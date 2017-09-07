@@ -1,0 +1,54 @@
+<p><h3>Data Available</h3>
+<p><b><u>Backtesting mode</u></b></p>
+4000 symbols of US equity options from Jan 2010 to now provided by AlgoSeek.</p>
+Quotes and trades with minute resolution only.
+
+<p><b><u>Live mode</u></b></p>
+<p>Live tick data from Interactive Brokers are available. You MUST have a valid <a href="https://www.interactivebrokers.com/en/software/am/am/manageaccount/marketdatasubscriptions.htm">data subscription</a> with IB).</p></p>
+<p><h3>Selecting Data</h3>
+Subscribe to options data:
+<p><pre>
+// Complete Add Option API - Including Default Parameters:
+AddOption(string underlying,
+          Resolution resolution = Resolution.Minute,
+          string market = null,
+          bool fillDataForward = true,
+          decimal leverage = 0m)
+</pre></p>
+By default, the option universe is filtered down to contracts that expire within 35 days, one contract below and another above ATM, and exclude weeklys. A difference set of contracts can be chosen with the <code>SetFilter</code> method:
+<p><pre>
+var option = AddOption("GOOG");
+option.SetFilter(-2, 2, TimeSpan.FromDays(30), TimeSpan.FromDays(180));
+</pre></p>
+<code>SetFilter</code> also accepts Linq expressions and enables the section of weeklys and define the desired option right:
+<p><pre>
+var option = AddOption("GOOG");
+option.SetFilter(universe => from symbol in universe
+                                .WeeklysOnly()
+                                .Expiration(TimeSpan.Zero, TimeSpan.FromDays(10))
+                                    where symbol.ID.OptionRight != OptionRight.Put &&
+                                    universe.Underlying.Price - symbol.ID.StrikePrice < 60
+                                    select symbol);
+</pre></p></p>
+<p><h3>Accessing data</h3>
+Quotes and trades can be accessed in the Slice object in OnData event handler.</br>
+The OptionChains member contains an OptionChain object for each subscribed option:
+</br>
+<pre>
+// In Initialize
+OptionSymol = option.Symbol;
+
+// In OnData
+OptionChain chain;
+slice.OptionChains.TryGetValue(OptionSymbol, out chain);
+</pre>
+</br>
+An OptionChain object has information about the undelying and options contracts that were filtered by <code>SetFilter</code>:</br>
+<pre>
+var underlying = chain.Underlying;
+var contracts = chain.Contracts; 
+</pre>
+</br>
+Finally, we can use Linq to select the contract(s) we want to trade.</p>
+<p><h3>Live Trading</h3>
+Only available with Interactive Brokers.</p>

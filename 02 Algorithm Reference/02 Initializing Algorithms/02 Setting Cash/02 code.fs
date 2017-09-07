@@ -1,0 +1,1 @@
+this.SetCash(100000)

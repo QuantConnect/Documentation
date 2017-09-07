@@ -1,0 +1,19 @@
+<p>Batch history API is often easier to understand as you can manually feed data into your components which need it. If Resolution of the data request is not specified the history API uses the resolution of data you've specified with AddSecurity() or your Universe, similarly if the Symbol is not specified then history for all symbols is returned for the period.</p>
+<p>Batch data returned as <code>IEnumerable&lt;Slice&gt; slices</code>, <code>IEnumerable&lt;TradeBar&gt; slices</code> or <code>IEnumerable&lt;QuoteBar&gt; slices</code> has all the normal slice helpers - to assist using the data in your strategy, for example:
+
+<pre>
+//From slice -> tradebars, or slice -> decimals.  
+IEnumerable&lt;Slice&gt; slices = History(TimeSpan.FromDays(7), Resolution.Minute);
+IEnumerable&lt;TradeBar&gt; bars = slices.Get("SPY"); // Bars 
+IEnumerable&lt;decimal&gt; decimals = slices.Get("SPY", Field.Close); // Close from slice
+
+// Many math libraries need double arrays, decimals -> double[]
+double[] doubleArray = decimals.ToDoubleArray();
+</pre>
+<p>
+In Python algorithms, batch data can also be returned as pandas.DataFrame. It is a multi-index dataframe where the first index is the symbol.</p>
+<pre>
+slices = self.History(["SPY","EURUSD"], 14)
+bars = slices.loc["EURUSD"]
+doubleArray = bars["close"]   # use lowercase
+</pre></p>

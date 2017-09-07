@@ -1,0 +1,14 @@
+<p>QuantConnect's LEAN engine manages your portfolio and data feeds letting you focus on your algorithm strategy and execution. Data is piped into your strategy via event handlers, upon which you can place trades. We provide basic portfolio management and fill modelling underneath the hood automatically. This is provided by the <code>QCAlgorithm</code> base class.</p>
+<p>All algorithms extend <code>QCAlgorithm</code>, which provides some key helper properties for you to use: Security Manager, Portfolio Manager, Transactions Manager, Notification Manager and Scheduling Manager. Along with hundreds of helper methods to make the API easy to use. We'll go into more detail on those below, but its important for you to know the basic infrastructure around your algorithm.</p>
+<p>The 
+<code class="csharp visualbasic fsharp python">Securities</code> 
+<span class="csharp visualbasic fsharp python">property</span>
+<code class="java">get_Securities()</code> 
+<span class="java">method</span>
+ is a dictionary of Security objects. Each asset (equity, forex pair etc) in your algorithm has a security object. All the models for a security live on these objects: e.g. 
+<span class="csharp visualbasic fsharp python"><code>Securities["IBM"].FeeModel</code> or <code>Securities["IBM"].Price</code>.</span>
+<code class="java">get_Securities().get_Item("SPY").get_Price()</code></p>
+<p><code>Portfolio</code> is a dictionary of SecurityHolding classes. These classes track the individual portfolio items profit and losses, fees and quantity held. e.g. 
+<code class="csharp visualbasic fsharp python">Portfolio["IBM"].LastTradeProfit</code><code class="java">Decimal profit = get_Portfolio().get_Item("IBM").get_LastTradeProfit();</code>.</p>
+<p>Other helpers like <code>Transactions</code>, <code>Schedule</code>, <code>Notify</code>, and <code>Universe</code> have their own helper methods which we'll explain below.</p>
+<p>All algorithms must have an <code>Initialize()</code> method to setup your strategy. Once setup most algorithms have OnData event handlers to process market data and make trading decisions.</p>

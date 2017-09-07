@@ -1,0 +1,1 @@
+self.Debug(str(self.Time) + " Purchasing AAPL: " + str(slice["SPY"].Price))
