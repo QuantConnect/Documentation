@@ -1,40 +1,72 @@
-<p><h3>Data Available</h3>
-<p><b><u>Backtesting mode</u></b></p>
+<p>
+	<h3>
+		Data Available
+	</h3>
+	<p>
+		<b><u>
+		Backtesting mode</u></b>
+</p>
 4000 symbols of futures contracts from Jan 2009 to now provided by AlgoSeek.
-<p>Quotes and trades with tick, second, minute resolutions are available.</p>
-
-<p><b><u>Live mode</u></b></p>
-<p>Live tick data from Interactive Brokers are available. You MUST have a valid <a href="https://www.interactivebrokers.com/en/software/am/am/manageaccount/marketdatasubscriptions.htm">data subscription</a> with IB).</p></p>
-<p><h3>Selecting Data</h3>
-Subscribe to futures data:
-<p><pre>
+<p>
+	Quotes and trades with tick, second, minute resolutions are available.
+</p>
+<p>
+	<b><u>
+	Live mode</u></b>
+</p>
+<p>
+	Live tick data from Interactive Brokers are available. You MUST have a valid <a href="https://www.interactivebrokers.com/en/software/am/am/manageaccount/marketdatasubscriptions.htm">data subscription</a> with IB).
+</p>
+</p>
+<p>
+	<h3>
+		Selecting Data
+	</h3>
+	Subscribe to futures data:
+	<p>
+		<pre>
 // Complete Add Future API - Including Default Parameters:
 AddFuture(string symbol,
           Resolution resolution = Resolution.Minute,
           string market = null,
           bool fillDataForward = true,
           decimal leverage = 0m)      
-</pre></p>
-By default, the futures universe is filtered down to contracts that expire within 35 days. A difference set of contracts can be chosen with the <code>SetFilter</code> method:
-<p><pre>
+</pre>
+	</p>
+	By default, the futures universe is filtered down to contracts that expire within 35 days. A difference set of contracts can be chosen with the <code>SetFilter</code> method:
+	<p>
+		<pre>
 var future = AddFuture(Futures.Indices.SP500EMini);
 future.SetFilter(TimeSpan.FromDays(30), TimeSpan.FromDays(180));
-</pre><p></p>
-<p>Quotes and trades can be accessed in the Slice object in OnData event handler.</p>
-<p>The FuturesChains member contains a FutureChain object for each subscribed future:</p>
-<p><pre>
+</pre>
+		<p></p>
+		<p>
+			Quotes and trades can be accessed in the Slice object in OnData event handler.
+		</p>
+		<p>
+			The FuturesChains member contains a FutureChain object for each subscribed future:
+		</p>
+		<p>
+			<pre>
 // In Initialize
 FutureSymbol = future.Symbol;
 
 // In OnData
 FuturesChain chain;
 slice.FuturesChains.TryGetValue(FutureSymbol, out chain);
-</pre></p>
-An FuturesChain object has information about the undelying and futures contracts that were filtered by <code>SetFilter</code>:
-<p><pre>
+</pre>
+		</p>
+		An FuturesChain object has information about the undelying and futures contracts that were filtered by <code>SetFilter</code>:
+		<p>
+			<pre>
 var underlying = chain.Underlying;
 var contracts = chain.Contracts; 
-</pre><p>
-Finally, we can use Linq to select the contract(s) we want to trade.
-<p><h3>Live Trading</h3>
-Only available with Interactive Brokers.</p>
+</pre>
+			<p>
+				Finally, we can use Linq to select the contract(s) we want to trade.
+				<p>
+					<h3>
+						Live Trading
+					</h3>
+					Only available with Interactive Brokers.
+				</p>
