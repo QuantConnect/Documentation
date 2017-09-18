@@ -6,6 +6,8 @@
 
 This repository is the primary source for documentation for QuantConnect.com. If you have edits to the documentation please submit a Pull Request the fix. 
 
+All accepted pull requests will get a 2mo free Prime subscription on QuantConnect. Once your pull-request has been merged write to us at support@quantconnect.com with a link to your PR to claim your free live trading =) QC <3 Open Source.
+
 Lean Engine is an open-source fully managed C# algorithmic trading engine built for desktop and cloud usage. It was designed in Mono and operates in Windows, Linux and Mac platforms. For more information about the LEAN Algorithmic Trading engine see the [Lean Engine Repository][4].
 
 
