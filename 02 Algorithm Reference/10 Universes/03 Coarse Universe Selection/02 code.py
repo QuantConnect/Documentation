@@ -8,6 +8,4 @@ def CoarseSelectionFunction(self, coarse):
         key=lambda x: x.DollarVolume, reverse=True) 
 
     # we need to return only the symbol objects
-    list = List[Symbol]()
-    for x in sortedByDollarVolume[:50]: list.Add(x.Symbol)
-    return list
+    return [ x.Symbol for x in sortedByDollarVolume[:50] ]

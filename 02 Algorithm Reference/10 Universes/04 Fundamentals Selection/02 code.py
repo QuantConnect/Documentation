@@ -8,20 +8,13 @@ def CoarseSelectionFunction(self, coarse):
         key=lambda x: x.DollarVolume, reverse=True) 
 
     # we need to return only the symbol objects
-    list = List[Symbol]()
-    for x in sortedByDollarVolume[:50]: list.Add(x.Symbol)
-    return list
+    return [ x.Symbol for x in sortedByDollarVolume[:50] ]
 
 def FineSelectionFunction(self, fine):
-    '''sort the data by P/E ratio and take the top 'NumberOfSymbolsFine' '''
+    '''sort the data by P/E ratio and take the top 10 '''
     # sort descending by P/E ratio
-    sortedByPeRatio = sorted(fine, key=lambda x: x.ValuationRatios.PERatio, reverse=True)
+    sortedByPeRatio = sorted(fine, \
+        key=lambda x: x.ValuationRatios.PERatio, reverse=True)
 
     # take the top entries from our sorted collection
-    topFine = sortedByPeRatio[:self.__numberOfSymbolsFine]
-
-    list = List[Symbol]()
-    for x in topFine:
-        list.Add(x.Symbol)
-
-    return list
+    return [ x.Symbol for x in sortedByPeRatio[:10] ]
