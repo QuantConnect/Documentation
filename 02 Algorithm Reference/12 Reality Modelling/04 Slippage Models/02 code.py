@@ -1,5 +1,5 @@
 # Assigning securities custom slippage models:
-self.SetSlippageModel(CustomSlippageModel(), self.Securities["SPY"])
+self.Securities["SPY"].SetSlippageModel(CustomSlippageModel())
 
 # Custom slippage implementation
 class CustomSlippageModel:

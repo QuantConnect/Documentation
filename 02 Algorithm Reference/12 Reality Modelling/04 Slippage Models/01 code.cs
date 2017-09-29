@@ -1,5 +1,5 @@
 // Assigning securities custom slippage models:
-Securities["SPY"].SlippageModel = new CustomSlippageModel()
+Securities["SPY"].SetSlippageModel(new CustomSlippageModel());
 
 // Custom slippage implementation
 public class CustomSlippageModel : ISlippageModel {
