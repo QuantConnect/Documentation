@@ -1,5 +1,5 @@
 // Set the fill models in initialize:
-Securities["IBM"].FillModel = new PartialFillModel();
+Securities["IBM"].SetFillModel(new PartialFillModel());
 
 // Custom fill model implementation stub
 public class PartialFillModel : ImmediateFillModel {

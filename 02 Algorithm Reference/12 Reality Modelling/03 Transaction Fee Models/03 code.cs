@@ -1,5 +1,5 @@
 // Assigning securities custom fee models:
-Securities["SPY"].FeeModel = new CustomFeeModel()
+Securities["SPY"].SetFeeModel(new CustomFeeModel());
 
 // Custom fee implementation
 public class CustomFeeModel : IFeeModel {

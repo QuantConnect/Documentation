@@ -1,5 +1,5 @@
 # Assigning securities custom fee models:
-self.SetFeeModel(CustomFeeModel(), self.Securities["SPY"]) 
+self.Securities["SPY"].SetFeeModel(CustomFeeModel()) 
 
 # Custom fee implementation
 class CustomFeeModel:

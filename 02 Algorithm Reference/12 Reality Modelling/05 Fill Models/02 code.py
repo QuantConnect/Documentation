@@ -1,5 +1,5 @@
 # Set the fill models in initialize:
-self.SetFillModel(PartialFillModel(), self.Securities["IBM"])
+self.Securities["IBM"].SetFillModel(PartialFillModel())
 
 # Custom fill model implementation stub
 class PartialFillModel(ImmediateFillModel):
