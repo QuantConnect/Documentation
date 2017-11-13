@@ -1,0 +1,1 @@
+self.SetBenchmark("SPY")
