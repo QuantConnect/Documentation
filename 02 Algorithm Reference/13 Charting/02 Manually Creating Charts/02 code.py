@@ -6,7 +6,13 @@ stockPlot = Chart('Trade Plot')
 stockPlot.AddSeries(Series('Buy', SeriesType.Scatter, 0))
 stockPlot.AddSeries(Series('Sell', SeriesType.Scatter, 0))
 stockPlot.AddSeries(Series('Price', SeriesType.Line, 0))
+# Or using custom chart
+# Import the necessary module before using Custom color
+from System.Drawing import Color
+stockPlot.AddSeries(Series('Price', SeriesType.Line, '$', Color.Green))
+stockPlot.AddSeries(Series('Buy', SeriesType.Scatter, '$', Color.Red, ScatterMarkerSymbol.Triangle))
+stockPlot.AddSeries(Series('Sell', SeriesType.Scatter, '$', Color.Blue, ScatterMarkerSymbol.TriangleDown))
 self.AddChart(stockPlot)
 
-// Later in your OnData(self, data):
+# Later in your OnData(self, data):
 self.Plot('Trade Plot', 'Price', self.lastPrice)
