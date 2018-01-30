@@ -1,0 +1,35 @@
+<meta name="tag" content="using data" />
+<meta name="tag" content="history and warm up" />
+<meta name="tag" content="history" />
+<meta name="tag" content="warm up" />
+<meta name="tag" content="indicators" />
+<meta name="tag" content="rolling windows" />
+<p>
+	A particular and helpful use of RollingWindow is to store past indicator values.
+</p>
+<p>
+	Creates an indicator and adds to a rolling window when it is updated
+	<pre class="csharp">
+	SMA("SPY", 5).Updated += (sender, updated) => _smaWin.Add(updated);
+	_smaWin = new RollingWindow&lt;IndicatorDataPoint&gt;(5);
+	</pre>
+	<pre class="python">
+	self.SMA("SPY", 5).Updated += self.SmaUpdated
+	self.smaWin = RollingWindow[IndicatorDataPoint](5)
+
+	# Adds updated values to rolling window
+	def SmaUpdated(self, sender, updated):
+		self.smaWin.Add(updated)
+	</pre>
+	The most recent element, the previous and the last item for this case are:
+	<pre class="csharp">
+	var currentSma = _smaWin[0];
+	var previousSma = _smaWin[1];
+	var oldestSma = _smaWin[_smaWin.Count-1];
+	</pre>
+	<pre class="python">
+	currentSma = self.smaWin[0]
+	previousSma = self.smaWin[1]
+	oldestSma = self.smaWin[_smaWin.Count-1]
+	</pre>
+</p>

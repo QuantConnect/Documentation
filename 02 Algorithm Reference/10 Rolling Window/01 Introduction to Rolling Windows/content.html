@@ -1,0 +1,47 @@
+<meta name="tag" content="using data" />
+<meta name="tag" content="history and warm up" />
+<meta name="tag" content="history" />
+<meta name="tag" content="warm up" />
+<meta name="tag" content="indicators" />
+<meta name="tag" content="rolling windows" />
+<p>
+	$[RollingWindow] is a window that allows for list access semantics, where the object with index [0] refers to the most recent item in the window and index [Length-1] refers to the last item in the window, where Length is the number of elements in the window.
+</p>
+<p>
+	We can store any type of object in a RollingWindow, since it is a generic type, with a given max length:
+	<pre class="csharp">
+	_closeWindow = new RollingWindow&lt;decimal&gt;(4);
+	_tradeBarWindow = new RollingWindow&lt;TradeBar&gt;(2);
+	_quoteBarWindow = new RollingWindow&lt;QuoteBar&gt;(2);
+	</pre>
+	<pre class="python">
+	self.closeWindow = RollingWindow[decimal](4)
+	self.tradeBarWindow = RollingWindow[TradeBar](2)
+	self.quoteBarWindow = RollingWindow[QuoteBar](2)
+	</pre>
+	These objects are updated by adding a new element of its type:
+	<pre class="csharp">
+	_closeWindow.Add(data["SPY"].Close);
+	_tradeBarWindow.Add(data["SPY"]);
+	_quoteBarWindow.Add(data["EURUSD"]);
+	</pre>
+	<pre class="python">
+	self.closeWindow.Add(data["SPY"].Close)
+	self.tradeBarWindow.Add(data["SPY"])
+	self.quoteBarWindow.Add(data["EURUSD"])
+	</pre>
+	The most recent element, the previous and the last item for the decimal case are:
+	<pre class="csharp">
+	var currentClose = _closeWindow[0];
+	var previousClose = _closeWindow[1];
+	var oldestClose = _closeWindow[_closeWindow.Count-1];
+	</pre>
+	<pre class="python">
+	currentClose = self.closeWindow[0]
+	previousClose = self.closeWindow[1]
+	oldestClose = self.closeWindow[self.closeWindow.Count-1]
+	</pre>
+</p>
+<p>
+	<b>Pro tip:</b> RollingWindow of TradeBar and/or QuoteBar are better than Historical Data Requests in algorithms that need to keep track of historical data, since we just need to update it with recent data, while the History method fetches the whole requested period and synchronize the data.     
+</p>
