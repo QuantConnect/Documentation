@@ -8,10 +8,12 @@
 <meta name="tag" content="delistings event" />
 <meta name="tag" content="symbol changed event" />
 <p>
-	The Slice event handler combine all of the data together into a single method. It represents the data at a point in time. The <code>Slice</code> object contains many helpers for accessing your data. The Slice objects arrive to the <code>OnData(Slice data)</code> event handler.
+	The Slice event handler combine all of the data together into a single method. It represents the data at a point in time. 
+	The <code>Slice</code> object contains many helpers for accessing your data. The Slice objects arrive to the 
+	<code class="csharp fsharp">OnData(Slice data)</code><code class="python">def OnData(self, slice)</code> event handler.
 </p>
 <p>
-	The <code>Slice</code> object gives you three ways to access your data: 
+	The <code>Slice</code> object gives you <span class="csharp fsharp">three</span><span class="python">two</span> ways to access your data: 
 </p>
 <ol>
 	<li>
@@ -20,23 +22,18 @@
 	<li>
 		Statically typed properties (slice.Bars[], slice.QuoteBars[]).
 	</li>
-	<li>
+	<li class="csharp fsharp">
 		Statically typed Get&lt;T&gt;() helper
 	</li>
 </ol>
-<p>
-	Strongly typed access gives you compile time safety but dynamic types can sometimes simplify coding. We recommend static types as they are easier to debug.
-</p>
-<p>
-	<span class="python">Python is dynamically typed so does not have the Get method. Primary Slice data access is through the string/symbol indexer.</span>
-</p>
-<p>
-	<span class="csharp fsharp visualbasic">Slice is the recommended method for data access in your algorithm.</span>
-</p>
+<p class="csharp fsharp">
+	Strongly typed access gives you compile time safety but dynamic types can sometimes simplify coding. We recommend static
+	types as they are easier to debug.
+</p> 
 <p>
 	Slice has the following internal structure:
 </p>
-<pre>class Slice : IEnumerable&lt;KeyValuePair&lt;Symbol, BaseData&gt;&gt;
+<pre class="csharp fsharp">class Slice : IEnumerable&lt;KeyValuePair&lt;Symbol, BaseData&gt;&gt;
 {
     TradeBars Bars;
     QuoteBars QuoteBars;
@@ -48,9 +45,22 @@
     Delistings Delistings;
     SymbolChangedEvents SymbolChangedEvents;
 }</pre>
+<pre class="python">class Slice:
+    TradeBars Bars;
+    QuoteBars QuoteBars;
+    Ticks Ticks;
+    OptionChains OptionChains;
+    FuturesChains FuturesChains;
+    Splits Splits;
+    Dividends Dividends;
+    Delistings Delistings;
+    SymbolChangedEvents SymbolChangedEvents;
+</pre>
 <p>
-	It contains all the data for a given moment of time. TradeBars and QuoteBars are symbol/string indexed dictionaries so you can easily access the data. Ticks is a symbol-list dictionary with a list of ticks for that moment of time.
+	It contains all the data for a given moment of time. TradeBars and QuoteBars are symbol/string indexed dictionaries so you 
+	can easily access the data. Ticks is a list of ticks for that moment of time; indexed by the symbol.
 </p>
 <p>
-	To make accessing the data easier the Slice object itself can also be indexed. e.g. <code>slice["IBM"]</code> will return a <b>TradeBar</b> for IBM. <code>slice["EURUSD"]</code> will return a <b>QuoteBar</b> for EURUSD.
+	To make accessing the data easier the Slice object itself can also be indexed. e.g. <code>slice["IBM"]</code> will return a 
+	<b>TradeBar</b> for IBM. <code>slice["EURUSD"]</code> will return a <b>QuoteBar</b> for EURUSD.
 </p>
