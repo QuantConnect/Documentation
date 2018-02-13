@@ -1,17 +1,23 @@
 <meta name="tag" content="custom data" />
 <p>
-	You must create a custom type to instruct LEAN where to get your data, and how to read it. We support many different data types and formats. You can even change source locations for backtesting and live modes. All data must extend from <code>BaseData</code> and override the <code>Reader</code> and <code>GetSource</code> methods.
+	You must create a custom type to instruct LEAN where to get your data, and how to read it. We support many different data types 
+	and formats. You can even change source locations for backtesting and live modes. All data must extend from <code>BaseData</code>
+	and override the <code>Reader</code> and <code>GetSource</code> methods.
 </p>
 <p>
-	<code>GetSource</code>
-	 instructs LEAN where to find your data. It must return a <code>SubscriptionDataSource</code> object containing the string Url to find your data, and the format of the data (SubscriptionTransportMedium RemoteFile or Rest). When the source returned changes URL the data is downloaded again. This allows LEAN to cache large files and only download new data when requested. This also allows you to break up large intraday data into smaller daily files, speeding up the backtest.
+	<code>GetSource</code> instructs LEAN where to find your data. It must return a <code>SubscriptionDataSource</code> object 
+	containing the string Url to find your data, and the format of the data (SubscriptionTransportMedium RemoteFile or Rest). When 
+	the source returned changes URL the data is downloaded again. This allows LEAN to cache large files and only download new data 
+	when requested. This also allows you to break up large intraday data into smaller daily files, speeding up the backtest.
 </p>
 <p>
-	When using <code>SubscriptionTransportMedium.Rest</code> the url provided is polled at each Resolution time step and is assumed to be sufficient for 1-data point. This is generally intended for live data sources.
+	When using <code>SubscriptionTransportMedium.Rest</code> the url provided is polled at each Resolution time step and is assumed to
+	be sufficient for 1-data point. This is generally intended for live data sources.
 </p>
 <p>
-	<code>Reader</code>
-	 takes one line of data provided by the source, and parses it into one of your custom objects (e.g. Yahoo in the code snippet). In addition to setting your custom type properties, you should also take care to set three required properties: 
+	<code>Reader</code> takes one line of data provided by the source, and parses it into one of your custom objects (e.g. Weather 
+	in the code snippet). In addition to setting your custom type properties, you should also take care to set three required 
+	properties: 
 	<ol>
 		<li>
 			Symbol - Should always be set to config.Symbol
