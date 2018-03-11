@@ -10,4 +10,18 @@ var emaDaily = EMA("IBM", 14, Resolution.Daily);
 // TIP -> You can use helper methods Field.Open, Field.High etc on the indicator selector:
 var emaDailyHigh = EMA("IBM", 14, Resolution.Daily, point => ((TradeBar) point).High);
 
+//4. Using the indicators:
+//4.1  Setup in initialize:
+_emaFast = EMA("IBM", 14);
+_emaSlow = EMA("IBM", 28);
+
+//4.2 Use in OnData:
+if (_emaSlow.IsReady && _emaFast.IsReady) {
+   if (_emaFast > _emaSlow) {
+       //Long.
+   } else if (_emaFast < _emaSlow) {
+       //Short.
+   } 
+}
+
 //NOTE. Some indicators require tradebars (ATR, AROON) so your selector must return a TradeBar object for those indicators.
