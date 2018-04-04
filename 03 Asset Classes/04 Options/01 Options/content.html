@@ -86,3 +86,53 @@ Finally, we can use Linq to select the contract(s) we want to trade.
 	</h3>
 	Only available with Interactive Brokers.
 </p>
+
+
+<div class="section-example-container" >
+<pre class="csharp" >
+// In Initialize
+var option = AddOption("GOOG");
+option.SetFilter(-2, 2, TimeSpan.Zero, TimeSpan.FromDays(182));
+// or Linq
+option.SetFilter(universe => from symbol in universe
+                                .WeeklysOnly()
+                                .Expiration(TimeSpan.Zero, TimeSpan.FromDays(10))
+                                    where symbol.ID.OptionRight != OptionRight.Put &&
+                                    universe.Underlying.Price - symbol.ID.StrikePrice < 60
+                                    select symbol);
+</pre>
+<pre class="python" >
+# In Initialize
+option = self.AddOption("GOOG");
+option.SetFilter(-2, 2, timedelta(0), timedelta(182))
+# or Lambda
+option.SetFilter(lambda universe: universe.IncludeWeeklys().Strikes(-2, +2).Expiration(timedelta(0), timedelta(182)))
+</pre>
+<pre class="csharp" >
+// In Initialize
+OptionSymol = option.Symbol;
+
+// In OnData
+OptionChain chain;
+if (slice.OptionChains.TryGetValue(OptionSymbol, out chain))
+{
+    // we find at the money (ATM) put contract with farthest expiration
+    var atmContract = chain
+        .OrderByDescending(x => x.Expiry)
+        .ThenBy(x => Math.Abs(chain.Underlying.Price - x.Strike))
+        .ThenByDescending(x => x.Right)
+        .FirstOrDefault();
+}
+</pre>
+<pre class="python" >
+# In Initialize
+self.OptionSymol = option.Symbol;
+
+// In OnData
+chain = slice.OptionChains[self.OptionSymbol].Value
+# we sort the contracts to find at the money (ATM) contract with farthest expiration
+contracts = sorted(sorted(chain, \
+    key = lambda x: abs(chain.Underlying.Price - x.Strike)), \
+    key = lambda x: x.Expiry, reverse=True)
+</pre>
+</div>
