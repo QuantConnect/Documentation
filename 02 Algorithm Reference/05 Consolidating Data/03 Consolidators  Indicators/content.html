@@ -11,3 +11,53 @@
 <p>
 	In very rare cases you may want to update your indicator manually. You can do this by passing each data point into your <code>indicator.Update()</code> method from your consolidator <code>DataConsolidated</code> event handler.
 </p>
+
+
+<div class="section-example-container" >
+<pre class="csharp" >
+// Consolidating minute SPY into Daily SMA/EMA.
+var ema = EMA("SPY", 14, Resolution.Daily);
+var sma = SMA("SPY", 14, Resolution.Daily);
+</pre>
+<pre class="csharp" >
+// Register for daily bars from minutely data.
+AddEquity("SPY", Resolution.Minute);
+var myTradeBarIndicator = new MyTradeBarIndicator(120);
+RegisterIndicator("SPY", myTradeBarIndicator, Resolution.Daily);
+</pre>
+<pre class="python" >
+# Consolidating minute SPY into Daily SMA/EMA.
+ema = self.EMA("SPY", 14, Resolution.Daily)
+sma = self.SMA("SPY", 14, Resolution.Daily)
+</pre>
+<pre class="python" >
+# Register for daily bars from minutely data.
+self.AddEquity("SPY", Resolution.Minute)
+myTradeBarIndicator = MyTradeBarIndicator(120)
+self.RegisterIndicator("SPY", myTradeBarIndicator, Resolution.Daily)
+</pre>
+<pre class="csharp" >
+// Create, initialize a consolidator and add an indicator
+private SimpleMovingAverage _sma;
+
+public override void Initialize()
+{
+	//...other initialization...
+	AddEquity("SPY", Resolution.Minute);
+	var consolidator = new TradeBarConsolidator(30);
+	_sma = new SimpleMovingAverage(10);
+	RegisterIndicator("SPY", _sma, consolidator);
+	SubscriptionManager.AddConsolidator("SPY", consolidator);
+}
+</pre>
+<pre class="python" >
+# Create, initialize a consolidator and add an indicator
+def Initialize(self):
+    # ...other initialization...
+    self.AddEquity("SPY", Resolution.Minute)
+    consolidator = TradeBarConsolidator(30)
+    self._sma = SimpleMovingAverage(10)
+    self.RegisterIndicator("SPY", self._sma, consolidator)
+    self.SubscriptionManager.AddConsolidator("SPY", consolidator)
+</pre>
+</div>
