@@ -1,1 +1,0 @@
-self.SetCash(100000)
