@@ -14,3 +14,32 @@ Liquidate(Symbol symbolToLiquidate = null)
 <p>
 	SetHoldings sets a fraction of unlevered equity. e.g. If you have 2x available leverage, and SetHoldings to 1.0 the algorithm will use 1.0 of your available buying power. To maximize buying power in this case you would make the SetHoldings fractions total 2.0.
 </p>
+
+
+<div class="section-example-container" >
+<pre class="csharp" >
+// Set fixed percentages of known tickers:
+SetHoldings("IBM", 0.25);
+SetHoldings("GOOG", 0.25);
+SetHoldings("AAPL", 0.25);
+SetHoldings("MSFT", 0.25);
+
+// Or set portfolio to equal weighting of all securities:
+var weighting = 1m / Securities.Count;
+foreach(var security in Securities.Values) {
+    SetHoldings(security.Symbol, weighting);
+}
+</pre>
+<pre class="python" >
+# Set fixed percentages of known tickers:
+self.SetHoldings("IBM", 0.25)
+self.SetHoldings("GOOG", 0.25)
+self.SetHoldings("AAPL", 0.25)
+self.SetHoldings("MSFT", 0.25)
+
+# Or set portfolio to equal weighting of all securities:
+weighting = 1.0 / self.Securities.Count
+for security in self.Securities.Values:
+    self.SetHoldings(security.Symbol, weighting)
+</pre>
+</div>

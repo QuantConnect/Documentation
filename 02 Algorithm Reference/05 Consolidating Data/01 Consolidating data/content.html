@@ -12,3 +12,30 @@
 	<code class="csharp fsharp">Initialize()</code><code class="python">def Initialize:</code>  method.
 </p>
 
+<div class="section-example-container" >
+<pre class="csharp" >
+// Create and initialize a consolidator
+public override void Initialize()
+{
+	//...other initialization...
+	AddEquity("SPY", Resolution.Minute);
+	var consolidator = new TradeBarConsolidator(15);
+	consolidator.DataConsolidated += {
+		Debug(Time.ToString() + " > New Bar!");
+	};
+	SubscriptionManager.AddConsolidator("SPY", consolidator);
+}
+</pre>
+<pre class="python" >
+# Create and initialize a consolidator
+def Initialize(self):
+    # ...other initialization...
+    self.AddEquity("SPY", Resolution.Minute)
+    consolidator = TradeBarConsolidator(15)
+    consolidator.DataConsolidated += self.OnDataConsolidated
+    self.SubscriptionManager.AddConsolidator("SPY", consolidator)
+
+def OnDataConsolidated(self, sender, bar):
+    self.Debug(str(self.Time) + " > New Bar!")
+</pre>
+</div>
