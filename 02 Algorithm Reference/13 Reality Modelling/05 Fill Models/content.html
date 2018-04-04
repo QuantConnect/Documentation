@@ -15,3 +15,28 @@
     OrderEvent MarketOnCloseFill(Security asset, MarketOnCloseOrder order);
 }</pre>We provide the $[ImmediateFillModel] which assumes orders and immediately and completely filled.
 </p>
+
+
+<div class="section-example-container" >
+<pre class="csharp" >
+// Set the fill models in initialize:
+Securities["IBM"].SetFillModel(new PartialFillModel());
+
+// Custom fill model implementation stub
+public class PartialFillModel : ImmediateFillModel {
+    public override OrderEvent MarketFill(Security asset, MarketOrder order) {
+        //Override order event handler and return partial order fills, 
+    }
+}
+</pre>
+<pre class="python" >
+# Set the fill models in initialize:
+self.Securities["IBM"].SetFillModel(PartialFillModel())
+
+# Custom fill model implementation stub
+class PartialFillModel(ImmediateFillModel):
+    def MarketFill(self, asset, order):
+        # Override order event handler and return partial order fills
+        pass
+</pre>
+</div>
