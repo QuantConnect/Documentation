@@ -1,1 +1,0 @@
-Debug(Time.ToString("o") + " Purchasing AAPL: " + data["AAPL"].Price);
