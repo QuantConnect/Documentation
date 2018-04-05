@@ -73,3 +73,48 @@ var contracts = chain.Contracts;
 					</h3>
 					Only available with Interactive Brokers.
 				</p>
+				
+
+<div class="section-example-container" >
+<pre class="csharp" >
+// In Initialize
+var future = AddFuture(Futures.Indices.SP500EMini, Resolution.Minute);
+future.SetFilter(TimeSpan.Zero, TimeSpan.FromDays(182));
+// or Linq
+future.SetFilter(universe => universe.Expiration(TimeSpan.Zero, TimeSpan.FromDays(182)));
+</pre>
+<pre class="python" >
+# In Initialize
+future = self.AddFuture(Futures.Indices.SP500EMini, Resolution.Minute)
+future.SetFilter(timedelta(0), timedelta(182))
+# or Lambda
+future.SetFilter(universe => universe.Expiration(timedelta(0), timedelta(182)))
+</pre>
+<pre class="csharp" >
+// In Initialize
+FutureSymbol = future.Symbol;
+
+// In OnData(Slice slice)
+FuturesChain chain;
+if (slice.FuturesChains.TryGetValue(FutureSymbol, out chain))
+{
+    var underlying = chain.Underlying;
+    var contracts = chain.Contracts.Value; 
+    foreach (var contract in contracts)
+    {
+        //
+    }
+}
+</pre>
+<pre class="python" >
+# In Initialize
+self.FutureSymbol = future.Symbol;
+
+// In OnData(self, slice)
+chain = slice.FuturesChains[self.FutureSymbol]
+underlying = chain.Underlying
+contracts = chain.Contracts.Value
+for contract in contracts:
+    pass
+</pre>
+</div>
