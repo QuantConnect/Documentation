@@ -34,7 +34,8 @@
 	</h3>
 	Subscribe to equity data:
 	<p>
-		<pre>
+		<div class="section-example-container">
+		<pre class="all">
 // Complete Add Equity API - Including Default Parameters:
 AddEquity(string ticker,
           Resolution resolution = Resolution.Minute,
@@ -43,6 +44,7 @@ AddEquity(string ticker,
           decimal leverage = 0m,
           bool extendedMarketHours = false)
 </pre>
+</div>
 	</p>
 </p>
 <p>
@@ -53,13 +55,13 @@ AddEquity(string ticker,
 		Trades can be accessed in the Slice or TradeBars object in OnData event handler:
 	</p>
 	<p>
-		<pre>var bar = data["SPY"];</pre>
+		<div class="section-example-container"><pre class="all">var bar = data["SPY"];</pre></div>
 	</p>
 	<p>
 		Other information about the equity can be found in the <a href="#Securities-and-Portfolio">security</a> object:
 	</p>
 	<p>
-		<pre>var equity = Securities["SPY"];</pre>
+		<div class="section-example-container"><pre class="all">var equity = Securities["SPY"];</pre></div>
 	</p>
 </p>
 <p>
@@ -68,3 +70,28 @@ AddEquity(string ticker,
 	</h3>
 	Only available with Interactive Brokers.
 </p>
+
+<div class="section-example-container" >
+<pre class="csharp" >
+// In Initialize
+AddEquity("SPY", Resolution.Minute);
+</pre>
+<pre class="python" >
+# In Initialize
+self.AddEquity("SPY", Resolution.Minute)
+</pre>
+<pre class="csharp" >
+// In OnData(Slice data) or OnData(TradeBars data)
+var bar = data["SPY"];
+
+// Anywhere in the code
+var equity = Securities["SPY"];
+</pre>
+<pre class="python" >
+# In OnData(self, data)
+bar = data["SPY"]
+
+# Anywhere in the code
+equity = self.Securities["SPY"]
+</pre>
+</div>

@@ -1,0 +1,47 @@
+<meta name="tag" content="trading and orders" />
+<meta name="tag" content="brokerage models" />
+<meta name="tag" content="transaction fees and slippage" />
+<meta name="tag" content="custom transaction models" />
+<p>
+	Transaction fee models set the fees for each order. We provide customized transaction models for all brokerages, but you can also set your own. Like all models they must be set on a security by security basis.
+</p>
+<p>
+	Transaction models implement the $[ISecurityTransactionModel] interface. If you wish to implement your own transaction model you can start with the $[SecurityTransactionModel] and override methods you wish to change.
+</p>
+
+<div class="section-example-container" >
+<pre class="csharp" >
+// Set IBM to use a fixed $1.5 per trade fee model.
+Securities["IBM"].FeeModel = new ConstantFeeTransactionModel(1.5);
+
+// Set EURUSD to use FXCM's transaction fees:
+Securities["EURUSD"].FeeModel = new FxcmTransactionModel();
+</pre>
+<pre class="python" >
+# Set IBM to use a fixed $1.5 per trade fee model.
+self.Securities["IBM"].FeeModel = ConstantFeeTransactionModel(1.5)
+
+# Set EURUSD to use FXCM's transaction fees:
+self.Securities["EURUSD"].FeeModel = new FxcmTransactionModel()
+</pre>
+<pre class="csharp" >
+// Assigning securities custom fee models:
+Securities["SPY"].SetFeeModel(new CustomFeeModel());
+
+// Custom fee implementation
+public class CustomFeeModel : IFeeModel {
+    public decimal GetOrderFee(Security security, Order order) {
+        return 1;
+    }
+}
+</pre>
+<pre class="python" >
+# Assigning securities custom fee models:
+self.Securities["SPY"].SetFeeModel(CustomFeeModel()) 
+
+# Custom fee implementation
+class CustomFeeModel:
+    def GetOrderFee(self, security, order):
+        return 1
+</pre>
+</div>

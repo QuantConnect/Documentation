@@ -1,0 +1,46 @@
+<meta name="tag" content="trading and orders" />
+<meta name="tag" content="transaction fees and slippage" />
+<meta name="tag" content="custom transaction models" />
+<meta name="tag" content="order events" />
+<p>
+	Fill models give you control over order fills. Each supported order type is passed through a dedicated method and returns an $[OrderEvent] object. OrderEvents are used to carry information about order partial fills or errors.
+</p>
+<p>
+	The Fill Models implement the $[IFillModel] interface. They have the following key methods:
+	<div class="section-example-container">	
+	<pre class="all">public interface IFillModel {
+    OrderEvent MarketFill(Security asset, MarketOrder order);
+    OrderEvent StopMarketFill(Security asset, StopMarketOrder order);
+    OrderEvent StopLimitFill(Security asset, StopLimitOrder order);
+    OrderEvent LimitFill(Security asset, LimitOrder order);
+    OrderEvent MarketOnOpenFill(Security asset, MarketOnOpenOrder order);
+    OrderEvent MarketOnCloseFill(Security asset, MarketOnCloseOrder order);
+}</pre>
+</div>
+We provide the $[ImmediateFillModel] which assumes orders and immediately and completely filled.
+</p>
+
+
+<div class="section-example-container" >
+<pre class="csharp" >
+// Set the fill models in initialize:
+Securities["IBM"].SetFillModel(new PartialFillModel());
+
+// Custom fill model implementation stub
+public class PartialFillModel : ImmediateFillModel {
+    public override OrderEvent MarketFill(Security asset, MarketOrder order) {
+        //Override order event handler and return partial order fills, 
+    }
+}
+</pre>
+<pre class="python" >
+# Set the fill models in initialize:
+self.Securities["IBM"].SetFillModel(PartialFillModel())
+
+# Custom fill model implementation stub
+class PartialFillModel(ImmediateFillModel):
+    def MarketFill(self, asset, order):
+        # Override order event handler and return partial order fills
+        pass
+</pre>
+</div>

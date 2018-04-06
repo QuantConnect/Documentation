@@ -19,8 +19,8 @@
 <p>
 	The Transactions property is a helper that provides easy access to current and past orders and order tickets.
 </p>
-<p>
-	<pre>
+<div class="section-example-container">
+	<pre class="all" >
 // Popular Transactions methods:
 Transactions
             .CancelOpenOrders(Symbol symbol)
@@ -28,8 +28,84 @@ Transactions
             .GetOpenOrders()
             .GetOpenOrders(Symbol symbol)
             .GetOrderById(int orderId)
-            .GetOrders(Func<Order, bool>
-	 filter)            .GetOrderTicket(int orderId)            .GetOrderTickets(Func
-	<OrderTicket, bool>
-		 filter = null)</pre>
-</p>
+            .GetOrders(Func<Order, bool>filter).GetOrderTicket(int orderId).GetOrderTickets(Func<OrderTicket, bool>filter = null)
+</pre>
+</div>
+
+
+<div class="section-example-container" >
+<pre class="csharp" >
+// Creating an Order:
+OrderTicket limitOrderTicket = LimitOrder("SPY", 100, 205);
+
+// Updating an Order:
+limitOrderTicket.Update(new UpdateOrderFields{LimitPrice = 207.50};
+
+// Cancel an Order:
+limitOrderTicket.Cancel();
+</pre>
+<pre class="python" >
+# Creating an Order:
+limitOrderTicket = self.LimitOrder("SPY", 100, 205)
+
+# Updating an Order:
+updateOrderFields = UpdateOrderFields()
+updateOrderFields.LimitPrice = decimal.Decimal(207.50)
+limitOrderTicket.Update(updateOrderFields)
+
+# Cancel an Order:
+limitOrderTicket.Cancel()
+</pre>
+<pre class="csharp" >
+// Cancel all open orders from SPY
+List<OrderTicket> cancelledOrders = Transactions.CancelOpenOrders("SPY")
+
+// Cancel order #10
+OrderTicket cancelledOrder = Transactions.CancelOrder(10);
+
+// Get open orders
+List<Order> openOrders = Transactions.GetOpenOrders();
+List<Order> openOrders = Transactions
+    .GetOrders(x => x.Status.IsOpen()).ToList();
+
+// Get open orders from SPY
+List<Order> openOrders = Transactions.GetOpenOrders("SPY");
+List<Order> openOrders = Transactions
+    .GetOrders(x => x.Status.IsOpen() && x.Symbol == "SPY").ToList();
+
+// Get open order #10
+Order openOrder = Transactions.GetOrderById(10);
+
+// Get order ticket #10
+OrderTicket orderTicket = Transactions.GetOrderTicket(10);
+
+// Get open orders tickets from SPY
+IEnumerable<OrderTicket> openOrderTickets = Transactions
+    .GetOrderTickets(x => x.Status.IsOpen() && x.Symbol == "SPY");
+</pre>
+<pre class="python" >
+# Cancel all open orders from SPY
+cancelledOrders = self.Transactions.CancelOpenOrders("SPY")
+
+# Cancel order #10
+cancelledOrder = self.Transactions.CancelOrder(10)
+
+# Get open orders
+openOrders = self.Transactions.GetOpenOrders()
+
+# Get open orders from SPY
+openOrders = self.Transactions.GetOpenOrders("SPY")
+
+# Get open order #10
+openOrder = self.Transactions.GetOrderById(10)
+
+# Get all orders
+orders = self.Transactions.GetOrders()
+
+# Get order ticket #10
+orderTicket = self.Transactions.GetOrderTicket(10)
+
+# Get all orders tickets
+openOrderTickets = self.Transactions.GetOrderTickets()
+</pre>
+</div>

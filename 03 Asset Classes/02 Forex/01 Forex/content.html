@@ -26,6 +26,7 @@ Tick data is available from FXCM and OANDA.
 	</h3>
 	Subscribe to forex data:
 	<p>
+		<div class="section-example-container">
 		<pre>
 // Complete Add Forex API - Including Default Parameters:
 AddForex(string pair,
@@ -33,11 +34,11 @@ AddForex(string pair,
          string market = null,
          bool fillDataForward = true,
          decimal leverage = 0m)
-</pre>
+</pre></div>
 	</p>
 	By default, FXCM is the data provider. If we want to use OANDA instead, we have to explicitly select it:
 	<p>
-		<pre>AddForex("EURUSD", Resolution.Minute, Market.Oanda);</pre>
+		<div class="section-example-container"><pre>AddForex("EURUSD", Resolution.Minute, Market.Oanda);</pre></div>
 	</p>
 </p>
 <p>
@@ -48,13 +49,13 @@ AddForex(string pair,
 		Quotes can be accessed in the Slice or TradeBars object in OnData event handler:
 	</p>
 	<p>
-		<pre>var bar = data["EURUSD"];</pre>
+		<div class="section-example-container"><pre>var bar = data["EURUSD"];</pre></div>
 	</p>
 	<p>
 		Other information about the forex pair can be found in the <a href="#Securities-and-Portfolio">security</a> object:
 	</p>
 	<p>
-		<pre>var forex = Securities["EURUSD"];</pre>
+		<div class="section-example-container"><pre>var forex = Securities["EURUSD"];</pre></div>
 	</p>
 </p>
 <p>
@@ -63,3 +64,36 @@ AddForex(string pair,
 	</h3>
 	Available with FXCM, OANDA and Interactive Brokers.
 </p>
+
+<div class="section-example-container" >
+<pre class="csharp" >
+// In Initialize
+AddForex("EURUSD", Resolution.Minute);   // or
+AddForex("EURUSD", Resolution.Minute, Market.FXCM);
+
+// For OANDA, we need to explictly define the market
+AddForex("EURUSD", Resolution.Minute, Market.Oanda);
+</pre>
+<pre class="python" >
+# In Initialize
+self.AddForex("EURUSD", Resolution.Minute)   # or
+self.AddForex("EURUSD", Resolution.Minute, Market.FXCM)
+
+# For OANDA, we need to explictly define the market
+self.AddForex("EURUSD", Resolution.Minute, Market.Oanda)
+</pre>
+<pre class="csharp" >
+// In OnData(Slice data) or OnData(QuoteBars data)
+var bar = data["EURUSD"];
+
+// Anywhere in the code
+var forex = Securities["EURUSD"];
+</pre>
+<pre class="python" >
+# In OnData(self, data)
+bar = data["EURUSD"]
+
+# Anywhere in the code
+equity = self.Securities["EURUSD"]
+</pre>
+</div>

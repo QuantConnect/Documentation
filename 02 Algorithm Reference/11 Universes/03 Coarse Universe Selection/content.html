@@ -1,0 +1,49 @@
+<meta name="tag" content="universes" />
+<meta name="tag" content="coarse universes" />
+<p>
+	Coarse Universe selection is the built in universe data provided by QuantConnect. Using financial data we generate a few key properties for each symbol and allow you to filter the universe of 16,400+ symbols to receive the symbols matching your filter criteria. It uses the $[CoarseFundamental] type.
+</p>
+<p>
+	Coarse fundamental has the following properties you can use to perform rough filtering.
+	<div class="section-example-container">	
+	<pre class="all">class CoarseFundamental {
+    public long Volume;             // Traded shares
+    public decimal DollarVolume;    // Traded shares x Price
+    public decimal Price;           // Yesterday close price
+    public Symbol Symbol;           // Asset symbol
+    public bool HasFundamentalData; // Whether it has fundamental
+}</pre>
+</div>
+</p>
+<p>
+	Coarse filtering allows you to select an unlimited universe of symbols to analyse. You are only limited by practical memory and speed limits and may quickly run out of memory if you backtest too many symbols in parallel. These limits can be increased with a subscription.
+</p>
+
+<div class="section-example-container" >
+<pre class="csharp" >
+// Take the top 50 by dollar volume using coarse 
+AddUniverse(coarse => {
+    return (from c in coarse
+	    where c.Price > 10
+	    orderby c.DollarVolume descending 
+            select c.Symbol).Take(50);
+});
+</pre>
+<pre class="python" >
+# In Initialize:
+self.AddUniverse(self.CoarseSelectionFunction)
+
+def CoarseSelectionFunction(self, coarse):
+    '''Take the top 50 by dollar volume using coarse'''
+    # sort descending by daily dollar volume
+    sortedByDollarVolume = sorted(coarse, \
+        key=lambda x: x.DollarVolume, reverse=True) 
+
+    # we need to return only the symbol objects
+    return [ x.Symbol for x in sortedByDollarVolume[:50] ]
+</pre>
+<pre class="csharp" >
+// We can use the following helper to reproduce the same result
+AddUniverse(Universe.DollarVolume.Top(50));
+</pre>
+</div>

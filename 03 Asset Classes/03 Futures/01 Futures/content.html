@@ -27,21 +27,21 @@
 	</h3>
 	Subscribe to futures data:
 	<p>
-		<pre>
+		<div class="section-example-container"><pre>
 // Complete Add Future API - Including Default Parameters:
 AddFuture(string symbol,
           Resolution resolution = Resolution.Minute,
           string market = null,
           bool fillDataForward = true,
           decimal leverage = 0m)      
-</pre>
+</pre></div>
 	</p>
 	By default, the futures universe is filtered down to contracts that expire within 35 days. A difference set of contracts can be chosen with the <code>SetFilter</code> method:
 	<p>
-		<pre>
+		<div class="section-example-container"><pre>
 var future = AddFuture(Futures.Indices.SP500EMini);
 future.SetFilter(TimeSpan.FromDays(30), TimeSpan.FromDays(180));
-</pre>
+</pre></div>
 		<p></p>
 		<p>
 			Quotes and trades can be accessed in the Slice object in OnData event handler.
@@ -50,21 +50,21 @@ future.SetFilter(TimeSpan.FromDays(30), TimeSpan.FromDays(180));
 			The FuturesChains member contains a FutureChain object for each subscribed future:
 		</p>
 		<p>
-			<pre>
+			<div class="section-example-container"><pre>
 // In Initialize
 FutureSymbol = future.Symbol;
 
 // In OnData
 FuturesChain chain;
 slice.FuturesChains.TryGetValue(FutureSymbol, out chain);
-</pre>
+</pre></div>
 		</p>
 		An FuturesChain object has information about the undelying and futures contracts that were filtered by <code>SetFilter</code>:
 		<p>
-			<pre>
+			<div class="section-example-container"><pre>
 var underlying = chain.Underlying;
 var contracts = chain.Contracts; 
-</pre>
+</pre></div>
 			<p>
 				Finally, we can use Linq to select the contract(s) we want to trade.
 				<p>
@@ -73,3 +73,48 @@ var contracts = chain.Contracts;
 					</h3>
 					Only available with Interactive Brokers.
 				</p>
+				
+
+<div class="section-example-container" >
+<pre class="csharp" >
+// In Initialize
+var future = AddFuture(Futures.Indices.SP500EMini, Resolution.Minute);
+future.SetFilter(TimeSpan.Zero, TimeSpan.FromDays(182));
+// or Linq
+future.SetFilter(universe => universe.Expiration(TimeSpan.Zero, TimeSpan.FromDays(182)));
+</pre>
+<pre class="python" >
+# In Initialize
+future = self.AddFuture(Futures.Indices.SP500EMini, Resolution.Minute)
+future.SetFilter(timedelta(0), timedelta(182))
+# or Lambda
+future.SetFilter(universe => universe.Expiration(timedelta(0), timedelta(182)))
+</pre>
+<pre class="csharp" >
+// In Initialize
+FutureSymbol = future.Symbol;
+
+// In OnData(Slice slice)
+FuturesChain chain;
+if (slice.FuturesChains.TryGetValue(FutureSymbol, out chain))
+{
+    var underlying = chain.Underlying;
+    var contracts = chain.Contracts.Value; 
+    foreach (var contract in contracts)
+    {
+        //
+    }
+}
+</pre>
+<pre class="python" >
+# In Initialize
+self.FutureSymbol = future.Symbol;
+
+// In OnData(self, slice)
+chain = slice.FuturesChains[self.FutureSymbol]
+underlying = chain.Underlying
+contracts = chain.Contracts.Value
+for contract in contracts:
+    pass
+</pre>
+</div>
