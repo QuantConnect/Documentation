@@ -26,32 +26,32 @@ Quotes and trades with minute resolution only.
 	</h3>
 	Subscribe to options data:
 	<p>
-		<pre>
+		<div class="section-example-container"><pre>
 // Complete Add Option API - Including Default Parameters:
 AddOption(string underlying,
           Resolution resolution = Resolution.Minute,
           string market = null,
           bool fillDataForward = true,
           decimal leverage = 0m)
-</pre>
+</pre></div>
 	</p>
 	By default, the option universe is filtered down to contracts that expire within 35 days, one contract below and another above ATM, and exclude weeklys. A difference set of contracts can be chosen with the <code>SetFilter</code> method:
 	<p>
-		<pre>
+		<div class="section-example-container"><pre>
 var option = AddOption("GOOG");
 option.SetFilter(-2, 2, TimeSpan.FromDays(30), TimeSpan.FromDays(180));
-</pre>
+</pre></div>
+</pre></div>
 	</p>
 	<code>SetFilter</code>
 	 also accepts Linq expressions and enables the section of weeklys and define the desired option right:
 	<p>
-		<pre>
+		<div class="section-example-container"><pre>
 var option = AddOption("GOOG");
-option.SetFilter(universe =>
-		 from symbol in universe                                .WeeklysOnly()                                .Expiration(TimeSpan.Zero, TimeSpan.FromDays(10))                                    where symbol.ID.OptionRight != OptionRight.Put &&                                    universe.Underlying.Price - symbol.ID.StrikePrice 
-	< 60
-                                    select symbol);
-</pre>
+option.SetFilter(universe => from symbol in universe.WeeklysOnly()
+				.Expiration(TimeSpan.Zero, TimeSpan.FromDays(10))
+				where symbol.ID.OptionRight != OptionRight.Put && universe.Underlying.Price - symbol.ID.StrikePrice < 60 select symbol);
+</pre></div>
 </p>
 </p>
 <p>
@@ -62,6 +62,7 @@ option.SetFilter(universe =>
 </br>
 The OptionChains member contains an OptionChain object for each subscribed option:
 </br>
+<div class="section-example-container">
 <pre>
 // In Initialize
 OptionSymol = option.Symbol;
@@ -70,13 +71,16 @@ OptionSymol = option.Symbol;
 OptionChain chain;
 slice.OptionChains.TryGetValue(OptionSymbol, out chain);
 </pre>
+</div>
 </br>
 An OptionChain object has information about the undelying and options contracts that were filtered by <code>SetFilter</code>:
 </br>
+<div class="section-example-container">
 <pre>
 var underlying = chain.Underlying;
 var contracts = chain.Contracts; 
 </pre>
+</div>
 </br>
 Finally, we can use Linq to select the contract(s) we want to trade.
 </p>
