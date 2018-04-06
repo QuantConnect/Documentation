@@ -1,54 +1,56 @@
-<meta name="tag" content="data event handlers" />
-<meta name="tag" content="tradebars event" />
-<meta name="tag" content="ticks event" />
-<meta name="tag" content="splits event" />
-<meta name="tag" content="dividends event" />
-<meta name="tag" content="delistings event" />
-<meta name="tag" content="symbol changed event" />
+<meta name="tag" content="data event handlers"/>
+<meta name="tag" content="tradebars event"/>
+<meta name="tag" content="ticks event"/>
+<meta name="tag" content="splits event"/>
+<meta name="tag" content="dividends event"/>
+<meta name="tag" content="delistings event"/>
+<meta name="tag" content="symbol changed event"/>
 
 
 <p>
-	There are six financial data types: TradeBars, Ticks, Delistings, SymbolChangedEvents, Splits and Dividends.
+    There are six financial data types: TradeBars, Ticks, Delistings, SymbolChangedEvents, Splits and Dividends.
 </p>
 <p>
-	All data extends from $[BaseData] - the core data class which provides Symbol, Time and Value properties.
+    All data extends from $[BaseData] - the core data class which provides Symbol, Time and Value properties.
 </p>
 <p>
-	$[TradeBar] events contains Open, High, Low, Close and Volume properties for a given period of time.
+    $[TradeBar] events contains Open, High, Low, Close and Volume properties for a given period of time.
 </p>
 <p>
-	$[Dividend C] events are triggered on payment of a dividend. It provides the Distribution per share.
+    $[Dividend C] events are triggered on payment of a dividend. It provides the Distribution per share.
 </p>
 <p>
-	$[Split] events are triggered on a share split or reverse split event. It provides a SplitFactor and ReferencePrice.
+    $[Split] events are triggered on a share split or reverse split event. It provides a SplitFactor and ReferencePrice.
 </p>
 <p>
-	$[SymbolChangedEvent] provide notice of new ticker names for stocks, or mergers of two tickers into one. It provides the OldSymbol and NewSymbol tickers.
+    $[SymbolChangedEvent] provide notice of new ticker names for stocks, or mergers of two tickers into one. It provides
+    the OldSymbol and NewSymbol tickers.
 </p>
 <p>
-	$[Delisting] events provide notice an asset is no longer trading on the exchange.
+    $[Delisting] events provide notice an asset is no longer trading on the exchange.
 </p>
 <p>
-	$[Ticks C] is a string indexed dictionary of lists of ticks.
+    $[Ticks C] is a string indexed dictionary of lists of ticks.
 </p>
 <p class="csharp">
-	These data types all have dedicated event handlers which follow the pattern above (<code>public void OnData(Type data) {}</code>);
-	and are also passed into the OnData(Slice data) event handler.
+    These data types all have dedicated event handlers which follow the pattern above (<code>public void OnData(Type
+    data) {}</code>);
+    and are also passed into the OnData(Slice data) event handler.
 </p>
 <p class="python">
-	All these data types are accessible through their properties on the slice object. i.e.
-	<ul>
-		<li><code>slice.Bars</code></li>
-		<li><code>slice.Ticks</code></li>
-		<li><code>slice.Splits</code></li>
-		<li><code>slice.Dividends</code></li>
-		<li><code>slice.Delistings</code></li>
-		<li><code>slice.SymbolChangedEvents</code></li>
-	</ul>
+    All these data types are accessible through their properties on the slice object. i.e.
 </p>
+<ul>
+    <li><code>slice.Bars</code></li>
+    <li><code>slice.Ticks</code></li>
+    <li><code>slice.Splits</code></li>
+    <li><code>slice.Dividends</code></li>
+    <li><code>slice.Delistings</code></li>
+    <li><code>slice.SymbolChangedEvents</code></li>
+</ul>
 
-<div class="section-example-container" >
-<pre class="csharp" >
+<div class="section-example-container">
+<pre class="csharp">
 //TradeBars collection of TradeBar objects
 TradeBars data; TradeBar ibm = data["IBM"];
 
