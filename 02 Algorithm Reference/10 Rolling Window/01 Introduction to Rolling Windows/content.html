@@ -9,6 +9,7 @@
 </p>
 <p>
 	We can store any type of object in a RollingWindow, since it is a generic type, with a given max length:
+	<div class="section-example-container">	
 	<pre class="csharp">
 	_closeWindow = new RollingWindow&lt;decimal&gt;(4);
 	_tradeBarWindow = new RollingWindow&lt;TradeBar&gt;(2);
@@ -19,7 +20,9 @@
 	self.tradeBarWindow = RollingWindow[TradeBar](2)
 	self.quoteBarWindow = RollingWindow[QuoteBar](2)
 	</pre>
+	</div>
 	These objects are updated by adding a new element of its type:
+	<div class="section-example-container">	
 	<pre class="csharp">
 	_closeWindow.Add(data["SPY"].Close);
 	_tradeBarWindow.Add(data["SPY"]);
@@ -30,7 +33,9 @@
 	self.tradeBarWindow.Add(data["SPY"])
 	self.quoteBarWindow.Add(data["EURUSD"])
 	</pre>
+	</div>
 	The most recent element, the previous and the last item for the decimal case are:
+	<div class="section-example-container">	
 	<pre class="csharp">
 	var currentClose = _closeWindow[0];
 	var previousClose = _closeWindow[1];
@@ -41,6 +46,7 @@
 	previousClose = self.closeWindow[1]
 	oldestClose = self.closeWindow[self.closeWindow.Count-1]
 	</pre>
+	</div>
 </p>
 <p>
 	<b>Pro tip:</b> RollingWindow of TradeBar and/or QuoteBar are better than Historical Data Requests in algorithms that need to keep track of historical data, since we just need to update it with recent data, while the History method fetches the whole requested period and synchronize the data.     
