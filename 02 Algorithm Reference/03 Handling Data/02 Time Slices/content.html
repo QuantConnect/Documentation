@@ -1,39 +1,43 @@
-<meta name="tag" content="data event handlers" />
-<meta name="tag" content="options" />
-<meta name="tag" content="futures" />
-<meta name="tag" content="tradebars event" />
-<meta name="tag" content="ticks event" />
-<meta name="tag" content="splits event" />
-<meta name="tag" content="dividends event" />
-<meta name="tag" content="delistings event" />
-<meta name="tag" content="symbol changed event" />
+<meta name="tag" content="data event handlers"/>
+<meta name="tag" content="options"/>
+<meta name="tag" content="futures"/>
+<meta name="tag" content="tradebars event"/>
+<meta name="tag" content="ticks event"/>
+<meta name="tag" content="splits event"/>
+<meta name="tag" content="dividends event"/>
+<meta name="tag" content="delistings event"/>
+<meta name="tag" content="symbol changed event"/>
 <p>
-	The Slice event handler combine all of the data together into a single method. It represents the data at a point in time. 
-	The <code>Slice</code> object contains many helpers for accessing your data. The Slice objects arrive to the 
-	<code class="csharp fsharp">OnData(Slice data)</code><code class="python">def OnData(self, slice)</code> event handler.
+    The Slice event handler combine all of the data together into a single method. It represents the data at a point in
+    time.
+    The <code>Slice</code> object contains many helpers for accessing your data. The Slice objects arrive to the
+    <code class="csharp fsharp">OnData(Slice data)</code><code class="python">def OnData(self, slice)</code> event
+    handler.
 </p>
 <p>
-	The <code>Slice</code> object gives you <span class="csharp fsharp">three</span><span class="python">two</span> ways to access your data: 
+    The <code>Slice</code> object gives you <span class="csharp fsharp">three</span><span class="python">two</span> ways
+    to access your data:
 </p>
 <ul>
-	<li>
-		Dynamic string/symbol indexer which returns a dynamic object of your type slice["IBM"].
-	</li>
-	<li>
-		Statically typed properties (slice.Bars[], slice.QuoteBars[]).
-	</li>
-	<li class="csharp fsharp">
-		Statically typed Get&lt;T&gt;() helper
-	</li>
+    <li>
+        Dynamic string/symbol indexer which returns a dynamic object of your type slice["IBM"].
+    </li>
+    <li>
+        Statically typed properties (slice.Bars[], slice.QuoteBars[]).
+    </li>
+    <li class="csharp fsharp">
+        Statically typed Get&lt;T&gt;() helper
+    </li>
 </ul>
 <p class="csharp fsharp">
-	Strongly typed access gives you compile time safety but dynamic types can sometimes simplify coding. We recommend static
-	types as they are easier to debug.
-</p> 
-<p>
-	Slice has the following internal structure:
+    Strongly typed access gives you compile time safety but dynamic types can sometimes simplify coding. We recommend
+    static
+    types as they are easier to debug.
 </p>
-<div class="section-example-container" >
+<p>
+    Slice has the following internal structure:
+</p>
+<div class="section-example-container">
 <pre class="csharp fsharp">class Slice : IEnumerable&lt;KeyValuePair&lt;Symbol, BaseData&gt;&gt;
 {
     TradeBars Bars;
@@ -46,7 +50,7 @@
     Delistings Delistings;
     SymbolChangedEvents SymbolChangedEvents;
 }</pre>
-<pre class="python">class Slice:
+    <pre class="python">class Slice:
     TradeBars Bars;
     QuoteBars QuoteBars;
     Ticks Ticks;
@@ -59,31 +63,33 @@
 </pre>
 </div>
 <p>
-	It contains all the data for a given moment of time. TradeBars and QuoteBars are symbol/string indexed dictionaries so you 
-	can easily access the data. Ticks is a list of ticks for that moment of time; indexed by the symbol.
+    It contains all the data for a given moment of time. TradeBars and QuoteBars are symbol/string indexed dictionaries
+    so you
+    can easily access the data. Ticks is a list of ticks for that moment of time; indexed by the symbol.
 </p>
 <p>
-	To make accessing the data easier the Slice object itself can also be indexed. e.g. <code>slice["IBM"]</code> will return a 
-	<b>TradeBar</b> for IBM. <code>slice["EURUSD"]</code> will return a <b>QuoteBar</b> for EURUSD.
+    To make accessing the data easier the Slice object itself can also be indexed. e.g. <code>slice["IBM"]</code> will
+    return a
+    <b>TradeBar</b> for IBM. <code>slice["EURUSD"]</code> will return a <b>QuoteBar</b> for EURUSD.
 </p>
 
-<div class="section-example-container" >
-<pre class="csharp" >
+<div class="section-example-container">
+<pre class="csharp">
 // Event handler for Slice method
 public void OnData(Slice data) {
 }
 </pre>
-<pre class="fsharp" >
+    <pre class="fsharp">
 // Event handler for Slice method
 member this.OnData(slice:Slice) =  
       ()
 </pre>
-<pre class="python" >
+    <pre class="python">
 # Event handler for the slice method
 def OnData(self, slice):
     pass
 </pre>
-<pre class="csharp" >
+    <pre class="csharp">
 //Access data in a Slice object: 
 // 1. Strong Typed Properties: Ticks, TradeBars, Delistings, SymbolChangedEvents, Splits and Dividends
 var bars = slice.Bars; // e.g. bars["IBM"].Open
@@ -95,7 +101,7 @@ var bar   = slice.Get<TradeBar>("IBM"); //e.g. bar.Open
 // 3. Dynamic String / Symbol Indexer:
 var bar = slice["IBM"]; // e.g. bar.Open
 </pre>
-<pre class="python" >
+    <pre class="python">
 #Access data in a Slice object: 
 # 1. Grouped Properties: Ticks, Bars, Delistings, SymbolChangedEvents, Splits and Dividends
 bars = slice.Bars; # e.g. bars["IBM"].Open
