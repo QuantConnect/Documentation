@@ -182,12 +182,11 @@ Every month we rebalance the portfolio using the <a href="https://www.quantconne
         self.SetHoldings(long_short[1][0],-1)</pre>
 <h2>Results</h2>
 The following regression output is obtained by backtesting the time period from Jun 2013 to Jun 2016. We can see the results are fairly close to those from the source paper with a R-squared value of 3.1% compared to the paper's 3.89%. Our momentum coefficient, ρ, is 0.0344 compared to the paper's 0.042. We obtained 0.9955 mean reversion coefficient (1 - 0.0045), and the paper got 0.9859.
-<img class=" wp-image-565 alignleft" src="https://www.quantconnect.com/tutorials/wp-content/uploads/2017/06/WX20170602-123108@2x-300x162.png" alt="" width="522" height="282" />
-
+<img src="http://s3.amazonaws.com/cdn.quantconnect.com/web/i/docs/tutorials/strategy-tutorials-images/mean-reversion-1.png" alt="mean version 1”/>
 From these results we can say the limited sample size does not impair the feasibility of this model. The t-stats of the coefficients are -4.074 and 1.417 for the reversal factor and momentum factor respectively. The p-value of the reversal factor is very small which means this factor has a very high significance level.
 <h3>Backtest Sensitivity Results</h3>
 We performed some rough period sensitivity analysis in different time periods and summarized the results as the following table:
-<img class="alignnone wp-image-583" src="https://www.quantconnect.com/tutorials/wp-content/uploads/2017/06/WX20170602-153018@2x-1-300x63.png" alt="" width="471" height="99" />
+<img src="http://s3.amazonaws.com/cdn.quantconnect.com/web/i/docs/tutorials/strategy-tutorials-images/mean-reversion-2.png" alt="mean version 1”/>
 The compound annual returns are quite stable, however, the paper claimed that the average return is 27.5% vs our 11% achieved. This difference can be accounted for by the data time span and currency pairs.
 <h2>Conclusion</h2>
 The paper demonstrates there are inefficiencies in the UIP which can be exploited with a hybrid momentum and mean reversion strategy. Although the sample size of the paper is much larger than ours the parameter and significance level of the two models are very close. The strategies we discussed above keep \(\rho \) fixed and only allow \(\mu \) to change by country. If we let \(\rho \) change by lag the significance level of the model might increase, but this could potentially make modeling more difficult by introducing multicollinearity. To test this we wrote this implementation in the algorithm and commented out the lines. If you are interested in exploring this extension to the model you can change these lines to test your strategy.

@@ -50,7 +50,7 @@ The solution of this optimization problem is given by solving the following line
     self.trend = spsolve(I+lamb*K.T.dot(K), X,use_umfpack=use_umfpack)
     cycle = X - self.trend
 </pre>
-    
+
 <h2>Method</h2>
 
 This low-frequency momentum trading strategies are applied to daily data on seven kinds of exchange rates. We use five years history data before January 2011 for initial estimation of the trend model. Daily exchange rates for the period January 2011 to May 2017 is used for out of sample trading.
@@ -69,16 +69,14 @@ This low-frequency momentum trading strategies are applied to daily data on seve
 
 <h3>Step 1: Calibrating the Filter Smoothing Parameter λ</h3>
 The Ravn–Uhlig rule is commonly used to set the smoothing parameter λ in HP filter and must be greater than 0. It is adjusted by the changing frequency of observations and must be greater than 0. Hodrick and Prescott (1997) recommended setting λ to 1,600 for quarterly data. The Ravn–Uhlig rule sets  \(\lambda = 1600p^4\) , where p is the number of periods per quarter. As for our daily exchange rate data, we should have set λ to be \(\1600\times (30 \times 4)^4\). But when we use this value as the λ, the curve is almost a straight line since the trend becomes smoother as λ → ∞. In order to avoid excessive smoothing, we gradually decrease the λ and draw the smoothing curve. Below is the chart of EURUSD daily price from the year 2010 to 2011. t100 denotes the trend component after filter with the parameter λ=100.
-
-<img src="images/low-frequency-component-more.jpg" alt="low-frequency-component-more” />
-
+<img src="http://s3.amazonaws.com/cdn.quantconnect.com/web/i/docs/tutorials/strategy-tutorials-images/low-frequency-component-more.jpg" alt="low-frequency-component-more” />
 If we just plot the curve for the first 100 days, we find that the smaller the λ, the more apparent the trend. The curve does not change too much as the λ  smaller than 100. Thus here we choose  λ=100 to extract the trend of daily price data. This trend is our low-frequency component.
-<p style="text-align: center;"><img src="images/low-frequency-component-less.jpg" alt="low-frequency-component-less”/>
+<p style="text-align: center;"><img src="http://s3.amazonaws.com/cdn.quantconnect.com/web/i/docs/tutorials/strategy-tutorials-images/low-frequency-component-less.jpg" alt="low-frequency-component-less”/>
 </p>
 
 <p style="text-align: center;">Out-of-sample EUR/USD Trend Estimation</p>
 
-<h3><img src="images/out-of-sample-trend-estimation.jpg" alt="out-of-sample-trend-estimation”/> Step 2: Setting up the Moving Average Rule</h3>
+<h3><img src="http://s3.amazonaws.com/cdn.quantconnect.com/web/i/docs/tutorials/strategy-tutorials-images/out-of-sample-trend-estimation.jpg" alt="out-of-sample-trend-estimation”/> Step 2: Setting up the Moving Average Rule</h3>
 
 Moving average (MA) rules are very commonly used to generate buy and sell signals from data on the spot exchange rate. The MA rule compares a short-run moving average of the current and lagged exchange rate with a long-run moving average.
 
@@ -86,7 +84,7 @@ Moving average (MA) rules are very commonly used to generate buy and sell signal
 
 
 For HP filter, the non-linear trend is estimated recursively as the paper did. The initial estimation was undertaken using 3 years history data before 2011. The estimation period is then rolled forward each day through the trading period from January 2011 to May 2017.
- 
+
 <h3>Step 3: Generating the Trading Signals</h3>
 We generate buy and sell signals by applying an MA(1, 2) rule to the estimated low-frequency component. For MA(m,n), m must be 1 which denotes the current value of low-frequency component. n should be small since large n would generate large time lag, the judgment of turning points is not accurate.
 
@@ -105,10 +103,10 @@ A buy signal is generated when the current day’s low-frequency trend is higher
 </pre>
 <p style="text-align: center;">Trading Signals when λ=1600</p>
 
-<img src="images/trading-signal-1600.jpg" alt="trading-signal.jpg”/>
+<img src="http://s3.amazonaws.com/cdn.quantconnect.com/web/i/docs/tutorials/strategy-tutorials-images/trading-signal-1600.jpg" alt="trading-signal.jpg”/>
 
 <p style="text-align: center;">Trading Signals when λ=100</p>
-<img src="images/trading-signal-100.jpg" alt="trading-signal-100.jpg"/>
+<img src="http://s3.amazonaws.com/cdn.quantconnect.com/web/i/docs/tutorials/strategy-tutorials-images/trading-signal-100.jpg" alt="trading-signal-100.jpg"/>
 
 The above charts are the in-sample trading signals after applying MA rules on the low-frequency component. The trend curve is more smooth with larger λ. Thus when we applied MA rules, a less smooth trend will trigger more trading opportunities.
 <h2>Conclusion</h2>
@@ -171,7 +169,7 @@ The above charts are the in-sample trading signals after applying MA rules on th
 </tr>
 </tbody>
 </table>
-    
+
 The table reports the strategy performance statistics during six and a half years backtesting period. From the table we can see, most of them have the higher maximum drawdown. The number of total trades is small because we applied MA rules on the smoothed trend component.  As the author indicated in the paper, we still find that the performance of this strategy is very sensitive to the choice of lag parameters in MA rules and in a non-monotonic way.
 
 The strategy does not generate more stable profits in Forex market generally. That might because that the HP filter technique was designed to be viewed as a trend curve through the entire set of data. When we applied it in trading strategy, the entry of new data into the filter model can cause the trend line to change the trend through past data, makes it harder to identify the trend accurately.
@@ -179,4 +177,3 @@ The strategy does not generate more stable profits in Forex market generally. Th
 We also tried the kernel regression method in the paper. However, because the distribution parameter in the Python kernel regression package can not be adjusted. The appropriate trend component is not being extracted well from kernel regression. The smoothing effect of the regression is not good as expected. Thus here we choose not to move on to the trading part of kernel regression method.
 <h2>Algorithm</h2>
 <script src='https://www.quantconnect.com/terminal/backtest.js?sid=5188517de3244425b56af3e717c90cb9'></script>
-
