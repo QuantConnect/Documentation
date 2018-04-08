@@ -1,32 +1,30 @@
 <meta name="tag" content="using data" />
 <meta name="tag" content="assets" />
 <meta name="tag" content="options" />
+
+<h5 style="font-weight: bold;">
+    Backtesting
+</h5>
 <p>
-	<h3>
-		Data Available
-	</h3>
-	<p>
-		<b><u>
-		Backtesting mode</u></b>
-</p>
-4000 symbols of US equity options from Jan 2010 to now provided by AlgoSeek.
-</p>
-Quotes and trades with minute resolution only.
-<p>
-	<b><u>
-	Live mode</u></b>
+    QuantConnect hosts approximately 4000 symbols of Options data, provided by AlgoSeek. The data is sourced directly from the OPRA channel feeds - which aggregate all the major US exchange option data. The data is available from January 2010.
 </p>
 <p>
-	Live tick data from Interactive Brokers are available. You MUST have a valid <a href="https://www.interactivebrokers.com/en/software/am/am/manageaccount/marketdatasubscriptions.htm">data subscription</a> with IB).
+The Options tick data is converted into quote and trade bars at Minute resolution. No other resolutions are hosted.
 </p>
-</p>
+
+<h5 style="font-weight: bold;">
+    Live Trading
+</h5>
 <p>
-	<h3>
-		Selecting Data
-	</h3>
-	Subscribe to options data:
-	<p>
-		<div class="section-example-container"><pre>
+    Live trading Options data is sourced from Interactive Brokers directly. This is from <i>your</i> data subscription. In order to do live options trading you must have a valid <a href="https://www.interactivebrokers.com/en/software/am/am/manageaccount/marketdatasubscriptions.htm">data subscription</a> with Interactive Brokers.
+</p>
+
+<h5 style="font-weight: bold;">
+    Selecting Data
+</h5>
+
+<p> To subscribe to QuantConnect options data you must use the AddOption method:</p>
+<div class="section-example-container"><pre>
 // Complete Add Option API - Including Default Parameters:
 AddOption(string underlying,
           Resolution resolution = Resolution.Minute,
@@ -34,62 +32,50 @@ AddOption(string underlying,
           bool fillDataForward = true,
           decimal leverage = 0m)
 </pre></div>
-	</p>
-	By default, the option universe is filtered down to contracts that expire within 35 days, one contract below and another above ATM, and exclude weeklys. A difference set of contracts can be chosen with the <code>SetFilter</code> method:
-	<p>
-		<div class="section-example-container"><pre>
+<p>
+By default, the option universe is filtered down to contracts that expire within 35 days, one contract below and another above ATM, and exclude weeklys. A difference set of contracts can be chosen with the <code>SetFilter</code> method:
+</p>
+
+
+<div class="section-example-container"><pre>
 var option = AddOption("GOOG");
 option.SetFilter(-2, 2, TimeSpan.FromDays(30), TimeSpan.FromDays(180));
 </pre></div>
-	</p>
-	<code>SetFilter</code>
-	 also accepts Linq expressions and enables the section of weeklys and define the desired option right:
-	<p>
-		<div class="section-example-container"><pre>
+
+<p>The data defaults to monthly expiration contracts. If you'd like Weekly expirations as well you must add it to your filter in the <code>SetFilter</code> method. <span class="csharp"><code>SetFilter</code> also accepts Linq expressions.</span>
+</p>
+
+<div class="section-example-container"><pre>
 var option = AddOption("GOOG");
 option.SetFilter(universe => from symbol in universe.WeeklysOnly()
 				.Expiration(TimeSpan.Zero, TimeSpan.FromDays(10))
 				where symbol.ID.OptionRight != OptionRight.Put && universe.Underlying.Price - symbol.ID.StrikePrice < 60 select symbol);
 </pre></div>
-</p>
-</p>
+
+<h5 style="font-weight: bold;">
+    Accessing data
+</h5>
 <p>
-	<h3>
-		Accessing data
-	</h3>
-	Quotes and trades can be accessed in the Slice object in OnData event handler.
-</br>
-The OptionChains member contains an OptionChain object for each subscribed option:
-</br>
-<div class="section-example-container">
-<pre>
+	Options quote and trade data can be accessed in the Slice object in OnData event handler. The <code>OptionChains</code> member contains an <code>OptionChain</code> object for each subscribed option:
+</p>
+    
+<div class="section-example-container"><pre>
 // In Initialize
 OptionSymol = option.Symbol;
 
 // In OnData
 OptionChain chain;
 slice.OptionChains.TryGetValue(OptionSymbol, out chain);
-</pre>
-</div>
-</br>
-An OptionChain object has information about the undelying and options contracts that were filtered by <code>SetFilter</code>:
-</br>
-<div class="section-example-container">
-<pre>
-var underlying = chain.Underlying;
-var contracts = chain.Contracts; 
-</pre>
-</div>
-</br>
-Finally, we can use Linq to select the contract(s) we want to trade.
-</p>
+</pre></div>
+
 <p>
-	<h3>
-		Live Trading
-	</h3>
-	Only available with Interactive Brokers.
+An <code>OptionChain</code> object has information about the underlying asset and options contracts that were filtered by <code>SetFilter</code>:
 </p>
 
+<div class="section-example-container"><pre>
+var underlying = chain.Underlying;
+var contracts = chain.Contracts; 
+</pre></div>
 
 <div class="section-example-container" >
 <pre class="csharp" >
