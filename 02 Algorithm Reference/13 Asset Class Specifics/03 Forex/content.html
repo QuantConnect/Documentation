@@ -2,30 +2,24 @@
 <meta name="tag" content="assets" />
 <meta name="tag" content="forex" />
 
+<h5 style="font-weight: bold;">Backtesting</h5>
 <p>
-	<h3>
-		Data Available
-	</h3>
-	<p>
-		13 major currency pairs from Apr 2007 to now provided by FXCM and 71 major currency pairs from Apr 2004 to now provided by OANDA.
-	</p>
-	<p>
-		<b><u>
-		Backtesting mode</u></b>
-</p>
-Quotes with tick, second, minute, hour and daily resolutions are available.
-<p>
-	<b><u>
-	Live mode</u></b>
-</p>
-Tick data is available from FXCM and OANDA.
+    QuantConnect hosts 13 currency pairs from Apr 2007 to present provided by FXCM, and 71 currency pairs from Apr 2004 to now provided by OANDA. 
+    These currencies are provided as quote data in tick, second, minute, hour and daily resolutions.
 </p>
 <p>
-	<h3>
-		Selecting Data
-	</h3>
-	Subscribe to forex data:
-	<p>
+    OANDA data is in GMT timezone. Although many popular charting libraries convert this to EST for display QuantConnect has elected to leave it in GMT and not manipulate the data. When comparing the data to external references make sure to account for the different timezones. 
+</p>
+
+<h5 style="font-weight: bold;">Live Trading</h5>
+<p>
+    The same data from backtesting is provided in live trading. The tick streams are sent directly from FXCM and OANDA. Live Trading is only possible on OANDA and FXCM. Interactive Brokers supported FX until 2017 when they stopped offering it for US customers.
+</p>
+
+<h5 style="font-weight: bold;">Selecting Data</h5>
+<p>
+	To subscribe to FOREX data; use the AddForex method with the currency pair you'd like information about:
+</p>
 		<div class="section-example-container">
 		<pre>
 // Complete Add Forex API - Including Default Parameters:
@@ -35,35 +29,24 @@ AddForex(string pair,
          bool fillDataForward = true,
          decimal leverage = 0m)
 </pre></div>
-	</p>
-	By default, FXCM is the data provider. If we want to use OANDA instead, we have to explicitly select it:
-	<p>
-		<div class="section-example-container"><pre>AddForex("EURUSD", Resolution.Minute, Market.Oanda);</pre></div>
-	</p>
-</p>
 <p>
-	<h3>
-		Accessing data
-	</h3>
-	<p>
-		Quotes can be accessed in the Slice or TradeBars object in OnData event handler:
-	</p>
-	<p>
-		<div class="section-example-container"><pre>var bar = data["EURUSD"];</pre></div>
-	</p>
-	<p>
-		Other information about the forex pair can be found in the <a href="#Securities-and-Portfolio">security</a> object:
-	</p>
-	<p>
-		<div class="section-example-container"><pre>var forex = Securities["EURUSD"];</pre></div>
-	</p>
+FXCM is set as the default data provider. If we want to use OANDA instead, we need to explicitly select the market:
 </p>
+<div class="section-example-container"><pre>AddForex("EURUSD", Resolution.Minute, Market.Oanda);</pre></div>
+	
+   
+<h5 style="font-weight: bold;">
+    Accessing data
+</h5>
 <p>
-	<h3>
-		Live Trading
-	</h3>
-	Available with FXCM, OANDA and Interactive Brokers.
+    Quotes can be accessed in the Slice or TradeBars object in OnData event handler:
 </p>
+<div class="section-example-container"><pre>var bar = data["EURUSD"];</pre></div>
+<p>
+    Other information about the forex pair can be found in the <a href="#Securities-and-Portfolio">security</a> object:
+</p>
+<div class="section-example-container"><pre>var forex = Securities["EURUSD"];</pre></div>
+
 
 <div class="section-example-container" >
 <pre class="csharp" >
