@@ -36,11 +36,31 @@ AddOption(string underlying,
 By default, the option universe is filtered down to contracts that expire within 35 days, one contract below and another above ATM, and exclude weeklys. A difference set of contracts can be chosen with the <code>SetFilter</code> method:
 </p>
 
-
-<div class="section-example-container"><pre>
+<div class="section-example-container">
+<pre class="csharp">
+// In Initialize
+var option = AddOption("GOOG");
+option.SetFilter(-2, 2, TimeSpan.Zero, TimeSpan.FromDays(182));
+// or Linq
+option.SetFilter(universe => from symbol in universe
+                                .WeeklysOnly()
+                                .Expiration(TimeSpan.Zero, TimeSpan.FromDays(10))
+                                    where symbol.ID.OptionRight != OptionRight.Put &&
+                                    universe.Underlying.Price - symbol.ID.StrikePrice < 60
+                                    select symbol);
+</pre>
+<pre class="python">
+# In Initialize
+option = self.AddOption("GOOG");
+option.SetFilter(-2, 2, timedelta(0), timedelta(182))
+# or Lambda
+option.SetFilter(lambda universe: universe.IncludeWeeklys().Strikes(-2, +2).Expiration(timedelta(0), timedelta(182)))
+</pre>
+<pre>
 var option = AddOption("GOOG");
 option.SetFilter(-2, 2, TimeSpan.FromDays(30), TimeSpan.FromDays(180));
-</pre></div>
+</pre>
+</div>
 
 <p>The data defaults to monthly expiration contracts. If you'd like Weekly expirations as well you must add it to your filter in the <code>SetFilter</code> method. <span class="csharp"><code>SetFilter</code> also accepts Linq expressions.</span>
 </p>
@@ -56,48 +76,22 @@ option.SetFilter(universe => from symbol in universe.WeeklysOnly()
     Accessing data
 </h5>
 <p>
-	Options quote and trade data can be accessed in the Slice object in OnData event handler. The <code>OptionChains</code> member contains an <code>OptionChain</code> object for each subscribed option:
-</p>
-    
-<div class="section-example-container"><pre>
-// In Initialize
-OptionSymol = option.Symbol;
-
-// In OnData
-OptionChain chain;
-slice.OptionChains.TryGetValue(OptionSymbol, out chain);
-</pre></div>
-
-<p>
-An <code>OptionChain</code> object has information about the underlying asset and options contracts that were filtered by <code>SetFilter</code>:
+	Options quote and trade data can be accessed in the Slice object in OnData event handler. The <code>OptionChains</code> member contains an <code>OptionChain</code> object for each subscribed option. An <code>OptionChain</code> object has information about the underlying asset and options contracts that were filtered by <code>SetFilter</code>.
 </p>
 
-<div class="section-example-container"><pre>
+<div class="section-example-container">
+<pre class="csharp">
 var underlying = chain.Underlying;
 var contracts = chain.Contracts; 
-</pre></div>
+</pre>
+<pre class="python">
+underlying = chain.Underlying
+contracts = chain.Contracts
+</pre>
+</div>
 
 <div class="section-example-container" >
-<pre class="csharp" >
-// In Initialize
-var option = AddOption("GOOG");
-option.SetFilter(-2, 2, TimeSpan.Zero, TimeSpan.FromDays(182));
-// or Linq
-option.SetFilter(universe => from symbol in universe
-                                .WeeklysOnly()
-                                .Expiration(TimeSpan.Zero, TimeSpan.FromDays(10))
-                                    where symbol.ID.OptionRight != OptionRight.Put &&
-                                    universe.Underlying.Price - symbol.ID.StrikePrice < 60
-                                    select symbol);
-</pre>
-<pre class="python" >
-# In Initialize
-option = self.AddOption("GOOG");
-option.SetFilter(-2, 2, timedelta(0), timedelta(182))
-# or Lambda
-option.SetFilter(lambda universe: universe.IncludeWeeklys().Strikes(-2, +2).Expiration(timedelta(0), timedelta(182)))
-</pre>
-<pre class="csharp" >
+<pre class="csharp">
 // In Initialize
 OptionSymol = option.Symbol;
 
@@ -123,5 +117,13 @@ chain = slice.OptionChains[self.OptionSymbol].Value
 contracts = sorted(sorted(chain, \
     key = lambda x: abs(chain.Underlying.Price - x.Strike)), \
     key = lambda x: x.Expiry, reverse=True)
+</pre>
+<pre>
+// In Initialize
+OptionSymol = option.Symbol;
+
+// In OnData
+OptionChain chain;
+slice.OptionChains.TryGetValue(OptionSymbol, out chain);
 </pre>
 </div>
