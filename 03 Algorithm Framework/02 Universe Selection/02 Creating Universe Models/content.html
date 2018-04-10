@@ -1,0 +1,25 @@
+<p>
+Universe Models must implement a <code>IUniverseSelectionModel</code> interface. It has one method, <code>CreateUniverses(QCAlgorithmFramework algorithm)</code>. The algorithm object is passed into the method to give you access to the QuantConnect API; and it should return an array of Universe objects.
+</p>
+<div class="section-example-container">
+	<pre class="all">// Algorithm framework model that defines the universes to be used by an algorithm
+interface IUniverseSelectionModel
+{
+   // Creates the universes for this algorithm, called once after IAlgorithm.Initialize
+   Universe[] CreateUniverses(QCAlgorithmFramework algorithm);
+}</pre>
+</div>
+<p>This can be implemented in <span class="python">python</span><span class="csharp">C#</span> as:
+</p>
+<div class="section-example-container">
+	<pre class="python">class ManualUniverseSelectionModel(self):
+    def __init__(self, tickers):
+          __tickers = tickers
+    def CreateUniverses(self, QCAlgorithmFramework algorithm):
+          return [ Universe( __tickers ) ]</pre>
+	<pre class="csharp">class ManualUniverseSelectionModel(self):
+    def __init__(self, tickers):
+          self.__tickers = tickers
+    def CreateUniverses(self, QCAlgorithmFramework algorithm):
+          return [ Universe( self.__tickers ) ]</pre>
+</div>
