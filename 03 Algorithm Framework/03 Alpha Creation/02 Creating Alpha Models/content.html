@@ -1,0 +1,34 @@
+<p>
+To create Alpha Models you must implement the <code>IAlphaModel</code> interface. This has one method; <code>Update(QCAlgorithmFramework algorithm, Slice data)</code>. This gives you the algorithm object to call the base QuantConnect API in addition to data for the current moment of time.
+</p>
+<div class="section-example-container" >
+	<pre class="all">// Algorithm framework model that produces insights 
+interface IAlphaModel : INotifiedSecurityChanges
+{ 
+    // Updates this alpha model with the latest data from the algorithm.
+    // This is called each time the algorithm receives data for subscribed securities
+    Insight[] Update(QCAlgorithmFramework algorithm, Slice data)
+}</pre>
+</div>
+<p>The Alpha Model returns an array of Insight objects. Insights hold the prediction for the asset. These can be thought of actionable trading signals; indicating the asset direction, magnitude and confidence in the near future. Insight classes have the following important properties:</p>
+<div class="section-example-container" >
+	<pre class="csharp">class Insight {
+    // Symbol of this Insight
+    Symbol Symbol;
+    
+    // Gets the type of insight, for example, price insight or volatility insight
+    InsightType Type;
+    
+    // Gets the predicted direction, Down, Flat or Up.
+    InsightDirection Direction;
+
+    // Gets the period over which this insight is expected to come to fruition
+    TimeSpan Period;
+
+    // Gets the predicted percent change in the insight type (price/volatility) (optional)
+    double? Magnitude;
+
+    // Gets the confidence in this insight (optional)
+    double? Confidence { get; private set; }
+}</pre>
+</div>
