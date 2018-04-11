@@ -1,25 +1,26 @@
 <div style="border: #dc4343 solid 1px; line-height: 30px; margin: 30px 0px; padding: 10px; color: #dc4343; "><code><i class="fa fa-warning"></i> This section is a work in progress and may change without notice. ETA April 11th, 2018.</code>
 </div>
-<p><img src="https://cdn.quantconnect.com/web/i/docs/algorithm-framework/universe-selection.png" style="width:50px; float: left; margin-right:10px"> The Universe Section Model creates <code>Universe</code> objects which select the assets for your strategy. We have identified four types of universes that cover most people's requirements. We have built helper classes for these universes and will expand on how to use them in the discussion below. Generally, <i>creating</i> Universe Selection Models from scratch isn't simple so we recommend you use one of the helper universes we've provided.
+<p><img src="https://cdn.quantconnect.com/web/i/docs/algorithm-framework/universe-selection.png" style="width:50px; float: left; margin-right:10px"> The Universe Section Model creates <code>Universe</code> objects which select the assets for your strategy. We have identified three types of universes that cover most people's requirements, and built helper classes to make their implementation easier.<i>Creating</i> Universe Selection Models from scratch isn't simple so we recommend you use one of the helper universes we've provided.
 </p>
-<p>To <i>set</i> a Universe Selection Model set your <code class="csharp fsharp">UniverseSelection</code><code class="python">self.UniverseSelection</code> property. This should be done from your algorithm <code class="csharp fsharp">Initialize()</code><code class="python">def Initialize()</code> method:
+<p>To <i>set</i> a Universe Selection Model you should use the<code class="csharp fsharp">UniverseSelection</code><code class="python">self.UniverseSelection</code> method. This should be done from your algorithm <code class="csharp fsharp">Initialize()</code><code class="python">def Initialize()</code> method:
 </p>
 <div class="section-example-container">
 	<pre class="csharp">public override void Initialize()
 {
       UniverseSettings.Resolution = Resolution.Minute;
-      UniverseSelection = new ManualUniverseSelectionModel(QuantConnect.Symbol.Create("SPY", SecurityType.Equity, Market.USA));
+      var symbols = new [] { QuantConnect.Symbol.Create("SPY", SecurityType.Equity, Market.USA) };
+      SetUniverseSelection( new ManualUniverseSelectionModel(symbols) );
 }</pre>
 	<pre class="python">def Initialize(self):    # Set requested data resolution
     self.UniverseSettings.Resolution = Resolution.Minute
     symbols = [ Symbol.Create("SPY", SecurityType.Equity, Market.USA) ]
-    self.UniverseSelection = ManualUniverseSelectionModel(symbols)</pre>
+    self.SetUniverseSelection( ManualUniverseSelectionModel(symbols) )</pre>
 </div>
 <p>As with all LEAN algorithms; the default resolution of the assets added to the universe is configured by the <code class="csharp fsharp">UniverseSettings.Resolution</code><code class="python">self.UniverseSettings.Resolution</code> property.
 </p>
 <p>There are 3 types of universes:</p>
 <ul>
 	<li>Manual Universes - Universes which use a fixed, static set of assets.</li>
-	<li>Coarse and Fine Universes - Universes based on price or fundamental data.</li>
+	<li>Fundamental Universes - Universes based on coarse price or fundamental data.</li>
 	<li>Scheduled Universes - Universes triggering on regular intervals.</li>
 </ul>
