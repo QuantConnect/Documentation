@@ -1,68 +1,64 @@
-<meta name="tag" content="using data" />
-<meta name="tag" content="history and warm up" />
-<meta name="tag" content="history" />
-<meta name="tag" content="warm up" />
-<meta name="tag" content="indicators" />
-<meta name="tag" content="rolling windows" />
+<meta name="tag" content="using data">
+<meta name="tag" content="history and warm up">
+<meta name="tag" content="history">
+<meta name="tag" content="warm up">
+<meta name="tag" content="indicators">
+<meta name="tag" content="rolling windows">
 <p>
-	$[RollingWindow] is a window that allows for list access semantics, where the object with index [0] refers to the most recent item in the window and index [Length-1] refers to the last item in the window, where Length is the number of elements in the window.
+$[RollingWindow] is a window that allows for list access semantics, where the object with index [0] refers to the most recent item in the window and index [Length-1] refers to the last item in the window, where Length is the number of elements in the window.
 </p>
 <p>
 	We can store any type of object in a RollingWindow, since it is a generic type, with a given max length:
-	<div class="section-example-container">	
-	<pre class="csharp">
-	_closeWindow = new RollingWindow&lt;decimal&gt;(4);
+</p>
+<div class="section-example-container">
+	<pre class="csharp">	_closeWindow = new RollingWindow&lt;decimal&gt;(4);
 	_tradeBarWindow = new RollingWindow&lt;TradeBar&gt;(2);
 	_quoteBarWindow = new RollingWindow&lt;QuoteBar&gt;(2);
 	</pre>
-	<pre class="python">
-	self.closeWindow = RollingWindow[decimal](4)
+	<pre class="python">	self.closeWindow = RollingWindow[decimal](4)
 	self.tradeBarWindow = RollingWindow[TradeBar](2)
 	self.quoteBarWindow = RollingWindow[QuoteBar](2)
 	</pre>
-	</div>
+</div>
 	These objects are updated by adding a new element of its type:
-	<div class="section-example-container">	
-	<pre class="csharp">
-	_closeWindow.Add(data["SPY"].Close);
+<div class="section-example-container">
+	<pre class="csharp">	_closeWindow.Add(data["SPY"].Close);
 	_tradeBarWindow.Add(data["SPY"]);
 	_quoteBarWindow.Add(data["EURUSD"]);
 	</pre>
-	<pre class="python">
-	self.closeWindow.Add(data["SPY"].Close)
+	<pre class="python">	self.closeWindow.Add(data["SPY"].Close)
 	self.tradeBarWindow.Add(data["SPY"])
 	self.quoteBarWindow.Add(data["EURUSD"])
 	</pre>
-	</div>
+</div>
 	The most recent element, the previous and the last item for the decimal case are:
-	<div class="section-example-container">	
-	<pre class="csharp">
-	var currentClose = _closeWindow[0];
+<div class="section-example-container">
+	<pre class="csharp">	var currentClose = _closeWindow[0];
 	var previousClose = _closeWindow[1];
 	var oldestClose = _closeWindow[_closeWindow.Count-1];
 	</pre>
-	<pre class="python">
-	currentClose = self.closeWindow[0]
+	<pre class="python">	currentClose = self.closeWindow[0]
 	previousClose = self.closeWindow[1]
 	oldestClose = self.closeWindow[self.closeWindow.Count-1]
 	</pre>
-	</div>
-</p>
+</div>
+<p></p>
 <p>
-	<b>Pro tip:</b> RollingWindow of TradeBar and/or QuoteBar are better than Historical Data Requests in algorithms that need to keep track of historical data, since we just need to update it with recent data, while the History method fetches the whole requested period and synchronize the data.     
+	We recommend using RollingWindows to hold periods of data instead of making multiple Historical Data Requests. It is much more efficient as we just need to update the RollingWindow with the latest data point, while a History call fetches the whole requested period and synchronizes the data.
 </p>
-
-<div class="section-example-container" >
-<pre class="csharp" >
-// In Initialize, create the rolling windows
+<div class="section-example-container">
+	<pre class="csharp">// In Initialize, create the rolling windows
 public override void Initialize()
 {
     // Create a Rolling Window to keep the 4 decimal
-    _closeWindow = new RollingWindow<decimal>(4);
+    _closeWindow = new RollingWindow
+<decimal>(4);
     // Create a Rolling Window to keep the 2 TradeBar
-    _tradeBarWindow = new RollingWindow<TradeBar>(2);
+    _tradeBarWindow = new RollingWindow
+<tradebar>(2);
     // Create a Rolling Window to keep the 2 QuoteBar
-    _quoteBarWindow = new RollingWindow<QuoteBar>(2);
+    _quoteBarWindow = new RollingWindow
+<quotebar>(2);
 }
 
 // In OnData, update the rolling windows
@@ -75,9 +71,11 @@ public override void Initialize()
     // Add EURUSD QuoteBar in rolling window
     _quoteBarWindow.Add(data["EURUSD"]);
 }
-</pre>
-<pre class="python" >
-# In Initialize, create the rolling windows
+</quotebar>
+			</tradebar>
+		</decimal>
+	</pre>
+	<pre class="python"># In Initialize, create the rolling windows
 def Initialize(self):
     # Create a Rolling Window to keep the 4 decimal
     self.closeWindow = RollingWindow[decimal](4)
