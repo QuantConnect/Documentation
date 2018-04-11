@@ -3,7 +3,7 @@
 <meta name="tag" content="indicator helpers" />
 <meta name="tag" content="consolidating data" />
 <p>
-	If you'd like to have an indicator updated using a specific resolution of data; e.g. 30-period, 15-minute EMA; then you should ideally use the helper methods which come with the indicators. Most indicators handle setting up these resolution periods for you. See <a href="#Indicators">Indicators</a> for more information.
+If you'd like to have an indicator updated using a specific resolution of data; e.g. 30-period, 15-minute EMA; then you should ideally use the helper methods which come with the indicators. Most indicators handle setting up these resolution periods for you. See <a class="docs-internal-link" href="/docs/algorithm-reference/indicators">Indicators</a> for more information.
 </p>
 <p>
 	You may have a custom indicator which doesn't have this helper. In this case you should register your indicator with the $[RegisterIndicator] function which will automatically create a consolidator and pipe the data into your Indicator class.
@@ -11,32 +11,30 @@
 <p>
 	In very rare cases you may want to update your indicator manually. You can do this by passing each data point into your <code>indicator.Update()</code> method from your consolidator <code>DataConsolidated</code> event handler.
 </p>
-
-
 <div class="section-example-container" >
-<pre class="csharp" >
+	<pre class="csharp" >
 // Consolidating minute SPY into Daily SMA/EMA.
 var ema = EMA("SPY", 14, Resolution.Daily);
 var sma = SMA("SPY", 14, Resolution.Daily);
 </pre>
-<pre class="csharp" >
+	<pre class="csharp" >
 // Register for daily bars from minutely data.
 AddEquity("SPY", Resolution.Minute);
 var myTradeBarIndicator = new MyTradeBarIndicator(120);
 RegisterIndicator("SPY", myTradeBarIndicator, Resolution.Daily);
 </pre>
-<pre class="python" >
+	<pre class="python" >
 # Consolidating minute SPY into Daily SMA/EMA.
 ema = self.EMA("SPY", 14, Resolution.Daily)
 sma = self.SMA("SPY", 14, Resolution.Daily)
 </pre>
-<pre class="python" >
+	<pre class="python" >
 # Register for daily bars from minutely data.
 self.AddEquity("SPY", Resolution.Minute)
 myTradeBarIndicator = MyTradeBarIndicator(120)
 self.RegisterIndicator("SPY", myTradeBarIndicator, Resolution.Daily)
 </pre>
-<pre class="csharp" >
+	<pre class="csharp" >
 // Create, initialize a consolidator and add an indicator
 private SimpleMovingAverage _sma;
 
@@ -50,7 +48,7 @@ public override void Initialize()
 	SubscriptionManager.AddConsolidator("SPY", consolidator);
 }
 </pre>
-<pre class="python" >
+	<pre class="python" >
 # Create, initialize a consolidator and add an indicator
 def Initialize(self):
     # ...other initialization...
