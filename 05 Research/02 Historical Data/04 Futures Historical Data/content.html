@@ -1,0 +1,28 @@
+<p>
+To request future data in the research environment you need to add the underlying asset to the QuantBook as demonstrated above by the symbols. This returns a <code>Security</code> object.
+</p>
+<div class="section-example-container">
+	<pre class="all">es = qb.AddFuture("ES") # add S&amp;P 500 futures
+</pre>
+</div>
+<p>Once you have the Security object for the underlying asset you must set the filter you'd like to apply on the universe of available contracts. Futures have a contracts for every expiration date combination.</p>
+<p>For Futures you can optionally to set the contract expiration date range <code>SetFilter(minExpiry, maxExpiry)</code>. The default filter is set to <code>SetFilter(timedelta(0), timedelta(35))</code>.
+</p>
+<div class="section-example-container">
+	<pre class="all"># filter future contracts
+es.SetFilter(timedelta(0), timedelta(180))
+</pre>
+</div>
+<p>Finally to request price data for the filtered contracts we have created a helper which fetches the history in a single request:</p>
+<div class="section-example-container">
+	<pre class="all"># request the SP500 futures history from 01/11/2017 10:10 to 01/12/2017 12:10
+future_history = qb.GetFutureHistory(es.Symbol, datetime(2017, 1, 11, 10, 10), datetime(2017, 1, 13, 12, 10))
+
+# Get all futures data as a dataframe
+future_history.GetAllData()
+
+# Fetch expiration dates of all futures contracts
+future_history.GetExpiryDates()
+</pre>
+</div>
+
