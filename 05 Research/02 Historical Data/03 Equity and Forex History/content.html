@@ -11,3 +11,16 @@ h2 = qb.History(["SPY"], 10, Resolution.Daily)
 </div>
 <p>You can also use the start date and the end date to retrieve a period of history data with the method <code>qb.History(Symbols, StartDate, EndDate, Resolution)</code>. The format of start and end date are python datetime.
 </p>
+<p>The return value of history request is a <i>multi-index pandas dataframe</i>. The first level of the index is symbol, the second level is time. To get the columns required you can apply operations on the pandas dataframes to retrieve the columns you need:
+</p>
+<div class="section-example-container">
+	<pre class="all"># Fetch the open price of "SPY"
+h2.loc[“SPY”]["open"]
+
+# Fetch the ask close price of “EURUSD”
+h1.loc["EURUSD"]["askclose"]
+
+# Fetch the close price of all subscribed assets
+h1['close'].unstack(level=0)
+</pre>
+</div>
