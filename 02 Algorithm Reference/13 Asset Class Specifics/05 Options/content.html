@@ -1,43 +1,40 @@
 <meta name="tag" content="using data" />
 <meta name="tag" content="assets" />
 <meta name="tag" content="options" />
-
 <h5 style="font-weight: bold;">
     Backtesting
 </h5>
 <p>
-    QuantConnect hosts approximately 4000 symbols of Options data, provided by AlgoSeek. The data is sourced directly from the OPRA channel feeds - which aggregate all the major US exchange option data. The data is available from January 2010.
+QuantConnect hosts approximately 4000 symbols of Options data, provided by AlgoSeek. The data is sourced directly from the OPRA channel feeds - which aggregate all the major US exchange option data. The data is available from January 2010.
 </p>
 <p>
 The Options tick data is converted into quote and trade bars at Minute resolution. No other resolutions are hosted.
 </p>
-
 <h5 style="font-weight: bold;">
     Live Trading
 </h5>
 <p>
     Live trading Options data is sourced from Interactive Brokers directly. This is from <i>your</i> data subscription. In order to do live options trading you must have a valid <a href="https://www.interactivebrokers.com/en/software/am/am/manageaccount/marketdatasubscriptions.htm">data subscription</a> with Interactive Brokers.
 </p>
-
 <h5 style="font-weight: bold;">
     Selecting Data
 </h5>
-
 <p> To subscribe to QuantConnect options data you must use the AddOption method:</p>
-<div class="section-example-container"><pre>
+<div class="section-example-container">
+	<pre>
 // Complete Add Option API - Including Default Parameters:
 AddOption(string underlying,
           Resolution resolution = Resolution.Minute,
           string market = null,
           bool fillDataForward = true,
           decimal leverage = 0m)
-</pre></div>
+</pre>
+</div>
 <p>
 By default, the option universe is filtered down to contracts that expire within 35 days, one contract below and another above ATM, and exclude weeklys. A difference set of contracts can be chosen with the <code>SetFilter</code> method:
 </p>
-
 <div class="section-example-container">
-<pre class="csharp">
+	<pre class="csharp">
 // In Initialize
 var option = AddOption("GOOG");
 option.SetFilter(-2, 2, TimeSpan.Zero, TimeSpan.FromDays(182));
@@ -49,49 +46,46 @@ option.SetFilter(universe => from symbol in universe
                                     universe.Underlying.Price - symbol.ID.StrikePrice < 60
                                     select symbol);
 </pre>
-<pre class="python">
+	<pre class="python">
 # In Initialize
 option = self.AddOption("GOOG");
 option.SetFilter(-2, 2, timedelta(0), timedelta(182))
 # or Lambda
 option.SetFilter(lambda universe: universe.IncludeWeeklys().Strikes(-2, +2).Expiration(timedelta(0), timedelta(182)))
 </pre>
-<pre>
+	<pre>
 var option = AddOption("GOOG");
 option.SetFilter(-2, 2, TimeSpan.FromDays(30), TimeSpan.FromDays(180));
 </pre>
 </div>
-
 <p>The data defaults to monthly expiration contracts. If you'd like Weekly expirations as well you must add it to your filter in the <code>SetFilter</code> method. <span class="csharp"><code>SetFilter</code> also accepts Linq expressions.</span>
 </p>
-
-<div class="section-example-container"><pre>
+<div class="section-example-container">
+	<pre>
 var option = AddOption("GOOG");
 option.SetFilter(universe => from symbol in universe.WeeklysOnly()
 				.Expiration(TimeSpan.Zero, TimeSpan.FromDays(10))
 				where symbol.ID.OptionRight != OptionRight.Put && universe.Underlying.Price - symbol.ID.StrikePrice < 60 select symbol);
-</pre></div>
-
+</pre>
+</div>
 <h5 style="font-weight: bold;">
     Accessing data
 </h5>
 <p>
 	Options quote and trade data can be accessed in the Slice object in OnData event handler. The <code>OptionChains</code> member contains an <code>OptionChain</code> object for each subscribed option. An <code>OptionChain</code> object has information about the underlying asset and options contracts that were filtered by <code>SetFilter</code>.
 </p>
-
 <div class="section-example-container">
-<pre class="csharp">
+	<pre class="csharp">
 var underlying = chain.Underlying;
 var contracts = chain.Contracts; 
 </pre>
-<pre class="python">
+	<pre class="python">
 underlying = chain.Underlying
 contracts = chain.Contracts
 </pre>
 </div>
-
 <div class="section-example-container" >
-<pre class="csharp">
+	<pre class="csharp">
 // In Initialize
 OptionSymol = option.Symbol;
 
@@ -107,23 +101,15 @@ if (slice.OptionChains.TryGetValue(OptionSymbol, out chain))
         .FirstOrDefault();
 }
 </pre>
-<pre class="python" >
+	<pre class="python" >
 # In Initialize
-self.OptionSymol = option.Symbol;
+self.OptionSymbol = option.Symbol;
 
-// In OnData
-chain = slice.OptionChains[self.OptionSymbol].Value
-# we sort the contracts to find at the money (ATM) contract with farthest expiration
-contracts = sorted(sorted(chain, \
-    key = lambda x: abs(chain.Underlying.Price - x.Strike)), \
-    key = lambda x: x.Expiry, reverse=True)
-</pre>
-<pre>
-// In Initialize
-OptionSymol = option.Symbol;
-
-// In OnData
-OptionChain chain;
-slice.OptionChains.TryGetValue(OptionSymbol, out chain);
+# In OnData(self, slice)
+for chain in slice.OptionChains.Values:
+	# sort contracts to find at the money (ATM) contract with the farthest expiration
+  	contracts = sorted(sorted(chain, \
+                           key = lambda x: abs(chain.Underlying.Price - x.Strike)), \
+                           key = lambda x: x.Expiry, reverse=True)
 </pre>
 </div>
