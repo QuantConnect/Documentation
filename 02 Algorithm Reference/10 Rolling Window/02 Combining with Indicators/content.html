@@ -5,15 +5,13 @@
 <meta name="tag" content="indicators" />
 <meta name="tag" content="rolling windows" />
 <p>
-	A particular and helpful use of RollingWindow is to store past indicator values.
+A particularly common and helpful use of the RollingWindow class is to store past indicator values. The following examples create an indicator and adds its values to a rolling window when the indicator is updated.
 </p>
-<p>
-	Creates an indicator and adds to a rolling window when it is updated
-	<div class="section-example-container">	
+<div class="section-example-container">
 	<pre class="csharp">
-	SMA("SPY", 5).Updated += (sender, updated) => _smaWin.Add(updated);
-	_smaWin = new RollingWindow&lt;IndicatorDataPoint&gt;(5);
-	</pre>
+	SMA("SPY", 5).Updated += (sender, updated) => smaWin.Add(updated);
+	smaWin = new RollingWindow&lt;IndicatorDataPoint&gt;(5);
+   </pre>
 	<pre class="python">
 	self.SMA("SPY", 5).Updated += self.SmaUpdated
 	self.smaWin = RollingWindow[IndicatorDataPoint](5)
@@ -21,34 +19,31 @@
 	# Adds updated values to rolling window
 	def SmaUpdated(self, sender, updated):
 		self.smaWin.Add(updated)
-	</pre>
-	</div>
+</pre>
+</div>
 	The most recent element, the previous and the last item for this case are:
-	<div class="section-example-container">	
+<div class="section-example-container">
 	<pre class="csharp">
-	var currentSma = _smaWin[0];
-	var previousSma = _smaWin[1];
-	var oldestSma = _smaWin[_smaWin.Count-1];
+	var currentSma = smaWin[0];
+	var previousSma = smaWin[1];
+	var oldestSma = smaWin[ smaWin.Count - 1 ];
 	</pre>
 	<pre class="python">
 	currentSma = self.smaWin[0]
 	previousSma = self.smaWin[1]
-	oldestSma = self.smaWin[_smaWin.Count-1]
-	</pre>
-	</div>
-</p>
-
+	oldestSma = self.smaWin[ smaWin.Count - 1 ]</pre>
+</div>
 <div class="section-example-container" >
-<pre class="csharp" >
+	<pre class="csharp" >
 // In Initialize, create the rolling windows
 public override void Initialize()
 {
     // Creates an indicator and adds to a rolling window when it is updated
-    SMA("SPY", 5).Updated += (sender, updated) => _smaWin.Add(updated);
-    _smaWin = new RollingWindow<IndicatorDataPoint>(5);
+    SMA("SPY", 5).Updated += (sender, updated) => smaWin.Add(updated);
+    smaWin = new RollingWindow&lt;IndicatorDataPoint&gt;(5);
 }
 </pre>
-<pre class="python" >
+	<pre class="python" >
 # In Initialize, create the rolling windows
 def Initialize(self):
     # Creates an indicator and adds to a rolling window when it is updated
