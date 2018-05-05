@@ -1,16 +1,14 @@
 <meta name="tag" content="brokerage models" />
 <p>
-	In QuantConnect by default we model your algorithm with margin-modeling but you can select a cash account type. 
+In QuantConnect by default we model your algorithm with margin-modeling but you can select a cash account type. 
 	Cash accounts do not allow leveraged trading, whereas Margin accounts support 2-4x leverage on your account value. You can set
-	your brokerage account type in your initialization with <code>SetBrokerageModel(BrokerageName brokerage, AccountType account);</code>.
+	your brokerage account type in your initialization with <code>SetBrokerageModel(BrokerageName brokerage, AccountType account)</code>.
 </p>
 <p>
-	The <code>BrokerageName</code> enum supports values of Default, TradierBrokerage, InteractiveBrokersBrokerage, FxcmBrokerage and 
-	OandaBrokerage.  When setting the brokerage name we also set the trading fee structures for that brokerage.
+	The <code>BrokerageName</code> enum supports values of Default, TradierBrokerage, InteractiveBrokersBrokerage, FxcmBrokerage and OandaBrokerage.  When setting the brokerage name we also set the trading fee structures for that brokerage.
 </p>
 <p>
-	The <code>AccountType</code> enum supports values of Cash and Margin. When using cash leverage is disabled by default, and the 
-	cash settlement period is set to 3 days. Margin accounts are settled immediately and have a leverage of 2.
+	The <code>AccountType</code> enum supports values of Cash and Margin. When using cash leverage is disabled by default, and the cash settlement period is set to 3 days for Equity securities. Margin accounts are settled immediately and have a leverage of 2.
 </p>
 <p>
 	Margin accounts with more than $25,000 in equity are eligible for pattern day trading margin limits. This increases your available
@@ -20,9 +18,8 @@
 <p>
 	See more about brokerage models in the <a class="docs-internal-link" href="/docs/algorithm-reference/reality-modelling">Reality Modelling</a> section.
 </p>
-
 <div class="section-example-container" >
-<pre class="csharp" >
+	<pre class="csharp" >
 //Brokerage model and account type:
 SetBrokerageModel(BrokerageName.InteractiveBrokersBrokerage, AccountType.Margin);
 
@@ -30,7 +27,7 @@ SetBrokerageModel(BrokerageName.InteractiveBrokersBrokerage, AccountType.Margin)
 var spy = AddEquity("SPY"); //Defaults to minute bars.
 spy.MarginModel = new PatternDayTradingMarginModel();
 </pre>
-<pre class="python" >
+	<pre class="python" >
 #Brokerage model and account type:
 self.SetBrokerageModel(BrokerageName.InteractiveBrokersBrokerage, AccountType.Cash)
 
@@ -38,14 +35,14 @@ self.SetBrokerageModel(BrokerageName.InteractiveBrokersBrokerage, AccountType.Ca
 spy = self.AddEquity("SPY") # Default to minute bars
 spy.MarginModel = PatternDayTradingMarginModel()
 </pre>
-<pre class="fsharp" >
+	<pre class="fsharp" >
 (* In Initialize method, set the brokerage models *)
 this.SetBrokerageModel(BrokerageName.InteractiveBrokersBrokerage, AccountType.Cash);
 this.AddEquity("SPY", Resolution.Second) |> ignore
 (* Then if required, you can set specific margin models for your secutities *)
 this.Securities.Item("SPY").MarginModel <- new PatternDayTradingMarginModel()
 </pre>
-<pre class="csharp" >
+	<pre class="csharp" >
 // You can also create your own brokerage model: IBrokerageModel
 class MyBrokerage: DefaultBrokerage {
    // Custom implementation of brokerage here.
