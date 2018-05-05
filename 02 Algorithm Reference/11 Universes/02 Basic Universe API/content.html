@@ -7,8 +7,15 @@
 			If you do not pass in a full universe object the $[UniverseSettings] property is used to fill in the blanks.  Changing the UniverseSettings algorithm property can be helpful to simplify adding universes. Universes have 5 key properties:
 </p>
 <div class="section-example-container">
-	<pre class="all">    //Popular universe settings:
+	<pre class="csharp">    //Popular universe settings:
     UniverseSettings.Resolution      // What resolution should added assets use
+                    .Leverage        // What leverage should assets use in the universe?
+                    .Fillforward     // Should asset data fill forward?
+                    .MinimumTimeInUniverse // Minimum time assets should be in universe
+                    .ExtendedMarketHours  // Should assets also feed extended market hours?
+</pre>
+	<pre class="python">    //Popular universe settings:
+    self.UniverseSettings.Resolution      // What resolution should added assets use
                     .Leverage        // What leverage should assets use in the universe?
                     .Fillforward     // Should asset data fill forward?
                     .MinimumTimeInUniverse // Minimum time assets should be in universe
@@ -17,10 +24,10 @@
 </div>
 <p></p>
 <p>
-			Once added universes are stored in the <code>IDictionary&lt;string, Universe&gt; UniverseManager</code>.
+	Once added universes are stored in the <code>algorithm.UniverseManager</code>.
 </p>
 <p><b>Universe Events</b><br>
-				When universe contents are changed (securities are added or removed from the algorithm) we generate an <code>OnSecuritiesChanged</code> event. This allows your algorithm to know the changes in the universe state. The event passes in the $[SecurityChanges] object containing references to the Added and Removed securities.
+	When universe contents are changed (securities are added or removed from the algorithm) we generate an <code>OnSecuritiesChanged</code> event. This allows your algorithm to know the changes in the universe state. The event passes in the $[SecurityChanges] object containing references to the Added and Removed securities.
 </p>
 <div class="section-example-container">
 	<pre class="csharp">// Inside your initialize function:
