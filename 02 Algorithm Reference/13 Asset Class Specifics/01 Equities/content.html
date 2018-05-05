@@ -1,36 +1,22 @@
 <meta name="tag" content="using data">
 <meta name="tag" content="assets">
 <meta name="tag" content="equity">
-
-<h5 style="font-weight: bold;">
-		Backtesting
-	</h5>
-	<p>
-		There are roughly 16,400 symbols of survivorship bias free, split and dividend adjusted US equities data from  Jan 1998 to today provided by QuantQuote. US Equities data by default arrives in adjusted format.
-	</p>
-	<p>
-		Our data is provided by QuantQuote and is <b>trade</b> data only only with tick, second, minute, hour and daily resolutions available.
-	</p>
-	<p>
-		The Tick data is raw and unfiltered - which includes suspicious, untradable and off market ticks. This can often result in unrealistic backtests. Before using tick data you should fully understand all the exchange codes and the "suspicious" flag which indicates a tick you should ignore. Unless you're an expert you should use the pre-filtered second and minute data.
-	</p>
-	<p>
-		In backtesting QuantConnect tick data is ordered but rounded to the previous second. There is no millisecond timestamp on the data.
-	</p>
-	<h5 style="font-weight: bold;">
-		Live Trading
-	</h5>
-	<p>
-		QuantConnect live tick data comes directly from the exchanges. Like backtesting tick data, it is also raw and unfiltered.
-	</p>
-	<p>
-		When deploying an algorithm to Interactive Brokers you also have the option to use them for your datafeed. When using Interactive Brokers for your datafeed you must make sure you're subscribed to the asset classes you need.
-	</p>
-<h5 style="font-weight: bold;">
-		Selecting Data
-	</h5><p>You can use the AddEquity or AddSecurity API to subscribe to equity data:</p>
-	<div class="section-example-container">
-		<pre class="all">// Complete Add Equity API - Including Default Parameters:
+<h5 style="font-weight: bold;">Selecting Data</h5>
+<p>
+There are roughly 16,400 symbols of survivorship bias free, split and dividend adjusted US equities data from  Jan 1998 to today provided by QuantQuote. US Equities data by default arrives in adjusted format.
+</p>
+<p>
+    Our data is provided by QuantQuote and is <b>trade</b> data only only with tick, second, minute, hour and daily resolutions available.
+</p>
+<p>
+    The Tick data is raw and unfiltered - which includes suspicious, untradable and off market ticks. This can often result in unrealistic backtests. Before using tick data you should fully understand all the exchange codes and the "suspicious" flag which indicates a tick you should ignore. Unless you're an expert you should use the pre-filtered second and minute data.
+</p>
+<p>
+    In backtesting QuantConnect tick data is ordered but rounded to the previous second. There is no millisecond timestamp on the data.
+</p>
+<p>You can use the AddEquity or AddSecurity API to subscribe to equity data:</p>
+<div class="section-example-container">
+	<pre class="all">// Complete Add Equity API - Including Default Parameters:
 AddEquity(string ticker,
           Resolution resolution = Resolution.Minute,
           string market = Market.USA, 
@@ -39,38 +25,39 @@ AddEquity(string ticker,
           bool extendedMarketHours = false)
 </pre>
 </div>
-
-<h5 style="font-weight: bold;">
-		Using Data
-	</h5>
-	<p>
-		Trades can be accessed in the Slice or TradeBars object in OnData event handler:
-	</p>
-	<div class="section-example-container"><pre class="all">var bar = data["SPY"];</pre></div>
-	<p>
-		Other information about the equity can be found in the <a href="#Securities-and-Portfolio">security</a> object:
-	</p>
-	<div class="section-example-container"><pre class="all">var equity = Securities["SPY"];</pre></div>
-	
-
+<h5 style="font-weight: bold;">Using Data</h5>
+<p>
+Trades can be accessed in the Slice or TradeBars object in OnData event handler:
+</p>
+<div class="section-example-container">
+	<pre class="csharp">var bar = data["SPY"];</pre>
+	<pre class="python">bar = data["SPY"]</pre>
+</div>
+<p>
+   Other information about the equity can be found in the <a href="#Securities-and-Portfolio">security</a> object:
+</p>
+<div class="section-example-container">
+	<pre class="all">var equityObject = Securities["SPY"];</pre>
+	<pre class="python">equityObject = self.Securities["SPY"]</pre>
+</div>
 <h5 style="font-weight: bold;">
 		Live Trading
-	</h5><p>Live trading for US Equities in only available in pairs trading or on Interactive Brokers.</p>
-
+	</h5>
+<p>Live trading for US Equities is only available on Interactive Brokers.</p>
 <div class="section-example-container">
-<pre class="csharp">// In Initialize
+	<pre class="csharp">// In Initialize
 AddEquity("SPY", Resolution.Minute);
 </pre>
-<pre class="python"># In Initialize
+	<pre class="python"># In Initialize
 self.AddEquity("SPY", Resolution.Minute)
 </pre>
-<pre class="csharp">// In OnData(Slice data) or OnData(TradeBars data)
+	<pre class="csharp">// In OnData(Slice data) or OnData(TradeBars data)
 var bar = data["SPY"];
 
 // Anywhere in the code
 var equity = Securities["SPY"];
 </pre>
-<pre class="python"># In OnData(self, data)
+	<pre class="python"># In OnData(self, data)
 bar = data["SPY"]
 
 # Anywhere in the code
