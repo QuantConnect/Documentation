@@ -1,4 +1,24 @@
 <p>
-Manual Universe Selection chooses a static, fixed set of assets to trade. This is most useful when selecting a set of currencies, or a basket of ETF stocks. Currently manually selected universes cannot easily be updated after initialize but we will be adding methods to make this easier.</p>
-<p>The <code>ManualUniverseSelectionModel</code> class is initialized with an array of <code>Symbol</code> objects at the UniverseSettings.Resolution data resolution. $[Symbol] objects can be created with the Symbol.Create method
+Manual universe selection chooses a static, fixed set of assets to trade. This is most useful when selecting a set of currencies, or a basket of ETF stocks. You can also add assets with the traditional <a href="/docs/algorithm-reference/initializing-algorithms#Initializing-Algorithms-Selecting-Asset-Data" class="docs-internal-link">AddSecurity API</a>.
 </p>
+<p>The <code>ManualUniverseSelectionModel</code> class is initialized with an array of <code>Symbol</code> objects at the UniverseSettings.Resolution data resolution. $[Symbol] objects can be created with the Symbol.Create method.
+</p>
+<div class="section-example-container" >
+	<pre class="csharp">public override void Initialize()
+{
+     // Set requested data resolution
+     UniverseSettings.Resolution = Resolution.Minute;
+     SetUniverseSelection(
+        new ManualUniverseSelectionModel(
+             QuantConnect.Symbol.Create("SPY", SecurityType.Equity, Market.USA)
+     ));
+}
+</pre>
+	<pre class="python">def Initialize(self):
+     self.UniverseSettings.Resolution = Resolution.Minute
+     symbols = [ Symbol.Create("SPY", SecurityType.Equity, Market.USA) ]
+     self.SetUniverseSelection(ManualUniverseSelectionModel(symbols))</pre>
+</div>
+<div class="example-fieldset">
+	<div class="example-legend">Demonstration Manual Universe Model</div><a class="python example-algorithm-link" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.Python/BasicTemplateFrameworkAlgorithm.py" target="_BLANK">BasicTemplateFrameworkAlgorithm.py  <span class="badge-python pull-right">Python</span></a><a class="csharp example-algorithm-link" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.CSharp/BasicTemplateFrameworkAlgorithm.cs" target="_BLANK">BasicTemplateFrameworkAlgorithm.cs  <span class="badge-csharp pull-right">C#</span></a>
+</div>
