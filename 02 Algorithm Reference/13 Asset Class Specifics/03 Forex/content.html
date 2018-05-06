@@ -1,79 +1,69 @@
-<meta name="tag" content="using data" />
-<meta name="tag" content="assets" />
-<meta name="tag" content="forex" />
-
-<h5 style="font-weight: bold;">Backtesting</h5>
-<p>
-    QuantConnect hosts 13 currency pairs from Apr 2007 to present provided by FXCM, and 71 currency pairs from Apr 2004 to now provided by OANDA. 
-    These currencies are provided as quote data in tick, second, minute, hour and daily resolutions.
-</p>
-<p>
-    OANDA data is in GMT timezone. Although many popular charting libraries convert this to EST for display QuantConnect has elected to leave it in GMT and not manipulate the data. When comparing the data to external references make sure to account for the different timezones. 
-</p>
-
-<h5 style="font-weight: bold;">Live Trading</h5>
-<p>
-    The same data from backtesting is provided in live trading. The tick streams are sent directly from FXCM and OANDA. Live Trading is only possible on OANDA and FXCM. Interactive Brokers supported FX until 2017 when they stopped offering it for US customers.
-</p>
-
+<meta name="tag" content="using data">
+<meta name="tag" content="assets">
+<meta name="tag" content="forex">
 <h5 style="font-weight: bold;">Selecting Data</h5>
+<p>
+QuantConnect hosts 13 currency pairs from Apr 2007 to present provided by FXCM, and 71 currency pairs from Apr 2004 to now provided by OANDA. These currencies are provided as quote data in tick, second, minute, hour and daily resolutions.
+</p>
+<p>
+    OANDA data is in GMT timezone. Although many popular charting websites convert this to EST for display QuantConnect has elected to leave it in GMT and not manipulate the data. When comparing the data to external references make sure to account for the different time zones. 
+</p>
 <p>
 	To subscribe to FOREX data; use the AddForex method with the currency pair you'd like information about:
 </p>
-		<div class="section-example-container">
-		<pre>
-// Complete Add Forex API - Including Default Parameters:
+<div class="section-example-container">
+	<pre>// Complete Add Forex API - Including Default Parameters:
 AddForex(string pair,
          Resolution resolution = Resolution.Minute,
          string market = null,
          bool fillDataForward = true,
          decimal leverage = 0m)
-</pre></div>
+</pre>
+</div>
 <p>
 FXCM is set as the default data provider. If we want to use OANDA instead, we need to explicitly select the market:
 </p>
-<div class="section-example-container"><pre>AddForex("EURUSD", Resolution.Minute, Market.Oanda);</pre></div>
-	
-   
-<h5 style="font-weight: bold;">
-    Accessing data
-</h5>
+<div class="section-example-container">
+	<pre class="csharp">AddForex("EURUSD", Resolution.Minute, Market.Oanda);</pre>
+	<pre class="python">self.AddForex("EURUSD", Resolution.Minute, Market.Oanda)</pre>
+</div>
+<h5 style="font-weight: bold;">Using Data</h5>
 <p>
     Quotes can be accessed in the Slice or TradeBars object in OnData event handler:
 </p>
-<div class="section-example-container"><pre>var bar = data["EURUSD"];</pre></div>
+<div class="section-example-container">
+	<pre class="csharp">var bar = data["EURUSD"];</pre>
+	<pre class="python">bar = data["EURUSD"]</pre>
+</div>
 <p>
     Other information about the forex pair can be found in the <a href="#Securities-and-Portfolio">security</a> object:
 </p>
-<div class="section-example-container"><pre>var forex = Securities["EURUSD"];</pre></div>
-
-
-<div class="section-example-container" >
-<pre class="csharp" >
-// In Initialize
+<div class="section-example-container">
+	<pre class="csharp">var forexObject = Securities["EURUSD"];</pre>
+	<pre class="python">forexObject = self.Securities["EURUSD"]</pre>
+</div>
+<div class="section-example-container">
+	<pre class="csharp">// In Initialize
 AddForex("EURUSD", Resolution.Minute);   // or
 AddForex("EURUSD", Resolution.Minute, Market.FXCM);
 
 // For OANDA, we need to explictly define the market
 AddForex("EURUSD", Resolution.Minute, Market.Oanda);
 </pre>
-<pre class="python" >
-# In Initialize
+	<pre class="python"># In Initialize
 self.AddForex("EURUSD", Resolution.Minute)   # or
 self.AddForex("EURUSD", Resolution.Minute, Market.FXCM)
 
 # For OANDA, we need to explictly define the market
 self.AddForex("EURUSD", Resolution.Minute, Market.Oanda)
 </pre>
-<pre class="csharp" >
-// In OnData(Slice data) or OnData(QuoteBars data)
+	<pre class="csharp">// In OnData(Slice data) or OnData(QuoteBars data)
 var bar = data["EURUSD"];
 
 // Anywhere in the code
 var forex = Securities["EURUSD"];
 </pre>
-<pre class="python" >
-# In OnData(self, data)
+	<pre class="python"># In OnData(self, data)
 bar = data["EURUSD"]
 
 # Anywhere in the code
