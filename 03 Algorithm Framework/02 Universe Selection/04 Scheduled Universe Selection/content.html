@@ -13,18 +13,37 @@ Scheduled universes allow you to perform universe selection at fixed, regular in
 <p>The universe selection helper works in the same way as the <a class="docs-internal-link" href="/docs/algorithm-reference/scheduled-events">Scheduled Event API</a>, requiring a <code>DateRule</code> and <code>TimeRule</code>, along with a selector function to execute which returns a list of Symbol objects.
 </p>
 <div class="section-example-container">
-	<pre class="csharp">// selection will run on mon/tues/thurs at 00:00/06:00/12:00/18:00
+	<pre class="csharp">// Selection will run on mon/tues/thurs at 00:00/06:00/12:00/18:00
 SetUniverseSelection(new ScheduledUniverseSelectionModel(
     DateRules.Every(DayOfWeek.Monday, DayOfWeek.Tuesday, DayOfWeek.Thursday),
     TimeRules.Every(TimeSpan.FromHours(12)),
     SelectSymbols // selection function in algorithm.
-));</pre>
-	<pre class="python"># selection will run on mon/tues/thurs at 00:00/06:00/12:00/18:00
+));
+
+// Create selection function which returns symbol objects.
+IEnumerable&lt;Symbol&gt; SelectSymbols(DateTime dateTime) 
+{
+     return new[] 
+     {
+          Symbol.Create("SPY", SecurityType.Equity, Market.USA),
+          Symbol.Create("AAPL", SecurityType.Equity, Market.USA),
+          Symbol.Create("IBM", SecurityType.Equity, Market.USA)
+     } 
+}
+</pre>
+	<pre class="python"># Selection will run on mon/tues/thurs at 00:00/06:00/12:00/18:00
 self.SetUniverseSelection(ScheduledUniverseSelectionModel(
     self.DateRules.Every(DayOfWeek.Monday, DayOfWeek.Tuesday, DayOfWeek.Thursday),
     self.TimeRules.Every(timedelta(hours = 12)),
     self.SelectSymbols # selection function in algorithm.
-))</pre>
+))
+
+# Create selection function which returns symbol objects.
+def SelectSymbols(self, dateTime):
+     symbols = []
+     symbols.append(Symbol.Create('SPY', SecurityType.Equity, Market.USA))
+     symbols.append(Symbol.Create('SPY', SecurityType.Equity, Market.USA))
+     return symbols</pre>
 </div>
 <div class="example-fieldset">
 	<div class="example-legend">Demonstration Scheduled Universe Model</div><a class="python example-algorithm-link" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.Python/ScheduledUniverseSelectionModelRegressionAlgorithm.py" target="_BLANK">ScheduledUniverseSelectionModelRegressionAlgorithm.py  <span class="badge-python pull-right">Python</span></a><a class="csharp example-algorithm-link" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.CSharp/ScheduledUniverseSelectionModelRegressionAlgorithm.cs" target="_BLANK">ScheduledUniverseSelectionModelRegressionAlgorithm.cs  <span class="badge-csharp pull-right">C#</span></a>
