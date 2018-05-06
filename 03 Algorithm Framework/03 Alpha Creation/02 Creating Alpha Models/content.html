@@ -1,7 +1,7 @@
 <p>
-To create Alpha Models you must implement the <code>IAlphaModel</code> interface. This has one method; <code>Update(QCAlgorithmFramework algorithm, Slice data)</code>. This gives you the algorithm object to call the base QuantConnect API in addition to data for the current moment of time.
+To create Alpha Models you must implement the <code>IAlphaModel</code> interface. This has one method; <code>Update(QCAlgorithmFramework algorithm, Slice data)</code>. This gives you the algorithm object to call the base QuantConnect API in addition to data for the current moment of time. Alpha models are intended to be easy to create and the primary location for iterating your strategy.
 </p>
-<div class="section-example-container" >
+<div class="section-example-container">
 	<pre class="all">// Algorithm framework model that produces insights 
 interface IAlphaModel : INotifiedSecurityChanges
 { 
@@ -10,8 +10,9 @@ interface IAlphaModel : INotifiedSecurityChanges
     Insight[] Update(QCAlgorithmFramework algorithm, Slice data)
 }</pre>
 </div>
-<p>The Alpha Model returns an array of Insight objects. Insights hold the prediction for the asset. These can be thought of actionable trading signals; indicating the asset direction, magnitude and confidence in the near future. Insight classes have the following important properties:</p>
-<div class="section-example-container" >
+<p>The Alpha Model returns an array of Insight objects. An Insight is a <i>single</i> prediction for an asset. These can be thought of actionable trading signals; indicating the asset direction, magnitude and confidence in the near future. Insight classes have the following important properties:
+</p>
+<div class="section-example-container">
 	<pre class="csharp">class Insight {
     // Symbol of this Insight
     Symbol Symbol;
@@ -31,4 +32,11 @@ interface IAlphaModel : INotifiedSecurityChanges
     // Gets the confidence in this insight (optional)
     double? Confidence { get; private set; }
 }</pre>
+	<pre class="python">class Insight:
+    self.Symbol # Symbol of this Insight 
+    self.Type # Type of insight (price or volatility)
+    self.Direction # Insight Direction (down, flat or up)
+    self.Period # Insight period (TimeSpan)
+    self.Magnitude # Expected percent change (optional, double)
+    self.Confidence # Confidence in insight (optional, double)}</pre>
 </div>
