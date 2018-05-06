@@ -2,7 +2,7 @@
 <meta name="tag" content="assets" />
 <meta name="tag" content="futures" />
 <h5 style="font-weight: bold;">
-    Backtesting
+    Selecting Data
 </h5>
 <p>
 QuantConnect hosts approximately 4000 symbols of futures contracts from Jan 2009 to present. The data 
@@ -11,15 +11,9 @@ QuantConnect hosts approximately 4000 symbols of futures contracts from Jan 2009
 <p>
     Future data comes as trades and quotes, with tick, second and minute resolutions available.
 </p>
-<h5 style="font-weight: bold;">
-    Live Trading
-</h5>
 <p>
-	Live Trading futures data is sourced from Interactive Brokers. The data used comes from <i>your</i> futures data subscription. You must have a valid <a href="https://www.interactivebrokers.com/en/software/am/am/manageaccount/marketdatasubscriptions.htm">data subscription</a> with Interactive Brokers).
+	Live Trading futures data is sourced from Interactive Brokers. The data used comes from <i>your</i> futures data subscription. You must have a valid <a href="https://www.interactivebrokers.com/en/software/am/am/manageaccount/marketdatasubscriptions.htm">data subscription</a> with Interactive Brokers.
 </p>
-<h5 style="font-weight: bold;">
-    Selecting Data
-</h5>
 <p>
 To subscribe to futures data in QuantConnect you should first select the asset you'd like to trade; and then specify the filter by the contracts expiration that you'd like to see. 
 </p>
@@ -37,9 +31,13 @@ AddFuture(string symbol,
 By default, the futures universe is filtered down to contracts that expire within 35 days. A difference set of contracts can be chosen with the <code>SetFilter</code> method:
 <p>
 		<div class="section-example-container">
-			<pre>
+			<pre class="csharp">
 var future = AddFuture(Futures.Indices.SP500EMini);
 future.SetFilter(TimeSpan.FromDays(30), TimeSpan.FromDays(180));
+</pre>
+			<pre class="python">
+future = self.AddFuture(Futures.Indices.SP500EMini)
+future.SetFilter(timedelta(30), timedelta(182))
 </pre>
 		</div>
 		<p>
@@ -48,11 +46,11 @@ future.SetFilter(TimeSpan.FromDays(30), TimeSpan.FromDays(180));
 		<div class="section-example-container">
 			<pre>
 // In Initialize
-FutureSymbol = future.Symbol;
+futureSymbol = future.Symbol;
 
 // In OnData
 FuturesChain chain;
-slice.FuturesChains.TryGetValue(FutureSymbol, out chain);
+slice.FuturesChains.TryGetValue(futureSymbol, out chain);
 </pre>
 		</div>
 		<p>
@@ -63,31 +61,37 @@ var underlying = chain.Underlying;
 var contracts = chain.Contracts; 
 </pre>
 			</div>
-			<p class="csharp fsharp">
+			<p class="csharp">
 We can use Linq on the contract list to select the contract(s) we want to trade.
+</p>
+			<p class="python">
+We can use filter functions on the contract list to select the contract(s) we want to trade.
 </p>
 			<div class="section-example-container" >
 				<pre class="csharp" >
 // In Initialize
 var future = AddFuture(Futures.Indices.SP500EMini, Resolution.Minute);
 future.SetFilter(TimeSpan.Zero, TimeSpan.FromDays(182));
-// or Linq
+// or filtering with Linq:
 future.SetFilter(universe => universe.Expiration(TimeSpan.Zero, TimeSpan.FromDays(182)));
 </pre>
 				<pre class="python" >
 # In Initialize
 future = self.AddFuture(Futures.Indices.SP500EMini, Resolution.Minute)
 future.SetFilter(timedelta(0), timedelta(182))
-# or Lambda
+# or with a Lambda Function:
 future.SetFilter(lambda universe: universe.Expiration(timedelta(0), timedelta(182)))
 </pre>
+				<h5 style="font-weight: bold;">
+    Using Data
+</h5>
 				<pre class="csharp" >
 // In Initialize
-FutureSymbol = future.Symbol;
+futureSymbol = future.Symbol;
 
 // In OnData(Slice slice)
 FuturesChain chain;
-if (slice.FuturesChains.TryGetValue(FutureSymbol, out chain))
+if (slice.FuturesChains.TryGetValue(futureSymbol, out chain))
 {
     var underlying = chain.Underlying;
     var contracts = chain.Contracts.Value; 
@@ -97,11 +101,7 @@ if (slice.FuturesChains.TryGetValue(FutureSymbol, out chain))
     }
 }
 </pre>
-				<pre class="python" >
-# In Initialize
-self.FutureSymbol = future.Symbol;
-
-# In OnData(self, slice)
+				<pre class="python"># In OnData(self, slice)
 for chain in slice.FutureChains.Values:
     contracts = chain.Contracts
     for contract in contracts:                                                                   pass</pre>
