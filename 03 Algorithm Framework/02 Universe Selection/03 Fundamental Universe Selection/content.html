@@ -1,0 +1,40 @@
+
+<p>
+Framework Universe Selection models can use the same function based selection mechanics as other algorithms. QuantConnect provides two helper methods for these universes which handle the framework requirements: <code>CoarseFundamentalUniverseSelectionModel</code> and the <code>FineFundamentalUniverseSelectionModel</code>.
+</p>
+<p>To define a fundamental Universe Selection model you need to create an instance of the class and set with the <code>SetUniverseSelection</code> method:
+</p>
+<div class="section-example-container">
+	<pre class="csharp"> // Setting Universe Model in QCAlgorithmFramework algorithm
+public override void Initialize() 
+{
+     SetUniverseSelection(new FineFundamentalUniverseSelectionModel(SelectCoarse, SelectFine));
+}
+
+IEnumerable&lt;Symbol&gt; SelectCoarse(IEnumerable&lt;CoarseFundamental&gt; coarse)
+{
+    var tickers = new[] { "AAPL", "AIG", "IBM" };
+    return tickers.Select(x => 
+        QuantConnect.Symbol.Create(x, SecurityType.Equity, Market.USA)
+    );
+}
+
+IEnumerable&lt;Symbol&gt; SelectFine(IEnumerable&lt;FineFundamental&gt; fine) {
+     return fine.Select(f => f.Symbol);
+}
+</pre>
+	<pre class="python"> # Setting Universe Model in QCAlgorithmFramework algorithm
+def Initialize(self):
+    self.SetUniverseSelection(
+           FineFundamentalUniverseSelectionModel(self.SelectCoarse, self.SelectFine)
+    )
+
+def SelectCoarse(self, coarse):
+    tickers = ["AAPL", "AIG", "IBM"]
+    return [Symbol.Create(x, SecurityType.Equity, Market.USA) for x in tickers]
+
+def SelectFine(self, fine):
+    return [f.Symbol for f in fine] </pre>
+</div>
+<p>This takes the same universe filtering functions explained in the <a class="docs-internal-link" href="/docs/algorithm-reference/universes">Universe</a> section. The Coarse selection function is passed a list of <code>CoarseFundamental</code> objects; and returns a list of Symbol objects. The Fine selection function is passed a list of <code>FineFundamental</code> objects generated from coarse selection results; and should return a list of Symbol objects.
+</p> 
