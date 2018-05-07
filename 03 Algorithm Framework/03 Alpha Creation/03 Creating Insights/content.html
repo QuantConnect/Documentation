@@ -29,4 +29,17 @@ The Update method returns an array of Insight objects. An Insight is a <i>single
     self.Magnitude # Expected percent change (optional, double)
     self.Confidence # Confidence in insight (optional, double)}</pre>
 </div>
-<p>We provide helper methods to make creating Insights easier. These should be used in your Update method to create insight objects for your Alpha Model:</p>
+<p>An $[Insight] constructor takes the following arguments:</p>
+<div class="section-example-container">
+	<pre class="python"># Insight Constructor Arguments:
+# Insight(symbol, timedelta, type, direction, magnitude=None, confidence=None, sourceModel=None)
+ Insight("IBM", timedelta(minutes=20), InsightType.Price, InsightDirection.Up, 0.0025, 1.00)</pre>
+	<pre class="csharp">// Insight Constructor Arguments
+// new Insight(symbol, period, type, confidence=null, magnitude=null, source=null);
+var insight = new Insight("IBM", TimeSpan.FromMinutes(20), InsightType.Price, InsightDirection.Up);</pre>
+	<p>We have provided a helper method to make creating Insights easier. This can be used in your Update method to create insight objects for your Alpha Model of the Price type:</p>
+	<div class="section-example">
+		<pre class="python">insight = Insight.Price("IBM", timedelta(minutes = 20), InsightDirection.Up)</pre>
+		<pre class="csharp">var insight = Insight.Price("IBM", TimeSpan.FromMinutes(20), InsightDirection.Up);</pre>
+	</div>
+</div>
