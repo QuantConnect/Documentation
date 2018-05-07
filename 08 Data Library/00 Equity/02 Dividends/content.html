@@ -1,1 +1,19 @@
-dividends-content
+<p>
+QuantConnect provides dividend payment data on all US stocks back to January 1st, 1998. Data is passed into your algorithm with dedicated event handlers. The dividend event is triggered on the payment date. Stock splits and price data is also available.</p>
+<div class="section-example-container" >
+	<pre>
+// Manually adding inside your Initialize() method:
+public override void Initialize() {
+    AddEquity("IBM", Resolution.Minute);
+}
+// v2.0 Technique: Dedicated Event handler:
+public void OnData(Dividends data) {
+    //access Dividend objects via Dividends dictionary
+    data["IBM"].Distribution; // Cash dividend
+}
+// v3.0 Technique: Accessing via Slice object:
+public override void OnData(Slice data) {
+    data.Dividends["IBM"].Distribution;
+}
+</pre>
+</div>
