@@ -1,0 +1,35 @@
+<p>
+    Options symbols are most commonly added using a filter or range of desired symbols.
+</p>
+<div class="section-example-container">
+<pre>
+// Manual add symbols required in your initialize method:
+public override void Initialize() {
+    var option = AddOption("SPY", Resolution.Minute);
+    // set our strike/expiry filter for this option chain
+    option.SetFilter(-2, +2, TimeSpan.Zero, TimeSpan.FromDays(10));
+}
+// v3.0 Technique: Access data via grouped time slice method handlers:
+public override void OnData(Slice data) {
+    OptionChain chain;
+    if (slice.OptionChains.TryGetValue(OptionSymbol, out chain))
+    {
+        // find the second call strike under market price expiring today
+        var contract = (
+            from optionContract in chain.OrderByDescending(x => x.Strike)
+            where optionContract.Right == OptionRight.Call
+            where optionContract.Expiry == Time.Date
+            where optionContract.Strike < chain.Underlying.Price
+            select optionContract
+            ).Skip(2).FirstOrDefault();
+
+        if (contract != null)
+        {
+            var quantity = CalculateOrderQuantity(contract.Symbol, -1m);
+            MarketOrder(contract.Symbol, quantity);
+            MarketOnCloseOrder(contract.Symbol, -quantity);
+        }
+    }
+}
+</pre>
+</div>
