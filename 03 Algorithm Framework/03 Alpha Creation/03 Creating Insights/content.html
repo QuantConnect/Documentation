@@ -1,0 +1,32 @@
+<p>
+The Update method returns an array of Insight objects. An Insight is a <i>single</i> prediction for an asset. These can be thought of actionable trading signals; indicating the asset direction, magnitude and confidence in the near future. Insight classes have the following important properties:
+</p>
+<div class="section-example-container">
+	<pre class="csharp">class Insight {
+    // Symbol of this Insight
+    Symbol Symbol;
+    
+    // Gets the type of insight, for example, price insight or volatility insight
+    InsightType Type;
+    
+    // Gets the predicted direction, Down, Flat or Up.
+    InsightDirection Direction;
+
+    // Gets the period over which this insight is expected to come to fruition
+    TimeSpan Period;
+
+    // Gets the predicted percent change in the insight type (price/volatility) (optional)
+    double? Magnitude;
+
+    // Gets the confidence in this insight (optional)
+    double? Confidence { get; private set; }
+}</pre>
+	<pre class="python">class Insight:
+    self.Symbol # Symbol of this Insight 
+    self.Type # Type of insight (price or volatility)
+    self.Direction # Insight Direction (down, flat or up)
+    self.Period # Insight period (TimeSpan)
+    self.Magnitude # Expected percent change (optional, double)
+    self.Confidence # Confidence in insight (optional, double)}</pre>
+</div>
+<p>We provide helper methods to make creating Insights easier. These should be used in your Update method to create insight objects for your Alpha Model:</p>
