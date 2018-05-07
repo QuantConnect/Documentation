@@ -1,14 +1,33 @@
-<p>
-To create Alpha Models you must implement the <code>IAlphaModel</code> interface. This has one method; <code>Update(QCAlgorithmFramework algorithm, Slice data)</code>. This gives you the algorithm object to call the base QuantConnect API in addition to data for the current moment of time. Alpha models are intended to be easy to create and the primary location for iterating your strategy.
+<p><span style="font-size: 16px;">Alpha models are intended to be easy to create and the primary location for iterating your strategy.</span>To create Alpha Models you must implement the <code>IAlphaModel</code> interface as shown in the examples below. This has two methods:
+</p>
+<p>1.<code>Update()</code> - Generate Insight objects.<br>2.&nbsp;<code>OnSecuritiesChanged()</code> - Receive notifications about security changes.
 </p>
 <div class="section-example-container">
-	<pre class="all">// Algorithm framework model that produces insights 
-interface IAlphaModel : INotifiedSecurityChanges
+	<pre class="csharp">// Algorithm framework model that produces insights 
+class MyAlphaModel : IAlphaModel, INotifiedSecurityChanges
 { 
     // Updates this alpha model with the latest data from the algorithm.
     // This is called each time the algorithm receives data for subscribed securities
-    Insight[] Update(QCAlgorithmFramework algorithm, Slice data)
+    Insight[] Update(QCAlgorithmFramework algorithm, Slice data) {
+         // Generate insights on the securities in universe.
+    }
+
+    void OnSecuritiesChanged(QCAlgorithmFramework algorithm, SecurityChanges changes) {
+         // Handle security changes in from your universe model.
+    }
 }</pre>
+	<pre class="python"># Algorithm framework model that produces insights 
+class MyAlphaModel:
+
+    def Update(self, algorithm, slice):
+         # Updates this alpha model with the latest data from the algorithm.
+         # This is called each time the algorithm receives data for subscribed securities
+         # Generate insights on the securities in universe.
+         insights = []
+         return insights
+    
+    def OnSecuritiesChanged(self, algorithm, changes):
+         # Handle security changes in from your universe model.</pre>
 </div>
 <p>The Alpha Model returns an array of Insight objects. An Insight is a <i>single</i> prediction for an asset. These can be thought of actionable trading signals; indicating the asset direction, magnitude and confidence in the near future. Insight classes have the following important properties:
 </p>
