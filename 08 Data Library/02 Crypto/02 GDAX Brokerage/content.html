@@ -74,16 +74,13 @@ The Global Digital Asset Exchange (GDAX) is a US-Based crypto currency exchange 
 Data must be added in the Initialize() method manually with <code>AddCrypto()</code> method.
 </p>
 <div class="section-example-container">
-	<pre>//Manually adding the symbol
-private Symbol _sym = QuantConnect.Symbol.Create("BTCUSD", SecurityType.Crypto, Market.GDAX);
-
+	<pre class="csharp">
 // Initialise the data and resolution required, as well as the cash and start-end dates for your algorithm. All algorithms must initialized.
 public override void Initialize()
 {
     SetStartDate(2015, 10, 07);  //Set Start Date
     SetEndDate(2017, 10, 11);    //Set End Date
     SetCash(100000);             //Set Strategy Cash
-
     AddCrypto("BTCUSD", Resolution.Hour);
 }
 
@@ -91,12 +88,32 @@ public override void Initialize()
 public override void OnData(Slice data) {
     //via a tradebar dictionary (symbol - bar)
     data.Bars["BTCUSD"].Close
-    //Or via a ticks list:
+    //or via a ticks list:
     data.Ticks["BTCUSD"][0].Close
 }
 </pre>
+	<pre>
+# Initialise the data and resolution required, as well as the cash and start-end dates for your algorithm. All algorithms must initialized.
+def Initialize(self):
+    self.SetStartDate(2015, 10, 07)  # Set Start Date
+    self.SetEndDate(2017, 10, 11)    # Set End Date
+    self.SetCash(100000)             # Set Strategy Cash
+    self.AddCrypto("BTCUSD", Resolution.Hour)
+
+# Accessing requested data
+def OnData(self, data):
+    # via a tradebar dictionary (symbol - bar)
+    data.Bars["BTCUSD"].Close
+    # or via a ticks list:
+    data.Ticks["BTCUSD"][0].Close
+</pre>
 </div>
-<p>
-    For more information on using this data in your algorithm see the <a href="/docs#Initializing-Algorithms">QuantConnect
-    Documentation</a>.
+<p>GDAX trades are currently available from 2015-06-15 to the present. The data in 2015 is somewhat spotty and unrealistic so we recommend starting your backtests from 2016 onwards. We have data on all currency pairs supported by GDAX.</p>
+<p>To change the market, specify the market name in the <code>AddCrypto</code> command. For example, to subscribe to hourly resolution, BTCUSD, Bitfinex data in your algorithm, use the following method:
+</p>
+<div class="section-example-container">
+	<pre class="csharp">AddCrypto("BTCUSD", Resolution.Hour, Market.Bitfinex);</pre>
+	<pre class="python">self.AddCrypto("BTCUSD", Resolution.Hour, Market.Bitfinex)</pre>
+</div>
+<p>Note this is provided as an example only. We currently only have GDAX brokerage integration. For more information on using this data in your algorithm see the <a class="docs-internal-link" href="/docs/algorithm-reference/initializing-algorithms">Initializing Algorithms</a>.
 </p>
