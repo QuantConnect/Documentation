@@ -28,7 +28,7 @@ foreach ($decoded['fundamentals'] as $field) {
             $type = str_replace("QuantConnect.Data.Fundamental.", "", $type);
             
             if ($isMultiPeriod) {
-               $type = "<a href='https://github.com/QuantConnect/Lean/tree/master/Common/Data/Fundamental/Generated'>$type (MultiPeriodField)</a>";
+               $type = "<a href='https://raw.githubusercontent.com/QuantConnect/Lean/master/Common/Data/Fundamental/Generated/MultiPeriodValueTypes.cs'>MultiPeriodField</a>";
                $periodExample = ".OneMonth";
             }
             
@@ -36,11 +36,12 @@ foreach ($decoded['fundamentals'] as $field) {
             
             echo "
 <tr>
-			<td width='30%'><code>$name</code><br/><i style='font-size: 0.8em'>$type</i>
+			<td width='30%'><code>$name</code><br/>
+				<p>$type</p>
 			</td>
 			<td>
-				<p>$tooltip e.g. <i  style=\"font-family: 'Courier New', Courier, 'Lucida Sans Typewriter', 'Lucida Typewriter', monospace;\" >fine.$fieldName.$name{$periodExample}</i>
-				</p>
+				<p>$tooltip</p>
+				<pre>fine.$fieldName.$name{$periodExample}</pre>
 			</td>
 		</tr>";
         }
