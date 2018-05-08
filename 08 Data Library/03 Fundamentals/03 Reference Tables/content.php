@@ -2,7 +2,7 @@
 The following reference tables detail the specific objects available for use in your QuantConnect Fine Universe filter. These properties are subsets of the <code>FineFundamental</code> object presented to your universe filter each day.
 </p>
 <?php
-$fields = file_get_contents("https://www.quantconnect.com/services/fundamentals");
+$fields = file_get_contents("https://www.quantconnect.com/services/fundamentals"); 
 $decoded = json_decode($fields, true);
 foreach ($decoded['fundamentals'] as $field) {
     $fieldName = $field['name'];
