@@ -1,47 +1,42 @@
 <p>
-QuantConnect provides US Future prices for all assets listed on the CME, CBOT, NYMEX and Comex since January
-    2008. Data is timestamped to the millisecond. It is also survivorship-bias free (includes symbols no longer
-    traded). Futures live trading only available through Interactive Brokers.
-</p><br/>
-<table class="table qc-table table-itemized table-reflow">
-	<thead>
-		<tr>
-			<th colspan="2">
-            Data Properties
-        </th>
-		</tr>
-	</thead>
-	<tbody>
-		<tr>
-			<td>Data Provider</td>
-			<td><a href="/data/provider/algoseek">AlgoSeek</a>
-			</td>
-		</tr>
-		<tr>
-			<td>Start Date</td>
-			<td>
-            Data is available starting January 1st, 2008
-        </td>
-		</tr>
-		<tr>
-			<td>Symbol Universe</td>
-			<td>
-            &asymp; 1100 Symbols. All symbols trading on future exchanges each day.
-        </td>
-		</tr>
-		<tr>
-			<td>Data Type</td>
-			<td>
-            Trades and Quotes
-        </td>
-		</tr>
-		<tr>
-			<td>Resolutions</td>
-			<td>Tick, Second, Minute</td>
-		</tr>
-	</tbody>
-</table>
-<p>
-    See <a target="_blank" rel="nofollow" href="https://www.algoseek.com/futures">AlgoSeek Futures</a> for more
-    information.
+To subscribe to futures data in QuantConnect you should first select the asset you'd like to trade; and then specify the filter by the contracts expiration that you'd like to see.
 </p>
+<div class="section-example-container">
+	<pre>// Complete Add Future API - Including Default Parameters:
+AddFuture(string symbol,
+          Resolution resolution = Resolution.Minute,
+          string market = null,
+          bool fillDataForward = true,
+          decimal leverage = 0m)      
+</pre>
+</div>
+<p>
+By default, the futures universe is filtered down to contracts that expire within 35 days. A different set of contracts can be chosen with the <code>SetFilter</code> method:
+</p>
+<div class="section-example-container">
+	<pre class="csharp">var future = AddFuture(Futures.Indices.SP500EMini);
+future.SetFilter(TimeSpan.FromDays(30), TimeSpan.FromDays(180));
+</pre>
+	<pre class="python">future = self.AddFuture(Futures.Indices.SP500EMini)
+future.SetFilter(timedelta(30), timedelta(182))
+</pre>
+</div>
+<p class="csharp">
+We can also use Linq on the contract list to select the contract(s) we want to trade:</p>
+<p class="python">
+We can<span style="font-size: 16px;">also</span><span style="font-size: 16px;"></span>use filter functions on the contract list to select the contract(s) we want to trade:
+</p>
+<div class="section-example-container">
+	<pre class="csharp">// In Initialize
+var future = AddFuture(Futures.Indices.SP500EMini, Resolution.Minute);
+future.SetFilter(TimeSpan.Zero, TimeSpan.FromDays(182));
+// or filtering with Linq:
+future.SetFilter(universe =&gt; universe.Expiration(TimeSpan.Zero, TimeSpan.FromDays(182)));
+</pre>
+	<pre class="python"># In Initialize
+future = self.AddFuture(Futures.Indices.SP500EMini, Resolution.Minute)
+future.SetFilter(timedelta(0), timedelta(182))
+# or with a Lambda Function:
+future.SetFilter(lambda universe: universe.Expiration(timedelta(0), timedelta(182)))
+</pre>
+</div>
