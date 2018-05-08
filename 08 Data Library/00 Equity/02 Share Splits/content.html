@@ -1,7 +1,7 @@
 <p>
 QuantConnect provides split and merger data on all US stocks back to January 1st, 1998. When a symbol is requested with prior splits/mergers we automatically pass the previous symbol data into your algorithm. You can monitor on the split/merger events using the built in event handlers. Dividend data is also provided to perform dividend analysis.</p>
 <div class="section-example-container" >
-	<pre>
+	<pre class="csharp">
 // Manually adding inside your Initialize() method:
 public override void Initialize() {
     AddEquity("IBM", Resolution.Minute);
@@ -16,4 +16,9 @@ public override void OnData(Slice data) {
     data.Splits["IBM"].SplitFactor;
 }
 </pre>
+	<pre class="python">
+# Splits data is accessible via the Splits property in the slice:
+def OnData(self, data):
+      # e.g. 1 -> 2 split-> split factor of 2.
+      data.Splits["IBM"].SplitFactor</pre>
 </div>
