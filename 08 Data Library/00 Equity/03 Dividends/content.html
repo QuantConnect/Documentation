@@ -1,11 +1,7 @@
 <p>
-QuantConnect provides dividend payment data on all US stocks back to January 1st, 1998. Data is passed into your algorithm with dedicated event handlers. The dividend event is triggered on the payment date. Stock splits and price data is also available.</p>
+QuantConnect provides dividend payment data on all US stocks back to January 1st, 1998. Data is passed into your algorithm with dedicated event handlers. The dividend event is triggered on the payment date.</p>
 <div class="section-example-container" >
-	<pre>
-// Manually adding inside your Initialize() method:
-public override void Initialize() {
-    AddEquity("IBM", Resolution.Minute);
-}
+	<pre class="csharp">
 // v2.0 Technique: Dedicated Event handler:
 public void OnData(Dividends data) {
     //access Dividend objects via Dividends dictionary
@@ -16,4 +12,7 @@ public override void OnData(Slice data) {
     data.Dividends["IBM"].Distribution;
 }
 </pre>
+	<pre class="python"># Dividend data is accessible via the Dividends property in the slice:
+def OnData(self, data):
+      data.Dividends["IBM"].Distribution # Cash dividend</pre>
 </div>
