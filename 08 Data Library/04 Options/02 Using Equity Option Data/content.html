@@ -1,35 +1,86 @@
 <p>
-    Options symbols are most commonly added using a filter or range of desired symbols.
+To subscribe to QuantConnect options data you must use the AddOption method:</p>
+<div class="section-example-container">
+	<pre>// Complete Add Option API - Including Default Parameters:
+AddOption(string underlying,
+          Resolution resolution = Resolution.Minute,
+          string market = null,
+          bool fillDataForward = true,
+          decimal leverage = 0m)
+</pre>
+</div>
+<p>
+By default, the option universe is filtered down to contracts that expire within 35 days, one contract below and another above ATM, and exclude weeklys. A difference set of contracts can be chosen with the <code>SetFilter</code> method:
 </p>
 <div class="section-example-container">
-<pre>
-// Manual add symbols required in your initialize method:
-public override void Initialize() {
-    var option = AddOption("SPY", Resolution.Minute);
-    // set our strike/expiry filter for this option chain
-    option.SetFilter(-2, +2, TimeSpan.Zero, TimeSpan.FromDays(10));
-}
-// v3.0 Technique: Access data via grouped time slice method handlers:
-public override void OnData(Slice data) {
-    OptionChain chain;
-    if (slice.OptionChains.TryGetValue(OptionSymbol, out chain))
-    {
-        // find the second call strike under market price expiring today
-        var contract = (
-            from optionContract in chain.OrderByDescending(x => x.Strike)
-            where optionContract.Right == OptionRight.Call
-            where optionContract.Expiry == Time.Date
-            where optionContract.Strike < chain.Underlying.Price
-            select optionContract
-            ).Skip(2).FirstOrDefault();
+	<pre class="csharp">// In Initialize
+var option = AddOption("GOOG");
+option.SetFilter(-2, 2, TimeSpan.Zero, TimeSpan.FromDays(182));
+// or Linq
+option.SetFilter(universe =&gt; from symbol in universe
+                                .WeeklysOnly()
+                                .Expiration(TimeSpan.Zero, TimeSpan.FromDays(10))
+                                    where symbol.ID.OptionRight != OptionRight.Put &amp;&amp;
+                                    universe.Underlying.Price - symbol.ID.StrikePrice &lt; 60
+                                    select symbol);
+</pre>
+	<pre class="python"># In Initialize
+option = self.AddOption("GOOG");
+option.SetFilter(-2, 2, timedelta(0), timedelta(182))
+# or Lambda
+option.SetFilter(lambda universe: universe.WeeklysOnly().Strikes(-2, +2).Expiration(timedelta(0), timedelta(182)))
+</pre>
+</div>
+<p>The data defaults to monthly expiration contracts. If you'd like Weekly expirations as well you must add it to your filter in the <code>SetFilter</code> method. <span class="csharp"><code>SetFilter</code> also accepts Linq expressions in C#.</span>
+</p>
+<div class="section-example-container">
+	<pre class="csharp">var option = AddOption("GOOG");
+option.SetFilter(universe =&gt; from symbol in universe.IncludeWeeklys()
+				.Expiration(TimeSpan.Zero, TimeSpan.FromDays(10))
+				where symbol.ID.OptionRight != OptionRight.Put &amp;&amp; universe.Underlying.Price - symbol.ID.StrikePrice &lt; 60 select symbol);
+</pre>
+	<pre class="python">option = self.AddOption("GOOG");
+option.SetFilter(lambda universe: universe.IncludeWeeklys().Strikes(0, 10).Expiration(timedelta(0), timedelta(182)))
+</pre>
+</div>
+<h5 style="font-weight: bold;">
+    Using Data
+</h5>
+<p>
+	Options quote and trade data can be accessed in the Slice object in OnData event handler. The <code>OptionChains</code> member contains an <code>OptionChain</code> object for each subscribed option. An <code>OptionChain</code> object has information about the underlying asset and options contracts that were filtered by <code>SetFilter</code>.
+</p>
+<div class="section-example-container">
+	<pre class="csharp">var underlying = chain.Underlying;
+var contracts = chain.Contracts; 
+</pre>
+	<pre class="python">underlying = chain.Underlying
+contracts = chain.Contracts
+</pre>
+</div>
+<div class="section-example-container">
+	<pre class="csharp">// In Initialize
+OptionSymol = option.Symbol;
 
-        if (contract != null)
-        {
-            var quantity = CalculateOrderQuantity(contract.Symbol, -1m);
-            MarketOrder(contract.Symbol, quantity);
-            MarketOnCloseOrder(contract.Symbol, -quantity);
-        }
-    }
+// In OnData
+OptionChain chain;
+if (slice.OptionChains.TryGetValue(OptionSymbol, out chain))
+{
+    // we find at the money (ATM) put contract with farthest expiration
+    var atmContract = chain
+        .OrderByDescending(x =&gt; x.Expiry)
+        .ThenBy(x =&gt; Math.Abs(chain.Underlying.Price - x.Strike))
+        .ThenByDescending(x =&gt; x.Right)
+        .FirstOrDefault();
 }
+</pre>
+	<pre class="python"># In Initialize
+self.OptionSymbol = option.Symbol;
+
+# In OnData(self, slice)
+for chain in slice.OptionChains.Values:
+	# sort contracts to find at the money (ATM) contract with the farthest expiration
+  	contracts = sorted(sorted(chain, \
+                           key = lambda x: abs(chain.Underlying.Price - x.Strike)), \
+                           key = lambda x: x.Expiry, reverse=True)
 </pre>
 </div>
