@@ -39,8 +39,7 @@ foreach ($decoded['fundamentals'] as $field) {
 			<td width='30%'><code>$name</code><br/><i style='font-size: 0.8em'>$type</i>
 			</td>
 			<td>
-				<p>$tooltip</p>
-				<p><code>fine.$fieldName.$name{$periodExample}</code>
+				<p>$tooltip e.g. <i  style=\"font-family: 'Courier New', Courier, 'Lucida Sans Typewriter', 'Lucida Typewriter', monospace;\" >fine.$fieldName.$name{$periodExample}</i>
 				</p>
 			</td>
 		</tr>";
