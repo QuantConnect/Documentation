@@ -18,8 +18,8 @@ foreach ($decoded['fundamentals'] as $field) {
             $name = $property['name'];    
             $tooltip = htmlentities($property['description']);
             echo "
-		<tr>
-			<td>$name</td>
+<tr>
+			<td width='30%'>$name</td>
 			<td>$tooltip</td>
 		</tr>";
         }
