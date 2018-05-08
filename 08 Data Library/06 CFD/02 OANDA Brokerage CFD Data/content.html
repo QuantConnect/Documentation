@@ -169,32 +169,36 @@ QuantConnect provides all OANDA Brokerage CFD contracts for backtesting and trad
 			</td>
 			<td></td>
 			<td></td>
-			<td>&nbsp;</td>
-			<td>&nbsp;</td>
+			<td></td>
+			<td></td>
 		</tr>
 	</tbody>
 </table>
 <p>
-    To use OANDA Brokerage FX products in QuantConnect you must specify the QuantConnect symbol not the OANDA
-    one.
-</p>
-<p>
-    CFD data must be added in the Initialize() method manually. Specify <code>Market.Oanda</code> to backtest on
-    OANDA historical data.
+    To use OANDA Brokerage FX products in QuantConnect you must specify the QuantConnect symbol not the OANDA one. CFD data must be added in the Initialize() method manually. Specify <code>Market.Oanda</code> to backtest on OANDA historical data.
 </p>
 <div class="section-example-container">
-<pre>
+	<pre class="csharp">
 // Manual add symbols required in your initialize method:
 public override void Initialize() {
     AddCfd("AU200AUD", Resolution.Minute, Market.Oanda);
 }
-// v2.0 Technique: Access data via dedicated event handlers:
+// Access data via dedicated event handlers:
 public void OnData(TradeBars data) {
     data["AU200AUD"].Close;
 }
-// v3.0 Technique: Access data via grouped time slice method handlers:
+// Access data via grouped time slice method handlers:
 public override void OnData(Slice data) {
     data.Bars["AU200AUD"].Close;
 }
+</pre>
+	<pre class="python">
+# Manual add symbols required in your initialize method:
+def Initialize(self):
+    sef.AddCfd("AU200AUD", Resolution.Minute, Market.Oanda)
+
+# Access data via grouped time slice method handlers:
+def OnData(self, data):
+    data.Bars["AU200AUD"].Close;
 </pre>
 </div>
