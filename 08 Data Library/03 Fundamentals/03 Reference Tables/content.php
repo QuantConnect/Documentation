@@ -36,7 +36,7 @@ foreach ($decoded['fundamentals'] as $field)
             
             $description = htmlentities($property['description']);
             
-            if ( len($children) == 0) {
+            if ( count($children) == 0) {
                 ?>
 		<tr>
 			<td width='30%'><code>
