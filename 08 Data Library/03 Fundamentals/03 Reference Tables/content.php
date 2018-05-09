@@ -4,7 +4,8 @@ The following reference tables detail the specific objects available for use in 
 <?php
 $fields = file_get_contents("https://www.quantconnect.com/services/fundamentals"); 
 $decoded = json_decode($fields, true);
-foreach ($decoded['fundamentals'] as $field) {
+foreach ($decoded['fundamentals'] as $field) 
+{
     $fieldName = $field['name'];
     ?>
 <table class="table qc-table table-itemized table-reflow">
@@ -20,10 +21,11 @@ foreach ($decoded['fundamentals'] as $field) {
         foreach ($field['properties'] as $property)
         {
             $periodExample = "";
-            $name = $property['name'];
-            $type = $property['type'];
-            $isMultiPeriod = strpos($type, "QuantConnect.Data.Fundamental.") !== false;
+            $propertyName = $property['name'];
+            $isMultiPeriod = $property['multiperiodfield'];
+            $children = $property['child-properties'];
             
+            $type = $property['type'];
             $type = str_replace("System.", "", $type);
             $type = str_replace("QuantConnect.Data.Fundamental.", "", $type);
             
@@ -32,18 +34,46 @@ foreach ($decoded['fundamentals'] as $field) {
                $periodExample = ".OneMonth";
             }
             
-            $tooltip = htmlentities($property['description']);
+            $description = htmlentities($property['description']);
             
-            echo "
-<tr>
-			<td width='30%'><code>$name</code><br/>
+            if ( len($children) == 0) {
+                ?>
+		<tr>
+			<td width='30%'><code>
+				<?=$propertyName?></code><br/>
 				<p>$type</p>
 			</td>
 			<td>
-				<p>$tooltip</p>
-				<pre class='prettyprint' style='border: none !important; background: transparent; font-size: 1em;'>fine.$fieldName.$name{$periodExample}</pre>
+				<p>
+					<?=$description?>
+				</p>
+				<pre class='prettyprint' style='border: none !important; background: transparent; font-size: 1em;'>fine.
+					<?php echo $fieldName.$propertyName; ?>
+				</pre>
 			</td>
-		</tr>";
+		</tr>
+		<?php
+            } else {
+                foreach($children as $child) {
+                    ?>
+		<tr>
+			<td width='30%'> CHILD 
+                            <code>
+				<?=print_r($child, true); ?></code><br/>
+				<p>$type</p>
+			</td>
+			<td>
+				<p>CHILD 
+					<?=$description?>
+				</p>
+				<pre class='prettyprint' style='border: none !important; background: transparent; font-size: 1em;'>fine.
+					<?php echo $fieldName.$propertyName; ?>
+				</pre>
+			</td>
+		</tr>
+		<?php
+                }
+            }
         }
     ?>
 	</tbody>
