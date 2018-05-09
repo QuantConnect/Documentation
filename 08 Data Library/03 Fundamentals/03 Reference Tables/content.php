@@ -1,4 +1,4 @@
-<p>
+<p> 
 The following reference tables detail the specific objects available for use in your QuantConnect Fine Universe filter. These properties are subsets of the <code>FineFundamental</code> object presented to your universe filter each day.
 </p>
 <?php
