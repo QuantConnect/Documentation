@@ -58,8 +58,7 @@ foreach ($decoded['fundamentals'] as $field)
 				<p>
 					<?=$description?>
 				</p>
-				<pre class='prettyprint' style='border: none !important; background: transparent; font-size: 1em;'>
-					<?php echo "fine.{$fieldName}.{$propertyName}"; ?>
+				<pre class='prettyprint' style='border: none !important; background: transparent; font-size: 1em;'><?php echo "fine.{$fieldName}.{$propertyName}"; ?>
 				</pre>
 			</td>
 		</tr>
@@ -87,8 +86,7 @@ foreach ($decoded['fundamentals'] as $field)
 				<p>
 					<?=$child['description']?>
 				</p>
-				<pre class='prettyprint' style='border: none !important; background: transparent; font-size: 1em;'>
-					<?php echo "fine.{$fieldName}.{$propertyName}.{$childName}{$periodExample}"; ?>
+				<pre class='prettyprint' style='border: none !important; background: transparent; font-size: 1em;'><?php echo "fine.{$fieldName}.{$propertyName}.{$childName}{$periodExample}"; ?>
 				</pre>
 			</td>
 		</tr>
