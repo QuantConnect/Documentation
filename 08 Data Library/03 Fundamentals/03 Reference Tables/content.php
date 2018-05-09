@@ -1,6 +1,16 @@
 <p>
 The following reference tables detail the specific objects available for use in your QuantConnect Fine Universe filter. These properties are subsets of the <code>FineFundamental</code> object presented to your universe filter each day.
 </p>
+<style>
+.fundamental-table {
+    table-layout: fixed;
+}
+
+.fundamental-type {
+    width: 30% !important;
+    word-wrap: break-word !important;
+}
+</style>
 <?php
 $fields = file_get_contents("https://www.quantconnect.com/services/fundamentals"); 
 $decoded = json_decode($fields, true);
@@ -8,7 +18,7 @@ foreach ($decoded['fundamentals'] as $field)
 {
     $fieldName = trim($field['name']);
     ?>
-<table class="table qc-table table-itemized table-reflow">
+<table class="table qc-table fundamental-table table-itemized table-reflow">
 	<thead>
 		<tr>
 			<th colspan="2">
@@ -39,7 +49,7 @@ foreach ($decoded['fundamentals'] as $field)
             if ( count($children) == 0) {
                 ?>
 		<tr>
-			<td width='30%'><code>
+			<td class="fundamental-type"><code>
 				<?=$propertyName?></code><br/>
 				<p>
 					<?=$type?>
@@ -68,7 +78,7 @@ foreach ($decoded['fundamentals'] as $field)
                 
                     ?>
 		<tr>
-			<td width='30%'><code>
+			<td class="fundamental-type"><code>
 				<?="{$propertyName}.{$childName}"; ?></code><br/>
 				<p>
 					<?=$childType; ?>
