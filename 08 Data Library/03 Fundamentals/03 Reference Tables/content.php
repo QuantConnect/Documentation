@@ -2,13 +2,12 @@
 The following reference tables detail the specific objects available for use in your QuantConnect Fine Universe filter. These properties are subsets of the <code>FineFundamental</code> object presented to your universe filter each day.
 </p>
 <style>
-.fundamental-table {
-    table-layout: fixed;
-}
-
 .fundamental-type {
     width: 30% !important;
     word-wrap: break-word !important;
+}
+.fundamental-type > code, .fundamental-type > p {
+    word-break: break-all;
 }
 </style>
 <?php
