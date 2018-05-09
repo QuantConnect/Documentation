@@ -1,4 +1,4 @@
-<p> 
+<p>
 The following reference tables detail the specific objects available for use in your QuantConnect Fine Universe filter. These properties are subsets of the <code>FineFundamental</code> object presented to your universe filter each day.
 </p>
 <?php
@@ -41,33 +41,45 @@ foreach ($decoded['fundamentals'] as $field)
 		<tr>
 			<td width='30%'><code>
 				<?=$propertyName?></code><br/>
-				<p>$type</p>
+				<p>
+					<?=$type?>
+				</p>
 			</td>
 			<td>
 				<p>
 					<?=$description?>
 				</p>
 				<pre class='prettyprint' style='border: none !important; background: transparent; font-size: 1em;'>fine.
-					<?php echo $fieldName.$propertyName; ?>
+					<?php echo trim("{$fieldName}.{$propertyName}"); ?>
 				</pre>
 			</td>
 		</tr>
 		<?php
             } else {
                 foreach($children as $child) {
+                
+                    $childType=$child['type'];
+                
+                    if ($isMultiPeriod) {
+                       $childType = "<a style='color: #747f8e !important;' href='https://raw.githubusercontent.com/QuantConnect/Lean/master/Common/Data/Fundamental/Generated/MultiPeriodValueTypes.cs'>MultiPeriodField</a>";
+                       $periodExample = ".OneMonth";
+                    } 
+                
                     ?>
 		<tr>
 			<td width='30%'> CHILD 
                             <code>
-				<?=print_r($child, true); ?></code><br/>
-				<p>$type</p>
+				<?="{$propertyName}.{$child['name']}"; ?></code><br/>
+				<p>
+					<?=$childType; ?>
+				</p>
 			</td>
 			<td>
-				<p>CHILD 
-					<?=$description?>
+				<p>
+					<?=$child['description']?>
 				</p>
 				<pre class='prettyprint' style='border: none !important; background: transparent; font-size: 1em;'>fine.
-					<?php echo $fieldName.$propertyName; ?>
+					<?php echo trim("{$fieldName}.{$propertyName}.{$child['name']}{$periodExample}"); ?>
 				</pre>
 			</td>
 		</tr>
