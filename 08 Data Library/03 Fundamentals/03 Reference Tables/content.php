@@ -6,7 +6,7 @@ $fields = file_get_contents("https://www.quantconnect.com/services/fundamentals"
 $decoded = json_decode($fields, true);
 foreach ($decoded['fundamentals'] as $field) 
 {
-    $fieldName = $field['name'];
+    $fieldName = trim($field['name']);
     ?>
 <table class="table qc-table table-itemized table-reflow">
 	<thead>
@@ -49,8 +49,8 @@ foreach ($decoded['fundamentals'] as $field)
 				<p>
 					<?=$description?>
 				</p>
-				<pre class='prettyprint' style='border: none !important; background: transparent; font-size: 1em;'>fine.
-					<?php echo trim("{$fieldName}.{$propertyName}"); ?>
+				<pre class='prettyprint' style='border: none !important; background: transparent; font-size: 1em;'>
+					<?php echo "fine.{$fieldName}.{$propertyName}"; ?>
 				</pre>
 			</td>
 		</tr>
@@ -58,18 +58,18 @@ foreach ($decoded['fundamentals'] as $field)
             } else {
                 foreach($children as $child) {
                 
-                    $childType=$child['type'];
+                    $childType = trim($child['type']);
+                    $childName = trim($child['name']);
                 
-                    if ($isMultiPeriod) {
+                    if ($child['multiperiodfield']) {
                        $childType = "<a style='color: #747f8e !important;' href='https://raw.githubusercontent.com/QuantConnect/Lean/master/Common/Data/Fundamental/Generated/MultiPeriodValueTypes.cs'>MultiPeriodField</a>";
                        $periodExample = ".OneMonth";
                     } 
                 
                     ?>
 		<tr>
-			<td width='30%'> CHILD 
-                            <code>
-				<?="{$propertyName}.{$child['name']}"; ?></code><br/>
+			<td width='30%'><code>
+				<?="{$propertyName}.{$childName}"; ?></code><br/>
 				<p>
 					<?=$childType; ?>
 				</p>
@@ -78,8 +78,8 @@ foreach ($decoded['fundamentals'] as $field)
 				<p>
 					<?=$child['description']?>
 				</p>
-				<pre class='prettyprint' style='border: none !important; background: transparent; font-size: 1em;'>fine.
-					<?php echo trim("{$fieldName}.{$propertyName}.{$child['name']}{$periodExample}"); ?>
+				<pre class='prettyprint' style='border: none !important; background: transparent; font-size: 1em;'>
+					<?php echo "fine.{$fieldName}.{$propertyName}.{$childName}{$periodExample}"; ?>
 				</pre>
 			</td>
 		</tr>
