@@ -1,5 +1,6 @@
 <p>
-The following reference tables detail the specific objects available for use in your QuantConnect Fine Universe filter. These properties are subsets of the <code>FineFundamental</code> object presented to your universe filter each day.</p>
+The following reference tables detail the specific objects available for use in your QuantConnect Fine Universe filter. These properties are subsets of the <code>FineFundamental</code> object presented to your universe filter each day.
+</p>
 <style>
 .fundamental-type {
     width: 30% !important;
@@ -16,15 +17,15 @@ foreach ($decoded['fundamentals'] as $field)
 {
     $fieldName = trim($field['name']);
     ?>
-<table class="table qc-table fundamental-table table-itemized table-reflow">
-	<thead>
+    <table class="table qc-table fundamental-table table-itemized table-reflow">
+        <thead>
 		<tr>
 			<th colspan="2">
 				<?php echo $field['name']; ?>
 			</th>
 		</tr>
-	</thead>
-	<tbody>
+        </thead>
+        <tbody>
 		<?php
         foreach ($field['properties'] as $property)
         {
@@ -46,22 +47,17 @@ foreach ($decoded['fundamentals'] as $field)
             
             if ( count($children) == 0) {
                 ?>
-		<tr>
-			<td class="fundamental-type"><code>
-				<?=$propertyName?></code><br/>
-				<p>
-					<?=$type?>
-				</p>
-			</td>
-			<td>
-				<p>
-					<?=$description?>
-				</p>
-				<pre class='prettyprint' style='border: none !important; background: transparent; font-size: 1em;'><?php echo "fine.{$fieldName}.{$propertyName}"; ?>
-				</pre>
-			</td>
-		</tr>
-		<?php
+                <tr>
+                    <td class="fundamental-type">
+                        <code><?=$propertyName?></code><br/>
+                        <p><?=$type?></p>
+                    </td>
+                    <td>
+                        <p><?=$description?></p>
+                        <pre class='prettyprint' style='border: none !important; background: transparent; font-size: 1em;'><?php echo "fine.{$fieldName}.{$propertyName}{$periodExample}"; ?></pre>
+                    </td>
+                </tr>
+                <?php
             } else {
                 foreach($children as $child) {
                 
@@ -74,22 +70,14 @@ foreach ($decoded['fundamentals'] as $field)
                     } 
                 
                     ?>
-		<tr>
-			<td class="fundamental-type"><code>
-				<?="{$propertyName}.{$childName}"; ?></code><br/>
-				<p>
-					<?=$childType; ?>
-				</p>
-			</td>
-			<td>
-				<p>
-					<?=$child['description']?>
-				</p>
-				<pre class='prettyprint' style='border: none !important; background: transparent; font-size: 1em;'><?php echo "fine.{$fieldName}.{$propertyName}.{$childName}{$periodExample}"; ?>
-				</pre>
-			</td>
-		</tr>
-		<?php
+                    <tr>
+                        <td class="fundamental-type"><code><?="{$propertyName}.{$childName}"; ?></code><br/><p><?=$childType; ?></p>
+                        </td>
+                        <td>
+                            <p><?=$child['description']?></p>
+<pre class='prettyprint' style='border: none !important; background: transparent; font-size: 1em;'><?php echo "fine.{$fieldName}.{$propertyName}.{$childName}{$periodExample}"; ?></pre></td>
+                    </tr>
+                    <?php
                 }
             }
         }
