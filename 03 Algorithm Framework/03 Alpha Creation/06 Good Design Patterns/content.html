@@ -1,15 +1,8 @@
 <p>
 To make Alpha Models as useful and pluggable as possible we recommend you follow the following design suggestions. These will ensure you can quickly migrate the Alpha from one algorithm to another if ever needed.</p>
 <p>The <a class="docs-internal-link" href="/docs/algorithm-framework/universe-selection">Universe Selection Model</a> is in charge of selecting assets; so you should not assume any fixed set of assets. When assets are added to your universe they will trigger an <code>OnSecuritiesChanged()</code> event. From there you can initialize any state or history required for your Alpha Model.
-	<div class="section-example-container">
-		<pre class="csharp>/// 
-			<summary>
-/// Event fired each time the we add/remove securities from the data feed
-/// </summary>
-/// 
-			<param name="algorithm">The algorithm instance that experienced the change in securities</param>
-/// 
-			<param name="changes">The security additions and removals from the algorithm</param>
+<div class="section-example-container">
+		<pre class="csharp> // Event fired each time the we add/remove securities from the data feed
 public void OnSecuritiesChanged(QCAlgorithmFramework algorithm, SecurityChanges changes)
 {
     foreach (var added in changes.AddedSecurities)
@@ -35,27 +28,18 @@ public void OnSecuritiesChanged(QCAlgorithmFramework algorithm, SecurityChanges 
         }
     }
 }
-
-/// 
-			<summary>
-/// Contains data specific to a symbol required by this model
-/// </summary>
+ 
+// Contains data specific to a symbol required by this model 
 private class SymbolData
 {
     public Security Security { get; set; }
     public Symbol Symbol => Security.Symbol;
     public ExponentialMovingAverage Fast { get; set; }
     public ExponentialMovingAverage Slow { get; set; }
-
-    /// 
-			<summary>
-    /// True if the fast is above the slow, otherwise false.
-    /// This is used to prevent emitting the same signal repeatedly
-    /// </summary>
     public bool FastIsOverSlow { get; set; }
     public bool SlowIsOverFast => !FastIsOverSlow;
 }
-		</pre>
+</pre>
 		<pre class="python">    def OnSecuritiesChanged(self, algorithm, changes):
         '''Event fired each time the we add/remove securities from the data feed
         Args:
@@ -74,7 +58,6 @@ private class SymbolData
                 symbolData.Fast.Reset()
                 symbolData.Slow.Reset()
 
-
 class SymbolData:
     '''Contains data specific to a symbol required by this model'''
     def __init__(self, security):
@@ -82,9 +65,6 @@ class SymbolData:
         self.Symbol = security.Symbol
         self.Fast = None
         self.Slow = None
-
-        # True if the fast is above the slow, otherwise false.
-        # This is used to prevent emitting the same signal repeatedly
         self.FastIsOverSlow = False
 
     @property
