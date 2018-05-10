@@ -1,5 +1,7 @@
 <p>
 To make Alpha Models as useful and pluggable as possible we recommend you follow the following design suggestions. These will ensure you can quickly migrate the Alpha from one algorithm to another if ever needed.</p>
+<p><b>1. Use Assets Defined By Universe Selection Model</b>
+</p>
 <p>The <a class="docs-internal-link" href="/docs/algorithm-framework/universe-selection">Universe Selection Model</a> is in charge of selecting assets; so you should not assume any fixed set of assets. When assets are added to your universe they will trigger an <code>OnSecuritiesChanged()</code> event. From there you can initialize any state or history required for your Alpha Model.
 <div class="section-example-container">
 		<pre class="csharp"> // Event fired each time the we add/remove securities from the data feed
@@ -70,4 +72,17 @@ class SymbolData:
     @property
     def SlowIsOverFast(self):
         return not self.FastIsOverSlow</pre>
+	</div>
+	<p><b>2. Give Alpha Models A Unique Name</b>
+	</p>
+	<p>To ensure your Alpha Model can be used by all <a class="docs-internal-link" href="/docs/algorithm-framework/portfolio-construction">Portfolio Construction Models</a> you should assign a unique name to your Alpha Model. Some Portfolio Construction Models can combine multiple Alpha Models together and it can be important to distinguish between them. By default we use the class-type name as the Alpha Model name.This can be a random numbercan consume multiple Alpha Models.
+</p>
+	<div class="section-example-container">
+		<pre class="python" style="display: none;">class RsiAlphaModel(AlphaModel):
+     self.Name = "RsiAlphaModel"</pre>
+		<pre class="csharp">public class RsiAlphaModel : AlphaModel
+{
+     // Give your alpha a name (perhaps based on its constructor args?)
+     public override string Name { get; }
+}</pre>
 	</div>
