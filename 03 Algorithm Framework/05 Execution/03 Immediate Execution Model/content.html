@@ -1,0 +1,28 @@
+<p>
+The Immediate Execution Model uses market orders to immediately fill algorithm portfolio targets. It is the simplest Execution Model similar to simply placing Market Orders inline with your algorithm logic.</p>
+<div class="section-example-container">
+	<pre class="csharp">
+// Issue market orders for the difference between holdings &amp; targeted quantity
+public override void Execute(QCAlgorithmFramework algorithm, IPortfolioTarget[] targets)
+{
+    foreach (var target in targets)
+    {
+        var existing = algorithm.Securities[target.Symbol].Holdings.Quantity
+            + algorithm.Transactions.GetOpenOrders(target.Symbol).Sum(o => o.Quantity);
+        var quantity = target.Quantity - existing;
+        if (quantity != 0)
+        {
+            algorithm.MarketOrder(target.Symbol, quantity);
+        }
+    }
+}</pre>
+	<pre class="python">
+# Issue market orders for the difference between holdings &amp; targeted quantity
+def Execute(self, algorithm, targets):
+    for target in targets:
+      open_quantity = sum([x.Quantity for x in algorithm.Transactions.GetOpenOrders(target.Symbol)])
+      existing = algorithm.Securities[target.Symbol].Holdings.Quantity + open_quantity
+      quantity = target.Quantity - existing
+      if quantity != 0:
+          algorithm.MarketOrder(target.Symbol, quantity)</pre>
+</div><span class="csharp">You can view the complete C# <i>implementation</i> of this model in <a href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.Framework/Execution/ImmediateExecutionModel.cs" target="_BLANK">GitHub</a>.</span><span class="python">You can view the complete Python <i>implementation</i> of this model in <a href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.Framework/Execution/ImmediateExecutionModel.py" target="_BLANK">GitHub</a>.</span>
