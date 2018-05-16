@@ -1,21 +1,19 @@
 <p>
 The Immediate Execution Model uses market orders to immediately fill algorithm portfolio targets. It is the simplest Execution Model similar to simply placing Market Orders inline with your algorithm logic.</p>
-<p>You can use this pre-made Execution Model with the class <code>ImmediateExecutionModel</code>.
-</p>
+<p>You can use this pre-made Execution Model by setting it in the Initialize method:</p>
 <div class="section-example-container">
 	<pre class="csharp">SetExecutionModel( new ImmediateExecutionModel() );</pre>
 	<pre class="python">self.SetExecutionModel( ImmediateExecutionModel() )</pre>
 </div>
 <p>It is implemented as demonstrated in the code snippet below:</p>
 <div class="section-example-container">
-	<pre class="csharp">
-// Issue market orders for the difference between holdings &amp; targeted quantity
+	<pre class="csharp">// Issue market orders for the difference between holdings &amp; targeted quantity
 public override void Execute(QCAlgorithmFramework algorithm, IPortfolioTarget[] targets)
 {
     foreach (var target in targets)
     {
         var existing = algorithm.Securities[target.Symbol].Holdings.Quantity
-            + algorithm.Transactions.GetOpenOrders(target.Symbol).Sum(o => o.Quantity);
+            + algorithm.Transactions.GetOpenOrders(target.Symbol).Sum(o =&gt; o.Quantity);
         var quantity = target.Quantity - existing;
         if (quantity != 0)
         {
@@ -23,8 +21,7 @@ public override void Execute(QCAlgorithmFramework algorithm, IPortfolioTarget[] 
         }
     }
 }</pre>
-	<pre class="python">
-# Issue market orders for the difference between holdings &amp; targeted quantity
+	<pre class="python"># Issue market orders for the difference between holdings &amp; targeted quantity
 def Execute(self, algorithm, targets):
     for target in targets:
       open_quantity = sum([x.Quantity for x in algorithm.Transactions.GetOpenOrders(target.Symbol)])
