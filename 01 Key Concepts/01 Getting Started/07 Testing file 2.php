@@ -1,3 +1,3 @@
 <?php 
-echo "Testing file 2 : " . time();
+echo "Testing file 2 : " . time() . "  ". date();
 ?>
