@@ -1,23 +1,23 @@
 <meta name="tag" content="custom data" />
 <p>
-	You must create a custom type to instruct LEAN where to get your data, and how to read it. We support many different data types 
-	and formats. You can even change source locations for backtesting and live modes. All data must extend from <code>BaseData</code>
-	and override the <code>Reader</code> and <code>GetSource</code> methods.
+	You must create a custom type to instruct LEAN where to get your data, and how to read it. We support many different data types
+	and formats. You can even change source locations for backtesting and live modes. All data must extend from $[BaseData,T:QuantConnect.Data.BaseData]
+	and override the $[Reader,M:QuantConnect.Data.BaseData.Reader] and $[GetSource,M:QuantConnect.Data.BaseData.Reader] methods.
 </p>
 <p>
-	<code>GetSource</code> instructs LEAN where to find your data. It must return a <code>SubscriptionDataSource</code> object 
-	containing the string Url to find your data, and the format of the data (SubscriptionTransportMedium RemoteFile or Rest). When 
-	the source returned changes URL the data is downloaded again. This allows LEAN to cache large files and only download new data 
+	$[GetSource,M:QuantConnect.Data.BaseData.Reader] instructs LEAN where to find your data. It must return a $[SubscriptionDataSource,T:QuantConnect.Data.SubscriptionDataSource] object
+	containing the string Url to find your data, and the format of the data (SubscriptionTransportMedium RemoteFile or Rest). When
+	the source returned changes URL the data is downloaded again. This allows LEAN to cache large files and only download new data
 	when requested. This also allows you to break up large intraday data into smaller daily files, speeding up the backtest.
 </p>
 <p>
-	When using <code>SubscriptionTransportMedium.Rest</code> the url provided is polled at each Resolution time step and is assumed to
+	When using $[SubscriptionTransportMedium.Rest,T:QuantConnect.SubscriptionTransportMedium] the url provided is polled at each Resolution time step and is assumed to
 	be sufficient for 1-data point. This is generally intended for live data sources.
 </p>
 <p>
-	<code>Reader</code> takes one line of data provided by the source, and parses it into one of your custom objects (e.g. Weather 
-	in the code snippet). In addition to setting your custom type properties, you should also take care to set three required 
-	properties: 
+	$[Reader,M:QuantConnect.Data.BaseData.Reader] takes one line of data provided by the source, and parses it into one of your custom objects (e.g. Weather
+	in the code snippet). In addition to setting your custom type properties, you should also take care to set three required
+	properties:
 	<ul>
 		<li>
 			Symbol - Should always be set to config.Symbol
@@ -43,8 +43,8 @@ public class Weather : BaseData
     public string errString = "";
 
     public override SubscriptionDataSource GetSource(
-        SubscriptionDataConfig config, 
-        DateTime date, 
+        SubscriptionDataConfig config,
+        DateTime date,
         bool isLive)
     {
         var source = string.Format(
@@ -62,15 +62,15 @@ public class Weather : BaseData
         bool isLive)
     {
         if (string.IsNullOrWhiteSpace(line) ||
-            char.IsLetter(line[0])) 
+            char.IsLetter(line[0]))
             return null;
-            
+
         var data = line.Split(',');
 
         return new Weather()
         {
             // Make sure we only get this data AFTER trading day - don't want forward bias.
-            Time = DateTime.Parse(data[0]).AddHours(20), 
+            Time = DateTime.Parse(data[0]).AddHours(20),
             Symbol = config.Symbol,
             MaxC = Convert.ToDecimal(data[1]),
             Value = Convert.ToDecimal(data[2]),
@@ -82,16 +82,16 @@ public class Weather : BaseData
 <pre class="python" >
 class Weather(PythonData):
     ''' Weather based rebalancing'''
-    
+
     def GetSource(self, config, date, isLive):
         source = "https://www.wunderground.com/history/airport/{0}/{1}/1/1/CustomHistory.html?dayend=31&monthend=12&yearend={1}&format=1".format(config.Symbol, date.year);
-        return SubscriptionDataSource(source, SubscriptionTransportMedium.RemoteFile);       
+        return SubscriptionDataSource(source, SubscriptionTransportMedium.RemoteFile);
 
 
     def Reader(self, config, line, date, isLive):
         # If first character is not digit, pass
         if not (line.strip() and line[0].isdigit()): return None
-        
+
         data = line.split(',')
         weather = Weather()
         weather.Symbol = config.Symbol

@@ -1,19 +1,19 @@
 <meta name="tag" content="brokerage models" />
 <p>
-In QuantConnect by default we model your algorithm with margin-modeling but you can select a cash account type. 
+In QuantConnect by default we model your algorithm with margin-modeling but you can select a cash account type.
 	Cash accounts do not allow leveraged trading, whereas Margin accounts support 2-4x leverage on your account value. You can set
-	your brokerage account type in your initialization with <code>SetBrokerageModel(BrokerageName brokerage, AccountType account)</code>.
+	your brokerage account type in your initialization with $[SetBrokerageModel(BrokerageName brokerage, AccountType account),M:QuantConnect.Algorithm.QCAlgorithm.SetBrokerageModel].
 </p>
 <p>
-	The <code>BrokerageName</code> enum supports values of Default, TradierBrokerage, InteractiveBrokersBrokerage, FxcmBrokerage and OandaBrokerage.  When setting the brokerage name we also set the trading fee structures for that brokerage.
+	The $[BrokerageName,T:QuantConnect.Brokerages.BrokerageName] enum supports values of Default, TradierBrokerage, InteractiveBrokersBrokerage, FxcmBrokerage and OandaBrokerage.  When setting the brokerage name we also set the trading fee structures for that brokerage.
 </p>
 <p>
-	The <code>AccountType</code> enum supports values of Cash and Margin. When using cash leverage is disabled by default, and the cash settlement period is set to 3 days for Equity securities. Margin accounts are settled immediately and have a leverage of 2.
+	The $[AccountType,T:QuantConnect.AccountType] enum supports values of Cash and Margin. When using cash leverage is disabled by default, and the cash settlement period is set to 3 days for Equity securities. Margin accounts are settled immediately and have a leverage of 2.
 </p>
 <p>
 	Margin accounts with more than $25,000 in equity are eligible for pattern day trading margin limits. This increases your available
-	leverage to 4x while the market is open and 2x overnight. To model this behavior in your algorithm you must set your security 
-	<code>MarginModel</code> to <code>PatternDayTradingMarginModel</code>.
+	leverage to 4x while the market is open and 2x overnight. To model this behavior in your algorithm you must set your security
+	$[MarginModel,P:QuantConnect.Securities.Security.MarginModel] to <code>PatternDayTradingMarginModel</code>.
 </p>
 <p>
 	See more about brokerage models in the <a class="docs-internal-link" href="/docs/algorithm-reference/reality-modelling">Reality Modelling</a> section.
@@ -23,7 +23,7 @@ In QuantConnect by default we model your algorithm with margin-modeling but you 
 //Brokerage model and account type:
 SetBrokerageModel(BrokerageName.InteractiveBrokersBrokerage, AccountType.Margin);
 
-//Add securities and if required set custom margin models 
+//Add securities and if required set custom margin models
 var spy = AddEquity("SPY"); //Defaults to minute bars.
 spy.MarginModel = new PatternDayTradingMarginModel();
 </pre>
@@ -31,7 +31,7 @@ spy.MarginModel = new PatternDayTradingMarginModel();
 #Brokerage model and account type:
 self.SetBrokerageModel(BrokerageName.InteractiveBrokersBrokerage, AccountType.Cash)
 
-//Add securities and if required set custom margin models 
+//Add securities and if required set custom margin models
 spy = self.AddEquity("SPY") # Default to minute bars
 spy.MarginModel = PatternDayTradingMarginModel()
 </pre>
@@ -46,7 +46,7 @@ this.Securities.Item("SPY").MarginModel <- new PatternDayTradingMarginModel()
 // You can also create your own brokerage model: IBrokerageModel
 class MyBrokerage: DefaultBrokerage {
    // Custom implementation of brokerage here.
-} 
+}
 
 SetBrokerageModel(new MyBrokerage());
 </pre>
