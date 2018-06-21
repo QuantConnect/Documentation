@@ -3,11 +3,11 @@
 <meta name="tag" content="custom transaction models" />
 <meta name="tag" content="order events" />
 <p>
-	Fill models give you control over order fills. Each supported order type is passed through a dedicated method and returns an $[OrderEvent] object. OrderEvents are used to carry information about order partial fills or errors.
+	Fill models give you control over order fills. Each supported order type is passed through a dedicated method and returns an $[OrderEvent,T:QuantConnect.Orders.OrderEvent] object. OrderEvents are used to carry information about order partial fills or errors.
 </p>
 <p>
-	The Fill Models implement the $[IFillModel] interface. They have the following key methods:
-	<div class="section-example-container">	
+	The Fill Models implement the $[IFillModel,T:QuantConnect.Orders.Fills.IFillModel] interface. They have the following key methods:
+	<div class="section-example-container">
 	<pre class="all">public interface IFillModel {
     OrderEvent MarketFill(Security asset, MarketOrder order);
     OrderEvent StopMarketFill(Security asset, StopMarketOrder order);
@@ -17,7 +17,7 @@
     OrderEvent MarketOnCloseFill(Security asset, MarketOnCloseOrder order);
 }</pre>
 </div>
-We provide the $[ImmediateFillModel] which assumes orders and immediately and completely filled.
+We provide the $[ImmediateFillModel,T:QuantConnect.Orders.Fills.ImmediateFillModel] which assumes orders and immediately and completely filled.
 </p>
 
 
@@ -29,7 +29,7 @@ Securities["IBM"].SetFillModel(new PartialFillModel());
 // Custom fill model implementation stub
 public class PartialFillModel : ImmediateFillModel {
     public override OrderEvent MarketFill(Security asset, MarketOrder order) {
-        //Override order event handler and return partial order fills, 
+        //Override order event handler and return partial order fills,
     }
 }
 </pre>

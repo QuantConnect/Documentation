@@ -1,13 +1,13 @@
 <meta name="tag" content="history amd warm up" />
 <meta name="tag" content="history" />
 <p>
-Batch history API is often easier to understand as you can manually feed data into your components which need it. 
-	If Resolution of the data request is not specified the history API uses the resolution of data you've specified with 
+Batch history API is often easier to understand as you can manually feed data into your components which need it.
+	If Resolution of the data request is not specified the history API uses the resolution of data you've specified with
 	AddSecurity() or your Universe. If the Symbol is not specified then history for all symbols is returned for the period.
 </p>
 <p class="csharp">
-	Batch data returned as <code>IEnumerable&lt;Slice&gt; slices</code>, <code>IEnumerable&lt;TradeBar&gt; slices</code> or 
-	<code>IEnumerable&lt;QuoteBar&gt; slices</code> has all the normal slice helpers - to assist using the data in your strategy, 
+	Batch data returned as $[IEnumerable&lt;Slice&gt; slices,T:QuantConnect.Data.Slice], $[IEnumerable&lt;TradeBar&gt; slices,T:QuantConnect.Data.Market.TradeBar] or
+	$[IEnumerable&lt;QuoteBar&gt; slices,T:QuantConnect.Data.Market.QuoteBar] has all the normal slice helpers - to assist using the data in your strategy,
 	for example:
 </p>
 <p class="python">
@@ -17,7 +17,7 @@ Batch history API is often easier to understand as you can manually feed data in
 	<pre class="csharp">
 //From slice -> tradebars, or slice -> decimals.
 IEnumerable&lt;Slice&gt; slices = History(TimeSpan.FromDays(7), Resolution.Minute);
-IEnumerable&lt;TradeBar&gt; bars = slices.Get("SPY"); // Bars 
+IEnumerable&lt;TradeBar&gt; bars = slices.Get("SPY"); // Bars
 IEnumerable&lt;decimal&gt; decimals = slices.Get("SPY", Field.Close); // Close from slice
 // Many math libraries need double arrays, decimals -> double[]
 double[] doubleArray = decimals.ToDoubleArray();
