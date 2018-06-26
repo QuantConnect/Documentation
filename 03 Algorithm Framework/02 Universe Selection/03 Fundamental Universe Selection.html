@@ -1,12 +1,12 @@
 
 <p>
-Framework Universe Selection models can use the same function based selection mechanics as other algorithms. QuantConnect provides two helper methods for these universes which handle the framework requirements: <code>CoarseFundamentalUniverseSelectionModel</code> and the <code>FineFundamentalUniverseSelectionModel</code>.
+Framework Universe Selection models can use the same function based selection mechanics as other algorithms. QuantConnect provides two helper methods for these universes which handle the framework requirements: $[CoarseFundamentalUniverseSelectionModel,T:QuantConnect.Algorithm.Framework.Selection.CoarseFundamentalUniverseSelectionModel] and the $[FineFundamentalUniverseSelectionModel,T:QuantConnect.Algorithm.Framework.Selection.FineFundamentalUniverseSelectionModel].
 </p>
-<p>To define a fundamental Universe Selection model you need to create an instance of the class and set with the <code>SetUniverseSelection</code> method:
+<p>To define a fundamental Universe Selection model you need to create an instance of the class and set with the $[SetUniverseSelection,M:QuantConnect.Algorithm.Framework.QCAlgorithmFramework.SetUniverseSelection] method:
 </p>
 <div class="section-example-container">
 	<pre class="csharp"> // Setting Universe Model in QCAlgorithmFramework algorithm
-public override void Initialize() 
+public override void Initialize()
 {
      SetUniverseSelection(new FineFundamentalUniverseSelectionModel(SelectCoarse, SelectFine));
 }
@@ -14,7 +14,7 @@ public override void Initialize()
 IEnumerable&lt;Symbol&gt; SelectCoarse(IEnumerable&lt;CoarseFundamental&gt; coarse)
 {
     var tickers = new[] { "AAPL", "AIG", "IBM" };
-    return tickers.Select(x =&gt; 
+    return tickers.Select(x =&gt;
         QuantConnect.Symbol.Create(x, SecurityType.Equity, Market.USA)
     );
 }
@@ -36,5 +36,5 @@ def SelectCoarse(self, coarse):
 def SelectFine(self, fine):
     return [f.Symbol for f in fine] </pre>
 </div>
-<p>This takes the same universe filtering functions explained in the <a class="docs-internal-link" href="/docs/algorithm-reference/universes">Universe</a> section. The Coarse selection function is passed a list of <code>CoarseFundamental</code> objects; and returns a list of Symbol objects. The Fine selection function is passed a list of <code>FineFundamental</code> objects generated from coarse selection results; and should return a list of Symbol objects. See the example algorithms at the top of the page to get started.
+<p>This takes the same universe filtering functions explained in the <a class="docs-internal-link" href="/docs/algorithm-reference/universes">Universe</a> section. The Coarse selection function is passed a list of $[CoarseFundamental,T:QuantConnect.Data.UniverseSelection.CoarseFundamental] objects; and returns a list of Symbol objects. The Fine selection function is passed a list of $[FineFundamental,T:QuantConnect.Data.Fundamental.FineFundamental] objects generated from coarse selection results; and should return a list of Symbol objects. See the example algorithms at the top of the page to get started.
 </p>
