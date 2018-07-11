@@ -1,17 +1,21 @@
 <meta name="tag" content="universes" />
 <meta name="tag" content="coarse universes" />
 <p>
-	Coarse Universe selection is the built in universe data provided by QuantConnect. Using financial data we generate a few key properties for each symbol and allow you to filter the universe of 16,400+ symbols to receive the symbols matching your filter criteria. It uses the $[CoarseFundamental,T:QuantConnect.Data.UniverseSelection.CoarseFundamental] type.
+	Coarse Universe selection is the built in universe data provided by QuantConnect. Using financial data we generate a few key properties for each symbol and allow you to filter the universe of 16,400+ symbols to receive the symbols matching your filter criteria. It uses the $[CoarseFundamental,T:QuantConnect.Data.UniverseSelection.CoarseFundamental] type, which extends BaseData.
 </p>
 <p>
 	Coarse fundamental has the following properties you can use to perform rough filtering.
 	<div class="section-example-container">
-	<pre class="all">class CoarseFundamental {
+	<pre class="all">class CoarseFundamental : BaseData {
+    public string Market;           // Market for symbol
     public long Volume;             // Traded shares
     public decimal DollarVolume;    // Traded shares x Price
-    public decimal Price;           // Yesterday close price
+    public decimal Price;           // Yesterday's close price
+    public decimal PriceFactor;     // Price factor for the given date 
+    public decimal SplitFactor;     // Split factor for the given date
+    public decimal AdjustedPrice;   // Split and dividend adjusted price
     public Symbol Symbol;           // Asset symbol
-    public bool HasFundamentalData; // Whether it has fundamental
+    public bool HasFundamentalData; // Whether it has fundamental    
 }</pre>
 </div>
 </p>
