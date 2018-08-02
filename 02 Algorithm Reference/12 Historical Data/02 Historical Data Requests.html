@@ -14,7 +14,7 @@ Batch history API is often easier to understand as you can manually feed data in
 	In Python batch data can also be returned as pandas.DataFrame. It is a multi-index dataframe where the first index is the symbol.
 </p>
 <div class="section-example-container">
-	<pre class="csharp">
+<pre class="csharp">
 //From slice -> tradebars, or slice -> decimals.
 IEnumerable&lt;Slice&gt; slices = History(TimeSpan.FromDays(7), Resolution.Minute);
 IEnumerable&lt;TradeBar&gt; bars = slices.Get("SPY"); // Bars
@@ -22,14 +22,48 @@ IEnumerable&lt;decimal&gt; decimals = slices.Get("SPY", Field.Close); // Close f
 // Many math libraries need double arrays, decimals -> double[]
 double[] doubleArray = decimals.ToDoubleArray();
 </pre>
-	<pre class="python">
-slices = self.History(["SPY","EURUSD"], 14)
+<pre class="python">
+# Request history for a single asset
+eurusd_slices = self.History(["EURUSD"], 5) # multi-index dataframe
 # Good practice to check whether the dataframe is empty
-if not slices.empty:
-    bars = slices.loc["EURUSD"]
-    doubleArray = bars["close"]   # use lowercase
+if not eurusd_slices.empty:
+    eurusd_bars = eurusd_slices.loc["EURUSD"] # single index dataframe
+    eurusd_close = bars["close"] # use lowercase
+	</pre>
+	</div>
+
+<span class="python">
+<figure>
+<img class="img-responsive" src="https://cdn.quantconnect.com/docs/i/forex-history-dataframe.png" />
+<figcaption>Data shape results from a History request on Forex:</figcaption>
+</figure>
+</span>
+
+<div class="section-example-container">
+<pre class="python">
+# Request history for a list of symbols
+symbols_slices = self.History(["AAPL", "SPY", "VXX"], 4) # multi-index dataframe
+if not symbols_slices.empty:
+		# single index dataframe for SPY
+    df_spy = slices.loc["SPY"]
+		# A series of the SPY closing price
+    spy_close = df_spy['close']
+		# single index dataframe with the closing price of all symbols
+    all_symbols_close = slices["close"].unstack(level=0)
 </pre>
 </div>
+
+<span class="python">
+<figure>
+<img class="img-responsive" src="https://cdn.quantconnect.com/docs/i/equity-history-all.png" />
+<figcaption>Data shape results from a History Request on a List of Equity Symbols</figcaption>
+</figure>
+<figure>
+<img class="img-responsive" src="https://cdn.quantconnect.com/docs/i/equity-close.png" />
+<figcaption>Data shape Results from a History Request on the Closing Price:</figcaption>
+</figure>
+</span>
+
 <div class="section-example-container" >
 	<pre class="csharp" >
 // Request history for specific symbol, default to AddSecurity resolution.

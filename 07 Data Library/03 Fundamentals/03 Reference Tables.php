@@ -11,7 +11,7 @@ The following reference tables detail the specific objects available for use in 
 }
 </style>
 <?php 
-$fields = file_get_contents("https://www.quantconnect.com/services/fundamentals"); 
+$fields = file_get_contents("https://cdn.quantconnect.com/docs/fundamentals.json"); 
 $decoded = json_decode($fields, true);
 foreach ($decoded['fundamentals'] as $field) 
 {
