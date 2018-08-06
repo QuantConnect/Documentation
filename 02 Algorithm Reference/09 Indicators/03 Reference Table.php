@@ -22,7 +22,7 @@ $indicators = json_decode($indicators, true);
         }
         ?>
         <tr>
-            <td width="30%">$[<?= $indicator['class'] ?>]</td>
+            <td width="30%">$[<?= $indicator['class'] ?>,T:QuantConnect.Indicators.<?= $indicator['class'] ?>]</td>
             <td data-toggle="tooltip" title="<?= $indicator['summary'] ?>">
                 <span class="indicators-method-usage">
                     var <?= strtolower($indicator['name']) ?>
