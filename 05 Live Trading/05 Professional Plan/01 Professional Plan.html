@@ -60,3 +60,18 @@ class InteractiveBrokersOrderProperties {
 }
 </pre>
 </div>
+<p>
+$[DefaultOrderProperties,P:QuantConnect.Algorithm.QCAlgorithm.DefaultOrderProperties] properties can be overridden throughout the code to accommodate different scenarios. For instance, the group may have a different allocation method and these properties need to be overwritten before calling an order method (SetHoldings, Buy, Sell, LImitOrder, etc).</p>
+<div class="section-example-container"><pre class="csharp fsharp">
+// Change FA Account Group and Allocation Method
+((InteractiveBrokersOrderProperties)DefaultOrderProperties).FaGroup = "TestGroupAE";
+((InteractiveBrokersOrderProperties)DefaultOrderProperties).FaMethod = "AvailableEquity";
+SetHoldings("AAPL", 1);
+}</pre>
+<pre class="python">
+# Change FA Account Group and Allocation Method
+self.DefaultOrderProperties.FaGroup = "TestGroupAE"
+self.DefaultOrderProperties.FaMethod = "AvailableEquity"
+self.SetHoldings("AAPL", 1)
+</pre>
+</div>
