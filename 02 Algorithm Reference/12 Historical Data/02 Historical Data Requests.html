@@ -69,11 +69,14 @@ df = self.History(["EURUSD"], 14, Resolution.Minute)
 </pre>
 </div>
 <div class="section-example-container">
+<p>
+    The returned data is presented in ascending order, meaning that last element has most recent information. Therefore, if you want to use historical data to warm up an indicator, you should use the list in its original order.
+</p>
 <p class="csharp">
     Batch data returned as $[IEnumerable&lt;Slice&gt; slices,T:QuantConnect.Data.Slice], $[IEnumerable&lt;TradeBar&gt; slices,T:QuantConnect.Data.Market.TradeBar] or $[IEnumerable&lt;QuoteBar&gt; slices,T:QuantConnect.Data.Market.QuoteBar] has all the normal slice helpers - to assist using the data in your strategy, for example:
 </p>
 <p class="python">
-    In Python batch data can also be returned as pandas.DataFrame. It is a multi-index dataframe where the first index is the symbol.
+    In Python batch data can also be returned as pandas.DataFrame. It is a multi-index dataframe where the first index is the symbol where the time column is the EndTime of the bar. It is designed in LEAN to prevent the forward-looking in algorithm trading.
 </p>
 <pre class="csharp">
 //From slice -> tradebars, or slice -> decimals.
@@ -82,6 +85,9 @@ IEnumerable&lt;TradeBar&gt; bars = slices.Get("SPY"); // Bars
 IEnumerable&lt;decimal&gt; decimals = slices.Get("SPY", Field.Close); // Close from slice
 // Many math libraries need double arrays, decimals -> double[]
 double[] doubleArray = decimals.ToDoubleArray();
+// Get the most recent bar
+List&lt;TradeBar&gt; list = bars.ToList();
+TradeBar mostRecentBar = list.Last();
 </pre>
 <pre class="python">
 # Request history for a single asset
@@ -89,7 +95,9 @@ eurusd_slices = self.History(["EURUSD"], 5) # multi-index dataframe
 # Good practice to check whether the dataframe is empty
 if not eurusd_slices.empty:
     eurusd_bars = eurusd_slices.loc["EURUSD"] # single index dataframe
-    eurusd_close = bars["close"] # use lowercase
+    eurusd_close = eurusd_bars["close"] # use lowercase
+    # Get the most recent bar
+    most_recent_bar = eurusd_close.tail(1)
 
 # Request history for a list of symbols
 symbols_slices = self.History(["AAPL", "SPY", "VXX"], 4) # multi-index dataframe
@@ -100,6 +108,8 @@ if not symbols_slices.empty:
     spy_close = df_spy['close']
     # single index dataframe with the closing price of all symbols
     all_symbols_close = slices["close"].unstack(level=0)
+    # Get the most recent bar of each symbol
+    most_recent_bars = all_symbols_close.tail(1)
 </pre>
 </div>
 
