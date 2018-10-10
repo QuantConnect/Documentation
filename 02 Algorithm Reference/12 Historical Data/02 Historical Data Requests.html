@@ -1,71 +1,10 @@
 <meta name="tag" content="history amd warm up" />
 <meta name="tag" content="history" />
 <p>
-Batch history API is often easier to understand as you can manually feed data into your components which need it.
-	If Resolution of the data request is not specified the history API uses the resolution of data you've specified with
-	AddSecurity() or your Universe. If the Symbol is not specified then history for all symbols is returned for the period.
+Batch history API is often easier to understand as you can manually feed data into your components which need it. If Resolution of the data request is not specified the history API uses the resolution of data you've specified with AddSecurity() or your Universe. If the Symbol is not specified then history for all symbols is returned for the period
 </p>
-<p class="csharp">
-	Batch data returned as $[IEnumerable&lt;Slice&gt; slices,T:QuantConnect.Data.Slice], $[IEnumerable&lt;TradeBar&gt; slices,T:QuantConnect.Data.Market.TradeBar] or
-	$[IEnumerable&lt;QuoteBar&gt; slices,T:QuantConnect.Data.Market.QuoteBar] has all the normal slice helpers - to assist using the data in your strategy,
-	for example:
-</p>
-<p class="python">
-	In Python batch data can also be returned as pandas.DataFrame. It is a multi-index dataframe where the first index is the symbol.
-</p>
-<div class="section-example-container">
-<pre class="csharp">
-//From slice -> tradebars, or slice -> decimals.
-IEnumerable&lt;Slice&gt; slices = History(TimeSpan.FromDays(7), Resolution.Minute);
-IEnumerable&lt;TradeBar&gt; bars = slices.Get("SPY"); // Bars
-IEnumerable&lt;decimal&gt; decimals = slices.Get("SPY", Field.Close); // Close from slice
-// Many math libraries need double arrays, decimals -> double[]
-double[] doubleArray = decimals.ToDoubleArray();
-</pre>
-<pre class="python">
-# Request history for a single asset
-eurusd_slices = self.History(["EURUSD"], 5) # multi-index dataframe
-# Good practice to check whether the dataframe is empty
-if not eurusd_slices.empty:
-    eurusd_bars = eurusd_slices.loc["EURUSD"] # single index dataframe
-    eurusd_close = bars["close"] # use lowercase
-	</pre>
-	</div>
-
-<span class="python">
-<figure>
-<img class="img-responsive" src="https://cdn.quantconnect.com/docs/i/forex-history-dataframe.png" />
-<figcaption>Data shape results from a History request on Forex:</figcaption>
-</figure>
-</span>
-
-<div class="section-example-container">
-<pre class="python">
-# Request history for a list of symbols
-symbols_slices = self.History(["AAPL", "SPY", "VXX"], 4) # multi-index dataframe
-if not symbols_slices.empty:
-		# single index dataframe for SPY
-    df_spy = slices.loc["SPY"]
-		# A series of the SPY closing price
-    spy_close = df_spy['close']
-		# single index dataframe with the closing price of all symbols
-    all_symbols_close = slices["close"].unstack(level=0)
-</pre>
-</div>
-
-<span class="python">
-<figure>
-<img class="img-responsive" src="https://cdn.quantconnect.com/docs/i/equity-history-all.png" />
-<figcaption>Data shape results from a History Request on a List of Equity Symbols</figcaption>
-</figure>
-<figure>
-<img class="img-responsive" src="https://cdn.quantconnect.com/docs/i/equity-close.png" />
-<figcaption>Data shape Results from a History Request on the Closing Price:</figcaption>
-</figure>
-</span>
-
 <div class="section-example-container" >
-	<pre class="csharp" >
+<pre class="csharp" >
 // Request history for specific symbol, default to AddSecurity resolution.
 IEnumerable&lt;TradeBar&gt; bars = History("SPY", TimeSpan.FromDays(7));
 // Request history for specific symbol, at specific resolution.
@@ -97,7 +36,7 @@ AddData&lt;Quandl&gt;("SYMBOL")
 IEnumerable&lt;Quandl&gt; bars = History&lt;Quandl&gt;("SYMBOL", TimeSpan.FromDays(7));
 IEnumerable&lt;Quandl&gt; bars = History&lt;Quandl&gt;("SYMBOL", 14);
 </pre>
-	<pre class="python" >
+<pre class="python" >
 # Get history for all tickers we're subscribed to, at their native resolution
 slices = self.History(timedelta(7))
 # Get history for all tickers we're subscribed to, at a specific resolution
@@ -129,3 +68,54 @@ df = self.History(["EURUSD"], 14)
 df = self.History(["EURUSD"], 14, Resolution.Minute)
 </pre>
 </div>
+<div class="section-example-container">
+<p class="csharp">
+    Batch data returned as $[IEnumerable&lt;Slice&gt; slices,T:QuantConnect.Data.Slice], $[IEnumerable&lt;TradeBar&gt; slices,T:QuantConnect.Data.Market.TradeBar] or $[IEnumerable&lt;QuoteBar&gt; slices,T:QuantConnect.Data.Market.QuoteBar] has all the normal slice helpers - to assist using the data in your strategy, for example:
+</p>
+<p class="python">
+    In Python batch data can also be returned as pandas.DataFrame. It is a multi-index dataframe where the first index is the symbol.
+</p>
+<pre class="csharp">
+//From slice -> tradebars, or slice -> decimals.
+IEnumerable&lt;Slice&gt; slices = History(TimeSpan.FromDays(7), Resolution.Minute);
+IEnumerable&lt;TradeBar&gt; bars = slices.Get("SPY"); // Bars
+IEnumerable&lt;decimal&gt; decimals = slices.Get("SPY", Field.Close); // Close from slice
+// Many math libraries need double arrays, decimals -> double[]
+double[] doubleArray = decimals.ToDoubleArray();
+</pre>
+<pre class="python">
+# Request history for a single asset
+eurusd_slices = self.History(["EURUSD"], 5) # multi-index dataframe
+# Good practice to check whether the dataframe is empty
+if not eurusd_slices.empty:
+    eurusd_bars = eurusd_slices.loc["EURUSD"] # single index dataframe
+    eurusd_close = bars["close"] # use lowercase
+
+# Request history for a list of symbols
+symbols_slices = self.History(["AAPL", "SPY", "VXX"], 4) # multi-index dataframe
+if not symbols_slices.empty:
+    # single index dataframe for SPY
+    df_spy = slices.loc["SPY"]
+    # A series of the SPY closing price
+    spy_close = df_spy['close']
+    # single index dataframe with the closing price of all symbols
+    all_symbols_close = slices["close"].unstack(level=0)
+</pre>
+</div>
+
+<span class="python">
+<figure>
+<img class="img-responsive" src="https://cdn.quantconnect.com/docs/i/forex-history-dataframe.png" />
+<figcaption>Data shape results from a History request on Forex:</figcaption>
+</figure>
+</span>
+<span class="python">
+<figure>
+<img class="img-responsive" src="https://cdn.quantconnect.com/docs/i/equity-history-all.png" />
+<figcaption>Data shape results from a History Request on a List of Equity Symbols</figcaption>
+</figure>
+<figure>
+<img class="img-responsive" src="https://cdn.quantconnect.com/docs/i/equity-close.png" />
+<figcaption>Data shape Results from a History Request on the Closing Price:</figcaption>
+</figure>
+</span>
