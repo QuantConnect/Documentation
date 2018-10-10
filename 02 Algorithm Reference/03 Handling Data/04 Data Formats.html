@@ -8,13 +8,16 @@
 
 
 <p>
-    There are six financial data types: TradeBars, Ticks, Delistings, SymbolChangedEvents, Splits and Dividends.
+    There are seven financial data types: TradeBars, QuoteBars, Ticks, Delistings, SymbolChangedEvents, Splits and Dividends.
 </p>
 <p>
     All data extends from $[BaseData,T:QuantConnect.Data.BaseData] - the core data class which provides Symbol, Time and Value properties.
 </p>
 <p>
     $[TradeBar,T:QuantConnect.Data.Market.TradeBar] events contains Open, High, Low, Close and Volume properties for a given period of time.
+</p>
+<p>
+    $[QuoteBar,T:QuantConnect.Data.Market.QuoteBar] events contains Open, High, Low, Close, Bid, Ask, LastBidSize and LastAskSize properties for a given period of time. The Bid and the Ask properties are $[Bar,T:QuantConnect.Data.Market.Bar] objects that contains Open, High, Low and Close. The QuoteBar Open, High, Low and Close properties values are the mean of the respective Bid and Ask property.
 </p>
 <p>
     $[Dividend,T:QuantConnect.Data.Market.Dividend] events are triggered on payment of a dividend. It provides the Distribution per share.
@@ -42,6 +45,7 @@
 </p>
 <ul>
     <li><code>slice.Bars</code></li>
+    <li><code>slice.QuoteBars</code></li>
     <li><code>slice.Ticks</code></li>
     <li><code>slice.Splits</code></li>
     <li><code>slice.Dividends</code></li>
@@ -53,6 +57,9 @@
 <pre class="csharp">
 //TradeBars collection of TradeBar objects
 TradeBars data; TradeBar ibm = data["IBM"];
+
+//QuoteBars collection of QuoteBar objects
+QuoteBars data; QuoteBar eur = data["EURUSD"];
 
 //Dividends collection of Dividend objects
 Dividends data; Dividend ibm = data["IBM"];
