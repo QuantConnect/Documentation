@@ -1,0 +1,138 @@
+<p>
+	You can create an indicator object that is not bound to any automatic update and choose which data it should use.
+	In this indicator usage, you create indicator with its constructor where only the indicator characteristics (e.g., period(s), moving average type) is defined.
+	If you want to hook up this indicator with a data subscription for automatic updates, you can do it in two ways:
+</p>
+<h4>1. RegisterIndicator Method</h4>
+<p>
+	$[RegisterIndicator(), M:QuantConnect.Algorithm.QCAlgorithm.RegisterIndicator] method registers the data for the specified resolution to receive automatic updates as well as configures the indicator to receive updates from the consolidator.
+</p>
+
+<div class="section-example-container">
+	<pre class="python">
+# request the daily equity data
+self.AddEquity("SPY", Resolution.Daily)
+# define a 10-period RSI indicator with indicator constructor
+self.rsi = RelativeStrengthIndex(10, MovingAverageType.Simple)
+# register the daily data of "SPY" to automatically update the indicator
+self.RegisterIndicator("SPY", self.rsi, Resolution.Daily)
+# initialize the indicator with the previous ten daily bars
+self.SetWarmUp(10)
+</pre>
+	<pre class="csharp fsharp">
+// request the daily equity data
+AddEquity("SPY", Resolution.Daily);
+// define a 10-period RSI indicator with indicator constructor
+_rsi = new RelativeStrengthIndex(10, MovingAverageType.Simple);
+// register the daily data of "SPY" to automatically update the indicator
+RegisterIndicator("SPY", _rsi, Resolution.Daily);
+// initialize the indicator with the previous ten daily bars
+SetWarmUp(10);
+</pre>
+</div>
+<p>
+	Other than the available resolutions, you can also update the indicator with the consolidator. For details about data consolidator, please see <a class="docs-internal-link" href="/docs/algorithm-reference/consolidating-data">Consolidating Data</a>.
+</p>
+<div class="section-example-container">
+	<pre class="python">
+# request the equity data in minute resolution
+self.AddEquity("SPY", Resolution.Minute)
+# define a 10-period RSI indicator with indicator constructor
+self.rsi = RelativeStrengthIndex(10, MovingAverageType.Simple)
+# create the 30-minutes data consolidator
+thirtyMinuteConsolidator = TradeBarConsolidator(timedelta(minutes=30))
+self.SubscriptionManager.AddConsolidator("SPY", thirtyMinuteConsolidator)
+# register the 30-minute consolidated bar data to automatically update the indicator
+self.RegisterIndicator("SPY", self.rsi, thirtyMinuteConsolidator)
+# set a warm-up period to initialize the indicator
+# make sure the time period covers the indicator period
+self.SetWarmUp(timedelta(days=3))
+</pre>
+	<pre class="csharp fsharp">
+// request the equity data in minute resolution
+AddEquity(_symbol, Resolution.Hour);
+// define a 10-period RSI indicator with indicator constructor
+_rsi = new RelativeStrengthIndex(10, MovingAverageType.Simple);
+// create the 30-minutes data consolidator
+var thirtyMinuteConsolidator = new TradeBarConsolidator(TimeSpan.FromMinutes(30));
+SubscriptionManager.AddConsolidator("SPY", thirtyMinuteConsolidator);
+// register the 30-minute consolidated bar data to automatically update the indicator
+RegisterIndicator("SPY", _rsi,thirtyMinuteConsolidator);
+// set a warm-up period to initialize the indicator
+// make sure the time period covers the indicator period
+SetWarmUp(TimeSpan.FromDays(3));
+</pre>
+</div>
+
+<h4>2. Manually Update Method</h4>
+<p>
+	$[Update(), M:QuantConnect.Indicators.IndicatorBase.Update] method updates the state of indicator with the given value.
+	Depending on the different types of indicator, this value can be the time index and decimal value, trade bar or quote bar.
+	With this method, the indicator will only be ready after it has been updated with enough data.
+	For example, a 10-period daily moving average needs to receive ten daily data points through the <code>Update()</code> method.
+	You can use historical data to warm up the indicator.
+	This updating method grants more flexibility to the indicator. You can use customized values to update the indicator other than the price fields available.
+</p>
+<div class="section-example-container">
+	<pre class="python">
+class BasicIndicatorAlgorithm(QCAlgorithm):
+    def Initialize(self):
+        self.SetStartDate(2013,10, 7)
+        self.SetEndDate(2013,10,20)
+        self.SetCash(100000)
+        self.AddEquity("SPY", Resolution.Daily)
+        self.rsi = RelativeStrengthIndex(10, MovingAverageType.Simple)
+        # initialize the indicator with the history close price
+        history = self.History(["SPY"], 11, Resolution.Daily)
+        for time, row in history.loc["SPY"].iterrows():
+            self.rsi.Update(time, row["close"])
+
+    def OnData(self, data):
+        # update the indicator value with the new input close price every day
+        if data.Bars.ContainsKey("SPY"):
+            self.rsi.Update(data["SPY"].EndTime, data["SPY"].Close)
+        # check if the indicator is ready
+        if self.rsi.IsReady:
+            # get the current RSI value
+            rsi_value = self.rsi.Current.Value
+</pre>
+	<pre class="csharp fsharp">
+namespace QuantConnect.Algorithm.CSharp
+{
+    public class BasicIndicatorAlgorithm : QCAlgorithm
+    {
+        private RelativeStrengthIndex _rsi;
+        private readonly string _symbol = "SPY";
+        public override void Initialize()
+        {
+          SetStartDate(2013,10, 7);
+          SetEndDate(2013,10,20);
+          SetCash(100000);
+          AddEquity(_symbol, Resolution.Daily);
+          _rsi = new RelativeStrengthIndex(10, MovingAverageType.Simple);
+          // initialize the indicator with the daily history close price
+          var history = History(_symbol, 11, Resolution.Daily);
+          foreach (var bar in history)
+           {
+              _rsi.Update(bar.EndTime, bar.Close);
+           }
+        }
+
+        public override void OnData(Slice data)
+        {
+          // update the indicator value with the new input close price every day
+          if (data.Bars.ContainsKey(_symbol))
+            {
+               _rsi.Update(data[_symbol].EndTime, data[_symbol].Close);
+            }
+          // check if the indicator is ready
+          if (_rsi.IsReady)
+            {
+              // get the current RSI value
+              var rsiValue = _rsi;
+            }
+        }
+    }
+}
+</pre>
+</div>

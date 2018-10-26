@@ -1,0 +1,20 @@
+<p>
+	As indicators may need data from a lookback period to yield values that are ready to use, we need to warm up the indicator with historical data. There are two methods.
+</p>
+<h4>Set the warm-up period</h4>
+<p>
+	The first method is to set the warm-up period and let the engine automatically update the indicators with data prior to the start date of the algorithm.
+	In Initialize(), you can specify a warm-up period with the number of bars <code>SetWarmUp(int barCount)</code>.
+	<code>barCount</code> is based on the resolution when you subscribe the asset data.
+	If the indicator resolution is different from the data subscription resolution when adding the asset,
+	you can use the time period <code>SetWarmUp(TimeSpan period)</code> or <code>SetWarmup(TimeSpan timeSpan, Resolution resolution)</code>.
+	To make sure the data in the warm-up period covers the indicator period, this timespan should be longer than the period in indicator setting because only the trading days has the data.
+	See more about the indicator warm-up in the <a class="docs-internal-link" href="/docs/algorithm-reference/historical-data">History</a> section.
+	This method can not be used to warm up the indicator in universe selection algorithm.
+</p>
+
+<h4>Warm-Up with History Request</h4>
+<p>
+	The second method is to request the history data to update the indicator in initialization manually.
+	See more about using historical data in the <a class="docs-internal-link" href="/docs/algorithm-reference/historical-data">History</a> section.
+</p>
