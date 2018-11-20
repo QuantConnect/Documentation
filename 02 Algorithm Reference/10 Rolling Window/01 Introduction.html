@@ -15,7 +15,8 @@
 	tradeBarWindow = new RollingWindow&lt;TradeBar&gt;(2);
 	quoteBarWindow = new RollingWindow&lt;QuoteBar&gt;(2);
 	</pre>
-	<pre class="python">	self.closeWindow = RollingWindow[decimal](4)
+	<pre class="python">	from decimal import Decimal   # Important: import decimal.Decimal class
+	self.closeWindow = RollingWindow[Decimal](4)
 	self.tradeBarWindow = RollingWindow[TradeBar](2)
 	self.quoteBarWindow = RollingWindow[QuoteBar](2)
 	</pre>
@@ -60,17 +61,22 @@ public override void Initialize()
 // In OnData, update the rolling windows
  public override void OnData(Slice data)
 {
-    // Add SPY bar close in the rolling window
-    closeWindow.Add(data["SPY"].Close);
-    // Add SPY TradeBar in rolling window
-    tradeBarWindow.Add(data["SPY"]);
-    // Add EURUSD QuoteBar in rolling window
-    quoteBarWindow.Add(data["EURUSD"]);
+    if(data.ContainsKey("SPY")) {
+        // Add SPY bar close in the rolling window
+        closeWindow.Add(data["SPY"].Close);
+        // Add SPY TradeBar in rolling window
+        tradeBarWindow.Add(data["SPY"]);
+    }
+    if(data.ContainsKey("EURUSD")) {
+        // Add EURUSD QuoteBar in rolling window
+        quoteBarWindow.Add(data["EURUSD"]);
+    }
 }</pre>
-	<pre class="python"># In Initialize, create the rolling windows
+	<pre class="python">from decimal import Decimal   # Important: import decimal.Decimal class
+# In Initialize, create the rolling windows
 def Initialize(self):
     # Create a Rolling Window to keep the 4 decimal
-    self.closeWindow = RollingWindow[decimal](4)
+    self.closeWindow = RollingWindow[Decimal](4)
     # Create a Rolling Window to keep the 2 TradeBar
     self.tradeBarWindow = RollingWindow[TradeBar](2)
     # Create a Rolling Window to keep the 2 QuoteBar
@@ -78,11 +84,13 @@ def Initialize(self):
 
 # In OnData, update the rolling windows
  def OnData(self, data):
-    # Add SPY bar close in the rolling window
-    self.closeWindow.Add(data["SPY"].Close)
-    # Add SPY TradeBar in rolling window
-    self.tradeBarWindow.Add(data["SPY"])
-    # Add EURUSD QuoteBar in rolling window
-    self.quoteBarWindow.Add(data["EURUSD"])
+    if data.ContainsKey("SPY"):
+        # Add SPY bar close in the rolling window
+        self.closeWindow.Add(data["SPY"].Close)
+        # Add SPY TradeBar in rolling window
+        self.tradeBarWindow.Add(data["SPY"])
+    if data.ContainsKey("EURUSD"):
+        # Add EURUSD QuoteBar in rolling window
+        self.quoteBarWindow.Add(data["EURUSD"])
 </pre>
 </div>
