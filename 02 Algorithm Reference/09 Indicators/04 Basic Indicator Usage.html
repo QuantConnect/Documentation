@@ -1,0 +1,53 @@
+<p>
+	QCAlgorithm provides a shortcut method for each indicator available. Each method creates an indicator object, hooks it up for automatic updates and returns it to be used in your algorithm.
+</p>
+<p>
+	You can determine the specific requirements of the indicator from the reference table below.
+</p>
+<p>
+	The indicator resolution can be different from the resolution of your securities data. However, the resolution of the indicator should be equal to or higher than the resolution of your security. For most cases, this usage should be in Initialize method. If you call this method several times, it will create a new indicator that is not ready to use.
+</p>
+<p class="csharp">
+	The indicator object can be implicitly used as a decimal.
+</p>
+<p class="python">
+	To retrieve the numerical value of any indicator, you can use the <code>Current.Value</code> attribute of the indicator.
+</p>
+<div class="section-example-container">
+	<pre class="python">
+def Initialize(self):
+    # request the hourly equity data
+    self.AddEquity("SPY", Resolution.Hour)
+    # define a 10-period daily RSI indicator with shortcut helper method
+    self.rsi = self.RSI("SPY", 10,  MovingAverageType.Simple, Resolution.Daily)
+
+def OnData(self, data):
+    # check if this algorithm is still warming up
+    if self.rsi.IsReady:
+        # get the current RSI value
+        rsi_value = self.rsi.Current.Value
+        # get the current average gain of rsi
+        average_gain = self.rsi.AverageGain.Current.Value
+        # get the current average gain of rsi
+        average_loss = self.rsi.AverageLoss.Current.Value
+</pre>
+	<pre class="csharp fsharp">
+public override void Initialize() {
+    AddEquity(_symbol, Resolution.Hour);
+    // define a 10-period daily RSI indicator with shortcut helper method
+    _rsi = RSI(_symbol, 10,  MovingAverageType.Simple, Resolution.Daily);
+}
+
+public override void OnData(Slice data) {
+    // check if this algorithm is still warming up
+    if(!_rsi.IsReady) {
+        // get the current RSI value
+        var rsiValue = _rsi;
+        // get the current average gain of rsi
+        var averageGain = _rsi.AverageGain;
+        // get the current average gain of rsi
+        var averageLoss = _rsi.AverageLoss;
+    }
+}
+</pre>
+</div>
