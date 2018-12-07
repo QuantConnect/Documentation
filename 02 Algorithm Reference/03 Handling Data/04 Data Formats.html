@@ -8,16 +8,19 @@
 
 
 <p>
-    There are seven financial data types: TradeBars, QuoteBars, Ticks, Delistings, SymbolChangedEvents, Splits and Dividends.
+    There are seven financial data types: Tick, TradeBar, QuoteBar, Delisting, SymbolChangedEvent, Split and Dividend.
 </p>
 <p>
     All data extends from $[BaseData,T:QuantConnect.Data.BaseData] - the core data class which provides Symbol, Time and Value properties.
 </p>
 <p>
-    $[TradeBar,T:QuantConnect.Data.Market.TradeBar] events contains Open, High, Low, Close and Volume properties for a given period of time.
+    $[Ticks,T:QuantConnect.Data.Market.Tick] provides LastPrice and Quantity properties for a given time. If it is a quote, it also contains non-zero BidPrice, BidSize, AskPrice, AskSize properties.
 </p>
 <p>
-    $[QuoteBar,T:QuantConnect.Data.Market.QuoteBar] events contains Open, High, Low, Close, Bid, Ask, LastBidSize and LastAskSize properties for a given period of time. The Bid and the Ask properties are $[Bar,T:QuantConnect.Data.Market.Bar] objects that contains Open, High, Low and Close. The QuoteBar Open, High, Low and Close properties values are the mean of the respective Bid and Ask property.
+    $[TradeBar,T:QuantConnect.Data.Market.TradeBar] provides Open, High, Low, Close and Volume properties for a given period of time.
+</p>
+<p>
+    $[QuoteBar,T:QuantConnect.Data.Market.QuoteBar] provides Open, High, Low, Close, Bid, Ask, LastBidSize and LastAskSize properties for a given period of time. The Bid and the Ask properties are $[Bar,T:QuantConnect.Data.Market.Bar] objects that contains Open, High, Low and Close. The QuoteBar Open, High, Low and Close properties values are the mean of the respective Bid and Ask property.
 </p>
 <p>
     $[Dividend,T:QuantConnect.Data.Market.Dividend] events are triggered on payment of a dividend. It provides the Distribution per share.
@@ -26,15 +29,13 @@
     $[Split,T:QuantConnect.Data.Market.Split] events are triggered on a share split or reverse split event. It provides a SplitFactor and ReferencePrice.
 </p>
 <p>
-    $[SymbolChangedEvent,T:QuantConnect.Data.Market.SymbolChangedEvent] provide notice of new ticker names for stocks, or mergers of two tickers into one. It provides
+    $[SymbolChangedEvent,T:QuantConnect.Data.Market.SymbolChangedEvent] provides notice of new ticker names for stocks, or mergers of two tickers into one. It provides
     the OldSymbol and NewSymbol tickers.
 </p>
 <p>
     $[Delisting,T:QuantConnect.Data.Market.Delisting] events provide notice an asset is no longer trading on the exchange.
 </p>
-<p>
-    $[Ticks,T:QuantConnect.Data.Market.Ticks] is a string indexed dictionary of lists of ticks.
-</p>
+
 <p class="csharp">
     These data types all have dedicated event handlers which follow the pattern above (<code>public void OnData(Type
     data) {}</code>);
