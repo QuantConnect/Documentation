@@ -1,0 +1,20 @@
+<meta name="tag" content="data event handlers"/>
+<meta name="tag" content="splits event"/>
+
+<p>
+    $[Split,T:QuantConnect.Data.Market.Split] events are triggered on a share split or reverse split event. It provides a SplitFactor and ReferencePrice.
+</p>
+<div class="section-example-container">
+<pre class="python">
+    self.spy = self.AddEquity("MSFT", Resolution.Hour)
+    
+def OnData(self, data):
+    if not self.Portfolio.Invested:
+        self.Buy("MSFT", 100)
+    
+    ## If MSFT had a split, print out information about it
+    if data.Splits.ContainsKey("MSFT"):
+        spySplit = data.Splits["MSFT"]
+        self.Debug('MSFT had a ' + str(spySplit.Type) + ' with Split Factor ' + str(spySplit.SplitFactor) +  ' at $' + str(spySplit.ReferencePrice))         
+</pre>
+</div>
