@@ -1,0 +1,27 @@
+<meta name="tag" content="data event handlers"/>
+<meta name="tag" content="delistings event"/>
+
+<p>
+    $[Delisting,T:QuantConnect.Data.Market.Delisting] events provide notice an asset is no longer trading on the exchange.
+</p>
+<div class="section-example-container">
+<pre class="python">
+def Initialize(self):
+    self.SetStartDate(2007, 5, 16)
+    self.SetEndDate(2007, 5, 25)
+    self.SetCash(100000);
+    equity = self.AddEquity("AAA", Resolution.Daily)
+
+def OnData(self, data):
+    self.MarketOrder('AAA', 10)
+    
+    ## Print delisting warnings and noritifications
+    for kvp in data.Delistings:
+        symbol = kvp.Key
+        value = kvp.Value
+        if value.Type == DelistingType.Delisted:
+            self.Log(str(symbol) + ' delisted')
+        if value.Type == DelistingType.Warning:
+            self.Log(str(symbol) + ' will be delisted at EOD')
+</pre>
+</div>
