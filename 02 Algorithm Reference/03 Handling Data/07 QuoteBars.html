@@ -9,22 +9,34 @@
     self.AddForex('EURUSD', Resolution.Hour) # Subscribe to hourly QuoteBars
         
  def OnData(self, data):
-    ## Accessing attributes of QuoteBar objects
-    ## All price attributes are averages of their repective bid and ask attributes
+    ## You can access the EURUSD QuoteBar by directly by subsetting the slice object
+    ## Note that all price attributes are averages of their repective bid and ask attributes
     fxOpen  = data['EURUSD'].Open          ## Market Open FX Rate
     fxClose = data['EURUSD'].Close         ## Market Close FX Rate
-    fxHigh  = data['EURUSD'].High          ## Day's High FX Rate
-    fxLow   = data['EURUSD'].Low           ## Day's Low FX Rate
-    fxLBS   = data['EURUSD'].LastBidSize   ## Last Bid Size (# shares)
-    fxLAS   = data['EURUSD'].LastAskSize   ## Last Ask Size (# shares)
     
-    ## Accessing attributes of Bid/Ask Bar objects (replacing 'Bid' with 'Ask'
-    ## would return the respective attributes of the 'Ask' Bar object)
+    ## If you are subscribed to more than one Forex or futures data stream then your can
+    ## access the QuoteBar dictionary and then subset this for your desired Forex symbol
+    fxQuoteBars = data.QuoteBars
+    eurusd      = fxQuoteBars['EURUSD']
+    fxOpen      = eurusd.Open          ## Market Open FX Rate
+    fxClose     = eurusd.Close         ## Market Close FX Rate
+        
+    
+    ## If you access the Bid or Ask bars, then you can get specific Bid or Ask prices
+    ## rathen than the average of the two, which is what is done above
     fxBid   = data['EURUSD'].Bid           ## Returns a Bar object: Bid
-    fxBid.Open                              ## Market Open Bid
-    fxBid.Close                             ## Market Close Bid
-    fxBid.High                              ## Market High Bid
-    fxBid.Low                               ## Market Low Bid
-            
+    fxAsk   = data['EURUSD'].Ask           ## Returns a Bar object: Ask
+    fxBid.Open                             ## Market Open Bid
+    fxBid.Close                            ## Market Close Bid
+    fxAsk.Open                             ## Market Open Ask
+    fxAsk.Close                            ## Market Close Ask
+    
+    ## If subscribed to multiple Forex or futures data streams, then
+    ## you can access the full Bid/Ask dictionaries as above and then
+    ## subset these based on desired symbols instead
+    fxQuoteBars     = data.QuoteBars
+    eurusdBid       = fxQuoteBars['EURUSD'].Bid
+    eurusdAsk       = fxQuoteBars['EURUSD'].Ask
+    
 </pre>
 </div>
