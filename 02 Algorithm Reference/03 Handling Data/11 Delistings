@@ -16,12 +16,12 @@ def OnData(self, data):
     self.MarketOrder('AAA', 10)
     
     ## Print delisting warnings and noritifications
-    for kvp in data.Delistings:
-        symbol = kvp.Key
-        value = kvp.Value
-        if value.Type == DelistingType.Delisted:
-            self.Log(str(symbol) + ' delisted')
-        if value.Type == DelistingType.Warning:
-            self.Log(str(symbol) + ' will be delisted at EOD')
+    
+    if data.Delistings.ContainsKey('AAA'):
+        delisting = data.Delisting['AAA']
+        if data.Delisting['AAA'].Delisted == 1:
+            self.Log('AAA delisted')
+        if data.Delisting['AAA'].Warning == 1:
+            self.Log('AAA will be delisted at EOD')
 </pre>
 </div>
