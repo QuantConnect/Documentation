@@ -16,11 +16,9 @@ def Initialize(self):
 def OnData(self, data):
     self.MarketOrder('GOOG', 10)
     
-    ## Print out old and new symbol if 'GOOG' symbol has changed
-    for kvp in data.SymbolChangedEvents:
-        symbol = kvp.Key
-        value = kvp.Value.OldSymbol
-        newSymbol = kvp.Value.NewSymbol
-        self.Log(str('Old symbol: ' + str(value) + " | New symbol: " + str(newSymbol)))
+    ## Log old and new symbol if 'GOOG' symbol has changed
+    if data.SymbolChangedEvent.ContainsKey('GOOG'):
+        self.Log('Old symbol: ' + str(data.SymbolChangedEvent['GOOG'].OldSymbol) + '; New symbol: ' +
+        str(data.SymbolChangedEvent['GOOG'].NewSymbol))
 </pre>
 </div>
