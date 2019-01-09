@@ -14,7 +14,9 @@ def OnData(self, data):
         self.Buy("SPY", 100)
     
     ## If SPY has a dividend, print the amount distributed
-    if data.Dividends.ContainsKey("SPY"):
-        self.Debug(str(data.Dividends["SPY"].Distribution))            
+    for kvp in data.Dividends:
+        symbol = kvp.Key
+        value = kvp.Value.Distribution
+        self.Debug(str(symbol) + ' : ' + str(value))
 </pre>
 </div>
