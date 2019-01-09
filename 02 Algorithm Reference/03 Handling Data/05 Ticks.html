@@ -9,17 +9,12 @@
 <pre class="python">
     self.AddEquity("IBM", Resolution.Tick) ## Subscribe to tick-level IBM data
         
-def OnData(self, slice):
+def OnData(self, data):
         
     if not self.Portfolio.Invested:
         self.MarketOrder('IBM', 1)
-        
-    if self.Time.day == 10 and self.Time.hour == 10 and self.Time.minute == 5:
-        if slice['IBM'].Quantity > 0:
-            self.Liquidate('IBM')
-            
-            ## Log Last price
-            self.Log(str(slice['IBM'].LastPrice))
+        ## Log Last price
+        self.Log(str(data['IBM'].LastPrice))
             
 </pre>
 </div>
