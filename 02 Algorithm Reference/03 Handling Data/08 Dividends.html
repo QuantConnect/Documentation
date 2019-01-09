@@ -13,10 +13,10 @@ def OnData(self, data):
     if not self.Portfolio.Invested:
         self.Buy("SPY", 100)
     
-    ## If SPY has a dividend, print the amount distributed
-    for kvp in data.Dividends:
-        symbol = kvp.Key
-        value = kvp.Value.Distribution
-        self.Log("{0} >> DIVIDEND >> {1} - {2} - {3} - {4}".format(self.Time, symbol, value, self.Portfolio.Cash, self.Portfolio["SPY"].Price))
+    ## Condition to see if SPY is in the Dividend DataDictionary
+    if data.Dividends.ContainsKey("SPY"):
+        ## Log the dividend distribution
+        self.Log(str(data.Dividends["SPY"].Distribution))
+   
 </pre>
 </div>
