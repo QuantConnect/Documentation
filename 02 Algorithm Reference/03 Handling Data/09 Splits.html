@@ -6,16 +6,21 @@
 </p>
 <div class="section-example-container">
 <pre class="python">
-    self.spy = self.AddEquity("MSFT", Resolution.Hour)
-    
+    self.SetStartDate(2003, 2, 1)
+    self.SetEndDate(2003, 2, 30)
+    self.SetCash(100000);
+    self.msft = self.AddEquity("MSFT", Resolution.Daily)
+    self.msft.SetDataNormalizationMode(DataNormalizationMode.Raw)
+
 def OnData(self, data):
     if not self.Portfolio.Invested:
         self.Buy("MSFT", 100)
     
     ## If MSFT had a split, print out information about it
-    for kvp in data.Splits:
-        symbol = kvp.Key
-        value = kvp.Value.SplitFactor
-        self.Log("{0} >> SPLIT >> {1} - {2} - {3} - {4}".format(self.Time, symbol, value, self.Portfolio.Cash, self.Portfolio["MSFT"].Quantity))
+    if data.Splits.ContainsKey("MSFT"):
+        ## Log split information
+        spySplit = data.Splits['MSFT']
+        self.Log('Split type: ' + str(spySplit.Type) + '; Split factor: ' + str(spySplit.SplitFactor) +
+                 '; Reference price: ' + str(spySplit.ReferencePrice))
 </pre>
 </div>
