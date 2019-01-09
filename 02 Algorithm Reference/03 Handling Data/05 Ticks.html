@@ -10,11 +10,12 @@
     self.AddEquity("IBM", Resolution.Tick) ## Subscribe to tick-level IBM data
         
 def OnData(self, data):
-        
-    if not self.Portfolio.Invested:
-        self.MarketOrder('IBM', 1)
-        ## Log Last price
-        self.Log(str(data['IBM'].LastPrice))
+     ## Ticks can get pushed together and arrive at the same time
+     ## and have the same EndTime in the data handler, so we use 
+     ## the [-1] to access to most recent tick that arrived
+     
+     self.Log('Last price: ' + str(data['IBM'][-1].LastPrice))
+     self.Log('Quantity: ' + str(data['IBM'][-1].Quantity))
             
 </pre>
 </div>
