@@ -13,9 +13,9 @@ def OnData(self, data):
         self.Buy("MSFT", 100)
     
     ## If MSFT had a split, print out information about it
-    if data.Splits.ContainsKey("MSFT"):
-        spySplit = data.Splits["MSFT"]
-        self.Debug('MSFT had a ' + str(spySplit.Type) + ' with Split Factor ' 
-                    + str(spySplit.SplitFactor) +  ' at $' + str(spySplit.ReferencePrice))         
+    for kvp in data.Splits:
+        symbol = kvp.Key
+        value = kvp.Value.SplitFactor
+        self.Log("{0} >> SPLIT >> {1} - {2} - {3} - {4}".format(self.Time, symbol, value, self.Portfolio.Cash, self.Portfolio["MSFT"].Quantity))
 </pre>
 </div>
