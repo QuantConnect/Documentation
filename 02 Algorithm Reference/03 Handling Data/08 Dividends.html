@@ -6,8 +6,7 @@
 </p>
 <div class="section-example-container">
 <pre class="python">
-    self.spy = self.AddEquity("SPY", Resolution.Hour)
-    self.spy.SetDataNormalizationMode(DataNormalizationMode.Raw)
+    self.spy = self.AddEquity("SPY", Resolution.Hour) ## Subscribe to hourly SPY data in Initialize(self)
     
 def OnData(self, data):
     if not self.Portfolio.Invested:
@@ -16,7 +15,7 @@ def OnData(self, data):
     ## Condition to see if SPY is in the Dividend DataDictionary
     if data.Dividends.ContainsKey("SPY"):
         ## Log the dividend distribution
-        self.Log(str(data.Dividends["SPY"].Distribution))
+        self.Log(f"SPY paid a dividend of {data.Dividends['SPY'].Distribution}")
    
 </pre>
 </div>
