@@ -11,33 +11,34 @@
         
  def OnData(self, data):
     ## You can access the EURUSD QuoteBar by directly by subsetting the slice object
-    ## Note that all price attributes are averages of their repective bid and ask attributes
-    fxOpen  = data['EURUSD'].Open          ## Market Open FX Rate
-    fxClose = data['EURUSD'].Close         ## Market Close FX Rate
+    fxOpen = data['EURUSD'].Open          ## Market Open FX Rate
+    fxClose = data['EURUSD'].Close        ## Market Close FX Rate
     
-    ## If you are subscribed to more than one Forex or futures data stream then your can
+    ## If you are subscribed to more than one Forex or Futures data stream then your can
     ## access the QuoteBar dictionary and then subset this for your desired Forex symbol
     fxQuoteBars = data.QuoteBars
-    eurusd      = fxQuoteBars['EURUSD']
-    fxOpen      = eurusd.Open          ## Market Open FX Rate
-    fxClose     = eurusd.Close         ## Market Close FX Rate
+    eurusdQuoteBar = fxQuoteBars['EURUSD']     ## EURUSD QuoteBar
+    fxOpen = eurusdQuoteBar.Open               ## Market Open FX Rate
+    fxClose = eurusdQuoteBar.Close             ## Market Close FX Rate
             
 </pre>
 </div>
 <p>
-    With a specific QuoteBar you can also access Bid and Ask Bars for the same security. These Bars provide information specific to the Bid and Ask side of Forex and Future asset types, whereas QuoteBars use the mean of the Open, High, Low, and Close attributes of the Bid and Ask Bars to extrapolte values.
+    With a specific QuoteBar you can also access Bid and Ask Bars for the same security. These Bars provide information specific to the Bid and Ask side of Forex and Future asset types, while the QuoteBar.Open, High, Low and Close properties are the midpoint of the Bid-Ask spread at that moment of time. These QuoteBar.Bid and QuoteBar.Ask bars have Open, High, Low and close properties (e.g., <code>QuoteBar.Bid.Open</code>).
 </p>
 <div class="section-example-container">
 <pre class="python">
     self.AddForex('EURUSD', Resolution.Hour) # Subscribe to hourly QuoteBars in Initialize(self)  
  
  def OnData(self, data):
-    QuoteBar    = data['EURUSD']
-    BidBar      = QuoteBar.Bid
-    AskBar      = QuoteBar.Ask
+    quoteBar = data['EURUSD']   ## EURUSD QuoteBar
+    self.Log(f"Mid-point open price: {quoteBar.Open}")
     
-    AskOpen     = AskBar.Open
-    BidOpen     = BidBar.Open
-
+    bidBar = quoteBar.Bid       ## EURUSD Bid Bar 
+    askBar = quoteBar.Ask       ## EURUSD Ask Bar
+    
+    self.Log(f"Bid open price: {bidBar.Open}")
+    self.Log(f"Ask open price: {askBar.Open}")
+    
 </pre>
 </div>
