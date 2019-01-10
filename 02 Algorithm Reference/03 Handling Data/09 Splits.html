@@ -5,10 +5,11 @@
     $[Split,T:QuantConnect.Data.Market.Split] events are triggered on a share split or reverse split event. It provides a SplitFactor and ReferencePrice.
 </p>
 <div class="section-example-container">
-<pre class="python">
+    <pre class="python">
+def Initialize(self):
     self.SetStartDate(2003, 2, 1)
     self.SetEndDate(2003, 2, 28)
-    self.SetCash(100000);
+    self.SetCash(100000)
     self.msft = self.AddEquity("MSFT", Resolution.Daily)
     self.msft.SetDataNormalizationMode(DataNormalizationMode.Raw)
 
@@ -23,7 +24,6 @@ def OnData(self, data):
         if spySplit.Type == 0:
             self.Log('MSFT stock will split next trading day')
         if spySplit.Type == 1:
-            self.Log('Split type: ' + str(spySplit.Type) + '; Split factor: ' + str(spySplit.SplitFactor) +
-                    '; Reference price: ' + str(spySplit.ReferencePrice))
+            self.Log("Split type: {0}, Split factor: {1}, Reference price: {2}".format(spySplit.Type, spySplit.SplitFactor, spySplit.ReferencePrice))
 </pre>
 </div>

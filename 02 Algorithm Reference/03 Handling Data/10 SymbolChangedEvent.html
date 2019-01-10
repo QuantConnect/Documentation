@@ -2,7 +2,7 @@
 <meta name="tag" content="symbol changed event"/>
 
 <p>
-    $[SymbolChangedEvent,T:QuantConnect.Data.Market.SymbolChangedEvent] provides notice of new ticker names for stocks, or mergers of two tickers into one. It provides
+    $[SymbolChangedEvents,T:QuantConnect.Data.Market.SymbolChangedEvents] provides notice of new ticker names for stocks, or mergers of two tickers into one. It provides
     the OldSymbol and NewSymbol tickers.
 </p>
 <div class="section-example-container">
@@ -10,15 +10,14 @@
 def Initialize(self):
     self.SetStartDate(2014, 4, 1)
     self.SetEndDate(2014, 4, 3)
-    self.SetCash(100000);
-    equity = self.AddEquity("GOOG", Resolution.Daily)
+    self.SetCash(100000)
+    self.goog = self.AddEquity("GOOG", Resolution.Daily)
     
 def OnData(self, data):
     self.MarketOrder('GOOG', 10)
     
     ## Log old and new symbol if 'GOOG' symbol has changed
-    if data.SymbolChangedEvent.ContainsKey('GOOG'):
-        self.Log('Old symbol: ' + str(data.SymbolChangedEvent['GOOG'].OldSymbol) + '; New symbol: ' +
-        str(data.SymbolChangedEvent['GOOG'].NewSymbol))
+    if data.SymbolChangedEvents.ContainsKey('GOOG'):
+        self.Log("Old symbol: {0}, New symbol: {1}".format(data.SymbolChangedEvents['GOOG'].OldSymbol,data.SymbolChangedEvents['GOOG'].NewSymbol))
 </pre>
 </div>
