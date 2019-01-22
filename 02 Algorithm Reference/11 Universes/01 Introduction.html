@@ -4,11 +4,11 @@
 Often you may want to rotate securities in your algorithm based on filter criteria. You may only want equities above their 200 day EMA, or to only follow stocks on your custom list of symbols. This is possible using our <i>universe selection</i> API.
 </p>
 <p>
-	Universes are how LEAN organizes collections of data subscriptions under the hood. Each security and its data is controlled by a universe. When no universes are asking for data, the asset is removed from your algorithm. If your algorithm has open orders or holdings in a security we will not remove it from your subscriptions.
+	Universes are how LEAN organizes a collection of data subscriptions. When no universes are asking for data, the asset is removed from your algorithm. If your algorithm has open orders or holdings in a security we will not remove it from your subscription list.
 </p>
 <p>
-	Every algorithm has a hidden "user-defined-universe". The assets in this universe are set by the $[AddEquity] / $[AddForex] methods. These assets are fixed and never removed from your algorithm and so there is no need to add $[AddEquity] / $[AddForex] declarations outside of $[Initialize()].
+	Every algorithm has a hidden "user-defined-universe". The assets in this universe are set by the $[AddEquity] / $[AddForex] methods. These assets are fixed and never removed from your algorithm. Generally you should avoid using $[AddEquity] / $[AddForex] declarations outside of $[Initialize()] as it can have unexpected results.
 </p>
 <p>
-	Universes (and data QuantConnect provides) are refreshed every day by default. Custom universes can be refreshed as often as required. This is controlled in the $[algorithm.UniverseSettings,P:QuantConnect.Algorithm.QCAlgorithm.UniverseSettings] variable which we'll describe in more detail below.
+	Universe data is refreshed every day.
 </p>
