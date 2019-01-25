@@ -32,8 +32,33 @@ class MyCoarseUniverseAlgorithm(QCAlgorithm):
 
 <p>
 The coarse filter function is provided a list of $[CoarseFundamental,T:QuantConnect.Data.UniverseSelection.CoarseFundamental] objects. The most important properties of this object are: <code>Price</code>, <code>DollarVolume</code> and <code>HasFundamentaData</code>. Typical examples of filter functions you might want sound like: 
-<ul>
- <li>Take 500 stocks worth more than $10, with more than $10M daily trading volume.</li>
- <li>Take 10 stocks above their 200-Day EMA with more than $1B daily trading volume.</li>
-</ul>
 </p>
+<h4>Example 1: Take 500 stocks worth more than $10, with more than $10M daily trading volume.</h4>
+<p>
+This example coarse filter function might be useful to get a large collection of stocks and perform some further analysis in your algorithm to determine which one to trade.
+</p>
+<div class="section-example-container" >
+<pre class="csharp">
+    IEnumerable&lt;Symbol&gt; MyCoarseFilterFunction(IEnumerable&lt;CoarseFundamental&gt; coarse) {
+        // Linq makes this a piece of cake;
+        var stocks = (from c in coarse
+            where c.DollarVolume > 10000000 &&
+                  c.Price > 10
+            orderby c.DollarVolume descending
+            select c.Symbol).Take(500).ToList();
+        return stocks;
+    }
+</pre>
+<pre class="python">
+    def MyCoarseFilterFunction(self, coarse):
+         sortedByDollarVolume = sorted(coarse, key=lambda x: x.DollarVolume, reverse=True)
+         filtered = [ x.Symbol for x in sortedByDollarVolume[:500] 
+                        if x.Price > 10 and x.DollarVolume > 10000000 ]
+         return filtered[:500]
+</pre>
+</div>
+
+
+
+
+<!--<h4>Example 2: Take 10 stocks above their 200-Day EMA with more than $1B daily trading volume.</h4>-->
