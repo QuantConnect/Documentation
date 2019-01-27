@@ -1,15 +1,57 @@
 <meta name="tag" content="universes">
 <meta name="tag" content="coarse universes">
 <meta name="tag" content="fine universes">
+
 <p>
-QuantConnect provides <a href="https://www.quantconnect.com/data#provider/morningstar">Morningstar®</a> corporate fundamentals data for US Equities symbols. The available dataset includes about 5000 tickers with 900 fields starting from January 1998. It uses the $[FineFundamental,T:QuantConnect.Data.Fundamental.FineFundamental] type.
+The universe API supports performing universe selection based on corporate fundamental data. This data is powered by <a href="https://www.quantconnect.com/data#provider/morningstar">Morningstar®</a> and includes approximately 5,000 tickers with 900 properties each. The data comes delivered as a  $[FineFundamental,T:QuantConnect.Data.Fundamental.FineFundamental] type.
 </p>
+
+<p>Due to the sheer volume of information, Fundamental selection is performed on the <i>output</i> of the coarse universe. You can think of this as a 2-stage filter; first, coarse-universe can select all of the liquid assets; then fine fundamental universe can select those which meet your targets.
+</p>
+
 <p>
-	For the $[FineFundamental] properties, please check out our <a href="https://www.quantconnect.com/data#fundamentals/usa/morningstar">data library</a> page.
+For the $[FineFundamental] properties, please check out our <a href="https://www.quantconnect.com/data#fundamentals/usa/morningstar">data library</a> page.
 </p>
+
+<h4>Requesting a Fundamental Universe</h4>
 <p>
-	Like coarse universes, fine universes allow you to select an unlimited universe of symbols to analyse. You are only limited by practical memory and speed limits and may quickly run out of memory if you backtest too many symbols in parallel. These limits can be increased with a subscription. Also you must use coarse fundamental universe to narrow down the universe as a "pre-filter".
+To request a fundamental universe pass a second filter-function into the <code>AddUniverse()</code> method. The second function handles the filtering of your FineFundamental objects:
 </p>
+<div class="section-example-container">
+<pre class="csharp">
+public class MyUniverseAlgorithm : QCAlgorithm {
+    public override void Initialize() {
+        AddUniverse(MyCoarseFilterFunction, MyFineFundamentalFilterFunction);
+    }
+    // filter based on CoarseFundamental
+    IEnumerable&lt;Symbol&gt; MyCoarseFilterFunction(IEnumerable&lt;CoarseFundamental&gt; coarse) {
+         // return list of symbols
+    }
+    // filter based on FineFundamental
+    public IEnumerable&lt;Symbol&gt; FineSelectionFunction(IEnumerable&lt;FineFundamental&gt; fine)
+    {
+        // return list of symbols
+    }
+}
+</pre>
+<pre class="python">
+class MyUniverseAlgorithm(QCAlgorithm):
+     def Initialize(self):
+         self.AddUniverse(self.MyCoarseFilterFunction, self.MyFineFundamentalFunction)
+
+    def MyCoarseFilterFunction(self, coarse):
+         pass
+
+    def MyFineFundamentalFunction(self, fine):
+         pass
+</pre>
+</div>
+
+<h4>Example 1: From the top 50 stocks with the highest volume, take 10 with lowest PE-ratio.</h4>
+<p>
+The simplest example of accessing the fundamental object would be harnessing the iconic PE ratio for a stock. This is a ratio of the earnings of a stock to the price it commands. The lower the PE ratio for a stock, the more affordable it appears.
+</p>
+
 <div class="section-example-container">
 	<pre class="csharp">// Take the top 50 by dollar volume using coarse
 // Then the top 10 by PERatio using fine
@@ -48,3 +90,12 @@ def FineSelectionFunction(self, fine):
     return [ x.Symbol for x in sortedByPeRatio[:10] ]
 </pre>
 </div>
+<p>
+There are 900 properties you can use to perform your own filtering. We recommend you review the <a href="https://www.quantconnect.com/data#fundamentals/usa/morningstar">data library</a> page dedicated to this data to fully understand each property.
+</p>
+
+<h4>Practical Limitations</h4>
+<p>
+	Like coarse universes, fine universes allow you to select an unlimited universe of symbols to analyze. Each asset added consumes approximately 5MB of RAM, so you may quickly run out of memory if your universe filter selects many symbols. QuantConnect provides unlimited backtesting and 8GB of RAM per backtest. If you run into memory issues you can increase this with a subscription.
+</p>
+
