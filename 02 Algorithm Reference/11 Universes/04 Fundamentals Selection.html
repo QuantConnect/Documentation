@@ -109,7 +109,7 @@ AddUniverse(
     },
     fine =&gt; {
         return (from f in fine
-            orderby f.ValuationRatios.PERatio descending
+            orderby f.ValuationRatios.PERatio ascending
             select f.Symbol).Take(10);
     });
 </pre>
@@ -122,7 +122,7 @@ def CoarseSelectionFunction(self, coarse):
     return filtered[:50]
 
 def FineSelectionFunction(self, fine):
-    sortedByPeRatio = sorted(fine, key=lambda x: x.ValuationRatios.PERatio, reverse=True)
+    sortedByPeRatio = sorted(fine, key=lambda x: x.ValuationRatios.PERatio, reverse=False)
     return [ x.Symbol for x in sortedByPeRatio[:10] ]
 </pre>
 </div>
