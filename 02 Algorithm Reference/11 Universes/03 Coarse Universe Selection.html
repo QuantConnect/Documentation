@@ -198,8 +198,7 @@ def CoarseFilterFunction(self, coarse):
             avg.update(cf.EndTime, cf.AdjustedPrice, cf.DollarVolume)
 
         # filter the values of selectionData(sd) above SMA
-        values = list(filter(lambda sd: sd.volume > sd.sma.Current.Value, \
-                             self.stateData.values()))
+        values = list(filter(lambda sd: sd.volume > sd.sma.Current.Value && sd.volume_ratio > 0, self.stateData.values()))
         
         # sort sd by the largest % jump in volume.
         values.sort(key=lambda sd: sd.volume_ratio, reverse=True)
