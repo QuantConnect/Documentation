@@ -96,7 +96,7 @@ Another common request is to filter the universe by a technical indicator, such 
             avg.update(cf.EndTime, cf.AdjustedPrice, cf.DollarVolume)
 
         # Filter the values of the dict to those above EMA and more than $1B vol.
-        values = list(filter(lambda x: x.is_above_ema && x.volume > 1000000000, self.stateData.values()))
+        values = list(filter(lambda x: x.is_above_ema & (x.volume > 1000000000), self.stateData.values()))
         
         # sort by the largest in volume.
         values.sort(key=lambda x: x.volume, reverse=True)
@@ -160,7 +160,7 @@ class SelectionData(object):
 
     def update(self, time, price, volume):
         self.volume = volume
-        if self.sma.Update(time, price):
+        if self.sma.Update(time, volume):
             # get ratio of this volume bar vs previous 10 before it.
             self.volume_ratio = volume / self.sma.Current.Value 
 </pre>
@@ -198,7 +198,7 @@ def CoarseFilterFunction(self, coarse):
             avg.update(cf.EndTime, cf.AdjustedPrice, cf.DollarVolume)
 
         # filter the values of selectionData(sd) above SMA
-        values = list(filter(lambda sd: sd.volume > sd.sma.Current.Value && sd.volume_ratio > 0, self.stateData.values()))
+        values = list(filter(lambda sd: (sd.volume > sd.sma.Current.Value) & (sd.volume_ratio > 0), self.stateData.values()))
         
         # sort sd by the largest % jump in volume.
         values.sort(key=lambda sd: sd.volume_ratio, reverse=True)
