@@ -1,14 +1,13 @@
-
 <p>
-Framework Universe Selection models can use the same function based selection mechanics as other algorithms. QuantConnect provides two helper methods for these universes which handle the framework requirements: $[CoarseFundamentalUniverseSelectionModel,T:QuantConnect.Algorithm.Framework.Selection.CoarseFundamentalUniverseSelectionModel] and the $[FineFundamentalUniverseSelectionModel,T:QuantConnect.Algorithm.Framework.Selection.FineFundamentalUniverseSelectionModel].
+Framework Universe Selection models can use the same function based selection mechanics as other algorithms. QuantConnect provides two helper methods for these universes which handle the framework requirements: $[CoarseFundamentalUniverseSelectionModel,T:QuantConnect.Algorithm.Selection.CoarseFundamentalUniverseSelectionModel] and the $[FineFundamentalUniverseSelectionModel,T:QuantConnect.Algorithm.Selection.FineFundamentalUniverseSelectionModel].
 </p>
-<p>To define a fundamental Universe Selection model you need to create an instance of the class and set with the $[SetUniverseSelection,M:QuantConnect.Algorithm.Framework.QCAlgorithmFramework.SetUniverseSelection] method:
+<p>To define a fundamental Universe Selection model you need to create an instance of the class and set with the $[AddUniverseSelection,M:QuantConnect.Algorithm.QCAlgorithm.AddUniverseSelection] method:
 </p>
 <div class="section-example-container">
-	<pre class="csharp"> // Setting Universe Model in QCAlgorithmFramework algorithm
+	<pre class="csharp"> // Setting Universe Model in QCAlgorithm
 public override void Initialize()
 {
-     SetUniverseSelection(new FineFundamentalUniverseSelectionModel(SelectCoarse, SelectFine));
+     AddUniverseSelection(new FineFundamentalUniverseSelectionModel(SelectCoarse, SelectFine));
 }
 
 IEnumerable&lt;Symbol&gt; SelectCoarse(IEnumerable&lt;CoarseFundamental&gt; coarse)
@@ -23,9 +22,9 @@ IEnumerable&lt;Symbol&gt; SelectFine(IEnumerable&lt;FineFundamental&gt; fine) {
      return fine.Select(f =&gt; f.Symbol);
 }
 </pre>
-	<pre class="python"> # Setting Universe Model in QCAlgorithmFramework algorithm
+	<pre class="python"> # Setting Universe Model in QCAlgorithm 
 def Initialize(self):
-    self.SetUniverseSelection(
+    self.AddUniverseSelection(
            FineFundamentalUniverseSelectionModel(self.SelectCoarse, self.SelectFine)
     )
 
