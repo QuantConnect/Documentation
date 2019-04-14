@@ -1,3 +1,17 @@
 <p>
-Data comes in two different "shapes" according to the time period it covers; point values, or period values. These have different properties in LEAN which determine when the data is emitted to your algorithm. 
+Data comes in two different "shapes" according to the time period it covers; point values, or period values. These have different properties in LEAN which determine when the data is emitted to your algorithm. The coordination of emitting this data is controlled by the <i>Time Frontier</i>.
+</p>
+
+<h4>The Time Frontier</h4>
+<p>
+QuantConnect allows your algorithm to request data for multiple securities, and multiple resolutions. This creates a situation where one of your data subscriptions is ready to emit, but another subscription with a longer period may still be building its trade bar. To coordinate this emission of data we use the <i>End Time</i> of a data point to transmit it to your algorithm.   
+</p>
+
+<h4>Tick Data - Point Values</h4>
+<p>
+Tick data represents a single trade or quote made on the market. It is a discrete event which does not have a period of time attached to it. These events are emitted as soon as they arrive to LEAN. 
+</p>
+<img src="http://s3.amazonaws.com/cdn.quantconnect.com/docs/i/tick-stream_rev1.png" class="img-responsive" />
+<p>
+$[Tick, T:QuantConnect.Data.Market.Tick] objects have the same value of Time and EndTime, because they have no <i>period</i>. They represent instantaneous point values. 
 </p>
