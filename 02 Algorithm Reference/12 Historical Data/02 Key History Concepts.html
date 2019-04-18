@@ -46,22 +46,22 @@ The QuantConnect historical data API has many different options to give you the 
     <i class="fa fa-lightbulb-o"></i> <b>Key Concept #1:</b>
 <ul>
 <li>History requests can be done by a bar <i>count</i>, or,</li>
-<li>History requests can be done by a <i>period</i> of time.</li> 
+<li>History requests can be done for a <i>period</i> of time.</li> 
 </ul>
 </div> 
-<p style="margin-top: 15px">
-Secondly, as we've added new security classes we've had to support new data formats as such some assets return <a class="docs-internal-link" href="/docs/algorithm-reference/handling-data#Handling-Data-QuoteBars">QuoteBars</a>, and other assets return <a class="docs-internal-link" href="/docs/algorithm-reference/handling-data#Handling-Data-TradeBars">TradeBars</a>. When placing a history request its important to consider what data will be returned. 
-</p>
+<p style="margin-top: 25px">
+Secondly, when placing a history request its important to consider what data will be returned as each asset type comes in slightly different data shapes. Additionally depending on whether you ask for a <i>single</i> security, or <i>multiple</i> securities we will return different shapes of data. Data is returned as <a class="docs-internal-link" href="/docs/algorithm-reference/handling-data#Handling-Data-TradeBars">TradeBars</a>, <a class="docs-internal-link" href="/docs/algorithm-reference/handling-data#Handling-Data-QuoteBars">QuoteBars</a>, or <a class="docs-internal-link" href="/docs/algorithm-reference/handling-data#Handling-Data-Time-Slices">Slice</a> objects depending on how you request it and the data available for your security.
+</p> 
 
 <div class="work-in-progress"> 
     <i class="fa fa-lightbulb-o"></i> <b>Key Concept #2:</b>
 <ul>
-<li>History requests without a security specified return data as a <code>Slice</code> object.</li> 
-<li>Single security history requests return data in the data format of the security.</li> 
-<li class="python">Multi-security (batch) requests return data as a data frame.</li>
+<li>History requests without a security provided return a <code>Slice</code> object.</li> 
+<li>Single-security history requests return an array of objects in the format requested.</li> 
+<li class="python">Multi-security (batch) requests return data as a pandas data frame.</li>
 <li class="csharp">Multi-security (batch) requests return data as a <code>Slice</code> object.</li>
 </ul>
 </div>
 <p style="margin-top: 15px">
-This can seem a little complex at first but read through the section below for examples of each method.
+This can seem a little complex at first but we'll step through each of these in the sections below.
 </p>
