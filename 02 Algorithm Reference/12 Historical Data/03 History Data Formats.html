@@ -1,5 +1,5 @@
 <p>
-
+The QuantConnect platform hosts a specific set of data so history requests data is returned in these formats. When requesting history these are the data formats you will get returned. 
 </p>
 
 <table class="table qc-table table-striped">
@@ -16,8 +16,19 @@
 <tbody>
 	<tr><td>Equity</td> <td>TradeBar</td> </tr>
 	<tr><td>Forex, CFD</td> <td>QuoteBar</td> </tr>
-	<tr><td>Crypto</td> <td>TradeBar, QuoteBar</td> </tr> 
-	<tr><td>Future Contracts</td> <td>TradeBar, QuoteBar</td> </tr>
-	<tr><td>Option Contracts</td> <td>TradeBar, QuoteBar</td> </tr>
+	<tr><td>Crypto</td> <td>TradeBar (default), QuoteBar (available)</td> </tr> 
+	<tr><td>Future Contracts</td> <td>TradeBar (default), QuoteBar (available)</td> </tr>
+	<tr><td>Option Contracts</td> <td>TradeBar (default), QuoteBar (available)</td> </tr>
 </tbody>
 </table>
+<p>
+History is returned in TradeBars by default when available, but for Futures, Crypto and Options QuoteBars are also available. To request data as QuoteBars you must specify the type in the query.
+</p>
+<div class="section-example-container">
+<pre class="python"># Get BTCUSD symbol and use it to request history 
+self.btcusd = self.AddCrypto("BTCUSD", Resolution.Daily, Market.GDAX).Symbol
+df = self.History[QuoteBar](self.btcusd, 14, Resolution.Daily)</pre>
+<pre class="csharp">// Get BTCUSD symbol and use it to request history 
+var btcusd = AddCrypto("BTCUSD", Resolution.Daily, Market.GDAX).Symbol;
+var quotes = History&lt;QuoteBar&gt;(btcusd, 14, Resolution.Daily)</pre>
+</div>
