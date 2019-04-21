@@ -1,28 +1,32 @@
+<p>The simplest form of history request is for a known set of Symbols. This is common for fixed universes of securities, or when you'd like to warm up new securities added to your algorithm.
+</p>
+
 <p class="python">
-When history requests for are for a known set of Symbols QuantConnect returns a multi-index Data Frame with all the historical results. 
+History requests for a known set of Symbols return a Data Frame. Each row of the Data Frame represents the prices at a point of time. Each <i>column</i> of the Data Frame is a property of that price data (e.g. open, high, low, close). 
+</p>
+
+<p class="csharp">
+History requests return slightly different data depending on if you ask with 1-Symbol or an array of Symbols. With 1-Symbol you get an array of the security data. With multiple security history requests, we cannot guarantee all the data types are the same format, so we return an array of Slices instead. E.g. A history request for FX-QuoteBars + Equity-TradeBars is returned as an array of Slices; where the FX data is located under <code>slices.QuoteBars</code>, and the Equity data is under <code>slices.Bars</code>.
 </p>
 
 <p>
-The simplest form of history request is for one security, where we return an array of security data. If you do not specify a resolution QuantConnect defaults to the resolution of the security in your algorithm. This API follows the pattern: <code class="python">self.History[Type]( symbol, bar_count, resolution = null)</code> <code class="csharp">History&lt;Type&gt;(Symbol symbol, int barCount, Resolution resolution = null)</code>
+History API calls follow the following pattern: <code class="python">self.History(symbol, bar_count, resolution = null)</code> <code class="csharp">History&lt;Type&gt;(Symbol symbol, int barCount, Resolution resolution = null)</code>.
 </p>
 
 
 <div class="section-example-container">
-<pre class="python">
-# Requesting By Bar Count: 14 IBM TradeBars 
+<pre class="python"># Requesting By Bar Count: 14 IBM TradeBars 
 
-self.bars = self.History("IBM", 14) 
-self.bars = self.History[TradeBar]("IBM", 14)
-self.bars = self.History[TradeBar]("IBM", 14, Resolution.Minute)
+self.df = self.History(self.Symbol("IBM"), 7)
+self.df = self.History(self.Symbol("IBM"), 14, Resolution.Minute)
 
 
 # Requestion By Period: 2 Weeks Of IBM Data
 
-self.bars = self.History("IBM", timedelta(14))
-self.bars = self.History("IBM", timedelta(14), Resolution.Minute)
+self.df = self.History(self.Symbol("IBM"), timedelta(14))
+self.df = self.History(self.Symbol("IBM"), timedelta(14), Resolution.Minute)
 </pre>
-<pre class="csharp fsharp">
-// Requesting By Bar Count: 14 IBM TradeBars
+<pre class="csharp fsharp">// Requesting By Bar Count: 14 IBM TradeBars
 var bars = History&lt;TradeBar&gt;("IBM", 14);
 var bars = History&lt;TradeBar&gt;("IBM", 14, Resolution.Minute);
 
@@ -32,7 +36,7 @@ var bars = History&lt;TradeBar&gt;("IBM", TimeSpan.FromDays(14), Resolution.Minu
 </pre>
 </div>
 <p>
-<img class="python img-responsive img-thumbnail " src="http://cdn.quantconnect.com/docs/i/history-simple-bars_rev1.png" />
+<img class="python img-responsive img-thumbnail " src="http://cdn.quantconnect.com/docs/i/history-simple-bars_rev1.png">
 </p>
 <p> Simple, single security requests are generally best for a fixed set or manual universe of assets. The data you can request using this method depends on the security type. The table below shows the currently supported data types available in QuantConnect. 
 </p>
