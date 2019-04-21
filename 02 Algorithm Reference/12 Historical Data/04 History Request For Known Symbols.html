@@ -15,31 +15,39 @@ History API calls follow the following pattern: <code class="python">self.Histor
 
 
 <div class="section-example-container">
-<pre class="python"># Requesting By Bar Count: 14 IBM TradeBars 
+<pre class="python"># Requesting By Bar Count: 7 IBM TradeBars 
 
 self.df = self.History(self.Symbol("IBM"), 7)
-self.df = self.History(self.Symbol("IBM"), 14, Resolution.Minute)
+self.df = self.History(self.Symbol("IBM"), 7, Resolution.Minute)
 
 
-# Requestion By Period: 2 Weeks Of IBM Data
+# Requestion By Period: 1 Week Of IBM Data.
 
-self.df = self.History(self.Symbol("IBM"), timedelta(14))
-self.df = self.History(self.Symbol("IBM"), timedelta(14), Resolution.Minute)
+self.df = self.History(self.Symbol("IBM"), timedelta(7)) 
+self.df = self.History(self.Symbol("IBM"), timedelta(7), Resolution.Minute)
 </pre>
-<pre class="csharp fsharp">// Requesting By Bar Count: 14 IBM TradeBars
-var bars = History&lt;TradeBar&gt;("IBM", 14);
-var bars = History&lt;TradeBar&gt;("IBM", 14, Resolution.Minute);
+<pre class="csharp fsharp">// Requesting By Bar Count: 7 IBM TradeBars
+var bars = History&lt;TradeBar&gt;("IBM", 7);
+var bars = History&lt;TradeBar&gt;("IBM", 7, Resolution.Minute);
 
-// Requestion By Period: 2 Weeks Of IBM Data
-var bars = History&lt;TradeBar&gt;("IBM", TimeSpan.FromDays(14));
-var bars = History&lt;TradeBar&gt;("IBM", TimeSpan.FromDays(14), Resolution.Minute);
+// Requestion By Period: 1 Week Of IBM Data
+var bars = History&lt;TradeBar&gt;("IBM", TimeSpan.FromDays(7));
+var bars = History&lt;TradeBar&gt;("IBM", TimeSpan.FromDays(7), Resolution.Minute);
 </pre>
 </div>
-<p>
-<img class="python img-responsive img-thumbnail " src="http://cdn.quantconnect.com/docs/i/history-simple-bars_rev1.png">
-</p>
-<p> Simple, single security requests are generally best for a fixed set or manual universe of assets. The data you can request using this method depends on the security type. The table below shows the currently supported data types available in QuantConnect. 
+
+<p class="python">
+<img class="img-responsive img-thumbnail " src="http://cdn.quantconnect.com/docs/i/history-simple-bars_rev1.png">
+<b>Example 1: Querying via research has the same API as your backtests.</b>
 </p>
 
+<h4>Assumed Default Values</h4>
+<ol>
+<li> Resolution. An important distinction exists between the two examples above, one is using the default value for Resolution. Here LEAN attempts to guess the resolution you request by looking at any securities you already have in your algorithm. If you have a matching Symbol, QuantConnect will use the same resolution. When no default values can be located <code>Resolution.Minute</code> is selected.
+</li>
+<li class="csharp">
+When no type is specified for the history request <code>TradeBar</code> is assumed for Equity, Futures Crypto and Options securities. Assets with QuoteBar data must explicitly specify Quotes to receive their history (Forex, Futures, Options, and Crypto).
+</li>
+</ol>
 
  
