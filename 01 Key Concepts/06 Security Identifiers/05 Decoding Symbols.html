@@ -1,0 +1,32 @@
+<p>
+When a Symbol is serialized to a string it will look something like this: <code>SPY R735QTJ8XC9X</code>. This two-part string is a base64 encoded set of data. Encoding all of the properties into a short format allows dense communication without requiring a third party list or look-up. 
+</p>
+
+<p>Most of the time you will not need to work with these encoded strings. However, we provide parsing classes to automatically parse the symbols into a usable form.</p>
+
+<p>
+QuantConnect provides a C# and Python class for deserializing Symbol objects into easily consumable objects for trading. You can download an test these classes on Github ( <a target="_BLANK" href="https://github.com/QuantConnect/Lean/blob/master/Common/SecurityIdentifier.cs#L559">C#</a> | <a taget="_BLANK" href="https://github.com/QuantConnect/Lean/blob/master/PythonToolbox/quantconnect/symbol.py">Py</a> ). Each class provides a Parse method for decomposing the data:
+</p>
+<div class="section-example-container">
+<pre class="all">
+# Python 
+google = Symbol("GOOCV VP83T1ZUHROL")
+print(google.Market)                                # USA
+print(google.SecurityType)                          # Equity
+print(google.Symbol)                                # GOOCV
+
+# CSharp
+var google = SecurityIdentifier.Parse("GOOCV VP83T1ZUHROL");
+google.Market                       # Market.USA
+google.SecurityType                 # SecurityType.Equity
+google.Symbol                       # GOOCV
+</pre>
+</div>
+
+<p>
+The <code>Market</code> field is used to distinguish between tickers with the same string value representing different underlying assets. A prime example of this is the various market makers who all have different prices for EURUSD. QuantConnect stores this data separately and as they have different fill prices we treat the execution venues as different <i>markets</i>.
+</p>
+
+<p>
+The downside of this style of identification is that it requires clients to have knowledge of the initial listing ticker string. In this example, it is GOOCV which eventually was renamed/mapped into the GOOG class C-shares. QuantConnect is working to also provide the ISIN on all insights generated, but for now, will work with institutions engineering teams to give them the necessary information to interpret symbol objects. 
+</p>
