@@ -1,3 +1,36 @@
 <p>
-
+With the QuantConnect History API, you can request history for all active securities in your universe. The parameters are very similar to other history methods, but the return type is an array of <code>Slice</code> objects.
 </p>
+
+<div class="section-example-container">
+<pre class="python"> 
+<b># EXAMPLE 1: Requesting 5 Bars For All Securities, default to security resolution:</b>
+
+# Setting Up Universe
+self.AddEquity("IBM", Resolution.Daily)
+self.AddEquity("AAPL", Resolution.Daily)
+
+#Request history data and enumerate results:
+self.slices = self.History(5)
+for s in slices:
+    print(str(s.Time) + \
+          " AAPL:" + str(s.Bars["AAPL"].Close) + " IBM:" + str(s.Bars["IBM"].Close))
+<img class="img-responsive img-thumbnail " src="https://cdn.quantconnect.com/docs/i/history-all-security-slices_rev0.png">
+</pre>
+
+<pre class="python"> 
+<b># EXAMPLE 2: Requesting 5 Minutes For All Securities:</b>
+
+slices = self.History(timedelta(minutes=5), Resolution.Minute)
+for s in slices:
+    print(str(s.Time) + \
+          " AAPL:" + str(s.Bars["AAPL"].Close) + " IBM:" + str(s.Bars["IBM"].Close))
+<img class="img-responsive img-thumbnail " src="https://cdn.quantconnect.com/docs/i/history-all-security-slices-minute_rev0.png">
+# Keep in mind you timedelta history requests are relative to "now" in Algorithm Time. If you requested this data at 16.05, it would return an empty array because the market was closed.
+</pre>
+
+
+<pre class="csharp fsharp">
+
+</pre>
+</div>
