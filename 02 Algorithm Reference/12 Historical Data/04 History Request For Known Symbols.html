@@ -1,4 +1,4 @@
-<p>The simplest form of history request is for a known set of Symbols. This is common for fixed universes of securities, or when you'd like to prepare new securities added to your algorithm.
+<p>The simplest form of history request is for a known set of Symbols. This is common for fixed universes of securities, or when you'd like to prepare new securities added to your algorithm. <span class="csharp">History requests return slightly different data depending on the overload you reach.</span>
 </p>
 
 <span class="python">
@@ -39,7 +39,7 @@ self.df = self.History(self.Symbol("IBM"), timedelta(5), Resolution.Minute)
 <span class="csharp"> 
 <h4 class="csharp">Single Symbol History Request</h4>
 <p class="csharp">
-History requests return slightly different data depending on the overload you reach. If you ask for one Symbol LEAN can infer the type of the returning data is fixed and directly returns an array of bars.
+When requesting a single Symbol LEAN can infer the type of the returning data is fixed and directly returns an array of bars. This is convient for quickly warming up an indicator.
 </p>
 
 <div class="section-example-container">
@@ -48,33 +48,39 @@ var bars = History&lt;Type&gt;(Symbol symbol, int barCount, Resolution resolutio
 var bars = History&lt;Type&gt;(Symbol symbol, TimeSpan period, Resolution = null);
 </pre>
 <pre class="csharp">
-<b>// EXAMPLE 1: One Symbol, Specifying Type, Default to Security Resolution:</b>
-AddEquity("IBM", Resolution.Minute);
-var bars = History(Symbol("IBM"), TimeSpan.FromMinutes(5));
+<b>// EXAMPLE 1: 100 Bars of Single Symbol, Specifying Type, Default to Security Resolution:</b>
+var ibm = AddEquity("IBM", Resolution.Minute).Symbol;
+var bars = History&lt;TradeBar&gt;(ibm, 100);
+
+// Same request but for QuoteBars
+var eurusd = AddForex("EURUSD", Resolution.Minute).Symbol;
+var quoteBars = History&lt;QuoteBar&gt;(eurusd, 100);
+</pre>
+<pre class="csharp">
+<b>// EXAMPLE 2: Six Hours of Bars of Single Symbol, Setting Resolution:</b>
+var ibm = AddEquity("IBM", Resolution.Minute).Symbol;
+var bars = History&lt;TradeBar&gt;(ibm, TimeSpan.FromHours(6), Resolution.Minute);
+
+// Same request but for QuoteBars
+var eurusd = AddForex("EURUSD", Resolution.Minute).Symbol;
+var quoteBars = History&lt;QuoteBar&gt;(eurusd, TimeSpan.FromHours(6), Resolution.Minute);
 </pre>
 </div>
 
 <h4 class="csharp">Multiple Symbols History Request</h4>
-<div class="section-example-container">
-<pre class="csharp"><b>// Multi-Symbol History Method Arguments:</b>
-var slices = History(symbols[], int barCount, Resolution resolution = null)
-var slices = History(Symbol[] symbols, TimeSpan period, Resolution = null);
-</pre>
-</div>
-
 <p class="csharp">
 History requests with an array of Symbols objects return an array of slices. This provides a container which supports all data types. For example, a history request for FX-QuoteBars and Equity-TradeBars has the FX data is located under <code>slices.QuoteBars</code>, and the Equity data is under <code>slices.Bars</code>.
 </p>
-
 <div class="section-example-container">
-<pre class="csharp fsharp">// Requesting By Bar Count: 7 IBM TradeBars; with Type set.
-var bars = History&lt;TradeBar&gt;("IBM", 7);
-var bars = History&lt;TradeBar&gt;("IBM", 7, Resolution.Minute);
+<pre class="csharp"><b>// Multi-Symbol History Method Arguments:</b>
+var slices = History(symbols[], int barCount, Resolution resolution = null);
+var slices = History(Symbol[] symbols, TimeSpan period, Resolution = null);
 </pre>
-<pre class="csharp fsharp">
-// Requestion By Period: 1 Week Of IBM Data; with Type set.
-var bars = History&lt;TradeBar&gt;("IBM", TimeSpan.FromDays(7));
-var bars = History&lt;TradeBar&gt;("IBM", TimeSpan.FromDays(7), Resolution.Minute);
+<pre class="csharp">
+<b>// EXAMPLE 1: Symbol array, 5 Bars, Default to Security Resolution:</b>
+var ibm = AddEquity("IBM", Resolution.Minute).Symbol;
+var aapl = AddEquity("AAPL", Resolution.Minute).Symbol;
+var bars = History(new[] { ibm, aapl }, 5);
 </pre>
 </div>
 </span>
@@ -87,5 +93,3 @@ var bars = History&lt;TradeBar&gt;("IBM", TimeSpan.FromDays(7), Resolution.Minut
 When no type is specified for the history request <code>TradeBar</code> is assumed for Equity, Futures Crypto and Options securities. Assets with QuoteBar data must explicitly specify Quotes to receive their history (Forex, Futures, Options, and Crypto).
 </li>
 </ul>
-
- 
