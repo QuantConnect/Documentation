@@ -41,10 +41,27 @@ self.df = self.History(self.Symbol("IBM"), timedelta(5), Resolution.Minute)
 <p class="csharp">
 History requests return slightly different data depending on the overload you reach. If you ask for one Symbol LEAN can infer the type of the returning data is fixed and directly returns an array of bars.
 </p>
-<p class="csharp"><pre class="csharp">var bars = History&lt;Type&gt;(Symbol symbol, int barCount, Resolution resolution = null)</pre></p>
+
+<div class="section-example-container">
+<pre class="csharp"><b>// Single Symbol History Method Arguments: </b>
+var bars = History&lt;Type&gt;(Symbol symbol, int barCount, Resolution resolution = null);
+var bars = History&lt;Type&gt;(Symbol symbol, TimeSpan period, Resolution = null);
+</pre>
+<pre class="csharp">
+<b>// EXAMPLE 1: One Symbol, Specifying Type, Default to Security Resolution:</b>
+AddEquity("IBM", Resolution.Minute);
+var bars = History(Symbol("IBM"), TimeSpan.FromMinutes(5));
+</pre>
+</div>
 
 <h4 class="csharp">Multiple Symbols History Request</h4>
-<p class="csharp"><code class="csharp">var slices = History(symbols[], int barCount, Resolution resolution = null)</code></p>
+<div class="section-example-container">
+<pre class="csharp"><b>// Multi-Symbol History Method Arguments:</b>
+var slices = History(symbols[], int barCount, Resolution resolution = null)
+var slices = History(Symbol[] symbols, TimeSpan period, Resolution = null);
+</pre>
+</div>
+
 <p class="csharp">
 History requests with an array of Symbols objects return an array of slices. This provides a container which supports all data types. For example, a history request for FX-QuoteBars and Equity-TradeBars has the FX data is located under <code>slices.QuoteBars</code>, and the Equity data is under <code>slices.Bars</code>.
 </p>
