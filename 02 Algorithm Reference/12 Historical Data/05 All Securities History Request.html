@@ -33,7 +33,30 @@ for s in slices:
 </pre>
 
 
-<pre class="csharp fsharp">
 
+<pre class="csharp fsharp">
+<b>// EXAMPLE 1: Requesting 5 Bars For All Securities, default to security resolution:</b>
+
+// Setting Up Universe
+AddEquity("IBM", Resolution.Daily)
+AddEquity("AAPL", Resolution.Daily)
+
+// Request history data and enumerate results:
+var slices = History(5)
+foreach (var s in slices) {
+    Debug($"{s.Time} AAPL: {s.Bars["AAPL"].Close} IBM: {s.Bars["IBM"].Close}");
+}
+<img class="img-responsive img-thumbnail " src="https://cdn.quantconnect.com/docs/i/history-debug-all-securities_rev0.png">
+</pre>
+
+<pre class="python"> 
+<b>// EXAMPLE 2: Requesting 24 Hours of Hourly Data For All Securities:</b>
+
+var slices = History(TimeSpan.FromHours(24), Resolution.Hour);
+foreach (var s in slices) {
+     Debug($"{s.Time} AAPL: {s.Bars["AAPL"].Close} IBM: {s.Bars["IBM"].Close}");
+}
+<img class="img-responsive img-thumbnail" src="https://cdn.quantconnect.com/docs/i/history-debug-all-securities-timespan-6hours_rev0.png">
+// Keep in mind you TimeSpan history requests are relative to "now" in Algorithm Time. If you requested this data on a Monday morning, it would return an empty array because the market was closed over the weekend.
 </pre>
 </div>
