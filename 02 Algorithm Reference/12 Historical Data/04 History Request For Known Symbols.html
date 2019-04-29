@@ -5,6 +5,8 @@
 <p class="python">
 History requests for a known set of Symbols return a Data Frame. Each row of the Data Frame represents the prices at a point of time. Each <i>column</i> of the Data Frame is a property of that price data (e.g. open, high, low, close). 
 </p>
+
+<h4>Single Symbol Request Examples</h4>
 <p class="python">
 History API calls follow the following pattern: <code>self.History(symbol, bar_count, resolution = null)</code>
 </p>
@@ -32,6 +34,23 @@ self.df = self.History(self.Symbol("IBM"), timedelta(7))
 self.df = self.History(self.Symbol("IBM"), timedelta(5), Resolution.Minute)
 <img class="img-thumbnail img-responsive" src="https://cdn.quantconnect.com/docs/i/history-dataframe-period-minute_rev0.png" />
 # Important Note: Period history requests are relative to "now" algorithm time. The example above would return 5 minute bars if requested *at* market close. If you wait for 16.05 it will return nothing.
+</pre>
+</div>
+
+<h4>Multiple Symbol Request Examples</h4>
+<p>
+To request history for multiple symbols at a time you need to pass an array of Symbol objects to the same API methods as above.
+</p>
+<p>
+Multi-Symbol History API calls follow the following pattern: <code>self.History( symbols[], bar_count, resolution = null )</code>
+</p>
+
+<div class="section-example-container">
+<pre class="python">
+<b># EXAMPLE 5: Multi-Symbol History Request.</b>
+
+self.df = self.History([self.Symbol("IBM"), self.Symbol("AAPL")], 2)
+<img class="img-responsive img-thumbnail " src="https://cdn.quantconnect.com/docs/i/history-stacked-multi-symbol-python_rev0.png">
 </pre>
 </div>
 </span>
