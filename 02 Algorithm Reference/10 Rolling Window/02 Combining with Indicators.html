@@ -8,24 +8,32 @@
 A particularly common and helpful use of the RollingWindow class is to store past indicator values. The following examples create an indicator and adds its values to a rolling window when the indicator is updated.
 </p>
 <div class="section-example-container">
-	<pre class="csharp">
-	SMA("SPY", 5).Updated += (sender, updated) => smaWin.Add(updated);
-	smaWin = new RollingWindow&lt;IndicatorDataPoint&gt;(5);
-   </pre>
-	<pre class="python">
-	self.SMA("SPY", 5).Updated += self.SmaUpdated
-	self.smaWin = RollingWindow[IndicatorDataPoint](5)
+<pre class="csharp" >
+// In Initialize, create the rolling windows
+public override void Initialize()
+{
+    // Creates an indicator and adds to a rolling window when it is updated
+   smaWindow = new RollingWindow&lt;IndicatorDataPoint&gt;(5);
+   SMA("SPY", 5).Updated += (sender, updated) => smaWindow.Add(updated);
+}
+</pre> 
+	<pre class="python" >
+# In Initialize, create the rolling windows
+def Initialize(self):
+    # Creates an indicator and adds to a rolling window when it is updated
+    self.SMA("SPY", 5).Updated += self.SmaUpdated
+    self.smaWindow = RollingWindow[IndicatorDataPoint](5)
 
-	# Adds updated values to rolling window
-	def SmaUpdated(self, sender, updated):
-		self.smaWin.Add(updated)
+# Adds updated values to rolling window
+def SmaUpdated(self, sender, updated):
+    self.smaWindow.Add(updated)
 </pre>
 </div>
 <p>
-	Indicator objects have the <code>Updated</code> event that fires after the indicator is updated. To respond to <code>Updated</code>, we define an event handler method that adds the last value of the indicator to the rolling window. The value is an $[IndicatorDataPoint, C:QuantConnect.Indicators.IndicatorDataPoint] object that represents a piece of data at a specific time.
+	Indicators emit an <code>Updated</code> event after they have been updated. To create a rolling window of indicator points we attach an event handler function to <code>Updated</code> which adds the last value of the indicator to the rolling window. The value is an $[IndicatorDataPoint, C:QuantConnect.Indicators.IndicatorDataPoint] object that represents a piece of data at a specific time.
 </p>
 
-<p>The most recent element, the previous and the last item for this case are:</p>
+<p>The current (most recent addition) is stored at index-0, the previous addition to a window is at index 1 and so on until the length of the window:</p>
 
 <div class="section-example-container">
 	<pre class="csharp">
@@ -37,26 +45,4 @@ A particularly common and helpful use of the RollingWindow class is to store pas
 	currentSma = self.smaWin[0]
 	previousSma = self.smaWin[1]
 	oldestSma = self.smaWin[ smaWin.Count - 1 ]</pre>
-</div>
-<div class="section-example-container" >
-	<pre class="csharp" >
-// In Initialize, create the rolling windows
-public override void Initialize()
-{
-    // Creates an indicator and adds to a rolling window when it is updated
-    SMA("SPY", 5).Updated += (sender, updated) => smaWin.Add(updated);
-    smaWin = new RollingWindow&lt;IndicatorDataPoint&gt;(5);
-}
-</pre>
-	<pre class="python" >
-# In Initialize, create the rolling windows
-def Initialize(self):
-    # Creates an indicator and adds to a rolling window when it is updated
-    self.SMA("SPY", 5).Updated += self.SmaUpdated
-    self.smaWin = RollingWindow[IndicatorDataPoint](5)
-
-# Adds updated values to rolling window
-def SmaUpdated(self, sender, updated):
-    self.smaWin.Add(updated)
-</pre>
-</div>
+</div> 

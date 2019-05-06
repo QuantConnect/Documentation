@@ -1,14 +1,14 @@
 <p>
 Manual universe selection chooses a static, fixed set of assets to trade. This is most useful when selecting a set of currencies, or a basket of ETF stocks. You can also add assets with the traditional <a href="/docs/algorithm-reference/initializing-algorithms#Initializing-Algorithms-Selecting-Asset-Data" class="docs-internal-link">AddSecurity API</a>.
 </p>
-<p>The $[ManualUniverseSelectionModel, T:QuantConnect.Algorithm.Framework.Selection.ManualUniverseSelectionModel] class is initialized with an array of $[Symbol,T:QuantConnect.Symbol] objects at the UniverseSettings.Resolution data resolution. $[Symbol,T:QuantConnect.Symbol] objects can be created with the Symbol.Create method.
+<p>The $[ManualUniverseSelectionModel, T:QuantConnect.Algorithm.Selection.ManualUniverseSelectionModel] class is initialized with an array of $[Symbol,T:QuantConnect.Symbol] objects at the UniverseSettings.Resolution data resolution. $[Symbol,T:QuantConnect.Symbol] objects can be created with the Symbol.Create method.
 </p>
 <div class="section-example-container" >
 	<pre class="csharp">public override void Initialize()
 {
      // Set requested data resolution
      UniverseSettings.Resolution = Resolution.Minute;
-     SetUniverseSelection(
+     AddUniverseSelection(
         new ManualUniverseSelectionModel(
              QuantConnect.Symbol.Create("SPY", SecurityType.Equity, Market.USA)
      ));
@@ -17,5 +17,5 @@ Manual universe selection chooses a static, fixed set of assets to trade. This i
 	<pre class="python">def Initialize(self):
      self.UniverseSettings.Resolution = Resolution.Minute
      symbols = [ Symbol.Create("SPY", SecurityType.Equity, Market.USA) ]
-     self.SetUniverseSelection(ManualUniverseSelectionModel(symbols))</pre>
+     self.AddUniverseSelection(ManualUniverseSelectionModel(symbols))</pre>
 </div>
