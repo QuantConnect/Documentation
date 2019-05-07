@@ -1,6 +1,7 @@
 <p>
-Subscribing to QuantConnect options data for a new equity entering a Universe and/or for an Option Chain for a specific date (in backtesting), you can use the OptionChainProvider. 
-Option Chain Provider gets a list of option contracts for an underlying symbol at a requested date. Then you can manually filter the contract list returned by GetOptionContractList.</p>
+To subscribe to options data, you can use the OptionChainProvider. In backtesting, OptionChainProvider allows you to request a list of options contracts for a specific symbol and a specific date. In Live Mode, the date argument is fixed to the current algorithm time.
+The GetOptionContractList method of OptionChainProvider returns a list of option contracts for the provided symbol and date. Then you can manually filter the contract list returned by GetOptionContractList, and add only the contracts you want using the AddOptionContract method. 
+This allows you to eliminate any unwanted options data and maintain a small universe to keep your algorithm running as fast as possible.</p>
 <div class="section-example-container">
     <pre>
         OptionChainProvider.GetOptionContractList(Symbol symbol
@@ -8,7 +9,7 @@ Option Chain Provider gets a list of option contracts for an underlying symbol a
     </pre>
 </div>
 <p>
-The manual filtering will be limited to the information included in the Symbol (strike, expiration, type, style) and/or prices from a History call
+The manual filtering will be limited to the information included in the Symbol (strike, expiration, type, style) and/or prices from a History call. Once you have applied filters, you can use AddOptionContract to add the desired contract(s) to the Universe. 
 </p>
 <div class="section-example-container">
 	<pre class="csharp">// In public class
@@ -39,6 +40,7 @@ def OnData(self, data):
 ## Example of a filtering function to be called
 def OptionsFilter(self, data):
     contracts = self.OptionChainProvider.GetOptionContractList(self.equity.Symbol, data.Time)  ## Get list of Options Contracts for a specific time
+    
     ## Use AddOptionContract() to subscribe the data for specified contract
     self.AddOptionContract(contracts[0], Resolution.Minute)  ## Add the first contract in contracts
 
