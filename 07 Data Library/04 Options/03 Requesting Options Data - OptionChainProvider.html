@@ -1,0 +1,47 @@
+<p>
+Subscribing to QuantConnect options data for a new equity entering a Universe and/or for an Option Chain for a specific date (in backtesting), you can use the OptionChainProvider. 
+Option Chain Provider gets a list of option contracts for an underlying symbol at a requested date. Then you can manually filter the contract list returned by GetOptionContractList.</p>
+<div class="section-example-container">
+    <pre>
+        OptionChainProvider.GetOptionContractList(Symbol symbol
+                                                  DateTime date)
+    </pre>
+</div>
+<p>
+The manual filtering will be limited to the information included in the Symbol (strike, expiration, type, style) and/or prices from a History call
+</p>
+<div class="section-example-container">
+	<pre class="csharp">// In public class
+    private Symbol _equitySymbol;
+
+    // In Initialize
+    var equity = AddEquity("GOOG", Resolution.Minute);
+    equity.SetDataNormalizationMode(DataNormalizationMode.Raw);
+    _equitySymbol = equity.Symbol;
+
+public override void OnData(Slice data)
+{
+    // Get list of Options Contracts for a specific time
+    var contracts = OptionChainProvider.GetOptionContractList(_equitySymbol, data.Time);
+
+    // use AddOptionContract() to subscribe the data for specified contract
+    AddOptionContract(contracts.First(), Resolution.Minute);
+}
+</pre>
+	<pre class="python"># In Initialize
+    self.equity = self.AddEquity("GOOG", Resolution.Minute)
+    self.equity.SetDataNormalizationMode(DataNormalizationMode.Raw)
+
+def OnData(self, data):
+    ## Call options filter
+    contract = self.OptionsFilter(data)
+
+## Example of a filtering function to be called
+def OptionsFilter(self, data):
+    contracts = self.OptionChainProvider.GetOptionContractList(self.equity.Symbol, data.Time)  ## Get list of Options Contracts for a specific time
+    ## Use AddOptionContract() to subscribe the data for specified contract
+    self.AddOptionContract(contracts[0], Resolution.Minute)  ## Add the first contract in contracts
+
+    return contracts[0]
+</pre>
+</div>
