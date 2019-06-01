@@ -1,23 +1,22 @@
 <p>
-There are only two steps required to convert your classic algorithm to be compatible with Alpha Streams. First you need to make it inherit from QCFrameworkBridge, and second, you need to modify your algorithm to emit Insight objects at an appropriate time in your algorithm.</p><h4>Step 1: Inherit from QCFrameworkBridge</h4><p>At the top of your algorithm, you'll likely have inherited from the QCAlgorithm base class. To start, you should modify this to extend from <code>QCFrameworkAlgorithm</code>.</p><div class="section-example-container"><pre class="csharp">
-// Step 1. Update base class from QCAlgorithm to QCAlgorithmFrameworkBridge
-public class ConvertToFrameworkAlgorithm : QCAlgorithmFrameworkBridge
-{
-       ...
-}</pre><pre class="python"># Step 1. Update base class from QCAlgorithm to QCAlgorithmFrameworkBridge
-class ConvertToFrameworkAlgorithm(QCAlgorithmFrameworkBridge):
-       ....</pre></div><h4>Step 2: Call EmitInsights</h4><p>Next, at appropriate points in your code, you need to call the function which generates trade signals for Funds following your strategy. Emitting Insight objects may line up with when you place trades. Take care in setting the insight properties and don't emit insights superfluously or they could negatively affect your overall score.</p><div class="section-example-container"><pre class="csharp">
-// 2. Call EmitInsights with insights created in correct direction, here we're going short
-//    The EmitInsights method can accept multiple insights separated by commas
+There is only one step required to convert your classic algorithm to be compatible with Alpha Streams, and this is to modify your algorithm to emit Insight objects at an appropriate time in your algorithm.
+The default QCAlgorithm behavior is to emit Insights whenever a trade is placed, but manually emitting Insights allows you to inject information about the magnitude and confidence of the Insight, which adds value to the Alpha and can boost your overall score.
+</p>
+<h4>Call EmitInsights</h4>
+<p>Insight direction generally lines up with what type of order you want to place -- Up/Buy, Down/Sell -- but <em>Flat</em> Insights are required for Liquidate statements. To emit Insights, you need to call the function before placing a trade. 
+    Take care in setting the insight properties and don't emit insights superfluously or they could negatively affect your overall score.</p><div class="section-example-container"><pre class="csharp">
+// Call EmitInsights with insights created in correct direction,
+// here we're going short. The EmitInsights method can accept multiple insights
+// separated by commas.
 EmitInsights(
     // Creates an insight for our symbol, predicting that it will move down within
     // the fast ema period number of days
     Insight.Price(_symbol, TimeSpan.FromDays(FastEmaPeriod), InsightDirection.Down)
-);</pre><pre class="python"># Step 2. Call EmitInsights with insights created in correct direction,
+);</pre><pre class="python"># Call EmitInsights with insights created in correct direction,
 # here we're going short. The EmitInsights method can accept multiple insights
 # separated by commas.
 self.EmitInsights(
     # Creates an insight for our symbol, predicting that it will move down within
     #  the fast ema period number of days
     Insight.Price(self.symbol, timedelta(self.FastEmaPeriod), InsightDirection.Down)
-)</pre></div><p>In creating these insights you should think about:</p><ul>   <li>What is the time period of my insight / expected holding period?</li>   <li>Does my trade signal give me a confidence of investment?</li>   <li>What is the expected move magnitude?</li></ul><p>If you cannot determine these values with some intrinsic data driven hypothesis we recommend leaving them unset.</p>
+)</pre></div><p>In creating these insights you should think about:</p><ul>   <li>What is the time period of my insight / expected holding period?</li>   <li>Does my trade signal give me a confidence of investment?</li>   <li>What is the expected move magnitude?</li></ul><p>If you cannot determine these values with some intrinsic data driven hypothesis we recommend leaving them unset. This information can provide value to your algorithm that goes beyond pure performance and is one of the benefits of manual Insight creation.</p>

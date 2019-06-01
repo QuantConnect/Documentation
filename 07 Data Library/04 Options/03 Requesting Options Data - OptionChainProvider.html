@@ -1,0 +1,60 @@
+<p>
+Another way to subscribe to options data is by using OptionChainProvider. The GetOptionContractList method of OptionChainProvider returns a list of options contracts exclusively for the specified symbol and date.
+</p>
+<div class="section-example-container">
+    <pre>
+        OptionChainProvider.GetOptionContractList(Symbol symbol,
+                                                  DateTime date)
+    </pre>
+</div>
+<p>
+This method allows you to filter for options contracts based on your algorithm's specific requirements. Manual filtering these contracts is limited to the information included in the Symbol (strike, expiration, type, style) and/or prices from a History call. Once you have applied filters, you can use AddOptionContract to add the desired contract(s) to the Universe.
+This process allows you to subscribe exclusively to the options contracts you want and helps maintain a small Universe to keep your algorithm running as fast as possible.
+</p>
+<div class="section-example-container">
+    <pre>
+        AddOptionContract(Symbol symbol,
+                          Resolution resolution = Resolution.Minute,
+                          bool fillforward = true,
+                          decimal Leverage = 0m)
+    </pre>
+</div>
+<p>
+In backtesting, OptionChainProvider.GetOptionContractList allows you to request a list of options contracts for a specific symbol and date. In Live Mode, the date argument is fixed to the current algorithm time.
+</p>
+<div class="section-example-container">
+	<pre class="csharp">// In public class
+    private Symbol _equitySymbol;
+
+    // In Initialize
+    var equity = AddEquity("GOOG", Resolution.Minute);
+    equity.SetDataNormalizationMode(DataNormalizationMode.Raw);
+    _equitySymbol = equity.Symbol;
+
+public override void OnData(Slice data)
+{
+    // Get list of Options Contracts for a specific time
+    var contracts = OptionChainProvider.GetOptionContractList(_equitySymbol, data.Time);
+
+    // use AddOptionContract() to subscribe the data for specified contract
+    AddOptionContract(contracts.First(), Resolution.Minute);
+}
+</pre>
+	<pre class="python"># In Initialize
+    self.equity = self.AddEquity("GOOG", Resolution.Minute)
+    self.equity.SetDataNormalizationMode(DataNormalizationMode.Raw)
+
+def OnData(self, data):
+    ## Call options filter
+    contract = self.OptionsFilter(data)
+
+## Example of a filtering function to be called
+def OptionsFilter(self, data):
+    contracts = self.OptionChainProvider.GetOptionContractList(self.equity.Symbol, data.Time)  ## Get list of Options Contracts for a specific time
+    
+    ## Use AddOptionContract() to subscribe the data for specified contract
+    self.AddOptionContract(contracts[0], Resolution.Minute)  ## Add the first contract in contracts
+
+    return contracts[0]
+</pre>
+</div>
