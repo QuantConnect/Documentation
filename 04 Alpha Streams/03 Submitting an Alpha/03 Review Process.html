@@ -1,2 +1,86 @@
 <p>
-Alphas are reviewed for five <b>technical</b> criteria. We aim to not impose any value bias during an Alpha review but primarily to ensure they are mechanically sound. When submitting your Alpha please review it for the following points:</p><h4>Stateless &amp; Resilient</h4><p>Mechanisms should be setup to restore internal state in the event of reboots. Alphas will be very long running. Over the course of months or years, the server will need patches and occasional restarting. The alpha should be smart enough to automatically recover in the event of restart using History and WarmUp API methods.</p><h4>Use Reliable Data Sources</h4><p>Alphas should use public data, commercial feeds or QuantConnect's data. Importing a personal dataset through DropBox isn't reliable enough to build a long-term track record and ensure the Alpha will continue working as expected. You should use public data sources (e.g. Quandl), commercial data, or QuantConnect supplied data.</p><h4>Grounded in Reality</h4><p>Alphas should have clear strategic reasoning underpinning the strategy. A single reason based foundation for the algorithm is necessary to understand the alpha behavior when things go wrong, and it helps improve your alpha application for funds. Obscure correlations or overfitted strategies tend to perform poorly out of sample.</p><h4>Transparent Sourcing</h4><p>Authors need a transparent employment history and alphas must not infringe on other IP. We'd like to know the employment history of authors on the platform and ensure the alpha is not infringing on any intellectual property, including your current and past employers. Public or shared content may be used as a foundation and extended. Where you may have licensed the IP from a third party, presenting consents for usage are acceptable.</p>
+Alphas are reviewed for seven <b>technical</b> criteria. We aim to not impose any value bias during an Alpha review but primarily to ensure they are mechanically sound. 
+When submitting your Alpha please review it for the following points:
+</p>
+<h4>Stateless &amp; Resilient</h4>
+<p>Mechanisms should be setup to restore internal state in the event of reboots. 
+    Alphas will be very long running. Over the course of months or years, the server will need patches and occasional restarting. The alpha should be smart enough to automatically recover in the
+     event of restart using History and WarmUp API methods.
+</p>
+<h4>Use Reliable Data Sources</h4>
+<p>Alphas should use public data, commercial feeds or QuantConnect's data. Importing a personal dataset through DropBox isn't reliable enough to build a long-term track record and ensure the Alpha will continue working as expected. 
+    You should use public data sources (e.g. Quandl), commercial data, or QuantConnect supplied data.
+</p>
+<h4>Grounded in Reality</h4>
+<p>Alphas should have clear strategic reasoning underpinning the strategy. A single reason based foundation for the algorithm is necessary to understand the alpha behavior when things go wrong, 
+    and it helps improve your alpha application for funds. Obscure correlations or overfitted strategies tend to perform poorly out of sample.
+</p>
+<h4>Transparent Sourcing</h4>
+<p>Authors need a transparent employment history and alphas must not infringe on other IP. We'd like to know the employment history of authors on the platform and ensure the alpha is not infringing
+     on any intellectual property, including your current and past employers. Public or shared content may be used as a foundation and extended. Where you may have licensed the IP from a third party,
+      presenting consents for usage are acceptable.
+</p>
+<h4>Edge Case Handling</h4>
+<p>
+Alphas need to be able to handle edge cases, including Dividends, Splits, Delistings, and other significant data changes. This adds another layer of resiliency and will keep an Alpha running in the event of data changes. This 
+can involve simple control logic, explicitly removing certain securities affected from the Universe, or other methods.
+</p>
+<h4>Avoid Common Biases</h4>
+<h5>Look-Ahead Bias</h5>
+<p>
+Look-ahead bias can negatively affect the performance of an Alpha once it is deployed and will limit its appeal for licensing. Bias is introduced by using information or data in testing that would not have been known or
+available during the period being analyzed. In order to avoid look-ahead bias in an Alpha, it is vital only to use information that would have been available at the time of the trade.
+</p>
+<h5>Selection Bias</h5>
+<p>
+Selection bias happens when an Alpha selects specific securities where the data is known and where a subset of the data is systematically excluded due to a particular attribute. Universe Selection aids in preventing
+selection bias by blindly choosing assets with limited filtering and without foreknowledge of whether the security will be delisted, declare bankruptcy, split, etc. Fixed universes are not necessarily biased, but authors must exercise caution. Alphas
+whose Ingiths are generalizable across groups of securities and market conditions will generate more appeal than those with minimal scope.
+</p>
+<p>
+Although not a technical requirement for submission, Alphas should be simplified and generalized as much as possible by omitting specific APIs that LEAN offers.
+</p>
+table class="table qc-table">
+<thead>
+<tr>
+<th>
+API
+</th>
+<th>
+</th>
+</tr>
+</thead>
+        <tbody>
+        <tr>
+            <td>
+                Fee Models
+            </td>
+            <td>
+                Funds can obtain significantly lower fees from brokerages than individual traders. Omitting fees allows funds to extrapolate from an equity curve using their fee models instead.
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Brokerage Models
+            </td>
+            <td>
+                Brokerage Models are useful for individuals trading with LEAN, but omitting them in Alphas offers simplicity and funds have specific models that they will likely apply.
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Reality Modeling
+            </td>
+            <td>
+                Fill, Slippage, Settlement, and Buying Power Models -- all of these add constraints upon Insight emission.
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Plotting
+            </td>
+            <td>
+                Plots and Charts won't appear in the Alpha Streams marketplace and won't be seen by funds.
+            </td>
+        </tr>
+        </tbody>
