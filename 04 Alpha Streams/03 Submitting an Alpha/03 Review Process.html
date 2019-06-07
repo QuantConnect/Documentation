@@ -22,16 +22,17 @@ When submitting your Alpha please review it for the following points:
 </p>
 <h4>Edge Case Handling</h4>
 <p>
-Alphas need to be able to handle edge cases, including Dividends, Splits, Delistings, and other significant data changes. This adds another layer of resiliency and will keep an Alpha running in the event of data changes. This 
-can involve simple control logic, explicitly removing certain securities affected from the Universe, or other methods.
+Alphas need to be able to handle edge cases such as Dividends, Splits, and Delistings. This adds another layer of resiliency and will keep an Alpha running in the event of data changes. This 
+can involve simple control logic, explicitly removing certain affected securities from the Universe, or other methods.
 </p>
-<h4>Avoid Common Biases</h4>
-<h5>Look-Ahead Bias</h5>
+<h4>Recommended Best Practices</h4>
+We won't reject any Alphas based on what is outlined below, but these are good practices to abide by when authoring an Alpha.
+<h5>Avoid Look-Ahead Bias</h5>
 <p>
 Look-ahead bias can negatively affect the performance of an Alpha once it is deployed and will limit its appeal for licensing. Bias is introduced by using information or data in testing that would not have been known or
 available during the period being analyzed. In order to avoid look-ahead bias in an Alpha, it is vital only to use information that would have been available at the time of the trade.
 </p>
-<h5>Selection Bias</h5>
+<h5>Limit Selection Bias</h5>
 <p>
 Selection bias happens when an Alpha selects specific securities where the data is known and where a subset of the data is systematically excluded due to a particular attribute. Universe Selection aids in preventing
 selection bias by blindly choosing assets with limited filtering and without foreknowledge of whether the security will be delisted, declare bankruptcy, split, etc. Fixed universes are not necessarily biased, but authors must exercise caution. Alphas
@@ -40,47 +41,31 @@ whose Ingiths are generalizable across groups of securities and market condition
 <p>
 Although not a technical requirement for submission, Alphas should be simplified and generalized as much as possible by omitting specific APIs that LEAN offers.
 </p>
-table class="table qc-table">
+<table class="table qc-table">
 <thead>
 <tr>
 <th>
-API
+Reality Modeling Code to Omit
 </th>
 <th>
 </th>
 </tr>
 </thead>
         <tbody>
-        <tr>
+            <tr>
             <td>
-                Fee Models
+                <ul>
+                    <li>Fee Modes</li>
+                    <li>Brokerage Models</li>
+                    <li>Fill Models</li>
+                    <li>Slippage Models</li>
+                    <li>Buying Power Models</li>
+                    <li>Settlement Models</li>
+                </ul>
             </td>
             <td>
-                Funds can obtain significantly lower fees from brokerages than individual traders. Omitting fees allows funds to extrapolate from an equity curve using their fee models instead.
-            </td>
-        </tr>
-        <tr>
-            <td>
-                Brokerage Models
-            </td>
-            <td>
-                Brokerage Models are useful for individuals trading with LEAN, but omitting them in Alphas offers simplicity and funds have specific models that they will likely apply.
-            </td>
-        </tr>
-        <tr>
-            <td>
-                Reality Modeling
-            </td>
-            <td>
-                Fill, Slippage, Settlement, and Buying Power Models -- all of these add constraints upon Insight emission.
-            </td>
-        </tr>
-        <tr>
-            <td>
-                Plotting
-            </td>
-            <td>
-                Plots and Charts won't appear in the Alpha Streams marketplace and won't be seen by funds.
+                All of these models add functionality for individual traders or researchers, but funds have specific methods and models they'll want to use.
+                Omitting these will remove some constraints upon Insight emission and provide an unfiltered view of how the Alpha model performs.
             </td>
         </tr>
         </tbody>
