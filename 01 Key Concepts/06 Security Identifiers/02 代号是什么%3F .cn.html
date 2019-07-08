@@ -1,0 +1,43 @@
+<p>
+    （证券）代号具有多个公共属性，它们都可以用于唯一标识资产。当它们序列化在一起时，此类允许在一个自包含的引用中对百万个不同的证券进行唯一的标识。
+</p>
+<img src="https://cdn.quantconnect.com/alpha/docs/i/what-is-symbol_rev0.png" class="img-responsive"/>
+<div class="section-example-container">
+<pre class="all">
+Symbol.Market            # 市场 USA, FXCM, GDAX, Bitfinex, Oanda. Liquidity venues.
+Symbol.SecurityType      # 证券类型包括权益(Equity), 期权(Option), 期货(Future), 外汇(Forex), 数字货币(Crypto) and 差价合约(Cfd).
+Symbol.OptionType        # 美式或欧式期权.
+Symbol.OptionRight       # OptionRight表明是一个看涨期权或是看跌期权.
+Symbol.Date              # 对权益为最早上市日期; 对期权或者期货，则是到期日.
+Symbol.HasUnderlying     # 是一个有标的物的衍生品.
+</pre>
+</div>
+
+<p>
+所有数据都会被编码到代号对象中。 QuantConnect会尽力从您的算法中隐藏这些细节，但有时您会看到它像这样编码的哈希：<code>AAPL R735QTJ8XC9X</code>。编码字符串的前半部分代表 <b>第一个</b> 股票代码AAPL列在其下, 末尾的部分则表示资产的其他信息 (证券类型, 上市日期, 到期日期, 行权价, 上市市场)。 
+</p>
+
+<img class="img-responsive" src="https://cdn.quantconnect.com/docs/i/symbol-encoding-examples_rev0.png" style="max-width: 400px"/>
+
+
+<h4>
+重要: 添加证券
+</h4>
+<p>
+当您使用 <code>AddSecurity()/AddEquity()</code> 方法手动请求数据时, QuantConnect假定您从<i>"今天"</i>添加股票代号，同时自动查找第一个与该资产一同列出的标签代号。使用上述的Google例子:
+</p>
+<div class="section-example-container">
+<pre class="python">
+self.goog = self.AddEquity("GOOG").Symbol
+self.Debug(self.goog.ID) # 打印 "GOOCV VP83T1ZUHROL"
+self.Debug(self.goog)    # 打印您的参考 "GOOG"
+</pre>
+<pre class="csharp">
+var goog = AddEquity("GOOG").Symbol;
+Debug(goog.ID.ToString()); // 打印 "GOOCV VP83T1ZUHROL"
+Debug(goog);               // 打印您的参考 "GOOG"
+</pre>
+</div>
+<p>
+    要访问（证券）代号的值，可以使用<code> Symbol.Value </code>属性，该属性返回您所使用的代号字符串来将数据添加到您的算法之中（即我们示例中的“GOOG”）。
+</p>
