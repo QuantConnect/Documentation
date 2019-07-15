@@ -1,0 +1,30 @@
+<p>
+在实盘运行算法时，可以使用方法$[MarketOrder，T：QuantConnect.Orders.MarketOrder]下两种订单：同步或异步。
+</p>
+
+<h4>同步市价单</h4>
+<p>
+MarketOrder（市价单）会被默认为同步发送。这意味着在得到来自经纪商的订单成交反馈之前，该方法将阻止代码继续运行。
+在高流动市场中，订单成交反馈通常是即时的; 然而，一些流动性不足的股票或缓慢的经纪商可能需要几秒钟才能成交市价单。默认情况下，LEAN等待最多5秒来成交市价单，然后恢复正常地运行算法。
+</p>
+<p>
+如果您的算法需要更长的订单成交时间，则可以用$[MarketOrderFillTimeOut，P：QuantConnect.Securities.SecurityTransactionManager.MarketOrderFillTimeout]方法调整。 这是通过Transactions Manager设置的，如下所示。
+请记住，这个方法会为了成交时间较长的订单而导致算法被阻止继续运行。
+</p>
+<div class="section-example-container">
+<pre class="python">self.Transactions.MarketOrderFillTimeout = TimeSpan.FromMinutes(2)</pre>
+<pre class="csharp">Transactions.MarketOrderFillTimeout = TimeSpan.FromMinutes(2);</pre>
+</div>
+
+<h4>异步市价单</h4>
+<p>
+这种类型的MarketOrder（市价单）无需等待经纪商的订单成交反馈就会将下一个市价单发送给经纪商。
+这对于发送数百或数千个订单（例如Universe Selection）非常有用，同步执行此操作需要几分钟时间。
+</p>
+<p>
+将asynchronous参数设为True即可发送异步市价单：
+</p>
+<div class="section-example-container">
+<pre class="python">self.MarketOrder("SPY", 100, true, "Async Order")</pre>
+<pre class="csharp">MarketOrder("SPY", 100, asynchronous: true);</pre>
+</div>
