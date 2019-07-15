@@ -1,0 +1,125 @@
+<meta name="tag" content="using data">
+<meta name="tag" content="securities and portfolio">
+<meta name="tag" content="securities">
+<p>
+所有算法都拥有一个$[Securities,P:QuantConnect.Algorithm.QCAlgorithm.Securities]属性。该属性为算法中的每一个资产存储一个$[Security,T:QuantConnect.Securities.Security]对象。Security对象包含模型与资产属性。每一个Security对象都可以完全自定义以实现您的策略。Securities是一个<code>Dictionary&lt;Symbol,
+    Security&gt;</code>，因此您可以使用其股票代码来访问您的Security对象：<code>Securities["IBM"].Price</code>。
+</p>
+<div class="section-example-container">
+	<pre class="csharp">// 常用Security属性：
+Securities["IBM"].HasData           // Security是否有数据
+                 .Invested          // 是否持有
+                 .LocalTime         // 交易所当地时间
+                 .Holdings          // Portfolio对象
+                 .Exchange          // 交易所
+                 .FeeModel;         // 费用模型
+</pre>
+	<pre class="python">// 常用Security属性：
+self.Securities["IBM"].HasData           # Security是否有数据
+                 .Invested          # 是否持有
+                 .LocalTime         # 交易所当地时间
+                 .Holdings          # Portfolio对象
+                 .Exchange          # 交易所
+                 .FeeModel;         # 费用模型
+</pre>
+</div>
+<p>
+    为了创造近乎真实的回测，Security对象还携带所有模型。可以通过设置Security对象的属性来使用模型，从而改善回测的逼真度。
+</p>
+<p>
+    Portfolio属性是SecurityHolding对象的集合。通过它可以访问资产组合的属性。
+</p>
+<div class="section-example-container">
+	<pre class="csharp">// 常用Portfolio属性:
+Portfolio.Invested                // 持有至少一笔资产
+         .Cash                    // 账户中所有货币的总和 (仅包括已结算现金)
+         .UnsettledCash           // 账户中所有货币的总和 (仅包括未结算现金)
+         .TotalFees               // 自回测开始以来产生的的所有费用总和
+         .TotalHoldingsValue      // 持有资产的价值总和
+         .MarginRemaining         // 剩余保证金
+         .TotalMarginUsed         // 已使用的保证金总和
+         .TotalPortfolioValue     // 投资组合的价值总和
+         .TotalProfit             // 毛利润总和
+         .TotalUnrealizedProfit   // 所有资产的盈利/亏损总和
+</pre>
+	<pre class="python">// 常用Portfolio属性:
+self.Portfolio.Invested                # 持有至少一笔资产
+              .Cash                    # 账户中所有货币的总和 (仅包括已结算现金)
+              .UnsettledCash           # 账户中所有货币的总和 (仅包括未结算现金)
+              .TotalFees               # 自回测开始以来产生的的所有费用总和
+              .TotalHoldingsValue      # 持有资产的价值总和
+              .MarginRemaining         # 剩余保证金
+              .TotalMarginUsed         # 已使用的保证金总和
+              .TotalPortfolioValue     # 投资组合的价值总和
+              .TotalProfit             # 毛利润总和
+              .TotalUnrealizedProfit   # 所有资产的盈利/亏损总和
+</pre>
+</div>
+<p>
+    Portfolio是一个<code>Dictionary&lt;Symbol, SecurityHolding&gt;</code>类，所以我们可以通过股票代码访问SecurityHolding对象及其属性：<code>Portfolio["IBM"].IsLong</code>
+</p>
+<div class="section-example-container">
+	<pre class="csharp">// 常用SecurityHolding属性:
+Portfolio["IBM"].Invested          // 是否已经持有
+                .IsLong            // 做多/做空
+                .Quantity          // 持有数量
+                .UnrealizedProfit; // 盈利/亏损
+                .TotalFees         // 自回测开始以来产生的费用
+                .Price;            // 资产价格
+</pre>
+	<pre class="python">// 常用SecurityHolding属性:
+self.Portfolio["IBM"].Invested     # 是否已经持有
+                .IsLong            # 做多/做空
+                .Quantity          # 持有数量
+                .UnrealizedProfit; # 盈利/亏损
+                .TotalFees         # 自回测开始以来产生的费用
+                .Price;            # 资产价格
+</pre>
+</div>
+<p>
+    有关这些类的详细信息，请参阅LEAN文档。Security对象：$[Security,T:QuantConnect.Securities.Security]，Portfolio对象：$[SecurityPortfolioManager,T:QuantConnect.Securities.SecurityPortfolioManager]，SecurityHolding对象：$[SecurityHolding,T:QuantConnect.Securities.SecurityHolding]。
+</p>
+<div class="section-example-container">
+	<pre class="csharp">//通过Securities对象访问Security对象:
+Securities["IBM"].Price
+</pre>
+	<pre class="csharp">//Security对象属性:
+class Security {
+    Resolution Resolution;
+    bool HasData;
+    bool Invested;
+    DateTime LocalTime;
+    SecurityHolding Holdings;
+    SecurityExchange Exchange;
+    IFeeModel FeeModel;
+    IFillModel FillModel;
+    ISlippageModel SlippageModel;
+    ISecurityPortfolioModel PortfolioModel;
+    ISecurityMarginModel MarginModel;
+    ISettlementModel SettlementModel;
+    IVolatilityModel VolatilityModel;
+    ISecurityDataFilter DataFilter;
+}
+</pre>
+	<pre class="python">#通过Securities对象访问Security对象:
+self.Securities["IBM"].Price
+</pre>
+	<pre class="python">#Security对象属性:
+class Security {
+    Resolution Resolution;
+    bool HasData;
+    bool Invested;
+    DateTime LocalTime;
+    SecurityHolding Holdings;
+    SecurityExchange Exchange;
+    IFeeModel FeeModel;
+    IFillModel FillModel;
+    ISlippageModel SlippageModel;
+    ISecurityPortfolioModel PortfolioModel;
+    ISecurityMarginModel MarginModel;
+    ISettlementModel SettlementModel;
+    IVolatilityModel VolatilityModel;
+    ISecurityDataFilter DataFilter;
+}
+</pre>
+</div>
