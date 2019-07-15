@@ -1,0 +1,118 @@
+<meta name="tag" content="trading and orders">
+<meta name="tag" content="placing orders">
+<meta name="tag" content="order types">
+<p>
+我们支持许多不同的订单类型。 在实盘交易中，取决于您的经纪商，我们也许能模拟其中一些订单类型（有关此内容的更多信息，请参阅<a class="docs-internal-link" href="/docs/live-trading/overview">实盘交易</a>）。
+</p>
+<table class="table qc-table table-striped table-responsive">
+	<thead>
+		<tr>
+			<th>
+            订单类型
+        </th>
+			<th>
+            方法
+        </th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td>
+            Market Order（市价单）
+        </td>
+			<td><code>MarketOrder(Symbol symbol, decimal quantity, bool asynchronous=false, string tag="")</code><br>
+				<small>Asynchronous参数可用于发送许多订单而不等待成交反馈。</small>
+			</td>
+		</tr>
+		<tr>
+			<td>
+            Market On Open（开盘市价单）
+        </td>
+			<td><code>MarketOnOpenOrder(Symbol symbol, decimalquantity, string tag="")</code><br>
+				<small>在开盘时成交。 仅限股票市场。</small>
+			</td>
+		</tr>
+		<tr>
+			<td>
+            Market On Close（收盘市价单）
+        </td>
+			<td><code>MarketOnCloseOrder(Symbol symbol, decimal quantity, string tag="")</code><br>
+				<small>在收盘时成交。 仅限股票市场。 订单必须在收盘15分钟前提交。
+            </small>
+			</td>
+		</tr>
+		<tr>
+			<td>
+            Stop Market（市价止损单）
+        </td>
+			<td><code>StopMarketOrder(Symbol symbol, decimal quantity, decimal stopPrice, string tag="")</code><br>
+				<small>达到止损价时提交市价单。</small>
+			</td>
+		</tr>
+		<tr>
+			<td>
+            Limit Order （限价单）
+        </td>
+			<td><code>LimitOrder(Symbol symbol, decimal quantity, decimal limitPrice, string tag="")</code><br>
+				<small>以限价或比限价更好的价格成交订单。</small>
+			</td>
+		</tr>
+		<tr>
+			<td>
+            Stop Limit Order （限价止损单）
+        </td>
+			<td><code>StopLimitOrder(Symbol symbol, decimal quantity, decimal stopPrice, decimal limitPrice, string tag="")</code><br>
+				<small>达到止损价时提交限价单。</small>
+			</td>
+		</tr>
+	</tbody>
+</table>
+<p>
+    所有订单方法都返回OrderTicket。tag参数可用于发送其他调试信息以及每个订单对象。
+</p>
+<div class="section-example-container">
+	<pre class="csharp">// 不同的订单类型：
+// 立即成交市价单（在转到下一行代码之前）
+var newTicket = MarketOrder("IBM", 100);
+
+// 下一个限价低于现价的做多限价单
+var newTicket = LimitOrder("IBM", 100, lastClose * .999m);
+
+// 空头平仓，做多高于最后收盘价的市价止损单
+var stopPrice = close * 1.0025m;
+var newTicket = StopMarketOrder("IBM", 100, stopPrice);
+
+// 市场下跌的多头平仓
+var stopPrice = close * .9975m;
+var newTicket = StopMarketOrder("IBM", -100, stopPrice);
+
+// 限价止损单
+var newTicket = StopLimitOrder("IBM", 100, stopPrice, limitPrice);
+
+// 收盘/开盘市价单
+var newTicket = MarketOnCloseOrder("IBM", 100);
+var newTicket = MarketOnOpenOrder("IBM", 100);
+</pre>
+	<pre class="python"># 不同的订单类型：
+# 立即成交市价单（在转到下一行代码之前）
+newTicket = self.MarketOrder("IBM", 100)
+
+# 下一个限价低于现价的做多限价单
+newTicket = self.LimitOrder("IBM", 100, lastClose * decimal.Decimal(.999))
+
+# 空头平仓，做多高于最后收盘价的市价止损单
+stopPrice = close * decimal.Decimal(1.0025)
+newTicket = self.StopMarketOrder("IBM", 100, stopPrice)
+
+# 市场下跌的多头平仓
+stopPrice = close * decimal.Decimal(.9975)
+newTicket = self.StopMarketOrder("IBM", -100, stopPrice)
+
+# 限价止损单
+newTicket = self.StopLimitOrder("IBM", 100, stopPrice, limitPrice)
+
+# 收盘/开盘市价单
+newTicket = self.MarketOnCloseOrder("IBM", 100)
+newTicket = self.MarketOnOpenOrder("IBM", 100)
+</pre>
+</div>

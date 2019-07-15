@@ -1,0 +1,36 @@
+<meta name="tag" content="consolidating data" />
+<meta name="tag" content="using data" />
+<p>
+	Consolidator（数据整合器）用于将时间跨度较小的数据点合并成时间跨度较大的K线， 常用于合并分钟数据来创建5,10或15分钟的K线。 我们提供Tick，秒，分钟，小时和日分辨率，可以根据您的需求生成合适的K线。
+</p>
+<p>
+	您需要创建Consolidator（数据整合器）类，然后将其注册以接受数据。一旦您注册Consolidator类后，它会自动获取数据更新。当它将数据整合成合适的分辨率后，它会在<code>DataConsolidated</code>上发出一个event handler（事件处理程序）。您只需在<code class="csharp fsharp">Initialize()</code><code class="python">def Initialize:</code>里创建Consolidator并绑定到事件处理程序一次即可。
+</p>
+
+<div class="section-example-container" >
+<pre class="csharp" >
+// 创建并initialize Consolidator
+public override void Initialize()
+{
+	//...other initialization...
+	AddEquity("SPY", Resolution.Minute);
+	var consolidator = new TradeBarConsolidator(15);
+	consolidator.DataConsolidated += {
+		Debug(Time.ToString() + " > New Bar!");
+	};
+	SubscriptionManager.AddConsolidator("SPY", consolidator);
+}
+</pre>
+<pre class="python" >
+# 创建并initialize Consolidator
+def Initialize(self):
+    # ...other initialization...
+    self.AddEquity("SPY", Resolution.Minute)
+    consolidator = TradeBarConsolidator(15)
+    consolidator.DataConsolidated += self.OnDataConsolidated
+    self.SubscriptionManager.AddConsolidator("SPY", consolidator)
+
+def OnDataConsolidated(self, sender, bar):
+    self.Debug(str(self.Time) + " > New Bar!")
+</pre>
+</div>
