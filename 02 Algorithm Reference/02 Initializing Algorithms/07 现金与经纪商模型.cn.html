@@ -1,0 +1,50 @@
+<meta name="tag" content="brokerage models" />
+<p>
+	在QuantConnect中，我们默认使用保证金建模对您的算法进行模拟，但您可以选择现金帐户类型。现金账户不允许杠杆交易，而保证金账户支持您使用账户价值的2-4倍杠杆进行交易。您可以在您的Initialize()方法中调用$[SetBrokerageModel(BrokerageName brokerage, AccountType account),M:QuantConnect.Algorithm.QCAlgorithm.SetBrokerageModel]并输入您的经纪商名称。
+</p>
+<p>
+	$[BrokerageName,T:QuantConnect.Brokerages.BrokerageName]枚举类支持Default, TradierBrokerage, InteractiveBrokersBrokerage, FxcmBrokerage与OandaBrokerage。在设置经纪商名称的同时，我们还设置了该经纪商的交易费用结构。
+</p>
+<p>
+	$[AccountType,T:QuantConnect.AccountType]枚举类支持现金与保证金类型。默认情况下使用现金类型账户，并且股票的现金结算期限默认为3天。保证金类型账户默认立即结算，并且默认杠杆率为2。
+</p>
+<p>
+	拥有超过25,000美元股权的保证金账户可以进行典型即日交易(Pattern Day Trading Margin)。 这增加了您的可用杠杆：在市场开放时杠杆率为4倍，市场关闭时为2倍。要在算法中对此进行模拟，您需要设置您的证券的$[MarginModel,P:QuantConnect.Securities.Security.MarginModel]（保证金模式）为<code>PatternDayTradingMarginModel</code>。
+</p>
+<p>
+	有关经纪商模型的更多信息，请参阅<a class="docs-internal-link" href="/docs/algorithm-reference/reality-modelling">现实建模</a>部分。
+</p>
+<div class="section-example-container" >
+	<pre class="csharp" >
+//经纪商模型与账户类型：
+SetBrokerageModel(BrokerageName.InteractiveBrokersBrokerage, AccountType.Margin);
+
+//Add securities and if required set custom margin models
+//订阅证券。如果必要，设置自定义保证金模型。
+var spy = AddEquity("SPY"); //Defaults to minute bars.
+spy.MarginModel = new PatternDayTradingMarginModel();
+</pre>
+	<pre class="python" >
+#经纪商模型与账户类型：
+self.SetBrokerageModel(BrokerageName.InteractiveBrokersBrokerage, AccountType.Cash)
+
+//订阅证券。如果必要，设置自定义保证金模型。
+spy = self.AddEquity("SPY") # Default to minute bars
+spy.MarginModel = PatternDayTradingMarginModel()
+</pre>
+	<pre class="fsharp" >
+(* 经纪商模型与账户类型 *)
+this.SetBrokerageModel(BrokerageName.InteractiveBrokersBrokerage, AccountType.Cash);
+this.AddEquity("SPY", Resolution.Second) |> ignore
+(* 订阅证券。如果必要，设置自定义保证金模型。 *)
+this.Securities.Item("SPY").MarginModel <- new PatternDayTradingMarginModel()
+</pre>
+	<pre class="csharp" >
+// You can also create your own brokerage model: IBrokerageModel
+class MyBrokerage: DefaultBrokerage {
+   // Custom implementation of brokerage here.
+}
+
+SetBrokerageModel(new MyBrokerage());
+</pre>
+</div>
