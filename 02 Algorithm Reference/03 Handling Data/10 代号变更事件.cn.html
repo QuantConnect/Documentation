@@ -1,0 +1,22 @@
+<meta name="tag" content="data event handlers"/>
+<meta name="tag" content="symbol changed event"/>
+
+<p>
+	$[SymbolChangedEvents,T:QuantConnect.Data.Market.SymbolChangedEvents]提供关于股票新标签，或两个标签合并为一个的通知。它会提供OldSymbol和NewSymbol标签。
+</p>
+<div class="section-example-container">
+<pre class="python">
+def Initialize(self):
+    self.SetStartDate(2014, 4, 1)
+    self.SetEndDate(2014, 4, 3)
+    self.SetCash(100000)
+    self.goog = self.AddEquity("GOOG", Resolution.Daily)
+    
+def OnData(self, data):
+    self.MarketOrder('GOOG', 10)
+    
+    ## 如果‘GOOG’代号有变更，记录旧代号和新代号
+    if data.SymbolChangedEvents.ContainsKey('GOOG'):
+        self.Log("Old symbol: {0}, New symbol: {1}".format(data.SymbolChangedEvents['GOOG'].OldSymbol,data.SymbolChangedEvents['GOOG'].NewSymbol))
+</pre>
+</div>
