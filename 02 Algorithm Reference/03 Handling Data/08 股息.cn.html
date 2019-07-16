@@ -1,0 +1,24 @@
+<meta name="tag" content="data event handlers"/>
+<meta name="tag" content="dividends event"/>
+
+<p>
+    $[Dividend，T：QuantConnect.Data.Market.Dividend]事件在支付股息时触发。它提供每股派息。
+</p>
+<div class="section-example-container">
+<pre class="python">
+def Initialize(self):
+    self.SetStartDate(2017, 6, 1)
+    self.SetEndDate(2017, 6, 28)
+    self.spy = self.AddEquity("SPY", Resolution.Hour) 
+    
+def OnData(self, data):
+    if not self.Portfolio.Invested:
+        self.Buy("SPY", 100)
+    
+    ## 查看SPY是否在Dividend DataDictionary中的条件
+    if data.Dividends.ContainsKey("SPY"):
+        ## 记录股息分配
+        self.Log(f"SPY paid a dividend of {data.Dividends['SPY'].Distribution}")
+   
+</pre>
+</div>
