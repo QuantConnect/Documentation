@@ -1,0 +1,65 @@
+<p>
+	您可以使用两个方法来填充指标从而使它们做好使用准备。
+</p>
+<h4>算法预热</h4>
+<p>
+	当我们设定一个算法预热期，算法引擎会传入数据并在开始日期前自动更新所有指标（阅读<a class="docs-internal-link" href="/docs/algorithm-reference/historical-data">设定预热期</a>）。
+	为了确保指标在预热后预备完毕，您需要选择一个足够长的预热期从而有足够数据来预热。
+</p>
+<div class="section-example-container">
+	<pre class="python">
+def Initialize(self):
+    self.AddEquity("SPY", Resolution.Hour)
+    # 使用快捷方式定义一个10日RSI指标
+    self.rsi = self.RSI("SPY", 10,  MovingAverageType.Simple, Resolution.Daily)
+    # 设置一个预热期来预热指标
+    self.SetWarmUp(timedelta(20))
+    # 设置k线数量来预热指标
+    # self.SetWarmUp(10, Resolution.Daily)
+</pre>
+	<pre class="csharp fsharp">
+public override void Initialize()
+{
+	AddEquity(_symbol, Resolution.Hour);
+    // 使用快捷方式定义一个10日RSI指标
+    _rsi = RSI(_symbol, 10,  MovingAverageType.Simple, Resolution.Daily);
+    // 设置一个预热期来预热指标
+    SetWarmUp(TimeSpan.FromDays(20));
+    // 设置k线数量来预热指标
+    // SetWarmUp(10, Resolution.Daily)
+}
+</pre>
+</div>
+<p>
+	资产集选择不支持预热，因此与之相关的元素将不会被更新。
+</p>
+
+<h4>历史数据预热</h4>
+<p>
+	或者，我们可以请求历史数据来手动更新我们的指标。（阅读<a class="docs-internal-link" href="docs/algorithm-reference/historical-data#Historical-Data-Historical-Data-Requests">历史数据请求</a>）。
+</p>
+<div class="section-example-container">
+	<pre class="python">
+def Initialize(self):
+    self.AddEquity("SPY", Resolution.Hour)
+    # 使用快捷方式定义一个10日RSI指标
+    self.rsi = self.RSI("SPY", 10,  MovingAverageType.Simple, Resolution.Daily)
+    # 使用每日历史收盘数据来初始化指标
+    history = self.History(["SPY"], 10, Resolution.Daily)
+        for time, row in history.loc["SPY"].iterrows():
+            self.rsi.Update(time, row["close"])
+
+</pre>
+	<pre class="csharp fsharp">
+public override void Initialize() {
+    AddEquity(_symbol, Resolution.Hour);
+    // 使用快捷方式定义一个10日RSI指标
+    _rsi = RSI(_symbol, 10,  MovingAverageType.Simple, Resolution.Daily);
+    // 使用每日历史收盘数据来初始化指标
+    var history = History(_symbol, 10, Resolution.Daily);
+    foreach (var bar in history) {
+        _rsi.Update(bar.EndTime, bar.Close);
+    }
+}
+</pre>
+</div>
