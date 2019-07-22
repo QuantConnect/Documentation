@@ -1,0 +1,36 @@
+<p>
+	一些数据点指标在计算中仅使用单个价格数据。默认情况下，这些指标使用收盘价。对于股票，这些指标使用成交收盘价。对于其他有报价K线的资产，这些指标使用出价收盘价和要价收盘价的中间值进行计算。
+</p>
+<p>
+	如果您想使用其他字段例如<code>Open</code>，<code>High</code>，<code>Low</code>或<code>Close</code>来创建一个指标，您需要使用可用字段在指标快捷创建方法中指定<code>selector</code>参数。
+</p>
+<div class="section-example-container">
+	<pre class="python">
+# define a 10-period daily RSI indicator with shortcut helper method
+# select the Open price to update the indicator
+self.rsi = self.RSI("SPY", 10,  MovingAverageType.Simple, Resolution.Daily, Field.Open)
+</pre>
+	<pre class="csharp fsharp">
+// 使用快捷方式创建一个10日RSI指标
+// 指定开盘价来自动更新指标
+_rsi = RSI("SPY", 10,  MovingAverageType.Simple, Resolution.Daily, Field.Open);
+</pre>
+</div>
+
+<p>
+	You can also apply <code>RegisterIndicator</code> to register the price data with the specified field.
+</p>
+<div class="section-example-container">
+	<pre class="python">
+# 使用快捷方式创建一个10日RSI指标
+self.rsi = RelativeStrengthIndex(10, MovingAverageType.Simple)
+# 指定开盘价来自动更新指标
+self.RegisterIndicator("SPY", self.rsi, Resolution.Daily, Field.High)
+</pre>
+	<pre class="csharp fsharp">
+// 使用快捷方式创建一个10日RSI指标
+_rsi = new RelativeStrengthIndex(10, MovingAverageType.Simple);
+// 指定最高价来自动更新指标
+RegisterIndicator("SPY", _rsi, Resolution.Daily, Field.High);
+</pre>
+</div>
