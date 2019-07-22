@@ -23,7 +23,7 @@ Transactions属性是一个帮助方法，可以轻松访问当前和过去的�
 
 <div class="section-example-container">
 	<pre class="all" >
-// Popular Transactions methods:
+// 常见交易方法：
 Transactions
             .CancelOpenOrders(Symbol symbol)
             .CancelOrder(int orderId, string orderTag = null)
@@ -37,77 +37,77 @@ Transactions
 
 <div class="section-example-container" >
 <pre class="csharp" >
-// Creating an Order:
+// 创建订单：
 OrderTicket limitOrderTicket = LimitOrder("SPY", 100, 205);
 
-// Updating an Order:
+// 更新订单：
 limitOrderTicket.Update(new UpdateOrderFields{LimitPrice = 207.50};
 
-// Cancel an Order:
+// 取消订单：
 limitOrderTicket.Cancel();
 </pre>
 <pre class="python" >
-# Creating an Order:
+# 创建订单：
 limitOrderTicket = self.LimitOrder("SPY", 100, 205)
 
-# Updating an Order:
+# 更新订单：
 updateOrderFields = UpdateOrderFields()
 updateOrderFields.LimitPrice = decimal.Decimal(207.50)
 limitOrderTicket.Update(updateOrderFields)
 
-# Cancel an Order:
+# 取消订单：
 limitOrderTicket.Cancel()
 </pre>
 <pre class="csharp" >
-// Cancel all open orders from SPY
+// 取消SPY的所有未结订单：
 List<OrderTicket> cancelledOrders = Transactions.CancelOpenOrders("SPY")
 
-// Cancel order #10
+// 取消10号订单：
 OrderTicket cancelledOrder = Transactions.CancelOrder(10);
 
-// Get open orders
+// 获取所有未结订单：
 List<Order> openOrders = Transactions.GetOpenOrders();
 List<Order> openOrders = Transactions
     .GetOrders(x => x.Status.IsOpen()).ToList();
 
-// Get open orders from SPY
+// 获取SPY的所有未结订单：
 List<Order> openOrders = Transactions.GetOpenOrders("SPY");
 List<Order> openOrders = Transactions
     .GetOrders(x => x.Status.IsOpen() && x.Symbol == "SPY").ToList();
 
-// Get open order #10
+// 获取10号未结订单：
 Order openOrder = Transactions.GetOrderById(10);
 
-// Get order ticket #10
+// 获取10号未结订单的OrderTicket：
 OrderTicket orderTicket = Transactions.GetOrderTicket(10);
 
-// Get open orders tickets from SPY
+// 获取SPY所有未结订单的OrderTicket：
 IEnumerable<OrderTicket> openOrderTickets = Transactions
     .GetOrderTickets(x => x.Status.IsOpen() && x.Symbol == "SPY");
 </pre>
 <pre class="python" >
-# Cancel all open orders from SPY
+# 取消SPY的所有未结订单：
 cancelledOrders = self.Transactions.CancelOpenOrders("SPY")
 
-# Cancel order #10
+# 取消10号订单：
 cancelledOrder = self.Transactions.CancelOrder(10)
 
-# Get open orders
+# 获取所有未结订单：
 openOrders = self.Transactions.GetOpenOrders()
 
-# Get open orders from SPY
+# 获取SPY的所有未结订单：
 openOrders = self.Transactions.GetOpenOrders("SPY")
 
-# Get open order #10
+# 获取10号未结订单：
 openOrder = self.Transactions.GetOrderById(10)
 
-# Get all orders
+# 获取所有订单：
 orders = self.Transactions.GetOrders()
 
-# Get order ticket #10
+# 获取10号订单的OrderTicket：
 orderTicket = self.Transactions.GetOrderTicket(10)
 
-# Get all orders tickets
+# 获取所有未结订单的OrderTicket：
 openOrderTickets = self.Transactions.GetOrderTickets()
 </pre>
 </div>
