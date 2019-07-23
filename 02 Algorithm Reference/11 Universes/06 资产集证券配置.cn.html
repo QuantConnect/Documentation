@@ -1,0 +1,45 @@
+<meta name="tag" content="universes" />
+<meta name="tag" content="configuring securities" />
+<p>
+    往资产集添加证券时，某些算法需要原始或部分调整的价格数据。这可以通过<code>SetSecurityInitializer()</code>方法来进行控制。通过此方法，您可以在每一个证券集初上应用任何填充模型或特殊的数据请求。
+</p>
+
+<p>
+    最常见的请求是原始的，未调整的价格数据。这可以通过结合SetSecurityInitializer方法与$[SetDataNormalizationMode(),M:QuantConnect.Securities.Security.SetDataNormalizationMode]方法来实现。
+    当每个证券被加入到资产集时，它的数据将会被设置为任何一种枚举类的值。
+</p>
+<div class="section-example-container" >
+<pre class="csharp" >
+//在Initialize中
+SetSecurityInitializer(CustomSecurityInitializer);
+
+private void CustomSecurityInitializer(Security security)
+{
+	//用原始价格对证券初始化
+	security.SetDataNormalizationMode(DataNormalizationMode.Raw);
+}
+</pre>
+<pre class="python" >
+#在Initialize中
+self.SetSecurityInitializer(self.CustomSecurityInitializer)
+
+def CustomSecurityInitializer(self, security):
+    '''用原始价格对证券初始化'''
+    security.SetDataNormalizationMode(DataNormalizationMode.Raw)
+</pre>
+</div>
+
+<p>
+    对于简单请求，您可以使用证券初始化函数（security initializer）来实现。这让您可以仅仅使用一行代码来进行配置以及返回证券对象：
+</p>
+
+<div class="section-example-container">
+<pre class="csharp">
+//最常见的请求；对资产集证券请求原始价格数据
+SetSecurityInitializer(x => x.SetDataNormalizationMode(DataNormalizationMode.Raw));
+</pre>
+<pre class="python">
+# 最常见的请求；对资产集证券请求原始价格数据
+self.SetSecurityInitializer(lambda x: x.SetDataNormalizationMode(DataNormalizationMode.Raw))
+</pre>
+</div>
