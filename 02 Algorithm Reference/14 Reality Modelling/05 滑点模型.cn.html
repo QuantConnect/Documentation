@@ -1,0 +1,51 @@
+<meta name="tag" content="trading and orders" />
+<meta name="tag" content="transaction fees and slippage" />
+<meta name="tag" content="custom slippage models " />
+<p>
+	滑点是最后报价与实际成交价格之间的价格差异。这种差异可能是正的，也可能是负的。有时滑点可能会对您有利。在波动的市场中，您可能会遇到更多的滑点。
+</p>
+<p>
+	滑点模型在$[ISlippageModel,T:QuantConnect.Orders.Slippage.ISlippageModel]界面实施。我们提供$[VolumeShareSlippageModel,T:QuantConnect.Orders.Slippage.VolumeShareSlippageModel]（交易量占比滑点模型）给基于外汇的证券和$[ConstantSlippageModel,T:QuantConnect.Orders.Slippage.ConstantSlippageModel]（恒量滑点模型）给股票。
+</p>
+<p>
+	经验丰富的用户可能想自定义基于波动率的滑点模型，以提高您在波动市场中的回测的准确性。
+</p>
+
+
+<div class="section-example-container" >
+<pre class="csharp" >
+// 给证券自定义滑点模型
+Securities["SPY"].SetSlippageModel(new CustomSlippageModel(this));
+
+// 自定义滑点模式
+public class CustomSlippageModel : ISlippageModel {
+    private readonly QCAlgorithm _algorithm;
+
+    public CustomSlippageModel(QCAlgorithm algorithm) {
+        _algorithm = algorithm;
+    }
+
+    public decimal GetSlippageApproximation(Security asset, Order order) {
+        // 自定义滑点数学公式
+        var slippage = asset.Price*0.0001m*(decimal) Math.Log10(2*(double) order.AbsoluteQuantity);
+        _algorithm.Log("CustomSlippageModel: " + slippage);
+        return slippage;
+    }
+}
+</pre>
+<pre class="python" >
+# 给证券自定义滑点模型
+self.Securities["SPY"].SetSlippageModel(CustomSlippageModel(self))
+
+# 自定义滑点模式
+class CustomSlippageModel:
+    def __init__(self, algorithm):
+        self.algorithm = algorithm
+
+    def GetSlippageApproximation(self, asset, order):
+        # 自定义滑点数学公式
+        slippage = asset.Price * d.Decimal(0.0001 * np.log10(2*float(order.AbsoluteQuantity)))
+        self.algorithm.Log("CustomSlippageModel: " + str(slippage))
+        return slippage
+</pre>
+</div>
