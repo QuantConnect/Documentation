@@ -1,0 +1,67 @@
+<p>
+    您可以利用TimeInForce(订单有效期)来避免意外执行交易。通过设置时间参数，您不需要记得要取消旧交易。TimeInForce属性将设置未结订单的有效期。
+</p>
+<table class="table qc-table table-striped table-responsive">
+	<thead>
+		<tr>
+			<th>
+            Time In Force （订单有效期）
+        </th>
+			<th>
+            枚举类的值
+        </th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td>
+            Good Until Canceled （有效直至取消）
+            </td>
+			<td><code>TimeInForce.GoodTilCanceled</code><br>
+				<small>订单未成交前一直有效 - 默认值
+            </small>                
+			</td>
+		</tr>
+		<tr>
+			<td>
+            Day （今日有效）
+            </td>
+			<td><code>TimeInForce.Day</code><br>
+				<small>未成交订单在今日收盘前有效
+            </small>                
+			</td>
+		</tr>
+		<tr>
+			<td>
+            Good Until Date （固定日期前有效）
+        </td>
+			<td><code>TimeInForce.GoodTilDate(DateTime expiry)</code><br>
+				<small>未成交订单在设置的失效期前有效
+            </small>
+			</td>
+		</tr>
+	</tbody>
+</table>
+<p>
+    默认值是GoodTilCanceled。如果想设置不同的值，请在下订单前声明订单有效期。一次可以给一个或多个订单设置TimeInForce（订单有效期），除非重新再设置，这样会更改所有未来订单的默认值。
+    </p>
+<div class="section-example-container">
+        <pre class="csharp">
+    // 将限价单的有效期设为收盘前有效
+    DefaultOrderProperties.TimeInForce = TimeInForce.Day;
+    LimitOrder("IBM", 100, lastClose * .999m);
+
+    // 将市价单的有效期设为午前有效
+    DefaultOrderProperties.TimeInForce = TimeInForce.GoodTilDate(new DateTime(2019, 6, 19, 12, 0, 0));
+    MarketOrder("IBM", 100);
+    </pre>
+        <pre class="python">
+    # 将限价单的有效期设为收盘前有效
+    self.DefaultOrderProperties.TimeInForce = TimeInForce.Day
+    self.LimitOrder("IBM", 100, lastClose * decimal.Decimal(.999))
+
+    # 将市价单的有效期设为午前有效
+    self.DefaultOrderProperties.TimeInForce = TimeInForce.GoodTilDate(datetime(2019, 6, 19, 12, 0, 0))
+    self.MarketOrder("IBM", 100)
+    </pre>
+    </div>

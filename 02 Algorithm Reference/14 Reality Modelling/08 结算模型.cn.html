@@ -1,0 +1,20 @@
+<meta name="tag" content="trading and orders" />
+<meta name="tag" content="brokerage models" />
+<meta name="tag" content="settlement models" />
+<p>
+	交易完成后，经纪商根据市场和账户类型结算现金，这将由Settlement Models（结算模型）实现。最常见的结算类型是即时的，资金可以立即进行交易。这由$[ImmediateSettlementModel，T：QuantConnect.Securities.ImmediateSettlementModel]（即时结算模型）处理。 交易美国股票的现金账户通常在交易发生后3天结算，这由$[DelayedSettlementModel，T：QuantConnect.Securities.DelayedSettlementModel]（延迟结算模型）实现。
+</p>
+<p>
+	结算模型在$[ISettlementModel，T：QuantConnect.Securities.ISettlementModel]界面实现。您可以通过自定义实施方法来创建自定义结算模型。大多数用户不需要创建自己的结算模型，使用上面提供的模型之一即可。
+</p>
+
+<div class="section-example-container" >
+<pre class="csharp" >
+// 将证券设定为延迟结算模型：7天后，早上8点结算。
+Securities["IBM"].SettlementModel = new DelayedSettlementModel(7, new TimeSpan(8, 0, 0));
+</pre>
+<pre class="python" >
+# 将证券设定为延迟结算模型：7天后，早上8点结算。
+self.Securities["IBM"].SettlementModel =  DelayedSettlementModel(7, timedelta(hours = 8))
+</pre>
+</div>

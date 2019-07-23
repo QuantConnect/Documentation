@@ -1,0 +1,71 @@
+<meta name="tag" content="trading and orders"/>
+<meta name="tag" content="brokerage models"/>
+<meta name="tag" content="transaction fees and slippage"/>
+<meta name="tag" content="custom transaction models"/>
+<meta name="tag" content="custom slippage models "/>
+<p>
+我们提供一个快捷方式来设定我们支持的每个经纪商的常用模型和属性。这些经纪商模型会设定经纪商的手续费、订单成交模型、滑点模型和交易市场。另外它们会验证能否向经纪商提交交易（例如，将股票交易订单提交给外汇经纪商）。
+</p>
+<p>经纪商模型会设定：</p>
+<ul>
+	<li>
+        手续费
+    </li>
+	<li>
+        经纪商支持的资产类型
+    </li>
+	<li>
+        检验订单类型和设置
+    </li>
+	<li>
+        默认账户类型（保证金或现金）
+    </li>
+	<li>
+        是否支持盘后交易
+    </li>
+	<li>
+        资产的默认杠杆
+    </li>
+	<li>
+        默认的结算模式
+    </li>
+</ul>
+<p>这使您可以很好的控制算法行为，并允许您模拟任何经纪商。</p>
+<p>
+    除了我们的默认经纪商模型（<a href='https://www.quantconnect.com/lean/docs#topic8588.html' target='_BLANK' class='lean-documentation' title='Open DefaultBrokerageModel API Documentation'>默认经纪商模型</a>），我们为Interactive Brokers（<a href='https://www.quantconnect.com/lean/docs#topic8640.html' target='_BLANK' class='lean-documentation' title='Open InteractiveBrokersBrokerageModel API Documentation'>InteractiveBrokersBrokerageModel </a>）、FXCM（<a href='https://www.quantconnect.com/lean/docs#topic8607.html' target='_BLANK' class='lean-documentation' title='Open FxcmBrokerageModel API Documentation'>FxcmBrokerageModel</a>）、OANDA（<a href='https://www.quantconnect.com/lean/docs#topic8651.html' target='_BLANK' class='lean-documentation' title='Open OandaBrokerageModel API Documentation'>OandaBrokerageModel</a>）和Coinbase Pro（<a href='https://www.quantconnect.com/lean/docs#topic8607.html' target='_BLANK' class='lean-documentation' title='Open GDAX API Documentation'>GDAX</a>）提供经纪商模型。
+</p>
+<p>
+    经纪商模型将覆盖您给某支证券设置的其他模型。
+</p>
+<div class="section-example-container">
+	<pre class="csharp">
+// 用辅助方法设置经纪商模型：
+SetBrokerageModel(BrokerageName.FxcmBrokerage); // 保证金账户的默认值
+SetBrokerageModel(BrokerageName.GDAX, AccountType.Cash); //或者覆盖账户类型
+
+// 支持的经纪商名：
+BrokerageName.FxcmBrokerage
+             .OandaBrokerage
+             .InteractiveBrokersBrokerage
+             .GDAX
+</pre>
+	<pre class="csharp">
+// 您也可以自定义经纪商模型： IBrokerageModel
+class MyBrokerage: DefaultBrokerage {
+   // 在此自定义经纪商
+} 
+
+SetBrokerageModel(new MyBrokerage());
+</pre>
+	<pre class="python">
+# 用辅助方法设置经纪商模型：
+self.SetBrokerageModel(BrokerageName.FxcmBrokerage) # 保证金账户的默认值
+self.SetBrokerageModel(BrokerageName.GDAX, \ 
+                       AccountType.Cash) # 或者覆盖账户类型
+
+# 支持的经纪商名：
+BrokerageName.FxcmBrokerage
+             .OandaBrokerage
+             .InteractiveBrokersBrokerage
+             .GDAX</pre>
+</div>
