@@ -1,0 +1,28 @@
+<meta name="tag" content="charting">
+<meta name="tag" content="adding charts">
+<p>
+	我们提供了一个功能强大的图表API，可用于构建许多图表类型。最简单的用法仅需一行代码：
+</p><div class="section-example-container">
+		<pre class="csharp">Plot("Series Name", value);</pre>
+		<pre class="python">self.Plot("Series Name", value)</pre>
+	</div>
+<p></p>
+<p>
+	使用此代码，您的<i>Strategy Equity</i>图表下方会增加一个折线图，并随时间显示您请求的值。要创建新图标（新选项卡）您还应在请求中指定图标名称：
+</p><div class="section-example-container">
+		<pre class="csharp">private MovingAverageConvergenceDivergence _macd
+// 在Initialize()方法中：
+_macd = MACD（"SPY", 12, 26,9, MovingAverageType.Exponential, Resolution.Daily）
+// 在OnData()方法中：
+Plot("My Indicators", "MACD Signal", _macd.Signal);
+</pre>
+		<pre class="python"># 在Initialize(self)方法中：
+self.macd = MACD（"SPY", 12, 26,9, MovingAverageType.Exponential, Resolution.Daily）
+# 在OnData(self, data)方法中：
+self.Plot("My Indicators", "MACD Signal", self.macd.Signal)
+</pre>
+	</div>
+<p></p>
+<p>
+	这些方法会创建一个新的$[Chart,T:QuantConnect.Chart]对象并将其添加到您的算法中，然后将一个新的$[Series,T:QuantConnect.Series]对象添加到该图表中。图表由许多Series（组）对象组成。您还可以手动初始化图表以更好地控制其外观。
+</p>

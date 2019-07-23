@@ -1,0 +1,61 @@
+<meta name="tag" content="charting" />
+<meta name="tag" content="adding charts" />
+<meta name="tag" content="series types" />
+<meta name="tag" content="plotting indicators" />
+<p>
+	在初始化方法中，您可以使用$[AddChart(Chart obj),M:QuantConnect.Algorithm.QCAlgorithm.AddChart]方法来插入新图表。每个图表对象都有一个Series对象的内部集合。
+</p>
+<p>
+	在创建Series对象时，您必须指定系列的名称，系列的$[SeriesType]以及<i>索引</i>。组索引指的是它在图表中的位置——例如，如果所有组索引都是0，那么他们会叠在一起。如果每个组都有不同的索引，我们会有几个彼此相邻的小图表。
+</p>
+<p>
+	下图显示了将两个EMA组设置为相同索引的EMA交叉图
+	<img src="https://cdn.quantconnect.com/web/i/docs/charting-overlay.png" class="img-responsive" />
+	使用不同索引的图表如下所示：
+	<img src="https://cdn.quantconnect.com/web/i/docs/charting-stacked.png" class="img-responsive" />
+</p>
+<div class="section-example-container" >
+	<pre class="csharp" >
+// 在您的Initialize方法中
+
+// 图表——图表的主容器
+var stockPlot = new Chart("Trade Plot");
+// 在图表中我们想要三个组：买入，卖出以及价格
+var buyOrders = new Series("Buy", SeriesType.Scatter, 0);
+var sellOrders = new Series("Sell", SeriesType.Scatter, 0);
+var assetPrice = new Series("Price", SeriesType.Line, 0);
+// 或者使用自定义图标
+// 在使用自定义颜色之前导入必要的模块
+using System.Drawing;
+var buyOrders = new Series("Buy", SeriesType.Scatter, "$", Color.Red, ScatterMarkerSymbol.Triangle);
+var sellOrders = new Series("Sell", SeriesType.Scatter, "$", Color.Blue, ScatterMarkerSymbol.TriangleDown);
+var assetPrice = new Series("Price", SeriesType.Line, "$", Color.Green);
+stockPlot.AddSeries(buyOrders);
+stockPlot.AddSeries(sellOrders);
+stockPlot.AddSeries(assetPrice);
+AddChart(stockPlot);
+
+// 之后在您的OnData(Slice data)方法中:
+Plot("Trade Plot", "Price", data.Bars["SPY"].Close);
+</pre>
+	<pre class="python" >
+# 在您的Initialize方法中
+# 注意——使用单引号'而不是双引号"
+# 图表——图表的主容器
+stockPlot = Chart('Trade Plot')
+# 在图表中我们想要三个组：买入，卖出以及价格
+stockPlot.AddSeries(Series('Buy', SeriesType.Scatter, 0))
+stockPlot.AddSeries(Series('Sell', SeriesType.Scatter, 0))
+stockPlot.AddSeries(Series('Price', SeriesType.Line, 0))
+# 或者使用自定义图标
+# 在使用自定义颜色之前导入必要的模块
+from System.Drawing import Color
+stockPlot.AddSeries(Series('Price', SeriesType.Line, '$', Color.Green))
+stockPlot.AddSeries(Series('Buy', SeriesType.Scatter, '$', Color.Red, ScatterMarkerSymbol.Triangle))
+stockPlot.AddSeries(Series('Sell', SeriesType.Scatter, '$', Color.Blue, ScatterMarkerSymbol.TriangleDown))
+self.AddChart(stockPlot)
+
+# 之后在您的OnData(self, data)方法中:
+self.Plot('Trade Plot', 'Price', self.lastPrice)
+</pre>
+</div>
