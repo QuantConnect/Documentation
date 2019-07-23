@@ -1,0 +1,79 @@
+<style>
+.work-in-progress {
+    width: 100%;
+    border: 1px solid #f5ae29;
+    border-radius: 5px;
+    padding: 15px;
+    color: #f5ae29;
+}
+.tip {
+    width: 100%;
+    border: 1px solid #f5ae29;
+    border-radius: 5px;
+    padding: 15px;
+    margin-bottom: 20px;
+    margin-top: 20px;
+}
+.tip i {
+    color: #f5ae29;
+}
+.tip-title { 
+ font-weight: bold;
+color: #f5ae29;
+margin-left: 5px;
+margin-right: 5px;
+}
+.tip p { display: inline; }
+table th i {
+    color: #f5ae29;
+}
+th.summary {
+   font-family: "Courier New"; 
+   font-weight: normal;
+}
+.table.qc-table tbody tr td {
+   text-align: left;
+}
+.implementation {
+    font-family: "Courier New";
+}
+</style>
+
+<p>
+QuantConnect历史数据API有许多不同的选项，可以为您提供最大的灵活性，使其适用于您的算法。多年来，它已经发展到可以处理不同的数据格式，数据分辨率和用例，但我们一直努力保持两个不变的设计：
+</p>
+<div class="work-in-progress">
+    <i class="fa fa-lightbulb-o"></i> <b>关键概念 #1: 请求选项</b>
+<ul>
+<li>History请求可以通过K线<i>计数</i>来完成，或者，</li>
+<li>History请求可以通过设定<i>一段</i>时间来完成。</li>
+</ul>
+</div> 
+<p style="margin-top: 25px">
+其次，在请求历史数据时，考虑哪些数据会被返回非常重要，因为每种资产类型的数据格式略有不同。<span class="python">所有python历史数据请求都返回一个Data Frame，根据请求的数据类型，它具有不同的列。</span>Data作为<a class="docs-internal-link" href="/docs/algorithm-reference/handling-data#Handling-Data-TradeBars">成交K线(TradeBars)</a>，<a class="docs-internal-link" href="/docs/algorithm-reference/handling-data#Handling-Data-QuoteBars">报价K线(QuoteBars)</a>或<a class="docs-internal-link" href="/docs/algorithm-reference/handling-data#Handling-Data-Time-Slices">Slice</a>对象返回，具体取决于您的请求方式和证券数据可得性。
+</p>
+
+<div class="work-in-progress"> 
+    <i class="fa fa-lightbulb-o"></i> <b>关键概念 #2: 返回格式</b>
+<ul> 
+<li class="csharp">单个证券请求将数据作为证券数据类型的数组返回。例如，<code>成交K线( TradeBar)[]</code>。</li>
+<li class="csharp">多个证券（批处理）请求将数据作为<code>Slice</code>对象的数组返回。</li>
+
+<li class="python">提供代码的历史数据请求将返回pandas data frame。</li>
+<li>没有提供代码的历史数据请求将提取整个资产集的历史数据，并将其作为<code>Slice</code>对象的数组返回。</li> 
+</ul>
+</div>
+
+<p style="margin-top: 15px">
+最后，在查看历史数据请求的结果时，请记住它们是由每个数据点的<i>EndTime</i>索引的。对于日数据，这导致星期六会出现数据点，并跳过星期一的K线数据。
+</p>
+
+<div class="work-in-progress"> 
+    <i class="fa fa-lightbulb-o"></i> <b>关键概念 #3: 时间索引</b> 
+<ul>
+<li>历史数据结果由K线的<a href="/docs/key-concepts/understanding-time#Understanding-Time-Ticks-Bars-and-the-Time-Frontier" class="docs-internal-link">EndTime</a>索引。</li> 
+</ul>
+</div> 
+<p style="margin-top: 15px">
+这在一开始看起来会有点复杂，但我们将在下面的部分逐步介绍这些内容。
+</p>

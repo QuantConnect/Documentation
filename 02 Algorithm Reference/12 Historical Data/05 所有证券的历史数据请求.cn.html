@@ -1,19 +1,19 @@
 <p>
-With the QuantConnect History API, you can request history for all active securities in your universe. The parameters are very similar to other history methods, but the return type is an array of $[Slice, T:QuantConnect.Slice]</code> objects. This has the same properties as the OnData() Slice object.
+使用QuantConnect历史数据API，您可以请求资产集中所有活跃证券的历史数据。所需参数与其他历史数据方法非常相似，但返回类型是$[Slice，T：QuantConnect.Slice]</code>对象的数组。它具有与OnData（）方法Slice对象相同的属性。
 </p>
 <p>
-The <a class="docs-internal-link" href="/docs/algorithm-reference/handling-data#Handling-Data-Time-Slices">Slice</a> object holds all of the results in a sorted enumerable collection you can iterate over with a foreach loop.
+<a class="docs-internal-link" href="/docs/algorithm-reference/handling-data#Handling-Data-Time-Slices">Slice</a>对象将所有结果保存在一个已排序的可枚举集合中，您可以使用foreach循环进行迭代。
 </p>
 
 <div class="section-example-container">
 <pre class="python"> 
-<b># EXAMPLE 1: Requesting 5 Bars For All Securities, default to security resolution:</b>
+<b># 示例1： 请求所有证券的5支K线，默认的证券分辨率：</b>
 
-# Setting Up Universe
+# 设置资产集
 self.AddEquity("IBM", Resolution.Daily)
 self.AddEquity("AAPL", Resolution.Daily)
 
-# Request history data and enumerate results:
+# 请求历史数据并罗列结果：
 self.slices = self.History(5)
 for s in slices:
     print(str(s.Time) + \
@@ -22,26 +22,26 @@ for s in slices:
 </pre>
 
 <pre class="python"> 
-<b># EXAMPLE 2: Requesting 5 Minutes For All Securities:</b>
+<b># 示例2： 请求所有证券的5分钟历史数据：</b>
 
 slices = self.History(timedelta(minutes=5), Resolution.Minute)
 for s in slices:
     print(str(s.Time) + \
           " AAPL:" + str(s.Bars["AAPL"].Close) + " IBM:" + str(s.Bars["IBM"].Close))
 <img class="img-responsive img-thumbnail " src="https://cdn.quantconnect.com/docs/i/history-all-security-slices-minute_rev0.png">
-# Keep in mind your timedelta history requests are relative to "now" in Algorithm Time. If you requested this data at 16.05, it would return an empty array because the market was closed.
+# 请记住，您的timedelta历史数据请求与算法时间中的“now”相关。如果您在16：05分请求此数据，因为市场已关闭，它将返回一个空数组。
 </pre>
 
 
 
 <pre class="csharp fsharp">
-<b>// EXAMPLE 1: Requesting 5 Bars For All Securities, default to security resolution:</b>
+<b>// 示例1： 请求所有证券的5支K线，默认的证券分辨率：</b>
 
-// Setting Up Universe
+// 设置资产集
 AddEquity("IBM", Resolution.Daily)
 AddEquity("AAPL", Resolution.Daily)
 
-// Request history data and enumerate results:
+// 请求历史数据并罗列结果：
 var slices = History(5)
 foreach (var s in slices) {
     Debug($"{s.Time} AAPL: {s.Bars["AAPL"].Close} IBM: {s.Bars["IBM"].Close}");
@@ -50,13 +50,13 @@ foreach (var s in slices) {
 </pre>
 
 <pre class="csharp"> 
-<b>// EXAMPLE 2: Requesting 24 Hours of Hourly Data For All Securities:</b>
+<b>// 示例2： 请求所有证券的24个小时的小时数据：</b>
 
 var slices = History(TimeSpan.FromHours(24), Resolution.Hour);
 foreach (var s in slices) {
      Debug($"{s.Time} AAPL: {s.Bars["AAPL"].Close} IBM: {s.Bars["IBM"].Close}");
 }
 <img class="img-responsive img-thumbnail" src="https://cdn.quantconnect.com/docs/i/history-debug-all-securities-timespan-6hours_rev0.png">
-// Keep in mind you TimeSpan history requests are relative to "now" in Algorithm Time. If you requested this data on a Monday morning, it would return an empty array because the market was closed over the weekend.
+// 请记住，TimeSpan历史数据请求与算法时间中的“now”相关。如果您在周一早上请求此数据，因为市场在周末关闭，它将返回一个空数组。
 </pre>
 </div>
