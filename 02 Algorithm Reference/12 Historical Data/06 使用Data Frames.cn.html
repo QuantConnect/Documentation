@@ -1,0 +1,51 @@
+<span class="python">
+<p>
+在Python中，数据作为Pandas DataFrame返回。它是一个多索引dataframe，其中第一个索引是代号。然后根据K线的<a target="_BLANK" href="/docs/key-concepts/understanding-time">EndTime</a>按行对数据进行排序。通过学习一些有用的快捷方法，您可以直接访问算法所需的历史数据。
+</p>
+<div class="section-example-container">
+<pre class="python">
+# 设置资产集:
+eurusd = self.AddForex("EURUSD", Resolution.Daily).Symbol
+nzdusd = self.AddForex("NZDUSD", Resolution.Daily).Symbol
+
+<b> # 第1步： 请求Dataframe： </b>
+
+self.df = self.History([eurusd, nzdusd], 3)
+<img class="img-responsive img-thumbnail" src="https://cdn.quantconnect.com/docs/i/history-dataframe-loc-array_rev0.png" />
+
+
+<b> # 第2步： 检查是否为空并使用<b>loc[]</b>方法锁定代号索引： </b>
+
+if not self.df.empty:
+    eurusd_quotebars = self.df.loc["EURUSD"]
+<img class="img-responsive img-thumbnail" src="https://cdn.quantconnect.com/docs/i/history-dataframe-loc-single_rev0.png" />
+
+
+<b># 第3步： 使用字符串列名称提取和操作单个列： </b>
+
+spread = eurusd_quotebars["askclose"] - eurusd_quotebars["bidclose"]
+<img class="img-responsive img-thumbnail" src="https://cdn.quantconnect.com/docs/i/history-dataframe-column-spread.png" />
+# 确保使用小写字符串列名称。
+</pre>
+</div>
+
+<p>
+也可以通过<a target="_BLANK" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.unstack.html">DataFrame unstack</a>来实现代号<i>之间</i>的分析。这会将每列转换为您选择的某个价格列的相应代号数据。
+</p>
+
+<div class="section-example-container">
+<pre class="python">
+<b># UNSTACKING: 转换为列： </b>
+
+# 获取多索引历史数据：
+self.dataframe = self.History([self.Symbol("IBM"), self.Symbol("AAPL)], 3)
+<img class="img-responsive img-thumbnail" src="https://cdn.quantconnect.com/docs/i/history-dataframe-unstack-source_rev0.png" />
+
+# 使用unstack进行转换：
+self.dataframe["close"].unstack(level=0)
+<img class="img-responsive img-thumbnail" src="https://cdn.quantconnect.com/docs/i/history-dataframe-unstack_rev1.png" />
+# 确保使用小写字符串列名称。
+</pre>
+</div>
+
+</span>

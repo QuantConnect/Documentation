@@ -1,0 +1,31 @@
+<p>
+QuantConnect平台托管一组特定数据，因此历史数据仅限于几种特定格式。有关证券类型的数据格式指南，请参阅下表：
+</p>
+
+<table class="table qc-table table-striped">
+<thead>
+	<tr>
+		<th style="width: 30%;">
+			证券类型
+		</th>
+		<th>
+			支持的数据类型
+		</th>
+	</tr>
+</thead>
+<tbody>
+	<tr><td>股票</td> <td>成交K线(TradeBar)<br/><small style="font-size: 0.8em">Tick，秒，分钟，小时，每日</small></td> </tr>
+	<tr><td>外汇，差价合约(CFD)</td> <td>报价K线(QuoteBar)<br/><small style="font-size: 0.8em">Tick，秒，分钟，小时，每日</small></td> </tr>
+	<tr><td>加密货币</td> <td>成交K线(TradeBar)：默认值，报价K线(QuoteBar):可选<br/><small style="font-size: 0.8em">Tick，秒，分钟，小时，每日</small></td> </tr> 
+	<tr><td>期货合约</td> <td>成交K线(TradeBar)：默认值，报价K线(QuoteBar):可选<br/><small style="font-size: 0.8em">Tick，秒，分钟</small></td> </tr>
+	<tr><td>期权合约</td> <td>成交K线(TradeBar)：默认值，报价K线(QuoteBar):可选<br/><small style="font-size: 0.8em">分钟</small></td> </tr>
+</tbody>
+</table>
+<p class="csharp">
+默认情况下会在成交K线(TradeBars)中返回历史数据，但对于期货，加密货币和期权报价K线(QuoteBars)也可用。要以<a class="docs-internal-link" href="/docs/algorithm-reference/handling-data#Handling-Data-QuoteBars">报价K线(QuoteBars)</a>请求数据，您必须在请求时指定数据类型。
+</p>
+<div class="section-example-container csharp">
+<pre class="csharp">// 获取BTCUSD代号并使用它来请求历史数据
+var btcusd = AddCrypto("BTCUSD", Resolution.Daily, Market.GDAX).Symbol;
+var quotes = History&lt;QuoteBar&gt;(btcusd, 14, Resolution.Daily)</pre>
+</div>
