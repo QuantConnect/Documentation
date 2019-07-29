@@ -1,0 +1,25 @@
+<p>
+投资组合目标PortfolioTarget类的构造函数接受两个参数：Symbol与Quantity。投资组合目标将由执行模型实现，因此您不应该假设算法会立即下订单或者订单会立即成交。
+</p>
+<div class="section-example-container">
+	<pre class="csharp">// 创建新的投资组合目标：1200股IBM
+var target = new PortfolioTarget("IBM", 1200);</pre>
+	<pre class="python"># 创建新的投资组合目标：1200股IBM
+target = PortfolioTarget("IBM", 1200)</pre>
+</div>
+<p>保证金账户还可以使用$[Percent(algorithm, Symbol, percent),M:QuantConnect.Algorithm.Framework.Portfolio.PortfolioTarget.Percent]辅助方法。这个方法会计算相当于当前投资组合价值百分比的数量。
+</p>
+<div class="section-example-container">
+	<pre class="csharp">// 创建新的投资组合目标：当前投资组合价值的10%
+var target = PortfolioTarget.Percent(algorithm, "IBM", 0.1);</pre>
+	<pre class="python"># 创建新的投资组合目标：当前投资组合价值的10%
+target = PortfolioTarget.Percent(algorithm, "IBM", 0.1)</pre>
+</div>
+<p>您的投资组合构建模型应在$[CreateTargets,M:QuantConnect.Algorithm.Framework.Portfolio.IPortfolioConstructionModel.CreateTargets]方法中返回一个投资组合目标(PortfolioTarget)数组：
+</p>
+<div class="section-example-container">
+	<pre class="csharp">// 返回PortfolioTarget数组
+return new PortfolioTarget[] {  new PortfolioTarget("IBM", 1200)  };</pre>
+	<pre class="python"># 返回PortfolioTarget数组
+return [ PortfolioTarget("IBM", 1200) ]</pre>
+</div>
