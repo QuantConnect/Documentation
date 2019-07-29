@@ -1,0 +1,25 @@
+<p>
+风险管理模型应继承自RiskManagementModel类，并必须实现一个方法：$[ManageRisk(),M:QuantConnect.Algorithm.Framework.Risk.IRiskManagementModel.ManageRisk]。它将接受一组PortfolioTarget对象。当需要调整投资组合目标时，您应仅返回更改后的目标。您也可以选择使用$[OnSecuritiesChanged(),M:QuantConnect.Algorithm.Framework.Risk.RiskManagementModel.OnSecuritiesChanged]事件。
+</p>
+<div class="section-example-container">
+	<pre class="csharp">class MaximumDrawdownPerSecurity : RiskManagementModel
+{
+    // 调整投资组合目标并将其返回。如果没有变化则返回空。
+    List&lt;PortfolioTarget&gt; ManageRisk(QCAlgorithmFramework algorithm, PortfolioTarget[] targets)      {
+    }
+
+    // 可选：在证券被添加或删除时执行。
+    void OnSecuritiesChanged(QCAlgorithmFramework algorithm, SecurityChanges changes)
+    {
+    }
+}</pre>
+	<pre class="python">class MaximumDrawdownPerSecurity(RiskManagementModel):
+    # 调整投资组合目标并将其返回。如果没有变化则返回空。
+    def ManageRisk(self, algorithm, targets):
+        return []
+
+    # 可选：在证券被添加或删除时执行。
+    def OnSecuritiesChanged(self, algorithm, changes):
+        pass
+</pre>
+</div>
