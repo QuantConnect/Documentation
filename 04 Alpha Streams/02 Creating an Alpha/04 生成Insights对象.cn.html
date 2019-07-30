@@ -1,0 +1,25 @@
+<p>
+	您算法的下一个组件是Alpha模型。它负责生成Insight对象，基金会使用其作为它们投资组合的因子。您的Alpha模型应从其<code>Update()</code>方法返回一个列表或可枚举的Insight对象。
+	有关创建Insights对象的更多信息，请参阅<a href="/docs/algorithm-framework/alpha-creation">算法框架/创建Alpha</a>。
+</p>
+<p>
+	$[Insight,T:QuantConnect.Algorithm.Framework.Alphas.Insight]构造函数采用以下参数：
+</p>
+<div class="section-example-container">
+	<pre class="python"># Insight构造函数参数:
+# Insight(symbol, timedelta, type, direction, magnitude=None, confidence=None, sourceModel=None)
+ Insight("IBM", timedelta(minutes=20), InsightType.Price, InsightDirection.Up, 0.0025, 1.00)</pre>
+	<pre class="csharp">// Insight构造函数参数:
+// new Insight(symbol, period, type, confidence=null, magnitude=null, source=null);
+var insight = new Insight("IBM", TimeSpan.FromMinutes(20), InsightType.Price, InsightDirection.Up);</pre>
+	<p>
+		我们提供了一种辅助方法，可以更轻松地创建Insights对象。这可以在Update方法中用于为Price类型的Alpha模型创建Insight对象：
+	</p>
+	<div class="section-example">
+		<pre class="python">insight = Insight.Price("IBM", timedelta(minutes = 20), InsightDirection.Up)</pre>
+		<pre class="csharp">var insight = Insight.Price("IBM", TimeSpan.FromMinutes(20), InsightDirection.Up);</pre>
+	</div>
+</div>
+<p>
+	要使用经典算法生成insight对象，请参阅<a href="/docs/alpha-streams/upgrading-classic-algorithms">升级经典算法</a>。
+</p>
