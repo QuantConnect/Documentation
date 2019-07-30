@@ -1,0 +1,54 @@
+<p>
+    执行模型有一个必需的方法来实现$[Execute(algorithm, targets),M:QuantConnect.Algorithm.Framework.Execution.ExecutionModel.Execute]。这有助于尽可能有效地达到目标投资组合。 $[PortfolioTarget,T:QuantConnect.Algorithm.Framework.Portfolio.IPortfolioTarget]对象由<a href="/docs/algorithm-framework/portfolio-construction" class="docs-internal-link">投资组合构建模型</a>创建，
+    然后通过<a href="/docs/algorithm-framework/risk-management" class="docs-internal-link">风险管理模块</a>进行调整。最终风险调整后的投资组合目标将交付给您的执行模型以供履行。
+</p>
+<div class="section-example-container">
+	<pre class="csharp"> // 基本执行模型的支架式教学例子
+class MyExecutionModel : ExecutionModel {
+
+   // 有效填写提供的投资组合目标
+   public override void Execute(QCAlgorithmFramework algorithm, IPortfolioTarget[] targets)
+   {
+      // NOP
+   }
+
+   //  可选：证券变更处理新证券的事件
+   public override void OnSecuritiesChanged(QCAlgorithmFramework algorithm,
+                                            SecurityChanges changes)
+   {
+   }
+}</pre>
+	<pre class="python">
+from clr import AddReference
+AddReference("QuantConnect.Algorithm.Framework")
+from QuantConnect.Algorithm.Framework.Execution import ExecutionModel
+
+# 基本执行模型的支架式教学例子
+class MyExecutionModel(ExecutionModel):
+
+    # 有效填写提供的投资组合目标
+    def Execute(self, algorithm, targets):
+        pass
+
+    # 可选：证券变更处理新证券的事件
+    def OnSecuritiesChanged(self, algorithm, changes):
+        pass</pre>
+</div>
+<p>
+    $[PortfolioTarget,T:QuantConnect.Algorithm.Framework.Portfolio.IPortfolioTarget]类具有以下可供执行模型使用的属性。可以使用公共属性<code> target.Quantity </code>访问它们。
+</p>
+<div class="section-example-container">
+	<pre class="csharp">// 执行的最终目标的数量
+class PortfolioTarget : IPortfolioTarget {
+
+    // 需要交易的资产
+    Symbol Symbol;
+
+    // 持有的数量
+    decimal Quantity;
+}</pre>
+	<pre class="python"># 执行的最终目标的数量
+class PortfolioTarget:
+    self.Symbol    # 需要交易的资产 (Symbol)
+    self.Quantity  # 持有的数量 (decimal) </pre>
+</div>

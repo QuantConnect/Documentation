@@ -1,0 +1,39 @@
+<p>
+    即时执行模型使用市场订单来立即填写算法组合目标。它是最简单的执行模型，类似于简单地将市场订单与您的算法逻辑内联。
+</p>
+<p>
+    您可以通过在Initialize方法中设置它来使用此预制的执行模型：
+</p>
+<div class="section-example-container">
+	<pre class="csharp">SetExecution( new ImmediateExecutionModel() );</pre>
+	<pre class="python">self.SetExecution( ImmediateExecutionModel() )</pre>
+</div>
+<p>
+    它的实现方式如下面的代码片段所示：
+</p>
+<div class="section-example-container">
+	<pre class="csharp">// 发行市场订单来控制持股与目标数量的差价
+public override void Execute(QCAlgorithmFramework algorithm, IPortfolioTarget[] targets)
+{
+    foreach (var target in targets)
+    {
+        var existing = algorithm.Securities[target.Symbol].Holdings.Quantity
+            + algorithm.Transactions.GetOpenOrders(target.Symbol).Sum(o =&gt; o.Quantity);
+        var quantity = target.Quantity - existing;
+        if (quantity != 0)
+        {
+            algorithm.MarketOrder(target.Symbol, quantity);
+        }
+    }
+}</pre>
+	<pre class="python"># 发行市场订单来控制持股与目标数量的差价
+def Execute(self, algorithm, targets):
+    for target in targets:
+      open_quantity = sum([x.Quantity for x in algorithm.Transactions.GetOpenOrders(target.Symbol)])
+      existing = algorithm.Securities[target.Symbol].Holdings.Quantity + open_quantity
+      quantity = target.Quantity - existing
+      if quantity != 0:
+          algorithm.MarketOrder(target.Symbol, quantity)</pre>
+</div>
+<p><span class="csharp">您可以在此<a href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.Framework/Execution/ImmediateExecutionModel.cs" target="_BLANK">GitHub</a>查看此模型的完整C#<i>实现</i>。</span><span class="python">您可以在此<a href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.Framework/Execution/ImmediateExecutionModel.py" target="_BLANK">GitHub</a>查看此模型的完整Python<i>实现</i>。</span>
+</p>

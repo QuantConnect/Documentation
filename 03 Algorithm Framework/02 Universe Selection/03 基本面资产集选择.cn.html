@@ -1,0 +1,46 @@
+<p>
+    资产集选择框架模型可以使用与其他算法相同的基于函数的选择机制。QuantConnect为处理框架要求的这些资产集提供了两种辅助方法：$[CoarseFundamentalUniverseSelectionModel,T:QuantConnect.Algorithm.Selection.CoarseFundamentalUniverseSelectionModel] 与 $[FineFundamentalUniverseSelectionModel,T:QuantConnect.Algorithm.Selection.FineFundamentalUniverseSelectionModel]。
+</p>
+
+<p>
+    要定义基本面资产集选择模型，您需要创建该类的实例并使用$[AddUniverseSelection,M:QuantConnect.Algorithm.QCAlgorithm.AddUniverseSelection]方法进行设置：
+</p>
+
+<div class="section-example-container">
+	<pre class="csharp"> // 在QCAlgorithm中设置资产集模型
+public override void Initialize()
+{
+     AddUniverseSelection(new FineFundamentalUniverseSelectionModel(SelectCoarse, SelectFine));
+}
+
+IEnumerable&lt;Symbol&gt; SelectCoarse(IEnumerable&lt;CoarseFundamental&gt; coarse)
+{
+    var tickers = new[] { "AAPL", "AIG", "IBM" };
+    return tickers.Select(x =&gt;
+        QuantConnect.Symbol.Create(x, SecurityType.Equity, Market.USA)
+    );
+}
+
+IEnumerable&lt;Symbol&gt; SelectFine(IEnumerable&lt;FineFundamental&gt; fine) {
+     return fine.Select(f =&gt; f.Symbol);
+}
+</pre>
+	<pre class="python"> # 在QCAlgorithm中设置资产集模型
+def Initialize(self):
+    self.AddUniverseSelection(
+           FineFundamentalUniverseSelectionModel(self.SelectCoarse, self.SelectFine)
+    )
+
+def SelectCoarse(self, coarse):
+    tickers = ["AAPL", "AIG", "IBM"]
+    return [Symbol.Create(x, SecurityType.Equity, Market.USA) for x in tickers]
+
+def SelectFine(self, fine):
+    return [f.Symbol for f in fine] </pre>
+</div>
+<p>
+    基本面资产集与<a class="docs-internal-link" href="/docs/algorithm-reference/universes"></a>部分中解释的传统算法执行相同的过滤。
+    传递$[CoarseFundamental,T:QuantConnect.Data.UniverseSelection.CoarseFundamental]对象列表的资产集粗选函数应当返回Symbol对象列表。
+    资产集精选函数传递从粗选择结果生成的$[FineFundamental,T:QuantConnect.Data.Fundamental.FineFundamental]对象的子集，并应当返回Symbol对象列表。
+    有关这些过滤函数的详细信息，请参阅<a class="docs-internal-link" href="/docs/algorithm-reference/universes">Universe</a>部分。
+</p>
