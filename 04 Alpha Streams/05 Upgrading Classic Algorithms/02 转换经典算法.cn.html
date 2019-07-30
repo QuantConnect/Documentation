@@ -1,0 +1,20 @@
+<p>
+将经典算法转换为与Alpha流兼容只需要一步，这就是修改算法以在算法中的适当时间发出Insight对象。默认的QCAlgorithm行为是在交易时发出Insights，但手动发送Insights允许您注入有关Insight的幅度和置信度的信息，这会增加Alpha的价值并可以提高您的总分。
+</p>
+<h4>调用EmitInsights</h4>
+<p>Insight预测方向通常与您的订单类型相关联 -- 上涨/买入，下跌/卖出 -- 但Liquidate语句需要<em>Flat</em> Insights。要发出Insights，您需要在进行交易之前调用该函数。注意设置insight属性，不要过多地发出insights，否则可能会对您的整体得分产生负面影响。</p><div class="section-example-container"><pre class="csharp">
+// 调用EmitInsights方法，注意设置正确的预测方向,
+// 这里我们是在卖空。EmitInsights方法可以接受
+// 以逗号分隔的多个insights。
+EmitInsights(
+    // 为我们的（证券）代号创建一个insight，
+	// 预测它将在FastEmaPeriod天内下跌
+    Insight.Price(_symbol, TimeSpan.FromDays(FastEmaPeriod), InsightDirection.Down)
+);</pre><pre class="python"># 调用EmitInsights方法，注意设置正确的预测方向,
+# 这里我们是在卖空。EmitInsights方法可以接受
+# 以逗号分隔的多个insights。
+self.EmitInsights(
+    # 为我们的（证券）代号创建一个insight，
+    # 预测它将在FastEmaPeriod天内下跌
+    Insight.Price(self.symbol, timedelta(self.FastEmaPeriod), InsightDirection.Down)
+)</pre></div><p>在创建这些insights时，您应该考虑：</p><ul>   <li>我的insight的有效期/预期的持仓期是多久？</li>   <li>我的交易信号能提供投资结果的置信度吗？</li>   <li>预期的资产价格变动幅度是多少？</li></ul><p>如果您无法通过某些数据驱动的内在假设来确定这些值，我们建议您不要设置这些值。这些信息可为您的算法提供超出纯粹预测表现的价值，并且是手动创建Insight的好处之一。</p>
