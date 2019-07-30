@@ -1,0 +1,32 @@
+<p>
+Alpha模型旨在易于创建，并且是迭代您的策略的主要位置。您必须实现$[IAlphaModel，T：QuantConnect.Algorithm.Framework.Alphas.IAlphaModel]接口来创建Alpha模型，如下面的示例所示。有两种方法：
+</p>
+<p>1. $[Update(),M:QuantConnect.Algorithm.Framework.Alphas.AlphaModel.Update]-生成信号对象。<br>2. $[OnSecuritiesChanged(),M:QuantConnect.Algorithm.Framework.Alphas.AlphaModel.OnSecuritiesChanged]-接收证券更改的通知。
+</p>
+<div class="section-example-container">
+	<pre class="csharp">// Algorithm framework model that produces insights
+class MyAlphaModel : IAlphaModel, INotifiedSecurityChanges
+{
+    // 使用算法中的最新数据更新此Alpha模型。
+    // 每次算法接收订阅证券的数据时都会调用此方法
+    Insight[] Update(QCAlgorithm algorithm, Slice data) {
+         // 生成在资产集中的证券的Insights对象
+    }
+
+    void OnSecuritiesChanged(QCAlgorithm algorithm, SecurityChanges changes) {
+         // 处理资产集选择模型生成的证券更改
+    }
+}</pre>
+	<pre class="python"># Algorithm framework model that produces insights
+class MyAlphaModel:
+
+    def Update(self, algorithm, slice):
+         # 使用算法中的最新数据更新此Alpha模型。
+         # 每次算法接收订阅证券的数据时都会调用此方法
+         # 生成在资产集中的证券的Insights对象
+         insights = []
+         return insights
+
+    def OnSecuritiesChanged(self, algorithm, changes):
+         # 处理资产集选择模型生成的证券更改</pre>
+</div>
