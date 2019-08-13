@@ -1,0 +1,25 @@
+<p>
+您可以在QuantBook中使用QuantConnect指标库中所有的100多个指标。有关特定指标的更多信息，请参阅<a class="docs-internal-link" href="/docs/algorithm-reference/indicators">指标</a>文档。
+</p>
+<p>要在<code>QuantBook</code>中使用指标的话，您需要先定义一个指标对象的实例。这将是此对象的全称，例如<code>BollingerBands</code>。这些名称全部在<a target="_BLANK" href=" https://www.quantconnect.com/docs/algorithm-reference/indicators#Indicators-Reference-Table">参考表</a>中列出。
+</p>
+<div class="section-example-container">
+	<pre class="all"># 定义一个周期为10的Bollinger bands（布林带）指标
+bb = BollingerBands(10, 2, MovingAverageType.Exponential) 
+</pre>
+</div>
+<p>一旦我们有了指标对象，我们就需要用历史数据填充指标。我们提供两个<code>qc.Indicator()</code>辅助方法，它们检测所需的指标和数据，并输送历史数据。Indicator()方法返回一个<b>dataframe</b>。
+</p>
+<div class="section-example-container">
+	<pre class="all"># qb.Indicator(Indicator, Symbol, Period, Resolution)
+# qb.Indicator(Indicator, Symbol, StartDate, EndDate, Resolution)
+
+# 生成过去360天的SPY指标值
+df1_bb = qb.Indicator(bb, "SPY", 360, Resolution.Daily) 
+
+# 生成2017年至2018年EURUSD的指标值
+df2_bb = qb.Indicator(bb, "EURUSD", datetime(2017,1,1), datetime(2018,1,1), Resolution.Daily)</pre>
+</div>
+<figure><img src="https://cdn.quantconnect.com/web/i/docs/algorithm-framework/indicator-bb-values-min.png" class="img-responsive"/>
+	<figcaption>在QuantConnect研究环境中获取指定资产的布林带指标的历史数据</figcaption>
+</figure>

@@ -1,0 +1,75 @@
+<p>
+QuantConnect支持财务顾问（FA）帐户的实盘交易。这些经过认证的专业人员可以使用单个交易算法来管理多个客户帐户。此功能仅供QuantConnect上的<a href="https://www.quantconnect.com/upgrade">专业人员订阅</a>账户使用。
+</p>
+<p>
+    唯一支持FA账户的经纪商是Interactive Brokers。
+在初始化（Initialize）方法中，我们需要将$[DefaultOrderProperties,P:QuantConnect.Algorithm.QCAlgorithm.DefaultOrderProperties]属性设置为$[InteractiveBrokersOrderProperties,T:QuantConnect.Orders.InteractiveBrokersOrderProperties]:
+</p><div class="section-example-container"><pre class="csharp fsharp">
+// 可以在此处设置默认订单属性，以选择在任何订单提交方法中自动使用的FA设置（例如SetHoldings，Buy，Sell和Order）
+
+// 使用具有分配方法的默认FA账户组
+DefaultOrderProperties = new InteractiveBrokersOrderProperties
+{
+    //在IB/TWS里手动创建的账户组
+    FaGroup = "TestGroupEQ",
+    // 支持的分配方法有： EqualQuantity, NetLiq, AvailableEquity, PctChange
+    FaMethod = "EqualQuantity"
+};
+
+// 设置默认的FA分配配置
+DefaultOrderProperties = new InteractiveBrokersOrderProperties
+{
+    // 在IB/TWS里手动创建的分配配置
+    FaProfile = "TestProfileP"
+};
+
+// 将所有订单发送到一个托管帐户
+DefaultOrderProperties = new InteractiveBrokersOrderProperties
+{
+    // 与财务顾问主帐户关联的子帐户
+    Account = "DU123456"
+};
+</pre>
+<pre class="python">
+# 使用具有分配方法的默认FA账户组
+self.DefaultOrderProperties = InteractiveBrokersOrderProperties()
+# 在IB/TWS里手动创建的账户组
+self.DefaultOrderProperties.FaGroup = "TestGroupEQ"
+# 支持的分配方法有： EqualQuantity, NetLiq, AvailableEquity, PctChange
+self.DefaultOrderProperties.FaMethod = "EqualQuantity"
+
+# 设置默认的FA分配配置
+self.DefaultOrderProperties = InteractiveBrokersOrderProperties()
+# 在IB/TWS里手动创建的分配配置
+self.DefaultOrderProperties.FaProfile = "TestProfileP"
+
+# 将所有订单发送到一个托管帐户
+DefaultOrderProperties = InteractiveBrokersOrderProperties()
+# 与财务顾问主帐户关联的子帐户
+self.DefaultOrderProperties.Account = "DU123456"
+</pre>
+<pre class="csharp fsharp python">//InteractiveBrokersOrderProperties object properties:
+class InteractiveBrokersOrderProperties {
+    string Account     // 要提交订单的关联帐户
+    string FaGroup     // 订单的帐户组
+    string FaMethod    // 帐户组订单的分配方法： EqualQuantity, NetLiq, AvailableEquity, PctChange
+    int FaPercentage   // PctChange（百分比变化）分配方法的百分比
+    string FaProfile   // 用于订单的分配配置
+}
+</pre>
+</div>
+<p>
+$[DefaultOrderProperties,P:QuantConnect.Algorithm.QCAlgorithm.DefaultOrderProperties]（默认订单属性）可以在整个代码中任何位置被覆盖以适应不同的情况。例如，该组可能具有不同的分配方法，并且在调用订单方法（SetHoldings，Buy，Sell，LImitOrder等）之前需要覆盖这些属性。</p>
+<div class="section-example-container"><pre class="csharp fsharp">
+// 改变FA账户组和分配方法
+((InteractiveBrokersOrderProperties)DefaultOrderProperties).FaGroup = "TestGroupAE";
+((InteractiveBrokersOrderProperties)DefaultOrderProperties).FaMethod = "AvailableEquity";
+SetHoldings("AAPL", 1);
+</pre>
+<pre class="python">
+# 改变FA账户组和分配方法
+self.DefaultOrderProperties.FaGroup = "TestGroupAE"
+self.DefaultOrderProperties.FaMethod = "AvailableEquity"
+self.SetHoldings("AAPL", 1)
+</pre>
+</div>
