@@ -1,0 +1,38 @@
+<p>
+	要在研究环境中请求期货数据，您需要将标的资产添加到QuantBook，如上面的证券代号所示。这将返回<code>Security</code>对象。
+</p>QuantBook
+<div class="section-example-container">
+	<pre class="all">es = qb.AddFuture("ES") # 添加S&amp;P 500 期货
+</pre>
+</div>
+<p>
+	获得标的资产的证券代号后，必须设置要在可用合同的资产集内应用的过滤器。期货与每个到期日组合都有合约。
+</p>
+<p>
+	对于期货，您可以有选择地设置合约到期日期范围<code>SetFilter(minExpiry, maxExpiry)</code>。默认过滤器设置为<code>SetFilter(timedelta(0), timedelta(35))</code>。
+</p>
+<div class="section-example-container">
+	<pre class="all"># 过滤期货合约
+es.SetFilter(timedelta(0), timedelta(180))
+</pre>
+</div>
+<p>
+	最后，为了请求过滤合同的价格数据，我们创建了一个辅助方法，它在一个请求中获取历史记录：
+</p>
+<div class="section-example-container">
+	<pre class="all"># 从01/11/2017 10:10 到 01/13/2017 12:10请求SP500期货数据
+future_history = qb.GetFutureHistory(es.Symbol, datetime(2017, 1, 11, 10, 10), datetime(2017, 1, 13, 12, 10))
+
+# 以数据框形式获取所有期货数据
+future_history.GetAllData()
+
+# 对所有期货合约获取到期日数据
+future_history.GetExpiryDates()
+</pre>
+</div>
+<figure><img src="https://cdn.quantconnect.com/web/i/docs/algorithm-framework/futures-all-history-min.png" class="img-responsive"/>
+	<figcaption>在QuantConnect研究环境中获取期货历史数据</figcaption>
+</figure>
+<figure><img src="https://cdn.quantconnect.com/web/i/docs/algorithm-framework/futures-expiry-min.png" class="img-responsive"/>
+	<figcaption>在QuantConnect研究环境中获取期货到期时间</figcaption>
+</figure>
