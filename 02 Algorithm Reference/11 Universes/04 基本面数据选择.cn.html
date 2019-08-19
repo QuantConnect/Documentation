@@ -43,8 +43,7 @@ th.summary {
 </style>
 
 <p>
-    资产集API支持根据公司基本面数据来进行资产集选择。这些数据由<a href="https://www.quantconnect.com/data#provider/morningstar">Morningstar®</a>提供，并包括了大约5000只股票，每一只有超过900个属性。
-    数据以$[FineFundamental,T:QuantConnect.Data.Fundamental.FineFundamental]类型的形式提供。
+    资产集API支持根据公司基本面数据来进行资产集选择。这些数据由<a href="https://www.quantconnect.com/data#provider/morningstar">Morningstar®</a>提供，并包括了大约5000只股票，每一只有超过900个属性。数据以$[FineFundamental,T:QuantConnect.Data.Fundamental.FineFundamental]类型的形式提供。
 </p>
 
 <p>
@@ -96,14 +95,14 @@ class MyUniverseAlgorithm(QCAlgorithm):
 </pre>
 </div>
 
-<h4>例1：从50只拥有最高交易量的股票，选取10只有着最低市盈率的股票</h4>
+<h4>例1：从50只拥有最高交易量的股票中，选取拥有最低市盈率的10只股票</h4>
 <p>
     访问基本面对象最简单的例子为利用股票标志性的市盈率。这是每股市价与每股盈余的比率。股票的市盈率越低，它看起来越便宜。
 </p>
 
 <div class="section-example-container">
-	<pre class="csharp">// 通过资产集粗选获取50值交易金额最大的股票
-// 然后通过市盈率选取前十只
+	<pre class="csharp">// 通过资产集粗选获取50只交易金额最大的股票
+// 然后通过市盈率选取前10只
 AddUniverse(
     coarse =&gt; {
         return (from c in coarse
@@ -136,14 +135,12 @@ def FineSelectionFunction(self, fine):
 
 <h4>例2：“QC-500”，500家具有流动性、盈利性以及超过1B交易量的公司</h4>
 <p>
-    由于许可限制，QuantConnect没有标志性的S&amp;P500索引列表，但是，我们重建了一个90％复制的自制版本，我们称之为QC-500。QC-500太大而无法粘贴到此文档中，但我们已开放实施用于教育目的。有关更多信息，请参阅
-<span class="python"><a href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.Python/ConstituentsQC500GeneratorAlgorithm.py" target="_BLANK">QC500算法示例</a></span>
+    由于许可限制，QuantConnect没有标志性的S&amp;P500索引列表，但是，我们重建了一个90％复制的自制版本，我们称之为QC-500。QC-500太大而无法粘贴到此文档中，但我们已将其开源以用于教育目的。有关更多信息，请参阅<span class="python"><a href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.Python/ConstituentsQC500GeneratorAlgorithm.py" target="_BLANK">QC500算法示例</a></span>
 <span class="csharp"><a href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.CSharp/ConstituentsQC500GeneratorAlgorithm.cs" target="_BLANK">QC500算法示例</a></span>.
 </p>
 
-<h4>应用的局限</h4>
+<h4>实际局限</h4>
 <p>
-    与资产集粗选集， 资产集精选允许您选择一个无限的代号（symbol）集来进行分析。每一个添加的资产消耗大约5MB的内存，因此如果资产集过滤器选择了过多代号，则可能会快速耗尽内存。
-    QuantConnect提供无限制的回测和每次回测的免费8GB RAM。如果遇到内存问题，可以使用订阅或是内存包来增加内存。只要订阅所需的资产，即可快速高效地保证算法的有效性。
+    与资产集粗选一样，资产集精选允许您选择一个无限的代号（symbol）集来进行分析。每一个添加的资产消耗大约5MB的内存，因此如果资产集过滤器选择了过多代号，则可能会快速耗尽内存。QuantConnect提供无限制的回测以及为每次回测免费提供8GB的RAM。如果遇到内存问题，可以使用购买订阅或是内存包来增加内存。通过只订阅所需的资产，您可保持算法快速高效。
 </p>
 

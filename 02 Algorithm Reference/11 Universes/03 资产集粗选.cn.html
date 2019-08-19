@@ -2,11 +2,11 @@
 <meta name="tag" content="coarse universes" />
 
 <p>
-    资产集粗选允许您根据其数量，价格或是否具有基本数据来选择一组股票。这有助于将您的资产集缩小为流动资产或是通过技术指标过滤得到的资产。
+    资产集粗选允许您根据其数量，价格或是否具有基本数据来选择一组股票。这有助于将您的资产集缩小为流动性资产或是通过技术指标过滤得到的资产。
 </p>
 
 <p>
-    要使用资产集粗选，您必须使用您算法中Initialize()的$[AddUniverse(), M:QuantConnect.Algorithm.QCAlgorithm.AddUniverse]来进行请求。您应该向其中传递一个函数，该函数将用于将股票过滤从而得到您感兴趣的资产。
+    要使用资产集粗选，您必须使用您算法中Initialize()的$[AddUniverse(), M:QuantConnect.Algorithm.QCAlgorithm.AddUniverse]来进行请求。您应该向其中传入一个函数，该函数将用于将股票过滤从而得到您感兴趣的资产。
 </p>
 <div class="section-example-container" >
 <pre class="csharp">
@@ -31,14 +31,12 @@ class MyCoarseUniverseAlgorithm(QCAlgorithm):
 </div>
 
 <p>
-    粗过滤函数由$[CoarseFundamental,T:QuantConnect.Data.UniverseSelection.CoarseFundamental]对象列表所提供。这个对象最重要的属性为<code>Price（价格）</code>, <code>DollarVolume（成交金额）</code> and <code>HasFundamentaData（是否有基本面数据）</code>。
+    粗过滤函数具有$[CoarseFundamental,T:QuantConnect.Data.UniverseSelection.CoarseFundamental]对象列表。这个对象最重要的属性为<code>Price（价格）</code>, <code>DollarVolume（成交金额）</code> and <code>HasFundamentaData（是否有基本面数据）</code>。
     一些您可能需要的典型过滤函数例子为： 
 </p>
 <h4>例1：选取500只价值大于$10同时每日交易金额大于$10M的股票。</h4>
 <p>
     最常见的场景为选取许多流动性良好的股票。通过资产集粗选，这是简单且快速的。下面的这个粗选例子选取了500只流动性最好且每股金额高于$10的股票。
-    The most common use case is selecting a lot of liquid stocks. With coarse this is simple and fast.
-    This example below of a coarse filter function selects the top most liquid 500 stocks over $10 per share.
 </p>
 <div class="section-example-container" >
 <pre class="csharp">
@@ -62,9 +60,9 @@ class MyCoarseUniverseAlgorithm(QCAlgorithm):
 </div>
 
 
-<h4>Example 2: Take 10 stocks above their 200-Day EMA with more than $1B daily trading volume.</h4>
+<h4>例2：选取10只价格高于200天EMA且每日交易金额大于$1B的股票。</h4>
 <p>
-Another common request is to filter the universe by a technical indicator, such as only picking those above their 200-day EMA. The coarse fundamental object has adjusted price and volume information so we can do any price related analysis and return the symbols which pass our filter.
+另一个常见的请求是通过技术指标过滤资产集，例如仅选择超过200天EMA的那些资产。CoarseFundamental对象具有调整过的价格和交易量信息，因此我们可以进行任何与价格相关的分析并返回通过我们的过滤器的Symbol（代号）。
 </p>
 <div class="section-example-container" >
 <pre class="csharp">
@@ -89,7 +87,7 @@ Another common request is to filter the universe by a technical indicator, such 
     self.stateData = { };
 
     def MyCoarseFilterFunction(self, coarse):
-        # 我们将使用字典来引用储存移动平均值的对象
+        # 我们将使用一个字典来引用储存移动平均值的对象
         for cf in coarse:
             if cf.Symbol not in self.stateData:
                 self.stateData[cf.Symbol] = SelectionData(cf.Symbol, 200)
@@ -109,8 +107,7 @@ Another common request is to filter the universe by a technical indicator, such 
 </pre>
 </div>
 <p>
-    在这个例子中，我们使用一个新定义的类<code>SelectionData</code>。这是将我们的资产集选择的变量组合在一起并在几行代码中更新所有指标的整洁方法。
-    我们强烈建议您遵循此模式，以保持您的算法整洁无误！下面我们给出一个SelectionData类的实例，但您可以根据需要储存自定义的资产集过滤器。
+    在这个例子中，我们使用一个新定义的类<code>SelectionData</code>。这是将我们的资产集选择的变量组合在一起并在几行代码中更新所有指标的整洁方法。我们强烈建议您遵循此模式，以保持您的算法整洁无误！下面我们给出一个SelectionData类的实例，但您可以根据需要储存自定义的资产集过滤器。
 </p>
 <div class="section-example-container">
 <pre class="python">
@@ -127,7 +124,7 @@ class SelectionData(object):
             self.is_above_ema = price > ema
 </pre>
 <pre class="csharp">
-// 例 SelectionData类
+// 示例SelectionData类
 private class SelectionData
 {
     // 您需要选择的变量
@@ -149,9 +146,9 @@ private class SelectionData
 </pre>
 </div>
 
-<h4>例三：选取十只离它们十日交易量的SMA最远的股票</h4>
+<h4>例三：选取十只超出它们十日交易量SMA最多的股票</h4>
 <p>
-    获取10天SMA股票交易量与将其他指标应用于示例2中的数据的过程相同。首先，您应该定义执行平均的SelectionData类。对于此示例，以下类将用于此目的：
+    获取10天SMA股票交易量与将其他指标应用于示例2中的数据的过程相同。首先，您应该定义用来计算平均数的SelectionData类。对于此示例，以下类将用于此目的：
 </p>
 <div class="section-example-container">
 <pre class="python">
@@ -165,7 +162,7 @@ class SelectionData(object):
     def update(self, time, price, volume):
         self.volume = volume
         if self.sma.Update(time, volume):
-            # 获取此交易量的bar vs 它的前10个bar
+            # 获取此交易量的bar与它的前10个bar的比例
             self.volume_ratio = volume / self.sma.Current.Value 
 </pre>
 <pre class="csharp">
@@ -189,7 +186,7 @@ private class SelectionData
 </pre>
 </div>
 <p>
-    有了这个助手，我们已经定义了今天的交易量与历史交易量的比率。我们可以使用这个比率来选择超过10天简单移动平均线的资产，并根据自昨天以来下跌幅度最大的资产对选择进行排序。
+    有了这个辅助方法，我们已经定义了今天的交易量与历史交易量的比率。我们可以使用这个比率来选择超过10天简单移动平均线的资产，并根据自昨天以来交易量跳涨幅度最大的资产对选择进行排序。
 </p>
 <p>我们可以像这样使用这个SelectionData类</p>
 <div class="section-example-container">
@@ -201,10 +198,10 @@ def CoarseFilterFunction(self, coarse):
             avg = self.stateData[cf.Symbol]
             avg.update(cf.EndTime, cf.AdjustedPrice, cf.DollarVolume)
 
-        # 过滤SMA上方SelectionData(sd)的值
+        # 过滤大于SMA的SelectionData(sd)的值
         values = list(filter(lambda sd: (sd.volume > sd.sma.Current.Value) & (sd.volume_ratio > 0), self.stateData.values()))
         
-        # 按最大交易量跌幅排序sd
+        # 按最大交易量跳涨幅度百分比对sd进行排序
         values.sort(key=lambda sd: sd.volume_ratio, reverse=True)
 
         # 返回前十个代号（symbol）对象
@@ -226,7 +223,6 @@ def CoarseFilterFunction(self, coarse):
 
 <h4>例4：选取50天EMA > 200天EMA的前十名“最快速移动”的股票</h4>
 <p>
-    复杂的资产集过滤器可以通过SelectionData辅助类模式来构建。我们已经实现了一个完整的例子，您可以在
-<span class="csharp"><a href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.CSharp/EmaCrossUniverseSelectionAlgorithm.cs" target="_BLANK">这里</a></span>
+    复杂的资产集过滤器可以通过SelectionData辅助类模式来构建。我们已经在Github上实现了一个完整的例子，您可以在<span class="csharp"><a href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.CSharp/EmaCrossUniverseSelectionAlgorithm.cs" target="_BLANK">这里</a></span>
 <span class="python"><a href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.Python/EmaCrossUniverseSelectionAlgorithm.py" target="_BLANK">这里</a></span>查看。
 </p>
