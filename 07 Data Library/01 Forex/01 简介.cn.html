@@ -1,0 +1,44 @@
+<meta name="tag" content="using data">
+<meta name="tag" content="assets">
+<meta name="tag" content="forex">
+<p>
+QuantConnect通过两家经纪商支持外汇交易：OANDA和FXCM。由于大多数经纪商提供不同的资产定价，我们为支持的这两家经济商分别提供相应的数据。 
+</p>
+<p>
+QuantConnect总共拥有从2007年4月到现在由FXCM提供的13种货币对，以及从2004年4月到现在由OANDA提供的71种货币对。这些货币报价数据有Tick，秒，分钟，小时和每日分辨率。
+</p>
+<p>
+请使用<code>AddForex()</code>方法来订阅您想要的货币对的数据： 
+</p>
+<div class="section-example-container">
+	<pre class="csharp">// 完整的AddForex API，包括默认参数：
+AddForex(string pair,
+         Resolution resolution = Resolution.Minute,
+         string market = null,
+         bool fillDataForward = true,
+         decimal leverage = 0m)
+</pre>
+	<pre class="python"># 完整的AddForex API，包括默认参数：
+self.AddForex(string pair,
+    Resolution resolution = Resolution.Minute,
+    string market = null,
+    bool fillDataForward = true,
+    decimal leverage = 0m)
+</pre>
+</div>
+<p>
+在请求外汇数据时，您应该通过<code>market</code>参数设置数据提供者。Forex有两个支持的参数值：FXCM和Oanda。
+</p>
+<div class="section-example-container">
+	<pre class="csharp">AddForex("EURUSD", Resolution.Minute, Market.Oanda);
+AddForex("EURUSD", Resolution.Minute, Market.FXCM);</pre>
+	<pre class="python">self.AddForex("EURUSD", Resolution.Minute, Market.Oanda)
+self.AddForex("EURUSD", Resolution.Minute, Market.FXCM)</pre>
+</div>
+<p>
+这些报价数据可以在OnData事件处理程序中的Slice对象中访问：
+</p>
+<div class="section-example-container">
+	<pre class="csharp">var bar = data["EURUSD"];</pre>
+	<pre class="python">bar = data["EURUSD"]</pre>
+</div>
