@@ -1,0 +1,59 @@
+<p>
+订阅期权数据的另一种方法是使用OptionChainProvider。OptionChainProvider的GetOptionContractList方法将返回一个仅有指定资产和日期的期权合约的List。
+</p>
+<div class="section-example-container">
+    <pre>
+        OptionChainProvider.GetOptionContractList(Symbol symbol,
+                                                  DateTime date)
+    </pre>
+</div>
+<p>
+此方法允许您根据算法的特定要求筛选期权合约。手动过滤这些合约受限于资产代号中包含的信息（执行价格，到期日，类型，品种）和/或History调用的价格。应用过滤器后，可以使用AddOptionContract将所需的合同添加到资产集中。此过程允许您专门订阅所需的期权合约，并帮助维护一个小型资产集，以使您的算法尽可能快地运行。
+</p>
+<div class="section-example-container">
+    <pre>
+        AddOptionContract(Symbol symbol,
+                          Resolution resolution = Resolution.Minute,
+                          bool fillforward = true,
+                          decimal Leverage = 0m)
+    </pre>
+</div>
+<p>
+在回测中，OptionChainProvider.GetOptionContractList允许您请求特定资产代号和日期的期权合约List。在实盘模式下，日期参数固定为当前算法时间。
+</p>
+<div class="section-example-container">
+	<pre class="csharp">// 在public类中
+    private Symbol _equitySymbol;
+
+    // 在初始化方法中
+    var equity = AddEquity("GOOG", Resolution.Minute);
+    equity.SetDataNormalizationMode(DataNormalizationMode.Raw);
+    _equitySymbol = equity.Symbol;
+
+public override void OnData(Slice data)
+{
+    // 获取指定时间的期权合约List
+    var contracts = OptionChainProvider.GetOptionContractList(_equitySymbol, data.Time);
+
+    // 使用AddOptionContract()订阅指定合约的数据
+    AddOptionContract(contracts.First(), Resolution.Minute);
+}
+</pre>
+	<pre class="python"># 在初始化方法中
+    self.equity = self.AddEquity("GOOG", Resolution.Minute)
+    self.equity.SetDataNormalizationMode(DataNormalizationMode.Raw)
+
+def OnData(self, data):
+    ## 调用期权过滤器
+    contract = self.OptionsFilter(data)
+
+## 调用过滤方法示例
+def OptionsFilter(self, data):
+    contracts = self.OptionChainProvider.GetOptionContractList(self.equity.Symbol, data.Time)  ## 获取指定时间的期权合约List
+    
+    ## 使用AddOptionContract()订阅指定合约的数据
+    self.AddOptionContract(contracts[0], Resolution.Minute)  ## 添加期权合约List里的第一个合约
+
+    return contracts[0]
+</pre>
+</div>

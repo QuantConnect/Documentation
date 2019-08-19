@@ -1,0 +1,102 @@
+<p>
+可以在OnData事件处理程序的Slice对象中访问期权报价和交易数据。<code>OptionChains</code>成员包含每个订阅期权的<code>OptionChain</code>对象。<code>OptionChain</code>对象包含有关标的资产和由<code>SetFilter</code>过滤的期权合约的信息。
+</p>
+<div class="section-example-container">
+	<pre class="csharp">var underlying = chain.Underlying;
+var contracts = chain.Contracts; 
+</pre>
+	<pre class="python">underlying = chain.Underlying
+contracts = chain.Contracts
+</pre>
+</div>
+<div class="section-example-container">
+	<pre class="csharp">// 在初始化方法中
+OptionSymbol = option.Symbol;
+
+// 在OnData中
+OptionChain chain;
+if (slice.OptionChains.TryGetValue(OptionSymbol, out chain))
+{
+    // 到期日最远的平价看跌期权合约
+    var atmContract = chain
+        .OrderByDescending(x =&gt; x.Expiry)
+        .ThenBy(x =&gt; Math.Abs(chain.Underlying.Price - x.Strike))
+        .ThenByDescending(x =&gt; x.Right)
+        .FirstOrDefault();
+}
+</pre>
+	<pre class="python"># 在初始化方法中
+self.OptionSymbol = option.Symbol;
+
+# 在OnData(self, slice)中
+for chain in slice.OptionChains.Values:
+	# 给合约排序以找到拥有最远到期日的平价看跌期权合约
+  	contracts = sorted(sorted(chain, \
+                           key = lambda x: abs(chain.Underlying.Price - x.Strike)), \
+                           key = lambda x: x.Expiry, reverse=True)
+</pre>
+</div>
+<p><code>OptionChain</code>是一个包含<code>OptionContract</code>List的对象。OptionContract有以下附加属性：
+</p>
+<div class="section-example-container">
+	<pre class="csharp">
+// OptionContract对象的List
+class OptionChain : BaseData, IEnumerable&lt;OptionContract&gt; {
+     BaseData Underlying;  // 标的资产的Symbol
+     QuoteBars QuoteBars; // 这个chain中所有的报价K线
+     OptionContracts Contracts; // 这个chain中所有的交易K线
+}</pre>
+	<pre class="python">
+# OptionContract对象的List
+class OptionChain(self):
+     self.Underlying  # 标的资产的Symbol
+     self.QuoteBars   # 这个chain中所有的报价K线
+     self.Contracts   # 这个chain中所有的交易K线
+</pre>
+</div>
+<p> <code>OptionContract</code>对象是期权市场的可交易证券。它有自己的Symbol代码，代表唯一的期权合约。它具有以下属性：
+</p>
+<div class="section-example-container">
+	<pre class="csharp">
+// OptionChain的可交易期权合约
+class OptionContract : BaseData, IEnumerable&lt;OptionContract&gt;{
+     Symbol Symbol;    // 可交易期权合约的Symbol
+     Symbol UnderlyingSymbol;    // 标的资产的Symbol
+     decimal Strike; // 合约执行价格
+     DateTime Expiry; // 合约到期日
+     OptionRight Right; // 看跌或看涨
+     decimal TheoreticalPrice; //期权模型生成的价格
+     decimal ImpliedVolatility; //期权模型的隐含波动率
+     Greeks Greeks; //Greek属性的集合
+     DateTime Time; //数据的时间
+     decimal OpenInterest;//可用合约数量
+     decimal LastPrice; //最后交易价格
+     long Volume; //此分钟交易的合约数量
+     decimal BidPrice; //买价
+     long BidSize; //买单量
+     decimal AskPrice; //卖价
+     long AskSize; //卖单量
+     decimal UnderlyingLastPrice; //资产标的价格
+}</pre>
+	<pre class="python">
+# OptionChain的可交易期权合约
+class OptionContract(self):
+     self.Symbol    # 可交易期权合约的Symbol
+     self.UnderlyingSymbol    # 标的资产的Symbol
+     self.Strike     # (decimal) 合约执行价格
+     self.Expiry     # (datetime) 合约到期日
+     self.Right      # (OptionRight) 看跌或看涨
+     self.TheoreticalPrice # (decimal) 期权模型生成的价格
+     self.ImpliedVolatility   # (decimal) 期权模型的隐含波动率
+     self.Greeks     # (Greeks) Greek属性的集合
+     self.Time       # (datetime) 数据的时间
+     self.OpenInterest # (decimal ) 可用合约数量
+     self.LastPrice  # (decimal) 最后交易价格
+     self.Volume     # 此分钟交易的合约数量
+     self.BidPrice   # (decimal) 买价
+     self.BidSize    # (long) 买单量
+     self.AskPrice   # (decimal) 卖价
+     self.AskSize    # (long) 卖单量
+     self.UnderlyingLastPrice # (decimal) 资产标的价格
+</pre>
+</div>
