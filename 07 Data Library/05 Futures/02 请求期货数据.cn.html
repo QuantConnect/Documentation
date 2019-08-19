@@ -1,0 +1,42 @@
+<p>
+	要在QuantConnect中订阅期货数据，您应首先选择您想要交易的资产;然后根据您希望查看的合同到期时间来指定过滤器。
+</p>
+<div class="section-example-container">
+	<pre>// 完成添加期货API - 包括默认参数：
+AddFuture(string symbol,
+          Resolution resolution = Resolution.Minute,
+          string market = null,
+          bool fillDataForward = true,
+          decimal leverage = 0m)      
+</pre>
+</div>
+<p>
+	默认情况下，期货资产集会过滤到在35天内到期的合约。可以使用<code>SetFilter</code>方法选择一组不同的合同：
+</p>
+<div class="section-example-container">
+	<pre class="csharp">var future = AddFuture(Futures.Indices.SP500EMini);
+future.SetFilter(TimeSpan.FromDays(30), TimeSpan.FromDays(180));
+</pre>
+	<pre class="python">future = self.AddFuture(Futures.Indices.SP500EMini)
+future.SetFilter(timedelta(30), timedelta(182))
+</pre>
+</div>
+<p class="csharp">
+我们也可以在合同清单上使用Linq来选择我们想要交易的合约：</p>
+<p class="python">
+我们也可以在合同清单上使用Linq来选择我们想要交易的合约：
+</p>
+<div class="section-example-container">
+	<pre class="csharp">// 在初始化方法中
+var future = AddFuture(Futures.Indices.SP500EMini, Resolution.Minute);
+future.SetFilter(TimeSpan.Zero, TimeSpan.FromDays(182));
+// 或用Linq过滤:
+future.SetFilter(universe =&gt; universe.Expiration(TimeSpan.Zero, TimeSpan.FromDays(182)));
+</pre>
+	<pre class="python"># 在初始化方法中
+future = self.AddFuture(Futures.Indices.SP500EMini, Resolution.Minute)
+future.SetFilter(timedelta(0), timedelta(182))
+# 或者用lambda函数:
+future.SetFilter(lambda universe: universe.Expiration(timedelta(0), timedelta(182)))
+</pre>
+</div>
