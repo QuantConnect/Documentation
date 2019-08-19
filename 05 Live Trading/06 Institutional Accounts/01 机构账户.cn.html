@@ -2,17 +2,16 @@
 QuantConnect支持财务顾问（FA）帐户的实盘交易。这些经过认证的专业人员可以使用单个交易算法来管理多个客户帐户。此功能仅供QuantConnect上的<a href="https://www.quantconnect.com/upgrade">专业人员订阅</a>账户使用。
 </p>
 <p>
-    唯一支持FA账户的经纪商是Interactive Brokers。
-在初始化（Initialize）方法中，我们需要将$[DefaultOrderProperties,P:QuantConnect.Algorithm.QCAlgorithm.DefaultOrderProperties]属性设置为$[InteractiveBrokersOrderProperties,T:QuantConnect.Orders.InteractiveBrokersOrderProperties]:
+    唯一支持FA账户的经纪商是盈透证券。在初始化（Initialize）方法中，我们需要将$[DefaultOrderProperties,P:QuantConnect.Algorithm.QCAlgorithm.DefaultOrderProperties]属性设置为$[InteractiveBrokersOrderProperties,T:QuantConnect.Orders.InteractiveBrokersOrderProperties]:
 </p><div class="section-example-container"><pre class="csharp fsharp">
 // 可以在此处设置默认订单属性，以选择在任何订单提交方法中自动使用的FA设置（例如SetHoldings，Buy，Sell和Order）
 
 // 使用具有分配方法的默认FA账户组
 DefaultOrderProperties = new InteractiveBrokersOrderProperties
 {
-    //在IB/TWS里手动创建的账户组
+    // 在IB/TWS里手动创建的账户组
     FaGroup = "TestGroupEQ",
-    // 支持的分配方法有： EqualQuantity, NetLiq, AvailableEquity, PctChange
+    // 支持的分配方法有：EqualQuantity, NetLiq, AvailableEquity, PctChange
     FaMethod = "EqualQuantity"
 };
 
@@ -48,11 +47,11 @@ DefaultOrderProperties = InteractiveBrokersOrderProperties()
 # 与财务顾问主帐户关联的子帐户
 self.DefaultOrderProperties.Account = "DU123456"
 </pre>
-<pre class="csharp fsharp python">//InteractiveBrokersOrderProperties object properties:
+<pre class="csharp fsharp python">//InteractiveBrokersOrderProperties对象性质:
 class InteractiveBrokersOrderProperties {
     string Account     // 要提交订单的关联帐户
     string FaGroup     // 订单的帐户组
-    string FaMethod    // 帐户组订单的分配方法： EqualQuantity, NetLiq, AvailableEquity, PctChange
+    string FaMethod    // 帐户组订单的分配方法：EqualQuantity, NetLiq, AvailableEquity, PctChange
     int FaPercentage   // PctChange（百分比变化）分配方法的百分比
     string FaProfile   // 用于订单的分配配置
 }
