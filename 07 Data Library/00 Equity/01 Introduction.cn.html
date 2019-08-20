@@ -1,0 +1,74 @@
+<p>
+QuantConnect提供从1998年1月1日至今的无幸存者偏差的所有美国股票数据。在此期间，有一些新股上市，有一些股票被摘牌。当公司名称/符号更改时，数据将自动映射到原始名称。 默认情况下，会根据<a href="#equity/usa/splits">拆分</a>以及<a href="#equity/usa/dividends">股息</a>调整数据。
+</p>
+<p>所有数据均以Tick，秒，分钟，小时和每日分辨率提供。 Tick数据是按交易顺序提供的，但数据本身的时间戳记为前一秒。</p>
+<p>Tick数据是原始的和未经过滤的 - 包括可疑的，不可交易的和非开市时间内的价格数据。 这通常会导致不切实际的回测。 在使用Tick数据之前，您应该完全理解所有交易所代码和“可疑”标志，这标志着您应该忽略此Tick。 除非您是专家，否则您应该使用经过预先过滤的秒和分钟数据。</p>
+<div><br>
+	<div>
+		<table class="table qc-table table-itemized table-reflow">
+			<thead>
+				<tr>
+					<th colspan="2">
+                    数据属性
+                </th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td>可用分辨率</td>
+					<td>Tick，秒，分钟，小时和每日</td>
+				</tr>
+				<tr>
+					<td>Data Providers</td>
+					<td><a href="/docs/data-library/equity#Equity-About-the-Provider">QuantQuote</a>
+					</td>
+				</tr>
+				<tr>
+					<td>开始时间</td>
+					<td>
+                    1998年1月1日
+                </td>
+				</tr>
+				<tr>
+					<td>符号集</td>
+					<td>
+                    ≈ 19,700个符号
+                    (<a href="https://quantquote.com/docs/symbol_map_comnam.csv" rel="nofollow" target="_BLANK"><i class="fa fa-download"></i> 下载列表 </a>)
+</td>
+				</tr>
+			</tbody>
+		</table>
+		<p>
+            数据必须通过Initialize()方法或者资产集选择来添加。
+</p>
+		<div class="section-example-container">
+			<pre class="csharp">//使用Initialize()方法手动添加：
+public override void Initialize() {
+    AddEquity("IBM", Resolution.Minute);
+}
+// 访问获取到的数据
+public override void OnData(Slice data) {
+    //通过tradebar字典 (symbol - bar)
+    data.Bars["IBM"].Close
+    //通过Tick列表
+    data.Ticks["IBM"][0].Close
+}
+</pre>
+			<pre class="python"># 使用Initialize()方法手动添加：
+def Initialize(self):
+    self.AddEquity("IBM", Resolution.Minute)
+# 访问获取到的数据
+def OnData(self, data):
+    # 通过tradebar字典 (symbol - bar)
+    data.Bars["IBM"].Close
+    //通过Tick列表
+    data.Ticks["IBM"][0].Close
+</pre>
+		</div>
+		<p>美国股票的实时交易仅适用于盈透证券（Interactive Brokers）。将算法部署到盈透时，您还可以选择使用他们的数据源。您必须订阅了所需的资产类别来使用盈透作为您的数据源。
+</p>
+		<p>QuantConnect的实时Tick数据流直接来自交易所。 就像回测数据一样，它也是原始的和未经过滤的。</p>
+		<p>有关更多关于算法的信息请参阅<a class="docs-internal-link" href="/docs/algorithm-reference/initializing-algorithms">算法初始化</a>.
+</p>
+	</div>
+</div>
