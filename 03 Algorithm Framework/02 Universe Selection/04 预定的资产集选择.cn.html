@@ -1,5 +1,5 @@
 <p>
-     预定的资产集允许您以固定的，定期的间隔执行资产集选择。在实时交易中，这可以应用于从Dropbox获取代码，或者对历史数据进行分析并选择合理的股票代号。用于创建预定资产集的类称为$[ScheduledUniverseSelectionModel,T:QuantConnect.Algorithm.Selection.ScheduledUniverseSelectionModel]。
+     预定的资产集允许您以固定的，定期的间隔执行资产集选择。在实盘交易中，这可以应用于从Dropbox获取代码，或者对历史数据进行分析并选择合理的股票代号。用于创建预定资产集的类称为$[ScheduledUniverseSelectionModel,T:QuantConnect.Algorithm.Selection.ScheduledUniverseSelectionModel]。
 </p>
 <div class="section-example-container">
 	<pre class="csharp">public ScheduledUniverseSelectionModel(
@@ -12,15 +12,14 @@
 	<pre class="python">ScheduledUniverseSelectionModel(dateRule, timeRule, selector,  universeSettings=null, securityInitializer=null)</pre>
 </div>
 <p>
-     资产集选择辅助方法的工作方式与<a class="docs-internal-link" href="/docs/algorithm-reference/scheduled-events">计划事件API</a>相同，
-     需要$[DateRule,T:QuantConnect.Scheduling.IDateRule]和$[TimeRule,T:QuantConnect.Scheduling.ITimeRule]设置回调时间，以及一个返回Symbol对象列表的执行函数。 
+     资产集选择辅助方法的工作方式与<a class="docs-internal-link" href="/docs/algorithm-reference/scheduled-events">计划事件API</a>相同，需要$[DateRule,T:QuantConnect.Scheduling.IDateRule]和$[TimeRule,T:QuantConnect.Scheduling.ITimeRule]来设置回调时间，以及一个返回Symbol对象列表的执行函数。 
 </p>
 <div class="section-example-container">
 	<pre class="csharp">// 资产集选择将于周一/周二/周四的00：00/06：00/12：00/18：00进行
 AddUniverseSelection(new ScheduledUniverseSelectionModel(
     DateRules.Every(DayOfWeek.Monday, DayOfWeek.Tuesday, DayOfWeek.Thursday),
     TimeRules.Every(TimeSpan.FromHours(6)),
-    SelectSymbols // 选择函数在算法中
+    SelectSymbols // 算法中的选择函数
 ));
 
 // 创建返回symbol对象的选择函数
@@ -38,7 +37,7 @@ IEnumerable&lt;Symbol&gt; SelectSymbols(DateTime dateTime)
 self.AddUniverseSelection(ScheduledUniverseSelectionModel(
     self.DateRules.Every(DayOfWeek.Monday, DayOfWeek.Tuesday, DayOfWeek.Thursday),
     self.TimeRules.Every(timedelta(hours = 12)),
-    self.SelectSymbols # 选择函数在算法中
+    self.SelectSymbols # 算法中的选择函数
 ))
 
 # 创建返回symbol对象的选择函数

@@ -1,13 +1,10 @@
 <p><img src="https://cdn.quantconnect.com/web/i/docs/algorithm-framework/execute.png" style="width:50px; float: left; margin-right:10px">
 </p>
 <p>
-	执行模型主要涉及有效执行交易。它寻求最优价格来填补订单并管理订单。它从<a class="docs-internal-link" href="/docs/algorithm-framework/portfolio-construction">投资组合构建模型</a>中
-	收到$[PortfolioTarget,T:QuantConnect.Algorithm.Framework.Portfolio.IPortfolioTarget]数组，并使用它们在市场中进行交易，寻求达到投资组合目标中指示的单位。要执行模型，您应该使用
-	<code class="csharp fsharp">SetExecution( IExecutionModel )</code><code class="python">self.SetExecution( IExecutionModel )</code>方法。
-	这应该从您的算法<code class="csharp fsharp">Initialize()</code><code class="python">def Initialize()</code>方法中完成。
+	执行模型主要涉及有效执行交易。它寻求最优价格来成交订单并管理订单。它从<a class="docs-internal-link" href="/docs/algorithm-framework/portfolio-construction">投资组合构建模型</a>中收到$[PortfolioTarget,T:QuantConnect.Algorithm.Framework.Portfolio.IPortfolioTarget]数组，并使用它们在市场中进行交易，寻求达到投资组合目标中指定的单位。要执行模型，您应该使用<code class="csharp fsharp">SetExecution( IExecutionModel )</code><code class="python">self.SetExecution( IExecutionModel )</code>方法。这应该在您的算法<code class="csharp fsharp">Initialize()</code><code class="python">def Initialize()</code>方法中完成。
 </p>
 <p>
-	当目标到达执行模型时，它们已经由风险管理模型进行风险调整。像所有模型一样；执行模型仅接收<i>更新</i>到投资组合目标共享计数。您不会立即收到所有目标。
+	当目标到达执行模型时，它们已经由风险管理模型进行过风险调整。像所有模型一样；执行模型仅接收投资组合目标中证券份额计数的<i>更新</i>。您不会立即收到所有目标。
 </p>
 <div class="section-example-container">
 	<pre class="csharp"> // 在Initialize()方法中设置执行模型

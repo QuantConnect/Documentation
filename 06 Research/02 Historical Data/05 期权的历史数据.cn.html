@@ -5,11 +5,10 @@
 	<pre class="all">goog = qb.AddOption("GOOG") # 添加GOOG期权</pre>
 </div>
 <p>
-	获得标的资产的证券对象后，必须设置在可用合同资产集范围内应用的过滤器。期权具有每个行权价-到期日组合的合约。
+	获得标的资产的证券对象后，必须设置过滤器以应用于可用合同的资产集。期权对于每个执行价格-到期日组合都有合约。
 </p>
 <p>
-	在Options中，此过滤器使用<code>SetFilter(minStrike, maxStrike, minExpiry, maxExpiry)</code>方法设置。行权价是一个整数，到期时间则是一种时间跨度。
-	如果未指定，则默认过滤器为<code>SetFilter(-1, 1, timedelta(0), timedelta(35))</code>。
+	在Options中，此过滤器使用<code>SetFilter(minStrike, maxStrike, minExpiry, maxExpiry)</code>方法设置。执行价格是一个整数，到期时间则是一种时间跨度。如果未指定，则默认过滤器为<code>SetFilter(-1, 1, timedelta(0), timedelta(35))</code>。
 </p>
 <div class="section-example-container">
 	<pre class="all">
@@ -17,29 +16,29 @@
 goog.SetFilter(-2, 2, timedelta(0), timedelta(180))</pre>
 </div>
 <p>
-	最后，要获取与此标的资产相关联的历史数据并过滤，您应该使用我们创建的帮助方法，该方法在一个请求中获取所有数据：
+	最后，要获取与此标的资产相关联的历史数据并过滤，您应该使用我们创建的辅助方法，该方法在一个请求中获取所有数据：
 </p>
 <div class="section-example-container">
 	<pre class="all">
-# 从01/11/2017 10:10 到 01/13/2017 12:10请求GOOG期权历史数据
+# 请求GOOG期权从01/11/2017 10:10到01/13/2017 12:10的历史数据
 option_history = qb.GetOptionHistory(goog.Symbol, datetime(2017, 1, 11, 10, 10), datetime(2017, 1, 13, 12, 10))
 
-# 获取所有期权合约的行权价
+# 获取所有期权合约的执行价格
 option_history.GetStrikes()
 
 # 获取所有期权合约的到期日
 option_history.GetExpiryDates()
 
-# 以数据框形式获取所有期权合约的数据
+# 以dataframe形式获取所有期权合约的数据
 option_history.GetAllData()
 </pre>
 </div>
 <figure><img src="https://cdn.quantconnect.com/web/i/docs/algorithm-framework/options-all-history-min.png" class="img-responsive"/>
-	<figcaption>在QuantConnect研究环境中获取期权数据</figcaption>
+	<figcaption>在QuantConnect研究环境中获取期权历史数据</figcaption>
 </figure>
 <figure><img src="https://cdn.quantconnect.com/web/i/docs/algorithm-framework/options-expiry-min.png" class="img-responsive"/>
-	<figcaption>在QuantConnect研究环境中获取期权到期时间</figcaption>
+	<figcaption>在QuantConnect研究环境中获取期权到期日</figcaption>
 </figure>
 <figure><img src="https://cdn.quantconnect.com/web/i/docs/algorithm-framework/options-strikes-min.png" class="img-responsive"/>
-	<figcaption>在QuantConnect研究环境中获取期权的行权价</figcaption>
+	<figcaption>在QuantConnect研究环境中获取期权的执行价格</figcaption>
 </figure>
