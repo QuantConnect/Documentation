@@ -1,0 +1,18 @@
+<p>
+QuantConnect提供1998年1月1日以来的所有美国股票的股息数据。数据通过专用事件处理程序传递到您的算法中。股息事件在付款日期触发。</p>
+<div class="section-example-container" >
+	<pre class="csharp">
+// v2.0技术：专用事件处理程序：
+public void OnData(Dividends data) {
+    //通过Dividends字典访问Dividend对象
+    data["IBM"].Distribution; // 股息现金
+}
+// v3.0技术：通过Slice对象访问：
+public override void OnData(Slice data) {
+    data.Dividends["IBM"].Distribution; // 股息现金
+}
+</pre>
+	<pre class="python"># 可以通过Slice对象中的Dividends属性访问股息数据：
+def OnData(self, data):
+      data.Dividends["IBM"].Distribution # 股息现金</pre>
+</div>
