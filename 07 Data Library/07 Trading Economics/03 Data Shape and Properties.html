@@ -1,0 +1,59 @@
+<p>
+    Trading Economics data is stored as a flat, single-line JSON file on disk. Data can be accessed using either one of the types using AddData:
+    
+    <ul>
+        <li>$[TradingEconomicsCalendar,T:QuantConnect.Data.Custom.TradingEconomics]</li>
+        <li>$[TradingEconomicsIndicator,T:QuantConnect.Data.Custom.TradingEconomics]</li>
+    </ul>
+
+    You can see the available fields for both Calendar and Indicator data by clicking the type name in the list above.
+</p>
+<p>
+    Trading Economics data is separated into two distinct categories: Calendar, and Indicator. The calendar category contains the announcements and results
+    of economic events, whereas Indicators only contain the most recent value parsable as a decimal. An example of Calendar data is U.S. fed interest rate announcements.
+    Calendar data will contain the announced actual value, the predicted value (by Wall St. and Trading Economics), and the previous value. Indicator data is similar to calendar
+    data, but contains numeric values instead of hard to parse values.
+</p>
+<p>
+    Accessible ticker values for Calendar and Indicator data for <code>AddData</code> can be seen on <a href="https://github.com/QuantConnect/Lean/blob/master/Common/Data/Custom/TradingEconomics/TradingEconomics.cs">GitHub</a>
+</p>
+<p>
+    Because calendar data sometimes has unclean values for the fields: <code>"Actual", "Previous", "Forecast", "TEForecast"</code>,
+    you'll have to clean the string and then parse as decimal/float. To do this, we recommend doing the following:
+
+    <div class="section-example-container">
+    	<pre class="csharp">
+            var inBillions = calendarData.Forecast.Contains("B");
+            var inMillions = calendarData.Forecast.Contains("M");
+
+            var formattedForecast = calendarData.Forecast.Replace("%", "").Replace("$", "");
+            var forecast = 0;
+
+            if (inBillions) 
+            {
+                forecast = Convert.ToDeicmal(formattedForecast.Replace("B", ""), CultureInfo.InvariantCulture) * 1000000000;
+            }
+            else if (inMillions) 
+            {
+                forecast = Convert.ToDecimal(formattedForecast.Replace("M", ""), CultureInfo.InvariantCulture) * 1000000;
+            }
+            else 
+            {
+                forecast = Convert.ToDecimal(formattedForecast, CultureInfo.InvariantCulture);
+            }
+        </pre>
+    	<pre class="python">
+            inBillions = "B" in calendarData.Forecast
+            inMillions = "M" in calendarData.Forecast
+
+            if inBillions:
+                forecast = float(calendarData.Forecast.replace("%", "").replace("B", "").replace("$", ""))
+                forecast = forecast * 1000000000
+            elif inMillions
+                forecast = float(calendarData.Forecast.replace("%", "").replace("M", "").replace("$", ""))
+                forecast = forecast * 1000000
+            else:
+                forecast = float(calendarData.Forecast.replace("%", "").replace("$", ""))
+        </pre>
+    </div>
+</p>

@@ -1,0 +1,64 @@
+<p>
+    We recommend that you store the Symbol object that is accessible from the <code>Security</code> type
+    returned from the <code>AddData</code> call. Reasons for doing so are:
+
+    <ol>
+        <li>You can reference the custom data symbol directly for use in other methods</li>
+        <li>It makes accessing data from <code>Slice</code> easier</li>
+        <li>Allows you to remove the custom data subscription later if you're not using it anymore</li>
+    </ol>
+
+    <span>Note:</span> special care must be taken with adding TradingEconomics data. The AddData method currently assumes
+    that the data timezone (i.e. the timezone the data is stored in) is America/New_York. We need to make sure
+    that we use UTC because the data is stored in UTC.
+</p>
+<p>
+    In order to store your custom data symbol, you can do the following:
+
+    <div class="section-example-container">
+    	<pre class="csharp">
+            // Storing a symbol object to a List&lt;Symbol&gt; defined as a class member variable
+            public class TradingEconomicsCalendarAlgorithm : QCAlgorithm 
+            {
+                // Can be private or public
+                private List&lt;Symbol&gt; _customDataSymbols = new List&lt;Symbol&gt;();
+
+                public void Initialize() 
+                {
+                    var calendars = new List&lt;string&gt; 
+                    {
+                        TradingEconomics.Calendar.UnitedStates.InterestRate,
+                        // ...
+                    };
+
+                    foreach (var calendar in calendars) 
+                    {
+                        var tickerSymbol = AddData&lt;TradingEconomicsCalendar&gt;(calendar, Resolution.Daily, TimeZones.Utc).Symbol;
+                        _customDataSymbols.Add(tickerSymbol);
+                    }
+                }
+
+                public void OnData(Slice slice) 
+                {
+                    // ...
+                }
+            }
+        </pre>
+    	<pre class="python">
+            # Storing a symbol object to a list defined as a class member variable
+            class TradingEconomicsCalendarAlgorithm(QCAlgorithm):
+                def Initialize():
+                    calendars = [TradingEconomics.Calendar.UnitedStates.InterestRate]
+
+                    self.customDataSymbols = [self.AddData(TradingEconomicsCalendar, calendar, Resolution.Daily, TimeZones.Utc).Symbol for calendar in calendars]
+
+                def OnData(slice):
+                    # ...
+                    pass
+        </pre>
+    </div>
+</p>
+<p>
+    After you've stored your symbol object, you can access data from the <code>Slice</code> object using the stored symbol object, similar to how you would load equity data.
+    Please see the <a href="/docs/algorithm-reference/handling-data">Handling Data</a> documentation section for more information on how to access your data using a symbol object.
+</p>
