@@ -17,44 +17,44 @@
 
     <div class="section-example-container">
     	<pre class="csharp">
-            // Storing a symbol object to a List&lt;Symbol&gt; defined as a class member variable
-            public class TradingEconomicsCalendarAlgorithm : QCAlgorithm 
-            {
-                // Can be private or public
-                private List&lt;Symbol&gt; _customDataSymbols = new List&lt;Symbol&gt;();
+// Storing a symbol object to a List&lt;Symbol&gt; defined as a class member variable
+public class TradingEconomicsCalendarAlgorithm : QCAlgorithm 
+{
+    // Can be private or public
+    private List&lt;Symbol&gt; _customDataSymbols = new List&lt;Symbol&gt;();
 
-                public void Initialize() 
-                {
-                    var calendars = new List&lt;string&gt; 
-                    {
-                        TradingEconomics.Calendar.UnitedStates.InterestRate,
-                        // ...
-                    };
+    public void Initialize() 
+    {
+        var calendars = new List&lt;string&gt; 
+        {
+            TradingEconomics.Calendar.UnitedStates.InterestRate,
+            // ...
+        };
 
-                    foreach (var calendar in calendars) 
-                    {
-                        var tickerSymbol = AddData&lt;TradingEconomicsCalendar&gt;(calendar, Resolution.Daily, TimeZones.Utc).Symbol;
-                        _customDataSymbols.Add(tickerSymbol);
-                    }
-                }
+        foreach (var calendar in calendars) 
+        {
+            var tickerSymbol = AddData&lt;TradingEconomicsCalendar&gt;(calendar, Resolution.Daily, TimeZones.Utc).Symbol;
+            _customDataSymbols.Add(tickerSymbol);
+        }
+    }
 
-                public void OnData(Slice slice) 
-                {
-                    // ...
-                }
-            }
+    public void OnData(Slice slice) 
+    {
+        // ...
+    }
+}
         </pre>
     	<pre class="python">
-            # Storing a symbol object to a list defined as a class member variable
-            class TradingEconomicsCalendarAlgorithm(QCAlgorithm):
-                def Initialize():
-                    calendars = [TradingEconomics.Calendar.UnitedStates.InterestRate]
+# Storing a symbol object to a list defined as a class member variable
+class TradingEconomicsCalendarAlgorithm(QCAlgorithm):
+    def Initialize():
+        calendars = [TradingEconomics.Calendar.UnitedStates.InterestRate]
 
-                    self.customDataSymbols = [self.AddData(TradingEconomicsCalendar, calendar, Resolution.Daily, TimeZones.Utc).Symbol for calendar in calendars]
+        self.customDataSymbols = [self.AddData(TradingEconomicsCalendar, calendar, Resolution.Daily, TimeZones.Utc).Symbol for calendar in calendars]
 
-                def OnData(slice):
-                    # ...
-                    pass
+    def OnData(slice):
+        # ...
+        pass
         </pre>
     </div>
 </p>
