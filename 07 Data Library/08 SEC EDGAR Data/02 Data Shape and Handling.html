@@ -1,9 +1,4 @@
 <p>
-    The data is stored as a flat JSON file on disk. In the processing stage, we chose to 
-    preserve as many fields as possible without modifying the order in which data is represented.
-    This way, we can preserve the structure and essence of the raw data in a structured format.
-</p>
-<p>
     To access SEC data, you'll need to use one or more of the following data types:
 
     <table class="table qc-table table-striped">
@@ -30,35 +25,15 @@
     </table>
 </p>
 <p>
-    The data is accessible from the derived BaseData instances (SECReport8K, SECReport10K, etc.) under the class field "Report". The "Report" field is of type $[SECReport,T:QuantConnect.Common.Data.Custom.SEC.SECReport]
-    and contains all of the report metadata in a structured format. The report documents are left in their original order and are unprocessed.
+    The data is accessible from the derived BaseData instances (SECReport8K, SECReport10K, etc.) under the field <code>Report</code>. The <code>Report</code> field is of type $[SECReport,T:QuantConnect.Common.Data.Custom.SEC.SECReport]
+    and contains all of the report metadata in a structured format. However, the report document contents are left raw and unparsed.
 </p>
 <p>
-    Note: Since we use the same interface in our BaseData derived classes (ISECReport), we'll use SECReport8K as an example to cover for both SECReport10K and SECReport10Q.
+    Note: Since we use the same interface in our BaseData derived classes (<code>ISECReport</code>), we can use <code>SECReport8K</code> as an example to cover for both <code>SECReport10K</code> and <code>SECReport10Q</code>.
 </p>
 <p>
-    Taking a look at $[SECReport8K,T:QuantConnect.Common.Data.Custom.SEC.SECReport8K], we can see that there is a field that contains a type called $[SECReportSubmission,T:QuantConnect.Common.Data.Custom.SEC.SECReportSubmission].
-    It is the class containing all SEC metadata and document contents. To begin accessing SEC data, you'll need to retrieve your SECReport8K, SECReport10K, SECReport10Q, etc. from 
-    the Slice object, and then access the "Report" field:
-
-    <div class="section-example-container">
-    	<pre class="csharp">
-public void OnData(Slice slice)
-{
-    // ...
-    // Save in two different variables in the case that we need to access the Symbol object
-    var reportData = slice[_symbol];
-    var report = reportData.Report;
-}
-        </pre>
-    	<pre class="python">
-def OnData(slice):
-    # ...
-    # Save in two different variables in the case that we need to access the Symbol object
-    reportData = slice[self.symbol]
-    report = reportData.Report
-        </pre>
-    </div>
+    Inside $[SECReport8K,T:QuantConnect.Common.Data.Custom.SEC.SECReport8K], the <code>Report</code> field contains the contents of the SEC report as a $[SECReportSubmission,T:QuantConnect.Common.Data.Custom.SEC.SECReportSubmission] object, which will let us
+    access SEC report metadata and document contents.
 </p>
 <p>
     For $[SECReportSubmission,T:QuantConnect.Common.Data.Custom.SEC.SECReportSubmission], we describe subtle behaviors present for each field:
@@ -84,12 +59,8 @@ def OnData(slice):
                 <td>Chosen as string because of potential non-number values</td>
             </tr>
             <tr>
-                <td>Period</td>
-                <td></td>
-            </tr>
-            <tr>
                 <td>Items</td>
-                <td>Items are a good way to identify what kind of contents an 8-K report contains</td>
+                <td>Describes the contents present in the report</td>
             </tr>
             <tr>
                 <td>FilingDate</td>
@@ -101,7 +72,7 @@ def OnData(slice):
             </tr>
             <tr>
                 <td>MadeAvailableAt</td>
-                <td>This is a field added by QuantConnect to identify when the data first became available for reality modeling purposes</td>
+                <td>This is a field added by QuantConnect to identify when the data first became available. For reality modeling purposes</td>
             </tr>
             <tr>
                 <td>Filers</td>
@@ -116,8 +87,8 @@ def OnData(slice):
 </p>
 <p>
     Focusing on the SEC report contents, we can access the document(s) by iterating on the Documents field.
-    Inside the $[SECReportDocument,T:QuantConnect.Common.Data.Custom.SEC.SECReportDocument] object, the Text field
-    contains all of the raw report contents.
+    Inside the $[SECReportDocument,T:QuantConnect.Common.Data.Custom.SEC.SECReportDocument] object, the <code>Text</code> field
+    will contain all of the raw report contents.
 </p>
 <p>
     <span>Note:</span> If the first line starts with "&lt;XML&gt;" (without double quotes), the contents will be in XML (except the first line), and can potentially be parsed with an XBRL parser
