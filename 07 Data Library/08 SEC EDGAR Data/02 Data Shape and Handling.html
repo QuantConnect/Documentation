@@ -1,0 +1,124 @@
+<p>
+    The data is stored as a flat JSON file on disk. In the processing stage, we chose to 
+    preserve as many fields as possible without modifying the order in which data is represented.
+    This way, we can preserve the structure and essence of the raw data in a structured format.
+</p>
+<p>
+    To access SEC data, you'll need to use one or more of the following data types:
+
+    <table class="table qc-table table-striped">
+        <thead>
+            <tr>
+                <td style="font-weight: bold">Form Type</td>
+                <td style="font-weight: bold">Data Type</td>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>8-K</td>
+                <td>$[SECReport8K,T:QuantConnect.Common.Data.Custom.SEC.SECReport8K]</td>
+            </tr>
+            <tr>
+                <td>10-K</td>
+                <td>$[SECReport10K,T:QuantConnect.Common.Data.Custom.SEC.SECReport10K]</td>
+            </tr>
+            <tr>
+                <td>10-Q</td>
+                <td>$[SECReport10Q,T:QuantConnect.Common.Data.Custom.SEC.SECReport10Q]</td>
+            </tr>
+        </tbody>
+    </table>
+</p>
+<p>
+    The data is accessible from the derived BaseData instances (SECReport8K, SECReport10K, etc.) under the class field "Report". The "Report" field is of type $[SECReport,T:QuantConnect.Common.Data.Custom.SEC.SECReport]
+    and contains all of the report metadata in a structured format. The report documents are left in their original order and are unprocessed.
+</p>
+<p>
+    Note: Since we use the same interface in our BaseData derived classes (ISECReport), we'll use SECReport8K as an example to cover for both SECReport10K and SECReport10Q.
+</p>
+<p>
+    Taking a look at $[SECReport8K,T:QuantConnect.Common.Data.Custom.SEC.SECReport8K], we can see that there is a field that contains a type called $[SECReportSubmission,T:QuantConnect.Common.Data.Custom.SEC.SECReportSubmission].
+    It is the class containing all SEC metadata and document contents. To begin accessing SEC data, you'll need to retrieve your SECReport8K, SECReport10K, SECReport10Q, etc. from 
+    the Slice object, and then access the "Report" field:
+
+    <div class="section-example-container">
+    	<pre class="csharp">
+public void OnData(Slice slice)
+{
+    // ...
+    // Save in two different variables in the case that we need to access the Symbol object
+    var reportData = slice[_symbol];
+    var report = reportData.Report;
+}
+        </pre>
+    	<pre class="python">
+def OnData(slice):
+    # ...
+    # Save in two different variables in the case that we need to access the Symbol object
+    reportData = slice[self.symbol]
+    report = reportData.Report
+        </pre>
+    </div>
+</p>
+<p>
+    For $[SECReportSubmission,T:QuantConnect.Common.Data.Custom.SEC.SECReportSubmission], we describe subtle behaviors present for each field:
+
+    <table class="table qc-table table-striped">
+        <thead>
+            <tr>
+                <td style="font-weight: bold">Field</td>
+                <td style="font-weight: bold">Remarks</td>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>AccessionNumber</td>
+                <td>Rarely used, mostly as a way to reference the specific original filing on EDGAR</td>
+            </tr>
+            <tr>
+                <td>FormType</td>
+                <td>Value is hyphenated</td>
+            </tr>
+            <tr>
+                <td>PublicDocumentCount</td>
+                <td>Chosen as string because of potential non-number values</td>
+            </tr>
+            <tr>
+                <td>Period</td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>Items</td>
+                <td>Items are a good way to identify what kind of contents an 8-K report contains</td>
+            </tr>
+            <tr>
+                <td>FilingDate</td>
+                <td>This is sometimes before the date that the data was released on</td>
+            </tr>
+            <tr>
+                <td>FilingDateChange</td>
+                <td>Optional field. Does not always appear in reports. Check for 0001-01-01 to filter</td>
+            </tr>
+            <tr>
+                <td>MadeAvailableAt</td>
+                <td>This is a field added by QuantConnect to identify when the data first became available for reality modeling purposes</td>
+            </tr>
+            <tr>
+                <td>Filers</td>
+                <td>First filer is usually the company the report is for. Will always contain at least a single value</td>
+            </tr>
+            <tr>
+                <td>Documents</td>
+                <td>Will always contain at least a single value</td>
+            </tr>
+        </tbody>
+    </table>
+</p>
+<p>
+    Focusing on the SEC report contents, we can access the document(s) by iterating on the Documents field.
+    Inside the $[SECReportDocument,T:QuantConnect.Common.Data.Custom.SEC.SECReportDocument] object, the Text field
+    contains all of the raw report contents.
+</p>
+<p>
+    <span>Note:</span> If the first line starts with "&lt;XML&gt;" (without double quotes), the contents will be in XML (except the first line), and can potentially be parsed with an XBRL parser
+</p>
