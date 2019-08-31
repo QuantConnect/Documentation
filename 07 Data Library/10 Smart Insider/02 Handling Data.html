@@ -1,0 +1,73 @@
+<p>
+    There are over 40 fields available for each Smart Insider data type for use in your algorithms. Data is published in UTC and is updated daily, so be sure to set your resolution to <code>Resolution.Daily</code>.
+</p>
+<p>
+    For Smart Insider, <code>AddData</code> accepts a ticker for an equity for the ticker field.
+</p>
+<p>
+    <i class="fa fa-warning"></i> Note: Smart Insider data can undergo rename and delisting events because of its relationship to equities. To learn more about handling delisting/rename events, visit <a href="https://www.quantconnect.com/docs/algorithm-reference/handling-data#Handling-Data-SymbolChangedEvent">Handling Data - SymbolChangedEvent</a>
+</p>
+<p>
+    <i class="fa fa-warning"></i> Note: Ensure you set the data timezone to UTC in <code>AddData</code>
+</p>
+<p>
+    Smart Insider data is provided in an event-sourced/delta format. What this means is that you can receive events as encountered at a specific point in time, but have a correction be issued after the fact invalidating that record, meaning you would have to replace the old data with the new.
+    For more information about event sourcing/delta file formatting, visit <a href="https://docs.microsoft.com/en-us/azure/architecture/patterns/event-sourcing">https://docs.microsoft.com/en-us/azure/architecture/patterns/event-sourcing</a>
+</p>
+<p>
+    If a <code>TransactionID</code> is duplicated, that means the record was amended and the old transaction should be considered outdated.
+</p>
+<p>
+    Reasons why transactions might be amended are:
+
+    <table class="table qc-table table-striped">
+        <thead>
+            <tr>
+                <td style="font-weight: bold;">Reason</td>
+                <td style="font-weight: bold;">Description</td>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Reporting errors by the issuer</td>
+                <td>The issuer of the report might have corrections</td>
+            </tr>
+            <tr>
+                <td>Reporting errors by Smart Insider</td>
+                <td>Rare, but can occur</td>
+            </tr>
+            <tr>
+                <td>New information</td>
+                <td>If additional information is received in the future regarding a transaction</td>
+            </tr>
+            <tr>
+                <td>Company change</td>
+                <td>ISIN or local market ID changes</td>
+            </tr>
+        </tbody>
+    </table>
+</p>
+<p>
+    Transactions might be reissued with <code>PriceAdjustedFactor</code> and <code>AmountAdjustedFactor</code>fields in the case of:
+
+    <ul>
+        <li>Splits</li>
+        <li>Reverse splits</li>
+        <li>Special dividends (amount factor will be 1)</li>
+        <li>Spin-offs (amount factor will be 1)</li>
+    </ul>
+</p>
+<p>
+    Sometimes, in rare cases, Smart Insider might delete a transaction file and report it again, sometimes due to a duplicate data error, or misc. error.
+</p>
+<p>
+    When a deletion occurs, the transaction is resent with the TransactionID, but all other fields null. The <code>NoteText</code> field will contain the word "DELETED" and may also contain an explanation of why the data was deleted.
+</p>
+<p>
+    Please note that with the exception of the following fields, all fields have the potential to be <code>null</code> in both $[SmartInsiderIntention,T:QuantConnect.Data.Custom.SmartInsider] and $[SmartInsiderTransaction,T:QuantConnect.Data.Custom.SmartInsider].
+
+    <ul>
+        <li>TransactionID</li>
+        <li>LastUpdate</li>
+    </ul>
+</p>
