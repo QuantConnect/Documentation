@@ -1,11 +1,5 @@
 <p>
-    The data are stored with the resolution <code>Resolution.Minute</code>. At most, there can only be one data point per ticker each minute. That means there can be no more than 1440 points of data per day per ticker.
-</p>
-<p>
-    <i class="fa fa-warning"></i> PsychSignal data is prone to rename and delisting events. This is because the custom data is related to equity symbols, which can undergo rename and delisting events. Please see <a href="https://www.quantconnect.com/docs/algorithm-reference/handling-data#Handling-Data-SymbolChangedEvent">Handling Data - SymbolChangedEvent</a> for more information on how to handle these events
-</p>
-<p>
-    <i class="fa fa-warning"></i> Specify the timezone as <code>UTC</code> in <code>AddData</code>
+    PsychSignal data only supports the resolution <code>Resolution.Minute</code>. To construct <code>Resolution.Hour</code> and <code>Resolution.Daily</code>, consider using <a href="https://www.quantconnect.com/docs/algorithm-reference/consolidating-data">Consolidators</a>
 </p>
 <p>
     $[PsychSignalSentiment,T:QuantConnect.Data.Custom.PsychSignal] has the following fields available:
@@ -19,36 +13,48 @@
                 <td style="font-weight: bold;">Description</td>
             </tr>
         </thead>
-        <tr>
-            <td><code>BullIntensity</code></td>
-            <td><code>decimal</code></td>
-            <td>Bullish (positive) intensity of messages scanned at that minute</td>
-        </tr>
-        <tr>
-            <td><code>BearIntensity</code></td>
-            <td><code>decimal</code></td>
-            <td>Bearish (negative) intensity of messages scanned at that minute</td>
-        </tr>
-        <tr>
-            <td><code>BullMinusBear</code></td>
-            <td><code>decimal</code></td>
-            <td>Bullish intensity minus bearish intensity</td>
-        <tr>
-            <td><code>BullScoredMessages</code></td>
-            <td><code>int</code></td>
-            <td>Number of bullish messages scanned at that minute. Note that <code>BullScoredMessages + BearScoredMessages</code> can be smaller than <code>TotalScoredMessages</code> due to the sentiment classification algorithm not being able to classify the message as bullish or bearish</td>
-        <tr>
-            <td><code>BearScoredMessages</code></td>
-            <td><code>int</code></td>
-            <td>Number of bearish messages scanned at that minute. Note that <code>BullScoredMessages + BearScoredMessages</code> can be smaller than <code>TotalScoredMessages</code> due to the sentiment classification algorithm not being able to classify the message as bullish or bearish</td>
-        <tr>
-            <td><code>BullBearMessageRatio</code></td>
-            <td><code>decimal</code></td>
-            <td><code>BullScoredMessages / BearScoredMessages</code> - If <code>BearScoredMessages</code> is zero, then the ratio will be reported as 0</td>
-        <tr>
-            <td><code>TotalScoredMessages</code></td>
-            <td><code>int</code></td>
-            <td>Total messages scanned related to the ticker. This can be greater than <code>BullScoredMessages + BearScoredMessages</code> because the sentiment classification algorithm was unable to classify a message into bullish or bearish</td>
-        </tr>
-    </ul>
+        <tbody>
+            <tr>
+                <td><code>BullIntensity</code></td>
+                <td><code>decimal</code></td>
+                <td>Bullish (positive) intensity of messages scanned at that minute. This is a positive value between 0.0 and 4.0 (inclusive)</td>
+            </tr>
+            <tr>
+                <td><code>BearIntensity</code></td>
+                <td><code>decimal</code></td>
+                <td>Bearish (negative) intensity of messages scanned at that minute. This is a positive value between 0.0 and 4.0 (inclusive)</td>
+            </tr>
+            <tr>
+                <td><code>BullMinusBear</code></td>
+                <td><code>decimal</code></td>
+                <td>Bullish intensity minus bearish intensity</td>
+            </tr>
+            <tr>
+                <td><code>BullScoredMessages</code></td>
+                <td><code>int</code></td>
+                <td>Number of bullish messages scanned at that minute. Note that <code>BullScoredMessages + BearScoredMessages</code> can be smaller than <code>TotalScoredMessages</code> due to the sentiment classification algorithm not being able to classify the message as bullish or bearish</td>
+            </tr>
+            <tr>
+                <td><code>BearScoredMessages</code></td>
+                <td><code>int</code></td>
+                <td>Number of bearish messages scanned at that minute. Note that <code>BullScoredMessages + BearScoredMessages</code> can be smaller than <code>TotalScoredMessages</code> due to the sentiment classification algorithm not being able to classify the message as bullish or bearish</td>
+            </tr>
+            <tr>
+                <td><code>BullBearMessageRatio</code></td>
+                <td><code>decimal</code></td>
+                <td><code>BullScoredMessages / BearScoredMessages</code> - If <code>BearScoredMessages</code> is zero, then the ratio will be reported as 0</td>
+            </tr>
+            <tr>
+                <td><code>TotalScoredMessages</code></td>
+                <td><code>int</code></td>
+                <td>Total messages scanned related to the ticker. This can be greater than <code>BullScoredMessages + BearScoredMessages</code> because the sentiment classification algorithm was unable to classify a message into bullish or bearish</td>
+            </tr>
+        </tbody>
+    </table>
+</p>
+<p>
+    <i class="fa fa-warning"></i> PsychSignal data is prone to rename and delisting events. This is because the custom data is related to equity symbols, which can undergo rename and delisting events
+</p>
+<p>
+    <i class="fa fa-warning"></i> Specify the timezone as <code>UTC</code> in <code>AddData</code>
 </p>
