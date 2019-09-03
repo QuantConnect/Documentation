@@ -1,26 +1,51 @@
+    
 <p>
-    U.S. Treasury yield curve data has no associated ticker with it. To add it to your algorithm, use a placeholder value.
-    The Symbol object for the U.S. Treasury custom data is assigned the ticker/value you pass into AddData, and will never undergo delisting/rename events.
-    An example of adding the data is provided:
+    U.S. Treasury yield curve data is reported in percentages with the value being between <code>0.0 - 100.0</code>. To view the end-of-day interest rate statistics, visit the <a href="https://www.treasury.gov/resource-center/data-chart-center/interest-rates/Pages/TextView.aspx?data=yield">Daily Treasury Yield Curve Rates</a> page
 </p>
 <p>
+    All fields with the exception of <code>BaseData</code> fields contained within $[USTreasuryYieldCurveRate,T:QuantConnect.Data.Custom.USTreasury] can potentially be null values. Be sure to check for null values before you continue using the data.
+</p>
+<p>
+    In this example, we check for null values before using the data, as well as calculating if there's a yield curve inversion:
     <div class="section-example-container">
         <pre class="csharp">
-public class YieldCurveAlgorithm : QCAlgorithm 
+public override void OnData(Slice data)
 {
-    public void Initialize() 
+    if (!data.ContainsKey(_symbol))
     {
-        AddData&lt;USTreasuryYieldCurveRate&gt;("FOOBAR", Resolution.Daily);
+        return;
+    }
+
+    // Get the data using slice.Get&lt;T&gt; instead of data[_symbol] so that null values don't get set to default(decimal)
+    var rates = slice.Get&lt;USTreasuryYieldCurveRate&gt;().First().Value;
+
+    // Check for null values first
+    if (!rates.TwoYear.HasValue || !rates.TenYear.HasValue)
+    {
+        return;
+    }
+
+    // Now that we're certain that we have the values, see if we have a yield curve inversion
+    if (rates.TwoYear > rates.TenYear) 
+    {
+        Debug($"{Time} - Yield curve inversion!");
     }
 }
         </pre>
-    	<pre class="python">
-class YieldCurveAlgorithm(QCAlgorithm):
-    def Initialize(self):
-        self.AddData(USTreasuryYieldCurveRate, "FOOBAR", Resolution.Daily)
+        <pre class="python">
+def OnData(data):
+    if not data.ContainsKey(self.symbol):
+        return
+    
+    rates = data[self.symbol]
+
+    # Check for None values first
+    if rates.TwoYear is None or rates.TenYear is None:
+        return
+    
+    # Now that we're certain that we have the values, see if we have a yield curve inversion
+    if rates.TwoYear > rates.TenYear:
+        self.Debug(f"{str(self.Time)} - Yield curve inversion!")
         </pre>
     </div>
-</p>
-<p>
-    All fields with the exception of <code>BaseData</code> fields contained within $[USTreasuryYieldCurveRate,T:QuantConnect.Data.Custom.USTreasury] can potentially be null values.
 </p>
