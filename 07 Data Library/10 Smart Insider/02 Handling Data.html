@@ -2,20 +2,108 @@
     There are over 40 fields available for each Smart Insider data type for use in your algorithms. Data is published in UTC and is updated daily, so be sure to set your resolution to <code>Resolution.Daily</code>.
 </p>
 <p>
-    For Smart Insider, <code>AddData</code> accepts a ticker for an equity for the ticker field.
+    You can view the fields available for use in your algorithm by clicking on the type names below:
+
+    <ul>
+        <li>$[SmartInsiderEvent,T:QuantConnect.Data.Custom.SmartInsider] - These fields are available in both intentions and transactions types</li>
+        <li>$[SmartInsiderIntention,T:QuantConnect.Data.Custom.SmartInsider]</li>
+        <li>$[SmartInsiderTransaction,T:QuantConnect.Data.Custom.SmartInsider]</li>
+    </ul>
 </p>
 <p>
-    <i class="fa fa-warning"></i> Note: Smart Insider data can undergo rename and delisting events because of its relationship to equities. To learn more about handling delisting/rename events, visit <a href="https://www.quantconnect.com/docs/algorithm-reference/handling-data#Handling-Data-SymbolChangedEvent">Handling Data - SymbolChangedEvent</a>
+    To import the data types to your algorithm, you can do the following:
+
+    <div class="section-example-container">
+        <pre class="csharp">
+using QuantConnect.Data.Custom.SmartInsider;
+        </pre>
+        <pre class="python">
+from QuantConnect.Data.Custom.SmartInsider import *
+        </pre>
+    </div>
+</p>
+<p>
+    <code>AddData</code> accepts an equity ticker value for Smart Insider data. For the data to be added properly, ensure that the ticker being added is the most up to date ticker as of today.
+</p>
+<p>
+    <i class="fa fa-warning"></i> Note: Smart Insider data can undergo rename and delisting events because of its relationship to equities.
 </p>
 <p>
     <i class="fa fa-warning"></i> Note: Ensure you set the data timezone to UTC in <code>AddData</code>
 </p>
 <p>
-    Smart Insider data is provided in an event-sourced/delta format. What this means is that you can receive events as encountered at a specific point in time, but have a correction be issued after the fact invalidating that record, meaning you would have to replace the old data with the new.
-    For more information about event sourcing/delta file formatting, visit <a href="https://docs.microsoft.com/en-us/azure/architecture/patterns/event-sourcing">https://docs.microsoft.com/en-us/azure/architecture/patterns/event-sourcing</a>
+    If a <code>TransactionID</code> is duplicated in either <code>SmartInsiderIntention</code> or <code>SmartInsiderTransaction</code>, that means the record was amended and the old record should be considered outdated.
 </p>
 <p>
-    If a <code>TransactionID</code> is duplicated, that means the record was amended and the old transaction should be considered outdated.
+    Smart Insider data is provided in an event-sourced/delta format. Transaction and intention events are transmitted as they were at a specific point in time. Transactions can have corrections issued to them at a future point in time after the original data has been reported.
+    An example of this would be receiving a piece of data on <code>2019-01-01</code> with the transaction ID <code>TX-1234</code>, and then receiving another piece of data on <code>2019-02-05</code> with the same transaction ID <code>TX-1234</code>. 
+    The event reported on <code>2019-02-05</code> should be considered as the most current data, and the old event from <code>2019-01-01</code> should be discarded. An example on how to detect these events is provided below:
+</p>
+<p>
+    <div class="section-example-container">
+        <pre class="csharp">
+public class SmartInsiderAlgorithm : QCAlgorithm 
+{
+    private HashSet&lt;string&gt; _transactionIDs = new HashSet&lt;string&gt;();
+    private Symbol _symbol;
+
+    public override void Initialize()
+    {
+        // ...
+        _symbol = AddData&lt;SmartInsiderTransaction&gt;("AAPL", Resolution.Daily, TimeZones.Utc).Symbol;
+        // ...
+    }
+
+    public override void OnData(Slice data)
+    {
+        if (!data.ContainsKey(_symbol)) 
+        {
+            return;
+        }
+
+        var transactionID = data[_symbol].TransactionID;
+        var isAmendment = _transactionIDs.Contains(transactionID);
+
+        if (isAmendment)
+        {
+            Debug($"{Time} - Encountered duplicate event for ticker {_symbol.Value}");
+        }
+        
+        // Add the transaction ID to the transactions ID store
+        _transactionIDs.Add(transactionID);
+
+        // ...
+    }
+}
+        </pre>
+        <pre class="python">
+class SmartInsiderAlgorithm(QCAlgorithm):
+    def Initialize(self):
+        # ...
+        self.transactionIDs = []
+        self.symbol = self.AddData(SmartInsiderTransaction, "AAPL", Resolution.Daily, TimeZones.Utc).Symbol
+        # ...
+
+    def OnData(self, data):
+        if not data.ContainsKey(self.symbol):
+            return
+        
+        transactionID = data[self.symbol].TransactionID
+        addToTransactionsDatabase = True
+
+        isAmendment = transactionID in self.transactionIDs
+
+        if isAmendment:
+            self.Debug(f"{str(self.Time)} - Encountered duplicate event for ticker {self.symbol.Value}")
+            addToTransactionsDatabase = False
+        
+        # Add the transaction ID to the transaction ID store 
+        if addToTransactionsDatabase:
+            self.transactionIDs.append(transactionID)
+        
+        # ...
+        </pre>
+    </div>
 </p>
 <p>
     Reasons why transactions might be amended are:
@@ -23,8 +111,8 @@
     <table class="table qc-table table-striped">
         <thead>
             <tr>
-                <td style="font-weight: bold;">Reason</td>
-                <td style="font-weight: bold;">Description</td>
+                <th style="font-weight: bold;">Reason</th>
+                <th style="font-weight: bold;">Description</th>
             </tr>
         </thead>
         <tbody>
@@ -59,15 +147,13 @@
 </p>
 <p>
     Sometimes, in rare cases, Smart Insider might delete a transaction file and report it again, sometimes due to a duplicate data error, or misc. error.
+    When a deletion occurs, the transaction is re-sent with the TransactionID, but all other fields null. The <code>NoteText</code> field will contain the word "DELETED" and may also contain an explanation of why the data was deleted.
 </p>
 <p>
-    When a deletion occurs, the transaction is resent with the TransactionID, but all other fields null. The <code>NoteText</code> field will contain the word "DELETED" and may also contain an explanation of why the data was deleted.
-</p>
-<p>
-    Please note that with the exception of the following fields, all fields have the potential to be <code>null</code> in both $[SmartInsiderIntention,T:QuantConnect.Data.Custom.SmartInsider] and $[SmartInsiderTransaction,T:QuantConnect.Data.Custom.SmartInsider].
+    Please note that with the exception of the following fields, all fields have the potential to be <code>null</code> in both $[SmartInsiderIntention,T:QuantConnect.Data.Custom.SmartInsider] and $[SmartInsiderTransaction,T:QuantConnect.Data.Custom.SmartInsider]
 
     <ul>
-        <li>TransactionID</li>
-        <li>LastUpdate</li>
+        <li><code>TransactionID</code></li>
+        <li><code>LastUpdate</code></li>
     </ul>
 </p>
