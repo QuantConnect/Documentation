@@ -37,29 +37,19 @@ Selection bias happens when an Alpha selects specific securities where the data 
 selection bias by blindly choosing assets with limited filtering and without foreknowledge of whether the security will be delisted, declare bankruptcy, split, etc. Fixed universes are not necessarily biased, but authors must exercise caution. Alphas
 whose Ingiths are generalizable across groups of securities and market conditions will generate more appeal than those with minimal scope.
 </p>
+
+<h5>Reality Modelling</h5>
 <p>
-Although not a technical requirement for submission, Alphas should be simplified and generalized as much as possible by omitting specific APIs that LEAN offers. 
-</p>
-<table class="table qc-table">
-<thead>
-<tr>
-<th>
-Reality Modeling Code to Omit
-</th>
-<th>
-</th>
-</tr>
-</thead>
-        <tbody>
-            <tr>
-                <td>Fee Models</td>
-                <td>Brokerage Models</td>
-            </tr>
-                <tr><td>Fill Models</td>
-                <td>Slippage Models</td>
-            </tr><tr>
-                <td>Buying Power Models</td>
-                <td>Settlement Models</td>
-            </tr></tbody></table>
-<p>All of these APIs add functionality for individual traders or researchers, but funds have specific methods and models they'll want to use.
-Omitting these will remove some constraints upon Insight emission and provide an unfiltered view of how the Alpha model performs.</p>
+QuantConnect offers extensive API to model different market/brokerage conditions for individual traders or researchers, but funds have specific methods and models they'll want to use in replicating backtests and in their live trading.
+To ensure uniformity and maximum compatibility, we've implemented an Alpha Streams Brokerage Model that incorporates a most of the common fees and restrictions that funds face in trading. This model should be used for all Alpha Streams submissions.</p>
+
+
+<div class="section-example-container">
+	<pre class="csharp">
+// Set brokerage model using helper methods:
+SetBrokerageModel(BrokerageName.AlphaStreams);
+</pre>
+<pre class="python">
+# Set brokerage model using helper methods:
+self.SetBrokerageModel(BrokerageName.AlphaStreams)
+</pre></div>
