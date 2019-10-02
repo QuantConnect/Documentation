@@ -1,1 +1,19 @@
-<p></p>
+<p>News is published, then at a later date it is crawled by Tiingo's technology. The data events are emitted at the time Tiingo <em>crawls</em> the data. This prevents look ahead bias by knowing the news before it was available by Tiingo.</p>
+
+<p>
+There can sometimes be large delays between these two dates (many years). This happens when Tiingo adds a new source and back-populates their historical archives. Tiingo created their news technology in 2019 so all news prior to then will have a significant delay between publishing and crawl dates.
+</p>
+
+<p>
+Once the new source is added the delay between published to crawl time is typically less than <em>one hour</em>. For this reason, QuantConnect reviews the difference and if it is greater than one day we set the crawl date to one hour after the publish date. This is an approximation but allows backtesting on historical news with a representative crawl time.  
+</p>
+
+<p>
+You can control this offset setting with the <code>TiingoNews.HistoricalCrawlOffset</code> property:
+</p>
+<div class="section-example-container">
+<pre class="csharp"> // Overriding the new data-source offset to 3 hours.
+TiingoNews.HistoricalCrawlOffset = TimeSpan.FromHours(3);</pre>
+<pre class="python"> // Overriding the new data-source offset to 3 hours.
+TiingoNews.HistoricalCrawlOffset = timedelta(0, 3)</pre>
+</div>
