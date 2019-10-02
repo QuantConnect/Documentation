@@ -17,7 +17,7 @@ self.AddData(TiingoNews, ibm)
 
 <h4>Accessing Linked Data</h4>
 <p>
-As the data is linked to an underlying you can access it via the <code>GetAll</code> helper methods:
+Data can be access the normal way via the Slice event system, or since it is a linked data source it is also available on the underlying secuity via the <code>Data.GetAll()</code> helper method. You can see an example of both of these accessors in the code below.
 </p>
 <div class="section-example-container">
 <pre class="csharp">using QuantConnect.Data.Custom.Tiingo;
@@ -58,13 +58,13 @@ class TiingoNewsDemonstration(QCAlgorithm):
         
         # Request linked news data for Apple
         s = self.AddEquity("AAPL", Resolution.Minute).Symbol
-        self.AddData(TiingoNewsData, s)
+        self.AddData(TiingoNews, s)
 
     def OnData(self, data):
-        # Accessing news via a linked source from securities collection:
+        # Accessing most recent news via a linked source from securities collection:
         #tiingoNews = self.Securities["AAPL"].Data.GetAll(TiingoNews)
         
-        # Accessing news via slice event:
+        # Accessing unique news via slice event:
         tiingoNews = data.Get(TiingoNews)
         for t in tiingoNews.Values:
             self.Debug(f"Now: {Time} Crawled: {news.CrawlDate} Title: {news.Title}")
