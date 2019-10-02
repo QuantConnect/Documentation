@@ -9,9 +9,58 @@
 
 <h4>Requesting Data</h4>
 <p>
-To add Trading Economics data to your algorithm select the dataset you'd like to use from the tables below and use the <code>AddData()</code> system to request the data. As with all datasets, you should save a reference to your symbol for easy use later in your algorithm.
+To add Trading Economics data to your algorithm select the dataset you'd like to use from the tables below and use the <code>AddData()</code> system to request the data. As with all datasets, you should save a reference to your symbol for easy use later in your algorithm. For detailed documentation on custom data see <a class="docs-internal-link" href="/docs/algorithm-reference/importing-custom-data">Importing Custom Data</a>.
 </p>
 <div class="section-example-container">
-<pre class="csharp">current = AddData<TradingEconomicsCalendar>(TradingEconomics.Calendar.Australia.CurrentAccount);</pre>
-<pre class="python">self.current = self.AddData(TradingEconomicsCalendar, TradingEconomics.Calendar.Australia.CurrentAccount)</pre>
+<pre class="csharp">// Adding Australian Current Account Events.
+AddData<TradingEconomicsCalendar>(TradingEconomics.Calendar.Australia.CurrentAccount);</pre>
+<pre class="python"># Adding Australian Current Account Events.
+self.AddData(TradingEconomicsCalendar, TradingEconomics.Calendar.Australia.CurrentAccount)</pre>
+</div>
+
+<h4>Using Data In Algorithm</h4>
+<p>Calendar and Indicator events arrive as a list of objects in your slice. We recommend saving the symbol object when you add the data for easy access to slice later. For example:</p>
+<div class="section-example-container">
+<pre class="csharp">
+public class TradingEconomicsCalendarAlgorithm : QCAlgorithm { 
+    
+    List&lt;Symbol&gt; symbols = new List&lt;Symbol&gt;();
+
+    public void Initialize() 
+    { 
+        // Initializing a collection of calendar events
+        var calendars = new List&lt;string&gt; {
+            TradingEconomics.Calendar.UnitedStates.InterestRate
+        };
+
+        foreach (var calendar in calendars) 
+        {
+            var s = AddData&lt;TradingEconomicsCalendar&gt;(calendar).Symbol;
+            symbols.Add(s);
+        }
+    }
+
+    public void OnData(Slice slice) {
+        // Using the data is the same as other data types:
+        foreach(var s in symbols) {
+            if (slice.ContainsKey(s)) {
+                Debug(slice[s]);
+            }
+        }
+    }
+}
+</pre>
+<pre class="python">
+class TradingEconomicsCalendarAlgorithm(QCAlgorithm):
+    def Initialize():
+        # Initializing a collection of calendar events
+        calendars = [TradingEconomics.Calendar.UnitedStates.InterestRate]
+        self.symbols = [self.AddData(TradingEconomicsCalendar, c).Symbol for c in calendars]
+
+    def OnData(slice):
+        # Using the data is the same as other data types:
+        for s in calendarDataSymbols:
+            if slice.ContainsKey(s):
+                self.Debug(slice[s]) 
+</pre>
 </div>
