@@ -64,10 +64,12 @@ class TiingoNewsDemonstration(QCAlgorithm):
 
     def OnData(self, data):
         # Accessing most recent news via a linked source from securities collection:
+	# (returns a list, you can drop the "Values" from the for loop below)
         #tiingoNews = self.Securities["AAPL"].Data.GetAll(TiingoNews)
         
         # Accessing unique news via slice event:
         tiingoNews = data.Get(TiingoNews)
+	# (returns a dictionary symbol-news, use "Values" to enumerate below)
         for t in tiingoNews.Values:
             self.Debug(f"Now: {Time} Crawled: {news.CrawlDate} Title: {news.Title}")
 </pre>
