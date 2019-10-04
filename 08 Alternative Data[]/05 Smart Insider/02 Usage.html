@@ -1,1 +1,119 @@
+<p>
+    Smart Insider Transactions and Intentions are a linked data source. This means Transaction/Intention data is
+    automatically tied to the underlying equity whenever possible. This linkage is performed by the ticker included in a
+    Transaction/Intention entry at the time the Intention/Transaction entered Smart Insider systems. To add the right
+    data to your strategy, you should use the <i>equity</i> asset symbol.
+</p>
+<h4>Requesting Data</h4>
+<div class="section-example-container">
+    <div class="language-buttons">
+        Select Language:
+        <button class="lang-csharp" onclick="Documentation.SetLanguage('csharp')">C#</button>
+        <button class="lang-python" onclick="Documentation.SetLanguage('python')">Python</button>
+    </div>
+        <pre class="csharp prettyprint prettyprinted"
+        style="">// Request underlying equity data.
+var ibm = AddEquity("IBM", Resolution.Minute).Symbol;
+// Add buyback transaction data for the underlying IBM asset
+AddData&lt;SmartInsiderTransaction&gt;(ibm);
+// Add buyback intention data for the underlying IBM asset
+AddData&lt;SmartInsiderIntention&gt;(ibm);</pre>
+
+    <pre class="csharp prettyprint prettyprinted"
+        style=""># Request underlying equity data.
+aapl = self.AddEquity("AAPL", Resolution.Minute).Symbol
+# Add buyback transaction data for the underlying AAPL asset
+self.AddData(SmartInsiderTransaction, aapl)
+# Add buyback intention data for the underlying AAPL asset
+self.AddData(SmartInsiderIntention, aapl)</pre>
+</div>
+<h4>Accessing Data</h4>
+<p>
+    Data can be accessed the normal way via the Slice events. Slice events deliver the <i>unique</i>
+    Transaction/Intention objects to your algorithm as they happen.
+</p>
+<p>
+    Alternatively because this is a linked data source, it is also available on the underlying security via the <code class="csharp">Securities[symbol].Data.GetAll&lt;SmartInsiderTransaction&gt;();</code><code class="python">self.Securities[symbol].Data.GetAll(SmartInsiderTransaction)</code> or
+    <code class="csharp">Securities[symbol].Data.GetAll&lt;SmartInsiderIntention&gt;();</code>
+    <code class="python">self.Securities[symbol].Data.GetAll(SmartInsiderIntention)</code> helper methods. When you
+    request data via the data cache it will always return the <i>last</i> SmartInsiderTransaction/SmartInsiderIntention
+    object stored.
+</p>
+<p>
+    You can see an example of both of these accessors in the code below.
+</p>
+<p>
+    </p><div class="section-example-container">
+        <div class="language-buttons">
+            Select Language:
+            <button class="lang-csharp" onclick="Documentation.SetLanguage('csharp')">C#</button>
+            <button class="lang-python" onclick="Documentation.SetLanguage('python')">Python</button>
+        </div>
+        <pre class="csharp prettyprint prettyprinted">using QuantConnect.Data.Custom.SmartInsider;
+namespace QuantConnect.Algorithm.CSharp
+{
+    public class SmartInsiderDemonstration : QCAlgorithm
+    {
+        public override void Initialize()
+        {
+            SetStartDate(2019, 8, 1);
+            SetCash(100000);
+
+            // Request linked transactions and intentions data for Apple.
+            var aapl = AddEquity("AAPL", Resolution.Minute).Symbol;
+            
+            AddData&lt;SmartInsiderIntention&gt;(aapl);
+            AddData&lt;SmartInsiderTransaction&gt;(aapl);
+        }
+
+        public override void OnData(Slice data)
+        {
+            // Accessing linked sentiment from securities collection
+            //var intentions = Securities["AAPL"].Data.GetAll&lt;SmartInsiderIntention&gt;();
+            //var transactions = Securities["AAPL"].Data.GetAll&lt;SmartInsiderTransaction&gt;();
+
+            // Accessing via Slice event
+            var intentions = data.Get&lt;SmartInsiderIntention&gt;();
+            var transactions = data.Get&lt;SmartInsiderTransaction&gt;();
+
+            foreach (var intention in intentions.Values)
+            {
+                Log($"Intention to buyback for company {intention.CompanyName}");
+            }
+            foreach (var transaction in transactions.Values)
+            {
+                Log($"Buyback transaction took place for company {transaction.CompanyName}");
+            }
+        }
+    }
+}</pre>
+        <pre class="python prettyprint prettyprinted">from QuantConnect.Data.Custom.SmartInsider import *
+
+class SmartInsiderDemonstration(QCAlgorithm):
+    
+    def Initialize(self):
+        self.SetStartDate(2019, 8, 1)
+        self.SetCash(100000)
+
+        # Request linked transactions and intentions data for Apple.
+        aapl = self.AddEquity("AAPL", Resolution.Minute)
+        self.AddData(SmartInsiderIntention, aapl)
+        self.AddData(SmartInsiderTransaction, aapl)
+
+    def OnData(self, data):
+        # Accessing most recent intentions/transactions via a linked source from securities collection:
+        # (returns a list, you can drop the "Values" from the loop below)
+        #intentions = self.Securities["AAPL"].Data.GetAll(SmartInsiderIntentions)
+        #transactions = self.Securities["AAPL"].Data.GetAll(SmartInsiderTransaction)
+
+        # Accessing unique transaction/intention objects via slice event:
+        intentions = data.Get(SmartInsiderIntention)
+        transactions = data.Get(SmartInsiderTransaction)
+
+        for intention in intentions.Values:
+            self.Log(f"Intention to buyback for company {intention.CompanyName}")
+
+        for transaction in transactions.Values:
+            self.Log(f"Buyback transaction took place for company {transaction.CompanyName}")</pre>
+    </div>
 <p></p>
