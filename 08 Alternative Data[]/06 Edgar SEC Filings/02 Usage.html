@@ -1,0 +1,396 @@
+<p>
+    SEC filing data is a <i>linked</i> data source. This means filing data is automatically tied to the underlying
+    equity whenever possible. This linkage is performed by the ticker the filing applies to at the time the filing was
+    made public. To add the right data to your strategy, you should use the equity asset symbol.
+</p>
+<h4>Requesting Data</h4>
+<div class="section-example-container">
+    <div class="language-buttons">
+        Select Language:
+        <button class="lang-csharp" onclick="Documentation.SetLanguage('csharp')">C#</button>
+        <button class="lang-python" onclick="Documentation.SetLanguage('python')">Python</button>
+    </div>
+    <pre class="csharp">// Request underlying equity data.
+var aapl = AddEquity("AAPL", Resolution.Minute).Symbol;
+// Add SEC 10-Q (quarterly report) filings for Apple 
+AddData&lt;SECReport10Q&gt;(aapl);
+// Add SEC 10-K (yearly report) filings for Apple
+AddData&lt;SECReport10K&gt;(aapl);
+// Add SEC 8-K (investor notices) filings for Apple
+AddData&lt;SECReport8K&gt;(aapl);</pre>
+
+    <pre class="python">Request underlying equity data.
+aapl = self.AddEquity("AAPL", Resolution.Minute).Symbol
+# Add SEC 10-Q (quarterly report) filings for Apple
+self.AddData(SECReport10Q, aapl)
+# Add SEC 10-K (yearly report) filings for Apple
+self.AddData(SECReport10K, aapl)
+# Add SEC 8-K (investor notices) filings for Apple
+self.AddData(SECReport8K, aapl)</pre>
+</div>
+<h4>Accessing data</h4>
+<p>
+    Data can be accessed the normal way via the Slice events. Slice events deliver the unique SEC report objects to your
+    algorithm as they happen.
+    Alternatively because this is a linked data source, it is also available on the underlying security via the helper
+    methods:
+
+    <ul>
+        <li><code class="csharp">Securities[symbol].Data.GetAll&lt;SECReport10Q&gt;();</code><code
+                class="python">self.Securities[symbol].Data.GetAll(SECReport10Q)</code></li>
+        <li><code class="csharp">Securities[symbol].Data.GetAll&lt;SECReport10K&gt;();</code><code
+                class="python">self.Securities[symbol].Data.GetAll(SECReport10K)</code></li>
+        <li><code class="csharp">Securities[symbol].Data.GetAll&lt;SECReport8K&gt;();</code><code
+                class="python">self.Securities[symbol].Data.GetAll(SECReport8K)</code></li>
+    </ul>
+</p>
+<p>
+    When you request data via the data cache it will always return the <i>last</i> SEC report object stored.
+</p>
+<p>
+    You can see an example of both of these accessors in the code below.
+</p>
+<div class="section-example-container">
+    <div class="language-buttons">
+        Select Language:
+        <button class="lang-csharp" onclick="Documentation.SetLanguage('csharp')">C#</button>
+        <button class="lang-python" onclick="Documentation.SetLanguage('python')">Python</button>
+    </div>
+    <pre class="csharp" style="display: none;">using QuantConnect.Data.Custom.SEC;
+namespace QuantConnect.Algorithm.CSharp
+{
+    public class SECDemonstration : QCAlgorithm
+    {
+        public override void Initialize()
+        {
+            SetStartDate(2019, 8, 1);
+            SetCash(100000);
+
+            // Request linked SEC report data for Apple.
+            var aapl = AddEquity("AAPL", Resolution.Minute).Symbol;
+            
+            AddData&lt;SECReport10Q&gt;(aapl);
+            AddData&lt;SECReport10K&gt;(aapl);
+        }
+
+        public override void OnData(Slice data)
+        {
+            // Accessing linked SEC filings from securities collection.
+            // (returns a list, you can drop the "Values" from the loop below)
+            //var quarterlyReports = Securities["AAPL"].Data.GetAll&lt;SECReport10Q&gt;();
+            //var yearlyReports = Securities["AAPL"].Data.GetAll&lt;SECReport10K&gt;();
+
+            // Accessing via Slice event
+            var quarterlyReports = data.Get&lt;SECReport10Q&gt;();
+            var yearlyReports = data.Get&lt;SECReport10K&gt;();
+
+            foreach (var filing in quarterlyReports.Values)
+            {
+                // The first filer tends to be the company that is publicly listed
+                Log($"Received quarterly report for company {filing.Report.Filers.First().CompanyData.ConformedName}");
+            }
+            foreach (var filing in yearlyReports.Values)
+            {
+                // The first filer tends to be the company that is publicly listed
+                Log($"Received yearly report for company {filing.Report.Filers.First().CompanyData.ConformedName}");
+            }
+        }
+    }
+}</pre>
+    <pre class="python" style="">from QuantConnect.Data.Custom.SEC import *
+
+class SECDemonstration(QCAlgorithm):
+    
+    def Initialize(self):
+        self.SetStartDate(2019, 8, 1)
+        self.SetCash(100000)
+
+        # Request linked SEC report data for Apple.
+        aapl = self.AddEquity("AAPL", Resolution.Minute).Symbol
+        self.AddData(SECReport10Q, aapl)
+        self.AddData(SECReport10K, aapl)
+
+    def OnData(self, data):
+        # Accessing linked SEC filings from securities collection.
+        # (returns a list, you can drop the "Values" from the loop below)
+        #quarterlyReport = self.Securities["AAPL"].Data.GetAll(SECReport10Q)
+        #yearlyReport = self.Securities["AAPL"].Data.GetAll(SECReport10K)
+
+        # Accessing unique SEC report objects via slice event:
+        quarterlyReport = data.Get(SECReport10Q)
+        yearlyReport = data.Get(SECReport10K)
+
+        for filing in quarterlyReport.Values:
+            self.Log(f"Received quarterly report for company {filing.Report.Filers[0].CompanyData.ConformedName}")
+
+        for filing in yearlyReport.Values:
+            self.Log(f"Received yearly report for company {filing.Report.Filers[0].CompanyData.ConformedName}")</pre>
+</div>
+<p>
+    We provide a table below that explains the various fields present in the SEC reports as well as the types associated with each member
+</p>
+<table class="table qc-table">
+    <thead>
+        <tr class="definitions-header">
+            <th colspan="2">SECReport8K/SECReport10K/SECReport10Q</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr class="definitions-row">
+            <td class="definitions-property" width="20%"><code>Report</code><br /><p><a class="replaceme5" href="https://github.com/QuantConnect/Lean/blob/master/Common/Data/Custom/SEC/SECReportSubmission.cs" target="_blank" rel="noopener noreferrer">SECReportSubmission</a></p></td>
+            <td class="definitions-description"><p>Contents of the actual SEC report</p><pre>sec.Report</pre></td>
+        </tr>
+    </tbody>
+</table>
+
+<table class="table qc-table">
+    <thead>
+        <tr class="definitions-header">
+            <th colspan="2">SECReportSubmission</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr class="definitions-row">
+            <td class="definitions-property" width="20%"><code>AccessionNumber</code><br /><p>string</p></td>
+            <td class="definitions-description"><p>Number used to access document filings on the SEC website</p><pre>sec.Report.AccessionNumber</pre></td>
+        </tr>
+        <tr class="definitions-row">
+            <td class="definitions-property" width="20%"><code>FormType</code><br /><p>string</p></td>
+            <td class="definitions-description"><p>SEC form type (e.g. 8-K, 10-K, 10-Q)</p><pre>sec.Report.FormType</pre></td>
+        </tr>
+        <tr class="definitions-row">
+            <td class="definitions-property" width="20%"><code>PublicDocumentCount</code><br /><p>string</p></td>
+            <td class="definitions-description"><p>Number of documents made public by the SEC</p><pre>sec.Report.PublicDocumentCount</pre></td>
+        </tr>
+        <tr class="definitions-row">
+            <td class="definitions-property" width="20%"><code>Period</code><br /><p>DateTime</p></td>
+            <td class="definitions-description"><p>End date of reporting period of filing</p><pre>sec.Report.Period</pre></td>
+        </tr>
+        <tr class="definitions-row">
+            <td class="definitions-property" width="20%"><code>Items</code><br /><p>List&lt;string&gt;</p></td>
+            <td class="definitions-description"><p>Items can be used to determine the contents of an 8-K report without having to parse the document itself. You can learn more about 8-K items <a href="https://www.sec.gov/fast-answers/answersform8khtm.html" target="_blank" rel="noopener noreferrer">here</a></p><pre>sec.Report.Items</pre></td>
+        </tr>
+        <tr class="definitions-row">
+            <td class="definitions-property" width="20%"><code>FilingDate</code><br /><p>DateTime</p></td>
+            <td class="definitions-description"><p>Date report was filed with the SEC</p><pre>sec.Report.FilingDate</pre></td>
+        </tr>
+        <tr class="definitions-row">
+            <td class="definitions-property" width="20%"><code>FilingDateChange</code><br /><p>DateTime</p></td>
+            <td class="definitions-description"><p>Date when the last Post Acceptance occured</p><pre>sec.Report.FilingDateChange</pre></td>
+        </tr>
+        <tr class="definitions-row">
+            <td class="definitions-property" width="20%"><code>MadeAvailableAt</code><br /><p>DateTime</p></td>
+            <td class="definitions-description"><p>Exact time the report was filed with the SEC and made available to the public</p><pre>sec.Report.MadeAvailableAt</pre></td>
+        </tr>
+        <tr class="definitions-row">
+            <td class="definitions-property" width="20%"><code>Filers</code><br /><p>List&lt;<a href="https://github.com/QuantConnect/Lean/blob/master/Common/Data/Custom/SEC/SECReportFiler.cs" target="_blank" rel="noopener noreferrer">SECReportFiler</a>&gt;</p></td>
+            <td class="definitions-description"><p>Contains information regarding who the filer of the report is</p><pre>sec.Report.Filers[]</pre></td>
+        </tr>
+        <tr class="definitions-row">
+            <td class="definitions-property" width="20%"><code>Documents</code><br /><p>List&lt;<a href="https://github.com/QuantConnect/Lean/blob/master/Common/Data/Custom/SEC/SECReportDocument.cs" target="_blank" rel="noopener noreferrer">SECReportDocument</a>&gt;</p></td>
+            <td class="definitions-description"><p>Attachments/content associated with the report</p><pre>sec.Report.Documents[]</pre></td>
+        </tr>
+    </tbody>
+</table>
+
+<table class="table qc-table">
+    <thead>
+        <tr class="definitions-header">
+            <th colspan="2">SECReportFiler</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr class="definitions-row">
+            <td class="definitions-property" width="20%"><code>CompanyData</code><br /><p><a href="https://github.com/QuantConnect/Lean/blob/master/Common/Data/Custom/SEC/SECReportCompanyData.cs" target="_blank" rel="noopener noreferrer">SECReportCompanyData</a></p></td>
+            <td class="definitions-description"><p>SEC data containing company data such as company name, cik, etc.</p><pre>sec.Report.Filers[].CompanyData</pre></td>
+        </tr>
+        <tr class="definitions-row">
+            <td class="definitions-property" width="20%"><code>Values</code><br /><p>List&lt;<a href="https://github.com/QuantConnect/Lean/blob/master/Common/Data/Custom/SEC/SECReportFilingValues.cs" target="_blank" rel="noopener noreferrer">SECReportFilingValues</a>&gt;</p></td>
+            <td class="definitions-description"><p>Information regarding the filing itself</p><pre>sec.Report.Filers[].Values</pre></td>
+        </tr>
+        <tr class="definitions-row">
+            <td class="definitions-property" width="20%"><code>BusinessAddress</code><br /><p>List&lt;<a href="https://github.com/QuantConnect/Lean/blob/master/Common/Data/Custom/SEC/SECReportBusinessAddress.cs" target="_blank" rel="noopener noreferrer">SECReportBusinessAddress</a>&gt;</p></td>
+            <td class="definitions-description"><p>Information related to the business' address</p><pre>sec.Report.Filers[].BusinessAddress</pre></td>
+        </tr>
+        <tr class="definitions-row">
+            <td class="definitions-property" width="20%"><code>MailingAddress</code><br /><p>List&lt;<a href="https://github.com/QuantConnect/Lean/blob/master/Common/Data/Custom/SEC/SECReportMailAddress.cs" target="_blank" rel="noopener noreferrer">SECReportMailAddress</a>&gt;</p></td>
+            <td class="definitions-description"><p>Company mailing address information</p><pre>sec.Report.Filers[].MailingAddress</pre></td>
+        </tr>
+        <tr class="definitions-row">
+            <td class="definitions-property" width="20%"><code>FormerCompanies</code><br /><p>List&lt;<a href="https://github.com/QuantConnect/Lean/blob/master/Common/Data/Custom/SEC/SECReportFormerCompany.cs" target="_blank" rel="noopener noreferrer">SECReportFormerCompany</a>&gt;</p></td>
+            <td class="definitions-description"><p>Former company names. Can be an empty List</p><pre>sec.Report.Filers[].FormerCompanies</pre></td>
+        </tr>
+    </tbody>
+</table>
+
+<table class="table qc-table">
+    <thead>
+        <tr class="definitions-header">
+            <th colspan="2">SECReportCompanyData</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr class="definitions-row">
+            <td class="definitions-property" width="20%"><code>ConformedName</code><br /><p>string</p></td>
+            <td class="definitions-description"><p>Current company name</p><pre>sec.Report.Filers[].CompanyData.ConformedName</pre></td>
+        </tr>
+        <tr class="definitions-row">
+            <td class="definitions-property" width="20%"><code>Cik</code><br /><p>string</p></td>
+            <td class="definitions-description"><p>Company's Central Index Key. Used to uniquely identify companies in SEC's EDGAR system</p><pre>sec.Report.Filers[].CompanyData.Cik</pre></td>
+        </tr>
+        <tr class="definitions-row">
+            <td class="definitions-property" width="20%"><code>AssignedSic</code><br /><p>string</p></td>
+            <td class="definitions-description"><p>Standard Industrial Classification</p><pre>sec.Report.Filers[].CompanyData.AssignedSic</pre></td>
+        </tr>
+        <tr class="definitions-row">
+            <td class="definitions-property" width="20%"><code>IrsNumber</code><br /><p>string</p></td>
+            <td class="definitions-description"><p>Employer Identification Number (EIN)</p><pre>sec.Report.Filers[].CompanyData.IrsNumber</pre></td>
+        </tr>
+        <tr class="definitions-row">
+            <td class="definitions-property" width="20%"><code>StateOfIncorporation</code><br /><p>string</p></td>
+            <td class="definitions-description"><p>State that the company was incorporated in</p><pre>sec.Report.Filers[].CompanyData.StateOfIncorporation</pre></td>
+        </tr>
+        <tr class="definitions-row">
+            <td class="definitions-property" width="20%"><code>FiscalYearEnd</code><br /><p>string</p></td>
+            <td class="definitions-description"><p>Day fiscal year ends for the company. Formatted as MMdd</p><pre>sec.Report.Filers[].CompanyData.FiscalYearEnd</pre></td>
+        </tr>
+    </tbody>
+</table>
+
+<table class="table qc-table">
+    <thead>
+        <tr class="definitions-header">
+            <th colspan="2">SECReportFilingValues</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr class="definitions-row">
+            <td class="definitions-property" width="20%"><code>FormType</code><br /><p>string</p></td>
+            <td class="definitions-description"><p>SEC form type (e.g. 8-K, 10-K, 10-Q)</p><pre>sec.Report.Filers[].Values[].FormType</pre></td>
+        </tr>
+        <tr class="definitions-row">
+            <td class="definitions-property" width="20%"><code>Act</code><br /><p>string</p></td>
+            <td class="definitions-description"><p>Identification of the act(s) under which certain IM filings are made. The form type may be modified more than one act. Required in each filing values tag nest</p><pre>sec.Report.Filers[].Values[].Act</pre></td>
+        </tr>
+        <tr class="definitions-row">
+            <td class="definitions-property" width="20%"><code>FileNumber</code><br /><p>string</p></td>
+            <td class="definitions-description"><p>SEC filing number</p><pre>sec.Report.Filers[].Values[].FileNumber</pre></td>
+        </tr>
+        <tr class="definitions-row">
+            <td class="definitions-property" width="20%"><code>FilmNumber</code><br /><p>string</p></td>
+            <td class="definitions-description"><p>Used to access documents in the SEC's Virtual Private Reference Room (VPRR)</p><pre>sec.Report.Filers[].Values[].FilmNumber</pre></td>
+        </tr>
+    </tbody>
+</table>
+
+<table class="table qc-table">
+    <thead>
+        <tr class="definitions-header">
+            <th colspan="2">SECReportBusinessAddress</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr class="definitions-row">
+            <td class="definitions-property" width="20%"><code>StreetOne</code><br /><p>string</p></td>
+            <td class="definitions-description"><p>Street Address 1</p><pre>sec.Report.Filers[].BusinessAddress[].StreetOne</pre></td>
+        </tr>
+        <tr class="definitions-row">
+            <td class="definitions-property" width="20%"><code>StreetTwo</code><br /><p>string</p></td>
+            <td class="definitions-description"><p>Street Address 2</p><pre>sec.Report.Filers[].BusinessAddress[].StreetTwo</pre></td>
+        </tr>
+        <tr class="definitions-row">
+            <td class="definitions-property" width="20%"><code>City</code><br /><p>string</p></td>
+            <td class="definitions-description"><p></p><pre>sec.Report.Filers[].BusinessAddress[].City</pre></td>
+        </tr>
+        <tr class="definitions-row">
+            <td class="definitions-property" width="20%"><code>State</code><br /><p>string</p></td>
+            <td class="definitions-description"><p></p><pre>sec.Report.Filers[].BusinessAddress[].State</pre></td>
+        </tr>
+        <tr class="definitions-row">
+            <td class="definitions-property" width="20%"><code>Zip</code><br /><p>string</p></td>
+            <td class="definitions-description"><p></p><pre>sec.Report.Filers[].BusinessAddress[].Zip</pre></td>
+        </tr>
+        <tr class="definitions-row">
+            <td class="definitions-property" width="20%"><code>Phone</code><br /><p>string</p></td>
+            <td class="definitions-description"><p></p><pre>sec.Report.Filers[].BusinessAddress[].Phone</pre></td>
+        </tr>
+    </tbody>
+</table>
+
+<table class="table qc-table">
+    <thead>
+        <tr class="definitions-header">
+            <th colspan="2">SECReportMailAddress</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr class="definitions-row">
+            <td class="definitions-property" width="20%"><code>StreetOne</code><br /><p>string</p></td>
+            <td class="definitions-description"><p>Street Address 1</p><pre>sec.Report.Filers[].MailingAddress[].StreetOne</pre></td>
+        </tr>
+        <tr class="definitions-row">
+            <td class="definitions-property" width="20%"><code>StreetTwo</code><br /><p>string</p></td>
+            <td class="definitions-description"><p>Street Address 2</p><pre>sec.Report.Filers[].MailingAddress[].StreetTwo</pre></td>
+        </tr>
+        <tr class="definitions-row">
+            <td class="definitions-property" width="20%"><code>City</code><br /><p>string</p></td>
+            <td class="definitions-description"><p></p><pre>sec.Report.Filers[].MailingAddress[].City</pre></td>
+        </tr>
+        <tr class="definitions-row">
+            <td class="definitions-property" width="20%"><code>State</code><br /><p>string</p></td>
+            <td class="definitions-description"><p></p><pre>sec.Report.Filers[].MailingAddress[].State</pre></td>
+        </tr>
+        <tr class="definitions-row">
+            <td class="definitions-property" width="20%"><code>Zip</code><br /><p>string</p></td>
+            <td class="definitions-description"><p></p><pre>sec.Report.Filers[].MailingAddress[].Zip</pre></td>
+        </tr>
+    </tbody>
+</table>
+
+<table class="table qc-table">
+    <thead>
+        <tr class="definitions-header">
+            <th colspan="2">SECReportFormerCompany</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr class="definitions-row">
+            <td class="definitions-property" width="20%"><code>FormerConformedName</code><br /><p>string</p></td>
+            <td class="definitions-description"><p>Previous company name</p><pre>sec.Report.Filers[].FormerCompanies[].FormerConformedName</pre></td>
+        </tr>
+        <tr class="definitions-row">
+            <td class="definitions-property" width="20%"><code>Changed</code><br /><p>DateTime</p></td>
+            <td class="definitions-description"><p>Date the company name was changed to a new name</p><pre>sec.Report.Filers[].FormerCompanies[].Changed</pre></td>
+        </tr>
+    </tbody>
+</table>
+
+<table class="table qc-table">
+    <thead>
+        <tr class="definitions-header">
+            <th colspan="2">SECReportDocument</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr class="definitions-row">
+            <td class="definitions-property" width="20%"><code>FormType</code><br /><p>string</p></td>
+            <td class="definitions-description"><p>SEC form type (e.g. 8-K, 10-K, 10-Q)</p><pre>sec.Report.Documents[].FormType</pre></td>
+        </tr>
+        <tr class="definitions-row">
+            <td class="definitions-property" width="20%"><code>Sequence</code><br /><p>string</p></td>
+            <td class="definitions-description"><p>n<sup>th</sup> attachment to the form filed</p><pre>sec.Report.Documents[].Sequence</pre></td>
+        </tr>
+        <tr class="definitions-row">
+            <td class="definitions-property" width="20%"><code>Filename</code><br /><p>string</p></td>
+            <td class="definitions-description"><p>File name that the file had when it was uploaded</p><pre>sec.Report.Documents[].Filename</pre></td>
+        </tr>
+        <tr class="definitions-row">
+            <td class="definitions-property" width="20%"><code>Description</code><br /><p>string</p></td>
+            <td class="definitions-description"><p>Attachment content(s) description</p><pre>sec.Report.Documents[].Description</pre></td>
+        </tr>
+        <tr class="definitions-row">
+            <td class="definitions-property" width="20%"><code>Text</code><br /><p>string</p></td>
+            <td class="definitions-description"><p>Contents of the attachment. This is the field that will contain the actual financial reports as well as misc. attachments</p><pre>sec.Report.Documents[].Text</pre></td>
+        </tr>
+    </tbody>
+</table>
