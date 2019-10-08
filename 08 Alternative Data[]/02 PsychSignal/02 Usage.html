@@ -1,5 +1,5 @@
 <p>
-PsychSignal Sentiment is <em>linked</em> data source. This means news data is automatically tied to the underlying equity whenever possible. This linkage is performed by the ticker mentioned in the tweet article at the time it was published. To add the right sentiment feed to your strategy you should use the <em>equity</em> asset symbol.
+PsychSignal Sentiment is a&nbsp;<em>linked</em> data source. This means news data is automatically tied to the underlying equity whenever possible. This linkage is performed by the ticker mentioned in the tweet article at the time it was published. To add the right sentiment feed to your strategy you should use the <em>equity</em> asset symbol.
 </p>
 
 <h4>Requesting Data</h4>
@@ -7,13 +7,11 @@ PsychSignal Sentiment is <em>linked</em> data source. This means news data is au
 
 </p>
 <div class="section-example-container">
-<pre class="csharp">
-// Request underlying equity data.
+<pre class="csharp">// Request underlying equity data.
 var ibm = AddEquity("IBM", Resolution.Minute).Symbol;
 // Add news data for the underlying IBM asset
 AddData&lt;PsychSignalSentiment&gt;(ibm);</pre>
-<pre class="python">
-# Request underlying equity data.
+<pre class="python"># Request underlying equity data.
 ibm = self.AddEquity("IBM", Resolution.Minute).Symbol
 # Add sentiment data for the underlying IBM asset
 self.AddData(PsychSignalSentiment, ibm)
@@ -46,19 +44,18 @@ namespace QuantConnect.Algorithm.CSharp
         public override void OnData(Slice data)
         {
             // Accessing linked sentiment from securities collection:
-            //var tiingoNews = Securities["AAPL"].Data.GetAll<PsychSignalSentiment>();
+            //var tiingoNews = Securities["AAPL"].Data.GetAll<psychsignalsentiment>();
             
             //Accessing via slice event:
-            var sentiments = data.Get<PsychSignalSentiment>();
+            var sentiments = data.Get<psychsignalsentiment>();
             foreach (var sentiment in sentiments.Values)
             {
             	Log($"Bull: {sentiment.BullIntensity} Bull Count: {sentiment.BullScoredMessages}");
             }
         }
     }
-}</pre>
-<pre class="python">
-class PsychSignalSentimentDemonstration(QCAlgorithm):
+}</psychsignalsentiment></psychsignalsentiment></pre>
+<pre class="python">class PsychSignalSentimentDemonstration(QCAlgorithm):
 
     def Initialize(self):
         self.SetStartDate(2019, 8, 1)
