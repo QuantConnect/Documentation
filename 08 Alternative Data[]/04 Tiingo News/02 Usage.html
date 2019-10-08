@@ -1,4 +1,4 @@
-<p>Tiingo News is a <em>linked</em> data source. This means news data is automatically tied to the underlying equity whenever possible. This linkage is performed by the ticker mentioned in the news article at the time of the publication. To add the right news articles to your strategy you should use the <em>equity</em> asset symbol.</p>
+<p>Tiingo News is <em>linked</em> data source. This means news data is automatically tied to the underlying equity whenever possible. This linkage is performed by the ticker mentioned in the news article at the time of the publication. To add the right news articles to your strategy you should use the <em>equity</em> asset symbol.</p>
 
 <h4>Requesting Data</h4>
 <div class="section-example-container">
@@ -34,16 +34,16 @@ namespace QuantConnect.Algorithm.CSharp
             
             // Request linked news data for Apple.
             var aapl = AddEquity("AAPL", Resolution.Minute).Symbol;
-            AddData<TiingoNews>(aapl);
+            AddData&lt;TiingoNews&gt;(aapl);
         }
 		
         public override void OnData(Slice data)
         {
         	// Accessing a linked source from securities collection:
-        	//var tiingoNews = Securities["AAPL"].Data.GetAll<TiingoNews>();
+        	//var tiingoNews = Securities["AAPL"].Data.GetAll&lt;TiingoNews&gt;();
             
             //Accessing via slice event:
-            var tiingoNews = data.Get<TiingoNews>();
+            var tiingoNews = data.Get&lt;TiingoNews&gt;();
             foreach (var news in tiingoNews.Values)
             {
             	Log($"Now: {Time} Crawled: {news.CrawlDate} Title: {news.Title}");
