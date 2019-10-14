@@ -1,1 +1,19 @@
-<p></p>
+<p>
+You can request for historical custom data in your algorithm. To learn more about historical data requests, please visit the <a href="https://www.quantconnect.com/docs/algorithm-reference/historical-data" target="_blank" ref="noreferrer noopener">Historical Data</a> documentation page. The following example gets SEC report 10-Q historical data using the History API.
+</p>
+<div class="section-example-container">
+<pre class="csharp">// Request underlying equity data.
+var ibm = AddEquity("IBM", Resolution.Minute).Symbol;
+// Add SEC report 10-Q data for the underlying IBM asset
+var earningsFiling = AddData&lt;SECReport10Q&gt;(ibm).Symbol;
+// Request 120 days of history with the SECReport10Q IBM custom data Symbol.
+var history = History&lt;SECReport10Q&gt;(earningsFiling, 120, Resolution.Daily);
+</pre>
+<pre class="python"># Request underlying equity data.
+ibm = self.AddEquity("IBM", Resolution.Minute).Symbol
+# Add news data for the underlying IBM asset
+earningsFiling = self.AddData(SECReport10Q, ibm).Symbol
+# Request 120 days of history with the SECReport10Q IBM custom data Symbol
+history = self.History(SECReport10Q, earningsFiling, 120, Resolution.Daily)
+</pre>
+</div>
