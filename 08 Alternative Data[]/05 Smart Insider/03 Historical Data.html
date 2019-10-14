@@ -1,1 +1,19 @@
-<p></p>
+<p>
+You can request for historical custom data in your algorithm. To learn more about historical data requests, please visit the <a href="https://www.quantconnect.com/docs/algorithm-reference/historical-data" target="_blank" ref="noreferrer noopener">Historical Data</a> documentation page. The following example gets Tiingo news historical data using the History API.
+</p>
+<div class="section-example-container">
+<pre class="csharp">// Request historical data
+var ibm = AddEquity("IBM", Resolution.Minute).Symbol;
+// Add Smart Insider stock buyback transaction data for the underlying IBM asset
+var si = AddData&lt;SmartInsiderTransaction&gt;(ibm).Symbol;
+// Request 60 days of history with the SmartInsiderTransaction IBM Custom Data Symbol.
+var history = History&lt;SmartInsiderTransaction&gt;(si, 60, Resolution.Daily);
+</pre>
+<pre class="python"># Request underlying equity data.
+ibm = self.AddEquity("IBM", Resolution.Minute).Symbol
+# Add Smart Insider stock buyback transaction data for the underlying IBM asset
+si = self.AddData(SmartInsiderTransaction, ibm).Symbol
+# Request 60 days of history with the SmartInsiderTransaction IBM Custom Data Symbol
+history = self.History(SmartInsiderTransaction, si, 60, Resolution.Daily)
+</pre>
+</div>
