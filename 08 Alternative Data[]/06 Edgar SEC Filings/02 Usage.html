@@ -3,13 +3,8 @@
     equity whenever possible. This linkage is performed by the ticker used at the time of the filing. To add the right data to your strategy, you should use the equity asset symbol when you request SEC data.
 </p>
 <h4>Requesting Data</h4>
-<div class="section-example-container">
-    <div class="language-buttons">
-        Select Language:
-        <button class="lang-csharp" onclick="Documentation.SetLanguage('csharp')">C#</button>
-        <button class="lang-python" onclick="Documentation.SetLanguage('python')">Python</button>
-    </div>
-    <pre class="csharp" style="display: none;">// Request underlying equity data.
+<div class="section-example-container"> 
+    <pre class="csharp">// Request underlying equity data.
 var aapl = AddEquity("AAPL", Resolution.Minute).Symbol;
 // Add SEC 10-Q (quarterly report) filings for Apple 
 AddData&lt;SECReport10Q&gt;(aapl);
@@ -18,7 +13,7 @@ AddData&lt;SECReport10K&gt;(aapl);
 // Add SEC 8-K (investor notices) filings for Apple
 AddData&lt;SECReport8K&gt;(aapl);</pre>
 
-    <pre class="python" style=""># Request underlying equity data.
+    <pre class="python"># Request underlying equity data.
 aapl = self.AddEquity("AAPL", Resolution.Minute).Symbol
 # Add SEC 10-Q (quarterly report) filings for Apple
 self.AddData(SECReport10Q, aapl)
@@ -34,8 +29,8 @@ self.AddData(SECReport8K, aapl)</pre>
     methods.
     </p>
 <div class="section-example-container">
-    <pre class="csharp">var report = Securities["IBM"].Data.GetAll&lt;SECReport10Q&gt();</pre>
-    <pre class="python">report = self.Securities["IBM"].Data.GetAll(SECReport10Q)</pre>
+    <pre class="csharp">var reports = Securities["IBM"].Data.GetAll&lt;SECReport10Q&gt();</pre>
+    <pre class="python">reports = self.Securities["IBM"].Data.GetAll(SECReport10Q)</pre>
 </div>
 <p>
     When you request data via the data cache it will always return the <i>last</i> SEC report object stored. You can see an example of both of these accessors in the sample code below.
@@ -98,17 +93,17 @@ class SECDemonstration(QCAlgorithm):
     def OnData(self, data):
         # Accessing linked SEC filings from securities collection.
         # (returns a list, you can drop the "Values" from the loop below)
-        #quarterlyReport = self.Securities["AAPL"].Data.GetAll(SECReport10Q)
-        #yearlyReport = self.Securities["AAPL"].Data.GetAll(SECReport10K)
+        #quarterlyReports = self.Securities["AAPL"].Data.GetAll(SECReport10Q)
+        #yearlyReports = self.Securities["AAPL"].Data.GetAll(SECReport10K)
 
         # Accessing unique SEC report objects via slice event:
-        quarterlyReport = data.Get(SECReport10Q)
-        yearlyReport = data.Get(SECReport10K)
+        quarterlyReports = data.Get(SECReport10Q)
+        yearlyReports = data.Get(SECReport10K)
 
-        for filing in quarterlyReport.Values:
+        for filing in quarterlyReports.Values:
             self.Log(f"Received quarterly report for company {filing.Report.Filers[0].CompanyData.ConformedName}")
 
-        for filing in yearlyReport.Values:
+        for filing in yearlyReports.Values:
             self.Log(f"Received yearly report for company {filing.Report.Filers[0].CompanyData.ConformedName}")
 </pre>
 </div>
