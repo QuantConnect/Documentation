@@ -1,7 +1,6 @@
 <p>
-    SEC filing data is a <i>linked</i> data source. This means filing data is automatically tied to the underlying
-    equity whenever possible. This linkage is performed by the ticker the filing applies to at the time the filing was
-    made public. To add the right data to your strategy, you should use the equity asset symbol.
+    SEC filing data is a <i>linked</i> data source. This means filing data is tied to the underlying
+    equity whenever possible. This linkage is performed by the ticker used at the time of the filing. To add the right data to your strategy, you should use the equity asset symbol when you request SEC data.
 </p>
 <h4>Requesting Data</h4>
 <div class="section-example-container">
@@ -30,30 +29,19 @@ self.AddData(SECReport8K, aapl)</pre>
 </div>
 <h4>Accessing data</h4>
 <p>
-    Data can be accessed the normal way via the Slice events. Slice events deliver the unique SEC report objects to your
-    algorithm as they happen.
-    Alternatively because this is a linked data source, it is also available on the underlying security via the helper
-    methods:
-
-    </p><ul>
-        <li><code class="csharp" style="display: none;">Securities[symbol].Data.GetAll&lt;SECReport10Q&gt;();</code><code class="python" style="">self.Securities[symbol].Data.GetAll(SECReport10Q)</code></li>
-        <li><code class="csharp" style="display: none;">Securities[symbol].Data.GetAll&lt;SECReport10K&gt;();</code><code class="python" style="">self.Securities[symbol].Data.GetAll(SECReport10K)</code></li>
-        <li><code class="csharp" style="display: none;">Securities[symbol].Data.GetAll&lt;SECReport8K&gt;();</code><code class="python" style="">self.Securities[symbol].Data.GetAll(SECReport8K)</code></li>
-    </ul>
-<p></p>
+    Each unique data event can be accessed via Slice events. Slice events deliver the unique SEC report objects to your
+    algorithm as they happen. Alternatively, because this is a linked data source, it is also available on the underlying security via the cache helper
+    methods.
+    </p>
+<div class="section-example-container">
+    <pre class="csharp">var report = Securities["IBM"].Data.GetAll&lt;SECReport10Q&gt();</pre>
+    <pre class="python">report = self.Securities["IBM"].Data.GetAll(SECReport10Q)</pre>
+</div>
 <p>
-    When you request data via the data cache it will always return the <i>last</i> SEC report object stored.
-</p>
-<p>
-    You can see an example of both of these accessors in the code below.
+    When you request data via the data cache it will always return the <i>last</i> SEC report object stored. You can see an example of both of these accessors in the sample code below.
 </p>
 <div class="section-example-container">
-    <div class="language-buttons">
-        Select Language:
-        <button class="lang-csharp" onclick="Documentation.SetLanguage('csharp')">C#</button>
-        <button class="lang-python" onclick="Documentation.SetLanguage('python')">Python</button>
-    </div>
-    <pre class="csharp" style="display: none;">using QuantConnect.Data.Custom.SEC;
+    <pre class="csharp">using QuantConnect.Data.Custom.SEC;
 namespace QuantConnect.Algorithm.CSharp
 {
     public class SECDemonstration : QCAlgorithm
@@ -94,7 +82,7 @@ namespace QuantConnect.Algorithm.CSharp
         }
     }
 }</pre>
-    <pre class="python" style="">from QuantConnect.Data.Custom.SEC import *
+    <pre class="python">from QuantConnect.Data.Custom.SEC import *
 
 class SECDemonstration(QCAlgorithm):
     
@@ -121,10 +109,11 @@ class SECDemonstration(QCAlgorithm):
             self.Log(f"Received quarterly report for company {filing.Report.Filers[0].CompanyData.ConformedName}")
 
         for filing in yearlyReport.Values:
-            self.Log(f"Received yearly report for company {filing.Report.Filers[0].CompanyData.ConformedName}")</pre>
+            self.Log(f"Received yearly report for company {filing.Report.Filers[0].CompanyData.ConformedName}")
+</pre>
 </div>
 <p>
-    We provide a table below that explains the various fields present in the SEC reports as well as the types associated with each member
+    The table below explains the various fields present in the SEC reports as well as the types associated with each member. The root object of all the reports available is the same; the <code>SECReportSubmission</code>.
 </p>
 <table class="table qc-table">
     <thead>
