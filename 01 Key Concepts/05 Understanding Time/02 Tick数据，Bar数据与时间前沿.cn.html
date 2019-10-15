@@ -1,13 +1,13 @@
 <p>
 数据根据涵盖的周期不同有两个“形状”：点数据与段数据。在LEAN中，他们有不同的属性。<i>时间前沿(Time Frontier)</i>被用来协调与控制发送数据。在QuantConnect中，Tick数据是点数据，Bar数据是段数据。</p>
-<img src="https://s3.amazonaws.com/cdn.quantconnect.com/docs/i/time-v-endtime_rev0.png" class="img-responsive"/>
+<img src="https://cdn.quantconnect.com/docs/i/time-v-endtime_rev0.png" class="img-responsive"/>
 
 <h4>时间前沿</h4>
 <p>
 QuantConnect允许您的算法获取多个证券以及多种分辨率的数据。这会导致以下情况：您订阅的一笔数据已经准备发送，然而另外一笔周期更长的数据还在构建它的Bar数据。我们使用<i>结束时间(End Time)</i>来协调所有数据并发送至您的算法。
 </p>
 
-<img src="https://s3.amazonaws.com/cdn.quantconnect.com/docs/i/time-frontier_rev1.gif" class="img-responsive"/>
+<img src="https://cdn.quantconnect.com/docs/i/time-frontier_rev1.gif" class="img-responsive"/>
 
 <p>
 到了一个数据点的<i>结束时间(End Time)</i>时，它会被发送至您的算法的OnData()方法中。对于Bar数据，这是<i>下一个</i>Bar的开始。您的算法只能访问时间前沿以前的数据，而不能访问未来数据从而避免前瞻性偏差(Look-ahead Bias)。
@@ -22,7 +22,7 @@ Bar数据（或K线）是将一段时间的数据聚合在一起的对象。Quan
 <p>
 在<i>下一个</i>Bar开始前，一个Bar的结束时间是未知的。比如，一个星期五的Bar会包括从星期五00:00至23:59.99999的所有Tick数据，但是它会在星期六00:00被发送。因此，在分析星期五的全部数据后产生的所有订单会在星期六被发送至您的经纪商。因为届时绝大部分市场不开放交易，所以QuantConnect会自动将您的订单转换为<code>MarketOnOpen</code>订单并且将在星期一早上成交。
 </p>
-<img src="https://s3.amazonaws.com/cdn.quantconnect.com/docs/i/bar-stream_rev0.png" class="img-responsive"/>
+<img src="https://cdn.quantconnect.com/docs/i/bar-stream_rev0.png" class="img-responsive"/>
 <p>
 当一段时间内没有Tick数据时，根据您设定的分辨率，前一个Bar会被复制和发送。在QuantConnect，这是默认的Bar数据特性，被称为“向前填充数据”。您可以在您<a class="docs-internal-link" href="/docs/algorithm-reference/initializing-algorithms#Initializing-Algorithms-Selecting-Asset-Data">获取证券数据</a>时配置是否启用“向前填充数据”
 </p>
@@ -35,7 +35,7 @@ QuantConnect提供秒，分钟，小时和日K线。您可以将较短周期的�
 <p>
 Tick数据代表市场上的单笔交易或报价。这是一个离散的事件，它没有被附加一个周期。Tick数据一到达LEAN就会被发送。
 </p>
-<img src="https://s3.amazonaws.com/cdn.quantconnect.com/docs/i/tick-stream_rev2.png" class="img-responsive" />
+<img src="https://cdn.quantconnect.com/docs/i/tick-stream_rev2.png" class="img-responsive" />
 <p>
 $[Tick, T:QuantConnect.Data.Market.Tick]对象的时间(Time)与结束时间(EndTime)是相同的，因为它们没有<i>周期</i>。它们代表瞬时点数据，因此不能“向前填充”。
 </p>
