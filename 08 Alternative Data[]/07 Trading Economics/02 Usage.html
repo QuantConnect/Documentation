@@ -1,0 +1,346 @@
+
+<h4>Requesting Data</h4>
+
+<p>
+    To add Trading Economics data to your algorithm use the <code>AddData()</code> system to request the data. As with all datasets, you should 
+    save a reference to your symbol for easy use later in your algorithm. For detailed documentation on using custom data 
+    see <a class="docs-internal-link" href="/docs/algorithm-reference/importing-custom-data">Importing Custom Data</a>.
+</p>
+<div class="section-example-container">
+<pre class="csharp">
+// U.S. Federal Reserve interest rate
+var calendarInterest = AddData&lt;TradingEconomicsCalendar&gt;(TradingEconomics.Calendar.UnitedStates.InterestRate).Symbol;
+// U.S. Federal Reserve interest rate
+var indicatorInterest = AddData&lt;TradingEconomicsIndicator&gt;(TradingEconomics.Indicator.UnitedStates.InterestRate).Symbol;
+</pre>
+
+<pre class="python">
+# Add U.S. Federal Reserve interest rate data.
+calendarInterest = self.AddData(TradingEconomicsCalendar, TradingEconomics.Calendar.UnitedStates.InterestRate).Symbol
+# Add U.S. Federal Reserve interest rate data.
+indicatorInterest = self.AddData(TradingEconomicsIndicator, TradingEconomics.Indicator.UnitedStates.InterestRate).Symbol
+</pre>
+</div>
+
+<h4>Accessing Data</h4>
+<p>
+    Data can be accessed via the Slice events. Slice delivers the unique events to your algorithm as they happen.
+    We recommend saving the symbol object when you add the data for easy access to slice later.
+    Data is available in the following resolutions: Daily.
+
+
+    You can see an example of the slice accessor in the code below.
+</p>
+<div class="section-example-container">
+<pre class="csharp">using QuantConnect.Data.Custom.TradingEconomics;
+namespace QuantConnect.Algorithm.CSharp {
+    public class TradingEconomicsAlgorithm : QCAlgorithm {
+        public override void Initialize() {
+            SetStartDate(2019, 1, 1);
+            
+            // U.S. Federal Reserve interest rate
+            AddData&lt;TradingEconomicsCalendar&gt;(TradingEconomics.Calendar.UnitedStates.InterestRate);
+            // U.S. Federal Reserve interest rate
+            AddData&lt;TradingEconomicsIndicator&gt;(TradingEconomics.Indicator.UnitedStates.InterestRate);
+        }
+        
+        public override void OnData(Slice data) {
+            // Accessing via Slice event
+            var calendarInterest = data.Get&lt;TradingEconomicsCalendar&gt;();
+            var indicatorInterest = data.Get&lt;TradingEconomicsIndicator&gt;();
+            
+            foreach (var calendar in calendarInterest.Values)
+            {
+                Log($"Unique calendar ID used by Trading Economics: {calendar.CalendarId}, Release time and date in UTC: {calendar.EndTime}, Country name: {calendar.Country}, Indicator category name: {calendar.Category}, Specific event name in the calendar: {calendar.Event}, The period for which released data refers to: {calendar.Reference}, Source of data: {calendar.Source}, Latest released value: {calendar.Actual}, Value for the previous period after the revision (if revision is applicable): {calendar.Previous}, Average forecast among a representative group of economists: {calendar.Forecast}, TradingEconomics own projections: {calendar.TradingEconomicsForecast}, 0 indicates that the time of the event is known, 1 indicates that we only know the date of event, the exact time of event is unknown: {calendar.DateSpan}, Importance of a TradingEconomics information: {calendar.Importance}, Time when new data was inserted or changed: {calendar.LastUpdate}, Value reported in the previous period after revision: {calendar.Revised}, Countrys original name: {calendar.OCountry}, Categorys original name: {calendar.OCategory}, Unique ticker used by Trading Economics: {calendar.Ticker}, Unique symbol used by Trading Economics: {calendar.TESymbol}, Indicates whether the Actual, Previous, Forecast, TradingEconomicsForecast fields are reported as percent values: {calendar.IsPercentage}");
+            }
+            foreach (var indicator in indicatorInterest.Values)
+            {
+                Log($"Country name: {indicator.Country}, Indicator category name: {indicator.Category}, Release time and date in UTC: {indicator.EndTime}, Value: {indicator.Value}, Frequency of the indicator: {indicator.Frequency}, Time when new data was inserted or changed: {indicator.LastUpdate}, Unique symbol used by Trading Economics: {indicator.HistoricalDataSymbol}");
+            }
+        }
+    }
+}</pre>
+<pre class="python">from QuantConnect.Data.Custom.TradingEconomics import *
+
+    class TradingEconomicsAlgorithm(QCAlgorithm):
+        def Initialize(self):
+            self.SetStartDate(2019, 1, 1)
+
+            # U.S. Federal Reserve interest rate
+            self.AddData(TradingEconomicsCalendar, TradingEconomics.Calendar.UnitedStates.InterestRate)
+            # U.S. Federal Reserve interest rate
+            self.AddData(TradingEconomicsIndicator, TradingEconomics.Indicator.UnitedStates.InterestRate)
+
+        def OnData(self, data):
+            # Accessing via Slice event
+            calendarInterest = data.Get(TradingEconomicsCalendar)
+            indicatorInterest = data.Get(TradingEconomicsIndicator)
+            
+            for calendar in calendarInterest.Values:
+                self.Log(f"Unique calendar ID used by Trading Economics: {calendar.CalendarId}, Release time and date in UTC: {calendar.EndTime}, Country name: {calendar.Country}, Indicator category name: {calendar.Category}, Specific event name in the calendar: {calendar.Event}, The period for which released data refers to: {calendar.Reference}, Source of data: {calendar.Source}, Latest released value: {calendar.Actual}, Value for the previous period after the revision (if revision is applicable): {calendar.Previous}, Average forecast among a representative group of economists: {calendar.Forecast}, TradingEconomics own projections: {calendar.TradingEconomicsForecast}, 0 indicates that the time of the event is known, 1 indicates that we only know the date of event, the exact time of event is unknown: {calendar.DateSpan}, Importance of a TradingEconomics information: {calendar.Importance}, Time when new data was inserted or changed: {calendar.LastUpdate}, Value reported in the previous period after revision: {calendar.Revised}, Countrys original name: {calendar.OCountry}, Categorys original name: {calendar.OCategory}, Unique ticker used by Trading Economics: {calendar.Ticker}, Unique symbol used by Trading Economics: {calendar.TESymbol}, Indicates whether the Actual, Previous, Forecast, TradingEconomicsForecast fields are reported as percent values: {calendar.IsPercentage}")
+            for indicator in indicatorInterest.Values:
+                self.Log(f"Country name: {indicator.Country}, Indicator category name: {indicator.Category}, Release time and date in UTC: {indicator.EndTime}, Value: {indicator.Value}, Frequency of the indicator: {indicator.Frequency}, Time when new data was inserted or changed: {indicator.LastUpdate}, Unique symbol used by Trading Economics: {indicator.HistoricalDataSymbol}")
+</pre>
+</div>
+
+
+<p>Each TradingEconomicsCalendar object has the following properties available for use in your algorithm:</p>
+<table class="table qc-table">
+    <thead>
+        <tr class="definitions-header"><th colspan="2">TradingEconomicsCalendar Fields</th></tr>
+    </thead>
+    <tbody>
+        <tr class="definitions-row">
+            <td class="definitions-property" width="20%"><code>CalendarId</code><br />
+                <p>$[string, T:System.String]</p>
+            </td>
+            <td class="definitions-description">
+                <p>Unique calendar ID used by Trading Economics</p>
+                <pre>calendarInterest.CalendarId</pre>
+            </td>
+        </tr>
+        <tr class="definitions-row">
+            <td class="definitions-property" width="20%"><code>EndTime</code><br />
+                <p>$[DateTime, T:System.DateTime]</p>
+            </td>
+            <td class="definitions-description">
+                <p>Release time and date in UTC</p>
+                <pre>calendarInterest.EndTime</pre>
+            </td>
+        </tr>
+        <tr class="definitions-row">
+            <td class="definitions-property" width="20%"><code>Country</code><br />
+                <p>$[string, T:System.String]</p>
+            </td>
+            <td class="definitions-description">
+                <p>Country name</p>
+                <pre>calendarInterest.Country</pre>
+            </td>
+        </tr>
+        <tr class="definitions-row">
+            <td class="definitions-property" width="20%"><code>Category</code><br />
+                <p>$[string, T:System.String]</p>
+            </td>
+            <td class="definitions-description">
+                <p>Indicator category name</p>
+                <pre>calendarInterest.Category</pre>
+            </td>
+        </tr>
+        <tr class="definitions-row">
+            <td class="definitions-property" width="20%"><code>Event</code><br />
+                <p>$[string, T:System.String]</p>
+            </td>
+            <td class="definitions-description">
+                <p>Specific event name in the calendar</p>
+                <pre>calendarInterest.Event</pre>
+            </td>
+        </tr>
+        <tr class="definitions-row">
+            <td class="definitions-property" width="20%"><code>Reference</code><br />
+                <p>$[string, T:System.String]</p>
+            </td>
+            <td class="definitions-description">
+                <p>The period for which released data refers to</p>
+                <pre>calendarInterest.Reference</pre>
+            </td>
+        </tr>
+        <tr class="definitions-row">
+            <td class="definitions-property" width="20%"><code>Source</code><br />
+                <p>$[string, T:System.String]</p>
+            </td>
+            <td class="definitions-description">
+                <p>Source of data</p>
+                <pre>calendarInterest.Source</pre>
+            </td>
+        </tr>
+        <tr class="definitions-row">
+            <td class="definitions-property" width="20%"><code>Actual</code><br />
+                <p>$[Nullable&lt;Decimal&gt;, T:System.Decimal]</p>
+            </td>
+            <td class="definitions-description">
+                <p>Latest released value</p>
+                <pre>calendarInterest.Actual</pre>
+            </td>
+        </tr>
+        <tr class="definitions-row">
+            <td class="definitions-property" width="20%"><code>Previous</code><br />
+                <p>$[Nullable&lt;Decimal&gt;, T:System.Decimal]</p>
+            </td>
+            <td class="definitions-description">
+                <p>Value for the previous period after the revision (if revision is applicable)</p>
+                <pre>calendarInterest.Previous</pre>
+            </td>
+        </tr>
+        <tr class="definitions-row">
+            <td class="definitions-property" width="20%"><code>Forecast</code><br />
+                <p>$[Nullable&lt;Decimal&gt;, T:System.Decimal]</p>
+            </td>
+            <td class="definitions-description">
+                <p>Average forecast among a representative group of economists</p>
+                <pre>calendarInterest.Forecast</pre>
+            </td>
+        </tr>
+        <tr class="definitions-row">
+            <td class="definitions-property" width="20%"><code>TradingEconomicsForecast</code><br />
+                <p>$[Nullable&lt;Decimal&gt;, T:System.Decimal]</p>
+            </td>
+            <td class="definitions-description">
+                <p>TradingEconomics own projections</p>
+                <pre>calendarInterest.TradingEconomicsForecast</pre>
+            </td>
+        </tr>
+        <tr class="definitions-row">
+            <td class="definitions-property" width="20%"><code>DateSpan</code><br />
+                <p>$[string, T:System.String]</p>
+            </td>
+            <td class="definitions-description">
+                <p>0 indicates that the time of the event is known, 1 indicates that we only know the date of event, the exact time of event is unknown</p>
+                <pre>calendarInterest.DateSpan</pre>
+            </td>
+        </tr>
+        <tr class="definitions-row">
+            <td class="definitions-property" width="20%"><code>Importance</code><br />
+                <p>$[TradingEconomicsImportance, T:QuantConnect.Data.Custom.TradingEconomics.TradingEconomicsImportance]</p>
+            </td>
+            <td class="definitions-description">
+                <p>Importance of a TradingEconomics information</p>
+                <pre>calendarInterest.Importance</pre>
+            </td>
+        </tr>
+        <tr class="definitions-row">
+            <td class="definitions-property" width="20%"><code>LastUpdate</code><br />
+                <p>$[DateTime, T:System.DateTime]</p>
+            </td>
+            <td class="definitions-description">
+                <p>Time when new data was inserted or changed</p>
+                <pre>calendarInterest.LastUpdate</pre>
+            </td>
+        </tr>
+        <tr class="definitions-row">
+            <td class="definitions-property" width="20%"><code>Revised</code><br />
+                <p>$[Nullable&lt;Decimal&gt;, T:System.Decimal]</p>
+            </td>
+            <td class="definitions-description">
+                <p>Value reported in the previous period after revision</p>
+                <pre>calendarInterest.Revised</pre>
+            </td>
+        </tr>
+        <tr class="definitions-row">
+            <td class="definitions-property" width="20%"><code>OCountry</code><br />
+                <p>$[string, T:System.String]</p>
+            </td>
+            <td class="definitions-description">
+                <p>Countrys original name</p>
+                <pre>calendarInterest.OCountry</pre>
+            </td>
+        </tr>
+        <tr class="definitions-row">
+            <td class="definitions-property" width="20%"><code>OCategory</code><br />
+                <p>$[string, T:System.String]</p>
+            </td>
+            <td class="definitions-description">
+                <p>Categorys original name</p>
+                <pre>calendarInterest.OCategory</pre>
+            </td>
+        </tr>
+        <tr class="definitions-row">
+            <td class="definitions-property" width="20%"><code>Ticker</code><br />
+                <p>$[string, T:System.String]</p>
+            </td>
+            <td class="definitions-description">
+                <p>Unique ticker used by Trading Economics</p>
+                <pre>calendarInterest.Ticker</pre>
+            </td>
+        </tr>
+        <tr class="definitions-row">
+            <td class="definitions-property" width="20%"><code>TESymbol</code><br />
+                <p>$[string, T:System.String]</p>
+            </td>
+            <td class="definitions-description">
+                <p>Unique symbol used by Trading Economics</p>
+                <pre>calendarInterest.TESymbol</pre>
+            </td>
+        </tr>
+        <tr class="definitions-row">
+            <td class="definitions-property" width="20%"><code>IsPercentage</code><br />
+                <p>$[bool, T:System.Boolean]</p>
+            </td>
+            <td class="definitions-description">
+                <p>Indicates whether the Actual, Previous, Forecast, TradingEconomicsForecast fields are reported as percent values</p>
+                <pre>calendarInterest.IsPercentage</pre>
+            </td>
+        </tr>
+    </tbody>
+</table>
+<p>Each TradingEconomicsIndicator object has the following properties available for use in your algorithm:</p>
+<table class="table qc-table">
+    <thead>
+        <tr class="definitions-header"><th colspan="2">TradingEconomicsIndicator Fields</th></tr>
+    </thead>
+    <tbody>
+        <tr class="definitions-row">
+            <td class="definitions-property" width="20%"><code>Country</code><br />
+                <p>$[string, T:System.String]</p>
+            </td>
+            <td class="definitions-description">
+                <p>Country name</p>
+                <pre>indicatorInterest.Country</pre>
+            </td>
+        </tr>
+        <tr class="definitions-row">
+            <td class="definitions-property" width="20%"><code>Category</code><br />
+                <p>$[string, T:System.String]</p>
+            </td>
+            <td class="definitions-description">
+                <p>Indicator category name</p>
+                <pre>indicatorInterest.Category</pre>
+            </td>
+        </tr>
+        <tr class="definitions-row">
+            <td class="definitions-property" width="20%"><code>EndTime</code><br />
+                <p>$[DateTime, T:System.DateTime]</p>
+            </td>
+            <td class="definitions-description">
+                <p>Release time and date in UTC</p>
+                <pre>indicatorInterest.EndTime</pre>
+            </td>
+        </tr>
+        <tr class="definitions-row">
+            <td class="definitions-property" width="20%"><code>Value</code><br />
+                <p>$[decimal, T:System.Decimal]</p>
+            </td>
+            <td class="definitions-description">
+                <p>Value</p>
+                <pre>indicatorInterest.Value</pre>
+            </td>
+        </tr>
+        <tr class="definitions-row">
+            <td class="definitions-property" width="20%"><code>Frequency</code><br />
+                <p>$[string, T:System.String]</p>
+            </td>
+            <td class="definitions-description">
+                <p>Frequency of the indicator</p>
+                <pre>indicatorInterest.Frequency</pre>
+            </td>
+        </tr>
+        <tr class="definitions-row">
+            <td class="definitions-property" width="20%"><code>LastUpdate</code><br />
+                <p>$[DateTime, T:System.DateTime]</p>
+            </td>
+            <td class="definitions-description">
+                <p>Time when new data was inserted or changed</p>
+                <pre>indicatorInterest.LastUpdate</pre>
+            </td>
+        </tr>
+        <tr class="definitions-row">
+            <td class="definitions-property" width="20%"><code>HistoricalDataSymbol</code><br />
+                <p>$[string, T:System.String]</p>
+            </td>
+            <td class="definitions-description">
+                <p>Unique symbol used by Trading Economics</p>
+                <pre>indicatorInterest.HistoricalDataSymbol</pre>
+            </td>
+        </tr>
+    </tbody>
+</table>
+<p>All custom data has the properties <code>Time</code>, <code>Symbol</code>, and <code>Value</code>.</p> 

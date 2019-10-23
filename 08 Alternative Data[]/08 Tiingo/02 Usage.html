@@ -1,0 +1,180 @@
+<p>
+    Tiingo data is a <i>linked</i> data source. This means that the data is automatically tied to the
+    underlying equity whenever possible. To add the correct data to your algorithm, you should use
+    the <i>equity</i> asset Symbol in <code>AddData</code>.
+</p>
+
+<h4>Requesting Data</h4>
+
+<p>
+    To add Tiingo data to your algorithm use the <code>AddData()</code> system to request the data. As with all datasets, you should 
+    save a reference to your symbol for easy use later in your algorithm. For detailed documentation on using custom data 
+    see <a class="docs-internal-link" href="/docs/algorithm-reference/importing-custom-data">Importing Custom Data</a>.
+</p>
+<div class="section-example-container">
+<pre class="csharp">
+// Request underlying equity data.
+var aapl = AddEquity("AAPL", Resolution.Tick).Symbol;
+// AAPL news
+var aaplNews = AddData&lt;TiingoNews&gt;(aapl).Symbol;
+</pre>
+
+<pre class="python">
+# Request underlying equity data.
+aapl = self.AddEquity("AAPL", Resolution.Tick).Symbol
+# Add AAPL news data.
+aaplNews = self.AddData(TiingoNews, aapl).Symbol
+</pre>
+</div>
+
+<h4>Accessing Data</h4>
+<p>
+    Data can be accessed via the Slice events. Slice delivers the unique events to your algorithm as they happen.
+    We recommend saving the symbol object when you add the data for easy access to slice later.
+    Data is available in the following resolutions: Tick.
+
+        Since this is a linked data source, it is also available on the underlying 
+        security via the <code class="csharp">Securities[symbol].Data.GetAll&lt;TiingoNews&gt;()</code>
+        <code class="python">self.Securities[symbol].Data.GetAll(TiingoNews)</code> helper method. When you 
+        request data via the data cache, it will always return the <em>last</em> article stored.
+
+    You can see an example of both of these accessors in the code below.
+</p>
+<div class="section-example-container">
+<pre class="csharp">using QuantConnect.Data.Custom.Tiingo;
+namespace QuantConnect.Algorithm.CSharp {
+    public class TiingoAlgorithm : QCAlgorithm {
+        public override void Initialize() {
+            SetStartDate(2019, 1, 1);
+            
+            var aapl = AddEquity("AAPL").Symbol;
+            // AAPL news
+            AddData&lt;TiingoNews&gt;(aapl);
+        }
+        
+        public override void OnData(Slice data) {
+            // Accessing a linked source from securities collection:
+            //var aaplNews = Securities["AAPL"].Data.GetAll&lt;TiingoNews&gt;();
+            // Accessing via Slice event
+            var aaplNews = data.Get&lt;TiingoNews&gt;();
+            
+            foreach (var news in aaplNews.Values)
+            {
+                Log($"The domain the news source is from: {news.Source}, The datetime the news story was added to Tiingos database in UTC: {news.CrawlDate}, URL of the news article: {news.Url}, The datetime the news story was published in UTC: {news.PublishedDate}, Tags that are mapped and discovered by Tiingo: {news.Tags}, Long-form description of the news story: {news.Description}, Title of the news article: {news.Title}, Unique identifier specific to the news article: {news.ArticleID}, What symbols are mentioned in the news story: {news.Symbols}");
+            }
+        }
+    }
+}</pre>
+<pre class="python">from QuantConnect.Data.Custom.Tiingo import *
+
+    class TiingoAlgorithm(QCAlgorithm):
+        def Initialize(self):
+            self.SetStartDate(2019, 1, 1)
+
+            aapl = self.AddEquity("AAPL").Symbol
+
+            # AAPL news
+            self.AddData(TiingoNews, aapl)
+
+        def OnData(self, data):
+            # Accessing a linked source from securities collection:
+            #aaplNews = self.Securities["AAPL"].Data.GetAll(TiingoNews)
+            # Accessing via Slice event
+            aaplNews = data.Get(TiingoNews)
+            
+            for news in aaplNews.Values:
+                self.Log(f"The domain the news source is from: {news.Source}, The datetime the news story was added to Tiingos database in UTC: {news.CrawlDate}, URL of the news article: {news.Url}, The datetime the news story was published in UTC: {news.PublishedDate}, Tags that are mapped and discovered by Tiingo: {news.Tags}, Long-form description of the news story: {news.Description}, Title of the news article: {news.Title}, Unique identifier specific to the news article: {news.ArticleID}, What symbols are mentioned in the news story: {news.Symbols}")
+</pre>
+</div>
+
+
+<p>Each TiingoNews object has the following properties available for use in your algorithm:</p>
+<table class="table qc-table">
+    <thead>
+        <tr class="definitions-header"><th colspan="2">TiingoNews Fields</th></tr>
+    </thead>
+    <tbody>
+        <tr class="definitions-row">
+            <td class="definitions-property" width="20%"><code>Source</code><br />
+                <p>$[string, T:System.String]</p>
+            </td>
+            <td class="definitions-description">
+                <p>The domain the news source is from.</p>
+                <pre>aaplNews.Source</pre>
+            </td>
+        </tr>
+        <tr class="definitions-row">
+            <td class="definitions-property" width="20%"><code>CrawlDate</code><br />
+                <p>$[DateTime, T:System.DateTime]</p>
+            </td>
+            <td class="definitions-description">
+                <p>The datetime the news story was added to Tiingos database in UTC. This is always recorded by Tiingo and the news source has no input on this date.</p>
+                <pre>aaplNews.CrawlDate</pre>
+            </td>
+        </tr>
+        <tr class="definitions-row">
+            <td class="definitions-property" width="20%"><code>Url</code><br />
+                <p>$[string, T:System.String]</p>
+            </td>
+            <td class="definitions-description">
+                <p>URL of the news article.</p>
+                <pre>aaplNews.Url</pre>
+            </td>
+        </tr>
+        <tr class="definitions-row">
+            <td class="definitions-property" width="20%"><code>PublishedDate</code><br />
+                <p>$[DateTime, T:System.DateTime]</p>
+            </td>
+            <td class="definitions-description">
+                <p>The datetime the news story was published in UTC. This is usually reported by the news source and not by Tiingo. If the news source does not declare a published date, Tiingo will use the time the news story was discovered by our crawler farm.</p>
+                <pre>aaplNews.PublishedDate</pre>
+            </td>
+        </tr>
+        <tr class="definitions-row">
+            <td class="definitions-property" width="20%"><code>Tags</code><br />
+                <p>$[List&lt;String&gt;, T:System.String]</p>
+            </td>
+            <td class="definitions-description">
+                <p>Tags that are mapped and discovered by Tiingo.</p>
+                <pre>aaplNews.Tags</pre>
+            </td>
+        </tr>
+        <tr class="definitions-row">
+            <td class="definitions-property" width="20%"><code>Description</code><br />
+                <p>$[string, T:System.String]</p>
+            </td>
+            <td class="definitions-description">
+                <p>Long-form description of the news story.</p>
+                <pre>aaplNews.Description</pre>
+            </td>
+        </tr>
+        <tr class="definitions-row">
+            <td class="definitions-property" width="20%"><code>Title</code><br />
+                <p>$[string, T:System.String]</p>
+            </td>
+            <td class="definitions-description">
+                <p>Title of the news article.</p>
+                <pre>aaplNews.Title</pre>
+            </td>
+        </tr>
+        <tr class="definitions-row">
+            <td class="definitions-property" width="20%"><code>ArticleID</code><br />
+                <p>$[string, T:System.String]</p>
+            </td>
+            <td class="definitions-description">
+                <p>Unique identifier specific to the news article.</p>
+                <pre>aaplNews.ArticleID</pre>
+            </td>
+        </tr>
+        <tr class="definitions-row">
+            <td class="definitions-property" width="20%"><code>Symbols</code><br />
+                <p>$[List&lt;Symbol&gt;, T:QuantConnect.Symbol]</p>
+            </td>
+            <td class="definitions-description">
+                <p>What symbols are mentioned in the news story.</p>
+                <pre>aaplNews.Symbols</pre>
+            </td>
+        </tr>
+    </tbody>
+</table>
+<p>All custom data has the properties <code>Time</code>, <code>Symbol</code>, and <code>Value</code>.</p> 

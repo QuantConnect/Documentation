@@ -1,0 +1,45 @@
+<p>
+QuantConnect hosts sentiment analysis data provided by PsychSignal. This data is generated from an interpretation of the Twitter and StockTwits community messages. When a user tags a ticker in a tweet, PsychSignal reads the message and assigns it a weighting. Each minute PsychSignal builds a summary of the data and records it to their API. 
+</p>
+<style>
+.tweet .CallToAction {display: none;}
+</style>
+<span class="tweet">
+<twitter-widget class="twitter-tweet twitter-tweet-rendered" id="twitter-widget-1" style="position: static; visibility: visible; display: block; transform: rotate(0deg); max-width: 100%; width: 500px; min-width: 220px; margin-top: 10px; margin-bottom: 10px;" data-tweet-id="1179880831340482561"></twitter-widget> <script async="" src="https://platform.twitter.com/widgets.js" charset="utf-8"></script></span>
+
+<p>The $[PsychSignalSentiment, T:QuantConnect.Data.Custom.PsychSignal.PsychSignalSentiment] object has 7 key pieces of information you can use:</p>
+
+<div class="section-example-container">
+<pre class="python">class PsychSignalSentiment:
+     self.BullIntensity;              # Bullish intensity (float)
+     self.BearIntensity;              # Bearish intensity (float)
+     self.BullMinusBear;              # Bullish intensity minus bearish intensity (float)
+     self.BullScoredMessages;         # Bullish messages in a minute (int)
+     self.BearScoredMessages;         # Bearish messages in a minute (int)
+     self.BullBearMessageRatio;       # Bull/bear message ratio (float)
+     self.TotalScoredMessages;        # All messages scanned (int)</pre>
+<pre class="csharp">class PsychSignalSentiment {
+     decimal BullIntensity;              // Bullish intensity
+     decimal BearIntensity;              // Bearish intensity
+     decimal BullMinusBear;              // Bullish intensity minus bearish intensity
+     int BullScoredMessages;             // Bullish messages in a minute
+     int BearScoredMessages;             // Bearish messages in a minute
+     decimal BullBearMessageRatio;       // Bull/bear message ratio
+     int TotalScoredMessages;            // All messages scanned
+}</pre>
+</div>
+
+<table class="table qc-table">
+<thead>
+<tr><th>Property</th><th>Possible Values</th></tr>
+</thead>
+<tbody>
+<tr><td width="40%"><code>BullIntensity</code></td><td>0 to +4.0</td></tr>
+<tr><td width="40%"><code>BearIntensity</code></td><td>0 to +4.0</td></tr>
+<tr><td width="40%"><code>BullMinusBear</code></td><td>-4.0 to +4.0</td></tr>
+<tr><td width="40%"><code>BullScoredMessages</code></td><td>0 to Infinity</td></tr>
+<tr><td width="40%"><code>BearScoredMessages</code></td><td>0 to Infinity</td></tr>
+<tr><td width="40%"><code>BullBearMessageRatio</code></td><td>0 to Infinity</td></tr>
+<tr><td width="40%"><code>TotalScoredMessages</code></td><td>0 to Infinity</td></tr>
+</tbody>
+</table>

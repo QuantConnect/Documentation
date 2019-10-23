@@ -1,0 +1,162 @@
+<p>
+    PsychSignal data is a <i>linked</i> data source. This means that the data is automatically tied to the
+    underlying equity whenever possible. To add the correct data to your algorithm, you should use
+    the <i>equity</i> asset Symbol in <code>AddData</code>.
+</p>
+
+<h4>Requesting Data</h4>
+
+<p>
+    To add PsychSignal data to your algorithm use the <code>AddData()</code> system to request the data. As with all datasets, you should 
+    save a reference to your symbol for easy use later in your algorithm. For detailed documentation on using custom data 
+    see <a class="docs-internal-link" href="/docs/algorithm-reference/importing-custom-data">Importing Custom Data</a>.
+</p>
+<div class="section-example-container">
+<pre class="csharp">
+// Request underlying equity data.
+var aapl = AddEquity("AAPL", Resolution.Minute).Symbol;
+// AAPL sentiment
+var aaplSentiment = AddData&lt;PsychSignalSentiment&gt;(aapl).Symbol;
+</pre>
+
+<pre class="python">
+# Request underlying equity data.
+aapl = self.AddEquity("AAPL", Resolution.Minute).Symbol
+# Add AAPL sentiment data.
+aaplSentiment = self.AddData(PsychSignalSentiment, aapl).Symbol
+</pre>
+</div>
+
+<h4>Accessing Data</h4>
+<p>
+    Data can be accessed via the Slice events. Slice delivers the unique events to your algorithm as they happen.
+    We recommend saving the symbol object when you add the data for easy access to slice later.
+    Data is available in the following resolutions: Minute.
+
+        Since this is a linked data source, it is also available on the underlying 
+        security via the <code class="csharp">Securities[symbol].Data.GetAll&lt;PsychSignalSentiment&gt;()</code>
+        <code class="python">self.Securities[symbol].Data.GetAll(PsychSignalSentiment)</code> helper method. When you 
+        request data via the data cache, it will always return the <em>last</em> sentiment stored.
+
+    You can see an example of both of these accessors in the code below.
+</p>
+<div class="section-example-container">
+<pre class="csharp">using QuantConnect.Data.Custom.PsychSignal;
+namespace QuantConnect.Algorithm.CSharp {
+    public class PsychSignalAlgorithm : QCAlgorithm {
+        public override void Initialize() {
+            SetStartDate(2019, 1, 1);
+            
+            var aapl = AddEquity("AAPL").Symbol;
+            // AAPL sentiment
+            AddData&lt;PsychSignalSentiment&gt;(aapl);
+        }
+        
+        public override void OnData(Slice data) {
+            // Accessing a linked source from securities collection:
+            //var aaplSentiment = Securities["AAPL"].Data.GetAll&lt;PsychSignalSentiment&gt;();
+            // Accessing via Slice event
+            var aaplSentiment = data.Get&lt;PsychSignalSentiment&gt;();
+            
+            foreach (var sentiment in aaplSentiment.Values)
+            {
+                Log($"Bullish intensity as reported by psychsignal: {sentiment.BullIntensity}, Bearish intensity as reported by psychsignal: {sentiment.BearIntensity}, Bullish intensity minus bearish intensity: {sentiment.BullMinusBear}, Total bullish scored messages: {sentiment.BullScoredMessages}, Total bearish scored messages: {sentiment.BearScoredMessages}, Bull/Bear message ratio: {sentiment.BullBearMessageRatio}, Total messages scanned: {sentiment.TotalScoredMessages}");
+            }
+        }
+    }
+}</pre>
+<pre class="python">from QuantConnect.Data.Custom.PsychSignal import *
+
+    class PsychSignalAlgorithm(QCAlgorithm):
+        def Initialize(self):
+            self.SetStartDate(2019, 1, 1)
+
+            aapl = self.AddEquity("AAPL").Symbol
+
+            # AAPL sentiment
+            self.AddData(PsychSignalSentiment, aapl)
+
+        def OnData(self, data):
+            # Accessing a linked source from securities collection:
+            #aaplSentiment = self.Securities["AAPL"].Data.GetAll(PsychSignalSentiment)
+            # Accessing via Slice event
+            aaplSentiment = data.Get(PsychSignalSentiment)
+            
+            for sentiment in aaplSentiment.Values:
+                self.Log(f"Bullish intensity as reported by psychsignal: {sentiment.BullIntensity}, Bearish intensity as reported by psychsignal: {sentiment.BearIntensity}, Bullish intensity minus bearish intensity: {sentiment.BullMinusBear}, Total bullish scored messages: {sentiment.BullScoredMessages}, Total bearish scored messages: {sentiment.BearScoredMessages}, Bull/Bear message ratio: {sentiment.BullBearMessageRatio}, Total messages scanned: {sentiment.TotalScoredMessages}")
+</pre>
+</div>
+
+
+<p>Each PsychSignalSentiment object has the following properties available for use in your algorithm:</p>
+<table class="table qc-table">
+    <thead>
+        <tr class="definitions-header"><th colspan="2">PsychSignalSentiment Fields</th></tr>
+    </thead>
+    <tbody>
+        <tr class="definitions-row">
+            <td class="definitions-property" width="20%"><code>BullIntensity</code><br />
+                <p>$[decimal, T:System.Decimal]</p>
+            </td>
+            <td class="definitions-description">
+                <p>Bullish intensity as reported by psychsignal</p>
+                <pre>aaplSentiment.BullIntensity</pre>
+            </td>
+        </tr>
+        <tr class="definitions-row">
+            <td class="definitions-property" width="20%"><code>BearIntensity</code><br />
+                <p>$[decimal, T:System.Decimal]</p>
+            </td>
+            <td class="definitions-description">
+                <p>Bearish intensity as reported by psychsignal.</p>
+                <pre>aaplSentiment.BearIntensity</pre>
+            </td>
+        </tr>
+        <tr class="definitions-row">
+            <td class="definitions-property" width="20%"><code>BullMinusBear</code><br />
+                <p>$[decimal, T:System.Decimal]</p>
+            </td>
+            <td class="definitions-description">
+                <p>Bullish intensity minus bearish intensity</p>
+                <pre>aaplSentiment.BullMinusBear</pre>
+            </td>
+        </tr>
+        <tr class="definitions-row">
+            <td class="definitions-property" width="20%"><code>BullScoredMessages</code><br />
+                <p>$[Int32, T:System.Int32]</p>
+            </td>
+            <td class="definitions-description">
+                <p>Total bullish scored messages. This is the total nubmer of messages classified as bullish in a minute</p>
+                <pre>aaplSentiment.BullScoredMessages</pre>
+            </td>
+        </tr>
+        <tr class="definitions-row">
+            <td class="definitions-property" width="20%"><code>BearScoredMessages</code><br />
+                <p>$[Int32, T:System.Int32]</p>
+            </td>
+            <td class="definitions-description">
+                <p>Total bearish scored messages. This is the total number of messages classified as bearish in a minute</p>
+                <pre>aaplSentiment.BearScoredMessages</pre>
+            </td>
+        </tr>
+        <tr class="definitions-row">
+            <td class="definitions-property" width="20%"><code>BullBearMessageRatio</code><br />
+                <p>$[decimal, T:System.Decimal]</p>
+            </td>
+            <td class="definitions-description">
+                <p>Bull/Bear message ratio. Calculated by dividing BullScoredMessages by BearScoredMessages</p>
+                <pre>aaplSentiment.BullBearMessageRatio</pre>
+            </td>
+        </tr>
+        <tr class="definitions-row">
+            <td class="definitions-property" width="20%"><code>TotalScoredMessages</code><br />
+                <p>$[Int32, T:System.Int32]</p>
+            </td>
+            <td class="definitions-description">
+                <p>Total messages scanned. This includes bull/bear messages and messages that couldn't be classified</p>
+                <pre>aaplSentiment.TotalScoredMessages</pre>
+            </td>
+        </tr>
+    </tbody>
+</table>
+<p>All custom data has the properties <code>Time</code>, <code>Symbol</code>, and <code>Value</code>.</p> 
