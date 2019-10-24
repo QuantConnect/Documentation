@@ -8,13 +8,15 @@
 </p>
 <div class="section-example-container">
 <pre class="csharp">
-// Weekly net input of total petroleum products
-var petroleumInput = AddData&lt;USEnergy&gt;(USEnergy.Petroleum.UnitedStates.WeeklyNetImportsOfTotalPetroleumProducts).Symbol;
+// exports of crude oil
+
+var crudeExport = AddData&lt;USEnergy&gt;(USEnergy.Petroleum.UnitedStates.WeeklyExportsOfCrudeOil).Symbol;
 </pre>
 
 <pre class="python">
-# Add Weekly net input of total petroleum products data.
-petroleumInput = self.AddData(USEnergy, USEnergy.Petroleum.UnitedStates.WeeklyNetImportsOfTotalPetroleumProducts).Symbol
+# Add exports of crude oil
+ data.
+crudeExport = self.AddData(USEnergy, USEnergy.Petroleum.UnitedStates.WeeklyExportsOfCrudeOil).Symbol
 </pre>
 </div>
 
@@ -22,7 +24,7 @@ petroleumInput = self.AddData(USEnergy, USEnergy.Petroleum.UnitedStates.WeeklyNe
 <p>
     Data can be accessed via the Slice events. Slice delivers the unique events to your algorithm as they happen.
     We recommend saving the symbol object when you add the data for easy access to slice later.
-    Data is available in Weekly resolution.
+    Data is available in Daily resolution.
 
 
     You can see an example of the slice accessor in the code below.
@@ -34,17 +36,18 @@ namespace QuantConnect.Algorithm.CSharp {
         public override void Initialize() {
             SetStartDate(2019, 1, 1);
             
-            // Weekly net input of total petroleum products
-            AddData&lt;USEnergy&gt;(USEnergy.Petroleum.UnitedStates.WeeklyNetImportsOfTotalPetroleumProducts);
+            // exports of crude oil
+
+            AddData&lt;USEnergy&gt;(USEnergy.Petroleum.UnitedStates.WeeklyExportsOfCrudeOil);
         }
         
         public override void OnData(Slice data) {
             // Accessing via Slice event
-            var petroleumInput = data.Get&lt;USEnergy&gt;();
+            var crudeExport = data.Get&lt;USEnergy&gt;();
             
-            foreach (var petroleumInput in petroleumInput.Values)
+            foreach (var crude in crudeExport.Values)
             {
-                Log($"Value: {petroleumInput.Value}");
+                Log($"Value: {crude.Value}");
             }
         }
     }
@@ -55,15 +58,16 @@ namespace QuantConnect.Algorithm.CSharp {
         def Initialize(self):
             self.SetStartDate(2019, 1, 1)
 
-            # Weekly net input of total petroleum products
-            self.AddData(USEnergy, USEnergy.Petroleum.UnitedStates.WeeklyNetImportsOfTotalPetroleumProducts)
+            # exports of crude oil
+
+            self.AddData(USEnergy, USEnergy.Petroleum.UnitedStates.WeeklyExportsOfCrudeOil)
 
         def OnData(self, data):
             # Accessing via Slice event
-            petroleumInput = data.Get(USEnergy)
+            crudeExport = data.Get(USEnergy)
             
-            for petroleumInput in petroleumInput.Values:
-                self.Log(f"Value: {petroleumInput.Value}")
+            for crude in crudeExport.Values:
+                self.Log(f"Value: {crude.Value}")
 </pre>
 </div>
 
