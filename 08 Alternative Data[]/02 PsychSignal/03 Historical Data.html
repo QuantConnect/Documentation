@@ -1,0 +1,19 @@
+<p>
+You can request for historical custom data in your algorithm. To learn more about historical data requests, please visit the <a href="https://www.quantconnect.com/docs/algorithm-reference/historical-data" target="_blank" ref="noreferrer noopener">Historical Data</a> documentation page. The following example gets PsychSignal historical data using the History API.
+</p>
+<div class="section-example-container">
+<pre class="csharp">// Request underlying equity data.
+var ibm = AddEquity("IBM", Resolution.Minute).Symbol;
+// Add news data for the underlying IBM asset
+var psy = AddData&lt;PsychSignalSentiment&gt;(ibm).Symbol;
+// Request 120 minutes of history with the PsychSignal IBM Custom Data Symbol.
+var history = History&lt;PsychSignalSentiment&gt;(psy, 120, Resolution.Minute);
+</pre>
+<pre class="python"># Request underlying equity data.
+ibm = self.AddEquity("IBM", Resolution.Minute).Symbol
+# Add sentiment data for the underlying IBM asset
+psy = self.AddData(PsychSignalSentiment, ibm).Symbol
+# Request 120 minutes of history with the PsychSignal IBM Custom Data Symbol
+history = self.History(PsychSignalSentiment, psy, 120, Resolution.Minute)
+</pre>
+</div>
