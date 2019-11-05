@@ -2,47 +2,54 @@
 Once your Alpha has met the minimum criteria listed above, it is then reviewed by our team. We aim to not impose any value bias during an Alpha review but we need to ensure they are mechanically sound. 
 When reviewing your Alpha, we will consider the following points:
 </p>
-<h4>Stateless &amp; Resilient</h4>
+<h4 id="stateless-resilient">Stateless &amp; Resilient</h4>
 <p>Mechanisms should be set up to restore the internal state of an Alpha in the event of reboots. 
     Alphas will be very long running. Over the course of months or years, the server will need patches and occasional restarting. The alpha should be smart enough to automatically recover in the
      event of restart using History and WarmUp API methods.
 </p>
 
-<h4>Grounded in Reality</h4>
+<h4 id="grounded-in-reality">Grounded in Reality</h4>
 <p>Alphas should have clear strategic reasoning underpinning the strategy. A single reason-based foundation for the algorithm is necessary to understand the alpha behavior when things go wrong, 
     and it helps improve your alpha application for funds. Obscure correlations or overfitted strategies tend to perform poorly out of sample.
 </p>
-<h4>Transparent Sourcing</h4>
+<h4 id='transparent-sourcing'>Transparent Sourcing</h4>
 <p>Authors need a transparent employment history and alphas must not infringe on other IP. We'd like to know the employment history of authors on the platform and ensure the alpha is not infringing
      on any intellectual property, including your current and past employers. Public or shared content may be used as a foundation and extended. Where you may have licensed the IP from a third party,
       presenting consents for usage are acceptable.
 </p>
-<h4>Edge Case Handling</h4>
+<h4 id="edge-case-handling">Edge Case Handling</h4>
 <p>
 Alphas need to be able to handle edge cases such as Dividends, Splits, and Delistings. This adds another layer of resiliency and will keep an Alpha running in the event of data changes. This can involve simple control logic, explicitly removing certain affected securities from the Universe, or other methods.
 </p>
 
-<h4>Insights</h4>
+<h4 id = 'supported-data-sources'>Supported Data Sources</h4>
 <p>
-    Insights are predictions about the price movement of specific securities and are required in all Alpha Streams submissions. 
+    When a fund licenses an Alpha, we need to guarantee them that it will perform without error and be of the highest quality possible. 
+    To do this, we can't accept any submissions that use an external data source that is not built into Lean (i.e., dropbox files, SubscriptionDataReader, etc.). 
+    If we don't directly support the data, then we are unable to guarantee its integrity and that it will be maintained faithfully.
+</p>
+
+<h4 id="insights">Insights</h4>
+<p>
+    Insights are predictions about the price movement of specific securities and are required in all Alpha Streams submissions.
     For classic algorithms, one of the <a href = "https://www.quantconnect.com/docs/alpha-streams/creating-an-alpha">Insight constructors</a> must be 
     used and emitted using the <a href="https://www.quantconnect.com/docs/alpha-streams/upgrading-classic-algorithms">EmitInsights API</a>. An Insight must be emitted before any orders are placed. Insights provide funds with information about the predictive power of your models and give 
     them insight into why the orders they see are being placed. For Framework-style algorithms, Insights need to be generated in the Update() 
     method of the Alpha Model. These will then be used in the Portfolio Construction model to build a portfolio.
 </p>
-<h4>Daily Data</h4>
+<h4 id="daily-data">Daily Data</h4>
 <p>
     We aggregate our <a href="https://www.quantconnect.com/docs/key-concepts/understanding-time">Daily data</a> and then passed through the algorithm at 00:00 UTC the day after (i.e., the Daily resolution TradeBar for 2019-10-22 will pass through the algorithm at 2019-10-23 00:00). When using daily data, any operations performed during an intraday event
      will be using stale data. Using daily data can lead to unexpected results and trades, as well as unrealistic performance. In general, it is best to use Minute or Hour resolution and a <a href="https://www.quantconnect.com/docs/algorithm-reference/scheduled-events">Scheduled Event</a> to perform daily operations to achieve realistic performance.
 </p>
 
-<h4>Open-Source IP</h4>
+<h4 id="open-source-ip">Open-Source IP</h4>
 <p>We provide the community with lots of example algorithms. The goal of this is to demonstrate how to use the API correctly, incorporate new data sources into their 
     existing algorithms, implement our recommended best practices for Alpha Streams, and more. However, we cannot accept any copies or near-copies of 
     our demonstration algorithms into Alpha Streams. We love to see that our work inspired someone, but each submission must provide sufficient originality that the work can indeed be called the author's own.
 </p>
 
-<h4>Overfitting</h4>
+<h4 id="overfitting">Overfitting</h4>
 <p>
     <a href="https://www.quantconnect.com/docs/key-concepts/research-guide#Research-Guide-What-Is-Overfitting">Overfitting</a> will doom an algorithm in live trading. To prevent this and try to boost the quality of submissions, we can't accept any 
     Alphas that obviously overfit to data. Overfitting can manifest itself in countless ways, but the most common things we see are
@@ -58,8 +65,14 @@ Alphas need to be able to handle edge cases such as Dividends, Splits, and Delis
     </ul>
 </p>
 
-<h4>Slow Recovery</h4>
+<h4 id="slow-recovery">Slow Recovery</h4>
 <p>Algorithms that fail to recover from a drawdown within 6-months will likely not be accepted. Funds understand that all algorithms experience drawdowns, and the smaller, the better, but the recovery time is especially important. An algorithm that is in a sustained drawdown for more than 6-months most likely won't be traded by a fund and would likely be dropped if this occurs in live trading.</p>
 
-<h4>Infrequent Insight Generation</h4>
-<p>Algorithms don't need to trade daily or intraday, but the maximum holding period for funds is usually a matter of days or weeks. Anything longer than monthly-rebalancing likely won't be accepted.</p>
+<h4 id="infrequent-insight-generation-trading">Infrequent Insight Generation or Trading</h4>
+<p>Algorithms don't need to emit Insights or trade daily or intraday, but the maximum holding period for funds is usually a matter of days or weeks. Anything longer than monthly-rebalancing likely won't be accepted.</p>
+
+<h4 id = "ip-infringement">IP Infringement</h4>
+<p>
+    All Alphas must be the intellectual property (IP) of the submitting author. If you submit an Alpha and we suspect that there is IP infringement, we will contact
+    you directly and discuss the next steps.
+</p>
