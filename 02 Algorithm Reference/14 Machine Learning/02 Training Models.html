@@ -4,8 +4,14 @@ The <code>Train</code> feature allows you to get an increase in computation time
 
 <h4>Initializing a Model</h4>
 <p>
-Models can be trained immediately with the <code>Train()</code> method. When called with a method argument the method can then be run for a longer period without the algorithm terminating the process.
+Models can be trained immediately with the <code>Train()</code> method. This is most useful for training the model immediately on deployment of your strategy to production or when its performance begins to degrade.
 </p>
+<div class="section-example-container" >
+<pre class="csharp">// Trigger a training immediately in your training method.
+Train(MyTrainingMethod);</pre>
+<pre class="python"># Trigger a training immediately in your training method.
+self.Train(self.MyMethod)</pre> 
+</div>
 
 <h4>Scheduling Training</h4>
 <p>
@@ -13,20 +19,18 @@ Model training can be scheduled in a very similar way to a scheduled event. To d
 </p>
 
 <h4>Training Limits</h4>
-<p>Training resources are allocated with a <a target="_BLANK" href="https://en.wikipedia.org/wiki/Leaky_bucket">leaky bucket algorithm</a> where a maximum of n-hours can be used in a single training, and the allocated time refills slowly over time. This model gives you burst allocations when needed and recharges the allowance to prepare for the next training. Limits are configured by subscription tier according to the table below.
+<p>Training resources are allocated with a <a target="_BLANK" href="https://en.wikipedia.org/wiki/Leaky_bucket">leaky bucket algorithm</a> where a maximum of n-hours can be used in a single training, and the allocated time refills slowly over time. This model gives you burst allocations when needed and recharges the allowance to prepare for the next training. Limits are configured by server-type according to the table below.
 </p>
 <table class="table qc-table">
 <thead>
 <tr>
-<th width="30%">Subscription Tier</th>
+<th width="30%">Live Server Type</th>
 <th>Resource Allocation</th>
 </tr>
 </thead>
 <tbody>
-<tr><td>Free</td><td></td></tr>
-<tr><td>Prime</td><td></td></tr>
-<tr><td>Professional</td><td></td></tr>
+<tr><td>512MB</td><td>Capacity: 30min. Refill Rate: 5min/24hrs.</td></tr>
+<tr><td>1024MB</td><td>Capacity: 60min. Refill Rate: 10min/24hrs.</td></tr>
+<tr><td>2048MB</td><td>Capacity: 90min. Refill Rate: 15min/24hrs.</td></tr>
 </tbody>
 </table>
-
-. Limits are configured by subscription tier 
