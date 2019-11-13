@@ -1,9 +1,9 @@
 <p>
-The <code>Train</code> feature allows you to get an increase in computation time to perform your model training for your machine learning strategies. Normally algorithms must perform all necessary work within 10-minutes before returning from the OnData method. With the training features, these limits have been increased to 2-hours to give you time to run your models.
+The <code>Train</code> feature allows you to get an increase in computation time to perform your model training for your machine learning strategies. Normally algorithms must perform all necessary work within 10-minutes before returning from the OnData method. With the training features, these limits have been increased to more than 30 minutes to give you time to run your models.
 </p>
 
 <p style="">
-<i class="fa fa-warning"></i> <b>Important:</b> </a> In backtesting the <code>Train</code> method is <em>synchronous</em> and will block your program execution while the model is executed, however, in live trading it needs to run <em>asynchronously</em>. Because of this you should be careful to ensure your model is ready to use before continuing program execution. This training occurs on a separate thread so we recommend a boolean flag to notify your algorithm of the model state.
+<i class="fa fa-warning"></i> <b>Important:</b> </a> In backtesting the <code>Train</code> method is <em>synchronous</em> and will block your program execution while the model is executed, however, in live trading it runs <em>asynchronously</em>. Because of this you should be careful to ensure your model is ready to use before continuing program execution. This training occurs on a separate thread so we recommend a boolean flag to notify your algorithm of the model state. We post some examples of this in the Examples section below.
 </p>
 
 <h4>Initializing a Model</h4>
@@ -19,13 +19,13 @@ self.Train(self.MyMethod)</pre>
 
 <h4>Scheduling Training</h4>
 <p>
-Model training can be scheduled in a very similar way to a scheduled event. To do this you need to pass in a <code>DateRule</code> and <code>TimeRule</code> argument to the <code>Train</code> method. You can see a full list of available date and time rules in the <a href="/docs/algorithm-reference/scheduled-events" class="docs-internal-link">scheduled event</a> documentation.
+Model training can be scheduled in a similar way to a scheduled event. To do this you need to pass in a <code>DateRule</code> and <code>TimeRule</code> argument to the <code>Train</code> method. You can see a full list of available date and time rules in the <a href="/docs/algorithm-reference/scheduled-events" class="docs-internal-link">scheduled event</a> documentation.
 </p>
 <div class="section-example-container" >
 <pre class="csharp">// Set TrainingMethod to be executed at 8:00 am every Sunday
 Train(DateRules.Every(DayOfWeek.Sunday), TimeRules.At(8, 0), MyTrainingMethod);</pre>
 <pre class="python"># Set TrainingMethod to be executed at 8:00 am every Sunday
-self.Train(self.DateRules.Every(DayOfWeek.Sunday), self.TimeRules.At(8,0), self.MyMethod)</pre> 
+self.Train(self.DateRules.Every(DayOfWeek.Sunday), self.TimeRules.At(8,0), self.MyTrainingMethod)</pre> 
 </div>
 <p>We recommend scheduling your training for the evening or early mornings when the market is closed to get the best compute allocation. While the market is open your CPU is occupied with processing incoming tick data and handling other LEAN events.</p>
 
