@@ -1,0 +1,29 @@
+<h4>Using Semaphore to Synchronize Model Usage and Training</h4>
+<p>
+A "semaphore" is a thread-safe flag you can use to synchronize program operation across different threads. Because your model trainings can take a long time they are processed in a separate thread from your algorithm data. You need to confirm the model is ready to use before using it to generate predictions. 
+</p>
+<div class="section-example-container">
+<pre>class SemaphoreTrainingAlgorithm(QCAlgorithm):
+
+    # Model Object
+    model = None
+    # Model State Flag
+    modelIsTraining = False
+
+    def Initialize(self): 
+        self.Train(self.MyTraining)
+    
+    def MyTraining(self):
+        self.modelIsTraining = True
+        # Perform Work..... 
+        self.modelIsTraining = False
+    
+    def OnData(self, data): 
+        # Do not use model while its being trained.
+        if self.modelIsTraining:
+            return
+        
+        # Once training is complete; use the model safely.
+        result = self.model.Predict()
+</pre>
+</div>
