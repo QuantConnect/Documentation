@@ -1,26 +1,30 @@
+<p>
+The algorithm Transactions Manager ($[SecurityTransactionManager,T:QuantConnect.Securities.SecurityTransactionManager]) is a collection of helper methods for quick access to all your orders. It is located in the <code class="python">self.Transactions</code><code class="python">Transactions</code> property on your algorithm. 
+</p>
+
 <h4>Fetching Single Order</h4>
 <p>
-
+Using the Transactions Manager you can retrieve a clone of an order by its Id. Once sent orders cannot be changed so the clone of the order is for informational purposes only. To <a href="/docs/alternative-data/trading-and-orders#Trading-and-Orders-Updating-Orders">update</a> an order's properties you should use an Order Ticket.
 </p>
 <div class="section-example-container">
-<pre class="csharp">// Create a Market Order for 100 shares of IBM.
-MarketOrder("IBM", 100);
+<pre class="csharp">// Retrieve a clone of a previously sent order.
+var order = Transactions.GetOrderById(orderId)
 </pre>
-<pre class="python"> # Create a Market Order for 100 shares of IBM.
-self.MarketOrder("IBM", 100)
+<pre class="python"> # Retrieve a clone of a previously sent order.
+order = self.Transactions.GetOrderById(orderId)
 </pre>
 </div>
 
-<h4>Fetching Open Orders</h4>
+<h4>Fetching All Open Orders</h4>
 <p>
-
+Using the Transaction Manager you can fetch a list of all open orders for a symbol. This is helpful if you want to update multiple open orders for a specific symbol.
 </p>
 <div class="section-example-container">
-<pre class="csharp">// Create a Market Order for 100 shares of IBM.
-MarketOrder("IBM", 100);
+<pre class="csharp">// Retrieve a list of all open orders for a symbol
+var openOrders = Transactions.GetOpenOrders(symbol);
 </pre>
-<pre class="python"> # Create a Market Order for 100 shares of IBM.
-self.MarketOrder("IBM", 100)
+<pre class="python"> # Retrieve a list of all open orders for a symbol
+openOrders = self.Transactions.GetOpenOrders(symbol)
 </pre>
 </div>
 
