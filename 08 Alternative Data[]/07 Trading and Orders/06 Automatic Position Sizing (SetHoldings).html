@@ -1,18 +1,28 @@
 <h4>Single Asset Targets</h4>
 <p>
-The SetHoldings method automatically calculates the number of asset units to purchase according to the fraction of portfolio value provided.
+The SetHoldings method automatically calculates the number of asset units to purchase according to the fraction of the portfolio value provided. This is a quick way to set up a portfolio with a set of weights for assets. If you already have holdings you may want to liquidate the existing holdings first to free up buying power.
 </p>
 <div class="section-example-container">
-<pre class="csharp">// Allocate 50% of buying power to IBM via market orders.
+<pre class="csharp">// Allocate 50% of portfolio value to IBM via market orders
 SetHoldings("IBM", 0.5);
+
+// Allocate 50% of portfolio value to IBM, but liquidate other holdings before starting
+SetHoldings("IBM", 0.5, true);
 </pre>
 <pre class="python"> # Allocate 50% of buying power to IBM via market orders.
 self.SetHoldings("IBM", 0.5)
+
+# Allocate 50% of portfolio value to IBM, but liquidate other holdings before starting
+self.SetHoldings("IBM", 0.5, True)
 </pre>
 </div>
 
 <h4>Portfolio of Asset Targets</h4>
-<p>xx
+<p>
+Often when trading on a weighted basket of assets you must intelligently scale down existing positions, before increasing allocations to other assets. The portfolio variant of SetHoldings was designed to do this operation for you by accepting an array of $[PortfolioTarget, T:QuantConnect.Algorithm.Framework.Portfolio.PortfolioTarget] objects. </p>
+
+<p>
+If you already have holdings the LEAN engine will calculate the delta-order required to meet your new target. When required positions will be scaled down before other positions are scaled up in size.
 </p>
 <div class="section-example-container">
 <pre class="csharp">// Purchase a portfolio of targets, processing orders intelligently.
