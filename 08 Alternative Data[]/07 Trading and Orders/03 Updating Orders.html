@@ -28,10 +28,16 @@ Orders are updated by passing a $[UpdateOrderFields, T:QuantConnect.Orders.Updat
 var ticket = LimitOrder("SPY", 100, 221.05, tag: "New SPY trade");
 
 //Tag order later
-ticket.Update(new UpdateOrderFields() { 
+var response = ticket.Update(new UpdateOrderFields() { 
   Tag = "Our New Tag for SPY Trade",
   LimitPrice = 222.00
-});</pre>
+});
+
+// Check response with the OrderResponse
+if (response.IsSuccessful) { 
+     Debug("Order updated successfully");
+}
+</pre>
 <pre class="python"> # Tag an order on creation
 ticket = self.LimitOrder("SPY", 100, 221.05, False, "New SPY trade")
 
@@ -39,6 +45,10 @@ ticket = self.LimitOrder("SPY", 100, 221.05, False, "New SPY trade")
 updateSettings = UpdateOrderFields()
 updateSettings.LimitPrice = 222.00
 updateSettings.Tag = "Limit Price Updated for SPY Trade"
-ticket.Update(updateSettings)
+response = ticket.Update(updateSettings)
+
+# Validate the response is OK
+if response.IsSuccessful:
+     self.Debug("Order updated successfully")
 </pre>
 </div>
