@@ -1,4 +1,27 @@
 <p>
-
-
+To cancel an order you must use its $[OrderTicket, T:QuantConnect.Orders.OrderTicket]. Market Orders are transmitted to the brokerage immediately and cannot be canceled. The <code>Cancel()</code> method returns an $[OrderResponse, T:QuantConnect.Orders.OrderResponse] object to determine if the operation was successful.
 </p>
+
+<div class="section-example-container">
+<pre class="csharp">// Create an order and save its ticket
+var ticket = LimitOrder("SPY", 100, 221.05, tag: "SPY Trade to Cancel");
+
+//Later cancel the order via the order ticket.
+var response = ticket.Cancel();
+
+// Use order response object to read status
+if (response.IsSuccessful) {
+       Debug("Order successfully canceled");
+}
+</pre>
+<pre class="python"> # Create an order and save its ticket
+ticket = self.LimitOrder("SPY", 100, 221.05, False, "SPY Trade to Cancel")
+
+# Tag order later
+response = ticket.Cancel("Canceled SPY Trade")
+
+# Use order response object to read status
+if response.IsSuccessful:
+     self.Debug("Order successfully canceled")
+</pre>
+</div>
