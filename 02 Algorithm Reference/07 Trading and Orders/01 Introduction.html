@@ -1,111 +1,24 @@
-<meta name="tag" content="trading and orders" />
-<meta name="tag" content="placing orders" />
-<meta name="tag" content="updating orders" />
-<meta name="tag" content="managing orders" />
-<meta name="tag" content="transactions" />
-<meta name="tag" content="locating orders" />
 <p>
-	Algorithms can place an order through calling the appropriate method in the API. Going long is denoted with a ordering positive number, and short a negative one. LEAN does not support hedging (long and short at the same time).
+QuantConnect provides dozens of methods to create, update and cancel orders. These orders can be placed <a class="docs-internal-link" href="#Trading-and-Orders-Automatic-Position-Sizing-SetHoldings">automatically</a> with helper methods, or manually through methods on the algorithm API. Manual orders can be <a class="docs-internal-link" href="#Trading-and-Orders-Updating-Orders">fetched, updated and canceled</a> with Order Tickets.  As orders are filled and updated they generate <a class="docs-internal-link" href="#Trading-and-Orders-Tracking-Order-Events">events</a> that notify your algorithm about their execution. 
+</p>
+
+<p>In backtesting order fills are simulated using historical data. QuantConnect allows you to create your own fill, fee, slippage, and margin models via plugin points. You can control how optimistic or pessimistic these fills are with <a href="/docs/alternative-data/trading-and-orders#Trading-and-Orders-Slippage-and-Transaction-Models">transaction model</a> classes.  In live trading, this fill price is set by your brokerage when the order is filled.</p>
+
+
+<h4>What is an Order Ticket?</h4>
+<p>
+A critical concept required before diving in specific order types is the Order Ticket. When you create an order you are given an $[OrderTicket,T:QuantConnect.Orders.OrderTicket] object to update and cancel your order. All orders return an order ticket.
 </p>
 <p>
-	Placing an order generates an $[OrderTicket,T:QuantConnect.Orders.OrderTicket] which you can use to update, cancel or check the status of your order.
+In live trading orders are asynchronous and any operations to update the order must be <i>requested</i>. Whether the update is processed successfully is not guaranteed as the trade may already be filled by the time the request is sent.
 </p>
+<img class="img-responsive" src="https://cdn.quantconnect.com/docs/i/trading-and-orders-order-tickets.png" />
 <p>
-	To update an order you can call the Update method on the OrderTicket. The Update method takes an $[UpdateOrderFields,T:QuantConnect.Orders.UpdateOrderFields] object which defines what properties of the order should be updated. In the same way you can cancel your order with the OrderTicket Cancel method.
+In the following sections, we'll explore how to use the Order Ticket to update and cancel orders you have created.
 </p>
-<p>
-	The OrderTicket Status property can be used to determine if the order is filled. The $[OrderStatus,T:QuantConnect.Orders.OrderStatus] has the values Submitted, PartiallyFilled, Filled, Cancelled or Invalid.
-</p>
-<p>
-	The Transactions property is a helper that provides easy access to current and past orders and order tickets.
-</p>
-<div class="section-example-container">
-	<pre class="all" >
-// Popular Transactions methods:
-Transactions
-            .CancelOpenOrders(Symbol symbol)
-            .CancelOrder(int orderId, string orderTag = null)
-            .GetOpenOrders()
-            .GetOpenOrders(Symbol symbol)
-            .GetOrderById(int orderId)
-            .GetOrders(Func<Order, bool>filter).GetOrderTicket(int orderId).GetOrderTickets(Func<OrderTicket, bool>filter = null)
-</pre>
-</div>
+
+<iframe width="757" height="433" src="https://www.youtube-nocookie.com/embed/HykXfstdNW0" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 
 
-<div class="section-example-container" >
-<pre class="csharp" >
-// Creating an Order:
-OrderTicket limitOrderTicket = LimitOrder("SPY", 100, 205);
 
-// Updating an Order:
-limitOrderTicket.Update(new UpdateOrderFields{LimitPrice = 207.50};
 
-// Cancel an Order:
-limitOrderTicket.Cancel();
-</pre>
-<pre class="python" >
-# Creating an Order:
-limitOrderTicket = self.LimitOrder("SPY", 100, 205)
-
-# Updating an Order:
-updateOrderFields = UpdateOrderFields()
-updateOrderFields.LimitPrice = decimal.Decimal(207.50)
-limitOrderTicket.Update(updateOrderFields)
-
-# Cancel an Order:
-limitOrderTicket.Cancel()
-</pre>
-<pre class="csharp" >
-// Cancel all open orders from SPY
-List<OrderTicket> cancelledOrders = Transactions.CancelOpenOrders("SPY")
-
-// Cancel order #10
-OrderTicket cancelledOrder = Transactions.CancelOrder(10);
-
-// Get open orders
-List<Order> openOrders = Transactions.GetOpenOrders();
-List<Order> openOrders = Transactions
-    .GetOrders(x => x.Status.IsOpen()).ToList();
-
-// Get open orders from SPY
-List<Order> openOrders = Transactions.GetOpenOrders("SPY");
-List<Order> openOrders = Transactions
-    .GetOrders(x => x.Status.IsOpen() && x.Symbol == "SPY").ToList();
-
-// Get open order #10
-Order openOrder = Transactions.GetOrderById(10);
-
-// Get order ticket #10
-OrderTicket orderTicket = Transactions.GetOrderTicket(10);
-
-// Get open orders tickets from SPY
-IEnumerable<OrderTicket> openOrderTickets = Transactions
-    .GetOrderTickets(x => x.Status.IsOpen() && x.Symbol == "SPY");
-</pre>
-<pre class="python" >
-# Cancel all open orders from SPY
-cancelledOrders = self.Transactions.CancelOpenOrders("SPY")
-
-# Cancel order #10
-cancelledOrder = self.Transactions.CancelOrder(10)
-
-# Get open orders
-openOrders = self.Transactions.GetOpenOrders()
-
-# Get open orders from SPY
-openOrders = self.Transactions.GetOpenOrders("SPY")
-
-# Get open order #10
-openOrder = self.Transactions.GetOrderById(10)
-
-# Get all orders
-orders = self.Transactions.GetOrders()
-
-# Get order ticket #10
-orderTicket = self.Transactions.GetOrderTicket(10)
-
-# Get all orders tickets
-openOrderTickets = self.Transactions.GetOrderTickets()
-</pre>
-</div>
