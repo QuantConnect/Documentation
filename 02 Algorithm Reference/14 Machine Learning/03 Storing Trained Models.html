@@ -10,12 +10,15 @@ When deploying a live algoithm, your state is loaded from the object store on de
 <p>
 The Object Store is accessible in the root of your algorithm. It has the following methods available for storing data. You can see an example of using these in the <a class="csharp" target="_BLANK" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.CSharp/ObjectStoreExampleAlgorithm.cs">demonstration algorithm</a><a class="python" target="_BLANK" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.Python/ObjectStoreExampleAlgorithm.py">demonstration algorithm</a>. 
 </p>
+<p>
+Bytearrays may be created in python using the <code>bytearray()</code> method. Keeping track of encoding is important when converting data into a bytearray because the same encoding must be used to decode your bytearray when reading from ObjectStore. For example, <code>bytearray("Hello World!", 'utf-8')</code> converts a string to a bytearray under the utf-8 encoding. Integers must first be converted to bytes using <code>int.to_byte</code> and then passed into <code>bytearray()</code>. See the<a href="https://docs.python.org/3/library/functions.html#func-bytearray">Python Documentation</a> for more information.
+</p>
 <div class="section-example-container">
 <pre class="python">
 self.ObjectStore.Save("key", "value")                        # Save data as a string
 self.ObjectStore.SaveBytes("key", bytearray)                 # Save data as a bytes
-self.ObjectStore.SaveJson[objectType]("key", objectValue)    # Save object as JSON encoded string
-self.ObjectStore.SaveXml[objectType]("key", objectValue)     # Save object as XML encoded string
+self.ObjectStore.SaveJson("key", objectValue)    # Save object as JSON encoded string
+self.ObjectStore.SaveXml("key", objectValue)     # Save object as XML encoded string
 </pre>
 </div>
 
@@ -27,8 +30,8 @@ self.ObjectStore.SaveXml[objectType]("key", objectValue)     # Save object as XM
 <pre class="python">
 val = self.ObjectStore.Read("key")                        # Read data as string
 bytes = self.ObjectStore.ReadBytes("key")                 # Read data as bytes
-jsonObj = self.ObjectStore.ReadJson[objectType]("key")    # Deserialize a JSON object from storage
-xmlObj = self.ObjectStore.ReadXml[objectType]("key")      # Deserialize a XML object from storage
+jsonObj = self.ObjectStore.ReadJson("key")    # Deserialize a JSON object from storage
+xmlObj = self.ObjectStore.ReadXml("key")      # Deserialize a XML object from storage
 </pre>
 </div>
 
