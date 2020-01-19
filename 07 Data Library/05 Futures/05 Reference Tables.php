@@ -18,7 +18,7 @@ foreach ($decoded['types'] as $type)
 {
     $decoded = json_decode(file_get_contents($inspector . urlencode($type)), true);
     $typeName = $decoded['type-name'] ?>
-    <table class="table qc-table futures-table table-itemized table-reflow">
+    <table class="table futures-table table-reflow">
         <thead>
         <tr>
             <th colspan="3">
@@ -26,9 +26,8 @@ foreach ($decoded['types'] as $type)
             </th>
         </tr>
         <tr>
-            <th>Name</th>
-            <th>Ticker</th>
-            <th>Code</th>
+            <th style="width: 33% important!; text-wrap:normal; word-wrap:break-word;">Name</th>
+            <th>Accessor Code</th>
         </tr>
         </thead>
         <tbody>
@@ -38,9 +37,6 @@ foreach ($decoded['types'] as $type)
             <tr>
                 <td class="futures-type">
                     <p><?=htmlentities($field['field-description'])?></p><br/>
-                </td>
-                <td>
-                    <p><?=$field['field-name']?></p>
                 </td>
                 <td>
                     <code><?php echo "Futures.{$typeName}.{$field['field-name']}"; ?></code>
