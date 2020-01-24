@@ -8,6 +8,14 @@ $indicators = file_get_contents('https://cdn.quantconnect.com/docs/indicators.js
 $indicators = json_decode($indicators, true);
 
 ?>
+<style>
+    #table-indicators-patterns .dummy-reference,
+    #table-indicators-reference .dummy-reference {
+        position: relative;
+        top: -100px;
+        display: block;
+    }
+</style>
 <table id="table-indicators-reference" class="table qc-table table-striped">
     <thead>
     <tr>
