@@ -30,8 +30,14 @@ $indicators = json_decode($indicators, true);
         }
         ?>
         <tr>
-            <td style="width:30%">$[<?= $indicator['class'] ?>,T:QuantConnect.Indicators.<?= $indicator['class'] ?>]
-            </td>
+            <td style="width:30%"><?php
+
+                $htmlId = 'indicator-' . strtolower($indicator['class']);
+
+                printf('<span class="dummy-reference" id="%s"></span>', $htmlId);
+                printf("\$[%s,T:QuantConnect.Indicators.%s]", $indicator['class'], $indicator['class']);
+
+                ?></td>
             <td style="text-align: left">
                 <p><?= trim($indicator['summary']) ?></p>
                 <pre class='prettyprint' style='padding: 15px 5px;border: none !important; background: transparent; font-size: 1em;'><?php
@@ -62,7 +68,14 @@ $indicators = json_decode($indicators, true);
             continue;
         } ?>
         <tr>
-            <td style="width: 30%">$[<?= $indicator['class'] ?>]</td>
+            <td style="width: 30%"><?php
+
+                $htmlId = 'indicator-candlesticks-pattern-' . strtolower($indicator['class']);
+
+                printf('<span class="dummy-reference" id="%s"></span>', $htmlId);
+                printf("\$[%s]", $indicator['class']);
+    
+                ?></td>
             <td style="text-align: left">
                 <p><?= trim($indicator['summary']) ?></p>
                 <pre class='prettyprint' style='padding: 15px 5px;border: none !important; background: transparent; font-size: 1em;'><?php
