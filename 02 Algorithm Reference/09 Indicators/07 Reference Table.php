@@ -26,7 +26,7 @@ $indicators = json_decode($indicators, true);
             </td>
             <td style="text-align: left">
                 <p><?= trim($indicator['summary']) ?></p>
-                <pre class='prettyprint' style='border: none !important; background: transparent; font-size: 1em;'><?php
+                <pre class='prettyprint' style='padding: 15px 5px;border: none !important; background: transparent; font-size: 1em;'><?php
 
                     printf("var %s = %s%s%s",
                         strtolower($indicator['name']),
@@ -41,7 +41,7 @@ $indicators = json_decode($indicators, true);
     <?php } ?>
     </tbody>
 </table>
-<table id="table-indicators-patterns" class="table qc-table table-striped data-table">
+<table id="table-indicators-patterns" class="table qc-table table-striped">
     <thead>
     <tr>
         <th>Candlesticks Patterns</th>
@@ -54,12 +54,19 @@ $indicators = json_decode($indicators, true);
             continue;
         } ?>
         <tr>
-            <td width="30%">$[<?= $indicator['class'] ?>]</td>
-            <td data-toggle="tooltip" title="<?= $indicator['summary'] ?>">
-                <span class="indicators-method-usage">
-                    var <?= strtolower($indicator['name']) ?>
-                    = <?= ($indicator['prefix'] . $indicator['name'] . $getParameterList($indicator['parameters'])) ?>
-                </span>
+            <td style="width: 30%">$[<?= $indicator['class'] ?>]</td>
+            <td style="text-align: left">
+                <p><?= trim($indicator['summary']) ?></p>
+                <pre class='prettyprint' style='padding: 15px 5px;border: none !important; background: transparent; font-size: 1em;'><?php
+
+                    printf("var %s = %s%s%s",
+                        strtolower($indicator['name']),
+                        $indicator['prefix'],
+                        $indicator['name'],
+                        $getParameterList($indicator['parameters'])
+                    );
+
+                    ?></pre>
             </td>
         </tr>
     <?php } ?>
