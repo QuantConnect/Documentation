@@ -12,7 +12,7 @@ $indicators = json_decode($indicators, true);
     #table-indicators-patterns .dummy-reference,
     #table-indicators-reference .dummy-reference {
         position: relative;
-        top: -100px;
+        top: -200px;
         display: block;
     }
 </style>
