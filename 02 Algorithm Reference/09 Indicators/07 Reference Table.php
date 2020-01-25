@@ -8,7 +8,15 @@ $indicators = file_get_contents('https://cdn.quantconnect.com/docs/indicators.js
 $indicators = json_decode($indicators, true);
 
 ?>
-<table id="table-indicators-reference" class="table qc-table table-striped data-table">
+<style>
+    #table-indicators-patterns .dummy-reference,
+    #table-indicators-reference .dummy-reference {
+        position: relative;
+        top: -200px;
+        display: block;
+    }
+</style>
+<table id="table-indicators-reference" class="table qc-table table-striped">
     <thead>
     <tr>
         <th>Indicators</th>
@@ -22,19 +30,32 @@ $indicators = json_decode($indicators, true);
         }
         ?>
         <tr>
-            <td width="30%">$[<?= $indicator['class'] ?>,T:QuantConnect.Indicators.<?= $indicator['class'] ?>]</td>
-            <td data-toggle="tooltip" title="<?= $indicator['summary'] ?>">
-                <span class="indicators-method-usage">
-                    var <?= strtolower($indicator['name']) ?>
-                    = <?= ($indicator['prefix'] . $indicator['name'] . $getParameterList($indicator['parameters'])) ?>
-                </span>
+            <td style="width:30%"><?php
+
+                $htmlId = 'indicator-' . strtolower($indicator['class']);
+
+                printf('<span class="dummy-reference" id="%s"></span>', $htmlId);
+                printf("\$[%s,T:QuantConnect.Indicators.%s]", $indicator['class'], $indicator['class']);
+
+                ?></td>
+            <td style="text-align: left">
+                <p><?= trim($indicator['summary']) ?></p>
+                <pre class='prettyprint' style='padding: 15px 5px;border: none !important; background: transparent; font-size: 1em;'><?php
+
+                    printf("var %s = %s%s%s",
+                        strtolower($indicator['name']),
+                        $indicator['prefix'],
+                        $indicator['name'],
+                        $getParameterList($indicator['parameters'])
+                    );
+
+                    ?></pre>
             </td>
         </tr>
     <?php } ?>
     </tbody>
 </table>
-
-<table id="table-indicators-patterns" class="table qc-table table-striped data-table">
+<table id="table-indicators-patterns" class="table qc-table table-striped">
     <thead>
     <tr>
         <th>Candlesticks Patterns</th>
@@ -47,12 +68,26 @@ $indicators = json_decode($indicators, true);
             continue;
         } ?>
         <tr>
-            <td width="30%">$[<?= $indicator['class'] ?>]</td>
-            <td data-toggle="tooltip" title="<?= $indicator['summary'] ?>">
-                <span class="indicators-method-usage">
-                    var <?= strtolower($indicator['name']) ?>
-                    = <?= ($indicator['prefix'] . $indicator['name'] . $getParameterList($indicator['parameters'])) ?>
-                </span>
+            <td style="width: 30%"><?php
+
+                $htmlId = 'indicator-candlesticks-pattern-' . strtolower($indicator['class']);
+
+                printf('<span class="dummy-reference" id="%s"></span>', $htmlId);
+                printf("\$[%s]", $indicator['class']);
+    
+                ?></td>
+            <td style="text-align: left">
+                <p><?= trim($indicator['summary']) ?></p>
+                <pre class='prettyprint' style='padding: 15px 5px;border: none !important; background: transparent; font-size: 1em;'><?php
+
+                    printf("var %s = %s%s%s",
+                        strtolower($indicator['name']),
+                        $indicator['prefix'],
+                        $indicator['name'],
+                        $getParameterList($indicator['parameters'])
+                    );
+
+                    ?></pre>
             </td>
         </tr>
     <?php } ?>
