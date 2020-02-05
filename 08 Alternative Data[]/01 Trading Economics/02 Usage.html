@@ -1,56 +1,70 @@
-<meta name="tag" content="using data">
-<meta name="tag" content="using custom data">
-<meta name="tag" content="custom data">
-<meta name="tag" content="adddata">
-<meta name="tag" content="trading economics">
-<meta name="tag" content="fed interest rates">
-<meta name="tag" content="economic indicators">
-<meta name="tag" content="tradingeconomics">
 
 <h4>Requesting Data</h4>
+
 <p>
-To add Trading Economics data to your algorithm select the dataset you'd like to use from the tables below and use the <code>AddData()</code> system to request the data. As with all datasets, you should save a reference to your symbol for easy use later in your algorithm. For detailed documentation on using custom data see <a class="docs-internal-link" href="/docs/algorithm-reference/importing-custom-data">Importing Custom Data</a>.
+    To add Trading Economics data to your algorithm use the <code>AddData()</code> system to request the data. As with all datasets, you should 
+    save a reference to your symbol for easy use later in your algorithm. For detailed documentation on using custom data 
+    see <a class="docs-internal-link" href="/docs/algorithm-reference/importing-custom-data">Importing Custom Data</a>.
 </p>
 <div class="section-example-container">
-<pre class="csharp">// Adding Australian Current Account Events.
-AddData&lt;TradingEconomicsCalendar&gt;(TradingEconomics.Calendar.Australia.CurrentAccount);</pre>
-<pre class="python"># Adding Australian Current Account Events.
-self.AddData(TradingEconomicsCalendar, TradingEconomics.Calendar.Australia.CurrentAccount)</pre>
-</div>
-
-<h4>Using Data In Algorithm</h4>
-<p>Calendar events arrive as a list of objects in your slice. We recommend saving the symbol object when you add the data for easy access to slice later. For example:</p>
-<div class="section-example-container">
 <pre class="csharp">
-public class TradingEconomicsCalendarAlgorithm : QCAlgorithm { 
-    
-    Symbol rate;
-
-    public void Initialize() 
-    {
-        rate = AddData&lt;TradingEconomicsCalendar&gt;(TradingEconomics.Calendar.UnitedStates.InterestRate).Symbol
-    }
-
-    public void OnData(Slice data) {
-        // Using the data is the same as other data types: 
-        if (!data.ContainsKey(rate)) return;
-        var announcement = data[rate];
-        Debug(announcement.Event); 
-    }
-}
+// U.S. Federal Reserve interest rate
+var interestRate = AddData&lt;TradingEconomicsCalendar&gt;(TradingEconomics.Calendar.UnitedStates.InterestRate).Symbol;
 </pre>
-<pre class="python">
-class TradingEconomicsCalendarAlgorithm(QCAlgorithm):
-    def Initialize():
-        # Initializing a collection of calendar events 
-        self.rate = self.AddData(TradingEconomicsCalendar, TradingEconomics.Calendar.UnitedStates.InterestRate).Symbol
 
-    def OnData(self, slice):
-        # Using the data is the same as other data types: 
-        if not slice.ContainsKey(self.rate):
-            return
-        
-        announcement = data[self.rate]
-        self.Debug(announcement.Event)
+<pre class="python">
+# U.S. Federal Reserve interest rate
+interestRate = self.AddData(TradingEconomicsCalendar, TradingEconomics.Calendar.UnitedStates.InterestRate).Symbol
 </pre>
 </div>
+
+<h4>Accessing Data</h4>
+<p>
+    Data can be accessed via Slice events. Slice delivers unique events to your algorithm as they happen.
+    We recommend saving the symbol object when you add the data for easy access to slice later.
+    Data is available in daily resolution.
+
+
+    You can see an example of the slice accessor in the code below.
+</p>
+<div class="section-example-container">
+<pre class="csharp">using QuantConnect.Data.Custom.TradingEconomics;
+namespace QuantConnect.Algorithm.CSharp {
+    public class TradingEconomicsAlgorithm : QCAlgorithm {
+        public override void Initialize() {
+            SetStartDate(2019, 1, 1);
+            
+            // U.S. Federal Reserve interest rate
+            AddData&lt;TradingEconomicsCalendar&gt;(TradingEconomics.Calendar.UnitedStates.InterestRate);
+        }
+        
+        public override void OnData(Slice data) {
+            // Accessing via Slice event
+            var interestRate = data.Get&lt;TradingEconomicsCalendar&gt;();
+            
+            foreach (var rate in interestRate.Values)
+            {
+                Log($"Unique calendar ID used by Trading Economics: {rate.CalendarId}, Release time and date in UTC: {rate.EndTime}, Country name: {rate.Country}, Indicator category name: {rate.Category}, Specific event name in the calendar: {rate.Event}");
+            }
+        }
+    }
+}</pre>
+<pre class="python">from QuantConnect.Data.Custom.TradingEconomics import *
+
+    class TradingEconomicsAlgorithm(QCAlgorithm):
+        def Initialize(self):
+            self.SetStartDate(2019, 1, 1)
+
+            # U.S. Federal Reserve interest rate
+            self.AddData(TradingEconomicsCalendar, TradingEconomics.Calendar.UnitedStates.InterestRate)
+
+        def OnData(self, data):
+            # Accessing via Slice event
+            interestRate = data.Get(TradingEconomicsCalendar)
+            
+            for rate in interestRate.Values:
+                self.Log(f"Unique calendar ID used by Trading Economics: {rate.CalendarId}, Release time and date in UTC: {rate.EndTime}, Country name: {rate.Country}, Indicator category name: {rate.Category}, Specific event name in the calendar: {rate.Event}")
+</pre>
+</div>
+
+<p>All custom data has the properties <code>Time</code>, <code>Symbol</code>, and <code>Value</code>.</p> 
