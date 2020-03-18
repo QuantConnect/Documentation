@@ -73,7 +73,7 @@ Another common request is to filter the universe by a technical indicator, such 
         // Linq makes this a piece of cake;
         var stocks = (from c in coarse
             let avg = _stateData.GetOrAdd(c.Symbol, sym => new SelectionData(200))
-            where avg.Update(cf.EndTime, cf.AdjustedPrice)
+            where avg.Update(c.EndTime, c.AdjustedPrice)
             where c.DollarVolume > 1000000000 &&
                   c.Price > avg.Ema
             orderby c.DollarVolume descending
@@ -87,13 +87,13 @@ Another common request is to filter the universe by a technical indicator, such 
 
     def MyCoarseFilterFunction(self, coarse):
         # We are going to use a dictionary to refer the object that will keep the moving averages
-        for cf in coarse:
-            if cf.Symbol not in self.stateData:
-                self.stateData[cf.Symbol] = SelectionData(cf.Symbol, 200)
+        for c in coarse:
+            if c.Symbol not in self.stateData:
+                self.stateData[c.Symbol] = SelectionData(c.Symbol, 200)
 
             # Updates the SymbolData object with current EOD price
-            avg = self.stateData[cf.Symbol]
-            avg.update(cf.EndTime, cf.AdjustedPrice, cf.DollarVolume)
+            avg = self.stateData[c.Symbol]
+            avg.update(c.EndTime, c.AdjustedPrice, c.DollarVolume)
 
         # Filter the values of the dict to those above EMA and more than $1B vol.
         values = list(filter(lambda x: x.is_above_ema & (x.volume > 1000000000), self.stateData.values()))
@@ -191,11 +191,11 @@ With this helper, we've defined a ratio of today's volume to the historical volu
 <div class="section-example-container">
 <pre class="python">
 def CoarseFilterFunction(self, coarse):
-        for cf in coarse:
-            if cf.Symbol not in self.stateData:
-                self.stateData[cf.Symbol] = SelectionData(cf.Symbol, 10)
-            avg = self.stateData[cf.Symbol]
-            avg.update(cf.EndTime, cf.AdjustedPrice, cf.DollarVolume)
+        for c in coarse:
+            if c.Symbol not in self.stateData:
+                self.stateData[c.Symbol] = SelectionData(c.Symbol, 10)
+            avg = self.stateData[c.Symbol]
+            avg.update(c.EndTime, c.AdjustedPrice, c.DollarVolume)
 
         # filter the values of selectionData(sd) above SMA
         values = list(filter(lambda sd: (sd.volume > sd.sma.Current.Value) & (sd.volume_ratio > 0), self.stateData.values()))
@@ -210,8 +210,8 @@ def CoarseFilterFunction(self, coarse):
     IEnumerable&lt;Symbol&gt; MyCoarseFilterFunction(IEnumerable&lt;CoarseFundamental&gt; coarse) {
         var stocks = (from c in coarse
             let avg = _stateData.GetOrAdd(c.Symbol, sym => new SelectionData(10))
-            where avg.Update(cf.EndTime, cf.Volume)
-            where cf.Volume > avg.VolumeSma
+            where avg.Update(c.EndTime, c.Volume)
+            where c.Volume > avg.VolumeSma
             orderby avg.VolumeRatio descending
             select c.Symbol).Take(10).ToList();
         return stocks;
