@@ -1,4 +1,4 @@
-<h4>Data Resolution Incompatibility</h4>
+<h4>be Data Resolution Incompatibility</h4>
 <p>
 Using the correct data resolution is essential. Specifically, algorithms that have events scheduled intra-day, using the Scheduled Events API or by other means, need to use minute resolution data. Using the wrong data resolution can lead to stale prices and order fills, corrupting the signals and the results they produce.
 </p>
@@ -17,4 +17,13 @@ Each day, a backtest is run to generate the out-of-sample curve. If an algorithm
 When an algorithm is deployed to a live brokerage account, it will accommodate any current positions that are open, even those unrelated to the algorithm itself. In backtesting, an empty portfolio is assumed. These pre-existing live positions aren't currently reflected in our reconciliation technology, and if they contribute to the live performance of your total portfolio, differences will inevitably exist between the&nbsp;<span style="font-size: 16px;">out-of-sample&nbsp;</span>and live curves.
 </p>
 
+<h4>Using the Time Property</h4>
+<p>
+In backtesting, time is a discrete process. Time intervals are rounded and time-steps are done in precise intervals. When trading live, however, time is a constant stream. Data streams in real-time and the algorithm events might happen milliseconds before or after the same events in backtesting.
+</p>
+
 <h4>Order Fill Differences</h4>
+<p>In live trading, Market Orders are executed at whatever price the brokerage fills the order at. Backtesting, however, does not know what price live orders will filled at and instead models order fills based on the best price available according to backtest data.</p>
+<p>
+Similarly, Limit Order fills can differ between out-of-sample backtesting and live trading. In backtesting, Limit Orders are filled as soon as the best price is hit. Brokerages, however, might fill the same Limit Order at a different price, or fail to fill it, depending on where the order is in the order book.
+</p>
