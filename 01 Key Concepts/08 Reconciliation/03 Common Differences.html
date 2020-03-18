@@ -20,7 +20,8 @@ When an algorithm is deployed to a live brokerage account, it will accommodate a
 
 <h4>Using the Time Property</h4>
 <p>
-In backtesting, time is a discrete process. Time intervals are rounded and time-steps are done in precise intervals. When trading live, however, time is a constant stream. Code that checks for precise times (i.e. <div class="section-example-container">
+In backtesting, time is a discrete process. Time intervals are rounded and time-steps are done in precise intervals. When trading live, however, time is a constant stream. Code that checks for precise times will execute more precisely in backtesting than in live trading.
+<div class="section-example-container">
 <pre class="python">
 if self.Time.hour == 9 and self.Time.minute == 31:
     self.SetHoldings("SPY", 0.5)
@@ -32,10 +33,6 @@ if (Time.Hour == 9 & Time.Minute== 31)
 }
 </pre>
 </div>
-will execute more precisely in backtesting than in live trading. Live trading time will likely be milliseconds behind or ahead of precisely 09:31, leading to differences in OOS and live performance.
-</p>
-
-<h4>Market Open/Market Close</h4>
 <p>
-In reality, it is difficult to place orders at precisely market open or precisely market close. For lower-liquidity stocks, backtesting and live data for the stock can differ, leading to stale fill prices, signals, and skewed results. Similarly, unless you have access to after-market trading, it is impossible to fill an order at precisely market close. Without after-market hours trading, certain brokerages or exchanges won't accept market orders inside the last minute of the market being open.
+In the case above, live trading time will likely be milliseconds behind or ahead of precisely 09:31, leading to differences in OOS and live performance.
 </p>
