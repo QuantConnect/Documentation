@@ -20,4 +20,17 @@ When an algorithm is deployed to a live brokerage account, it will accommodate a
 
 <h4>Using the Time Property</h4>
 <p>
+In backtesting, time is a discrete process. Time intervals are rounded and time-steps are done in precise intervals. When trading live, however, time is a constant stream. Code that checks for precise times (i.e. <div class="section-example-container">
+<pre class="python">
+if self.Time.hour == 9 and self.Time.minute == 31:
+    self.SetHoldings("SPY", 0.5)
+</pre>
+<pre class="csharp">
+if (Time.Hour == 9 & Time.Minute== 31)
+{
+    SetHoldings("SPY", 0.5);
+}
+</pre>
+</div>
+will execute more precisely in backtesting than in live trading. Live trading time will likely be milliseconds behind or ahead of precisely 09:31, leading to differences in OOS and live performance.
 </p>
