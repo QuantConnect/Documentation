@@ -12,6 +12,7 @@ The following reference table lists the Future assets available for use on Quant
 }
 </style>
 <?php
+
 $inspector = "https://www.quantconnect.com/services/inspector?type=T:";
 $decoded = json_decode(file_get_contents($inspector . "QuantConnect.Securities.Futures"), true);
 foreach ($decoded['types'] as $type)
