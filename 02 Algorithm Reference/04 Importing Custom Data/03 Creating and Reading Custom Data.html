@@ -1,21 +1,21 @@
 <meta name="tag" content="custom data" />
 <p>
-	You must create a custom type to instruct LEAN where to get your data, and how to read it. We support many different data types
+	You must create a custom type to instruct LEAN where to get your data and how to read it. We support many different data types
 	and formats. You can even change source locations for backtesting and live modes. All data must extend from $[BaseData,T:QuantConnect.Data.BaseData]
 	and override the $[Reader,M:QuantConnect.Data.BaseData.Reader] and $[GetSource,M:QuantConnect.Data.BaseData.Reader] methods.
 </p>
 <p>
 	$[GetSource,M:QuantConnect.Data.BaseData.Reader] instructs LEAN where to find your data. It must return a $[SubscriptionDataSource,T:QuantConnect.Data.SubscriptionDataSource] object
-	containing the string Url to find your data, and the format of the data (SubscriptionTransportMedium RemoteFile or Rest). When
-	the source returned changes URL the data is downloaded again. This allows LEAN to cache large files and only download new data
+	containing the string URL to find your data, and the format of the data (SubscriptionTransportMedium RemoteFile or Rest). When
+	the source returned changes URL, the data is downloaded again. This allows LEAN to cache large files and only download new data
 	when requested. This also allows you to break up large intraday data into smaller daily files, speeding up the backtest.
 </p>
 <p>
-	When using $[SubscriptionTransportMedium.Rest,T:QuantConnect.SubscriptionTransportMedium] the url provided is polled at each Resolution time step and is assumed to
+	When using $[SubscriptionTransportMedium.Rest,T:QuantConnect.SubscriptionTransportMedium] the URL provided is polled at each Resolution time step and is assumed to
 	be sufficient for 1-data point. This is generally intended for live data sources.
 </p>
 <p>
-	$[Reader,M:QuantConnect.Data.BaseData.Reader] takes one line of data provided by the source, and parses it into one of your custom objects (e.g. Weather
+	$[Reader,M:QuantConnect.Data.BaseData.Reader] takes one line of data provided by the source and parses it into one of your custom objects (e.g. Weather
 	in the code snippet). In addition to setting your custom type properties, you should also take care to set three required
 	properties:
 	<ul>
