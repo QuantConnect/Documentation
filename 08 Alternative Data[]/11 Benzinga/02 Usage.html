@@ -1,0 +1,90 @@
+<p>
+    Benzinga data is a <i>linked</i> data source. This means that the data is automatically tied to the
+    underlying equity whenever possible. To add the correct data to your algorithm, you should use
+    the <i>equity</i> asset Symbol in <code>AddData</code>.
+</p>
+
+<h4>Requesting Data</h4>
+
+<p>
+    To add Benzinga data to your algorithm use the <code>AddData()</code> system to request the data. As with all datasets, you should 
+    save a reference to your symbol for easy use later in your algorithm. For detailed documentation on using custom data 
+    see <a class="docs-internal-link" href="/docs/algorithm-reference/importing-custom-data">Importing Custom Data</a>.
+</p>
+<div class="section-example-container">
+<pre class="csharp">
+// Request underlying equity data.
+var aapl = AddEquity("AAPL", Resolution.Daily).Symbol;
+// AAPL news
+var aaplNews = AddData&lt;BenzingaNews&gt;(aapl).Symbol;
+</pre>
+
+<pre class="python">
+# Request underlying equity data.
+aapl = self.AddEquity("AAPL", Resolution.Daily).Symbol
+# AAPL news
+aaplNews = self.AddData(BenzingaNews, aapl).Symbol
+</pre>
+</div>
+
+<h4>Accessing Data</h4>
+<p>
+    Data can be accessed via Slice events. Slice delivers unique events to your algorithm as they happen.
+    We recommend saving the symbol object when you add the data for easy access to slice later.
+    Data is available in daily resolution.
+
+        Since this is a linked data source, it is also available on the underlying 
+        security via the <code class="csharp">Securities[symbol].Data.GetAll&lt;BenzingaNews&gt;()</code>
+        <code class="python">self.Securities[symbol].Data.GetAll(BenzingaNews)</code> helper method. When you 
+        request data via the data cache, it will always return the <em>last</em> article stored.
+
+    You can see an example of both of these accessors in the code below.
+</p>
+<div class="section-example-container">
+<pre class="csharp">using QuantConnect.Data.Custom.Benzinga;
+namespace QuantConnect.Algorithm.CSharp {
+    public class BenzingaAlgorithm : QCAlgorithm {
+        public override void Initialize() {
+            SetStartDate(2019, 1, 1);
+            
+            var aapl = AddEquity("AAPL").Symbol;
+            // AAPL news
+            AddData&lt;BenzingaNews&gt;(aapl);
+        }
+        
+        public override void OnData(Slice data) {
+            // Accessing a linked source from securities collection:
+            //var aaplNews = Securities["AAPL"].Data.GetAll&lt;BenzingaNews&gt;();
+            // Accessing via Slice event
+            var aaplNews = data.Get&lt;BenzingaNews&gt;();
+            
+            foreach (var news in aaplNews.Values)
+            {
+                Log($"Unique ID assigned to the article by Benzinga: {news.Id}, Author of the article: {news.Author}, Date the article was published: {news.CreatedAt}, Date that the article was revised on: {news.UpdatedAt}, Title of the article published: {news.Title}");
+            }
+        }
+    }
+}</pre>
+<pre class="python">from QuantConnect.Data.Custom.Benzinga import *
+
+    class BenzingaAlgorithm(QCAlgorithm):
+        def Initialize(self):
+            self.SetStartDate(2019, 1, 1)
+
+            aapl = self.AddEquity("AAPL").Symbol
+
+            # AAPL news
+            self.AddData(BenzingaNews, aapl)
+
+        def OnData(self, data):
+            # Accessing a linked source from securities collection:
+            #aaplNews = self.Securities["AAPL"].Data.GetAll(BenzingaNews)
+            # Accessing via Slice event
+            aaplNews = data.Get(BenzingaNews)
+            
+            for news in aaplNews.Values:
+                self.Log(f"Unique ID assigned to the article by Benzinga: {news.Id}, Author of the article: {news.Author}, Date the article was published: {news.CreatedAt}, Date that the article was revised on: {news.UpdatedAt}, Title of the article published: {news.Title}")
+</pre>
+</div>
+
+<p>All custom data has the properties <code>Time</code>, <code>Symbol</code>, and <code>Value</code>.</p> 
