@@ -13,6 +13,9 @@ The following reference table lists the Future assets available for use on Quant
 </style>
 <?php
 
+$ice_data = array("U.S. Dollar Index Futures", "Cotton #2 Futures", "Sugar #11 Futures ICE", 
+                  "Coffee C Arabica Futures", "Brent Crude Futures", "Low Sulfur Gasoil", 
+                  "Orange Juice Futures");
 $inspector = "https://www.quantconnect.com/services/inspector?type=T:";
 $decoded = json_decode(file_get_contents($inspector . "QuantConnect.Securities.Futures"), true);
 foreach ($decoded['types'] as $type)
@@ -34,16 +37,20 @@ foreach ($decoded['types'] as $type)
         <tbody>
         <?php
         foreach ($decoded['fields'] as $field)
-        { ?>
-            <tr>
-                <td class="futures-type">
-                    <p><?=htmlentities($field['field-description'])?></p><br/>
-                </td>
-                <td>
-                    <code><?php echo "Futures.{$typeName}.{$field['field-name']}"; ?></code>
-                </td>
-            </tr>
-  <?php } ?>
+        { 
+            if (!in_array($field['field-description'], $ice_data))
+            {
+              ?>
+                <tr>
+                    <td class="futures-type">
+                        <p><?=htmlentities($field['field-description'])?></p><br/>
+                    </td>
+                    <td>
+                        <code><?php echo "Futures.{$typeName}.{$field['field-name']}"; ?></code>
+                    </td>
+                </tr>
+      <?php }
+        } ?>
     </tbody>
 </table>
 <?php
