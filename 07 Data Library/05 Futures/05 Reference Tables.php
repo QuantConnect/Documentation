@@ -38,19 +38,18 @@ foreach ($decoded['types'] as $type)
         <?php
         foreach ($decoded['fields'] as $field)
         { 
-            if (!in_array($field['field-description'], $ice_data))
-            {
-              ?>
-                <tr>
-                    <td class="futures-type">
-                        <p><?=htmlentities($field['field-description'])?></p><br/>
-                    </td>
-                    <td>
-                        <code><?php echo "Futures.{$typeName}.{$field['field-name']}"; ?></code>
-                    </td>
-                </tr>
-      <?php }
-        } ?>
+            if (in_array($field['field-description'], $ice_data))
+                continue;
+            ?>
+            <tr>
+                <td class="futures-type">
+                    <p><?=htmlentities($field['field-description'])?></p><br/>
+                </td>
+                <td>
+                    <code><?php echo "Futures.{$typeName}.{$field['field-name']}"; ?></code>
+                </td>
+            </tr>
+  <?php } ?>
     </tbody>
 </table>
 <?php
