@@ -3,10 +3,40 @@ QuantBook gives you access to the vast amounts of data QuantConnect hosts. Simil
 </p>
 
 <p>
-To use QuantBook, you’ll need to add these references and dependencies at the start of the notebook. (Show) This is important to note for local instances of a notebook, but in the QuantConnect research environment, these references are automatically added to the notebook and hidden from sight.
+To use QuantBook, you’ll need to add these references and dependencies at the start of the notebook. This is important to note for local instances of a notebook, but in the QuantConnect research environment, these references are automatically added to the notebook and hidden from sight.
 </p>
 
+<div class="section-example-container">
+	<pre class="all">from clr import AddReference
+AddReference("System")
+AddReference("QuantConnect.Common")
+AddReference("QuantConnect.Research")
+AddReference("QuantConnect.Indicators")
+from System import *
+from QuantConnect import *
+from QuantConnect.Data.Market import TradeBar, QuoteBar
+from QuantConnect.Research import *
+from QuantConnect.Indicators import *
+from datetime import datetime, timedelta
+import matplotlib.pyplot as plt
+import pandas as pd
+
+# Create an instance
+qb = QuantBook()
+</pre>
+</div>
+
+<h4>QuantBook Example</h4>
+<p>Using QuantBook to subscribe to SPY data and then making a history call for daily resolution SPY data.</p>
+<div class="section-example-container">
+	<pre class="all">spy = qb.AddEquity("SPY")
+history = qb.History(qb.Securities.Keys, 360, Resolution.Daily)
+</pre>
 <p>
-(Basic QB example of accessing data and plotting indicator.
-Walkthrough of BasicQuantBookTemplate, explaining each step.)
+Using QuantBook to create a Bollinger Band indicator for SPY, dropping the <i>standard deviation</i> column and then plotting it.
 </p>
+<pre class="all">bbdf = qb.Indicator(BollingerBands(30, 2), spy.Symbol, 360, Resolution.Daily)
+bbdf.drop('standarddeviation', 1).plot()
+</pre>
+<img src="https://www.dropbox.com/s/6c3h1ndt3oo0ioc/notebook%203.PNG?dl=1" class="img-responsive" title="" style="">
+</div>
