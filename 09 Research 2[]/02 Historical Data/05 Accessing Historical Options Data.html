@@ -49,19 +49,31 @@ We can combine strike filtering and expiration filtering to narrow our chain eve
 
 <h4>Making history calls</h4>
 <p>
-Regular <code>qb.History</code> calls do not work for options. Instead, we need to use <code>qb.GetOptionHistory</code>, which allows us to access options data during a given period.
-</p>
+Regular <code>qb.History</code> calls do not work for options. Instead, we need to use <code>qb.GetOptionHistory</code>, which allows us to request options data during a given period.&nbsp;</p>
 
 <div class="section-example-container">
 	<pre class="all">start_time = datetime(2019, 2, 12, 10, 30) # February 12th 2019 10:30 AM
-end_time = datetime(2019, 2, 16, 16, 0) February 16th 2019 4:00 PM
+end_time = datetime(2019, 2, 16, 16, 0) # February 16th 2019 4:00 PM
 
-# Returns minute resolution option chain data between the given period
-history = qb.GetOptionHistory(spy.Symbol, start_time, end_time)
+# Request SPY options history between February 12th 2019 10:30 AM and February 16th 2019 4:00 PM
+option_history = qb.GetOptionHistory(spy.Symbol, start_time, end_time)
 </pre>
 </div>
 
+<p><code>qb.GetOptionHistory</code> does not return a dataframe of historical data. It instead returns an OptionHistory object, which allows us to access the strike, expiration, and price data.</p>
+
 <h4>Accessing and manipulating the data</h4>
 <p>
-Accessing all data, strikes and expiry dates (GetAllData)
+We can use <code>OptionHistory.GetAllData()</code> to return a dataframe containing all the price data for the options chain.
 </p>
+
+<div class="section-example-container">
+	<pre class="all"># Fetch historical price data for options chain
+history = option_history.GetAllData()
+</pre>
+
+<figure><img src="https://www.dropbox.com/s/lddod6c13qrvbod/notebook%2010.PNG?dl=1" class="img-responsive">
+	<figcaption>Fetch Historical Data for SPY Option Chain</figcaption>
+</figure>
+
+</div>
