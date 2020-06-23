@@ -7,13 +7,15 @@ The report contents are not parsed in any way. The contents range from plain tex
 ">XBRL</a> structured data format. For more information about the SEC and structured data formats, please visit the SEC's <a href="https://www.sec.gov/structureddata">Office of Structured Disclosure</a> webpage.
 </p>
 
+<h4> Making history calls </h4>
+
 <p>
 SEC filing data is a linked data source. This means filing data is tied to the underlying equity whenever possible. This linkage is performed by the ticker used at the time of the filing. To add the right data to your strategy, you should use the equity symbol when you request SEC data.
 </p>
 
 <div class="section-example-container">
 	<pre class="all"># Request underlying equity data.
-aapl = qb.AddEquity("AAPL", Resolution.Minute)
+aapl = qb.AddEquity("AAPL")
 
 # Add SEC 10-Q (quarterly report) filings for Apple
 aapl_10Q = qb.AddData(SECReport10Q, aapl)
@@ -42,6 +44,8 @@ report_history = self.History(SECReport8K, aapl_8K.Symbol, timedelta(days=1000))
 <p>
 Insert figure here
 </p>
+
+<h4>Accessing and manipulating data</h4>
 
 <p>
 We can then analyze this data by plotting it. Let's analyze the performance of AAPL in the days after an 8-K report is released. Let's first plot the daily close values of AAPL.
@@ -85,3 +89,4 @@ for date in report_history.index.levels[1]:
 <img src="https://www.dropbox.com/s/v9aaukqfv0tsafs/notebook%2017.PNG?dl=1" class="img-responsive">
 <figcaption>AAPL Historical Performance After an 8-K</figcaption>
 </figure>
+
