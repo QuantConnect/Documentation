@@ -1,2 +1,96 @@
 <p>
+Keras is a high level library for neural networks. Keras was designed to be modular fast and easy to use. It allows for easy and quick implementations of models. 
 </p>
+
+<h4> Example </h4>
+
+<p>
+Neural networks provide a way to predict future prices based on past prices. In order to accomplish this in Keras, we will need to create a <a href="https://keras.io/guides/sequential_model/">Sequential</a> model and train it with historical data. After our model has been trained, we can test its accuracy by comparing its predictions against historical prices. First, let's import the necessary dependencies and subscribe to SPY data.
+</p>
+
+<div class="section-example-container">
+	<pre class="all">from keras.models import Sequential
+from keras.layers import Dense, Activation
+from keras.optimizers import SGD
+
+
+spy = qb.AddEquity("SPY")
+</pre>
+</div>
+
+<p>
+Let's create a model which given 30 minutes of price data, it predicts the next price. We can make a history call for 60 minutes of data, so that we can use the first 30 minutes to train our model, and then every consecutive 30 minute interval after to test our model.
+</p>
+
+<div class="section-example-container">
+	<pre class="all">history = qb.History(spy.Symbol, 60, Resolution.Minute)
+
+# Format dataframe to get time series open data
+prices = history.reset_index(level=0, drop=True).open
+
+# First 30 minutes of data for training
+train_prices = prices[:30]
+
+# Format data for training 
+predictor = train_prices[:-1]
+predictand = train_prices[1:]
+</pre>
+</div>
+
+<p>
+Next, we create our neural network model. The Keras Sequential model allows us to create a neural network layer by layer. We will use a neural network with 1 hidden layer.
+</p>
+
+<div class="section-example-container">
+	<pre class="all"># Define Sequential model
+model = Sequential()
+
+# Add hidden layer with relu activation
+model.add(Dense(10, input_dim=1))
+model.add(Activation('relu'))
+
+# Add output layer
+model.add(Dense((1)))
+
+# Optimizer function
+sgd = SGD(lr=0.01)
+
+# Compile model with mean square error loss function and sgd optimizer
+model.compile(loss='mse', optimizer=sgd)
+
+# Train model
+for step in range(2000):
+    cost = model.train_on_batch(predictor, predictand)
+</pre>
+</div>
+
+<p>
+Finally, let's visualize our neural networks accuracy by plotting its predictions alongside the historical prices. We can iteratively feed consecutive intervals of 30 minutes of data into our model and save its prediction. Then we can use matplotlib to plot the predictions.
+</p>
+
+<div class="section-example-container">
+	<pre class="all"># List to store predictions made by model
+predictions = []
+
+
+for i in range(30):
+    # iterate through consecutive 30 minute intervals of data
+    test_range = prices[i:i+30]
+
+    # use model to predict next price 
+    y = model.predict(test_range)y0][-1]
+    
+    # save prediction
+    predictions.append(y)
+
+# plot entire 60 minutes of data
+plt.scatter(range(60), prices)
+
+# plot model's prediction of latter 30 minutes of data
+plt.plot(range(30, 60), predictions, color='red', linewidth=1)
+</pre>
+</div>
+
+<figure><img src="https://www.dropbox.com/s/6l2u2ven4xzur4e/notebook%2022.PNG?dl=1" class="img-responsive">
+	<figcaption>Sequential Model's Predictions</figcaption>
+</figure>
