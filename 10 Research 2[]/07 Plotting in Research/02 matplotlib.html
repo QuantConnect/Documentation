@@ -1,5 +1,5 @@
 <p>
-Matplotlib is a 2d-charting library for python. It allows you to easily create histograms, scatterplots and various other charts. 
+Matplotlib is a 2d-charting library for python. It allows you to easily create histograms, scatterplots, and various other charts. 
 
 </p>
 
@@ -16,8 +16,7 @@ Let's plot the distribution of daily returns of SPY on a histogram.
 
 qb = QuantBook()
 spy = qb.AddEquity("SPY")
-spy_hist = qb.History(qb.Securities.Keys, 360, Resolution.Daily).reset_index(level=0)
-	</pre>
+spy_hist = qb.History(qb.Securities.Keys, 360, Resolution.Daily).reset_index(level=0)</pre>
 </div>
 
 
@@ -36,8 +35,7 @@ plt.hist(spy_daily_ret, bins=50)
 # Chart formatting
 plt.title('Are normally distributed returns a hoax?')
 plt.xlabel('Daily Return')
-plt.ylabel('Count')
-	</pre>
+plt.ylabel('Count')</pre>
 </div>
 
 <p> insert graph </p>
@@ -53,11 +51,35 @@ Plotting a line graph from a pandas dataframe is made easy using the built in pa
 spy_hist['close'].plot() 
 
 # Chart formatting
-plt.title('SPY Daily Close')
-	</pre>
+plt.title('SPY Daily Close')</pre>
 </div>
 
 <p> insert graph </p>
 
 <h4>Example 3: Scatterplot</h4>
 
+<p>ETFs which track the same underlying, for example gold ETFs like GLD and BAR, should produce the same returns. We can check the validity of this statement by plotting their returns on a scatterplot. </p>
+
+<div class="section-example-container">
+	<pre class="python"># Add data for gold ETFs
+qb.AddEquity('GLD')
+qb.AddEquity('BAR') 
+
+# Make daily resolution data history call for our ETFs
+gold_etf_hist = qb.History(['GLD', 'BAR'], 300, Resolution.Daily)
+
+# Calculate daily returns for each ETF
+gld_ret = gold_etf_hist.loc['GLD']['close'].pct_change()
+bar_ret = gold_etf_hist.loc['BAR']['close'].pct_change()
+
+# Plot ETF returns in scatterplot
+plt.scatter(gld_ret, bar_ret)
+
+# Chart formatting
+plt.title('GLD vs BAR daily returns Scatter Plot')
+plt.xlabel('GLD')
+plt.ylabel('BAR')
+plt.show()</pre>
+</div>
+
+<p> insert graph </p>
