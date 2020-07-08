@@ -3,14 +3,33 @@ Matplotlib is a 2d-charting library for python. It allows you to easily create h
 
 </p>
 
-<p>
+<h4>
+Example 1: Histogram
+</h4>
 
+<p>
+Let's plot the distribution of daily returns of SPY on a histogram. 
+</p>
+
+<div class="section-example-container">
+	<pre class="python">import matplotlib.pyplot as plt
+
+qb = QuantBook()
+spy = qb.AddEquity("SPY")
+spy_hist = qb.History(qb.Securities.Keys, 360, Resolution.Daily).reset_index(level=0)
+	</pre>
+</div>
+
+<p>
+We can calculate SPY's daily returns by finding the percent change of its daily close values using <code> spy_hist['close'].pct_change()</code>. Then we can plot the distribution of daily returns.
 </p>
 
 
 <div class="section-example-container">
-	<pre class="python">qb = QuantBook()
+	<pre class="python">import matplotlib.pyplot as plt
+
+qb = QuantBook()
 spy = qb.AddEquity("SPY")
-history = qb.History(qb.Securities.Keys, 360, Resolution.Daily)
+spy_hist = qb.History(qb.Securities.Keys, 360, Resolution.Daily).reset_index(level=0)
 	</pre>
 </div>
