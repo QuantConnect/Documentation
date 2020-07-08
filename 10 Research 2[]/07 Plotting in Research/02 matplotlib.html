@@ -20,16 +20,44 @@ spy_hist = qb.History(qb.Securities.Keys, 360, Resolution.Daily).reset_index(lev
 	</pre>
 </div>
 
+
 <p>
 We can calculate SPY's daily returns by finding the percent change of its daily close values using <code> spy_hist['close'].pct_change()</code>. Then we can plot the distribution of daily returns.
 </p>
 
 
 <div class="section-example-container">
-	<pre class="python">import matplotlib.pyplot as plt
+	<pre class="python"># Calculate daily returns
+spy_daily_ret = spy_hist['close'].pct_change()
 
-qb = QuantBook()
-spy = qb.AddEquity("SPY")
-spy_hist = qb.History(qb.Securities.Keys, 360, Resolution.Daily).reset_index(level=0)
+# Plot histogram of daily returns with 50 bins
+plt.hist(spy_daily_ret, bins=50)
+
+# Chart formatting
+plt.title('Are normally distributed returns a hoax?')
+plt.xlabel('Daily Return')
+plt.ylabel('Count')
 	</pre>
 </div>
+
+<p> insert graph </p>
+
+<h4> Example 2: Line Graph </h4>
+
+<p>
+Plotting a line graph from a pandas dataframe is made easy using the built in pandas <code>dataframe.plot()</code> method.
+</p>
+
+<div class="section-example-container">
+	<pre class="python"># Plot close prices as line graph
+spy_hist['close'].plot() 
+
+# Chart formatting
+plt.title('SPY Daily Close')
+	</pre>
+</div>
+
+<p> insert graph </p>
+
+<h4>Example 3: Scatterplot</h4>
+
