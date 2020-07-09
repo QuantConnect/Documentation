@@ -2,3 +2,46 @@
 Seaborn is a data visualization library based on matplotlib. It makes it easier to create more complicated plots. It also allows us to create much more visually appealing charts than offered by matplotlib. 
 
 </p>
+
+<h4> Example 1: Heatmap Chart</h4>
+
+<div class="section-example-container">
+	<pre class="python">import seaborn as sns
+
+qb = QuantBook()
+
+tickers = [
+    "BAC", # Bank of America Corporation
+    "COF", # Capital One Financial Corporation
+    "C",   # Citigroup Inc.
+    "JPM", # J P Morgan Chase & Co
+    "STI", # SunTrust Banks, Inc.
+    "WFC", # Wells Fargo & Company
+]
+symbols = [qb.AddEquity(ticker, Resolution.Daily).Symbol for ticker in tickers]</pre>
+</div>
+
+<p>Let's make a history call ...</p>
+
+<div class="section-example-container">
+	<pre class="python">history = qb.History(symbols, 
+                     datetime(2020, 2, 1), 
+                     datetime(2020, 7, 1), 
+                     Resolution.Daily).close.unstack(level=0)
+
+correlation_matrix = history.corr()</pre>
+</div>
+
+<figure><img src="https://www.dropbox.com/s/siixlb6prnwqc67/plotting%203.PNG?dl=1" class="img-responsive">
+	<figcaption>
+Correlation Matrix of Daily Close Prices
+</figcaption>
+</figure>
+
+<p> heatmap of the correlation matrix</p>
+
+<figure><img src="https://www.dropbox.com/s/laod4h62vsha5bs/plotting%204.PNG?dl=1" class="img-responsive">
+	<figcaption>
+Seaborn Heatmap of Correlation Matrix
+</figcaption>
+</figure>
