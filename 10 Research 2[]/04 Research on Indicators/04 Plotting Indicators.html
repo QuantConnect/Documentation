@@ -3,16 +3,19 @@ When we use <code>qb.Indicator</code> to warm up an indicator, the indicator val
 </p>
 
 <p>
-Before we plot our indicator, we should filter out columns in the dataframe which are not relevant to our analysis. For our Bollinger Band indicator, we find that the standard deviation column contains much smaller values than the other columns. This may skew our charts when it scales to fit all the data. We can drop the standard deviation column from our dataframe before we plot it.
+Before we plot our indicator, we should filter out columns in the dataframe which are not relevant to our analysis. For our Bollinger Band indicator, we find that the standard deviation column contains much smaller values than the other columns. This may skew our charts when it scales to fit all the data. We can drop all the irrelevant columns, such as the standarddeviation and percentb columns, from our dataframe before we plot it.
 </p>
 
 <div class="section-example-container">
-	<pre class="all"># drop the standard deviation fields
-df1_bb.drop('standarddeviation', 1)
+	<pre class="all"># drop all irrelevant columns fields
+df1_bb.drop(['standarddeviation', 'bandwidth', 'percentb', 'bollingerbands'], axis=1, inplace=True)
 </pre>
 </div>
 
-<p> insert figure </p>
+
+<figure><img src="https://www.dropbox.com/s/0ch84xwvam03br7/indy%206.PNG?dl=1" class="img-responsive" title="" style="">
+	<figcaption>Indicator Dataframe with Columns Dropped</figcaption>
+</figure>
 
 Now that our indicator is ready for analysis, we can plot it.
 
@@ -22,4 +25,6 @@ df1_bb.plot()
 </pre>
 </div>
 
-<p> insert figure </p>
+<figure><img src="https://www.dropbox.com/s/4y77d5zcycdklma/indy%205.PNG?dl=1" class="img-responsive" title="" style="">
+	<figcaption>Plot of Bollinger Band Indicator Dataframe</figcaption>
+</figure>
