@@ -1,5 +1,4 @@
-<p>
-QuantConnect provides equity options data from AlgoSeek going back as far as 2010. The options data is available only in minute resolution, which means we need to consolidate the data if we wish to work with other resolutions. Options data also contains both trade data and quote data. To access options data, we need to first subscribe to an underlying and also to the option chains data for that underlying.
+<p>,QuantConnect provides equity options data from AlgoSeek going back as far as 2010. The options data is available only in minute resolution, which means we need to consolidate the data if we wish to work with other resolutions. Options data also contains both trade data and quote data. To access options data, we need to first subscribe to an underlying and also to the option chains data for that underlying.
 </p>
 
 
@@ -52,28 +51,49 @@ We can combine strike filtering and expiration filtering to narrow our chain eve
 Regular <code>qb.History</code> calls do not work for options. Instead, we need to use <code>qb.GetOptionHistory</code>, which allows us to request options data during a given period.&nbsp;</p>
 
 <div class="section-example-container">
-	<pre class="all">start_time = datetime(2019, 2, 12, 10, 30) # February 12th 2019 10:30 AM
-end_time = datetime(2019, 2, 16, 16, 0) # February 16th 2019 4:00 PM
+	<pre class="all">start_time =  datetime(2017, 1, 11, 10, 10) 
+end_time = datetime(2017, 1, 13, 12, 10)
 
-# Request SPY options history between February 12th 2019 10:30 AM and February 16th 2019 4:00 PM
+# Request SPY options history between given dates
 option_history = qb.GetOptionHistory(spy.Symbol, start_time, end_time)
 </pre>
 </div>
 
 <p><code>qb.GetOptionHistory</code> does not return a dataframe of historical data. It instead returns an OptionHistory object, which allows us to access the strike, expiration, and price data.</p>
 
-<h4>Accessing and Manipulating Data</h4>
 <p>
-We can use <code>OptionHistory.GetAllData()</code> to return a dataframe containing all the price data for the options chain.
-</p>
+We can use <code>OptionHistory.GetAllData()</code> to return a dataframe containing all the price data for the options chain. This dataframe contains all the quote, trade and open interest data for each contract in our history call. It is indexed by contract expiry, strike, option right type, contract symbol, and data timestamp.</p>
 
 <div class="section-example-container">
 	<pre class="all"># Fetch historical price data for options chain
 history = option_history.GetAllData()
 </pre>
+</div>
 
-<figure><img src="https://www.dropbox.com/s/lddod6c13qrvbod/notebook%2010.PNG?dl=1" class="img-responsive">
+<figure><img src="https://www.dropbox.com/s/44kmdy1efrumq5q/opto%201-2.PNG?dl=1" class="img-responsive" title="" style="">
 	<figcaption>Fetch Historical Data for SPY Option Chain</figcaption>
 </figure>
 
+<p>
+We can also retrieve the set
+</p>
+
+<div class="section-example-container">
+	<pre class="all"># Fetch strikes of all options contracts 
+option_history.GetStrikes()
+</pre>
 </div>
+
+<figure><img src="https://www.dropbox.com/s/3ytr20ctwlb6aj2/opto%202.PNG?dl=1" class="img-responsive">
+	<figcaption>Fetch Historical Data for SPY Option Chain</figcaption>
+</figure>
+
+<div class="section-example-container">
+	<pre class="all"># Fetch expiration dates of all options contracts
+option_history.GetExpiryDates()
+</pre>
+</div>
+
+<figure><img src="https://www.dropbox.com/s/nv7qn6aji6pzyjv/opto%203.PNG?dl=1" class="img-responsive">
+	<figcaption>Fetch Historical Data for SPY Option Chain</figcaption>
+</figure>
