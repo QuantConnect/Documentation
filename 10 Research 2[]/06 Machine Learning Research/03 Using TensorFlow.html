@@ -2,7 +2,7 @@
 TensorFlow is a low-level library that we can use to implement machine learning algorithms. Unlike scikit, TensorFlow does not have any ready to use algorithms, Instead, TensorFlow provides the building blocks to implement the algorithms we need. TensorFlow is especially great for implement deep learning algorithms and working with large datasets since it allows us to take advantage of GPU's for training our models.
 </p>
 
-<h4> Formatting Data For Training and Testing </h4>
+<h4> Preparing Data For Training and Testing </h4>
 
 <p>
 Let's create a neural network that predicts future prices given past prices. We'll build our network with TensorFlow and then train it using historical data. We can then test our model by visualizing its predictions against actual historical prices. First, we'll need to retrieve historical data for SPY.
@@ -145,13 +145,16 @@ for _ in range(epochs):
 
 <h4> Testing Models </h4>
 
+<p>
+Finally, let's test how accurate our model is by plotting its predictions against actual price data.
+</p>
 
 <div class="section-example-container">
 	<pre class="all">prediction = sess.run(output, feed_dict={X: X_test})
 prediction = prediction.reshape(prediction.shape[1], 1)
 y_test.reset_index(drop=True).plot(figsize=(16, 6), label="Actual")
 
-# Plot predictions againt
+# Plot predictions
 plt.plot(prediction, label="Prediction")
 plt.title("Test Set Results from Original Model")
 plt.xlabel("Time step")
@@ -160,6 +163,3 @@ plt.legend()
 plt.show()</pre>
 </div>
 
-<figure><img src="https://www.dropbox.com/s/sbb1eibffhfbemr/ml%202.PNG?dl=1" class="img-responsive">
-	<figcaption>TF Neural Network's Predictions Against Actual Prices</figcaption>
-</figure>
