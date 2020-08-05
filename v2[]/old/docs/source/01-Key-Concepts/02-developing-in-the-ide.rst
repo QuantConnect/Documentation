@@ -16,7 +16,7 @@ The QuantConnect Algorithm Lab allows you to write code in project files and the
 You can add, rename, and delete files in your project in the Projects tab. To rename your project, click into the project, hover over the title, and click on the pencil to the right of it. You can create a virtual folder for your project by placing a slash ("/") into the name of your file. The bare minimum to run an algorithm is your initialization and data event methods.
 
 .. raw:: html
-   :file: ../iframes/coding-your-algorithm.html
+   :file: ./iframes/coding-your-algorithm.html
 
 |
 
