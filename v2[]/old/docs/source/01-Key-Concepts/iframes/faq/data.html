@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+.collapsible {
+  background-color: #777;
+  color: white;
+  cursor: pointer;
+  padding: 18px;
+  width: 100%;
+  border: none;
+  text-align: left;
+  outline: none;
+  font-size: 15px;
+}
+
+.active, .collapsible:hover {
+  background-color: #555;
+}
+
+.content {
+  padding: 0 18px;
+  display: none;
+  overflow: hidden;
+  background-color: #f1f1f1;
+}
+</style>
+</head>
+
+
+<body>
+
+<button type="button" class="collapsible">What data sources do you have?</button>
+<div class="content">
+
+  <p>QuantConnect offers Equity, Forex, Futures, Options, Crypto, and CFD data for you to backtest. We also offer Morning Star data for doing fundamental analysis. You can see a full list of the data providers in the Data Library.<br><br>For most data sources we offer data resolution down to the tick with the exception of Options data, which is so large we can only offer minute bars.</p>
+</div>
+
+<button type="button" class="collapsible">Do you plan on adding more data in the future?</button>
+<div class="content">
+
+  <p>We're always looking for more data sets and are adding them all the time. Due to the high investment required for any dataset we have to make sure its useful and interesting for a majority of the community. If you would like to import a data set we don't currently support you can use the Custom Data feature to backtest on any data source.</p>
+</div>
+
+<button type="button" class="collapsible">Can you sell me data?</button>
+<div class="content">
+
+  <p>Thanks to FXCM and OANDA we are able to provide FX and CFD for free to download through the Data Library. Cryptocurrency data is available for sale, but because of other data provider restrictions we are not able to resell Equity, Futures or Options data. When downloading data from QuantConnect we just ask a small fee to cover the bandwidth cost.</p>
+</div>
+
+<button type="button" class="collapsible">Why does the data have so many decimal places?</button>
+<div class="content">
+
+  <p>By default our data is adjusted. This means we account for the splits and dividends in the data and create an adjusted price. You can disable this by selecting "Raw" mode for the data which pays dividends as cash and directly applies splits to your account. Read more about adjusted data.</p>
+</div>
+
+<button type="button" class="collapsible">Why are the equity prices sometimes different from other data providers?</button>
+<div class="content">
+
+  <p>QuantConnect builds our TradeBars from tick data. While doing this we filter out ticks which our vendor believes are "suspicious". These suspicious trades include ones which are rolled back, reported late, or traded via OTC markets. This makes the bars a more realistic representation of the asset price but it might vary slightly from popular web-portals like Yahoo etc. Although this results in slightly different prices we believe its more important to have realistic backtests than match Yahoo.</p>
+</div>
+
+<script>
+var coll = document.getElementsByClassName("collapsible");
+var i;
+
+for (i = 0; i < coll.length; i++) {
+  coll[i].addEventListener("click", function() {
+    this.classList.toggle("active");
+    var content = this.nextElementSibling;
+    if (content.style.display === "block") {
+      content.style.display = "none";
+    } else {
+      content.style.display = "block";
+    }
+  });
+}
+</script>
+
+</body>
+</html>

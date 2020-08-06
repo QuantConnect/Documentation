@@ -3,18 +3,14 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to QuantConnect-old-documentation's documentation!
-==========================================================
+QuantConnect's old docuentation, converted to rst.
+==================================================
+
 
 .. toctree::
-   :maxdepth: 2
-   :caption: Contents:
+   :maxdepth: 1
+   :caption: Key Concepts:
 
-
-
-Indices and tables
-==================
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
+   Getting Started <01-Key-Concepts/01-getting-started>
+   Developing in the IDE <01-Key-Concepts/02-developing-in-the-ide>
+   Frequently Asked Questions <01-Key-Concepts/03-faq>
