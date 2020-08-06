@@ -16,9 +16,9 @@ You can add, rename, and delete files in your project in the Projects tab. To re
 
 |
 
-.. image:: https://cdn.quantconnect.com/web/i/docs/20180213-framework-light.png
+.. figure:: https://cdn.quantconnect.com/web/i/docs/20180213-framework-light.png
 
-``QuantConnect Backtesting and Coding Environment``
+   QuantConnect Backtesting and Coding Environment
 
 |
 
