@@ -32,6 +32,7 @@ master_doc = 'index'
 # ones.
 extensions = [
     'sphinx.ext.intersphinx',
+    'sphinx_tabs.tabs',
 ]
 intersphinx_mapping = {
     'sphinx': ('https://www.sphinx-doc.org/en/master/', None),

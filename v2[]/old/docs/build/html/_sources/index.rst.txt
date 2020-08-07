@@ -14,3 +14,4 @@ QuantConnect's old docuentation, converted to rst.
    Getting Started <01-Key-Concepts/01-getting-started>
    Developing in the IDE <01-Key-Concepts/02-developing-in-the-ide>
    Frequently Asked Questions <01-Key-Concepts/03-faq>
+   Supported Libraries <01-Key-Concepts/04-supported-libraries>

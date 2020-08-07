@@ -11,8 +11,35 @@ The QuantConnect Algorithm Lab allows you to write code in project files and the
 
 You can add, rename, and delete files in your project in the Projects tab. To rename your project, click into the project, hover over the title, and click on the pencil to the right of it. You can create a virtual folder for your project by placing a slash ("/") into the name of your file. The bare minimum to run an algorithm is your initialization and data event methods.
 
-.. raw:: html
-   :file: ./iframes/coding-your-algorithm.html
+.. tabs::
+
+   .. code-tab:: c#
+
+        public class BasicTemplateAlgorithm : QCAlgorithm
+        {
+            public override void Initialize() {
+                // Setup algorithm requirements: cash, dates and securities.
+                        // Initialize is called once at the start of the algorithm.
+            }
+
+            public override void OnData(Slice data) {
+                       // Data requested is then piped into event handlers like this one.
+            }
+        }
+
+   .. code-tab:: py
+
+        class BasicTemplateAlgorithm(QCAlgorithm):
+
+            def Initialize(self):
+                '''Initialise the data and resolution required, as well as the cash and start-end dates for your algorithm. All algorithms must initialized.'''
+                pass
+
+            def OnData(self, data):
+                '''OnData event is the primary entry point for your algorithm. Each new data point will be pumped in here.
+                    data: Slice object keyed by symbol containing the stock data
+                '''
+                pass
 
 |
 
@@ -59,18 +86,30 @@ The website coding environment comes with some keyboard shortcuts to make coding
      - Description
    * - Ctrl + Space
      - Initiate auto-complete
-   * - Ctrl + /	Toggle comments on selected code
-     - Ctrl + Up/Down	Increase/decrease font size
-   * - Ctrl + F	Find
-     - Ctrl + H	Replace
-   * - Ctrl + S	Save document and compile project
-     - Ctrl + D	Remove line
-   * - Ctrl + Z	Undo
-     - Ctrl + Y (or Ctrl + Shift + Z)	Redo
-   * - Alt + Up/Down	Move line up/down
-     - Alt + Shift + Up/Down	Copy lines up/down
-   * - Alt + 0 (zero)	Collapse all code blocks
-     - Alt + Shift + 0 (zero)	Expand all code blocks
+   * - Ctrl + /
+     - Toggle comments on selected code
+   * - Ctrl + Up/Down
+     - Increase/decrease font size
+   * - Ctrl + F
+     - Find
+   * - Ctrl + H
+     - Replace
+   * - Ctrl + S
+     - Save document and compile project
+   * - Ctrl + D
+     - Remove line
+   * - Ctrl + Z
+     - Undo
+   * - Ctrl + Y (or Ctrl + Shift + Z)
+     - Redo
+   * - Alt + Up/Down
+     - Move line up/down
+   * - Alt + Shift + Up/Down
+     - Copy lines up/down
+   * - Alt + 0 (zero)
+     - Collapse all code blocks
+   * - Alt + Shift + 0 (zero)
+     - Expand all code blocks
 
 The full list of shortcuts can be found in the `ACE Editor <https://github.com/ajaxorg/ace/wiki/Default-Keyboard-Shortcuts>`_ open source project.
 
@@ -96,6 +135,22 @@ We aim to make it as easy as possible to use QuantConnect, but you still need to
      - Interactive
      - `Code Academy - Python <https://www.codecademy.com/learn/learn-python>`_
      - Code Acedemy
+   * - C#
+     - Video
+     - `C# Fundamentals for Absolute Beginners <https://www.microsoftvirtualacademy.com/en-US/training-courses/c-fundamentals-for-absolute-beginners-8295>`_
+     - Microsoft
+   * - C#
+     - Text
+     - `C# Jump Start - Advanced Concepts <https://docs.microsoft.com/en-us/learn/>`_
+     - Microsoft
+   * - C#
+     - Video
+     - `Top 20 C# Questions <https://www.microsoftvirtualacademy.com/en-US/training-courses/twenty-c-questions-answered-8298>`_
+     - Microsoft
+   * - C#
+     - Text
+     - `C# Tutorial <https://www.tutorialspoint.com/csharp/index.htm>`_
+     - Tutorialspoint
 
 |
 
