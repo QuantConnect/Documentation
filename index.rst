@@ -17,3 +17,4 @@ QuantConnect's old docuentation, converted to rst.
    Supported Libraries <01-Key-Concepts/04-supported-libraries>
    Understanding Time <01-Key-Concepts/05-understanding-time>
    Security Identifiers <01-Key-Concepts/06-security-identifiers>
+   Research Guide <01-Key-Concepts/07-research-guide>

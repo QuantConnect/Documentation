@@ -4,7 +4,24 @@ Key Concepts - Understanding Time
 
 
 .. raw:: html
-   :file: iframes/understanding-time/video.html
+
+    <style>
+    .videoWrapper {
+      position: relative;
+      padding-bottom: 56.25%; /* 16:9 */
+      height: 0;
+    }
+    .videoWrapper iframe {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+    }
+    </style>
+    <div class="videoWrapper">
+    <iframe src="https://player.vimeo.com/video/420736510" width="640" height="360" frameborder="0" allow="autoplay; fullscreen" allowfullscreen></iframe>
+    </div>
 
 |
 
