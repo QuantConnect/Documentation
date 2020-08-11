@@ -18,3 +18,4 @@ QuantConnect's old docuentation, converted to rst.
    Understanding Time <01-Key-Concepts/05-understanding-time>
    Security Identifiers <01-Key-Concepts/06-security-identifiers>
    Research Guide <01-Key-Concepts/07-research-guide>
+   Reconciliation <01-Key-Concepts/08-reconciliation>
