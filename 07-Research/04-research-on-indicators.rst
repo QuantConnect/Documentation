@@ -4,7 +4,6 @@ Research - Research on Indicators
 
 |
 
-============
 Introduction
 ============
 
@@ -12,7 +11,6 @@ Indicators allow us to analyze market data in an abstract form rather than in it
 
 |
 
-===================
 Defining Indicators
 ===================
 
