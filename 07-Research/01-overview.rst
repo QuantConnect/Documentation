@@ -2,8 +2,10 @@
 Research - Overview
 ===================
 
+|
+
 Introduction
-=====================
+=============
 
 **What is a Research Notebook?**
 
@@ -20,7 +22,7 @@ A research notebook is created for every new project started in QuantConnect. Ho
 |
 
 Basic Features
-==========================
+==============
 
 **Creating, editing, and running cells.**
 
@@ -87,7 +89,7 @@ It is possible to reuse classes written in backtesting in the research environme
 |
 
 QuantBook
-============
+=========
 
 QuantBook is a wrapper on QCAlgorithm which allows you to access QCAlgorithm methods in the notebook environment. QuantBook gives you access to the vast amounts of data QuantConnect hosts. Similar to backtesting, you can access that data using history calls. You can also create indicators, consolidate data, and access charting features. However, keep in mind that event-driven features available in backtesting, like universe selection and OnData events, are not available in research.
 
