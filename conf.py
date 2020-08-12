@@ -19,7 +19,7 @@ sys.path.append(os.path.abspath('sphinxext'))
 
 # -- Project information -----------------------------------------------------
 
-project = 'QuantConnect-old-documentation'
+project = 'QuantConnect-documentation'
 copyright = '2020, QuantConnect'
 author = 'QuantConnect'
 master_doc = 'index'

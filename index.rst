@@ -6,6 +6,16 @@
 QuantConnect's old docuentation, converted to rst.
 ==================================================
 
+.. table::
+   :widths: 25 50
+
+
+.. toctree::
+   :maxdepth: 1
+   :caption: Home
+
+   Home <00-Home/01-home>
+
 
 .. toctree::
    :maxdepth: 1
@@ -19,3 +29,24 @@ QuantConnect's old docuentation, converted to rst.
    Security Identifiers <01-Key-Concepts/06-security-identifiers>
    Research Guide <01-Key-Concepts/07-research-guide>
    Reconciliation <01-Key-Concepts/08-reconciliation>
+
+
+.. toctree::
+   :maxdepth: 1
+   :caption: Algorithm Reference:
+
+   Overview <03-Algorithm-Reference/01-overview>
+   Initializing Algorithms <03-Algorithm-Reference/02-initializing-algorithms>
+
+
+.. toctree::
+   :maxdepth: 1
+   :caption: Research:
+
+   Overview <07-Research/01-overview>
+   Historical Data <07-Research/02-historical-data>
+   Fundamental Data <07-Research/03-fundamental-data>
+   Research on Indicators <07-Research/04-research-on-indicators>
+   Alternative Data <07-Research/05-alternative-data>
+   Machine Learning Research <07-Research/06-machine-learning-research>
+   Research to Production <07-Research/07-research-to-production>
