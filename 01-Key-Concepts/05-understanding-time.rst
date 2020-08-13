@@ -2,7 +2,6 @@
 Key Concepts - Understanding Time
 =================================
 
-
 .. raw:: html
 
     <style>
