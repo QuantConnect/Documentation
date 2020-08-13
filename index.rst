@@ -37,6 +37,7 @@ QuantConnect's old docuentation, converted to rst.
 
    Overview <03-Algorithm-Reference/01-overview>
    Initializing Algorithms <03-Algorithm-Reference/02-initializing-algorithms>
+   Handling Data <03-Algorithm-Reference/03-handling-data>
 
 
 .. toctree::
