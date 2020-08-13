@@ -5,9 +5,6 @@ Algorithm Reference - Handling Data
 Demonstration Algorithms
 ========================
 
-DelistingEventsAlgorithm.cs
-DividendAlgorithm.cs
-
 .. list-table::
    :header-rows: 1
 
