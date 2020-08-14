@@ -6,10 +6,6 @@
 QuantConnect's old docuentation, converted to rst.
 ==================================================
 
-.. table::
-   :widths: 25 50
-
-
 .. toctree::
    :maxdepth: 1
    :caption: Home
@@ -39,6 +35,7 @@ QuantConnect's old docuentation, converted to rst.
    Initializing Algorithms <03-Algorithm-Reference/02-initializing-algorithms>
    Handling Data <03-Algorithm-Reference/03-handling-data>
    Importing Custom Data <03-Algorithm-Reference/04-importing-custom-data>
+   Consolidating Data <03-Algorithm-Reference/05-consolidating-data>
 
 
 .. toctree::
