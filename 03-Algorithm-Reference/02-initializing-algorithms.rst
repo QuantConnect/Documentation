@@ -2,6 +2,8 @@
 Algorithm Reference - Initializing Algorithms
 =============================================
 
+|
+
 Demonstration Algorithms
 ========================
 

@@ -36,6 +36,7 @@ QuantConnect's old docuentation, converted to rst.
    Handling Data <03-Algorithm-Reference/03-handling-data>
    Importing Custom Data <03-Algorithm-Reference/04-importing-custom-data>
    Consolidating Data <03-Algorithm-Reference/05-consolidating-data>
+   Securities and Portfolio <03-Algorithm-Reference/06-securities-and-portfolio>
 
 
 .. toctree::
