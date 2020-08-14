@@ -29,7 +29,7 @@ Some examples of a focused alpha model are:
 * "Public Sentiment Alpha" - Public opinion as an indicator of company trajectory.
 * "Product Demand Alpha" - Tracking sales to project the trajectory of a company.
 
-Your alpha *does not need to perform well in all markets* to be a good alpha. The fund consuming the alpha will need to decide when to apply your signal. In fact, the more focused your alpha is, the more widely applicable it will be to potential clients.Your alpha does not need to perform well in all markets to be a good alpha. The fund consuming the alpha will need to decide when to apply your signal. In fact, the more focused your alpha is, the more widely applicable it will be to potential clients.
+Your alpha *does not need to perform well in all markets* to be a good alpha. The fund consuming the alpha will need to decide when to apply your signal. In fact, the more focused your alpha is, the more widely applicable it will be to potential clients.
 
 |
 
@@ -76,6 +76,10 @@ An ``Insight`` constructor takes the following arguments:
         insight = Insight.Price("IBM", timedelta(minutes = 20), InsightDirection.Up, 0.0025, 1.00, "MyAlphaModel", 0.25)
 
 We have provided a helper method to make creating Insights easier. This can be used in your Update method to create insight objects for your Alpha Model of the Price type:
+
+.. code-block:: py
+
+        insight = Insight.Price("IBM", timedelta(minutes = 20), InsightDirection.Up, 0.0025, 1.00, "MyAlphaModel", 0.25)
 
 For generating insights with Classic Algorithms, see `Upgrading Classic Algorithms <https://www.quantconnect.com/docs/alpha-streams/upgrading-classic-algorithms>`_.
 

@@ -40,6 +40,20 @@ QuantConnect's old docuentation, converted to rst.
 
 .. toctree::
    :maxdepth: 1
+   :caption: Alpha Streams:
+
+   Overview <05-Alpha-Streams/01-overview>
+   Creating an Alpha <05-Alpha-Streams/02-creating-an-alpha>
+   Common Alpha Features <05-Alpha-Streams/03-common-alpha-features>
+   Submitting an Alpha <05-Alpha-Streams/04-submitting-an-alpha>
+   Pricing an Alpha <05-Alpha-Streams/05-pricing-an-alpha>
+   Upgrading Classic Algorithms <05-Alpha-Streams/06-upgrading-classic-algorithms>
+   Competitions <05-Alpha-Streams/07-competitions>
+   Alpha Fee Models <05-Alpha-Streams/08-alpha-fee-models>
+
+
+.. toctree::
+   :maxdepth: 1
    :caption: Research:
 
    Overview <07-Research/01-overview>

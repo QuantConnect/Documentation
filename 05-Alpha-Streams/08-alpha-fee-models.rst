@@ -4,7 +4,10 @@ Alpha Streams - Alpha Fee Models
 
 |
 
-.. list-table:: Model Implementations
+Model Implementations
+=====================
+
+.. list-table::
    :header-rows: 0
 
    * - `Alpha Streams Brokerage Model <https://github.com/QuantConnect/Lean/blob/master/Common/Brokerages/AlphaStreamsBrokerageModel.cs>`_

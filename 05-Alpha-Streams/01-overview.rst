@@ -12,8 +12,11 @@ Alpha Streams is a global marketplace where Quants and Funds meet. Quants offer 
 
 |
 
-Licensing Mode
-==============
+Licensing Model
+===============
+
+.. figure:: https://cdn.quantconnect.com/docs/i/revenue-model.png
+
 Alpha Streams licensing is performed with a monthly subscription, prorated on a daily basis. Funds can manage their subscriptions programmatically, licensing your Alpha as their models require. A subscription revenue model for Alpha has several benefits over a classic revenue sharing model:
 
 * No Audit Requirements: Assigning a profit value to a factor is subjective and requires knowledge of the fund's existing portfolio and models.

@@ -6,12 +6,14 @@ Alpha Streams - Common Alpha Features
 
 Introduction
 ============
+
 There are several common metrics, themes, and features that funds look for when licensing an Alpha. We've outlined below some of the most common factors that go into selecting an Alpha.
 
 |
 
 Backtests
 =========
+
 Backtesting is not the only or even most important part of the Alpha development process. However, it is essential to display how a strategy performs in a variety of market conditions and not just in a market selected to boost overall performance during that period.
 
 **Length**
@@ -32,6 +34,7 @@ Investors want to know whether or not a strategy can outperform the broader mark
 
 Performance Metrics
 ===================
+
 **Sharpe Ratio**
 
 The Sharpe ratio is likely the most common performance measurement as it conveys much information very quickly. Despite its limitations, a number expressing risk-adjusted performance is a valuable tool that investors use to screen algorithms. Sharpe ratios need to be positive, but a good minimum to aim for is an annualized Sharpe ratio of 1.
@@ -52,6 +55,7 @@ Due to borrowing costs, funds often want to be dollar-neutral in their strategie
 
 Market Correlation
 ==================
+
 One question every Alpha author must be able to answer is why people should invest in their strategy. Active trading involves commission costs, borrowing costs, and other risks. The signal that the algorithm finds in the data needs to be unique and provide sufficient Alpha to warrant the extra risk. If the strategy produces an equity curve that is too correlated with a relevant benchmark, then it is likely cheaper and safer for an investor to just buy the benchmark. Be sure to compare the strategy against common benchmarks to see how much additional value it produces beyond the broader market returns.
 
 Equities
@@ -86,4 +90,5 @@ Futures
 
 Informative Description
 =======================
+
 Investors want to understand the basic ideas behind the signals they are receiving. Backtests and performance metrics are significant and can convey a lot of information about a strategy, but the best way to sell your Alpha is to give an informative, comprehensive summary involving the basic premise, risk-management methods, order management, universe selection, etc. A thorough description gives funds more information and demonstrates that you are a well-informed developer, which can help establish trust between yourself and the funds looking to invest.

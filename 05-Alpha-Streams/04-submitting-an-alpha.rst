@@ -38,29 +38,23 @@ Minimum Criteria
 ================
 Before your submission is sent to us for the final code review, we run an analysis on the selected backtest. This is done to ensure that seven essential criteria are met.
 
-.. list-table:: Pre-Submission Screening Criteria
-   :header-rows: 0
-
-   * - **Length**
-     - Backtests must be a minimum of 5 years in length.
-
-   * - **Recent History**
-     - The backtest must include the most most recent 5 years of data and can't have an End Date more than 7 days priod to the date of submission.
-
-   * - **Alpha Streams Brokerage Model**
-     - ``AlphaStreamsBrokerageModel()`` Alphas are required to use the `Alpha Streams Brokerage Model <https://www.quantconnect.com/docs/alpha-streams/alpha-fee-models>`_ and cannot include any additional `Reality Modeling <https://www.quantconnect.com/docs/algorithm-reference/reality-modelling>`_.
-
-   * - **Profitability**
-     - All Alpha submissions must be profitable over the course of the backtest.
-
-   * - **Known Data Sources**
-     - We can't guarantee the integrity of any external data sources. Only data sources supported by QuantConnect can be used in Alphas.
-
-   * - **PSR Greater than 80%**
-     - All Alpha submissions must have a Probabilistic Sharpe Ratio (PSR) of greater than 80%.
-
-   * - **Low Correlation to Current Alphas**
-     - Alphas need to be sufficiently unique, so we test the correlation between submissions and an author's other accepted Alphas. Correlation must be less than 85%. Updates to current versions are not tested for correlation.
++----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Pre-Submission Screening Criteria                                                                                                                                                                                                                                                                                                            |
++=======================================+======================================================================================================================================================================================================================================================================================================+
+| **Length**                            | Backtests must be a minimum of 5 years in length.                                                                                                                                                                                                                                                    |
++---------------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| **Recent History**                    | The backtest must include the most most recent 5 years of data and can't have an End Date more than 7 days priod to the date of submission.                                                                                                                                                          |
++---------------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| **Alpha Streams Brokerage Model**     | ``AlphaStreamsBrokerageModel()`` Alphas are required to use the `Alpha Streams Brokerage Model <https://www.quantconnect.com/docs/alpha-streams/alpha-fee-models>`_ and cannot include any additional `Reality Modeling <https://www.quantconnect.com/docs/algorithm-reference/reality-modelling>`_. |
++---------------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| **Profitability**                     | All Alpha submissions must be profitable over the course of the backtest.                                                                                                                                                                                                                            |
++---------------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| **Known Data Sources**                | We can't guarantee the integrity of any external data sources. Only data sources supported by QuantConnect can be used in Alphas.                                                                                                                                                                    |
++---------------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| **PSR Greater than 80%**              | All Alpha submissions must have a Probabilistic Sharpe Ratio (PSR) of greater than 80%.                                                                                                                                                                                                              |
++---------------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| **Low Correlation to Current Alphas** | Alphas need to be sufficiently unique, so we test the correlation between submissions and an author's other accepted Alphas. Correlation must be less than 85%. Updates to current versions are not tested for correlation.                                                                          |
++---------------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 
 |
 
