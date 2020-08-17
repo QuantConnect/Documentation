@@ -50,7 +50,7 @@ In backtests you can set your starting capital using the ``self.SetCash(float ca
 Setting Dates
 =============
 
-Backtesting uses the ``SetStartDate(int year, int month, int day)`` and ``SetEndDate(int year, int month, int day)`` methods to configure the backtest time range. If unspecified, the end date defaults to yesterday. In .NET languages, you can also use a DateTime object to set the dates.
+Backtesting uses the ``self.SetStartDate(int year, int month, int day)`` and ``self.SetEndDate(int year, int month, int day)`` methods in Python, or the ``SetStartDate(int year, int month, int day)`` and ``SetEndDate(int year, int month, int day)`` methods in C# to configure the backtest time range. If unspecified, the end date defaults to yesterday. In .NET languages, you can also use a DateTime object to set the dates.
 
 .. tabs::
 
