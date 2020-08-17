@@ -66,3 +66,10 @@ QuantConnect's old docuentation, converted to rst.
    Alternative Data <07-Research/05-alternative-data>
    Machine Learning Research <07-Research/06-machine-learning-research>
    Research to Production <07-Research/07-research-to-production>
+
+
+.. toctree::
+   :maxdepth: 1
+   :caption: Data Library
+
+   Equity <08-Data-Library/01-equity>
