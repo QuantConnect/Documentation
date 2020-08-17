@@ -38,6 +38,7 @@ QuantConnect's old docuentation, converted to rst.
    Consolidating Data <03-Algorithm-Reference/05-consolidating-data>
    Securities and Portfolio <03-Algorithm-Reference/06-securities-and-portfolio>
    Trading and Orders <03-Algorithm-Reference/07-trading-and-orders>
+   Scheduled Events <03-Algorithm-Reference/08-scheduled-events>
 
 
 .. toctree::
