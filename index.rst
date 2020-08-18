@@ -29,6 +29,17 @@ QuantConnect's old docuentation, converted to rst.
 
 .. toctree::
    :maxdepth: 1
+   :caption: Organizations:
+
+   Overview <02-Organizations/01-overview>
+   Team Management <02-Organizations/02-team-management>
+   Resource Management <02-Organizations/03-resource-management>
+   Alpha Management <02-Organizations/04-alpha-management>
+   Organization Support <02-Organizations/05-organization-support>
+
+
+.. toctree::
+   :maxdepth: 1
    :caption: Algorithm Reference:
 
    Overview <03-Algorithm-Reference/01-overview>
@@ -39,6 +50,25 @@ QuantConnect's old docuentation, converted to rst.
    Securities and Portfolio <03-Algorithm-Reference/06-securities-and-portfolio>
    Trading and Orders <03-Algorithm-Reference/07-trading-and-orders>
    Scheduled Events <03-Algorithm-Reference/08-scheduled-events>
+   Indicators <03-Algorithm-Reference/09-indicators>
+   Rolling Window <03-Algorithm-Reference/10-rolling-window>
+   Universes <03-Algorithm-Reference/11-universes>
+   Historical Data <03-Algorithm-Reference/12-historical-data>
+   Charting <03-Algorithm-Reference/13-charting>
+   Logging and Debug <03-Algorithm-Reference/16-logging-and-debug>
+
+
+.. toctree::
+   :maxdepth: 1
+   :caption: Algorithm Framework:
+
+   Overview <04-Algorithm-Framework/01-overview>
+   Universe Selection <04-Algorithm-Framework/02-universe-selection>
+   Alpha Creation <04-Algorithm-Framework/03-alpha-creation>
+   Portfolio Construction <04-Algorithm-Framework/04-portfolio-construction>
+   Execution <04-Algorithm-Framework/05-execution>
+   Risk Management <04-Algorithm-Framework/06-risk-management>
+   Algorithm Scoring <04-Algorithm-Framework/07-algorithm-scoring>
 
 
 .. toctree::
