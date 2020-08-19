@@ -253,6 +253,8 @@ Pricing
 .. list-table::
    :header-rows: 1
 
+   * - Application Context
+     - Subscription Fee
    * - Backtesting
      - Free
    * - Alpha Streams Use, Competitions

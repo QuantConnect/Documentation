@@ -24,3 +24,4 @@ Data Available
 .. toctree::
 
    01-tiingo-news
+   02-benzinga
