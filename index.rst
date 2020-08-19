@@ -104,3 +104,4 @@ QuantConnect's old docuentation, converted to rst.
 
    Equity <08-Data-Library/01-equity>
    Forex <08-Data-Library/02-forex>
+   Crypto <08-Data-Library/03-crypto>
