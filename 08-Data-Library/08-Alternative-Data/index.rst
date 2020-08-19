@@ -2,10 +2,6 @@
 Data Library - Alternative Data
 ===============================
 
-.. toctree::
-
-   01-tiingo-news
-
 |
 
 Introduction
@@ -25,4 +21,6 @@ All data is free for all backtesting, Alpha Streams, and use in `Alpha Streams C
 Data Available
 ==============
 
-:ref:`tiingo-news`
+.. toctree::
+
+   01-tiingo-news
