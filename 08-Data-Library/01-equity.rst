@@ -1,8 +1,8 @@
 .. _data-library-equity:
 
-=====================
-Data Library - Equity
-=====================
+======
+Equity
+======
 
 |
 

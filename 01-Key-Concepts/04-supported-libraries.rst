@@ -1,8 +1,8 @@
 .. _key-concepts-supported-libraries:
 
-==================================
-Key Concepts - Supported Libraries
-==================================
+===================
+Supported Libraries
+===================
 
 |
 

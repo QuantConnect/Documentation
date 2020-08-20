@@ -1,8 +1,8 @@
 .. _key-concepts-research-guide:
 
-=============================
-Key Concepts - Research Guide
-=============================
+==============
+Research Guide
+==============
 
 |
 

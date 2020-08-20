@@ -1,8 +1,8 @@
 .. _algorithm-reference-consolidating-data:
 
-========================================
-Algorithm Reference - Consolidating Data
-========================================
+==================
+Consolidating Data
+==================
 
 |
 

@@ -1,8 +1,8 @@
 .. _key-concepts-getting-started:
 
-==============================
-Key Concepts - Getting Started
-==============================
+===============
+Getting Started
+===============
 
 |
 

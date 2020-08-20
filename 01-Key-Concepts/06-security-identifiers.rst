@@ -1,8 +1,8 @@
 .. _key-concepts-security-identifiers:
 
-===================================
-Key Concepts - Security Identifiers
-===================================
+====================
+Security Identifiers
+====================
 
 |
 

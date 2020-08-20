@@ -1,8 +1,8 @@
 .. _data-library-forex:
 
-====================
-Data Library - Forex
-====================
+=====
+Forex
+=====
 
 |
 

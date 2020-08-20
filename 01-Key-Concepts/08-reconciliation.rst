@@ -1,8 +1,8 @@
 .. _key-concepts-reconciliation:
 
-=============================
-Key Concepts - Reconciliation
-=============================
+==============
+Reconciliation
+==============
 
 |
 

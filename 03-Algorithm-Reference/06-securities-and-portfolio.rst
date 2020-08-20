@@ -1,8 +1,8 @@
 .. _algorithm-reference-securities-and-portfolio:
 
-==============================================
-Algorithm Reference - Securities and Portfolio
-==============================================
+========================
+Securities and Portfolio
+========================
 
 |
 

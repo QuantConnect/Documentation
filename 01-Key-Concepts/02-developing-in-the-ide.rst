@@ -1,8 +1,8 @@
 .. _key-concepts-developing-in-the-ide:
 
-====================================
-Key Concepts - Developing in the IDE
-====================================
+=====================
+Developing in the IDE
+=====================
 
 |
 

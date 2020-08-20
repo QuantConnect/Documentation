@@ -1,8 +1,8 @@
 .. _algorithm-reference-trading-and-orders:
 
-========================================
-Algorithm Reference - Trading and Orders
-========================================
+==================
+Trading and Orders
+==================
 
 |
 
