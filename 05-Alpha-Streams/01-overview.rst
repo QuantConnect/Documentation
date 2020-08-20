@@ -1,8 +1,8 @@
 .. _alpha-streams-overview:
 
-==============================
-Alpha Streams - Overview
-==============================
+========
+Overview
+========
 
 |
 
@@ -31,7 +31,7 @@ QuantConnect directly charges the funds a 30% fee for reviewing, hosting, and se
 
 What Is An Alpha?
 =================
-An Alpha is an algorithm that generates expected return predictions funds can use to help manage their portfolio. Alphas solely focus on this prediction, actively ignoring position sizing and management. Fund managers with existing portfolios prefer to consume your signals as a factor to their model. To see more about creating an Alpha for the marketplace, see the next section, `Creating An Alpha <https://www.quantconnect.com/docs/alpha-streams/creating-an-alpha>`_.
+An Alpha is an algorithm that generates expected return predictions funds can use to help manage their portfolio. Alphas solely focus on this prediction, actively ignoring position sizing and management. Fund managers with existing portfolios prefer to consume your signals as a factor to their model. To see more about creating an Alpha for the marketplace, see the next section, :ref:`Creating An Alpha <alpha-streams-creating-an-alpha>`.
 
 Some examples of a focused alpha model are:
 
@@ -58,7 +58,7 @@ Insights include the following pieces of information:
 
 Only the Symbol and Direction are required properties; however, the other properties add depth to your prediction, which increases its usefulness and value in the marketplace.
 
-If you are using the Algorithm Framework, your ``AlphaModel`` will yield Insight objects from your Update() method. We'll cover more about emitting insights in the next section, `Creating An Alpha <https://www.quantconnect.com/docs/alpha-streams/creating-an-alpha>`_.
+If you are using the Algorithm Framework, your ``AlphaModel`` will yield Insight objects from your Update() method. We'll cover more about emitting insights in the next section, :ref:`Creating An Alpha <alpha-streams-creating-an-alpha>`.
 
 .. tabs::
 

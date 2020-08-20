@@ -1,8 +1,8 @@
 .. _key-concepts-understanding-time:
 
-=================================
-Key Concepts - Understanding Time
-=================================
+==================
+Understanding Time
+==================
 
 .. raw:: html
 

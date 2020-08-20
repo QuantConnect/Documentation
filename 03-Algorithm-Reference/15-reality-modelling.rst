@@ -1,6 +1,8 @@
-=======================================
-Algorithm Reference - Reality Modelling
-=======================================
+.. _algorithm-reference-reality-modelling:
+
+=================
+Reality Modelling
+=================
 
 |
 

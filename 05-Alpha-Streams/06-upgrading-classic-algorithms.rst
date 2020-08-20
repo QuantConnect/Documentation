@@ -1,8 +1,8 @@
 .. _alpha-streams-upgrading-classic-algorithms:
 
-============================================
-Alpha Streams - Upgrading Classic Algorithms
-============================================
+============================
+Upgrading Classic Algorithms
+============================
 
 |
 
@@ -65,4 +65,4 @@ If you cannot determine these values with some intrinsic data-driven hypothesis,
 
 Determining Insight Confidence and Magnitude
 ============================================
-Your Insight period, magnitude, and confidence are important properties that can be hard to generate when porting a classic algorithm. See the `Creating Alpha <https://www.quantconnect.com/docs/alpha-streams/creating-an-alpha#Creating-an-Alpha-Determining-Insight-Confidence-and-Magnitude>`_ section for more information.
+Your Insight period, magnitude, and confidence are important properties that can be hard to generate when porting a classic algorithm. See the :ref:`Creating Alpha <alpha-streams-creating-an-alpha-determining-insight-confidence-magnitude-and-weight>` section for more information.
