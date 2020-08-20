@@ -48,7 +48,7 @@ To achieve this, QuantConnect allows you to create ``Consolidator`` objects and 
 Data Shapes and Sizes
 =====================
 
-Consolidated output data is in the same format as the input. Small TradeBars are aggregated into large TradeBars, and small QuoteBars are aggregated into large QuoteBars.
+Consolidated output data is in the same format as the input. :ref:`Small TradeBars <algorithm-reference-handling-data-tradebars>` are aggregated into large TradeBars, and small :ref:`QuoteBars <algorithm-reference-handling-data-quotebars>` are aggregated into large QuoteBars.
 
 .. figure:: http://cdn.quantconnect.com/docs/i/consolidators-small-to-large.png
 
@@ -112,7 +112,7 @@ The most common error is to put braces "``()``" at the end of your function call
 Consolidating Data for Indicators
 =================================
 
-Consolidated data can easily be used with indicators along the period-resolution boundaries. This is possible with one line of code by the basic indicator API, as shown below. Using these helper methods, the required consolidators are created, and the output bar is automatically used to update the indicator. See the Indicators documentation for more information.
+Consolidated data can easily be used with indicators along the period-resolution boundaries. This is possible with one line of code by the basic indicator API, as shown below. Using these helper methods, the required consolidators are created, and the output bar is automatically used to update the indicator. See the :ref:`Indicators <algorithm-reference-indicators>` documentation for more information.
 
 .. tabs::
 
@@ -151,7 +151,7 @@ A common request is to use consolidators with indicators to create indicators wi
 Rolling Window of Consolidated Bars
 ===================================
 
-A common request is to compare a current consolidated bar with one from the past. This can be achieved by combining a RollingWindow with a Consolidator. This is easy to achieve with the individual tools provided here and in the RollingWindow documentation. First, you must create a consolidator for the data you need, and then you must add it to the rolling window in the event handler. Building this will allow you to easily compare recent custom-bars with previous ones created.
+A common request is to compare a current consolidated bar with one from the past. This can be achieved by combining a `RollingWindow <algorithm-reference-rolling-window>` with a Consolidator. This is easy to achieve with the individual tools provided here and in the RollingWindow documentation. First, you must create a consolidator for the data you need, and then you must add it to the rolling window in the event handler. Building this will allow you to easily compare recent custom-bars with previous ones created.
 
 .. tabs::
 

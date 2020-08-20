@@ -72,10 +72,12 @@ Backtesting uses the ``self.SetStartDate(int year, int month, int day)`` and ``s
 
 |
 
+.. _algorithm-reference-initializing-algorithms-selecting-asset-data:
+
 Selecting Asset Data
 ====================
 
-Algorithms can manually subscribe to data for specific assets they need or use universes to choose groups of assets based on filtering criteria (e.g. all stocks with volumes greater than $10M/day). See more about Universes here.
+Algorithms can manually subscribe to data for specific assets they need or use universes to choose groups of assets based on filtering criteria (e.g. all stocks with volumes greater than $10M/day). See more about Universes :ref:`here <algorithm-reference-universes>`.
 
 To manually subscribe to a specific asset you can call the ``AddEquity()``, ``AddForex()``, ``AddCrypto()``, ``AddCfd()`` and ``AddOption()`` methods in your Initialize() method. There is no official limit to how much data you can ask for, but there are practical resource limitations.
 
@@ -103,7 +105,7 @@ By default equity data in QuantConnect is Split and Dividend adjusted backwards 
 |                    | Return of the investment adding the dividend sum to the initial asset price. For more information on this see Investopedia's article `Total Returns <https://www.investopedia.com/terms/t/totalreturn.asp>`_.                                                                 |
 +--------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 
-If you have your own custom data you'd like to backtest against, check out the custom data section.
+If you have your own custom data you'd like to backtest against, check out the :ref:`custom data section <algorithm-reference-importing-custom-data>`.
 
 .. code-block::
 
@@ -134,7 +136,7 @@ If you have your own custom data you'd like to backtest against, check out the c
 Setting Indicators
 ==================
 
-Indicators should be created and warmed up in the ``Initialize()`` method in most applications. For more details, please see the Indicators section.
+Indicators should be created and warmed up in the ``Initialize()`` method in most applications. For more details, please see the :ref:`Indicators <algorithm-reference-indicators>` section.
 
 |
 
@@ -170,7 +172,7 @@ The ``AccountType`` enum supports values of Cash and Margin. When using cash, le
 
 Margin accounts with more than $25,000 in equity are eligible for pattern day trading margin limits. This increases your available leverage to 4x while the market is open and 2x overnight. To model this behavior in your algorithm, you must set your security ``MarginModel`` to ``PatternDayTradingMarginModel``.
 
-See more about brokerage models in the Reality Modeling section.
+See more about brokerage models in the :ref:`Reality Modeling <algorithm-reference-reality-modeling>` section.
 
 .. tabs::
 

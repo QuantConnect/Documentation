@@ -1,3 +1,5 @@
+.. _algorithm-reference-machine-learning:
+
 ======================================
 Algorithm Reference - Machine Learning
 ======================================

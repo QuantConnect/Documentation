@@ -135,6 +135,8 @@ Tick data is raw and unfiltered. It may contain bad ticks which skew your trade 
 
 |
 
+.. _algorithm-reference-handling-data-tradebars:
+
 TradeBars
 =========
 
@@ -162,6 +164,8 @@ TradeBars are individual trades from the exchanges consolidated into price bars.
             imbClose = data['IBM'].Close       ## Close price
 
 |
+
+.. _algorithm-reference-handling-data-quotebars:
 
 QuoteBars
 =========

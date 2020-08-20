@@ -23,9 +23,9 @@ Algorithm Reference - Trading and Orders
 Introduction
 ============
 
-QuantConnect provides dozens of methods to create, update, and cancel orders. These orders can be placed automatically with helper methods, or manually through methods on the algorithm API. Manual orders can be fetched, updated, and canceled with Order Tickets. As orders are filled and updated, they generate events that notify your algorithm about their execution.
+QuantConnect provides dozens of methods to create, update, and cancel orders. These orders can be placed :ref:`automatically <algorithm-reference-trading-and-orders-automatic-position-sizing>` with helper methods, or manually through methods on the algorithm API. Manual orders can be :ref:`fetched, updated, and canceled <algorithm-reference-trading-and-orders-updating-orders>` with Order Tickets. As orders are filled and updated, they generate :ref:`events <algorithm-reference-trading-and-orders-tracking-order-events>` that notify your algorithm about their execution.
 
-In backtesting, order fills are simulated using historical data. QuantConnect allows you to create your own fill, fee, slippage, and margin models via plugin points. You can control how optimistic or pessimistic these fills are with transaction model classes. In live trading, this fill price is set by your brokerage when the order is filled.
+In backtesting, order fills are simulated using historical data. QuantConnect allows you to create your own fill, fee, slippage, and margin models via plugin points. You can control how optimistic or pessimistic these fills are with :ref:`transaction model <algorithm-reference-trading-and-orders-slippage-transaction-and-brokerage-models>` classes. In live trading, this fill price is set by your brokerage when the order is filled.
 
 **What is an Order Ticket**
 
@@ -66,9 +66,11 @@ QuantConnect provides the following API methods to place orders. All of the meth
    * - MarketOnCloseOrder
      - ``MarketOnCloseOrder("IBM", 100);`` Market on close order for 100 IBM
 
-QuantConnect also provides automated order management technology via the Algorithm Framework, and automated position sizing via the Automated Position Sizing (SetHoldings).
+QuantConnect also provides automated order management technology via the :ref:`Algorithm Framework <algorithm-framework-overview>`, and automated position sizing via the :ref:`Automated Position Sizing (SetHoldings) <algorithm-reference-trading-and-orders-automatic-position-sizing>`.
 
 |
+
+.. _algorithm-reference-trading-and-orders-updating-orders:
 
 Updating Orders
 ===============
@@ -164,6 +166,8 @@ To cancel an order, you must use its ``OrderTicket``. Market Orders are transmit
 
 |
 
+.. _algorithm-reference-trading-and-orders-slippage-transaction-and-brokerage-models:
+
 Slippage, Transaction, and Brokerage Models
 ===========================================
 
@@ -173,17 +177,19 @@ As of November 2019, QuantConnect does not have quote data for US equities backt
 
 **Order Slippage Impact**
 
-By default, QuantConnect does not model slippage impact though we highly recommend you include a slippage model in your algorithm. Slippage is the difference between the expected and final fill prices of a trade. For more information on creating your own slippage models, see our documentation.
+By default, QuantConnect does not model slippage impact though we highly recommend you include a slippage model in your algorithm. Slippage is the difference between the expected and final fill prices of a trade. For more information on creating your own slippage models, see our :ref:`documentation <algorithm-reference-reality-modeling-slippage-models>`.
 
 **Transaction Cost Models**
 
-By default, transaction fees are modelled from Interactive Brokers Brokerage rates. These models are customizable by setting a new ``FeeModel``. For more information on creating your own fee models, see our documentation.
+By default, transaction fees are modelled from Interactive Brokers Brokerage rates. These models are customizable by setting a new ``FeeModel``. For more information on creating your own fee models, see our :ref:`documentation <algorithm-reference-reality-modeling-fee-models>`.
 
 **Brokerage Models**
 
-Brokerage models aim to combine all of the models relevant for a brokerage together as a set. If you set the appropriate brokerage model, the fee models and supported order types will be appropriately set in your algorithm. For more information on setting your brokerage models, see our documentation.
+Brokerage models aim to combine all of the models relevant for a brokerage together as a set. If you set the appropriate brokerage model, the fee models and supported order types will be appropriately set in your algorithm. For more information on setting your brokerage models, see our :ref:`documentation <algorithm-reference-reality-modeling-brokerage-models>`.
 
 |
+
+.. _algorithm-reference-trading-and-orders-automatic-position-sizing:
 
 Automatic Position Sizing (SetHoldings)
 =======================================
@@ -300,7 +306,7 @@ The algorithm Transactions Manager (``SecurityTransactionManager``) is a collect
 
 **Fetching Single Order**
 
-Using the Transactions Manager, you can retrieve a clone of an order by its Id. Once sent, orders cannot be changed, so the clone of the order is for informational purposes only. To update an order's properties, you should use an ``Order`` Ticket. The method returns an Order object.
+Using the Transactions Manager, you can retrieve a clone of an order by its Id. Once sent, orders cannot be changed, so the clone of the order is for informational purposes only. To :ref:`update <algorithm-reference-trading-and-orders-updating-orders>` an order's properties, you should use an ``Order`` Ticket. The method returns an Order object.
 
 .. tabs::
 
@@ -354,6 +360,8 @@ The Cancel helpers can cancel all open orders, or just those orders related with
 
 |
 
+.. _algorithm-reference-trading-and-orders-tracking-order-events:
+
 Tracking Order Events
 =====================
 
@@ -394,7 +402,7 @@ The ``OrderStatus`` enum has the following potential values.
    * - ``OrderStatus.Canceled``
      - Order canceled before it was filled.
    * - ``OrderStatus.Invalid``
-     - Order invalidated before it was accepted by LEAN.
+     - Order :ref:`invalidated <algorithm-reference-trading-and-orders-order-error-code-reference>` before it was accepted by LEAN.
    * - ``OrderStatus.CancelPending``
      - Order waiting for confirmation of cancellation.
    * - ``OrderStatus.UpdateSubmitted``
@@ -504,7 +512,7 @@ Limit Orders
 
 Limit orders fill once the asset price is equal or better than the configured price. When purchasing an asset, this means the price is equal or lower to the price you set. Conversely, when selling shares, this is when the price is equal or higher to the price you set. Limit orders are often used to get a good entry price, or take-profit on an existing holding.
 
-Limit orders can be updated via their ``OrderTicket`` because their orders are not immediately filled. For more information about updating orders, see Updating Orders.
+Limit orders can be updated via their ``OrderTicket`` because their orders are not immediately filled. For more information about updating orders, see :ref:`Updating Orders <algorithm-reference-trading-and-orders-updating-orders>`.
 
 .. tabs::
 
@@ -529,7 +537,7 @@ A Stop Market Order ("stop-loss") fills as a market order when a specific price 
 
 If the market gaps (jumps in a discontinuous manner) past your stop price, it may be filled at a substantially worse price than the stop price you entered. As such, a stop-loss order is no guarantee your trade will fill at the price you specify.
 
-Stop Market Order ``StopPrice``, ``Tag``, and ``Quantity`` can be updated. For more information on updating orders, see Updating Orders.
+Stop Market Order ``StopPrice``, ``Tag``, and ``Quantity`` can be updated. For more information on updating orders, see :ref:`Updating Orders <algorithm-reference-trading-and-orders-updating-orders>`.
 
 .. tabs::
 
@@ -552,7 +560,7 @@ Stop Limit Orders
 
 Stop Limit Orders create a limit order when a specified price is reached. The associated limit order is filled when it reaches the limit price or better. As with all limit orders, the order is not filled if the price does not reach the specified price. Stop limit orders are often used to control risk, without the risk of a large gap filling trades unfavorably.
 
-Stop Limit Order ``StopPrice``, ``LimitPrice``, ``Tag``, and ``Quantity`` can all be updated after creation. For more information on updating orders, see Updating Orders.
+Stop Limit Order ``StopPrice``, ``LimitPrice``, ``Tag``, and ``Quantity`` can all be updated after creation. For more information on updating orders, see :ref:`Updating Orders <algorithm-reference-trading-and-orders-updating-orders>`.
 
 .. tabs::
 
@@ -580,7 +588,7 @@ Market On Open orders are filled at the official opening price for the security.
 
 Market On Close orders are filled at the official closing price for the security. They must be submitted at least two minutes before the market closes to be included in the official closing auction. The Market On Open ``Quantity`` and ``Tag`` properties can be updated after creation until the last two minutes before close.
 
-For more information on updating orders, see Updating Orders.
+For more information on updating orders, see :ref:`Updating Orders <algorithm-reference-trading-and-orders-updating-orders>`.
 
 .. tabs::
 
@@ -636,7 +644,7 @@ Orders can be set with tags to aid your strategy development. Tags can be any st
         updateSettings.Tag = "Our New Tag for SPY Trade"
         ticket.Update(updateSettings)
 
-For more information on updating order properties, see Updating Orders.
+For more information on updating order properties, see :ref:`Updating Orders <algorithm-reference-trading-and-orders-updating-orders>`.
 
 |
 
@@ -656,6 +664,8 @@ If the last price data point was more than 10 minutes old, LEAN will flag the or
 To fix this, we recommend using the highest resolution data possible for a high fidelity backtest.
 
 |
+
+.. _algorithm-reference-trading-and-orders-order-error-code-reference:
 
 Order Error Code Reference
 ==========================

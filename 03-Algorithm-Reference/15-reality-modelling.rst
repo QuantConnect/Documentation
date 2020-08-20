@@ -1,3 +1,5 @@
+.. _algorithm-reference-reality-modeling:
+
 =======================================
 Algorithm Reference - Reality Modelling
 =======================================
@@ -19,6 +21,8 @@ All models are set on a per security basis. To set a model, first fetch the secu
 All models should be set up in your Initialize() method.
 
 |
+
+.. _algorithm-reference-reality-modeling-brokerage-models:
 
 Brokerage Models
 ================
@@ -120,6 +124,8 @@ Each brokerage model validates the security and order type before it submits an 
 
 |
 
+.. _algorithm-reference-reality-modeling-fee-models:
+
 Fee Models
 ==========
 
@@ -190,6 +196,8 @@ Fee models implement the ``IFeeModel`` interface. If you wish to implement your 
                 return OrderFee(CashAmount(1, 'ETH'))
 
 |
+
+.. _algorithm-reference-reality-modeling-slippage-models:
 
 Slippage Models
 ===============

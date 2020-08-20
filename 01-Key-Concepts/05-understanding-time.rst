@@ -50,7 +50,7 @@ QuantConnect allows your algorithm to request data for multiple securities and m
 
 Once a datapoint's *EndTime* has passed, it will be transmitted to your algorithm OnData() method. For bar data, this is the beginning of the *next* bar. Your algorithm is only permitted to access values of securities from before this Time Frontier, preventing you from accidentally looking into the future.
 
-The Time property in your algorithm is always equal to this Time Frontier. This is also used as the timestamp for any `logging and debugging <https://www.quantconnect.com/docs/algorithm-reference/logging-and-debug>`_ messages.
+The Time property in your algorithm is always equal to this Time Frontier. This is also used as the timestamp for any :ref:`logging and debugging <algorithm-reference-logging-and-debug>` messages.
 
 
 **Bar Data - Period Values**
@@ -61,9 +61,9 @@ The close of a bar is not known until the start of the next bar, which can somet
 
 .. figure:: https://cdn.quantconnect.com/docs/i/bar-stream_rev0.png
 
-When there are no ticks during a period, the previous bar transmitted is copied and emitted at the request resolution. In QuantConnect, this is the default behavior for bar data and it is referred to as "filling the data forward". You can configure whether this is enabled when you `request the security data <https://www.quantconnect.com/docs/algorithm-reference/initializing-algorithms#Initializing-Algorithms-Selecting-Asset-Data>`_.
+When there are no ticks during a period, the previous bar transmitted is copied and emitted at the request resolution. In QuantConnect, this is the default behavior for bar data and it is referred to as "filling the data forward". You can configure whether this is enabled when you :ref:`request the security data <algorithm-reference-initializing-algorithms-selecting-asset-data>`.
 
-QuantConnect provides data in Second, Minute, Hour, and Daily bar format. To create other periods of bars, you need to `consolidate <https://www.quantconnect.com/docs/algorithm-reference/consolidating-data>`_ these short periods into larger ones.
+QuantConnect provides data in Second, Minute, Hour, and Daily bar format. To create other periods of bars, you need to :ref:`consolidate <algorithm-reference-consolidating-data>` these short periods into larger ones.
 
 **Tick Data - Point Values**
 
