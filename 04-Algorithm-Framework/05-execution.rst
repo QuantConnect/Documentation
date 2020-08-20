@@ -1,8 +1,8 @@
 .. _algorithm-framework-execution:
 
-===============================
-Algorithm Framework - Execution
-===============================
+=========
+Execution
+=========
 
 |
 
@@ -27,7 +27,7 @@ Introduction
 
 .. figure:: https://cdn.quantconnect.com/web/i/docs/algorithm-framework/execute.png
 
-The Execution Model is primarily concerned with efficiently executing trades. It seeks to find the optimal price to fill orders and manages the orders. It receives a ``PortfolioTarget`` array from the `Portfolio Construction Model <https://www.quantconnect.com/docs/algorithm-framework/portfolio-construction>`_ and uses it to place trades in the market, seeking to reach the units indicated in the Portfolio Target. To set your execution model, you should use the ``self.SetExecution( IExecutionModel )`` method. This should be done from your algorithm ``def Initialize()`` method.
+The Execution Model is primarily concerned with efficiently executing trades. It seeks to find the optimal price to fill orders and manages the orders. It receives a ``PortfolioTarget`` array from the :ref:`Portfolio Construction Model <algorithm-framework-portfolio-construction>` and uses it to place trades in the market, seeking to reach the units indicated in the Portfolio Target. To set your execution model, you should use the ``self.SetExecution( IExecutionModel )`` method. This should be done from your algorithm ``def Initialize()`` method.
 
 When the targets arrive at the Execution Model, they have already been risk-adjusted by the Risk Management Model. Like all models, the Execution Model only receives *updates* to the portfolio target share counts. You will not receive all the targets at once.
 
@@ -48,7 +48,7 @@ When the targets arrive at the Execution Model, they have already been risk-adju
 Execution Model Structure
 =========================
 
-Execution models have one required method to implement ``Execute(algorithm, targets)``. This is responsible for reaching the target portfolios as efficiently as possible. The ``PortfolioTarget`` objects are created by the `Portfolio Construction Model <https://www.quantconnect.com/docs/algorithm-framework/portfolio-construction>`_ and then adjusted by the `Risk Management Module <https://www.quantconnect.com/docs/algorithm-framework/risk-management>`_. The final risk-adjusted portfolio targets are delivered to your execution model for fulfillment.
+Execution models have one required method to implement ``Execute(algorithm, targets)``. This is responsible for reaching the target portfolios as efficiently as possible. The ``PortfolioTarget`` objects are created by the :ref:`Portfolio Construction Model <algorithm-framework-portfolio-construction>` and then adjusted by the :ref:`Risk Management Module <algorithm-framework-risk-management>`. The final risk-adjusted portfolio targets are delivered to your execution model for fulfillment.
 
 .. tabs::
 

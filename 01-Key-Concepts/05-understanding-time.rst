@@ -1,8 +1,8 @@
 .. _key-concepts-understanding-time:
 
-=================================
-Key Concepts - Understanding Time
-=================================
+==================
+Understanding Time
+==================
 
 .. raw:: html
 
@@ -34,6 +34,8 @@ The core technology behind QuantConnect algorithmic trading is an event-based, s
 All QuantConnect algorithms have this time-stream baked in as the primary event handler: OnData(slice). The Slice object represents all of the data at a moment of time, a *"time-slice"*. No matter what data you request, you receive it in the order created according to simulated algorithm time. By only letting your algorithm see the present and past moments, we can prevent the most common quantitative-analysis error, `look-ahead bias <https://www.investopedia.com/terms/l/lookaheadbias.asp>`_.
 
 |
+
+.. _key-concepts-understanding-time-ticks-bars-and-the-time-frontier:
 
 Ticks, Bars and the Time Frontier
 =================================

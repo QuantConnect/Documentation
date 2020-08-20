@@ -1,8 +1,8 @@
 .. _research-alternative-data:
 
-===========================
-Research - Alternative Data
-===========================
+================
+Alternative Data
+================
 
 |
 

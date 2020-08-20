@@ -1,8 +1,8 @@
 .. _alpha-streams-common-alpha-features:
 
-=====================================
-Alpha Streams - Common Alpha Features
-=====================================
+=====================
+Common Alpha Features
+=====================
 
 |
 

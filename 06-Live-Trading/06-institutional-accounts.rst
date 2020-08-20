@@ -1,8 +1,8 @@
 .. _live-trading-institutional-accounts:
 
-=====================================
-Live Trading - Institutional Accounts
-=====================================
+======================
+Institutional Accounts
+======================
 
 |
 

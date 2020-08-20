@@ -1,8 +1,8 @@
 .. _algorithm-framework-universe-selection:
 
-========================================
-Algorithm Framework - Universe Selection
-========================================
+==================
+Universe Selection
+==================
 
 |
 
@@ -58,7 +58,7 @@ There are 3 types of universes:
 
 Manual Universe Selection
 =========================
-Manual universe selection chooses a static, fixed set of assets to trade. This is most useful when selecting a set of currencies or a basket of ETF stocks. You can also add assets with the traditional `AddSecurity API <https://www.quantconnect.com/docs/algorithm-reference/initializing-algorithms#Initializing-Algorithms-Selecting-Asset-Data>`_.
+Manual universe selection chooses a static, fixed set of assets to trade. This is most useful when selecting a set of currencies or a basket of ETF stocks. You can also add assets with the traditional :ref:`AddSecurity API <algorithm-reference-initializing-algorithms-selecting-asset-data>`.
 
 The ``ManualUniverseSelectionModel`` class is initialized with an array of ``Symbol`` objects at the UniverseSettings.Resolution data resolution. ``Symbol`` objects can be created with the Symbol.Create method.
 
@@ -129,7 +129,7 @@ To define a fundamental Universe Selection model, you need to create an instance
         def SelectFine(self, fine):
             return [f.Symbol for f in fine]
 
-The fundamental universes perform the same filtering as the traditional algorithm explained in the `Universe <https://www.quantconnect.com/docs/algorithm-reference/universes>`_ section. The Coarse selection function is passed a list of ``CoarseFundamental`` objects and should return a list of Symbol objects. The Fine selection function is passed a subset of ``FineFundamental`` objects generated from coarse selection results and should return a list of Symbol objects. See the Universe section for more information on these filtering functions.
+The fundamental universes perform the same filtering as the traditional algorithm explained in the :ref:`Universe <algorithm-reference-universes>` section. The Coarse selection function is passed a list of ``CoarseFundamental`` objects and should return a list of Symbol objects. The Fine selection function is passed a subset of ``FineFundamental`` objects generated from coarse selection results and should return a list of Symbol objects. See the Universe section for more information on these filtering functions.
 
 |
 
@@ -153,7 +153,7 @@ Scheduled universes allow you to perform universe selection at fixed, regular in
 
         ScheduledUniverseSelectionModel(dateRule, timeRule, selector,  universeSettings=null, securityInitializer=null)
 
-The universe selection helper works in the same way as the `Scheduled Event API <https://www.quantconnect.com/docs/algorithm-reference/scheduled-events>`_ requiring a ``DateRule``, a ``TimeRule`` to set the callback times, and a function to execute, which returns a list of Symbol objects.
+The universe selection helper works in the same way as the :ref:`Scheduled Event API <algorithm-reference-scheduled-events>` requiring a ``DateRule``, a ``TimeRule`` to set the callback times, and a function to execute, which returns a list of Symbol objects.
 
 .. tabs::
 
@@ -213,7 +213,7 @@ Generally, you should be able to extend one of the universes described above, so
 
 Configuring Securities
 ======================
-To configure securities in a universe, you should use the ``SetSecurityInitializer()`` method. Call this from your Initialize method and set an ``ISecurityInitializer`` class, or use the functional implementation demonstrated below for simple requests. This feature is described in detail in the `Configuring Universe Securities <https://www.quantconnect.com/docs/algorithm-reference/universes#Universes-Configuring-Universe-Securities>`_ section.
+To configure securities in a universe, you should use the ``SetSecurityInitializer()`` method. Call this from your Initialize method and set an ``ISecurityInitializer`` class, or use the functional implementation demonstrated below for simple requests. This feature is described in detail in the :ref:`Configuring Universe Securities <algorithm-reference-universes-configuring-universe-securities>` section.
 
 .. tabs::
 

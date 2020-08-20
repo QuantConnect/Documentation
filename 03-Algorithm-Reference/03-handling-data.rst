@@ -30,6 +30,8 @@ All data uses ``DataDictionary`` objects to group data by symbol and provide eas
 
 |
 
+.. _algorithm-reference-handling-data-time-slices:
+
 Time Slices
 ===========
 

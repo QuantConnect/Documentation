@@ -1,15 +1,15 @@
 .. _research-machine-learning-research:
 
-====================================
-Research - Machine Learning Research
-====================================
+=========================
+Machine Learning Research
+=========================
 
 |
 
 Introduction
 ============
 
-Machine learning algorithms provide another way to analyze and conduct research on data. They allow us to detect patterns on large datasets and create predictive models. There are many machine learning libraries which make it easy to create, train and use various machine learning models. QuantConnect supports many of the popular frameworks like SciKit and TensorFlow. You can find a full list of the supported libraries in the `Machine Learning <https://www.quantconnect.com/docs/algorithm-reference/machine-learning#Machine-Learning-Supported-Libraries>`_ documentation.
+Machine learning algorithms provide another way to analyze and conduct research on data. They allow us to detect patterns on large datasets and create predictive models. There are many machine learning libraries which make it easy to create, train and use various machine learning models. QuantConnect supports many of the popular frameworks like SciKit and TensorFlow. You can find a full list of the supported libraries in the :ref:`Machine Learning <algorithm-reference-machine-learning-supported-libraries>` documentation.
 
 |
 
@@ -355,12 +355,14 @@ Finally, let's visualize our neural networks accuracy by plotting its prediction
 Resource Limitations
 ====================
 
-Training machine learning algorithms can be quite computationally expensive. There is a 10 minute limit on a time single loop in backtesting. This means that if we are training a model on a large dataset, algorithm may time out. The ``self.Train`` method increases this limit to 30 minutes, allowing us more time to train our model. You can learn more in the `Machine Learning <https://www.quantconnect.com/docs/algorithm-reference/machine-learning#Machine-Learning-Training-Models>`__ documentation.
+Training machine learning algorithms can be quite computationally expensive. There is a 10 minute limit on a time single loop in backtesting. This means that if we are training a model on a large dataset, algorithm may time out. The ``self.Train`` method increases this limit to 30 minutes, allowing us more time to train our model. You can learn more in the :ref:`Machine Learning <algorithm-reference-machine-learning-training-models>` documentation.
 
 |
 
 Saving Models with the Object Store
 ===================================
+
+The Object Store is a project specific storage space available in the QuantConnect web environment. We can use the Object Store to save trained models for future use. You can learn more about the Object Store in the :ref:`Machine Learning <algorithm-reference-machine-learning-storing-trained-models>` documentation.
 
 **Keras**
 

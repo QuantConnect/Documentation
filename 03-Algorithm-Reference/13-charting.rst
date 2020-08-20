@@ -1,8 +1,8 @@
 .. _algorithm-reference-charting:
 
-==============================
-Algorithm Reference - Charting
-==============================
+========
+Charting
+========
 
 |
 

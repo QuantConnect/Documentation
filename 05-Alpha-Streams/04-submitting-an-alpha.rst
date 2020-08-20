@@ -1,8 +1,8 @@
 .. _alpha-streams-submitting-an-alpha:
 
-====================================
-Alpha Streams - Submitting an Alpha
-====================================
+===================
+Submitting an Alpha
+===================
 
 |
 
@@ -22,7 +22,7 @@ To get started, navigate to your `fund dashboard <https://www.quantconnect.com/a
 
 Submission Information
 ======================
-Alpha submissions provide some information funds can use to help them license your strategy. Start by giving your strategy an appropriate name for the Alpha along with a description of the Alpha strategy. Most Alphas are relatively simple, so a sentence or two is fine here. Alpha pricing is covered in the `Pricing an Alpha <https://www.quantconnect.com/docs/alpha-streams/pricing-an-alpha>`_ section.
+Alpha submissions provide some information funds can use to help them license your strategy. Start by giving your strategy an appropriate name for the Alpha along with a description of the Alpha strategy. Most Alphas are relatively simple, so a sentence or two is fine here. Alpha pricing is covered in the :ref:`Pricing an Alpha <alpha-streams-pricing-an-alpha>`_ section.
 
 .. figure:: https://cdn.quantconnect.com/docs/i/alpha-dashboard-description.png
 
@@ -47,7 +47,7 @@ Before your submission is sent to us for the final code review, we run an analys
 +---------------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | **Recent History**                    | The backtest must include the most most recent 5 years of data and can't have an End Date more than 7 days priod to the date of submission.                                                                                                                                                          |
 +---------------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| **Alpha Streams Brokerage Model**     | ``AlphaStreamsBrokerageModel()`` Alphas are required to use the `Alpha Streams Brokerage Model <https://www.quantconnect.com/docs/alpha-streams/alpha-fee-models>`_ and cannot include any additional `Reality Modeling <https://www.quantconnect.com/docs/algorithm-reference/reality-modelling>`_. |
+| **Alpha Streams Brokerage Model**     | ``AlphaStreamsBrokerageModel()`` Alphas are required to use the :ref:`Alpha Streams Brokerage Model <alpha-streams-alpha-fee-models>` and cannot include any additional :ref:`Reality Modeling <_algorithm-reference-reality-modelling>`.                                                            |
 +---------------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 | **Profitability**                     | All Alpha submissions must be profitable over the course of the backtest.                                                                                                                                                                                                                            |
 +---------------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
@@ -88,11 +88,11 @@ We currently don't support futures or option data in Alpha Streams. We are activ
 
 **Insights**
 
-Insights are predictions about the price movement of specific securities and are required in all Alpha Streams submissions. For classic algorithms, one of the `Insight constructors <https://www.quantconnect.com/docs/alpha-streams/creating-an-alpha>`_ must be used and emitted using the `EmitInsights API <https://www.quantconnect.com/docs/alpha-streams/upgrading-classic-algorithms>`_. An Insight must be emitted before any orders are placed. Insights provide funds with information about the predictive power of your models and give them insight into why the orders they see are being placed. For Framework-style algorithms, Insights need to be generated in the Update() method of the Alpha Model. These will then be used in the Portfolio Construction model to build a portfolio.
+Insights are predictions about the price movement of specific securities and are required in all Alpha Streams submissions. For classic algorithms, one of the :ref:`Insight constructors <alpha-streams-creating-an-alpha>` must be used and emitted using the :ref:`EmitInsights API <alpha-streams-upgrading-classic-algorithms>`. An Insight must be emitted before any orders are placed. Insights provide funds with information about the predictive power of your models and give them insight into why the orders they see are being placed. For Framework-style algorithms, Insights need to be generated in the Update() method of the Alpha Model. These will then be used in the Portfolio Construction model to build a portfolio.
 
 **Daily Data**
 
-We aggregate our `Daily data <https://www.quantconnect.com/docs/key-concepts/understanding-time>`_ and then pass it through the algorithm at 00:00 UTC the day after (i.e., the Daily resolution TradeBar for 2019-10-22 will pass through the algorithm at 2019-10-23 00:00). When using daily data, any operations performed during an intraday event will be using stale data. Using daily data can lead to unexpected results and trades as well as unrealistic performance. In general, it is best to use Minute or Hour resolution and a `Scheduled Event <https://www.quantconnect.com/docs/algorithm-reference/scheduled-events>`_ to perform daily operations to achieve realistic performance.
+We aggregate our :ref:`Daily data <key-concepts-understanding-time>` and then pass it through the algorithm at 00:00 UTC the day after (i.e., the Daily resolution TradeBar for 2019-10-22 will pass through the algorithm at 2019-10-23 00:00). When using daily data, any operations performed during an intraday event will be using stale data. Using daily data can lead to unexpected results and trades as well as unrealistic performance. In general, it is best to use Minute or Hour resolution and a :ref:`Scheduled Event <algorithm-reference-scheduled-events>` to perform daily operations to achieve realistic performance.
 
 **Open-Source IP**
 
@@ -100,7 +100,7 @@ We provide the community with lots of example algorithms. A few examples to get 
 
 **Overfitting**
 
-`Overfitting <https://www.quantconnect.com/docs/key-concepts/research-guide#Research-Guide-What-Is-Overfitting>`_ will doom an algorithm in live trading. To prevent this and try to boost the quality of submissions, we can't accept any Alphas that obviously overfit to data. Overfitting can manifest itself in countless ways, but the most common things we see are:
+:ref:`Overfitting <key-concepts-research-guide-overfitting>` will doom an algorithm in live trading. To prevent this and try to boost the quality of submissions, we can't accept any Alphas that obviously overfit to data. Overfitting can manifest itself in countless ways, but the most common things we see are:
 
 * Coding of indicator parameters that work for certain hand-picked assets but perhaps not for any others.
 * Using thresholds for indicator values that are hard-coded and have no fundamental theory behind their value.

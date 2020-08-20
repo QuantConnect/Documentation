@@ -1,8 +1,8 @@
 .. _live-trading-overview:
 
-=======================
-Live Trading - Overview
-=======================
+========
+Overview
+========
 
 |
 
@@ -91,5 +91,5 @@ Deploying two algorithms to the same brokerage account is slightly more difficul
 
 With the ``QCAlgorithmFramework`` you can set two Alpha Models with the ``CompositeAlphaModel``. The CompositeAlphaModel merges the signals of two Alphas. These merged Alpha Model signals are then reconciled in the Portfolio Construction Model, which makes the final decision how much capital to allocate to each signal.
 
-For more information on the CompositeAlphaModel, see the `Algorithm Framework <https://www.quantconnect.com/docs/algorithm-framework/alpha-creation#Alpha-Creation-Multi-Alpha-Algorithms>`_.
+For more information on the CompositeAlphaModel, see the :ref:`Algorithm Framework <algorithm-framework-alpha-creation-multi-alpha-algorithms>`.
 

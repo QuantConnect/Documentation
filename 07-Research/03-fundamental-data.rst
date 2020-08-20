@@ -1,8 +1,8 @@
 .. _research-fundamental-data:
 
-===========================
-Research - Fundamental Data
-===========================
+================
+Fundamental Data
+================
 
 |
 

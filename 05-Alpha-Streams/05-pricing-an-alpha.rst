@@ -1,8 +1,8 @@
 .. _alpha-streams-pricing-an-alpha:
 
-================================
-Alpha Streams - Pricing an Alpha
-================================
+================
+Pricing an Alpha
+================
 
 |
 

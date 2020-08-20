@@ -1,22 +1,22 @@
 .. _research-research-on-indicators:
 
-=================================
-Research - Research on Indicators
-=================================
+======================
+Research on Indicators
+======================
 
 |
 
 Introduction
 ============
 
-Indicators allow us to analyze market data in an abstract form rather than in its raw form. For example, indicators like the RSI tell us, based on price and volume data, if the market is overbought or oversold. Because indicators can extract overall market trends from price data, sometimes, we may want to look for correlations between indicators and the market, instead of between raw price data and the market. You can learn more about indicators in the `Indicators <https://www.quantconnect.com/docs/algorithm-reference/indicators>`_ documentation.
+Indicators allow us to analyze market data in an abstract form rather than in its raw form. For example, indicators like the RSI tell us, based on price and volume data, if the market is overbought or oversold. Because indicators can extract overall market trends from price data, sometimes, we may want to look for correlations between indicators and the market, instead of between raw price data and the market. You can learn more about indicators in the :ref:`Indicators <algorithm-reference-indicators>` documentation.
 
 |
 
 Defining Indicators
 ===================
 
-QuantConnect provides over 100+ predefined indicators that you can use in both backtesting and in research. You can find a full list of indicators in the `Reference Table <https://www.quantconnect.com/docs/research/:%22https://www.quantconnect.com/docs/algorithm-reference/indicators#Indicators-Reference-Table%22>`_. To use an indicator in QuantBook, we will need to define an instance of the indicator object. For example, to define a 10 period Bollinger Band, we will need to provide the period length, the number of standard deviations our bands extend, and the type of moving average.
+QuantConnect provides over 100+ predefined indicators that you can use in both backtesting and in research. You can find a full list of indicators in the :ref:`Reference Table <algorithm-reference-indicators-reference-table>`. To use an indicator in QuantBook, we will need to define an instance of the indicator object. For example, to define a 10 period Bollinger Band, we will need to provide the period length, the number of standard deviations our bands extend, and the type of moving average.
 
 .. code-block::
 
@@ -89,7 +89,7 @@ Now that our indicator is ready for analysis, we can plot it.
 Custom Resolutions
 ==================
 
-Data from history calls is restricted to the default resolutions available for the given type of security, such as second, minute, hour, and daily resolutions. This means that when using ``qb.Indicator``, the resolution of our indicators is also restricted to the default resolutions. If we want to create, for example, a 5-minute resolution indicator, we will need to consolidate our minute resolution historical data into 5 minute data. You can learn how to consolidate data in a pandas dataframe in the `Consolidating Historical Data <https://www.quantconnect.com/docs/research-2/historical-data#Historical-Data-Consolidating-Historical-Data>`_ documentation. After consolidating our data, we will need to manually update our indicator with data from our consolidated dataframe and save those indicator values in a new dataframe.
+Data from history calls is restricted to the default resolutions available for the given type of security, such as second, minute, hour, and daily resolutions. This means that when using ``qb.Indicator``, the resolution of our indicators is also restricted to the default resolutions. If we want to create, for example, a 5-minute resolution indicator, we will need to consolidate our minute resolution historical data into 5 minute data. You can learn how to consolidate data in a pandas dataframe in the :ref:`Consolidating Historical Data <research-historical-data-consolidating-historical-data>` documentation. After consolidating our data, we will need to manually update our indicator with data from our consolidated dataframe and save those indicator values in a new dataframe.
 
 For example, consider the case where we've consolidated our minute historical data into 5 minute data. Let's create a 5 minute Bollinger Band indicator from our new 5 minute dataframe.
 
@@ -133,7 +133,7 @@ For example, consider the case where we've consolidated our minute historical da
 Indicator Extensions
 ====================
 
-Indicators in Lean can be chained together to create unique combinations corresponding to new indicators. For example, we can compose the *SimpleMovingAverage* indicator with a *RelativeStrengthIndex* indicator to create a new indicator which is the *SMA* of the *RSI*. This is accomplished by using Indicator Extensions, which let us compose and operate on indicators. You can find a complete list of available Indicator Extensions in the `Indicator <https://www.quantconnect.com/docs/algorithm-reference/indicators#Indicators-Indicator-Extensions>`_ documentation.
+Indicators in Lean can be chained together to create unique combinations corresponding to new indicators. For example, we can compose the *SimpleMovingAverage* indicator with a *RelativeStrengthIndex* indicator to create a new indicator which is the *SMA* of the *RSI*. This is accomplished by using Indicator Extensions, which let us compose and operate on indicators. You can find a complete list of available Indicator Extensions in the :ref:`Indicator <algorithm-reference-indicators-indicator-extensions>` documentation.
 
 .. code-block::
 

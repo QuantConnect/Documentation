@@ -28,19 +28,19 @@ An organization's homepage is located in the Algorithm Lab. The Organization tab
 
 **Team Management**
 
-The members of your organization can collaborate on projects and also share the resources available to the organization. You can grant members various user-based permissions allowing manage resources and other aspects of the organization. Learn more in the `Team Management <https://www.quantconnect.com/docs/organizations/team-management>`_ documentation.
+The members of your organization can collaborate on projects and also share the resources available to the organization. You can grant members various user-based permissions allowing manage resources and other aspects of the organization. Learn more in the :ref:`team management <organizations-team-management>` documentation.
 
 **Resources Management**
 
-Every user receives a free B-MICRO backtesting node and R-MICRO research node. However, you can also add additional nodes, allowing you to run faster backtests and more concurrent live algorithms. There are a variety of nodes with different specifications that can be added to your organization. Learn more in the `Resource Management <https://www.quantconnect.com/docs/organizations/resource-management>`_ documentation.
+Every user receives a free B-MICRO backtesting node and R-MICRO research node. However, you can also add additional nodes, allowing you to run faster backtests and more concurrent live algorithms. There are a variety of nodes with different specifications that can be added to your organization. Learn more in the :ref:`resource management <organizations-resource-management>` documentation.
 
 The Object Store is a project-specific data storage feature available in QuantConnect. Each organization receives 500 MB of free storage which can be upgraded on the Resource Management page.
 
 **Alpha Management**
 
-The Alpha Streams market place allows you to license alphas written by our community of quants. Qualified organizations can apply to be clients of the market place, giving them licensing access to the available alphas. Learn more in the `Alpha Management <https://www.quantconnect.com/docs/organizations/alpha-management>`_ documentation.
+The Alpha Streams market place allows you to license alphas written by our community of quants. Qualified organizations can apply to be clients of the market place, giving them licensing access to the available alphas. Learn more in the :ref:`alpha management <organizations-alpha-management>` documentation.
 
 **Organization Support**
 
-QuantConnect's community is a great resource for project support. However, for more personalized assistance, you can submit a request for support from a QuantConnect engineer. In order for a member of your organization to submit a support ticket, they must have a support seat. You can learn more about support seats in the `Support <https://www.quantconnect.com/docs/organizations/organization-support>`_ documentation.
+QuantConnect's community is a great resource for project support. However, for more personalized assistance, you can submit a request for support from a QuantConnect engineer. In order for a member of your organization to submit a support ticket, they must have a support seat. You can learn more about support seats in the :ref:`organization support <organizations-organization-support>` documentation.
 

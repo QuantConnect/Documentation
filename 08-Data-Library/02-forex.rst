@@ -63,6 +63,8 @@ Quotes can be accessed in the Slice object in OnData event handler:
 
 |
 
+.. _data-library-forex-oanda-brokerage-forex-data:
+
 OANDA Brokerage Forex Data
 ==========================
 

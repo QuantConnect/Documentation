@@ -1,8 +1,8 @@
 .. _alpha-streams-creating-an-alpha:
 
-=================================
-Alpha Streams - Creating an Alpha
-=================================
+=================
+Creating an Alpha
+=================
 
 |
 
@@ -13,7 +13,7 @@ To create an Alpha for the marketplace, you need just two principal components f
 #. A Universe Selection Model, to determine the assets your Alpha will be trading; and
 #. An Alpha Model, to generate Insight objects on selected assets.
 
-The rest of the Algorithm Framework (Portfolio Construction, Execution, and Risk Management) are related to position sizing and trade management and not relevant to an *external fund.* In this section, we will only cover creating an Alpha using the Algorithm Framework. If you have a Classic Algorithm, please see the documentation for Upgrading `Classic Algorithms <https://www.quantconnect.com/docs/alpha-streams/upgrading-classic-algorithms>`_.
+The rest of the Algorithm Framework (Portfolio Construction, Execution, and Risk Management) are related to position sizing and trade management and not relevant to an *external fund.* In this section, we will only cover creating an Alpha using the Algorithm Framework. If you have a Classic Algorithm, please see the documentation for Upgrading :ref:`Classic Algorithms <alpha-streams-upgrading-classic-algorithms>`.
 
 All algorithms utilizing the QuantConnect Algorithm Framework are eligible for licensing in the Alpha Streams marketplace.
 
@@ -37,7 +37,7 @@ Your alpha *does not need to perform well in all markets* to be a good alpha. Th
 
 Selecting Your Universe
 =======================
-Universe Selection is the first model of the Algorithm Framework. QuantConnect provides four techniques for selecting an asset universe: Coarse, Fine, Scheduled, and Manual Universes. For more information on defining your universe, see the documentation on `Algorithm Framework/Universe Selection <https://www.quantconnect.com/docs/algorithm-framework/universe-selection>`_. Depending on your algorithm, you can likely use one of these helpers to select the stocks required.
+Universe Selection is the first model of the Algorithm Framework. QuantConnect provides four techniques for selecting an asset universe: Coarse, Fine, Scheduled, and Manual Universes. For more information on defining your universe, see the documentation on :ref:`Algorithm Framework/Universe Selection <algorithm-framework-universe-selection>`. Depending on your algorithm, you can likely use one of these helpers to select the stocks required.
 
 **Manual Universe Selection**
 
@@ -55,7 +55,7 @@ Scheduled Universes trigger at defined points in time and run a generic function
 
 Generating Insights
 ===================
-The next component of your algorithm is the Alpha Model. It is responsible for generating the Insight objects Funds consume as factors for their portfolio. Your Alpha Model should return a list or enumerable of Insight objects from its ``Update()`` method. For more information on creating Insights, see `AlgorithmFramework / Alpha Creation <https://www.quantconnect.com/docs/algorithm-framework/alpha-creation>`_.
+The next component of your algorithm is the Alpha Model. It is responsible for generating the Insight objects Funds consume as factors for their portfolio. Your Alpha Model should return a list or enumerable of Insight objects from its ``Update()`` method. For more information on creating Insights, see :ref:`AlgorithmFramework / Alpha Creation <algorithm-framework-alpha-creation>`_.
 
 An ``Insight`` constructor takes the following arguments:
 
@@ -83,9 +83,11 @@ We have provided a helper method to make creating Insights easier. This can be u
 
         insight = Insight.Price("IBM", timedelta(minutes = 20), InsightDirection.Up, 0.0025, 1.00, "MyAlphaModel", 0.25)
 
-For generating insights with Classic Algorithms, see `Upgrading Classic Algorithms <https://www.quantconnect.com/docs/alpha-streams/upgrading-classic-algorithms>`_.
+For generating insights with Classic Algorithms, see :ref:`Upgrading Classic Algorithms <alpha-streams-upgrading-classic-algorithms>`.
 
 |
+
+.. _alpha-streams-creating-an-alpha-determining-insight-confidence-magnitude-and-weight:
 
 Determining Insight Confidence, Magnitude, and Weight
 =====================================================
@@ -116,4 +118,4 @@ Once your Alpha is ready to be submitted, you can create a profile for it throug
 
 .. figure:: https://cdn.quantconnect.com/docs/i/alpha-dashboard.png
 
-For more information on submitted a new Alpha see `Submitting an Alpha <https://www.quantconnect.com/docs/alpha-streams/submitting-an-alpha>`_.
+For more information on submitted a new Alpha see  :ref:`Submitting an Alpha <alpha-streams-submitting-an-alpha>`.

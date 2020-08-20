@@ -1,8 +1,8 @@
 .. _algorithm-reference-universes:
 
-===============================
-Algorithm Reference - Universes
-===============================
+=========
+Universes
+=========
 
 |
 
@@ -406,6 +406,8 @@ These settings should be configured in your ``Initialize()`` method before you r
 
 |
 
+.. _algorithm-reference-universes-configuring-universe-securities:
+
 Configuring Universe Securities
 ===============================
 
@@ -482,7 +484,7 @@ To monitor these events, you can bind to the ``OnSecuritiesChanged`` Event handl
             self._changes = changes
             self.Log(f"OnSecuritiesChanged({self.UtcTime}):: {changes}")
 
-These events are tracked automatically, and a list of current securities is provided by the ``ActiveSecurities`` property. This is a dictionary of Security objects which are currently in your universe. See more in the `Securities and Portfolio <https://www.quantconnect.com/docs/algorithm-reference/securities-and-portfolio#Securities-and-Portfolio-Active-Securities>`_ documentation.
+These events are tracked automatically, and a list of current securities is provided by the ``ActiveSecurities`` property. This is a dictionary of Security objects which are currently in your universe. See more in the :ref:`Securities and Portfolio <algorithm-reference-securities-and-portfolio>` documentation.
 
 |
 
@@ -548,7 +550,7 @@ Each of the custom universe data points is 1 line of the source file. The Reader
 
 **Defining Custom Universe Type**
 
-Custom universes need a type defined to perform the parsing of the file. This pattern is almost identical to `importing custom data <https://www.quantconnect.com/docs/algorithm-reference/importing-custom-data>`_ to your algorithm, except the data is being used for choosing the universe data subscription instead of a price feed.
+Custom universes need a type defined to perform the parsing of the file. This pattern is almost identical to :ref:`importing custom <algorithm-reference-importing-custom-data>` to your algorithm, except the data is being used for choosing the universe data subscription instead of a price feed.
 
 .. tabs::
 
@@ -603,7 +605,7 @@ Option Universes
 
 When you add an option to the algorithm it adds many individual option contract securities. These are modelled as a "universe" of option contracts. We provide the ``SetFilter`` method to help narrow the option strike and expiry dates down to a range you are interested in.
 
-For more information on selecting options universes, see the `Options <https://www.quantconnect.com/docs/data-library/options>`_ section in Data Library documentation.
+For more information on selecting options universes, see the :ref:`Options <data-library-options>` section in Data Library documentation.
 
 |
 
@@ -612,4 +614,4 @@ Future Universes
 
 When you add a futures asset to your algorithm, it adds all the contracts which match your filter as a universe of futures contracts in a similar way to option. The primary difference is that futures don't have a strike price, so the universe filter is primarily focused on the future expiration date.
 
-For more information on selecting futures universes, see the `Futures <https://www.quantconnect.com/docs/data-library/futures>`_ section in Data Library documentation.
+For more information on selecting futures universes, see the :ref:`Futures <data-library-futures>` section in Data Library documentation.
