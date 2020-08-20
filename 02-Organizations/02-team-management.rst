@@ -1,6 +1,8 @@
-===============================
-Organizations - Team Management
-===============================
+.. _organizations-team-management:
+
+===============
+Team Management
+===============
 
 |
 

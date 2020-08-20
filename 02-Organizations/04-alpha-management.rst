@@ -1,6 +1,8 @@
-================================
-Organizations - Alpha Management
-================================
+.. _organizations-alpha-management:
+
+================
+Alpha Management
+================
 
 |
 
