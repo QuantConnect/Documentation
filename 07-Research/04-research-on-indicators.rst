@@ -28,7 +28,7 @@ Warming Up With Historical Data
 
 Similar to backtesting, once we have our indicator object, we will need to warm it up with historical data. We can accomplish this using the qb.Indicator helper method, which detects the indicator and data required, and pipes historical data through it. The qb.Indicator method returns a dataframe containing values for our indicator. Each column of the dataframe corresponds to a component of our indicator. For example, for BollingerBands, there is a column for each band.
 
-We can use :code:`qb.Indicator(Indicator, Symbol, StartDate, EndDate, Resolution)` to warm up an indicator with historical data between two dates.
+We can use ``qb.Indicator(Indicator, Symbol, StartDate, EndDate, Resolution)`` to warm up an indicator with historical data between two dates.
 
 .. code-block::
 
@@ -42,7 +42,7 @@ We can use :code:`qb.Indicator(Indicator, Symbol, StartDate, EndDate, Resolution
 
     Indicator Values Between Given Dates
 
-We can also use :code:`qb.Indicator(Indicator, Symbol, Period, Resolution)` to warm up an indicator with historical data from the last N periods.
+We can also use ``qb.Indicator(Indicator, Symbol, Period, Resolution)`` to warm up an indicator with historical data from the last N periods.
 
 .. code-block::
 
@@ -58,7 +58,7 @@ We can also use :code:`qb.Indicator(Indicator, Symbol, Period, Resolution)` to w
 Plotting Indicators
 ===================
 
-When we use :code:`qb.Indicator` to warm up an indicator, the indicator values are returned in a pandas dataframe. Because pandas dataframes allow plotting with the :code:`df.plot()` method, it is straightforward to make simple plots of our indicators.
+When we use ``qb.Indicator`` to warm up an indicator, the indicator values are returned in a pandas dataframe. Because pandas dataframes allow plotting with the ``df.plot()`` method, it is straightforward to make simple plots of our indicators.
 
 Before we plot our indicator, we should filter out columns in the dataframe which are not relevant to our analysis. For our Bollinger Band indicator, we find that the standard deviation column contains much smaller values than the other columns. This may skew our charts when it scales to fit all the data. We can drop all the irrelevant columns, such as the standarddeviation and percentb columns, from our dataframe before we plot it.
 
@@ -87,7 +87,7 @@ Now that our indicator is ready for analysis, we can plot it.
 Custom Resolutions
 ==================
 
-Data from history calls is restricted to the default resolutions available for the given type of security, such as second, minute, hour, and daily resolutions. This means that when using :code:`qb.Indicator`, the resolution of our indicators is also restricted to the default resolutions. If we want to create, for example, a 5-minute resolution indicator, we will need to consolidate our minute resolution historical data into 5 minute data. You can learn how to consolidate data in a pandas dataframe in the `Consolidating Historical Data <https://www.quantconnect.com/docs/research-2/historical-data#Historical-Data-Consolidating-Historical-Data>`_ documentation. After consolidating our data, we will need to manually update our indicator with data from our consolidated dataframe and save those indicator values in a new dataframe.
+Data from history calls is restricted to the default resolutions available for the given type of security, such as second, minute, hour, and daily resolutions. This means that when using ``qb.Indicator``, the resolution of our indicators is also restricted to the default resolutions. If we want to create, for example, a 5-minute resolution indicator, we will need to consolidate our minute resolution historical data into 5 minute data. You can learn how to consolidate data in a pandas dataframe in the `Consolidating Historical Data <https://www.quantconnect.com/docs/research-2/historical-data#Historical-Data-Consolidating-Historical-Data>`_ documentation. After consolidating our data, we will need to manually update our indicator with data from our consolidated dataframe and save those indicator values in a new dataframe.
 
 For example, consider the case where we've consolidated our minute historical data into 5 minute data. Let's create a 5 minute Bollinger Band indicator from our new 5 minute dataframe.
 

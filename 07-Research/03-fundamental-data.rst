@@ -16,7 +16,7 @@ Accessing Historical Fundamental Data
 
 **Making History Calls**
 
-We can directly access fundamental data for a given data field using :code:`qb.GetFundamental(Symbols, Selector, StartDate, EndDate)`. Symbols is the list of symbols that interest us. Selector is the name of the fundamental data field. If StartDate and EndDate are not specified, QuantBook will get all the fundamental data starting from January 1st, 1998. In order to access fundamental data, we will first need to subscribe to some symbols.
+We can directly access fundamental data for a given data field using ``qb.GetFundamental(Symbols, Selector, StartDate, EndDate)``. Symbols is the list of symbols that interest us. Selector is the name of the fundamental data field. If StartDate and EndDate are not specified, QuantBook will get all the fundamental data starting from January 1st, 1998. In order to access fundamental data, we will first need to subscribe to some symbols.
 
 .. code-block::
 
@@ -113,7 +113,7 @@ First let's subscribe to data for a set of airline stocks.
 
     symbols = [qb.AddEquity(ticker, Resolution.Daily).Symbol for ticker in tickers]
 
-Using :code:`qb.GetFundamental` we can retrieve the PE ratios of these stocks over 2011. Let's then plot the PE ratios over that year to visualize how they vary.
+Using ``qb.GetFundamental`` we can retrieve the PE ratios of these stocks over 2011. Let's then plot the PE ratios over that year to visualize how they vary.
 
 .. code-block::
 

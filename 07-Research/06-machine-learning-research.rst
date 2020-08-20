@@ -145,7 +145,7 @@ Since we'd like to predict the closing price of SPY 1 timestep into the future, 
     # Shift our time series close data by 1
     Y = data.shift(-1)[lookback:-1].reset_index(drop=True)
 
-We can then split our data into training and testing sets using scikit-learn's :code:`train_test_split`. We will use the training set to train our model and then assess the network's predictions against the test data. Let's use a third of our data to test and the remaining to train our model.
+We can then split our data into training and testing sets using scikit-learn's ``train_test_split``. We will use the training set to train our model and then assess the network's predictions against the test data. Let's use a third of our data to test and the remaining to train our model.
 
 .. code-block::
 
@@ -205,7 +205,7 @@ Next, we can build our model layer by layer. We will need a set of weights and b
 
 **Training Models**
 
-We will need a loss function and an optimizer function to train our model; we can use TensorFlow's built-in :code:`tf.squared_difference` and :code:`tf.train.AdamOptimizer()`, respectively. An epoch is an iteration of our entire training set. Let's train our model for 20 epochs.
+We will need a loss function and an optimizer function to train our model; we can use TensorFlow's built-in ``tf.squared_difference`` and ``tf.train.AdamOptimizer()``, respectively. An epoch is an iteration of our entire training set. Let's train our model for 20 epochs.
 
 .. code-block::
 
@@ -329,14 +329,14 @@ Next, we create our neural network model. The Keras Sequential model allows us t
 
 **Training and Testing Models**
 
-Keras allows for easy training using the :code:`model.fit(x_train, y_train, epochs)` method. This method iterates through our training set once for each epoch.
+Keras allows for easy training using the ``model.fit(x_train, y_train, epochs)`` method. This method iterates through our training set once for each epoch.
 
 .. code-block::
 
     # Train model with training data
     model.fit(X_train, y_train, epochs=5)
 
-Finally, let's visualize our neural networks accuracy by plotting its predictions alongside the historical prices changes. We can use :code:`model.predict(x_test)` to retrieve our model's predictions on the test set. Then we can format our predicted prices and actual historical changes in a dataframe, and plot that dataframe.
+Finally, let's visualize our neural networks accuracy by plotting its predictions alongside the historical prices changes. We can use ``model.predict(x_test)`` to retrieve our model's predictions on the test set. Then we can format our predicted prices and actual historical changes in a dataframe, and plot that dataframe.
 
 .. code-block::
 
@@ -353,7 +353,7 @@ Finally, let's visualize our neural networks accuracy by plotting its prediction
 Resource Limitations
 ====================
 
-Training machine learning algorithms can be quite computationally expensive. There is a 10 minute limit on a time single loop in backtesting. This means that if we are training a model on a large dataset, algorithm may time out. The :code:`self.Train` method increases this limit to 30 minutes, allowing us more time to train our model. You can learn more in the `Machine Learning <https://www.quantconnect.com/docs/algorithm-reference/machine-learning#Machine-Learning-Training-Models>`__ documentation.
+Training machine learning algorithms can be quite computationally expensive. There is a 10 minute limit on a time single loop in backtesting. This means that if we are training a model on a large dataset, algorithm may time out. The ``self.Train`` method increases this limit to 30 minutes, allowing us more time to train our model. You can learn more in the `Machine Learning <https://www.quantconnect.com/docs/algorithm-reference/machine-learning#Machine-Learning-Training-Models>`__ documentation.
 
 |
 
@@ -362,7 +362,7 @@ Saving Models with the Object Store
 
 **Keras**
 
-In order to save our model, we can first use :code:`serialize_keras_object` from the :code:`keras.util` library to convert our model into a json. Then we can convert our json into string using :code:`json.dumps`. Finally, we save our model using :code:`qb.ObjectStore.Save`. We will need to provide the Object Store a key to reference our saved object.
+In order to save our model, we can first use ``serialize_keras_object`` from the ``keras.util`` library to convert our model into a json. Then we can convert our json into string using ``json.dumps``. Finally, we save our model using ``qb.ObjectStore.Save``. We will need to provide the Object Store a key to reference our saved object.
 
 .. code-block::
 
@@ -373,7 +373,7 @@ In order to save our model, we can first use :code:`serialize_keras_object` from
     modelStr = json.dumps(serialize_keras_object(model))
     qb.ObjectStore.Save(model_key, modelStr)
 
-Then we can load our model from the Object Store using :code:`qb.ObjectStore.Read` with our key. We should make sure our key exists in the Object Store before attempting to access it. Then we can convert our string back into a json and finally create a sequential model from it using :code:`Sequential.from_config`.
+Then we can load our model from the Object Store using ``qb.ObjectStore.Read`` with our key. We should make sure our key exists in the Object Store before attempting to access it. Then we can convert our string back into a json and finally create a sequential model from it using ``Sequential.from_config``.
 
 .. code-block::
 

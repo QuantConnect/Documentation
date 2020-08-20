@@ -14,9 +14,9 @@ The ultimate goal of research is to produce a strategy which we can backtest and
 API Context
 ===========
 
-The most notable difference is that research uses QuantBook while backtesting uses QCAlgorithm. QuantBook is a wrapper on QCAlgorithm, which means QuantBook allows you to access all the methods available to QCAlgorithm; However, QuantBook contains some additional methods not found in QCAlgorithm, like :code:`GetFutureHistory` and :code:`GetOptionHistory`. This means that if we utilize one of these methods in research to request historical data, we will need to replace them with their QCAlgorithm counterpart GetHistory. :code:`GetFundamental` in research does not have any counterpart in backtesting. Fundamental data is accessed through universe selection in backtesting. Visit the Universe Selection documentation to learn more.
+The most notable difference is that research uses QuantBook while backtesting uses QCAlgorithm. QuantBook is a wrapper on QCAlgorithm, which means QuantBook allows you to access all the methods available to QCAlgorithm; However, QuantBook contains some additional methods not found in QCAlgorithm, like ``GetFutureHistory`` and ``GetOptionHistory``. This means that if we utilize one of these methods in research to request historical data, we will need to replace them with their QCAlgorithm counterpart GetHistory. ``GetFundamental`` in research does not have any counterpart in backtesting. Fundamental data is accessed through universe selection in backtesting. Visit the Universe Selection documentation to learn more.
 
-We can, for most intents and purposes, replace :code:`qb` with :code:`self` when exporting code to backtesting. For example, consider the following code in the research environment.
+We can, for most intents and purposes, replace `qb` with ``self`` when exporting code to backtesting. For example, consider the following code in the research environment.
 
 .. code-block::
 
@@ -29,7 +29,7 @@ We can, for most intents and purposes, replace :code:`qb` with :code:`self` when
     # Make history call with QuantBook
     history = qb.History(spy.Symbol, timedelta(days=10), Resolution.Daily)
 
-We can export this into backtesting by removing QuantBook and replacing :code:`qb` with :code:`self` by setting :code:`qb = self`.
+We can export this into backtesting by removing QuantBook and replacing ``qb`` with ``self`` by setting ``qb = self``.
 
 .. code-block::
 
@@ -123,7 +123,7 @@ Once we are confident in our hypothesis, we can export this code into backtestin
             # Set Scheduled Event Method For Our Model
             self.Schedule.On(self.DateRules.Every(DayOfWeek.Monday), self.TimeRules.AfterMarketOpen("IEF", 1), self.EveryDayAfterMarketOpen)
 
-Now we export our model into the scheduled event method. We will switch :code:`qb` with :code:`self` and replace methods with their QCAlgorithm counterparts as needed. In this example, this is not an issue because all the methods we used in research also exist in QCAlgorithm.
+Now we export our model into the scheduled event method. We will switch ``qb`` with ``self`` and replace methods with their QCAlgorithm counterparts as needed. In this example, this is not an issue because all the methods we used in research also exist in QCAlgorithm.
 
 .. code-block::
 
