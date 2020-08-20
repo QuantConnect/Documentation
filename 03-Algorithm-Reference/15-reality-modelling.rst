@@ -6,6 +6,25 @@ Reality Modelling
 
 |
 
+Demonstration Algorithms
+========================
+
+.. list-table::
+   :header-rows: 1
+
+   * - C#
+     - Python
+   * - `CustomModelsAlgorithm.cs <https://github.com/QuantConnect/Lean/blob/master/Algorithm.CSharp/CustomModelsAlgorithm.cs>`_
+     - `CustomModelsAlgorithm.py <https://github.com/QuantConnect/Lean/blob/master/Algorithm.Python/CustomModelsAlgorithm.py>`_
+   * - `CustomPartialFillModelAlgorithm.cs <https://github.com/QuantConnect/Lean/blob/master/Algorithm.CSharp/CustomPartialFillModelAlgorithm.cs>`_
+     - `CustomPartialFillModelAlgorithm.py <https://github.com/QuantConnect/Lean/blob/master/Algorithm.Python/CustomPartialFillModelAlgorithm.py>`_
+   * - `MarginCallEventsAlgorithm.cs <https://github.com/QuantConnect/Lean/blob/master/Algorithm.CSharp/MarginCallEventsAlgorithm.cs>`_
+     - `MarginCallEventsAlgorithm.py <https://github.com/QuantConnect/Lean/blob/master/Algorithm.Python/MarginCallEventsAlgorithm.py>`_
+   * - `BrokerageModelAlgorithm.cs <https://github.com/QuantConnect/Lean/blob/master/Algorithm.CSharp/BrokerageModelAlgorithm.cs>`_
+     - `BrokerageModelAlgorithm.py <https://github.com/QuantConnect/Lean/blob/master/Algorithm.Python/BrokerageModelAlgorithm.py>`_
+
+|
+
 Introduction
 ============
 

@@ -6,6 +6,29 @@ Machine Learning
 
 |
 
+Demonstration Algorithms
+========================
+
+.. list-table::
+   :header-rows: 1
+
+   * - C#
+     - Python
+   * - `TrainingExampleAlgorithm.cs <https://github.com/QuantConnect/Lean/blob/master/Algorithm.CSharp/TrainingExampleAlgorithm.cs>`_
+     - `TrainingExampleAlgorithm.py <https://github.com/QuantConnect/Lean/blob/master/Algorithm.Python/TrainingExampleAlgorithm.py>`_
+   * - `TrainingInitializeRegressionAlgorithm.cs <https://github.com/QuantConnect/Lean/blob/master/Algorithm.CSharp/TrainingInitializeRegressionAlgorithm.cs>`_
+     - `TrainingInitializeRegressionAlgorithm.py <https://github.com/QuantConnect/Lean/blob/master/Algorithm.Python/TrainingInitializeRegressionAlgorithm.py>`_
+   * - `AccordVectorMachinesAlgorithm.cs <https://github.com/QuantConnect/Lean/blob/master/Algorithm.CSharp/AccordVectorMachinesAlgorithm.cs>`_
+     - `TensorFlowNeuralNetworkAlgorithm.py <https://github.com/QuantConnect/Lean/blob/master/Algorithm.Python/TensorFlowNeuralNetworkAlgorithm.py>`_
+   * -
+     - `ScikitLearnLinearRegressionAlgorithm.py <https://github.com/QuantConnect/Lean/blob/master/Algorithm.Python/ScikitLearnLinearRegressionAlgorithm.py>`_
+   * -
+     - `PytorchNeuralNetworkAlgorithm.py <https://github.com/QuantConnect/Lean/blob/master/Algorithm.Python/PytorchNeuralNetworkAlgorithm.py>`_
+   * -
+     - `KerasNeuralNetworkAlgorithm.py <https://github.com/QuantConnect/Lean/blob/master/Algorithm.Python/KerasNeuralNetworkAlgorithm.py>`_
+
+|
+
 Introduction
 ============
 

@@ -6,6 +6,27 @@ Universes
 
 |
 
+Demonstration Algorithms
+========================
+
+.. list-table::
+   :header-rows: 1
+
+   * - C#
+     - Python
+   * - `CoarseFundamentalTop3DollarVolumeAlgorithm.cs <https://github.com/QuantConnect/Lean/blob/master/Algorithm.CSharp/CoarseFundamentalTop3Algorithm.cs>`_
+     - `CoarseFundamentalTop3DollarVolumeAlgorithm.py <https://github.com/QuantConnect/Lean/blob/master/Algorithm.Python/CoarseFundamentalTop3Algorithm.py>`_
+   * - `EmaCrossUniverseSelectionAlgorithm.cs <https://github.com/QuantConnect/Lean/blob/master/Algorithm.CSharp/EmaCrossUniverseSelectionAlgorithm.cs>`_
+     - `EmaCrossUniverseSelectionAlgorithm.py <https://github.com/QuantConnect/Lean/blob/master/Algorithm.Python/EmaCrossUniverseSelectionAlgorithm.py>`_
+   * - `DropboxUniverseSelectionAlgorithm.cs <https://github.com/QuantConnect/Lean/blob/master/Algorithm.CSharp/DropboxUniverseSelectionAlgorithm.cs>`_
+     - `DropboxUniverseSelectionAlgorithm.py <https://github.com/QuantConnect/Lean/blob/master/Algorithm.Python/DropboxUniverseSelectionAlgorithm.py>`_
+   * - `WeeklyUniverseSelectionRegressionAlgorithm.cs <https://github.com/QuantConnect/Lean/blob/master/Algorithm.CSharp/WeeklyUniverseSelectionRegressionAlgorithm.cs>`_
+     - `WeeklyUniverseSelectionRegressionAlgorithm.py <https://github.com/QuantConnect/Lean/blob/master/Algorithm.Python/WeeklyUniverseSelectionRegressionAlgorithm.py>`_
+   * - `CoarseFineFundamentalComboAlgorithm.cs <https://github.com/QuantConnect/Lean/blob/master/Algorithm.CSharp/CoarseFineFundamentalComboAlgorithm.cs>`_
+     - `CoarseFineFundamentalComboAlgorithm.py <https://github.com/QuantConnect/Lean/blob/master/Algorithm.Python/CoarseFineFundamentalComboAlgorithm.py>`_
+
+|
+
 Introduction
 ============
 

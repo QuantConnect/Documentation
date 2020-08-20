@@ -6,6 +6,21 @@ Charting
 
 |
 
+Demonstration Algorithms
+========================
+
+.. list-table::
+   :header-rows: 1
+
+   * - C#
+     - Python
+   * - `CustomChartingAlgorithm.cs <https://github.com/QuantConnect/Lean/blob/master/Algorithm.CSharp/CustomChartingAlgorithm.cs>`_
+     - `CustomChartingAlgorithm.py <https://github.com/QuantConnect/Lean/blob/master/Algorithm.Python/CustomChartingAlgorithm.py>`_
+   * - `DisplacedMovingAverageRibbon.cs <https://github.com/QuantConnect/Lean/blob/master/Algorithm.CSharp/DisplacedMovingAverageRibbon.cs>`_
+     - `DisplacedMovingAverageRibbon.py <https://github.com/QuantConnect/Lean/blob/master/Algorithm.Python/DisplacedMovingAverageRibbon.py>`_
+
+|
+
 Introduction
 ============
 

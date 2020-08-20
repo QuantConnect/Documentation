@@ -6,6 +6,21 @@ Historical Data
 
 |
 
+Demonstration Algorithms
+========================
+
+.. list-table::
+   :header-rows: 1
+
+   * - C#
+     - Python
+   * - `HistoryAlgorithm.cs <https://github.com/QuantConnect/Lean/blob/master/Algorithm.CSharp/HistoryAlgorithm.cs>`_
+     - `HistoryAlgorithm.py <https://github.com/QuantConnect/Lean/blob/master/Algorithm.Python/HistoryAlgorithm.py>`_
+   * - `WarmupHistoryAlgorithm.cs <https://github.com/QuantConnect/Lean/blob/master/Algorithm.CSharp/WarmupHistoryAlgorithm.cs>`_
+     - `WarmupHistoryAlgorithm.py <https://github.com/QuantConnect/Lean/blob/master/Algorithm.Python/WarmupHistoryAlgorithm.py>`_
+
+|
+
 Introduction
 ============
 
