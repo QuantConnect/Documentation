@@ -9,7 +9,7 @@ Data Library - Equity
 Introduction
 ============
 
-QuantConnect provides survivorship bias-free, split- and dividend-adjusted US Equities data from January 1st, 1998 to today on all US stocks. Over this period, a number of new stocks have entered the market, and others have been delisted. When a company name/symbol changes, the data will automatically be mapped over to the original name. By default data is adjusted for splits and dividends.
+QuantConnect provides survivorship bias-free, split- and dividend-adjusted US Equities data from January 1st, 1998 to today on all US stocks. Over this period, a number of new stocks have entered the market, and others have been delisted. When a company name/symbol changes, the data will automatically be mapped over to the original name. By default data is adjusted for :ref:`splits <data-library-equity-splits>` and :ref:`dividends <data-library-equity-dividends>`.
 
 All data is available in tick, second, minute, hourly, and daily resolution. Tick data is provided in the order the trades were made, but the data itself is time-stamped to the previous second.
 
@@ -61,9 +61,11 @@ Live trading for US Equities is only available on Interactive Brokers. When depl
 
 Live QuantConnect data feed tick data comes directly from the exchanges. Like backtesting tick data, it is also raw and unfiltered.
 
-For more information on using this data in your algorithm, see the Initializing Algorithms.
+For more information on using this data in your algorithm, see the :ref:`Initializing Algorithms <algorithm-reference-initializing-algorithms>`.
 
 |
+
+.. _data-library-equity-splits:
 
 Share Splits
 ============
@@ -96,6 +98,8 @@ QuantConnect provides split and merger data on all US stocks back to January 1st
               data.Splits["IBM"].SplitFactor
 
 |
+
+.. _data-library-equity-dividends:
 
 Dividends
 =========
