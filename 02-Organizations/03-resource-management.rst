@@ -122,7 +122,7 @@ A live trading node is needed for each deployed live algorithm. More powerful li
 Data Storage Limits
 ===================
 
-The `Object Store <https://www.quantconnect.com/docs/>`_ allows you to store project specific data in QuantConnect's cache. This can be useful in saving machine learning models or other data which is expensive to compute or retrieve from external sources. Free accounts are given 500 MB in the object store which you upgrade up to 10 GB of space. You can also view how much storage space you've consumed so far.
+The :ref:`Object Store <algorithm-reference-machine-learning-storing-trained-models>` allows you to store project specific data in QuantConnect's cache. This can be useful in saving machine learning models or other data which is expensive to compute or retrieve from external sources. Free accounts are given 500 MB in the object store which you upgrade up to 10 GB of space. You can also view how much storage space you've consumed so far.
 
 .. figure:: https://cdn.quantconnect.com/i/tu/organization-resource-2.png
 

@@ -1,8 +1,8 @@
 .. _live-trading-universe-selection:
 
-=================================
-Live Trading - Universe Selection
-=================================
+==================
+Universe Selection
+==================
 
 |
 

@@ -1,8 +1,8 @@
 .. _live-trading-runtime-statistics:
 
-=================================
-Live Trading - Runtime Statistics
-=================================
+==================
+Runtime Statistics
+==================
 
 |
 

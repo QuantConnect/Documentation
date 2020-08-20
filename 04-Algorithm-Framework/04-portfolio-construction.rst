@@ -1,8 +1,8 @@
 .. _algorithm-framework-portfolio-construction:
 
-============================================
-Algorithm Framework - Portfolio Construction
-============================================
+======================
+Portfolio Construction
+======================
 
 |
 
@@ -27,7 +27,7 @@ Introduction
 
 .. figure:: https://cdn.quantconnect.com/web/i/docs/algorithm-framework/portfolio-construction.png
 
-The Portfolio Construction Model receives ``Insight`` objects from the `Alpha Model <https://www.quantconnect.com/docs/algorithm-framework/alpha-creation>`_ and uses them to create ``PortfolioTarget`` objects for the execution model. A Portfolio Target provides the number of units of the asset we'd like to hold. To set your portfolio construction model you should use the ``self.SetPortfolioConstruction( IPortfolioConstructionModel )`` method. This should be done from your algorithm ``def Initialize()`` method.
+The Portfolio Construction Model receives ``Insight`` objects from the :ref:`Alpha Model <algorithm-framework-alpha-creation>` and uses them to create ``PortfolioTarget`` objects for the execution model. A Portfolio Target provides the number of units of the asset we'd like to hold. To set your portfolio construction model you should use the ``self.SetPortfolioConstruction( IPortfolioConstructionModel )`` method. This should be done from your algorithm ``def Initialize()`` method.
 
 |
 

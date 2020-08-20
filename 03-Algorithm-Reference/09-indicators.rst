@@ -1,8 +1,8 @@
 .. _algorithm-reference-indicators:
 
-================================
-Algorithm Reference - Indicators
-================================
+==========
+Indicators
+==========
 
 |
 
@@ -109,7 +109,7 @@ Universe Selection does not support warm-up and, consequently, factors that depe
 
 **History Request Warm-Up**
 
-Alternatively, we can request for historical data to update the indicator manually (see `Historical Data Requests <https://www.quantconnect.com/docs/algorithm-reference/docs/algorithm-reference/historical-data#Historical-Data-Historical-Data-Requests>`_).
+Alternatively, we can request for historical data to update the indicator manually (see :ref:`Historical Data Requests <algorithm-reference-historical-data>`).
 
 .. tabs::
 
@@ -228,7 +228,7 @@ In this method, you will recreate the basic indicator usage: create an indicator
         # register the daily data of "SPY" to automatically update the indicator
         self.RegisterIndicator("SPY", self.rsi, Resolution.Daily)
 
-Other than the available resolutions, you can also update the indicator with the consolidator. For details about data consolidator, please see `Consolidating Data <https://www.quantconnect.com/docs/algorithm-reference/consolidating-data>`_.
+Other than the available resolutions, you can also update the indicator with the consolidator. For details about data consolidator, please see :ref:`Consolidating Data <algorithm-reference-consolidating-data>`.
 
 .. tabs::
 
@@ -344,6 +344,10 @@ You can also apply ``RegisterIndicator`` to register the price data with the spe
         self.RegisterIndicator("SPY", self.rsi, Resolution.Daily, Field.High)
 
 .. code-block::
+
+|
+
+.. _algorithm-reference-indicators-reference-table:
 
 Reference Table
 ===============
@@ -1170,6 +1174,8 @@ Reference Table
 
 |
 
+.. _algorithm-reference-indicators-indicator-extensions:
+
 Indicator Extensions
 ====================
 
@@ -1256,7 +1262,7 @@ Indicators are *composable* - meaning they can be *chained* together to create u
 Plotting Indicators
 ===================
 
-We provide a helper method which aims to make plotting indicators simple. For further information on the charting API please see our `Charting <https://www.quantconnect.com/docs/algorithm-reference/charting>`_ section.
+We provide a helper method which aims to make plotting indicators simple. For further information on the charting API please see our :ref:`Charting <algorithm-reference-charting>` section.
 
 .. tabs::
 

@@ -30,6 +30,8 @@ All data uses ``DataDictionary`` objects to group data by symbol and provide eas
 
 |
 
+.. _algorithm-reference-handling-data-time-slices:
+
 Time Slices
 ===========
 
@@ -162,6 +164,8 @@ TradeBars are individual trades from the exchanges consolidated into price bars.
             imbClose = data['IBM'].Close       ## Close price
 
 |
+
+.. _algorithm-reference-handling-data-quotebars:
 
 QuoteBars
 =========

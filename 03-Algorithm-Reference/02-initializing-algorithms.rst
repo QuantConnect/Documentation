@@ -72,6 +72,8 @@ Backtesting uses the ``self.SetStartDate(int year, int month, int day)`` and ``s
 
 |
 
+.. _algorithm-reference-initializing-algorithms-selecting-asset-data:
+
 Selecting Asset Data
 ====================
 

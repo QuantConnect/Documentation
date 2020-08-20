@@ -1,8 +1,8 @@
 .. _algorithm-framework-alpha-creation:
 
-====================================
-Algorithm Framework - Alpha Creation
-====================================
+==============
+Alpha Creation
+==============
 
 |
 
@@ -203,6 +203,8 @@ When you return the grouped insights from your Alpha Model, simply use the ``Ins
         return Insight.Group( [ insight1, insight2, insight3 ] )
 
 |
+
+.. _algorithm-framework-alpha-creation-multi-alpha-algorithms:
 
 Multi-Alpha Algorithms
 ======================

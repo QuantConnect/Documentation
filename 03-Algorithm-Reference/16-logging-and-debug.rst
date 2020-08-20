@@ -1,8 +1,8 @@
 .. _algorithm-reference-logging-and-debug:
 
-=======================================
-Algorithm Reference - Logging and Debug
-=======================================
+=================
+Logging and Debug
+=================
 
 |
 

@@ -35,6 +35,8 @@ All QuantConnect algorithms have this time-stream baked in as the primary event 
 
 |
 
+.. _key-concepts-understanding-time-ticks-bars-and-the-time-frontier:
+
 Ticks, Bars and the Time Frontier
 =================================
 

@@ -1,8 +1,8 @@
 .. _research-overview:
 
-===================
-Research - Overview
-===================
+========
+Overview
+========
 
 |
 

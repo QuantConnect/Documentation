@@ -1,8 +1,8 @@
 .. _live-trading-notifications:
 
-============================
-Live Trading - Notifications
-============================
+=============
+Notifications
+=============
 
 |
 

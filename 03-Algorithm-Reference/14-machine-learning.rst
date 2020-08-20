@@ -1,6 +1,8 @@
-======================================
-Algorithm Reference - Machine Learning
-======================================
+.. _algorithm-reference-machine-learning:
+
+================
+Machine Learning
+================
 
 |
 
@@ -10,6 +12,8 @@ Introduction
 QuantConnect supports using machine learning techniques for your trading strategies. In designing a machine learning strategy, you should consider the time required to train your models, so they are ready for use when the market is open. In the following sections, we'll explore how to schedule a model training which receives a longer time allowance, and then how to store the result of your work.
 
 |
+
+.. _algorithm-reference-machine-learning-training-models:
 
 Training Models
 ===============
@@ -76,6 +80,8 @@ Training resources are allocated with a `leaky bucket algorithm <https://en.wiki
 
 |
 
+.. _algorithm-reference-machine-learning-storing-trained-models:
+
 Storing Trained Models
 ======================
 
@@ -140,6 +146,8 @@ You can delete data from the object store using the ``Delete()`` method.
      - 	500MB, 10,000 Files
 
 |
+
+.. _algorithm-reference-machine-learning-supported-libraries:
 
 Supported Libraries
 ===================

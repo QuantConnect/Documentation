@@ -1,15 +1,15 @@
 .. _research-historical-data:
 
-==========================
-Research - Historical Data
-==========================
+===============
+Historical Data
+===============
 
 |
 
 Introduction
 ============
 
-The Research environment allows you to directly access historical data from any period. This includes Equities, Options, Forex, and Futures data going back as far as 1998. Similar to backtesting, the data is accessed by first subscribing to a security, :code:`qb.AddEquity("SPY")`, and then making a history call, ``qb.History("SPY", 10, Resolution.Daily)``.
+The Research environment allows you to directly access historical data from any period. This includes Equities, Options, Forex, and Futures data going back as far as 1998. Similar to backtesting, the data is accessed by first subscribing to a security, ``qb.AddEquity("SPY")``, and then making a history call, ``qb.History("SPY", 10, Resolution.Daily)``.
 
 The data from the history call is returned in a pandas dataframe. Pandas is a python data manipulation and analysis framework. A pandas dataframe is a 2 dimensional labeled data structure, much like a spreadsheet or SQL table. A label on a row is called an Index and labels on columns are simply called columns.
 
@@ -109,7 +109,7 @@ We can also access the time series close data for all symbols by unstacking the 
 Historical Forex Data
 =====================
 
-QuantConnect provides Forex data from both FXCM and Oanda for 71 currency pairs going back as far as 2004. You can find a full list of supported pairs in the `data library <https://www.quantconnect.com/docs/data-library/forex#Forex-OANDA-Brokerage-Forex-Data>`_. The data is available in Tick, Second, Minute, Hour, and Daily resolutions. Unlike equities, Forex data also contains quote data. To access the data for a given pair, we must first subscribe to its data using its ticker.
+QuantConnect provides Forex data from both FXCM and Oanda for 71 currency pairs going back as far as 2004. You can find a full list of supported pairs in the :ref:`data library <data-library-forex-oanda-brokerage-forex-data>`. The data is available in Tick, Second, Minute, Hour, and Daily resolutions. Unlike equities, Forex data also contains quote data. To access the data for a given pair, we must first subscribe to its data using its ticker.
 
 .. code-block::
 
@@ -278,7 +278,7 @@ We can also access the set of expiries for the contracts in our history call.
 Historical Futures Data
 =======================
 
-QuantConnect provides trade and quote data from AlgoSeek for over 100 Futures symbols going back as far as 2009. You can find a full list of available Futures symbols in the `data library <https://www.quantconnect.com/docs/data-library/futures#Futures-Reference-Tables>`__. Futures data is available in tick, second and minute resolutions. To access data for a given Future, we need to first subscribe to its data using its ticker.
+QuantConnect provides trade and quote data from AlgoSeek for over 100 Futures symbols going back as far as 2009. You can find a full list of available Futures symbols in the :ref:`data library <data-library-futures-reference-tables>`. Futures data is available in tick, second and minute resolutions. To access data for a given Future, we need to first subscribe to its data using its ticker.
 
 .. code-block::
 
@@ -332,6 +332,8 @@ We can also retrieve the list of expiry dates of the futures contracts in our hi
     Expiry Dates For Future Contracts
 
 |
+
+.. _research-historical-data-consolidating-historical-data:
 
 Consolidating Historical Data
 =============================

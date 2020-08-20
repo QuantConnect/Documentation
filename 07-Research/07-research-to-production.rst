@@ -1,8 +1,8 @@
 .. _research-research-to-production:
 
-=================================
-Research - Research to Production
-=================================
+======================
+Research to Production
+======================
 
 |
 

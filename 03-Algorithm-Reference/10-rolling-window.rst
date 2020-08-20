@@ -1,8 +1,8 @@
 .. _algorithm-reference-rolling-window:
 
-====================================
-Algorithm Reference - Rolling Window
-====================================
+==============
+Rolling Window
+==============
 
 |
 

@@ -163,6 +163,8 @@ Algoseek futures data is set in the timezone in which the future is listed. The 
 
 |
 
+.. _data-library-futures-reference-table:
+
 Reference Tables
 ================
 

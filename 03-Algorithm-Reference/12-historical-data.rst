@@ -1,8 +1,8 @@
 .. _algorithm-reference-historical-data:
 
-=====================================
-Algorithm Reference - Historical Data
-=====================================
+===============
+Historical Data
+===============
 
 |
 
@@ -38,7 +38,7 @@ Finally, when reviewing the results of your history requests, remember they are 
 
 .. note::  Key Concept #3: Time Index
 
-           * History results are indexed by the `EndTime <https://www.quantconnect.com/docs/key-concepts/understanding-time#Understanding-Time-Ticks-Bars-and-the-Time-Frontier>`_ of a bar.
+           * History results are indexed by the :ref:`EndTime <key-concepts-understanding-time-ticks-bars-and-the-time-frontier>` of a bar.
 
 This can seem a little complex at first, but we'll step through each of these in the sections below.
 
@@ -151,7 +151,7 @@ All Securities History Request
 
 With the QuantConnect History API, you can request history for all active securities in your universe. The parameters are very similar to other history methods, but the return type is an array of ``Slice`` objects. This has the same properties as the OnData() Slice object.
 
-The `Slice <https://www.quantconnect.com/docs/algorithm-reference/handling-data#Handling-Data-Time-Slices>`_ object holds all of the results in a sorted enumerable collection you can iterate over with a foreach loop.
+The :ref:`Slice <algorithm-reference-handling-data-time-slices>` object holds all of the results in a sorted enumerable collection you can iterate over with a foreach loop.
 
 .. tabs::
 
@@ -253,7 +253,7 @@ The QuantConnect platform hosts a specific set of data so the history data is li
 
        Minute
 
-History is returned in TradeBars by default, but for Futures, Crypto and Options QuoteBars are also available. To request data as `QuoteBars <https://www.quantconnect.com/docs/algorithm-reference/handling-data#Handling-Data-QuoteBars>`_ you must specify the type in the query.
+History is returned in TradeBars by default, but for Futures, Crypto and Options QuoteBars are also available. To request data as :ref:`QuoteBars <algorithm-reference-handling-data-quotebars>` you must specify the type in the query.
 
 .. tabs::
 
