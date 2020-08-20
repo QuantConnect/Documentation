@@ -1,6 +1,8 @@
-===================================
-Organizations - Resource Management
-===================================
+.. _organizations-resource-management:
+
+===================
+Resource Management
+===================
 
 |
 

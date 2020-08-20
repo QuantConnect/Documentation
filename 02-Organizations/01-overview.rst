@@ -1,6 +1,8 @@
-========================
-Organizations - Overview
-========================
+.. _organizations-overview:
+
+========
+Overview
+========
 
 |
 
@@ -20,7 +22,7 @@ At the top of the Algorithm Lab page, you can find which organizations your acco
 
 An organization's homepage is located in the Algorithm Lab. The Organization tab, which is located in the Algorithm Lab, provides a central hub where you can easily manage your organization's members and resources.
 
-.. figure:: https://www.dropbox.com/s/fn28s2dbr2cvlbh/org%201.PNG?dl=1
+.. figure:: https://cdn.quantconnect.com/i/tu/organizations-overview.png
 
     Organization Homepage
 

@@ -44,7 +44,7 @@ SEC filing data is a linked data source. This means filing data is tied to the u
     # Add SEC 8-K (investor notices) filings for Apple
     aapl_8K = qb.AddData(SECReport8K, aapl)
 
-We can then make requests for AAPL's historical price data and report data using :code:`qb.History`. History calls for alternative data sources are similar to history calls for price data. We can use either :code:`qb.History(Type, Symbol, StartDate, EndDate)`, where Type is the data type, Symbol is the symbol for which to retrieve data for, or we can use :code:`qb.History(Type, Symbol, Period)`, which returns historical data from the given past period starting from today's date.
+We can then make requests for AAPL's historical price data and report data using ``qb.History``. History calls for alternative data sources are similar to history calls for price data. We can use either ``qb.History(Type, Symbol, StartDate, EndDate)``, where Type is the data type, Symbol is the symbol for which to retrieve data for, or we can use ``qb.History(Type, Symbol, Period)``, which returns historical data from the given past period starting from today's date.
 
 .. code-block::
 
@@ -98,7 +98,7 @@ The Federal Reserve bank of St. Louis, MO provides free macroeconomic indicators
 
 **Making History Calls**
 
-Let's analyze how SPY performs when there is a recession according to the `From Period Following Peak Through The Trough <https://fred.stlouisfed.org/series/USREC>`_ indicator. We can subscribe to FRED data with :code:`qb.AddData(FRED, Selector)`, where Selector is the metric we wish to analyze.
+Let's analyze how SPY performs when there is a recession according to the `From Period Following Peak Through The Trough <https://fred.stlouisfed.org/series/USREC>`_ indicator. We can subscribe to FRED data with ``qb.AddData(FRED, Selector)``, where Selector is the metric we wish to analyze.
 
 .. code-block::
 
@@ -113,7 +113,7 @@ Let's analyze how SPY performs when there is a recession according to the `From 
     # Add Federal Reserve Economic Data (FRED) custom data
     oecd = self.AddData(Fred, Fred.OECDRecessionIndicators.UnitedStatesFromPeakThroughTheTrough)
 
-We can then make requests for the OCED recession indicator data using :code:`qb.History`. History calls for alternative data sources are similar to history calls for price data. We can use either :code:`qb.History(Type, Symbol, StartDate, EndDate)`, where Type is the data type, Symbol is the symbol for which to retrieve data for, or we can use :code:`qb.History(Type, Symbol, Period)`, which returns historical data from the given past period starting from today's date.
+We can then make requests for the OCED recession indicator data using ``qb.History``. History calls for alternative data sources are similar to history calls for price data. We can use either ``qb.History(Type, Symbol, StartDate, EndDate)``, where Type is the data type, Symbol is the symbol for which to retrieve data for, or we can use ``qb.History(Type, Symbol, Period)``, which returns historical data from the given past period starting from today's date.
 
 .. code-block::
 
@@ -190,7 +190,7 @@ The United States Energy Information Administration (EIA) publishes bulk archive
 
 **Making History Calls**
 
-We can analyze how the US stockpile of motor gasoline correlates to value of Chevron (CVX), a multinational energy corporation. We will need price data for CVX and EIA data for `Weekly Ending Stocks Of Finished Motor Gasoline <https://www.eia.gov/dnav/pet/hist/LeafHandler.ashx?n=PET&s=WGFSTUS1&f=W>`_. In order to make a history call, we need to first subscribe to data. We can subscribe to CVX data using :code:`qb.AddEquity(Symbol)` and :code:`qb.AddData(USEnergy, Selector)`, where Selector is the metric we wish to analyze.
+We can analyze how the US stockpile of motor gasoline correlates to value of Chevron (CVX), a multinational energy corporation. We will need price data for CVX and EIA data for `Weekly Ending Stocks Of Finished Motor Gasoline <https://www.eia.gov/dnav/pet/hist/LeafHandler.ashx?n=PET&s=WGFSTUS1&f=W>`_. In order to make a history call, we need to first subscribe to data. We can subscribe to CVX data using ``qb.AddEquity(Symbol)`` and ``qb.AddData(USEnergy, Selector)``, where Selector is the metric we wish to analyze.
 
 .. code-block::
 
@@ -200,7 +200,7 @@ We can analyze how the US stockpile of motor gasoline correlates to value of Che
     # Add weekly finished motor gasoline stockpile data
     weekly_finished_motor_gasoline = self.AddData(USEnergy, USEnergy.Petroleum.UnitedStates.WeeklyEndingStocksOfFinishedMotorGasoline)
 
-We can then make requests for the petroleum metric data using :code:`qb.History`. History calls for alternative data sources are similar to history calls for price data. We can use either :code:`qb.History(Type, Symbol, StartDate, EndDate)`, where Type is the data type, Symbol is the symbol for which to retrieve data for, or we can use :code:`qb.History(Type, Symbol, Period)`, which returns historical data from the given past period starting from today's date.
+We can then make requests for the petroleum metric data using ``qb.History``. History calls for alternative data sources are similar to history calls for price data. We can use either ``qb.History(Type, Symbol, StartDate, EndDate)``, where Type is the data type, Symbol is the symbol for which to retrieve data for, or we can use ``qb.History(Type, Symbol, Period)``, which returns historical data from the given past period starting from today's date.
 
 .. code-block::
 
@@ -241,7 +241,7 @@ The Chicago Board Options Exchange (CBOE) provides daily exports of their most p
 
 The `VIX <https://www.investopedia.com/terms/v/vix.asp>`_ is a volatility index which is derived from the bid-ask spread of S&P 500 index options. It provides a measure of overall market risk and investor sentiment. The VIX's value rises when markets are unsteady and volatile, and falls when volatility recedes.
 
-Let's analyze how the market behaves during volatile times by comparing the VIX with SPY. We can subscribe to VIX data using :code:`qb.AddData(CBOE, "VIX")`.
+Let's analyze how the market behaves during volatile times by comparing the VIX with SPY. We can subscribe to VIX data using ``qb.AddData(CBOE, "VIX")``.
 
 .. code-block::
 
@@ -255,7 +255,7 @@ Let's analyze how the market behaves during volatile times by comparing the VIX 
     # Add SPY to see how the market is during volatile periods
     spy = self.AddEquity("SPY", Resolution.Daily)
 
-History calls for alternative data sources are similar to history calls for price data. We can use either :code:`qb.History(Type, Symbol, StartDate, EndDate)`, where Type is the data type, Symbol is the symbol for which to retrieve data for, or we can use :code:`qb.History(Type, Symbol, Period)`, which returns historical data from the given past period starting from today's date.
+History calls for alternative data sources are similar to history calls for price data. We can use either ``qb.History(Type, Symbol, StartDate, EndDate)``, where Type is the data type, Symbol is the symbol for which to retrieve data for, or we can use `qb.History(Type, Symbol, Period)`, which returns historical data from the given past period starting from today's date.
 
 .. code-block::
 

@@ -9,7 +9,7 @@ Research - Historical Data
 Introduction
 ============
 
-The Research environment allows you to directly access historical data from any period. This includes Equities, Options, Forex, and Futures data going back as far as 1998. Similar to backtesting, the data is accessed by first subscribing to a security, :code:`qb.AddEquity("SPY")`, and then making a history call, :code:`qb.History("SPY", 10, Resolution.Daily)`.
+The Research environment allows you to directly access historical data from any period. This includes Equities, Options, Forex, and Futures data going back as far as 1998. Similar to backtesting, the data is accessed by first subscribing to a security, :code:`qb.AddEquity("SPY")`, and then making a history call, ``qb.History("SPY", 10, Resolution.Daily)``.
 
 The data from the history call is returned in a pandas dataframe. Pandas is a python data manipulation and analysis framework. A pandas dataframe is a 2 dimensional labeled data structure, much like a spreadsheet or SQL table. A label on a row is called an Index and labels on columns are simply called columns.
 
@@ -59,7 +59,7 @@ Start Time + End Time + Resolution
     # Returns daily historical data between January 1st 2019 and January 1st 2020
     history = qb.History(spy.Symbol, start_time, end_time, Resolution.Daily)
 
-If we have subscribed to multiple symbols, we can retrieve a single dataframe which contains historical data for all our symbols, by using :code:`qb.History(qb.Securities.Keys, 10, Resolution.Daily)`.
+If we have subscribed to multiple symbols, we can retrieve a single dataframe which contains historical data for all our symbols, by using ``qb.History(qb.Securities.Keys, 10, Resolution.Daily)``.
 
 .. code-block::
 
@@ -74,7 +74,7 @@ If we have subscribed to multiple symbols, we can retrieve a single dataframe wh
 
 The dataframe returned will have a column for each data type available. For equities, the dataframe will have a column for Open, High, Low, Close, and Volume data since equity quote data is not yet available. The rows are indexed by time, meaning each OHLC row correlates to one timestamp. The frequency between timestamps will depend on the resolution of data. Rows are also indexed by symbols if multiple symbols were passed into the history call.
 
-We can use :code:`history.loc["SPY"]` to access the time series row data for a specific symbol. The row data will contain the open, high, low, close, and volume data for a given timestamp.
+We can use ``history.loc["SPY"]`` to access the time series row data for a specific symbol. The row data will contain the open, high, low, close, and volume data for a given timestamp.
 
 .. code-block::
 
@@ -144,7 +144,7 @@ Start Time + End Time + Resolution
     # Returns daily historical data between January 1st 2019 and January 1st 2020
     history = qb.History(eurusd.Symbol, start_time, end_time, Resolution.Daily)
 
-If we have subscribed to multiple symbols, we can retrieve a single dataframe which contains historical data for all our symbols, by using :code:`qb.History(qb.Securities.Keys, 10, Resolution.Daily)`.
+If we have subscribed to multiple symbols, we can retrieve a single dataframe which contains historical data for all our symbols, by using ``qb.History(qb.Securities.Keys, 10, Resolution.Daily)``.
 
 .. code-block::
 
@@ -159,7 +159,7 @@ If we have subscribed to multiple symbols, we can retrieve a single dataframe wh
 
 The dataframe returned will have a column for each data type available. Similar to equities, the dataframe will have a column for Open, High, Low, Close, and Volume (OHLC) data, but there will also be columns for Ask OHLC and Bid OHLC data. The rows are indexed by time, meaning each row correlates to one timestamp. Rows are also indexed by symbols if multiple symbols were passed into the history call.
 
-We can use :code:`history.loc["EURUSD"]` to access the time series row data for a specific symbol. The row data will contain the open, high, low, close, volume (OHLC) data and the quote data, which includes Ask OHLC and Bid OHLC data. Each row is indexed by a given timestamp.
+We can use ``history.loc["EURUSD"]`` to access the time series row data for a specific symbol. The row data will contain the open, high, low, close, volume (OHLC) data and the quote data, which includes Ask OHLC and Bid OHLC data. Each row is indexed by a given timestamp.
 
 .. code-block::
 
@@ -204,7 +204,7 @@ QuantConnect provides equity options data from AlgoSeek going back as far as 201
 
 **Setting a Filter**
 
-When we use :code:`qb.AddOption("SPY")`, we are subscribed to the option chain data for SPY, which contains a large number of contracts with different rights, strikes, and expirations. We need to filter the contracts in the chain for the ones which interest us. We can do this using the :code:`Option.SetFilter` method. There are a few different ways we can filter our options chain.
+When we use ``qb.AddOption("SPY")``, we are subscribed to the option chain data for SPY, which contains a large number of contracts with different rights, strikes, and expirations. We need to filter the contracts in the chain for the ones which interest us. We can do this using the ``Option.SetFilter`` method. There are a few different ways we can filter our options chain.
 
 One way to refer to a strike price is to use the number of strike levels it is below or above the current market price. If SPY is trading at $300 and the option chain contains strikes: $285, $295, $300, $305, $310, $315, then we can refer to the $290 strike as -2 because it is 2 strikes below the current market price of SPY.
 
@@ -228,7 +228,7 @@ We can combine strike filtering and expiration filtering to narrow our chain eve
 
 **Making History Calls**
 
-Regular :code:`qb.History` calls do not work for options. Instead, we need to use :code:`qb.GetOptionHistory`, which allows us to request options data during a given period.
+Regular ``qb.History`` calls do not work for options. Instead, we need to use ``qb.GetOptionHistory``, which allows us to request options data during a given period.
 
 .. code-block::
 
@@ -238,9 +238,9 @@ Regular :code:`qb.History` calls do not work for options. Instead, we need to us
     # Request SPY options history between given dates
     option_history = qb.GetOptionHistory(spy.Symbol, start_time, end_time)
 
-:code:`qb.GetOptionHistory` does not return a dataframe of historical data. It instead returns an OptionHistory object, which allows us to access the strike, expiration, and price data.
+``qb.GetOptionHistory`` does not return a dataframe of historical data. It instead returns an OptionHistory object, which allows us to access the strike, expiration, and price data.
 
-We can use :code:`OptionHistory.GetAllData()` to return a dataframe containing all the price data for the options chain. This dataframe contains all the quote, trade and open interest data for each contract in our history call. It is indexed by contract expiry, strike, option right type, contract symbol, and data timestamp.
+We can use ``OptionHistory.GetAllData()`` to return a dataframe containing all the price data for the options chain. This dataframe contains all the quote, trade and open interest data for each contract in our history call. It is indexed by contract expiry, strike, option right type, contract symbol, and data timestamp.
 
 .. code-block::
 
@@ -285,7 +285,7 @@ QuantConnect provides trade and quote data from AlgoSeek for over 100 Futures sy
     # Subcribes to data for S&P500 E-mini Futures (ES).
     es = qb.AddFuture("ES")
 
-We can also refer to Future tickers using a predefined categorized Enum. For example, The ticker for S&P 500 E-mini futures ("ES"), can be accessed with Futures.Indices.SP500EMini. This means we can subscribe to data for ES using :code:`qb.AddFuture(Futures.Indices.SP500EMini)`. You can find a full list of all the tickers and their associated Enum addresses in the data library.
+We can also refer to Future tickers using a predefined categorized Enum. For example, The ticker for S&P 500 E-mini futures ("ES"), can be accessed with Futures.Indices.SP500EMini. This means we can subscribe to data for ES using ``qb.AddFuture(Futures.Indices.SP500EMini)``. You can find a full list of all the tickers and their associated Enum addresses in the data library.
 
 **Setting a Filter**
 
@@ -298,7 +298,7 @@ Futures data for a given commodity contains a chain of contracts of different ex
 
 **Making History Calls**
 
-Similar to options, future historical data can't be accessed using :code:`qb.History`. Instead, we need to use :code:`qb.GetFutureHistory`, which lets us access historical futures data.
+Similar to options, future historical data can't be accessed using ``qb.History``. Instead, we need to use ``qb.GetFutureHistory``, which lets us access historical futures data.
 
 .. code-block::
 
@@ -307,9 +307,9 @@ Similar to options, future historical data can't be accessed using :code:`qb.His
 
     future_history = qb.GetFutureHistory(es.Symbol, start_time, end_time)
 
-:code:`qb.GetFutureHistory` does not return a dataframe of historical data. It instead returns a FutureHistory object, which lets us access the expiry and price data for the chain.
+`qb.GetFutureHistory` does not return a dataframe of historical data. It instead returns a FutureHistory object, which lets us access the expiry and price data for the chain.
 
-We can access historical price data using :code:`FutureHistory.GetAllData()`. This returns a dataframe containing quote, trade, and open interest data for the contracts in the future chain. The data is indexed by contract expiry, symbol and the timestamp of the data.
+We can access historical price data using ``FutureHistory.GetAllData()``. This returns a dataframe containing quote, trade, and open interest data for the contracts in the future chain. The data is indexed by contract expiry, symbol and the timestamp of the data.
 
 .. code-block::
 
