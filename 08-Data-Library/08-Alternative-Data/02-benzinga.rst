@@ -1,3 +1,5 @@
+.. _data-library-alt-data-benzinga:
+
 ========
 Benzinga
 ========

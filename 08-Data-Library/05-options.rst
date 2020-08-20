@@ -1,3 +1,5 @@
+.. _data-library-options:
+
 ======================
 Data Library - Options
 ======================

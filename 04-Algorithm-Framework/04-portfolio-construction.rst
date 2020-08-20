@@ -1,3 +1,5 @@
+.. _algorithm-framework-portfolio-construction:
+
 ============================================
 Algorithm Framework - Portfolio Construction
 ============================================

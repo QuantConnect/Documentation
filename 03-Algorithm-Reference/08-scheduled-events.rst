@@ -1,3 +1,5 @@
+.. _algorithm-reference-scheduled-events:
+
 ======================================
 Algorithm Reference - Scheduled Events
 ======================================

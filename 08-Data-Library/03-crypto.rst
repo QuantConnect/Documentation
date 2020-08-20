@@ -1,3 +1,5 @@
+.. _data-library-crypto:
+
 =====================
 Data Library - Crypto
 =====================

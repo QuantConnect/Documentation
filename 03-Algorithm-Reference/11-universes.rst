@@ -1,6 +1,8 @@
-=====================
-Algorithm - Reference
-=====================
+.. _algorithm-reference-universes:
+
+===============================
+Algorithm Reference - Universes
+===============================
 
 |
 

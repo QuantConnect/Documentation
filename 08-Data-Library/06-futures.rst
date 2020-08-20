@@ -1,3 +1,5 @@
+.. _data-library-futures:
+
 ======================
 Data Library - Futures
 ======================

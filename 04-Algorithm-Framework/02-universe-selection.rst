@@ -1,3 +1,5 @@
+.. _algorithm-framework-universe-selection:
+
 ========================================
 Algorithm Framework - Universe Selection
 ========================================

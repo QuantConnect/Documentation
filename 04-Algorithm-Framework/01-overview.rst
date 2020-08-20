@@ -1,3 +1,5 @@
+.. _algorithm-framework-overview:
+
 ==============================
 Algorithm Framework - Overview
 ==============================

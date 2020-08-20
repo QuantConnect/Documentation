@@ -1,3 +1,5 @@
+.. _algorithm-reference-importing-custom-data:
+
 ===========================================
 Algorithm Reference - Importing Custom Data
 ===========================================

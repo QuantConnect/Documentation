@@ -1,3 +1,5 @@
+.. _research-historical-data:
+
 ==========================
 Research - Historical Data
 ==========================

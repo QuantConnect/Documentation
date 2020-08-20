@@ -1,3 +1,5 @@
+.. _alpha-streams-creating-an-alpha:
+
 =================================
 Alpha Streams - Creating an Alpha
 =================================

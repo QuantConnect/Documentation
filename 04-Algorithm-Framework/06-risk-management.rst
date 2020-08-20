@@ -1,3 +1,5 @@
+.. _algorithm-framework-risk-management:
+
 =====================================
 Algorithm Framework - Risk Management
 =====================================

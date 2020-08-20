@@ -1,3 +1,5 @@
+.. _alpha-streams-competitions:
+
 ============================
 Alpha Streams - Competitions
 ============================

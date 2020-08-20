@@ -1,3 +1,5 @@
+.. _alpha-streams-submitting-an-alpha:
+
 ====================================
 Alpha Streams - Submitting an Alpha
 ====================================

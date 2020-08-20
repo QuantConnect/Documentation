@@ -1,3 +1,5 @@
+.. _alpha-streams-overview:
+
 ==============================
 Alpha Streams - Overview
 ==============================

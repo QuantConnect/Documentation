@@ -1,3 +1,5 @@
+.. _algorithm-reference-initializing-algorithms:
+
 =============================================
 Algorithm Reference - Initializing Algorithms
 =============================================

@@ -1,3 +1,5 @@
+.. _algorithm-reference-indicators:
+
 ================================
 Algorithm Reference - Indicators
 ================================

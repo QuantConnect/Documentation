@@ -1,3 +1,5 @@
+.. _algorithm-reference-handling-data:
+
 ===================================
 Algorithm Reference - Handling Data
 ===================================

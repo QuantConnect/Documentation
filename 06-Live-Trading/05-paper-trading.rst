@@ -1,3 +1,5 @@
+.. _live-trading-paper-trading:
+
 ============================
 Live Trading - Paper Trading
 ============================

@@ -1,3 +1,5 @@
+.. _key-concepts-faq:
+
 =========================================
 Key Concepts - Frequently Asked Questions
 =========================================

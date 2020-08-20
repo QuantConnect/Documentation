@@ -1,3 +1,5 @@
+.. _algorithm-reference-overview:
+
 ==============================
 Algorithm Reference - Overview
 ==============================

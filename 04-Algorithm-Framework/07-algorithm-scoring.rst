@@ -1,3 +1,5 @@
+.. _algorithm-framework-algorithm-scoring:
+
 =======================================
 Algorithm Framework - Algorithm Scoring
 =======================================

@@ -1,3 +1,5 @@
+.. _research-machine-learning-research:
+
 ====================================
 Research - Machine Learning Research
 ====================================

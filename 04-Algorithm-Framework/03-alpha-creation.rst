@@ -1,3 +1,5 @@
+.. _algorithm-framework-alpha-creation:
+
 ====================================
 Algorithm Framework - Alpha Creation
 ====================================

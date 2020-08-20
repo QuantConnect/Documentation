@@ -1,3 +1,5 @@
+.. _research-research-on-indicators:
+
 =================================
 Research - Research on Indicators
 =================================

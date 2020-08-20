@@ -1,3 +1,5 @@
+.. _alpha-streams-alpha-fee-models:
+
 ================================
 Alpha Streams - Alpha Fee Models
 ================================

@@ -3,6 +3,8 @@
 .. image:: https://cdn.quantconnect.com/web/i/docs/docs_home_icon.rev0.png
    :align: left
 
+.. _home:
+
 =============
 Documentation
 =============

@@ -1,3 +1,5 @@
+.. _algorithm-reference-historical-data:
+
 =====================================
 Algorithm Reference - Historical Data
 =====================================

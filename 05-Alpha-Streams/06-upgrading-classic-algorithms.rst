@@ -1,3 +1,5 @@
+.. _alpha-streams-upgrading-classic-algorithms:
+
 ============================================
 Alpha Streams - Upgrading Classic Algorithms
 ============================================

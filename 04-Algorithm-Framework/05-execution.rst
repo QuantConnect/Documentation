@@ -1,3 +1,5 @@
+.. _algorithm-framework-execution:
+
 ===============================
 Algorithm Framework - Execution
 ===============================
