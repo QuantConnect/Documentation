@@ -12,6 +12,7 @@ Alpha Streams is a global marketplace where Quants and Funds meet. Quants offer 
 
 .. figure:: https://cdn.quantconnect.com/web/i/alpha/how-it-works-graphic-rev2.png
 
+   Community Designs Algorithms___QuantConnect Reviews and Hosts___Funds License Alpha for Trading
 |
 
 Licensing Model

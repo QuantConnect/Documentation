@@ -170,7 +170,7 @@ The VWAP Execution Model seeks for the average fill price of your position to ma
 
 .. figure:: https://cdn.quantconnect.com/web/i/docs/algorithm-framework/execution-model-vwap-fill.png
 
-**VWAP Execution Model Fill Placements**
+   VWAP Execution Model Fill Placements
 
 To use the pre-made Execution Model in your algorithm, you should set it in Initialize():
 

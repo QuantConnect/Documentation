@@ -106,13 +106,13 @@ The Algorithm Framework is built into the ``QCAlgorithm`` class giving your stra
 
 .. figure:: https://cdn.quantconnect.com/web/i/docs/algorithm-framework/class-structure_rev2.png
 
-Algorithm Framework Class Hierarchy
+   Algorithm Framework Class Hierarchy
 
 The framework data output of each module flows into the next predictably. Assets selected by the *Universe Selection* Model are fed into your *Alpha* Model to generate trade signals. The trade signals (*Insights*) are converted into *Portfolio Targets* by the *Portfolio Construction* Model. The Portfolio Targets hold a target share quantity we'd like the algorithm to hold. To execute these targets efficiently, the Execution module fills the targets over time. Finally, the *Risk Management* Model ensures our targets are still within safe risk parameters and adjusts the portfolio targets if required.
 
 .. figure:: https://cdn.quantconnect.com/web/i/docs/algorithm-framework/algorithm-framework.png
 
-QuantConnect Algorithm Framework Architecture.
+   QuantConnect Algorithm Framework Architecture.
 
 .. tabs::
 

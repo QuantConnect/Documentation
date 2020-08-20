@@ -15,7 +15,7 @@ Scoring an algorithm is a balance of art and science. Between the start of your 
 
 .. figure:: https://cdn.quantconnect.com/web/i/docs/20180213-framework-light.png
 
-Algorithm Framework Backtest View
+   Algorithm Framework Backtest View
 
 |
 
