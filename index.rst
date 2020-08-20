@@ -87,6 +87,18 @@ QuantConnect's old docuentation, converted to rst.
 
 .. toctree::
    :maxdepth: 1
+   :caption: Live Trading
+
+   Overview <06-Live-Trading/01-overview>
+   Notifications <06-Live-Trading/02-notifications>
+   Runtime Statistics <06-Live-Trading/03-runtime-statistics>
+   Universe Selection <06-Live-Trading/04-universe-selection>
+   Paper Trading <06-Live-Trading/05-paper-trading>
+   Institutional Accounts <06-Live-Trading/06-institutional-accounts>
+
+
+.. toctree::
+   :maxdepth: 1
    :caption: Research:
 
    Overview <07-Research/01-overview>
@@ -105,4 +117,6 @@ QuantConnect's old docuentation, converted to rst.
    Equity <08-Data-Library/01-equity>
    Forex <08-Data-Library/02-forex>
    Crypto <08-Data-Library/03-crypto>
+   Options <08-Data-Library/05-options>
+   Futures <08-Data-Library/06-futures>
    Alternative Data <08-Data-Library/08-Alternative-Data/index>
