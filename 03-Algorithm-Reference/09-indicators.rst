@@ -6,6 +6,26 @@ Algorithm Reference - Indicators
 
 |
 
+Demonstration Algorithms
+========================
+
+.. list-table::
+   :header-rows: 1
+
+   * - C#
+     - Python
+   * - `IndicatorSuiteAlgorithm.cs <https://github.com/QuantConnect/Lean/blob/master/Algorithm.CSharp/IndicatorSuiteAlgorithm.cs>`_
+     - `IndicatorSuiteAlgorithm.py <https://github.com/QuantConnect/Lean/blob/master/Algorithm.Python/IndicatorSuiteAlgorithm.py>`_
+   * - `EmaCrossUniverseSelectionAlgorithm.cs <https://github.com/QuantConnect/Lean/blob/master/Algorithm.CSharp/EmaCrossUniverseSelectionAlgorithm.cs>`_
+     - `EmaCrossUniverseSelectionAlgorithm.py <https://github.com/QuantConnect/Lean/blob/master/Algorithm.Python/EmaCrossUniverseSelectionAlgorithm.py>`_
+   * - `MACDTrendAlgorithm.cs <https://github.com/QuantConnect/Lean/blob/master/Algorithm.CSharp/MACDTrendAlgorithm.cs>`_
+     - `MACDTrendAlgorithm.py <https://github.com/QuantConnect/Lean/blob/master/Algorithm.Python/MACDTrendAlgorithm.py>`_
+   * - `RegressionChannelAlgorithm <https://github.com/QuantConnect/Lean/blob/master/Algorithm.CSharp/RegressionChannelAlgorithm.cs>`_
+     - `RegressionChannelAlgorithm.py <https://github.com/QuantConnect/Lean/blob/master/Algorithm.Python/RegressionChannelAlgorithm.py>`_
+   * -
+     - `TalibIndicatorsAlgorithm.py <https://github.com/QuantConnect/Lean/blob/master/Algorithm.Python/TalibIndicatorsAlgorithm.py>`_
+
+|
 
 Introduction
 ============
@@ -33,7 +53,7 @@ One key indicator to learn is the ``Identity`` indicator, which simply returns t
 Indicator Ready
 ===============
 
-Indicators are not ready when you first create them. The length of time it takes to trust the indicator values depends on the indicator period. In QuantConnect, we provide a shortcut to check the indicator status. :code:`Indicator.IsReady` will return true when the indicator is ready to be used. eg. :code:`IsReady`
+Indicators are not ready when you first create them. The length of time it takes to trust the indicator values depends on the indicator period. In QuantConnect, we provide a shortcut to check the indicator status. ``Indicator.IsReady`` will return true when the indicator is ready to be used. eg. ``IsReady``.
 
 
 .. tabs::
@@ -56,7 +76,7 @@ You can use two methods to prime technical indicators and get them ready to be u
 
 **Algorithm Warm-Up**
 
-When we set an algorithm warm-up period, the engine pumps data in and automatically update all the indicators from before the start date (see `Setting Warm Up Period <https://www.quantconnect.com/docs/algorithm-reference/historical-data>`_). To ensure that all the indicators are ready after the algorithm warm-up period, you need to choose a lookback period that contains the required data.
+When we set an algorithm warm-up period, the engine pumps data in and automatically update all the indicators from before the start date (see :ref:`algorithm-reference-historical-data`). To ensure that all the indicators are ready after the algorithm warm-up period, you need to choose a lookback period that contains the required data.
 
 .. tabs::
 
@@ -129,7 +149,7 @@ You can determine the specific requirements of the indicator from the reference 
 
 The indicator resolution can be different from the resolution of your securities data. However, the resolution of the indicator should be equal to or higher than the resolution of your security. In most cases, this usage should be in the Initialize method. If you call this method several times, it will create a new indicator that is not ready to use.
 
-To retrieve the numerical value of any indicator, you can use the :code:`Current.Value` attribute of the indicator.
+To retrieve the numerical value of any indicator, you can use the ``Current.Value`` attribute of the indicator.
 
 .. tabs::
 
@@ -186,7 +206,7 @@ You can use two methods to update the indicator: automatic or manual.
 
 **Automatic Update**
 
-In this method, you will recreate the basic indicator usage: create an indicator with its constructor and register the indicator for automatic updates with the :code:`RegisterIndicator()` method.
+In this method, you will recreate the basic indicator usage: create an indicator with its constructor and register the indicator for automatic updates with the ``RegisterIndicator()`` method.
 
 .. tabs::
 
@@ -240,9 +260,9 @@ Other than the available resolutions, you can also update the indicator with the
 
 Updating your indicator manually allows you to control which data is used and create indicators of other non-price fields. For instance, you can use the 3:30 pm price in your daily moving average instead of the after-market closing price, or you may want to use the maximum temperature of the past 10 cloudy days.
 
-The indicator objects have the :code:`Update()` method that updates the state of an indicator with the given value. Depending on the different types of indicators, this value can be the time/decimal pair, a trade bar, a quote bar, or a custom data bar.
+The indicator objects have the ``Update()`` method that updates the state of an indicator with the given value. Depending on the different types of indicators, this value can be the time/decimal pair, a trade bar, a quote bar, or a custom data bar.
 
-With this method, the indicator will only be ready after the :code:`Update()` method has been used to pump enough data. For example, a 10-period daily moving average needs to receive ten daily data points through the :code:`Update()` method.
+With this method, the indicator will only be ready after the ``Update()`` method has been used to pump enough data. For example, a 10-period daily moving average needs to receive ten daily data points through the ``Update()`` method.
 
 .. tabs::
 
@@ -289,7 +309,7 @@ Updating Indicators with Custom Values
 
 The data point indicators use only a single price data in their calculations. By default, those indicators use the closing price. For equity, that price is the trade bar closing price. For other asset classes with quote bar data (bid/ask price), those indicators are calculated with the mid-price of the bid closing price and the ask closing price.
 
-If you want to create an indicator with the other fields like ``Open``, :code:`High`, :code:`Low`, or :code:`Close`, you can specify the selector argument in the indicator helper method with the available fields.
+If you want to create an indicator with the other fields like ``Open``, ``High``, ``Low``, or ``Close``, you can specify the selector argument in the indicator helper method with the available fields.
 
 .. tabs::
 
@@ -305,7 +325,7 @@ If you want to create an indicator with the other fields like ``Open``, :code:`H
         # select the Open price to update the indicator
         self.rsi = self.RSI("SPY", 10,  MovingAverageType.Simple, Resolution.Daily, Field.Open)
 
-You can also apply :code:`RegisterIndicator` to register the price data with the specified field.
+You can also apply ``RegisterIndicator`` to register the price data with the specified field.
 
 .. tabs::
 

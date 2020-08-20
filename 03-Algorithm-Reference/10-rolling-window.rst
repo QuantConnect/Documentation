@@ -6,6 +6,23 @@ Algorithm Reference - Rolling Window
 
 |
 
+Demonstration Algorithms
+========================
+
+.. list-table::
+   :header-rows: 1
+
+   * - C#
+     - Python
+   * - `RollingWindowAlgorithm.cs <https://github.com/QuantConnect/Lean/blob/master/Algorithm.CSharp/RollingWindowAlgorithm.cs>`_
+     - `RollingWindowAlgorithm.py <https://github.com/QuantConnect/Lean/blob/master/Algorithm.Python/RollingWindowAlgorithm.py>`_
+   * -
+     - `CustomVolatilityModelAlgorithm.py <https://github.com/QuantConnect/Lean/blob/master/Algorithm.Python/CustomVolatilityModelAlgorithm.py>`_
+   * - `MultipleSymbolConsolidationAlgorithm.cs <https://github.com/QuantConnect/Lean/blob/master/Algorithm.CSharp/MultipleSymbolConsolidationAlgorithm.cs>`_
+     - `MultipleSymbolConsolidationAlgorithm.py <https://github.com/QuantConnect/Lean/blob/master/Algorithm.Python/MultipleSymbolConsolidationAlgorithm.py>`_
+
+|
+
 Introduction
 ============
 
