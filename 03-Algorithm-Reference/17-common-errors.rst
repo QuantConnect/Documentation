@@ -1,3 +1,5 @@
+.. _algorithm-reference-common-errors:
+
 ===================================
 Algorithm Reference - Common Errors
 ===================================
