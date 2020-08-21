@@ -6,7 +6,10 @@ Universe Selection
 
 |
 
-.. list-table:: Demonstration Algorithms
+Demonstration Algorithms
+========================
+
+.. list-table::
    :header-rows: 1
 
    * - C#
@@ -23,6 +26,8 @@ Universe Selection
 Introduction
 ============
 .. figure:: https://cdn.quantconnect.com/web/i/docs/algorithm-framework/universe-selection.png
+   :width: 50
+   :align: left
 
 The ``Universe`` Selection Model creates Universe objects which select the assets for your strategy. We have identified three types of universes that cover most people's requirements and built helper classes to make their implementation easier. *Creating* Universe Selection Models from scratch isn't simple, so we recommend you use one of the helper universes we've provided.
 

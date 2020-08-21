@@ -6,7 +6,10 @@ Risk Management
 
 |
 
-.. list-table:: Demonstration Algorithms
+Demonstration Algorithms
+========================
+
+.. list-table::
    :header-rows: 1
 
    * - C#
@@ -24,13 +27,26 @@ Introduction
 ============
 
 .. figure:: https://cdn.quantconnect.com/web/i/docs/algorithm-framework/risk-management.png
+   :width: 50
+   :align: left
 
 The Risk Management Model seeks to manage risk on the ``PortfolioTarget`` collection created by the Portfolio Construction Model. It is applied to the targets *before* they reach the Execution Model. There are many creative ways to manage risk. Some examples of this might be:
 
-* *"Trailing Stop Risk Management Model"* Seek to automatically create and manage trailing stop-loss orders for open positions.
-* *"Option Hedging Risk Management Model"* Automatically purchase options to hedge large equity exposures.
-* *"Sector Exposure Risk Management Model"* Seek to reduce position sizes when overexposed to sectors or individual assets, keeping the portfolio within diversification requirements.
-* *"Flash Crash Detection Risk Management Model"* Scan for strange market situations which might be precursors to a flash crash and attempt to protect the portfolio when detected.
+* *"Trailing Stop Risk Management Model"*
+
+  Seek to automatically create and manage trailing stop-loss orders for open positions.
+
+* *"Option Hedging Risk Management Model"*
+
+  Automatically purchase options to hedge large equity exposures.
+
+* *"Sector Exposure Risk Management Model"*
+
+  Seek to reduce position sizes when overexposed to sectors or individual assets, keeping the portfolio within diversification requirements.
+
+* *"Flash Crash Detection Risk Management Model"*
+
+  Scan for strange market situations which might be precursors to a flash crash and attempt to protect the portfolio when detected.
 
 To set a Risk Management Model use the ``AddRiskManagement()`` method:
 

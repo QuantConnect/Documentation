@@ -29,25 +29,25 @@ QuantConnect's `algorithm wizard <https://www.quantconnect.com/terminal/>`_ offe
 
 .. figure:: https://cdn.quantconnect.com/bootcamp/i/techuniverse_rev0.gif
 
-Example: A Universe of Technology Stocks
+**Example: A Universe of Technology Stocks**
 
 The Technology Universe Selection Model selects the most liquid stocks in the Nasdaq Stock Exchange. Through a combination of coarse and fine filtering on MorningStar data, it sorts all available symbols on dollar-volume and returns a sorted list of 1000 most liquid symbols.
 
 .. code-block::
 
     def Initialize(self):
-    # Pass in a universe class of technology stocks
-    self.SetUniverseSelection(TechnologyUniverseModule())
+        # Pass in a universe class of technology stocks
+        self.SetUniverseSelection(TechnologyUniverseModule())
 
-Example: A Universe of Banking Stocks
+**Example: A Universe of Banking Stocks**
 
 The Banking Stock Universe Selection Model selects the most liquid stocks in the Morningstar Bank Industry. This comprises all public US Equities classified as Banks and provides an industry-specific Universe for banking stocks.
 
 .. code-block::
 
     def Initialize(self):
-    # Pass in a universe class of banking stocks
-    self.SetUniverseSelection(BankingIndustryStocks())
+        # Pass in a universe class of banking stocks
+        self.SetUniverseSelection(BankingIndustryStocks())
 
 |
 

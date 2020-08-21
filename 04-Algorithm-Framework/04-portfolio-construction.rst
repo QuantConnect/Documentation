@@ -6,7 +6,10 @@ Portfolio Construction
 
 |
 
-.. list-table:: Demonstration Algorithms
+Demonstration Algorithms
+========================
+
+.. list-table::
    :header-rows: 1
 
    * - C#
@@ -26,8 +29,10 @@ Introduction
 ============
 
 .. figure:: https://cdn.quantconnect.com/web/i/docs/algorithm-framework/portfolio-construction.png
+   :width: 50
+   :align: left
 
-The Portfolio Construction Model receives ``Insight`` objects from the :ref:`Alpha Model <algorithm-framework-alpha-creation>` and uses them to create ``PortfolioTarget`` objects for the execution model. A Portfolio Target provides the number of units of the asset we'd like to hold. To set your portfolio construction model you should use the ``self.SetPortfolioConstruction( IPortfolioConstructionModel )`` method. This should be done from your algorithm ``def Initialize()`` method.
+The Portfolio Construction Model receives ``Insight`` objects from the :ref:`Alpha Model <algorithm-framework-alpha-creation>` and uses them to create ``PortfolioTarget`` objects for the execution model. A Portfolio Target provides the number of units of the asset we'd like to hold. To set your portfolio construction model you should use the ``SetPortfolioConstruction( IPortfolioConstructionModel )`` method in C# or ``self.SetPortfolioConstruction( IPortfolioConstructionModel )`` method in Python. This should be done from your algorithm ``def Initialize()`` method.
 
 |
 
@@ -63,17 +68,17 @@ Like all Algorithm Framework models, the Portfolio Construction Model also recei
         # Portfolio construction scaffolding class; basic method args.
         class MyPortfolioConstructionModel(PortfolioConstructionModel):
 
-        # Create list of PortfolioTarget objects from Insights
-        def CreateTargets(self, algorithm, insights):
-            pass
+            # Create list of PortfolioTarget objects from Insights
+            def CreateTargets(self, algorithm, insights):
+                pass
 
-        # OPTIONAL: Security change details
-        def OnSecuritiesChanged(self, algorithm, changes):
-            # Security additions and removals are pushed here.
-            # This can be used for setting up algorithm state.
-            # changes.AddedSecurities:
-            # changes.RemovedSecurities:
-            pass
+            # OPTIONAL: Security change details
+            def OnSecuritiesChanged(self, algorithm, changes):
+                # Security additions and removals are pushed here.
+                # This can be used for setting up algorithm state.
+                # changes.AddedSecurities:
+                # changes.RemovedSecurities:
+                pass
 
 |
 

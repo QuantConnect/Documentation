@@ -6,7 +6,10 @@ Alpha Creation
 
 |
 
-.. list-table:: Demonstration Algorithms
+Demonstration Algorithms
+========================
+
+.. list-table::
    :header-rows: 1
 
    * - C#
@@ -30,10 +33,12 @@ Introduction
 ============
 
 .. figure:: https://cdn.quantconnect.com/web/i/docs/algorithm-framework/alpha-creation.png
+   :width: 50
+   :align: left
 
 The Alpha Model is primarily concerned with predicting market trends and signalling to the algorithm the best moments for making an investment. These signals, or ``Insight`` objects, contain the Direction, Magnitude, and Confidence of a market prediction. Insights should be generated on a defined set of assets provided by the Universe Selection Model and only emitted when they change.
 
-To set an Alpha Model, you can use the self.AddAlpha(alpha) method in Python, or the AddAlpha(alpha) method in C#.. This should be done from your algorithm def Initialize() method.
+To set an Alpha Model, you can use the ``self.AddAlpha(alpha)`` method in Python, or the ``AddAlpha(alpha)`` method in C#.. This should be done from your algorithm def ``Initialize()`` method.
 
 .. tabs::
 
@@ -232,7 +237,7 @@ Good Design Patterns
 ====================
 To make Alpha Models as useful and pluggable as possible, we recommend you follow the following design suggestions. These will ensure you can quickly migrate the Alpha from one algorithm to another if ever needed.
 
-1. Use Assets Defined By Universe Selection Model
+**1. Use Assets Defined By Universe Selection Model**
 
 The `Universe Selection Model <https://www.quantconnect.com/docs/algorithm-framework/universe-selection>`_ is in charge of selecting assets, so you should not assume any fixed set of assets. When assets are added to your universe, they will trigger an ``OnSecuritiesChanged()`` event. From there, you can initialize any state or history required for your Alpha Model.
 
