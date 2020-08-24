@@ -255,7 +255,7 @@ Let's analyze how the market behaves during volatile times by comparing the VIX 
     # Add SPY to see how the market is during volatile periods
     spy = self.AddEquity("SPY", Resolution.Daily)
 
-History calls for alternative data sources are similar to history calls for price data. We can use either ``qb.History(Type, Symbol, StartDate, EndDate)``, where Type is the data type, Symbol is the symbol for which to retrieve data for, or we can use `qb.History(Type, Symbol, Period)`, which returns historical data from the given past period starting from today's date.
+History calls for alternative data sources are similar to history calls for price data. We can use either ``qb.History(Type, Symbol, StartDate, EndDate)``, where Type is the data type, Symbol is the symbol for which to retrieve data for, or we can use ``qb.History(Type, Symbol, Period)``, which returns historical data from the given past period starting from today's date.
 
 .. code-block::
 

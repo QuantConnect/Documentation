@@ -294,6 +294,10 @@ Due to the sheer volume of information, Fundamental selection is performed on th
 
 For the ``FineFundamental`` properties, please check out our `data library <https://www.quantconnect.com/data#fundamentals/usa/morningstar>`_ page.
 
+.. note:: **Tip:**
+
+          Only 5,000 assets have fundamental data. When working with fundamental data, you should always include the "HasFundamentalData" filter in your Coarse Universe filter. See the example below for how to do this in your algorithm.
+
 **Requesting a Fundamental Universe**
 
 To request a fundamental universe, pass a second filter-function into the ``AddUniverse()`` method. The second function handles the filtering of your FineFundamental objects:
@@ -572,6 +576,86 @@ Each of the custom universe data points is 1 line of the source file. The Reader
 **Defining Custom Universe Type**
 
 Custom universes need a type defined to perform the parsing of the file. This pattern is almost identical to :ref:`importing custom <algorithm-reference-importing-custom-data>` to your algorithm, except the data is being used for choosing the universe data subscription instead of a price feed.
+
+.. tabs::
+
+   .. code-tab:: c#
+
+        //Example custom universe data; it is virtually identical to other custom data types.
+        public class NyseTopGainers : BaseData
+        {
+            public int TopGainersRank;
+            public override DateTime EndTime {
+                // define end time as exactly 1 day after Time
+            get { return Time + QuantConnect.Time.OneDay; }
+            set { Time = value - QuantConnect.Time.OneDay; }
+            }
+
+            public override SubscriptionDataSource GetSource(SubscriptionDataConfig config, DateTime date, bool isLiveMode) {
+                return new SubscriptionDataSource(@"your-remote-universe-data", SubscriptionTransportMedium.RemoteFile);
+             }
+
+             public override BaseData Reader(SubscriptionDataConfig config, string line, DateTime date, bool isLiveMode) {
+                 // Generate required data, then return an instance of your class.
+                return new NyseTopGainers {
+                    Symbol = Symbol.Create(symbolString, SecurityType.Equity, Market.USA),
+                    Time = date,
+                    TopGainersRank = rank
+                };
+            }
+        }
+
+   .. code-tab:: py
+
+        # Example custom universe data; it is virtually identical to other custom data types.
+        class NyseTopGainers(PythonData):
+
+            def GetSource(self, config, date, isLiveMode):
+                return SubscriptionDataSource(@"your-remote-universe-data", SubscriptionTransportMedium.RemoteFile)
+
+            def Reader(self, config, line, date, isLiveMode):
+                # Generate required data, then return an instance of your class.
+                nyse = NyseTopGainers()
+                nyse.Time = date
+                # define end time as exactly 1 day after Time
+                nyse.EndTime = nyse.Time + timedelta(1)
+                nyse.Symbol = Symbol.Create(symbolString, SecurityType.Equity, Market.USA)
+                nyse["Rank"] = rank
+                return nyse
+
+|
+
+Custom Universe Selection
+=========================
+
+Custom universes allow you to perform selection on your own datasets. Custom universe types extend from ``BaseData``, so implement a ``Reader()`` method which parses the lines of the file.
+
+Each of the custom universe data points is 1 line of the source file. The Reader method will be called repeatedly until the date/time advances, or the end of file is reached. This way you can group universe data and pass it as a single collection into the filter function.
+
+**Adding a Custom Universe**
+
+.. tabs::
+
+   .. code-tab:: c#
+
+        // Add custom universe type and define the filter function.
+        AddUniverse("myCustomUniverse", Resolution.Daily, nyseTopGainersList => {
+              return from singleStockData in nyseTopGainersList
+                     where singleStockData.Rank > 5
+                     select singleStockData.Symbol;
+        });
+
+   .. code-tab:: py
+
+        # add the custom universe in initialize
+        self.AddUniverse(NyseTopGainers, "myCustomUniverse", Resolution.Daily, self.nyseTopGainers)
+        # filter function using your custom data
+        def nyseTopGainers(self, data):
+            return [ x.Symbol for x in data if x["Rank"] > 5 ]
+
+**Defining Custom Universe Type**
+
+Custom universes need a type defined to perform the parsing of the file. This pattern is almost identical to :ref:`importing custom data <algorithm-reference-importing-custom-data>` to your algorithm, except the data is being used for choosing the universe data subscription instead of a price feed.
 
 .. tabs::
 

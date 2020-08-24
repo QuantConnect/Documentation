@@ -28,7 +28,7 @@ QuantConnect provides over 100+ predefined indicators that you can use in both b
 Warming Up With Historical Data
 ===============================
 
-Similar to backtesting, once we have our indicator object, we will need to warm it up with historical data. We can accomplish this using the qb.Indicator helper method, which detects the indicator and data required, and pipes historical data through it. The qb.Indicator method returns a dataframe containing values for our indicator. Each column of the dataframe corresponds to a component of our indicator. For example, for BollingerBands, there is a column for each band.
+Similar to backtesting, once we have our indicator object, we will need to warm it up with historical data. We can accomplish this using the ``qb.Indicator`` helper method, which detects the indicator and data required, and pipes historical data through it. The ``qb.Indicator`` method returns a dataframe containing values for our indicator. Each column of the dataframe corresponds to a component of our indicator. For example, for BollingerBands, there is a column for each band.
 
 We can use ``qb.Indicator(Indicator, Symbol, StartDate, EndDate, Resolution)`` to warm up an indicator with historical data between two dates.
 

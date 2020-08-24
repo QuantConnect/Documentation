@@ -76,7 +76,7 @@ You can use two methods to prime technical indicators and get them ready to be u
 
 **Algorithm Warm-Up**
 
-When we set an algorithm warm-up period, the engine pumps data in and automatically update all the indicators from before the start date (see :ref:`algorithm-reference-historical-data`). To ensure that all the indicators are ready after the algorithm warm-up period, you need to choose a lookback period that contains the required data.
+When we set an algorithm warm-up period, the engine pumps data in and automatically update all the indicators from before the start date (see :ref:`Setting Warm Up Period <algorithm-reference-historical-data>`). To ensure that all the indicators are ready after the algorithm warm-up period, you need to choose a lookback period that contains the required data.
 
 .. tabs::
 

@@ -41,7 +41,7 @@ QuantConnect supports using machine learning techniques for your trading strateg
 Training Models
 ===============
 
-The Train feature allows you to get an increase in computation time to perform your model training for your machine learning strategies. Normally algorithms must perform all necessary work within 10 minutes before returning from the OnData method. With the training features, these limits have been increased to more than 30 minutes to give you time to run your models.
+The ``Train`` feature allows you to get an increase in computation time to perform your model training for your machine learning strategies. Normally algorithms must perform all necessary work within 10 minutes before returning from the OnData method. With the training features, these limits have been increased to more than 30 minutes to give you time to run your models.
 
 Important: In backtesting, the ``Train`` method is *synchronous* and will block your program execution while the model is executed. However, in live trading, it runs *asynchronously*. Because of this, you should be careful to ensure your model is ready to use before continuing program execution. This training occurs on a separate thread, so we recommend a boolean flag to notify your algorithm of the model state. We post some examples of this in the Examples section below.
 

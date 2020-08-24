@@ -14,6 +14,7 @@ QuantConnect is built around organizations. A default personal organization is c
 
 Organizations using QuantConnect have the ability to subscribe to more resources as needed. Many of the free features previously available for individual accounts are still available, however, the payment structure for additional resources have been updated to accommodate growth by organizations. As you grow on QuantConnect, you may need more live nodes to run more live algorithms and more backtesting nodes for faster concurrent backtesting with a simple monthly subscription.
 
+|
 
 Basic Features
 ==============

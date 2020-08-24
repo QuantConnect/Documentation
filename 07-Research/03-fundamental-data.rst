@@ -28,7 +28,7 @@ We can directly access fundamental data for a given data field using ``qb.GetFun
     goog = qb.AddEquity("GOOG")
     ibm = qb.AddEquity("IBM")
 
-For some quarterly or yearly reported fundamentals like *FinancialStatements* and *OperationRatios*, we need to specify the period at the end of the fundamental selector name. For example, *EarningReports.BasicAverageShares.TwelveMonths* gives us the one year value of the basic average shares, while *EarningReports.BasicAverageShares.ThreeMonths* gives us the three month value.
+For some quarterly or yearly reported fundamentals like ``FinancialStatements`` and ``OperationRatios``, we need to specify the period at the end of the fundamental selector name. For example, ``EarningReports.BasicAverageShares.TwelveMonths`` gives us the one year value of the basic average shares, while ``EarningReports.BasicAverageShares.ThreeMonths`` gives us the three month value.
 
 .. code-block::
 

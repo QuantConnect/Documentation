@@ -6,7 +6,6 @@ Organization Support
 
 |
 
-============
 Introduction
 ============
 
@@ -18,7 +17,6 @@ The community is a great resource for support on developing algorithms. However,
 
 |
 
-=====
 Tiers
 =====
 
