@@ -53,18 +53,25 @@ QuantConnect provides the following API methods to place orders. All of the meth
 
    * - Order Type
      - Summary
+     - Link
    * - Market Order
      - ``MarketOrder("IBM", 100);`` Send a market order for 100 IBM at market price
+     - :ref:`algorithm-reference-trading-and-orders-market-orders`
    * - Limit Order
      - 	``LimitOrder("IBM", 100, 21.67);`` Submit a limit order for 100 IBM @ $21.67
+     - :ref:`algorithm-reference-trading-and-orders-limit-orders`
    * - Stop Market Order
      - ``StopMarketOrder("IBM", 100, 21.67);`` Submit a stop limit order for 100 IBM with stop price of $21.67
+     - :ref:`algorithm-reference-trading-and-orders-stop-market-orders`
    * - Stop Limit Order
      - ``StopLimitOrder("IBM", 100, 21.67, 22.00);`` Stop limit order for 100 IBM, stop price $21.67, limit of $22.00
+     - :ref:`algorithm-reference-trading-and-orders-stop-limit-orders`
    * - MarketOnOpenOrder
      - ``MarketOnOpenOrder("IBM", 100);`` Market on open order for 100 IBM
+     - :ref:`algorithm-reference-trading-and-orders-market-open-close`
    * - MarketOnCloseOrder
      - ``MarketOnCloseOrder("IBM", 100);`` Market on close order for 100 IBM
+     - :ref:`algorithm-reference-trading-and-orders-market-open-close`
 
 QuantConnect also provides automated order management technology via the :ref:`Algorithm Framework <algorithm-framework-overview>`, and automated position sizing via the :ref:`Automated Position Sizing (SetHoldings) <algorithm-reference-trading-and-orders-automatic-position-sizing>`.
 
@@ -454,6 +461,8 @@ By default, orders remain open until they are canceled (``TimeInForce.GoodTilCan
 
 |
 
+.. _algorithm-reference-trading-and-orders-market-orders:
+
 Market Orders
 =============
 
@@ -507,6 +516,8 @@ When trading on a large portfolio of assets, you may wish to send orders in batc
 
 |
 
+.. _algorithm-reference-trading-and-orders-limit-orders:
+
 Limit Orders
 ============
 
@@ -529,6 +540,8 @@ Limit orders can be updated via their ``OrderTicket`` because their orders are n
         limitTicket = self.LimitOrder("SPY", 10, close * .99)
 
 |
+
+.. _algorithm-reference-trading-and-orders-stop-market-orders:
 
 Stop Market Orders
 ==================
@@ -554,6 +567,8 @@ Stop Market Order ``StopPrice``, ``Tag``, and ``Quantity`` can be updated. For m
         stopMarketTicket = self.StopMarketOrder("SPY", 10, close * 0.99)
 
 |
+
+.. _algorithm-reference-trading-and-orders-stop-limit-orders:
 
 Stop Limit Orders
 =================
@@ -581,12 +596,14 @@ Stop Limit Order ``StopPrice``, ``LimitPrice``, ``Tag``, and ``Quantity`` can al
 
 |
 
+.. _algorithm-reference-trading-and-orders-market-open-close:
+
 Market On Open-Close Orders
 ===========================
 
-Market On Open orders are filled at the official opening price for the security. They must be submitted two minutes before the market opens to be included in the opening auction. The Market On Open ``Quantity`` and ``Tag`` properties can be updated after creation until the last two minutes before open.
+Market On Open orders are filled at the official *opening* price for the security. They must be submitted two minutes before the market opens to be included in the opening auction. The Market On Open ``Quantity`` and ``Tag`` properties can be updated after creation until the last two minutes before open.
 
-Market On Close orders are filled at the official closing price for the security. They must be submitted at least two minutes before the market closes to be included in the official closing auction. The Market On Open ``Quantity`` and ``Tag`` properties can be updated after creation until the last two minutes before close.
+Market On Close orders are filled at the official *closing* price for the security. They must be submitted at least two minutes before the market closes to be included in the official closing auction. The Market On Open ``Quantity`` and ``Tag`` properties can be updated after creation until the last two minutes before close.
 
 For more information on updating orders, see :ref:`Updating Orders <algorithm-reference-trading-and-orders-updating-orders>`.
 
@@ -678,60 +695,60 @@ When an order fails to process it returns with a negative order-id. These error 
    * - Id
      - Interpretation
    * - -1
-     - ``ProcessingError`` - Unknown error.
+     - **ProcessingError** - Unknown error.
    * - -2
-     - ``OrderAlreadyExists`` - Cannot submit because order already exists.
+     - **OrderAlreadyExists** - Cannot submit because order already exists.
    * - -3
-     - ``InsufficientBuyingPower`` - Not enough money to to submit order.
+     - **InsufficientBuyingPower** - Not enough money to to submit order.
    * - -4
-     - ``BrokerageModelRefusedToSubmitOrder`` - Internal logic invalidated submit order.
+     - **BrokerageModelRefusedToSubmitOrder** - Internal logic invalidated submit order.
    * - -5
-     - ``BrokerageFailedToSubmitOrder`` - Brokerage rejected order.
+     - **BrokerageFailedToSubmitOrder** - Brokerage rejected order.
    * - -6
-     - ``BrokerageFailedToUpdateOrder`` - Failed to update order.
+     - **BrokerageFailedToUpdateOrder** - Failed to update order.
    * - -7
-     - ``BrokerageHandlerRefusedToUpdateOrder`` - Brokerage rejected update request.
+     - **BrokerageHandlerRefusedToUpdateOrder** - Brokerage rejected update request.
    * - -8
-     - ``BrokerageFailedToCancelOrder`` - Brokerage refused to cancel order.
+     - **BrokerageFailedToCancelOrder** - Brokerage refused to cancel order.
    * - -9
-     - ``InvalidOrderStatus`` - Only pending orders can be cancelled
+     - **InvalidOrderStatus** - Only pending orders can be cancelled
    * - -10
-     - ``UnableToFindOrder`` - Cannot find order with that id.
+     - **UnableToFindOrder** - Cannot find order with that id.
    * - -11
-     - ``OrderQuantityZero`` - Cannot submit or update orders with zero quantity.
+     - **OrderQuantityZero** - Cannot submit or update orders with zero quantity.
    * - -12
-     - ``UnsupportedRequestType`` - This type of request is unsupported.
+     - **UnsupportedRequestType** - This type of request is unsupported.
    * - -13
-     - ``PreOrderChecksError`` - Pre-placement order checks failed.
+     - **PreOrderChecksError** - Pre-placement order checks failed.
    * - -14
-     - ``MissingSecurity`` - Security is missing. Probably did not subscribe.
+     - **MissingSecurity** - Security is missing. Probably did not subscribe.
    * - -15
-     - ``ExchangeNotOpen`` - Some order types require open exchange.
+     - **ExchangeNotOpen** - Some order types require open exchange.
    * - -16
-     - ``SecurityPriceZero`` - There isn't any market data yet for the security.
+     - **SecurityPriceZero** - There isn't any market data yet for the security.
    * - -17
-     - ``ForexBaseAndQuoteCurrenciesRequired`` - Need both currencies in cashbook to trade a pair.
+     - **ForexBaseAndQuoteCurrenciesRequired** - Need both currencies in cashbook to trade a pair.
    * - -18
-     - ``ForexConversionRateZero`` - Need conversion rate to account currency.
+     - **ForexConversionRateZero** - Need conversion rate to account currency.
    * - -19
-     - ``SecurityHasNoData`` - Should not attempt trading without at least one data point.
+     - **SecurityHasNoData** - Should not attempt trading without at least one data point.
    * - -20
-     - ``ExceededMaximumOrders`` - Transaction manager's cache is full.
+     - **ExceededMaximumOrders** - Transaction manager's cache is full.
    * - -21
-     - ``MarketOnCloseOrderTooLate`` - Need to submit market on close orders at least 11 minutes before exchange close.
+     - **MarketOnCloseOrderTooLate** - Need to submit market on close orders at least 11 minutes before exchange close.
    * - -22
-     - ``InvalidRequest`` - Request is invalid or null.
+     - **InvalidRequest** - Request is invalid or null.
    * - -23
-     - ``RequestCanceled`` - Request was canceled by user.
+     - **RequestCanceled** - Request was canceled by user.
    * - -24
-     - ``AlgorithmWarmingUp`` - All orders are invalidated while algorithm is warming up.
+     - **AlgorithmWarmingUp** - All orders are invalidated while algorithm is warming up.
    * - -25
-     - ``BrokerageModelRefusedToUpdateOrder`` - Internal logic invalidated update order.
+     - **BrokerageModelRefusedToUpdateOrder** - Internal logic invalidated update order.
    * - -26
-     - ``QuoteCurrencyRequired`` - Need quote currency in cashbook to trade.
+     - **QuoteCurrencyRequired** - Need quote currency in cashbook to trade.
    * - -27
-     - ``ConversionRateZero`` - Need conversion rate to account currency.
+     - **ConversionRateZero** - Need conversion rate to account currency.
    * - -28
-     - ``NonTradableSecurity`` - The order's symbol references a non-tradable security.
+     - **NonTradableSecurity** - The order's symbol references a non-tradable security.
    * - -29
-     - ``NonExercisableSecurity`` - The order's symbol references a non-exercisable security.
+     - **NonExercisableSecurity** - The order's symbol references a non-exercisable security.

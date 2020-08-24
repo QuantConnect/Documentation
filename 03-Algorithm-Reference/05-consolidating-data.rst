@@ -48,7 +48,7 @@ To achieve this, QuantConnect allows you to create ``Consolidator`` objects and 
 Data Shapes and Sizes
 =====================
 
-Consolidated output data is in the same format as the input. :ref:`Small TradeBars <algorithm-reference-handling-data-tradebars>` are aggregated into large TradeBars, and small :ref:`QuoteBars <algorithm-reference-handling-data-quotebars>` are aggregated into large QuoteBars.
+Consolidated output data is in the same format as the input. Small :ref:`TradeBars <algorithm-reference-handling-data-tradebars>` are aggregated into large TradeBars, and small :ref:`QuoteBars <algorithm-reference-handling-data-quotebars>` are aggregated into large QuoteBars.
 
 .. figure:: http://cdn.quantconnect.com/docs/i/consolidators-small-to-large.png
 
@@ -102,8 +102,7 @@ The event handler function of Consolidate accepts one argument, the resulting ba
         def FortyFiveMinuteBarHandler(self, consolidated):
               self.Log(f"{consolidated.EndTime} >> FortyFiveMinuteBarHandler >> {consolidated.Close}")
 
-Most Common Error: Adding Braces
---------------------------------
+**Most Common Error: Adding Braces**
 
 The most common error is to put braces "``()``" at the end of your function call when defining the event handler. Using braces causes the method to be executed, and the result passed in as the event handler. Remember to simply pass the name of your function to the event system. i.e. It should be ``self.EventHandler`` not ``self.EventHandler()``.
 
@@ -151,7 +150,7 @@ A common request is to use consolidators with indicators to create indicators wi
 Rolling Window of Consolidated Bars
 ===================================
 
-A common request is to compare a current consolidated bar with one from the past. This can be achieved by combining a `RollingWindow <algorithm-reference-rolling-window>` with a Consolidator. This is easy to achieve with the individual tools provided here and in the RollingWindow documentation. First, you must create a consolidator for the data you need, and then you must add it to the rolling window in the event handler. Building this will allow you to easily compare recent custom-bars with previous ones created.
+A common request is to compare a current consolidated bar with one from the past. This can be achieved by combining a `RollingWindow <algorithm-reference-rolling-window>`_ with a Consolidator. This is easy to achieve with the individual tools provided here and in the RollingWindow documentation. First, you must create a consolidator for the data you need, and then you must add it to the rolling window in the event handler. Building this will allow you to easily compare recent custom-bars with previous ones created.
 
 .. tabs::
 
@@ -219,7 +218,7 @@ Most people will not need to manually consolidate data, but if needed this gives
 Manually Consolidating Periods
 ==============================
 
-Data can be aggregated according to a period, with the time of the bars used to perform the consolidation. This requires the input data to be of a higher resolution than the desired consolidation period, e.g. to build a 1.5 hour bar you need minute data.
+Data can be aggregated according to a period, with the time of the bars used to perform the consolidation. This requires the input data to be of a higher resolution than the desired consolidation period, e.g. to build a 1.5 hour bar you need *minute* data.
 
 The mechanics are identical to consolidation counts described previously. You must create a consolidator object and then register it to receive data with the Subscription Manager.
 
@@ -267,7 +266,7 @@ The mechanics are identical to consolidation counts described previously. You mu
 Renko Bar Consolidation
 =======================
 
-Renko bars are the consolidation of fixed price movements instead of fixed time periods. When you define a ``RenkoConsolidator`` you set the price movement instead of the period of the consolidation.
+Renko bars are the consolidation of fixed price movements instead of fixed time periods. When you define a ``RenkoConsolidator`` you set the *price movement* instead of the period of the consolidation.
 
 .. tabs::
 

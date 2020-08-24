@@ -99,7 +99,7 @@ With just a handful of parameters, it is possible to create an algorithm that pe
 
 .. |clock| image:: https://cdn.quantconnect.com/terminal/i/backtest_tab_icons/clock_rev1.svg
 
-As you spend more time on one algorithm, research suggests you are more likely to be overfitting the strategy to the data. It is common to become attached to an idea and spend weeks or months to perform well in a backtest. Assuming you are a proficient coder who fully understands the QuantConnect API, we recommend no more than 16 hours of work per experiment. In theory, within two full working days, you should be able to test a single hypothesis thoroughly.
+As you spend more time on one algorithm, `research suggests <https://papers.ssrn.com/sol3/papers.cfm?abstract_id=2308659>`_ you are more likely to be overfitting the strategy to the data. It is common to become attached to an idea and spend weeks or months to perform well in a backtest. Assuming you are a proficient coder who fully understands the QuantConnect API, we recommend no more than 16 hours of work per experiment. In theory, within two full working days, you should be able to test a single hypothesis thoroughly.
 
 +----------------------------------------------------------------------------------------------------+
 | Research Time Overfit Reference                                                                    |

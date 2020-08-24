@@ -9,7 +9,7 @@ Supported Libraries
 Introduction
 ============
 
-QuantConnect supports using dozens of open source packages in your algorithms. These packages are reviewed by our security team, and when approved, can be used in backtesting and live trading. To use these packages in your algorithm, you will need to add the relevant import statement at the top of your code file.
+QuantConnect supports using dozens of open source packages in your algorithms. These packages are reviewed by our security team, and when approved, can be used in backtesting and live trading. To use these packages in your algorithm, you will need to add the relevant ``import`` statement (Python) or ``using`` statement (C#) at the top of your code file.
 
 |
 

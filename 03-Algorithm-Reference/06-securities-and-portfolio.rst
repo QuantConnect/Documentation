@@ -163,7 +163,7 @@ Detailed information on these classes can be found in the LEAN documentation. Ch
 Active Securities
 =================
 
-The ActiveSecurities lets you select the assets currently in your universe. This is useful for iterating over those securities from your universe selection. It has all the same properties as the Securities collection.
+The ActiveSecurities lets you select the assets *currently* in your universe. This is useful for iterating over those securities from your universe selection. It has all the same properties as the Securities collection.
 
 .. tabs::
 

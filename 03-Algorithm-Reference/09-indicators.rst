@@ -1207,7 +1207,7 @@ Indicators are *composable* - meaning they can be *chained* together to create u
    * - .Of()
      - ``sma = SimpleMovingAverage("SPY", 14)``
        ``rsiAverage= IndicatorExtensions.Of(rsi, sma)``
-        Feed an indicator output into input of another
+       Feed an indicator output into input of another
 
    * - .SMA(int period)
      - ``rsiAvg = IndicatorExtensions.SMA(rsi, 10)``

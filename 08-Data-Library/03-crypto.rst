@@ -111,7 +111,7 @@ Data must be added in the Initialize() method manually with the ``AddCrypto()`` 
 
 Coinbase Pro trades are currently available from 2015-06-15 to the present. The data in 2015 is somewhat spotty and unrealistic, so we recommend starting your backtests from 2016 onwards. We have data on all currency pairs supported by Coinbase Pro.
 
-We currently only have Coinbase Pro brokerage integration. For more information on using this data in your algorithm, see Initializing Algorithms.
+We currently only have Coinbase Pro brokerage integration. For more information on using this data in your algorithm, see :ref:`Initializing Algorithms <algorithm-reference-initializing-algorithms>`.
 
 |
 

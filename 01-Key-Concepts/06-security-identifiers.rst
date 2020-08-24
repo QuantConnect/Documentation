@@ -9,7 +9,7 @@ Security Identifiers
 Introduction
 ============
 
-Symbols are a way to identify an asset uniquely. They are objects which contain all the information required to identify a security without needing external references or proprietary database look-ups. Symbols were implemented in the LEAN open-source project as a way to identify or "finger-print" tradable assets so that no further database look-up is required.
+``Symbols`` are a way to identify an asset uniquely. They are objects which contain all the information required to identify a security without needing external references or proprietary database look-ups. Symbols were implemented in the LEAN open-source project as a way to identify or "finger-print" tradable assets so that no further database look-up is required.
 
 All QuantConnect and LEAN Algorithm API methods use Symbols to identify the asset for trading.
 
@@ -31,13 +31,13 @@ Symbols have several public properties you can use to identify the asset uniquel
     Symbol.Date              # Earliest listing date if equities, expiry for future/option.
     Symbol.HasUnderlying     # Is a derivative asset with another underlying asset.
 
-All of this data is encoded into the symbol object. QuantConnect does our best to hide the details of this from your algorithm, but occasionally you'll see it come through as an encoded hash like this: AAPL R735QTJ8XC9X. The first half of the encoded string represents the first ticker AAPL was listed under, the other letters at the end of the string represent other information for the asset (Security Type, Date Listed, Expiry Date, Strike Price, and Listed Market).
+All of this data is encoded into the symbol object. QuantConnect does our best to hide the details of this from your algorithm, but occasionally you'll see it come through as an encoded hash like this: ``AAPL R735QTJ8XC9X``. The first half of the encoded string represents the first ticker AAPL was listed under, the other letters at the end of the string represent other information for the asset (Security Type, Date Listed, Expiry Date, Strike Price, and Listed Market).
 
 .. figure:: https://cdn.quantconnect.com/docs/i/symbol-encoding-examples_rev0.png
 
 **Important: Adding Securities**
 
-When you manually request data with AddSecurity()/AddEquity() methods, QuantConnect assumes you are adding the ticker as of *"today"* and automatically looks up the first ticker that an asset was listed with. Using the Google example above:
+When you manually request data with ``AddSecurity()``/``AddEquity()`` methods, QuantConnect assumes you are adding the ticker as of *"today"* and automatically looks up the first ticker that an asset was listed with. Using the Google example above:
 
 .. tabs::
 
@@ -53,7 +53,7 @@ When you manually request data with AddSecurity()/AddEquity() methods, QuantConn
         self.Debug(self.goog.ID) # Prints "GOOCV VP83T1ZUHROL"
         self.Debug(self.goog)    # Prints Your Reference "GOOG"
 
-To access your reference value for a Symbol, you can use the Symbol.Value property which returns the string ticker you used to add the data to your algorithm (i.e. "GOOG" in our example).
+To access your reference value for a Symbol, you can use the ``Symbol.Value`` property which returns the string ticker you used to add the data to your algorithm (i.e. "GOOG" in our example).
 
 |
 
@@ -108,7 +108,7 @@ To make using the API easier, QuantConnect has built technology called the Symbo
 Decoding Symbols
 ================
 
-When a Symbol is serialized to a string, it will look something like this: SPY R735QTJ8XC9X. This two-part string is a base64 encoded set of data. Encoding all of the properties into a short format allows dense communication without requiring a third party list or look-up.
+When a Symbol is serialized to a string, it will look something like this: ``SPY R735QTJ8XC9X``. This two-part string is a base64 encoded set of data. Encoding all of the properties into a short format allows dense communication without requiring a third party list or look-up.
 
 Most of the time, you will not need to work with these encoded strings. However, QuantConnect provides a method for deserializing Symbol objects into easily consumable objects for use by the API. You can use this method as demonstrated below:
 
@@ -128,7 +128,7 @@ Most of the time, you will not need to work with these encoded strings. However,
         print(google.SecurityType)                          # Equity
         print(google.Value)                                # GOOCV
 
-The Market property is used to distinguish between tickers with the same string value representing different underlying assets. A prime example of this is the various market makers who have different prices for EURUSD. QuantConnect stores this data separately, and as they have different fill prices, we treat the execution venues as different *markets*.
+The ``Market`` property is used to distinguish between tickers with the same string value representing different underlying assets. A prime example of this is the various market makers who have different prices for EURUSD. QuantConnect stores this data separately, and as they have different fill prices, we treat the execution venues as different *markets*.
 
 |
 

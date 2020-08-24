@@ -86,8 +86,7 @@ Since the Slice object is indexed, it is possible to check if the time slice con
 Other Event Handlers
 ====================
 
-C#
---
+**C#**
 
 In C#/F# data is also piped into dedicated event handlers for each data type. To use data this way, you need to put an event handler in your algorithm that follows the pattern: ``public void OnData(TradeBars data) {}``. LEAN automatically detects the method exists and sends data to it.
 
@@ -102,8 +101,7 @@ In C#/F# data is also piped into dedicated event handlers for each data type. To
             // Ticks objects are piped into this method.
         }
 
-Python
-------
+**Python**
 
 Python passes all data events into the ``def OnData(self, slice)``: event handler. This is the preferred way to access data for your strategy. This includes all the data you've requested for your algorithm, including custom data.
 
@@ -195,6 +193,22 @@ QuoteBars are built by consolidating the bid and ask ticks from the exchanges in
             fxClose = eurusdQuoteBar.Close             ## Market Close FX Rate
 
 With a specific QuoteBar, you can also access Bid and Ask Bars for the same security. These Bars provide information specific to the Bid and Ask side of Forex and Future asset types, while the QuoteBar.Open, High, Low, and Close properties are the midpoint of the Bid-Ask spread at that moment of time. These QuoteBar.Bid and QuoteBar.Ask bars have Open, High, Low, and close properties (e.g., ``QuoteBar.Bid.Open``).
+
+.. tabs::
+
+   .. code-tab:: py
+
+        self.AddForex('EURUSD', Resolution.Hour) # Subscribe to hourly QuoteBars in Initialize(self)
+
+         def OnData(self, data):
+            quoteBar = data['EURUSD']   ## EURUSD QuoteBar
+            self.Log(f"Mid-point open price: {quoteBar.Open}")
+
+            bidBar = quoteBar.Bid       ## EURUSD Bid Bar
+            askBar = quoteBar.Ask       ## EURUSD Ask Bar
+
+            self.Log(f"Bid open price: {bidBar.Open}")
+            self.Log(f"Ask open price: {askBar.Open}")
 
 |
 

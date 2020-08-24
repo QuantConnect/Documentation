@@ -25,47 +25,45 @@ Other helpers like ``Transactions``, ``Schedule``, ``Notify``, and ``Universe`` 
 
         public class QCAlgorithm
         {
-                SecurityManager Securities;   //Array of Security objects.
-                SecurityPortfolioManager Portfolio;  // Array of SecurityHolding objects
-                SecurityTransactionManager Transactions;  // Transactions helper
-                ScheduleManager Schedule;  // Scheduling helper
-                NotificationManager Notify; //Email, SMS helper
-                UniverseManager Universe; // Universe helper
+            SecurityManager Securities;   //Array of Security objects.
+            SecurityPortfolioManager Portfolio;  // Array of SecurityHolding objects
+            SecurityTransactionManager Transactions;  // Transactions helper
+            ScheduleManager Schedule;  // Scheduling helper
+            NotificationManager Notify; //Email, SMS helper
+            UniverseManager Universe; // Universe helper
 
-                //Set up Requested Data, Cash, Time Period.
-                public virtual void Initialize() { ... };
+            //Set up Requested Data, Cash, Time Period.
+            public virtual void Initialize() { ... };
 
-                //Event Handlers:
-                public virtual OnData(Slice data) { ... };
-                public virtual OnDividend() { ... };
-                public virtual OnEndOfDay() { ... };
-                public virtual OnEndOfAlgorithm() { ... };
+            //Event Handlers:
+            public virtual OnData(Slice data) { ... };
+            public virtual OnDividend() { ... };
+            public virtual OnEndOfDay() { ... };
+            public virtual OnEndOfAlgorithm() { ... };
 
-                //Helpers...
-                public SimpleMovingAverage SMA();
+            //Helpers...
+            public SimpleMovingAverage SMA();
         }
 
    .. code-tab:: py
 
-        def QCAlgorithm
-        {
-                self.Securities;   # Array of Security objects.
-                self.Portfolio;    # Array of SecurityHolding objects
-                self.Transactions; # Transactions helper
-                self.Schedule;    # Scheduling helper
-                self.Notify;      # Email, SMS helper
-                self.Universe;    # Universe helper
+        class QCAlgorithm:
+            self.Securities;   # Array of Security objects.
+            self.Portfolio;    # Array of SecurityHolding objects
+            self.Transactions; # Transactions helper
+            self.Schedule;    # Scheduling helper
+            self.Notify;      # Email, SMS helper
+            self.Universe;    # Universe helper
 
-                # Set up Requested Data, Cash, Time Period.
-                def Initialize:
+            # Set up Requested Data, Cash, Time Period.
+            def Initialize:
 
-                # Other Event Handlers:
-                def OnData(self, slice):
-                def OnEndOfDay(self, symbol):
-                def OnEndOfAlgorithm():
+            # Other Event Handlers:
+            def OnData(self, slice):
+            def OnEndOfDay(self, symbol):
+            def OnEndOfAlgorithm():
 
-                # Indicator Helpers
-                def SMA():
-        }
+            # Indicator Helpers
+            def SMA():
 
 |

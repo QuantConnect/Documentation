@@ -55,7 +55,10 @@ QuantConnect's old docuentation, converted to rst.
    Universes <03-Algorithm-Reference/11-universes>
    Historical Data <03-Algorithm-Reference/12-historical-data>
    Charting <03-Algorithm-Reference/13-charting>
+   Machine Learning <03-Algorithm-Reference/14-machine-learning>
+   Reality Modeling <03-Algorithm-Reference/15-reality-modelling>
    Logging and Debug <03-Algorithm-Reference/16-logging-and-debug>
+   Common Errors <03-Algorithm-Reference/17-common-errors>
 
 
 .. toctree::
