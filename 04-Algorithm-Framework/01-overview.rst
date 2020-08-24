@@ -29,25 +29,25 @@ QuantConnect's `algorithm wizard <https://www.quantconnect.com/terminal/>`_ offe
 
 .. figure:: https://cdn.quantconnect.com/bootcamp/i/techuniverse_rev0.gif
 
-Example: A Universe of Technology Stocks
+**Example: A Universe of Technology Stocks**
 
 The Technology Universe Selection Model selects the most liquid stocks in the Nasdaq Stock Exchange. Through a combination of coarse and fine filtering on MorningStar data, it sorts all available symbols on dollar-volume and returns a sorted list of 1000 most liquid symbols.
 
 .. code-block::
 
     def Initialize(self):
-    # Pass in a universe class of technology stocks
-    self.SetUniverseSelection(TechnologyUniverseModule())
+        # Pass in a universe class of technology stocks
+        self.SetUniverseSelection(TechnologyUniverseModule())
 
-Example: A Universe of Banking Stocks
+**Example: A Universe of Banking Stocks**
 
 The Banking Stock Universe Selection Model selects the most liquid stocks in the Morningstar Bank Industry. This comprises all public US Equities classified as Banks and provides an industry-specific Universe for banking stocks.
 
 .. code-block::
 
     def Initialize(self):
-    # Pass in a universe class of banking stocks
-    self.SetUniverseSelection(BankingIndustryStocks())
+        # Pass in a universe class of banking stocks
+        self.SetUniverseSelection(BankingIndustryStocks())
 
 |
 
@@ -106,13 +106,13 @@ The Algorithm Framework is built into the ``QCAlgorithm`` class giving your stra
 
 .. figure:: https://cdn.quantconnect.com/web/i/docs/algorithm-framework/class-structure_rev2.png
 
-Algorithm Framework Class Hierarchy
+   Algorithm Framework Class Hierarchy
 
 The framework data output of each module flows into the next predictably. Assets selected by the *Universe Selection* Model are fed into your *Alpha* Model to generate trade signals. The trade signals (*Insights*) are converted into *Portfolio Targets* by the *Portfolio Construction* Model. The Portfolio Targets hold a target share quantity we'd like the algorithm to hold. To execute these targets efficiently, the Execution module fills the targets over time. Finally, the *Risk Management* Model ensures our targets are still within safe risk parameters and adjusts the portfolio targets if required.
 
 .. figure:: https://cdn.quantconnect.com/web/i/docs/algorithm-framework/algorithm-framework.png
 
-QuantConnect Algorithm Framework Architecture.
+   QuantConnect Algorithm Framework Architecture.
 
 .. tabs::
 

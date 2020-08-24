@@ -6,7 +6,10 @@ Execution
 
 |
 
-.. list-table:: Demonstration Algorithms
+Demonstration Algorithms
+========================
+
+.. list-table::
    :header-rows: 1
 
    * - C#
@@ -26,8 +29,10 @@ Introduction
 ============
 
 .. figure:: https://cdn.quantconnect.com/web/i/docs/algorithm-framework/execute.png
+   :width: 50
+   :align: left
 
-The Execution Model is primarily concerned with efficiently executing trades. It seeks to find the optimal price to fill orders and manages the orders. It receives a ``PortfolioTarget`` array from the :ref:`Portfolio Construction Model <algorithm-framework-portfolio-construction>` and uses it to place trades in the market, seeking to reach the units indicated in the Portfolio Target. To set your execution model, you should use the ``self.SetExecution( IExecutionModel )`` method. This should be done from your algorithm ``def Initialize()`` method.
+The Execution Model is primarily concerned with efficiently executing trades. It seeks to find the optimal price to fill orders and manages the orders. It receives a ``PortfolioTarget`` array from the :ref:`Portfolio Construction Model <algorithm-framework-portfolio-construction>` and uses it to place trades in the market, seeking to reach the units indicated in the Portfolio Target. To set your execution model, you should use the ``SetExecution( IExecutionModel )`` method in C# or ``self.SetExecution( IExecutionModel )`` method in Python. This should be done from your algorithm ``def Initialize()`` method.
 
 When the targets arrive at the Execution Model, they have already been risk-adjusted by the Risk Management Model. Like all models, the Execution Model only receives *updates* to the portfolio target share counts. You will not receive all the targets at once.
 
@@ -79,12 +84,12 @@ Execution models have one required method to implement ``Execute(algorithm, targ
         class MyExecutionModel(ExecutionModel):
 
             # Fill the supplied portfolio targets efficiently
-                def Execute(self, algorithm, targets):
-                    pass
+            def Execute(self, algorithm, targets):
+                pass
 
             # Optional: Securities changes event for handling new securities.
             def OnSecuritiesChanged(self, algorithm, changes):
-                    pass
+                pass
 
 The ``PortfolioTarget`` class has the following properties available for use by the Execution Model. They can be accessed with their public properties ``target.Quantity``.
 
@@ -170,7 +175,7 @@ The VWAP Execution Model seeks for the average fill price of your position to ma
 
 .. figure:: https://cdn.quantconnect.com/web/i/docs/algorithm-framework/execution-model-vwap-fill.png
 
-**VWAP Execution Model Fill Placements**
+   VWAP Execution Model Fill Placements
 
 To use the pre-made Execution Model in your algorithm, you should set it in Initialize():
 
