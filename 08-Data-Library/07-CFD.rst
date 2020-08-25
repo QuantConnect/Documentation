@@ -96,7 +96,7 @@ Oanda CFD data is set in the timezone in which the contract is listed. The CFD e
 About the Provider
 ==================
 
-.. figure:: https://cdn.quantconnect.com/web/i/providers/algoseek.png
+.. figure:: https://cdn.quantconnect.com/web/i/providers/oanda.png
    :width: 200
    :align: center
 
