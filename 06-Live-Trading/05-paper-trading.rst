@@ -20,7 +20,7 @@ Paper trading is possible using your brokerage (IB, OANDA, FXCM) or the QuantCon
 Assets Supported
 ================
 
-Whether our paper model or a real brokerage, you can source data for your algorithm from QuantConnect or your brokerage directly. Currently, only Interactive Brokers Brokerage data feed is supported, as the other brokerage data sources are identical to the QuantConnect stream, so we have not built in ways to use them directly.
+Whether our paper model or a real brokerage, you can source *data* for your algorithm from QuantConnect or your brokerage directly. Currently, only Interactive Brokers Brokerage data feed is supported, as the other brokerage data sources are identical to the QuantConnect stream, so we have not built in ways to use them directly.
 
 **QuantConnect Data Feed**
 

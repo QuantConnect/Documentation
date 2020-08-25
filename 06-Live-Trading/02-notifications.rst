@@ -6,7 +6,10 @@ Notifications
 
 |
 
-.. list-table:: Demonstration Algorithm
+Demonstration Algorithm
+=======================
+
+.. list-table::
    :header-rows: 1
 
    * - C#
@@ -29,7 +32,7 @@ To prevent sending thousands of messages each time you run a backtest, all notif
 Email Notifications
 ===================
 
-To request email notifications on market events, you need to use ``the Notify.Email(email, subject, contents)`` method. This will trigger QuantConnect to immediately send an email in live trading.
+To request email notifications on market events, you need to use the ``Notify.Email(email, subject, contents)`` method. This will trigger QuantConnect to immediately send an email in live trading.
 
 .. tabs::
 
