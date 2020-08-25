@@ -110,7 +110,8 @@ QuantConnect's old docuentation, converted to rst.
    Research on Indicators <07-Research/04-research-on-indicators>
    Alternative Data <07-Research/05-alternative-data>
    Machine Learning Research <07-Research/06-machine-learning-research>
-   Research to Production <07-Research/07-research-to-production>
+   Plotting in Research <07-Research/07-plotting-in-research>
+   Research to Production <07-Research/08-research-to-production>
 
 
 .. toctree::
