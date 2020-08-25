@@ -6,7 +6,10 @@ Upgrading Classic Algorithms
 
 |
 
-.. list-table:: Demonstration Algorithms
+Demonstration Algorithms
+========================
+
+.. list-table::
    :header-rows: 1
 
    * - C#

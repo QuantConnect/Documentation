@@ -60,13 +60,13 @@ Market Correlation
 
 One question every Alpha author must be able to answer is why people should invest in their strategy. Active trading involves commission costs, borrowing costs, and other risks. The signal that the algorithm finds in the data needs to be unique and provide sufficient Alpha to warrant the extra risk. If the strategy produces an equity curve that is too correlated with a relevant benchmark, then it is likely cheaper and safer for an investor to just buy the benchmark. Be sure to compare the strategy against common benchmarks to see how much additional value it produces beyond the broader market returns.
 
-Equities
+**Equities**
 
 * S&P 500
 * Russell 2000
 * Russell 3000
 
-Fixed Income
+**Fixed Income**
 
 * Short-term US Treasury Bond ETFs
 * Medium-term US Treasury Bond ETFs
@@ -74,15 +74,15 @@ Fixed Income
 * Investment-grade Corporate Bond ETFs
 * Municipal Bond ETFs
 
-Forex
+**Forex**
 
 * Libor Rates
 
-Options
+**Options**
 
 * Underlying security
 
-Futures
+**Futures**
 
 * S&P 500
 * VIX ETFs

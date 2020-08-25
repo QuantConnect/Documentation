@@ -12,11 +12,11 @@ Since QuantConnect was formed in 2013, we've seen more than 2 million algorithms
 
 These core "modules" – Universe Selection, Alpha Creation, Portfolio Construction, Execution and Risk Management – form the basis of all investment strategies.
 
-#. Universe Selection - Select your assets.
-#. Alpha Creation - Generate trading signals.
-#. Portfolio Construction - Determine position size targets.
-#. Execution - Place trades to reach your position sizes.
-#. Risk Management - Manage the market risks.
+* 1. Universe Selection - Select your assets.
+* 2. Alpha Creation - Generate trading signals.
+* 3. Portfolio Construction - Determine position size targets.
+* 4. Execution - Place trades to reach your position sizes.
+* 5. Risk Management - Manage the market risks.
 
 In the following sections, we'll go into each of these modules in more detail
 
