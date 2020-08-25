@@ -1,4 +1,4 @@
-.. _algorithm-reference-reality-modeling:
+.. _algorithm-reference-reality-modelling:
 
 =================
 Reality Modelling
