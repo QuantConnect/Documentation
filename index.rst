@@ -122,4 +122,5 @@ QuantConnect's old docuentation, converted to rst.
    Crypto <08-Data-Library/03-crypto>
    Options <08-Data-Library/05-options>
    Futures <08-Data-Library/06-futures>
+   CFD <08-Data-Library/07-CFD>
    Alternative Data <08-Data-Library/08-Alternative-Data/index>
