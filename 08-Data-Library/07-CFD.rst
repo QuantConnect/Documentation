@@ -100,5 +100,5 @@ About the Provider
    :width: 200
    :align: center
 
-`OANDA <https://www.oanda.com/>`_ uses innovative computer and financial technology to provide Internet-based forex trading and currency information services to everyone, from individuals to large corporations, from portfolio managers to financial institutions. OANDA is a market maker and a trusted source for currency data. It has access to one of the world's largest historical, high frequency, filtered currency databases.
+`OANDA <https://www.oanda.com/>`__ uses innovative computer and financial technology to provide Internet-based forex trading and currency information services to everyone, from individuals to large corporations, from portfolio managers to financial institutions. OANDA is a market maker and a trusted source for currency data. It has access to one of the world's largest historical, high frequency, filtered currency databases.
 
