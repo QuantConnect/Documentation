@@ -13,7 +13,7 @@ To create an Alpha for the marketplace, you need just two principal components f
 #. A Universe Selection Model, to determine the assets your Alpha will be trading; and
 #. An Alpha Model, to generate Insight objects on selected assets.
 
-The rest of the Algorithm Framework (Portfolio Construction, Execution, and Risk Management) are related to position sizing and trade management and not relevant to an *external fund.* In this section, we will only cover creating an Alpha using the Algorithm Framework. If you have a Classic Algorithm, please see the documentation for Upgrading :ref:`Classic Algorithms <alpha-streams-upgrading-classic-algorithms>`.
+The rest of the Algorithm Framework (Portfolio Construction, Execution, and Risk Management) are related to position sizing and trade management and not relevant to an *external fund.* In this section, we will only cover creating an Alpha using the Algorithm Framework. If you have a Classic Algorithm, please see the documentation for :ref:`Upgrading Classic Algorithms <alpha-streams-upgrading-classic-algorithms>`.
 
 All algorithms utilizing the QuantConnect Algorithm Framework are eligible for licensing in the Alpha Streams marketplace.
 
@@ -55,7 +55,7 @@ Scheduled Universes trigger at defined points in time and run a generic function
 
 Generating Insights
 ===================
-The next component of your algorithm is the Alpha Model. It is responsible for generating the Insight objects Funds consume as factors for their portfolio. Your Alpha Model should return a list or enumerable of Insight objects from its ``Update()`` method. For more information on creating Insights, see :ref:`AlgorithmFramework / Alpha Creation <algorithm-framework-alpha-creation>`_.
+The next component of your algorithm is the Alpha Model. It is responsible for generating the Insight objects Funds consume as factors for their portfolio. Your Alpha Model should return a list or enumerable of Insight objects from its ``Update()`` method. For more information on creating Insights, see :ref:`AlgorithmFramework / Alpha Creation <algorithm-framework-alpha-creation>`.
 
 An ``Insight`` constructor takes the following arguments:
 

@@ -45,7 +45,7 @@ Next, let's make a history call for the last 60 days of price data. We will use 
     # Get list of 60 days of open prices from dataframe
     prices = list(spy_history['open'])
 
-The linear regression model requires two series, train_X and train_Y, to train our model with. We want to predict prices using our model so the prices will be our train_Y. We can use a time series starting at t=0 as our train_X.
+The linear regression model requires two series, *train_X* and *train_Y*, to train our model with. We want to predict prices using our model so the prices will be our *train_Y*. We can use a time series starting at t=0 as our *train_X*.
 
 .. code-block::
 
@@ -64,7 +64,7 @@ The linear regression model requires two series, train_X and train_Y, to train o
     # Fit model with training data
     reg.fit(train_X, train_Y)
 
-Now we can test the model's predictions on the next 30 days of data against the actual prices. First, we create a test_X for the entire 60 days of time, then feed the model with it and save its predictions.
+Now we can test the model's predictions on the next 30 days of data against the actual prices. First, we create a *test_X* for the entire 60 days of time, then feed the model with it and save its predictions.
 
 .. code-block::
 

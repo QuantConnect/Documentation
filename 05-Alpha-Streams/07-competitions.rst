@@ -18,13 +18,18 @@ Algorithms submitted to a competition remain your intellectual property. The spo
 
 |
 
-Open Competitions |trophy|
-==========================
+Open Competitions
+=================
 
-.. |trophy| image:: https://cdn.quantconnect.com/competitions/i/email/main_trophy_rev0.png
-   :width: 100
+.. note::
+   .. image:: https://cdn.quantconnect.com/competitions/i/email/main_trophy_rev0.png
+      :width: 100
+      :align: center
+
+   **Weekly Alpha Streams Competition**
+     $1,000 Prize Pool
+
+   Each week, develop algorithms in any asset class using any type of strategy to find alpha. Submissions are due every Sunday by 8pm EST. `Learn more <https://www.quantconnect.com/competitions/quant-league-1>`_.
 
 
-**Weekly Alpha Streams Competition** ($1,000 Prize Pool)
 
-Each week, develop algorithms in any asset class using any type of strategy to find alpha. Submissions are due every Sunday by 8pm EST. `Learn more <https://www.quantconnect.com/competitions/quant-league-1>`_.

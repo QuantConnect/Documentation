@@ -288,6 +288,8 @@ About the Provider
 ==================
 
 .. figure:: https://cdn.quantconnect.com/web/i/providers/algoseek.png
+   :width: 200
+   :align: center
 
 `AlgoSeek <https://www.algoseek.com/>`_ is a leading provider of historical intraday US market data to banks, hedge funds, academia, and individuals worldwide. Their high quality and affordable datasets are used for research and trading around the world.
 

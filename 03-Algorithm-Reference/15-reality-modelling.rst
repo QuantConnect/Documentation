@@ -150,7 +150,7 @@ Fee Models
 
 Fee models set the fees for each order. We provide customized fee models for all brokerages, but you can also set your own. Like all models, they must be set on a security by security basis.
 
-Fee models implement the ``IFeeModel`` interface. If you wish to implement your own fee model, you can start with the ``FeeModel``and override methods you wish to change. ``IFeeModel.GetOrderFee`` accepts a single parameter of type ``OrderFeeParameters`` and returns an ``OrderFee`` that represents a cash amount with a given currency.
+Fee models implement the ``IFeeModel`` interface. If you wish to implement your own fee model, you can start with the ``FeeModel`` and override methods you wish to change. ``IFeeModel.GetOrderFee`` accepts a single parameter of type ``OrderFeeParameters`` and returns an ``OrderFee`` that represents a cash amount with a given currency.
 
 
 .. tabs::

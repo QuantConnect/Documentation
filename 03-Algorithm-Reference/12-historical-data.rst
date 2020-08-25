@@ -42,11 +42,13 @@ The QuantConnect historical data API has many different options to give you the 
            * History requests can be done by a bar count; or,
            * History requests can be done for a period of time.
 
-Secondly, when placing a history request, it's important to consider what data will be returned as each asset type comes in slightly different data shapes. All python history requests return a Data Frame, which has different columns depending on the type of data requested. Data is returned as TradeBars, QuoteBars, or Slice objects depending on how you request it and the data available for your security.
+Secondly, when placing a history request, it's important to consider what data will be returned as each asset type comes in slightly different data shapes. All python history requests return a Data Frame, which has different columns depending on the type of data requested. Data is returned as :ref:`TradeBars <algorithm-reference-handling-data-tradebars>`, :ref:`QuoteBars <algorithm-reference-handling-data-quotebars>`, or :ref:`Slice <algorithm-reference-handling-data-time-slices>`objects depending on how you request it and the data available for your security.
 
 .. note::  Key Concept #2: Return Format
 
-           * History requests with symbols provided return data as a pandas data frame.
+           * In C#, Single security requests return data as an array of the security data type. E.g. ``TradeBar[]``.
+           * In C#, Multi-security (batch) requests return data as an array of ``Slice`` objects.
+           * In Python, history requests with symbols provided return data as a pandas data frame.
            * History requests without symbols provided fetch history for the entire universe of your securities, and return it as an array of ``Slice`` objects.
 
 Finally, when reviewing the results of your history requests, remember they are indexed by the EndTime of each data point. For daily data, this results in data points appearing on Saturday and skipping Monday's bar.
@@ -155,10 +157,11 @@ Multi-Symbol History API calls follow the following pattern: ``self.History( sym
 
 .. figure:: https://cdn.quantconnect.com/docs/i/history-stacked-multi-symbol-python_rev0.png
 
-Assumed Default Values
+**Assumed Default Values**
 
 *   Resolution: LEAN attempts to guess the resolution you request by looking at any securities you already have in your algorithm. If you have a matching Symbol, QuantConnect will use the same resolution. When no default values can be located ``Resolution.Minute`` is selected.
 
+* In C#, when no type is specified for the history request, ``TradeBar`` is assumed for Equity, Futures, Crypto, and Options securities. Assets with QuoteBar data must explicitly specify Quotes to receive their history (Forex, Futures, Options, and Crypto).
 |
 
 All Securities History Request

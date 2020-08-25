@@ -6,7 +6,10 @@ Runtime Statistics
 
 |
 
-.. list-table:: Demonstration Algorithm
+Demonstration Algorithm
+=======================
+
+.. list-table::
    :header-rows: 1
 
    * - C#

@@ -11,7 +11,7 @@ Introduction
 
 The Research environment allows you to directly access historical data from any period. This includes Equities, Options, Forex, and Futures data going back as far as 1998. Similar to backtesting, the data is accessed by first subscribing to a security, ``qb.AddEquity("SPY")``, and then making a history call, ``qb.History("SPY", 10, Resolution.Daily)``.
 
-The data from the history call is returned in a pandas dataframe. Pandas is a python data manipulation and analysis framework. A pandas dataframe is a 2 dimensional labeled data structure, much like a spreadsheet or SQL table. A label on a row is called an Index and labels on columns are simply called columns.
+The data from the history call is returned in a pandas dataframe. `Pandas <https://pandas.pydata.org/docs/>`_ is a python data manipulation and analysis framework. A pandas dataframe is a 2 dimensional labeled data structure, much like a spreadsheet or SQL table. A label on a row is called an Index and labels on columns are simply called columns.
 
 In the example below, a history request is made for all securities that been subscribed to. The resulting data frame has columns for each data type returned; these data types correspond to components of the Trade data or the Quote data available. Notice that because `SPY` and `BTCUSD` do not have Quote data, they have `NaN` values for those columns.
 
@@ -204,7 +204,7 @@ QuantConnect provides equity options data from AlgoSeek going back as far as 201
 
 **Setting a Filter**
 
-When we use ``qb.AddOption("SPY")``, we are subscribed to the option chain data for SPY, which contains a large number of contracts with different rights, strikes, and expirations. We need to filter the contracts in the chain for the ones which interest us. We can do this using the ``Option.SetFilter`` method. There are a few different ways we can filter our options chain.
+When we use ``qb.AddOption("SPY")``, we are subscribed to the option chain data for *SPY*, which contains a large number of contracts with different rights, strikes, and expirations. We need to filter the contracts in the chain for the ones which interest us. We can do this using the ``Option.SetFilter`` method. There are a few different ways we can filter our options chain.
 
 One way to refer to a strike price is to use the number of strike levels it is below or above the current market price. If SPY is trading at $300 and the option chain contains strikes: $285, $295, $300, $305, $310, $315, then we can refer to the $290 strike as -2 because it is 2 strikes below the current market price of SPY.
 
@@ -278,14 +278,14 @@ We can also access the set of expiries for the contracts in our history call.
 Historical Futures Data
 =======================
 
-QuantConnect provides trade and quote data from AlgoSeek for over 100 Futures symbols going back as far as 2009. You can find a full list of available Futures symbols in the :ref:`data library <data-library-futures-reference-tables>`. Futures data is available in tick, second and minute resolutions. To access data for a given Future, we need to first subscribe to its data using its ticker.
+QuantConnect provides trade and quote data from AlgoSeek for over 100 Futures symbols going back as far as 2009. You can find a full list of available Futures symbols in the :ref:`data library <data-library-futures-reference-table>`. Futures data is available in tick, second and minute resolutions. To access data for a given Future, we need to first subscribe to its data using its ticker.
 
 .. code-block::
 
     # Subcribes to data for S&P500 E-mini Futures (ES).
     es = qb.AddFuture("ES")
 
-We can also refer to Future tickers using a predefined categorized Enum. For example, The ticker for S&P 500 E-mini futures ("ES"), can be accessed with Futures.Indices.SP500EMini. This means we can subscribe to data for ES using ``qb.AddFuture(Futures.Indices.SP500EMini)``. You can find a full list of all the tickers and their associated Enum addresses in the data library.
+We can also refer to Future tickers using a predefined categorized Enum. For example, The ticker for S&P 500 E-mini futures ("ES"), can be accessed with ``Futures.Indices.SP500EMini``. This means we can subscribe to data for ES using ``qb.AddFuture(Futures.Indices.SP500EMini)``. You can find a full list of all the tickers and their associated Enum addresses in the data library.
 
 **Setting a Filter**
 
@@ -307,7 +307,7 @@ Similar to options, future historical data can't be accessed using ``qb.History`
 
     future_history = qb.GetFutureHistory(es.Symbol, start_time, end_time)
 
-`qb.GetFutureHistory` does not return a dataframe of historical data. It instead returns a FutureHistory object, which lets us access the expiry and price data for the chain.
+``qb.GetFutureHistory`` does not return a dataframe of historical data. It instead returns a FutureHistory object, which lets us access the expiry and price data for the chain.
 
 We can access historical price data using ``FutureHistory.GetAllData()``. This returns a dataframe containing quote, trade, and open interest data for the contracts in the future chain. The data is indexed by contract expiry, symbol and the timestamp of the data.
 

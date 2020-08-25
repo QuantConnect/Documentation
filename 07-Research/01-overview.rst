@@ -35,11 +35,11 @@ The notebook allows you to run code in a safe and disposable environment. It is 
 
 The notebook also allows you to provide descriptions of code with supplementary cells written in MarkDown.
 
-You can create a new cell by first selecting an existing cell and then using the Insert Cell Below button on the toolbar.
+You can create a new cell by first selecting an existing cell and then using the *Insert Cell Below* button on the toolbar.
 
 Each cell can be edited with either markdown or python code. You can choose which language to use in the drop-down list in the toolbar.
 
-To run an individual cell, you must first select that cell and then click the Run button on the toolbar.
+To run an individual cell, you must first select that cell and then click the *Run* button on the toolbar.
 
 **Some useful keyboard shortcuts**
 
