@@ -6,7 +6,7 @@ Resource Management
 
 |
 
-============
+
 Introduction
 ============
 
@@ -26,7 +26,7 @@ You can view the nodes that are available in the resources page. Nodes are categ
 |
 
 Backtesting Nodes
-================
+=================
 
 Adding more backtesting nodes allows you to run more concurrent backtests. Depending on the design of your algorithm you can add more powerful nodes to run faster backtests. Nodes with more RAM allocation can handle more intensive operations such as machine learning and options data processing.
 

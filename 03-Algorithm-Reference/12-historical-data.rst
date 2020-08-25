@@ -42,7 +42,7 @@ The QuantConnect historical data API has many different options to give you the 
            * History requests can be done by a bar count; or,
            * History requests can be done for a period of time.
 
-Secondly, when placing a history request, it's important to consider what data will be returned as each asset type comes in slightly different data shapes. All python history requests return a Data Frame, which has different columns depending on the type of data requested. Data is returned as :ref:`TradeBars <algorithm-reference-handling-data-tradebars>`, :ref:`QuoteBars <algorithm-reference-handling-data-quotebars>`, or :ref:`Slice <algorithm-reference-handling-data-time-slices>`objects depending on how you request it and the data available for your security.
+Secondly, when placing a history request, it's important to consider what data will be returned as each asset type comes in slightly different data shapes. All python history requests return a Data Frame, which has different columns depending on the type of data requested. Data is returned as :ref:`TradeBars <algorithm-reference-handling-data-tradebars>`, :ref:`QuoteBars <algorithm-reference-handling-data-quotebars>`, or :ref:`Slice <algorithm-reference-handling-data-time-slices>` objects depending on how you request it and the data available for your security.
 
 .. note::  Key Concept #2: Return Format
 
@@ -161,7 +161,8 @@ Multi-Symbol History API calls follow the following pattern: ``self.History( sym
 
 *   Resolution: LEAN attempts to guess the resolution you request by looking at any securities you already have in your algorithm. If you have a matching Symbol, QuantConnect will use the same resolution. When no default values can be located ``Resolution.Minute`` is selected.
 
-* In C#, when no type is specified for the history request, ``TradeBar`` is assumed for Equity, Futures, Crypto, and Options securities. Assets with QuoteBar data must explicitly specify Quotes to receive their history (Forex, Futures, Options, and Crypto).
+*   In C#, when no type is specified for the history request, ``TradeBar`` is assumed for Equity, Futures, Crypto, and Options securities. Assets with QuoteBar data must explicitly specify Quotes to receive their history (Forex, Futures, Options, and Crypto).
+
 |
 
 All Securities History Request
@@ -231,6 +232,69 @@ The :ref:`Slice <algorithm-reference-handling-data-time-slices>` object holds al
 
 Working with Data Frames
 ========================
+
+In Python, data is returned as a Pandas DataFrame. It is a multi-index dataframe where the first index is the symbol. The data is then sorted in rows according to the :ref:`EndTime <key-concepts-understanding-time>` of the bar. By learning a few helpful short cuts, you can directly access the history values you need for your algorithm.
+
+.. tabs::
+
+   .. code-tab:: py
+
+        # Setup Universe:
+        eurusd = self.AddForex("EURUSD", Resolution.Daily).Symbol
+        nzdusd = self.AddForex("NZDUSD", Resolution.Daily).Symbol
+
+         # STEP 1:  Request Dataframe:
+
+        self.df = self.History([eurusd, nzdusd], 3)
+
+.. figure:: https://cdn.quantconnect.com/docs/i/history-dataframe-loc-array_rev0.png
+
+.. tabs::
+
+   .. code-tab:: py
+
+         # STEP 2: Check if empty and lock onto a symbol index with the loc[] method:
+
+        if not self.df.empty:
+            eurusd_quotebars = self.df.loc["EURUSD"]
+
+.. figure:: https://cdn.quantconnect.com/docs/i/history-dataframe-loc-single_rev0.png
+
+.. tabs::
+
+   .. code-tab:: py
+
+        # STEP 3: Extract and manipulate a single column with the string column name:
+
+        spread = eurusd_quotebars["askclose"] - eurusd_quotebars["bidclose"]
+
+        # Make sure to use the lowercase string column name.
+
+.. figure:: https://cdn.quantconnect.com/docs/i/history-dataframe-column-spread.png
+
+It's possible to also perform analysis between symbols by `unstacking the DataFrame <https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.unstack.html>`_. This will transform each column into the symbol values for one of the price-columns you select.
+
+.. tabs::
+
+   .. code-tab:: py
+
+        # UNSTACKING: Transform into columns:
+
+        # Fetch multi-indexed history:
+        self.dataframe = self.History([self.Symbol("IBM"), self.Symbol("AAPL")], 3)
+
+.. figure:: https://cdn.quantconnect.com/docs/i/history-dataframe-unstack-source_rev0.png
+
+.. tabs::
+
+   .. code-tab:: py
+
+        # Transform using unstack:
+        self.dataframe["close"].unstack(level=0)
+
+        # Make sure to use the lowercase string column name.
+
+.. figure:: https://cdn.quantconnect.com/docs/i/history-dataframe-unstack_rev1.png
 
 |
 
