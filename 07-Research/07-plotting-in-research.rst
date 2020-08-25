@@ -30,7 +30,7 @@ Let's plot the distribution of daily returns of SPY on a histogram.
     spy = qb.AddEquity("SPY")
     spy_hist = qb.History(qb.Securities.Keys, 360, Resolution.Daily).reset_index(level=0)
 
-We can calculate SPY's daily returns by finding the percent change of its daily close values using spy_hist['close'].pct_change(). Then we can plot the distribution of daily returns.
+We can calculate SPY's daily returns by finding the percent change of its daily close values using ``spy_hist['close'].pct_change()``. Then we can plot the distribution of daily returns.
 
 .. code-block::
 
