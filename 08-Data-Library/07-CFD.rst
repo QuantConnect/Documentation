@@ -18,147 +18,78 @@ OANDA Brokerage CFD Data
 
 QuantConnect provides all OANDA Brokerage CFD contracts for backtesting and trading.
 
-+-----------------------------------------------------------------------------------------+
-| Data Properties                                                                         |
-+=====================+===================================================================+
-| **Data Provider**   | `AlgoSeek <https://www.quantconnect.com/data/provider/algoseek>`_ |
-+---------------------+-------------------------------------------------------------------+
-| **Start Date**      | Data is available starting May 1st, 2009                          |
-+---------------------+-------------------------------------------------------------------+
-| **Symbol Universe** | ≈ 1100 Symbols. All symbols trading on future exchanges each day. |
-+---------------------+-------------------------------------------------------------------+
-| **Data Type**       | Trades and Quotes                                                 |
-+---------------------+-------------------------------------------------------------------+
-| **Resolutions**     | Tick, Second, Minute                                              |
-+---------------------+-------------------------------------------------------------------+
++-----------------------------------------------------------------------------------------------------------------+
+| Data Properties                                                                                                 |
++=====================+===========================================================================================+
+| **Data Provider**   | `OANDA <https://www.quantconnect.com/data/provider/oanda>`_                               |
++---------------------+-------------------------------------------------------------------------------------------+
+| **Start Date**      | Mixed Dates: Earliest starts May 30th, 2004                                               |
++---------------------+-------------------------------------------------------------------------------------------+
+| **Symbol Universe** | 51 CFD Contracts (`More Information <https://www.oanda.com/forex-trading/markets/live>`_) |
++---------------------+-------------------------------------------------------------------------------------------+
 
-Future data comes as trades and quotes, with tick, second, and minute resolutions available.
++------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Contracts Available                                                                                                                                                                                                                                                                                                                                                                                  |
++==============================================================================+=============================================================================+=============================================================================+=============================================================================+=============================================================================+
+| `AU200AUD <https://www.quantconnect.com/data#symbol/cfd/oanda/AU200AUD>`_    | `BCOUSD <https://www.quantconnect.com/data#symbol/cfd/oanda/BCOUSD>`_       | `CORNUSD <https://www.quantconnect.com/data#symbol/cfd/oanda/CORNUSD>`_     | `DE30EUR <https://www.quantconnect.com/data#symbol/cfd/oanda/DE30EUR>`_     | `EU50EUR <https://www.quantconnect.com/data#symbol/cfd/oanda/EU50EUR>`_     |
++------------------------------------------------------------------------------+-----------------------------------------------------------------------------+-----------------------------------------------------------------------------+-----------------------------------------------------------------------------+-----------------------------------------------------------------------------+
+| `DE10YBEUR <https://www.quantconnect.com/data#symbol/cfd/oanda/DE10YBEUR>`_  | `CH20CHF <https://www.quantconnect.com/data#symbol/cfd/oanda/CH20CHF>`_     | `FR40EUR <https://www.quantconnect.com/data#symbol/cfd/oanda/FR40EUR>`_     | `HK33HKD <https://www.quantconnect.com/data#symbol/cfd/oanda/HK33HKD>`_     | `JP225USD <https://www.quantconnect.com/data#symbol/cfd/oanda/JP225USD>`_   |
++------------------------------------------------------------------------------+-----------------------------------------------------------------------------+-----------------------------------------------------------------------------+-----------------------------------------------------------------------------+-----------------------------------------------------------------------------+
+| `NAS100USD <https://www.quantconnect.com/data#symbol/cfd/oanda/NAS100USD>`_  | `NATGASUSD <https://www.quantconnect.com/data#symbol/cfd/oanda/NATGASUSD>`_ | `NL25EUR <https://www.quantconnect.com/data#symbol/cfd/oanda/NL25EUR>`_     | `SOYBNUSD <https://www.quantconnect.com/data#symbol/cfd/oanda/SOYBNUSD>`_   | `SPX500USD <https://www.quantconnect.com/data#symbol/cfd/oanda/SPX500USD>`_ |
++------------------------------------------------------------------------------+-----------------------------------------------------------------------------+-----------------------------------------------------------------------------+-----------------------------------------------------------------------------+-----------------------------------------------------------------------------+
+| `SUGARUSD <https://www.quantconnect.com/data#symbol/cfd/oanda/SUGARUSD>`_    | `SG30SGD <https://www.quantconnect.com/data#symbol/cfd/oanda/SG30SGD>`_     | `UK100GBP <https://www.quantconnect.com/data#symbol/cfd/oanda/UK100GBP>`_   | `UK10YBGBP <https://www.quantconnect.com/data#symbol/cfd/oanda/UK10YBGBP>`_ | `US2000USD <https://www.quantconnect.com/data#symbol/cfd/oanda/US2000USD>`_ |
++------------------------------------------------------------------------------+-----------------------------------------------------------------------------+-----------------------------------------------------------------------------+-----------------------------------------------------------------------------+-----------------------------------------------------------------------------+
+| `US30USD <https://www.quantconnect.com/data#symbol/cfd/oanda/US30USD>`_      | `USB02YUSD <https://www.quantconnect.com/data#symbol/cfd/oanda/USB02YUSD>`_ | `USB05YUSD <https://www.quantconnect.com/data#symbol/cfd/oanda/USB05YUSD>`_ | `USB10YUSD <https://www.quantconnect.com/data#symbol/cfd/oanda/USB10YUSD>`_ | `USB30YUSD <https://www.quantconnect.com/data#symbol/cfd/oanda/USB30YUSD>`_ |
++------------------------------------------------------------------------------+-----------------------------------------------------------------------------+-----------------------------------------------------------------------------+-----------------------------------------------------------------------------+-----------------------------------------------------------------------------+
+| `WHEATUSD <https://www.quantconnect.com/data#symbol/cfd/oanda/WHEATUSD>`_    | `WTICOUSD <https://www.quantconnect.com/data#symbol/cfd/oanda/WTICOUSD>`_   | `XAGAUD <https://www.quantconnect.com/data#symbol/cfd/oanda/XAGAUD>`_       | `XAGCAD <https://www.quantconnect.com/data#symbol/cfd/oanda/XAGCAD>`_       | `XAGCHF <https://www.quantconnect.com/data#symbol/cfd/oanda/XAGCHF>`_       |
++------------------------------------------------------------------------------+-----------------------------------------------------------------------------+-----------------------------------------------------------------------------+-----------------------------------------------------------------------------+-----------------------------------------------------------------------------+
+| `XAGEUR <https://www.quantconnect.com/data#symbol/cfd/oanda/XAGEUR>`_        | `XAGGBP <https://www.quantconnect.com/data#symbol/cfd/oanda/XAGGBP>`_       | `XAGHKD <https://www.quantconnect.com/data#symbol/cfd/oanda/XAGHKD>`_       | `XAGJPY <https://www.quantconnect.com/data#symbol/cfd/oanda/XAGJPY>`_       | `XAGNZD <https://www.quantconnect.com/data#symbol/cfd/oanda/XAGNZD>`_       |
++------------------------------------------------------------------------------+-----------------------------------------------------------------------------+-----------------------------------------------------------------------------+-----------------------------------------------------------------------------+-----------------------------------------------------------------------------+
+| `XAGSGD <https://www.quantconnect.com/data#symbol/cfd/oanda/XAGSGD>`_        | `XAGUSD <https://www.quantconnect.com/data#symbol/cfd/oanda/XAGUSD>`_       | `XAUAUD <https://www.quantconnect.com/data#symbol/cfd/oanda/XAUAUD>`_       | `XAUCAD <https://www.quantconnect.com/data#symbol/cfd/oanda/XAUCAD>`_       | `XAUCHF <https://www.quantconnect.com/data#symbol/cfd/oanda/XAUCHF>`_       |
++------------------------------------------------------------------------------+-----------------------------------------------------------------------------+-----------------------------------------------------------------------------+-----------------------------------------------------------------------------+-----------------------------------------------------------------------------+
+| `XAUEUR <https://www.quantconnect.com/data#symbol/cfd/oanda/XAUEUR>`_        | `XAUGBP <https://www.quantconnect.com/data#symbol/cfd/oanda/XAUGBP>`_       | `XAUHKD <https://www.quantconnect.com/data#symbol/cfd/oanda/XAUHKD>`_       | `XAUJPY <https://www.quantconnect.com/data#symbol/cfd/oanda/XAUJPY>`_       | `XAUNZD <https://www.quantconnect.com/data#symbol/cfd/oanda/XAUNZD>`_       |
++------------------------------------------------------------------------------+-----------------------------------------------------------------------------+-----------------------------------------------------------------------------+-----------------------------------------------------------------------------+-----------------------------------------------------------------------------+
+| `XAUSGD <https://www.quantconnect.com/data#symbol/cfd/oanda/XAUSGD>`_        | `XAUUSD <https://www.quantconnect.com/data#symbol/cfd/oanda/XAUUSD>`_       | `XAUXAG <https://www.quantconnect.com/data#symbol/cfd/oanda/XAUXAG>`_       | `XCUUSD <https://www.quantconnect.com/data#symbol/cfd/oanda/XCUUSD>`_       | `XPDUSD <https://www.quantconnect.com/data#symbol/cfd/oanda/XPDUSD>`_       |
++------------------------------------------------------------------------------+-----------------------------------------------------------------------------+-----------------------------------------------------------------------------+-----------------------------------------------------------------------------+-----------------------------------------------------------------------------+
+| `XPTUSD <https://www.quantconnect.com/data#symbol/cfd/oanda/XPTUSD>`_        |                                                                             |                                                                             |                                                                             |                                                                             |
++------------------------------------------------------------------------------+-----------------------------------------------------------------------------+-----------------------------------------------------------------------------+-----------------------------------------------------------------------------+-----------------------------------------------------------------------------+
 
-Live Trading futures data is sourced from Interactive Brokers. The data used comes from your futures data subscription. You must have a valid `data subscription <https://www.interactivebrokers.com/en/software/am/am/manageaccount/marketdatasubscriptions.htm>`_ with Interactive Brokers.
-
-Requesting Futures Data
-=======================
-
-To subscribe to futures data in QuantConnect, you should first select the asset you'd like to trade and then specify the filter by the contract's expiration that you'd like to see.
-
-.. code-block:: c#
-
-    // Complete Add Future API - Including Default Parameters:
-    AddFuture(string symbol,
-              Resolution resolution = Resolution.Minute,
-              string market = null,
-              bool fillDataForward = true,
-              decimal leverage = 0m)
-
-By default, the futures universe is filtered down to contracts that expire within 35 days. A different set of contracts can be chosen with the ``SetFilter`` method:
-
-.. tabs::
-
-   .. code-tab:: c#
-
-        var future = AddFuture(Futures.Indices.SP500EMini);
-        future.SetFilter(TimeSpan.FromDays(30), TimeSpan.FromDays(180));
-
-   .. code-tab:: py
-
-        future = self.AddFuture(Futures.Indices.SP500EMini)
-        future.SetFilter(timedelta(30), timedelta(182))
-
-We can also use filter functions on the contract list to select the contract(s) we want to trade:
+To use OANDA Brokerage FX products in QuantConnect, you must specify the QuantConnect symbol, not the OANDA symbol. CFD data must be added in the Initialize() method manually. Specify ``Market.Oanda`` to backtest on OANDA historical data.
 
 .. tabs::
 
    .. code-tab:: c#
 
-        // In Initialize
-        var future = AddFuture(Futures.Indices.SP500EMini, Resolution.Minute);
-        future.SetFilter(TimeSpan.Zero, TimeSpan.FromDays(182));
-        // or filtering with Linq:
-        future.SetFilter(universe => universe.Expiration(TimeSpan.Zero, TimeSpan.FromDays(182)));
-
-   .. code-tab:: py
-
-        # In Initialize
-        future = self.AddFuture(Futures.Indices.SP500EMini, Resolution.Minute)
-        future.SetFilter(timedelta(0), timedelta(182))
-        # or with a Lambda Function:
-        future.SetFilter(lambda universe: universe.Expiration(timedelta(0), timedelta(182)))
-
-Using Futures Data
-==================
-
-Quotes and trades for your selected future contracts can be accessed in the Slice object in the OnData event handler. The ``FuturesChains`` member contains a ``FutureChain`` object for each subscribed future. A FutureChain is a collection of individual future contracts with different expiry dates.
-
-.. tabs::
-
-   .. code-tab:: c#
-
-        // Save accessor symbol in Initialize() function.
-        futureSymbol = future.Symbol;
-
-        // In OnData(Slice slice)
-        FuturesChain chain;
-        // Explore the future contract chain
-        if (slice.FuturesChains.TryGetValue(futureSymbol, out chain))
-        {
-            var underlying = chain.Underlying;
-            var contracts = chain.Contracts.Value;
-            foreach (var contract in contracts)
-            {
-                //
-            }
+        // Manual add symbols required in your initialize method:
+        public override void Initialize() {
+            AddCfd("AU200AUD", Resolution.Minute, Market.Oanda);
+        }
+        // Access data via dedicated event handlers:
+        public void OnData(TradeBars data) {
+            data["AU200AUD"].Close;
+        }
+        // Access data via grouped time slice method handlers:
+        public override void OnData(Slice data) {
+            data.Bars["AU200AUD"].Close;
         }
 
    .. code-tab:: py
 
-        # Explore the future contract chain
-        def OnData(self, slice):
-            for chain in slice.FutureChains.Values:
-                contracts = chain.Contracts
-                for contract in contracts.Values:
-                    pass
+        # Manual add symbols required in your initialize method:
+        def Initialize(self):
+            self.AddCfd("AU200AUD", Resolution.Minute, Market.Oanda)
 
-Future contracts have the following properties:
-
-.. tabs::
-
-   .. code-tab:: c#
-
-        public class FuturesContract
-        {
-            Symbol Symbol;
-            Symbol UnderlyingSymbol;
-            DateTime Expiry;
-            DateTime Time;
-            decimal OpenInterest;
-            decimal LastPrice;
-            long Volume;
-            decimal BidPrice;
-            long BidSize;
-            decimal AskPrice;
-            long AskSize;
-        }
-
-   .. code-tab:: py
-
-        class FuturesContract:
-            self.Symbol # (Symbol) Symbol for contract needed to trade.
-            self.UnderlyingSymbol # (Symbol) Underlying futures asset.
-            self.Expiry # (datetime) When the future expires
-            self.OpenInterest # (decimal) Number of open interest.
-            self.LastPrice # (decimal) Last sale price.
-            self.Volume # (long) reported volume.
-            self.BidPrice # (decimal) bid quote price.
-            self.BidSize # (long) bid quote size.
-            self.AskPrice # (decimal) ask quote price.
-            self.AskSize # (long) ask quote size.
+        # Access data via grouped time slice method handlers:
+        def OnData(self, data):
+            data.Bars["AU200AUD"].Close;
 
 |
 
 Timezone
 ========
 
-Algoseek futures data is set in the timezone in which the future is listed. The futures listed in CME or CBOT have their data set in Chicago Time, and the futures listed in NYMEX and Comex have their data set in New York Time. So when accessing futures data, make sure to account for the different time zones.
+Oanda CFD data is set in the timezone in which the contract is listed. The CFD exchange timezones include New York, Chicago, Sydney, Berlin, London, Zurich, Hong Kong, Amsterdam, and UTC Time. When accessing CFD data, make sure to account for the different time zones.
+
 
 |
 
@@ -169,6 +100,5 @@ About the Provider
    :width: 200
    :align: center
 
-`AlgoSeek <https://www.algoseek.com/>`_ is a leading provider of historical intraday US market data to banks, hedge funds, academia, and individuals worldwide. Their high quality and affordable datasets are used for research and trading around the world.
+`OANDA <https://www.oanda.com/>`_ uses innovative computer and financial technology to provide Internet-based forex trading and currency information services to everyone, from individuals to large corporations, from portfolio managers to financial institutions. OANDA is a market maker and a trusted source for currency data. It has access to one of the world's largest historical, high frequency, filtered currency databases.
 
-AlgoSeek has been collecting US Equities and ETF data on all listed USA equities and ETFs since January 2007. Their data is ready for institutional researchers for backtesting and quant research. Data is timestamped to the millisecond.
