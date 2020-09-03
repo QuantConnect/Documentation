@@ -7,9 +7,10 @@
 <p>
   If a live algorithm is stopped and restarted during execution, it needs to restart in a stateful way to avoid 
   performance discrepancies. To restart in a stateful way, utilize the 
-  <a href="https://www.quantconnect.com/lean/documentation/topic426.html">SetWarmUp</a> and 
-  <a href="https://www.quantconnect.com/lean/documentation/topic215.html">History</a> methods. Additionally, consider 
-  using the 
+  <a href="https://www.quantconnect.com/docs/algorithm-reference/initializing-algorithms#Initializing-Algorithms-Setting-Warm-Up-Period">SetWarmUp</a> 
+  and 
+  <a href="https://www.quantconnect.com/docs/algorithm-reference/historical-data#Historical-Data-History-Request-For-Known-Symbols">History</a>
+   methods. Additionally, consider using the 
   <a href="https://www.quantconnect.com/docs/algorithm-reference/machine-learning#Machine-Learning-Storing-Trained-Models">ObjectStore</a> 
   to save state information between live trading deployments.
 </p>
@@ -70,15 +71,16 @@
   In a backtest, the <a href="https://www.quantconnect.com/docs/key-concepts/understanding-time">Time Frontier</a> 
   moves in precise steps every time. Live data time moves as a stream not a set of discrete steps. Therefore, if an 
   algorithm is checking for a specific time without using a tolerance value (i.e. time is 9:30:15am) , the logic may 
-  not work the same when switching to live trading. As a remedy, we suggest our users use a time range (time > 9.30.10 
-  AND time < 9.30.20) or use a 
+  not work the same when switching to live trading. As a remedy, we suggest our users use a time range (time &gt; 9.30.10 
+  and time &lt; 9.30.20) or use a 
   <a href="https://www.quantconnect.com/docs/algorithm-reference/scheduled-events#Scheduled-Events-Scheduled-Events">scheduled event</a>.
 </p>
 
 <h4>Look-ahead Bias</h4>
 <p>
-  Although we go to great lengths to eliminate look-ahead bias with the Time Frontier, it can still creep into a 
-  backtest. For instance, if an algorithm integrates a 
+  Although we go to great lengths to eliminate look-ahead bias with the 
+  <a href="https://www.quantconnect.com/docs/key-concepts/understanding-time">Time Frontier</a>, it can still creep 
+  into a backtest. For instance, if an algorithm integrates a 
   <a href="https://www.quantconnect.com/docs/algorithm-reference/importing-custom-data">custom data source</a> that is
   implemented to have look-ahead bias, the backtest may have different results than live trading. To ensure an 
   algorithm eliminates this bias, always set a period on your custom data types. The time the data is emitted will be 
