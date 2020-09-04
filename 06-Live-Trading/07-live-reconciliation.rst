@@ -13,8 +13,8 @@ be several reasons for this, including:
 
 |
 
-Non-Stateful Restarts
-=====================
+Non-Deterministic State From Algorithm Restarts
+===============================================
 If a live algorithm is stopped and restarted during execution, it needs to restart in a stateful way to avoid 
 performance discrepancies. To restart in a stateful way, utilize the 
 :ref:`SetWarmUp <algorithm-reference-initializing-algorithms-setting-warm-up-period>` and 
@@ -74,6 +74,25 @@ To fix this, closely review your order fill prices to see if there were trade pr
 be a signal of a live feed data error. It is rare to see an error in the live price; but it is common to miss a split 
 or corporate event in live trading for smaller companies. There are unfortunately no professional data feeds for 
 corporate events.
+
+|
+
+Brokerage Limitations
+=====================
+LEAN supports the use of many different :ref:`order types <algorithm-reference-trading-and-orders-placing-orders>`. 
+With backtesting, these orders are simulated. In live trading, the broker an algorithm uses to fulfill orders may not 
+support the order type, leading to the trades not being placed. Futhermore, if the buying power on the algorithm's 
+brokerage account isn't sufficient, orders will not be placed. To avoid issues, 
+:ref:`set a brokerage model <algorithm-reference-initializing-algorithms-cash-and-brokerage-models>`. 
+
+|
+
+Portfolio Allocations on Small Accounts
+=======================================
+Its hard to achieve accurate portfolio allocations on smaller capital sizes where the price per share is larger than
+the allocation percentage. This can be addressed by using fractional shares, but fractional share trading is only 
+supported by some brokerages. To get the closest results when backtesting and live-trading over the same period, 
+ensure both algorithms have the same starting cash balance. 
 
 |
 

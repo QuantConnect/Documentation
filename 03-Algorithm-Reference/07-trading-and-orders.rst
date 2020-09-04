@@ -43,6 +43,8 @@ In the following sections, we'll explore how to use the Order Ticket to update a
 
 |
 
+.. _algorithm-reference-trading-and-orders-placing-orders:
+
 Placing Orders
 ==============
 

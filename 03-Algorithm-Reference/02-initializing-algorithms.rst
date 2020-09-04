@@ -164,6 +164,8 @@ Algorithms can use the ``bool IsWarmingUp`` property to determine if the warm-up
 
 |
 
+.. _algorithm-reference-initializing-algorithms-cash-and-brokerage-models:
+
 Cash and Brokerage Models
 =========================
 
