@@ -141,6 +141,8 @@ Indicators should be created and warmed up in the ``Initialize()`` method in mos
 
 |
 
+.. _algorithm-reference-initializing-algorithms-setting-warm-up-period:
+
 Setting Warm Up Period
 ======================
 

@@ -61,6 +61,8 @@ This can seem a little complex at first, but we'll step through each of these in
 
 |
 
+.. _algorithm-reference-historical-data-history-request-for-known-symbols:
+
 History Request For Known Symbols
 =================================
 

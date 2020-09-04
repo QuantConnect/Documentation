@@ -268,6 +268,8 @@ Advanced users may wish to implement their own volatility based slippage model -
 
 |
 
+.. _algorithm-reference-reality-modeling-fill-models:
+
 Fill Models
 ===========
 
