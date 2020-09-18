@@ -1,11 +1,11 @@
 ===================
-LEAN Engine
+Writing Algorithms
 ===================
 
 .. toctree::
     :maxdepth: 2
     :glob:
 
-    API Reference/index.rst
-    Getting Started/index.rst
+    api-reference/index.rst
+    getting-started/index.rst
 
