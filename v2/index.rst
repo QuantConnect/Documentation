@@ -6,8 +6,10 @@ Home
     :maxdepth: 1
     :glob:
 
-    Our Platform/*
-    LEAN Engine/*
+    our-platform/*
+    lean-engine/*
+    writing-algorithms/*
+    research/*
 
 .. raw:: html
 
@@ -26,10 +28,10 @@ Home
          <p  class="docs-p" style="margin-bottom: 75px;">QuantConnect’s LEAN engine manages your portfolio and data feeds letting you focus on your algorithm strategy and execution.</p>
     </div>
     <div class="docs-img-row">
-        <a href='Our Platform/index.html'>
+        <a href='our-platform/index.html'>
             <div class="flex-center docs-section-icon">
                 <span>
-                   <img src="https://cdn.quantconnect.com/web/i/docs/home/docs_using_qc_rev0.svg" width="60px" height="60px" ;="">
+                    <img src="https://cdn.quantconnect.com/i/tu/platform-v1.0.png" alt="list-icon" width="60px" height="60px">
                 </span>
                 <div class="flex-column">
                     <p class="docs-p" style="color: #0072BC">Our Platform</p>
@@ -37,14 +39,39 @@ Home
                 </div>
             </div>
         </a>
-         <a href='Lean Engine/index.html'>
+         <a href='lean-engine/index.html'>
            <div class="flex-center docs-section-icon">
                 <span>
-                    <img src="https://cdn.quantconnect.com/web/i/docs/home/docs_algo_ref_rev0.svg" width="60px" height="60px">
+                    <img src="https://cdn.quantconnect.com/i/tu/lean-v3.0.png" alt="list-icon" width="65px" height="60px">
                 </span>
                 <div class="flex-column">
                     <p class="docs-p" style="color: #0072BC">LEAN Engine</p>
                     <p class="docs-p docs-p-small ">Reference to building an Algorithm</p>
+                </div>
+            </div>
+        </a>
+    </div>
+    <div class="docs-img-row">
+        <a href='writing-algorithms/index.html'>
+            <div class="flex-center docs-section-icon">
+                <span>
+                    <img src="https://cdn.quantconnect.com/i/tu/alrgorithms-v2.0.png" alt="list-icon" width="55px" height="60px">
+                </span>
+                <div class="flex-column">
+                    <p class="docs-p" style="color: #0072BC">Writing Algorithms</p>
+                    <p class="docs-p docs-p-small">Algorithm Reference</p>
+                </div>
+            </div>
+        </a>
+         <a href='research/index.html'>
+           <div class="flex-center docs-section-icon">
+                <span>
+                     <img src="https://cdn.quantconnect.com/i/tu/research-v2.0.png" alt="list-icon" width="40px" height="60px">
+                </span>
+                <div class="flex-column">
+                    <p class="docs-p" style="color: #0072BC">Research</p>
+                    <p class="docs-p docs-p-small ">Interactive Jupyter development API
+            </p>
                 </div>
             </div>
         </a>
