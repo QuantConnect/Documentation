@@ -1,10 +1,11 @@
-=============
-Our Platform
-=============
+===================
+LEAN Engine
+===================
 
 .. toctree::
     :maxdepth: 2
     :glob:
 
-    Tutorials/index.rst
-    User Guides/index.rst
+    API Reference/index.rst
+    Getting Started/index.rst
+

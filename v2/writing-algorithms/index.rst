@@ -1,5 +1,5 @@
 ===================
-Writing Algorithms
+LEAN Engine
 ===================
 
 .. toctree::

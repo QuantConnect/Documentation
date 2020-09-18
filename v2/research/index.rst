@@ -1,5 +1,5 @@
 ===================
-Research
+LEAN Engine
 ===================
 
 .. toctree::
