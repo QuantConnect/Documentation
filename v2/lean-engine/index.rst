@@ -6,6 +6,8 @@ LEAN Engine
     :maxdepth: 2
     :glob:
 
-    API Reference/index.rst
-    Getting Started/index.rst
+    getting-started/index.rst
+    user-guides/index.rst
+    tutorials/index.rst
+    api-reference/index.rst
 
