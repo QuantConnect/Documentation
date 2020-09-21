@@ -29,7 +29,7 @@ Our Platform
          <p  class="docs-p" style="margin-bottom: 75px;">QuantConnect’s LEAN engine manages your portfolio and data feeds letting you focus on your algorithm strategy and execution.</p>
     </div>
     <div class="docs-img-row">
-        <a href='Getting Started/index.html'>
+        <a href='getting-started/index.html'>
             <div class="flex-center docs-section-icon">
                 <span>
                     <img src="https://cdn.quantconnect.com/i/tu/getting-started.png" alt="list-icon" width="60px" height="60px">
@@ -40,7 +40,7 @@ Our Platform
                 </div>
             </div>
         </a>
-         <a href='Tutorials/index.html'>
+         <a href='tutorials/index.html'>
            <div class="flex-center docs-section-icon">
                 <span>
                     <img src="https://cdn.quantconnect.com/i/tu/tutorials.png" alt="list-icon" width="65px" height="60px">
@@ -53,7 +53,7 @@ Our Platform
         </a>
     </div>
     <div class="docs-img-row">
-        <a href='User Guides/index.html'>
+        <a href='user-guides/index.html'>
             <div class="flex-center docs-section-icon">
                 <span>
                     <img src="https://cdn.quantconnect.com/i/tu/user-guides.png " alt="list-icon" width="50px" height="60px">
@@ -64,7 +64,7 @@ Our Platform
                 </div>
             </div>
         </a>
-         <a href='API Reference/index.html'>
+         <a href='api-reference/index.html'>
            <div class="flex-center docs-section-icon">
                 <span>
                      <img src="https://cdn.quantconnect.com/i/tu/api-reference.png" width="55px" height="60px">
