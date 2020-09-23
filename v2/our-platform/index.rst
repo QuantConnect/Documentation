@@ -88,7 +88,7 @@ Our Platform
     </div>
 
     <div class="contribution-section">
-        <p class="docs-p" style="margin: 30px 0;">You can also see our <span style="color: #0072BC; cursor: pointer;">Tutorials</span> and  <a class="text-bold" target="_BLANK" href="https://www.youtube.com/user/QuantConnect/videos" rel="nofollow"><span style="color: #0072BC; cursor: pointer;">Videos</span></a>. You can also get in touch with us via <a class="text-bold" target="_BLANK" href="https://www.quantconnect.com/slack"><span style="color: #0072BC; cursor: pointer;">Chat</span></a>.</p>
+        
         <p class="docs-p page-helpful" style="margin: 30px 0;">Did you find this page helpful?  <span class="yes-answer" style="color: #0072BC; margin-left: 10px; cursor: pointer;">Yes</span> <span class="no-answer" style="color: #0072BC; margin-left: 10px; cursor: pointer;">No</span></p>
         <a href="https://github.com/QuantConnect/Documentation">
             <div class="flex-center" style="margin: 30px 0; cursor: pointer; display: flex; align-items: center;">
