@@ -5,42 +5,12 @@ Home
 .. toctree::
    :hidden:
    :maxdepth: 1
-   :caption: Our Platform
+   :glob:
 
-   Getting Started <our-platform/getting-started/index.rst>
-   User Guides <our-platform/user-guides/index.rst>
-   Tutorials <our-platform/tutorials/index.rst>
-   API Reference <our-platform/api-reference/index.rst>
-
-.. toctree::
-   :hidden:
-   :maxdepth: 1
-   :caption: LEAN Engine
-
-   Getting Started <lean-engine/getting-started/index.rst>
-   User Guides <lean-engine/user-guides/index.rst>
-   Tutorials <lean-engine/tutorials/index.rst>
-   API Reference <lean-engine/api-reference/index.rst>
-
-.. toctree::
-   :hidden:
-   :maxdepth: 1
-   :caption: Writing Algorithms
-
-   Getting Started <writing-algorithms/getting-started/index.rst>
-   User Guides <writing-algorithms/user-guides/index.rst>
-   Tutorials <writing-algorithms/tutorials/index.rst>
-   API Reference <writing-algorithms/api-reference/index.rst>
-
-.. toctree::
-   :hidden:
-   :maxdepth: 1
-   :caption: Research
-
-   Getting Started <research/getting-started/index.rst>
-   User Guides <research/user-guides/index.rst>
-   Tutorials <research/tutorials/index.rst>
-   API Reference <research/api-reference/index.rst>
+    our-platform/*
+    lean-engine/*
+    writing-algorithms/*
+    research/*
 
 .. raw:: html
 
