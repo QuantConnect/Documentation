@@ -3,6 +3,7 @@ Home
 ====
 
 .. toctree::
+   :hidden:
    :maxdepth: 1
    :caption: Our Platform
 
@@ -12,6 +13,7 @@ Home
    API Reference <our-platform/api-reference/index.rst>
 
 .. toctree::
+   :hidden:
    :maxdepth: 1
    :caption: LEAN Engine
 
@@ -21,6 +23,7 @@ Home
    API Reference <lean-engine/api-reference/index.rst>
 
 .. toctree::
+   :hidden:
    :maxdepth: 1
    :caption: Writing Algorithms
 
@@ -30,6 +33,7 @@ Home
    API Reference <writing-algorithms/api-reference/index.rst>
 
 .. toctree::
+   :hidden:
    :maxdepth: 1
    :caption: Research
 
@@ -62,7 +66,7 @@ Home
                 </span>
                 <div class="flex-column">
                     <p class="docs-p" style="color: #0072BC">Our Platform</p>
-                    <p class="docs-p docs-p-small">Learn the basics of working in the terminal</p>
+                    <p class="docs-p docs-p-small">Learn about the tools and resources available through the QuantConnect platform.</p>
                 </div>
             </div>
         </a>
@@ -73,7 +77,7 @@ Home
                 </span>
                 <div class="flex-column">
                     <p class="docs-p" style="color: #0072BC">LEAN Engine</p>
-                    <p class="docs-p docs-p-small ">Reference to building an Algorithm</p>
+                    <p class="docs-p docs-p-small ">Learn about the LEAN Engine, QuantConnect’s open-source algorithmic trading engine.</p>
                 </div>
             </div>
         </a>
@@ -86,7 +90,7 @@ Home
                 </span>
                 <div class="flex-column">
                     <p class="docs-p" style="color: #0072BC">Writing Algorithms</p>
-                    <p class="docs-p docs-p-small">Algorithm Reference</p>
+                    <p class="docs-p docs-p-small">Learn about creating algorithms in QuantConnect.</p>
                 </div>
             </div>
         </a>
@@ -97,8 +101,7 @@ Home
                 </span>
                 <div class="flex-column">
                     <p class="docs-p" style="color: #0072BC">Research</p>
-                    <p class="docs-p docs-p-small ">Interactive Jupyter development API
-            </p>
+                    <p class="docs-p docs-p-small ">Learn about QuantConnect’s interactive Research environment.</p>
                 </div>
             </div>
         </a>

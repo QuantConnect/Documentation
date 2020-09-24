@@ -3,8 +3,9 @@ Our Platform
 ===================
 
 .. toctree::
-    :maxdepth: 2
-    :glob:
+   :hidden:
+   :maxdepth: 2
+   :glob:
 
     getting-started/index.rst
     user-guides/index.rst
@@ -17,7 +18,7 @@ Our Platform
     <div class="flex-column qc-doc-header">
         <div class="flex-center docs-margin-small">
             <img src="https://cdn.quantconnect.com/i/tu/documentation-v1.0.png" alt="list-icon" style="width: 25px; height: 23px; margin-right: 15px;">
-            <p class="docs-title">QuantConnect Documentation</p>
+            <p class="docs-title">QuantConnect Platform Documentation</p>
         </div>
          <p class="docs-p">Learn to use QuantConnect and Explore Our Features</p>
     </div>
@@ -26,7 +27,7 @@ Our Platform
             <img src="https://cdn.quantconnect.com/i/tu/list-v1.0.png" alt="list-icon" style="width: 18px; height: 12px; margin-right: 15px;">
             <div id="documentation-sections" class="section"><h2 class="docs-title-small"><a href="#documentation-sections">Documentation Sections</a></h2></div>
         </div>
-         <p  class="docs-p" style="margin-bottom: 75px;">QuantConnect’s LEAN engine manages your portfolio and data feeds letting you focus on your algorithm strategy and execution.</p>
+         <p  class="docs-p" style="margin-bottom: 75px;">Learn about the tools and resources available through the QuantConnect platform.</p>
     </div>
     <div class="docs-img-row">
         <a href='getting-started/index.html'>
@@ -36,7 +37,7 @@ Our Platform
                 </span>
                 <div class="flex-column">
                     <p class="docs-p" style="color: #0072BC">Getting Started</p>
-                    <p class="docs-p docs-p-small">Learn the basics of working in the terminal</p>
+                    <p class="docs-p docs-p-small">Get acquainted with the current platform organization, and where to find tools and resources.</p>
                 </div>
             </div>
         </a>
@@ -47,7 +48,7 @@ Our Platform
                 </span>
                 <div class="flex-column">
                     <p class="docs-p" style="color: #0072BC">Tutorials</p>
-                    <p class="docs-p docs-p-small ">Reference to building an Algorithm</p>
+                    <p class="docs-p docs-p-small ">Learn how to use the QuantConnect platform through guided tutorials.</p>
                 </div>
             </div>
         </a>
@@ -60,7 +61,7 @@ Our Platform
                 </span>
                 <div class="flex-column">
                     <p class="docs-p" style="color: #0072BC">User Guides</p>
-                    <p class="docs-p docs-p-small">Algorithm Reference</p>
+                    <p class="docs-p docs-p-small">Read guides about the platform’s various tools and resources.</p>
                 </div>
             </div>
         </a>
@@ -71,8 +72,7 @@ Our Platform
                 </span>
                 <div class="flex-column">
                     <p class="docs-p" style="color: #0072BC">API Reference</p>
-                    <p class="docs-p docs-p-small ">Interactive Jupyter development API
-            </p>
+                    <p class="docs-p docs-p-small ">Browse a central list of reference materials.</p>
                 </div>
             </div>
         </a>
