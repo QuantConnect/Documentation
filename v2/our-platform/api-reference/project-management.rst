@@ -8,10 +8,10 @@ The QuantConnect.com API exposes methods for creating, reading, listing, and del
 
 ----------------------------------------------------------------
 
-The ProjectResponse Object
---------------------------
+The Project Response Object
+---------------------------
 
-Project management API calls return a ProjectResponse object, which contains information about one or more projects.
+Project management API calls return a Project Response object, which contains information about one or more projects.
 
 Attributes
 ==========
@@ -36,6 +36,40 @@ Attributes
 
 ----------------------------------------------------------------
 
+The Project Object
+------------------
+
+A Project object contains information about a single project.
+
+Attributes
+==========
+
+.. list-table::
+   :header-rows: 1
+
+   * - Attribute
+     - Type
+     - Description
+   * - projectId
+     - int
+     - ID of the project.
+   * - name
+     - string
+     - Name of the project.
+   * - created
+     - string
+     - Date and time the project was created.
+   * - modified
+     - string
+     - Date and time the project was last modified.
+   * - language
+     - string
+     - Programming language of the project. Either "C#" or "Py".
+
+|
+
+----------------------------------------------------------------
+
 Create a Project
 ----------------
 
@@ -46,8 +80,15 @@ Path
 
 ``POST`` /projects/create
 
-Parameters
-==========
+Request
+=======
+
+.. code-block::
+
+    {
+      "name": "My-First-Project",
+      "language": "Py"
+    }
 
 .. list-table::
    :header-rows: 1
@@ -65,19 +106,19 @@ Parameters
 Response
 ========
 
-Returns a ProjectResponse object, containing the newly created Project object.
+Returns a Project Response object, containing the newly created Project object.
 
 .. code-block::
 
     {
-      "Projects": {
+      "projects": {
         "projectId": 987654321,
         "name": , "My-First-Project"
         "created": "09/30/2020",
         "modified": "10/01/2020",
         "language": "Py"
       },
-      "Success": true,
+      "success": true,
     }
 
 |
@@ -94,8 +135,14 @@ Path
 
 ``POST`` /projects/read
 
-Parameters
-==========
+Request
+=======
+
+.. code-block::
+
+    {
+      "projectId": 000000001
+    }
 
 .. list-table::
    :header-rows: 1
@@ -110,12 +157,12 @@ Parameters
 Response
 ========
 
-Returns a ProjectResponse containing the requested Project object.
+Returns a Project Response containing the requested Project object.
 
 .. code-block::
 
     {
-      "Projects": [
+      "projects": [
         {
           "projectId": 000000001,
           "name": , "My-First-Project"
@@ -124,7 +171,7 @@ Returns a ProjectResponse containing the requested Project object.
           "language": "C#"
         }
       ],
-      "Success": true,
+      "success": true,
     }
 
 |
@@ -141,8 +188,14 @@ Path
 
 ``POST`` /projects/delete
 
-Parameters
-==========
+Request
+=======
+
+.. code-block::
+
+    {
+      "projectId": 000000001
+    }
 
 .. list-table::
    :header-rows: 1
@@ -162,7 +215,7 @@ Returns a RestResponse object which indicates whether the request executed succe
 .. code-block::
 
     {
-      "Success": true,
+      "success": true,
     }
 
 |
@@ -179,20 +232,20 @@ Path
 
 ``POST`` /projects/read
 
-Parameters
-==========
+Request
+=======
 
 None.
 
 Response
 ========
 
-Returns a ProjectResponse containing Project objects representing each of the user's projects.
+Returns a Project Response containing Project objects representing each of the user's projects.
 
 .. code-block::
 
     {
-      "Projects": [
+      "projects": [
         {
           "projectId": 000000001,
           "name": "My-First-Project"
@@ -208,7 +261,7 @@ Returns a ProjectResponse containing Project objects representing each of the us
           "language": "Py"
         }
       ],
-      "Success": true,
+      "success": true,
     }
 
 |
