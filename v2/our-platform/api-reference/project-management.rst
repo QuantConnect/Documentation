@@ -22,13 +22,13 @@ Attributes
    * - Attribute
      - Type
      - Description
-   * - Projects
+   * - projects
      - Array of Project objects
      - List of projects for the authenticated user.
-   * - Success
+   * - success
      - Boolean
      - Indicate if the API request was successful.
-   * - Errors
+   * - errors
      - Array of strings
      - List of errors with the API call, if any.
 
@@ -52,7 +52,7 @@ Attributes
      - Description
    * - projectId
      - int
-     - ID of the project.
+     - Id of the project.
    * - name
      - string
      - Name of the project.
@@ -94,12 +94,12 @@ Request
    :header-rows: 1
 
    * - Parameter
-     - Type
+     - type
      - Description
-   * - Name ``(Required)``
+   * - name ``(Required)``
      - string
      - A name for the project
-   * - Language ``(Required)``
+   * - language ``(Required)``
      - string
      - Programming language to use. Either "Py" or "C#".
 
@@ -113,9 +113,9 @@ Returns a Project Response object, containing the newly created Project object.
     {
       "projects": [{
         "projectId": 987654321,
-        "name": , "My First Project"
-        "created": "09/30/2020",
-        "modified": "10/01/2020",
+        "name": , "My-First-Project"
+        "created": "2020-09-30 10:30:00",
+        "modified": "2020-10-01 10:30:00",
         "language": "Py"
       }],
       "success": true,
@@ -152,7 +152,7 @@ Request
      - Description
    * - projectId ``(Required)``
      - int
-     - ID of the project to read.
+     - Id of the project to read.
 
 Response
 ========
@@ -165,9 +165,9 @@ Returns a Project Response containing the requested Project object.
       "projects": [
         {
           "projectId": 000000001,
-          "name": , "My First Project"
-          "created": "09/29/2020",
-          "modified": "09/30/2020",
+          "name": , "My-First-Project"
+          "created": "2020-09-30 10:30:00",
+          "modified": "2020-10-01 10:30:00",
           "language": "C#"
         }
       ],
@@ -181,7 +181,7 @@ Returns a Project Response containing the requested Project object.
 Delete a Project
 ----------------
 
-Delete the project with the specified project ID.
+Delete the project with the specified project Id.
 
 Path
 ====
@@ -205,7 +205,7 @@ Request
      - Description
    * - projectId ``(Required)``
      - int
-     - ID of the project to delete.
+     - Id of the project to delete.
 
 Response
 ========
@@ -248,14 +248,14 @@ Returns a Project Response containing Project objects representing each of the u
       "projects": [
         {
           "projectId": 000000001,
-          "name": "My First Project"
+          "name": "My-First-Project"
           "modified": "2020-09-30 10:30:00",
           "created": "2020-09-30 10:00:00",
           "language": "C#"
         },
         {
           "projectId": 000000002,
-          "name": "My Second Project",
+          "name": "My-Second-Project",
           "modified": "2020-10-01 10:30:00",
           "created": "2020-10-01 10:00:00",
           "language": "Py"
