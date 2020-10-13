@@ -8,7 +8,7 @@ The QuantConnect.com API exposes methods for creating, reading, listing, and del
 
 ----------------------------------------------------------------
 
-The Project Response Object
+Project Response Object
 ---------------------------
 
 Project management API calls return a Project Response object, which contains information about one or more projects.
@@ -36,7 +36,7 @@ Attributes
 
 ----------------------------------------------------------------
 
-The Project Object
+Project Object
 ------------------
 
 A Project object contains information about a single project.
@@ -111,13 +111,13 @@ Returns a Project Response object, containing the newly created Project object.
 .. code-block::
 
     {
-      "projects": {
+      "projects": [{
         "projectId": 987654321,
-        "name": , "My-First-Project"
+        "name": , "My First Project"
         "created": "09/30/2020",
         "modified": "10/01/2020",
         "language": "Py"
-      },
+      }],
       "success": true,
     }
 
@@ -165,7 +165,7 @@ Returns a Project Response containing the requested Project object.
       "projects": [
         {
           "projectId": 000000001,
-          "name": , "My-First-Project"
+          "name": , "My First Project"
           "created": "09/29/2020",
           "modified": "09/30/2020",
           "language": "C#"
@@ -248,15 +248,15 @@ Returns a Project Response containing Project objects representing each of the u
       "projects": [
         {
           "projectId": 000000001,
-          "name": "My-First-Project"
+          "name": "My First Project"
           "modified": "2020-09-30 10:30:00",
           "created": "2020-09-30 10:00:00",
           "language": "C#"
         },
         {
           "projectId": 000000002,
-          "name": , "My-Second-Project"
-           "modified": "2020-10-01 10:30:00",
+          "name": "My Second Project",
+          "modified": "2020-10-01 10:30:00",
           "created": "2020-10-01 10:00:00",
           "language": "Py"
         }
