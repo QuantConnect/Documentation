@@ -6,4 +6,5 @@ API Reference
     :maxdepth: 2
     :glob:
 
+    Project Management <project-management.rst>
     *
