@@ -22,13 +22,13 @@ Attributes
    * - Attribute
      - Type
      - Description
-   * - Projects
+   * - projects
      - Array of Project objects
      - List of projects for the authenticated user.
-   * - Success
+   * - success
      - Boolean
      - Indicate if the API request was successful.
-   * - Errors
+   * - errors
      - Array of strings
      - List of errors with the API call, if any.
 
@@ -52,7 +52,7 @@ Attributes
      - Description
    * - projectId
      - int
-     - ID of the project.
+     - Id of the project.
    * - name
      - string
      - Name of the project.
@@ -96,10 +96,10 @@ Request
    * - Parameter
      - Type
      - Description
-   * - Name ``(Required)``
+   * - name ``(Required)``
      - string
      - A name for the project
-   * - Language ``(Required)``
+   * - language ``(Required)``
      - string
      - Programming language to use. Either "Py" or "C#".
 
@@ -152,7 +152,7 @@ Request
      - Description
    * - projectId ``(Required)``
      - int
-     - ID of the project to read.
+     - Id of the project to read.
 
 Response
 ========
@@ -181,7 +181,7 @@ Returns a Project Response containing the requested Project object.
 Delete a Project
 ----------------
 
-Delete the project with the specified project ID.
+Delete the project with the specified project Id.
 
 Path
 ====
@@ -205,7 +205,7 @@ Request
      - Description
    * - projectId ``(Required)``
      - int
-     - ID of the project to delete.
+     - Id of the project to delete.
 
 Response
 ========
