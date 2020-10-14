@@ -7,4 +7,5 @@ API Reference
     :glob:
 
     Project Management <project-management>
+    File Management <file-management>
     *
