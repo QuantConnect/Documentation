@@ -11,7 +11,7 @@ The QuantConnect.com API exposes methods for creating, reading, listing, and del
 Project Files Response Object
 -----------------------------
 
-File management API calls return a Project Files Response object, which contains information about one or more files from a project.
+Project Files Response object contains information about one or more files from a project return in an array format.
 
 Attributes
 ==========
@@ -67,7 +67,8 @@ Attributes
 Create a File
 -------------
 
-Add a file to the specified project with the specified file name and contents.
+Add a file to the specified project with the specified file name and contents. The API returns a copy of the file and confirmation it was successful.
+The file directory location can be denoted by the slashes in the filename.
 
 Path
 ====
@@ -80,8 +81,8 @@ Request
 .. code-block::
 
     {
-      "projectId": 000000001,
-      "name": "My First File",
+      "projectId": 12345678,
+      "name": "myNewFile.py",
       "content": "print('Hello world!')"
     }
 
@@ -110,7 +111,7 @@ Returns a Project Files Response object, containing the newly created Project Fi
 
     {
       "files": [{
-        "name": "My First File",
+        "name": "myNewFile.py",
         "content": "print('Hello world!')",
         "modified": "2020-10-01 10:30:00"
       }],
@@ -121,7 +122,7 @@ Returns a Project Files Response object, containing the newly created Project Fi
 
 ----------------------------------------------------------------
 
-Read a File
+Read a Single File
 -----------
 
 Get details about a single file.
@@ -137,8 +138,8 @@ Request
 .. code-block::
 
     {
-      "projectId": 000000001,
-      "fileName": "My First File"
+      "projectId": 12345678,
+      "fileName": "myNewFile.py"
     }
 
 .. list-table::
@@ -163,7 +164,7 @@ Returns a Project Files Response containing the requested Project File object.
 
     {
       "files": [{
-        "name": "My First File",
+        "name": "main.py",
         "content": "print('Hello world!')",
         "modified": "2020-10-01 10:30:00"
       }],
@@ -177,7 +178,7 @@ Returns a Project Files Response containing the requested Project File object.
 Update a File's Name
 --------------------
 
-Update the name of a file.
+Update the name of a file. 
 
 Path
 ====
@@ -190,9 +191,9 @@ Request
 .. code-block::
 
     {
-      "projectId": 000000001,
-      "oldFileName": "My File's Old Name",
-      "newFileName": "My File's New Name"
+      "projectId": 12345678,
+      "oldFileName": "myOldFileName.py",
+      "newFileName": "myNewFileName.py"
     }
 
 .. list-table::
@@ -226,7 +227,7 @@ Returns a RestResponse object which indicates whether the request executed succe
 
 ----------------------------------------------------------------
 
-Update a File's Contents
+Update a File Contents
 ------------------------
 
 Update the contents of a file.
@@ -242,8 +243,8 @@ Request
 .. code-block::
 
     {
-      "projectId": 000000001,
-      "fileName": "My First File",
+      "projectId": 12345678,
+      "fileName": "myPrintFileName.py",
       "newFileContents": "print('New file contents!')"
     }
 
@@ -297,8 +298,8 @@ Request
 .. code-block::
 
     {
-      "projectId": 000000001,
-      "name": "My First File"
+      "projectId": 12345678,
+      "name": "fileToDelete.py"
     }
 
 .. list-table::
@@ -329,7 +330,7 @@ Returns a RestResponse object which indicates whether the request executed succe
 
 ----------------------------------------------------------------
 
-List Projects
+List Files
 -------------
 
 Get details about all of the files within a specified project.
@@ -345,7 +346,7 @@ Request
 .. code-block::
 
     {
-      "projectId": 000000001
+      "projectId": 12345678
     }
 
 .. list-table::
@@ -368,12 +369,12 @@ Returns a Project Files Response containing Project File objects representing ea
     {
       "files": [
         {
-          "name": "My First File",
+          "name": "main.py",
           "content": "print('Hello world #1!')",
           "modified": "2020-09-30 10:30:00"
         },
         {
-          "name": "My Second File",
+          "name": "myClassLibrary.py",
           "content": "print('Hello world #2!')",
           "modified": "2020-10-01 10:30:00"
       }
