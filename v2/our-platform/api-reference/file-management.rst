@@ -139,7 +139,7 @@ Request
 
     {
       "projectId": 12345678,
-      "fileName": "myNewFile.py"
+      "fileName": "main.py"
     }
 
 .. list-table::
@@ -333,7 +333,7 @@ Returns a RestResponse object which indicates whether the request executed succe
 List Files
 -------------
 
-Get details about all of the files within a specified project.
+Get details about all of the files within a specified project by not providing a specific file. 
 
 Path
 ====
