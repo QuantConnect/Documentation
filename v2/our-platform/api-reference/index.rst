@@ -8,4 +8,6 @@ API Reference
 
     Project Management <project-management>
     File Management <file-management>
+    Compiling Projects <compiling-projects>
+    Backtest Management <backtest-management>
     *
