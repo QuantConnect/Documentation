@@ -175,7 +175,7 @@ Returns a Project Files Response containing the requested Project File object.
 
 ----------------------------------------------------------------
 
-Update a File's Name
+Update File Name
 --------------------
 
 Update the name of a file. 
@@ -227,7 +227,7 @@ Returns a RestResponse object which indicates whether the request executed succe
 
 ----------------------------------------------------------------
 
-Update a File Contents
+Update File Contents
 ------------------------
 
 Update the contents of a file.
@@ -279,7 +279,7 @@ Returns a RestResponse object which indicates whether the request executed succe
 
 ----------------------------------------------------------------
 
-Delete a File
+Delete File
 -------------
 
 Delete the file with the specified project Id.
