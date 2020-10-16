@@ -1,3 +1,5 @@
+.. _platform-api-live:
+
 ==================
 Project Management
 ==================
@@ -8,8 +10,10 @@ The QuantConnect.com API exposes methods for creating, reading, listing, and del
 
 ----------------------------------------------------------------
 
-Data Types
-----------
+Live Algorithm Data Types
+-------------------------
+
+This is a list of data types unique to the Live API. For other common data types, see the see :ref:`backtest management <platform-api-backtest`> page.
 
 Live Algorithm Object
 =====================
