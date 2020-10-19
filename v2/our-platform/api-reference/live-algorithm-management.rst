@@ -1,10 +1,10 @@
 .. _platform-api-live:
 
 ==================
-Project Management
+Live Algorithm Management
 ==================
 
-The QuantConnect.com API exposes methods for creating, reading, listing, and deleting projects in the user's account.
+Using the QuantConnect for creation (deployment) and control of live running algorithmic trading strategies.
 
 |
 
@@ -106,7 +106,7 @@ Attributes
    * - Attribute
      - Type
      - Description
-   * - liveResults
+   * - LiveResults
      - A Live Results Data object
      - Holds information about the state and operation of the live running algorithm
    * - success
@@ -173,9 +173,9 @@ Attributes
      - Results version
    * - resolution
      - string
-     - Resolution of data requested. Either 'Tick', 'Second', 'Minute', 'Hour', or 'Daily'.
+     - Resolution of charting data requested. Either '10minute', 'minute', 'second'
    * - results
-     - A Live Result object
+     - LiveResult Object
      - A class for packaging live result data.
 
 |
@@ -280,7 +280,7 @@ Attributes
 CashBook Object
 ===============
 
-Keeps track of the different cash holdings of an algorithm. Is also a Dictionary of Cash objects.
+Keeps track of the different cash holdings of an algorithm. Is a Dictionary of Cash objects.
 
 Attributes
 ^^^^^^^^^^
