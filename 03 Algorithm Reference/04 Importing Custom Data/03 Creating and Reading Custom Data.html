@@ -99,5 +99,19 @@ class Weather(PythonData):
         weather["MinC"] = float(data[3])
 
         return weather
+	
+class MyAlgorithm(QCAlgorithm):
+
+    def Initialize(self):
+        self.SetStartDate(2019, 9, 20)  # Set Start Date
+        self.SetCash(100000)  # Set Strategy Cash
+        self.symbol = self.AddData(Weather, "KNYC", Resolution.Daily).Symbol
+        
+
+    def OnData(self, data):
+        if data.ContainsKey(self.symbol):
+            maxC = data[self.symbol].GetProperty('MaxC')
+            minC = data[self.symbol].GetProperty('MaxC')
+            value = data[self.symbol].Value
 </pre>
 </div>
