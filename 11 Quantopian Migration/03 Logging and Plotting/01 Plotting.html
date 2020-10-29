@@ -1,0 +1,19 @@
+<p>
+    In QuantConnect, plotting is usually done with the <code>self.Plot("chart name", "series name", value)</code>, while plotting
+    in Quantopian is simply <code>record(series1_name=value, series2_name=value, etc.)</code>. While creating multiple plotting
+    series through one line is possible in Quantopian, in QuantConnect, a separate call is needed for each series. Furthermore,
+    all series with the same <code>chart name</code> string will be on the same chart, and new charts can be created by
+    calling <code>self.Plot</code> with a different <code>chart name</code>. For example:</p>
+<div class="section-example-container">
+    <pre class="python">    class Algorithm(QCAlgorithm):
+        ...
+        def OnData(self, data):
+            self.Plot('Chart1', 'Series1', 1)
+            self.Plot('Chart1', 'Series2', 2)
+            self.Plot('Chart2', 'c2 Series1', 3)
+    </pre>
+</div>
+<p>
+    Will create two charts, one named "Chart1" with two series of data, and another named "Chart2" with one series of data.
+    However, for users who wish to add the chart under the equity curve, simply use <code>self.Plot("series name", value)</code>. More information on plotting can be found in the <a href="https://www.quantconnect.com/docs/algorithm-reference/charting#Charting-Introduction">Charting</a> section of our Documentation.
+</p>
