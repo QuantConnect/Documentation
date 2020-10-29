@@ -1,0 +1,102 @@
+<h4>Slippage</h4>
+<p>Algorithms can customize the simulation of order fills by calling SetSlippageModel() with a ISlippageModel which is any class that implements GetSlippageApproximation method. Unlike Quantopian, the slippage model is a security attribute, not a global attribute. Different securities can have different slippage models.</p>
+<p>The default slippage model on QuantConnect is a constant slippage model with zero slippage percent (no slippage).</p>
+<table class="table qc-table table-striped">
+<colgroup>
+<col width="15%" />
+<col width="20%" />
+<col width="60%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd">
+<td><code class="xref py py-obj docutils literal notranslate"><span class="pre">quantopian.algorithm.set_slippage</span></code>([...])</td>
+<td><code class="xref py py-obj docutils literal notranslate"><span class="pre">self.Securities[symbol].SetSlippageModel(ISlippageModel)</td>
+<td>Set the slippage models for the simulation.</td>
+</tr>
+<tr class="row-even">
+<td><code class="xref py py-obj docutils literal notranslate"><span class="pre">zipline.finance.slippage.SlippageModel</span></code>()</td>
+<td><code class="xref py py-obj docutils literal notranslate"><span class="pre">N/A (class must implement GetSlippageApproximation method)</td>
+<td>Abstract base class for slippage models.</td>
+</tr>
+<tr class="row-odd">
+<td><code class="xref py py-obj docutils literal notranslate"><span class="pre">zipline.finance.slippage.FixedBasisPointsSlippage</span></code>([...])</td>
+<td><code class="xref py py-obj docutils literal notranslate"><span class="pre">ConstantSlippageModel(slippage_percent)</td>
+<td>Model slippage as a fixed percentage difference from historical minutely close price, limiting the size of fills to a fixed percentage of historical minutely volume.</td>
+</tr>
+<tr class="row-even">
+<td><code class="xref py py-obj docutils literal notranslate"><span class="pre">zipline.finance.slippage.NoSlippage</span></code>()</td>
+<td><code class="xref py py-obj docutils literal notranslate"><span class="pre">ConstantSlippageModel(0)</td>
+<td>A slippage model where all orders fill immediately and completely at the current close price.</td>
+</tr>
+<tr class="row-odd">
+<td><code class="xref py py-obj docutils literal notranslate"><span class="pre">zipline.finance.slippage.FixedSlippage</span></code>([spread])</td>
+<td><code class="xref py py-obj docutils literal notranslate"><span class="pre">N/A</td>
+<td>Simple model assuming a fixed-size spread for all assets.</td>
+</tr>
+<tr class="row-even">
+<td><code class="xref py py-obj docutils literal notranslate"><span class="pre">zipline.finance.slippage.VolumeShareSlippage</span></code>([...])</td>
+<td><code class="xref py py-obj docutils literal notranslate"><span class="pre">N/A</td>
+<td>Model slippage as a quadratic function of percentage of historical volume.</td>
+</tr>
+</tbody>
+</table>
+
+<h4>Commissions</h4>
+<p>Algorithms can customize the simulation of order fees by calling SetFeeModel() with a IFeeModel which is any class that implements GetOrderFee method. Unlike Quantopian, the fee model is a security attribute, not a global attribute. Different securities can have different fee models.</p>
+<p>The default fee model on QuantConnect depends on the security type and the brokerage. For instance, the default fee model for equity is the Interactive Brokers fee model.</p>
+<table class="table qc-table table-striped">
+<colgroup>
+<col width="15%" />
+<col width="20%" />
+<col width="60%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd">
+<td><code class="xref py py-obj docutils literal notranslate"><span class="pre">quantopian.algorithm.set_commission</span></code>([...])</td>
+<td><code class="xref py py-obj docutils literal notranslate"><span class="pre">self.Securities[symbol].SetFeeModel(IFeeModel)</td>
+<td>Sets the commission models for the simulation.</td>
+</tr>
+<tr class="row-even">
+<td><code class="xref py py-obj docutils literal notranslate"><span class="pre">zipline.finance.commission.CommissionModel</span></code></td>
+<td><code class="xref py py-obj docutils literal notranslate"><span class="pre">N/A (class must implement GetOrderFee method)</td>
+<td>Abstract base class for commission models.</td>
+</tr>
+<tr class="row-odd">
+<td><code class="xref py py-obj docutils literal notranslate"><span class="pre">zipline.finance.commission.PerShare</span></code>([cost,&nbsp;...])</td>
+<td><code class="xref py py-obj docutils literal notranslate"><span class="pre">N/A</td>
+<td>Calculates a commission for a transaction based on a per share cost with an optional minimum cost per trade.</td>
+</tr>
+<tr class="row-even">
+<td><code class="xref py py-obj docutils literal notranslate"><span class="pre">zipline.finance.commission.PerTrade</span></code>([cost])</td>
+<td><code class="xref py py-obj docutils literal notranslate"><span class="pre">N/A</td>
+<td>Calculates a commission for a transaction based on a per trade cost.</td>
+</tr>
+<tr class="row-odd">
+<td><code class="xref py py-obj docutils literal notranslate"><span class="pre">zipline.finance.commission.PerDollar</span></code>([cost])</td>
+<td><code class="xref py py-obj docutils literal notranslate"><span class="pre">N/A</td>
+<td>Model commissions by applying a fixed cost per dollar transacted.</td>
+</tr>
+<tr class="row-even">
+<td><code class="xref py py-obj docutils literal notranslate"><span class="pre">zipline.finance.commission.NoCommission</span></code></td>
+<td><code class="xref py py-obj docutils literal notranslate"><span class="pre">FeeModel()</td>
+<td>Model commissions as free.</td>
+</tr>
+</tbody>
+</table>
+
+<h4>Benchmark</h4>
+<p>The default benchmark is SPY.</p>
+<table class="table qc-table table-striped">
+<colgroup>
+<col width="15%" />
+<col width="20%" />
+<col width="60%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd">
+<td><code class="xref py py-obj docutils literal notranslate"><span class="pre">quantopian.algorithm.set_benchmark</span></code>(benchmark)</td>
+<td><code class="xref py py-obj docutils literal notranslate"><span class="pre">self.SetBenchmark(benchmark)</td>
+<td>Set the benchmark asset.</td>
+</tr>
+</tbody>
+</table>

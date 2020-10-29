@@ -1,0 +1,65 @@
+<p>The following table describes classes that are passed to <code class="xref py py-func docutils literal notranslate"><span class="pre">initialize()</span></code>, <code class="xref py py-func docutils literal notranslate"><span class="pre">handle_data()</span></code>, <code class="xref py py-func docutils literal notranslate"><span class="pre">before_trading_start()</span></code> and any scheduled with <code class="xref py py-func docutils literal notranslate"><span class="pre">schedule_function()</span></code>.</p>
+
+<p>In QuantConnect/Lean, the portfolio state and the positions are class attributes of QCAlgorithm, available via self keyword. The scheduled function is parameterless and can algorithms can self.CurrentSlice.</p>
+
+<table class="table qc-table table-striped">
+<colgroup>
+<col width="15%" />
+<col width="20%" />
+<col width="60%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd">
+<td><code class="xref py py-obj docutils literal notranslate"><span class="pre">quantopian.algorithm.interface.AlgorithmContext</span></code></td>
+<td><code class="xref py py-obj docutils literal notranslate"><span class="pre">QCAlgorithm</span></code></td>
+<td>Shared object for storing custom state.</td>
+</tr>
+<tr class="row-even">
+<td><code class="xref py py-obj docutils literal notranslate"><span class="pre">quantopian.algorithm.interface.BarData</span></code></td>
+<td><code class="xref py py-obj docutils literal notranslate"><span class="pre">Slice</span></code></td>
+<td>Provides methods for accessing minutely and daily price/volume data from Algorithm API functions.</td>
+</tr>
+<tr class="row-odd">
+<td><code class="xref py py-obj docutils literal notranslate"><span class="pre">quantopian.algorithm.interface.Portfolio</span></code></td>
+<td><code class="xref py py-obj docutils literal notranslate"><span class="pre">self.Portfolio</span></code></td>
+<td>Object providing read-only access to current portfolio state.</td>
+</tr>
+<tr class="row-even">
+<td><code class="xref py py-obj docutils literal notranslate"><span class="pre">quantopian.algorithm.interface.Positions</span></code></td>
+<td><code class="xref py py-obj docutils literal notranslate"><span class="pre">self.Transactions</span></code></td>
+<td>A dict-like object containing the algorithm's current positions.</td>
+</tr>
+</tbody>
+</table>
+
+<p>The features from the BarData methods are found in the Slice object (current data), History method (past data) and class attribute Securities.</p>
+
+<table class="table qc-table table-striped">
+<colgroup>
+<col width="15%" />
+<col width="20%" />
+<col width="60%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd">
+<td><code class="xref py py-obj docutils literal notranslate"><span class="pre">quantopian.algorithm.interface.BarData.current</span></code></td>
+<td><code class="xref py py-obj docutils literal notranslate"><span class="pre">Slice[symbol]</span></code></td>
+<td>Returns the &quot;current&quot; value of the given fields for the given assets at the current simulation time.</td>
+</tr>
+<tr class="row-even">
+<td><code class="xref py py-obj docutils literal notranslate"><span class="pre">quantopian.algorithm.interface.BarData.history</span></code></td>
+<td><code class="xref py py-obj docutils literal notranslate"><span class="pre">self.History(symbols, bar_count)</span></code></td>
+<td>Returns a trailing window of length <code class="docutils literal notranslate"><span class="pre">bar_count</span></code> containing data for the given assets, fields, and frequency.</td>
+</tr>
+<tr class="row-odd">
+<td><code class="xref py py-obj docutils literal notranslate"><span class="pre">quantopian.algorithm.interface.BarData.can_trade</span></code></td>
+<td><code class="xref py py-obj docutils literal notranslate"><span class="pre">self.Securities[symbol].IsTradable</span></code></td>
+<td>For the given asset or iterable of assets, returns True if all of the following are true:</td>
+</tr>
+<tr class="row-even">
+<td><code class="xref py py-obj docutils literal notranslate"><span class="pre">quantopian.algorithm.interface.BarData.is_stale</span></code></td>
+<td><code class="xref py py-obj docutils literal notranslate"><span class="pre">not Slice[symbol].IsFillForward</span></code></td>
+<td>For the given asset or iterable of assets, returns True if the asset is alive and there is no trade data for the current simulation time.</td>
+</tr>
+</tbody>
+</table>
