@@ -1,10 +1,67 @@
 <p>
-  Both Quantopian and QuantConnect offer several methods for placing orders. Quantopian's 
-  <code>order_optimal_portfolio</code>  method computes the optimal portfolio weights using an objective and 
+  Both Quantopian and QuantConnect offer several methods for placing orders. Both platforms have 
+  <code>MarketOrder</code>, <code>LimitOrder</code>, <code>StopOrder</code>, and <code>StopLimitOrder</code> classes to 
+  create specific order types, although the <code>StopOrder</code> order is named <code>StopMarketOrder</code> on 
+  our platform. On Quantopian, creating these orders is done by passing a <code>style</code> argument to the 
+  <code>order</code> method.
+</p>
+
+<div class="section-example-container">
+<pre class="python">from zipline.finance.execution import (
+    LimitOrder,
+    MarketOrder,
+    StopLimitOrder,
+    StopOrder,
+)
+
+def initialize(context):
+    context.stock = sid(8554)
+    context.ordered = False
+
+def handle_data(context, data):
+    if not context.ordered:
+        close = data.current(context.stock, 'close')
+        order(context.stock, 10, style=MarketOrder()) 
+        order(context.stock, 10, style=LimitOrder(limit_price=close * 0.9)) 
+        order(context.stock, -10, style=StopOrder(stop_price=close * 0.85)) 
+        order(context.stock, -10, style=StopLimitOrder(limit_price=close * 0.75, stop_price=close * 0.85)) 
+        context.ordered = True
+</pre>
+</div>
+
+<p>On QuantConnect, the same orders can be created with</p>
+
+<div class="section-example-container">
+<pre class="python">class MyAlgorithm(QCAlgorithm):
+
+    def Initialize(self):
+        self.SetStartDate(2020, 3, 1)
+        self.SetCash(100000)
+        self.symbol = self.AddEquity("SPY", Resolution.Minute).Symbol
+        self.ordered = False
+
+    def OnData(self, data):
+        if not self.ordered and data.ContainsKey(self.symbol):
+            close = data[self.symbol].Close
+            self.MarketOrder(self.symbol, 10)
+            self.LimitOrder(self.symbol, 10, close * 0.9)
+            self.StopMarketOrder(self.symbol, -10, close * 0.85)
+            self.StopLimitOrder(self.symbol, -10, close * 0.85, close * 0.75)
+            self.ordered = True
+</pre>
+</div>
+
+<p>
+  In addition to the order types above, QuantConnect has several other order types available. Refer to our 
+  <a href="https://www.quantconnect.com/docs/algorithm-reference/trading-and-orders#Trading-and-Orders-Placing-Orders">Trading and Orders documentation</a> 
+  for a comprehensive list. 
+</p>
+
+<p>
+  Quantopian's <code>order_optimal_portfolio</code>  method computes the optimal portfolio weights using an objective and 
   constraints, then places the orders to achieve the desired portfolio. For example, the code below uses the Quantopian
   API to create an equal-weighted dollar-neutral portfolio.
 </p>
-
 
 <div class="section-example-container">
 <pre class="python">import quantopian.algorithm as algo
@@ -19,12 +76,12 @@ algo.order_optimal_portfolio(objective, constraints)
 </pre>
 </div>
 
-<p></p>
+</p>
   To acheive the same functionality with QuantConnect, we utilize 
   <a href="https://www.quantconnect.com/docs/algorithm-framework/portfolio-construction">portfolio construction models</a>.
-  For instance, to create an equal-weighted dollar-neutral portfolio, we could define a portfolio construction model 
-  and attach it to the algorithm.
-<p></p> 
+  For instance, to create an equal-weighted dollar-neutral portfolio, we could define the following portfolio 
+  construction model and attach it to the algorithm.
+</p> 
 
 <div class="section-example-container">
 <pre class="python">class MyAlgorithm(QCAlgorithm):
@@ -62,30 +119,49 @@ class EqualWeightedDollarNeutralPortfolioConstructionModel(PortfolioConstruction
 </div>
 
 <p>
-  When algorithms require manual control of their orders, both platforms have lower-level ordering methods. 
-  Quantopian's <code>order</code> method, which places an order for a fixed number of shares, directly
-  maps to our <code>Order</code> method.  Additionally, Quantopian's <code>order_target_percent</code> method places
-  an order to adjust a position to a target percent of the current portfolio value. Our <code>SetHoldings</code> 
-  method performs the same functionality.
-</p>
-
-<p>
-  Quantopian's <code>order_percent</code> method places an order in the specified asset corresponding to the given 
-  percent of the current portfolio value. To accomplish this on QuantConnect, we can determine the weight of the 
-  asset in the <code>Portfolio</code>, then manually determine the new target percent to pass to 
-  <code>SetHoldings</code>. A demonstration of this process is shown below.
+  When algorithms require manual control of their orders, both Quantopian and QuantConnect have lower-level ordering 
+  methods. Quantopian's <code>order</code> method, which places an order for a fixed number of shares, directly
+  maps to our <code>Order</code> method. Additionally, Quantopian's <code>order_target_percent</code> method places
+  an order to adjust a position to a target percent of the current portfolio value. Here's an example use case of these
+  methods on the Quantopian platform.
 </p>
 
 <div class="section-example-container">
-<pre class="python">current_weight = self.Portfolio[symbol].HoldingsValue / self.Portfolio.TotalPortfolioValue
-self.SetHoldings(symbol, current_weight + 0.1)
+<pre class="python">order_target_percent(sid(8554), 10) # Allocate 10% of portfolio
+order(sid(8554), 10) # Order 10 shares
 </pre>
 </div>
 
 <p>
-  Quantopian has <code>MarketOrder</code>, <code>LimitOrder</code>, <code>StopOrder</code>, and 
-  <code>StopLimitOrder</code> methods to create specific order types. QuantConnect has all of these methods, in 
-  addition to several other order types. Refer to our 
-  <a href="https://www.quantconnect.com/docs/algorithm-reference/trading-and-orders#Trading-and-Orders-Placing-Orders">Trading and Orders documentation</a> 
-  for a comprehensive list. 
+  On QuantConnect, these same orders can be placed using the <code>SetHoldings</code> and <code>Order</code> 
+  methods.
 </p>
+
+<div class="section-example-container">
+<pre class="python">self.SetHoldings(symbol, 0.1) # Allocate 10% of portfolio
+self.Order(symbol, 10) # Order 10 shares
+</pre>
+</div>
+
+
+<p>
+  Quantopian and QuantConnect don't have equivalents for all the ordering techniques, although we can create a workaround
+  for most situations. For instance, Quantopian's <code>order_percent</code> method places an order in the specified 
+  asset corresponding to the given percent of the current portfolio value. 
+</p>
+
+<div class="section-example-container">
+<pre class="python">order_percent(sid(8554), 10) # Allocate 10% more of portfolio
+</pre>
+</div>
+
+<p>
+  To accomplish this on QuantConnect, we can determine the weight of the asset in the <code>Portfolio</code>, then 
+  manually determine the new target percent to pass to <code>SetHoldings</code>.
+</p>
+
+<div class="section-example-container">
+<pre class="python">current_weight = self.Portfolio[symbol].HoldingsValue / self.Portfolio.TotalPortfolioValue
+self.SetHoldings(symbol, current_weight + 0.1) # Allocate 10% more of portfolio
+</pre>
+</div>
