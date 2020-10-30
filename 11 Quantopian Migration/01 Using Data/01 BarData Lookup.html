@@ -77,14 +77,14 @@ class MyDataAlgorithm(QCAlgorithm):
         # We must first check to make sure we have AAPL data, since this point-in-time
         # might not have had any trades for AAPL (this is in case you trade a low
         # liquidity asset. The data can potentially be missing for a point-in-time).
-        if data.Bars.ContainsKey(self.aapl_symbol):
+        if self.aapl_symbol in data.Bars:
             aapl_current_trade = data.Bars[self.aapl_symbol]
             Log(f"{self.Time} :: TRADE :: {self.aapl_symbol} - O: {aapl_current_trade.Open} H: {aapl_current_trade.High} L: {aapl_current_trade.Low} C: {aapl_current_trade.Close} V: {aapl_current_trade.Volume}")
 
         # Check to make sure we have AAPL data first, since there might not have
         # been any quote updates since the previous for AAPL (this is in case you trade
         # a low liquidity asset. The data can potentially be missing for a point-in-time).
-        if data.QuoteBars.ContainsKey(self.aapl_symbol):
+        if self.aapl_symbol in data.QuoteBars:
             aapl_current_quote = data.QuoteBars[self.aapl_symbol]
             if aapl_current_quote.Bid is not None:
                 Log(f"{} :: QUOTE :: {} - Bid O: {} Bid H: {} Bid L: {} Bid C: {} Bid size: {}".format(
@@ -94,7 +94,7 @@ class MyDataAlgorithm(QCAlgorithm):
                     str(aapl_current_quote.Bid.High),
                     str(aapl_current_quote.Bid.Low),
                     str(aapl_current_quote.Bid.Close),
-                    str(aapl_current_quote.Bid.LastBidSize)
+                    str(aapl_current_quote.LastBidSize)
                 ))
 
             if aapl_current_quote.Ask is not None:
@@ -105,7 +105,7 @@ class MyDataAlgorithm(QCAlgorithm):
                     str(aapl_current_quote.Ask.High),
                     str(aapl_current_quote.Ask.Low),
                     str(aapl_current_quote.Ask.Close),
-                    str(aapl_current_quote.Ask.LastBidSize)
+                    str(aapl_current_quote.LastAskSize)
                 ))
     </pre>
 </div>
