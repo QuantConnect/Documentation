@@ -1,55 +1,91 @@
-<p>Placing orders with Quantopian is done with the following methods:</p>
-<ul>
-  <li><code>order_optimal_portfolio</code></li>
-  <li><code>order</code></li>
-  <li><code>order_value</code></li>
-  <li><code>order_percent</code></li>
-  <li><code>order_target</code></li>
-  <li><code>order_target_value</code></li>
-  <li><code>order_target_percent</code></li>
-</ul>
-
 <p>
-  On QuantConnect, can use the <code>Buy</code>, <code>Sell</code>, or <code>SetHoldings</code> methods. The 
-  <code>Buy</code> and <code>Sell</code> methods accept a quantity to buy or sell, while the <code>SetHoldings</code>
-  method accepts a percentage of the portfolio to allocate. All of these methods execute trades with market orders.
+  Both Quantopian and QuantConnect offer several methods for placing orders. Quantopian's 
+  <code>order_optimal_portfolio</code>  method computes the optimal portfolio weights using an objective and 
+  constraints, then places the orders to achieve the desired portfolio. For example, the code below uses the Quantopian
+  API to create an equal-weighted dollar-neutral portfolio.
 </p>
 
-<div class="section-example-container">
-<pre class="python">
-class MyAlgorithm(QCAlgorithm):
-    def Initialize(self):
-        self.SetStartDate(2020, 4, 28)
-        self.SetCash(100000)
-        self.AddEquity("SPY", Resolution.Minute)
 
-    def OnData(self, data):
-        if not self.Portfolio.Invested:
-            self.SetHoldings("SPY", 1)
+<div class="section-example-container">
+<pre class="python">import quantopian.algorithm as algo
+import quantopian.optimize as opt
+
+objective = opt.TargetWeights(weights)
+constraints = [
+    opt.MaxGrossExposure(2.0),
+    opt.DollarNeutral()
+]
+algo.order_optimal_portfolio(objective, constraints)
+</pre>
+</div>
+
+</p>
+  To acheive the same functionality with QuantConnect, we utilize 
+  <a href="https://www.quantconnect.com/docs/algorithm-framework/portfolio-construction">portfolio construction models</a>.
+  For instance, to create an equal-weighted dollar-neutral portfolio, we could define a portfolio construction model 
+  and attach it to the algorithm.
+</p> 
+
+<div class="section-example-container">
+<pre class="python">class MyAlgorithm(QCAlgorithm):
+    def Initialize(self):
+        self.SetStartDate(2020, 5, 1)  
+        self.SetCash(100000)  
+
+        self.SetPortfolioConstruction(EqualWeightedDollarNeutralPortfolioConstructionModel())
+
+
+class EqualWeightedDollarNeutralPortfolioConstructionModel(PortfolioConstructionModel):
+
+    def DetermineTargetPercent(self, activeInsights):
+        result = {}
+        
+        longs = 0
+        shorts = 0
+        for insight in activeInsights:
+            if insight.Direction == InsightDirection.Up:
+                longs += 1
+            elif insight.Direction == InsightDirection.Down:
+                shorts += 1
+            result[insight] = 0
+        
+        if longs == 0 or shorts == 0:
+            return result
+        
+        for insight in activeInsights:
+            if insight.Direction == InsightDirection.Up:
+                result[insight] = 0.5 / longs
+            elif insight.Direction == InsightDirection.Down:
+                result[insight] = -0.5 / shorts
+        return result
 </pre>
 </div>
 
 <p>
-  Instead of using <code>Buy</code>, <code>Sell</code>, or <code>SetHoldings</code>, we can also create orders of a 
-  particular type. We have the following methods available:
-</p>
-<ul>
-  <li><code>MarketOrder</code></li>
-  <li><code>LimitOrder</code></li>
-  <li><code>StopMarketOrder</code></li>
-  <li><code>StopLimitOrder</code></li>
-  <li><code>MarketOnOpenOrder</code></li>
-  <li><code>MarketOnCloseOrder</code></li>
-</ul>
-
-<p>
-  For more information on order types, refer to our 
-  <a href="https://www.quantconnect.com/docs/algorithm-reference/trading-and-orders#Trading-and-Orders-Placing-Orders">Trading and Orders documentation</a>.
+  When algorithms require manual control of their orders, both platforms have lower-level ordering methods. 
+  Quantopian's <code>order</code> method, which places an order for a fixed number of shares, directly
+  maps to our <code>Order</code> method.  Additionally, Quantopian's <code>order_target_percent</code> method places
+  an order to adjust a position to a target percent of the current portfolio value. Our <code>SetHoldings</code> 
+  method performs the same functionality.
 </p>
 
 <p>
-  Quantopian's <code>order_optimal_portfolio</code> method computes the optimial portfolio weights using an 
-  objective and contraints, then places the orders to achieve the desired portfolio. To acheive the same 
-  functionality with QuantConnect, we utilize 
-  <a href="https://www.quantconnect.com/docs/algorithm-framework/portfolio-construction">portfolio construction models</a>.
+  Quantopian's <code>order_percent</code> method places an order in the specified asset corresponding to the given 
+  percent of the current portfolio value. To accomplish this on QuantConnect, we can determine the weight of the 
+  asset in the <code>Portfolio</code>, then manually determine the new target percent to pass to 
+  <code>SetHoldings</code>. A demonstration of this process is shown below.
+</p>
+
+<div class="section-example-container">
+<pre class="python">current_weight = self.Portfolio[symbol].HoldingsValue / self.Portfolio.TotalPortfolioValue
+self.SetHoldings(symbol, current_weight + 0.1)
+</pre>
+</div>
+
+<p>
+  Quantopian has <code>MarketOrder</code>, <code>LimitOrder</code>, <code>StopOrder</code>, and 
+  <code>StopLimitOrder</code> methods to create specific order types. QuantConnect has all of these methods, in 
+  addition to several other order types. Refer to our 
+  <a href="https://www.quantconnect.com/docs/algorithm-reference/trading-and-orders#Trading-and-Orders-Placing-Orders">Trading and Orders documentation</a> 
+  for a comprehensive list. 
 </p>
