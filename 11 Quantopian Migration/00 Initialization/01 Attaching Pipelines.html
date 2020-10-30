@@ -1,0 +1,51 @@
+<p>
+    The functional equivalent of Pipelines on QuantConnect are Universes.
+    Universes can be used to dynamically select assets your algorithm wants to trade
+    or request data from. To add a universe to your algorithm, you can call the <code>AddUniverse()</code> method
+    and provide the required Coarse and Fine universe selection functions.
+</p>
+<p>
+    Coarse Universe selection is the first step of universe selection. It provides a means to filter data
+    in a lightweight fashion before proceeding to Fine Universe selection. Coarse universe will allow you to
+    filter assets based off top-level fundamental factors, such as Dollar Volume for the day, if a company has fundamental data,
+    and market of the asset.
+</p>
+<p>
+    Fine Universe selection is the second step of universe selection. It provides fundamental data
+    to your user-defined function, and can be used to filter in greater detail based on
+    an asset's fundamental data, such as earnings, EPS, etc.
+</p>
+<p>
+    You can configure universe settings by modifying the existing <code>UniverseSettings</code> attribute of the algorithm.
+</p>
+<div class="section-example-container">
+    <pre class="python">class MyUniverseAlgorithm(QCAlgorithm):
+    def Initialize(self):
+        self.UniverseSettings.Resolution = Resolution.Minute
+        self.UniverseSettings.DataNormalizationMode = DataNormalizationMode.Adjusted
+        self.UniverseSettings.Leverage = 1.0
+        self.UniverseSettings.ExtendedMarketHours = False</pre>
+</div>
+<p>
+    An example of coarse and fine universe selection to filter assets in our algorithm is provided.
+    Adding universes can be used as an alternative to using <code>AddEquity</code> if you prefer
+    dynamic asset selection.
+</p>
+<div class="section-example-container">
+    <pre class="python">class MyUniverseAlgorithm(QCAlgorithm):
+    def Initialize(self):
+        self.SetStartDate(2020, 1, 1)
+        self.SetEndDate(2020, 2, 1)
+
+        self.UniverseSettings.Resolution = Resolution.Minute
+        self.AddUniverse(self.CoarseSelectionFunction, self.FineSelectionFunction)
+
+    def CoarseSelectionFunction(self, coarse):
+        return [i.Symbol for i in coarse if i.DollarVolume > 500000 and i.HasFundamentalData]
+
+    def FineSelectionFunction(self, fine):
+        return [i.Symbol for i in fine if i.EarningReports.BasicEPS.OneMonth > 0]</pre>
+</div>
+<p>
+    You can read more about universe selection at the <a class="docs-internal-link" href="/docs/algorithm-reference/universes" target="_blank" rel="noopener noreferrer">Universe</a> documentation page.
+</p>
