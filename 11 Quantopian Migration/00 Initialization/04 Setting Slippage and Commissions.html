@@ -1,0 +1,42 @@
+<p>
+    QuantConnect supports applying slippage and commissions per individual security.
+</p>
+<p>
+    To add a slippage model to a security, we must set the <code>SlippageModel</code> property 
+    of the <code>Security</code> object to our model. A <code>Security</code> is returned
+    when data is added to the algorithm.
+
+    An example is provided below.
+</p>
+<div class="section-example-container">
+    <pre class="python">class MyAlgorithm(QCAlgorithm)
+    def Initialize(self):
+        spy = self.AddEquity("SPY", Resolution.Minute)
+        # `ConstantSlippageModel` is the same as `FixedSlippage` on Quantopian
+        spy.SlippageModel = ConstantSlippageModel(0.01)</pre>
+</div>
+
+<h4>Commissions</h3>
+<p>
+    To add a fee model (otherwise known as Commissions on Quantopian) to a security,
+    we must set the <code>FeeModel</code> property of the <code>Security</code> object
+    to our model.
+
+    An example is provided below.
+</p>
+<div class="section-example-container">
+    <pre class="python">class MyAlgorithm(QCAlgorithm):
+    def Initialize(self):
+       aapl = self.AddEquity("AAPL", Resolution.Minute)
+       spy = self.AddEquity("SPY", Resolution.Minute)
+       # Sets the fee model to the IB fee model, which simulates
+       # the fees we would encounter in live trading.
+       spy.FeeModel = InteractiveBrokersFeeModel()
+
+       # Sets the fee model to a constant fee model
+       aapl.FeeModel = ConstantFeeModel(0.01, "USD")</pre>
+</div>
+<p>
+    You can read more about Securities and their attributes at the <a class="docs-internal-link" href="/docs/algorithm-reference/securities-and-portfolio" target="_blank" rel="noopener noreferrer">Securities and Portfolio</a> and 
+    <a class="docs-internal-link" href="/docs/algorithm-reference/reality-modeling" target="_blank" rel="noopener noreferrer">Reality Modeling</a> documentation pages.
+</p>
