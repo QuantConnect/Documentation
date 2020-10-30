@@ -1,0 +1,112 @@
+<p>
+    As covered in the <a class="docs-internal-link" href="/docs/quantopian-migration/initialization" target="_blank" rel="noopener noreferrer">Initialization</a> section,
+    Pipelines can be replicated using Universe Selection in QuantConnect, albeit with some additional steps in between and a performance impact.
+</p>
+<p>
+    In this section, we will construct and define an equivalent pipeline model using universe selection in QuantConnect.
+    We will filter our data set in Coarse and Fine, and apply an additional filter to historical data with a rolling window.
+</p>
+<p>
+    We first create a skeleton algorithm definition to begin setting up our Pipeline.
+    Note that this algorithm will allow all equities through, which will have a substantial performance
+    impact on our algorithm. 
+</p>
+<div class="section-example-container">
+    <pre class="python">class MyPipelineAlgorithm(QCAlgorithm):
+    def Initialize(self):
+        self.SetStartDate(2020, 1, 1)
+        self.SetEndDate(2020, 10, 20)
+
+        self.AddUniverse(self.CoarseSelectionFunction, self.FineSelectionFunction)
+
+    def CoarseSelectionFunction(self, coarse):
+        # Allows all Symbols through, no filtering applied
+        return [coarse_data.Symbol for coarse_data in coarse]
+
+    def FineSelectionFunction(self, fine):
+        # Allows all Symbols through, no filtering applied
+        return [fine_data.Symbol for fine_data in fine]</pre>
+</div>
+<p>
+    The skeleton algorithm is the equivalent of the Pipeline call below.
+</p>
+<div class="section-example-container">
+    <pre class="python">from quantopian.pipeline import Pipeline
+from quantopian.pipeline.domain import US_EQUITIES
+from quantopian.research import run_pipeline
+
+pipe = Pipeline(columns={}, domain=US_EQUITIES)
+run_pipeline(pipe, '2020-01-01', '2020-10-20')</pre>
+</div>
+
+<p>
+    The equivalent of <code>Pipeline(screen=...)</code> resolves to the filter applied at the Coarse and Fine stages
+    of universe selection.
+
+    Let's define a filter of stocks with a dollar volume greater than $50000000 USD, as well as
+    a rolling thirty day return greater than 2%. Once we've initially filtered the Symbols in Coarse Universe Selection,
+    let's define a final filter only allowing stocks with EPS greater than 0.
+
+    Beware of making <code>History()</code> calls with many Symbols. It could potentially cause your algorithm to
+    run out of system resources (i.e. RAM) and reduce performance of your algorithm on universe selection.
+</p>
+<div class="section-example-container">
+    <pre class="python">from datetime import datetime, timedelta
+
+class MyPipelineAlgorithm(QCAlgorithm):
+    def Initialize(self):
+        self.SetStartDate(2020, 1, 1)
+        self.SetEndDate(2020, 10, 20)
+
+        self.AddUniverse(self.CoarseSelectionFunction, self.FineSelectionFunction)
+
+    def CoarseSelectionFunction(self, coarse):
+        # Allows all Symbols through, no filtering applied
+        dollar_volume_filter_symbols = [coarse_data.Symbol for coarse_data in coarse if coarse_data.DollarVolume > 50000000]
+
+        # Make a history call to calculate the 30 day rolling returns
+        df = self.History(dollar_volume_filter_symbols, self.Time - timedelta(days=60), self.Time, Resolution.Daily)
+
+        # Compute the rolling 30 day returns
+        df = df['close'].groupby(level=0).filter(lambda x: len(x) >= 30).groupby(level=0).apply(lambda x: (x.iloc[-1] - x.iloc[-30]) / x.iloc[-30])
+
+        # Finally, apply our filter
+        dataframe_screen = df[df > 0.02]
+
+        # Filters out any Symbol that is not in the DataFrame
+        return [s for s in dollar_volume_filter_symbols if str(s) in dataframe_screen]
+
+    def FineSelectionFunction(self, fine):
+        # We receive the filtered symbols from before, and we filter by EPS > 0 in this step
+       return [s.Symbol for s in fine if s.EarningReports.BasicEPS.ThreeMonths > 0]</pre>
+</div>
+<p>
+    This class definition is now roughly equivalent to the following <code>CustomFactor</code> and Pipeline call in Quantopian, excluding the EPS filtering.
+</p>
+<div class="section-example-container">
+    <pre class="python">from quantopian.pipeline.filters import QTradableStocksUS
+from quantopian.pipeline.factors import AverageDollarVolume
+
+class PercentageChange(CustomFactor):
+    def compute(self, today, assets, out, values):
+        out[:] = (values[-1] - values[0]) / values[0]
+
+    dollar_volume = AverageDollarVolume(window_length=5)
+    dollar_volume_filter = (dollar_volume > 50000000)
+
+    pipe = Pipeline(
+        columns={
+            "percent_change": PercentageChange(inputs=[USEquityPricing.close], window_length=30)
+        },
+        screen=(QTradableStocksUS() & dollar_volume_filter)
+    )
+    </pre>
+</div>
+<p>
+    An example of the shape of the DataFrame returned from History is shown below.
+    The DataFrame has a MultiIndex, with <code>level=0</code> being the Symbol, and <code>level=1</code> being the Time
+    for that point of data. You can index the Symbol/<code>level=0</code> index by using either the SecurityIdentifier string (e.g. <code>df.loc["AAPL R735QTJ8XC9X"]</code>) or
+    with the ticker of the Symbol (e.g. <code>df.loc["AAPL"]</code>)
+
+    <img src="https://cdn.quantconnect.com/docs/i/history-stacked-multi-symbol-python_rev0.png" />
+</p>
