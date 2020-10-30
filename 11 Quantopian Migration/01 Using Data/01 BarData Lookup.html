@@ -1,0 +1,109 @@
+<p>
+    Similar but different, the Quantopian <code>BarData</code> object, and the QuantConnect <code>Slice</code> object
+    both provide data to the user's algorithm as point-in-time data.
+</p>
+<p>
+    In Quantopian, data is handled via the <code>handle_data(context, data)</code> function.
+    In QuantConnect, data is handled via the <code>OnData(self, data)</code> method.
+
+    Both of these functions accept data whenever new data exists for a given point in time.
+    Although these two functions share the same method signature, the handling of the data is different.
+</p>
+<h3><code>Slice</code> vs. <code>BarData</code></h3>
+<p>
+    <code>BarData</code> is the primary mechanism to retrieve the point-in-time data, as well as request
+    history for a given security in Quantopian.
+
+    The following code retrieves daily historical 30 days into the past, as well as getting
+    the most recent data for AAPL.
+</p>
+<div class="section-example-container">
+    <pre class="python">def initialize(context):
+    context.aapl = sid(24)
+
+def handle_data(context, data):
+    # Gets a DataFrame of AAPL history going back 30 days
+    aapl_history = data.history(context.aapl, fields=["open", "high", "low", "close", "volume"], 30, "1d")
+    # Gets a pandas Series of the most recent AAPL data
+    aapl_current = data.current(context.aapl, fields=["open", "high", "low", "close", "volume"])
+    </pre>
+</div>
+<p>
+    <code>Slice</code> represents a single point in time, and does not allow for access to historical data.
+    To access historical data in an algorithm, you should use the algorithm's <code>self.History()</code> call to request
+    a DataFrame of historical data.
+
+    Data is not returned as a DataFrame, but rather as a single object containing the data for a single point in time.
+    QuantConnect additionally provides Quote (NBBO) data for use in your algorithm.
+    
+    You can access Trade (OHLCV) data by accessing the <code>Bars</code> attribute, and
+    you can access Quotes (Bid(OHLCV), Ask(OHLCV)) data by accessing the <code>QuoteBars</code> attributes of the <code>Slice</code>.
+</p>
+<p>
+    Both of the <code>Bars</code> and <code>QuoteBars</code> attributes allow for quick checking to see if there exists a new piece of data
+    for a given security. You can check if data exists by calling the <code>ContainsKey(Symbol)</code> method on <code>Bars</code> or <code>QuoteBars</code>.
+
+    You can iterate on all of the data received by calling the <code>Values</code> attribute of the <code>Bars</code> or <code>QuoteBars</code> attributes, which will
+    return either a <code>TradeBar</code> or <code>QuoteBar</code>, depending on which property was accessed.
+</p>
+<p>
+    The <code>TradeBar</code> object contains the <code>Open</code>, <code>High</code>, <code>Low</code>, <code>Close</code>, <code>Volume</code>, <code>Time</code>, <code>EndTime</code>, and <code>Symbol</code> attributes.
+    The <code>QuoteBar</code> object contains the following attributes:
+    <ol>
+        <li>Bids: <code>BidOpen</code>, <code>BidHigh</code>, <code>BidLow</code>, <code>BidClose</code>, <code>LastBidSize</code></li>
+        <li>Asks: <code>AskOpen</code>, <code>AskHigh</code>, <code>AskLow</code>, <code>AskClose</code>, <code>LastAskSize</code></li>
+        <li><code>Time</code>, <code>EndTime</code>, and <code>Symbol</code>.</li>
+    </ol>
+</p>
+<p>
+    An example is provided below showing the different ways to access <code>TradeBar</code> and <code>QuoteBar</code> 
+    data as well as requesting 30 days of historical data for AAPL.
+</p>
+<div class="section-example-container">
+    <pre class="python">from datetime import datetime, timedelta
+
+
+class MyDataAlgorithm(QCAlgorithm):
+    def Initialize(self):
+        self.aapl_security = self.AddEquity("AAPL", Resolution.Daily)
+        self.aapl_symbol = self.aapl_security.Symbol
+
+    def OnData(self, data):
+        # Gets 30 days of AAPL history
+        aapl_history = self.History([self.aapl_symbol], timedelta(days=30), Resolution.Daily)
+
+        # We must first check to make sure we have AAPL data, since this point-in-time
+        # might not have had any trades for AAPL (this is in case you trade a low
+        # liquidity asset. The data can potentially be missing for a point-in-time).
+        if data.Bars.ContainsKey(self.aapl_symbol):
+            aapl_current_trade = data.Bars[self.aapl_symbol]
+            Log(f"{self.Time} :: TRADE :: {self.aapl_symbol} - O: {aapl_current_trade.Open} H: {aapl_current_trade.High} L: {aapl_current_trade.Low} C: {aapl_current_trade.Close} V: {aapl_current_trade.Volume}")
+
+        # Check to make sure we have AAPL data first, since there might not have
+        # been any quote updates since the previous for AAPL (this is in case you trade
+        # a low liquidity asset. The data can potentially be missing for a point-in-time).
+        if data.QuoteBars.ContainsKey(self.aapl_symbol):
+            aapl_current_quote = data.QuoteBars[self.aapl_symbol]
+            if aapl_current_quote.Bid is not None:
+                Log(f"{} :: QUOTE :: {} - Bid O: {} Bid H: {} Bid L: {} Bid C: {} Bid size: {}".format(
+                    str(self.Time),
+                    str(self.aapl_symbol)
+                    str(aapl_current_quote.Bid.Open),
+                    str(aapl_current_quote.Bid.High),
+                    str(aapl_current_quote.Bid.Low),
+                    str(aapl_current_quote.Bid.Close),
+                    str(aapl_current_quote.Bid.LastBidSize)
+                ))
+
+            if aapl_current_quote.Ask is not None:
+                Log(f"{} :: QUOTE :: {} - Ask O: {} Ask H: {} Ask L: {} Ask C: {} Ask size: {}".format(
+                    str(self.Time),
+                    str(self.aapl_symbol),
+                    str(aapl_current_quote.Ask.Open),
+                    str(aapl_current_quote.Ask.High),
+                    str(aapl_current_quote.Ask.Low),
+                    str(aapl_current_quote.Ask.Close),
+                    str(aapl_current_quote.Ask.LastBidSize)
+                ))
+    </pre>
+</div>
