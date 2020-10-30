@@ -17,6 +17,9 @@
     The following code retrieves daily historical 30 days into the past, as well as getting
     the most recent data for AAPL.
 </p>
+<p>
+    Quantopian
+</p>
 <div class="section-example-container">
     <pre class="python">def initialize(context):
     context.aapl = sid(24)
@@ -25,7 +28,22 @@ def handle_data(context, data):
     # Gets a DataFrame of AAPL history going back 30 days
     aapl_history = data.history(context.aapl, fields=["open", "high", "low", "close", "volume"], 30, "1d")
     # Gets a pandas Series of the most recent AAPL data
-    aapl_current = data.current(context.aapl, fields=["open", "high", "low", "close", "volume"])
+    aapl_current = data.current(context.aapl, fields=["open", "high", "low", "close", "volume"])</pre>
+</div>
+<p>
+    QuantConnect
+</p>
+<div class="section-example-container">
+    <pre class="python">class MyHistoryAlgorithm(QCAlgorithm):
+    def Initialize(self):
+        self.aapl = self.AddEquity("AAPL", Resolution.Daily)
+
+    def OnData(self, data):
+        # Gets a DataFrame of AAPL history going back 30 days
+        aapl_history = self.History([self.aapl.Symbol], timedelta(days=30), Resolution.Daily)
+
+        # Gets the most recent AAPL Trade data (OHLCV)
+        aapl_current = data.Bars[self.aapl.Symbol]
     </pre>
 </div>
 <p>
@@ -77,14 +95,14 @@ class MyDataAlgorithm(QCAlgorithm):
         # We must first check to make sure we have AAPL data, since this point-in-time
         # might not have had any trades for AAPL (this is in case you trade a low
         # liquidity asset. The data can potentially be missing for a point-in-time).
-        if data.Bars.ContainsKey(self.aapl_symbol):
+        if self.aapl_symbol in data.Bars:
             aapl_current_trade = data.Bars[self.aapl_symbol]
             Log(f"{self.Time} :: TRADE :: {self.aapl_symbol} - O: {aapl_current_trade.Open} H: {aapl_current_trade.High} L: {aapl_current_trade.Low} C: {aapl_current_trade.Close} V: {aapl_current_trade.Volume}")
 
         # Check to make sure we have AAPL data first, since there might not have
         # been any quote updates since the previous for AAPL (this is in case you trade
         # a low liquidity asset. The data can potentially be missing for a point-in-time).
-        if data.QuoteBars.ContainsKey(self.aapl_symbol):
+        if self.aapl_symbol in data.QuoteBars:
             aapl_current_quote = data.QuoteBars[self.aapl_symbol]
             if aapl_current_quote.Bid is not None:
                 Log(f"{} :: QUOTE :: {} - Bid O: {} Bid H: {} Bid L: {} Bid C: {} Bid size: {}".format(
@@ -94,7 +112,7 @@ class MyDataAlgorithm(QCAlgorithm):
                     str(aapl_current_quote.Bid.High),
                     str(aapl_current_quote.Bid.Low),
                     str(aapl_current_quote.Bid.Close),
-                    str(aapl_current_quote.Bid.LastBidSize)
+                    str(aapl_current_quote.LastBidSize)
                 ))
 
             if aapl_current_quote.Ask is not None:
@@ -105,7 +123,7 @@ class MyDataAlgorithm(QCAlgorithm):
                     str(aapl_current_quote.Ask.High),
                     str(aapl_current_quote.Ask.Low),
                     str(aapl_current_quote.Ask.Close),
-                    str(aapl_current_quote.Ask.LastBidSize)
+                    str(aapl_current_quote.LastAskSize)
                 ))
     </pre>
 </div>
