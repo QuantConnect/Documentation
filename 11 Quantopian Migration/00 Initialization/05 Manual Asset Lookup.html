@@ -1,0 +1,25 @@
+<p>
+    On QuantConnect, we provide the <code>Symbol</code> class to reference a security across time with a changing ticker.
+    This is similar to Quantopian's <code>symbol()</code> function, which enables the same functionality.
+</p>
+<p>
+    When you add data to your algorithm, a <code>Security</code> object is returned.
+    The <code>Symbol</code> is accessible from the <code>Security</code> as shown below.
+</p>
+<div class="section-example-container">
+    <pre class="python">class MyAlgorithm(QCAlgorithm):
+    def Initialize(self):
+        self.SetStartDate(2000, 1, 1)
+        self.SetEndDate(2020, 1, 1)
+        # TWX will change to AOL when backtesting in the early 2000s, and will
+        # change to TWX as the backtest advances past the date it was renamed.
+        twx_security = self.AddEquity("TWX", Resolution.Minute)
+        twx_symbol = twx_security.Symbol</pre>
+</div>
+<p>
+    To manually create a reference to an old equity, you can use the <code>Symbol.Create()</code> method,
+    or the <code>Symbol.CreateEquity()</code> method.
+</p>
+<p>
+    You can read more about Symbols and Security Identifiers (SID) at the <a class="docs-internal-link" href="/docs/key-concepts/security-identifiers" target="_blank" rel="noopener noreferrer">Security Identifiers</a> documentation page.
+</p>
