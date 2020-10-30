@@ -11,11 +11,11 @@
 </p>
 <h3><code>BarData</code> vs. <code>Slice</code></h3>
 <p>
-    <code>BarData</code> is the primary mechanism to retrieve the point-in-time data, as well as request
-    history for a given security in Quantopian.
+    <code>BarData</code> is the primary mechanism to retrieve the point-in-time data, as well as requesting
+    history for any given securities in Quantopian.
 
-    The following code retrieves daily historical 30 days into the past, as well as getting
-    the most recent data for AAPL.
+    The following code retrieves daily historical data from 30 days into the past, as well as getting
+    the most recent data for AAPL at the current point-in-time.
 </p>
 <p>
     Quantopian
@@ -49,37 +49,48 @@ class MyHistoryAlgorithm(QCAlgorithm):
     </pre>
 </div>
 <p>
-    <code>Slice</code> represents a single point in time, and does not allow for access to historical data.
-    To access historical data in an algorithm, you should use the algorithm's <code>self.History()</code> call to request
+    <code>Slice</code> represents a single point in time, and does not provide the functionality to access historical data itself.
+    To access historical data in an algorithm, use the algorithm's <code>self.History()</code> call to request
     a pandas DataFrame of historical data.
 
-    In <code>Slice</code>, data is not retrieved as a pandas DataFrame, but instead as a single object containing the data for a single point in time. An example is the <code>TradeBar</code> class. It contains OHLCV data for a single point in time. Since the data Slice contains is point-in-time, we will only receive a single trade or quote per Symbol in each call to <code>OnData(self, data)</code>.
+    In <code>Slice</code>, the data that is accessed is not a pandas DataFrame, but rather a single object containing data for a single point in time. 
 </p>
 <p>
-    QuantConnect additionally provides Quote (NBBO) data for use in your algorithm.
-    
-    You can access Trade (OHLCV) data by accessing the <code>Bars</code> attribute, and
-    you can access Quotes (Bid(OHLCV), Ask(OHLCV)) data by accessing the <code>QuoteBars</code> attributes of the <code>Slice</code>.
+    The <code>TradeBar</code> class, for example, only contains scalar values of OHLCV, rather than return a DataFrame of OHLCV values. 
+    Since the data <code>Slice</code> contains is point-in-time, there will be only a single trade/quote bar per Symbol whenever <code>OnData(self, data)</code> is called.
 </p>
 <p>
-    Both of the <code>Bars</code> and <code>QuoteBars</code> attributes allow for quick checking to see if there exists a new piece of data
-    for a given security. You can check if data exists by calling the <code>ContainsKey(Symbol)</code> method on <code>Bars</code> or <code>QuoteBars</code>.
+    QuantConnect provides Quote (NBBO) data for use in your algorithm, otherwise known as a <code>QuoteBar</code>.
+    Quote data is only accessible when an algorithm is set to consume Tick, Second, or Minutely data.
+</p>
+<p>
+    You can access Trade (OHLCV) data by accessing the <code>Bars</code> attribute of <code>Slice</code>.
+    You can access Quote (Bid(OHLCV), Ask(OHLCV)) data by accessing the <code>QuoteBars</code> attribute of <code>Slice</code>.
+</p>
+<p>
+    Both of the <code>Bars</code> and <code>QuoteBars</code> attributes are similar to Python dictionaries, and can
+    be used as such. To check to see if there exists a new piece of data for a given security, you can use Python's <code>in</code> operator
+    on <code>Bars</code> and or <code>QuoteBars</code>.
 
-    You can iterate on all of the data received by calling the <code>Values</code> attribute of the <code>Bars</code> or <code>QuoteBars</code> attributes, which will
-    return either a <code>TradeBar</code> or <code>QuoteBar</code>, depending on which property was accessed.
+    You can also choose to iterate on all data received by calling the <code>Values</code> attribute of the <code>Bars</code> or <code>QuoteBars</code> attributes, which will
+    return either a list of <code>TradeBar</code> or <code>QuoteBar</code> objects.
 </p>
 <p>
     The <code>TradeBar</code> object contains the <code>Open</code>, <code>High</code>, <code>Low</code>, <code>Close</code>, <code>Volume</code>, <code>Time</code>, <code>EndTime</code>, and <code>Symbol</code> attributes.
     The <code>QuoteBar</code> object contains the following attributes:
-    <ol>
-        <li>Bids: <code>BidOpen</code>, <code>BidHigh</code>, <code>BidLow</code>, <code>BidClose</code>, <code>LastBidSize</code></li>
-        <li>Asks: <code>AskOpen</code>, <code>AskHigh</code>, <code>AskLow</code>, <code>AskClose</code>, <code>LastAskSize</code></li>
+    <ul>
+        <li><code>Bid.Open</code>, <code>Bid.High</code>, <code>Bid.Low</code>, <code>Bid.Close</code>, <code>LastBidSize</code></li>
+        <li><code>Ask.Open</code>, <code>Ask.High</code>, <code>Ask.Low</code>, <code>Ask.Close</code>, <code>LastAskSize</code></li>
         <li><code>Time</code>, <code>EndTime</code>, and <code>Symbol</code>.</li>
-    </ol>
+    </ul>
 </p>
 <p>
-    An example is provided below showing the different ways to access <code>TradeBar</code> and <code>QuoteBar</code> 
-    data as well as requesting 30 days of historical data for AAPL.
+    Note that the <code>Bid</code> and <code>Ask</code> attributes can potentially be <code>None</code> if no bid/ask data exists
+    at a given point-in-time.
+</p>
+<p>
+    The example below shows the different ways to access <code>TradeBar</code> and <code>QuoteBar</code> 
+    data, as well as requesting 30 days of AAPL historical data.
 </p>
 <div class="section-example-container">
     <pre class="python">from datetime import datetime, timedelta
