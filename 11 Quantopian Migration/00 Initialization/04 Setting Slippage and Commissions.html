@@ -6,13 +6,30 @@
     of the <code>Security</code> object to our model. A <code>Security</code> is returned
     when data is added to the algorithm.
 
-    An example is provided below.
+    Examples of setting slippage in an algorithm is provided below for both Quantopian and QuantConnect.
+</p>
+<p>
+    Quantopian
+</p>
+<div class="section-example-container">
+    <pre class="python">import quantopian.algorithm as algorithm
+from zipline.finance.slippage import FixedSlippage
+
+
+    def initialize(context):
+        # This will set slippage for all U.S. equities
+        algorithm.set_slippage(us_equities=FixedSlippage(0.01))
+    </pre>
+</div>
+<p>
+    QuantConnect
 </p>
 <div class="section-example-container">
     <pre class="python">class MyAlgorithm(QCAlgorithm)
     def Initialize(self):
         spy = self.AddEquity("SPY", Resolution.Minute)
-        # `ConstantSlippageModel` is the same as `FixedSlippage` on Quantopian
+        # `ConstantSlippageModel` is the same as `FixedSlippage` on Quantopian.
+        # This will set slippage only for the "SPY" security.
         spy.SlippageModel = ConstantSlippageModel(0.01)</pre>
 </div>
 
@@ -22,13 +39,30 @@
     we must set the <code>FeeModel</code> property of the <code>Security</code> object
     to our model.
 
-    An example is provided below.
+    Examples are provided below for Quantopian and QuantConnect.
+</p>
+<p>
+    Quantopian
+</p>
+<div class="section-example-container">
+    <pre class="python">import quantopian.algorithm as algorithm
+from zipline.finance.commission import PerShare
+
+
+    def initialize(context):
+        # Approximates Interactive Brokers' equities trading commissions.
+        algorithm.set_commission(us_equities=Pershare(cost=0.0075))
+    </pre>
+</div>
+<p>
+    QuantConnect
 </p>
 <div class="section-example-container">
     <pre class="python">class MyAlgorithm(QCAlgorithm):
     def Initialize(self):
        aapl = self.AddEquity("AAPL", Resolution.Minute)
        spy = self.AddEquity("SPY", Resolution.Minute)
+
        # Sets the fee model to the IB fee model, which simulates
        # the fees we would encounter in live trading.
        spy.FeeModel = InteractiveBrokersFeeModel()
