@@ -1,0 +1,29 @@
+<p>
+    On QuantConnect, algorithm initialization behavior is equivalent to Quantopian's <code>initialize</code> method.
+    <code>Initialize</code> is the method equivalent, and it is only ran once at the start of the algorithm. 
+    It is responsible for initially adding data to the algorithm, adding a universe, setting the brokerage, setting the algorithm's
+    start and end date, etc.
+</p>
+
+<p>
+    On QuantConnect, the <code>self</code> parameter is the equivalent of the <code>context</code> parameter in Quantopian algorithms.
+    You can use <code>self</code> to access algorithm resources, such as the Portfolio, Orders, Order Tickets, Securities, place orders in your algorithm, and much more.
+</p>
+
+<p>
+    The two methods are equivalent, with the exception of the <code>context</code> parameter being named <code>self</code>.
+    <code>def initialize(context): ...</code> is the same as <code>def Initialize(self): ...</code>
+</p>
+<p>
+    The algorithm structure differs too. On QuantConnect, we create a class that derives from <code>QCAlgorithm</code> and define
+    our overrides/algorithm functionality there. An example of an algorithm with initialization is provided.
+</p>
+<div class="section-example-container">
+    <pre class="python">class MyAlgorithm(QCAlgorithm):
+    def Initialize(self):
+        # Adds minutely AAPL data to the algorithm
+        self.AddEquity("AAPL", Resolution.Minute)</pre>
+</div>
+<p>
+    You can read more about algorithm initialization at the <a class="docs-internal-link" href="/docs/algorithm-reference/initializing-algorithms" target="_blank" rel="noopener noreferrer">Initializing Algorithms</a> documentation page.
+</p>
