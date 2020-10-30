@@ -9,7 +9,7 @@
     Both of these functions accept data whenever new data exists for a given point in time.
     Although these two functions share the same method signature, the handling of the data is different.
 </p>
-<h3><code>Slice</code> vs. <code>BarData</code></h3>
+<h3><code>BarData</code> vs. <code>Slice</code></h3>
 <p>
     <code>BarData</code> is the primary mechanism to retrieve the point-in-time data, as well as request
     history for a given security in Quantopian.
@@ -77,14 +77,14 @@ class MyDataAlgorithm(QCAlgorithm):
         # We must first check to make sure we have AAPL data, since this point-in-time
         # might not have had any trades for AAPL (this is in case you trade a low
         # liquidity asset. The data can potentially be missing for a point-in-time).
-        if self.aapl_symbol in data.Bars:
+        if data.Bars.ContainsKey(self.aapl_symbol):
             aapl_current_trade = data.Bars[self.aapl_symbol]
             Log(f"{self.Time} :: TRADE :: {self.aapl_symbol} - O: {aapl_current_trade.Open} H: {aapl_current_trade.High} L: {aapl_current_trade.Low} C: {aapl_current_trade.Close} V: {aapl_current_trade.Volume}")
 
         # Check to make sure we have AAPL data first, since there might not have
         # been any quote updates since the previous for AAPL (this is in case you trade
         # a low liquidity asset. The data can potentially be missing for a point-in-time).
-        if self.aapl_symbol in data.QuoteBars:
+        if data.QuoteBars.ContainsKey(self.aapl_symbol):
             aapl_current_quote = data.QuoteBars[self.aapl_symbol]
             if aapl_current_quote.Bid is not None:
                 Log(f"{} :: QUOTE :: {} - Bid O: {} Bid H: {} Bid L: {} Bid C: {} Bid size: {}".format(
@@ -94,7 +94,7 @@ class MyDataAlgorithm(QCAlgorithm):
                     str(aapl_current_quote.Bid.High),
                     str(aapl_current_quote.Bid.Low),
                     str(aapl_current_quote.Bid.Close),
-                    str(aapl_current_quote.LastBidSize)
+                    str(aapl_current_quote.Bid.LastBidSize)
                 ))
 
             if aapl_current_quote.Ask is not None:
@@ -105,7 +105,7 @@ class MyDataAlgorithm(QCAlgorithm):
                     str(aapl_current_quote.Ask.High),
                     str(aapl_current_quote.Ask.Low),
                     str(aapl_current_quote.Ask.Close),
-                    str(aapl_current_quote.LastAskSize)
+                    str(aapl_current_quote.Ask.LastBidSize)
                 ))
     </pre>
 </div>
