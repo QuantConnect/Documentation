@@ -1,46 +1,64 @@
 <p>
   Quantopian's <code>Portfolio</code> class provides read-only access to the current portfolio state. The state 
-  includes starting cash, current cash, portfolio value, and positions. The associated <code>Position</code> class 
-  tracks the amount held of an asset, the cost basis, and the last sale price. All of this information is 
-  attainable on QuantConnect by using our <code>Portfolio</code> object.
+  includes starting cash, current cash, portfolio value, and positions. The <code>Portfolio</code> object is accessed
+  through the <code>context</code> object, as seen below.
 </p>
 
-<p>Our <code>Portfolio</code> has the following members:</p>
 <div class="section-example-container">
-<pre class="python">
-self.Portfolio.Invested                # Hold at least one stock
-              .Cash                    # Sum of all currencies in account (only settled cash)
-              .UnsettledCash           # Sum of all currencies in account (only unsettled cash)
-              .TotalFees               # Fees incurred since backtest start
-              .TotalHoldingsValue      # Absolute sum portfolio items
-              .MarginRemaining         # Remaining margin on the account
-              .TotalMarginUsed         # Sum of margin used across all securities
-              .TotalPortfolioValue     # Portfolio equity
-              .TotalProfit             # Sum of all gross profit
-              .TotalUnrealizedProfit   # Holdings profit/loss
+<pre class="python">  
+context.portfolio.starting_cash     # Amount of cash in the portfolio at the start of the backtest
+                 .cash              # Amount of cash currently held in portfolio
+                 .portfolio_value   # Current liquidation value of the portfolio's holdings
+                 .positions         # Dict-like object for currently-held positions
 </pre>
 </div>
 
 <p>
-  Since the <code>Portfolio</code> is a <code>Dictionary&lt;Symbol, SecurityHolding&gt;</code>, we can get information 
-  on current positions by indexing the <code>Portfolio</code> object with a <code>Symbol</code> or ticker. The 
-  <code>SecurityHolding</code> object that is returned contains information related to a single security in the 
-  portfolio. For instance, we have
+  All of this information, and more, is attainable on QuantConnect by using our <code>Portfolio</code> object. Listed 
+  below is an example of doing so. Although there isn't a property for starting cash, this value can be saved during 
+  <a href="https://www.quantconnect.com/docs/quantopian-migration/initialization">Initialization</a> to be referenced
+  later.
 </p>
 <div class="section-example-container">
 <pre class="python">
-self.Portfolio['SPY'].Quantity                 # Number of shares held
-                     .AveragePrice             # Average price of shares held (aka cost basis)
-                     .Price                    # Current market price of the security
-                     .Leverage                 # Leverage of the underlying security
-                     .TotalFees                # Total fees for this company since the algorithm started
-                     .TotalSaleVolume          # Trade volume for this security since algorithm start
-                     .UnrealizedProfit         # Unrealized profit of this security
-                     .UnrealizedProfitPercent  # Unrealized profit as a percenage of holdings cost  
+self.Portfolio.Cash                  # Sum of all currencies in account (only settled cash)
+              .TotalPortfolioValue   # Portfolio equity
+              .Keys                  # Collection of Symbol objects in the portfolio
+              .Values                # Collection of SecurityHolding objects in the portfolio
 </pre>
 </div>
 
 <p>
-  For more information on the <code>Portfolio</code> class refer to the 
+  On Quantopian, by iterating through the <code>positions</code> dictionary, we can access information about 
+  currently-held positions. This includes the number of shares held, the last traded price & date of the asset, and the 
+  position's cost basis. 
+</p>
+<div class="section-example-container">
+<pre class="python">  
+for sid, position in context.portfolio.positions.iteritems():
+    position.amount            # Number of shares in the position 
+            .cost_basis        # Volume weighted average price paid per share
+            .last_sale_price   # Price at last sale of the asset on the exchange 
+            .last_sale_date    # Date of last sale of the asset on the exchange
+</pre>
+</div>
+
+
+<p>
+  Since the <code>Portfolio</code> on QuantConnect is a <code>Dictionary&lt;Symbol, SecurityHolding&gt;</code>, we can 
+  get information on current positions by indexing the <code>Portfolio</code> object with a <code>Symbol</code> or 
+  ticker. The <code>SecurityHolding</code> object that is returned contains information related to a single security in 
+  the portfolio. For instance, we have
+</p>
+<div class="section-example-container">
+<pre class="python">
+self.Portfolio[symbol].Quantity                 # Number of shares held
+                      .AveragePrice             # Average price of shares held (aka cost basis)
+                      .Price                    # Last traded price of the security
+</pre>
+</div>
+
+<p>
+  For more information on our <code>Portfolio</code> object refer to the 
   <a href="https://www.quantconnect.com/docs/algorithm-reference/securities-and-portfolio">Securities and Portfolio documentation</a>.
 </p>
