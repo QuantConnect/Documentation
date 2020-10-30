@@ -9,10 +9,13 @@
 <div class="section-example-container">
     <pre class="python">import quantopian.algorithm as algo
 
+def my_scheduled_function(context, data):
+    pass
+
 def initialize(context):
     # Runs a function every day 60 minutes before U.S. Equities market close
     algo.schedule_function(
-        func=lambda x: ...,
+        func=my_scheduled_function,
         date_rule=algo.date_rules.every_day(),
         time_rule=algo.time_rules.market_close(minutes=60),
         calendar=algo.calendars.US_EQUITIES
@@ -24,12 +27,15 @@ def initialize(context):
 <div class="section-example-container">
     <pre class="python">
 class MyAlgorithm(QCAlgorithm):
+    def my_scheduled_function(self):
+        pass
+
     # Runs a function every day 60 minutes before SPY ETF's market close
     def Initialize(self):
         self.Schedule.On(
             self.DateRules.EveryDay(),
             self.TimeRules.BeforeMarketClose("SPY", 60),
-            lambda x: ...
+            self.my_scheduled_function
        )</pre>
 </div>
 <p>
