@@ -1,0 +1,37 @@
+<p>
+    Scheduled Events on QuantConnect are the equivalent of <code>schedule_function()</code> from Quantopian.
+    Examples are provided comparing the Scheduled Events functionality between QuantConnect and Quantopian.
+</p>
+
+<p>
+    Quantopian
+</p>
+<div class="section-example-container">
+    <pre class="python">import quantopian.algorithm as algo
+
+def initialize(context):
+    # Runs a function every day 60 minutes before U.S. Equities market close
+    algo.schedule_function(
+        func=lambda x: ...,
+        date_rule=algo.date_rules.every_day(),
+        time_rule=algo.time_rules.market_close(minutes=60),
+        calendar=algo.calendars.US_EQUITIES
+    )</pre>
+</div>
+<p>
+    QuantConnect
+</p>
+<div class="section-example-container">
+    <pre class="python">
+class MyAlgorithm(QCAlgorithm):
+    # Runs a function every day 60 minutes before SPY ETF's market close
+    def Initialize(self):
+        self.Schedule.On(
+            self.DateRules.EveryDay(),
+            self.TimeRules.BeforeMarketClose("SPY", 60),
+            lambda x: ...
+       )</pre>
+</div>
+<p>
+    You can read more about scheduled events at the <a class="docs-internal-link" href="/docs/algorithm-reference/scheduled-events" target="_blank" rel="noopener noreferrer">Scheduled Events</a> documentation page.
+</p>
