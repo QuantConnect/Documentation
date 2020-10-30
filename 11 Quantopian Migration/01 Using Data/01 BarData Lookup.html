@@ -31,9 +31,11 @@ def handle_data(context, data):
 <p>
     <code>Slice</code> represents a single point in time, and does not allow for access to historical data.
     To access historical data in an algorithm, you should use the algorithm's <code>self.History()</code> call to request
-    a DataFrame of historical data.
+    a pandas DataFrame of historical data.
 
-    Data is not returned as a DataFrame, but rather as a single object containing the data for a single point in time.
+    In <code>Slice</code>, data is not retrieved as a pandas DataFrame, but instead as a single object containing the data for a single point in time. An example is the <code>TradeBar</code> class. It contains OHLCV data for a single point in time. Since the data Slice contains is point-in-time, we will only receive a single trade or quote per Symbol in each call to <code>OnData(self, data)</code>.
+</p>
+<p>
     QuantConnect additionally provides Quote (NBBO) data for use in your algorithm.
     
     You can access Trade (OHLCV) data by accessing the <code>Bars</code> attribute, and
