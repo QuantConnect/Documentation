@@ -16,17 +16,6 @@
     an asset's fundamental data, such as earnings, EPS, etc.
 </p>
 <p>
-    You can configure universe settings by modifying the existing <code>UniverseSettings</code> attribute of the algorithm.
-</p>
-<div class="section-example-container">
-    <pre class="python">class MyUniverseAlgorithm(QCAlgorithm):
-    def Initialize(self):
-        self.UniverseSettings.Resolution = Resolution.Minute
-        self.UniverseSettings.DataNormalizationMode = DataNormalizationMode.Adjusted
-        self.UniverseSettings.Leverage = 1.0
-        self.UniverseSettings.ExtendedMarketHours = False</pre>
-</div>
-<p>
     An example of coarse and fine universe selection to filter assets in our algorithm is provided.
     Adding universes can be used as an alternative to using <code>AddEquity</code> if you prefer
     dynamic asset selection.
@@ -45,6 +34,17 @@
 
     def FineSelectionFunction(self, fine):
         return [i.Symbol for i in fine if i.EarningReports.BasicEPS.OneMonth > 0]</pre>
+</div>
+<p>
+    You can configure universe settings by modifying the existing <code>UniverseSettings</code> attribute of the algorithm.
+</p>
+<div class="section-example-container">
+    <pre class="python">class MyUniverseAlgorithm(QCAlgorithm):
+    def Initialize(self):
+        self.UniverseSettings.Resolution = Resolution.Minute
+        self.UniverseSettings.DataNormalizationMode = DataNormalizationMode.Adjusted
+        self.UniverseSettings.Leverage = 1.0
+        self.UniverseSettings.ExtendedMarketHours = False</pre>
 </div>
 <p>
     You can read more about universe selection at the <a class="docs-internal-link" href="/docs/algorithm-reference/universes" target="_blank" rel="noopener noreferrer">Universe</a> documentation page.
