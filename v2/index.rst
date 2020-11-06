@@ -28,53 +28,53 @@ Home
          <p  class="docs-p" style="margin-bottom: 75px;">QuantConnect’s LEAN engine manages your portfolio and data feeds letting you focus on your algorithm strategy and execution.</p>
     </div>
     <div class="docs-img-row">
-        <a href='our-platform/index.html'>
-            <div class="flex-center docs-section-icon">
+            <div class="flex-center-start docs-section-icon">
                 <span>
                     <img src="https://cdn.quantconnect.com/i/tu/platform-v1.0.png" alt="list-icon" width="60px" height="60px">
                 </span>
                 <div class="flex-column">
-                    <p class="docs-p" style="color: #0072BC">Our Platform</p>
+                 <a href='our-platform/index.html'>
+                    <p class="docs-p p-title" style="color: #0072BC">Our Platform</p>
+                </a>
                     <p class="docs-p docs-p-small">Learn the basics of working in the terminal</p>
                 </div>
             </div>
-        </a>
-         <a href='lean-engine/index.html'>
-           <div class="flex-center docs-section-icon">
+           <div class="flex-center-start docs-section-icon">
                 <span>
                     <img src="https://cdn.quantconnect.com/i/tu/lean-v3.0.png" alt="list-icon" width="65px" height="60px">
                 </span>
                 <div class="flex-column">
-                    <p class="docs-p" style="color: #0072BC">LEAN Engine</p>
+                 <a href='lean-engine/index.html'>
+                    <p class="docs-p p-title" style="color: #0072BC">LEAN Engine</p>
+                </a>
                     <p class="docs-p docs-p-small ">Reference to building an Algorithm</p>
                 </div>
             </div>
-        </a>
     </div>
     <div class="docs-img-row">
-        <a href='writing-algorithms/index.html'>
-            <div class="flex-center docs-section-icon">
+            <div class="flex-center-start docs-section-icon">
                 <span>
                     <img src="https://cdn.quantconnect.com/i/tu/alrgorithms-v2.0.png" alt="list-icon" width="55px" height="60px">
                 </span>
                 <div class="flex-column">
-                    <p class="docs-p" style="color: #0072BC">Writing Algorithms</p>
+                 <a href='writing-algorithms/index.html'>
+                    <p class="docs-p p-title" style="color: #0072BC">Writing Algorithms</p>
+                  </a>
                     <p class="docs-p docs-p-small">Algorithm Reference</p>
                 </div>
             </div>
-        </a>
-         <a href='research/index.html'>
-           <div class="flex-center docs-section-icon">
+           <div class="flex-center-start docs-section-icon">
                 <span>
                      <img src="https://cdn.quantconnect.com/i/tu/research-v2.0.png" alt="list-icon" width="40px" height="60px">
                 </span>
                 <div class="flex-column">
-                    <p class="docs-p" style="color: #0072BC">Research</p>
+                <a href='research/index.html'>
+                    <p class="docs-p p-title" style="color: #0072BC">Research</p>
+                 </a>
                     <p class="docs-p docs-p-small ">Interactive Jupyter development API
             </p>
                 </div>
             </div>
-        </a>
     </div>
 
     <div>
@@ -173,12 +173,5 @@ Home
 .. raw:: html
 
     <div class="contribution-section">
-        <p class="docs-p" style="margin: 30px 0;">You can also see our <span style="color: #0072BC; cursor: pointer;">Tutorials</span> and  <a class="text-bold" target="_BLANK" href="https://www.youtube.com/user/QuantConnect/videos" rel="nofollow"><span style="color: #0072BC; cursor: pointer;">Videos</span></a>. You can also get in touch with us via <a class="text-bold" target="_BLANK" href="https://www.quantconnect.com/slack"><span style="color: #0072BC; cursor: pointer;">Chat</span></a>.</p>
         <p class="docs-p page-helpful" style="margin: 30px 0;">Did you find this page helpful?  <span class="yes-answer" style="color: #0072BC; margin-left: 10px; cursor: pointer;">Yes</span> <span class="no-answer" style="color: #0072BC; margin-left: 10px; cursor: pointer;">No</span></p>
-        <a href="https://github.com/QuantConnect/Documentation">
-            <div class="flex-center" style="margin: 30px 0; cursor: pointer; display: flex; align-items: center;">
-                <p class="docs-p">Contribute to the documentation </p>
-                <img src="https://cdn.quantconnect.com/i/tu/github-v1.0.png" alt="quant-connect" style="width: 24px; height: 23px; margin-left: 10px;">
-            </div>
-        </a>
     </div>
