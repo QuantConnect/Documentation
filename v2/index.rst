@@ -173,5 +173,5 @@ Home
 .. raw:: html
 
     <div class="contribution-section">
-        <p class="docs-p page-helpful" style="margin: 30px 0;">Did you find this page helpful?  <span class="yes-answer" style="color: #0072BC; margin-left: 10px; cursor: pointer;">Yes</span> <span class="no-answer" style="color: #0072BC; margin-left: 10px; cursor: pointer;">No</span></p>
+        <p class="docs-p page-helpful" style="margin: 30px 0;">Did you find this page helpful? <span class="yes-answer" style="color: #0072BC; margin-left: 10px; cursor: pointer;">Yes</span> <span class="no-answer" style="color: #0072BC; margin-left: 10px; cursor: pointer;">No</span></p>
     </div>
