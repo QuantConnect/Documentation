@@ -42,7 +42,7 @@ The most common use case is selecting a lot of liquid stocks. With coarse this i
     IEnumerable&lt;Symbol&gt; MyCoarseFilterFunction(IEnumerable&lt;CoarseFundamental&gt; coarse) {
         // Linq makes this a piece of cake;
         var stocks = (from c in coarse
-            where c.DollarVolume > 10000000 &&
+            where c.DollarVolume > 10000000 &amp;&amp;
                   c.Price > 10
             orderby c.DollarVolume descending
             select c.Symbol).Take(500).ToList();
@@ -74,7 +74,7 @@ Another common request is to filter the universe by a technical indicator, such 
         var stocks = (from c in coarse
             let avg = _stateData.GetOrAdd(c.Symbol, sym => new SelectionData(200))
             where avg.Update(c.EndTime, c.AdjustedPrice)
-            where c.DollarVolume > 1000000000 &&
+            where c.DollarVolume > 1000000000 &amp;&amp;
                   c.Price > avg.Ema
             orderby c.DollarVolume descending
             select c.Symbol).Take(10).ToList();
