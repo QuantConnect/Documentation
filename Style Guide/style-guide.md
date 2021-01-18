@@ -490,6 +490,6 @@ Use the following guidelines when creating blocks of code as input or output exa
 ### Use consistent and simple terminology
 Use short, simple words, and use them as they are defined in a general or accepted industry dictionary. Each word or phrase should have only one meaning that is used consistently throughout the content. Avoid using humor, jargon, and metaphors.
 
- - [Use consistent terminology](style-guide-use-consistent-terms.md)
- - [Terminology for a global audience](style-guide-terms-for-global-audience)
+ - [Use consistent terminology](style-guide-consistent-terminology.md)
+ - [Terminology for a global audience](style-guide-terminology-global-audience.md)
  - [Concise terms](style-guide-concise-terms.md)
