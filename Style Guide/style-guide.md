@@ -493,3 +493,7 @@ Use short, simple words, and use them as they are defined in a general or accept
  - [Use consistent terminology](style-guide-consistent-terminology.md)
  - [Terminology for a global audience](style-guide-terminology-global-audience.md)
  - [Concise terms](style-guide-concise-terms.md)
+
+
+## License
+Work in the `/Style Guide/` folder is derived [Rackspace Style Guide](https://github.com/rackerlabs/docs-style-guide) and made available in the same Creative Commons Attribution 4.0 International License.
