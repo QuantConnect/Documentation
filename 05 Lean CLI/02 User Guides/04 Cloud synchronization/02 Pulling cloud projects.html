@@ -1,0 +1,23 @@
+<p>
+    When you run <code>lean cloud pull</code> to download cloud projects to your local drive, the CLI will attempt to download each of them to the local directory matching the cloud project's path.
+    If one of your cloud project is named "Logging" and stored in the "Library" directory, the CLI will attempt to download it to <code>./Library/Logging</code>.
+    Before writing the cloud project's files to the local directory, the CLI performs a set of checks to make sure it doesn't accidentally overwrite the wrong files.
+    To perform these checks the following information is gathered:
+</p>
+
+<ul>
+    <li>Whether the local directory for the cloud project exists or not.</li>
+    <li>Whether the local directory contains a <a href="/docs/v2/lean-cli/user-guides/configuration#04-Project-configurationhtml">config.json</a> file with a <code>cloud-id</code> matching the cloud project's id.</li>
+</ul>
+
+<p>
+    The CLI will only proceed with downloading the cloud project if and only if the local directory does not exist yet or the <code>cloud-id</code> in the <a href="/docs/v2/lean-cli/user-guides/configuration#04-Project-configurationhtml">config.json</a> file matches the cloud project's id.
+    If these criteria are not met, a warning is shown to let you know exactly what went wrong and the cloud project is not downloaded.
+</p>
+
+<p>
+    When the required criteria are met, the CLI will download all cloud project's files and parameters to the local directory, potentially overwriting existing files and parameters.
+    Local files which do not exist in the cloud will not be deleted.
+    After successfully pulling the cloud project's files and parameters, the cloud project's id is saved in the local directory's <a href="/docs/v2/lean-cli/user-guides/configuration#04-Project-configurationhtml">config.json</a> file.
+    This ensures the CLI knows which cloud project is linked to the local project the next time you try to pull/push the project.
+</p>
