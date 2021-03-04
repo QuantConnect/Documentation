@@ -1,3 +1,54 @@
 <p>
-    TODO
+    To debug backtests locally some additional setup is needed depending on the editor and language you use.
 </p>
+
+<p>
+    Know that when debugging C#, after you attach to the debugger, a breakpoint will be hit for which your editor will tell you it has no code for. This is expected behavior, simply continue from that breakpoint and your algorithm will start running.
+</p>
+
+<h4>VS Code + Python</h4>
+<ol>
+    <li>Install the <a href="https://marketplace.visualstudio.com/items?itemName=ms-python.python" target="_blank">Python</a> extension.</li>
+    <li>Run the <code>lean backtest</code> command with the <code>--debug ptvsd</code> option.</li>
+    <li>Wait until the CLI tells you to attach to the debugger.</li>
+    <li>In VS Code, open the Run tab and run the configuration called "Debug Python with Lean CLI" (this configuration is created when you run <code>lean init</code>).</li>
+</ol>
+
+<h4>VS Code + C#</h4>
+<ol>
+    <li>Install version 15.8 of the <a href="https://marketplace.visualstudio.com/items?itemName=ms-vscode.mono-debug" target="_blank">Mono Debug</a> extension. You can do this by first installing the latest version and then clicking on the arrow button next to the Uninstall button, which will open a context menu containing the "Install Another Version" option.</li>
+    <li>Run the <code>lean backtest</code> command with the <code>--debug mono</code> option.</li>
+    <li>Wait until the CLI tells you to attach to the debugger.</li>
+    <li>In VS Code, open the Run tab and run the configuration called "Debug C# with Lean CLI" (this configuration is created when you run <code>lean init</code>).</li>
+</ol>
+
+<h4>PyCharm + Python</h4>
+<p>
+    This combination requires the PyCharm's remote debugging functionality, which is only available in PyCharm Professional.
+</p>
+<ol>
+    <li>In PyCharm, start debugging using the "Debug with Lean CLI" run configuration (this configuration is created when you run <code>lean init</code>).</li>
+    <li>Run the <code>lean backtest</code> command with the <code>--debug pycharm</code> option.</li>
+</ol>
+
+<h4>Visual Studio + C#</h4>
+<ol>
+    <li>Install the <a href="https://marketplace.visualstudio.com/items?itemName=GordianDotNet.VSMonoDebugger0d62" target="_blank">VSMonoDebugger</a> extension.</li>
+    <li>In Visual Studio, go to "Extensions > Mono > Settings" and enter the following settings:
+        <ul>
+            <li>Remote Host IP: 127.0.0.1</li>
+            <li>Remote Host Port: 55555</li>
+            <li>Mono Debug Port: 55555</li>
+        </ul>
+    </li>
+    <li>Run the <code>lean backtest</code> command with the <code>--debug mono</code> option.</li>
+    <li>Wait until the CLI tells you to attach to the debugger.</li>
+    <li>In Visual Studio, attach to the debugger using "Extensions > Mono > Attach to mono debugger".</li>
+</ol>
+
+<h4>Rider + C#</h4>
+<ol>
+    <li>Run the <code>lean backtest</code> command with the <code>--debug mono</code> option.</li>
+    <li>Wait until the CLI tells you to attach to the debugger.</li>
+    <li>In Rider, start debugging using the "Debug with Lean CLI" run configuration (this configuration is created when you run <code>lean init</code>).</li>
+</ol>

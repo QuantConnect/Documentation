@@ -1,3 +1,26 @@
 <p>
-    TODO
+    If you are logged in using <code>lean login</code> you can also retrieve cloud backtest results in your local research environment.
+    If you know the name of the project and the backtest you can use the following code snippet to retrieve the backtest's results and to print its statistics:
 </p>
+
+<div class="section-example-container">
+    <pre class="csharp">var projectName = "Python Template";
+var backtestName = "Adaptable Tan Frog";
+
+var project = api.ListProjects().Projects.First(p => p.Name == projectName);
+var partialBacktest = api.ListBacktests(project.ProjectId).Backtests.First(b => b.Name == backtestName);
+var backtest = api.ReadBacktest(project.ProjectId, partialBacktest.BacktestId);
+
+foreach (var item in backtest.Statistics) {
+    Console.WriteLine($"{item.Key}: {item.Value}");
+}</pre>
+    <pre class="python">project_name = "Python Template"
+backtest_name = "Adaptable Tan Frog"
+
+project = next(p for p in api.ListProjects().Projects if p.Name == project_name)
+partial_backtest = next(b for b in api.ListBacktests(project.ProjectId).Backtests if b.Name == backtest_name)
+backtest = api.ReadBacktest(project.ProjectId, partial_backtest.BacktestId)
+
+for key in backtest.Statistics.Keys:
+    print(f"{key}: {backtest.Statistics[key]}")</pre>
+</div>
