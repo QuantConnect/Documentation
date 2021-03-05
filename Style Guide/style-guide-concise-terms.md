@@ -10,8 +10,8 @@ In addition to using concise terms, use the shorter of two approved spellings (f
 |additional | more
 |along with | with
 |are able to | can
-|are not able |to cannot 
-|as a result | of because
+|are not able to | cannot 
+|as a result of | because
 |as long as | if
 |as opposed to | instead of
 |as well as | and
