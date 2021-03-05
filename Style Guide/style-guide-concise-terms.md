@@ -3,7 +3,7 @@ Use shorter terms and phrases to convey an idea clearly. The following table lis
 
 In addition to using concise terms, use the shorter of two approved spellings (for example, canceled instead of cancelled).
 
-| User | Avoid |
+| Avoid | Use |
 | - | - |
 |a great many | many
 |a number of | several
