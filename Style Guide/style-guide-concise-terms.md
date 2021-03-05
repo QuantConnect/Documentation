@@ -21,7 +21,7 @@ In addition to using concise terms, use the shorter of two approved spellings (f
 |at the time of this writing | now
 |at this point in time | now
 |check to ensure | verify 
-|click the  _buttonName_ | button click  _buttonName_
+|click the  _buttonName_ button | click  _buttonName_
 |commence | start
 |concerning | about
 | contains a list of| lists
