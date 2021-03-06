@@ -1,0 +1,64 @@
+<p>
+    Runs the random data generator in the LEAN ToolBox to generate realistic market data using a Brownian motion model.
+    Requires <code>--start &lt;yyyyMMdd&gt;</code> and <code>--symbol-count &lt;amount&gt;</code> to be set, the rest of the options have defaults.
+</p>
+
+<p>
+    If <code>--end &lt;yyyyMMdd&gt;</code> is not set data is generated from the start date until the current date.
+    If the <code>--end</code> option is set data is generated between the given <code>--start</code> and <code>--end</code> values (inclusive).
+</p>
+
+<p>
+    By default dense data is generated, which means the generated data contains at least one data point per resolution step.
+    You can use <code>--data-density Sparse</code> to change this to at least one data point per 5 resolution steps, or to <code>--data-density VerySparse</code> to change it to at least one data point per 50 resolution steps.
+</p>
+
+<p>
+    If the security type is set to <code>Equity</code> this command will automatically generate coarse universe data.
+    Use the <code>--include-coarse false</code> option to disable this behavior.
+</p>
+
+<p>
+    This following combinations of security types and resolutions are supported:
+</p>
+
+<table class="table qc-table">
+    <thead>
+        <tr>
+            <th>Security type</th>
+            <th>Supported resolutions</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>Equity</td>
+            <td>Tick, Second, Minute, Hour and Daily</td>
+        </tr>
+        <tr>
+            <td>Forex</td>
+            <td>Tick, Second, Minute, Hour and Daily</td>
+        </tr>
+        <tr>
+            <td>CFD</td>
+            <td>Tick, Second, Minute, Hour and Daily</td>
+        </tr>
+        <tr>
+            <td>Future</td>
+            <td>Tick, Second, Minute, Hour and Daily</td>
+        </tr>
+        <tr>
+            <td>Crypto</td>
+            <td>Tick, Second, Minute, Hour and Daily</td>
+        </tr>
+        <tr>
+            <td>Option</td>
+            <td>Minute</td>
+        </tr>
+    </tbody>
+</table>
+
+<p>
+    By default the latest installed version of the <a href="https://hub.docker.com/r/quantconnect/lean" target="_blank">quantconnect/lean</a> Docker image is used.
+    If this image doesn't exist locally yet or if you specify the <code>--update</code> option it is pulled before running the random data generator.
+    You can specify a custom tag to use with the <code>--version</code> option.
+</p>
