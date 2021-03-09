@@ -1,0 +1,137 @@
+<p>
+    The CLI contains a lot of commands to make working on LEAN algorithms easier and more productive.
+    Below we list some of the most common tasks, see the tutorials in the sidebar and the <a href="/docs/v2/lean-cli/api-reference/commands">command reference</a> for a complete overview of the supported features.
+</p>
+
+<h4>Authenticating with the cloud</h4>
+<p>
+    Before using the CLI to perform tasks in the cloud it is required to login with your QuantConnect API credentials.
+    Run <code>lean login</code> to open an interactive wizard which asks you for your user id and API token.
+    Both of these credentials can be requested on <a href="https://www.quantconnect.com/account" target="_blank">quantconnect.com/account</a>, after which they'll be sent to your email address.
+</p>
+
+<div class="section-example-container">
+<pre>
+lean login
+Your user id and API token are needed to make authenticated requests to the QuantConnect API
+You can request these credentials on https://www.quantconnect.com/account
+Both will be saved in /home/jasper/.lean/credentials
+User id: &lt;user id&gt;
+API token: &lt;api token&gt;
+Successfully logged in
+</pre>
+</div>
+
+<h4>Pulling projects from the cloud</h4>
+<p>
+    Run <code>lean cloud pull</code> to pull your QuantConnect projects to your local drive.
+    This command pulls all your cloud projects to your local drive while preserving your QuantConnect directory structure.
+    If you have a lot of projects and only want to work locally on a few of them you can run this command with the <code>--project "Project Name"</code> option, which makes the command pull a single project instead.
+</p>
+
+<div class="section-example-container">
+<pre>
+lean cloud pull
+[1/3] Pulling 'Creative Red Mule'
+Successfully pulled 'Creative Red Mule/main.py'
+[2/3] Pulling 'Determined Yellow-Green Duck'
+Successfully pulled 'Determined Yellow-Green Duck/main.py'
+Successfully pulled 'Determined Yellow-Green Duck/research.ipynb'
+[3/3] Pulling 'Halloween Strategy'
+Successfully pulled 'Halloween Strategy/benchmark.py'
+Successfully pulled 'Halloween Strategy/main.py'
+Successfully pulled 'Halloween Strategy/research.ipynb'
+</pre>
+</div>
+
+<h4>Sourcing data</h4>
+<p>
+    Run <code>lean data generate --start 20180101 --symbol-count 100</code> to generate realistic fake market data to test with.
+    You can also choose to <a href="/docs/v2/lean-cli/tutorials/local-data">download data</a> from QuantConnect's Data Library, or to convert your own data into LEAN-compatible data.
+</p>
+
+<div class="section-example-container">
+<pre>
+lean data generate --start 20180101 --symbol-count 100
+20210309 00:00:04.263 TRACE:: Config.GetValue(): debug-mode - Using default value: False
+20210309 00:00:04.265 TRACE:: Config.Get(): Configuration key not found. Key: results-destination-folder - Using default value:
+20210309 00:00:04.266 TRACE:: Config.Get(): Configuration key not found. Key: plugin-directory - Using default value:
+20210309 00:00:04.271 TRACE:: Config.Get(): Configuration key not found. Key: composer-dll-directory - Using default value: /Lean/Launcher/bin/Debug/
+'market' was not specified. Using default value: ''
+'quote-trade-ratio' was not specified. Using default value: '1'
+'random-seed' was not specified. Using default value: ''
+'ipo-percentage' was not specified. Using default value: '5.0'
+'rename-percentage' was not specified. Using default value: '30.0'
+'splits-percentage' was not specified. Using default value: '15.0'
+'dividends-percentage' was not specified. Using default value: '60.0'
+'dividend-every-quarter-percentage' was not specified. Using default value: '30.0'
+Using default value of 'usa' for --market and --security-type=Equity
+Selected tick types for Equity: Trade
+20210309 00:00:04.543 TRACE:: Config.Get(): Configuration key not found. Key: data-directory - Using default value: ../../../Data/
+20210309 00:00:04.545 TRACE:: Config.Get(): Configuration key not found. Key: version-id - Using default value:
+20210309 00:00:04.546 TRACE:: Config.Get(): Configuration key not found. Key: cache-location - Using default value: ../../../Data/
+Begin data generation of 100 randomly generated Equity assets...
+...
+</pre>
+</div>
+
+<h4>Running a local backtest</h4>
+<p>
+    Run <code>lean backtest "Project Name"</code> to run a local backtest for the specified project.
+    This command runs a backtest in a Docker container containing the same packages as the ones used on QuantConnect.com, but with your own data.
+</p>
+
+<div class="section-example-container">
+<pre>
+lean backtest "Project Name"
+20210308 23:58:35.204 TRACE:: Config.GetValue(): debug-mode - Using default value: False
+20210308 23:58:35.208 TRACE:: Config.Get(): Configuration key not found. Key: plugin-directory - Using default value:
+20210308 23:58:35.296 TRACE:: Python for .NET Assembly: Python.Runtime, Version=1.0.5.30, Culture=neutral, PublicKeyToken=null
+20210308 23:58:35.336 TRACE:: Python for .NET Assembly: nPython, Version=1.0.5.30, Culture=neutral, PublicKeyToken=null
+20210308 23:58:35.351 TRACE:: Config.Get(): Configuration key not found. Key: data-directory - Using default value: ../../../Data/
+20210308 23:58:35.354 TRACE:: Config.Get(): Configuration key not found. Key: version-id - Using default value:
+20210308 23:58:35.354 TRACE:: Config.Get(): Configuration key not found. Key: cache-location - Using default value: /Lean/Data
+20210308 23:58:35.354 TRACE:: Engine.Main(): LEAN ALGORITHMIC TRADING ENGINE v2.5.0.0 Mode: DEBUG (64bit)
+20210308 23:58:35.360 TRACE:: Engine.Main(): Started 11:58 PM
+...
+</pre>
+</div>
+
+<h4>Pushing local changes to the cloud</h4>
+<p>
+    Run <code>lean cloud push</code> to push local changes to the QuantConnect.
+    This command pushes all your local projects to the cloud and creates new cloud projects when necessary.
+    If you only want to push a single project you can run this command with the <code>--project "Project Name"</code> command.
+</p>
+
+<div class="section-example-container">
+<pre>
+lean cloud push
+[1/3] Pushing 'Creative Red Mule'
+Successfully updated cloud file 'Creative Red Mule/main.py'
+[2/3] Pushing 'Determined Yellow-Green Duck'
+[3/3] Pushing 'Halloween Strategy'
+</pre>
+</div>
+
+<h4>Running a cloud backtest</h4>
+<p>
+    Run <code>lean cloud backtest "Project Name"</code> to run a cloud backtest for the specified project.
+    By default a summary of the results and a link to the full results is shown in the terminal.
+    Running this command with the <code>--open</code> flag automatically opens the full results in the browser once the backtest is finished.
+    Additionally you can run this command with the <code>--push</code> flag to push all local changes to the project to the cloud before running the backtest.
+</p>
+
+<div class="section-example-container">
+<pre>
+lean cloud backtest "Project Name"
+Started compiling project 'Project Name'
+Detected parameters (2):
+- main.py:19 :: 1 Order Event parameter detected near "SetHoldings(self.spy, 1)".
+- main.py:21 :: 1 Order Event parameter detected near "SetHoldings(self.spy, 0)".
+Build Request Successful for Project ID: 4882833, with CompileID: eaf9b677c91cfadd0a9032eb95918beb-c3b92b55d26a6d610e9b792ce561a687, Lean Version: 2.5.0.0.11058
+Successfully compiled project 'Project Name'
+Started backtest named 'Swimming Orange Lemur' for project 'Project Name'
+...
+</pre>
+</div>
