@@ -1,0 +1,53 @@
+<p> 
+    To start local live trading on Interactive Brokers, make sure the following environment exists:
+</p>
+
+<div class="section-example-container">
+<pre class="json">
+{
+    "environments": {
+        "live-interactive": {
+            "live-mode": true,
+
+            "live-mode-brokerage": "InteractiveBrokersBrokerage",
+            "setup-handler": "QuantConnect.Lean.Engine.Setup.BrokerageSetupHandler",
+            "result-handler": "QuantConnect.Lean.Engine.Results.LiveTradingResultHandler",
+            "data-feed-handler": "QuantConnect.Lean.Engine.DataFeeds.LiveTradingDataFeed",
+            "data-queue-handler": "QuantConnect.Brokerages.InteractiveBrokers.InteractiveBrokersBrokerage",
+            "real-time-handler": "QuantConnect.Lean.Engine.RealTime.LiveTradingRealTimeHandler",
+            "transaction-handler": "QuantConnect.Lean.Engine.TransactionHandlers.BrokerageTransactionHandler",
+            "history-provider": "BrokerageHistoryProvider"
+        }
+    }
+}
+</pre>
+</div>
+
+<p>
+    The following properties should be configured before you start local live trading on Interactive Brokers:
+</p>
+
+<ul>
+    <li><code>ib-account</code>: This property must contain the name of the account (example: DU1234567).</li>
+    <li><code>ib-user-name</code>: This property must contain the username of the given account (example: trader123).</li>
+    <li><code>ib-password</code>: This property must contain the password of the given account.</li>
+    <li><code>ib-agent-description</code>: This property describes the type of trader that you are. It must be one of the following values:
+        <ul>
+            <li><code>Individual</code> or <code>I</code> for an individual. If you're not aware what the below means, you probably need this value.</li>
+            <li><code>A</code> for an agency.</li>
+            <li><code>W</code> for an agent or other member.</li>
+            <li><code>J</code> for an individual PTIA.</li>
+            <li><code>U</code> for an agency PTIA.</li>
+            <li><code>M</code> for an agent or other member PTIA.</li>
+            <li><code>K</code> for an individual PT.</li>
+            <li><code>Y</code> for an agency PT.</li>
+            <li><code>N</code> for an agent or other member PT.</li>
+        </ul>
+    </li>
+    <li><code>ib-trading-mode</code>: This property must be <code>paper</code> if the specified account is a paper account, or <code>live</code> if the specified account is a live account.</li>
+    <li><code>ib-enable-delayed-streaming-data</code>: This property configures the behavior when your algorithm attempts to subscribe to market data which you don't have a market data subscription on Interactive Brokers for. When set to <code>true</code>, your algorithm continues running using delayed market data. When set to <code>false</code>, live trading will stop and LEAN will shut down.</li>
+</ul>
+
+<p>
+    After setting up all the above, you can start local live trading on Interactive Brokers by running <code>lean live &lt;project name&gt; live-interactive</code>.
+</p>
