@@ -1,3 +1,38 @@
+<p> 
+    To start local live trading on Tradier, make sure the following environment exists:
+</p>
+
+<div class="section-example-container">
+<pre class="json">
+{
+    "environments": {
+        "live-tradier": {
+            "live-mode": true,
+
+            "live-mode-brokerage": "TradierBrokerage",
+            "data-queue-handler": "TradierBrokerage",
+
+            "setup-handler": "QuantConnect.Lean.Engine.Setup.BrokerageSetupHandler",
+            "result-handler": "QuantConnect.Lean.Engine.Results.LiveTradingResultHandler",
+            "data-feed-handler": "QuantConnect.Lean.Engine.DataFeeds.LiveTradingDataFeed",
+            "real-time-handler": "QuantConnect.Lean.Engine.RealTime.LiveTradingRealTimeHandler",
+            "transaction-handler": "QuantConnect.Lean.Engine.TransactionHandlers.BrokerageTransactionHandler"
+        }
+    }
+}
+</pre>
+</div>
+
 <p>
-    TODO
+    The following properties should be configured before you start local live trading on Tradier:
+</p>
+
+<ul>
+    <li><code>tradier-use-sandbox</code>: This property must be <code>true</code> if Tradier's developer sandbox should be used, or <code>false</code> if it shouldn't.</li>
+    <li><code>tradier-account-id</code>: This property must contain your account id.</li>
+    <li><code>tradier-access-token</code>: This property must contain your API access token.</li>
+</ul>
+
+<p>
+    After setting up all the above, you can start local live trading on Tradier by running <code>lean live &lt;project name&gt; live-tradier</code>.
 </p>

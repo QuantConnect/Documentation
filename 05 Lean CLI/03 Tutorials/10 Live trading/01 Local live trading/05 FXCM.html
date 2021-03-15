@@ -1,3 +1,40 @@
+<p> 
+    To start local live trading on FXCM, make sure the following environment exists:
+</p>
+
+<div class="section-example-container">
+<pre class="json">
+{
+    "environments": {
+        "live-fxcm": {
+            "live-mode": true,
+
+            "live-mode-brokerage": "FxcmBrokerage",
+            "data-queue-handler": "FxcmBrokerage",
+            "setup-handler": "QuantConnect.Lean.Engine.Setup.BrokerageSetupHandler",
+            "result-handler": "QuantConnect.Lean.Engine.Results.LiveTradingResultHandler",
+            "data-feed-handler": "QuantConnect.Lean.Engine.DataFeeds.LiveTradingDataFeed",
+            "real-time-handler": "QuantConnect.Lean.Engine.RealTime.LiveTradingRealTimeHandler",
+            "transaction-handler": "QuantConnect.Lean.Engine.TransactionHandlers.BrokerageTransactionHandler",
+            "history-provider": "BrokerageHistoryProvider"
+        }
+    }
+}
+</pre>
+</div>
+
 <p>
-    TODO
+    The following properties should be configured before you start local live trading on FXCM:
+</p>
+
+<ul>
+    <li><code>fxcm-server</code>: This property must contain the full URL of the server (example: http://www.fxcorporate.com/Hosts.jsp).</li>
+    <li><code>fxcm-terminal</code>: This property must contain the name of the connection, either <code>Demo</code> or <code>Real</code>.</li>
+    <li><code>fxcm-user-name</code>: This property must contain your username.</li>
+    <li><code>fxcm-password</code>: This property must contain your password.</li>
+    <li><code>fxcm-account-id</code>: This property must contain your account id.</li>
+</ul>
+
+<p>
+    After setting up all the above, you can start local live trading on FXCM by running <code>lean live &lt;project name&gt; live-fxcm</code>.
 </p>

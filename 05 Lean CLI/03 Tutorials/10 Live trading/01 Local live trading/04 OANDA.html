@@ -1,0 +1,38 @@
+<p> 
+    To start local live trading on OANDA, make sure the following environment exists:
+</p>
+
+<div class="section-example-container">
+<pre class="json">
+{
+    "environments": {
+        "live-oanda": {
+            "live-mode": true,
+
+            "live-mode-brokerage": "OandaBrokerage",
+            "data-queue-handler": "OandaBrokerage",
+            "setup-handler": "QuantConnect.Lean.Engine.Setup.BrokerageSetupHandler",
+            "result-handler": "QuantConnect.Lean.Engine.Results.LiveTradingResultHandler",
+            "data-feed-handler": "QuantConnect.Lean.Engine.DataFeeds.LiveTradingDataFeed",
+            "real-time-handler": "QuantConnect.Lean.Engine.RealTime.LiveTradingRealTimeHandler",
+            "transaction-handler": "QuantConnect.Lean.Engine.TransactionHandlers.BrokerageTransactionHandler",
+            "history-provider": "BrokerageHistoryProvider"
+        }
+    }
+}
+</pre>
+</div>
+
+<p>
+    The following properties should be configured before you start local live trading on OANDA:
+</p>
+
+<ul>
+    <li><code>oanda-environment</code>: This property must be set to <code>Trade</code> to use the OANDA's fxTrade environment, or to <code>Practice</code> to use OANDA's fxTrade Practice environment.</li>
+    <li><code>oanda-access-token</code>: This property must contain your API access token. You can generate one on the My Account &gt; My Services &gt; Manage API Access page.</li>
+    <li><code>oanda-account-id</code>: This property must contain your account id.</li>
+</ul>
+
+<p>
+    After setting up all the above, you can start local live trading on OANDA by running <code>lean live &lt;project name&gt; live-oanda</code>.
+</p>
