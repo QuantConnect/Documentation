@@ -1,3 +1,37 @@
 <p>
-    TODO
+    Instead of live trading using actual money, you can also start paper trading locally.
+    Although some brokerages have builtin support for paper trading, LEAN also offers a paper brokerage.
+    This brokerage allows you to run live, real-time data through your algorithm while using fictional capital.
+    To start local paper trading, make sure the following environment exists:
+</p>
+
+<div class="section-example-container">
+<pre class="json">
+{
+    "environments": {
+        "live-paper": {
+            "live-mode": true,
+
+            "live-mode-brokerage": "PaperBrokerage",
+
+            "setup-handler": "QuantConnect.Lean.Engine.Setup.BrokerageSetupHandler",
+            "result-handler": "QuantConnect.Lean.Engine.Results.LiveTradingResultHandler",
+            "data-feed-handler": "QuantConnect.Lean.Engine.DataFeeds.LiveTradingDataFeed",
+            "data-queue-handler": "&lt;data queue handler&gt;",
+            "real-time-handler": "QuantConnect.Lean.Engine.RealTime.LiveTradingRealTimeHandler",
+            "transaction-handler": "QuantConnect.Lean.Engine.TransactionHandlers.BacktestingTransactionHandler"
+        }
+    }
+}
+</pre>
+</div>
+
+<p>
+    The <code>&lt;data queue handler&gt;</code> must have the same value as the <code>data-queue-handler</code> on one of the other brokerages.
+    You must also configure all the properties of the brokerage of which you copy the data queue handler from (as you will be using the live data feed from that brokerage).
+    For example, you can set <code>data-queue-handler</code> to <code>QuantConnect.Brokerages.InteractiveBrokers.InteractiveBrokersBrokerage</code> and configure Interactive Brokers' <a href="/docs/v2/lean-cli/tutorials/live-trading/local-live-trading#02-Interactive-Brokers">required properties</a> to use the data feed from Interactive Brokers.
+</p>
+
+<p>
+    After setting up the environment, you can start local paper trading by running <code>lean live &lt;project name&gt; live-paper</code>.
 </p>
