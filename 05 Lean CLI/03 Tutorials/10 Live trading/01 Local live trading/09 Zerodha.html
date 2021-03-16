@@ -1,3 +1,41 @@
+<p> 
+    To start local live trading on Zerodha, make sure the following environment exists:
+</p>
+
+<div class="section-example-container">
+<pre class="json">
+{
+    "environments": {
+        "live-zerodha": {
+            "live-mode": true,
+
+            "live-mode-brokerage": "ZerodhaBrokerage",
+            "data-queue-handler": "ZerodhaBrokerage",
+
+            "setup-handler": "QuantConnect.Lean.Engine.Setup.BrokerageSetupHandler",
+            "result-handler": "QuantConnect.Lean.Engine.Results.LiveTradingResultHandler",
+            "data-feed-handler": "QuantConnect.Lean.Engine.DataFeeds.LiveTradingDataFeed",
+            "real-time-handler": "QuantConnect.Lean.Engine.RealTime.LiveTradingRealTimeHandler",
+            "transaction-handler": "QuantConnect.Lean.Engine.TransactionHandlers.BrokerageTransactionHandler",
+            "history-provider": "BrokerageHistoryProvider"
+        }
+    }
+}
+</pre>
+</div>
+
 <p>
-    TODO
+    The following properties should be configured before you start local live trading on Zerodha:
+</p>
+
+<ul>
+    <li><code>zerodha-access-token</code>: This property must contain your <a href="https://kite.trade/" target="_blank">Kite Connect</a> access token.</li>
+    <li><code>zerodha-api-key</code>: This property must contain your <a href="https://kite.trade/" target="_blank">Kite Connect</a> API key.</li>
+    <li><code>zerodha-product-type</code>: This property must be <code>MIS</code> if you are targeting intraday products, <code>CNC</code> if you are targeting delivery products, or <code>NRML</code> if you are targeting carry forward products.</li>
+    <li><code>zerodha-trading-segment</code>: This property must be <code>EQUITY</code> if you are trading equities on NSE or BSE, or <code>COMMODITY</code> if you are trading commodities on MCX.</li>
+    <li><code>zerodha-history-subscription</code>: This property must be <code>true</code> if a history API subscription is available, or <code>false</code> if it is not.</li>
+</ul>
+
+<p>
+    After setting up all the above, you can start local live trading on Zerodha by running <code>lean live &lt;project name&gt; live-zerodha</code>.
 </p>

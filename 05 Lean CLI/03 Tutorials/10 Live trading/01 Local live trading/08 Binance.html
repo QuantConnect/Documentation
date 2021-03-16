@@ -1,3 +1,37 @@
+<p> 
+    To start local live trading on Binance, make sure the following environment exists:
+</p>
+
+<div class="section-example-container">
+<pre class="json">
+{
+    "environments": {
+        "live-binance": {
+            "live-mode": true,
+
+            "live-mode-brokerage": "BinanceBrokerage",
+            "data-queue-handler": "BinanceBrokerage",
+            "setup-handler": "QuantConnect.Lean.Engine.Setup.BrokerageSetupHandler",
+            "result-handler": "QuantConnect.Lean.Engine.Results.LiveTradingResultHandler",
+            "data-feed-handler": "QuantConnect.Lean.Engine.DataFeeds.LiveTradingDataFeed",
+            "real-time-handler": "QuantConnect.Lean.Engine.RealTime.LiveTradingRealTimeHandler",
+            "transaction-handler": "QuantConnect.Lean.Engine.TransactionHandlers.BrokerageTransactionHandler",
+            "history-provider": "BrokerageHistoryProvider"
+        }
+    }
+}
+</pre>
+</div>
+
 <p>
-    TODO
+    The following properties should be configured before you start local live trading on Binance:
+</p>
+
+<ul>
+    <li><code>binance-api-secret</code>: This property must contain your API secret. You can create a new API key on <a href="https://www.binance.com/en/my/settings/api-management" target="_blank">binance.com/en/my/settings/api-management</a>.</li>
+    <li><code>binance-api-key</code>: This property must contain the API key belonging to the given secret.</li>
+</ul>
+
+<p>
+    After setting up all the above, you can start local live trading on Binance by running <code>lean live &lt;project name&gt; live-binance</code>.
 </p>

@@ -1,3 +1,37 @@
+<p> 
+    To start local live trading on Bitfinex, make sure the following environment exists:
+</p>
+
+<div class="section-example-container">
+<pre class="json">
+{
+    "environments": {
+        "live-bitfinex": {
+            "live-mode": true,
+
+            "live-mode-brokerage": "BitfinexBrokerage",
+            "data-queue-handler": "BitfinexBrokerage",
+            "setup-handler": "QuantConnect.Lean.Engine.Setup.BrokerageSetupHandler",
+            "result-handler": "QuantConnect.Lean.Engine.Results.LiveTradingResultHandler",
+            "data-feed-handler": "QuantConnect.Lean.Engine.DataFeeds.LiveTradingDataFeed",
+            "real-time-handler": "QuantConnect.Lean.Engine.RealTime.LiveTradingRealTimeHandler",
+            "transaction-handler": "QuantConnect.Lean.Engine.TransactionHandlers.BrokerageTransactionHandler",
+            "history-provider": "BrokerageHistoryProvider"
+        }
+    }
+}
+</pre>
+</div>
+
 <p>
-    TODO
+    The following properties should be configured before you start local live trading on Bitfinex:
+</p>
+
+<ul>
+    <li><code>bitfinex-api-secret</code>: This property must contain your API secret. You can create a new API key on <a href="https://www.bitfinex.com/api#createkey" target="_blank">bitfinex.com/api#createkey</a>.</li>
+    <li><code>bitfinex-api-key</code>: This property must contain the API key belonging to the given secret.</li>
+</ul>
+
+<p>
+    After setting up all the above, you can start local live trading on Bitfinex by running <code>lean live &lt;project name&gt; live-bitfinex</code>.
 </p>
