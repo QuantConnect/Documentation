@@ -1,14 +1,32 @@
 <p>
-    Run <code>lean research "Project Name"</code> to start a local Jupyter Lab environment for the <code>./Project Name</code> directory.
-    This command automatically runs the <a href="https://hub.docker.com/r/quantconnect/research" target="_blank">quantconnect/research</a> Docker image and opens the browser once the environment is available.
+    Follow these steps to start a local research environment:
 </p>
 
-<p>
-    You can use the <code>--version</code> option to run a specific version of the <code>quantconnect/research</code> image.
-    The value of the option is the tag that is used, so <code>lean research "Project Name" --version 10992</code> runs the <a href="https://hub.docker.com/layers/quantconnect/research/10992/images/sha256-2229665021dc7c4b88ba6e3773f57739c52e8aac7ef8ed76363aabea92db5f0e" target="_blank">10992</a> tag.
-</p>
+<ol>
+    <li>Open a terminal in the directory you ran <code>lean init</code> in.</li>
+    <li>Run <code>lean research "My Project"</code> to start a local research environment for the project in <code>./My Project</code> on port <code>8888</code>.
+<div class="section-example-container">
+<pre>$ lean research "My Project"
+Starting JupyterLab, access in your browser at localhost:8888</pre>
+</div>
+        You can run the environment on a different port by providing the <code>--port &lt;port&gt;</code> option.
+    </li>
+    <li>Open the research notebook that you want to work on in the browser window that opens.</li>
+</ol>
 
 <p>
-    By default, Jupyter Lab is exposed on port <code>8888</code> locally.
-    You can specify a custom port with the <code>--port</code> option, which is required to run two Jupyter Lab environments alongside each other.
+    Follow these steps to start a local research environment with a custom version of the LEAN engine:
 </p>
+
+<ol>
+    <li>View the available versions on the <a href="https://hub.docker.com/r/quantconnect/research/tags" target="_blank">quantconnect/research Docker Hub tags page</a>.</li>
+    <li>Copy the name of the tag that you want to run.</li>
+    <li>Follow the "How to start a local research environment" steps above and append the <code>--version &lt;tag from step 2&gt;</code> option when running the <code>lean research</code> command.
+<div class="section-example-container">
+<pre>$ lean research "My Project" --version 11154
+Pulling quantconnect/research:11154...
+20210322 17:27:46.658 TRACE:: Engine.Main(): LEAN ALGORITHMIC TRADING ENGINE v2.5.0.0 Mode: DEBUG (64bit)
+20210322 17:27:46.664 TRACE:: Engine.Main(): Started 5:27 PM</pre>
+</div>
+    </li>
+</ol>

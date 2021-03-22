@@ -1,16 +1,50 @@
 <p>
-    Run <code>lean backtest "Project Name"</code> to run a local backtest for the given project.
-    This command automatically runs a backtest for the specified project with the LEAN engine in the <a href="https://hub.docker.com/r/quantconnect/lean" target="_blank">quantconnect/lean</a> Docker image.
+    Follow these steps to run a local backtest:
+</p>
+
+<ol>
+    <li>Ensure you have your <a href="/docs/v2/lean-cli/tutorials/local-data">local data</a> set up for all the data required by your project.</li>
+    <li>Open a terminal in the directory you ran <code>lean init</code> in.</li>
+    <li>Run <code>lean backtest "My Project"</code> to run a local backtest for the project in <code>./My Project</code>.
+<div class="section-example-container">
+<pre>$ lean backtest "My Project"
+20210322 17:27:46.658 TRACE:: Engine.Main(): LEAN ALGORITHMIC TRADING ENGINE v2.5.0.0 Mode: DEBUG (64bit)
+20210322 17:27:46.664 TRACE:: Engine.Main(): Started 5:27 PM
+Successfully ran 'My Project' in the 'backtesting' environment and stored the output in 'My Project/backtests/2021-03-22_18-51-28'</pre>
+</div>
+    </li>
+    <li>
+        View the result in the <code>&lt;project&gt;/backtests/&lt;timestamp&gt;</code> directory.
+        Results are stored in JSON files and can be analyzed in a <a href="/docs/v2/lean-cli/tutorials/research#02-Running-local-research-environment">local research environment</a>.
+        You can save results to a different directory by providing the <code>--output &lt;path&gt;</code> option in step 3.
+<div class="section-example-container">
+<pre>$ lean backtest "My Project" --output "My Project/custom-output"
+20210322 17:27:46.658 TRACE:: Engine.Main(): LEAN ALGORITHMIC TRADING ENGINE v2.5.0.0 Mode: DEBUG (64bit)
+20210322 17:27:46.664 TRACE:: Engine.Main(): Started 5:27 PM
+Successfully ran 'My Project' in the 'backtesting' environment and stored the output in 'My Project/custom-output'</pre>
+</div>
+    </li>
+</ol>
+
+<p>
+    Follow these steps to run a backtest with a custom version of the LEAN engine:
+</p>
+
+<ol>
+    <li>View the available versions on the <a href="https://hub.docker.com/r/quantconnect/lean/tags" target="_blank">quantconnect/lean Docker Hub tags page</a>.</li>
+    <li>Copy the name of the tag that you want to run.</li>
+    <li>Follow the "How to run a local backtest" steps above and append the <code>--version &lt;tag from step 2&gt;</code> option when running the <code>lean backtest</code> command.
+<div class="section-example-container">
+<pre>$ lean backtest "My Project" --version 11154
+Pulling quantconnect/lean:11154...
+20210322 17:27:46.658 TRACE:: Engine.Main(): LEAN ALGORITHMIC TRADING ENGINE v2.5.0.0 Mode: DEBUG (64bit)
+20210322 17:27:46.664 TRACE:: Engine.Main(): Started 5:27 PM</pre>
+</div>
+    </li>
+</ol>
+
+<p>
+    Local backtests run in the LEAN engine in the <a href="https://hub.docker.com/r/quantconnect/lean" target="_blank">quantconnect/lean</a> Docker image.
     This Docker image contains all the <a href="/docs/v2/writing-algorithms/user-guides/key-concepts/supported-libraries">libraries available on QuantConnect</a>, meaning your algorithm also has access to those libraries.
-    If the specified project is a C# project it is compiled first.
-</p>
-
-<p>
-    By default, the results of the backtests and their logging are stored in the <code>&lt;project&gt;/backtests/&lt;timestamp&gt;</code> directory.
-    The <code>--output &lt;directory&gt;</code> option can be used to write output to a different directory.
-</p>
-
-<p>
-    You can use the <code>--version</code> option to run a specific version of the <code>quantconnect/lean</code> image.
-    The value of the option is the tag that is used, so <code>lean backtest "Project Name" --version 10992</code> runs the <a href="https://hub.docker.com/layers/quantconnect/lean/10992/images/sha256-b6dd58635f5614736fd4654012d52459944414a2ac67b8bb5cfa296fd28aaf24?context=explore" target="_blank">10992</a> tag.
+    If the specified project is a C# project it is first compiled using the same Docker image, but in a different container.
 </p>
