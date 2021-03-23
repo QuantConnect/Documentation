@@ -1,0 +1,104 @@
+<p>
+    Follow these steps to run a local optimization:
+</p>
+
+<ol>
+    <li>Ensure you have your <a href="/docs/v2/lean-cli/tutorials/local-data">local data</a> set up for all the data required by your project.</li>
+    <li>Ensure your project uses <a href="/docs/v2/lean-cli/tutorials/optimization/project-parameters">project parameters</a> for all values that must be optimized.</li>
+    <li>Open a terminal in the directory you ran <code>lean init</code> in.</li>
+    <li>Run <code>lean optimize "My Project"</code> to start optimizing the project in <code>./My Project</code>. This command starts an interactive wizard which lets you configure the optimizer.
+<div class="section-example-container">
+<pre>$ lean optimize "My Project"
+Select the optimization strategy to use:
+1) Grid Search
+2) Euler Search
+Enter a number: 1</pre>
+</div>
+    </li>
+    <li>Enter the number of the optimization strategy to use. You can either choose for Grid Search, which runs through all possible combinations of parameters, or for Euler Search, which performs an Euler-like which gradually works towards smaller optimizations.
+<div class="section-example-container">
+<pre>$ lean optimize "My Project"
+Select the optimization strategy to use:
+1) Grid Search
+2) Euler Search
+Enter a number: 1</pre>
+</div>
+    </li>
+    <li>Enter the number of the optimization target to use. The target specifies what statistic you want to optimize and whether you want to minimize or maximize it.
+<div class="section-example-container">
+<pre>$ lean optimize "My Project"
+Select an optimization target:
+1) Sharpe Ratio (min)
+2) Sharpe Ratio (max)
+3) Compounding Annual Return (min)
+4) Compounding Annual Return (max)
+5) Probabilistic Sharpe Ratio (min)
+6) Probabilistic Sharpe Ratio (max)
+7) Drawdown (min)
+8) Drawdown (max)
+Enter a number: 1</pre>
+</div>
+    </li>
+    <li>For each parameter, enter whether you want to optimize it and what its values can be.
+<div class="section-example-container">
+<pre>$ lean optimize "My Project"
+Should the 'ema-fast' parameter be optimized? [Y/n]: y
+Minimum value for 'ema-fast': 1
+Maximum value for 'ema-fast': 10
+Step size for 'order_size' [1.0]: 1</pre>
+</div>
+    </li>
+    <li>Enter the constraints of the optimization. An example optimization is "Drawdown &lt;= 0.25", which discards all parameter combinations resulting in a drawdown higher than 25%.
+<div class="section-example-container">
+<pre>$ lean optimize "My Project"
+Current constraints: None
+Do you want to add a constraint? [y/N]: y
+Select a constraint target:
+1) Sharpe Ratio
+2) Compounding Annual Return
+3) Probabilistic Sharpe Ratio
+4) Drawdown
+Enter a number: 4
+Select a constraint operator (&lt;value&gt; will be asked after this):
+1) Less than &lt;value&gt;
+2) Less than or equal to &lt;value&gt;
+3) Greater than &lt;value&gt;
+4) Greater than or equal to &lt;value&gt;
+5) Equal to &lt;value&gt;
+6) Not equal to &lt;value&gt;
+Enter a number: 2
+Set the &lt;value&gt; for the selected operator: 0.25
+Current constraints: TotalPerformance.PortfolioStatistics.Drawdown &lt;= 0.25
+Do you want to add a constraint? [y/N]: n</pre>
+</div>
+        After configuring the constraints the optimizer starts running.
+    </li>
+    <li>View the results in the terminal after the optimizer finished. The last line of LEAN's logs contains the optimal parameter combination.
+<div class="section-example-container">
+<pre>$ lean optimize "My Project"
+20210323 23:24:21.796 TRACE:: Program.Main(): Exiting Lean...
+20210323 23:24:22.020 TRACE:: LeanOptimizer.TriggerOnEndEvent(OID 26f0efc9-c7d2-46ad-864e-f036edd04a04): Optimization has ended. Result for Target: ['TotalPerformance'].['PortfolioStatistics'].['SharpeRatio']
+at: 0: was reached using ParameterSet: (ema-fast:6) backtestId 'bd9ad642-1d08-42ef-81fd-9dc3708c9619'. Constraints: (['TotalPerformance'].['PortfolioStatistics'].['Drawdown'] 'LessOrEqual' 0.25)
+Successfully optimized 'My Project' and stored the output in 'My Project/optimizations/2021-03-24_00-22-15'
+</pre>
+</div>
+    </li>
+    <li>
+        View the individual backtest results in the <code>&lt;project&gt;/optimizations/&lt;timestamp&gt;</code> directory.
+        Results are stored in JSON files and can be analyzed in a <a href="/docs/v2/lean-cli/tutorials/research#02-Running-local-research-environment">local research environment</a>.
+        You can save results to a different directory by providing the <code>--output &lt;path&gt;</code> option in step 4.
+<div class="section-example-container">
+<pre>$ lean optimize "My Project" --output "My Project/custom-output"
+20210323 23:24:21.796 TRACE:: Program.Main(): Exiting Lean...
+20210323 23:24:22.020 TRACE:: LeanOptimizer.TriggerOnEndEvent(OID 26f0efc9-c7d2-46ad-864e-f036edd04a04): Optimization has ended. Result for Target: ['TotalPerformance'].['PortfolioStatistics'].['SharpeRatio']
+at: 0: was reached using ParameterSet: (ema-fast:6) backtestId 'bd9ad642-1d08-42ef-81fd-9dc3708c9619'. Constraints: (['TotalPerformance'].['PortfolioStatistics'].['Drawdown'] 'LessOrEqual' 0.25)
+Successfully optimized 'My Project' and stored the output in 'My Project/custom-output'</pre>
+</div>
+    </li>
+</ol>
+
+<p>
+    Local optimizations run in the LEAN engine in the <a href="https://hub.docker.com/r/quantconnect/lean" target="_blank">quantconnect/lean</a> Docker image.
+    This Docker image contains all the <a href="/docs/v2/writing-algorithms/user-guides/key-concepts/supported-libraries">libraries available on QuantConnect</a>, meaning your algorithm also has access to those libraries.
+    If the specified project is a C# project it is first compiled using the same Docker image, but in a different container.
+</p>
