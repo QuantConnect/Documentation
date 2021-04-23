@@ -4,20 +4,21 @@
 
 <ol>
     <li>Follow the <a href="/docs/v2/lean-cli/tutorials/local-autocomplete#04-C-and-Visual-Studio">How to set up local autocomplete for C# in Visual Studio</a> tutorial.</li>
-    <li>Install the <a href="https://marketplace.visualstudio.com/items?itemName=GordianDotNet.VSMonoDebugger0d62" target="_blank">VSMonoDebugger</a> extension.</li>
-    <li>In Visual Studio, go to "Extensions > Mono > Settings" and enter the following settings:
-        <ul>
-            <li>Remote Host IP: 127.0.0.1</li>
-            <li>Remote Host Port: 55556</li>
-            <li>Mono Debug Port: 55556</li>
-        </ul>
-    </li>
     <li>Save any modified files in Visual Studio.</li>
-    <li>Run the <code>lean backtest</code> command with the <code>--debug mono</code> option and wait until the CLI tells you to attach to the debugger.
+    <li>Run the <code>lean backtest</code> command with the <code>--debug vsdbg</code> option and wait until the CLI tells you to attach to the debugger.
 <div class="section-example-container">
-<pre>$ lean backtest "My Project" --debug mono
-Docker container starting, attach to Mono debugger at localhost:55556 to begin</pre>
+<pre>$ lean backtest "My Project" --debug vsdbg
+20210423 13:50:54.634 TRACE:: DebuggerHelper.Initialize(): waiting for debugger to attach...</pre>
 </div>
     </li>
-    <li>In Visual Studio, attach to the debugger using "Extensions > Mono > Attach to mono debugger".</li>
+    <li>In Visual Studio, open the process selector using "Debug > Attach to Process...".</li>
+    <li>Select "Docker (Linux Container)" as connection type.</li>
+    <li>Select "lean_cli_vsdbg" as connection target.</li>
+    <li>Double-click on the process named "dotnet".</li>
+    <li>Tick the checkbox in front of "Managed (.NET Core for Unix)" and click OK to start debugging.</li>
 </ol>
+
+<p>
+    After finishing C# debugging with Visual Studio you will see a message saying "The debug adapter exited unexpectedly.".
+    You can safely ignore this message.
+</p>
