@@ -1,0 +1,23 @@
+<p>
+    Follow these steps to build custom LEAN Docker images using the CLI:
+</p>
+
+<ol>
+    <li>Clone the <a href="https://github.com/QuantConnect/Lean" target="_blank">QuantConnect/Lean</a> GitHub repository using <code>git</code> or download and extract the latest <a href="https://github.com/QuantConnect/Lean/archive/refs/heads/master.zip" target="_blank">master branch archive</a>.</li>
+    <li>Make your changes to LEAN. See <a href="#04-Custom-libraries">Custom libraries</a> for tutorials on how to add custom C# or Python libraries.</li>
+    <li>Open a terminal in the directory containing your local version of LEAN.</li>
+    <li>Run <code>lean build .</code> to compile LEAN, build the foundation image, the engine image, and the research image.
+<div class="section-example-container">
+<pre>$ lean build .
+Compiling the C# code in '/home/johndoe/Lean'
+Building 'lean-cli/foundation:latest' from '/home/johndoe/Lean/DockerfileLeanFoundation'
+Building 'lean-cli/engine:latest' from '/home/johndoe/Lean/Dockerfile' using 'lean-cli/foundation:latest' as base image
+Building 'lean-cli/research:latest' from '/home/johndoe/Lean/DockerfileJupyter' using 'lean-cli/engine:latest' as base image
+Setting default engine image to 'lean-cli/engine:latest'
+Setting default research image to 'lean-cli/research:latest'
+</pre>
+</div>
+        After running this command the CLI uses your newly built images instead of the official ones.
+        You can use <code>--no-compile</code> to skip compiling the C# code if you have done so yourself already.
+    </li>
+</ol>
