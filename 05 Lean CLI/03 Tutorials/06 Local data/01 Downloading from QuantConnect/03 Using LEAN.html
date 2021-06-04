@@ -1,0 +1,29 @@
+<p>
+    An alternative to manually downloading all required data before running the backtest is to use the <code>ApiDataProvider</code> in LEAN.
+    This data provider automatically downloads the required data files when your backtest requests them.
+    After it downloads a data file, it stores it in your local data directory so that in future runs it'll not have to download it again.
+</p>
+
+<p>
+    Follow these steps to use the <code>ApiDataProvider</code> to automatically download data when needed:
+</p>
+
+<ol>
+    <li><a href="/docs/v2/lean-cli/tutorials/authentication#02-Logging-in">Log in</a> to the CLI if you haven't done so already.</li>
+    <li>Open a terminal in the directory you ran <code>lean init</code> in.</li>
+    <li>Run <code>lean backtest "My Project" --download-data</code> to run a local backtest for the project in <code>./My Project</code> and update the Lean configuration to use the <code>ApiDataProvider</code>.
+<div class="section-example-container">
+<pre>$ lean backtest "My Project" --download-data
+20210322 17:27:46.658 TRACE:: Engine.Main(): LEAN ALGORITHMIC TRADING ENGINE v2.5.0.0 Mode: DEBUG (64bit)
+20210322 17:27:46.664 TRACE:: Engine.Main(): Started 5:27 PM
+Successfully ran 'My Project' in the 'backtesting' environment and stored the output in 'My Project/backtests/2021-03-22_18-51-28'</pre>
+</div>
+        Setting the <code>--download-data</code> flag updates your Lean configuration.
+        This means that you only need to use the flag once, all future backtests will automatically use the <code>ApiDataProvider</code>.
+    </li>
+</ol>
+
+<p>
+    By default the <code>ApiDataProvider</code> does not have a spending limit and will keep downloading files until your QuantConnect organization runs out of QCC.
+    You can use the <code>--data-purchase-limit &lt;value&gt;</code> option to set the spending limit for the backtest.
+</p>
