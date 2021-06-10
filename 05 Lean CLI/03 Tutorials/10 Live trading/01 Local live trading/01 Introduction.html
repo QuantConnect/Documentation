@@ -8,24 +8,64 @@
 </p>
 
 <ol>
-    <li>Navigate to the directory which you ran <code>lean init</code> in.</li>
-    <li>Open the <code>lean.json</code> file in a text editor.</li>
-    <li>Modify the <code>lean.json</code> file to include the live environment settings required for your brokerage. See the table of contents on the right for quick links to the required settings of each brokerage. Before you add a new environment or configuration property, ensure that there doesn't already exist one with the same name.</li>
-    <li><i>(Optional)</i> Follow the <a href="#11-IQFeed">IQFeed steps</a> if you want to use IQFeed as your data feed.</li>
-    <li>Save the <code>lean.json</code> file.</li>
     <li>Open a terminal in the directory you ran <code>lean init</code> in.</li>
-    <li>Run <code>lean live &lt;project name&gt; &lt;environment name&gt;</code> to start local live trading for the project in <code>./&lt;project name&gt;</code> using the environment named <code>&lt;environment name&gt;</code> in your <code>lean.json</code> file.
+    <li>Run <code>lean live "My Project"</code> to start a live deployment wizard for the project in <code>./My Project</code>.
 <div class="section-example-container">
-<pre>$ lean live "My Project" live-interactive
-20210324 00:41:53.742 TRACE:: Engine.Main(): LEAN ALGORITHMIC TRADING ENGINE v2.5.0.0 Mode: DEBUG (64bit)
-20210324 00:41:53.748 TRACE:: Engine.Main(): Started 12:41 AM
-20210324 00:42:00.969 TRACE:: InteractiveBrokersBrokerage.InteractiveBrokersBrokerage(): Starting IB Automater...
-</pre>
+<pre>$ lean live "My Project"
+Select a brokerage:
+1) Paper Trading
+2) Interactive Brokers
+3) Tradier
+4) OANDA
+5) Bitfinex
+6) Coinbase Pro
+7) Binance
+8) Zerodha
+Enter an option:</pre>
 </div>
     </li>
+    <li>Enter the number of the brokerage to use.
+<div class="section-example-container">
+<pre>$ lean live "My Project"
+Select a brokerage:
+1) Paper Trading
+2) Interactive Brokers
+3) Tradier
+4) OANDA
+5) Bitfinex
+6) Coinbase Pro
+7) Binance
+8) Zerodha
+Enter an option:</pre>
+</div>
+    </li>
+    <li>Configure your brokerage settings. Depending on which brokerage you select in step 3 you get different prompts to configure your credentials. See the table of contents on the right for quick links to exact instructions for each brokerage.</li>
+    <li>Enter the number of the data feed to use.
+<div class="section-example-container">
+<pre>$ lean live "My Project"
+Select the data feed to use:
+1) Interactive Brokers
+2) Tradier
+3) OANDA
+4) Bitfinex
+5) Coinbase Pro
+6) Binance
+7) Zerodha
+8) IQFeed
+Enter an option:
+</pre>
+</div>
+        This step is only shown if you selected the paper trading brokerage in step 3 or if you are on Windows.
+    </li>
+    <li>Configure your data feed. Depending on which data feed you select in step 5 you get different prompts to configure your credentials. See the table of contents on the right for quick links to exact instructions for each data feed.</li>
     <li>
         View the result in the <code>&lt;project&gt;/live/&lt;timestamp&gt;</code> directory.
         Results are stored in real-time in JSON format.
-        You can save results to a different directory by providing the <code>--output &lt;path&gt;</code> option in step 6.
+        You can save results to a different directory by providing the <code>--output &lt;path&gt;</code> option in step 2.
     </li>
 </ol>
+
+<p>
+    If you already have a live environment configured in your Lean configuration file, you can skip the interactive wizard by providing the <code>--environment &lt;value&gt;</code> option in step 2.
+    The value of this option must be the name of an environment which has <code>live-mode</code> set to <code>true</code>.
+</p>
