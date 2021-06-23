@@ -10,11 +10,50 @@
 </p>
 
 <p>
-    If no optimizer config is provided using <code>--optimizer-config</code> the CLI shows an interactive wizard to let you configure the optimizer.
-    You can use the <code>--optimizer-config &lt;config file&gt;</code> option if you want to configure more than what the interactive wizard allows.
+    By default, an interactive wizard is shown letting you configure the optimizer.
+    When <code>--optimizer-config</code> or <code>--strategy</code> is given the command runs in non-interactive mode and does not prompt for input.
+</p>
+
+<p>
+    When the <code>--optimizer-config &lt;config file&gt;</code> option is given the specified config file is used.
     This option must point to a file containing a full optimizer config (the <code>algorithm-type-name</code>, <code>algorithm-language</code> and <code>algorithm-location</code> properties may be omitted).
     See the <a href="https://github.com/QuantConnect/Lean/blob/master/Optimizer.Launcher/config.json" target="_blank">Optimizer.Launcher/config.json</a> file in the LEAN repository for an example optimizer configuration file, which also contains documentation on all the required properties.
 </p>
+
+<p>
+    When <code>--strategy</code> is given, the optimizer configuration is read from the command-line options.
+    This means the <code>--strategy</code>, <code>--target</code>, <code>--target-direction</code>, and <code>--parameter</code> options become required.
+    Additionally, you can also use <code>--constraint</code> to specify optimization constraints.
+</p>
+
+<p>
+    In non-interactive mode the parameters can be configured using the <code>--parameter</code> option.
+    This option takes 4 values: the name of the parameter, its minimum value, its maximum value, and its step size.
+    You can provide this option multiple times to configure multiple parameters.
+</p>
+
+<p>
+    In non-interactive mode the constraints can be configured using the <code>--constraint</code> option.
+    This option takes a "statistic operator value" string as value, where the statistic must be a path to a property in a backtest's output file, like "TotalPerformance.PortfolioStatistics.SharpeRatio".
+    This statistic can also be shortened to "SharpeRatio" or "Sharpe Ratio", in which case the command automatically converts it to the longer version.
+    The operator must be one of <code>&lt;</code>, <code>&gt;</code>, <code>&lt;=</code>, <code>&gt;=</code>, <code>==</code>, and <code>==</code>, and the value must be a number.
+    You can provide this option multiple times to configure multiple constraints.
+</p>
+
+<p>
+    Example non-interactive usage:
+</p>
+
+<div class="section-example-container">
+<pre>$ lean optimize "My Project" \
+    --strategy "Grid Search" \
+    --target "Sharpe Ratio" \
+    --target-direction "max" \
+    --parameter my-first-parameter 1 10 0.5 \
+    --parameter my-second-parameter 20 30 5 \
+    --constraint "Drawdown &lt; 0.5" \
+    --constraint "Sharpe Ratio &gt;= 1"</pre>
+</div>
 
 <p>
     The Docker image that is used contains the same libraries as the ones <a href="https://www.lean.io/docs/lean-cli/user-guides/supported-libraries">available on QuantConnect</a>.

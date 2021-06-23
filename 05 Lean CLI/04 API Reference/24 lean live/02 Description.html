@@ -11,10 +11,148 @@
 
 <p>
     By default, an interactive wizard is shown letting you configure the brokerage and data feed to use.
-    When the <code>--environment</code> option is given this wizard is skipped and the environment with the given name is used instead.
+    When <code>--environment</code>, <code>--brokerage</code>, or <code>--data-feed</code> is given the command runs in non-interactive mode and does not prompt for input.
+</p>
+
+<p>
+    When the <code>--environment</code> option is given the environment with the given name is used.
     The given environment must be one of the live environments stored in your <a href="https://www.lean.io/docs/lean-cli/user-guides/configuration#03-Lean-configuration">Lean configuration file</a>.
     This means the environment must have the <code>live-mode</code> property set to <code>true</code>.
 </p>
+
+<p>
+    When <code>--brokerage</code> or <code>--data-feed</code> is given, the live configuration is read from the command-line options.
+    In case a required option has not been provided, the command falls back to the property with the same name in your <a href="https://www.lean.io/docs/lean-cli/user-guides/configuration#03-Lean-configuration">Lean configuration file</a>.
+    The command aborts if this property also hasn't been set.
+    The required options depend on the selected brokerage or data feed.
+</p>
+
+<p>
+    The following options are required for each brokerage in non-interactive mode:
+</p>
+
+<ul>
+    <li><code>--brokerage "Paper Trading"</code>
+        <ul>
+            <li>No required options.</li>
+        </ul>
+    </li>
+    <li><code>--brokerage "Interactive Brokers"</code>
+        <ul>
+            <li><code>--ib-user-name</code>: must be set to your Interactive Brokers username (example: trader777).</li>
+            <li><code>--ib-account</code>: must be set to your Interactive Brokers account id (example: DU1234567).</li>
+            <li><code>--ib-password</code>: must be set to your Interactive Brokers account password.</li>
+        </ul>
+    </li>
+    <li><code>--brokerage "Tradier"</code>
+        <ul>
+            <li><code>--tradier-account-id</code>: must be set to your Tradier account id, which you can find on your <a href="https://dash.tradier.com/settings/api" target="_blank">Settings/API Access</a> page.</li>
+            <li><code>--tradier-access-token</code>: must be set to your Tradier access token.</li>
+            <li><code>--tradier-use-sandbox</code>: must be set to <code>yes</code> or <code>no</code> depending on whether you want to use the developer sandbox.</li>
+        </ul>
+    </li>
+    <li><code>--brokerage "OANDA"</code>
+        <ul>
+            <li><code>--oanda-account-id</code>: must be set to your OANDA account id, which you can find on your <a href="https://www.oanda.com/account/statement/" target="_blank">Account Statement page</a>.</li>
+            <li><code>--oanda-access-token</code>: must be set to your OANDA API token, which you can generate on the <a href="https://www.oanda.com/account/tpa/personal_token" target="_blank">Manage API Access page</a>.</li>
+            <li><code>--oanda-environment</code>: must be set to <code>Practice</code> for fxTrade Practice or <code>Trade</code> for fxTrade.</li>
+        </ul>
+    </li>
+    <li><code>--brokerage "Bitfinex"</code>
+        <ul>
+            <li><code>--bitfinex-api-key</code>: must be set to your Bitfinex API key, which you can generate on the <a href="https://www.bitfinex.com/api" target="_blank">API Management page</a>.</li>
+            <li><code>--bitfinex-api-secret</code>: must be set to your Bitfinex API secret.</li>
+        </ul>
+    </li>
+    <li><code>--brokerage "Coinbase Pro"</code>
+        <ul>
+            <li><code>--gdax-api-key</code>: must be set to your Coinbase Pro API key, which you can generate on the <a href="https://pro.coinbase.com/profile/api" target="_blank">API settings page</a>.</li>
+            <li><code>--gdax-api-secret</code>: must be set to your Coinbase Pro API secret.</li>
+            <li><code>--gdax-passphrase</code>: must be set to your Coinbase Pro API passphrase.</li>
+        </ul>
+    </li>
+    <li><code>--brokerage "Binance"</code>
+        <ul>
+            <li><code>--binance-api-key</code>: must be set to your Binance API key, which you can generate on the <a href="https://www.binance.com/en/my/settings/api-management" target="_blank">API Management page</a>.</li>
+            <li><code>--binance-api-secret</code>: must be set to your Binance API secret.</li>
+        </ul>
+    </li>
+    <li><code>--brokerage "Zerodha"</code>
+        <ul>
+            <li><code>--zerodha-api-key</code>: must be set to your <a href="https://kite.trade/" target="_blank">Kite Connect</a> API key.</li>
+            <li><code>--zerodha-access-token</code>: must be set to your Kite Connect access token.</li>
+            <li><code>--zerodha-product-type</code>: must be set to <code>MIS</code> if you are targeting intraday products, <code>CNC</code> if you are targeting delivery products, or <code>NRML</code> if you are targeting carry forward products.</li>
+            <li><code>--zerodha-trading-segment</code>: must be set to <code>EQUITY</code> if you are trading equities on NSE or BSE, or <code>COMMODITY</code> if you are trading commodities on MCX.</li>
+        </ul>
+    </li>
+</ul>
+
+<p>
+    The following options are required for each data feed in non-interactive mode:
+</p>
+
+<ul>
+    <li><code>--data-feed "Interactive Brokers"</code>
+        <ul>
+            <li>Inherits all options required by <code>--brokerage "Interactive Brokers"</code>.</li>
+            <li><code>--ib-enable-delayed-streaming-data</code>: must be set to <code>yes</code> or <code>no</code> depending on whether delayed data may be used when your algorithm subscribes to a security you don't have a market data subscription for.</li>
+        </ul>
+    </li>
+    <li><code>--data-feed "Tradier"</code>
+        <ul>
+            <li>Inherits all options required by <code>--brokerage "Tradier"</code>.</li>
+        </ul>
+    </li>
+    <li><code>--data-feed "OANDA"</code>
+        <ul>
+            <li>Inherits all options required by <code>--brokerage "Tradier"</code>.</li>
+        </ul>
+    </li>
+    <li><code>--data-feed "Bitfinex"</code>
+        <ul>
+            <li>Inherits all options required by <code>--brokerage "Bitfinex"</code>.</li>
+        </ul>
+    </li>
+    <li><code>--data-feed "Coinbase Pro"</code>
+        <ul>
+            <li>Inherits all options required by <code>--brokerage "Coinbase Pro"</code>.</li>
+        </ul>
+    </li>
+    <li><code>--data-feed "Binance"</code>
+        <ul>
+            <li>Inherits all options required by <code>--brokerage "Binance"</code>.</li>
+        </ul>
+    </li>
+    <li><code>--data-feed "Zerodha"</code>
+        <ul>
+            <li>Inherits all options required by <code>--brokerage "Zerodha"</code>.</li>
+            <li><code>--zerodha-history-subscription</code>: must be set to <code>yes</code> or <code>no</code> depending on whether you have a history API subscription for Zerodha.</li>
+        </ul>
+    </li>
+    <li><code>--data-feed "IQFeed"</code> (only supported on Windows)
+        <ul>
+            <li><code>--iqfeed-iqconnect</code>: must be set to the path to your IQConnect binary.</li>
+            <li><code>--iqfeed-username</code>: must be set to your IQFeed username.</li>
+            <li><code>--iqfeed-password</code>: must be set to your IQFeed password.</li>
+            <li><code>--iqfeed-product-name</code>: must be set to the product name of your IQFeed developer account.</li>
+            <li><code>--iqfeed-version</code>: must be set to the product version of your IQFeed developer account.</li>
+        </ul>
+    </li>
+</ul>
+
+<p>
+    Example non-interactive usage:
+</p>
+
+<div class="section-example-container">
+<pre>$ lean live "My Project" \
+    --brokerage "Paper Trading" \
+    --data-feed "Interactive Brokers" \
+    --ib-user-name "trader777" \
+    --ib-account "DU1234567" \
+    --ib-password "hunter2" \
+    --ib-enable-delayed-streaming-data yes</pre>
+</div>
 
 <p>
     The Docker image that is used contains the same libraries as the ones <a href="https://www.lean.io/docs/lean-cli/user-guides/supported-libraries">available on QuantConnect</a>.
