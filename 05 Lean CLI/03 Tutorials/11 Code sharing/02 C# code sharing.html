@@ -1,0 +1,35 @@
+<p>
+    To share code between two C# projects, you need to add them to the same solution and add a project reference between the two projects.
+    You can do this in your favorite C# editor, or in the terminal by following these steps:
+</p>
+
+<ol>
+    <li>Open a terminal in the directory you ran <code>lean init</code> in.</li>
+    <li>Run <code>dotnet new sln</code> to bootstrap the solution. This command only needs to be ran once.
+<div class="section-example-container">
+<pre>$ dotnet new sln
+The template "Solution File" was created successfully.</pre>
+</div>
+    </li>
+    <li>Run <code>dotnet sln add "My Project"</code>c for each LEAN project you want to share code from or to. This command adds the project in <code>./My Project</code> to the solution.
+<div class="section-example-container">
+<pre>$ dotnet sln add "My Project"
+Project `My Project/My Project.csproj` added to the solution.</pre>
+</div>
+    </li>
+    <li>Run <code>dotnet add "Algorithm Project" reference "Library Project"</code> to make the code in <code>./Library Project</code> available in the project in <code>./Algorithm Project</code>.
+<div class="section-example-container">
+<pre>$ dotnet add "Algorithm Project" reference "Library Project"
+Reference `..\Library Project\Library Project.csproj` added to the project.</pre>
+</div>
+    </li>
+</ol>
+
+<p>
+    Sharing code between C# projects has the following limitations:
+</p>
+
+<ul>
+    <li>The directory the solution is in must be one of the parent directories of the project directory.</li>
+    <li>Your projects cannot have references to any projects or files outside the solution directory.</li>
+</ul>
