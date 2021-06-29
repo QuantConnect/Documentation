@@ -24,6 +24,28 @@ Successfully ran 'My Project' in the 'backtesting' environment and stored the ou
 </ol>
 
 <p>
+    Follow these steps to revert the Lean configuration changes so that it uses only local data again:
+</p>
+
+<ol>
+    <li>Open a terminal in the directory you ran <code>lean init</code> in.</li>
+    <li>Run <code>lean backtest "My Project" --data-provider Local</code> to run a local backtest for the project in <code>./My Project</code> and update the Lean configuration to only use local data.
+<div class="section-example-container">
+<pre>$ lean backtest "My Project" --data-provider Local
+20210322 17:27:46.658 TRACE:: Engine.Main(): LEAN ALGORITHMIC TRADING ENGINE v2.5.0.0 Mode: DEBUG (64bit)
+20210322 17:27:46.664 TRACE:: Engine.Main(): Started 5:27 PM
+Successfully ran 'My Project' in the 'backtesting' environment and stored the output in 'My Project/backtests/2021-03-22_18-51-28'</pre>
+</div>
+        The <code>--data-provider</code> option updates your Lean configuration.
+        This means that you only need to use the option once, all future backtests will automatically use the newly configured data provider.
+    </li>
+</ol>
+
+<p>
     By default the <code>ApiDataProvider</code> does not have a spending limit and will keep downloading files until your QuantConnect organization runs out of QCC.
     You can use the <code>--data-purchase-limit &lt;value&gt;</code> option to set the QCC spending limit for the backtest.
+</p>
+
+<p>
+    All the options documented above are also available on the <code>lean research</code> command.
 </p>
