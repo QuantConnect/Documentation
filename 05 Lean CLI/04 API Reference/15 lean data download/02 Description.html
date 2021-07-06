@@ -1,5 +1,5 @@
 <p>
-    Lets you purchase and download data from the QuantConnect Data Library.
+    Lets you purchase and download data from the QuantConnect Data Market.
     This command performs the following actions:
 </p>
 
@@ -12,102 +12,17 @@
 </ol>
 
 <p>
-    The available data and pricing information can be found in the <a href="https://www.lean.io/docs/lean-cli/user-guides/local-data#03-QuantConnect-Data-Library">user guides</a>.
+    The available datasets and their pricing can be found in the <a href="https://www.quantconnect.com/datasets/" target="_blank">data market</a>.
     Data is priced on a per-file per-download basis, meaning you pay a certain number of QuantConnect Credits (QCC) for each file you download.
     The required QCC is deducted from your organization's QCC balance when a file is downloaded.
     If you force-quit the command before it downloaded all requested files, you are not charged for the files you didn't download.
 </p>
 
 <p>
-    When <code>--product</code> is given the command runs in non-interactive mode and step 1, 2, and 4 of the list above are skipped.
+    When <code>--dataset</code> is given the command runs in non-interactive mode and step 1, 2, and 4 of the list above are skipped.
     Instead, the command reads the downloading configuration from the given command-line options.
-    In this mode <code>--product</code> and <code>--organization</code> are required options, as well as all options specific to the selected product.
+    In this mode <code>--dataset</code> and <code>--organization</code> are required options, as well as all options specific to the selected dataset.
 </p>
-
-<p>
-    The following options are required for each product in non-interactive mode:
-</p>
-
-<ul>
-    <li><code>--product "CFD"</code>
-        <ul>
-            <li><code>--ticker</code>: must be set to the ticker of the data that you want to download.</li>
-            <li><code>--resolution</code>: must be set to the resolution of the data that you want to download.</li>
-            <li><code>--start</code>: must be set to the inclusive start date of the data that you want to download (only for tick, second, and minute resolutions).</li>
-            <li><code>--end</code>: must be set to the inclusive end date of the data that you want to download (only for tick, second, and minute resolutions).</li>
-        </ul>
-    </li>
-    <li><code>--product "Crypto"</code>
-        <ul>
-            <li><code>--data-type</code>: must be set to the type of data that you want to download, which can be one of <code>Trade</code> and <code>Quote</code>.</li>
-            <li><code>--market</code>: must be set to the market of data that you want to download, which can be one of <code>Bitfinex</code> and <code>GDAX</code>.</li>
-            <li><code>--ticker</code>: must be set to the ticker of the data that you want to download.</li>
-            <li><code>--resolution</code>: must be set to the resolution of the data that you want to download.</li>
-            <li><code>--start</code>: must be set to the inclusive start date of the data that you want to download (only for tick, second, and minute resolutions).</li>
-            <li><code>--end</code>: must be set to the inclusive end date of the data that you want to download (only for tick, second, and minute resolutions).</li>
-        </ul>
-    </li>
-    <li><code>--product "Equity"</code>
-        <ul>
-            <li><code>--data-type</code>: must be set to the type of data that you want to download, which can be one of <code>Trade</code> and <code>Quote</code>.</li>
-            <li><code>--ticker</code>: must be set to the ticker of the data that you want to download.</li>
-            <li><code>--resolution</code>: must be set to the resolution of the data that you want to download. Hourly and daily data is only available if <code>--data-type</code> is set to <code>Trade</code>.</li>
-            <li><code>--start</code>: must be set to the inclusive start date of the data that you want to download (only for tick, second, and minute resolutions).</li>
-            <li><code>--end</code>: must be set to the inclusive end date of the data that you want to download (only for tick, second, and minute resolutions).</li>
-        </ul>
-    </li>
-    <li><code>--product "Equity Option"</code>
-        <ul>
-            <li><code>--data-type</code>: must be set to the type of data that you want to download, which can be one of <code>Trade</code>, <code>Quote</code>, and <code>OpenInterest</code>.</li>
-            <li><code>--option-style</code>: must be set to the option style of the data that you want to download, which can be one of <code>American</code> and <code>European</code>.</li>
-            <li><code>--ticker</code>: must be set to the ticker of the data that you want to download.</li>
-            <li><code>--start</code>: must be set to the inclusive start date of the data that you want to download.</li>
-            <li><code>--end</code>: must be set to the inclusive end date of the data that you want to download.</li>
-        </ul>
-    </li>
-    <li><code>--product "Forex"</code>
-        <ul>
-            <li><code>--ticker</code>: must be set to the ticker of the data that you want to download.</li>
-            <li><code>--resolution</code>: must be set to the resolution of the data that you want to download.</li>
-            <li><code>--start</code>: must be set to the inclusive start date of the data that you want to download (only for tick, second, and minute resolutions).</li>
-            <li><code>--end</code>: must be set to the inclusive end date of the data that you want to download (only for tick, second, and minute resolutions).</li>
-        </ul>
-    </li>
-    <li><code>--product "Future"</code>
-        <ul>
-            <li><code>--market</code>: must be set to the market of the data that you want to download, which can be one of <code>CBOE</code>, <code>CBOT</code>, <code>CME</code>, <code>COMEX</code>, <code>HKFE</code>, <code>ICE</code>, <code>NYMEX</code>, and <code>SGX</code>.</li>
-            <li><code>--ticker</code>: must be set to the ticker of the data that you want to download the margins of.</li>
-        </ul>
-    </li>
-    <li><code>--product "CBOE Volatility Index Pricing"</code>
-        <ul>
-            <li><code>--ticker</code>: must be set to the ticker of the index.</li>
-        </ul>
-    </li>
-    <li><code>--product "Federal Reserve Economics Data"</code>
-        <ul>
-            <li><code>--ticker</code>: must be set to the name of the variable passed to <code>AddData(Fred, &lt;variable&gt;)</code> (example: "Fred.CBOE.VIXOnGoogle") or to the series id used by FRED (example: "VXGOGCLS").</li>
-        </ul>
-    </li>
-    <li><code>--product "SEC Filings"</code>
-        <ul>
-            <li><code>--report-type</code>: must be set to the type of the reports to download, which can be one of <code>10K</code>, <code>10Q</code>, and <code>8K</code>.</li>
-            <li><code>--ticker</code>: must be set to the ticker of the company to download the reports for.</li>
-            <li><code>--start</code>: must be set to the inclusive start date of the data.</li>
-            <li><code>--end</code>: must be set to the inclusive end date of the data.</li>
-        </ul>
-    </li>
-    <li><code>--product "US Treasury Yield Curve Rates"</code>
-        <ul>
-            <li>No required options.</li>
-        </ul>
-    </li>
-    <li><code>--product "US Energy Information Administration Data"</code>
-        <ul>
-            <li><code>--ticker</code>: must be set to the name of the variable passed to <code>AddData(USEnergy, &lt;variable&gt;)</code> (example: "USEnergy.Petroleum.UnitedStates.WeeklyImportsOfCrudeOil") or to the series id used by the US Energy Information Administration (example: "PET.WCRIMUS2.W").</li>
-        </ul>
-    </li>
-</ul>
 
 <p>
     Example non-interactive usage:
@@ -115,10 +30,10 @@
 
 <div class="section-example-container">
 <pre>$ lean data download \
-    --product "Crypto" \
+    --dataset "Crypto Price Data" \
     --organization "My Organization" \
     --data-type "Trade" \
-    --market "GDAX" \
+    --market "Coinbase" \
     --ticker "BTCUSD" \
     --resolution "Daily"</pre>
 </div>
