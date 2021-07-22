@@ -7,7 +7,7 @@
     <li><a href="https://www.lean.io/docs/lean-cli/tutorials/optimization/project-parameters">Convert your project to use project parameters</a> instead of constants for all values that must be optimized.</li>
     <li>Open a terminal in the directory you ran <code>lean init</code> in.</li>
     <li>Run <code>lean optimize "My Project"</code> to start optimizing the project in <code>./My Project</code>. This command starts an interactive wizard which lets you configure the optimizer.
-<div class="section-example-container">
+<div class="cli section-example-container">
 <pre>$ lean optimize "My Project"
 Select the optimization strategy to use:
 1) Grid Search
@@ -16,7 +16,7 @@ Enter an option:</pre>
 </div>
     </li>
     <li>Enter the number of the optimization strategy to use. You can either choose for Grid Search, which runs through all possible combinations of parameters, or for Euler Search, which performs an Euler-like which gradually works towards smaller optimizations.
-<div class="section-example-container">
+<div class="cli section-example-container">
 <pre>$ lean optimize "My Project"
 Select the optimization strategy to use:
 1) Grid Search
@@ -25,7 +25,7 @@ Enter an option: 1</pre>
 </div>
     </li>
     <li>Enter the number of the optimization target to use. The target specifies what statistic you want to optimize and whether you want to minimize or maximize it.
-<div class="section-example-container">
+<div class="cli section-example-container">
 <pre>$ lean optimize "My Project"
 Select an optimization target:
 1) Sharpe Ratio (min)
@@ -40,7 +40,7 @@ Enter an option: 2</pre>
 </div>
     </li>
     <li>For each parameter, enter whether you want to optimize it and what its values can be.
-<div class="section-example-container">
+<div class="cli section-example-container">
 <pre>$ lean optimize "My Project"
 Should the 'ema-fast' parameter be optimized? [Y/n]: y
 Minimum value for 'ema-fast': 1
@@ -49,7 +49,7 @@ Step size for 'ema-fast' [1.0]: 1</pre>
 </div>
     </li>
     <li>Enter the constraints of the optimization. An example optimization is "Drawdown &lt;= 0.25", which discards all parameter combinations resulting in a drawdown higher than 25%.
-<div class="section-example-container">
+<div class="cli section-example-container">
 <pre>$ lean optimize "My Project"
 Current constraints: None
 Do you want to add a constraint? [y/N]: y
@@ -74,7 +74,7 @@ Do you want to add a constraint? [y/N]: n</pre>
         After configuring the constraints the optimizer starts running.
     </li>
     <li>View the results in the terminal after the optimizer finished. The last line of LEAN's logs contains the optimal parameter combination.
-<div class="section-example-container">
+<div class="cli section-example-container">
 <pre>$ lean optimize "My Project"
 20210323 23:24:21.796 TRACE:: Program.Main(): Exiting Lean...
 20210323 23:24:22.020 TRACE:: LeanOptimizer.TriggerOnEndEvent(OID 26f0efc9-c7d2-46ad-864e-f036edd04a04): Optimization has ended. Result for Target: ['TotalPerformance'].['PortfolioStatistics'].['SharpeRatio']
@@ -87,7 +87,7 @@ Successfully optimized 'My Project' and stored the output in 'My Project/optimiz
         View the individual backtest results in the <code>&lt;project&gt;/optimizations/&lt;timestamp&gt;</code> directory.
         Results are stored in JSON files and can be analyzed in a <a href="https://www.lean.io/docs/lean-cli/tutorials/research#02-Running-local-research-environment">local research environment</a>.
         You can save results to a different directory by providing the <code>--output &lt;path&gt;</code> option in step 4.
-<div class="section-example-container">
+<div class="cli section-example-container">
 <pre>$ lean optimize "My Project" --output "My Project/custom-output"
 20210323 23:24:21.796 TRACE:: Program.Main(): Exiting Lean...
 20210323 23:24:22.020 TRACE:: LeanOptimizer.TriggerOnEndEvent(OID 26f0efc9-c7d2-46ad-864e-f036edd04a04): Optimization has ended. Result for Target: ['TotalPerformance'].['PortfolioStatistics'].['SharpeRatio']
