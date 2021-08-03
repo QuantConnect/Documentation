@@ -1,0 +1,159 @@
+<p>Our platform supports using machine learning techniques in your trading strategies. When designing a machine learning strategy, you should consider the time required to train your models so they are ready for use when the market is open. In the following sections, we'll explore scheduling a model training period and storing the result of your work.</p>
+
+<h4>Creating models</h4>
+<p>Machine learning models can be created from scratch in the backtesting and research environments for use in your trading algorithms. Refer to the Packages documentation for a list of the available Python packages that can be used to create machine learning models.</p>
+
+<h4>Loading models</h4>
+<p>Instead of creating machine learning models from scratch in the backtesting and research environments, models can also be loaded from the ObjectStore. Keras models can be loaded from the ObjectStore and reconstructed using the <code>Sequential.from_config</code> method. The following snippet demonstrates the process. Refer to <a href="https://www.quantconnect.com/terminal/processCache?request=embedded_backtest_4919fad00e933f16119983213614646d.html">this research notebook</a>a> for a full example.</p>
+
+<div class="section-example-container">
+<pre><code class="language-python">if qb.ObjectStore.ContainsKey(model_key):
+    model_str = qb.ObjectStore.Read(model_key)
+    config = json.loads(model_str)['config']
+    model = Sequential.from_config(config)
+</code></pre>
+<pre><code class="language-cs"></code></pre>
+</div>
+
+<p>If the model can be serialized with pickle into a byte array, the model can also be loaded from the ObjectStore or a custom data source like Dropbox with the <code>Download</code> method. To do so, the byte array should be encoded into a base64 byte array before being uploaded to the ObjectStore or custom data source. As a result, models loaded from these sources need to be decoded from the base64 byte array and deserialized with pickle before they can be used in your projects. Refer to <a href="https://www.quantconnect.com/terminal/processCache?request=embedded_backtest_1fe09f1533ba8aee7ffe1ef867e6847c.html">this research notebook</a> for a full example of the model loading process.</p>
+
+
+<h4>Training models</h4>
+<p>Once a machine learning model has been created or loaded into the environment, it can be trained in preparation for making predictions. Algorithms usually have to perform all necessary work at each timestep within 10 minutes. The Train feature allows you to get an increase in computation time up to 30 minutes to train your machine learning models.</p>
+
+<p>In backtesting, the Train method is synchronous and will block your program execution while the model is executed. In live trading, the Train method runs asynchronously, so it’s important to ensure your model is ready to use before continuing program execution. Training occurs on a separate thread, so use a boolean flag to notify your algorithm of the model’s training state. </p>
+
+<p>Training resources are allocated with a <a href="https://en.wikipedia.org/wiki/Leaky_bucket">leaky bucket algorithm</a> where a maximum of n-minutes can be used in a single training period, and the allocated compute refills over time. This gives you burst allocations when needed and recharges the allowance to prepare for the next training. The table below shows the capacity and refill rate of each live trading and backtesting node.</p>
+
+<div style="overflow:auto">
+    <table class="table price-table" id="pricing-table" style="min-width:425px;">
+        <thead>
+        </thead>
+        <tbody>
+            <tr class="thead-dark">
+                <th>
+                    <div style="display: flex; justify-content: center; align-items: center;">
+                        <span class="plan-name">Resource Node</span>
+                     </div>
+                </th>
+                <th>
+                    <div style="display: flex; justify-content: center; align-items: center;">
+                        <span class="plan-name">Capacity (mins)</span>
+                     </div>
+                </th>
+                <th>
+                    <div style="display: flex; justify-content: center; align-items: center;">
+                        <span class="plan-name">Refill Rate (mins per 24 hours)</span>
+                    </div>
+                </th>
+            </tr>
+            <tr>
+                <td>L-MICRO</td>
+                <td>30</td>
+                <td>5</td>
+            </tr>
+            <tr>
+                <td>L1-1</td>
+                <td>60</td>
+                <td>10</td>
+            </tr>
+            <tr>
+                <td>L1-2</td>
+                <td>90</td>
+                <td>15</td>
+            </tr>
+            <tr>
+                <td>L1-4</td>
+                <td>120</td>
+                <td>20</td>
+            </tr>
+            <tr>
+                <td>B-MICRO</td>
+                <td>20</td>
+                <td>1</td>
+            </tr>
+            <tr>
+                <td>B2-8</td>
+                <td>30</td>
+                <td>5</td>
+            </tr>
+            <tr>
+                <td>B4-12</td>
+                <td>60</td>
+                <td>10</td>
+            </tr>
+            <tr>
+                <td>B8-16</td>
+                <td>90</td>
+                <td>15</td>
+            </tr>            
+        </tbody>
+    </table>
+</div>
+
+
+<h4>Immediate training</h4>
+<p>Models can be trained immediately with the <code>Train</code> method. This is most useful for training the model immediately on the deployment of your strategy or when the model’s performance begins to degrade. To use the Train method at the current moment in execution, you just need to provide the method that trains the model.</p>
+
+<div class="section-example-container">
+<pre><code class="language-python"># Trigger a training immediately in your training method.
+self.Train(self.MyTrainingMethod)
+</code></pre>
+<pre><code class="language-cs">// Trigger a training immediately in your training method.
+Train(MyTrainingMethod);
+</code></pre>
+</div>
+
+
+
+<h4>Scheduled training</h4>
+<p>Instead of training a model immediately, model training can be scheduled in a similar way to a ScheduledEvent. To schedule model training, provide a DateRule and TimeRule argument to the Train method. Refer to the ScheduledEvent documentation for a full list of available date and time rules.</p>
+
+<div class="section-example-container">
+<pre><code class="language-python"># Set TrainingMethod to be executed at 8:00 am every Sunday
+self.Train(self.DateRules.Every(DayOfWeek.Sunday), self.TimeRules.At(8,0), self.MyTrainingMethod)
+</code></pre>
+<pre><code class="language-cs">// Set TrainingMethod to be executed at 8:00 am every Sunday
+Train(DateRules.Every(DayOfWeek.Sunday), TimeRules.At(8, 0), MyTrainingMethod);
+</code></pre>
+</div>
+
+<p>We recommend scheduling your training for the evening or early mornings when the market is closed to get the best compute allocation. While the market is open, your CPU is occupied with processing incoming tick data and handling other LEAN events.</p>
+
+
+<h4>Flagging the training state</h4>
+<p>A "semaphore" is a thread-safe flag you can use to synchronize program operation across different threads. Because your model training can take a long time, training is processed in a separate thread from your algorithm data. To avoid issues, confirm the model is ready to use before using it to generate predictions. The following code snippet demonstrates this process.</p>
+
+<div class="section-example-container">
+<pre><code class="language-python">class SemaphoreTrainingAlgorithm(QCAlgorithm):
+
+    # Model Object
+    model = None
+    # Model State Flag
+    modelIsTraining = False
+
+    def Initialize(self): 
+        self.Train(self.MyTraining)
+    
+    def MyTraining(self):
+        self.modelIsTraining = True
+        # Perform Work..... 
+        self.modelIsTraining = False
+    
+    def OnData(self, data): 
+        # Do not use model while it’s being trained.
+        if self.modelIsTraining:
+            return
+        
+        # Once training is complete; use the model safely.
+        result = self.model.Predict()
+
+</code></pre>
+<pre><code class="language-cs"></code></pre>
+</div>
+
+
+<h4>Saving models</h4>
+<p>To save a Keras model to the ObjectStore, use the <code>serialize_keras_object</code> method from the <code>keras.util</code> library to convert the model into a JSON object. The <code>json.dumps</code> method can then convert the JSON object into a string that can be saved in the ObjectStore. The snippet below demonstrates this process. Refer to <a href="https://www.quantconnect.com/terminal/processCache?request=embedded_backtest_4919fad00e933f16119983213614646d.html">this research notebook</a> for a full example.</p>
+
+<p>Other types of machine learning models can be saved if the model can be serialized with pickle into a byte array. The pickled byte array just needs to be encoded into a base64 byte array before uploaded to the ObjectStore. Refer to <a href="https://www.quantconnect.com/terminal/processCache?request=embedded_backtest_1fe09f1533ba8aee7ffe1ef867e6847c.html">this research notebook</a> for an example of the model saving process using pickle.</p>
