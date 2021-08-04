@@ -8,13 +8,11 @@
 </ul>
 
 <h4>Gathering keys</h4>
-<p>The ObjectStore keys can be gathered by using the <code>GetEnumerator</code> method.</p>
+<p>Keys are used to save and load data from the ObjectStore. The ObjectStore keys can be gathered by using the <code>GetEnumerator</code> method. A <code>Keys</code> attribute will be added to the ObjectStore class to enable easier key gathering. Subscribe to <a href="https://github.com/QuantConnect/Lean/issues/5507">GitHub Issue #5507</a> to track our progress in adding this functionality.</p>
 
 <div class="section-example-container">
 <pre class="python">keys = [str(j).split(',')[0][1:] for _, j in enumerate(self.ObjectStore.GetEnumerator())]</pre>
 </div>
-
-<p>A <code>Keys</code> attribute will be added to the ObjectStore class to enable easier key gathering. Subscribe to <a href="https://github.com/QuantConnect/Lean/issues/5507">GitHub Issue #5507</a> to track our progress in adding this functionality.</p>
 
 
 <h4>Storing data</h4>
@@ -23,7 +21,7 @@
 
 <div class="section-example-container">
 <pre class="python">self.ObjectStore.Save("key", "value")                         # Save data as a string
-self.ObjectStore.SaveBytes("key", bytearray(object_value))    # Save data as a bytes
+self.ObjectStore.SaveBytes("key", bytearray(object_value))    # Save data as a bytes array
 self.ObjectStore.SaveJson("key", object_value)                # Save object as JSON encoded string
 self.ObjectStore.SaveXml("key", object_value)                 # Save object as XML encoded string
 </pre>
@@ -44,7 +42,7 @@ xml_obj = self.ObjectStore.ReadXml("key")      # Deserialize a XML object from s
 
 <h4>Deleting data</h4>
 
-<p>Data can be deleted from the ObjectStore using the <code>Delete</code> method. The <code>Delete</code> method works with all types of data stored in the ObjectStore. You just need to provide the key.</p>
+<p>When your ObjectStore storage starts reaching it's capacity, you can free up space by deleting the project or deleting values from the ObjectStore. Data can be deleted from the ObjectStore using the <code>Delete</code> method. The <code>Delete</code> method works with all types of data stored in the ObjectStore. You just need to provide the key.</p>
 
 <div class="section-example-container">
 <pre class="python">self.ObjectStore.Delete("key")            # Delete the data from the store</pre>
