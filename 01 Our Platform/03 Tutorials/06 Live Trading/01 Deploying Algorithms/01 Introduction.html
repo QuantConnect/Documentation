@@ -1,22 +1,63 @@
-<p>To deploy an algorithm to live trading, follow these steps:</p>
+<p>You must have an available live trading node for each live trading algorithm you deploy.</p>
+
+<p>Follow these steps to deploy a live algorithm:</p>
 
 <ol>
-    <li>Open the project you want to deploy to live trading.</li>
+    <li>Open the project you want to deploy.</li>
     <li>Click <b>Go Live</b>.</li>
     <li>Click <b>Select Brokerage</b> and then click the brokerage you want to use to place orders.</li>
     <li>Configure your brokerage account details.</li>
     <p>Depending on the brokerage you select in step 3, you'll have to fill in different fields to authenticate your account. See the table of contents on this page for quick links to instructions for each supported brokerage.<br></p>
     <li>Click the node dropdown and then select a live trading node to use.</li>
-    <li>If the deployment wizard has an Initialize Cash State section, follow these steps:</li>
-    <li>If the deployment wizard has an Initialize Holdings State section, follow these steps:</li>
-    <li>Setup notifications</li>
-    <li>Select or deselect the <b>Automatically restart algorithm</b> checkbox.</li>
-    <p>By enabling automatic restarts, the algorithm will use best efforts to restart the algorithm if it fails due to a runtime error. This can help improve its resilience to temporary outages such as a brokerage API disconnection.</p>
+    <li>If the deployment wizard has an Initialize Cash State section and your brokerage account has cash holdings, follow these steps:</li>
+    <li>If the deployment wizard has an Initialize Holdings State section and your brokerage account has position holdings, follow these steps:</li>
+    <li><i>(Optional)</i> Follow these steps to set up notifications:</li>
+    <ol>
+        <li>Enable at least one of the following:</li>
+        <ul>
+            <li><b>Order Events</b>: Be notified when order events occur.</li>
+            <li><b>Insights</b>: Be notified when insights are emitted.</li>
+        </ul>
+        <li>Configure at least one of the following notification services:</li>
+        <ul>
+            <li><b>Email</b>: Send email notification summaries.</li>
+            <ol>
+                <li>Click <b>Email</b>.</li>
+                <li>Enter an email address.</li>
+                <li>Enter a subject.</li>
+                <li>Click <b>Add</b>.</li>
+            </ol>
+            <li><b>Webhook</b>: Trigger web requests to external servers.</li>
+            <ol>
+                <li>Click <b>Webhook</b>.</li>
+                <li>Enter a URL.</li>
+                <li>If you want to add header information, click <b>Add Header</b> and then enter a key and value.</li>
+                <p>Repeat this step to add multiple header keys and values.</p>
+                <li>Click <b>Add</b>.</li>
+            </ol>
+            <li><b>SMS</b>: Send concise SMS notification summaries.</li>
+            <ol>
+                <li>Click <b>SMS</b>.</li>
+                <li>Enter a phone number.</li>
+                <li>Click <b>Add</b>.</li>
+            </ol>
+            <li><b>Telegram</b>: Send notifications to your Telegram group.</li>
+            <ol>
+                <li>Create a new Telegram group.</li>
+                <li>Add a bot to your Telegram group.</li>
+                <p>If you want to use our bot, the username is @quantconnect_notifications_bot.</p>
+                <li>On the live deployment wizard, click <b>Telegram</b>.</li>
+                <li>Enter your group Id.</li>
+                <p>Your group Id is in the URL when you open your group chat in the Telegram web interface (for example, the group Id of web.telegram.org/z/#-503016366 is -503016366).</p>
+                <li>If you are not using our notification bot, enter the token of your bot.</li>
+                <li>Click <b>Add</b>.</li>
+            </ol>
+        </ul>
+        <li>If you want to add additional notification services, click <b>Add Notification</b> and then continue from step 2.</li>
+    </ol>
+    <li>Configure the <b>Automatically restart algorithm</b> setting.</li>
+    <p>By enabling automatic restarts, the algorithm will use best efforts to restart the algorithm if it fails due to a runtime error. This can help improve the algorithm's resilience to temporary outages such as a brokerage API disconnection.</p>
     <li>Click <b>Deploy</b>.</li>
 </ol>
 
 <p>If you know your brokerage positions before you deployed, you can verify they have been loaded properly by checking your equity value in the runtime statistics, your cashbook holdings, and your position holdings.</p>
-
-
-
--Deploying multiple algorithms<br>1. Select Brokerage<br>2. Configure Brokerage Settings<br>3. Select Node<br>4. Initialize Cash State (doesn’t apply to all brokerages)<br>5. Initialize Holdings State (doesn’t apply to all brokerages)<br>6. Setup Notifications<br>&nbsp;&nbsp;&nbsp;&nbsp; - Email<br>&nbsp;&nbsp;&nbsp;&nbsp; - Webhook<br>&nbsp;&nbsp;&nbsp;&nbsp; - SMS<br><div>&nbsp;&nbsp;&nbsp;&nbsp; - Telegram</div><div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - <span class="pl-c">Provide the chat ID and supply a token for the custom bot.</span></div>7. Specify Automatic Restarts<br><div>8. Click Deploy</div><div>9. Verify</div><div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - If you know your brokerage positions before you deploy, you can verify they have been loaded properly by using the QC GUI. Check your equity at the top, check the cashbook holdings, and position holdings<br></div><div></div>
