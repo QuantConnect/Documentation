@@ -1,0 +1,1095 @@
+#
+# QuantConnect Alpha Stream API v0.8
+#
+openapi: 3.0.0
+
+#
+# Introduction
+#
+info:
+  description: 'QuantConnect Alpha Streams API accesses a database of algorithms (Alphas) designed by the QuantConnect community (Authors) for predicting market movements and volatility in the future. They are created and listed for licensing by members of QuantConnect from all over the world. The API provides a system for searching, subscribing and streaming predictions (Insights) from these algorithms.'
+  version: "0.8"
+  title: QuantConnect Alpha Stream API v0.8
+  termsOfService: 'https://www.quantconnect.com/terms'
+  contact:
+    name: QuantConnect
+    email: contact@quantconnect.com
+  license:
+    name: License For Use Granted Under QuantConnect Platform Services Agreement.
+    
+#
+# Servers Endpoints 
+#
+servers:
+  # REST Endpoint for searching and subscribing to the Alpha insight streams:
+  - url: 'https://www.quantconnect.com/api/v2'
+    description: 'Core endpoint for RESTful services against the community alphas database.'
+    
+  # HTML Website for Streaming Administration:
+  - url: 'https://www.quantconnect.com:15672/api/v2/alpha/insights'
+    description: 'Endpoint for streaming socket administration.'
+    
+  # AMPQ Streaming Insights:  
+  - url: 'ampq://{client}.quantconnect.com:5672'
+    description: 'RMQ Streaming socket endpoint for receiving Insights from Alphas running in QuantConnect'
+    variables:
+      client:
+        default: democlient
+        description: 'Client name assigned on creation of the account'
+#
+# Security Protocol
+#
+security:
+  - HttpApiKeyAuthentication: []
+  
+#
+# URL Paths for API
+#
+paths:
+  # Alpha -> Read Single
+  '/alpha/{id}':
+    get:
+      summary: 'Retrieve Information on an Alpha Module.' 
+      description: 'Read information about an individual Alpha from the database based on the Alpha id.'
+      parameters:
+        - name: id
+          in: path
+          description: 'Unique id hash of an Alpha published to the marketplace.'
+          schema:
+            type: string
+          required: true
+      tags: 
+        - Alpha Analysis
+      responses:
+        '200':
+          $ref: '#/components/responses/Alpha'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        'default':
+          $ref: '#/components/responses/Error'
+          
+  # Alpha -> Conversation: 
+  '/alpha/{id}/conversation/create':
+      post:
+        summary: Create a conversation thread
+        description: 'Start a conversation with the author(s) of the alpha via email. Quickly solve reconciliation issues or design automated filter questions.'
+        parameters:
+          - name: id
+            in: path
+            description: 'Unique id hash of an Alpha published to the marketplace.'
+            schema:
+              type: string
+            required: true
+          - name: from
+            description: 'Email that is going to be used to send the replies from the author(s).'
+            in: query
+            schema:
+              type: string
+            required: true
+          - name: subject
+            description: 'The subject of the thread, this is going to be used for the email.'
+            in: query
+            schema:
+              type: string
+            required: true
+          - name: message
+            description: 'Message to be sent to the author(s)'
+            in: query
+            schema:
+              type: string
+            required: true
+          - name: cc
+            description: 'Comma separated list of emails that are going to be copied into the author(s) replies.'
+              
+            in: query
+            schema:
+              type: string
+            required: false
+        tags:
+          - Conversations
+        responses:
+          '200':
+            $ref: '#/components/schemas/Success'
+          '401':
+            $ref: '#/components/responses/UnauthorizedError'
+          default:
+            $ref: '#/components/responses/Error'
+  
+  # Alpha -> Get the associated equity curve for the alpha
+  '/alpha/{id}/equity':
+    get:
+      summary: 'Alpha Equity Curve.'
+      description: 'Fetch the equity curve for the alpha in backtesting and live.'
+      parameters:
+        - name: id
+          in: path
+          description: 'Unique id hash of an Alpha published to the marketplace.'
+          schema:
+            type: string
+          required: true
+      tags:
+        - Alpha Analysis
+      responses:
+        '200':
+          description: 'Successfully found alpha-id and returning an array of equity time-value results.'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/EquityPoint'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        'default':
+          $ref: '#/components/responses/Error'
+  
+  # Alpha -> List All Alphas Visible By Token
+  '/alpha/list':
+    get:
+      summary: 'List all alphas available in the market'
+      description: 'Listing all alpha ids so you can maintain a dictionary and detect programatically when a new alpha is added to the API.'
+      tags:
+        - Alpha Search
+      responses:
+        '200':
+          description: 'Successfully searched for passed query parameters; returns an array of Alpha objects.'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+                  example: "fd4bc7ce493c54b7453f2fd2a72eaa29"
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+
+  # Alpha -> Subscribe
+  '/alpha/{id}/subscribe':
+    post:
+      summary: 'Subscribe to Alpha Module'
+      description: 'Subscribe to an Alpha given by `id` and charge the subscription the funds account. There is a minimum of 7 days subscription for a request.'
+      tags:
+        - Subscription Management
+      parameters: 
+        - name: id
+          in: path
+          description: 'Unique id hash of an Alpha published to the marketplace.'
+          schema:
+            type: string
+          required: true
+        - name: exclusive
+          in: query
+          description: 'Try and subscribe to the Alpha with an exclusive preference.'
+          schema:
+            type: boolean
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        'default':
+          $ref: '#/components/responses/Error'
+
+  # Alpha -> Unsubscribe
+  '/alpha/{id}/unsubscribe':
+    post:
+      summary: 'Unsubscribe from an Alpha Module.'
+      description: 'Unsubscribe to the Alpha given by the id in path. Pro-rate subscription billing for remainder of them billing cycle.'
+      tags:
+        - Subscription Management
+      parameters:
+        - name: id
+          in: path
+          description: 'Unique id hash of an Alpha published to the marketplace.'
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        'default':
+          $ref: '#/components/responses/Error'
+  
+  
+  # Alpha -> Search
+  '/alpha/search':
+    get:
+      summary: 'Search Alpha Modules.'
+      description: 'Search endpoint for locating Alphas matching search criteria. All input values are optional and are joined with a logical AND for the filtered results.'
+      tags:
+        - Alpha Search
+      parameters: 
+        - name: accuracy-minimum
+          description: 'Search for Alphas which have a specific accuracy minimum.' 
+          in: query
+          schema:
+            minimum: 0
+            type: number
+        - name: accuracy-maximum
+          description: 'Search for Alphas which have a specific accuracy maximum.' 
+          in: query
+          schema:
+            type: number
+            maximum: 1
+        - name: asset-classes
+          description: 'Comma separated value array of asset classes to search.'
+          in: query
+          schema:
+            type: array
+            items:
+              enum: 
+                - equity
+                - forex
+                - future
+                - option
+                - cfd
+                - crypto
+        - name: author
+          description: 'Hash author id identifier to locate.'
+          in: query
+          schema:
+            type: string
+        - name: estimated-value-minimum
+          description: 'Search for Alphas which have the specified minimum estimated-value.'
+          in: query
+          schema:
+            type: number
+            minimum: 0
+        - name: estimated-value-maximum
+          description: 'Search for Alphas which have the specified maximum estimated-value.'
+          in: query
+          schema:
+            type: number
+        - name: exclude
+          description: 'Comma separated list of tags to exclude from the search results.'
+          in: query
+          schema:
+            type: string
+        - name: fee-minimum
+          description: 'Fee minimum filter on the listed Alphas.'
+          in: query
+          schema:
+            type: number
+            minimum: 0
+        - name: fee-maximum
+          description: 'Fee maximum filter on the listed Alphas.'
+          in: query
+          schema:
+            type: number
+        - name: include
+          description: 'Comma separated list of tags to include in the search results.'
+          in: query
+          schema:
+            type: string
+        - name: project-id
+          description: 'Search for Alphas created by a specific Project.'
+          in: query
+          schema:
+            type: integer
+        - name: sharpe-minimum
+          description: 'Search for Alphas which have the specified maximum sharpe ratio.' 
+          in: query
+          schema:
+            type: number
+        - name: sharpe-maximum
+          description: 'Search for Alphas which have the specified maximum sharpe ratio.' 
+          in: query
+          schema:
+            type: number
+        - name: symbols
+          description: 'Search for Alphas which utilize specific symbols. QuantConnect symbol identifier code.'
+          in: query
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/Insight'
+        - name: start
+          description: 'Starting position for the search query. With very large datasets the results can be paginated and fetched in chunks starting from start.'
+          in: query
+          schema:
+            type: number
+            default: 0
+        - name: uniqueness-minimum
+          description: 'Search for Alphas which meet the specified minimum uniqueness value relative to existing portfolio. Uniqueness is a measure of correlation of the return curve approximation.'
+          in: query
+          schema:
+            type: number
+            minimum: 0
+        - name: uniqueness-maximum
+          description: 'Search for Alphas which meet the specified maximum uniqueness value relative to existing portfolio. Uniqueness is a measure of correlation of the return curve approximation.'
+          in: query
+          schema:
+            type: number
+            minimum: 1
+        
+      responses:
+        '200':
+          description: 'Successfully searched for passed query parameters; returns an array of Alpha objects.'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Alpha'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        'default':
+          $ref: '#/components/responses/Error'
+
+
+          
+  '/alpha/{id}/insights':
+    get:
+      summary: 'Alpha Backtest and Live Trading Insight History.'
+      description: 'Fetch the Alpha Insight list(backtest and live trading) track record since publication.'
+      parameters:
+        - name: id
+          in: path
+          description: 'Unique id hash of an Alpha published to the marketplace.'
+          schema:
+            type: string
+          required: true
+        - name: start
+          description: 'Starting position for the search query. With very large datasets the results can be paginated and fetched in chunks starting from start.'
+          in: query
+          schema:
+            type: number
+            default: 0
+      tags:
+        - Alpha Analysis
+      responses:
+        '200':
+          description: 'Successfully searched for passed query parameters. Returns an array of Insight objects.'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Insight'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        'default':
+          $ref: '#/components/responses/Error'
+          
+          
+  '/alpha/{id}/prices':
+    get:
+      summary: 'Alpha Price History.'
+      description: 'Fetch Alpha historical listing prices.'
+      parameters:
+        - name: id
+          in: path
+          description: 'Unique id hash of an Alpha published to the marketplace.'
+          schema:
+            type: string
+          required: true
+        - name: start
+          description: 'Starting position for the search query. With very large datasets the results can be paginated and fetched in chunks starting from start.'
+          in: query
+          schema:
+            type: number
+            default: 0
+      tags:
+        - Alpha Analysis
+      responses:
+        '200':
+          description: 'Successfully returned prices. Returns an array of Price objects.'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Price'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        'default':
+          $ref: '#/components/responses/Error'
+          
+  # Alpha -> Create a new Bid
+  '/alpha/{id}/prices/bids/create':
+    post:
+      summary: 'Post an offer to license an Alpha'
+      description: 'Create a new bid price for licensing an offer. The author will be notified of the price and allowed to accept the license price. The alpha public price will be set accordingly.'
+      tags:
+        - Subscription Management
+      parameters: 
+        - name: id
+          in: path
+          description: 'Unique id hash of an Alpha published to the marketplace.'
+          schema:
+            type: string
+          required: true
+        - name: good-until
+          in: query 
+          required: true
+          description: 'Timestamp greater than 1 hour in the future when the bid expires'
+          schema:
+            type: number
+            format: double
+        - name: shared
+          in: query
+          description: 'Optional shared bid price for the alpha per month in USD'
+          schema:
+            type: number
+            format: integer
+            minimum: 0
+        - name: exclusive
+          in: query 
+          description: 'Optional exclusive bid price for the alpha per month in USD'
+          schema:
+            type: number
+            format: integer
+            minimum: 0
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        'default':
+          $ref: '#/components/responses/Error'
+    
+
+  '/alpha/{id}/errors':
+    get:
+      summary: 'Alpha Runtime Error History.'
+      description: 'Fetch Alpha runtime errors to help correlate unknown behavior or protect against exposure when an Alpha has a production issue.'
+      parameters:
+        - name: id
+          in: path
+          description: 'Unique id hash of an Alpha published to the marketplace.'
+          schema:
+            type: string
+          required: true
+        - name: start
+          description: 'Starting position for the search query. With very large datasets the results can be paginated and fetched in chunks starting from start.'
+          in: query
+          schema:
+            type: number
+            default: 0
+      tags:
+        - Alpha Analysis
+      responses:
+        '200':
+          description: 'Successfully returned errors. Returns an array of RuntimeError objects.'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/RuntimeError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        'default':
+          $ref: '#/components/responses/Error'
+
+  # Author -> Describe
+  '/alpha/author/{id}':
+    get:
+      summary: 'Specific Author Information.'
+      description: 'Fetch Author information by id to form models based around people.'
+      tags: 
+        - Author Search
+      parameters:
+      - name: id
+        in: path
+        description: 'Unique id hash of an Author.'
+        schema:
+          type: string
+        required: true
+      responses:
+        '200':
+          $ref: '#/components/responses/Author'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        'default':
+          $ref: '#/components/responses/Error'
+          
+  
+  
+  # Author -> Search
+  '/alpha/author/search':
+    get:
+      summary: 'Search Author Database.'
+      description: 'Search Author database by query filters to locate researchers according to criteria.'
+      tags:
+        - Author Search
+      parameters: 
+        - name: alphas-minimum
+          description: 'The minimum number of Alphas the Author has listed.'
+          in: query
+          schema:
+            type: integer
+            minimum: 0
+        - name: alphas-maximum
+          description: 'The maximum number of Alphas the Author has listed.'
+          in: query
+          schema:
+            type: integer
+        - name: biography
+          description: 'Search the Author biography information for this text.'
+          in: query
+          schema:
+            type: string
+        - name: forum-comments-minimum
+          description: 'Minimum number of comments created on QuantConnect.'
+          in: query
+          schema:
+            minimum: 0
+            type: integer
+        - name: forum-comments-maximum
+          description: 'Maximum number of comments created on QuantConnect.'
+          in: query
+          schema:
+            type: integer
+        - name: forum-discussions-minimum
+          description: 'Minimum number of discussions started on QuantConnect.'
+          in: query
+          schema:
+            minimum: 0
+            type: integer
+        - name: forum-discussions-maximum
+          description: 'Maximum number of discussions started on QuantConnect.'
+          in: query
+          schema:
+            type: integer
+        - name: last-login-minimum
+          description: 'Minimum of the unix timestamp of the Author last login on QuantConnect.'
+          in: query
+          schema:
+            type: integer
+            minimum: 0
+        - name: last-login-maximum
+          description: 'Maximum of the unix timestamp of the Author last login on QuantConnect.'
+          in: query
+          schema:
+            type: integer
+        - name: languages
+          description: 'Preferred programming language for the primary Author.'
+          in: query
+          schema:
+            type: array
+            items:
+              enum: 
+                - C#
+                - Py
+        - name: location
+          description: 'Best guess geographic location of the Author based on the IP address.'
+          in: query
+          schema:
+            type: string
+        - name: projects-minimum
+          description: 'Minimum number of projects the user has created.'
+          in: query
+          schema:
+            type: integer
+            minimum: 0
+        - name: projects-maximum
+          description: 'Maximum number of projects the user has created.'
+          in: query
+          schema:
+            type: integer
+        - name: signed-up-minimum
+          description: 'The minimum unix timestamp of the Author registration on QuantConnect.'
+          in: query
+          schema:
+            type: integer 
+        - name: signed-up-maximum
+          description: 'The maximum unix timestamp of the Author registration on QuantConnect.'
+          in: query
+          schema:
+            type: integer
+        - name: start
+          description: 'Starting position for the search query. With very large datasets the results can be paginated and fetched in chunks starting from start.'
+          in: query
+          schema:
+            type: number
+            default: 0
+        
+      responses:
+        '200':
+          description: 'Successfully searched Authors by query parameters; returns an array of Author objects.'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Author'  
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        'default':
+          $ref: '#/components/responses/Error'
+
+
+
+  # Alpha -> Streaming EndPoint
+  '/': 
+    get:
+      summary: 'Streaming Insights from Alpha Modules from Streaming AMPQ Server.'
+      description: 'Streaming endpoint for insight predictions from the community. All subscribed Insights will be piped to this web socket connection 24/7. The socket is AMPQ format for RabbitMQ -- *not* GET. This should be connected to with a RMQ client library.'
+      tags:
+        - Streaming RMQ Socket
+      responses:
+        '200':
+          description: 'Streaming, long running web socket endpoint with JSON insights streaming.'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/InsightPacket'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        'default':
+          $ref: '#/components/responses/Error'
+
+      
+
+# Model Definitions
+components:
+  # Common Responses -> 
+  responses:
+  
+    Alpha:
+      description: 'Single response of Alpha module from the API.'
+      content: 
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Alpha'
+            
+    Author:
+      description: 'Single response of an Author model from the API.'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Author'
+            
+    Success:
+      description: 'Generic success response message from the API.'
+      content: 
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Success'
+            
+    Error:
+      description: 'Generic error response message from the API. '
+      content: 
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+            
+    RuntimeError:
+      description: 'Runtime error log entry for a running production Alpha.'
+      content: 
+        application/json:
+          schema:
+            $ref: '#/components/schemas/RuntimeError'
+    
+    NotFoundError:
+      description: 'The requested item, index, page was not found.'
+    
+    UnauthorizedError:
+      description: 'Unauthorized response from the API. Key is missing or invalid.'
+      headers:
+        www_authenticate:
+          schema:
+            type: string
+            
+
+  # Base API Security -> 
+  securitySchemes:
+    HttpApiKeyAuthentication:
+      description: 'The standard QuantConnect API authentication scheme is used. This requires the current unix time and your api key to be hashed together and sent as the B64 password in a basic authentication. The user-name for the basic authentication is the UID on your QuantConnect account.'
+      type: http
+      scheme: basic
+    
+  # Common API Models ->
+  schemas:
+  
+    # Alpha Object Model
+    Alpha:
+      description: 'Snapshot of a Project at the time it was deployed to the marketplace, written by an Author on QuantConnect, generating Insights about Assets.'
+      properties:
+        id:
+          type: string
+          description: 'Unique hash identifier for this published Alpha.'
+          example: '78fc2972b9ac597369d86a0f98d9316e'
+        authors:
+          description: 'Creators of the Alpha. Sometimes users collaborate on a Project or have one trader paired with a coder. Authors can be added and removed from projects.'
+          type: array
+          items:
+            $ref: '#/components/schemas/Author'
+        asset-classes:
+          description: 'Asset classes predicted in this stream.'
+          type: array
+          items:
+            type: string
+            enum: 
+              - equity
+              - forex
+              - future
+              - option
+              - cfd
+              - crypto
+        accuracy:
+          description: 'Daily rolling accuracy of the Alpha module over the last 30 days of insight direction score.'
+          type: array
+          items:
+            $ref: '#/components/schemas/Point'
+        analyses-performed:
+          description: 'Number of backtests/analysis trials used to generate this Alpha model.'
+          type: number
+          format: integer
+        author-trading: 
+          type: boolean
+          description: 'Boolean indicating whether the author is actively trading this alpha on their own account'
+        description:
+          type: string
+          description: 'Author supplied paragraph description of the Alpha behavior'
+        estimated-depth:
+          description: 'Estimated market depth available for this asset based on trading volumes at the time of Insights.'
+          type: number
+          format: double
+        exclusive-available:
+          description: 'Flag to indicate if the author is open to selling the signal exclusively.'
+          type: boolean
+        exclusive-subscription-fee:
+          description: 'Monthly fee for exclusive access to the Alpha signal.'
+          type: number
+          format: double
+        estimated-effort:
+          description: 'Estimated number of hours the user was working on this Alpha.'
+          type: number
+          format: double
+        listed-time:
+          description: 'Unix timestamp the Alpha was listed into the marketplace.'
+          type: number
+          format: double
+        project:
+          $ref: '#/components/schemas/Project'
+        uniqueness:
+          description: 'Indicator of uniqueness in in the QuantConnect marketplace based on the assets traded and the overlap of signal with other Alphas in the Client portfolio, where percentage of overlap with other Alphas (100% is identical).'
+          type: number
+          format: double
+        sharpe-ratio:
+          description: 'Sharpe ratio of the Alpha with a $1M portfolio, equal weighting portfolio construction and immediate execution models. NOTE: This is currently not implemented.'
+          type: number
+        subscription-fee:
+          description: 'Monthly fee levied by the author on the Alpha signal.'
+          type: number
+          format: double
+        status:
+          description: 'Alphas are forced-running by default but after 10 production runtime errors they are taken offline.'
+          type: string
+          enum: 
+          - running
+          - stopped
+        tags:
+          description: 'Array of string tags to describe the alpha and its algorithm properties'
+          type: array
+          items:
+            type: string
+        version:
+          description: 'Version of the Alpha. The production version of the Alpha.'
+          type: string
+          example: '1.0.2'
+          
+    InsightPacket:
+      description: 'Wrapper packet to hold collection of Insight objects'
+      properties:
+        alpha-id:
+          description: 'Unique Alpha Id which generated this Insight'
+          example: '623b06b231eb1cc1aa3643a46'
+        algorithm-id:
+          description: 'Deploy id for this algorithm'
+          example: 'A-78fc2972b9ac597369d86a0f98d9316e'
+        insights:
+          description: 'Array of insights emitted at this timestep.'
+          type: array
+          items:
+            $ref: '#/components/schemas/Insight'
+            
+            
+    # Author Meta Data
+    Author:
+      description: 'Author user of QuantConnect responsible for creation of an Alpha.'
+      properties:
+        id:
+          type: string
+          description: 'Unique string hash id for Author.'
+          example: '623b06b231eb1cc1aa3643a46'
+        alphas:
+          description: 'String array of Alpha-Id hashes the Author has created.'
+          type: array
+          items:
+            type: string
+        alphas-listed:
+          type: integer
+          description: 'Number of Alphas Author has listed in the marketplace.'
+          example: 4
+        analysis-average-length:
+          type: integer
+          description: 'Number of days of the average analysis(backtest) length for the Author.'
+          example: 520
+        backtests:
+          type: integer
+          description: 'Lifetime number of analysis(backtests) conducted by the Author.'
+          example: 1300
+        biography:
+          type: string
+          description: 'Profile auto-biography (100-500 words).'
+          example: 'Physics professor from North East USA with background in nuclear fusion.'
+        forum-discussions:
+          type: integer
+          description: 'Number of forum discussions started by the Author.'
+          example: 5
+        forum-comments:
+          type: integer
+          description: 'Number of forum comments made by the Author.'
+          example: 34
+        language:
+          description: 'Author preferred programming language.'
+          type: string
+          enum: 
+            - 'Py'
+            - 'C#'
+          example: 'Py'
+        last-online-time:
+          type: number
+          format: double
+          description: 'Unix timestamp of the last time the Author was online (Updated daily).'
+          example: 1520785125.21
+        location:
+          type: string
+          description: 'Best known estimate of the Author geographic location.'
+          example: 'Brooklyn, New York, US'
+        projects:
+          type: integer
+          description: 'Total count of the number of projects the Author has in account.'
+          example: 34
+        signup-time:
+          type: number
+          format: double
+          description: 'Unix timestamp of the user sign up.'
+          example: 1520785125.21
+        social-media:
+          type: array
+          description: 'Array of social media profile links.'
+          items:
+            type: string
+
+
+    # Insight Object returned from the stream
+    Insight:
+      description: 'Individual prediction from an Alpha.'
+      properties:
+        id: 
+          description: 'Unique hash id of this Insight'
+          type: string
+          example: "dd9527c4dfde4b54b4c46fd95fe39049"
+        confidence:
+          description: 'Confidence of the Insight as a percentage.'
+          type: number
+          format: double
+          example: 0.21
+        created-time:
+          description: 'Unix timestamp for when the Alpha Insight was created.'
+          type: number
+          format: double
+          example: 1520785125.21
+        close-time:
+          description: 'Unix timestamp for when the Alpha Insight was closed (start + period).'
+          type: number
+          format: double
+          example: 1520785125.21
+        direction:
+          description: 'Direction of the insight; flat, up or down.'
+          type: string
+          enum:
+            - up
+            - down
+            - flat
+        type:
+          description: 'Insight prediction type category: price or volatility.'
+          type: string
+          enum:
+            - price
+            - volatility
+        source:
+          $ref: '#/components/schemas/AlphaMode'
+        period:
+          description: 'Prediction period of the insight in seconds.'
+          type: number
+          format: double
+          example: 600
+        reference-value:
+          description: 'Sample of the asset price at the time the insight was created'
+          type: number
+          format: double
+        symbol: 
+          $ref: '#/components/schemas/Symbol'
+        ticker: 
+          description: 'Current ticker for this asset'
+          type: string
+          example: "AAPL"
+          
+          
+    Price:
+      description: 'Record of the price of an Alpha or a bid made for it.'
+      properties:
+        time:
+          type: number
+          format: double
+          description: 'Unix timestamp of the last time the price was updated.'
+          example: 1520785125.21
+        price-type: 
+          description: 'The type of price update. Can be bid, ask or trade. Only ask supported at this time.'
+          type: string
+          enum:
+            - bid
+            - ask
+            - trade
+        shared-price:
+          description: 'Shared price for this moment of time.'
+          type: number
+          format: double
+          example: 1300
+        exclusive-price:
+          description: 'Exclusive price for this moment of time.'
+          type: number
+          format: double
+          example: 4500
+          
+    
+    # Alpha Project Object
+    Project:
+      description: 'Project object where the Alpha source resides. One Project can have multiple generated Alphas.'
+      properties:
+        author:
+          $ref: '#/components/schemas/Author'
+        id:
+          description: 'Unique integer id for the Alpha Project.'
+          type: integer
+        name:
+          type: string
+          description: 'Author assigned project name.'
+        created-time: 
+          type: number
+          format: double
+          example: 1520785125.21
+          description: 'Unix timestamp when the project was created.'
+        last-modified-time:
+          type: number
+          format: double
+          example: 1520785125.21
+          description: 'Unix timestamp last time the project was opened/modified.'
+        parent-id:
+          description: 'Id of the parent Project this was cloned from to start.'
+          type: number
+          format: integer
+          example: 1100012
+            
+            
+    # Generic success response from the API.
+    Success:
+      description: 'Generic success response message from the API.'
+      properties:
+        success:
+          type: boolean
+          example: true
+      
+      
+    # Generic error response from the API.
+    Error:
+      properties:
+        success:
+          description: 'Boolean indicating true-false; for error models this is always false.'
+          type: boolean
+          example: false
+        messages:
+          description: 'Array of error messages from the API.'
+          type: array
+          items:
+            type: string
+    
+    
+    # Production error recorded from an Alpha
+    RuntimeError:
+      properties:
+        time:
+          description: 'The unix timestamp of the production runtime error.'
+          type: number
+          format: double
+          example: 1520785125.21
+        error:
+          description: 'Error message string from the Alpha.'
+          type: string
+        stacktrace:
+          description: 'Stacktrace of the production error recorded from the Alpha.'
+          type: string
+
+
+    # Time Value Point
+    Point:
+      properties:
+        time:
+          description: 'Time value of a time-value pair.'
+          type: number
+          format: double
+          example: 1520785125.21
+        value:
+          description: 'Value of the point.'
+          type: number
+          format: double
+          
+    # Equity data point
+    EquityPoint: 
+      description: 'An array of the time-value and sampling mode of the alpha data. Backtest and live samples are a continuous series in the result set.'
+      type: array
+      items: 
+        oneOf:
+          - $ref: '#/components/schemas/TimeStamp'
+          - $ref: '#/components/schemas/Value'
+          - $ref: '#/components/schemas/AlphaMode'
+          
+    # Unique Symbol Identifier Class 
+    TimeStamp:
+      description: 'Unixtimestamp in seconds since Jan 1st 1970; with milliseconds.'
+      type: number
+      example: 1520785125.2123
+      
+    # Unique Symbol Identifier Class 
+    Value:
+      description: 'Numerical value for an array response (Alpha equity value in USD).'
+      type: number
+      example: 1120540.00
+      
+    # Enum property for the alphas state.
+    AlphaMode:
+      description: 'Description of the state of the model emissions (backtest, live or out of sample)'
+      type: string
+      enum:
+        - in sample
+        - out of sample
+        - live trading
+          
+    # Unique Symbol Identifier Class 
+    Symbol:
+      description: 'Uniquely identified securities-contract based on QuantConnect.Symbol type. All information to uniquely identify a contract.'
+      type: string
+      example: "AAPL R735QTJ8XC9X"
