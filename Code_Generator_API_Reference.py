@@ -8,7 +8,7 @@ paths = doc["paths"]
 
 def TableCreation(requestBody):
     writeUp = ""
-    component = request_body["content"]["application/json"]["schema"]["$ref"].split("/")[1:]
+    component = requestBody["content"]["application/json"]["schema"]["$ref"].split("/")[1:]
     item_list = [component]
     i = 0
     
