@@ -56,7 +56,7 @@ def TableCreation(requestBody):
     return writeUp
 
 def ExampleWriting(request_object_properties, item_list, order=0):
-    tab = "&nbsp&nbsp" * order
+    tab = "  " * order
     example = "{\n"
     line = []
     
@@ -65,14 +65,14 @@ def ExampleWriting(request_object_properties, item_list, order=0):
         description_ = properties["description"] if "description" in properties else "/"
         if example != "{\n":
             example += ",\n"
-        example_ = tab + f'&nbsp&nbsp"{name}":&nbsp'
+        example_ = tab + f'  "{name}": '
         
         if type_ == "array":
             example_ += '[\n'
             
             if "type" in properties["items"]:
                 type_ = properties["items"]["type"] + " Array"
-                example_ += tab + f'&nbsp&nbsp&nbsp&nbsp"{properties["items"]["type"]}"'
+                example_ += tab + f'    "{properties["items"]["type"]}"'
                 
             elif "$ref" in properties["items"]:
                 ref = properties["items"]["$ref"].split("/")[1:]
@@ -88,7 +88,7 @@ def ExampleWriting(request_object_properties, item_list, order=0):
                     request_object_properties_ = request_object_["properties"]
                     
                     write_up, __, item_list = ExampleWriting(request_object_properties_, item_list, order+2)
-                    example_ += tab + "&nbsp&nbsp" * 2 + write_up
+                    example_ += tab + "  " * 2 + write_up
         
         elif type_ == "object":
             if "additionalProperties" in properties:
@@ -164,16 +164,16 @@ def ExampleWriting(request_object_properties, item_list, order=0):
             type_ += " Enum"
             description_ += f' Options : {properties["enum"]}'
             if "string" in type_:
-                example_ = tab + f'&nbsp&nbsp"{name}": "{properties["enum"][0]}"'
+                example_ = tab + f'  "{name}": "{properties["enum"][0]}"'
             else:
-                example_ = tab + f'&nbsp&nbsp"{name}": {properties["enum"][0]}'
+                example_ = tab + f'  "{name}": {properties["enum"][0]}'
             
         if "example" in properties:
             type_ += f'<br/><i><sub>example: {properties["example"]}</sub></i>'
-            example_ = tab + f'&nbsp&nbsp"{name}": {properties["example"]}'
+            example_ = tab + f'  "{name}": {properties["example"]}'
         
         if "Array" in type_:
-            example_ += "\n" + tab + "&nbsp&nbsp]"
+            example_ += "\n" + tab + "  ]"
         
         if order == 0:
             line.append(f'</tr>\n<td width="20%">{name}</td> <td> <code>{type_}</code> <br/> {description_}</td>\n</tr>\n')
@@ -193,7 +193,7 @@ for api_call, result in paths.items():
     # Create Introduction part
     with open(destination_folder / f'{j:02} Introduction.html', "w") as html_file:
         html_file.write("<p>\n")
-        html_file.write(f"&nbsp&nbsp{content['summary']}\n")
+        html_file.write(f"  {content['summary']}\n")
         html_file.write("</p>\n")
         
         j += 1
@@ -202,7 +202,7 @@ for api_call, result in paths.items():
     if "description" in content:
         with open(destination_folder / f'{j:02} Descripion.html', "w") as html_file:
             html_file.write('<p>\n')
-            html_file.write(f'&nbsp&nbsp{content["description"]}\n')
+            html_file.write(f'  {content["description"]}\n')
             html_file.write('</p>\n')
             
             j += 1
@@ -210,7 +210,7 @@ for api_call, result in paths.items():
     # Create Request part
     with open(destination_folder / f'{j:02} Request.html', "w") as html_file:
         html_file.write('<p>\n')
-        html_file.write(f'&nbsp&nbspThe <code>{api_call}</code> API accepts requests in the following format:\n')
+        html_file.write(f'The <code>{api_call}</code> API accepts requests in the following format:\n')
         html_file.write('</p>\n')
         
         request_body = content["requestBody"]
@@ -222,7 +222,7 @@ for api_call, result in paths.items():
     # Create Response part
     with open(destination_folder / f'{j:02} Response.html', "w") as html_file:
         html_file.write('<p>\n')
-        html_file.write(f'&nbsp&nbspThe <code>{api_call}</code> API accepts requests in the following format:\n')
+        html_file.write(f'The <code>{api_call}</code> API accepts requests in the following format:\n')
         html_file.write('</p>\n\n<h4>200 Success</h4>\n')
         
         request_body = content["responses"]["200"]
