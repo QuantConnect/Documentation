@@ -133,6 +133,7 @@ def ExampleWriting(request_object_properties, item_list, order=0):
                     
                 if "properties" in request_object_:
                     request_object_properties_ = request_object_["properties"]
+                    description_ = request_object_["description"] if "description" in request_object_ else "/"
                     
                     write_up, __, item_list = ExampleWriting(request_object_properties_, item_list, order+1)
                     example_ += write_up
