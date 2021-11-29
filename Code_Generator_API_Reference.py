@@ -193,7 +193,7 @@ for api_call, result in paths.items():
     # Create Introduction part
     with open(destination_folder / f'{j:02} Introduction.html', "w") as html_file:
         html_file.write("<p>\n")
-        html_file.write(f"  {content['summary']}\n")
+        html_file.write(f"{content['summary']}\n")
         html_file.write("</p>\n")
         
         j += 1
@@ -202,7 +202,7 @@ for api_call, result in paths.items():
     if "description" in content:
         with open(destination_folder / f'{j:02} Descripion.html', "w") as html_file:
             html_file.write('<p>\n')
-            html_file.write(f'  {content["description"]}\n')
+            html_file.write(f'{content["description"]}\n')
             html_file.write('</p>\n')
             
             j += 1
