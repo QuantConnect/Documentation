@@ -380,7 +380,7 @@ for section, source in documentations.items():
             html_file.write('</p>\n')
             
             writeUp = '<table class="table qc-table">\n<thead>\n<tr>\n'
-            writeUp += f'<th colspan="1"><code>{api_call}</code> Method</th>\n'
+            writeUp += f'<th colspan="2"><code>{api_call}</code> Method</th>\n'
             
             if "parameters" in content:
                 writeUp += RequestTable(content["parameters"])
