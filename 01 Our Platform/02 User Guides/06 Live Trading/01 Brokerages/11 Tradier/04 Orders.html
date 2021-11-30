@@ -26,14 +26,36 @@ self.LimitIfTouchedOrder(self.symbol, quantity, trigger_price, limit_price)</pre
 <p>The Tradier brokerage model supports all of the <code>TimeInForce</code> options.</p>
 
 <div class="section-example-container">
-    <pre class="csharp">DefaultOrderProperties.TimeInForce = TimeInForce.Day;
-DefaultOrderProperties.TimeInForce = TimeInForce.GoodTilCanceled;
-DefaultOrderProperties.TimeInForce = TimeInForce.GoodTilDate(new DateTime(yyyy, MM, dd));
-LimitOrder(_symbol, quantity, limit_price);</pre>
-    <pre class="python">self.DefaultOrderProperties.TimeInForce = TimeInForce.Day
-self.DefaultOrderProperties.TimeInForce = TimeInForce.GoodTilCanceled
-self.DefaultOrderProperties.TimeInForce = TimeInForce.GoodTilDate(DateTime(yyyy, MM, dd))
-self.LimitOrder(self.symbol, quantity, limitPrice)</pre>
+    <pre class="csharp">public override void Initialize()
+{
+    DefaultOrderProperties.TimeInForce = TimeInForce.GoodTilCanceled;
+}
+
+public override void OnData(Slice data)
+{
+    LimitOrder(_symbol, quantity, limitPrice);
+    
+    var orderProperty1 = new OrderProperties();
+	orderProperty1.TimeInForce = TimeInForce.Day;
+    LimitOrder(_symbol, quantity, limitPrice, orderProperties: orderProperty1);
+
+    var orderProperty2 = new OrderProperties();
+	orderProperty2.TimeInForce = TimeInForce.GoodTilDate(DateTime(yyyy, MM, dd));
+    LimitOrder(_symbol, quantity, limitPrice, orderProperties: orderProperty2);
+}</pre>
+    <pre class="python">def Initialize(self):
+    self.DefaultOrderProperties.TimeInForce = TimeInForce.GoodTilCanceled
+
+def OnData(self, data):
+    self.LimitOrder(self.symbol, quantity, limit_price)
+
+    orderProperty1 = OrderProperties()
+	orderProperty1.TimeInForce = TimeInForce.Day
+    self.LimitOrder(self.symbol, quantity, limit_price, orderProperties=orderProperty1)
+
+    orderProperty2 = OrderProperties()
+	orderProperty2.TimeInForce = TimeInForce.GoodTilDate(DateTime(yyyy, MM, dd))
+    self.LimitOrder(self.symbol, quantity, limit_price, orderProperties=orderProperty2)</pre>
 </div>
 
 <h4>Updates</h4>
