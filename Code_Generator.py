@@ -366,7 +366,7 @@ for section, source in documentations.items():
             
         # Create Description part if having one
         if "description" in content:
-            with open(destination_folder / f'{j:02} Descripion.html', "w") as html_file:
+            with open(destination_folder / f'{j:02} Description.html', "w") as html_file:
                 html_file.write('<p>\n')
                 html_file.write(f'{content["description"]}\n')
                 html_file.write('</p>\n')
@@ -398,7 +398,7 @@ for section, source in documentations.items():
             j += 1
 
         # Create Response part
-        with open(destination_folder / f'{j:02} Response.html', "w") as html_file:
+        with open(destination_folder / f'{j:02} Responses.html', "w") as html_file:
             html_file.write('<p>\n')
             html_file.write(f'The <code>{api_call}</code> API provides a response in the following format:\n')
             html_file.write('</p>\n')
