@@ -134,9 +134,13 @@ def ResponseTable(requestBody):
                     request_object = request_object[item]
                     
                 if "enum" in request_object:
-                    enum = request_object["enum"]
+                    enum = " Options: " + str(request_object["enum"])
                 
-                writeUp += f'</tr>\n<td width="20%">{name}</td> <td> <code>{request_object["type"]}</code> <br/> {request_object["description"] + ". Options: " + str(enum)}</td>\n</tr>\n'
+                description_ = request_object["description"]
+                if description_[-1] != ".":
+                    description_ += "."
+                    
+                writeUp += f'</tr>\n<td width="20%">{name}</td> <td> <code>{request_object["type"]}</code> <br/> {description_ + enum}</td>\n</tr>\n'
 
                 if "example" in request_object:
                     text = request_object["example"]
