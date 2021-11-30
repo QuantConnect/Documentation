@@ -385,7 +385,7 @@ for section, source in documentations.items():
             html_file.write('</p>\n')
             
             if "parameters" in content:
-                writeUp += RequestTable(api_call, content["parameters"])
+                writeUp = RequestTable(api_call, content["parameters"])
                 html_file.write(writeUp)
                 
             elif "requestBody" in content:
