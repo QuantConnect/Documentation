@@ -1,24 +1,29 @@
+<h4>Order Types</h4>
 <p>The Atreyu brokerage supports the following order types:</p>
 <ul>
     <li><code>MarketOrder</code></li>
     <li><code>LimitOrder</code></li>
-    <li><code>MarketOnOpenOrder</code></li>
+    <li><code>MarketOnCloseOrder</code></li>
 </ul>
 
 <div class="section-example-container">
     <pre class="csharp">MarketOrder(_symbol, quantity);
 LimitOrder(_symbol, quantity, limitPrice);
-MarketOnOpenOrder(_symbol, quantity);</pre>
+MarketOnCloseOrder(_symbol, quantity);</pre>
     <pre class="python">self.MarketOrder(self.symbol, quantity)
 self.LimitOrder(self.symbol, quantity, limit_price)
-self.MarketOnOpenOrder(self.symbol, quantity)</pre>
+self.MarketOnCloseOrder(self.symbol, quantity)</pre>
 </div>
 
-<p>When creating orders, the quantity must be rounded to the nearest integer. After orders are created, they can be updated and canceled as desired. When applying time in force instructions to orders, the <code>DayTimeInForce</code> is supported.</p>
+<p>Only integer order quantities are supported.</p>
+
+
+
+<h4>Order Properties</h4>
+<p>The Atreyu brokerage model accepts <code>AtreyuOrderProperties</code> to specify the exchange and <code>TimeInForce</code> of orders. Only the <code>DayTimeInForce</code> is supported.</p>
 
 <div class="section-example-container">
-    <pre class="csharp">
-// Set default order properties
+    <pre class="csharp">// Set default order properties
 DefaultOrderProperties = new AtreyuOrderProperties
 {
     Exchange = Exchange.BATS,
@@ -27,8 +32,7 @@ DefaultOrderProperties = new AtreyuOrderProperties
 
 // Override default order properties
 MarketOrder(symbol, quantity, orderProperties: new AtreyuOrderProperties { Exchange = Exchange.ARCA });</pre>
-    <pre class="python">
-# Set default order properties
+    <pre class="python"># Set default order properties
 self.DefaultOrderProperties = AtreyuOrderProperties()
 self.DefaultOrderProperties.Exchange = Exchange.BATS
 self.DefaultOrderProperties.TimeInForce = TimeInForce.Day
@@ -37,4 +41,11 @@ self.DefaultOrderProperties.TimeInForce = TimeInForce.Day
 orderProperties = AtreyuOrderProperties()
 orderProperties.Exchange = Exchange.ARCA
 self.MarketOrder(self.symbol, quantity, orderProperties = orderProperties)</pre>
+</div>
+
+<h4>Updates</h4>
+<p>The Atreyu brokerage model supports order updates.</p>
+<div class="section-example-container">
+    <pre class="csharp"></pre>
+    <pre class="python"></pre>
 </div>
