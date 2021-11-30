@@ -390,7 +390,7 @@ for section, source in documentations.items():
                 
             else:
                 writeUp = '<table class="table qc-table">\n<thead>\n<tr>\n'
-                writeUp += f'<th colspan="2"><code>{api_call}</code> Method</th>\n</tr>\n</thead>\n'
+                writeUp += f'<th colspan="1"><code>{api_call}</code> Method</th>\n</tr>\n</thead>\n'
                 writeUp += '</tr>\n<td>{api_call} method takes no parameters.</td>\n</tr>\n</table>'
                 html_file.write(writeUp)
                 
