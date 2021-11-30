@@ -15,6 +15,9 @@ def RequestTable(api_call, params):
         description_ = "Optional. " if "required" not in item or not item["required"] else ""
         description_ += item["description"]
         
+        if description_[-1] != ".":
+              description_ += "."
+              
         if "type" in item["schema"]:
             type_ = item["schema"]["type"]
         else:
@@ -54,7 +57,7 @@ def RequestTable(api_call, params):
                 
             if "enum" in array_obj:
                 type_ = type_ + " Enum"
-                description_ += f' Options: {array_obj["enum"]}'
+                description_ += f' Options: {str(array_obj["enum"])}'
                 example_ = f'"{array_obj["enum"][0]}"'
             
         if "Enum" not in type_:
@@ -67,9 +70,6 @@ def RequestTable(api_call, params):
             elif "boolean" in type_:
                 example_ = 'true'
         
-        if description_[-1] != ".":
-              description_ += "."
-              
         writeUp += f'</tr>\n<td width="20%">{item["name"]}</td> <td> <code>{type_}</code><br/>{description_}</td>\n</tr>'
         example += f'  "{item["name"]}": {example_},\n'
         
