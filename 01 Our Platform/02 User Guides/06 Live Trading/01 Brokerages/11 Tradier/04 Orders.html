@@ -10,24 +10,42 @@
 </ul>
 
 <div class="section-example-container">
-    <pre class="csharp"></pre>
-    <pre class="python"></pre>
+    <pre class="csharp">MarketOrder(_symbol, quantity);
+LimitOrder(_symbol, quantity, limitPrice);
+StopMarketOrder(_symbol, quantity, stopPrice);
+StopLimitOrder(_symbol, quantity, stopPrice, limitPrice);
+LimitIfTouchedOrder(_symbol, quantity, triggerPrice, limitPrice);</pre>
+    <pre class="python">self.MarketOrder(self.symbol, quantity)
+self.LimitOrder(self.symbol, quantity, limit_price)
+self.StopMarketOrder(self.symbol, quantity, stop_price)
+self.StopLimitOrder(self.symbol, quantity, stop_price, limit_price)
+self.LimitIfTouchedOrder(self.symbol, quantity, trigger_price, limit_price)</pre>
 </div>
 
 <h4>Time In Force</h4>
 <p>The Tradier brokerage model supports all of the <code>TimeInForce</code> options.</p>
 
 <div class="section-example-container">
-    <pre class="csharp"></pre>
-    <pre class="python"></pre>
+    <pre class="csharp">DefaultOrderProperties.TimeInForce = TimeInForce.Day;
+DefaultOrderProperties.TimeInForce = TimeInForce.GoodTilCanceled;
+DefaultOrderProperties.TimeInForce = TimeInForce.GoodTilDate(new DateTime(yyyy, MM, dd));
+LimitOrder(_symbol, quantity, limit_price);</pre>
+    <pre class="python">self.DefaultOrderProperties.TimeInForce = TimeInForce.Day
+self.DefaultOrderProperties.TimeInForce = TimeInForce.GoodTilCanceled
+self.DefaultOrderProperties.TimeInForce = TimeInForce.GoodTilDate(DateTime(yyyy, MM, dd))
+self.LimitOrder(self.symbol, quantity, limitPrice)</pre>
 </div>
 
 <h4>Updates</h4>
 <p>The Tradier brokerage model supports order updates, but the quantity of the order can't change. To change the quantity of an order, cancel the order and then submit a new order with the desired quantity.</p>
 
 <div class="section-example-container">
-    <pre class="csharp"></pre>
-    <pre class="python"></pre>
+    <pre class="csharp">var ticket = LimitOrder(_symbol, quantity, limit_price);
+ticket.Cancel();
+ticket = LimitOrder(_symbol, new_quantity, new_limit_price);</pre>
+    <pre class="python">ticket = self.LimitOrder(self.symbol, quantity, limitPrice)
+ticket.Cancel()
+ticket = self.LimitOrder(self.symbol, newQuantity, newLimitPrice)</pre>
 </div>
 
 <h4>Extended Market Hours</h4>

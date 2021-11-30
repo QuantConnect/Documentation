@@ -9,22 +9,34 @@
 </ul>
 
 <div class="section-example-container">
-    <pre class="csharp"></pre>
-    <pre class="python"></pre>
+    <pre class="csharp">MarketOrder(_symbol, quantity);
+LimitOrder(_symbol, quantity, limitPrice);
+StopMarketOrder(_symbol, quantity, stopPrice);
+StopLimitOrder(_symbol, quantity, stopPrice, limitPrice);</pre>
+    <pre class="python">self.MarketOrder(self.symbol, quantity)
+self.LimitOrder(self.symbol, quantity, limit_price)
+self.StopMarketOrder(self.symbol, quantity, stop_price)
+self.StopLimitOrder(self.symbol, quantity, stop_price, limit_price)</pre>
 </div>
 
 <h4>Updates</h4>
 <p>The Coinbase brokerage model does not support order updates. However, you can cancel an existing order and then create a new order with the desired arguments.</p>
 
 <div class="section-example-container">
-    <pre class="csharp"></pre>
-    <pre class="python"></pre>
+    <pre class="csharp">var ticket = LimitOrder(_symbol, quantity, limit_price);
+ticket.Cancel();
+ticket = LimitOrder(_symbol, new_quantity, new_limit_price);</pre>
+    <pre class="python">ticket = self.LimitOrder(self.symbol, quantity, limitPrice)
+ticket.Cancel()
+ticket = self.LimitOrder(self.symbol, newQuantity, newLimitPrice)</pre>
 </div>
 
 <h4>Time In Force</h4>
 <p></p><p>The Coinbase brokerage model supports the <code>GoodTilCanceled</code> <code>TimeInForce</code>.</p>
 
 <div class="section-example-container">
-    <pre class="csharp"></pre>
-    <pre class="python"></pre>
+    <pre class="csharp">DefaultOrderProperties.TimeInForce = TimeInForce.GoodTilCanceled;
+LimitOrder(_symbol, quantity, limit_price);</pre>
+    <pre class="python">self.DefaultOrderProperties.TimeInForce = TimeInForce.GoodTilCanceled
+self.LimitOrder(self.symbol, quantity, limitPrice)</pre>
 </div>
