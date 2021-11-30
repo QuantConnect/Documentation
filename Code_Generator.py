@@ -4,8 +4,9 @@ import yaml
 documentations = {"Our Platform": "QuantConnect-Platform-2.0.0.yaml",
                   "Alpha Streams": "QuantConnect-Alpha-0.8.yaml"}
 
-def RequestTable(params):
-    writeUp = ""
+def RequestTable(api_call, params):
+    writeUp = '<table class="table qc-table">\n<thead>\n<tr>\n'
+    writeUp += f'<th colspan="2"><code>{api_call}</code> Method</th>\n</tr>\n</thead>\n'
     example = '<tr>\n<td width="20%">Example</td>\n<td>\n<div class="cli section-example-container"><pre>\n{\n'
     
     for item in params:
@@ -379,11 +380,8 @@ for section, source in documentations.items():
             html_file.write(f'The <code>{api_call}</code> API accepts requests in the following format:\n')
             html_file.write('</p>\n')
             
-            writeUp = '<table class="table qc-table">\n<thead>\n<tr>\n'
-            writeUp += f'<th colspan="2"><code>{api_call}</code> Method</th>\n'
-            
             if "parameters" in content:
-                writeUp += RequestTable(content["parameters"])
+                writeUp += RequestTable(api_call, content["parameters"])
                 html_file.write(writeUp)
                 
             elif "requestBody" in content:
@@ -391,8 +389,9 @@ for section, source in documentations.items():
                 html_file.write(writeUp)
                 
             else:
-                writeUp += '</tr>\n</thead>\n'
-                writeUp += '</tr>\n<td>{api_call} method takes no parameters.</td>\n</tr>\n'
+                writeUp = '<table class="table qc-table">\n<thead>\n<tr>\n'
+                writeUp += f'<th colspan="2"><code>{api_call}</code> Method</th>\n</tr>\n</thead>\n'
+                writeUp += '</tr>\n<td>{api_call} method takes no parameters.</td>\n</tr>\n</table>'
                 html_file.write(writeUp)
                 
             j += 1
