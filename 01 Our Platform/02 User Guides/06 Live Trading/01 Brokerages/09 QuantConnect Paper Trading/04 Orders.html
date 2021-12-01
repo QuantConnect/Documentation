@@ -46,23 +46,40 @@ self.LimitIfTouchedOrder(self.symbol, quantity, trigger_price, limit_price)</pre
 
 public override void OnData(Slice data)
 {
+    // Use default order order properties
+    LimitOrder(_symbol, quantity, limitPrice);
+    
     // Override the default order properties
-    LimitOrder(_symbol, quantity, limitPrice, orderProperties: new OrderProperties{ TimeInForce = TimeInForce.Day });
-    LimitOrder(_symbol, quantity, limitPrice, orderProperties: new OrderProperties{ TimeInForce = TimeInForce.GoodTilDate(DateTime(yyyy, MM, dd)) });
+    LimitOrder(_symbol, 
+               quantity, 
+               limitPrice, 
+               orderProperties: new OrderProperties
+               { 
+                   TimeInForce = TimeInForce.Day 
+               });
+    LimitOrder(_symbol, 
+               quantity, 
+               limitPrice, 
+               orderProperties: new OrderProperties
+               { 
+                   TimeInForce = TimeInForce.GoodTilDate(DateTime(year, month, day)) 
+               });
 }</pre>
     <pre class="python">def Initialize(self):
     # Set the default order properties
     self.DefaultOrderProperties.TimeInForce = TimeInForce.GoodTilCanceled
 
 def OnData(self, data):
+    # Use default order order properties
+    self.LimitOrder(self.symbol, quantity, limit_price)
+    
     # Override the default order properties
-    orderProperty1 = OrderProperties()
-    orderProperty1.TimeInForce = TimeInForce.Day
-    self.LimitOrder(self.symbol, quantity, limit_price, orderProperties=orderProperty1)
+    order_property = OrderProperties()
+    order_property.TimeInForce = TimeInForce.Day
+    self.LimitOrder(self.symbol, quantity, limit_price, orderProperties=order_property)
 
-    orderProperty2 = OrderProperties()
-    orderProperty2.TimeInForce = TimeInForce.GoodTilDate(DateTime(yyyy, MM, dd))
-    self.LimitOrder(self.symbol, quantity, limit_price, orderProperties=orderProperty2)</pre>
+    order_property.TimeInForce = TimeInForce.GoodTilDate(DateTime(year, month, day))
+    self.LimitOrder(self.symbol, quantity, limit_price, orderProperties=order_property)</pre>
 </div>
 
 <h4>Handling Splits</h4>

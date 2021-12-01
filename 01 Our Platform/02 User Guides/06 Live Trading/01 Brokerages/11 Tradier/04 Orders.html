@@ -40,35 +40,52 @@ self.LimitIfTouchedOrder(self.symbol, quantity, trigger_price, limit_price)</pre
 
 public override void OnData(Slice data)
 {
+    // Use default order order properties
+    LimitOrder(_symbol, quantity, limitPrice);
+    
     // Override the default order properties
-    LimitOrder(_symbol, quantity, limitPrice, orderProperties: new OrderProperties{ TimeInForce = TimeInForce.Day });
-    LimitOrder(_symbol, quantity, limitPrice, orderProperties: new OrderProperties{ TimeInForce = TimeInForce.GoodTilDate(DateTime(yyyy, MM, dd)) });
+    LimitOrder(_symbol, 
+               quantity, 
+               limitPrice, 
+               orderProperties: new OrderProperties
+               { 
+                   TimeInForce = TimeInForce.Day 
+               });
+    LimitOrder(_symbol, 
+               quantity, 
+               limitPrice, 
+               orderProperties: new OrderProperties
+               { 
+                   TimeInForce = TimeInForce.GoodTilDate(DateTime(year, month, day)) 
+               });
 }</pre>
     <pre class="python">def Initialize(self):
     # Set the default order properties
     self.DefaultOrderProperties.TimeInForce = TimeInForce.GoodTilCanceled
 
 def OnData(self, data):
+    # Use default order order properties
+    self.LimitOrder(self.symbol, quantity, limit_price)
+    
     # Override the default order properties
-    orderProperty1 = OrderProperties()
-    orderProperty1.TimeInForce = TimeInForce.Day
-    self.LimitOrder(self.symbol, quantity, limit_price, orderProperties=orderProperty1)
+    order_property = OrderProperties()
+    order_property.TimeInForce = TimeInForce.Day
+    self.LimitOrder(self.symbol, quantity, limit_price, orderProperties=order_property)
 
-    orderProperty2 = OrderProperties()
-    orderProperty2.TimeInForce = TimeInForce.GoodTilDate(DateTime(yyyy, MM, dd))
-    self.LimitOrder(self.symbol, quantity, limit_price, orderProperties=orderProperty2)</pre>
+    order_property.TimeInForce = TimeInForce.GoodTilDate(DateTime(year, month, day))
+    self.LimitOrder(self.symbol, quantity, limit_price, orderProperties=order_property)</pre>
 </div>
 
 <h4>Updates</h4>
 <p>The <code>TradierBrokerageModel</code> supports order updates, but the quantity of the order can't change. To change the quantity of an order, cancel the order and then submit a new order with the desired quantity.</p>
 
 <div class="section-example-container">
-    <pre class="csharp">var ticket = LimitOrder(_symbol, quantity, limit_price);
+    <pre class="csharp">var ticket = LimitOrder(_symbol, quantity, limitPrice);
 ticket.Cancel();
-ticket = LimitOrder(_symbol, new_quantity, new_limit_price);</pre>
-    <pre class="python">ticket = self.LimitOrder(self.symbol, quantity, limitPrice)
+ticket = LimitOrder(_symbol, newQuantity, newLimitPrice);</pre>
+    <pre class="python">ticket = self.LimitOrder(self.symbol, quantity, limit_price)
 ticket.Cancel()
-ticket = self.LimitOrder(self.symbol, newQuantity, newLimitPrice)</pre>
+ticket = self.LimitOrder(self.symbol, new_quantity, new_limit_price)</pre>
 </div>
 
 <h4>Extended Market Hours</h4>

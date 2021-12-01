@@ -42,16 +42,28 @@ self.StopLimitOrder(self.symbol, quantity, stop_price, limit_price)</pre>
 
 public override void OnData(Slice data)
 {
+    // Use default order order properties
+    LimitOrder(_symbol, quantity, limitPrice);
+    
     // Override the default order properties
-    LimitOrder(_symbol, quantity, limitPrice, orderProperties: new OrderProperties{ TimeInForce = TimeInForce.Day });
+    LimitOrder(_symbol, 
+               quantity, 
+               limitPrice, 
+               orderProperties: new OrderProperties
+               { 
+                   TimeInForce = TimeInForce.Day 
+               });
 }</pre>
     <pre class="python">def Initialize(self):
     # Set the default order properties
     self.DefaultOrderProperties.TimeInForce = TimeInForce.GoodTilCanceled
 
 def OnData(self, data):
+    # Use default order order properties
+    self.LimitOrder(self.symbol, quantity, limit_price)
+    
     # Override the default order properties
-    orderProperty1 = OrderProperties()
-    orderProperty1.TimeInForce = TimeInForce.Day
-    self.LimitOrder(self.symbol, quantity, limit_price, orderProperties=orderProperty1)</pre>
+    order_property = OrderProperties()
+    order_property.TimeInForce = TimeInForce.Day
+    self.LimitOrder(self.symbol, quantity, limit_price, orderProperties=order_property)</pre>
 </div>
