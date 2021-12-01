@@ -17,14 +17,16 @@ self.LimitOrder(self.symbol, quantity, limit_price)
 self.StopLimitOrder(self.symbol, quantity, stop_price, limit_price)</pre>
 </div>
 
-<h4>Time In Force</h4>
-<p>The <code>BinanceBrokerageModel</code> supports the following <code>TimeInForce</code> instructions:</p>
+<h4>Order Properties<br></h4>
+<p>The <code>BinanceBrokerageModel</code> supports custom order properties. You can define <code>BinanceOrderProperties</code> to use a <code>TimeInForce</code> instruction and to enforce that your orders do not take liquidity for the order book. The following <code>TimeInForce</code> instructions are supported:<br></p>
 
 <ul>
     <li><code>Day</code></li>
     <li><code>GoodTilCanceled</code></li>
     <li><code>GoodTilDate</code></li>
 </ul>
+
+<p>Enable the <code>PostOnly</code> flag of the <code>BinanceOrderProperties</code> to ensure your order executes as a maker order. If part of the order results in taking liquidity rather than providing liquidity, the order will be rejected without any part of the order being filled.</p>
 
 <div class="section-example-container">
     <pre class="csharp">public override void Initialize()
