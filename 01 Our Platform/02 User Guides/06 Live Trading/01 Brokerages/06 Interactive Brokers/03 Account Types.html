@@ -39,6 +39,7 @@ self.DefaultOrderProperties.Account = "DU123456"</pre>
 <div class="section-example-container">
     <pre class="csharp">public override void Initialize()
 {
+    // Set the default order properties
     DefaultOrderProperties = new InteractiveBrokersOrderProperties()
     {
         FaGroup = "TestGroupEQ",
@@ -50,21 +51,13 @@ self.DefaultOrderProperties.Account = "DU123456"</pre>
 
 public override void OnData(Slice data)
 {
-    LimitOrder(_symbol, quantity, limitPrice);
-    
-    var orderProperty1 = new InteractiveBrokersOrderProperties();
-	orderProperty1.FaMethod = "NetLiq";
-    LimitOrder(_symbol, quantity, limitPrice, orderProperties: orderProperty1);
-
-    var orderProperty2 = new InteractiveBrokersOrderProperties();
-	orderProperty2.FaMethod = "AvailableEquity";
-    LimitOrder(_symbol, quantity, limitPrice, orderProperties: orderProperty2);
-
-    var orderProperty3 = new InteractiveBrokersOrderProperties();
-	orderProperty3.FaMethod = "PctChange";
-    LimitOrder(_symbol, quantity, limitPrice, orderProperties: orderProperty3);
+    // Override the default order properties
+    LimitOrder(_symbol, quantity, limitPrice, orderProperties: new InteractiveBrokersOrderProperties{ FaMethod = "NetLiq" });
+    LimitOrder(_symbol, quantity, limitPrice, orderProperties: new InteractiveBrokersOrderProperties{ FaMethod = "AvailableEquity" });
+    LimitOrder(_symbol, quantity, limitPrice, orderProperties: new InteractiveBrokersOrderProperties{ FaMethod = "PctChange" });
 }</pre>
     <pre class="python">def Initialize(self):
+    # Set the default order properties
     self.DefaultOrderProperties = InteractiveBrokersOrderProperties()
     self.DefaultOrderProperties.FaGroup = "TestGroupEQ"
     self.DefaultOrderProperties.FaMethod = "EqualQuantity"
@@ -72,17 +65,16 @@ public override void OnData(Slice data)
     self.DefaultOrderProperties.Account = "DU123456"
 
 def OnData(self, data):
-    self.LimitOrder(self.symbol, quantity, limit_price)
-
+    # Override the default order properties
     orderProperty1 = InteractiveBrokersOrderProperties()
-	orderProperty1.FaMethod = "NetLiq"
+    orderProperty1.FaMethod = "NetLiq"
     self.LimitOrder(self.symbol, quantity, limit_price, orderProperties=orderProperty1)
 
     orderProperty2 = InteractiveBrokersOrderProperties()
-	orderProperty2.FaMethod = "AvailableEquity"
+    orderProperty2.FaMethod = "AvailableEquity"
     self.LimitOrder(self.symbol, quantity, limit_price, orderProperties=orderProperty2)
 
     orderProperty3 = InteractiveBrokersOrderProperties()
-	orderProperty3.FaMethod = "PctChange"
+    orderProperty3.FaMethod = "PctChange"
     self.LimitOrder(self.symbol, quantity, limit_price, orderProperties=orderProperty3)</pre>
 </div>

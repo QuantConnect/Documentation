@@ -47,35 +47,31 @@ self.StopLimitOrder(self.symbol, -1, currentBidPrice - 1, limit_price)</pre>
     <li><code>GoodTilDate</code></li>
 </ul>
 
-<pre class="csharp">public override void Initialize()
+<div class="section-example-container">
+    <pre class="csharp">public override void Initialize()
 {
+    // Set the default order properties
     DefaultOrderProperties.TimeInForce = TimeInForce.GoodTilCanceled;
 }
 
 public override void OnData(Slice data)
 {
-    LimitOrder(_symbol, quantity, limitPrice);
-    
-    var orderProperty1 = new OrderProperties();
-	orderProperty1.TimeInForce = TimeInForce.Day;
-    LimitOrder(_symbol, quantity, limitPrice, orderProperties: orderProperty1);
-
-    var orderProperty2 = new OrderProperties();
-	orderProperty2.TimeInForce = TimeInForce.GoodTilDate(DateTime(yyyy, MM, dd));
-    LimitOrder(_symbol, quantity, limitPrice, orderProperties: orderProperty2);
+    // Override the default order properties
+    LimitOrder(_symbol, quantity, limitPrice, orderProperties: new OrderProperties{ TimeInForce = TimeInForce.Day });
+    LimitOrder(_symbol, quantity, limitPrice, orderProperties: new OrderProperties{ TimeInForce = TimeInForce.GoodTilDate(DateTime(yyyy, MM, dd)) });
 }</pre>
     <pre class="python">def Initialize(self):
+    # Set the default order properties
     self.DefaultOrderProperties.TimeInForce = TimeInForce.GoodTilCanceled
 
 def OnData(self, data):
-    self.LimitOrder(self.symbol, quantity, limit_price)
-
+    # Override the default order properties
     orderProperty1 = OrderProperties()
-	orderProperty1.TimeInForce = TimeInForce.Day
+    orderProperty1.TimeInForce = TimeInForce.Day
     self.LimitOrder(self.symbol, quantity, limit_price, orderProperties=orderProperty1)
 
     orderProperty2 = OrderProperties()
-	orderProperty2.TimeInForce = TimeInForce.GoodTilDate(DateTime(yyyy, MM, dd))
+    orderProperty2.TimeInForce = TimeInForce.GoodTilDate(DateTime(yyyy, MM, dd))
     self.LimitOrder(self.symbol, quantity, limit_price, orderProperties=orderProperty2)</pre>
 </div>
 

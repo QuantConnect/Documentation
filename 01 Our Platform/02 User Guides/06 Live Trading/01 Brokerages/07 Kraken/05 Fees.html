@@ -15,6 +15,7 @@
 <div class="section-example-container">
     <pre class="csharp">public override void Initialize()
 {
+    // Set the default order properties
     DefaultOrderProperties = new KrakenOrderProperties()
     {
         FeeInBase = true;
@@ -24,23 +25,19 @@
 
 public override void OnData(Slice data)
 {
-    LimitOrder(_symbol, quantity, limitPrice);
-    
-    var orderProperty1 = new KrakenOrderProperties();
-	orderProperty1.FeeInQuote = true;
-	orderProperty1.FeeInBase = false;
-    LimitOrder(_symbol, quantity, limitPrice, orderProperties: orderProperty1);
+    // Override the default order properties
+    LimitOrder(_symbol, quantity, limitPrice, orderProperties: new KrakenOrderProperties{ FeeInQuote = true, FeeInBase = false });
 }</pre>
     <pre class="python">def Initialize(self):
+    # Set the default order properties
     self.DefaultOrderProperties = KrakenOrderProperties()
     self.DefaultOrderProperties.FeeInBase = True
     self.DefaultOrderProperties.FeeInQuote = False
 
 def OnData(self, data):
-    self.LimitOrder(self.symbol, quantity, limit_price)
-
+    # Override the default order properties
     orderProperty1 = KrakenOrderProperties()
-	orderProperty1.FeeInQuote = True
+    orderProperty1.FeeInQuote = True
     orderProperty1.FeeInBase = False
     self.LimitOrder(self.symbol, quantity, limit_price, orderProperties=orderProperty1)</pre>
 </div>

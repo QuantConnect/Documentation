@@ -36,24 +36,22 @@ self.StopLimitOrder(self.symbol, quantity, stop_price, limit_price)</pre>
 <div class="section-example-container">
     <pre class="csharp">public override void Initialize()
 {
+    // Set the default order properties
     DefaultOrderProperties.TimeInForce = TimeInForce.GoodTilCanceled;
 }
 
 public override void OnData(Slice data)
 {
-    LimitOrder(_symbol, quantity, limitPrice);
-    
-    var orderProperty1 = new OrderProperties();
-	orderProperty1.TimeInForce = TimeInForce.Day;
-    LimitOrder(_symbol, quantity, limitPrice, orderProperties: orderProperty1);
+    // Override the default order properties
+    LimitOrder(_symbol, quantity, limitPrice, orderProperties: new OrderProperties{ TimeInForce = TimeInForce.Day });
 }</pre>
     <pre class="python">def Initialize(self):
+    # Set the default order properties
     self.DefaultOrderProperties.TimeInForce = TimeInForce.GoodTilCanceled
 
 def OnData(self, data):
-    self.LimitOrder(self.symbol, quantity, limit_price)
-
+    # Override the default order properties
     orderProperty1 = OrderProperties()
-	orderProperty1.TimeInForce = TimeInForce.Day
+    orderProperty1.TimeInForce = TimeInForce.Day
     self.LimitOrder(self.symbol, quantity, limit_price, orderProperties=orderProperty1)</pre>
 </div>
