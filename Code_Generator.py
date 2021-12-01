@@ -6,7 +6,7 @@ documentations = {"Our Platform": "QuantConnect-Platform-2.0.0.yaml",
 
 def RequestTable(api_call, params):
     writeUp = '<table class="table qc-table">\n<thead>\n<tr>\n'
-    writeUp += f'<th colspan="2"><code>{api_call}</code> Method</th>\n</tr>\n</thead>\n'
+    writeUp += f'<th colspan="2"><code>{api_call}</code> Method</th>\n</tr>\n</thead>'
     example = '<tr>\n<td width="20%">Example</td>\n<td>\n<div class="cli section-example-container"><pre>\n{\n'
     
     for item in params:
@@ -70,7 +70,7 @@ def RequestTable(api_call, params):
             elif "boolean" in type_:
                 example_ = 'true'
         
-        writeUp += f'</tr>\n<td width="20%">{item["name"]}</td> <td> <code>{type_}</code><br/>{description_}</td>\n</tr>'
+        writeUp += f'\n<tr>\n<td width="20%">{item["name"]}</td> <td> <code>{type_}</code><br/>{description_}</td>\n</tr>'
         example += f'  "{item["name"]}": {example_},\n'
         
     return writeUp + example + "\b}</pre>\n</div>\n</td>\n</tr>\n</table>"
@@ -96,7 +96,7 @@ def ResponseTable(requestBody):
             writeUp += f'<th colspan="2">{requestBody["description"]}</th>\n'
             writeUp += '</tr>\n</thead>\n'
             
-            writeUp += f'</tr>\n<td width="20%">value</td> <td> <code>{component["items"]["type"]}</code> <br/>/</td>\n</tr>\n'
+            writeUp += f'<tr>\n<td width="20%">value</td> <td> <code>{component["items"]["type"]}</code> <br/>/</td>\n</tr>\n'
             
             writeUp += '<tr>\n<td width="20%">Example</td>\n<td>\n<div class="cli section-example-container"><pre>\n'
             writeUp += f'[\n  "{component["items"]["example"]}"\n]'
@@ -121,7 +121,7 @@ def ResponseTable(requestBody):
             
             writeUp += '<table class="table qc-table">\n<thead>\n<tr>\n'
             writeUp += f'<th colspan="2"><code>{item}</code> Model - {request_object["description"]}</th>\n'
-            writeUp += '</tr>\n</thead>\n'
+            writeUp += '</tr>\n</thead>'
             
             for y in prop:
                 path = y["$ref"].split("/")[1:]
@@ -140,7 +140,7 @@ def ResponseTable(requestBody):
                 if description_[-1] != ".":
                     description_ += "."
                     
-                writeUp += f'</tr>\n<td width="20%">{name}</td> <td> <code>{request_object["type"]}</code> <br/> {description_ + enum}</td>\n</tr>\n'
+                writeUp += f'\n<tr>\n<td width="20%">{name}</td> <td> <code>{request_object["type"]}</code> <br/> {description_ + enum}</td>\n</tr>\n'
 
                 if "example" in request_object:
                     text = request_object["example"]
@@ -339,7 +339,7 @@ def ExampleWriting(request_object_properties, item_list, array=False, order=0):
             example_ += "\n" + tab + "  ]"
         
         if order == 0 or array:
-            line.append(f'</tr>\n<td width="20%">{name}</td> <td> <code>{type_}</code> <br/> {description_}</td>\n</tr>\n')
+            line.append(f'<tr>\n<td width="20%">{name}</td> <td> <code>{type_}</code> <br/> {description_}</td>\n</tr>\n')
             
         example += example_
     
