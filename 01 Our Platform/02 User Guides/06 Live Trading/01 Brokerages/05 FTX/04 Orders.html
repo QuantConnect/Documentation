@@ -37,14 +37,20 @@ StopLimitOrder(_symbol, -1, currentBidPrice - 1, limitPrice);</pre>
 self.StopLimitOrder(self.symbol, -1, currentBidPrice - 1, limit_price)</pre>
 </div>
 
-<h4>Time In Force</h4>
 
-<p>The <code>FTXBrokerageModel</code> supports the following <code>TimeInForce</code> instructions:</p>
+<h4>Order Properties</h4>
+
+<p>The <code>FTXBrokerageModel</code> supports custom order properties. You can define the following members of <code>FTXOrderProperties</code>:</p>
 
 <ul>
-    <li><code>Day</code></li>
-    <li><code>GoodTilCanceled</code></li>
-    <li><code>GoodTilDate</code></li>
+    <li><b><code>TimeInForce</code></b>: A <code>TimeInForce</code> instruction to apply to the order. The following instructions are supported:</li>
+    <ul>
+        <li><code>Day</code></li>
+        <li><code>GoodTilCanceled</code></li>
+        <li><code>GoodTilDate</code></li>
+    </ul>
+    <li><b><code>ReduceOnly</code></b>: A flag to signal that the order should only be filled if it reduces your position size.</li>
+    <li><b><code>PostOnly</code></b>: A flag to signal that your order will only add liquidity to the order book and not take liquidity from the order book. If part of your order results in taking liquidity rather than providing liquidity, your order will be rejected without any part of it being filled.</li>
 </ul>
 
 <div class="section-example-container">
@@ -102,12 +108,4 @@ ticket = LimitOrder(_symbol, newQuantity, newLimitPrice);</pre>
     <pre class="python">ticket = self.LimitOrder(self.symbol, quantity, limit_price)
 ticket.Cancel()
 ticket = self.LimitOrder(self.symbol, new_quantity, new_limit_price)</pre>
-</div>
-
-<h4>Order Properties</h4>
-<p>The <code>FTXBrokerageModel</code> supports custom order properties. You can define <code>FTXOrderProperties</code> so that your orders will only be filled if it reduces your position size.</p>
-
-<div class="section-example-container">
-    <pre class="csharp"></pre>
-    <pre class="python"></pre>
 </div>
