@@ -29,14 +29,18 @@ self.MarketOnCloseOrder(self.symbol, quantity)
 self.LimitIfTouchedOrder(self.symbol, quantity, trigger_price, limit_price)</pre>
 </div>
 
-<h4>Time In Force</h4>
-
-<p>The <code>BitfinexBrokerageModel</code> supports the following <code>TimeInForce</code> instructions:</p>
+<h4>Order Properties</h4>
+<p>The <code>BitfinexBrokerageModel</code> supports custom order properties. You can define the following members of <code>BitfinexOrderProperties</code>:</p>
 
 <ul>
-    <li><code>Day</code></li>
-    <li><code>GoodTilCanceled</code></li>
-    <li><code>GoodTilDate</code></li>
+    <li><b><code>TimeInForce</code></b>: A <code>TimeInForce</code> instruction to apply to the order. The following instructions are supported:</li>
+    <ul>
+        <li><code>Day</code></li>
+        <li><code>GoodTilCanceled</code></li>
+        <li><code>GoodTilDate</code></li>
+    </ul>
+    <li><b><code>Hidden</code></b>: A flag to signal that the order should be hidden. Hidden orders do not appear in the order book, so they do not influence other market participants. If you place a hidden order, you pay the taker fee.</li>
+    <li><b><code>PostOnly</code></b>: A flag signal that your order will only add liquidity to the order book and not take liquidity from the order book. If part of your order results in taking liquidity rather than providing liquidity, your order will be rejected without any part of it being filled.</li>
 </ul>
 
 <div class="section-example-container">
@@ -82,12 +86,4 @@ def OnData(self, data):
 
     order_property.TimeInForce = TimeInForce.GoodTilDate(DateTime(year, month, day))
     self.LimitOrder(self.symbol, quantity, limit_price, orderProperties=order_property)</pre>
-</div>
-
-<h4>Order Properties</h4>
-<p>The <code>BitfinexBrokerageModel</code> supports custom order properties. You can define <code>BitfinexOrderProperties</code> to create hidden orders. Hidden orders do not appear in the order book, so they do not influence other market participants. If you place a hidden order, you pay the taker fee.<br></p>
-
-<div class="section-example-container">
-    <pre class="csharp"></pre>
-    <pre class="python"></pre>
 </div>
