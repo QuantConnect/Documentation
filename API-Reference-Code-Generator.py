@@ -380,23 +380,31 @@ for section, source in documentations.items():
             
         # Create Request part
         with open(destination_folder / f'{j:02} Request.html', "w") as html_file:
-            html_file.write('<p>\n')
-            html_file.write(f'The <code>{api_call}</code> API accepts requests in the following format:\n')
-            html_file.write('</p>\n')
-            
+            description_ = ""
+                
             if "parameters" in content:
                 writeUp = RequestTable(api_call, content["parameters"])
-                html_file.write(writeUp)
                 
             elif "requestBody" in content:
+                if "description" in content["requestBody"]:
+                    description_ = str(content["requestBody"]["description"]) 
+                    
+                    if description_[-1] != ".":
+                        description_ += "."
+                        
+                    description_ += " "
+                    
                 writeUp = ResponseTable(content["requestBody"])
-                html_file.write(writeUp)
                 
             else:
                 writeUp = '<table class="table qc-table">\n<thead>\n<tr>\n'
                 writeUp += f'<th colspan="1"><code>{api_call}</code> Method</th>\n</tr>\n</thead>\n'
                 writeUp += f'</tr>\n<td><code>{api_call}</code> method takes no parameters.</td>\n</tr>\n</table>'
-                html_file.write(writeUp)
+            
+            description_ += f'The <code>{api_call}</code> API accepts requests in the following format:\n'
+            
+            html_file.write("<p>\n" + description_ + "</p>\n")
+            html_file.write(writeUp)
                 
             j += 1
 
