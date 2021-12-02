@@ -23,14 +23,22 @@ self.StopLimitOrder(self.symbol, quantity, stop_price, limit_price)
 self.LimitIfTouchedOrder(self.symbol, quantity, trigger_price, limit_price)</pre>
 </div>
 
-<h4>Time In Force</h4>
+<h4>Order Properties</h4>
 
-<p>The <code>KrakenBrokerageModel</code> supports the following <code>TimeInForce</code> instructions:</p>
+<p>The <code>KrakenBrokerageModel</code> supports custom order properties. You can define the following members of <code>KrakenOrderProperties</code>:</p>
 
 <ul>
-    <li><code>Day</code></li>
-    <li><code>GoodTilCanceled</code></li>
-    <li><code>GoodTilDate</code></li>
+    <li><b><code>TimeInForce</code></b>: A <code>TimeInForce</code> instruction to apply to the order. The following instructions are supported:</li>
+    <ul>
+        <li><code>Day</code></li>
+        <li><code>GoodTilCanceled</code></li>
+        <li><code>GoodTilDate</code></li>
+    </ul>
+    <li><b><code>PostOnly</code></b>: A flag to signal that your order will only add liquidity to the order book and not take liquidity from the order book. If part of your order results in taking liquidity rather than providing liquidity, your order will be rejected without any part of it being filled.</li>
+    <li><b><code>FeeInBase</code></b>: A flag to signal that the order fees should be paid in the base currency, which is the default behavior when selling. This flag must be the opposite of the <code>FeeInQuote</code> flag.<br></li>
+    <li><b><code>FeeInQuote</code></b>: A flag to signal that the order fees should be paid in the quote currency, which is the default behavior when buying. This flag must be the opposite of the <code>FeeInBase</code> flag.</li>
+    <li><b><code>NoMarketPriceProtection</code></b>: A flag to signal that no <a href="https://support.kraken.com/hc/en-us/articles/201648183-Market-Price-Protection">Market Price Protection</a> should be used.</li>
+    <li><b><code>ConditionalOrder</code></b>: An <code>Order</code> that's submitted when the primary order is executed. The quantity of the order must match the primary order quantity and the direction of the order must be the opposite of the primary order direction.</li>
 </ul>
 
 <div class="section-example-container">
@@ -89,20 +97,4 @@ ticket = LimitOrder(_symbol, newQuantity, newLimitPrice);</pre>
     <pre class="python">ticket = self.LimitOrder(self.symbol, quantity, limit_price)
 ticket.Cancel()
 ticket = self.LimitOrder(self.symbol, new_quantity, new_limit_price)</pre>
-</div>
-
-<h4>Order Properties</h4>
-
-<p>The <code>KrakenBrokerageModel</code> supports custom order properties. You can define the following members of <code>KrakenOrderProperties</code>:</p>
-
-<ul>
-    <li><b><code>FeeInBase</code></b>: A boolean flag to signal that the order fees should be paid in the base currency, which is the default behavior when selling. This flag must be the opposite of the <code>FeeInQuote</code> flag.<br></li>
-    <li><b><code>FeeInQuote</code></b>: A boolean flag to signal that the order fees should be paid in the quote currency, which is the default behavior when buying. This flag must be the opposite of the <code>FeeInBase</code> flag.</li>
-    <li><b><code>NoMarketPriceProtection</code></b>: A boolean flag to signal that no <a href="https://support.kraken.com/hc/en-us/articles/201648183-Market-Price-Protection">Market Price Protection</a> should be used.</li>
-    <li><b><code>ConditionalOrder</code></b>: An order that's submitted when the primary order is executed. The quantity of this order must match the primary order quantity and the direction of this order must be the opposite of the primary order direction.</li>
-</ul>
-
-<div class="section-example-container">
-    <pre class="csharp"></pre>
-    <pre class="python"></pre>
 </div>
