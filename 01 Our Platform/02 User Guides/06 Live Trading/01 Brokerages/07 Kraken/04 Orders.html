@@ -84,9 +84,10 @@ public override void OnData(Slice data)
                    FeeInBase = true,
                    FeeInQuote = false,
                    NoMarketPriceProtection = false,
-                   ConditionalOrder = StopMarketOrder(_symbol, 
-                                                      -quantity,
-                                                      stopPrice)
+                   ConditionalOrder = StopLimitOrder(_symbol, 
+                                                     -quantity,
+                                                     stopLimitPrice,
+                                                     stopPrice)
                });
 }</pre>
     <pre class="python">def Initialize(self):
@@ -116,9 +117,10 @@ def OnData(self, data):
     order_property.FeeInBase = True
     order_property.FeeInQuote = False
     order_property.NoMarketPriceProtection = False
-    order_property.ConditionalOrder = self.StopMarketOrder(self.symbol, 
-                                                           -quantity,
-                                                           stop_price)
+    order_property.ConditionalOrder = self.StopLimitOrder(self.symbol, 
+                                                          -quantity,
+                                                          stop_limit_price,
+                                                          stop_price)
     self.LimitOrder(self.symbol, quantity, limit_price, orderProperties=order_property)</pre>
 </div>
 
