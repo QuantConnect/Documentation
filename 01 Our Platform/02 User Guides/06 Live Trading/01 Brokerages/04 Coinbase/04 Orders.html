@@ -30,8 +30,46 @@ self.StopLimitOrder(self.symbol, quantity, stop_price, limit_price)</pre>
 </ul>
 
 <div class="section-example-container">
-    <pre class="csharp"></pre>
-    <pre class="python"></pre>
+    <pre class="csharp">public override void Initialize()
+{
+    // Set the default order properties
+    DefaultOrderProperties = new GDAXOrderProperties
+    {
+        TimeInForce = TimeInForce.GoodTilCanceled,
+        PostOnly = false
+    };
+}
+
+public override void OnData(Slice data)
+{
+    // Use default order order properties
+    LimitOrder(_symbol, quantity, limitPrice);
+    
+    // Override the default order properties
+    LimitOrder(_symbol, 
+               quantity, 
+               limitPrice, 
+               orderProperties: new GDAXOrderProperties
+               { 
+                   TimeInForce = TimeInForce.GoodTilCanceled,
+                   PostOnly = true
+               });
+}</pre>
+    <pre class="python">def Initialize(self):
+    # Set the default order properties
+    self.DefaultOrderProperties = GDAXOrderProperties()
+    self.DefaultOrderProperties.TimeInForce = TimeInForce.GoodTilCanceled
+    self.DefaultOrderProperties.PostOnly = False
+
+def OnData(self, data):
+    # Use default order order properties
+    self.LimitOrder(self.symbol, quantity, limit_price)
+    
+    # Override the default order properties
+    order_property = GDAXOrderProperties()
+    order_property.TimeInForce = TimeInForce.GoodTilCanceled
+    order_property.PostOnly = True
+    self.LimitOrder(self.symbol, quantity, limit_price, orderProperties=order_property)</pre>
 </div>
 
 <h4>Updates</h4>

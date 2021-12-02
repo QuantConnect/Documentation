@@ -49,7 +49,11 @@ self.LimitIfTouchedOrder(self.symbol, quantity, trigger_price, limit_price)</pre
     <pre class="csharp">public override void Initialize()
 {
     // Set the default order properties
-    DefaultOrderProperties.TimeInForce = TimeInForce.GoodTilCanceled;
+    DefaultOrderProperties = new InteractiveBrokersOrderProperties
+    {
+        TimeInForce = TimeInForce.GoodTilCanceled,
+        OutsideRegularTradingHours = false
+    };
 }
 
 public override void OnData(Slice data)
@@ -61,29 +65,34 @@ public override void OnData(Slice data)
     LimitOrder(_symbol, 
                quantity, 
                limitPrice, 
-               orderProperties: new OrderProperties
+               orderProperties: new InteractiveBrokersOrderProperties
                { 
-                   TimeInForce = TimeInForce.Day 
+                   TimeInForce = TimeInForce.Day,
+                   OutsideRegularTradingHours = false
                });
     LimitOrder(_symbol, 
                quantity, 
                limitPrice, 
-               orderProperties: new OrderProperties
+               orderProperties: new InteractiveBrokersOrderProperties
                { 
-                   TimeInForce = TimeInForce.GoodTilDate(DateTime(year, month, day)) 
+                   TimeInForce = TimeInForce.GoodTilDate(new DateTime(year, month, day)),
+                   OutsideRegularTradingHours = true
                });
 }</pre>
     <pre class="python">def Initialize(self):
     # Set the default order properties
+    self.DefaultOrderProperties = InteractiveBrokersOrderProperties()
     self.DefaultOrderProperties.TimeInForce = TimeInForce.GoodTilCanceled
+    self.DefaultOrderProperties.OutsideRegularTradingHours = False
 
 def OnData(self, data):
     # Use default order order properties
     self.LimitOrder(self.symbol, quantity, limit_price)
     
     # Override the default order properties
-    order_property = OrderProperties()
+    order_property = InteractiveBrokersOrderProperties()
     order_property.TimeInForce = TimeInForce.Day
+    order_property.OutsideRegularTradingHours = True
     self.LimitOrder(self.symbol, quantity, limit_price, orderProperties=order_property)
 
     order_property.TimeInForce = TimeInForce.GoodTilDate(DateTime(year, month, day))

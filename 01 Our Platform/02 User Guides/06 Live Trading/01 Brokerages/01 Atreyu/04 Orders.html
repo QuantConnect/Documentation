@@ -34,19 +34,30 @@ self.MarketOnCloseOrder(self.symbol, quantity)</pre>
     <pre class="csharp">// Set default order properties
 DefaultOrderProperties = new AtreyuOrderProperties
 {
+    TimeInForce = TimeInForce.Day,
     Exchange = Exchange.BATS,
-    TimeInForce = TimeInForce.Day
+    PostOnly = false
 };
 
 // Override default order properties
-MarketOrder(symbol, quantity, orderProperties: new AtreyuOrderProperties { Exchange = Exchange.ARCA });</pre>
+MarketOrder(symbol, 
+            quantity, 
+            orderProperties: new AtreyuOrderProperties 
+            { 
+                TimeInForce = TimeInForce.Day,
+                Exchange = Exchange.ARCA, 
+                PostOnly = true 
+            });</pre>
     <pre class="python"># Set default order properties
 self.DefaultOrderProperties = AtreyuOrderProperties()
-self.DefaultOrderProperties.Exchange = Exchange.BATS
 self.DefaultOrderProperties.TimeInForce = TimeInForce.Day
+self.DefaultOrderProperties.Exchange = Exchange.BATS
+self.DefaultOrderProperties.PostOnly = False
 
 # Override default order properties
-orderProperties = AtreyuOrderProperties()
-orderProperties.Exchange = Exchange.ARCA
-self.MarketOrder(self.symbol, quantity, orderProperties = orderProperties)</pre>
+order_properties = AtreyuOrderProperties()
+order_properties.TimeInForce = TimeInForce.Day
+order_properties.Exchange = Exchange.ARCA
+order_properties.PostOnly = True
+self.MarketOrder(self.symbol, quantity, orderProperties = order_properties)</pre>
 </div>

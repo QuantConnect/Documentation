@@ -14,28 +14,34 @@
     <li><code>TradingTechnologies</code></li>
 </ul>
 
+<h4>Alpha Streams Brokerage Model</h4>
+<p>The <code>AlphaStreamsBrokerageModel</code> models the cost of executing through a prime brokerage.</p>
+
+<h5>Account Types</h5>
+<p>The <code>AlphaStreamsBrokerageModel</code> supports cash and margin accounts.</p>
 <div class="section-example-container">
     <pre class="csharp">SetBrokerageModel(BrokerageName.AlphaStreams, AccountType.Cash);
 SetBrokerageModel(BrokerageName.AlphaStreams, AccountType.Margin);</pre>
     <pre class="python">self.SetBrokerageModel(BrokerageName.AlphaStreams, AccountType.Cash)
 self.SetBrokerageModel(BrokerageName.AlphaStreams, AccountType.Margin)</pre>
 </div>
-
-<h4>Alpha Streams Brokerage Model</h4>
-<p>The <code>AlphaStreamsBrokerageModel</code> models the cost of executing through a prime brokerage.</p>
-
-<h5>Account Types</h5>
-<p>The <code>AlphaStreamsBrokerageModel</code> supports cash accounts.</p>
-<div class="section-example-container">
-    <pre class="csharp"></pre>
-    <pre class="python"></pre>
-</div>
-
 <h5>Asset Classes</h5>
 <p>The <code>AlphaStreamsBrokerageModel</code> supports paper trading Equities, Cryptocurrencies, Forex, and Futures.</p>
 <div class="section-example-container">
-    <pre class="csharp"></pre>
-    <pre class="python"></pre>
+    <pre class="csharp">AddCrypto("BTCUSDT", Resolution.Minute);
+
+AddEquity("SPY", Resolution.Minute);
+
+AddForex("EURUSD", Resolution.Minute);
+
+AddFuture(Futures.Indices.SP500EMini, Resolution.Minute);</pre>
+    <pre class="python">self.AddCrypto("BTCUSDT", Resolution.Minute)
+
+self.AddEquity("SPY", Resolution.Minute)
+
+self.AddForex("EURUSD", Resolution.Minute)
+
+self.AddFuture(Futures.Indices.SP500EMini, Resolution.Minute)</pre>
 </div>
 
 
@@ -56,8 +62,20 @@ self.SetBrokerageModel(BrokerageName.AlphaStreams, AccountType.Margin)</pre>
 </ul>
 
 <div class="section-example-container">
-    <pre class="csharp"></pre>
-    <pre class="python"></pre>
+    <pre class="csharp">MarketOrder(_symbol, quantity);
+LimitOrder(_symbol, quantity, limitPrice);
+StopMarketOrder(_symbol, quantity, stopPrice);
+StopLimitOrder(_symbol, quantity, stopPrice, limitPrice);
+MarketOnOpenOrder(_symbol, quantity);
+MarketOnCloseOrder(_symbol, quantity);
+LimitIfTouchedOrder(_symbol, quantity, triggerPrice, limitPrice);</pre>
+    <pre class="python">self.MarketOrder(self.symbol, quantity)
+self.LimitOrder(self.symbol, quantity, limit_price)
+self.StopMarketOrder(self.symbol, quantity, stop_price)
+self.StopLimitOrder(self.symbol, quantity, stop_price, limit_price)
+self.MarketOnOpenOrder(self.symbol, quantity)
+self.MarketOnCloseOrder(self.symbol, quantity)
+self.LimitIfTouchedOrder(self.symbol, quantity, trigger_price, limit_price)</pre>
 </div>
 
 <h6>Time In Force</h6>
@@ -71,8 +89,48 @@ self.SetBrokerageModel(BrokerageName.AlphaStreams, AccountType.Margin)</pre>
 </ul>
 
 <div class="section-example-container">
-    <pre class="csharp"></pre>
-    <pre class="python"></pre>
+    <pre class="csharp">public override void Initialize()
+{
+    // Set the default order properties
+    DefaultOrderProperties.TimeInForce = TimeInForce.GoodTilCanceled;
+}
+
+public override void OnData(Slice data)
+{
+    // Use default order order properties
+    LimitOrder(_symbol, quantity, limitPrice);
+    
+    // Override the default order properties
+    LimitOrder(_symbol, 
+               quantity, 
+               limitPrice, 
+               orderProperties: new OrderProperties
+               { 
+                   TimeInForce = TimeInForce.Day 
+               });
+    LimitOrder(_symbol, 
+               quantity, 
+               limitPrice, 
+               orderProperties: new OrderProperties
+               { 
+                   TimeInForce = TimeInForce.GoodTilDate(new DateTime(year, month, day)) 
+               });
+}</pre>
+    <pre class="python">def Initialize(self):
+    # Set the default order properties
+    self.DefaultOrderProperties.TimeInForce = TimeInForce.GoodTilCanceled
+
+def OnData(self, data):
+    # Use default order order properties
+    self.LimitOrder(self.symbol, quantity, limit_price)
+    
+    # Override the default order properties
+    order_property = OrderProperties()
+    order_property.TimeInForce = TimeInForce.Day
+    self.LimitOrder(self.symbol, quantity, limit_price, orderProperties=order_property)
+
+    order_property.TimeInForce = TimeInForce.GoodTilDate(DateTime(year, month, day))
+    self.LimitOrder(self.symbol, quantity, limit_price, orderProperties=order_property)</pre>
 </div>
 
 <h5>Fees</h5>
