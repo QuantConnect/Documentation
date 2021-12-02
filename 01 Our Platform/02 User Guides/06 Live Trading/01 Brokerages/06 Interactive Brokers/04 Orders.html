@@ -28,15 +28,20 @@ self.MarketOnCloseOrder(self.symbol, quantity)
 self.LimitIfTouchedOrder(self.symbol, quantity, trigger_price, limit_price)</pre>
 </div>
 
-<h4>Time In Force</h4>
+<h4>Order Properties</h4>
 
-<p>The <code>InteractiveBrokersBrokerageModel</code> supports the following <code>TimeInForce</code> instructions:</p>
+<p>The <code>InteractiveBrokersBrokerageModel</code> supports custom order properties. In the FA account management members above, you can define the following members of <code>InteractiveBrokersOrderProperties</code>:</p>
 
 <ul>
-    <li><code>Day</code></li>
-    <li><code>GoodTilCanceled</code></li>
-    <li><code>GoodTilDate</code></li>
+    <li><b><code>TimeInForce</code></b>: A <code>TimeInForce</code> instruction to apply to the order. The following instructions are supported:</li>
+    <ul>
+        <li><code>Day</code></li>
+        <li><code>GoodTilCanceled</code></li>
+        <li><code>GoodTilDate</code></li>
+    </ul>
+    <li><b><code>OutsideRegularTradingHours</code></b>: A flag to signal that your order can be triggered and filled outside of regular trading hours.</li>
 </ul>
+
 
 <div class="section-example-container">
     <pre class="csharp">public override void Initialize()
@@ -81,12 +86,4 @@ def OnData(self, data):
 
     order_property.TimeInForce = TimeInForce.GoodTilDate(DateTime(year, month, day))
     self.LimitOrder(self.symbol, quantity, limit_price, orderProperties=order_property)</pre>
-</div>
-
-<h4>Order Properties</h4>
-<p>The <code>InteractiveBrokersBrokerageModel</code> supports custom order properties. In addition to managing FA accounts, you can define <code>InteractiveBrokersOrderProperties</code> so that your orders can be triggered and filled outside of regular trading hours.</p>
-
-<div class="section-example-container">
-    <pre class="csharp"></pre>
-    <pre class="python"></pre>
 </div>
