@@ -12,7 +12,7 @@
         <pre class="csharp">_symbol = AddCrypto("BTCUSDT", Resolution.Minute).Symbol;</pre>
         <pre class="python">self.symbol = self.AddCrypto("BTCUSDT", Resolution.Minute).Symbol</pre>
     </div>
-    <li>In the <code>Initialize</code> method in <b class="python">main.py</b><b class="csharp">Main.cs</b>, set the <code>DefaultOrderProperties</code>.</li>
+    <li><i>(Optional)</i> In the <code>Initialize</code> method in <b class="python">main.py</b><b class="csharp">Main.cs</b>, set the <code>DefaultOrderProperties</code>.</li>
     <div class="section-example-container">
         <pre class="csharp">DefaultOrderProperties = new BinanceOrderProperties
 {
@@ -23,7 +23,7 @@
 self.DefaultOrderProperties.TimeInForce = TimeInForce.GoodTilCanceled
 self.DefaultOrderProperties.PostOnly = False</pre>
     </div>
-    <li>When you want to send an order with different properties, pass a <code>BinanceOrderProperties</code> argument to the order method.</li>
+    <li>When you want to send an order with properties that are not the default properties, pass a <code>BinanceOrderProperties</code> argument to the order method.</li>
     <div class="section-example-container">
         <pre class="csharp">LimitOrder(_symbol, <br>           quantity, <br>           limitPrice, <br>           orderProperties: new BinanceOrderProperties { PostOnly = true });
         </pre>
@@ -32,7 +32,7 @@ orderProperties.PostOnly = True
 self.LimitOrder(self.symbol, quantity, limit_price, orderProperties = orderProperties)
         </pre>
     </div>
-    <li>When you want to update an order, cancel the original order and then submit a new order with the desired arguments.</li>
+    <li>When you want to update an order, <code>Cancel</code> the original order and then submit a new order with the desired arguments.</li>
     <div class="section-example-container">
         <pre class="csharp">var ticket = LimitOrder(_symbol, quantity, limitPrice);
 ticket.Cancel();
