@@ -1,1 +1,55 @@
-<div></div>
+<p>Follow these steps to create an algorithm using the Bitfinex brokerage:</p>
+
+<ol>
+    <li><a href="../../projects/managing-projects#03-Create-New-Projects">Create a new project</a>.</li>
+    <li>In the <code>Initialize</code> method in <b class="python">main.py</b><b class="csharp">Main.cs</b>, set the brokerage model to the <code>BitfinexBrokerageModel</code>.</li>
+    <div class="section-example-container">
+        <pre class="csharp">SetBrokerageModel(BrokerageName.Bitfinex, AccountType.Cash);</pre>
+        <pre class="python">self.SetBrokerageModel(BrokerageName.Bitfinex, AccountType.Cash)</pre>
+    </div>
+    <li>In the <code>Initialize</code> method in <b class="python">main.py</b><b class="csharp">Main.cs</b>, create a security subscription.</li>
+    <div class="section-example-container">
+        <pre class="csharp">AddCrypto("BTCUSDT", Resolution.Minute);</pre>
+        <pre class="python">self.AddCrypto("BTCUSDT", Resolution.Minute)</pre>
+    </div>
+    <li>In the <code>Initialize</code> method in <b class="python">main.py</b><b class="csharp">Main.cs</b>, set the <code>DefaultOrderProperties</code>.</li>
+    <div class="section-example-container">
+        <pre class="csharp">DefaultOrderProperties = new BitfinexOrderProperties
+{
+    TimeInForce = TimeInForce.GoodTilCanceled,
+    Hidden = false,
+    PostOnly = false
+};</pre>
+        <pre class="python">self.DefaultOrderProperties = BitfinexOrderProperties()
+self.DefaultOrderProperties.TimeInForce = TimeInForce.GoodTilCanceled
+self.DefaultOrderProperties.Hidden = False
+self.DefaultOrderProperties.PostOnly = False</pre>
+    </div>
+    <li>When you want to send an order with different properties, pass a <code>BitfinexOrderProperties</code> argument to the order method.</li>
+    <div class="section-example-container">
+        <pre class="csharp">LimitOrder(symbol, <br>           quantity, <br>           limitPrice, <br>           orderProperties: new BinanceOrderProperties { PostOnly = true, Hidden = True });
+        </pre>
+        <pre class="python">orderProperties = BinanceOrderProperties()
+orderProperties.PostOnly = True<br>orderProperties.Hidden = True
+self.LimitOrder(self.symbol, quantity, limit_price, orderProperties = orderProperties)
+        </pre>
+    </div>
+    <li>When you want to update an order, call <code>Update</code> on the <code>OrderTicket</code> with an <code>UpdateOrderFields</code> object.</li>
+    <div class="section-example-container">
+        <pre class="csharp">var ticket = LimitOrder(_symbol, quantity, limitPrice);
+var response = ticket.Update(new UpdateOrderFields() { 
+  LimitPrice = newLimitPrice
+});
+if (response.IsSuccessful) { 
+     Debug("Order updated successfully");
+};</pre>
+        <pre class="python">ticket = self.LimitOrder(self.symbol, quantity, limit_price)
+updateSettings = UpdateOrderFields()
+updateSettings.LimitPrice = new_limit_price
+response = ticket.Update(updateSettings)
+if response.IsSuccessful:
+     self.Debug("Order updated successfully")</pre>
+    </div>
+</ol>
+
+<p>Refer to the backtest below for a full example.</p>
