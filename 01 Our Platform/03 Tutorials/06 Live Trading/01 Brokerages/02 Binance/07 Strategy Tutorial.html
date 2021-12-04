@@ -7,10 +7,10 @@
         <pre class="csharp">SetBrokerageModel(BrokerageName.Binance, AccountType.Cash);</pre>
         <pre class="python">self.SetBrokerageModel(BrokerageName.Binance, AccountType.Cash)</pre>
     </div>
-    <li>In the <code>Initialize</code> method in <b class="python">main.py</b><b class="csharp">Main.cs</b>, create a security subscription.</li>
+    <li>In the <code>Initialize</code> method in <b class="python">main.py</b><b class="csharp">Main.cs</b>, create a security subscription and save a reference to the <code>Symbol</code>.</li>
     <div class="section-example-container">
-        <pre class="csharp">AddCrypto("BTCUSDT", Resolution.Minute);</pre>
-        <pre class="python">self.AddCrypto("BTCUSDT", Resolution.Minute)</pre>
+        <pre class="csharp">_symbol = AddCrypto("BTCUSDT", Resolution.Minute).Symbol;</pre>
+        <pre class="python">self.symbol = self.AddCrypto("BTCUSDT", Resolution.Minute).Symbol</pre>
     </div>
     <li>In the <code>Initialize</code> method in <b class="python">main.py</b><b class="csharp">Main.cs</b>, set the <code>DefaultOrderProperties</code>.</li>
     <div class="section-example-container">
@@ -25,7 +25,7 @@ self.DefaultOrderProperties.PostOnly = False</pre>
     </div>
     <li>When you want to send an order with different properties, pass a <code>BinanceOrderProperties</code> argument to the order method.</li>
     <div class="section-example-container">
-        <pre class="csharp">LimitOrder(symbol, <br>           quantity, <br>           limitPrice, <br>           orderProperties: new BinanceOrderProperties { PostOnly = true });
+        <pre class="csharp">LimitOrder(_symbol, <br>           quantity, <br>           limitPrice, <br>           orderProperties: new BinanceOrderProperties { PostOnly = true });
         </pre>
         <pre class="python">orderProperties = BinanceOrderProperties()
 orderProperties.PostOnly = True
