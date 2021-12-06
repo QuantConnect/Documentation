@@ -12,6 +12,11 @@
         <pre class="csharp">_symbol = AddCrypto("BTCUSDT", Resolution.Minute).Symbol;</pre>
         <pre class="python">self.symbol = self.AddCrypto("BTCUSDT", Resolution.Minute).Symbol</pre>
     </div>
+    <li>Deposit some of the quote currency into your account.</li>
+    <div class="section-example-container">
+        <pre class="csharp">SetCash("USDT", 100000)</pre>
+        <pre class="python">self.SetCash('USDT', 100000)</pre>
+    </div>
     <li><i>(Optional)</i> In the <code>Initialize</code> method in <b class="python">main.py</b><b class="csharp">Main.cs</b>, set the <code>DefaultOrderProperties</code>.</li>
     <div class="section-example-container">
         <pre class="csharp">DefaultOrderProperties = new BinanceOrderProperties
@@ -25,7 +30,8 @@ self.DefaultOrderProperties.PostOnly = False</pre>
     </div>
     <li>When you want to send an order with properties that are not the default properties, pass a <code>BinanceOrderProperties</code> argument to the order method.</li>
     <div class="section-example-container">
-        <pre class="csharp">LimitOrder(_symbol, <br>           quantity, <br>           limitPrice, <br>           orderProperties: new BinanceOrderProperties { PostOnly = true });
+        <pre class="csharp">var orderProperties = new BinanceOrderProperties { PostOnly = true };
+LimitOrder(_symbol, quantity, limitPrice, orderProperties: orderProperties);
         </pre>
         <pre class="python">orderProperties = BinanceOrderProperties()
 orderProperties.PostOnly = True
@@ -44,3 +50,8 @@ ticket = self.LimitOrder(self.symbol, new_quantity, new_limit_price)</pre>
 </ol>
 
 <p>Refer to the backtest below for a full example.</p>
+
+
+<div class="qc-embed-frame python" style="display: inline-block; position: relative; width: 100%; min-height: 100px; min-width: 300px;"><div class="qc-embed-dummy" style="padding-top: 56.25%;"></div><div class="qc-embed-element" style="position: absolute; top: 0; bottom: 0; left: 0; right: 0;"><iframe class="qc-embed-backtest" src="https://www.quantconnect.com/terminal/processCache?request=embedded_backtest_66be676652f2597517c422ad7c659737.html" style="max-width: calc(100vw - 30px); max-height: 100vw; overflow: hidden;" scrolling="no" width="100%" height="100%"></iframe></div></div>
+
+<div class="qc-embed-frame csharp" style="display: inline-block; position: relative; width: 100%; min-height: 100px; min-width: 300px;"><div class="qc-embed-dummy" style="padding-top: 56.25%;"></div><div class="qc-embed-element" style="position: absolute; top: 0; bottom: 0; left: 0; right: 0;"><iframe class="qc-embed-backtest" src="https://www.quantconnect.com/terminal/processCache?request=embedded_backtest_43cc1b0c3d40cb832f0d2c8ec4c1a7d9.html" style="max-width: calc(100vw - 30px); max-height: 100vw; overflow: hidden;" scrolling="no" width="100%" height="100%"></iframe></div></div>
