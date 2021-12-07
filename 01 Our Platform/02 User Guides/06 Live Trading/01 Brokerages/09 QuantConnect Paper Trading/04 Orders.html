@@ -84,5 +84,25 @@ def OnData(self, data):
     self.LimitOrder(self.symbol, quantity, limit_price, orderProperties=order_property)</pre>
 </div>
 
+<h4>Updates</h4>
+<p>The <code>DefaultBrokerageModel</code> supports order updates. You can define the following members of <code>UpdateOrderFields</code> to update active orders:</p>
+
+<ul>
+    <li><code>Quantity</code></li>
+    <li><code>LimitPrice</code></li>
+    <li><code>StopPrice</code><code></code></li><li><code>TriggerPrice</code></li><li><code>Tag</code></li>
+</ul>
+
+<div class="section-example-container">
+    <pre class="csharp">var ticket = StopLimitOrder(symbol, quantity, stopPrice, limitPrice, tag);
+var orderFields = new UpdateOrderFields { <br>    Quantity = newQuantity,<br>    StopPrice = newStopPrice,<br>    LimitPrice = newLimitPrice,<br>    Tag = newTag<br>};
+ticket.Update(orderFields);</pre>
+    <pre class="python">ticket = self.StopLimitOrder(symbol, quantity, stop_price, limit_price, tag)<br>update_fields = UpdateOrderFields()
+update_fields.Quantity = new_quantity<br>update_fields.StopPrice = new_stop_price
+update_fields.LimitPrice = new_limit_price
+update_fields.Tag = new_tag
+ticket.Update(update_fields)</pre>
+</div>
+
 <h4>Handling Splits</h4>
 <p>If you have limit orders in an order book and a stock split occurs, the <code>DefaultBrokerageModel</code> automatically adjusts the quantity, limit price, and stop price of your orders.</p>
