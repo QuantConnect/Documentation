@@ -7,12 +7,12 @@
         <pre class="csharp">SetBrokerageModel(BrokerageName.Bitfinex, AccountType.Margin);</pre>
         <pre class="python">self.SetBrokerageModel(BrokerageName.Bitfinex, AccountType.Margin)</pre>
     </div>
-    <li>In the <code>Initialize</code> method in <b class="python">main.py</b><b class="csharp">Main.cs</b>, create a security subscription and save a reference to the <code>Symbol</code>.</li>
+    <li>In the <code>Initialize</code> method, create a security subscription and save a reference to the <code>Symbol</code>.</li>
     <div class="section-example-container">
         <pre class="csharp">_symbol = AddCrypto("BTCUSD", Resolution.Minute).Symbol;</pre>
         <pre class="python">self.symbol = self.AddCrypto("BTCUSD", Resolution.Minute).Symbol</pre>
     </div>
-    <li><i>(Optional)</i> In the <code>Initialize</code> method in <b class="python">main.py</b><b class="csharp">Main.cs</b>, set the <code>DefaultOrderProperties</code>.</li>
+    <li><i>(Optional)</i> In the <code>Initialize</code> method, set the <code>DefaultOrderProperties</code>.</li>
     <div class="section-example-container">
         <pre class="csharp">DefaultOrderProperties = new BitfinexOrderProperties
 {
@@ -25,7 +25,12 @@ self.DefaultOrderProperties.TimeInForce = TimeInForce.Day
 self.DefaultOrderProperties.Hidden = False
 self.DefaultOrderProperties.PostOnly = False</pre>
     </div>
-    <li>When you want to send an order with properties that are not the default properties, pass a <code>BitfinexOrderProperties</code> argument to the order method.</li>
+    <li>In the <code>OnData</code> method in <b class="python">main.py</b><b class="csharp">Main.cs</b>, call one of the <a href="../../../user-guides/live-trading/brokerages/bitfinex#04-Orders">supported order methods</a> to place an order with the <code>DefaultOrderProperties</code>.</li>
+    <div class="section-example-container">
+        <pre class="csharp">MarketOrder(_symbol, quantity);</pre>
+        <pre class="python">self.MarketOrder(self.symbol, quantity)</pre>
+    </div>
+    <li>If you want to send an order with properties that are not the default properties, pass a <code>BitfinexOrderProperties</code> argument to the order method.</li>
     <div class="section-example-container">
         <pre class="csharp">var orderProperties = new BitfinexOrderProperties { <br>    TimeInForce = TimeInForce.GoodTilCanceled,<br>    PostOnly = true, <br>    Hidden = true<br>};<br>LimitOrder(_symbol, quantity, limitPrice, orderProperties: orderProperties);
         </pre>
@@ -33,7 +38,7 @@ self.DefaultOrderProperties.PostOnly = False</pre>
 self.LimitOrder(self.symbol, quantity, limit_price, orderProperties = orderProperties)
         </pre>
     </div>
-    <li>When you want to update an order, <code>Update</code> the <code>OrderTicket</code> with an <code>UpdateOrderFields</code> object.</li>
+    <li>If you want to update an active order, <code>Update</code> the <code>OrderTicket</code> with an <code>UpdateOrderFields</code> object.</li>
     <div class="section-example-container">
         <pre class="csharp">var ticket = LimitOrder(_symbol, quantity, limitPrice);
 ticket.Update(new UpdateOrderFields() { <br>    Quantity = newQuantity,<br>    LimitPrice = newLimitPrice,<br>    Tag = newTag<br>});
