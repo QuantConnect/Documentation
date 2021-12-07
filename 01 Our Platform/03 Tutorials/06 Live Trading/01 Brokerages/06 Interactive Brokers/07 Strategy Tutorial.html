@@ -19,6 +19,11 @@
         <pre class="csharp">DefaultOrderProperties = new InteractiveBrokersOrderProperties<br>{<br>    Account = faAccount,        // Only for FA accounts<br>    FaProfile = faProfile,      // Only for FA accounts<br>    FaGroup = faGroup,          // Only for FA accounts<br>    FaMethod = "EqualQuantity", // Only for FA accounts<br>    TimeInForce = TimeInForce.GoodTilCanceled,<br>    OutsideRegularTradingHours = false<br>};</pre>
         <pre class="python">self.DefaultOrderProperties = InteractiveBrokersOrderProperties()<br>self.DefaultOrderProperties.Account = fa_account       # Only for FA accounts<br>self.DefaultOrderProperties.FaProfile = fa_profile     # Only for FA accounts<br>self.DefaultOrderProperties.FaGroup = fa_group         # Only for FA accounts<br>self.DefaultOrderProperties.FaMethod = "EqualQuantity" # Only for FA accounts<br>self.DefaultOrderProperties.TimeInForce = TimeInForce.GoodTilCanceled<br>self.DefaultOrderProperties.OutsideRegularTradingHours = False</pre>
     </div>
+    <li>In the <code>OnData</code> method in <b class="python">main.py</b><b class="csharp">Main.cs</b>, call one of the <a href="../../../user-guides/live-trading/brokerages/interactive-brokers#04-Orders">supported order methods</a> to place an order with the <code>DefaultOrderProperties</code>.</li>
+    <div class="section-example-container">
+        <pre class="csharp">MarketOrder(_symbol, quantity);</pre>
+        <pre class="python">self.MarketOrder(self.symbol, quantity)</pre>
+    </div>
     <li>If you want to send an order with properties that are not the default properties, pass an <code>InteractiveBrokersOrderProperties</code> argument to the order method.</li>
     <div class="section-example-container">
         <pre class="csharp">var orderProperties = new InteractiveBrokersOrderProperties<br>{<br>    Account = newFaAccount,     // Only for FA accounts<br>    FaProfile = newFaProfile,   // Only for FA accounts<br>    FaGroup = newFaGroup,       // Only for FA accounts<br>    FaMethod = "NetLiq",        // Only for FA accounts<br>    OutsideRegularTradingHours = true<br>};<br>LimitOrder(_symbol, quantity, limitPrice, orderProperties: orderProperties);</pre>
