@@ -11,25 +11,25 @@
     </div>
     <li><i>(Optional)</i> In the <code>Initialize</code> method in <b class="python">main.py</b><b class="csharp">Main.cs</b>, set the <code>DefaultOrderProperties</code>.</li>
     <div class="section-example-container">
-        <pre class="csharp">DefaultOrderProperties = new AtreyuOrderProperties
-{
-    Exchange = Exchange.BATS,
-    TimeInForce = TimeInForce.Day
-};
-        </pre>
-        <pre class="python">self.DefaultOrderProperties = AtreyuOrderProperties()
-self.DefaultOrderProperties.Exchange = Exchange.BATS
-self.DefaultOrderProperties.TimeInForce = TimeInForce.Day
-        </pre>
+        <pre class="csharp">DefaultOrderProperties = new AtreyuOrderProperties<br>{<br>    Exchange = Exchange.ARCA,<br>    TimeInForce = TimeInForce.Day,<br>    PostOnly = false<br>};</pre>
+        <pre class="python">self.DefaultOrderProperties = AtreyuOrderProperties()<br>self.DefaultOrderProperties.Exchange = Exchange.ARCA<br>self.DefaultOrderProperties.TimeInForce = TimeInForce.Day<br>self.DefaultOrderProperties.PostOnly = False</pre>
     </div>
-    <li>When you want to send an order to a different exchange, pass an <code>AtreyuOrderProperties</code> argument to the order method.</li>
+    <li>When you want to send an order with properties that are not the default properties, pass an <code>AtreyuOrderProperties</code> argument to the order method.</li>
     <div class="section-example-container">
-        <pre class="csharp">MarketOrder(symbol, quantity, orderProperties: new AtreyuOrderProperties { Exchange = Exchange.ARCA });
+        <pre class="csharp">order_properties = AtreyuOrderProperties()<br>order_properties.Exchange = Exchange.BATS<br>order_properties.TimeInForce = TimeInForce.Day<br>order_properties.PostOnly = True<br>self.LimitOrder(self.symbol, quantity, limit_price, orderProperties = order_properties)
         </pre>
-        <pre class="python">orderProperties = AtreyuOrderProperties()
-orderProperties.Exchange = Exchange.ARCA
-self.MarketOrder(self.symbol, quantity, orderProperties = orderProperties)
-        </pre>
+        <pre class="python">var orderProperties = new AtreyuOrderProperties { <br>	Exchange = Exchange.BATS,<br>	TimeInForce = TimeInForce.Day,<br>	PostOnly = true <br>};<br>LimitOrder(_symbol, quantity, limitPrice, orderProperties: orderProperties);<br></pre>
+    </div>
+    <li>When you want to update an order, <code>Update</code> the <code>OrderTicket</code> with an <code>UpdateOrderFields</code> object.</li>
+    <div class="section-example-container">
+        <pre class="csharp">ticket = LimitOrder(_symbol, quantity, limitPrice, orderProperties: orderProperties);<br>var orderFields = new UpdateOrderFields { <br>    Quantity = newQuantity,<br>    LimitPrice = newLimitPrice,<br>    Tag = newTag<br>};<br>var response = ticket.Update(orderFields);<br>if (!LiveMode &amp;&amp; response.IsSuccess)<br>{<br>    Debug("Order updated successfully");<br>}</pre>
+        <pre class="python">ticket = self.LimitOrder(self.symbol, quantity, limit_price, orderProperties = order_properties)<br>update_fields = UpdateOrderFields()
+update_fields.Quantity = new_quantity
+update_fields.LimitPrice = new_limit_price
+update_fields.Tag = new_tag
+response = ticket.Update(update_fields)
+if not self.LiveMode and response.IsSuccess:
+    self.Debug("Order updated successfully")</pre>
     </div>
     <li>When you want to check if a there are enough shares available to fill your short order, call the <code>Shortable</code> method.</li>
     <div class="section-example-container">
