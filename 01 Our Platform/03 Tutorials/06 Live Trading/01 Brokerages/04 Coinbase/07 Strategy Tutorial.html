@@ -1,1 +1,36 @@
-<div></div>
+<p>Follow these steps to create an algorithm using the Coinbase Pro brokerage:</p>
+
+<ol>
+    <li><a href="../../projects/managing-projects#03-Create-New-Projects">Create a new project</a>.</li>
+    <li>In the <code>Initialize</code> method in <b class="python">main.py</b><b class="csharp">Main.cs</b>, set the brokerage model to the <code>GDAXBrokerageModel</code> and declare your <code>AccountType</code>.</li>
+    <div class="section-example-container">
+        <pre class="csharp">SetBrokerageModel(BrokerageName.GDAX, AccountType.Cash);</pre>
+        <pre class="python">self.SetBrokerageModel(BrokerageName.GDAX, AccountType.Cash)</pre>
+    </div>
+    <li>In the <code>Initialize</code> method in <b class="python">main.py</b><b class="csharp">Main.cs</b>, create a security subscription and save a reference to the <code>Symbol</code>.</li>
+    <div class="section-example-container">
+        <pre class="csharp">_symbol = AddCrypto("BTCUSD", Resolution.Minute).Symbol;</pre>
+        <pre class="python">self.symbol = self.AddCrypto("BTCUSD", Resolution.Minute).Symbol</pre>
+    </div>
+    <li><i>(Optional)</i> In the <code>Initialize</code> method in <b class="python">main.py</b><b class="csharp">Main.cs</b>, set the <code>DefaultOrderProperties</code>.</li>
+    <div class="section-example-container">
+        <pre class="csharp">DefaultOrderProperties = new GDAXOrderProperties<br>{<br>    TimeInForce = TimeInForce.GoodTilCanceled,<br>    PostOnly = false<br>};</pre>
+        <pre class="python">self.DefaultOrderProperties = GDAXOrderProperties()<br>self.DefaultOrderProperties.TimeInForce = TimeInForce.GoodTilCanceled<br>self.DefaultOrderProperties.PostOnly = False</pre>
+    </div>
+    <li>When you want to send an order with properties that are not the default properties, pass a <code>GDAXOrderProperties</code> argument to the order method.</li>
+    <div class="section-example-container">
+        <pre class="csharp">var orderProperties = new GDAXOrderProperties { PostOnly = true };<br>LimitOrder(_symbol, quantity, limitPrice, orderProperties: orderProperties);
+        </pre>
+        <pre class="python">order_properties = GDAXOrderProperties()<br>order_properties.PostOnly = True<br>self.LimitOrder(self.symbol, quantity, limit_price, orderProperties = order_properties)
+        </pre>
+    </div>
+    <li>When you want to update an order, call <code>Cancel</code> the original order and then create a new order with the desired arguments.</li>
+    <div class="section-example-container">
+        <pre class="csharp">var ticket = LimitOrder(_symbol, quantity, limitPrice, orderProperties: orderProperties);
+ticket.Cancel();<br>LimitOrder(_symbol, newQuantity, newLimitPrice, orderProperties: newOrderProperties);</pre>
+        <pre class="python">ticket = self.LimitOrder(self.symbol, quantity, limit_price, orderProperties = order_properties)
+ticket.Cancel()<br>self.LimitOrder(self.symbol, new_quantity, new_limit_price, orderProperties = new_order_properties)</pre>
+    </div>
+</ol>
+
+<p>Refer to the backtest below for a full example.</p>
