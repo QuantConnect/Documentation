@@ -7,22 +7,27 @@
         <pre class="csharp">SetBrokerageModel(BrokerageName.GDAX, AccountType.Margin);</pre>
         <pre class="python">self.SetBrokerageModel(BrokerageName.GDAX, AccountType.Margin)</pre>
     </div>
-    <li>In the <code>Initialize</code> method in <b class="python">main.py</b><b class="csharp">Main.cs</b>, create a security subscription and save a reference to the <code>Symbol</code>.</li>
+    <li>In the <code>Initialize</code> method, create a security subscription and save a reference to the <code>Symbol</code>.</li>
     <div class="section-example-container">
         <pre class="csharp">_symbol = AddCrypto("BTCUSD", Resolution.Minute).Symbol;</pre>
         <pre class="python">self.symbol = self.AddCrypto("BTCUSD", Resolution.Minute).Symbol</pre>
     </div>
-    <li><i>(Optional)</i> In the <code>Initialize</code> method in <b class="python">main.py</b><b class="csharp">Main.cs</b>, set the <code>DefaultOrderProperties</code>.</li>
+    <li><i>(Optional)</i> In the <code>Initialize</code> method, set the <code>DefaultOrderProperties</code>.</li>
     <div class="section-example-container">
         <pre class="csharp">DefaultOrderProperties = new FTXOrderProperties<br>{<br>    TimeInForce = TimeInForce.Day,<br>    ReduceOnly = false,<br>    PostOnly = false<br>};</pre>
         <pre class="python">self.DefaultOrderProperties = FTXOrderProperties()<br>self.DefaultOrderProperties.TimeInForce = TimeInForce.Day<br>self.DefaultOrderProperties.ReduceOnly = False<br>self.DefaultOrderProperties.PostOnly = False</pre>
     </div>
-    <li>When you want to send an order with properties that are not the default properties, pass a <code>FTXOrderProperties</code> argument to the order method.</li>
+    <li>In the <code>OnData</code> method in <b class="python">main.py</b><b class="csharp">Main.cs</b>, call one of the <a href="../../../user-guides/live-trading/brokerages/ftx#04-Orders">supported order methods</a> to place an order with the <code>DefaultOrderProperties</code>.</li>
+    <div class="section-example-container">
+        <pre class="csharp">MarketOrder(_symbol, quantity);</pre>
+        <pre class="python">self.MarketOrder(self.symbol, quantity)</pre>
+    </div>
+    <li>If you want to send an order with properties that are not the default properties, pass a <code>FTXOrderProperties</code> argument to the order method.</li>
     <div class="section-example-container">
         <pre class="csharp">var orderProperties = new FTXOrderProperties { <br>	TimeInForce = TimeInForce.GoodTilCanceled,<br>	ReduceOnly = true,<br>	PostOnly = true <br>};<br>LimitOrder(_symbol, quantity, limitPrice, orderProperties: orderProperties);</pre>
         <pre class="python">order_properties = FTXOrderProperties()<br>order_properties.TimeInForce = TimeInForce.GoodTilCanceled<br>order_properties.ReduceOnly = True<br>order_properties.PostOnly = True<br>ticket = self.LimitOrder(self.symbol, quantity, limit_price, orderProperties = order_properties)</pre>
     </div>
-    <li>When you want to update an order, <code>Cancel</code> the original order and then create a new order with the desired arguments.</li>
+    <li>If you want to update an active order, <code>Cancel</code> the original order and then create a new order with the desired arguments.</li>
     <div class="section-example-container">
         <pre class="csharp">var ticket = LimitOrder(_symbol, quantity, limitPrice, orderProperties: orderProperties);
 ticket.Cancel();<br>LimitOrder(_symbol, newQuantity, newLimitPrice, orderProperties: newOrderProperties);</pre>
