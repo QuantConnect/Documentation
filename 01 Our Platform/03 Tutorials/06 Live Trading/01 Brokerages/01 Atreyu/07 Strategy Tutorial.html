@@ -16,20 +16,18 @@
     </div>
     <li>When you want to send an order with properties that are not the default properties, pass an <code>AtreyuOrderProperties</code> argument to the order method.</li>
     <div class="section-example-container">
-        <pre class="csharp">order_properties = AtreyuOrderProperties()<br>order_properties.Exchange = Exchange.BATS<br>order_properties.TimeInForce = TimeInForce.Day<br>order_properties.PostOnly = True<br>self.LimitOrder(self.symbol, quantity, limit_price, orderProperties = order_properties)
-        </pre>
-        <pre class="python">var orderProperties = new AtreyuOrderProperties { <br>	Exchange = Exchange.BATS,<br>	TimeInForce = TimeInForce.Day,<br>	PostOnly = true <br>};<br>LimitOrder(_symbol, quantity, limitPrice, orderProperties: orderProperties);<br></pre>
+        <pre class="csharp">var orderProperties = new AtreyuOrderProperties { <br>	Exchange = Exchange.BATS,<br>	TimeInForce = TimeInForce.Day,<br>	PostOnly = true <br>};<br>LimitOrder(_symbol, quantity, limitPrice, orderProperties: orderProperties);</pre>
+        <pre class="python">order_properties = AtreyuOrderProperties()<br>order_properties.Exchange = Exchange.BATS<br>order_properties.TimeInForce = TimeInForce.Day<br>order_properties.PostOnly = True<br>self.LimitOrder(self.symbol, quantity, limit_price, orderProperties = order_properties)</pre>
     </div>
     <li>When you want to update an order, <code>Update</code> the <code>OrderTicket</code> with an <code>UpdateOrderFields</code> object.</li>
     <div class="section-example-container">
-        <pre class="csharp">var ticket = LimitOrder(_symbol, quantity, limitPrice, orderProperties: orderProperties);<br>var orderFields = new UpdateOrderFields { <br>    Quantity = newQuantity,<br>    LimitPrice = newLimitPrice,<br>    Tag = newTag<br>};<br>var response = ticket.Update(orderFields);<br>if (!LiveMode &amp;&amp; response.IsSuccess)<br>{<br>    Debug("Order updated successfully");<br>}</pre>
+        <pre class="csharp">var ticket = LimitOrder(_symbol, quantity, limitPrice, orderProperties: orderProperties);<br>var orderFields = new UpdateOrderFields { <br>    Quantity = newQuantity,<br>    LimitPrice = newLimitPrice,<br>    Tag = newTag<br>};<br>ticket.Update(orderFields);<br></pre>
         <pre class="python">ticket = self.LimitOrder(self.symbol, quantity, limit_price, orderProperties = order_properties)<br>update_fields = UpdateOrderFields()
 update_fields.Quantity = new_quantity
 update_fields.LimitPrice = new_limit_price
 update_fields.Tag = new_tag
-response = ticket.Update(update_fields)
-if not self.LiveMode and response.IsSuccess:
-    self.Debug("Order updated successfully")</pre>
+ticket.Update(update_fields)
+</pre>
     </div>
     <li>When you want to check if a there are enough shares available to fill your short order, call the <code>Shortable</code> method.</li>
     <div class="section-example-container">
