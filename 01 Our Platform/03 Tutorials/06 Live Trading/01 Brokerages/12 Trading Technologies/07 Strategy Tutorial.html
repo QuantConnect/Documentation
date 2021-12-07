@@ -10,7 +10,7 @@
     <li>In the <code>Initialize</code> method in <b class="python">main.py</b><b class="csharp">Main.cs</b>, create a security subscription, select the rollover methodology, and save a reference to the continuous <code>Future</code>.<br></li>
     <div class="section-example-container">
         <pre class="csharp">_continuousContract = AddFuture(Futures.Indices.SP500EMini, Resolution.Minute, <br>    dataNormalizationMode: DataNormalizationMode.BackwardsRatio,<br>    dataMappingMode: DataMappingMode.LastTradingDay,<br>    contractDepthOffset: 0<br>);</pre>
-        <pre class="python">self.continuous_contract = self.AddFuture(Futures.Indices.SP500EMini, Resolution.Minute, <br>                                          dataNormalizationMode = DataNormalizationMode.BackwardsRatio,<br>                                          dataMappingMode = DataMappingMode.LastTradingDay,<br>                                          contractDepthOffset = 0)</pre>
+        <pre class="python">self.continuous_contract = self.AddFuture(Futures.Indices.SP500EMini, Resolution.Minute, <br>    dataNormalizationMode = DataNormalizationMode.BackwardsRatio,<br>    dataMappingMode = DataMappingMode.LastTradingDay,<br>    contractDepthOffset = 0)</pre>
     </div>
     <li><i>(Optional)</i> In the <code>Initialize</code> method in <b class="python">main.py</b><b class="csharp">Main.cs</b>, set the <code>DefaultOrderProperties</code>.</li>
     <div class="section-example-container">
@@ -27,11 +27,11 @@
     <div class="section-example-container">
         <pre class="csharp">var orderProperties = new OrderProperties { TimeInForce = TimeInForce.GoodTilCanceled };<br>LimitOrder(_currentContract.Symbol, quantity, limitPrice, orderProperties: orderProperties);
 </pre>
-        <pre class="python">order_properties = OrderProperties()<br>order_properties.TimeInForce = TimeInForce.GoodTilCanceled<br>self.LimitOrder(self.current_contract.Symbol, quantity, limit_price, orderProperties = order_properties)</pre>
+        <pre class="python">order_properties = OrderProperties()<br>order_properties.TimeInForce = TimeInForce.GoodTilCanceled<br>self.LimitOrder(self.current_contract.Symbol, quantity, limit_price, <br>                orderProperties = order_properties)</pre>
     </div>
     <li>If you want to update an active order, <code>Update</code> the <code>OrderTicket</code> with an <code>UpdateOrderFields</code> object.</li>
     <div class="section-example-container">
-        <pre class="csharp">var ticket = LimitOrder(_currentContract.Symbol, quantity, limitPrice, orderProperties: orderProperties);
+        <pre class="csharp">var ticket = LimitOrder(_currentContract.Symbol, quantity, limitPrice, <br>    orderProperties: orderProperties<br>);
 var orderFields = new UpdateOrderFields { <br>    Quantity = newQuantity,<br>    LimitPrice = newLimitPrice,<br>    Tag = newTag<br>};<br>ticket.Update(orderFields);</pre>
         <pre class="python">ticket = self.LimitOrder(self.current_contract.Symbol, quantity, limit_price, <br>                         orderProperties = order_properties)
 update_fields = UpdateOrderFields()<br>update_fields.Quantity = new_quantity<br>update_fields.LimitPrice = new_limit_price<br>update_fields.Tag = new_tag<br>ticket.Update(update_fields)</pre>
