@@ -1,48 +1,42 @@
 <p>Follow these steps to create an algorithm using the Atreyu brokerage:</p>
 
 <ol>
-    <li><a href='../../projects/managing-projects#03-Create-New-Projects'>Create a new project</a>.</li>
-    <li>In the <code>Initialize</code> method in <b class='python'>main.py</b><b class='csharp'>Main.cs</b>, set the brokerage model to Atreyu.</li>
+    <li><a href="../../projects/managing-projects#03-Create-New-Projects">Create a new project</a>.</li>
+    <li>In the <code>Initialize</code> method in <b class="python">main.py</b><b class="csharp">Main.cs</b>, set the brokerage model to the <code>AtreyuBrokerageModel</code> and delcare your <code>AccountType</code>.</li>
     <div class="section-example-container">
-        <pre class="csharp">SetBrokerageModel(BrokerageName.Atreyu);
+        <pre class="csharp">SetBrokerageModel(BrokerageName.Atreyu, AccountType.Margin);
         </pre>
-        <pre class="python">self.SetBrokerageModel(BrokerageName.Atreyu)
+        <pre class="python">self.SetBrokerageModel(BrokerageName.Atreyu, AccountType.Margin)
         </pre>
     </div>
-    <li>In the <code>Initialize</code> method in <b class='python'>main.py</b><b class='csharp'>Main.cs</b>, set the <code>DefaultOrderProperties</code>.</li>
+    <li><i>(Optional)</i> In the <code>Initialize</code> method in <b class="python">main.py</b><b class="csharp">Main.cs</b>, set the <code>DefaultOrderProperties</code>.</li>
     <div class="section-example-container">
-        <pre class="csharp">
-DefaultOrderProperties = new AtreyuOrderProperties
+        <pre class="csharp">DefaultOrderProperties = new AtreyuOrderProperties
 {
     Exchange = Exchange.BATS,
     TimeInForce = TimeInForce.Day
 };
         </pre>
-        <pre class="python">
-self.DefaultOrderProperties = AtreyuOrderProperties()
+        <pre class="python">self.DefaultOrderProperties = AtreyuOrderProperties()
 self.DefaultOrderProperties.Exchange = Exchange.BATS
 self.DefaultOrderProperties.TimeInForce = TimeInForce.Day
         </pre>
     </div>
-    <li>When you want to send an order to a different exchange, pass an <code>AtreyuOrderProperties</code> argument to the <code>MarketOrder</code> method.</li>
+    <li>When you want to send an order to a different exchange, pass an <code>AtreyuOrderProperties</code> argument to the order method.</li>
     <div class="section-example-container">
-        <pre class="csharp">
-MarketOrder(symbol, quantity, orderProperties: new AtreyuOrderProperties { Exchange = Exchange.ARCA });
+        <pre class="csharp">MarketOrder(symbol, quantity, orderProperties: new AtreyuOrderProperties { Exchange = Exchange.ARCA });
         </pre>
-        <pre class="python">
-orderProperties = AtreyuOrderProperties()
+        <pre class="python">orderProperties = AtreyuOrderProperties()
 orderProperties.Exchange = Exchange.ARCA
 self.MarketOrder(self.symbol, quantity, orderProperties = orderProperties)
         </pre>
     </div>
-    <li>When you want to check if a there are enough shares available to fill your short order, use the <code>Shortable</code> method.</li>
+    <li>When you want to check if a there are enough shares available to fill your short order, call the <code>Shortable</code> method.</li>
     <div class="section-example-container">
-        <pre class="csharp">
-var quantity = CalculateOrderQuantity(symbol, -0.1m);
+        <pre class="csharp">var quantity = CalculateOrderQuantity(symbol, portfolioWeight);
 var canShort = Shortable(symbol, quantity);
         </pre>
-        <pre class="python">
-quantity = self.CalculateOrderQuantity(self.symbol, -0.1)
+        <pre class="python">quantity = self.CalculateOrderQuantity(self.symbol, portfolio_weight)
 can_short = self.Shortable(self.symbol, quantity)
         </pre>
     </div>
