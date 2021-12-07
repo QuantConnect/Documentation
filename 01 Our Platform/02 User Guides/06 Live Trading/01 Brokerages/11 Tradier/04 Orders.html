@@ -79,7 +79,25 @@ def OnData(self, data):
 </div>
 
 <h4>Updates</h4>
-<p>The <code>TradierBrokerageModel</code> supports order updates, but the quantity of the order can't change. To change the quantity of an order, cancel the order and then submit a new order with the desired quantity.</p>
+<p>The <code>TradierBrokerageModel</code> supports some order updates. You can define the following members of <code>UpdateOrderFields</code> to update active orders:</p>
+
+<ul>
+    
+    <li><code>LimitPrice</code></li>
+    <li><code>StopPrice</code><code></code></li><li><code>TriggerPrice</code></li><li><code>Tag</code></li>
+</ul>
+
+<div class="section-example-container">
+    <pre class="csharp">var ticket = StopLimitOrder(symbol, quantity, stopPrice, limitPrice, tag);
+var orderFields = new UpdateOrderFields { <br>    StopPrice = newStopPrice,<br>    LimitPrice = newLimitPrice,<br>    Tag = newTag<br>};
+ticket.Update(orderFields);</pre>
+    <pre class="python">ticket = self.StopLimitOrder(symbol, quantity, stop_price, limit_price, tag)<br>update_fields = UpdateOrderFields()<br>update_fields.StopPrice = new_stop_price
+update_fields.LimitPrice = new_limit_price
+update_fields.Tag = new_tag
+ticket.Update(update_fields)</pre>
+</div>
+
+<p>If you need to update the quantity of an order, cancel the order and then submit a new order with the desired quantity.</p>
 
 <div class="section-example-container">
     <pre class="csharp">var ticket = LimitOrder(_symbol, quantity, limitPrice);
@@ -89,6 +107,7 @@ ticket = LimitOrder(_symbol, newQuantity, newLimitPrice);</pre>
 ticket.Cancel()
 ticket = self.LimitOrder(self.symbol, new_quantity, new_limit_price)</pre>
 </div>
+
 
 <h4>Extended Market Hours</h4>
 <p>The <code>TradierBrokerageModel</code> does not support extended market hours trading. If you place an order outside of regular trading hours, the order will be processed at market open.</p>
