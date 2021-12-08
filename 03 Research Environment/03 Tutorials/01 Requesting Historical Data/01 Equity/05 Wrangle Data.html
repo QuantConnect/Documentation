@@ -12,7 +12,7 @@
 <pre class="csharp">var history = history.Select(data =&gt; data[symbol]);
 foreach(var bar in history.Take(5))
 {
-    Console.WriteLine(bar.ToString());
+    Console.WriteLine($"{bar} EndTime: {bar.EndTime}");
 }
 </pre>
 <pre class="python">history.loc[symbol]
@@ -34,7 +34,7 @@ foreach(var bar in history.Take(5))
 <p class="python">Index the <code>pandas.DataFrame</code> with a <code>Symbol</code> to select the historical data of the security and then select a property column to get the historical values of the property.</p>
 
 <div class="section-example-container">
-<pre class="csharp">var closePrices = history.Select(data =&gt; data[symbol].Close);
+<pre class="csharp">var closePrices = history.Select(data =&gt; (data[symbol].Close, data[symbol].EndTime));;
 foreach(var closePrice in closePrices.Take(5))
 {
     Console.WriteLine(closePrice.ToString());
