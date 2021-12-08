@@ -1,39 +1,44 @@
-<p>The format of the returned object from the History method call depends on the language our Research Environment is set. In C#, this method returns an IEnumerable<TradeBar> for a single-security request and an IEnumerable<Slice> for a multi-security index. In Python, it returns a multi-index pandas.DataFrame.</p>
+<p class="python">The <code>History</code> method returns a <code>pandas.DataFrame</code> with a <code>MultiIndex</code>. Run a cell in a Jupyter Notebook with the <code>pandas.DataFrame</code> as the last line to display the historical data.<br></p>
 
-<p>Jupyter Notebooks are prepared to show the value of any variable using the Python Kernel. For C#, we need to rely on Console.WriteLine to visualize the values</p>
+<p class="csharp">The <code>History</code> method returns an <code>IEnumerable&lt;TradeBar&gt;</code> for single-security requests or an <code>IEnumerable&lt;Slice&gt;</code> for multiple-security requests. Call the <code>Console.WriteLine</code> method to display the historical data in a Jupyter Notebook</p>
 
-<h4>Select one security:</h4>
-<div class="section-example-container" >
-<pre class="csharp">
-var spyHistory = history.Select(data => data[spy]);
-foreach(var bar in spyHistory.Take(5))
+
+<h4>Select One Security</h4>
+<p class="csharp">Iterate through the <code>IEnumerable</code> and index the <code>Slice</code> with a <code>Symbol</code> to get the historical data of the security.</p>
+
+<p class="python">Index the <code>pandas.DataFrame</code> with a <code>Symbol</code> to select the historical data of the security.</p>
+
+<div class="section-example-container">
+<pre class="csharp">var history = history.Select(data =&gt; data[symbol]);
+foreach(var bar in history.Take(5))
 {
     Console.WriteLine(bar.ToString());
 }
 </pre>
-<pre class="python">
-spy_history = history.loc[spy]
+<pre class="python">history.loc[symbol]
 </pre>
 </div>
 
-<h4>Select a specific property of the security:</h4>
-<div class="section-example-container" >
-<pre class="csharp">
-var spyClosePrices = history.Select(data => data[spy].Close);
-foreach(var closePrice in spyClosePrices.Take(5))
+<h4>Select a Property of the Security</h4>
+<p class="csharp">Iterate through the <code>IEnumerable</code>, index the <code>Slice</code> with a <code>Symbol</code>, and select a property of the <code>Slice</code> to get the historical values of the property.</p>
+
+<p class="python">Index the <code>pandas.DataFrame</code> with a <code>Symbol</code> to select the historical data of the security and then select a property column to get the historical values of the property.</p>
+
+<div class="section-example-container">
+<pre class="csharp">var closePrices = history.Select(data =&gt; data[symbol].Close);
+foreach(var closePrice in closePrices.Take(5))
 {
     Console.WriteLine(closePrice.ToString());
 }
 </pre>
-<pre class="python">
-spy_close_prices = history.loc[spy]['close']
+<pre class="python">history.loc[symbol]['close']
 </pre>
 </div>
 
-<div class="section-example-container" >
-<h4>Reorganize the dataframe</h4>
-<p>We can a dataframe with a single property, e.g. "close", where the Symbol objects are the columns by unstacking the dataframe.</p>
-<pre class="python">
-close_prices_by_symbols = history['close'].unstack(level=0)
-</pre>
+
+<h4 class='python'>Unstack the Dataframe</h4>
+<p class='python'>If you request historical data for multiple securities, you can transform the <code>pandas.DataFrame</code> so that it is a time series of closing prices for all of the securities. Select the column that you want to display for each security and then call the <code>unstack</code> method to transform the <code>pandas.DataFrame</code> into the desired format. In the new format, the column indices are the <code>Symbol</code> of each security.</p>
+
+<div class="section-example-container python">
+    <pre class="python">history['close'].unstack(level=0)</pre>
 </div>
