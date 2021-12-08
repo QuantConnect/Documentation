@@ -1,34 +1,58 @@
-<p>QuantConnect Research Environment has several Python packages for plotting data. In this tutorial, we will show two popular chart types.</p>
+<div>^^ Rename to Plot Data<br></div><div><br></div><p class="csharp">Use Python to plot historical Equity data.</p>
 
-<h4>Candlestick</h4>
-<p>The candlestick chart is a popular chart in technical analysis that displays the high, low, open, and closing prices of a security for a specific period.</p>
-<div class="section-example-container" >
-<pre class="python">
-import plotly.graph_objects as go
+<p class="python">You need to subscribe to Equities and request their historical data to plot their historical data. You can use many of the <a href="../../../lean-cli/user-guides/supported-libraries">supported libraries</a> to plot data in various formats. For example, you can plot candlestick and line charts.</p>
 
-fig = go.Figure(data=[go.Candlestick(x=spy_history.index,
-                                    open=spy_history['open'],
-                                    high=spy_history['high'],
-                                    low=spy_history['low'],
-                                    close=spy_history['close'])],
-                                    layout=go.Layout(
-                                        title=go.layout.Title(text='SPY OHLC'),
-                                        xaxis_title='Date',
-                                        yaxis_title='Price',
-                                        xaxis_rangeslider_visible=False
-                                    ))
+<h4 class="python">Candlestick Chart<br></h4>
 
-fig.show()
-</pre>
-</div>
+<p class="python">Follow these steps to plot candlestick charts:</p>
 
-<h4>Line chart</h4>
-<p>The line chart is a popular chart for quick visualization. Creating a line graph from a pandas dataframe is easy using the built-in pandas.DataFrame.plot() method.</p>
-<div class="section-example-container" >
-<pre class="python">
-volume = history.unstack("symbol")["volume"]
+<ol class="python">
+    <li>Import the <code>plotly</code> package.</li>
+    <div class="section-example-container">
+        <pre class="python">import plotly.graph_objects as go</pre>
+    </div>
+    <li>Create a <code>Candlestick</code>.<br></li>
+    <div class="section-example-container">
+        <pre class="python">candlestick = go.Candlestick(x=history.index,
+                             open=history['open'],
+                             high=history['high'],
+                             low=history['low'],
+                             close=history['close'])</pre>
+    </div>
+    <li>Create a <code>Layout</code>.<br></li>
+    <div class="section-example-container">
+        <pre class="python">layout = go.Layout(title=go.layout.Title(text='OHLC'),
+                   xaxis_title='Date',
+                   yaxis_title='Price',
+                   xaxis_rangeslider_visible=False)</pre>
+    </div>
+    <li>Create the <code>Figure</code>.<br></li>
+    <div class="section-example-container">
+        <pre class="python">fig = go.Figure(data=[candlestick], layout=layout)</pre>
+    </div>
+    <li>Show the <code>Figure</code>.<br></li>
+    <div class="section-example-container">
+        <pre class="python">fig.show()</pre>
+    </div>
+    <p>Candlestick charts display the open, high, low, and close prices of the security.</p>
+</ol>
 
-volume.plot(title="Volume", figsize=(15, 10))
-plt.show()
-</pre>
-</div>
+
+<h4 class="python">Line Chart</h4>
+<p class="python">Follow these steps to plot line charts using built-in methods:</p>
+
+<ol class="python">
+    <li>Select data to plot.</li>
+    <div class="section-example-container">
+        <pre class="python">volume = history['volume'].unstack(level=0)</pre>
+    </div>
+    <li>Call the <code>plot</code> method on the <code>pandas</code> object.</li>
+    <div class="section-example-container">
+        <pre class="python">volume.plot(title="Volume", figsize=(15, 10))</pre>
+    </div>
+    <li>Show the plot.</li>
+    <div class="section-example-container">
+        <pre class="python">plt.show()</pre>
+    </div>
+    <p>Line charts display the value of the property you selected in a time series.</p>
+</ol>
