@@ -9,17 +9,27 @@
         <pre class="python">self.SetBrokerageModel(BrokerageName.QuantConnectBrokerage, AccountType.Margin)
         </pre>
     </div>
-    <li><i>(Optional)</i> In the <code>Initialize</code> method in <b class="python">main.py</b><b class="csharp">Main.cs</b>, set the <code>DefaultOrderProperties</code>.</li>
+    <li>In the <code>Initialize</code> method, create a security subscription and save a reference to the <code>Symbol</code>.</li>
+    <div class="section-example-container">
+        <pre class="csharp">_symbol = AddEquity("SPY", Resolution.Minute).Symbol;</pre>
+        <pre class="python">self.symbol = self.AddEquity("SPY", Resolution.Minute).Symbol</pre>
+    </div>
+    <li><i>(Optional)</i> In the <code>Initialize</code> method, set the <code>DefaultOrderProperties</code>.</li>
     <div class="section-example-container">
         <pre class="csharp">DefaultOrderProperties.TimeInForce = TimeInForce.Day;</pre>
         <pre class="python">self.DefaultOrderProperties.TimeInForce = TimeInForce.Day</pre>
     </div>
-    <li>When you want to send an order with properties that are not the default properties, pass an <code>OrderProperties</code> argument to the order method.</li>
+    <li>In the <code>OnData</code> method in <b class="python">main.py</b><b class="csharp">Main.cs</b>, call one of the <a href="../../../user-guides/live-trading/brokerages/quantconnect-paper-trading#04-Orders">supported order methods</a> to place an order with the <code>DefaultOrderProperties</code>.</li>
+    <div class="section-example-container">
+        <pre class="csharp">MarketOrder(_symbol, quantity);</pre>
+        <pre class="python">self.MarketOrder(self.symbol, quantity)</pre>
+    </div>
+    <li>If you want to send an order with properties that are not the default properties, pass an <code>OrderProperties</code> argument to the order method.</li>
     <div class="section-example-container">
         <pre class="csharp">var orderProperties = new OrderProperties { TimeInForce = TimeInForce.GoodTilCanceled };<br>var ticket = LimitOrder(_symbol, quantity, limitPrice, orderProperties: orderProperties);</pre>
         <pre class="python">order_properties = OrderProperties()<br>order_properties.TimeInForce = TimeInForce.GoodTilCanceled<br>ticket = self.LimitOrder(self.symbol, quantity, limit_price, orderProperties = order_properties)</pre>
     </div>
-    <li>When you want to update an order, <code>Update</code> the <code>OrderTicket</code> with an <code>UpdateOrderFields</code> object.</li>
+    <li>If you want to update an active order, <code>Update</code> the <code>OrderTicket</code> with an <code>UpdateOrderFields</code> object.</li>
     <div class="section-example-container">
         <pre class="csharp">var ticket = LimitOrder(_symbol, quantity, limitPrice, orderProperties: orderProperties);<br>var orderFields = new UpdateOrderFields { <br>    Quantity = newQuantity,<br>    LimitPrice = newLimitPrice,<br>    Tag = newTag<br>};<br>ticket.Update(orderFields);<br></pre>
         <pre class="python">ticket = self.LimitOrder(self.symbol, quantity, limit_price, orderProperties = order_properties)<br>update_fields = UpdateOrderFields()

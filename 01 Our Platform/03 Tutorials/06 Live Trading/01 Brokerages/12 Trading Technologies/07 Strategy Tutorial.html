@@ -7,12 +7,12 @@
         <pre class="csharp">SetBrokerageModel(BrokerageName.TradingTechnologies, AccountType.Margin);</pre>
         <pre class="python">self.SetBrokerageModel(BrokerageName.TradingTechnologies, AccountType.Margin)</pre>
     </div>
-    <li>In the <code>Initialize</code> method in <b class="python">main.py</b><b class="csharp">Main.cs</b>, create a security subscription, select the rollover methodology, and save a reference to the continuous <code>Future</code>.<br></li>
+    <li>In the <code>Initialize</code> method, create a security subscription, select the rollover methodology, and save a reference to the continuous <code>Future</code>.<br></li>
     <div class="section-example-container">
         <pre class="csharp">_continuousContract = AddFuture(Futures.Indices.SP500EMini, Resolution.Minute, <br>    dataNormalizationMode: DataNormalizationMode.BackwardsRatio,<br>    dataMappingMode: DataMappingMode.LastTradingDay,<br>    contractDepthOffset: 0<br>);</pre>
         <pre class="python">self.continuous_contract = self.AddFuture(Futures.Indices.SP500EMini, Resolution.Minute, <br>    dataNormalizationMode = DataNormalizationMode.BackwardsRatio,<br>    dataMappingMode = DataMappingMode.LastTradingDay,<br>    contractDepthOffset = 0)</pre>
     </div>
-    <li><i>(Optional)</i> In the <code>Initialize</code> method in <b class="python">main.py</b><b class="csharp">Main.cs</b>, set the <code>DefaultOrderProperties</code>.</li>
+    <li><i>(Optional)</i> In the <code>Initialize</code> method, set the <code>DefaultOrderProperties</code>.</li>
     <div class="section-example-container">
         <pre class="csharp">DefaultOrderProperties.TimeInForce = TimeInForce.Day;</pre>
         <pre class="python">self.DefaultOrderProperties.TimeInForce = TimeInForce.Day</pre>
@@ -22,6 +22,11 @@
         <pre class="csharp">_currentContract = Securities[_continuousContract.Mapped];
 </pre>
         <pre class="python">self.current_contract = self.Securities[self.continuous_contract.Mapped]</pre>
+    </div>
+    <li>In the <code>OnData</code> method, call one of the <a href="../../../user-guides/live-trading/brokerages/trading-technologies#04-Orders">supported order methods</a> to place an order with the <code>DefaultOrderProperties</code>.</li>
+    <div class="section-example-container">
+        <pre class="csharp">MarketOrder(_currentContract.Symbol, quantity);</pre>
+        <pre class="python">self.MarketOrder(self.current_contract.Symbol, quantity)</pre>
     </div>
     <li>If you want to send an order with properties that are not the default properties, pass an <code>OrderProperties</code> argument to one of the supported order methods.</li>
     <div class="section-example-container">
