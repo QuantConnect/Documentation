@@ -1,50 +1,38 @@
-<p>Follow the steps of the previous sections to request historical data for multiple securities:</p>
+<p>^^ Rename to "Handle Multiple Subscriptions"</p><p>In addition to selecting historical data based on a period of time, you can select historical data based on a collection of Equities. You need a subscription for each Equity for which you want historical data. Follow these steps to get historical data for a collection of Equities:</p>
 
-<h4>Subscribe to Equity</h4>
-<p>Instantiate a QuantBook and then call AddEquity to subscribe to an Equity security for multiple tickers by using the following snippet:</p>
-<div class="section-example-container" >
-<pre class="csharp">
-var qb = new QuantBook();
+<ol>
+    <li>Subscribe to a collection of Equities and save references to their <code>Symbol</code>s.</li>
+    <div class="section-example-container">
+        <pre class="csharp">var qb = new QuantBook();
 var spy = qb.AddEquity("SPY").Symbol;
 var tlt = qb.AddEquity("TLT").Symbol;
-var gld = qb.AddEquity("GLD").Symbol;
-</pre>
-<pre class="python">
-qb = QuantBook()
+var gld = qb.AddEquity("GLD").Symbol;</pre>
+        <pre class="python">qb = QuantBook()
 spy = qb.AddEquity("SPY").Symbol
 tlt = qb.AddEquity("TLT").Symbol
-gld = qb.AddEquity("GLD").Symbol
-</pre>
-</div>
-
-<h4>Make Historical Data Request</h4>
-<p>The three ways to make historical data requests are available. The first argument of the History method can be a list of Symbol for a single request as follows:</p>
-<div class="section-example-container" >
-<pre class="csharp">
-var start = new DateTime(2021, 1, 1);
+gld = qb.AddEquity("GLD").Symbol</pre>
+    </div>
+    <li>If you want to request historical data for a subset of the Equities to which you have subscribed, pass the subset of <code>Symbol</code>s to the <code>History</code> method.<br></li>
+    <div class="section-example-container">
+        <pre class="csharp">var start = new DateTime(2021, 1, 1);
 var end = new DateTime(2021, 2, 1);
-var definedPeriodHistory = qb.Historyv(new []{spy, tlt, gld}, start, end, Resolution.Daily);
+var definedPeriodHistory = qb.History(new []{spy, tlt, gld}, start, end, Resolution.Daily);
 var timespanHistory = qb.History(new []{spy, tlt, gld}, TimeSpan.FromDays(10), Resolution.Daily);
-bar barCountHistory = qb.History(new []{spy, tlt, gld}, 10, Resolution.Daily);
-</pre>
-<pre class="python">
-start = datetime(2021, 1, 1)
+bar barCountHistory = qb.History(new []{spy, tlt, gld}, 10, Resolution.Daily);</pre>
+        <pre class="python">start = datetime(2021, 1, 1)
 end = datetime(2021, 2, 1)
 defined_period_history = qb.History([spy, tlt, gld], start, end, Resolution.Daily)
 timespan_history = qb.History([spy, tlt, gld], timedelta(days=10), Resolution.Daily)
-bar_count_history = qb.History([spy, tlt, gld], 10, Resolution.Daily)
-</pre>
-</div>
-
-<p>Alterativelly, the History method can make a historical data request that incluses all securities that has been susbcribed as follows:</p>
-History method can be a list of Symbol for a single request as follows:</p>
-<div class="section-example-container" >
-<pre class="csharp">
-var timespanHistory = qb.History(TimeSpan.FromDays(10), Resolution.Daily);
-var barCountHistory = qb.History(10, Resolution.Daily);
-</pre>
-<pre class="python">
-timespan_history = qb.History(qb.Securities.Keys, timedelta(days=10), Resolution.Daily)
-bar_count_history = qb.History(qb.Securities.Keys, 10, Resolution.Daily)
-</pre>
-</div>
+bar_count_history = qb.History([spy, tlt, gld], 10, Resolution.Daily)</pre>
+    </div>
+    <li class='csharp'>If you want to request historical data for all of the Equities to which the <code>QuantBook</code> is subscribed, don't pass any <code>Symbol</code>s to the <code>History</code> method.</li>
+    <li class='python'>If you want to request historical data for all of the Equities to which the <code>QuantBook</code> is subscribed, pass <code>qb.Securities.Keys</code> to the <code>History</code> method.</li>
+    <div class="section-example-container">
+        <pre class="csharp">var start = new DateTime(2021, 1, 1);
+var end = new DateTime(2021, 2, 1);<br>var definedPeriodHistory = qb.History(start, end, Resolution.Daily);<br>var timespanHistory = qb.History(TimeSpan.FromDays(10), Resolution.Daily);
+var barCountHistory = qb.History(10, Resolution.Daily);</pre>
+        <pre class="python">start = datetime(2021, 1, 1)
+end = datetime(2021, 2, 1)<br>defined_period_history = qb.History(qb.Securities.Keys, start, end, Resolution.Daily)<br>timespan_history = qb.History(qb.Securities.Keys, timedelta(days=10), Resolution.Daily)
+bar_count_history = qb.History(qb.Securities.Keys, 10, Resolution.Daily)</pre>
+    </div>
+</ol>
