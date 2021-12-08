@@ -1,24 +1,63 @@
 <p>
-QuantConnect provides dozens of methods to create, update, and cancel orders. These orders can be placed <a href="#Trading-and-Orders-Automatic-Position-Sizing-SetHoldings">automatically</a> with helper methods, or manually through methods on the algorithm API. Manual orders can be <a href="#Trading-and-Orders-Updating-Orders">fetched, updated, and canceled</a> with Order Tickets.  As orders are filled and updated, they generate <a href="#Trading-and-Orders-Tracking-Order-Events">events</a> that notify your algorithm about their execution. 
+To update an order, you must use its $[OrderTicket, T:QuantConnect.Orders.OrderTicket]. The specific properties that can be updated depend on the order type. Market orders are transmitted to the brokerage almost immediately, so only the tag on the order can be updated. Other orders can be updated until they are filled or the brokerage prevents modifications.
 </p>
 
-<p>In backtesting, order fills are simulated using historical data. QuantConnect allows you to create your own fill, fee, slippage, and margin models via plugin points. You can control how optimistic or pessimistic these fills are with <a href="#Trading-and-Orders-Slippage-Transaction-and-Brokerage-Models">transaction model</a> classes. In live trading, this fill price is set by your brokerage when the order is filled.</p>
+<table class="qc-table table  table-condensed">
+<thead>
+<tr>
+<th width="30%">Order Type</th>
+<th>Updatable Properties</th> 
+</tr>
+</thead>
+<tbody>
+<tr><td>Market Order</td><td><code>Tag</code></td></tr>
+<tr><td>Limit Order</td><td><code>Tag</code>, <code>Quantity</code>, <code>Limit Price</code></td></tr>
+<tr><td>Stop Market Order</td><td><code>Tag</code>, <code>Quantity</code>, <code>Stop Prce</code></td></tr>
+<tr><td>Stop Limit Order</td><td><code>Tag</code>, <code>Quantity</code>, <code>Stop Price</code>, <code>Limit Price</code>.</td></tr>
+<tr><td>Market On Open Order</td><td><code>Tag</code>, <code>Quantity</code></td></tr>
+<tr><td>Market On Close Order</td><td><code>Tag</code>, <code>Quantity</code></td></tr>
+</tbody>
+</table>
 
-
-<h4>What is an Order Ticket?</h4>
 <p>
-A critical concept required before diving into specific order types is the Order Ticket. When you create an order you are given an $[OrderTicket,T:QuantConnect.Orders.OrderTicket] object to update and cancel your order. All orders return an order ticket.
-</p>
-<p>
-In live trading, orders are asynchronous, and any operations to update the order must be <i>requested</i>. Whether the update is processed successfully is not guaranteed as the trade may already be filled by the time the request is sent.
-</p>
-<img class="img-responsive" src="https://cdn.quantconnect.com/docs/i/trading-and-orders-order-tickets.png" />
-<p>
-In the following sections, we'll explore how to use the Order Ticket to update and cancel orders you have created.
+Orders are updated by passing a $[UpdateOrderFields, T:QuantConnect.Orders.UpdateOrderFields] object to the Update method. The Update method returns an $[OrderResponse, T:QuantConnect.Orders.OrderResponse] to signal the success or failure of the update request. 
 </p>
 
-<iframe width="757" height="433" src="https://www.youtube-nocookie.com/embed/HykXfstdNW0" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+<div class="section-example-container">
+<pre class="csharp">// Tag an order on creation
+var ticket = LimitOrder("SPY", 100, 221.05, tag: "New SPY trade");
 
+//Tag order later
+var response = ticket.Update(new UpdateOrderFields() { 
+  Tag = "Our New Tag for SPY Trade",
+  LimitPrice = 222.00
+});
 
+// Check response with the OrderResponse
+if (response.IsSuccessful) { 
+     Debug("Order updated successfully");
+}
+</pre>
+<pre class="python"> # Tag an order on creation
+ticket = self.LimitOrder("SPY", 100, 221.05, False, "New SPY trade")
 
+# Tag order later
+updateSettings = UpdateOrderFields()
+updateSettings.LimitPrice = 222.00
+updateSettings.Tag = "Limit Price Updated for SPY Trade"
+response = ticket.Update(updateSettings)
 
+# Validate the response is OK
+if response.IsSuccessful:
+     self.Debug("Order updated successfully")
+</pre>
+</div>
+
+<div class="base-tree-container"></div>
+<script data-tree="QuantConnect.Orders.OrderResponse"></script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        var dataTree = $("script[data-tree]").data("tree").split(",");
+        initializeTreeView(dataTree);
+    });
+</script>
