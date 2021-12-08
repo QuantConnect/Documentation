@@ -1,0 +1,39 @@
+<p>The format of the returned object from the History method call depends on the language our Research Environment is set. In C#, this method returns an IEnumerable<TradeBar> for a single-security request and an IEnumerable<Slice> for a multi-security index. In Python, it returns a multi-index pandas.DataFrame.</p>
+
+<p>Jupyter Notebooks are prepared to show the value of any variable using the Python Kernel. For C#, we need to rely on Console.WriteLine to visualize the values</p>
+
+<h4>Select one security:</h4>
+<div class="section-example-container" >
+<pre class="csharp">
+var spyHistory = history.Select(data => data[spy]);
+foreach(var bar in spyHistory.Take(5))
+{
+    Console.WriteLine(bar.ToString());
+}
+</pre>
+<pre class="python">
+spy_history = history.loc[spy]
+</pre>
+</div>
+
+<h4>Select a specific property of the security:</h4>
+<div class="section-example-container" >
+<pre class="csharp">
+var spyClosePrices = history.Select(data => data[spy].Close);
+foreach(var closePrice in spyClosePrices.Take(5))
+{
+    Console.WriteLine(closePrice.ToString());
+}
+</pre>
+<pre class="python">
+spy_close_prices = history.loc[spy]['close']
+</pre>
+</div>
+
+<div class="section-example-container" >
+<h4>Reorganize the dataframe</h4>
+<p>We can a dataframe with a single property, e.g. "close", where the Symbol objects are the columns by unstacking the dataframe.</p>
+<pre class="python">
+close_prices_by_symbols = history['close'].unstack(level=0)
+</pre>
+</div>
