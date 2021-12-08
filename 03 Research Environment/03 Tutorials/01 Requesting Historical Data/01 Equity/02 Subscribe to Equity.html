@@ -1,31 +1,24 @@
-<p>Follow these steps to subscribe to a security of type Equity to your QuantBook:</p>
+<p>Follow these steps to subscribe to an Equity security:</p>
 
 <ol>
-    <li>Create an instance of QuantBook</li>
-    <li>Call the AddEquity method to add a subscription for an Equity object</li>
-	<li>Save an instance of the Symbol object for the Equity object</li>
+    <li>Instantiate a <code>QuantBook</code>.</li>
+    <div class="section-example-container">
+        <pre class="csharp">var qb = new QuantBook();</pre>
+        <pre class="python">qb = QuantBook()</pre>
+    </div>
+    <li>Call the <code>AddEquity</code> method.</li>
+    <div class="section-example-container">
+        <pre class="csharp">var equity = qb.AddEquity("SPY");</pre>
+        <pre class="python">equity = qb.AddEquity("SPY")</pre>
+    </div>
+    <li>Save a reference to the Equity <code>Symbol</code></li>
+    <div class="section-example-container">
+        <pre class="csharp">var symbol = equity.Symbol;</pre>
+        <pre class="python">symbol = equity.Symbol</pre>
+    </div>
+    <li>If you want the historical data of the subscription to have a different normalization than <code>Adjusted</code>, call the <code>SetDataNormalizationMode</code> method.</li>
+    <div class="section-example-container">
+        <pre class="csharp">equity.SetDataNormalizationMode(DataNormalizationMode.Raw);</pre>
+        <pre class="python">equity.SetDataNormalizationMode(DataNormalizationMode.Raw)</pre>
+    </div>
 </ol>
-
-<div class="section-example-container" >
-<pre class="csharp">
-var qb = new QuantBook();
-var equity = qb.AddEquity("SPY");
-var symbol = equity.Symbol;
-</pre>
-<pre class="python">
-qb = QuantBook()
-equity = qb.AddEquity("SPY")
-symbol = equity.Symbol
-</pre>
-</div>
-
-<p>By default, the susbcribed data is adjusted for splits and dividends, reflecting the historical request data output. We can change the normalization mode by using the following snippet:</p>
-
-<div class="section-example-container" >
-<pre class="csharp">
-equity.SetDataNormalizationMode(DataNormalizationMode.Raw);
-</pre>
-<pre class="python">
-equity.SetDataNormalizationMode(DataNormalizationMode.Raw)
-</pre>
-</div>
