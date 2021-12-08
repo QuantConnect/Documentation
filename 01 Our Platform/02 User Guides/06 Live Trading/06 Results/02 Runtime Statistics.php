@@ -1,8 +1,20 @@
-<?php
-	echo file_get_contents(__DIR__."/../../04 Backtesting/02 Results/03 Runtime Statistics.php");
-?>
+<p>Runtime statistics of your live performance are displayed in the banner at the top of the live performance page. You can create your own custom runtime statistics, but the following statistics are included by default:</p>
 
+<ul>
+    <li><b>PSR</b>: Probabilistic Sharpe Ratio</li>
+    <li><b>Unrealized</b>: Unrealized profit</li>
+    <li><b>Fees</b>: Total fees paid during the algorithm operation across all securities in the portfolio</li>
+    <li><b>Net Profit</b>: Sum of all gross profit across all securities in the portfolio</li>
+    <li><b>Return</b>: Return = (current equity - starting equity) / starting equity</li>
+    <li><b>Equity</b>: Total portfolio value if we sold all holdings at current market rates</li>
+    <li><b>Holdings</b>: Absolute sum of the items in the portfolio</li>
+    <li><b>Volume</b>: Total sale volume since the start of algorithm operations</li>
+</ul>
 
-<p><a href='../backtesting/results#03-Runtime-Statistics'>aaaa</a></p>
+<img style="max-width: 100%; margin-bottom: 20px" src="https://cdn.quantconnect.com/i/tu/runtime-statistics.png">
+<p>Call <code>SetRuntimeStatistic</code> with <code>name</code> and <code>value</code> arguments to add a run-time statistic to the banner. The <code>value</code> argument can be a <code>string</code> or a number. If you pass a number, it is cast to a <code>string</code>.</p>
 
-<div><div>What is the runtime statisicts:</div><div>-A section at the top of the page that shows</div><div>&nbsp;&nbsp; - PSR<br></div><div>&nbsp;&nbsp; - Unrealized profit<br></div><div>&nbsp;&nbsp; - Fees</div><div>&nbsp;&nbsp; - Net profit</div><div>&nbsp;&nbsp; - Return (%)</div><div>&nbsp;&nbsp; - Equity</div><div>&nbsp;&nbsp; - Holdings ($-value)</div><div>&nbsp;&nbsp; - Volume</div><div><br></div><div>Why is there a banner:</div>-To present the live trading results in real-time as the algorithm runs on our co-located servers</div><div>-To help you quickly analyze the performance of your trading strategy to see if you need to intervene</div><div></div>
+<div class="section-example-container">
+    <pre class="csharp">SetRuntimeStatistic(name, value);</pre>
+    <pre class="python">self.SetRuntimeStatistic(name, value)</pre>
+</div>
