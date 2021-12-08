@@ -1,0 +1,50 @@
+<p>Follow the steps of the previous sections to request historical data for multiple securities:</p>
+
+<h4>Subscribe to Equity</h4>
+<p>Instantiate a QuantBook and then call AddEquity to subscribe to an Equity security for multiple tickers by using the following snippet:</p>
+<div class="section-example-container" >
+<pre class="csharp">
+var qb = new QuantBook();
+var spy = qb.AddEquity("SPY").Symbol;
+var tlt = qb.AddEquity("TLT").Symbol;
+var gld = qb.AddEquity("GLD").Symbol;
+</pre>
+<pre class="python">
+qb = QuantBook()
+spy = qb.AddEquity("SPY").Symbol
+tlt = qb.AddEquity("TLT").Symbol
+gld = qb.AddEquity("GLD").Symbol
+</pre>
+</div>
+
+<h4>Make Historical Data Request</h4>
+<p>The three ways to make historical data requests are available. The first argument of the History method can be a list of Symbol for a single request as follows:</p>
+<div class="section-example-container" >
+<pre class="csharp">
+var start = new DateTime(2021, 1, 1);
+var end = new DateTime(2021, 2, 1);
+var definedPeriodHistory = qb.Historyv(new []{spy, tlt, gld}, start, end, Resolution.Daily);
+var timespanHistory = qb.History(new []{spy, tlt, gld}, TimeSpan.FromDays(10), Resolution.Daily);
+bar barCountHistory = qb.History(new []{spy, tlt, gld}, 10, Resolution.Daily);
+</pre>
+<pre class="python">
+start = datetime(2021, 1, 1)
+end = datetime(2021, 2, 1)
+defined_period_history = qb.History([spy, tlt, gld], start, end, Resolution.Daily)
+timespan_history = qb.History([spy, tlt, gld], timedelta(days=10), Resolution.Daily)
+bar_count_history = qb.History([spy, tlt, gld], 10, Resolution.Daily)
+</pre>
+</div>
+
+<p>Alterativelly, the History method can make a historical data request that incluses all securities that has been susbcribed as follows:</p>
+History method can be a list of Symbol for a single request as follows:</p>
+<div class="section-example-container" >
+<pre class="csharp">
+var timespanHistory = qb.History(TimeSpan.FromDays(10), Resolution.Daily);
+var barCountHistory = qb.History(10, Resolution.Daily);
+</pre>
+<pre class="python">
+timespan_history = qb.History(qb.Securities.Keys, timedelta(days=10), Resolution.Daily)
+bar_count_history = qb.History(qb.Securities.Keys, 10, Resolution.Daily)
+</pre>
+</div>
