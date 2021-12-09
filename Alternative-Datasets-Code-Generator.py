@@ -7,6 +7,7 @@ for section, source in documentations.items():
     json_file = open(source, encoding="utf-8")
     doc = json.load(json_file)
     count = 4
+    attr = False
 
     for dataset in doc:
         i = 1
@@ -28,9 +29,10 @@ for section, source in documentations.items():
             if item["title"] == "Example Applications":
                 with open(destination_folder / f'99 {item["title"].strip()}.html', "w", encoding="utf-8") as html_file:
                     html_file.write(content)
-            elif item["title"] == "Data Point Attributes":
-                continue
             else: 
+                if item["title"] == "Data Point Attributes":
+                    attr = True
+                    
                 with open(destination_folder / f'{i:02} {item["title"].strip()}.html', "w", encoding="utf-8") as html_file:
                     html_file.write(content)
                     i += 1
@@ -44,7 +46,7 @@ for section, source in documentations.items():
                         .replace('<code class="language-cs">',
                                  '<code class="csharp">')
             
-            if item["title"] == "Data Point Attributes":
+            if item["title"] == "Data Point Attributes" and attr:
                 continue
             else:
                 with open(destination_folder / f'{i:02} {item["title"].strip()}.html', "w", encoding="utf-8") as html_file:
