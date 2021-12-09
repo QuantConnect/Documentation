@@ -44,9 +44,12 @@ for section, source in documentations.items():
                         .replace('<code class="language-cs">',
                                  '<code class="csharp">')
             
-            with open(destination_folder / f'{i:02} {item["title"].strip()}.html', "w", encoding="utf-8") as html_file:
-                html_file.write(content)
-                i += 1
+            if item["title"] == "Data Point Attributes":
+                continue
+            else:
+                with open(destination_folder / f'{i:02} {item["title"].strip()}.html', "w", encoding="utf-8") as html_file:
+                    html_file.write(content)
+                    i += 1
                 
         print(f'Documentation of {dataset["name"]} is generated and inplace!')
         count += 1
