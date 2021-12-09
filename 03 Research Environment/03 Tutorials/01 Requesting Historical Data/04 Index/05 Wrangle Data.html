@@ -34,11 +34,9 @@ foreach(var bar in tradeBars.Take(5))
 <p class="python">Index the <code>pandas.DataFrame</code> with a <code>Symbol</code> to select the historical data of the security and then select a property column to get the historical values of the property.</p>
 
 <div class="section-example-container">
-<pre class="csharp">var closeAskPrices = history.Select(data =&gt; (data[symbol].Close, data[symbol].EndTime));;
-foreach(var closeAskPrice in closeAskPrices.Take(5))
-{
-    Console.WriteLine(closeAskPrice.ToString());
-}
+<pre class="csharp">var closingPrices = history.Select(data =&gt; (data[symbol].Close, data[symbol].EndTime));;
+foreach(var closingPrice in closingPrices.Take(5))<br>{
+    Console.WriteLine(closingPrice.ToString());<br>}
 </pre>
 <pre class="python">history.loc[symbol]['close']
 </pre>
@@ -58,7 +56,7 @@ foreach(var closeAskPrice in closeAskPrices.Take(5))
 <p class="python">If you request historical data for multiple securities, you can transform the <code>pandas.DataFrame</code> so that it is a time series of closing prices for all of the securities. Select the column that you want to display for each security and then call the <code>unstack</code> method to transform the <code>pandas.DataFrame</code> into the desired format.</p>
 
 <div class="section-example-container python">
-    <pre class="python">history['bidclose'].unstack(level=0)</pre>
+    <pre class="python">history['close'].unstack(level=0)</pre>
 </div>
 
 <p class="python">The <code>pandas.DataFrame</code> is transformed so that the column indices are the <code>Symbol</code> of each security and each row contains the closing price.</p>
