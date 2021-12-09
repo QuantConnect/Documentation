@@ -1,0 +1,35 @@
+<p>To add US ETF Constituents data to your algorithm, use the AddUniverse() and Universe.ETF() methods to request the data. To select which constituents occupy the universe, you need to provide the ETF Symbol and a selection function.
+</p>
+
+<div class="section-example-container">
+<pre><code class="python">class ETFConstituentsDataAlgorithm(QCAlgorithm):
+
+    def Initialize(self):
+        self.SetStartDate(2018, 1, 1)
+        self.SetEndDate(2020, 8, 25)
+        self.SetCash(100000)
+        
+        spy = self.AddEquity("SPY").Symbol
+        self.UniverseSettings.Resolution = Resolution.Minute
+
+        self.AddUniverse(self.Universe.ETF(spy, self.UniverseSettings, self.ETFConstituentsFilter))
+</code></pre>
+<pre><code class="csharp">namespace QuantConnect
+{
+   public class ETFConstituentsDataAlgorithm : QCAlgorithm
+   {
+       public override void Initialize()
+       {
+           SetStartDate(2018, 1, 1);
+           SetEndDate(2020, 8, 25);
+           SetCash(100000);
+
+           var spy = AddEquity("SPY").Symbol;
+           UniverseSettings.Resolution = Resolution.Minute;
+
+           AddUniverse(Universe.ETF(spy, UniverseSettings, ETFConstituentsFilter));
+       }
+    }
+}
+</code></pre>
+</div>
