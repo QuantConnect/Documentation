@@ -21,10 +21,12 @@ for section, source in documentations.items():
             content = item["content"] \
                         .replace('<div class="qc-embed-frame"><div class="qc-embed-dummy"></div><div class="qc-embed-element"><iframe class="qc-embed-backtest"',
                                               '<div class="qc-embed-frame python" style="display: inline-block; position: relative; width: 100%; min-height: 100px; min-width: 300px;"><div class="qc-embed-dummy" style="padding-top: 56.25%;"></div><div class="qc-embed-element" style="position: absolute; top: 0; bottom: 0; left: 0; right: 0;"><iframe class="qc-embed-backtest"') \
-                        .replace('<code class="language-python">', 
-                                 '<code class="python">') \
-                        .replace('<code class="language-cs">',
-                                 '<code class="csharp">')
+                        .replace('<pre><code class="language-python">', 
+                                 '<pre class="python">') \
+                        .replace('<pre><code class="language-cs">',
+                                 '<pre class="csharp">') \
+                        .replace('</code>',
+                                 '')
             
             if item["title"] == "Example Applications":
                 with open(destination_folder / f'99 {item["title"].strip()}.html', "w", encoding="utf-8") as html_file:
@@ -41,10 +43,12 @@ for section, source in documentations.items():
             content = item["content"] \
                         .replace('<div class="qc-embed-frame"><div class="qc-embed-dummy"></div><div class="qc-embed-element"><iframe class="qc-embed-backtest"',
                                               '<div class="qc-embed-frame python" style="display: inline-block; position: relative; width: 100%; min-height: 100px; min-width: 300px;"><div class="qc-embed-dummy" style="padding-top: 56.25%;"></div><div class="qc-embed-element" style="position: absolute; top: 0; bottom: 0; left: 0; right: 0;"><iframe class="qc-embed-backtest"') \
-                        .replace('<code class="language-python">', 
-                                 '<code class="python">') \
-                        .replace('<code class="language-cs">',
-                                 '<code class="csharp">')
+                        .replace('<pre><code class="language-python">', 
+                                 '<pre class="python">') \
+                        .replace('<pre><code class="language-cs">',
+                                 '<pre class="csharp">') \
+                        .replace('</code>',
+                                 '')
             
             if item["title"] == "Data Point Attributes" and attr:
                 continue
