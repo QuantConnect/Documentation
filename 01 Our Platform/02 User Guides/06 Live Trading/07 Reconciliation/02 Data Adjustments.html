@@ -1,1 +1,40 @@
-** DELME
+^^ Rename "Scoring"
+
+<p>Reconciliation is scored using two metrics: returns correlation and Dynamic Time Warping (DTW) Distance. </p>
+
+<h4>Returns Correlation</h4>
+<p>Returns correlation is the simple Pearson correlation between the live and OOS backtest daily returns. It is calculated as<br></p>
+
+<img style="max-width: 100%; display: block; max-height: 80px" src="https://cdn.quantconnect.com/i/tu/pearson-correlation-coefficient-formula.png">
+
+<p>where <i>X</i> and <i>Y</i> are the live and OOS backtest daily returns, respectively. The return correlation measures the degree of the linear relationship between the live and OOS backtest daily returns. Its value gives us a rudimentary understanding of how the returns move together. Do they trend up and down at the same time? Do they deviate in direction or timing?</p>
+
+
+<p>The return correlation of your live and OSS backtest equity curves should be as close to 1 as possible. We consider a good score to be 0.8 or above, meaning that there is a strong positive correlation. This indicates that the returns move together most of the time and that for any given return you see from one of the curves, the other curve usually has a similar direction return (positive or negative). Understanding returns correlation is valuable, but we also want users 
+and funds to have another measurement that gives them an accurate 
+comparison of the two equity curves.</p>
+
+<h4>DTW Distance</h4>
+<p>The similarity, or dissimilarity, of two time series is typically 
+calculated by calculating the 
+Euclidean distance between those points in vector space. It is calculated as<br></p>
+
+<img style="max-width: 100%; display: block; max-height: 100px" src="https://cdn.quantconnect.com/i/tu/dynamic-time-warping-formula.png">
+
+<p>However, equity curves can often be sampled at irregular frequencies even if they may cover the same period, which renders Euclidian distance useless unless we want to modify our sample. Fortunately, there is a DTW algorithm that measures the similarity between two time series that may vary in sampling frequency. Figure 1 shows the difference in how Euclidian and DTW distance is calculated.<br></p>
+
+<p><b>Figure 1</b></p>
+<p><i>Euclidean distance (A) and DTW distance (B)</i></p>
+<img style="max-width: 100%; display: block" src="https://cdn.quantconnect.com/i/tu/dynamic-time-warping-graph.png">
+<p><i>Note.</i> This figure demonstrates the difference between Euclidean distance (A) and DTW distance (B).<br></p>
+
+<p>DTW distance calculates the optimal match between the two series with the smallest cost, which is given by a distance measurement. It uses Euclidean distance as a measurement of point-to-point distance 
+and returns an overall measurement of the distance on the scale of the 
+initial time-series values. We apply DTW to the returns curve of the 
+live and OOS performance, so the DTW distance measurement is on the 
+scale of percent returns. The smaller the DTW for two series, the more similar they are, with <span class="MathJax_Preview" style="color: inherit;"></span><span class="MathJax" id="MathJax-Element-3-Frame" tabindex="0" style="position: relative;" data-mathml="<math xmlns=&quot;http://www.w3.org/1998/Math/MathML&quot;><mi>D</mi><mi>T</mi><mi>W</mi><mo>=</mo><mn>0</mn></math>" role="presentation"><nobr aria-hidden="true"><span class="math" id="MathJax-Span-69" style="width: 4.929em; display: inline-block;"><span style="display: inline-block; position: relative; width: 4.249em; height: 0px; font-size: 116%;"><span style="position: absolute; clip: rect(1.479em, 1004.23em, 2.541em, -1000em); top: -2.34em; left: 0em;"><span class="mrow" id="MathJax-Span-70"><span class="mi" id="MathJax-Span-71" style="font-family: STIXMathJax_Normal; font-style: italic;">𝐷</span><span class="mi" id="MathJax-Span-72" style="font-family: STIXMathJax_Normal; font-style: italic;">𝑇<span style="display: inline-block; overflow: hidden; height: 1px; width: 0.12em;"></span></span><span class="mi" id="MathJax-Span-73" style="font-family: STIXMathJax_Normal; font-style: italic; text-rendering: optimizelegibility;">𝑊<span style="display: inline-block; overflow: hidden; height: 1px; width: 0.185em;"></span></span><span class="mo" id="MathJax-Span-74" style="font-family: STIXMathJax_Main; padding-left: 0.313em;">=</span><span class="mn" id="MathJax-Span-75" style="font-family: STIXMathJax_Main; padding-left: 0.313em;">0</span></span><span style="display: inline-block; width: 0px; height: 2.34em;"></span></span></span><span style="display: inline-block; overflow: hidden; vertical-align: -0.09em; border-left: 0px solid; width: 0px; height: 0.946em;"></span></span></nobr></span> being a perfect match. <br></p>
+
+<p>We annualize the daily DTW because annualized distance provides us with a measurement of the annual difference in the magnitude of returns between the two curves. A perfect score is 0, meaning the returns for each day were precisely the same. A DTW score of 0 is nearly impossible to achieve, and we consider anything below 0.2 to be a decent score. A distance of 0.2 means the returns between an algorithm's live and OOS performance deviated by 20% over a year.</p>
+
+<h4>Why We Need DTW Distance and Returns Correlation</h4>
+<p>Each measurement provides insight into distinct elements of time-series similarity, but neither measurement alone gives us the whole picture. Returns correlation tells us whether or not the live and OOS returns move together, but it doesn't account for the possible differences in the magnitude of the returns. DTW distance measures the difference in magnitude of returns but provides no insight into whether or not the returns move in the same direction. It is possible for there to be two cases of equity curve similarity where both pairs have the same DTW distance, but one has perfectly negatively correlated returns, and the other has a perfectly positive correlation. Similarly, it is possible for two pairs of equity curves to each have perfect correlation but substantially different DTW distance. Having both measurements provides us with a more comprehensive understanding of the actual similarity between live and OOS performance. We outline several interesting cases and go into more depth on the topic of reconciliation in research we have published. </p>
