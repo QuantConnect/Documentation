@@ -6,7 +6,7 @@ documentations = {"Alternative Datasets": "alternative-data-dump-v2021-12-06.jso
 for section, source in documentations.items():
     json_file = open(source, encoding="utf-8")
     doc = json.load(json_file)
-    count = 4
+    count = 3
     attr = False
 
     for dataset in doc:
