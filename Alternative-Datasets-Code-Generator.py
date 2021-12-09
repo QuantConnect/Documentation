@@ -28,6 +28,8 @@ for section, source in documentations.items():
             if item["title"] == "Example Applications":
                 with open(destination_folder / f'99 {item["title"].strip()}.html', "w", encoding="utf-8") as html_file:
                     html_file.write(content)
+            elif item["title"] == "Data Point Attributes":
+                continue
             else: 
                 with open(destination_folder / f'{i:02} {item["title"].strip()}.html', "w", encoding="utf-8") as html_file:
                     html_file.write(content)
