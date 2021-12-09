@@ -26,15 +26,15 @@ Euclidean distance between adjacent points in vector space. Euclidean distance i
 <p><b>Figure 1</b></p>
 <p><i>Euclidean distance (A) and DTW distance (B)</i></p>
 <img style="max-width: 100%; display: block" src="https://cdn.quantconnect.com/i/tu/dynamic-time-warping-graph.png">
-<p><i>Note.</i> This figure demonstrates the difference between Euclidean distance (A) and DTW distance (B).<br></p>
+<p><i>Note.</i> This figure demonstrates the difference between Euclidean distance (A) and DTW distance (B). Run the <a href="https://www.quantconnect.com/terminal/clone/3835374/2a6e1d050283bc265ad98941628276c5/clone-of%3A-reconciliation-kpi-notebook">Live Trading Reconciliation notebook</a> to reproduce the figure.<br></p>
 
-<p>It uses Euclidean distance as a measurement of point-to-point distance 
+<p>DTW uses Euclidean distance as a measurement of point-to-point distance 
 and returns an overall measurement of the distance on the scale of the 
 initial time-series values. We apply DTW to the returns curve of the 
-live and OOS performance, so the DTW distance measurement is on the 
+live and OOS backtest performance, so the DTW distance measurement is on the 
 scale of percent returns. <br></p>
 
-<p>We annualize the daily DTW because annualized distance provides us with a measurement of the annual difference in the magnitude of returns between the two curves. A DTW score of 0 is nearly impossible to achieve, so we consider anything below 0.2 to be a decent score. A distance of 0.2 means the returns between an algorithm's live and OOS performance deviated by 20% over a year.</p>
+<p>We annualize the daily DTW because annualized distance measures the annual difference in the magnitude of returns between the two curves. A DTW score of 0 is nearly impossible to achieve, so we consider anything below 0.2 to be a decent score. A distance of 0.2 means the returns between an algorithm's live and OOS performance deviated by 20% over a year.</p>
 
-<h4>Why We Need DTW Distance and Returns Correlation</h4>
-<p>Each measurement provides insight into distinct elements of time-series similarity, but neither measurement alone gives us the whole picture. Returns correlation tells us whether or not the live and OOS returns move together, but it doesn't account for the possible differences in the magnitude of the returns. DTW distance measures the difference in magnitude of returns but provides no insight into whether or not the returns move in the same direction. It is possible for there to be two cases of equity curve similarity where both pairs have the same DTW distance, but one has perfectly negatively correlated returns, and the other has a perfectly positive correlation. Similarly, it is possible for two pairs of equity curves to each have perfect correlation but substantially different DTW distance. Having both measurements provides us with a more comprehensive understanding of the actual similarity between live and OOS performance. We outline several interesting cases and go into more depth on the topic of reconciliation in research we have published. </p>
+<h4>Why We Need Returns Correlation and DTW Distance <br></h4>
+<p>Returns correlation and DTW distance both provide insight into distinct elements of time-series similarity, but neither measurement alone provides the whole picture. Returns correlation tells us whether or not the live and OOS backtest returns move together, but it doesn't account for the possible differences in the magnitude of the returns. DTW distance measures the difference in magnitude of returns but provides no insight into whether or not the returns move in the same direction. It is possible for there to be two cases of equity curve similarity where both pairs have the same DTW distance, but one has perfectly negatively correlated returns and the other has a perfectly positive correlation. Similarly, it is possible for two pairs of equity curves to each have perfect correlation but substantially different DTW distance. Having both measurements provides a more comprehensive understanding of the actual similarity between live and OOS backtest performance.<br></p>
