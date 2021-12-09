@@ -1,17 +1,4 @@
-<div><div>In backtesting, orders are filled immediately. In live trading, 
-orders are sent to the brokerage. Filling orders through the brokerage 
-takes about half a second. Backtest orders that are submitted on stale 
-data may have simulated fill prices that are different from the real 
-  market price. This commonly happens when creating a 
-  <a href="https://www.quantconnect.com/docs/algorithm-reference/scheduled-events">scheduled event</a> with an 
-  incompatible data resolution. To avoid this, we recommend using the highest resolution data as much as possible such 
-  as minute data, even if you only need hourly bars. This will give you an up to date price feed. <br></div><div><br></div><div>-----<br></div>In
- live trading, Market Orders are executed at whatever price the 
-brokerage fills the order at. Backtesting, however, does not know what 
-price live orders were filled at and instead models order fills based on
- the best price available according to backtest data.<br><br>Similarly, 
-Limit Order fills can differ between out-of-sample backtesting and live 
-trading. In backtesting, Limit Orders are filled as soon as the limit 
-price is hit. Brokerages, however, might fill the same Limit Order at a 
-different price, or fail to fill it, depending on where the order is in 
-the order book. </div><div></div>
+<p>Your orders are filled immediately in backtests but are sent to your brokerage in live trading and take about half a second to execute. If you fill an order in a backtest using stale data, reconciliation can occur because the order will be filled at a price that is likely different from the real market price. Stale order fills commonly occur in backtests if you create a <a href="https://www.quantconnect.com/docs/algorithm-reference/scheduled-events">Scheduled Event</a> with an incompatible data resolution. For instance, if you subscribe to hourly data, place a Scheduled Event for 11:15am, and fill an order during the Scheduled Event, the order will fill at a stale price. To avoid stale fills, only place orders when price data is injected into your algorithm.<br></p>
+
+<p>In live trading, market orders are filled at whatever price your brokerage fills them. Since the backtesting brokerage models do not know what price live orders are filled at, the orders are filled based on
+ the best price available in the current backtesting data. Similarly, limit orders can be filled at different prices between backtesting and live trading. In backtesting, limit orders are filled as soon as the limit price is hit. In live trading, your brokerage may fill the same limit order at a different price or fail to fill the order, depending on the position of your order in your brokerage's order book.<br></p>
