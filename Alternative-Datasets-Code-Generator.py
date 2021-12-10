@@ -25,7 +25,7 @@ for dataset in doc:
     destination_folder.mkdir(parents=True, exist_ok=True)
     
     for item in dataset["about"]:
-        content = item["content"] \
+        content = item["content"].replace("\/", "/") \
                     .replace('<div class="qc-embed-frame"><div class="qc-embed-dummy"></div><div class="qc-embed-element"><iframe class="qc-embed-backtest"',
                                             '<div class="qc-embed-frame python" style="display: inline-block; position: relative; width: 100%; min-height: 100px; min-width: 300px;"><div class="qc-embed-dummy" style="padding-top: 56.25%;"></div><div class="qc-embed-element" style="position: absolute; top: 0; bottom: 0; left: 0; right: 0;"><iframe class="qc-embed-backtest"') \
                     .replace('<pre><code class="language-python">', 
@@ -47,7 +47,7 @@ for dataset in doc:
                 i += 1
                 
     for item in dataset["documentation"]:
-        content = item["content"] \
+        content = item["content"].replace("\/", "/") \
                     .replace('<div class="qc-embed-frame"><div class="qc-embed-dummy"></div><div class="qc-embed-element"><iframe class="qc-embed-backtest"',
                                             '<div class="qc-embed-frame python" style="display: inline-block; position: relative; width: 100%; min-height: 100px; min-width: 300px;"><div class="qc-embed-dummy" style="padding-top: 56.25%;"></div><div class="qc-embed-element" style="position: absolute; top: 0; bottom: 0; left: 0; right: 0;"><iframe class="qc-embed-backtest"') \
                     .replace('<pre><code class="language-python">', 
