@@ -1,0 +1,26 @@
+<p>Data can be accessed via the IEnumerable object that is piped into the user-defined selector function. Coarse data is available in daily resolution. You can see an example of using this data in the code below.<\/p>
+<div class="section-example-container">
+<pre class="python">def CoarseSelectionFunction(self, coarse):
+
+    sortedByDollarVolume = sorted(coarse, key=lambda x: x.DollarVolume, reverse=True)[:3]
+    for cf in sortedByDollarVolume :
+        self.Debug(f"{cf.EndTime} :: {cf.Symbol} : {cf.AdjustedPrice} :: {cf.DollarVolume}")
+
+    return [ x.Symbol for x in sortedByDollarVolume]    
+
+<\/code><\/pre>
+<pre class="csharp">
+public IEnumerable&lt;Symbol&gt; CoarseSelectionFunction(IEnumerable&lt;CoarseFundamental&gt; coarse)
+{
+    var sortedByDollarVolume = coarse
+        .OrderByDescending(x =&gt; x.DollarVolume)
+        .Take(3).ToList();
+
+    foreach (var cf in sortedByDollarVolume)
+    {
+        Debug($"{cf.EndTime} :: {cf.Symbol} : {cf.AdjustedPrice} :: {cf.DollarVolume}");
+    }
+
+    return sortedByDollarVolume.Select(x =&gt; x.Symbol);
+}<\/code><\/pre>
+<\/div>
