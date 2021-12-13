@@ -141,8 +141,8 @@ def Box(input_):
             if "Description" in item:
                 args[item["Name"]]["Description"] = item["Description"]
                 
-            if args[item["Name"]]["Description"][-1] != ".":
-                args[item["Name"]]["Description"] = args[item["Name"]]["Description"] + "."
+                if args[item["Name"]]["Description"][-1] != ".":
+                    args[item["Name"]]["Description"] = args[item["Name"]]["Description"] + "."
                 
             if "EnumValues" in item:
                 args[item["Name"]]["Description"] = args[item["Name"]]["Description"] + f' Options: {item["EnumValues"]}'
