@@ -75,7 +75,7 @@ def Table(lang, input_, previous_name, n):
             
             with open(path / '01 Available Overloads.html', "w", encoding="utf-8") as html_file:
                 html_file.write(f'<p>The <code>{name}</code> method provides the following overload options:<br/>')
-                html_file.write(f'<ul><li><a href="#{name}">{call}</a></li></ul></p>')
+                html_file.write(f'<ul><li><a href="#{call}"><i class="fa fa-link"></i>{call}</a></li></ul></p>')
             
             with open(path / '02 Available Properties.html', "w", encoding="utf-8") as html_file:
                 if properties:
@@ -100,7 +100,7 @@ def Table(lang, input_, previous_name, n):
             
             with open(path / '03 Available Methods.html', "w", encoding="utf-8") as html_file:
                 if methods:
-                    write_up = "".join([Box(method, name) for method in methods])
+                    write_up = "".join([Box(method) for method in methods])
                     
                 else:
                     write_up = '</p>No sub-method is available for this method.</p>'
@@ -117,17 +117,17 @@ def Table(lang, input_, previous_name, n):
                 html_file.truncate()
                 
             with open(path / '01 Available Overloads.html', "a", encoding="utf-8") as html_file:
-                html_file.write(f'<li><a href="#{name}">{call}</a></li></ul></p>')
+                html_file.write(f'<li><a href="#{call}"><i class="fa fa-link"></i>{call}</a></li></ul></p>')
                 
         with open(path / f'{i:02} {call}.html', "w", encoding="utf-8") as html_file:
-            html_file.write(Box(input_, name))
+            html_file.write(Box(input_))
             
     i += 1
     
     return name, i
 
 
-def Box(input_, name):
+def Box(input_):
     args = {}
         
     if "Parameters" in input_:
@@ -197,7 +197,7 @@ def Box(input_, name):
         ret += "This method provides no return."
     
     write_up = f"""<div style="padding: 10px; border: 1px solid #ccc; margin-bottom: 25px; border-radius: 3px">
-<a id="{name}"><i class="fa fa-link"></i> <code>{call}</code></a>
+<a id="{call}"><code>{call}</code></a>
 <p>{input_["Description"] if "Description" in input_ else ""}</p>
 <h4>Parameters</h4>
 {params}
