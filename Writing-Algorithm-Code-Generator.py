@@ -145,7 +145,7 @@ def Box(input_):
                     args[item["Name"]]["Description"] = args[item["Name"]]["Description"] + "."
                 
             if "EnumValues" in item:
-                args[item["Name"]]["Description"] = args[item["Name"]]["Description"] + f' Options: {item["EnumValues"]}'
+                args[item["Name"]]["Description"] = args[item["Name"]]["Description"] + f'<br/><i>Options: {item["EnumValues"]}</i>'
 
             if "ShortType" in item:
                 args[item["Name"]]["Type"] = item["ShortType"]
