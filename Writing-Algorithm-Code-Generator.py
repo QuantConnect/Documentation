@@ -191,7 +191,7 @@ def Box(input_):
             ret += f'- {input_["ReturnValue"]["Description"]}'
             
         else:
-            ret += '- /'
+            ret += "This method provides no return."
             
     else:
         ret += "This method provides no return."
