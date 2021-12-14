@@ -87,7 +87,7 @@ def Table(input_, previous_name, n, type_map):
             html_file.truncate()
             
         with open(path_ / "01 Indexes.html", "a", encoding="utf-8") as html_file:
-            html_file.write(f'<ul><li><a href="#{call + str(i)}"><i class="fa fa-link"></i>{call}</a></li></ul></p>')
+            html_file.write(f'<ul><li><a href="https://www.quantconnect.com/docs/v2/writing-algorithms/api-reference/{"-".join(dir_[tag].split(" ")[1:]).lower()}/{name}#{call + str(i)}"><i class="fa fa-link"></i>{call}</a></li></ul></p>')
             
         with open(path / f'{i:02} {call}.html', "w", encoding="utf-8") as html_file:
             html_file.write(Box(input_, type_map, i))
