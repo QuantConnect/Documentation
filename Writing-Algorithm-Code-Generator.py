@@ -2,8 +2,7 @@ import os
 import pathlib
 from urllib.request import urlopen
 
-sources = ["http://cdn.quantconnect.com.s3.us-east-1.amazonaws.com/terminal/cache/api/csharp_tree.json",
-          "http://cdn.quantconnect.com.s3.us-east-1.amazonaws.com/terminal/cache/api/python_tree.json"]
+sources = ["http://cdn.quantconnect.com.s3.us-east-1.amazonaws.com/terminal/cache/api/csharp_tree.json"]
 
 base = "02 Writing Algorithms/04 API Reference/"
 dir_ = {"Adding Data": "01 Adding Data/",
