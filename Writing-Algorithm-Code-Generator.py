@@ -87,17 +87,17 @@ def Table(input_, previous_name, n, type_map):
             html_file.truncate()
             
         with open(path_ / "01 Indexes.html", "a", encoding="utf-8") as html_file:
-            html_file.write(f'<ul><li><a href="#{call}"><i class="fa fa-link"></i>{call}</a></li></ul></p>')
+            html_file.write(f'<ul><li><a href="{str(path)}{i:02} {call}.html#{call + str(i)}"><i class="fa fa-link"></i>{call}</a></li></ul></p>')
             
         with open(path / f'{i:02} {call}.html', "w", encoding="utf-8") as html_file:
-            html_file.write(Box(input_, type_map))
+            html_file.write(Box(input_, type_map, i))
             
     i += 1
     
     return name, i
 
 
-def Box(input_, type_map):
+def Box(input_, type_map, i):
     args = {}
         
     if "Parameters" in input_:
@@ -172,7 +172,7 @@ def Box(input_, type_map):
     slash = '\"'
     
     write_up = f"""<div style="padding: 10px; border: 1px solid #ccc; margin-bottom: 25px; border-radius: 3px">
-<a id={call}><code>{call}</code></a>
+<a id={call + str(i)}><code>{call}</code></a>
 <p>{input_["Description"].replace("{slash}", "") if "Description" in input_ else ""}</p>
 <h4>Parameters</h4>
 {params}
