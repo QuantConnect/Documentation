@@ -2,8 +2,8 @@ import os
 import pathlib
 from urllib.request import urlopen
 
-source = {"01 CSharp/": "http://cdn.quantconnect.com.s3.us-east-1.amazonaws.com/terminal/cache/api/csharp_tree.json",
-          "02 Python/": "http://cdn.quantconnect.com.s3.us-east-1.amazonaws.com/terminal/cache/api/python_tree.json"}
+sources = ["http://cdn.quantconnect.com.s3.us-east-1.amazonaws.com/terminal/cache/api/csharp_tree.json",
+          "http://cdn.quantconnect.com.s3.us-east-1.amazonaws.com/terminal/cache/api/python_tree.json"]
 
 base = "02 Writing Algorithms/04 API Reference/"
 dir_ = {"Adding Data": "01 Adding Data/",
@@ -25,15 +25,15 @@ dir_ = {"Adding Data": "01 Adding Data/",
 
 counter = {key: 0 for key in dir_.keys()}
 
-def Table(lang, input_, previous_name, n):
+def Table(input_, previous_name, n, type_map):
     if "DocumentationAttributes" not in input_ or not "DocumentationAttributes":
         if "concentrate" in input_:
             for item in input_["concentrate"]:
-                previous_name, n = Table(lang, item, previous_name, n)
+                previous_name, n = Table(item, previous_name, n, type_map)
                 
         elif "children" in input_:
             for item in input_["children"]:
-                previous_name, n = Table(lang, item, previous_name, n)
+                previous_name, n = Table(item, previous_name, n, type_map)
                 
         return previous_name, n
     
@@ -68,66 +68,25 @@ def Table(lang, input_, previous_name, n):
         if previous_name != name:
             counter[tag] = counter[tag] + 1
             
-            path = pathlib.Path(base + lang + dir_[tag] + f"{counter[tag]:02} " + name)
+            path = pathlib.Path(base + dir_[tag] + f"{counter[tag]:02} " + name)
             path.mkdir(parents=True, exist_ok=True)
             
-            i = 4
-            
-            with open(path / '01 Available Overloads.html', "w", encoding="utf-8") as html_file:
-                html_file.write(f'<p>The <code>{name}</code> method provides the following overload options:<br/>')
-                html_file.write(f'<ul><li><a href="#{call}"><i class="fa fa-link"></i>{call}</a></li></ul></p>')
-            
-            with open(path / '02 Available Properties.html', "w", encoding="utf-8") as html_file:
-                if properties:
-                    html_file.write(f'<p>The <code>{name}</code> method has the following properties:<br/>')
-                    
-                    for property_ in properties:
-                        prop = f'{property_["Name"]}'
-                        
-                        if "ShortType" in property_:
-                            prop += f'<i>({property_["ShortType"]})</i> '
-                            
-                        elif "Type" in property_:
-                            prop += f'<i>({property_["Type"]})</i> '
-                            
-                        if "Description" in property_:
-                            prop += f'<br/>{property_["Description"]}'
-                        
-                        html_file.write(f'<ul><li>{prop}</li></ul></p>')
-                
-                else:
-                    html_file.write(f'<p>The <code>{name}</code> method has no property.</p>')
-            
-            with open(path / '03 Available Methods.html', "w", encoding="utf-8") as html_file:
-                if methods:
-                    write_up = "".join([Box(method) for method in methods])
-                    
-                else:
-                    write_up = '</p>No sub-method is available for this method.</p>'
-                
-                html_file.write(write_up)
+            i = 1
             
         else:
-            path = pathlib.Path(base + lang + dir_[tag] + f"{counter[tag]:02} " + name)
+            path = pathlib.Path(base + dir_[tag] + f"{counter[tag]:02} " + name)
             
             i = n
             
-            with open(path / '01 Available Overloads.html', "rb+") as html_file:
-                html_file.seek(-9, os.SEEK_END)
-                html_file.truncate()
-                
-            with open(path / '01 Available Overloads.html', "a", encoding="utf-8") as html_file:
-                html_file.write(f'<li><a href="#{call}"><i class="fa fa-link"></i>{call}</a></li></ul></p>')
-                
         with open(path / f'{i:02} {call}.html', "w", encoding="utf-8") as html_file:
-            html_file.write(Box(input_))
+            html_file.write(Box(input_, type_map))
             
     i += 1
     
     return name, i
 
 
-def Box(input_):
+def Box(input_, type_map):
     args = {}
         
     if "Parameters" in input_:
@@ -152,6 +111,9 @@ def Box(input_):
                 
             elif "Type" in item:
                 args[item["Name"]]["Type"] = item["Type"]
+                
+            else:
+                args[item["Name"]]["Type"] = type_map[str(item["typeId"])]
         
     call = input_["Name"] + "(" + ",".join(list(args.keys())).replace("/", "_") + ")"
     
@@ -168,7 +130,7 @@ def Box(input_):
 <tbody>"""
 
         for name, prop in args.items():
-            params += f'<tr><td>{prop["Type"]}</td><td><code>{name}</code></td><td>{prop["Description"]}</td></tr>'
+            params += f'<tr><td><code>{prop["Type"]}</code></td><td>{name}</td><td>{prop["Description"]}</td></tr>'
             
         params += "</tbody></table>"
         
@@ -181,23 +143,23 @@ def Box(input_):
         if "Name" in input_["ReturnValue"]:
             ret += f'<code>{input_["ReturnValue"]["Name"]}</code> '
             
-        if "ShortType" in input_["ReturnValue"]:
-            ret += f'<i>({input_["ReturnValue"]["ShortType"]})</i> '
+        elif "ShortType" in input_["ReturnValue"]:
+            ret += f'<code>{input_["ReturnValue"]["ShortType"]}</code> '
             
         elif "Type" in input_["ReturnValue"]:
-            ret += f'<i>({input_["ReturnValue"]["Type"]})</i> '
+            ret += f'<code>{input_["ReturnValue"]["Type"].split(".")[-1]}</code> '
+            
+        else:
+            ret += f'<code>{type_map[str(input_["ReturnValue"]["typeId"])]}</code>'
             
         if "Description" in input_["ReturnValue"]:
             ret += f'- {input_["ReturnValue"]["Description"]}'
-            
-        else:
-            ret += "This method provides no return."
             
     else:
         ret += "This method provides no return."
     
     write_up = f"""<div style="padding: 10px; border: 1px solid #ccc; margin-bottom: 25px; border-radius: 3px">
-<a id="{call}"><code>{call}</code></a>
+<a href="#jump"><code>{call}</code></a>
 <p>{input_["Description"] if "Description" in input_ else ""}</p>
 <h4>Parameters</h4>
 {params}
@@ -209,16 +171,25 @@ def Box(input_):
     return write_up
 
 
-for lang, source in source.items():
+for source in sources:
     json_file = urlopen(source).read().decode("utf-8")
     json_file = json_file.replace("true", "True").replace("false", "False").replace("null", "None")
     doc = eval(json_file)
+    
+    keys = doc["keys"]
+    
+    type_map = {}
+    for key in keys.items():
+        if "GenericParameters" in key[1]:
+            type_map[key[0]] = key[1]["Type"].split(".")[-1][:-1]
+        else:
+            type_map[key[0]] = key[1]["ShortType"]
 
-    algo_methods = [doc["tree"]["core"]["data"][0]["children"], doc["keys"].values()]
+    algo_methods = [doc["tree"]["core"]["data"][0]["children"], keys.values()]
     
     for branch in algo_methods:
         previous_name = ""
-        i = 4
+        i = 1
         
         for item in branch:
-            previous_name, i = Table(lang, item, previous_name, i)
+            previous_name, i = Table(item, previous_name, i, type_map)
