@@ -71,7 +71,7 @@ def Table(input_, previous_name, n, type_map):
             path = pathlib.Path(base + dir_[tag] + f"{counter[tag]:02} " + name)
             path.mkdir(parents=True, exist_ok=True)
             
-            i = 1
+            i = 4
             
         else:
             path = pathlib.Path(base + dir_[tag] + f"{counter[tag]:02} " + name)
@@ -189,7 +189,7 @@ for source in sources:
     
     for branch in algo_methods:
         previous_name = ""
-        i = 1
+        i = 4
         
         for item in branch:
             previous_name, i = Table(item, previous_name, i, type_map)
