@@ -1,0 +1,34 @@
+<p>Follow these steps to subscribe to a Future security:</p>
+
+<ol>
+    <li>Instantiate a <code>QuantBook</code>.</li>
+    <div class="section-example-container">
+        <pre class="csharp">var qb = new QuantBook();</pre>
+        <pre class="python">qb = QuantBook()</pre>
+    </div>
+    <li>Call the <code>AddFuture</code> method with a ticker and resolution.</li>
+    <div class="section-example-container">
+        <pre class="csharp">var future = qb.AddFuture(Futures.Indices.SP500EMini,
+                dataNormalizationMode: DataNormalizationMode.BackwardsRatio,
+                dataMappingMode: DataMappingMode.LastTradingDay,
+                contractDepthOffset: 0
+            );</pre>
+        <pre class="python">future = qb.AddFuture(Futures.Indices.SP500EMini,
+                dataNormalizationMode = DataNormalizationMode.BackwardsRatio,
+                dataMappingMode = DataMappingMode.LastTradingDay,
+                contractDepthOffset = 0
+			)</pre>
+    </div>
+    <p>If you do not pass a resolution argument, <code>Resolution.Minute</code> is used by default.</p>
+    <li>Save a reference to the future <code>Symbol</code>.</li>
+    <div class="section-example-container">
+        <pre class="csharp">var symbol = future.Symbol;</pre>
+        <pre class="python">symbol = future.Symbol</pre>
+    </div>
+    <li><i>(Optional)</i> Call the <code>SetFilter</code> method with a specified expiration range value.</li>
+    <div class="section-example-container">
+        <pre class="csharp">future.SetFilter(0, 90);</pre>
+        <pre class="python">future.SetFilter(0, 90)</pre>
+    </div>
+    <p>If you don't use this method to pass a specified expiration range value, the Future chain will not be populated by futures contracts. This choice impacts one of the ways to get historical data we will see next.</p>
+</ol>

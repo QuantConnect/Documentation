@@ -1,0 +1,83 @@
+<p>You need to <a href="#02-Create-Subscriptions">subscribe</a> to all of the Futures for which you want historical data. You can request historical data for a subset of the Futures or all of the Futures.</p> 
+
+<h4>Subset of Futures</h4>
+
+<p><a href="#02-Create-Subscriptions">Create subscriptions</a> for multiple Futures and then call the <code>History</code> method with a list of <code>Symbol</code>s to request historical data for those specific securities.</p>
+
+<div class="section-example-container">
+    <pre class="csharp">var qb = new QuantBook();
+var es = qb.AddFuture(Futures.Indices.SP500EMini).Symbol;
+var nq = qb.AddFuture(Futures.Indices.NASDAQ100EMini).Symbol;
+var ym = qb.AddFuture(Futures.Indices.Dow30EMini).Symbol;
+
+var startTime = new DateTime(2021, 11, 1);
+var endTime = new DateTime(2021, 12, 1);
+var definedPeriodHistory = qb.History(new []{es, nq, ym}, startTime, endTime, Resolution.Minute);
+var timespanHistory = qb.History(new []{es, nq, ym}, TimeSpan.FromDays(10), Resolution.Minute);
+var barCountHistory = qb.History(new []{es, nq, ym}, 2000, Resolution.Minute);</pre>
+    <pre class="python">qb = QuantBook()
+es = qb.AddFuture(Futures.Indices.SP500EMini).Symbol
+nq = qb.AddFuture(Futures.Indices.NASDAQ100EMini).Symbol
+ym = qb.AddFuture(Futures.Indices.Dow30EMini).Symbol
+
+start_time = datetime(2021, 11, 1)
+end_time = datetime(2021, 12, 1)
+defined_period_history = qb.History([es, nq, ym], start_time, end_time, Resolution.Minute)
+timespan_history = qb.History([es, nq, ym], timedelta(days=10), Resolution.Minute)
+bar_count_history = qb.History([es, nq, ym], 400, Resolution.Minute)</pre>
+</div>
+
+<h4>All Futures</h4>
+<p class="csharp">Call the <code>History</code> method with no <code>Symbol</code>s to request historical data for all of the futures.</p>
+
+<p class="python">Call the <code>History</code> method with <code>qb.Securities.Keys</code>, time argument(s), and resolution to request historical data for all of the futures.</p>
+
+<div class="section-example-container">
+    <pre class="csharp">var startTime = new DateTime(2021, 11, 1);
+var endTime = new DateTime(2021, 12, 1);<br>var definedPeriodHistory = qb.History(startTime, endTime, Resolution.Minute);<br>var timespanHistory = qb.History(TimeSpan.FromDays(10), Resolution.Minute);
+var barCountHistory = qb.History(10, Resolution.Minute);</pre>
+    <pre class="python">start_time = datetime(2021, 11, 1)
+end_time = datetime(2021, 12, 1)<br>defined_period_history = qb.History(qb.Securities.Keys, start_time, end_time, Resolution.Minute)<br>timespan_history = qb.History(qb.Securities.Keys, timedelta(days=10), Resolution.Minute)
+bar_count_history = qb.History(qb.Securities.Keys, 400, Resolution.Minute)</pre>
+</div>
+
+<p class="csharp">The <code>History</code> method returns an <code>IEnumerable&lt;Slice&gt;</code> for multiple-security requests.</p>
+
+<h4>Future Chain Provider<h4>
+
+<p>An alternative to adjust the universe size with other futures, we can add the futures contracts using the <code>FutureChainProvider</code> as follows:</p>
+
+<div class="section-example-container">
+    <pre class="csharp">var qb = new QuantBook();
+var startTime = new DateTime(2021, 11, 1);
+var endTime = new DateTime(2021, 12, 1);
+var contractSymbols = qb.FutureChainProvider.GetFutureContractList(symbol, endTime)
+
+var definedPeriodHistory = qb.History(contractSymbols, startTime, endTime, Resolution.Minute);
+var timespanHistory = qb.History(contractSymbols, TimeSpan.FromDays(10), Resolution.Minute);
+var barCountHistory = qb.History(contractSymbols, 2000, Resolution.Minute);</pre>
+    <pre class="python">qb = QuantBook()
+start_time = datetime(2021, 11, 1)
+end_time = datetime(2021, 12, 1)
+contract_symbols = qb.FutureChainProvider.GetFutureContractList(symbol, end_time)
+
+defined_period_history = qb.History(contract_symbols, start_time, end_time, Resolution.Minute)
+timespan_history = qb.History(contract_symbols, timedelta(days=10), Resolution.Minute)
+bar_count_history = qb.History(contract_symbols, 2000, Resolution.Minute)</pre>
+</div>
+
+<h4>Use the GetFutureHistory Helper Method<h4>
+
+<p class="csharp">Not available for C#.</p>
+
+<p class="python">An alternative to adjust the universe size with other futures, we can add the futures contracts using the <code>FutureChainProvider</code> as follows:</p>
+
+<div class="section-example-container">
+    <pre class="python">qb = QuantBook()
+start_time = datetime(2021, 11, 1)
+end_time = datetime(2021, 12, 1)
+future.SetFilter(0, 90);
+chain_history = qb.GetFutureHistory(symbol, start_time, end_time, Resolution.Minute)</pre>
+</div>
+
+<p>If you don't do not use the <code>SetFilter</code> method to pass a specified expiration range value, the <code>GetFutureHistory<code> will not return data, since it uses the filter definition to select the contracts that will be requested.</p>
