@@ -24,9 +24,9 @@ dir_ = {"Adding Data": "02 Adding Data/",
 
 counter = {key: 0 for key in dir_.keys()}
 
-path_ = pathlib.Path(base)
+path_ = pathlib.Path(base + "01 Overview/")
 path_.mkdir(parents=True, exist_ok=True)
-with open(path_ / "01 Overview.html", "w", encoding="utf-8") as html_file:
+with open(path_ / "01 Indexes.html", "w", encoding="utf-8") as html_file:
     html_file.write(f'<p>Available API References:<br/></p>')
 
 def Table(input_, previous_name, n, type_map):
@@ -82,11 +82,11 @@ def Table(input_, previous_name, n, type_map):
             
             i = n
             
-        with open(path_ / "01 Overview.html", "rb+") as html_file:
+        with open(path_ / "01 Indexes.html", "rb+") as html_file:
             html_file.seek(-4, os.SEEK_END)
             html_file.truncate()
             
-        with open(path_ / "01 Overview.html", "a", encoding="utf-8") as html_file:
+        with open(path_ / "01 Indexes.html", "a", encoding="utf-8") as html_file:
             html_file.write(f'<ul><li><a href="#{call}"><i class="fa fa-link"></i>{call}</a></li></ul></p>')
             
         with open(path / f'{i:02} {call}.html', "w", encoding="utf-8") as html_file:
