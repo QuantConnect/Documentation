@@ -149,18 +149,27 @@ def Box(input_, type_map, i):
 <tbody>"""
 
         for name, prop in args.items():
-            des_ = prop["Description"]
+            slash = r"\'"
+            description = prop["Description"].replace(f"{slash}", "")
             
-            start = des_.find("<")
+            start = description.find("<see cref=")
             if start != -1:
-                end = des_.find(">") + 1
-                substring = des_[start:end]
+                end = description.find(">") + 1
+                substring = description[start:end]
+                new_substring = '<code>' + substring.split('(')[0].split(".")[-1].split('"')[0] + '</code>'
+                
+                description = description.replace(substring, new_substring)
+            
+            start = description.find("<")
+            if start != -1:
+                end = description.find(">") + 1
+                substring = description[start:end]
                 new_substring_ = substring.split('"')
                 new_substring = new_substring_[1] if len(new_substring_) > 1 else new_substring_[0]
             
-                des_ = des_.replace(substring, new_substring).split('"')[0]
+                description = description.replace(substring, new_substring).split('"')[0]
                 
-            params += f'<tr><td><code>{prop["Type"]}</code></td><td>{name}</td><td>{des_}</td></tr>'
+            params += f'<tr><td><code>{prop["Type"]}</code></td><td>{name}</td><td>{description}</td></tr>'
             
         params += "</tbody></table>"
         
