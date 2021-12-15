@@ -179,22 +179,24 @@ def Box(input_, type_map, i):
         
     if "Description" in input_:
         slash = r"\'"
+        description = input_["Description"].replace(f"{slash}", "")
         
-        start = input_["Description"].find("<see cref=")
-        end = input_["Description"].find(">") + 1
-        substring = input_["Description"][start:end]
-        new_substring = '<code>' + substring.split('(')[0].split(".")[-1] + '</code>'
-        
-        description = input_["Description"].replace(f"{slash}", "") \
-                                           .replace(substring, new_substring)
+        start = description.find("<see cref=")
+        if start != -1:
+            end = description.find(">") + 1
+            substring = description[start:end]
+            new_substring = '<code>' + substring.split('(')[0].split(".")[-1] + '</code>'
+            
+            description = description.replace(substring, new_substring)
         
         start = description.find("<")
-        end = description.find(">") + 1
-        substring = description[start:end]
-        new_substring_ = substring.split('"')
-        new_substring = new_substring_[1] if len(new_substring_) > 1 else new_substring_[0]
+        if start != -1:
+            end = description.find(">") + 1
+            substring = description[start:end]
+            new_substring_ = substring.split('"')
+            new_substring = new_substring_[1] if len(new_substring_) > 1 else new_substring_[0]
         
-        description = description.replace(substring, new_substring)
+            description = description.replace(substring, new_substring)
     
     else: 
         description = ""
