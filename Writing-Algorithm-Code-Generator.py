@@ -177,8 +177,18 @@ def Box(input_, type_map, i):
     else:
         ret += "This method provides no return."
         
-    slash = '\"'
-    description = input_["Description"].replace(f"{slash}", "") if "Description" in input_ else ""
+    if "Description" in input_:
+        slash = r"\'"
+        
+        start = input_["Description"].find("<see cref=")
+        end = input_["Description"].find(">") + 1
+        substring = input_["Description"][start:end]
+        new_substring = substring.split("(")[0].split(".")[-1]
+        
+        description = input_["Description"].replace(f"{slash}", "").replace(substring, new_substring)  
+    
+    else: 
+        description = ""
     
     write_up = f"""<div style="padding: 10px; border: 1px solid #ccc; margin-bottom: 25px; border-radius: 3px">
 <a id={call.replace(" ", "-") + str(i)}><code>{call}</code></a>
