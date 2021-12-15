@@ -134,7 +134,7 @@ def Box(input_, type_map, i):
             else:
                 args[item["Name"]]["Type"] = type_map[str(item["typeId"])]
         
-    call = input_["Name"] + "(" + ", ".join([str(value) + " " + str(key) for key, value in args.items()]).replace("/", "_") + ")"
+    call = input_["Name"] + "(" + ", ".join([str(value["Type"]) + " " + str(key) for key, value in args.items()]).replace("/", "_") + ")"
     
     params = ""
     if args:
