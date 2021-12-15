@@ -26,8 +26,8 @@ counter = {key: 0 for key in dir_.keys()}
 
 path_ = pathlib.Path(base + "01 Overview/")
 path_.mkdir(parents=True, exist_ok=True)
-with open(path_ / "01 Indexes.html", "w", encoding="utf-8") as html_file:
-    html_file.write(f'<p>Available API References:<br/></p>')
+with open(path_ / "01 All Available Methods.html", "w", encoding="utf-8") as html_file:
+    html_file.write(f'<table class="table qc-table">\n<thead>\n<tr>\n<th colspan="1"><code>QCAlgorithm</code> class subclasses/methods</th>\n</tr>\n</thead>\n<tbody></tbody></table>')
 
 def Table(input_, previous_name, n, type_map):
     if "DocumentationAttributes" not in input_ or not "DocumentationAttributes":
@@ -82,16 +82,19 @@ def Table(input_, previous_name, n, type_map):
             
             i = n
             
-        with open(path_ / "01 Indexes.html", "rb+") as html_file:
-            html_file.seek(-4, os.SEEK_END)
+        with open(path_ / "01 All Available Methods.html", "rb+") as html_file:
+            html_file.seek(-16, os.SEEK_END)
             html_file.truncate()
             
-        with open(path_ / "01 Indexes.html", "a", encoding="utf-8") as html_file:
-            html_file.write(f'<ul><li><a href="https://www.quantconnect.com/docs/v2/writing-algorithms/api-reference/{"-".join(dir_[tag].split(" ")[1:]).lower()}{name.lower()}#{call + str(i)}"><i class="fa fa-link"></i>{call}</a></li></ul></p>')
-            
+        description = ""
         with open(path / f'{i:02} {call}.html', "w", encoding="utf-8") as html_file:
-            html_file.write(Box(input_, type_map, i))
-            
+            write_up, description = Box(input_, type_map, i)
+            html_file.write(write_up)
+        
+        with open(path_ / "01 All Available Methods.html", "a", encoding="utf-8") as html_file:
+            html_file.write(f'<tr><td><a href="https://www.quantconnect.com/docs/v2/writing-algorithms/api-reference/{"-".join(dir_[tag].split(" ")[1:]).lower()}{name.lower()}#{call + str(i)}"><i class="fa fa-link"></i>{call}</a><br/>{description}</td></tr></tbody></table>')
+        
+        
     i += 1
     
     return name, i
@@ -164,16 +167,17 @@ def Box(input_, type_map, i):
             ret += f'<code>{type_map[str(input_["ReturnValue"]["typeId"])]}</code>'
             
         if "Description" in input_["ReturnValue"]:
-            ret += f'- {input_["ReturnValue"]["Description"]}'
+            ret += f' - {input_["ReturnValue"]["Description"]}'
             
     else:
         ret += "This method provides no return."
         
     slash = '\"'
+    description = input_["Description"].replace(f"{slash}", "") if "Description" in input_ else ""
     
     write_up = f"""<div style="padding: 10px; border: 1px solid #ccc; margin-bottom: 25px; border-radius: 3px">
 <a id={call + str(i)}><code>{call}</code></a>
-<p>{input_["Description"].replace("{slash}", "") if "Description" in input_ else ""}</p>
+<p>{description}</p>
 <h4>Parameters</h4>
 {params}
 
@@ -181,7 +185,7 @@ def Box(input_, type_map, i):
 {ret}
 </div>"""
 
-    return write_up
+    return write_up, description
 
 
 json_file = urlopen(source).read().decode("utf-8")
