@@ -50,18 +50,18 @@ def Table(input_, previous_name, n, type_map):
     i = n
     
     for tag in doc_attr:
-        args = []
+        args = {}
             
         if "Parameters" in input_:
             params = input_["Parameters"]
             for item in params:
                 if "GenericParameters" not in item:
-                    args.append(item["Name"])
+                    args[item["Name"]] = type_map[str(item["typeId"])]
                     
                 else:
-                    args.append("/".join([x["Name"] for x in item["GenericParameters"]]))
+                    args[item["GenericParameters"][-1]["Name"]] = type_map[str(item["GenericParameters"][-1]["typeId"])]
             
-        call = name + "(" + ",".join(args).replace("/", "_") + ")"
+        call = name + "(" + ", ".join([str(key) + " " + str(value) for key, value in args.items()]).replace("/", "_") + ")"
         
         properties = []
         methods = []
@@ -134,7 +134,7 @@ def Box(input_, type_map, i):
             else:
                 args[item["Name"]]["Type"] = type_map[str(item["typeId"])]
         
-    call = input_["Name"] + "(" + ",".join(list(args.keys())).replace("/", "_") + ")"
+    call = input_["Name"] + "(" + ", ".join([str(key) + " " + str(value) for key, value in args.items()]).replace("/", "_") + ")"
     
     params = ""
     if args:
