@@ -2,16 +2,12 @@
 
 <p class="python">The <code>pandas.DataFrame</code> that contains historical data for Futures contracts has a <code>MultiIndex</code> with the levels for the expiry, <code>Symbol</code>, and timestamp. For some of the wrangling operations, you need to drop the first index level.</p>
 
-<div class="python section-example-container">
-    <pre class="python">history.index.droplevel(0)</pre>
-</div>
-
 <p class="csharp">You need some <a href="#03-Get-Historical-Data">historical data</a> to perform wrangling operations. Use LINQ to wrangle the data and then call the <code>Console.WriteLine</code> method in a Jupyter Notebook to display the data.</p>
 
 <h4>Select One Security</h4>
-<p class="csharp">Iterate through the <code>IEnumerable</code> and index the <code>TradeBar</code> with a <code>Symbol</code> to get the historical data of the security.</p>
+<p class="csharp">Iterate through the <code>IEnumerable</code> and index the <code>TradeBar</code> with a <code>Symbol</code> to get the historical data of the contract.</p>
 
-<p class="python">Index the <code>pandas.DataFrame</code> with a <code>Symbol</code> to select the historical data of the security.</p>
+<p class="python">Index the <code>pandas.DataFrame</code> with a <code>Symbol</code> to select the historical data of the contract.</p>
 
 <div class="section-example-container">
 <pre class="csharp">foreach(var bar in history.Take(5))
@@ -29,14 +25,14 @@ history.loc[symbol]
 <img class="csharp" style="max-width: 100%; display: block" src="https://cdn.quantconnect.com/i/tu/research-history-future-onesecurity-linq.png">
 
 
-<p class="python">The Jupyter Notebook displays a <code>pandas.DataFrame</code> containing the open, high, low, close, and volume of the security.</p>
+<p class="python">The Jupyter Notebook displays a <code>pandas.DataFrame</code> containing the trade and quote data of the contract.</p>
 
 <img class="python" style="max-width: 100%; display: block" src="https://cdn.quantconnect.com/i/tu/research-history-futures-onesecurity-loc-es-dataframe.png">
 
 <h4>Select a Property of the Security</h4>
 <p class="csharp">Iterate through the <code>IEnumerable</code>, index the <code>Slice</code> with a <code>Symbol</code>, and select a property of the <code>Slice</code> to get the historical values of the property.</p>
 
-<p class="python">Index the <code>pandas.DataFrame</code> with a <code>Symbol</code> to select the historical data of the security and then select a property column to get the historical values of the property.</p>
+<p class="python">Index the <code>pandas.DataFrame</code> with a <code>Symbol</code> to select the historical data of the contract and then select a property column to get the historical values of the property.</p>
 
 <div class="section-example-container">
 <pre class="csharp">var closePrices = history.Select(data =&gt; (data.Close, data.EndTime));
@@ -61,28 +57,23 @@ history.loc[symbol]['close']
 
 
 <h4 class="python">Unstack the Dataframe</h4>
-<p class="python">If you request historical data for multiple securities, you can transform the <code>pandas.DataFrame</code> so that it is a time series of closing prices for all of the securities. Select the column that you want to display for each security and then call the <code>unstack</code> method to transform the <code>pandas.DataFrame</code> into the desired format. We can also rename the colums to Futures' symbology.</p>
+<p class="python">If you request historical data for multiple contracts, you can transform the <code>pandas.DataFrame</code> so that it is a time series of bid closing prices for all of the containing contracts. Select the column that you want to display for each contract and then call the <code>unstack</code> method to transform the <code>pandas.DataFrame</code> into the desired format. You can rename the columns of the transformed to <code>pandas.DataFrame</code> to be the respective <code>FuturesContract</code> <code>Symbol</code>s.</p>
 
-<div class="section-example-container python">
+<div class="python section-example-container python">
     <pre class="python">defined_period_history.index = defined_period_history.index.droplevel(0)
-	defined_period_history['bidclose'].unstack(level=0)
-	defined_period_history.columns = hist[Symbol.GetAlias(SecurityIdentifier.Parse(x))
-		for x in defined_period_history.columns]
-</pre>
+defined_period_history['bidclose'].unstack(level=0)<br>columns = [Symbol.GetAlias(SecurityIdentifier.Parse(x)) for x in defined_period_history.columns]
+defined_period_history.columns = columns</pre>
 </div>
 
-<p class="python">The <code>pandas.DataFrame</code> is transformed so that the column indices are the <code>Symbol</code> of each security and each row contains the closing price.</p>
+<p class="python">The <code>pandas.DataFrame</code> is transformed so that the column indices are the <code>Symbol</code> of each <code>FuturesContract</code> and each row contains the bid closing price.</p>
 
-<h4>All Futures</h4>
+<p class="python">If you transform the <code>pandas.DataFrame</code> that is returned from calling the <code>History</code> method with <code>Future</code> <code>Symbol</code>s, the <code>pandas.DataFrame</code> is transformed into the following format:</p>
 <img class="python" style="max-width: 100%; display: block" src="https://cdn.quantconnect.com/i/tu/research-history-futures-multiplesecurities-unstackdataframe.png">
 
-<h4>Future Chain Provider</h4><h4>
+<p class="python">If you transform the <code>pandas.DataFrame</code> that is returned from calling the <code>History</code> method with <code>FuturesContract</code> <code>Symbol</code>s, the <code>pandas.DataFrame</code> is transformed into the following format:</p>
 <img class="python" style="max-width: 100%; display: block" src="https://cdn.quantconnect.com/i/tu/research-history-futureschainprovider-unstackdataframe.png">
 
+<p class="python">If you transform the <code>pandas.DataFrame</code> that is returned from calling the <code>GetAllData</code> method, the <code>pandas.DataFrame</code> is transformed into the following format:</p>
+<img class="python" style="max-width: 100%; display: block" src="https://cdn.quantconnect.com/i/tu/research-history-getfutureshistory-unstackdataframe.png">
 
-</h4><h4>Use the GetFutureHistory Helper Method</h4><h4>
-
-<p class="csharp">Not available for C#.</p>
-
-<p class="python">
-<img class="python" style="max-width: 100%; display: block" src="https://cdn.quantconnect.com/i/tu/research-history-getfutureshistory-unstackdataframe.png"></p></h4>
+<p>The last two <code>pandas.DataFrame</code>s above differ because the first one contains all of the Future contracts that were passed to the <code>History</code> method while the second one contains only the Future contracts that respect the expiry thresholds that were passed to the <code>SetFilter</code> method.</p>
