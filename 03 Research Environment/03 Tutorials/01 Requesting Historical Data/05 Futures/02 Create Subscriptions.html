@@ -1,0 +1,34 @@
+<p>Follow these steps to subscribe to a Future security:</p>
+
+<ol>
+    <li>Instantiate a <code>QuantBook</code>.</li>
+    <div class="section-example-container">
+        <pre class="csharp">var qb = new QuantBook();</pre>
+        <pre class="python">qb = QuantBook()</pre>
+    </div>
+    <li>Call the <code>AddFuture</code> method with a ticker, resolution, and contract rollover settings.</li>
+    <div class="section-example-container">
+        <pre class="csharp">var future = qb.AddFuture(Futures.Indices.SP500EMini, Resolution.Minute,
+                dataNormalizationMode: DataNormalizationMode.BackwardsRatio,
+                dataMappingMode: DataMappingMode.LastTradingDay,
+                contractDepthOffset: 0
+            );</pre>
+        <pre class="python">future = qb.AddFuture(Futures.Indices.SP500EMini, Resolution.Minute,
+                dataNormalizationMode = DataNormalizationMode.BackwardsRatio,
+                dataMappingMode = DataMappingMode.LastTradingDay,
+                contractDepthOffset = 0)</pre>
+    </div>
+    <p>If you do not pass a resolution argument, <code>Resolution.Minute</code> is used by default. If you do not pass rollover setting arguments, the default values of <code>dataNormalizationMode</code>, <code>dataMappingMode</code>, and <code>contractDepthOffset </code> are <code>DataNormalizationMode.Adjusted</code>, <code>DataMappingMode.OpenInterest</code>, and 0, respectively.</p>
+    <li>Save a reference to the Future <code>Symbol</code>.</li>
+    <div class="section-example-container">
+        <pre class="csharp">var symbol = future.Symbol;</pre>
+        <pre class="python">symbol = future.Symbol</pre>
+    </div>
+    <p>The Future <code>Symbol</code> references the continuous contract.</p>
+    <li><i>(Optional)</i> Call the <code>SetFilter</code> method with a specified expiration range value.</li>
+    <div class="section-example-container">
+        <pre class="csharp">future.SetFilter(0, 90);</pre>
+        <pre class="python">future.SetFilter(0, 90)</pre>
+    </div>
+    <p>If you don't call the <code>SetFilter</code> method, the <code>GetFutureHistory</code> method will not return historical data.</p>
+</ol>
