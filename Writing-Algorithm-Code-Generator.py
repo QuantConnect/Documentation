@@ -95,7 +95,7 @@ def Table(input_, previous_name, n, type_map):
             html_file.write(write_up)
         
         with open(path_ / "01 All Available Methods.html", "a", encoding="utf-8") as html_file:
-            html_file.write(f'<tr><td><a href="#{call + str(i)}"><i class="fa fa-link"></i>{call}</a><br/>{description}</td></tr></tbody></table>')
+            html_file.write(f'<tr><td><a href="#{call.replace(" ", "-") + str(i)}"><i class="fa fa-link"></i>{call}</a><br/>{description}</td></tr></tbody></table>')
         
         with open(path_ / "02 Public Members.html", "a", encoding="utf-8") as html_file:
             html_file.write(write_up)
@@ -181,7 +181,7 @@ def Box(input_, type_map, i):
     description = input_["Description"].replace(f"{slash}", "") if "Description" in input_ else ""
     
     write_up = f"""<div style="padding: 10px; border: 1px solid #ccc; margin-bottom: 25px; border-radius: 3px">
-<a id={call + str(i)}><code>{call}</code></a>
+<a id={call.replace(" ", "-") + str(i)}><code>{call}</code></a>
 <p>{description}</p>
 <h4>Parameters</h4>
 {params}
