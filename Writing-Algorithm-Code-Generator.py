@@ -61,7 +61,7 @@ def Table(input_, previous_name, n, type_map):
                 else:
                     args[item["GenericParameters"][-1]["Name"]] = type_map[str(item["GenericParameters"][-1]["typeId"])]
             
-        call = name + "(" + ", ".join([str(key) + " " + str(value) for key, value in args.items()]).replace("/", "_") + ")"
+        call = name + "(" + ", ".join([str(value) + " " + str(key) for key, value in args.items()]).replace("/", "_") + ")"
         
         properties = []
         methods = []
@@ -134,7 +134,7 @@ def Box(input_, type_map, i):
             else:
                 args[item["Name"]]["Type"] = type_map[str(item["typeId"])]
         
-    call = input_["Name"] + "(" + ", ".join([str(key) + " " + str(value) for key, value in args.items()]).replace("/", "_") + ")"
+    call = input_["Name"] + "(" + ", ".join([str(value) + " " + str(key) for key, value in args.items()]).replace("/", "_") + ")"
     
     params = ""
     if args:
