@@ -95,7 +95,7 @@ def Table(input_, previous_name, n, type_map):
             html_file.write(write_up)
         
         with open(path_ / "01 All Available Methods.html", "a", encoding="utf-8") as html_file:
-            html_file.write(f'<tr><td><a href="https://www.quantconnect.com/docs/v2/writing-algorithms/api-reference/{"-".join(dir_[tag].split(" ")[1:]).lower()}{name.lower()}#{call + str(i)}"><i class="fa fa-link"></i>{call}</a><br/>{description}</td></tr></tbody></table>')
+            html_file.write(f'<tr><td><a href="#{call + str(i)}"><i class="fa fa-link"></i>{call}</a><br/>{description}</td></tr></tbody></table>')
         
         with open(path_ / "02 Public Members.html", "a", encoding="utf-8") as html_file:
             html_file.write(write_up)
