@@ -1,4 +1,4 @@
-<p>You need to <a href="#02-Create-Subscriptions">subscribe</a> to all of the Futures for which you want historical data. You can request historical data for a subset of the Futures or all of the Futures.</p> 
+<p>You need to <a href="#02-Create-Subscriptions">subscribe</a> to all of the Futures for which you want historical data. You can request historical data for a subset of the Futures, all of the Futures, or a subset of the Futures contracts.</p> 
 
 <h4>Subset of Futures</h4>
 
@@ -14,7 +14,7 @@ var startTime = new DateTime(2021, 11, 1);
 var endTime = new DateTime(2021, 12, 1);
 var definedPeriodHistory = qb.History(new []{es, nq, ym}, startTime, endTime, Resolution.Minute);
 var timespanHistory = qb.History(new []{es, nq, ym}, TimeSpan.FromDays(10), Resolution.Minute);
-var barCountHistory = qb.History(new []{es, nq, ym}, 2000, Resolution.Minute);</pre>
+var barCountHistory = qb.History(new []{es, nq, ym}, 4000, Resolution.Minute);</pre>
     <pre class="python">qb = QuantBook()
 es = qb.AddFuture(Futures.Indices.SP500EMini).Symbol
 nq = qb.AddFuture(Futures.Indices.NASDAQ100EMini).Symbol
@@ -24,13 +24,13 @@ start_time = datetime(2021, 11, 1)
 end_time = datetime(2021, 12, 1)
 defined_period_history = qb.History([es, nq, ym], start_time, end_time, Resolution.Minute)
 timespan_history = qb.History([es, nq, ym], timedelta(days=10), Resolution.Minute)
-bar_count_history = qb.History([es, nq, ym], 400, Resolution.Minute)</pre>
+bar_count_history = qb.History([es, nq, ym], 4000, Resolution.Minute)</pre>
 </div>
 
 <h4>All Futures</h4>
-<p class="csharp">Call the <code>History</code> method with no <code>Symbol</code>s to request historical data for all of the futures.</p>
+<p class="csharp">Call the <code>History</code> method with no <code>Symbol</code>s to request historical data for all of the Futures.</p>
 
-<p class="python">Call the <code>History</code> method with <code>qb.Securities.Keys</code>, time argument(s), and resolution to request historical data for all of the futures.</p>
+<p class="python">Call the <code>History</code> method with <code>qb.Securities.Keys</code>, time argument(s), and resolution to request historical data for all of the Futures.</p>
 
 <div class="section-example-container">
     <pre class="csharp">var startTime = new DateTime(2021, 11, 1);
@@ -43,9 +43,9 @@ bar_count_history = qb.History(qb.Securities.Keys, 400, Resolution.Minute)</pre>
 
 <p class="csharp">The <code>History</code> method returns an <code>IEnumerable&lt;Slice&gt;</code> for multiple-security requests.</p>
 
-<h4>Future Chain Provider<h4>
+<h4>Subset of Futures Contracts<br></h4>
 
-<p>An alternative to adjust the universe size with other futures, we can add the futures contracts using the <code>FutureChainProvider</code> as follows:</p>
+<p>Call the <code>GetFutureContractList</code> method with a <code>Future</code> <code>Symbol</code> and a <code class="python">datetime</code><code class="csharp">DateTime</code> to get a list of contract <code>Symbol</code>s that were trading at the given time. Call the <code>History</code> method with a subset of the returned <code>Symbol</code>s to get historical data for the given contracts.</p>
 
 <div class="section-example-container">
     <pre class="csharp">var qb = new QuantBook();
@@ -66,18 +66,32 @@ timespan_history = qb.History(contract_symbols, timedelta(days=10), Resolution.M
 bar_count_history = qb.History(contract_symbols, 2000, Resolution.Minute)</pre>
 </div>
 
-<h4>Use the GetFutureHistory Helper Method<h4>
+<h4>Subset of Futures Contract Properties</h4>
 
-<p class="csharp">Not available for C#.</p>
+<p class="csharp">This functionality is not currently supported for C# research environments. Use Python to get a subset of <code>Future</code>s contract properties.<br></p>
 
-<p class="python">An alternative to adjust the universe size with other futures, we can add the futures contracts using the <code>FutureChainProvider</code> as follows:</p>
+<p class="python">Call the <code>SetFilter</code> method and then call the <code>GetFutureHistory</code> method with a  <code>Future</code> <code>Symbol</code>, start <code>datetime</code>, end <code>datetime</code>, and resolution to get historical contract data for the given <code>Future</code> <code>Symbol</code>. <br></p>
 
-<div class="section-example-container">
+<div class="python section-example-container">
     <pre class="python">qb = QuantBook()
 start_time = datetime(2021, 11, 1)
 end_time = datetime(2021, 12, 1)
 future.SetFilter(0, 90);
-chain_history = qb.GetFutureHistory(symbol, start_time, end_time, Resolution.Minute)</pre>
+future_history = qb.GetFutureHistory(symbol, start_time, end_time, Resolution.Minute)</pre>
 </div>
 
-<p>If you don't do not use the <code>SetFilter</code> method to pass a specified expiration range value, the <code>GetFutureHistory<code> will not return data, since it uses the filter definition to select the contracts that will be requested.</p>
+<p class="python">The call returns a <code>FutureHistory</code> object. If you don't call the <code>SetFilter</code> method, the <code>GetFutureHistory</code> method will not return data since <code>GetFutureHistory</code> uses the filter definition to select contracts and their historical data.</p>
+
+<p class="python">Call the <code>FutureHistory</code>'s <code>GetAllData</code> method to get all of the historical data for the selected contracts.</p>
+<div class="python section-example-container">
+    <pre class="python">future_history.GetAllData()</pre>
+</div>
+<p class="python">The call returns a <code>pandas.DataFrame</code> with a <code>MultiIndex</code>.</p>
+<img class="python" style="max-width: 100%; display: block; margin-bottom: 20px" src="https://cdn.quantconnect.com/i/tu/getfuturehistory-getalldata.png">
+
+<p class="python">Call the <code>FutureHistory</code>'s <code>GetExpiryDates</code> method to get all of the expiry dates for the selected contracts.</p>
+<div class="python section-example-container">
+    <pre class="python">future_history.GetAllData()</pre>
+</div>
+<p class="python">The call returns a list of <code>datetime</code>s.</p>
+<img class="python" style="max-width: 100%; display: block; max-height: 45px" src="https://cdn.quantconnect.com/i/tu/getfuturehistory-getexpirydates.png">
