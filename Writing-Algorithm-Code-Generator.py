@@ -117,7 +117,19 @@ def Box(input_, type_map, i):
             args[item["Name"]] = {"Description": "/", "Type": "/"}
             
             if "Description" in item:
-                args[item["Name"]]["Description"] = item["Description"]
+                slash = r"\'"
+                description = input_["Description"].replace(f"{slash}", "")
+                
+                start = description.find("<")
+                if start != -1:
+                    end = description.find(">") + 1
+                    substring = description[start:end]
+                    new_substring_ = substring.split('"')
+                    new_substring = new_substring_[1] if len(new_substring_) > 1 else new_substring_[0]
+                
+                    description = description.replace(substring, new_substring).split('"')[0]
+                
+                args[item["Name"]]["Description"] = description
                 
                 if args[item["Name"]]["Description"][-1] != ".":
                     args[item["Name"]]["Description"] = args[item["Name"]]["Description"] + "."
