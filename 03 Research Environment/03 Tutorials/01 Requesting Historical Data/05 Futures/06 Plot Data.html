@@ -1,17 +1,17 @@
 <p class="csharp">Jupyter Notebooks don't currently support packages to plot historical data, but we are working on adding the functionality. Until the functionality is added, use Python to plot historical Equity data.</p>
 
-<p class="python">You need to <a href="#02-Create-Subscriptions">subscribe</a> to Equities and <a href="#03-Get-Historical-Data">get their historical data</a> to plot their historical data. You can use many of the <a href="../../../lean-cli/user-guides/supported-libraries">supported libraries</a> to plot data in various formats. For example, you can plot candlestick and line charts.</p>
+<p class="python">You need to <a href="#02-Create-Subscriptions">subscribe</a> to Futures and <a href="#03-Get-Historical-Data">get their historical contract data</a> to plot their historical data. You can use many of the <a href="../../../lean-cli/user-guides/supported-libraries">supported libraries</a> to plot data in various formats. For example, you can plot candlestick and line charts.</p>
 
 <h4 class="python">Candlestick Chart<br></h4>
 
 <p class="python">Follow these steps to plot candlestick charts:</p>
 
 <ol class="python">
-    <li>Drop the first index level</li>
+    <li>Drop the first index level.</li>
 	<div class="section-example-container">
         <pre class="python">history.index = history.index.droplevel(0)</pre>
     </div>
-    <li>Use only the first 30 data points for simplicity.</li>
+    <li><i>(Optional)</i> Select the first 30 data points for simplicity.</li>
 	<div class="section-example-container">
         <pre class="python">history = history.head(30)</pre>
     </div>	
@@ -29,7 +29,7 @@
     </div>
     <li>Create a <code>Layout</code>.<br></li>
     <div class="section-example-container">
-        <pre class="python">layout = go.Layout(title=go.layout.Title(text='SPY OHLC'),
+        <pre class="python">layout = go.Layout(title=go.layout.Title(text='ES Continuous OHLC'),
                    xaxis_title='Date',
                    yaxis_title='Price',
                    xaxis_rangeslider_visible=False)</pre>
@@ -42,7 +42,7 @@
     <div class="section-example-container">
         <pre class="python">fig.show()</pre>
     </div>
-    <p>Candlestick charts display the open, high, low, and close prices of the security.</p>
+    <p>Candlestick charts display the open, high, low, and close prices of the contract.</p>
 </ol>
 
 <img class="python" style="max-width: 100%; display: block" src="https://cdn.quantconnect.com/i/tu/research-history-futures-onesecurity-candlestickplot.png">
@@ -52,7 +52,7 @@
 <p class="python">Follow these steps to plot line charts using built-in methods:</p>
 
 <ol class="python">
-    <li>Drop the first index level</li>
+    <li>Drop the first index level.</li>
 	<div class="section-example-container">
         <pre class="python">history.index = history.index.droplevel(0)</pre>
     </div>
@@ -60,7 +60,7 @@
     <div class="section-example-container">
         <pre class="python">closingPrices = history['close'].unstack(level=0)</pre>
     </div>
-	<li>Rename the columns.</li>
+	<li>Rename the columns to be the <code>Symbol</code> of each contract.</li>
     <div class="section-example-container">
         <pre class="python">closingPrices.columns = [Symbol.GetAlias(SecurityIdentifier.Parse(x)) for x in closingPrices.columns]</pre>
     </div>
