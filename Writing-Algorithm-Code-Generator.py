@@ -183,7 +183,7 @@ def Box(input_, type_map, i):
         start = input_["Description"].find("<see cref=")
         end = input_["Description"].find(">") + 1
         substring = input_["Description"][start:end]
-        new_substring = substring.split("(")[0].split(".")[-1]
+        new_substring = '<code>' + substring.split("(")[0].split(".")[-1] + '</code>'
         
         description = input_["Description"].replace(f"{slash}", "").replace(substring, new_substring)  
     
