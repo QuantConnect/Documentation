@@ -5,33 +5,12 @@ from urllib.request import urlopen
 source = "http://cdn.quantconnect.com.s3.us-east-1.amazonaws.com/terminal/cache/api/csharp_tree.json"
 
 base = "02 Writing Algorithms/04 API Reference/"
-dir_ = {"Adding Data": "02 Adding Data/",
-       "Algorithm Framework": "03 Algorithm Framework/",
-       "Charting": "04 Charting/",
-       "Consolidating Data": "05 Consolidating Data/",
-       "Handling Data": "06 Handling Data/",
-       "Historical Data": "07 Historical Data/",
-       "Indicators": "08 Indicators/",
-       "Live Trading": "09 Live Trading/",
-       "Logging": "10 Logging/",
-       "MachineLearning": "11 Machine Learning/",
-       "Modeling": "12 Modeling/",
-       "Parameter and Optimization": "13 Parameter and Optimization/",
-       "Scheduled Events": "14 Scheduled Events/",
-       "Securities and Portfolio": "15 Securities and Portfolio/",
-       "Trading and Orders": "16 Trading and Orders/",
-       "Universes": "17 Universes/"}
 
-counter = {key: 0 for key in dir_.keys()}
-
-path_ = pathlib.Path(base + "01 Overview/")
+path_ = pathlib.Path(base)
 path_.mkdir(parents=True, exist_ok=True)
 
 with open(path_ / "01 All Available Methods.html", "w", encoding="utf-8") as html_file:
     html_file.write(f'<table class="table qc-table">\n<thead>\n<tr>\n<th colspan="1"><code>QCAlgorithm</code> class subclasses/methods</th>\n</tr>\n</thead>\n<tbody></tbody></table>')
-
-with open(path_ / "02 Public Members.html", "w", encoding="utf-8") as html_file:
-    html_file.write(f'<p>Below shows all available method members:</p>')
 
 def Table(input_, previous_name, n, type_map):
     if "DocumentationAttributes" not in input_ or not "DocumentationAttributes":
@@ -63,45 +42,23 @@ def Table(input_, previous_name, n, type_map):
             
         call = name + "(" + ", ".join([str(value) + " " + str(key) for key, value in args.items()]).replace("/", "_") + ")"
         
-        properties = []
-        methods = []
+        mode = "a"
         
-        if "ReturnValue" in input_:
-            if "Properties" in input_["ReturnValue"]:
-                properties.extend(input_["ReturnValue"]["Properties"])
-                
-            if "Methods" in input_["ReturnValue"]:
-                methods.extend(input_["ReturnValue"]["Methods"])
-                
         if previous_name != name:
-            counter[tag] = counter[tag] + 1
+            i += 1
+            mode = "w"
             
-            path = pathlib.Path(base + dir_[tag] + f"{counter[tag]:02} " + name)
-            path.mkdir(parents=True, exist_ok=True)
-            
-            i = 4
-            
-        else:
-            path = pathlib.Path(base + dir_[tag] + f"{counter[tag]:02} " + name)
-            
-            i = n
-            
+        with open(path_ / f'{i:02} {name}.html', mode, encoding="utf-8") as html_file:
+                write_up, description = Box(input_, type_map, i)
+                html_file.write(write_up)
+                
         with open(path_ / "01 All Available Methods.html", "rb+") as html_file:
             html_file.seek(-16, os.SEEK_END)
             html_file.truncate()
             
-        with open(path / f'{i:02} {call}.html', "w", encoding="utf-8") as html_file:
-            write_up, description = Box(input_, type_map, i)
-            html_file.write(write_up)
-        
         with open(path_ / "01 All Available Methods.html", "a", encoding="utf-8") as html_file:
             html_file.write(f'<tr><td><a href="#{call.replace(" ", "-") + str(i)}"><i class="fa fa-link"></i>{call}</a><br/>{description}</td></tr></tbody></table>')
-        
-        with open(path_ / "02 Public Members.html", "a", encoding="utf-8") as html_file:
-            html_file.write(write_up)
 
-    i += 1
-    
     return name, i
 
 
@@ -135,6 +92,7 @@ def Box(input_, type_map, i):
                 args[item["Name"]]["Type"] = type_map[str(item["typeId"])]
         
     call = input_["Name"] + "(" + ", ".join([str(value["Type"]) + " " + str(key) for key, value in args.items()]).replace("/", "_") + ")"
+    call_ = input_["Name"] + "(<br/>&emsp;" + ",<br/>&emsp;".join(["<code>" + str(value["Type"]) + "</code>    " + str(key) for key, value in args.items()]) + "<br/>)"
     
     params = ""
     if args:
@@ -217,7 +175,9 @@ def Box(input_, type_map, i):
         description = ""
     
     write_up = f"""<div style="padding: 10px; border: 1px solid #ccc; margin-bottom: 25px; border-radius: 3px">
-<a id={call.replace(" ", "-") + str(i)}><code>{call}</code></a>
+<a id={call.replace(" ", "-") + str(i)}><b><code><font size="5">{input_["Name"]}</font></code></b></a>
+<p>{call_}<br\></p>
+<hr class="solid">
 <p>{description}</p>
 <h4>Parameters</h4>
 {params}
@@ -244,9 +204,10 @@ for key in keys.items():
 
 algo_methods = [doc["tree"]["core"]["data"][0]["children"], keys.values()]
 
+i = 1
+    
 for branch in algo_methods:
     previous_name = ""
-    i = 4
     
     for item in branch:
         previous_name, i = Table(item, previous_name, i, type_map)
