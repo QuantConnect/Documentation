@@ -9,7 +9,7 @@ base = "02 Writing Algorithms/04 API Reference/"
 path_ = pathlib.Path(base)
 path_.mkdir(parents=True, exist_ok=True)
 
-with open(path_ / "01 All Available Methods.html", "w", encoding="utf-8") as html_file:
+with open(path_ / "001 All Available Methods.html", "w", encoding="utf-8") as html_file:
     html_file.write(f'<table class="table qc-table">\n<thead>\n<tr>\n<th colspan="1"><code>QCAlgorithm</code> class subclasses/methods</th>\n</tr>\n</thead>\n<tbody></tbody></table>')
 
 def Table(input_, previous_name, n, type_map):
@@ -48,15 +48,15 @@ def Table(input_, previous_name, n, type_map):
             i += 1
             mode = "w"
             
-        with open(path_ / f'{i:02} {name}.html', mode, encoding="utf-8") as html_file:
+        with open(path_ / f'{i:03} {name}.html', mode, encoding="utf-8") as html_file:
                 write_up, description = Box(input_, type_map, i)
                 html_file.write(write_up)
                 
-        with open(path_ / "01 All Available Methods.html", "rb+") as html_file:
+        with open(path_ / "001 All Available Methods.html", "rb+") as html_file:
             html_file.seek(-16, os.SEEK_END)
             html_file.truncate()
             
-        with open(path_ / "01 All Available Methods.html", "a", encoding="utf-8") as html_file:
+        with open(path_ / "001 All Available Methods.html", "a", encoding="utf-8") as html_file:
             html_file.write(f'<tr><td><a href="#{call.replace(" ", "-") + str(i)}"><i class="fa fa-link"></i>{call}</a><br/>{description}</td></tr></tbody></table>')
 
     return name, i
@@ -92,7 +92,9 @@ def Box(input_, type_map, i):
                 args[item["Name"]]["Type"] = type_map[str(item["typeId"])]
         
     call = input_["Name"] + "(" + ", ".join([str(value["Type"]) + " " + str(key) for key, value in args.items()]).replace("/", "_") + ")"
-    call_ = input_["Name"] + "(<br/>&emsp;" + ",<br/>&emsp;".join(["<code>" + str(value["Type"]) + "</code>    " + str(key) for key, value in args.items()]) + "<br/>)"
+    next_ = ",<br/>" + "&nbsp;" * 50
+    this_ = "(<br/>" + "&nbsp;" * (50 - len(input_["Name"]) - 1)
+    call_ = input_["Name"] + this_ + next_.join(["<code>" + str(value["Type"]) + "</code>&emsp;" + str(key) for key, value in args.items()]) + "<br/>" + "&nbsp;" * 50 + ")"
     
     params = ""
     if args:
@@ -175,7 +177,7 @@ def Box(input_, type_map, i):
         description = ""
     
     write_up = f"""<div style="padding: 10px; border: 1px solid #ccc; margin-bottom: 25px; border-radius: 3px">
-<a id={call.replace(" ", "-") + str(i)}><b><code><font size="5">{input_["Name"]}</font></code></b></a>
+<a id={call.replace(" ", "-") + str(i)}><b><code><font size="4">{input_["Name"] + "()"}</font></code></b></a>
 <p>{call_}<br\></p>
 <hr class="solid">
 <p>{description}</p>
