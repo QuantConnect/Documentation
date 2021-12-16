@@ -93,7 +93,7 @@ def Box(input_, type_map, i):
         
     call = input_["Name"] + "(" + ", ".join([str(value["Type"]) + " " + str(key) for key, value in args.items()]).replace("/", "_") + ")"
     next_ = ",<br/>" + "&nbsp;" * 50
-    this_ = "(<br/>" + "&nbsp;" * (50 - len(input_["Name"]) - 1)
+    this_ = "(" + "&nbsp;" * (50 - len(input_["Name"]) - 1)
     call_ = input_["Name"] + this_ + next_.join(["<code>" + str(value["Type"]) + "</code>&emsp;" + str(key) for key, value in args.items()]) + "<br/>" + "&nbsp;" * 50 + ")"
     
     params = ""
@@ -177,7 +177,8 @@ def Box(input_, type_map, i):
         description = ""
     
     write_up = f"""<div style="padding: 10px; border: 1px solid #ccc; margin-bottom: 25px; border-radius: 3px">
-<a id={call.replace(" ", "-") + str(i)}><b><code><font size="4">{input_["Name"] + "()"}</font></code></b></a>
+<a id={call.replace(" ", "-") + str(i)}><b><code><font size="5">{input_["Name"] + "()"}</font></code></b></a>
+<br\>
 <p>{call_}<br\></p>
 <hr class="solid">
 <p>{description}</p>
