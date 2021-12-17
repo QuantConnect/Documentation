@@ -26,11 +26,11 @@ function openTab(evt, category) {
 
   tablinks = document.getElementsByClassName("tablinks");
   for (i = 0; i < tablinks.length; i++) {{
-    tablinks[i].className = tablinks[i].className.replace(" active", "");
+    tablinks[i].className = tablinks[i].className.replace("active", "");
   }
 
   document.getElementById(category).style.display = "block";
-  evt.currentTarget.className += " active";
+  evt.currentTarget.className += "active";
 }
 </script>
 <div class="tab">
@@ -64,14 +64,22 @@ function ShowHide(className) {
     }
     
     var x = document.getElementById(className);
-    for (i = 0; i < x.length; i++)
-    if (x[i].style.display == "none") {
-        x[i].style.display = "block";
+    if (x.style.display == "none") {
+        x.style.display = "block";
     }
     else {
-        x[i].style.display = "none";
+        x.style.display = "none";
     }
 };
+
+$(function(){
+ $('#close').on('click',function(){
+   $('#danceforme').hide();
+ });
+ $('#open').on('click',function(){
+   $('#danceforme').show();
+ });
+});
 
 function openCategory(category) {
     openTab(event, category);
