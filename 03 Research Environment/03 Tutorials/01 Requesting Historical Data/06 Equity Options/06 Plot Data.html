@@ -1,19 +1,19 @@
 <p class="csharp">Jupyter Notebooks don't currently support packages to plot historical data, but we are working on adding the functionality. Until the functionality is added, use Python to plot historical Equity data.</p>
 
-<p class="python">You need to <a href="#02-Create-Subscriptions">subscribe</a> to Futures and <a href="#03-Get-Historical-Data">get their historical contract data</a> to plot their historical data. You can use many of the <a href="../../../lean-cli/user-guides/supported-libraries">supported libraries</a> to plot data in various formats. For example, you can plot candlestick and line charts.</p>
+<p class="python">You need to <a href="#02-Create-Subscriptions">subscribe</a> to Equity Options and <a href="#03-Get-Historical-Data">get their historical contract data</a> to plot their historical data. You can use many of the <a href="../../../lean-cli/user-guides/supported-libraries">supported libraries</a> to plot data in various formats. For example, you can plot candlestick and line charts.</p>
 
 <h4 class="python">Candlestick Chart<br></h4>
 
 <p class="python">Follow these steps to plot candlestick charts:</p>
 
 <ol class="python">
-    <li>Drop the first index level.</li>
+    <li>Drop the first four index levels.</li>
 	<div class="section-example-container">
-        <pre class="python">history.index = history.index.droplevel(0)</pre>
+        <pre class="python">history.index = history.index.droplevel([0,1,2,3])</pre>
     </div>
-    <li><i>(Optional)</i> Select the first 30 data points for simplicity.</li>
+    <li><i>(Optional)</i> Select the one day of data for simplicity.</li>
 	<div class="section-example-container">
-        <pre class="python">history = history.head(30)</pre>
+        <pre class="python">history = history.loc[(history.index < start_time+timedelta(1))]</pre>
     </div>	
     <li>Import the <code>plotly</code> package.</li>
     <div class="section-example-container">
@@ -45,16 +45,16 @@
     <p>Candlestick charts display the open, high, low, and close prices of the contract.</p>
 </ol>
 
-<!--img class="python" style="max-width: 100%; display: block" src="https://cdn.quantconnect.com/i/tu/research-history-futures-onesecurity-candlestickplot.png"-->
+<img class="python" style="max-width: 100%; display: block" src="https://cdn.quantconnect.com/i/tu/research-history-equityoptions-onesecurity-candlestickplot.png">
 
 
 <h4 class="python">Line Chart</h4>
 <p class="python">Follow these steps to plot line charts using built-in methods:</p>
 
 <ol class="python">
-    <li>Drop the first index level.</li>
+    <li>Drop the first three index levels.</li>
 	<div class="section-example-container">
-        <pre class="python">history.index = history.index.droplevel(0)</pre>
+        <pre class="python">history.index = history.index.droplevel([0,1,2])</pre>
     </div>
     <li>Select data to plot.</li>
     <div class="section-example-container">
@@ -62,11 +62,11 @@
     </div>
 	<li>Rename the columns to be the <code>Symbol</code> of each contract.</li>
     <div class="section-example-container">
-        <pre class="python">closingPrices.columns = [Symbol.GetAlias(SecurityIdentifier.Parse(x)) for x in closingPrices.columns]</pre>
+        <pre class="python">closingPrices.columns = [Symbol.GetAlias(SecurityIdentifier.Parse(x), underlying) for x in bar_count_history.columns]</pre>
     </div>
     <li>Call the <code>plot</code> method on the <code>pandas</code> object.</li>
     <div class="section-example-container">
-        <pre class="python">closingPrices.plot(title="Close", figsize=(15, 10))</pre>
+        <pre class="python">closingPrices.plot(title="Close", figsize=(15, 4))</pre>
     </div>
     <li>Show the plot.</li>
     <div class="section-example-container">
@@ -75,4 +75,4 @@
     <p>Line charts display the value of the property you selected in a time series.</p>
 </ol>
 
-<!--img class="python" style="max-width: 100%; display: block" src="https://cdn.quantconnect.com/i/tu/research-history-futures-multiplesecurities-closelinechart.png"-->
+<img class="python" style="max-width: 100%; display: block" src="https://cdn.quantconnect.com/i/tu/research-history-equityoptions-multiplesecurities-closelinechart.png">

@@ -2,32 +2,40 @@
 
 <p>Historical data requests using the <code>Symbol</code> of the <a href="#02-Create-Subscriptions">subscribed</a> Option will not return data, since it only represents the option chain.</p>
 
-<p>Call the <code>GetOptionsContractList</code> method with a <code>Equity</code> <code>Symbol</code> and a <code class="python">datetime</code><code class="csharp">DateTime</code> to get a list of contract <code>Symbol</code>s that were trading at the given time. Call the <code>History</code> method with a subset of the returned <code>Symbol</code>s to get historical data for the given contract <code>Symbol</code>s.</p>
+<ol>
+	<li>Call the <code>GetOptionsContractList</code> method with a <code>Equity</code> <code>Symbol</code> and a <code class="python">datetime</code><code class="csharp">DateTime</code> to get a list of contract <code>Symbol</code>s that were trading at the given time. Call the <code>History</code> method with a subset of the returned <code>Symbol</code>s to get historical data for the given contract <code>Symbol</code>s.<li>
 
-<div class="section-example-container">
-    <pre class="csharp">var qb = new QuantBook();
-var startTime = new DateTime(2021, 11, 1);
-var endTime = new DateTime(2021, 12, 1);
-var contractSymbols = qb.OptionChainProvider.GetOptionContractList(underlying, endTime)</pre>
-    <pre class="python">qb = QuantBook()
-start_time = datetime(2021, 11, 1)
-end_time = datetime(2021, 12, 1)
-contract_symbols = qb.OptionChainProvider.GetOptionContractList(underlying, end_time)
-</pre>
-</div>
+	<div class="section-example-container">
+		<pre class="csharp">var qb = new QuantBook();
+		var startTime = new DateTime(2021, 11, 1);
+		var endTime = new DateTime(2021, 11, 2);
+		var symbols = qb.OptionChainProvider.GetOptionContractList(underlying, endTime)</pre>
+		<pre class="python">qb = QuantBook()
+		start_time = datetime(2021, 11, 1)
+		end_time = datetime(2021, 11, 2)
+		symbols = qb.OptionChainProvider.GetOptionContractList(underlying, end_time)
+		</pre>
+	</div>
 
-<p>Define the <code>Symbol</code> that we want to make a historical data request for:<p>
-<div class="section-example-container">
-    <pre class="csharp">var symbol = contractSymbols.First();</pre>
-    <pre class="python">symbol = contract_symbols[0]</pre>
-</div>
-<p>In this tutorial, we will use the first element of the list for simplicity.<p>
+	<li>Define the <code>Symbol</code> that we want to make a historical data request for:<li>
+	<div class="section-example-container">
+		<pre class="csharp">var symbol = symbols.First();</pre>
+		<pre class="python">symbol = symbols[0]</pre>
+	</div>
+	<p>In this tutorial, we will use the first element of the list for simplicity.<p>
+	
+	<li>Change the <code>StartDate</code> to the time used in <code>GetOptionContractList</code> method</li>
+		<div class="section-example-container">
+		<pre class="csharp">qb.SetStartDate(endTime);</pre>
+		<pre class="python">qb.SetStartDate(end_time)</pre>
+	</div>
+<ol>
 
 <h4>Trailing Number of Bars<br></h4>
 <p>Call the <code>History</code> method with a symbol, integer, and resolution to request historical data based on the given number of trailing bars and resolution.</p>
 <div class="section-example-container">
-    <pre class="csharp">var history = qb.History(symbol, 400, Resolution.Minute);</pre>
-    <pre class="python">history = qb.History(symbol, 400, Resolution.Minute)</pre>
+    <pre class="csharp">var history = qb.History(symbol, 10, Resolution.Minute);</pre>
+    <pre class="python">history = qb.History(symbol, 10, Resolution.Minute)</pre>
 </div>
 <p>The call returns the most recent bars, excluding periods of time when the exchange was closed.</p>
 
@@ -43,11 +51,9 @@ contract_symbols = qb.OptionChainProvider.GetOptionContractList(underlying, end_
 <p>Call the <code>History</code> method with a symbol, start  <code class="csharp">DateTime</code><code class="python">datetime</code>, end  <code class="csharp">DateTime</code><code class="python">datetime</code>, and resolution to request historical data based on the defined period of time and resolution.</p>
 
 <div class="section-example-container">
-    <pre class="csharp">var startTime = new DateTime(2021, 1, 1);
-var endTime = new DateTime(2021, 2, 1);
+    <pre class="csharp">
 var history = qb.History(symbol, startTime, endTime, Resolution.Minute);</pre>
-    <pre class="python">start_time = datetime(2021, 1, 1)
-end_time = datetime(2021, 2, 1)
+    <pre class="python">
 history = qb.History(symbol, start_time, end_time, Resolution.Minute)</pre>
 </div>
 
@@ -55,7 +61,7 @@ history = qb.History(symbol, start_time, end_time, Resolution.Minute)</pre>
 
 <p class="python">In all of the cases above, the <code>History</code> method returns a <code>pandas.DataFrame</code> with a <code>MultiIndex</code>.</p>
 
-<img class="python" style="max-width: 100%; display: block" src="https://cdn.quantconnect.com/i/tu/research-history-futures-onesecurity-fulldataframe.png">
+<img class="python" style="max-width: 100%; display: block" src="https://cdn.quantconnect.com/i/tu/research-history-equityoptions-getoptionhistory-fulldataframe.png">
 
 <p class="python">If you do not pass a resolution to the <code>History</code> method, the <code>History</code> method uses the resolution that the <code>AddFuture</code> method used when you created the <a href="#02-Create-Subscriptions">security subscription</a>.</p>
 
