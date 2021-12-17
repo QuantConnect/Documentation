@@ -1,60 +1,58 @@
-<p>You need a <a href="#02-Create-Subscriptions">subscription</a> before you can request historical data for a security. You can request an amount of historical data based on a trailing number of bars, a trailing period of time, or a defined period of time.</p>
-
-<p>Historical data requests using the <code>Symbol</code> of the <a href="#02-Create-Subscriptions">subscribed</a> Option will not return data, since it only represents the option chain.</p>
+<p>You need a <a href="#02-Create-Subscriptions">subscription</a> before you can request historical data for a security. If you call the History method with an <code>Option</code> <code>Symbol</code>, no data is returned because the <code>Symbol</code> represents an <code>OptionChain</code>. Follow these steps to get historical data for <code>OptionContract</code>s in the <code>OptionChain</code>:</p>
 
 <ol>
-	<li>Call the <code>GetOptionsContractList</code> method with a <code>Equity</code> <code>Symbol</code> and a <code class="python">datetime</code><code class="csharp">DateTime</code> to get a list of contract <code>Symbol</code>s that were trading at the given time. Call the <code>History</code> method with a subset of the returned <code>Symbol</code>s to get historical data for the given contract <code>Symbol</code>s.<li>
+    <li>Call the <code>GetOptionsContractList</code> method with the underlying <code>Equity</code> <code>Symbol</code> and a <code class="python">datetime</code><code class="csharp">DateTime</code> to get the list of <code>OptionContract</code> <code>Symbol</code>s that were trading at the given time.</li>
+    <div class="section-example-container">
+        <pre class="csharp">var qb = new QuantBook();
+var startTime = new DateTime(2021, 11, 1);
+var endTime = new DateTime(2021, 11, 2);
+var symbols = qb.OptionChainProvider.GetOptionContractList(equity.Symbol, endTime)</pre>
+    <pre class="python">qb = QuantBook()
+start_time = datetime(2021, 11, 1)
+end_time = datetime(2021, 11, 2)
+symbols = qb.OptionChainProvider.GetOptionContractList(equity.Symbol, end_time)</pre>
+    </div>
+    <p>You can get historical data for a subset of the returned <code>Symbol</code>s.</p>
 
-	<div class="section-example-container">
-		<pre class="csharp">var qb = new QuantBook();
-		var startTime = new DateTime(2021, 11, 1);
-		var endTime = new DateTime(2021, 11, 2);
-		var symbols = qb.OptionChainProvider.GetOptionContractList(underlying, endTime)</pre>
-		<pre class="python">qb = QuantBook()
-		start_time = datetime(2021, 11, 1)
-		end_time = datetime(2021, 11, 2)
-		symbols = qb.OptionChainProvider.GetOptionContractList(underlying, end_time)
-		</pre>
-	</div>
-
-	<li>Define the <code>Symbol</code> that we want to make a historical data request for:<li>
-	<div class="section-example-container">
-		<pre class="csharp">var symbol = symbols.First();</pre>
-		<pre class="python">symbol = symbols[0]</pre>
-	</div>
-	<p>In this tutorial, we will use the first element of the list for simplicity.<p>
+    <li>Select the subset of <code>Symbol</code>s for which you want to get historical data.</li>
+    <p>For example, you can select the first <code>Symbol</code>.</p>
+    <div class="section-example-container">
+        <pre class="csharp">var symbol = symbols.First();</pre>
+	<pre class="python">symbol = symbols[0]</pre>
+    </div>
 	
-	<li>Change the <code>StartDate</code> to the time used in <code>GetOptionContractList</code> method</li>
-		<div class="section-example-container">
-		<pre class="csharp">qb.SetStartDate(endTime);</pre>
-		<pre class="python">qb.SetStartDate(end_time)</pre>
-	</div>
-<ol>
+    <li>Call the <code>SetStartDate</code> method with the <code class="python">datetime</code><code class="csharp">DateTime</code> you passed to the <code>GetOptionContractList</code> method.</li>
+    <div class="section-example-container">
+        <pre class="csharp">qb.SetStartDate(endTime);</pre>
+	<pre class="python">qb.SetStartDate(end_time)</pre>
+    </div>
+</ol>
+
+
+<p>You can now request an amount of historical data for the <code>OptionContract</code> <code>Symbol</code>s based on a trailing number of bars, a trailing period of time, or a defined period of time.</p>
 
 <h4>Trailing Number of Bars<br></h4>
-<p>Call the <code>History</code> method with a symbol, integer, and resolution to request historical data based on the given number of trailing bars and resolution.</p>
+<p>Call the <code>History</code> method with a symbol and integer to request historical data based on the given number of trailing bars.</p>
 <div class="section-example-container">
-    <pre class="csharp">var history = qb.History(symbol, 10, Resolution.Minute);</pre>
-    <pre class="python">history = qb.History(symbol, 10, Resolution.Minute)</pre>
+    <pre class="csharp">var history = qb.History(symbol, 10);</pre>
+    <pre class="python">history = qb.History(symbol, 10)</pre>
 </div>
 <p>The call returns the most recent bars, excluding periods of time when the exchange was closed.</p>
 
 <h4>Trailing Period of Time<br></h4>
-<p>Call the <code>History</code> method with a symbol, <code class="csharp">TimeSpan</code><code class="python">timedelta</code>, and resolution to request historical data based on the given trailing period of time and resolution.</p>
+<p>Call the <code>History</code> method with a symbol and <code class="csharp">TimeSpan</code><code class="python">timedelta</code> to request historical data based on the given trailing period of time.</p>
 <div class="section-example-container">
-    <pre class="csharp">var history = qb.History(symbol, TimeSpan.FromDays(10), Resolution.Minute);</pre>
-    <pre class="python">history = qb.History(symbol, timedelta(days=10), Resolution.Minute)</pre>
+    <pre class="csharp">var history = qb.History(symbol, TimeSpan.FromDays(10));</pre>
+    <pre class="python">history = qb.History(symbol, timedelta(days=10))</pre>
 </div>
 <p>The call returns the most recent bars, excluding periods of time when the exchange was closed.</p>
 
 <h4>Defined Period of Time<br></h4>
-<p>Call the <code>History</code> method with a symbol, start  <code class="csharp">DateTime</code><code class="python">datetime</code>, end  <code class="csharp">DateTime</code><code class="python">datetime</code>, and resolution to request historical data based on the defined period of time and resolution.</p>
+<p>Call the <code>History</code> method with a symbol, start  <code class="csharp">DateTime</code><code class="python">datetime</code>, and end  <code class="csharp">DateTime</code><code class="python">datetime</code> to request historical data based on the defined period of time.</p>
 
 <div class="section-example-container">
-    <pre class="csharp">
-var history = qb.History(symbol, startTime, endTime, Resolution.Minute);</pre>
-    <pre class="python">
-history = qb.History(symbol, start_time, end_time, Resolution.Minute)</pre>
+    <pre class="csharp">var history = qb.History(symbol, startTime, endTime);</pre>
+    <pre class="python">history = qb.History(symbol, start_time, end_time)</pre>
 </div>
 
 <p>The call returns the bars that are timestamped within the defined period of time.</p>
@@ -63,6 +61,6 @@ history = qb.History(symbol, start_time, end_time, Resolution.Minute)</pre>
 
 <img class="python" style="max-width: 100%; display: block" src="https://cdn.quantconnect.com/i/tu/research-history-equityoptions-getoptionhistory-fulldataframe.png">
 
-<p class="python">If you do not pass a resolution to the <code>History</code> method, the <code>History</code> method uses the resolution that the <code>AddFuture</code> method used when you created the <a href="#02-Create-Subscriptions">security subscription</a>.</p>
 
-<p class="csharp">In all of the cases above, the <code>History</code> method returns an <code>IEnumerable&lt;TradeBar&gt;</code> for single-security requests. If you do not pass a resolution to the <code>History</code> method, the <code>History</code> method uses the resolution that the <code>AddFuture</code> method used when you created the <a href="#02-Create-Subscriptions">security subscription</a>.</p>
+
+<p class="csharp">In all of the cases above, the <code>History</code> method returns an <code>IEnumerable&lt;TradeBar&gt;</code> for single-security requests.</p>
