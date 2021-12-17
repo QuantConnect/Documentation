@@ -10,14 +10,21 @@
 <p class="python">Index the <code>pandas.DataFrame</code> with a <code>Symbol</code> to select the historical data of the contract.</p>
 
 <div class="section-example-container">
-<pre class="csharp">foreach(var bar in history.Take(5))
+<pre class="csharp">foreach(var bar in priceHistory.Take(5))
 {
     Console.WriteLine($"{bar} EndTime: {bar.EndTime}");
 }
+
+foreach(var openInterest in openInterestHistory.Take(5))
+{
+    Console.WriteLine($"{openInterest} EndTime: {openInterest.EndTime}");
+}
 </pre>
-<pre class="python">history.index = history.index.droplevel([0,1,2])
-history.loc[symbol]
-</pre>
+<pre class="python">price_history.index = price_history.index.droplevel([0,1,2])
+price_history.loc[symbol]
+
+open_interest_history.index = open_interest_history.index.droplevel([0,1,2])
+open_interest_history.loc[symbol]</pre>
 </div>
 
 <p class="csharp">The Jupyter Notebook displays the contents of the first 5 <code>TradeBar</code>s.</p>
@@ -25,9 +32,11 @@ history.loc[symbol]
 <!--img class="csharp" style="max-width: 100%; display: block" src="https://cdn.quantconnect.com/i/tu/research-history-future-onesecurity-linq.png"-->
 
 
-<p class="python">The Jupyter Notebook displays a <code>pandas.DataFrame</code> containing the trade and quote data of the contract.</p>
+<p class="python">The Jupyter Notebook displays <code>pandas.DataFrame</code>s containing the trade and quote data of the contract, and the open interest respectively.</p>
 
 <img class="python" style="max-width: 100%; display: block" src="https://cdn.quantconnect.com/i/tu/research-history-equityoptions-onesecurity-locsymboldataframe.png">
+
+<img class="python" style="max-width: 100%; display: block" src="https://cdn.quantconnect.com/i/tu/research-history-equityoptions-onesecurity-openinterest-locsymbol.png">
 
 <h4>Select a Property of the Contract</h4>
 <p class="csharp">Iterate through the <code>IEnumerable </code>and select a property of the <code>Slice</code> to get the historical values of the property.</p>
@@ -35,14 +44,17 @@ history.loc[symbol]
 <p class="python">Index the <code>pandas.DataFrame</code> with a <code>Symbol</code> to select the historical data of the contract and then select a property column to get the historical values of the property.</p>
 
 <div class="section-example-container">
-<pre class="csharp">var closePrices = history.Select(data =&gt; (data.Close, data.EndTime));
+<pre class="csharp">var closePrices = priceHistory.Select(data =&gt; (data.Close, data.EndTime));
 foreach(var closePrice in closePrices.Take(5))
 {
     Console.WriteLine(closePrice.ToString());
 }
 </pre>
-<pre class="python">history.index = history.index.droplevel([0,1,2])
-history.loc[symbol]['askclose']
+<pre class="python">price_history.index = price_history.index.droplevel([0,1,2])
+price_history.loc[symbol]['askclose']
+
+open_interest_history.index = open_interest_history.index.droplevel([0,1,2])
+open_interest_history.loc[symbol]['openinterest']
 </pre>
 </div>
 
@@ -51,25 +63,35 @@ history.loc[symbol]['askclose']
 <!--img class="csharp" style="max-width: 100%; display: block" src="https://cdn.quantconnect.com/i/tu/research-history-future-onesecurity-linq-close.png"-->
 
 
-<p class="python">The <code>pandas.DataFrame</code> is transformed into a <code>pandas.Series</code> of ask closing prices.</p>
+<p class="python">The <code>pandas.DataFrame</code>s are transformed into a <code>pandas.Series</code> of ask closing prices and open interest respectively.</p>
 
 <img class="python" style="max-width: 100%; display: block" src="https://cdn.quantconnect.com/i/tu/research-history-equityoptions-onesecurity-locsymbolaskclose.png">
+
+<img class="python" style="max-width: 100%; display: block" src="https://cdn.quantconnect.com/i/tu/research-history-equityoptions-onesecurity-openinterest-locsymbolopeninterest.png">
 
 <h4 class="python">Unstack the Dataframe</h4>
 <p class="python">If you request historical data for multiple contracts, you can transform the <code>pandas.DataFrame</code> so that it is a time series of bid closing prices for all of the containing contracts. Select the column that you want to display for each contract and then call the <code>unstack</code> method to transform the <code>pandas.DataFrame</code> into the desired format. You can rename the columns of the transformed <code>pandas.DataFrame</code> to be the respective <code>OptionsContract</code> <code>Symbol</code>s.</p>
 
 <div class="python section-example-container python">
-    <pre class="python">bar_count_history.index = bar_count_history.index.droplevel([0,1,2])
-bar_count_history = bar_count_history['bidclose'].unstack(level=0)
+    <pre class="python">timespan_price_history.index = timespan_price_history.index.droplevel([0,1,2])
+timespan_price_history = timespan_price_history['bidclose'].unstack(level=0)
 columns = [Symbol.GetAlias(SecurityIdentifier.Parse(x), underlying)
-    for x in bar_count_history.columns]
-bar_count_history.columns = columns</pre>
+    for x in timespan_price_history.columns]
+timespan_price_history.columns = columns
+
+timespan_open_interest_history.index = timespan_open_interest_history.index.droplevel([0,1,2])
+timespan_open_interest_history = timespan_open_interest_history['openinterest'].unstack(level=0)
+columns = [Symbol.GetAlias(SecurityIdentifier.Parse(x), underlying)
+    for x in timespan_open_interest_history.columns]
+timespan_open_interest_history.columns = columns
+</pre>
 </div>
 
-<p class="python">The <code>pandas.DataFrame</code> is transformed so that the column indices are the <code>Symbol</code> of each <code>OptionsContract</code> and each row contains the bid closing price.</p>
+<p class="python">The <code>pandas.DataFrame</code>s are transformed so that the column indices are the <code>Symbol</code> of each <code>OptionsContract</code> and each row contains the bid closing price and the open interest respectively.</p>
 
-<p class="python">If you transform the <code>pandas.DataFrame</code> that is returned from calling the <code>History</code> method with <code>Option</code> <code>Symbol</code>s, the <code>pandas.DataFrame</code> is transformed into the following format:</p>
+<p class="python">If you transform the <code>pandas.DataFrame</code>s that are returned from calling the <code>History</code> method with <code>Option</code> <code>Symbol</code>s, the <code>pandas.DataFrame</code>s are transformed into the following format:</p>
 <img class="python" style="max-width: 100%; display: block" src="https://cdn.quantconnect.com/i/tu/research-history-equityoptions-multisecurity-unstack.png">
+<img class="python" style="max-width: 100%; display: block" src="https://cdn.quantconnect.com/i/tu/research-history-equityoptions-multisecurity-open-interest-unstack.png">
 
 <p class="python">If you transform the <code>pandas.DataFrame</code> that is returned from calling the <code>History</code> method with <code>OptionsContract</code> <code>Symbol</code>s, the <code>pandas.DataFrame</code> is transformed into the following format:</p>
 <img class="python" style="max-width: 100%; display: block" src="https://cdn.quantconnect.com/i/tu/research-history-futureschainprovider-unstackdataframe.png">
@@ -77,4 +99,4 @@ bar_count_history.columns = columns</pre>
 <p class="python">If you transform the <code>pandas.DataFrame</code> that is returned from calling the <code>GetAllData</code> method, the <code>pandas.DataFrame</code> is transformed into the following format:</p>
 <img class="python" style="max-width: 100%; display: block" src="https://cdn.quantconnect.com/i/tu/research-history-equityoptions-gethistorydata-unstack-0.png">
 
-<p class="python">The last two <code>pandas.DataFrame</code>s above differ because the first one contains only Option contracts that were passed to the <code>History</code> method while the second one contains the Underlying data (<code>NaN</code> column).</p>
+<p class="python">The <code>pandas.DataFrame</code>s above differ because the first one contains only Option contracts that were passed to the <code>History</code> method while the third one contains the Underlying data (<code>NaN</code> column). The second <code>pandas.DataFrame</code> has information that is not available in the second.</p>
