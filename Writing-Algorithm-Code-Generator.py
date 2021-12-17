@@ -34,7 +34,7 @@ function openTab(evt, category) {
 }
 </script>
 <div class="tab">
-<button class="tablinks" onclick="openTab(event, 'All')">All</button>''')
+<button class="tablinks" onclick="openTab(event, 'All')">All</button>\n''')
     
     for topic in dir_:
         html_file.write(f'''<button class="tablinks" onclick="openTab(event, '{topic}')">{topic}</button>\n''')
@@ -47,8 +47,7 @@ function openTab(evt, category) {
 </div>''')
 
     for topic in dir_:    
-        html_file.write(f'''</div>
-<div id="{topic}" class="tabcontent">
+        html_file.write(f'''<div id="{topic}" class="tabcontent">
 <table cellspacing="0" cellpadding="0">
 <tbody>
 </tbody></table>
@@ -112,11 +111,8 @@ def Table(input_, previous_name, type_map, j):
         call = name + "(" + ", ".join([str(value) + " " + str(key) for key, value in args.items()]).replace("/", "_") + ")"
         
         if previous_name != name:
-            lines = []
-            
             with open(path_ / f'02 Public Members.html', "r", encoding="utf-8") as fin:
-                for line in fin.readlines():
-                    lines.append(line)
+                lines = fin.readlines()
             
             with open(path_ / f'02 Public Members.html', "w", encoding="utf-8") as html_file:
                 k = 1
@@ -148,11 +144,8 @@ def Table(input_, previous_name, type_map, j):
                 
             j += 1
         
-        lines = []
-        
         with open(path_ / f'01 All Available Methods.html', "r", encoding="utf-8") as fin:
-            for line in fin.readlines():
-                lines.append(line)
+            lines = fin.readlines()
                 
         with open(path_ / f'01 All Available Methods.html', "w", encoding="utf-8") as html_file:
             active = False
@@ -162,11 +155,12 @@ def Table(input_, previous_name, type_map, j):
                     active = True
                 
                 if active and '</tbody></table>' in line:
-                    html_file.write(f'''<tr>
-<td width="20%"><a href="#{call.replace(" ", "-")}"><i class="fa fa-link"></i>{call}</a></td>
+                    link = line.replace('</tbody></table>', f'''<tr>
+<td width="20%"><a href="#{call.replace(" ", "-") + str(j)}"><i class="fa fa-link"></i>{call}</a></td>
 <td>{description}</td>
 </tr>
 </tbody></table>''')
+                    html_file.write(link)
                     
                     active = False
                     
@@ -212,9 +206,9 @@ def Box(input_, doc_attr, type_map, j):
         params += """<table cellspacing="0" cellpadding="0" style="border: none">
 <thead>
 <tr>
-  <th width="80px" align="left"><h5>Type</h5></th>
-  <th width="100px" align="left"><h5>Name</h5></th>
-  <th align="left"><h5>Description</h5></th>
+  <th width="80px" align="left"><font size="3px">Type</font></th>
+  <th width="100px" align="left"><font size="3px">Name</font></th>
+  <th align="left"><font size="3px">Description</font></th>
 </tr>
 </thead>
 <tbody>"""
@@ -313,12 +307,12 @@ def Box(input_, doc_attr, type_map, j):
         next_.join(["<code>" + str(value["Type"]) + "</code>" + " " * (max_ + 2 - len(str(value["Type"]))) + str(key) for key, value in args.items()]) + \
         "\n" + " " * len(count_) + "&emsp;" + ")"
         
-    buttons = [f'<button class="tablinks" onclick="openCategory("{attr_}")">{topic}</button>' for attr_ in doc_attr]
+    buttons = [f'''<button class="tablinks" onclick="openCategory('{attr_}')">{topic}</button>''' for attr_ in doc_attr]
     
     write_up = f"""<div class="{call.replace(" ", "-")}-head" style="background-color: #f0ffff; border: 1px solid #ccc">
 {''.join(buttons)}
 <h3>
-<a id={call.replace(" ", "-")}><b>{input_["Name"] + "()"}</b></a>    
+<a id={call.replace(" ", "-") + str(j)}><b>{input_["Name"] + "()"}</b></a>    
 <font color="#cdcdcd" size="2px">0/0</font>
 </h3>
 <pre>
@@ -327,7 +321,7 @@ def Box(input_, doc_attr, type_map, j):
 </div>
 <div class="{call.replace(" ", "-")}-content" style="background-color: #ffffff; border: 1px solid #ccc">
 <p>{description}</p>
-<button class="details" onclick="ShowHide(visible-{input_["Name"]}-{j})" style="border: none; background-color: transparent; outline: none; color: blue">Show Details ▼</button>
+<button class="details" onclick="ShowHide('visible-{input_["Name"]}-{j}')" style="border: none; background-color: transparent; outline: none; color: blue">Show Details ▼</button>
 <div class="visible-{input_["Name"]}-{j}" style="display:none;">
 <h4><b>Parameters</b></h4>
 {params}
