@@ -11,6 +11,8 @@
     <li><b>Capacity</b>: The backtest must have a capacity &gt;= $250,000.</li>
     <li><b>Correlation</b>: The backtest must have a return correlation &lt;= 85% with Alphas accepted by the same author.</li>
     <li><b>First trade</b>: The backtest must place a trade on the first trading day.</li>
+    <li><b>Asset classes</b>: The backtest must not trade Futures or Options.</li>
+    <li><b>Insight count</b>: The backtest must emit more than 100 <code>Insight</code>s.</li>
 </ul>
 
 <p>Alphas do not need to perform well in all market environments to be accepted into the Alpha Streams Market. Licensees can adjust their allocation to the Alphas over time.</p>
@@ -24,38 +26,27 @@
 <p>Alphas should have clear strategic reasoning underpinning the strategy. A single reason-based foundation for the algorithm is necessary to understand the Alpha behavior when things go wrong and it helps improve your Alpha application for funds. Obscure correlations or overfit strategies tend to perform poorly out-of-sample. </p>
 
 <h4>Transparent Sourcing</h4>
-<p>Authors need a transparent employment history and alphas must not infringe on other IP. We'd like to know the employment history of authors on the platform to ensure the alpha is not infringing on any intellectual property, including your current and past employers. Public or shared content may be used as a foundation and extended. Where you may have licensed the IP from a third party, presenting consents for usage are acceptable. </p>
+<p>Authors need a transparent employment history and Alphas must not infringe on other IP. We like to know the employment history of authors on the platform to ensure the Alpha is not infringing on any intellectual property, including your current and past employers. Public or shared content may be used as a foundation and extended. If you have licensed the IP from a third party, you must present consent for using the IP. </p>
 
 <h4>Edge Case Handling</h4>
-<p>Alphas need to be able to handle edge cases such as Dividends, Splits, and Delistings. This adds another layer of resiliency and will keep an Alpha running in the event of data changes. This can involve simple control logic, checking <code>data.ContainsKey(symbol)</code>, explicitly removing certain affected securities from the Universe, or other methods. </p>
-
-<h4>Supported Data Sources</h4>
-<p>When a fund licenses an Alpha, we need to guarantee them that it will perform without error and be of the highest quality possible. To do this, we can't accept any submissions that use an external data source that is not built into LEAN (i.e., dropbox files, SubscriptionDataReader, etc.). If we don't directly support the data, then we are unable to guarantee its integrity and that it will be maintained faithfully.</p>
-<p>We currently don't support futures or option data in Alpha Streams. We are actively working on this and hope to enable futures and options support soon. </p>
-
-<h4>Insights</h4>
-<p>Insights are predictions about the price movement of specific securities and are required in all Alpha Streams submissions. For classic algorithms, one of the Insight constructors must be used and emitted using the EmitInsights API. An Insight must be emitted before any orders are placed. Insights provide funds with information about the predictive power of your models and give them insight into why the orders they see are being placed. For Framework-style algorithms, Insights need to be generated in the Update() method of the Alpha Model. These will then be used in the Portfolio Construction model to build a portfolio. </p>
+<p>Alphas need to be able to handle edge cases such as dividends, splits, and delistings. Handling edge cases adds another layer of resiliency to Alphas and keeps them running when data changes occur. You can handle edge cases with simple control logic, checking <code>data.ContainsKey(symbol)</code>, explicitly removing certain affected securities from the universe of traded securities, or other methods. </p><h4>Insights</h4>
+<p>Insights are predictions about the price movement of specific securities. Insights are required in all Alpha Streams submissions. If the algorithm follows the classic design, it must call the <code>EmitInsights</code> method before each order is submitted. Insights provide funds with information about the predictive power of your models and give them insight into why the orders they see are being placed. If the algorithm follows the framework design, the <code>Update</code> method of the Alpha model must return a list of Insights.</p>
 
 <h4>Daily Data</h4>
-<p>We aggregate our Daily data and then pass it through the algorithm at 00:00 UTC the day after (i.e., the Daily resolution TradeBar for 2019-10-22 will pass through the algorithm at 2019-10-23 00:00). When using daily data, any operations performed during an intraday event will be using stale data. Using daily data can lead to unexpected results and trades as well as unrealistic performance. In general, it is best to use Minute or Hour resolution and a Scheduled Event to perform daily operations to achieve realistic performance. </p>
+<p>We aggregate our daily data from ticks and then inject the daily bars into the algorithms at 00:00 UTC. For instance, <code>TradeBar</code>s with a daily resolution that span across the day 2019-10-22 are injected into the algorithm at 2019-10-23 00:00. If an algorithm uses daily data, operations performed intraday will be done using stale data, leading to unexpected results, impossible order fills, and unrealistic performance. To perform operations intraday while maintaining realistic performance, use minute or hour resolution and place a Scheduled Event.</p>
 
 <h4>Open-Source IP</h4>
-<p>We provide the community with lots of example algorithms. A few examples to get you started can be found in this blog post, or on GitHub. The goal of this is to demonstrate how to use the API correctly, incorporate new data sources into their existing algorithms, implement our recommended best practices for Alpha Streams, and more. However, we cannot accept any copies or near-copies of our demonstration algorithms into Alpha Streams. We love to see that our work inspired someone, but each submission must provide sufficient originality that the work can indeed be called the author's own. </p>
+<p>We provide the community with lots of example algorithms. The goal of the examples is to demonstrate how to use the API correctly, incorporate new data sources into existing algorithms, implement best practices for Alpha Streams, and more. However, we cannot accept any copies or near-copies of our demonstration algorithms into Alpha Streams. We love to see that our work inspired someone, but each submission must provide sufficient originality that the work can indeed be called the author's own. </p>
 
 <h4>Overfitting</h4>
-<p>Overfitting will doom an algorithm in live trading. To prevent this and try to boost the quality of submissions, we can't accept any Alphas that obviously overfit to data. Overfitting can manifest itself in countless ways, but the most common things we see are:</p>
+<p>Overfitting will doom an algorithm in live trading. To prevent overfitting and boost the quality of submissions, we can't accept any Alphas that obviously overfit to data. Overfitting can manifest itself in countless ways, but the most common things we see are:</p>
 <ul>
     <li>Coding of indicator parameters that work for certain hand-picked assets but perhaps not for any others.</li>
     <li>Using thresholds for indicator values that are hard-coded and have no fundamental theory behind their value.</li>
-    <li>Look-ahead bias, such as hard-coding specific dates to perform specific actions. This can only be done if there is prior knowledge of an event. Look-ahead bias might boost the backtest, but it does not mean the model is fundamentally valuable and can sustain performance during future outliers/extreme events.</li>
+    <li>Look-ahead bias, such as hard-coding specific dates to perform specific actions. Hard-coding specific dates can only be done if there is prior knowledge of an event. Look-ahead bias might boost the backtest performance, but it does not mean the Alpha is fundamentally valuable and can sustain performance during future events.</li>
     <li>Selection bias, such as picking stocks known ahead of time to perform exceptionally well during specific periods. </li>
-</ul>
-
-<h4>Slow Recovery</h4>
-<p>Algorithms that fail to recover from a drawdown within 6 months will likely not be accepted. Funds understand that all algorithms experience drawdowns, and the smaller, the better, but the recovery time is especially important. An algorithm that is in a sustained drawdown for more than 6-months most likely won't be traded by a fund and would likely be dropped if this occurs in live trading.</p>
-
-<h4>Infrequent Insight Generation or Trading</h4>
-<p>Algorithms don't need to emit Insights or trade daily or intraday, but the maximum holding period for funds is usually a matter of days or weeks. Anything longer than monthly-rebalancing likely won't be accepted. Alphas need to place at least 10 trades per month for the majority of the backtest.</p>
+</ul><h4>Infrequent Insight Generation or Trading</h4>
+<p>Algorithms don't need to emit Insights or trade daily or intraday, but the maximum holding period for funds is usually a matter of days or weeks. Anything longer than monthly rebalancing likely won't be accepted. Alphas need to place at least 10 trades per month for the majority of the backtest.</p>
 
 <h4>IP Infringement</h4>
 <p>All Alphas must be the intellectual property (IP) of the submitting author. </p>
