@@ -7,6 +7,10 @@
 <p class="python">Follow these steps to plot candlestick charts:</p>
 
 <ol class="python">
+    <li>Call <code>History<code> method defined by a period</li>
+	<div class="section-example-container">
+        <pre class="python">history = qb.History(symbol, start_time, end_time)</pre>
+    </div>
     <li>Drop the first four index levels.</li>
 	<div class="section-example-container">
         <pre class="python">history.index = history.index.droplevel([0,1,2,3])</pre>
@@ -29,7 +33,7 @@
     </div>
     <li>Create a <code>Layout</code>.<br></li>
     <div class="section-example-container">
-        <pre class="python">layout = go.Layout(title=go.layout.Title(text='ES Continuous OHLC'),
+        <pre class="python">layout = go.Layout(title=go.layout.Title(text=f'{symbol.Value} OHLC'),
                    xaxis_title='Date',
                    yaxis_title='Price',
                    xaxis_rangeslider_visible=False)</pre>
@@ -45,28 +49,33 @@
     <p>Candlestick charts display the open, high, low, and close prices of the contract.</p>
 </ol>
 
-<img class="python" style="max-width: 100%; display: block" src="https://cdn.quantconnect.com/i/tu/research-history-equityoptions-onesecurity-candlestickplot.png">
+<img class="python" style="max-width: 100%; display: block" src="https://cdn.quantconnect.com/i/tu/research-history-equityoptions-onesecurity-candlestickplot-o.png">
 
 
 <h4 class="python">Line Chart</h4>
 <p class="python">Follow these steps to plot line charts using built-in methods:</p>
 
 <ol class="python">
+    <li>Call <code>History<code> method with the <code>timedelta</code> overload for 10 days</li>
+	<div class="section-example-container">
+        <pre class="python">history = qb.History(OpenInterest,symbols, timedelta(days=10))</pre>
+    </div>
     <li>Drop the first three index levels.</li>
 	<div class="section-example-container">
         <pre class="python">history.index = history.index.droplevel([0,1,2])</pre>
-    </div>
     <li>Select data to plot.</li>
     <div class="section-example-container">
-        <pre class="python">closingPrices = history['close'].unstack(level=0)</pre>
+        <pre class="python">openInterests = history['openinterest'].unstack(level=0)</pre>
     </div>
 	<li>Rename the columns to be the <code>Symbol</code> of each contract.</li>
     <div class="section-example-container">
-        <pre class="python">closingPrices.columns = [Symbol.GetAlias(SecurityIdentifier.Parse(x), underlying) for x in bar_count_history.columns]</pre>
+        <pre class="python">openInterests.columns = [
+    Symbol.GetAlias(SecurityIdentifier.Parse(x), underlying)
+        for x in openInterests.columns]</pre>
     </div>
     <li>Call the <code>plot</code> method on the <code>pandas</code> object.</li>
     <div class="section-example-container">
-        <pre class="python">closingPrices.plot(title="Close", figsize=(15, 4))</pre>
+        <pre class="python">openInterests.plot(title="Open Interest", ylim=(0,15000), figsize=(15, 4))</pre>
     </div>
     <li>Show the plot.</li>
     <div class="section-example-container">
@@ -75,4 +84,4 @@
     <p>Line charts display the value of the property you selected in a time series.</p>
 </ol>
 
-<img class="python" style="max-width: 100%; display: block" src="https://cdn.quantconnect.com/i/tu/research-history-equityoptions-multiplesecurities-closelinechart.png">
+<img class="python" style="max-width: 100%; display: block" src="https://cdn.quantconnect.com/i/tu/research-history-equityoptions-multiplesecurities-openinterest-linechart.png">
