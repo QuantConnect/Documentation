@@ -5,28 +5,54 @@ from urllib.request import urlopen
 source = "http://cdn.quantconnect.com.s3.us-east-1.amazonaws.com/terminal/cache/api/csharp_tree.json"
 
 base = "02 Writing Algorithms/04 API Reference/"
+dir_ = ["Adding Data", "Algorithm Framework", "Charting", "Consolidating Data",
+       "Handling Data", "Historical Data", "Indicators", "Live Trading", "Logging",
+       "MachineLearning", "Modeling", "Parameter and Optimization", "Scheduled Events",
+       "Securities and Portfolio", "Trading and Orders", "Universes"]
 
 path_ = pathlib.Path(base)
 path_.mkdir(parents=True, exist_ok=True)
 
-with open(path_ / "001 All Available Methods.html", "w", encoding="utf-8") as html_file:
-    html_file.write(f'<table class="table qc-table">\n<thead>\n<tr>\n<th colspan="1"><code>QCAlgorithm</code> class subclasses/methods</th>\n</tr>\n</thead>\n<tbody></tbody></table>')
+with open(path_ / "01 All Available Methods.html", "w", encoding="utf-8") as html_file:
+    html_file.write('''<h3><code>QCAlgorithm</code> class subclasses/methods</h3><hr class="solid">
+<div class="tab">
+<button class="tablinks" onclick="openTab(event, 'All')">All</button>''')
+    
+    for topic in dir_:
+        html_file.write(f'''<button class="tablinks" onclick="openTab(event, '{topic}')">{topic}</button>''')
+    
+    html_file.write('''</div>
+<div id="All" class="tabcontent">
+<table cellspacing="0" cellpadding="0">
+<tbody>
+</tbody></table>
+</div>''')
 
-def Table(input_, previous_name, n, type_map):
+    for topic in dir_:    
+        html_file.write('''</div>
+<div id="{topic}" class="tabcontent">
+<table cellspacing="0" cellpadding="0">
+<tbody>
+</tbody></table>
+</div>''')
+        
+with open(path_ / "02 Public Members.html", "w", encoding="utf-8") as html_file:
+    html_file.write("<p>Below shows all availble method members:</p><br/>")
+    
+def Table(input_, previous_name, type_map, j):
     if "DocumentationAttributes" not in input_ or not "DocumentationAttributes":
         if "concentrate" in input_:
             for item in input_["concentrate"]:
-                previous_name, n = Table(item, previous_name, n, type_map)
+                previous_name, j = Table(item, previous_name, type_map, j)
                 
         elif "children" in input_:
             for item in input_["children"]:
-                previous_name, n = Table(item, previous_name, n, type_map)
+                previous_name, j = Table(item, previous_name, type_map, j)
                 
-        return previous_name, n
+        return previous_name, j
     
     doc_attr = [x["tag"] for x in input_["DocumentationAttributes"]]
     name = input_["Name"] if "Name" in input_ else input_["ShortType"]
-    i = n
     
     for tag in doc_attr:
         args = {}
@@ -42,27 +68,67 @@ def Table(input_, previous_name, n, type_map):
             
         call = name + "(" + ", ".join([str(value) + " " + str(key) for key, value in args.items()]).replace("/", "_") + ")"
         
-        mode = "a"
-        
         if previous_name != name:
-            i += 1
-            mode = "w"
+            with open(path_ / f'02 Public Members.html', "r", encoding="utf-8") as fin, open(path_ / f'02 Public Members_.html', "w", encoding="utf-8") as fout:
+                for line in fin.readlines():
+                    fout.write(line)
             
-        with open(path_ / f'{i:03} {name}.html', mode, encoding="utf-8") as html_file:
-                write_up, description = Box(input_, type_map, i)
-                html_file.write(write_up)
+            k = 1
                 
-        with open(path_ / "001 All Available Methods.html", "rb+") as html_file:
-            html_file.seek(-16, os.SEEK_END)
-            html_file.truncate()
+            with open(path_ / f'02 Public Members_.html', "r", encoding="utf-8") as fin, open(path_ / f'02 Public Members.html', "w", encoding="utf-8") as html_file:
+                for line in fin.readlines():
+                    if line == '<font color="#cdcdcd" size="1px">1/1</font>':
+                        line = line.replace(">1/1<", f">{k}/{j}<")
+                        
+                    html_file.write(line)
+                    
+                    k += 1
+                
+                write_up, description = Box(input_, type_map)
+                html_file.write(f'''<div class="container" style="border: 1px solid #ccc; margin-bottom: 25px">
+{write_up}
+</div>''')
+        
+            j = 1
             
-        with open(path_ / "001 All Available Methods.html", "a", encoding="utf-8") as html_file:
-            html_file.write(f'<tr><td><a href="#{call.replace(" ", "-") + str(i)}"><i class="fa fa-link"></i>{call}</a><br/>{description}</td></tr></tbody></table>')
+        else:
+            with open(path_ / f'02 Public Members.html', "rb+") as html_file:
+                html_file.seek(-6, os.SEEK_END)
+                html_file.truncate()
+            
+            with open(path_ / f'02 Public Members.html', "a", encoding="utf-8") as html_file:
+                write_up, description = Box(input_, type_map)
+                html_file.write(f'''{write_up}
+</div>''')
+                
+        j += 1
+        
+        with open(path_ / f'01 All Available Methods.html', "r", encoding="utf-8") as fin, open(path_ / f'01 All Available Methods_.html', "w", encoding="utf-8") as fout:
+            for line in fin.readlines():
+                fout.write(line)
+        
+        with open(path_ / f'01 All Available Methods_.html', "r", encoding="utf-8") as fin, open(path_ / f'01 All Available Methods.html', "w", encoding="utf-8") as html_file:
+            active = False
+            
+            for line in fin.readlines():
+                if line == '<div id="All" class="tabcontent">' or line == f'<div id="{tag}" class="tabcontent">':
+                    active = True
+                
+                if active and line == '</tbody></table>':
+                    html_file.write(f'''<tr>
+<td width="20%"><a href="#{call.replace(" ", "-")}"><i class="fa fa-link"></i>{call}</a></td>
+<td>{description}</td>
+</tr>
+</tbody></table>''')
+                    active = False
+                    
+                else:
+                    html_file.write(line)
 
-    return name, i
+    return name, j
 
 
-def Box(input_, type_map, i):
+def Box(input_, type_map):
     args = {}
         
     if "Parameters" in input_:
@@ -92,18 +158,15 @@ def Box(input_, type_map, i):
                 args[item["Name"]]["Type"] = type_map[str(item["typeId"])]
         
     call = input_["Name"] + "(" + ", ".join([str(value["Type"]) + " " + str(key) for key, value in args.items()]).replace("/", "_") + ")"
-    next_ = ",<br/>" + "&nbsp;" * 50
-    this_ = "(" + "&nbsp;" * (50 - len(input_["Name"]) - 1)
-    call_ = input_["Name"] + this_ + next_.join(["<code>" + str(value["Type"]) + "</code>&emsp;" + str(key) for key, value in args.items()]) + "<br/>" + "&nbsp;" * 50 + ")"
     
     params = ""
     if args:
-        params += """<table class="table qc-table">
+        params += """<table cellspacing="0" cellpadding="0" style="border: none">
 <thead>
 <tr>
-  <th width="80px">Type</th>
-  <th width="100px">Name</th>
-  <th>Description</th>
+  <th width="80px" align="left">Type</th>
+  <th width="100px" align="left">Name</th>
+  <th align="left">Description</th>
 </tr>
 </thead>
 <tbody>"""
@@ -122,6 +185,9 @@ def Box(input_, type_map, i):
                     new_substring = substring[start2:substring.find('"', start2 + 1)]
                     new_substring = '<code>' + new_substring.split('(')[0].split(".")[-1].split('"')[0] + '</code>'
                 
+                if "seealso" in substring:
+                    new_substring = "\nSee also: " + new_substring + ".\n"
+                
                 description = description.replace(substring, new_substring)
                 start = description.find("<", end)
             
@@ -136,16 +202,18 @@ def Box(input_, type_map, i):
     
     if "ReturnValue" in input_:
         if "Name" in input_["ReturnValue"]:
-            ret += f'<code>{input_["ReturnValue"]["Name"]}</code> '
+            ret_ = input_["ReturnValue"]["Name"]
             
         elif "ShortType" in input_["ReturnValue"]:
-            ret += f'<code>{input_["ReturnValue"]["ShortType"]}</code> '
+            ret_ = input_["ReturnValue"]["ShortType"]\
             
         elif "Type" in input_["ReturnValue"]:
-            ret += f'<code>{input_["ReturnValue"]["Type"].split(".")[-1]}</code> '
+            ret_ = input_["ReturnValue"]["Type"].split(".")[-1]
             
         else:
-            ret += f'<code>{type_map[str(input_["ReturnValue"]["typeId"])]}</code>'
+            ret_ = type_map[str(input_["ReturnValue"]["typeId"])]
+            
+        ret += f'<code>{ret_}</code>'
             
         if "Description" in input_["ReturnValue"]:
             ret += f' - {input_["ReturnValue"]["Description"]}'
@@ -176,17 +244,39 @@ def Box(input_, type_map, i):
     else: 
         description = ""
     
-    write_up = f"""<div style="padding: 10px; border: 1px solid #ccc; margin-bottom: 25px; border-radius: 3px">
-<a id={call.replace(" ", "-") + str(i)}><b><code><font size="5">{input_["Name"] + "()"}</font></code></b></a>
-<br\>
-<p>{call_}<br\></p>
-<hr class="solid">
+    this_ = "&emsp;(" + "&emsp;"
+    head_ = '<font color="#cdcdcd">' + ret_ + "</font> QuantConnect.Algorithm.QCAlgorithm." + input_["Name"] + this_
+    count_ = ret_ + " QuantConnect.Algorithm.QCAlgorithm." + input_["Name"]
+    next_ = ",\n" + " " * (len(count_) + 2) + "&emsp;"
+    
+    max_ = 0
+    for value in args.values():
+        type_ = str(value["Type"])
+        
+        if len(type_) > max_:
+            max_ = len(type_)
+        
+    call_ = head_ + \
+        next_.join(["<code>" + str(value["Type"]) + "</code>" + " " * (max_ + 2 - len(str(value["Type"]))) + str(key) for key, value in args.items()]) + \
+        "\n" + " " * len(count_) + "&emsp;" + ")"
+    
+    write_up = f"""<div class="{call.replace(" ", "-")}-head" style="background-color: #f0fff; padding: 10px; border: 1px solid #ccc; border-radius: 3px">
+<h3><a id={call.replace(" ", "-")}><b>{input_["Name"] + "()"}</b></a>    
+<font color="#cdcdcd" size="2px">1/1</font>
+</h3>
+<pre>
+{call_}
+</pre>
+</div>
+<div class="{call.replace(" ", "-")}-content" style="background-color: #fffff; padding: 10px; border: 1px solid #ccc; border-radius: 3px">
 <p>{description}</p>
 <h4>Parameters</h4>
 {params}
 
 <h4>Returns</h4>
+<p>
 {ret}
+</p>
 </div>"""
 
     return write_up, description
@@ -206,11 +296,13 @@ for key in keys.items():
         type_map[key[0]] = key[1]["ShortType"]
 
 algo_methods = [doc["tree"]["core"]["data"][0]["children"], keys.values()]
-
-i = 1
     
 for branch in algo_methods:
     previous_name = ""
+    j = 1
     
     for item in branch:
-        previous_name, i = Table(item, previous_name, i, type_map)
+        previous_name, j = Table(item, previous_name, type_map, j)
+
+os.remove(path_ / f'01 All Available Methods_.html')
+os.remove(path_ / f'02 Public Members_.html')
