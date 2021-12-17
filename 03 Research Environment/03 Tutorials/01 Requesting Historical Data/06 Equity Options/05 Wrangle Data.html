@@ -75,13 +75,13 @@ open_interest_history.loc[symbol]['openinterest']
 <div class="python section-example-container python">
     <pre class="python">timespan_price_history.index = timespan_price_history.index.droplevel([0,1,2])
 timespan_price_history = timespan_price_history['bidclose'].unstack(level=0)
-columns = [Symbol.GetAlias(SecurityIdentifier.Parse(x), underlying)
+columns = [Symbol.GetAlias(SecurityIdentifier.Parse(x), equity.Symbol)
     for x in timespan_price_history.columns]
 timespan_price_history.columns = columns
 
 timespan_open_interest_history.index = timespan_open_interest_history.index.droplevel([0,1,2])
 timespan_open_interest_history = timespan_open_interest_history['openinterest'].unstack(level=0)
-columns = [Symbol.GetAlias(SecurityIdentifier.Parse(x), underlying)
+columns = [Symbol.GetAlias(SecurityIdentifier.Parse(x), equity.Symbol)
     for x in timespan_open_interest_history.columns]
 timespan_open_interest_history.columns = columns
 </pre>
