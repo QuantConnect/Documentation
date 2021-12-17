@@ -15,11 +15,29 @@ path_.mkdir(parents=True, exist_ok=True)
 
 with open(path_ / "01 All Available Methods.html", "w", encoding="utf-8") as html_file:
     html_file.write('''<h3><code>QCAlgorithm</code> class subclasses/methods</h3><hr class="solid">
+<script>
+function openTab(evt, category) {
+  var i, tabcontent, tablinks;
+
+  tabcontent = document.getElementsByClassName("tabcontent");
+  for (i = 0; i < tabcontent.length; i++) {{
+    tabcontent[i].style.display = "none";
+  }
+
+  tablinks = document.getElementsByClassName("tablinks");
+  for (i = 0; i < tablinks.length; i++) {{
+    tablinks[i].className = tablinks[i].className.replace(" active", "");
+  }
+
+  document.getElementById(category).style.display = "block";
+  evt.currentTarget.className += " active";
+}
+</script>
 <div class="tab">
 <button class="tablinks" onclick="openTab(event, 'All')">All</button>''')
     
     for topic in dir_:
-        html_file.write(f'''<button class="tablinks" onclick="openTab(event, '{topic}')">{topic}</button>''')
+        html_file.write(f'''<button class="tablinks" onclick="openTab(event, '{topic}')">{topic}</button>\n''')
     
     html_file.write('''</div>
 <div id="All" class="tabcontent">
@@ -29,7 +47,7 @@ with open(path_ / "01 All Available Methods.html", "w", encoding="utf-8") as htm
 </div>''')
 
     for topic in dir_:    
-        html_file.write('''</div>
+        html_file.write(f'''</div>
 <div id="{topic}" class="tabcontent">
 <table cellspacing="0" cellpadding="0">
 <tbody>
@@ -37,7 +55,32 @@ with open(path_ / "01 All Available Methods.html", "w", encoding="utf-8") as htm
 </div>''')
         
 with open(path_ / "02 Public Members.html", "w", encoding="utf-8") as html_file:
-    html_file.write("<p>Below shows all availble method members:</p><br/>")
+    html_file.write("""<script>
+function ShowHide(className) {
+    if (this.value == "Show Details ▼") {
+        this.value = "Hide Details ▲";
+    }
+    else {
+        this.value = "Show Details ▼";
+    }
+    
+    var x = document.getElementById(className);
+    for (i = 0; i < x.length; i++)
+    if (x[i].style.display == "none") {
+        x[i].style.display = "block";
+    }
+    else {
+        x[i].style.display = "none";
+    }
+};
+
+function openCategory(category) {
+    openTab(event, category);
+    document.body.scrollTop = 0;
+    document.documentElement.scrollTop = 0;
+}
+</script>
+<p>Below shows all available method members:</p><br/>\n""")
     
 def Table(input_, previous_name, type_map, j):
     if "DocumentationAttributes" not in input_ or not "DocumentationAttributes":
@@ -69,22 +112,24 @@ def Table(input_, previous_name, type_map, j):
         call = name + "(" + ", ".join([str(value) + " " + str(key) for key, value in args.items()]).replace("/", "_") + ")"
         
         if previous_name != name:
-            with open(path_ / f'02 Public Members.html', "r", encoding="utf-8") as fin, open(path_ / f'02 Public Members_.html', "w", encoding="utf-8") as fout:
-                for line in fin.readlines():
-                    fout.write(line)
+            lines = []
             
-            k = 1
-                
-            with open(path_ / f'02 Public Members_.html', "r", encoding="utf-8") as fin, open(path_ / f'02 Public Members.html', "w", encoding="utf-8") as html_file:
+            with open(path_ / f'02 Public Members.html', "r", encoding="utf-8") as fin:
                 for line in fin.readlines():
-                    if line == '<font color="#cdcdcd" size="1px">1/1</font>':
-                        line = line.replace(">1/1<", f">{k}/{j}<")
+                    lines.append(line)
+            
+            with open(path_ / f'02 Public Members.html', "w", encoding="utf-8") as html_file:
+                k = 1
+                
+                for line in lines:
+                    if '<font color="#cdcdcd" size="2px">0/0</font>' in line:
+                        line = line.replace(">0/0<", f">{k}/{j}<")
+                    
+                        k += 1
                         
                     html_file.write(line)
-                    
-                    k += 1
                 
-                write_up, description = Box(input_, type_map)
+                write_up, description = Box(input_, doc_attr, type_map, j)
                 html_file.write(f'''<div class="container" style="border: 1px solid #ccc; margin-bottom: 25px">
 {write_up}
 </div>''')
@@ -97,29 +142,32 @@ def Table(input_, previous_name, type_map, j):
                 html_file.truncate()
             
             with open(path_ / f'02 Public Members.html', "a", encoding="utf-8") as html_file:
-                write_up, description = Box(input_, type_map)
+                write_up, description = Box(input_, doc_attr, type_map, j)
                 html_file.write(f'''{write_up}
 </div>''')
                 
-        j += 1
+            j += 1
         
-        with open(path_ / f'01 All Available Methods.html', "r", encoding="utf-8") as fin, open(path_ / f'01 All Available Methods_.html', "w", encoding="utf-8") as fout:
+        lines = []
+        
+        with open(path_ / f'01 All Available Methods.html', "r", encoding="utf-8") as fin:
             for line in fin.readlines():
-                fout.write(line)
-        
-        with open(path_ / f'01 All Available Methods_.html', "r", encoding="utf-8") as fin, open(path_ / f'01 All Available Methods.html', "w", encoding="utf-8") as html_file:
+                lines.append(line)
+                
+        with open(path_ / f'01 All Available Methods.html', "w", encoding="utf-8") as html_file:
             active = False
             
-            for line in fin.readlines():
-                if line == '<div id="All" class="tabcontent">' or line == f'<div id="{tag}" class="tabcontent">':
+            for line in lines:
+                if '<div id="All" class="tabcontent">' in line or f'<div id="{tag}" class="tabcontent">' in line:
                     active = True
                 
-                if active and line == '</tbody></table>':
+                if active and '</tbody></table>' in line:
                     html_file.write(f'''<tr>
 <td width="20%"><a href="#{call.replace(" ", "-")}"><i class="fa fa-link"></i>{call}</a></td>
 <td>{description}</td>
 </tr>
 </tbody></table>''')
+                    
                     active = False
                     
                 else:
@@ -128,7 +176,7 @@ def Table(input_, previous_name, type_map, j):
     return name, j
 
 
-def Box(input_, type_map):
+def Box(input_, doc_attr, type_map, j):
     args = {}
         
     if "Parameters" in input_:
@@ -164,9 +212,9 @@ def Box(input_, type_map):
         params += """<table cellspacing="0" cellpadding="0" style="border: none">
 <thead>
 <tr>
-  <th width="80px" align="left">Type</th>
-  <th width="100px" align="left">Name</th>
-  <th align="left">Description</th>
+  <th width="80px" align="left"><h5>Type</h5></th>
+  <th width="100px" align="left"><h5>Name</h5></th>
+  <th align="left"><h5>Description</h5></th>
 </tr>
 </thead>
 <tbody>"""
@@ -191,7 +239,8 @@ def Box(input_, type_map):
                 description = description.replace(substring, new_substring)
                 start = description.find("<", end)
             
-            params += f'<tr><td><code>{prop["Type"]}</code></td><td>{name}</td><td>{description.replace("</value>", "")}</td></tr>'
+            description = description.replace("</value>", "").replace("``1", "&lt;T&gt;")
+            params += f'<tr><td><code>{prop["Type"]}</code></td><td>{name}</td><td>{description}</td></tr>'
             
         params += "</tbody></table>"
         
@@ -213,13 +262,17 @@ def Box(input_, type_map):
         else:
             ret_ = type_map[str(input_["ReturnValue"]["typeId"])]
             
-        ret += f'<code>{ret_}</code>'
-            
-        if "Description" in input_["ReturnValue"]:
-            ret += f' - {input_["ReturnValue"]["Description"]}'
+        if ret_ == "Void":
+            ret = f"<code>{ret_}</code> - This method provides no return."
+        
+        else:
+            ret += f'<code>{ret_}</code>'
+                
+            if "Description" in input_["ReturnValue"]:
+                ret += f' - {input_["ReturnValue"]["Description"]}'
             
     else:
-        ret += "This method provides no return."
+        ret = "This method provides no return."
         
     if "Description" in input_:
         slash = r"\'"
@@ -259,24 +312,31 @@ def Box(input_, type_map):
     call_ = head_ + \
         next_.join(["<code>" + str(value["Type"]) + "</code>" + " " * (max_ + 2 - len(str(value["Type"]))) + str(key) for key, value in args.items()]) + \
         "\n" + " " * len(count_) + "&emsp;" + ")"
+        
+    buttons = [f'<button class="tablinks" onclick="openCategory("{attr_}")">{topic}</button>' for attr_ in doc_attr]
     
-    write_up = f"""<div class="{call.replace(" ", "-")}-head" style="background-color: #f0fff; padding: 10px; border: 1px solid #ccc; border-radius: 3px">
-<h3><a id={call.replace(" ", "-")}><b>{input_["Name"] + "()"}</b></a>    
-<font color="#cdcdcd" size="2px">1/1</font>
+    write_up = f"""<div class="{call.replace(" ", "-")}-head" style="background-color: #f0ffff; border: 1px solid #ccc">
+{''.join(buttons)}
+<h3>
+<a id={call.replace(" ", "-")}><b>{input_["Name"] + "()"}</b></a>    
+<font color="#cdcdcd" size="2px">0/0</font>
 </h3>
 <pre>
 {call_}
 </pre>
 </div>
-<div class="{call.replace(" ", "-")}-content" style="background-color: #fffff; padding: 10px; border: 1px solid #ccc; border-radius: 3px">
+<div class="{call.replace(" ", "-")}-content" style="background-color: #ffffff; border: 1px solid #ccc">
 <p>{description}</p>
-<h4>Parameters</h4>
+<button class="details" onclick="ShowHide(visible-{input_["Name"]}-{j})" style="border: none; background-color: transparent; outline: none; color: blue">Show Details ▼</button>
+<div class="visible-{input_["Name"]}-{j}" style="display:none;">
+<h4><b>Parameters</b></h4>
 {params}
-
-<h4>Returns</h4>
+<br/>
+<h4><b>Returns</b></h4>
 <p>
 {ret}
 </p>
+</div>
 </div>"""
 
     return write_up, description
@@ -303,6 +363,3 @@ for branch in algo_methods:
     
     for item in branch:
         previous_name, j = Table(item, previous_name, type_map, j)
-
-os.remove(path_ / f'01 All Available Methods_.html')
-os.remove(path_ / f'02 Public Members_.html')
