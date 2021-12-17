@@ -43,29 +43,53 @@ option_history = qb.GetOptionHistory(underlying, start_time, end_time, Resolutio
 
 	<div class="section-example-container">
 		<pre class="csharp">var qb = new QuantBook();
-		var startTime = new DateTime(2021, 12, 6);
-		var endTime = new DateTime(2021, 12, 10);
-		var symbols = qb.OptionChainProvider.GetOptionContractList(underlying, endTime)</pre>
+var startTime = new DateTime(2021, 12, 6);
+var endTime = new DateTime(2021, 12, 10);
+var symbols = qb.OptionChainProvider.GetOptionContractList(equity.Symbol, endTime)</pre>
 		<pre class="python">qb = QuantBook()
-		start_time = datetime(2021, 12, 6)
-		end_time = datetime(2021, 12, 10)
-		symbols = qb.OptionChainProvider.GetOptionContractList(underlying, end_time)
+start_time = datetime(2021, 12, 6)
+end_time = datetime(2021, 12, 10)
+symbols = qb.OptionChainProvider.GetOptionContractList(equity.Symbol, end_time)
 		</pre>
 	</div>
-	<pre>The <code>GetOptionsContractList</code> method returns more than 8,000 symbols. We are foing to select the same symbols from the section above as follows:</pre>
-	<li>Define the <code>Symbol</code> that we want to make a historical data request for:<li>
+	<p>The <code>GetOptionsContractList</code> method returns more than 8,000 symbols. We are foing to select the same symbols from the section above as follows:</p>
+	<li>Define the <code>Symbol</code> that we want to make a historical data request for:</li>
 	<div class="section-example-container">
 		<pre class="csharp">var symbol = symbols.First();</pre>
 		<pre class="python">symbols = [symbol for symbol in symbols \
-		    if symbol.ID.StrikePrice in strikes and symbol.ID.Date in expiries]</pre>
+    if symbol.ID.StrikePrice in strikes and symbol.ID.Date in expiries]</pre>
 	</div>
+	
+	<li>If you want to get open interest data, call the <code>AddOptionContract</code> method with an <code>OptionContract</code> <code>Symbol</code> and disable fill-forward.</li>
+    <div class="section-example-container">
+        <pre class="csharp">foreach (var symbol in symbols)
+{
+    qb.AddOptionContract(symbol, fillDataForward: false);
+}</pre>
+	<pre class="python">for symbol in symbols:
+	qb.AddOptionContract(symbols, fillDataForward = False)</pre>
+    </div>
+	
 	<li>Call the <code>History</code> method with a subset of the returned <code>Symbol</code>s to get historical data for the given contract Symbols.</li>
 		<div class="section-example-container">
-		<pre class="csharp">var definedPeriodHistory = qb.History(symbols, startTime, endTime, Resolution.Minute);
-var timespanHistory = qb.History(symbols, TimeSpan.FromDays(10), Resolution.Minute);
-var barCountHistory = qb.History(symbols, 10, Resolution.Minute);</pre>
-		<pre class="python">defined_period_history = qb.History(symbols, start_time, end_time, Resolution.Minute)
-timespan_history = qb.History(symbols, timedelta(days=10), Resolution.Minute)
-bar_count_history = qb.History(symbols, 10, Resolution.Minute)</pre>
+		<pre class="csharp">var definedPeriodPriceHistory = qb.History(symbols, startTime, endTime,
+    Resolution.Minute);
+var timespanPriceHistory = qb.History(symbols, TimeSpan.FromDays(10),
+    Resolution.Minute);
+var barCountPriceHistory = qb.History(symbols, 10, Resolution.Minute);
+
+var definedPeriodOpenInterestHistory = qb.History&lt;OpenInterest&gt;(symbols, startTime, endTime);
+var timespanOpenInterestHistory = qb.History&lt;OpenInterest&gt;(symbols, TimeSpan.FromDays(10));
+var barCountOpenInterestHistory = qb.History&lt;OpenInterest&gt;(symbols, 400);
+</pre>
+		<pre class="python">defined_period_price_history = qb.History(symbols, start_time, end_time,
+    Resolution.Minute)
+timespan_price_history = qb.History(symbols, timedelta(days=10),
+    Resolution.Minute)
+bar_count_price_history = qb.History(symbols, 10, Resolution.Minute)
+
+defined_period_open_interest_history = qb.History(OpenInterest, symbols, start_time, end_time)
+timespan_open_interest_history = qb.History(OpenInterest, symbols, timedelta(days=10))
+bar_count_open_interest_history = qb.History(OpenInterest, symbols, 400)</pre>
 	</div>
 <ol>
