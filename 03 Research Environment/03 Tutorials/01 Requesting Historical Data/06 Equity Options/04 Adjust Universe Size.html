@@ -45,7 +45,7 @@ option_history = qb.GetOptionHistory(equity.Symbol, start_time, end_time, Resolu
 		<pre class="csharp">
 var startTime = new DateTime(2021, 11, 1);
 var endTime = new DateTime(2021, 11, 2);
-var symbols = qb.OptionChainProvider.GetOptionContractList(equity.Symbol, endTime);</pre>
+var symbols = qb.OptionChainProvider.GetOptionContractList(equity.Symbol, endTime).ToArray();</pre>
 		<pre class="python">start_time = datetime(2021, 11, 1)
 end_time = datetime(2021, 11, 2)
 symbols = qb.OptionChainProvider.GetOptionContractList(equity.Symbol, end_time)
@@ -54,7 +54,8 @@ symbols = qb.OptionChainProvider.GetOptionContractList(equity.Symbol, end_time)
 	<p>The <code>GetOptionsContractList</code> method returns a list of more than 8,000 <code>Symbol</code>s.<br></p>
 	<li>Select the subset of <code>Symbol</code>s for which you want to get historical data.</li>
 	<div class="section-example-container">
-		<pre class="csharp">var selectedSymbols = symbols.Take(5);</pre>
+		<pre class="csharp">var selectedSymbols = new []{ 2394, 2548, 2857, 3366, 3769, 5834, 6838, 7235 }
+    .Select(i => symbols[i]);</pre>
 		<pre class="python">selected_symbols = [symbol for symbol in symbols \
     if symbol.ID.StrikePrice in strikes and symbol.ID.Date in expiries]</pre>
 	</div>
