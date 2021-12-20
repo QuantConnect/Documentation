@@ -23,10 +23,17 @@ using QuantConnect.Research;</pre>
         <pre class="python">equity = qb.AddEquity("SPY", Resolution.Minute)</pre>
     </div>
     <p>If you do not pass a resolution argument, <code>Resolution.Minute</code> is used by default</p>
-	<li>Call the <code>SetDataNormalizationMode</code> method with <code>DataNormalizationMode.Raw</code>.</li>
+    <li>Call the <code>SetDataNormalizationMode</code> method with <code>DataNormalizationMode.Raw</code>.</li>
     <div class="section-example-container">
         <pre class="csharp">equity.SetDataNormalizationMode(DataNormalizationMode.Raw);</pre>
         <pre class="python">equity.SetDataNormalizationMode(DataNormalizationMode.Raw)</pre>
+    </div>
+    <p class="csharp">The call to <code>SetDataNormalizationMode</code> above throws an error because it is obsolete. Use the following code snippet to avoid the warning and ensure all subscriptions of the security have the same data normalization mode:</p>
+    <div class="csharp section-example-container">
+        <pre class="csharp">qb.SubscriptionManager
+  .SubscriptionDataConfigService
+  .GetSubscriptionDataConfigs(equity.Symbol)
+  .SetDataNormalizationMode(DataNormalizationMode.Raw);</pre>
     </div>
     <li>Call the <code>AddOption</code> method with the underlying Equity <code>Symbol</code>.</li>
     <div class="section-example-container">
