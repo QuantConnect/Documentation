@@ -35,7 +35,7 @@ with open(path_ / "01 All Available Methods.html", "w", encoding="utf-8") as htm
     margin: 0.5rem 0rem;
     display: flex;
   }
-
+  
   .ref-table-container {
     position: relative;
     border: 1px solid #D9E1EB;
@@ -44,6 +44,7 @@ with open(path_ / "01 All Available Methods.html", "w", encoding="utf-8") as htm
     margin: 2rem 0;
     height: 420px;
     overflow-x: hidden;
+    display: none;
   }
 
   .ref-tag-active {
@@ -72,7 +73,7 @@ function openTab(evt, category) {
   evt.currentTarget.className += " ref-tag-active";
 }
 
-document.getElementById("All_button").click();
+document.getElementById("All_button").click()
 </script>
 
 <h3><code>QCAlgorithm</code> class subclasses/methods</h3><hr class="solid">
@@ -90,10 +91,16 @@ document.getElementById("All_button").click();
     
     html_file.write('''  </div>
                     
+</div>
+
+<div id="All" class="ref-table-container" style="display: block;">
+<table cellspacing="0" cellpadding="0">
+<tbody>
+</tbody></table>
 </div>''')
 
-    for topic in ["All"] + dir_:    
-        html_file.write(f'''<div id="{topic}" class="ref-table-container">
+    for topic in dir_:    
+        html_file.write( f'''<div id="{topic}" class="ref-table-container">
 <table cellspacing="0" cellpadding="0">
 <tbody>
 </tbody></table>
@@ -169,22 +176,41 @@ with open(path_ / "02 Public Members.html", "w", encoding="utf-8") as html_file:
 </style>
 
 <script>
-function ShowHide(className) {
-    if (this.value == "Show Details ▼") {
-        this.value = "Hide Details ▲";
+function ShowHide(idName) {
+    if (this.value == "Hide Details <span><img src="https://cdn.quantconnect.com/i/tu/api-chevron-hide.svg" alt="arrow-hide"></span>") {
+        this.value = "Show Details ▲";
     }
     else {
-        this.value = "Show Details ▼";
+        this.value = "Hide Details <span><img src="https://cdn.quantconnect.com/i/tu/api-chevron-hide.svg" alt="arrow-hide"></span>";
     }
     
-    var x = document.getElementById(className);
-    if (x.style.display == "none") {
-        x.style.display = "block";
-    }
-    else {
-        x.style.display = "none";
+    var x = document.getElementById(idName);
+    for (i = 0; i < x.length; i++) {
+        if (x[i].style.display == "none") {
+            x[i].style.display = "block";
+        }
+        else {
+            x[i].style.display = "none";
+        }
     }
 };
+
+function openTab(evt, category) {
+  var i, tabcontent, tablinks;
+  
+  tabcontent = document.getElementsByClassName("ref-table-container");
+  for (i = 0; i < tabcontent.length; i++) {
+    tabcontent[i].style.display = "none";
+  }
+
+  tablinks = document.getElementsByClassName("tablinks ref-tag-active");
+  for (i = 0; i < tablinks.length; i++) {
+    tablinks[i].className = tablinks[i].className.replace(" ref-tag-active", "");
+  }
+
+  document.getElementById(category).style.display = "block";
+  evt.currentTarget.className += " ref-tag-active";
+}
 
 function openTopTab(category) {
     document.body.scrollTop = 0;
@@ -266,7 +292,7 @@ def Table(input_, previous_name, type_map, j):
                 active = False
                 
                 for line in lines:
-                    if '<div id="All" class="ref-table-container">' in line or f'<div id="{tag}" class="ref-table-container">' in line:
+                    if '<div id="All" class="ref-table-container"' in line or f'<div id="{tag}" class="ref-table-container"' in line:
                         active = True
                     
                     if active and '</tbody></table>' in line:
@@ -445,10 +471,10 @@ def Box(input_, doc_attr, doc_ref, type_map, j):
     </div>
     
     <div class="details-btn">
-        <button class="show-hide-detail" onclick="ShowHide(method-details)">Hide Details <span><img src="https://cdn.quantconnect.com/i/tu/api-chevron-hide.svg" alt="arrow-hide"></span></button>
+        <button class="show-hide-detail" onclick="ShowHide({call.replace(" ", "-")}-details)">Hide Details <span><img src="https://cdn.quantconnect.com/i/tu/api-chevron-hide.svg" alt="arrow-hide"></span></button>
     </div>
 
-    <div class="method-details">
+    <div class="method-details" id="{call.replace(" ", "-")}-details">
     
 {params}
 
