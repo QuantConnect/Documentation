@@ -1,0 +1,41 @@
+<p>You need to <a href="#02-Create-Subscriptions">subscribe</a> to all of the Equities for which you want fundamental historical data. You can request historical data for a subset of the Equities or all of the Equities.</p> 
+
+<h4>Subset of Equities</h4>
+<p><a href="#02-Create-Subscriptions">Create subscriptions</a> for multiple Equities and then call the <code>GetFundamental</code> method with a list of <code>Symbol</code>s to request fundamental historical data for those specific securities.</p>
+
+<div class="section-example-container">
+    <pre class="csharp">
+var fb = qb.AddEquity("FB").Symbol;
+var amzn = qb.AddEquity("AMZN").Symbol;
+var aapl = qb.AddEquity("AAPL").Symbol;
+var nflx = qb.AddEquity("NFLX").Symbol;
+var goog = qb.AddEquity("GOOG").Symbol;
+
+var startTime = new DateTime(2017, 1, 1);
+var endTime = DateTime.Now;
+var marketCaps = qb.GetFundamental(new []{fb, amzn, aapl, nflx, goog}, "CompanyProfile.MarketCap",
+    startTime, endTime);</pre>
+    <pre class="python">
+var fb = qb.AddEquity("FB").Symbol
+var amzn = qb.AddEquity("AMZN").Symbol
+var aapl = qb.AddEquity("AAPL").Symbol
+var nflx = qb.AddEquity("NFLX").Symbol
+var goog = qb.AddEquity("GOOG").Symbol
+
+start_time = datetime(2021, 1, 1)
+end_time = datetime(2021, 2, 1)
+marketCaps = qb.GetFundamental([fb, amzn, aapl, nflx, goog], "CompanyProfile.MarketCap",
+    startTime, endTime);</pre>
+</div>
+
+<h4>All Equities</h4>
+<p>Call the <code>GetFundamental</code> method with <code>qb.Securities.Keys</code> to request fundamental historical data for those specific securities for all of the Equities.</p>
+
+<div class="section-example-container">
+    <pre class="csharp">
+var marketCaps = qb.GetFundamental(qb.Securities.Keys, "CompanyProfile.MarketCap",
+    startTime, endTime);</pre>
+    <pre class="python">
+marketCaps = qb.GetFundamental(qb.Securities.Keys, "CompanyProfile.MarketCap",
+    start_time, end_time)</pre>
+</div>
