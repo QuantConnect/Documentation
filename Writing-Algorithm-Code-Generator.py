@@ -124,6 +124,7 @@ with open(path_ / "02 Public Members.html", "w", encoding="utf-8") as html_file:
 
     .method-details > div {
         margin-bottom: 2rem;
+        display: block;
     }
 
     .method-header {
@@ -212,7 +213,7 @@ function openTab(evt, category) {
   evt.currentTarget.className += " ref-tag-active";
 }
 
-function openTopTab(category) {
+function openTopTab(event, category) {
     document.body.scrollTop = 0;
     document.documentElement.scrollTop = 0;
     openTab(event, category);
