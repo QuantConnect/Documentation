@@ -383,6 +383,9 @@ def Box(input_, doc_attr, doc_ref, type_map, j):
             
         if ret_ == "Void":
             ret += f"            <p>{ret_} - This method provides no return.</p>\n"
+            
+        elif ret_ == "Security":
+            ret += f"            <p>{ret_} - The new Security"
         
         else:
             ret += f'            <p>{ret_}'
@@ -401,9 +404,6 @@ def Box(input_, doc_attr, doc_ref, type_map, j):
     if "Description" in input_:
         slash = r"\'"
         description = input_["Description"].replace(f"{slash}", "")
-        
-        if ret_ == "Security":
-            description = "The new Security"
         
         start = description.find("<")
         while start != -1:
