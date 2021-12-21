@@ -366,7 +366,7 @@ def Box(input_, doc_attr, doc_ref, type_map, j):
         params += "<p>This method requires no argument input.</p>"
     
     ret = """        <div class="method-return">
-            <h4>Return</h4>"""
+            <h4>Return</h4>\n"""
     
     if "ReturnValue" in input_:
         if "Name" in input_["ReturnValue"]:
@@ -382,25 +382,28 @@ def Box(input_, doc_attr, doc_ref, type_map, j):
             ret_ = type_map[str(input_["ReturnValue"]["typeId"])]
             
         if ret_ == "Void":
-            ret += f"            <p>{ret_} - This method provides no return.</p>"
+            ret += f"            <p>{ret_} - This method provides no return.</p>\n"
         
         else:
             ret += f'            <p>{ret_}'
                 
             if "Description" in input_["ReturnValue"]:
-                ret += f' - {input_["ReturnValue"]["Description"]}</p>'
+                ret += f' - {input_["ReturnValue"]["Description"]}</p>\n'
                 
             else:
-                ret += '</p>'
+                ret += '</p>\n'
             
     else:
-        ret += "            <p>This method provides no return.</p>"
+        ret += "            <p>This method provides no return.</p>\n"
         
     ret += "        </div>"
         
     if "Description" in input_:
         slash = r"\'"
         description = input_["Description"].replace(f"{slash}", "")
+        
+        if ret_ == "Security":
+            description = "The new Security"
         
         start = description.find("<")
         while start != -1:
@@ -421,7 +424,7 @@ def Box(input_, doc_attr, doc_ref, type_map, j):
     else: 
         description = ""
     
-    this_ = "&emsp;(\n"
+    this_ = " (\n&emsp;"
     head_ = '<font color="#cdcdcd">' + ret_ + "</font> QuantConnect.Algorithm.QCAlgorithm." + input_["Name"] + this_
     next_ = ",\n" + "&emsp;"
     
@@ -433,9 +436,9 @@ def Box(input_, doc_attr, doc_ref, type_map, j):
             max_ = len(type_)
         
     call_ = head_ + \
-        next_.join([" <code>" + str(value["Type"]) + "</code>" + " " * (max_ + 2 - len(str(value["Type"]))) + str(key) for key, value in args.items()]) + \
+        next_.join(["<code>" + str(value["Type"]) + "</code>" + " " * (max_ + 2 - len(str(value["Type"]))) + str(key) for key, value in args.items()]) + \
         "\n" + ")"
-    call_ = call_.replace("\n", "\n" + "&emsp;" * 3)
+    call_ = call_.replace("\n", "\n" + " " * 3)
         
     buttons = "\n".join([f'''<button class="method-tag" onclick="openTopTab(event, '{attr_}')">{attr_}</button>''' for attr_ in doc_attr])
     
