@@ -454,7 +454,7 @@ def Box(input_, doc_attr, doc_ref, type_map, j):
         "\n" + ")"
     call_ = call_.replace("\n", "\n" + "&emsp;" * 3)
         
-    buttons = "\n".join([f'''<button class="method-tag" onclick="openTopTab(event, {attr_})">{attr_}</button>''' for attr_ in doc_attr])
+    buttons = "\n".join([f'''<button class="method-tag" onclick="openTopTab(event, '{attr_}')">{attr_}</button>''' for attr_ in doc_attr])
     
     write_up = f"""<a id="{call.replace(" ", "-") + str(j)}"></a>
 <div class="method-container">
@@ -472,7 +472,7 @@ def Box(input_, doc_attr, doc_ref, type_map, j):
     </div>
     
     <div class="details-btn">
-        <button class="show-hide-detail" onclick="ShowHide({call.replace(" ", "-")}-details)">Hide Details <span><img src="https://cdn.quantconnect.com/i/tu/api-chevron-hide.svg" alt="arrow-hide"></span></button>
+        <button class="show-hide-detail" onclick="ShowHide('{call.replace(" ", "-")}-details)'">Hide Details <span><img src="https://cdn.quantconnect.com/i/tu/api-chevron-hide.svg" alt="arrow-hide"></span></button>
     </div>
 
     <div class="method-details" id="{call.replace(" ", "-")}-details">
