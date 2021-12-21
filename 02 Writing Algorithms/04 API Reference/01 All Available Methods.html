@@ -37,37 +37,55 @@
   }
 
 </style>
+                    
+<script>
+function openTab(evt, category) {
+  var i, tabcontent, tablinks;
+  
+  tabcontent = document.getElementsByClassName("ref-table-container");
+  for (i = 0; i < tabcontent.length; i++) {
+    tabcontent[i].style.display = "none";
+  }
+
+  tablinks = document.getElementsByClassName("tablinks ref-tag-active");
+  for (i = 0; i < tablinks.length; i++) {
+    tablinks[i].className = tablinks[i].className.replace(" ref-tag-active", "");
+  }
+
+  document.getElementById(category).style.display = "block";
+  evt.currentTarget.className += " ref-tag-active";
+}
+
+document.getElementById("All_button").click();
+</script>
 
 <h3><code>QCAlgorithm</code> class subclasses/methods</h3><hr class="solid">
 
 <div class="api-ref-tag-list">
 
   <div style="margin-right: 0.8rem;">
-    <button class="tablinks ref-tag-active" onclick="openTab(event, 'All')">All</button>
+    <button id="All_button" class="tablinks ref-tag-active" onclick="openTab(event, 'All')">All</button>
   </div>
-
-  <div>
-    <button class="tablinks" onclick="openTab(event, 'Adding Data')">Adding Data</button>
-    <button class="tablinks" onclick="openTab(event, 'Algorithm Framework')">Algorithm Framework</button>
-    <button class="tablinks" onclick="openTab(event, 'Charting')">Charting</button>
-    <button class="tablinks" onclick="openTab(event, 'Consolidating Data')">Consolidating Data</button>
-    <button class="tablinks" onclick="openTab(event, 'Handling Data')">Handling Data</button>
-    <button class="tablinks" onclick="openTab(event, 'Historical Data')">Historical Data</button>
-    <button class="tablinks" onclick="openTab(event, 'Indicators')">Indicators</button>
-    <button class="tablinks" onclick="openTab(event, 'Live Trading')">Live Trading</button>
-    <button class="tablinks" onclick="openTab(event, 'Logging')">Logging</button>
-    <button class="tablinks" onclick="openTab(event, 'MachineLearning')">MachineLearning</button>
-    <button class="tablinks" onclick="openTab(event, 'Modeling')">Modeling</button>
-    <button class="tablinks" onclick="openTab(event, 'Parameter and Optimization')">Parameter and Optimization</button>
-    <button class="tablinks" onclick="openTab(event, 'Scheduled Events')">Scheduled Events</button>
-    <button class="tablinks" onclick="openTab(event, 'Securities and Portfolio')">Securities and Portfolio</button>
-    <button class="tablinks" onclick="openTab(event, 'Trading and Orders')">Trading and Orders</button>
-    <button class="tablinks" onclick="openTab(event, 'Universes')">Universes</button>
+  
+  <div>    <button id="Adding Data_button" class="tablinks" onclick="openTab(event, 'Adding Data')">Adding Data</button>
+    <button id="Algorithm Framework_button" class="tablinks" onclick="openTab(event, 'Algorithm Framework')">Algorithm Framework</button>
+    <button id="Charting_button" class="tablinks" onclick="openTab(event, 'Charting')">Charting</button>
+    <button id="Consolidating Data_button" class="tablinks" onclick="openTab(event, 'Consolidating Data')">Consolidating Data</button>
+    <button id="Handling Data_button" class="tablinks" onclick="openTab(event, 'Handling Data')">Handling Data</button>
+    <button id="Historical Data_button" class="tablinks" onclick="openTab(event, 'Historical Data')">Historical Data</button>
+    <button id="Indicators_button" class="tablinks" onclick="openTab(event, 'Indicators')">Indicators</button>
+    <button id="Live Trading_button" class="tablinks" onclick="openTab(event, 'Live Trading')">Live Trading</button>
+    <button id="Logging_button" class="tablinks" onclick="openTab(event, 'Logging')">Logging</button>
+    <button id="MachineLearning_button" class="tablinks" onclick="openTab(event, 'MachineLearning')">MachineLearning</button>
+    <button id="Modeling_button" class="tablinks" onclick="openTab(event, 'Modeling')">Modeling</button>
+    <button id="Parameter and Optimization_button" class="tablinks" onclick="openTab(event, 'Parameter and Optimization')">Parameter and Optimization</button>
+    <button id="Scheduled Events_button" class="tablinks" onclick="openTab(event, 'Scheduled Events')">Scheduled Events</button>
+    <button id="Securities and Portfolio_button" class="tablinks" onclick="openTab(event, 'Securities and Portfolio')">Securities and Portfolio</button>
+    <button id="Trading and Orders_button" class="tablinks" onclick="openTab(event, 'Trading and Orders')">Trading and Orders</button>
+    <button id="Universes_button" class="tablinks" onclick="openTab(event, 'Universes')">Universes</button>
   </div>
-
-</div>
-
-<div class="ref-table-container">
+                    
+</div><div id="All" class="ref-table-container">
 <table cellspacing="0" cellpadding="0">
 <tbody>
 <tr>
@@ -83,10 +101,6 @@
 <td>Adds a new alpha model</td>
 </tr>
 <tr>
-<td><a href="#AddAlpha(PyObject-alpha)2">AddAlpha()</a></td>
-<td>Adds a new alpha model</td>
-</tr>
-<tr>
 <td><a href="#AddCfd(String-ticker,-Resolution-resolution,-String-market,-Boolean-fillDataForward,-Decimal-leverage)1">AddCfd()</a></td>
 <td>Creates and adds a new <code>Cfd</code> security to the algorithm</td>
 </tr>
@@ -101,58 +115,6 @@
 <tr>
 <td><a href="#AddData(PyObject-type,-String-ticker,-Resolution-resolution)1">AddData()</a></td>
 <td>AddData a new user defined data source, requiring only the minimum config options. The data is added with a default time zone of NewYork (Eastern Daylight Savings Time). This method is meant for custom data types that require a ticker, but have no underlying Symbol. Examples of data sources that meet this criteria are U.S. Treasury Yield Curve Rates and Trading Economics data</td>
-</tr>
-<tr>
-<td><a href="#AddData(PyObject-type,-Symbol-underlying,-Resolution-resolution)2">AddData()</a></td>
-<td>AddData a new user defined data source, requiring only the minimum config options. The data is added with a default time zone of NewYork (Eastern Daylight Savings Time). This adds a Symbol to the `Underlying` property in the custom data Symbol object. Use this method when adding custom data with a ticker from the past, such as "AOL" before it became "TWX", or if you need to filter using custom data and place trades on the Symbol associated with the custom data.</td>
-</tr>
-<tr>
-<td><a href="#AddData(PyObject-type,-String-ticker,-Resolution-resolution,-DateTimeZone-timeZone,-Boolean-fillDataForward,-Decimal-leverage)3">AddData()</a></td>
-<td>AddData a new user defined data source, requiring only the minimum config options. This method is meant for custom data types that require a ticker, but have no underlying Symbol. Examples of data sources that meet this criteria are U.S. Treasury Yield Curve Rates and Trading Economics data</td>
-</tr>
-<tr>
-<td><a href="#AddData(PyObject-type,-Symbol-underlying,-Resolution-resolution,-DateTimeZone-timeZone,-Boolean-fillDataForward,-Decimal-leverage)4">AddData()</a></td>
-<td>AddData a new user defined data source, requiring only the minimum config options. This adds a Symbol to the `Underlying` property in the custom data Symbol object. Use this method when adding custom data with a ticker from the past, such as "AOL" before it became "TWX", or if you need to filter using custom data and place trades on the Symbol associated with the custom data.</td>
-</tr>
-<tr>
-<td><a href="#AddData(Type-dataType,-String-ticker,-Resolution-resolution,-DateTimeZone-timeZone,-Boolean-fillDataForward,-Decimal-leverage)5">AddData()</a></td>
-<td>AddData a new user defined data source, requiring only the minimum config options. This method is meant for custom data types that require a ticker, but have no underlying Symbol. Examples of data sources that meet this criteria are U.S. Treasury Yield Curve Rates and Trading Economics data</td>
-</tr>
-<tr>
-<td><a href="#AddData(Type-dataType,-Symbol-underlying,-Resolution-resolution,-DateTimeZone-timeZone,-Boolean-fillDataForward,-Decimal-leverage)6">AddData()</a></td>
-<td>AddData a new user defined data source, requiring only the minimum config options. This adds a Symbol to the `Underlying` property in the custom data Symbol object. Use this method when adding custom data with a ticker from the past, such as "AOL" before it became "TWX", or if you need to filter using custom data and place trades on the Symbol associated with the custom data.</td>
-</tr>
-<tr>
-<td><a href="#AddData(PyObject-type,-String-ticker,-SymbolProperties-properties,-SecurityExchangeHours-exchangeHours,-Resolution-resolution,-Boolean-fillDataForward,-Decimal-leverage)7">AddData()</a></td>
-<td>AddData a new user defined data source including symbol properties and exchange hours, all other vars are not required and will use defaults. This overload reflects the C# equivalent for custom properties and market hours</td>
-</tr>
-<tr>
-<td><a href="#AddData(String-ticker,-Resolution-resolution)8">AddData()</a></td>
-<td></td>
-</tr>
-<tr>
-<td><a href="#AddData(Symbol-underlying,-Resolution-resolution)9">AddData()</a></td>
-<td></td>
-</tr>
-<tr>
-<td><a href="#AddData(String-ticker,-Resolution-resolution,-Boolean-fillDataForward,-Decimal-leverage)10">AddData()</a></td>
-<td></td>
-</tr>
-<tr>
-<td><a href="#AddData(Symbol-underlying,-Resolution-resolution,-Boolean-fillDataForward,-Decimal-leverage)11">AddData()</a></td>
-<td></td>
-</tr>
-<tr>
-<td><a href="#AddData(String-ticker,-Resolution-resolution,-DateTimeZone-timeZone,-Boolean-fillDataForward,-Decimal-leverage)12">AddData()</a></td>
-<td></td>
-</tr>
-<tr>
-<td><a href="#AddData(Symbol-underlying,-Resolution-resolution,-DateTimeZone-timeZone,-Boolean-fillDataForward,-Decimal-leverage)13">AddData()</a></td>
-<td></td>
-</tr>
-<tr>
-<td><a href="#AddData(String-ticker,-SymbolProperties-properties,-SecurityExchangeHours-exchangeHours,-Resolution-resolution,-Boolean-fillDataForward,-Decimal-leverage)14">AddData()</a></td>
-<td></td>
 </tr>
 <tr>
 <td><a href="#AddEquity(String-ticker,-Resolution-resolution,-String-market,-Boolean-fillDataForward,-Decimal-leverage,-Boolean-extendedMarketHours)1">AddEquity()</a></td>
@@ -175,10 +137,6 @@
 <td>Creates and adds a new Future Option contract to the algorithm.</td>
 </tr>
 <tr>
-<td><a href="#AddFutureOption(Symbol-symbol,-OptionFilterUniverse-OptionFilterUniverse)2">AddFutureOption()</a></td>
-<td>Creates and adds a new Future Option contract to the algorithm.</td>
-</tr>
-<tr>
 <td><a href="#AddFutureOptionContract(Symbol-symbol,-Resolution-resolution,-Boolean-fillDataForward,-Decimal-leverage)1">AddFutureOptionContract()</a></td>
 <td>Adds a future option contract to the algorithm.</td>
 </tr>
@@ -191,20 +149,12 @@
 <td>Creates and adds index options to the algorithm.</td>
 </tr>
 <tr>
-<td><a href="#AddIndexOption(Symbol-symbol,-Resolution-resolution,-Boolean-fillDataForward)2">AddIndexOption()</a></td>
-<td>Creates and adds index options to the algorithm.</td>
-</tr>
-<tr>
 <td><a href="#AddIndexOptionContract(Symbol-symbol,-Resolution-resolution,-Boolean-fillDataForward)1">AddIndexOptionContract()</a></td>
 <td>Adds an index option contract to the algorithm.</td>
 </tr>
 <tr>
 <td><a href="#AddOption(String-underlying,-Resolution-resolution,-String-market,-Boolean-fillDataForward,-Decimal-leverage)1">AddOption()</a></td>
 <td>Creates and adds a new equity <code>Option</code> security to the algorithm</td>
-</tr>
-<tr>
-<td><a href="#AddOption(Symbol-underlying,-Resolution-resolution,-String-market,-Boolean-fillDataForward,-Decimal-leverage)2">AddOption()</a></td>
-<td>Creates and adds a new <code>Option</code> security to the algorithm. This method can be used to add options with non-equity asset classes to the algorithm (e.g. Future Options).</td>
 </tr>
 <tr>
 <td><a href="#AddOptionContract(Symbol-symbol,-Resolution-resolution,-Boolean-fillDataForward,-Decimal-leverage)1">AddOptionContract()</a></td>
@@ -219,28 +169,8 @@
 <td>Adds a new risk management model</td>
 </tr>
 <tr>
-<td><a href="#AddRiskManagement(PyObject-riskManagement)2">AddRiskManagement()</a></td>
-<td>Adds a new risk management model</td>
-</tr>
-<tr>
-<td><a href="#AddRiskManagement(PyObject-riskManagement)3">AddRiskManagement()</a></td>
-<td>Adds a new risk management model</td>
-</tr>
-<tr>
 <td><a href="#AddSecurity(SecurityType-securityType,-String-ticker,-Resolution-resolution,-Boolean-fillDataForward,-Boolean-extendedMarketHours,-DataMappingMode-dataMappingMode,-DataNormalizationMode-dataNormalizationMode)1">AddSecurity()</a></td>
 <td>Add specified data to our data subscriptions. QuantConnect will funnel this data to the handle data routine.</td>
-</tr>
-<tr>
-<td><a href="#AddSecurity(SecurityType-securityType,-String-ticker,-Resolution-resolution,-Boolean-fillDataForward,-Decimal-leverage,-Boolean-extendedMarketHours,-DataMappingMode-dataMappingMode,-DataNormalizationMode-dataNormalizationMode)2">AddSecurity()</a></td>
-<td>Add specified data to required list. QC will funnel this data to the handle data routine.</td>
-</tr>
-<tr>
-<td><a href="#AddSecurity(SecurityType-securityType,-String-ticker,-Resolution-resolution,-String-market,-Boolean-fillDataForward,-Decimal-leverage,-Boolean-extendedMarketHours,-DataMappingMode-dataMappingMode,-DataNormalizationMode-dataNormalizationMode)3">AddSecurity()</a></td>
-<td>Set a required SecurityType-symbol and resolution for algorithm</td>
-</tr>
-<tr>
-<td><a href="#AddSecurity(Symbol-symbol,-Resolution-resolution,-Boolean-fillDataForward,-Decimal-leverage,-Boolean-extendedMarketHours,-DataMappingMode-dataMappingMode,-DataNormalizationMode-dataNormalizationMode,-Int32-contractDepthOffset)4">AddSecurity()</a></td>
-<td>Set a required SecurityType-symbol and resolution for algorithm</td>
 </tr>
 <tr>
 <td><a href="#AddSeries(String-chart,-String-series,-SeriesType-seriesType,-String-unit)1">AddSeries()</a></td>
@@ -251,151 +181,15 @@
 <td>Adds the universe to the algorithm</td>
 </tr>
 <tr>
-<td><a href="#AddUniverse(String-name,-Symbol-IEnumerable`1)2">AddUniverse()</a></td>
-<td></td>
-</tr>
-<tr>
-<td><a href="#AddUniverse(String-name,-String-IEnumerable`1)3">AddUniverse()</a></td>
-<td></td>
-</tr>
-<tr>
-<td><a href="#AddUniverse(String-name,-UniverseSettings-universeSettings,-Symbol]-selector)4">AddUniverse()</a></td>
-<td></td>
-</tr>
-<tr>
-<td><a href="#AddUniverse(String-name,-UniverseSettings-universeSettings,-String]-selector)5">AddUniverse()</a></td>
-<td></td>
-</tr>
-<tr>
-<td><a href="#AddUniverse(String-name,-Resolution-resolution,-Symbol]-selector)6">AddUniverse()</a></td>
-<td></td>
-</tr>
-<tr>
-<td><a href="#AddUniverse(String-name,-Resolution-resolution,-String]-selector)7">AddUniverse()</a></td>
-<td></td>
-</tr>
-<tr>
-<td><a href="#AddUniverse(String-name,-Resolution-resolution,-UniverseSettings-universeSettings,-Symbol]-selector)8">AddUniverse()</a></td>
-<td></td>
-</tr>
-<tr>
-<td><a href="#AddUniverse(String-name,-Resolution-resolution,-UniverseSettings-universeSettings,-String]-selector)9">AddUniverse()</a></td>
-<td></td>
-</tr>
-<tr>
-<td><a href="#AddUniverse(SecurityType-securityType,-String-name,-Resolution-resolution,-String-market,-Symbol]-selector)10">AddUniverse()</a></td>
-<td></td>
-</tr>
-<tr>
-<td><a href="#AddUniverse(SecurityType-securityType,-String-name,-Resolution-resolution,-String-market,-String]-selector)11">AddUniverse()</a></td>
-<td></td>
-</tr>
-<tr>
-<td><a href="#AddUniverse(SecurityType-securityType,-String-name,-Resolution-resolution,-String-market,-UniverseSettings-universeSettings,-Symbol]-selector)12">AddUniverse()</a></td>
-<td></td>
-</tr>
-<tr>
-<td><a href="#AddUniverse(SecurityType-securityType,-String-name,-Resolution-resolution,-String-market,-UniverseSettings-universeSettings,-String]-selector)13">AddUniverse()</a></td>
-<td></td>
-</tr>
-<tr>
-<td><a href="#AddUniverse(Symbol-IEnumerable`1)14">AddUniverse()</a></td>
-<td></td>
-</tr>
-<tr>
-<td><a href="#AddUniverse(Symbol]-coarseSelector,-Symbol-IEnumerable`1)15">AddUniverse()</a></td>
-<td></td>
-</tr>
-<tr>
-<td><a href="#AddUniverse(Universe-universe,-Symbol]-fineSelector)16">AddUniverse()</a></td>
-<td></td>
-</tr>
-<tr>
-<td><a href="#AddUniverse(String-name,-String-IEnumerable`1)17">AddUniverse()</a></td>
-<td></td>
-</tr>
-<tr>
-<td><a href="#AddUniverse(String-name,-Resolution-resolution,-String]-selector)18">AddUniverse()</a></td>
-<td></td>
-</tr>
-<tr>
-<td><a href="#AddUniverse(SecurityType-securityType,-String-name,-Resolution-resolution,-String-market,-UniverseSettings-universeSettings,-String]-selector)19">AddUniverse()</a></td>
-<td></td>
-</tr>
-<tr>
-<td><a href="#AddUniverse(PyObject-T,-String-name,-Resolution-resolution,-UniverseSettings-universeSettings,-PyObject-selector)20">AddUniverse()</a></td>
-<td>Creates a new universe and adds it to the algorithm. This will use the default universe settings specified via the <code>UniverseSettings</code> property. This universe will use the defaults of SecurityType.Equity, and Market.USA</td>
-</tr>
-<tr>
-<td><a href="#AddUniverse(PyObject-T,-String-name,-UniverseSettings-universeSettings,-PyObject-selector)21">AddUniverse()</a></td>
-<td>Creates a new universe and adds it to the algorithm. This will use the default universe settings specified via the <code>UniverseSettings</code> property. This universe will use the defaults of SecurityType.Equity, Resolution.Daily, and Market.USA</td>
-</tr>
-<tr>
-<td><a href="#AddUniverse(PyObject-T,-SecurityType-securityType,-String-name,-Resolution-resolution,-String-market,-PyObject-selector)22">AddUniverse()</a></td>
-<td>Creates a new universe and adds it to the algorithm. This will use the default universe settings specified via the <code>UniverseSettings</code> property.</td>
-</tr>
-<tr>
-<td><a href="#AddUniverse(PyObject-T,-SecurityType-securityType,-String-name,-Resolution-resolution,-String-market,-UniverseSettings-universeSettings,-PyObject-selector)23">AddUniverse()</a></td>
-<td>Creates a new universe and adds it to the algorithm</td>
-</tr>
-<tr>
-<td><a href="#AddUniverse(Type-dataType,-SecurityType-securityType,-String-name,-Resolution-resolution,-String-market,-UniverseSettings-universeSettings,-PyObject-pySelector)24">AddUniverse()</a></td>
-<td>Creates a new universe and adds it to the algorithm</td>
-</tr>
-<tr>
-<td><a href="#AddUniverse(PyObject-pyObject)25">AddUniverse()</a></td>
-<td>Creates a new universe and adds it to the algorithm. This is for coarse fundamental US Equity data and will be executed on day changes in the NewYork time zone (<code>NewYork</code></td>
-</tr>
-<tr>
-<td><a href="#AddUniverse(PyObject-pyObject,-PyObject-pyfine)26">AddUniverse()</a></td>
-<td>Creates a new universe and adds it to the algorithm. This is for coarse and fine fundamental US Equity data and will be executed on day changes in the NewYork time zone (<code>NewYork</code></td>
-</tr>
-<tr>
-<td><a href="#AddUniverse(String-name,-Resolution-resolution,-PyObject-pySelector)27">AddUniverse()</a></td>
-<td>Creates a new universe and adds it to the algorithm. This can be used to return a list of string symbols retrieved from anywhere and will loads those symbols under the US Equity market.</td>
-</tr>
-<tr>
-<td><a href="#AddUniverse(String-name,-PyObject-pySelector)28">AddUniverse()</a></td>
-<td>Creates a new universe and adds it to the algorithm. This can be used to return a list of string symbols retrieved from anywhere and will loads those symbols under the US Equity market.</td>
-</tr>
-<tr>
-<td><a href="#AddUniverse(SecurityType-securityType,-String-name,-Resolution-resolution,-String-market,-UniverseSettings-universeSettings,-PyObject-pySelector)29">AddUniverse()</a></td>
-<td>Creates a new user defined universe that will fire on the requested resolution during market hours.</td>
-</tr>
-<tr>
-<td><a href="#AddUniverse(PyObject-T,-String-name,-PyObject-selector)30">AddUniverse()</a></td>
-<td>Creates a new universe and adds it to the algorithm. This will use the default universe settings specified via the <code>UniverseSettings</code> property. This universe will use the defaults of SecurityType.Equity, Resolution.Daily, Market.USA, and UniverseSettings</td>
-</tr>
-<tr>
-<td><a href="#AddUniverse(PyObject-T,-String-name,-Resolution-resolution,-PyObject-selector)31">AddUniverse()</a></td>
-<td>Creates a new universe and adds it to the algorithm. This will use the default universe settings specified via the <code>UniverseSettings</code> property. This universe will use the defaults of SecurityType.Equity, Market.USA and UniverseSettings</td>
-</tr>
-<tr>
 <td><a href="#AddUniverseOptions(Symbol-underlyingSymbol,-OptionFilterUniverse-optionFilter)1">AddUniverseOptions()</a></td>
 <td>Adds a new universe that creates options of the security by monitoring any changes in the Universe the provided security is in. Additionally, a filter can be applied to the options generated when the universe of the security changes.</td>
 </tr>
 <tr>
-<td><a href="#AddUniverseOptions(Universe-universe,-OptionFilterUniverse-optionFilter)2">AddUniverseOptions()</a></td>
-<td>Creates a new universe selection model and adds it to the algorithm. This universe selection model will chain to the security changes of a given <code>Universe</code> selection output and create a new <see cref="T:QuantConnect.Data.UniverseSelection.OptionChainUniverse" /> for each of them</td>
-</tr>
-<tr>
-<td><a href="#AddUniverseOptions(PyObject-universe,-PyObject-optionFilter)3">AddUniverseOptions()</a></td>
-<td>Creates a new universe selection model and adds it to the algorithm. This universe selection model will chain to the security changes of a given <code>Universe</code> selection output and create a new <see cref="T:QuantConnect.Data.UniverseSelection.OptionChainUniverse" /> for each of them</td>
-</tr>
-<tr>
 <td><a href="#AddUniverseSelection(IUniverseSelectionModel-universeSelection)1">AddUniverseSelection()</a></td>
 <td>Adds a new universe selection model</td>
 </tr>
 <tr>
 <td><a href="#AddUniverseSelection(IUniverseSelectionModel-universeSelection)1">AddUniverseSelection()</a></td>
-<td>Adds a new universe selection model</td>
-</tr>
-<tr>
-<td><a href="#AddUniverseSelection(PyObject-universeSelection)2">AddUniverseSelection()</a></td>
-<td>Adds a new universe selection model</td>
-</tr>
-<tr>
-<td><a href="#AddUniverseSelection(PyObject-universeSelection)3">AddUniverseSelection()</a></td>
 <td>Adds a new universe selection model</td>
 </tr>
 <tr>
@@ -447,10 +241,6 @@
 <td>Creates a new AroonOscillator indicator which will compute the AroonUp and AroonDown (as well as the delta)</td>
 </tr>
 <tr>
-<td><a href="#AROON(Symbol-symbol,-Int32-period,-Resolution-resolution,-IBaseDataBar-selector)2">AROON()</a></td>
-<td>Creates a new AroonOscillator indicator which will compute the AroonUp and AroonDown (as well as the delta)</td>
-</tr>
-<tr>
 <td><a href="#ASI(Symbol-symbol,-Decimal-limitMove,-Resolution-resolution)1">ASI()</a></td>
 <td>Creates a Wilder Accumulative Swing Index (ASI) indicator for the symbol. The indicator will be automatically updated on the given resolution.</td>
 </tr>
@@ -475,27 +265,7 @@
 <td>Buy Option Strategy (Alias of Order)</td>
 </tr>
 <tr>
-<td><a href="#Buy(Symbol-symbol,-Int32-quantity)2">Buy()</a></td>
-<td>Buy Stock (Alias of Order)</td>
-</tr>
-<tr>
-<td><a href="#Buy(Symbol-symbol,-Double-quantity)3">Buy()</a></td>
-<td>Buy Stock (Alias of Order)</td>
-</tr>
-<tr>
-<td><a href="#Buy(Symbol-symbol,-Decimal-quantity)4">Buy()</a></td>
-<td>Buy Stock (Alias of Order)</td>
-</tr>
-<tr>
-<td><a href="#Buy(Symbol-symbol,-Single-quantity)5">Buy()</a></td>
-<td>Buy Stock (Alias of Order)</td>
-</tr>
-<tr>
 <td><a href="#CalculateOrderQuantity(Symbol-symbol,-Double-target)1">CalculateOrderQuantity()</a></td>
-<td>Calculate the order quantity to achieve target-percent holdings.</td>
-</tr>
-<tr>
-<td><a href="#CalculateOrderQuantity(Symbol-symbol,-Decimal-target)2">CalculateOrderQuantity()</a></td>
 <td>Calculate the order quantity to achieve target-percent holdings.</td>
 </tr>
 <tr>
@@ -527,62 +297,6 @@
 <td>Registers the <code></code> to receive consolidated data for the specified symbol</td>
 </tr>
 <tr>
-<td><a href="#Consolidate(Symbol-symbol,-Resolution-period,-TickType-TickType,-PyObject-handler)2">Consolidate()</a></td>
-<td>Registers the <code></code> to receive consolidated data for the specified symbol</td>
-</tr>
-<tr>
-<td><a href="#Consolidate(Symbol-symbol,-TimeSpan-period,-PyObject-handler)3">Consolidate()</a></td>
-<td>Registers the <code></code> to receive consolidated data for the specified symbol</td>
-</tr>
-<tr>
-<td><a href="#Consolidate(Symbol-symbol,-TimeSpan-period,-TickType-tickType,-PyObject-handler)4">Consolidate()</a></td>
-<td>Registers the <code></code> to receive consolidated data for the specified symbol</td>
-</tr>
-<tr>
-<td><a href="#Consolidate(Symbol-symbol,-CalendarInfo-CalendarInfo,-PyObject-handler)5">Consolidate()</a></td>
-<td>Registers the <code></code> to receive consolidated data for the specified symbol</td>
-</tr>
-<tr>
-<td><a href="#Consolidate(Symbol-symbol,-Resolution-period,-TradeBar-TradeBar)6">Consolidate()</a></td>
-<td></td>
-</tr>
-<tr>
-<td><a href="#Consolidate(Symbol-symbol,-TimeSpan-period,-TradeBar-handler)7">Consolidate()</a></td>
-<td></td>
-</tr>
-<tr>
-<td><a href="#Consolidate(Symbol-symbol,-Resolution-period,-QuoteBar-QuoteBar)8">Consolidate()</a></td>
-<td></td>
-</tr>
-<tr>
-<td><a href="#Consolidate(Symbol-symbol,-TimeSpan-period,-QuoteBar-handler)9">Consolidate()</a></td>
-<td></td>
-</tr>
-<tr>
-<td><a href="#Consolidate(Symbol-symbol,-TimeSpan-period,-T-T)10">Consolidate()</a></td>
-<td></td>
-</tr>
-<tr>
-<td><a href="#Consolidate(Symbol-symbol,-Resolution-period,-TickType-tickType,-Action`1[T-handler)11">Consolidate()</a></td>
-<td></td>
-</tr>
-<tr>
-<td><a href="#Consolidate(Symbol-symbol,-TimeSpan-period,-TickType-tickType,-Action`1[T-handler)12">Consolidate()</a></td>
-<td></td>
-</tr>
-<tr>
-<td><a href="#Consolidate(Symbol-symbol,-CalendarInfo-calendar,-QuoteBar-handler)13">Consolidate()</a></td>
-<td></td>
-</tr>
-<tr>
-<td><a href="#Consolidate(Symbol-symbol,-CalendarInfo-calendar,-TradeBar-handler)14">Consolidate()</a></td>
-<td></td>
-</tr>
-<tr>
-<td><a href="#Consolidate(Symbol-symbol,-CalendarInfo-calendar,-Action`1[T-handler)15">Consolidate()</a></td>
-<td></td>
-</tr>
-<tr>
 <td><a href="#CreateConsolidator(TimeSpan-period,-Type-consolidatorInputType,-TickType-tickType)1">CreateConsolidator()</a></td>
 <td>Creates a new consolidator for the specified period, generating the requested output type.</td>
 </tr>
@@ -599,27 +313,7 @@
 <td>Creates a new Donchian Channel indicator which will compute the Upper Band and Lower Band. The indicator will be automatically updated on the given resolution.</td>
 </tr>
 <tr>
-<td><a href="#DCH(Symbol-symbol,-Int32-period,-Resolution-resolution,-IBaseDataBar-selector)2">DCH()</a></td>
-<td>Overload shorthand to create a new symmetric Donchian Channel indicator which has the upper and lower channels set to the same period length.</td>
-</tr>
-<tr>
 <td><a href="#Debug(PyObject-message)1">Debug()</a></td>
-<td>Send a debug message to the web console:</td>
-</tr>
-<tr>
-<td><a href="#Debug(String-message)2">Debug()</a></td>
-<td>Send a debug message to the web console:</td>
-</tr>
-<tr>
-<td><a href="#Debug(Int32-message)3">Debug()</a></td>
-<td>Send a debug message to the web console:</td>
-</tr>
-<tr>
-<td><a href="#Debug(Double-message)4">Debug()</a></td>
-<td>Send a debug message to the web console:</td>
-</tr>
-<tr>
-<td><a href="#Debug(Decimal-message)5">Debug()</a></td>
 <td>Send a debug message to the web console:</td>
 </tr>
 <tr>
@@ -639,38 +333,6 @@
 <td>Downloads the requested resource as a String</code>. The resource to download is specified as a String</code> containing the URI.</td>
 </tr>
 <tr>
-<td><a href="#Download(String-address,-PyObject-headers,-String-userName,-String-password)2">Download()</a></td>
-<td>Downloads the requested resource as a String</code>. The resource to download is specified as a String</code> containing the URI.</td>
-</tr>
-<tr>
-<td><a href="#Download(String-address,-PyObject-headers,-String-userName,-String-password)3">Download()</a></td>
-<td>Downloads the requested resource as a String</code>. The resource to download is specified as a String</code> containing the URI.</td>
-</tr>
-<tr>
-<td><a href="#Download(String-address)4">Download()</a></td>
-<td>Downloads the requested resource as a String</code>. The resource to download is specified as a String</code> containing the URI.</td>
-</tr>
-<tr>
-<td><a href="#Download(String-address)5">Download()</a></td>
-<td>Downloads the requested resource as a String</code>. The resource to download is specified as a String</code> containing the URI.</td>
-</tr>
-<tr>
-<td><a href="#Download(String-address,-String-KeyValuePair`2)6">Download()</a></td>
-<td></td>
-</tr>
-<tr>
-<td><a href="#Download(String-address,-String-KeyValuePair`2)7">Download()</a></td>
-<td></td>
-</tr>
-<tr>
-<td><a href="#Download(String-address,-String]-headers,-String-userName,-String-password)8">Download()</a></td>
-<td></td>
-</tr>
-<tr>
-<td><a href="#Download(String-address,-String]-headers,-String-userName,-String-password)9">Download()</a></td>
-<td></td>
-</tr>
-<tr>
 <td><a href="#DPO(Symbol-symbol,-Int32-period,-Resolution-resolution,-Decimal-selector)1">DPO()</a></td>
 <td>Creates a new DetrendedPriceOscillator"  indicator.</td>
 </tr>
@@ -679,15 +341,7 @@
 <td>Creates an ExponentialMovingAverage indicator for the symbol. The indicator will be automatically updated on the given resolution.</td>
 </tr>
 <tr>
-<td><a href="#EMA(Symbol-symbol,-Int32-period,-Decimal-smoothingFactor,-Resolution-resolution,-Decimal-selector)2">EMA()</a></td>
-<td>Creates an ExponentialMovingAverage indicator for the symbol. The indicator will be automatically updated on the given resolution.</td>
-</tr>
-<tr>
 <td><a href="#EmitInsights(Insight[]-insights)1">EmitInsights()</a></td>
-<td>Manually emit insights from an algorithm. This is typically invoked before calls to submit orders in algorithms written against QCAlgorithm that have been ported into the algorithm framework.</td>
-</tr>
-<tr>
-<td><a href="#EmitInsights(Insight-insight)2">EmitInsights()</a></td>
 <td>Manually emit insights from an algorithm. This is typically invoked before calls to submit orders in algorithms written against QCAlgorithm that have been ported into the algorithm framework.</td>
 </tr>
 <tr>
@@ -699,51 +353,11 @@
 <td>Send a string error message to the Console.</td>
 </tr>
 <tr>
-<td><a href="#Error(String-message)2">Error()</a></td>
-<td>Send a string error message to the Console.</td>
-</tr>
-<tr>
-<td><a href="#Error(Int32-message)3">Error()</a></td>
-<td>Send a int error message to the Console.</td>
-</tr>
-<tr>
-<td><a href="#Error(Double-message)4">Error()</a></td>
-<td>Send a double error message to the Console.</td>
-</tr>
-<tr>
-<td><a href="#Error(Decimal-message)5">Error()</a></td>
-<td>Send a decimal error message to the Console.</td>
-</tr>
-<tr>
-<td><a href="#Error(Exception-error)6">Error()</a></td>
-<td>Send a string error message to the Console.</td>
-</tr>
-<tr>
 <td><a href="#ExerciseOption(Symbol-optionSymbol,-Int32-quantity,-Boolean-asynchronous,-String-tag,-IOrderProperties-orderProperties)1">ExerciseOption()</a></td>
 <td>Send an exercise order to the transaction handler</td>
 </tr>
 <tr>
 <td><a href="#FilteredIdentity(Symbol-symbol,-PyObject-selector,-PyObject-filter,-String-fieldName)1">FilteredIdentity()</a></td>
-<td>Creates a new FilteredIdentity indicator for the symbol The indicator will be automatically updated on the symbol's subscription resolution</td>
-</tr>
-<tr>
-<td><a href="#FilteredIdentity(Symbol-symbol,-Resolution-resolution,-PyObject-selector,-PyObject-filter,-String-fieldName)2">FilteredIdentity()</a></td>
-<td>Creates a new FilteredIdentity indicator for the symbol The indicator will be automatically updated on the symbol's subscription resolution</td>
-</tr>
-<tr>
-<td><a href="#FilteredIdentity(Symbol-symbol,-TimeSpan-resolution,-PyObject-selector,-PyObject-filter,-String-fieldName)3">FilteredIdentity()</a></td>
-<td>Creates a new FilteredIdentity indicator for the symbol The indicator will be automatically updated on the symbol's subscription resolution</td>
-</tr>
-<tr>
-<td><a href="#FilteredIdentity(Symbol-symbol,-IBaseDataBar-selector,-Boolean-Boolean,-String-fieldName)4">FilteredIdentity()</a></td>
-<td>Creates a new FilteredIdentity indicator for the symbol The indicator will be automatically updated on the symbol's subscription resolution</td>
-</tr>
-<tr>
-<td><a href="#FilteredIdentity(Symbol-symbol,-Resolution-resolution,-IBaseDataBar-selector,-Boolean-filter,-String-fieldName)5">FilteredIdentity()</a></td>
-<td>Creates a new FilteredIdentity indicator for the symbol The indicator will be automatically updated on the symbol's subscription resolution</td>
-</tr>
-<tr>
-<td><a href="#FilteredIdentity(Symbol-symbol,-TimeSpan-resolution,-IBaseDataBar-selector,-Boolean-filter,-String-fieldName)6">FilteredIdentity()</a></td>
 <td>Creates a new FilteredIdentity indicator for the symbol The indicator will be automatically updated on the symbol's subscription resolution</td>
 </tr>
 <tr>
@@ -767,14 +381,6 @@
 <td>Yields data to warmup a security for all it's subscribed data types</td>
 </tr>
 <tr>
-<td><a href="#GetLastKnownPrices(Symbol-symbol)2">GetLastKnownPrices()</a></td>
-<td>Yields data to warmup a security for all it's subscribed data types</td>
-</tr>
-<tr>
-<td><a href="#GetLastKnownPrices(Symbol-symbol)3">GetLastKnownPrices()</a></td>
-<td>Yields data to warmup a security for all it's subscribed data types</td>
-</tr>
-<tr>
 <td><a href="#GetParameters()1">GetParameters()</a></td>
 <td>Gets a read-only dictionary with all current parameters</td>
 </tr>
@@ -787,106 +393,6 @@
 <td>Gets the historical data for the specified symbol. The exact number of bars will be returned. The symbol must exist in the Securities collection.</td>
 </tr>
 <tr>
-<td><a href="#History(PyObject-tickers,-TimeSpan-span,-Resolution-resolution)2">History()</a></td>
-<td>Gets the historical data for the specified symbols over the requested span. The symbols must exist in the Securities collection.</td>
-</tr>
-<tr>
-<td><a href="#History(PyObject-tickers,-DateTime-start,-DateTime-end,-Resolution-resolution)3">History()</a></td>
-<td>Gets the historical data for the specified symbol between the specified dates. The symbol must exist in the Securities collection.</td>
-</tr>
-<tr>
-<td><a href="#History(PyObject-type,-PyObject-tickers,-DateTime-start,-DateTime-end,-Resolution-resolution)4">History()</a></td>
-<td>Gets the historical data for the specified symbols between the specified dates. The symbols must exist in the Securities collection.</td>
-</tr>
-<tr>
-<td><a href="#History(PyObject-type,-PyObject-tickers,-Int32-periods,-Resolution-resolution)5">History()</a></td>
-<td>Gets the historical data for the specified symbols. The exact number of bars will be returned for each symbol. This may result in some data start earlier/later than others due to when various exchanges are open. The symbols must exist in the Securities collection.</td>
-</tr>
-<tr>
-<td><a href="#History(PyObject-type,-PyObject-tickers,-TimeSpan-span,-Resolution-resolution)6">History()</a></td>
-<td>Gets the historical data for the specified symbols over the requested span. The symbols must exist in the Securities collection.</td>
-</tr>
-<tr>
-<td><a href="#History(PyObject-type,-Symbol-symbol,-DateTime-start,-DateTime-end,-Resolution-resolution)7">History()</a></td>
-<td>Gets the historical data for the specified symbols between the specified dates. The symbols must exist in the Securities collection.</td>
-</tr>
-<tr>
-<td><a href="#History(PyObject-type,-Symbol-symbol,-Int32-periods,-Resolution-resolution)8">History()</a></td>
-<td>Gets the historical data for the specified symbols. The exact number of bars will be returned for each symbol. This may result in some data start earlier/later than others due to when various exchanges are open. The symbols must exist in the Securities collection.</td>
-</tr>
-<tr>
-<td><a href="#History(PyObject-type,-Symbol-symbol,-TimeSpan-span,-Resolution-resolution)9">History()</a></td>
-<td>Gets the historical data for the specified symbols over the requested span. The symbols must exist in the Securities collection.</td>
-</tr>
-<tr>
-<td><a href="#History(TimeSpan-span,-Resolution-resolution)10">History()</a></td>
-<td>Get the history for all configured securities over the requested span. This will use the resolution and other subscription settings for each security. The symbols must exist in the Securities collection.</td>
-</tr>
-<tr>
-<td><a href="#History(Int32-periods,-Resolution-resolution)11">History()</a></td>
-<td>Get the history for all configured securities over the requested span. This will use the resolution and other subscription settings for each security. The symbols must exist in the Securities collection.</td>
-</tr>
-<tr>
-<td><a href="#History(TimeSpan-span,-Resolution-resolution)12">History()</a></td>
-<td>Get the history for all configured securities over the requested span. This will use the resolution and other subscription settings for each security. The symbols must exist in the Securities collection.</td>
-</tr>
-<tr>
-<td><a href="#History(Symbol-symbols,-TimeSpan-span,-Resolution-resolution)13">History()</a></td>
-<td></td>
-</tr>
-<tr>
-<td><a href="#History(Symbol-symbols,-Int32-periods,-Resolution-resolution)14">History()</a></td>
-<td></td>
-</tr>
-<tr>
-<td><a href="#History(Symbol-symbols,-DateTime-start,-DateTime-end,-Resolution-resolution)15">History()</a></td>
-<td></td>
-</tr>
-<tr>
-<td><a href="#History(Symbol-symbol,-TimeSpan-span,-Resolution-resolution)16">History()</a></td>
-<td>Gets the historical data for the specified symbol over the request span. The symbol must exist in the Securities collection.</td>
-</tr>
-<tr>
-<td><a href="#History(Symbol-symbol,-Int32-periods,-Resolution-resolution)17">History()</a></td>
-<td>Gets the historical data for the specified symbol. The exact number of bars will be returned. The symbol must exist in the Securities collection.</td>
-</tr>
-<tr>
-<td><a href="#History(Symbol-symbol,-Int32-periods,-Resolution-resolution)18">History()</a></td>
-<td>Gets the historical data for the specified symbol. The exact number of bars will be returned. The symbol must exist in the Securities collection.</td>
-</tr>
-<tr>
-<td><a href="#History(Symbol-symbol,-DateTime-start,-DateTime-end,-Resolution-resolution)19">History()</a></td>
-<td>Gets the historical data for the specified symbol over the request span. The symbol must exist in the Securities collection.</td>
-</tr>
-<tr>
-<td><a href="#History(Symbol-symbol,-TimeSpan-span,-Resolution-resolution)20">History()</a></td>
-<td>Gets the historical data for the specified symbol over the request span. The symbol must exist in the Securities collection.</td>
-</tr>
-<tr>
-<td><a href="#History(Symbol-symbol,-DateTime-start,-DateTime-end,-Resolution-resolution)21">History()</a></td>
-<td>Gets the historical data for the specified symbol over the request span. The symbol must exist in the Securities collection.</td>
-</tr>
-<tr>
-<td><a href="#History(Symbol-symbols,-TimeSpan-span,-Resolution-resolution)22">History()</a></td>
-<td></td>
-</tr>
-<tr>
-<td><a href="#History(Symbol-symbols,-Int32-periods,-Resolution-resolution)23">History()</a></td>
-<td></td>
-</tr>
-<tr>
-<td><a href="#History(Symbol-symbols,-DateTime-start,-DateTime-end,-Resolution-resolution,-Boolean-Boolean,-Boolean-extendedMarket)24">History()</a></td>
-<td></td>
-</tr>
-<tr>
-<td><a href="#History(HistoryRequest-request)25">History()</a></td>
-<td>Executes the specified history request</td>
-</tr>
-<tr>
-<td><a href="#History(HistoryRequest-HistoryRequest)26">History()</a></td>
-<td></td>
-</tr>
-<tr>
 <td><a href="#HMA(Symbol-symbol,-Int32-period,-Resolution-resolution,-Decimal-selector)1">HMA()</a></td>
 <td>Creates a new HullMovingAverage indicator. The Hull moving average is a series of nested weighted moving averages, is fast and smooth.</td>
 </tr>
@@ -896,14 +402,6 @@
 </tr>
 <tr>
 <td><a href="#Identity(Symbol-symbol,-Decimal-selector,-String-fieldName)1">Identity()</a></td>
-<td>Creates a new Identity indicator for the symbol The indicator will be automatically updated on the symbol's subscription resolution</td>
-</tr>
-<tr>
-<td><a href="#Identity(Symbol-symbol,-Resolution-resolution,-Decimal-selector,-String-fieldName)2">Identity()</a></td>
-<td>Creates a new Identity indicator for the symbol The indicator will be automatically updated on the symbol's subscription resolution</td>
-</tr>
-<tr>
-<td><a href="#Identity(Symbol-symbol,-TimeSpan-resolution,-Decimal-selector,-String-fieldName)3">Identity()</a></td>
 <td>Creates a new Identity indicator for the symbol The indicator will be automatically updated on the symbol's subscription resolution</td>
 </tr>
 <tr>
@@ -935,10 +433,6 @@
 <td>Creates a new KaufmanAdaptiveMovingAverage indicator.</td>
 </tr>
 <tr>
-<td><a href="#KAMA(Symbol-symbol,-Int32-period,-Int32-fastEmaPeriod,-Int32-slowEmaPeriod,-Resolution-resolution,-Decimal-selector)2">KAMA()</a></td>
-<td>Creates a new KaufmanAdaptiveMovingAverage indicator.</td>
-</tr>
-<tr>
 <td><a href="#KCH(Symbol-symbol,-Int32-period,-Decimal-k,-MovingAverageType-movingAverageType,-Resolution-resolution,-IBaseDataBar-selector)1">KCH()</a></td>
 <td>Creates a new Keltner Channels indicator. The indicator will be automatically updated on the given resolution.</td>
 </tr>
@@ -951,23 +445,7 @@
 <td>Send a limit if touched order to the transaction handler:</td>
 </tr>
 <tr>
-<td><a href="#LimitIfTouchedOrder(Symbol-symbol,-Double-quantity,-Decimal-triggerPrice,-Decimal-limitPrice,-String-tag,-IOrderProperties-orderProperties)2">LimitIfTouchedOrder()</a></td>
-<td>Send a limit if touched order to the transaction handler:</td>
-</tr>
-<tr>
-<td><a href="#LimitIfTouchedOrder(Symbol-symbol,-Decimal-quantity,-Decimal-triggerPrice,-Decimal-limitPrice,-String-tag,-IOrderProperties-orderProperties)3">LimitIfTouchedOrder()</a></td>
-<td>Send a limit if touched order to the transaction handler:</td>
-</tr>
-<tr>
 <td><a href="#LimitOrder(Symbol-symbol,-Int32-quantity,-Decimal-limitPrice,-String-tag,-IOrderProperties-orderProperties)1">LimitOrder()</a></td>
-<td>Send a limit order to the transaction handler:</td>
-</tr>
-<tr>
-<td><a href="#LimitOrder(Symbol-symbol,-Double-quantity,-Decimal-limitPrice,-String-tag,-IOrderProperties-orderProperties)2">LimitOrder()</a></td>
-<td>Send a limit order to the transaction handler:</td>
-</tr>
-<tr>
-<td><a href="#LimitOrder(Symbol-symbol,-Decimal-quantity,-Decimal-limitPrice,-String-tag,-IOrderProperties-orderProperties)3">LimitOrder()</a></td>
 <td>Send a limit order to the transaction handler:</td>
 </tr>
 <tr>
@@ -976,22 +454,6 @@
 </tr>
 <tr>
 <td><a href="#Log(PyObject-message)1">Log()</a></td>
-<td>Added another method for logging if user guessed.</td>
-</tr>
-<tr>
-<td><a href="#Log(String-message)2">Log()</a></td>
-<td>Added another method for logging if user guessed.</td>
-</tr>
-<tr>
-<td><a href="#Log(Int32-message)3">Log()</a></td>
-<td>Added another method for logging if user guessed.</td>
-</tr>
-<tr>
-<td><a href="#Log(Double-message)4">Log()</a></td>
-<td>Added another method for logging if user guessed.</td>
-</tr>
-<tr>
-<td><a href="#Log(Decimal-message)5">Log()</a></td>
 <td>Added another method for logging if user guessed.</td>
 </tr>
 <tr>
@@ -1019,39 +481,11 @@
 <td>Market on close order implementation: Send a market order when the exchange closes</td>
 </tr>
 <tr>
-<td><a href="#MarketOnCloseOrder(Symbol-symbol,-Double-quantity,-String-tag,-IOrderProperties-orderProperties)2">MarketOnCloseOrder()</a></td>
-<td>Market on close order implementation: Send a market order when the exchange closes</td>
-</tr>
-<tr>
-<td><a href="#MarketOnCloseOrder(Symbol-symbol,-Decimal-quantity,-String-tag,-IOrderProperties-orderProperties)3">MarketOnCloseOrder()</a></td>
-<td>Market on close order implementation: Send a market order when the exchange closes</td>
-</tr>
-<tr>
 <td><a href="#MarketOnOpenOrder(Symbol-symbol,-Double-quantity,-String-tag,-IOrderProperties-orderProperties)1">MarketOnOpenOrder()</a></td>
 <td>Market on open order implementation: Send a market order when the exchange opens</td>
 </tr>
 <tr>
-<td><a href="#MarketOnOpenOrder(Symbol-symbol,-Int32-quantity,-String-tag,-IOrderProperties-orderProperties)2">MarketOnOpenOrder()</a></td>
-<td>Market on open order implementation: Send a market order when the exchange opens</td>
-</tr>
-<tr>
-<td><a href="#MarketOnOpenOrder(Symbol-symbol,-Decimal-quantity,-String-tag,-IOrderProperties-orderProperties)3">MarketOnOpenOrder()</a></td>
-<td>Market on open order implementation: Send a market order when the exchange opens</td>
-</tr>
-<tr>
 <td><a href="#MarketOrder(Symbol-symbol,-Int32-quantity,-Boolean-asynchronous,-String-tag,-IOrderProperties-orderProperties)1">MarketOrder()</a></td>
-<td>Market order implementation: Send a market order and wait for it to be filled.</td>
-</tr>
-<tr>
-<td><a href="#MarketOrder(Symbol-symbol,-Double-quantity,-Boolean-asynchronous,-String-tag,-IOrderProperties-orderProperties)2">MarketOrder()</a></td>
-<td>Market order implementation: Send a market order and wait for it to be filled.</td>
-</tr>
-<tr>
-<td><a href="#MarketOrder(Symbol-symbol,-Decimal-quantity,-Boolean-asynchronous,-String-tag,-IOrderProperties-orderProperties)3">MarketOrder()</a></td>
-<td>Market order implementation: Send a market order and wait for it to be filled.</td>
-</tr>
-<tr>
-<td><a href="#MarketOrder(Security-security,-Decimal-quantity,-Boolean-asynchronous,-String-tag,-IOrderProperties-orderProperties)4">MarketOrder()</a></td>
 <td>Market order implementation: Send a market order and wait for it to be filled.</td>
 </tr>
 <tr>
@@ -1103,116 +537,16 @@
 <td>Issue an order/trade for buying/selling an option strategy</td>
 </tr>
 <tr>
-<td><a href="#Order(Symbol-symbol,-Int32-quantity,-OrderType-type,-Boolean-asynchronous,-String-tag,-IOrderProperties-orderProperties)2">Order()</a></td>
-<td>Obsolete implementation of Order method accepting a OrderType. This was deprecated since it was impossible to generate other orders via this method. Any calls to this method will always default to a Market Order.</td>
-</tr>
-<tr>
-<td><a href="#Order(Symbol-symbol,-Decimal-quantity,-OrderType-type)3">Order()</a></td>
-<td>Obsolete method for placing orders.</td>
-</tr>
-<tr>
-<td><a href="#Order(Symbol-symbol,-Int32-quantity,-OrderType-type)4">Order()</a></td>
-<td>Obsolete method for placing orders.</td>
-</tr>
-<tr>
-<td><a href="#Order(Symbol-symbol,-Double-quantity)5">Order()</a></td>
-<td>Issue an order/trade for asset: Alias wrapper for Order(string, int);</td>
-</tr>
-<tr>
-<td><a href="#Order(Symbol-symbol,-Int32-quantity)6">Order()</a></td>
-<td>Issue an order/trade for asset</td>
-</tr>
-<tr>
-<td><a href="#Order(Symbol-symbol,-Decimal-quantity)7">Order()</a></td>
-<td>Issue an order/trade for asset</td>
-</tr>
-<tr>
-<td><a href="#Order(Symbol-symbol,-Decimal-quantity,-Boolean-asynchronous,-String-tag,-IOrderProperties-orderProperties)8">Order()</a></td>
-<td>Wrapper for market order method: submit a new order for quantity of symbol using type order.</td>
-</tr>
-<tr>
 <td><a href="#Plot(String-series,-PyObject-pyObject)1">Plot()</a></td>
 <td>Plot a chart using string series name, with value.</td>
 </tr>
 <tr>
-<td><a href="#Plot(String-chart,-Indicator-first,-Indicator-second,-Indicator-third,-Indicator-fourth)2">Plot()</a></td>
-<td>Plots the value of each indicator on the chart</td>
-</tr>
-<tr>
-<td><a href="#Plot(String-chart,-BarIndicator-first,-BarIndicator-second,-BarIndicator-third,-BarIndicator-fourth)3">Plot()</a></td>
-<td>Plots the value of each indicator on the chart</td>
-</tr>
-<tr>
-<td><a href="#Plot(String-chart,-TradeBarIndicator-first,-TradeBarIndicator-second,-TradeBarIndicator-third,-TradeBarIndicator-fourth)4">Plot()</a></td>
-<td>Plots the value of each indicator on the chart</td>
-</tr>
-<tr>
-<td><a href="#Plot(String-series,-Decimal-value)5">Plot()</a></td>
-<td>Plot a chart using string series name, with value.</td>
-</tr>
-<tr>
-<td><a href="#Plot(String-series,-Double-value)6">Plot()</a></td>
-<td>Plot a chart using string series name, with double value.</td>
-</tr>
-<tr>
-<td><a href="#Plot(String-series,-Int32-value)7">Plot()</a></td>
-<td>Plot a chart using string series name, with int value.</td>
-</tr>
-<tr>
-<td><a href="#Plot(String-series,-Single-value)8">Plot()</a></td>
-<td>Plot a chart using string series name, with float value.</td>
-</tr>
-<tr>
-<td><a href="#Plot(String-chart,-String-series,-Double-value)9">Plot()</a></td>
-<td>Plot a chart to string chart name, using string series name, with double value.</td>
-</tr>
-<tr>
-<td><a href="#Plot(String-chart,-String-series,-Int32-value)10">Plot()</a></td>
-<td>Plot a chart to string chart name, using string series name, with int value</td>
-</tr>
-<tr>
-<td><a href="#Plot(String-chart,-String-series,-Single-value)11">Plot()</a></td>
-<td>Plot a chart to string chart name, using string series name, with float value</td>
-</tr>
-<tr>
-<td><a href="#Plot(String-chart,-String-series,-Decimal-value)12">Plot()</a></td>
-<td>Plot a value to a chart of string-chart name, with string series name, and decimal value. If chart does not exist, create it.</td>
-</tr>
-<tr>
-<td><a href="#Plot(String-chart,-IndicatorBase`1[]-indicators)13">Plot()</a></td>
-<td></td>
-</tr>
-<tr>
 <td><a href="#PlotIndicator(String-chart,-PyObject-first,-PyObject-second,-PyObject-third,-PyObject-fourth)1">PlotIndicator()</a></td>
 <td>Automatically plots each indicator when a new value is available</td>
 </tr>
 <tr>
 <td><a href="#PlotIndicator(String-chart,-PyObject-first,-PyObject-second,-PyObject-third,-PyObject-fourth)1">PlotIndicator()</a></td>
 <td>Automatically plots each indicator when a new value is available</td>
-</tr>
-<tr>
-<td><a href="#PlotIndicator(String-chart,-Boolean-waitForReady,-PyObject-first,-PyObject-second,-PyObject-third,-PyObject-fourth)2">PlotIndicator()</a></td>
-<td>Automatically plots each indicator when a new value is available</td>
-</tr>
-<tr>
-<td><a href="#PlotIndicator(String-chart,-Boolean-waitForReady,-PyObject-first,-PyObject-second,-PyObject-third,-PyObject-fourth)3">PlotIndicator()</a></td>
-<td>Automatically plots each indicator when a new value is available</td>
-</tr>
-<tr>
-<td><a href="#PlotIndicator(String-chart,-IndicatorBase`1[]-indicators)4">PlotIndicator()</a></td>
-<td></td>
-</tr>
-<tr>
-<td><a href="#PlotIndicator(String-chart,-IndicatorBase`1[]-indicators)5">PlotIndicator()</a></td>
-<td></td>
-</tr>
-<tr>
-<td><a href="#PlotIndicator(String-chart,-Boolean-waitForReady,-IndicatorBase`1[]-indicators)6">PlotIndicator()</a></td>
-<td></td>
-</tr>
-<tr>
-<td><a href="#PlotIndicator(String-chart,-Boolean-waitForReady,-IndicatorBase`1[]-indicators)7">PlotIndicator()</a></td>
-<td></td>
 </tr>
 <tr>
 <td><a href="#PPHL(Symbol-symbol,-Int32-lengthHigh,-Int32-lengthLow,-Int32-lastStoredValues,-Resolution-resolution,-IBaseDataBar-selector)1">PPHL()</a></td>
@@ -1231,10 +565,6 @@
 <td>Terminate the algorithm after processing the current event handler.</td>
 </tr>
 <tr>
-<td><a href="#Quit(String-message)2">Quit()</a></td>
-<td>Terminate the algorithm after processing the current event handler.</td>
-</tr>
-<tr>
 <td><a href="#RC(Symbol-symbol,-Int32-period,-Decimal-k,-Resolution-resolution,-Decimal-selector)1">RC()</a></td>
 <td>Creates a new RegressionChannel indicator which will compute the LinearRegression, UpperChannel and LowerChannel lines, the intercept and slope</td>
 </tr>
@@ -1247,100 +577,12 @@
 <td>Plot a chart using string series name, with int value. Alias of Plot();</td>
 </tr>
 <tr>
-<td><a href="#Record(String-series,-Double-value)2">Record()</a></td>
-<td>Plot a chart using string series name, with double value. Alias of Plot();</td>
-</tr>
-<tr>
-<td><a href="#Record(String-series,-Decimal-value)3">Record()</a></td>
-<td>Plot a chart using string series name, with decimal value. Alias of Plot();</td>
-</tr>
-<tr>
 <td><a href="#RegisterIndicator(Symbol-symbol,-PyObject-indicator,-Resolution-resolution,-PyObject-selector)1">RegisterIndicator()</a></td>
 <td>Registers the consolidator to receive automatic updates as well as configures the indicator to receive updates from the consolidator.</td>
 </tr>
 <tr>
 <td><a href="#RegisterIndicator(Symbol-symbol,-PyObject-indicator,-Resolution-resolution,-PyObject-selector)1">RegisterIndicator()</a></td>
 <td>Registers the consolidator to receive automatic updates as well as configures the indicator to receive updates from the consolidator.</td>
-</tr>
-<tr>
-<td><a href="#RegisterIndicator(Symbol-symbol,-PyObject-indicator,-TimeSpan-TimeSpan,-PyObject-selector)2">RegisterIndicator()</a></td>
-<td>Registers the consolidator to receive automatic updates as well as configures the indicator to receive updates from the consolidator.</td>
-</tr>
-<tr>
-<td><a href="#RegisterIndicator(Symbol-symbol,-PyObject-indicator,-TimeSpan-TimeSpan,-PyObject-selector)3">RegisterIndicator()</a></td>
-<td>Registers the consolidator to receive automatic updates as well as configures the indicator to receive updates from the consolidator.</td>
-</tr>
-<tr>
-<td><a href="#RegisterIndicator(Symbol-symbol,-PyObject-indicator,-PyObject-pyObject,-PyObject-selector)4">RegisterIndicator()</a></td>
-<td>Registers the consolidator to receive automatic updates as well as configures the indicator to receive updates from the consolidator.</td>
-</tr>
-<tr>
-<td><a href="#RegisterIndicator(Symbol-symbol,-PyObject-indicator,-PyObject-pyObject,-PyObject-selector)5">RegisterIndicator()</a></td>
-<td>Registers the consolidator to receive automatic updates as well as configures the indicator to receive updates from the consolidator.</td>
-</tr>
-<tr>
-<td><a href="#RegisterIndicator(Symbol-symbol,-PyObject-indicator,-IDataConsolidator-consolidator,-PyObject-selector)6">RegisterIndicator()</a></td>
-<td>Registers the consolidator to receive automatic updates as well as configures the indicator to receive updates from the consolidator.</td>
-</tr>
-<tr>
-<td><a href="#RegisterIndicator(Symbol-symbol,-PyObject-indicator,-IDataConsolidator-consolidator,-PyObject-selector)7">RegisterIndicator()</a></td>
-<td>Registers the consolidator to receive automatic updates as well as configures the indicator to receive updates from the consolidator.</td>
-</tr>
-<tr>
-<td><a href="#RegisterIndicator(Symbol-symbol,-IndicatorDataPoint-IndicatorDataPoint,-Resolution-resolution,-Decimal-selector)8">RegisterIndicator()</a></td>
-<td></td>
-</tr>
-<tr>
-<td><a href="#RegisterIndicator(Symbol-symbol,-IndicatorDataPoint-IndicatorDataPoint,-Resolution-resolution,-Decimal-selector)9">RegisterIndicator()</a></td>
-<td></td>
-</tr>
-<tr>
-<td><a href="#RegisterIndicator(Symbol-symbol,-IndicatorDataPoint-indicator,-TimeSpan-resolution,-Decimal-selector)10">RegisterIndicator()</a></td>
-<td></td>
-</tr>
-<tr>
-<td><a href="#RegisterIndicator(Symbol-symbol,-IndicatorDataPoint-indicator,-TimeSpan-resolution,-Decimal-selector)11">RegisterIndicator()</a></td>
-<td></td>
-</tr>
-<tr>
-<td><a href="#RegisterIndicator(Symbol-symbol,-IndicatorDataPoint-indicator,-IDataConsolidator-consolidator,-Decimal-selector)12">RegisterIndicator()</a></td>
-<td></td>
-</tr>
-<tr>
-<td><a href="#RegisterIndicator(Symbol-symbol,-IndicatorDataPoint-indicator,-IDataConsolidator-consolidator,-Decimal-selector)13">RegisterIndicator()</a></td>
-<td></td>
-</tr>
-<tr>
-<td><a href="#RegisterIndicator(Symbol-symbol,-T-T,-Resolution-resolution)14">RegisterIndicator()</a></td>
-<td></td>
-</tr>
-<tr>
-<td><a href="#RegisterIndicator(Symbol-symbol,-T-T,-Resolution-resolution)15">RegisterIndicator()</a></td>
-<td></td>
-</tr>
-<tr>
-<td><a href="#RegisterIndicator(Symbol-symbol,-IndicatorBase`1[T-indicator,-Resolution-resolution,-T-T)16">RegisterIndicator()</a></td>
-<td></td>
-</tr>
-<tr>
-<td><a href="#RegisterIndicator(Symbol-symbol,-IndicatorBase`1[T-indicator,-Resolution-resolution,-T-T)17">RegisterIndicator()</a></td>
-<td></td>
-</tr>
-<tr>
-<td><a href="#RegisterIndicator(Symbol-symbol,-IndicatorBase`1[T-indicator,-TimeSpan-resolution,-IBaseData,T-selector)18">RegisterIndicator()</a></td>
-<td></td>
-</tr>
-<tr>
-<td><a href="#RegisterIndicator(Symbol-symbol,-IndicatorBase`1[T-indicator,-TimeSpan-resolution,-IBaseData,T-selector)19">RegisterIndicator()</a></td>
-<td></td>
-</tr>
-<tr>
-<td><a href="#RegisterIndicator(Symbol-symbol,-IndicatorBase`1[T-indicator,-IDataConsolidator-consolidator,-IBaseData,T-selector)20">RegisterIndicator()</a></td>
-<td></td>
-</tr>
-<tr>
-<td><a href="#RegisterIndicator(Symbol-symbol,-IndicatorBase`1[T-indicator,-IDataConsolidator-consolidator,-IBaseData,T-selector)21">RegisterIndicator()</a></td>
-<td></td>
 </tr>
 <tr>
 <td><a href="#RemoveOptionContract(Symbol-symbol)1">RemoveOptionContract()</a></td>
@@ -1356,14 +598,6 @@
 </tr>
 <tr>
 <td><a href="#ResolveConsolidator(Symbol-symbol,-Resolution-resolution,-Type-dataType)1">ResolveConsolidator()</a></td>
-<td>Gets the default consolidator for the specified symbol and resolution</td>
-</tr>
-<tr>
-<td><a href="#ResolveConsolidator(Symbol-symbol,-TimeSpan-timeSpan,-Type-dataType)2">ResolveConsolidator()</a></td>
-<td>Gets the default consolidator for the specified symbol and resolution</td>
-</tr>
-<tr>
-<td><a href="#ResolveConsolidator(Symbol-symbol,-TimeSpan-timeSpan,-Type-dataType)3">ResolveConsolidator()</a></td>
 <td>Gets the default consolidator for the specified symbol and resolution</td>
 </tr>
 <tr>
@@ -1387,7 +621,7 @@
 <td>Creates a new RelativeVigorIndex indicator.</td>
 </tr>
 <tr>
-<td><a href="#SEDOL(String-sedol,-DateTime-tradingDate)1">SEDOL(String sedol, DateTime tradingDate)</a></td>
+<td><a href="#SEDOL(String-sedol,-DateTime-tradingDate)1">SEDOL()</a></td>
 <td>Converts a SEDOL identifier into a <code>Symbol</code></td>
 </tr>
 <tr>
@@ -1399,31 +633,11 @@
 <td>Sell Option Strategy (alias of Order)</td>
 </tr>
 <tr>
-<td><a href="#Sell(Symbol-symbol,-Int32-quantity)2">Sell()</a></td>
-<td>Sell stock (alias of Order)</td>
-</tr>
-<tr>
-<td><a href="#Sell(Symbol-symbol,-Double-quantity)3">Sell()</a></td>
-<td>Sell stock (alias of Order)</td>
-</tr>
-<tr>
-<td><a href="#Sell(Symbol-symbol,-Single-quantity)4">Sell()</a></td>
-<td>Sell stock (alias of Order)</td>
-</tr>
-<tr>
-<td><a href="#Sell(Symbol-symbol,-Decimal-quantity)5">Sell()</a></td>
-<td>Sell stock (alias of Order)</td>
-</tr>
-<tr>
 <td><a href="#SetAccountCurrency(String-accountCurrency)1">SetAccountCurrency()</a></td>
 <td>Sets the account currency cash symbol this algorithm is to manage.</td>
 </tr>
 <tr>
 <td><a href="#SetAlpha(IAlphaModel-alpha)1">SetAlpha()</a></td>
-<td>Sets the alpha model</td>
-</tr>
-<tr>
-<td><a href="#SetAlpha(PyObject-alpha)2">SetAlpha()</a></td>
 <td>Sets the alpha model</td>
 </tr>
 <tr>
@@ -1443,54 +657,6 @@
 <td>Sets the specified function as the benchmark, this function provides the value of the benchmark at each date/time requested</td>
 </tr>
 <tr>
-<td><a href="#SetBenchmark(SecurityType-securityType,-String-symbol)2">SetBenchmark()</a></td>
-<td>Sets the benchmark used for computing statistics of the algorithm to the specified symbol</td>
-</tr>
-<tr>
-<td><a href="#SetBenchmark(SecurityType-securityType,-String-symbol)3">SetBenchmark()</a></td>
-<td>Sets the benchmark used for computing statistics of the algorithm to the specified symbol</td>
-</tr>
-<tr>
-<td><a href="#SetBenchmark(SecurityType-securityType,-String-symbol)4">SetBenchmark()</a></td>
-<td>Sets the benchmark used for computing statistics of the algorithm to the specified symbol</td>
-</tr>
-<tr>
-<td><a href="#SetBenchmark(String-ticker)5">SetBenchmark()</a></td>
-<td>Sets the benchmark used for computing statistics of the algorithm to the specified ticker, defaulting to SecurityType.Equity if the ticker doesn't exist in the algorithm</td>
-</tr>
-<tr>
-<td><a href="#SetBenchmark(String-ticker)6">SetBenchmark()</a></td>
-<td>Sets the benchmark used for computing statistics of the algorithm to the specified ticker, defaulting to SecurityType.Equity if the ticker doesn't exist in the algorithm</td>
-</tr>
-<tr>
-<td><a href="#SetBenchmark(String-ticker)7">SetBenchmark()</a></td>
-<td>Sets the benchmark used for computing statistics of the algorithm to the specified ticker, defaulting to SecurityType.Equity if the ticker doesn't exist in the algorithm</td>
-</tr>
-<tr>
-<td><a href="#SetBenchmark(Symbol-symbol)8">SetBenchmark()</a></td>
-<td>Sets the benchmark used for computing statistics of the algorithm to the specified symbol</td>
-</tr>
-<tr>
-<td><a href="#SetBenchmark(Symbol-symbol)9">SetBenchmark()</a></td>
-<td>Sets the benchmark used for computing statistics of the algorithm to the specified symbol</td>
-</tr>
-<tr>
-<td><a href="#SetBenchmark(Symbol-symbol)10">SetBenchmark()</a></td>
-<td>Sets the benchmark used for computing statistics of the algorithm to the specified symbol</td>
-</tr>
-<tr>
-<td><a href="#SetBenchmark(Decimal-Decimal)11">SetBenchmark()</a></td>
-<td>Sets the specified function as the benchmark, this function provides the value of the benchmark at each date/time requested</td>
-</tr>
-<tr>
-<td><a href="#SetBenchmark(Decimal-Decimal)12">SetBenchmark()</a></td>
-<td>Sets the specified function as the benchmark, this function provides the value of the benchmark at each date/time requested</td>
-</tr>
-<tr>
-<td><a href="#SetBenchmark(Decimal-Decimal)13">SetBenchmark()</a></td>
-<td>Sets the specified function as the benchmark, this function provides the value of the benchmark at each date/time requested</td>
-</tr>
-<tr>
 <td><a href="#SetBrokerageMessageHandler(IBrokerageMessageHandler-handler)1">SetBrokerageMessageHandler()</a></td>
 <td>Sets the implementation used to handle messages from the brokerage. The default implementation will forward messages to debug or error and when a <code>Error</code> occurs, the algorithm is stopped.</td>
 </tr>
@@ -1503,28 +669,8 @@
 <td>Sets the brokerage to emulate in backtesting or paper trading. This can be used to set a custom brokerage model.</td>
 </tr>
 <tr>
-<td><a href="#SetBrokerageModel(BrokerageName-brokerage,-AccountType-accountType)2">SetBrokerageModel()</a></td>
-<td>Sets the brokerage to emulate in backtesting or paper trading. This can be used for brokerages that have been implemented in LEAN</td>
-</tr>
-<tr>
-<td><a href="#SetBrokerageModel(IBrokerageModel-model)3">SetBrokerageModel()</a></td>
-<td>Sets the brokerage to emulate in backtesting or paper trading. This can be used to set a custom brokerage model.</td>
-</tr>
-<tr>
 <td><a href="#SetCash(Double-startingCash)1">SetCash()</a></td>
 <td>Set initial cash for the strategy while backtesting. During live mode this value is ignored and replaced with the actual cash of your brokerage account.</td>
-</tr>
-<tr>
-<td><a href="#SetCash(Int32-startingCash)2">SetCash()</a></td>
-<td>Set initial cash for the strategy while backtesting. During live mode this value is ignored and replaced with the actual cash of your brokerage account.</td>
-</tr>
-<tr>
-<td><a href="#SetCash(Decimal-startingCash)3">SetCash()</a></td>
-<td>Set initial cash for the strategy while backtesting. During live mode this value is ignored and replaced with the actual cash of your brokerage account.</td>
-</tr>
-<tr>
-<td><a href="#SetCash(String-symbol,-Decimal-startingCash,-Decimal-conversionRate)4">SetCash()</a></td>
-<td>Set the cash for the specified symbol</td>
 </tr>
 <tr>
 <td><a href="#SetCurrentSlice(Slice-slice)1">SetCurrentSlice()</a></td>
@@ -1535,23 +681,11 @@
 <td>Set the end date for a backtest run</td>
 </tr>
 <tr>
-<td><a href="#SetEndDate(DateTime-end)2">SetEndDate()</a></td>
-<td>Set the end date for a backtest.</td>
-</tr>
-<tr>
 <td><a href="#SetExecution(IExecutionModel-execution)1">SetExecution()</a></td>
 <td>Sets the execution model</td>
 </tr>
 <tr>
 <td><a href="#SetExecution(IExecutionModel-execution)1">SetExecution()</a></td>
-<td>Sets the execution model</td>
-</tr>
-<tr>
-<td><a href="#SetExecution(PyObject-execution)2">SetExecution()</a></td>
-<td>Sets the execution model</td>
-</tr>
-<tr>
-<td><a href="#SetExecution(PyObject-execution)3">SetExecution()</a></td>
 <td>Sets the execution model</td>
 </tr>
 <tr>
@@ -1561,22 +695,6 @@
 <tr>
 <td><a href="#SetHoldings(PortfolioTarget-PortfolioTarget,-Boolean-liquidateExistingHoldings,-String-tag,-IOrderProperties-orderProperties)1">SetHoldings()</a></td>
 <td>Sets holdings for a collection of targets. The implementation will order the provided targets executing first those that reduce a position, freeing margin.</td>
-</tr>
-<tr>
-<td><a href="#SetHoldings(Symbol-symbol,-Double-percentage,-Boolean-liquidateExistingHoldings,-String-tag,-IOrderProperties-orderProperties)2">SetHoldings()</a></td>
-<td>Alias for SetHoldings to avoid the M-decimal errors.</td>
-</tr>
-<tr>
-<td><a href="#SetHoldings(Symbol-symbol,-Single-percentage,-Boolean-liquidateExistingHoldings,-String-tag,-IOrderProperties-orderProperties)3">SetHoldings()</a></td>
-<td>Alias for SetHoldings to avoid the M-decimal errors.</td>
-</tr>
-<tr>
-<td><a href="#SetHoldings(Symbol-symbol,-Int32-percentage,-Boolean-liquidateExistingHoldings,-String-tag,-IOrderProperties-orderProperties)4">SetHoldings()</a></td>
-<td>Alias for SetHoldings to avoid the M-decimal errors.</td>
-</tr>
-<tr>
-<td><a href="#SetHoldings(Symbol-symbol,-Decimal-percentage,-Boolean-liquidateExistingHoldings,-String-tag,-IOrderProperties-orderProperties)5">SetHoldings()</a></td>
-<td>Automatically place a market order which will set the holdings to between 100% or -100% of *PORTFOLIO VALUE*. E.g. SetHoldings("AAPL", 0.1); SetHoldings("IBM", -0.2); -&gt; Sets portfolio as long 10% APPL and short 20% IBM E.g. SetHoldings("AAPL", 2); -&gt; Sets apple to 2x leveraged with all our cash. If the market is closed, place a market on open order.</td>
 </tr>
 <tr>
 <td><a href="#SetObjectStore(IObjectStore-objectStore)1">SetObjectStore()</a></td>
@@ -1603,14 +721,6 @@
 <td>Sets the portfolio construction model</td>
 </tr>
 <tr>
-<td><a href="#SetPortfolioConstruction(PyObject-portfolioConstruction)2">SetPortfolioConstruction()</a></td>
-<td>Sets the portfolio construction model</td>
-</tr>
-<tr>
-<td><a href="#SetPortfolioConstruction(PyObject-portfolioConstruction)3">SetPortfolioConstruction()</a></td>
-<td>Sets the portfolio construction model</td>
-</tr>
-<tr>
 <td><a href="#SetQuit(Boolean-quit)1">SetQuit()</a></td>
 <td>Set the Quit flag property of the algorithm.</td>
 </tr>
@@ -1620,14 +730,6 @@
 </tr>
 <tr>
 <td><a href="#SetRiskManagement(IRiskManagementModel-riskManagement)1">SetRiskManagement()</a></td>
-<td>Sets the risk management model</td>
-</tr>
-<tr>
-<td><a href="#SetRiskManagement(PyObject-riskManagement)2">SetRiskManagement()</a></td>
-<td>Sets the risk management model</td>
-</tr>
-<tr>
-<td><a href="#SetRiskManagement(PyObject-riskManagement)3">SetRiskManagement()</a></td>
 <td>Sets the risk management model</td>
 </tr>
 <tr>
@@ -1643,63 +745,19 @@
 <td>Set a runtime statistic for the algorithm. Runtime statistics are shown in the top banner of a live algorithm GUI.</td>
 </tr>
 <tr>
-<td><a href="#SetRuntimeStatistic(String-name,-Decimal-value)2">SetRuntimeStatistic()</a></td>
-<td>Set a runtime statistic for the algorithm. Runtime statistics are shown in the top banner of a live algorithm GUI.</td>
-</tr>
-<tr>
-<td><a href="#SetRuntimeStatistic(String-name,-Int32-value)3">SetRuntimeStatistic()</a></td>
-<td>Set a runtime statistic for the algorithm. Runtime statistics are shown in the top banner of a live algorithm GUI.</td>
-</tr>
-<tr>
-<td><a href="#SetRuntimeStatistic(String-name,-Double-value)4">SetRuntimeStatistic()</a></td>
-<td>Set a runtime statistic for the algorithm. Runtime statistics are shown in the top banner of a live algorithm GUI.</td>
-</tr>
-<tr>
 <td><a href="#SetSecurityInitializer(PyObject-securityInitializer)1">SetSecurityInitializer()</a></td>
 <td>Sets the security initializer function, used to initialize/configure securities after creation</td>
 </tr>
 <tr>
 <td><a href="#SetSecurityInitializer(PyObject-securityInitializer)1">SetSecurityInitializer()</a></td>
 <td>Sets the security initializer function, used to initialize/configure securities after creation</td>
-</tr>
-<tr>
-<td><a href="#SetSecurityInitializer(ISecurityInitializer-securityInitializer)2">SetSecurityInitializer()</a></td>
-<td>Sets the security initializer, used to initialize/configure securities after creation. The initializer will be applied to all universes and manually added securities.</td>
-</tr>
-<tr>
-<td><a href="#SetSecurityInitializer(ISecurityInitializer-securityInitializer)3">SetSecurityInitializer()</a></td>
-<td>Sets the security initializer, used to initialize/configure securities after creation. The initializer will be applied to all universes and manually added securities.</td>
-</tr>
-<tr>
-<td><a href="#SetSecurityInitializer(Boolean-Boolean)4">SetSecurityInitializer()</a></td>
-<td></td>
-</tr>
-<tr>
-<td><a href="#SetSecurityInitializer(Boolean-Boolean)5">SetSecurityInitializer()</a></td>
-<td></td>
-</tr>
-<tr>
-<td><a href="#SetSecurityInitializer(Security-Security)6">SetSecurityInitializer()</a></td>
-<td></td>
-</tr>
-<tr>
-<td><a href="#SetSecurityInitializer(Security-Security)7">SetSecurityInitializer()</a></td>
-<td></td>
 </tr>
 <tr>
 <td><a href="#SetStartDate(DateTime-start)1">SetStartDate()</a></td>
 <td>Set the start date for the backtest</td>
 </tr>
 <tr>
-<td><a href="#SetStartDate(Int32-year,-Int32-month,-Int32-day)2">SetStartDate()</a></td>
-<td>Set the start date for backtest.</td>
-</tr>
-<tr>
 <td><a href="#SetTimeZone(String-timeZone)1">SetTimeZone()</a></td>
-<td>Sets the time zone of the <code>Time</code> property in the algorithm</td>
-</tr>
-<tr>
-<td><a href="#SetTimeZone(DateTimeZone-timeZone)2">SetTimeZone()</a></td>
 <td>Sets the time zone of the <code>Time</code> property in the algorithm</td>
 </tr>
 <tr>
@@ -1715,35 +773,11 @@
 <td>Sets the universe selection model</td>
 </tr>
 <tr>
-<td><a href="#SetUniverseSelection(PyObject-universeSelection)2">SetUniverseSelection()</a></td>
-<td>Sets the universe selection model</td>
-</tr>
-<tr>
-<td><a href="#SetUniverseSelection(PyObject-universeSelection)3">SetUniverseSelection()</a></td>
-<td>Sets the universe selection model</td>
-</tr>
-<tr>
 <td><a href="#SetWarmUp(TimeSpan-timeSpan)1">SetWarmUp()</a></td>
 <td>Sets the warm up period to the specified value</td>
 </tr>
 <tr>
-<td><a href="#SetWarmUp(TimeSpan-timeSpan,-Resolution-resolution)2">SetWarmUp()</a></td>
-<td>Sets the warm up period to the specified value</td>
-</tr>
-<tr>
-<td><a href="#SetWarmUp(Int32-barCount)3">SetWarmUp()</a></td>
-<td>Sets the warm up period by resolving a start date that would send that amount of data into the algorithm. The highest (smallest) resolution in the securities collection will be used. For example, if an algorithm has minute and daily data and 200 bars are requested, that would use 200 minute bars.</td>
-</tr>
-<tr>
-<td><a href="#SetWarmUp(Int32-barCount,-Resolution-resolution)4">SetWarmUp()</a></td>
-<td>Sets the warm up period by resolving a start date that would send that amount of data into the algorithm.</td>
-</tr>
-<tr>
 <td><a href="#Shortable(Symbol-symbol)1">Shortable()</a></td>
-<td>Determines if the Symbol is shortable at the brokerage</td>
-</tr>
-<tr>
-<td><a href="#Shortable(Symbol-symbol,-Decimal-shortQuantity)2">Shortable()</a></td>
 <td>Determines if the Symbol is shortable at the brokerage</td>
 </tr>
 <tr>
@@ -1775,31 +809,11 @@
 <td>Creates a new Stochastic indicator.</td>
 </tr>
 <tr>
-<td><a href="#STO(Symbol-symbol,-Int32-period,-Resolution-resolution)2">STO()</a></td>
-<td>Overload short hand to create a new Stochastic indicator; defaulting to the 3 period for dStoch</td>
-</tr>
-<tr>
 <td><a href="#StopLimitOrder(Symbol-symbol,-Int32-quantity,-Decimal-stopPrice,-Decimal-limitPrice,-String-tag,-IOrderProperties-orderProperties)1">StopLimitOrder()</a></td>
 <td>Send a stop limit order to the transaction handler:</td>
 </tr>
 <tr>
-<td><a href="#StopLimitOrder(Symbol-symbol,-Double-quantity,-Decimal-stopPrice,-Decimal-limitPrice,-String-tag,-IOrderProperties-orderProperties)2">StopLimitOrder()</a></td>
-<td>Send a stop limit order to the transaction handler:</td>
-</tr>
-<tr>
-<td><a href="#StopLimitOrder(Symbol-symbol,-Decimal-quantity,-Decimal-stopPrice,-Decimal-limitPrice,-String-tag,-IOrderProperties-orderProperties)3">StopLimitOrder()</a></td>
-<td>Send a stop limit order to the transaction handler:</td>
-</tr>
-<tr>
 <td><a href="#StopMarketOrder(Symbol-symbol,-Int32-quantity,-Decimal-stopPrice,-String-tag,-IOrderProperties-orderProperties)1">StopMarketOrder()</a></td>
-<td>Create a stop market order and return the newly created order id; or negative if the order is invalid</td>
-</tr>
-<tr>
-<td><a href="#StopMarketOrder(Symbol-symbol,-Double-quantity,-Decimal-stopPrice,-String-tag,-IOrderProperties-orderProperties)2">StopMarketOrder()</a></td>
-<td>Create a stop market order and return the newly created order id; or negative if the order is invalid</td>
-</tr>
-<tr>
-<td><a href="#StopMarketOrder(Symbol-symbol,-Decimal-quantity,-Decimal-stopPrice,-String-tag,-IOrderProperties-orderProperties)3">StopMarketOrder()</a></td>
 <td>Create a stop market order and return the newly created order id; or negative if the order is invalid</td>
 </tr>
 <tr>
@@ -1847,40 +861,12 @@
 <td>Schedules the provided training code to execute immediately</td>
 </tr>
 <tr>
-<td><a href="#Train(IDateRule-dateRule,-ITimeRule-timeRule,-PyObject-trainingCode)2">Train()</a></td>
-<td>Schedules the training code to run using the specified date and time rules</td>
-</tr>
-<tr>
-<td><a href="#Train(IDateRule-dateRule,-ITimeRule-timeRule,-PyObject-trainingCode)3">Train()</a></td>
-<td>Schedules the training code to run using the specified date and time rules</td>
-</tr>
-<tr>
-<td><a href="#Train(Action-trainingCode)4">Train()</a></td>
-<td>Schedules the provided training code to execute immediately</td>
-</tr>
-<tr>
-<td><a href="#Train(Action-trainingCode)5">Train()</a></td>
-<td>Schedules the provided training code to execute immediately</td>
-</tr>
-<tr>
-<td><a href="#Train(IDateRule-dateRule,-ITimeRule-timeRule,-Action-trainingCode)6">Train()</a></td>
-<td>Schedules the training code to run using the specified date and time rules</td>
-</tr>
-<tr>
-<td><a href="#Train(IDateRule-dateRule,-ITimeRule-timeRule,-Action-trainingCode)7">Train()</a></td>
-<td>Schedules the training code to run using the specified date and time rules</td>
-</tr>
-<tr>
 <td><a href="#TRIMA(Symbol-symbol,-Int32-period,-Resolution-resolution,-Decimal-selector)1">TRIMA()</a></td>
 <td>Creates a new TriangularMovingAverage indicator.</td>
 </tr>
 <tr>
 <td><a href="#TRIN(Symbol-symbols,-Resolution-resolution)1">TRIN()</a></td>
 <td></td>
-</tr>
-<tr>
-<td><a href="#TRIN(Symbol[]-symbols,-Resolution-resolution)2">TRIN()</a></td>
-<td>Creates a new Arms Index indicator</td>
 </tr>
 <tr>
 <td><a href="#TRIX(Symbol-symbol,-Int32-period,-Resolution-resolution,-Decimal-selector)1">TRIX()</a></td>
@@ -1903,48 +889,12 @@
 <td>Creates an VolumeWeightedAveragePrice (VWAP) indicator for the symbol. The indicator will be automatically updated on the given resolution.</td>
 </tr>
 <tr>
-<td><a href="#VWAP(Symbol-symbol)2">VWAP()</a></td>
-<td>Creates the canonical VWAP indicator that resets each day. The indicator will be automatically updated on the security's configured resolution.</td>
-</tr>
-<tr>
 <td><a href="#WarmUpIndicator(Symbol-symbol,-PyObject-indicator,-Resolution-resolution,-PyObject-selector)1">WarmUpIndicator()</a></td>
 <td>Warms up a given indicator with historical data</td>
 </tr>
 <tr>
 <td><a href="#WarmUpIndicator(Symbol-symbol,-PyObject-indicator,-Resolution-resolution,-PyObject-selector)1">WarmUpIndicator()</a></td>
 <td>Warms up a given indicator with historical data</td>
-</tr>
-<tr>
-<td><a href="#WarmUpIndicator(Symbol-symbol,-IndicatorDataPoint-indicator,-Resolution-resolution,-Decimal-selector)2">WarmUpIndicator()</a></td>
-<td></td>
-</tr>
-<tr>
-<td><a href="#WarmUpIndicator(Symbol-symbol,-IndicatorDataPoint-indicator,-Resolution-resolution,-Decimal-selector)3">WarmUpIndicator()</a></td>
-<td></td>
-</tr>
-<tr>
-<td><a href="#WarmUpIndicator(Symbol-symbol,-IndicatorDataPoint-indicator,-TimeSpan-period,-Decimal-selector)4">WarmUpIndicator()</a></td>
-<td></td>
-</tr>
-<tr>
-<td><a href="#WarmUpIndicator(Symbol-symbol,-IndicatorDataPoint-indicator,-TimeSpan-period,-Decimal-selector)5">WarmUpIndicator()</a></td>
-<td></td>
-</tr>
-<tr>
-<td><a href="#WarmUpIndicator(Symbol-symbol,-IndicatorBase`1[T-indicator,-Resolution-resolution,-IBaseData,T-selector)6">WarmUpIndicator()</a></td>
-<td></td>
-</tr>
-<tr>
-<td><a href="#WarmUpIndicator(Symbol-symbol,-IndicatorBase`1[T-indicator,-Resolution-resolution,-IBaseData,T-selector)7">WarmUpIndicator()</a></td>
-<td></td>
-</tr>
-<tr>
-<td><a href="#WarmUpIndicator(Symbol-symbol,-IndicatorBase`1[T-indicator,-TimeSpan-period,-IBaseData,T-selector)8">WarmUpIndicator()</a></td>
-<td></td>
-</tr>
-<tr>
-<td><a href="#WarmUpIndicator(Symbol-symbol,-IndicatorBase`1[T-indicator,-TimeSpan-period,-IBaseData,T-selector)9">WarmUpIndicator()</a></td>
-<td></td>
 </tr>
 <tr>
 <td><a href="#WILR(Symbol-symbol,-Int32-period,-Resolution-resolution,-IBaseDataBar-selector)1">WILR()</a></td>
@@ -1954,6 +904,10 @@
 <td><a href="#WWMA(Symbol-symbol,-Int32-period,-Resolution-resolution,-Decimal-selector)1">WWMA()</a></td>
 <td>Creates a WilderMovingAverage indicator for the symbol. The indicator will be automatically updated on the given resolution.</td>
 </tr>
+</tbody></table>
+</div><div id="Adding Data" class="ref-table-container">
+<table cellspacing="0" cellpadding="0">
+<tbody>
 <tr>
 <td><a href="#AddCfd(String-ticker,-Resolution-resolution,-String-market,-Boolean-fillDataForward,-Decimal-leverage)1">AddCfd()</a></td>
 <td>Creates and adds a new <code>Cfd</code> security to the algorithm</td>
@@ -1965,58 +919,6 @@
 <tr>
 <td><a href="#AddData(PyObject-type,-String-ticker,-Resolution-resolution)1">AddData()</a></td>
 <td>AddData a new user defined data source, requiring only the minimum config options. The data is added with a default time zone of NewYork (Eastern Daylight Savings Time). This method is meant for custom data types that require a ticker, but have no underlying Symbol. Examples of data sources that meet this criteria are U.S. Treasury Yield Curve Rates and Trading Economics data</td>
-</tr>
-<tr>
-<td><a href="#AddData(PyObject-type,-Symbol-underlying,-Resolution-resolution)2">AddData()</a></td>
-<td>AddData a new user defined data source, requiring only the minimum config options. The data is added with a default time zone of NewYork (Eastern Daylight Savings Time). This adds a Symbol to the `Underlying` property in the custom data Symbol object. Use this method when adding custom data with a ticker from the past, such as "AOL" before it became "TWX", or if you need to filter using custom data and place trades on the Symbol associated with the custom data.</td>
-</tr>
-<tr>
-<td><a href="#AddData(PyObject-type,-String-ticker,-Resolution-resolution,-DateTimeZone-timeZone,-Boolean-fillDataForward,-Decimal-leverage)3">AddData()</a></td>
-<td>AddData a new user defined data source, requiring only the minimum config options. This method is meant for custom data types that require a ticker, but have no underlying Symbol. Examples of data sources that meet this criteria are U.S. Treasury Yield Curve Rates and Trading Economics data</td>
-</tr>
-<tr>
-<td><a href="#AddData(PyObject-type,-Symbol-underlying,-Resolution-resolution,-DateTimeZone-timeZone,-Boolean-fillDataForward,-Decimal-leverage)4">AddData()</a></td>
-<td>AddData a new user defined data source, requiring only the minimum config options. This adds a Symbol to the `Underlying` property in the custom data Symbol object. Use this method when adding custom data with a ticker from the past, such as "AOL" before it became "TWX", or if you need to filter using custom data and place trades on the Symbol associated with the custom data.</td>
-</tr>
-<tr>
-<td><a href="#AddData(Type-dataType,-String-ticker,-Resolution-resolution,-DateTimeZone-timeZone,-Boolean-fillDataForward,-Decimal-leverage)5">AddData()</a></td>
-<td>AddData a new user defined data source, requiring only the minimum config options. This method is meant for custom data types that require a ticker, but have no underlying Symbol. Examples of data sources that meet this criteria are U.S. Treasury Yield Curve Rates and Trading Economics data</td>
-</tr>
-<tr>
-<td><a href="#AddData(Type-dataType,-Symbol-underlying,-Resolution-resolution,-DateTimeZone-timeZone,-Boolean-fillDataForward,-Decimal-leverage)6">AddData()</a></td>
-<td>AddData a new user defined data source, requiring only the minimum config options. This adds a Symbol to the `Underlying` property in the custom data Symbol object. Use this method when adding custom data with a ticker from the past, such as "AOL" before it became "TWX", or if you need to filter using custom data and place trades on the Symbol associated with the custom data.</td>
-</tr>
-<tr>
-<td><a href="#AddData(PyObject-type,-String-ticker,-SymbolProperties-properties,-SecurityExchangeHours-exchangeHours,-Resolution-resolution,-Boolean-fillDataForward,-Decimal-leverage)7">AddData()</a></td>
-<td>AddData a new user defined data source including symbol properties and exchange hours, all other vars are not required and will use defaults. This overload reflects the C# equivalent for custom properties and market hours</td>
-</tr>
-<tr>
-<td><a href="#AddData(String-ticker,-Resolution-resolution)8">AddData()</a></td>
-<td></td>
-</tr>
-<tr>
-<td><a href="#AddData(Symbol-underlying,-Resolution-resolution)9">AddData()</a></td>
-<td></td>
-</tr>
-<tr>
-<td><a href="#AddData(String-ticker,-Resolution-resolution,-Boolean-fillDataForward,-Decimal-leverage)10">AddData()</a></td>
-<td></td>
-</tr>
-<tr>
-<td><a href="#AddData(Symbol-underlying,-Resolution-resolution,-Boolean-fillDataForward,-Decimal-leverage)11">AddData()</a></td>
-<td></td>
-</tr>
-<tr>
-<td><a href="#AddData(String-ticker,-Resolution-resolution,-DateTimeZone-timeZone,-Boolean-fillDataForward,-Decimal-leverage)12">AddData()</a></td>
-<td></td>
-</tr>
-<tr>
-<td><a href="#AddData(Symbol-underlying,-Resolution-resolution,-DateTimeZone-timeZone,-Boolean-fillDataForward,-Decimal-leverage)13">AddData()</a></td>
-<td></td>
-</tr>
-<tr>
-<td><a href="#AddData(String-ticker,-SymbolProperties-properties,-SecurityExchangeHours-exchangeHours,-Resolution-resolution,-Boolean-fillDataForward,-Decimal-leverage)14">AddData()</a></td>
-<td></td>
 </tr>
 <tr>
 <td><a href="#AddEquity(String-ticker,-Resolution-resolution,-String-market,-Boolean-fillDataForward,-Decimal-leverage,-Boolean-extendedMarketHours)1">AddEquity()</a></td>
@@ -2039,10 +941,6 @@
 <td>Creates and adds a new Future Option contract to the algorithm.</td>
 </tr>
 <tr>
-<td><a href="#AddFutureOption(Symbol-symbol,-OptionFilterUniverse-OptionFilterUniverse)2">AddFutureOption()</a></td>
-<td>Creates and adds a new Future Option contract to the algorithm.</td>
-</tr>
-<tr>
 <td><a href="#AddFutureOptionContract(Symbol-symbol,-Resolution-resolution,-Boolean-fillDataForward,-Decimal-leverage)1">AddFutureOptionContract()</a></td>
 <td>Adds a future option contract to the algorithm.</td>
 </tr>
@@ -2055,20 +953,12 @@
 <td>Creates and adds index options to the algorithm.</td>
 </tr>
 <tr>
-<td><a href="#AddIndexOption(Symbol-symbol,-Resolution-resolution,-Boolean-fillDataForward)2">AddIndexOption()</a></td>
-<td>Creates and adds index options to the algorithm.</td>
-</tr>
-<tr>
 <td><a href="#AddIndexOptionContract(Symbol-symbol,-Resolution-resolution,-Boolean-fillDataForward)1">AddIndexOptionContract()</a></td>
 <td>Adds an index option contract to the algorithm.</td>
 </tr>
 <tr>
 <td><a href="#AddOption(String-underlying,-Resolution-resolution,-String-market,-Boolean-fillDataForward,-Decimal-leverage)1">AddOption()</a></td>
 <td>Creates and adds a new equity <code>Option</code> security to the algorithm</td>
-</tr>
-<tr>
-<td><a href="#AddOption(Symbol-underlying,-Resolution-resolution,-String-market,-Boolean-fillDataForward,-Decimal-leverage)2">AddOption()</a></td>
-<td>Creates and adds a new <code>Option</code> security to the algorithm. This method can be used to add options with non-equity asset classes to the algorithm (e.g. Future Options).</td>
 </tr>
 <tr>
 <td><a href="#AddOptionContract(Symbol-symbol,-Resolution-resolution,-Boolean-fillDataForward,-Decimal-leverage)1">AddOptionContract()</a></td>
@@ -2079,43 +969,11 @@
 <td>Add specified data to our data subscriptions. QuantConnect will funnel this data to the handle data routine.</td>
 </tr>
 <tr>
-<td><a href="#AddSecurity(SecurityType-securityType,-String-ticker,-Resolution-resolution,-Boolean-fillDataForward,-Decimal-leverage,-Boolean-extendedMarketHours,-DataMappingMode-dataMappingMode,-DataNormalizationMode-dataNormalizationMode)2">AddSecurity()</a></td>
-<td>Add specified data to required list. QC will funnel this data to the handle data routine.</td>
-</tr>
-<tr>
-<td><a href="#AddSecurity(SecurityType-securityType,-String-ticker,-Resolution-resolution,-String-market,-Boolean-fillDataForward,-Decimal-leverage,-Boolean-extendedMarketHours,-DataMappingMode-dataMappingMode,-DataNormalizationMode-dataNormalizationMode)3">AddSecurity()</a></td>
-<td>Set a required SecurityType-symbol and resolution for algorithm</td>
-</tr>
-<tr>
-<td><a href="#AddSecurity(Symbol-symbol,-Resolution-resolution,-Boolean-fillDataForward,-Decimal-leverage,-Boolean-extendedMarketHours,-DataMappingMode-dataMappingMode,-DataNormalizationMode-dataNormalizationMode,-Int32-contractDepthOffset)4">AddSecurity()</a></td>
-<td>Set a required SecurityType-symbol and resolution for algorithm</td>
-</tr>
-<tr>
 <td><a href="#Download(String-address,-PyObject-headers)1">Download()</a></td>
 <td>Downloads the requested resource as a String</code>. The resource to download is specified as a String</code> containing the URI.</td>
 </tr>
 <tr>
-<td><a href="#Download(String-address,-PyObject-headers,-String-userName,-String-password)2">Download()</a></td>
-<td>Downloads the requested resource as a String</code>. The resource to download is specified as a String</code> containing the URI.</td>
-</tr>
-<tr>
-<td><a href="#Download(String-address)4">Download()</a></td>
-<td>Downloads the requested resource as a String</code>. The resource to download is specified as a String</code> containing the URI.</td>
-</tr>
-<tr>
-<td><a href="#Download(String-address,-String-KeyValuePair`2)6">Download()</a></td>
-<td></td>
-</tr>
-<tr>
-<td><a href="#Download(String-address,-String]-headers,-String-userName,-String-password)8">Download()</a></td>
-<td></td>
-</tr>
-<tr>
 <td><a href="#GetLastKnownPrices(Security-security)1">GetLastKnownPrices()</a></td>
-<td>Yields data to warmup a security for all it's subscribed data types</td>
-</tr>
-<tr>
-<td><a href="#GetLastKnownPrices(Symbol-symbol)2">GetLastKnownPrices()</a></td>
 <td>Yields data to warmup a security for all it's subscribed data types</td>
 </tr>
 <tr>
@@ -2139,27 +997,15 @@
 <td>Sets the security initializer function, used to initialize/configure securities after creation</td>
 </tr>
 <tr>
-<td><a href="#SetSecurityInitializer(ISecurityInitializer-securityInitializer)2">SetSecurityInitializer()</a></td>
-<td>Sets the security initializer, used to initialize/configure securities after creation. The initializer will be applied to all universes and manually added securities.</td>
-</tr>
-<tr>
-<td><a href="#SetSecurityInitializer(Boolean-Boolean)4">SetSecurityInitializer()</a></td>
-<td></td>
-</tr>
-<tr>
-<td><a href="#SetSecurityInitializer(Security-Security)6">SetSecurityInitializer()</a></td>
-<td></td>
-</tr>
-<tr>
 <td><a href="#Symbol(String-ticker)1">Symbol()</a></td>
 <td>Converts the string 'ticker' symbol into a full <code>Symbol</code> object This requires that the string 'ticker' has been added to the algorithm</td>
 </tr>
+</tbody></table>
+</div><div id="Algorithm Framework" class="ref-table-container">
+<table cellspacing="0" cellpadding="0">
+<tbody>
 <tr>
 <td><a href="#AddAlpha(IAlphaModel-alpha)1">AddAlpha()</a></td>
-<td>Adds a new alpha model</td>
-</tr>
-<tr>
-<td><a href="#AddAlpha(PyObject-alpha)2">AddAlpha()</a></td>
 <td>Adds a new alpha model</td>
 </tr>
 <tr>
@@ -2167,23 +1013,11 @@
 <td>Adds a new risk management model</td>
 </tr>
 <tr>
-<td><a href="#AddRiskManagement(PyObject-riskManagement)2">AddRiskManagement()</a></td>
-<td>Adds a new risk management model</td>
-</tr>
-<tr>
 <td><a href="#AddUniverseSelection(IUniverseSelectionModel-universeSelection)1">AddUniverseSelection()</a></td>
 <td>Adds a new universe selection model</td>
 </tr>
 <tr>
-<td><a href="#AddUniverseSelection(PyObject-universeSelection)2">AddUniverseSelection()</a></td>
-<td>Adds a new universe selection model</td>
-</tr>
-<tr>
 <td><a href="#EmitInsights(Insight[]-insights)1">EmitInsights()</a></td>
-<td>Manually emit insights from an algorithm. This is typically invoked before calls to submit orders in algorithms written against QCAlgorithm that have been ported into the algorithm framework.</td>
-</tr>
-<tr>
-<td><a href="#EmitInsights(Insight-insight)2">EmitInsights()</a></td>
 <td>Manually emit insights from an algorithm. This is typically invoked before calls to submit orders in algorithms written against QCAlgorithm that have been ported into the algorithm framework.</td>
 </tr>
 <tr>
@@ -2199,15 +1033,7 @@
 <td>Sets the alpha model</td>
 </tr>
 <tr>
-<td><a href="#SetAlpha(PyObject-alpha)2">SetAlpha()</a></td>
-<td>Sets the alpha model</td>
-</tr>
-<tr>
 <td><a href="#SetExecution(IExecutionModel-execution)1">SetExecution()</a></td>
-<td>Sets the execution model</td>
-</tr>
-<tr>
-<td><a href="#SetExecution(PyObject-execution)2">SetExecution()</a></td>
 <td>Sets the execution model</td>
 </tr>
 <tr>
@@ -2215,25 +1041,17 @@
 <td>Sets the portfolio construction model</td>
 </tr>
 <tr>
-<td><a href="#SetPortfolioConstruction(PyObject-portfolioConstruction)2">SetPortfolioConstruction()</a></td>
-<td>Sets the portfolio construction model</td>
-</tr>
-<tr>
 <td><a href="#SetRiskManagement(IRiskManagementModel-riskManagement)1">SetRiskManagement()</a></td>
-<td>Sets the risk management model</td>
-</tr>
-<tr>
-<td><a href="#SetRiskManagement(PyObject-riskManagement)2">SetRiskManagement()</a></td>
 <td>Sets the risk management model</td>
 </tr>
 <tr>
 <td><a href="#SetUniverseSelection(IUniverseSelectionModel-universeSelection)1">SetUniverseSelection()</a></td>
 <td>Sets the universe selection model</td>
 </tr>
-<tr>
-<td><a href="#SetUniverseSelection(PyObject-universeSelection)2">SetUniverseSelection()</a></td>
-<td>Sets the universe selection model</td>
-</tr>
+</tbody></table>
+</div><div id="Charting" class="ref-table-container">
+<table cellspacing="0" cellpadding="0">
+<tbody>
 <tr>
 <td><a href="#AddChart(Chart-chart)1">AddChart()</a></td>
 <td>Add a Chart object to algorithm collection</td>
@@ -2247,156 +1065,24 @@
 <td>Plot a chart using string series name, with value.</td>
 </tr>
 <tr>
-<td><a href="#Plot(String-chart,-Indicator-first,-Indicator-second,-Indicator-third,-Indicator-fourth)2">Plot()</a></td>
-<td>Plots the value of each indicator on the chart</td>
-</tr>
-<tr>
-<td><a href="#Plot(String-chart,-BarIndicator-first,-BarIndicator-second,-BarIndicator-third,-BarIndicator-fourth)3">Plot()</a></td>
-<td>Plots the value of each indicator on the chart</td>
-</tr>
-<tr>
-<td><a href="#Plot(String-chart,-TradeBarIndicator-first,-TradeBarIndicator-second,-TradeBarIndicator-third,-TradeBarIndicator-fourth)4">Plot()</a></td>
-<td>Plots the value of each indicator on the chart</td>
-</tr>
-<tr>
-<td><a href="#Plot(String-series,-Decimal-value)5">Plot()</a></td>
-<td>Plot a chart using string series name, with value.</td>
-</tr>
-<tr>
-<td><a href="#Plot(String-series,-Double-value)6">Plot()</a></td>
-<td>Plot a chart using string series name, with double value.</td>
-</tr>
-<tr>
-<td><a href="#Plot(String-series,-Int32-value)7">Plot()</a></td>
-<td>Plot a chart using string series name, with int value.</td>
-</tr>
-<tr>
-<td><a href="#Plot(String-series,-Single-value)8">Plot()</a></td>
-<td>Plot a chart using string series name, with float value.</td>
-</tr>
-<tr>
-<td><a href="#Plot(String-chart,-String-series,-Double-value)9">Plot()</a></td>
-<td>Plot a chart to string chart name, using string series name, with double value.</td>
-</tr>
-<tr>
-<td><a href="#Plot(String-chart,-String-series,-Int32-value)10">Plot()</a></td>
-<td>Plot a chart to string chart name, using string series name, with int value</td>
-</tr>
-<tr>
-<td><a href="#Plot(String-chart,-String-series,-Single-value)11">Plot()</a></td>
-<td>Plot a chart to string chart name, using string series name, with float value</td>
-</tr>
-<tr>
-<td><a href="#Plot(String-chart,-String-series,-Decimal-value)12">Plot()</a></td>
-<td>Plot a value to a chart of string-chart name, with string series name, and decimal value. If chart does not exist, create it.</td>
-</tr>
-<tr>
-<td><a href="#Plot(String-chart,-IndicatorBase`1[]-indicators)13">Plot()</a></td>
-<td></td>
-</tr>
-<tr>
 <td><a href="#PlotIndicator(String-chart,-PyObject-first,-PyObject-second,-PyObject-third,-PyObject-fourth)1">PlotIndicator()</a></td>
 <td>Automatically plots each indicator when a new value is available</td>
-</tr>
-<tr>
-<td><a href="#PlotIndicator(String-chart,-Boolean-waitForReady,-PyObject-first,-PyObject-second,-PyObject-third,-PyObject-fourth)2">PlotIndicator()</a></td>
-<td>Automatically plots each indicator when a new value is available</td>
-</tr>
-<tr>
-<td><a href="#PlotIndicator(String-chart,-IndicatorBase`1[]-indicators)4">PlotIndicator()</a></td>
-<td></td>
-</tr>
-<tr>
-<td><a href="#PlotIndicator(String-chart,-Boolean-waitForReady,-IndicatorBase`1[]-indicators)6">PlotIndicator()</a></td>
-<td></td>
 </tr>
 <tr>
 <td><a href="#Record(String-series,-Int32-value)1">Record()</a></td>
 <td>Plot a chart using string series name, with int value. Alias of Plot();</td>
 </tr>
 <tr>
-<td><a href="#Record(String-series,-Double-value)2">Record()</a></td>
-<td>Plot a chart using string series name, with double value. Alias of Plot();</td>
-</tr>
-<tr>
-<td><a href="#Record(String-series,-Decimal-value)3">Record()</a></td>
-<td>Plot a chart using string series name, with decimal value. Alias of Plot();</td>
-</tr>
-<tr>
 <td><a href="#SetRuntimeStatistic(String-name,-String-value)1">SetRuntimeStatistic()</a></td>
 <td>Set a runtime statistic for the algorithm. Runtime statistics are shown in the top banner of a live algorithm GUI.</td>
 </tr>
-<tr>
-<td><a href="#SetRuntimeStatistic(String-name,-Decimal-value)2">SetRuntimeStatistic()</a></td>
-<td>Set a runtime statistic for the algorithm. Runtime statistics are shown in the top banner of a live algorithm GUI.</td>
-</tr>
-<tr>
-<td><a href="#SetRuntimeStatistic(String-name,-Int32-value)3">SetRuntimeStatistic()</a></td>
-<td>Set a runtime statistic for the algorithm. Runtime statistics are shown in the top banner of a live algorithm GUI.</td>
-</tr>
-<tr>
-<td><a href="#SetRuntimeStatistic(String-name,-Double-value)4">SetRuntimeStatistic()</a></td>
-<td>Set a runtime statistic for the algorithm. Runtime statistics are shown in the top banner of a live algorithm GUI.</td>
-</tr>
+</tbody></table>
+</div><div id="Consolidating Data" class="ref-table-container">
+<table cellspacing="0" cellpadding="0">
+<tbody>
 <tr>
 <td><a href="#Consolidate(Symbol-symbol,-Resolution-period,-PyObject-handler)1">Consolidate()</a></td>
 <td>Registers the <code></code> to receive consolidated data for the specified symbol</td>
-</tr>
-<tr>
-<td><a href="#Consolidate(Symbol-symbol,-Resolution-period,-TickType-TickType,-PyObject-handler)2">Consolidate()</a></td>
-<td>Registers the <code></code> to receive consolidated data for the specified symbol</td>
-</tr>
-<tr>
-<td><a href="#Consolidate(Symbol-symbol,-TimeSpan-period,-PyObject-handler)3">Consolidate()</a></td>
-<td>Registers the <code></code> to receive consolidated data for the specified symbol</td>
-</tr>
-<tr>
-<td><a href="#Consolidate(Symbol-symbol,-TimeSpan-period,-TickType-tickType,-PyObject-handler)4">Consolidate()</a></td>
-<td>Registers the <code></code> to receive consolidated data for the specified symbol</td>
-</tr>
-<tr>
-<td><a href="#Consolidate(Symbol-symbol,-CalendarInfo-CalendarInfo,-PyObject-handler)5">Consolidate()</a></td>
-<td>Registers the <code></code> to receive consolidated data for the specified symbol</td>
-</tr>
-<tr>
-<td><a href="#Consolidate(Symbol-symbol,-Resolution-period,-TradeBar-TradeBar)6">Consolidate()</a></td>
-<td></td>
-</tr>
-<tr>
-<td><a href="#Consolidate(Symbol-symbol,-TimeSpan-period,-TradeBar-handler)7">Consolidate()</a></td>
-<td></td>
-</tr>
-<tr>
-<td><a href="#Consolidate(Symbol-symbol,-Resolution-period,-QuoteBar-QuoteBar)8">Consolidate()</a></td>
-<td></td>
-</tr>
-<tr>
-<td><a href="#Consolidate(Symbol-symbol,-TimeSpan-period,-QuoteBar-handler)9">Consolidate()</a></td>
-<td></td>
-</tr>
-<tr>
-<td><a href="#Consolidate(Symbol-symbol,-TimeSpan-period,-T-T)10">Consolidate()</a></td>
-<td></td>
-</tr>
-<tr>
-<td><a href="#Consolidate(Symbol-symbol,-Resolution-period,-TickType-tickType,-Action`1[T-handler)11">Consolidate()</a></td>
-<td></td>
-</tr>
-<tr>
-<td><a href="#Consolidate(Symbol-symbol,-TimeSpan-period,-TickType-tickType,-Action`1[T-handler)12">Consolidate()</a></td>
-<td></td>
-</tr>
-<tr>
-<td><a href="#Consolidate(Symbol-symbol,-CalendarInfo-calendar,-QuoteBar-handler)13">Consolidate()</a></td>
-<td></td>
-</tr>
-<tr>
-<td><a href="#Consolidate(Symbol-symbol,-CalendarInfo-calendar,-TradeBar-handler)14">Consolidate()</a></td>
-<td></td>
-</tr>
-<tr>
-<td><a href="#Consolidate(Symbol-symbol,-CalendarInfo-calendar,-Action`1[T-handler)15">Consolidate()</a></td>
-<td></td>
 </tr>
 <tr>
 <td><a href="#CreateConsolidator(TimeSpan-period,-Type-consolidatorInputType,-TickType-tickType)1">CreateConsolidator()</a></td>
@@ -2407,53 +1093,13 @@
 <td>Registers the consolidator to receive automatic updates as well as configures the indicator to receive updates from the consolidator.</td>
 </tr>
 <tr>
-<td><a href="#RegisterIndicator(Symbol-symbol,-PyObject-indicator,-TimeSpan-TimeSpan,-PyObject-selector)3">RegisterIndicator()</a></td>
-<td>Registers the consolidator to receive automatic updates as well as configures the indicator to receive updates from the consolidator.</td>
-</tr>
-<tr>
-<td><a href="#RegisterIndicator(Symbol-symbol,-PyObject-indicator,-PyObject-pyObject,-PyObject-selector)5">RegisterIndicator()</a></td>
-<td>Registers the consolidator to receive automatic updates as well as configures the indicator to receive updates from the consolidator.</td>
-</tr>
-<tr>
-<td><a href="#RegisterIndicator(Symbol-symbol,-PyObject-indicator,-IDataConsolidator-consolidator,-PyObject-selector)7">RegisterIndicator()</a></td>
-<td>Registers the consolidator to receive automatic updates as well as configures the indicator to receive updates from the consolidator.</td>
-</tr>
-<tr>
-<td><a href="#RegisterIndicator(Symbol-symbol,-IndicatorDataPoint-IndicatorDataPoint,-Resolution-resolution,-Decimal-selector)8">RegisterIndicator()</a></td>
-<td></td>
-</tr>
-<tr>
-<td><a href="#RegisterIndicator(Symbol-symbol,-IndicatorDataPoint-indicator,-TimeSpan-resolution,-Decimal-selector)10">RegisterIndicator()</a></td>
-<td></td>
-</tr>
-<tr>
-<td><a href="#RegisterIndicator(Symbol-symbol,-IndicatorDataPoint-indicator,-IDataConsolidator-consolidator,-Decimal-selector)12">RegisterIndicator()</a></td>
-<td></td>
-</tr>
-<tr>
-<td><a href="#RegisterIndicator(Symbol-symbol,-T-T,-Resolution-resolution)14">RegisterIndicator()</a></td>
-<td></td>
-</tr>
-<tr>
-<td><a href="#RegisterIndicator(Symbol-symbol,-IndicatorBase`1[T-indicator,-Resolution-resolution,-T-T)16">RegisterIndicator()</a></td>
-<td></td>
-</tr>
-<tr>
-<td><a href="#RegisterIndicator(Symbol-symbol,-IndicatorBase`1[T-indicator,-TimeSpan-resolution,-IBaseData,T-selector)18">RegisterIndicator()</a></td>
-<td></td>
-</tr>
-<tr>
-<td><a href="#RegisterIndicator(Symbol-symbol,-IndicatorBase`1[T-indicator,-IDataConsolidator-consolidator,-IBaseData,T-selector)20">RegisterIndicator()</a></td>
-<td></td>
-</tr>
-<tr>
 <td><a href="#ResolveConsolidator(Symbol-symbol,-Resolution-resolution,-Type-dataType)1">ResolveConsolidator()</a></td>
 <td>Gets the default consolidator for the specified symbol and resolution</td>
 </tr>
-<tr>
-<td><a href="#ResolveConsolidator(Symbol-symbol,-TimeSpan-timeSpan,-Type-dataType)2">ResolveConsolidator()</a></td>
-<td>Gets the default consolidator for the specified symbol and resolution</td>
-</tr>
+</tbody></table>
+</div><div id="Handling Data" class="ref-table-container">
+<table cellspacing="0" cellpadding="0">
+<tbody>
 <tr>
 <td><a href="#CompositeFIGI(String-compositeFigi,-DateTime-DateTime)1">CompositeFIGI()</a></td>
 <td>Converts a composite FIGI identifier into a <code>Symbol</code></td>
@@ -2487,10 +1133,6 @@
 <td>Set the end date for a backtest run</td>
 </tr>
 <tr>
-<td><a href="#SetEndDate(DateTime-end)2">SetEndDate()</a></td>
-<td>Set the end date for a backtest.</td>
-</tr>
-<tr>
 <td><a href="#SetObjectStore(IObjectStore-objectStore)1">SetObjectStore()</a></td>
 <td>Sets the object store</td>
 </tr>
@@ -2503,27 +1145,19 @@
 <td>Set the start date for the backtest</td>
 </tr>
 <tr>
-<td><a href="#SetStartDate(Int32-year,-Int32-month,-Int32-day)2">SetStartDate()</a></td>
-<td>Set the start date for backtest.</td>
-</tr>
-<tr>
 <td><a href="#SetTimeZone(String-timeZone)1">SetTimeZone()</a></td>
-<td>Sets the time zone of the <code>Time</code> property in the algorithm</td>
-</tr>
-<tr>
-<td><a href="#SetTimeZone(DateTimeZone-timeZone)2">SetTimeZone()</a></td>
 <td>Sets the time zone of the <code>Time</code> property in the algorithm</td>
 </tr>
 <tr>
 <td><a href="#Symbol(String-ticker)1">Symbol()</a></td>
 <td>Converts the string 'ticker' symbol into a full <code>Symbol</code> object This requires that the string 'ticker' has been added to the algorithm</td>
 </tr>
+</tbody></table>
+</div><div id="Historical Data" class="ref-table-container">
+<table cellspacing="0" cellpadding="0">
+<tbody>
 <tr>
 <td><a href="#GetLastKnownPrices(Security-security)1">GetLastKnownPrices()</a></td>
-<td>Yields data to warmup a security for all it's subscribed data types</td>
-</tr>
-<tr>
-<td><a href="#GetLastKnownPrices(Symbol-symbol)3">GetLastKnownPrices()</a></td>
 <td>Yields data to warmup a security for all it's subscribed data types</td>
 </tr>
 <tr>
@@ -2531,141 +1165,17 @@
 <td>Gets the historical data for the specified symbol. The exact number of bars will be returned. The symbol must exist in the Securities collection.</td>
 </tr>
 <tr>
-<td><a href="#History(PyObject-tickers,-TimeSpan-span,-Resolution-resolution)2">History()</a></td>
-<td>Gets the historical data for the specified symbols over the requested span. The symbols must exist in the Securities collection.</td>
-</tr>
-<tr>
-<td><a href="#History(PyObject-tickers,-DateTime-start,-DateTime-end,-Resolution-resolution)3">History()</a></td>
-<td>Gets the historical data for the specified symbol between the specified dates. The symbol must exist in the Securities collection.</td>
-</tr>
-<tr>
-<td><a href="#History(PyObject-type,-PyObject-tickers,-DateTime-start,-DateTime-end,-Resolution-resolution)4">History()</a></td>
-<td>Gets the historical data for the specified symbols between the specified dates. The symbols must exist in the Securities collection.</td>
-</tr>
-<tr>
-<td><a href="#History(PyObject-type,-PyObject-tickers,-Int32-periods,-Resolution-resolution)5">History()</a></td>
-<td>Gets the historical data for the specified symbols. The exact number of bars will be returned for each symbol. This may result in some data start earlier/later than others due to when various exchanges are open. The symbols must exist in the Securities collection.</td>
-</tr>
-<tr>
-<td><a href="#History(PyObject-type,-PyObject-tickers,-TimeSpan-span,-Resolution-resolution)6">History()</a></td>
-<td>Gets the historical data for the specified symbols over the requested span. The symbols must exist in the Securities collection.</td>
-</tr>
-<tr>
-<td><a href="#History(PyObject-type,-Symbol-symbol,-DateTime-start,-DateTime-end,-Resolution-resolution)7">History()</a></td>
-<td>Gets the historical data for the specified symbols between the specified dates. The symbols must exist in the Securities collection.</td>
-</tr>
-<tr>
-<td><a href="#History(PyObject-type,-Symbol-symbol,-Int32-periods,-Resolution-resolution)8">History()</a></td>
-<td>Gets the historical data for the specified symbols. The exact number of bars will be returned for each symbol. This may result in some data start earlier/later than others due to when various exchanges are open. The symbols must exist in the Securities collection.</td>
-</tr>
-<tr>
-<td><a href="#History(PyObject-type,-Symbol-symbol,-TimeSpan-span,-Resolution-resolution)9">History()</a></td>
-<td>Gets the historical data for the specified symbols over the requested span. The symbols must exist in the Securities collection.</td>
-</tr>
-<tr>
-<td><a href="#History(TimeSpan-span,-Resolution-resolution)10">History()</a></td>
-<td>Get the history for all configured securities over the requested span. This will use the resolution and other subscription settings for each security. The symbols must exist in the Securities collection.</td>
-</tr>
-<tr>
-<td><a href="#History(Int32-periods,-Resolution-resolution)11">History()</a></td>
-<td>Get the history for all configured securities over the requested span. This will use the resolution and other subscription settings for each security. The symbols must exist in the Securities collection.</td>
-</tr>
-<tr>
-<td><a href="#History(TimeSpan-span,-Resolution-resolution)12">History()</a></td>
-<td>Get the history for all configured securities over the requested span. This will use the resolution and other subscription settings for each security. The symbols must exist in the Securities collection.</td>
-</tr>
-<tr>
-<td><a href="#History(Symbol-symbols,-TimeSpan-span,-Resolution-resolution)13">History()</a></td>
-<td></td>
-</tr>
-<tr>
-<td><a href="#History(Symbol-symbols,-Int32-periods,-Resolution-resolution)14">History()</a></td>
-<td></td>
-</tr>
-<tr>
-<td><a href="#History(Symbol-symbols,-DateTime-start,-DateTime-end,-Resolution-resolution)15">History()</a></td>
-<td></td>
-</tr>
-<tr>
-<td><a href="#History(Symbol-symbol,-TimeSpan-span,-Resolution-resolution)16">History()</a></td>
-<td>Gets the historical data for the specified symbol over the request span. The symbol must exist in the Securities collection.</td>
-</tr>
-<tr>
-<td><a href="#History(Symbol-symbol,-Int32-periods,-Resolution-resolution)17">History()</a></td>
-<td>Gets the historical data for the specified symbol. The exact number of bars will be returned. The symbol must exist in the Securities collection.</td>
-</tr>
-<tr>
-<td><a href="#History(Symbol-symbol,-Int32-periods,-Resolution-resolution)18">History()</a></td>
-<td>Gets the historical data for the specified symbol. The exact number of bars will be returned. The symbol must exist in the Securities collection.</td>
-</tr>
-<tr>
-<td><a href="#History(Symbol-symbol,-DateTime-start,-DateTime-end,-Resolution-resolution)19">History()</a></td>
-<td>Gets the historical data for the specified symbol over the request span. The symbol must exist in the Securities collection.</td>
-</tr>
-<tr>
-<td><a href="#History(Symbol-symbol,-TimeSpan-span,-Resolution-resolution)20">History()</a></td>
-<td>Gets the historical data for the specified symbol over the request span. The symbol must exist in the Securities collection.</td>
-</tr>
-<tr>
-<td><a href="#History(Symbol-symbol,-DateTime-start,-DateTime-end,-Resolution-resolution)21">History()</a></td>
-<td>Gets the historical data for the specified symbol over the request span. The symbol must exist in the Securities collection.</td>
-</tr>
-<tr>
-<td><a href="#History(Symbol-symbols,-TimeSpan-span,-Resolution-resolution)22">History()</a></td>
-<td></td>
-</tr>
-<tr>
-<td><a href="#History(Symbol-symbols,-Int32-periods,-Resolution-resolution)23">History()</a></td>
-<td></td>
-</tr>
-<tr>
-<td><a href="#History(Symbol-symbols,-DateTime-start,-DateTime-end,-Resolution-resolution,-Boolean-Boolean,-Boolean-extendedMarket)24">History()</a></td>
-<td></td>
-</tr>
-<tr>
-<td><a href="#History(HistoryRequest-request)25">History()</a></td>
-<td>Executes the specified history request</td>
-</tr>
-<tr>
-<td><a href="#History(HistoryRequest-HistoryRequest)26">History()</a></td>
-<td></td>
-</tr>
-<tr>
 <td><a href="#SetWarmUp(TimeSpan-timeSpan)1">SetWarmUp()</a></td>
 <td>Sets the warm up period to the specified value</td>
-</tr>
-<tr>
-<td><a href="#SetWarmUp(TimeSpan-timeSpan,-Resolution-resolution)2">SetWarmUp()</a></td>
-<td>Sets the warm up period to the specified value</td>
-</tr>
-<tr>
-<td><a href="#SetWarmUp(Int32-barCount)3">SetWarmUp()</a></td>
-<td>Sets the warm up period by resolving a start date that would send that amount of data into the algorithm. The highest (smallest) resolution in the securities collection will be used. For example, if an algorithm has minute and daily data and 200 bars are requested, that would use 200 minute bars.</td>
-</tr>
-<tr>
-<td><a href="#SetWarmUp(Int32-barCount,-Resolution-resolution)4">SetWarmUp()</a></td>
-<td>Sets the warm up period by resolving a start date that would send that amount of data into the algorithm.</td>
 </tr>
 <tr>
 <td><a href="#WarmUpIndicator(Symbol-symbol,-PyObject-indicator,-Resolution-resolution,-PyObject-selector)1">WarmUpIndicator()</a></td>
 <td>Warms up a given indicator with historical data</td>
 </tr>
-<tr>
-<td><a href="#WarmUpIndicator(Symbol-symbol,-IndicatorDataPoint-indicator,-Resolution-resolution,-Decimal-selector)2">WarmUpIndicator()</a></td>
-<td></td>
-</tr>
-<tr>
-<td><a href="#WarmUpIndicator(Symbol-symbol,-IndicatorDataPoint-indicator,-TimeSpan-period,-Decimal-selector)4">WarmUpIndicator()</a></td>
-<td></td>
-</tr>
-<tr>
-<td><a href="#WarmUpIndicator(Symbol-symbol,-IndicatorBase`1[T-indicator,-Resolution-resolution,-IBaseData,T-selector)6">WarmUpIndicator()</a></td>
-<td></td>
-</tr>
-<tr>
-<td><a href="#WarmUpIndicator(Symbol-symbol,-IndicatorBase`1[T-indicator,-TimeSpan-period,-IBaseData,T-selector)8">WarmUpIndicator()</a></td>
-<td></td>
-</tr>
+</tbody></table>
+</div><div id="Indicators" class="ref-table-container">
+<table cellspacing="0" cellpadding="0">
+<tbody>
 <tr>
 <td><a href="#ABANDS(Symbol-symbol,-Int32-period,-Decimal-width,-MovingAverageType-movingAverageType,-Resolution-Resolution,-TradeBar-TradeBar)1">ABANDS()</a></td>
 <td>Creates a new Acceleration Bands indicator.</td>
@@ -2719,10 +1229,6 @@
 <td>Creates a new AroonOscillator indicator which will compute the AroonUp and AroonDown (as well as the delta)</td>
 </tr>
 <tr>
-<td><a href="#AROON(Symbol-symbol,-Int32-period,-Resolution-resolution,-IBaseDataBar-selector)2">AROON()</a></td>
-<td>Creates a new AroonOscillator indicator which will compute the AroonUp and AroonDown (as well as the delta)</td>
-</tr>
-<tr>
 <td><a href="#ASI(Symbol-symbol,-Decimal-limitMove,-Resolution-resolution)1">ASI()</a></td>
 <td>Creates a Wilder Accumulative Swing Index (ASI) indicator for the symbol. The indicator will be automatically updated on the given resolution.</td>
 </tr>
@@ -2763,10 +1269,6 @@
 <td>Creates a new Donchian Channel indicator which will compute the Upper Band and Lower Band. The indicator will be automatically updated on the given resolution.</td>
 </tr>
 <tr>
-<td><a href="#DCH(Symbol-symbol,-Int32-period,-Resolution-resolution,-IBaseDataBar-selector)2">DCH()</a></td>
-<td>Overload shorthand to create a new symmetric Donchian Channel indicator which has the upper and lower channels set to the same period length.</td>
-</tr>
-<tr>
 <td><a href="#DEM(Symbol-symbol,-Int32-period,-MovingAverageType-type,-Resolution-resolution,-TradeBar-selector)1">DEM()</a></td>
 <td>Creates a new DeMarker Indicator (DEM), an oscillator-type indicator measuring changes in terms of an asset's High and Low tradebar values.</td>
 </tr>
@@ -2783,35 +1285,11 @@
 <td>Creates an ExponentialMovingAverage indicator for the symbol. The indicator will be automatically updated on the given resolution.</td>
 </tr>
 <tr>
-<td><a href="#EMA(Symbol-symbol,-Int32-period,-Decimal-smoothingFactor,-Resolution-resolution,-Decimal-selector)2">EMA()</a></td>
-<td>Creates an ExponentialMovingAverage indicator for the symbol. The indicator will be automatically updated on the given resolution.</td>
-</tr>
-<tr>
 <td><a href="#EMV(Symbol-symbol,-Int32-period,-Int32-scale,-Resolution-resolution,-TradeBar-selector)1">EMV()</a></td>
 <td>Creates an EaseOfMovementValue indicator for the symbol. The indicator will be automatically updated on the given resolution.</td>
 </tr>
 <tr>
 <td><a href="#FilteredIdentity(Symbol-symbol,-PyObject-selector,-PyObject-filter,-String-fieldName)1">FilteredIdentity()</a></td>
-<td>Creates a new FilteredIdentity indicator for the symbol The indicator will be automatically updated on the symbol's subscription resolution</td>
-</tr>
-<tr>
-<td><a href="#FilteredIdentity(Symbol-symbol,-Resolution-resolution,-PyObject-selector,-PyObject-filter,-String-fieldName)2">FilteredIdentity()</a></td>
-<td>Creates a new FilteredIdentity indicator for the symbol The indicator will be automatically updated on the symbol's subscription resolution</td>
-</tr>
-<tr>
-<td><a href="#FilteredIdentity(Symbol-symbol,-TimeSpan-resolution,-PyObject-selector,-PyObject-filter,-String-fieldName)3">FilteredIdentity()</a></td>
-<td>Creates a new FilteredIdentity indicator for the symbol The indicator will be automatically updated on the symbol's subscription resolution</td>
-</tr>
-<tr>
-<td><a href="#FilteredIdentity(Symbol-symbol,-IBaseDataBar-selector,-Boolean-Boolean,-String-fieldName)4">FilteredIdentity()</a></td>
-<td>Creates a new FilteredIdentity indicator for the symbol The indicator will be automatically updated on the symbol's subscription resolution</td>
-</tr>
-<tr>
-<td><a href="#FilteredIdentity(Symbol-symbol,-Resolution-resolution,-IBaseDataBar-selector,-Boolean-filter,-String-fieldName)5">FilteredIdentity()</a></td>
-<td>Creates a new FilteredIdentity indicator for the symbol The indicator will be automatically updated on the symbol's subscription resolution</td>
-</tr>
-<tr>
-<td><a href="#FilteredIdentity(Symbol-symbol,-TimeSpan-resolution,-IBaseDataBar-selector,-Boolean-filter,-String-fieldName)6">FilteredIdentity()</a></td>
 <td>Creates a new FilteredIdentity indicator for the symbol The indicator will be automatically updated on the symbol's subscription resolution</td>
 </tr>
 <tr>
@@ -2839,19 +1317,7 @@
 <td>Creates a new Identity indicator for the symbol The indicator will be automatically updated on the symbol's subscription resolution</td>
 </tr>
 <tr>
-<td><a href="#Identity(Symbol-symbol,-Resolution-resolution,-Decimal-selector,-String-fieldName)2">Identity()</a></td>
-<td>Creates a new Identity indicator for the symbol The indicator will be automatically updated on the symbol's subscription resolution</td>
-</tr>
-<tr>
-<td><a href="#Identity(Symbol-symbol,-TimeSpan-resolution,-Decimal-selector,-String-fieldName)3">Identity()</a></td>
-<td>Creates a new Identity indicator for the symbol The indicator will be automatically updated on the symbol's subscription resolution</td>
-</tr>
-<tr>
 <td><a href="#KAMA(Symbol-symbol,-Int32-period,-Resolution-resolution,-Decimal-selector)1">KAMA()</a></td>
-<td>Creates a new KaufmanAdaptiveMovingAverage indicator.</td>
-</tr>
-<tr>
-<td><a href="#KAMA(Symbol-symbol,-Int32-period,-Int32-fastEmaPeriod,-Int32-slowEmaPeriod,-Resolution-resolution,-Decimal-selector)2">KAMA()</a></td>
 <td>Creates a new KaufmanAdaptiveMovingAverage indicator.</td>
 </tr>
 <tr>
@@ -2931,18 +1397,6 @@
 <td>Automatically plots each indicator when a new value is available</td>
 </tr>
 <tr>
-<td><a href="#PlotIndicator(String-chart,-Boolean-waitForReady,-PyObject-first,-PyObject-second,-PyObject-third,-PyObject-fourth)3">PlotIndicator()</a></td>
-<td>Automatically plots each indicator when a new value is available</td>
-</tr>
-<tr>
-<td><a href="#PlotIndicator(String-chart,-IndicatorBase`1[]-indicators)5">PlotIndicator()</a></td>
-<td></td>
-</tr>
-<tr>
-<td><a href="#PlotIndicator(String-chart,-Boolean-waitForReady,-IndicatorBase`1[]-indicators)7">PlotIndicator()</a></td>
-<td></td>
-</tr>
-<tr>
 <td><a href="#PPHL(Symbol-symbol,-Int32-lengthHigh,-Int32-lengthLow,-Int32-lastStoredValues,-Resolution-resolution,-IBaseDataBar-selector)1">PPHL()</a></td>
 <td>Creates a new PivotPointsHighLow indicator</td>
 </tr>
@@ -2967,51 +1421,7 @@
 <td>Registers the consolidator to receive automatic updates as well as configures the indicator to receive updates from the consolidator.</td>
 </tr>
 <tr>
-<td><a href="#RegisterIndicator(Symbol-symbol,-PyObject-indicator,-TimeSpan-TimeSpan,-PyObject-selector)2">RegisterIndicator()</a></td>
-<td>Registers the consolidator to receive automatic updates as well as configures the indicator to receive updates from the consolidator.</td>
-</tr>
-<tr>
-<td><a href="#RegisterIndicator(Symbol-symbol,-PyObject-indicator,-PyObject-pyObject,-PyObject-selector)4">RegisterIndicator()</a></td>
-<td>Registers the consolidator to receive automatic updates as well as configures the indicator to receive updates from the consolidator.</td>
-</tr>
-<tr>
-<td><a href="#RegisterIndicator(Symbol-symbol,-PyObject-indicator,-IDataConsolidator-consolidator,-PyObject-selector)6">RegisterIndicator()</a></td>
-<td>Registers the consolidator to receive automatic updates as well as configures the indicator to receive updates from the consolidator.</td>
-</tr>
-<tr>
-<td><a href="#RegisterIndicator(Symbol-symbol,-IndicatorDataPoint-IndicatorDataPoint,-Resolution-resolution,-Decimal-selector)9">RegisterIndicator()</a></td>
-<td></td>
-</tr>
-<tr>
-<td><a href="#RegisterIndicator(Symbol-symbol,-IndicatorDataPoint-indicator,-TimeSpan-resolution,-Decimal-selector)11">RegisterIndicator()</a></td>
-<td></td>
-</tr>
-<tr>
-<td><a href="#RegisterIndicator(Symbol-symbol,-IndicatorDataPoint-indicator,-IDataConsolidator-consolidator,-Decimal-selector)13">RegisterIndicator()</a></td>
-<td></td>
-</tr>
-<tr>
-<td><a href="#RegisterIndicator(Symbol-symbol,-T-T,-Resolution-resolution)15">RegisterIndicator()</a></td>
-<td></td>
-</tr>
-<tr>
-<td><a href="#RegisterIndicator(Symbol-symbol,-IndicatorBase`1[T-indicator,-Resolution-resolution,-T-T)17">RegisterIndicator()</a></td>
-<td></td>
-</tr>
-<tr>
-<td><a href="#RegisterIndicator(Symbol-symbol,-IndicatorBase`1[T-indicator,-TimeSpan-resolution,-IBaseData,T-selector)19">RegisterIndicator()</a></td>
-<td></td>
-</tr>
-<tr>
-<td><a href="#RegisterIndicator(Symbol-symbol,-IndicatorBase`1[T-indicator,-IDataConsolidator-consolidator,-IBaseData,T-selector)21">RegisterIndicator()</a></td>
-<td></td>
-</tr>
-<tr>
 <td><a href="#ResolveConsolidator(Symbol-symbol,-Resolution-resolution,-Type-dataType)1">ResolveConsolidator()</a></td>
-<td>Gets the default consolidator for the specified symbol and resolution</td>
-</tr>
-<tr>
-<td><a href="#ResolveConsolidator(Symbol-symbol,-TimeSpan-timeSpan,-Type-dataType)3">ResolveConsolidator()</a></td>
 <td>Gets the default consolidator for the specified symbol and resolution</td>
 </tr>
 <tr>
@@ -3039,22 +1449,6 @@
 <td>Sets the specified function as the benchmark, this function provides the value of the benchmark at each date/time requested</td>
 </tr>
 <tr>
-<td><a href="#SetBenchmark(SecurityType-securityType,-String-symbol)4">SetBenchmark()</a></td>
-<td>Sets the benchmark used for computing statistics of the algorithm to the specified symbol</td>
-</tr>
-<tr>
-<td><a href="#SetBenchmark(String-ticker)7">SetBenchmark()</a></td>
-<td>Sets the benchmark used for computing statistics of the algorithm to the specified ticker, defaulting to SecurityType.Equity if the ticker doesn't exist in the algorithm</td>
-</tr>
-<tr>
-<td><a href="#SetBenchmark(Symbol-symbol)10">SetBenchmark()</a></td>
-<td>Sets the benchmark used for computing statistics of the algorithm to the specified symbol</td>
-</tr>
-<tr>
-<td><a href="#SetBenchmark(Decimal-Decimal)13">SetBenchmark()</a></td>
-<td>Sets the specified function as the benchmark, this function provides the value of the benchmark at each date/time requested</td>
-</tr>
-<tr>
 <td><a href="#SI(Symbol-symbol,-Decimal-limitMove,-Resolution-resolution)1">SI()</a></td>
 <td>Creates a Wilder Swing Index (SI) indicator for the symbol. The indicator will be automatically updated on the given resolution.</td>
 </tr>
@@ -3077,10 +1471,6 @@
 <tr>
 <td><a href="#STO(Symbol-symbol,-Int32-period,-Int32-kPeriod,-Int32-dPeriod,-Resolution-resolution)1">STO()</a></td>
 <td>Creates a new Stochastic indicator.</td>
-</tr>
-<tr>
-<td><a href="#STO(Symbol-symbol,-Int32-period,-Resolution-resolution)2">STO()</a></td>
-<td>Overload short hand to create a new Stochastic indicator; defaulting to the 3 period for dStoch</td>
 </tr>
 <tr>
 <td><a href="#STR(Symbol-symbol,-Int32-period,-Decimal-multiplier,-MovingAverageType-movingAverageType,-Resolution-resolution)1">STR()</a></td>
@@ -3119,10 +1509,6 @@
 <td></td>
 </tr>
 <tr>
-<td><a href="#TRIN(Symbol[]-symbols,-Resolution-resolution)2">TRIN()</a></td>
-<td>Creates a new Arms Index indicator</td>
-</tr>
-<tr>
 <td><a href="#TRIX(Symbol-symbol,-Int32-period,-Resolution-resolution,-Decimal-selector)1">TRIX()</a></td>
 <td>Creates a new Trix indicator.</td>
 </tr>
@@ -3143,28 +1529,8 @@
 <td>Creates an VolumeWeightedAveragePrice (VWAP) indicator for the symbol. The indicator will be automatically updated on the given resolution.</td>
 </tr>
 <tr>
-<td><a href="#VWAP(Symbol-symbol)2">VWAP()</a></td>
-<td>Creates the canonical VWAP indicator that resets each day. The indicator will be automatically updated on the security's configured resolution.</td>
-</tr>
-<tr>
 <td><a href="#WarmUpIndicator(Symbol-symbol,-PyObject-indicator,-Resolution-resolution,-PyObject-selector)1">WarmUpIndicator()</a></td>
 <td>Warms up a given indicator with historical data</td>
-</tr>
-<tr>
-<td><a href="#WarmUpIndicator(Symbol-symbol,-IndicatorDataPoint-indicator,-Resolution-resolution,-Decimal-selector)3">WarmUpIndicator()</a></td>
-<td></td>
-</tr>
-<tr>
-<td><a href="#WarmUpIndicator(Symbol-symbol,-IndicatorDataPoint-indicator,-TimeSpan-period,-Decimal-selector)5">WarmUpIndicator()</a></td>
-<td></td>
-</tr>
-<tr>
-<td><a href="#WarmUpIndicator(Symbol-symbol,-IndicatorBase`1[T-indicator,-Resolution-resolution,-IBaseData,T-selector)7">WarmUpIndicator()</a></td>
-<td></td>
-</tr>
-<tr>
-<td><a href="#WarmUpIndicator(Symbol-symbol,-IndicatorBase`1[T-indicator,-TimeSpan-period,-IBaseData,T-selector)9">WarmUpIndicator()</a></td>
-<td></td>
 </tr>
 <tr>
 <td><a href="#WILR(Symbol-symbol,-Int32-period,-Resolution-resolution,-IBaseDataBar-selector)1">WILR()</a></td>
@@ -3174,28 +1540,20 @@
 <td><a href="#WWMA(Symbol-symbol,-Int32-period,-Resolution-resolution,-Decimal-selector)1">WWMA()</a></td>
 <td>Creates a WilderMovingAverage indicator for the symbol. The indicator will be automatically updated on the given resolution.</td>
 </tr>
+</tbody></table>
+</div><div id="Live Trading" class="ref-table-container">
+<table cellspacing="0" cellpadding="0">
+<tbody>
 <tr>
 <td><a href="#SetRunTimeError(Exception-exception)1">SetRunTimeError()</a></td>
 <td>Set the runtime error</td>
 </tr>
+</tbody></table>
+</div><div id="Logging" class="ref-table-container">
+<table cellspacing="0" cellpadding="0">
+<tbody>
 <tr>
 <td><a href="#Debug(PyObject-message)1">Debug()</a></td>
-<td>Send a debug message to the web console:</td>
-</tr>
-<tr>
-<td><a href="#Debug(String-message)2">Debug()</a></td>
-<td>Send a debug message to the web console:</td>
-</tr>
-<tr>
-<td><a href="#Debug(Int32-message)3">Debug()</a></td>
-<td>Send a debug message to the web console:</td>
-</tr>
-<tr>
-<td><a href="#Debug(Double-message)4">Debug()</a></td>
-<td>Send a debug message to the web console:</td>
-</tr>
-<tr>
-<td><a href="#Debug(Decimal-message)5">Debug()</a></td>
 <td>Send a debug message to the web console:</td>
 </tr>
 <tr>
@@ -3203,51 +1561,11 @@
 <td>Send a string error message to the Console.</td>
 </tr>
 <tr>
-<td><a href="#Error(String-message)2">Error()</a></td>
-<td>Send a string error message to the Console.</td>
-</tr>
-<tr>
-<td><a href="#Error(Int32-message)3">Error()</a></td>
-<td>Send a int error message to the Console.</td>
-</tr>
-<tr>
-<td><a href="#Error(Double-message)4">Error()</a></td>
-<td>Send a double error message to the Console.</td>
-</tr>
-<tr>
-<td><a href="#Error(Decimal-message)5">Error()</a></td>
-<td>Send a decimal error message to the Console.</td>
-</tr>
-<tr>
-<td><a href="#Error(Exception-error)6">Error()</a></td>
-<td>Send a string error message to the Console.</td>
-</tr>
-<tr>
 <td><a href="#Log(PyObject-message)1">Log()</a></td>
 <td>Added another method for logging if user guessed.</td>
 </tr>
 <tr>
-<td><a href="#Log(String-message)2">Log()</a></td>
-<td>Added another method for logging if user guessed.</td>
-</tr>
-<tr>
-<td><a href="#Log(Int32-message)3">Log()</a></td>
-<td>Added another method for logging if user guessed.</td>
-</tr>
-<tr>
-<td><a href="#Log(Double-message)4">Log()</a></td>
-<td>Added another method for logging if user guessed.</td>
-</tr>
-<tr>
-<td><a href="#Log(Decimal-message)5">Log()</a></td>
-<td>Added another method for logging if user guessed.</td>
-</tr>
-<tr>
 <td><a href="#Quit(PyObject-message)1">Quit()</a></td>
-<td>Terminate the algorithm after processing the current event handler.</td>
-</tr>
-<tr>
-<td><a href="#Quit(String-message)2">Quit()</a></td>
 <td>Terminate the algorithm after processing the current event handler.</td>
 </tr>
 <tr>
@@ -3258,6 +1576,14 @@
 <td><a href="#SetQuit(Boolean-quit)1">SetQuit()</a></td>
 <td>Set the Quit flag property of the algorithm.</td>
 </tr>
+</tbody></table>
+</div><div id="MachineLearning" class="ref-table-container">
+<table cellspacing="0" cellpadding="0">
+<tbody>
+</tbody></table>
+</div><div id="Modeling" class="ref-table-container">
+<table cellspacing="0" cellpadding="0">
+<tbody>
 <tr>
 <td><a href="#SetBrokerageMessageHandler(IBrokerageMessageHandler-handler)1">SetBrokerageMessageHandler()</a></td>
 <td>Sets the implementation used to handle messages from the brokerage. The default implementation will forward messages to debug or error and when a <code>Error</code> occurs, the algorithm is stopped.</td>
@@ -3267,29 +1593,13 @@
 <td>Sets the brokerage to emulate in backtesting or paper trading. This can be used to set a custom brokerage model.</td>
 </tr>
 <tr>
-<td><a href="#SetBrokerageModel(BrokerageName-brokerage,-AccountType-accountType)2">SetBrokerageModel()</a></td>
-<td>Sets the brokerage to emulate in backtesting or paper trading. This can be used for brokerages that have been implemented in LEAN</td>
-</tr>
-<tr>
-<td><a href="#SetBrokerageModel(IBrokerageModel-model)3">SetBrokerageModel()</a></td>
-<td>Sets the brokerage to emulate in backtesting or paper trading. This can be used to set a custom brokerage model.</td>
-</tr>
-<tr>
 <td><a href="#SetSecurityInitializer(PyObject-securityInitializer)1">SetSecurityInitializer()</a></td>
 <td>Sets the security initializer function, used to initialize/configure securities after creation</td>
 </tr>
-<tr>
-<td><a href="#SetSecurityInitializer(ISecurityInitializer-securityInitializer)3">SetSecurityInitializer()</a></td>
-<td>Sets the security initializer, used to initialize/configure securities after creation. The initializer will be applied to all universes and manually added securities.</td>
-</tr>
-<tr>
-<td><a href="#SetSecurityInitializer(Boolean-Boolean)5">SetSecurityInitializer()</a></td>
-<td></td>
-</tr>
-<tr>
-<td><a href="#SetSecurityInitializer(Security-Security)7">SetSecurityInitializer()</a></td>
-<td></td>
-</tr>
+</tbody></table>
+</div><div id="Parameter and Optimization" class="ref-table-container">
+<table cellspacing="0" cellpadding="0">
+<tbody>
 <tr>
 <td><a href="#GetParameters()1">GetParameters()</a></td>
 <td>Gets a read-only dictionary with all current parameters</td>
@@ -3298,22 +1608,18 @@
 <td><a href="#SetParameters(String-String)1">SetParameters()</a></td>
 <td></td>
 </tr>
+</tbody></table>
+</div><div id="Scheduled Events" class="ref-table-container">
+<table cellspacing="0" cellpadding="0">
+<tbody>
 <tr>
 <td><a href="#Train(PyObject-trainingCode)1">Train()</a></td>
 <td>Schedules the provided training code to execute immediately</td>
 </tr>
-<tr>
-<td><a href="#Train(IDateRule-dateRule,-ITimeRule-timeRule,-PyObject-trainingCode)3">Train()</a></td>
-<td>Schedules the training code to run using the specified date and time rules</td>
-</tr>
-<tr>
-<td><a href="#Train(Action-trainingCode)5">Train()</a></td>
-<td>Schedules the provided training code to execute immediately</td>
-</tr>
-<tr>
-<td><a href="#Train(IDateRule-dateRule,-ITimeRule-timeRule,-Action-trainingCode)7">Train()</a></td>
-<td>Schedules the training code to run using the specified date and time rules</td>
-</tr>
+</tbody></table>
+</div><div id="Securities and Portfolio" class="ref-table-container">
+<table cellspacing="0" cellpadding="0">
+<tbody>
 <tr>
 <td><a href="#CompositeFIGI(String-compositeFigi,-DateTime-DateTime)1">CompositeFIGI()</a></td>
 <td>Converts a composite FIGI identifier into a <code>Symbol</code></td>
@@ -3343,43 +1649,15 @@
 <td>Sets the specified function as the benchmark, this function provides the value of the benchmark at each date/time requested</td>
 </tr>
 <tr>
-<td><a href="#SetBenchmark(SecurityType-securityType,-String-symbol)3">SetBenchmark()</a></td>
-<td>Sets the benchmark used for computing statistics of the algorithm to the specified symbol</td>
-</tr>
-<tr>
-<td><a href="#SetBenchmark(String-ticker)6">SetBenchmark()</a></td>
-<td>Sets the benchmark used for computing statistics of the algorithm to the specified ticker, defaulting to SecurityType.Equity if the ticker doesn't exist in the algorithm</td>
-</tr>
-<tr>
-<td><a href="#SetBenchmark(Symbol-symbol)9">SetBenchmark()</a></td>
-<td>Sets the benchmark used for computing statistics of the algorithm to the specified symbol</td>
-</tr>
-<tr>
-<td><a href="#SetBenchmark(Decimal-Decimal)12">SetBenchmark()</a></td>
-<td>Sets the specified function as the benchmark, this function provides the value of the benchmark at each date/time requested</td>
-</tr>
-<tr>
 <td><a href="#SetCash(Double-startingCash)1">SetCash()</a></td>
 <td>Set initial cash for the strategy while backtesting. During live mode this value is ignored and replaced with the actual cash of your brokerage account.</td>
 </tr>
-<tr>
-<td><a href="#SetCash(Int32-startingCash)2">SetCash()</a></td>
-<td>Set initial cash for the strategy while backtesting. During live mode this value is ignored and replaced with the actual cash of your brokerage account.</td>
-</tr>
-<tr>
-<td><a href="#SetCash(Decimal-startingCash)3">SetCash()</a></td>
-<td>Set initial cash for the strategy while backtesting. During live mode this value is ignored and replaced with the actual cash of your brokerage account.</td>
-</tr>
-<tr>
-<td><a href="#SetCash(String-symbol,-Decimal-startingCash,-Decimal-conversionRate)4">SetCash()</a></td>
-<td>Set the cash for the specified symbol</td>
-</tr>
+</tbody></table>
+</div><div id="Trading and Orders" class="ref-table-container">
+<table cellspacing="0" cellpadding="0">
+<tbody>
 <tr>
 <td><a href="#AddRiskManagement(IRiskManagementModel-riskManagement)1">AddRiskManagement()</a></td>
-<td>Adds a new risk management model</td>
-</tr>
-<tr>
-<td><a href="#AddRiskManagement(PyObject-riskManagement)3">AddRiskManagement()</a></td>
 <td>Adds a new risk management model</td>
 </tr>
 <tr>
@@ -3391,27 +1669,7 @@
 <td>Buy Option Strategy (Alias of Order)</td>
 </tr>
 <tr>
-<td><a href="#Buy(Symbol-symbol,-Int32-quantity)2">Buy()</a></td>
-<td>Buy Stock (Alias of Order)</td>
-</tr>
-<tr>
-<td><a href="#Buy(Symbol-symbol,-Double-quantity)3">Buy()</a></td>
-<td>Buy Stock (Alias of Order)</td>
-</tr>
-<tr>
-<td><a href="#Buy(Symbol-symbol,-Decimal-quantity)4">Buy()</a></td>
-<td>Buy Stock (Alias of Order)</td>
-</tr>
-<tr>
-<td><a href="#Buy(Symbol-symbol,-Single-quantity)5">Buy()</a></td>
-<td>Buy Stock (Alias of Order)</td>
-</tr>
-<tr>
 <td><a href="#CalculateOrderQuantity(Symbol-symbol,-Double-target)1">CalculateOrderQuantity()</a></td>
-<td>Calculate the order quantity to achieve target-percent holdings.</td>
-</tr>
-<tr>
-<td><a href="#CalculateOrderQuantity(Symbol-symbol,-Decimal-target)2">CalculateOrderQuantity()</a></td>
 <td>Calculate the order quantity to achieve target-percent holdings.</td>
 </tr>
 <tr>
@@ -3427,23 +1685,7 @@
 <td>Send a limit if touched order to the transaction handler:</td>
 </tr>
 <tr>
-<td><a href="#LimitIfTouchedOrder(Symbol-symbol,-Double-quantity,-Decimal-triggerPrice,-Decimal-limitPrice,-String-tag,-IOrderProperties-orderProperties)2">LimitIfTouchedOrder()</a></td>
-<td>Send a limit if touched order to the transaction handler:</td>
-</tr>
-<tr>
-<td><a href="#LimitIfTouchedOrder(Symbol-symbol,-Decimal-quantity,-Decimal-triggerPrice,-Decimal-limitPrice,-String-tag,-IOrderProperties-orderProperties)3">LimitIfTouchedOrder()</a></td>
-<td>Send a limit if touched order to the transaction handler:</td>
-</tr>
-<tr>
 <td><a href="#LimitOrder(Symbol-symbol,-Int32-quantity,-Decimal-limitPrice,-String-tag,-IOrderProperties-orderProperties)1">LimitOrder()</a></td>
-<td>Send a limit order to the transaction handler:</td>
-</tr>
-<tr>
-<td><a href="#LimitOrder(Symbol-symbol,-Double-quantity,-Decimal-limitPrice,-String-tag,-IOrderProperties-orderProperties)2">LimitOrder()</a></td>
-<td>Send a limit order to the transaction handler:</td>
-</tr>
-<tr>
-<td><a href="#LimitOrder(Symbol-symbol,-Decimal-quantity,-Decimal-limitPrice,-String-tag,-IOrderProperties-orderProperties)3">LimitOrder()</a></td>
 <td>Send a limit order to the transaction handler:</td>
 </tr>
 <tr>
@@ -3455,23 +1697,7 @@
 <td>Market on close order implementation: Send a market order when the exchange closes</td>
 </tr>
 <tr>
-<td><a href="#MarketOnCloseOrder(Symbol-symbol,-Double-quantity,-String-tag,-IOrderProperties-orderProperties)2">MarketOnCloseOrder()</a></td>
-<td>Market on close order implementation: Send a market order when the exchange closes</td>
-</tr>
-<tr>
-<td><a href="#MarketOnCloseOrder(Symbol-symbol,-Decimal-quantity,-String-tag,-IOrderProperties-orderProperties)3">MarketOnCloseOrder()</a></td>
-<td>Market on close order implementation: Send a market order when the exchange closes</td>
-</tr>
-<tr>
 <td><a href="#MarketOnOpenOrder(Symbol-symbol,-Double-quantity,-String-tag,-IOrderProperties-orderProperties)1">MarketOnOpenOrder()</a></td>
-<td>Market on open order implementation: Send a market order when the exchange opens</td>
-</tr>
-<tr>
-<td><a href="#MarketOnOpenOrder(Symbol-symbol,-Int32-quantity,-String-tag,-IOrderProperties-orderProperties)2">MarketOnOpenOrder()</a></td>
-<td>Market on open order implementation: Send a market order when the exchange opens</td>
-</tr>
-<tr>
-<td><a href="#MarketOnOpenOrder(Symbol-symbol,-Decimal-quantity,-String-tag,-IOrderProperties-orderProperties)3">MarketOnOpenOrder()</a></td>
 <td>Market on open order implementation: Send a market order when the exchange opens</td>
 </tr>
 <tr>
@@ -3479,87 +1705,15 @@
 <td>Market order implementation: Send a market order and wait for it to be filled.</td>
 </tr>
 <tr>
-<td><a href="#MarketOrder(Symbol-symbol,-Double-quantity,-Boolean-asynchronous,-String-tag,-IOrderProperties-orderProperties)2">MarketOrder()</a></td>
-<td>Market order implementation: Send a market order and wait for it to be filled.</td>
-</tr>
-<tr>
-<td><a href="#MarketOrder(Symbol-symbol,-Decimal-quantity,-Boolean-asynchronous,-String-tag,-IOrderProperties-orderProperties)3">MarketOrder()</a></td>
-<td>Market order implementation: Send a market order and wait for it to be filled.</td>
-</tr>
-<tr>
-<td><a href="#MarketOrder(Security-security,-Decimal-quantity,-Boolean-asynchronous,-String-tag,-IOrderProperties-orderProperties)4">MarketOrder()</a></td>
-<td>Market order implementation: Send a market order and wait for it to be filled.</td>
-</tr>
-<tr>
 <td><a href="#Order(OptionStrategy-strategy,-Int32-quantity,-IOrderProperties-orderProperties)1">Order()</a></td>
 <td>Issue an order/trade for buying/selling an option strategy</td>
-</tr>
-<tr>
-<td><a href="#Order(Symbol-symbol,-Int32-quantity,-OrderType-type,-Boolean-asynchronous,-String-tag,-IOrderProperties-orderProperties)2">Order()</a></td>
-<td>Obsolete implementation of Order method accepting a OrderType. This was deprecated since it was impossible to generate other orders via this method. Any calls to this method will always default to a Market Order.</td>
-</tr>
-<tr>
-<td><a href="#Order(Symbol-symbol,-Decimal-quantity,-OrderType-type)3">Order()</a></td>
-<td>Obsolete method for placing orders.</td>
-</tr>
-<tr>
-<td><a href="#Order(Symbol-symbol,-Int32-quantity,-OrderType-type)4">Order()</a></td>
-<td>Obsolete method for placing orders.</td>
-</tr>
-<tr>
-<td><a href="#Order(Symbol-symbol,-Double-quantity)5">Order()</a></td>
-<td>Issue an order/trade for asset: Alias wrapper for Order(string, int);</td>
-</tr>
-<tr>
-<td><a href="#Order(Symbol-symbol,-Int32-quantity)6">Order()</a></td>
-<td>Issue an order/trade for asset</td>
-</tr>
-<tr>
-<td><a href="#Order(Symbol-symbol,-Decimal-quantity)7">Order()</a></td>
-<td>Issue an order/trade for asset</td>
-</tr>
-<tr>
-<td><a href="#Order(Symbol-symbol,-Decimal-quantity,-Boolean-asynchronous,-String-tag,-IOrderProperties-orderProperties)8">Order()</a></td>
-<td>Wrapper for market order method: submit a new order for quantity of symbol using type order.</td>
 </tr>
 <tr>
 <td><a href="#Sell(OptionStrategy-strategy,-Int32-quantity,-IOrderProperties-orderProperties)1">Sell()</a></td>
 <td>Sell Option Strategy (alias of Order)</td>
 </tr>
 <tr>
-<td><a href="#Sell(Symbol-symbol,-Int32-quantity)2">Sell()</a></td>
-<td>Sell stock (alias of Order)</td>
-</tr>
-<tr>
-<td><a href="#Sell(Symbol-symbol,-Double-quantity)3">Sell()</a></td>
-<td>Sell stock (alias of Order)</td>
-</tr>
-<tr>
-<td><a href="#Sell(Symbol-symbol,-Single-quantity)4">Sell()</a></td>
-<td>Sell stock (alias of Order)</td>
-</tr>
-<tr>
-<td><a href="#Sell(Symbol-symbol,-Decimal-quantity)5">Sell()</a></td>
-<td>Sell stock (alias of Order)</td>
-</tr>
-<tr>
 <td><a href="#SetBenchmark(PyObject-benchmark)1">SetBenchmark()</a></td>
-<td>Sets the specified function as the benchmark, this function provides the value of the benchmark at each date/time requested</td>
-</tr>
-<tr>
-<td><a href="#SetBenchmark(SecurityType-securityType,-String-symbol)2">SetBenchmark()</a></td>
-<td>Sets the benchmark used for computing statistics of the algorithm to the specified symbol</td>
-</tr>
-<tr>
-<td><a href="#SetBenchmark(String-ticker)5">SetBenchmark()</a></td>
-<td>Sets the benchmark used for computing statistics of the algorithm to the specified ticker, defaulting to SecurityType.Equity if the ticker doesn't exist in the algorithm</td>
-</tr>
-<tr>
-<td><a href="#SetBenchmark(Symbol-symbol)8">SetBenchmark()</a></td>
-<td>Sets the benchmark used for computing statistics of the algorithm to the specified symbol</td>
-</tr>
-<tr>
-<td><a href="#SetBenchmark(Decimal-Decimal)11">SetBenchmark()</a></td>
 <td>Sets the specified function as the benchmark, this function provides the value of the benchmark at each date/time requested</td>
 </tr>
 <tr>
@@ -3567,43 +1721,15 @@
 <td>Sets the execution model</td>
 </tr>
 <tr>
-<td><a href="#SetExecution(PyObject-execution)3">SetExecution()</a></td>
-<td>Sets the execution model</td>
-</tr>
-<tr>
 <td><a href="#SetHoldings(PortfolioTarget-PortfolioTarget,-Boolean-liquidateExistingHoldings,-String-tag,-IOrderProperties-orderProperties)1">SetHoldings()</a></td>
 <td>Sets holdings for a collection of targets. The implementation will order the provided targets executing first those that reduce a position, freeing margin.</td>
-</tr>
-<tr>
-<td><a href="#SetHoldings(Symbol-symbol,-Double-percentage,-Boolean-liquidateExistingHoldings,-String-tag,-IOrderProperties-orderProperties)2">SetHoldings()</a></td>
-<td>Alias for SetHoldings to avoid the M-decimal errors.</td>
-</tr>
-<tr>
-<td><a href="#SetHoldings(Symbol-symbol,-Single-percentage,-Boolean-liquidateExistingHoldings,-String-tag,-IOrderProperties-orderProperties)3">SetHoldings()</a></td>
-<td>Alias for SetHoldings to avoid the M-decimal errors.</td>
-</tr>
-<tr>
-<td><a href="#SetHoldings(Symbol-symbol,-Int32-percentage,-Boolean-liquidateExistingHoldings,-String-tag,-IOrderProperties-orderProperties)4">SetHoldings()</a></td>
-<td>Alias for SetHoldings to avoid the M-decimal errors.</td>
-</tr>
-<tr>
-<td><a href="#SetHoldings(Symbol-symbol,-Decimal-percentage,-Boolean-liquidateExistingHoldings,-String-tag,-IOrderProperties-orderProperties)5">SetHoldings()</a></td>
-<td>Automatically place a market order which will set the holdings to between 100% or -100% of *PORTFOLIO VALUE*. E.g. SetHoldings("AAPL", 0.1); SetHoldings("IBM", -0.2); -&gt; Sets portfolio as long 10% APPL and short 20% IBM E.g. SetHoldings("AAPL", 2); -&gt; Sets apple to 2x leveraged with all our cash. If the market is closed, place a market on open order.</td>
 </tr>
 <tr>
 <td><a href="#SetPortfolioConstruction(IPortfolioConstructionModel-portfolioConstruction)1">SetPortfolioConstruction()</a></td>
 <td>Sets the portfolio construction model</td>
 </tr>
 <tr>
-<td><a href="#SetPortfolioConstruction(PyObject-portfolioConstruction)3">SetPortfolioConstruction()</a></td>
-<td>Sets the portfolio construction model</td>
-</tr>
-<tr>
 <td><a href="#SetRiskManagement(IRiskManagementModel-riskManagement)1">SetRiskManagement()</a></td>
-<td>Sets the risk management model</td>
-</tr>
-<tr>
-<td><a href="#SetRiskManagement(PyObject-riskManagement)3">SetRiskManagement()</a></td>
 <td>Sets the risk management model</td>
 </tr>
 <tr>
@@ -3615,10 +1741,6 @@
 <td>Determines if the Symbol is shortable at the brokerage</td>
 </tr>
 <tr>
-<td><a href="#Shortable(Symbol-symbol,-Decimal-shortQuantity)2">Shortable()</a></td>
-<td>Determines if the Symbol is shortable at the brokerage</td>
-</tr>
-<tr>
 <td><a href="#ShortableQuantity(Symbol-symbol)1">ShortableQuantity()</a></td>
 <td>Gets the quantity shortable for the given asset</td>
 </tr>
@@ -3627,175 +1749,27 @@
 <td>Send a stop limit order to the transaction handler:</td>
 </tr>
 <tr>
-<td><a href="#StopLimitOrder(Symbol-symbol,-Double-quantity,-Decimal-stopPrice,-Decimal-limitPrice,-String-tag,-IOrderProperties-orderProperties)2">StopLimitOrder()</a></td>
-<td>Send a stop limit order to the transaction handler:</td>
-</tr>
-<tr>
-<td><a href="#StopLimitOrder(Symbol-symbol,-Decimal-quantity,-Decimal-stopPrice,-Decimal-limitPrice,-String-tag,-IOrderProperties-orderProperties)3">StopLimitOrder()</a></td>
-<td>Send a stop limit order to the transaction handler:</td>
-</tr>
-<tr>
 <td><a href="#StopMarketOrder(Symbol-symbol,-Int32-quantity,-Decimal-stopPrice,-String-tag,-IOrderProperties-orderProperties)1">StopMarketOrder()</a></td>
 <td>Create a stop market order and return the newly created order id; or negative if the order is invalid</td>
 </tr>
-<tr>
-<td><a href="#StopMarketOrder(Symbol-symbol,-Double-quantity,-Decimal-stopPrice,-String-tag,-IOrderProperties-orderProperties)2">StopMarketOrder()</a></td>
-<td>Create a stop market order and return the newly created order id; or negative if the order is invalid</td>
-</tr>
-<tr>
-<td><a href="#StopMarketOrder(Symbol-symbol,-Decimal-quantity,-Decimal-stopPrice,-String-tag,-IOrderProperties-orderProperties)3">StopMarketOrder()</a></td>
-<td>Create a stop market order and return the newly created order id; or negative if the order is invalid</td>
-</tr>
+</tbody></table>
+</div><div id="Universes" class="ref-table-container">
+<table cellspacing="0" cellpadding="0">
+<tbody>
 <tr>
 <td><a href="#AddUniverse(Universe-universe)1">AddUniverse()</a></td>
 <td>Adds the universe to the algorithm</td>
-</tr>
-<tr>
-<td><a href="#AddUniverse(String-name,-Symbol-IEnumerable`1)2">AddUniverse()</a></td>
-<td></td>
-</tr>
-<tr>
-<td><a href="#AddUniverse(String-name,-String-IEnumerable`1)3">AddUniverse()</a></td>
-<td></td>
-</tr>
-<tr>
-<td><a href="#AddUniverse(String-name,-UniverseSettings-universeSettings,-Symbol]-selector)4">AddUniverse()</a></td>
-<td></td>
-</tr>
-<tr>
-<td><a href="#AddUniverse(String-name,-UniverseSettings-universeSettings,-String]-selector)5">AddUniverse()</a></td>
-<td></td>
-</tr>
-<tr>
-<td><a href="#AddUniverse(String-name,-Resolution-resolution,-Symbol]-selector)6">AddUniverse()</a></td>
-<td></td>
-</tr>
-<tr>
-<td><a href="#AddUniverse(String-name,-Resolution-resolution,-String]-selector)7">AddUniverse()</a></td>
-<td></td>
-</tr>
-<tr>
-<td><a href="#AddUniverse(String-name,-Resolution-resolution,-UniverseSettings-universeSettings,-Symbol]-selector)8">AddUniverse()</a></td>
-<td></td>
-</tr>
-<tr>
-<td><a href="#AddUniverse(String-name,-Resolution-resolution,-UniverseSettings-universeSettings,-String]-selector)9">AddUniverse()</a></td>
-<td></td>
-</tr>
-<tr>
-<td><a href="#AddUniverse(SecurityType-securityType,-String-name,-Resolution-resolution,-String-market,-Symbol]-selector)10">AddUniverse()</a></td>
-<td></td>
-</tr>
-<tr>
-<td><a href="#AddUniverse(SecurityType-securityType,-String-name,-Resolution-resolution,-String-market,-String]-selector)11">AddUniverse()</a></td>
-<td></td>
-</tr>
-<tr>
-<td><a href="#AddUniverse(SecurityType-securityType,-String-name,-Resolution-resolution,-String-market,-UniverseSettings-universeSettings,-Symbol]-selector)12">AddUniverse()</a></td>
-<td></td>
-</tr>
-<tr>
-<td><a href="#AddUniverse(SecurityType-securityType,-String-name,-Resolution-resolution,-String-market,-UniverseSettings-universeSettings,-String]-selector)13">AddUniverse()</a></td>
-<td></td>
-</tr>
-<tr>
-<td><a href="#AddUniverse(Symbol-IEnumerable`1)14">AddUniverse()</a></td>
-<td></td>
-</tr>
-<tr>
-<td><a href="#AddUniverse(Symbol]-coarseSelector,-Symbol-IEnumerable`1)15">AddUniverse()</a></td>
-<td></td>
-</tr>
-<tr>
-<td><a href="#AddUniverse(Universe-universe,-Symbol]-fineSelector)16">AddUniverse()</a></td>
-<td></td>
-</tr>
-<tr>
-<td><a href="#AddUniverse(String-name,-String-IEnumerable`1)17">AddUniverse()</a></td>
-<td></td>
-</tr>
-<tr>
-<td><a href="#AddUniverse(String-name,-Resolution-resolution,-String]-selector)18">AddUniverse()</a></td>
-<td></td>
-</tr>
-<tr>
-<td><a href="#AddUniverse(SecurityType-securityType,-String-name,-Resolution-resolution,-String-market,-UniverseSettings-universeSettings,-String]-selector)19">AddUniverse()</a></td>
-<td></td>
-</tr>
-<tr>
-<td><a href="#AddUniverse(PyObject-T,-String-name,-Resolution-resolution,-UniverseSettings-universeSettings,-PyObject-selector)20">AddUniverse()</a></td>
-<td>Creates a new universe and adds it to the algorithm. This will use the default universe settings specified via the <code>UniverseSettings</code> property. This universe will use the defaults of SecurityType.Equity, and Market.USA</td>
-</tr>
-<tr>
-<td><a href="#AddUniverse(PyObject-T,-String-name,-UniverseSettings-universeSettings,-PyObject-selector)21">AddUniverse()</a></td>
-<td>Creates a new universe and adds it to the algorithm. This will use the default universe settings specified via the <code>UniverseSettings</code> property. This universe will use the defaults of SecurityType.Equity, Resolution.Daily, and Market.USA</td>
-</tr>
-<tr>
-<td><a href="#AddUniverse(PyObject-T,-SecurityType-securityType,-String-name,-Resolution-resolution,-String-market,-PyObject-selector)22">AddUniverse()</a></td>
-<td>Creates a new universe and adds it to the algorithm. This will use the default universe settings specified via the <code>UniverseSettings</code> property.</td>
-</tr>
-<tr>
-<td><a href="#AddUniverse(PyObject-T,-SecurityType-securityType,-String-name,-Resolution-resolution,-String-market,-UniverseSettings-universeSettings,-PyObject-selector)23">AddUniverse()</a></td>
-<td>Creates a new universe and adds it to the algorithm</td>
-</tr>
-<tr>
-<td><a href="#AddUniverse(Type-dataType,-SecurityType-securityType,-String-name,-Resolution-resolution,-String-market,-UniverseSettings-universeSettings,-PyObject-pySelector)24">AddUniverse()</a></td>
-<td>Creates a new universe and adds it to the algorithm</td>
-</tr>
-<tr>
-<td><a href="#AddUniverse(PyObject-pyObject)25">AddUniverse()</a></td>
-<td>Creates a new universe and adds it to the algorithm. This is for coarse fundamental US Equity data and will be executed on day changes in the NewYork time zone (<code>NewYork</code></td>
-</tr>
-<tr>
-<td><a href="#AddUniverse(PyObject-pyObject,-PyObject-pyfine)26">AddUniverse()</a></td>
-<td>Creates a new universe and adds it to the algorithm. This is for coarse and fine fundamental US Equity data and will be executed on day changes in the NewYork time zone (<code>NewYork</code></td>
-</tr>
-<tr>
-<td><a href="#AddUniverse(String-name,-Resolution-resolution,-PyObject-pySelector)27">AddUniverse()</a></td>
-<td>Creates a new universe and adds it to the algorithm. This can be used to return a list of string symbols retrieved from anywhere and will loads those symbols under the US Equity market.</td>
-</tr>
-<tr>
-<td><a href="#AddUniverse(String-name,-PyObject-pySelector)28">AddUniverse()</a></td>
-<td>Creates a new universe and adds it to the algorithm. This can be used to return a list of string symbols retrieved from anywhere and will loads those symbols under the US Equity market.</td>
-</tr>
-<tr>
-<td><a href="#AddUniverse(SecurityType-securityType,-String-name,-Resolution-resolution,-String-market,-UniverseSettings-universeSettings,-PyObject-pySelector)29">AddUniverse()</a></td>
-<td>Creates a new user defined universe that will fire on the requested resolution during market hours.</td>
-</tr>
-<tr>
-<td><a href="#AddUniverse(PyObject-T,-String-name,-PyObject-selector)30">AddUniverse()</a></td>
-<td>Creates a new universe and adds it to the algorithm. This will use the default universe settings specified via the <code>UniverseSettings</code> property. This universe will use the defaults of SecurityType.Equity, Resolution.Daily, Market.USA, and UniverseSettings</td>
-</tr>
-<tr>
-<td><a href="#AddUniverse(PyObject-T,-String-name,-Resolution-resolution,-PyObject-selector)31">AddUniverse()</a></td>
-<td>Creates a new universe and adds it to the algorithm. This will use the default universe settings specified via the <code>UniverseSettings</code> property. This universe will use the defaults of SecurityType.Equity, Market.USA and UniverseSettings</td>
 </tr>
 <tr>
 <td><a href="#AddUniverseOptions(Symbol-underlyingSymbol,-OptionFilterUniverse-optionFilter)1">AddUniverseOptions()</a></td>
 <td>Adds a new universe that creates options of the security by monitoring any changes in the Universe the provided security is in. Additionally, a filter can be applied to the options generated when the universe of the security changes.</td>
 </tr>
 <tr>
-<td><a href="#AddUniverseOptions(Universe-universe,-OptionFilterUniverse-optionFilter)2">AddUniverseOptions()</a></td>
-<td>Creates a new universe selection model and adds it to the algorithm. This universe selection model will chain to the security changes of a given <code>Universe</code> selection output and create a new <see cref="T:QuantConnect.Data.UniverseSelection.OptionChainUniverse" /> for each of them</td>
-</tr>
-<tr>
-<td><a href="#AddUniverseOptions(PyObject-universe,-PyObject-optionFilter)3">AddUniverseOptions()</a></td>
-<td>Creates a new universe selection model and adds it to the algorithm. This universe selection model will chain to the security changes of a given <code>Universe</code> selection output and create a new <see cref="T:QuantConnect.Data.UniverseSelection.OptionChainUniverse" /> for each of them</td>
-</tr>
-<tr>
 <td><a href="#AddUniverseSelection(IUniverseSelectionModel-universeSelection)1">AddUniverseSelection()</a></td>
 <td>Adds a new universe selection model</td>
 </tr>
 <tr>
-<td><a href="#AddUniverseSelection(PyObject-universeSelection)3">AddUniverseSelection()</a></td>
-<td>Adds a new universe selection model</td>
-</tr>
-<tr>
 <td><a href="#SetUniverseSelection(IUniverseSelectionModel-universeSelection)1">SetUniverseSelection()</a></td>
-<td>Sets the universe selection model</td>
-</tr>
-<tr>
-<td><a href="#SetUniverseSelection(PyObject-universeSelection)3">SetUniverseSelection()</a></td>
 <td>Sets the universe selection model</td>
 </tr>
 </tbody></table>

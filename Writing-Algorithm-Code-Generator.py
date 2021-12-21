@@ -14,47 +14,161 @@ path_ = pathlib.Path(base)
 path_.mkdir(parents=True, exist_ok=True)
 
 with open(path_ / "01 All Available Methods.html", "w", encoding="utf-8") as html_file:
-    html_file.write('''<h3><code>QCAlgorithm</code> class subclasses/methods</h3><hr class="solid">
+    html_file.write('''<style>
+
+  td {
+    vertical-align:text-top;
+    padding: 0 0 1rem 0;
+  }
+
+  .tablinks {
+    font-size: 14px;
+    border: 1px solid #D9E1EB;
+    border-radius: 2px;
+    background-color: #FBFCFD;
+    margin: 0.2rem 0;
+    padding: 5px 10px;
+    font-weight: 600;
+  }
+
+  .api-ref-tag-list {
+    margin: 0.5rem 0rem;
+    display: flex;
+  }
+
+  .ref-table-container {
+    position: relative;
+    border: 1px solid #D9E1EB;
+    border-radius: 4px;
+    padding: 1.2rem;
+    margin: 2rem 0;
+    height: 420px;
+    overflow-x: hidden;
+  }
+
+  .ref-tag-active {
+    color: #fff;
+    border: 1px solid #8F9CA3;
+    background-color: #8F9CA3;
+  }
+
+</style>
+                    
 <script>
 function openTab(evt, category) {
   var i, tabcontent, tablinks;
-
-  tabcontent = document.getElementsByClassName("tabcontent");
-  for (i = 0; i < tabcontent.length; i++) {{
+  
+  tabcontent = document.getElementsByClassName("ref-table-container");
+  for (i = 0; i < tabcontent.length; i++) {
     tabcontent[i].style.display = "none";
   }
 
-  tablinks = document.getElementsByClassName("tablinks");
-  for (i = 0; i < tablinks.length; i++) {{
-    tablinks[i].className = tablinks[i].className.replace("active", "");
+  tablinks = document.getElementsByClassName("tablinks ref-tag-active");
+  for (i = 0; i < tablinks.length; i++) {
+    tablinks[i].className = tablinks[i].className.replace(" ref-tag-active", "");
   }
 
   document.getElementById(category).style.display = "block";
-  evt.currentTarget.className += "active";
+  evt.currentTarget.className += " ref-tag-active";
 }
+
+document.getElementById("All_button").click();
 </script>
-<div class="tab">
-<button class="tablinks" onclick="openTab(event, 'All')">All</button>\n''')
+
+<h3><code>QCAlgorithm</code> class subclasses/methods</h3><hr class="solid">
+
+<div class="api-ref-tag-list">
+
+  <div style="margin-right: 0.8rem;">
+    <button id="All_button" class="tablinks ref-tag-active" onclick="openTab(event, 'All')">All</button>
+  </div>
+  
+  <div>''')
     
     for topic in dir_:
-        html_file.write(f'''<button class="tablinks" onclick="openTab(event, '{topic}')">{topic}</button>\n''')
+        html_file.write(f'''    <button id="{topic}_button" class="tablinks" onclick="openTab(event, '{topic}')">{topic}</button>\n''')
     
-    html_file.write('''</div>
-<div id="All" class="tabcontent">
-<table cellspacing="0" cellpadding="0">
-<tbody>
-</tbody></table>
+    html_file.write('''  </div>
+                    
 </div>''')
 
-    for topic in dir_:    
-        html_file.write(f'''<div id="{topic}" class="tabcontent">
+    for topic in ["All"] + dir_:    
+        html_file.write(f'''<div id="{topic}" class="ref-table-container">
 <table cellspacing="0" cellpadding="0">
 <tbody>
 </tbody></table>
 </div>''')
         
 with open(path_ / "02 Public Members.html", "w", encoding="utf-8") as html_file:
-    html_file.write("""<script>
+    html_file.write("""<style>
+
+    .method-container {
+        border: 1px solid #D9E1EB;
+        border-top: 0;
+        border-radius: 4px;
+        margin-top: 2rem;
+    }
+
+    .method-container > div {
+        padding-left: 1.5rem;
+        padding-right: 1rem;
+        margin-bottom: 2rem;
+    }
+
+    .method-details > div {
+        margin-bottom: 2rem;
+    }
+
+    .method-header {
+        background: #FBFCFD;
+        border-bottom: 1px solid #D9E1EB;
+        border-top: 1px solid #D9E1EB;
+        padding: 1.5rem;
+    }
+
+    .method-header > pre {
+        white-space: pre-line;
+    }
+
+    .method-header:first-child {
+        border-radius: 4px 4px 0px 0px;
+    }
+
+    .method-tag {
+        border: 1px solid #D9E1EB;
+        border-radius: 2px;
+        font-size: 12px;
+        color: #8F9CA3;
+        background-color: transparent;
+        text-transform: uppercase;
+    }
+
+    .method-order {
+        color: #8F9CA3;
+        font-size: 14px;
+    }
+
+    .parameter-table{
+        margin: 2rem 0 2rem -0.25rem;
+    }
+
+    .parameter-table th {
+        padding-bottom: 1rem;
+        text-align: left;
+    }
+
+    .parameter-table td {
+        padding: 1rem 3rem 0 0;
+        vertical-align: top;
+    }
+
+    .method-definition {
+        margin-top: 3rem;
+    }
+
+</style>
+
+<script>
 function ShowHide(className) {
     if (this.value == "Show Details ▼") {
         this.value = "Hide Details ▲";
@@ -72,22 +186,14 @@ function ShowHide(className) {
     }
 };
 
-$(function(){
- $('#close').on('click',function(){
-   $('#danceforme').hide();
- });
- $('#open').on('click',function(){
-   $('#danceforme').show();
- });
-});
-
-function openCategory(category) {
-    openTab(event, category);
+function openTopTab(category) {
     document.body.scrollTop = 0;
     document.documentElement.scrollTop = 0;
+    openTab(event, category);
 }
 </script>
-<p>Below shows all available method members:</p><br/>\n""")
+
+<hr>""")
     
 def Table(input_, previous_name, type_map, j):
     if "DocumentationAttributes" not in input_ or not "DocumentationAttributes":
@@ -104,7 +210,8 @@ def Table(input_, previous_name, type_map, j):
     doc_attr = [x["tag"] for x in input_["DocumentationAttributes"]]
     name = input_["Name"] if "Name" in input_ else input_["ShortType"]
     
-    for tag in doc_attr:
+    for count, tag in enumerate(doc_attr):
+        doc_ref = (input_["DocumentationAttributes"][count]["line"], input_["DocumentationAttributes"][count]["fileName"])
         args = {}
             
         if "Parameters" in input_:
@@ -126,59 +233,59 @@ def Table(input_, previous_name, type_map, j):
                 k = 1
                 
                 for line in lines:
-                    if '<font color="#cdcdcd" size="2px">0/0</font>' in line:
+                    if '<span class="method-order">0/0</span>' in line:
                         line = line.replace(">0/0<", f">{k}/{j}<")
                     
                         k += 1
                         
                     html_file.write(line)
                 
-                write_up, description = Box(input_, doc_attr, type_map, j)
-                html_file.write(f'''<div class="container" style="border: 1px solid #ccc; margin-bottom: 25px">
-{write_up}
-</div>''')
+                write_up, description = Box(input_, doc_attr, doc_ref, type_map, j)
+                html_file.write(write_up)
         
             j = 1
             
         else:
             with open(path_ / f'02 Public Members.html', "rb+") as html_file:
-                html_file.seek(-6, os.SEEK_END)
+                html_file.seek(-10, os.SEEK_END)
                 html_file.truncate()
             
             with open(path_ / f'02 Public Members.html', "a", encoding="utf-8") as html_file:
-                write_up, description = Box(input_, doc_attr, type_map, j)
-                html_file.write(f'''{write_up}
-</div>''')
+                write_up, description = Box(input_, doc_attr, doc_ref, type_map, j)
+                write_up_lines = write_up.split('<div class="method-container">')
+                for line in write_up_lines[1:]:
+                    html_file.write(line)
                 
             j += 1
-        
-        with open(path_ / f'01 All Available Methods.html', "r", encoding="utf-8") as fin:
-            lines = fin.readlines()
-                
-        with open(path_ / f'01 All Available Methods.html', "w", encoding="utf-8") as html_file:
-            active = False
             
-            for line in lines:
-                if '<div id="All" class="tabcontent">' in line or f'<div id="{tag}" class="tabcontent">' in line:
-                    active = True
+        if name != previous_name: 
+            with open(path_ / f'01 All Available Methods.html', "r", encoding="utf-8") as fin:
+                lines = fin.readlines()
+                    
+            with open(path_ / f'01 All Available Methods.html', "w", encoding="utf-8") as html_file:
+                active = False
                 
-                if active and '</tbody></table>' in line:
-                    link = line.replace('</tbody></table>', f'''<tr>
-<td width="20%"><a href="#{call.replace(" ", "-") + str(j)}"><i class="fa fa-link"></i>{call}</a></td>
+                for line in lines:
+                    if '<div id="All" class="ref-table-container">' in line or f'<div id="{tag}" class="ref-table-container">' in line:
+                        active = True
+                    
+                    if active and '</tbody></table>' in line:
+                        link = line.replace('</tbody></table>', f'''<tr>
+<td><a href="#{call.replace(" ", "-") + str(j)}">{name}()</a></td>
 <td>{description}</td>
 </tr>
 </tbody></table>''')
-                    html_file.write(link)
-                    
-                    active = False
-                    
-                else:
-                    html_file.write(line)
+                        html_file.write(link)
+                        
+                        active = False
+                        
+                    else:
+                        html_file.write(line)
 
     return name, j
 
 
-def Box(input_, doc_attr, type_map, j):
+def Box(input_, doc_attr, doc_ref, type_map, j):
     args = {}
         
     if "Parameters" in input_:
@@ -196,7 +303,7 @@ def Box(input_, doc_attr, type_map, j):
                     args[item["Name"]]["Description"] = args[item["Name"]]["Description"] + "."
                 
             if "EnumValues" in item:
-                args[item["Name"]]["Description"] = args[item["Name"]]["Description"] + f'<br/><i>Options: {item["EnumValues"]}</i>'
+                args[item["Name"]]["Description"] = args[item["Name"]]["Description"] + '<br/><i>\n' + f'Options: {item["EnumValues"]}</i>'
 
             if "ShortType" in item:
                 args[item["Name"]]["Type"] = item["ShortType"]
@@ -211,15 +318,9 @@ def Box(input_, doc_attr, type_map, j):
     
     params = ""
     if args:
-        params += """<table cellspacing="0" cellpadding="0" style="border: none">
-<thead>
-<tr>
-  <th width="80px" align="left"><font size="3px">Type</font></th>
-  <th width="100px" align="left"><font size="3px">Name</font></th>
-  <th align="left"><font size="3px">Description</font></th>
-</tr>
-</thead>
-<tbody>"""
+        params += """        <div class="parameter-list">
+            <table class="parameter-table">
+                <th><strong>Parameters</strong></th>"""
 
         for name, prop in args.items():
             description = prop["Description"]
@@ -242,14 +343,20 @@ def Box(input_, doc_attr, type_map, j):
                 start = description.find("<", end)
             
             description = description.replace("</value>", "").replace("``1", "&lt;T&gt;")
-            params += f'<tr><td><code>{prop["Type"]}</code></td><td>{name}</td><td>{description}</td></tr>'
+            params += f'''                <tr>
+                    <td><code>{prop["Type"]}</code></td>
+                    <td>{name}</td>
+                    <td>{description}</td>
+                </tr>'''
             
-        params += "</tbody></table>"
+        params += """            </table>
+        </div>"""
         
     else:
         params += "<p>This method requires no argument input.</p>"
     
-    ret = ""
+    ret = """        <div class="method-return">
+            <h4>Return</h4>"""
     
     if "ReturnValue" in input_:
         if "Name" in input_["ReturnValue"]:
@@ -265,16 +372,21 @@ def Box(input_, doc_attr, type_map, j):
             ret_ = type_map[str(input_["ReturnValue"]["typeId"])]
             
         if ret_ == "Void":
-            ret = f"<code>{ret_}</code> - This method provides no return."
+            ret += f"            <p>{ret_} - This method provides no return.</p>"
         
         else:
-            ret += f'<code>{ret_}</code>'
+            ret += f'            <p>{ret_}'
                 
             if "Description" in input_["ReturnValue"]:
-                ret += f' - {input_["ReturnValue"]["Description"]}'
+                ret += f' - {input_["ReturnValue"]["Description"]}</p>'
+                
+            else:
+                ret += '</p>'
             
     else:
-        ret = "This method provides no return."
+        ret += "            <p>This method provides no return.</p>"
+        
+    ret += "        </div>"
         
     if "Description" in input_:
         slash = r"\'"
@@ -299,10 +411,9 @@ def Box(input_, doc_attr, type_map, j):
     else: 
         description = ""
     
-    this_ = "&emsp;(" + "&emsp;"
+    this_ = "&emsp;(\n"
     head_ = '<font color="#cdcdcd">' + ret_ + "</font> QuantConnect.Algorithm.QCAlgorithm." + input_["Name"] + this_
-    count_ = ret_ + " QuantConnect.Algorithm.QCAlgorithm." + input_["Name"]
-    next_ = ",\n" + " " * (len(count_) + 2) + "&emsp;"
+    next_ = ",\n" + "&emsp;"
     
     max_ = 0
     for value in args.values():
@@ -312,34 +423,46 @@ def Box(input_, doc_attr, type_map, j):
             max_ = len(type_)
         
     call_ = head_ + \
-        next_.join(["<code>" + str(value["Type"]) + "</code>" + " " * (max_ + 2 - len(str(value["Type"]))) + str(key) for key, value in args.items()]) + \
-        "\n" + " " * len(count_) + "&emsp;" + ")"
+        next_.join([" <code>" + str(value["Type"]) + "</code>" + " " * (max_ + 2 - len(str(value["Type"]))) + str(key) for key, value in args.items()]) + \
+        "\n" + ")"
+    call_ = call_.replace("\n", "\n" + "&emsp;" * 3)
         
-    buttons = [f'''<button class="tablinks" onclick="openCategory('{attr_}')">{topic}</button>''' for attr_ in doc_attr]
+    buttons = "\n".join([f'''<button class="method-tag" onclick="openTopTab(event, {attr_})">{attr_}</button>''' for attr_ in doc_attr])
     
-    write_up = f"""<div class="{call.replace(" ", "-")}-head" style="background-color: #f0ffff; border: 1px solid #ccc">
-{''.join(buttons)}
-<h3>
-<a id={call.replace(" ", "-") + str(j)}><b>{input_["Name"] + "()"}</b></a>    
-<font color="#cdcdcd" size="2px">0/0</font>
-</h3>
-<pre>
-{call_}
-</pre>
-</div>
-<div class="{call.replace(" ", "-")}-content" style="background-color: #ffffff; border: 1px solid #ccc">
-<p>{description}</p>
-<button class="details" onclick="ShowHide('visible-{input_["Name"]}-{j}')" style="border: none; background-color: transparent; outline: none; color: blue">Show Details ▼</button>
-<div class="visible-{input_["Name"]}-{j}" style="display:none;">
-<h4><b>Parameters</b></h4>
+    write_up = f"""<a id="{call.replace(" ", "-") + str(j)}"></a>
+<div class="method-container">
+
+    <div class="method-header">
+        {buttons}
+        <h3>{input_["Name"]}()<span class="method-order">0/0</span></h3>
+        <pre>
+            {call_}
+        </pre>
+    </div>
+    
+    <div class="method-description">
+        <p>{description}</p>
+    </div>
+    
+    <div class="details-btn">
+        <button class="show-hide-detail" onclick="ShowHide(method-details)">Hide Details <span><img src="https://cdn.quantconnect.com/i/tu/api-chevron-hide.svg" alt="arrow-hide"></span></button>
+    </div>
+
+    <div class="method-details">
+    
 {params}
-<br/>
-<h4><b>Returns</b></h4>
-<p>
+
 {ret}
-</p>
+
+        <div class="method-def">
+            <p>Definition at <a href="https://github.com/QuantConnect/Lean/blob/master/{doc_ref[1]}#L{doc_ref[0]}">line {doc_ref[0]}</a> of file  <a href="https://github.com/QuantConnect/Lean/blob/master/{doc_ref[1]}">{doc_ref[1]}.</a></p>
+        </div>
+        
+    </div>
+
 </div>
-</div>"""
+
+"""
 
     return write_up, description
 
