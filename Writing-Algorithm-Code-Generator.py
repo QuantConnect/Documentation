@@ -178,11 +178,11 @@ with open(path_ / "02 Public Members.html", "w", encoding="utf-8") as html_file:
 
 <script>
 function ShowHide(idName) {
-    if (this.value == "Hide Details <span><img src="https://cdn.quantconnect.com/i/tu/api-chevron-hide.svg" alt="arrow-hide"></span>") {
+    if (this.value == "Hide Details <span><img src='https://cdn.quantconnect.com/i/tu/api-chevron-hide.svg' alt='arrow-hide'></span>") {
         this.value = "Show Details ▲";
     }
     else {
-        this.value = "Hide Details <span><img src="https://cdn.quantconnect.com/i/tu/api-chevron-hide.svg" alt="arrow-hide"></span>";
+        this.value = "Hide Details <span><img src='https://cdn.quantconnect.com/i/tu/api-chevron-hide.svg' alt='arrow-hide'></span>";
     }
     
     var x = document.getElementById(idName);
@@ -472,7 +472,7 @@ def Box(input_, doc_attr, doc_ref, type_map, j):
     </div>
     
     <div class="details-btn">
-        <button class="show-hide-detail" onclick="ShowHide('{call.replace(" ", "-")}-details)'">Hide Details <span><img src="https://cdn.quantconnect.com/i/tu/api-chevron-hide.svg" alt="arrow-hide"></span></button>
+        <button class="show-hide-detail" onclick="ShowHide('{call.replace(" ", "-")}-details)'">Hide Details <span><img src='https://cdn.quantconnect.com/i/tu/api-chevron-hide.svg' alt='arrow-hide'></span></button>
     </div>
 
     <div class="method-details" id="{call.replace(" ", "-")}-details">
