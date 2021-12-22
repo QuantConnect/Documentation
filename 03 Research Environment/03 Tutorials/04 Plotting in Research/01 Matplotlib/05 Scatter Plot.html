@@ -1,0 +1,93 @@
+<p>GLD and BAR are two different Gold-tracking ETFs, and we would like to visualize their correlation. To do this, we will employ a scatter plot of their returns.</p>
+
+<h4>Gathering Data</h4>
+<p>To begin, we retrieve daily return of close price data for GLD and BAR</p>
+<ol>
+    <li>Instantiate a <code>QuantBook</code>.</li>
+    <div class="section-example-container">
+        <pre class="python">qb = QuantBook()</pre>
+    </div>
+
+    <li>Call the <code>AddEquity</code> method with GLD and BAR, and their corresponding resolution. Save a reference to their Symbol.</li>
+    <div class="section-example-container">
+        <pre class="python">gld = qb.AddEquity("GLD", Resolution.Daily).Symbol
+bar = qb.AddEquity("BAR", Resolution.Daily).Symbol</pre>
+    </div>
+    <p>If you do not pass a resolution argument, <code>Resolution.Minute</code> is used by default.</p>
+
+    <li>Call the <code>History</code> method with a list of <code>Symbol</code> objects, time argument, and resolution to request historical data for all of the Securities.</li>
+    <div class="section-example-container">
+        <pre class="python">history = qb.History([gld, bar], 360, Resolution.Daily)</pre>
+    </div>
+
+    <li>Index the <code>pandas.DataFrame</code> with a <code>Symbol</code> to select the historical data of the security and then select a property column to get the historical values of the property.</li>
+    <div class="section-example-container">
+        <pre class="python">gld_close_price = history.loc[gld]['close']
+bar_close_price = history.loc[bar]['close']</pre>
+    </div>
+    
+    <li>Call the <code>pct_change()</code> method on each <code>pandas.Series</code> object.</li>
+    <div class="section-example-container">
+        <pre class="python">gld_daily_ret = gld_close_price.pct_change()
+bar_daily_ret = bar_close_price.pct_change()</pre>
+    </div>
+
+    <li>Drop any NaN values by <code>dropna()</code> to avoid regression error.</li>
+    <div class="section-example-container">
+        <pre class="python">gld_daily_ret.dropna(inplace=True)
+bar_daily_ret.dropna(inplace=True)</pre>
+    </div>
+</ol>
+
+<h4>Create a Trend Line</h4>
+<p>Since we would like to include a trend line (OLS) in our scatter plot, we will need to employ <code>numpy</code> to calculate our OLS line.</p>
+<ol class="python">
+    <li>Get coefficients of the trend Line.</li>
+    <div class="section-example-container">
+        <pre class="python">m, b = np.polyfit(gld_daily_ret, bar_daily_ret, deg=1)</pre>
+    </div>
+
+    <li>Get the continuous x-axis values of the trend line by <code>np.linspace</code>.</li>
+    <div class="section-example-container">
+        <pre class="python">upper_limit = 0.05
+lower_limit = -0.05
+x = np.linspace(lower_limit, upper_limit)</pre>
+    </div>
+
+    <li>Get the y-axis values with the corresponding x-axis values through regression result.</li>
+    <div class="section-example-container">
+        <pre class="python">y = x * m + b</pre>
+    </div>
+</ol>
+
+<h4>Plot the Data</h4>
+<p>Now, we want to visualize the returns correlation of GLD and BAR.</p>
+<ol class="python">
+    <li>Set up the figure with <code>figsize</code> setting.</li>
+    <div class="section-example-container">
+        <pre class="python">plt.figure(figsize=(15, 10))</pre>
+    </div>
+
+    <li>Call the <code>plt.plot</code> method with x-axis values, y-axis-values and color setting to plot the trend line.</li>
+    <div class="section-example-container">
+        <pre class="python">plt.plot(x, y, color='red')</pre>
+    </div>
+
+    <li>Call <code>plt.scatter</code> method with the 2 series of daily return data.</li>
+    <div class="section-example-container">
+        <pre class="python">plt.scatter(gld_daily_ret, bar_daily_ret)</pre>
+    </div>
+
+    <li>Set up the title, x-axis label and y-axis label of the plot.</li>
+    <div class="section-example-container">
+        <pre class="python">plt.title('GLD vs BAR daily returns Scatter Plot')
+plt.xlabel('GLD')
+plt.ylabel('BAR')</pre>
+    </div>
+
+    <li>Show the plot.</li>
+    <div class="section-example-container">
+        <pre class="python">plt.show()</pre>
+    </div>
+    <p>Scatter plot displays the historical data of the property you selected over a period of time for 2 Series against each other.</p>
+</ol>

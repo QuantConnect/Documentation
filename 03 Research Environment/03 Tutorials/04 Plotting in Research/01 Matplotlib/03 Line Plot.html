@@ -1,0 +1,43 @@
+<p>We will visualize the close price of SPY and QQQ using a time-series line plot.</p>
+
+<h4>Gathering Data</h4>
+<p>To begin, we retrieve close price data for SPY and QQQ</p>
+<ol>
+    <li>Instantiate a <code>QuantBook</code>.</li>
+    <div class="section-example-container">
+        <pre class="python">qb = QuantBook()</pre>
+    </div>
+
+    <li>Call the <code>AddEquity</code> method with SPY and QQQ, and their corresponding resolution.</li>
+    <div class="section-example-container">
+        <pre class="python">spy = qb.AddEquity("SPY", Resolution.Daily)
+qqq = qb.AddEquity("QQQ", Resolution.Daily)
+        </pre>
+    </div>
+    <p>If you do not pass a resolution argument, <code>Resolution.Minute</code> is used by default.</p>
+
+    <li>Call the <code>History</code> method with <code>qb.Securities.Keys</code>, time argument(s), and resolution to request historical data for all of the Securities.</li>
+    <div class="section-example-container">
+        <pre class="python">history = qb.History(qb.Securities.Keys, 360, Resolution.Daily)</pre>
+    </div>
+
+    <li>Select close price data to plot.</li>
+    <div class="section-example-container">
+        <pre class="python">close_price = history['close'].unstack(level=0)</pre>
+    </div>
+</ol>
+
+<h4>Plot the Data</h4>
+<p>Here, we visualize the close price of SPY and QQQ with a time-series line plot. Note that <code>pandas.DataFrame</code> has built-in support for <code>matplotlib</code> library, making it easier and quicker for us to create plots.</p>
+<ol class="python">
+    <li>Call the <code>plot</code> method on the <code>pandas</code> object.</li>
+    <div class="section-example-container">
+        <pre class="python">close_price.plot(title="Close Price of SPY and QQQ", figsize=(15, 10))</pre>
+    </div>
+
+    <li>Show the plot.</li>
+    <div class="section-example-container">
+        <pre class="python">plt.show()</pre>
+    </div>
+    <p>Line charts display the value of the property you selected in a time series.</p>
+</ol>
