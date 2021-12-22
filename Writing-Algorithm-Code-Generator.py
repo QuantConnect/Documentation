@@ -154,10 +154,13 @@ with open(path_ / "02 Public Members.html", "w", encoding="utf-8") as html_file:
     .method-order {
         color: #8F9CA3;
         font-size: 14px;
+        margin-left: 0.5rem;
     }
 
     .parameter-table{
         margin: 2rem 0 2rem -0.25rem;
+        display: block;
+        overflow-x: auto;
     }
 
     .parameter-table th {
@@ -193,7 +196,7 @@ function ShowHide(event, idName) {
     }
     else {
         x.style.display = "none";
-        event.target.innerHTML = "Show Details";
+        event.target.innerHTML = "Show Details <span><img src='https://cdn.quantconnect.com/i/tu/api-chevron-show.svg' alt='arrow-hide'></span>";
     }
 };
 
@@ -425,7 +428,7 @@ def Box(input_, doc_attr, doc_ref, type_map, j):
         description = ""
     
     this_ = " (\n&emsp;"
-    head_ = '<font color="#cdcdcd">' + ret_ + "</font> QuantConnect.Algorithm.QCAlgorithm." + input_["Name"] + this_
+    head_ = '<font color="#8F9CA3">' + ret_ + "</font> QuantConnect.Algorithm.QCAlgorithm." + input_["Name"] + this_
     next_ = ",\n" + "&emsp;"
     
     max_ = 0
