@@ -24,10 +24,10 @@ open_interest_history.index = open_interest_history.index.droplevel([0,1,2])<br>
 <div class="python section-example-container">
     <pre class="python">open_interest_history.loc[symbol]</pre>
 </div>
-<p class="python">The Jupyter Notebook displays a <code>DataFrame</code> containing the open interest data of the contract.</p>
+<p class="python">The Jupyter Notebook displays a <code>DataFrame</code> containing the open interest of the contract.</p>
 <img class="python" style="max-width: 100%; display: block; max-width: 600px; margin-bottom: 20px" src="https://cdn.quantconnect.com/i/tu/research-history-indexoptions-onesecurity-openinterest-locsymboldataframe.png">
 
-<p class="csharp">Iterate through the <code>IEnumerable</code> to get the historical data of the contract.</p>
+<p class="csharp">Iterate through the <code>IEnumerable</code> to display the historical data of the contract.</p>
 
 <div class="section-example-container">
     <pre class="csharp">foreach(var bar in priceHistory.TakeLast(5))
@@ -47,57 +47,62 @@ foreach(var openInterest in openInterestHistory.TakeLast(5))
 
 
 <h4>Select a Property of the Contract</h4>
-<p class="csharp">Iterate through the <code>IEnumerable </code>and select a property of the <code>Slice</code> to get the historical values of the property.</p>
-
 <p class="python">Index the <code>pandas.DataFrame</code> with a <code>Symbol</code> to select the historical data of the contract and then select a property column to get the historical values of the property.</p>
 
+<p class="python">To display the closing ask prices of the contract, run:</p>
+<div class="python section-example-container">
+    <pre class="python">price_history.loc[symbol]['askclose']</pre>
+</div>
+<p class="python">The Jupyter Notebook displays a <code>Series</code> containing the closing ask prices of the contract.</p>
+<img class="python" style="max-width: 100%; display: block" src="https://cdn.quantconnect.com/i/tu/research-history-indexoptions-onesecurity-ask-close.png">
+
+<p class="python">To display the open interest of the contract, run:</p>
+<div class="python section-example-container">
+    <pre class="python">open_interest_history.loc[symbol]['openinterest']</pre>
+</div>
+<p class="python">The Jupyter Notebook displays a <code>Series</code> containing the open interest of the contract.</p>
+<img class="python" style="max-width: 100%; display: block" src="https://cdn.quantconnect.com/i/tu/research-history-indexoptions-onesecurity-open-interest.png">
+
+<p class="csharp">Iterate through the <code>IEnumerable </code>and select a property of the <code>Slice</code> to display the historical values of the property.</p>
 <div class="section-example-container">
 <pre class="csharp">var closingPrices = priceHistory
     .Select(x =&gt; $"{x.Symbol}: Close: {x.Close} EndTime:{x.EndTime}");
 foreach(var closingPrice in closingPrices.TakeLast(5))
 {
     Console.WriteLine(closingPrice);
-}
-</pre>
-<pre class="python">price_history.index = price_history.index.droplevel([0,1,2])
-price_history.loc[symbol]['askclose']
-
-open_interest_history.index = open_interest_history.index.droplevel([0,1,2])
-open_interest_history.loc[symbol]['openinterest']
-</pre>
+}</pre>
 </div>
 
 <p class="csharp">The Jupyter Notebook displays the last 5 closing prices of the contract.</p>
 
 <img class="csharp" style="max-width: 100%; display: block" src="https://cdn.quantconnect.com/i/tu/research-history-indexoptions-onesecurity-linq-close.png">
 
-<p class="python">The <code>pandas.DataFrame</code>s are transformed into <code>pandas.Series</code> of ask closing prices and open interest, respectively.</p>
-
-<img class="python" style="max-width: 100%; display: block" src="https://cdn.quantconnect.com/i/tu/research-history-indexoptions-onesecurity-locsymbolvalue.png">
-
 <h4 class="python">Unstack the Dataframe</h4>
-<p class="python">If you request historical data for multiple contracts, you can transform the <code>pandas.DataFrame</code> so that it is a time series of bid closing prices for all of the containing contracts. Select the column that you want to display for each contract and then call the <code>unstack</code> method to transform the <code>pandas.DataFrame</code> into the desired format. You can rename the columns of the transformed <code>pandas.DataFrame</code> to be the respective <code>OptionsContract</code> <code>Symbol</code>s.</p>
+<p class="python">If you request historical data for multiple contracts, you can transform the <code>DataFrame</code> so that it is a time series of bid closing prices for all of the contracts that it contains. Select the column that you want to display for each contract and then call the <code>unstack</code> method to transform the <code>DataFrame</code> into the desired format. You can rename the columns of the transformed <code>DataFrame</code> to be the respective <code>OptionsContract</code> <code>Symbol</code>s.</p>
 
+<p class="python">To display the closing bid prices of all of the contracts, run:<br></p>
 <div class="python section-example-container python">
     <pre class="python">timespan_price_history = timespan_price_history['bidclose'].unstack(level=0)
 columns = [Symbol.GetAlias(SecurityIdentifier.Parse(x), index.Symbol)
     for x in timespan_price_history.columns]
 timespan_price_history.columns = columns
+timespan_price_history</pre>
+</div>
+<p class="python">The Jupyter Notebook displays a <code>DataFrame</code> that contains the closing bid prices of the contracts and has the <code>Symbol</code> of each <code>OptionsContract</code> as the column indices.</p>
+<img class="python" style="max-width: 100%; display: block; margin-bottom: 20px" src="https://cdn.quantconnect.com/i/tu/research-history-indexoptions-multisecurity-unstack.png">
 
-timespan_open_interest_history = timespan_open_interest_history['openinterest'].unstack(level=0)
+<p class="python">To display the open interest of all of the contracts, run:<br></p>
+<div class="python section-example-container python">
+    <pre class="python">timespan_open_interest_history = timespan_open_interest_history['openinterest'].unstack(level=0)
 columns = [Symbol.GetAlias(SecurityIdentifier.Parse(x), index.Symbol)
     for x in timespan_open_interest_history.columns]
 timespan_open_interest_history.columns = columns
-</pre>
+timespan_open_interest_history </pre>
 </div>
+<p class="python">The Jupyter Notebook displays a <code>DataFrame</code> that contains the open interest of the contracts and has the <code>Symbol</code> of each <code>OptionsContract</code> as the column indices.</p>
+<img class="python" style="max-width: 100%; display: block; margin-bottom: 20px" src="https://cdn.quantconnect.com/i/tu/research-history-indexoptions-multisecurity-openinterest-unstack.png">
 
-<p class="python">The <code>pandas.DataFrame</code>s are transformed so that the column indices are the <code>Symbol</code> of each <code>OptionsContract</code> and each row contains the bid closing price and the open interest respectively.</p>
+<p class="python">If you <code>unstack</code> the <code>DataFrame</code> that is returned from the <code>GetAllData</code> method, the <code>DataFrame</code> is transformed into the following format:</p>
+<img class="python" style="max-width: 100%; display: block; margin-bottom: 20px" src="https://cdn.quantconnect.com/i/tu/research-history-indexoptions-gethistorydata-getalldata-unstack.png">
 
-<p class="python">If you transform the <code>pandas.DataFrame</code>s that are returned from calling the <code>History</code> method with <code>OptionsContract</code> <code>Symbol</code>s, the <code>pandas.DataFrame</code>s are transformed into the following format:</p>
-<img class="python" style="max-width: 100%; display: block" src="https://cdn.quantconnect.com/i/tu/research-history-indexoptions-multisecurity-unstack.png">
-<img class="python" style="max-width: 100%; display: block" src="https://cdn.quantconnect.com/i/tu/research-history-indexoptions-multisecurity-openinterest-unstack.png">
-
-<p class="python">If you transform the <code>pandas.DataFrame</code> that is returned from calling the <code>GetAllData</code> method, the <code>pandas.DataFrame</code> is transformed into the following format:</p>
-<img class="python" style="max-width: 100%; display: block" src="https://cdn.quantconnect.com/i/tu/research-history-indexoptions-gethistorydata-getalldata-unstack.png">
-
-<p class="python">The <code>pandas.DataFrame</code>s above differ because the first one contains only <code>OptionContract</code>s that were passed to the <code>History</code> method while the third one contains the underlying Index data (<code>NaN</code> column). The second <code>pandas.DataFrame</code> contains open interest information that is not contained in the third <code>pandas.DataFrame</code>.</p>
+<p class="python">This <code>DataFrame</code> differs from the previous two <code>DataFrame</code>s because the first <code>DataFrame </code>contains only <code>OptionContract</code>s that were passed to the <code>History</code> method while the third one contains the underlying Index data, which is represented by the <code>NaN</code> column. Additionally, the second <code>DataFrame</code> contains open interest data that is not contained in the third <code>DataFrame</code>.</p>
