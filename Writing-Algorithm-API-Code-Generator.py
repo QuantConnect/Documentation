@@ -124,7 +124,7 @@ with open(path_ / "02 Public Members.html", "w", encoding="utf-8") as html_file:
 
     .method-details > div {
         margin-bottom: 2rem;
-        display: block;
+        display: none;
     }
 
     .method-header {
@@ -461,7 +461,7 @@ def Box(input_, doc_attr, doc_ref, type_map, j):
     </div>
     
     <div class="details-btn">
-        <button class="show-hide-detail" onclick="ShowHide(event, '{call.replace(" ", "-")}-details')">Hide Details <span><img src='https://cdn.quantconnect.com/i/tu/api-chevron-hide.svg' alt='arrow-hide'></span></button>
+        <button class="show-hide-detail" onclick="ShowHide(event, '{call.replace(" ", "-")}-details')">Show Details <span><img src='https://cdn.quantconnect.com/i/tu/api-chevron-show.svg' alt='arrow-hide'></span></button>
     </div>
 
     <div class="method-details" id="{call.replace(" ", "-")}-details">
