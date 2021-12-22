@@ -11,45 +11,47 @@ open_interest_history.index = open_interest_history.index.droplevel([0,1,2])<br>
 
 <h4>Select One Contract</h4>
 
+<p class="csharp">Iterate through the <code>IEnumerable</code> to select the historical data of the contract.</p>
+
 <p class="python">Index the <code>DataFrame</code> with a <code>Symbol</code> to select the historical data of the contract.</p>
 
-<p class="python">To display the price data of the contract, run:</p>
+<p>To display the price data of the contract, run:</p>
 <div class="python section-example-container">
-    <pre class="python">price_history.loc[symbol]</pre>
-</div>
-<p class="python">The Jupyter Notebook displays a <code>DataFrame</code> containing the trade and quote data of the contract.</p>
-<img class="python" style="max-width: 100%; display: block; margin-bottom: 20px" src="https://cdn.quantconnect.com/i/tu/research-history-indexoptions-onesecurity-locsymboldataframe.png">
-
-<p class="python">To display the open interest data of the contract, run:</p>
-<div class="python section-example-container">
-    <pre class="python">open_interest_history.loc[symbol]</pre>
-</div>
-<p class="python">The Jupyter Notebook displays a <code>DataFrame</code> containing the open interest of the contract.</p>
-<img class="python" style="max-width: 100%; display: block; max-width: 600px; margin-bottom: 20px" src="https://cdn.quantconnect.com/i/tu/research-history-indexoptions-onesecurity-openinterest-locsymboldataframe.png">
-
-<p class="csharp">Iterate through the <code>IEnumerable</code> to display the historical data of the contract.</p>
-
-<div class="section-example-container">
     <pre class="csharp">foreach(var bar in priceHistory.TakeLast(5))
 {
     Console.WriteLine($"{bar} EndTime: {bar.EndTime}");
-}
+}</pre>
+    <pre class="python">price_history.loc[symbol]</pre>
+</div>
 
-foreach(var openInterest in openInterestHistory.TakeLast(5))
+<p class="csharp">The Jupyter Notebook displays the trade and quote data of the contract.</p>
+<img class="csharp" style="max-width: 100%; display: block; margin-bottom: 20px" src="https://cdn.quantconnect.com/i/tu/research-history-indexoptions-onesecurity-linq-price-data.png">
+
+<p class="python">The Jupyter Notebook displays a <code>DataFrame</code> containing the trade and quote data of the contract.</p>
+<img class="python" style="max-width: 100%; display: block; margin-bottom: 20px" src="https://cdn.quantconnect.com/i/tu/research-history-indexoptions-onesecurity-locsymboldataframe.png">
+
+<p>To display the open interest data of the contract, run:</p>
+<div class="python section-example-container">
+    <pre class="csharp">foreach(var openInterest in openInterestHistory.TakeLast(5))
 {
     Console.WriteLine($"{openInterest} EndTime: {openInterest.EndTime}");
 }</pre>
+    <pre class="python">open_interest_history.loc[symbol]</pre>
 </div>
 
-<p class="csharp">The Jupyter Notebook displays the contents of the last 5 <code>TradeBar</code>s and the last 5 <code>OpenInterest</code>s.</p>
+<p class="python">The Jupyter Notebook displays the open interest of the contract.</p>
+<img class="python" style="max-width: 100%; display: block; margin-bottom: 20px" src="https://cdn.quantconnect.com/i/tu/research-history-indexoptions-onesecurity-linq-open-interest-data.png">
 
-<img class="csharp" style="max-width: 100%; display: block" src="https://cdn.quantconnect.com/i/tu/research-history-indexoptions-onesecurity-linq.png">
+<p class="python">The Jupyter Notebook displays a <code>DataFrame</code> containing the open interest of the contract.</p>
+<img class="python" style="max-width: 100%; display: block; margin-bottom: 20px" src="https://cdn.quantconnect.com/i/tu/research-history-indexoptions-onesecurity-openinterest-locsymboldataframe.png">
 
 
 <h4>Select a Property of the Contract</h4>
+<p class="csharp">Iterate through the <code>IEnumerable </code>and select a property of the <code>Slice</code> to display the historical values of the property.</p>
+
 <p class="python">Index the <code>pandas.DataFrame</code> with a <code>Symbol</code> to select the historical data of the contract and then select a property column to get the historical values of the property.</p>
 
-<p class="python">To display the closing ask prices of the contract, run:</p>
+<p>To display the closing ask prices of the contract, run:</p>
 <div class="python section-example-container">
     <pre class="python">price_history.loc[symbol]['askclose']</pre>
 </div>
@@ -63,19 +65,6 @@ foreach(var openInterest in openInterestHistory.TakeLast(5))
 <p class="python">The Jupyter Notebook displays a <code>Series</code> containing the open interest of the contract.</p>
 <img class="python" style="max-width: 100%; display: block" src="https://cdn.quantconnect.com/i/tu/research-history-indexoptions-onesecurity-open-interest.png">
 
-<p class="csharp">Iterate through the <code>IEnumerable </code>and select a property of the <code>Slice</code> to display the historical values of the property.</p>
-<div class="section-example-container">
-<pre class="csharp">var closingPrices = priceHistory
-    .Select(x =&gt; $"{x.Symbol}: Close: {x.Close} EndTime:{x.EndTime}");
-foreach(var closingPrice in closingPrices.TakeLast(5))
-{
-    Console.WriteLine(closingPrice);
-}</pre>
-</div>
-
-<p class="csharp">The Jupyter Notebook displays the last 5 closing prices of the contract.</p>
-
-<img class="csharp" style="max-width: 100%; display: block" src="https://cdn.quantconnect.com/i/tu/research-history-indexoptions-onesecurity-linq-close.png">
 
 <h4 class="python">Unstack the Dataframe</h4>
 <p class="python">If you request historical data for multiple contracts, you can transform the <code>DataFrame</code> so that it is a time series of bid closing prices for all of the contracts that it contains. Select the column that you want to display for each contract and then call the <code>unstack</code> method to transform the <code>DataFrame</code> into the desired format. You can rename the columns of the transformed <code>DataFrame</code> to be the respective <code>OptionsContract</code> <code>Symbol</code>s.</p>
