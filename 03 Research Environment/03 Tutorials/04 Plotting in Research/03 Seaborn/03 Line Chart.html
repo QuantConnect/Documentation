@@ -1,0 +1,56 @@
+<p>We will visualize the close price of SPY using a time-series line chart.</p>
+
+<h4>Gathering Data</h4>
+<p>To begin, we retrieve close price data for SPY.</p>
+<ol>
+    <li>Instantiate a <code>QuantBook</code>.</li>
+    <div class="section-example-container">
+        <pre class="python">qb = QuantBook()</pre>
+    </div>
+
+    <li>Call the <code>AddEquity</code> method with SPY, and their corresponding resolution.</li>
+    <div class="section-example-container">
+        <pre class="python">spy = qb.AddEquity("SPY", Resolution.Daily)</pre>
+    </div>
+    <p>If you do not pass a resolution argument, <code>Resolution.Minute</code> is used by default.</p>
+
+    <li>Call the <code>History</code> method with a <code>Symbol</code>, time argument(s), and resolution to request historical data for the symbol.</li>
+    <div class="section-example-container">
+        <pre class="python">history = qb.History(spy.Symbol, 360, Resolution.Daily)</pre>
+    </div>
+
+    <li>Index the <code>pandas.DataFrame</code> with a Symbol to select the historical data of the security and then select a property column to get the historical values of the property.</li>
+    <div class="section-example-container">
+        <pre class="python">close_price = history.loc["SPY"]["close"]</pre>
+    </div>
+</ol>
+
+<h4>Plot the Data</h4>
+<p>Here, we visualize the close price of SPY with a time-series line plot.</p>
+<ol>
+    <li>Reset index of the <code>pandas.DataFrame</code>.</li>
+    <div class="section-example-container">
+        <pre class="python">close_price2 = close_price.reset_index()</pre>
+    </div>
+
+    <li>Call <code>sns.lineplot</code> with <code>pandas.DataFrame</code>, x-axis column and y-axis column to plot the line chart</li>
+    <div class="section-example-container">
+        <pre class="python">plot = sns.lineplot(data=close_price2,
+                    x='time', 
+                    y='close'
+                    )</pre>
+    </div>
+
+    <li>Set up the y-axis label and title.</li>
+    <div class="section-example-container">
+        <pre class="python">plot.set(ylabel="price", title="SPY Price Over Time")</pre>
+    </div>
+
+    <li>Show the plot.</li>
+    <div class="section-example-container">
+        <pre class="python">plt.show()</pre>
+    </div>
+
+    <img style="max-width: 100%; display: block" src="https://cdn.quantconnect.com/i/tu/seaborn-linechart.png">
+    <p>Line charts display the value of the property you selected in a time series.</p>
+</ol>

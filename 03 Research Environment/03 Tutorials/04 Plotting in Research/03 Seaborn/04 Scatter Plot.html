@@ -20,43 +20,44 @@ bar = qb.AddEquity("BAR", Resolution.Daily).Symbol</pre>
         <pre class="python">history = qb.History([gld, bar], 360, Resolution.Daily)</pre>
     </div>
 
-    <li>Index the <code>pandas.DataFrame</code> with a <code>Symbol</code> to select the historical data of the security and then select a property column to get the historical values of the property.</li>
+    <li>Select the column that you want to display and then call the <code>.unstack()</code> method.</li>
     <div class="section-example-container">
-        <pre class="python">gld_close_price = history.loc[gld]['close']
-bar_close_price = history.loc[bar]['close']</pre>
+        <pre class="python">close_price = history["close"].unstack(0)</pre>
     </div>
     
-    <li>Call the <code>pct_change()</code> method on each <code>pandas.Series</code> object.</li>
+    <li>Call the <code>pct_change()</code> method on the <code>pandas.DataFrame</code> object.</li>
     <div class="section-example-container">
-        <pre class="python">gld_daily_ret = gld_close_price.pct_change()
-bar_daily_ret = bar_close_price.pct_change()</pre>
+        <pre class="python">daily_ret = close_price.pct_change()</pre>
     </div>
 
     <li>Drop any NaN values by <code>dropna()</code> to avoid regression error.</li>
     <div class="section-example-container">
-        <pre class="python">gld_daily_ret.dropna(inplace=True)
-bar_daily_ret.dropna(inplace=True)</pre>
+        <pre class="python">daily_ret.dropna(inplace=True)</pre>
     </div>
 </ol>
 
 <h4>Plot the Data</h4>
 <p>Now, we want to visualize the returns relationship of GLD and BAR.</p>
 <ol>
-    <li>Call <code>px.scatter</code> with the 2 return <code>pandas.Series</code>, trendline option and axis-labels.</li>
+    <li>Call <code>sns.regplot</code> with the daily return <code>pandas.DataFrame</code>, trendline option and axis-labels.</li>
     <div class="section-example-container">
-        <pre class="python">fig = px.scatter(x=gld_daily_ret, y=bar_daily_ret, trendline='ols', labels={'x': 'GLD', 'y': 'BAR'}) </pre>
+        <pre class="python">plot = sns.regplot(data=daily_ret, 
+            x=daily_ret.columns[0], 
+            y=daily_ret.columns[1])</pre>
     </div>
 
-    <li>Update the layout with title.</li>
+    <li>Set up the x-axis label, y-axis label and title.</li>
     <div class="section-example-container">
-        <pre class="python">fig.update_layout(title='GLD vs BAR Daily % Returns')</pre>
+        <pre class="python">plot.set(xlabel=f'{daily_ret.columns[0]} % Returns', 
+        ylabel=f'{daily_ret.columns[1]} % Returns', 
+        title='GLD vs BAR Daily % Returns');</pre>
     </div>
 
     <li>Show the plot.</li>
     <div class="section-example-container">
-        <pre class="python">fig.show()</pre>
+        <pre class="python">plt.show()</pre>
     </div>
 
-    <img style="max-width: 100%; display: block" src="https://cdn.quantconnect.com/i/tu/plotly-scatterplot.png">
+    <img style="max-width: 100%; display: block" src="https://cdn.quantconnect.com/i/tu/seaborn-scatterplot.png">
     <p>Scatter plot displays the historical data of the property you selected over a period of time for 2 Series against each other.</p>
 </ol>
