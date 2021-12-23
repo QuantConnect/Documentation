@@ -1,50 +1,48 @@
 <p>You must <a href="#02-Import-Packages">import the plotting packages</a> and <a href="#03-Get-Historical-Data">get some historical data</a> to create bar charts.</p>
 
-<p>We use a bar chart to compare the average daily percent returns of various banking stocks and bank sector ETF.</p>
-
 <p>Follow these steps to create a bar chart:</p>
 
 <ol>
-    <li>Select the column you want to plot.</li>
+    <li>Select the column of data that you want to plot and then call the <code>unstack</code> method.<br></li>
     <p>For example, to select the closing prices, run:</p>
     <div class="section-example-container">
-        <pre class="python">close_price = history['close'].unstack(level=0)</pre>
+        <pre class="python">close_prices = history['close'].unstack(level=0)</pre>
     </div>
     
-    <li>Call the <code>pct_change</code> method on the <code>pandas.DataFrame</code> object. Multiplied by 100 to get the %.</li>
+    <li>Call the <code>pct_change</code> method and then multiply by 100.</li>
     <div class="section-example-container">
-        <pre class="python">daily_ret = close_price.pct_change() * 100</pre>
+        <pre class="python">daily_returns = close_price.pct_change() * 100</pre>
     </div>
 
-    <li>Call <code>apply</code> method on the <code>pandas.DataFrame</code> using <code>np.nanmean</code> to obtain the average return.</li>
+    <li>Call the <code>mean</code> method.</li>
     <div class="section-example-container">
-        <pre class="python">avg_daily_ret = daily_ret.apply(np.nanmean, axis=0)</pre>
+        <pre class="python">avg_daily_returns = daily_returns.mean()</pre>
     </div>
 
-    <li>Convert the <code>pd.Series</code> into <code>pd.DataFrame</code></li>
+    <li>Convert the <code>Series</code> into a <code>DataFrame</code>. </li>
     <div class="section-example-container">
-        <pre class="python">avg_daily_ret = pd.DataFrame(avg_daily_ret, columns=["avg_daily_ret"])</pre>
+        <pre class="python">avg_daily_returns = pd.DataFrame(avg_daily_returns, columns=["avg_daily_ret"])</pre>
     </div>
 
-    <li>Reset index of the <code>pandas.DataFrame</code>.</li>
+    <li>Call the <code>reset_index </code>method with the <code>inplace </code>argument enabled.</li>
     <div class="section-example-container">
-        <pre class="python">avg_daily_ret.reset_index(inplace=True)</pre>
+        <pre class="python">avg_daily_returns.reset_index(inplace=True)</pre>
     </div>
 
-    <li>Call <code>bar</code> method with the <code>pandas.DataFrame</code>, x-axis column and y-axis column.</li>
+    <li>Call the <code>bar</code> method with <code>avg_daily_returns</code> and the axis column names.</li>
     <div class="section-example-container">
         <pre class="python">fig = px.bar(avg_daily_ret, x='symbol', y='avg_daily_ret')</pre>
     </div>
 
-    <li>Update the layout with title.</li>
+    <li>Call the <code>update_layout</code> method with a title.</li>
     <div class="section-example-container">
-        <pre class="python">fig.update_layout(title='Banking Stocks Average Daily % Returns')</pre>
+        <pre class="python">fig.update_layout(title='Banking Stocks Average Daily % Returns');</pre>
     </div>
 
     <li>Show the <code>Figure</code>.</li>
     <div class="section-example-container">
         <pre class="python">fig.show()</pre>
     </div>
-    <p>The Jupyter Notebook displays a bar plot.</p>
+    <p>The Jupyter Notebook displays a bar plot of the average daily percent returns of each of the banking securities.</p>
     <img style="max-width: 100%; display: block" src="https://cdn.quantconnect.com/i/tu/plotly-bar-3.png">
 </ol>
