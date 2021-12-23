@@ -1,20 +1,19 @@
-<p>You must <a href="#02-Import-Packages">import the plotting packages</a> and <a href="#03-Get-Historical-Data">get some historical data</a> to create candlestick charts.</p>
+<p>You must <a href="#03-Import-Packages">import the plotting packages</a> and <a href="#04-Get-Historical-Data">get some historical data</a> to create candlestick charts.</p>
 
-<p>Follow these steps to create a candlestick chart:</p>
+<p>In this example, you create a candlestick chart that shows the open, high, low, and close prices of one of the banking securities. Follow these steps to create the candlestick chart:</p>
 
 <ol>
-    <li>Select the <code>Symbol</code> that you want to plot in the candlestick chart.</li>
-    <p>For example, to select the first <code>Symbol</code>, run:</p>
+    <li>Select a <code>Symbol</code>.</li>
     <div class="section-example-container">
         <pre class="python">symbol = symbols[0]</pre>
     </div>
 
-    <li>Slice the <code>history</code> DataFrame with the <code>Symbol</code> that you selected.</li>
+    <li>Slice the <code>history</code> <code>DataFrame</code> with the <code>symbol</code> .</li>
     <div class="section-example-container">
         <pre class="python">data = history.loc[symbol]</pre>
     </div>
 
-    <li>Create a <code>Candlestick</code>.</li>
+    <li>Call the <code>Candlestick</code> method with the time and open, high, low, and close price <code>Series</code>.</li>
     <div class="section-example-container">
         <pre class="python">candlestick = go.Candlestick(x=data.index,
                              open=data['open'],
@@ -23,7 +22,7 @@
                              close=data['close'])</pre>
     </div>
 
-    <li>Create a <code>Layout</code>.</li>
+    <li>Call the <code>Layout</code> method with a title and axes labels.<br></li>
     <div class="section-example-container">
         <pre class="python">layout = go.Layout(title=go.layout.Title(text=f'{symbol.Value} OHLC'),
                    xaxis_title='Date',
@@ -31,15 +30,15 @@
                    xaxis_rangeslider_visible=False)</pre>
     </div>
 
-    <li>Create a <code>Figure</code>.</li>
+    <li>Call the <code>Figure</code> method with the <code>candlestick</code> and <code>layout</code>. </li>
     <div class="section-example-container">
         <pre class="python">fig = go.Figure(data=[candlestick], layout=layout)</pre>
     </div>
 
-    <li>Show the <code>Figure</code>.</li>
+    <li>Call the <code>show</code> method.<br></li>
     <div class="section-example-container">
         <pre class="python">fig.show()</pre>
     </div>
-    <p>The Jupyter Notebook displays a candlestick chart that shows the open, high, low, and close prices of the selected banking security.</p>
+    <p>The Jupyter Notebook displays the candlestick chart.</p>
     <img style="max-width: 100%; display: block" src="https://cdn.quantconnect.com/i/tu/plotly-candle-3.png">
 </ol>
