@@ -1,0 +1,80 @@
+<p>Correlations between stocks in the same sector are commonly applied to develop pairs trading strategies. We will visualize the correlations between a few stocks in the banking sector using a heat map.<br/></p>
+
+<h4>Gathering Data</h4>
+<p>To begin, we retrieve daily return data of close price for the bank stocks.</p>
+<ol>
+    <li>Instantiate a <code>QuantBook</code>.</li>
+    <div class="section-example-container">
+        <pre class="python">qb = QuantBook()</pre>
+    </div>
+
+    <li>Create a ticker list of the selected tickers.</li>
+    <div class="section-example-container">
+        <pre class="python">tickers = [
+    "COF", # Capital One Financial Corporation
+    "JPM", # J P Morgan Chase & Co
+    "GS", # Goldman Sachs Group, Inc.
+    "WFC" # Wells Fargo & Company
+]</pre>
+    </div>
+
+    <li>Call the <code>AddEquity</code> method with their corresponding resolution while iterrating the ticker list.</li>
+    <div class="section-example-container">
+        <pre class="python">symbols = [qb.AddEquity(ticker, Resolution.Daily).Symbol for ticker in tickers]</pre>
+    </div>
+    <p>If you do not pass a resolution argument, <code>Resolution.Minute</code> is used by default.</p>
+
+    <li>Call the <code>History</code> method with list of <code>Symbol</code> objects, time argument(s), and resolution to request historical data for all of the Securities.</li>
+    <div class="section-example-container">
+        <pre class="python">history = qb.History(tickers, 
+                    datetime(2020, 2, 1), 
+                    datetime(2020, 7, 1), 
+                    Resolution.Daily)</pre>
+    </div>
+    
+    <li>Select close price data.</li>
+    <div class="section-example-container">
+        <pre class="python">close_price = history['close'].unstack(level=0)</pre>
+    </div>
+    
+    <li>Call the <code>pct_change()</code> method on the <code>pandas.DataFrame</code> object.</li>
+    <div class="section-example-container">
+        <pre class="python">daily_ret = close_price.pct_change()</pre>
+    </div>
+
+    <li>Create the correlation matrix.</li>
+    <p>Before we create the heat map, we must create a correlation matrix, which has all the correlations between all possible pairs of symbols. This can be easily done with <code>pandas.DataFrame</code>'s built-in <code>corr()</code> method.</p>
+    <div class="section-example-container">
+        <pre class="python">corr_matrix = daily_ret.corr()</pre>
+    </div>
+</ol>
+
+<h4>Plot the Data</h4>
+<p>Now, we want to visualize the correlation matrix with color indicating the correlation level of banks stocks.</p>
+<ol>
+    <li>Set up the figure with <code>figsize</code> setting.</li>
+    <div class="section-example-container">
+        <pre class="python">plt.figure(figsize=(15, 10))</pre>
+    </div>
+
+    <li>Call <code>plt.imshow</code> method with the correlation matrix, color map, and interpolation method.</li>
+    <div class="section-example-container">
+        <pre class="python">plt.imshow(corr_matrix, cmap='hot', interpolation='nearest')</pre>
+    </div>
+
+    <li>Set up the title, x-axis labels, y-axis labels and color bar of the plot.</li>
+    <div class="section-example-container">
+        <pre class="python">plt.title('Banking Stocks Correlation Heat Map')
+plt.xticks(np.arange(len(tickers)), labels=tickers)
+plt.yticks(np.arange(len(tickers)), labels=tickers)
+plt.colorbar()</pre>
+    </div>
+
+    <li>Show the plot.</li>
+    <div class="section-example-container">
+        <pre class="python">plt.show()</pre>
+    </div>
+
+    <img style="max-width: 100%; display: block" src="https://cdn.quantconnect.com/i/tu/matplotlib-heatmap.png">
+    <p>Heat map displays the correlation strength of the property you selected over a period of time.</p>
+</ol>
