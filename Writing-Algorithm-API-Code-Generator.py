@@ -7,7 +7,7 @@ source = "http://cdn.quantconnect.com.s3.us-east-1.amazonaws.com/terminal/cache/
 base = "02 Writing Algorithms/04 API Reference/"
 dir_ = ["Adding Data", "Algorithm Framework", "Charting", "Consolidating Data",
        "Handling Data", "Historical Data", "Indicators", "Live Trading", "Logging",
-       "MachineLearning", "Modeling", "Parameter and Optimization", "Scheduled Events",
+       "Machine Learning", "Modeling", "Parameter and Optimization", "Scheduled Events",
        "Securities and Portfolio", "Trading and Orders", "Universes"]
 
 path_ = pathlib.Path(base)
@@ -76,7 +76,7 @@ function openTab(evt, category) {
 document.getElementById("All_button").click()
 </script>
 
-<h3><code>QCAlgorithm</code> class subclasses/methods</h3><hr class="solid">
+<h3>QCAlgorithm class subclasses/methods</h3><hr class="solid">
 
 <div class="api-ref-tag-list">
 
