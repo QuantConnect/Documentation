@@ -1,51 +1,21 @@
 <p>You must <a href="#02-Import-Packages">import the plotting packages</a> and <a href="#03-Get-Historical-Data">get some historical data</a> to create bar charts.</p>
 
+<p>We use a bar chart to compare the average daily percent returns of various banking stocks and SPY.</p>
 
-<p>We use a bar chart to compare the average daily percent returns of various banking stocks.</p>
+<p>Follow these steps to create a bar chart:</p>
 
-<h4>Gathering Data</h4>
-<p>First, we get historical closing prices for four banking sector stocks, then compute the average daily return for each stock.</p>
 <ol>
-    <li>Instantiate a <code>QuantBook</code>.</li>
-    <div class="section-example-container">
-        <pre class="python">qb = QuantBook()</pre>
-    </div>
-
-    <li>Create a ticker list of the selected tickers.</li>
-    <div class="section-example-container">
-        <pre class="python">tickers = [
-    "COF", # Capital One Financial Corporation
-    "JPM", # J P Morgan Chase & Co
-    "GS", # Goldman Sachs Group, Inc.
-    "WFC" # Wells Fargo & Company
-]</pre>
-    </div>
-
-    <li>Call the <code>AddEquity</code> method with their corresponding resolution while iterrating the ticker list.</li>
-    <div class="section-example-container">
-        <pre class="python">symbols = [qb.AddEquity(ticker, Resolution.Daily).Symbol for ticker in tickers]</pre>
-    </div>
-    <p>If you do not pass a resolution argument, <code>Resolution.Minute</code> is used by default.</p>
-
-    <li>Call the <code>History</code> method with list of <code>Symbol</code> objects, time argument(s), and resolution to request historical data for all of the Securities.</li>
-    <div class="section-example-container">
-        <pre class="python">history = qb.History(tickers, 
-                    datetime(2020, 2, 1), 
-                    datetime(2020, 7, 1), 
-                    Resolution.Daily)</pre>
-    </div>
-    
     <li>Select close price data.</li>
     <div class="section-example-container">
         <pre class="python">close_price = history['close'].unstack(level=0)</pre>
     </div>
     
-    <li>Call the <code>pct_change()</code> method on the <code>pandas.DataFrame</code> object.</li>
+    <li>Call the <code>pct_change</code> method on the <code>pandas.DataFrame</code> object.</li>
     <div class="section-example-container">
         <pre class="python">daily_ret = close_price.pct_change()</pre>
     </div>
 
-    <li>Call <code>.apply()</code> function on the <code>pandas.DataFrame</code> using <code>np.nanmean</code> to obtain the average return.</li>
+    <li>Call <code>apply</code> method on the <code>pandas.DataFrame</code> using <code>np.nanmean</code> to obtain the average return.</li>
     <div class="section-example-container">
         <pre class="python">avg_daily_ret = daily_ret.apply(np.nanmean, axis=0)</pre>
     </div>
@@ -54,31 +24,26 @@
     <div class="section-example-container">
         <pre class="python">avg_daily_ret = pd.DataFrame(avg_daily_ret, columns=["avg_daily_ret"])</pre>
     </div>
-</ol>
 
-<h4>Plot the Data</h4>
-<p>Now, we want to visualize the average daily return of the banks stocks.</p>
-<ol>
     <li>Reset index of the <code>pandas.DataFrame</code>.</li>
     <div class="section-example-container">
-        <pre class="python">avg_daily_ret2 = avg_daily_ret.reset_index()</pre>
+        <pre class="python">avg_daily_ret.reset_index(inplace=True)</pre>
     </div>
 
-    <li>Call <code>px.bar</code> method with the <code>pandas.DataFrame</code>, x-axis column and y-axis column.</li>
+    <li>Call <code>bar</code> method with the <code>pandas.DataFrame</code>, x-axis column and y-axis column.</li>
     <div class="section-example-container">
-        <pre class="python">fig = px.bar(avg_daily_ret2, x='symbol', y='avg_daily_ret')</pre>
+        <pre class="python">fig = px.bar(avg_daily_ret, x='symbol', y='avg_daily_ret')</pre>
     </div>
 
-    <li># Update the layout with title.</li>
+    <li>Update the layout with title.</li>
     <div class="section-example-container">
         <pre class="python">fig.update_layout(title='Banking Stocks Average Daily % Returns')</pre>
     </div>
 
-    <li>Show the plot.</li>
+    <li>Show the <code>Figure</code>.</li>
     <div class="section-example-container">
         <pre class="python">fig.show()</pre>
     </div>
-
+    <p>The Jupyter Notebook displays a bar plot.</p>
     <img style="max-width: 100%; display: block" src="https://cdn.quantconnect.com/i/tu/plotly-barchart.png">
-    <p>Bar chart displays the average daily return data of the property you selected over a period of time.</p>
 </ol>

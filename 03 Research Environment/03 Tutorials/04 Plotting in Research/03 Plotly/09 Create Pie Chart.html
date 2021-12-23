@@ -1,2 +1,54 @@
 <p>You must <a href="#02-Import-Packages">import the plotting packages</a> and <a href="#03-Get-Historical-Data">get some historical data</a> to create pie charts.</p>
 
+<p>We would use a pie chart to present our asset allocation over various bank stocks and SPY. In this example, we'll use inverse variance as our allocation strategy.<br/></p>
+
+<p>Follow these steps to create a pie chart:</p>
+
+<ol>
+    <li>Select close price data.</li>
+    <div class="section-example-container">
+        <pre class="python">close_price = history['close'].unstack(level=0)</pre>
+    </div>
+    
+    <li>Call the <code>pct_change</code> method on the <code>pandas.DataFrame</code> object.</li>
+    <div class="section-example-container">
+        <pre class="python">daily_ret = close_price.pct_change()</pre>
+    </div>
+
+    <li>Call <code>var</code> to obtain the variance of daily return.</li>
+    <div class="section-example-container">
+        <pre class="python">var = daily_ret.var()</pre>
+    </div>
+
+    <li>Convert the variance into inverse variance for our allocation.</li>
+    <div class="section-example-container">
+        <pre class="python">inv_var = 1 / var</pre>
+    </div>
+
+    <li>Convert the <code>pd.Series</code> into <code>pd.DataFrame</code></li>
+    <div class="section-example-container">
+        <pre class="python">inv_var = pd.DataFrame(inv_var, columns=["inverse variance"])</pre>
+    </div>
+
+    <li>Reset index of the <code>pandas.DataFrame</code>.</li>
+    <div class="section-example-container">
+        <pre class="python">inv_var.reset_index(inplace=True)</pre>
+    </div>
+
+    <li>Call <code>pie</code> method with the <code>pandas.DataFrame</code>, value column and category column.</li>
+    <div class="section-example-container">
+        <pre class="python">fig = px.pie(inv_var, values='inverse variance', names='symbol')</pre>
+    </div>
+
+    <li>Update the layout with title.</li>
+    <div class="section-example-container">
+        <pre class="python">fig.update_layout(title='Asset Allocation of bank stocks and SPY')</pre>
+    </div>
+
+    <li>Show the <code>Figure</code>.</li>
+    <div class="section-example-container">
+        <pre class="python">fig.show()</pre>
+    </div>
+    <p>The Jupyter Notebook displays a pie chart.</p>
+    <img style="max-width: 100%; display: block" src="">
+</ol>
