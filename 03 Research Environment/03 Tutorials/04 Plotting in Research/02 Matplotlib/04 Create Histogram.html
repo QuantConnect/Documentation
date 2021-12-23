@@ -3,15 +3,21 @@
 <p>Follow these steps to create a histogram:</p>
 
 <ol>
-    <li>Select the column you want to plot.</li>
+    <li>Select the <code>Symbol</code> that you want to plot in the line chart.</li>
+    <p>For example, to select the first <code>Symbol</code>, run:</p>
+    <div class="section-example-container">
+        <pre class="python">symbol = symbols[0]</pre>
+    </div>
+
+    <li>Slice the <code>history</code> DataFrame with <code>symbol</code> and then select the column that you want to plot.</li>
     <p>For example, to select the closing prices, run:</p>
     <div class="section-example-container">
-        <pre class="python">close_price = history['close'].unstack(level=0)</pre>
+        <pre class="python">data = history.loc[symbol]['close']</pre>
     </div>
-    
+
     <li>Call the <code>pct_change</code> method on the <code>pandas</code> object.</li>
     <div class="section-example-container">
-        <pre class="python">daily_ret = close_price.pct_change()</pre>
+        <pre class="python">daily_ret = data.pct_change()[1:]</pre>
     </div>
 
     <li>Set up the figure with <code>figsize</code> setting.</li>
@@ -19,17 +25,16 @@
         <pre class="python">plt.figure(figsize=(15, 10))</pre>
     </div>
 
-    <li>Call <code>hist</code> method with the daily return data, bin number, and labels.</li>
+    <li>Call <code>hist</code> method with the daily return data and bin number.</li>
     <div class="section-example-container">
-        <pre class="python">plt.hist(daily_ret, bins=20, label=daily_ret.columns)</pre>
+        <pre class="python">plt.hist(daily_ret, bins=20)</pre>
     </div>
 
-    <li>Set up the title, x-axis label, y-axis label and label legend of the plot.</li>
+    <li>Set up the title, x-axis label and y-axis label of the plot.</li>
     <div class="section-example-container">
         <pre class="python">plt.title('Are normally distributed returns a hoax?')
 plt.xlabel('Daily Return')
-plt.ylabel('Count')
-plt.legend()</pre>
+plt.ylabel('Count')</pre>
     </div>
 
     <li>Show the plot.</li>
