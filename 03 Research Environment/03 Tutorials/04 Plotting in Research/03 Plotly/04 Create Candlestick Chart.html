@@ -1,60 +1,45 @@
-<p>We will visualize the open, high, low, close (OHLC) data of SPY using a candlestick chart.</p>
+<p>You must <a href="#02-Import-Packages">import the plotting packages</a> and <a href="#03-Get-Historical-Data">get some historical data</a> to create candlestick charts.</p>
 
-<h4>Gathering Data</h4>
-<p>To begin, we retrieve the historical data of close price for SPY.</p>
+<p>Follow these steps to create a candlestick chart:</p>
+
 <ol>
-    <li>Instantiate a <code>QuantBook</code>.</li>
+    <li>Select the <code>Symbol</code> that you want to plot in the candlestick chart.</li>
+    <p>For example, to select the first <code>Symbol</code>, run:</p>
+<div class="section-example-container">
+    <pre class="python">symbol = symbols[0]</pre>
+</div>
+
+    <li>Slice the <code>history</code> DataFrame with the <code>Symbol</code> that you selected.</li>
+<div class="section-example-container">
+    <pre class="python">data = history.loc[symbol]</pre>
+</div>
+
+    <li>Create a <code>Candlestick</code>.</li>
     <div class="section-example-container">
-        <pre class="python">qb = QuantBook()</pre>
+        <pre class="python">candlestick = go.Candlestick(x=data.index,
+                             open=data['open'],
+                             high=data['high'],
+                             low=data['low'],
+                             close=data['close'])</pre>
     </div>
 
-    <li>Call the <code>AddEquity</code> method with SPY, and their corresponding resolution.</li>
+    <li>Create a <code>Layout</code>.</li>
     <div class="section-example-container">
-        <pre class="python">spy = qb.AddEquity("SPY", Resolution.Daily)</pre>
-    </div>
-    <p>If you do not pass a resolution argument, <code>Resolution.Minute</code> is used by default.</p>
-
-    <li>Call the <code>History</code> method with a <code>Symbol</code>, time argument(s), and resolution to request historical data for the Symbol.</li>
-    <div class="section-example-container">
-        <pre class="python">history = qb.History(spy.Symbol, 360, Resolution.Daily)</pre>
+        <pre class="python">layout = go.Layout(title=go.layout.Title(text=f'{symbol} OHLC'),
+                   xaxis_title='Date',
+                   yaxis_title='Price',
+                   xaxis_rangeslider_visible=False)</pre>
     </div>
 
-    <li>Index the <code>pandas.DataFrame</code> with a <code>Symbol</code> to select the historical data of the security.</li>
-    <div class="section-example-container">
-        <pre class="python">price = history.loc["SPY"]</pre>
-    </div>
-</ol>
-
-<h4>Plot the Data</h4>
-<p>Now, we want to visualize the OHLC data of SPY.</p>
-<ol>
-    <li>Create a Candlestick.</li>
-    <div class="section-example-container">
-        <pre class="python">candlestick = go.Candlestick(x=price.index,
-                            open=price['open'],
-                            high=price['high'],
-                            low=price['low'],
-                            close=price['close'])</pre>
-    </div>
-
-    <li>Create a Layout.</li>
-    <div class="section-example-container">
-        <pre class="python">layout = go.Layout(title=go.layout.Title(text='SPY OHLC'),
-                    xaxis_title='Date',
-                    yaxis_title='Price',
-                    xaxis_rangeslider_visible=False)</pre>
-    </div>
-
-    <li>Create the Figure.</li>
+    <li>Create a <code>Figure</code>.</li>
     <div class="section-example-container">
         <pre class="python">fig = go.Figure(data=[candlestick], layout=layout)</pre>
     </div>
 
-    <li>Show the plot.</li>
+    <li>Show the <code>Figure</code>.</li>
     <div class="section-example-container">
         <pre class="python">fig.show()</pre>
     </div>
-
+    <p>The Jupyter Notebook displays a candlestick chart.</p>
     <img style="max-width: 100%; display: block" src="https://cdn.quantconnect.com/i/tu/plotly-candlestick.png">
-    <p>Candlestick Chart displays the price data of the Symbol you selected over a period of time.</p>
 </ol>
