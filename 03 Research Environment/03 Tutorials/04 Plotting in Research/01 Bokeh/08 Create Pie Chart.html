@@ -1,1 +1,64 @@
-<p>Correlations between stocks in the same sector are commonly applied to develop pairs trading strategies. We will visualize the correlations between a few stocks in the banking sector using a heat map.</p>
+<p>You must <a href="#02-Import-Packages">import the plotting packages</a> and <a href="#03-Get-Historical-Data">get some historical data</a> to create pie charts.</p>
+
+<p>We would use a pie chart to present our asset allocation over various bank stocks and bank sector ETF. In this example, we'll use inverse variance as our allocation strategy.<br/></p>
+
+<p>Follow these steps to create a pie chart:</p>
+
+<ol>
+    <li>Select the column you want to plot.</li>
+    <p>For example, to select the closing prices, run:</p>
+    <div class="section-example-container">
+        <pre class="python">close_price = history['close'].unstack(level=0)</pre>
+    </div>
+    
+    <li>Call the <code>pct_change</code> method on the <code>pandas.DataFrame</code> object.</li>
+    <div class="section-example-container">
+        <pre class="python">daily_ret = close_price.pct_change()</pre>
+    </div>
+
+    <li>Call <code>var</code> to obtain the variance of daily return.</li>
+    <div class="section-example-container">
+        <pre class="python">var = daily_ret.var()</pre>
+    </div>
+
+    <li>Convert the variance into normalized inverse variance for our allocation.</li>
+    <div class="section-example-container">
+        <pre class="python">inv_var = 1 / var
+inv_var = inv_var/np.sum(inv_var)   # Normalization
+inv_var *= np.pi*2    # For a full circle circumference in radian</pre>
+    </div>
+
+    <li>Convert the <code>pd.Series</code> into <code>pd.DataFrame</code></li>
+    <div class="section-example-container">
+        <pre class="python">inv_var = pd.DataFrame(inv_var, columns=["inverse variance"])</pre>
+    </div>
+
+    <li>Reset index of the <code>pandas.DataFrame</code>.</li>
+    <div class="section-example-container">
+        <pre class="python">inv_var.reset_index(inplace=True)</pre>
+    </div>
+
+    <li>Configure the colors.</li>
+    <div class="section-example-container">
+        <pre class="python">inv_var['color'] = Category20c[len(inv_var.index)]</pre>
+    </div>
+
+    <li>Call <code>figure</code> to create a plot with title.</li>
+    <div class="section-example-container">
+        <pre class="python">plot = figure(title=f"Banking Stocks and Bank Sector ETF Allocation")</pre>
+    </div>
+
+    <li>Call <code>wedge</code> method to create a pie chart.</li>
+    <div class="section-example-container">
+        <pre class="python">plot.wedge(x=0, y=1, radius=0.6, start_angle=cumsum('inverse variance', include_zero=True), 
+            end_angle=cumsum('inverse variance'), line_color="white", fill_color='color', 
+            legend_field='symbol', source=inv_var)</pre>
+    </div>
+
+    <li>Call <code>show</code> to show the plot.</li>
+    <div class="section-example-container">
+        <pre class="python">show(plot)</pre>
+    </div>
+    <p>The Jupyter Notebook displays a pie chart.</p>
+    <img style="max-width: 100%; display: block" src="">
+</ol>

@@ -1,1 +1,77 @@
-<p>Correlations between stocks in the same sector are commonly applied to develop pairs trading strategies. We will visualize the correlations between a few stocks in the banking sector using a heat map.</p>
+<p>You must <a href="#02-Import-Packages">import the plotting packages</a> and <a href="#03-Get-Historical-Data">get some historical data</a> to create heat maps.</p>
+
+<p>Correlations between stocks in the same sector are commonly applied to develop pairs trading strategies. We will visualize the correlations between a few stocks in the banking sector and bank sector ETF using a heat map.<br/></p>
+
+<p>Follow these steps to create a heat map:</p>
+
+<ol>
+    <li>Select the column you want to plot.</li>
+    <p>For example, to select the closing prices, run:</p>
+    <div class="section-example-container">
+        <pre class="python">close_price = history['close'].unstack(level=0)</pre>
+    </div>
+    
+    <li>Call the <code>pct_change</code> method on the <code>pandas.DataFrame</code> object.</li>
+    <div class="section-example-container">
+        <pre class="python">daily_ret = close_price.pct_change()</pre>
+    </div>
+
+    <li>Call <code>corr</code> to create the correlation matrix.</li>
+    <p>Before we create the heat map, we must create a correlation matrix, which has all the correlations between all possible pairs of symbols. This can be easily done with <code>pandas.DataFrame</code>'s built-in <code>corr()</code> method.</p>
+    <div class="section-example-container">
+        <pre class="python">corr_matrix = daily_ret.corr()</pre>
+    </div>
+
+    <li>Set the index and column names.</li>
+    <div class="section-example-container">
+        <pre class="python">corr_matrix.index.name = 'symbol'
+corr_matrix.columns.name = "stocks"</pre>
+    </div>
+
+    <li>Stack the <code>DataFrame</code> and reset the index.</li>
+    <div class="section-example-container">
+        <pre class="python">corr_matrix = corr_matrix.stack().rename("value").reset_index()</pre>
+    </div>
+
+    <li>Call <code>figure</code> to create a plot.</li>
+    <div class="section-example-container">
+        <pre class="python">plot = figure(title=f"Banking Stocks and Bank Sector ETF Correlation Heat Map",
+            x_range=list(corr_matrix.symbol.drop_duplicates()),
+            y_range=list(corr_matrix.stocks.drop_duplicates()),
+            toolbar_location=None,
+            tools="",
+            x_axis_location="above")</pre>
+    </div>
+
+    <li>Configure the colors.</li>
+    <div class="section-example-container">
+        <pre class="python">colors = Category20c[len(corr_matrix.columns)]
+mapper = LinearColorMapper(palette=colors, low=corr_matrix.value.min(), high=corr_matrix.value.max())</pre>
+    </div>
+
+    <li>Call <code>rect</code> method to create the heat map.</li>
+    <div class="section-example-container">
+        <pre class="python">plot.rect(source=ColumnDataSource(corr_matrix), 
+            x="stocks", 
+            y="symbol",
+            width=1,
+            height=1,
+            line_color=None,
+            fill_color=transform('value', mapper))</pre>
+    </div>
+
+    <li>Call <code>ColorBar</code> method to create the heat map, then add it to the layout.</li>
+    <div class="section-example-container">
+        <pre class="python">color_bar = ColorBar(color_mapper=mapper,
+            location=(0, 0),
+            ticker=BasicTicker(desired_num_ticks=len(colors)))
+plot.add_layout(color_bar, 'right')</pre>
+    </div>
+
+    <li>Call <code>show</code> to show the plot.</li>
+    <div class="section-example-container">
+        <pre class="python">show(plot)</pre>
+    </div>
+    <p>The Jupyter Notebook displays a heat map.</p>
+    <img style="max-width: 100%; display: block" src="">
+</ol>

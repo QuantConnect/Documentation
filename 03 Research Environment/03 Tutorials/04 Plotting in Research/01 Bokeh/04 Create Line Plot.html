@@ -3,22 +3,26 @@
 <p>Follow these steps to create a line chart:</p>
 
 <ol>
-    <li>Select the column you want to plot.</li>
-    <p>For example, to select the closing prices, run:</p>
+    <li>Select the Symbol you want to plot.</li>
+    <p>For example, to select the first <code>Symbol</code>, run:</p>
     <div class="section-example-container">
-        <pre class="python">close_price = history['close'].unstack(level=0)</pre>
+        <pre class="python">symbol = symbols[0]</pre>
+    </div>
+    
+    <li>Slice the history DataFrame with symbol and then select the column that you want to plot.</li>
+    <p>For example, to select the close price, run:</p>
+    <div class="section-example-container">
+        <pre class="python">data = history.loc[symbol]['close']</pre>
     </div>
     
     <li>Call <code>figure</code> to create a plot with title and axis labels.</li>
     <div class="section-example-container">
-        <pre class="python">plot = figure(title=f"Bank Stocks and Bank Sector ETF Close Price", x_axis_label='Date', y_axis_label='Price')</pre>
+        <pre class="python">plot = figure(title=f"{symbol} Close Price", x_axis_label='Date', y_axis_label='Price')</pre>
     </div>
 
-    <li>Call <code>line</code> to plot a line plot for each <code>Symbol</code> with x-axis value, y-axis value, legend lable and line width.</li>
+    <li>Call <code>line</code> to plot a line plot for each <code>Symbol</code> with x-axis value, y-axis value, legend lable, color and line width.</li>
     <div class="section-example-container">
-        <pre class="python">for symbol in symbols:
-    color = np.random.randint(low=0, high=255, size=3)
-    plot.line(close_price.index, close_price[symbol], legend_label=symbol.Value, color=tuple(color), line_width=2)</pre>
+        <pre class="python">plot.line(data.index, data, legend_label=symbol.Value, color="blue", line_width=2)</pre>
     </div>
 
     <li>Call <code>show</code> to show the plot.</li>
