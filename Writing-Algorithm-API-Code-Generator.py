@@ -247,8 +247,6 @@ def Table(input_, previous_name, type_map, j):
                 else:
                     args[item["GenericParameters"][-1]["Name"]] = type_map[str(item["GenericParameters"][-1]["typeId"])]
             
-        call = name + "(" + ", ".join([str(value) + " " + str(key) for key, value in args.items()]).replace("/", "_") + ")"
-        
         if previous_name != name:
             with open(path_ / f'02.html', "r", encoding="utf-8") as fin:
                 lines = fin.readlines()
@@ -295,7 +293,7 @@ def Table(input_, previous_name, type_map, j):
                     
                     if active and '</tbody></table>' in line:
                         link = line.replace('</tbody></table>', f'''<tr>
-<td><a href="#{call.replace(" ", "-") + str(j)}">{name}()</a></td>
+<td width="33%"><a href="#{name}-header">{name}()</a></td>
 <td>{description}</td>
 </tr>
 </tbody></table>''')
@@ -456,7 +454,9 @@ def Box(input_, doc_attr, doc_ref, type_map, j):
         
     buttons = "\n".join([f'''<button class="method-tag" onclick="openTopTab(event, '{attr_}')">{attr_}</button>''' for attr_ in doc_attr])
     
-    write_up = f"""<a id="{call.replace(" ", "-") + str(j)}"></a>
+    name = input_["Name"] if "Name" in input_ else input_["ShortType"]
+    
+    write_up = f"""<a id="{name}-header"></a>
 <div class="method-container">
 
     <div class="method-header">
