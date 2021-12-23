@@ -1,48 +1,27 @@
-<p>We will visualize the distribution of daily return of SPY and QQQ using a histogram.</p>
+<p>You must <a href="#02-Import-Packages">import the plotting packages</a> and <a href="#03-Get-Historical-Data">get some historical data</a> to create histogram.</p>
 
-<h4>Gathering Data</h4>
-<p>To begin, we retrieve daily return data of close price for SPY and QQQ</p>
+<p>Follow these steps to create a histogram:</p>
+
 <ol>
-    <li>Instantiate a <code>QuantBook</code>.</li>
-    <div class="section-example-container">
-        <pre class="python">qb = QuantBook()</pre>
-    </div>
-
-    <li>Call the <code>AddEquity</code> method with SPY and QQQ, and their corresponding resolution.</li>
-    <div class="section-example-container">
-        <pre class="python">spy = qb.AddEquity("SPY", Resolution.Daily)
-qqq = qb.AddEquity("QQQ", Resolution.Daily)
-        </pre>
-    </div>
-    <p>If you do not pass a resolution argument, <code>Resolution.Minute</code> is used by default.</p>
-
-    <li>Call the <code>History</code> method with <code>qb.Securities.Keys</code>, time argument(s), and resolution to request historical data for all of the Securities.</li>
-    <div class="section-example-container">
-        <pre class="python">history = qb.History(qb.Securities.Keys, 360, Resolution.Daily)</pre>
-    </div>
-    
-    <li>Select close price data.</li>
+    <li>Select the column you want to plot.</li>
+    <p>For example, to select the closing prices, run:</p>
     <div class="section-example-container">
         <pre class="python">close_price = history['close'].unstack(level=0)</pre>
     </div>
     
-    <li>Call the <code>pct_change()</code> method on the <code>pandas</code> object.</li>
+    <li>Call the <code>pct_change</code> method on the <code>pandas</code> object.</li>
     <div class="section-example-container">
         <pre class="python">daily_ret = close_price.pct_change()</pre>
     </div>
-</ol>
 
-<h4>Plot the Data</h4>
-<p>Now, we want to visualize the returns distribution of SPY and QQQ.</p>
-<ol>
     <li>Set up the figure with <code>figsize</code> setting.</li>
     <div class="section-example-container">
         <pre class="python">plt.figure(figsize=(15, 10))</pre>
     </div>
 
-    <li>Call <code>plt.hist</code> method with the daily return data, bin number, and labels.</li>
+    <li>Call <code>hist</code> method with the daily return data, bin number, and labels.</li>
     <div class="section-example-container">
-        <pre class="python">plt.hist(daily_ret, bins=20, label=["SPY", "QQQ"])</pre>
+        <pre class="python">plt.hist(daily_ret, bins=20, label=daily_ret.columns)</pre>
     </div>
 
     <li>Set up the title, x-axis label, y-axis label and label legend of the plot.</li>
@@ -57,7 +36,6 @@ plt.legend()</pre>
     <div class="section-example-container">
         <pre class="python">plt.show()</pre>
     </div>
-
+    <p>The Jupyter Notebook displays a histogram.</p>
     <img style="max-width: 100%; display: block" src="https://cdn.quantconnect.com/i/tu/matplotlib-histogram.png">
-    <p>Histogram displays the distribution of the property you selected over a period of time.</p>
 </ol>
