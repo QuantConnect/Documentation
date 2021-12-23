@@ -3,15 +3,21 @@
 <p>Follow these steps to create a line chart:</p>
 
 <ol>
-    <li>Select the column you want to plot.</li>
+    <li>Select the <code>Symbol</code> that you want to plot in the line chart.</li>
+    <p>For example, to select the first <code>Symbol</code>, run:</p>
+    <div class="section-example-container">
+        <pre class="python">symbol = symbols[0]</pre>
+    </div>
+
+    <li>Slice the <code>history</code> DataFrame with <code>symbol</code> and then select the column that you want to plot.</li>
     <p>For example, to select the closing prices, run:</p>
     <div class="section-example-container">
-        <pre class="python">close_price = history['close'].unstack(level=0)</pre>
+        <pre class="python">data = history.loc[symbol]['close']</pre>
     </div>
-    
+
     <li>Call the <code>plot</code> method on the <code>pandas</code> object.</li>
     <div class="section-example-container">
-        <pre class="python">close_price.plot(title="Close Price of Bank Stocks and Bank Sector ETF", figsize=(15, 10))</pre>
+        <pre class="python">data.plot(title="{symbol} Close Price", figsize=(15, 10))</pre>
     </div>
 
     <li>Show the plot.</li>
