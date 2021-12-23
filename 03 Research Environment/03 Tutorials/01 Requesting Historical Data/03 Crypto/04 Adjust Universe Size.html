@@ -5,25 +5,27 @@
 <p><a href="#02-Create-Subscriptions">Create subscriptions</a> for multiple Cryptocurrencies and then call the <code>History</code> method with a list of <code>Symbol</code>s to request historical data for those specific securities.</p>
 
 <div class="section-example-container">
-    <pre class="csharp">
-var btc = qb.AddCrypto("BTCUSD", market: Market.Bitfinex).Symbol
+    <pre class="csharp">var btc = qb.AddCrypto("BTCUSD", market: Market.Bitfinex).Symbol
 var eth = qb.AddCrypto("ETHUSD", market: Market.Bitfinex).Symbol
 var sol = qb.AddCrypto("SOLUSD", market: Market.Bitfinex).Symbol
 
 var startTime = new DateTime(2021, 1, 1);
 var endTime = new DateTime(2021, 2, 1);
-var definedPeriodHistory = qb.History(new []{btc, eth, sol}, startTime, endTime, Resolution.Daily);
-var timespanHistory = qb.History(new []{btc, eth, sol}, TimeSpan.FromDays(10), Resolution.Daily);
+var definedPeriodHistory = qb.History(new []{btc, eth, sol}, startTime, endTime,
+    Resolution.Daily);
+var timespanHistory = qb.History(new []{btc, eth, sol}, TimeSpan.FromDays(10),
+    Resolution.Daily);
 var barCountHistory = qb.History(new []{btc, eth, sol}, 10, Resolution.Daily);</pre>
-    <pre class="python">
-btc = qb.AddCrypto("BTCUSD", market=Market.Bitfinex).Symbol
+    <pre class="python">btc = qb.AddCrypto("BTCUSD", market=Market.Bitfinex).Symbol
 eth = qb.AddCrypto("ETHUSD", market=Market.Bitfinex).Symbol
 sol = qb.AddCrypto("SOLUSD", market=Market.Bitfinex).Symbol
 
 start_time = datetime(2021, 1, 1)
 end_time = datetime(2021, 2, 1)
-defined_period_history = qb.History([btc, eth, sol], start_time, end_time, Resolution.Daily)
-timespan_history = qb.History([btc, eth, sol], timedelta(days=10), Resolution.Daily)
+defined_period_history = qb.History([btc, eth, sol], start_time, end_time,
+    Resolution.Daily)
+timespan_history = qb.History([btc, eth, sol], timedelta(days=10),
+    Resolution.Daily)
 bar_count_history = qb.History([btc, eth, sol], 10, Resolution.Daily)</pre>
 </div>
 
@@ -33,14 +35,15 @@ bar_count_history = qb.History([btc, eth, sol], 10, Resolution.Daily)</pre>
 <p class="python">Call the <code>History</code> method with <code>qb.Securities.Keys</code>, time argument(s), and resolution to request historical data for all of the Cryptocurrencies.</p>
 
 <div class="section-example-container">
-    <pre class="csharp">var startTime = new DateTime(2021, 1, 1);
-var endTime = new DateTime(2021, 2, 1);
+    <pre class="csharp">
 var timespanHistory = qb.History(TimeSpan.FromDays(10), Resolution.Daily);
 var barCountHistory = qb.History(10, Resolution.Daily);</pre>
     <pre class="python">start_time = datetime(2021, 1, 1)
 end_time = datetime(2021, 2, 1)
-defined_period_history = qb.History(qb.Securities.Keys, start_time, end_time, Resolution.Daily)
-timespan_history = qb.History(qb.Securities.Keys, timedelta(days=10), Resolution.Daily)
+defined_period_history = qb.History(qb.Securities.Keys, start_time, end_time,
+    Resolution.Daily)
+timespan_history = qb.History(qb.Securities.Keys, timedelta(days=10),
+    Resolution.Daily)
 bar_count_history = qb.History(qb.Securities.Keys, 10, Resolution.Daily)</pre>
 </div>
 
