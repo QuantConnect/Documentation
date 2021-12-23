@@ -1,39 +1,77 @@
-<p>You need a <a href="#02-Create-Subscriptions">subscription</a> before you can request historical data for a security. You can request an amount of historical data based on a trailing number of bars, a trailing period of time, or a defined period of time.</p>
+<p>You need a <a href="#03-Create-Subscriptions">subscription</a> before you can request historical data for a security. If you call the <code>History</code> method with a <code>Future</code> <code>Symbol</code>, no data is returned because the <code>Symbol</code> represents an <code>FutureChain</code>. Follow these steps to get the historical data of the <code>FutureContract</code>s in the <code>FutureChain</code> from the <code>History</code> method:</p>
+
+<ol>
+    <li>Call the <code>GetFuturesContractList</code> method with the underlying <code>Future</code> <code>Symbol</code> and a <code class="python">datetime</code><code class="csharp">DateTime</code>.</li>
+    <div class="section-example-container">
+        <pre class="csharp">var startTime = new DateTime(2021,12,13);
+var endTime = new DateTime(2021,12,20);
+var symbols = qb.FutureChainProvider.GetFutureContractList(equity.Symbol, endTime);</pre>
+    <pre class="python">start_time = datetime(2021,12,13)
+end_time = datetime(2021,12,20)
+symbols = qb.FutureChainProvider.GetFutureContractList(symbol, end_time)
+</pre>
+    </div>
+	<p>The call returns a list of <code>Symbol</code>s that reference the <code>FutureContract</code>s that were trading at the given time. You can get historical data for a subset of the returned <code>Symbol</code>s.</p>
+	<li><i>Optional</i> Remove the weeklies and contracts that have expired before <code class="python">end_time</code><code class="csharp">endTime</code>.</li>
+    <div class="section-example-container">
+        <pre class="csharp"></pre>
+    <pre class="python">symbols = [s for s in symbols
+    if FutureSymbol.IsStandard(s) && s.ID.Date > end_time]</pre>
+    </div>
+    <li>Select the <code>Symbol</code> of the <code>FutureContract</code>(s) for which you want to get historical data.</li>
+    <p>For example, you can select the  <code>Symbol</code> of the contract with the closest expiry to match the continuous futures defined before:</p>
+    <div class="section-example-container">
+        <pre class="csharp">var contractSymbol = symbols.OrderBy(s =&gt; s.ID.Date).FirstOrDefault();</pre>
+	<pre class="python">
+	contract_symbol = sorted(symbols, key=lambda s: s.ID.Date)[0]</pre>
+    </div>
+	
+	<li>If you want to get open interest data, call the <code>AddFutureContract</code> method with an <code>FutureContract</code> <code>Symbol</code> and disable fill-forward.</li>
+    <div class="section-example-container">
+        <pre class="csharp">qb.AddFutureContract(contractSymbol, fillDataForward: false);</pre>
+	<pre class="python">qb.AddFutureContract(contract_symbol, fillDataForward = False)</pre>
+    </div>
+</ol>
+
+<p>You can now request an amount of historical data for the <code>FutureContract</code> <code>Symbol</code>s based on a trailing number of bars, a trailing period of time, or a defined period of time.</p>
 
 <h4>Trailing Number of Bars<br></h4>
-<p>Call the <code>History</code> method with a symbol, integer, and resolution to request historical data based on the given number of trailing bars and resolution.</p>
+<p>Call the <code>History</code> method with a symbol and integer to request historical data based on the given number of trailing bars.</p>
 <div class="section-example-container">
-    <pre class="csharp">var history = qb.History(symbol, 400, Resolution.Minute);</pre>
-    <pre class="python">history = qb.History(symbol, 400, Resolution.Minute)</pre>
+    <pre class="csharp">var priceHistory = qb.History(symbol, 10);
+var openInterestHistory = qb.History&lt;OpenInterest&gt;(contractSymbol, 400);
+	</pre>
+    <pre class="python">price_history = qb.History(symbol, 10)
+open_interest_history = qb.History(OpenInterest, contract_symbol, 400)</pre>
 </div>
 <p>The call returns the most recent bars, excluding periods of time when the exchange was closed.</p>
 
 <h4>Trailing Period of Time<br></h4>
-<p>Call the <code>History</code> method with a symbol, <code class="csharp">TimeSpan</code><code class="python">timedelta</code>, and resolution to request historical data based on the given trailing period of time and resolution.</p>
+<p>Call the <code>History</code> method with a symbol and <code class="csharp">TimeSpan</code><code class="python">timedelta</code> to request historical data based on the given trailing period of time.</p>
 <div class="section-example-container">
-    <pre class="csharp">var history = qb.History(symbol, TimeSpan.FromDays(10), Resolution.Minute);</pre>
-    <pre class="python">history = qb.History(symbol, timedelta(days=10), Resolution.Minute)</pre>
+    <pre class="csharp">var priceHistory = qb.History(symbol, TimeSpan.FromDays(10));
+var openInterestHistory = qb.History&lt;OpenInterest&gt;(contractSymbol, TimeSpan.FromDays(10));</pre>
+    <pre class="python">price_history = qb.History(symbol, timedelta(days=10))
+open_interest_history = qb.History(OpenInterest, contract_symbol, timedelta(days=10))</pre>
 </div>
 <p>The call returns the most recent bars, excluding periods of time when the exchange was closed.</p>
 
 <h4>Defined Period of Time<br></h4>
-<p>Call the <code>History</code> method with a symbol, start  <code class="csharp">DateTime</code><code class="python">datetime</code>, end  <code class="csharp">DateTime</code><code class="python">datetime</code>, and resolution to request historical data based on the defined period of time and resolution.</p>
+<p>Call the <code>History</code> method with a symbol, start  <code class="csharp">DateTime</code><code class="python">datetime</code>, and end  <code class="csharp">DateTime</code><code class="python">datetime</code> to request historical data based on the defined period of time.</p>
 
 <div class="section-example-container">
-    <pre class="csharp">var startTime = new DateTime(2021, 1, 1);
-var endTime = new DateTime(2021, 2, 1);
-var history = qb.History(symbol, startTime, endTime, Resolution.Minute);</pre>
-    <pre class="python">start_time = datetime(2021, 1, 1)
-end_time = datetime(2021, 2, 1)
-history = qb.History(symbol, start_time, end_time, Resolution.Minute)</pre>
+    <pre class="csharp">var priceHistory = qb.History(symbol, startTime, endTime);
+var openInterestHistory = qb.History&lt;OpenInterest&gt;(contractSymbol, startTime, endTime);</pre>
+    <pre class="python">price_history = qb.History(symbol, start_time, end_time)
+open_interest_history = qb.History(OpenInterest, contract_symbol, start_time, end_time)</pre>
 </div>
 
 <p>The call returns the bars that are timestamped within the defined period of time.</p>
 
-<p class="python">In all of the cases above, the <code>History</code> method returns a <code>pandas.DataFrame</code> with a <code>MultiIndex</code>.</p>
+<p class="python">In all of the cases above, the <code>History</code> method returns a <code>DataFrame</code> with a <code>MultiIndex</code>.</p>
 
-<img class="python" style="max-width: 100%; display: block" src="https://cdn.quantconnect.com/i/tu/research-history-futures-onesecurity-fulldataframe.png">
+<img class="python" style="max-width: 100%; display: block" src="https://cdn.quantconnect.com/i/tu/research-history-futures-fulldataframe.png">
 
-<p class="python">If you do not pass a resolution to the <code>History</code> method, the <code>History</code> method uses the resolution that the <code>AddFuture</code> method used when you created the <a href="#02-Create-Subscriptions">security subscription</a>.</p>
+<img class="python" style="max-width: 100%; display: block" src="https://cdn.quantconnect.com/i/tu/research-history-futures-openinterest-fulldataframe.png">
 
-<p class="csharp">In all of the cases above, the <code>History</code> method returns an <code>IEnumerable&lt;TradeBar&gt;</code> for single-security requests. If you do not pass a resolution to the <code>History</code> method, the <code>History</code> method uses the resolution that the <code>AddFuture</code> method used when you created the <a href="#02-Create-Subscriptions">security subscription</a>.</p>
+<p class="csharp">In all of the cases above, the <code>History</code> method returns an <code>IEnumerable&lt;Slice&gt;</code> for the market price history requests and an <code>IEnumerable&lt;OpenInterest&gt;</code> for open interest history request.</p>
