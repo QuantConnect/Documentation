@@ -1,0 +1,55 @@
+<p>You must <a href="#02-Import-Packages">import the plotting packages</a> and <a href="#03-Get-Historical-Data">get some historical data</a> to create pie charts.</p>
+
+<p>We would use a pie chart to present our asset allocation over various bank stocks and bank sector ETF. In this example, we'll use inverse variance as our allocation strategy.<br/></p>
+
+<p>Follow these steps to create a pie chart:</p>
+
+<ol>
+    <li>Select the column you want to plot.</li>
+    <p>For example, to select the closing prices, run:</p>
+    <div class="section-example-container">
+        <pre class="python">close_price = history['close'].unstack(level=0)</pre>
+    </div>
+    
+    <li>Call the <code>pct_change</code> method on the <code>pandas.DataFrame</code> object.</li>
+    <div class="section-example-container">
+        <pre class="python">daily_ret = close_price.pct_change()</pre>
+    </div>
+
+    <li>Call <code>var</code> to obtain the variance of daily return.</li>
+    <div class="section-example-container">
+        <pre class="python">var = daily_ret.var()</pre>
+    </div>
+
+    <li>Convert the variance into inverse variance for our allocation.</li>
+    <div class="section-example-container">
+        <pre class="python">inv_var = 1 / var</pre>
+    </div>
+
+    <li>Convert the <code>pd.Series</code> into <code>pd.DataFrame</code></li>
+    <div class="section-example-container">
+        <pre class="python">inv_var = pd.DataFrame(inv_var, columns=["inverse variance"])</pre>
+    </div>
+
+    <li>Reset index of the <code>pandas.DataFrame</code>.</li>
+    <div class="section-example-container">
+        <pre class="python">inv_var.reset_index(inplace=True)</pre>
+    </div>
+
+    <li>Define <code>Seaborn</code> color palette to use.</li>
+    <div class="section-example-container">
+        <pre class="python">colors = sns.color_palette('pastel')[:len(inv_var.index)]</pre>
+    </div>
+
+    <li>Create pie chart</li>
+    <div class="section-example-container">
+        <pre class="python">plt.pie(inv_var, labels=inv_var.index, colors=colors, autopct='%1.1f%%')</pre>
+    </div>
+
+    <li>Show the plot.</li>
+    <div class="section-example-container">
+        <pre class="python">plt.show()</pre>
+    </div>
+    <p>The Jupyter Notebook displays a pie chart.</p>
+    <img style="max-width: 100%; display: block" src="https://cdn.quantconnect.com/i/tu/seaborn-heatmap.png">
+</ol>

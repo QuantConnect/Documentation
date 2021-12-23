@@ -1,45 +1,34 @@
-<p>GLD and BAR are two different Gold-tracking ETFs, and we would like to visualize their correlation. To do this, we will employ a scatter plot of their returns.</p>
+<p>You must <a href="#02-Import-Packages">import the plotting packages</a> and <a href="#03-Get-Historical-Data">get some historical data</a> to create scatter plots.</p>
 
-<h4>Gathering Data</h4>
-<p>To begin, we retrieve the daily return of close price for GLD and BAR.</p>
+<p>We would like to visualize the correlation of the first 2 bank stocks. To do this, we will employ a scatter plot of their returns.</p>
+
+<p>Follow these steps to create a scatter chart:</p>
+
 <ol>
-    <li>Instantiate a <code>QuantBook</code>.</li>
+    <li>Select the 2 <code>Symbol</code>s that you want to plot in the scatter chart.</li>
+    <p>For example, to select the first 2 selected bank stocks <code>Symbol</code>s, run:</p>
+<div class="section-example-container">
+    <pre class="python">symbol1 = symbols[1]
+symbol2 = symbols[2]</pre>
+</div>
+
+    <li>Slice the <code>history</code> DataFrame with the <code>Symbol</code>s and then select the column that you want to plot.</li>
+    <p>For example, to select the closing prices, run:</p>
     <div class="section-example-container">
-        <pre class="python">qb = QuantBook()</pre>
+        <pre class="python">close_price = history['close'].unstack(0)[[symbol1, symbol2]]</pre>
     </div>
 
-    <li>Call the <code>AddEquity</code> method with GLD and BAR, and their corresponding resolution. Save a reference to their Symbol.</li>
-    <div class="section-example-container">
-        <pre class="python">gld = qb.AddEquity("GLD", Resolution.Daily).Symbol
-bar = qb.AddEquity("BAR", Resolution.Daily).Symbol</pre>
-    </div>
-    <p>If you do not pass a resolution argument, <code>Resolution.Minute</code> is used by default.</p>
-
-    <li>Call the <code>History</code> method with a list of <code>Symbol</code> objects, time argument, and resolution to request historical data for all of the Securities.</li>
-    <div class="section-example-container">
-        <pre class="python">history = qb.History([gld, bar], 360, Resolution.Daily)</pre>
-    </div>
-
-    <li>Select the column that you want to display and then call the <code>.unstack()</code> method.</li>
-    <div class="section-example-container">
-        <pre class="python">close_price = history["close"].unstack(0)</pre>
-    </div>
-    
-    <li>Call the <code>pct_change()</code> method on the <code>pandas.DataFrame</code> object.</li>
+    <li>Call the <code>pct_change</code> method on each <code>pandas.Series</code> object.</li>
     <div class="section-example-container">
         <pre class="python">daily_ret = close_price.pct_change()</pre>
     </div>
 
-    <li>Drop any NaN values by <code>dropna()</code> to avoid regression error.</li>
+    <li>Drop any NaN values by <code>dropna</code> to avoid regression error.</li>
     <div class="section-example-container">
         <pre class="python">daily_ret.dropna(inplace=True)</pre>
     </div>
-</ol>
 
-<h4>Plot the Data</h4>
-<p>Now, we want to visualize the returns relationship of GLD and BAR.</p>
-<ol>
-    <li>Call <code>sns.regplot</code> with the daily return <code>pandas.DataFrame</code>, trendline option and axis-labels.</li>
+    <li>Call <code>regplot</code> with the daily return <code>pandas.DataFrame</code>, trendline option and axis-labels.</li>
     <div class="section-example-container">
         <pre class="python">plot = sns.regplot(data=daily_ret, 
                 x=daily_ret.columns[0], 
@@ -50,14 +39,13 @@ bar = qb.AddEquity("BAR", Resolution.Daily).Symbol</pre>
     <div class="section-example-container">
         <pre class="python">plot.set(xlabel=f'{daily_ret.columns[0]} % Returns', 
         ylabel=f'{daily_ret.columns[1]} % Returns', 
-        title='GLD vs BAR Daily % Returns');</pre>
+        title='{symbol1} vs {symbol2} Daily % Returns');</pre>
     </div>
 
     <li>Show the plot.</li>
     <div class="section-example-container">
         <pre class="python">plt.show()</pre>
     </div>
-
+    <p>The Jupyter Notebook displays a scatter plot.</p>
     <img style="max-width: 100%; display: block" src="https://cdn.quantconnect.com/i/tu/seaborn-scatterplot.png">
-    <p>Scatter plot displays the historical data of the property you selected over a period of time for 2 Series against each other.</p>
 </ol>
