@@ -1,7 +1,5 @@
 <p>You must <a href="#02-Import-Packages">import the plotting packages</a> and <a href="#03-Get-Historical-Data">get some historical data</a> to create scatter plots.</p>
 
-<p>We would like to visualize the correlation of the first 2 bank stocks. To do this, we will employ a scatter plot of their returns.</p>
-
 <p>Follow these steps to create a scatter chart:</p>
 
 <ol>
@@ -12,33 +10,29 @@
 symbol2 = symbols[2]</pre>
 </div>
 
-    <li>Slice the <code>history</code> DataFrame with the <code>Symbol</code>s and then select the column that you want to plot.</li>
+    <li>Slice the <code>history</code> DataFrame with each <code>Symbol</code> and then select the column that you want to plot.</li>
     <p>For example, to select the closing prices, run:</p>
     <div class="section-example-container">
         <pre class="python">close_price1 = history.loc[symbol1]['close']
 close_price2 = history.loc[symbol2]['close']</pre>
     </div>
 
-    <li>Call the <code>pct_change</code> method on each <code>pandas.Series</code> object.</li>
+    <li>Call the <code>pct_change</code> and <code>dropna </code>methods on each <code>Series</code> object.</li>
     <div class="section-example-container">
-        <pre class="python">daily_ret1 = close_price1.pct_change()
-daily_ret2 = close_price2.pct_change()</pre>
+        <pre class="python">daily_return1 = close_price1.pct_change().dropna()
+daily_return2 = close_price2.pct_change().dropna()</pre>
+    </div>
+    <p>These calls return <code>Series</code> that contain the daily returns of each banking company.</p>
+
+    <li>Call the <code>scatter</code> method with the 2 return <code>Series</code>, the trendline option, and axis labels.</li>
+    <div class="section-example-container">
+        <pre class="python">fig = px.scatter(x=daily_return1, y=daily_return2, trendline='ols', 
+                 labels={'x': symbol1.Value, 'y': symbol2.Value}) </pre>
     </div>
 
-    <li>Drop any NaN values by <code>dropna</code> to avoid regression error.</li>
+    <li>Call the <code>update_layout </code>method with a title.</li>
     <div class="section-example-container">
-        <pre class="python">daily_ret1.dropna(inplace=True)
-daily_ret2.dropna(inplace=True)</pre>
-    </div>
-
-    <li>Call <code>scatter</code> with the 2 return <code>pandas.Series</code>, trendline option and axis-labels.</li>
-    <div class="section-example-container">
-        <pre class="python">fig = px.scatter(x=daily_ret1, y=daily_ret2, trendline='ols', labels={'x': symbol1.Value, 'y': symbol2.Value}) </pre>
-    </div>
-
-    <li>Update the layout with title.</li>
-    <div class="section-example-container">
-        <pre class="python">fig.update_layout(title=f'{symbol1.Value} vs {symbol2.Value} Daily % Returns')</pre>
+        <pre class="python">fig.update_layout(title=f'{symbol1.Value} vs {symbol2.Value} Daily % Returns');</pre>
     </div>
 
     <li>Show the <code>Figure</code>.</li>
