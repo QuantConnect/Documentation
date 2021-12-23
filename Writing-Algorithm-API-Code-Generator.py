@@ -105,7 +105,7 @@ document.getElementById("All_button").click()
 </div>
 
 <div id="All" class="ref-table-container" style="display: block;">
-<table cellspacing="0" cellpadding="0">
+<table cellspacing="0" cellpadding="0" width="100%">
 <tbody>
 </tbody></table>
 </div>''')
