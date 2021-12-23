@@ -5,15 +5,28 @@ from urllib.request import urlopen
 source = "http://cdn.quantconnect.com.s3.us-east-1.amazonaws.com/terminal/cache/api/csharp_tree.json"
 
 base = "02 Writing Algorithms/04 API Reference/"
-dir_ = ["Adding Data", "Algorithm Framework", "Charting", "Consolidating Data",
-       "Handling Data", "Historical Data", "Indicators", "Live Trading", "Logging",
-       "Machine Learning", "Modeling", "Parameter and Optimization", "Scheduled Events",
-       "Securities and Portfolio", "Trading and Orders", "Universes"]
+
+dir_ = []
+raw = urlopen("https://raw.githubusercontent.com/QuantConnect/Lean/4d1fc7e05a9c4829445f4be9258e5777181f535b/Algorithm/QCAlgorithm.cs").read().decode("utf-8").split('\n')
+active = False
+
+for line in raw:
+    if "#region Documentation Attribute Categories" in line:
+        active = True
+    
+    elif "#endregion" in line:
+        active = False
+        
+    if active:
+        line = line.split('"')
+        
+        if len(line) >= 2:
+            dir_.append(line[1])
 
 path_ = pathlib.Path(base)
 path_.mkdir(parents=True, exist_ok=True)
 
-with open(path_ / "01 All Available Methods.html", "w", encoding="utf-8") as html_file:
+with open(path_ / "01 Available QCAlgorithm Methods.html", "w", encoding="utf-8") as html_file:
     html_file.write('''<style>
 
   td {
@@ -76,8 +89,6 @@ function openTab(evt, category) {
 document.getElementById("All_button").click()
 </script>
 
-<h3>QCAlgorithm class subclasses/methods</h3><hr class="solid">
-
 <div class="api-ref-tag-list">
 
   <div style="margin-right: 0.8rem;">
@@ -106,7 +117,7 @@ document.getElementById("All_button").click()
 </tbody></table>
 </div>''')
         
-with open(path_ / "02 Public Members.html", "w", encoding="utf-8") as html_file:
+with open(path_ / "02.html", "w", encoding="utf-8") as html_file:
     html_file.write("""<style>
 
     .method-container {
@@ -239,10 +250,10 @@ def Table(input_, previous_name, type_map, j):
         call = name + "(" + ", ".join([str(value) + " " + str(key) for key, value in args.items()]).replace("/", "_") + ")"
         
         if previous_name != name:
-            with open(path_ / f'02 Public Members.html', "r", encoding="utf-8") as fin:
+            with open(path_ / f'02.html', "r", encoding="utf-8") as fin:
                 lines = fin.readlines()
             
-            with open(path_ / f'02 Public Members.html', "w", encoding="utf-8") as html_file:
+            with open(path_ / f'02.html', "w", encoding="utf-8") as html_file:
                 k = 1
                 
                 for line in lines:
@@ -259,11 +270,11 @@ def Table(input_, previous_name, type_map, j):
             j = 1
             
         else:
-            with open(path_ / f'02 Public Members.html', "rb+") as html_file:
+            with open(path_ / f'02.html', "rb+") as html_file:
                 html_file.seek(-10, os.SEEK_END)
                 html_file.truncate()
             
-            with open(path_ / f'02 Public Members.html', "a", encoding="utf-8") as html_file:
+            with open(path_ / f'02.html', "a", encoding="utf-8") as html_file:
                 write_up, description = Box(input_, doc_attr, doc_ref, type_map, j)
                 write_up_lines = write_up.split('<div class="method-container">')
                 for line in write_up_lines[1:]:
@@ -272,10 +283,10 @@ def Table(input_, previous_name, type_map, j):
             j += 1
             
         if name != previous_name: 
-            with open(path_ / f'01 All Available Methods.html', "r", encoding="utf-8") as fin:
+            with open(path_ / f'01 Available QCAlgorithm Methods.html', "r", encoding="utf-8") as fin:
                 lines = fin.readlines()
                     
-            with open(path_ / f'01 All Available Methods.html', "w", encoding="utf-8") as html_file:
+            with open(path_ / f'01 Available QCAlgorithm Methods.html', "w", encoding="utf-8") as html_file:
                 active = False
                 
                 for line in lines:
