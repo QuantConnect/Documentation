@@ -1,1 +1,30 @@
-<p>We will visualize the close price of SPY and QQQ using a time-series line plot.</p>
+<p>You must <a href="#02-Import-Packages">import the plotting packages</a> and <a href="#03-Get-Historical-Data">get some historical data</a> to create line charts.</p>
+
+<p>Follow these steps to create a line chart:</p>
+
+<ol>
+    <li>Select the column you want to plot.</li>
+    <p>For example, to select the closing prices, run:</p>
+    <div class="section-example-container">
+        <pre class="python">close_price = history['close'].unstack(level=0)</pre>
+    </div>
+    
+    <li>Call <code>figure</code> to create a plot with title and axis labels.</li>
+    <div class="section-example-container">
+        <pre class="python">plot = figure(title=f"Bank Stocks and Bank Sector ETF Close Price", x_axis_label='Date', y_axis_label='Price')</pre>
+    </div>
+
+    <li>Call <code>line</code> to plot a line plot for each <code>Symbol</code> with x-axis value, y-axis value, legend lable and line width.</li>
+    <div class="section-example-container">
+        <pre class="python">for symbol in symbols:
+    color = np.random.randint(low=0, high=255, size=3)
+    plot.line(close_price.index, close_price[symbol], legend_label=symbol.Value, color=tuple(color), line_width=2)</pre>
+    </div>
+
+    <li>Call <code>show</code> to show the plot.</li>
+    <div class="section-example-container">
+        <pre class="python">show(plot)</pre>
+    </div>
+    <p>The Jupyter Notebook displays a line plot.</p>
+    <img style="max-width: 100%; display: block" src="">
+</ol>

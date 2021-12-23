@@ -1,1 +1,80 @@
-<p>GLD and BAR are two different Gold-tracking ETFs, and we would like to visualize their correlation. To do this, we will employ a scatter plot of their returns.</p>
+<p>You must <a href="#02-Import-Packages">import the plotting packages</a> and <a href="#03-Get-Historical-Data">get some historical data</a> to create scatter plots.</p>
+
+<p>We would like to visualize the correlation of the first 2 bank stocks. To do this, we will employ a scatter plot of their returns.</p>
+
+<p>Follow these steps to create a scatter chart:</p>
+
+<h4>Prepare the Data</h4>
+<ol>
+    <li>Select the 2 <code>Symbol</code>s that you want to plot in the scatter chart.</li>
+    <p>For example, to select the first 2 selected bank stocks <code>Symbol</code>s, run:</p>
+<div class="section-example-container">
+    <pre class="python">symbol1 = symbols[1]
+symbol2 = symbols[2]</pre>
+</div>
+
+    <li>Slice the <code>history</code> DataFrame with the <code>Symbol</code>s and then select the column that you want to plot.</li>
+    <p>For example, to select the closing prices, run:</p>
+    <div class="section-example-container">
+        <pre class="python">close_price1 = history.loc[symbol1]['close']
+close_price2 = history.loc[symbol2]['close']</pre>
+    </div>
+
+    <li>Call the <code>pct_change</code> method on each <code>pandas.Series</code> object.</li>
+    <div class="section-example-container">
+        <pre class="python">daily_ret1 = close_price1.pct_change()
+daily_ret2 = close_price2.pct_change()</pre>
+    </div>
+
+    <li>Drop any NaN values by <code>dropna</code> to avoid regression error.</li>
+    <div class="section-example-container">
+        <pre class="python">daily_ret1.dropna(inplace=True)
+daily_ret2.dropna(inplace=True)</pre>
+    </div>
+</ol>
+
+<h4>Create a Trend Line</h4>
+<p>Since we would like to include a trend line (OLS) in our scatter plot, we will need to employ <code>numpy</code> to calculate our OLS line.</p>
+<ol>
+    <li>Get coefficients of the trend line.</li>
+    <div class="section-example-container">
+        <pre class="python">m, b = np.polyfit(daily_ret1, daily_ret2, deg=1)</pre>
+    </div>
+
+    <li>Get the continuous x-axis values of the trend line by <code>np.linspace</code>.</li>
+    <div class="section-example-container">
+        <pre class="python">upper_limit = 0.05
+lower_limit = -0.05
+x = np.linspace(lower_limit, upper_limit)</pre>
+    </div>
+
+    <li>Get the y-axis values with the corresponding x-axis values through regression result.</li>
+    <div class="section-example-container">
+        <pre class="python">y = x * m + b</pre>
+    </div>
+</ol>
+
+<h4>Plot the Data</h4>
+<ol>
+    <li>Call <code>figure</code> to create a plot with title and axis labels.</li>
+    <div class="section-example-container">
+        <pre class="python">plot = figure(title=f"{symbol1} vs {symbol2} Daily Return", x_axis_label=symbol1.Value, y_axis_label=symbol2.Value)</pre>
+    </div>
+
+    <li>Call the <code>line</code> method with x-axis values, y-axis-values, color and line width to plot the trend line.</li>
+    <div class="section-example-container">
+        <pre class="python">plot.line(x, y, color="red", line_width=2)</pre>
+    </div>
+
+    <li>Call <code>dot</code> method with the 2 series of daily return data, dot size, color and transparency.</li>
+    <div class="section-example-container">
+        <pre class="python">plot.dot(daily_ret1, daily_ret1, size=2, color="navy", alpha=0.5)</pre>
+    </div>
+
+    <li>Call <code>show</code> to show the plot.</li>
+    <div class="section-example-container">
+        <pre class="python">show(plot)</pre>
+    </div>
+    <p>The Jupyter Notebook displays a scatter plot.</p>
+    <img style="max-width: 100%; display: block" src="">
+</ol>

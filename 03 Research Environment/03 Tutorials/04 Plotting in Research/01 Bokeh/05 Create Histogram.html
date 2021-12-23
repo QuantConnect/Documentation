@@ -1,1 +1,45 @@
-<p>We will visualize the distribution of daily return of SPY and QQQ using a histogram.</p>
+<p>You must <a href="#02-Import-Packages">import the plotting packages</a> and <a href="#03-Get-Historical-Data">get some historical data</a> to create histogram.</p>
+
+<p>Follow these steps to create a histogram:</p>
+
+<ol>
+    <li>Select the <code>Symbol</code> that you want to plot in the line chart.</li>
+    <p>For example, to select the first <code>Symbol</code>, run:</p>
+    <div class="section-example-container">
+        <pre class="python">symbol = symbols[0]</pre>
+    </div>
+
+    <li>Slice the <code>history</code> DataFrame with <code>symbol</code> and then select the column that you want to plot.</li>
+    <p>For example, to select the closing prices, run:</p>
+    <div class="section-example-container">
+        <pre class="python">data = history.loc[symbol]['close']</pre>
+    </div>
+
+    <li>Call the <code>pct_change</code> method on the <code>pandas</code> object.</li>
+    <div class="section-example-container">
+        <pre class="python">daily_ret = data.pct_change()</pre>
+    </div>
+
+    <li>Call <code>np.histogram</code> method on the <code>pandas</code> object with density indicator and bin number to obtain the bar frequnecy and edges values.</li>
+    <div class="section-example-container">
+        <pre class="python">hist, edges = np.histogram(daily_ret, density=True, bins=20)</pre>
+    </div>
+
+    <li>Call <code>figure</code> to create a plot with title and axis labels.</li>
+    <div class="section-example-container">
+        <pre class="python">plot = figure(title=f"{symbol} Daily Return Distribution", x_axis_label='Return', y_axis_label='Frequency')</pre>
+    </div>
+
+    <li>Call <code>quad</code> to plot a histogram with the bars' top, bottom, left-side and right-side values, fill and edge colors, and transparency.</li>
+    <div class="section-example-container">
+        <pre class="python">plot.quad(top=hist, bottom=0, left=edges[:-1], right=edges[1:],
+          fill_color="navy", line_color="white", alpha=0.5)</pre>
+    </div>
+
+    <li>Call <code>show</code> to show the plot.</li>
+    <div class="section-example-container">
+        <pre class="python">show(plot)</pre>
+    </div>
+    <p>The Jupyter Notebook displays a histogram.</p>
+    <img style="max-width: 100%; display: block" src="">
+</ol>
