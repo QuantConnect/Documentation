@@ -1,5 +1,29 @@
 <p>You need to <a href="#03-Create-Subscriptions">subscribe</a> to all of the Futures for which you want historical data. You can request historical data for a subset of the Option contract properties or a subset of the Option contracts.</p> 
 
+<h4>Subset of Futures</h4>
+<p>Create subscriptions for multiple Futures and then call the History method with a list of Symbols to request historical data for those specific securities.</p>
+<ol>
+    <li>Call the <code>AddFuture</code> method with a ticker, resolution, and contract rollover settings.</li>
+    <div class="section-example-container">
+        <pre class="csharp">var es = qb.AddFuture(Futures.Indices.SP500EMini).Symbol;
+var nq = qb.AddFuture(Futures.Indices.NASDAQ100EMini).Symbol;
+var ym = qb.AddFuture(Futures.Indices.Dow30EMini).Symbol;</pre>
+        <pre class="python">es = qb.AddFuture(Futures.Indices.SP500EMini).Symbol
+nq = qb.AddFuture(Futures.Indices.NASDAQ100EMini).Symbol
+ym = qb.AddFuture(Futures.Indices.Dow30EMini).Symbol</pre>
+    </div>
+    <p>If you do not pass a resolution argument, <code>Resolution.Minute</code> is used by default. If you do not pass rollover setting arguments, the default values of <code>dataNormalizationMode</code>, <code>dataMappingMode</code>, and <code>contractDepthOffset </code> are <code>DataNormalizationMode.Adjusted</code>, <code>DataMappingMode.OpenInterest</code>, and 0, respectively.</p>
+	<li>Call the <code>History</code> method with a list of <code>Symbol</code>s to get the historical data of the given <code>Symbol</code>s.</li>
+	<div class="section-example-container">
+		<pre class="csharp">var definedPeriodHistory = qb.History(new []{es, nq, ym}, startTime, endTime, Resolution.Minute);
+var timespanHistory = qb.History(new []{es, nq, ym}, TimeSpan.FromDays(10), Resolution.Minute);
+var barCountHistory = qb.History(new []{es, nq, ym}, 400, Resolution.Minute);</pre>
+		<pre class="python">defined_period_history = qb.History([es, nq, ym], start_time, end_time, Resolution.Minute)
+timespan_history = qb.History([es, nq, ym], timedelta(days=10), Resolution.Minute)
+bar_count_history = qb.History([es, nq, ym], 400, Resolution.Minute)</pre>
+	</div>
+</ol>
+
 <h4>Subset of Futures Contract Properties</h4>
 
 <p class="csharp">This functionality is not currently supported for C# research environments. Use Python to get a subset of <code>FutureContract</code> properties.<br></p>
@@ -10,7 +34,7 @@
     <pre class="python">future_history = qb.GetFutureHistory(equity.Symbol, start_time, end_time, Resolution.Minute)</pre>
 </div>
 
-<p class="python">The call returns an <code>FutureHistory</code> object. If you don't call the <code>SetFilter</code> method, the <code>GetFutureHistory</code> method will not return data since <code>GetFutureHistory<code> uses the filter definition to select contracts and their historical data.</p>
+<p class="python">The call returns an <code>FutureHistory</code> object. If you don't call the <code>SetFilter</code> method, the <code>GetFutureHistory</code> method will not return data since <code>GetFutureHistory</code> uses the filter definition to select contracts and their historical data.</p>
 
 <p class="python">Call the <code>GetAllData</code> method to get all of the historical data for the selected contracts and the underlying Equity.</p>
 <div class="python section-example-container">
@@ -34,9 +58,8 @@
 	<li>Call the <code>GetFuturesContractList</code> method with a <code>Future</code> <code>Symbol</code> and a <code class="python">datetime</code><code class="csharp">DateTime</code> to get a list of <code>FutureContract Symbol</code>s that were trading at the given time.<br></li>
 
 	<div class="section-example-container">
-		<pre class="csharp">var symbols = qb.FutureChainProvider.GetFutureContractList(symbol, endTime);</pre>
-		<pre class="python">selectedSymbols = qb.FutureChainProvider.GetFutureContractList(symbol, end_time)
-		</pre>
+		<pre class="csharp">var selectedSymbols = qb.FutureChainProvider.GetFutureContractList(symbol, endTime);</pre>
+		<pre class="python">selected_symbols = qb.FutureChainProvider.GetFutureContractList(symbol, end_time)</pre>
 	</div>
 	<p>The <code>GetFuturesContractList</code> method returns a list of a few contracts <code>Symbol</code>s.<br></p>
 	<li>If you want to get open interest data, call the <code>AddFutureContract</code> method with the <code>FutureContract</code> <code>Symbol</code> and disable fill-forward.</li>
@@ -51,13 +74,13 @@
 	
 	<li>Call the <code>History</code> method with a list of <code>Symbol</code>s to get the historical data of the given <code>Symbol</code>s.</li>
 		<div class="section-example-container">
-		<pre class="csharp">var definedPeriodPriceHistory = qb.History(symbols, startTime, endTime);
-var timespanPriceHistory = qb.History(symbols, TimeSpan.FromDays(10));
-var barCountPriceHistory = qb.History(symbols, 400);
+		<pre class="csharp">var definedPeriodPriceHistory = qb.History(selectedSymbols, startTime, endTime);
+var timespanPriceHistory = qb.History(selectedSymbols, TimeSpan.FromDays(10));
+var barCountPriceHistory = qb.History(selectedSymbols, 400);
 
-var definedPeriodOpenInterestHistory = qb.History&lt;OpenInterest&gt;(symbols, startTime, endTime);
-var timespanOpenInterestHistory = qb.History&lt;OpenInterest&gt;(symbols, TimeSpan.FromDays(10));
-var barCountOpenInterestHistory = qb.History&lt;OpenInterest&gt;(symbols, 400);
+var definedPeriodOpenInterestHistory = qb.History&lt;OpenInterest&gt;(selectedSymbols, startTime, endTime);
+var timespanOpenInterestHistory = qb.History&lt;OpenInterest&gt;(selectedSymbols, TimeSpan.FromDays(10));
+var barCountOpenInterestHistory = qb.History&lt;OpenInterest&gt;(selectedSymbols, 400);
 </pre>
 		<pre class="python">defined_period_price_history = qb.History(selected_symbols, start_time, end_time)
 timespan_price_history = qb.History(selected_symbols, timedelta(days=10))
