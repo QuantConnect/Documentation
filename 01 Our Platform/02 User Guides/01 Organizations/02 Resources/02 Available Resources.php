@@ -10,84 +10,14 @@
 <h4>Research Nodes</h4>
 <p>You need research nodes to use the Research Environment. Several models of research nodes are available. More powerful research nodes allow you to handle more data and run faster computations in your notebooks. The following table shows the specifications of the research node models: </p>
 
-<table class="qc-table table  table-condensed">
-   <thead>
-      <tr>
-         <th style="padding:5px">Model</th>
-         <th style="padding:5px">Number of Cores</th>
-         <th style="padding:5px">Processing Speed (GHz)</th>
-         <th style="padding:5px">RAM (GB)</th>
-      </tr>
-   </thead>
-   <tbody>
-      <tr>
-         <td style="padding:5px">R1-4</td>
-         <td style="padding:5px; text-align: right">1</td>
-         <td style="padding:5px; text-align: right">2.4</td>
-         <td style="padding:5px; text-align: right">4</td>
-      </tr>
-      <tr>
-         <td style="padding:5px">R2-8</td>
-         <td style="padding:5px; text-align: right">2</td>
-         <td style="padding:5px; text-align: right">2.4</td>
-         <td style="padding:5px; text-align: right">8</td>
-      </tr>
-      <tr>
-         <td style="padding:5px">R4-12</td>
-         <td style="padding:5px; text-align: right">4</td>
-         <td style="padding:5px; text-align: right">2.4</td>
-         <td style="padding:5px; text-align: right">12</td>
-      </tr>
-      <tr>
-         <td style="padding:5px">R8-16</td>
-         <td style="padding:5px; text-align: right">8</td>
-         <td style="padding:5px; text-align: right">2.4</td>
-         <td style="padding:5px; text-align: right">16</td>
-      </tr>
-   </tbody>
-</table>
+<?php echo file_get_contents(DOCS_RESOURCES."/research-nodes-table.html"); ?>
 
 <p>Refer to the <a href="https://www.quantconnect.com/pricing"><b>Pricing</b></a> page to see the price of each research node model. You get one free R1-4 research node in your first organization, but the node is replaced when you subscribe to a new research node in the organization.</p>
 
 <h4>Live Trading Nodes</h4>
 <p>You need a live trading node for each strategy that's deployed to our co-located live trading servers. Several models of live trading nodes are available. More powerful live trading nodes allow you to run algorithms with larger universes and gives you more time for machine learning training. The following table shows the specifications of the live trading node models:<br></p>
 
-<table class="qc-table table table-condensed">
-   <thead>
-      <tr>
-         <th style="padding:5px">Model</th>
-         <th style="padding:5px">Number of Cores</th>
-         <th style="padding:5px">Processing Speed (GHz)</th>
-         <th style="padding:5px">RAM (GB)</th>
-      </tr>
-   </thead>
-   <tbody>
-      <tr>
-         <td style="padding:5px">L-MICRO</td>
-         <td style="padding:5px; text-align: right">1</td>
-         <td style="padding:5px; text-align: right">2.4</td>
-         <td style="padding:5px; text-align: right">0.5</td>
-      </tr>
-      <tr>
-         <td style="padding:5px">L1-1</td>
-         <td style="padding:5px; text-align: right">1</td>
-         <td style="padding:5px; text-align: right">2.4</td>
-         <td style="padding:5px; text-align: right">1</td>
-      </tr>
-      <tr>
-         <td style="padding:5px">L1-2</td>
-         <td style="padding:5px; text-align: right">1</td>
-         <td style="padding:5px; text-align: right">2.4</td>
-         <td style="padding:5px; text-align: right">2</td>
-      </tr>
-      <tr>
-         <td style="padding:5px">L1-4</td>
-         <td style="padding:5px; text-align: right">1</td>
-         <td style="padding:5px; text-align: right">2.4</td>
-         <td style="padding:5px; text-align: right">4</td>
-      </tr>
-   </tbody>
-</table>
+<?php echo file_get_contents(DOCS_RESOURCES."/live-trading-nodes-table.html"); ?>
 
 <p>Refer to the <a href="https://www.quantconnect.com/pricing"><b>Pricing</b></a> page to see the price of each live trading node model.</p>
 
