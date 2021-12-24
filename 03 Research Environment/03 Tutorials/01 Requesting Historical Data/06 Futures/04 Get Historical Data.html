@@ -5,7 +5,7 @@
     <div class="section-example-container">
         <pre class="csharp">var startTime = new DateTime(2021,12,13);
 var endTime = new DateTime(2021,12,20);
-var symbols = qb.FutureChainProvider.GetFutureContractList(equity.Symbol, endTime);</pre>
+var symbols = qb.FutureChainProvider.GetFutureContractList(symbol, endTime);</pre>
     <pre class="python">start_time = datetime(2021,12,13)
 end_time = datetime(2021,12,20)
 symbols = qb.FutureChainProvider.GetFutureContractList(symbol, end_time)
@@ -14,7 +14,7 @@ symbols = qb.FutureChainProvider.GetFutureContractList(symbol, end_time)
 	<p>The call returns a list of <code>Symbol</code>s that reference the <code>FutureContract</code>s that were trading at the given time. You can get historical data for a subset of the returned <code>Symbol</code>s.</p>
 	<li><i>Optional</i> Remove the weeklies and contracts that have expired before <code class="python">end_time</code><code class="csharp">endTime</code>.</li>
     <div class="section-example-container">
-        <pre class="csharp"></pre>
+        <pre class="csharp">symbols = symbols.Where(s => FutureSymbol.IsStandard(s) && s.ID.Date > endTime);</pre>
     <pre class="python">symbols = [s for s in symbols
     if FutureSymbol.IsStandard(s) && s.ID.Date > end_time]</pre>
     </div>
@@ -24,12 +24,16 @@ symbols = qb.FutureChainProvider.GetFutureContractList(symbol, end_time)
         <pre class="csharp">var contractSymbol = symbols.OrderBy(s =&gt; s.ID.Date).FirstOrDefault();</pre>
 	<pre class="python">
 	contract_symbol = sorted(symbols, key=lambda s: s.ID.Date)[0]</pre>
-    </div>
-	
+    </div>	
 	<li>If you want to get open interest data, call the <code>AddFutureContract</code> method with an <code>FutureContract</code> <code>Symbol</code> and disable fill-forward.</li>
     <div class="section-example-container">
         <pre class="csharp">qb.AddFutureContract(contractSymbol, fillDataForward: false);</pre>
 	<pre class="python">qb.AddFutureContract(contract_symbol, fillDataForward = False)</pre>
+    </div>
+	<li><i>Optional</i> Call the <code>SetStartDate</code> method with the <code class="python">datetime</code> <code class="python">DateTime</code> that you passed to the GetFutureContractList method.</li>
+    <div class="section-example-container">
+        <pre class="csharp">qb.SetStartDate(endTime);</pre>
+	<pre class="python">qb.SetStartDate(end_time)</pre>
     </div>
 </ol>
 
@@ -38,13 +42,13 @@ symbols = qb.FutureChainProvider.GetFutureContractList(symbol, end_time)
 <h4>Trailing Number of Bars<br></h4>
 <p>Call the <code>History</code> method with a symbol and integer to request historical data based on the given number of trailing bars.</p>
 <div class="section-example-container">
-    <pre class="csharp">var priceHistory = qb.History(symbol, 10);
+    <pre class="csharp">var priceHistory = qb.History(symbol, 400);
 var openInterestHistory = qb.History&lt;OpenInterest&gt;(contractSymbol, 400);
 	</pre>
-    <pre class="python">price_history = qb.History(symbol, 10)
+    <pre class="python">price_history = qb.History(symbol, 400)
 open_interest_history = qb.History(OpenInterest, contract_symbol, 400)</pre>
 </div>
-<p>The call returns the most recent bars, excluding periods of time when the exchange was closed.</p>
+<p>The call returns the most recent bars, excluding periods of time when the exchange was closed. If you set the <code>StartDate</code>, the requested number of bar might be slower to get any data.</p>
 
 <h4>Trailing Period of Time<br></h4>
 <p>Call the <code>History</code> method with a symbol and <code class="csharp">TimeSpan</code><code class="python">timedelta</code> to request historical data based on the given trailing period of time.</p>
