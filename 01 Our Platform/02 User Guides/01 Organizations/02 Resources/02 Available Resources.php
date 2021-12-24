@@ -1,86 +1,98 @@
-<p>Organizations can subscribe to hardware nodes for backtesting, research, and live trading.</p>
+<p>Organizations can subscribe to backtesting, research, and live trading nodes.</p>
 
 <h4>Backtesting Nodes</h4>
-<p>Organizations need backtesting nodes to run backtests. The more backtesting nodes an organization has, the more concurrent backtests the members can run. Several models of backtesting nodes are available. Backtesting nodes that are more powerful can run faster backtests and backtest nodes with more RAM can handle more memory-intensive operations like training machine learning models, processing Options data, and managing large universes. The following table shows the specifications of the backtesting node models:<br></p>
+<p>You need backtesting nodes to run backtests. The more backtesting nodes your organization has, the more concurrent backtests the you can run. Several models of backtesting nodes are available. Backtesting nodes that are more powerful can run faster backtests and backtest nodes with more RAM can handle more memory-intensive operations like training machine learning models, processing Options data, and managing large universes. The following table shows the specifications of the backtesting node models:<br></p>
 
 <?php echo file_get_contents(DOCS_RESOURCES."/backtest-nodes-table.html"); ?>
 
-<p>Refer to the <a href="https://www.quantconnect.com/pricing"><b>Pricing</b></a> page to see the price of each backtesting node model. The first organization on each account is given one free B-MICRO backtesting node. It incurs a 20-second delay when launching backtests, but the delay is removed and the node is replaced when subscribing to a new backtesting node in the organization.<br></p>
+<p>Refer to the <a href="https://www.quantconnect.com/pricing"><b>Pricing</b></a> page to see the price of each backtesting node model. You get one free B-MICRO backtesting node in your first organization. This node incurs a 20-second delay when you launch backtests, but the delay is removed and the node is replaced when you subscribe to a new backtesting node in the organization.<br></p>
 
 <h4>Research Nodes</h4>
-<p>Organizations need research nodes to use the Research Environment. Several models of research nodes are available. More powerful research nodes allow you to handle more data and run faster computations in your notebooks.&nbsp; The following table shows the specifications of the research node models: </p>
+<p>You need research nodes to use the Research Environment. Several models of research nodes are available. More powerful research nodes allow you to handle more data and run faster computations in your notebooks. The following table shows the specifications of the research node models: </p>
 
-<table class="qc-table table  table-condensed"><thead><tr>
-        <th style="padding:5px">Node Type</th>
-        <th style="padding:5px">Number of Cores</th>
-        <th style="padding:5px">Processing Speed</th>
-        <th style="padding:5px">RAM</th></tr></thead><tbody>
-      <!--<tr>
-        <td style="padding:5px">R-MICRO</td>
-        <td style="padding:5px">1 Core</td>
-        <td style="padding:5px">2.4 GHz</td>
-        <td style="padding:5px">1 GB</td></tr>-->
+<table class="qc-table table  table-condensed">
+   <thead>
       <tr>
-          <td style="padding:5px">R1-4</td>
-        <td style="padding:5px">1 Core</td>
-        <td style="padding:5px">2.4 GHz</td>
-        <td style="padding:5px">4 GB</td></tr><tr>
-          <td style="padding:5px">R2-8</td>
-        <td style="padding:5px">2 Cores</td>
-        <td style="padding:5px">2.4 GHz</td>
-        <td style="padding:5px">8 GB</td></tr><tr>
-          <td style="padding:5px">R4-12</td>
-        <td style="padding:5px">4 Cores</td>
-        <td style="padding:5px">2.4 GHz</td>
-        <td style="padding:5px">12 GB</td></tr><tr>
-          <td style="padding:5px">R8-16</td>
-        <td style="padding:5px">8 Cores</td>
-        <td style="padding:5px">2.4 GHz</td>
-        <td style="padding:5px">16 GB</td></tr>
-</tbody>
-    </table>
+         <th style="padding:5px">Model</th>
+         <th style="padding:5px">Number of Cores</th>
+         <th style="padding:5px">Processing Speed (GHz)</th>
+         <th style="padding:5px">RAM (GB)</th>
+      </tr>
+   </thead>
+   <tbody>
+      <tr>
+         <td style="padding:5px">R1-4</td>
+         <td style="padding:5px; text-align: right">1</td>
+         <td style="padding:5px; text-align: right">2.4</td>
+         <td style="padding:5px; text-align: right">4</td>
+      </tr>
+      <tr>
+         <td style="padding:5px">R2-8</td>
+         <td style="padding:5px; text-align: right">2</td>
+         <td style="padding:5px; text-align: right">2.4</td>
+         <td style="padding:5px; text-align: right">8</td>
+      </tr>
+      <tr>
+         <td style="padding:5px">R4-12</td>
+         <td style="padding:5px; text-align: right">4</td>
+         <td style="padding:5px; text-align: right">2.4</td>
+         <td style="padding:5px; text-align: right">12</td>
+      </tr>
+      <tr>
+         <td style="padding:5px">R8-16</td>
+         <td style="padding:5px; text-align: right">8</td>
+         <td style="padding:5px; text-align: right">2.4</td>
+         <td style="padding:5px; text-align: right">16</td>
+      </tr>
+   </tbody>
+</table>
 
-<p>Refer to the <a href="https://www.quantconnect.com/pricing"><b>Pricing</b></a> page to see the price of each research node model. The first organization on each account is given one free R1-4 research node, but it is replaced when subscribing to a new research node in the organization.</p>
+<p>Refer to the <a href="https://www.quantconnect.com/pricing"><b>Pricing</b></a> page to see the price of each research node model. You get one free R1-4 research node in your first organization, but the node is replaced when you subscribe to a new research node in the organization.</p>
 
 <h4>Live Trading Nodes</h4>
-<p>Organizations need a live trading node for each strategy that's deployed to our co-located live trading servers. Several models of live trading nodes are available. More powerful live trading nodes allow you to run algorithms with larger universes, increases your 
-notifications limit, and gives you more time for machine learning 
-training. The following table shows the specifications of the live trading node models:<br></p>
+<p>You need a live trading node for each strategy that's deployed to our co-located live trading servers. Several models of live trading nodes are available. More powerful live trading nodes allow you to run algorithms with larger universes and gives you more time for machine learning training. The following table shows the specifications of the live trading node models:<br></p>
 
-<table class="qc-table table table-condensed"><thead><tr>
-        <th style="padding:5px">Node Type</th>
-        <th style="padding:5px">Number of Cores</th>
-        <th style="padding:5px">Processing Speed</th>
-        <th style="padding:5px">RAM</th></tr></thead><tbody><tr>
-        <td style="padding:5px">L-MICRO</td>
-        <td style="padding:5px">1 Core</td>
-        <td style="padding:5px">2.4 GHz</td>
-        <td style="padding:5px">0.5 GB</td></tr><tr>
-          <td style="padding:5px">L1-1</td>
-        <td style="padding:5px">1 Core</td>
-        <td style="padding:5px">2.4 GHz</td>
-        <td style="padding:5px">1 GB</td></tr><tr>
-          <td style="padding:5px">L1-2</td>
-        <td style="padding:5px">1 Core</td>
-        <td style="padding:5px">2.4 GHz</td>
-        <td style="padding:5px">2 GB</td></tr><tr>
-          <td style="padding:5px">L1-4</td>
-        <td style="padding:5px">1 Core</td>
-        <td style="padding:5px">2.4 GHz</td>
-        <td style="padding:5px">4 GB</td></tr>
-</tbody>
-    </table>
+<table class="qc-table table table-condensed">
+   <thead>
+      <tr>
+         <th style="padding:5px">Model</th>
+         <th style="padding:5px">Number of Cores</th>
+         <th style="padding:5px">Processing Speed (GHz)</th>
+         <th style="padding:5px">RAM (GB)</th>
+      </tr>
+   </thead>
+   <tbody>
+      <tr>
+         <td style="padding:5px">L-MICRO</td>
+         <td style="padding:5px; text-align: right">1</td>
+         <td style="padding:5px; text-align: right">2.4</td>
+         <td style="padding:5px; text-align: right">0.5</td>
+      </tr>
+      <tr>
+         <td style="padding:5px">L1-1</td>
+         <td style="padding:5px; text-align: right">1</td>
+         <td style="padding:5px; text-align: right">2.4</td>
+         <td style="padding:5px; text-align: right">1</td>
+      </tr>
+      <tr>
+         <td style="padding:5px">L1-2</td>
+         <td style="padding:5px; text-align: right">1</td>
+         <td style="padding:5px; text-align: right">2.4</td>
+         <td style="padding:5px; text-align: right">2</td>
+      </tr>
+      <tr>
+         <td style="padding:5px">L1-4</td>
+         <td style="padding:5px; text-align: right">1</td>
+         <td style="padding:5px; text-align: right">2.4</td>
+         <td style="padding:5px; text-align: right">4</td>
+      </tr>
+   </tbody>
+</table>
 
 <p>Refer to the <a href="https://www.quantconnect.com/pricing"><b>Pricing</b></a> page to see the price of each live trading node model.</p>
 
 <h4>Naming</h4>
-<p>Hardware nodes are assigned a default name which includes the node type and an arbitrary string of characters. However, you can rename the nodes in your organization at any time.</p>
+<p>We assign a default name to hardware nodes that includes the model name and an arbitrary string of characters. However, you can <a href='../../tutorials/organizations/handling-resources#05-Rename-Nodes'>rename the nodes in your organization</a> at any time.</p>
 
 <h4>Activity Management</h4>
-<p>Nodes can be managed from the Algorithm Lab. For instance, you can stop running nodes and you can select specific nodes to use when running backtests, launching research notebooks, or deploying to live trading.</p>
-
-<!-- 
-Partial duplicate of 
-our-platform/user-guides/backtesting/deployment#02-Resources 
-our-platform/user-guides/live-trading/deployment#02-Resources
--->
+<p>Manage your organization's nodes from the Algorithm Lab. You can <a href='../../tutorials/organizations/handling-resources#06-Stop-Nodes'>stop running nodes</a> and you can select specific nodes to use when you run backtests, launch research notebooks, or deploy algorithms to live trading.</p>
