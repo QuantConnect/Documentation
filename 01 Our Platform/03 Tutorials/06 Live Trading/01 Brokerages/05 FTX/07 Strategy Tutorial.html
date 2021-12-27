@@ -1,0 +1,43 @@
+<p>Follow these steps to create an algorithm using the FTX brokerage:</p>
+
+<ol>
+    <li><a href="../../projects/managing-projects#03-Create-New-Projects">Create a new project</a>.</li>
+    <li>In the <code>Initialize</code> method in <b class="python">main.py</b><b class="csharp">Main.cs</b>, set the brokerage model to the <code>FTXBrokerageModel</code> and declare your <code>AccountType</code>.</li>
+    <div class="section-example-container">
+        <pre class="csharp">SetBrokerageModel(BrokerageName.FTX, AccountType.Margin);</pre>
+        <pre class="python">self.SetBrokerageModel(BrokerageName.FTX, AccountType.Margin)</pre>
+    </div>
+    <li>In the <code>Initialize</code> method, create a security subscription and save a reference to the <code>Symbol</code>.</li>
+    <div class="section-example-container">
+        <pre class="csharp">_symbol = AddCrypto("BTCUSD", Resolution.Minute).Symbol;</pre>
+        <pre class="python">self.symbol = self.AddCrypto("BTCUSD", Resolution.Minute).Symbol</pre>
+    </div>
+    <li><i>(Optional)</i> In the <code>Initialize</code> method, set the <code>DefaultOrderProperties</code>.</li>
+    <div class="section-example-container">
+        <pre class="csharp">DefaultOrderProperties = new FTXOrderProperties<br>{<br>    TimeInForce = TimeInForce.Day,<br>    ReduceOnly = false,<br>    PostOnly = false<br>};</pre>
+        <pre class="python">self.DefaultOrderProperties = FTXOrderProperties()<br>self.DefaultOrderProperties.TimeInForce = TimeInForce.Day<br>self.DefaultOrderProperties.ReduceOnly = False<br>self.DefaultOrderProperties.PostOnly = False</pre>
+    </div>
+    <li>In the <code>OnData</code> method in <b class="python">main.py</b><b class="csharp">Main.cs</b>, call one of the <a href="../../../user-guides/live-trading/brokerages/ftx#04-Orders">supported order methods</a> to place an order with the <code>DefaultOrderProperties</code>.</li>
+    <div class="section-example-container">
+        <pre class="csharp">MarketOrder(_symbol, quantity);</pre>
+        <pre class="python">self.MarketOrder(self.symbol, quantity)</pre>
+    </div>
+    <li>If you want to send an order with properties that are not the default properties, pass a <code>FTXOrderProperties</code> argument to the order method.</li>
+    <div class="section-example-container">
+        <pre class="csharp">var orderProperties = new FTXOrderProperties { <br>	TimeInForce = TimeInForce.GoodTilCanceled,<br>	ReduceOnly = true,<br>	PostOnly = true <br>};<br>LimitOrder(_symbol, quantity, limitPrice, orderProperties: orderProperties);</pre>
+        <pre class="python">order_properties = FTXOrderProperties()<br>order_properties.TimeInForce = TimeInForce.GoodTilCanceled<br>order_properties.ReduceOnly = True<br>order_properties.PostOnly = True<br>ticket = self.LimitOrder(self.symbol, quantity, limit_price, orderProperties = order_properties)</pre>
+    </div>
+    <li>If you want to update an active order, <code>Cancel</code> the original order and then create a new order with the desired arguments.</li>
+    <div class="section-example-container">
+        <pre class="csharp">var ticket = LimitOrder(_symbol, quantity, limitPrice, orderProperties: orderProperties);
+ticket.Cancel();<br>LimitOrder(_symbol, newQuantity, newLimitPrice, orderProperties: newOrderProperties);</pre>
+        <pre class="python">ticket = self.LimitOrder(self.symbol, quantity, limit_price, orderProperties = order_properties)
+ticket.Cancel()<br>self.LimitOrder(self.symbol, new_quantity, new_limit_price, orderProperties = new_order_properties)</pre>
+    </div>
+</ol>
+
+<p>Refer to the backtest below for a full example.</p>
+
+<div class="qc-embed-frame python" style="display: inline-block; position: relative; width: 100%; min-height: 100px; min-width: 300px;"><div class="qc-embed-dummy" style="padding-top: 56.25%;"></div><div class="qc-embed-element" style="position: absolute; top: 0; bottom: 0; left: 0; right: 0;"><iframe class="qc-embed-backtest" src="https://www.quantconnect.com/terminal/processCache?request=embedded_backtest_6cdac1ae8740effc67cf69249e19ff76.html" style="max-width: calc(100vw - 30px); max-height: 100vw; overflow: hidden;" scrolling="no" width="100%" height="100%"></iframe></div></div>
+
+<div class="qc-embed-frame csharp" style="display: inline-block; position: relative; width: 100%; min-height: 100px; min-width: 300px;"><div class="qc-embed-dummy" style="padding-top: 56.25%;"></div><div class="qc-embed-element" style="position: absolute; top: 0; bottom: 0; left: 0; right: 0;"><iframe class="qc-embed-backtest" src="https://www.quantconnect.com/terminal/processCache?request=embedded_backtest_4dd8f30a5551ca0435f7da9d56bbd50e.html" style="max-width: calc(100vw - 30px); max-height: 100vw; overflow: hidden;" scrolling="no" width="100%" height="100%"></iframe></div></div>

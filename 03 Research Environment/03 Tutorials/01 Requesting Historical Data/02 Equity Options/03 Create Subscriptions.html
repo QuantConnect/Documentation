@@ -1,0 +1,49 @@
+<p>Follow these steps to subscribe to an Equity Option security:</p>
+
+<ol>
+    <li class="csharp">Load the required assembly files and data types.</li>
+    <div class="csharp section-example-container">
+        <pre class="csharp">#load "../Initialize.csx"
+#load "../QuantConnect.csx"
+
+using QuantConnect;
+using QuantConnect.Data;
+using QuantConnect.Data.Market;
+using QuantConnect.Algorithm;
+using QuantConnect.Research;</pre>
+    </div>
+    <li>Instantiate a <code>QuantBook</code>.</li>
+    <div class="section-example-container">
+        <pre class="csharp">var qb = new QuantBook();</pre>
+        <pre class="python">qb = QuantBook()</pre>
+    </div>
+    <li>Call the <code>AddEquity</code> method with a ticker and resolution.</li>
+    <div class="section-example-container">
+        <pre class="csharp">var equity = qb.AddEquity("SPY", Resolution.Minute);</pre>
+        <pre class="python">equity = qb.AddEquity("SPY", Resolution.Minute)</pre>
+    </div>
+    <p>If you do not pass a resolution argument, <code>Resolution.Minute</code> is used by default</p>
+    <li>Call the <code>SetDataNormalizationMode</code> method with <code>DataNormalizationMode.Raw</code>.</li>
+    <div class="section-example-container">
+        <pre class="csharp">equity.SetDataNormalizationMode(DataNormalizationMode.Raw);</pre>
+        <pre class="python">equity.SetDataNormalizationMode(DataNormalizationMode.Raw)</pre>
+    </div>
+    <p class="csharp">The call to <code>SetDataNormalizationMode</code> above throws an error because it is obsolete. Use the following code snippet to avoid the warning and ensure all subscriptions of the security have the same data normalization mode:</p>
+    <div class="csharp section-example-container">
+        <pre class="csharp">qb.SubscriptionManager
+  .SubscriptionDataConfigService
+  .GetSubscriptionDataConfigs(equity.Symbol)
+  .SetDataNormalizationMode(DataNormalizationMode.Raw);</pre>
+    </div>
+    <li>Call the <code>AddOption</code> method with the underlying Equity <code>Symbol</code>.</li>
+    <div class="section-example-container">
+        <pre class="csharp">var option = qb.AddOption(equity.Symbol);</pre>
+        <pre class="python">option = qb.AddOption(equity.Symbol)</pre>
+    </div>
+    <li><i>(Optional)</i> Call the <code>SetFilter</code> method with strike and expiration boundary values.</li>
+    <div class="section-example-container">
+        <pre class="csharp">option.SetFilter(-2, 2, 0, 90);</pre>
+        <pre class="python">option.SetFilter(-2, 2, 0, 90)</pre>
+    </div>
+    <p>If you don't call the <code>SetFilter</code> method, the default values of the <code>minStrike</code>, <code>maxStrike</code>, <code>minExpiryDays</code>, and <code>maxExpiryDays </code>parameters are <code>-1</code>, <code>1</code>, <code>0</code>, and <code>35</code>, respectively.</p>
+</ol>

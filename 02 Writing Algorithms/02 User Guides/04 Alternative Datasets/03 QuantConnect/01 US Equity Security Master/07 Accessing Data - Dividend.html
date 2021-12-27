@@ -1,0 +1,19 @@
+<p>Dividend data can be accessed via Slice events. Slice delivers unique events to your algorithm as they happen. We recommend saving the symbol object when you add the data for easy access to slice later. You can see an example of the slice accessor in the code below.</p>
+
+<div class="section-example-container">
+<pre class="python">
+def OnData(self, data):
+    dividend = data.Dividends.get(self.symbol)
+    if dividend:
+        self.Log(f'Dividend: {dividend.Symbol}\t{dividend.Distribution}\t{dividend.ReferencePrice}')
+</pre>
+<pre class="csharp">
+public override void OnData(Slice data)
+{
+    if (data.Dividends.ContainsKey(_symbol))
+    {
+        var dividend = data.Dividends[_symbol];
+        Log($"Dividend: {dividend.Symbol}\t{dividend.Distribution}\t{dividend.ReferencePrice}");
+    }
+}</pre>
+</div>

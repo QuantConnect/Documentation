@@ -1,0 +1,98 @@
+<p>The <code>BinanceBrokerageModel</code> supports several order types and properties, but the model does not support order updates.<br></p>
+
+<h4>Order Types</h4>
+<p>The <code>BinanceBrokerageModel</code> supports the following order types:</p>
+<ul>
+    <li><code>MarketOrder</code></li>
+    <li><code>LimitOrder</code></li>
+    <li><code>StopLimitOrder</code></li>
+</ul>
+
+<div class="section-example-container">
+    <pre class="csharp">MarketOrder(_symbol, quantity);
+LimitOrder(_symbol, quantity, limitPrice);
+StopLimitOrder(_symbol, quantity, stopPrice, limitPrice);</pre>
+    <pre class="python">self.MarketOrder(self.symbol, quantity)
+self.LimitOrder(self.symbol, quantity, limit_price)
+self.StopLimitOrder(self.symbol, quantity, stop_price, limit_price)</pre>
+</div>
+
+<h4>Order Properties<br></h4>
+<p>The <code>BinanceBrokerageModel</code> supports custom order properties. You can define the following members of <code>BinanceOrderProperties</code> to customize order execution:</p>
+
+<ul>
+    <li><b><code>TimeInForce</code></b>: A <code>TimeInForce</code> instruction to apply to the order. The following instructions are supported:</li>
+    <ul>
+        <li><code>Day</code></li>
+        <li><code>GoodTilCanceled</code></li>
+        <li><code>GoodTilDate</code></li>
+    </ul>
+    
+    <li><b><code>PostOnly</code></b>: A flag to signal that your order will only add liquidity to the order book and not take liquidity from the order book. If part of your order results in taking liquidity rather than providing liquidity, your order will be rejected without any part of it being filled.</li>
+</ul>
+
+<div class="section-example-container">
+    <pre class="csharp">public override void Initialize()
+{
+    // Set the default order properties
+    DefaultOrderProperties = new BinanceOrderProperties
+    {
+        TimeInForce = TimeInForce.GoodTilCanceled,
+        PostOnly = false
+    };
+}
+
+public override void OnData(Slice data)
+{
+    // Use default order order properties
+    LimitOrder(_symbol, quantity, limitPrice);
+    
+    // Override the default order properties
+    LimitOrder(_symbol, 
+               quantity, 
+               limitPrice, 
+               orderProperties: new BinanceOrderProperties
+               { 
+                   TimeInForce = TimeInForce.Day,
+                   PostOnly = false
+               });
+    LimitOrder(_symbol, 
+               quantity, 
+               limitPrice, 
+               orderProperties: new BinanceOrderProperties
+               { 
+                   TimeInForce = TimeInForce.GoodTilDate(new DateTime(year, month, day)),
+                   PostOnly = true
+               });
+}</pre>
+    <pre class="python">def Initialize(self):
+    # Set the default order properties
+    self.DefaultOrderProperties = BinanceOrderProperties()
+    self.DefaultOrderProperties.TimeInForce = TimeInForce.GoodTilCanceled
+    self.DefaultOrderProperties.PostOnly = False
+
+def OnData(self, data):
+    # Use default order order properties
+    self.LimitOrder(self.symbol, quantity, limit_price)
+    
+    # Override the default order properties
+    order_properties = BinanceOrderProperties()
+    order_properties.TimeInForce = TimeInForce.Day
+    order_properties.PostOnly = True
+    self.LimitOrder(self.symbol, quantity, limit_price, orderProperties=order_properties)
+
+    order_properties.TimeInForce = TimeInForce.GoodTilDate(DateTime(year, month, day))
+    self.LimitOrder(self.symbol, quantity, limit_price, orderProperties=order_properties)</pre>
+</div>
+
+<h4>Updates</h4>
+<p>The <code>BinanceBrokerageModel</code> does not support order updates. However, you can cancel an existing order and then create a new order with the desired arguments.</p>
+
+<div class="section-example-container">
+    <pre class="csharp">var ticket = LimitOrder(_symbol, quantity, limitPrice);
+ticket.Cancel();
+ticket = LimitOrder(_symbol, newQuantity, newLimitPrice);</pre>
+    <pre class="python">ticket = self.LimitOrder(self.symbol, quantity, limit_price)
+ticket.Cancel()
+ticket = self.LimitOrder(self.symbol, new_quantity, new_limit_price)</pre>
+</div>

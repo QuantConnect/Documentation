@@ -1,0 +1,74 @@
+<p>You must <a href="#02-Import-Packages">import the plotting packages</a> and <a href="#03-Get-Historical-Data">get some historical data</a> to create histogram.</p>
+
+<p>Follow these steps to create a histogram:</p>
+
+<h4>Prepare the Data</h4>
+<ol>
+    <li>Select the <code>Symbol</code> that you want to plot in the line chart.</li>
+    <p>For example, to select the first <code>Symbol</code>, run:</p>
+    <div class="section-example-container">
+        <pre class="python">symbol = symbols[0]</pre>
+    </div>
+
+    <li>Slice the <code>history</code> DataFrame with <code>symbol</code> and then select the column that you want to plot.</li>
+    <p>For example, to select the closing prices, run:</p>
+    <div class="section-example-container">
+        <pre class="python">data = history.loc[symbol]['close']</pre>
+    </div>
+
+    <li>Call the <code>pct_change</code> method on the <code>pandas</code> object.</li>
+    <div class="section-example-container">
+        <pre class="python">daily_ret = data.pct_change()[1:]</pre>
+    </div>
+
+    <li>Call <code>np.histogram</code> method on the <code>pandas</code> object with density indicator and bin number to obtain the bar frequnecy and edges values.</li>
+    <div class="section-example-container">
+        <pre class="python">hist, edges = np.histogram(daily_ret, density=True, bins=20)</pre>
+    </div>
+</ol>
+
+<h4>Create Normal Distribution Curve</h4>
+<p>We'd like to also plot the normal distribution values for comparison. To do so, we must first create the corresponding values of the probability desity curve (PDF).</p>
+<ol>
+    <li>Get the mean and standard deviation of the daily return Series.</li>
+    <div class="section-example-container">
+        <pre class="python">mean = daily_ret.mean()
+std = daily_ret.std()</pre>
+    </div>
+
+    <li>Call <code>linspace</code> with lower limit, upper limit and number data points for the x-axis values.</li>
+    <div class="section-example-container">
+        <pre class="python">x = np.linspace(-3*std, 3*std, 1000)</pre>
+    </div>
+
+    <li>Calculate the y-axis values for the normal distribution PDF.</li>
+    <div class="section-example-container">
+        <pre class="python">pdf = 1/(std * np.sqrt(2*np.pi)) * np.exp(-(x-mean)**2 / (2*std**2))</pre>
+    </div>
+</ol>
+
+<h4>Plot the Data</h4>
+<ol>
+    <li>Call <code>figure</code> to create a plot with title and axis labels.</li>
+    <div class="section-example-container">
+        <pre class="python">plot = figure(title=f"{symbol} Daily Return Distribution", x_axis_label='Return', y_axis_label='Frequency')</pre>
+    </div>
+
+    <li>Call the <code>line</code> method with x-axis values, y-axis-values, color, line width, transparency and legend label to plot the normal distribution PDF.</li>
+    <div class="section-example-container">
+        <pre class="python">plot.line(x, pdf, color="red", line_width=4, alpha=0.7, legend_label="Normal Distribution PDF")</pre>
+    </div>
+
+    <li>Call <code>quad</code> to plot a histogram with the bars' top, bottom, left-side and right-side values, fill and edge colors, and transparency.</li>
+    <div class="section-example-container">
+        <pre class="python">plot.quad(top=hist, bottom=0, left=edges[:-1], right=edges[1:],
+          fill_color="navy", line_color="white", alpha=0.5)</pre>
+    </div>
+
+    <li>Call <code>show</code> to show the plot.</li>
+    <div class="section-example-container">
+        <pre class="python">show(plot)</pre>
+    </div>
+    <p>The Jupyter Notebook displays a histogram.</p>
+    <img style="max-width: 100%; display: block" src="https://cdn.quantconnect.com/i/tu/bokeh-histogram.png">
+</ol>

@@ -1,0 +1,52 @@
+<p>Check the <a href="https://www.kraken.com/features/fee-schedule"><b>Fee Schedule</b></a> page on the Kraken website to see the live trading order fees. In backtests, the fees are modeled with the <code>KrakenFeeModel</code>, which charges a 0.1% maker and taker fee. If you add liquidity to the order book by placing a limit order that doesn't cross the spread, you pay maker fees. If you remove liquidity from the order book by placing an order that crosses the spread, you pay taker fees. If you trade a pair where the base currency is any of the following currencies, the fee is 0.2%:</p>
+
+<ul>
+    <li>CAD</li>
+    <li>EUR</li>
+    <li>GBP</li>
+    <li>JPY</li>
+    <li>USD</li>
+    <li>USDT</li>
+    <li>DAI</li>
+    <li>USDC</li>
+</ul>
+
+<p>The <code>KrakenFeeModel</code> charges fees in the quote currency when buying and in the base currency when selling by default. However, these can be overridden by defining the <code>KrakenOrderProperties</code>.</p>
+<div class="section-example-container">
+    <pre class="csharp">public override void Initialize()
+{
+    // Set the default order properties
+    DefaultOrderProperties = new KrakenOrderProperties()
+    {
+        FeeInBase = true,
+        FeeInQuote = false
+    };
+}
+
+public override void OnData(Slice data)
+{
+    // Override the default order properties
+    LimitOrder(_symbol, 
+               quantity, 
+               limitPrice, 
+               orderProperties: new KrakenOrderProperties
+               { 
+                   FeeInQuote = true, 
+                   FeeInBase = false 
+               });
+}</pre>
+    <pre class="python">def Initialize(self):
+    # Set the default order properties
+    self.DefaultOrderProperties = KrakenOrderProperties()
+    self.DefaultOrderProperties.FeeInBase = True
+    self.DefaultOrderProperties.FeeInQuote = False
+
+def OnData(self, data):
+    # Override the default order properties
+    order_property = KrakenOrderProperties()
+    order_property.FeeInQuote = True
+    order_property.FeeInBase = False
+    self.LimitOrder(self.symbol, quantity, limit_price, orderProperties=order_property)</pre>
+</div>
+
+<p>The <code>KrakenFeeModel</code> does not currently model your 30-day trading volume to adjust the fees in backtests. In live trading, Kraken adjusts the fees.<br></p><p></p>

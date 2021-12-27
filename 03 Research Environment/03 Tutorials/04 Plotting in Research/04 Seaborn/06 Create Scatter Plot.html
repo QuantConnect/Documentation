@@ -1,0 +1,39 @@
+<p>You must <a href="#03-Import-Packages">import the plotting packages</a> and <a href="#04-Get-Historical-Data">get some historical data</a> to create scatter plots.</p>
+
+<p>In this example, you create a scatter plot that shows the relationship between the daily returns of two banking securities. Follow these steps to create the scatter plot:</p>
+
+<ol>
+    <li>Select 2 <code>Symbol</code>s.</li>
+    <p>For example, to select the <code>Symbol</code>s of the first 2 bank stocks, run:</p>
+<div class="section-example-container">
+    <pre class="python">symbol1 = symbols[1]
+symbol2 = symbols[2]</pre>
+</div>
+
+    <li>Select the close column of the <code>history</code> DataFrame, call the <code>unstack</code> method, and then select the <code>symbol1</code> and <code>symbol2</code> columns.</li>
+    <div class="section-example-container">
+        <pre class="python">close_prices = history['close'].unstack(0)[[symbol1, symbol2]]</pre>
+    </div>
+
+    <li>Call the <code>pct_change</code> method and then call the <code>dropna</code> method.</li>
+    <div class="section-example-container">
+        <pre class="python">daily_returns = close_prices.pct_change().dropna()</pre>
+    </div>
+
+    <li>Call the <code>regplot</code> method with the <code>daily_returns DataFrame</code> and the column names.</li>
+    <div class="section-example-container">
+        <pre class="python">plot = sns.regplot(data=daily_returns, 
+                   x=daily_returns.columns[0], 
+                   y=daily_returns.columns[1])</pre>
+    </div>
+
+    <li>In the same cell that you called the <code>regplot</code> method, call the <code>set</code> method with the axis labels and a title.</li>
+    <div class="section-example-container">
+        <pre class="python">plot.set(xlabel=f'{daily_returns.columns[0]} % Returns', 
+         ylabel=f'{daily_returns.columns[1]} % Returns', 
+         title=f'{symbol1} vs {symbol2} Daily % Returns');</pre>
+    </div>
+
+    <p>The Jupyter Notebook displays the scatter plot.</p>
+    <img style="max-width: 100%; display: block" src="https://cdn.quantconnect.com/i/tu/seaborn-scatter-3.png">
+</ol>

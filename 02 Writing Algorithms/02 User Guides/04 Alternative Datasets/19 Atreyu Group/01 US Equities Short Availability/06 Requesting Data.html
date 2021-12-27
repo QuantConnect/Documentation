@@ -1,0 +1,47 @@
+<p>To add Short Availability data to your algorithm, use the SetBrokerageModel() method to request the data as the ShortableProvider is a brokerage property. The AtreyuBrokerageModel includes the AtreyuShortableProvider ready to use. If we want to extend other brokerage models, we need to create a custom brokerage model. to use this data. For detailed documentation on using brokerage models, see <a href="https://www.quantconnect.com/docs/algorithm-reference/reality-modelling">Reality Modelling</a>.
+
+</p><div class="section-example-container">
+<pre class="python">
+class ShortAvailabilityDataAlgorithm(QCAlgorithm):
+
+    def Initialize(self):
+        self.SetStartDate(2019, 1, 1)
+        self.SetEndDate(2020, 6, 1)
+        self.SetCash(100000) 
+        aapl = self.AddEquity("AAPL", Resolution.Minute).Symbol
+        self.SetBrokerageModel(InteractiveBrokersBrokerageModelWithShortable())
+ 
+class InteractiveBrokersBrokerageModelWithShortable(InteractiveBrokersBrokerageModel):
+    def __init__(self):
+        super().__init__()
+        self.ShortableProvider = AtreyuShortableProvider(SecurityType.Equity, Market.USA)
+</pre>
+
+<pre class="csharp">
+using QuantConnect.Data.Shortable;
+namespace QuantConnect
+{
+    public class ShortAvailabilityDataAlgorithm : QCAlgorithm
+    {
+        public override void Initialize()
+        {
+            SetStartDate(2019, 1, 1);
+            SetEndDate(2020, 6, 1);
+            SetCash(100000);
+            var aapl = AddEquity("AAPL", Resolution.Daily).Symbol;
+            SetBrokerageModel(new InteractiveBrokersBrokerageModelWithShortable());
+        }
+        
+        public override void OnEndOfDay(Symbol symbol) =&gt;
+            Plot(symbol, "EOD", (int)((Equity)Securities[symbol]).TotalShortableQuantity.Value);
+		
+        public class InteractiveBrokersBrokerageModelWithShortable : InteractiveBrokersBrokerageModel
+        {
+            public InteractiveBrokersBrokerageModelWithShortable() : base()
+            {
+                ShortableProvider = new AtreyuShortableProvider(SecurityType.Equity, Market.USA);
+            }
+        }
+    }
+}</pre>
+</div>

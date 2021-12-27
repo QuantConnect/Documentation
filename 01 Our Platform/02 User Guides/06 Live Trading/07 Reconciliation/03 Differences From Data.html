@@ -1,0 +1,15 @@
+<p>The data that your algorithm uses can cause differences between backtesting and live trading performance.</p>
+
+<h4>Look-Ahead Bias</h4>
+<p>We minimize the risk of look-ahead bias in backtests with the <a href="../../../writing-algorithms/user-guides/key-concepts/understanding-time">Time Frontier</a>, but it can still creep into your backtests. For instance, if your algorithm uses a <a href="../../../writing-algorithms/user-guides/custom-datasets/">custom dataset</a> that contains look-ahead bias, deviations may occur between backtesting and live trading. To avoid look-ahead bias with custom datasets, set a <code>Period</code> on your custom data points so that the data points are injected into your algorithm after the <code>Time</code> + <code>Period</code>.</p>
+
+
+<h4>Discrete Time Steps</h4>
+<p>Data is injected into your backtests at predictable times according to the data resolution. However, in live trading, data is injected into your algorithm whenever new data is available. Therefore, if your algorithm has a condition with a specific time (i.e. time is 9:30:15), the condition may work in backtesting but fail in live trading if there is no live data at that point in time. To avoid issues, use a time range in your condition (i.e. 9:30:10 &lt; time &lt; 9:30:20) or use a Scheduled Event.</p>
+
+<h4>Custom Data Emission Times</h4>
+<p>Custom data is often timestamped to midnight, but the data point may not be available in reality until several days after. If your custom dataset is prone to this delay, your backtest may not fetch the same data at the same time or frequency that your live trading algorithm receives the data, causing deviations between backtesting and live trading. To avoid issues, ensure the timestamps of your custom dataset are the times of when the data points would be available in reality.</p>
+
+
+<h4>Split Adjustment of Indicators</h4>
+<p>Price data is adjusted for splits and dividends by default in backtests. Therefore, if you don't change the data normalization mode, the indicators in your backtests are updated with adjusted price data. In contrast, if a split or dividend occurs in live trading, your indicators will temporarily contain price data from before the corporate event and price data from after the corporate event. If this occurs, your indicators will produce different signals in your backtests compared to your live trading deployment. To avoid issues, reset and warm up your indicators when a corporate event is injected into your algorithm. Refer to the <a href="../../../writing-algorithms/user-guides/indicators/">Indicators documentation</a> for guidance on resetting and warming up indicators.</p>

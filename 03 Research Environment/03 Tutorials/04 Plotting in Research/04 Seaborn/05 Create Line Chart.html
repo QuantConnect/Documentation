@@ -1,0 +1,35 @@
+<p>You must <a href="#03-Import-Packages">import the plotting packages</a> and <a href="#04-Get-Historical-Data">get some historical data</a> to create line charts.</p>
+
+<p>In this example, you create a line chart that shows the closing price for one of the banking securities. Follow these steps to create the chart:</p>
+
+<ol>
+    <li>Select a <code>Symbol</code>.</li>
+    <div class="section-example-container">
+        <pre class="python">symbol = symbols[0]</pre>
+    </div>
+
+    <li>Slice the <code>history</code> DataFrame with the <code>symbol</code> and then select the close column.</li>
+    <div class="section-example-container">
+        <pre class="python">data = history.loc[symbol]['close']</pre>
+    </div>
+
+    <li>Call the <code>DataFrame</code> constructor with the <code>data Series</code> and then call the <code>reset_index</code> method.</li>
+    <div class="section-example-container">
+        <pre class="python">data = pd.DataFrame(data).reset_index()</pre>
+    </div>
+
+    <li>Call the <code>lineplot</code> method with the  <code>data Series</code> and the column name of each axis.</li>
+    <div class="section-example-container">
+        <pre class="python">plot = sns.lineplot(data=data,
+                    x='time', 
+                    y='close')</pre>
+    </div>
+
+    <li>In the same cell that you called the <code>lineplot</code> method, call the <code>set</code> method with the y-axis label and a title.</li>
+    <div class="section-example-container">
+        <pre class="python">plot.set(ylabel="price", title=f"{symbol} Price Over Time");</pre>
+    </div>
+
+    <p>The Jupyter Notebook displays the line chart.</p>
+    <img style="max-width: 100%; display: block" src="https://cdn.quantconnect.com/i/tu/seaborn-line-3.png">
+</ol>

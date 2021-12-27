@@ -1,0 +1,56 @@
+<p>Follow these steps to create an algorithm using the TT brokerage:</p>
+
+<ol>
+    <li><a href="../../projects/managing-projects#03-Create-New-Projects">Create a new project</a>.</li>
+    <li>In the <code>Initialize</code> method in <b class="python">main.py</b><b class="csharp">Main.cs</b>, set the brokerage model to the <code>TradingTechnologiesBrokerageModel</code> and declare your <code>AccountType</code>.<br></li>
+    <div class="section-example-container">
+        <pre class="csharp">SetBrokerageModel(BrokerageName.TradingTechnologies, AccountType.Margin);</pre>
+        <pre class="python">self.SetBrokerageModel(BrokerageName.TradingTechnologies, AccountType.Margin)</pre>
+    </div>
+    <li>In the <code>Initialize</code> method, create a security subscription, select the rollover methodology, and save a reference to the continuous <code>Future</code>.<br></li>
+    <div class="section-example-container">
+        <pre class="csharp">_continuousContract = AddFuture(Futures.Indices.SP500EMini, Resolution.Minute, <br>    dataNormalizationMode: DataNormalizationMode.BackwardsRatio,<br>    dataMappingMode: DataMappingMode.LastTradingDay,<br>    contractDepthOffset: 0<br>);</pre>
+        <pre class="python">self.continuous_contract = self.AddFuture(Futures.Indices.SP500EMini, Resolution.Minute, <br>    dataNormalizationMode = DataNormalizationMode.BackwardsRatio,<br>    dataMappingMode = DataMappingMode.LastTradingDay,<br>    contractDepthOffset = 0)</pre>
+    </div>
+    <li><i>(Optional)</i> In the <code>Initialize</code> method, set the <code>DefaultOrderProperties</code>.</li>
+    <div class="section-example-container">
+        <pre class="csharp">DefaultOrderProperties.TimeInForce = TimeInForce.Day;</pre>
+        <pre class="python">self.DefaultOrderProperties.TimeInForce = TimeInForce.Day</pre>
+    </div>
+    <li>In the <code>OnData</code> method in <b class="python">main.py</b><b class="csharp">Main.cs</b>, select the current contract based on the contract rollover methodology.</li>
+    <div class="section-example-container">
+        <pre class="csharp">_currentContract = Securities[_continuousContract.Mapped];
+</pre>
+        <pre class="python">self.current_contract = self.Securities[self.continuous_contract.Mapped]</pre>
+    </div>
+    <li>In the <code>OnData</code> method, call one of the <a href="../../../user-guides/live-trading/brokerages/trading-technologies#04-Orders">supported order methods</a> to place an order with the <code>DefaultOrderProperties</code>.</li>
+    <div class="section-example-container">
+        <pre class="csharp">MarketOrder(_currentContract.Symbol, quantity);</pre>
+        <pre class="python">self.MarketOrder(self.current_contract.Symbol, quantity)</pre>
+    </div>
+    <li>If you want to send an order with properties that are not the default properties, pass an <code>OrderProperties</code> argument to one of the supported order methods.</li>
+    <div class="section-example-container">
+        <pre class="csharp">var orderProperties = new OrderProperties { TimeInForce = TimeInForce.GoodTilCanceled };<br>LimitOrder(_currentContract.Symbol, quantity, limitPrice, orderProperties: orderProperties);
+</pre>
+        <pre class="python">order_properties = OrderProperties()<br>order_properties.TimeInForce = TimeInForce.GoodTilCanceled<br>self.LimitOrder(self.current_contract.Symbol, quantity, limit_price, <br>                orderProperties = order_properties)</pre>
+    </div>
+    <li>If you want to update an active order, <code>Update</code> the <code>OrderTicket</code> with an <code>UpdateOrderFields</code> object.</li>
+    <div class="section-example-container">
+        <pre class="csharp">var ticket = LimitOrder(_currentContract.Symbol, quantity, limitPrice, <br>    orderProperties: orderProperties<br>);
+var orderFields = new UpdateOrderFields { <br>    Quantity = newQuantity,<br>    LimitPrice = newLimitPrice,<br>    Tag = newTag<br>};<br>ticket.Update(orderFields);</pre>
+        <pre class="python">ticket = self.LimitOrder(self.current_contract.Symbol, quantity, limit_price, <br>                         orderProperties = order_properties)
+update_fields = UpdateOrderFields()<br>update_fields.Quantity = new_quantity<br>update_fields.LimitPrice = new_limit_price<br>update_fields.Tag = new_tag<br>ticket.Update(update_fields)</pre>
+    </div>
+    <li>If the rollover logic selects a new contract, move your position to the new contract.</li>
+    <div class="section-example-container">
+        <pre class="csharp">if (_currentContract != null &amp;&amp; _currentContract.Symbol != _continuousContract.Mapped)<br>{<br>    var currentPositionSize = _currentContract.Holdings.Quantity;<br>    Liquidate(_currentContract.Symbol);<br>    MarketOrder(_continuousContract.Mapped, currentPositionSize);   <br>    _currentContract = Securities[_continuousContract.Mapped];<br>}   </pre>
+        <pre class="python">if self.current_contract is not None and \<br>    self.current_contract.Symbol != self.continuous_contract.Mapped:<br>    current_position_size = self.current_contract.Holdings.Quantity<br>    self.Liquidate(self.current_contract.Symbol)<br>    self.MarketOrder(self.continuous_contract.Mapped, current_position_size)<br>    self.current_contract = self.Securities[self.continuous_contract.Mapped]</pre>
+    </div>
+</ol>
+
+<p>Refer to the backtest below for a full example.</p>
+
+
+<div class="qc-embed-frame python" style="display: inline-block; position: relative; width: 100%; min-height: 100px; min-width: 300px;"><div class="qc-embed-dummy" style="padding-top: 56.25%;"></div><div class="qc-embed-element" style="position: absolute; top: 0; bottom: 0; left: 0; right: 0;"><iframe class="qc-embed-backtest" src="https://www.quantconnect.com/terminal/processCache?request=embedded_backtest_045cede8c67faf6c95aebbb079eec0f2.html" style="max-width: calc(100vw - 30px); max-height: 100vw; overflow: hidden;" scrolling="no" width="100%" height="100%"></iframe></div></div>
+
+<div class="qc-embed-frame csharp" style="display: inline-block; position: relative; width: 100%; min-height: 100px; min-width: 300px;"><div class="qc-embed-dummy" style="padding-top: 56.25%;"></div><div class="qc-embed-element" style="position: absolute; top: 0; bottom: 0; left: 0; right: 0;"><iframe class="qc-embed-backtest" src="https://www.quantconnect.com/terminal/processCache?request=embedded_backtest_ffbb74516a43092781a3023e25b10df4.html" style="max-width: calc(100vw - 30px); max-height: 100vw; overflow: hidden;" scrolling="no" width="100%" height="100%"></iframe></div></div>

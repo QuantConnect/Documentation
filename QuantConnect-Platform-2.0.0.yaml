@@ -1,0 +1,2380 @@
+---
+openapi: 3.0.0
+info:
+  title: QuantConnect Platform API v2.0
+  description: QuantConnect Platform API controls creating, updating and deleting projects, files, backtests and live algorithms. Automate the updating and backtesting of your strategies, or build tools to fast track your development.
+  termsOfService: https://www.quantconnect.com/terms
+  contact:
+    name: QuantConnect
+    email: contact@quantconnect.com
+  license:
+    name: License For Use Granted Under QuantConnect Terms of Service. All other rights reserved.
+  version: 2.0.0
+servers:
+- url: https://virtserver.swaggerhub.com/QuantConnect/Platform/2.0.0
+  description: SwaggerHub API Auto Mocking
+- url: https://www.quantconnect.com/api/v2
+  description: Primary REST Endpoint
+security:
+- nonceTokenAuth: []
+paths:
+  /projects/create:
+    post:
+      tags:
+      - 01 Our Platform
+      - 04 API Reference
+      - 02 Project Management
+      - 01 Create Project
+      summary: Create a new project in your default organization.
+      description: Create a project with the specified name and programming language. If the project-name already exists, API call returns success:false with exception details in the errors array.
+      requestBody:
+        description: Name and language of the project to create.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateProjectRequest'
+        required: true
+      responses:
+        "200":
+          description: Project list response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProjectListResponse'
+        "401":
+          description: Unauthorized response from the API. Key is missing, invalid, or timestamp is too old for hash.
+          headers:
+            www_authenticate:
+              style: simple
+              explode: false
+              schema:
+                type: string
+  /projects/read:
+    post:
+      tags:
+      - 01 Our Platform
+      - 04 API Reference
+      - 02 Project Management
+      - 02 Read Project
+      summary: If a ReadProjectRequest is passed, get details about that single project. If no request body is passed, list details of all projects.
+      requestBody:
+        description: The projectId for the project to read, or nothing to get a list of all projects.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReadProjectRequest'
+        required: false
+      responses:
+        "200":
+          description: Project list response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProjectListResponse'
+        "401":
+          description: Unauthorized response from the API. Key is missing, invalid, or timestamp is too old for hash.
+          headers:
+            www_authenticate:
+              style: simple
+              explode: false
+              schema:
+                type: string
+  /projects/update:
+    post:
+      tags:
+      - 01 Our Platform
+      - 04 API Reference
+      - 02 Project Management
+      - 03 Update Project
+      summary: Update a project name, description or parameters.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateProjectRequest'
+        required: true
+      responses:
+        "200":
+          description: Base API response class.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RestResponse'
+        "401":
+          description: Unauthorized response from the API. Key is missing, invalid, or timestamp is too old for hash.
+          headers:
+            www_authenticate:
+              style: simple
+              explode: false
+              schema:
+                type: string
+  /projects/delete:
+    post:
+      tags:
+      - 01 Our Platform
+      - 04 API Reference
+      - 02 Project Management
+      - 04 Delete Project
+      summary: Delete a project.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DeleteProjectRequest'
+        required: true
+      responses:
+        "200":
+          description: Base API response class.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RestResponse'
+        "401":
+          description: Unauthorized response from the API. Key is missing, invalid, or timestamp is too old for hash.
+          headers:
+            www_authenticate:
+              style: simple
+              explode: false
+              schema:
+                type: string
+  /files/create:
+    post:
+      tags:
+      - 01 Our Platform
+      - 04 API Reference
+      - 03 File Management
+      - 01 Create File
+      summary: Add a file to given project.
+      requestBody:
+        description: Project, file name and file content to create
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateProjectFileRequest'
+        required: true
+      responses:
+        "200":
+          description: Response received when reading all files of a project.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProjectFilesResponse'
+        "401":
+          description: Unauthorized response from the API. Key is missing, invalid, or timestamp is too old for hash.
+          headers:
+            www_authenticate:
+              style: simple
+              explode: false
+              schema:
+                type: string
+  /files/read:
+    post:
+      tags:
+      - 01 Our Platform
+      - 04 API Reference
+      - 03 File Management
+      - 02 Read File
+      summary: If a ReadSingleFileRequest is passed, reads that file from the project. If a ReadAllFilesRequest is passed, reads all files in the project.
+      requestBody:
+        description: An array list of files from the project requested.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReadFilesRequest'
+        required: true
+      responses:
+        "200":
+          description: Response received when reading all files of a project.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProjectFilesResponse'
+        "401":
+          description: Unauthorized response from the API. Key is missing, invalid, or timestamp is too old for hash.
+          headers:
+            www_authenticate:
+              style: simple
+              explode: false
+              schema:
+                type: string
+  /files/update:
+    post:
+      tags:
+      - 01 Our Platform
+      - 04 API Reference
+      - 03 File Management
+      - 03 Update File
+      summary: If an UpdateProjectFileNameRequest is passed, update the name of a file. If a UpdateProjectFileContentsRequest is passed, update the contents of a file.
+      requestBody:
+        description: Information about the file to update along with the new properties to set.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/files_update_body'
+        required: true
+      responses:
+        "200":
+          description: Base API response class.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RestResponse'
+        "401":
+          description: Unauthorized response from the API. Key is missing, invalid, or timestamp is too old for hash.
+          headers:
+            www_authenticate:
+              style: simple
+              explode: false
+              schema:
+                type: string
+  /files/delete:
+    post:
+      tags:
+      - 01 Our Platform
+      - 04 API Reference
+      - 03 File Management
+      - 04 Delete File
+      summary: Delete a file in a project
+      requestBody:
+        description: Project Id and filename to specify the file for deletion.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DeleteFileRequest'
+        required: true
+      responses:
+        "200":
+          description: Base API response class.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RestResponse'
+        "401":
+          description: Unauthorized response from the API. Key is missing, invalid, or timestamp is too old for hash.
+          headers:
+            www_authenticate:
+              style: simple
+              explode: false
+              schema:
+                type: string
+  /compile/create:
+    post:
+      tags:
+      - 01 Our Platform
+      - 04 API Reference
+      - 04 Compiling Code
+      - 01 Create Compilation Job
+      summary: Asynchronously create a compile job request for a project
+      requestBody:
+        description: Project Id specifying project to build.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateCompileRequest'
+        required: true
+      responses:
+        "200":
+          description: Response from the compiler on a build event.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CompileResponse'
+        "401":
+          description: Unauthorized response from the API. Key is missing, invalid, or timestamp is too old for hash.
+          headers:
+            www_authenticate:
+              style: simple
+              explode: false
+              schema:
+                type: string
+  /compile/read:
+    post:
+      tags:
+      - 01 Our Platform
+      - 04 API Reference
+      - 04 Compiling Code
+      - 02 Read Compilation Result
+      summary: Read a compile packet job result.
+      requestBody:
+        description: Read a compile result for a specific Project Id and Compile Id.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReadCompileRequest'
+        required: true
+      responses:
+        "200":
+          description: Response from the compiler on a build event.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CompileResponse'
+        "401":
+          description: Unauthorized response from the API. Key is missing, invalid, or timestamp is too old for hash.
+          headers:
+            www_authenticate:
+              style: simple
+              explode: false
+              schema:
+                type: string
+  /backtests/create:
+    post:
+      tags:
+      - 01 Our Platform
+      - 04 API Reference
+      - 05 Backtest Management
+      - 01 Create Backtest
+      summary: Create a new backtest request and get the backtest Id.
+      requestBody:
+        description: Create a new backtest given a project Id and compile Id.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateBacktestRequest'
+        required: true
+      responses:
+        "200":
+          description: Backtest read response packet.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BacktestResponse'
+        "401":
+          description: Unauthorized response from the API. Key is missing, invalid, or timestamp is too old for hash.
+          headers:
+            www_authenticate:
+              style: simple
+              explode: false
+              schema:
+                type: string
+  /backtests/read:
+    post:
+      tags:
+      - 01 Our Platform
+      - 04 API Reference
+      - 05 Backtest Management
+      - 02 Read Backtest
+      summary: If a backtest id is provided, read out that backtest from the project, otherwise list all the backtests for the project.
+      requestBody:
+        description: Fetch the results for the project Id and backtest Id provided.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReadBacktestRequest'
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_200'
+        "401":
+          description: Unauthorized response from the API. Key is missing, invalid, or timestamp is too old for hash.
+          headers:
+            www_authenticate:
+              style: simple
+              explode: false
+              schema:
+                type: string
+  /backtests/read/report:
+    post:
+      tags:
+      - 01 Our Platform
+      - 04 API Reference
+      - 09 Reports
+      - 01 Backtest Report
+      summary: Read out the report of a backtest in the project id specified
+      requestBody:
+        description: A JSON object containing info about the project to delete.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BacktestReportRequest'
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_200_1'
+        "401":
+          description: Unauthorized response from the API. Key is missing, invalid, or timestamp is too old for hash.
+          headers:
+            www_authenticate:
+              style: simple
+              explode: false
+              schema:
+                type: string
+  /backtests/update:
+    post:
+      tags:
+      - 01 Our Platform
+      - 04 API Reference
+      - 05 Backtest Management
+      - 03 Update Backtest
+      summary: Update a backtest name or note
+      requestBody:
+        description: A JSON object containing info about the backtest and new name.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateBacktestRequest'
+        required: true
+      responses:
+        "200":
+          description: Base API response class.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RestResponse'
+        "401":
+          description: Unauthorized response from the API. Key is missing, invalid, or timestamp is too old for hash.
+          headers:
+            www_authenticate:
+              style: simple
+              explode: false
+              schema:
+                type: string
+  /backtests/delete:
+    post:
+      tags:
+      - 01 Our Platform
+      - 04 API Reference
+      - 05 Backtest Management
+      - 04 Delete Backtest
+      summary: Delete a backtest from the specified project and backtestId
+      requestBody:
+        description: Information required to delete the backtest.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DeleteBacktestRequest'
+        required: true
+      responses:
+        "200":
+          description: Base API response class.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RestResponse'
+        "401":
+          description: Unauthorized response from the API. Key is missing, invalid, or timestamp is too old for hash.
+          headers:
+            www_authenticate:
+              style: simple
+              explode: false
+              schema:
+                type: string
+  /live/create:
+    post:
+      tags:
+      - 01 Our Platform
+      - 04 API Reference
+      - 07 Live Management
+      - 01 Create Live Algorithm
+      summary: Create a live algorithm
+      requestBody:
+        description: Project, compile and brokerage login information for deploying a live algorithm.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateLiveAlgorithmRequest'
+        required: true
+      responses:
+        "200":
+          description: Live algorithm instance result.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LiveAlgorithm'
+        "401":
+          description: Unauthorized response from the API. Key is missing, invalid, or timestamp is too old for hash.
+          headers:
+            www_authenticate:
+              style: simple
+              explode: false
+              schema:
+                type: string
+  /live/read:
+    post:
+      tags:
+      - 01 Our Platform
+      - 04 API Reference
+      - 07 Live Management
+      - 02 Read Live Algorithm
+      - 01 Get Live Algorithm Statistics
+      summary: If a ReadLiveAlgorithmRequest is provided details on a live algorithm are returned. If a ListLiveAlgorithmsRequest is passed get a list of live running algorithms.
+      requestBody:
+        description: Dynamic arguement to specify whether seeking single project or list response.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/live_read_body'
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_200_2'
+        "401":
+          description: Unauthorized response from the API. Key is missing, invalid, or timestamp is too old for hash.
+          headers:
+            www_authenticate:
+              style: simple
+              explode: false
+              schema:
+                type: string
+  /live/read/log:
+    post:
+      tags:
+      - 01 Our Platform
+      - 04 API Reference
+      - 07 Live Management
+      - 02 Read Live Algorithm
+      - 02 Read Live Algorithm Log
+      summary: Get the logs of a specific live algorithm.
+      requestBody:
+        description: Information about the algorithm to read live logs from.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReadLiveLogsRequest'
+        required: true
+      responses:
+        "200":
+          description: Logs from a live algorithm.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReadLiveLogsResponse'
+        "401":
+          description: Unauthorized response from the API. Key is missing, invalid, or timestamp is too old for hash.
+          headers:
+            www_authenticate:
+              style: simple
+              explode: false
+              schema:
+                type: string
+  /live/update/liquidate:
+    post:
+      tags:
+      - 01 Our Platform
+      - 04 API Reference
+      - 07 Live Management
+      - 03 Update Live Algorithm
+      - 01 Liquidate Live Portfolio
+      summary: Liquidate a live algorithm from the specified project and deployId.
+      requestBody:
+        description: Information about the live algorithm to liquidate.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LiquidateLiveAlgorithmRequest'
+        required: true
+      responses:
+        "200":
+          description: Base API response class.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RestResponse'
+        "401":
+          description: Unauthorized response from the API. Key is missing, invalid, or timestamp is too old for hash.
+          headers:
+            www_authenticate:
+              style: simple
+              explode: false
+              schema:
+                type: string
+  /live/update/stop:
+    post:
+      tags:
+      - 01 Our Platform
+      - 04 API Reference
+      - 07 Live Management
+      - 03 Update Live Algorithm
+      - 02 Stop Live Algorithm
+      summary: Stop a live algorithm from the specified project and deployId.
+      requestBody:
+        description: Information about the project to delete.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/StopLiveAlgorithmRequest'
+        required: true
+      responses:
+        "200":
+          description: Base API response class.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RestResponse'
+        "401":
+          description: Unauthorized response from the API. Key is missing, invalid, or timestamp is too old for hash.
+          headers:
+            www_authenticate:
+              style: simple
+              explode: false
+              schema:
+                type: string
+  /data/read:
+    post:
+      tags:
+      - 01 Our Platform
+      - 04 API Reference
+      - 08 Downloading Data
+      - 01 Read Downloaded Data
+      summary: Get the link to the downloadable data.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DataDownloadRequest'
+        required: true
+      responses:
+        "200":
+          description: Response from reading purchased data.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReadDataLinkResponse'
+        "401":
+          description: Unauthorized response from the API. Key is missing, invalid, or timestamp is too old for hash.
+          headers:
+            www_authenticate:
+              style: simple
+              explode: false
+              schema:
+                type: string
+components:
+  schemas:
+    AlgorithmPerformance:
+      type: object
+      properties:
+        TradeStatistics:
+          $ref: '#/components/schemas/TradeStatistics'
+        PortfolioStatistics:
+          $ref: '#/components/schemas/PortfolioStatistics'
+        ClosedTrades:
+          type: array
+          description: The algorithm statistics on portfolio.
+          items:
+            $ref: '#/components/schemas/Trade'
+      description: The AlgorithmPerformance class is a wrapper for TradeStatistics and PortfolioStatistics.
+    AlgorithmStatus:
+      type: string
+      description: States of a live deployment.
+      enum:
+      - DeployError
+      - InQueue
+      - Running
+      - Stopped
+      - Liquidated
+      - Deleted
+      - Completed
+      - RuntimeError
+      - Invalid
+      - LoggingIn
+      - Initializing
+      - History
+    AlphaRuntimeStatistics:
+      type: object
+      properties:
+        MeanPopulationScore:
+          $ref: '#/components/schemas/InsightScore'
+        RollingAveragedPopulationScore:
+          $ref: '#/components/schemas/InsightScore'
+        LongCount:
+          type: string
+          description: Gets the total number of insights with an up direction.
+        ShortCount:
+          type: string
+          description: Gets the total number of insights with a down direction.
+        LongShortRatio:
+          type: number
+          description: The ratio of InsightDirection.Up over InsightDirection.Down
+          format: float
+        TotalAccumulatedEstimatedAlphaValue:
+          type: number
+          description: The total accumulated estimated value of trading all insights.
+          format: float
+        KellyCriterionEstimate:
+          type: number
+          description: Score of the strategy's insights predictive power.
+          format: float
+        KellyCriterionProbabilityValue:
+          type: number
+          description: The p-value or probability value of the KellyCriterionEstimate.
+          format: float
+        FitnessScore:
+          type: number
+          description: Score of the strategy's performance, and suitability for the Alpha Stream Market.
+          format: float
+        PortfolioTurnover:
+          type: number
+          description: Measurement of the strategies trading activity with respect to the portfolio value. Calculated as the sales volume with respect to the average total portfolio value.
+          format: float
+        ReturnOverMaxDrawdown:
+          type: number
+          description: Provides a risk adjusted way to factor in the returns and drawdown of the strategy. It is calculated by dividing the Portfolio Annualized Return by the Maximum Drawdown seen during the backtest.
+          format: float
+        SortinoRatio:
+          type: number
+          description: Gives a relative picture of the strategy volatility. It is calculated by taking a portfolio's annualized rate of return and subtracting the risk free rate of return.
+          format: float
+        EstimatedMonthlyAlphaValue:
+          type: number
+          description: Suggested Value of the Alpha On A Monthly Basis For Licensing.
+          format: float
+        TotalInsightsGenerated:
+          type: string
+          description: The total number of insight signals generated by the algorithm.
+        TotalInsightsClosed:
+          type: string
+          description: The total number of insight signals generated by the algorithm.
+        TotalInsightsAnalysisCompleted:
+          type: string
+          description: The total number of insight signals generated by the algorithm.
+        MeanPopulationEstimatedInsightValue:
+          type: number
+          description: Gets the mean estimated insight value.
+          format: float
+      description: Contains insight population run time statistics.
+    BacktestResponse:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Name of the backtest.
+        note:
+          type: string
+          description: Note on the backtest attached by the user.
+        backtestId:
+          type: string
+          description: Assigned backtest Id
+        completed:
+          type: boolean
+          description: Boolean true when the backtest is completed.
+        progress:
+          type: number
+          description: Progress of the backtest in percent 0-1
+          format: float
+        result:
+          $ref: '#/components/schemas/BacktestResult'
+        error:
+          type: string
+          description: Backtest error message.
+        stacktrace:
+          type: string
+          description: Backtest error stacktrace.
+        created:
+          type: string
+          description: Backtest creation date and time.
+          format: date-time
+        success:
+          type: boolean
+          description: Indicate if the API request was successful.
+        errors:
+          type: array
+          description: List of errors with the API call.
+          items:
+            type: string
+      description: Packet container for carrying Backtest results.
+    BacktestList:
+      type: object
+      properties:
+        backtests:
+          type: array
+          description: Array of BacktestResponse objects
+          items:
+            $ref: '#/components/schemas/BacktestResponse'
+        success:
+          type: boolean
+          description: Indicate if the API request was successful.
+        errors:
+          type: array
+          description: List of errors with the API call.
+          items:
+            type: string
+      description: Collection container for a list of Backtest objects for a project.
+    BacktestReport:
+      type: object
+      properties:
+        report:
+          type: string
+          description: HTML data of the report with embedded base64 images.
+        success:
+          type: boolean
+          description: Indicate if the API request was successful.
+        errors:
+          type: array
+          description: List of errors with the API call.
+          items:
+            type: string
+      description: Backtest Report Response wrapper.
+    BacktestReportRequest:
+      type: object
+      properties:
+        projectId:
+          type: integer
+          description: Id of the project to read.
+        backtestId:
+          type: string
+          description: Specific backtest Id to read.
+      description: Request to read out the report of a backtest.
+    BacktestResult:
+      type: object
+      properties:
+        RollingWindow:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/AlgorithmPerformance'
+          description: Rolling window detailed statistics.
+        TotalPerformance:
+          $ref: '#/components/schemas/AlgorithmPerformance'
+        AlphaRuntimeStatistics:
+          $ref: '#/components/schemas/AlphaRuntimeStatistics'
+        Charts:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/Chart'
+          description: Charts updates for the live algorithm since the last result packet.
+        Orders:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/Order'
+          description: Order updates since the last result packet.
+        OrderEvents:
+          type: array
+          description: OrderEvent updates since the last result packet.
+          items:
+            $ref: '#/components/schemas/OrderEvent'
+        ProfitLoss:
+          type: object
+          additionalProperties:
+            type: number
+            format: float
+          description: Trade profit and loss information since the last algorithm result packet.
+        Statistics:
+          type: object
+          additionalProperties:
+            type: string
+          description: Statistics information sent during the algorithm operations.
+        RuntimeStatistics:
+          type: object
+          additionalProperties:
+            type: string
+          description: Runtime banner/updating statistics in the title banner of the live algorithm GUI.
+        ServerStatistics:
+          type: object
+          additionalProperties:
+            type: string
+          description: Server status information, including CPU and RAM usage.
+      description: Results object class. Results are exhaust from backtest or live algorithms running in LEAN.
+    BaseLiveAlgorithmSettings:
+      type: object
+      properties:
+        id:
+          type: string
+          description: '''Interactive'' / ''FXCM'' / ''Oanda'' / ''Tradier'' /''PaperTrading'''
+        user:
+          type: string
+          description: Username associated with brokerage.
+        password:
+          type: string
+          description: Password associated with brokerage.
+        environment:
+          $ref: '#/components/schemas/BrokerageEnvironment'
+        account:
+          type: string
+          description: Account of the associated brokerage.
+      description: Base class for settings that must be configured per Brokerage to create new algorithms via the API.
+    BrokerageEnvironment:
+      type: string
+      description: Represents the types of environments supported by brokerages for trading.
+      enum:
+      - live
+      - paper
+    Cash:
+      type: object
+      properties:
+        _conversionRate:
+          type: number
+          description: Conversion rate for this cash.
+          format: float
+        _isBaseCurrency:
+          type: boolean
+          description: Is this the base account currency of the cashbook.
+        _invertRealTimePrice:
+          type: boolean
+          description: Invert real time price.
+        Symbol:
+          type: string
+          description: Gets the symbol used to represent this cash.
+        Amount:
+          type: number
+          description: Gets or sets the amount of cash held.
+          format: float
+        CurrencySymbol:
+          description: The symbol of the currency, such as $.
+      description: Represents a holding of a currency in cash.
+    CashAmount:
+      properties:
+        Amount:
+          type: number
+          description: The amount of cash.
+          format: float
+        Currency:
+          type: string
+          description: The currency in which the cash amount is denominated.
+      description: Represents a cash amount which can be converted to account currency using a currency converter.
+    CashBook:
+      type: object
+      properties:
+        _accountCurrency:
+          type: string
+          description: The base currency used.
+        _currencies:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/Cash'
+          description: Tracks cash holdings.
+        TotalValueInAccountCurrency:
+          type: number
+          description: The total value of the cash book in units of the base currency.
+          format: float
+        AccountCurrency:
+          type: string
+          description: Gets account currency.
+      additionalProperties:
+        $ref: '#/components/schemas/Cash'
+      description: Keeps track of the different cash holdings of an algorithm. Is also a Dictionary of Cash objects.
+    Chart:
+      type: object
+      properties:
+        Name:
+          type: string
+          description: Name of the Chart.
+        ChartType:
+          type: string
+          description: Type of the Chart, Overlayed or Stacked.
+          enum:
+          - Overlay
+          - Stacked
+        Series:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/Series'
+          description: List of Series Objects for this Chart.
+      description: Single Parent Chart Object for Custom Charting.
+    ChartPoint:
+      type: object
+      properties:
+        x:
+          type: string
+          description: 'Time of this chart point: lower case for javascript encoding simplicty.'
+        y:
+          type: number
+          description: 'Value of this chart point:  lower case for javascript encoding simplicty.'
+          format: float
+      description: Location on a chart containing the X-Y location
+    CreateCompileRequest:
+      type: object
+      properties:
+        projectId:
+          type: integer
+          description: Project id we wish to compile.
+      description: Request to compile a project.
+    CompileResponse:
+      type: object
+      properties:
+        compileId:
+          type: string
+          description: Compile Id for a sucessful build.
+        state:
+          type: string
+          description: True on successful compile.
+          enum:
+          - InQueue
+          - BuildSuccess
+          - BuildError
+        logs:
+          type: array
+          description: Logs of the compilation request.
+          items:
+            type: string
+        success:
+          type: boolean
+          description: Indicate if the API request was successful.
+        errors:
+          type: array
+          description: List of errors with the API call.
+          items:
+            type: string
+      description: Response from the compiler on a build event.
+    CreateBacktestRequest:
+      type: object
+      properties:
+        projectId:
+          type: integer
+          description: Project Id we sent for compile.
+        compileId:
+          type: string
+          description: Compile Id for the project to backtest.
+        backtestName:
+          type: string
+          description: Name for the new backtest.
+      description: Request to create a new backtest.
+    CreateLiveAlgorithmRequest:
+      type: object
+      properties:
+        projectId:
+          type: integer
+          description: Project Id.
+        compileId:
+          type: string
+          description: Compile Id.
+        serverType:
+          type: string
+          description: Type of server instance that will run the algorithm.
+        baseLiveAlgorithmSettings:
+          $ref: '#/components/schemas/BaseLiveAlgorithmSettings'
+        versionId:
+          type: string
+          description: The version of the Lean used to run the algorithm. -1 is master, however, sometimes this can create problems with live deployments. If you experience problems using, try specifying the version of Lean you would like to use.
+          example: "-1"
+      description: Request to create a live algorithm.
+    CreateProjectRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Project name.
+        language:
+          type: string
+          description: Programming langage to use.
+          enum:
+          - C#
+          - Py
+      description: Request to create a project.
+    CreateProjectFileRequest:
+      type: object
+      properties:
+        projectId:
+          type: integer
+          description: Project id to which the file belongs.
+        name:
+          type: string
+          description: The name of the new file.
+          example: main.py
+        content:
+          type: string
+          description: The content of the new file.
+      description: Request to add a file to a project.
+    DataDownloadRequest:
+      type: object
+      properties:
+        format:
+          description: Format for returning data, link or download.
+          example: link
+        ticker:
+          type: string
+        type:
+          $ref: '#/components/schemas/SecurityType'
+        resolution:
+          $ref: '#/components/schemas/Resolution'
+        market:
+          $ref: '#/components/schemas/Market'
+        date:
+          type: string
+          description: Date of the data requested yyyyMMdd.
+          example: yyyyMMdd
+      description: Request for a link to downloadable data.
+    DeleteFileRequest:
+      type: object
+      properties:
+        projectId:
+          type: integer
+          description: Project id to which the file belongs.
+        name:
+          type: string
+          description: The name of the file that should be deleted.
+      description: Request to delete a file in a project.
+    DeleteProjectRequest:
+      type: object
+      properties:
+        projectId:
+          type: integer
+          description: Project id to which the file belongs.
+      description: Request to delete a project.
+    DeleteBacktestRequest:
+      type: object
+      properties:
+        projectId:
+          type: integer
+          description: Project id for the backtest we want to delete.
+        backtestId:
+          type: string
+          description: Backtest id we want to delete.
+      description: Request to delete a backtest.
+    Holding:
+      type: object
+      properties:
+        Symbol:
+          $ref: '#/components/schemas/Symbol'
+        Type:
+          $ref: '#/components/schemas/SecurityType'
+        CurrencySymbol:
+          type: string
+          description: The currency symbol of the holding.
+          example: $
+        AveragePrice:
+          type: number
+          description: Average Price of our Holding in the currency the symbol is traded in.
+          format: float
+        Quantity:
+          type: number
+          description: Quantity of the Symbol we hold.
+          format: float
+        MarketPrice:
+          type: number
+          description: Current Market Price of the Asset in the currency the symbol is traded in.
+          format: float
+        ConversionRate:
+          type: number
+          description: Current market conversion rate into the account currency.
+          format: float
+        MarketValue:
+          type: number
+          description: Current market value of the holding.
+          format: float
+        UnrealizedPnl:
+          type: number
+          description: Current unrealized P/L of the holding.
+          format: float
+      description: Live results object class for packaging live result data.
+    InsightScore:
+      type: object
+      properties:
+        UpdatedTimeUtc:
+          type: string
+          description: The time these scores were last updated.
+          format: date-time
+        Direction:
+          type: number
+          description: The direction score.
+          format: float
+        Magnitude:
+          type: number
+          description: The magnitude score.
+          format: float
+        IsFinalScore:
+          type: boolean
+          description: Is the insight past its expiry time and score can be finalized.
+      description: Defines the scores given to a particular insight
+    LiveAlgorithm:
+      type: object
+      properties:
+        projectId:
+          type: integer
+          description: Project id for the live instance.
+        deployId:
+          type: string
+          description: Unique live algorithm deployment identifier (similar to a backtest id).
+        status:
+          $ref: '#/components/schemas/AlgorithmStatus'
+        launched:
+          type: string
+          description: Datetime the algorithm was launched in UTC.
+          format: date-time
+        stopped:
+          type: string
+          description: Datetime the algorithm was stopped in UTC, null if its still running.
+          format: date-time
+        brokerage:
+          type: string
+          description: Brokerage
+          enum:
+          - Interactive
+          - FXCM
+          - Oanda
+          - Tradier
+          - PaperTrading
+          - Alpaca
+          - Bitfinex
+          - Binance
+          - GDAX
+        subscription:
+          type: string
+          description: Chart we're subscribed to.
+        error:
+          type: string
+          description: Live algorithm error message from a crash or algorithm runtime error.
+        success:
+          type: boolean
+          description: Indicate if the API request was successful.
+        errors:
+          type: array
+          description: List of errors with the API call.
+          items:
+            type: string
+      description: Live algorithm instance result from the QuantConnect Rest API.
+    LiveResult:
+      type: object
+      properties:
+        Holdings:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/Holding'
+          description: Dictionary of algorithm holdings information.
+        Cash:
+          $ref: '#/components/schemas/CashBook'
+        AlphaRuntimeStatistics:
+          $ref: '#/components/schemas/AlphaRuntimeStatistics'
+        Charts:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/Chart'
+          description: Charts updates for the live algorithm since the last result packet.
+        Orders:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/Order'
+          description: Order updates since the last result packet.
+        OrderEvents:
+          type: array
+          description: OrderEvent updates since the last result packet.
+          items:
+            $ref: '#/components/schemas/OrderEvent'
+        ProfitLoss:
+          type: object
+          additionalProperties:
+            type: number
+            format: float
+          description: Trade profit and loss information since the last algorithm result packet.
+        Statistics:
+          type: object
+          additionalProperties:
+            type: string
+          description: Statistics information sent during the algorithm operations.
+        RuntimeStatistics:
+          type: object
+          additionalProperties:
+            type: string
+          description: Runtime banner/updating statistics in the title banner of the live algorithm GUI.
+        ServerStatistics:
+          type: object
+          additionalProperties:
+            type: string
+          description: Server status information, including CPU and RAM usage.
+      description: Live results object class for packaging live result data.
+    LiveAlgorithmResults:
+      type: object
+      properties:
+        LiveResults:
+          $ref: '#/components/schemas/LiveResultsData'
+        success:
+          type: boolean
+          description: Indicate if the API request was successful.
+        errors:
+          type: array
+          description: List of errors with the API call.
+          items:
+            type: string
+      description: Details a live algorithm from the live/read API endpoint.
+    LiveAlgorithmLogs:
+      type: object
+      properties:
+        LiveAlgorithmLogs:
+          type: array
+          description: List of logs from the live algorithm.
+          items:
+            type: string
+        success:
+          type: boolean
+          description: Indicate if the API request was successful.
+        errors:
+          type: array
+          description: List of errors with the API call.
+          items:
+            type: string
+      description: Logs from a live algorithm.
+    LiveAlgorithmList:
+      type: object
+      properties:
+        live:
+          type: array
+          description: Algorithm list matching the requested status.
+          items:
+            $ref: '#/components/schemas/LiveAlgorithm'
+        success:
+          type: boolean
+          description: Indicate if the API request was successful.
+        errors:
+          type: array
+          description: List of errors with the API call.
+          items:
+            type: string
+      description: List of the live algorithms running which match the requested status.
+    LiquidateLiveAlgorithmRequest:
+      type: object
+      properties:
+        projectId:
+          type: integer
+          description: Project Id for the live instance we want to liquidate.
+      description: Request to liquidate a live algorithm.
+    LiveList:
+      type: object
+      properties:
+        Algorithms:
+          type: array
+          description: Algorithm list matching the requested status.
+          items:
+            $ref: '#/components/schemas/LiveAlgorithm'
+        success:
+          type: boolean
+          description: Indicate if the API request was successful.
+        errors:
+          type: array
+          description: List of errors with the API call.
+          items:
+            type: string
+      description: List of the live algorithms running which match the requested status.
+    LiveResultsData:
+      type: object
+      properties:
+        version:
+          type: integer
+          description: Results version.
+        resolution:
+          $ref: '#/components/schemas/ChartResolution'
+        results:
+          $ref: '#/components/schemas/LiveResult'
+      description: Holds information about the state and operation of the live running algorithm.
+    Market:
+      type: string
+      description: Fungible market of the underlying security.
+      enum:
+      - usa
+      - oanda
+      - fxcm
+      - dukascopy
+      - bitfinex
+      - cmeglobex
+      - nymex
+      - cbot
+      - ice
+      - cboe
+      - nse
+      - comex
+      - cme
+      - sgx
+      - hkfe
+      - gdax
+      - kraken
+      - bitstamp
+      - okcoin
+      - bithumb
+      - binance
+      - poloniex
+      - coinone
+      - hitbtc
+      - bittrex
+    Order:
+      type: object
+      properties:
+        Id:
+          type: integer
+          description: Order ID.
+        ContingentId:
+          type: integer
+          description: Order id to process before processing this order.
+        BrokerId:
+          type: array
+          description: Brokerage Id for this order for when the brokerage splits orders into multiple pieces.
+          items:
+            type: string
+        Symbol:
+          $ref: '#/components/schemas/Symbol'
+        Price:
+          type: number
+          description: Price of the Order.
+          format: float
+        PriceCurrency:
+          type: string
+          description: Currency for the order price.
+        Time:
+          type: string
+          description: Gets the utc time the order was created.
+          format: date-time
+        CreatedTime:
+          type: string
+          description: Gets the utc time this order was created. Alias for Time.
+          format: date-time
+        LastFillTime:
+          type: string
+          description: Gets the utc time the last fill was received, or null if no fills have been received.
+          format: date-time
+        LastUpdateTime:
+          type: string
+          description: Gets the utc time this order was last updated, or null if the order has not been updated.
+          format: date-time
+        CanceledTime:
+          type: string
+          description: Gets the utc time this order was canceled, or null if the order was not canceled.
+          format: date-time
+        Quantity:
+          type: number
+          description: Number of shares to execute.
+          format: float
+        Type:
+          type: string
+          description: Order type.
+          enum:
+          - Market
+          - Limit
+          - StopMarket
+          - StopLimit
+          - MarketOnOpen
+          - MarketOnClose
+          - OptionExercise
+        Status:
+          type: string
+          description: Status of the Order.
+          enum:
+          - New
+          - Submitted
+          - PartiallyFilled
+          - Filled
+          - Canceled
+          - None
+          - Invalid
+          - CancelPending
+          - UpdateSubmitted
+        Tag:
+          type: string
+          description: Tag the order with some custom data.
+        SecurityType:
+          $ref: '#/components/schemas/SecurityType'
+        Direction:
+          $ref: '#/components/schemas/OrderDirection'
+        Value:
+          type: number
+          description: Gets the executed value of this order. If the order has not yet filled, then this will return zero.
+          format: float
+        OrderSubmissionData:
+          $ref: '#/components/schemas/OrderSubmissionData'
+        IsMarketable:
+          type: boolean
+          description: Returns true if the order is a marketable order.
+      description: Order struct for placing new trade.
+    OrderDirection:
+      type: string
+      description: Direction of the order.
+      enum:
+      - Buy
+      - Sell
+      - Hold
+    OrderEvent:
+      type: object
+      properties:
+        OrderId:
+          type: integer
+          description: Id of the order this event comes from.
+        Id:
+          type: integer
+          description: The unique order event id for each order.
+        Symbol:
+          $ref: '#/components/schemas/Symbol'
+        UtcTime:
+          type: string
+          description: The date and time of this event (UTC).
+          format: date-time
+        Status:
+          $ref: '#/components/schemas/OrderStatus'
+        OrderFee:
+          $ref: '#/components/schemas/OrderFee'
+        FillPrice:
+          type: number
+          description: Fill price information about the order.
+          format: float
+        FillPriceCurrency:
+          type: string
+          description: Currency for the fill price.
+        FillQuantity:
+          type: number
+          description: Number of shares of the order that was filled in this event.
+          format: float
+        Direction:
+          $ref: '#/components/schemas/OrderDirection'
+        Message:
+          type: string
+          description: Any message from the exchange.
+        IsAssignment:
+          type: boolean
+          description: True if the order event is an assignment.
+        StopPrice:
+          type: number
+          description: The current stop price.
+          format: float
+        LimitPrice:
+          type: number
+          description: The current limit price.
+          format: float
+        Quantity:
+          type: number
+          description: The current order quantity.
+          format: float
+      description: Change in an order state applied to user algorithm portfolio
+    OrderFee:
+      type: object
+      properties:
+        Value:
+          $ref: '#/components/schemas/CashAmount'
+      description: The order fee associated with the specified order.
+    OrderSubmissionData:
+      type: object
+      properties:
+        BidPrice:
+          type: number
+          description: The bid price at an order submission time.
+          format: float
+        AskPrice:
+          type: number
+          description: The ask price at an order submission time.
+          format: float
+        LastPrice:
+          type: number
+          description: The current price at an order submission time.
+          format: float
+      description: Stores time and price information available at the time an order was submitted.
+    OrderStatus:
+      type: object
+      properties:
+        OrderId:
+          type: integer
+          description: Id of the order this event comes from.
+        Id:
+          type: integer
+          description: The unique order event id for this order.
+        Symbol:
+          $ref: '#/components/schemas/Symbol'
+        UtcTime:
+          type: string
+          description: The date and time of this event.
+          format: date-time
+        Status:
+          $ref: '#/components/schemas/Order/properties/Status'
+        FillPrice:
+          type: number
+          description: Fill price information about the order.
+          format: float
+        FillPriceCurrency:
+          type: string
+          description: Currency for the fill price.
+        FillQuantity:
+          type: number
+          description: Number of shares of the order that was filled in this event.
+          format: float
+        Direction:
+          $ref: '#/components/schemas/OrderDirection'
+        Message:
+          type: string
+          description: Any message from the exchange.
+        IsAssignment:
+          type: boolean
+          description: Order event is an allocation of trades from ITM option assignment.
+        StopPrice:
+          type: number
+          description: The current stop price.
+          format: float
+        LimitPrice:
+          type: number
+          description: The current limit price.
+          format: float
+        Quantity:
+          type: number
+          description: The current order quantity.
+          format: float
+      description: Messaging class signifying a change in an order state and record the change in the users algorithm portfolio.
+    Project:
+      type: object
+      properties:
+        projectId:
+          type: integer
+          description: Project id.
+        name:
+          type: string
+          description: Name of the project.
+        created:
+          type: string
+          description: Date the project was created.
+          format: date-time
+        modified:
+          type: string
+          description: Modified date for the project.
+          format: date-time
+        language:
+          type: string
+          description: Programming language of the project.
+          enum:
+          - C#
+          - Py
+      description: Response from reading a project by id.
+    ProjectFile:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Name of a project file.
+        content:
+          type: string
+          description: Contents of the project file.
+        modified:
+          type: string
+          description: DateTime project file was modified.
+          format: date-time
+      description: File for a project.
+    ProjectFilesResponse:
+      type: object
+      properties:
+        files:
+          type: array
+          description: List of project file information.
+          items:
+            $ref: '#/components/schemas/ProjectFile'
+        success:
+          type: boolean
+          description: Indicate if the API request was successful.
+        errors:
+          type: array
+          description: List of errors with the API call.
+          items:
+            type: string
+      description: Response received when reading files from a project.
+    ProjectListResponse:
+      type: object
+      properties:
+        projects:
+          type: array
+          description: List of projects for the authenticated user.
+          items:
+            $ref: '#/components/schemas/Project'
+        success:
+          type: boolean
+          description: Indicate if the API request was successful.
+        errors:
+          type: array
+          description: List of errors with the API call.
+          items:
+            type: string
+      description: Project list response.
+    PortfolioStatistics:
+      type: object
+      properties:
+        RiskFreeRate:
+          type: number
+          description: The current defined risk free annual return rate.
+          format: float
+        AverageWinRate:
+          type: number
+          description: The average rate of return for winning trades.
+          format: float
+        AverageLossRate:
+          type: number
+          description: The average rate of return for losing trades.
+          format: float
+        ProfitLossRatio:
+          type: number
+          description: The ratio of the average win rate to the average loss rate.
+          format: float
+        WinRate:
+          type: number
+          description: The ratio of the number of winning trades to the total number of trades.
+          format: float
+        LossRate:
+          type: number
+          description: The ratio of the number of losing trades to the total number of trades.
+          format: float
+        Expectancy:
+          type: number
+          description: The expected value of the rate of return.
+          format: float
+        CompoundingAnnualReturn:
+          type: number
+          description: Annual compounded returns statistic based on the final-starting capital and years.
+          format: float
+        Drawdown:
+          type: number
+          description: Drawdown maximum percentage.
+          format: float
+        TotalNetProfit:
+          type: number
+          description: The total net profit percentage.
+          format: float
+        SharpeRatio:
+          type: number
+          description: 'Sharpe ratio with respect to risk free rate: measures excess of return per unit of risk.'
+          format: float
+        ProbabilisticSharpeRatio:
+          type: number
+          description: Probabilistic Sharpe Ratio is a probability measure associated with the Sharpe ratio. It informs us of the probability that the estimated Sharpe ratio is greater than a chosen benchmark.
+          format: float
+        Alpha:
+          type: number
+          description: Algorithm "Alpha" statistic - abnormal returns over the risk free rate and the relationshio (beta) with the benchmark returns.
+          format: float
+        Beta:
+          type: number
+          description: Algorithm beta statistic - the covariance between the algorithm and benchmark performance, divided by benchmark variance.
+          format: float
+        AnnualStandardDeviation:
+          type: number
+          description: Annualized standard deviation
+          format: float
+        AnnualVariance:
+          type: number
+          description: Annualized variance statistic calculation using the daily performance variance and trading days per year.
+          format: float
+        InformationRatio:
+          type: number
+          description: Information ratio - risk adjusted return.
+          format: float
+        TrackingError:
+          type: number
+          description: Tracking error volatility (TEV) statistic - a measure of how closely a portfolio follows the index to which it is benchmarked.
+          format: float
+        TreynorRatio:
+          type: number
+          description: Treynor ratio statistic is a measurement of the returns earned in excess of that which could have been earned on an investment that has no diversifiable risk.
+          format: float
+      description: Represents a set of statistics calculated from equity and benchmark samples.
+    ReadFilesRequest:
+      required:
+      - projectId
+      type: object
+      properties:
+        projectId:
+          type: integer
+          description: Project id to which the file belongs.
+        fileName:
+          type: string
+          description: Optional. The name of the file that should be updated.
+      description: Request to read all files from a project.
+    ReadCompileRequest:
+      type: object
+      properties:
+        projectId:
+          type: integer
+          description: Project Id we sent for compile.
+        compileId:
+          type: string
+          description: Compile Id returned during the creation request.
+      description: Request to read a compile packet job.
+    ReadDataLinkResponse:
+      type: object
+      properties:
+        link:
+          type: string
+          description: Link to the data.
+        success:
+          type: boolean
+          description: Indicate if the API request was successful.
+        errors:
+          type: array
+          description: List of errors with the API call.
+          items:
+            type: string
+      description: Response from reading purchased data.
+    ReadLiveLogsRequest:
+      type: object
+      properties:
+        format:
+          description: Format of the log results
+          example: json
+        projectId:
+          type: integer
+          description: Project Id of the live running algorithm.
+        algorithmId:
+          type: string
+          description: Deploy Id (Algorithm Id) of the live running algorithm.
+        start:
+          type: integer
+          description: No logs will be returned before this unixtime.
+        end:
+          type: integer
+          description: No logs will be returned after this unixtime.
+      description: Request to read the logs of a specific algorithm.
+    ReadLiveLogsResponse:
+      type: object
+      properties:
+        LiveLogs:
+          type: array
+          description: List of logs from the live algorithm.
+          items:
+            type: string
+        success:
+          type: boolean
+          description: Indicate if the API request was successful.
+        errors:
+          type: array
+          description: List of errors with the API call.
+          items:
+            type: string
+      description: Logs from a live algorithm.
+    ReadProjectRequest:
+      type: object
+      properties:
+        projectId:
+          type: integer
+          description: Id of the project.
+      description: Request to get details about a specific project.
+    ReadLiveAlgorithmRequest:
+      type: object
+      properties:
+        projectId:
+          type: integer
+          description: Id of the project to read.
+        deployId:
+          type: string
+          description: Specific instance id to read.
+      description: Request to read out a single algorithm.
+    ListLiveAlgorithmsRequest:
+      type: object
+      properties:
+        status:
+          $ref: '#/components/schemas/AlgorithmStatus'
+        start:
+          type: string
+          description: Earliest launched time of the algorithms
+          format: date-time
+        end:
+          type: string
+          description: Latest launched time of the algorithms
+          format: date-time
+      description: Request for a list of live running algorithms.
+    ReadBacktestRequest:
+      required:
+      - projectId
+      type: object
+      properties:
+        projectId:
+          type: integer
+          description: Id of the project from which to read one or multiple backtests.
+        backtestId:
+          type: string
+          description: When provided, specific backtest Id to read.
+      description: Request to read a single backtest from a project.
+    RequestFailedError:
+      type: object
+      properties:
+        success:
+          type: boolean
+          description: Indicate if the API request was successful.
+        errors:
+          type: array
+          description: List of errors with the API call.
+          items:
+            type: string
+      description: The API method call could not be completed as requested.
+    RestResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          description: Indicate if the API request was successful.
+        errors:
+          type: array
+          description: List of errors with the API call.
+          items:
+            type: string
+      description: Base API response class for the QuantConnect API.
+    Resolution:
+      type: string
+      description: Resolution of data requested.
+      enum:
+      - Tick
+      - Second
+      - Minute
+      - Hour
+      - Daily
+    ChartResolution:
+      type: string
+      description: Storage format of the charting data
+      enum:
+      - 10minute
+      - minute
+      - second
+    SecurityType:
+      type: string
+      description: Type of tradable security / underlying asset.
+      enum:
+      - Base
+      - Equity
+      - Option
+      - Commodity
+      - Forex
+      - Future
+      - Cfd
+      - Crypto
+    Series:
+      type: object
+      properties:
+        Name:
+          type: string
+          description: Name of the series.
+        Unit:
+          type: string
+          description: Axis for the chart series.
+        Index:
+          type: integer
+          description: Index/position of the series on the chart.
+        Values:
+          type: array
+          description: Values for the series plot. These values are assumed to be in ascending time order (first points earliest, last points latest)
+          items:
+            $ref: '#/components/schemas/ChartPoint'
+        SeriesType:
+          type: string
+          description: Chart type for the series.
+          enum:
+          - Line
+          - Scatter
+          - Candle
+          - Bar
+          - Flag
+          - StackedArea
+          - Pie
+          - Treemap
+        Color:
+          type: string
+          description: Color the series.
+        ScatterMarkerSymbol:
+          type: string
+          description: Shape or symbol for the marker in a scatter plot.
+          enum:
+          - none
+          - circle
+          - square
+          - diamond
+          - triangle
+          - triangle-down
+      description: Chart Series Object - Series data and properties for a chart.
+    StopLiveAlgorithmRequest:
+      type: object
+      properties:
+        projectId:
+          type: integer
+          description: Project Id for the live instance we want to stop.
+      description: Request to stop a live algorithm.
+    Symbol:
+      type: object
+      properties:
+        Value:
+          type: string
+          description: The current symbol for this ticker.
+        ID:
+          type: string
+          description: The security identifier for this symbol.
+        Permtick:
+          type: string
+          description: The current symbol for this ticker.
+      description: Represents a unique security identifier. This is made of two components, the unique SID and the Value. The value is the current ticker symbol while the SID is constant over the life of a security.
+    Trade:
+      type: object
+      properties:
+        Symbol:
+          $ref: '#/components/schemas/Symbol'
+        EntryTime:
+          type: string
+          description: The date and time the trade was opened.
+          format: date-time
+        EntryPrice:
+          type: number
+          description: The price at which the trade was opened (or the average price if multiple entries).
+          format: float
+        Direction:
+          $ref: '#/components/schemas/TradeDirection'
+        Quantity:
+          type: number
+          description: The total unsigned quantity of the trade.
+          format: float
+        ExitTime:
+          type: string
+          description: The date and time the trade was closed.
+          format: date-time
+        ExitPrice:
+          type: number
+          description: The price at which the trade was closed (or the average price if multiple exits).
+          format: float
+        ProfitLoss:
+          type: number
+          description: The gross profit/loss of the trade (as account currency).
+          format: float
+        TotalFees:
+          type: number
+          description: The total fees associated with the trade (always positive value) (as account currency).
+          format: float
+        MAE:
+          type: number
+          description: The Maximum Adverse Excursion (as account currency).
+          format: float
+        MFE:
+          type: number
+          description: The Maximum Favorable Excursion (as account currency).
+          format: float
+        Duration:
+          type: string
+          description: The duration of the trade.
+        EndTradeDrawdown:
+          type: number
+          description: The amount of profit given back before the trade was closed.
+          format: float
+      description: Represents a closed trade.
+    TradeDirection:
+      type: string
+      description: Direction of a trade.
+      enum:
+      - Long
+      - Short
+    TradeStatistics:
+      type: object
+      properties:
+        StartDateTime:
+          type: string
+          description: The entry date/time of the first trade
+          format: date-time
+        EndDateTime:
+          type: string
+          description: The exit date/time of the first trade.
+          format: date-time
+        TotalNumberOfTrades:
+          type: integer
+          description: The total number of trades.
+        NumberOfWinningTrades:
+          type: integer
+          description: The total number of winning trades.
+        NumberOfLosingTrades:
+          type: integer
+          description: The total number of losing trades.
+        TotalProfitLoss:
+          type: number
+          description: The total profit/loss for all trades (as symbol currency).
+          format: float
+        TotalProfit:
+          type: number
+          description: The total profit for all winning trades (as symbol currency).
+          format: float
+        TotalLoss:
+          type: number
+          description: The total loss for all losing trades (as symbol currency).
+          format: float
+        LargestProfit:
+          type: number
+          description: The largest profit in a single trade (as symbol currency).
+          format: float
+        LargestLoss:
+          type: number
+          description: The largest loss in a single trade (as symbol currency).
+          format: float
+        AverageProfitLoss:
+          type: number
+          description: The average profit/loss (a.k.a. Expectancy or Average Trade) for all trades (as symbol currency).
+          format: float
+        AverageProfit:
+          type: number
+          description: The average profit for all winning trades (as symbol currency).
+          format: float
+        AverageLoss:
+          type: number
+          description: The average loss for all winning trades (as symbol currency).
+          format: float
+        AverageTradeDuration:
+          type: string
+          description: The average duration for all trades.
+        AverageWinningTradeDuration:
+          type: string
+          description: The average duration for all winning trades.
+        AverageLosingTradeDuration:
+          type: string
+          description: The average duration for all losing trades.
+        MedianTradeDuration:
+          type: string
+          description: The median duration for all trades.
+        MedianWinningTradeDuration:
+          type: string
+          description: The median duration for all winning trades.
+        MedianLosingTradeDuration:
+          type: string
+          description: The median duration for all losing trades.
+        MaxConsecutiveWinningTrades:
+          type: integer
+          description: The maximum number of consecutive winning trades.
+        MaxConsecutiveLosingTrades:
+          type: integer
+          description: The maximum number of consecutive losing trades.
+        ProfitLossRatio:
+          type: number
+          description: The ratio of the average profit per trade to the average loss per trade.
+          format: float
+        WinLossRatio:
+          type: number
+          description: The ratio of the number of winning trades to the number of losing trades.
+          format: float
+        WinRate:
+          type: number
+          description: The ratio of the number of winning trades to the total number of trades.
+          format: float
+        LossRate:
+          type: number
+          description: The ratio of the number of losing trades to the total number of trades.
+          format: float
+        AverageMAE:
+          type: number
+          description: The average Maximum Adverse Excursion for all trades.
+          format: float
+        AverageMFE:
+          type: number
+          description: The average Maximum Adverse Excursion for all trades.
+          format: float
+        LargestMAE:
+          type: number
+          description: The average Maximum Favorable Excursion for all trades.
+          format: float
+        LargestMFE:
+          type: number
+          description: The largest Maximum Adverse Excursion in a single trade (as symbol currency).
+          format: float
+        MaximumClosedTradeDrawdown:
+          type: number
+          description: The maximum closed-trade drawdown for all trades (as symbol currency).
+          format: float
+        MaximumIntraTradeDrawdown:
+          type: number
+          description: The maximum intra-trade drawdown for all trades (as symbol currency).
+          format: float
+        ProfitLossStandardDeviation:
+          type: number
+          description: The standard deviation of the profits/losses for all trades (as symbol currency).
+          format: float
+        ProfitLossDownsideDeviation:
+          type: number
+          description: The downside deviation of the profits/losses for all trades (as symbol currency).
+          format: float
+        ProfitFactor:
+          type: number
+          description: The ratio of the total profit to the total loss.
+          format: float
+        SharpeRatio:
+          type: number
+          description: The ratio of the average profit/loss to the standard deviation.
+          format: float
+        SortinoRatio:
+          type: number
+          description: The ratio of the average profit/loss to the downside deviation.
+          format: float
+        ProfitToMaxDrawdownRatio:
+          type: number
+          description: The ratio of the total profit/loss to the maximum closed trade drawdown.
+          format: float
+        MaximumEndTradeDrawdown:
+          type: number
+          description: The maximum amount of profit given back by a single trade before exit (as symbol currency).
+          format: float
+        AverageEndTradeDrawdown:
+          type: number
+          description: The average amount of profit given back by all trades before exit (as symbol currency).
+          format: float
+        MaximumDrawdownDuration:
+          type: string
+          description: The maximum amount of time to recover from a drawdown (longest time between new equity highs or peaks).
+        TotalFees:
+          type: number
+          description: The sum of fees for all trades.
+          format: float
+      description: A set of statistics calculated from a list of closed trades.
+    UpdateBacktestRequest:
+      required:
+      - backtestId
+      - projectId
+      type: object
+      properties:
+        projectId:
+          type: integer
+          description: Project id for the backtest we want to update.
+        backtestId:
+          type: string
+          description: Backtest id we want to update.
+        name:
+          type: string
+          description: Name we'd like to assign to the backtest.
+        note:
+          type: string
+          description: Note attached to the backtest.
+      description: Request to update a backtest's name.
+    UpdateFileNameRequest:
+      type: object
+      properties:
+        projectId:
+          type: integer
+          description: Project id to which the file belongs.
+        oldFileName:
+          type: string
+          description: The current name of the new file.
+        newFileName:
+          type: string
+          description: The new name for the file.
+      description: Request to update the name of a file.
+    UpdateFileContentsRequest:
+      type: object
+      properties:
+        projectId:
+          type: integer
+          description: Project id to which the file belongs.
+        fileName:
+          type: string
+          description: The name of the file that should be updated.
+        newFileContents:
+          type: string
+          description: The new contents of the file.
+      description: Request to update the contents of a file.
+    UpdateProjectRequest:
+      type: object
+      properties:
+        projectId:
+          type: integer
+          description: Project id to which the file belongs.
+        name:
+          type: string
+          description: The new name for the project.
+        description:
+          description: The new description for the project.
+      description: Update a project name, description or parameters.
+    files_update_body:
+      oneOf:
+      - $ref: '#/components/schemas/UpdateFileNameRequest'
+      - $ref: '#/components/schemas/UpdateFileContentsRequest'
+    inline_response_200:
+      oneOf:
+      - $ref: '#/components/responses/BacktestResponse'
+      - $ref: '#/components/responses/BacktestList'
+    inline_response_200_1:
+      oneOf:
+      - $ref: '#/components/responses/BacktestReport'
+      - $ref: '#/components/responses/RequestFailedError'
+    live_read_body:
+      oneOf:
+      - $ref: '#/components/schemas/ReadLiveAlgorithmRequest'
+      - $ref: '#/components/schemas/ListLiveAlgorithmsRequest'
+    inline_response_200_2:
+      oneOf:
+      - $ref: '#/components/responses/LiveAlgorithmResults'
+      - $ref: '#/components/responses/LiveList'
+  responses:
+    BacktestResponse:
+      description: Backtest read response packet.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/BacktestResponse'
+    BacktestList:
+      description: Collection container for a list of backtests for a project.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/BacktestList'
+    BacktestReport:
+      description: Backtest Report Response wrapper.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/BacktestReport'
+    CompileResponse:
+      description: Response from the compiler on a build event.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/CompileResponse'
+    LiveAlgorithm:
+      description: Live algorithm instance result.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/LiveAlgorithm'
+    LiveAlgorithmLog:
+      description: Logs from a live algorithm.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/LiveAlgorithmLogs'
+    LiveAlgorithmList:
+      description: List of the live algorithms running which match the requested status.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/LiveAlgorithmList'
+    LiveAlgorithmResults:
+      description: Details a live algorithm from the live/read API endpoint.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/LiveAlgorithmResults'
+    LiveList:
+      description: List of the live algorithms running which match the requested status.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/LiveList'
+    ProjectListResponse:
+      description: Project list response.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ProjectListResponse'
+    ProjectFilesResponse:
+      description: Response received when reading all files of a project.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ProjectFilesResponse'
+    ReadDataLinkResponse:
+      description: Response from reading purchased data.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ReadDataLinkResponse'
+    ReadLiveLogsResponse:
+      description: Logs from a live algorithm.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ReadLiveLogsResponse'
+    RequestFailedError:
+      description: Request Failed.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/RequestFailedError'
+    RestResponse:
+      description: Base API response class.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/RestResponse'
+    UnauthorizedError:
+      description: Unauthorized response from the API. Key is missing, invalid, or timestamp is too old for hash.
+      headers:
+        www_authenticate:
+          style: simple
+          explode: false
+          schema:
+            type: string
+  securitySchemes:
+    nonceTokenAuth:
+      type: http
+      description: The standard QuantConnect API authentication scheme is used. This requires the current unixtime and your api key to be hashed together with SHA256 and sent as the B64 password in a basic authentication. The username for the basic authentication is the UID on your QuantConnect account.
+      scheme: basic

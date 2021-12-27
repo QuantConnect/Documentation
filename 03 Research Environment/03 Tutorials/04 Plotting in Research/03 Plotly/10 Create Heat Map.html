@@ -1,0 +1,37 @@
+<p>You must <a href="#03-Import-Packages">import the plotting packages</a> and <a href="#04-Get-Historical-Data">get some historical data</a> to create heat maps.</p>
+
+<p>In this example, you create a heat map that shows the correlation between the daily returns of the banking securities. Follow these steps to create the heat map:</p>
+
+<ol>
+    <li>Select the close column and then call the <code>unstack</code> method.</li>
+    <div class="section-example-container">
+        <pre class="python">close_prices = history['close'].unstack(level=0)</pre>
+    </div>
+    
+    <li>Call the <code>pct_change</code> method.</li>
+    <div class="section-example-container">
+        <pre class="python">daily_returns = close_prices.pct_change()</pre>
+    </div>
+
+    <li>Call the <code>corr</code> method.</li>
+    <div class="section-example-container">
+        <pre class="python">corr_matrix = daily_returns.corr()</pre>
+    </div>
+
+    <li>Call the <code>imshow</code> method with the <code>corr_matrix</code> and the axes labels.</li>
+    <div class="section-example-container">
+        <pre class="python">fig = px.imshow(corr_matrix, x=tickers, y=tickers)</pre>
+    </div>
+
+    <li>Call the <code>update_layout</code> method with a title.</li>
+    <div class="section-example-container">
+        <pre class="python">fig.update_layout(title='Banking Stocks and bank sector ETF Correlation Heat Map');</pre>
+    </div>
+
+    <li>Call the <code>show</code> method.</li>
+    <div class="section-example-container">
+        <pre class="python">fig.show()</pre>
+    </div>
+    <p>The Jupyter Notebook displays the heat map.</p>
+    <img style="max-width: 100%; display: block" src="https://cdn.quantconnect.com/i/tu/plotly-heatmap-3.png">
+</ol>

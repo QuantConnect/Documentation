@@ -1,0 +1,32 @@
+<p>To add Tiingo News Feed data to your algorithm, use the AddData() method to request the data. As with all datasets, you should save a reference to your symbol for easy use later in your algorithm. For detailed documentation on using custom data, see <a href="https://www.quantconnect.com/docs/algorithm-reference/importing-custom-data">Importing Custom Data</a>.</p>
+
+<div class="section-example-container">
+<pre class="python">from QuantConnect.DataSource import *
+class TiingoNewsDataAlgorithm(QCAlgorithm):
+    def Initialize(self):
+        self.SetStartDate(2021, 1, 1)
+        self.SetEndDate(2021, 6, 1)
+        self.SetCash(100000)
+
+        self.aapl = self.AddEquity("AAPL", Resolution.Minute).Symbol
+        self.tiingo_symbol = self.AddData(TiingoNews, self.aapl).Symbol</pre>
+<pre class="csharp">using QuantConnect.DataSource;
+namespace QuantConnect.Algorithm.CSharp.AltData
+{
+    public class TiingoNewsDataAlgorithm : QCAlgorithm
+    {
+        private Symbol _aapl;
+        private Symbol _tiingoSymbol;
+
+        public override void Initialize()
+        {
+            SetStartDate(2021, 1, 1);
+            SetEndDate(2021, 6, 1);
+            SetCash(100000);
+
+            _aapl = AddEquity("AAPL", Resolution.Minute).Symbol;
+            _tiingoSymbol = AddData&lt;TiingoNews&gt;(_aapl).Symbol;
+        }
+    }
+}</pre>
+</div>

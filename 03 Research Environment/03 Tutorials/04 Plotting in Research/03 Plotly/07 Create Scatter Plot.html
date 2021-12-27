@@ -1,0 +1,42 @@
+<p>You must <a href="#03-Import-Packages">import the plotting packages</a> and <a href="#04-Get-Historical-Data">get some historical data</a> to create scatter plots.</p>
+
+<p>In this example, you create a scatter plot that shows the relationship between the daily returns of two banking securities. Follow these steps to create the scatter plot:</p>
+
+<ol>
+    <li>Select 2 <code>Symbol</code>s.</li>
+    <p>For example, to select the <code>Symbol</code>s of the first 2 bank stocks, run:</p>
+<div class="section-example-container">
+    <pre class="python">symbol1 = symbols[1]
+symbol2 = symbols[2]</pre>
+</div>
+
+    <li>Slice the <code>history</code> DataFrame with each <code>Symbol</code> and then select the close column.</li>
+    <div class="section-example-container">
+        <pre class="python">close_price1 = history.loc[symbol1]['close']
+close_price2 = history.loc[symbol2]['close']</pre>
+    </div>
+
+    <li>Call the <code>pct_change</code> and <code>dropna</code> methods on each <code>Series</code>.</li>
+    <div class="section-example-container">
+        <pre class="python">daily_return1 = close_price1.pct_change().dropna()
+daily_return2 = close_price2.pct_change().dropna()</pre>
+    </div>
+
+    <li>Call the <code>scatter</code> method with the 2 return <code>Series</code>, the trendline option, and axes labels.</li>
+    <div class="section-example-container">
+        <pre class="python">fig = px.scatter(x=daily_return1, y=daily_return2, trendline='ols', 
+                 labels={'x': symbol1.Value, 'y': symbol2.Value}) </pre>
+    </div>
+
+    <li>Call the <code>update_layout </code>method with a title.</li>
+    <div class="section-example-container">
+        <pre class="python">fig.update_layout(title=f'{symbol1.Value} vs {symbol2.Value} Daily % Returns');</pre>
+    </div>
+
+    <li>Call the <code>show</code> method.</li>
+    <div class="section-example-container">
+        <pre class="python">fig.show()</pre>
+    </div>
+    <p>The Jupyter Notebook displays the scatter plot.</p>
+    <img style="max-width: 100%; display: block" src="https://cdn.quantconnect.com/i/tu/plotly-scatter-3.png">
+</ol>

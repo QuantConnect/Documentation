@@ -1,0 +1,42 @@
+<p>You must <a href="#03-Import-Packages">import the plotting packages</a> and <a href="#04-Get-Historical-Data">get some historical data</a> to create bar charts.</p>
+
+<p>In this example, you create a bar chart that shows the average daily percent return of the banking securities. Follow these steps to create the bar chart:</p>
+
+<ol>
+    <li>Select the close column and then call the <code>unstack</code> method.<br></li>
+    <div class="section-example-container">
+        <pre class="python">close_prices = history['close'].unstack(level=0)</pre>
+    </div>
+    
+    <li>Call the <code>pct_change</code> method and then multiply by 100.</li>
+    <div class="section-example-container">
+        <pre class="python">daily_returns = close_prices.pct_change() * 100</pre>
+    </div>
+
+    <li>Call the <code>mean</code> method.</li>
+    <div class="section-example-container">
+        <pre class="python">avg_daily_returns = daily_returns.mean()</pre>
+    </div>
+
+    <li>Call the <code>DataFrame</code> constructor with the <code>avg_daily_returns </code><code>Series</code> and then call the <code>reset_index</code> method.</li>
+    <div class="section-example-container">
+        <pre class="python">avg_daily_returns = pd.DataFrame(avg_daily_returns, columns=["avg_daily_ret"]).reset_index()</pre>
+    </div>
+
+    <li>Call the <code>bar</code> method with the <code>avg_daily_returns</code> and the axes column names.</li>
+    <div class="section-example-container">
+        <pre class="python">fig = px.bar(avg_daily_returns, x='symbol', y='avg_daily_ret')</pre>
+    </div>
+
+    <li>Call the <code>update_layout</code> method with a title.</li>
+    <div class="section-example-container">
+        <pre class="python">fig.update_layout(title='Banking Stocks Average Daily % Returns');</pre>
+    </div>
+
+    <li>Call the <code>show</code> method.</li>
+    <div class="section-example-container">
+        <pre class="python">fig.show()</pre>
+    </div>
+    <p>The Jupyter Notebook displays the bar plot.</p>
+    <img style="max-width: 100%; display: block" src="https://cdn.quantconnect.com/i/tu/plotly-bar-3.png">
+</ol>

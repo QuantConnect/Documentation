@@ -1,0 +1,35 @@
+<p>Follow these steps to subscribe to alternative data security from <a href="https://www.quantconnect.com/datasets/">QuantConnect datasets</a>:</p>
+
+<ol>
+    <li class="csharp">Load the required assembly files and data types.</li>
+    <div class="csharp section-example-container">
+        <pre class="csharp">#load "../Initialize.csx"
+#load "../QuantConnect.csx"
+
+using QuantConnect;
+using QuantConnect.Data;
+using QuantConnect.Algorithm;
+using QuantConnect.Research;</pre>
+    </div>
+    <li class="csharp">Load the assembly file and <code>QuantConnect.DataSource</code> namespace.</li>
+    <div class="csharp section-example-container">
+        <pre class="csharp">#r "../QuantConnect.DataSource.CBOE.dll"
+using QuantConnect.DataSource;</pre>
+    </div>
+    <li>Instantiate a <code>QuantBook</code>.</li>
+    <div class="section-example-container">
+        <pre class="csharp">var qb = new QuantBook();</pre>
+        <pre class="python">qb = QuantBook()</pre>
+    </div>
+    <li>Call the <code>AddData</code> method with a ticker and resolution.</li>
+    <div class="section-example-container">
+        <pre class="csharp">var cboe = qb.AddData&lt;CBOE&gt;("VIX", Resolution.Daily);</pre>
+        <pre class="python">cboe = qb.AddData(CBOE, "VIX", Resolution.Daily)</pre>
+    </div>
+    <p>If you do not pass a resolution argument, the default resolution of the alternative data is used by default. On the other hand, if you pass a resolution that is not supported, it will be ignored.</p>
+    <li>Save a reference to the Alternative data <code>Symbol</code>.</li>
+    <div class="section-example-container">
+        <pre class="csharp">var symbol = cboe.Symbol;</pre>
+        <pre class="python">symbol = cboe.Symbol</pre>
+    </div>
+</ol>

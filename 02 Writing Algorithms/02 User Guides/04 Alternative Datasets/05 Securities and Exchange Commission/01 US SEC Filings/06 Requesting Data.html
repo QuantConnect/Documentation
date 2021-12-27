@@ -1,0 +1,40 @@
+<p>To add SEC Fillings data to your algorithm, use the AddData() method to request the data. As with all datasets, you should save a reference to your symbol for easy use later in your algorithm. For detailed documentation on using custom data, see <a href="https://www.quantconnect.com/docs/algorithm-reference/importing-custom-data">Importing Custom Data</a>.</p>
+
+<div class="section-example-container">
+<pre class="python">
+class SECReportAlgorithm(QCAlgorithm):
+    def Initialize(self):
+        self.SetStartDate(2019, 1, 1)
+        self.SetEndDate(2019, 8, 21)
+        self.SetCash(100000)
+
+        self.aapl= self.AddEquity("AAPL", Resolution.Minute).Symbol
+        self.report8K = self.AddData(SECReport8K, self.aapl).Symbol
+        self.report10K = self.AddData(SECReport10K, self.aapl).Symbol
+        self.report10Q = self.AddData(SECReport10Q, self.aapl).Symbol
+</pre>
+
+<pre class="csharp">
+namespace QuantConnect
+{
+    public class SECReportAlgorithm : QCAlgorithm
+    {
+        private Symbol _aapl;
+        private Symbol _report8K;
+        private Symbol _report10K;
+        private Symbol _report10Q;
+
+        public override void Initialize()
+        {
+            SetStartDate(2019, 1, 1);
+            SetEndDate(2019, 8, 21);
+            SetCash(100000);
+
+            _aapl = AddEquity("AAPL", Resolution.Daily).Symbol;
+            _report8K = AddData&lt;SECReport8K&gt;(_aapl, Resolution.Daily).Symbol;
+            _report10K = AddData&lt;SECReport10K&gt;(_aapl, Resolution.Daily).Symbol;
+            _report10Q = AddData&lt;SECReport10Q&gt;(_aapl, Resolution.Daily).Symbol;
+        }
+    }
+}</pre>
+</div>
