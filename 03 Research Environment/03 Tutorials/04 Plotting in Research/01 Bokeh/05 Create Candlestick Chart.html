@@ -1,0 +1,45 @@
+<p>You must <a href="#03-Import-Packages">import the plotting packages</a> and <a href="#04-Get-Historical-Data">get some historical data</a> to create candlestick charts.</p>
+
+<p>In this example, we'll create a candlestick chart that shows the open, high, low, and close prices of one of the banking securities. Follow these steps to create the candlestick chart:</p>
+
+<ol>
+    <li>Select a <code>Symbol</code>.</li>
+    <div class="section-example-container">
+        <pre class="python">symbol = symbols[0]</pre>
+    </div>
+
+    <li>Slice the <code>history</code> <code>DataFrame</code> with the <code>symbol</code>.</li>
+    <div class="section-example-container">
+        <pre class="python">data = history.loc[symbol]</pre>
+    </div>
+
+    <li>Divide the price in positive or negtive intraday change.</li>
+    <div class="section-example-container">
+        <pre class="python">inc = data['close'] > data['open']
+dec = data['open'] > data['close']</pre>
+    </div>
+
+    <li>Call <code>figure</code> to create a plot with title and axis labels.</li>
+    <div class="section-example-container">
+        <pre class="python">plot = figure(title=f"{symbol} Close Price", x_axis_label='Date', y_axis_label='Price')</pre>
+    </div>
+
+    <li>Call <code>segment</code> to plot the end points of the bars.</li>
+    <div class="section-example-container">
+        <pre class="python">plot.segment(data.index, data['high'], data.index, data['low'], color="black")</pre>
+    </div>
+
+    <li>Call <code>vbar</code> to plot the bars.</li>
+    <div class="section-example-container">
+        <pre class="python">width = 12*60*60*1000
+plot.vbar(data.index[inc], width, data['open'][inc], data['close'][inc], fill_color="green", line_color="green")
+plot.vbar(data.index[dec], width, data['open'][dec], data['close'][dec], fill_color="red", line_color="red")</pre>
+    </div>
+
+    <li>Call <code>show</code> to show the plot.</li>
+    <div class="section-example-container">
+        <pre class="python">show(plot)</pre>
+    </div>
+    <p>The Jupyter Notebook displays the candlestick chart.</p>
+    <img style="max-width: 100%; display: block" src="width">
+</ol>
