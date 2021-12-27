@@ -1,48 +1,40 @@
-<p>You must <a href="#02-Import-Packages">import the plotting packages</a> and <a href="#03-Get-Historical-Data">get some historical data</a> to create scatter plots.</p>
+<p>You must <a href="#03-Import-Packages">import the plotting packages</a> and <a href="#04-Get-Historical-Data">get some historical data</a> to create scatter plots.</p>
 
-<p>We would like to visualize the correlation of the first 2 bank stocks. To do this, we will employ a scatter plot of their returns.</p>
-
-<p>Follow these steps to create a scatter chart:</p>
+<p>In this example, you create a scatter plot that shows the relationship between the daily returns of two banking securities. Follow these steps to create the scatter plot:</p>
 
 <ol>
-    <li>Select the 2 <code>Symbol</code>s that you want to plot in the scatter chart.</li>
-    <p>For example, to select the first 2 selected bank stocks <code>Symbol</code>s, run:</p>
+    <li>Select 2 <code>Symbol</code>s.</li>
+    <p>For example, to select the <code>Symbol</code>s of the first 2 bank stocks, run:</p>
 <div class="section-example-container">
     <pre class="python">symbol1 = symbols[1]
 symbol2 = symbols[2]</pre>
 </div>
 
-    <li>Slice the <code>history</code> DataFrame with the <code>Symbol</code>s and then select the column that you want to plot.</li>
-    <p>For example, to select the closing prices, run:</p>
+    <li>Select the close column of the <code>history</code> DataFrame, call the <code>unstack</code> method, and then select the <code>symbol1</code> and <code>symbol2</code> columns.</li>
     <div class="section-example-container">
-        <pre class="python">close_price = history['close'].unstack(0)[[symbol1, symbol2]]</pre>
+        <pre class="python">close_prices = history['close'].unstack(0)[[symbol1, symbol2]]</pre>
     </div>
 
-    <li>Call the <code>pct_change</code> method on each <code>pandas.Series</code> object.</li>
+    <li>Call the <code>pct_change</code> method and then call the <code>dropna</code> method.</li>
     <div class="section-example-container">
-        <pre class="python">daily_ret = close_price.pct_change()</pre>
+        <pre class="python">daily_returns = close_prices.pct_change().dropna()</pre>
     </div>
 
-    <li>Drop any NaN values by <code>dropna</code> to avoid regression error.</li>
+    <li>Call the <code>regplot</code> method with the <code>daily_returns DataFrame</code> and the column names.</li>
     <div class="section-example-container">
-        <pre class="python">daily_ret.dropna(inplace=True)</pre>
+        <pre class="python">plot = sns.regplot(data=daily_returns, 
+                   x=daily_returns.columns[0], 
+                   y=daily_returns.columns[1])</pre>
     </div>
 
-    <li>Call <code>regplot</code> with the daily return <code>pandas.DataFrame</code>, trendline option and axis-labels.</li>
-    <div class="section-example-container">
-        <pre class="python">plot = sns.regplot(data=daily_ret, 
-                x=daily_ret.columns[0], 
-                y=daily_ret.columns[1])</pre>
-    </div>
-
-    <li>Set up the x-axis label, y-axis label and title.</li>
+    <li>Call the <code>set</code> method with the axis labels and a title.</li>
     <div class="section-example-container">
         <pre class="python">plot.set(xlabel=f'{daily_ret.columns[0]} % Returns', 
-        ylabel=f'{daily_ret.columns[1]} % Returns', 
-        title=f'{symbol1} vs {symbol2} Daily % Returns')</pre>
+         ylabel=f'{daily_ret.columns[1]} % Returns', 
+         title=f'{symbol1} vs {symbol2} Daily % Returns')</pre>
     </div>
 
-    <li>Show the plot.</li>
+    <li>Call the <code>show</code> method.</li>
     <div class="section-example-container">
         <pre class="python">plt.show()</pre>
     </div>
