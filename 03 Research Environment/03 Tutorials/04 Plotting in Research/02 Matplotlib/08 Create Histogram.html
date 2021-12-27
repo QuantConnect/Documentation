@@ -1,75 +1,56 @@
-<p>You must <a href="#02-Import-Packages">import the plotting packages</a> and <a href="#03-Get-Historical-Data">get some historical data</a> to create histogram.</p>
+<p>You must <a href="#03-Import-Packages">import the plotting packages</a> and <a href="#04-Get-Historical-Data">get some historical data</a> to create histogram.</p>
 
-<p>Follow these steps to create a histogram:</p>
+<p>In this example, you create a histogram that shows the distribution of the daily percent returns of the bank sector ETF. In addition to the bins in the histogram, you also overlay a normal distribution curve for comparison. Follow these steps to create the histogram:</p>
 
-<h4>Prepare the Data</h4>
 <ol>
-    <li>Select the <code>Symbol</code> that you want to plot in the line chart.</li>
-    <p>For example, to select the first <code>Symbol</code>, run:</p>
+    <li>Select the <code>Symbol</code>.</li>
     <div class="section-example-container">
         <pre class="python">symbol = symbols[0]</pre>
     </div>
 
-    <li>Slice the <code>history</code> DataFrame with <code>symbol</code> and then select the column that you want to plot.</li>
-    <p>For example, to select the closing prices, run:</p>
+    <li>Slice the <code>history</code> DataFrame with <code>symbol</code> and then select the close column.</li>
     <div class="section-example-container">
-        <pre class="python">data = history.loc[symbol]['close']</pre>
+        <pre class="python">close_prices = history.loc[symbol]['close']</pre>
     </div>
 
-    <li>Call the <code>pct_change</code> method on the <code>pandas</code> object.</li>
+    <li>Call the <code>pct_change</code> method and then call the <code>dropna</code> method.</li>
     <div class="section-example-container">
-        <pre class="python">daily_ret = data.pct_change()[1:]</pre>
-    </div>
-</ol>
-
-<h4>Create Normal Distribution Curve</h4>
-<p>We'd like to also plot the normal distribution values for comparison. To do so, we must first create the corresponding values of the probability desity curve (PDF).</p>
-<ol>
-    <li>Get the mean and standard deviation of the daily return Series.</li>
-    <div class="section-example-container">
-        <pre class="python">mean = daily_ret.mean()
-std = daily_ret.std()</pre>
+        <pre class="python">daily_returns = close_prices.pct_change().dropna()</pre>
     </div>
 
-    <li>Call <code>linspace</code> with lower limit, upper limit and number data points for the x-axis values.</li>
+    <li>Call the <code>mean</code> and <code>std</code> methods.</li>
+    <div class="section-example-container">
+        <pre class="python">mean = daily_returns.mean()
+std = daily_returns.std()</pre>
+    </div>
+
+    <li>Call the <code>linspace</code> method with the lower limit, upper limit, and number data points for the x-axis of the normal distribution curve.</li>
     <div class="section-example-container">
         <pre class="python">x = np.linspace(-3*std, 3*std, 1000)</pre>
     </div>
 
-    <li>Calculate the y-axis values for the normal distribution PDF.</li>
+    <li>Calculate the y-axis values of the normal distribution curve.</li>
     <div class="section-example-container">
         <pre class="python">pdf = 1/(std * np.sqrt(2*np.pi)) * np.exp(-(x-mean)**2 / (2*std**2))</pre>
     </div>
-</ol>
 
-<h4>Plot the Data</h4>
-<ol>
-    <li>Set up the figure with <code>figsize</code> setting.</li>
-    <div class="section-example-container">
-        <pre class="python">plt.figure(figsize=(15, 10))</pre>
-    </div>
-
-    <li>Call <code>plot</code> method to plot the normal distribution curve.</li>
+    <li>Call the <code>plot</code> method with the data for the normal distribution curve.</li>
     <div class="section-example-container">
         <pre class="python">plt.plot(x, pdf, label="Normal Distribution")</pre>
     </div>
 
-    <li>Call <code>hist</code> method with the daily return data and bin number.</li>
+    <li>In the same cell that you called the <code>plot</code> method, call the <code>hist</code> method with the daily return data and the number of bins.</li>
     <div class="section-example-container">
-        <pre class="python">plt.hist(daily_ret, bins=20)</pre>
+        <pre class="python">plt.hist(daily_returns, bins=20)</pre>
     </div>
 
-    <li>Set up the title, x-axis label and y-axis label of the plot.</li>
+    <li>In the same cell that you called the <code>hist</code> method, call the <code>title</code>, <code>xlabel</code>, and <code>ylabel</code> methods with a title and the axis labels.</li>
     <div class="section-example-container">
         <pre class="python">plt.title(f'{symbol} Return Distribution')
 plt.xlabel('Daily Return')
 plt.ylabel('Count')</pre>
     </div>
 
-    <li>Show the plot.</li>
-    <div class="section-example-container">
-        <pre class="python">plt.show()</pre>
-    </div>
-    <p>The Jupyter Notebook displays a histogram.</p>
+    <p>The Jupyter Notebook displays the histogram.</p>
     <img style="max-width: 100%; display: block" src="https://cdn.quantconnect.com/i/tu/matplotlib-hist-4.png">
 </ol>
