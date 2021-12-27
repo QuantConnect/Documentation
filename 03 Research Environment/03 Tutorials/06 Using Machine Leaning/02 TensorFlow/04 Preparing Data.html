@@ -10,9 +10,9 @@ for i in range(1, lookback + 1):
 X = pd.concat(lookback_series, axis=1).reset_index(drop=True)</pre>
 </div>
 
-<p>We'd like the model to predict the closing price of the SPY 1 timestep into the future, so let's create a DataFrame containing 1-step forward price.</p>
-
 <img style="max-width: 100%; display: block" src="https://cdn.quantconnect.com/i/tu/tf-x.png">
+
+<p>We'd like the model to predict the closing price of the SPY 1 timestep into the future, so let's create a DataFrame containing 1-step forward price.</p>
 
 <div class="section-example-container">
     <pre class="python">Y = data['close'].shift(-1)[lookback:-1].reset_index(drop=True)
@@ -25,11 +25,10 @@ plt.show()</pre>
 
 <img style="max-width: 100%; display: block" src="https://cdn.quantconnect.com/i/tu/tf-y-plot.png">
 
-<p>Now, let's split the data into testing and training sets.</p>
+<p>Now, let's split the data into testing and training sets. In this example, we'd split the last 1/3 of the data as testing set.</p>
 
 <div class="section-example-container">
-    <pre class="python">test_size = 0.33
-X_train, X_test, y_train, y_test = train_test_split(X, Y, test_size=0.33, shuffle=False)
+    <pre class="python">X_train, X_test, y_train, y_test = train_test_split(X, Y, test_size=0.33, shuffle=False)
 print(f"Train index: {X_train.index[0]}...{X_train.index[-1]}")
 print(f"Test index: {X_test.index[0]}...{X_test.index[-1]}")</pre>
 </div>
