@@ -4,29 +4,24 @@
     <li>Write a function to build the model.</li>
     <div class="section-example-container">
         <pre class="python">def build_model():
-        # Call Sequential for multi-layer neural network basis.
-        model = Sequential([
-            # Dense is a perceptron layer, with number of neurones and activation function.
-            # If this is the first layer, an `input_shape` is necessary to tell the model the input data shape.
-            # 5 input variables (OHLCV) by 5 time steps
-            Dense(10, input_shape=(5,5), activation='relu'),
-            Dense(10, activation='relu'),
-            # Flatten layer required because input shape is 2D
-            Flatten(),
-            # Last layer will export the regression value. Since we are performing regression, we only need 1 output node
-            Dense(1)
-        ])
-    
-        # All models required compilation, with loss function, optimizer and optimization metric(s) arguemnts.
-        model.compile(loss='mse',
-                    optimizer=RMSprop(0.001),
-                    metrics=['mae', 'mse'])
-        return model</pre>
-    </div>
+    # Call Sequential for multi-layer neural network basis.
+    model = Sequential([
+        # Dense is a perceptron layer, with number of neurones and activation function.
+        # If this is the first layer, an `input_shape` is necessary to tell the model the input data shape.
+        # 5 input variables (OHLCV) by 5 time steps
+        Dense(10, input_shape=(5,5), activation='relu'),
+        Dense(10, activation='relu'),
+        # Flatten layer required because input shape is 2D
+        Flatten(),
+        # Last layer will export the regression value. Since we are performing regression, we only need 1 output node
+        Dense(1)
+    ])
 
-    <li>Process the data.</li>
-    <div class="section-example-container">
-        <pre class="python">X, y = prep_data(data)</pre>
+    # All models required compilation, with loss function, optimizer and optimization metric(s) arguemnts.
+    model.compile(loss='mse',
+                optimizer=RMSprop(0.001),
+                metrics=['mae', 'mse'])
+    return model</pre>
     </div>
 
     <li>Build the model.</li>
