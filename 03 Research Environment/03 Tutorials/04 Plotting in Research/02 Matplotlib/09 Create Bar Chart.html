@@ -1,0 +1,44 @@
+<p>You must <a href="#02-Import-Packages">import the plotting packages</a> and <a href="#03-Get-Historical-Data">get some historical data</a> to create bar charts.</p>
+
+<p>In this example, you create a bar chart that shows the average daily percent return of the banking securities. Follow these steps to create the bar chart:</p>
+
+<ol>
+    <li>Select the close column and then call the <code>unstack</code> method.</li>
+    <div class="section-example-container">
+        <pre class="python">close_prices = history['close'].unstack(level=0)</pre>
+    </div>
+    
+    <li>Call the <code>pct_change</code> method and then multiply by 100.</li>
+    <div class="section-example-container">
+        <pre class="python">daily_returns = close_prices.pct_change() * 100</pre>
+    </div>
+
+    <li>Call the <code>mean</code> method.</li>
+    <div class="section-example-container">
+        <pre class="python">avg_daily_returns = daily_returns.mean()</pre>
+    </div>
+
+    <li>Set up the figure with <code>figsize</code> setting.</li>
+    <div class="section-example-container">
+        <pre class="python">plt.figure(figsize=(15, 10))</pre>
+    </div>
+
+    <li>Call <code>bar</code> method with the x-axis and y-axis values.</li>
+    <div class="section-example-container">
+        <pre class="python">plt.bar(avg_daily_returns.index, avg_daily_returns)</pre>
+    </div>
+
+    <li>Set up the title, x-axis label and y-axis label of the plot.</li>
+    <div class="section-example-container">
+        <pre class="python">plt.title('Banking Stocks Average Daily % Returns')
+plt.xlabel('Tickers')
+plt.ylabel('%')</pre>
+    </div>
+
+    <li>Show the plot.</li>
+    <div class="section-example-container">
+        <pre class="python">plt.show()</pre>
+    </div>
+    <p>The Jupyter Notebook displays a bar chart.</p>
+    <img style="max-width: 100%; display: block" src="https://cdn.quantconnect.com/i/tu/matplotlib-bar.png">
+</ol>
