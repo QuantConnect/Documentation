@@ -1,9 +1,9 @@
 <p>You must <a href="#03-Import-Packages">import the plotting packages</a> and <a href="#04-Get-Historical-Data">get some historical data</a> to create histograms.</p>
 
-<p>We use a histogram to visualize the distribution of return of a selected stock. Follow these steps to create a histogram:</p>
+<p>In this example, you create a histogram that shows the distribution of the daily percent returns of the bank sector ETF. Follow these steps to create the histogram:</p>
 
 <ol>
-    <li>Select a <code>Symbol</code>.</li>
+    <li>Select the <code>Symbol</code>.</li>
     <div class="section-example-container">
         <pre class="python">symbol = symbols[0]</pre>
     </div>
@@ -13,34 +13,29 @@
         <pre class="python">data = history.loc[symbol]['close']</pre>
     </div>
 
-    <li>Call the <code>pct_change</code> method on the <code>pandas.Series</code> object.</li>
+    <li>Call the <code>pct_change</code> method and then call the <code>dropna</code> method.</li>
     <div class="section-example-container">
-        <pre class="python">daily_ret = data.pct_change()</pre>
-    </div>
-
-    <li>Drop any NaN values by dropna to avoid regression error.</li>
-    <div class="section-example-container">
-        <pre class="python">daily_ret.dropna(inplace=True)</pre>
+        <pre class="python">daily_returns = data.pct_change().dropna()</pre>
     </div>
 
     <li>Call the <code>DataFrame</code> constructor with the <code>data Series</code> and then call the <code>reset_index</code> method.</li>
     <div class="section-example-container">
-        <pre class="python">daily_ret = pd.DataFrame(daily_ret).reset_index()</pre>
+        <pre class="python">daily_returns = pd.DataFrame(daily_returns).reset_index()</pre>
     </div>
 
-    <li>Call the <code>histplot</code> method with the data, the column names of the x- and y-axis in data, and number of bins.</li>
+    <li>Call the <code>histplot</code> method with the <code>daily_returns</code>, the close column name, and number of bins.</li>
     <div class="section-example-container">
-        <pre class="python">plot = sns.histplot(daily_ret, x='close', bins=20)</pre>
+        <pre class="python">plot = sns.histplot(daily_returns, x='close', bins=20)</pre>
     </div>
 
-    <li>Set up the x-axis label, y-axis label and title.</li>
+    <li>Call the <code>set</code> method with the axis labels and a title.</li>
     <div class="section-example-container">
         <pre class="python">plot.set(xlabel='Return', 
          ylabel='Frequency', 
          title=f'{symbol} Daily Return of Close Price Distribution')</pre>
     </div>
 
-    <li>Show the plot.</li>
+    <li>Call the <code>plot</code> method.</li>
     <div class="section-example-container">
         <pre class="python">plt.show()</pre>
     </div>
