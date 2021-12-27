@@ -1,0 +1,37 @@
+<p>We'll use the last 5 closing prices of the SPY as inputs to our model. Here, we create a DataFrame containing this data.</p>
+
+<div class="section-example-container">
+    <pre class="python">lookback = 5
+lookback_series = []
+for i in range(1, lookback + 1):
+    df = data['close'].shift(i)[lookback:-1]
+    df.name = f"close_-{i}"
+    lookback_series.append(df)
+X = pd.concat(lookback_series, axis=1).reset_index(drop=True)</pre>
+</div>
+
+<p>We'd like the model to predict the closing price of the SPY 1 timestep into the future, so let's create a DataFrame containing 1-step forward price.</p>
+
+<img style="max-width: 100%; display: block" src="https://cdn.quantconnect.com/i/tu/tf-x.png">
+
+<div class="section-example-container">
+    <pre class="python">Y = data['close'].shift(-1)[lookback:-1].reset_index(drop=True)
+Y.plot(figsize=(16, 6))
+plt.title("SPY price 1 timestep in the future")
+plt.xlabel("Time step")
+plt.ylabel("Price")
+plt.show()</pre>
+</div>
+
+<img style="max-width: 100%; display: block" src="https://cdn.quantconnect.com/i/tu/tf-y-plot.png">
+
+<p>Now, let's split the data into testing and training sets.</p>
+
+<div class="section-example-container">
+    <pre class="python">test_size = 0.33
+X_train, X_test, y_train, y_test = train_test_split(X, Y, test_size=0.33, shuffle=False)
+print(f"Train index: {X_train.index[0]}...{X_train.index[-1]}")
+print(f"Test index: {X_test.index[0]}...{X_test.index[-1]}")</pre>
+</div>
+
+<img style="max-width: 100%; display: block" src="https://cdn.quantconnect.com/i/tu/tf-step.png">

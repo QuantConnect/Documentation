@@ -1,0 +1,82 @@
+<p>Let's build the neural network architecture by utilizing the TensorFlow library. Note how we name the input and output nodes so we can retreive them when loading the model from the ObjectStore.</p>
+
+<h4>Set up the model structure</h4>
+<ol>
+    <li>Instantiate a tensorflow session.</li>
+    <div class="section-example-container">
+        <pre class="python">tf.reset_default_graph()
+sess = tf.Session()</pre>
+    </div>
+
+    <li>Set the number of layers, their number of nodes and the placeholders for data.</li>
+    <div class="section-example-container">
+        <pre class="python">num_factors = X_test.shape[1]
+num_neurons_1 = 32
+num_neurons_2 = 16
+num_neurons_3 = 8
+
+X = tf.placeholder(dtype=tf.float32, shape=[None, num_factors], name='X')
+Y = tf.placeholder(dtype=tf.float32, shape=[None])</pre>
+    </div>
+
+    <li>Set up the weights and bias initializers for each layer.</li>
+    <div class="section-example-container">
+        <pre class="python">weight_initializer = tf.variance_scaling_initializer(mode="fan_avg", distribution="uniform", scale=1)
+bias_initializer = tf.zeros_initializer()</pre>
+    </div>
+    
+    <li>Create hidden layers with the set number of layer and their corresponding number of nodes.</li>
+    <p>In this example, we're using Relu activator for non-linear activation of each tensors.</p>
+    <div class="section-example-container">
+        <pre class="python">W_hidden_1 = tf.Variable(weight_initializer([num_factors, num_neurons_1]))
+bias_hidden_1 = tf.Variable(bias_initializer([num_neurons_1]))
+hidden_1 = tf.nn.relu(tf.add(tf.matmul(X, W_hidden_1), bias_hidden_1))
+
+W_hidden_2 = tf.Variable(weight_initializer([num_neurons_1, num_neurons_2]))
+bias_hidden_2 = tf.Variable(bias_initializer([num_neurons_2]))
+hidden_2 = tf.nn.relu(tf.add(tf.matmul(hidden_1, W_hidden_2), bias_hidden_2))
+
+W_hidden_3 = tf.Variable(weight_initializer([num_neurons_2, num_neurons_3]))
+bias_hidden_3 = tf.Variable(bias_initializer([num_neurons_3]))
+hidden_3 = tf.nn.relu(tf.add(tf.matmul(hidden_2, W_hidden_3), bias_hidden_3))</pre>
+    </div>
+
+    <li>Create the output layer.</li>
+    <p>We would like a 1-node output for weight and bias for single step forward price prediction</p>
+    <div class="section-example-container">
+        <pre class="python">W_out = tf.Variable(weight_initializer([num_neurons_3, 1]))
+bias_out = tf.Variable(bias_initializer([1]))
+output = tf.transpose(tf.add(tf.matmul(hidden_3, W_out), bias_out), name='outer')</pre>
+    </div>
+
+    <li>Set up the loss function and optimizers for gradient descent optimization and backpropagation.</li>
+    <p>We're using mean-square error as the loss function since close price is a continuous data, while Adam as optimizer for adaptive step size.</p>
+    <div class="section-example-container">
+        <pre class="python">loss = tf.reduce_mean(tf.squared_difference(output, Y))
+optimizer = tf.train.AdamOptimizer().minimize(loss)</pre>
+    </div>
+
+    <li>Set the batch size and number of epochs to bootstrap the training process.</li>
+    <div class="section-example-container">
+        <pre class="python">batch_size = len(y_train) // 10
+epochs = 20</pre>
+    </div>
+</ol>
+
+<h4>Train the model.</h4>
+<ol>
+    <li>Initial the training.</li>
+    <div class="section-example-container">
+        <pre class="python">sess.run(tf.global_variables_initializer())</pre>
+    </div>
+
+    <li>Update the parameters by each epoch of training.</li>
+    <div class="section-example-container">
+        <pre class="python">for _ in range(epochs):
+    for i in range(0, len(y_train) // batch_size):
+        start = i * batch_size
+        batch_x = X_train[start:start + batch_size]
+        batch_y = y_train[start:start + batch_size]
+        sess.run(optimizer, feed_dict={X: batch_x, Y: batch_y})</pre>
+    </div>
+</ol>
