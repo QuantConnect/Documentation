@@ -1,0 +1,45 @@
+<p>You must <a href="#03-Import-Packages">import the plotting packages</a> and <a href="#04-Get-Historical-Data">get some historical data</a> to create histograms.</p>
+
+<p>We use a histogram to visualize the distribution of return of a selected stock.
+<br/>
+Follow these steps to create a histogram:</p>
+
+<ol>
+    <li>Select a <code>Symbol</code>.</li>
+    <div class="section-example-container">
+        <pre class="python">symbol = symbols[0]</pre>
+    </div>
+
+    <li>Slice the <code>history</code> DataFrame with the <code>symbol</code> and then select the close column.</li>
+    <div class="section-example-container">
+        <pre class="python">data = history.loc[symbol]['close']</pre>
+    </div>
+
+    <li>Call the pct_change method on the pandas.Series object.</li>
+    <div class="section-example-container">
+        <pre class="python">daily_ret = data.pct_change()</pre>
+    </div>
+
+    <li>Drop any NaN values by dropna to avoid regression error.</li>
+    <div class="section-example-container">
+        <pre class="python">daily_ret.dropna(inplace=True)</pre>
+    </div>
+
+    <li>Call the <code>DataFrame</code> constructor with the <code>data Series</code> and then call the <code>reset_index</code> method.</li>
+    <div class="section-example-container">
+        <pre class="python">daily_ret = pd.DataFrame(daily_ret).reset_index()</pre>
+    </div>
+
+    <li>Call the <code>histogram</code> method with the data, the column names of the x- and y-axis in data, the plot title and number of bins.</li>
+    <div class="section-example-container">
+        <pre class="python">fig = px.histogram(daily_ret, x='close', title=f'{symbol} Daily Return of Close Price Distribution', nbins=20)</pre>
+    </div>
+
+    <li>Call the <code>show</code> method.</li>
+    <div class="section-example-container">
+        <pre class="python">fig.show()</pre>
+    </div>
+    <p>The Jupyter Notebook displays the histogram.</p>
+    <img style="max-width: 100%; display: block" src="https://cdn.quantconnect.com/i/tu/plotly-histogram.png">
+
+</ol>
