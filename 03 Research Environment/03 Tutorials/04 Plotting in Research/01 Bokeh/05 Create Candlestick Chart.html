@@ -1,6 +1,6 @@
 <p>You must <a href="#03-Import-Packages">import the plotting packages</a> and <a href="#04-Get-Historical-Data">get some historical data</a> to create candlestick charts.</p>
 
-<p>In this example, we'll create a candlestick chart that shows the open, high, low, and close prices of one of the banking securities. Follow these steps to create the candlestick chart:</p>
+<p>In this example, you create a candlestick chart that shows the open, high, low, and close prices of one of the banking securities. Follow these steps to create the candlestick chart:</p>
 
 <ol>
     <li>Select a <code>Symbol</code>.</li>
@@ -13,30 +13,32 @@
         <pre class="python">data = history.loc[symbol]</pre>
     </div>
 
-    <li>Divide the price in positive or negtive intraday change.</li>
+    <li>Divide the <code>data</code> into days with positive returns and days with negative returns.</li>
     <div class="section-example-container">
-        <pre class="python">inc = data['close'] > data['open']
-dec = data['open'] > data['close']</pre>
+        <pre class="python">up_days = data[data['close'] &gt; data['open']]
+down_days = data[data['open'] &gt; data['close']]</pre>
     </div>
 
-    <li>Call <code>figure</code> to create a plot with title and axis labels.</li>
+    <li>Call the <code>figure</code> function with a title and axis labels.</li>
     <div class="section-example-container">
         <pre class="python">plot = figure(title=f"{symbol} Close Price", x_axis_label='Date', y_axis_label='Price')</pre>
     </div>
 
-    <li>Call <code>segment</code> to plot the end points of the bars.</li>
+    <li>Call the <code>segment</code> method with the <code>data</code> timestamps, high prices, low prices, and a color.</li>
     <div class="section-example-container">
         <pre class="python">plot.segment(data.index, data['high'], data.index, data['low'], color="black")</pre>
     </div>
+    <p>This method call plots the candlestick wicks.</p>
 
-    <li>Call <code>vbar</code> to plot the bars.</li>
+    <li>Call the <code>vbar</code> method for the up and down days with the <code>data</code> timestamps, open prices, close prices, and a color.</li>
     <div class="section-example-container">
         <pre class="python">width = 12*60*60*1000
-plot.vbar(data.index[inc], width, data['open'][inc], data['close'][inc], fill_color="green", line_color="green")
-plot.vbar(data.index[dec], width, data['open'][dec], data['close'][dec], fill_color="red", line_color="red")</pre>
+plot.vbar(up_days.index, width, up_days['open'], up_days['close'], fill_color="green", line_color="green")
+plot.vbar(down_days.index, width, down_days['open'], down_days['close'], fill_color="red", line_color="red")</pre>
     </div>
+    <p>This method call plots the candlestick bodies.</p>
 
-    <li>Call <code>show</code> to show the plot.</li>
+    <li>Call the <code>show</code> function.</li>
     <div class="section-example-container">
         <pre class="python">show(plot)</pre>
     </div>
