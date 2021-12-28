@@ -1,0 +1,76 @@
+<p>Once we are confident in our hypothesis, we can export this code into backtesting. One way to accomodate this model into research is to create a scheduled event which uses our model to pick stocks and goes long.</p>
+
+<div class="section-example-container">
+    <pre class="python">def Initialize(self):
+
+    #1. Required: Five years of backtest history
+    self.SetStartDate(2014, 1, 1)
+
+    #2. Required: Alpha Streams Models:
+    self.SetBrokerageModel(BrokerageName.AlphaStreams)
+
+    #3. Required: Significant AUM Capacity
+    self.SetCash(1000000)
+
+    #4. Required: Benchmark to SPY
+    self.SetBenchmark("SPY")
+    
+    self.SetPortfolioConstruction(InsightWeightingPortfolioConstructionModel())
+    self.SetExecution(ImmediateExecutionModel())
+
+    self.assets = ["SHY", "TLT", "IEI", "SHV", "TLH", "EDV", "BIL",
+                    "SPTL", "TBT", "TMF", "TMV", "TBF", "VGSH", "VGIT",
+                    "VGLT", "SCHO", "SCHR", "SPTS", "GOVT"]
+
+    self.symbols = {}
+    
+    # Add Equity ------------------------------------------------ 
+    for i in range(len(self.assets)):
+        self.symbols[self.assets[i]] = self.AddEquity(self.assets[i],Resolution.Minute).Symbol 
+    
+    # Set Scheduled Event Method For Our Model
+    self.Schedule.On(self.DateRules.EveryDay(), self.TimeRules.AfterMarketOpen("SHY", 1), self.EveryDayAfterMarketOpen)</pre>
+</div>
+
+<p>Now we export our model into the scheduled event method. We will switch <code>qb</code> with <code>self</code> and replace methods with their <code>QCAlgorithm</code> counterparts as needed. In this example, this is not an issue because all the methods we used in research also exist in <code>QCAlgorithm</code>.</p>
+
+<div class="section-example-container">
+    <pre class="python">def EveryDayAfterMarketOpen(self):
+    qb = self
+    # Fetch history on our universe
+    df = qb.History(qb.Securities.Keys, 30, Resolution.Daily)
+
+    # Make all of them into a single time index.
+    df = df.close.unstack(level=0)
+
+    # Calculate the truth value of the most recent price being less than 1 std away from the mean
+    classifier = df.le(df.mean().subtract(df.std())).iloc[-1]
+
+    # Get the z-score for the True values, then compute the expected return and probability
+    z_score = df.apply(zscore)[[classifier.index[i] for i in range(len(classifier)) if classifier[i]]]
+    magnitude = -z_score * df.std() / df.shift(1)
+    confidence = (-z_score).apply(norm.cdf)
+
+    # Get the latest values
+    magnitude = magnitude.iloc[-1].fillna(0)
+    confidence = confidence.iloc[-1].fillna(0)
+
+    # Get the weights, then zip together to iterate over later
+    weight = confidence - 1 / (magnitude + 1)
+    sum_ = np.sum(weight + 1)
+    if sum_ > 0:
+        weight = (weight.fillna(0) + 1) / sum_
+        selected = zip(classifier, magnitude, confidence, weight)
+    else:
+        weight = None
+
+    # ==============================
+    
+    insights = []
+    
+    if weight != None:
+        for symbol, magnitude, confidence, weight in selected:
+            insights.append( Insight.Price(symbol, timedelta(days=1), InsightDirection.Up, magnitude, confidence, None, weight) )
+
+    self.EmitInsights(insights)</pre>
+</div>

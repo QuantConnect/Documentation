@@ -1,0 +1,38 @@
+<p>We'll have to process our data to get an extent of the signal on how much the stock is deviated from its norm for each ticker.</p>
+
+<ol>
+    <li>Select the close column and then call the <code>unstack</code> method.</li>
+    <div class="section-example-container">
+        <pre class="python">df = history['close'].unstack(level=0)</pre>
+    </div>
+
+    <li>Calculate the truth value of the most recent price being less than 1 standard deviation away from the mean price.</li>
+    <div class="section-example-container">
+        <pre class="python">classifier = df.le(df.rolling(30).mean() - df.rolling(30).std())</pre>
+    </div>
+
+    <li>Get the z-score for the True values, then compute the expected return and probability (used for Insight magnitude and confidence).</li>
+    <div class="section-example-container">
+        <pre class="python">z_score = df.apply(zscore)[classifier]
+magnitude = -z_score * df.std() / df.shift(1)
+confidence = (-z_score).apply(norm.cdf)</pre>
+    </div>
+
+    <li>Call <code>fillna</code> to fill NaNs with 0</li>
+    <div class="section-example-container">
+        <pre class="python">magnitude.fillna(0, inplace=True)
+confidence.fillna(0, inplace=True)</pre>
+    </div>
+
+    <li>Get our trading weight, we'd take a long only portfolio and normalized to total weight = 1.</li>
+    <div class="section-example-container">
+        <pre class="python">weight = confidence - 1 / (magnitude + 1)
+sum_ = np.sum(weight+1, axis=1)
+for i in range(edge.shape[0]):
+    if sum_[i] > 0:
+        weight.iloc[i] = (weight.iloc[i] + 1) / sum_[i]
+    else:
+        weight.iloc[i] = 0</pre>
+    </div>
+    <img style="max-width: 100%; display: block" src="https://cdn.quantconnect.com/i/tu/mean-reversion-weight.png">
+</ol>
