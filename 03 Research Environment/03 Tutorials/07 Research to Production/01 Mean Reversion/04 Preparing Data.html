@@ -1,31 +1,110 @@
 <p>We'll have to process our data to get an extent of the signal on how much the stock is deviated from its norm for each ticker.</p>
 
 <ol>
-    <li>Select the close column and then call the <code>unstack</code> method.</li>
+    <li class="csharp">Extract close prices for each <code>Symbol</code> from <code>Slice</code> data.</li>
+    <li class="python">Select the close column and then call the <code>unstack</code> method.</li>
     <div class="section-example-container">
+        <pre class="csharp">var closes = new Dictionary&lt;Symbol, List&lt;Decimal&gt;&gt;();
+foreach(var slice in history){
+    foreach(var symbol in slice.Keys){
+        if(!closes.ContainsKey(symbol)){
+            closes.Add(symbol, new List&lt;Decimal&gt;());
+        }
+        closes[symbol].Add(slice.Bars[symbol].Close);
+    }
+}</pre>
         <pre class="python">df = history['close'].unstack(level=0)</pre>
     </div>
 
-    <li>Calculate the truth value of the most recent price being less than 1 standard deviation away from the mean price.</li>
+    <li class="csharp">Get the 30-day rolling mean, standard deviation series, z-score and filtration for each <code>Symbol</code>.</li>
+    <li class="python">Calculate the truth value of the most recent price being less than 1 standard deviation away from the mean price.</li>
     <div class="section-example-container">
+        <pre class="csharp">var rollingMean = new Dictionary&lt;Symbol, List&lt;double&gt;&gt;();
+var rollingStd = new Dictionary&lt;Symbol, List&lt;double&gt;&gt;();
+var filter = new Dictionary&lt;Symbol, List&lt;bool&gt;&gt;();
+var zScore = new Dictionary&lt;Symbol, List&lt;double&gt;&gt;();
+foreach(var kvp in closes)
+{
+    var symbol = kvp.Key;
+    if(!rollingMean.ContainsKey(symbol)){
+        rollingMean.Add(symbol, new List&lt;double&gt;());
+        rollingStd.Add(symbol, new List&lt;double&gt;());
+        zScore.Add(symbol, new List&lt;double&gt;());
+        filter.Add(symbol, new List&lt;bool&gt;());
+    }
+    for (int i=0; i &lt; closes.Values.ElementAt(0).Count - 30; i++)
+    {
+        var slice = kvp.Value.Skip(30+i).Take(30);
+        rollingMean[symbol].Add(decimal.ToDouble(slice.Average()));
+        rollingStd[symbol].Add(Math.Sqrt(slice.Average(v =&gt; Math.Pow(decimal.ToDouble(v-slice.Average()), 2))));
+        zScore[symbol].Add((decimal.ToDouble(closes[symbol][i]) - rollingMean[symbol].Last()) / rollingStd[symbol].Last());
+        filter[symbol].Add(zScore[symbol].Last() &lt; -1);
+    }
+}</pre>
         <pre class="python">classifier = df.le(df.rolling(30).mean() - df.rolling(30).std())</pre>
     </div>
 
-    <li>Get the z-score for the True values, then compute the expected return and probability (used for Insight magnitude and confidence).</li>
+    <li class="csharp">Calculate the expected return and its probability, then calculate the weight.</li>
+    <li class="python">Get the z-score for the True values, then compute the expected return and probability (used for Insight magnitude and confidence).</li>
     <div class="section-example-container">
+        <pre class="csharp">var magnitude = new Dictionary&lt;Symbol, List&lt;double&gt;&gt;();
+var confidence = new Dictionary&lt;Symbol, List&lt;double&gt;&gt;();
+var weights = new Dictionary&lt;Symbol, List&lt;double&gt;&gt;();
+foreach(var kvp in rollingMean)
+{
+    var symbol = kvp.Key;
+    if(!magnitude.ContainsKey(symbol)){
+        magnitude.Add(symbol, new List&lt;double&gt;());
+        confidence.Add(symbol, new List&lt;double&gt;());
+        weights.Add(symbol, new List&lt;double&gt;());
+    }
+    for (int i=1; i &lt; rollingMean.Values.ElementAt(0).Count; i++)
+    {
+        magnitude[symbol].Add(-zScore[symbol][i] * rollingStd[symbol][i] / decimal.ToDouble(closes[symbol][i-1]));
+        confidence[symbol].Add(Normal.CDF(0, 1, zScore[symbol].Last()));
+        weights[symbol].Add(Math.Max(confidence[symbol].Last() - 1 / (magnitude[symbol].Last() + 1), 0));
+    }
+}</pre>
         <pre class="python">z_score = df.apply(zscore)[classifier]
-magnitude = -z_score * df.std() / df.shift(1)
+magnitude = -z_score * df.rolling(30).std() / df.shift(1)
 confidence = (-z_score).apply(norm.cdf)</pre>
     </div>
 
-    <li>Call <code>fillna</code> to fill NaNs with 0</li>
+    <li class="csharp">Convert the weights into 2-d array.</li>
+    <li class="python">Call <code>fillna</code> to fill NaNs with 0.</li>
     <div class="section-example-container">
+        <pre class="csharp">double[,] weight = new double[weights.Values.ElementAt(0).Count, weights.Count];
+int j = 0;
+foreach(var symbol in weights.Keys){
+    for(int i=0; i < weights[symbol].Count; i++){
+        weight[i, j] = weights[symbol][i];
+    }
+    j++;
+}</pre>
         <pre class="python">magnitude.fillna(0, inplace=True)
 confidence.fillna(0, inplace=True)</pre>
     </div>
 
     <li>Get our trading weight, we'd take a long only portfolio and normalized to total weight = 1.</li>
     <div class="section-example-container">
+        <pre class="csharp">public double[,] Normalize(double[,] array)
+{
+    for(int i=0; i < array.GetLength(0); i++)
+    {
+        var sum = 0.0;
+        for (int j=0; j < array.GetLength(1); j++)
+        {
+            sum += array[i, j];
+        }
+        for (int j=0; j < array.GetLength(1); j++)
+        {
+            array[i, j] = array[i, j] / sum;
+        }
+    }
+    
+    return array;
+}
+weight = Normalize(weight);</pre>
         <pre class="python">weight = confidence - 1 / (magnitude + 1)
 sum_ = np.sum(weight+1, axis=1)
 for i in range(edge.shape[0]):
@@ -34,5 +113,5 @@ for i in range(edge.shape[0]):
     else:
         weight.iloc[i] = 0</pre>
     </div>
-    <img style="max-width: 100%; display: block" src="https://cdn.quantconnect.com/i/tu/mean-reversion-weight.png">
+    <img class="python" style="max-width: 100%; display: block" src="https://cdn.quantconnect.com/i/tu/mean-reversion-weight.png">
 </ol>

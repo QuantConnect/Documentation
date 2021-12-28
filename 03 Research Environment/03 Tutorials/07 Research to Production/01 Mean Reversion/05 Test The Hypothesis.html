@@ -1,28 +1,58 @@
 <p>We would test the performance of this strategy. To do so, we would make use of the calculated weight for portfolio optimization.</p>
 
 <ol>
+    <li class="csharp">Convert close price to 2-d array.</li>
+    <div class="csharp section-example-container">
+        <pre class="csharp">double[,] close = new double[closes.Values.ElementAt(0).Count, closes.Count];
+int j = 0;
+foreach(var symbol in closes.Keys){
+    for(int i=0; i < closes[symbol].Count; i++){
+        close[i, j] = decimal.ToDouble(closes[symbol][i]);
+    }
+    j++;
+}</pre>
+    </div>
+
     <li>Get the total daily return series.</li>
     <div class="section-example-container">
+        <pre class="csharp">var totalValue = new List<double>{1.0};
+var dailySum = 0.0;
+for(int i=0; i < weight.GetLength(0) - 1; i++)
+{
+    totalValue.Add(totalValue.Last() * (1 + dailySum));
+    dailySum = 0.0;
+    for (int j=0; j < weight.GetLength(1); j++)
+    {
+        if (close[i, j] != 0 && double.IsFinite(close[i+1, j]) && double.IsFinite(close[i, j]) && double.IsFinite(weight[i, j])){
+            dailySum += weight[i, j] * (close[i+1, j] - close[i, j]) / close[i, j];
+        }
+    }
+}</pre>
         <pre class="python">ret = pd.Series(index=range(df.shape[0] - 1))
 for i in range(df.shape[0] - 1):
     ret[i] = weight.iloc[i] @ df.pct_change().iloc[i + 1].T</pre>
     </div>
 
-    <li>Call <code>cumprod</code> to get the cumulative return.</li>
+    <li class="python">Call <code>cumprod</code> to get the cumulative return.</li>
     <div class="section-example-container">
         <pre class="python">total_ret = (ret + 1).cumprod()</pre>
     </div>
 
-    <li>Set index for visualization.</li>
+    <li class="python">Set index for visualization.</li>
     <div class="section-example-container">
         <pre class="python">total_ret.index = weight.index</pre>
     </div>
 
-    <li>Plot the result.</li>
+    <li>Display the result.</li>
     <div class="section-example-container">
+        <pre class="csharp">for(int i=0; i < totalValue.Count; i=i+5)
+{
+    Console.WriteLine("Portfolio Value in Day{0}: {1}", i, totalValue[i]);
+}</pre>
         <pre class="python">total_ret.plot(title='Strategy Equity Curve', figsize=(15, 10))
 plt.show()</pre>
     </div>
+    <img class="csharp" style="max-width: 100%; display: block" src="https://cdn.quantconnect.com/i/tu/mean-reversion-c#-result.png">
+    <img class="python" style="max-width: 100%; display: block" src="https://cdn.quantconnect.com/i/tu/mean-reversion-plot.png">
 </ol>
 
-<img style="max-width: 100%; display: block" src="https://cdn.quantconnect.com/i/tu/mean-reversion-plot.png">
