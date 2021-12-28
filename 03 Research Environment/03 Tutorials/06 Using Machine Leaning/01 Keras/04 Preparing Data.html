@@ -4,29 +4,48 @@
     <li>Labels: Daily percent return of the SPY over the next day</li>
 </ul>
 
-<p>To prepare the data, run:</p>
-
-<div class="section-example-container">
-    <pre class="python">def prep_data(data, n_tsteps=5):    
-    df = data.pct_change()[1:] # this helps make the data stationary
-    
-    features = []
-    labels = []
-
-    for i in range(len(df)-n_tsteps):
-        input_data = df.iloc[i:i+n_tsteps].values
-        features.append(input_data)
-        label = df['close'].iloc[i+n_tsteps]
-        labels.append(label)
-
-    return np.array(features), np.array(labels)
-
-X, y = prep_data(history)</pre>
-</div>
-
 <p>Figure 1 shows the difference in time for the features and labels.</p>
 
 <p><b>Figure 1</b></p>
 <p><i>The difference in time for features and labels</i></p>
 <img style="max-width: 100%; display: block" src="https://cdn.quantconnect.com/i/tu/ml-keras-function.png">
 <p><i>Note:</i> This figure illustrates the difference in time for the features and labels that are used to train a machine learning model.</p>
+
+<p>Follow these steps to prepare the data:</p>
+
+<ol>
+    <li>Call the <code>pct_change</code> and <code>dropna</code> methods.</li>
+    <div class="section-example-container">
+        <pre class="python">daily_pct_change = history.pct_change().dropna()</pre>
+        <p>These method calls help make the data stationary.</p>
+    </div>
+
+    <li>Loop through the <code>daily_pct_change</code> DataFrame and collect the features and labels.</li>
+    <div class="section-example-container">
+        <pre class="python">n_steps = 5<br>features = []
+labels = []
+for i in range(len(df)-n_steps):
+    input_data = df.iloc[i:i+n_steps].values
+    features.append(input_data)
+    label = df['close'].iloc[i+n_steps]
+    labels.append(label)</pre>
+        <p>These method calls helps make the data stationary.</p>
+    </div>
+
+    <li>Convert the lists of features and labels into numpy arrays.</li>
+    <div class="section-example-container">
+        <pre class="python">features = np.array(features)
+labels = np.array(labels)</pre>
+    </div>
+
+    <li>Split the data into training and testing periods.</li>
+    <div class="section-example-container">
+        <pre class="python">train_length = int(len(features) * 0.7)
+X_train = features[:train_length]
+X_test = features[train_length:]
+y_train = labels[:train_length]
+y_test = labels[train_length:]</pre>
+    </div>
+
+</ol>
+
