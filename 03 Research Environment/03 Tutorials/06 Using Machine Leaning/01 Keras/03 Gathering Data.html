@@ -1,25 +1,7 @@
-<p>To begin, we retrieve historical data for SPY.</p>
+<p><a href="../requesting-historical-data/">Get some historical market data</a> to train and test the model. For example, to get data for the SPY ETF during 2020 and 2021, run:</p>
 
-<ol>
-    <li>Instantiate a <code>QuantBook</code>.</li>
-    <div class="section-example-container">
-        <pre class="python">qb = QuantBook()</pre>
-    </div>
-
-    <li>Call the <code>AddEquity</code> method with SPY, and their corresponding resolution.</li>
-    <div class="section-example-container">
-        <pre class="python">spy = qb.AddEquity("SPY", Resolution.Daily)</pre>
-    </div>
-    <p>If you do not pass a resolution argument, <code>Resolution.Minute</code> is used by default.</p>
-
-    <li>Call the <code>History</code> method with a <code>Symbol</code>, time argument(s), and resolution to request historical data for the symbol.</li>
-    <div class="section-example-container">
-        <pre class="python">history = qb.History(spy.Symbol, 360, Resolution.Daily)</pre>
-    </div>
-
-    <li>Index the <code>pandas.DataFrame</code> with a <code>Symbol</code> to select the historical data of the security.</li>
-    <div class="section-example-container">
-        <pre class="python">data = history.loc["SPY"]</pre>
-    </div>
-    <img style="max-width: 100%; display: block" src="https://cdn.quantconnect.com/i/tu/keras-df.png">
-</ol>
+<div class="section-example-container">
+    <pre class="python">qb = QuantBook()
+symbol = qb.AddEquity("SPY", Resolution.Daily).Symbol
+history = qb.History(symbol, datetime(2020, 1, 1), datetime(2022, 1, 1)).loc[symbol]</pre>
+</div>
