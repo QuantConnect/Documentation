@@ -1,0 +1,46 @@
+<p>You can save and load keras models using the ObjectStore.</p>
+
+<h4>Save Models</h4>
+<p>Follow these steps to save keras models in the ObjectStore:</p>
+<ol>
+    <li>Call the <code>serialize_keras_object</code> method with the model and then call the <code>dumps</code> method.</li>
+    <div class="section-example-container">
+        <pre class="python">model_str = json.dumps(serialize_keras_object(model))</pre>
+    </div>
+
+    <li>Create a key to store the model.</li>
+    <div class="section-example-container">
+        <pre class="python">model_key = 'keras_model'</pre>
+    </div>
+
+    <li>Call the <code>Save</code> method with the key and the JSON string representation of the model.</li>
+    <div class="section-example-container">
+        <pre class="python">qb.ObjectStore.Save(model_key, model_str)</pre>
+    </div>
+</ol>
+
+<h4>Load Models</h4>
+<p>You must save a model into the ObjectStore before you can load it from the ObjectStore. If you have saved a model, follow these steps to load it:</p>
+
+<ol>
+    <li>Call the <code>ContainsKey</code> method.</li>
+    <div class="section-example-container">
+        <pre class="python">qb.ObjectStore.ContainsKey(model_key)</pre>
+    </div>
+    <p>This method returns a boolean that represents if the <code>model_key</code> is in the ObjectStore. If the ObjectStore does not contain the <code>model_key</code>, save the model using the <code>model_key</code> before you proceed.</p>
+
+    <li>Call the <code>Read</code> method.</li>
+    <div class="section-example-container">
+        <pre class="python">model_str = qb.ObjectStore.Read(model_key)</pre>
+    </div>
+
+    <li>Call the <code>loads</code> method with the <code>model_str</code> and then get the value of the <code>config</code> key.</li>
+    <div class="section-example-container">
+        <pre class="python">config = json.loads(model_str)['config']</pre>
+    </div>
+
+    <li>Call the <code>from_config</code> method with the model configuration.</li>
+    <div class="section-example-container">
+        <pre class="python">model = Sequential.from_config(config)</pre>
+    </div>
+</ol>

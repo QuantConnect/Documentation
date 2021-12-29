@@ -1,2 +1,18 @@
-<div>
+<p>You can use some helper methods to get all of the ObjectStore keys and clear the ObjectStore.</p>
+
+<h4>Get ObjectStore Keys</h4>
+<p>To get all of the ObjectStore keys, call:</p>
+<div class="section-example-container">
+    <pre class="python">def get_ObjectStore_keys():
+    return [str(j).split(',')[0][1:] for _, j in enumerate(qb.ObjectStore.GetEnumerator())]</pre>
+</div>
+<p>We are working on adding a <code>Keys</code> member to the <code>ObjectStore</code> class so that you don't need to use this helper method to get the keys. Subscribe to <a href="https://github.com/QuantConnect/Lean/issues/5507">GitHub Issue #5507</a> to track our progress on adding this functionality.</p>
+
+
+<h4>Clear ObjectStore</h4>
+<p>To clear all of the objects in the ObjectStore, call:</p>
+<div class="section-example-container">
+    <pre class="python">def clear_ObjectStore():
+    for key in get_ObjectStore_keys():
+        qb.ObjectStore.Delete(key)</pre>
 </div>
