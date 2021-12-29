@@ -1,0 +1,50 @@
+<p>To test the hypothesis. Our desired outcome would be a consistent and low fluctuation equity curve should be seen, as compared with benchmark.</p>
+
+<ol>
+    <li>Construct a equal weighting portfolio for 5-asset-portfolio.</li>
+    <div class="section-example-container">
+        <pre class="csharp">decimal[,] portRet = new decimal[returns.GetLength(0), 5]{}
+int j = 0;
+foreach(var symbol in selected.Keys){
+    for(int i=0; i < returns[symbol].Count; i++){
+        portRet[i, j] = decimal.ToDouble(returns[symbol][i]) / 5;
+    }
+    j++;
+}</pre>
+        <pre class="python">port_ret = returns[x[0] for x in selected] / 5</pre>
+    </div>
+
+    <li class="csharp">Get the Equity Return.</li>
+    <li class="python">Call <code>cumprod</code> to get the cumulative return.</li>
+    <div class="section-example-container">
+        <pre class="csharp">var totalValue = new List&lt;double&gt;{1.0};
+var dailySum = 0.0;
+for(int i=0; i < portRet.GetLength(0); i++)
+{
+    totalValue.Add(totalValue.Last() * (1 + dailySum));
+    dailySum = 0.0;
+    for (int j=0; j < portRet.GetLength(1); j++)
+    {
+        if (double.IsFinite(port_ret[i, j]))
+        {
+            dailySum += port_ret[i, j]
+        }
+    }
+}</pre>
+        <pre class="python">total_ret = (port_ret + 1).cumprod()</pre>
+    </div>
+
+    <li class="csharp">Print the result.</li>
+    <li class="python">Plot the result.</li>
+    <div class="section-example-container">
+        <pre class="csharp">for(int i=0; i < totalValue.Count; i=i+)
+{
+    Console.WriteLine("Portfolio Value in Day{0}: {1}", i, totalValue[i]);
+}</pre>
+        <pre class="python">total_ret.plot(title='Strategy Equity Curve', figsize=(15, 10))
+plt.show()/pre>
+    </div>
+    <img class="csharp" style="max-width: 100%; display: block" src="">
+    <img class="python" style="max-width: 100%; display: block" src="">
+</ol>
+
