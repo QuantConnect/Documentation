@@ -1,6 +1,38 @@
 <p>Once we are confident in our hypothesis, we can export this code into backtesting. One way to accomodate this model into research is to create a scheduled event which uses our model to pick stocks and goes long.</p>
 
 <div class="section-example-container">
+    <pre class="csharp">List&lt;string&gt; _asset = new List&lt;string&gt;{"SHY", "TLT", "IEI", "SHV", "TLH", "EDV", "BIL",
+        "SPTL", "TBT", "TMF", "TMV", "TBF", "VGSH", "VGIT",
+        "VGLT", "SCHO", "SCHR", "SPTS", "GOVT"};
+        
+public override void Initialize()
+{
+    // 1. Required: Five years of backtest history
+    SetStartDate(2014, 1, 1);
+
+    // 2. Required: Alpha Streams Models:
+    SetBrokerageModel(BrokerageName.AlphaStreams);
+
+    // 3. Required: Significant AUM Capacity
+    SetCash(1000000);
+
+    // 4. Required: Benchmark to SPY
+    SetBenchmark("SPY");
+
+    SetPortfolioConstruction(new InsightWeightingPortfolioConstructionModel());
+    SetExecution(new ImmediateExecutionModel());
+
+    // Add Equity ------------------------------------------------ 
+    foreach(var ticker in _asset)
+    {
+    AddEquity(ticker, Resolution.Minute);
+    }
+
+    // Set Scheduled Event Method For Our Model
+    Schedule.On(DateRules.EveryDay(), 
+        TimeRules.BeforeMarketClose("SHY", 5),
+        EveryDayBeforeMarketClose);
+}</pre>
     <pre class="python">def Initialize(self):
 
     #1. Required: Five years of backtest history
@@ -21,21 +53,82 @@
     self.assets = ["SHY", "TLT", "IEI", "SHV", "TLH", "EDV", "BIL",
                     "SPTL", "TBT", "TMF", "TMV", "TBF", "VGSH", "VGIT",
                     "VGLT", "SCHO", "SCHR", "SPTS", "GOVT"]
-
-    self.symbols = {}
     
     # Add Equity ------------------------------------------------ 
     for i in range(len(self.assets)):
-        self.symbols[self.assets[i]] = self.AddEquity(self.assets[i], Resolution.Minute).Symbol 
+        self.AddEquity(self.assets[i], Resolution.Minute)
     
     # Set Scheduled Event Method For Our Model
     self.Schedule.On(self.DateRules.EveryDay(), self.TimeRules.BeforeMarketClose("SHY", 5), self.EveryDayBeforeMarketClose)</pre>
 </div>
 
-<p>Now we export our model into the scheduled event method. We will switch <code>qb</code> with <code>self</code> and replace methods with their <code>QCAlgorithm</code> counterparts as needed. In this example, this is not an issue because all the methods we used in research also exist in <code>QCAlgorithm</code>.</p>
+<p class="csharp">Now we export our model into the scheduled event method. We will remove <code>qb</code> and replace methods with their <code>QCAlgorithm</code> counterparts as needed. In this example, this is not an issue because all the methods we used in research also exist in <code>QCAlgorithm</code>.</p>
+<p class="python">Now we export our model into the scheduled event method. We will switch <code>qb</code> with <code>self</code> and replace methods with their <code>QCAlgorithm</code> counterparts as needed. In this example, this is not an issue because all the methods we used in research also exist in <code>QCAlgorithm</code>.</p>
 
 <div class="section-example-container">
-    <pre class="python">def EveryDayAfterMarketOpen(self):
+    <pre class="csharp">private void EveryDayBeforeMarketClose()
+{
+    // Fetch history on our universe
+    var history = History(Securities.Keys, 30, Resolution.Daily);
+    if (history.Count() &lt; 0) return;
+    
+    // Extract close prices for each Symbol from Slice data
+    var closes = new Dictionary&lt;Symbol, List&lt;Decimal&gt;&gt;();
+    foreach(var slice in history){
+        foreach(var symbol in slice.Keys){
+            if(!closes.ContainsKey(symbol)){
+                closes.Add(symbol, new List&lt;Decimal&gt;());
+            }
+            closes[symbol].Add(slice.Bars[symbol].Close);
+        }
+    }
+    
+    // Get the 30-day rolling mean, standard deviation series, z-score and filtration for each Symbol
+    var rollingMean = new Dictionary&lt;string, double&gt;();
+    var rollingStd = new Dictionary&lt;string, double&gt;();
+    var filter = new Dictionary&lt;string, bool&gt;();
+    var zScore = new Dictionary&lt;string, double&gt;();
+    foreach(var kvp in closes)
+    {
+        var symbol = kvp.Key;
+        if(!rollingMean.ContainsKey(symbol)){
+            rollingMean.Add(symbol, decimal.ToDouble(kvp.Value.Average()));
+            rollingStd.Add(symbol, Math.Sqrt(kvp.Value.Average(v =&gt; Math.Pow(decimal.ToDouble(v-kvp.Value.Average()), 2))));
+            zScore.Add(symbol, (decimal.ToDouble(kvp.Value.Last()) - rollingMean[symbol]) / rollingStd[symbol]);
+            filter.Add(symbol, zScore[symbol] &lt; -1);
+        }
+    }
+    
+    // Calculate the expected return and its probability, then calculate the weight
+    var magnitude = new Dictionary&lt;Symbol, double&gt;();
+    var confidence = new Dictionary&lt;Symbol, double&gt;();
+    var weights = new Dictionary&lt;Symbol, double&gt;();
+    foreach(var kvp in rollingMean)
+    {
+        var symbol = kvp.Key;
+        if(!magnitude.ContainsKey(symbol)){
+            magnitude.Add(symbol, -zScore[symbol] * rollingStd[symbol] / decimal.ToDouble(closes[symbol].Last()));
+            confidence.Add(symbol, Normal.CDF(0, 1, -zScore[symbol]));
+            weights.Add(symbol, Math.Max(confidence[symbol] - 1 / (magnitude[symbol] + 1), 0));
+        }
+    }
+    
+    // Normalize the weights, then emit insights
+    List&lt;Insight&gt; insights = new List&lt;Insight&gt;{};
+    
+    var sum = weights.Sum(x =&gt; x.Value);
+    if (sum == 0) return;
+    
+    foreach(var kvp in weights)
+    {
+        var symbol = kvp.Key;
+        weights[symbol] = kvp.Value / sum;
+        
+        var insight = new Insight(symbol, TimeSpan.FromDays(1), InsightType.Price, InsightDirection.Up, magnitude[symbol], confidence[symbol], null, weights[symbol]);
+        EmitInsights(insight);
+    }
+}</pre>
+    <pre class="python">def EveryDayBeforeMarketClose(self):
     qb = self
     # Fetch history on our universe
     df = qb.History(qb.Securities.Keys, 30, Resolution.Daily)
@@ -49,9 +142,9 @@
     if not classifier.any(): return
 
     # Get the z-score for the True values, then compute the expected return and probability
-    z_score = df.apply(zscore)[[classifier.index[i] for i in range(len(classifier)) if classifier[i]]]
+    z_score = df.apply(zscore)[[classifier.index[i] for i in range(classifier.size) if classifier.iloc[i]]]
 
-    magnitude = -z_score * df.std() / df.shift(1)
+    magnitude = -z_score * df.std() / df
     confidence = (-z_score).apply(norm.cdf)
 
     # Get the latest values
@@ -60,9 +153,10 @@
 
     # Get the weights, then zip together to iterate over later
     weight = confidence - 1 / (magnitude + 1)
-    sum_ = np.sum(weight + 1)
+    weight = weight[weight > 0].fillna(0)
+    sum_ = np.sum(weight)
     if sum_ > 0:
-        weight = (weight.fillna(0) + 1) / sum_
+        weight = (weight) / sum_
         selected = zip(weight.index, magnitude, confidence, weight)
     else:
         return

@@ -32,9 +32,9 @@ foreach(var kvp in closes)
         zScore.Add(symbol, new List&lt;double&gt;());
         filter.Add(symbol, new List&lt;bool&gt;());
     }
-    for (int i=0; i &lt; closes.Values.ElementAt(0).Count - 30; i++)
+    for (int i=30; i < closes.Values.ElementAt(0).Count; i++)
     {
-        var slice = kvp.Value.Skip(30+i).Take(30);
+        var slice = kvp.Value.Skip(i).Take(30);
         rollingMean[symbol].Add(decimal.ToDouble(slice.Average()));
         rollingStd[symbol].Add(Math.Sqrt(slice.Average(v =&gt; Math.Pow(decimal.ToDouble(v-slice.Average()), 2))));
         zScore[symbol].Add((decimal.ToDouble(closes[symbol][i]) - rollingMean[symbol].Last()) / rollingStd[symbol].Last());
@@ -61,7 +61,7 @@ foreach(var kvp in rollingMean)
     for (int i=1; i &lt; rollingMean.Values.ElementAt(0).Count; i++)
     {
         magnitude[symbol].Add(-zScore[symbol][i] * rollingStd[symbol][i] / decimal.ToDouble(closes[symbol][i-1]));
-        confidence[symbol].Add(Normal.CDF(0, 1, zScore[symbol].Last()));
+        confidence[symbol].Add(Normal.CDF(0, 1, -zScore[symbol][i]));
         weights[symbol].Add(Math.Max(confidence[symbol].Last() - 1 / (magnitude[symbol].Last() + 1), 0));
     }
 }</pre>
@@ -106,12 +106,13 @@ confidence.fillna(0, inplace=True)</pre>
 }
 weight = Normalize(weight);</pre>
         <pre class="python">weight = confidence - 1 / (magnitude + 1)
-sum_ = np.sum(weight+1, axis=1)
-for i in range(edge.shape[0]):
+weight = weight[weight > 0].fillna(0)
+sum_ = np.sum(weight, axis=1)
+for i in range(weight.shape[0]):
     if sum_[i] > 0:
-        weight.iloc[i] = (weight.iloc[i] + 1) / sum_[i]
+        weight.iloc[i] = weight.iloc[i] / sum_[i]
     else:
-        weight.iloc[i] = 0</pre>
+        weight.iloc[i] = 0
+weight = weight.iloc[:-1]</pre>
     </div>
-    <img class="python" style="max-width: 100%; display: block" src="https://cdn.quantconnect.com/i/tu/mean-reversion-weight.png">
 </ol>
