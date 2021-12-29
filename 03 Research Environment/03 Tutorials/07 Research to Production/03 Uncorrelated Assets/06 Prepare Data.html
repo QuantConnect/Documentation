@@ -1,0 +1,70 @@
+<p>We'll have to process our data to get their correlation and select the least related ones.</p>
+
+<ol>
+    <li class="csharp">Extract daily return for each <code>Symbol</code> from <code>Slice</code> data.</li>
+    <li class="python">Select the close column and then call the <code>unstack</code> method, then call <code>pct_change</code> to compute the daily return.</li>
+    <div class="section-example-container">
+        <pre class="csharp">public Dictionary&lt;string, List&lt;Double&gt;&gt; GetReturns(IEnumerable&lt;Slice&gt; history){
+    var returns = new Dictionary&lt;string, List&lt;Double&gt;&gt;();
+    var last = new Dictionary&lt;string, Double&gt;();
+    foreach(var slice in history){
+        foreach(var symbol in slice.Bars.Keys){
+            if(!returns.ContainsKey(symbol)){
+                returns.Add(symbol, new List&lt;Double&gt;());
+                last.Add(symbol, (Double)slice.Bars[symbol].Close);
+            }
+            var change = (Double) ((Double)slice.Bars[symbol].Close - last[symbol])/last[symbol];
+            returns[symbol].Add(change);
+        }    
+    }
+    return returns;
+}
+
+var returns = GetReturns(history);</pre>
+        <pre class="python">returns = history['close'].unstack(level=0).pct_change().iloc[1:]</pre>
+    </div>
+
+    <li>Write a function to obtain the least correlated 5 assets.</li>
+    <div class="section-example-container">
+        <pre class="csharp">public Dictionary&lt;string, Double&gt; GetCorrelations(Dictionary&lt;string, List&lt;Double&gt;&gt; returns){
+    
+    var correlations = new Dictionary&lt;string, Double&gt;();
+    
+    foreach(var symbol in returns.Keys){
+        if(!correlations.ContainsKey(symbol)){
+            correlations.Add(symbol, 0);
+        }
+        
+        foreach(var symbol2 in returns.Keys){
+            if(symbol == symbol2) {
+                continue;
+            }
+            var corr = Correlation.Pearson(returns[symbol], returns[symbol2]);
+            correlations[symbol] += Math.Abs(corr);
+        }        
+       
+    }    
+    
+    return correlations;
+}
+
+var corr = GetCorrelations(returns);
+var selected = corr.OrderBy(x => x.Value).Take(5);     </pre>
+        <pre class="python">def GetUncorrelatedAssets(returns, num_assets):
+    # Get correlation
+    correlation = returns.corr()
+    
+    # Find assets with lowest mean correlation, scaled by STD
+    selected = []
+    for index, row in correlation.iteritems():
+        corr_rank = row.abs().mean()/row.abs().std()
+        selected.append((index, corr_rank))
+
+    # Sort and take the top num_assets
+    selected = sorted(selected, key = lambda x: x[1])[:num_assets]
+    
+    return selected
+
+selected = GetUncorrelatedAssets(returns, 5)</pre>
+    </div>
+</ol>
