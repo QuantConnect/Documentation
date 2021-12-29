@@ -1,0 +1,97 @@
+<p>Once we are confident in our hypothesis, we can export this code into backtesting. One way to accomodate this model into backtest is to create a scheduled event which uses our model to predict the expected return. Since we could calculate the expected return, we'd use Mean-Variance Optimization for portfolio construction.</p>
+
+<div class="section-example-container">
+    <pre class="python">def Initialize(self):
+
+    #1. Required: Five years of backtest history
+    self.SetStartDate(2014, 1, 1)
+
+    #2. Required: Alpha Streams Models:
+    self.SetBrokerageModel(BrokerageName.AlphaStreams)
+
+    #3. Required: Significant AUM Capacity
+    self.SetCash(1000000)
+
+    #4. Required: Benchmark to SPY
+    self.SetBenchmark("SPY")
+    
+    self.SetPortfolioConstruction(MeanVarianceOptimizationPortfolioConstructionModel(portfolioBias = PortfolioBias.Long,
+                                                                                    period=252))
+    self.SetExecution(ImmediateExecutionModel())
+
+    self.assets = ["SHY", "TLT", "IEI", "SHV", "TLH", "EDV", "BIL",
+                    "SPTL", "TBT", "TMF", "TMV", "TBF", "VGSH", "VGIT",
+                    "VGLT", "SCHO", "SCHR", "SPTS", "GOVT"]
+    
+    # Add Equity ------------------------------------------------ 
+    for i in range(len(self.assets)):
+        self.AddEquity(self.assets[i], Resolution.Minute)
+        
+    # Initialize the timer to train the Machine Learning model
+    self.time = datetime.min
+    
+    # Set Scheduled Event Method For Our Model
+    self.Schedule.On(self.DateRules.EveryDay(), self.TimeRules.BeforeMarketClose("SHY", 5), self.EveryDayBeforeMarketClose)</pre>
+</div>
+
+<p>We'll also need to create a function to train and update our model from time to time.</p>
+
+<div class="section-example-container">
+    <pre class="python">def BuildModel(self):
+    # Initialize the Random Forest Regressor
+    self.regressor = RandomForestRegressor(n_estimators=100, min_samples_split=5, random_state = 1990)
+    
+    # Get historical data
+    history = self.History(self.Securities.Keys, 360, Resolution.Daily)
+    
+    # Select the close column and then call the unstack method.
+    df = history['close'].unstack(level=0)
+    
+    # Feature engineer the data for input.
+    input_ = df.diff() * 0.5 + df * 0.5
+    input_ = input_.iloc[1:].ffill().fillna(0)
+    
+    # Shift the data for 1-step backward as training output result.
+    output = df.shift(-1).iloc[:-1].ffill().fillna(0)
+    
+    # Fit the regressor
+    self.regressor.fit(input_, output)</pre>
+</div>
+
+<p>Now we export our model into the scheduled event method. We will switch <code>qb</code> with <code>self</code> and replace methods with their <code>QCAlgorithm</code> counterparts as needed. In this example, this is not an issue because all the methods we used in research also exist in <code>QCAlgorithm</code>.</p>
+
+<div class="section-example-container">
+    <pre class="python">def EveryDayBeforeMarketClose(self):
+    # Retrain the regressor every month
+    if self.time < self.Time:
+        self.BuildModel()
+        self.time = Expiry.EndOfMonth(self.Time)
+    
+    qb = self
+    # Fetch history on our universe
+    df = qb.History(qb.Securities.Keys, 2, Resolution.Daily)
+    if df.empty: return
+
+    # Make all of them into a single time index.
+    df = df.close.unstack(level=0)
+
+    # Feature engineer the data for input
+    input_ = df.diff() * 0.5 + df * 0.5
+    input_ = input_.iloc[-1].fillna(0).values.reshape(1, -1)
+    
+    # Predict the expected price
+    predictions = self.regressor.predict(input_)
+    
+    # Get the expected return
+    predictions = (predictions - df.iloc[-1].values) / df.iloc[-1].values
+    predictions = predictions.flatten()
+
+    # ==============================
+    
+    insights = []
+    
+    for i in range(len(predictions)):
+        insights.append( Insight.Price(self.assets[i], timedelta(days=1), InsightDirection.Up, predictions[i]) )
+
+    self.EmitInsights(insights)</pre>
+</div>

@@ -1,0 +1,34 @@
+<p>We'll have to process our data as well as build the ML model before testing the hypothesis. Our methodology is to use fractional differencing price data as input data in order to (1) provide stationarity, and (2) retain variance of the previous price information. We assume d=0.5 is the right balance to do so.</p>
+
+<ol>
+    <li>Select the close column and then call the <code>unstack</code> method.</li>
+    <div class="section-example-container">
+        <pre class="python">df = history['close'].unstack(level=0)</pre>
+    </div>
+
+    <li>Feature engineer the data for input.</li>
+    <div class="section-example-container">
+        <pre class="python">input_ = df.diff() * 0.5 + df * 0.5
+input_ = input_.iloc[1:]</pre>
+    </div>
+
+    <li>Shift the data for 1-step backward as training output result.</li>
+    <div class="section-example-container">
+        <pre class="python">output = df.shift(-1).iloc[:-1]</pre>
+    </div>
+
+    <li>Split the data into training and testing sets.</li>
+    <div class="section-example-container">
+        <pre class="python">X_train, X_test, y_train, y_test = train_test_split(input_, output, test_size = 0.2, random_state = 1990)</pre>
+    </div>
+
+    <li>Initialize a Random Forest Regressor.</li>
+    <div class="section-example-container">
+        <pre class="python">regressor = RandomForestRegressor(n_estimators=100, min_samples_split=5, random_state = 1990)</pre>
+    </div>
+
+    <li>Fit the regressor.</li>
+    <div class="section-example-container">
+        <pre class="python">regressor.fit(X_train, y_train)</pre>
+    </div>
+</ol>
