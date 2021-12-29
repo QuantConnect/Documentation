@@ -1,4 +1,4 @@
-<p>We'll have to process our data as well as build the ML model before testing the hypothesis. Our methodology is to use fractional differencing price data as input data in order to (1) provide stationarity, and (2) retain variance of the previous price information. We assume d=0.5 is the right balance to do so.</p>
+<p>We'll have to process our data as well as to build the ML model before testing the hypothesis. Our methodology is to use fractional differencing close price as the input data in order to (1) provide stationarity, and (2) retain sufficient extent of variance of the previous price information. We assume d=0.5 is the right balance to do so.</p>
 
 <ol>
     <li>Select the close column and then call the <code>unstack</code> method.</li>
@@ -6,7 +6,7 @@
         <pre class="python">df = history['close'].unstack(level=0)</pre>
     </div>
 
-    <li>Feature engineer the data for input.</li>
+    <li>Feature engineer the data as fractional differencing for input.</li>
     <div class="section-example-container">
         <pre class="python">input_ = df.diff() * 0.5 + df * 0.5
 input_ = input_.iloc[1:]</pre>
