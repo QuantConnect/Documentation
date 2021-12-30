@@ -1,20 +1,34 @@
-<p>To test the hypothesis. Our desired outcome would be a consistent and low fluctuation equity curve should be seen, as compared with benchmark.</p>
+<p>To test the hypothesis: Our desired outcome would be a consistent and low fluctuation equity curve should be seen, as compared with benchmark.</p>
 
 <ol>
-    <li>Construct a equal weighting portfolio for 5-asset-portfolio.</li>
+    <li>Construct a equal weighting portfolio for the 5-uncorrelated-asset-portfolio and the 5-correlated-asset-portfolio (benchmark).</li>
     <div class="section-example-container">
-        <pre class="csharp">decimal[,] portRet = new decimal[returns.GetLength(0), 5]{}
+        <pre class="csharp">double[,] portRet = new double[returns.Values.ElementAt(0).Count, 5];
 int j = 0;
-foreach(var symbol in selected.Keys){
-    for(int i=0; i < returns[symbol].Count; i++){
-        portRet[i, j] = decimal.ToDouble(returns[symbol][i]) / 5;
+foreach(var kvp in selected){
+    var symbol = kvp.Key;
+    for(int i=0; i < returns[symbol].Count; i++)
+    {
+        portRet[i, j] = returns[symbol][i] / 5;
+    }
+    j++;
+}
+
+double[,] benchRet = new double[returns.Values.ElementAt(0).Count, 5];
+j = 0;
+foreach(var kvp in benchmark){
+    var symbol = kvp.Key;
+    for(int i=0; i < returns[symbol].Count; i++)
+    {
+        benchRet[i, j] = returns[symbol][i] / 5;
     }
     j++;
 }</pre>
-        <pre class="python">port_ret = returns[x[0] for x in selected] / 5</pre>
+        <pre class="python">port_ret = returns[[x[0] for x in selected]] / 5
+bench_ret = returns[[x[0] for x in benchmark]] / 5</pre>
     </div>
 
-    <li class="csharp">Get the Equity Return.</li>
+    <li class="csharp">Get the Equity Return for both portfolios.</li>
     <li class="python">Call <code>cumprod</code> to get the cumulative return.</li>
     <div class="section-example-container">
         <pre class="csharp">var totalValue = new List&lt;double&gt;{1.0};
@@ -25,26 +39,69 @@ for(int i=0; i < portRet.GetLength(0); i++)
     dailySum = 0.0;
     for (int j=0; j < portRet.GetLength(1); j++)
     {
-        if (double.IsFinite(port_ret[i, j]))
+        if (double.IsFinite(portRet[i, j]))
         {
-            dailySum += port_ret[i, j]
+            dailySum += portRet[i, j];
+        }
+    }
+}
+
+var totalValueBench = new List&lt;double&gt;{1.0};
+var dailySumBench = 0.0;
+for(int i=0; i < benchRet.GetLength(0); i++)
+{
+    totalValueBench.Add(totalValueBench.Last() * (1 + dailySumBench));
+    dailySumBench = 0.0;
+    for (int j=0; j < benchRet.GetLength(1); j++)
+    {
+        if (double.IsFinite(benchRet[i, j]))
+        {
+            dailySumBench += benchRet[i, j];
         }
     }
 }</pre>
-        <pre class="python">total_ret = (port_ret + 1).cumprod()</pre>
+        <pre class="python">total_ret = (np.sum(port_ret, axis=1) + 1).cumprod()
+total_ret_bench = (np.sum(bench_ret, axis=1) + 1).cumprod()</pre>
+    </div>
+
+    <li class="csharp">Calculate the variance of the 2 portfolios.</li>
+    <div class="csharp section-example-container">
+        <pre class="csharp">var returnPort = new List&lt;double&gt;();
+previous = 0.0;
+for(int i=0; i < totalValue.Count; i++)
+{
+    var current = totalValue[i];
+    returnPort.Add((current - previous) / previous);
+    previous = current;
+}
+var varPort = Math.Sqrt(returnPort.Skip(1).Average(v=>Math.Pow(v-returnPort.Skip(1).Average(),2)));
+
+var returnBench = new List&lt;double&gt;();
+previous = 0.0;
+for(int i=0; i < totalValueBench.Count; i++)
+{
+    var current = totalValueBench[i];
+    returnBench.Add((current - previous) / previous);
+    previous = current;
+}
+var varBench = Math.Sqrt(returnBench.Skip(1).Average(v=>Math.Pow(v-returnBench.Skip(1).Average(),2)));</pre>
     </div>
 
     <li class="csharp">Print the result.</li>
     <li class="python">Plot the result.</li>
     <div class="section-example-container">
-        <pre class="csharp">for(int i=0; i < totalValue.Count; i=i+)
-{
-    Console.WriteLine("Portfolio Value in Day{0}: {1}", i, totalValue[i]);
-}</pre>
-        <pre class="python">total_ret.plot(title='Strategy Equity Curve', figsize=(15, 10))
-plt.show()/pre>
+        <pre class="csharp">Console.WriteLine("Portfolio Return: {0}, Variance: {1}", (totalValue.Last() - totalValue.First())/totalValue.First(), varPort);
+Console.WriteLine("Benchmark Return: {0}, Variance: {1}", (totalValueBench.Last() - totalValueBench.First())/totalValueBench.First(), varBench);</pre>
+        <pre class="python">plt.figure(figsize=(15, 10))
+total_ret.plot(label='Proposed')
+total_ret_bench.plot(label='Benchmark')
+plt.title('Equity Curve')
+plt.legend()
+plt.show()</pre>
     </div>
-    <img class="csharp" style="max-width: 100%; display: block" src="">
-    <img class="python" style="max-width: 100%; display: block" src="">
+    <img class="csharp" style="max-width: 100%; display: block" src="https://cdn.quantconnect.com/i/tu/uncorrelated-assets-result-2.png">
+    <img class="python" style="max-width: 100%; display: block" src="https://cdn.quantconnect.com/i/tu/uncorrelated-assets-plot.png">
 </ol>
+
+<p>We can clearly see from the results, the proposed uncorrelated-asset-portfolio has a lower variance/fluctuation, thus more consistent than the benchmark. This proven our hypothesis.</p>
 
