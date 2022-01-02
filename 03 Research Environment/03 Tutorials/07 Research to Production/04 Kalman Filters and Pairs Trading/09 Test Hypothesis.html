@@ -1,0 +1,41 @@
+<p>To test the hypothesis. We wish to obtain a profiting strategy.</p>
+
+<ol>
+    <li>Set the trading weight. We would like the portfolio absolute total weight is 1 when trading.</li>
+    <div class="section-example-container">
+        <pre class="python">trading_weight = beta @ opt.x
+trading_weight /= np.sum(abs(trading_weight))</pre>
+    </div>
+
+    <li>Set up the trading data.</li>
+    <div class="section-example-container">
+        <pre class="python">testing_ret = data.pct_change().iloc[1:].shift(-1)   # Shift 1 step backward as forward return result
+equity = pd.DataFrame(np.ones((testing_ret.shape[0], 1)), index=testing_ret.index, columns=["Daily value"])</pre>
+    </div>
+
+    <li>Set the buy and sell preiod when the spread exceeds the threshold.</li>
+    <div class="section-example-container">
+        <pre class="python">buy_period = normalized_spread[normalized_spread < -threshold].index
+sell_period = normalized_spread[normalized_spread > threshold].index</pre>
+    </div>
+
+    <li>Trade the portfolio.</li>
+    <div class="section-example-container">
+        <pre class="python">equity.loc[buy_period, "Daily value"] = testing_ret.loc[buy_period] @ trading_weight + 1
+equity.loc[sell_period, "Daily value"] = testing_ret.loc[sell_period] @ -trading_weight + 1</pre>
+    </div>
+    
+    <li>Get the total portfolio value.</li>
+    <div class="section-example-container">
+        <pre class="python">value = equity.cumprod()</pre>
+    </div>
+
+    <li>Plot the result.</li>
+    <div class="section-example-container">
+        <pre class="python">value.plot(title="Equity Curve", figsize=(15, 10))
+plt.ylabel("Portfolio Value")
+plt.show()</pre>
+    </div>
+    <img style="max-width: 100%; display: block" src="https://cdn.quantconnect.com/i/tu/kalman-filter-stat-arb-result.png">
+</ol>
+

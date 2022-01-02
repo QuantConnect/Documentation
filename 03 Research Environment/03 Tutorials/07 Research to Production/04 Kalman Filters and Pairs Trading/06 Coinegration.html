@@ -1,0 +1,107 @@
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});
+</script>
+<script type="text/javascript"
+  src="http://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+<p>We'll have to test if the assets are cointegrated. If so, we'll have to obtain the cointegration vector(s).</p>
+
+<h4>Cointegration Testing</h4>
+<ol>
+    <li>Select the close column and then call the <code>unstack</code> method.</li>
+    <div class="section-example-container">
+        <pre class="python">df = history['close'].unstack(level=0)</pre>
+    </div>
+
+    <li>Call <code>np.log</code> to convert the close price into log-price series to eliminate compounding effect.</li>
+    <div class="section-example-container">
+        <pre class="python">log_price = np.log(data)</pre>
+    </div>
+
+    <li>Apply Engle Granger Test to check if the series are cointegrated.</li>
+    <div class="section-example-container">
+        <pre class="python">coint_result = engle_granger(log_price.iloc[:, 0], log_price.iloc[:, 1:], trend='n', method='bic')</pre>
+    </div>
+    <img style="max-width: 100%; display: block" src="https://cdn.quantconnect.com/i/tu/kalman-filter-stat-egt.png">
+    <p>It shows a p-value < 0.05 for the unit test, with lag-level 0. This proven the log price series are cointegrated in realtime. The spread of the 5 forex pairs are stationary.</p>
+</ol>
+
+<h4>Get Cointegration Vectors</h4>
+<p>We would use a VECM model to obtain the cointegrated vectors.</p>
+<ol>
+    <li>Initialize a <code>VECM</code> model by following the unit test parameters, then fit to our data.</li>
+    <div class="section-example-container">
+        <pre class="python">vecm_result = VECM(log_price, k_ar_diff=0, coint_rank=len(assets)-1, deterministic='n').fit()</pre>
+    </div>
+
+    <li>Obtain the <code>Beta</code> attribute. This is the cointegration subspaces' unit vectors.</li>
+    <div class="section-example-container">
+        <pre class="python">beta = vecm_result.beta</pre>
+    </div>
+
+    <li>Check the spread of different cointegration subspaces.</li>
+    <div class="section-example-container">
+        <pre class="python">spread = log_price @ beta</pre>
+    </div>
+
+    <li>Plot the results.</li>
+    <div class="section-example-container">
+        <pre class="python">fig, axs = plt.subplots(beta.shape[1], figsize=(15, 15))
+fig.suptitle('Spread for various cointegrating vectors')
+for i in range(beta.shape[1]):
+    axs[i].plot(spread.iloc[:, i])
+    axs[i].set_title(f"The {i+1}th normalized cointegrating subspace")
+plt.show()</pre>
+    </div>
+    <img style="max-width: 100%; display: block" src="https://cdn.quantconnect.com/i/tu/kalman-filter-stat-arb-coint-subspaces.png">
+</ol>
+
+
+<h4>Optimization of Cointegration Subspaces</h4>
+<p>Although the 4 cointegratoin subspaces are not looking stationarym, we can optimize for a mean-reverting portfolio by putting various weights in different subspaces. We use the Portmanteau statistics as a proxy for the mean reversion. So we formulate:</p>
+$$\begin{equation*}
+\begin{aligned}
+& \underset{w}{\text{minimize}}
+& & \mathrm (\frac {w^{T}M_{1}w} {w^{T}M_{0}w}) ^{2} \\
+& \text{subject to}
+& & w^{T}M_{0}w = \nu\\
+&&& 1^Tw = 0\\
+& \text{where}
+& & M_i \triangleq Cov(s_t, s_{t+i}) = E[(s_t − E[s_t]) (s_{t+i} − E[s_{t+i}])^T] \\
+\end{aligned}
+\end{equation*}$$<br/>
+<p>with s is spread, v is predetermined desirable variance level (the larger the higher the profit, but lower the trading frequency)</p>
+<ol>
+    <li>We set the weight on each vector is between -1 and 1. While overall sum is 0.</li>
+    <div class="section-example-container">
+        <pre class="python">x0 = np.array([-1**i/beta.shape[1] for i in range(beta.shape[1])])
+bounds = tuple((-1, 1) for i in range(beta.shape[1]))
+constraints = [{'type':'eq', 'fun':lambda x: np.sum(x)}]</pre>
+    </div>
+
+    <li>Optimize the Portmanteau statistics.</li>
+    <div class="section-example-container">
+        <pre class="python">opt = minimize(lambda w: ((w.T @ np.cov(spread.T, spread.shift(1).fillna(0).T)[spread.shape[1]:, :spread.shape[1]] @ w)/(w.T @ np.cov(spread.T) @ w))**2,
+               x0=x0,
+               bounds=bounds,
+               constraints=constraints,
+               method="SLSQP")</pre>
+    </div>
+
+    <li>Normalize the result.</li>
+    <div class="section-example-container">
+        <pre class="python">opt.x = opt.x/np.sum(abs(opt.x))
+for i in range(len(opt.x)):
+    print(f"The weight put on {i+1}th normalized cointegrating subspace: {opt.x[i]}")</pre>
+    </div>
+
+    <li>Plot the weighted spread.</li>
+    <div class="section-example-container">
+        <pre class="python">new_spread = spread @ opt.x
+new_spread.plot(title="Weighted spread", figsize=(15, 10))
+plt.ylabel("Spread")
+plt.show()</pre>
+    </div>
+    <img style="max-width: 100%; display: block" src="https://cdn.quantconnect.com/i/tu/kalman-filter-stat-arb-weighted-spread.png">
+</ol>

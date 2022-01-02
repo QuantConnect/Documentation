@@ -1,0 +1,69 @@
+<p>Now we need to determine the threshold of entry. We want to maximize profit from each trade (variance of spread) x frequency of entry. To do so, we formulate:</p>
+$$\begin{equation*}
+\begin{aligned}
+& \underset{f}{\text{minimize}}
+& & \begin{Vmatrix}
+\bar{f} - f
+\end{Vmatrix}_{2}^{2} + \lambda\ \begin{Vmatrix}Df\end{Vmatrix}_{2}^{2} \\
+& \text{where}
+& & \bar{f_j} = \frac{\sum_{t=1}^T 1_{\{spread_t\ >\ set\ level_j\}}}{T}\\
+&&& D = \begin{bmatrix}
+1 & -1 & & &\\
+& 1 & -1 & &\\
+&  & \ddots & \ddots & \\
+&  &  & 1 & -1
+\end{bmatrix} 
+\in \mathbb{R}^{(j - 1) \times j}\\
+\end{aligned}
+\end{equation*}$$
+<p>so $f^* = (I+\lambda D^TD)^{-1}\bar{f}$ </p>
+
+<ol>
+    <li>Initialize 50 set levels for testing.</li>
+    <div class="section-example-container">
+        <pre class="python">s0 = np.linspace(0, max(normalized_spread), 50)</pre>
+    </div>
+
+    <li>Calculate the profit levels using the 50 set levels.</li>
+    <div class="section-example-container">
+        <pre class="python">f_bar = np.array([None]*50)
+            for i in range(50):
+                f_bar[i] = len(normalized_spread.values[normalized_spread.values > s0[i]]) / normalized_spread.shape[0]</pre>
+    </div>
+
+    <li>Set trading frequency matrix.</li>
+    <div class="section-example-container">
+        <pre class="python">D = np.zeros((49, 50))
+for i in range(D.shape[0]):
+    D[i, i] = 1
+    D[i, i+1] = -1</pre>
+    </div>
+
+    <li>Set level of lambda.</li>
+    <div class="section-example-container">
+        <pre class="python">l = 1.0</pre>
+    </div>
+
+    <li>Obtain the normalized profit level.</li>
+    <div class="section-example-container">
+        <pre class="python">f_star = np.linalg.inv(np.eye(50) + l * D.T@D) @ f_bar.reshape(-1, 1)
+s_star = [f_star[i]*s0[i] for i in range(50)]</pre>
+    </div>
+
+    <li>Get the maximum profit level as threshold.</li>
+    <div class="section-example-container">
+        <pre class="python">threshold = s0[s_star.index(max(s_star))]
+print(f"The optimal threshold is {threshold}")</pre>
+    </div>
+
+    <li>Plot the result.</li>
+    <div class="section-example-container">
+        <pre class="python">plt.figure(figsize=(15, 10))
+plt.plot(s0, s_star)
+plt.title("Profit of mean-revertion trading")
+plt.xlabel("Threshold")
+plt.ylabel("Profit")
+plt.show()</pre>
+    </div>
+    <img style="max-width: 100%; display: block" src="https://cdn.quantconnect.com/i/tu/kalman-filter-stat-arb-threshold.png">
+</ol>
