@@ -94,17 +94,17 @@
     self.currentCov = filtered_state_covariances[-1, :]
     
     # Initialize a mean series for spread normalization using the Kalman Filter's results.
-    mean_series = np.array([None]*(new_spread.shape[0]-100))
+    mean_series = np.array([None]*(new_spread.shape[0]-20))
     
     # Roll over the Kalman Filter to obtain the mean series.
-    for i in range(100, new_spread.shape[0]):
+    for i in range(20, new_spread.shape[0]):
         (self.currentMean, self.currentCov) = self.kalmanFilter.filter_update(filtered_state_mean = self.currentMean,
                                                                 filtered_state_covariance = self.currentCov,
                                                                 observation = new_spread.iloc[i])
-        mean_series[i-100] = float(self.currentMean)
+        mean_series[i-20] = float(self.currentMean)
     
     # Obtain the normalized spread series.
-    normalized_spread = (new_spread.iloc[100:] - mean_series)
+    normalized_spread = (new_spread.iloc[20:] - mean_series)
     
     ### Determine Trading Threshold
     # Initialize 50 set levels for testing.
