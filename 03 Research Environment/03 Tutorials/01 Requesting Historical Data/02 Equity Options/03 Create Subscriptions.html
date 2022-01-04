@@ -10,6 +10,8 @@ using QuantConnect;
 using QuantConnect.Data;
 using QuantConnect.Data.Market;
 using QuantConnect.Algorithm;
+using QuantConnect.Securities;
+using QuantConnect.Securities.Option;
 using QuantConnect.Research;</pre>
     </div>
     <li>Instantiate a <code>QuantBook</code>.</li>
@@ -46,4 +48,28 @@ using QuantConnect.Research;</pre>
         <pre class="python">option.SetFilter(-2, 2, 0, 90)</pre>
     </div>
     <p>If you don't call the <code>SetFilter</code> method, the default values of the <code>minStrike</code>, <code>maxStrike</code>, <code>minExpiryDays</code>, and <code>maxExpiryDays </code>parameters are <code>-1</code>, <code>1</code>, <code>0</code>, and <code>35</code>, respectively.</p>
+</ol>
+
+<p>If you want historical data on individual contracts and their <code>OpenInterest</code>, you need to subscribe to the individual contracts. You need to subscribe to the underlying <code>Equity</code> before you can subscribe to the contracts of the Option. Follow these steps to subscribe to individual Option contracts:</p>
+<ol>
+    <li>Call the <code>GetOptionsContractList</code> method with the underlying <code>Equity</code> <code>Symbol</code> and a <code class="python">datetime</code><code class="csharp">DateTime</code>.</li>
+    <div class="section-example-container">
+        <pre class="csharp">var startDate = new DateTime(2021,12,20);
+var symbols = qb.OptionChainProvider.GetOptionContractList(equity.Symbol, startDate);</pre>
+    <pre class="python">start_date = dateTime(2021,12,20)
+symbols = qb.OptionChainProvider.GetOptionContractList(equity.Symbol, start_date)</pre>
+    </div>
+    <p>The call returns a list of <code>Symbol</code>s that reference the <code>OptionContract</code>s that were trading at the given time.</p>
+    <li>Select the <code>Symbol</code> of the <code>OptionContract</code>(s) for which you want to get historical data.</li>
+    <p>For example, you can select an arbitrary <code>Symbol</code>.</p>
+    <div class="section-example-container">
+      <pre class="csharp">var contractSymbol = symbols.ToArray()[7235];</pre>
+	    <pre class="python">contract_symbol = symbols[7235]</pre>
+    </div>
+	<li>Call the <code>AddOptionContract</code> method with an <code>OptionContract</code> <code>Symbol</code> and disable fill-forward.</li>
+    <div class="section-example-container">
+      <pre class="csharp">qb.AddOptionContract(contractSymbol, fillDataForward: false);</pre>
+	    <pre class="python">qb.AddOptionContract(contract_symbol, fillDataForward = False)</pre>
+    </div>
+  <p>Disabling fill-forward is a good practice since there is only a few <code>OpenInterest</code> data points per day.</p>
 </ol>
