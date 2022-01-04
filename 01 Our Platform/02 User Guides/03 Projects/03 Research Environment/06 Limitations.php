@@ -1,7 +1,7 @@
 <p>There are several limitations to note when working with the Research Environment.</p>
 
 <h4>Node Specifications</h4>
-<p>Research nodes are not as powerful as backtesting and live trading nodes because the Research Environment only works with static data. In the Research Environment, you can control the amount of data that you're analyzing. In backtesting, there is much more data to process. The following table shows the specifications of the research node models:</p>
+<p>Research nodes are not as powerful as backtesting and live trading nodes because the Research Environment only works with static data. In the Research Environment, you can control the amount of data that you're analyzing. In backtesting, there is much more data to process so you need more powerful nodes. The following table shows the specifications of the research node models:</p>
 
 <?php echo file_get_contents(DOCS_RESOURCES."/research-nodes-table.html"); ?>
 
