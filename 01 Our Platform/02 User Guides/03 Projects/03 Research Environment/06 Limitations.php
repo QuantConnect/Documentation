@@ -12,4 +12,4 @@
 <p>Universe selection is not currently supported in the Research Environment. Subscribe to <a href="https://github.com/QuantConnect/Lean/issues/1614">GitHub Issue #1614</a> to stay informed of our progress in adding this functionality.</p>
 
 <h4>File Size</h4>
-<p>Research notebooks are limited to 128KB. The reason for the file size limit on notebooks is because whenever there is a change to a file, the entire file is sent to our servers to save. The file limit ensures a fast and successful upload and download communication. Therefore, we recommend breaking up notebook files into manageable sizes.</p>
+<p>Research notebooks are limited to 128KB. We limit the size of notebooks because when you change a notebook file, the entire file is sent to our servers to save. The file limit ensures a fast and successful connection for uploading and downloading files. If your notebook files exceed the limit, break up your notebook files into manageable sizes.</p>
