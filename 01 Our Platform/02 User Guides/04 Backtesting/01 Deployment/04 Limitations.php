@@ -1,7 +1,7 @@
 <p>There are limitations on the number of nodes your organization can have, the number of orders you complete in a backtest, and the amount of logs that you can produce. The limitations are eased as your organization grows to higher tiers.</p>
 
 <h4>Nodes</h4>
-<p>The number of backtesting nodes you can have in your organization depends on the tier of your organization. The maximum number of backtesting nodes for each tier is the following:</p>
+<p>The number of backtesting nodes that you can have in your organization depends on the tier of your organization. The maximum number of backtesting nodes for each tier is the following:</p>
 <ul>
     <li><b>Free</b>: 1</li>
     <li><b>Quant Researcher</b>: 2</li>
@@ -11,7 +11,7 @@
 </ul>
 
 <h4>Orders</h4>
-<p>The number of orders you can place in a single backtest depends on the tier of your organization. The maximum number of orders per backtest for each tier is the following:<br></p>
+<p>The number of orders that you can place in a single backtest depends on the tier of your organization. The maximum number of orders per backtest for each tier is the following:<br></p>
 <ul>
     <li><b>Free</b>: 10K</li>
     <li><b>Quant Researcher</b>: 10M</li>
