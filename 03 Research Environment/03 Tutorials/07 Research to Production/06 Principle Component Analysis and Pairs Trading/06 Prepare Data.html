@@ -1,0 +1,61 @@
+<p>We'll have to process our data to get the principle component unit vector that explains the most variance, then find the highest- and lowest-absolute-weighing assets as the pair, since the lowest one's variance is mostly explained by the highest.</p>
+
+<ol>
+    <li>Select the close column and then call the <code>unstack</code> method.</li>
+    <div class="section-example-container">
+        <pre class="python">close_price = history['close'].unstack(level=0)</pre>
+    </div>
+
+    <li>Call <code>pct_change</code> to compute the daily return.</li>
+    <div class="section-example-container">
+        <pre class="python">returns = close_price.pct_change().iloc[1:]</pre>
+    </div>
+
+    <li>Initialize a <code>PCA</code> model, then get the principle components by the maximum likelihood.</li>
+    <div class="section-example-container">
+        <pre class="python">pca = PCA()
+pca.fit(returns)</pre>
+    </div>
+
+    <li>Get the number of principle component in a list, and their corresponding explained variance ratio.</li>
+    <div class="section-example-container">
+        <pre class="python">components = [str(x + 1) for x in range(pca.n_components_)]
+explained_variance_pct = pca.explained_variance_ratio_ * 100</pre>
+    </div>
+
+    <li>Plot the principle components' explained variance ratio.</li>
+    <div class="section-example-container">
+        <pre class="python">plt.figure(figsize=(15, 10))
+plt.bar(components, explained_variance_pct)
+plt.title("Ratio of Explained Variance")
+plt.xlabel("Principle Component #")
+plt.ylabel("%")
+plt.show()</pre>
+    </div>
+    <img style="max-width: 100%; display: block" src="https://cdn.quantconnect.com/i/tu/pca-pair-trading-explained-variance.png">
+    <p>We can see over 95% of the variance is explained by the first principle. We could conclude that collinearity exists and most assets' return are correlated. Now, we can extract the 2 most correlated pairs.</p>
+
+    <li>Get the weighting of each asset in the first principle component.</li>
+    <div class="section-example-container">
+        <pre class="python">first_component = pca.components_[0, :]</pre>
+    </div>
+
+    <li>Select the highest- and lowest-absolute-weighing asset.</li>
+    <div class="section-example-container">
+        <pre class="python">highest = assets[abs(first_component).argmax()]
+lowest = assets[abs(first_component).argmin()]
+print(f'The highest-absolute-weighing asset: {highest}\nThe lowest-absolute-weighing asset: {lowest}')</pre>
+    </div>
+
+    <li>Plot their weighings.</li>
+    <div class="section-example-container">
+        <pre class="python">plt.figure(figsize=(15, 10))
+plt.bar(assets, first_component)
+plt.title("Weightings of each asset in the first component")
+plt.xlabel("Assets")
+plt.ylabel("Weighting")
+plt.xticks(rotation=30)
+plt.show()</pre>
+    </div>
+    <img style="max-width: 100%; display: block" src="https://cdn.quantconnect.com/i/tu/pca-pair-trading-weightings.png">
+</ol>

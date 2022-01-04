@@ -1,0 +1,41 @@
+<p>We now selected 2 assets as candidate for pair-trading. Hence, we're going to test if they are cointegrated and their spread is stationary to do so.</p>
+
+<ol>
+    <li>Call <code>np.log</code> to get the log price of the pair.</li>
+    <div class="section-example-container">
+        <pre class="python">log_price = np.log(close_price[[highest, lowest]])</pre>
+    </div>
+
+    <li>Test cointegration by Engle Granger Test.</li>
+    <div class="section-example-container">
+        <pre class="python">coint_result = engle_granger(log_price.iloc[:, 0], log_price.iloc[:, 1], trend="c", lags=0)
+display(coint_result)</pre>
+    <img style="max-width: 100%; display: block" src="https://cdn.quantconnect.com/i/tu/pca-pair-trading-egt.png">
+    </div>
+
+    <li>Get their cointegrating vector.</li>
+    <div class="section-example-container">
+        <pre class="python">coint_vector = coint_result.cointegrating_vector[:2]</pre>
+    </div>
+
+    <li>Calculate the spread.</li>
+    <div class="section-example-container">
+        <pre class="python">spread = log_price @ coint_vector</pre>
+    </div>
+
+    <li>Use Augmented Dickey Fuller test to test its stationarity.</li>
+    <div class="section-example-container">
+        <pre class="python">pvalue = adfuller(spread, maxlag=0)[1]
+print(f"The ADF test p-value is {pvalue}, so it is {'' if pvalue < 0.05 else 'not '}stationary.")</pre>
+    </div>
+
+    <li>Plot the spread.</li>
+    <div class="section-example-container">
+        <pre class="python">spread.plot(figsize=(15, 10), title=f"Spread of {highest} and {lowest}")
+plt.ylabel("Spread")
+plt.show()</pre>
+    </div>
+    <img style="max-width: 100%; display: block" src="https://cdn.quantconnect.com/i/tu/pca-pair-trading-spread.png">
+    <p>Result shown that the pair is cointegrated and their spread is stationary, so they are potential pair for pair-trading.</p>
+</ol>
+
