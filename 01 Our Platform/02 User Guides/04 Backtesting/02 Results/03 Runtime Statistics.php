@@ -1,4 +1,4 @@
-<p>Performance statistics of your backtest are displayed in the banner at the top of the backtest results page.</p>
+<p>The banner at the top of the backtest results page displays performance statistics of your backtest.</p>
 
 <img style="max-width: 100%; margin-bottom: 20px" src="https://cdn.quantconnect.com/i/tu/runtime-statistics.png">
 
