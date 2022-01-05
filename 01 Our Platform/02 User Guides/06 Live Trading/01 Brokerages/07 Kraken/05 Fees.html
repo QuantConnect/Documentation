@@ -11,7 +11,7 @@
     <li>USDC</li>
 </ul>
 
-<p>The <code>KrakenFeeModel</code> charges fees in the quote currency when buying and in the base currency when selling by default. However, these can be overridden by defining the <code>KrakenOrderProperties</code>.</p>
+<p>The <code>KrakenFeeModel</code> charges fees in the quote currency when buying and in the base currency when selling. However, you can override these settings by defining <code>KrakenOrderProperties</code>.</p>
 <div class="section-example-container">
     <pre class="csharp">public override void Initialize()
 {
@@ -26,9 +26,7 @@
 public override void OnData(Slice data)
 {
     // Override the default order properties
-    LimitOrder(_symbol, 
-               quantity, 
-               limitPrice, 
+    LimitOrder(_symbol, quantity, limitPrice, 
                orderProperties: new KrakenOrderProperties
                { 
                    FeeInQuote = true, 
@@ -43,10 +41,10 @@ public override void OnData(Slice data)
 
 def OnData(self, data):
     # Override the default order properties
-    order_property = KrakenOrderProperties()
-    order_property.FeeInQuote = True
-    order_property.FeeInBase = False
-    self.LimitOrder(self.symbol, quantity, limit_price, orderProperties=order_property)</pre>
+    order_properties = KrakenOrderProperties()
+    order_properties.FeeInQuote = True
+    order_properties.FeeInBase = False
+    self.LimitOrder(self.symbol, quantity, limit_price, orderProperties=order_properties)</pre>
 </div>
 
 <p>The <code>KrakenFeeModel</code> does not currently model your 30-day trading volume to adjust the fees in backtests. In live trading, Kraken adjusts the fees.<br></p><p></p>
