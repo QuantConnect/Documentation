@@ -22,12 +22,12 @@ self.MarketOnCloseOrder(self.symbol, quantity)</pre>
 
 
 <h4>Order Properties</h4>
-<p>The <code>AtreyuBrokerageModel</code> supports custom order properties. You can define the following members of <code>AtreyuOrderProperties</code> to customize order execution:<br></p>
+<p>The <code>AtreyuBrokerageModel</code> supports custom order properties. You can define the following members of an <code>AtreyuOrderProperties</code> object to customize order execution:<br></p>
 
 <ul>
     <li><b><code>TimeInForce</code></b>: A <code>TimeInForce</code> instruction to apply to the order. The <code>Day</code> <code>TimeInForce</code> is supported.</li>
-    <li><b><code>Exchange</code></b>: An <code>Exchange</code> to which you want to route the order.</li>
-    <li><b><code>PostOnly</code></b>: A flag to signal that your order will only add liquidity to the order book and not take liquidity from the order book.</li>
+    <li><b><code>Exchange</code></b>: The <code>Exchange</code> where the order should be sent.</li>
+    <li><b><code>PostOnly</code></b>: A flag to signal that the order must only add liquidity to the order book and not take liquidity from the order book.</li>
 </ul>
 
 <div class="section-example-container">
@@ -48,7 +48,7 @@ public override void OnData(Slice data)
     LimitOrder(_symbol, quantity, limitPrice);
     
     // Override the default order properties
-    LimitOrder(symbol, 
+    LimitOrder(_symbol, 
                quantity, 
                limitPrice,
                orderProperties: new AtreyuOrderProperties 
@@ -56,7 +56,8 @@ public override void OnData(Slice data)
                    TimeInForce = TimeInForce.Day,
                    Exchange = Exchange.ARCA, 
                    PostOnly = true 
-               });</pre>
+               });
+}</pre>
     <pre class="python">def Initialize(self):
     # Set the default order properties
     self.DefaultOrderProperties = AtreyuOrderProperties()
@@ -77,7 +78,7 @@ def OnData(self, data):
 </div>
 
 <h4>Updates</h4>
-<p>The <code>AtreyuBrokerageModel</code> supports order updates. You can define the following members of <code>UpdateOrderFields</code> to update active orders:</p>
+<p>The <code>AtreyuBrokerageModel</code> supports order updates. You can define the following members of an <code>UpdateOrderFields</code> object to update active orders:</p>
 
 <ul>
     <li><code>Quantity</code></li>
