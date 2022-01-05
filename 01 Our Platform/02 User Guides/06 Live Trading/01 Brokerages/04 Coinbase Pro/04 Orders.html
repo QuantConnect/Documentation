@@ -6,7 +6,7 @@
 <ul>
     <li><code>MarketOrder</code></li>
     <li><code>LimitOrder</code></li>
-    <li><code>StopMarketOrder</code> (supported after 3/23/2019<sup><a href="https://blog.coinbase.com/coinbase-pro-market-structure-update-fbd9d49f43d7">3</a></sup>)</li>
+    <li><code>StopMarketOrder</code> (supported after 3/23/2019<sup><a href="https://blog.coinbase.com/coinbase-pro-market-structure-update-fbd9d49f43d7">3</a></sup> in backtests)</li>
     <li><code>StopLimitOrder</code></li>
 </ul>
 
@@ -22,11 +22,11 @@ self.StopLimitOrder(self.symbol, quantity, stop_price, limit_price)</pre>
 </div>
 
 <h4>Order Properties</h4>
-<p>The <code>GDAXBrokerageModel</code> supports custom order properties. You can define the following members of <code>GDAXOrderProperties</code> to customize order execution:</p>
+<p>The <code>GDAXBrokerageModel</code> supports custom order properties. You can define the following members of a <code>GDAXOrderProperties</code> object to customize order execution:</p>
 
 <ul>
     <li><b><code>TimeInForce</code></b>: A <code>TimeInForce</code> instruction to apply to the order. The <code>GoodTilCanceled</code> <code>TimeInForce</code> is supported.</li>
-    <li><b><code>PostOnly</code></b>: A flag signal that your order will only add liquidity to the order book and not take liquidity from the order book. If part of your order results in taking liquidity rather than providing liquidity, your order will be rejected without any part of it being filled.</li>
+    <li><b><code>PostOnly</code></b>: A flag signal that the order must only add liquidity to the order book and not take liquidity from the order book. If part of the order results in taking liquidity rather than providing liquidity, the order is rejected without any part of it being filled.</li>
 </ul>
 
 <div class="section-example-container">
@@ -73,7 +73,7 @@ def OnData(self, data):
 </div>
 
 <h4>Updates</h4>
-<p>The <code>GDAXBrokerageModel</code> does not support order updates. However, you can cancel an existing order and then create a new order with the desired arguments.</p>
+<p>The <code>GDAXBrokerageModel</code> does not support order updates, but you can cancel an existing order and then create a new order with the desired arguments.</p>
 
 <div class="section-example-container">
     <pre class="csharp">var ticket = LimitOrder(_symbol, quantity, limitPrice);
