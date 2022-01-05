@@ -1,0 +1,21 @@
+<p>We'll have to process our data to get the volatility of the market for classification.</p>
+
+<ol>
+    <li>Select the close column and then call the <code>unstack</code> method.</li>
+    <div class="section-example-container">
+        <pre class="python">close_price = history['close'].unstack(level=0)</pre>
+    </div>
+
+    <li>Call <code>pct_change</code> to compute the daily return.</li>
+    <div class="section-example-container">
+        <pre class="python">returns = close_price.pct_change().iloc[1:]</pre>
+    </div>
+
+    <li>Initialize the HMM, then fit by the daily return data. Note that we're using varinace as switching regime, so <code>switching_variance</code> argument is set as <code>True</code>.</li>
+    <div class="section-example-container">
+        <pre class="python">model = MarkovRegression(returns, k_regimes=2, switching_variance=True).fit()
+display(model.summary())</pre>
+    </div>
+    <img style="max-width: 100%; display: block" src="https://cdn.quantconnect.com/i/tu/hmm-model-stats.png">
+    <p>All p-values of the regime self-transition coefficients and the regime transition probability matrix's coefficient is smaller than 0.05, indicating the model should be able to classify the data into 2 different volatility regimes.</p>
+</ol>

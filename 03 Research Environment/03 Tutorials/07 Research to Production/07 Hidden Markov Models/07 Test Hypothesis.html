@@ -1,0 +1,95 @@
+<p>We now verify if the model can detect high and low volatility period effectively.</p>
+
+<ol>
+    <li>Get the regime as a column, 1 as Low Variance Regime, 2 as High Variance Regime.</li>
+    <div class="section-example-container">
+        <pre class="python">regime = pd.Series(model.smoothed_marginal_probabilities.values.argmax(axis=1)+1, 
+                      index=returns.index, name='regime')
+df_1 = close.loc[returns.index][regime == 1]
+df_2 = close.loc[returns.index][regime == 2]</pre>
+    </div>
+
+    <li>Get the mean and covariance matrix of the 2 regimes, assume 0 covariance between the two.</li>
+    <div class="section-example-container">
+        <pre class="python">mean = np.array([returns.loc[df_1.index].mean(), returns.loc[df_2.index].mean()])
+cov = np.array([[returns.loc[df_1.index].var(), 0], [0, returns.loc[df_2.index].var()]])</pre>
+    </div>
+
+    <li>Fit a 2-dimensional multivariate normal distribution by the 2 means and covriance matrix.</li>
+    <div class="section-example-container">
+        <pre class="python">dist = multivariate_normal(mean=mean.flatten(), cov=cov)
+mean_1, mean_2 = mean[0], mean[1]
+sigma_1, sigma_2 = cov[0,0], cov[1,1]</pre>
+    </div>
+
+    <li>Get the normal distribution of each of the distribution.</li>
+    <div class="section-example-container">
+        <pre class="python">x = np.linspace(-0.05, 0.05, num=100)
+y = np.linspace(-0.05, 0.05, num=100)
+X, Y = np.meshgrid(x,y)
+pdf = np.zeros(X.shape)
+for i in range(X.shape[0]):
+    for j in range(X.shape[1]):
+        pdf[i,j] = dist.pdf([X[i,j], Y[i,j]])</pre>
+    </div>
+
+    <li>Plot the probability of data in different regimes.</li>
+    <div class="section-example-container">
+        <pre class="python">fig, axes = plt.subplots(2, figsize=(15, 10))
+ax = axes[0]
+ax.plot(model.smoothed_marginal_probabilities[0])
+ax.set(title='Smoothed probability of Low Variance Regime')
+ax = axes[1]
+ax.plot(model.smoothed_marginal_probabilities[1])
+ax.set(title='Smoothed probability of High Variance Regime')
+fig.tight_layout()
+plt.show()</pre>
+    </div>
+    <img style="max-width: 100%; display: block" src="https://cdn.quantconnect.com/i/tu/hmm-prob.png">
+
+    <li>Plot the series into regime-wise.</li>
+    <div class="section-example-container">
+        <pre class="python">df_1.index = pd.to_datetime(df_1.index)
+df_1 = df_1.sort_index()
+df_2.index = pd.to_datetime(df_2.index)
+df_2 = df_2.sort_index()
+plt.figure(figsize=(15, 10))
+plt.scatter(df_1.index, df_1, color='blue', label="Low Variance Regime")
+plt.scatter(df_2.index, df_2, color='red', label="High Variance Regime")
+plt.title("Price series")
+plt.ylabel("Price ($)")
+plt.xlabel("Date")
+plt.legend()
+plt.show()</pre>
+    </div>
+    <img style="max-width: 100%; display: block" src="https://cdn.quantconnect.com/i/tu/hmm-curve.png">
+
+    <li>Plot the distribution surface.</li>
+    <div class="section-example-container">
+        <pre class="python">fig = plt.figure(figsize=(20, 10))
+ax = fig.add_subplot(122, projection = '3d')
+ax.plot_surface(X, Y, pdf, cmap = 'viridis')
+ax.axes.zaxis.set_ticks([])
+plt.xlabel("Low Volatility Regime")
+plt.ylabel("High Volatility Regime")
+plt.title('Bivariate normal distribution of the Regimes')
+plt.tight_layout()
+plt.show()</pre>
+    </div>
+    <img style="max-width: 100%; display: block" src="https://cdn.quantconnect.com/i/tu/hmm-surface.png">
+
+    <li>Plot the contour.</li>
+    <div class="section-example-container">
+        <pre class="python">plt.figure(figsize=(12, 8))
+plt.contourf(X, Y, pdf, cmap = 'viridis')
+plt.xlabel("Low Volatility Regime")
+plt.ylabel("High Volatility Regime")
+plt.title('Bivariate normal distribution of the Regimes')
+plt.tight_layout()
+plt.show()</pre>
+    </div>
+    <img style="max-width: 100%; display: block" src="https://cdn.quantconnect.com/i/tu/hmm-contour.png">
+</ol>
+
+<p>We can clearly seen from the results, the Low Volatility Regime has much lower variance than the High Volatility Regim, proven the model works.</p>
+
