@@ -23,8 +23,8 @@ self.StopLimitOrder(self.symbol, quantity, stop_price, limit_price)</pre>
 
 <p>The <code>TradingTechnologiesBrokerageModel</code> enforces the following order rules:</p>
 <ul>
-    <li>The stop price of <code>StopMarketOrder</code>s and <code>StopLimitOrder</code>s must be greater (less) than the current security price when buying (selling).</li>
-    <li>The limit price of <code>StopLimitOrder</code>s must be greater (less) than the stop price when buying (selling).</li>
+    <li>If you are buying (selling) with <code>StopMarketOrder</code>s or <code>StopLimitOrder</code>s, the stop price of the orders must be greater (less) than the current security price.</li>
+    <li>If you are buying (selling) with <code>StopLimitOrder</code>s, the limit price of the orders must be greater (less) than the stop price.</li>
 </ul>
 
 <h4>Time In Force</h4>
@@ -48,9 +48,7 @@ public override void OnData(Slice data)
     LimitOrder(_symbol, quantity, limitPrice);
     
     // Override the default order properties
-    LimitOrder(_symbol, 
-               quantity, 
-               limitPrice, 
+    LimitOrder(_symbol, quantity, limitPrice, 
                orderProperties: new OrderProperties
                { 
                    TimeInForce = TimeInForce.Day 
