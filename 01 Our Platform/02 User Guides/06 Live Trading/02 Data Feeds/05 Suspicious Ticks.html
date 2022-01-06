@@ -1,11 +1,11 @@
-<p>Tick data is raw and unfiltered, so the data can contain a lot of noise. If a tick is not tradable, we flag it as suspicious. You should avoid using suspicious ticks in your algorithms as informative data points. We flag ticks as suspicious in the following situations:</p>
+<p>Tick data is raw and unfiltered, so the data can contain a lot of noise. If a tick is not tradable, we flag it as suspicious and don't include it in our <code>TradeBar</code>s and <code>QuoteBar</code>s. If you use tick data, you should avoid using suspicious ticks in your algorithms as informative data points. We recommend only using tick data if you understand the risks and are able to perform your own online tick filtering. Ticks are flagged as suspicious in the following situations:</p>
 
 <ul>
-    <li>The tick occurs below the best bid quote or above the best ask quote</li>
+    <li>The tick occurs below the best bid or above the best ask</li>
     <img style="max-width:100%" src="https://cdn.quantconnect.com/i/tu/suspicious-ticks-2.png">
     <li>The tick occurs far from the current market price</li>
     <img style="max-width:100%" src="https://cdn.quantconnect.com/i/tu/suspicious-ticks-1.png">
     <li>The tick occurs on a dark pool</li>
+    <li>The tick is rolled back</li>
+    <li>The tick is reported late</li>
 </ul>
-
-<p>We only recommend advanced users incorporate their own tick filtering process. You can ignore the suspicious flag and just accept every tick that is injected into your algorithm.</p>
