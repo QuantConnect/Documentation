@@ -1,7 +1,7 @@
 <p>There are limits on the number of nodes that your organization can have, the amount of time that you can train machine learning models in live trading, and the amount of logs that you can produce.</p>
 
 <h4>Node Limits</h4>
-<p>The following table shows the number of nodes that each organization tier can have:</p>
+<p>The following table shows the maximum number of nodes that each organization tier can have:</p>
 <?php echo file_get_contents(DOCS_RESOURCES."/node-limits.html"); ?>
 
 <h4>Training Limits</h4>
