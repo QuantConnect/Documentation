@@ -5,7 +5,7 @@
 <p>You can create your own custom runtime statistics, but the following statistics are included by default:</p>
 
 <ul>
-    <li><b>PSR</b>: Probabilistic Sharpe Ratio</li>
+    <li><b>PSR</b>: <a href='../optimization/objectives#05-PSR'>Probabilistic Sharpe Ratio</a></li>
     <li><b>Unrealized</b>: Unrealized profit</li>
     <li><b>Fees</b>: Total fees paid during the live deployment across all securities in the portfolio</li>
     <li><b>Net Profit</b>: Sum of all gross profit across all securities in the portfolio</li>
