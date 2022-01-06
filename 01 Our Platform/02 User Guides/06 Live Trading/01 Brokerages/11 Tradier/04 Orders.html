@@ -46,16 +46,12 @@ public override void OnData(Slice data)
     LimitOrder(_symbol, quantity, limitPrice);
     
     // Override the default order properties
-    LimitOrder(_symbol, 
-               quantity, 
-               limitPrice, 
+    LimitOrder(_symbol, quantity, limitPrice, 
                orderProperties: new OrderProperties
                { 
                    TimeInForce = TimeInForce.Day 
                });
-    LimitOrder(_symbol, 
-               quantity, 
-               limitPrice, 
+    LimitOrder(_symbol, quantity, limitPrice, 
                orderProperties: new OrderProperties
                { 
                    TimeInForce = TimeInForce.GoodTilDate(new DateTime(year, month, day)) 
@@ -79,7 +75,7 @@ def OnData(self, data):
 </div>
 
 <h4>Updates</h4>
-<p>The <code>TradierBrokerageModel</code> supports some order updates. You can define the following members of <code>UpdateOrderFields</code> to update active orders:</p>
+<p>The <code>TradierBrokerageModel</code> supports some order updates. You can define the following members of an <code>UpdateOrderFields</code> object to update active orders:</p>
 
 <ul>
     
@@ -88,10 +84,10 @@ def OnData(self, data):
 </ul>
 
 <div class="section-example-container">
-    <pre class="csharp">var ticket = StopLimitOrder(symbol, quantity, stopPrice, limitPrice, tag);
+    <pre class="csharp">var ticket = StopLimitOrder(_symbol, quantity, stopPrice, limitPrice, tag);
 var orderFields = new UpdateOrderFields { <br>    LimitPrice = newLimitPrice,<br>    StopPrice = newStopPrice,<br>    Tag = newTag<br>};
 ticket.Update(orderFields);</pre>
-    <pre class="python">ticket = self.StopLimitOrder(symbol, quantity, stop_price, limit_price, tag)<br>update_fields = UpdateOrderFields()<br>update_fields.LimitPrice = new_limit_price<br>update_fields.StopPrice = new_stop_price
+    <pre class="python">ticket = self.StopLimitOrder(self.symbol, quantity, stop_price, limit_price, tag)<br>update_fields = UpdateOrderFields()<br>update_fields.LimitPrice = new_limit_price<br>update_fields.StopPrice = new_stop_price
 update_fields.Tag = new_tag
 ticket.Update(update_fields)</pre>
 </div>
@@ -112,4 +108,4 @@ ticket = self.LimitOrder(self.symbol, new_quantity, new_limit_price)</pre>
 <p>The <code>TradierBrokerageModel</code> does not support extended market hours trading. If you place an order outside of regular trading hours, the order will be processed at market open.</p>
 
 <h4>Automatic Cancellations</h4>
-<p>The <code>TradierBrokerageModel</code> automatically cancels the open orders your algorithm has for securities that perform a reverse split.</p>
+<p>The <code>TradierBrokerageModel</code> automatically cancels the open orders that your algorithm has for securities that perform a reverse split.</p>
