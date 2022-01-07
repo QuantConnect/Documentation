@@ -1,11 +1,11 @@
-<p>You need a <a href="#03-Create-Subscriptions">subscription</a> before you can request historical data for a security. You can request an amount of historical data based on a trailing number of bars, a trailing period of time, or a defined period of time.</p>
-
-<p><i>(Optional)</i> Call <code>SetStartDate</code> to set the algorithm <code>Time</code>:</p>
+<p>You need to <a href="#03-Create-Subscriptions">subscribe to individual Option contracts</a> before you can request their historical data with the <code>History</code> method. Before you request historical data, you can reduce the risk of look-ahead bias by calling the <code>SetStartDate</code> method with a <code class="python">datetime</code><code class="csharp">DateTime</code>.</p>
 <div class="section-example-container">
     <pre class="csharp">qb.SetStartDate(startDate);</pre>
     <pre class="python">qb.SetStartDate(start_date)</pre>
 </div>
-<p>To avoid lookahead bias, the algorithm <code>Time</code> is last date that a historical data request can get, and his value is internally used to calculate the requested period in the next methods.</p>
+<p>If you call the <code>SetStartDate</code> method, the date that you pass to the method is the latest date for which your history requests will return data.<br></p>
+
+<p>You can request an amount of historical data based on a trailing number of bars, a trailing period of time, or a defined period of time.</p>
 
 <h4>Trailing Number of Bars<br></h4>
 <p>Call the <code>History</code> method with a symbol and integer to request historical data based on the given number of trailing bars.</p>
@@ -50,8 +50,8 @@ open_interest_history = qb.History(OpenInterest, contract_symbol, start_time, en
 
 <img class="python" style="max-width: 100%; display: block" src="https://cdn.quantconnect.com/i/tu/research-history-equityoptions-onesecurity-openinterest-fulldataframe-0.png">
 
-<p class="csharp">In all of the cases above, the <code>History</code> method returns an <code>IEnumerable&lt;TradeBar&gt;</code> for single-security trade history requests and an <code>IEnumerable&lt;OpenInterest&gt;</code> for open interest history request.</p>
-<p class="csharp">The <code>History</code> method will returns an <code>IEnumerable&lt;Slice&gt;</code> for the market price history requests, if the first argument is a list. For example, the defined period of time case will be coded as follows:</p>
+<p class="csharp">In all of the cases above, the <code>History</code> method returns an <code>IEnumerable&lt;TradeBar&gt;</code> for single-security trade history requests and an <code>IEnumerable&lt;OpenInterest&gt;</code> for open interest history requests.</p>
+<p class="csharp">The <code>History</code> method returns an <code>IEnumerable&lt;Slice&gt;</code> for the market price history requests, if the first argument is a list. For example, the defined period of time case will be coded as follows:</p>
 <ol class="csharp">
 	<div class="section-example-container">
 		<pre class="csharp">var contractHistory = qb.History(new [] { contractSymbol }, startTime, endTime);</pre>
