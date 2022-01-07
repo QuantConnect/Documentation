@@ -75,15 +75,14 @@ open_interest_history.index = open_interest_history.index.droplevel([0,1,2])<br>
 
 
 <h4 class="python">Unstack the Dataframe</h4>
-<p class="python">If you request historical data for multiple contracts, you can transform the <code>DataFrame</code> so that it is a time series of bid closing prices for all of the containing contracts. Select the column that you want to display for each contract and then call the <code>unstack</code> method to transform the <code>DataFrame</code> into the desired format. You can rename the columns of the transformed <code>DataFrame</code> to be the respective <code>OptionsContract</code> <code>Symbol</code>s.</p>
+<p class="python">If you request historical data for multiple contracts, you can transform the <code>DataFrame</code> so that it is a time series of a property value for all of the containing contracts. Select the column that you want to display for each contract and then call the <code>unstack</code> method to transform the <code>DataFrame</code> into the desired format. You can rename the columns of the transformed <code>DataFrame</code> to be the respective <code>OptionsContract</code> <code>Symbol</code>s.</p>
 
 
 <p class="python">To display the closing bid prices of all of the contracts, run:<br></p>
 <div class="python section-example-container python">
     <pre class="python">df = timespan_contract_history.copy()
 df = df['bidclose'].unstack(level=0)
-df.columns = [Symbol.GetAlias(SecurityIdentifier.Parse(x), equity.Symbol)
-    for x in df.columns]
+df.columns = [Symbol.GetAlias(SecurityIdentifier.Parse(x), equity.Symbol) for x in df.columns]
 df</pre>
 </div>
 <p class="python">The Jupyter Notebook displays a <code>DataFrame</code> that contains the closing bid prices of the contracts and has the <code>Symbol</code> of each <code>OptionsContract</code> as the column indices.</p>
@@ -93,8 +92,7 @@ df</pre>
 <div class="python section-example-container python">
     <pre class="python">df = timespan_open_interest_history.copy()
 df = df['openinterest'].unstack(level=0)
-df.columns = [Symbol.GetAlias(SecurityIdentifier.Parse(x), equity.Symbol)
-    for x in df.columns]
+df.columns = [Symbol.GetAlias(SecurityIdentifier.Parse(x), equity.Symbol) for x in df.columns]
 df</pre>
 </div>
 <p class="python">The Jupyter Notebook displays a <code>DataFrame</code> that contains the open interest of the contracts and has the <code>Symbol</code> of each <code>OptionsContract</code> as the column indices.</p>
