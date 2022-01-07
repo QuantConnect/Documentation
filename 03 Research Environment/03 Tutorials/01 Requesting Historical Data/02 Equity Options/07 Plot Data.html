@@ -9,16 +9,12 @@
 <ol class="python">
     <li>Call the <code>History</code> method with an <code>OptionContract</code> <code>Symbol</code>, start <code>datetime</code>, and end <code>datetime</code>.</li>
 	<div class="section-example-container">
-        <pre class="python">history = qb.History(symbol, start_time, end_time)</pre>
+        <pre class="python">history = qb.History(contract_symbol, timedelta(1))</pre>
     </div>
     <li>Drop the first four index levels of the returned <code>DataFrame</code>.</li>
 	<div class="section-example-container">
         <pre class="python">history.index = history.index.droplevel([0,1,2,3])</pre>
     </div>
-    <li><i>(Optional)</i> Select just one day of the returned history.</li>
-	<div class="section-example-container">
-        <pre class="python">history = history.loc[(history.index &lt; start_time+timedelta(1))]</pre>
-    </div>	
     <li>Import the <code>plotly</code> package.</li>
     <div class="section-example-container">
         <pre class="python">import plotly.graph_objects as go</pre>
@@ -49,7 +45,7 @@
     <p>Candlestick charts display the open, high, low, and close prices of the contract.</p>
 </ol>
 
-<img class="python" style="max-width: 100%; display: block" src="https://cdn.quantconnect.com/i/tu/research-history-equityoptions-onesecurity-candlestickplot-o.png">
+<img class="python" style="max-width: 100%; display: block" src="https://cdn.quantconnect.com/i/tu/research_history_equity_options_contract_candlestick_2022.png">
 
 
 <h4 class="python">Line Chart</h4>
@@ -58,7 +54,7 @@
 <ol class="python">
     <li>Call the <code>History</code> method with the <code>OpenInterest</code> class, <code>OptionContract</code> <code>Symbol</code>s, and a <code>timedelta</code>.</li>
     <div class="section-example-container">
-        <pre class="python">history = qb.History(OpenInterest, symbols, timedelta(days=10))</pre>
+        <pre class="python">history = qb.History(OpenInterest, selected_symbols, timedelta(days=30))</pre>
     </div>
     <li>Drop the first three index levels of the returned <code>DataFrame</code>.</li>
     <div class="section-example-container">
@@ -72,7 +68,7 @@
     <div class="section-example-container">
         <pre class="python">open_interests.columns = [
     Symbol.GetAlias(SecurityIdentifier.Parse(x), equity.Symbol)
-        for x in open_interests .columns]</pre>
+        for x in open_interests.columns]</pre>
     </div>
     <li>Call the <code>plot</code> method on the <code>pandas</code> object.</li>
     <div class="section-example-container">
@@ -85,4 +81,4 @@
     <p>Line charts display the value of the property you selected in a time series.</p>
 </ol><code><code>
 
-<img class="python" style="max-width: 100%; display: block" src="https://cdn.quantconnect.com/i/tu/research-history-equityoptions-multiplesecurities-openinterest-linechart.png"></code></code>
+<img class="python" style="max-width: 100%; display: block" src="https://cdn.quantconnect.com/i/tu/research_history_equity_options_openinterest_lineplot_2022.png"></code></code>

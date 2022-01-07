@@ -3,8 +3,8 @@
 <p class="python">The <code>DataFrame</code> that contains historical data for Options contracts has a <code>MultiIndex</code> with levels for the expiry, strike, <code>OptionRight</code>, <code>Symbol</code>, and timestamp. For some of the wrangling operations, you need to drop the first three index levels. To drop the index levels, run:<br></p>
 
 <div class="python section-example-container">
-    <pre class="python">price_history.index = price_history.index.droplevel([0,1,2])
-open_interest_history.index = open_interest_history.index.droplevel([0,1,2])<br>timespan_price_history.index = timespan_price_history.index.droplevel([0,1,2])<br>timespan_open_interest_history.index = timespan_open_interest_history.index.droplevel([0,1,2])</pre>
+    <pre class="python">contract_history.index = contract_history.index.droplevel([0,1,2])
+open_interest_history.index = open_interest_history.index.droplevel([0,1,2])<br>timespan_contract_history.index = timespan_contract_history.index.droplevel([0,1,2])<br>timespan_open_interest_history.index = timespan_open_interest_history.index.droplevel([0,1,2])</pre>
 </div>
 
 <p class="csharp">You need some <a href="#04-Get-Historical-Data">historical data</a> to perform wrangling operations. Use LINQ to wrangle the data and then call the <code>Console.WriteLine</code> method in a Jupyter Notebook to display the data.</p>
@@ -16,18 +16,18 @@ open_interest_history.index = open_interest_history.index.droplevel([0,1,2])<br>
 
 <p>To display the price data of the contract, run:</p>
 <div class="section-example-container">
-    <pre class="csharp">foreach(var bar in priceHistory.TakeLast(5))
+    <pre class="csharp">foreach(var bar in contractHistory.TakeLast(5))
 {
     Console.WriteLine($"{bar} EndTime: {bar.EndTime}");
 }</pre>
-    <pre class="python">price_history.loc[symbol]</pre>
+    <pre class="python">contract_history.loc[symbol]</pre>
 </div>
 
 <p class="csharp">The Jupyter Notebook displays the trade and quote data of the contract.</p>
 <img class="csharp" style="max-width: 100%; display: block; margin-bottom: 20px" src="https://cdn.quantconnect.com/i/tu/research-history-equityoptions-onesecurity-linq-price-data.png">
 
 <p class="python">The Jupyter Notebook displays a <code>DataFrame</code> containing the trade and quote data of the contract.</p>
-<img class="python" style="max-width: 100%; display: block; margin-bottom: 20px" src="https://cdn.quantconnect.com/i/tu/research-history-equityoptions-onesecurity-locsymboldataframe-0.png">
+<img class="python" style="max-width: 100%; display: block; margin-bottom: 20px" src="https://cdn.quantconnect.com/i/tu/research_history_equity_options_contract_loc_2022.png">
 
 
 <p>To display the open interest data of the contract, run:</p>
@@ -43,7 +43,7 @@ open_interest_history.index = open_interest_history.index.droplevel([0,1,2])<br>
 <img class="csharp" style="max-width: 100%; display: block; margin-bottom: 20px" src="https://cdn.quantconnect.com/i/tu/research-history-equityoptions-onesecurity-linq-open-interest-data.png">
 
 <p class="python">The Jupyter Notebook displays a <code>DataFrame</code> containing the open interest of the contract.</p>
-<img class="python" style="max-width: 100%; display: block; margin-bottom: 20px" src="https://cdn.quantconnect.com/i/tu/research-history-equityoptions-onesecurity-openinterest-locsymbolvalue-0.png">
+<img class="python" style="max-width: 100%; display: block; margin-bottom: 20px" src="https://cdn.quantconnect.com/i/tu/research_history_equity_options_openinterest_loc_2022.png">
 
 
 <h4>Select a Property of the Contract</h4>
@@ -51,20 +51,19 @@ open_interest_history.index = open_interest_history.index.droplevel([0,1,2])<br>
 
 <p class="python">Index the <code>DataFrame</code> with a <code>Symbol</code> to select the historical data of the contract and then select a property column to get the historical values of the property.</p>
 
-
 <p class="csharp">To display the closing prices of the contract, run:</p>
 <p class="python">To display the closing ask prices of the contract, run:</p>
 <div class="section-example-container">
-    <pre class="csharp">foreach(var x in priceHistory.TakeLast(5))
+    <pre class="csharp">foreach(var x in contractHistory.TakeLast(5))
 {
     Console.WriteLine($"{x.Symbol}: Close: {x.Close} EndTime:{x.EndTime}");
 }</pre>
-    <pre class="python">price_history.loc[symbol]['askclose']</pre>
+    <pre class="python">contract_history.loc[symbol]['askclose']</pre>
 </div>
 <p class="csharp">The Jupyter Notebook displays the closing prices of the contract.</p>
 <img class="csharp" style="max-width: 100%; display: block" src="https://cdn.quantconnect.com/i/tu/research-history-equityoptions-onesecurity-linq-close.png">
 <p class="python">The Jupyter Notebook displays a <code>Series</code> containing the closing ask prices of the contract.</p>
-<img class="python" style="max-width: 100%; display: block" src="https://cdn.quantconnect.com/i/tu/research-history-equityoptions-onesecurity-locsymbolaskclose-0.png">
+<img class="python" style="max-width: 100%; display: block" src="https://cdn.quantconnect.com/i/tu/research_history_equity_options_contract_series_2022.png">
 
 
 <p class="python">To display the open interest of the contract, run:</p>
@@ -72,7 +71,7 @@ open_interest_history.index = open_interest_history.index.droplevel([0,1,2])<br>
     <pre class="python">open_interest_history.loc[symbol]['openinterest']</pre>
 </div>
 <p class="python">The Jupyter Notebook displays a <code>Series</code> containing the open interest of the contract.</p>
-<img class="python" style="max-width: 100%; display: block" src="https://cdn.quantconnect.com/i/tu/research-history-equityoptions-onesecurity-openinterest-locsymbolopeninterest-0.png">
+<img class="python" style="max-width: 100%; display: block" src="https://cdn.quantconnect.com/i/tu/research_history_equity_options_openinterest_series_2022.png">
 
 
 <h4 class="python">Unstack the Dataframe</h4>
@@ -81,27 +80,25 @@ open_interest_history.index = open_interest_history.index.droplevel([0,1,2])<br>
 
 <p class="python">To display the closing bid prices of all of the contracts, run:<br></p>
 <div class="python section-example-container python">
-    <pre class="python">timespan_price_history = timespan_price_history['bidclose'].unstack(level=0)
-columns = [Symbol.GetAlias(SecurityIdentifier.Parse(x), equity.Symbol)
-    for x in timespan_price_history.columns]
-timespan_price_history.columns = columns
-timespan_price_history</pre>
+    <pre class="python">df = timespan_contract_history.copy()
+df = df['bidclose'].unstack(level=0)
+df.columns = [Symbol.GetAlias(SecurityIdentifier.Parse(x), equity.Symbol)
+    for x in df.columns]
+df</pre>
 </div>
 <p class="python">The Jupyter Notebook displays a <code>DataFrame</code> that contains the closing bid prices of the contracts and has the <code>Symbol</code> of each <code>OptionsContract</code> as the column indices.</p>
-<img class="python" style="max-width: 100%; display: block; margin-bottom: 20px" src="https://cdn.quantconnect.com/i/tu/research-history-equityoptions-multisecurity-unstack-o.png">
+<img class="python" style="max-width: 100%; display: block; margin-bottom: 20px" src="https://cdn.quantconnect.com/i/tu/research_history_equity_options_contract_unstack_2022.png">
 
 <p class="python">To display the open interest of all of the contracts, run:<br></p>
 <div class="python section-example-container python">
-    <pre class="python">timespan_open_interest_history = timespan_open_interest_history['openinterest'].unstack(level=0)
-columns = [Symbol.GetAlias(SecurityIdentifier.Parse(x), equity.Symbol)
-    for x in timespan_open_interest_history.columns]
-timespan_open_interest_history.columns = columns
-timespan_open_interest_history </pre>
+    <pre class="python">df = timespan_open_interest_history.copy()
+df = df['openinterest'].unstack(level=0)
+df.columns = [Symbol.GetAlias(SecurityIdentifier.Parse(x), equity.Symbol)
+    for x in df.columns]
+df</pre>
 </div>
 <p class="python">The Jupyter Notebook displays a <code>DataFrame</code> that contains the open interest of the contracts and has the <code>Symbol</code> of each <code>OptionsContract</code> as the column indices.</p>
-<img class="python" style="max-width: 100%; display: block; margin-bottom: 20px" src="https://cdn.quantconnect.com/i/tu/research-history-equityoptions-multisecurity-open-interest-unstack.png">
+<img class="python" style="max-width: 100%; display: block; margin-bottom: 20px" src="https://cdn.quantconnect.com/i/tu/research_history_equity_options_openinterest_unstack_2022.png">
 
 <p class="python">If you <code>unstack</code> the <code>DataFrame</code> that is returned from the <code>GetAllData</code> method instead of the <code>History</code> method, the <code>DataFrame</code> is transformed into the following format:</p>
-<img class="python" style="max-width: 100%; display: block; margin-bottom: 20px" src="https://cdn.quantconnect.com/i/tu/research-history-equityoptions-gethistorydata-unstack-0.png">
-
-<p class="python">This third <code>DataFrame</code> differs from the previous two <code>DataFrame</code>s because the first <code>DataFrame </code>contains only <code>OptionContract</code>s that were passed to the <code>History</code> method while the third one contains the underlying Equity data, which is represented by the <code>NaN</code> column. Additionally, the second <code>DataFrame</code> contains open interest data that is not contained in the third <code>DataFrame</code>.</p>
+<img class="python" style="max-width: 100%; display: block; margin-bottom: 20px" src="https://cdn.quantconnect.com/i/tu/research_history_equity_options_getalldata_unstack_2022.png">
