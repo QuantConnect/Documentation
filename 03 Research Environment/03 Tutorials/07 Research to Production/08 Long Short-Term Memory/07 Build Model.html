@@ -1,0 +1,47 @@
+<p>We construct the LSTM model.</p>
+
+<ol>
+    <li>Build a <code>Sequential</code> keras model.</li>
+    <div class="section-example-container">
+        <pre class="python">model = Sequential()</pre>
+    </div>
+
+    <li>Create the model infrastructure.</li>
+    <div class="section-example-container">
+        <pre class="python"># Add our first LSTM layer - 50 nodes.
+model.add(LSTM(units = 50, return_sequences=True, input_shape=(features_set.shape[1], 1)))
+# Add Dropout layer to avoid overfitting
+model.add(Dropout(0.2))
+# Add additional layers
+model.add(LSTM(units=50, return_sequences=True))
+model.add(Dropout(0.2))
+model.add(LSTM(units=50))
+model.add(Dropout(0.2))
+model.add(Dense(units = 5))
+model.add(Dense(units = 1))</pre>
+    </div>
+
+    <li>Compile the model.</li>
+    <p>We use Adam as optimizer for adpative step size and MSE as loss function since it is continuous data.</p>
+    <div class="section-example-container">
+        <pre class="python">model.compile(optimizer = 'adam', loss = 'mean_squared_error', metrics=['mae', 'acc'])</pre>
+    </div>
+
+    <li>Set early stopping callback method.</li>
+    <div class="section-example-container">
+        <pre class="python">callback = EarlyStopping(monitor='loss', patience=3, verbose=1, restore_best_weights=True)</pre>
+    </div>
+
+    <li>Display the model structure.</li>
+    <div class="section-example-container">
+        <pre class="python">model.summary()</pre>
+    </div>
+    <img style="max-width: 100%; display: block" src="https://cdn.quantconnect.com/i/tu/lstm-model.png">
+
+    <li>Fit the model to our data, running 20 training epochs.</li>
+    <p>Note that different training session's results will not be the same since the batch is randomly selected.</p>
+    <div class="section-example-container">
+        <pre class="python">model.fit(features_set, labels, epochs = 20, batch_size = 100, callbacks=[callback])</pre>
+    </div>
+    <img style="max-width: 100%; display: block" src="https://cdn.quantconnect.com/i/tu/lstm-training-2.png">
+</ol>

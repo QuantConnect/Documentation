@@ -1,0 +1,35 @@
+<p>We would test the performance of this ML model to see if it could predict 1-step forward price precisely. To do so, we would compare the predicted and actual prices.</p>
+
+<ol>
+    <li>Get testing set features for input.</li>
+    <div class="section-example-container">
+        <pre class="python">test_features = []
+for i in range(60, X_test.shape[0]):
+    test_features.append(X_test.iloc[i-60:i].values.reshape(-1, 1))
+test_features = np.array(test_features)
+test_features = np.reshape(test_features, (test_features.shape[0], test_features.shape[1], 1))</pre>
+    </div>
+
+    <li>Make predictions.</li>
+    <div class="section-example-container">
+        <pre class="python">predictions = model.predict(test_features)</pre>
+    </div>
+
+    <li>Transform predictions back to original data-scale.</li>
+    <div class="section-example-container">
+        <pre class="python">predictions = scaler.inverse_transform(predictions)
+actual = scaler.inverse_transform(y_test.values)</pre>
+    </div>
+
+    <li>Plot the results.</li>
+    <div class="section-example-container">
+        <pre class="python">plt.figure(figsize=(15, 10))
+plt.plot(actual[60:], color='blue', label='Actual')
+plt.plot(predictions , color='red', label='Prediction')
+plt.title('Price vs Predicted Price ')
+plt.legend()
+plt.show()</pre>
+    </div>
+    <img style="max-width: 100%; display: block" src="https://cdn.quantconnect.com/i/tu/lstm-plot.png">
+</ol>
+

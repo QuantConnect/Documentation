@@ -1,0 +1,49 @@
+<p>We'll have to process our data as well as build the LSTM model before testing the hypothesis. We would scale our data to for better covergence.</p>
+
+<ol>
+    <li>Select the close column and then call the <code>unstack</code> method.</li>
+    <div class="section-example-container">
+        <pre class="python">close_price = history['close'].unstack(level=0)</pre>
+    </div>
+
+    <li>Initialize <code>MinMaxScaler</code> to scale the data onto [0,1].</li>
+    <div class="section-example-container">
+        <pre class="python">scaler = MinMaxScaler(feature_range = (0, 1))</pre>
+    </div>
+
+    <li>Transform our data.</li>
+    <div class="section-example-container">
+        <pre class="python">df = pd.DataFrame(scaler.fit_transform(close), index=close.index)</pre>
+    </div>
+
+    <li>Select input data</li>
+    <div class="section-example-container">
+        <pre class="python">scaler = MinMaxScaler(feature_range = (0, 1))</pre>
+    </div>
+
+    <li>Shift the data for 1-step backward as training output result.</li>
+    <div class="section-example-container">
+        <pre class="python">output = df.shift(-1).iloc[:-1]</pre>
+    </div>
+
+    <li>Split the data into training and testing sets.</li>
+    <p>In this example, we use the first 80% data for trianing, and the last 20% for testing.</p>
+    <div class="section-example-container">
+        <pre class="python">splitter = int(input_.shape[0] * 0.8)
+X_train = input_.iloc[:splitter]
+X_test = input_.iloc[splitter:]
+y_train = output.iloc[:splitter]
+y_test = output.iloc[splitter:]</pre>
+    </div>
+
+    <li>Build feauture and label sets (using number of steps 60, and feature rank 1).</li>
+    <div class="section-example-container">
+        <pre class="python">features_set = []
+labels = []
+for i in range(60, X_train.shape[0]):
+    features_set.append(X_train.iloc[i-60:i].values.reshape(-1, 1))
+    labels.append(y_train.iloc[i])
+features_set, labels = np.array(features_set), np.array(labels)
+features_set = np.reshape(features_set, (features_set.shape[0], features_set.shape[1], 1))</pre>
+    </div>
+</ol>
