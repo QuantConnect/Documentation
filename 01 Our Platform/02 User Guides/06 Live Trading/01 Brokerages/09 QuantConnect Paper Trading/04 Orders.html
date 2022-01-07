@@ -52,16 +52,12 @@ public override void OnData(Slice data)
     LimitOrder(_symbol, quantity, limitPrice);
     
     // Override the default order properties
-    LimitOrder(_symbol, 
-               quantity, 
-               limitPrice, 
+    LimitOrder(_symbol, quantity, limitPrice, 
                orderProperties: new OrderProperties
                { 
                    TimeInForce = TimeInForce.Day 
                });
-    LimitOrder(_symbol, 
-               quantity, 
-               limitPrice, 
+    LimitOrder(_symbol, quantity, limitPrice, 
                orderProperties: new OrderProperties
                { 
                    TimeInForce = TimeInForce.GoodTilDate(new DateTime(year, month, day)) 
@@ -80,12 +76,12 @@ def OnData(self, data):
     order_properties.TimeInForce = TimeInForce.Day
     self.LimitOrder(self.symbol, quantity, limit_price, orderProperties=order_properties)
 
-    order_properties.TimeInForce = TimeInForce.GoodTilDate(DateTime(year, month, day))
+    order_properties.TimeInForce = TimeInForce.GoodTilDate(datetime(year, month, day))
     self.LimitOrder(self.symbol, quantity, limit_price, orderProperties=order_properties)</pre>
 </div>
 
 <h4>Updates</h4>
-<p>The <code>DefaultBrokerageModel</code> supports order updates. You can define the following members of <code>UpdateOrderFields</code> to update active orders:</p>
+<p>The <code>DefaultBrokerageModel</code> supports order updates. You can define the following members of an <code>UpdateOrderFields</code> object to update active orders:</p>
 
 <ul>
     <li><code>Quantity</code></li>
@@ -97,7 +93,7 @@ def OnData(self, data):
     <pre class="csharp">var ticket = StopLimitOrder(symbol, quantity, stopPrice, limitPrice, tag);
 var orderFields = new UpdateOrderFields { <br>    Quantity = newQuantity,<br>    LimitPrice = newLimitPrice,<br>    StopPrice = newStopPrice,<br>    Tag = newTag<br>};
 ticket.Update(orderFields);</pre>
-    <pre class="python">ticket = self.StopLimitOrder(symbol, quantity, stop_price, limit_price, tag)<br>update_fields = UpdateOrderFields()
+    <pre class="python">ticket = self.StopLimitOrder(self.symbol, quantity, stop_price, limit_price, tag)<br>update_fields = UpdateOrderFields()
 update_fields.Quantity = new_quantity<br>update_fields.LimitPrice = new_limit_price<br>update_fields.StopPrice = new_stop_price
 update_fields.Tag = new_tag
 ticket.Update(update_fields)</pre>

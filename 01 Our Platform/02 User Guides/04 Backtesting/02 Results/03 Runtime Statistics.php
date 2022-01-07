@@ -2,7 +2,7 @@
 
 <img style="max-width: 100%; margin-bottom: 20px" src="https://cdn.quantconnect.com/i/tu/runtime-statistics.png">
 
-<p>You can create your own custom runtime statistics, but the following statistics are included by default:<br></p>
+<p>The banner displays the following statistics:<br></p>
 
 <ul>
     <li><b>PSR</b>: <a href='../optimization/objectives#05-PSR'>Probabilistic Sharpe Ratio</a><br></li>
@@ -15,8 +15,5 @@
     <li><b>Volume</b>: Total sale volume since the start of backtest</li>
     <li><b>Capacity</b>: The maximum amount of capital the strategy can trade.<br></li>
 </ul>
-<p>Call the <code>SetRuntimeStatistic</code> method with a <code>name</code> and <code>value</code> to add a runtime statistic to the banner. The <code>value</code> argument can be a <code>string</code> or a number. If you pass a number, it is cast to a <code>string</code>.</p>
-<div class="section-example-container">
-    <pre class="csharp">SetRuntimeStatistic("My Custom statistic", myCustomStatisticsValue);</pre>
-    <pre class="python">self.SetRuntimeStatistic("My Custom statistic", my_custom_statistics_value)</pre>
-</div>
+
+<?php echo file_get_contents(DOCS_RESOURCES."/create-custom-runtime-statistic.html"); ?>
