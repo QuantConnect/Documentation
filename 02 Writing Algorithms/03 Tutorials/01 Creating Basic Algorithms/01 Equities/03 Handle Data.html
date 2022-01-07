@@ -1,24 +1,21 @@
 <p>You must <a href="#02-Initialize-Algorithm">initialize the algorithm and create Equity subscriptions</a> to handle the Equity data in the algorithm.</p>
 
-<p>Follow these steps to handle the Equity in the algorithm:</p>
-
-<ol>
-    <li>In the class definition, add an <code>OnData</code> method that accepts a <code>Slice</code> argument.</li>
+<p>To accept the Equity data to which you subscribed, in the class definition, add an <code>OnData</code> method that accepts a <code>Slice</code> argument.
     
-    <div class="section-example-container">
+    </p><div class="section-example-container">
         <pre class="csharp">public override void OnData(Slice data)
 {
 
 }</pre>
         <pre class="python">def OnData(self, data):<br>    <br></pre>
     </div>
-	<li>In the <code>OnData</code> method, check if the <code>Slice</code> that was passed to the method contains SPY data.</li>
-	<div class="section-example-container">
-        <pre class="csharp">if (data.Bars.ContainsKey(_spy))
+
+<p>Call the <code>ContainsKey</code> method to check if the <code>Slice</code> contains data for an Equity. For example, to check if the <code>Slice</code> contains SPY data, type:</p>
+<div class="section-example-container">
+    <pre class="csharp">if (data.Bars.ContainsKey(_spy))
 {
     var bar = data[_spy];
 }</pre>
-        <pre class="python">if self.spy in data.Bars:<br>    bar = data[self.spy]<br></pre>
-    </div>
+    <pre class="python">if self.spy in data.Bars:<br>    bar = data[self.spy]<br></pre>
+</div>
 	
-</ol>
