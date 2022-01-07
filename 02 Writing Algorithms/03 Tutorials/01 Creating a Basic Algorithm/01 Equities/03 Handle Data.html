@@ -1,67 +1,58 @@
-<p>Follow these steps to lean how to handle the susbcribed data in the <code>OnData</code> class method:</p>
+<p>You must <a href="#Initialize">initialize the algorithm and create Equity subscriptions</a> to handle the Equity data in the algorithm.</p>
+
+<p>Follow these steps to handle the Equity in the algorithm:</p>
 
 <ol>
-    <li>Add <code>OnData</code> class method. This method requires <code>Slice</code> argument:<li>
-	<div class="section-example-container">
-        <pre class="csharp">
-	    public override void OnData(Slice data)
-        {
-		}</pre>
-        <pre class="python">
-    def OnData(self, data):</pre>
+    <li>In the class definition, add an <code>OnData</code> method that accepts a <code>Slice</code> argument.</li>
+    
+    <div class="section-example-container">
+        <pre class="csharp">public override void OnData(Slice data)
+{
+
+}</pre>
+        <pre class="python">def OnData(self, data):</pre>
     </div>
-	<li>Check whether there is a market data event for "SPY":</li>
+	<li>In the <code>OnData</code> method, check if the <code>Slice</code> that was passed to the method contains SPY data.</li>
 	<div class="section-example-container">
-        <pre class="csharp">
-	        if (data.ContainsKey("SPY"))
-			{
-        
-		    }</pre>
-        <pre class="python">
-        if "SPY" in data:</pre>
+        <pre class="csharp">if (data.ContainsKey(_spy) &amp;&amp; data[_spy] != null)
+{
+    bar = data[_spy]
+}</pre>
+        <pre class="python">if data.ContainsKey(self.spy) and data[self.spy] is not None:<br>    bar = data[self.spy]<br></pre>
     </div>
-	<li><i>(Optional)</i> Check whether there is a delisting event for "AAPL":</li>
+	<li><i>(Optional)</i> Check if the <code>Slice</code> contains a <code>Delisting</code> event for AAPL.</li>
 	<div class="section-example-container">
-        <pre class="csharp">
-	        if (data.Delistings.ContainsKey("AAPL"))
-			{
-                var delisting = data.Delistings['AAPL']
-		    }</pre>
-        <pre class="python">
-        if "AAPL" in data.Delistings:
-		    delisting = data.Delistings['AAPL']</pre>
+        <pre class="csharp">if (data.Delistings.ContainsKey(_aapl))
+{
+    var delisting = data.Delistings[_aapl]
+}</pre>
+        <pre class="python">if data.ContainsKey(self.aapl):
+    delisting = data.Delistings[self.aapl]</pre>
     </div>
-	<li><i>(Optional)</i> Check whether there is a split event for "AAPL":</li>
+	<li><i>(Optional)</i> Check if the <code>Slice</code> contains a <code>Split</code> event for AAPL.</li>
 	<div class="section-example-container">
-        <pre class="csharp">
-	        if (data.Splits.ContainsKey("AAPL"))
-			{
-                var split = data.Splits['AAPL'];
-		    }</pre>
-        <pre class="python">
-        if "AAPL" in data.Splits:
-		    split = data.Splits['AAPL']</pre>
+        <pre class="csharp">if (data.Splits.ContainsKey(_aapl))
+{
+    var split = data.Splits[_aapl];
+}</pre>
+        <pre class="python">if self.appl in data.Splits:
+    split = data.Splits[self.appl]</pre>
     </div>
-	<li><i>(Optional)</i> Check whether there is a dividend event for "GOOGL":</li>
+	<li><i>(Optional)</i> Check if the <code>Slice</code> contains a <code>Dividend</code> event for GOOGL.</li>
 	<div class="section-example-container">
-        <pre class="csharp">
-	        if (data.Dividends.ContainsKey("GOOGL"))
-			{
-                var dividend = data.Dividends['GOOGL'];
-		    }</pre>
-        <pre class="python">
-        if "GOOGL" in data.Dividends:
-		    dividend = data.Dividends['AAPL']</pre>
+        <pre class="csharp">if (data.Dividends.ContainsKey(_googl))
+{
+    var dividend = data.Dividends[_googl];
+}</pre>
+        <pre class="python">if self.googl in data.Dividends:<br>    dividend = data.Dividends[self.googl]</pre>
     </div>
-	<li><i>(Optional)</i> Check whether there is a symbol change event for "GOOGL":</li>
+	<li><i>(Optional)</i> Check if the <code>Slice</code> contains a <code>SymbolChangedEvent</code> for GOOGL.</li>
 	<div class="section-example-container">
-        <pre class="csharp">
-	        if (data.SymbolChangedEvents.ContainsKey("GOOGL"))
-			{
-                var symbolChangedEvent = data.SymbolChangedEvents['GOOGL'];
-		    }</pre>
-        <pre class="python">
-        if "GOOGL" in data.SymbolChangedEvents:
-		    symbolChangedEvent = data.SymbolChangedEvents['AAPL']</pre>
+        <pre class="csharp">if (data.SymbolChangedEvents.ContainsKey(_googl))
+{
+    var symbolChangedEvent = data.SymbolChangedEvents[_googl];
+}</pre>
+        <pre class="python">if self.googl in data.SymbolChangedEvents:
+    symbolChangedEvent = data.SymbolChangedEvents[self.googl]</pre>
     </div>
 </ol>
