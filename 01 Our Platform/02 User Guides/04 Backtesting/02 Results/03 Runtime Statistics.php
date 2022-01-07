@@ -2,7 +2,7 @@
 
 <img style="max-width: 100%; margin-bottom: 20px" src="https://cdn.quantconnect.com/i/tu/runtime-statistics.png">
 
-<p>You can create your own custom runtime statistics, but the following statistics are included by default:<br></p>
+<p>The banner displays the following statistics:<br></p>
 
 <ul>
     <li><b>PSR</b>: <a href='../optimization/objectives#05-PSR'>Probabilistic Sharpe Ratio</a><br></li>
