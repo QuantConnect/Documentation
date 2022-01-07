@@ -1,55 +1,53 @@
-<p>Follow these steps to lean how to check the value of global portfolio state or the holdings of a particular security:</p>
+<p>You must <a href="#03-Handle-Data">set up the OnData method to handle data</a> before you can check the portfolio state.</p>
 
-<h4>Global Portfolio Properties</h4>
+<p>You can check the state of the global portfolio or the state of individual portfolio holdings.</p>
+
+<h4>State of the Global Portfolio</h4>
+
+<p>Follow these steps to check the state of the global portfolio:</p>
+
 
 <ol>
-    <li>Check whether there are invested securities in the portfolio:</li>
+    <li>Check if the portfolio is invested in any Equities.</li>
 	<div class="section-example-container">
-        <pre class="csharp">
-	        if (!Portfolio.Invested)
-			{
-		    }</pre>
-        <pre class="python">
-        if not self.Portfolio.Invested:</pre>
+        <pre class="csharp">invested = Portfolio.Invested<br></pre>
+        <pre class="python">invested = self.Portfolio.Invested<br>    <br></pre>
     </div>
-	<li><i>(Optional)</i> Get the current cash amount, total portfolio value, and margin remaining:</li>
+    <li>Check the portfolio cash balance.</li>
 	<div class="section-example-container">
-        <pre class="csharp">
-	        var cash = Portfolio.Cash;
-			var totalPortfolioValue = Portfolio.TotalPortfolioValue;
-			var marginRemaining = Portfolio.MarginRemaining;</pre>
-        <pre class="python">
-        cash = self.Portfolio.Cash
-		total_portfolio_value = self.Portfolio.TotalPortfolioValue
-		margin_remaining = self.Portfolio.MarginRemaining</pre>
-    </div>
+            <pre class="csharp">var cash = Portfolio.Cash;</pre>
+            <pre class="python">cash = self.Portfolio.Cash</pre>
+        </div>
+    <li>Check the total portfolio value.</li>
+	<div class="section-example-container">
+            <pre class="csharp">var totalPortfolioValue = Portfolio.TotalPortfolioValue;</pre>
+            <pre class="python">total_portfolio_value = self.Portfolio.TotalPortfolioValue</pre>
+        </div>
+    <li>Check the amount of margin remaining in the portfolio.</li>
+	<div class="section-example-container">
+            <pre class="csharp">var marginRemaining = Portfolio.MarginRemaining;</pre>
+            <pre class="python">margin_remaining = self.Portfolio.MarginRemaining</pre>
+        </div>
 </ol>
 
-<h4>Specific Portfolio Items</h4>
+<h4>State of the Portfolio Holdings</h4>
+<p>Follow these steps to check the state of individual Equity holdings in the portfolio:</p>
 <ol>
-    <li>Access the individual asset holdings held in the portfolio</li>
+    <li>Index the <code>Portfolio</code> with an Equity <code>Symbol</code> to get the <code>SecurityHolding</code> of the Equity.</li>
 	<div class="section-example-container">
-        <pre class="csharp">
-	        var spyHoldings = Portfolio["SPY"];
-			var msftHoldings = Portfolio["MSFT"];</pre>
-        <pre class="python">
-		spy_holdings = self.Portfolio["SPY"]
-		msft_holdings = self.Portfolio["MSFT"]</pre>
+        <pre class="csharp">var spyHoldings = Portfolio[_spy];
+var msftHoldings = Portfolio[_msft];</pre>
+        <pre class="python">spy_holdings = self.Portfolio[self.spy]
+msft_holdings = self.Portfolio[self.msft]</pre>
     </div>
-    <li>Check whether "SPY" is not invested:</li>
+    <li>Check if the portfolio is invested in SPY.</li>
 	<div class="section-example-container">
-        <pre class="csharp">
-	        if (!spyHoldings.Invested)
-			{
-			}</pre>
-        <pre class="python">
-		if not spy_holdings.Invested:</pre>
+        <pre class="csharp">var invested = spyHoldings.Invested;<br></pre>
+        <pre class="python">invested = spy_holdings.Invested<br></pre>
     </div>
-	<li><i>(Optional)</i> Get the quantity of shares of "MSFT":</li>
+	<li>Check the number of MSFT shares in the portfolio.</li>
 	<div class="section-example-container">
-        <pre class="csharp">
-	        var msftQuantity = msftHoldings.Quantity;</pre>
-        <pre class="python">
-		msftQuantity = msft_holdings.Quantity</pre>
+        <pre class="csharp">var msftQuantity = msftHoldings.Quantity;</pre>
+        <pre class="python">msftQuantity = msft_holdings.Quantity</pre>
     </div>
 </ol>
