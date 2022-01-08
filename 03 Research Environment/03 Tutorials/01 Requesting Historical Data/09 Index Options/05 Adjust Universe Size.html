@@ -1,6 +1,4 @@
-<p>You need to <a href="#03-Create-Subscriptions">subscribe</a> to all of the Options for which you want historical data. You can request historical data for a subset of the Option contract properties or a subset of the Option contracts.</p>
-
-<p><i>(Optional)</i> Redefine start <code class=python>datetime</code><code class=csharp>DateTime</code> for two days after end <code class=python>datetime</code><code class=csharp>DateTime</code> because of the amount of data that results from multiple contracts:</p>
+<p>You need to <a href="#03-Create-Subscriptions">subscribe</a> to all of the Options for which you want historical data. You can request historical data for a subset of the Option contract properties or a subset of the Option contracts. Before you request historical data, redefine the start <code class="python">datetime</code><code class="csharp">DateTime</code> to reduce the amount of data that the history requests return.</p>
 <div class="section-example-container">
     <pre class="csharp">startTime = endTime.AddDays(-2);</pre>
     <pre class="python">start_time = end_time-timedelta(2)</pre>
@@ -13,8 +11,7 @@
 <p class="python">Call the <code>GetOptionHistory</code> method with an <code>Index</code> <code>Symbol</code>, start <code>datetime</code>, end <code>datetime</code>, and resolution to get historical Option contract data for the given <code>Symbol</code>. <br></p>
 
 <div class="python section-example-container">
-    <pre class="python">qb = QuantBook()
-option_history = qb.GetOptionHistory(index.Symbol, start_time, end_time, Resolution.Minute)</pre>
+    <pre class="python">option_history = qb.GetOptionHistory(index.Symbol, start_time, end_time, Resolution.Minute)</pre>
 </div>
 
 <p class="python">The call returns an <code>OptionHistory</code> object. If you don't call the <code>SetFilter</code> method, the <code>GetOptionHistory</code> method uses the default filter definition to select <code>OptionContract</code>s and their historical data.</p>
@@ -22,7 +19,7 @@ option_history = qb.GetOptionHistory(index.Symbol, start_time, end_time, Resolut
 <p class="python">Call the <code>GetAllData</code> method to get all of the historical data for the selected contracts and the underlying Index.</p>
 <div class="python section-example-container">
     <pre class="python">history = option_history.GetAllData()</pre>
-</div>-
+</div>
 <p class="python">The call returns a <code>DataFrame</code> with a <code>MultiIndex</code>.</p>
 <img class="python" style="max-width: 100%; display: block; margin-bottom: 20px" src="https://cdn.quantconnect.com/i/tu/research-history-index-options-getalldata-2022.png">
 
@@ -42,7 +39,7 @@ option_history = qb.GetOptionHistory(index.Symbol, start_time, end_time, Resolut
 
 <h4>Subset of Option Contracts</h4>
 
-<p>Follow these steps to get historical data for a subset of the Option contracts to which you are subscribed:</p>
+<p>Follow these steps to get historical data for a subset of the contracts for the Options to which you are subscribed:</p>
 
 <ol>
 	<li>Call the <code>GetOptionsContractList</code> method with an <code>Index</code> <code>Symbol</code> and a <code class="python">datetime</code><code class="csharp">DateTime</code> to get a list of <code>OptionContract Symbol</code>s that were trading at the given time.<br></li>
@@ -51,7 +48,7 @@ option_history = qb.GetOptionHistory(index.Symbol, start_time, end_time, Resolut
 		<pre class="csharp">var symbols = qb.OptionChainProvider.GetOptionContractList(index.Symbol, startDate);</pre>
 		<pre class="python">symbols = qb.OptionChainProvider.GetOptionContractList(index.Symbol, startDate)</pre>
 	</div>
-	<p>The <code>GetOptionsContractList</code> method returns a list of more than 8,000 <code>Symbol</code>s.<br></p>
+	<p>The method returns a list of more than 8,000 <code>Symbol</code>s.<br></p>
 	<li>Select the subset of <code>Symbol</code>s for which you want to get historical data.</li>
 	<div class="section-example-container">
 		<pre class="csharp">var expiry = new DateTime(2022,01,21);
