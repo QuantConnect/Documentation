@@ -1,0 +1,58 @@
+<p>We would test (1) if buyback has statistically significant effect on return direction, and (2) buyback could be a return predictor.</p>
+
+<ol>
+    <li>Get binary return (+/-).</li>
+    <div class="section-example-container">
+        <pre class="python">binary_ret = data[data > 0].fillna(0)[data < 0].fillna(1)["Return"]</pre>
+    </div>
+
+    <li>Construct a logistic regression model.</li>
+    <div class="section-example-container">
+        <pre class="python">model = Logit(binary_ret.values, data["Buybacks"].values).fit()</pre>
+    </div>
+
+    <li>Display logistic regression results.</li>
+    <div class="section-example-container">
+        <pre class="python">display(model.summary())</pre>
+    </div>
+    <img style="max-width: 100%; display: block" src="https://cdn.quantconnect.com/i/tu/airline-buybacks-logit.png">
+    <p>We can see a p-value of < 0.05 in the logistic regression model, meaning the separation of positive and negative using buyback premium/discount% is statistically significant.</p>
+
+    <li>Plot the results.</li>
+    <div class="section-example-container">
+        <pre class="python">plt.figure(figsize=(10, 6))
+sns.regplot(x=data["Buybacks"]*100, y=binary_ret, logistic=True, ci=None, line_kws={'label': " Logistic Regression Line"})
+plt.plot([-50, 50], [0.5, 0.5], "r--", label="Selection Cutoff Line")
+plt.title("Buyback premium vs Profit/Loss")
+plt.xlabel("Buyback premium %")
+plt.xlim([-50, 50])
+plt.ylabel("Profit/Loss")
+plt.legend()
+plt.show()</pre>
+    </div>
+    <img style="max-width: 100%; display: block" src="https://cdn.quantconnect.com/i/tu/airline-buybacks-plot.png">
+    <p>Interesting, from the logistic regression line, we observe that when the airlines brought their stock in premium price, the price tended to go down, while the opposite for buying back in discount.</p>
+    <br/>
+    
+    <p>Let's also study how good is the logistic regression.</p>
+    <li>Get in-sample prediction result.</li>
+    <div class="section-example-container">
+        <pre class="python">predictions = model.predict(data["Buybacks"].values)
+for i in range(len(predictions)):
+    predictions[i] = 1 if predictions[i] > 0.5 else 0</pre>
+    </div>
+
+    <li>Call <code>confusion_matrix</code> to contrast the results.</li>
+    <div class="section-example-container">
+        <pre class="python">cm = confusion_matrix(binary_ret, predictions)</pre>
+    </div>
+
+    <li>Display the result.</li>
+    <div class="section-example-container">
+        <pre class="python">df_result = pd.DataFrame(cm, 
+                        index=pd.MultiIndex.from_tuples([("Prediction", "Positive"), ("Prediction", "Negative")]),
+                        columns=pd.MultiIndex.from_tuples([("Actual", "Positive"), ("Actual", "Negative")]))</pre>
+    </div>
+    <img style="max-width: 100%; display: block" src="https://cdn.quantconnect.com/i/tu/airline-buybacks-cm.png">
+</ol>
+

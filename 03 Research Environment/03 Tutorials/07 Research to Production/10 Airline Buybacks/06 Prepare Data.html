@@ -1,0 +1,57 @@
+<p>We'll have to process our data to get the buyback premium/discount% vs forward return data.</p>
+
+<ol>
+    <li>Select the close column and then call the <code>unstack</code> method.</li>
+    <div class="section-example-container">
+        <pre class="python">df = history['close'].unstack(level=0)
+spy_close = spy['close'].unstack(level=0)</pre>
+    </div>
+
+    <li>Call <code>pct_change</code> to get the daily return of close price, then shift 1-step backward as prediction.</li>
+    <div class="section-example-container">
+        <pre class="python">ret = df.pct_change().shift(-1).iloc[:-1]
+ret_spy = spy_close.pct_change().shift(-1).iloc[:-1]</pre>
+    </div>
+
+    <li>Get the active forward return.</li>
+    <div class="section-example-container">
+        <pre class="python">active_ret = ret.sub(ret_spy.values, axis=0)</pre>
+    </div>
+
+    <li>Select the ExecutionPrice column and then call the <code>unstack</code> method to get the buyback dataframe.</li>
+    <div class="section-example-container">
+        <pre class="python">df_buybacks = history_buybacks['executionprice'].unstack(level=0)</pre>
+    </div>
+
+    <li>Convert buyback history into daily mean data.</li>
+    <div class="section-example-container">
+        <pre class="python">df_buybacks = df_buybacks.groupby(df_buybacks.index.date).mean()
+df_buybacks.columns = df.columns</pre>
+    </div>
+
+    <li>Get the buyback premium/discount %.</li>
+    <div class="section-example-container">
+        <pre class="python">df_close = df.reindex(df_buybacks.index)[~df_buybacks.isna()]
+df_buybacks = (df_buybacks - df_close)/df_close</pre>
+    </div>
+
+    <li>Create a <code>Dataframe</code> to hold the buyback and 1-day forward return data.</li>
+    <div class="section-example-container">
+        <pre class="python">data = pd.DataFrame(columns=["Buybacks", "Return"])</pre>
+    </div>
+
+    <li>Append the data into the <code>Dataframe</code>>.</li>
+    <div class="section-example-container">
+        <pre class="python">for row, row_buyback in zip(active_ret.reindex(df_buybacks.index).itertuples(), df_buybacks.itertuples()):
+    index = row[0]
+    for i in range(1, df_buybacks.shape[1]+1):
+        if row_buyback[i] != 0:
+            data = pd.concat([data, pd.DataFrame({"Buybacks": row_buyback[i], "Return":row[i]}, index=[index])])</pre>
+    </div>
+
+    <li>Call <code>dropna</code> to drop NaNs.</li>
+    <div class="section-example-container">
+        <pre class="python">data.dropna(inplace=True)</pre>
+    </div>
+    <img style="max-width: 100%; display: block" src="https://cdn.quantconnect.com/i/tu/airline-buybacks-df.png">
+</ol>

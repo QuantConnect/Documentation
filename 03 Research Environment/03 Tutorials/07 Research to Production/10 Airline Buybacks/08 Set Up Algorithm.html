@@ -1,0 +1,142 @@
+<p>Once we are confident in our hypothesis, we can export this code into backtesting. One way to accomodate this model into backtest is to create a scheduled event which uses our model to predict the expected return.</p>
+
+<div class="section-example-container">
+    <pre class="python">def Initialize(self):
+
+    #1. Required: Five years of backtest history
+    self.SetStartDate(2017, 1, 1)
+
+    #2. Required: Alpha Streams Models:
+    self.SetBrokerageModel(BrokerageName.AlphaStreams)
+
+    #3. Required: Significant AUM Capacity
+    self.SetCash(1000000)
+
+    #4. Required: Benchmark to SPY
+    self.SetBenchmark("SPY")
+    
+    self.SetPortfolioConstruction(EqualWeightingPortfolioConstructionModel())
+    self.SetExecution(ImmediateExecutionModel())
+    
+    # Set our strategy to be take 2% profit and 1% stop loss.
+    self.AddRiskManagement(MaximumUnrealizedProfitPercentPerSecurity(0.02))
+    self.AddRiskManagement(MaximumDrawdownPercentPerSecurity(0.01))
+
+    # Select the airline tickers for research.
+    self.symbols = {}
+    assets = ["LUV",   # Southwest Airlines
+                "DAL",   # Delta Airlines
+                "UAL",   # United Airlines Holdings
+                "AAL",   # American Airlines Group
+                "SKYW",  # SkyWest Inc. 
+                "ALGT",  # Allegiant Travel Co.
+                "ALK"    # Alaska Air Group Inc.
+                ]
+                
+    # Call the AddEquity method with the tickers, and its corresponding resolution. Then call AddData with SmartInsiderTransaction to subscribe to their buyback transaction data.
+    for ticker in assets:
+        symbol = self.AddEquity(ticker, Resolution.Minute).Symbol
+        self.symbols[symbol] = self.AddData(SmartInsiderTransaction, symbol).Symbol
+        
+    self.AddEquity("SPY")
+    
+    # Initialize the model
+    self.BuildModel()
+    
+    # Set Scheduled Event Method For Our Model Recalibration every month
+    self.Schedule.On(self.DateRules.MonthStart(), self.TimeRules.At(0, 0), self.BuildModel)
+    
+    # Set Scheduled Event Method For Trading
+    self.Schedule.On(self.DateRules.EveryDay(), self.TimeRules.BeforeMarketClose("SPY", 5), self.EveryDayBeforeMarketClose)</pre>
+</div>
+
+<p>We'll also need to create a function to train and update the logistic regression model from time to time.</p>
+
+<div class="section-example-container">
+    <pre class="python">def BuildModel(self):
+    qb = self
+    # Call the History method with list of tickers, time argument(s), and resolution to request historical data for the symbol.
+    history = qb.History(list(self.symbols.keys()), datetime(2015, 1, 1), datetime.now(), Resolution.Daily)
+    
+    # Call SPY history as reference
+    spy = qb.History(["SPY"], datetime(2015, 1, 1), datetime.now(), Resolution.Daily)
+    
+    # Call the History method with list of buyback tickers, time argument(s), and resolution to request buyback data for the symbol.
+    history_buybacks = qb.History(list(self.symbols.values()), datetime(2015, 1, 1), datetime.now(), Resolution.Daily)
+    
+    # Select the close column and then call the unstack method to get the close price dataframe.
+    df = history['close'].unstack(level=0)
+    spy_close = spy['close'].unstack(level=0)
+    
+    # Call pct_change to get the daily return of close price, then shift 1-step backward as prediction.
+    ret = df.pct_change().shift(-1).iloc[:-1]
+    ret_spy = spy_close.pct_change().shift(-1).iloc[:-1]
+    
+    # Get the active return
+    active_ret = ret.sub(ret_spy.values, axis=0)
+    
+    # Select the ExecutionPrice column and then call the unstack method to get the dataframe.
+    df_buybacks = history_buybacks['executionprice'].unstack(level=0)
+    
+    # Convert buyback history into daily mean data
+    df_buybacks = df_buybacks.groupby(df_buybacks.index.date).mean()
+    df_buybacks.columns = df.columns
+    
+    # Get the buyback premium/discount
+    df_close = df.reindex(df_buybacks.index)[~df_buybacks.isna()]
+    df_buybacks = (df_buybacks - df_close)/df_close
+    
+    # Create a dataframe to hold the buyback and 1-day forward return data
+    data = pd.DataFrame(columns=["Buybacks", "Return"])
+    
+    # Append the data into the dataframe
+    for row, row_buyback in zip(active_ret.reindex(df_buybacks.index).itertuples(), df_buybacks.itertuples()):
+        index = row[0]
+        for i in range(1, df_buybacks.shape[1]+1):
+            if row_buyback[i] != 0:
+                data = pd.concat([data, pd.DataFrame({"Buybacks": row_buyback[i], "Return":row[i]}, index=[index])])
+    
+    # Call dropna to drop NaNs
+    data.dropna(inplace=True)
+    
+    # Get binary return (+/-)
+    binary_ret = data[data > 0].fillna(0)[data < 0].fillna(1)["Return"]
+    
+    # Construct a logistic regression model
+    self.model = Logit(binary_ret.values, data["Buybacks"].values).fit()</pre>
+</div>
+
+<p>Now we export our model into the scheduled event method. We will switch <code>qb</code> with <code>self</code> and replace methods with their <code>QCAlgorithm</code> counterparts as needed. In this example, this is not an issue because all the methods we used in research also exist in <code>QCAlgorithm</code>.</p>
+
+<div class="section-example-container">
+    <pre class="python">def EveryDayBeforeMarketClose(self):
+    qb = self
+    # Get any buyback event today
+    history_buybacks = qb.History(list(self.symbols.values()), timedelta(days=1), Resolution.Daily)
+    if history_buybacks.empty or "executionprice" not in history_buybacks.columns: return
+
+    # Select the ExecutionPrice column and then call the unstack method to get the dataframe.
+    df_buybacks = history_buybacks['executionprice'].unstack(level=0)
+    
+    # Convert buyback history into daily mean data
+    df_buybacks = df_buybacks.groupby(df_buybacks.index.date).mean()
+    
+    # ==============================
+    
+    insights = []
+    
+    # Iterate the buyback data, thne pass to the model for prediction
+    row = df_buybacks.iloc[-1]
+    for i in range(len(row)):
+        prediction = self.model.predict(row[i])
+        
+        # Long if the prediction predict price goes up, short otherwise. Do opposite for SPY (active return)
+        if prediction > 0.5:
+            insights.append( Insight.Price(row.index[i].split(".")[0], timedelta(days=1), InsightDirection.Up) )
+            insights.append( Insight.Price("SPY", timedelta(days=1), InsightDirection.Down) )
+        else:
+            insights.append( Insight.Price(row.index[i].split(".")[0], timedelta(days=1), InsightDirection.Down) )
+            insights.append( Insight.Price("SPY", timedelta(days=1), InsightDirection.Up) )
+
+    self.EmitInsights(insights)</pre>
+</div>
