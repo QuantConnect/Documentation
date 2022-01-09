@@ -18,9 +18,9 @@
     self.SetPortfolioConstruction(EqualWeightingPortfolioConstructionModel())
     self.SetExecution(ImmediateExecutionModel())
     
-    # Set our strategy to be take 2% profit and 1% stop loss.
-    self.AddRiskManagement(MaximumUnrealizedProfitPercentPerSecurity(0.02))
-    self.AddRiskManagement(MaximumDrawdownPercentPerSecurity(0.01))
+    # Set our strategy to be take 5% profit and 5% stop loss.
+    self.AddRiskManagement(MaximumUnrealizedProfitPercentPerSecurity(0.05))
+    self.AddRiskManagement(MaximumDrawdownPercentPerSecurity(0.05))
 
     # Select the airline tickers for research.
     self.symbols = {}
@@ -100,7 +100,9 @@
     data.dropna(inplace=True)
     
     # Get binary return (+/-)
-    binary_ret = data[data > 0].fillna(0)[data < 0].fillna(1)["Return"]
+    binary_ret = data["Return"].copy()
+    binary_ret[binary_ret < 0] = 0
+    binary_ret[binary_ret > 0] = 1
     
     # Construct a logistic regression model
     self.model = Logit(binary_ret.values, data["Buybacks"].values).fit()</pre>
