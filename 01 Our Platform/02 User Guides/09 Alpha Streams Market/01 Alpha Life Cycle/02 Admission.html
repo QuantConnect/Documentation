@@ -5,53 +5,51 @@
     <li><b>End date</b>: The backtest must have an end date less than 7 days prior to the date of submission.</li>
     <li><b>Reality modeling</b>: The backtest must use the <code>AlphaStreamsBrokerageModel</code> and cannot include any additional reality modeling.</li>
     <li><b>Profitability</b>: The backtest must be profitable.</li>
-    <li><b>Data sources</b>: The backtest must only use datasets from our Dataset Market. We can't guarantee the integrity of any external data sources. Refer to the <b>License</b> tab on a dataset listing to see if the dataset is eligible for use in Alpha Streams.</li>
-    <li><b>PSR</b>: The backtest must have a Probabilistic Sharpe Ratio (PSR) &gt;= 80%.</li>
+    <li><b>Data sources</b>: The backtest must only use datasets from our <a href="../datasets">Dataset Market</a> because we can't guarantee the integrity of any external data sources. Refer to the <b>License</b> tab on a dataset listing to see if the dataset is eligible for use in Alpha Streams.</li>
+    <li><b>PSR</b>: The backtest must have a <a href="../optimization/objectives#05-PSR">Probabilistic Sharpe Ratio</a> (PSR) &gt;= 80%.</li>
     <li><b>Drawdown</b>: The backtest must have a maximum drawdown &lt;= 20%. If the maximum drawdown &gt;= 10%, then the maximum drawdown duration must be &lt;= 6 months.</li>
     <li><b>Capacity</b>: The backtest must have a capacity &gt;= $250,000.</li>
-    <li><b>Correlation</b>: The backtest must have a return correlation &lt;= 85% with Alphas accepted by the same author.</li>
+    <li><b>Correlation</b>: The backtest must have a return correlation &lt;= 85% with other Alphas that have been accepted by the same Author.</li>
     <li><b>First trade</b>: The backtest must place a trade on the first trading day.</li>
     <li><b>Asset classes</b>: The backtest must not trade Futures or Options.</li>
     <li><b>Insight count</b>: The backtest must emit more than 100 <code>Insight</code>s.</li>
 </ul>
 
-<p>Alphas do not need to perform well in all market environments to be accepted into the Alpha Streams Market. Licensees can adjust their allocation to the Alphas over time.</p>
+<p>Alphas do not need to perform well in all market environments to be accepted into the Alpha Streams Market. Licensees can adjust their allocation to Alphas as the market environment changes.</p>
 
 <p>If an Alpha passes the criteria above, it is reviewed by our team. We aim to not impose any value bias during the review process, but we need to ensure the Alphas are mechanically sound. When reviewing Alphas, we consider the following points: <br></p> 
 
 <h4>Stateless &amp; Resilient</h4>
-<p>Mechanisms should be set up to restore the internal state of an Alpha in the event of reboots. Alphas will be very long-running. Over the course of months or years, the server will need patches and occasional restarting. The Alpha should be smart enough to automatically recover in the event of restart using the <code>History</code> and <code>WarmUp</code> methods.</p>
+<p>Mechanisms should be set up to restore the internal state of the Alpha in the event of reboots. Alphas will run for a very long period of time. Over the course of months or years, the server will need patches and occasional restarting. The Alpha should be smart enough to automatically recover in the event of restarts using the <code>History</code> and <code>WarmUp</code> methods.</p>
 
 <h4>Grounded in Reality</h4>
 <p>Alphas should have clear strategic reasoning underpinning the strategy. A single reason-based foundation for the algorithm is necessary to understand the Alpha behavior when things go wrong and it helps improve your Alpha application for funds. Obscure correlations or overfit strategies tend to perform poorly out-of-sample. </p>
 
 <h4>Transparent Sourcing</h4>
-<p>Authors need a transparent employment history and Alphas must not infringe on other IP. We like to know the employment history of authors on the platform to ensure the Alpha is not infringing on any intellectual property, including your current and past employers. Public or shared content may be used as a foundation and extended. If you have licensed the IP from a third party, you must present consent for using the IP. </p>
+<p>Authors need a transparent employment history and Alphas must not infringe on other intellectual property (IP). We like to know the employment history of Authors on the platform to ensure their Alphas are not infringing on any IP, including current and past employers. Public or shared algorithms may be used as a foundation and extended. If you have licensed the IP from a third party, you must present consent for using the IP. </p>
 
 <h4>Edge Case Handling</h4>
-<p>Alphas need to be able to handle edge cases such as dividends, splits, and delistings. Handling edge cases adds another layer of resiliency to Alphas and keeps them running when data changes occur. You can handle edge cases with simple control logic, checking <code>data.ContainsKey(symbol)</code>, explicitly removing certain affected securities from the universe of traded securities, or other methods. </p><h4>Insights</h4>
-<p>Insights are predictions about the price movement of specific securities. Insights are required in all Alpha Streams submissions. If the algorithm follows the classic design, it must call the <code>EmitInsights</code> method before each order is submitted. Insights provide funds with information about the predictive power of your models and give them insight into why the orders they see are being placed. If the algorithm follows the framework design, the <code>Update</code> method of the Alpha model must return a list of Insights.</p>
+<p>Alphas need to be able to handle edge cases such as dividends, splits, and delistings. Handling edge cases adds another layer of resiliency to Alphas and keeps them running when data changes occur. Authors can handle edge cases with simple control logic, checking <code>data.ContainsKey(symbol)</code>, explicitly removing certain affected securities from the universe of traded securities, or other methods. </p><h4>Insights</h4>
+<p>Insights are predictions about the price movement of specific securities. Insights are required in all Alpha Streams submissions. If the algorithm follows the classic design, it must call the <code>EmitInsights</code> method before each order is submitted. Insights provide Licensees with information about the predictive power of Alphas and give the Licensees insight into why the orders are being placed. If the algorithm follows the framework design, the <code>Update</code> method of the Alpha model must return a list of <code>Insight</code>s.</p>
 
 <h4>Daily Data</h4>
-<p>We aggregate our daily data from ticks and then inject the daily bars into the algorithms at 00:00 UTC. For instance, <code>TradeBar</code>s with a daily resolution that span across the day 2019-10-22 are injected into the algorithm at 2019-10-23 00:00. If an algorithm uses daily data, operations performed intraday will be done using stale data, leading to unexpected results, impossible order fills, and unrealistic performance. To perform operations intraday while maintaining realistic performance, use minute or hour resolution and place a Scheduled Event.</p>
+<p>We aggregate our daily data from ticks and then inject the daily bars into the algorithms at 00:00 UTC. For instance, <code>TradeBar</code>s with a daily resolution that span across the day 2019-10-22 are injected into algorithms at 2019-10-23 00:00 UTC. If an algorithm uses daily data, operations performed intraday will be done using stale data, leading to unexpected results, impossible order fills, and unrealistic performance. To perform operations intraday while maintaining realistic performance, use minute or hour resolution and place a Scheduled Event.</p>
 
 <h4>Open-Source IP</h4>
-<p>We provide the community with lots of example algorithms. The goal of the examples is to demonstrate how to use the API correctly, incorporate new data sources into existing algorithms, implement best practices for Alpha Streams, and more. However, we cannot accept any copies or near-copies of our demonstration algorithms into Alpha Streams. We love to see that our work inspired someone, but each submission must provide sufficient originality that the work can indeed be called the author's own. </p>
+<p>We provide the community with lots of example algorithms. The goal of the examples is to demonstrate how to use the API correctly, incorporate new data sources into existing algorithms, implement best practices for Alpha Streams, and more. However, we cannot accept any copies or near-copies of our demonstration algorithms into Alpha Streams. We love to see that our work inspired someone, but each submission must provide sufficient originality that the work can indeed be called the Author's own. </p>
 
 <h4>Overfitting</h4>
-<p>Overfitting will doom an algorithm in live trading. To prevent overfitting and boost the quality of submissions, we can't accept any Alphas that obviously overfit to data. Overfitting can manifest itself in countless ways, but the most common things we see are:</p>
+<p>Overfitting will doom algorithms in live trading. To prevent overfitting and boost the quality of submissions, we can't accept any Alphas that obviously overfit to data. Overfitting can manifest itself in countless ways, but we most commonly see the following:</p>
 <ul>
-    <li>Coding of indicator parameters that work for certain hand-picked assets but perhaps not for any others.</li>
+    <li>Setting indicator parameters that work for certain hand-picked assets but perhaps not for any others.</li>
     <li>Using thresholds for indicator values that are hard-coded and have no fundamental theory behind their value.</li>
     <li>Look-ahead bias, such as hard-coding specific dates to perform specific actions. Hard-coding specific dates can only be done if there is prior knowledge of an event. Look-ahead bias might boost the backtest performance, but it does not mean the Alpha is fundamentally valuable and can sustain performance during future events.</li>
     <li>Selection bias, such as picking stocks known ahead of time to perform exceptionally well during specific periods. </li>
 </ul><h4>Infrequent Insight Generation or Trading</h4>
-<p>Algorithms don't need to emit Insights or trade daily or intraday, but the maximum holding period for funds is usually a matter of days or weeks. Anything longer than monthly rebalancing likely won't be accepted. Alphas need to place at least 10 trades per month for the majority of the backtest.</p>
+<p>Algorithms don't need to emit Insights, trade daily, or trade intraday, but the maximum holding period for funds is usually a matter of days or weeks. We likely won't accept Alphas that rebalance less frequently than monthly. Alphas need to place at least 10 trades per month for the majority of the backtest.</p>
 
 <h4>IP Infringement</h4>
-<p>All Alphas must be the intellectual property (IP) of the submitting author. </p>
-
-<p>In our Alpha submission process, we ask authors to include information on themselves and meta-information about the algorithm. The information that's collected is displayed on the Alpha listing for investors to review. The Alpha author's biography, work experience, and education are recorded to create the Alpha listing page. The following information is collected on each Alpha:</p>
+<p>Authors can only submit Alphas to which they own the IP. As Authors <a href="../../tutorials/alpha-streams-market/managing-alpha-listings#03-Submit-New-Alphas">submit Alphas</a>, they must include information on themselves and meta-information about the algorithm. The information that's collected is displayed on the <a href="alpha-listings">Alpha listing page</a> for investors to review. We collect the Author's biography, work experience, and education. We also collect the following information on each Alpha:</p>
 <ul>
     <li>Name</li>
     <li>Description</li>
@@ -64,4 +62,4 @@
     <li>Type of execution model(s)</li>
 </ul>
 
-<p>If an algorithm is accepted to the Alpha Streams Market, it is immediately listed in the market. If an algorithm does not meet the admission requirements above, the algorithm is rejected and our Alpha Streams team provides comments on why the algorithm was rejected. When an algorithm is rejected, the author can update the algorithm and then submit the updated version for review.</p>
+<p>If an algorithm is accepted to the Alpha Streams Market, it is immediately listed in the market. If an algorithm does not meet the admission requirements above, the algorithm is rejected and our Alpha Streams team provides comments on why the algorithm was rejected. When an algorithm is rejected, the Author can update the algorithm and then submit the updated version for review.</p>
