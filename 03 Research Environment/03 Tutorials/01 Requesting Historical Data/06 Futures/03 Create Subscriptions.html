@@ -46,7 +46,7 @@ using QuantConnect.Research;</pre>
     <p>If you don't call the <code>SetFilter</code> method, the <code>GetFutureHistory</code> method will not return historical data.</p>
 </ol>
 
-<p>If you want historical data on individual contracts and their <code>OpenInterest</code>, you need to subscribe to the individual contracts. You need to subscribe to the underlying Future before you can subscribe to the contracts of the Future. Follow these steps to subscribe to individual Future contracts:</p>
+<p>If you want historical data on individual contracts and their <code>OpenInterest</code>, you need to subscribe to the individual contracts. You need to subscribe to the underlying <code>Future</code> before you can subscribe to its contracts. Follow these steps to subscribe to individual Future contracts:</p>
 <ol>
   <li>Call the <code>GetFuturesContractList</code> method with the underlying <code>Future</code> <code>Symbol</code> and a <code class="python">datetime</code><code class="csharp">DateTime</code>.</li>
 	<div class="section-example-container">
@@ -56,8 +56,8 @@ var symbols = qb.FutureChainProvider.GetFutureContractList(symbol, startDate);</
 symbols = qb.FutureChainProvider.GetFutureContractList(symbol, start_date)</pre>
 	</div>
 	<p>The call returns a list of <code>Symbol</code>s that reference the <code>FutureContract</code>s that were trading at the given time.</p>
-	<li>Select the <code>Symbol</code> of the <code>FutureContract</code>s for which you want to get historical data.</li>
-	<p>For example, you can select the  <code>Symbol</code> of the contract with the closest expiry to match the continuous futures defined before:</p>
+	<li>Select the <code>Symbol</code> of the <code>FutureContract</code>(s) for which you want to get historical data.</li>
+	<p>For example, select the  <code>Symbol</code> of the contract with the closest expiry to match the continuous Future defined above.<br></p>
 	<div class="section-example-container">
 		<pre class="csharp">var contractSymbol = symbols.OrderBy(s =&gt; s.ID.Date).FirstOrDefault();</pre>
 		<pre class="python">contract_symbol = sorted(symbols, key=lambda s: s.ID.Date)[0]</pre>
@@ -67,5 +67,5 @@ symbols = qb.FutureChainProvider.GetFutureContractList(symbol, start_date)</pre>
 		<pre class="csharp">qb.AddFutureContract(contractSymbol, fillDataForward: false);</pre>
 		<pre class="python">qb.AddFutureContract(contract_symbol, fillDataForward = False)</pre>
 	</div>
-	<p>Disabling fill-forward is a good practice since there is only a few <code>OpenInterest</code> data points per day.</p>
+	<p>Disable fill-forward because there are only a few <code>OpenInterest</code> data points per day.</p>
 </ol>
