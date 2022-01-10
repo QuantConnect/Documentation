@@ -62,7 +62,9 @@ foreach(var kvp in rollingMean)
     {
         magnitude[symbol].Add(-zScore[symbol][i] * rollingStd[symbol][i] / decimal.ToDouble(closes[symbol][i-1]));
         confidence[symbol].Add(Normal.CDF(0, 1, -zScore[symbol][i]));
-        weights[symbol].Add(Math.Max(confidence[symbol].Last() - 1 / (magnitude[symbol].Last() + 1), 0));
+        // Filter if trade or not
+        var trade = filter[symbol][i] ? 1d : 0d;
+        weights[symbol].Add(trade * Math.Max(confidence[symbol].Last() - 1 / (magnitude[symbol].Last() + 1), 0));
     }
 }</pre>
         <pre class="python">z_score = df.apply(zscore)[classifier]
@@ -96,6 +98,7 @@ confidence.fillna(0, inplace=True)</pre>
         {
             sum += array[i, j];
         }
+        if (sum == 0.0) continue;
         for (int j=0; j < array.GetLength(1); j++)
         {
             array[i, j] = array[i, j] / sum;

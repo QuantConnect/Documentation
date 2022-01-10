@@ -109,7 +109,9 @@ public override void Initialize()
         if(!magnitude.ContainsKey(symbol)){
             magnitude.Add(symbol, -zScore[symbol] * rollingStd[symbol] / decimal.ToDouble(closes[symbol].Last()));
             confidence.Add(symbol, Normal.CDF(0, 1, -zScore[symbol]));
-            weights.Add(symbol, Math.Max(confidence[symbol] - 1 / (magnitude[symbol] + 1), 0));
+            // Filter if trade or not
+            var trade = filter[symbol] ? 1d : 0d;
+            weights.Add(symbol, trade * Math.Max(confidence[symbol] - 1 / (magnitude[symbol] + 1), 0));
         }
     }
     
