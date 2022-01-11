@@ -1,0 +1,96 @@
+<p>The <code>ObjectStore</code> is accessible in the root of your algorithm. It has the following methods available for storing data.</p>
+
+<h4>Save</h4>
+<p>Using <code>.Save()</code> method could store data as a string object.</p>
+<ol>
+    <li>Example data to be stored.</li>
+    <div class="section-example-container">
+        <pre class="csharp">var sample = new Dictionary&lt;string, int&gt; {["One"] = 1, ["Two"] = 2, ["Three"] = 3};</pre>
+        <pre class="python">sample = {"One": 1, "Two": 2, "Three": 3}</pre>
+    </div>
+
+    <li>Convert data into string.</li>
+    <div class="section-example-container">
+        <pre class="csharp">var stringSample = string.Join(Environment.NewLine, sample);</pre>
+        <pre class="python">string_sample = str(sample)</pre>
+    </div>
+
+    <li>Store into <code>ObjectStore</code>.</li>
+    <div class="section-example-container">
+        <pre class="csharp">qb.ObjectStore.Save("saveString", stringSample);</pre>
+        <pre class="python">qb.ObjectStore.Save("save_string", string_sample)</pre>
+    </div>
+
+    <li>Use <code>ContainsKey</code> to check if the key-value pair is in the <code>ObjectStore</code>.</li>
+    <div class="section-example-container">
+        <pre class="csharp">qb.ObjectStore.ContainsKey("saveString")</pre>
+        <img class="csharp" src="https://cdn.quantconnect.com/i/tu/store-data-save-string-cs.png">
+        <pre class="python">qb.ObjectStore.ContainsKey("save_string")</pre>
+        <img class="csharp" src="https://cdn.quantconnect.com/i/tu/store-data-save-string-py.png">
+    </div>
+</ol>
+
+<h4>SaveBytes</h4>
+<p>Using <code>.SaveBytes()</code> method could store data as a bytes object.</p>
+<ol>
+    <li>Convert data into bytes.</li>
+    <div class="section-example-container">
+        <pre class="csharp">var bytesSample = Encoding.UTF8.GetBytes(stringSample);</pre>
+        <pre class="python">import json
+bytes_sample = json.dumps(string_sample).encode('utf-8')</pre>
+    </div>
+
+    <li>Store into <code>ObjectStore</code>.</li>
+    <div class="section-example-container">
+        <pre class="csharp">qb.ObjectStore.SaveBytes("saveBytes", bytesSample);</pre>
+        <pre class="python">qb.ObjectStore.SaveBytes("save_bytes", bytes_sample)</pre>
+    </div>
+
+    <li>Use <code>ContainsKey</code> to check if the key-value pair is in the <code>ObjectStore</code>.</li>
+    <div class="section-example-container">
+        <pre class="csharp">qb.ObjectStore.ContainsKey("saveBytes")</pre>
+        <img class="csharp" src="https://cdn.quantconnect.com/i/tu/store-data-save-bytes-cs.png">
+        <pre class="python">qb.ObjectStore.ContainsKey("save_bytes")</pre>
+        <img class="csharp" src="https://cdn.quantconnect.com/i/tu/store-data-save-bytes-py.png">
+    </div>
+</ol>
+
+<h4>SaveJson</h4>
+<p class="csharp">Using <code>.SaveJson&lt;T&gt;()</code> method could store data as a JSON-encoded string object. The helper method will help serialize the data into JSON format automatically.</p>
+<p class="python">This method is intended for C# projects.</p>
+<ol class="csharp">
+    <li class="csharp">Store into <code>ObjectStore</code>.</li>
+    <div class="csharp section-example-container">
+        <pre class="csharp">qb.ObjectStore.SaveJson("saveJson", sample);</pre>
+    </div>
+
+    <li class="csharp">Use <code>ContainsKey</code> to check if the key-value pair is in the <code>ObjectStore</code>.</li>
+    <div class="csharp section-example-container">
+        <pre class="csharp">qb.ObjectStore.ContainsKey("saveJson")</pre>
+        <img class="csharp" src="https://cdn.quantconnect.com/i/tu/store-data-save-json-cs.png">
+    </div>
+</ol>
+
+<h4>SaveXml</h4>
+<p class="csharp">Using <code>.SaveXml&lt;T&gt;()</code> method could store data as a XML-encoded string object. </p>
+<p class="python">This method is intended for C# projects.</p>
+<ol class="csharp">
+    <li class="csharp">Convert the data into XML format.</li>
+    <div class="csharp section-example-container">
+        <pre class="csharp">XElement xmlSample = new XElement("sample",
+    sample.Select(kvp => new XElement(kvp.Key, kvp.Value)));
+Console.Write(xmlSample.ToString());</pre>
+    </div>
+    <img class="csharp" src="https://cdn.quantconnect.com/i/tu/store-data-xml-cs.png">
+
+    <li class="csharp">Store into <code>ObjectStore</code>.</li>
+    <div class="csharp section-example-container">
+        <pre class="csharp">qb.ObjectStore.SaveXml("saveXml", xmlSample);</pre>
+    </div>
+
+    <li class="csharp">Use <code>ContainsKey</code> to check if the key-value pair is in the <code>ObjectStore</code>.</li>
+    <div class="csharp section-example-container">
+        <pre class="csharp">qb.ObjectStore.ContainsKey("saveXml")</pre>
+        <img class="csharp" src="https://cdn.quantconnect.com/i/tu/store-data-save-xml-cs.png">
+    </div>
+</ol>

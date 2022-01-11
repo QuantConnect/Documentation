@@ -1,0 +1,83 @@
+<p>We can use the key to call the stored data in <code>ObjectStore</code>. It has the following methods available for reading data.</p>
+
+<h4>Read</h4>
+<p>Using <code>.Read()</code> method could read data as from a stored string object.</p>
+<ol>
+    <li>Read from <code>ObjectStore</code>.</li>
+    <div class="section-example-container">
+        <pre class="csharp">var stringData = qb.ObjectStore.Read("saveString");</pre>
+        <pre class="python">string_data = qb.ObjectStore.Read("save_string")</pre>
+    </div>
+
+    <li>Restore as the dictionary.</li>
+    <div class="section-example-container">
+        <pre class="csharp">var dict = stringData.Split(new[] {'\n'}, StringSplitOptions.RemoveEmptyEntries)
+               .Select(part => part.Split('[')[1]).Select(part => part.Split(']')[0]).Select(part => part.Split(','))
+               .ToDictionary(split => split[0], split => split[1]);</pre>
+        <img class="csharp" src="https://cdn.quantconnect.com/i/tu/store-data-read-str-cs.png">
+        <pre class="python">string_data = eval(string_data)</pre>
+    </div>
+
+    <li class="python">Call <code>assert</code> to check if the read and original data are the same. If no error message displayed, the two objects are the same.</li>
+    <div class="python section-example-container">
+        <pre class="python">assert string_data == sample</pre>
+    </div>
+</ol>
+
+<h4>ReadBytes</h4>
+<p>Using <code>.ReadBytes()</code> method could read data from a stored bytes object.</p>
+<ol>
+    <li>Read from <code>ObjectStore</code>.</li>
+    <div class="section-example-container">
+        <pre class="csharp">var stringData = qb.ObjectStore.Read("saveString");</pre>
+        <pre class="python">string_data = qb.ObjectStore.Read("save_string")</pre>
+    </div>
+
+    <li class="csharp">Convert to string.</li>
+    <li class="python">Call <code>json.loads</code> to restore the data string.</li>
+    <div class="section-example-container">
+        <pre class="csharp">var stringFromBytes = Encoding.UTF8.GetString(bytesData);</pre>
+        <pre class="python">byte_data = json.loads(bytearray(byte_data).decode('utf-8'))</pre>
+    </div>
+
+    <li>Restore as the dictionary.</li>
+    <div class="section-example-container">
+        <pre class="csharp">var dict = stringFromBytes.Split(new[] {'\n'}, StringSplitOptions.RemoveEmptyEntries)
+               .Select(part => part.Split('[')[1]).Select(part => part.Split(']')[0]).Select(part => part.Split(','))
+               .ToDictionary(split => split[0], split => split[1]);</pre>
+        <img class="csharp" src="https://cdn.quantconnect.com/i/tu/store-data-read-bytes-cs.png">
+        <pre class="python">byte_data = eval(byte_data)</pre>
+    </div>
+
+    <li class="python">Call <code>assert</code> to check if the read and original data are the same. If no error message displayed, the two objects are the same.</li>
+    <div class="python section-example-container">
+        <pre class="python">assert byte_data == sample</pre>
+    </div>
+</ol>
+
+<h4>ReadJson</h4>
+<p class="csharp">Using <code>.ReadJson&lt;T&gt;()</code> method could read data from a stored JSON-encoded string object.</p>
+<p class="python">This method is intended for C# projects.</p>
+<ol class="csharp">
+    <li class="csharp">Read data from <code>ObjectStore</code>.</li>
+    <div class="csharp section-example-container">
+        <pre class="csharp">var jsonData = qb.ObjectStore.ReadJson&lt;Dictionary&lt;string, int&gt;&gt;("saveJson");</pre>
+        <img class="csharp" src="https://cdn.quantconnect.com/i/tu/store-data-read-json-cs.png">
+    </div>
+</ol>
+
+<h4>ReadXml</h4>
+<p class="csharp">Using <code>.ReadXml&lt;T&gt;()</code> method could read data from a stored XML-encoded string object. </p>
+<p class="python">This method is intended for C# projects.</p>
+<ol class="csharp">
+    <li class="csharp">Read data from <code>ObjectStore</code>.</li>
+    <div class="csharp section-example-container">
+        <pre class="csharp">var xmlData = qb.ObjectStore.ReadXml&lt;XElement&gt;("saveXml");</pre>
+    </div>
+
+    <li class="csharp">Reconstruct the dictionary.</li>
+    <div class="csharp section-example-container">
+        <pre class="csharp">var dict = xmlData.Elements().ToDictionary(x => x.Name.LocalName, x => int.Parse(x.Value));</pre>
+        <img class="csharp" src="https://cdn.quantconnect.com/i/tu/store-data-read-xml-cs.png">
+    </div>
+</ol>

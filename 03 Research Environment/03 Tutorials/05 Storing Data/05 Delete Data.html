@@ -1,0 +1,50 @@
+<p>We can delete data from the <code>ObjectStore</code> using the <code>Delete()</code> method.</p>
+
+<h4>Single Item</h4>
+<ol>
+    <li>Delete data from <code>ObjectStore</code> by its key.</li>
+    <div class="section-example-container">
+        <pre class="csharp">qb.ObjectStore.Delete("saveXml");</pre>
+        <pre class="python">qb.ObjectStore.Delete("save_bytes")</pre>
+    </div>
+
+    <li>Use <code>ContainsKey</code> to check if the key-value pair is in the <code>ObjectStore</code>.</li>
+    <div class="section-example-container">
+        <pre class="csharp">qb.ObjectStore.ContainsKey("saveXml")</pre>
+        <img class="csharp" src="https://cdn.quantconnect.com/i/tu/store-data-delete-single-cs.png">
+        <pre class="python">qb.ObjectStore.ContainsKey("save_bytes")</pre>
+        <img class="python" src="https://cdn.quantconnect.com/i/tu/store-data-delete-single-py.png">
+    </div>
+</ol>
+
+<h4>All Items</h4>
+<p>We just need to iterate the <code>Delete()</code> method for all keys in <code>ObjectStore</code>.</p>
+<ol>
+    <li>Write a function to clear the <code>ObjectStore</code>, then run it.</li>
+    <div class="section-example-container">
+        <pre class="csharp">public static void ClearObjectStore(){
+    // Instantiate a QuantBook instance.
+    var qb = new QuantBook();
+
+    foreach(var key in GetObjectStoreKeys()){
+        qb.ObjectStore.Delete(key);
+    }
+}
+
+ClearObjectStore();</pre>
+        <img class="csharp" src="https://cdn.quantconnect.com/i/tu/store-data-delete-single-cs.png">
+        <pre class="python">def clear_ObjectStore():
+    for key in get_ObjectStore_keys():
+        qb.ObjectStore.Delete(key)
+        
+clear_ObjectStore()</pre>
+    </div>
+
+    <li class="csharp">Check if the <code>ObjectStore</code>'s key List is empty.</li>
+    <li class="python">Call <code>assert</code> to check if the <code>ObjectStore</code>'s key count is zero. If no error message displayed, the two objects are the same.</li>
+    <div class="section-example-container">
+        <pre class="csharp">GetObjectStoreKeys()</pre>
+        <img class="csharp" src="https://cdn.quantconnect.com/i/tu/store-data-delete-all-cs.png">
+        <pre class="python">assert len(get_ObjectStore_keys()) == 0</pre>
+    </div>
+</ol>
