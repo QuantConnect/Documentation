@@ -1,96 +1,73 @@
-<p>The <code>ObjectStore</code> is accessible in the root of your algorithm. It has the following methods available for storing data.</p>
+<p>You can save data in the <code>objectStore</code> object in different formats.</p>
 
-<h4>Save</h4>
-<p>Using <code>.Save()</code> method could store data as a string object.</p>
-<ol>
-    <li>Example data to be stored.</li>
-    <div class="section-example-container">
-        <pre class="csharp">var sample = new Dictionary&lt;string, int&gt; {["One"] = 1, ["Two"] = 2, ["Three"] = 3};</pre>
-        <pre class="python">sample = {"One": 1, "Two": 2, "Three": 3}</pre>
+<p>Follow this steps to create data in different formats:</p>
+<ol class=csharp>
+    <li>Create example data to be stored </li>
+    <div class="csharp section-example-container">
+        <pre class="csharp">var sample = new Dictionary&lt;string, int&gt; { {"One", 1}, {"Two", 2}, {"Three", 3} };</pre>
     </div>
-
-    <li>Convert data into string.</li>
-    <div class="section-example-container">
+    <li>Convert the example data to <code>string</code>:</li>
+    <div class="csharp section-example-container">
         <pre class="csharp">var stringSample = string.Join(Environment.NewLine, sample);</pre>
-        <pre class="python">string_sample = str(sample)</pre>
     </div>
-
-    <li>Store into <code>ObjectStore</code>.</li>
-    <div class="section-example-container">
-        <pre class="csharp">qb.ObjectStore.Save("saveString", stringSample);</pre>
-        <pre class="python">qb.ObjectStore.Save("save_string", string_sample)</pre>
-    </div>
-
-    <li>Use <code>ContainsKey</code> to check if the key-value pair is in the <code>ObjectStore</code>.</li>
-    <div class="section-example-container">
-        <pre class="csharp">qb.ObjectStore.ContainsKey("saveString")</pre>
-        <pre class="python">qb.ObjectStore.ContainsKey("save_string")</pre>
-    </div>
-    <img class="csharp" src="https://cdn.quantconnect.com/i/tu/store-data-save-string-cs.png">
-    <img class="python" src="https://cdn.quantconnect.com/i/tu/store-data-save-string-py.png">
-</ol>
-
-<h4>SaveBytes</h4>
-<p>Using <code>.SaveBytes()</code> method could store data as a bytes object.</p>
-<ol>
-    <li>Convert data into bytes.</li>
-    <div class="section-example-container">
+    <li>Convert the example data to <code>byte</code>:</li>
+    <div class="csharp section-example-container">
         <pre class="csharp">var bytesSample = Encoding.UTF8.GetBytes(stringSample);</pre>
-        <pre class="python">import json
-bytes_sample = json.dumps(string_sample).encode('utf-8')</pre>
     </div>
-
-    <li>Store into <code>ObjectStore</code>.</li>
-    <div class="section-example-container">
-        <pre class="csharp">qb.ObjectStore.SaveBytes("saveBytes", bytesSample);</pre>
-        <pre class="python">qb.ObjectStore.SaveBytes("save_bytes", bytes_sample)</pre>
-    </div>
-
-    <li>Use <code>ContainsKey</code> to check if the key-value pair is in the <code>ObjectStore</code>.</li>
-    <div class="section-example-container">
-        <pre class="csharp">qb.ObjectStore.ContainsKey("saveBytes")</pre>
-        <pre class="python">qb.ObjectStore.ContainsKey("save_bytes")</pre>
-    </div>
-    <img class="csharp" src="https://cdn.quantconnect.com/i/tu/store-data-save-bytes-cs.png">
-    <img class="python" src="https://cdn.quantconnect.com/i/tu/store-data-save-bytes-py.png">
-</ol>
-
-<h4>SaveJson</h4>
-<p class="csharp">Using <code>.SaveJson&lt;T&gt;()</code> method could store data as a JSON-encoded string object. The helper method will help serialize the data into JSON format automatically.</p>
-<p class="python">This method is intended for C# projects.</p>
-<ol class="csharp">
-    <li class="csharp">Store into <code>ObjectStore</code>.</li>
+    <li>Convert the example data to <code>JSON</code>:</li>
+    <p>Using <code>SaveJson&lt;T&gt;</code> method could store data as a JSON-encoded string object. The helper method will help serialize the data into JSON format automatically.</p>
     <div class="csharp section-example-container">
-        <pre class="csharp">qb.ObjectStore.SaveJson("saveJson", sample);</pre>
+        <pre class="csharp">var bytesSample = Encoding.UTF8.GetBytes(stringSample);</pre>
     </div>
-
-    <li class="csharp">Use <code>ContainsKey</code> to check if the key-value pair is in the <code>ObjectStore</code>.</li>
     <div class="csharp section-example-container">
-        <pre class="csharp">qb.ObjectStore.ContainsKey("saveJson")</pre>
-    </div>
-    <img class="csharp" src="https://cdn.quantconnect.com/i/tu/store-data-save-json-cs.png">
-</ol>
-
-<h4>SaveXml</h4>
-<p class="csharp">Using <code>.SaveXml&lt;T&gt;()</code> method could store data as a XML-encoded string object. </p>
-<p class="python">This method is intended for C# projects.</p>
-<ol class="csharp">
-    <li class="csharp">Convert the data into XML format.</li>
-    <div class="csharp section-example-container">
-        <pre class="csharp">XElement xmlSample = new XElement("sample",
+        <pre class="csharp">var xmlSample = new XElement("sample",
     sample.Select(kvp => new XElement(kvp.Key, kvp.Value)));
 Console.Write(xmlSample.ToString());</pre>
     </div>
     <img class="csharp" src="https://cdn.quantconnect.com/i/tu/store-data-xml-cs.png">
-
-    <li class="csharp">Store into <code>ObjectStore</code>.</li>
-    <div class="csharp section-example-container">
-        <pre class="csharp">qb.ObjectStore.SaveXml("saveXml", xmlSample);</pre>
-    </div>
-
-    <li class="csharp">Use <code>ContainsKey</code> to check if the key-value pair is in the <code>ObjectStore</code>.</li>
-    <div class="csharp section-example-container">
-        <pre class="csharp">qb.ObjectStore.ContainsKey("saveXml")</pre>
-    </div>
-    <img class="csharp" src="https://cdn.quantconnect.com/i/tu/store-data-save-xml-cs.png">
 </ol>
+
+<ol class=python>
+    <li>Create example data to be stored </li>
+    <div class="python section-example-container">
+        <pre class="python">sample = {"One": 1, "Two": 2, "Three": 3}</pre>
+    </div>
+    <li>Convert the example data to <code>string</code>:</li>
+    <div class="python section-example-container">
+        <pre class="python">string_sample = str(sample)</pre>
+    </div>
+    <li>Convert the example data to <code>byte</code>:</li>
+    <div class="python section-example-container">
+        <pre class="python">import json
+bytes_sample = json.dumps(string_sample).encode('utf-8')</pre>
+    </div>
+</ol>
+
+<h4>SaveBytes</h4>
+<p>Call the <code>SaveBytes</code> method could store the byte list object.</p>
+<div class="section-example-container">
+    <pre class="csharp">objectStore.SaveBytes("saveBytes", bytesSample);</pre>
+    <pre class="python">object_store.SaveBytes("save_bytes", bytes_sample)</pre>
+</div>
+
+<p class=csharp>The following methods are helper methods of <code>SaveBytes</code> that is internally called by them.</p>
+<p class=python>The following method is helper method of <code>SaveBytes</code> that is internally called by it.</p>
+
+<h4>Save</h4>
+<p>Call the <code>Save</code> or <code>SaveString</code> method could store data as a string object.</p>
+<div class="section-example-container">
+    <pre class="csharp">objectStore.Save("saveString", stringSample);</pre>
+    <pre class="python">object_store.Save("save_string", string_sample)</pre>
+</div>
+
+<h4 class="csharp">SaveJson</h4>
+<p class="csharp">Call the <code>SaveJson&lt;T&gt;</code> method to store data as a JSON object.</p>
+<div class="csharp section-example-container">
+    <pre class="csharp">objectStore&lt;Dictionary&lt;string, int&gt;&gt;.SaveJson("saveJson", sample);</pre>
+</div>
+
+<h4 class="csharp">SaveXml</h4>
+<p class="csharp">Call the <code>SaveXml&lt;T&gt;</code> method to store data the XML object. </p>
+<div class="csharp section-example-container">
+    <pre class="csharp">objectStore.SaveXml("saveXml", xmlSample);</pre>
+</div>

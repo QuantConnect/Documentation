@@ -1,49 +1,39 @@
-<p>We can delete data from the <code>ObjectStore</code> using the <code>Delete()</code> method.</p>
+<p>You can delete data from the <code>ObjectStore</code> with the <code>Delete</code> method.</p>
+<p>It is good practice to check wether the <code>ObjectStore</code> has the key to the object you want to delete. If not present, the method will raise an exception.</p>
 
 <h4>Single Item</h4>
 <ol>
-    <li>Delete data from <code>ObjectStore</code> by its key.</li>
-    <div class="section-example-container">
-        <pre class="csharp">qb.ObjectStore.Delete("saveXml");</pre>
-        <pre class="python">qb.ObjectStore.Delete("save_bytes")</pre>
-    </div>
-
     <li>Use <code>ContainsKey</code> to check if the key-value pair is in the <code>ObjectStore</code>.</li>
     <div class="section-example-container">
         <pre class="csharp">qb.ObjectStore.ContainsKey("saveXml")</pre>
         <pre class="python">qb.ObjectStore.ContainsKey("save_bytes")</pre>
     </div>
-    <img class="csharp" src="https://cdn.quantconnect.com/i/tu/store-data-delete-single-cs.png">
-    <img class="python" src="https://cdn.quantconnect.com/i/tu/store-data-delete-single-py.png">
+
+    <li>Delete data from <code>ObjectStore</code> by its key.</li>
+    <div class="section-example-container">
+        <pre class="csharp">qb.ObjectStore.Delete("saveXml");</pre>
+        <pre class="python">qb.ObjectStore.Delete("save_bytes")</pre>
+    </div>
+    <li><i>(Optional)<i> Use <code>ContainsKey</code> to check if the key-value pair is in the <code>ObjectStore</code>.</li>
 </ol>
 
 <h4>All Items</h4>
-<p>We just need to iterate the <code>Delete()</code> method for all keys in <code>ObjectStore</code>.</p>
 <ol>
-    <li>Write a function to clear the <code>ObjectStore</code>, then run it.</li>
+    <li>Iterate the <code>ObjectStore</code> object, and call the <code>Delete</code> method for every key.</li>
     <div class="section-example-container">
-        <pre class="csharp">public static void ClearObjectStore(){
-    // Instantiate a QuantBook instance.
-    var qb = new QuantBook();
-
-    foreach(var key in GetObjectStoreKeys()){
-        qb.ObjectStore.Delete(key);
-    }
-}
-
-ClearObjectStore();</pre>
-        <pre class="python">def clear_ObjectStore():
-    for key in get_ObjectStore_keys():
-        qb.ObjectStore.Delete(key)
-        
-clear_ObjectStore()</pre>
+        <pre class="csharp">foreach(var kvp in objectStore)
+{
+    objectStore.Delete(kvp.Key);
+}</pre>
+        <pre class="python">for item in object_store.GetEnumerator():
+    key = str(item).split(",")[0][1:]
+    object_store.Delete(key)</pre>
     </div>
 
-    <li class="csharp">Check if the <code>ObjectStore</code>'s key List is empty.</li>
-    <li class="python">Call <code>assert</code> to check if the <code>ObjectStore</code>'s key count is zero. If no error message displayed, the two objects are the same.</li>
+    <li class="csharp">Check if the <code>ObjectStore</code>'s <code class=csharp>Count</code> <code class=csharp>len</code> is zero.</li>
     <div class="section-example-container">
-        <pre class="csharp">GetObjectStoreKeys()</pre>
-        <pre class="python">assert len(get_ObjectStore_keys()) == 0</pre>
+        <pre class="csharp">objectStore.Count() == 0</pre>
+        <pre class="python">len(list(object_store)) == 0</pre>
     </div>
     <img class="csharp" src="https://cdn.quantconnect.com/i/tu/store-data-delete-all-cs.png">
 </ol>
