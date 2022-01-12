@@ -23,7 +23,7 @@ pe_ratios_ = pe_ratios.reset_index()</pre>
 for i in range(len(pe_cols)):
     fig.add_trace(go.Scatter(x=pe_ratios_['index'], 
                              y=pe_ratios_[pe_cols[i]],
-                             name=pe_cols[i]))</pre>
+                             name=pe_cols[i].split(" ")[0]))</pre>
     </div>
 
     <li>Set the title and axis labels.</li>
@@ -38,7 +38,7 @@ for i in range(len(pe_cols)):
         <pre class="python">fig.show()</pre>
     </div>
 </ol>
-<img class="python" src="https://cdn.quantconnect.com/i/tu/fundamentals-plotly-pe.png">
+<img class="python" src="https://cdn.quantconnect.com/i/tu/fundamentals-plotly-pe-py.png">
 
 <h4 class="python">Buy Low Sell High</h4>
 <p class="python">We hypothesize that in the same sector, the relatively undervalued (lowest average PE Ratio) would out perform the relatively overvalued (higehest average PE Ratio) stock by market efficiency. We would visualize this for validation.</p>
@@ -71,8 +71,8 @@ fig.add_trace(go.Scatter(x=equity_value_over_time['time'],
                          y=equity_value_over_time[highest_avg_pe], 
                          name=str(highest_avg_pe)))
 fig.add_trace(go.Scatter(x=equity_value_over_time['time'], 
-                         y=1 + equity_value_over_time[lowest_avg_pe] * 0.5 - equity_value_over_time[highest_avg_pe] * 0.5, 
-                         name=f"0.5{str(lowest_avg_pe)} - 0.5{str(highest_avg_pe)} (Proposed)"))</pre>
+                         y=1 + equity_value_over_time[lowest_avg_pe] - equity_value_over_time[highest_avg_pe], 
+                         name=f"{str(lowest_avg_pe)}-{str(highest_avg_pe)}"))</pre>
     </div>
 
     <li>Set the title and axis labels.</li>
@@ -87,4 +87,4 @@ fig.add_trace(go.Scatter(x=equity_value_over_time['time'],
         <pre class="python">fig.show()</pre>
     </div>
 </ol>
-<img class="python" src="https://cdn.quantconnect.com/i/tu/fundamentals-plotly-equity.png">
+<img class="python" src="https://cdn.quantconnect.com/i/tu/fundamentals-plotly-equity-curve-py.png">
