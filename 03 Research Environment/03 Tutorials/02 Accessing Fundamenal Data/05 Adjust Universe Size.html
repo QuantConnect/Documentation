@@ -2,18 +2,17 @@
 
 <h4>Subset of Equities</h4>
 <p><a href="#02-Create-Subscriptions">Create subscriptions</a> for multiple Equities and then call the <code>GetFundamental</code> method with a list of <code>Symbol</code>s to request fundamental historical data for those specific securities.</p>
-
 <div class="section-example-container">
     <pre class="csharp">
 var symbols = new [] 
     {
-        "ALK",  # Alaska Air Group, Inc.
-        "AAL",  # American Airlines Group, Inc.
-        "DAL",  # Delta Air Lines, Inc.
-        "LUV",  # Southwest Airlines Company
-        "UAL",  # United Air Lines
-        "ALGT", # Allegiant Travel Company
-        "SKYW"  # SkyWest, Inc.
+        "ALK",  // Alaska Air Group, Inc.
+        "AAL",  // American Airlines Group, Inc.
+        "DAL",  // Delta Air Lines, Inc.
+        "LUV",  // Southwest Airlines Company
+        "UAL",  // United Air Lines
+        "ALGT", // Allegiant Travel Company
+        "SKYW"  // SkyWest, Inc.
     }
 	.Select(ticker => qb.AddEquity(ticker).Symbol);
 
@@ -37,8 +36,16 @@ symbols = [qb.AddEquity(ticker).Symbol
 start_time = datetime(2014, 1, 1)
 end_time = datetime(2015, 1, 1)
 pe_ratios = qb.GetFundamental(symbols, "ValuationRatios.PERatio",
-    start_time, end_time);</pre>
+    start_time, end_time)</pre>
 </div>
+<img class="python" src="https://cdn.quantconnect.com/i/tu/fundamentals-pe.png">
 
 <h4>All Equities</h4>
 <p>Call the <code>GetFundamental</code> method with <code>qb.Securities.Keys</code> to request fundamental historical data for those specific securities for all of the Equities.</p>
+<div class="section-example-container">
+    <pre class="csharp">var ebitda = qb.GetFundamental(qb.Securities.Keys, "FinancialStatements.IncomeStatement.EBITDA.TwelveMonths",
+    startTime, endTime);</pre>
+    <pre class="python">ebitda = qb.GetFundamental(qb.Securities.Keys, "FinancialStatements.IncomeStatement.EBITDA.TwelveMonths",
+    start_time, end_time)</pre>
+</div>
+<img class="python" src="https://cdn.quantconnect.com/i/tu/fundamentals-ebitda.png">
