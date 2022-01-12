@@ -24,18 +24,18 @@
         <pre class="python">string_data = json.loads(bytearray(byte_data).decode('utf-8'))</pre>
     </div>
 
-    <li>Restore as the dictionary.</li>
+    <li>Restore as dictionary.</li>
     <div class="section-example-container">
         <pre class="csharp">var dict = stringFromBytes.Split(new[] {'\n'}, StringSplitOptions.RemoveEmptyEntries)
                .Select(part => part.Split('[')[1]).Select(part => part.Split(']')[0]).Select(part => part.Split(','))
                .ToDictionary(split => split[0], split => split[1]);</pre>
-        <pre class="python">byte_data = eval(byte_data)</pre>
+        <pre class="python">recovered_dict = eval(string_data)</pre>
     </div>
     <img class="csharp" src="https://cdn.quantconnect.com/i/tu/store-data-read-bytes-cs.png">
 
     <li class="python">Call <code>assert</code> to check if the read and original data are the same. If no error message displayed, the two objects are the same.</li>
     <div class="python section-example-container">
-        <pre class="python">assert byte_data == sample</pre>
+        <pre class="python">assert recovered_dict == sample</pre>
     </div>
 </ol>
 
@@ -55,18 +55,18 @@
         <pre class="python">string_data = object_store.Read("save_string")</pre>
     </div>
 
-    <li>Restore as the dictionary.</li>
+    <li>Restore as dictionary.</li>
     <div class="section-example-container">
         <pre class="csharp">var dict = stringData.Split(new[] {'\n'}, StringSplitOptions.RemoveEmptyEntries)
                .Select(part => part.Split('[')[1]).Select(part => part.Split(']')[0]).Select(part => part.Split(','))
                .ToDictionary(split => split[0], split => split[1]);</pre>
-        <pre class="python">string_data = eval(string_data)</pre>
+        <pre class="python">recovered_dict = eval(string_data)</pre>
     </div>
     <img class="csharp" src="https://cdn.quantconnect.com/i/tu/store-data-read-str-cs.png">
 
     <li class="python">Call <code>assert</code> to check if the read and original data are the same. If no error message displayed, the two objects are the same.</li>
     <div class="python section-example-container">
-        <pre class="python">assert string_data == sample</pre>
+        <pre class="python">assert recovered_dict == sample</pre>
     </div>
 </ol>
 
@@ -98,7 +98,7 @@
         <pre class="csharp">var xmlData = objectStore.ReadXml&lt;XElement&gt;("saveXml");</pre>
     </div>
 
-    <li class="csharp">Reconstruct the original sample object.</li>
+    <li class="csharp">Reconstruct as a dictionary.</li>
     <div class="csharp section-example-container">
         <pre class="csharp">var dict = xmlData.Elements().ToDictionary(x => x.Name.LocalName, x => int.Parse(x.Value));</pre>
     </div>
