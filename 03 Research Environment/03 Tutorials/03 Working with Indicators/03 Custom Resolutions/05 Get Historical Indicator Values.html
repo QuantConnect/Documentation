@@ -23,9 +23,9 @@ private void UpdateBollingerBandWindow(object sender, IndicatorDataPoint updated
     bbRollingWindow.Add(bb_.BandWidth.Current);
 }
 bb.Updated += UpdateBollingerBandWindow;
-atr.Updated += (sender, updated) =&gt; atrRollingWindow.Add(updated);
-vwap.Updated += (sender, updated) =&gt; vwapRollingWindow.Add(updated);
-smaOfRsi.Updated += (sender, updated) =&gt; smaOfRsiRollingWindow.Add(updated);</pre>
+atr.Updated += (sender, updated) => atrRollingWindow.Add(updated);
+vwap.Updated += (sender, updated) => vwapRollingWindow.Add(updated);
+smaOfRsi.Updated += (sender, updated) => smaOfRsiRollingWindow.Add(updated);</pre>
         <pre class="python"># We want to save BandWidth data for BollingerBands.
 def UpdateBollingerBandWindow(sender, updated):
     bb_ = sender;
@@ -38,32 +38,53 @@ sma_of_rsi.Updated += lambda sender, updated: sma_of_rsi_rolling_window.Add(upda
     </div>
     <p>When the indicators receive new data, the handler will add the new <code>IndicatorDataPoints</code> into the <code>RollingWindow</code>s.</p>
 
-    <li>Get historical <code class="csharp">TradeBar</code><code class="python">Slice</code> for the last 70-day to warm-up the indicators and get the datapoints we'd like to study.</li>
+    <li>Create a <code>TradeBarConsolidator</code> to get 7-day bar data.</li>
     <div class="section-example-container">
-        <pre class="csharp">var history = qb.History&lt;TradeBar&gt;(symbol, 70, Resolution.Daily);</pre>
-        <pre class="python">history = qb.History(symbol, 70, Resolution.Daily)</pre>
+        <pre class="csharp">var consolidator = new TradeBarConsolidator(TimeSpan.FromDays(7));</pre>
+        <pre class="python">consolidator = TradeBarConsolidator(timedelta(days=7))</pre>
+    </div>
+
+    <li>Set a handler method for the consolidator to update the indicators.</li>
+    <div class="section-example-container">
+        <pre class="csharp">private void ConsolidatorHandler(object sender, TradeBar consolidated){
+    // Update the indicators
+    bb.Update(consolidated.EndTime, consolidated.Close);
+    atr.Update(consolidated);
+    vwap.Update(consolidated);
+    rsi.Update(consolidated.EndTime, consolidated.Close);    // We update the "base" indicator for a combined indicator.
+}
+consolidator.DataConsolidated += ConsolidatorHandler;</pre>
+        <pre class="python">def ConsolidatorHandler(sender, consolidated):
+    # Update the indicators
+    bb.Update(consolidated.EndTime, consolidated.Close)
+    atr.Update(consolidated)
+    vwap.Update(consolidated)
+    rsi.Update(consolidated.EndTime, consolidated.Close)    # We update the "base" indicator for a combined indicator.
+    
+consolidator.DataConsolidated += ConsolidatorHandler </pre>
+    </div>
+    <p>When the consolidator consolidates a new bar, the handler will update the indicators with the consolidated bar.</p>
+
+    <li>Get historical <code class="csharp">TradeBar</code><code class="python">Slice</code> for the last 70*7 days to warm-up the indicators and get the datapoints we'd like to study.</li>
+    <div class="section-example-container">
+        <pre class="csharp">var history = qb.History&lt;TradeBar&gt;(symbol, TimeSpan.FromDays(70*7), Resolution.Daily);</pre>
+        <pre class="python">history = qb.History(symbol, timedelta(days=70*7), Resolution.Daily)</pre>
     </div>
 
     <li>Iterate each slice to update the indicators and the <code>RollingWindow</code>s.</li>
     <div class="section-example-container">
         <pre class="csharp">foreach(var bar in history){
-    // Update the indicators
-    bb.Update(bar.EndTime, bar.Close);
-    atr.Update(bar);
-    vwap.Update(bar);
-    rsi.Update(bar.EndTime, bar.Close);    // We update the "base" indicator for a combined indicator.
+    // # Feed the data slice into the consolidator.
+    consolidator.Update(bar);
 }</pre>
         <pre class="python">for bar in history.itertuples():
     # get the EndTime.
     date = bar.Index[1]    
-    # Reconstruct a TradeBar object that Bar/TradeBar Indicators required.
+    # Reconstruct a TradeBar object.
     trade_bar = TradeBar(date, symbol, bar.open, bar.high, bar.low, bar.close, bar.volume)
     
-    # Update the indicators
-    bb.Update(date, bar.close)
-    atr.Update(trade_bar)
-    vwap.Update(trade_bar)
-    rsi.Update(date, bar.close)    # We update the "base" indicator for a combined indicator.</pre>
+    # Feed the data slice into the consolidator.
+    consolidator.Update(trade_bar)</pre>
     </div>
 
     <li class="csharp">Display the data.</li>
@@ -81,7 +102,7 @@ foreach(var point in smaOfRsiRollingWindow.Take(5)){
     Console.WriteLine($"SMA of RSI: {point.Time}: {point.Value}");
 }</pre>
     </div>
-    <img class="csharp" src="https://cdn.quantconnect.com/i/tu/indicator-basic-cs-classic-3.png">
+    <img class="csharp" src="https://cdn.quantconnect.com/i/tu/indicator-custom-resolution-cs-classic.png">
 
     <li class="python">Convert the <code>RollingWindow</code>s' data into <code>pandas.DataFrame</code>.</li>
     <div class="python section-example-container">
@@ -108,33 +129,7 @@ sma_of_rsi_df = pd.DataFrame([point.Value for point in sma_of_rsi_rolling_window
                atr_df,
                vwap_df,
                sma_of_rsi_df],
-              axis=1)
-df = df.groupby(df.index.date).sum()</pre>
+              axis=1)</pre>
     </div>
-    <img class="python" src="https://cdn.quantconnect.com/i/tu/indicator-basic-py-classic-2.png">
+    <img class="python" src="https://cdn.quantconnect.com/i/tu/indicator-custom-resolution-py-classic.png">
 </ol>
-
-<div class="python">
-    <h4>Indicator Helper Method</h4>
-    <p>We can call <code>qb.Indicator</code> method to get historical indicator data for fixed-time interval indicators.</p>
-    <div class="section-example-container">
-        <pre class="csharp"></pre>
-        <pre class="python">bb_indicator = qb.Indicator(bb, symbol, 50, Resolution.Daily)</pre>
-    </div>
-    <img class="python" src="https://cdn.quantconnect.com/i/tu/indicator-basic-py-helper-bb.png">
-    <div class="section-example-container">
-        <pre class="csharp"></pre>
-        <pre class="python">atr_indicator = qb.Indicator(atr, symbol, 50, Resolution.Daily)</pre>
-    </div>
-    <img class="python" src="https://cdn.quantconnect.com/i/tu/indicator-basic-py-helper-atr.png">
-    <div class="section-example-container">
-        <pre class="csharp"></pre>
-        <pre class="python">vwap_indicator = qb.Indicator(vwap, symbol, 50, Resolution.Daily)</pre>
-    </div>
-    <img class="python" src="https://cdn.quantconnect.com/i/tu/indicator-basic-py-helper-vwap.png">
-    <div class="section-example-container">
-        <pre class="csharp"></pre>
-        <pre class="python">sma_of_rsi_indicator = qb.Indicator(sma_of_rsi, symbol, 50, Resolution.Daily)</pre>
-    </div>
-    <img class="python" src="">
-</div>
