@@ -1,0 +1,6 @@
+<?php
+	echo file_get_contents(DOCS_RESOURCES."/introduce-learning-center.html");
+?>
+
+<p>The courses in the Learning Center are structured in a way so you can complete courses at your own pace. The course structure enables you to improve your skills in finance, statistics, and software development while learning the QuantConnect API in easily digestible portions. The idea behind the course lessons is to focus on implementing individual strategies rather than learning just the theory. This page explains the specific structure of the courses.</p>
+
