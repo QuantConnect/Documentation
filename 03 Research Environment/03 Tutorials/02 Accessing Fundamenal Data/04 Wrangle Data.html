@@ -1,10 +1,10 @@
 <p>You need a <a href="#03-Create-Subscriptions">subscription</a> before you can request historical data for a security. You can request an amount of historical data based on a defined period of time.</p>
 
 <h4>Select One Security</h4>
-<p>Index the <code>pandas.DataFrame</code> with a Symbol to select the historical data of the security.</p>
+<p>Index the <code>DataFrame</code> with a Symbol to select the historical data of the security.</p>
 <div class="section-example-container">
     <pre class="csharp">// Take the first 10 slice as example.
-foreach(var bar in ebitda.Select(data => (data[symbol], data.Time)).Take(10))
+foreach(var bar in ebitda.Select(data =&gt; (data[symbol], data.Time)).Take(10))
 {
     Console.WriteLine($"{bar}");
 }</pre>
@@ -36,8 +36,8 @@ ebitda[symbol.Value]</pre>
 
     <li>Select the <code>Symbol</code> with highest and lowest mean.</li>
     <div class="csharp section-example-container">
-        <pre class="csharp">var symbolWithMaxPE = meanPE.FirstOrDefault(x => x.Value == meanPE.Values.Max()).Key; 
-var symbolWithMinPE = meanPE.FirstOrDefault(x => x.Value == meanPE.Values.Min()).Key; 
+        <pre class="csharp">var symbolWithMaxPE = meanPE.FirstOrDefault(x =&gt; x.Value == meanPE.Values.Max()).Key; 
+var symbolWithMinPE = meanPE.FirstOrDefault(x =&gt; x.Value == meanPE.Values.Min()).Key; 
 Console.WriteLine($"The Highest Average PE Ratio: {symbolWithMaxPE}: {meanPE[symbolWithMaxPE]}");
 Console.WriteLine($"The Lowest Average PE Ratio: {symbolWithMinPE}: {meanPE[symbolWithMinPE]}");</pre>
     </div>
@@ -76,7 +76,7 @@ lowest_avg_pe = qb.Symbol(sorted_by_mean_pe.index[0])</pre>
     if (!peOnUpdate.ContainsKey(sym)){
         peOnUpdate[sym] = new List&lt;decimal&gt;();
     }
-    foreach(var bar in peRatios.Select(data => (decimal) data[sym])){
+    foreach(var bar in peRatios.Select(data =&gt; (decimal) data[sym])){
         if (peOnUpdate[sym].Count() == 0 || bar != peOnUpdate[sym].Last()){
             peOnUpdate[sym].Add(bar);
         }
@@ -86,8 +86,8 @@ lowest_avg_pe = qb.Symbol(sorted_by_mean_pe.index[0])</pre>
 
     <li>Calculate the last PE Ratio % change, save as a dictionary.</li>
     <div class="csharp section-example-container">
-        <pre class="csharp">var lastPctChgPE = peOnUpdate.ToDictionary(kvp => kvp.Key, 
-                          kvp => kvp.Value.Count() > 2 ? 
+        <pre class="csharp">var lastPctChgPE = peOnUpdate.ToDictionary(kvp =&gt; kvp.Key, 
+                          kvp =&gt; kvp.Value.Count() &gt; 2 ? 
                           (kvp.Value.Last() - kvp.Value[kvp.Value.Count() - 2]) / kvp.Value[kvp.Value.Count() - 2] : 
                           0m);
 foreach(var kvp in lastPctChgPE){
@@ -97,8 +97,8 @@ foreach(var kvp in lastPctChgPE){
 
     <li>Select the <code>Symbol</code>s with highest and lowest % change.</li>
     <div class="csharp section-example-container">
-        <pre class="csharp">var symbolWithMaxPEChg = lastPctChgPE.FirstOrDefault(x => x.Value == lastPctChgPE.Values.Max()).Key; 
-var symbolWithMinPEChg = lastPctChgPE.FirstOrDefault(x => x.Value == lastPctChgPE.Values.Min()).Key; 
+        <pre class="csharp">var symbolWithMaxPEChg = lastPctChgPE.FirstOrDefault(x =&gt; x.Value == lastPctChgPE.Values.Max()).Key; 
+var symbolWithMinPEChg = lastPctChgPE.FirstOrDefault(x =&gt; x.Value == lastPctChgPE.Values.Min()).Key; 
 Console.WriteLine($"The Highest %Change PE Ratio: {symbolWithMaxPEChg}: {lastPctChgPE[symbolWithMaxPEChg]}");
 Console.WriteLine($"The Lowest %Change PE Ratio: {symbolWithMinPEChg}: {lastPctChgPE[symbolWithMinPEChg]}");</pre>
     </div>
