@@ -16,3 +16,4 @@
 <h4>Log Limits</h4>
 <p>The following table shows the amount of logs that each organization tier can produce:</p>
 <?php echo file_get_contents(DOCS_RESOURCES."/log-limits.html"); ?>
+<p>These limitations are enforced to prevent data theft. To avoid reaching the limits, we recommend logging sparsely, focusing on the change events instead of logging every time loop. Alternatively, you can use the debugger to inspect objects during runtime. If you use the debugger, you should rarely reach the log limits.</p>
