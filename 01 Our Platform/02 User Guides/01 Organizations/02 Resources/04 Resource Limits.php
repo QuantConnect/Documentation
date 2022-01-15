@@ -14,6 +14,6 @@
 <p>The refill rate in the table above is based on the real-world clock time, not the backtest clock time. In backtests, the <code>Train</code> method is synchronous, so it will block your algorithm from executing while the model is trained. In live trading, the method runs asynchronously, so ensure your model is ready to use before you continue executing the algorithm. Training occurs on a separate thread, so use a boolean flag to notify your algorithm of the model state.</p>
 
 <h4>Log Limits</h4>
-<p>The following table shows the amount of logs that each organization tier can produce:</p>
+<p>By our <a href='/terms'>terms and conditions</a>, you can not use the logs to export dataset information. The following table shows the amount of logs that each organization tier can produce:</p>
 <?php echo file_get_contents(DOCS_RESOURCES."/log-limits.html"); ?>
-<p>These limitations are enforced to prevent data theft. To avoid reaching the limits, we recommend logging sparsely, focusing on the change events instead of logging every time loop. Alternatively, you can use the <a href='../projects/debugging#03-Debugger'>debugger</a> to inspect objects during runtime. If you use the debugger, you should rarely reach the log limits.</p>
+<p>To avoid reaching the limits, we recommend logging sparsely, focusing on the change events instead of logging every time loop. Alternatively, you can use the <a href='../projects/debugging#03-Debugger'>debugger</a> to inspect objects during runtime. If you use the debugger, you should rarely reach the log limits.</p>
