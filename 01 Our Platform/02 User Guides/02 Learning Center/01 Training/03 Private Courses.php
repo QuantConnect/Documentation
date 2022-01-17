@@ -1,1 +1,1 @@
-<div></div>
+<p>Private courses are not for sale in the Learning Center. You can upload private courses to your <b>Organization > Resources</b> page, but they will not be available for other organizations to purchase. Create private courses to help onboard your team members while using the familiar Learning Center environment.</p>
