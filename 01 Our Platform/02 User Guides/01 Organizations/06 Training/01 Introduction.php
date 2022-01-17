@@ -1,1 +1,1 @@
-<div></div>
+<p>We support onboarding team members with the <a href='../learning-center'>Learning Center</a> content. The Learning Center enables you to systematically track and monitor the progress of your team members on the courses that you purchase or create. If you purchase or create a course, you can access it from the <b>Organization > Resources</b> page in the Algorithm Lab.</p>
