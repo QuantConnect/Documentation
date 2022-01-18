@@ -1,12 +1,5 @@
 <p>There are several limitations to note when working with the Research Environment.</p>
 
-<h4>Node Specifications</h4>
-<p>The following table shows the specifications of the research node models:</p>
-
-<?php echo file_get_contents(DOCS_RESOURCES."/research-nodes-table.html"); ?>
-
-<p>We recommend using more powerful nodes when requesting data for large universes or when training machine learning models.</p>
-
 <h4>Collaboration</h4>
 <p>It's not currently possible to simultaneously work on the same notebook with other members in your organization because the functionality is not supported by Jupyter. Jupyter doesn't recognize an edit as a change to the file until after you run the cell.</p>
 
