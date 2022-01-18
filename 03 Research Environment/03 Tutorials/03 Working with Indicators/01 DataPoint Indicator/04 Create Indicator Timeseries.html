@@ -1,0 +1,117 @@
+<p>Follow these steps to create an indicator timeseries:</p>
+
+<ol>
+	<li>Create an data-point indicator. In this tutorial, use a 20-period 2-standard-deviation BollingerBands indicator</li>
+	<div class="section-example-container">
+        <pre class="csharp">var bb = new BollingerBands(20, 2);</pre>
+        <pre class="python">bb = BollingerBands(20, 2)</pre>
+    </div>
+    <li>Create a <code>RollingWindow</code> for each attribute of the indicator to hold their values.</li>
+    <p>In this example, save the 50 data points.</p>
+    <div class="section-example-container">
+        <pre class="csharp">var window = new Dictionary&lt;string, RollingWindow&lt;IndicatorDataPoint&gt;&gt;()
+window["bollingerbands"] = new RollingWindow&lt;IndicatorDataPoint&gt;(50);
+window["lowerband"] = new RollingWindow&lt;IndicatorDataPoint&gt;(50);
+window["middleband"] = new RollingWindow&lt;IndicatorDataPoint&gt;(50);
+window["upperband"] = new RollingWindow&lt;IndicatorDataPoint&gt;(50);
+window["bandwidth"] = new RollingWindow&lt;IndicatorDataPoint&gt;(50);
+window["percentb"] = new RollingWindow&lt;IndicatorDataPoint&gt;(50);
+window["standarddeviation"] = new RollingWindow&lt;IndicatorDataPoint&gt;(50);
+window["price"] = new RollingWindow&lt;IndicatorDataPoint&gt;(50);
+</pre>
+        <pre class="python">window = {}
+window["bollingerbands"] = RollingWindow[IndicatorDataPoint](50)
+window["lowerband"] = RollingWindow[IndicatorDataPoint](50)
+window["middleband"] = RollingWindow[IndicatorDataPoint](50)
+window["upperband"] = RollingWindow[IndicatorDataPoint](50)
+window["bandwidth"] = RollingWindow[IndicatorDataPoint](50)
+window["percentb"] = RollingWindow[IndicatorDataPoint](50)
+window["standarddeviation"] = RollingWindow[IndicatorDataPoint](50)
+window["price"] = RollingWindow[IndicatorDataPoint](50)
+</pre>
+    </div>
+    <li>Set handler methods to update the <code>RollingWindow</code>s.</li>
+    <div class="section-example-container">
+        <pre class="csharp">
+bb.Updated += (sender, updated) => 
+{
+    var indicator = (BollingerBands)sender;
+    window["bollingerbands"].Add(updated);
+    window["lowerband"].Add(indicator.LowerBand);
+    window["middleband"].Add(indicator.MiddleBand);
+    window["upperband"].Add(indicator.UpperBand);
+    window["bandwidth"].Add(indicator.BandWidth);
+    window["percentb"].Add(indicator.PercentB);
+    window["standarddeviation"].Add(indicator.StandardDeviation);
+    window["price"].Add(indicator.StandardDeviation);
+};</pre>
+        <pre class="python"># We want to save BandWidth data for BollingerBands.
+def UpdateBollingerBandWindow(sender, updated):
+    indicator = sender
+    window["bollingerbands"].Add(updated)
+    window["lowerband"].Add(indicator.LowerBand)
+    window["middleband"].Add(indicator.MiddleBand)
+    window["upperband"].Add(indicator.UpperBand)
+    window["bandwidth"].Add(indicator.BandWidth)
+    window["percentb"].Add(indicator.PercentB)
+    window["standarddeviation"].Add(indicator.StandardDeviation)
+    window["price"].Add(indicator.StandardDeviation)
+
+bb.Updated += UpdateBollingerBandWindow;</pre>
+    </div>
+    <p>When the indicators receive new data, the handler will add the new <code>IndicatorDataPoints</code> into the <code>RollingWindow</code>s.</p>
+
+    <li>Iterate the <a href="#03 Get Historical Data">historical market data</a> to update the indicators and the <code>RollingWindow</code>s.</li>
+    <div class="section-example-container">
+        <pre class="csharp">foreach(var bar in history)
+{
+    bb.Update(bar.EndTime, bar.Close);
+}</pre>
+        <pre class="python">for time, row in history.iterrows():
+    bb.Update(time, row.close)</pre>
+    </div>
+    <li class="csharp">Display the data.</li>
+    <div class="csharp section-example-container">
+        <pre class="csharp">foreach(var point in bbRollingWindow.Take(5)){
+    Console.WriteLine($"Bollinger Band Width: {point.Time}: {point.Value}");
+}
+foreach(var point in atrRollingWindow.Take(5)){
+    Console.WriteLine($"Average True Range: {point.Time}: {point.Value}");
+}
+foreach(var point in vwapRollingWindow.Take(5)){
+    Console.WriteLine($"VWAP: {point.Time}: {point.Value}");
+}
+foreach(var point in smaOfRsiRollingWindow.Take(5)){
+    Console.WriteLine($"SMA of RSI: {point.Time}: {point.Value}");
+}</pre>
+    </div>
+    <img class="csharp" src="https://cdn.quantconnect.com/i/tu/indicator-basic-cs-classic-3.png">
+
+    <li class="python">Convert the <code>RollingWindow</code>s' data into <code>pandas.DataFrame</code>.</li>
+    <div class="python section-example-container">
+        <pre class="python">bb_df = pd.DataFrame([point.Value for point in bb_rolling_window], 
+                     index=[point.Time for point in bb_rolling_window],
+                     columns=["Bollinger Band Width"])[::-1]       # Reverse the order.
+
+atr_df = pd.DataFrame([point.Value for point in atr_rolling_window], 
+                      index=[point.Time for point in atr_rolling_window],
+                      columns=["Average True Range"])[::-1]
+
+vwap_df = pd.DataFrame([point.Value for point in vwap_rolling_window], 
+                       index=[point.Time for point in vwap_rolling_window],
+                       columns=["Volume Weighted Average Price"])[::-1]
+
+sma_of_rsi_df = pd.DataFrame([point.Value for point in sma_of_rsi_rolling_window], 
+                             index=[point.Time for point in sma_of_rsi_rolling_window],
+                             columns=["SMA of RSI"])[::-1]</pre>
+    </div>
+</ol>
+
+<div class="python">
+    <h4>Indicator Helper Method</h4>
+    <p>Call the <code>qb.Indicator</code> method to create an indicator timeseries.</p>
+    <div class="python section-example-container">
+        <pre class="python">bb_indicator = qb.Indicator(bb, symbol, 50, Resolution.Daily)</pre>
+    </div>
+    <img class="python" style='display: block; max-width: 100%;' src="https://cdn.quantconnect.com/i/tu/indicator-basic-py-helper-bb.png">
+</div>
