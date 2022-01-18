@@ -3,5 +3,5 @@
 ?>
 
 <?php 
-    echo DOCS_HOME;
+    echo DOCS_ROOT;
 ?>
