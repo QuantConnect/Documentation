@@ -3,21 +3,21 @@
 <h4>Nodes</h4>
 <p>The number of backtesting nodes that you can have in your organization depends on the tier of your organization. The maximum number of backtesting nodes for each tier is the following:</p>
 <ul>
-    <li><b>Free</b>: 1</li>
-    <li><b>Quant Researcher</b>: 2</li>
-    <li><b>Team</b>: 10</li>
-    <li><b>Trading Firm</b>: Unlimited</li>
-    <li><b>Institution</b>: Unlimited</li>
+    <li><span class='ul-option'>Free</span>: 1</li>
+    <li><span class='ul-option'>Quant Researcher</span>: 2</li>
+    <li><span class='ul-option'>Team</span>: 10</li>
+    <li><span class='ul-option'>Trading Firm</span>: Unlimited</li>
+    <li><span class='ul-option'>Institution</span>: Unlimited</li>
 </ul>
 
 <h4>Orders</h4>
 <p>The number of orders that you can place in a single backtest depends on the tier of your organization. The maximum number of orders per backtest for each tier is the following:<br></p>
 <ul>
-    <li><b>Free</b>: 10K</li>
-    <li><b>Quant Researcher</b>: 10M</li>
-    <li><b>Team</b>: Unlimited</li>
-    <li><b>Trading Firm</b>: Unlimited</li>
-    <li><b>Institution</b>: Unlimited</li>
+    <li><span class='ul-option'>Free</span>: 10K</li>
+    <li><span class='ul-option'>Quant Researcher</span>: 10M</li>
+    <li><span class='ul-option'>Team</span>: Unlimited</li>
+    <li><span class='ul-option'>Trading Firm</span>: Unlimited</li>
+    <li><span class='ul-option'>Institution</span>: Unlimited</li>
 </ul>
 
 <h4>Logs</h4>
