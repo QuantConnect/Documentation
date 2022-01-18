@@ -2,4 +2,4 @@
 
 <?php echo file_get_contents(DOCS_RESOURCES."/live-trading-nodes-table.html"); ?>
 
-<p>Refer to the <a href="https://www.quantconnect.com/pricing"><b>Pricing</b></a> page to see the price of each live trading node model.</p>
+<p>Refer to the <a href="/pricing">Pricing</a> page to see the price of each live trading node model.</p>
