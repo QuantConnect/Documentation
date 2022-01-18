@@ -5,15 +5,15 @@
 <p>The banner displays the following statistics:<br></p>
 
 <ul>
-    <li><b>PSR</b>: <a href='../optimization/objectives#05-PSR'>Probabilistic Sharpe Ratio</a><br></li>
-    <li><b>Unrealized</b>: Unrealized profit<br></li>
-    <li><b>Fees</b>: Total fees paid during the backtest across all securities in the portfolio</li>
-    <li><b>Net Profit</b>: Sum of all gross profit across all securities in the portfolio</li>
-    <li><b>Return</b>: Return = (current equity - starting equity) / starting equity<br></li>
-    <li><b>Equity</b>: Total portfolio value if you sold all holdings at current market rates</li>
-    <li><b>Holdings</b>: Absolute sum of the items in the portfolio</li>
-    <li><b>Volume</b>: Total sale volume since the start of backtest</li>
-    <li><b>Capacity</b>: The maximum amount of capital the strategy can trade.<br></li>
+    <li><span class='ul-option'>PSR</span>: <a href='../optimization/objectives#05-PSR'>Probabilistic Sharpe Ratio</a><br></li>
+    <li><span class='ul-option'>Unrealized</span>: Unrealized profit<br></li>
+    <li><span class='ul-option'>Fees</span>: Total fees paid during the backtest across all securities in the portfolio</li>
+    <li><span class='ul-option'>Net Profit</span>: Sum of all gross profit across all securities in the portfolio</li>
+    <li><span class='ul-option'>Return</span>: Return = (current equity - starting equity) / starting equity<br></li>
+    <li><span class='ul-option'>Equity</span>: Total portfolio value if you sold all holdings at current market rates</li>
+    <li><span class='ul-option'>Holdings</span>: Absolute sum of the items in the portfolio</li>
+    <li><span class='ul-option'>Volume</span>: Total sale volume since the start of backtest</li>
+    <li><span class='ul-option'>Capacity</span>: The maximum amount of capital the strategy can trade.<br></li>
 </ul>
 
 <?php echo file_get_contents(DOCS_RESOURCES."/create-custom-runtime-statistic.html"); ?>
