@@ -1,0 +1,72 @@
+<p>Follow these steps to create an indicator timeseries:</p>
+
+<ol>
+	<li>Create a trade bar indicator (utilizing OHLCV information). In this tutorial, we'll be using a 20-period <code>VolumeWeightedAveragePriceIndicator</code> indicator.</li>
+	<div class="section-example-container">
+        <pre class="csharp">var vwap = new VolumeWeightedAveragePriceIndicator(20);</pre>
+        <pre class="python">vwap = VolumeWeightedAveragePriceIndicator(20)</pre>
+    </div>
+    <li>Create a <code>RollingWindow</code> for each attribute of the indicator to hold their values.</li>
+    <p>In this example, save the 50 data points.</p>
+    <div class="section-example-container">
+        <pre class="csharp">var time = new RollingWindow&lt;DateTime&gt;(50);
+var window = new Dictionary&lt;string, RollingWindow&lt;decimal&gt;&gt;();
+window["volumeweightedaveragepriceindicator"] = new RollingWindow&lt;decimal&gt;(50);
+</pre>
+        <pre class="python">window = {}
+window['time'] = RollingWindow[DateTime](50)
+window['volumeweightedaveragepriceindicator'] = RollingWindow[float](50)
+</pre>
+    </div>
+    <li>Set handler methods to update the <code>RollingWindow</code>s.</li>
+    <div class="section-example-container">
+        <pre class="csharp">vwap.Updated += (sender, updated) => 
+{
+    time.Add(updated.EndTime);
+    window["volumeweightedaveragepriceindicator"].Add(updated);
+};</pre>
+        <pre class="python">def UpdateVWAPWindow(sender, updated):
+    window['time'].Add(updated.EndTime)
+    window["volumeweightedaveragepriceindicator"].Add(updated.Value)
+
+vwap.Updated += UpdateVWAPWindow</pre>
+    </div>
+    <p>When the indicators receive new data, the handler will add the new <code>IndicatorDataPoints</code> into the <code>RollingWindow</code>s.</p>
+
+    <li>Iterate the <a href="#03 Get Historical Data">historical market data</a> to update the indicators and the <code>RollingWindow</code>s.</li>
+    <div class="section-example-container">
+        <pre class="csharp">foreach(var bar in history){
+    // Update the indicators with the whole TradeBar.
+    vwap.Update(bar);
+}</pre>
+        <pre class="python">for time, row in history.iterrows():
+    # Create a TradeBar to update the TradeBar indicator.
+    bar = TradeBar(time, symbol, row.open, row.high, row.low, row.close, row.volume)
+    # Update the indicator with TradeBar.
+    vwap.Update(bar)</pre>
+    </div>
+    <li class="csharp">Display the data.</li>
+    <div class="csharp section-example-container">
+        <pre class="csharp">Console.WriteLine($"time,{string.Join(',', window.Select(kvp => kvp.Key))}");
+foreach (var i in Enumerable.Range(0, 5).Reverse())
+{
+    var data = string.Join(", ", window.Select(kvp => Math.Round(kvp.Value[i],6)));
+    Console.WriteLine($"{time[i]:yyyyMMdd}, {data}");
+}</pre>
+    </div>
+    <img class="csharp" style="max-width: 100%; display: block" src="https://cdn.quantconnect.com/i/tu/indicator-tradebar-cs-classic-vwap.png">
+
+    <li class="python">Convert the <code>RollingWindow</code>s' data into <code>pandas.DataFrame</code>.</li>
+    <div class="python section-example-container">
+        <pre class="python">vwap_dataframe = pd.DataFrame(window).set_index('time')</pre>
+    </div>
+    <img class="python" style="max-width: 100%; display: block" src="https://cdn.quantconnect.com/i/tu/indicator-tradebar-py-classic-vwap.png">	
+</ol>
+
+<h4>Indicator Helper Method</h4>
+<p>Call the <code>qb.Indicator</code> method to create an indicator timeseries.</p>
+<div class="section-example-container">
+    <pre class="csharp">var vwapIndicator = qb.Indicator(vwap, symbol, 50, Resolution.Daily);</pre>
+    <pre class="python">vwap_indicator = qb.Indicator(vwap, symbol, 50, Resolution.Daily)</pre>
+</div>
+<img class="python" style='display: block; max-width: 100%;' src="https://cdn.quantconnect.com/i/tu/indicator-tradebar-py-helper-vwap.png">

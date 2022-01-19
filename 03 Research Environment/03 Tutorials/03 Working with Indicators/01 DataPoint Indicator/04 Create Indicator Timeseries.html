@@ -1,7 +1,7 @@
 <p>Follow these steps to create an indicator timeseries:</p>
 
 <ol>
-	<li>Create an data-point indicator. In this tutorial, use a 20-period 2-standard-deviation BollingerBands indicator</li>
+	<li>Create an data-point indicator. In this tutorial, use a 20-period 2-standard-deviation <code>BollingerBands</code> indicator.</li>
 	<div class="section-example-container">
         <pre class="csharp">var bb = new BollingerBands(20, 2);</pre>
         <pre class="python">bb = BollingerBands(20, 2)</pre>
@@ -9,16 +9,16 @@
     <li>Create a <code>RollingWindow</code> for each attribute of the indicator to hold their values.</li>
     <p>In this example, save the 50 data points.</p>
     <div class="section-example-container">
-        <pre class="csharp">var time = new RollingWindow<DateTime>(50);
-var window = new Dictionary<string, RollingWindow<decimal>>();
-window["bollingerbands"] = new RollingWindow<decimal>(50);
-window["lowerband"] = new RollingWindow<decimal>(50);
-window["middleband"] = new RollingWindow<decimal>(50);
-window["upperband"] = new RollingWindow<decimal>(50);
-window["bandwidth"] = new RollingWindow<decimal>(50);
-window["percentb"] = new RollingWindow<decimal>(50);
-window["standarddeviation"] = new RollingWindow<decimal>(50);
-window["price"] = new RollingWindow<decimal>(50);
+        <pre class="csharp">var time = new RollingWindow&lt;DateTime&gt;(50);
+var window = new Dictionary&lt;string, RollingWindow&lt;decimal&gt;&gt;();
+window["bollingerbands"] = new RollingWindow&lt;decimal&gt;(50);
+window["lowerband"] = new RollingWindow&lt;decimal&gt;(50);
+window["middleband"] = new RollingWindow&lt;decimal&gt;(50);
+window["upperband"] = new RollingWindow&lt;decimal&gt;(50);
+window["bandwidth"] = new RollingWindow&lt;decimal&gt;(50);
+window["percentb"] = new RollingWindow&lt;decimal&gt;(50);
+window["standarddeviation"] = new RollingWindow&lt;decimal&gt;(50);
+window["price"] = new RollingWindow&lt;decimal&gt;(50);
 </pre>
         <pre class="python">window = {}
 window['time'] = RollingWindow[DateTime](50)
@@ -46,10 +46,9 @@ bb.Updated += (sender, updated) =>
     window["bandwidth"].Add(indicator.BandWidth);
     window["percentb"].Add(indicator.PercentB);
     window["standarddeviation"].Add(indicator.StandardDeviation);
-    window["price"].Add(indicator.StandardDeviation);
+    window["price"].Add(indicator.Price);
 };</pre>
-        <pre class="python"># We want to save BandWidth data for BollingerBands.
-def UpdateBollingerBandWindow(sender, updated):
+        <pre class="python">def UpdateBollingerBandWindow(sender, updated):
     indicator = sender
     window['time'].Add(updated.EndTime)
     window["bollingerbands"].Add(updated.Value)
