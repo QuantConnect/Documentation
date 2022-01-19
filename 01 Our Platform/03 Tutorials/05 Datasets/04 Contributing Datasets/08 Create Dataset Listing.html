@@ -3,20 +3,20 @@
 <p>Follow these steps to create the marketplace listing for your dataset:</p>
 
 <ol>
-    <li>In the <b>Lean.DataSource.<i>vendorNameDatasetName</i></b> directory, replace the placeholder text in the <b>listing_about.md</b> and <b>listing_documentation.md</b> files.</li>
-    <p>Refer to the  <b>About</b> and  <b>Documentation</b> tabs of the following dataset listings for example content:</p>
+    <li>In the <span class='private-directory-name'>Lean.DataSource.<span class='placeholder-text'>vendorNameDatasetName</span></span> directory, replace the placeholder text in the <span class='private-file-name'>listing_about.md</span> and <span class='private-file-name'>listing_documentation.md</span> files.</li>
+    <p>Refer to the <span class='tab-name'>About</span> and <span class='tab-name'>Documentation</span> tabs of the following dataset listings for example content:</p>
     <ul>
-        <li><b><a href="https://www.quantconnect.com/datasets/tiingo-news-feed">Tiingo News Feed</a></b>: Example for linked datasets</li>
-        <li><b><a href="https://www.quantconnect.com/datasets/regalytics-us-regulatory-alerts">US Regulatory Alerts</a></b>: Example for unlinked datasets</li>
+        <li><span class='ul-option'><a href="https://www.quantconnect.com/datasets/tiingo-news-feed">Tiingo News Feed</a></span>: Example for linked datasets</li>
+        <li><span class='ul-option'><a href="https://www.quantconnect.com/datasets/regalytics-us-regulatory-alerts">US Regulatory Alerts</a></span>: Example for unlinked datasets</li>
     </ul>
-    <li>Merge the content of the <b>Lean.DataSource.<i>vendorNameDatasetName</i>/output</b> directory into the Lean CLI <b>data</b> directory.</li>
-    <p>For example, if you saved the processed data of your dataset into the <b>/output/alternative/xyzairline</b> directory, then copy the <b>xyzairline</b> directory and paste it into the Lean CLI <b>data/alternative</b> directory.</p>
+    <li>Merge the content of the <span class='private-file-name'>Lean.DataSource.<span class='placeholder-text'>vendorNameDatasetName</span>/output</span> directory into the Lean CLI <span class='private-directory-name'>data</span> directory.</li>
+    <p>For example, if you saved the processed data of your dataset into the <span class='private-directory-name'>/output/alternative/xyzairline</span> directory, then copy the <span class='private-directory-name'>xyzairline</span> directory and paste it into the Lean CLI <span class='private-directory-name'>data/alternative</span> directory.</p>
     <li><a href="https://www.quantconnect.com/terminal/clone/10526637/2abd9a770bd7c94576978600e1e666b4/clone-of%3A-template-v5.3">Clone the dataset research template project</a>.</li>
     <li><a href="../../../lean-cli/api-reference/lean-cloud-pull">Pull</a> the dataset research template project down to your local machine.</li>
     <li>Launch the dataset research template project in a local research notebook.</li>
-    <p>Refer to the <a href="../../../lean-cli/api-reference/lean-research">lean research API reference</a> for assistance launching local research notebooks.</p>
-    <li>In the left navigation menu of JupyterLab, click <b>dataset_analysis_notebook.ipynb</b>.</li>
-    <li>In the second code cell of the <b>dataset_analysis_notebook.ipynb</b> file, follow these steps to instantiate a <code>DatasetAnalyzer</code>:</li>
+    <p>For assistance launching local research notebooks, refer to the <a href="../../../lean-cli/api-reference/lean-research">lean research API reference</a>.</p>
+    <li>In the left navigation menu of JupyterLab, click <span class='private-file-name'>dataset_analysis_notebook.ipynb</span>.</li>
+    <li>In the second code cell of the <span class='private-file-name'>dataset_analysis_notebook.ipynb</span> file, follow these steps to instantiate a <code>DatasetAnalyzer</code>:</li>
     <ol>
         <li>Instantiate an <code>ETFUniverse</code> with a relevant index ticker and date.</li>
         <div class="section-example-container">
@@ -36,14 +36,14 @@
             <pre class="python">dataset_tickers = ["REG"]</pre>
         </div>
         <li>Define a value function for each of the factors in your dataset that you want to analyze.</li>
-        <p>The value functions transform the raw factor values in your dataset into factor values that you want to analyze. If you want to want to just use the raw factor values, set the value functions to <code>None</code>. Refer to the <b>Research</b> tab of dataset listings in the Dataset Market for example value functions.</p>
+        <p>The value functions transform the raw factor values in your dataset into factor values that you want to analyze. If you want to want to just use the raw factor values, set the value functions to <code>None</code>. Refer to the <span class='tab-name'>Research</span> tab of dataset listings in the Dataset Market for example value functions.</p>
         <li>Create a list of <code>Factor</code>s.</li>
         <p>The <code>Factor</code> constructor expects the following arguments:</p>
         <ul>
-            <li><b>name</b>: Name of the factor as represented in the <code>pandas.DataFrame</code> column of a history request</li>
-            <li><b>printable_name</b>: The name of the factor to be used when mentioning in plots and tables</li>
-            <li><b>data_type</b>: The type of data ('discrete' or 'continuous')</li>
-            <li><b>value_function</b>: User-defined value function to translate the raw factor values</li>
+            <li><span class='ul-option'>name</span>: Name of the factor as represented in the <code>DataFrame</code> column of a history request</li>
+            <li><span class='ul-option'>printable_name</span>: The name of the factor to be used when mentioning in plots and tables</li>
+            <li><span class='ul-option'>data_type</span>: The type of data ('discrete' or 'continuous')</li>
+            <li><span class='ul-option'>value_function</span>: User-defined value function to translate the raw factor values</li>
         </ul>        
         <div class="section-example-container">
             <pre class="python">factors = [Factor('daypercentchange', 'Day Percent Change', 'continuous', None)]</pre>
@@ -51,16 +51,16 @@
         <li>Instantiate a <code>DatasetAnalyzer</code>.</li>
         <p>The <code>DatasetAnalyzer</code> expects the following arguments:</p>
         <ul>
-            <li><b>dataset</b>: The class of your dataset</li>
-            <li><b>dataset_tickers</b>: An <code>ETFUniverse</code> or a list of tickers</li>
-            <li><b>universe</b>: The <code>ETFUniverse</code> that you want to analyze with your dataset factor(s)</li>
-            <li><b>factors</b>: A list of <code>Factor</code>s to analyze within the dataset</li>
-            <li><b>sparse_data</b>: A boolean to represent if the dataset is sparse</li>
-            <li><b>dataset_start_date</b>: Start date of the dataset</li>
-            <li><b>in_sample_end_date</b>: Date to mark the end of the in-sample period</li>
-            <li><b>out_of_sample_end_date</b>: Date to mark the end of the out-of-sample period</li>
-            <li><b>label_function</b>: A function to transform the raw price history of the universe into the target label (use <code>None</code> if you want to analyze the daily returns)<br></li>
-            <li><b>return_prediction_period</b>: Number of days that positions are held (default value of 1)</li>
+            <li><span class='ul-option'>dataset</b>: The class of your dataset</li>
+            <li><span class='ul-option'>dataset_tickers</b>: An <code>ETFUniverse</code> or a list of tickers</li>
+            <li><span class='ul-option'>universe</b>: The <code>ETFUniverse</code> that you want to analyze with your dataset factor(s)</li>
+            <li><span class='ul-option'>factors</span>: A list of <code>Factor</code>s to analyze within the dataset</li>
+            <li><span class='ul-option'>sparse_data</span>: A boolean to represent if the dataset is sparse</li>
+            <li><span class='ul-option'>dataset_start_date</span>: Start date of the dataset</li>
+            <li><span class='ul-option'>in_sample_end_date</span>: Date to mark the end of the in-sample period</li>
+            <li><span class='ul-option'>out_of_sample_end_date</span>: Date to mark the end of the out-of-sample period</li>
+            <li><span class='ul-option'>label_function</span>: A function to transform the raw price history of the universe into the target label (use <code>None</code> if you want to analyze the daily returns)<br></li>
+            <li><span class='ul-option'>return_prediction_period</span>: Number of days that positions are held (default value of 1)</li>
         </ul>
         <div class="section-example-container">
             <pre class="python">dataset_analyzer = DatasetAnalyzer(dataset = RegalyticsRegulatoryArticle, 
@@ -74,10 +74,10 @@
                                    return_prediction_period=5)</pre>
         </div>
     </ol>
-    <li>In the text cells of the <b>dataset_analysis_notebook.ipynb</b> file, replace the placeholder text and remove any text or code that is not relevant for your dataset.</li>
+    <li>In the text cells of the <span class='private-file-name'>dataset_analysis_notebook.ipynb</span> file, replace the placeholder text and remove any text or code that is not relevant for your dataset.</li>
     <p>The template notebook describes cases where select content is required. For instance, if you dataset contains just one factor or if the dataset is unlinked, you'll need to remove some content from the notebook.</p>
-    <li>Copy the <b>dataset_analysis_notebook.ipynb</b> file in your Lean CLI directory and paste it into the <b>Lean.DataSource.<i>vendorNameDatasetName</i></b> directory.</li> 
-    <li>Add a dataset image file, named <b>dataset_img.png</b>, to the <b>Lean.DataSource.<i>vendorNameDatasetName</i></b> directory.</li>
+    <li>Copy the <span class='private-file-name'>dataset_analysis_notebook.ipynb</span> file in your Lean CLI directory and paste it into the <span class='private-directory-name'>Lean.DataSource.<span class='placeholder-text'>vendorNameDatasetName</span></span> directory.</li> 
+    <li>Add a dataset image file, named <span class='private-file-name'>dataset_img.png</span>, to the <span class='private-directory-name'>Lean.DataSource.<span class='placeholder-text'>vendorNameDatasetName</span></span> directory.</li>
     <li>Contact us through <a href='/contact'>email</a> or <a href='/discord'>Discord</a> and let us know that you have a dataset that you want to contribute.</li>
     <p>We will open a GitHub repository to which you can make a PR and then we will review your dataset before merging it into production.</p>
 </ol>
