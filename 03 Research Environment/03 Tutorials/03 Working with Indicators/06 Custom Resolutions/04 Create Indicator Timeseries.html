@@ -6,6 +6,7 @@
         <pre class="csharp">var bb = new BollingerBands(20, 2);</pre>
         <pre class="python">bb = BollingerBands(20, 2)</pre>
     </div>
+
     <li>Create a <code>RollingWindow</code> for each attribute of the indicator to hold their values.</li>
     <p>In this example, save 50 data points.</p>
     <div class="section-example-container">
@@ -32,6 +33,7 @@ window["standarddeviation"] = RollingWindow[float](50)
 window["price"] = RollingWindow[float](50)
 </pre>
     </div>
+
     <li>Set handler methods to update the <code>RollingWindow</code>s.</li>
     <div class="section-example-container">
         <pre class="csharp">
@@ -64,15 +66,35 @@ bb.Updated += UpdateBollingerBandWindow</pre>
     </div>
     <p>When the indicators receive new data, the handler will add the new <code>IndicatorDataPoints</code> into the <code>RollingWindow</code>s.</p>
 
-    <li>Iterate the <a href="#03 Get Historical Data">historical market data</a> to update the indicators and the <code>RollingWindow</code>s.</li>
+    <li>Create a <code>TradeBarConsolidator</code> to consolidate data into the custom resolution needed.</li>
+    <p>In this tutorial, 7-day bar will be used.</p>
     <div class="section-example-container">
-        <pre class="csharp">foreach(var bar in history)
+        <pre class="csharp">var consolidator = new TradeBarConsolidator(TimeSpan.FromDays(7));</pre>
+        <pre class="python">consolidator = TradeBarConsolidator(timedelta(days=7))</pre>
+    </div>
+
+    <li>Set a handler method to feed data into the consolidator and generate consolidated bar.</li>
+    <div class="section-example-container">
+        <pre class="csharp">consolidator.DataConsolidated += (sender, consolidated) =>
 {
-    bb.Update(bar.EndTime, bar.Close);
+    bb.Update(consolidated.EndTime, consolidated.Close);
+};</pre>
+        <pre class="python">consolidator.DataConsolidated += lambda sender, consolidated: bb.Update(consolidated.EndTime, consolidated.Close)</pre>
+    </div>
+    <p>When the consolidator receive data for every 7 days, the handler will generate a 7-day <code>TradeBar</code> and update the indicator.</p>
+    
+    <li>Iterate the <a href="#03 Get Historical Data">historical market data</a> and feed into the consolidator to update the indicators and the <code>RollingWindow</code>s.</li>
+    <div class="section-example-container">
+        <pre class="csharp">foreach(var bar in history){
+    consolidator.Update(bar);
 }</pre>
         <pre class="python">for time, row in history.iterrows():
-    bb.Update(time, row.close)</pre>
+    # Create a TradeBar object.
+    bar = TradeBar(time, symbol, row.open, row.high, row.low, row.close, row.volume)
+    # Update the consolidator with the TradeBar
+    consolidator.Update(bar)</pre>
     </div>
+
     <li class="csharp">Display the data.</li>
     <div class="csharp section-example-container">
         <pre class="csharp">Console.WriteLine($"time,{string.Join(',', window.Select(kvp => kvp.Key))}");
@@ -82,19 +104,11 @@ foreach (var i in Enumerable.Range(0, 5).Reverse())
     Console.WriteLine($"{time[i]:yyyyMMdd}, {data}");
 }</pre>
     </div>
-    <img class="csharp" style="max-width: 100%; display: block" src="https://cdn.quantconnect.com/i/tu/indicator-datapoint-cs-classic-bb.png">
+    <img class="csharp" style="max-width: 100%; display: block" src="https://cdn.quantconnect.com/i/tu/indicator-custom-resolution-cs-classic-bb.png">
 
     <li class="python">Convert the <code>RollingWindow</code>s' data into <code>pandas.DataFrame</code>.</li>
     <div class="python section-example-container">
         <pre class="python">bb_dataframe = pd.DataFrame(window).set_index('time')</pre>
     </div>
-    <img class="python" style="max-width: 100%; display: block" src="https://cdn.quantconnect.com/i/tu/indicator-datapoint-py-classic-bb.png">	
+    <img class="python" style="max-width: 100%; display: block" src="https://cdn.quantconnect.com/i/tu/indicator-custom-resolution-py-classic-bb.png">	
 </ol>
-
-<h4>Indicator Helper Method</h4>
-<p>Call the <code>qb.Indicator</code> method to create an indicator timeseries.</p>
-<div class="section-example-container">
-    <pre class="csharp">var bbIndicator = qb.Indicator(bb, symbol, 50, Resolution.Daily);</pre>
-    <pre class="python">bb_indicator = qb.Indicator(bb, symbol, 50, Resolution.Daily)</pre>
-</div>
-<img class="python" style='display: block; max-width: 100%;' src="https://cdn.quantconnect.com/i/tu/indicator-datapoint-py-helper-bb.png">
