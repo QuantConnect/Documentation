@@ -1,0 +1,154 @@
+<p>Follow these steps to create an indicator timeseries:</p>
+
+<ol>
+	<li class="csharp">Define a custom indicator class, inherited from the <code>Indicator</code> superclass.</li>
+    <li class="python">Define a custom indicator class. Note that the <code>PythonIndicator</code> superclass inheritance, <code>Value</code> attribute and <code>Update</code> method is mandatory.</li>
+	<p class="csharp">In this tutorial, we're creating an ExpectedShortfallPercent indicator from Monte Carlo method to calculate the expected shortfall in return. We'll be using <code>WindowIndicator</code> superclass instead of <code>Indicator</code> for using a period of historical data stored in a <code>RollingWindow</code>.</p>
+    <p class="python">In this tutorial, we're creating an <Code>ExpectedShortfallPercent</Code> indicator from Monte Carlo method to calculate the expected shortfall in return.</p>
+    <div class="section-example-container">
+        <pre class="csharp">public class ExpectedShortfallPercent : WindowIndicator&lt;IndicatorDataPoint&gt;, IIndicatorWarmUpPeriodProvider
+{
+    private decimal _alpha;
+    
+    // Set up IndicatorDataPoint attributes for the indicator.
+    public IndicatorBase&lt;IndicatorDataPoint&gt; ValueAtRisk { get; }
+
+    // Set up the WarmUpPeriod attribute to provide implementation of the IIndicatorWarmUpPeriodProvider interface.
+    public override int WarmUpPeriod => Period;
+
+    // Set up the constructor.
+    // period: The lookback period for return distribution.
+    // alpha: Alpha level of VaR cutoff.
+    public ExpectedShortfallPercent(int period, decimal alpha)
+        : base("ES", period)
+    {
+        _alpha = alpha;
+        ValueAtRisk = new Identity("ES_VaR");
+    }
+
+    // Override the IsReady method to set up the flag of the Indicator and its IndicatorDataPoint attributes are ready.
+    public override bool IsReady => ValueAtRisk.IsReady;
+
+    // Mandatory: Override the ComputeNextValue method to calculate the indictor value.
+    protected override decimal ComputeNextValue(IReadOnlyWindow&lt;IndicatorDataPoint&gt; window, IndicatorDataPoint input)
+    {
+        if (Samples < 2)
+            return 0m;
+                
+        var n = Math.Min(Period, Samples);
+        var cutoff = (int) Math.Ceiling(n * _alpha);
+        
+        var samples = new List&lt;decimal&gt;();
+        for (int i = 0; i < window.Count - 1; i++)
+        {
+            samples.Add( (window[i] - window[i+1]) / window[i+1] );
+        }
+        var lowest = samples.OrderBy(x => x).Take(cutoff);
+        
+        ValueAtRisk.Update(input.Time, lowest.Sum());
+        return lowest.Average();
+    }
+}</pre>
+        <pre class="python">class ExpectedShortfallPercent(PythonIndicator):
+    import math, numpy as np
+    
+    def __init__(self, period, alpha):
+        self.Value = None   # Attribute represents the indicator value
+        self.ValueAtRisk = None
+        
+        self.alpha = alpha
+        
+        self.window = RollingWindow[float](period)
+    
+    # Override the IsReady attribute to flag all attributes values are ready.
+    @property
+    def IsReady(self):
+        return self.Value and self.ValueAtRisk
+    
+    # Method to update the indicator values. Note that it only receives 1 IBaseData object (Tick, TradeBar, QuoteBar) argument.
+    def Update(self, input):
+        count = self.window.Count
+        
+        self.window.Add(input.Close)
+        
+        # Update the Value and other attributes as the indicator current value.
+        if count >= 2:
+            cutoff = math.ceil(self.alpha * count)
+            
+            ret = [ (self.window[i] - self.window[i+1]) / self.window[i+1] for i in range(count-1) ]
+            lowest = sorted(ret)[:cutoff]
+            
+            self.Value = np.mean(lowest)
+            self.ValueAtRisk = sum(lowest)
+            
+        # return a boolean to indicate IsReady.
+        return count >= 2</pre>
+    </div>
+
+    <li>Initialize a new instance of the custom indicator. In this tutorial, 50-period 5% <code>ExpectedShortfallPercent</code> indicator is used.</li>
+	<div class="section-example-container">
+        <pre class="csharp">var es = new ExpectedShortfallPercent(50, 0.05m);</pre>
+        <pre class="python">custom = ExpectedShortfallPercent(50, 0.05)</pre>
+    </div>
+
+    <li>Create a <code>RollingWindow</code> for each attribute of the indicator to hold their values.</li>
+    <p>In this example, save 20 data points.</p>
+    <div class="section-example-container">
+        <pre class="csharp">var time = new RollingWindow&lt;DateTime&gt;(20);
+var window = new Dictionary&lt;string, RollingWindow&lt;decimal&gt;&gt;();
+window["expectedshortfall"] = new RollingWindow&lt;decimal&gt;(20);
+window["valueatrisk"] = new RollingWindow&lt;decimal&gt;(20);
+</pre>
+        <pre class="python">window = {}
+window['time'] = RollingWindow[DateTime](20)
+window['expectedshortfall'] = RollingWindow[float](20)
+window['valueatrisk'] = RollingWindow[float](20)
+</pre>
+    </div>
+
+    <li class="csharp">Set handler methods to update the <code>RollingWindow</code>s.</li>
+    <div class="csharp section-example-container">
+        <pre class="csharp">es.Updated += (sender, updated) =>
+{
+    var indicator = (ExpectedShortfallPercent) sender;
+    time.Add(updated.EndTime);
+    window["expectedshortfall"].Add(updated);
+    window["valueatrisk"].Add(indicator.ValueAtRisk.Current);
+};</pre>
+    </div>
+    <p class="csharp">When the indicators receive new data, the handler will add the new <code>IndicatorDataPoints</code> into the <code>RollingWindow</code>s.</p>
+
+    <li>Iterate the <a href="#03 Get Historical Data">historical market data</a> to update the indicators and the <code>RollingWindow</code>s.</li>
+    <div class="section-example-container">
+        <pre class="csharp">foreach(var bar in history){
+    es.Update(bar.EndTime, bar.Close);
+}</pre>
+        <pre class="python">for time, row in history.iterrows():
+    # The Update method's input must be IBaseData object (Tick, TradeBar, QuoteBar).
+    bar = TradeBar(time, symbol, row.open, row.high, row.low, row.close, row.volume)
+    custom.Update(bar)
+    
+    # The Updated event handler is not available for custom indicator in Python, RollingWindows are needed to be updated in here.
+    if custom.IsReady:
+        window['time'].Add(bar.EndTime)
+        window['expectedshortfall'].Add(custom.Value)
+        window['valueatrisk'].Add(custom.ValueAtRisk)</pre>
+    </div>
+
+    <li class="csharp">Display the data.</li>
+    <div class="csharp section-example-container">
+        <pre class="csharp">Console.WriteLine($"time,{string.Join(',', window.Select(kvp => kvp.Key))}");
+foreach (var i in Enumerable.Range(0, 5).Reverse())
+{
+    var data = string.Join(", ", window.Select(kvp => Math.Round(kvp.Value[i],6)));
+    Console.WriteLine($"{time[i]:yyyyMMdd}, {data}");
+}</pre>
+    </div>
+    <img class="csharp" style="max-width: 100%; display: block" src="https://cdn.quantconnect.com/i/tu/indicator-custom-indicator-cs.png">
+
+    <li class="python">Convert the <code>RollingWindow</code>s' data into <code>pandas.DataFrame</code>.</li>
+    <div class="python section-example-container">
+        <pre class="python">custom_dataframe = pd.DataFrame(window).set_index('time'))</pre>
+    </div>
+    <img class="python" style="max-width: 100%; display: block" src="https://cdn.quantconnect.com/i/tu/indicator-custom-indicator-py.png">	
+</ol>
