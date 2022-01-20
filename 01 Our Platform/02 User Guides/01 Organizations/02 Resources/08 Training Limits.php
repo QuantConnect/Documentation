@@ -1,6 +1,6 @@
 <p>Normally, your algorithms must return from the <code>OnData</code> method within 10 minutes, but the <code>Train</code> method lets you increase this amount of time. Training resources are allocated with a <a href='https://en.wikipedia.org/wiki/Leaky_bucket'>leaky bucket algorithm</a> where you can use a maximum of n-minutes in a single training session and the number of minutes available refills over time. This gives you a reservoir of training time when you need it and recharges the reservoir to prepare for the next training session. The reservoir only starts draining after you exceed the standard 10 minutes of training time. The following animation demonstrates the leaky bucket algorithm:</p>
 
-<img style='max-width: 100%; width: 450px; display: block' src='https://cdn.quantconnect.com/i/tu/leaky-bucket-2.gif'>
+<img class='docs-image' src='https://cdn.quantconnect.com/i/tu/leaky-bucket-algo.gif'>
 
 <p>The following table shows the amount of extra time that each backtesting and live trading node can spend training machine learning models:</p>
 <?php echo file_get_contents(DOCS_RESOURCES."/training-limits.html"); ?>
