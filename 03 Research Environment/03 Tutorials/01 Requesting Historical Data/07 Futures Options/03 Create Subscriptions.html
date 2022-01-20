@@ -26,7 +26,7 @@ using QuantConnect.Research;</pre>
         <pre class="csharp">var future = qb.AddFuture(Futures.Indices.SP500EMini, Resolution.Minute);</pre>
         <pre class="python">future = qb.AddFuture(Futures.Indices.SP500EMini, Resolution.Minute)</pre>
     </div>
-    <p>If you do not pass a resolution argument, <code>Resolution.Minute</code> is used by default. If you do not pass rollover setting arguments, the default values of <code>dataNormalizationMode</code>, <code>dataMappingMode</code>, and <code>contractDepthOffset </code> are <code>DataNormalizationMode.Adjusted</code>, <code>DataMappingMode.OpenInterest</code>, and 0, respectively.</p>
+    <p>If you do not pass a resolution argument, <code>Resolution.Minute</code> is used by default.</p>
     
     <li><i>(Optional)</i> Call the <code>SetFilter</code> method with a specified expiration range value.</li>
     <div class="section-example-container">
@@ -45,7 +45,7 @@ future_symbols = qb.FutureChainProvider.GetFutureContractList(future.Symbol, sta
 	<p>The call returns a list of <code>Symbol</code>s that reference the <code>FutureContract</code>s that were trading at the given time.</p>
 	
     <li>Select the <code>Symbol</code> of the <code>FutureContract</code>(s) for which you want to get historical data.</li>
-	<p>For example, select the  <code>Symbol</code> of the contract with the closest expiry to match the continuous Future defined above.<br></p>
+	<p>For example, select the  <code>Symbol</code> of the contract with the closest expiry.<br></p>
 	<div class="section-example-container">
 		<pre class="csharp">var futureContractSymbol = futureSymbols.OrderBy(s =&gt; s.ID.Date).FirstOrDefault();
 qb.AddFutureContract(futureContractSymbol, fillDataForward: false);
@@ -70,7 +70,7 @@ qb.AddFutureContract(future_contract_symbol, fillDataForward = False)</pre>
 
     <li>Call the <code>GetOptionContractList</code> method with an <code>OptionContract</code> Symbol and disable fill-forward.</li>
 	<div class="section-example-container">
-		<pre class="csharp">var symbols = qb.OptionChainProvider.GetOptionContractList(futureContractSymbol, startDate);</pre>
+		<pre class="csharp">qb.AddFutureOptionContract(contractSymbol, fillDataForward: false);</pre>
 		<pre class="python">qb.AddFutureOptionContract(contract_symbol, fillDataForward = False)</pre>
 	</div>
 </ol>

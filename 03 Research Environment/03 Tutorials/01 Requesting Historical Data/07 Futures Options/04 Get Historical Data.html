@@ -1,24 +1,12 @@
-<p>You need a <a href="#03-Create-Subscriptions">subscription</a> before you can request historical data for a security. You can request historical data for the continuous Future or Future contracts. You can request an amount of historical data based on a trailing number of bars, a trailing period of time, or a defined period of time. To reduce the risk of look-ahead bias, before you request historical data, call the <code>SetStartDate</code> method with a <code class="python">datetime</code><code class="csharp">DateTime</code>.</p>
+<p>You need a <a href="#03-Create-Subscriptions">subscription</a> before you can request historical data for a security. You can request an amount of historical data based on a trailing number of bars, a trailing period of time, or a defined period of time. To reduce the risk of look-ahead bias, before you request historical data, call the <code>SetStartDate</code> method with a <code class="python">datetime</code><code class="csharp">DateTime</code>.</p>
 <div class="section-example-container">
     <pre class="csharp">qb.SetStartDate(startDate);</pre>
     <pre class="python">qb.SetStartDate(start_date)</pre>
 </div>
 <p>The <code class="python">datetime</code><code class="csharp">DateTime</code> passed to the <code>SetStartDate</code> method is the most recent day for which you can receive historical data. You can not receive historical data that is timestamped after the <code class="python">datetime</code><code class="csharp">DateTime</code>.</p>
 
-<h4>Defined Period of Time<br></h4>
-<p>Call the <code>History</code> method with a symbol, start <code class="csharp">DateTime</code><code class="python">datetime</code>, and end <code class="csharp">DateTime</code><code class="python">datetime</code> to request historical data based on the defined period of time.</p>
-<div class="section-example-container">
-    <pre class="csharp">var startTime = new DateTime(2021, 12, 1);
-var endTime = new DateTime(2021, 12, 10);
-contractHistory = qb.History(contractSymbol, startTime, endTime);</pre>
-    <pre class="python">start_time = datetime(2021, 12, 1)
-end_time = datetime(2021, 12, 10)
-contract_history = qb.History(contract_symbol, start_time, end_time)</pre>
-</div>
-<p>These calls return the bars that are timestamped within the defined period of time.</p>
-
 <h4>Trailing Number of Bars<br></h4>
-<p>Call the <code>History</code> method with a symbol and integer to request historical data based on the given number of trailing bars.</p>
+<p>Call the <code>History</code> method with a <code>Symbol</code> and integer to request historical data based on the given number of trailing bars.</p>
 <div class="section-example-container">
     <pre class="csharp">var contractHistory = qb.History(contractSymbol, 400);</pre>
     <pre class="python">contract_history = qb.History(contract_symbol, 400)</pre>
@@ -33,8 +21,7 @@ contract_history = qb.History(contract_symbol, start_time, end_time)</pre>
 </div>
 <p>These calls return the most recent bars, excluding periods of time when the exchange was closed.</p>
 
-
-<p class="csharp">In all of the cases above, the <code>History</code> method returns an <code>IEnumerable&lt;TradeBar&gt;</code> for the market price history requests and an <code>IEnumerable&lt;OpenInterest&gt;</code> for open interest history request.</p>
+<p class="csharp">In all of the cases above, the <code>History</code> method returns an <code>IEnumerable&lt;TradeBar&gt;</code> for the market price history requests.</p>
 <p class="csharp">The <code>History</code> method returns an <code>IEnumerable&lt;Slice&gt;</code> for the market price history requests, if the first argument is a list. For example, the defined period of time case will be coded as follows:</p>
 <div class="csharp section-example-container">
     <pre class="csharp">var contractHistorySlices = qb.History(new [] { contractSymbol }, startTime, endTime);</pre>
@@ -43,3 +30,14 @@ contract_history = qb.History(contract_symbol, start_time, end_time)</pre>
 <p class="python">In all of the cases above, the <code>History</code> method returns a <code>DataFrame</code> with a <code>MultiIndex</code>. If you request history for the continuous Future, the <code>DataFrame</code> contains quote prices, trade prices, and volume data.</p>
 <img class="python" style="max-width: 100%; display: block; margin-bottom: 20px" src="https://cdn.quantconnect.com/i/tu/image.png" alt="continuous future history DataFrame">
 
+<h4>Defined Period of Time<br></h4>
+<p>Call the <code>History</code> method with a symbol, start <code class="csharp">DateTime</code><code class="python">datetime</code>, and end <code class="csharp">DateTime</code><code class="python">datetime</code> to request historical data based on the defined period of time.</p>
+<div class="section-example-container">
+    <pre class="csharp">var startTime = new DateTime(2021, 12, 1);
+var endTime = new DateTime(2021, 12, 10);
+contractHistory = qb.History(contractSymbol, startTime, endTime);</pre>
+    <pre class="python">start_time = datetime(2021, 12, 1)
+end_time = datetime(2021, 12, 10)
+contract_history = qb.History(contract_symbol, start_time, end_time)</pre>
+</div>
+<p>These calls return the bars that are timestamped within the defined period of time.</p>
