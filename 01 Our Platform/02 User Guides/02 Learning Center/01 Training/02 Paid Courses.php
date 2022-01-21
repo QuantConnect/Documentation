@@ -1,1 +1,3 @@
-<p>Currently, there are only free tutorials in the Learning Center, but we expect to expand the paid course offerings through 2022 and 2023. We charge for paid courses based on the number of members in your organization. For example, if there are 5 team members in your organization, multiply the listed price of a course by 5. When you purchase a course, the team members in your organization have lifetime access to the course.</p>
+<?php
+    echo file_get_contents(DOCS_RESOURCES."/learning-center-training/paid-courses.php");
+?>

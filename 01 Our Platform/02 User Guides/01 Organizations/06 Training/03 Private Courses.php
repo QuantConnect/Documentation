@@ -1,3 +1,3 @@
 <?php
-    echo file_get_contents(__DIR__."/../../02 Learning Center/01 Training/03 Private Courses.php");
+    echo file_get_contents(DOCS_RESOURCES."/learning-center-training/private-courses.php");
 ?>
