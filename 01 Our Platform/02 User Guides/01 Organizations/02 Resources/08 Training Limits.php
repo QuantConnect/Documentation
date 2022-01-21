@@ -7,6 +7,3 @@
 <p>The following table shows the amount of extra time that each backtesting and live trading node can spend training machine learning models:</p>
 <?php echo file_get_contents(DOCS_RESOURCES."/training-limits.html"); ?>
 <p>The refill rate in the table above is based on the real-world clock time, not the backtest clock time. In backtests, the <code>Train</code> method is synchronous, so it will block your algorithm from executing while the model is trained. In live trading, the method runs asynchronously, so ensure your model is ready to use before you continue executing the algorithm. Training occurs on a separate thread, so use a boolean flag to notify your algorithm of the model state.</p>
-
-
-<a href="<?= DOCS_ROOT_URL ?>/our-platform">Home</a>
