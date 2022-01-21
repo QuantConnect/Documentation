@@ -1,7 +1,3 @@
-###
-<br> Todo: Merge this section into the Organization > Resources > Backtesting Nodes section
-<br>###
-
 <p>You need an idle backtesting node in your organization to deploy a backtest. You can <a href='../../tutorials/organizations/handling-resources#02-View-All-Nodes'>view the status of all of your organization's nodes</a> in  the Algorithm Lab. Backtesting nodes that are more powerful can run faster backtests and backtest nodes with more RAM can handle more memory-intensive operations like training machine learning models, processing Options data, and managing large universes. The following table shows the specifications of the backtesting node models:</p>
 
 <?php echo file_get_contents(DOCS_RESOURCES."/backtest-nodes-table.html"); ?>
