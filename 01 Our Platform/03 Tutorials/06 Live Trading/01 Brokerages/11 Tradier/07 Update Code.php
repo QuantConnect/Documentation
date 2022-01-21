@@ -1,3 +1,3 @@
 <?php
-    echo file_get_contents(__DIR__."/../01 Atreyu/07 Update Code.html");
+    echo file_get_contents(DOCS_RESOURCES."/brokerages/update-code.html"");
 ?>
