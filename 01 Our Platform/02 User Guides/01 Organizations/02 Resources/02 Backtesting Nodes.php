@@ -1,4 +1,4 @@
-<p>You need backtesting nodes to run backtests. The more backtesting nodes your organization has, the more concurrent backtests the you can run. Several models of backtesting nodes are available. Backtesting nodes that are more powerful can run faster backtests and backtest nodes with more RAM can handle more memory-intensive operations like training machine learning models, processing Options data, and managing large universes. The following table shows the specifications of the backtesting node models:<br></p>
+<p>Backtesting nodes enable you to run backtests. The more backtesting nodes your organization has, the more concurrent backtests that you can run. Several models of backtesting nodes are available. Backtesting nodes that are more powerful can run faster backtests and backtest nodes with more RAM can handle more memory-intensive operations like training machine learning models, processing Options data, and managing large universes. The following table shows the specifications of the backtesting node models:<br></p>
 
 <?php echo file_get_contents(DOCS_RESOURCES."/backtest-nodes-table.html"); ?>
 
