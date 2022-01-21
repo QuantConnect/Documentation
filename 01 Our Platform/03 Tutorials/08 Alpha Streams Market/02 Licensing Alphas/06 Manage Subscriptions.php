@@ -3,7 +3,7 @@
 <h4>Deploy Alpha</h4>
 
 <?php
-    echo file_get_contents(DOCS_RESOURCES."/deploy-alphas.html");
+    echo file_get_contents(DOCS_RESOURCES."/deploy-alphas.php");
 ?>
 
 <h4>Update Alpha</h4>
