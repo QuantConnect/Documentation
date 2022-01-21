@@ -1,10 +1,7 @@
 <p>You can deploy Alphas to live trading, update the version of Alphas that you have deployed, and adjust your allocation to an Alpha.</p>
 
 <h4>Deploy Alpha</h4>
-
-<?php
-    echo file_get_contents(DOCS_RESOURCES."/deploy-alphas.php");
-?>
+<?php include(DOCS_RESOURCES."/deploy-alphas.php"); ?>
 
 <h4>Update Alpha</h4>
 <p>If the author of an Alpha that you're running live updates the Alpha code, follow these steps to update the version that you have deployed:</p>
