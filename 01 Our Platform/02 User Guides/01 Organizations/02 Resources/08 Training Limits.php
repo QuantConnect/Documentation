@@ -2,7 +2,7 @@
 
 <p>The following animation demonstrates the leaky bucket algorithm. The tap continuously adds water to the bucket. When the bucket is full, water spills over the rim of the bucket. When your algorithm exceeds the 10 minutes of training time, holes open at the bottom of the bucket and water begins to drain out. When your algorithm stops training, the holes close and the bucket fills up with water.</p>
 
-<img class='docs-image' src='https://cdn.quantconnect.com/i/tu/leaky-bucket-algo.gif'>
+<img class='docs-image' src='https://cdn.quantconnect.com/i/tu/leaky-bucket-algo-(1).gif'>
 
 <p>The following table shows the amount of extra time that each backtesting and live trading node can spend training machine learning models:</p>
 <?php echo file_get_contents(DOCS_RESOURCES."/training-limits.html"); ?>
