@@ -1,107 +1,176 @@
-<p>
-   Using parameters is almost unavoidable, but a strategy trends toward being overfitted as more parameters get added or fine-tuned. Adding or optimizing parameters should only be done by a robust methodology such as <a href="https://en.wikipedia.org/wiki/Walk_forward_optimization">walk-forward optimization</a>.
-</p>
-<p>
-   <img src="https://cdn.quantconnect.com/docs/i/parameter-detection_rev0.png" class="img-responsive" alt="Parameter detection signal in the IDE">
-</p>
-<p>The parameter detection system is a general guide to inform you of how many parameters are present in the algorithm. It looks for criteria to warn that code is potentially a parameter. The following table shows the criteria for parameters:<br></p>
+<img
+  src="https://cdn.quantconnect.com/docs/i/research-guide_rev0.png"
+  style="width: 30%; float: right; margin-left: 10px"
+/>
 
-<table class="table qc-table">
-   <thead>
-      <tr>
-         <th style="width: 25%">
-            Parameter Types
-         </th>
-         <th style="width: 75%">
-            Example Instances
-         </th>
-      </tr>
-   </thead>
-   <tbody>
-      <tr>
-         <td>Numeric Comparison</td>
-         <td>Numeric operators used to compare numeric arguments: &lt;= &lt; &gt;  &gt;= </td>
-      </tr>
-      <tr>
-         <td>Time Span</td>
-         <td>Setting the interval of <code>TimeSpan</code> or <code>timedelta</code></td>
-      </tr>
-      <tr>
-         <td>Order Event</td>
-         <td>Inputting numeric arguments when placing orders</td>
-      </tr>
-      <tr>
-         <td>Scheduled Event</td>
-         <td>Inputting numeric arguments when scheduling an algorithm event to occur</td>
-      </tr>
-      <tr>
-         <td>Variable Assignment</td>
-         <td>Assigning numeric values to variables</td>
-      </tr>
-      <tr>
-         <td>Mathematical Operation</td>
-         <td>Any mathematical operation involving explicit numbers</td>
-      </tr>
-      <tr>
-         <td>Lean API</td>
-         <td>Numeric arguments passed to Indicators, Consolidators, Rolling Windows, etc.</td>
-      </tr>
-   </tbody>
-</table>
 <p>
-   The following table shows common expressions that are not parameters:
+  We launched the Research Guide in 2019 to inform you about common quantitative
+  research pitfalls. It displays a power gauge for the number of backtests
+  performed, the number of parameters used, and the time invested in the
+  strategy. These measures can give a ballpark estimate of the
+  <em>overfitting risk</em> of the project. Generally, as a strategy becomes
+  more overfit on historical data, it is less likely to perform well in live
+  trading. These properties were selected based on the recommended best
+  practices of the global quantitative research community.
+</p>
+
+<style>
+  .guide-icon {
+    width: 60px;
+    float: left;
+  }
+  .guide-icon .icon {
+    background-color: #f2f5f8;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-repeat-x: no-repeat;
+    background-repeat-y: no-repeat;
+    width: 50px;
+    height: 50px;
+    margin: 3px 0;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    border-radius: 3px;
+    border: 1px solid #d9e1eb;
+  }
+</style>
+
+<h4>Restricting Backtests</h4>
+<div class="guide-icon">
+  <div
+    style="
+      background-image: url(https://cdn.quantconnect.com/terminal/i/backtest_tab_icons/battery_3bars_rev0.svg);
+    "
+    class="icon"
+  ></div>
+</div>
+<p>
+  According to current research, the number of backtests performed on an idea
+  should be limited to prevent overfitting. In theory, each backtest performed
+  on an idea moves it one step closer to being overfitted as you are testing and
+  selecting for strategies written into your code instead of being based on a
+  central thesis. For more information, see the paper "<a 
+    href="https://papers.ssrn.com/sol3/papers.cfm?abstract_id=2326253"
+    >Probability of Backtest Overfitting</a
+  >."
+</p>
+<p>
+  QuantConnect does not restrict the number of backtests performed on a project,
+  but we have implemented the counter as a guide for your reference. Your coding
+  skills are a factor in how many backtests constitute overfitting, so if you
+  are a new programmer you can increase these targets.
 </p>
 <table class="table qc-table">
-   <thead>
-      <tr>
-         <th style="width: 25%">
-            Non-Parameter Types
-         </th>
-         <th style="width: 75%">
-            Example Instances
-         </th>
-      </tr>
-   </thead>
-   <tbody>
-      <tr>
-         <td>
-            Common APIs
-         </td>
-         <td>
-            <code>SetStartDate</code>, <code>SetEndDate</code>, <code>SetCash</code>, etc.
-         </td>
-      </tr>
-      <tr>
-         <td>
-            Boolean Comparison
-         </td>
-         <td>
-            Testing for True or False conditions
-         </td>
-      </tr>
-      <tr>
-         <td>
-            String Numbers
-         </td>
-         <td>
-            Numbers formatted as part of <code>Log</code> or <code>Debug</code> statements
-         </td>
-      </tr>
-      <tr>
-         <td>
-            Variable Names
-         </td>
-         <td>
-            Any variable names that use numbers as part of the name (for example, <code>smaIndicator200</code>)
-         </td>
-      </tr>
-      <tr>
-         <td>
-            Common Functions
-         </td>
-         <td>
-            Rounding, array indexing, boolean comparison using 1/0 for True/False, etc.
-         </td>
-      </tr>
-   </tbody>
+  <thead>
+    <tr>
+      <th colspan="3">Backtest Count Overfit Reference</th>
+    </tr>
+  </thead>
+  <tr width="100%">
+    <td width="33%">
+      0-30:
+      <span style="color: #8f9ca3; font-weight: bold">Likely Not Overfit</span>
+    </td>
+    <td width="33%">
+      30-70:
+      <span style="color: #f77914; font-weight: bold"
+        >Possibly Overfitting</span
+      >
+    </td>
+    <td width="33%">
+      70+
+      <span style="color: #ee1e1e; font-weight: bold"
+        >Probably Overfitting</span
+      >
+    </td>
+  </tr>
+</table>
+
+<h4>Reducing Strategy Parameters</h4>
+<div class="guide-icon">
+  <div
+    style="
+      background-image: url(https://cdn.quantconnect.com/terminal/i/backtest_tab_icons/parameters_rev1.svg);
+    "
+    class="icon"
+  ></div>
+</div>
+<p>
+  With just a handful of parameters, it is possible to create an algorithm that
+  perfectly models historical markets. Current
+  <a href="https://arxiv.org/abs/1904.12320" target>research</a> suggests
+  keeping your parameter count to a minimum to decrease the risk of overfitting.
+</p>
+<table class="table qc-table">
+  <thead>
+    <tr>
+      <th colspan="3">Parameter Overfit Reference</th>
+    </tr>
+  </thead>
+  <tr width="100%">
+    <td width="33%">
+      0-10:
+      <span style="color: #8f9ca3; font-weight: bold">Likely Not Overfit</span>
+    </td>
+    <td width="33%">
+      10-20:
+      <span style="color: #f77914; font-weight: bold"
+        >Possibly Overfitting</span
+      >
+    </td>
+    <td width="33%">
+      20+
+      <span style="color: #ee1e1e; font-weight: bold"
+        >Probably Overfitting</span
+      >
+    </td>
+  </tr>
+</table>
+
+<h4>Limiting Research Time Invested</h4>
+<div class="guide-icon">
+  <div
+    style="
+      background-image: url(https://cdn.quantconnect.com/terminal/i/backtest_tab_icons/clock_rev1.svg);
+    "
+    class="icon"
+  ></div>
+</div>
+<p>
+  As you spend more time on one algorithm,
+  <a
+    href="https://papers.ssrn.com/sol3/papers.cfm?abstract_id=2308659"
+    >research suggests</a
+  >
+  you are more likely to be overfitting the strategy to the data. It is common
+  to become attached to an idea and spend weeks or months to perform well in a
+  backtest. Assuming you are a proficient coder who fully understands the
+  QuantConnect API, we recommend no more than 16 hours of work per experiment.
+  In theory, within two full working days, you should be able to test a single
+  hypothesis thoroughly.
+</p>
+<table class="table qc-table">
+  <thead>
+    <tr>
+      <th colspan="3">Research Time Overfitting Reference</th>
+    </tr>
+  </thead>
+  <tr width="100%">
+    <td width="33%">
+      0-8 Hours:
+      <span style="color: #8f9ca3; font-weight: bold">Likely Not Overfit</span>
+    </td>
+    <td width="33%">
+      8-16 Hours:
+      <span style="color: #f77914; font-weight: bold"
+        >Possibly Overfitting</span
+      >
+    </td>
+    <td width="33%">
+      16 Hours+
+      <span style="color: #ee1e1e; font-weight: bold"
+        >Probably Overfitting</span
+      >
+    </td>
+  </tr>
 </table>
