@@ -19,7 +19,6 @@
 </div>
 
 
-<h4>Limitations</h4>
 <p>Custom charts are limited to 4,000 data points. Intensive charting requires hundreds of megabytes of data, which is too much to stream online or display in a web browser. If you exceed the limit, the following message displays in the Console:</p>
 
 <span class='error-messages'>Exceeded maximum points per chart, data skipped</span>
