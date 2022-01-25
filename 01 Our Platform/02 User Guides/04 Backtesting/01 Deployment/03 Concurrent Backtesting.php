@@ -2,40 +2,4 @@
 
 <p>The number of backtesting nodes that you can have in your organization depends on the tier of your organization. The following table shows the backtesting node quotas:</p>
 
-<table class="qc-table table" id='backtesting-node-quotas-table'>
-   <thead>
-      <tr>
-         <th style="width: 50%;">Tier</th>
-         <th style="width: 50%;">Node Quota</th>
-      </tr>
-   </thead>
-   <tbody>
-      <tr>
-         <td>Free</td>
-         <td>1</td>
-      </tr>
-      <tr>
-         <td>Quant Researcher</td>
-         <td>2</td>
-      </tr>
-      <tr>
-         <td>Team</td>
-         <td>10</td>
-      </tr>
-      <tr>
-         <td>Trading Firm</td>
-         <td>Unlimited</td>
-      </tr>
-      <tr>
-         <td>Institution</td>
-         <td>Unlimited</td>
-      </tr>
-   </tbody>
-</table>
-
-<style>
-#backtesting-node-quotas-table td:last-child, 
-#backtesting-node-quotas-table th:last-child {
-    text-align: right;
-}
-</style>
+<?php include(DOCS_RESOURCES."/quotas/backtesting-node-table.html"); ?>
