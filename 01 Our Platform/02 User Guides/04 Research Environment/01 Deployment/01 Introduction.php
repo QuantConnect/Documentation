@@ -1,4 +1,4 @@
-<p>The Research Environment is a <a href="https://jupyter-notebook.readthedocs.io/en/stable/notebook.html">Jupyter notebook</a>-based environment where you can access our data through the <code>QuantBook</code> class instead of through the <code>QCAlgorithm</code> class in a backtest. The environment supports both Python and C#. If you use Python, you can import code from the code files in your project into the Research Environment to aid development.</p>
+<?php include(DOCS_RESOURCES."/introduce-research-environment.html"); ?>
 
 <p>Before you run backtests, we recommend testing your hypothesis in the Research Environment. It's easier to perform data analysis and <a href="../../../research-environment/tutorials/plotting-in-research">produce plots in the Research Environment</a> than in a backtest. In the Research Environment, you can use the QuantConnect API to <a href="../../api-reference/backtest-management/read-backtest">import your backtest results</a> for further analysis.</p>
 
