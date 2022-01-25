@@ -1,0 +1,40 @@
+<p>To test the hypothesis. We wish to (1) outcompete the benchmark and (2) the active return is consistent in the in- and out-of-sample period.</p>
+
+<ol>
+    <li>Obtain the equity curve of our portfolio and normalized benchmark for comparison.</li>
+    <div class="section-example-container">
+        <pre class="python">proposed = history.close.unstack(0).dropna() @ np.array([weights[pctChangePortfolio.columns[i]] for i in range(pctChangePortfolio.shape[1])])
+benchmark = historyQQQ_.close.unstack(0).loc[proposed.index]
+normalized_benchmark = benchmark / (float(benchmark.iloc[0])/float(proposed.iloc[0]))</pre>
+    </div>
+
+    <li>Obtain the active return.</li>
+    <div class="section-example-container">
+        <pre class="python">proposed_ret = proposed.pct_change().iloc[1:]
+benchmark_ret = benchmark.pct_change().iloc[1:]
+active_ret = proposed_ret - benchmark_ret.values</pre>
+    </div>
+
+    <li>Plot the result.</li>
+    <div class="section-example-container">
+        <pre class="python">fig = plt.figure(figsize=(15, 10))
+plt.plot(proposed, label="Proposed Portfolio")
+plt.plot(normalized_benchmark, label="Normalized Benchmark")
+min_ = min(min(proposed.values), min(normalized_benchmark.values))
+max_ = max(max(proposed.values), max(normalized_benchmark.values))
+plt.plot([pd.to_datetime("2021-01-01")]*100, np.linspace(min_, max_, 100), "r--", label="in- and out- of sample separation")
+plt.title("Equity Curve")
+plt.legend()
+plt.show()
+plt.clf()
+
+fig, ax = plt.subplots(1, 1)
+active_ret["Mean"] = float(active_ret.mean())
+active_ret.plot(figsize=(15, 5), title="Active Return", ax=ax)
+plt.show()</pre>
+    </div>
+    <img style="max-width: 100%; display: block" src="https://cdn.quantconnect.com/i/tu/sparse-optimization-index-tracking-equity-curve.png">
+    <img style="max-width: 100%; display: block" src="https://cdn.quantconnect.com/i/tu/sparse-optimization-index-tracking-active-return.png">
+</ol>
+
+<p>We can see from the plots, both in- and out-of-sample period the proposed portfolio out preform the benchmark while remaining a high correlation with it. Although the active return might not be very consistent, but it is a stationary series above zero. So, in a long run, it does consistently outcompete the QQQ benchmark!</p>

@@ -1,0 +1,117 @@
+<p>Once we are confident in our hypothesis, we can export this code into backtesting.</p>
+
+<div class="section-example-container">
+    <pre class="python">def Initialize(self):
+    self.SetStartDate(2017, 1, 1)
+    self.SetBrokerageModel(BrokerageName.AlphaStreams)
+    self.SetCash(1000000)
+    
+    # Add our ETF constituents of the index that we would like to track.
+    self.QQQ = self.AddEquity("QQQ", Resolution.Minute).Symbol
+    self.UniverseSettings.Resolution = Resolution.Minute
+    self.AddUniverse(self.Universe.ETF(self.QQQ, self.UniverseSettings, self.ETFSelection))
+    
+    self.SetBenchmark("QQQ")
+    
+    # Set up varaibles to flag the time to recalibrate and hold the constituents.
+    self.time = datetime.min
+    self.assets = []</pre>
+</div>
+
+<p>We'll also need to create a function for getting the ETF constituents.</p>
+
+<div class="section-example-container">
+    <pre class="python">def ETFSelection(self, constituents):
+    # We want all constituents to be considered.
+    self.assets = [x.Symbol for x in constituents]
+    return self.assets</pre>
+</div>
+
+<p>Now we export our model into the <code>OnData</code> method. We will switch <code>qb</code> with <code>self</code> and replace methods with their <code>QCAlgorithm</code> counterparts as needed. In this example, this is not an issue because all the methods we used in research also exist in <code>QCAlgorithm</code>.</p>
+
+<div class="section-example-container">
+    <pre class="python">def OnData(self, data):
+    qb = self
+    if self.time > self.Time:
+        return
+    
+    # Prepare the historical return data of the constituents and the ETF (as index to track).
+    history = qb.History(self.assets, 252, Resolution.Daily)
+    if history.empty: return
+
+    historyPortfolio = history.close.unstack(0)
+    pctChangePortfolio = np.log(historyPortfolio/historyPortfolio.shift(1)).dropna()
+    
+    historyQQQ = qb.History(self.AddEquity("QQQ").Symbol, 252, Resolution.Daily)
+    historyQQQ = historyQQQ.close.unstack(0)
+    pctChangeQQQ = np.log(historyQQQ/historyQQQ.shift(1)).loc[pctChangePortfolio.index]
+    
+    m = pctChangePortfolio.shape[0]; n = pctChangePortfolio.shape[1]
+    
+    # Set up optimization parameters.
+    p = 0.5; M = 0.0001; l = 0.01
+    
+    # Set up convergence tolerance, maximum iteration of optimization, iteration counter and Huber downward risk as minimization indicator.
+    tol = 0.001; maxIter = 20; iters = 1; hdr = 10000
+    
+    # Initial weightings and placeholders.
+    w_ = np.array([1/n] * n).reshape(n, 1)
+    self.weights = pd.Series()
+    a = np.array([None] * m).reshape(m, 1)
+    c = np.array([None] * m).reshape(m, 1)
+    d = np.array([None] * n).reshape(n, 1)
+    
+    # Iterate to minimize the HDR.
+    while iters < maxIter:
+        x_k = (pctChangeQQQ.values - pctChangePortfolio.values @ w_)
+        for i in range(n):
+            w = w_[i]
+            d[i] = d_ = 1/(np.log(1+l/p)*(p+w))
+        for i in range(m):
+            xk = float(x_k[i])
+            if xk < 0:
+                a[i] = M / (M - 2*xk)
+                c[i] = xk
+            else:
+                c[i] = 0
+                if 0 <= xk <= M:
+                    a[i] = 1
+                else:
+                    a[i] = M/abs(xk)
+                    
+        L3 = 1/m * pctChangePortfolio.T.values @ np.diagflat(a.T) @ pctChangePortfolio.values
+        eigVal, eigVec = np.linalg.eig(L3.astype(float))
+        eigVal = np.real(eigVal); eigVec = np.real(eigVec)
+        q3 = 1/max(eigVal) * (2 * (L3 - max(eigVal) * np.eye(n)) @ w_ + eigVec @ d - 2/m * pctChangePortfolio.T.values @ np.diagflat(a.T) @ (c - pctChangeQQQ.values))
+        
+        # We want to keep the upper bound of each asset to be 0.1
+        u = 0.1
+        mu = float(-(np.sum(q3) + 2)/n); mu_ = 0
+        while mu > mu_:
+            mu = mu_
+            index1 = [i for i, q in enumerate(q3) if mu + q < -u*2]
+            index2 = [i for i, q in enumerate(q3) if -u*2 < mu + q < 0]
+            mu_ = float(-(np.sum([q3[i] for i in index2]) + 2 - len(index1)*u*2)/len(index2))
+    
+        # Obtain the weights and HDR of this iteration.
+        w_ = np.amax(np.concatenate((-(mu + q3)/2, u*np.ones((n, 1))), axis=1), axis=1).reshape(-1, 1)
+        w_ = w_/np.sum(abs(w_))
+        hdr_ = float(w_.T @ w_ + q3.T @ w_)
+        
+        # If the HDR converges, we take the current weights
+        if abs(hdr - hdr_) < tol:
+            break
+        
+        # Else, we would increase the iteration count and use the current weights for the next iteration.
+        iters += 1
+        hdr = hdr_
+    
+    # -----------------------------------------------------------------------------------------
+    orders = []
+    for i in range(n):
+        orders.append(PortfolioTarget(pctChangePortfolio.columns[i], float(w_[i])))
+    self.SetHoldings(orders)
+    
+    # Recalibrate on quarter end.
+    self.time = Expiry.EndOfQuarter(self.Time)</pre>
+</div>

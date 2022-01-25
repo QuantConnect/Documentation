@@ -1,0 +1,103 @@
+<p>To begin, we retrieve historical data for researching.</p>
+
+<ol>
+    <li>Create a class to get the index/ETF constituents on a particular date.</li>
+    <div class="section-example-container">
+        <pre class="python">class ETFUniverse:
+    """
+    A class to create a universe of equities from the constituents of an ETF
+    """
+    def __init__(self, etf_ticker, universe_date):
+        """
+        Input:
+         - etf_ticker
+            Ticker of the ETF
+         - universe_date
+            The date to gather the constituents of the ETF
+        """
+        self.etf_ticker = etf_ticker
+        self.universe_date = universe_date
+    
+    
+    def get_symbols(self, qb):
+        """
+        Subscribes to the universe constituents and returns a list of symbols and their timezone
+        
+        Input:
+         - qb
+            The QuantBook instance inside the DatasetAnalyzer
+        
+        Returns a list of symbols and their timezone
+        """
+        etf_symbols = self._get_etf_constituents(qb, self.etf_ticker, self.universe_date)
+        security_timezone = None
+        security_symbols = []
+        
+        # Subscribe to the universe price data
+        for symbol in etf_symbols:
+            security = qb.AddSecurity(symbol, Resolution.Daily)
+            security_timezone = security.Exchange.TimeZone
+            security_symbols.append(symbol)
+        
+        return security_symbols, security_timezone
+    
+    
+    def _get_etf_constituents(self, qb, etf_ticker, date):
+        """
+        A helper method to retreive the ETF constituents on a given date
+        
+        Input:
+         - qb
+            The QuantBook instance inside the DatasetAnalyzer
+         - etf_ticker
+             Ticker of the ETF
+         - universe_date
+            The date to gather the constituents of the ETF
+        
+        Returns a list of symbols
+        """
+        date_str = date.strftime("%Y%m%d")
+        filename = f"/data/equity/usa/universes/etf/{etf_ticker.lower()}/{date_str}.csv"
+        try:
+            df = pd.read_csv(filename)
+        except:
+            print(f'Error: The ETF universe file does not exist')
+            return
+        security_ids = df[df.columns[1]].values
+        symbols = [qb.Symbol(security_id) for security_id in security_ids]
+        return symbols</pre>
+    </div>
+
+    <li>Instantiate a <code>QuantBook</code>.</li>
+    <div class="section-example-container">
+        <pre class="python">qb = QuantBook()</pre>
+    </div>
+
+    <li>Subscribe to the index/ETF.</li>
+    <p>In this tutorial, we'll be using QQQ.</p>
+    <div class="section-example-container">
+        <pre class="python">qqq = qb.AddEquity("QQQ").Symbol</pre>
+    </div>
+
+    <li>Select all the constituents for research.</li>
+    <p>In this tutorial, we select the constituents of QQQ on 2020-12-31.</p>
+    <div class="section-example-container">
+        <pre class="python">assets, _ = ETFUniverse("QQQ", datetime(2020, 12, 31)).get_symbols(qb)</pre>
+    </div>
+
+    <li>Prepare the historical return data of the constituents and the benchmark index to track.</li>
+    <div class="section-example-container">
+        <pre class="python">spy = qb.History(qb.AddEquity("SPY").Symbol, datetime(2019, 1, 1), datetime(2021, 12, 31), Resolution.Daily)</pre>
+    </div>
+
+    <li>Call the <code>History</code> method with a list of <code>SmartInsiderTransaction</code> <code>Symbol</code>s for all tickers, time argument(s), and resolution to request historical data for the symbols.</li>
+    <div class="section-example-container">
+        <pre class="python">history = qb.History(assets, datetime(2020, 1, 1), datetime(2021, 3, 31), Resolution.Daily)
+historyPortfolio = history.close.unstack(0).loc[:"2021-01-01"]
+pctChangePortfolio = np.log(historyPortfolio/historyPortfolio.shift(1)).dropna()
+
+historyQQQ_ = qb.History(qqq, datetime(2020, 1, 1), datetime(2021, 3, 31), Resolution.Daily)
+historyQQQ = historyQQQ_.close.unstack(0).loc[:"2021-01-01"]
+pctChangeQQQ = np.log(historyQQQ/historyQQQ.shift(1)).loc[pctChangePortfolio.index]</pre>
+    </div>
+</ol>

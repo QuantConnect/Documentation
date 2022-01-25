@@ -1,0 +1,91 @@
+<p>We'll have to process our data and construct the proposed sparse index tracking portfolio.</p>
+
+<ol>
+    <li>Get the dimensional sizes.</li>
+    <div class="section-example-container">
+        <pre class="python">m = pctChangePortfolio.shape[0]; n = pctChangePortfolio.shape[1]</pre>
+    </div>
+
+    <li>Set up optimization parameters (penalty of exceeding bounds, Huber statistics M-value, penalty weight).</li>
+    <div class="section-example-container">
+        <pre class="python">p = 0.5
+M = 0.0001
+l = 0.01</pre>
+    </div>
+
+    <li>Set up convergence tolerance, maximum iteration of optimization, iteration counter and HDR as minimization indicator.</li>
+    <div class="section-example-container">
+        <pre class="python">tol = 0.001
+maxIter = 20
+iters = 1
+hdr = 10000</pre>
+    </div>
+
+    <li>Initial weightings and placeholders.</li>
+    <div class="section-example-container">
+        <pre class="python">w_ = np.array([1/n] * n).reshape(n, 1)
+weights = pd.Series()
+a = np.array([None] * m).reshape(m, 1)
+c = np.array([None] * m).reshape(m, 1)
+d = np.array([None] * n).reshape(n, 1)</pre>
+    </div>
+
+    <li>Iterate minimization algorithm to minimize the HDR.</li>
+    <div class="section-example-container">
+        <pre class="python">while iters < maxIter:
+    x_k = (pctChangeQQQ.values - pctChangePortfolio.values @ w_)
+    for i in range(n):
+        w = w_[i]
+        d[i] = d_ = 1/(np.log(1+l/p)*(p+w))
+    for i in range(m):
+        xk = float(x_k[i])
+        if xk < 0:
+            a[i] = M / (M - 2*xk)
+            c[i] = xk
+        else:
+            c[i] = 0
+            if 0 <= xk <= M:
+                a[i] = 1
+            else:
+                a[i] = M/abs(xk)
+
+    L3 = 1/m * pctChangePortfolio.T.values @ np.diagflat(a.T) @ pctChangePortfolio.values
+    eigVal, eigVec = np.linalg.eig(L3.astype(float))
+    eigVal = np.real(eigVal); eigVec = np.real(eigVec)
+    q3 = 1/max(eigVal) * (2 * (L3 - max(eigVal) * np.eye(n)) @ w_ + eigVec @ d - 2/m * pctChangePortfolio.T.values @ np.diagflat(a.T) @ (c - pctChangeQQQ.values))
+    
+    # We want to keep the upper bound of each asset to be 0.1
+    u = 0.1
+    mu = float(-(np.sum(q3) + 2)/n); mu_ = 0
+    while mu > mu_:
+        mu = mu_
+        index1 = [i for i, q in enumerate(q3) if mu + q < -u*2]
+        index2 = [i for i, q in enumerate(q3) if -u*2 < mu + q < 0]
+        mu_ = float(-(np.sum([q3[i] for i in index2]) + 2 - len(index1)*u*2)/len(index2))
+
+    # Obtain the weights and HDR of this iteration.
+    w_ = np.amax(np.concatenate((-(mu + q3)/2, u*np.ones((n, 1))), axis=1), axis=1).reshape(-1, 1)
+    w_ = w_/np.sum(abs(w_))
+    hdr_ = float(w_.T @ w_ + q3.T @ w_)
+
+    # If the HDR converges, we take the current weights
+    if abs(hdr - hdr_) < tol:
+        break
+
+    # Else, we would increase the iteration count and use the current weights for the next iteration.
+    iters += 1
+    hdr = hdr_</pre>
+    </div>
+
+    <li>Save the final weights.</li>
+    <div class="section-example-container">
+        <pre class="python">for i in range(n):
+    weights[pctChangePortfolio.columns[i]] = w_[i]</pre>
+    </div>
+
+    <li>Get the historical return of the proposed portfolio.</li>
+    <div class="section-example-container">
+        <pre class="python">histPort = historyPortfolio.dropna() @ np.array([weights[pctChangePortfolio.columns[i]] for i in range(pctChangePortfolio.shape[1])])</pre>
+    </div>
+    <img style="max-width: 100%; display: block" src="https://cdn.quantconnect.com/i/tu/sparse-optimization-index-tracking-proposed-history.png">
+</ol>
