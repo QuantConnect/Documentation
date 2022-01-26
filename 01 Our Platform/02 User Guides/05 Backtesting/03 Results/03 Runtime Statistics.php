@@ -5,7 +5,7 @@
 <p>The banner displays the following statistics:<br></p>
 
 <ul>
-    <li><span class='ul-option'>PSR</span>: <a href='../optimization/objectives#05-PSR'>Probabilistic Sharpe Ratio</a><br></li>
+    <li><span class='ul-option'>PSR</span>: <a href='/docs/v2/our-platform/user-guides/optimization/objectives#05-PSR'>Probabilistic Sharpe Ratio</a><br></li>
     <li><span class='ul-option'>Unrealized</span>: Unrealized profit<br></li>
     <li><span class='ul-option'>Fees</span>: Total fees paid during the backtest across all securities in the portfolio</li>
     <li><span class='ul-option'>Net Profit</span>: Sum of all gross profit across all securities in the portfolio</li>
