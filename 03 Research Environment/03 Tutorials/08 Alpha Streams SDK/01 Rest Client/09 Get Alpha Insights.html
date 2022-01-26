@@ -1,0 +1,28 @@
+<p>All historical insights of an <Code>Alpha</Code> are recorded in a database. Insights are generated in-sample, out-of-sample or in live trading. Using these insights you can perform your own backtests with your own fill and slippage models to see how the strategy would have performed with your execution.</p>
+<ol>
+    <li>Call <code>GetAlphaInsights</code> with the alpha ID and starting position.</li>
+    <div class="section-example-container">
+        <pre class="csharp">var insights = client.GetAlphaInsights( alphaId, 1760 );</pre>
+        <pre class="python">insights = client.GetAlphaInsights( alpha_id, 1760 )</pre>
+    </div>
+
+    <li>Display the results.</li>
+    <p>In this tutorial, we display the last 5 insights.</p>
+    <div class="section-example-container">
+        <pre class="csharp">foreach(var i in insights.TakeLast(5))
+{
+    var magnitude = i.Magnitude == null ? "" : " by {i.Magnitude:.2%}";
+    
+    Console.WriteLine($"{i.CloseTimeUtc} {i.Source} {i.Type} insight for {i.Symbol} going {i.Direction}{magnitude} over the next {i.Period}s");
+}</pre>
+        <pre class="python">for i in insights[-5:]:
+    magnitude = "" if i.Magnitude is None else " by {i.Magnitude:.2%}"
+    source = "in sample" if i.Source == 0 else "out of sample" if i.Source == 1 else "live trading"
+    type_ = "price" if i.Type == 0 else "volatility"
+    direction = "up" if i.Direction == 1 else "flat" if i.Direction == 0 else "down"
+    
+    print(f"{i.CloseTimeUtc} {source} {type_} insight for {i.Symbol.Value.split(' ')[0]} going {direction}{magnitude} over the next {i.Period}s")</pre>
+    </div>
+    <img class="csharp" src="">
+    <img class="python" src="">
+</ol>

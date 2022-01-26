@@ -1,0 +1,71 @@
+<p>The below shows how to place, read and remove a bid on an <code>Alpha</code> for liscensing.</p>
+
+<h4>Create a new bid</h4>
+<p>Place a bid on the desired <code>Alpha</code> for getting a place to allocate your fund into it through monthly auction.</p>
+<ol>
+    <li>Call <code>CreateBid</code> with <code>CreateBidPriceRequest</code> method that wrapped the alpha ID, bid price, allocation amount, period for liscensing and valid time for the bid. The method will return a status of your bid.</li>
+    <div class="section-example-container">
+        <pre class="csharp">var bidReponse = client.CreateBid(
+    new CreateBidPriceRequest{
+        Id = "d0fc88b1e6354fe95eb83225a",
+        Bid = 3,
+        Allocation = 10000,
+        Period = 1,
+        GoodUntil = ((DateTimeOffset)DateTime.Today + TimeSpan.FromDays(1)).ToUnixTimeSeconds()
+    }
+);</pre>
+        <pre class="python">bid_reponse = client.CreateBid(
+    CreateBidPriceRequest(
+        alphaId = "d0fc88b1e6354fe95eb83225a",
+        bid = 3,
+        allocation = 10000,
+        period = 1,
+        good_until = datetime.utcnow() + timedelta(1)
+    )
+)</pre>
+    </div>
+
+    <li>Call <code>ToString</code> to view the bid response message.</li>
+    <div class="section-example-container">
+        <pre class="csharp">bidReponse.ToString()</pre>
+        <pre class="python">bid_reponse.ToString()</pre>
+    </div>
+    <img class="csharp" src="">
+    <img class="python" src="">
+</ol>
+
+<h4>Read your bid's information</h4>
+<p>Once you make a bid, you can read its information.</p>
+<ol>
+    <li>Call <code>GetAlphaBid</code> with the alpha ID.</li>
+    <div class="section-example-container">
+        <pre class="csharp">var bidResult = client.GetAlphaBid("d0fc88b1e6354fe95eb83225a");</pre>
+        <pre class="python">bidResult = client.GetAlphaBid("d0fc88b1e6354fe95eb83225a")</pre>
+    </div>
+
+    <li>Call <code>ToString</code> to view the bid result message.</li>
+    <div class="section-example-container">
+        <pre class="csharp">bidResult.ToString()</pre>
+        <pre class="python">bid_result.ToString()</pre>
+    </div>
+    <img class="csharp" src="">
+    <img class="python" src="">
+</ol>
+
+<h4>Remove the bid</h4>
+<p>You can remove the active bid.</p>
+<ol>
+    <li>Call <code>RemoveAlphaBid</code> with the alpha ID and the active bid ID.</li>
+    <div class="section-example-container">
+        <pre class="csharp">var removeResult = client.RemoveAlphaBid("d0fc88b1e6354fe95eb83225a", bidResult.ActiveBid.Id);</pre>
+        <pre class="python">remove_result = client.RemoveAlphaBid('d0fc88b1e6354fe95eb83225a', bidResult.ActiveBid.Id)</pre>
+    </div>
+
+    <li>Call <code>ToString</code> to view the remove bid respond message.</li>
+    <div class="section-example-container">
+        <pre class="csharp">removeResult.ToString()</pre>
+        <pre class="python">remove_result.ToString()</pre>
+    </div>
+    <img class="csharp" src="">
+    <img class="python" src="">
+</ol>

@@ -1,0 +1,36 @@
+<p>Get the equity curve of an <code>Alpha</code>, including both backtesting and live-trading, helping in understand the NAV correlation and visualization.</p>
+<ol>
+    <li>Call <code>GetAlphaEquityCurve</code> with the alpha ID. This will return a <code>dataframe</code> of equity curve values.</li>
+    <div class="section-example-container">
+        <pre class="csharp">var equity = client.GetAlphaEquityCurve(alphaId);</pre>
+        <pre class="python">equity = client.GetAlphaEquityCurve(alpha_id)</pre>
+    </div>
+
+    <li>Display the equity curve data.</li>
+    <p> In this tutorial, display the last 5 data points.</p>
+    <div class="section-example-container">
+        <pre class="csharp">foreach(var e in equity["equity"].TakeLast(5))
+{
+    Console.WriteLine(e);
+}</pre>
+        <pre class="python">display(equity.tail())</pre>
+    </div>
+    <img class="csharp" src="">
+    <img class="python" src="">
+
+    <li class="python">Call <code>reset_index</code>.</li>
+    <div class="python section-example-container">
+        <pre class="python">equity.reset_index(inplace=True)</pre>
+    </div>
+
+    <li class="python">Call <code>line</code> to plot the equity curve.</li>
+    <div class="python section-example-container">
+        <pre class="python">fig = px.line(equity, x="index", y="equity", color="sample", title=f"Equity Curve of Alpha {alphaId}")</pre>
+    </div>
+
+    <li class="python">Show the figure.</li>
+    <div class="python section-example-container">
+        <pre class="python">fig.show()</pre>
+    </div>
+    <img class="python" src="">
+</ol>
