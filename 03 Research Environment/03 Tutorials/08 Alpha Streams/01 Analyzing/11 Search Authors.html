@@ -1,0 +1,44 @@
+<p>Follow these steps to perform a filtered search of <code>Alpha</code> authors:</p>
+<ol>
+    <li>Call <code>SearchAuthorsRequest</code> with list of programming language(s) and location, or more selection criteria.</li>
+    <div class="section-example-container">
+        <pre class="csharp">var request = new SearchAuthorsRequest{ 
+    Languages=new() {"C#"}, 
+    Location="Virginia" 
+}</pre>
+        <pre class="python">request = SearchAuthorsRequest()
+request.languages = ["C#"]
+request.location = "Virginia"</pre>
+    </div>
+    
+    <li>Call <code>SearchAuthors</code> with the request.</li>
+    <div class="section-example-container">
+        <pre class="csharp">var authors = client.SearchAuthors( request );</pre>
+        <pre class="python">authors = client.SearchAuthors( request ) )</pre>
+    </div>
+
+    <li>Filter out the authors without any publication.</li>
+    <div class="section-example-container">
+        <pre class="csharp">var qualifiedAuthors = authors.Where(x => x.AlphasListed > 0);</pre>
+        <pre class="python">qualified_authors = [x for x in authors if x.AlphasListed > 0]</pre>
+    </div>
+
+    <li>Display the results.</li>
+    <p>In this tutorial, we display the first 5 authors.</p>
+    <div class="section-example-container">
+        <pre class="csharp">Console.WriteLine($"Located {qualifiedAuthors.Count()} authors matching your criteria.");
+foreach(var a in qualifiedAuthors.Take(5))
+{
+    Console.WriteLine($@"Alpha Stream Author {a.Id} is from {a.Location}, signed up {a.SignupTime} and codes in {a.Language}
+    Number of alphas listed: {a.AlphasListed}
+    Alpha IDs: [{string.Join(", ", a.Alphas.Take(3))}]");
+}</pre>
+        <pre class="python">print(f"Located {len(qualified_authors)} authors matching your criteria.")
+for a in qualified_authors[:5]:
+    print(f"""Alpha Stream Author {a.Id} is from {a.Location}, signed up {a.SignupTime} and codes in {a.Language}
+    Number of alphas listed: {a.AlphasListed}
+    Alpha IDs: {a.Alphas[:3]}""")</pre>
+    </div>
+    <img class="csharp" src="https://cdn.quantconnect.com/i/tu/alpha-streams-analyzing-search-authors-cs.png">
+    <img class="python" src="">
+</ol>

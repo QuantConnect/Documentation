@@ -1,0 +1,43 @@
+<p>Follow these steps to perform a filtered search of <code>Alpha</code>s:</p>
+
+<ol>
+    <li>Call <code>SearchAlphasRequest</code> with desired criteria.</li>
+    <div class="section-example-container">
+        <pre class="csharp">var request = new SearchAlphasRequest{
+    Sharpe = Enumerable.Range(1, 2),
+    IncludedTags = new() {"Equal Weighting"}, 
+    ExcludedTags = new() {"Single Selection"}
+};</pre>
+        <pre class="python">request = SearchAlphasRequest()
+request.Sharpe = (1, 2)
+request.includedTags = ['Equal Weighting']
+request.excludedTags = ['Single Selection']</pre>
+    </div>
+    
+    <li>Call <code>SearchAlphas</code> with the request.</li>
+    <div class="section-example-container">
+        <pre class="csharp">var alphas = client.SearchAlphas( request );</pre>
+        <pre class="python">alphas = client.SearchAlphas( request )</pre>
+    </div>
+
+    <li>Display some information of the algorithms.</li>
+    <p>In this tutorial, display the first 5 alphas' information.</p>
+    <div class="section-example-container">
+        <pre class="csharp">foreach(var alpha in alphas.Take(5))
+{
+    Console.WriteLine($@"Alpha: id: {alpha.Id} 
+    Project: '{alpha.Name}' 
+    Assets: {alpha.AssetClasses}
+    Sharpe Ratio: {alpha.SharpeRatio}
+    Tags : [{string.Join(", ", alpha.Tags.Take(3))}]");
+}</pre>
+        <pre class="python">for alpha in alphas[:5]:
+    print(f"""Alpha: id: {alpha.Id} 
+    Project: '{alpha.Name}' 
+    Assets: {alpha.AssetClasses}
+    Sharpe Ratio: {alpha.SharpeRatio}
+    Tags : {alpha.Tags[:3]}""")</pre>
+    </div>
+    <img class="csharp" src="https://cdn.quantconnect.com/i/tu/alpha-streams-analyzing-search-alphas-cs.png">
+    <img class="python" src="">
+</ol>
