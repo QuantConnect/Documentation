@@ -27,21 +27,49 @@ self.LimitIfTouchedOrder(self.symbol, quantity, trigger_price, limit_price)</pre
 
 <h4>Order Properties</h4>
 
-<p>The <code>KrakenBrokerageModel</code> supports custom order properties. You can define the following members of a <code>KrakenOrderProperties</code> object to customize order execution:<br></p>
+<p>The <code>KrakenBrokerageModel</code> supports custom order properties. The following table describes the members of the <code>KrakenBrokerageModel</code> object that you can set to customize order execution:</p>
 
-<ul>
-    <li><span class='ul-option'><code>TimeInForce</code></span>: A <code>TimeInForce</code> instruction to apply to the order. The following instructions are supported:</li>
-    <ul>
-        <li><code>Day</code></li>
-        <li><code>GoodTilCanceled</code></li>
-        <li><code>GoodTilDate</code></li>
-    </ul>
-    <li><span class='ul-option'><code>PostOnly</code></span>: A flag to signal that the order must only add liquidity to the order book and not take liquidity from the order book. If part of the order results in taking liquidity rather than providing liquidity, the order is rejected without any part of it being filled.</li>
-    <li><span class='ul-option'><code>FeeInBase</code></span>: A flag to signal that the order fees should be paid in the base currency, which is the default behavior when selling. This flag must be the opposite of the <code>FeeInQuote</code> flag.<br></li>
-    <li><span class='ul-option'><code>FeeInQuote</code></span>: A flag to signal that the order fees should be paid in the quote currency, which is the default behavior when buying. This flag must be the opposite of the <code>FeeInBase</code> flag.</li>
-    <li><span class='ul-option'><code>NoMarketPriceProtection</code></span>: A flag to signal that no <a href="https://support.kraken.com/hc/en-us/articles/201648183-Market-Price-Protection">Market Price Protection</a> should be used.</li>
-    <li><span class='ul-option'><code>ConditionalOrder</code></span>: An <code>Order</code> that's submitted when the primary order is executed. The <code>ConditionalOrder</code> quantity must match the primary order quantity and the <code>ConditionalOrder</code> direction must be the opposite of the primary order direction.</li>
-</ul>
+<table class="table qc-table">
+    <thead>
+        <tr>
+            <th style="width: 25%">Property</th>
+            <th style="width: 75%">Description</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><code>TimeInForce</code></td>
+            <td>A <code>TimeInForce</code> instruction to apply to the order. The following instructions are supported:
+                <ul>
+                    <li><code>Day</code></li>
+                    <li><code>GoodTilCanceled</code></li>
+                    <li><code>GoodTilDate</code></li>
+                </ul>
+            </td>
+        </tr>
+        <tr>
+            <td><code>PostOnly</code></td>
+            <td>A flag to signal that the order must only add liquidity to the order book and not take liquidity from the order book. If part of the order results in taking liquidity rather than providing liquidity, the order is rejected without any part of it being filled.</td>
+        </tr>
+        <tr>
+            <td><code>FeeInBase</code></td>
+            <td>A flag to signal that the order fees should be paid in the base currency, which is the default behavior when selling. This flag must be the opposite of the <code>FeeInQuote</code> flag.</td>
+        </tr>
+        <tr>
+            <td><code>FeeInQuote</code></td>
+            <td>A flag to signal that the order fees should be paid in the quote currency, which is the default behavior when buying. This flag must be the opposite of the <code>FeeInBase</code> flag.</td>
+        </tr>
+        <tr>
+            <td><code>NoMarketPriceProtection</code></td>
+            <td>A flag to signal that no <a href="https://support.kraken.com/hc/en-us/articles/201648183-Market-Price-Protection">Market Price Protection</a> should be used.</td>
+        </tr>
+        <tr>
+            <td><code>ConditionalOrder</code></td>
+            <td>An <code>Order</code> that's submitted when the primary order is executed. The <code>ConditionalOrder</code> quantity must match the primary order quantity and the <code>ConditionalOrder</code> direction must be the opposite of the primary order direction.</td>
+        </tr>
+    </tbody>
+</table>
+
 
 <div class="section-example-container">
     <pre class="csharp">public override void Initialize()
