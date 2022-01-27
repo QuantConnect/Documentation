@@ -13,5 +13,5 @@
     <li>In the left navigation bar, click <span class='menu-name'>Organization &gt; Home</span>.</li>
     <li>On the organization homepage, click <span class='button-name'>Downgrade to Free</span>.</li>
     <li>Select the <span class='button-name'>I understand that my subscription will be terminated immediately</span> check box and then click <span class='button-name'>Continue</span>.</li>
-    <li>Select the reason for downgrading and then click <span class='button-name'>Downgrade</span></li>
+    <li>Select the reason for downgrading and then click <span class='button-name'>Downgrade</span>.</li>
 </ol>
