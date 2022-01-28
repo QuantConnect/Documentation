@@ -1,11 +1,11 @@
 <p>The My Listings page displays a table that contains all of the Alphas that you have submitted to the Alpha Streams Market.</p>
 
-<img class='docs-image' src="https://cdn.quantconnect.com/i/tu/my-listings.png" alt="My Alpha Listings Table">
+<img class='img-responsive' src="https://cdn.quantconnect.com/i/tu/my-listings.png" alt="My Alpha Listings Table">
 
 <p>The table of Alphas contains all of the columns in the table on the <a href="/docs/v2/our-platform/user-guides/alpha-streams-market/navigating-the-market#02-Strategies">Strategies</a> page and the following additional columns:</p>
 
 <ul>
-    <li><span class='ul-option'>Review Status</b>: The review status of your Alpha. The following statuses are supported:</li>
+    <li><span class='ul-option'>Review Status</span>: The review status of your Alpha. The following statuses are supported:</li>
     <ul>
         <li><span class='ul-option'></span>: </li>
         <li><span class='ul-option'></span>: </li>
