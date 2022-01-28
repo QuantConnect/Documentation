@@ -41,6 +41,6 @@
     <li>Select a maximum number of nodes to use.</li>
     <li>Click <span class='button-name'>Launch Optimization</span>.</li>
     <p>The optimization results page displays.</p>
-    <img class='docs-image' src="https://cdn.quantconnect.com/i/tu/view-optimization-results.png">
-    <p>If you want to abort the optimization job while it's running, in the Status panel, click <span class='button-name'>Abort</span> and then click <span class='button-name'>Abort Optimization</span>.</p>
+    <img class='img-responsive' src="https://cdn.quantconnect.com/i/tu/view-optimization-results.png">
+    <p>To abort a running optimization job, in the Status panel, click <span class='button-name'>Abort</span> and then click <span class='button-name'>Abort Optimization</span>.</p>
 </ol>
