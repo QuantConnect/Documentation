@@ -30,28 +30,7 @@
 
 <p>Select the optimization node that is most appropriate for your trading algorithm. The following table explains when to use each model:</p>
 
-<table class="table qc-table" id="optimization-node-usage-table">
-    <thead>
-        <tr>
-            <th style="width: 33%">Model</th>
-            <th style="width: 66%">Description</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr>
-            <td>O2-8</td>
-            <td>Relatively simple strategies with less than 100 assets</td>
-        </tr>
-        <tr>
-            <td>O4-12</td>
-            <td>Strategies with less than 500 assets and simple universe selections</td>
-        </tr>
-        <tr>
-            <td>O8-16</td>
-            <td>Complex strategies and machine learning</td>
-        </tr>
-    </tbody>
-</table>
+<?php include(DOCS_RESOURCES."/optimization-node-descriptions-table.php"); ?>
 
 
 <p>The following table shows the <a href="/docs/v2/our-platform/user-guides/organizations/resources#08-Training-Quotas">training quotas</a> of the optimization nodes:</p>

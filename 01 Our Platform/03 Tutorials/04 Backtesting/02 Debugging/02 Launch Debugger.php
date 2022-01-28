@@ -18,12 +18,9 @@
     	<li>If you want to remove a watch variable, click the <span class='icon-name'>X</span> icon next to the watch variable that you want to remove.</li>
     </ol>
     <li>Click <span class='button-name'>Backtest</span> to start debugging.</li>
-    <li>Control the debugger with the following buttons in the Debug panel:</li>
-    <ul>
-        <li><span class='button-name'>Continue</span>: Execute until the next breakpoint.</li>
-        <li><span class='button-name'>Stop</span>: Stop debugging and delete the backtest.</li>
-        <li><span class='button-name'>Step</span>: Execute the next line of code.</li>
-    </ul>
+    <li>Control the debugger with the buttons in the Debug panel.</li>
+    <p>The following table describes the functionality of the debugger buttons:</p>
+    <?php include(DOCS_RESOURCES."/debugger-buttons-table.html"); ?>
 </ol>
 
 <div class='docs-video'>

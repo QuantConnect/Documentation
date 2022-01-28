@@ -53,12 +53,8 @@
     <li>Add a dummy entry to the bottom of a data file in your <span class='private-file-name'>Lean.DataSource.<span class='placeholder-text'>vendorNameDatasetName</span>/output</span> directory and then save the file.</li>
     <li>Check if the data point that you added in the previous step is injected into your demonstration algorithm through the <code>OnData</code> method.</li>
     <p>If the <code>OnData</code> method receives the new data point, your algorithm works in live mode.</p>
-    <p>You may need to wait for the new data point to be polled before it is injected into your algorithm. Lean polls for new data at various intervals, depending on the resolution of the data:</p>
-    <ul>
-        <li><span class='ul-option'>Tick</span>: Constantly polled</li>
-        <li><span class='ul-option'>Second</span>: Polled every second</li>
-        <li><span class='ul-option'>Minute</span>: Polled every minute</li>
-        <li><span class='ul-option'>Hour</span>: Polled every 30 minutes</li>
-        <li><span class='ul-option'>Daily</span>: Polled every 30 minutes</li>
-    </ul>
+    <p>You may need to wait for the new data point to be polled before it is injected into your algorithm. Lean polls for new data at various intervals, depending on the resolution of the data. The following table shows the polling frequency of each resolution:</p>
+
+    <?php include(DOCS_RESOURCES."/live-dataset-polling-frequency-table.html"); ?>
+
 </ol>

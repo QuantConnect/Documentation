@@ -32,12 +32,12 @@
     </ol>
     <li>Click <span class='button-name'>Next</span>.</li>
     <p>"Parameters saved" displays.</p>
-    <li>In the <span class='page-section-name'>Type and Number of Compute Nodes</span> section, select one of the following <a href='/docs/v2/our-platform/user-guides/optimization/deployment#02-Resources'>optimization node models</a>:</li>
-    <ul>
-        <li><span class='ul-option'>O2-8</span>: For relatively simple strategies with less than 100 assets.</li>
-        <li><span class='ul-option'>O4-12</span>: For strategies with less than 500 assets and simple universe selections.</li>
-        <li><span class='ul-option'>O8-16</span>: For complex strategies and machine learning.</li>
-    </ul>
+    <li>In the <span class='page-section-name'>Type and Number of Compute Nodes</span> section, select one of the following <a href='/docs/v2/our-platform/user-guides/optimization/deployment#02-Resources'>optimization node models</a>.</li>
+
+    <p>The following table explains when to use each model:</p>
+
+    <?php include(DOCS_RESOURCES."/optimization-node-descriptions-table.php"); ?>
+
     <li>Select a maximum number of nodes to use.</li>
     <li>Click <span class='button-name'>Launch Optimization</span>.</li>
     <p>The optimization results page displays.</p>
