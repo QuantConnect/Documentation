@@ -1,26 +1,27 @@
 <p>Follow these steps to place a bid on an <code>Alpha</code> for liscensing:</p>
 
 <ol>
-    <li>Call <code>CreateBid</code> with <code>CreateBidPriceRequest</code> method that wrapped the alpha ID, bid price, allocation amount, period for liscensing and valid time for the bid. The method will return a status of your bid.</li>
+    <li>Call <code>CreateBidPriceRequest</code> with the bid's details.</li>
     <div class="section-example-container">
-        <pre class="csharp">var bidReponse = client.CreateBid(
-    new CreateBidPriceRequest{
-        Id = "d0fc88b1e6354fe95eb83225a",
-        Bid = 3,
-        Allocation = 10000,
-        Period = 1,
-        GoodUntil = ((DateTimeOffset)DateTime.Today + TimeSpan.FromDays(1)).ToUnixTimeSeconds()
-    }
-);</pre>
-        <pre class="python">bid_reponse = client.CreateBid(
-    CreateBidPriceRequest(
-        alphaId = "d0fc88b1e6354fe95eb83225a",
-        bid = 3,
-        allocation = 10000,
-        period = 1,
-        good_until = datetime.utcnow() + timedelta(1)
-    )
-)</pre>
+        <pre class="csharp">var request = new CreateBidPriceRequest{
+    Id = "d0fc88b1e6354fe95eb83225a",
+    Bid = 3,
+    Allocation = 10000,
+    Period = 1,
+    GoodUntil = ((DateTimeOffset)DateTime.Today + TimeSpan.FromDays(1)).ToUnixTimeSeconds()
+};</pre>
+        <pre class="python">request = CreateBidPriceRequest()
+request.AlphaId = "d0fc88b1e6354fe95eb83225a"
+request.Bid = 3
+request.Allocation = 10000
+request.Period = 1
+request.GoodUntil = (datetime.utcnow() + timedelta(1)).timestamp()</pre>
+    </div>
+    
+    <li>Call <code>CreateBid</code> with the request. The method will return a status of your bid.</li>
+    <div class="section-example-container">
+        <pre class="csharp">var bidReponse = client.CreateBid( request );</pre>
+        <pre class="python">bid_reponse = client.CreateBid( request )</pre>
     </div>
 
     <li>Call <code>ToString</code> to view the bid response message.</li>
