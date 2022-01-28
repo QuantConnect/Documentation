@@ -4,14 +4,14 @@
     <li>Call <code>SearchAlphasRequest</code> with desired criteria.</li>
     <div class="section-example-container">
         <pre class="csharp">var request = new SearchAlphasRequest{
-    Sharpe = Enumerable.Range(1, 2),
+    Sharpe = new NumberRange&lt;double&gt;(1d, 2d),
     IncludedTags = new() {"Equal Weighting"}, 
     ExcludedTags = new() {"Single Selection"}
 };</pre>
         <pre class="python">request = SearchAlphasRequest()
-request.Sharpe = (1, 2)
-request.includedTags = ['Equal Weighting']
-request.excludedTags = ['Single Selection']</pre>
+request.Sharpe = NumberRange[float](1, 2)
+request.IncludedTags = ["Equal Weighting"]
+request.ExcludedTags = ["Single Selection"]</pre>
     </div>
     
     <li>Call <code>SearchAlphas</code> with the request.</li>
@@ -27,17 +27,18 @@ request.excludedTags = ['Single Selection']</pre>
 {
     Console.WriteLine($@"Alpha: id: {alpha.Id} 
     Project: '{alpha.Name}' 
-    Assets: {alpha.AssetClasses}
+    Assets: [{string.Join(", ", alpha.AssetClasses.Take(3))}]
     Sharpe Ratio: {alpha.SharpeRatio}
     Tags : [{string.Join(", ", alpha.Tags.Take(3))}]");
 }</pre>
-        <pre class="python">for alpha in alphas[:5]:
+        <pre class="python">asset = {1: "Equity", 2: "Forex", 3: "Future", 4: "Option", 5: "Cfd", 6: "Crypto"}
+for alpha in alphas[:5]:
     print(f"""Alpha: id: {alpha.Id} 
     Project: '{alpha.Name}' 
-    Assets: {alpha.AssetClasses}
+    Assets: {[asset[x] for x in alpha.AssetClasses]}
     Sharpe Ratio: {alpha.SharpeRatio}
     Tags : {alpha.Tags[:3]}""")</pre>
     </div>
-    <img class="csharp" src="https://cdn.quantconnect.com/i/tu/alpha-streams-analyzing-search-alphas-cs.png">
-    <img class="python" src="">
+    <img class="csharp" src="https://cdn.quantconnect.com/i/tu/alpha-streams-analyzing-search-alphas-cs-2.png">
+    <img class="python" src="https://cdn.quantconnect.com/i/tu/alpha-streams-analyzing-search-alphas-py.png">
 </ol>
