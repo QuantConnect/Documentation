@@ -4,36 +4,4 @@
 
 <p>After you <a href="/docs/v2/our-platform/tutorials/backtesting/debugging">launch the debugger</a>, you can control program execution with the buttons described in the following table:</p>
 
-<table class="qc-table table" id="debugger-button-table">
-  <thead>
-    <tr>
-      <th style="width: 25%">Button</th>
-      <th style="width: 75%">Description</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td><img src="https://cdn.quantconnect.com/i/tu/debugger-play-icon.png"></td>
-      <td>Continue execution until the next breakpoint</td>
-    </tr>
-    <tr>
-      <td><img src="https://cdn.quantconnect.com/i/tu/debugger-stop-icon.png"></td>
-      <td>Exit the debugger</td>
-    </tr>
-    <tr>
-      <td><img src="https://cdn.quantconnect.com/i/tu/debugger-step-icon.png"></td>
-      <td>Step to the next line of code</td>
-    </tr>
-  </tbody>
-</table>
-
-<style>
-#debugger-button-table td:first-child,
-#debugger-button-table th:first-child {
-    text-align: center;
-}
-
-#debugger-button-table img {
-    height: 40px;
-}
-</style>
+<?php include(DOCS_RESOURCES."/debugger-buttons-table.html"); ?>
