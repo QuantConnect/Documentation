@@ -1,1 +1,188 @@
-<p></p>
+<p>Follow the below instruction to read information/statistics of a backtest by using the QuantConnect Api.</p>
+
+<p><b>Call <code>ReadBacktest</code> with the project ID and backtest ID.</b></p>
+<div class="section-example-container">
+    <pre class="csharp">var backtest = api.ReadBacktest(projectId, newBacktest.BacktestId);</pre>
+    <pre class="python">backtest = api.ReadBacktest(project_id, new_backtest.BacktestId)</pre>
+</div>
+
+<p>Note that this would be a snapshot of the backtest at this instance. If the backtest is not finished, you'll need to re-read it to update the information after its completion.</p>
+
+<h4>Read Metadata</h4>
+<p>Display the metadata of the backtest.</p>
+<div class="section-example-container">
+    <pre class="csharp">Console.WriteLine($@"Backtest ID: {backtest.BacktestId}
+Name: {backtest.Name}
+Created Time: {backtest.Created}
+Success?: {backtest.Success}
+Completed?: {backtest.Completed}
+Progress [0,1]: {backtest.Progress}
+Note: {backtest.Note}")</pre>
+    <pre class="python">print(f"""Backtest ID: {backtest.BacktestId}
+Name: {backtest.Name}
+Created Time: {backtest.Created.strftime("%Y/%m/%d %H:%M:%S")}
+Success?: {backtest.Success}
+Completed?: {backtest.Completed}
+Progress [0,1]: {backtest.Progress}
+Note: {backtest.Note}\n""")</pre>
+</div>
+<img class="csharp" src="https://cdn.quantconnect.com/i/tu/api-backtest-read-metadata-cs.png">
+<img class="python" src="https://cdn.quantconnect.com/i/tu/api-backtest-read-metadata-py.png">
+
+<h4>Read Errors</h4>
+<p>Call <code>Error</code> and <code>StackTrace</code> to obtain the error messages of the backtest.</p>
+<div class="section-example-container">
+    <pre class="csharp">Console.WriteLine($@"Error: {backtest.Error}
+Stacktrace: {backtest.StackTrace}")</pre>
+    <pre class="python">print(f"""Error: {backtest.Error}
+Stacktrace: {backtest.StackTrace}""")</pre>
+</div>
+<img class="csharp" src="https://cdn.quantconnect.com/i/tu/api-backtest-read-errors-cs.png">
+<img class="python" src="https://cdn.quantconnect.com/i/tu/api-backtest-read-errors-py-2.png">
+
+<h4>Read Statistics</h4>
+<p>Follow these steps to get the statistics of the backtest. Note that these metrics will only be available when the backtest is completed.</p>
+<ol>
+    <li>Call <code>Statistics</code> attribute of the backtest, then display it.</li>
+    <div class="section-example-container">
+        <pre class="csharp">var statistics = backtest.Statistics;
+foreach(var kvp in statistics)
+{
+    Console.WriteLine($"{kvp.Key}: {kvp.Value}");
+}</pre>
+        <pre class="python">statistics = backtest.Statistics
+for kvp in statistics:
+    print(f"{kvp.Key}: {kvp.Value}")</pre>
+    </div>
+
+    <li>Call <code>RuntimeStatistics</code> attribute of the backtest, then display it.</li>
+    <div class="section-example-container">
+        <pre class="csharp">var runtimeStatistics = backtest.RuntimeStatistics;
+foreach(var kvp in runtimeStatistics)
+{
+    Console.WriteLine($"{kvp.Key}: {kvp.Value}");
+}</pre>
+        <pre class="python">runtime_statistics = backtest.RuntimeStatistics
+for kvp in runtime_statistics:
+    print(f"{kvp.Key}: {kvp.Value}")</pre>
+    </div>
+
+    <li>Call <code>AlphaRuntimeStatistics</code> attribute of the backtest, then display it.</li>
+    <div class="section-example-container">
+        <pre class="csharp">var alphaStatistics = backtest.AlphaRuntimeStatistics.ToDictionary();
+foreach(var kvp in alphaStatistics)
+{
+    Console.WriteLine($"{kvp.Key}: {kvp.Value}");
+}</pre>
+        <pre class="python">alpha_statistics = backtest.AlphaRuntimeStatistics.ToDictionary()
+for kvp in alpha_statistics:
+    print(f"{kvp.Key}: {kvp.Value}")</pre>
+    </div>
+</ol>
+<img class="csharp" src="https://cdn.quantconnect.com/i/tu/api-backtest-read-statistics-cs.png">
+<img class="python" src="https://cdn.quantconnect.com/i/tu/api-backtest-read-statistics-py.png">
+
+<h4>Read Charts</h4>
+<p>Follow these steps to read <div class="python">and plot </div>chart data of a backtest.</p>
+<ol>
+    <li>Call <code>Charts</code> attribute of the backtest.</li>
+    <div class="section-example-container">
+        <pre class="csharp">var charts = backtest.Charts;</pre>
+        <pre class="python">charts = backtest.Charts</pre>
+    </div>
+
+    <li>Hash the chart's name to obtain a particular chart's data.</li>
+    <div class="section-example-container">
+        <pre class="csharp">var equityChart = charts["Strategy Equity"];
+var drawdownChart = charts["Drawdown"];
+var exposureChart = charts["Exposure"];</pre>
+        <pre class="python">equity_chart = charts["Strategy Equity"]
+drawdown_chart = charts["Drawdown"]
+exposure_chart = charts["Exposure"]</pre>
+    </div>
+
+    <li>Call <code>Series</code> attribute of the charts, then hash with the name of the desired series to obtain particular series's data.</li>
+    <div class="section-example-container">
+        <pre class="csharp">var equitySeries = equityChart.Series["Equity"].Values;
+var drawdownSeries = drawdownChart.Series["Equity Drawdown"].Values;</pre>
+        <pre class="python">equity_series = equity_chart.Series["Equity"].Values
+drawdown_series = drawdown_chart.Series["Equity Drawdown"].Values</pre>
+    </div>
+
+    <li>Iterate each data point of each series, store them in (nested) <code>Dictionary</code>.</li>
+    <div class="section-example-container">
+        <pre class="csharp">var equityData = equitySeries
+                 .Where(kvp => kvp != null)
+                 .ToDictionary(kvp => kvp.x, kvp => kvp.y);
+var drawdownData = drawdownSeries
+                   .Where(kvp => kvp != null)
+                   .ToDictionary(kvp => kvp.x, kvp => kvp.y);
+var exposureData = new Dictionary&lt;string, Dictionary&lt;long, decimal&gt;&gt;();
+foreach(var col in exposureChart.Series.Keys)
+{
+    exposureData[col] = new Dictionary&lt;long, decimal&gt;();
+    foreach(var kvp in exposureChart.Series[col].Values)
+    {
+        if (kvp != null)
+        {
+            exposureData[col].Add(kvp.x, kvp.y);
+        }
+    }
+}</pre>
+        <pre class="python">equity_data = {kvp.x: kvp.y for kvp in equity_series if kvp}
+drawdown_data = {kvp.x: kvp.y for kvp in drawdown_series if kvp}
+exposure_data = {}
+for col in exposure_chart.Series.Keys:
+    series = {}
+    for kvp in exposure_chart.Series[col].Values:
+        if not kvp: continue
+        series[kvp.x] = kvp.y
+    exposure_data[col] = series</pre>
+    </div>
+
+    <li class="csharp">Display the data.</li>
+    <div class="csharp section-example-container">
+        <pre class="csharp">Console.WriteLine("Equity Curve:");
+foreach(var kvp in equityData.Take(5))
+{
+    var time = DateTimeOffset.FromUnixTimeSeconds(kvp.Key).DateTime;
+    Console.WriteLine($"{time} : {kvp.Value}");
+}
+Console.WriteLine("Drawdown %:");
+foreach(var kvp in drawdownData.Take(5))
+{
+    var time = DateTimeOffset.FromUnixTimeSeconds(kvp.Key).DateTime;
+    Console.WriteLine($"{time} : {kvp.Value}");
+}
+foreach(var kvpExposure in exposureData)
+{
+    Console.WriteLine($"{kvpExposure.Key} Exposure:");
+    foreach(var kvp in kvpExposure.Value.Take(5))
+    {
+        var time = DateTimeOffset.FromUnixTimeSeconds(kvp.Key).DateTime;
+        Console.WriteLine($"{time} : {kvp.Value}");
+    }
+}</pre>
+    </div>
+    <img class="csharp" src="https://cdn.quantconnect.com/i/tu/api-backtest-read-charts-cs.png">
+
+    <li class="python">Convert the dictionaries into <code>pandas.Series/DataFrame</code>.</li>
+    <div class="python section-example-container">
+        <pre class="python">equity_data = pd.Series(equity_data)
+drawdown_data = pd.Series(drawdown_data)
+exposure_data = pd.DataFrame(exposure_data)</pre>
+    </div>
+
+    <li class="python">Call <code>plot</code> to plot the data.</li>
+    <div class="python section-example-container">
+        <pre class="python">equity_data.plot(figsize=(10, 6), title="Equity Curve")
+plt.show()
+drawdown_data.plot(figsize=(10, 6), title="Underwater Plot")
+plt.show()
+exposure_data.plot(figsize=(10, 6), title="Exposure")
+plt.show()</pre>
+    </div>
+    <img class="python" src="https://cdn.quantconnect.com/i/tu/api-backtest-read-charts-equity-curve-py.png">
+    <img class="python" src="https://cdn.quantconnect.com/i/tu/api-backtest-read-charts-drawdown-py.png">
+    <img class="python" src="https://cdn.quantconnect.com/i/tu/api-backtest-read-charts-exposure-py.png">
+</ol>

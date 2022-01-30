@@ -1,0 +1,29 @@
+<p>Follow these steps to delete a backtest and check its existance by using the QuantConnect Api.</p>
+
+<ol>
+    <li>Call <code>DeleteBacktest</code> with the project ID, backtest ID. This will return a <code>RestResponse</code> from the Api.</li>
+    <div class="section-example-container">
+        <pre class="csharp">var response = api.DeleteBacktest(projectId, backtest.BacktestId);</pre>
+        <pre class="python">response = api.DeleteBacktest(project_id, backtest.BacktestId)</pre>
+    </div>
+
+    <li>Call <code>Success</code> attribute to see if the deletion task is successful.</li>
+    <div class="section-example-container">
+        <pre class="csharp">Console.WriteLine($"\n{response.Success}\n");</pre>
+        <pre class="python">print(str(response.Success)+"\n")</pre>
+    </div>
+
+    <li>Re-read the backtest.</li>
+    <div class="section-example-container">
+        <pre class="csharp">var backtest3 = api.ReadBacktest(projectId, backtest.BacktestId);</pre>
+        <pre class="python">backtest = api.ReadBacktest(project_id, backtest.BacktestId)</pre>
+    </div>
+
+    <li>Call <code>Errors</code> to check if the API throw any error message on the backtest existance.</li>
+    <div class="section-example-container">
+        <pre class="csharp">backtest3.Errors</pre>
+        <pre class="python">backtest.Errors</pre>
+    </div>
+</ol>
+<img class="csharp" src="https://cdn.quantconnect.com/i/tu/api-backtest-delete-cs.png">
+<img class="python" src="https://cdn.quantconnect.com/i/tu/api-backtest-delete-py.png">

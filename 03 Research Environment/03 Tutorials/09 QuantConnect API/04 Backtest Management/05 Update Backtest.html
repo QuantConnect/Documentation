@@ -1,1 +1,43 @@
-<p></p>
+<p>Follow these steps to update the name and/or note of the backtest by using the QuantConnect Api.</p>
+
+<ol>
+    <li>Display the name and note of the backtest before updating.</li>
+    <div class="section-example-container">
+        <pre class="csharp">Console.WriteLine($@"Backtest ID: {backtest.BacktestId}
+Name: {backtest.Name}
+Note: {backtest.Note}");</pre>
+        <pre class="python">print(f"""Backtest ID: {backtest.BacktestId}
+Name: {backtest.Name}
+Note: {backtest.Note}\n""")</pre>
+    </div>
+
+    <li>Call <code>UpdateBacktest</code> with the project ID, backtest ID, new backtest name and new backtest note. This will return a <code>RestResponse</code> from the Api.</li>
+    <div class="section-example-container">
+        <pre class="csharp">var response = api.UpdateBacktest(projectId, backtest.BacktestId, "New Name", "New Note");</pre>
+        <pre class="python">response = api.UpdateBacktest(project_id, backtest.BacktestId, "New Name", "New Note")</pre>
+    </div>
+
+    <li>Call <code>Success</code> attribute to see if the update task is successful.</li>
+    <div class="section-example-container">
+        <pre class="csharp">Console.WriteLine($"\n{response.Success}\n");</pre>
+        <pre class="python">print(str(response.Success)+"\n")</pre>
+    </div>
+
+    <li>Re-read the backtest.</li>
+    <div class="section-example-container">
+        <pre class="csharp">var backtest2 = api.ReadBacktest(projectId, backtest.BacktestId);</pre>
+        <pre class="python">backtest = api.ReadBacktest(project_id, backtest.BacktestId)</pre>
+    </div>
+
+    <li>Display the name and note of the backtest after updating.</li>
+    <div class="section-example-container">
+        <pre class="csharp">Console.WriteLine($@"Backtest ID: {backtest2.BacktestId}
+Name: {backtest2.Name}
+Note: {backtest2.Note}");</pre>
+        <pre class="python">print(f"""Backtest ID: {backtest.BacktestId}
+Name: {backtest.Name}
+Note: {backtest.Note}""")</pre>
+    </div>
+</ol>
+<img class="csharp" src="https://cdn.quantconnect.com/i/tu/api-backtest-update-cs.png">
+<img class="python" src="https://cdn.quantconnect.com/i/tu/api-backtest-update-py.png">
