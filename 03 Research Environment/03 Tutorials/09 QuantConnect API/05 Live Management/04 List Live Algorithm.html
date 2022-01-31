@@ -1,1 +1,46 @@
-<div></div>
+<p>Follow these steps to list out all live algorithms of a user by the QuantConnect Api.</p>
+
+<ol>
+    <li>Call <code>ListLiveAlgorithms</code> with <i>(optional)</i> filtering criteria on its status, start and end time.</li>
+    <div class="section-example-container">
+        <pre class="csharp">var liveList = api.ListLiveAlgorithms(status: AlgorithmStatus.Running,
+                                      startTime: new DateTime(2022, 1, 30),
+                                      endTime: new DateTime(2021, 2, 10));</pre>
+        <pre class="python">live_list = api.ListLiveAlgorithms(status=AlgorithmStatus.Running,
+                                   startTime=datetime(2022, 1, 30),
+                                   endTime=datetime(2022, 2, 10))</pre>
+    </div>
+
+    <li>Call <code>Algorithms</code> attribute. This will return a list of live algorithms.</li>
+    <div class="section-example-container">
+        <pre class="csharp">var liveAlgos = liveList.Algorithms;</pre>
+        <pre class="python">live_list = live_list.Algorithms</pre>
+    </div>
+    
+    <li>Display the live algorithms.</li>
+    <p>In this tutorial, <code>DefaultLiveAlgorithmSettings</code> is used for using QuantConnect's paper trading. For other brokerages, please refer to <a href="https://github.com/QuantConnect/Lean/blob/master/Common/Api/LiveAlgorithmSettings.cs">LiveAlgorithmSettings.cs</a> for reference.</p>
+    <div class="section-example-container">
+        <pre class="csharp">foreach(var algo in liveAlgos)
+{
+    Console.WriteLine($@"Project ID: {algo.ProjectId}
+Deploy ID: {algo.DeployId}
+Status: {algo.Status}
+Launched Time: {algo.Launched}
+Stopped?: {algo.Stopped}
+Brokerage: {algo.Brokerage}
+Subscription: {algo.Subscription}
+");
+}</pre>
+        <pre class="python">status = ['DeployError', 'InQueue', 'Running', 'Stopped', 'Liquidated', 'Deleted', 'Completed', 'RuntimeError', 'Invalid', 'LoggingIn', 'Initializing', 'History']
+for algo in live_list[-3:]:
+    print(f"""Project ID: {algo.ProjectId}
+Deploy ID: {algo.DeployId}
+Status: {status[algo.Status]}
+Launched Time: {algo.Launched.strftime('%Y/%m/%d %H:%M:%S')}
+Stopped?: {algo.Stopped}
+Brokerage: {algo.Brokerage}
+Subscription: {algo.Subscription}\n""")</pre>
+    </div>
+    <img class="csharp" src="">
+    <img class="python" src="">
+</ol>

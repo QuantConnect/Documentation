@@ -1,1 +1,195 @@
-<div></div>
+<p>Follow these steps to list out all live algorithms of a user by the QuantConnect Api.</p>
+
+<ol>
+    <li>Call <code>ReadLiveAlgorithm</code> with the project ID and deploy ID.</li>
+    <div class="section-example-container">
+        <pre class="csharp">var liveAlgorithm = api.ReadLiveAlgorithm(projectId, newLiveAlgorithm.DeployId);</pre>
+        <pre class="python">live_algorithm = api.ReadLiveAlgorithm(project_id, new_live_algorithm.DeployId)</pre>
+    </div>
+
+    <li>Call <code>Success</code> attribute to check if the request is successful.</li>
+    <div class="section-example-container">
+        <pre class="csharp">Console.WriteLine($"{liveAlgorithm.Success}");</pre>
+        <pre class="python">print(live_algorithm.Success)</pre>
+    </div>
+    <img class="csharp" src="">
+    <img class="python" src="">
+    
+    <li>Call <code>LiveResults.Results</code> attribute to obtain the live algorithm's results.</li>
+    <p>In this tutorial, <code>DefaultLiveAlgorithmSettings</code> is used for using QuantConnect's paper trading. For other brokerages, please refer to <a href="https://github.com/QuantConnect/Lean/blob/master/Common/Api/LiveAlgorithmSettings.cs">LiveAlgorithmSettings.cs</a> for reference.</p>
+    <div class="section-example-container">
+        <pre class="csharp">var results = liveAlgorithm.LiveResults.Results;</pre>
+        <pre class="python">results = live_algorithm.LiveResults.Results</pre>
+    </div>
+</ol>
+
+<p>Note that this would be a snapshot of the live algorithm at this instance. If more updated information is needed, you'll need to re-read it.</p>
+
+<h4>Read Assets Holding</h4>
+<p>Follow these steps to read the securities and cash holdings of a live algorithm.</p>
+<ol>
+    <li>Call <code>Holdings</code> and <code>Cash</code> attributes to retrieve the assets holding.</li>
+    <div class="section-example-container">
+        <pre class="csharp">var holdings = results.Holdings;
+var cash = results.Cash;</pre>
+        <pre class="python">holdings = results.Holdings
+cash = results.Cash</pre>
+    </div>
+
+    <li>Display the assets holdings.</li>
+    <div class="section-example-container">
+        <pre class="csharp">foreach(var h in holdings.Values)
+{
+    Console.WriteLine($@"{h.Symbol} 
+    Quantity: {h.Quantity} 
+    Average Price: {h.AveragePrice} 
+    Market Price: {h.MarketPrice}
+    Market Value: {h.MarketValue}
+    ");
+}
+foreach(var c in cash.Values)
+{
+    Console.WriteLine($"{c.Symbol}: {c.CurrencySymbol} {c.Amount}");
+}</pre>
+        <pre class="python">for h in holdings.Values:
+    print(f"""{h.Symbol} 
+    Quantity: {h.Quantity} 
+    Average Price: {h.AveragePrice} 
+    Market Price: {h.MarketPrice}
+    Market Value: {h.MarketValue}
+    """)
+    
+for c in cash.Values:
+    print(f"{c.Symbol}: {c.CurrencySymbol} {c.Amount}")</pre>
+    </div>
+    <img class="csharp" src="">
+    <img class="python" src="">
+</ol>
+
+<h4>Read Statistics</h4>
+<p>Follow these steps to get the statistics of the live algorithm.</p>
+<ol>
+    <li>Call <code>Statistics</code> attribute to display the statistics of the live algorithm.</li>
+    <div class="section-example-container">
+        <pre class="csharp">var statistics = results.Statistics;
+foreach(var kvp in statistics)
+{
+    Console.WriteLine($"{kvp.Key}: {kvp.Value}");
+}</pre>
+        <pre class="python">statistics = results.Statistics
+for kvp in statistics:
+    print(f"{kvp.Key}: {kvp.Value}")</pre>
+    </div>
+
+    <li>Call <code>RuntimeStatistics</code> attribute to display the runtime statistics of the live algorithm.</li>
+    <div class="section-example-container">
+        <pre class="csharp">var runtimeStatistics = results.RuntimeStatistics;
+foreach(var kvp in runtimeStatistics)
+{
+    Console.WriteLine($"{kvp.Key}: {kvp.Value}");
+}</pre>
+        <pre class="python">runtime_statistics = results.RuntimeStatistics
+for kvp in runtime_statistics:
+    print(f"{kvp.Key}: {kvp.Value}")</pre>
+    </div>
+
+    <li>Call <code>AlphaRuntimeStatistics</code> attribute to display the alpha runtime statistics of the live algorithm.</li>
+    <div class="section-example-container">
+        <pre class="csharp">var alphaStatistics = results.AlphaRuntimeStatistics.ToDictionary();
+foreach(var kvp in alphaStatistics)
+{
+    Console.WriteLine($"{kvp.Key}: {kvp.Value}");
+}</pre>
+        <pre class="python">alpha_statistics = results.AlphaRuntimeStatistics.ToDictionary()
+for kvp in alpha_statistics:
+    print(f"{kvp.Key}: {kvp.Value}")</pre>
+    </div>
+    <img class="csharp" src="">
+    <img class="python" src="">
+</ol>
+
+<h4>Read Orders</h4>
+<p>Follow these steps to read the orders and order events of a live algorithm.</p>
+<ol>
+    <li>Call <code>Orders</code> attribute to read the orders.</li>
+    <div class="section-example-container">
+        <pre class="csharp">var orders = results.Orders;
+foreach(var o in orders.Values)
+{
+    Console.WriteLine($"{o.LastFillTime}: {o.Direction} {o.Symbol.Value} Type: {o.Type} Price: {o.Price} Quantity: {o.Quantity}");
+}</pre>
+        <pre class="python">direction = {1: "Buy", 2: "Sell", 3: "Hold"}
+type_ = {1: "Market", 2: "Limit", 3: "Stop Market", 4: "Stop Limit", 5: "Market On Open", 6: "Market On Close", 7: "Option Exercise"}
+
+orders = results.Orders
+for o in orders.Values:
+    print(f"{o.LastFillTime.strftime('%Y/%m/%d %H:%M:%S')}: {direction[o.Direction]} {o.Symbol.Value} Type: {type_[o.Type]} Price: {o.Price} Quantity: {o.Quantity}")</pre>
+    </div>
+
+    <li>Call <code>OrderEvents</code> attribute to read the order events.</li>
+    <div class="section-example-container">
+        <pre class="csharp">var orderEvents = results.OrderEvents;
+foreach(var o in orderEvents)
+{
+    Console.WriteLine($"{o.UtcTime}: {o.Direction} {o.Symbol.Value} Price: {o.FillPrice} Quantity: {o.FillQuantity} Fee: {o.OrderFee}");
+}</pre>
+        <pre class="python">orderEvents = results.OrderEvents;
+for o in orderEvents:
+    print(f"{o.UtcTime}: {direction[o.Direction]} {o.Symbol.Value} Price: {o.FillPrice} Quantity: {o.FillQuantity} Fee: {o.OrderFee}")</pre>
+    </div>
+    <img class="csharp" src="">
+    <img class="python" src="">
+</ol>
+
+<h4>Read Charts</h4>
+<p>Follow these steps to read <div class="python">and plot </div>chart data of a live algorithm.</p>
+<ol>
+    <li>Call <code>Charts</code> attribute of the live algorithm.</li>
+    <div class="section-example-container">
+        <pre class="csharp">var charts = results.Charts;</pre>
+        <pre class="python">charts = results.Charts</pre>
+    </div>
+
+    <li>Hash the chart's name to obtain a particular chart's data.</li>
+    <div class="section-example-container">
+        <pre class="csharp">var equityChart = charts["Strategy Equity"];</pre>
+        <pre class="python">equity_chart = charts["Strategy Equity"]</pre>
+    </div>
+
+    <li>Call <code>Series</code> attribute of the charts, then hash with the name of the desired series to obtain particular series's data.</li>
+    <div class="section-example-container">
+        <pre class="csharp">var equitySeries = equityChart.Series["Equity"].Values;</pre>
+        <pre class="python">equity_series = equity_chart.Series["Equity"].Values</pre>
+    </div>
+
+    <li>Iterate each data point of each series, store them in (nested) <code>Dictionary</code>.</li>
+    <div class="section-example-container">
+        <pre class="csharp">var equityData = equitySeries
+                 .Where(kvp => kvp != null)
+                 .ToDictionary(kvp => kvp.x, kvp => kvp.y);</pre>
+        <pre class="python">equity_data = {kvp.x: kvp.y for kvp in equity_series if kvp}</pre>
+    </div>
+
+    <li class="csharp">Display the data.</li>
+    <div class="csharp section-example-container">
+        <pre class="csharp">Console.WriteLine("Equity Curve:");
+foreach(var kvp in equityData.Take(5))
+{
+    var time = DateTimeOffset.FromUnixTimeSeconds(kvp.Key).DateTime;
+    Console.WriteLine($"{time} : {kvp.Value}");
+}</pre>
+    </div>
+    <img class="csharp" src="">
+
+    <li class="python">Convert the dictionaries into <code>pandas.Series</code>.</li>
+    <div class="python section-example-container">
+        <pre class="python">equity_data = pd.Series(equity_data)</pre>
+    </div>
+
+    <li class="python">Call <code>plot</code> to plot the data.</li>
+    <div class="python section-example-container">
+        <pre class="python">equity_data.plot(figsize=(10, 6), title="Equity Curve")
+plt.show()</pre>
+    </div>
+    <img class="python" src="">
+</ol>

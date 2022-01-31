@@ -1,1 +1,48 @@
-<div></div>
+<p>Follow these steps to create a live algorithm by using the QauntConnect Api.</p>
+
+<ol>
+    <li class="csharp">Load the required assembly files and data types.</li>
+    <div class="csharp section-example-container">
+        <pre class="csharp">#load "../Initialize.csx"
+#load "../QuantConnect.csx"
+
+using QuantConnect;
+using QuantConnect.Api;</pre>
+    </div>
+
+    <li>Call <code>CreateCompile</code> to compile the project and get the <code>CompileId</code>.</li>
+    <div class="section-example-container">
+        <pre class="csharp">var projectId = &lt;yourProjectId&gt;;
+var compileId = api.CreateCompile(projectId).CompileId;</pre>
+        <pre class="python">project_id = &lt;your_project_id&gt;
+compile_id = api.CreateCompile(project_id).CompileId</pre>
+    </div>
+    
+    <li>Call <code>LiveAlgorithmSettings</code> with your brokerage credentials and live algorithm's setting.</li>
+    <p>In this tutorial, <code>DefaultLiveAlgorithmSettings</code> is used for using QuantConnect's paper trading. For other brokerages, please refer to <a href="https://github.com/QuantConnect/Lean/blob/master/Common/Api/LiveAlgorithmSettings.cs">LiveAlgorithmSettings.cs</a> for reference.</p>
+    <div class="section-example-container">
+        <pre class="csharp">var liveSettings = new DefaultLiveAlgorithmSettings(user: "",
+                                                    password: "",
+                                                    environment: BrokerageEnvironment.Paper,
+                                                    account: "");</pre>
+        <pre class="python">live_settings = DefaultLiveAlgorithmSettings(user="",
+                                             password="",
+                                             environment=BrokerageEnvironment.Paper,
+                                             account="")</pre>
+    </div>
+
+    <li>Call <code>CreateLiveAlgorithm</code> with the project ID, compile ID, live node ID, the <code>LiveAlgorithmSetting</code> and <i>(optional)</i> a custom version ID.</li>
+    <div class="section-example-container">
+        <pre class="csharp">// Using the first available free live node of your organization.
+var nodeId = api.ReadNodes("&lt;yourOrganizationId&gt;")
+                .LiveNodes.Where(x => x.Busy == false)
+                .FirstOrDefault().Id;
+var versionId = "1.0 Alpha";
+var newLiveAlgorithm = api.CreateLiveAlgorithm(projectId, compileId, nodeId, liveSettings, versionId);</pre>
+        <pre class="python"># Using the first available free live node of your organization.
+node_id = [x for x in api.ReadNodes("&lt;your_organization_id&gt;").LiveNodes
+           if not x.Busy][0].Id
+version_id = "1.0 Alpha"
+new_live_algorithm = api.CreateLiveAlgorithm(project_id, compile_id, node_id, live_settings, version_id)</pre>
+    </div>
+</ol>
