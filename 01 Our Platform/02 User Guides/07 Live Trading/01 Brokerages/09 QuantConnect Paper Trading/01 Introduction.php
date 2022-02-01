@@ -1,1 +1,3 @@
+<?php include(DOCS_RESOURCES."/landing-page-introductions/individual-brokerages.php"); ?>
+
 <p>QuantConnect Paper Trading lets you run live, real-time data through your algorithm but execute trades using fictional capital. Instead of your orders being routed to an exchange when you're paper trading, your order fills are simulated. Use paper trading to test your algorithm without risking real money and to ensure your backtest wasn't overfit before deploying with real money. You can use the paper trading brokerage without needing to sign up for a real brokerage account. If you don't set a brokerage model in your algorithm with the <code>SetBrokerageModel</code> method, the paper trading brokerage uses the <code>DefaultBrokerageModel</code> to simulate trades.</p>

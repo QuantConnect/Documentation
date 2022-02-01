@@ -1,1 +1,3 @@
+<?php include(DOCS_RESOURCES."/landing-page-introductions/individual-brokerages.php"); ?>
+
 <p>Subscribe to the Terminal Link add-on in your organization to unlock access to 1,300 brokers via the Bloomberg Execution Management System network. Terminal Link is only supported in live mode, so there is no backtesting brokerage model. However, you can use Terminal Link in paper trading to test your algorithm using the Bloomberg live data feeds.<br></p>
