@@ -1,0 +1,26 @@
+<p>Follow these steps to read a live-deploying algorithm instance by the QuantConnect Api.</p>
+
+<ol>
+    <li>Call <code>ReadLiveAlgorithm</code> with the project ID and deploy ID.</li>
+    <div class="section-example-container">
+        <pre class="csharp">var liveAlgorithm = api.ReadLiveAlgorithm(projectId, newLiveAlgorithm.DeployId);</pre>
+        <pre class="python">live_algorithm = api.ReadLiveAlgorithm(project_id, new_live_algorithm.DeployId)</pre>
+    </div>
+
+    <li>Call <code>Success</code> attribute to check if the request is successful.</li>
+    <div class="section-example-container">
+        <pre class="csharp">Console.WriteLine($"{liveAlgorithm.Success}");</pre>
+        <pre class="python">print(live_algorithm.Success)</pre>
+    </div>
+    <img class="csharp" src="">
+    <img class="python" src="">
+    
+    <li>Call <code>LiveResults.Results</code> attribute to obtain the live algorithm's results.</li>
+    <p>In this tutorial, <code>DefaultLiveAlgorithmSettings</code> is used for using QuantConnect's paper trading. For other brokerages, please refer to <a href="https://github.com/QuantConnect/Lean/blob/master/Common/Api/LiveAlgorithmSettings.cs">LiveAlgorithmSettings.cs</a> for reference.</p>
+    <div class="section-example-container">
+        <pre class="csharp">var results = liveAlgorithm.LiveResults.Results;</pre>
+        <pre class="python">results = live_algorithm.LiveResults.Results</pre>
+    </div>
+</ol>
+
+<p>Note that this would be a snapshot of the live algorithm at this instance. If more updated information is needed, you'll need to re-read it.</p>

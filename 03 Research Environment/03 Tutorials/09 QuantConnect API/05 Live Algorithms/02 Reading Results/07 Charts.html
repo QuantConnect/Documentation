@@ -1,0 +1,52 @@
+<p>You need to understand how to <a href="#03-Read-Deployment-Instance">Read Deployment Instance</a> to read the charts.</p>
+<p>Follow these steps to read <div class="python">and plot </div>chart data of a live algorithm.</p>
+<ol>
+    <li>Call <code>Charts</code> attribute of the live algorithm.</li>
+    <div class="section-example-container">
+        <pre class="csharp">var charts = results.Charts;</pre>
+        <pre class="python">charts = results.Charts</pre>
+    </div>
+
+    <li>Hash the chart's name to obtain a particular chart's data.</li>
+    <div class="section-example-container">
+        <pre class="csharp">var equityChart = charts["Strategy Equity"];</pre>
+        <pre class="python">equity_chart = charts["Strategy Equity"]</pre>
+    </div>
+
+    <li>Call <code>Series</code> attribute of the charts, then hash with the name of the desired series to obtain particular series's data.</li>
+    <div class="section-example-container">
+        <pre class="csharp">var equitySeries = equityChart.Series["Equity"].Values;</pre>
+        <pre class="python">equity_series = equity_chart.Series["Equity"].Values</pre>
+    </div>
+
+    <li>Iterate each data point of each series, store them in (nested) <code>Dictionary</code>.</li>
+    <div class="section-example-container">
+        <pre class="csharp">var equityData = equitySeries
+                 .Where(kvp => kvp != null)
+                 .ToDictionary(kvp => kvp.x, kvp => kvp.y);</pre>
+        <pre class="python">equity_data = {kvp.x: kvp.y for kvp in equity_series if kvp}</pre>
+    </div>
+
+    <li class="csharp">Display the data.</li>
+    <div class="csharp section-example-container">
+        <pre class="csharp">Console.WriteLine("Equity Curve:");
+foreach(var kvp in equityData.Take(5))
+{
+    var time = DateTimeOffset.FromUnixTimeSeconds(kvp.Key).DateTime;
+    Console.WriteLine($"{time} : {kvp.Value}");
+}</pre>
+    </div>
+    <img class="csharp" src="">
+
+    <li class="python">Convert the dictionaries into <code>pandas.Series</code>.</li>
+    <div class="python section-example-container">
+        <pre class="python">equity_data = pd.Series(equity_data)</pre>
+    </div>
+
+    <li class="python">Call <code>plot</code> to plot the data.</li>
+    <div class="python section-example-container">
+        <pre class="python">equity_data.plot(figsize=(10, 6), title="Equity Curve")
+plt.show()</pre>
+    </div>
+    <img class="python" src="">
+</ol>

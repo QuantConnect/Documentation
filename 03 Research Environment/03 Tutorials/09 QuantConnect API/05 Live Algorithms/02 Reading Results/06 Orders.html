@@ -1,0 +1,32 @@
+<p>You need to understand how to <a href="#03-Read-Deployment-Instance">Read Deployment Instance</a> to read the orders.</p>
+<p>Follow these steps to read the orders and order events of a live algorithm.</p>
+<ol>
+    <li>Call <code>Orders</code> attribute to read the orders.</li>
+    <div class="section-example-container">
+        <pre class="csharp">var orders = results.Orders;
+foreach(var o in orders.Values)
+{
+    Console.WriteLine($"{o.LastFillTime}: {o.Direction} {o.Symbol.Value} Type: {o.Type} Price: {o.Price} Quantity: {o.Quantity}");
+}</pre>
+        <pre class="python">direction = {1: "Buy", 2: "Sell", 3: "Hold"}
+type_ = {1: "Market", 2: "Limit", 3: "Stop Market", 4: "Stop Limit", 5: "Market On Open", 6: "Market On Close", 7: "Option Exercise"}
+
+orders = results.Orders
+for o in orders.Values:
+    print(f"{o.LastFillTime.strftime('%Y/%m/%d %H:%M:%S')}: {direction[o.Direction]} {o.Symbol.Value} Type: {type_[o.Type]} Price: {o.Price} Quantity: {o.Quantity}")</pre>
+    </div>
+
+    <li>Call <code>OrderEvents</code> attribute to read the order events.</li>
+    <div class="section-example-container">
+        <pre class="csharp">var orderEvents = results.OrderEvents;
+foreach(var o in orderEvents)
+{
+    Console.WriteLine($"{o.UtcTime}: {o.Direction} {o.Symbol.Value} Price: {o.FillPrice} Quantity: {o.FillQuantity} Fee: {o.OrderFee}");
+}</pre>
+        <pre class="python">orderEvents = results.OrderEvents;
+for o in orderEvents:
+    print(f"{o.UtcTime}: {direction[o.Direction]} {o.Symbol.Value} Price: {o.FillPrice} Quantity: {o.FillQuantity} Fee: {o.OrderFee}")</pre>
+    </div>
+    <img class="csharp" src="">
+    <img class="python" src="">
+</ol>
