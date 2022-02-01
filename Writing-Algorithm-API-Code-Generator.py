@@ -7,7 +7,7 @@ source = "http://cdn.quantconnect.com.s3.us-east-1.amazonaws.com/terminal/cache/
 base = "02 Writing Algorithms/04 API Reference/"
 
 dir_ = []
-raw = urlopen("https://raw.githubusercontent.com/QuantConnect/Lean/4d1fc7e05a9c4829445f4be9258e5777181f535b/Algorithm/QCAlgorithm.cs").read().decode("utf-8").split('\n')
+raw = urlopen("https://raw.githubusercontent.com/QuantConnect/Lean/master/Algorithm/QCAlgorithm.cs").read().decode("utf-8").split('\n')
 active = False
 
 for line in raw:
