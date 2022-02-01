@@ -1,1 +1,1 @@
-<p>New brokerages can be added if the brokerage has an API that is officially supported by the brokerage, open-source, popular, and stable. If you want to add a new brokerage to the platform, <a href='/contact'>contact us</a>.</p>
+<p>New brokerages can be added if the brokerage has an API that is officially supported by the brokerage, open-source, popular, and stable. To add a new brokerage to the platform, <a href='/contact'>contact us</a>.</p>
