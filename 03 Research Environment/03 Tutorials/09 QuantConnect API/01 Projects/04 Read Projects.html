@@ -1,0 +1,35 @@
+<p>Follow these instructions to read details of a project by the QuantConnect Api.</p>
+
+<ol>
+    <li>Call <code>ReadProject</code> with the project ID.</li>
+    <div class="section-example-container">
+        <pre class="csharp">var readProject = api.ReadProject(newProject.Projects.First().ProjectId);</pre>
+        <pre class="python">read_project = api.ReadProject(new_project.Projects[0].ProjectId)</pre>
+    </div>
+
+    <li>Call <code>Projects</code> attribute.</li>
+    <div class="section-example-container">
+        <pre class="csharp">var project = readProject.Projects.First();</pre>
+        <pre class="python">project = read_project.Projects[0]</pre>
+    </div>
+
+    <li>Display the project's details.</li>
+    <div class="section-example-container">
+        <pre class="csharp">Console.WriteLine($@"Project ID: {project.ProjectId}
+Name: {project.Name}
+Created Time: {project.Created}
+Last Modified Time: {project.Modified}
+Language: {project.Language}")</pre>
+        <pre class="python">lang = {0: "C#", 4: "Python"}
+
+print(f"""Project ID: {project.ProjectId}
+Name: {project.Name}
+Created Time: {project.Created.strftime("%Y/%m/%d %H:%M:%S")}
+Last Modified Time: {project.Modified.strftime("%Y/%m/%d %H:%M:%S")}
+Language: {lang[project.Language]}""")</pre>
+    </div>
+    <img class="csharp" src="https://cdn.quantconnect.com/i/tu/api-project-read-cs.png">
+    <img class="python" src="https://cdn.quantconnect.com/i/tu/api-project-read-py.png">
+</ol>
+
+<p>Note that this would be a snapshot of the project at this instance. You'll need to re-read it to update the information.</p>
