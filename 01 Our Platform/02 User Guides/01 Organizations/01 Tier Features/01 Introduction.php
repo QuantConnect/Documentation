@@ -1,4 +1,4 @@
 <?php
-	echo file_get_contents(DOCS_RESOURCES."/introduce-organizations.html");
+	echo file_get_contents(DOCS_RESOURCES."/landing-page-introductions/organizations.html");
 ?>
 <p>Organizations let you coordinate resources and teamwork on QuantConnect Cloud. There are 5 tiers of organizations and each tier has its own set of features. Each account starts with a personal organization on the Free tier with access to one free backtest node and one free research node. However, to accommodate the growth of your trading skills and business, you can adjust the tier of your organization at any time. Higher tiers offer more live nodes to run more live algorithms, more backtesting nodes for faster concurrent backtesting, and many other features.</p>
