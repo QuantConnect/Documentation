@@ -1,7 +1,7 @@
-<p>The <code>InteractiveBrokersBrokerageModel</code> supports several order types and properties.</p>
+<p>We model the IB API by supporting several order types, order properties, and order updates.</p>
 
 <h4>Order Types</h4>
-<p>The following table describes the order types that the <code>InteractiveBrokersBrokerageModel</code> supports. For specific details about each order type, refer to the IB documentation.<br></p>
+<p>The following table describes the order types that IB supports. For specific details about each order type, refer to the IB documentation.<br></p>
 
 
 <table class="qc-table table">
@@ -62,7 +62,7 @@ self.LimitIfTouchedOrder(self.symbol, quantity, trigger_price, limit_price)</pre
 
 <h4>Order Properties</h4>
 
-<p>The <code>InteractiveBrokersBrokerageModel</code> supports custom order properties. The following table describes the members of the <code>InteractiveBrokersBrokerageModel</code> object that you can set to customize order execution. The table does not include the preceding methods for FA accounts.</p>
+<p>We model custom order properties from the IB API. The following table describes the members of the <code>InteractiveBrokersOrderProperties</code> object that you can set to customize order execution. The table does not include the preceding methods for FA accounts.</p>
 
 <table class="table qc-table">
     <thead>
@@ -107,17 +107,13 @@ public override void OnData(Slice data)
     LimitOrder(_symbol, quantity, limitPrice);
     
     // Override the default order properties
-    LimitOrder(_symbol, 
-               quantity, 
-               limitPrice, 
+    LimitOrder(_symbol, quantity, limitPrice, 
                orderProperties: new InteractiveBrokersOrderProperties
                { 
                    TimeInForce = TimeInForce.Day,
                    OutsideRegularTradingHours = false
                });
-    LimitOrder(_symbol, 
-               quantity, 
-               limitPrice, 
+    LimitOrder(_symbol, quantity, limitPrice, 
                orderProperties: new InteractiveBrokersOrderProperties
                { 
                    TimeInForce = TimeInForce.GoodTilDate(new DateTime(year, month, day)),
@@ -145,7 +141,7 @@ def OnData(self, data):
 </div>
 
 <h4>Updates</h4>
-<p>The <code>InteractiveBrokersBrokerageModel</code> supports order updates. You can define the following members of an <code>UpdateOrderFields</code> object to update active orders:</p>
+<p>IB supports order updates. You can define the following members of an <code>UpdateOrderFields</code> object to update active orders:</p>
 
 <ul>
     <li><code>Quantity</code></li>
