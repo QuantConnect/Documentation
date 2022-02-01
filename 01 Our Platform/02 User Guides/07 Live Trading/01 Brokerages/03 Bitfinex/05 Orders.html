@@ -1,8 +1,8 @@
-<p>The <code>BitfinexBrokerageModel</code> supports several order types and properties.</p>
+<p>We model the Bitfinex API by supporting several order types, order properties, and order updates.</p>
 
 <h4>Order Types</h4>
 
-<p>The <code>BitfinexBrokerageModel</code> supports the following order types:</p>
+<p>Bitfinex supports the following order types:</p>
 
 <ul>
     <li><code>MarketOrder</code></li>
@@ -32,14 +32,14 @@ self.LimitIfTouchedOrder(self.symbol, quantity, trigger_price, limit_price)</pre
 </div>
 
 <h4>Order Properties</h4>
-<p>The <code>BitfinexBrokerageModel</code> supports custom order properties. The following table describes the members of the <code>BitfinexBrokerageModel</code> object that you can set to customize order execution:</p>
+<p>We model custom order properties from the Bitfinex API. The following table describes the members of the <code>BitfinexOrderProperties</code> object that you can set to customize order execution:</p>
 
 
 <table class="table qc-table">
    <thead>
       <tr>
-         <th style='width: 25%'>Property</th>
-         <th style='width: 75%'>Description</th>
+         <th style="width: 25%">Property</th>
+         <th style="width: 75%">Description</th>
       </tr>
    </thead>
    <tbody>
@@ -83,18 +83,14 @@ public override void OnData(Slice data)
     LimitOrder(_symbol, quantity, limitPrice);
     
     // Override the default order properties
-    LimitOrder(_symbol, 
-               quantity, 
-               limitPrice, 
+    LimitOrder(_symbol, quantity, limitPrice, 
                orderProperties: new BitfinexOrderProperties
                { 
                    TimeInForce = TimeInForce.Day,
                    Hidden = true,
                    PostOnly = false
                });
-    LimitOrder(_symbol, 
-               quantity, 
-               limitPrice, 
+    LimitOrder(_symbol, quantity, limitPrice, 
                orderProperties: new BitfinexOrderProperties
                { 
                    TimeInForce = TimeInForce.GoodTilDate(new DateTime(year, month, day)),
@@ -128,7 +124,7 @@ def OnData(self, data):
 
 
 <h4>Updates</h4>
-<p>The <code>BitfinexBrokerageModel</code> supports order updates. You can define the following members of the <code>UpdateOrderFields</code> object to update active orders:</p>
+<p>We model the Bitfinex API by supporting order updates. You can define the following members of the <code>UpdateOrderFields</code> object to update active orders:</p>
 
 <ul>
     <li><code>Quantity</code></li>
