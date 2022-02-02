@@ -97,5 +97,4 @@
 }
 </style>
 
-<h4>Margin Calls</h4>
-<p>Regulation T margin rules are enforced with the <code>DefaultMarginCallModel</code>. When the amount of margin remaining in your portfolio drops below 5% of the total portfolio value, a warning is sent. When the amount of margin remaining in your portfolio drops to zero or goes negative, the portfolio sorts the generated margin call orders by their unrealized profit and executes each order synchronously until your portfolio is within the margin requirements.</p>
+<?php include(DOCS_RESOURCES."/brokerages/margin-calls.html"); ?>
