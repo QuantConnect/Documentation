@@ -26,20 +26,25 @@ with open("02 Writing Algorithms/02 User Guides/02 Datasets/06 Futures/09 Suppor
 
 html = '''<table class="table qc-table table-reflow">
 <thead>
-<tr><th colspan="3" align="left" width="100%">Name</th></tr>
-<tr><th align="left" width="20%">Symbol</th><th align="left" width="60%">Accessor Code</th><th align="left" width="20%">Market</th></tr>
+<tr><th colspan="3" style="width: 100%;">Name</th></tr>
+<tr><th style="width: 20%;">Symbol</th><th style="width: 20%;">Market</th><th style="width: 60%;">Accessor Code</th></tr>
 </thead>
 <tbody>
 '''
+
+html_ = {}
 
 for x in raw:
     splits = x.split(",")
     if len(splits) < 3: continue
     
     if str(splits[2]) == "future":
-        html += f'''<tr><th colspan="3" align="left" width="100%">{splits[3]}</th></tr>
-<tr><td width="20%">{splits[1].upper()}</td><td width="60%"><code>{symbols[splits[1]] if splits[1] in symbols else "/"}</code></td><td width="20%">{splits[0].upper()}</td></tr>
+        html_[splits[1]] = f'''<tr><th colspan="3" style="width: 100%;">{splits[3]}</th></tr>
+<tr><td style="width: 20%;">{splits[1].upper()}</td><td style="width: 20%;">{splits[0].upper()}</td><td style="width: 60%;"><code>{symbols[splits[1]] if splits[1] in symbols else "/"}</code></td></tr>
 '''
+
+for key in symbols.keys():
+    html += html_[key]
 
 html += """</tbody>
 </table>"""
