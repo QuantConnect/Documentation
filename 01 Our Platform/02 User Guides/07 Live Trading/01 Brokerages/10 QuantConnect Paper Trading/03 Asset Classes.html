@@ -1,4 +1,4 @@
-<p>The QuantConnect Paper Trading brokerage supports trading Equities, Crypto, Forex, and Futures.</p>
+<p>The QuantConnect Paper Trading brokerage supports trading Equities, Crypto, Forex, CFDs, Futures, and Future Options.</p>
 
 <div class="section-example-container">
     <pre class="csharp">AddEquity("SPY", Resolution.Minute, Market.USA);
@@ -7,14 +7,22 @@ AddCrypto("BTCUSD", Resolution.Minute, Market.GDAX);
 
 AddForex("EURUSD", Resolution.Minute, Market.Oanda);
 
-AddFuture(Futures.Indices.SP500EMini, Resolution.Minute, Market.CME);</pre>
+AddCfd("AU200AUD", Resolution.Minute, Market.Oanda);
+
+var goldFutures = AddFuture(Futures.Metals.Gold, Resolution.Minute, Market.CME);
+
+AddFutureOption(goldFutures.Symbol, universe => universe.Strikes(-5, +5));</pre>
     <pre class="python">self.AddEquity("SPY", Resolution.Minute, Market.USA)
 
 self.AddCrypto("BTCUSD", Resolution.Minute, Market.GDAX)
 
 self.AddForex("EURUSD", Resolution.Minute, Market.Oanda)
 
-self.AddFuture(Futures.Indices.SP500EMini, Resolution.Minute, Market.CME)</pre>
+self.AddCfd("AU200AUD", Resolution.Minute, Market.Oanda)
+
+gold_futures = self.AddFuture(Futures.Metals.Gold, Resolution.Minute, Market.CME)
+
+self.AddFutureOption(gold_futures.Symbol, lambda universe: universe.Strikes(-5, +5))</pre>
 </div>
 
 <p>If you set the brokerage model to a model other than the <code>DefaultBrokerageModel</code>, the new brokerage model defines the asset classes that you can trade. If you call the <code>SetBrokerageModel</code> method with the correct <code>BrokerageName</code>, then you don't need to pass a <code>Market</code> argument to the method calls above because the brokerage model automatically selects the correct market.</p><p></p>
