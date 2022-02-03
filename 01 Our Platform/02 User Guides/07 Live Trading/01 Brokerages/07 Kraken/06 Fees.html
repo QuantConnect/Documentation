@@ -1,4 +1,4 @@
-<p>Check the <a rel="nofollow" target="_blank" href="https://www.kraken.com/features/fee-schedule">Fee Schedule</a> page on the Kraken website to see the live trading order fees. In backtests, we model the fees by charging a 0.1% maker and taker fee. If you add liquidity to the order book by placing a limit order that doesn't cross the spread, you pay maker fees. If you remove liquidity from the order book by placing an order that crosses the spread, you pay taker fees. If you trade a pair where the base currency is any of the following currencies, the fee is 0.2%:</p>
+<p>We model the order fees of Kraken. For trading pairs that only Crypto assets we model the lowest tier in their tiered fee structure, which is a 0.16% maker fee and a 0.26% taker fee. If you add liquidity to the order book by placing a limit order that doesn't cross the spread, you pay maker fees. If you remove liquidity from the order book by placing an order that crosses the spread, you pay taker fees. For trading pairs that have any of the following currencies as the base currency in the pair, the fee is 0.2%:</p>
 
 <ul>
     <li>CAD</li>
@@ -11,7 +11,9 @@
     <li>USDC</li>
 </ul>
 
-<p>Kraken charges fees in the quote currency when buying and in the base currency when selling. You can define some <code>KrakenOrderProperties</code> to override these settings<code></code>.</p>
+<p>Kraken adjusts your fees based on your 30-day trading volume, but we don't currently model trading volume to adjust fees.</p>
+
+<p>Fees are charged in the quote currency when buying and in the base currency when selling. To override these settings, define the&nbsp;<code>KrakenOrderProperties</code>.</p>
 <div class="section-example-container">
     <pre class="csharp">public override void Initialize()
 {
@@ -47,4 +49,4 @@ def OnData(self, data):
     self.LimitOrder(self.symbol, quantity, limit_price, orderProperties=order_properties)</pre>
 </div>
 
-<p>We don't currently model your 30-day trading volume to adjust the fees in backtests. In live trading, Kraken adjusts the fees.<br></p><p></p>
+<p>To check the latest fees&nbsp;<span style="font-family: Norpeth-Medium, Helvetica, Arial, sans-serif; font-size: 16px;">at all the fee tiers</span><span style="font-family: Norpeth-Medium, Helvetica, Arial, sans-serif;">, see the </span><a rel="nofollow" target="_blank" href="https://www.kraken.com/features/fee-schedule" style="background-color: rgb(255, 255, 255);">Fee Schedule</a><span style="font-family: Norpeth-Medium, Helvetica, Arial, sans-serif;"> page on the Kraken website.</span></p>
