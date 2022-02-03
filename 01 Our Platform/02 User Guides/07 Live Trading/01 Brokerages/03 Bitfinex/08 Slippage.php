@@ -1,4 +1,4 @@
 <?php
 include(DOCS_RESOURCES."/brokerages/slippage.php");
-getSlippageText("Bitfinex", true);
+$getSlippageText("Bitfinex", true);
 ?>
