@@ -1,0 +1,62 @@
+<p>Note that the below instructions would fetch a snapshot of the files at this instance. You'll need to re-read them to update the information.</p>
+
+<h4>Read A Specific File</h4>
+<p>Follow these steps to read details of a file by the QuantConnect Api.</p>
+<ol>
+    <li>Call <code>ReadProjectFile</code> with the project ID and the file name.</li>
+    <div class="section-example-container">
+        <pre class="csharp">var files = api.ReadProjectFile(projectId, "newFile.cs");</pre>
+        <pre class="python">files = api.ReadProjectFile(project_id, "new_file.py")</pre>
+    </div>
+
+    <li>Call <code>Files</code> attribute, then obtain the first file.</li>
+    <div class="section-example-container">
+        <pre class="csharp">var file = files.Files[0];</pre>
+        <pre class="python">file = files.Files[0]</pre>
+    </div>
+
+    <li>Display the file's details.</li>
+    <div class="section-example-container">
+        <pre class="csharp">Console.WriteLine($@"Name: {file.Name}
+Last Modified: {file.DateModified}
+Content: {file.Code}")</pre>
+        <pre class="python">print(f"""Name: {file.Name}
+Last Modified: {file.DateModified.strftime("%Y/%m/%d %H:%M:%S")}
+Content: {file.Code}""")</pre>
+    </div>
+    <img class="csharp" src="https://cdn.quantconnect.com/i/tu/api-files-read-single-cs.png">
+    <img class="python" src="https://cdn.quantconnect.com/i/tu/api-files-read-single-py.png">
+</ol>
+
+<h4>Read All Files</h4>
+<p>Follow these steps to read details of all files in a project by the QuantConnect Api.</p>
+<ol>
+    <li>Call <code>ReadProjectFiles</code> with the project ID.</li>
+    <div class="section-example-container">
+        <pre class="csharp">var files = api.ReadProjectFiles(projectId);</pre>
+        <pre class="python">files = api.ReadProjectFiles(project_id)</pre>
+    </div>
+
+    <li>Call <code>Files</code> attribute to obtain a list of files.</li>
+    <div class="section-example-container">
+        <pre class="csharp">var filesList = files.Files;</pre>
+        <pre class="python">files_list = files.Files</pre>
+    </div>
+
+    <li>Display the files' details.</li>
+    <div class="section-example-container">
+        <pre class="csharp">foreach(var file in filesList)
+{
+    Console.WriteLine($@"Name: {file.Name}
+Last Modified: {file.DateModified}
+Content: {file.Code}
+");
+}</pre>
+        <pre class="python">for file in files_list:
+    print(f"""Name: {file.Name}
+Last Modified: {file.DateModified.strftime("%Y/%m/%d %H:%M:%S")}
+Content: {file.Code}\n""")</pre>
+    </div>
+    <img class="csharp" src="https://cdn.quantconnect.com/i/tu/api-files-read-all-cs.png">
+    <img class="python" src="https://cdn.quantconnect.com/i/tu/api-files-read-all-py.png">
+</ol>
