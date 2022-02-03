@@ -1,0 +1,1 @@
+<p>Orders through the <code>DefaultBrokerageModel</code> do not experience slippage in backtests or paper trading.</p>
