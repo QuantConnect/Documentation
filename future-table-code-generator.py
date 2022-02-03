@@ -18,7 +18,9 @@ for x in futs:
         two = x.split(" ")[-1]
         
     else: continue
-    
+
+symbols = dict(sorted(symbols.items(), key=lambda x: "Future.Indices" in x[1], reverse=True))
+
 raw = urlopen("https://raw.githubusercontent.com/QuantConnect/Lean/master/Data/symbol-properties/symbol-properties-database.csv").read().decode("utf-8").split('\n')
 
 with open("02 Writing Algorithms/02 User Guides/02 Datasets/06 Futures/09 Supported Markets.html", "w", encoding="utf-8") as text:
@@ -27,7 +29,7 @@ with open("02 Writing Algorithms/02 User Guides/02 Datasets/06 Futures/09 Suppor
 html = '''<table class="table qc-table table-reflow">
 <thead>
 <tr><th colspan="3" style="width: 100%;">Name</th></tr>
-<tr><th style="width: 20%;">Symbol</th><th style="width: 20%;">Market</th><th style="width: 60%;">Accessor Code</th></tr>
+<tr><th style="width: 15%;">Symbol</th><th style="width: 15%;">Market</th><th style="width: 70%;">Accessor Code</th></tr>
 </thead>
 <tbody>
 '''
@@ -40,7 +42,7 @@ for x in raw:
     
     if str(splits[2]) == "future":
         html_[splits[1]] = f'''<tr><th colspan="3" style="width: 100%;">{splits[3]}</th></tr>
-<tr><td style="width: 20%;">{splits[1].upper()}</td><td style="width: 20%;">{splits[0].upper()}</td><td style="width: 60%;"><code>{symbols[splits[1]] if splits[1] in symbols else "/"}</code></td></tr>
+<tr><td style="width: 15%;">{splits[1].upper()}</td><td style="width: 15%;">{splits[0].upper()}</td><td style="width: 70%;"><code>{symbols[splits[1]] if splits[1] in symbols else "/"}</code></td></tr>
 '''
 
 for key in symbols.keys():
