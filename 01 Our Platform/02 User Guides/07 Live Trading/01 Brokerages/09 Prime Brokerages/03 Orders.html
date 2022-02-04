@@ -70,6 +70,26 @@ def OnData(self, data):
     self.LimitOrder(self.symbol, quantity, limit_price, orderProperties=order_properties)</pre>
 </div>
 
+<h4>Get Open Orders</h4>
+<p>Terminal Link lets you access open orders.</p>
+
+<div class="section-example-container">
+    <pre class="csharp">var ticket = StopLimitOrder(symbol, quantity, stopPrice, limitPrice, tag);
+var order = Transactions.GetOrderById(ticket.OrderId);</pre>
+    <pre class="python">ticket = self.StopLimitOrder(symbol, quantity, stop_price, limit_price, tag)
+order = self.Transactions.GetOrderById(ticket.OrderId)</pre>
+</div>
+
+<h4>Monitor Fills</h4>
+<p>Terminal Link allows you to monitor orders as they fill. Order events are tracked in LEAN and sent to the <code>OnOrderEvent</code> handler.</p>
+<div class="section-example-container">
+    <pre class="csharp">public override void OnOrderEvent(OrderEvent orderEvent)
+{
+    var quantity = orderEvent.FillQuantity;
+}</pre>
+    <pre class="python">def OnOrderEvent(self, orderEvent):
+    quantity = orderEvent.FillQuantity</pre>
+</div>
 
 <h4>Updates</h4>
 <p>Terminal Link supports order updates. You can define the following members of an <code>UpdateOrderFields</code> object to update active orders:</p>
@@ -88,4 +108,14 @@ ticket.Update(orderFields);</pre>
 update_fields.Quantity = new_quantity<br>update_fields.LimitPrice = new_limit_price<br>update_fields.StopPrice = new_stop_price
 update_fields.Tag = new_tag
 ticket.Update(update_fields)</pre>
+</div>
+
+<h4>Cancellations</h4>
+<p>Terminal Link enables you cancel open orders.&nbsp;</p>
+
+<div class="section-example-container">
+    <pre class="csharp">var ticket = StopLimitOrder(symbol, quantity, stopPrice, limitPrice, tag);
+ticket.Cancel();</pre>
+    <pre class="python">ticket = self.StopLimitOrder(symbol, quantity, stop_price, limit_price, tag)
+ticket.Cancel()</pre>
 </div>
