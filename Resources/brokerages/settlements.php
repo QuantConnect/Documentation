@@ -1,6 +1,6 @@
 <?php
 
-$getSettlementText() = function($usBrokerage, $cashAccount=null, $marginAccount=null, $equities=null, $options=null) {
+$getSettlementText = function($usBrokerage, $cashAccount=null, $marginAccount=null, $equities=null, $options=null) {
 
     $result = "<p>";
 
