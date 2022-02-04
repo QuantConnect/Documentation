@@ -20,12 +20,12 @@ $getSettlementText() = function($usBrokerage, $cashAccount=null, $marginAccount=
             }
 
             if ($options) {
-                $result .= "Option trades settle on the business day following the transaction (T+1)."
+                $result .= "Option trades settle on the business day following the transaction (T+1).";
             }
         }
     }
     else {
-        $result .= "Trades settle immediately after the transaction."
+        $result .= "Trades settle immediately after the transaction.";
     }
 
     $result .= "</p>";
@@ -35,7 +35,7 @@ $getSettlementText() = function($usBrokerage, $cashAccount=null, $marginAccount=
         <pre class=\"csharp\">security.SettlementModel = new ImmediateSettlementModel();</pre>
         <pre class=\"python\">security.SettlementModel = ImmediateSettlementModel()</pre>
     </div>
-    "
+    ";
 
    echo $result;
 }
