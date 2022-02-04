@@ -1,14 +1,12 @@
-<p>Note the following security and stability aspects of our IB integration.</p>
-
-<h4>Account Credentials</h4>
-<p>We don't save your IB account credentials.</p>
+<?php
+include(DOCS_RESOURCES."/brokerages/security-and-stability.php");
+$getBrokerageStabilityText("IB",
+	                       "/docs/v2/our-platform/tutorials/live-trading/brokerages/interactive-brokers#03-Deploy-Live-Algorithms", 
+	                       "https://www.interactivebrokers.com/en/software/systemStatus.php");
+?>
 
 <h4>Connections</h4>
 <p>IB only supports 1 connection at a time to your account. To run more than 1 algorithm, <a rel="nofollow" target="_blank" href="https://www.interactivebrokers.com.hk/en/software/ptgstl/topics/ptgsubaccounts.htm">open an IB subaccount</a> for each additional algorithm.</p>
-
-
-<h4>API Outages<br></h4>
-<p>We call the IB API to place live trades. Sometimes the API may be down. Check the <a rel="nofollow" target="_blank" href="https://www.interactivebrokers.com/en/software/systemStatus.php">IB status page</a> to see if the API is currently working.</p>
 
 <h4>SMS 2FA</h4>
 <p>Our IB integration doesn't support Two-Factor Authentication (2FA) via SMS. Use the <a rel="nofollow" target="_blank" href="https://guides.interactivebrokers.com/iphone/log_in/using_ios.htm">IB Key protocol in IBKR Mobile</a> instead.</p>
