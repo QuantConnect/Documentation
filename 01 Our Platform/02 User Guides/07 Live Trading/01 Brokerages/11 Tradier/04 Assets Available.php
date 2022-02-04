@@ -18,3 +18,8 @@
       </tr>
    </tbody>
 </table>
+
+<?php
+include(DOCS_RESOURCES."/brokerages/us-etfs.php");
+$getUSETFText("Tradier");
+?>

@@ -31,4 +31,7 @@
 <p>You might need to purchase an IB data subscription for your trading. For more information about live data feeds, see <a href='/docs/v2/our-platform/user-guides/live-trading/data-feeds'>Data Feeds</a>.</p>
 
 <h4>ETFs</h4>
-<p>You may not be able to trade all assets with the IB. For example, if you live in the EU, you can’t trade US ETFs. Check with your local regulators to know which assets you are allowed to trade. You may need to adjust settings in your brokerage account to live trade some assets.</p>
+<?php
+include(DOCS_RESOURCES."/brokerages/us-etfs.php");
+$getUSETFText("IB");
+?>
