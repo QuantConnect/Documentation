@@ -4,3 +4,5 @@
 <p>Tradier's margin accounts allow up to 2x leverage for Equity trades.</p>
 
 <?php include(DOCS_RESOURCES."/brokerages/margin-calls.html"); ?>
+
+<?php include(DOCS_RESOURCES."/brokerages/pattern-day-trader-rule.html"); ?>
