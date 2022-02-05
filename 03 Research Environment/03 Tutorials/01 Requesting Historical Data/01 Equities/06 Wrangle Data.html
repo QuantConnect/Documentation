@@ -15,6 +15,7 @@
 }
 </pre>
 <pre class="python">history.loc[symbol]
+history.loc['SPY']   # Valid alternative
 </pre>
 </div>
 
@@ -52,7 +53,6 @@ foreach(var closePrice in closePrices.Take(5))
 
 <img class="python" style="max-width: 100%; display: block" src="https://cdn.quantconnect.com/i/tu/reserachhistoryequityonesecuritylocspyclosedataframe.png">
 
-
 <h4 class="python">Unstack the Dataframe</h4>
 <p class="python">If you request historical data for multiple securities, you can transform the <code>DataFrame</code> so that it is a time series of closing prices for all of the securities. Select the column that you want to display for each security and then call the <code>unstack</code> method to transform the <code>DataFrame</code> into the desired format.</p>
 
@@ -63,3 +63,30 @@ foreach(var closePrice in closePrices.Take(5))
 <p class="python">The <code>DataFrame</code> is transformed so that the column indices are the <code>Symbol</code> of each security and each row contains the closing price.</p>
 
 <img class="python" style="max-width: 100%; display: block" src="https://cdn.quantconnect.com/i/tu/reserachhistoryequitymultiplesecuritiesunstackdataframe.png">
+
+<h4 class="python">Rename the Dataframe Index</h4>
+<p class="python">Follow these steps, if you prefer displaying the ticker of <code>Symbol</code> instead of the string representation of the <code>SecurityIdentifier</code>:</p>
+<ol class="python">
+  <li>Create a dictionary keyed by the string representation of the <code>SecurityIdentifier</code> and the ticker of <code>Symbol</code>: <code>Symbol.Value</code>:</li>
+  <div class="section-example-container python">
+    <pre class="python">tickers_by_id = {str(x.ID): x.Value for x in qb.Securities.Keys}</pre>
+  </div>
+  <li>Get the values of the symbol level of the <code>DataFrame.Index</code> and create a list of tickers</li>
+  <div class="section-example-container python">
+    <pre class="python">tickers = set([tickers_by_id[x] for x in history.index.get_level_values('symbol')])</pre>
+  </div>
+  <li>Set the values of the symbol level of the <code>DataFrame.Index</code> with the list of tickers</li>
+  <div class="section-example-container python">
+    <pre class="python">history.index.set_levels(tickers, 'symbol', inplace=True)</pre>
+  </div>
+</ol>
+
+<p class="python">The new <code>DataFrame</code> is keyed by the ticker, and you cannot use the <code>Symbol</code> object to access the values with the <code>loc</code> method. You need to use the <code>Symbol.Value</code>:</p>
+<div class="section-example-container python">
+  <pre class="python">history.loc[symbol.Value]
+history.loc['SPY']   # Valid alternative
+  </pre>
+</div>
+
+<p class="python">After the index renaming, the unstacked <code>DataFrame</code> has the following aspect:</p>
+<img class="python" style="max-width: 100%; display: block" src="https://cdn.quantconnect.com/i/tu/researchhistoryequitymultiplesecuritiesunstackdataframeticker.png">
