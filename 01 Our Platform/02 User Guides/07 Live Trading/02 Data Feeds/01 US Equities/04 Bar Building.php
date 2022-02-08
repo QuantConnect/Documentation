@@ -7,10 +7,10 @@
 <?php echo file_get_contents(DOCS_RESOURCES."/datasets/opening-and-closing-auctions.html"); ?>
 
 <h4>Excluded Ticks</h4>
-<p>The bar building process can exclude ticks. If a tick is excluded, its volume is aggregated in the bar but its price is not aggregated in the bar. Ticks are excluded in the following situations:</p>
+<p>The bar building process can exclude ticks. If a tick is excluded, its volume is aggregated in the bar but its price is not aggregated in the bar. Ticks are excluded if any of the the following statements are true:</p>
 <ul>
     <li>The tick is <a href='/docs/v2/our-platform/user-guides/live-trading/data-feeds/us-equities#03-Suspicious-Ticks'>suspicious</a>.</li>
-    <li>The tick is from the FINRA exchange and meets a price threshold and volume threshold since market open.</li>
+    <li>The tick is from the FINRA exchange and meets our price and volume thresholds.</li>
 <p>FINRA is a government-authorized not-for-profit organization that oversees U.S. broker-dealers. The ticks that have FINRA as the exchange represent trades like internal crosses from brokers, dealers and dark pools. We can miss a complete day of aggregated trades in low volume securities because the flag filtering is quite strict.</p>
     <li>The tick is a trade, the tick has none of the included <code>TradeConditionFlags</code>, and the tick has at least one of the excluded <code>TradeConditionFlags</code>.</li>
     <p>The following table describes the included and excluded <code>TradeConditionFlags</code>:</p>
@@ -122,7 +122,7 @@
        </tbody>
     </table>
 
-    <li>The tick is a quote and doesn't has one of the following <code>QuoteConditionFlags</code>:</li>
+    <li>The tick is a quote and doesn't have any of the following <code>QuoteConditionFlags</code>:</li>
     <table class="qc-table table">
         <thead>
             <tr>
