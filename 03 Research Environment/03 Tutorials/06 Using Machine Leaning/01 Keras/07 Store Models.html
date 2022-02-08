@@ -3,19 +3,24 @@
 <h4>Save Models</h4>
 <p>Follow these steps to save keras models in the ObjectStore:</p>
 <ol>
-    <li>Call the <code>serialize_keras_object</code> method with the model and then call the <code>dumps</code> method.</li>
+    <li>Set the key name of the model to be stored in ObjectStore.</li>
     <div class="section-example-container">
-        <pre class="python">model_str = json.dumps(serialize_keras_object(model))</pre>
+        <pre class="python">model_key = "model"</pre>
     </div>
 
-    <li>Create a key to store the model.</li>
+    <li>Call <code>GetFilePath</code> with the key's name to get the file path.</li>
     <div class="section-example-container">
-        <pre class="python">model_key = 'keras_model'</pre>
+        <pre class="python">file_name = qb.ObjectStore.GetFilePath(model_key)</pre>
     </div>
 
-    <li>Call the <code>Save</code> method with the key and the JSON string representation of the model.</li>
+    <li>Save the model to the file path.</li>
     <div class="section-example-container">
-        <pre class="python">qb.ObjectStore.Save(model_key, model_str)</pre>
+        <pre class="python">model.save(file_name)</pre>
+    </div>
+
+    <li>Call <code>Save</code> with the key's name to save the model into ObjectStore.</li>
+    <div class="section-example-container">
+        <pre class="python">qb.ObjectStore.Save(model_key)</pre>
     </div>
 </ol>
 
@@ -29,18 +34,13 @@
     </div>
     <p>This method returns a boolean that represents if the <code>model_key</code> is in the ObjectStore. If the ObjectStore does not contain the <code>model_key</code>, save the model using the <code>model_key</code> before you proceed.</p>
 
-    <li>Call the <code>Read</code> method.</li>
+    <li>Call <code>GetFilePath</code> with the key's name to get the file path.</li>
     <div class="section-example-container">
-        <pre class="python">model_str = qb.ObjectStore.Read(model_key)</pre>
+        <pre class="python">file_name = qb.ObjectStore.GetFilePath(model_key)</pre>
     </div>
 
-    <li>Call the <code>loads</code> method with the <code>model_str</code> and then get the value of the <code>config</code> key.</li>
+    <li>Call <code>load_model</code> with the file path to fetch the saved model.</li>
     <div class="section-example-container">
-        <pre class="python">config = json.loads(model_str)['config']</pre>
-    </div>
-
-    <li>Call the <code>from_config</code> method with the model configuration.</li>
-    <div class="section-example-container">
-        <pre class="python">model = Sequential.from_config(config)</pre>
+        <pre class="python">loaded_model = load_model(file_name)</pre>
     </div>
 </ol>
