@@ -1,4 +1,4 @@
-<p>We aggregate a stream of ticks into bars as we receive the ticks throughout the day. When we close a bar, we publish it to the cloud storage. Lean checks the storage system for new data points at various frequencies, depending on the resolution of your data subscription. When Lean finds new data points, they are injected into your algorithm. The following table shows the frequency of which Lean checks the storage system:</p>
+<p>As we <a href='/docs/v2/our-platform/user-guides/live-trading/data-feeds/us-equities#04-Bar-Building'>build slices of ticks and bars</a>, we publish them to the cloud storage system. Lean checks the storage system for new data points at various frequencies, depending on the resolution of your data subscription. When new data points are available, they are injected into your algorithm. The following table shows the frequency of which Lean checks the storage system:</p>
 
 <?php include(DOCS_RESOURCES."/live-dataset-polling-frequency-table.html"); ?>
 
