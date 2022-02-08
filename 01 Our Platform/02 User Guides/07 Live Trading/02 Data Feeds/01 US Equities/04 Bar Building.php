@@ -1,4 +1,4 @@
-<p>Ticks are aggregated to build bars. In backtesting, ticks are collected into slices that span 1 millisecond before they are injected into your algorithm. In live trading, ticks are collected into slices that span up to 70 milliseconds before they are injected into your algorithm.</p>
+<?php echo file_get_contents(DOCS_RESOURCES."/data-feeds/bar-building.html"); ?>
 
 <h4>Discrepancies</h4>
 <?php echo file_get_contents(DOCS_RESOURCES."/datasets/live-and-backtest-differences.html"); ?>
