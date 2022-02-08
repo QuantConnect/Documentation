@@ -1,1 +1,1 @@
-<p>Data feed latency is the amount of time it takes for a data point in the data feed to travel to your algorithm. The US Equities data feed has a latency of <?php echo file_get_contents(DOCS_RESOURCES."/data-feeds-latency/us-equities.php") ?>.</p>
+<p>Data feed latency is the amount of time it takes for a data point in the data feed to travel to your algorithm. The Futures data feed has a latency of <?php echo file_get_contents(DOCS_RESOURCES."/data-feeds-latency/futures.php") ?>.</p>
