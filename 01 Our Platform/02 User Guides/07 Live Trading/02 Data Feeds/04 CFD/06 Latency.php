@@ -1,0 +1,1 @@
+<p>Data feed latency is the amount of time it takes for a data point in the data feed to travel to your algorithm. The CFD data feed has a latency of <?php echo file_get_contents(DOCS_RESOURCES."/data-feeds-latency/cfd.php") ?>.</p>
