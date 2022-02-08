@@ -1,5 +1,4 @@
-<p>Alternative <a href="/docs/v2/our-platform/user-guides/datasets/vendors">dataset Vendors</a> send us data points throughout the day. If your algorithm subscribes to alternative datasets, Lean checks our storage system for new data points at various frequencies, depending on the resolution of the dataset subscription. When Lean finds new data points, they are immediately inject them into your algorithm. The following table shows the polling frequency of each resolution:</p>
-
+<p><a href="/docs/v2/our-platform/user-guides/datasets/vendors">Dataset Vendors</a> send us data points throughout the day. If your algorithm subscribes to alternative datasets, Lean checks the storage system for new data points at various frequencies, depending on the resolution of the dataset subscription. When Lean finds new data points, they are injected into your algorithm. The following table shows the frequency of which Lean checks the storage system:</p>
 
 <?php include(DOCS_RESOURCES."/live-dataset-polling-frequency-table.html"); ?>
 
