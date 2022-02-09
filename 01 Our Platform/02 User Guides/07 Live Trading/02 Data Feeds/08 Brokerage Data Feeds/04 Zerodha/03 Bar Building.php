@@ -1,1 +1,1 @@
-<p></p>
+<p>The data feed consolidates prices and quotes across all of the Indian exchanges.</p>
