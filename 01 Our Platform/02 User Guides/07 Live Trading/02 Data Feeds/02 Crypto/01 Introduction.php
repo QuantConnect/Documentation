@@ -1,1 +1,4 @@
-<p>Crypto data feeds are streams of live Crypto prices directly from the brokerage. WebSockets gather the data and deliver it to the live algorithms running on the platform.</p>
+<?php 
+include(DOCS_RESOURCES."/data-feeds/introductions.php"); 
+$getDataFeedIntroText("Cryptos", "security trades and quotes");
+?>
