@@ -6,7 +6,7 @@ $getBrokerageStabilityText("IB",
 ?>
 
 <h4>Connections</h4>
-<p>IB only supports 1 connection at a time to your account. If you log in to your brokerage account while an algorithm is connected to it, the algorithm may stop executing. To run more than 1 algorithm, <a rel="nofollow" target="_blank" href="https://www.interactivebrokers.com.hk/en/software/ptgstl/topics/ptgsubaccounts.htm">open an IB subaccount</a> for each additional algorithm.</p>
+<p>IB only supports 1 connection at a time to your account. If interfere with your brokerage account while an algorithm is connected to it, the algorithm may stop executing. To run more than 1 algorithm, <a rel="nofollow" target="_blank" href="https://www.interactivebrokers.com.hk/en/software/ptgstl/topics/ptgsubaccounts.htm">open an IB subaccount</a> for each additional algorithm.</p>
 
 <h4>SMS 2FA</h4>
 <p>Our IB integration doesn't support Two-Factor Authentication (2FA) via SMS. Use the <a rel="nofollow" target="_blank" href="https://guides.interactivebrokers.com/iphone/log_in/using_ios.htm">IB Key protocol in IBKR Mobile</a> instead.</p>
