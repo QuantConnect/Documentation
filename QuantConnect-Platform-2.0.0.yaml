@@ -1007,16 +1007,6 @@ components:
     Cash:
       type: object
       properties:
-        _conversionRate:
-          type: number
-          description: Conversion rate for this cash.
-          format: float
-        _isBaseCurrency:
-          type: boolean
-          description: Is this the base account currency of the cashbook.
-        _invertRealTimePrice:
-          type: boolean
-          description: Invert real time price.
         Symbol:
           type: string
           description: Gets the symbol used to represent this cash.
@@ -1024,8 +1014,16 @@ components:
           type: number
           description: Gets or sets the amount of cash held.
           format: float
+        ConversionRate:
+          type: number
+          description: The currency conversion rate to the account base currency.
+          format: float
         CurrencySymbol:
           description: The symbol of the currency, such as $.
+        ValueInAccountCurrency:
+          type: number
+          description: The value of the currency cash in the account base currency.
+          format: float
       description: Represents a holding of a currency in cash.
     CashAmount:
       properties:
@@ -1040,14 +1038,6 @@ components:
     CashBook:
       type: object
       properties:
-        _accountCurrency:
-          type: string
-          description: The base currency used.
-        _currencies:
-          type: object
-          additionalProperties:
-            $ref: '#/components/schemas/Cash'
-          description: Tracks cash holdings.
         TotalValueInAccountCurrency:
           type: number
           description: The total value of the cash book in units of the base currency.
@@ -1337,7 +1327,7 @@ components:
             $ref: '#/components/schemas/Holding'
           description: Dictionary of algorithm holdings information.
         Cash:
-          $ref: '#/components/schemas/CashBook'
+          $ref: '#/components/schemas/Cash'
         AlphaRuntimeStatistics:
           $ref: '#/components/schemas/AlphaRuntimeStatistics'
         Charts:
@@ -1465,6 +1455,9 @@ components:
         Length:
           type: integer
           description: Total number of returned orders
+        latestOrderTimestamp:
+          type: integer
+          description: Timestamp of the latest order event.
       description: Contains orders and the number of orders of the live algorithm in the request criteria.
     LiveResultsData:
       type: object
@@ -1732,7 +1725,7 @@ components:
             $ref: '#/components/schemas/Holding'
           description: Dictionary of algorithm holdings information.
         Cash:
-          $ref: '#/components/schemas/CashBook'
+          $ref: '#/components/schemas/Cash'
     Project:
       type: object
       properties:
@@ -1986,7 +1979,6 @@ components:
       description: Request to read the portfolio state from a live algorithm.
     ReadLiveOrdersRequest:
       required:
-      - start
       - end
       - projectId
       type: object
@@ -2029,7 +2021,6 @@ components:
       description: Request to read a single backtest from a project.
     ReadBacktestOrdersRequest:
       required:
-      - start
       - end
       - projectId
       - backtestId

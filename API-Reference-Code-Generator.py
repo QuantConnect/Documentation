@@ -211,7 +211,8 @@ def ExampleWriting(request_object_properties, item_list, array=False, order=0):
     line = []
     
     for name, properties in request_object_properties.items():
-        if name[0] == "_": continue
+        if name[0] == "_": 
+            name = name[1:].title()
 
         type_ = properties["type"] if "type" in properties else "object"
         description_ = properties["description"] if "description" in properties else "/"
