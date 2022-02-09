@@ -377,6 +377,36 @@ paths:
               explode: false
               schema:
                 type: string
+  /backtests/read/orders:
+    post:
+      tags:
+      - 01 Our Platform
+      - 04 API Reference
+      - 05 Backtest Management
+      - 03 Read Orders
+      summary: Read out the orders of a backtest.
+      requestBody:
+        description: Fetch the orders of a backtest for the project Id, backtest Id and steps provided.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReadBacktestOrdersRequest'
+        required: true
+      responses:
+        "200":
+          description: Orders of the backtest within range.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BacktestOrdersResponse'
+        "401":
+          description: Unauthorized response from the API. Key is missing, invalid, or timestamp is too old for hash.
+          headers:
+            www_authenticate:
+              style: simple
+              explode: false
+              schema:
+                type: string
   /backtests/read/report:
     post:
       tags:
@@ -551,6 +581,68 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ReadLiveLogsResponse'
+        "401":
+          description: Unauthorized response from the API. Key is missing, invalid, or timestamp is too old for hash.
+          headers:
+            www_authenticate:
+              style: simple
+              explode: false
+              schema:
+                type: string
+  /live/read/portfolio:
+    post:
+      tags:
+      - 01 Our Platform
+      - 04 API Reference
+      - 07 Live Management
+      - 02 Read Live Algorithm
+      - 04 Read Live Portfolio State
+      summary: Read out the portfolio state of a live algorithm.
+      requestBody:
+        description: Fetch the live portfolio state for the project Id provided.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReadLivePortfolioRequest'
+        required: true
+      responses:
+        "200":
+          description: Portfolio holdings and cash of the live algorithm.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LivePortfolioResponse'
+        "401":
+          description: Unauthorized response from the API. Key is missing, invalid, or timestamp is too old for hash.
+          headers:
+            www_authenticate:
+              style: simple
+              explode: false
+              schema:
+                type: string
+  /live/read/orders:
+    post:
+      tags:
+      - 01 Our Platform
+      - 04 API Reference
+      - 07 Live Management
+      - 02 Read Live Algorithm
+      - 03 Read Live Orders
+      summary: Read out the orders of a live algorithm.
+      requestBody:
+        description: Fetch the orders of a live algorithm for the project Id and steps provided.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReadLiveOrdersRequest'
+        required: true
+      responses:
+        "200":
+          description: Orders of the live algorithm within range.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LiveOrdersResponse'
         "401":
           description: Unauthorized response from the API. Key is missing, invalid, or timestamp is too old for hash.
           headers:
@@ -744,6 +836,17 @@ components:
           description: Gets the mean estimated insight value.
           format: float
       description: Contains insight population run time statistics.
+    BacktestOrdersResponse:
+      type: object
+      properties:
+        Orders:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/Order'
+        Length:
+          type: integer
+          description: Total number of returned orders
+      description: Contains orders and the number of orders of the backtest in the request criteria.
     BacktestResponse:
       type: object
       properties:
@@ -1344,6 +1447,23 @@ components:
           items:
             type: string
       description: List of the live algorithms running which match the requested status.
+    LivePortfolioResponse:
+      type: object
+      properties:
+        portfolio:
+          $ref: '#/components/schemas/Portfolio'
+      description: Contains holdongs and cash of the live algorithm in the request criteria.
+    LiveOrdersResponse:
+      type: object
+      properties:
+        orders:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/Order'
+        Length:
+          type: integer
+          description: Total number of returned orders
+      description: Contains orders and the number of orders of the live algorithm in the request criteria.
     LiveResultsData:
       type: object
       properties:
@@ -1601,6 +1721,16 @@ components:
           description: The current order quantity.
           format: float
       description: Messaging class signifying a change in an order state and record the change in the users algorithm portfolio.
+    Portfolio:
+      type: object
+      properties:
+        Holdings:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/Holding'
+          description: Dictionary of algorithm holdings information.
+        Cash:
+          $ref: '#/components/schemas/CashBook'
     Project:
       type: object
       properties:
@@ -1843,6 +1973,32 @@ components:
           type: string
           description: Specific instance id to read.
       description: Request to read out a single algorithm.
+    ReadLivePortfolioRequest:
+      required:
+      - projectId
+      type: object
+      properties:
+        projectId:
+          type: integer
+          description: Id of the project from which to read the live algorithm.
+      description: Request to read the portfolio state from a live algorithm.
+    ReadLiveOrdersRequest:
+      required:
+      - start
+      - end
+      - projectId
+      type: object
+      properties:
+        start:
+          type: integer
+          description: starting index of the orders to be fetched.
+        end:
+          type: integer
+          description: last index of the orders to be fetched. Note that end - start must be < 100.
+        projectId:
+          type: integer
+          description: Id of the project from which to read the live algorithm.
+      description: Request to read orders from a live algorithm.
     ListLiveAlgorithmsRequest:
       type: object
       properties:
@@ -1869,6 +2025,27 @@ components:
           type: string
           description: When provided, specific backtest Id to read.
       description: Request to read a single backtest from a project.
+    ReadBacktestOrdersRequest:
+      required:
+      - start
+      - end
+      - projectId
+      - backtestId
+      type: object
+      properties:
+        start:
+          type: integer
+          description: starting index of the orders to be fetched.
+        end:
+          type: integer
+          description: last index of the orders to be fetched. Note that end - start must be < 100.
+        projectId:
+          type: integer
+          description: Id of the project from which to read the backtest.
+        backtestId:
+          type: string
+          description: Id of the backtest from which to read the orders.
+      description: Request to read orders from a backtest.
     RequestFailedError:
       type: object
       properties:
