@@ -126,6 +126,8 @@ def ResponseTable(requestBody):
             for y in prop:
                 path = y["$ref"].split("/")[1:]
                 name = path[-1]
+                if name[0] == "_": continue
+
                 enum = ""
                 item_list.append(path)
                 
@@ -209,6 +211,8 @@ def ExampleWriting(request_object_properties, item_list, array=False, order=0):
     line = []
     
     for name, properties in request_object_properties.items():
+        if name[0] == "_": continue
+
         type_ = properties["type"] if "type" in properties else "object"
         description_ = properties["description"] if "description" in properties else "/"
         

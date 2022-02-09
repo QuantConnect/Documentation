@@ -1,0 +1,266 @@
+<p>
+The <code>/live/read/orders</code> API provides a response in the following format:
+</p>
+<h4>200 Success</h4>
+<table class="table qc-table">
+<thead>
+<tr>
+<th colspan="2"><code>LiveOrdersResponse</code> Model - Contains orders and the number of orders of the live algorithm in the request criteria.</th>
+</tr>
+</thead>
+<tr>
+<td width="20%">orders</td> <td> <code>Order object</code> <br/> /.</td>
+</tr>
+<tr>
+<td width="20%">Length</td> <td> <code>integer</code> <br/> Total number of returned orders.</td>
+</tr>
+<tr>
+<td width="20%">Example</td>
+<td>
+<div class="cli section-example-container"><pre>
+{
+  "orders": {
+    "Id": 0,
+    "ContingentId": 0,
+    "BrokerId": [
+      "string"
+    ],
+    "Symbol": {
+      "Value": "string",
+      "ID": "string",
+      "Permtick": "string"
+    },
+    "Price": 0,
+    "PriceCurrency": "string",
+    "Time": 2021-11-26T15:18:27.693Z,
+    "CreatedTime": 2021-11-26T15:18:27.693Z,
+    "LastFillTime": 2021-11-26T15:18:27.693Z,
+    "LastUpdateTime": 2021-11-26T15:18:27.693Z,
+    "CanceledTime": 2021-11-26T15:18:27.693Z,
+    "Quantity": 0,
+    "Type": "Market",
+    "Status": "New",
+    "Tag": "string",
+    "SecurityType": "Base",
+    "Direction": "Buy",
+    "Value": 0,
+    "OrderSubmissionData": {
+      "BidPrice": 0,
+      "AskPrice": 0,
+      "LastPrice": 0
+    },
+    "IsMarketable": true
+  },
+  "Length": 0
+}</pre>
+</div>
+</td>
+</tr>
+</table><table class="table qc-table">
+<thead>
+<tr>
+<th colspan="2"><code>Order</code> Model - Order struct for placing new trade.</th>
+</tr>
+</thead>
+<tr>
+<td width="20%">Id</td> <td> <code>integer</code> <br/> Order ID.</td>
+</tr>
+<tr>
+<td width="20%">ContingentId</td> <td> <code>integer</code> <br/> Order id to process before processing this order.</td>
+</tr>
+<tr>
+<td width="20%">BrokerId</td> <td> <code>string Array</code> <br/> Brokerage Id for this order for when the brokerage splits orders into multiple pieces.</td>
+</tr>
+<tr>
+<td width="20%">Symbol</td> <td> <code>Symbol object</code> <br/> Represents a unique security identifier. This is made of two components, the unique SID and the Value. The value is the current ticker symbol while the SID is constant over the life of a security.</td>
+</tr>
+<tr>
+<td width="20%">Price</td> <td> <code>number</code> <br/> Price of the Order.</td>
+</tr>
+<tr>
+<td width="20%">PriceCurrency</td> <td> <code>string</code> <br/> Currency for the order price.</td>
+</tr>
+<tr>
+<td width="20%">Time</td> <td> <code>string($date-time)</code> <br/> Gets the utc time the order was created.</td>
+</tr>
+<tr>
+<td width="20%">CreatedTime</td> <td> <code>string($date-time)</code> <br/> Gets the utc time this order was created. Alias for Time.</td>
+</tr>
+<tr>
+<td width="20%">LastFillTime</td> <td> <code>string($date-time)</code> <br/> Gets the utc time the last fill was received, or null if no fills have been received.</td>
+</tr>
+<tr>
+<td width="20%">LastUpdateTime</td> <td> <code>string($date-time)</code> <br/> Gets the utc time this order was last updated, or null if the order has not been updated.</td>
+</tr>
+<tr>
+<td width="20%">CanceledTime</td> <td> <code>string($date-time)</code> <br/> Gets the utc time this order was canceled, or null if the order was not canceled.</td>
+</tr>
+<tr>
+<td width="20%">Quantity</td> <td> <code>number</code> <br/> Number of shares to execute.</td>
+</tr>
+<tr>
+<td width="20%">Type</td> <td> <code>string Enum</code> <br/> Order type. Options : ['Market', 'Limit', 'StopMarket', 'StopLimit', 'MarketOnOpen', 'MarketOnClose', 'OptionExercise']</td>
+</tr>
+<tr>
+<td width="20%">Status</td> <td> <code>string Enum</code> <br/> Status of the Order. Options : ['New', 'Submitted', 'PartiallyFilled', 'Filled', 'Canceled', 'None', 'Invalid', 'CancelPending', 'UpdateSubmitted']</td>
+</tr>
+<tr>
+<td width="20%">Tag</td> <td> <code>string</code> <br/> Tag the order with some custom data.</td>
+</tr>
+<tr>
+<td width="20%">SecurityType</td> <td> <code>string Enum</code> <br/> Type of tradable security / underlying asset. Options : ['Base', 'Equity', 'Option', 'Commodity', 'Forex', 'Future', 'Cfd', 'Crypto']</td>
+</tr>
+<tr>
+<td width="20%">Direction</td> <td> <code>string Enum</code> <br/> Direction of the order. Options : ['Buy', 'Sell', 'Hold']</td>
+</tr>
+<tr>
+<td width="20%">Value</td> <td> <code>number</code> <br/> Gets the executed value of this order. If the order has not yet filled, then this will return zero.</td>
+</tr>
+<tr>
+<td width="20%">OrderSubmissionData</td> <td> <code>OrderSubmissionData object</code> <br/> Stores time and price information available at the time an order was submitted.</td>
+</tr>
+<tr>
+<td width="20%">IsMarketable</td> <td> <code>boolean</code> <br/> Returns true if the order is a marketable order.</td>
+</tr>
+<tr>
+<td width="20%">Example</td>
+<td>
+<div class="cli section-example-container"><pre>
+{
+  "Id": 0,
+  "ContingentId": 0,
+  "BrokerId": [
+    "string"
+  ],
+  "Symbol": {
+    "Value": "string",
+    "ID": "string",
+    "Permtick": "string"
+  },
+  "Price": 0,
+  "PriceCurrency": "string",
+  "Time": 2021-11-26T15:18:27.693Z,
+  "CreatedTime": 2021-11-26T15:18:27.693Z,
+  "LastFillTime": 2021-11-26T15:18:27.693Z,
+  "LastUpdateTime": 2021-11-26T15:18:27.693Z,
+  "CanceledTime": 2021-11-26T15:18:27.693Z,
+  "Quantity": 0,
+  "Type": "Market",
+  "Status": "New",
+  "Tag": "string",
+  "SecurityType": "Base",
+  "Direction": "Buy",
+  "Value": 0,
+  "OrderSubmissionData": {
+    "BidPrice": 0,
+    "AskPrice": 0,
+    "LastPrice": 0
+  },
+  "IsMarketable": true
+}</pre>
+</div>
+</td>
+</tr>
+</table><table class="table qc-table">
+<thead>
+<tr>
+<th colspan="2"><code>Symbol</code> Model - Represents a unique security identifier. This is made of two components, the unique SID and the Value. The value is the current ticker symbol while the SID is constant over the life of a security.</th>
+</tr>
+</thead>
+<tr>
+<td width="20%">Value</td> <td> <code>string</code> <br/> The current symbol for this ticker.</td>
+</tr>
+<tr>
+<td width="20%">ID</td> <td> <code>string</code> <br/> The security identifier for this symbol.</td>
+</tr>
+<tr>
+<td width="20%">Permtick</td> <td> <code>string</code> <br/> The current symbol for this ticker.</td>
+</tr>
+<tr>
+<td width="20%">Example</td>
+<td>
+<div class="cli section-example-container"><pre>
+{
+  "Value": "string",
+  "ID": "string",
+  "Permtick": "string"
+}</pre>
+</div>
+</td>
+</tr>
+</table><table class="table qc-table">
+<thead>
+<tr>
+<th colspan="2"><code>SecurityType</code> Model - Type of tradable security / underlying asset.</th>
+</tr>
+</thead>
+<tr>
+<td width="20%">SecurityType</td> <td> <code>string Enum</code> <br/> Type of tradable security / underlying asset. Options : ['Base', 'Equity', 'Option', 'Commodity', 'Forex', 'Future', 'Cfd', 'Crypto']</td>
+</tr>
+<tr>
+<td width="20%">Example</td>
+<td>
+<div class="cli section-example-container"><pre>
+{
+  "SecurityType": "Base"
+}</pre>
+</div>
+</td>
+</tr>
+</table><table class="table qc-table">
+<thead>
+<tr>
+<th colspan="2"><code>OrderDirection</code> Model - Direction of the order.</th>
+</tr>
+</thead>
+<tr>
+<td width="20%">OrderDirection</td> <td> <code>string Enum</code> <br/> Direction of the order. Options : ['Buy', 'Sell', 'Hold']</td>
+</tr>
+<tr>
+<td width="20%">Example</td>
+<td>
+<div class="cli section-example-container"><pre>
+{
+  "OrderDirection": "Buy"
+}</pre>
+</div>
+</td>
+</tr>
+</table><table class="table qc-table">
+<thead>
+<tr>
+<th colspan="2"><code>OrderSubmissionData</code> Model - Stores time and price information available at the time an order was submitted.</th>
+</tr>
+</thead>
+<tr>
+<td width="20%">BidPrice</td> <td> <code>number</code> <br/> The bid price at an order submission time.</td>
+</tr>
+<tr>
+<td width="20%">AskPrice</td> <td> <code>number</code> <br/> The ask price at an order submission time.</td>
+</tr>
+<tr>
+<td width="20%">LastPrice</td> <td> <code>number</code> <br/> The current price at an order submission time.</td>
+</tr>
+<tr>
+<td width="20%">Example</td>
+<td>
+<div class="cli section-example-container"><pre>
+{
+  "BidPrice": 0,
+  "AskPrice": 0,
+  "LastPrice": 0
+}</pre>
+</div>
+</td>
+</tr>
+</table><h4>401 Authentication Error</h4>
+<table class="table qc-table">
+<thead>
+<tr>
+<th colspan="2"><code>UnauthorizedError</code> Model - Unauthorized response from the API. Key is missing, invalid, or timestamp is too old for hash.</th>
+</tr>
+</thead>
+<tr>
+<td width="20%">www_authenticate</td> <td> <code>string</code> <br/> Header</td>
+</tr>
+</table>
