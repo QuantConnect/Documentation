@@ -1,4 +1,4 @@
 <?php 
 include(DOCS_RESOURCES."/data-feeds/introductions.php"); 
-$getDataFeedIntroText("CFD", "contracts trades and quotes");
+$getDataFeedIntroText("CFD", "contract trades and quotes");
 ?>
