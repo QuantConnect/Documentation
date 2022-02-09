@@ -56,7 +56,7 @@
             <tr>
                 <td><code>OfficialOpen</code></td>
                 <td>Included</td>
-                <td>Indicates the 'Official' open value as determined by a Market Center. This transaction report will contain the market.</td>
+                <td>Indicates the 'Official' open value as determined by a Market Center. This transaction report will contain the market center generated opening price.</td>
             </tr>
             <tr>
                 <td><code>ClosingPrints</code></td>
@@ -97,27 +97,28 @@
        <tbody>
             <tr>
                 <td><code>Closing</code></td>
-                <td>Indicates that this quote was the last quote for a security for a participant.</td>
+                <td>Indicates that this quote was the last quote for a security for that Participant.</td>
             </tr>
             <tr>
                 <td><code>NewsDissemination</code></td>
-                <td>This regulatory Opening Delay or Trading Halt is used when relevant news influencing the security is being disseminated. Trading is suspended until the primary market determines that an adequate publication or disclosure of information has occurred.</td>
+                <td>Denotes a regulatory trading halt when relevant news influencing the security is being disseminated. Trading is 
+ suspended until the primary market determines that an adequate publication or disclosure of information has occurred.</td>
             </tr>
             <tr>
                 <td><code>NewsPending</code></td>
-                <td>Indicates a regulatory Opening Delay or Trading Halt due to an expected news announcement that may influence the security. An Opening Delay or Trading Halt may be continued once the news has been disseminated.</td>
+                <td>Denotes a regulatory Trading Halt due to an expected news announcement, which may influence the security. An Opening Delay or Trading Halt may be continued once the news has been disseminated.</td>
             </tr>
             <tr>
                 <td><code>TradingRangeIndication</code></td>
-                <td>Denotes the probable trading range of a security that is not Opening Delayed or Trading Halted. The Trading Range Indication is used prior to, or after, the opening of a security.</td>
+                <td>Denotes the probable trading range (Bid and Offer prices, no sizes) of a security that is not Opening Delayed or Trading Halted. The Trading Range Indication is used prior to or after the opening of a security.</td>
             </tr>
             <tr>
                 <td><code>OrderImbalance</code></td>
-                <td>This non-regulatory Opening Delay or Trading Halt is used when there is a significant imbalance of buy or sell orders.</td>
+                <td>Denotes a non-regulatory halt condition where there is a significant imbalance of buy or sell orders.</td>
             </tr>
             <tr>
                 <td><code>Resume</code></td>
-                <td>Indicates that trading for a participant is no longer suspended in a security that had been Opening Delayed or Trading Halted.</td>
+                <td>Indicates that trading for a Participant is no longer suspended in a security that had been Opening Delayed or Trading Halted.</td>
             </tr>
        </tbody>
     </table>
@@ -145,16 +146,18 @@
             </tr>
             <tr>
                 <td><code>OpeningQuote</code></td>
-                <td>This condition can be disseminated to indicate that this quote was the opening quote for a security for a participant.</td>
+                <td>This condition can be disseminated to indicate that this quote was the opening quote for a security for that Participant.</td>
             </tr>
             <tr>
                 <td><code>FastTrading</code></td>
-                <td>For extremely active periods of short duration. While in this mode, the UTP participant will enter quotations on a best efforts basis.</td>
+                <td>For extremely active periods of short duration. While in this mode, the UTP Participant will enter quotations on a best efforts basis.</td>
             </tr>
             <tr>
                 <td><code>Resume</code></td>
-                <td>Indicate that trading for a participant is no longer suspended in a security which had been Opening Delayed or Trading Halted.</td>
+                <td>Indicate that trading for a Participant is no longer suspended in a security which had been Opening Delayed or Trading Halted.</td>
             </tr>
        </tbody>
     </table>
 </ul>
+
+<p>In the preceding tables, <span class='new-term'>Participant</span> refers to the entities on page 19 of the <a class='document-title' rel='nofollow' target='_blank' href='https://www.ctaplan.com/publicdocs/ctaplan/notifications/trader-update/CTS_BINARY_OUTPUT_SPECIFICATION.pdf'>Consolidated Tape System Multicast Output Binany Specification</a>.
