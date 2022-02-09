@@ -1,1 +1,4 @@
-<p>Data feed latency is the amount of time it takes for a data point in the data feed to travel to your algorithm. The Future Options data feed has a latency of <?php echo file_get_contents(DOCS_RESOURCES."/data-feeds-latency/future-options.php") ?>.</p>
+<?php 
+include(DOCS_RESOURCES."/data-feeds/latency.php"); 
+$getDataFeedLatencyText("Future Options", "future-options");
+?>
