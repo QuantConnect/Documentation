@@ -1,1 +1,1 @@
-<p>Data feed latency is the amount of time it takes for a data point in the data feed to travel to your algorithm. The latency of the alternative data feeds depend on the specific data feed you're using.</p>
+<p>Live data takes time to travel from the source to your algorithm. The latency of the alternative data feeds depend on the specific data feed you're using.</p>
