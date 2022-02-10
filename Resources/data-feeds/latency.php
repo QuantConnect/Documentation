@@ -9,7 +9,7 @@ $getDataFeedLatencyText = function($dataFeedPathByDataFeed) {
         echo ".</p>";
     }
     else {
-        echo "The following table shows the latency of each US Equity data feed:</p>";
+        echo "The following table shows the latency of the US Equity data feeds:</p>";
 
 
         echo "<table class='qc-table table'>";
