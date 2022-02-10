@@ -1,4 +1,8 @@
 <?php 
 include(DOCS_RESOURCES."/data-feeds/latency.php"); 
-$getDataFeedLatencyText("US Equities", "us-equities");
+$dataFeedPathByDataFeed = array("US Equities" => "us-equities",
+                                "US Equity Security Master" => "us-equity-security-master",
+                                "US Fundamentals" => "us-fundamentals",
+                                "US Equities Short Availability" => "us-equities-short-availability");
+$getDataFeedLatencyText($dataFeedPathByDataFeed);
 ?>
