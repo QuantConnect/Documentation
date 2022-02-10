@@ -1,22 +1,46 @@
 <h4>Saving the Model</h4>
-<p>We dump the model using the <code>pickle</code> module and save the resulting bytes to <code>ObjectStore</code>. This way, the model doesn't need to be retrained, saving time and computational resources.</p>
+<p>We dump the model using the <code>joblib</code> module and save it to <code>ObjectStore</code> file path. This way, the model doesn't need to be retrained, saving time and computational resources.</p>
+<ol>
+    <li>Set the key name of the model to be stored in ObjectStore.</li>
+    <div class="section-example-container">
+        <pre class="python">model_key = "model"</pre>
+    </div>
 
-<div class="section-example-container">
-    <pre class="python">model_key = 'spy_model'
+    <li>Call <code>GetFilePath</code> with the key's name to get the file path.</li>
+    <div class="section-example-container">
+        <pre class="python">file_name = qb.ObjectStore.GetFilePath(model_key)</pre>
+    </div>
 
-pickled_model = pickle.dumps(model)
-qb.ObjectStore.SaveBytes(model_key, pickled_model)</pre>
-</div>
+    <li>Call dump with the model and file path to save the model to the file path.</li>
+    <div class="section-example-container">
+        <pre class="python">joblib.dump(model, file_name)</pre>
+    </div>
+
+    <li>Call <code>Save</code> with the key's name to save the model into ObjectStore.</li>
+    <div class="section-example-container">
+        <pre class="python">qb.ObjectStore.Save(model_key)</pre>
+    </div>
+</ol>
 
 <h4>Loading the Model</h4>
-<p>Let's first retrieve the bytes of the model from <code>ObjectStore</code>. When we retrieve the bytes from <code>ObjectStore</code>, we need to cast it into a form useable by <code>pickle</code> with the bytearray() method.</p>
+<p>Let's retrieve the model from <code>ObjectStore</code> file path and load by <code>joblib</code>.</p>
+<ol>
+    <li>Call the <code>ContainsKey</code> method.</li>
+    <div class="section-example-container">
+        <pre class="python">qb.ObjectStore.ContainsKey(model_key)</pre>
+    </div>
+    <p>This method returns a boolean that represents if the <code>model_key</code> is in the ObjectStore. If the ObjectStore does not contain the <code>model_key</code>, save the model using the <code>model_key</code> before you proceed.</p>
 
-<div class="section-example-container">
-    <pre class="python">if qb.ObjectStore.ContainsKey(model_key):
-    model_bytes = qb.ObjectStore.ReadBytes(model_key)
-    model_bytes = bytearray(model_bytes)
-    loaded_model = pickle.loads(model_bytes)</pre>
-</div>
+    <li>Call <code>GetFilePath</code> with the key's name to get the file path.</li>
+    <div class="section-example-container">
+        <pre class="python">file_name = qb.ObjectStore.GetFilePath(model_key)</pre>
+    </div>
+
+    <li>Call <code>load</code> with the file path to fetch the saved model.</li>
+    <div class="section-example-container">
+        <pre class="python">loaded_model = joblib.load(file_name)</pre>
+    </div>
+</ol>
 
 <p>To ensure loading the model was successfuly, let's test the model.</p>
 <div class="section-example-container">
