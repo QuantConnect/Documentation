@@ -2,7 +2,7 @@
 $getUpdateFrequencyText = function($barBuildingPath, $brokerageName=null) {
     echo "<p>As we <a href='$barBuildingPath'>";
     if ($brokerageName == null) {
-        echo "build slices of ticks and bars</a>, we publish them"
+        echo "build slices of ticks and bars</a>, we publish them";
     }
     else {
         echo "receive data from $brokerageName</a>, we publish it";
