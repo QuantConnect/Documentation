@@ -160,4 +160,4 @@
     </table>
 </ul>
 
-<p>In the preceding tables, <span class='new-term'>Participant</span> refers to the entities on page 19 of the <a class='document-title' rel='nofollow' target='_blank' href='https://www.ctaplan.com/publicdocs/ctaplan/notifications/trader-update/CTS_BINARY_OUTPUT_SPECIFICATION.pdf'>Consolidated Tape System Multicast Output Binany Specification</a>.
+<p>In the preceding tables, <span class='new-term'>Participant</span> refers to the entities on page 19 of the <a class='document-title' rel='nofollow' target='_blank' href='https://www.ctaplan.com/publicdocs/ctaplan/notifications/trader-update/CTS_BINARY_OUTPUT_SPECIFICATION.pdf'>Consolidated Tape System Multicast Output Binary Specification</a>.
