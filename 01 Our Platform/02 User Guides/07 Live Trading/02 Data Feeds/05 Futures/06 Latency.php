@@ -1,4 +1,4 @@
 <?php 
 include(DOCS_RESOURCES."/data-feeds/latency.php"); 
-$getDataFeedLatencyText("Futures", "futures");
+$getDataFeedLatencyText(array("Futures" => "futures"));
 ?>
