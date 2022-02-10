@@ -1,6 +1,6 @@
 <?php
 $getDataFeedLatencyText = function($dataFeedPathByDataFeed) {
-    echo "<p>Data feed latency is the time it takes for a data point to travel from the source to your algorithm. ";
+    echo "<p>Live data takes time to travel from the source to your algorithm. ";
     if (sizeof($dataFeedPathByDataFeed) <= 1) {
         foreach($dataFeedPathByDataFeed as $dataFeedName => $dataFeedPathName) {
             echo "The $dataFeedName data feed has a latency of ";
