@@ -1,0 +1,22 @@
+<p>To simulate deposit, call <code>CashBook.Add</code> to add cash into Portfolio. The below example shows a deposit of 100 in the account currency.</p>
+<div class="section-example-container">
+    <pre class="csharp">Porfolio.CashBook.Add(AccountCurrency, 100);</pre>
+    <pre class="python">self.Porfolio.CashBook.Add(self.AccountCurrency, 100)</pre>
+</div>
+
+<p>To simulate withdrawl, do the same step in deposit, but in negative value.</p>
+<div class="section-example-container">
+    <pre class="csharp">Porfolio.CashBook.Add(AccountCurrency, -100);</pre>
+    <pre class="python">self.Porfolio.CashBook.Add(self.AccountCurrency, -100)</pre>
+</div>
+
+<p>To perform a regular deposit/withdrawl, schedule a <code>Schedule</code> event. The below example shows a monthly deposit of 100 in the account currency at month starts.</p>
+<div class="section-example-container">
+    <pre class="csharp">Schedule.On(DateRules.MonthStart(), TimeRules.At(0, 0), () =>
+{
+	Porfolio.CashBook.Add(AccountCurrency, 100);
+});</pre>
+    <pre class="python">self.Schedule.On(self.DateRules.MonthStart(), \
+                 self.TimeRules.At(0, 0), \
+                 lambda: self.Porfolio.CashBook.Add(self.AccountCurrency, 100))</pre>
+</div>
