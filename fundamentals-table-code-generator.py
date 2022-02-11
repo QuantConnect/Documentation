@@ -4,8 +4,6 @@ raw = urlopen("https://raw.githubusercontent.com/QuantConnect/Lean/master/Common
 
 html = ""
 
-one = ""
-two = ""
 active = False
 
 for x in raw:
@@ -18,10 +16,9 @@ for x in raw:
 </div>
 <table class="table qc-table table-reflow">
 <thead>
-<tr><th style="width: 80%;">Sector Helper Class</th><th style="width: 20%; align: right;">Sector Code</th></tr>
+<tr><th style="width: 80%;"><code>MorningstarSectorCode</code></th><th style="width: 20%;" align="right">Sector Code</th></tr>
 </thead>
 <tbody>"""
-        one = "MorningstarSectorCode"
         active = True
         
     elif "class MorningstarIndustryGroupCode" in x:
@@ -33,10 +30,9 @@ for x in raw:
 </div>
 <table class="table qc-table table-reflow">
 <thead>
-<tr><th style="width: 80%;">Industry Group Helper Class</th><th style="width: 20%; align: right;">Industry Group Code</th></tr>
+<tr><th style="width: 80%;"><code>MorningstarIndustryGroupCode</code></th><th style="width: 20%;" align="right">Industry Group Code</th></tr>
 </thead>
 <tbody>"""
-        one = "MorningstarIndustryGroupCode"
         active = True
         
     elif "class MorningstarIndustryCode" in x:
@@ -48,10 +44,9 @@ for x in raw:
 </div>
 <table class="table qc-table table-reflow">
 <thead>
-<tr><th style="width: 80%;">Industry Helper Class</th><th style="width: 20%; align: right;">Industry Code</th></tr>
+<tr><th style="width: 80%;"><code>MorningstarIndustryCode</code></th><th style="width: 20%;" align="right">Industry Code</th></tr>
 </thead>
 <tbody>"""
-        one = "MorningstarIndustryCode"
         active = True
         
     elif "}" in x and active:
@@ -66,12 +61,12 @@ for x in raw:
         
         space_split = equal_sign_split[0].split(" ")
 
-        two = space_split[-1]
+        enum = space_split[-1]
         code = equal_sign_split[-1][:-1]
         
-        html += f'<tr><td><code>{one}.{two}</code></td><td align="right">{code}</td></tr>'
+        html += f'<tr><td><code>{enum}</code></td><td align="right">{code}</td></tr>'
 
-with open("/02 Writing Algorithms/02 User Guides/04 Alternative Datasets/21 Morningstar/01 US Fundamental Data/05 Data Point Attributes.html", "w", encoding="utf-8") as text:
+with open("02 Writing Algorithms/02 User Guides/04 Alternative Datasets/21 Morningstar/01 US Fundamental Data/05 Data Point Attributes.html", "w", encoding="utf-8") as text:
     text.write("""<h4>FineFundamental Attributes</h4>
 <div data-tree="QuantConnect.Data.Fundamental.FineFundamental"></div>
 
