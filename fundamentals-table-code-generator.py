@@ -13,7 +13,7 @@ for x in raw:
         html += """<h4>MorningstarSectorCode Enumeration</h4>
 <table class="table qc-table table-reflow">
 <thead>
-<tr><th style="width: 85%;">Sector Helper Class</th><th style="width: 15%;">Sector Code</th></tr>
+<tr><th style="width: 80%;">Sector Helper Class</th><th style="width: 20%;">Sector Code</th></tr>
 </thead>
 <tbody>"""
         one = "MorningstarSectorCode"
@@ -23,7 +23,7 @@ for x in raw:
         html += """<h4>MorningstarIndustryGroupCode Enumeration</h4>
 <table class="table qc-table table-reflow">
 <thead>
-<tr><th style="width: 85%;">Industry Group Helper Class</th><th style="width: 15%;">Industry Group Code</th></tr>
+<tr><th style="width: 80%;">Industry Group Helper Class</th><th style="width: 20%;">Industry Group Code</th></tr>
 </thead>
 <tbody>"""
         one = "MorningstarIndustryGroupCode"
