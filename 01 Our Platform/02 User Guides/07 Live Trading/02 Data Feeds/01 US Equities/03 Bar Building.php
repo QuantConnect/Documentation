@@ -11,7 +11,6 @@
 <ul>
     <li>The tick is suspicious.</li>
     <li>The tick is from the FINRA exchange and meets our price and volume thresholds.</li>
-<p>FINRA is a government-authorized not-for-profit organization that oversees U.S. broker-dealers. The ticks that have FINRA as the exchange represent trades like internal crosses from brokers, dealers and dark pools. We can miss a complete day of aggregated trades in low volume securities because the flag filtering is quite strict.</p>
     <li>The tick is a trade, the tick has none of the included <code>TradeConditionFlags</code>, and the tick has at least one of the excluded <code>TradeConditionFlags</code>.</li>
     <p>The following table describes the included and excluded <code>TradeConditionFlags</code>:</p>
     <table class="qc-table table">
