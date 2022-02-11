@@ -44,7 +44,7 @@ for x in raw:
 <p>Industries are the finest level of classification available, and are the individual industries according to the Morningstar classification system. They are accessed with the <code>MorningstarIndustryCode</code> property:</p>
 <div class="section-example-container">
     <pre class="csharp">filteredFine = find.Where(x => x.AssetClassification.MorningstarIndustryGroupCode == MorningstarIndustryCode.SoftwareApplication);</pre>
-    <pre class="python">filteredFine = [x for x in fine if x.AssetClassification.MorningstarIndustryCode == MorningstarSectorCode.SoftwareInfrastructure]</pre>
+    <pre class="python">filtered_fine = [x for x in fine if x.AssetClassification.MorningstarIndustryCode == MorningstarSectorCode.SoftwareInfrastructure]</pre>
 </div>
 <table class="table qc-table table-reflow">
 <thead>
