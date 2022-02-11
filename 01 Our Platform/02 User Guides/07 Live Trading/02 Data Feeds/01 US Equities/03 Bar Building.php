@@ -83,7 +83,7 @@
             </tr>
        </tbody>
     </table>
-    <li>The quote is for less than 100 shares.</li>
+    <li>The quote has a size of less than 100 shares.</li>
     <li>The quote has one of the following <code>QuoteConditionFlags</code>:</li>
     <table class="qc-table table">
         <thead>
