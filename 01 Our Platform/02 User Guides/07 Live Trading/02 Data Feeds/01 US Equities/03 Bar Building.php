@@ -11,8 +11,7 @@
 <ul>
     <li>The tick is suspicious.</li>
     <li>The tick is from the FINRA exchange and meets our price and volume thresholds.</li>
-    <li>The tick is a trade, the tick has none of the included <code>TradeConditionFlags</code>, and the tick has at least one of the excluded <code>TradeConditionFlags</code>.</li>
-    <p>The following table describes the included and excluded <code>TradeConditionFlags</code>:</p>
+    <li>The trade has none of the following included <code>TradeConditionFlags</code> and at least one of the following excluded <code>TradeConditionFlags</code>:</li>
     <table class="qc-table table">
         <thead>
             <tr>
@@ -84,8 +83,8 @@
             </tr>
        </tbody>
     </table>
-    <li>The tick is a quote with less than 100 shares.</li>
-    <li>The tick is a quote and has one of the following <code>QuoteConditionFlags</code>:</li>
+    <li>The quote is for less than 100 shares.</li>
+    <li>The quote has one of the following <code>QuoteConditionFlags</code>:</li>
     <table class="qc-table table">
         <thead>
             <tr>
@@ -122,7 +121,7 @@
        </tbody>
     </table>
 
-    <li>The tick is a quote and doesn't have any of the following <code>QuoteConditionFlags</code>:</li>
+    <li>The quote has none of the following <code>QuoteConditionFlags</code>:</li>
     <table class="qc-table table">
         <thead>
             <tr>
