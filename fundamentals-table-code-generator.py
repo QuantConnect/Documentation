@@ -33,7 +33,7 @@ for x in raw:
         html += """<h4>MorningstarIndustryCode Enumeration</h4>
 <table class="table qc-table table-reflow">
 <thead>
-<tr><th style="width: 85%;">Industry Helper Class</th><th style="width: 15%;">Industry Code</th></tr>
+<tr><th style="width: 80%;">Industry Helper Class</th><th style="width: 20%;">Industry Code</th></tr>
 </thead>
 <tbody>"""
         one = "MorningstarIndustryCode"
