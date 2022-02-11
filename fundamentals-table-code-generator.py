@@ -16,7 +16,7 @@ for x in raw:
 </div>
 <table class="table qc-table table-reflow">
 <thead>
-<tr><th style="width: 80%;"><code>MorningstarSectorCode</code></th><th style="width: 20%;" align="right">Sector Code</th></tr>
+<tr><th style="width: 80%;"><code>MorningstarSectorCode</code></th><th style="width: 20%;" text-align="right">Sector Code</th></tr>
 </thead>
 <tbody>"""
         active = True
@@ -30,7 +30,7 @@ for x in raw:
 </div>
 <table class="table qc-table table-reflow">
 <thead>
-<tr><th style="width: 80%;"><code>MorningstarIndustryGroupCode</code></th><th style="width: 20%;" align="right">Industry Group Code</th></tr>
+<tr><th style="width: 80%;"><code>MorningstarIndustryGroupCode</code></th><th style="width: 20%;" text-align="right">Industry Group Code</th></tr>
 </thead>
 <tbody>"""
         active = True
@@ -44,7 +44,7 @@ for x in raw:
 </div>
 <table class="table qc-table table-reflow">
 <thead>
-<tr><th style="width: 80%;"><code>MorningstarIndustryCode</code></th><th style="width: 20%;" align="right">Industry Code</th></tr>
+<tr><th style="width: 80%;"><code>MorningstarIndustryCode</code></th><th style="width: 20%;" text-align="right">Industry Code</th></tr>
 </thead>
 <tbody>"""
         active = True
