@@ -1,5 +1,5 @@
 <p>We model buying power and margin calls to ensure your algorithm stays within the margin requirements.</p>
 
 <h4>Buying Power</h4>
-<p>Zerodha allows maximum 5x leverage for margin trades, we model the margin leverage with this. However, the margin requirements are various among different equity and product type. Please refer to <a href="https://zerodha.com/margin-calculator/Equity/">Margin Calculator</a> page of Zerodha for details.</p> 
+<p>Zerodha allows maximum 5x leverage for margin trades, but the amount of margin available depends on the Equity and product type. To check the amount of margin available for each asset, see the <a rel='nofollow' target='_blank' href="https://zerodha.com/margin-calculator/Equity/">Margin Calculator</a> on the Zerodha website.</p> 
 <?php include(DOCS_RESOURCES."/brokerages/margin-calls.html"); ?>
