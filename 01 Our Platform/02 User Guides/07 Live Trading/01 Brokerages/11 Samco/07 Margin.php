@@ -1,6 +1,6 @@
 <p>We model buying power and margin calls to ensure your algorithm stays within the margin requirements.</p>
 
 <h4>Buying Power</h4>
-<p>Samco allows maximum 5x leverage for margin trades, we model the margin leverage with this. However, the margin requirements are various among different equity and product type. Please refer to <a href="https://www.samco.in/span/equity">Equities Margin Calculator</a> page of Samco for details.</p> 
+<p>Samco allows up to 5x leverage for margin accounts, but the amount of margin available depends on the Equity and product type. To check the amount of margin for each asset, see the <a href="https://www.samco.in/span/equity">Equities Margin Calculator</a> on the Samco website.</p> 
 
 <?php include(DOCS_RESOURCES."/brokerages/margin-calls.html"); ?>
