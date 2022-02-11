@@ -1,0 +1,3 @@
+<?php include(DOCS_RESOURCES."/landing-page-introductions/individual-brokerages.php"); ?>
+
+<p>Samco was founded by Jimeet Modi in March 2015. It is an award-winning online discount stock broker known for its clutter-breaking investment platforms, with a mission of providing retail investors access to sophisticated financial technology that can assist in creating wealth to retail investors at low-cost.</p>
