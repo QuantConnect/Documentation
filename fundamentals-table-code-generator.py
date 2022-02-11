@@ -16,7 +16,7 @@ for x in raw:
 </div>
 <table class="table qc-table table-reflow">
 <thead>
-<tr><th style="width: 80%;"><code>MorningstarSectorCode</code></th><th style="width: 20%;" text-align="right">Sector Code</th></tr>
+<tr><th style="width: 80%;"><code>MorningstarSectorCode</code></th><th style="width: 20%;">Sector Code</th></tr>
 </thead>
 <tbody>"""
         active = True
@@ -30,7 +30,7 @@ for x in raw:
 </div>
 <table class="table qc-table table-reflow">
 <thead>
-<tr><th style="width: 80%;"><code>MorningstarIndustryGroupCode</code></th><th style="width: 20%;" text-align="right">Industry Group Code</th></tr>
+<tr><th style="width: 80%;"><code>MorningstarIndustryGroupCode</code></th><th style="width: 20%;">Industry Group Code</th></tr>
 </thead>
 <tbody>"""
         active = True
@@ -44,7 +44,7 @@ for x in raw:
 </div>
 <table class="table qc-table table-reflow">
 <thead>
-<tr><th style="width: 80%;"><code>MorningstarIndustryCode</code></th><th style="width: 20%;" text-align="right">Industry Code</th></tr>
+<tr><th style="width: 80%;"><code>MorningstarIndustryCode</code></th><th style="width: 20%;">Industry Code</th></tr>
 </thead>
 <tbody>"""
         active = True
@@ -67,7 +67,14 @@ for x in raw:
         html += f'<tr><td><code>{enum}</code></td><td align="right">{code}</td></tr>'
 
 with open("02 Writing Algorithms/02 User Guides/04 Alternative Datasets/21 Morningstar/01 US Fundamental Data/05 Data Point Attributes.html", "w", encoding="utf-8") as text:
-    text.write("""<h4>FineFundamental Attributes</h4>
+    text.write("""<style>
+#enum-code-table td:nth-child(2), 
+#enum-code-table th:nth-child(2) {
+    text-align: right;
+}
+</style>
+
+<h4>FineFundamental Attributes</h4>
 <div data-tree="QuantConnect.Data.Fundamental.FineFundamental"></div>
 
 """)
