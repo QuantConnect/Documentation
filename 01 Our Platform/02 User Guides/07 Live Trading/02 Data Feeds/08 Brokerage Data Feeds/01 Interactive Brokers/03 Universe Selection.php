@@ -1,1 +1,1 @@
-<p>Universe selection isn't available with the IB data feed. However, if you use the <a href='/docs/v2/our-platform/user-guides/live-trading/data-feeds/brokerage-data-feeds/interactive-brokers#06-Hybrid-QuantConnect-Data-Feed'>hybid QuantConnect-IB data feed</a>, universe selection is available.</p>
+<p>Universe selection isn't available with the IB data feed, but it is available with the hybid QuantConnect-IB data feed.</p>
