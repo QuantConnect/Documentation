@@ -1,4 +1,4 @@
-<p>The Crypto data feed gathers market data by WebSocket from the following sources:</p>
+<p>The Crypto data feed uses WebSockets to gathers market data from the following sources:</p>
 <ul>
     <li>Binance</li>
     <li>Bitfinex</li>
