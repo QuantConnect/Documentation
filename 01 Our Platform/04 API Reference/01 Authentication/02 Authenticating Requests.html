@@ -2,7 +2,165 @@
 Requests to QuantConnect API v2 require a hashed combination of time, and the API token. The unixtime stamp combination serves as a nonce token as each request is sent with a different signature but never requires sending the API token itself.
 </p> 
 
-<p> - example of hashing</p>
-<p> - where to install into header</p>
+<h4>Hashing</h4>
+<p>Follow these steps to create a hashing for authentication.</p>
+<ol>
+    <li class="csharp">Load the required namespace.</li>
+    <li class="python">Load the <code>base64</code>, <code>hashlib</code> and <code>time</code> packages.</li>
+    <div class="section-example-container">
+        <pre class="csharp">#r "nuget:RestSharp"
 
-<p> - URL endpoint </p>
+using System;
+using System.Security.Cryptography;
+using RestSharp;</pre>
+        <pre class="python">import base64
+import hashlib
+import time</pre>
+    </div>
+
+    <li>Create <div class="csharp">an instance of </div><div class="python">a string of </div>the current timestamp.</li>
+    <div class="section-example-container">
+        <pre class="csharp">var stamp = ((DateTimeOffset)DateTime.UtcNow).ToUnixTimeSeconds();</pre>
+        <pre class="python">timestamp = str(int(time.time()))</pre>
+    </div>
+
+    <li >Create a timestamped-token.</li>
+    <div class="section-example-container">
+        <pre class="csharp">var ApiToken = "&lt;yourApiToken&gt;";
+var timeStampedToken = $"{ApiToken}:{stamp}";</pre>
+        <pre class="python">token = "&lt;your_api_token&gt;"
+time_stamped_token = token + ':' + timestamp</pre>
+    </div>
+
+    <li class="csharp">Compute a secured hash for the timestamped-token.</li>
+    <li class="python">Call <code>sha256</code> to secure hash the timestamped-token.</li>
+    <div class="section-example-container">
+        <pre class="csharp">var crypt = new SHA256Managed();
+var hashToken = crypt.ComputeHash(Encoding.UTF8.GetBytes(timeStampedToken), 0, Encoding.UTF8.GetByteCount(timeStampedToken));</pre>
+        <pre class="python">hash_token = hashlib.sha256(time_stamped_token.encode('utf-8'))</pre>
+    </div>
+
+    <li class="csharp">Digest the hashed-token.</li>
+    <li class="python">Call <code>hexdigest</code> to message digest the hashed-token.</li>
+    <div class="section-example-container">
+        <pre class="csharp">var hash = new StringBuilder();
+foreach (var theByte in hashToken)
+{
+    hash.Append(theByte.ToString("x2"));
+}</pre>
+        <pre class="python">api_token = hash_token.hexdigest()</pre>
+    </div>
+
+    <li class="csharp">Convert the hashed value in string.</li>
+    <div class="csharp section-example-container">
+        <pre class="csharp">var apiToken = hash.ToString();</pre>
+    </div>
+
+    <li class="python">Combine the user ID and API token.</li>
+    <div class="python section-example-container">
+        <pre class="python">authentication = "{}:{}".format(&lt;your_user_id&gt;, api_token)</pre>
+    </div>
+
+    <li class="python">Call <code>b64encode</code> to encode the authentication into a base-64 string.</li>
+    <div class="python section-example-container">
+        <pre class="python">base64string = base64.b64encode(authentication.encode('utf-8'))</pre>
+    </div>
+
+    <li class="python">Decode the base-64 string by ASCII.</li>
+    <div class="python section-example-container">
+        <pre class="python">hashed_authentication = base64string.decode('ascii')</pre>
+    </div>
+
+    <p>The returned hashed string will be used for authentication.</p>
+</ol>
+
+<h4>Make API Request</h4>
+<p>Follow these steps to make an API request.</p>
+<ol>
+    <li class="csharp">Create a Authenticator by the hash.</li>
+    <li class="python">Install the hased authentication and current timestamp in a dictionary as request header.</li>
+    <div class="section-example-container">
+        <pre class="csharp">var authenticator = new HttpBasicAuthenticator(
+    "&lt;your_user_id&gt;",
+    hash.ToString()
+);</pre>
+        <pre class="python">headers = {
+    'Authorization': 'Basic %s' % hashed_authentication,
+    'Timestamp': timestamp
+}</pre>
+    </div>
+
+    <li>Create <div class="python">a request link by combining </div>the base URL and URL endpoint.</li>
+        <div class="section-example-container">
+            <pre class="csharp">var baseUrl = "https://www.quantconnect.com/api/v2";
+var endpoint = "/authenticate";</pre>
+            <pre class="python">base_url = "https://www.quantconnect.com/api/v2"
+endpoint = "/authenticate"
+url = base_url + endpoint</pre>
+    </div>
+
+    <li class="csharp">Create a <code>RestClient</code>, and set the authenticator.</li>
+    <div class="csharp section-example-container">
+        <pre class="csharp">var client = new RestClient(baseUrl);
+client.Authenticator = authenticator;</pre>
+    </div>
+
+    <li class="python">Create a POST request with the request URL, header and request body.</li>
+        <div class="section-example-container">
+            <pre class="csharp">var request = new RestRequest(endpoint);
+/* request.AddJsonBody(new
+{
+    requestBody = "value"
+});
+*/
+request.AddHeader("Timestamp", stamp.ToString());
+
+var response = await client.PostAsync(request);</pre>
+            <pre class="python">response = requests.post(url, 
+                  data = {}, 
+                  headers = headers)</pre>
+    </div>
+
+    <li>Get response.</li>
+        <div class="section-example-container">
+            <pre class="csharp">var content = response.Content;</pre>
+            <pre class="python">content = response.text</pre>
+    </div>
+</ol>
+
+<h4>URL Endpoints</h4>
+<p>Requests must be sent to the base URL with URL Endpoints. The following table shows the URL Endpoints of the QuantConnect API.</p>
+<div>
+<table class="table qc-table table-reflow">
+<thead>
+<tr><th width="50%">Usage</th><th width="50%">API Endpoints</th></tr>
+</thead>
+<tbody>
+<tr><td width="50%"><a href="https://www.quantconnect.com/docs/v2/our-platform/api-reference/project-management/create-project"> Create Project</a></td><td width="50%"><code>/projects/create</code></td></tr>
+<tr><td width="50%"><a href="https://www.quantconnect.com/docs/v2/our-platform/api-reference/project-management/read-project"> Read Project</a></td><td width="50%"><code>/projects/read</code></td></tr>
+<tr><td width="50%"><a href="https://www.quantconnect.com/docs/v2/our-platform/api-reference/project-management/update-project"> Update Project</a></td><td width="50%"><code>/projects/update</code></td></tr>
+<tr><td width="50%"><a href="https://www.quantconnect.com/docs/v2/our-platform/api-reference/project-management/delete-project"> Delete Project</a></td><td width="50%"><code>/projects/delete</code></td></tr>
+<tr><td width="50%"><a href="https://www.quantconnect.com/docs/v2/our-platform/api-reference/file-management/create-file"> Create File</a></td><td width="50%"><code>/files/create</code></td></tr>
+<tr><td width="50%"><a href="https://www.quantconnect.com/docs/v2/our-platform/api-reference/file-management/read-file"> Read File</a></td><td width="50%"><code>/files/read</code></td></tr>
+<tr><td width="50%"><a href="https://www.quantconnect.com/docs/v2/our-platform/api-reference/file-management/update-file"> Update File</a></td><td width="50%"><code>/files/update</code></td></tr>
+<tr><td width="50%"><a href="https://www.quantconnect.com/docs/v2/our-platform/api-reference/file-management/delete-file"> Delete File</a></td><td width="50%"><code>/files/delete</code></td></tr>
+<tr><td width="50%"><a href="https://www.quantconnect.com/docs/v2/our-platform/api-reference/compiling-code/create-compilation-job"> Create Compilation Job</a></td><td width="50%"><code>/compile/create</code></td></tr>
+<tr><td width="50%"><a href="https://www.quantconnect.com/docs/v2/our-platform/api-reference/compiling-code/read-compilation-result"> Read Compilation Result</a></td><td width="50%"><code>/compile/read</code></td></tr>
+<tr><td width="50%"><a href="https://www.quantconnect.com/docs/v2/our-platform/api-reference/backtest-management/create-backtest"> Create Backtest</a></td><td width="50%"><code>/backtests/create</code></td></tr>
+<tr><td width="50%"><a href="https://www.quantconnect.com/docs/v2/our-platform/api-reference/backtest-management/read-backtest/backtest-statistics"> Backtest Statistics</a></td><td width="50%"><code>/backtests/read</code></td></tr>
+<tr><td width="50%"><a href="https://www.quantconnect.com/docs/v2/our-platform/api-reference/backtest-management/read-backtest/orders"> Orders</a></td><td width="50%"><code>/backtests/read/orders</code></td></tr>
+<tr><td width="50%"><a href="https://www.quantconnect.com/docs/v2/our-platform/api-reference/reports/backtest-report"> Backtest Report</a></td><td width="50%"><code>/backtests/read/report</code></td></tr>
+<tr><td width="50%"><a href="https://www.quantconnect.com/docs/v2/our-platform/api-reference/backtest-management/update-backtest"> Update Backtest</a></td><td width="50%"><code>/backtests/update</code></td></tr>
+<tr><td width="50%"><a href="https://www.quantconnect.com/docs/v2/our-platform/api-reference/backtest-management/delete-backtest"> Delete Backtest</a></td><td width="50%"><code>/backtests/delete</code></td></tr>
+<tr><td width="50%"><a href="https://www.quantconnect.com/docs/v2/our-platform/api-reference/live-management/create-live-algorithm"> Create Live Algorithm</a></td><td width="50%"><code>/live/create</code></td></tr>
+<tr><td width="50%"><a href="https://www.quantconnect.com/docs/v2/our-platform/api-reference/live-management/read-live-algorithm/live-algorithm-statistics"> Live Algorithm Statistics</a></td><td width="50%"><code>/live/read</code></td></tr>
+<tr><td width="50%"><a href="https://www.quantconnect.com/docs/v2/our-platform/api-reference/live-management/read-live-algorithm/logs"> Logs</a></td><td width="50%"><code>/live/read/log</code></td></tr>
+<tr><td width="50%"><a href="https://www.quantconnect.com/docs/v2/our-platform/api-reference/live-management/read-live-algorithm/portfolio-state"> Portfolio State</a></td><td width="50%"><code>/live/read/portfolio</code></td></tr>
+<tr><td width="50%"><a href="https://www.quantconnect.com/docs/v2/our-platform/api-reference/live-management/read-live-algorithm/orders"> Orders</a></td><td width="50%"><code>/live/read/orders</code></td></tr>
+<tr><td width="50%"><a href="https://www.quantconnect.com/docs/v2/our-platform/api-reference/live-management/update-live-algorithm/liquidate-live-portfolio"> Liquidate Live Portfolio</a></td><td width="50%"><code>/live/update/liquidate</code></td></tr>
+<tr><td width="50%"><a href="https://www.quantconnect.com/docs/v2/our-platform/api-reference/live-management/update-live-algorithm/stop-live-algorithm"> Stop Live Algorithm</a></td><td width="50%"><code>/live/update/stop</code></td></tr>
+<tr><td width="50%"><a href="https://www.quantconnect.com/docs/v2/our-platform/api-reference/downloading-data/read-downloaded-data"> Read Downloaded Data</a></td><td width="50%"><code>/data/read</code></td></tr>
+<tr><td width="50%"><a href="https://www.quantconnect.com/docs/v2/alpha-streams/api-reference/streaming-rmq-socket"> Streaming RMQ Socket</a></td><td width="50%"><code>/</code></td></tr>
+</tbody>
+</table>
+</div>
