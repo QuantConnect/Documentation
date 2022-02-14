@@ -3,10 +3,10 @@ $getCustomChartText = function($backtest) {
 
     echo "<p>Create custom charts and they will display on the results page of your algorithm. We support the following types of plots:</p>";
     echo "<div class='section-example-container'>";
-    echo "<pre class='all prettyprint prettyprinted'><span class='pln'>   </span><span class='typ'>SeriesType</span><span class='pun'>.</span><span class='typ'>Line</span><span class='pln'>";
-    echo "             </span><span class='pun'>.</span><span class='typ'>Scatter</span><span class='pln'>";
-    echo "             </span><span class='pun'>.</span><span class='typ'>Candle</span><span class='pln'>";
-    echo "             </span><span class='pun'>.</span><span class='typ'>Bar</span><span class='pln'>";
+    echo "<pre class='all prettyprint prettyprinted'><span class='pln'>   </span><span class='typ'>SeriesType</span><span class='pun'>.</span><span class='typ'>Line</span><br><span class='pln'>";
+    echo "             </span><span class='pun'>.</span><span class='typ'>Scatter</span><br><span class='pln'>";
+    echo "             </span><span class='pun'>.</span><span class='typ'>Candle</span><br><span class='pln'>";
+    echo "             </span><span class='pun'>.</span><span class='typ'>Bar</span><br><span class='pln'>";
     echo "             </span><span class='pun'>.</span><span class='typ'>Flag</span></pre>";
     echo "</div>";
 
@@ -16,10 +16,10 @@ $getCustomChartText = function($backtest) {
 
     echo "<p>When you create scatter plots, you can set a marker symbol. We support the following marker symbols:</p>";
     echo "<div class='section-example-container'>";
-    echo "<pre class='all prettyprint prettyprinted'><span class='pln'>   </span><span class='typ'>ScatterMarkerSymbol</span><span class='pun'>.</span><span class='typ'>Circle</span><span class='pln'>";
-    echo "             </span><span class='pun'>.</span><span class='typ'>Diamond</span><span class='pln'>";
-    echo "             </span><span class='pun'>.</span><span class='typ'>Square</span><span class='pln'>";
-    echo "             </span><span class='pun'>.</span><span class='typ'>Triangle</span><span class='pln'>";
+    echo "<pre class='all prettyprint prettyprinted'><span class='pln'>   </span><span class='typ'>ScatterMarkerSymbol</span><span class='pun'>.</span><span class='typ'>Circle</span><br><span class='pln'>";
+    echo "             </span><span class='pun'>.</span><span class='typ'>Diamond</span><br><span class='pln'>";
+    echo "             </span><span class='pun'>.</span><span class='typ'>Square</span><br><span class='pln'>";
+    echo "             </span><span class='pun'>.</span><span class='typ'>Triangle</span><br><span class='pln'>";
     echo "             </span><span class='pun'>.</span><span class='typ'>TriangleDown</span></pre>";
     echo "</div>";
 
