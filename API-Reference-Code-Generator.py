@@ -353,8 +353,6 @@ def ExampleWriting(request_object_properties, item_list, array=False, order=0):
     
     return example + "\n" + tab + "}\n" + "  " * (order-1) + "]", line, item_list
 
-endpoints = {}
-
 for section, source in documentations.items():
     yaml_file = open(source)
     doc = yaml.load(yaml_file, Loader=yaml.Loader)
@@ -368,14 +366,6 @@ for section, source in documentations.items():
         link = "/".join(content["tags"])
         destination_folder = pathlib.Path(link)
         destination_folder.mkdir(parents=True, exist_ok=True)
-        
-        # Add to Endpoints table
-        if api_call.split("/")[1] != "alpha":
-            link = ''.join([char for char in link if not char.isdigit()])
-            link = "/".join([x.strip() for x in link.split("/") if x != " "])
-            link = link.replace(" ", "-").lower()
-            tag = ''.join([char for char in content["tags"][-1] if not char.isdigit()])
-            endpoints[api_call] = (tag, f"https://www.quantconnect.com/docs/v2/{link}")
         
         # Create Introduction part
         with open(destination_folder / f'{j:02} Introduction.html', "w") as html_file:
@@ -453,37 +443,3 @@ for section, source in documentations.items():
                 html_file.write(writeUp)
                 
     print(f"Documentation of {section} is generated and inplace!")
-    
-destination_folder = pathlib.Path("01 Our Platform/04 API Reference/01 Authentication/")
-destination_folder.mkdir(parents=True, exist_ok=True)
-
-store = []
-
-with open(destination_folder / '02 Authenticating Requests.html', "r", encoding="utf-8") as fin:
-    lines = fin.readlines()
-    
-    for line in lines:
-        if "<h4>URL Endpoints</h4>" in line:
-            break
-        
-        store.append(line)
-
-with open(destination_folder / '02 Authenticating Requests.html', "w") as html_file:
-    for line in store:
-        html_file.write(line)
-        
-    html_file.write("""<h4>URL Endpoints</h4>
-<p>Requests must be sent to the base URL with URL Endpoints. The following table shows the URL Endpoints of the QuantConnect API.</p>
-<div>
-<table class="table qc-table table-reflow">
-<thead>
-<tr><th width="50%">Usage</th><th width="50%">API Endpoints</th></tr>
-</thead>
-<tbody>""")
-    
-    for endpoint, tags in endpoints.items():
-        html_file.write(f'<tr><td width="50%"><a href="{tags[1]}">{tags[0]}</a></td><td width="50%"><code>{endpoint}</code></td></tr>')
-        
-    html_file.write("""</tbody>
-</table>
-</div>""")
