@@ -1,1 +1,1 @@
-<p>Universe selection isn't available with the IB data feed, but it is available with the hybid QuantConnect-IB data feed.</p>
+<p>Universe selection isn't available with the IB data feed, but it's available with the hybid QuantConnect-IB data feed.</p>
