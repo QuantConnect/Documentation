@@ -203,11 +203,11 @@ function ShowHide(event, idName) {
     var x = document.getElementById(idName);
     if (x.style.display == "none") {
         x.style.display = "block";
-        event.target.innerHTML = "Hide Details <span><img src='https://cdn.quantconnect.com/i/tu/api-chevron-hide.svg' alt='arrow-hide'></span>";
+        event.target.innerHTML = "<span>Hide Details <img src='https://cdn.quantconnect.com/i/tu/api-chevron-hide.svg' alt='arrow-hide'></span>";
     }
     else {
         x.style.display = "none";
-        event.target.innerHTML = "Show Details <span><img src='https://cdn.quantconnect.com/i/tu/api-chevron-show.svg' alt='arrow-show'></span>";
+        event.target.innerHTML = "<span>Show Details <img src='https://cdn.quantconnect.com/i/tu/api-chevron-show.svg' alt='arrow-show'></span>";
     }
 };
 
@@ -220,12 +220,12 @@ function openTopTab(event, category) {
 <hr>""")
     
 def Table(input_, previous_name, type_map, j):
-    if "DocumentationAttributes" not in input_ or not "DocumentationAttributes":
+    if "DocumentationAttributes" not in input_ or not input_["DocumentationAttributes"]:
         if "concentrate" in input_:
             for item in input_["concentrate"]:
                 previous_name, j = Table(item, previous_name, type_map, j)
                 
-        elif "children" in input_:
+        elif "children" in input_ and input_["children"] != input_['text'].split("(")[0]:
             for item in input_["children"]:
                 previous_name, j = Table(item, previous_name, type_map, j)
                 
@@ -247,64 +247,64 @@ def Table(input_, previous_name, type_map, j):
                 else:
                     args[item["GenericParameters"][-1]["Name"]] = type_map[str(item["GenericParameters"][-1]["typeId"])]
             
-        if previous_name != name:
-            with open(path_ / f'02.html', "r", encoding="utf-8") as fin:
-                lines = fin.readlines()
-            
-            with open(path_ / f'02.html', "w", encoding="utf-8") as html_file:
-                k = 1
-                
-                for line in lines:
-                    if '<span class="method-order">0/0</span>' in line:
-                        line = line.replace(">0/0<", f">{k}/{j}<")
-                    
-                        k += 1
-                        
-                    html_file.write(line)
-                
-                write_up, description = Box(input_, doc_attr, doc_ref, type_map, j)
-                html_file.write(write_up)
-        
-            j = 1
-            
-        else:
-            with open(path_ / f'02.html', "rb+") as html_file:
-                html_file.seek(-10, os.SEEK_END)
-                html_file.truncate()
-            
-            with open(path_ / f'02.html', "a", encoding="utf-8") as html_file:
-                write_up, description = Box(input_, doc_attr, doc_ref, type_map, j)
-                write_up_lines = write_up.split('<div class="method-container">')
-                for line in write_up_lines[1:]:
-                    html_file.write(line)
-                
-            j += 1
-            
-        if name != previous_name: 
-            with open(path_ / f'01 Available QCAlgorithm Methods.html', "r", encoding="utf-8") as fin:
-                lines = fin.readlines()
-                    
-            with open(path_ / f'01 Available QCAlgorithm Methods.html', "w", encoding="utf-8") as html_file:
-                active = False
-                
-                for line in lines:
-                    if '<div id="All" class="ref-table-container"' in line or f'<div id="{tag}" class="ref-table-container"' in line:
-                        active = True
-                    
-                    if active and '</tbody></table>' in line:
-                        link = line.replace('</tbody></table>', f'''<tr>
+    if previous_name != name:
+        with open(path_ / f'02.html', "r", encoding="utf-8") as fin:
+            lines = fin.readlines()
+
+        with open(path_ / f'02.html', "w", encoding="utf-8") as html_file:
+            k = 1
+
+            for line in lines:
+                if '<span class="method-order">0/0</span>' in line:
+                    line = line.replace(">0/0<", f">{k}/{j}<")
+
+                    k += 1
+
+                html_file.write(line)
+
+            write_up, description = Box(input_, doc_attr, doc_ref, type_map, j)
+            html_file.write(write_up)
+
+        j = 1
+
+    else:
+        with open(path_ / f'02.html', "rb+") as html_file:
+            html_file.seek(-10, os.SEEK_END)
+            html_file.truncate()
+
+        with open(path_ / f'02.html', "a", encoding="utf-8") as html_file:
+            write_up, description = Box(input_, doc_attr, doc_ref, type_map, j)
+            write_up_lines = write_up.split('<div class="method-container">')
+            for line in write_up_lines[1:]:
+                html_file.write(line)
+
+        j += 1
+
+    if name != previous_name: 
+        with open(path_ / f'01 Available QCAlgorithm Methods.html', "r", encoding="utf-8") as fin:
+            lines = fin.readlines()
+
+        with open(path_ / f'01 Available QCAlgorithm Methods.html', "w", encoding="utf-8") as html_file:
+            active = False
+
+            for line in lines:
+                if '<div id="All" class="ref-table-container"' in line or f'<div id="{tag}" class="ref-table-container"' in line:
+                    active = True
+
+                if active and '</tbody></table>' in line:
+                    link = line.replace('</tbody></table>', f'''<tr>
 <td width="33%"><a href="#{name}-header">{name}()</a></td>
 <td>{description}</td>
 </tr>
 </tbody></table>''')
-                        html_file.write(link)
-                        
-                        active = False
-                        
-                    else:
-                        html_file.write(line)
+                    html_file.write(link)
 
-    return name, j
+                    active = False
+
+                else:
+                    html_file.write(line)
+
+    return name.strip(), j
 
 
 def Box(input_, doc_attr, doc_ref, type_map, j):
@@ -472,7 +472,7 @@ def Box(input_, doc_attr, doc_ref, type_map, j):
     </div>
     
     <div class="details-btn">
-        <button class="show-hide-detail" onclick="ShowHide(event, '{call.replace(" ", "-")}-details')">Show Details <span><img src='https://cdn.quantconnect.com/i/tu/api-chevron-show.svg' alt='arrow-show'></span></button>
+        <button class="show-hide-detail" onclick="ShowHide(event, '{call.replace(" ", "-")}-details')"><span>Show Details <img src='https://cdn.quantconnect.com/i/tu/api-chevron-show.svg' alt='arrow-show'></span></button>
     </div>
 
     <div class="method-details" id="{call.replace(" ", "-")}-details" style="display: none;" >
@@ -507,11 +507,19 @@ for key in keys.items():
     else:
         type_map[key[0]] = key[1]["ShortType"]
 
-algo_methods = [doc["tree"]["core"]["data"][0]["children"], keys.values()]
-    
-for branch in algo_methods:
-    previous_name = ""
-    j = 1
-    
-    for item in branch:
-        previous_name, j = Table(item, previous_name, type_map, j)
+algo_methods = doc["tree"]["core"]["data"][0]["children"]
+previous_name = ""
+j = 1
+
+for item in algo_methods:
+    previous_name, j = Table(item, previous_name, type_map, j)
+        
+with open(path_ / f'02.html', "r", encoding="utf-8") as fin:
+    lines = fin.readlines()
+
+with open(path_ / f'02.html', "w", encoding="utf-8") as html_file:
+    for line in lines:
+        if '<span class="method-order">0/0</span>' in line:
+            line = line.replace(">0/0<", f">1/1<")
+
+        html_file.write(line)
