@@ -236,17 +236,7 @@ def Table(input_, previous_name, type_map, j):
     
     for count, tag in enumerate(doc_attr):
         doc_ref = (input_["DocumentationAttributes"][count]["line"], input_["DocumentationAttributes"][count]["fileName"])
-        args = {}
-            
-        if "Parameters" in input_:
-            params = input_["Parameters"]
-            for item in params:
-                if "GenericParameters" not in item:
-                    args[item["Name"]] = type_map[str(item["typeId"])]
-                    
-                else:
-                    args[item["GenericParameters"][-1]["Name"]] = type_map[str(item["GenericParameters"][-1]["typeId"])]
-            
+        
     if previous_name != name:
         with open(path_ / f'02.html', "r", encoding="utf-8") as fin:
             lines = fin.readlines()
@@ -313,9 +303,6 @@ def Box(input_, doc_attr, doc_ref, type_map, j):
     if "Parameters" in input_:
         params = input_["Parameters"]
         for item in params:
-            if "GenericParameters" in item:
-                item = item["GenericParameters"][-1]
-                
             args[item["Name"]] = {"Description": "/", "Type": "/"}
             
             if "Description" in item:
@@ -327,14 +314,7 @@ def Box(input_, doc_attr, doc_ref, type_map, j):
             if "EnumValues" in item:
                 args[item["Name"]]["Description"] = args[item["Name"]]["Description"] + '<br/><i>\n' + f'Options: {item["EnumValues"]}</i>'
 
-            if "ShortType" in item:
-                args[item["Name"]]["Type"] = item["ShortType"]
-                
-            elif "Type" in item:
-                args[item["Name"]]["Type"] = item["Type"]
-                
-            else:
-                args[item["Name"]]["Type"] = type_map[str(item["typeId"])]
+            args[item["Name"]]["Type"] = type_map[str(item["typeId"])]
         
     call = input_["Name"] + "(" + ", ".join([str(value["Type"]) + " " + str(key) for key, value in args.items()]).replace("/", "_") + ")"
     
@@ -383,12 +363,6 @@ def Box(input_, doc_attr, doc_ref, type_map, j):
     if "ReturnValue" in input_:
         if "Name" in input_["ReturnValue"]:
             ret_ = input_["ReturnValue"]["Name"]
-            
-        elif "ShortType" in input_["ReturnValue"]:
-            ret_ = input_["ReturnValue"]["ShortType"]\
-            
-        elif "Type" in input_["ReturnValue"]:
-            ret_ = input_["ReturnValue"]["Type"].split(".")[-1]
             
         else:
             ret_ = type_map[str(input_["ReturnValue"]["typeId"])]
@@ -502,11 +476,33 @@ keys = doc["keys"]
 
 type_map = {}
 for key in keys.items():
-    if "GenericParameters" in key[1]:
-        type_map[key[0]] = key[1]["Type"].split(".")[-1][:-1]
+    if "Type" in key[1]:
+        t_ = key[1]["Type"]
+        
+        if "[" in t_:
+            n = t_.count('[')
+            t_ = t_.split("[")
+            t = ""
+            
+            for i in range(n):
+                if len(t) > 0 and t[-4:] == "&gt;":
+                    t += ", "
+                    
+                t += t_[i].split(".")[-1].split("`")[0]
+                t += "&lt;"
+                
+                if "]" in t_[i+1]:
+                    t += t_[i+1].split("]")[0].split(".")[-1]
+                    t += "&gt;" * t_[i+1].count(']')
+                    
+            type_map[key[0]] = t
+            
+        else:
+            type_map[key[0]] = t_.split(".")[-1]
+            
     else:
         type_map[key[0]] = key[1]["ShortType"]
-
+        
 algo_methods = doc["tree"]["core"]["data"][0]["children"]
 previous_name = ""
 j = 1
