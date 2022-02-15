@@ -2,7 +2,7 @@
 $getUniverseSelectionText = function($dataFeedName, $availability=true) {
     if ($availability)
     {
-        echo "<p>Universe selection is available with the $dataFeedName data feed.</p>
+        echo "<p>Universe selection is compatible with the $dataFeedName data feed.</p>
         
 <div class='section-example-container'>
     <pre class='csharp'>AddUniverse(CoarseUniverseSelection, FineUniverseSelection);</pre>
