@@ -1,4 +1,4 @@
-<p>The optimization nodes that backtest your algorithm are not the <a href="/docs/v2/our-platform/user-guides/organizations/resources#02-Backtesting-Nodes">backtesting nodes</a> in your organization. The optimization nodes are a cluster of nodes that exclusively run optimization jobs. You can use 1-24 nodes when running optimization jobs. If you use multiple nodes, the backtests run concurrently and all of the nodes are the same model. The following table shows the specifications of the optimization node models:</p> 
+<p>The optimization nodes that backtest your algorithm are not the <a href="/docs/v2/our-platform/user-guides/organizations/resources#02-Backtesting-Nodes">backtesting nodes</a> in your organization. The optimization nodes are a cluster of nodes that exclusively run optimization jobs. The optimization can run with up to 24 nodes. If you use multiple nodes, the backtests run concurrently and all of the nodes are the same model. The following table shows the specifications of the optimization node models:</p> 
 
 <table class="qc-table table">
    <thead>
