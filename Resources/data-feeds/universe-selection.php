@@ -11,7 +11,7 @@ $getUniverseSelectionText = function($dataFeedName, $availability=true) {
     }
     else
     {
-        echo "<p>Universe selection isn't available with the $dataFeedName data feed."
+        echo "<p>Universe selection isn't available with the $dataFeedName data feed.";
     }
 }
 ?>
