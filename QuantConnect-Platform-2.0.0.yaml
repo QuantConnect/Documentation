@@ -378,6 +378,37 @@ paths:
               explode: false
               schema:
                 type: string
+  /backtests/read/portfolio:
+    post:
+      tags:
+      - 01 Our Platform
+      - 04 API Reference
+      - 05 Backtest Management
+      - 02 Read Backtest
+      - 02 Portfolio
+      summary: Read out the portfolio state of a backtest.
+      requestBody:
+        description: Fetch the portfolio state of a backtest for the project Id and backtest Id.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReadBacktestPortfolioRequest'
+        required: true
+      responses:
+        "200":
+          description: Portfolio state of the backtest instance.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BacktestPortfolioResponse'
+        "401":
+          description: Unauthorized response from the API. Key is missing, invalid, or timestamp is too old for hash.
+          headers:
+            www_authenticate:
+              style: simple
+              explode: false
+              schema:
+                type: string
   /backtests/read/orders:
     post:
       tags:
@@ -385,7 +416,7 @@ paths:
       - 04 API Reference
       - 05 Backtest Management
       - 02 Read Backtest
-      - 02 Orders
+      - 03 Orders
       summary: Read out the orders of a backtest.
       requestBody:
         description: Fetch the orders of a backtest for the project Id, backtest Id and steps provided.
@@ -838,6 +869,12 @@ components:
           description: Gets the mean estimated insight value.
           format: float
       description: Contains insight population run time statistics.
+    BacktestPortfolioResponse:
+      type: object
+      properties:
+        portfolio:
+          $ref: '#/components/schemas/Portfolio'
+      description: Contains holdings and cash of the backtest instance.
     BacktestOrdersResponse:
       type: object
       properties:
@@ -2019,8 +2056,22 @@ components:
           type: string
           description: When provided, specific backtest Id to read.
       description: Request to read a single backtest from a project.
+    ReadBacktestPortfolioRequest:
+      required:
+      - projectId
+      - backtestId
+      type: object
+      properties:
+        projectId:
+          type: integer
+          description: Id of the project from which to read the backtest.
+        backtestId:
+          type: string
+          description: Id of the backtest from which to read the portfolio state.
+      description: Request to read the portfolio state from a backtest in a project.
     ReadBacktestOrdersRequest:
       required:
+      - start
       - end
       - projectId
       - backtestId
