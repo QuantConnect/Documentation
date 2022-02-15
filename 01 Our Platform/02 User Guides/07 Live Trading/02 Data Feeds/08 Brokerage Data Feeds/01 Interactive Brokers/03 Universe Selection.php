@@ -1,1 +1,4 @@
-<p>Universe selection isn't available with the IB data feed, but it's available with the hybid QuantConnect-IB data feed.</p>
+<?php
+include(DOCS_RESOURCES."/data-feeds/universe-selection.php");
+$getUniverseSelectionText("IB", true);
+?>
