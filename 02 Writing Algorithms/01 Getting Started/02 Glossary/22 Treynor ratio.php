@@ -1,4 +1,6 @@
 <?php 
 include(DOCS_RESOURCES."/glossary.php");
-echo "<p>$defintionByTerm['treynor ratio']</p>";
+echo "<p>";
+echo $defintionByTerm['treynor ratio'];
+echo "</p>";
 ?>
