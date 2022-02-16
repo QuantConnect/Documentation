@@ -1,0 +1,32 @@
+<?php
+$defintionByTerm = array(
+    "alpha" => "The quantity of an algorithm's returns that aren't explained by its underlying benchmark.",
+    "annual standard deviation" => "A staticial measure that describes the dispersion of annual returns relative to the mean annual return. It's the square root of the annual variance.",
+    "annual variance" => "A staticial measure that describes the dispersion of annual returns relative to the mean annual return.",
+    "average loss" => "The average rate of return for unprofitable closed trades.",
+    "average win" => "The average rate of return for profitable closed trades.",
+    "beta" => "The scale and direction of an algorithm's returns relative to movements in the underlying benchmark.",
+    "compounding annual return" => "The annual percentage return that would be required to grow a portfolio from its starting value to its ending value.",
+    "drawdown" => "The largest peak to trough decline in an algorithm's equity curve.",
+    "equity" => "The total portfolio value if all of the holdings were sold with market orders.", 
+    "capacity" => "The maximum amount of money an algorithm can trade before its performance degrades from market impact.",
+    "expectancy" => "The expected profit per closed trade.",
+    "holdings" => "The absolute sum of the items in the portfolio.",
+    "information ratio" => "The amount of excess return from the risk-free rate per unit of systematic risk.",
+    "loss rate" => "The proportion of closed trades that were not profitable.",
+    "lowest capacity asset" => "The asset an algorithm traded that has the lowest capacity.",
+    "net profit" => array("percent" => "The rate of return across the entire trading period.", "dollar-value" => "The dollar-value return across the entire trading period."),
+    "probabilistic sharpe ratio (PSR)" => "The probability that the estimated Sharpe ratio of an algorithm is greater than the Sharpe ratio of its benchmark.",
+    "profit-loss ratio" => "The ratio of the average win rate to the average loss rate.",
+    "return" => "The rate of return across the entire trading period.",
+    "sharpe ratio" => "A measure of the risk-adjusted return, developed by William Sharpe.",
+    "total fees" => "The total quantity of fees paid for all the transactions.",
+    "total net profit" => "The rate of return across the entire trading period.", 
+    "total trades" => "The number of orders that were filled or partially filled.",
+    "tracking error" => "A measure of how closely a portfolio follows the index to which it is benchmarked. A tracking error of 0 is a perfect match.",
+    "treynor ratio" => "A measurement of the returns earned in an algorithm in excess of the risk-free rate per unit of benchmark risk, developed by Jack Treynor.",
+    "unrealized" => "The amount of profit a portfolio has in open trades.",
+    "volume" => "The total value of assets traded for all of an algorithm's transactions.",
+    "win rate" => "The proportion of closed trades that were profitable."
+);
+?>
