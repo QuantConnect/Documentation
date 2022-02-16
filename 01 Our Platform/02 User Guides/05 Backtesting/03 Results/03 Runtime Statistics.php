@@ -5,6 +5,7 @@
 <p>The following table describes the runtime statistics:</p>
 
 <?php
+include(DOCS_RESOURCES."/glossary.php");
 echo "
 <table class='qc-table table'>
   <thead>
@@ -14,21 +15,9 @@ echo "
     </tr>
   </thead>
   <tbody>
-  </tbody>
-</table>";
-?>
-
-<table class="qc-table table">
-  <thead>
     <tr>
-      <th style="width: 25%">Statistic</th>
-      <th style="width: 75%">Description</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td>PSR</td>
-      <td>The probability that the estimated Sharpe ratio of your algorithm is greater than the Sharpe ratio of the benchmark</td>
+      <td>PSR----</td>
+      <td>{$defintionByTerm['probabilistic sharpe ratio (PSR)']}</td>
     </tr>
     <tr>
       <td>Unrealized</td>
@@ -63,6 +52,7 @@ echo "
       <td>The maximum amount of money the algorithm can trade before its performance degrades from market impact</td>
     </tr>
   </tbody>
-</table>
+</table>";
+?>
 
 <?php echo file_get_contents(DOCS_RESOURCES."/create-custom-runtime-statistic.html"); ?>
