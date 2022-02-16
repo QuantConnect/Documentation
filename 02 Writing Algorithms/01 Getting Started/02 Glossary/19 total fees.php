@@ -1,4 +1,6 @@
 <?php 
 include(DOCS_RESOURCES."/glossary.php");
-echo "<p>$defintionByTerm['total fees']</p>";
+echo "<p>";
+echo $defintionByTerm['total fees'];
+echo "</p>";
 ?>
