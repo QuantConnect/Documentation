@@ -1,4 +1,6 @@
 <?php 
 include(DOCS_RESOURCES."/glossary.php");
-echo "<p>$defintionByTerm['win rate']</p>";
+echo "<p>";
+echo $defintionByTerm['win rate'];
+echo "</p>";
 ?>
