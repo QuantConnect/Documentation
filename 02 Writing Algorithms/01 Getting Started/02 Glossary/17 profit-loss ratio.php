@@ -1,4 +1,6 @@
 <?php 
 include(DOCS_RESOURCES."/glossary.php");
-echo "<p>$defintionByTerm['profit-loss ratio']</p>";
+echo "<p>";
+echo $defintionByTerm['profit-loss ratio'];
+echo "</p>";
 ?>
