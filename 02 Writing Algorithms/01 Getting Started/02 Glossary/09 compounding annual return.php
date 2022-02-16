@@ -1,4 +1,6 @@
 <?php 
 include(DOCS_RESOURCES."/glossary.php");
-echo "<p>$defintionByTerm['compounding annual return']</p>";
+echo "<p>";
+echo $defintionByTerm['compounding annual return'];
+echo "</p>";
 ?>
