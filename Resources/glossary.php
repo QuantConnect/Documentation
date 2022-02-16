@@ -25,7 +25,7 @@ $defintionByTerm = array(
     "total trades" => "The number of orders that were filled or partially filled.",
     "tracking error" => "A measure of how closely a portfolio follows the index to which it is benchmarked. A tracking error of 0 is a perfect match.",
     "treynor ratio" => "A measurement of the returns earned in an algorithm in excess of the risk-free rate per unit of benchmark risk, developed by Jack Treynor.",
-    "unrealized" => "The amount of profit a portfolio has in open trades.",
+    "unrealized" => "The amount of profit a portfolio would capture if it liquidated all open positions and paid the fees for transacting and crossing the spread.",
     "volume" => "The total value of assets traded for all of an algorithm's transactions.",
     "win rate" => "The proportion of closed trades that were profitable."
 );
