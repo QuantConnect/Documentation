@@ -1,4 +1,6 @@
 <?php 
 include(DOCS_RESOURCES."/glossary.php");
-echo "<p>$defintionByTerm['total trades']</p>";
+echo "<p>";
+echo $defintionByTerm['total trades'];
+echo "</p>";
 ?>
