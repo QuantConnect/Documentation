@@ -1,4 +1,6 @@
 <?php 
 include(DOCS_RESOURCES."/glossary.php");
-echo "<p>$defintionByTerm['drawdown']</p>";
+echo "<p>";
+echo $defintionByTerm['drawdown'];
+echo "</p>";
 ?>
