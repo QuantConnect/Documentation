@@ -1,4 +1,6 @@
 <?php 
 include(DOCS_RESOURCES."/glossary.php");
-echo "<p>$defintionByTerm['information ratio']</p>";
+echo "<p>";
+echo $defintionByTerm['information ratio'];
+echo "</p>";
 ?>
