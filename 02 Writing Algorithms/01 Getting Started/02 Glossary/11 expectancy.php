@@ -1,4 +1,6 @@
 <?php 
 include(DOCS_RESOURCES."/glossary.php");
-echo "<p>$defintionByTerm['expectancy']</p>";
+echo "<p>";
+echo $defintionByTerm['expectancy'];
+echo "</p>";
 ?>
