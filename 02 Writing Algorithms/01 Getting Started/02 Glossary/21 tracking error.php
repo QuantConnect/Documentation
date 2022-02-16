@@ -1,4 +1,6 @@
 <?php 
 include(DOCS_RESOURCES."/glossary.php");
-echo "<p>$defintionByTerm['tracking error']</p>";
+echo "<p>";
+echo $defintionByTerm['tracking error'];
+echo "</p>";
 ?>
