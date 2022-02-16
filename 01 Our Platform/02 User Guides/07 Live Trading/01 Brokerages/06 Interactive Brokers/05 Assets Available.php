@@ -17,6 +17,10 @@
          <td><a href="/datasets/algoseek-us-equity-options">US Equity Options</a></td>
       </tr>
       <tr>
+         <td>Forex</td>
+         <td><a href="/datasets/oanda-forex">FOREX Data</a></td>
+      </tr>
+      <tr>
          <td>Futures</td>
          <td><a href="/datasets/algoseek-us-futures">US Futures</a></td>
       </tr>
