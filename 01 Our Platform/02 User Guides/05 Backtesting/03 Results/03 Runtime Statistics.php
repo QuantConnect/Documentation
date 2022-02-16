@@ -4,6 +4,20 @@
 
 <p>The following table describes the runtime statistics:</p>
 
+<?php
+echo "
+<table class='qc-table table'>
+  <thead>
+    <tr>
+      <th style='width: 25%'>Statistic</th>
+      <th style='width: 75%'>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+  </tbody>
+</table>";
+?>
+
 <table class="qc-table table">
   <thead>
     <tr>
@@ -13,7 +27,7 @@
   </thead>
   <tbody>
     <tr>
-      <td><a href='/docs/v2/our-platform/user-guides/optimization/objectives#05-PSR'>PSR</a></td>
+      <td>PSR</td>
       <td>The probability that the estimated Sharpe ratio of your algorithm is greater than the Sharpe ratio of the benchmark</td>
     </tr>
     <tr>
