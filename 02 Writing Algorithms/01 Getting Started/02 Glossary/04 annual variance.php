@@ -1,4 +1,6 @@
 <?php 
 include(DOCS_RESOURCES."/glossary.php");
-echo "<p>$defintionByTerm['annual variance']</p>";
+echo "<p>";
+echo $defintionByTerm['annual variance'];
+echo "</p>";
 ?>
