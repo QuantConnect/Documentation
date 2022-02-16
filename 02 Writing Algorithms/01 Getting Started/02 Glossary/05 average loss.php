@@ -1,4 +1,6 @@
 <?php 
 include(DOCS_RESOURCES."/glossary.php");
-echo "<p>$defintionByTerm['average loss']</p>";
+echo "<p>";
+echo $defintionByTerm['average loss'];
+echo "</p>";
 ?>
