@@ -1,4 +1,6 @@
 <?php 
 include(DOCS_RESOURCES."/glossary.php");
-echo "<p>$defintionByTerm['capacity']</p>";
+echo "<p>";
+echo $defintionByTerm['capacity'];
+echo "</p>";
 ?>
