@@ -1,3 +1,3 @@
 <?php
-    echo file_get_contents(DOCS_RESOURCES."/tutorials/optimizations/download-results.php");
+    echo file_get_contents(DOCS_RESOURCES."/tutorials/optimization/download-results.php");
 ?>
