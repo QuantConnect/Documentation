@@ -1,1 +1,1 @@
-<p><a href="<?= DOCS_ROOT_URL ?>/our-platform/tutorials/projects/managing-projects#05-Open-Existing-Projects">Open the project</a> that you have deployed and then click <span class='button-name'>Live</span> to view the performance of your live trading algorithm.</p>
+<p><a href="/docs/v2/our-platform/tutorials/projects/managing-projects#05-Open-Existing-Projects">Open the project</a> that you have deployed and then click <span class='button-name'>Live</span> to view the performance of your live trading algorithm.</p>
