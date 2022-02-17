@@ -1,5 +1,5 @@
 <?php
-$defintionByTerm = array(
+$definitionByTerm = array(
     "alpha" => "The quantity of an algorithm's returns that aren't explained by its underlying benchmark.",
     "annual standard deviation" => "A staticial measure that describes the dispersion of annual returns relative to the mean annual return. It's the square root of the annual variance.",
     "annual variance" => "A staticial measure that describes the dispersion of annual returns relative to the mean annual return.",

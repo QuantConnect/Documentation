@@ -17,35 +17,35 @@ echo "
   <tbody>
     <tr>
       <td>PSR</td>
-      <td>{$defintionByTerm['probabilistic sharpe ratio (PSR)']}</td>
+      <td>{$definitionByTerm['probabilistic sharpe ratio (PSR)']}</td>
     </tr>
     <tr>
       <td>Unrealized</td>
-      <td>{$defintionByTerm['unrealized']}</td>
+      <td>{$definitionByTerm['unrealized']}</td>
     </tr>
     <tr>
       <td>Fees</td>
-      <td>{$defintionByTerm['total fees']}</td>
+      <td>{$definitionByTerm['total fees']}</td>
     </tr>
     <tr>
       <td>Net Profit</td>
-      <td>{$defintionByTerm['net profit']['dollar-value']}</td>
+      <td>{$definitionByTerm['net profit']['dollar-value']}</td>
     </tr>
     <tr>
       <td>Return</td>
-      <td>{$defintionByTerm['net profit']['percent']}</td>
+      <td>{$definitionByTerm['net profit']['percent']}</td>
     </tr>
     <tr>
       <td>Equity</td>
-      <td>{$defintionByTerm['equity']}</td>
+      <td>{$definitionByTerm['equity']}</td>
     </tr>
     <tr>
       <td>Holdings</td>
-      <td>{$defintionByTerm['holdings']}</td>
+      <td>{$definitionByTerm['holdings']}</td>
     </tr>
     <tr>
       <td>Volume</td>
-      <td>{$defintionByTerm['volume']}</td>
+      <td>{$definitionByTerm['volume']}</td>
     </tr>
   </tbody>
 </table>";

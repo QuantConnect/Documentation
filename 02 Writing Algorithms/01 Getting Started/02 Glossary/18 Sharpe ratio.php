@@ -1,6 +1,6 @@
 <?php 
 include(DOCS_RESOURCES."/glossary.php");
 echo "<p>";
-echo $defintionByTerm['sharpe ratio'];
+echo $definitionByTerm['sharpe ratio'];
 echo "</p>";
 ?>
