@@ -16,24 +16,24 @@ echo "
   </thead>
   <tbody>
     <tr>
-      <td>PSR----</td>
+      <td>PSR</td>
       <td>{$defintionByTerm['probabilistic sharpe ratio (PSR)']}</td>
     </tr>
     <tr>
       <td>Unrealized</td>
-      <td>Unrealized profit</td>
+      <td>{$defintionByTerm['unrealized']}</td>
     </tr>
     <tr>
       <td>Fees</td>
-      <td>Total fees paid during the backtest across all securities in the portfolio</td>
+      <td>{$defintionByTerm['total fees']}</td>
     </tr>
     <tr>
       <td>Net Profit</td>
-      <td>Sum of all gross profit across all securities in the portfolio</td>
+      <td>{$defintionByTerm['net profit']['dollar-value']}</td>
     </tr>
     <tr>
       <td>Return</td>
-      <td>Return = (current equity - starting equity) / starting equity</td>
+      <td>{$defintionByTerm['net profit']['percent']}</td>
     </tr>
     <tr>
       <td>Equity</td>
@@ -41,18 +41,18 @@ echo "
     </tr>
     <tr>
       <td>Holdings</td>
-      <td>Absolute sum of the items in the portfolio</td>
+      <td>{$defintionByTerm['holdings']}</td>
     </tr>
     <tr>
       <td>Volume</td>
-      <td>Total sale volume since the start of backtest</td>
+      <td>{$defintionByTerm['volume']}</td>
     </tr>
     <tr>
-      <td><a href='/docs/v2/our-platform/user-guides/alpha-streams-market/investing#02-Capacity'>Capacity</a></td>
-      <td>The maximum amount of money the algorithm can trade before its performance degrades from market impact</td>
+      <td>Capacity</td>
+      <td>{$defintionByTerm['capacity']}</td>
     </tr>
   </tbody>
 </table>";
-?>
 
-<?php echo file_get_contents(DOCS_RESOURCES."/create-custom-runtime-statistic.html"); ?>
+echo file_get_contents(DOCS_RESOURCES."/create-custom-runtime-statistic.html"); 
+?>
