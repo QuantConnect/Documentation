@@ -1,5 +1,5 @@
 <?php
-    echo file_get_contents(__DIR__."/../../03 Tutorials/01 Organizations/01 Managing Organizations/05 Add New Organizations.html");
+    echo file_get_contents(DOCS_RESOURCES."/tutorials/organizations/add-new-organizations.php");
 ?>
 
-<p>Click the name of the organization that you created to connect to the new organization.</p>
+<p>Click the name of the organization you created to connect to it.</p>

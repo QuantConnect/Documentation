@@ -1,5 +1,3 @@
-<p>You need the Strategy Builder enabled to use it to auto-generate your algorithm code.</p>
-
 <p>Follow these steps to use the Strategy Builder:</p>
 
 <ol>

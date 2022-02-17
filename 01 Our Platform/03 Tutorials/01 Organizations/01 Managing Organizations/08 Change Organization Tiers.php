@@ -2,7 +2,7 @@
 <h4>Paid Tiers</h4>
 
 <?php
-    echo file_get_contents(DOCS_RESOURCES."/upgrade-organization-tier.html");
+    echo file_get_contents(DOCS_RESOURCES."/tutorials/organizations/upgrade-organization-tier.html");
 ?>
 
 <h4>Free Tier</h4>
