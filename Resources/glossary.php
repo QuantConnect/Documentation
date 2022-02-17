@@ -3,17 +3,17 @@ $definitionByTerm = array(
     "alpha" => "The quantity of an algorithm's returns that aren't explained by its underlying benchmark.",
     "annual standard deviation" => "A staticial measure that describes the dispersion of annual returns relative to the mean annual return. It's the square root of the annual variance.",
     "annual variance" => "A staticial measure that describes the dispersion of annual returns relative to the mean annual return.",
-    "average loss" => "The average rate of return for unprofitable closed trades.",
-    "average win" => "The average rate of return for profitable closed trades.",
+    "average loss" => "The average rate of return for unprofitable trades.",
+    "average win" => "The average rate of return for profitable trades.",
     "beta" => "The scale and direction of an algorithm's returns relative to movements in the underlying benchmark.",
     "capacity" => "The maximum amount of money an algorithm can trade before its performance degrades from market impact.",
     "compounding annual return" => "The annual percentage return that would be required to grow a portfolio from its starting value to its ending value.",
     "drawdown" => "The largest peak to trough decline in an algorithm's equity curve.",
     "equity" => "The total portfolio value if all of the holdings were sold at current market rates.", 
-    "expectancy" => "The expected profit per closed trade.",
+    "expectancy" => "The expected return per trade.",
     "holdings" => "The absolute sum of the items in the portfolio.",
     "information ratio" => "The amount of excess return from the risk-free rate per unit of systematic risk.",
-    "loss rate" => "The proportion of closed trades that were not profitable.",
+    "loss rate" => "The proportion of trades that were not profitable.",
     "lowest capacity asset" => "The asset an algorithm traded that has the lowest capacity.",
     "net profit" => array("percent" => "The rate of return across the entire trading period.", "dollar-value" => "The dollar-value return across the entire trading period."),
     "probabilistic sharpe ratio (PSR)" => "The probability that the estimated Sharpe ratio of an algorithm is greater than the Sharpe ratio of its benchmark.",
@@ -27,6 +27,6 @@ $definitionByTerm = array(
     "treynor ratio" => "A measurement of the returns earned in an algorithm in excess of the risk-free rate per unit of benchmark risk, developed by Jack Treynor.",
     "unrealized" => "The amount of profit a portfolio would capture if it liquidated all open positions and paid the fees for transacting and crossing the spread.",
     "volume" => "The total value of assets traded for all of an algorithm's transactions.",
-    "win rate" => "The proportion of closed trades that were profitable."
+    "win rate" => "The proportion of trades that were profitable."
 );
 ?>
