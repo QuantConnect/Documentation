@@ -1,6 +1,6 @@
 <?php 
 include(DOCS_RESOURCES."/glossary.php");
 echo "<p>";
-echo $defintionByTerm['alpha'];
+echo $definitionByTerm['alpha'];
 echo "</p>";
 ?>
