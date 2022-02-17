@@ -37,7 +37,7 @@ echo "
     </tr>
     <tr>
       <td>Equity</td>
-      <td>Total portfolio value if you sold all holdings at current market rates</td>
+      <td>{$defintionByTerm['equity']}</td>
     </tr>
     <tr>
       <td>Holdings</td>
