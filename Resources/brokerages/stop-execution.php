@@ -2,7 +2,7 @@
 $getStopExecutionText = function($includeLink=true) {
     echo "<p>";
     if ($includeLink) {
-    	echo "<a href='#04-View-Live-Performance'>";
+    	echo "<a href='#05-View-Live-Performance'>";
     }
     echo "Open the live performance page";
     if ($includeLink) {
