@@ -53,7 +53,7 @@ for full, short in dict(sorted(names.items())).items():
     
     with open(destination_folder / "01 Introduction.html", "w", encoding="utf-8") as html_file:
         html_file.write(f"""<p>
-    {descriptions[full]}
+    {descriptions[full].replace(full, '<code>'+full+'</code>')}
 </p>""")
         
     with open(destination_folder / "02 Automatic Usage.html", "w", encoding="utf-8") as html_file:
