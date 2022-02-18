@@ -13,6 +13,7 @@ $definitionByTerm = array(
     "expectancy" => "The expected return per trade.",
     "holdings" => "The absolute sum of the items in the portfolio.",
     "information ratio" => "The amount of excess return from the risk-free rate per unit of systematic risk.",
+    "look-ahead bias" => "The practice of making decisions using information that would not be available until some time in the future.", 
     "loss rate" => "The proportion of trades that were not profitable.",
     "lowest capacity asset" => "The asset an algorithm traded that has the lowest capacity.",
     "net profit" => array("percent" => "The rate of return across the entire trading period.", "dollar-value" => "The dollar-value return across the entire trading period."),
