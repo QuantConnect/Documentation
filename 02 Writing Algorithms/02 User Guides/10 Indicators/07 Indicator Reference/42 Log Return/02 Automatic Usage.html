@@ -1,0 +1,26 @@
+<p><code>QCAlgorithm</code> provides a shortcut method for each indicator available. Each method creates an indicator object, hooks it up for automatic updates, and returns it to be used in your algorithm.</p>
+
+<p>You can determine the specific requirements of the indicator from the reference table below.</p>
+
+<p>The indicator resolution can be different from the resolution of your securities data. However, the resolution of the indicator should be equal to or higher than the resolution of your security. In most cases, this usage should be in the Initialize method. If you call this method several times, it will create a new indicator that is not ready to use.</p>
+
+<p>To retrieve the numerical value of any indicator, you can use the <code>Current.Value</code> attribute of the indicator.</p>
+
+<div class="section-example-container">
+    <pre class="csharp">private LogReturn _logr;
+// In Initialize()
+_logr = LOGR(symbol, period, resolution, selector);
+
+// In OnData()
+if (_logr.IsReady)
+{
+    var indicatorValue = _logr.Current.Value;
+}</pre>
+    <pre class="python"># In Initialize()
+self.logr = self.LOGR(symbol, period, resolution, selector)
+
+# In OnData()
+if self.logr.IsReady:
+    indicator_value = self.logr.Current.Value
+</pre>
+</div>
