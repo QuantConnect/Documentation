@@ -1,1 +1,0 @@
-<?php echo file_get_contents(DOCS_RESOURCES."/../01 Our Platform/02 User Guides/03 Projects/07 Packages/03 Add New Packages.html"); ?>
