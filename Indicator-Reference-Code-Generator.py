@@ -97,7 +97,7 @@ if self.{short.lower()}.IsReady:
 <div class="section-example-container">
     <pre class="csharp">private {full} _{short.lower()};
 // In Initialize()
-_{short.lower()} = new {full}{str(tuple(args[full][i] for i in range(len(args[full])) if i != 0))};
+_{short.lower()} = new {full}{str(tuple(args[full][i] for i in range(len(args[full])) if i != 0)).replace("'", "").replace('"', '')};
 _{short.lower()}.Updated += IndicatorUpdateMethod;
 
 var thirtyMinuteConsolidator = new TradeBarConsolidator(TimeSpan.FromMinutes(30));
@@ -111,7 +111,7 @@ if (_{short.lower()}.IsReady)
     var indicatorValue = _{short.lower()}.Current.Value;
 }}</pre>
     <pre class="python"># In Initialize()
-self.{short.lower()} = {full}{str(tuple(args[full][i] for i in range(len(args[full])) if i != 0))}
+self.{short.lower()} = {full}{str(tuple(args[full][i] for i in range(len(args[full])) if i != 0)).replace("'", "").replace('"', '')}
 self.{short.lower()}.Updated += self.IndicatorUpdateMethod
 
 thirty_minute_consolidator = TradeBarConsolidator(timedelta(minutes=30))
