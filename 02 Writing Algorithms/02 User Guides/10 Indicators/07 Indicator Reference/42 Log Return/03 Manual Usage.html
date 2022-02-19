@@ -84,7 +84,7 @@ function ShowHide(event, idName) {
 <p>You can create an indicator object that is not bound to any automatic update and choose which data it should use. To use an indicator like this, you create an indicator with its constructor.</p>
 
 <p>To see the LEAN indicator classes available and their constructor arguments, please look them up in the reference table below.</p>
-<a id="LOGR-header"></a>
+<a id="LogReturn-header"></a>
 <div class="method-container">
 
     <div class="method-header">
@@ -103,10 +103,10 @@ function ShowHide(event, idName) {
     </div>
     
     <div class="details-btn">
-        <button class="show-hide-detail" onclick="ShowHide(event, 'LOGR(Symbol-symbol,-Int32-period,-*Nullable&lt;Resolution&gt;-resolution,-*Func&lt;Decimal&gt;-selector)-details')"><span>Show Details <img src='https://cdn.quantconnect.com/i/tu/api-chevron-show.svg' alt='arrow-show'></span></button>
+        <button class="show-hide-detail" onclick="ShowHide(event, 'LogReturn(Symbol-symbol,-Int32-period,-*Nullable&lt;Resolution&gt;-resolution,-*Func&lt;Decimal&gt;-selector)-details')"><span>Show Details <img src='https://cdn.quantconnect.com/i/tu/api-chevron-show.svg' alt='arrow-show'></span></button>
     </div>
 
-    <div class="method-details" id="LOGR(Symbol-symbol,-Int32-period,-*Nullable&lt;Resolution&gt;-resolution,-*Func&lt;Decimal&gt;-selector)-details" style="display: none;" >
+    <div class="method-details" id="LogReturn(Symbol-symbol,-Int32-period,-*Nullable&lt;Resolution&gt;-resolution,-*Func&lt;Decimal&gt;-selector)-details" style="display: none;" >
     
         <div class="parameter-list">
             <table class="parameter-table">
@@ -144,7 +144,7 @@ function ShowHide(event, idName) {
 <div class="section-example-container">
     <pre class="csharp">private LogReturn _logr;
 // In Initialize()
-_logr = new LogReturn(period,);
+_logr = new LogReturn(period);
 _logr.Updated += IndicatorUpdateMethod;
 
 var thirtyMinuteConsolidator = new TradeBarConsolidator(TimeSpan.FromMinutes(30));
@@ -158,7 +158,7 @@ if (_logr.IsReady)
     var indicatorValue = _logr.Current.Value;
 }</pre>
     <pre class="python"># In Initialize()
-self.logr = LogReturn(period,)
+self.logr = LogReturn(period)
 self.logr.Updated += self.IndicatorUpdateMethod
 
 thirty_minute_consolidator = TradeBarConsolidator(timedelta(minutes=30))
@@ -181,23 +181,23 @@ if self.logr.IsReady:
 <div class="section-example-container">
     <pre class="csharp">private LogReturn _logr;
 // In Initialize()
-_logr = new LogReturn(period,);
+_logr = new LogReturn(period);
 
 // In OnData()
 if (data.Bars.ContainsKey(symbol))
 {
-    _logr.Update('time', 'value');
+    _logr.Update(time, value);
 }
 if (_logr.IsReady)
 {
     var indicatorValue = _logr.Current.Value;
 }</pre>
     <pre class="python"># In Initialize()
-self.logr = LogReturn(period,)
+self.logr = LogReturn(period)
 
 # In OnData()
 if data.Bars.ContainsKey(symbol):
-    self.logr.Update('time', 'value')
+    self.logr.Update(time, value)
 if self.logr.IsReady:
     indicator_value = self.logr.Current.Value</pre>
 </div>

@@ -84,7 +84,7 @@ function ShowHide(event, idName) {
 <p>You can create an indicator object that is not bound to any automatic update and choose which data it should use. To use an indicator like this, you create an indicator with its constructor.</p>
 
 <p>To see the LEAN indicator classes available and their constructor arguments, please look them up in the reference table below.</p>
-<a id="HMA-header"></a>
+<a id="HullMovingAverage-header"></a>
 <div class="method-container">
 
     <div class="method-header">
@@ -103,10 +103,10 @@ function ShowHide(event, idName) {
     </div>
     
     <div class="details-btn">
-        <button class="show-hide-detail" onclick="ShowHide(event, 'HMA(Symbol-symbol,-Int32-period,-*Nullable&lt;Resolution&gt;-resolution,-*Func&lt;Decimal&gt;-selector)-details')"><span>Show Details <img src='https://cdn.quantconnect.com/i/tu/api-chevron-show.svg' alt='arrow-show'></span></button>
+        <button class="show-hide-detail" onclick="ShowHide(event, 'HullMovingAverage(Symbol-symbol,-Int32-period,-*Nullable&lt;Resolution&gt;-resolution,-*Func&lt;Decimal&gt;-selector)-details')"><span>Show Details <img src='https://cdn.quantconnect.com/i/tu/api-chevron-show.svg' alt='arrow-show'></span></button>
     </div>
 
-    <div class="method-details" id="HMA(Symbol-symbol,-Int32-period,-*Nullable&lt;Resolution&gt;-resolution,-*Func&lt;Decimal&gt;-selector)-details" style="display: none;" >
+    <div class="method-details" id="HullMovingAverage(Symbol-symbol,-Int32-period,-*Nullable&lt;Resolution&gt;-resolution,-*Func&lt;Decimal&gt;-selector)-details" style="display: none;" >
     
         <div class="parameter-list">
             <table class="parameter-table">
@@ -144,7 +144,7 @@ function ShowHide(event, idName) {
 <div class="section-example-container">
     <pre class="csharp">private HullMovingAverage _hma;
 // In Initialize()
-_hma = new HullMovingAverage(period,);
+_hma = new HullMovingAverage(period);
 _hma.Updated += IndicatorUpdateMethod;
 
 var thirtyMinuteConsolidator = new TradeBarConsolidator(TimeSpan.FromMinutes(30));
@@ -158,7 +158,7 @@ if (_hma.IsReady)
     var indicatorValue = _hma.Current.Value;
 }</pre>
     <pre class="python"># In Initialize()
-self.hma = HullMovingAverage(period,)
+self.hma = HullMovingAverage(period)
 self.hma.Updated += self.IndicatorUpdateMethod
 
 thirty_minute_consolidator = TradeBarConsolidator(timedelta(minutes=30))
@@ -181,23 +181,23 @@ if self.hma.IsReady:
 <div class="section-example-container">
     <pre class="csharp">private HullMovingAverage _hma;
 // In Initialize()
-_hma = new HullMovingAverage(period,);
+_hma = new HullMovingAverage(period);
 
 // In OnData()
 if (data.Bars.ContainsKey(symbol))
 {
-    _hma.Update('time', 'value');
+    _hma.Update(time, value);
 }
 if (_hma.IsReady)
 {
     var indicatorValue = _hma.Current.Value;
 }</pre>
     <pre class="python"># In Initialize()
-self.hma = HullMovingAverage(period,)
+self.hma = HullMovingAverage(period)
 
 # In OnData()
 if data.Bars.ContainsKey(symbol):
-    self.hma.Update('time', 'value')
+    self.hma.Update(time, value)
 if self.hma.IsReady:
     indicator_value = self.hma.Current.Value</pre>
 </div>

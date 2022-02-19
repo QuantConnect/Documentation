@@ -173,7 +173,7 @@ function ShowHide(event, idName) {{
 <div class="section-example-container">
     <pre class="csharp">private {full} _{short.lower()};
 // In Initialize()
-_{short.lower()} = {short}{str(args[full]).replace("'", "").replace('"', '')};
+_{short.lower()} = {short}{str(args[full]).replace("'", "").replace('"', '').replace(',)', ')')};
 
 // In OnData()
 if (_{short.lower()}.IsReady)
@@ -181,7 +181,7 @@ if (_{short.lower()}.IsReady)
     var indicatorValue = _{short.lower()}.Current.Value;
 }}</pre>
     <pre class="python"># In Initialize()
-self.{short.lower()} = self.{short}{str(args[full]).replace("'", "").replace('"', '')}
+self.{short.lower()} = self.{short}{str(args[full]).replace("'", "").replace('"', '').replace(',)', ')')}
 
 # In OnData()
 if self.{short.lower()}.IsReady:
@@ -280,7 +280,9 @@ function ShowHide(event, idName) {{
         for line in api:
             if "<code>Symbol</code>" not in line and "<td>symbol</td>" not in line and " symbol " not in line:
                 html_file.write(line.replace(f"<h3>{short}", f"<h3>{full}")\
-                    .replace(f"QuantConnect.Algorithm.QCAlgorithm.{short}", f"QuantConnect.Indicators.{full}"))
+                    .replace(f"QuantConnect.Algorithm.QCAlgorithm.{short}", f"QuantConnect.Indicators.{full}")\
+                    .replace(f"ShowHide(event, '{short}", f"ShowHide(event, '{full}")\
+                    .replace(f'id="{short}', f'id="{full}'))
 
         html_file.write(f"""<br/>
 <p>You can use two methods to update the indicator: automatic or manual.</p>
@@ -291,7 +293,7 @@ function ShowHide(event, idName) {{
 <div class="section-example-container">
     <pre class="csharp">private {full} _{short.lower()};
 // In Initialize()
-_{short.lower()} = new {full}{str(tuple(args[full][i] for i in range(len(args[full])) if i != 0)).replace("'", "").replace('"', '')};
+_{short.lower()} = new {full}{str(tuple(args[full][i] for i in range(len(args[full])) if i != 0)).replace("'", "").replace('"', '').replace(',)', ')')};
 _{short.lower()}.Updated += IndicatorUpdateMethod;
 
 var thirtyMinuteConsolidator = new TradeBarConsolidator(TimeSpan.FromMinutes(30));
@@ -305,7 +307,7 @@ if (_{short.lower()}.IsReady)
     var indicatorValue = _{short.lower()}.Current.Value;
 }}</pre>
     <pre class="python"># In Initialize()
-self.{short.lower()} = {full}{str(tuple(args[full][i] for i in range(len(args[full])) if i != 0)).replace("'", "").replace('"', '')}
+self.{short.lower()} = {full}{str(tuple(args[full][i] for i in range(len(args[full])) if i != 0)).replace("'", "").replace('"', '').replace(',)', ')')}
 self.{short.lower()}.Updated += self.IndicatorUpdateMethod
 
 thirty_minute_consolidator = TradeBarConsolidator(timedelta(minutes=30))
@@ -328,23 +330,23 @@ if self.{short.lower()}.IsReady:
 <div class="section-example-container">
     <pre class="csharp">private {full} _{short.lower()};
 // In Initialize()
-_{short.lower()} = new {full}{str(tuple(args[full][i] for i in range(len(args[full])) if i != 0)).replace("'", "").replace('"', '')};
+_{short.lower()} = new {full}{str(tuple(args[full][i] for i in range(len(args[full])) if i != 0)).replace("'", "").replace('"', '').replace(',)', ')')};
 
 // In OnData()
 if (data.Bars.ContainsKey(symbol))
 {{
-    _{short.lower()}.Update{str(updates[full])};
+    _{short.lower()}.Update{str(updates[full]).replace("'", "").replace('"', '').replace(',)', ')')};
 }}
 if (_{short.lower()}.IsReady)
 {{
     var indicatorValue = _{short.lower()}.Current.Value;
 }}</pre>
     <pre class="python"># In Initialize()
-self.{short.lower()} = {full}{str(tuple(args[full][i] for i in range(len(args[full])) if i != 0)).replace("'", "").replace('"', '')}
+self.{short.lower()} = {full}{str(tuple(args[full][i] for i in range(len(args[full])) if i != 0)).replace("'", "").replace('"', '').replace(',)', ')')}
 
 # In OnData()
 if data.Bars.ContainsKey(symbol):
-    self.{short.lower()}.Update{str(updates[full])}
+    self.{short.lower()}.Update{str(updates[full]).replace("'", "").replace('"', '').replace(',)', ')')}
 if self.{short.lower()}.IsReady:
     indicator_value = self.{short.lower()}.Current.Value</pre>
 </div>""")
@@ -357,7 +359,7 @@ if self.{short.lower()}.IsReady:
 <div class="section-example-container">
     <pre class="csharp">private {full} _{short.lower()};
 // In Initialize()
-_{short.lower()} = {short}{str(args[full]).replace("'", "").replace('"', '')};
+_{short.lower()} = {short}{str(args[full]).replace("'", "").replace('"', '').replace(',)', ')')};
 
 // In OnData()
 if (_{short.lower()}.IsReady)
@@ -370,7 +372,7 @@ if (_{short.lower()}.IsReady)
                             
         html_file.write(f"""}}</pre>
     <pre class="python"># In Initialize()
-self.{short.lower()} = self.{short}{str(args[full]).replace("'", "").replace('"', '')}
+self.{short.lower()} = self.{short}{str(args[full]).replace("'", "").replace('"', '').replace(',)', ')')}
 
 # In OnData()
 if self.{short.lower()}.IsReady:

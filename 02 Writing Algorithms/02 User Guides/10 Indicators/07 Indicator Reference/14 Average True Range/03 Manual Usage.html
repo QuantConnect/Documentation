@@ -84,7 +84,7 @@ function ShowHide(event, idName) {
 <p>You can create an indicator object that is not bound to any automatic update and choose which data it should use. To use an indicator like this, you create an indicator with its constructor.</p>
 
 <p>To see the LEAN indicator classes available and their constructor arguments, please look them up in the reference table below.</p>
-<a id="ATR-header"></a>
+<a id="AverageTrueRange-header"></a>
 <div class="method-container">
 
     <div class="method-header">
@@ -104,10 +104,10 @@ function ShowHide(event, idName) {
     </div>
     
     <div class="details-btn">
-        <button class="show-hide-detail" onclick="ShowHide(event, 'ATR(Symbol-symbol,-Int32-period,-*MovingAverageType-type,-*Nullable&lt;Resolution&gt;-resolution,-*Func&lt;IBaseDataBar&gt;-selector)-details')"><span>Show Details <img src='https://cdn.quantconnect.com/i/tu/api-chevron-show.svg' alt='arrow-show'></span></button>
+        <button class="show-hide-detail" onclick="ShowHide(event, 'AverageTrueRange(Symbol-symbol,-Int32-period,-*MovingAverageType-type,-*Nullable&lt;Resolution&gt;-resolution,-*Func&lt;IBaseDataBar&gt;-selector)-details')"><span>Show Details <img src='https://cdn.quantconnect.com/i/tu/api-chevron-show.svg' alt='arrow-show'></span></button>
     </div>
 
-    <div class="method-details" id="ATR(Symbol-symbol,-Int32-period,-*MovingAverageType-type,-*Nullable&lt;Resolution&gt;-resolution,-*Func&lt;IBaseDataBar&gt;-selector)-details" style="display: none;" >
+    <div class="method-details" id="AverageTrueRange(Symbol-symbol,-Int32-period,-*MovingAverageType-type,-*Nullable&lt;Resolution&gt;-resolution,-*Func&lt;IBaseDataBar&gt;-selector)-details" style="display: none;" >
     
         <div class="parameter-list">
             <table class="parameter-table">
@@ -148,7 +148,7 @@ function ShowHide(event, idName) {
 <div class="section-example-container">
     <pre class="csharp">private AverageTrueRange _atr;
 // In Initialize()
-_atr = new AverageTrueRange(period,);
+_atr = new AverageTrueRange(period);
 _atr.Updated += IndicatorUpdateMethod;
 
 var thirtyMinuteConsolidator = new TradeBarConsolidator(TimeSpan.FromMinutes(30));
@@ -162,7 +162,7 @@ if (_atr.IsReady)
     var indicatorValue = _atr.Current.Value;
 }</pre>
     <pre class="python"># In Initialize()
-self.atr = AverageTrueRange(period,)
+self.atr = AverageTrueRange(period)
 self.atr.Updated += self.IndicatorUpdateMethod
 
 thirty_minute_consolidator = TradeBarConsolidator(timedelta(minutes=30))
@@ -185,23 +185,23 @@ if self.atr.IsReady:
 <div class="section-example-container">
     <pre class="csharp">private AverageTrueRange _atr;
 // In Initialize()
-_atr = new AverageTrueRange(period,);
+_atr = new AverageTrueRange(period);
 
 // In OnData()
 if (data.Bars.ContainsKey(symbol))
 {
-    _atr.Update('time', 'value');
+    _atr.Update(time, value);
 }
 if (_atr.IsReady)
 {
     var indicatorValue = _atr.Current.Value;
 }</pre>
     <pre class="python"># In Initialize()
-self.atr = AverageTrueRange(period,)
+self.atr = AverageTrueRange(period)
 
 # In OnData()
 if data.Bars.ContainsKey(symbol):
-    self.atr.Update('time', 'value')
+    self.atr.Update(time, value)
 if self.atr.IsReady:
     indicator_value = self.atr.Current.Value</pre>
 </div>
