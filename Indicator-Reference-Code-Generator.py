@@ -67,13 +67,13 @@ for full, short in dict(sorted(names.items())).items():
         active = False
         
         for line in lines:
-            if not active and line == f'<a id="{short}-header"></a>':
+            if not active and f'<a id="{short}-header"></a>' in line:
                 active = True
                 
             if active and 'button class="method-tag"' not in line:
                 api.append(line)
                 
-                if line == "</div>":
+                if "</div>" in line and "    " not in line:
                     active = False
         
     with open(destination_folder / "02 Automatic Usage.html", "w", encoding="utf-8") as html_file:
@@ -164,7 +164,7 @@ function ShowHide(event, idName) {{
 
 <p>You can determine the specific requirements of the indicator from the reference table below.</p>
 
-{(chr(92)+"n").join(api)}
+{"".join(api)}
 
 <p>The indicator resolution can be different from the resolution of your securities data. However, the resolution of the indicator should be equal to or higher than the resolution of your security. In most cases, this usage should be in the Initialize method. If you call this method several times, it will create a new indicator that is not ready to use.</p>
 

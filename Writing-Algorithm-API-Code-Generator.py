@@ -319,7 +319,11 @@ def Box(input_, doc_attr, doc_ref, type_map, j):
                 args[item["Name"]]["Description"] = args[item["Name"]]["Description"] + '<br/><i>\n' + f'Options: {item["EnumValues"]}</i>'
 
             args[item["Name"]]["Type"] = type_map[str(item["typeId"])]
-        
+            
+            if "IsOptional" in item:
+                args[item["Name"]]["Description"] = "<i>(Optional)</i> " + args[item["Name"]]["Description"]
+                args[item["Name"]]["Type"] = "*" + args[item["Name"]]["Type"]
+            
     call = input_["Name"] + "(" + ", ".join([str(value["Type"]) + " " + str(key) for key, value in args.items()]).replace("/", "_") + ")"
     
     params = ""
