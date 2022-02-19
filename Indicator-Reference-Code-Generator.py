@@ -165,7 +165,7 @@ function ShowHide(event, idName) {{
 <p>You can determine the specific requirements of the indicator from the reference table below.</p>
 
 {"".join(api)}
-
+<br/>
 <p>The indicator resolution can be different from the resolution of your securities data. However, the resolution of the indicator should be equal to or higher than the resolution of your security. In most cases, this usage should be in the Initialize method. If you call this method several times, it will create a new indicator that is not ready to use.</p>
 
 <p>To retrieve the numerical value of any indicator, you can use the <code>Current.Value</code> attribute of the indicator.</p>
@@ -279,9 +279,10 @@ function ShowHide(event, idName) {{
 """)
         for line in api:
             if "<code>Symbol</code>" not in line and "<td>symbol</td>" not in line and " symbol " not in line:
-                html_file.write(line.replace(f"QuantConnect.Algorithm.QCAlgorithm.{short}", f"QuantConnect.Indicators.{full}"))
+                html_file.write(line.replace(f"<h3>{short}", f"<h3>{full}")\
+                    .replace(f"QuantConnect.Algorithm.QCAlgorithm.{short}", f"QuantConnect.Indicators.{full}"))
 
-        html_file.write(f"""
+        html_file.write(f"""<br/>
 <p>You can use two methods to update the indicator: automatic or manual.</p>
 
 <h4>Automatic Update</h4>
