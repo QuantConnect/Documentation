@@ -30,7 +30,11 @@ for method in methods:
                 .replace("null", "None")
         ind_dict = eval(ind)
         
-        descriptions[item].append(str(ind_dict['description']).replace("Represents", "This indicator represents"))
+        detail_description = str(ind_dict['description']).replace("Represents", "This indicator represents")
+        if "Source: " in detail_description:
+            link_split = detail_description.split("http")
+            detail_description = link_split[0].replace("Source: ", f'<sup><a href="https{link_split[1]}">source</a></sup>')
+        descriptions[item].append(detail_description)
         
         for prop in ind_dict["properties"]:
             prop_name = str(prop["property-name"])
@@ -41,9 +45,29 @@ for method in methods:
             or prop_name != "Samples":
                 plots[item].append(prop_name)
                 
-        for m in ind_dict["methods"]:
-            if m["method-name"] == "Update":
-                updates[item] = tuple(x["argument-name"] for x in m["method-arguments"])
+        while True:
+            if "QuantConnect.Indicators.Indicator" in ind_dict["base-type-full-name"]:
+                updates[item] = ("time", "value")
+                update_value = "time/decimal pair"
+                break
+            
+            elif "QuantConnect.Indicators.BarIndicator" in ind_dict["base-type-full-name"]:
+                updates[item] = ("quotebar")
+                update_value = "a trade bar, a quote bar, or a custom data bar"
+                break
+            
+            elif "QuantConnect.Indicators.TradeBarIndicator" in ind_dict["base-type-full-name"]:
+                updates[item] = ("tradebar")
+                update_value = "a trade bar"
+                break
+            
+            else:
+                end = ind_dict["base-type-full-name"].split(".")[-1]
+                ind = urlopen(f"https://www.quantconnect.com/services/inspector?type=T:QuantConnect.Indicators.{end}").read().decode("utf-8") \
+                        .replace("true", "True") \
+                        .replace("false", "False") \
+                        .replace("null", "None")
+                ind_dict = eval(ind)
         
 i = 1
 
@@ -278,7 +302,10 @@ function ShowHide(event, idName) {{
 <p>To see the LEAN indicator classes available and their constructor arguments, please look them up in the reference table below.</p>
 """)
         for line in api:
-            if "<code>Symbol</code>" not in line and "<td>symbol</td>" not in line and " symbol " not in line:
+            if "<p>Definition at" in line:
+                html_file.write(f'            <p>Definition at <a href="https://github.com/QuantConnect/Lean/blob/master/Indicators/{full}.cs">file Indicators/{full}.cs.</a></p>\n')
+                
+            elif "<code>Symbol</code>" not in line and "<td>symbol</td>" not in line and " symbol " not in line:
                 html_file.write(line.replace(f"<h3>{short}", f"<h3>{full}")\
                     .replace(f"QuantConnect.Algorithm.QCAlgorithm.{short}", f"QuantConnect.Indicators.{full}")\
                     .replace(f"ShowHide(event, '{short}", f"ShowHide(event, '{full}")\
@@ -321,11 +348,9 @@ if self.{short.lower()}.IsReady:
 </div>
 
 <h4>Manual Update</h4>
-<p>Updating your indicator manually allows you to control which data is used and create indicators of other non-price fields. For instance, you can use the 3:30 pm price in your daily moving average instead of the after-market closing price, or you may want to use the maximum temperature of the past 10 cloudy days.</p>
+<p>Updating your indicator manually allows you to control which data is used and create indicators of other non-price fields. The indicator objects have the <code>Update()</code> method that updates the state of the <code>{full}</code> indicator with the given {update_value}.</p>
 
-<p>The indicator objects have the Update() method that updates the state of an indicator with the given value. Depending on the different types of indicators, this value can be the time/decimal pair, a trade bar, a quote bar, or a custom data bar.</p>
-
-<p>With this method, the indicator will only be ready after the Update() method has been used to pump enough data. For example, a 10-period daily moving average needs to receive ten daily data points through the Update() method.</p>
+<p>With this method, the indicator will only be ready after the <code>Update()</code> method has been used to pump enough data.</p>
 
 <div class="section-example-container">
     <pre class="csharp">private {full} _{short.lower()};
