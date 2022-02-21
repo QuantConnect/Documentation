@@ -321,7 +321,7 @@ def Box(input_, doc_attr, doc_ref, type_map, j):
             args[item["Name"]]["Type"] = type_map[str(item["typeId"])]
             
             if "IsOptional" in item:
-                args[item["Name"]]["Description"] = "<i>(Optional)</i> " + args[item["Name"]]["Description"]
+                args[item["Name"]]["Description"] = "(Optional) " + args[item["Name"]]["Description"]
                 args[item["Name"]]["Type"] = "*" + args[item["Name"]]["Type"]
             
     call = input_["Name"] + "(" + ", ".join([str(value["Type"]) + " " + str(key) for key, value in args.items()]).replace("/", "_") + ")"
@@ -356,7 +356,7 @@ def Box(input_, doc_attr, doc_ref, type_map, j):
             params += f'''                
                 <tr><td><code>{prop["Type"]}</code></td>
                 <td>{name}</td>
-                <td>{description}</td></tr>'''
+                <td>{description.replace("(Optional)", "<i>(Optional)</i>")}</td></tr>'''
             
         params += """
             </table>
