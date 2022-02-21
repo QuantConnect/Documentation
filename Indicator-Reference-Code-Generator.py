@@ -38,11 +38,11 @@ for method in methods:
         
         for prop in ind_dict["properties"]:
             prop_name = str(prop["property-name"])
-            if prop_name != "MovingAverageType" \
-            or prop_name != "IsReady" \
-            or prop_name != "WarmUpPeriod" \
-            or prop_name != "Name" \
-            or prop_name != "Samples":
+            if "MovingAverageType" not in prop_name\
+            or "IsReady" not in prop_name\
+            or "WarmUpPeriod" not in prop_name\
+            or "Name" not in prop_name\
+            or "Samples" not in prop_name:
                 plots[item].append(prop_name)
                 
         while True:
@@ -299,8 +299,19 @@ function ShowHide(event, idName) {{
 
 <p>You can create an {full} indicator object that is not bounded to any automatic update and choose which data it should use. To use it, please refer to the reference table below.</p>
 """)
+        
+        api_active = True
+        
         for line in api:
-            if "<p>Definition at" in line:
+            if "<code>*Nullable&lt;Resolution&gt;</code>" in line:
+                api_active = False
+                
+            elif ")" in line or "</table>" in line:
+                api_active = True
+                
+            if not api_active: continue
+            
+            elif "<p>Definition at" in line:
                 html_file.write(f'            <p>Definition at <a href="https://github.com/QuantConnect/Lean/blob/master/Indicators/{full}.cs">file Indicators/{full}.cs.</a></p>\n')
                 
             else:
@@ -408,7 +419,7 @@ if self.{short.lower()}.IsReady:
             html_file.write(f'''    self.Plot("My Indicators", "{short}{" ".join(re.split("(?=[A-Z])", x))}", self.{short.lower()}.{x});
 ''')
                             
-        html_file.write(f"""}}</pre>
+        html_file.write(f"""</pre>
 </div>""")
         
     i += 1
