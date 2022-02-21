@@ -39,10 +39,10 @@ for method in methods:
         for prop in ind_dict["properties"]:
             prop_name = str(prop["property-name"])
             if "MovingAverageType" not in prop_name\
-            or "IsReady" not in prop_name\
-            or "WarmUpPeriod" not in prop_name\
-            or "Name" not in prop_name\
-            or "Samples" not in prop_name:
+            and "IsReady" not in prop_name\
+            and "WarmUpPeriod" not in prop_name\
+            and "Name" not in prop_name\
+            and "Samples" not in prop_name:
                 plots[item].append(prop_name)
                 
         while True:
