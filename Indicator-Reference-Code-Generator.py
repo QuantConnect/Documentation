@@ -47,17 +47,17 @@ for method in methods:
                 
         while True:
             if "QuantConnect.Indicators.Indicator" in ind_dict["base-type-full-name"]:
-                updates[item] = ("time", "value")
+                updates[item] = tuple(("time", "value"))
                 update_value = "time/decimal pair"
                 break
             
             elif "QuantConnect.Indicators.BarIndicator" in ind_dict["base-type-full-name"]:
-                updates[item] = ("quotebar")
+                updates[item] = tuple(("quotebar",))
                 update_value = "a trade bar, a quote bar, or a custom data bar"
                 break
             
             elif "QuantConnect.Indicators.TradeBarIndicator" in ind_dict["base-type-full-name"]:
-                updates[item] = ("tradebar")
+                updates[item] = tuple(("tradebar",))
                 update_value = "a trade bar"
                 break
             
