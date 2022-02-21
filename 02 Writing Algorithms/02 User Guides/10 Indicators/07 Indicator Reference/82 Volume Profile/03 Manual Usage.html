@@ -81,7 +81,7 @@ function ShowHide(event, idName) {
 };
 </script>
 
-<p>You can create an VolumeProfile indicator object that is not bounded to any automatic update and choose which data it should use. To use it, please refer to the reference table below.</p>
+<p>You can create an <code>VolumeProfile</code> indicator that does not automatically update. This lets you update the indicator with any data you choose. The following reference table describes the <code>VolumeProfile</code> constructor.</p>
 <a id="VolumeProfile-header"></a>
 <div class="method-container">
 
@@ -146,10 +146,10 @@ function ShowHide(event, idName) {
 
 </div>
 <br/>
-<p>You can use two methods to update the indicator: automatic or manual.</p>
+<p>You can update the indicator automatically or manually.</p>
 
 <h4>Automatic Update</h4>
-<p>In this method, you will recreate the basic indicator usage: create the indicator with its constructor and register the indicator for automatic updates with the <code>RegisterIndicator()</code> method, but could be using a custom resolution via a <code>Consolidator</code>.</p>
+<p>Create a consolidator and then call the <code>RegisterIndicator</code> method to update the indicator with the consolidated bars.</p>
         
 <div class="section-example-container">
     <pre class="csharp">private VolumeProfile _vp;
@@ -158,6 +158,7 @@ _vp = new VolumeProfile();
 _vp.Updated += IndicatorUpdateMethod;
 
 var thirtyMinuteConsolidator = new TradeBarConsolidator(TimeSpan.FromMinutes(30));
+var symbol = AddEquity("SPY").Symbol;
 SubscriptionManager.AddConsolidator(symbol, thirtyMinuteConsolidator);
 
 RegisterIndicator(symbol, _vp, thirtyMinuteConsolidator);
@@ -172,6 +173,7 @@ self.vp = VolumeProfile()
 self.vp.Updated += self.IndicatorUpdateMethod
 
 thirty_minute_consolidator = TradeBarConsolidator(timedelta(minutes=30))
+symbol = self.AddEquity("SPY").Symbol
 self.SubscriptionManager.AddConsolidator(symbol, thirty_minute_consolidator)
 
 self.RegisterIndicator(symbol, self.vp, thirty_minute_consolidator)
@@ -182,19 +184,21 @@ if self.vp.IsReady:
 </div>
 
 <h4>Manual Update</h4>
-<p>Updating your indicator manually allows you to control which data is used and create indicators of other non-regular price fields. The indicator objects have the <code>Update()</code> method that updates the state of the <code>VolumeProfile</code> indicator with the given a trade bar, a quote bar, or a custom data bar.</p>
+<p>Updating your indicator manually enables you to control when the indicator is updated and what data you use to update it. To manually update the indicator, call the <code>Update</code> method that with a <code>TradeBar</code>. The indicator will only be ready after you prime it with enough data.</p>
 
 <p>With this method, the indicator will only be ready after the <code>Update()</code> method has been used to pump enough data.</p>
 
 <div class="section-example-container">
     <pre class="csharp">private VolumeProfile _vp;
+private Symbol _symbol;
 // In Initialize()
 _vp = new VolumeProfile();
+_symbol = AddEquity("SPY").Symbol;
 
 // In OnData()
-if (data.Bars.ContainsKey(symbol))
+if (data.Bars.ContainsKey(_symbol))
 {
-    _vp.Update(data.Bars[symbol]);
+    _vp.Update(data.Bars[_symbol]);
 }
 if (_vp.IsReady)
 {
@@ -202,10 +206,11 @@ if (_vp.IsReady)
 }</pre>
     <pre class="python"># In Initialize()
 self.vp = VolumeProfile()
+self.symbol = self.AddEquity("SPY").Symbol
 
 # In OnData()
-if data.Bars.ContainsKey(symbol):
-    self.vp.Update(data.Bars[symbol])
+if data.Bars.ContainsKey(self.symbol):
+    self.vp.Update(data.Bars[self.symbol])
 if self.vp.IsReady:
     indicator_value = self.vp.Current.Value</pre>
 </div>

@@ -81,9 +81,8 @@ function ShowHide(event, idName) {
 };
 </script>
                         
-<p><code>QCAlgorithm</code> provides a shortcut method for the <code>RelativeVigorIndex</code> indicator -- <code>RVI()</code>. It creates an <code>Indicator</code> object, hooks it up for automatic updates, and returns it to be used in your algorithm.</p>
-
-<p>You can determine the specific requirements of the indicator from the reference table below.</p>
+<p><code>QCAlgorithm</code> provides a shortcut method, RVI(), for the RelativeVigorIndex indicator. It creates an <code>Indicator</code> object, sets up a consolidator to update the indicator, and then returns the indicator so you can use it in your algorithm.</p>
+<p>The following reference table describes the RVI method:</p>
 
 <a id="RVI-header"></a>
 <div class="method-container">
@@ -146,13 +145,14 @@ function ShowHide(event, idName) {
 </div>
 
 <br/>
-<p>The indicator resolution can be different from the resolution of your securities data. However, the resolution of the indicator should be equal to or higher than the resolution of your security. In most cases, this usage should be in the <code>Initialize</code> method. If you call this method several times, it will create a new indicator that is not ready to use.</p>
+<p>The resolution of the indicator should be greater than or equal to the resolution of the security.</p>
 
-<p>To retrieve the numerical value of any indicator, you can use the <code>Current.Value</code> attribute of the indicator.</p>
+<p>To retrieve the numerical value of the indicator, use its <code>Current.Value</code> attribute.</p>
 
 <div class="section-example-container">
     <pre class="csharp">private RelativeVigorIndex _rvi;
 // In Initialize()
+var symbol = AddEquity("SPY").Symbol;
 _rvi = RVI(symbol, period);
 
 // In OnData()
@@ -161,6 +161,7 @@ if (_rvi.IsReady)
     var indicatorValue = _rvi.Current.Value;
 }</pre>
     <pre class="python"># In Initialize()
+symbol = self.AddEquity("SPY").Symbol
 self.rvi = self.RVI(symbol, period)
 
 # In OnData()
