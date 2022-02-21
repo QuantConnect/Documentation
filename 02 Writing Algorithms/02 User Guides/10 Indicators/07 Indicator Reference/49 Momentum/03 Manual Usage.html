@@ -81,9 +81,7 @@ function ShowHide(event, idName) {
 };
 </script>
 
-<p>You can create an indicator object that is not bound to any automatic update and choose which data it should use. To use an indicator like this, you create an indicator with its constructor.</p>
-
-<p>To see the LEAN indicator classes available and their constructor arguments, please look them up in the reference table below.</p>
+<p>You can create an Momentum indicator object that is not bounded to any automatic update and choose which data it should use. To use it, please refer to the reference table below.</p>
 <a id="Momentum-header"></a>
 <div class="method-container">
 
@@ -91,6 +89,7 @@ function ShowHide(event, idName) {
         <h3>Momentum()<span class="method-order">1/1</span></h3>
         <pre>
             <font color="#8F9CA3">Momentum</font> QuantConnect.Indicators.Momentum (
+   &emsp;<code>*string</code>                       name,
    &emsp;<code>Int32</code>                        period,
    &emsp;<code>*Nullable&lt;Resolution&gt;</code>  resolution,
    &emsp;<code>*Func&lt;Decimal&gt;</code>         selector
@@ -103,14 +102,17 @@ function ShowHide(event, idName) {
     </div>
     
     <div class="details-btn">
-        <button class="show-hide-detail" onclick="ShowHide(event, 'Momentum(Symbol-symbol,-Int32-period,-*Nullable&lt;Resolution&gt;-resolution,-*Func&lt;Decimal&gt;-selector)-details')"><span>Show Details <img src='https://cdn.quantconnect.com/i/tu/api-chevron-show.svg' alt='arrow-show'></span></button>
+        <button class="show-hide-detail" onclick="ShowHide(event, 'Momentum(*string-name,-Int32-period,-*Nullable&lt;Resolution&gt;-resolution,-*Func&lt;Decimal&gt;-selector)-details')"><span>Show Details <img src='https://cdn.quantconnect.com/i/tu/api-chevron-show.svg' alt='arrow-show'></span></button>
     </div>
 
-    <div class="method-details" id="Momentum(Symbol-symbol,-Int32-period,-*Nullable&lt;Resolution&gt;-resolution,-*Func&lt;Decimal&gt;-selector)-details" style="display: none;" >
+    <div class="method-details" id="Momentum(*string-name,-Int32-period,-*Nullable&lt;Resolution&gt;-resolution,-*Func&lt;Decimal&gt;-selector)-details" style="display: none;" >
     
         <div class="parameter-list">
             <table class="parameter-table">
                 <th><strong>Parameters</strong></th>                
+                <tr><td><code>*string</code></td>
+                <td>name</td>
+                <td><i>(Optional)</i> The custom name of the indicator whose momentum we want.</td></tr>                
                 <tr><td><code>Int32</code></td>
                 <td>period</td>
                 <td>The period over which to compute the momentum.</td></tr>                
@@ -125,6 +127,7 @@ function ShowHide(event, idName) {
 
         <div class="method-return">
             <h4>Return</h4>
+            <p>Momentum - The momentum indicator for the requested name over the specified period</p>
         </div>
 
         <div class="method-def">
@@ -138,7 +141,7 @@ function ShowHide(event, idName) {
 <p>You can use two methods to update the indicator: automatic or manual.</p>
 
 <h4>Automatic Update</h4>
-<p>In this method, you will recreate the basic indicator usage: create an indicator with its constructor and register the indicator for automatic updates with the <code>RegisterIndicator()</code> method.</p>
+<p>In this method, you will recreate the basic indicator usage: create the indicator with its constructor and register the indicator for automatic updates with the <code>RegisterIndicator()</code> method, but could be using a custom resolution via a <code>Consolidator</code>.</p>
         
 <div class="section-example-container">
     <pre class="csharp">private Momentum _mom;
@@ -171,7 +174,7 @@ if self.mom.IsReady:
 </div>
 
 <h4>Manual Update</h4>
-<p>Updating your indicator manually allows you to control which data is used and create indicators of other non-price fields. The indicator objects have the <code>Update()</code> method that updates the state of the <code>Momentum</code> indicator with the given a trade bar, a quote bar, or a custom data bar.</p>
+<p>Updating your indicator manually allows you to control which data is used and create indicators of other non-regular price fields. The indicator objects have the <code>Update()</code> method that updates the state of the <code>Momentum</code> indicator with the given a trade bar, a quote bar, or a custom data bar.</p>
 
 <p>With this method, the indicator will only be ready after the <code>Update()</code> method has been used to pump enough data.</p>
 
