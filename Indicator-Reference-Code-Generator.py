@@ -306,7 +306,7 @@ function ShowHide(event, idName) {{
             if "<code>*Nullable&lt;Resolution&gt;</code>" in line:
                 api_active = False
                 
-            elif ")" in line or "</table>" in line:
+            elif " )" in line or "</table>" in line:
                 api_active = True
                 
             if not api_active: continue
