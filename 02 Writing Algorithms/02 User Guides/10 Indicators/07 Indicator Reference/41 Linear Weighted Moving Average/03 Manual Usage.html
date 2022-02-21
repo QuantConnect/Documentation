@@ -182,9 +182,9 @@ if self.lwma.IsReady:
 _lwma = new LinearWeightedMovingAverage(period);
 
 // In OnData()
-if (data.Bars.ContainsKey(symbol))
+if (data.ContainsKey(symbol))
 {
-    _lwma.Update(time, value);
+    _lwma.Update(data[symbol].EndTime, data[symbol].High);
 }
 if (_lwma.IsReady)
 {
@@ -194,8 +194,8 @@ if (_lwma.IsReady)
 self.lwma = LinearWeightedMovingAverage(period)
 
 # In OnData()
-if data.Bars.ContainsKey(symbol):
-    self.lwma.Update(time, value)
+if data.ContainsKey(symbol):
+    self.lwma.Update(data[symbol].EndTime, data[symbol].High)
 if self.lwma.IsReady:
     indicator_value = self.lwma.Current.Value</pre>
 </div>

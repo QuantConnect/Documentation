@@ -181,9 +181,9 @@ if self.trima.IsReady:
 _trima = new TriangularMovingAverage(period);
 
 // In OnData()
-if (data.Bars.ContainsKey(symbol))
+if (data.ContainsKey(symbol))
 {
-    _trima.Update(time, value);
+    _trima.Update(data[symbol].EndTime, data[symbol].High);
 }
 if (_trima.IsReady)
 {
@@ -193,8 +193,8 @@ if (_trima.IsReady)
 self.trima = TriangularMovingAverage(period)
 
 # In OnData()
-if data.Bars.ContainsKey(symbol):
-    self.trima.Update(time, value)
+if data.ContainsKey(symbol):
+    self.trima.Update(data[symbol].EndTime, data[symbol].High)
 if self.trima.IsReady:
     indicator_value = self.trima.Current.Value</pre>
 </div>

@@ -182,9 +182,9 @@ if self.hma.IsReady:
 _hma = new HullMovingAverage(period);
 
 // In OnData()
-if (data.Bars.ContainsKey(symbol))
+if (data.ContainsKey(symbol))
 {
-    _hma.Update(time, value);
+    _hma.Update(data[symbol].EndTime, data[symbol].High);
 }
 if (_hma.IsReady)
 {
@@ -194,8 +194,8 @@ if (_hma.IsReady)
 self.hma = HullMovingAverage(period)
 
 # In OnData()
-if data.Bars.ContainsKey(symbol):
-    self.hma.Update(time, value)
+if data.ContainsKey(symbol):
+    self.hma.Update(data[symbol].EndTime, data[symbol].High)
 if self.hma.IsReady:
     indicator_value = self.hma.Current.Value</pre>
 </div>

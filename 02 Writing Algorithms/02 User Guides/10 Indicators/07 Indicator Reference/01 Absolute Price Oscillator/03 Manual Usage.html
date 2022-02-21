@@ -189,9 +189,9 @@ if self.apo.IsReady:
 _apo = new AbsolutePriceOscillator(fastPeriod, slowPeriod, movingAverageType);
 
 // In OnData()
-if (data.Bars.ContainsKey(symbol))
+if (data.ContainsKey(symbol))
 {
-    _apo.Update(time, value);
+    _apo.Update(data[symbol].EndTime, data[symbol].High);
 }
 if (_apo.IsReady)
 {
@@ -201,8 +201,8 @@ if (_apo.IsReady)
 self.apo = AbsolutePriceOscillator(fastPeriod, slowPeriod, movingAverageType)
 
 # In OnData()
-if data.Bars.ContainsKey(symbol):
-    self.apo.Update(time, value)
+if data.ContainsKey(symbol):
+    self.apo.Update(data[symbol].EndTime, data[symbol].High)
 if self.apo.IsReady:
     indicator_value = self.apo.Current.Value</pre>
 </div>

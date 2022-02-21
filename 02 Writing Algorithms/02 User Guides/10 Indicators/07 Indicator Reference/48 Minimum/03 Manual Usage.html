@@ -182,9 +182,9 @@ if self.min.IsReady:
 _min = new Minimum(period);
 
 // In OnData()
-if (data.Bars.ContainsKey(symbol))
+if (data.ContainsKey(symbol))
 {
-    _min.Update(time, value);
+    _min.Update(data[symbol].EndTime, data[symbol].High);
 }
 if (_min.IsReady)
 {
@@ -194,8 +194,8 @@ if (_min.IsReady)
 self.min = Minimum(period)
 
 # In OnData()
-if data.Bars.ContainsKey(symbol):
-    self.min.Update(time, value)
+if data.ContainsKey(symbol):
+    self.min.Update(data[symbol].EndTime, data[symbol].High)
 if self.min.IsReady:
     indicator_value = self.min.Current.Value</pre>
 </div>

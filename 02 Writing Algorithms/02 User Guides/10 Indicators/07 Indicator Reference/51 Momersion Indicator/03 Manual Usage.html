@@ -185,9 +185,9 @@ if self.momersion.IsReady:
 _momersion = new MomersionIndicator(minPeriod, fullPeriod);
 
 // In OnData()
-if (data.Bars.ContainsKey(symbol))
+if (data.ContainsKey(symbol))
 {
-    _momersion.Update(time, value);
+    _momersion.Update(data[symbol].EndTime, data[symbol].High);
 }
 if (_momersion.IsReady)
 {
@@ -197,8 +197,8 @@ if (_momersion.IsReady)
 self.momersion = MomersionIndicator(minPeriod, fullPeriod)
 
 # In OnData()
-if data.Bars.ContainsKey(symbol):
-    self.momersion.Update(time, value)
+if data.ContainsKey(symbol):
+    self.momersion.Update(data[symbol].EndTime, data[symbol].High)
 if self.momersion.IsReady:
     indicator_value = self.momersion.Current.Value</pre>
 </div>

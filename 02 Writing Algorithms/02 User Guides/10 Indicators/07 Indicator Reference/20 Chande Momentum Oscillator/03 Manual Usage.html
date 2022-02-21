@@ -181,9 +181,9 @@ if self.cmo.IsReady:
 _cmo = new ChandeMomentumOscillator(period);
 
 // In OnData()
-if (data.Bars.ContainsKey(symbol))
+if (data.ContainsKey(symbol))
 {
-    _cmo.Update(time, value);
+    _cmo.Update(data[symbol].EndTime, data[symbol].High);
 }
 if (_cmo.IsReady)
 {
@@ -193,8 +193,8 @@ if (_cmo.IsReady)
 self.cmo = ChandeMomentumOscillator(period)
 
 # In OnData()
-if data.Bars.ContainsKey(symbol):
-    self.cmo.Update(time, value)
+if data.ContainsKey(symbol):
+    self.cmo.Update(data[symbol].EndTime, data[symbol].High)
 if self.cmo.IsReady:
     indicator_value = self.cmo.Current.Value</pre>
 </div>

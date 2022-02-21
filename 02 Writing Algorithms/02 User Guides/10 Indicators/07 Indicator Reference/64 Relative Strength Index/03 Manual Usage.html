@@ -185,9 +185,9 @@ if self.rsi.IsReady:
 _rsi = new RelativeStrengthIndex(period);
 
 // In OnData()
-if (data.Bars.ContainsKey(symbol))
+if (data.ContainsKey(symbol))
 {
-    _rsi.Update(time, value);
+    _rsi.Update(data[symbol].EndTime, data[symbol].High);
 }
 if (_rsi.IsReady)
 {
@@ -197,8 +197,8 @@ if (_rsi.IsReady)
 self.rsi = RelativeStrengthIndex(period)
 
 # In OnData()
-if data.Bars.ContainsKey(symbol):
-    self.rsi.Update(time, value)
+if data.ContainsKey(symbol):
+    self.rsi.Update(data[symbol].EndTime, data[symbol].High)
 if self.rsi.IsReady:
     indicator_value = self.rsi.Current.Value</pre>
 </div>

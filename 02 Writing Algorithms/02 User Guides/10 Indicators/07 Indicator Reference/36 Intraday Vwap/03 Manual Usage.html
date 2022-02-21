@@ -219,9 +219,9 @@ if self.vwap.IsReady:
 _vwap = new IntradayVwap();
 
 // In OnData()
-if (data.Bars.ContainsKey(symbol))
+if (data.ContainsKey(symbol))
 {
-    _vwap.Update(time, value);
+    _vwap.Update(data[symbol].EndTime, data[symbol].High);
 }
 if (_vwap.IsReady)
 {
@@ -231,8 +231,8 @@ if (_vwap.IsReady)
 self.vwap = IntradayVwap()
 
 # In OnData()
-if data.Bars.ContainsKey(symbol):
-    self.vwap.Update(time, value)
+if data.ContainsKey(symbol):
+    self.vwap.Update(data[symbol].EndTime, data[symbol].High)
 if self.vwap.IsReady:
     indicator_value = self.vwap.Current.Value</pre>
 </div>

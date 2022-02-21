@@ -181,9 +181,9 @@ if self.tema.IsReady:
 _tema = new TripleExponentialMovingAverage(period);
 
 // In OnData()
-if (data.Bars.ContainsKey(symbol))
+if (data.ContainsKey(symbol))
 {
-    _tema.Update(time, value);
+    _tema.Update(data[symbol].EndTime, data[symbol].High);
 }
 if (_tema.IsReady)
 {
@@ -193,8 +193,8 @@ if (_tema.IsReady)
 self.tema = TripleExponentialMovingAverage(period)
 
 # In OnData()
-if data.Bars.ContainsKey(symbol):
-    self.tema.Update(time, value)
+if data.ContainsKey(symbol):
+    self.tema.Update(data[symbol].EndTime, data[symbol].High)
 if self.tema.IsReady:
     indicator_value = self.tema.Current.Value</pre>
 </div>

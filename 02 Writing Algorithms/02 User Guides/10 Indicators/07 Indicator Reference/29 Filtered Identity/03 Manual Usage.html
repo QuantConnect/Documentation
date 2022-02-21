@@ -431,9 +431,9 @@ if self.filteredidentity.IsReady:
 _filteredidentity = new FilteredIdentity(resolution);
 
 // In OnData()
-if (data.Bars.ContainsKey(symbol))
+if (data.ContainsKey(symbol))
 {
-    _filteredidentity.Update(time, value);
+    _filteredidentity.Update(data[symbol].EndTime, data[symbol].High);
 }
 if (_filteredidentity.IsReady)
 {
@@ -443,8 +443,8 @@ if (_filteredidentity.IsReady)
 self.filteredidentity = FilteredIdentity(resolution)
 
 # In OnData()
-if data.Bars.ContainsKey(symbol):
-    self.filteredidentity.Update(time, value)
+if data.ContainsKey(symbol):
+    self.filteredidentity.Update(data[symbol].EndTime, data[symbol].High)
 if self.filteredidentity.IsReady:
     indicator_value = self.filteredidentity.Current.Value</pre>
 </div>

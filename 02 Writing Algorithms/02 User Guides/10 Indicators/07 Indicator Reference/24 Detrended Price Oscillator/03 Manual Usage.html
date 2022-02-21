@@ -181,9 +181,9 @@ if self.dpo.IsReady:
 _dpo = new DetrendedPriceOscillator(period);
 
 // In OnData()
-if (data.Bars.ContainsKey(symbol))
+if (data.ContainsKey(symbol))
 {
-    _dpo.Update(time, value);
+    _dpo.Update(data[symbol].EndTime, data[symbol].High);
 }
 if (_dpo.IsReady)
 {
@@ -193,8 +193,8 @@ if (_dpo.IsReady)
 self.dpo = DetrendedPriceOscillator(period)
 
 # In OnData()
-if data.Bars.ContainsKey(symbol):
-    self.dpo.Update(time, value)
+if data.ContainsKey(symbol):
+    self.dpo.Update(data[symbol].EndTime, data[symbol].High)
 if self.dpo.IsReady:
     indicator_value = self.dpo.Current.Value</pre>
 </div>

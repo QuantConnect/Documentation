@@ -191,9 +191,9 @@ if self.abands.IsReady:
 _abands = new AccelerationBands(period);
 
 // In OnData()
-if (data.Bars.ContainsKey(symbol))
+if (data.ContainsKey(symbol))
 {
-    _abands.Update(time, value);
+    _abands.Update(data[symbol].EndTime, data[symbol].High);
 }
 if (_abands.IsReady)
 {
@@ -203,8 +203,8 @@ if (_abands.IsReady)
 self.abands = AccelerationBands(period)
 
 # In OnData()
-if data.Bars.ContainsKey(symbol):
-    self.abands.Update(time, value)
+if data.ContainsKey(symbol):
+    self.abands.Update(data[symbol].EndTime, data[symbol].High)
 if self.abands.IsReady:
     indicator_value = self.abands.Current.Value</pre>
 </div>

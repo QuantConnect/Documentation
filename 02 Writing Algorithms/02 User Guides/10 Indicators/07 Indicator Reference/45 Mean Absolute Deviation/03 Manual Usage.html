@@ -181,9 +181,9 @@ if self.mad.IsReady:
 _mad = new MeanAbsoluteDeviation(period);
 
 // In OnData()
-if (data.Bars.ContainsKey(symbol))
+if (data.ContainsKey(symbol))
 {
-    _mad.Update(time, value);
+    _mad.Update(data[symbol].EndTime, data[symbol].High);
 }
 if (_mad.IsReady)
 {
@@ -193,8 +193,8 @@ if (_mad.IsReady)
 self.mad = MeanAbsoluteDeviation(period)
 
 # In OnData()
-if data.Bars.ContainsKey(symbol):
-    self.mad.Update(time, value)
+if data.ContainsKey(symbol):
+    self.mad.Update(data[symbol].EndTime, data[symbol].High)
 if self.mad.IsReady:
     indicator_value = self.mad.Current.Value</pre>
 </div>

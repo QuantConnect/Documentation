@@ -185,9 +185,9 @@ if self.sr.IsReady:
 _sr = new SharpeRatio(sharpePeriod);
 
 // In OnData()
-if (data.Bars.ContainsKey(symbol))
+if (data.ContainsKey(symbol))
 {
-    _sr.Update(time, value);
+    _sr.Update(data[symbol].EndTime, data[symbol].High);
 }
 if (_sr.IsReady)
 {
@@ -197,8 +197,8 @@ if (_sr.IsReady)
 self.sr = SharpeRatio(sharpePeriod)
 
 # In OnData()
-if data.Bars.ContainsKey(symbol):
-    self.sr.Update(time, value)
+if data.ContainsKey(symbol):
+    self.sr.Update(data[symbol].EndTime, data[symbol].High)
 if self.sr.IsReady:
     indicator_value = self.sr.Current.Value</pre>
 </div>

@@ -182,9 +182,9 @@ if self.sma.IsReady:
 _sma = new SimpleMovingAverage(period);
 
 // In OnData()
-if (data.Bars.ContainsKey(symbol))
+if (data.ContainsKey(symbol))
 {
-    _sma.Update(time, value);
+    _sma.Update(data[symbol].EndTime, data[symbol].High);
 }
 if (_sma.IsReady)
 {
@@ -194,8 +194,8 @@ if (_sma.IsReady)
 self.sma = SimpleMovingAverage(period)
 
 # In OnData()
-if data.Bars.ContainsKey(symbol):
-    self.sma.Update(time, value)
+if data.ContainsKey(symbol):
+    self.sma.Update(data[symbol].EndTime, data[symbol].High)
 if self.sma.IsReady:
     indicator_value = self.sma.Current.Value</pre>
 </div>

@@ -182,9 +182,9 @@ if self.logr.IsReady:
 _logr = new LogReturn(period);
 
 // In OnData()
-if (data.Bars.ContainsKey(symbol))
+if (data.ContainsKey(symbol))
 {
-    _logr.Update(time, value);
+    _logr.Update(data[symbol].EndTime, data[symbol].High);
 }
 if (_logr.IsReady)
 {
@@ -194,8 +194,8 @@ if (_logr.IsReady)
 self.logr = LogReturn(period)
 
 # In OnData()
-if data.Bars.ContainsKey(symbol):
-    self.logr.Update(time, value)
+if data.ContainsKey(symbol):
+    self.logr.Update(data[symbol].EndTime, data[symbol].High)
 if self.logr.IsReady:
     indicator_value = self.logr.Current.Value</pre>
 </div>

@@ -181,9 +181,9 @@ if self.std.IsReady:
 _std = new StandardDeviation(period);
 
 // In OnData()
-if (data.Bars.ContainsKey(symbol))
+if (data.ContainsKey(symbol))
 {
-    _std.Update(time, value);
+    _std.Update(data[symbol].EndTime, data[symbol].High);
 }
 if (_std.IsReady)
 {
@@ -193,8 +193,8 @@ if (_std.IsReady)
 self.std = StandardDeviation(period)
 
 # In OnData()
-if data.Bars.ContainsKey(symbol):
-    self.std.Update(time, value)
+if data.ContainsKey(symbol):
+    self.std.Update(data[symbol].EndTime, data[symbol].High)
 if self.std.IsReady:
     indicator_value = self.std.Current.Value</pre>
 </div>

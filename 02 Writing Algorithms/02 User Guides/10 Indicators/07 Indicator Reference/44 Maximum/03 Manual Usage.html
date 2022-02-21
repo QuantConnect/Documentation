@@ -182,9 +182,9 @@ if self.max.IsReady:
 _max = new Maximum(period);
 
 // In OnData()
-if (data.Bars.ContainsKey(symbol))
+if (data.ContainsKey(symbol))
 {
-    _max.Update(time, value);
+    _max.Update(data[symbol].EndTime, data[symbol].High);
 }
 if (_max.IsReady)
 {
@@ -194,8 +194,8 @@ if (_max.IsReady)
 self.max = Maximum(period)
 
 # In OnData()
-if data.Bars.ContainsKey(symbol):
-    self.max.Update(time, value)
+if data.ContainsKey(symbol):
+    self.max.Update(data[symbol].EndTime, data[symbol].High)
 if self.max.IsReady:
     indicator_value = self.max.Current.Value</pre>
 </div>

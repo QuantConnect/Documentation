@@ -181,9 +181,9 @@ if self.sum.IsReady:
 _sum = new Sum(period);
 
 // In OnData()
-if (data.Bars.ContainsKey(symbol))
+if (data.ContainsKey(symbol))
 {
-    _sum.Update(time, value);
+    _sum.Update(data[symbol].EndTime, data[symbol].High);
 }
 if (_sum.IsReady)
 {
@@ -193,8 +193,8 @@ if (_sum.IsReady)
 self.sum = Sum(period)
 
 # In OnData()
-if data.Bars.ContainsKey(symbol):
-    self.sum.Update(time, value)
+if data.ContainsKey(symbol):
+    self.sum.Update(data[symbol].EndTime, data[symbol].High)
 if self.sum.IsReady:
     indicator_value = self.sum.Current.Value</pre>
 </div>

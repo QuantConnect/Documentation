@@ -185,9 +185,9 @@ if self.t3.IsReady:
 _t3 = new T3MovingAverage(period);
 
 // In OnData()
-if (data.Bars.ContainsKey(symbol))
+if (data.ContainsKey(symbol))
 {
-    _t3.Update(time, value);
+    _t3.Update(data[symbol].EndTime, data[symbol].High);
 }
 if (_t3.IsReady)
 {
@@ -197,8 +197,8 @@ if (_t3.IsReady)
 self.t3 = T3MovingAverage(period)
 
 # In OnData()
-if data.Bars.ContainsKey(symbol):
-    self.t3.Update(time, value)
+if data.ContainsKey(symbol):
+    self.t3.Update(data[symbol].EndTime, data[symbol].High)
 if self.t3.IsReady:
     indicator_value = self.t3.Current.Value</pre>
 </div>

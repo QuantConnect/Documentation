@@ -181,9 +181,9 @@ if self.dema.IsReady:
 _dema = new DoubleExponentialMovingAverage(period);
 
 // In OnData()
-if (data.Bars.ContainsKey(symbol))
+if (data.ContainsKey(symbol))
 {
-    _dema.Update(time, value);
+    _dema.Update(data[symbol].EndTime, data[symbol].High);
 }
 if (_dema.IsReady)
 {
@@ -193,8 +193,8 @@ if (_dema.IsReady)
 self.dema = DoubleExponentialMovingAverage(period)
 
 # In OnData()
-if data.Bars.ContainsKey(symbol):
-    self.dema.Update(time, value)
+if data.ContainsKey(symbol):
+    self.dema.Update(data[symbol].EndTime, data[symbol].High)
 if self.dema.IsReady:
     indicator_value = self.dema.Current.Value</pre>
 </div>

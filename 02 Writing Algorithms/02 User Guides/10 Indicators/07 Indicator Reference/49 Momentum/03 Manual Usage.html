@@ -181,9 +181,9 @@ if self.mom.IsReady:
 _mom = new Momentum(period);
 
 // In OnData()
-if (data.Bars.ContainsKey(symbol))
+if (data.ContainsKey(symbol))
 {
-    _mom.Update(time, value);
+    _mom.Update(data[symbol].EndTime, data[symbol].High);
 }
 if (_mom.IsReady)
 {
@@ -193,8 +193,8 @@ if (_mom.IsReady)
 self.mom = Momentum(period)
 
 # In OnData()
-if data.Bars.ContainsKey(symbol):
-    self.mom.Update(time, value)
+if data.ContainsKey(symbol):
+    self.mom.Update(data[symbol].EndTime, data[symbol].High)
 if self.mom.IsReady:
     indicator_value = self.mom.Current.Value</pre>
 </div>

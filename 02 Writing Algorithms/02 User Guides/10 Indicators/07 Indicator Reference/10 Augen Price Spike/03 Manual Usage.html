@@ -182,9 +182,9 @@ if self.aps.IsReady:
 _aps = new AugenPriceSpike();
 
 // In OnData()
-if (data.Bars.ContainsKey(symbol))
+if (data.ContainsKey(symbol))
 {
-    _aps.Update(time, value);
+    _aps.Update(data[symbol].EndTime, data[symbol].High);
 }
 if (_aps.IsReady)
 {
@@ -194,8 +194,8 @@ if (_aps.IsReady)
 self.aps = AugenPriceSpike()
 
 # In OnData()
-if data.Bars.ContainsKey(symbol):
-    self.aps.Update(time, value)
+if data.ContainsKey(symbol):
+    self.aps.Update(data[symbol].EndTime, data[symbol].High)
 if self.aps.IsReady:
     indicator_value = self.aps.Current.Value</pre>
 </div>

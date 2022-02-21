@@ -181,9 +181,9 @@ if self.midpoint.IsReady:
 _midpoint = new MidPoint(period);
 
 // In OnData()
-if (data.Bars.ContainsKey(symbol))
+if (data.ContainsKey(symbol))
 {
-    _midpoint.Update(time, value);
+    _midpoint.Update(data[symbol].EndTime, data[symbol].High);
 }
 if (_midpoint.IsReady)
 {
@@ -193,8 +193,8 @@ if (_midpoint.IsReady)
 self.midpoint = MidPoint(period)
 
 # In OnData()
-if data.Bars.ContainsKey(symbol):
-    self.midpoint.Update(time, value)
+if data.ContainsKey(symbol):
+    self.midpoint.Update(data[symbol].EndTime, data[symbol].High)
 if self.midpoint.IsReady:
     indicator_value = self.midpoint.Current.Value</pre>
 </div>

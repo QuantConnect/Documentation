@@ -190,9 +190,9 @@ if self.bb.IsReady:
 _bb = new BollingerBands(period, k);
 
 // In OnData()
-if (data.Bars.ContainsKey(symbol))
+if (data.ContainsKey(symbol))
 {
-    _bb.Update(time, value);
+    _bb.Update(data[symbol].EndTime, data[symbol].High);
 }
 if (_bb.IsReady)
 {
@@ -202,8 +202,8 @@ if (_bb.IsReady)
 self.bb = BollingerBands(period, k)
 
 # In OnData()
-if data.Bars.ContainsKey(symbol):
-    self.bb.Update(time, value)
+if data.ContainsKey(symbol):
+    self.bb.Update(data[symbol].EndTime, data[symbol].High)
 if self.bb.IsReady:
     indicator_value = self.bb.Current.Value</pre>
 </div>

@@ -181,9 +181,9 @@ if self.rocp.IsReady:
 _rocp = new RateOfChangePercent(period);
 
 // In OnData()
-if (data.Bars.ContainsKey(symbol))
+if (data.ContainsKey(symbol))
 {
-    _rocp.Update(time, value);
+    _rocp.Update(data[symbol].EndTime, data[symbol].High);
 }
 if (_rocp.IsReady)
 {
@@ -193,8 +193,8 @@ if (_rocp.IsReady)
 self.rocp = RateOfChangePercent(period)
 
 # In OnData()
-if data.Bars.ContainsKey(symbol):
-    self.rocp.Update(time, value)
+if data.ContainsKey(symbol):
+    self.rocp.Update(data[symbol].EndTime, data[symbol].High)
 if self.rocp.IsReady:
     indicator_value = self.rocp.Current.Value</pre>
 </div>

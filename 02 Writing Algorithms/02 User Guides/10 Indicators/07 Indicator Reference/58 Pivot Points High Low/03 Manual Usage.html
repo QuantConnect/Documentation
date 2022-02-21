@@ -190,9 +190,9 @@ if self.pphl.IsReady:
 _pphl = new PivotPointsHighLow(lengthHigh, lengthLow);
 
 // In OnData()
-if (data.Bars.ContainsKey(symbol))
+if (data.ContainsKey(symbol))
 {
-    _pphl.Update(time, value);
+    _pphl.Update(data[symbol].EndTime, data[symbol].High);
 }
 if (_pphl.IsReady)
 {
@@ -202,8 +202,8 @@ if (_pphl.IsReady)
 self.pphl = PivotPointsHighLow(lengthHigh, lengthLow)
 
 # In OnData()
-if data.Bars.ContainsKey(symbol):
-    self.pphl.Update(time, value)
+if data.ContainsKey(symbol):
+    self.pphl.Update(data[symbol].EndTime, data[symbol].High)
 if self.pphl.IsReady:
     indicator_value = self.pphl.Current.Value</pre>
 </div>

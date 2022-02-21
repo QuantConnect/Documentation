@@ -189,9 +189,9 @@ if self.arima.IsReady:
 _arima = new AutoRegressiveIntegratedMovingAverage(arOrder, diffOrder, maOrder, period);
 
 // In OnData()
-if (data.Bars.ContainsKey(symbol))
+if (data.ContainsKey(symbol))
 {
-    _arima.Update(time, value);
+    _arima.Update(data[symbol].EndTime, data[symbol].High);
 }
 if (_arima.IsReady)
 {
@@ -201,8 +201,8 @@ if (_arima.IsReady)
 self.arima = AutoRegressiveIntegratedMovingAverage(arOrder, diffOrder, maOrder, period)
 
 # In OnData()
-if data.Bars.ContainsKey(symbol):
-    self.arima.Update(time, value)
+if data.ContainsKey(symbol):
+    self.arima.Update(data[symbol].EndTime, data[symbol].High)
 if self.arima.IsReady:
     indicator_value = self.arima.Current.Value</pre>
 </div>

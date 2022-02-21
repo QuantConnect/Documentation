@@ -235,9 +235,9 @@ if self.ema.IsReady:
 _ema = new ExponentialMovingAverage(period, smoothingFactor);
 
 // In OnData()
-if (data.Bars.ContainsKey(symbol))
+if (data.ContainsKey(symbol))
 {
-    _ema.Update(time, value);
+    _ema.Update(data[symbol].EndTime, data[symbol].High);
 }
 if (_ema.IsReady)
 {
@@ -247,8 +247,8 @@ if (_ema.IsReady)
 self.ema = ExponentialMovingAverage(period, smoothingFactor)
 
 # In OnData()
-if data.Bars.ContainsKey(symbol):
-    self.ema.Update(time, value)
+if data.ContainsKey(symbol):
+    self.ema.Update(data[symbol].EndTime, data[symbol].High)
 if self.ema.IsReady:
     indicator_value = self.ema.Current.Value</pre>
 </div>

@@ -189,9 +189,9 @@ if self.ppo.IsReady:
 _ppo = new PercentagePriceOscillator(fastPeriod, slowPeriod, movingAverageType);
 
 // In OnData()
-if (data.Bars.ContainsKey(symbol))
+if (data.ContainsKey(symbol))
 {
-    _ppo.Update(time, value);
+    _ppo.Update(data[symbol].EndTime, data[symbol].High);
 }
 if (_ppo.IsReady)
 {
@@ -201,8 +201,8 @@ if (_ppo.IsReady)
 self.ppo = PercentagePriceOscillator(fastPeriod, slowPeriod, movingAverageType)
 
 # In OnData()
-if data.Bars.ContainsKey(symbol):
-    self.ppo.Update(time, value)
+if data.ContainsKey(symbol):
+    self.ppo.Update(data[symbol].EndTime, data[symbol].High)
 if self.ppo.IsReady:
     indicator_value = self.ppo.Current.Value</pre>
 </div>

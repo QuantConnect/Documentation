@@ -181,9 +181,9 @@ if self.var.IsReady:
 _var = new Variance(period);
 
 // In OnData()
-if (data.Bars.ContainsKey(symbol))
+if (data.ContainsKey(symbol))
 {
-    _var.Update(time, value);
+    _var.Update(data[symbol].EndTime, data[symbol].High);
 }
 if (_var.IsReady)
 {
@@ -193,8 +193,8 @@ if (_var.IsReady)
 self.var = Variance(period)
 
 # In OnData()
-if data.Bars.ContainsKey(symbol):
-    self.var.Update(time, value)
+if data.ContainsKey(symbol):
+    self.var.Update(data[symbol].EndTime, data[symbol].High)
 if self.var.IsReady:
     indicator_value = self.var.Current.Value</pre>
 </div>

@@ -194,9 +194,9 @@ if self.macd.IsReady:
 _macd = new MovingAverageConvergenceDivergence(fastPeriod, slowPeriod, signalPeriod);
 
 // In OnData()
-if (data.Bars.ContainsKey(symbol))
+if (data.ContainsKey(symbol))
 {
-    _macd.Update(time, value);
+    _macd.Update(data[symbol].EndTime, data[symbol].High);
 }
 if (_macd.IsReady)
 {
@@ -206,8 +206,8 @@ if (_macd.IsReady)
 self.macd = MovingAverageConvergenceDivergence(fastPeriod, slowPeriod, signalPeriod)
 
 # In OnData()
-if data.Bars.ContainsKey(symbol):
-    self.macd.Update(time, value)
+if data.ContainsKey(symbol):
+    self.macd.Update(data[symbol].EndTime, data[symbol].High)
 if self.macd.IsReady:
     indicator_value = self.macd.Current.Value</pre>
 </div>

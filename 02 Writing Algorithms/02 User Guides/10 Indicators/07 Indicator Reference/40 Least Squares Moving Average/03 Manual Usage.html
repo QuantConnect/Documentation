@@ -182,9 +182,9 @@ if self.lsma.IsReady:
 _lsma = new LeastSquaresMovingAverage(period);
 
 // In OnData()
-if (data.Bars.ContainsKey(symbol))
+if (data.ContainsKey(symbol))
 {
-    _lsma.Update(time, value);
+    _lsma.Update(data[symbol].EndTime, data[symbol].High);
 }
 if (_lsma.IsReady)
 {
@@ -194,8 +194,8 @@ if (_lsma.IsReady)
 self.lsma = LeastSquaresMovingAverage(period)
 
 # In OnData()
-if data.Bars.ContainsKey(symbol):
-    self.lsma.Update(time, value)
+if data.ContainsKey(symbol):
+    self.lsma.Update(data[symbol].EndTime, data[symbol].High)
 if self.lsma.IsReady:
     indicator_value = self.lsma.Current.Value</pre>
 </div>

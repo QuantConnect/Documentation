@@ -193,9 +193,9 @@ if self.stc.IsReady:
 _stc = new SchaffTrendCycle(cyclePeriod, fastPeriod, slowPeriod);
 
 // In OnData()
-if (data.Bars.ContainsKey(symbol))
+if (data.ContainsKey(symbol))
 {
-    _stc.Update(time, value);
+    _stc.Update(data[symbol].EndTime, data[symbol].High);
 }
 if (_stc.IsReady)
 {
@@ -205,8 +205,8 @@ if (_stc.IsReady)
 self.stc = SchaffTrendCycle(cyclePeriod, fastPeriod, slowPeriod)
 
 # In OnData()
-if data.Bars.ContainsKey(symbol):
-    self.stc.Update(time, value)
+if data.ContainsKey(symbol):
+    self.stc.Update(data[symbol].EndTime, data[symbol].High)
 if self.stc.IsReady:
     indicator_value = self.stc.Current.Value</pre>
 </div>

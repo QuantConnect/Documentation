@@ -270,9 +270,9 @@ if self.identity.IsReady:
 _identity = new Identity(resolution);
 
 // In OnData()
-if (data.Bars.ContainsKey(symbol))
+if (data.ContainsKey(symbol))
 {
-    _identity.Update(time, value);
+    _identity.Update(data[symbol].EndTime, data[symbol].High);
 }
 if (_identity.IsReady)
 {
@@ -282,8 +282,8 @@ if (_identity.IsReady)
 self.identity = Identity(resolution)
 
 # In OnData()
-if data.Bars.ContainsKey(symbol):
-    self.identity.Update(time, value)
+if data.ContainsKey(symbol):
+    self.identity.Update(data[symbol].EndTime, data[symbol].High)
 if self.identity.IsReady:
     indicator_value = self.identity.Current.Value</pre>
 </div>

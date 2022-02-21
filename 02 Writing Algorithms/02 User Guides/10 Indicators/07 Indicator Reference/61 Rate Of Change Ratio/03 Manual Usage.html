@@ -181,9 +181,9 @@ if self.rocr.IsReady:
 _rocr = new RateOfChangeRatio(period);
 
 // In OnData()
-if (data.Bars.ContainsKey(symbol))
+if (data.ContainsKey(symbol))
 {
-    _rocr.Update(time, value);
+    _rocr.Update(data[symbol].EndTime, data[symbol].High);
 }
 if (_rocr.IsReady)
 {
@@ -193,8 +193,8 @@ if (_rocr.IsReady)
 self.rocr = RateOfChangeRatio(period)
 
 # In OnData()
-if data.Bars.ContainsKey(symbol):
-    self.rocr.Update(time, value)
+if data.ContainsKey(symbol):
+    self.rocr.Update(data[symbol].EndTime, data[symbol].High)
 if self.rocr.IsReady:
     indicator_value = self.rocr.Current.Value</pre>
 </div>

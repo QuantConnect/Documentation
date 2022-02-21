@@ -181,9 +181,9 @@ if self.momp.IsReady:
 _momp = new MomentumPercent(period);
 
 // In OnData()
-if (data.Bars.ContainsKey(symbol))
+if (data.ContainsKey(symbol))
 {
-    _momp.Update(time, value);
+    _momp.Update(data[symbol].EndTime, data[symbol].High);
 }
 if (_momp.IsReady)
 {
@@ -193,8 +193,8 @@ if (_momp.IsReady)
 self.momp = MomentumPercent(period)
 
 # In OnData()
-if data.Bars.ContainsKey(symbol):
-    self.momp.Update(time, value)
+if data.ContainsKey(symbol):
+    self.momp.Update(data[symbol].EndTime, data[symbol].High)
 if self.momp.IsReady:
     indicator_value = self.momp.Current.Value</pre>
 </div>

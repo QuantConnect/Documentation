@@ -47,17 +47,17 @@ for method in methods:
                 
         while True:
             if "QuantConnect.Indicators.Indicator" in ind_dict["base-type-full-name"]:
-                updates[item] = tuple(("time", "value"))
+                updates[item] = (0, tuple(("data[symbol].EndTime", "data[symbol].High")))
                 update_value = "time/decimal pair"
                 break
             
             elif "QuantConnect.Indicators.BarIndicator" in ind_dict["base-type-full-name"]:
-                updates[item] = tuple(("quotebar",))
+                updates[item] = (1, tuple(("data.QuoteBars[symbol]",)))
                 update_value = "a trade bar, a quote bar, or a custom data bar"
                 break
             
             elif "QuantConnect.Indicators.TradeBarIndicator" in ind_dict["base-type-full-name"]:
-                updates[item] = tuple(("tradebar",))
+                updates[item] = (2, tuple(("data.Bars[symbol]",)))
                 update_value = "a trade bar"
                 break
             
@@ -358,9 +358,9 @@ if self.{short.lower()}.IsReady:
 _{short.lower()} = new {full}{str(tuple(args[full][i] for i in range(len(args[full])) if i != 0)).replace("'", "").replace('"', '').replace(',)', ')')};
 
 // In OnData()
-if (data.Bars.ContainsKey(symbol))
+if ({"data" if updates[full][0] == 0 else "data.QuoteBars" if updates[full][0] == 1 else "data.Bars"}.ContainsKey(symbol))
 {{
-    _{short.lower()}.Update{str(updates[full]).replace("'", "").replace('"', '').replace(',)', ')')};
+    _{short.lower()}.Update{str(updates[full][1]).replace("'", "").replace('"', '').replace(',)', ')')};
 }}
 if (_{short.lower()}.IsReady)
 {{
@@ -370,8 +370,8 @@ if (_{short.lower()}.IsReady)
 self.{short.lower()} = {full}{str(tuple(args[full][i] for i in range(len(args[full])) if i != 0)).replace("'", "").replace('"', '').replace(',)', ')')}
 
 # In OnData()
-if data.Bars.ContainsKey(symbol):
-    self.{short.lower()}.Update{str(updates[full]).replace("'", "").replace('"', '').replace(',)', ')')}
+if {"data" if updates[full][0] == 0 else "data.QuoteBars" if updates[full][0] == 1 else "data.Bars"}.ContainsKey(symbol):
+    self.{short.lower()}.Update{str(updates[full][1]).replace("'", "").replace('"', '').replace(',)', ')')}
 if self.{short.lower()}.IsReady:
     indicator_value = self.{short.lower()}.Current.Value</pre>
 </div>""")

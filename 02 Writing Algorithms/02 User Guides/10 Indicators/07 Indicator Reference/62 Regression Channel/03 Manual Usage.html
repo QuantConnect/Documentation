@@ -186,9 +186,9 @@ if self.rc.IsReady:
 _rc = new RegressionChannel(period, k);
 
 // In OnData()
-if (data.Bars.ContainsKey(symbol))
+if (data.ContainsKey(symbol))
 {
-    _rc.Update(time, value);
+    _rc.Update(data[symbol].EndTime, data[symbol].High);
 }
 if (_rc.IsReady)
 {
@@ -198,8 +198,8 @@ if (_rc.IsReady)
 self.rc = RegressionChannel(period, k)
 
 # In OnData()
-if data.Bars.ContainsKey(symbol):
-    self.rc.Update(time, value)
+if data.ContainsKey(symbol):
+    self.rc.Update(data[symbol].EndTime, data[symbol].High)
 if self.rc.IsReady:
     indicator_value = self.rc.Current.Value</pre>
 </div>

@@ -193,9 +193,9 @@ if self.alma.IsReady:
 _alma = new ArnaudLegouxMovingAverage(period);
 
 // In OnData()
-if (data.Bars.ContainsKey(symbol))
+if (data.ContainsKey(symbol))
 {
-    _alma.Update(time, value);
+    _alma.Update(data[symbol].EndTime, data[symbol].High);
 }
 if (_alma.IsReady)
 {
@@ -205,8 +205,8 @@ if (_alma.IsReady)
 self.alma = ArnaudLegouxMovingAverage(period)
 
 # In OnData()
-if data.Bars.ContainsKey(symbol):
-    self.alma.Update(time, value)
+if data.ContainsKey(symbol):
+    self.alma.Update(data[symbol].EndTime, data[symbol].High)
 if self.alma.IsReady:
     indicator_value = self.alma.Current.Value</pre>
 </div>

@@ -182,9 +182,9 @@ if self.wwma.IsReady:
 _wwma = new WilderMovingAverage(period);
 
 // In OnData()
-if (data.Bars.ContainsKey(symbol))
+if (data.ContainsKey(symbol))
 {
-    _wwma.Update(time, value);
+    _wwma.Update(data[symbol].EndTime, data[symbol].High);
 }
 if (_wwma.IsReady)
 {
@@ -194,8 +194,8 @@ if (_wwma.IsReady)
 self.wwma = WilderMovingAverage(period)
 
 # In OnData()
-if data.Bars.ContainsKey(symbol):
-    self.wwma.Update(time, value)
+if data.ContainsKey(symbol):
+    self.wwma.Update(data[symbol].EndTime, data[symbol].High)
 if self.wwma.IsReady:
     indicator_value = self.wwma.Current.Value</pre>
 </div>

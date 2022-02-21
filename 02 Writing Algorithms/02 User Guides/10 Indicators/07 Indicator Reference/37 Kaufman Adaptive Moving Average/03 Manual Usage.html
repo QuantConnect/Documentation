@@ -237,9 +237,9 @@ if self.kama.IsReady:
 _kama = new KaufmanAdaptiveMovingAverage(period, fastEmaPeriod, slowEmaPeriod);
 
 // In OnData()
-if (data.Bars.ContainsKey(symbol))
+if (data.ContainsKey(symbol))
 {
-    _kama.Update(time, value);
+    _kama.Update(data[symbol].EndTime, data[symbol].High);
 }
 if (_kama.IsReady)
 {
@@ -249,8 +249,8 @@ if (_kama.IsReady)
 self.kama = KaufmanAdaptiveMovingAverage(period, fastEmaPeriod, slowEmaPeriod)
 
 # In OnData()
-if data.Bars.ContainsKey(symbol):
-    self.kama.Update(time, value)
+if data.ContainsKey(symbol):
+    self.kama.Update(data[symbol].EndTime, data[symbol].High)
 if self.kama.IsReady:
     indicator_value = self.kama.Current.Value</pre>
 </div>
