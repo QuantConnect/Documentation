@@ -137,6 +137,7 @@ function ShowHide(event, idName) {
         
 <div class="section-example-container">
     <pre class="csharp">private RateOfChange _roc;
+
 // In Initialize()
 _roc = new RateOfChange(period);
 _roc.Updated += IndicatorUpdateMethod;
@@ -170,19 +171,18 @@ if self.roc.IsReady:
 <h4>Manual Update</h4>
 <p>Updating your indicator manually enables you to control when the indicator is updated and what data you use to update it. To manually update the indicator, call the <code>Update</code> method that with time/decimal pair. The indicator will only be ready after you prime it with enough data.</p>
 
-<p>With this method, the indicator will only be ready after the <code>Update()</code> method has been used to pump enough data.</p>
-
 <div class="section-example-container">
     <pre class="csharp">private RateOfChange _roc;
-private Symbol _symbol;
+private Symbol symbol;
+
 // In Initialize()
 _roc = new RateOfChange(period);
-_symbol = AddEquity("SPY").Symbol;
+symbol = AddEquity("SPY").Symbol;
 
 // In OnData()
 if (data.ContainsKey(_symbol))
 {
-    _roc.Update(data[_symbol].EndTime, data[_symbol].High);
+    _roc.Update(data[symbol].EndTime, data[symbol].High);
 }
 if (_roc.IsReady)
 {

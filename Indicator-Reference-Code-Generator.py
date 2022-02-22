@@ -1,3 +1,4 @@
+import base64
 import pathlib
 import re
 from urllib.request import urlopen
@@ -73,7 +74,7 @@ i = 1
 
 for full, short in dict(sorted(names.items())).items():
     name = " ".join(re.split('(?=[A-Z])', full))
-    base = f"02 Writing Algorithms/02 User Guides/10 Indicators/07 Indicator Reference/{i:02}{name}"
+    base = f"02 Writing Algorithms/02 User Guides/28 Indicators/07 Indicator Reference/{i:02}{name}"
     destination_folder = pathlib.Path(base)
     destination_folder.mkdir(parents=True, exist_ok=True)
     
@@ -181,19 +182,20 @@ function ShowHide(event, idName) {{
 }};
 </script>
                         
-<p><code>QCAlgorithm</code> provides a shortcut method, {short}(), for the {full} indicator. It creates an <code>Indicator</code> object, sets up a consolidator to update the indicator, and then returns the indicator so you can use it in your algorithm.</p>
-<p>The following reference table describes the {short} method:</p>
+<p><code>QCAlgorithm</code> provides a shortcut method, <code>{short}</code>, for the <code>{full}</code> indicator. It creates an <code>Indicator</code> object, sets up a consolidator to update the indicator, and then returns the indicator so you can use it in your algorithm.</p>
+<p>The following reference table describes the <code>{short}</code> method:</p>
 
 {"".join(api)}
 <br/>
-<p>The resolution of the indicator should be greater than or equal to the resolution of the security.</p>
+<p>The resolution of the indicator should be greater than or equal to the resolution of the security. For instance, if you subscribe to hourly data for a security, you should update its indicator with data that spans 1 hour or longer.</p>
 
 <p>To retrieve the numerical value of the indicator, use its <code>Current.Value</code> attribute.</p>
 
 <div class="section-example-container">
     <pre class="csharp">private {full} _{short.lower()};
+
 // In Initialize()
-var symbol = AddEquity("SPY").Symbol;
+{'var symbol = AddEquity("SPY").Symbol;' if 'symbol' in args[full] else 'var symbols = new[] {AddEquity("SPY").Symbol, AddEquity("QQQ").Symbol};' if 'symbols' in args[full] else ''}
 _{short.lower()} = {short}{str(args[full]).replace("'", "").replace('"', '').replace(',)', ')')};
 
 // In OnData()
@@ -202,7 +204,7 @@ if (_{short.lower()}.IsReady)
     var indicatorValue = _{short.lower()}.Current.Value;
 }}</pre>
     <pre class="python"># In Initialize()
-symbol = self.AddEquity("SPY").Symbol
+{'symbol = self.AddEquity("SPY").Symbol' if 'symbol' in args[full] else 'symbols = [self.AddEquity("SPY").Symbol, self.AddEquity("QQQ").Symbol]' if 'symbols' in args[full] else ''}
 self.{short.lower()} = self.{short}{str(args[full]).replace("'", "").replace('"', '').replace(',)', ')')}
 
 # In OnData()
@@ -329,6 +331,7 @@ function ShowHide(event, idName) {{
         
 <div class="section-example-container">
     <pre class="csharp">private {full} _{short.lower()};
+
 // In Initialize()
 _{short.lower()} = new {full}{str(tuple(args[full][i] for i in range(len(args[full])) if i != 0)).replace("'", "").replace('"', '').replace(',)', ')')};
 _{short.lower()}.Updated += IndicatorUpdateMethod;
@@ -362,19 +365,18 @@ if self.{short.lower()}.IsReady:
 <h4>Manual Update</h4>
 <p>Updating your indicator manually enables you to control when the indicator is updated and what data you use to update it. To manually update the indicator, call the <code>Update</code> method that with {update_value[full]}. The indicator will only be ready after you prime it with enough data.</p>
 
-<p>With this method, the indicator will only be ready after the <code>Update()</code> method has been used to pump enough data.</p>
-
 <div class="section-example-container">
     <pre class="csharp">private {full} _{short.lower()};
-private Symbol _symbol;
+{'private Symbol symbol;' if 'symbol' in args[full] else 'private List&lt;Symbol&gt; symbols;' if 'symbols' in args[full] else ''}
+
 // In Initialize()
 _{short.lower()} = new {full}{str(tuple(args[full][i] for i in range(len(args[full])) if i != 0)).replace("'", "").replace('"', '').replace(',)', ')')};
-_symbol = AddEquity("SPY").Symbol;
+{'symbol = AddEquity("SPY").Symbol;' if 'symbol' in args[full] else 'symbols = new List&lt;Symbol&gt; {AddEquity("SPY").Symbol, AddEquity("QQQ").Symbol};' if 'symbols' in args[full] else ''}
 
 // In OnData()
 if ({"data" if updates[full][0] == 0 else "data.QuoteBars" if updates[full][0] == 1 else "data.Bars"}.ContainsKey(_symbol))
 {{
-    _{short.lower()}.Update{str(updates[full][1]).replace("'", "").replace('"', '').replace(',)', ')').replace("symbol", "_symbol")};
+    _{short.lower()}.Update{str(updates[full][1]).replace("'", "").replace('"', '').replace(',)', ')')};
 }}
 if (_{short.lower()}.IsReady)
 {{
@@ -382,7 +384,7 @@ if (_{short.lower()}.IsReady)
 }}</pre>
     <pre class="python"># In Initialize()
 self.{short.lower()} = {full}{str(tuple(args[full][i] for i in range(len(args[full])) if i != 0)).replace("'", "").replace('"', '').replace(',)', ')')}
-self.symbol = self.AddEquity("SPY").Symbol
+{'self.symbol = self.AddEquity("SPY").Symbol' if 'symbol' in args[full] else 'self.symbols = [self.AddEquity("SPY").Symbol, self.AddEquity("QQQ").Symbol]' if 'symbols' in args[full] else ''}
 
 # In OnData()
 if {"data" if updates[full][0] == 0 else "data.QuoteBars" if updates[full][0] == 1 else "data.Bars"}.ContainsKey(self.symbol):
@@ -398,7 +400,9 @@ if self.{short.lower()}.IsReady:
                         
 <div class="section-example-container">
     <pre class="csharp">private {full} _{short.lower()};
+
 // In Initialize()
+{'var symbol = AddEquity("SPY").Symbol;' if 'symbol' in args[full] else 'var symbols = new[] {AddEquity("SPY").Symbol, AddEquity("QQQ").Symbol};' if 'symbols' in args[full] else ''}
 _{short.lower()} = {short}{str(args[full]).replace("'", "").replace('"', '').replace(',)', ')')};
 
 // In OnData()
@@ -412,6 +416,7 @@ if (_{short.lower()}.IsReady)
                             
         html_file.write(f"""}}</pre>
     <pre class="python"># In Initialize()
+{'symbol = self.AddEquity("SPY").Symbol' if 'symbol' in args[full] else 'symbols = [self.AddEquity("SPY").Symbol, self.AddEquity("QQQ").Symbol]' if 'symbols' in args[full] else ''}
 self.{short.lower()} = self.{short}{str(args[full]).replace("'", "").replace('"', '').replace(',)', ')')}
 
 # In OnData()
@@ -419,10 +424,14 @@ if self.{short.lower()}.IsReady:
 """)
                             
         for x in plots[full]:
-            html_file.write(f'''    self.Plot("My Indicators", "{short}{" ".join(re.split("(?=[A-Z])", x))}", self.{short.lower()}.{x});
+            html_file.write(f'''    self.Plot("My Indicators", "{short}{" ".join(re.split("(?=[A-Z])", x))}", self.{short.lower()}.{x})
 ''')
-                            
+        
+        with open(f"Resources/indicators/plots/indicator-reference-{short if full != 'IntradayVwap' else 'IntradayVwap'}.png", "rb") as image_file:
+            encoded_string = base64.b64encode(image_file.read())                 
         html_file.write(f"""</pre>
-</div>""")
+</div>
+
+<img src="data:image/png;base64,{encoded_string.decode('utf-8')}">""")
         
     i += 1

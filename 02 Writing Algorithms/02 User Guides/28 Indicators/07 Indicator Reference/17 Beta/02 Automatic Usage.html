@@ -81,8 +81,8 @@ function ShowHide(event, idName) {
 };
 </script>
                         
-<p><code>QCAlgorithm</code> provides a shortcut method, B(), for the Beta indicator. It creates an <code>Indicator</code> object, sets up a consolidator to update the indicator, and then returns the indicator so you can use it in your algorithm.</p>
-<p>The following reference table describes the B method:</p>
+<p><code>QCAlgorithm</code> provides a shortcut method, <code>B</code>, for the <code>Beta</code> indicator. It creates an <code>Indicator</code> object, sets up a consolidator to update the indicator, and then returns the indicator so you can use it in your algorithm.</p>
+<p>The following reference table describes the <code>B</code> method:</p>
 
 <a id="B-header"></a>
 <div class="method-container">
@@ -141,14 +141,15 @@ function ShowHide(event, idName) {
 </div>
 
 <br/>
-<p>The resolution of the indicator should be greater than or equal to the resolution of the security.</p>
+<p>The resolution of the indicator should be greater than or equal to the resolution of the security. For instance, if you subscribe to hourly data for a security, you should update its indicator with data that spans 1 hour or longer.</p>
 
 <p>To retrieve the numerical value of the indicator, use its <code>Current.Value</code> attribute.</p>
 
 <div class="section-example-container">
     <pre class="csharp">private Beta _b;
+
 // In Initialize()
-var symbol = AddEquity("SPY").Symbol;
+
 _b = B(target, reference, period);
 
 // In OnData()
@@ -157,7 +158,7 @@ if (_b.IsReady)
     var indicatorValue = _b.Current.Value;
 }</pre>
     <pre class="python"># In Initialize()
-symbol = self.AddEquity("SPY").Symbol
+
 self.b = self.B(target, reference, period)
 
 # In OnData()

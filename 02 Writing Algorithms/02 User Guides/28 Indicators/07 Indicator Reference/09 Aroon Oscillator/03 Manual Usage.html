@@ -186,6 +186,7 @@ function ShowHide(event, idName) {
         
 <div class="section-example-container">
     <pre class="csharp">private AroonOscillator _aroon;
+
 // In Initialize()
 _aroon = new AroonOscillator(period);
 _aroon.Updated += IndicatorUpdateMethod;
@@ -219,19 +220,18 @@ if self.aroon.IsReady:
 <h4>Manual Update</h4>
 <p>Updating your indicator manually enables you to control when the indicator is updated and what data you use to update it. To manually update the indicator, call the <code>Update</code> method that with a <code>TradeBar</code>, <code>QuoteBar</code>, or an <code>IndicatorDataPoint</code>. The indicator will only be ready after you prime it with enough data.</p>
 
-<p>With this method, the indicator will only be ready after the <code>Update()</code> method has been used to pump enough data.</p>
-
 <div class="section-example-container">
     <pre class="csharp">private AroonOscillator _aroon;
-private Symbol _symbol;
+private Symbol symbol;
+
 // In Initialize()
 _aroon = new AroonOscillator(period);
-_symbol = AddEquity("SPY").Symbol;
+symbol = AddEquity("SPY").Symbol;
 
 // In OnData()
 if (data.QuoteBars.ContainsKey(_symbol))
 {
-    _aroon.Update(data.QuoteBars[_symbol]);
+    _aroon.Update(data.QuoteBars[symbol]);
 }
 if (_aroon.IsReady)
 {

@@ -145,6 +145,7 @@ function ShowHide(event, idName) {
         
 <div class="section-example-container">
     <pre class="csharp">private PercentagePriceOscillator _ppo;
+
 // In Initialize()
 _ppo = new PercentagePriceOscillator(fastPeriod, slowPeriod, movingAverageType);
 _ppo.Updated += IndicatorUpdateMethod;
@@ -178,19 +179,18 @@ if self.ppo.IsReady:
 <h4>Manual Update</h4>
 <p>Updating your indicator manually enables you to control when the indicator is updated and what data you use to update it. To manually update the indicator, call the <code>Update</code> method that with time/decimal pair. The indicator will only be ready after you prime it with enough data.</p>
 
-<p>With this method, the indicator will only be ready after the <code>Update()</code> method has been used to pump enough data.</p>
-
 <div class="section-example-container">
     <pre class="csharp">private PercentagePriceOscillator _ppo;
-private Symbol _symbol;
+private Symbol symbol;
+
 // In Initialize()
 _ppo = new PercentagePriceOscillator(fastPeriod, slowPeriod, movingAverageType);
-_symbol = AddEquity("SPY").Symbol;
+symbol = AddEquity("SPY").Symbol;
 
 // In OnData()
 if (data.ContainsKey(_symbol))
 {
-    _ppo.Update(data[_symbol].EndTime, data[_symbol].High);
+    _ppo.Update(data[symbol].EndTime, data[symbol].High);
 }
 if (_ppo.IsReady)
 {
