@@ -169,16 +169,16 @@ if self.adr.IsReady:
 
 <div class="section-example-container">
     <pre class="csharp">private AdvanceDeclineRatio _adr;
-private Symbol _symbol;
+private List&lt;Symbol&gt; symbols;
 
 // In Initialize()
 _adr = new AdvanceDeclineRatio();
-_symbol = AddEquity("SPY").Symbol;
+symbols = new List&lt;Symbol&gt; {AddEquity("SPY").Symbol, AddEquity("QQQ").Symbol};
 
 // In OnData()
 if (data.Bars.ContainsKey(_symbol))
 {
-    _adr.Update(data.Bars[_symbol]);
+    _adr.Update(data.Bars[symbol]);
 }
 if (_adr.IsReady)
 {
@@ -186,7 +186,7 @@ if (_adr.IsReady)
 }</pre>
     <pre class="python"># In Initialize()
 self.adr = AdvanceDeclineRatio()
-self.symbol = self.AddEquity("SPY").Symbol
+self.symbols = [self.AddEquity("SPY").Symbol, self.AddEquity("QQQ").Symbol]
 
 # In OnData()
 if data.Bars.ContainsKey(self.symbol):

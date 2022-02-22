@@ -169,16 +169,16 @@ if self.advr.IsReady:
 
 <div class="section-example-container">
     <pre class="csharp">private AdvanceDeclineVolumeRatio _advr;
-private Symbol _symbol;
+private List&lt;Symbol&gt; symbols;
 
 // In Initialize()
 _advr = new AdvanceDeclineVolumeRatio();
-_symbol = AddEquity("SPY").Symbol;
+symbols = new List&lt;Symbol&gt; {AddEquity("SPY").Symbol, AddEquity("QQQ").Symbol};
 
 // In OnData()
 if (data.Bars.ContainsKey(_symbol))
 {
-    _advr.Update(data.Bars[_symbol]);
+    _advr.Update(data.Bars[symbol]);
 }
 if (_advr.IsReady)
 {
@@ -186,7 +186,7 @@ if (_advr.IsReady)
 }</pre>
     <pre class="python"># In Initialize()
 self.advr = AdvanceDeclineVolumeRatio()
-self.symbol = self.AddEquity("SPY").Symbol
+self.symbols = [self.AddEquity("SPY").Symbol, self.AddEquity("QQQ").Symbol]
 
 # In OnData()
 if data.Bars.ContainsKey(self.symbol):

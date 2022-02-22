@@ -210,16 +210,16 @@ if self.trin.IsReady:
 
 <div class="section-example-container">
     <pre class="csharp">private ArmsIndex _trin;
-private Symbol _symbol;
+private List&lt;Symbol&gt; symbols;
 
 // In Initialize()
 _trin = new ArmsIndex();
-_symbol = AddEquity("SPY").Symbol;
+symbols = new List&lt;Symbol&gt; {AddEquity("SPY").Symbol, AddEquity("QQQ").Symbol};
 
 // In OnData()
 if (data.Bars.ContainsKey(_symbol))
 {
-    _trin.Update(data.Bars[_symbol]);
+    _trin.Update(data.Bars[symbol]);
 }
 if (_trin.IsReady)
 {
@@ -227,7 +227,7 @@ if (_trin.IsReady)
 }</pre>
     <pre class="python"># In Initialize()
 self.trin = ArmsIndex()
-self.symbol = self.AddEquity("SPY").Symbol
+self.symbols = [self.AddEquity("SPY").Symbol, self.AddEquity("QQQ").Symbol]
 
 # In OnData()
 if data.Bars.ContainsKey(self.symbol):
