@@ -1,0 +1,48 @@
+<p>You need <a href="/docs/v2/our-platform/user-guides/organizations/administration#05-Permissions">storage delete permissions</a> to delete individual key-value pairs in the <code>ObjectStore</code>. Call the <code>Delete</code> method to delete data from the <code>ObjectStore</code>.</p>
+<p>It is good practice to check wether the <code>ObjectStore</code> has the key to the object you want to delete. If not present, the method will raise an exception.</p>
+
+<h4>Single Item</h4>
+<ol>
+    <li>Use <code>ContainsKey</code> to check if the key-value pair is in the <code>ObjectStore</code>.</li>
+    <div class="section-example-container">
+        <pre class="csharp">objectStore.ContainsKey("saveXml")</pre>
+        <pre class="python">object_store.ContainsKey("save_bytes")</pre>
+    </div>
+    <img class="csharp" src="https://cdn.quantconnect.com/i/tu/storing-cs-13.png">
+    <img class="python" src="https://cdn.quantconnect.com/i/tu/storing-py-7.png">
+
+    <li>Delete data from <code>ObjectStore</code> by its key.</li>
+    <div class="section-example-container">
+        <pre class="csharp">objectStore.Delete("saveXml");</pre>
+        <pre class="python">object_store.Delete("save_bytes")</pre>
+    </div>
+    
+    <li><i>(Optional)</i> Use <code>ContainsKey</code> to check if the key-value pair is in the <code>ObjectStore</code> to confirm the deletion.</li>
+    <div class="section-example-container">
+        <pre class="csharp">objectStore.ContainsKey("saveXml")</pre>
+        <pre class="python">object_store.ContainsKey("save_bytes")</pre>
+    </div>
+    <img class="csharp" src="https://cdn.quantconnect.com/i/tu/storing-cs-14.png">
+    <img class="python" src="https://cdn.quantconnect.com/i/tu/storing-py-8.png">
+</ol>
+
+<h4>All Items</h4>
+<ol>
+    <li>Iterate the <code>ObjectStore</code> object, and call the <code>Delete</code> method for every key.</li>
+    <div class="section-example-container">
+        <pre class="csharp">foreach(var kvp in objectStore)
+{
+    objectStore.Delete(kvp.Key);
+}</pre>
+        <pre class="python">for kvp in object_store:
+    object_store.Delete(kvp.Key)</pre>
+    </div>
+
+    <li>Check if the <code>ObjectStore</code>'s <code class="csharp">Count</code> <code class="python">len</code> is zero.</li>
+    <div class="section-example-container">
+        <pre class="csharp">objectStore.Count() == 0</pre>
+        <pre class="python">len(list(object_store)) == 0</pre>
+    </div>
+    <img class="csharp" src="https://cdn.quantconnect.com/i/tu/storing-cs-15.png">
+    <img class="python" src="https://cdn.quantconnect.com/i/tu/storing-py-9.png">
+</ol>

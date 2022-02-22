@@ -1,0 +1,26 @@
+<p>We create a function that prepares our data formatted to be suitable for training and testing our Model. We use 5 steps of close price data to predict the closing price of the bar right after.</p>
+
+<img style="max-width: 100%; display: block" src="https://cdn.quantconnect.com/i/tu/ml-keras-function.png">
+
+<div class="section-example-container">
+    <pre class="python"># function to prepare our data for training our NN
+def prep_data(data, n_tsteps=5):
+    # n_tsteps is the number of time steps at and before time t we want to use
+    #   to predict the close price at time t + 1
+    
+    # this helps making the data stationary
+    df = data.pct_change()[1:]
+    
+    features = []
+    labels = []
+
+    for i in range(len(df)-n_tsteps):
+        input_data = df['close'].iloc[i:i+n_tsteps].values
+        features.append(input_data)
+        label = df['close'].iloc[i+n_tsteps]
+        labels.append(label)
+
+    return np.array(features), np.array(labels)
+
+X, y = prep_data(data)</pre>
+</div>
