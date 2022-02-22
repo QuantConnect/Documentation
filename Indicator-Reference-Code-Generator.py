@@ -432,6 +432,6 @@ if self.{short.lower()}.IsReady:
         html_file.write(f"""</pre>
 </div>
 
-<img src="data:image/png;base64,{encoded_string}">""")
+<img src="data:image/png;base64,{encoded_string.decode('utf-8')}">""")
         
     i += 1
