@@ -1,4 +1,4 @@
 <?php
 include(DOCS_RESOURCES."/brokerages/slippage.php");
-$getSlippageText("Binance", true);
+$getSlippageText("Binance and Binance US", false);
 ?>
