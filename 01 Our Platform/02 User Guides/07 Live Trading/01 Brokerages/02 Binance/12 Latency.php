@@ -1,4 +1,4 @@
 <?php
 include(DOCS_RESOURCES."/brokerages/latency.php");
-$getBrokerageLatencyText("Binance", "binance");
+$getBrokerageLatencyText("Binance and Binance US", "binance");
 ?>
