@@ -87,7 +87,7 @@ for full, short in dict(sorted(names.items())).items():
     for l in range(len(lines)):
         if f"public {full}" in lines[l]:
             j = l - 1
-            temp = {"link": source_link, "line": l, "summary": "", "args": {}}
+            temp = {"link": source_link.replace("raw.githubusercontent.com/QuantConnect/Lean", "github.com/QuantConnect/Lean/blob/"), "line": l, "summary": "", "args": {}}
             if full in full_apis:
                 temp["param"] = full_apis[full][-1]["param"]
             else:
@@ -112,17 +112,51 @@ for full, short in dict(sorted(names.items())).items():
                 j -= 1
             
             try:
-                constructor_args = lines[l].split("(")[1].split(")")[0].split(",")
-                for x in [k.split(" ") for k in constructor_args]:
-                    if len(x) > 2:
-                        temp["args"][f"*{x[0]}"] = x[1]
-                        temp["param"][x[1]] = f"<i>(Optional)</i> {temp['param'][x[1]]} Default: {x[-1].strip()}"
+                constructor_args_ = lines[l].split("(")[1].split(")")[0].split(", ")
+                constructor_args = []
+                current = ""
+                on = True
+                
+                for num in range(len(constructor_args_)):
+                    if "<" in constructor_args_[num] and ">" not in constructor_args_[num]:
+                        current += constructor_args_[num] + ", "
+                        on = False
+                        
+                    elif "<" not in constructor_args_[num] and ">" in constructor_args_[num]:
+                        current += constructor_args_[num]
+                        on = True
                         
                     else:
+                        current = constructor_args_[num]
+                        on = True
+                        
+                    if on:
+                        constructor_args.append(current)
+                        current = ""
+                    
+            except:
+                constructor_args = None
+                        
+            if not constructor_args:
+                temp["args"] = {}
+                
+            else: 
+                for x in [k.split(" ") for k in constructor_args]:
+                    if "=" in x:
+                        ind = x.index("=")
+                        temp["args"][f"*{''.join(x[:(ind-1)])}"] = x[ind - 1]
+                        
+                        if x[ind - 1] in temp["args"]:
+                            temp["param"][x[ind - 1]] = f"<i>(Optional)</i> {temp['param'][x[ind - 1]]} Default: {''.join(x[(ind+1):]).strip()}"
+                            
+                        else:
+                            temp["param"][x[ind - 1]] = f"<i>(Optional)</i> /. Default: {''.join(x[(ind+1):]).strip()}"
+                        
+                    elif len(x) == 2:
                         temp["args"][x[0]] = x[1]
                         
-            except:
-                temp["args"] = {}
+                    else:
+                        temp["args"][x[0]] = "/"
             
             if full in full_apis:
                 full_apis[full].append(temp)
@@ -353,8 +387,23 @@ function ShowHide(event, idName) {{
 <div class="method-container">
 """)
         
-        for code in full_apis[full]:
-            html_file.write(f"""    <div class="method-description">
+        for e, code in enumerate(full_apis[full]):
+            html_file.write(f"""    <h3>{full}()<span class="method-order">{e+1}/{len(full_apis[full])}</span></h3>
+        <pre>
+            <font color="#8F9CA3">{full}</font> QuantConnect.Indicators.{full} (
+""")
+            
+            if len(code["args"].items()) > 0:
+                length = max([len(x) for x in code["args"].keys()]) + 2
+                for arg_type, arg_name in code["args"].items():
+                    html_file.write(f"""    &emsp;<code>{arg_type}</code>{" " * (length - len(arg_type))}{arg_name},
+""")
+                
+            html_file.write(f"""   )
+        </pre>
+    </div>
+    
+    <div class="method-description">
         <p>{code["summary"]}</p>
     </div>
     
@@ -369,14 +418,14 @@ function ShowHide(event, idName) {{
                 <th><strong>Parameters</strong></th>
 """)
             
-            if len(code["args"]) == 0:
+            if len(code["args"].items()) == 0:
                 html_file.write('                <tr><td colspan="3">This constructor does not take any argument.</td></tr>\n')
             
             else:
                 for arg_type, arg_name in code["args"].items():
                     html_file.write(f"""                <tr><td><code>{arg_type}</code></td>
                     <td>{arg_name}</td>
-                    <td>{code["param"]["arg_name"] if "arg_name" in code["param"] else "<i>(Optional)</i> /" if "*" in arg_type else "/"}</td></tr>
+                    <td>{code["param"][arg_name] if arg_name in code["param"] else "<i>(Optional)</i> /" if "*" in arg_type else "/"}</td></tr>
 """)
             
             html_file.write(f"""            </table>
@@ -393,7 +442,8 @@ function ShowHide(event, idName) {{
     </div>
 
 """)
-        index_min = np.argmin(np.array([len(full_apis[full][n]["param"]) for n in range(len(full_apis[full]))]))
+        
+        index_min = np.argmin(np.array([len(full_apis[full][n]["param"].items()) for n in range(len(full_apis[full]))]))
         
         html_file.write(f"""</div>
 <br/>
