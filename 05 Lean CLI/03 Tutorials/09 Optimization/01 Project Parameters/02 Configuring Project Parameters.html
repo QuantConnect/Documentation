@@ -10,19 +10,21 @@
 <pre class="json">{
     "parameters": {
         "ema-fast": "10",
+        "ema-medium": "30",
         "ema-slow": "50"
     }
 }</pre>
 </div>
     </li>
     <li>Open your algorithm in the editor.</li>
-    <li>Call <code>QCAlgorithm.GetParameter(name)</code> in your algorithm to retrieve the string value of a parameter and use that instead of constant values. For example, the <code>ema-fast</code> and <code>ema-slow</code> parameters from step 3 can be used like this:
+    <li>Call <code>QCAlgorithm.GetParameter(name)</code> in your algorithm to retrieve the string value of a parameter and use that instead of constant values. For example, the <code>ema-fast</code>, <code>ema-medium</code>, and <code>ema-slow</code> parameters from step 3 can be used like this:
 <div class="section-example-container">
 <pre class="csharp">namespace QuantConnect.Algorithm.CSharp
 {
     public class ParameterizedAlgorithm : QCAlgorithm
     {
         private ExponentialMovingAverage _fast;
+        private ExponentialMovingAverage _medium;
         private ExponentialMovingAverage _slow;
 
         public override void Initialize()
@@ -32,12 +34,15 @@
             AddEquity("SPY");
 
             var emaFast = GetParameter("ema-fast");
+            var emaMedium = GetParameter("ema-medium");
             var emaSlow = GetParameter("ema-slow");
 
             var fastPeriod = int.Parse(emaFast);
+            var mediumPeriod = int.Parse(emaMedium);
             var slowPeriod = int.Parse(emaSlow);
 
             _fast = EMA("SPY", fastPeriod);
+            _medium = EMA("SPY", mediumPeriod);
             _slow = EMA("SPY", slowPeriod);
         }
     }
@@ -49,12 +54,15 @@
         self.AddEquity("SPY")
 
         ema_fast = self.GetParameter("ema-fast")
+        ema_medium = self.GetParameter("ema-medium")
         ema_slow = self.GetParameter("ema-slow")
 
         fast_period = int(ema_fast)
+        medium_period = int(ema_medium)
         slow_period = int(ema_slow)
 
         self._fast = self.EMA("SPY", fast_period)
+        self._medium = self.EMA("SPY", medium_period)
         self._slow = self.EMA("SPY", slow_period)</pre>
 </div>
     </li>
