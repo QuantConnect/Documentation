@@ -87,7 +87,7 @@ for full, short in dict(sorted(names.items())).items():
     for l in range(len(lines)):
         if f"public {full}" in lines[l]:
             j = l - 1
-            temp = {"link": source_link.replace("raw.githubusercontent.com/QuantConnect/Lean", "github.com/QuantConnect/Lean/blob/"), "line": l, "summary": "", "args": {}}
+            temp = {"link": source_link.replace("raw.githubusercontent.com/QuantConnect/Lean", "github.com/QuantConnect/Lean/blob"), "line": l, "summary": "", "args": {}}
             if full in full_apis:
                 temp["param"] = full_apis[full][-1]["param"]
             else:
@@ -388,7 +388,8 @@ function ShowHide(event, idName) {{
 """)
         
         for e, code in enumerate(full_apis[full]):
-            html_file.write(f"""    <h3>{full}()<span class="method-order">{e+1}/{len(full_apis[full])}</span></h3>
+            html_file.write(f"""    <div class="method-header">
+        <h3>{full}()<span class="method-order">{e+1}/{len(full_apis[full])}</span></h3>
         <pre>
             <font color="#8F9CA3">{full}</font> QuantConnect.Indicators.{full} (
 """)
