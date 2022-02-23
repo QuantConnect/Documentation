@@ -82,48 +82,58 @@ function ShowHide(event, idName) {
 </script>
 
 <p>You can create an <code>DoubleExponentialMovingAverage</code> indicator that does not automatically update. This lets you update the indicator with any data you choose. The following reference table describes the <code>DoubleExponentialMovingAverage</code> constructor.</p>
-<a id="DoubleExponentialMovingAverage-header"></a>
-<div class="method-container">
 
-    <div class="method-header">
-        <h3>DoubleExponentialMovingAverage()<span class="method-order">1/1</span></h3>
-        <pre>
-            <font color="#8F9CA3">DoubleExponentialMovingAverage</font> QuantConnect.Indicators.DoubleExponentialMovingAverage (
-   &emsp;<code>*string</code>                       name,
-   &emsp;<code>Int32</code>                        period,
-   )
-        </pre>
-    </div>
-    
+<div class="method-container">
     <div class="method-description">
-        <p>Creates a new DoubleExponentialMovingAverage indicator.</p>
+        <p>Initializes a new instance of the <code>DoubleExponentialMovingAverage</code> class using the specified name and period.</p>
     </div>
     
     <div class="details-btn">
-        <button class="show-hide-detail" onclick="ShowHide(event, 'DoubleExponentialMovingAverage(*string-name,-Int32-period,-*Nullable&lt;Resolution&gt;-resolution,-*Func&lt;Decimal&gt;-selector)-details')"><span>Show Details <img src='https://cdn.quantconnect.com/i/tu/api-chevron-show.svg' alt='arrow-show'></span></button>
+        <button class="show-hide-detail" onclick="ShowHide(event, 'DoubleExponentialMovingAverage-38')"><span>Show Details <img src='https://cdn.quantconnect.com/i/tu/api-chevron-show.svg' alt='arrow-show'></span></button>
     </div>
-
-    <div class="method-details" id="DoubleExponentialMovingAverage(*string-name,-Int32-period,-*Nullable&lt;Resolution&gt;-resolution,-*Func&lt;Decimal&gt;-selector)-details" style="display: none;" >
+    
+    <div class="method-details" id="DoubleExponentialMovingAverage-38" style="display: none;" >
     
         <div class="parameter-list">
             <table class="parameter-table">
-                <th><strong>Parameters</strong></th>                
-                <tr><td><code>*string</code></td>
-                <td>name</td>
-                <td><i>(Optional)</i> The custom name of the indicator whose DEMA we want.</td></tr>                
-                <tr><td><code>Int32</code></td>
-                <td>period</td>
-                <td>The period over which to compute the DEMA.</td></tr>                
+                <th><strong>Parameters</strong></th>
+                <tr><td colspan="3">This constructor does not take any argument.</td></tr>
             </table>
         </div>
 
         <div class="method-return">
             <h4>Return</h4>
-            <p>DoubleExponentialMovingAverage - The DoubleExponentialMovingAverage indicator for the requested name over the specified period</p>
-        </div>
+            <p><code>DoubleExponentialMovingAverage</code> - The new <code>DoubleExponentialMovingAverage</code> indicator object.</div>
 
         <div class="method-def">
-            <p>Definition at <a href="https://github.com/QuantConnect/Lean/blob/master/Indicators/DoubleExponentialMovingAverage.cs">file Indicators/DoubleExponentialMovingAverage.cs.</a></p>
+            <p>Definition at <a href="https://raw.githubusercontent.com/QuantConnect/Lean/master/Indicators/DoubleExponentialMovingAverage.cs#L38">line 38 of file Indicators/DoubleExponentialMovingAverage.cs.</a></p>
+        </div>
+        
+    </div>
+
+    <div class="method-description">
+        <p>Initializes a new instance of the <code>DoubleExponentialMovingAverage</code> class using the specified period.</p>
+    </div>
+    
+    <div class="details-btn">
+        <button class="show-hide-detail" onclick="ShowHide(event, 'DoubleExponentialMovingAverage-52')"><span>Show Details <img src='https://cdn.quantconnect.com/i/tu/api-chevron-show.svg' alt='arrow-show'></span></button>
+    </div>
+    
+    <div class="method-details" id="DoubleExponentialMovingAverage-52" style="display: none;" >
+    
+        <div class="parameter-list">
+            <table class="parameter-table">
+                <th><strong>Parameters</strong></th>
+                <tr><td colspan="3">This constructor does not take any argument.</td></tr>
+            </table>
+        </div>
+
+        <div class="method-return">
+            <h4>Return</h4>
+            <p><code>DoubleExponentialMovingAverage</code> - The new <code>DoubleExponentialMovingAverage</code> indicator object.</div>
+
+        <div class="method-def">
+            <p>Definition at <a href="https://raw.githubusercontent.com/QuantConnect/Lean/master/Indicators/DoubleExponentialMovingAverage.cs#L52">line 52 of file Indicators/DoubleExponentialMovingAverage.cs.</a></p>
         </div>
         
     </div>
@@ -139,7 +149,7 @@ function ShowHide(event, idName) {
     <pre class="csharp">private DoubleExponentialMovingAverage _dema;
 
 // In Initialize()
-_dema = new DoubleExponentialMovingAverage(period);
+_dema = new DoubleExponentialMovingAverage(name, period, volumeFactor);
 _dema.Updated += IndicatorUpdateMethod;
 
 var thirtyMinuteConsolidator = new TradeBarConsolidator(TimeSpan.FromMinutes(30));
@@ -154,7 +164,7 @@ if (_dema.IsReady)
     var indicatorValue = _dema.Current.Value;
 }</pre>
     <pre class="python"># In Initialize()
-self.dema = DoubleExponentialMovingAverage(period)
+self.dema = DoubleExponentialMovingAverage(name, period, volumeFactor)
 self.dema.Updated += self.IndicatorUpdateMethod
 
 thirty_minute_consolidator = TradeBarConsolidator(timedelta(minutes=30))
@@ -176,7 +186,7 @@ if self.dema.IsReady:
 private Symbol symbol;
 
 // In Initialize()
-_dema = new DoubleExponentialMovingAverage(period);
+_dema = new DoubleExponentialMovingAverage(name, period, volumeFactor);
 symbol = AddEquity("SPY").Symbol;
 
 // In OnData()
@@ -189,7 +199,7 @@ if (_dema.IsReady)
     var indicatorValue = _dema.Current.Value;
 }</pre>
     <pre class="python"># In Initialize()
-self.dema = DoubleExponentialMovingAverage(period)
+self.dema = DoubleExponentialMovingAverage(name, period, volumeFactor)
 self.symbol = self.AddEquity("SPY").Symbol
 
 # In OnData()

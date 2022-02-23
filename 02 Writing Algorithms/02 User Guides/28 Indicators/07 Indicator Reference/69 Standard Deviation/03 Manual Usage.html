@@ -82,48 +82,60 @@ function ShowHide(event, idName) {
 </script>
 
 <p>You can create an <code>StandardDeviation</code> indicator that does not automatically update. This lets you update the indicator with any data you choose. The following reference table describes the <code>StandardDeviation</code> constructor.</p>
-<a id="StandardDeviation-header"></a>
-<div class="method-container">
 
-    <div class="method-header">
-        <h3>StandardDeviation()<span class="method-order">1/1</span></h3>
-        <pre>
-            <font color="#8F9CA3">StandardDeviation</font> QuantConnect.Indicators.StandardDeviation (
-   &emsp;<code>*string</code>                       name,
-   &emsp;<code>Int32</code>                        period,
-   )
-        </pre>
-    </div>
-    
+<div class="method-container">
     <div class="method-description">
-        <p>Creates a new StandardDeviation indicator. This will return the population standard deviation of samples over the specified period.</p>
+        <p>On a data set of size N will use an N normalizer and would thus be biased if applied to a subset.</p>
     </div>
     
     <div class="details-btn">
-        <button class="show-hide-detail" onclick="ShowHide(event, 'StandardDeviation(*string-name,-Int32-period,-*Nullable&lt;Resolution&gt;-resolution,-*Func&lt;Decimal&gt;-selector)-details')"><span>Show Details <img src='https://cdn.quantconnect.com/i/tu/api-chevron-show.svg' alt='arrow-show'></span></button>
+        <button class="show-hide-detail" onclick="ShowHide(event, 'StandardDeviation-31')"><span>Show Details <img src='https://cdn.quantconnect.com/i/tu/api-chevron-show.svg' alt='arrow-show'></span></button>
     </div>
-
-    <div class="method-details" id="StandardDeviation(*string-name,-Int32-period,-*Nullable&lt;Resolution&gt;-resolution,-*Func&lt;Decimal&gt;-selector)-details" style="display: none;" >
+    
+    <div class="method-details" id="StandardDeviation-31" style="display: none;" >
     
         <div class="parameter-list">
             <table class="parameter-table">
-                <th><strong>Parameters</strong></th>                
-                <tr><td><code>*string</code></td>
-                <td>name</td>
-                <td><i>(Optional)</i> The custom name of the indicator whose STD we want.</td></tr>                
-                <tr><td><code>Int32</code></td>
-                <td>period</td>
-                <td>The period over which to compute the STD.</td></tr>                
+                <th><strong>Parameters</strong></th>
+                <tr><td><code>int</code></td>
+                    <td>period</td>
+                    <td>/</td></tr>
             </table>
         </div>
 
         <div class="method-return">
             <h4>Return</h4>
-            <p>StandardDeviation - The StandardDeviation indicator for the requested name over the specified period</p>
-        </div>
+            <p><code>StandardDeviation</code> - The new <code>StandardDeviation</code> indicator object.</div>
 
         <div class="method-def">
-            <p>Definition at <a href="https://github.com/QuantConnect/Lean/blob/master/Indicators/StandardDeviation.cs">file Indicators/StandardDeviation.cs.</a></p>
+            <p>Definition at <a href="https://raw.githubusercontent.com/QuantConnect/Lean/master/Indicators/StandardDeviation.cs#L31">line 31 of file Indicators/StandardDeviation.cs.</a></p>
+        </div>
+        
+    </div>
+
+    <div class="method-description">
+        <p>On a data set of size N will use an N normalizer and would thus be biased if applied to a subset.</p>
+    </div>
+    
+    <div class="details-btn">
+        <button class="show-hide-detail" onclick="ShowHide(event, 'StandardDeviation-44')"><span>Show Details <img src='https://cdn.quantconnect.com/i/tu/api-chevron-show.svg' alt='arrow-show'></span></button>
+    </div>
+    
+    <div class="method-details" id="StandardDeviation-44" style="display: none;" >
+    
+        <div class="parameter-list">
+            <table class="parameter-table">
+                <th><strong>Parameters</strong></th>
+                <tr><td colspan="3">This constructor does not take any argument.</td></tr>
+            </table>
+        </div>
+
+        <div class="method-return">
+            <h4>Return</h4>
+            <p><code>StandardDeviation</code> - The new <code>StandardDeviation</code> indicator object.</div>
+
+        <div class="method-def">
+            <p>Definition at <a href="https://raw.githubusercontent.com/QuantConnect/Lean/master/Indicators/StandardDeviation.cs#L44">line 44 of file Indicators/StandardDeviation.cs.</a></p>
         </div>
         
     </div>
@@ -139,7 +151,7 @@ function ShowHide(event, idName) {
     <pre class="csharp">private StandardDeviation _std;
 
 // In Initialize()
-_std = new StandardDeviation(period);
+_std = new StandardDeviation(name, period);
 _std.Updated += IndicatorUpdateMethod;
 
 var thirtyMinuteConsolidator = new TradeBarConsolidator(TimeSpan.FromMinutes(30));
@@ -154,7 +166,7 @@ if (_std.IsReady)
     var indicatorValue = _std.Current.Value;
 }</pre>
     <pre class="python"># In Initialize()
-self.std = StandardDeviation(period)
+self.std = StandardDeviation(name, period)
 self.std.Updated += self.IndicatorUpdateMethod
 
 thirty_minute_consolidator = TradeBarConsolidator(timedelta(minutes=30))
@@ -176,7 +188,7 @@ if self.std.IsReady:
 private Symbol symbol;
 
 // In Initialize()
-_std = new StandardDeviation(period);
+_std = new StandardDeviation(name, period);
 symbol = AddEquity("SPY").Symbol;
 
 // In OnData()
@@ -189,7 +201,7 @@ if (_std.IsReady)
     var indicatorValue = _std.Current.Value;
 }</pre>
     <pre class="python"># In Initialize()
-self.std = StandardDeviation(period)
+self.std = StandardDeviation(name, period)
 self.symbol = self.AddEquity("SPY").Symbol
 
 # In OnData()

@@ -82,56 +82,58 @@ function ShowHide(event, idName) {
 </script>
 
 <p>You can create an <code>KeltnerChannels</code> indicator that does not automatically update. This lets you update the indicator with any data you choose. The following reference table describes the <code>KeltnerChannels</code> constructor.</p>
-<a id="KeltnerChannels-header"></a>
-<div class="method-container">
 
-    <div class="method-header">
-        <h3>KeltnerChannels()<span class="method-order">1/1</span></h3>
-        <pre>
-            <font color="#8F9CA3">KeltnerChannels</font> QuantConnect.Indicators.KeltnerChannels (
-   &emsp;<code>*string</code>                       name,
-   &emsp;<code>Int32</code>                        period,
-   &emsp;<code>Decimal</code>                      k,
-   &emsp;<code>*MovingAverageType</code>           movingAverageType,
-   )
-        </pre>
-    </div>
-    
+<div class="method-container">
     <div class="method-description">
-        <p>Creates a new Keltner Channels indicator. The indicator will be automatically updated on the given resolution.</p>
+        <p>Initializes a new instance of the KeltnerChannels class.</p>
     </div>
     
     <div class="details-btn">
-        <button class="show-hide-detail" onclick="ShowHide(event, 'KeltnerChannels(*string-name,-Int32-period,-Decimal-k,-*MovingAverageType-movingAverageType,-*Nullable&lt;Resolution&gt;-resolution,-*Func&lt;IBaseDataBar&gt;-selector)-details')"><span>Show Details <img src='https://cdn.quantconnect.com/i/tu/api-chevron-show.svg' alt='arrow-show'></span></button>
+        <button class="show-hide-detail" onclick="ShowHide(event, 'KeltnerChannels-52')"><span>Show Details <img src='https://cdn.quantconnect.com/i/tu/api-chevron-show.svg' alt='arrow-show'></span></button>
     </div>
-
-    <div class="method-details" id="KeltnerChannels(*string-name,-Int32-period,-Decimal-k,-*MovingAverageType-movingAverageType,-*Nullable&lt;Resolution&gt;-resolution,-*Func&lt;IBaseDataBar&gt;-selector)-details" style="display: none;" >
+    
+    <div class="method-details" id="KeltnerChannels-52" style="display: none;" >
     
         <div class="parameter-list">
             <table class="parameter-table">
-                <th><strong>Parameters</strong></th>                
-                <tr><td><code>*string</code></td>
-                <td>name</td>
-                <td><i>(Optional)</i> The custom name of the indicator whose Keltner Channel we seek.</td></tr>                
-                <tr><td><code>Int32</code></td>
-                <td>period</td>
-                <td>The period over which to compute the Keltner Channels.</td></tr>                
-                <tr><td><code>Decimal</code></td>
-                <td>k</td>
-                <td>The number of multiples of the <code>AverageTrueRange</code> from the middle band of the Keltner Channels.</td></tr>                
-                <tr><td><code>*MovingAverageType</code></td>
-                <td>movingAverageType</td>
-                <td><i>(Optional)</i> Specifies the type of moving average to be used as the middle line of the Keltner Channel.</td></tr>                
+                <th><strong>Parameters</strong></th>
+                <tr><td colspan="3">This constructor does not take any argument.</td></tr>
             </table>
         </div>
 
         <div class="method-return">
             <h4>Return</h4>
-            <p>KeltnerChannels - The Keltner Channel indicator for the requested name.</p>
-        </div>
+            <p><code>KeltnerChannels</code> - The new <code>KeltnerChannels</code> indicator object.</div>
 
         <div class="method-def">
-            <p>Definition at <a href="https://github.com/QuantConnect/Lean/blob/master/Indicators/KeltnerChannels.cs">file Indicators/KeltnerChannels.cs.</a></p>
+            <p>Definition at <a href="https://raw.githubusercontent.com/QuantConnect/Lean/master/Indicators/KeltnerChannels.cs#L52">line 52 of file Indicators/KeltnerChannels.cs.</a></p>
+        </div>
+        
+    </div>
+
+    <div class="method-description">
+        <p>Initializes a new instance of the KeltnerChannels class.</p>
+    </div>
+    
+    <div class="details-btn">
+        <button class="show-hide-detail" onclick="ShowHide(event, 'KeltnerChannels-64')"><span>Show Details <img src='https://cdn.quantconnect.com/i/tu/api-chevron-show.svg' alt='arrow-show'></span></button>
+    </div>
+    
+    <div class="method-details" id="KeltnerChannels-64" style="display: none;" >
+    
+        <div class="parameter-list">
+            <table class="parameter-table">
+                <th><strong>Parameters</strong></th>
+                <tr><td colspan="3">This constructor does not take any argument.</td></tr>
+            </table>
+        </div>
+
+        <div class="method-return">
+            <h4>Return</h4>
+            <p><code>KeltnerChannels</code> - The new <code>KeltnerChannels</code> indicator object.</div>
+
+        <div class="method-def">
+            <p>Definition at <a href="https://raw.githubusercontent.com/QuantConnect/Lean/master/Indicators/KeltnerChannels.cs#L64">line 64 of file Indicators/KeltnerChannels.cs.</a></p>
         </div>
         
     </div>
@@ -147,7 +149,7 @@ function ShowHide(event, idName) {
     <pre class="csharp">private KeltnerChannels _kch;
 
 // In Initialize()
-_kch = new KeltnerChannels(period, k);
+_kch = new KeltnerChannels(name, period, k, movingAverageType);
 _kch.Updated += IndicatorUpdateMethod;
 
 var thirtyMinuteConsolidator = new TradeBarConsolidator(TimeSpan.FromMinutes(30));
@@ -162,7 +164,7 @@ if (_kch.IsReady)
     var indicatorValue = _kch.Current.Value;
 }</pre>
     <pre class="python"># In Initialize()
-self.kch = KeltnerChannels(period, k)
+self.kch = KeltnerChannels(name, period, k, movingAverageType)
 self.kch.Updated += self.IndicatorUpdateMethod
 
 thirty_minute_consolidator = TradeBarConsolidator(timedelta(minutes=30))
@@ -184,7 +186,7 @@ if self.kch.IsReady:
 private Symbol symbol;
 
 // In Initialize()
-_kch = new KeltnerChannels(period, k);
+_kch = new KeltnerChannels(name, period, k, movingAverageType);
 symbol = AddEquity("SPY").Symbol;
 
 // In OnData()
@@ -197,7 +199,7 @@ if (_kch.IsReady)
     var indicatorValue = _kch.Current.Value;
 }</pre>
     <pre class="python"># In Initialize()
-self.kch = KeltnerChannels(period, k)
+self.kch = KeltnerChannels(name, period, k, movingAverageType)
 self.symbol = self.AddEquity("SPY").Symbol
 
 # In OnData()

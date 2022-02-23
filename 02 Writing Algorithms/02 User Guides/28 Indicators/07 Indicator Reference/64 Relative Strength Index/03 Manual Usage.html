@@ -82,52 +82,58 @@ function ShowHide(event, idName) {
 </script>
 
 <p>You can create an <code>RelativeStrengthIndex</code> indicator that does not automatically update. This lets you update the indicator with any data you choose. The following reference table describes the <code>RelativeStrengthIndex</code> constructor.</p>
-<a id="RelativeStrengthIndex-header"></a>
-<div class="method-container">
 
-    <div class="method-header">
-        <h3>RelativeStrengthIndex()<span class="method-order">1/1</span></h3>
-        <pre>
-            <font color="#8F9CA3">RelativeStrengthIndex</font> QuantConnect.Indicators.RelativeStrengthIndex (
-   &emsp;<code>*string</code>                       name,
-   &emsp;<code>Int32</code>                        period,
-   &emsp;<code>*MovingAverageType</code>           movingAverageType,
-   )
-        </pre>
-    </div>
-    
+<div class="method-container">
     <div class="method-description">
-        <p>Creates a new RelativeStrengthIndex indicator. This will produce an oscillator that ranges from 0 to 100 based on the ratio of average gains to average losses over the specified period.</p>
+        <p>Initializes a new instance of the RelativeStrengthIndex class with the specified name and period.</p>
     </div>
     
     <div class="details-btn">
-        <button class="show-hide-detail" onclick="ShowHide(event, 'RelativeStrengthIndex(*string-name,-Int32-period,-*MovingAverageType-movingAverageType,-*Nullable&lt;Resolution&gt;-resolution,-*Func&lt;Decimal&gt;-selector)-details')"><span>Show Details <img src='https://cdn.quantconnect.com/i/tu/api-chevron-show.svg' alt='arrow-show'></span></button>
+        <button class="show-hide-detail" onclick="ShowHide(event, 'RelativeStrengthIndex-47')"><span>Show Details <img src='https://cdn.quantconnect.com/i/tu/api-chevron-show.svg' alt='arrow-show'></span></button>
     </div>
-
-    <div class="method-details" id="RelativeStrengthIndex(*string-name,-Int32-period,-*MovingAverageType-movingAverageType,-*Nullable&lt;Resolution&gt;-resolution,-*Func&lt;Decimal&gt;-selector)-details" style="display: none;" >
+    
+    <div class="method-details" id="RelativeStrengthIndex-47" style="display: none;" >
     
         <div class="parameter-list">
             <table class="parameter-table">
-                <th><strong>Parameters</strong></th>                
-                <tr><td><code>*string</code></td>
-                <td>name</td>
-                <td><i>(Optional)</i> The custom name of the indicator whose RSI we want.</td></tr>                
-                <tr><td><code>Int32</code></td>
-                <td>period</td>
-                <td>The period over which to compute the RSI.</td></tr>                
-                <tr><td><code>*MovingAverageType</code></td>
-                <td>movingAverageType</td>
-                <td><i>(Optional)</i> The type of moving average to use in computing the average gain/loss values.</td></tr>                
+                <th><strong>Parameters</strong></th>
+                <tr><td colspan="3">This constructor does not take any argument.</td></tr>
             </table>
         </div>
 
         <div class="method-return">
             <h4>Return</h4>
-            <p>RelativeStrengthIndex - The RelativeStrengthIndex indicator for the requested name over the specified period</p>
-        </div>
+            <p><code>RelativeStrengthIndex</code> - The new <code>RelativeStrengthIndex</code> indicator object.</div>
 
         <div class="method-def">
-            <p>Definition at <a href="https://github.com/QuantConnect/Lean/blob/master/Indicators/RelativeStrengthIndex.cs">file Indicators/RelativeStrengthIndex.cs.</a></p>
+            <p>Definition at <a href="https://raw.githubusercontent.com/QuantConnect/Lean/master/Indicators/RelativeStrengthIndex.cs#L47">line 47 of file Indicators/RelativeStrengthIndex.cs.</a></p>
+        </div>
+        
+    </div>
+
+    <div class="method-description">
+        <p>Initializes a new instance of the RelativeStrengthIndex class with the specified name and period.</p>
+    </div>
+    
+    <div class="details-btn">
+        <button class="show-hide-detail" onclick="ShowHide(event, 'RelativeStrengthIndex-58')"><span>Show Details <img src='https://cdn.quantconnect.com/i/tu/api-chevron-show.svg' alt='arrow-show'></span></button>
+    </div>
+    
+    <div class="method-details" id="RelativeStrengthIndex-58" style="display: none;" >
+    
+        <div class="parameter-list">
+            <table class="parameter-table">
+                <th><strong>Parameters</strong></th>
+                <tr><td colspan="3">This constructor does not take any argument.</td></tr>
+            </table>
+        </div>
+
+        <div class="method-return">
+            <h4>Return</h4>
+            <p><code>RelativeStrengthIndex</code> - The new <code>RelativeStrengthIndex</code> indicator object.</div>
+
+        <div class="method-def">
+            <p>Definition at <a href="https://raw.githubusercontent.com/QuantConnect/Lean/master/Indicators/RelativeStrengthIndex.cs#L58">line 58 of file Indicators/RelativeStrengthIndex.cs.</a></p>
         </div>
         
     </div>
@@ -143,7 +149,7 @@ function ShowHide(event, idName) {
     <pre class="csharp">private RelativeStrengthIndex _rsi;
 
 // In Initialize()
-_rsi = new RelativeStrengthIndex(period);
+_rsi = new RelativeStrengthIndex(name, period, movingAverageType);
 _rsi.Updated += IndicatorUpdateMethod;
 
 var thirtyMinuteConsolidator = new TradeBarConsolidator(TimeSpan.FromMinutes(30));
@@ -158,7 +164,7 @@ if (_rsi.IsReady)
     var indicatorValue = _rsi.Current.Value;
 }</pre>
     <pre class="python"># In Initialize()
-self.rsi = RelativeStrengthIndex(period)
+self.rsi = RelativeStrengthIndex(name, period, movingAverageType)
 self.rsi.Updated += self.IndicatorUpdateMethod
 
 thirty_minute_consolidator = TradeBarConsolidator(timedelta(minutes=30))
@@ -180,7 +186,7 @@ if self.rsi.IsReady:
 private Symbol symbol;
 
 // In Initialize()
-_rsi = new RelativeStrengthIndex(period);
+_rsi = new RelativeStrengthIndex(name, period, movingAverageType);
 symbol = AddEquity("SPY").Symbol;
 
 // In OnData()
@@ -193,7 +199,7 @@ if (_rsi.IsReady)
     var indicatorValue = _rsi.Current.Value;
 }</pre>
     <pre class="python"># In Initialize()
-self.rsi = RelativeStrengthIndex(period)
+self.rsi = RelativeStrengthIndex(name, period, movingAverageType)
 self.symbol = self.AddEquity("SPY").Symbol
 
 # In OnData()

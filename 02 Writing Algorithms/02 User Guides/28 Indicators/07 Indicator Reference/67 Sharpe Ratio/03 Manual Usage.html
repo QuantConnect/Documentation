@@ -82,52 +82,58 @@ function ShowHide(event, idName) {
 </script>
 
 <p>You can create an <code>SharpeRatio</code> indicator that does not automatically update. This lets you update the indicator with any data you choose. The following reference table describes the <code>SharpeRatio</code> constructor.</p>
-<a id="SharpeRatio-header"></a>
-<div class="method-container">
 
-    <div class="method-header">
-        <h3>SharpeRatio()<span class="method-order">1/1</span></h3>
-        <pre>
-            <font color="#8F9CA3">SharpeRatio</font> QuantConnect.Indicators.SharpeRatio (
-   &emsp;<code>*string</code>                       name,
-   &emsp;<code>Int32</code>                        sharpePeriod,
-   &emsp;<code>*Decimal</code>                     riskFreeRate,
-   )
-        </pre>
-    </div>
-    
+<div class="method-container">
     <div class="method-description">
-        <p>Creates a new RollingSharpeRatio indicator.</p>
+        <p>Creates a new Sharpe Ratio indicator using the specified periods.</p>
     </div>
     
     <div class="details-btn">
-        <button class="show-hide-detail" onclick="ShowHide(event, 'SharpeRatio(*string-name,-Int32-sharpePeriod,-*Decimal-riskFreeRate,-*Nullable&lt;Resolution&gt;-resolution,-*Func&lt;Decimal&gt;-selector)-details')"><span>Show Details <img src='https://cdn.quantconnect.com/i/tu/api-chevron-show.svg' alt='arrow-show'></span></button>
+        <button class="show-hide-detail" onclick="ShowHide(event, 'SharpeRatio-57')"><span>Show Details <img src='https://cdn.quantconnect.com/i/tu/api-chevron-show.svg' alt='arrow-show'></span></button>
     </div>
-
-    <div class="method-details" id="SharpeRatio(*string-name,-Int32-sharpePeriod,-*Decimal-riskFreeRate,-*Nullable&lt;Resolution&gt;-resolution,-*Func&lt;Decimal&gt;-selector)-details" style="display: none;" >
+    
+    <div class="method-details" id="SharpeRatio-57" style="display: none;" >
     
         <div class="parameter-list">
             <table class="parameter-table">
-                <th><strong>Parameters</strong></th>                
-                <tr><td><code>*string</code></td>
-                <td>name</td>
-                <td><i>(Optional)</i> The custom name of the indicator whose RSR we want.</td></tr>                
-                <tr><td><code>Int32</code></td>
-                <td>sharpePeriod</td>
-                <td>Period of historical observation for sharpe ratio calculation.</td></tr>                
-                <tr><td><code>*Decimal</code></td>
-                <td>riskFreeRate</td>
-                <td><i>(Optional)</i> Risk-free rate for sharpe ratio calculation.</td></tr>                
+                <th><strong>Parameters</strong></th>
+                <tr><td colspan="3">This constructor does not take any argument.</td></tr>
             </table>
         </div>
 
         <div class="method-return">
             <h4>Return</h4>
-            <p>SharpeRatio - The RollingSharpeRatio indicator for the requested name over the specified period</p>
-        </div>
+            <p><code>SharpeRatio</code> - The new <code>SharpeRatio</code> indicator object.</div>
 
         <div class="method-def">
-            <p>Definition at <a href="https://github.com/QuantConnect/Lean/blob/master/Indicators/SharpeRatio.cs">file Indicators/SharpeRatio.cs.</a></p>
+            <p>Definition at <a href="https://raw.githubusercontent.com/QuantConnect/Lean/master/Indicators/SharpeRatio.cs#L57">line 57 of file Indicators/SharpeRatio.cs.</a></p>
+        </div>
+        
+    </div>
+
+    <div class="method-description">
+        <p>Creates a new SharpeRatio indicator using the specified periods.</p>
+    </div>
+    
+    <div class="details-btn">
+        <button class="show-hide-detail" onclick="ShowHide(event, 'SharpeRatio-78')"><span>Show Details <img src='https://cdn.quantconnect.com/i/tu/api-chevron-show.svg' alt='arrow-show'></span></button>
+    </div>
+    
+    <div class="method-details" id="SharpeRatio-78" style="display: none;" >
+    
+        <div class="parameter-list">
+            <table class="parameter-table">
+                <th><strong>Parameters</strong></th>
+                <tr><td colspan="3">This constructor does not take any argument.</td></tr>
+            </table>
+        </div>
+
+        <div class="method-return">
+            <h4>Return</h4>
+            <p><code>SharpeRatio</code> - The new <code>SharpeRatio</code> indicator object.</div>
+
+        <div class="method-def">
+            <p>Definition at <a href="https://raw.githubusercontent.com/QuantConnect/Lean/master/Indicators/SharpeRatio.cs#L78">line 78 of file Indicators/SharpeRatio.cs.</a></p>
         </div>
         
     </div>
@@ -143,7 +149,7 @@ function ShowHide(event, idName) {
     <pre class="csharp">private SharpeRatio _sr;
 
 // In Initialize()
-_sr = new SharpeRatio(sharpePeriod);
+_sr = new SharpeRatio(name, period, riskFreeRate);
 _sr.Updated += IndicatorUpdateMethod;
 
 var thirtyMinuteConsolidator = new TradeBarConsolidator(TimeSpan.FromMinutes(30));
@@ -158,7 +164,7 @@ if (_sr.IsReady)
     var indicatorValue = _sr.Current.Value;
 }</pre>
     <pre class="python"># In Initialize()
-self.sr = SharpeRatio(sharpePeriod)
+self.sr = SharpeRatio(name, period, riskFreeRate)
 self.sr.Updated += self.IndicatorUpdateMethod
 
 thirty_minute_consolidator = TradeBarConsolidator(timedelta(minutes=30))
@@ -180,7 +186,7 @@ if self.sr.IsReady:
 private Symbol symbol;
 
 // In Initialize()
-_sr = new SharpeRatio(sharpePeriod);
+_sr = new SharpeRatio(name, period, riskFreeRate);
 symbol = AddEquity("SPY").Symbol;
 
 // In OnData()
@@ -193,7 +199,7 @@ if (_sr.IsReady)
     var indicatorValue = _sr.Current.Value;
 }</pre>
     <pre class="python"># In Initialize()
-self.sr = SharpeRatio(sharpePeriod)
+self.sr = SharpeRatio(name, period, riskFreeRate)
 self.symbol = self.AddEquity("SPY").Symbol
 
 # In OnData()
