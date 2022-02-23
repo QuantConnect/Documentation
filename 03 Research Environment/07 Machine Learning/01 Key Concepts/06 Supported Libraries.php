@@ -26,15 +26,15 @@ class MachineLearningLibrary {
 }
 
 $libraries = array(
-    MachineLearningLibrary("Keras", "keras", "https://keras.io/"),
-    MachineLearningLibrary("TensorFlow", "tensorflow", "https://www.tensorflow.org/"),
-    MachineLearningLibrary("Scikit-Learn", "scikit-learn", "https://scikit-learn.org/stable/index.html"),
-    MachineLearningLibrary("hmmlearn", "hmmlearn", "https://hmmlearn.readthedocs.io/en/latest/"),
-    MachineLearningLibrary("gplearn", "gplearn", "https://gplearn.readthedocs.io/en/stable/intro.html"),
-    MachineLearningLibrary("PyTorch", "pytorch", "https://pytorch.org/"),
-    MachineLearningLibrary("Stable Baselines", "stable-baselines", "https://stable-baselines.readthedocs.io/en/master/"),
-    MachineLearningLibrary("tslearn", "tslearn", "https://tslearn.readthedocs.io/en/stable/"),
-    MachineLearningLibrary("XGBoost", "xgboost", "https://xgboost.readthedocs.io/en/latest/")
+    new MachineLearningLibrary("Keras", "keras", "https://keras.io/"),
+    new MachineLearningLibrary("TensorFlow", "tensorflow", "https://www.tensorflow.org/"),
+    new MachineLearningLibrary("Scikit-Learn", "scikit-learn", "https://scikit-learn.org/stable/index.html"),
+    new MachineLearningLibrary("hmmlearn", "hmmlearn", "https://hmmlearn.readthedocs.io/en/latest/"),
+    new MachineLearningLibrary("gplearn", "gplearn", "https://gplearn.readthedocs.io/en/stable/intro.html"),
+    new MachineLearningLibrary("PyTorch", "pytorch", "https://pytorch.org/"),
+    new MachineLearningLibrary("Stable Baselines", "stable-baselines", "https://stable-baselines.readthedocs.io/en/master/"),
+    new MachineLearningLibrary("tslearn", "tslearn", "https://tslearn.readthedocs.io/en/stable/"),
+    new MachineLearningLibrary("XGBoost", "xgboost", "https://xgboost.readthedocs.io/en/latest/")
 );
 
 foreach ($libraries as $library) {
