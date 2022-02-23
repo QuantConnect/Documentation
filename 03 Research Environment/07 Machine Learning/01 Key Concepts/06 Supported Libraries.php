@@ -41,7 +41,7 @@ foreach ($libraries as $library) {
     echo "<tr>
               <td>{$library->name}</td>
               <td><a href='/docs/v2/research-environment/machine-learning/{$library->tutorialLink}'>Tutorial</a></td>
-              <td>rel='nofollow' target='_blank' href='{$library->documentationLink}'>Documentation</a></td>
+              <td><a rel='nofollow' target='_blank' href='{$library->documentationLink}'>Documentation</a></td>
           </tr>
     ";
 }
