@@ -43,9 +43,17 @@ Enter an option: 2</pre>
 <div class="cli section-example-container">
 <pre>$ lean optimize "My Project"
 Should the 'ema-fast' parameter be optimized? [Y/n]: y
-Minimum value for 'ema-fast': 1
+Minimum value for 'ema-fast': 5
 Maximum value for 'ema-fast': 10
-Step size for 'ema-fast' [1.0]: 1</pre>
+Step size for 'ema-fast' [1.0]: 1
+Should the 'ema-medium' parameter be optimized? [Y/n]: y
+Minimum value for 'ema-medium': 25
+Maximum value for 'ema-medium': 30
+Step size for 'ema-medium' [1.0]: 1
+Should the 'ema-slow' parameter be optimized? [Y/n]: y
+Minimum value for 'ema-slow': 45
+Maximum value for 'ema-slow': 50
+Step size for 'ema-slow' [1.0]: 1</pre>
 </div>
     </li>
     <li>Enter the constraints of the optimization. An example optimization is "Drawdown &lt;= 0.25", which discards all parameter combinations resulting in a drawdown higher than 25%.
@@ -73,12 +81,12 @@ Do you want to add a constraint? [y/N]: n</pre>
 </div>
         After configuring the constraints the optimizer starts running.
     </li>
-    <li>View the results in the terminal after the optimizer finished. The last line of LEAN's logs contains the optimal parameter combination.
+    <li>View the results in the terminal after the optimizer finished. The logs contains the optimal parameter combination.
 <div class="cli section-example-container">
 <pre>$ lean optimize "My Project"
-20210323 23:24:21.796 TRACE:: Program.Main(): Exiting Lean...
-20210323 23:24:22.020 TRACE:: LeanOptimizer.TriggerOnEndEvent(OID 26f0efc9-c7d2-46ad-864e-f036edd04a04): Optimization has ended. Result for Target: ['TotalPerformance'].['PortfolioStatistics'].['SharpeRatio']
-at: 0: was reached using ParameterSet: (ema-fast:6) backtestId 'bd9ad642-1d08-42ef-81fd-9dc3708c9619'. Constraints: (['TotalPerformance'].['PortfolioStatistics'].['Drawdown'] 'LessOrEqual' 0.25)
+20220223 18:26:20.000 TRACE:: Program.Main(): Exiting Lean...
+20220223 18:26:20.079 TRACE:: LeanOptimizer.TriggerOnEndEvent(OID 2313bbba-9c71-4b9e-8b91-c70cc117b0c7): Optimization has ended. Result for Target: ['TotalPerformance'].['PortfolioStatistics'].['SharpeRatio'] at: 3.6205: was reached using ParameterSet: (ema-slow:47,ema-medium:26,ema-fast:5) backtestId '21c30000-dc5a-4dec-b75a-da5b1796ccba'. Constraints: (['TotalPerformance'].['PortfolioStatistics'].['Drawdown'] 'LessOrEqual' 0.25)
+Optimal parameters: ema-slow: 47, ema-medium: 26, ema-fast: 5
 Successfully optimized 'My Project' and stored the output in 'My Project/optimizations/2021-03-24_00-22-15'
 </pre>
 </div>
@@ -89,9 +97,9 @@ Successfully optimized 'My Project' and stored the output in 'My Project/optimiz
         You can save results to a different directory by providing the <code>--output &lt;path&gt;</code> option in step 4.
 <div class="cli section-example-container">
 <pre>$ lean optimize "My Project" --output "My Project/custom-output"
-20210323 23:24:21.796 TRACE:: Program.Main(): Exiting Lean...
-20210323 23:24:22.020 TRACE:: LeanOptimizer.TriggerOnEndEvent(OID 26f0efc9-c7d2-46ad-864e-f036edd04a04): Optimization has ended. Result for Target: ['TotalPerformance'].['PortfolioStatistics'].['SharpeRatio']
-at: 0: was reached using ParameterSet: (ema-fast:6) backtestId 'bd9ad642-1d08-42ef-81fd-9dc3708c9619'. Constraints: (['TotalPerformance'].['PortfolioStatistics'].['Drawdown'] 'LessOrEqual' 0.25)
+20220223 18:28:20.000 TRACE:: Program.Main(): Exiting Lean...
+20220223 18:28:20.079 TRACE:: LeanOptimizer.TriggerOnEndEvent(OID 1ac5e638-aae0-4aa9-80d4-02c51bb7b84d): Optimization has ended. Result for Target: ['TotalPerformance'].['PortfolioStatistics'].['SharpeRatio'] at: 3.6205: was reached using ParameterSet: (ema-slow:47,ema-medium:26,ema-fast:5) backtestId 'e2aa3abf-bb60-4e91-a281-59c882ada62f'. Constraints: (['TotalPerformance'].['PortfolioStatistics'].['Drawdown'] 'LessOrEqual' 0.25)
+Optimal parameters: ema-slow: 47, ema-medium: 26, ema-fast: 5
 Successfully optimized 'My Project' and stored the output in 'My Project/custom-output'</pre>
 </div>
     </li>
