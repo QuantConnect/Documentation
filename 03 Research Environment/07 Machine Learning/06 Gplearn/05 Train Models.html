@@ -1,1 +1,42 @@
-<p></p>
+<p>We use the <code>SymbolicTransformer</code> to feature engineer the data to generate new non-linear features automatically.</p>
+
+<ol>
+    <li>Split the data for training and testing to evaluate our model.</li>
+    <div class="section-example-container">
+        <pre class="python">X_train, X_test, y_train, y_test = train_test_split(X, y)</pre>
+    </div>
+
+    <li>Initialize the transformer with the tranformation function set.</li>
+    <div class="section-example-container">
+        <pre class="python">function_set = ['add', 'sub', 'mul', 'div',
+                'sqrt', 'log', 'abs', 'neg', 'inv',
+                'max', 'min']
+gp_transformer = SymbolicTransformer(function_set=function_set,
+                                     random_state=0, 
+                                     verbose=1)</pre>
+    </div>
+
+    <li>Fit the training set data into the transformer.</li>
+    <div class="section-example-container">
+        <pre class="python">gp_transformer.fit(X_train, y_train)</pre>
+    </div>
+    
+    <li>Transform the training set with the transformer and concatenate with the original training data.</li>
+    <div class="section-example-container">
+        <pre class="python">gp_features_train = gp_transformer.transform(X_train)
+new_X_train = np.hstack((X_train, gp_features_train))</pre>
+    </div>
+    <img src="https://cdn.quantconnect.com/i/tu/gplearn-transform.bmp">
+</ol>
+
+<p>We then use <code>SymbolicRegressor</code> to fit a regression model by genetic programming algorithm.</p>
+
+<div class="section-example-container">
+    <pre class="python"># Initialize the regression model.
+gp_regressor = SymbolicRegressor(random_state=0, verbose=1)
+
+# Fit the data into the model with the engineered data.
+gp_regressor.fit(new_X_train, y_train)</pre>
+</div>
+
+<img src="https://cdn.quantconnect.com/i/tu/gplearn-regress.bmp">

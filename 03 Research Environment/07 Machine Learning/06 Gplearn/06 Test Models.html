@@ -1,1 +1,29 @@
-<p></p>
+<p>We then make predictions on the testing data set. We compare our Predicted Values with the Expected Values by plotting both to see if our Model has predictive power. We'll also find out the r-square value to quantify the model's predictive power.</p>
+
+<ol>
+    <li>Feature engineer the testing set data.</li>
+    <div class="section-example-container">
+        <pre class="python">gp_features_test = gp_transformer.transform(X_test)
+new_X_test = np.hstack((X_test, gp_features_test))</pre>
+    </div>
+
+    <li>Predict with the engineered testing set data.</li>
+    <div class="section-example-container">
+        <pre class="python">y_predict = gp_regressor.predict(new_X_test)</pre>
+    </div>
+
+    <li>Plot the result.</li>
+    <div class="section-example-container">
+        <pre class="python">df = pd.DataFrame({'Real': y_test.flatten(), 'Predicted': y_predict.flatten()})
+df.plot(title='Model Performance: predicted vs actual %change in closing price', figsize=(15, 10))
+plt.show()</pre>
+    </div>
+    <img src="https://cdn.quantconnect.com/i/tu/gplearn-plot.png">
+    
+    <li>Find the r-square value.</li>
+    <div class="section-example-container">
+        <pre class="python">r2 = gp_regressor.score(new_X_test, y_test)
+print(f"The explained variance of the GP model: {r2*100:.2f}%")</pre>
+    </div>
+    <img src="https://cdn.quantconnect.com/i/tu/gplearn-rsquare.bmp">
+</ol>

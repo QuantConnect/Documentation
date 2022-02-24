@@ -1,1 +1,50 @@
-<p></p>
+<h4>Saving the Model</h4>
+<p>We dump the models using the <code>joblib</code> module and save them to <code>ObjectStore</code> file paths. This way, the models don't need to be retrained, saving time and computational resources.</p>
+<ol>
+    <li>Set the key names of the models to be stored in objectStore.</li>
+    <div class="section-example-container">
+        <pre class="python">transformer_key = "transformer"
+regressor_key = "regressor"</pre>
+    </div>
+
+    <li>Call <code>GetFilePath</code> with the keys' names to get the file paths.</li>
+    <div class="section-example-container">
+        <pre class="python">transformer_file = qb.ObjectStore.GetFilePath(transformer_key)
+regressor_file = qb.ObjectStore.GetFilePath(regressor_key)</pre>
+    </div>
+
+    <li>Call dump with the models and file paths to save the models to the file path.</li>
+    <div class="section-example-container">
+        <pre class="python">joblib.dump(gp_transformer, transformer_file)
+joblib.dump(gp_regressor, regressor_file)</pre>
+    </div>
+
+    <li>Call <code>Save</code> with the key's name to save the model into ObjectStore.</li>
+    <div class="section-example-container">
+        <pre class="python">qb.ObjectStore.Save(transformer_key)
+qb.ObjectStore.Save(regressor_key)</pre>
+    </div>
+</ol>
+
+<h4>Loading the Model</h4>
+<p>Let's retrieve the models from <code>ObjectStore</code> file paths and load by <code>joblib</code>.</p>
+<ol>
+    <li>Call the <code>ContainsKey</code> method.</li>
+    <div class="section-example-container">
+        <pre class="python">qb.ObjectStore.ContainsKey(transformer_key)
+qb.ObjectStore.ContainsKey(regressor_key)</pre>
+    </div>
+    <p>This method returns a boolean that represents if the <code>model_key</code> is in the ObjectStore. If the ObjectStore does not contain the <code>model_key</code>, save the model using the <code>model_key</code> before you proceed.</p>
+
+    <li>Call <code>GetFilePath</code> with the keys' names to get the file paths.</li>
+    <div class="section-example-container">
+        <pre class="python">transformer_file = qb.ObjectStore.GetFilePath(transformer_key)
+regressor_file = qb.ObjectStore.GetFilePath(regressor_key)</pre>
+    </div>
+
+    <li>Call <code>load</code> with the file paths to fetch the saved models.</li>
+    <div class="section-example-container">
+        <pre class="python">loaded_transformer = joblib.load(transformer_file)
+loaded_regressor = joblib.load(regressor_file)</pre>
+    </div>
+</ol>
