@@ -1,1 +1,21 @@
-<p></p>
+<p>We then make predictions on the testing data set. We compare our Predicted Values with the Expected Values by plotting both to see if our Model has predictive power.</p>
+
+<ol>
+    <li>Format testing set into XGBoost matrix.</li>
+    <div class="section-example-container">
+        <pre class="python">dtest = xgb.DMatrix(X_test, label=y_test)</pre>
+    </div>
+
+    <li>Predict with the testing set data.</li>
+    <div class="section-example-container">
+        <pre class="python">y_predict = model.predict(dtest)</pre>
+    </div>
+
+    <li>Plot the result.</li>
+    <div class="section-example-container">
+        <pre class="python">df = pd.DataFrame({'Real': y_test.flatten(), 'Predicted': y_predict.flatten()})
+df.plot(title='Model Performance: predicted vs actual closing price', figsize=(15, 10))
+plt.show()</pre>
+    </div>
+    <img src="https://cdn.quantconnect.com/i/tu/xgboost-plot.png">
+</ol>

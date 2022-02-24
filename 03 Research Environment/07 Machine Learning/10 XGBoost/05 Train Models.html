@@ -1,1 +1,28 @@
-<p></p>
+<p>We're about to train a gradient-boosted random forest for future price prediction.</p>
+
+<ol>
+    <li>Split the data for training and testing to evaluate our model.</li>
+    <div class="section-example-container">
+        <pre class="python">X_train, X_test, y_train, y_test = train_test_split(X, y)</pre>
+    </div>
+
+    <li>Format training set into XGBoost matrix.</li>
+    <div class="section-example-container">
+        <pre class="python">dtrain = xgb.DMatrix(X_train, label=y_train)</pre>
+    </div>
+
+    <li>Train the model with parameters.</li>
+    <div class="section-example-container">
+        <pre class="python">params = {
+  'booster': 'gbtree',
+  'colsample_bynode': 0.8,
+  'learning_rate': 0.1,
+  'lambda': 0.1,
+  'max_depth': 5,
+  'num_parallel_tree': 100,
+  'objective': 'reg:squarederror',
+  'subsample': 0.8,
+}
+model = xgb.train(params, dtrain, num_boost_round=10)</pre>
+    </div>
+</ol>
