@@ -37,10 +37,6 @@ self.MarketOnCloseOrder(self.symbol, quantity)</pre>
          <td>A <code>TimeInForce</code> instruction to apply to the order. The <code>Day</code> <code>TimeInForce</code> is supported.</td>
       </tr>
       <tr>
-         <td><code>Exchange</code></td>
-         <td>The <code>Exchange</code> where the order should be sent.</td>
-      </tr>
-      <tr>
          <td><code>PostOnly</code></td>
          <td>A flag to signal that the order must only add liquidity to the order book and not take liquidity from the order book.</td>
       </tr>
@@ -55,7 +51,6 @@ self.MarketOnCloseOrder(self.symbol, quantity)</pre>
     DefaultOrderProperties = new AtreyuOrderProperties
     {
         TimeInForce = TimeInForce.Day,
-        Exchange = Exchange.BATS,
         PostOnly = false
     };
 }
@@ -70,7 +65,6 @@ public override void OnData(Slice data)
                orderProperties: new AtreyuOrderProperties 
                { 
                    TimeInForce = TimeInForce.Day,
-                   Exchange = Exchange.ARCA, 
                    PostOnly = true 
                });
 }</pre>
@@ -78,7 +72,6 @@ public override void OnData(Slice data)
     # Set the default order properties
     self.DefaultOrderProperties = AtreyuOrderProperties()
     self.DefaultOrderProperties.TimeInForce = TimeInForce.Day
-    self.DefaultOrderProperties.Exchange = Exchange.BATS
     self.DefaultOrderProperties.PostOnly = False
 
 def OnData(self, data):
@@ -88,7 +81,6 @@ def OnData(self, data):
     # Override default order properties
     order_properties = AtreyuOrderProperties()
     order_properties.TimeInForce = TimeInForce.Day
-    order_properties.Exchange = Exchange.ARCA
     order_properties.PostOnly = True
     self.LimitOrder(self.symbol, quantity, limit_price, orderProperties = order_properties)</pre>
 </div>
