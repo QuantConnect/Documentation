@@ -3,7 +3,7 @@
    An algorithm hypothesis should be developed at the start of your research, and the remaining time spent exploring how to test your theory. If you find yourself deviating from your core theory, or introducing code that isn't based around that hypothesis, you should stop and go back to thesis development. 
 </p>
 
-<p>Wang et al. (2014) illustrates the danger of creating your hypothesis based on test results. In their research, they examined the earnings yield factor in the technology sector over time. During 1998-1999, before the tech bubble burst, the factor was unprofitable. If you decided to bet against the factor during 2000-2002, you would have lost a lot of money because the factor performed extremely well.</p>
+<p>Wang et al. (2014) illustrates the danger of creating your hypothesis based on test results. In their research, they examined the earnings yield factor in the technology sector over time. During 1998-1999, before the tech bubble burst, the factor was unprofitable. If you saw the results and then decided to bet against the factor during 2000-2002, you would have lost a lot of money because the factor performed extremely well during that time.</p>
 
 <p>
    Hypothesis development is somewhat of an art and requires creativity and great observation skills. It is one of the most powerful skills a quant can learn. We recommend that an algorithm hypothesis follow the pattern of cause and effect. Your aim should be to express your strategy in the following sentence:
