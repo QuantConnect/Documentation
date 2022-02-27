@@ -1,1 +1,57 @@
-<p></p>
+<h4>Saving the Model</h4>
+<p>We dump the model using the <code>joblib</code> module and save it to <code>ObjectStore</code> file path. This way, the model doesn't need to be retrained, saving time and computational resources.</p>
+<p>Note that <b>DO NOT</b> use the pytorch in-built <code>torch.save</code> as the tensor data will be lost and corrupt the save.</p>
+<ol>
+    <li>Set the key name of the model to be stored in ObjectStore.</li>
+    <div class="section-example-container">
+        <pre class="python">model_key = "model"</pre>
+    </div>
+
+    <li>Call <code>GetFilePath</code> with the key's name to get the file path.</li>
+    <div class="section-example-container">
+        <pre class="python">file_name = qb.ObjectStore.GetFilePath(model_key)</pre>
+    </div>
+
+    <li>Call dump with the model and file path to save the model to the file path.</li>
+    <div class="section-example-container">
+        <pre class="python">joblib.dump(model, file_name)</pre>
+    </div>
+
+    <li>Call <code>Save</code> with the key's name to save the model into ObjectStore.</li>
+    <div class="section-example-container">
+        <pre class="python">qb.ObjectStore.Save(model_key)</pre>
+    </div>
+</ol>
+
+<h4>Loading the Model</h4>
+<p>Let's retrieve the model from <code>ObjectStore</code> file path and load by <code>joblib</code>.</p>
+<ol>
+    <li>Call the <code>ContainsKey</code> method.</li>
+    <div class="section-example-container">
+        <pre class="python">qb.ObjectStore.ContainsKey(model_key)</pre>
+    </div>
+    <p>This method returns a boolean that represents if the <code>model_key</code> is in the ObjectStore. If the ObjectStore does not contain the <code>model_key</code>, save the model using the <code>model_key</code> before you proceed.</p>
+
+    <li>Call <code>GetFilePath</code> with the key's name to get the file path.</li>
+    <div class="section-example-container">
+        <pre class="python">file_name = qb.ObjectStore.GetFilePath(model_key)</pre>
+    </div>
+
+    <li>Call <code>load</code> with the file path to fetch the saved model.</li>
+    <div class="section-example-container">
+        <pre class="python">loaded_model = joblib.load(file_name)</pre>
+    </div>
+</ol>
+
+<p>To ensure loading the model was successfuly, let's test the model.</p>
+<div class="section-example-container">
+    <pre class="python"># Predict out-of-sample data by loaded model.
+y_pred = loaded_model(X_test).detach().numpy()
+
+# Plot the result.
+df = pd.DataFrame({'Real': y_test.flatten(), 'Predicted': y_predict.flatten()})
+df.plot(title='Model Performance: predicted vs actual standardized fractional return', figsize=(15, 10))
+plt.show()</pre>
+</div>
+
+<img style="max-width: 100%; display: block" src="https://cdn.quantconnect.com/i/tu/pytorch-plot.png">

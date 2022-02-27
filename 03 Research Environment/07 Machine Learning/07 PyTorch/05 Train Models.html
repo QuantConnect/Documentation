@@ -1,1 +1,70 @@
-<p></p>
+<p>Let's build the model using <code>PyTorch</code>. We use a 2-hidden-layer deep neural network with Rectified Linear Unit (ReLU) activation function for non-linearity, Stocahstic Gradient Descend (SGD) as optimizer and Mean-square-error (MSE) as loss function.</p>
+
+<ol>
+    <li>Split the data for training and testing to evaluate our model.</li>
+    <div class="section-example-container">
+        <pre class="python">X_train, X_test, y_train, y_test = train_test_split(X, y)</pre>
+    </div>
+
+    <li>Create a class object as the model.</li>
+    <p>In this example, we'll be using ReLU activation function for each layer.</p>
+    <div class="section-example-container">
+        <pre class="python">class NeuralNetwork(nn.Module):
+    # Model Structure
+    def __init__(self):
+        super(NeuralNetwork, self).__init__()
+        self.flatten = nn.Flatten()
+        self.linear_relu_stack = nn.Sequential(
+            nn.Linear(5, 5),  # input size, output size of the layer
+            nn.ReLU(),         # Relu non-linear transformation
+            nn.Linear(5, 5),
+            nn.ReLU(),  
+            nn.Linear(5, 1),   # Output size = 1 for regression
+        )
+    
+    # Feed-forward training/prediction
+    def forward(self, x):
+        x = torch.from_numpy(x).float()   # Convert to tensor in type float
+        result = self.linear_relu_stack(x)
+        return result</pre>
+    </div>
+
+    <li>Build the model with configuration on training with GPU if possible.</li>
+    <div class="section-example-container">
+        <pre class="python">device = 'cuda' if torch.cuda.is_available() else 'cpu'
+model = NeuralNetwork().to(device)</pre>
+    </div>
+    
+    <li>Set loss and optimization functions.</li>
+    <p>In this example, we'll be using MSE as loss function and SGD for optimization.</p>
+    <div class="section-example-container">
+        <pre class="python">loss_fn = nn.MSELoss()
+learning_rate = 0.001
+optimizer = torch.optim.SGD(model.parameters(), lr=learning_rate)</pre>
+    </div>
+
+    <li>Train the model.</li>
+    <p>In this example, we'll be training the model through 5 epochs.</p>
+    <div class="section-example-container">
+        <pre class="python">epochs = 5
+for t in range(epochs):
+    print(f"Epoch {t+1}\n-------------------------------")
+    
+    # Since we're using SGD, we'll be using the size of data as batch number.
+    for batch, (X, y) in enumerate(zip(X_train, y_train)):
+        # Compute prediction and loss
+        pred = model(X)
+        real = torch.from_numpy(np.array(y).flatten()).float()
+        loss = loss_fn(pred, real)
+
+        # Backpropagation
+        optimizer.zero_grad()
+        loss.backward()
+        optimizer.step()
+
+        if batch % 100 == 0:
+            loss, current = loss.item(), batch
+            print(f"loss: {loss:.5f}  [{current:5d}/{len(X_train):5d}]")</pre>
+    </div>
+    <img src="https://cdn.quantconnect.com/i/tu/pytorch-train.png">
+</ol>
