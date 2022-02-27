@@ -1,3 +1,3 @@
 <?php
-	echo file_get_contents(__DIR__."/../06 Gplearn/04 Prepare Data.html");
+	echo file_get_contents(__DIR__."/../07 PyTorch/04 Prepare Data.html");
 ?>
