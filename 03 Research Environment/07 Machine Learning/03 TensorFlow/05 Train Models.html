@@ -1,20 +1,22 @@
-<p>Let's build the neural network architecture by utilizing the TensorFlow library. Note how we name the input and output nodes so we can retreive them when loading the model from the ObjectStore.</p>
+<p>You need to <a href="/docs/v2/research-environment/machine-learning/tensorflow#04-Prepare-Data">prepare the historical data</a> for training before you train the model. If you have prepared the data, build and train the model. In this example, build a neural network model that predicts the future price of the SPY.</p>
 
-<h4>Set up the model structure</h4>
+<h4>Build the Model</h4>
+<p>Follow these steps to build the model:</p>
 <ol>
-    <li>Instantiate a tensorflow session.</li>
+    <li>Call the <code>reset_default_graph</code> method.</li>
     <div class="section-example-container">
-        <pre class="python">tf.reset_default_graph()
-sess = tf.Session()</pre>
+        <pre class="python">tf.reset_default_graph()</pre>
+    </div>
+    <p>This method clears the default graph stack and resets the global default graph.</p>
+
+    <li>Call the <code>Session</code> constructor.</li>
+    <div class="section-example-container">
+        <pre class="python">sess = tf.Session()</pre>
     </div>
 
-    <li>Set the number of layers, their number of nodes and the placeholders.</li>
+    <li>Declare the number of factors and then create placeholders for the input and output layers.</li>
     <div class="section-example-container">
         <pre class="python">num_factors = X_test.shape[1]
-num_neurons_1 = 32
-num_neurons_2 = 16
-num_neurons_3 = 8
-
 X = tf.placeholder(dtype=tf.float32, shape=[None, num_factors], name='X')
 Y = tf.placeholder(dtype=tf.float32, shape=[None])</pre>
     </div>
@@ -25,10 +27,13 @@ Y = tf.placeholder(dtype=tf.float32, shape=[None])</pre>
 bias_initializer = tf.zeros_initializer()</pre>
     </div>
     
-    <li>Create hidden layers with the set number of layer and their corresponding number of nodes.</li>
-    <p>In this example, we're using Relu activator for non-linear activation of each tensor.</p>
+    <li>Create hidden layers that use the Relu activator.</li>
     <div class="section-example-container">
-        <pre class="python">W_hidden_1 = tf.Variable(weight_initializer([num_factors, num_neurons_1]))
+        <pre class="python">num_neurons_1 = 32
+num_neurons_2 = 16
+num_neurons_3 = 8
+
+W_hidden_1 = tf.Variable(weight_initializer([num_factors, num_neurons_1]))
 bias_hidden_1 = tf.Variable(bias_initializer([num_neurons_1]))
 hidden_1 = tf.nn.relu(tf.add(tf.matmul(X, W_hidden_1), bias_hidden_1))
 
@@ -41,20 +46,21 @@ bias_hidden_3 = tf.Variable(bias_initializer([num_neurons_3]))
 hidden_3 = tf.nn.relu(tf.add(tf.matmul(hidden_2, W_hidden_3), bias_hidden_3))</pre>
     </div>
 
-    <li>Create the output layer.</li>
-    <p>We would like a 1-node output for both weight and bias for a single step forward price prediction</p>
+    <li>Create the output layer and give it a name.</li>
     <div class="section-example-container">
         <pre class="python">W_out = tf.Variable(weight_initializer([num_neurons_3, 1]))
 bias_out = tf.Variable(bias_initializer([1]))
 output = tf.transpose(tf.add(tf.matmul(hidden_3, W_out), bias_out), name='outer')</pre>
     </div>
 
+    <p>This snippet creates a 1-node output for both weight and bias. You must name the output layer so you can access it after you load and save the model.</p>
+
     <li>Set up the loss function and optimizers for gradient descent optimization and backpropagation.</li>
-    <p>We're using mean-square error as the loss function since close price is a continuous data, while Adam as optimizer for adaptive step size.</p>
     <div class="section-example-container">
         <pre class="python">loss = tf.reduce_mean(tf.squared_difference(output, Y))
 optimizer = tf.train.AdamOptimizer().minimize(loss)</pre>
     </div>
+    <p>Use mean-square error as the loss function because the close price is a continuous data and use Adam as the optimizer because of its adaptive step size.</p>
 
     <li>Set the batch size and number of epochs to bootstrap the training process.</li>
     <div class="section-example-container">
@@ -63,14 +69,17 @@ epochs = 20</pre>
     </div>
 </ol>
 
-<h4>Train the model.</h4>
+<h4>Train the Model</h4>
+
+<p>Follow these steps to train the model:</p>
+
 <ol>
-    <li>Initialize the training.</li>
+    <li>Call the <code>run</code> method with the result from the <code>global_variables_initializer</code> method.</li>
     <div class="section-example-container">
         <pre class="python">sess.run(tf.global_variables_initializer())</pre>
     </div>
 
-    <li>Update the parameters by each epoch of training.</li>
+    <li>Loop through the number of epochs, select a subset of the training data, and then call the <code>run</code> method with the subset of data.</li>
     <div class="section-example-container">
         <pre class="python">for _ in range(epochs):
     for i in range(0, len(y_train) // batch_size):
