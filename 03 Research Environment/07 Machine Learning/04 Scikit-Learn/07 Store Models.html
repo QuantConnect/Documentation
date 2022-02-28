@@ -1,52 +1,49 @@
-<h4>Saving the Model</h4>
-<p>We dump the model using the <code>joblib</code> module and save it to <code>ObjectStore</code> file path. This way, the model doesn't need to be retrained, saving time and computational resources.</p>
+<p>You can save and load <code>sklearn</code> models using the ObjectStore.</p>
+
+<h4>Save Models</h4>
+<p>Follow these steps to save models in the ObjectStore:</p>
 <ol>
     <li>Set the key name of the model to be stored in ObjectStore.</li>
     <div class="section-example-container">
         <pre class="python">model_key = "model"</pre>
     </div>
 
-    <li>Call <code>GetFilePath</code> with the key's name to get the file path.</li>
+    <li>Call the <code>GetFilePath</code> method with the key.</li>
     <div class="section-example-container">
         <pre class="python">file_name = qb.ObjectStore.GetFilePath(model_key)</pre>
     </div>
+    <p>This method returns the file path where the model will be stored.</p>
 
     <li>Call dump with the model and file path to save the model to the file path.</li>
     <div class="section-example-container">
         <pre class="python">joblib.dump(model, file_name)</pre>
     </div>
+    <p>If you dump the model using the <code>joblib</code> module before saving the model, you don't need to retrain the model, so you save time and computational resources.</p>
 
-    <li>Call <code>Save</code> with the key's name to save the model into ObjectStore.</li>
+    <li>Call the <code>Save</code> method with the key.</li>
     <div class="section-example-container">
         <pre class="python">qb.ObjectStore.Save(model_key)</pre>
     </div>
 </ol>
 
-<h4>Loading the Model</h4>
-<p>Let's retrieve the model from <code>ObjectStore</code> file path and load by <code>joblib</code>.</p>
+<h4>Load Models</h4>
+<p>You must save a model into the ObjectStore before you can load it from the ObjectStore. If you saved a model, follow these steps to load it:</p>
 <ol>
-    <li>Call the <code>ContainsKey</code> method.</li>
+    <li>Call the <code>ContainsKey</code> method with the model key.</li>
     <div class="section-example-container">
         <pre class="python">qb.ObjectStore.ContainsKey(model_key)</pre>
     </div>
     <p>This method returns a boolean that represents if the <code>model_key</code> is in the ObjectStore. If the ObjectStore does not contain the <code>model_key</code>, save the model using the <code>model_key</code> before you proceed.</p>
 
-    <li>Call <code>GetFilePath</code> with the key's name to get the file path.</li>
+    <li>Call <code>GetFilePath</code> with the key.</li>
     <div class="section-example-container">
         <pre class="python">file_name = qb.ObjectStore.GetFilePath(model_key)</pre>
     </div>
+    <p>This method returns the path where the model is stored.</p>
 
-    <li>Call <code>load</code> with the file path to fetch the saved model.</li>
+    <li>Call <code>load</code> with the file path.</li>
     <div class="section-example-container">
         <pre class="python">loaded_model = joblib.load(file_name)</pre>
     </div>
+    <p>This method returns the saved model.</p>
 </ol>
-
-<p>To ensure loading the model was successfuly, let's test the model.</p>
-<div class="section-example-container">
-    <pre class="python">y_hat = loaded_model.predict(X_test)
-df = pd.DataFrame({'y': y_test.flatten(), 'y_hat': y_hat.flatten()})
-df.plot(title='Model Performance: predicted vs actual %change in closing price', figsize=(15, 10))</pre>
-</div>
-
-<img style="max-width: 100%; display: block" src="https://cdn.quantconnect.com/i/tu/sklearn-load-2.png">
