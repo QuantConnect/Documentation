@@ -1,26 +1,54 @@
-<p>We create a function that prepares our data formatted to be suitable for training and testing our Model. We use 5 steps of close price data to predict the closing price of the bar right after.</p>
+<p>You need some <a href="/docs/v2/research-environment/machine-learning/scikit-learn#03-Get-Historical-Data">historical data</a> to prepare the data for the model. If you have historical data, manipulate it to train and test the model. In this example, use the following features and labels:</p>
 
-<img style="max-width: 100%; display: block" src="https://cdn.quantconnect.com/i/tu/ml-keras-function.png">
+<table class="qc-table table" id="live-trading-custer-sizes-table">
+    <thead>
+        <tr>
+            <th style="width: 50%">Data Category</th>
+            <th>Description</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>Features</td>
+            <td>The last 5 closing prices</td>
+        </tr>
+        <tr>
+            <td>Labels</td>
+            <td>The following day's closing price</td>
+        </tr>
+    </tbody>
+</table>
 
-<div class="section-example-container">
-    <pre class="python"># function to prepare our data for training our model
-def prep_data(data, n_tsteps=5):
-    # n_tsteps is the number of time steps at and before time t we want to use
-    #   to predict the close price at time t + 1
-    
-    # this helps making the data stationary
-    df = data.pct_change()[1:]
-    
-    features = []
-    labels = []
+<p>The following image shows the time difference between the features and labels:</p>
 
-    for i in range(len(df)-n_tsteps):
-        input_data = df['close'].iloc[i:i+n_tsteps].values
-        features.append(input_data)
-        label = df['close'].iloc[i+n_tsteps]
-        labels.append(label)
+<img class="docs-image" src="https://cdn.quantconnect.com/i/tu/ml-keras-function.png">
 
-    return np.array(features), np.array(labels)
+<p>Follow these steps to prepare the data:</p>
 
-X, y = prep_data(data)</pre>
-</div>
+<ol>
+    <li>Call the <code>pct_change</code> method and then drop the first row.</li>
+    <div class="section-example-container">
+        <pre class="python">daily_returns = data['close'].pct_change()[1:]</pre>
+    </div>
+
+    <li>Loop through the <code>daily_returns</code> DataFrame and collect the features and labels.</li>
+    <div class="section-example-container">
+        <pre class="python">n_steps = 5
+features = []
+labels = []
+for i in range(len(daily_returns)-n_steps):
+    features.append(daily_returns.iloc[i:i+n_steps].values)
+    labels.append(daily_returns.iloc[i+n_steps])</pre>
+    </div>
+
+    <li>Convert the lists of features and labels into <code>numpy</code> arrays.</li>
+    <div class="section-example-container">
+        <pre class="python">X = np.array(features)
+y = np.array(labels)</pre>
+    </div>
+
+    <li>Split the data into training and testing periods.</li>
+    <div class="section-example-container">
+        <pre class="python">X_train, X_test, y_train, y_test = train_test_split(X, y)</pre>
+    </div>
+</ol>
