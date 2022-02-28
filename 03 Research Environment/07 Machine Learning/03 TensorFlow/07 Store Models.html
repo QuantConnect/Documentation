@@ -1,14 +1,16 @@
-<h4>Saving the Model</h4>
-<p>We first serialize the <code>TensorFlow</code> graph and weights into a JSON string, then we save our model to <code>ObjectStore</code>. This way, the model doesn't need to be retrained, saving time and computational resources.</p>
+<p>You can save and load <code>TensorFlow</code> models using the ObjectStore.</p>
+
+<h4>Save Models</h4>
+<p>Follow these steps to save models in the ObjectStore:</p>
 
 <ol>
-    <li>Export the <code>TensorFlow</code> graph as JSON.</li>
+    <li>Export the <code>TensorFlow</code> graph as a JSON object.</li>
     <div class="section-example-container">
         <pre class="python">graph_definition = tf.compat.v1.train.export_meta_graph()
 json_graph = json_format.MessageToJson(graph_definition)</pre>
     </div>
 
-    <li>Export the <code>TensorFlow</code> weights as JSON.</li>
+    <li>Export the <code>TensorFlow</code> weights as a JSON object.</li>
     <div class="section-example-container">
         <pre class="python"># Define a function to get the weights from the tensorflow session
 def get_json_weights(sess):
@@ -21,37 +23,40 @@ json_weights = get_json_weights(sess)
 sess.close()    # Close the session opened by the `get_json_weights` function</pre>
     </div>
 
-    <li>Save the graph and weights to <code>ObjectStore</code>.</li>
+    <li>Save the graph and weights to the <code>ObjectStore</code>.</li>
     <div class="section-example-container">
         <pre class="python">qb.ObjectStore.Save('graph', json_graph)
 qb.ObjectStore.Save('weights', json_weights)</pre>
     </div>
 </ol>
 
-<h4>Loading the Model</h4>
-<p>Let's first retreive the JSON for the <code>TensorFlow</code> model that we saved in the <code>ObjectStore</code>, then restore our model from this JSON string.</p>
+<h4>Load Models</h4>
+<p>You must save a model into the ObjectStore before you can load it from the ObjectStore. If you saved a model, follow these steps to load it:</p>
 
 <ol>
-    <li>Fetch the JSON from <code>ObjectStore</code>.</li>
+    <li>Read the model graph and weights from the <code>ObjectStore</code>.</li>
     <div class="section-example-container">
         <pre class="python">json_graph = qb.ObjectStore.Read('graph')
 json_weights = qb.ObjectStore.Read('weights')</pre>
     </div>
 
-    <li>Restore the <code>TensorFlow</code> graph from JSON and select the input and output nodes.</li>
+    <li>Restore the <code>TensorFlow</code> graph from the JSON object.</li>
     <div class="section-example-container">
         <pre class="python">tf.reset_default_graph()
 graph_definition = json_format.Parse(json_graph, tf.compat.v1.MetaGraphDef())
 sess = tf.Session()
-tf.compat.v1.train.import_meta_graph(graph_definition)
-X = tf.compat.v1.get_default_graph().get_tensor_by_name('X:0')
+tf.compat.v1.train.import_meta_graph(graph_definition)</pre>
+    </div>
+
+    <li>Select the input and output tensors.<br></li>
+    <div class="section-example-container">
+        <pre class="python">X = tf.compat.v1.get_default_graph().get_tensor_by_name('X:0')
 output = tf.compat.v1.get_default_graph().get_tensor_by_name('outer:0')</pre>
     </div>
 
-    <li>Restore the weights from JSON and distribute to the corresponding nodes.</li>
+    <li>Restore the model weights from the JSON object.</li>
     <div class="section-example-container">
         <pre class="python">weights = [np.asarray(x) for x in json5.loads(json_weights)]
-
 assign_ops = []
 feed_dict = {}
 vs = tf.compat.v1.trainable_variables()
@@ -65,10 +70,3 @@ for var, value in zipped_values:
 sess.run(assign_ops, feed_dict=feed_dict)</pre>
     </div>
 </ol>
-
-<p>To ensure loading the model was successfuly, let's test the model.</p>
-<div class="section-example-container">
-    <pre class="python">test_model(sess, output, "Test Set Results from Loaded Model", X)
-sess.close()</pre>
-</div>
-<img style="max-width: 100%; display: block" src="https://cdn.quantconnect.com/i/tu/tf-load.png">
