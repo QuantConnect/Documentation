@@ -1,1 +1,43 @@
-<p></p>
+<h4>Saving the Model</h4>
+<p>We save the model using the inbuilt <code>to_hdf5</code> module and save it to <code>ObjectStore</code> file path. This way, the model doesn't need to be retrained, saving time and computational resources.</p>
+<ol>
+    <li>Set the key name of the model to be stored in ObjectStore.</li>
+    <div class="section-example-container">
+        <pre class="python">model_key = "model"</pre>
+    </div>
+
+    <li>Call <code>GetFilePath</code> with the key's name to get the file path.</li>
+    <div class="section-example-container">
+        <pre class="python">file_name = qb.ObjectStore.GetFilePath(model_key)</pre>
+    </div>
+
+    <li>Call save with the model and file path and type to save the model to the file path.</li>
+    <div class="section-example-container">
+        <pre class="python">km.to_hdf5(file_name + ".hdf5")</pre>
+    </div>
+
+    <li>Call <code>Save</code> with the key's name to save the model into ObjectStore.</li>
+    <div class="section-example-container">
+        <pre class="python">qb.ObjectStore.Save(model_key)</pre>
+    </div>
+</ol>
+
+<h4>Loading the Model</h4>
+<p>Let's retrieve the model from <code>ObjectStore</code> file path and load by <code>joblib</code>.</p>
+<ol>
+    <li>Call the <code>ContainsKey</code> method.</li>
+    <div class="section-example-container">
+        <pre class="python">qb.ObjectStore.ContainsKey(model_key)</pre>
+    </div>
+    <p>This method returns a boolean that represents if the <code>model_key</code> is in the ObjectStore. If the ObjectStore does not contain the <code>model_key</code>, save the model using the <code>model_key</code> before you proceed.</p>
+
+    <li>Call <code>GetFilePath</code> with the key's name to get the file path.</li>
+    <div class="section-example-container">
+        <pre class="python">file_name = qb.ObjectStore.GetFilePath(model_key)</pre>
+    </div>
+
+    <li>Call <code>from_hdf5</code> with the file path and type to fetch the saved model.</li>
+    <div class="section-example-container">
+        <pre class="python">loaded_model = TimeSeriesKMeans.from_hdf5(file_name + ".hdf5")</pre>
+    </div>
+</ol>

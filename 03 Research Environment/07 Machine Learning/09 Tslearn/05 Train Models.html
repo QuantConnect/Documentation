@@ -1,1 +1,15 @@
-<p></p>
+<p>Instead of using real-time comparison, we could apply a technique call Dynamic Time Wrapping (DTW) with Barycenter Averaging (DBA). Intuitively, it is a technique of averaging a few time-series into a single one without losing much of their information. Since not all time-series would move efficiently like in ideal EMH assumption, this would allow similarity analysis of different time-series with sticky lags. Check the technical details from <a href="https://tslearn.readthedocs.io/en/stable/user_guide/dtw.html">tslearn documentation page</a>.</p>
+
+<img src="https://cdn.quantconnect.com/i/tu/dba.png">
+
+<p>We then can separate different clusters by KMean after DBA.</p>
+
+<div class="section-example-container">
+    <pre class="python"># Set up the Time Series KMean model with soft DBA.
+km = TimeSeriesKMeans(n_clusters=6,   # We have 6 main groups
+                      metric="softdtw",  # soft for differentiable
+                      random_state=0)
+
+# Fit the model.
+km.fit(standard_close.T)</pre>
+</div>
