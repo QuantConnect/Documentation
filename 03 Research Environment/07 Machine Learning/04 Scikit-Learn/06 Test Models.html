@@ -1,9 +1,20 @@
-<p>We then make predictions on the testing data set. We compare our Predicted Values with the Expected Values by plotting both to see if our Model has predictive power.</p>
+<p>You need to <a href='/docs/v2/research-environment/machine-learning/scikit-learn#05-Train-Models'>build and train the model</a> before you test its performance. If you have trained the model, test it on the out-of-sample data. Follow these steps to test the model:</p>
 
-<div class="section-example-container">
-    <pre class="python">y_hat = model.predict(X_test)
-df = pd.DataFrame({'y': y_test.flatten(), 'y_hat': y_hat.flatten()})
-df.plot(title='Model Performance: predicted vs actual %change in closing price', figsize=(15, 10))</pre>
-</div>
+<ol>
+    <li>Call the <code>predict</code> method with the features of the testing period.</li>
+    <div class="section-example-container">
+        <pre class="python">y_hat = model.predict(X_test)</pre>
+    </div>
 
-<img style="max-width: 100%; display: block" src="https://cdn.quantconnect.com/i/tu/sklearn-plot-2.png">
+    <li>Call the <code>DataFrame</code> constructor with the actual and predicted labels of the testing period.</li>
+    <div class="section-example-container">
+        <pre class="python">df = pd.DataFrame({'y': y_test.flatten(), 'y_hat': y_hat.flatten()})</pre>
+    </div>
+
+    <li>Call the plot method with a title.</li>
+    <div class="section-example-container">
+        <pre class="python">df.plot(title='Model Performance: predicted vs actual %change in closing price', figsize=(15, 10))</pre>
+    </div>
+</ol>
+<p>The Jupyter Notebook displays the actual and predicted labels of the testing period.</p>
+<img class='docs-image' src="https://cdn.quantconnect.com/i/tu/sklearn-plot-2.png">
