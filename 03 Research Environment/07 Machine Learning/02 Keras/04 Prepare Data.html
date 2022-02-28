@@ -1,15 +1,26 @@
-<p>You need some <a href="#03-Get-Historical-Data">historical data</a> to prepare the data for the model. If you have historical data, manipulate the <code>history</code> so that you can train and test the model. In this example, use the following features and labels:</p>
-<ul>
-    <li>Features: Daily percent change of the open, high, low, close, and volume of the SPY over the last 5 days</li>
-    <li>Labels: Daily percent return of the SPY over the next day</li>
-</ul>
+<p>You need some <a href="#03-Get-Historical-Data">historical data</a> to prepare the data for the model. If you have historical data, manipulate it so you can train and test the model. In this example, use the following features and labels:</p>
 
-<p>Figure 1 shows the difference in time for the features and labels.</p>
+<table class="qc-table table" id="live-trading-custer-sizes-table">
+    <thead>
+        <tr>
+            <th>Data Category</th>
+            <th>Description</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>Features</td>
+            <td>Daily percent change of the open, high, low, close, and volume of the SPY over the last 5 days</td>
+        </tr>
+        <tr>
+            <td>Labels</td>
+            <td>Daily percent return of the SPY over the next day</td>
+        </tr>
+    </tbody>
+</table>
 
-<p><b>Figure 1</b></p>
-<p><i>The difference in time for features and labels</i></p>
-<img style="max-width: 100%; display: block" src="https://cdn.quantconnect.com/i/tu/ml-keras-function.png">
-<p><i>Note:</i> This figure illustrates the difference in time for the features and labels that are used to train a machine learning model.</p>
+<p>The following image shows the time difference between the features and labels:</p>
+<img class="docs-image" src="https://cdn.quantconnect.com/i/tu/ml-keras-function.png">
 
 <p>Follow these steps to prepare the data:</p>
 
@@ -17,21 +28,20 @@
     <li>Call the <code>pct_change</code> and <code>dropna</code> methods.</li>
     <div class="section-example-container">
         <pre class="python">daily_pct_change = history.pct_change().dropna()</pre>
-        <p>These method calls help make the data stationary.</p>
     </div>
 
     <li>Loop through the <code>daily_pct_change</code> DataFrame and collect the features and labels.</li>
     <div class="section-example-container">
         <pre class="python">n_steps = 5<br>features = []
 labels = []
-for i in range(len(df)-n_steps):
-    input_data = df.iloc[i:i+n_steps].values
+for i in range(len(daily_pct_change)-n_steps):
+    input_data = daily_pct_change.iloc[i:i+n_steps].values
     features.append(input_data)
-    label = df['close'].iloc[i+n_steps]
+    label = daily_pct_change['close'].iloc[i+n_steps]
     labels.append(label)</pre>
     </div>
 
-    <li>Convert the lists of features and labels into numpy arrays.</li>
+    <li>Convert the lists of features and labels into <code>numpy</code> arrays.</li>
     <div class="section-example-container">
         <pre class="python">features = np.array(features)
 labels = np.array(labels)</pre>
