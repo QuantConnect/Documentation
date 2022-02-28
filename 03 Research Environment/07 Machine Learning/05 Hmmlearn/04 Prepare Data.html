@@ -1,12 +1,18 @@
-<p>We'll use return data for market regime estimation.</p>
+<p>You need some <a href='/docs/v2/research-environment/machine-learning/hmmlearn#03-Get-Historical-Data'>historical data</a> to prepare the data for the model. If you have historical data, manipulate it to train and test the model. Follow these steps to prepare the data:</p>
 
-<div class="section-example-container">
-    <pre class="python"># Get close price.
-close = history['close']
+<ol>
+    <li>Select the close column of the historical data DataFrame.</li>
+    <div class="section-example-container">
+        <pre class="python">closes = history['close']</pre>
+    </div>
 
-# Compute the return
-ret = close.pct_change().iloc[1:]
+    <li>Call the <code>pct_change</code> method and then drop the first row.</li>
+    <div class="section-example-container">
+        <pre class="python">daily_returns = closes.pct_change().iloc[1:]</pre>
+    </div>
 
-# Reshape the series
-X = ret.values.reshape(-1, 1)</pre>
-</div>
+    <li>Call the <code>reshape</code> method.</li>
+    <div class="section-example-container">
+        <pre class="python">X = daily_returns.values.reshape(-1, 1)</pre>
+    </div>
+</ol>
