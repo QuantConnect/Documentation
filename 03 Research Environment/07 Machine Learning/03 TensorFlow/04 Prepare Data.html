@@ -1,36 +1,56 @@
-<p>We'll use the last 5 closing prices of the SPY as inputs to our model. Here, we create a DataFrame containing this data.</p>
+<p>You need some <a href="/docs/v2/research-environment/machine-learning/tensorflow#03-Get-Historical-Data">historical data</a> to prepare the data for the model. If you have historical data, manipulate it to train and test the model. In this example, use the following features and labels:</p>
 
-<div class="section-example-container">
-    <pre class="python">lookback = 5
+<table class="qc-table table" id="live-trading-custer-sizes-table">
+    <thead>
+        <tr>
+            <th style="width: 50%">Data Category</th>
+            <th>Description</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>Features</td>
+            <td>Last 5 closing prices</td>
+        </tr>
+        <tr>
+            <td>Labels</td>
+            <td>Tomorrow's closing price</td>
+        </tr>
+    </tbody>
+</table>
+
+<p>Follow these steps to prepare the data:</p>
+
+<ol>
+    <li>Loop through the DataFrame of historical prices and collect the features.</li>
+
+    <div class="section-example-container">
+        <pre class="python">lookback = 5
 lookback_series = []
 for i in range(1, lookback + 1):
     df = data['close'].shift(i)[lookback:-1]
     df.name = f"close_-{i}"
     lookback_series.append(df)
 X = pd.concat(lookback_series, axis=1).reset_index(drop=True)</pre>
-</div>
+    </div>
 
-<img style="max-width: 100%; display: block" src="https://cdn.quantconnect.com/i/tu/tf-x.png">
+    <p>The following image shows the format of the features DataFrame:</p>
+    <img class="docs-image" src="https://cdn.quantconnect.com/i/tu/tf-x.png">
 
-<p>We'd like the model to predict the closing price of the SPY 1 timestep into the future, so let's create a Series containing 1-step forward price.</p>
+    <li>Select the close column and then call the <code>shift</code> method to collect the labels.</li>
+    <div class="section-example-container">
+        <pre class="python">Y = data['close'].shift(-1)</pre>
+    </div>
 
-<div class="section-example-container">
-    <pre class="python">Y = data['close'].shift(-1)[lookback:-1].reset_index(drop=True)
-Y.plot(figsize=(16, 6))
-plt.title("SPY price 1 timestep in the future")
-plt.xlabel("Time step")
-plt.ylabel("Price")
-plt.show()</pre>
-</div>
+    <li>Drop the first 5 features and then call the <code>reset_index</code> method.</li>
+    <div class="section-example-container">
+        <pre class="python">Y = Y[lookback:-1].reset_index(drop=True)</pre>
+    </div>
+    <p>This method aligns the history of the features and labels.</p>
 
-<img style="max-width: 100%; display: block" src="https://cdn.quantconnect.com/i/tu/tf-y-plot.png">
-
-<p>Now, let's split the data into testing and training sets. In this example, we'd split the last 1/3 of the data as testing set.</p>
-
-<div class="section-example-container">
-    <pre class="python">X_train, X_test, y_train, y_test = train_test_split(X, Y, test_size=0.33, shuffle=False)
-print(f"Train index: {X_train.index[0]}...{X_train.index[-1]}")
-print(f"Test index: {X_test.index[0]}...{X_test.index[-1]}")</pre>
-</div>
-
-<img style="max-width: 100%; display: block" src="https://cdn.quantconnect.com/i/tu/tf-step.png">
+    <li>Call the <code>train_text_split</code> method with the datasets and a split size.</li>
+    <p>For example, to use the last third of data to test the model, run:</p>
+    <div class="section-example-container">
+        <pre class="python">X_train, X_test, y_train, y_test = train_test_split(X, Y, test_size=0.33, shuffle=False)</pre>
+    </div>
+</ol>
