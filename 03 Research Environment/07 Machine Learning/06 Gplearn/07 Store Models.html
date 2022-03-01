@@ -1,33 +1,37 @@
-<h4>Saving the Model</h4>
+<p>You can save and load <code>GPlearn</code> models using the ObjectStore.</p>
+
+<h4>Save Models</h4>
 <p>We dump the models using the <code>joblib</code> module and save them to <code>ObjectStore</code> file paths. This way, the models don't need to be retrained, saving time and computational resources.</p>
 <ol>
-    <li>Set the key names of the models to be stored in objectStore.</li>
+    <li>Set the key names of the models to be stored in ObjectStore.</li>
     <div class="section-example-container">
         <pre class="python">transformer_key = "transformer"
 regressor_key = "regressor"</pre>
     </div>
 
-    <li>Call <code>GetFilePath</code> with the keys' names to get the file paths.</li>
+    <li>Call the <code>GetFilePath</code> method with the key names.</li>
     <div class="section-example-container">
         <pre class="python">transformer_file = qb.ObjectStore.GetFilePath(transformer_key)
 regressor_file = qb.ObjectStore.GetFilePath(regressor_key)</pre>
     </div>
+    <p>This method returns the file paths where the models will be stored.</p>
 
-    <li>Call dump with the models and file paths to save the models to the file path.</li>
+    <li>Call the <code>dump</code> method with the models and file paths.</li>
     <div class="section-example-container">
         <pre class="python">joblib.dump(gp_transformer, transformer_file)
 joblib.dump(gp_regressor, regressor_file)</pre>
     </div>
+    <p>If you dump the model using the <code>joblib</code> module before you save the model, you don't need to retrain the model.</p>
 
-    <li>Call <code>Save</code> with the key's name to save the model into ObjectStore.</li>
+    <li>Call the <code>Save</code> method with the key names.</li>
     <div class="section-example-container">
         <pre class="python">qb.ObjectStore.Save(transformer_key)
 qb.ObjectStore.Save(regressor_key)</pre>
     </div>
 </ol>
 
-<h4>Loading the Model</h4>
-<p>Let's retrieve the models from <code>ObjectStore</code> file paths and load by <code>joblib</code>.</p>
+<h4>Load Models</h4>
+<p>You must save a model into the ObjectStore before you can load it from the ObjectStore. If you saved a model, follow these steps to load it:</p>
 <ol>
     <li>Call the <code>ContainsKey</code> method.</li>
     <div class="section-example-container">
@@ -36,13 +40,14 @@ qb.ObjectStore.ContainsKey(regressor_key)</pre>
     </div>
     <p>This method returns a boolean that represents if the <code>model_key</code> is in the ObjectStore. If the ObjectStore does not contain the <code>model_key</code>, save the model using the <code>model_key</code> before you proceed.</p>
 
-    <li>Call <code>GetFilePath</code> with the keys' names to get the file paths.</li>
+    <li>Call the <code>GetFilePath</code> method with the keys.</li>
     <div class="section-example-container">
         <pre class="python">transformer_file = qb.ObjectStore.GetFilePath(transformer_key)
 regressor_file = qb.ObjectStore.GetFilePath(regressor_key)</pre>
     </div>
+    <p>This method returns the path where the model is stored.</p>
 
-    <li>Call <code>load</code> with the file paths to fetch the saved models.</li>
+    <li>Call the <code>load</code> method with the file paths.</li>
     <div class="section-example-container">
         <pre class="python">loaded_transformer = joblib.load(transformer_file)
 loaded_regressor = joblib.load(regressor_file)</pre>
