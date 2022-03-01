@@ -1,13 +1,8 @@
-<p>Let's build the model using <code>PyTorch</code>. We use a 2-hidden-layer deep neural network with Rectified Linear Unit (ReLU) activation function for non-linearity, Stocahstic Gradient Descend (SGD) as optimizer and Mean-square-error (MSE) as loss function.</p>
+<p>You need to <a href="/docs/v2/research-environment/machine-learning/pytorch#04-Prepare-Data">prepare the historical data</a> for training before you train the model. If you have prepared the data, build and train the model. In this example, create a deep neural network with 2 hidden layers. Follow these steps to create the model:</p>
 
 <ol>
-    <li>Split the data for training and testing to evaluate our model.</li>
-    <div class="section-example-container">
-        <pre class="python">X_train, X_test, y_train, y_test = train_test_split(X, y)</pre>
-    </div>
-
-    <li>Create a class object as the model.</li>
-    <p>In this example, we'll be using ReLU activation function for each layer.</p>
+    <li>Define a subclass of <code>nn.Module</code> to be the model.<br></li>
+    <p>In this example, use the ReLU activation function for each layer.</p>
     <div class="section-example-container">
         <pre class="python">class NeuralNetwork(nn.Module):
     # Model Structure
@@ -15,7 +10,7 @@
         super(NeuralNetwork, self).__init__()
         self.flatten = nn.Flatten()
         self.linear_relu_stack = nn.Sequential(
-            nn.Linear(5, 5),  # input size, output size of the layer
+            nn.Linear(5, 5),   # input size, output size of the layer
             nn.ReLU(),         # Relu non-linear transformation
             nn.Linear(5, 5),
             nn.ReLU(),  
@@ -29,7 +24,7 @@
         return result</pre>
     </div>
 
-    <li>Build the model with configuration on training with GPU if possible.</li>
+    <li>Create an instance of the model and set its configuration to train on the GPU if it's available.</li>
     <div class="section-example-container">
         <pre class="python">device = 'cuda' if torch.cuda.is_available() else 'cpu'
 model = NeuralNetwork().to(device)</pre>
