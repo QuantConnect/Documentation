@@ -1,5 +1,6 @@
 <p>If you have a Cloud license for a dataset, you can access the dataset in the Algorithm Lab for research, backtests, and live trading. The cost of the license is added to your monthly bill, which you can pay with your organization's credit card or <a href='/docs/v2/our-platform/user-guides/organizations/credit'>QuantConnect Credit</a> balance. With one Cloud license for a dataset, all of the members in your organization can access the dataset in the cloud. If you have more than 3 Alphas listed in the Alpha Streams market, you can run backtests in the cloud without paying the Cloud license fee.</p>
 
+<h4>Add Cloud Access</h4>
 <?php
     echo file_get_contents(DOCS_RESOURCES."/tutorials/datasets/add-cloud-access.php");
 ?>
