@@ -1,21 +1,21 @@
-<p>We then make predictions on the testing data set. We compare our Predicted Values with the Expected Values by plotting both to see if our Model has predictive power. We'll also find out the r-square value to quantify the model's predictive power.</p>
+<p>You need to  <a href="/docs/v2/research-environment/machine-learning/pytorch#05-Train-Models">build and train the model</a> before you test its performance. If you have trained the model, test it on the out-of-sample data. Follow these steps to test the model:</p>
 
 <ol>
-    <li>Predict with the testing set data.</li>
+    <li>Predict with the testing data.</li>
     <div class="section-example-container">
         <pre class="python">predict = model(X_test)
 y_predict = predict.detach().numpy()   # Convert tensor to numpy ndarray</pre>
     </div>
 
-    <li>Plot the result.</li>
+    <li>Plot the real and predicted values.</li>
     <div class="section-example-container">
         <pre class="python">df = pd.DataFrame({'Real': y_test.flatten(), 'Predicted': y_predict.flatten()})
 df.plot(title='Model Performance: predicted vs actual standardized fractional return', figsize=(15, 10))
 plt.show()</pre>
     </div>
-    <img src="https://cdn.quantconnect.com/i/tu/pytorch-plot.png">
+    <img class='docs-image' src="https://cdn.quantconnect.com/i/tu/pytorch-plot.png">
     
-    <li>Find the r-square value.</li>
+    <li>Calculate the R-square value.</li>
     <div class="section-example-container">
         <pre class="python">r2 = 1 - np.sum(np.square(y_test.flatten() - y_predict.flatten())) / np.sum(np.square(y_test.flatten() - y_test.mean()))
 print(f"The explained variance by the model (r-square): {r2*100:.2f}%")</pre>
