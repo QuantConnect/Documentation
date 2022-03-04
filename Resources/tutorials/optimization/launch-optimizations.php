@@ -42,5 +42,6 @@
     <li>Click <span class='button-name'>Launch Optimization</span>.</li>
     <p>The optimization results page displays.</p>
     <img class='img-responsive' src="https://cdn.quantconnect.com/i/tu/view-optimization-results.png">
+    <p>As the optimization job runs, you can close or refresh the window without interrupting the job because the nodes are processing on our servers.</p>
     <p>To abort a running optimization job, in the Status panel, click <span class='button-name'>Abort</span> and then click <span class='button-name'>Abort Optimization</span>.</p>
 </ol>
