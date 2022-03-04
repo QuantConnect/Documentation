@@ -1,17 +1,11 @@
 <?php
 
 $getNavigateCourseIDEText = function($isGettingStarted) {
+    echo "<p>The course IDE automatically displays when you <a href='/docs/v2/our-platform/tutorials/learning-center/enrolling-in-courses#03-Enroll-in-Courses'>enrol in a course</a>.
+          <img class='docs-image' src='https://cdn.quantconnect.com/i/tu/navigate-course-ide.jpg'>
+    ";
     echo "<p>Follow these steps to navigate the course IDE:</p>";
-    echo "<ol>";
-    if (!$isGettingStarted) {
-        echo "
-              <li><a href='/docs/v2/our-platform/tutorials/learning-center/enrolling-in-courses#03-Enroll-in-Courses'>Enroll in a course</a>.</li>
-              <p>The Learning Center environment displays.</p>
-              <img class='docs-image' src='https://cdn.quantconnect.com/i/tu/navigate-course-ide.jpg'>
-        ";
-    }
-
-    echo "
+    echo "<ol>
               <li>Read the instructions in the left panel.</li>
               <li>Update the <span class='public-file-name'>main.py</span> file with your answer.</li>
               <li><span class='qualifier'>(Optional)</span> Scroll down to the bottom of the instruction panel and click <span class='button-name'>Show Hint</span> to show a hint.</li>
