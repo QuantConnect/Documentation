@@ -17,7 +17,7 @@
     <li>Click <span class='box-name'>Maximize</span> or <span class='box-name'>Minimize</span> to maximize or minimize the optimization target, respectively.</li>
     <li>Click <span class='button-name'>Next</span>.</li>
     <li>In the <span class='page-section-name'>Parameters</span> section, enter the name of the parameter to optimize.</li>
-    <p>The parameter name must match a parameter name in the project panel.</p>
+    <p>The parameter name must match a parameter name in the Project panel.</p>
     <li>Enter the minimum and maximum parameter values.</li>
     <li>Click the <span class='icon-name'>gear</span> icon next to the parameter and then enter a step size.</li>
     <li>If you want to add a second parameter to optimize, click <span class='button-name'>Add Parameter</span> and then continue from step 7.</li>
