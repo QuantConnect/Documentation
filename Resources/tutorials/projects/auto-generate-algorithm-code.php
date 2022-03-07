@@ -1,4 +1,4 @@
-<p>Follow these steps to use the Strategy Builder:</p>
+<p>Follow these steps to add and remove modules to your algorithm:</p>
 
 <ol>
     <li>Open a new project.</li>
