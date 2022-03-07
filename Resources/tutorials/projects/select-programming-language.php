@@ -6,5 +6,3 @@
     <li>On the Your Account page, in the <span class='page-section-name'>Account Settings</span> section, click <span class='button-name'>C#</span> or <span class='button-name'>Python</span>.</li>
     <p>"Preferred language setting has been updated" displays.</p>
 </ol>
-
-<p>By changing the programming language, new projects are populated with the appropriate file types (<span class='public-file-name'>.cs</span> or <span class='public-file-name'>.py</span>). In addition, <a href='/docs/v2/our-platform/user-guides/projects/ide#03-Autocomplete-and-Intellisense'>autocomplete and IntelliSense</a> are verified according to your selected programming language.</p>
