@@ -2,12 +2,15 @@
 
 <ol>
     <li>Open a new project.</li>
+    <li>At the top of the IDE, click the Strategy Builder editor.</li>
+    <p>The canvas displays.</p>
+    <img class='docs-image' src='https://cdn.quantconnect.com/i/tu/strategy-builder-canvas.png'>
     <li>On the Strategy Builder page, click <span class="button-name">Add Module</span>.</li>
     <p>The modules catalog displays.</p>
-    <img class="docs-image" src="https://cdn.quantconnect.com/i/tu/strategy-builder-module-catalog.jpg">
+    <img class="docs-image" src="https://cdn.quantconnect.com/i/tu/strategy-builder-catalog.png">
     <li><span class="qualifier">(Optional)</span> At the bottom of the page, click the pagination buttons to view other modules.</li>
-    <li><span class="qualifier">(Optional)</span> Click a module in the table to view more information about the module.</li>
-    <li>If you want to apply filters to the module catalog, follow these steps:</li>
+    <li><span class="qualifier">(Optional)</span> Click a module in the table to view more information about it.</li>
+    <li>To apply filters to the module catalog, follow these steps:</li>
     <ol>
         <li>Click <span class="button-name">Filters</span>.</li>
         <li>Select the column to which you want to apply the filter.</li>
@@ -44,10 +47,7 @@
         <li>If you selected the <span class="button-name">Author</span> column in step 5.2, enter the characters you want to be included in the author name.</li>
         <p>The module catalog displays modules that have author names containing the characters you entered.</p>
     </ol>
-    <img class="docs-image" src="https://cdn.quantconnect.com/i/tu/filter-strategy-builder.gif">
-    <li>Click <span class="button-name">Add</span> next to the modules that you want to add.</li>
+    <img class="docs-image" src="https://cdn.quantconnect.com/i/tu/add-strategy-builder-module.gif">
+    <li>Click <span class="button-name">Add</span> next to the modules you want to add.</li>
     <li>If you want to remove modules that you have added, click <span class="button-name">Remove</span> next to the module.</li>
-    <li>Click <span class="button-name">Exit Strategy Builder</span>.</li>
-    <li>Click <span class="button-name">OK</span>.<br></li>
-    <p>The web IDE displays the project with the module codes added.</p>
 </ol>
