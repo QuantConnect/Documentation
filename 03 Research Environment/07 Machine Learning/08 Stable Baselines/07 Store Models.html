@@ -1,1 +1,42 @@
-<p></p>
+<p>You can save and load <code>stable baselines</code> models using the ObjectStore.</p>
+
+<h4>Save Models</h4>
+<ol>
+    <li>Set the key name of the model to be stored in the ObjectStore.</li>
+    <div class="section-example-container">
+        <pre class="python">model_key = "model"</pre>
+    </div>
+
+    <li>Call the <code>GetFilePath</code> method with the key.</li>
+    <div class="section-example-container">
+        <pre class="python">file_name = qb.ObjectStore.GetFilePath(model_key)</pre>
+    </div>
+    <p>This method returns the file path where the model will be stored.</p>
+
+    <li>Call the <code>save</code> method with the file path.</li>
+    <div class="section-example-container">
+        <pre class="python">model.save(file_name)</pre>
+    </div>
+</ol>
+
+<h4>Load Models</h4>
+<p>You must save a model into the ObjectStore before you can load it from the ObjectStore. If you saved a model, follow these steps to load it:</p>
+<ol>
+    <li>Call the <code>ContainsKey</code> method.</li>
+    <div class="section-example-container">
+        <pre class="python">qb.ObjectStore.ContainsKey(model_key)</pre>
+    </div>
+    <p>This method returns a boolean that represents if the <code>model_key</code> is in the ObjectStore. If the ObjectStore does not contain the <code>model_key</code>, save the model using the <code>model_key</code> before you proceed.</p>
+
+    <li>Call the <code>GetFilePath</code> method with the key.</li>
+    <div class="section-example-container">
+        <pre class="python">file_name = qb.ObjectStore.GetFilePath(model_key)</pre>
+    </div>
+    <p>This method returns the path where the model is stored.</p> 
+
+    <li>Call the <code>load</code> method with the file path, environment and policy.</li>
+    <div class="section-example-container">
+        <pre class="python">loaded_model = DQN.load(file_name, env=env, policy=MlpPolicy)</pre>
+    </div>
+    <p>This method returns the saved model.</p>
+</ol>

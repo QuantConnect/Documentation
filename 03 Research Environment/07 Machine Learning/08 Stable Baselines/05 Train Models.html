@@ -1,1 +1,86 @@
-<p></p>
+<p>You need to <a href="/docs/v2/research-environment/machine-learning/stable-baselines#04-Prepare-Data">prepare the historical data</a> for training before you train the model. If you have prepared the data, build and train the environment and the model. In this example, create a <code>gym</code> environment to initialize the training environment, agent and reward. Then, create a RL model by DQN algorithm. Follow these steps to create the environment and the model:</p>
+
+<ol>
+    <li>Split the data for training and testing to evaluate our model.</li>
+    <div class="section-example-container">
+        <pre class="python">X_train = history.iloc[:-50].values
+X_test = history.iloc[-50:].values
+y_train = ret.iloc[:-50].values
+y_test = ret.iloc[-50:].values</pre>
+    </div>
+
+    <li>Create a custom gym environment class.</li>
+    <div class="section-example-container">
+        <pre class="python">class TradingEnv(gym.Env):
+    metadata = {'render.modes': ['console']}
+    
+    FLAT = 0
+    LONG = 1
+    SHORT = 2
+
+    def __init__(self, ohlcv, ret):
+        super(TradingEnv, self).__init__()
+        
+        self.ohlcv = ohlcv
+        self.ret = ret
+        self.trading_cost = 0.01
+        self.reward = 1
+        
+        # The number of step the training has taken, starts at 5 since we're using the previous 5 data for observation.
+        self.current_step = 5
+        # The last action
+        self.last_action = 0
+
+        # Define action and observation space
+        # Example when using discrete actions, we have 3: LONG, SHORT and FLAT.
+        n_actions = 3
+        self.action_space = gym.spaces.Discrete(n_actions)
+        # self.action_space = spaces.Box(low=0., high=1., shape=(1,), dtype=np.float64)  # for continuous weightings
+        # The observation will be the coordinate of the agent, shape for (5 previous data poionts, OHLCV)
+        self.observation_space = gym.spaces.Box(low=-np.inf, high=np.inf, shape=(5, 5), dtype=np.float64)
+
+    def reset(self):
+        # Reset the number of step the training has taken
+        self.current_step = 5
+        # Reset the last action
+        self.last_action = 0
+        # must return np.array type
+        return self.ohlcv[self.current_step-5:self.current_step].astype(np.float32)
+
+    def step(self, action):
+        if action == self.LONG:
+            self.reward *= 1 + self.ret[self.current_step] - (self.trading_cost if self.last_action != action else 0)
+        elif action == self.SHORT:
+            self.reward *= 1 + -1 * self.ret[self.current_step] - (self.trading_cost if self.last_action != action else 0)
+        elif action == self.FLAT:
+             self.reward *= 1 - (self.trading_cost if self.last_action != action else 0)
+        else:
+            raise ValueError("Received invalid action={} which is not part of the action space".format(action))
+            
+        self.last_action = action
+        self.current_step += 1
+
+        # Have we iterate all data points?
+        done = (self.current_step == self.ret.shape[0]-1)
+
+        # Reward as return
+        return self.ohlcv[self.current_step-5:self.current_step].astype(np.float32), self.reward, done, {}
+
+    def render(self, mode='console'):
+        if mode != 'console':
+            raise NotImplementedError()
+        print(f'Equity Value: {self.reward}')</pre>
+    </div>
+    
+    <li>Initialize the environment.</li>
+    <div class="section-example-container">
+        <pre class="python">env = TradingEnv(X_train, y_train)</pre>
+    </div>
+
+    <li>Train the model.</li>
+    <p>In this example, create a RL model by MLP-policy DQN algorithm with previous 5 OHLCV log-return data as observation and the highest portfolio value as reward.</p>
+    <div class="section-example-container">
+        <pre class="python">model = DQN(MlpPolicy, env, verbose=1)
+model.learn(total_timesteps=1000)</pre>
+    </div>
+</ol>
