@@ -49,5 +49,7 @@
     </ol>
     <img class="docs-image" src="https://cdn.quantconnect.com/i/tu/add-strategy-builder-module.gif">
     <li>Click <span class="button-name">Add</span> next to the modules you want to add.</li>
+    <p>The modules you add are added to your code files.</p>
     <li>If you want to remove modules that you have added, click <span class="button-name">Remove</span> next to the module.</li>
+    <p>The modules you remove are removed from your code files.</p>
 </ol>
