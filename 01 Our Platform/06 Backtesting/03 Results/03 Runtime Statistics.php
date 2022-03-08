@@ -1,6 +1,6 @@
 <p>The banner at the top of the backtest results page displays the performance statistics of your backtest.</p>
 
-<img class='img-responsive' src="https://cdn.quantconnect.com/i/tu/runtime-statistics.png">
+<img class='img-responsive' src="https://cdn.quantconnect.com/i/tu/runtime-statistics-1.png">
 
 <p>The following table describes the runtime statistics:</p>
 
