@@ -1,5 +1,7 @@
 <p>The backtest results page includes a <span class="tab-name">Share</span> tab that enables you to share your backtest results. Under the <span class="tab-name">Share</span> tab, if you click <span class="button-name">Make public</span>, your backtest results become public so you can share them with others. The following methods of sharing backtest results are available. After you've made your backtest results public, they can't be made private again because someone may have already cloned your project.</p>
 
+<p> If you share a backtest result, it's public domain and always stored.</p>
+
 <h4>Backtest Reports</h4>
 <p>The <span class="tab-name">Share</span> tab displays a link to your <a href="/docs/v2/our-platform/user-guides/report/backtesting">backtest report</a>. Share the link with others to give them access to your backtest report.</p>
 
