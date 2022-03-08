@@ -22,7 +22,3 @@
     <p>The following table describes the functionality of the debugger buttons:</p>
     <?php include(DOCS_RESOURCES."/debugger-buttons-table.html"); ?>
 </ol>
-
-<div class='docs-video'>
-    <iframe src="//www.youtube.com/embed/xtV_y43Q_Zs" allowfullscreen="" frameborder="0"></iframe>
-</div>
