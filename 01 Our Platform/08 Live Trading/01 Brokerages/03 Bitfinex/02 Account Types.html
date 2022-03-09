@@ -9,4 +9,31 @@ self.SetBrokerageModel(BrokerageName.Bitfinex, AccountType.Margin)</pre>
 
 <p>Use <code>AccountType.Cash</code> to connect to your Exchange wallet or <code>AccountType.Margin</code> to connect to your Margin wallet. You can not connect to your Funding or Capital Raise wallet. If you provide the wrong <code>AccountType</code> to the <code>SetBrokerageModel</code> method, you may connect to an empty wallet, causing Lean to throw a warning. If you have a currency in your wallet that ends with "F0", it will not load into your <code>CashBook</code>.</p>
 
-<p>Bitfinex supports paper trading with only the TESTBTCTESTUSD and TESTBTCTESTUSDT securities. To paper trade with Bitfinex, <a href="/docs/v2/our-platform/tutorials/live-trading/brokerages/bitfinex#03-Set-Up-Paper-Trading">set up a paper trading sub-account</a> and use <code>AccountType.Cash</code>. If you want to paper trade securities other than TESTBTCTESTUSD and TESTBTCTESTUSDT securities, <a href='/docs/v2/our-platform/tutorials/live-trading/brokerages/bitfinex#03-Set-Up-Paper-Trading'>simulate paper trading</a> with the QuantConnect Paper Trading brokerage.</p>
+
+<h4>Create an Account</h4>
+<p>Follow the <a rel='nofollow' target='_blank' href='https://www.bitfinex.com/sign-up/'>account creation wizard</a> on the Bitfinex website to create a Bitfinex account.</p>
+
+<p>You will need API credentials to deploy live algorithms. After you have an account, <a rel='nofollow' target='_blank' href='https://support.bitfinex.com/hc/en-us/articles/115003363429-How-to-create-and-revoke-a-Bitfinex-API-Key'>create API credentials</a> and store them somewhere safe.</p>
+
+
+<h4>Paper Trading</h4>
+<p>Bitfinex supports paper trading with only the TESTBTCTESTUSD and TESTBTCTESTUSDT securities. Follow these steps to paper trade with Bitfinex:</p>
+
+<ol>
+    <li>Create a paper trading sub-account and refill the paper balance For instructions, see <a href='https://support.bitfinex.com/hc/en-us/articles/900001525006-Paper-Trading-at-Bitfinex-test-learn-and-simulate-trading-strategies' rel='nofollow' target='_blank'>Paper Trading at Bitfinex</a> on the Bitfinex website.</li>
+    <li>Create an API key for your sub-account. For instructions, see <a href='https://support.bitfinex.com/hc/en-us/articles/115003363429-How-to-create-and-revoke-a-Bitfinex-API-Key' rel='nofollow' target='_blank'>How to create and revoke a Bitfinex API Key</a> on the Bitfinex website.</li>
+    <li>Use <code>AccountType.Cash</code> in your algorithms.</li>
+</ol>
+
+<p>To paper trade securities other than TESTBTCTESTUSD and TESTBTCTESTUSDT, follow these steps to simulate paper trading with the QuantConnect Paper Trading brokerage:</p>
+<ol>
+    <li>In the <code>Initialize</code> method of your algorithm, call the <code>SetBrokerageModel</code> method with the Bitfinex brokerage model and an account type.</li>
+    <div class="section-example-container">
+        <pre class="csharp">SetBrokerageModel(BrokerageName.Bitfinex, AccountType.Cash);
+SetBrokerageModel(BrokerageName.Bitfinex, AccountType.Margin);</pre>
+        <pre class="python">self.SetBrokerageModel(BrokerageName.Atreyu, AccountType.Cash)
+self.SetBrokerageModel(BrokerageName.Atreyu, AccountType.Margin)</pre>
+    </div>
+    <li><a href='/docs/v2/our-platform/tutorials/live-trading/brokerages/quantconnect-paper-trading#04-Deploy-Live-Algorithms'>Deploy your algorithm with the QuantConnect Paper Trading brokerage</a>.</li>
+</ol>
+
