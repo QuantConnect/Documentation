@@ -17,7 +17,7 @@ echo "
   <tbody>
     <tr>
       <td>PSR</td>
-      <td>{$definitionByTerm['probabilistic sharpe ratio (PSR)']} In this case, the benchmark is a Sharpe ratio of 1.</td>
+      <td>{$definitionByTerm['probabilistic sharpe ratio (PSR)']}</td>
     </tr>
     <tr>
       <td>Unrealized</td>
