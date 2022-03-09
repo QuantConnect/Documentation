@@ -17,7 +17,7 @@ $definitionByTerm = array(
     "loss rate" => "The proportion of trades that were not profitable.",
     "lowest capacity asset" => "The asset an algorithm traded that has the lowest capacity.",
     "net profit" => array("percent" => "The rate of return across the entire trading period.", "dollar-value" => "The dollar-value return across the entire trading period."),
-    "probabilistic sharpe ratio (PSR)" => "The probability that the estimated Sharpe ratio of an algorithm is greater than the Sharpe ratio of its benchmark.",
+    "probabilistic sharpe ratio (PSR)" => "The probability that the estimated Sharpe ratio of an algorithm is greater than a benchmark (1).",
     "profit-loss ratio" => "The ratio of the average win rate to the average loss rate.",
     "return" => "The rate of return across the entire trading period.",
     "sharpe ratio" => "A measure of the risk-adjusted return, developed by William Sharpe.",
