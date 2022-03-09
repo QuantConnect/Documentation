@@ -109,5 +109,5 @@ ticket.Update(update_fields)</pre>
 <h4>Place Manual Orders</h4>
 <?php
 include(DOCS_RESOURCES."/brokerages/place-manual-orders.php");
-$getPlaceManualOrdersText("#16-View-Live-Performance");
+$getPlaceManualOrdersText("#15-View-Live-Performance");
 ?>
