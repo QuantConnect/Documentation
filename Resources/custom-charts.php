@@ -7,11 +7,11 @@ $getCustomChartText = function($backtest) {
         <p>We support the following types of plots:</p>
         <div class='section-example-container'>
         <pre class='all prettyprint prettyprinted'>
-             <span class='typ'>SeriesType</span><span class='pun'>.</span><span class='typ'>Line</span><br>
-             <span class='pln'>          </span><span class='pun'>.</span><span class='typ'>Scatter</span><br>
-             <span class='pln'>          </span><span class='pun'>.</span><span class='typ'>Candle</span><br>
-             <span class='pln'>          </span><span class='pun'>.</span><span class='typ'>Bar</span><br>
-             <span class='pln'>          </span><span class='pun'>.</span><span class='typ'>Flag</span>
+<span class='typ'>SeriesType</span><span class='pun'>.</span><span class='typ'>Line</span>
+<span class='pln'>          </span><span class='pun'>.</span><span class='typ'>Scatter</span>
+<span class='pln'>          </span><span class='pun'>.</span><span class='typ'>Candle</span>
+<span class='pln'>          </span><span class='pun'>.</span><span class='typ'>Bar</span>
+<span class='pln'>          </span><span class='pun'>.</span><span class='typ'>Flag</span>
          </pre></div>
      ";
 
@@ -24,11 +24,11 @@ $getCustomChartText = function($backtest) {
         <p>When you create scatter plots, you can set a marker symbol. We support the following marker symbols:</p>
         <div class='section-example-container'>
         <pre class='all prettyprint prettyprinted'>
-            <span class='typ'>ScatterMarkerSymbol</span><span class='pun'>.</span><span class='typ'>Circle</span><br>
-            <span class='pln'>                   </span><span class='pun'>.</span><span class='typ'>Diamond</span><br>
-            <span class='pln'>                   </span><span class='pun'>.</span><span class='typ'>Square</span><br>
-            <span class='pln'>                   </span><span class='pun'>.</span><span class='typ'>Triangle</span><br>
-            <span class='pln'>                   </span><span class='pun'>.</span><span class='typ'>TriangleDown</span>
+<span class='typ'>ScatterMarkerSymbol</span><span class='pun'>.</span><span class='typ'>Circle</span>
+<span class='pln'>                   </span><span class='pun'>.</span><span class='typ'>Diamond</span>
+<span class='pln'>                   </span><span class='pun'>.</span><span class='typ'>Square</span>
+<span class='pln'>                   </span><span class='pun'>.</span><span class='typ'>Triangle</span>
+<span class='pln'>                   </span><span class='pun'>.</span><span class='typ'>TriangleDown</span>
         </pre></div>
     ";
 
