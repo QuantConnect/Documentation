@@ -1,6 +1,6 @@
 <p>The banner at the top of the live performance page displays the performance statistics of your algorithm.</p>
 
-<img class='img-responsive' src="https://cdn.quantconnect.com/i/tu/runtime-statistics-live.png">
+<img class='docs-image' src="https://cdn.quantconnect.com/i/tu/live-runtime-statistics-1.png">
 
 <p>The following table shows the performance statistics that display by default:</p>
 
