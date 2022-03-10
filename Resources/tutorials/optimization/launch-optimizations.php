@@ -10,38 +10,33 @@
 <p>Follow these steps to optimize parameters:</p>
 
 <ol>
-    <li><a href="/docs/v2/our-platform/tutorials/projects/managing-projects#05-Open-Existing-Projects">Open the project</a> that contains the parameters you want to optimize.</li>
-    <li>In the top-right corner of the IDE, click <span class='button-name'>Optimize</span>.</li>
-    <li>In the <span class='page-section-name'>Choose Optimization Strategy</span> section of the Optimization Wizard, click the <span class='field-name'>optimization strategy</span> field and then select a strategy from the drop-down menu.</li>
-    <li>In the <span class='page-section-name'>Select Target</span> section, click the <span class='field-name'>optimization target</span> field and then select a target from the drop-down menu.</li>
-    <li>Click <span class='box-name'>Maximize</span> or <span class='box-name'>Minimize</span> to maximize or minimize the optimization target, respectively.</li>
-    <li>Click <span class='button-name'>Next</span>.</li>
-    <li>In the <span class='page-section-name'>Parameters</span> section, enter the name of the parameter to optimize.</li>
+    <li><a href="/docs/v2/our-platform/projects/project-management#02-View-All-Projects">Open the project</a> that contains the parameters you want to optimize.</li>
+    <li>In the top-right corner of the IDE, click the <img class='inline-icon' src='https://cdn.quantconnect.com/i/tu/optimize-parameters-icon.png'><span class='icon-name'>Optimize</span> icon.</li>
+    
+    <li>On the Optimization page, in the <span class='page-section-name'>Parameter & Constraints</span> section, enter the name of the parameter to optimize.</li>
     <p>The parameter name must match a parameter name in the Project panel.</p>
     <li>Enter the minimum and maximum parameter values.</li>
     <li>Click the <span class='icon-name'>gear</span> icon next to the parameter and then enter a step size.</li>
-    <li>If you want to add a second parameter to optimize, click <span class='button-name'>Add Parameter</span> and then continue from step 7.</li>
-    <p>You can optimize a maximum of two parameters.</p>
+    <li>If you want to add a second parameter to optimize, click <span class='button-name'>Add Parameter</span>.</li>
+    <p>You can optimize a maximum of two parameters. To optimize more parameters, see <a href='/docs/v2/lean-cli/tutorials/optimization/local-optimizations'>Local Optimizations</a>.</p>
+    
     <li>If you want to add optimization constraints, follow these steps:</li>
     <ol>
-    	<li>In the <span class='page-section-name'>Constraint</span> section, click <span class='button-name'>Add Constraint</span>.</li>
+    	<li>Click <span class='button-name'>Add Constraint</span>.</li>
     	<li>Click the <span class='field-name'>target</span> field and then select a target from the drop-down menu.</li>
     	<li>Click the <span class='field-name'>operation</span> field and then an operation from the drop-down menu.</li>
     	<li>Enter a constraint value.</li>
-    	<li>If you want to add additional constraints, continue from step 11.1.</li>
     </ol>
-    <li>Click <span class='button-name'>Next</span>.</li>
-    <p>"Parameters saved" displays.</p>
-    <li>In the <span class='page-section-name'>Type and Number of Compute Nodes</span> section, select one of the following <a href='/docs/v2/our-platform/user-guides/optimization/deployment#02-Resources'>optimization node models</a>.</li>
-
-    <p>The following table explains when to use each model:</p>
-
-    <?php include(DOCS_RESOURCES."/optimization-node-descriptions-table.php"); ?>
-
+    
+    <li>In the <span class='page-section-name'>Estimated Number and Cost of Backtests</span>, click an <a href='/docs/v2/our-platform/optimization/deployment#02-Resources'>optimization node</a>.</li>
     <li>Select a maximum number of nodes to use.</li>
+    
+    <li>In the <span class='page-section-name'>Estimated Number and Cost of Backtests</span>, click the <span class='field-name'>Choose Optimization Strategy</span> field and then select a <a href='/docs/v2/our-platform/optimization/strategies'>strategy</a> from the drop-down menu.</li>
+    <li>Click the <span class='field-name'>Select Target</span> field and then select a target from the drop-down menu.</li>
+    <li>Click <span class='box-name'>Maximize</span> or <span class='box-name'>Minimize</span> to maximize or minimize the optimization target, respectively.</li>
     <li>Click <span class='button-name'>Launch Optimization</span>.</li>
     <p>The optimization results page displays.</p>
     <img class='img-responsive' src="https://cdn.quantconnect.com/i/tu/view-optimization-results.png">
     <p>As the optimization job runs, you can close or refresh the window without interrupting the job because the nodes are processing on our servers.</p>
-    <p>To abort a running optimization job, in the Status panel, click <span class='button-name'>Abort</span> and then click <span class='button-name'>Abort Optimization</span>.</p>
+    <p>To abort a running optimization job, in the Status panel, click <span class='button-name'>Abort</span> and then click <span class='button-name'>Yes</span>.</p>
 </ol>
