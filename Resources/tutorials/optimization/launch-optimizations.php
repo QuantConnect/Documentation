@@ -35,8 +35,6 @@
     <li>Click the <span class='field-name'>Select Target</span> field and then select a target from the drop-down menu.</li>
     <li>Click <span class='box-name'>Maximize</span> or <span class='box-name'>Minimize</span> to maximize or minimize the optimization target, respectively.</li>
     <li>Click <span class='button-name'>Launch Optimization</span>.</li>
-    <p>The optimization results page displays.</p>
-    <img class='img-responsive' src="https://cdn.quantconnect.com/i/tu/view-optimization-results.png">
-    <p>As the optimization job runs, you can close or refresh the window without interrupting the job because the nodes are processing on our servers.</p>
+    <p>The <a href='/docs/v2/our-platform/optimization/results#02-View-Optimization-Results'>optimization results page</a> displays. As the optimization job runs, you can close or refresh the window without interrupting the job because the nodes are processing on our servers.</p>
     <p>To abort a running optimization job, in the Status panel, click <span class='button-name'>Abort</span> and then click <span class='button-name'>Yes</span>.</p>
 </ol>
