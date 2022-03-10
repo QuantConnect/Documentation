@@ -113,9 +113,3 @@ ticket = self.LimitOrder(self.symbol, new_quantity, new_limit_price)</pre>
 <h4>Automatic Cancellations</h4>
 <p>Tradier automatically cancels the open orders that your algorithm has for securities that perform a reverse split.</p>
 
-
-<h4>Place Manual Orders</h4>
-<?php
-include(DOCS_RESOURCES."/brokerages/place-manual-orders.php");
-$getPlaceManualOrdersText("#16-View-Live-Performance");
-?>

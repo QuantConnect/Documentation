@@ -105,9 +105,3 @@ ticket.Update(update_fields)</pre>
 <h4>Handling Splits</h4>
 <p>If you have limit orders in an order book and a stock split occurs, the <code>DefaultBrokerageModel</code> automatically adjusts the quantity, limit price, and stop price of your orders.</p>
 
-
-<h4>Place Manual Orders</h4>
-<?php
-include(DOCS_RESOURCES."/brokerages/place-manual-orders.php");
-$getPlaceManualOrdersText("#15-View-Live-Performance");
-?>
