@@ -1,10 +1,10 @@
 <?php
-$getPlaceManualOrdersText = function($viewLivePerformanceLink) {
+$getPlaceManualOrdersText = function($viewLiveResultsLink) {
     echo "
         <p>Follow these steps to place manual orders in your live algorithm:</p>
         <ol>
-            <li><a href='{$viewLivePerformanceLink}'>Open the live performance page</a> of the algorithm for which you want to place manual orders.</li>
-            <li>On the live performance page, click the <span class='tab-name'>Holdings</span> tab.</li>
+            <li><a href='{$viewLiveResultsLink}'>Open the live results page</a> of the algorithm for which you want to place manual orders.</li>
+            <li>On the live results page, click the <span class='tab-name'>Holdings</span> tab.</li>
             <li>If the algorithm doesn't have a subscription to the security that you want to trade, follow these steps:</li>
             <ol>
                 <li>Click <span class='button-name'>Add Security</span>.</li>
