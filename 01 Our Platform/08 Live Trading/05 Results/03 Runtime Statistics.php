@@ -1,4 +1,4 @@
-<p>The banner at the top of the live performance page displays the performance statistics of your algorithm.</p>
+<p>The banner at the top of the live results page displays the performance statistics of your algorithm.</p>
 
 <img class='docs-image' src="https://cdn.quantconnect.com/i/tu/live-runtime-statistics-1.png">
 
