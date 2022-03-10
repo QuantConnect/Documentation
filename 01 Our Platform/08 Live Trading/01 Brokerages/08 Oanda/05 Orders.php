@@ -46,10 +46,3 @@ update_fields.LimitPrice = new_limit_price
 update_fields.Tag = new_tag
 ticket.Update(update_fields)</pre>
 </div>
-
-
-<h4>Place Manual Orders</h4>
-<?php
-include(DOCS_RESOURCES."/brokerages/place-manual-orders.php");
-$getPlaceManualOrdersText("#16-View-Live-Performance");
-?>

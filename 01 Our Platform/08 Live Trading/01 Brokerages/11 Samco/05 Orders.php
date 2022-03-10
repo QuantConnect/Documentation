@@ -152,9 +152,3 @@ updateSettings.LimitPrice = new_limit_price
 ticket.Update(updateSettings)</pre>
 </div>
 
-
-<h4>Place Manual Orders</h4>
-<?php
-include(DOCS_RESOURCES."/brokerages/place-manual-orders.php");
-$getPlaceManualOrdersText("#16-View-Live-Performance");
-?>

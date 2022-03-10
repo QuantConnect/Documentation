@@ -155,10 +155,3 @@ ticket.Cancel()
 ticket = self.LimitOrder(self.symbol, new_quantity, new_limit_price)</pre>
 </div>
 
-
-
-<h4>Place Manual Orders</h4>
-<?php
-include(DOCS_RESOURCES."/brokerages/place-manual-orders.php");
-$getPlaceManualOrdersText("#16-View-Live-Performance");
-?>

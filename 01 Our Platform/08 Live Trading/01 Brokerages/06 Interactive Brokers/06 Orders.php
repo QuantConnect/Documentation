@@ -170,9 +170,3 @@ ticket.Update(update_fields)</pre>
 <h4>Fill Time</h4>
 <p>IB has a 400 millisecond fill time for live orders.</p>
 
-
-<h4>Place Manual Orders</h4>
-<?php
-include(DOCS_RESOURCES."/brokerages/place-manual-orders.php");
-$getPlaceManualOrdersText("#17-View-Live-Performance");
-?>
