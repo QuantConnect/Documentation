@@ -3,6 +3,7 @@
 <ol>
     <li>Open a new project.</li>
     <li>At the top of the IDE, click the <span class='tab-name'>Strategy Builder</span> tab.</li>
+    <p>If there is no <span class='tab-name'>Strategy Builder</span> tab, <a href='/docs/v2/our-platform/projects/strategy-builder#05-Toggle-Builder'>enable the builder</a> and then reopen the project.</p>
     <p>The canvas displays.</p>
     <img class='docs-image' src='https://cdn.quantconnect.com/i/tu/strategy-builder-canvas.png'>
     <li>On the Strategy Builder page, click <span class="button-name">Add Module</span>.</li>
