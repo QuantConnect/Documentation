@@ -8,7 +8,7 @@
     <li>On the Strategy Builder page, click <span class="button-name">Add Module</span>.</li>
     <p>The modules catalog displays.</p>
     <img class="docs-image" src="https://cdn.quantconnect.com/i/tu/strategy-builder-catalog.png">
-    <p>Each of the modules in the catalog contains a description and list of the pre-selected settings for the module.</p>
+    <p>Click a module in the catalog to view its description and default settings.</p>
     <li><span class="qualifier">(Optional)</span> At the bottom of the page, click the pagination buttons to view other modules.</li>
     <li><span class="qualifier">(Optional)</span> Click a module in the table to view more information about it.</li>
     <li>To apply filters to the module catalog, follow these steps:</li>
