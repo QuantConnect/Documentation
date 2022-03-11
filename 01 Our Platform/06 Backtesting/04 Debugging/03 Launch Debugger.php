@@ -1,10 +1,8 @@
 <p>Follow these steps to launch the debugger:</p>
 <ol>
-    <li><a href="/docs/v2/our-platform/tutorials/projects/managing-projects#05-Open-Existing-Projects">Open the project</a> that you want to debug.</li>
-    <li>In your project's code files, click a line number to add a breakpoint.</li>
-    <img class='docs-image' src="https://cdn.quantconnect.com/i/tu/set-break-point-2.gif">
-    <p>You need at least one breakpoint to debug. You can only place breakpoints on non-empty lines.</p>
-    <li>On the right edge of the IDE, click <span class='button-name'>Debug</span>.</li>
+    <li><a href="/docs/v2/our-platform/tutorials/projects/managing-projects#05-Open-Existing-Projects">Open the project</a> you want to debug.</li>
+    <li>In your project's code files, add atleast one <a href='/docs/v2/our-platform/backtesting/debugging#02-Breakpoints'>breakpoint</a>.</li>
+    <li>Click the <img class='inline-icon' src='https://cdn.quantconnect.com/i/tu/backtest-button.png'> <span class='icon-name'>Backtest</span> icon.</li>
     <li>If you want to set watch variables, follow these steps:</li>
     <ol>
     	<li>In the Debug panel, click the <span class='icon-name'>plus</span> icon.</li>
