@@ -2,7 +2,7 @@
 <ol>
     <li><a href="/docs/v2/our-platform/tutorials/projects/managing-projects#05-Open-Existing-Projects">Open the project</a> that you want to debug.</li>
     <li>In your project's code files, click a line number to add a breakpoint.</li>
-    <img class='docs-image' src="https://cdn.quantconnect.com/i/tu/toggle-break-point.gif">
+    <img class='docs-image' src="https://cdn.quantconnect.com/i/tu/set-break-point-2.gif">
     <p>You need at least one breakpoint to debug. You can only place breakpoints on non-empty lines.</p>
     <li>On the right edge of the IDE, click <span class='button-name'>Debug</span>.</li>
     <li>If you want to set watch variables, follow these steps:</li>
