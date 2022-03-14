@@ -15,7 +15,7 @@ $getCustomChartText = function($backtest) {
      ";
 
     if ($backtest) {
-        echo "<p>To create other types of charts, save the plot data in the ObjectStore and then load it into the Research Environment. In the Research Environment, you can <a href='/docs/v2/research-environment/charting/key-concepts'>create other types of charts with third-party charting packages</a>.</p>";
+        echo "<p>To create other types of charts, save the plot data in the ObjectStore and then load it into the Research Environment. In the Research Environment, you can <a href='/docs/v2/research-environment/charting'>create other types of charts with third-party charting packages</a>.</p>";
     }
 
     echo "
