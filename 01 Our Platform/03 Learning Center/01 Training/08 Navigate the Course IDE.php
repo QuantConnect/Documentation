@@ -1,4 +1,4 @@
-<p>The course IDE automatically displays when you <a href='/docs/v2/our-platform/learning-center/training#05-Enroll-in-Courses'>enroll in a course</a>.</p>
+<p>The course IDE automatically displays when you enroll in a course.</p>
 <img class='docs-image' src='https://cdn.quantconnect.com/i/tu/navigate-course-ide.jpg'>
 
 <p>Follow these steps to navigate the course IDE:</p>
