@@ -1,1 +1,0 @@
-<p>Open an <a href="/docs/v2/our-platform/tutorials/optimization/reviewing-results#02-View-Optimization-Results">optimization results page</a>, right-click one of the rows in the Backtests table, and then click <span class='menu-name'>Export &gt; CSV Export</span> to download the table.</p>

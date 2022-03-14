@@ -1,4 +1,0 @@
-<p>Open the Algorithm Lab and then, in the left navigation bar, click <span class='menu-name'>Datasets > All Datasets</span> to see all of the datasets we have available.</p>
-
-<img class='docs-image' src='https://cdn.quantconnect.com/i/tu/view-all-datasets.png'>
-<p>Click a dataset to view more information about it on its listing page.</p>

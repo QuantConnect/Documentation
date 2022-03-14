@@ -55,6 +55,6 @@
     <p>If the <code>OnData</code> method receives the new data point, your algorithm works in live mode.</p>
     <p>You may need to wait for the new data point to be polled before it is injected into your algorithm. Lean polls for new data at various intervals, depending on the resolution of the data. The following table shows the polling frequency of each resolution:</p>
 
-    <?php include(DOCS_RESOURCES."/live-dataset-polling-frequency-table.html"); ?>
+    <?php include(DOCS_RESOURCES."/datasets/live-dataset-polling-frequency-table.html"); ?>
 
 </ol>

@@ -1,1 +1,1 @@
-<?php include(DOCS_RESOURCES."/deploy-alphas.php"); ?>
+<?php include(DOCS_RESOURCES."/alpha-streams/deploy-alphas.php"); ?>

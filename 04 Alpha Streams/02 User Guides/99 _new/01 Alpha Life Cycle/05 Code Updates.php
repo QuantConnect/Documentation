@@ -1,1 +1,1 @@
-<?php include(DOCS_RESOURCES."/alpha-updates.php"); ?>
+<?php include(DOCS_RESOURCES."/alpha-streams/alpha-updates.php"); ?>

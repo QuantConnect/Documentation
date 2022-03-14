@@ -51,5 +51,5 @@ echo "
 </table>";
 
 
-echo file_get_contents(DOCS_RESOURCES."/create-custom-runtime-statistic.html"); 
+echo file_get_contents(DOCS_RESOURCES."/algorithm-results/create-custom-runtime-statistic.html"); 
 ?>

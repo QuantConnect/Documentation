@@ -2,4 +2,4 @@
 
 <p>The number of backtesting nodes that you can have in your organization depends on the tier of your organization. The following table shows the backtesting node quotas:</p>
 
-<?php include(DOCS_RESOURCES."/quotas/backtesting-node-table.html"); ?>
+<?php include(DOCS_RESOURCES."/quotas/backtesting-nodes.html"); ?>
