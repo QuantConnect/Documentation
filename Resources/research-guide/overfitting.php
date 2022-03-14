@@ -17,7 +17,7 @@
   <tbody>
     <tr>
       <td>
-        <a href="https://en.wikipedia.org/wiki/Data_dredging">Data Dredging</a
+        <a target='_blank' rel='nofollow' href="https://en.wikipedia.org/wiki/Data_dredging">Data Dredging</a
         >
       </td>
       <td>
@@ -27,7 +27,7 @@
     </tr>
     <tr>
       <td>
-        <a href="https://en.wikipedia.org/wiki/Hyperparameter_optimization">Hyper-Tuning Parameters</a
+        <a target='_blank' rel='nofollow' href="https://en.wikipedia.org/wiki/Hyperparameter_optimization">Hyper-Tuning Parameters</a
         >
       </td>
       <td>
@@ -37,7 +37,7 @@
     </tr>
     <tr>
       <td>
-        <a href="https://en.wikipedia.org/wiki/Overfitting#Regression">Overfit Regression Models</a
+        <a target='_blank' rel='nofollow' href="https://en.wikipedia.org/wiki/Overfitting#Regression">Overfit Regression Models</a
         >
       </td>
       <td>
