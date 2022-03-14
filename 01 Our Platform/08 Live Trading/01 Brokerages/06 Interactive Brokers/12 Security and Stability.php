@@ -1,8 +1,6 @@
 <?php
 include(DOCS_RESOURCES."/brokerages/security-and-stability.php");
-$getBrokerageStabilityText("IB",
-	                       "/docs/v2/our-platform/tutorials/live-trading/brokerages/interactive-brokers#04-Deploy-Live-Algorithms", 
-	                       "https://www.interactivebrokers.com/en/software/systemStatus.php");
+$getBrokerageStabilityText("IB", "https://www.interactivebrokers.com/en/software/systemStatus.php");
 ?>
 
 <h4>Connections</h4>

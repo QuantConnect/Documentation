@@ -1,5 +1,5 @@
 <?php
-$getBrokerageStabilityText = function($brokerageName, $deploymentTutorialLink, $statusPageURL=null) {
+$getBrokerageStabilityText = function($brokerageName, $statusPageURL=null) {
 
     $result = "";
 
@@ -7,7 +7,7 @@ $getBrokerageStabilityText = function($brokerageName, $deploymentTutorialLink, $
         $result .= "<p>Note the following security and stability aspects of our $brokerageName integration.</p>";
         $result .= "<h4>Account Credentials</h4>";
     }
-    $result .= "<p>When you <a href='$deploymentTutorialLink'>deploy live algorithms with $brokerageName</a>, we don't save your brokerage account credentials.</p>";
+    $result .= "<p>When you deploy live algorithms with $brokerageName, we don't save your brokerage account credentials.</p>";
 
     if (!is_null($statusPageURL)) {
         $result .= "<h4>API Outages</h4>";
