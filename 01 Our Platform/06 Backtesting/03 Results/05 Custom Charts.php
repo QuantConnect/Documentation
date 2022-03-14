@@ -1,4 +1,4 @@
 <?php 
-include(DOCS_RESOURCES."/custom-charts.php"); 
+include(DOCS_RESOURCES."/algorithm-results/custom-charts.php"); 
 $getCustomChartText(true);
 ?>

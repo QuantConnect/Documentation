@@ -1,1 +1,1 @@
-<?php include(DOCS_RESOURCES."/manage-alpha-listings.php"); ?>
+<?php include(DOCS_RESOURCES."/alpha-streams/manage-alpha-listings.php"); ?>

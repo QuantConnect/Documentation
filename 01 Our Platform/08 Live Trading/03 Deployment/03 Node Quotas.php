@@ -1,3 +1,3 @@
 <?php
-    echo file_get_contents(DOCS_RESOURCES."/live-trading-limitations.html");
+    echo file_get_contents(DOCS_RESOURCES."/quotas/live-trading-nodes.html");
 ?>
