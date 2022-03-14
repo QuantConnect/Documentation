@@ -32,7 +32,7 @@
 </table>
 
 <h4>Data Feeds</h4>
-<p>You might need to purchase an IB data subscription for your trading. For more information about live data feeds, see <a href='/docs/v2/our-platform/user-guides/live-trading/data-feeds'>Data Feeds</a>.</p>
+<p>You might need to purchase an IB data subscription for your trading. For more information about live data feeds, see <a href='/docs/v2/our-platform/live-trading/data-feeds'>Data Feeds</a>.</p>
 
 <h4>ETFs</h4>
 <?php
