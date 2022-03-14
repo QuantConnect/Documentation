@@ -17,7 +17,7 @@
 <p>Follow these steps to set default values for algorithm parameters:</p>
 <ol>
     <li><a href="/docs/v2/our-platform/projects/project-management#02-View-All-Projects">Open the project</a> that contains the parameter for which you want to set a default value.</li>
-    <li>In the Project panel, hover over the algorithm parameter and then click the pencil icon that appears.</li>
+    <li>In the Project panel, hover over the algorithm parameter and then click the <span class='icon-name'>pencil</span> icon that appears.</li>
     <img class='docs-image' src="https://cdn.quantconnect.com/i/tu/set-default-value.png">
     <li>Enter a default value for the parameter and then click <span class='button-name'>Save</span></li>
     <p>The Project panel displays the default parameter value next to the parameter name.</p>
@@ -28,7 +28,7 @@
 <p>Follow these steps to delete algorithm parameters:</p>
 <ol>
     <li><a href="/docs/v2/our-platform/projects/project-management#02-View-All-Projects">Open the project</a> that contains the parameter you want to delete.</li>
-    <li>In the Project panel, hover over the algorithm parameter and then click the trash can icon that appears.</li>
+    <li>In the Project panel, hover over the algorithm parameter and then click the <span class='icon-name'>trash can</span> icon that appears.</li>
     <img class='docs-image' src="https://cdn.quantconnect.com/i/tu/delete-parameters.png">
     <li>Remove the <code>GetParameter</code> calls that were associated with the parameter from your code files.</li>
 </ol>
