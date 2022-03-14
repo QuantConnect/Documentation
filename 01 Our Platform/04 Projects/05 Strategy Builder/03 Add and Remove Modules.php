@@ -1,13 +1,13 @@
 <p>Follow these steps to add and remove modules to your algorithm:</p>
 
 <ol>
-    <li>Open a new project.</li>
+    <li><a href='/docs/v2/our-platform/projects/project-management#03-Create-Projects'>Open a new project</a>.</li>
     <li>At the top of the IDE, click the <span class='tab-name'>Strategy Builder</span> tab.</li>
-    <p>If there is no <span class='tab-name'>Strategy Builder</span> tab, <a href='/docs/v2/our-platform/projects/strategy-builder#05-Toggle-Builder'>enable the builder</a> and then reopen the project.</p>
-    <p>The canvas displays.</p>
+    <p>If there is no <span class='tab-name'>Strategy Builder</span> tab, <a href='/docs/v2/our-platform/projects/strategy-builder#05-Toggle-Builder'>enable the builder</a> and then open a new project.</p>
+    <p>The Strategy Builder canvas is displayed.</p>
     <img class='docs-image' src='https://cdn.quantconnect.com/i/tu/strategy-builder-canvas.png'>
     <li>On the Strategy Builder page, click <span class="button-name">Add Module</span>.</li>
-    <p>The modules catalog displays.</p>
+    <p>The modules catalog is displayed.</p>
     <img class="docs-image" src="https://cdn.quantconnect.com/i/tu/strategy-builder-catalog.png">
     <li><span class="qualifier">(Optional)</span> At the bottom of the page, click the pagination buttons to view other modules.</li>
     <li><span class="qualifier">(Optional)</span> Click a module in the table to view more information about it, including its description and default settings.</li>
