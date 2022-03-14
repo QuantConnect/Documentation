@@ -45,7 +45,7 @@
         <p>The module catalog displays modules that contain the characters you entered.</p>
         <li>If you selected the <span class="button-name">Category</span> column, select the check boxes next to the categories you want to be included in the results.</li>
         <p>The module catalog displays modules that are in the categories you selected.</p>
-        <li>If you selected the <span class="button-name">Author</span> column in step 5.2, enter the characters you want to be included in the author name.</li>
+        <li>If you selected the <span class="button-name">Author</span> column, enter the characters you want to be included in the author name.</li>
         <p>The module catalog displays modules that have author names containing the characters you entered.</p>
     </ol>
     <img class="docs-image" src="https://cdn.quantconnect.com/i/tu/add-strategy-builder-module.gif">
