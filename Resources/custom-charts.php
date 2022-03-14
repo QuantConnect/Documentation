@@ -33,7 +33,7 @@ $getCustomChartText = function($backtest) {
     if ($backtest) {
         echo "
             <h4>Chart Quotas</h4>
-            <p>Custom charts are limited to 4,000 data points. Intensive charting requires hundreds of megabytes of data, which is too much to stream online or display in a web browser. If you exceed the limit, the Console displays the following message:</p>
+            <p>Custom charts are limited to 4,000 data points. Intensive charting requires hundreds of megabytes of data, which is too much to stream online or display in a web browser. If you exceed the limit, the Cloud Terminal displays the following message:</p>
             <p><span class='error-messages'>Exceeded maximum points per chart, data skipped</span></p>
         ";
     }
