@@ -7,7 +7,7 @@
 <ol>
     <li><a href="/docs/v2/our-platform/tutorials/projects/managing-projects#05-Open-Existing-Projects">Open the project</a> to which you want to add a parameter.</li>
     <li>In the Project panel, click <span class='button-name'>Add New Parameter</span>.</li>
-    <li>Enter the parameter name and then click <span class='button-name'>OK</span>.</li>
+    <li>Enter the parameter name and then click <span class='button-name'>Create Parameter</span>.</li>
     <p>The parameter name must be unique in the project.</p>
     <li>Add the <code>GetParameter</code> method to your code files to inject the parameter value into your algorithm.</li>
 </ol>
@@ -18,7 +18,7 @@
     <li><a href="/docs/v2/our-platform/tutorials/projects/managing-projects#05-Open-Existing-Projects">Open the project</a> that contains the parameter for which you want to set a default value.</li>
     <li>In the Project panel, hover over the algorithm parameter and then click the pencil icon that appears.</li>
     <img class='docs-image' src="https://cdn.quantconnect.com/i/tu/set-default-value.png">
-    <li>Enter a default value for the parameter and then click <span class='button-name'>OK</span></li>
+    <li>Enter a default value for the parameter and then click <span class='button-name'>Save</span></li>
     <p>The Project panel displays the default parameter value next to the parameter name.</p>
 </ol>
 
