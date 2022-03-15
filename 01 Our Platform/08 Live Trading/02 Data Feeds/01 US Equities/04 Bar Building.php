@@ -7,7 +7,7 @@
 <?php echo file_get_contents(DOCS_RESOURCES."/datasets/opening-and-closing-auctions.html"); ?>
 
 <h4>Excluded Ticks</h4>
-<p>The bar building process can exclude ticks. If a tick is excluded, its volume is aggregated in the bar but its price is not aggregated in the bar. Ticks are excluded if any of the the following statements are true:</p>
+<p>The bar-building process can exclude ticks. If a tick is excluded, its volume is aggregated in the bar but its price is not aggregated in the bar. Ticks are excluded if any of the following statements are true:</p>
 <ul>
     <li>The tick is suspicious.</li>
     <li>The tick is from the FINRA exchange and meets our price and volume thresholds.</li>
