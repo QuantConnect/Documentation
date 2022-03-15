@@ -5,4 +5,4 @@ include(DOCS_RESOURCES."/data-feeds/data-delay.php");
 $getDataFeedDataDelayText();
 ?>
 
-<p>Live data takes time to travel from the source to your algorithm. The latency of the alternative data feeds depend on the specific data feed you're using.</p>
+<p>Live data takes time to travel from the source to your algorithm. The latency of the alternative data feeds depends on the specific data feed you're using.</p>
