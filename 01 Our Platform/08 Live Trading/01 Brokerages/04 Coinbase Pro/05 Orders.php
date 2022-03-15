@@ -38,7 +38,7 @@ self.StopLimitOrder(self.symbol, quantity, stop_price, limit_price)</pre>
         </tr>
         <tr>
             <td><code>PostOnly</code></td>
-            <td>A flag signal that the order must only add liquidity to the order book and not take liquidity from the order book. If part of the order results in taking liquidity rather than providing liquidity, the order is rejected without any part of it being filled.</td>
+            <td>A flag that signals the order must only add liquidity to the order book and not take liquidity from the order book. If part of the order results in taking liquidity rather than providing liquidity, the order is rejected without any part of it being filled.</td>
         </tr>
     </tbody>
 </table>
