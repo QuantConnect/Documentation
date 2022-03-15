@@ -4,7 +4,7 @@
     <li>At least one algorithm parameter in your project.</li>
     <li>The <code>GetParameter</code> method or <code>Parameter</code> attribute in your project.</li>
     <li>A successful backtest of the project.</li>
-    <li><a href='/docs/v2/our-platform/user-guides/organizations/credit'>QuantConnect Credit (QCC)</a> in your organization.</li>
+    <li><a href='/docs/v2/our-platform/organizations/credit'>QuantConnect Credit (QCC)</a> in your organization.</li>
 </ul>
 
 <p>Follow these steps to optimize parameters:</p>
