@@ -1,11 +1,10 @@
 name: Run Code Generators
 
 on:
+  schedule:
+    - cron:  "0 0 * * 6" # Runs "at Midnight UTC every Saturday" (see https://crontab.guru)
   push:
     branches: ['*']
-    tags: ['*']
-  pull_request:
-    branches: [master]
 
 jobs:
   build:
@@ -16,4 +15,11 @@ jobs:
       
       - name: Our Platform and Alpha Stream API
         run: python API-Reference-Code-Generator.py
-
+      - name: Commit and push
+        run: |-
+          git diff
+          git config --global user.email "actions@users.noreply.github.com"
+          git config --global user.name "GitHub Actions"
+          git add -A
+          git commit -m "Update Our Platform and Alpha Stream API"
+          git push
