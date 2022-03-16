@@ -3,9 +3,9 @@
 </p>
 
 <ol>
-    <li><a href="https://www.lean.io/docs/lean-cli/tutorials/local-data/downloading-from-quantconnect">Set up your local data</a> for all the data required by your project.</li>
+    <li><a href="/docs/v2/lean-cli/datasets/downloading-quantconnect-data">Set up your local data</a> for all the data required by your project.</li>
     <li>Open a terminal in the directory you ran <code>lean init</code> in.</li>
-    <li>Run <code>lean backtest "My Project"</code> to run a local backtest for the project in <code>./My Project</code>.
+    <li>Run <code>lean backtest "&lt;projectName&gt;"</code> to run a local backtest for the project in <span class="private-directory-name">./&lt;projectName&gt;</span>.
 <div class="cli section-example-container">
 <pre>$ lean backtest "My Project"
 20210322 17:27:46.658 TRACE:: Engine.Main(): LEAN ALGORITHMIC TRADING ENGINE v2.5.0.0 Mode: DEBUG (64bit)
@@ -14,8 +14,8 @@ Successfully ran 'My Project' in the 'backtesting' environment and stored the ou
 </div>
     </li>
     <li>
-        View the result in the <code>&lt;project&gt;/backtests/&lt;timestamp&gt;</code> directory.
-        Results are stored in JSON files and can be analyzed in a <a href="https://www.lean.io/docs/lean-cli/tutorials/research#02-Running-local-research-environment">local research environment</a>.
+        View the result in the <span class="private-file-name">&lt;projectName&gt;/backtests/&lt;timestamp&gt;</span> directory.
+        Results are stored in JSON files and can be analyzed in a <a href="/docs/v2/lean-cli/research#02-Running-Local-Research-Environment">local research environment</a>.
         You can save results to a different directory by providing the <code>--output &lt;path&gt;</code> option in step 3.
 <div class="cli section-example-container">
 <pre>$ lean backtest "My Project" --output "My Project/custom-output"
@@ -33,7 +33,7 @@ Successfully ran 'My Project' in the 'backtesting' environment and stored the ou
 <ol>
     <li>View the available versions on the <a href="https://hub.docker.com/r/quantconnect/lean/tags" target="_blank">quantconnect/lean Docker Hub tags page</a>.</li>
     <li>Copy the name of the tag that you want to run.</li>
-    <li>Follow the "How to run a local backtest" steps above and append the <code>--image quantconnect/lean:&lt;tag from step 2&gt;</code> option when running the <code>lean backtest</code> command.
+    <li>Follow the "How to run a local backtest" steps above and append the <code>--image quantconnect/lean:&lt;tagFromStep2&gt;</code> option when running the <code>lean backtest</code> command.
 <div class="cli section-example-container">
 <pre>$ lean backtest "My Project" --image quantconnect/lean:11154
 Pulling quantconnect/lean:11154...
@@ -45,13 +45,13 @@ Pulling quantconnect/lean:11154...
 
 <p>
     By default, local backtests run in the LEAN engine in the <a href="https://hub.docker.com/r/quantconnect/lean" target="_blank">quantconnect/lean</a> Docker image.
-    This Docker image contains all the <a href="https://www.lean.io/docs/lean-cli/user-guides/supported-libraries">libraries available on QuantConnect</a>, meaning your algorithm also has access to those libraries.
+    This Docker image contains all the <a href="/docs/v2/lean-cli/projects/libraries/third-party-libraries">libraries available on QuantConnect</a>, meaning your algorithm also has access to those libraries.
     If the specified project is a C# project it is first compiled using the same Docker image.
-    See <a href="https://www.lean.io/docs/lean-cli/tutorials/custom-libraries">Custom libraries</a> to learn how to use custom libraries, and <a href="https://www.lean.io/docs/lean-cli/tutorials/custom-docker-images">Custom Docker images</a> to learn how to build and use custom Docker images.
+    See <a href="/docs/v2/lean-cli/projects/libraries/third-party-libraries">Third-Party Libraries</a> to learn how to use custom libraries and <a href="/docs/v2/lean-cli/projects/custom-docker-images">Custom Docker images</a> to learn how to build and use custom Docker images.
 </p>
 
 <p>
     Because algorithms run in a Docker container, <code>localhost</code> does not point to your computer's <code>localhost</code>.
     Substitute <code>localhost</code> with <code>host.docker.internal</code> if your algorithm needs to connect to other services running on your computer.
-    In other words, instead of connecting to <code>http://localhost:&lt;port&gt;/</code> you need to connect to <code>http://host.docker.internal:&lt;port&gt;/</code>.
+    In other words, instead of connecting to <code>http://localhost:&lt;port&gt;/</code>, connect to <code>http://host.docker.internal:&lt;port&gt;/</code>.
 </p>
