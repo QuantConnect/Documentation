@@ -39,8 +39,7 @@ Enter an option:</pre>
             echo "E";
         }    
 
-        echo "
-             nter the number of the data feed to use.
+        echo "nter the number of the data feed to use.
             <div class='cli section-example-container'>
 <pre>$ lean live 'My Project'
 Select a data feed:";
