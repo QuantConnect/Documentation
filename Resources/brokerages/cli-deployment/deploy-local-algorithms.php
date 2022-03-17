@@ -42,13 +42,14 @@ Enter an option:</pre>
         echo "nter the number of the data feed to use.
             <div class='cli section-example-container'>
 <pre>$ lean live 'My Project'
-Select a data feed:";
+Select a data feed:
+";
 
         if ($brokerageName == 'QuantConnect Paper Trading') {
-            echo "1) Custom data only";
+            echo "1) Custom data only\n";
         }
         else {
-            echo "1) {$brokerageName}";
+            echo "1) {$brokerageName}\n";
         }
 
         echo "2) IQFeed
