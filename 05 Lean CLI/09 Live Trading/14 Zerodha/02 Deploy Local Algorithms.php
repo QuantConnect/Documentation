@@ -6,7 +6,7 @@ $brokerageDetails = "
 <li>Enter the number of the organization that has a subscription for the Zerodha module.
 <div class='cli section-example-container'>
 <pre>$ lean live \"My Project\"
-Select the organization with the Samco module subscription:
+Select the organization with the Zerodha module subscription:
 1) Organization 1
 2) Organization 2
 3) Organization 3
