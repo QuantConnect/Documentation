@@ -46,15 +46,30 @@ Select a data feed:
 ";
 
         if ($brokerageName == 'QuantConnect Paper Trading') {
-            echo "1) Custom data only\n";
+            echo "1) Interactive Brokers
+2) Tradier
+3) OANDA
+4) Bitfinex
+5) Coinbase Pro
+6) Binance
+7) Zerodha
+8) Samco
+9) Terminal Link
+10) Trading Technologies
+11) Custom data only
+12) Kraken
+13) FTX
+14) IQFeed
+";
         }
         else {
-            echo "1) {$brokerageName}\n";
+            echo "1) {$brokerageName}
+2) IQFeed
+";
         }
 
-        echo "2) IQFeed
-Enter an option:</pre>
-</div>
+        echo "Enter an option:</pre>
+            </div>
             </li>";
         echo "<p>If you select IQFeed, see <a href='/docs/v2/lean-cli/live-trading/other-data-feeds/iqfeed'>IQFeed</a> for set up instructions.</p>";
 
