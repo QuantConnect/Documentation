@@ -42,7 +42,7 @@ Product type (MIS, CNC, NRML):</pre>
 <table class='qc-table table'>
     <thead>
         <tr>
-            <th>Product Type</th>
+            <th style='width: 25%'>Product Type</th>
             <th>Description</th>
         </tr>
     </thead>
@@ -74,7 +74,7 @@ Trading segment (EQUITY, COMMODITY):</pre>
 <table class='qc-table table'>
     <thead>
         <tr>
-            <th>Trading segment</th>
+            <th style='width: 25%'>Trading Segment</th>
             <th>Description</th>
         </tr>
     </thead>
@@ -90,7 +90,6 @@ Trading segment (EQUITY, COMMODITY):</pre>
     </tbody>
 </table>
 </li>
-
 ";
 $dataFeedDetails = "";
 $supportsIQFeed = false;
