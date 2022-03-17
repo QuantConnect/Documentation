@@ -1,5 +1,5 @@
 <?php
-include(DOCS_RESOURCES."/brokearges/cli-deployment/deploy-cloud-algorithms.php");
+include(DOCS_RESOURCES."/brokerages/cli-deployment/deploy-cloud-algorithms.php");
 
 $brokerageDetails = "
 <li>Log in to Interactive Brokers in your browser and go to User Settings &gt; Security &gt; Secure Login System.</li>

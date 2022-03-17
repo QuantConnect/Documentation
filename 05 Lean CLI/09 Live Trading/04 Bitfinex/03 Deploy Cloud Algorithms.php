@@ -1,5 +1,5 @@
 <?php
-include(DOCS_RESOURCES."/brokearges/cli-deployment/deploy-cloud-algorithms.php");
+include(DOCS_RESOURCES."/brokerages/cli-deployment/deploy-cloud-algorithms.php");
 
 $brokerageDetails = "
 <li>Enter your API key id and secret. You can generate new API credentials on the <a href='https://www.bitfinex.com/api' target='_blank'>API Management page</a>.

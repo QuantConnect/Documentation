@@ -1,5 +1,5 @@
 <?php
-include(DOCS_RESOURCES."/brokearges/cli-deployment/deploy-cloud-algorithms.php");
+include(DOCS_RESOURCES."/brokerages/cli-deployment/deploy-cloud-algorithms.php");
 
 $brokerageDetails = "
 <li>Enter your Binance API key and secret. You can generate new API credentials on your <a href='https://www.binance.com/en/my/settings/api-management' target='_blank'>API Settings Management</a> page if you want to trade use the production environment, or on <a href='https://testnet.binance.vision/' target='_blank'>Binance Testnet</a> if you want to use the demo environment.

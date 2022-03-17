@@ -1,5 +1,5 @@
 <?php
-include(DOCS_RESOURCES."/brokearges/cli-deployment/deploy-local-algorithms.php");
+include(DOCS_RESOURCES."/brokerages/cli-deployment/deploy-local-algorithms.php");
 
 
 $brokerageDetails = "<li>TODO</li>";
