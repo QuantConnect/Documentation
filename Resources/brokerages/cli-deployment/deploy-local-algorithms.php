@@ -78,7 +78,7 @@ Enter an option:</pre>
         </p>
 
         <p>
-            If you are using the <a href='/docs/v2/lean-cli/projects/gui'>local GUI</a>, you can make it possible to monitor and control the live deployment through there by providing the <code>--gui</code> flag in step 2.
+            If you are using the <a href='/docs/v2/lean-cli/projects/gui'>local GUI</a>, monitor and control the live deployment through there by providing the <code>--gui</code> flag in step 2.
         </p>
     ";
 }
