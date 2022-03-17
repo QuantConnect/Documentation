@@ -30,8 +30,8 @@ Enter an option:</pre>
 
     echo $brokerageDetails;
 
-    echo "  <li>";
     if ($supportsIQFeed) {
+        echo "<li>";
         if ($brokerageName != 'QuantConnect Paper Trading') {
             echo "If you are on a Windows computer, e";
         }
@@ -56,7 +56,7 @@ Select a data feed:
 Enter an option:</pre>
 </div>
             </li>";
-        echo "<p>If you select IQFeed, see <a href='/docs/v2/lean-cli/live-trading/other-data-feeds/iqfeed'>IQFeed</a> for set up instructions.";
+        echo "<p>If you select IQFeed, see <a href='/docs/v2/lean-cli/live-trading/other-data-feeds/iqfeed'>IQFeed</a> for set up instructions.</p>";
 
     }
 
