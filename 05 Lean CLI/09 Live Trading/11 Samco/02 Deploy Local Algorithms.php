@@ -85,7 +85,7 @@ Trading segment (EQUITY, COMMODITY):</pre>
         </tr>
         <tr>
             <td><code>COMMODITY</code></td>
-            <td>For trading commodities on the Multi Commodity Exchange of India (MCX).</td>
+            <td>For trading commodities on the Multi Commodity Exchange of India (MCX)</td>
         </tr>
     </tbody>
 </table>
