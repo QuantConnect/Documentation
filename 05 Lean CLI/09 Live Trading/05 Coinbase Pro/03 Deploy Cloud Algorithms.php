@@ -1,5 +1,5 @@
 <?php
-include(DOCS_RESOURCES."/brokearges/cli-deployment/deploy-cloud-algorithms.php");
+include(DOCS_RESOURCES."/brokerages/cli-deployment/deploy-cloud-algorithms.php");
 
 $brokerageDetails = "
 <li>Enter your API key, API secret, and passphrase. You can generate new API credentials on the <a href='https://pro.coinbase.com/profile/api' target='_blank'>API settings page</a>.

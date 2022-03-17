@@ -1,5 +1,5 @@
 <?php
-include(DOCS_RESOURCES."/brokearges/cli-deployment/deploy-cloud-algorithms.php");
+include(DOCS_RESOURCES."/brokerages/cli-deployment/deploy-cloud-algorithms.php");
 
 $brokerageDetails = "
 <li>Enter your Tradier account id and access token. You can find these credentials on your <a href='https://dash.tradier.com/settings/api' target='_blank'>Settings/API Access</a> page.

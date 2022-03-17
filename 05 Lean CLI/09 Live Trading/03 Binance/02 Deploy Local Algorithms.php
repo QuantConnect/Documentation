@@ -1,5 +1,5 @@
 <?php
-include(DOCS_RESOURCES."/brokearges/cli-deployment/deploy-local-algorithms.php");
+include(DOCS_RESOURCES."/brokerages/cli-deployment/deploy-local-algorithms.php");
 
 $brokerageDetails = "
 <li>Enter your API key and API secret. You can create a new API key on the <a href='https://www.binance.com/en/my/settings/api-management' target='_blank'>API Management page</a>.

@@ -1,4 +1,4 @@
 <?php
-include(DOCS_RESOURCES."/brokearges/cli-deployment/introduction.php");
+include(DOCS_RESOURCES."/brokerages/cli-deployment/introduction.php");
 $getCLIDeploymentIntroText("Kraken");
 ?>
