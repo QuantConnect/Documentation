@@ -36,7 +36,7 @@ Enter an option:</pre>
             echo "If you are on a Windows computer, e";
         }
         else {
-            echo "E"
+            echo "E";
         }    
 
         echo "
