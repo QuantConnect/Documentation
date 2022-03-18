@@ -26,8 +26,8 @@ Environment (practice, trade): practice</pre>
 ";
 
 $dataFeedDetails = "";
-
 $supportsIQFeed = true;
+$requiresSubscription = false;
 
-$getDeployLocalAlgorithmsText("Oanda", $brokerageDetails, $dataFeedDetails, $supportsIQFeed);
+$getDeployLocalAlgorithmsText("Oanda", $brokerageDetails, $dataFeedDetails, $supportsIQFeed, $requiresSubscription);
 ?>

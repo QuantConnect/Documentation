@@ -3,18 +3,6 @@ include(DOCS_RESOURCES."/brokerages/cli-deployment/deploy-local-algorithms.php")
 
 
 $brokerageDetails = "
-<li>Enter the number of the organization that has a subscription for the Terminal Link module.
-<div class='cli section-example-container'>
-<pre>$ lean live \"My Project\"
-Select the organization with the Terminal Link module subscription:
-1) Organization 1
-2) Organization 2
-3) Organization 3
-Enter an option: 1</pre>
-</div>
-</li>
-
-
 <li>Enter the environment to run in. This property must be either <code>Production</code> or <code>Beta</code>.
 <div class='cli section-example-container'>
 <pre>$ lean live \"My Project\"
@@ -73,6 +61,7 @@ Allow modification (yes/no): no</pre>
 ";
 $dataFeedDetails = "";
 $supportsIQFeed = true;
+$requiresSubscription = true;
 
-$getDeployLocalAlgorithmsText("Terminal Link", $brokerageDetails, $dataFeedDetails, $supportsIQFeed);
+$getDeployLocalAlgorithmsText("Terminal Link", $brokerageDetails, $dataFeedDetails, $supportsIQFeed, $requiresSubscription);
 ?>

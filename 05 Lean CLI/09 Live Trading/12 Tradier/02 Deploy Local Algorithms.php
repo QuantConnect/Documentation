@@ -20,6 +20,7 @@ Use the developer sandbox? [y/N]: y</pre>
 ";
 $dataFeedDetails = "";
 $supportsIQFeed = true;
+$requiresSubscription = false;
 
-$getDeployLocalAlgorithmsText("Tradier", $brokerageDetails, $dataFeedDetails, $supportsIQFeed);
+$getDeployLocalAlgorithmsText("Tradier", $brokerageDetails, $dataFeedDetails, $supportsIQFeed, $requiresSubscription);
 ?>

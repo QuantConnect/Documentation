@@ -18,8 +18,6 @@ Account password: ****************</pre>
 ";
 
 $dataFeedDetails = "
-<li>Follow the steps of configuring Interactive Brokers as brokerage above if you chose paper trading as the brokerage.</li>
-
 <li>Enter whether you want to enable delayed market data.
 <div class='cli section-example-container'>
 <pre>$ lean live \"My Project\"
@@ -30,6 +28,7 @@ This property configures the behavior when your algorithm attempts to subscribe 
 ";
 
 $supportsIQFeed = true;
+$requiresSubscription = false;
 
-$getDeployLocalAlgorithmsText("Interactive Brokers", $brokerageDetails, $dataFeedDetails, $supportsIQFeed);
+$getDeployLocalAlgorithmsText("Interactive Brokers", $brokerageDetails, $dataFeedDetails, $supportsIQFeed, $requiresSubscription);
 ?>

@@ -20,6 +20,7 @@ Use the testnet? [y/N]: n</pre>
 
 $dataFeedDetails = "";
 $supportsIQFeed = false;
+$requiresSubscription = true;
 
-$getDeployLocalAlgorithmsText("Binance", $brokerageDetails, $dataFeedDetails, $supportsIQFeed);
+$getDeployLocalAlgorithmsText("Binance", $brokerageDetails, $dataFeedDetails, $supportsIQFeed, $requiresSubscription);
 ?>

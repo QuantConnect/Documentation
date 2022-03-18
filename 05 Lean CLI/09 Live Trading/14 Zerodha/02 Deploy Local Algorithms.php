@@ -3,17 +3,6 @@ include(DOCS_RESOURCES."/brokerages/cli-deployment/deploy-local-algorithms.php")
 
 
 $brokerageDetails = "
-<li>Enter the number of the organization that has a subscription for the Zerodha module.
-<div class='cli section-example-container'>
-<pre>$ lean live \"My Project\"
-Select the organization with the Zerodha module subscription:
-1) Organization 1
-2) Organization 2
-3) Organization 3
-Enter an option: 1</pre>
-</div>
-</li>
-
 <li>Enter your <a href='https://kite.trade/' target='_blank'>Kite Connect</a> API key and access token.
 <div class='cli section-example-container'>
 <pre>$ lean live \"My Project\"
@@ -89,6 +78,7 @@ Do you have a history API subscription? [y/N]: y</pre>
 ";
 
 $supportsIQFeed = false;
+$requiresSubscription = true;
 
-$getDeployLocalAlgorithmsText("Zerodha", $brokerageDetails, $dataFeedDetails, $supportsIQFeed);
+$getDeployLocalAlgorithmsText("Zerodha", $brokerageDetails, $dataFeedDetails, $supportsIQFeed, $requiresSubscription);
 ?>
