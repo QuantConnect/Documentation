@@ -35,7 +35,7 @@ Enter an option:</pre>
 </div>
             </li>
 
-            <li>Enter the number of the {$brokerageName} brokerage to use.</li>
+            <li>Enter the number of the {$brokerageName} brokerage.</li>
     ";
 
 
