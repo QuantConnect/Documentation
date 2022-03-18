@@ -23,5 +23,5 @@ Account Tier: </pre>
 </div>
 </li>
 ";
-$getDeployCloudAlgorithmsText("FTX or FTX US", true, $brokerageDetails);
+$getDeployCloudAlgorithmsText("FTX", true, $brokerageDetails);
 ?>
