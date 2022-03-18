@@ -25,7 +25,7 @@ Account Tier: </pre>
 <table class='table qc-table'>
     <thead>
         <tr>
-            <th>Number</th>
+            <th style='text-align: right'>Number</th>
             <th>FTX Tier</th>
             <th>FTX US Tier</th>
         </tr>
