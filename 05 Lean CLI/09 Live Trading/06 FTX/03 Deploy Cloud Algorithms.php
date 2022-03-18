@@ -22,10 +22,10 @@ Secret key: </pre>
 Account Tier: </pre>
 </div>
 <p>The following table shows the account tiers of the FTX and FTX US brokerages and the corresponding number to input into the CLI:</p>
-<table class='table qc-table'>
+<table class='table qc-table' id='ftx-account-tier-table'>
     <thead>
         <tr>
-            <th style='text-align: right'>Number</th>
+            <th>Number</th>
             <th>FTX Tier</th>
             <th>FTX US Tier</th>
         </tr>
@@ -103,6 +103,13 @@ Account Tier: </pre>
         </tr>
     </tbody>
 </table>
+
+<style>
+#ftx-account-tier-table td:first-child, 
+#ftx-account-tier-table th:first-child {
+    text-align: right;
+}
+</style>
 
 </li>
 ";
