@@ -86,9 +86,9 @@ Do you want to enable automatic algorithm restarting? [Y/n]: y</pre>
             <li>Verify the configured settings and confirm them to start the live deployment in the cloud.
             <div class='cli section-example-container'>
 <pre>$ lean cloud live \"My Project\" --push --open
-Brokerage: Paper Trading
+Brokerage: {$brokerageName}
 Project id: 1234567
-Environment: Paper
+Environment: Live
 Server name: L-MICRO node 89c90172
 Server type: L-MICRO
 Data provider: QuantConnect
