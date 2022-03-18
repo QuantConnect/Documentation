@@ -10,6 +10,13 @@ API secret: ********************************************************************
 Passphrase: ****************
 </div>
 </li>
+
+<li>Enter whether the sandbox should be used.
+<div class='cli section-example-container'>
+<pre>$ lean live \"My Project\"
+Use the sandbox? [y/N]: n</pre>
+</div>
+</li>
 ";
 
 $getDeployCloudAlgorithmsText("Coinbase Pro", true, $brokerageDetails);

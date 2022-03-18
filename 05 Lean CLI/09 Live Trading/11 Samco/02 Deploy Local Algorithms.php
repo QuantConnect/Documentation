@@ -3,18 +3,6 @@ include(DOCS_RESOURCES."/brokerages/cli-deployment/deploy-local-algorithms.php")
 
 
 $brokerageDetails = "
-<li>Enter the number of the organization that has a subscription for the Samco module.
-<div class='cli section-example-container'>
-<pre>$ lean live \"My Project\"
-Select the organization with the Samco module subscription:
-1) Organization 1
-2) Organization 2
-3) Organization 3
-Enter an option: 1</pre>
-</div>
-</li>
-
-
 <li>Enter your Samco credentials.
 <div class='cli section-example-container'>
 <pre>$ lean live \"My Project\"
@@ -93,6 +81,7 @@ Trading segment (EQUITY, COMMODITY):</pre>
 ";
 $dataFeedDetails = "";
 $supportsIQFeed = false;
+$requiresSubscription = true;
 
-$getDeployLocalAlgorithmsText("Samco", $brokerageDetails, $dataFeedDetails, $supportsIQFeed);
+$getDeployLocalAlgorithmsText("Samco", $brokerageDetails, $dataFeedDetails, $supportsIQFeed, $requiresSubscription);
 ?>

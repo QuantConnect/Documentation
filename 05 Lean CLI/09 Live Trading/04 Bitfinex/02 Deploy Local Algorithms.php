@@ -14,6 +14,7 @@ API secret: *******************************************</pre>
 
 $dataFeedDetails = "";
 $supportsIQFeed = false;
+$requiresSubscription = false;
 
-$getDeployLocalAlgorithmsText("Bitfinex", $brokerageDetails, $dataFeedDetails, $supportsIQFeed);
+$getDeployLocalAlgorithmsText("Bitfinex", $brokerageDetails, $dataFeedDetails, $supportsIQFeed, $requiresSubscription);
 ?>

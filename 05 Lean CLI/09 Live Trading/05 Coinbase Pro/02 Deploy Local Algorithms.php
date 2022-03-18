@@ -22,6 +22,7 @@ Use the sandbox? [y/N]: n</pre>
 ";
 $dataFeedDetails = "";
 $supportsIQFeed = false;
+$requiresSubscription = false;
 
-$getDeployLocalAlgorithmsText("Coinbase Pro", $brokerageDetails, $dataFeedDetails, $supportsIQFeed);
+$getDeployLocalAlgorithmsText("Coinbase Pro", $brokerageDetails, $dataFeedDetails, $supportsIQFeed, $requiresSubscription);
 ?>

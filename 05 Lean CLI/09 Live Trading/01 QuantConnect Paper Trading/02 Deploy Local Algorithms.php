@@ -16,6 +16,7 @@ $dataFeedDetails = "
         </div>
 ";
 $supportsIQFeed = true;
+$requiresSubscription = false;
 
-$getDeployLocalAlgorithmsText("QuantConnect Paper Trading", $brokerageDetails, $dataFeedDetails, $supportsIQFeed);
+$getDeployLocalAlgorithmsText("QuantConnect Paper Trading", $brokerageDetails, $dataFeedDetails, $supportsIQFeed, $requiresSubscription);
 ?>

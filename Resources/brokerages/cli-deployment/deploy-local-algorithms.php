@@ -1,11 +1,11 @@
 <?php
-$getDeployLocalAlgorithmsText = function($brokerageName, $brokerageDetails, $dataFeedDetails, $supportsIQFeed) {
+$getDeployLocalAlgorithmsText = function($brokerageName, $brokerageDetails, $dataFeedDetails, $supportsIQFeed, $requiresSubscription) {
 
     echo "
         <p>Follow these steps to start local live trading with the {$brokerageName} brokerage:</p>
         <ol>
             <li>Open a terminal in the directory you ran <code>lean init</code> in.</li>
-            <li>Run <code>lean live \"&lt;projectName&gt;\"</code> to start a live deployment wizard for the project in <span class='private-directory-name'>./&lt;projectName&gt;</span> and then enter the {$brokerageName} brokerage number.
+            <li>Run <code>lean live \"&lt;projectName&gt;\"</code> to start a live deployment wizard for the project in <span class='private-directory-name'>./&lt;projectName&gt;</span> and then enter the brokerage number.
             <div class='cli section-example-container'>
 <pre>$ lean live 'My Project'
 Select a brokerage:
@@ -27,6 +27,20 @@ Enter an option:</pre>
 </div>
             </li>
     ";
+
+    if ($requiresSubscription) {
+        echo "
+        <li>Enter the number of the organization that has a subscription for the {$brokerageName} module.
+        <div class='cli section-example-container'>
+<pre>$ lean live \"My Project\"
+Select the organization with the {$brokerageName} module subscription:
+1) Organization 1
+2) Organization 2
+3) Organization 3
+Enter an option: 1</pre>
+</div>
+</li>";
+    }
 
     echo $brokerageDetails;
 

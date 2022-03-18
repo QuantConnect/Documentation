@@ -3,17 +3,6 @@ include(DOCS_RESOURCES."/brokerages/cli-deployment/deploy-local-algorithms.php")
 
 
 $brokerageDetails = "
-<li>Enter the number of the organization that has a subscription for the Trading Technologies module.
-<div class='cli section-example-container'>
-<pre>$ lean live \"My Project\"
-Select the organization with the Trading Technologies module subscription:
-1) Organization 1
-2) Organization 2
-3) Organization 3
-Enter an option: 1</pre>
-</div>
-</li>
-
 <li>Enter your Trading Technologies credentials.
 <div class='cli section-example-container'>
 <pre>$ lean live \"My Project\"
@@ -62,6 +51,7 @@ Log FIX messages (yes/no): yes</pre>
 $dataFeedDetails = "";
 
 $supportsIQFeed = true;
+$requiresSubscription = true;
 
-$getDeployLocalAlgorithmsText("Trading Technologies", $brokerageDetails, $dataFeedDetails, $supportsIQFeed);
+$getDeployLocalAlgorithmsText("Trading Technologies", $brokerageDetails, $dataFeedDetails, $supportsIQFeed, $requiresSubscription);
 ?>
