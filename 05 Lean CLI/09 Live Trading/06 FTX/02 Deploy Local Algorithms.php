@@ -24,5 +24,5 @@ $dataFeedDetails = "";
 $supportsIQFeed = false;
 $requiresSubscription = true;
 
-$getDeployLocalAlgorithmsText("FTX or FTX US", $brokerageDetails, $dataFeedDetails, $supportsIQFeed, $requiresSubscription);
+$getDeployLocalAlgorithmsText("FTX", $brokerageDetails, $dataFeedDetails, $supportsIQFeed, $requiresSubscription);
 ?>
