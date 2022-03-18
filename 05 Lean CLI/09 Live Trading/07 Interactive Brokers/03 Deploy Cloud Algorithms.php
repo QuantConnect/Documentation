@@ -2,9 +2,7 @@
 include(DOCS_RESOURCES."/brokerages/cli-deployment/deploy-cloud-algorithms.php");
 
 $brokerageDetails = "
-<li>Log in to Interactive Brokers in your browser and go to User Settings &gt; Security &gt; Secure Login System.</li>
-
-<li>Deselect all options or only select 'IB Key Security via IBKR Mobile' on the Secure Login System page.</li>
+<li>Set up IB Key Security via IBKR Mobile. For instructions, see <a href='https://guides.interactivebrokers.com/iphone/log_in/ibkey.htm?tocpath=IB%20Key%20Security%20Protocol%7C_____0' target='_blank' rel='nofollow'>IB Key Security via IBKR Mobile</a> on the IB website.</li>
 
 <li>Go back to the terminal and enter your Interactive Brokers username, account id, and password.
 <div class='cli section-example-container'>
