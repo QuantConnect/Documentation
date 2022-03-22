@@ -4,7 +4,7 @@ $getDeployLocalAlgorithmsText = function($brokerageName, $brokerageDetails, $dat
     echo "
         <p>Follow these steps to start local live trading with the {$brokerageName} brokerage:</p>
         <ol>
-            <li>Open a terminal in the directory you ran <code>lean init</code> in.</li>
+            <li>Open a terminal in your <a href='/docs/v2/lean-cli/initialization/directory-structure#02-lean-init'>CLI root directory</a>.</li>
             <li>Run <code>lean live \"&lt;projectName&gt;\"</code> to start a live deployment wizard for the project in <span class='private-directory-name'>./&lt;projectName&gt;</span> and then enter the brokerage number.
             <div class='cli section-example-container'>
 <pre>$ lean live 'My Project'

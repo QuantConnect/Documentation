@@ -11,7 +11,7 @@ $getDeployCloudAlgorithmsText = function($brokerageName, $isSupported, $brokerag
         <p>Follow these steps to start live trading a project in the cloud with the {$brokerageName} brokerage:</p>
         <ol>
             <li><a href='/docs/v2/lean-cli/initialization/authenticating-accounts#02-Log-In'>Log in</a> to the CLI if you haven't done so already.</li>
-            <li>Open a terminal in the directory you ran <code>lean init</code> in.</li>
+            <li>Open a terminal in your <a href='/docs/v2/lean-cli/initialization/directory-structure#02-lean-init'>CLI root directory</a>.</li>
             <li>Run <code>lean cloud live '&lt;projectName&gt;' --push --open</code> to push <span class='private-directory-name'>./&lt;projectName&gt;</span>. to the cloud, start a live deployment wizard, and open the results in the browser once the deployment starts.
 <div class='cli section-example-container'>
 <pre>$ lean cloud live \"My Project\" --push --open
@@ -110,7 +110,7 @@ Are you sure you want to start live trading for project 'My Project'? [y/N]: y</
 
         <ol>
             <li><a href='/docs/v2/lean-cli/initialization/authenticating-accounts#02-Log-In'>Log in</a> to the CLI if you haven't done so already.</li>
-            <li>Open a terminal in the directory you ran <code>lean init</code> in.</li>
+            <li>Open a terminal in your CLI root directory.</li>
             <li>Run <code>lean cloud status \"&lt;projectName&gt;\"</code> to show the status of the cloud project named \"&lt;projectName&gt;\".
             <div class='cli section-example-container'>
 <pre>$ lean cloud status \"My Project\"
