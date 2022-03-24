@@ -3,7 +3,7 @@ include(DOCS_RESOURCES."/brokerages/cli-deployment/deploy-local-algorithms.php")
 
 
 $brokerageDetails = "
-<li>Enter your API key and API secret. You can gather these credentials from the <a target="_blank" rel='nofollow' href='https://www.kraken.com/u/security/api'>API Management Settings</a> page on the Kraken website.
+<li>Enter your API key and API secret. You can gather these credentials from the <a target='_blank' rel='nofollow' href='https://www.kraken.com/u/security/api'>API Management Settings</a> page on the Kraken website.
 <div class='cli section-example-container'>
 <pre>$ lean live \"My Project\"
 API key: 
