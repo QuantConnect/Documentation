@@ -18,7 +18,7 @@
     <li>Enter the minimum and maximum parameter values.</li>
     <li>Click the <span class='icon-name'>gear</span> icon next to the parameter and then enter a step size.</li>
     <li>If you want to add a second parameter to optimize, click <span class='button-name'>Add Parameter</span>.</li>
-    <p>You can optimize a maximum of two parameters. To optimize more parameters, see <a href='/docs/v2/lean-cli/tutorials/optimization/local-optimizations'>Local Optimizations</a>.</p>
+    <p>You can optimize a maximum of two parameters. To optimize more parameters, <a href='/docs/v2/lean-cli/optimization/deployment#02-Run-Local-Optimizations'>run local optimizations</a>.</p>
     
     <li>If you want to add optimization constraints, follow these steps:</li>
     <ol>
