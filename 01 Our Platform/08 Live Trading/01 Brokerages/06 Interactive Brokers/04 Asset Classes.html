@@ -1,4 +1,4 @@
-<p>Our IB integration supports trading Equities, Options, Forex, Futures, and Future Options.</p>
+<p>Our IB integration supports trading Equities, Options, Forex, Futures, Future Options, and Index Options.</p>
 
 <div class="section-example-container">
     <pre class="csharp">AddEquity("SPY", Resolution.Minute, Market.USA);
@@ -9,7 +9,10 @@ AddForex("EURUSD", Resolution.Minute, Market.Oanda).Symbol;
 
 var goldFutures = AddFuture(Futures.Metals.Gold, Resolution.Minute, Market.CME);
 
-AddFutureOption(goldFutures.Symbol, universe =&gt; universe.Strikes(-5, +5));</pre>
+AddFutureOption(goldFutures.Symbol, universe =&gt; universe.Strikes(-5, +5));
+
+var index = AddIndex("VIX", Resolution.Minute, Market.USA);
+var indexOption = AddOption(index.Symbol);</pre>
     <pre class="python">self.AddEquity("SPY", Resolution.Minute, Market.USA)
 
 self.AddOption("SPY", Resolution.Minute, Market.USA)
@@ -18,7 +21,10 @@ self.AddForex("EURUSD", Resolution.Minute, Market.Oanda).Symbol
 
 gold_futures = self.AddFuture(Futures.Metals.Gold, Resolution.Minute, Market.CME)
 
-self.AddFutureOption(gold_futures.Symbol, lambda universe: universe.Strikes(-5, +5))</pre>
+self.AddFutureOption(gold_futures.Symbol, lambda universe: universe.Strikes(-5, +5))
+
+index = self.AddIndex("VIX", Resolution.Minute, Market.USA)
+self.AddOption(index.Symbol)</pre>
 </div>
 
 <p>If you call the <code>SetBrokerageModel</code> method with the correct <code>BrokerageName</code>, then you don't need to pass a <code>Market</code> argument to the method calls above because the brokerage model automatically selects the correct market.</p>
