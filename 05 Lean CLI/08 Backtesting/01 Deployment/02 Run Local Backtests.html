@@ -1,10 +1,26 @@
 <p>
-    Follow these steps to run a local backtest:
+    By default, local backtests run in the LEAN engine in the <a href="https://hub.docker.com/r/quantconnect/lean" target="_blank">quantconnect/lean</a> Docker image.
+    This Docker image contains all the <a href="/docs/v2/lean-cli/projects/libraries/third-party-libraries">libraries available on QuantConnect</a>, meaning your algorithm also has access to those libraries.
+    If the specified project is a C# project, it is first compiled using the same Docker image.
+    See <a href="/docs/v2/lean-cli/projects/libraries/third-party-libraries">Third-Party Libraries</a> to learn how to use custom libraries and see <a href="/docs/v2/lean-cli/projects/custom-docker-images">Custom Docker Images</a> to learn how to build and use custom Docker images.
+</p>
+
+<p>
+    Because algorithms run in a Docker container, <code>localhost</code> does not point to your computer's <code>localhost</code>.
+    Substitute <code>localhost</code> with <code>host.docker.internal</code> if your algorithm needs to connect to other services running on your computer.
+    In other words, instead of connecting to <code>http://localhost:&lt;port&gt;/</code>, connect to <code>http://host.docker.internal:&lt;port&gt;/</code>.
+</p>
+
+<p>You can run local backtests with the regular version of the LEAN engine or a custom version.</p>
+
+<h4>Regular LEAN Engine</h4>
+<p>
+    Follow these steps to run a local backtest with the latest version of LEAN engine:
 </p>
 
 <ol>
     <li><a href="/docs/v2/lean-cli/datasets/downloading-quantconnect-data">Set up your local data</a> for all the data required by your project.</li>
-    <li>Open a terminal in your <a href='/docs/v2/lean-cli/initialization/directory-structure#02-lean-init'>CLI root directory</a>.</li>
+    <li>Open a terminal in your <a href="/docs/v2/lean-cli/initialization/directory-structure#02-lean-init">CLI root directory</a>.</li>
     <li>Run <code>lean backtest "&lt;projectName&gt;"</code> to run a local backtest for the project in <span class="private-directory-name">./&lt;projectName&gt;</span>.
 <div class="cli section-example-container">
 <pre>$ lean backtest "My Project"
@@ -26,14 +42,18 @@ Successfully ran 'My Project' in the 'backtesting' environment and stored the ou
     </li>
 </ol>
 
+
+
+<h4>Custom LEAN Engine</h4>
 <p>
-    Follow these steps to run a backtest with a custom version of the LEAN engine:
+    Follow these steps to run a local backtest with a custom version of the LEAN engine:
 </p>
 
 <ol>
+    <li><a href="/docs/v2/lean-cli/datasets/downloading-quantconnect-data">Set up your local data</a> for all the data required by your project.</li>
     <li>View the available versions on the <a href="https://hub.docker.com/r/quantconnect/lean/tags" target="_blank">quantconnect/lean Docker Hub tags page</a>.</li>
     <li>Copy the name of the tag that you want to run.</li>
-    <li>Follow the "How to run a local backtest" steps above and append the <code>--image quantconnect/lean:&lt;tagFromStep2&gt;</code> option when running the <code>lean backtest</code> command.
+    <li>Run <code>lean backtest "&lt;projectName&gt; --image quantconnect/lean:&lt;tagFromStep2&gt;"</code> to run a local backtest for the project in <span class="private-directory-name">./&lt;projectName&gt;</span>.
 <div class="cli section-example-container">
 <pre>$ lean backtest "My Project" --image quantconnect/lean:11154
 Pulling quantconnect/lean:11154...
@@ -42,16 +62,3 @@ Pulling quantconnect/lean:11154...
 </div>
     </li>
 </ol>
-
-<p>
-    By default, local backtests run in the LEAN engine in the <a href="https://hub.docker.com/r/quantconnect/lean" target="_blank">quantconnect/lean</a> Docker image.
-    This Docker image contains all the <a href="/docs/v2/lean-cli/projects/libraries/third-party-libraries">libraries available on QuantConnect</a>, meaning your algorithm also has access to those libraries.
-    If the specified project is a C# project it is first compiled using the same Docker image.
-    See <a href="/docs/v2/lean-cli/projects/libraries/third-party-libraries">Third-Party Libraries</a> to learn how to use custom libraries and <a href="/docs/v2/lean-cli/projects/custom-docker-images">Custom Docker Images</a> to learn how to build and use custom Docker images.
-</p>
-
-<p>
-    Because algorithms run in a Docker container, <code>localhost</code> does not point to your computer's <code>localhost</code>.
-    Substitute <code>localhost</code> with <code>host.docker.internal</code> if your algorithm needs to connect to other services running on your computer.
-    In other words, instead of connecting to <code>http://localhost:&lt;port&gt;/</code>, connect to <code>http://host.docker.internal:&lt;port&gt;/</code>.
-</p>
