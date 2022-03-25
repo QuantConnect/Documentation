@@ -1,0 +1,40 @@
+<p>To add Binance data from CoinAPI to your algorithm, use the AddCrypto() method to request the data. As with all datasets, you should save a reference to your symbol for easy use later in your algorithm. When requesting data, you have the option to use several crypto markets. For detailed documentation on requesting market data, see <a href="https://www.quantconnect.com/docs/algorithm-reference/initializing-algorithms#Initializing-Algorithms-Selecting-Asset-Data">Selecting Asset Data</a>.</p>
+
+<div class="section-example-container">
+<pre class="python">class CoinAPIDataAlgorithm(QCAlgorithm):
+
+    def Initialize(self):
+        self.SetStartDate(2020, 6, 1)
+        self.SetEndDate(2021, 6, 1)
+
+        # Set Account Currency to Binance Stable Coin for USD
+        self.SetAccountCurrency("BUSD")
+        self.SetCash(100000)
+
+        # Binance accepts Cash account type only, AccountType.Margin will result in an exception.
+        self.SetBrokerageModel(BrokerageName.Binance, AccountType.Cash)
+        
+        self.btcbusd = self.AddCrypto("BTCBUSD", Resolution.Minute, Market.Binance).Symbol</pre>
+<pre class="csharp">namespace QuantConnect
+{
+    public class CoinAPIDataAlgorithm : QCAlgorithm
+    {
+        private Symbol _btcbusd;
+        
+        public override void Initialize()
+        {
+            SetStartDate(2020, 6, 1);
+            SetEndDate(2021, 6, 1);
+
+            // Set Account Currency to Binance Stable Coin for USD
+            SetAccountCurrency("BUSD");
+            SetCash(100000);
+
+            // Binance accepts Cash account type only, AccountType.Margin will result in an exception.
+            SetBrokerageModel(BrokerageName.Binance, AccountType.Cash);
+            
+            _btcbusd = AddCrypto("BTCBUSD", Resolution.Minute, Market.Binance).Symbol;
+        }
+    }
+}</pre>
+</div>

@@ -1,0 +1,33 @@
+<div class="section-example-container">
+<pre class="python">
+# For premium datasets, you need to provide your API Key
+# NasdaqDataLink.SetAuthCode("your-api-key")
+
+### Requesting Data in Initialize method
+# The default column will be used is "close".
+self.nasdaq_ibm = self.AddData(NasdaqDataLink, 'WIKI/IBM', Resolution.Daily).Symbol
+
+# We can create a custom sub-class to select a column in the dataset.
+self.nasdaq_fb = self.AddData(NasdaqCustomColumns, 'WIKI/FB', Resolution.Daily).Symbol
+
+class NasdaqCustomColumns(NasdaqDataLink):
+    def __init__(self):
+        # Select the column "adj. close".
+        self.ValueColumnName = "adj. close"</pre>
+<pre class="csharp">
+// For premium datasets, you need to provide your API Key
+// NasdaqDataLink.SetAuthCode("your-api-key");
+
+/// Requesting Data in Initialize method
+// The default column will be used is "close".
+var nasdaqIbm = AddData&lt;NasdaqDataLink&gt;('WIKI/IBM', Resolution.Daily).Symbol;
+
+// We can create a custom sub-class to select a column in the dataset.
+var nasdaqFb = AddData&lt;NasdaqCustomColumns&gt;('WIKI/FB', Resolution.Daily).Symbol;
+
+public class NasdaqCustomColumns : NasdaqDataLink
+{
+    // Select the column "adj. close".
+    public NasdaqCustomColumns() : base(valueColumnName: "adj. close") { }
+}</pre>
+</div>

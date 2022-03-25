@@ -1,0 +1,38 @@
+<p>To add India Equities data to your algorithm, use the AddEquity() method to request the data from Market.India. As with all datasets, you should save a reference to your symbol for easy use later in your algorithm. For detailed documentation on requesting market data, see <a href="https://www.quantconnect.com/docs/algorithm-reference/initializing-algorithms#Initializing-Algorithms-Selecting-Asset-Data">Selecting Asset Data</a>.</p>
+
+<div class="section-example-container">
+<pre class="python">class TrueDataIndiaEquitiesAlgorithm(QCAlgorithm):
+    def Initialize(self):
+        # Set the Brokerage Model to Samco or Zerodha
+        self.SetBrokerageModel(BrokerageName.Samco)
+
+        # Indian Rupee must be in the Cashbook to trade Indian Equities.
+        self.SetAccountCurrency("INR")
+		
+        self.SetStartDate(2021, 12, 1)
+        self.SetEndDate(2021, 12, 31)
+        self.SetCash(1000000)
+        
+        # Requesting Data
+        self.equity = AddEquity("YESBANK", Resolution.Daily, Market.India).Symbol</pre>
+<pre class="csharp">public class TrueDataIndiaEquitiesAlgorithm : QCAlgorithm
+{
+	private Symbol _equity;
+	
+	public override void Initialize()
+	{
+		// Set the Brokerage Model to Samco or Zerodha
+		SetBrokerageModel(BrokerageName.Samco);
+
+		// Indian Rupee must be in the Cashbook to trade Indian Equities.
+		SetAccountCurrency("INR");
+		
+		SetStartDate(2021, 12, 1);
+		SetEndDate(2021, 12, 31);
+		SetCash(1000000);
+		
+		// Requesting Data
+		_equity = AddEquity("YESBANK", Resolution.Daily, Market.India).Symbol;
+	}
+}</pre>
+</div>

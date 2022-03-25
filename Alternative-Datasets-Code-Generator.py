@@ -20,7 +20,7 @@ for dataset in doc:
         vendor_count += 1
         
     # Create path if not exist
-    main_dir = f'02 Writing Algorithms/02 User Guides/04 Alternative Datasets/{vendors[vendorName]:02} {vendorName}/{product_count[vendorName]:02} {dataset["name"].strip()}'
+    main_dir = f'02 Writing Algorithms/02 User Guides/14 Datasets/{vendors[vendorName]:02} {vendorName}/{product_count[vendorName]:02} {dataset["name"].strip()}'
     destination_folder = pathlib.Path(main_dir)
     destination_folder.mkdir(parents=True, exist_ok=True)
     

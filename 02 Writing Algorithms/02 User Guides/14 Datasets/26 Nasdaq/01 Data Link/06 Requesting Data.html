@@ -1,0 +1,53 @@
+<p>To add Nasdaq Data Link data to your algorithm, use the AddData() method to request the data. As with all datasets, you should save a reference to your symbol for easy use later in your algorithm. For detailed documentation on using custom data, see <a href="https://www.quantconnect.com/docs/algorithm-reference/importing-custom-data">Importing Custom Data</a>.</p>
+
+<div class="section-example-container">
+<pre class="python">class NasdaqDataLinkDataAlgorithm(QCAlgorithm):
+    def Initialize(self):
+        self.SetStartDate(2019, 1, 1)
+        self.SetEndDate(2020, 6, 1)
+        self.SetCash(100000)
+
+        # For premium datasets, you need to provide your API Key
+        # NasdaqDataLink.SetAuthCode("your-api-key")
+        
+        # The default column will be used is "close".
+        self.nasdaq_ibm = self.AddData(NasdaqDataLink, 'WIKI/IBM', Resolution.Daily).Symbol
+
+        # We can create a custom sub-class to select a column in the dataset.
+        self.nasdaq_fb = self.AddData(NasdaqCustomColumns, 'WIKI/FB', Resolution.Daily).Symbol
+
+class NasdaqCustomColumns(NasdaqDataLink):
+    def __init__(self):
+        # Select the column "adj. close".
+        self.ValueColumnName = "adj. close"</pre>
+<pre class="csharp">namespace QuantConnect.Algorithm.CSharp.AltData
+{
+    public class NasdaqDataLinkDataAlgorithm : QCAlgorithm
+    {
+        private Symbol _nasdaqIbm;
+        private Symbol _nasdaqFb;
+
+        public override void Initialize()
+        {
+            SetStartDate(2019, 1, 1);
+            SetEndDate(2020, 6, 1);
+            SetCash(100000);
+
+            // For premium datasets, you need to provide your API Key
+            // NasdaqDataLink.SetAuthCode("your-api-key")
+
+            // The default column will be used is "close".
+            _nasdaqIbm = AddData&lt;NasdaqDataLink&gt;('WIKI/IBM', Resolution.Daily).Symbol;
+
+            // We can create a custom sub-class to select a column in the dataset.
+            _nasdaqFb = AddData&lt;NasdaqCustomColumns&gt;('WIKI/FB', Resolution.Daily).Symbol;
+        }
+    }
+
+    public class NasdaqCustomColumns : NasdaqDataLink
+    {
+        // Select the column "adj. close".
+        public NasdaqCustomColumns() : base(valueColumnName: "adj. close") { }
+    }
+}</pre>
+</div>
