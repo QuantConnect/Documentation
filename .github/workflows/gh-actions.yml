@@ -1,12 +1,9 @@
 name: Run Code Generators
 
 on:
-  push:
-    branches: ['*']
-    tags: ['*']
-  pull_request:
-    branches: [master]
-
+  schedule:
+    - cron:  "0 0 * * 6" # Runs "at Midnight UTC every Saturday" (see https://crontab.guru)
+    
 jobs:
   build:
     runs-on: ubuntu-20.04
@@ -14,6 +11,25 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       
-      - name: Our Platform and Alpha Stream API
+      - name: Run API Reference Code Generator Python Script
         run: python API-Reference-Code-Generator.py
-
+      - name: Run Writing Algorithm API Code Generator Python Script
+        run: python Writing-Algorithm-API-Code-Generator.py
+      - name: Run Alternative Datasets Code Generator Python Script
+        run: python Alternative-Datasets-Code-Generator.py
+      - name: Run Fundamentals Table Code Generator Python Script
+        run: python fundamentals-table-code-generator.py
+      - name: Run Future Table Code Generator Python Script
+        run: python future-table-code-generator.py
+      - name: Run Supported Assets Table Code Generator Python Script
+        run: python Supported-Assets-Table-Code-Generator.py
+      - name: Run Indicator Reference Code Generator Python Script
+        run: python Indicator-Reference-Code-Generator.py
+      - name: Commit and Push
+        run: |-
+          git diff
+          git config --global user.email "actions@users.noreply.github.com"
+          git config --global user.name "GitHub Actions"
+          git add -A
+          git commit --allow-empty -m "Updates API References"
+          git push
