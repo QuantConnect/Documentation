@@ -1,24 +1,22 @@
-<meta name="tag" content="using data" />
-<meta name="tag" content="history and warm up" />
-<meta name="tag" content="history" />
-<meta name="tag" content="warm up" />
-<meta name="tag" content="indicators" />
-<meta name="tag" content="rolling windows" />
-<p>
-A particularly common and helpful use of the RollingWindow class is to store past indicator values. The following examples create an indicator and add its values to a rolling window when the indicator is updated.
+<meta name="tag" content="using data">
+<meta name="tag" content="history and warm up">
+<meta name="tag" content="history">
+<meta name="tag" content="warm up">
+<meta name="tag" content="indicators">
+<meta name="tag" content="rolling windows">
+<p>## TODO: Move to indicator docs? <br>
+</p><p>A particularly common and helpful use of the RollingWindow class is to store past indicator values. The following examples create an indicator and add its values to a rolling window when the indicator is updated.
 </p>
 <div class="section-example-container">
-<pre class="csharp" >
-// In Initialize, create the rolling windows
+<pre class="csharp">// In Initialize, create the rolling windows
 public override void Initialize()
 {
     // Creates an indicator and adds to a rolling window when it is updated
    smaWindow = new RollingWindow&lt;IndicatorDataPoint&gt;(5);
-   SMA("SPY", 5).Updated += (sender, updated) => smaWindow.Add(updated);
+   SMA("SPY", 5).Updated += (sender, updated) =&gt; smaWindow.Add(updated);
 }
 </pre> 
-	<pre class="python" >
-# In Initialize, create the rolling windows
+	<pre class="python"># In Initialize, create the rolling windows
 def Initialize(self):
     # Creates an indicator and adds to a rolling window when it is updated
     self.SMA("SPY", 5).Updated += self.SmaUpdated
@@ -36,13 +34,11 @@ def SmaUpdated(self, sender, updated):
 <p>The current (most recent) addition is stored at index 0, the previous addition to a window is at index 1, and so on until the length of the window:</p>
 
 <div class="section-example-container">
-	<pre class="csharp">
-	var currentSma = smaWin[0];
+	<pre class="csharp">	var currentSma = smaWin[0];
 	var previousSma = smaWin[1];
 	var oldestSma = smaWin[ smaWin.Count - 1 ];
 	</pre>
-	<pre class="python">
-	currentSma = self.smaWin[0]
+	<pre class="python">	currentSma = self.smaWin[0]
 	previousSma = self.smaWin[1]
 	oldestSma = self.smaWin[ smaWin.Count - 1 ]</pre>
 </div> 
