@@ -23,9 +23,6 @@ symbols = dict(sorted(symbols.items(), key=lambda x: "Future.Indices" in x[1], r
 
 raw = urlopen("https://raw.githubusercontent.com/QuantConnect/Lean/master/Data/symbol-properties/symbol-properties-database.csv").read().decode("utf-8").split('\n')
 
-with open("09 Supported Markets.html", "w", encoding="utf-8") as text:
-    text.write("")
-
 html = '''<table class="table qc-table table-reflow">
 <thead>
 <tr><th colspan="3" style="width: 100%;">Name</th></tr>
@@ -51,5 +48,5 @@ for key in symbols.keys():
 html += """</tbody>
 </table>"""
 
-with open("09 Supported Markets.html", "a", encoding="utf-8") as text:
+with open("02 Writing Algorithms/02 User Guides/10 Asset Classes/06 Futures/09 Supported Markets.html", "a", encoding="utf-8") as text:
     text.write(html)
