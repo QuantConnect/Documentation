@@ -1,5 +1,5 @@
-<meta name="tag" content="universes" />
-<meta name="tag" content="coarse universes" />
+<meta name="tag" content="universes">
+<meta name="tag" content="coarse universes">
 
 <p>
 Coarse Universe selection allows you to pick a set of stocks by its volume, price, or whether it has fundamental data. This is helpful to narrow down your universe to liquid assets, or assets which pass a technical indicator filter.
@@ -8,9 +8,8 @@ Coarse Universe selection allows you to pick a set of stocks by its volume, pric
 <p>
 To use a coarse universe, you must request it using an $[AddUniverse(), M:QuantConnect.Algorithm.QCAlgorithm.AddUniverse] call from the Initialize() method of your algorithm. You should pass in a function that will be used to filter the stocks down to the assets you are interested in using.
 </p>
-<div class="section-example-container" >
-<pre class="csharp">
-public class MyCoarseUniverseAlgorithm : QCAlgorithm {
+<div class="section-example-container">
+<pre class="csharp">public class MyCoarseUniverseAlgorithm : QCAlgorithm {
     public override void Initialize() {
         AddUniverse(MyCoarseFilterFunction);
     }
@@ -20,8 +19,7 @@ public class MyCoarseUniverseAlgorithm : QCAlgorithm {
     }
 }
 </pre>
-<pre class="python">
-class MyCoarseUniverseAlgorithm(QCAlgorithm):
+<pre class="python">class MyCoarseUniverseAlgorithm(QCAlgorithm):
      def Initialize(self):
          self.AddUniverse(self.MyCoarseFilterFunction)
 
@@ -31,29 +29,26 @@ class MyCoarseUniverseAlgorithm(QCAlgorithm):
 </div>
 
 <p>
-The coarse filter function is provided a list of $[CoarseFundamental,T:QuantConnect.Data.UniverseSelection.CoarseFundamental] objects. The most important properties of this object are: <code>Price</code>, <code>DollarVolume</code> and <code>HasFundamentaData</code>. Typical examples of filter functions you might want sound like: 
-</p>
+The coarse filter function is provided a list of $[CoarseFundamental,T:QuantConnect.Data.UniverseSelection.CoarseFundamental] objects. The most important properties of this object are: <code>Price</code>, <code>DollarVolume</code> and <code>HasFundamentaData</code>. Typical examples of filter functions you might want sound like: <br></p><p>## TODO: The Price member is the raw price, not adjusted.<br></p>
 <h4>Example 1: Take 500 stocks worth more than $10, with more than $10M daily trading volume.</h4>
 <p>
 The most common use case is selecting a lot of liquid stocks. With coarse this is simple and fast. This example below of a coarse filter function selects the top most liquid 500 stocks over $10 per share.
 </p>
-<div class="section-example-container" >
-<pre class="csharp">
-    IEnumerable&lt;Symbol&gt; MyCoarseFilterFunction(IEnumerable&lt;CoarseFundamental&gt; coarse) {
+<div class="section-example-container">
+<pre class="csharp">    IEnumerable&lt;Symbol&gt; MyCoarseFilterFunction(IEnumerable&lt;CoarseFundamental&gt; coarse) {
         // Linq makes this a piece of cake;
         var stocks = (from c in coarse
-            where c.DollarVolume > 10000000 &amp;&amp;
-                  c.Price > 10
+            where c.DollarVolume &gt; 10000000 &amp;&amp;
+                  c.Price &gt; 10
             orderby c.DollarVolume descending
             select c.Symbol).Take(500).ToList();
         return stocks;
     }
 </pre>
-<pre class="python">
-    def MyCoarseFilterFunction(self, coarse):
+<pre class="python">    def MyCoarseFilterFunction(self, coarse):
          sortedByDollarVolume = sorted(coarse, key=lambda x: x.DollarVolume, reverse=True)
          filtered = [ x.Symbol for x in sortedByDollarVolume 
-                      if x.Price > 10 and x.DollarVolume > 10000000 ]
+                      if x.Price &gt; 10 and x.DollarVolume &gt; 10000000 ]
          return filtered[:500]
 </pre>
 </div>
@@ -63,26 +58,24 @@ The most common use case is selecting a lot of liquid stocks. With coarse this i
 <p>
 Another common request is to filter the universe by a technical indicator, such as only picking those above their 200-day EMA. The coarse fundamental object has adjusted price and volume information so we can do any price related analysis and return the symbols which pass our filter.
 </p>
-<div class="section-example-container" >
-<pre class="csharp">
-    ConcurrentDictionary&lt;Symbol, SelectionData&gt;
+<div class="section-example-container">
+<pre class="csharp">    ConcurrentDictionary&lt;Symbol, SelectionData&gt;
         _stateData = new ConcurrentDictionary&lt;Symbol, SelectionData&gt;();
 
     // Coarse filter function
     IEnumerable&lt;Symbol&gt; MyCoarseFilterFunction(IEnumerable&lt;CoarseFundamental&gt; coarse) {
         // Linq makes this a piece of cake;
         var stocks = (from c in coarse
-            let avg = _stateData.GetOrAdd(c.Symbol, sym => new SelectionData(200))
+            let avg = _stateData.GetOrAdd(c.Symbol, sym =&gt; new SelectionData(200))
             where avg.Update(c.EndTime, c.AdjustedPrice)
-            where c.DollarVolume > 1000000000 &amp;&amp;
-                  c.Price > avg.Ema
+            where c.DollarVolume &gt; 1000000000 &amp;&amp;
+                  c.Price &gt; avg.Ema
             orderby c.DollarVolume descending
             select c.Symbol).Take(10).ToList();
         return stocks;
     }
 </pre>
-<pre class="python">
-    # setup state storage in initialize method
+<pre class="python">    # setup state storage in initialize method
     self.stateData = { }
 
     def MyCoarseFilterFunction(self, coarse):
@@ -96,7 +89,7 @@ Another common request is to filter the universe by a technical indicator, such 
             avg.update(c.EndTime, c.AdjustedPrice, c.DollarVolume)
 
         # Filter the values of the dict to those above EMA and more than $1B vol.
-        values = [x for x in self.stateData.values() if x.is_above_ema and x.volume > 1000000000]
+        values = [x for x in self.stateData.values() if x.is_above_ema and x.volume &gt; 1000000000]
         
         # sort by the largest in volume.
         values.sort(key=lambda x: x.volume, reverse=True)
@@ -109,8 +102,7 @@ Another common request is to filter the universe by a technical indicator, such 
 In this example, we've used a new defined <code>SelectionData</code> class. This is a tidy way to group variables for our universe selection and update any indicators all in a few lines of  code. We highly recommend following this pattern to keep your algorithm tidy and bug free! Below we've put an example of a SelectionData class, but you can make this whatever you need to store your custom universe filters.
 </p>
 <div class="section-example-container">
-<pre class="python">
-class SelectionData(object):
+<pre class="python">class SelectionData(object):
     def __init__(self, symbol, period):
         self.symbol = symbol
         self.ema = ExponentialMovingAverage(period)
@@ -120,10 +112,9 @@ class SelectionData(object):
     def update(self, time, price, volume):
         self.volume = volume
         if self.ema.Update(time, price):
-            self.is_above_ema = price > ema
+            self.is_above_ema = price &gt; ema
 </pre>
-<pre class="csharp">
-// example selection data class
+<pre class="csharp">// example selection data class
 private class SelectionData
 {
     // variables you need for selection
@@ -150,8 +141,7 @@ private class SelectionData
 Getting the 10-day SMA stock volume is the same process as applying other indicators to data from Example 2. First, you should define a SelectionData class which performs the averaging. For this example, the following class will serve this purpose:
 </p>
 <div class="section-example-container">
-<pre class="python">
-class SelectionData(object):
+<pre class="python">class SelectionData(object):
     def __init__(self, symbol, period):
         self.symbol = symbol
         self.volume = 0
@@ -164,8 +154,7 @@ class SelectionData(object):
             # get ratio of this volume bar vs previous 10 before it.
             self.volume_ratio = volume / self.sma.Current.Value 
 </pre>
-<pre class="csharp">
-private class SelectionData
+<pre class="csharp">private class SelectionData
 {
     public readonly Symbol Symbol;
     public readonly SimpleMovingAverage VolumeSma;
@@ -189,8 +178,7 @@ With this helper, we've defined a ratio of today's volume to the historical volu
 </p>
 <p>We could use this Selection data like so:</p>
 <div class="section-example-container">
-<pre class="python">
-def CoarseFilterFunction(self, coarse):
+<pre class="python">def CoarseFilterFunction(self, coarse):
         for c in coarse:
             if c.Symbol not in self.stateData:
                 self.stateData[c.Symbol] = SelectionData(c.Symbol, 10)
@@ -198,7 +186,7 @@ def CoarseFilterFunction(self, coarse):
             avg.update(c.EndTime, c.AdjustedPrice, c.DollarVolume)
 
         # filter the values of selectionData(sd) above SMA
-        values = [sd for sd in self.stateData.values() if sd.volume > sd.sma.Current.Value and sd.volume_ratio > 0]
+        values = [sd for sd in self.stateData.values() if sd.volume &gt; sd.sma.Current.Value and sd.volume_ratio &gt; 0]
         
         # sort sd by the largest % jump in volume.
         values.sort(key=lambda sd: sd.volume_ratio, reverse=True)
@@ -209,9 +197,9 @@ def CoarseFilterFunction(self, coarse):
 <pre class="csharp"> 
     IEnumerable&lt;Symbol&gt; MyCoarseFilterFunction(IEnumerable&lt;CoarseFundamental&gt; coarse) {
         var stocks = (from c in coarse
-            let avg = _stateData.GetOrAdd(c.Symbol, sym => new SelectionData(10))
+            let avg = _stateData.GetOrAdd(c.Symbol, sym =&gt; new SelectionData(10))
             where avg.Update(c.EndTime, c.Volume)
-            where c.Volume > avg.VolumeSma
+            where c.Volume &gt; avg.VolumeSma
             orderby avg.VolumeRatio descending
             select c.Symbol).Take(10).ToList();
         return stocks;
@@ -220,7 +208,7 @@ def CoarseFilterFunction(self, coarse):
 </div>
 
 
-<h4>Example 4: Take top 10 "fastest moving" stocks with a 50-Day EMA > 200 Day EMA.</h4>
+<h4>Example 4: Take top 10 "fastest moving" stocks with a 50-Day EMA &gt; 200 Day EMA.</h4>
 <p>
 Complex universe filters can be constructed using the SelectionData helper class pattern. We have implemented a full example of this case in Github, which you can view 
 <span class="csharp"><a href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.CSharp/EmaCrossUniverseSelectionAlgorithm.cs" target="_BLANK">here</a></span>
