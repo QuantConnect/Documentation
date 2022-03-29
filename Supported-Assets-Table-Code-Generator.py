@@ -6,7 +6,7 @@ cryptos_exchange = {"binance": "Binance", "bitfinex": "Bitfinex", "gdax": "Coinb
 forex_exchanges = {"oanda": "Oanda"}
 cfd_exchanges = {"oanda": "Oanda"}
 
-with open("02 Writing Algorithms/02 User Guides/10 Asset Classes/04 Crypto/06 Supported Pairs.html", "w", encoding="utf-8") as text:
+with open("02 Writing Algorithms/10 Asset Classes/04 Crypto/06 Supported Pairs.html", "w", encoding="utf-8") as text:
     text.write("")
 
 for exchange, name in cryptos_exchange.items():
@@ -39,10 +39,10 @@ for exchange, name in cryptos_exchange.items():
 </table>
 </div>\n"""
     
-    with open("02 Writing Algorithms/02 User Guides/10 Asset Classes/04 Crypto/06 Supported Pairs.html", "a", encoding="utf-8") as text:
+    with open("02 Writing Algorithms/10 Asset Classes/04 Crypto/06 Supported Pairs.html", "a", encoding="utf-8") as text:
         text.write(html)
         
-with open("02 Writing Algorithms/02 User Guides/10 Asset Classes/05 Forex/05 Supported Pairs.html", "w", encoding="utf-8") as text:
+with open("02 Writing Algorithms/10 Asset Classes/05 Forex/05 Supported Pairs.html", "w", encoding="utf-8") as text:
     text.write("")
 
 for exchange, name in forex_exchanges.items():
@@ -75,10 +75,10 @@ for exchange, name in forex_exchanges.items():
 </table>
 </div>\n"""
     
-    with open("02 Writing Algorithms/02 User Guides/10 Asset Classes/05 Forex/05 Supported Pairs.html", "a", encoding="utf-8") as text:
+    with open("02 Writing Algorithms/10 Asset Classes/05 Forex/05 Supported Pairs.html", "a", encoding="utf-8") as text:
         text.write(html)
         
-with open("02 Writing Algorithms/02 User Guides/10 Asset Classes/10 CFD/05 Supported Contracts.html", "w", encoding="utf-8") as text:
+with open("02 Writing Algorithms/10 Asset Classes/10 CFD/05 Supported Contracts.html", "w", encoding="utf-8") as text:
     text.write("")
 
 for exchange, name in cfd_exchanges.items():
@@ -111,5 +111,5 @@ for exchange, name in cfd_exchanges.items():
 </table>
 </div>\n"""
     
-    with open("02 Writing Algorithms/02 User Guides/10 Asset Classes/10 CFD/05 Supported Contracts.html", "a", encoding="utf-8") as text:
+    with open("02 Writing Algorithms/10 Asset Classes/10 CFD/05 Supported Contracts.html", "a", encoding="utf-8") as text:
         text.write(html)

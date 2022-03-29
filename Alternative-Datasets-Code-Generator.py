@@ -5,22 +5,25 @@ url = urlopen("https://s3.amazonaws.com/cdn.quantconnect.com/web/docs/alternativ
 response = url.read().decode("utf-8")
 doc = eval(response)
 
-vendor_count = 3
+vendor_count = 2
 vendors = {}
 product_count = {}
 attr = False
 
+priority = ["QuantConnect", "AlgoSeek", "Morningstar", "TickData", "TrueData", "CoinAPI", "OANDA"]
+vendor_names = priority + sorted([x for x in [dataset["vendorName"].strip() for dataset in doc] if x not in priority])
+for vendor in vendor_names:
+    if vendor not in vendors:
+        vendors[vendor] = vendor_count
+        product_count[vendor] = 1
+        vendor_count += 1
+
 for dataset in doc:
     i = 1
     vendorName = dataset["vendorName"].strip()
-    
-    if vendorName not in vendors:
-        vendors[vendorName] = vendor_count
-        product_count[vendorName] = 1
-        vendor_count += 1
         
     # Create path if not exist
-    main_dir = f'02 Writing Algorithms/02 User Guides/14 Datasets/{vendors[vendorName]:02} {vendorName}/{product_count[vendorName]:02} {dataset["name"].strip()}'
+    main_dir = f'02 Writing Algorithms/14 Datasets/{vendors[vendorName]:02} {vendorName}/{product_count[vendorName]:02} {dataset["name"].strip()}'
     destination_folder = pathlib.Path(main_dir)
     destination_folder.mkdir(parents=True, exist_ok=True)
     

@@ -76,7 +76,7 @@ i = 1
 
 for full, short in dict(sorted(names.items())).items():
     name = " ".join(re.split('(?=[A-Z])', full))
-    base = f"02 Writing Algorithms/02 User Guides/28 Indicators/07 Indicator Reference/{i:02}{name}"
+    base = f"02 Writing Algorithms/28 Indicators/07 Indicator Reference/{i:02}{name}"
     destination_folder = pathlib.Path(base)
     destination_folder.mkdir(parents=True, exist_ok=True)
     
@@ -169,7 +169,7 @@ for full, short in dict(sorted(names.items())).items():
 <p>{descriptions[full]}</p>""")
     
     api = []
-    with open("02 Writing Algorithms/04 API Reference/02.html", "r", encoding="utf-8") as fin:
+    with open("02 Writing Algorithms/98 API Reference/02.html", "r", encoding="utf-8") as fin:
         lines = fin.readlines()
         active = False
         
