@@ -4,29 +4,26 @@ When universe contents are changed (securities are added or removed from the alg
 
 <p>To monitor these events, you can bind to the $[OnSecuritiesChanged,M:QuantConnect.Algorithm.QCAlgorithm.OnSecuritiesChanged] Event handler:</p>
 
-<div class="section-example-container" >
-<pre class="csharp" >
-public override void OnSecuritiesChanged(SecurityChanges changes)
+<div class="section-example-container">
+<pre class="csharp">public override void OnSecuritiesChanged(SecurityChanges changes)
 {
-    if (changes.AddedSecurities.Count > 0)
+    if (changes.AddedSecurities.Count &gt; 0)
     {
         Debug("Securities added: " + 
-              string.Join(",", changes.AddedSecurities.Select(x => x.Symbol.Value)));
+              string.Join(",", changes.AddedSecurities.Select(x =&gt; x.Symbol.Value)));
     }
-    if (changes.RemovedSecurities.Count > 0)
+    if (changes.RemovedSecurities.Count &gt; 0)
     {
         Debug("Securities removed: " + 
-              string.Join(",", changes.RemovedSecurities.Select(x => x.Symbol.Value)));
+              string.Join(",", changes.RemovedSecurities.Select(x =&gt; x.Symbol.Value)));
     }
 }
 </pre>
-<pre class="python" >
-def OnSecuritiesChanged(self, changes):
+<pre class="python">def OnSecuritiesChanged(self, changes):
     self._changes = changes
     self.Log(f"OnSecuritiesChanged({self.UtcTime}):: {changes}")
 </pre>
 </div>
 
 <p>
-These events are tracked automatically, and a list of current securities is provided by the <code>ActiveSecurities</code> property. This is a dictionary of Security objects which are currently in your universe. See more in the <a href="https://www.quantconnect.com/docs/algorithm-reference/securities-and-portfolio#Securities-and-Portfolio-Active-Securities">Securities and Portfolio</a> documentation.
-</p>
+These events are tracked automatically, and a list of current securities is provided by the <code>ActiveSecurities</code> property. This is a dictionary of Security objects which are currently in your universe. See more in the <a href="https://www.quantconnect.com/docs/algorithm-reference/securities-and-portfolio#Securities-and-Portfolio-Active-Securities">Securities and Portfolio</a> documentation. <br></p><p>- Add new h3: Manage securities with NotifiedSecurityChanges (C# only)</p>&nbsp;&nbsp;&nbsp; - Python version: self.securities += changes.AddedSecurities<p></p>
