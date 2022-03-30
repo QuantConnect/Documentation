@@ -1,0 +1,46 @@
+<meta name="tag" content="data event handlers">
+<meta name="tag" content="quotebars event">
+
+<p>
+    QuoteBars are built by consolidating the bid and ask ticks from the exchanges into bars. The  $[QuoteBar,T:QuantConnect.Data.Market.QuoteBar] provides Open, High, Low, Close, Bid, Ask, LastBidSize, and LastAskSize properties for a given period of time. The Bid and the Ask properties are $[Bar,T:QuantConnect.Data.Market.Bar] objects that contain Open, High, Low, and Close. The QuoteBar Open, High, Low, and Close properties values are the mean of the respective Bid and Ask properties. QuoteBars are supported for all asset types. <br></p><p>## TODO: The Low of a QuoteBar is not always the mean. If there is no data for the bid/ask at the current slice, it selects either the AskLow or the BidLow<br></p>
+<img src="https://cdn.quantconnect.com/docs/i/dataformat-quotebar.png" class="img-responsive">
+<div class="section-example-container">
+<pre class="python">    self.AddForex('EURUSD', Resolution.Hour) # Subscribe to hourly QuoteBars in Initialize(self)
+        
+ def OnData(self, data):
+    ## You can access the EURUSD QuoteBar directly by subsetting the slice object
+    fxOpen = data['EURUSD'].Open          ## Market Open FX Rate
+    fxClose = data['EURUSD'].Close        ## Market Close FX Rate
+    
+    ## If you are subscribed to more than one Forex or Futures data stream then you can
+    ## access the QuoteBar dictionary and then subset this for your desired Forex symbol
+    fxQuoteBars = data.QuoteBars
+    eurusdQuoteBar = fxQuoteBars['EURUSD']     ## EURUSD QuoteBar
+    fxOpen = eurusdQuoteBar.Open               ## Market Open FX Rate
+    fxClose = eurusdQuoteBar.Close             ## Market Close FX Rate
+            
+</pre>
+</div>
+<p>
+    With a specific QuoteBar, you can also access Bid and Ask Bars for the same security. These Bars provide information specific to the Bid and Ask side of Forex and Future asset types, while the QuoteBar.Open, High, Low, and Close properties are the midpoint of the Bid-Ask spread at that moment of time. These QuoteBar.Bid and QuoteBar.Ask bars have Open, High, Low, and close properties (e.g., <code>QuoteBar.Bid.Open</code>).
+</p>
+<div class="section-example-container">
+<pre class="python">    self.AddForex('EURUSD', Resolution.Hour) # Subscribe to hourly QuoteBars in Initialize(self)  
+ 
+ def OnData(self, data):
+    quoteBar = data['EURUSD']   ## EURUSD QuoteBar
+    self.Log(f"Mid-point open price: {quoteBar.Open}")
+    
+    bidBar = quoteBar.Bid       ## EURUSD Bid Bar 
+    askBar = quoteBar.Ask       ## EURUSD Ask Bar
+    
+    self.Log(f"Bid open price: {bidBar.Open}")
+    self.Log(f"Ask open price: {askBar.Open}")
+    
+</pre>
+</div>
+
+## TODO:
+<br>-Add C# snippets (do to all code snippets in Writing Algo docs)
+<br>-Add missing asset classes
+<br><div>-Add Collapse() method, ToString()<br></div><div>-EndTime / Period<br></div>

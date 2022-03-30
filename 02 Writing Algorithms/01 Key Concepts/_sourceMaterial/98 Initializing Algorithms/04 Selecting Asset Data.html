@@ -1,0 +1,102 @@
+<meta name="tag" content="universes">
+<meta name="tag" content="custom universes">
+<meta name="tag" content="using data">
+<meta name="tag" content="assets">
+<meta name="tag" content="equity">
+<meta name="tag" content="adjusted pricing">
+<meta name="tag" content="forex">
+<meta name="tag" content="cfd">
+<meta name="tag" content="options">
+<p>
+Algorithms can manually subscribe to data for specific assets they need or use universes to choose groups of assets based on
+	filtering criteria (e.g. all stocks with volumes greater than $10M/day). See more about Universes <a class="docs-internal-link" href="/docs/algorithm-reference/universes">here</a>.
+</p>
+<p>
+	To manually subscribe to a specific asset you can call the $[AddEquity(),M:QuantConnect.Algorithm.QCAlgorithm.AddEquity], $[AddForex(),M:QuantConnect.Algorithm.QCAlgorithm.AddForex], $[AddCrypto(),M:QuantConnect.Algorithm.QCAlgorithm.AddCrypto],
+	$[AddCfd(),M:QuantConnect.Algorithm.QCAlgorithm.AddCfd] and $[AddOption(),M:QuantConnect.Algorithm.QCAlgorithm.AddOption] methods in your Initialize() method. There is no official limit to how much data
+	you can ask for, but there are practical resource limitations. <br></p><p>## TODO: AddFuture, AddFutureOption, AddIndexOption<br></p>
+<p>
+	QuantConnect supports international trading across multiple timezones and markets. The $[Market,T:QuantConnect.Market] parameter is used
+	to distinguish between the same tickers on different exchanges (e.g. OANDA offers EURUSD but has different
+	rates).
+</p>
+<p>
+	QuantConnect provides 40TB of data. Check out more information about our data in our <a href="/data">data library</a>.
+	The resolution of the data available depends on the type of data. For Equities, Futures, Forex, and Crypto we provide Tick,
+	Second, Minute, Hourly, and Daily resolution. For Options, we only have minute bar data. These are specified by the
+	$[Resolution,T:QuantConnect.Resolution] enum. <br></p><p>## TODO: This 40TB of data is likely outdated. Can we measure this and update the docs programatically?<br></p>
+<p>
+	If there is a gap in the data (e.g. because there are no trades), by default the data is still pumped into your strategy on
+	each time step. This behavior is called "fillForward" and defaults to true. You can disable this by setting fillForward to false.
+</p>
+<p>
+	By default equity data in QuantConnect is Split and Dividend adjusted backwards in time to give smooth continuous prices.
+	This allows easy  use for indicators. Some algorithms need raw or partially adjusted price data. You can control this with
+	the $[SetDataNormalizationMode(),M:QuantConnect.Securities.Security.SetDataNormalizationMode] method. The $[DataNormalizationMode,T:QuantConnect.DataNormalizationMode] enum has the values Adjusted (default),
+	Raw, SplitAdjusted, and TotalReturn. When data is set to Raw mode the dividends are paid as cash into your algorithm, and the
+	splits are directly applied to your holding quantity. <br></p><p>## TODO: Replace the table below with the Resource<br></p>
+<table class="table qc-table table-itemized table-reflow">
+	<thead>
+		<tr>
+			<th colspan="2">
+            Data Adjustment Modes
+        </th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td width="30%">Adjusted<br>(default)
+			</td>
+			<td><code>DataNormalizationMode.Adjusted</code>
+				<p>Splits and dividends are backwards adjusted into the price of the asset. The price today is identical to current market price. For more information on this see Investopedia's article <a href="https://www.investopedia.com/terms/a/adjusted_closing_price.asp">Adjusted Pricing</a>.
+				</p>
+			</td>
+		</tr>
+		<tr>
+			<td width="30%">Raw</td>
+			<td><code>DataNormalizationMode.Raw</code>
+				<p>No modifications to the asset price at all. Dividends are paid in cash; splits are applied directly to your portfolio quantity. </p>
+			</td>
+		</tr>
+		<tr>
+			<td width="30%">SplitAdjusted</td>
+			<td><code>DataNormalizationMode.SplitAdjusted</code>
+				<p>Only equity splits are applied to the price adjustment, while dividends are still paid in cash to your portfolio. This allows for management of the dividend payments (e.g. reinvestment) while still giving a smooth curve for indicators.</p>
+			</td>
+		</tr>
+		<tr>
+			<td width="30%">TotalReturn</td>
+			<td><code>DataNormalizationMode.TotalReturn</code>
+				<p> Return of the investment adding the dividend sum to the initial asset price. For more information on this see Investopedia's article <a href="https://www.investopedia.com/terms/t/totalreturn.asp">Total Returns</a>.
+				</p>
+			</td>
+		</tr>
+	</tbody>
+</table>
+<p>
+	If you have your own custom data you'd like to backtest against, check out the <a class="docs-internal-link" href="/docs/algorithm-reference/importing-custom-data">custom data</a> section.
+</p>
+<div class="section-example-container">
+	<pre class="all">// Complete Add Equity API - Including Default Parameters:
+AddEquity(string ticker, Resolution resolution = Resolution.Minute, string market = Market.USA, bool fillDataForward = true, decimal leverage = 0m, bool extendedMarketHours = false)
+
+//Complete Add Forex API - Including Default Parameters:
+AddForex(string ticker, Resolution resolution = Resolution.Minute, string market = Market.OANDA, bool fillDataForward = true, decimal leverage = 0m)
+</pre>
+</div>
+<div class="section-example-container">
+	<pre class="csharp">AddEquity("AAPL"); //Add Apple 1 minute bars (minute by default).
+AddForex("EURUSD", Resolution.Second); //Add EURUSD 1 second bars.
+</pre>
+	<pre class="python">self.AddEquity("SPY")  # Default to minute bars
+self.AddForex("EURUSD", Resolution.Second) # Set second bars.
+</pre>
+	<pre class="csharp">//Setting the data normalization mode for the MSFT security to raw (pay dividends as cash)
+Securities["MSFT"].SetDataNormalizationMode(DataNormalizationMode.Raw);
+</pre>
+	<pre class="python"># Setting the data normalization mode for the MSFT security to raw (pay dividends as cash)
+self.Securities["SPY"].SetDataNormalizationMode(DataNormalizationMode.Raw);
+</pre>
+</div><div>
+
+## TODO: Replace the class='all' with langauge-specific snippets. Show an example of all Add&lt;securityType&gt; methods?</div><div>- Add extended market hours (https://github.com/QuantConnect/Documentation/issues/203)<br></div>

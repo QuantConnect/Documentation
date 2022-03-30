@@ -1,0 +1,63 @@
+<p>
+To update an order, you must use its $[OrderTicket, T:QuantConnect.Orders.OrderTicket]. The specific properties that can be updated depend on the order type. Market orders are transmitted to the brokerage almost immediately, so only the tag on the order can be updated. Other orders can be updated until they are filled or the brokerage prevents modifications.
+</p>
+
+<table class="qc-table table  table-condensed">
+<thead>
+<tr>
+<th width="30%">Order Type</th>
+<th>Updatable Properties</th> 
+</tr>
+</thead>
+<tbody>
+<tr><td>Market Order</td><td><code>Tag</code></td></tr>
+<tr><td>Limit Order</td><td><code>Tag</code>, <code>Quantity</code>, <code>Limit Price</code></td></tr>
+<tr><td>Stop Market Order</td><td><code>Tag</code>, <code>Quantity</code>, <code>Stop Prce</code></td></tr>
+<tr><td>Stop Limit Order</td><td><code>Tag</code>, <code>Quantity</code>, <code>Stop Price</code>, <code>Limit Price</code>.</td></tr>
+<tr><td>Market On Open Order</td><td><code>Tag</code>, <code>Quantity</code></td></tr>
+<tr><td>Market On Close Order</td><td><code>Tag</code>, <code>Quantity</code></td></tr>
+</tbody>
+</table>
+
+<p>
+Orders are updated by passing a $[UpdateOrderFields, T:QuantConnect.Orders.UpdateOrderFields] object to the Update method. The Update method returns an $[OrderResponse, T:QuantConnect.Orders.OrderResponse] to signal the success or failure of the update request. 
+</p>
+
+<div class="section-example-container">
+<pre class="csharp">// Tag an order on creation
+var ticket = LimitOrder("SPY", 100, 221.05, tag: "New SPY trade");
+
+//Tag order later
+var response = ticket.Update(new UpdateOrderFields() { 
+  Tag = "Our New Tag for SPY Trade",
+  LimitPrice = 222.00
+});
+
+// Check response with the OrderResponse
+if (response.IsSuccess) { 
+     Debug("Order updated successfully");
+}
+</pre>
+<pre class="python"> # Tag an order on creation
+ticket = self.LimitOrder("SPY", 100, 221.05, False, "New SPY trade")
+
+# Tag order later
+updateSettings = UpdateOrderFields()
+updateSettings.LimitPrice = 222.00
+updateSettings.Tag = "Limit Price Updated for SPY Trade"
+response = ticket.Update(updateSettings)
+
+# Validate the response is OK
+if response.IsSuccess:
+     self.Debug("Order updated successfully")
+</pre>
+</div>
+
+<div class="base-tree-container"></div>
+<script data-tree="QuantConnect.Orders.OrderResponse"></script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        var dataTree = $("script[data-tree]").data("tree").split(",");
+        initializeTreeView(dataTree);
+    });
+</script>

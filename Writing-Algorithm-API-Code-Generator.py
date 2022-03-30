@@ -4,7 +4,7 @@ from urllib.request import urlopen
 
 source = "http://cdn.quantconnect.com.s3.us-east-1.amazonaws.com/terminal/cache/api/csharp_tree.json"
 
-base = "02 Writing Algorithms/04 API Reference/"
+base = "02 Writing Algorithms/98 API Reference/"
 
 dir_ = []
 raw = urlopen("https://raw.githubusercontent.com/QuantConnect/Lean/master/Algorithm/QCAlgorithm.cs").read().decode("utf-8").split('\n')

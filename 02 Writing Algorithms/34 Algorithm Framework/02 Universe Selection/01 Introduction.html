@@ -1,0 +1,28 @@
+<p><img src="https://cdn.quantconnect.com/web/i/docs/algorithm-framework/universe-selection.png" style="width:50px; float: left; margin-right:10px"> The Universe Selection Model creates <code>Universe</code> objects which select the assets for your strategy. We have identified three types of universes that cover most people's requirements and built helper classes to make their implementation easier. <i>Creating</i> Universe Selection Models from scratch isn't simple, so we recommend you use one of the helper universes we've provided.
+</p>
+<p>To <i>set</i> a Universe Selection Model, you should use the <code class="csharp fsharp">AddUniverseSelection</code><code class="python">self.AddUniverseSelection</code> method. This should be done from your algorithm <code class="csharp fsharp">Initialize()</code><code class="python">def Initialize()</code> method:
+</p>
+<div class="section-example-container">
+	<pre class="csharp">public override void Initialize()
+{
+      UniverseSettings.Resolution = Resolution.Minute;
+      var symbols = new [] { QuantConnect.Symbol.Create("SPY", SecurityType.Equity, Market.USA) };
+      AddUniverseSelection( new ManualUniverseSelectionModel(symbols) );
+}</pre>
+	<pre class="python">def Initialize(self):    # Set requested data resolution
+    self.UniverseSettings.Resolution = Resolution.Minute
+    symbols = [ Symbol.Create("SPY", SecurityType.Equity, Market.USA) ]
+    self.AddUniverseSelection( ManualUniverseSelectionModel(symbols) )</pre>
+</div>
+<p>As with all LEAN algorithms, the resolution of the assets added to the universe is configured by the <code class="csharp fsharp">UniverseSettings.Resolution</code><code class="python">self.UniverseSettings.Resolution</code> property.
+</p>
+<p>There are 3 types of universes:</p>
+<ul>
+	<li>Manual Universes - Universes which use a fixed, static set of assets.</li>
+	<li>Fundamental Universes - Universes based on coarse price or fundamental data.</li>
+	<li>Scheduled Universes - Universes triggering on regular intervals.</li>
+</ul><div>
+
+## TODO:&nbsp; <br></div><div>- Add all of these universe selection models: https://github.com/QuantConnect/Lean/tree/master/Algorithm.Framework/Selection and https://github.com/QuantConnect/Lean/tree/master/Algorithm/Selection (OptionChainedUniverseSelectionModel)<br></div>
+- Universe.Unchanged
+<br><div>-OnSecuritiesChanged</div><div>- Using multiple universe selection models</div><div>- AddUniverseSelection vs SetUniverseSelection<br></div>

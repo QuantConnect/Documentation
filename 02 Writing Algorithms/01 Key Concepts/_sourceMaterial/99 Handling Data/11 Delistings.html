@@ -1,0 +1,34 @@
+<meta name="tag" content="data event handlers">
+<meta name="tag" content="delistings event">
+
+<p>
+    $[Delisting,T:QuantConnect.Data.Market.Delisting] events provide notice that an asset is no longer trading on the exchange. A delisting warning is issued on the final trading day for a stock delisting event to give your algorithm time to gracefully exit out of positions before forced termination.
+</p>
+<div class="section-example-container">
+<pre class="python">def Initialize(self):
+    self.SetStartDate(2007, 5, 16)
+    self.SetEndDate(2007, 5, 25)
+    self.SetCash(100000);
+    equity = self.AddEquity("AAA", Resolution.Daily)
+
+def OnData(self, data):
+    self.MarketOrder('AAA', 10)
+    
+    ## Print delisting warnings and noritifications
+    if data.Delistings.ContainsKey('AAA'):
+        delisting = data.Delistings['AAA']
+            
+        ## Log the delisting warning type
+        self.Log(delisting.ToString())
+            
+        if delisting.Type == 0:
+            self.Log('AAA will be delisted EOD')
+        if delisting.Type == 1:
+            self.Log('AAA delisted')
+</pre>
+</div>
+
+## TODO:
+<br>-Add DelistingType enum
+<br>-Update snippet to use Symbol
+<br><div>-Add SetOrderTicket method and add the Ticket member to get the order ticket that liquidates the position</div><div>-ToString<br></div>

@@ -28,6 +28,10 @@
          <td>Future Options</td>
          <td><a href="/datasets/algoseek-us-future-options">US Future Options</a></td>
       </tr>
+      <tr>
+         <td>Index Options</td>
+         <td><a href="/datasets/algoseek-us-index-options">US Index Options</a></td>
+      </tr>
    </tbody>
 </table>
 

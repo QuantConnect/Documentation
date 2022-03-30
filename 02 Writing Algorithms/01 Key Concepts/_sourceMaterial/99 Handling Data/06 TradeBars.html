@@ -1,0 +1,27 @@
+<meta name="tag" content="data event handlers">
+<meta name="tag" content="tradebars event">
+<p>
+TradeBars are individual trades from the exchanges consolidated into price bars. The  
+    $[TradeBar,T:QuantConnect.Data.Market.TradeBar] provides Open, High, Low, Close, and Volume properties for a given period of time. TradeBars are only supported for Equity, Options, and Futures asset types (NOT Forex or CFD). <br></p><p>## TODO: Add missing asset classes: Crypto<br></p>
+<img src="https://cdn.quantconnect.com/docs/i/dataformat-tradebar.png" class="img-responsive">
+<div class="section-example-container">
+<pre class="python">    self.AddEquity("IBM", Resolution.Hour) ## Subscribe to hourly TradeBars
+        
+ def OnData(self, data):
+    ## You can access the TradeBar dictionary in the slice object and then subset by symbol
+    ## to get the TradeBar for IBM
+    tradeBars = data.Bars
+    ibmTradeBar = tradeBars['IBM']
+    ibmOpen = ibmTradeBar.Open      ## Open price
+    ibmClose = ibmTradeBar.Close    ## Close price
+    
+    ## Or you can access the IBM TradeBar by directly subsetting the slice object
+    ## (since you are subscribed to IBM equity data, this will return a TradeBar rather than a QuoteBar)
+    ibmOpen = data['IBM'].Open         ## Open price
+    imbClose = data['IBM'].Close       ## Close price
+    
+</pre>
+</div>
+
+## TODO: Update ^ to use Symbol
+<br><div>-Add EndTime, Period, ToString()</div><div>-The examples on this page should check if the slice contains the data before indexing it. For instance, in the above snippet, we select IBM data without checking if it's in the slice. (https://github.com/QuantConnect/Documentation/issues/204).<br></div>

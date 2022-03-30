@@ -1,0 +1,43 @@
+<p>
+Data can be aggregated according to a period, with the time of the bars used to perform the consolidation. This requires the input data to be of a higher resolution than the desired consolidation period, e.g. to build a 1.5 hour bar you need <i>minute</i> data.
+</p>
+<p>
+The mechanics are identical to consolidation counts described previously. You must create a consolidator object and then register it to receive data with the Subscription Manager.
+</p>
+<div class="section-example-container">
+<pre class="python">def Initialize(self):
+    # Make sure you have the data you need
+    self.AddEquity("QQQ", Resolution.Minute)
+
+    # Create consolidator you need and attach event handler
+    thirtyMinuteConsolidator = TradeBarConsolidator(timedelta(minutes=30))
+    thirtyMinuteConsolidator.DataConsolidated += self.ThirtyMinuteHandler
+
+    # Register consolidator to get automatically updated with minute data
+    self.SubscriptionManager.AddConsolidator("QQQ", thirtyMinuteConsolidator)
+    
+def ThirtyMinuteHandler(self, sender, bar):
+    # Bar period is now 30 min from the consolidator above.
+    self.Debug(str(bar.EndTime - bar.Time) + " " + bar.ToString())
+</pre>
+<pre class="csharp">public override void Initialize()
+{ 
+     // Make sure you have the data you need
+    AddEquity("QQQ", Resolution.Minute);
+
+    // Create consolidator you need and attach event handler
+    var thirtyMinuteConsolidator = new TradeBarConsolidator(TimeSpan.FromMinutes(30));
+    thirtyMinuteConsolidator.DataConsolidated += ThirtyMinuteHandler;
+
+    // Register consolidator to get automatically updated with minute data
+    SubscriptionManager.AddConsolidator("QQQ", thirtyMinuteConsolidator);
+}
+
+private void ThirtyMinuteHandler(object sender, TradeBar bar) {
+    // Bar period is 30 min from the consolidator above.
+    Debug((bar.EndTime - bar.Time).ToString() + " " + bar.ToString());
+}
+</pre>
+</div><div>
+
+## TODO: <br></div><div>- This section should be an example of manually passing updating a consolidator, not a period consolidator</div><div>- Add Tick and Quote consolidators<br></div><div><br></div>

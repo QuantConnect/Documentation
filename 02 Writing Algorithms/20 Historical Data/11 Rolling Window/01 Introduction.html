@@ -1,0 +1,94 @@
+<meta name="tag" content="using data">
+<meta name="tag" content="history and warm up">
+<meta name="tag" content="history">
+<meta name="tag" content="warm up">
+<meta name="tag" content="indicators">
+<meta name="tag" content="rolling windows">
+<p>
+<code>RollingWindow</code> is an array of data that allows for reverse list access semantics, where the object with index [0] refers to the <i>most recent item</i> in the window, and index [Length-1] refers to the last item in the window, where Length is the number of elements in the window.
+</p>
+<p>
+	We can store any type of object in a RollingWindow, since it is a generic type with a given max length:
+</p>
+<div class="section-example-container">
+	<pre class="csharp">	closeWindow = new RollingWindow&lt;decimal&gt;(4);
+	tradeBarWindow = new RollingWindow&lt;TradeBar&gt;(2);
+	quoteBarWindow = new RollingWindow&lt;QuoteBar&gt;(2);
+	</pre>
+	<pre class="python">	self.closeWindow = RollingWindow[float](4)
+	self.tradeBarWindow = RollingWindow[TradeBar](2)
+	self.quoteBarWindow = RollingWindow[QuoteBar](2)
+	</pre>
+</div>
+<p>These rolling arrays are updated by adding a new element of its type with the Add method:</p>
+<div class="section-example-container">
+	<pre class="csharp">	closeWindow.Add(data["SPY"].Close);
+	tradeBarWindow.Add(data["SPY"]);
+	quoteBarWindow.Add(data["EURUSD"]);
+	</pre>
+	<pre class="python">	self.closeWindow.Add(data["SPY"].Close)
+	self.tradeBarWindow.Add(data["SPY"])
+	self.quoteBarWindow.Add(data["EURUSD"])
+	</pre>
+</div>
+<p>The most recent element, the previous, and the last item for the decimal case are:</p><p>## TODO: RollingWindows are FIFO, starting at index 0.<br></p>
+<div class="section-example-container">
+	<pre class="csharp">	var currentClose = closeWindow[0];
+	var previousClose = closeWindow[1];
+	var oldestClose = closeWindow[closeWindow.Count-1];
+	</pre>
+	<pre class="python">	currentClose = self.closeWindow[0]
+	previousClose = self.closeWindow[1]
+	oldestClose = self.closeWindow[self.closeWindow.Count-1]
+	</pre>
+</div>
+<p>
+	We recommend using RollingWindows to hold periods of data instead of making multiple Historical Data Requests. It is much more efficient as we just need to update the RollingWindow with the latest data point, while a History call fetches the whole requested period and synchronizes the data.
+</p>
+<div class="section-example-container">
+	<pre class="csharp">// In Initialize, create the rolling windows
+public override void Initialize()
+{
+    // Create a Rolling Window to keep the 4 decimal
+    closeWindow = new RollingWindow&lt;decimal&gt;(4);
+    // Create a Rolling Window to keep the 2 TradeBar
+    tradeBarWindow = new RollingWindow&lt;TradeBar&gt;(2);
+    // Create a Rolling Window to keep the 2 QuoteBar
+    quoteBarWindow = new RollingWindow&lt;QuoteBar&gt;(2);
+}
+
+// In OnData, update the rolling windows
+ public override void OnData(Slice data)
+{
+    if(data.ContainsKey("SPY")) {
+        // Add SPY bar close in the rolling window
+        closeWindow.Add(data["SPY"].Close);
+        // Add SPY TradeBar in rolling window
+        tradeBarWindow.Add(data["SPY"]);
+    }
+    if(data.ContainsKey("EURUSD")) {
+        // Add EURUSD QuoteBar in rolling window
+        quoteBarWindow.Add(data["EURUSD"]);
+    }
+}</pre>
+	<pre class="python"># In Initialize, create the rolling windows
+def Initialize(self):
+    # Create a Rolling Window to keep the 4 decimal
+    self.closeWindow = RollingWindow[float](4)
+    # Create a Rolling Window to keep the 2 TradeBar
+    self.tradeBarWindow = RollingWindow[TradeBar](2)
+    # Create a Rolling Window to keep the 2 QuoteBar
+    self.quoteBarWindow = RollingWindow[QuoteBar](2)
+
+# In OnData, update the rolling windows
+ def OnData(self, data):
+    if data.ContainsKey("SPY"):
+        # Add SPY bar close in the rolling window
+        self.closeWindow.Add(data["SPY"].Close)
+        # Add SPY TradeBar in rolling window
+        self.tradeBarWindow.Add(data["SPY"])
+    if data.ContainsKey("EURUSD"):
+        # Add EURUSD QuoteBar in rolling window
+        self.quoteBarWindow.Add(data["EURUSD"])
+</pre>
+</div>

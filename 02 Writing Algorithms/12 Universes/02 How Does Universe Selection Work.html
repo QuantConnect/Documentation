@@ -1,0 +1,16 @@
+<p>Universe Selection sends a large data set into a filter function. After passing through your filters, the algorithm needs you to return an array of <code>Symbol</code> objects. LEAN automatically subscribes to these new symbols and adds them to your algorithm.</p>
+
+<figure>
+<img src="https://cdn.quantconnect.com/docs/i/filters.png" class="img-responsive">
+<figcaption>QuantConnect Coarse and Fine Universe Selection</figcaption>
+</figure>
+
+<p>Your algorithm can do almost anything inside your filter functions, but the goal should be to narrow down the 8,000 daily stocks to a few which are most applicable for your algorithm.</p>
+
+<p>The first stage of the filter is called "Coarse Universe Selection". This is for roughly filtering down the universe by simple properties like price and volume. The <i>result</i> of this is piped into the Fine Universe Selection function to perform selection on fundamental data like PE Ratio and Earnings.</p>
+
+<p>When you deselect an asset you currently own or have open orders, it will continue receiving data. This is to ensure the portfolio models are accurate. You can use the algorithm <code class="python">self.ActiveSecurities</code><code class="csharp">ActiveSecurities</code> property to get the list of assets currently in a universe. Additionally, even once removed from the universe the security object in the Securties collection is maintained for record keeping purposes (e.g. total fees accrued, volume traded).</p>
+
+<p>By default, assets selected by universe selection are requested with minute resolution data. You can change the default selection by adjusting the <code>UniverseSettings</code> property, which we'll dive into below.</p><div>
+
+## TODO: <br></div><div>- Explain that AddEquity should not be used to add securities that Universe Selection has added since they are added to a different universe (user-defined universe)</div><div>- Universe.Unchanged<br></div>

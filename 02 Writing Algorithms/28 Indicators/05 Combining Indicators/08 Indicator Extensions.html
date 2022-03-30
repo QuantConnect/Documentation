@@ -1,0 +1,339 @@
+<meta name="tag" content="indicators">
+<meta name="tag" content="indicator helpers">
+<meta name="tag" content="indicator extensions">
+<p>
+	Indicators are <i>composable</i> - meaning they can be <i>chained</i> together to create unique combinations much like lego blocks. We support several indicator extensions as outlined below:
+</p> 
+<table class="table qc-table table-striped csharp">
+	   
+	<thead>
+			  
+		<tr>
+					 
+			<th>
+				Extension
+			</th>
+					 
+			<th>
+				Example Usage
+			</th>
+				  
+		</tr>
+		   
+	</thead>
+	   
+	<tbody>
+			  
+		<tr>
+					 
+			<td>
+				<b>.Plus()</b>
+			</td>
+					 
+			<td>
+							
+				<div class="indicators-method-usage">
+					var emaSum = ema5.Plus(ema20);
+				</div>
+							<small>Add a fixed value or indicator value to another indicator</small>         
+			</td>
+				  
+		</tr>
+			  
+		<tr>
+					 
+			<td>
+				<b>.Minus()</b>
+			</td>
+					 
+			<td>
+							
+				<div class="indicators-method-usage">
+					var emaDelta = ema20.Minus(ema5);
+				</div>
+							<small>Find the difference between two indicators</small>         
+			</td>
+				  
+		</tr>
+			  
+		<tr>
+					 
+			<td>
+				<b>.Times()</b>
+			</td>
+					 
+			<td>
+							
+				<div class="indicators-method-usage">
+					var rsiSafe = rsi.Times(0.95);
+				</div>
+							<small>Multiply one indicator or constant value by another.</small>         
+			</td>
+				  
+		</tr>
+			  
+		<tr>
+					 
+			<td>
+				<b>.Over()</b>
+			</td>
+					 
+			<td>
+							
+				<div class="indicators-method-usage">
+					var emaAverage = ema5.Plus(ema10).Over(2);
+				</div>
+							<small>Divide indicator chain by constant or indicator.</small>         
+			</td>
+				  
+		</tr>
+			  
+		<tr>
+					 
+			<td>
+				<b>.Of()</b>
+			</td>
+					 
+			<td>
+							
+				<div class="indicators-method-usage">var rsi = RSI("SPY", 10);</div><div class="indicators-method-usage">
+					var sma = new SimpleMovingAverage(14); <br></div><div class="indicators-method-usage">
+						 var rsiAverage= IndicatorExtensions.Of( sma, rsi );
+					</div>
+								<small>Feed an indicator output into input of another.</small>         
+				</td>
+					  
+			</tr>
+				  
+			<tr>
+						 
+				<td>
+					<b>.SMA(int period)</b>
+				</td>
+						 
+				<td>
+								
+					<div class="indicators-method-usage">
+						var rsiAvg = rsi.SMA(10);
+					</div>
+								<small>Of extension helper for SMA method.</small>         
+				</td>
+					  
+			</tr>
+				  
+			<tr>
+						 
+				<td>
+					<b>.EMA(int period)</b>
+				</td>
+						 
+				<td>
+								
+					<div class="indicators-method-usage">
+						var rsiAvg = rsi.EMA(10);
+					</div>
+								<small>Of extension helper for EMA method.</small>         
+				</td>
+					  
+			</tr>
+				  
+			<tr>
+						 
+				<td>
+					<b>.MAX(int period)</b>
+				</td>
+						 
+				<td>
+								
+					<div class="indicators-method-usage">
+						var rsiMax = rsi.MAX(10);
+					</div>
+								<small>Of extension helper for MAX method, get max in i-samples.</small>         
+				</td>
+					  
+			</tr>
+				  
+			<tr>
+						 
+				<td>
+					<b>.MIN(int period)</b>
+				</td>
+						 
+				<td>
+								
+					<div class="indicators-method-usage">
+						var rsiMin = rsi.MIN(10);
+					</div>
+								<small>Of extension helper for MIN method, get min in i-samples.</small>         
+				</td>
+					  
+			</tr>
+			   
+		</tbody>
+	</table>
+
+	<table class="table qc-table table-striped python">
+		<thead>
+			<tr>
+				<th>Extension</th>
+				<th>Example Usage</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td>
+					<b>.Plus()</b>
+				</td>
+				<td>
+					<div class="indicators-method-usage">
+						emaSum = IndicatorExtensions.Plus(ema20, ema5)
+					</div>
+					<small>Add a fixed value or indicator value to another indicator</small>
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<b>.Minus()</b>
+				</td>
+				<td>
+					<div class="indicators-method-usage">
+						emaDelta = IndicatorExtensions.Minus(ema5, ema20)
+					</div>
+					<small>Find the difference between two indicators</small>
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<b>.Times()</b>
+				</td>
+				<td>
+					<div class="indicators-method-usage">
+						rsiSafe = IndicatorExtensions.Times(rsi, 0.95)
+					</div>
+					<small>Multiply one indicator or constant value by another.</small>
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<b>.Over()</b>
+				</td>
+				<td>
+					<div class="indicators-method-usage">
+					 emaAverage = IndicatorExtensions.Over(IndicatorExtensions.Plus(ema10, ema5), 2)
+					</div>
+					<small>Divide indicator chain by constant or indicator.</small>
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<b>.Of()</b>
+				</td>
+				<td>
+					<div class="indicators-method-usage">rsi = self.RSI("SPY", 10)</div><div class="indicators-method-usage">
+						sma = SimpleMovingAverage(14)
+						<br>
+							rsiAverage= IndicatorExtensions.Of(sma, rsi)
+						</div>
+						<small>Feed an indicator output into input of another.</small>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<b>.SMA(int period)</b>
+					</td>
+					<td>
+						<div class="indicators-method-usage">
+							rsiAvg = IndicatorExtensions.SMA(rsi, 10)
+						</div>
+						<small>Of extension helper for SMA method.</small>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<b>.EMA(int period)</b>
+					</td>
+					<td>
+						<div class="indicators-method-usage">
+							rsiAvg = IndicatorExtensions.EMA(rsi, 10)
+						</div>
+						<small>Of extension helper for EMA method.</small>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<b>.MAX(int period)</b>
+					</td>
+					<td>
+						<div class="indicators-method-usage">
+							rsiMax = IndicatorExtensions.MAX(rsi, 10)
+						</div>
+						<small>Of extension helper for MAX method, get max in i-samples.</small>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<b>.MIN(int period)</b>
+					</td>
+					<td>
+						<div class="indicators-method-usage">
+							rsiMin = IndicatorExtensions.MIN(rsi, 10)
+						</div>
+						<small>Of extension helper for MIN method, get min in i-samples.</small>
+					</td>
+				</tr>
+			</tbody>
+		</table> 
+	
+
+<div class="section-example-container">
+<pre class="csharp">public class IndicatorTests : QCAlgorithm
+{
+    //Save off reference to indicator objects
+    RelativeStrengthIndex _rsi;
+    SimpleMovingAverage _rsiSMA;
+
+    public override void Initialize()
+    {
+       //In addition to other initialize logic:
+       _rsi = RSI("SPY", 14); // Creating a RSI
+       _rsiSMA = _rsi.SMA(3); // Creating the SMA on the RSI
+    }
+    
+    public override void OnData(Slice data)
+    {
+       Plot("RSI", _rsi, _rsiSMA);
+    }
+}
+</pre>
+<pre class="python">class IndicatorTests(QCAlgorithm):
+    def Initialize():
+       # In addition to other initialize logic:
+       self.rsi = self.RSI("SPY", 14)                     # Creating a RSI
+       self.rsiSMA = IndicatorExtensions.SMA(self.rsi, 3) # Creating the SMA on the RSI
+       self.PlotIndicator("RSI", self.rsi, self.rsiSMA)
+</pre>
+</div>
+
+<p>The first argument of the <code>IndicatorExtensions.Of</code> method must be an unregistered indicator. If you pass a registered indicator as the argument, that first indicator is updated twice. The first update is from the registered security and the second update is from the <code>IndicatorExtensions</code> class. To see how to create unregistered indicators, open the <a href="/docs/v2/writing-algorithms/indicators/indicator-reference">Indicator Reference</a>, click an indicator, and scroll down to the <span class="page-section-name">Manual Usage</span> section. The following example demonstrates how to create an unregistered <code>SimpleMovingAverage</code> indicator:<br></p>
+<div class="section-example-container">
+<pre class="csharp">public class IndicatorTests : QCAlgorithm
+{
+    private Symbol _symbol;
+    private RelativeStrengthIndex _rsi;
+    private SimpleMovingAverage _rsiSMA;
+
+    public override void Initialize()
+    {
+        _symbol = AddEquity("SPY", Resolution.Daily).Symbol;
+        _rsi = RSI(_symbol, 14);
+        _rsiSMA = IndicatorExtensions.Of(new SimpleMovingAverage(10), _rsi);
+    }
+}
+</pre>
+<pre class="python">class IndicatorTests(QCAlgorithm):
+    def Initialize():
+       self.symbol = self.AddEquity("SPY", Resolution.Daily).Symbol
+       rsi = self.RSI(self.symbol, 14)
+       self.rsi_sma = IndicatorExtensions.Of(SimpleMovingAverage(10), rsi)
+</pre>
+</div>

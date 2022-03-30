@@ -1,0 +1,59 @@
+<p>
+Once models are trained you can store the results into an <i>object store</i>. This is a permanent project-specific storage location for data located in QuantConnect. Objects are accessible from backtesting and live, and are stored with a key. You can think of this almost like a private project DropBox for your model data. 
+</p>
+<p>The object store can be used as a back up of your algorithm variables or to load a complex AI model that you don't wish to re-train. Once stored, your data is backed up on QuantConnect servers until requested.</p>
+<p>
+When deploying a live algorithm, your state is loaded from the object store on deployment. Currently, it is not "refreshed", so you will need to redeploy the live algorithm when you wish to reload your data.
+</p>
+
+<h4>Storing Data</h4>
+<p>
+The Object Store is accessible in the root of your algorithm. It has the following methods available for storing data. You can see an example of using these in the <a class="csharp" target="_BLANK" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.CSharp/ObjectStoreExampleAlgorithm.cs">demonstration algorithm</a><a class="python" target="_BLANK" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.Python/ObjectStoreExampleAlgorithm.py">demonstration algorithm</a>. 
+</p> 
+
+<div class="section-example-container">
+<pre class="python">
+self.ObjectStore.Save("key", "value")                        # Save data as a string
+self.ObjectStore.SaveBytes("key", bytearray(objectValue))    # Save data as a bytes
+self.ObjectStore.SaveJson("key", objectValue)                # Save object as JSON encoded string
+self.ObjectStore.SaveXml("key", objectValue)                 # Save object as XML encoded string
+</pre>
+</div>
+
+<h4>Reading Data</h4>
+<div class="section-example-container">
+<pre class="python">
+val = self.ObjectStore.Read("key")                        # Read data as string
+bytes = self.ObjectStore.ReadBytes("key")                 # Read data as bytes
+jsonObj = self.ObjectStore.ReadJson("key")    # Deserialize a JSON object from storage
+xmlObj = self.ObjectStore.ReadXml("key")      # Deserialize a XML object from storage
+</pre>
+</div>
+
+<h4>Deleting Data</h4>
+<p>
+You can delete data from the object store using the <code>Delete()</code> method.
+</p>
+<div class="section-example-container">
+<pre class="python">
+self.ObjectStore.Delete("key")            # Delete the data from the store
+</pre>
+</div>
+
+
+<h4>Storage Limits</h4>
+<table class="table qc-table">
+<thead>
+<tr>
+<th width="30%">Subscription Level</th>
+<th>Resource Allocation</th>
+</tr>
+</thead>
+<tbody>
+<tr><td>Free</td><td>5MB, 100 Files</td></tr>
+<tr><td>Prime</td><td>50MB, 1000 Files</td></tr>
+<tr><td>Professional</td><td>500MB, 10,000 Files</td></tr>
+</tbody>
+</table>
+
+## TODO: Redirect to Research Env docs to show how to store models from specific libraries.

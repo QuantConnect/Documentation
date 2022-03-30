@@ -1,0 +1,55 @@
+<span class="python">
+<p>
+In Python, data is returned as a Pandas DataFrame. It is a multi-index dataframe where the first index is the symbol. The data is then sorted in rows according to the <a target="_BLANK" href="/docs/key-concepts/understanding-time">EndTime</a> of the bar. By learning a few helpful short cuts, you can directly access the history values you need for your algorithm.
+</p>
+<div class="section-example-container">
+<pre class="python">
+# Setup Universe:
+eurusd = self.AddForex("EURUSD", Resolution.Daily).Symbol
+nzdusd = self.AddForex("NZDUSD", Resolution.Daily).Symbol
+
+<b> # STEP 1:  Request Dataframe: </b>
+
+self.df = self.History([eurusd, nzdusd], 3)
+<img class="img-responsive img-thumbnail" src="https://cdn.quantconnect.com/docs/i/history-dataframe-loc-array_rev0.png" />
+
+
+<b> # STEP 2: Check if empty and lock onto a symbol index with the <b>loc[]</b> method: </b>
+
+if not self.df.empty:
+    eurusd_quotebars = self.df.loc["EURUSD"]
+<img class="img-responsive img-thumbnail" src="https://cdn.quantconnect.com/docs/i/history-dataframe-loc-single_rev0.png" />
+
+
+<b># STEP 3: Extract and manipulate a single column with the string column name:</b>
+
+spread = eurusd_quotebars["askclose"] - eurusd_quotebars["bidclose"]
+<img class="img-responsive img-thumbnail" src="https://cdn.quantconnect.com/docs/i/history-dataframe-column-spread.png" />
+# Make sure to use the lowercase string column name.
+</pre>
+</div>
+
+<p>
+It's possible to also perform analysis <i>between</i> symbols by
+    <a target="_BLANK" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.unstack.html">unstacking the DataFrame</a>.
+This will transform each column into the symbol values for one of the price-columns you select. 
+</p>
+
+<div class="section-example-container">
+<pre class="python">
+<b># UNSTACKING: Transform into columns:</b>
+
+# Fetch multi-indexed history:
+self.dataframe = self.History([self.Symbol("IBM"), self.Symbol("AAPL")], 3)
+<img class="img-responsive img-thumbnail" src="https://cdn.quantconnect.com/docs/i/history-dataframe-unstack-source_rev0.png" />
+
+# Transform using unstack:
+self.dataframe["close"].unstack(level=0)
+<img class="img-responsive img-thumbnail" src="https://cdn.quantconnect.com/docs/i/history-dataframe-unstack_rev1.png" />
+# Make sure to use the lowercase string column name.
+</pre>
+</div>
+
+</span>
+
+## TODO: Add that you can access a security’s data in a DataFrame by using the Symbol or the string representation of the Symbol (`str(Symbol.ID)`)

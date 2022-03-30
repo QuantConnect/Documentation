@@ -135,7 +135,7 @@ for id, e in exchange_ids.items():
 """
 html += "</tbody></table>"
 
-with open("02 Writing Algorithms/02 User Guides/14 Datasets/21 Morningstar/01 US Fundamental Data/05 Data Point Attributes.html", "w", encoding="utf-8") as text:
+with open("02 Writing Algorithms/14 Datasets/04 Morningstar/01 US Fundamental Data/05 Data Point Attributes.html", "w", encoding="utf-8") as text:
     text.write("""<style>
 #enum-code-table td:nth-child(2), 
 #enum-code-table th:nth-child(2) {

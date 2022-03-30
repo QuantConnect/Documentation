@@ -1,0 +1,79 @@
+<p>The following backtest verifies the <code>StopMarketOrder</code> behavior. On even days, the algorithm buys SPY at the current market price and sells when the price drops 1%. On odd days, the algorithm shorts SPY and buys when the price raises 1%. The following table shows the first four trades in the backtest:</p>
+
+<table class="qc-table table" id="research-nodes-table">
+    <thead>
+        <tr>
+            <th>Time</th>
+            <th>Symbol</th>
+            <th>Price</th>
+            <th>Quantity</th>
+            <th>Type</th>
+            <th>Status</th>
+            <th>Value</th>
+            <th>Tag</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>2021-07-01T13:31:00Z</td>
+            <td>SPY</td>
+            <td>429.10</td>
+            <td>-1</td>
+            <td>Market</td>
+            <td>Filled</td>
+            <td>-429.10</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>2021-07-01T13:31:00Z</td>
+            <td>SPY</td>
+            <td>433.44</td>
+            <td>1</td>
+            <td>Stop Market</td>
+            <td>Filled</td>
+            <td>433.44</td>
+            <td>Stop Price: 433.43</td>
+        </tr>
+        <tr>
+            <td>2021-07-02T17:04:00Z</td>
+            <td>SPY</td>
+            <td>433.44</td>
+            <td>1</td>
+            <td>Market</td>
+            <td>Filled</td>
+            <td>433.44</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>2021-07-02T17:04:00Z</td>
+            <td>SPY</td>
+            <td>429.00</td>
+            <td>-1</td>
+            <td>Stop Market</td>
+            <td>Filled</td>
+            <td>-429.00</td>
+            <td>Stop Price: 429.10</td>
+        </tr>
+    </tbody>
+</table>
+
+<style>
+#research-nodes-table td:nth-child(3), 
+#research-nodes-table th:nth-child(3), 
+#research-nodes-table td:nth-child(4), 
+#research-nodes-table th:nth-child(4), 
+#research-nodes-table td:nth-child(7), 
+#research-nodes-table th:nth-child(7) {
+    text-align: right;
+}
+</style>
+
+<p>On July 1st, the algorithm shorts SPY at $429.10 and then buys it back at $433.44 when the stop price is $433.43. The stop price is 1% above market price. Note that $429.10 is not market price when the first two orders are submitted. $429.10 is the fill price at the bid, but it's not far from the market price because 429.1 * 1.01 = 433.39. The fill price of the stop market order is $433.44, which, as expected, is higher than $433.43. The fill model assumes the worst-case scenario between the market price and the stop price. In this case, the worst-case scenario is the maximum of the market price and stop price.</p>
+
+<p>On July 2nd, the algorithm buys SPY at $433.44 and sells it at $429 when the stop price is $429.10. The stop price is 1% below market price. Note that $433.44 is not market price when the second two orders are submitted. $433.44 is the fill price at the ask, but it's not far off from the market price because 433.44 * 0.99 = 429.11. The fill price of the stop market order is $429, which, as expected, is lower than $429.10. The fill model assumes the worst-case scenario between the market price and the stop price. In this case, the worst-case scenario is the minimum of the market price and stop price.</p>
+
+<p>To reproduce these results, backtest the following algorithm:</p>
+
+<div class="qc-embed-frame python" style="display: inline-block; position: relative; width: 100%; min-height: 100px; min-width: 300px;"><div class="qc-embed-dummy" style="padding-top: 56.25%;"></div><div class="qc-embed-element" style="position: absolute; top: 0; bottom: 0; left: 0; right: 0;"><iframe class="qc-embed-backtest" src="https://www.quantconnect.com/terminal/processCache?request=embedded_backtest_441f4e5f4793c00b95a8dfbc3a0925f1.html" style="max-width: calc(100vw - 30px); max-height: 100vw; overflow: hidden;" scrolling="no" width="100%" height="100%"></iframe></div></div>
+
+<div class="qc-embed-frame csharp" style="display: inline-block; position: relative; width: 100%; min-height: 100px; min-width: 300px;"><div class="qc-embed-dummy" style="padding-top: 56.25%;"></div><div class="qc-embed-element" style="position: absolute; top: 0; bottom: 0; left: 0; right: 0;"><iframe class="qc-embed-backtest" src="https://www.quantconnect.com/terminal/processCache?request=embedded_backtest_9499cb6385d54105dee8740de9131057.html" style="max-width: calc(100vw - 30px); max-height: 100vw; overflow: hidden;" scrolling="no" width="100%" height="100%"></iframe></div></div>

@@ -1,0 +1,61 @@
+<p>
+The Update method returns an array of Insight objects. An Insight is a <i>single</i> prediction for an asset. These can be thought of as actionable trading signals, indicating the asset direction, magnitude, and confidence in the near future. All insights can take a weight parameter to set the desired weighting for the insight. Insight classes have the following important properties:
+</p>
+<div class="section-example-container">
+	<pre class="csharp">class Insight {
+    // Symbol of this Insight
+    Symbol Symbol;
+
+    // Gets the type of insight, for example, price insight or volatility insight
+    InsightType Type;
+
+    // Gets the predicted direction, Down, Flat or Up.
+    InsightDirection Direction;
+
+    // Gets the period over which this insight is expected to come to fruition
+    TimeSpan Period;
+
+    // Gets the predicted percent change in the insight type (price/volatility) (optional)
+    double? Magnitude;
+
+    // Gets the confidence in this insight (optional)
+    double? Confidence;
+
+    // The weight in this insight (optional)
+    double? Weight;
+}</pre>
+	<pre class="python">class Insight:
+    self.Symbol # Symbol of this Insight
+    self.Type # Type of insight (price or volatility)
+    self.Direction # Insight Direction (down, flat or up)
+    self.Period # Insight period (TimeSpan)
+    self.Magnitude # Expected percent change (optional, double)
+    self.Confidence # Confidence in insight (optional, double)
+    self.Weight # Weighting of the insight (optional, double) 
+</pre>
+</div>
+<p>An $[Insight,T:QuantConnect.Algorithm.Framework.Alphas.Insight] constructor takes the following arguments:</p>
+<div class="section-example-container">
+	<pre class="python"># Insight Constructor Arguments:
+# Insight(symbol, timedelta, type, direction, magnitude=None, confidence=None, sourceModel=None)
+ Insight("IBM", timedelta(minutes=20), InsightType.Price, InsightDirection.Up, 0.0025, 1.00, None, 0.1)</pre>
+	<pre class="csharp">// Insight Constructor Arguments
+// new Insight(symbol, period, type, confidence=null, magnitude=null, source=null, weighting=null);
+var insight = new Insight("IBM", TimeSpan.FromMinutes(20), InsightType.Price, InsightDirection.Up, null, weight:0.1);</pre>
+</div>
+
+	<p>We have provided a helper method to make creating Insights easier. This can be used in your Update method to create insight objects for your Alpha Model of the Price type:</p>  
+	<div class="section-example-container">
+		<pre class="python">insight = Insight.Price("IBM", timedelta(minutes = 20), InsightDirection.Up)</pre>
+		<pre class="csharp">var insight = Insight.Price("IBM", TimeSpan.FromMinutes(20), InsightDirection.Up);</pre>
+	</div>
+
+	<p>If you are creating a portfolio style of algorithm where the Insights can recommend a specific weighting, you can specify the "Weight" property, which most portfolio construction systems will allocate capital to accordingly.</p>  
+	<div class="section-example-container">
+		<pre class="python"># Skipping magnitude, confidence and source model and assigning 25% to weighting.
+insight = Insight.Price("IBM", timedelta(minutes = 20), InsightDirection.Up, None, None, None, 0.25)</pre>
+		<pre class="csharp">// Skipping magnitude, confidence and source model and assigning 25% to weighting.
+var insight = Insight.Price("IBM", TimeSpan.FromMinutes(20), InsightDirection.Up, null, null, null, 0.25);</pre>
+	</div>
+
+## TODO: Don’t place a scheduled event in your alpha model to emit insights with EmitInsights (and returning an empty list in Update). Instead, use the Schedule event to set a flag, then you can still return insights in the Update method.
