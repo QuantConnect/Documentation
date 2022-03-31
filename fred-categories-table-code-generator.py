@@ -42,14 +42,7 @@ html += """</tbody>
 </table>"""
 
 with open("02 Writing Algorithms/14 Datasets/17 FRED/01 US Federal Reserve (FRED)/05 Data Point Attributes.html", "w", encoding="utf-8") as text:
-    text.write("""<style>
-#enum-code-table td:nth-child(2), 
-#enum-code-table th:nth-child(2) {
-    text-align: right;
-}
-</style>
-
-<h4>Fred Attributes</h4>
+    text.write("""<h4>Fred Attributes</h4>
 <div data-tree="QuantConnect.DataSource.Fred"></div>
 
 <h4>Reference Table</h4>
