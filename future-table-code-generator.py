@@ -38,7 +38,7 @@ for x in raw:
     if len(splits) < 3: continue
     
     if str(splits[2]) == "future":
-        html_[splits[1]] = f'''<tr><th colspan="3" style="width: 100%;">{splits[3]}</th></tr>
+        html_[splits[1]] = f'''<tr><td colspan="3" style="width: 100%;">{splits[3]}</td></tr>
 <tr><td style="width: 15%;">{splits[1].upper()}</td><td style="width: 15%;">{splits[0].upper()}</td><td style="width: 70%;"><code>{symbols[splits[1]] if splits[1] in symbols else "/"}</code></td></tr>
 '''
 

@@ -31,7 +31,7 @@ html = '''<table class="table qc-table table-reflow">
 '''
 
 for cat, key_dict in summaries.items():
-    html += f'''<tr><th colspan="3">{cat}</th></tr>
+    html += f'''<tr><td colspan="3"><b>{cat}</b></td></tr>
 '''
 
     for key, (ticker, summary) in key_dict.items():
