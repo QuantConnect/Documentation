@@ -2,7 +2,7 @@ from urllib.request import urlopen
 
 raw = urlopen("https://raw.githubusercontent.com/QuantConnect/Lean/master/Data/symbol-properties/symbol-properties-database.csv").read().decode("utf-8").split('\n')
 
-cryptos_exchange = {"binance": "Binance", "bitfinex": "Bitfinex", "gdax": "Coinbase Pro", "ftx": "FTX", "ftxusd": "FTX-US", "kraken": "Kraken"}
+cryptos_exchange = {"binance": "Binance", "binanceus": "BinanceUS", "bitfinex": "Bitfinex", "gdax": "Coinbase Pro", "ftx": "FTX", "ftxus": "FTXUS", "kraken": "Kraken"}
 forex_exchanges = {"oanda": "Oanda"}
 cfd_exchanges = {"oanda": "Oanda"}
 
