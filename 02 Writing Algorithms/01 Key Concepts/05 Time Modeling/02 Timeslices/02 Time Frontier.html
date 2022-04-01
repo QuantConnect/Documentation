@@ -1,2 +1,11 @@
 <p>
+QuantConnect allows your algorithm to request data for multiple securities and multiple resolutions. This creates a situation where one of your data subscriptions is ready to emit, but another subscription with a longer period may still be constructing its bar. To coordinate this data we use the <i>End Time</i> of a data point to transmit it to your algorithm.
 </p>
+
+<img src="https://cdn.quantconnect.com/docs/i/time-frontier_rev1.gif" class="img-responsive"/>
+
+<p>
+Once a datapoint's <i>EndTime</i> has passed, it will be transmitted to your algorithm OnData() method. For bar data, this is the beginning of the <i>next</i> bar. Your algorithm is only permitted to access values of securities from before this Time Frontier, preventing you from accidentally looking into the future.
+</p>
+
+<p>The <code class="csharp">Time</code><code class="python">self.Time</code> property in your algorithm is always equal to this Time Frontier. This is also used as the timestamp for any <a class="docs-internal-link" href="/docs/algorithm-reference/logging-and-debug">logging and debugging</a> messages.</p>
