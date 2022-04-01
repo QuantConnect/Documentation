@@ -1,1 +1,11 @@
 <div>-If a bar is created over a period of time, the data points throughout the period are aggregated to form OHLC values.</div><div>-Periods are a length of time</div><div>-Bars are emit at the start time + Period (aka EndTime)<br></div><p></p>
+
+<p>
+Bar data represents the aggregation of a period of data into a single object. In QuantConnect, we make this easy for you by pre-aggregating billions of raw trade-ticks into <i>Trade Bars</i>, and quote-ticks into <i>Quote Bars</i>.</p>
+<p>
+The close of a bar is not known until the start of the <i>next</i> bar, which can sometimes be confusing. For example, a price bar for Friday will include all the ticks from Friday 00:00 to Friday 23:59.99999, but it will actually be emitted to your algorithm on Saturday at midnight. Because of this, any orders you create after analyzing the Friday data will be sent to your brokerage on Saturday, when most markets are closed. QuantConnect automatically turns your order into a <code>MarketOnOpen</code> order, which will be filled Monday morning.
+</p>
+<img src="https://cdn.quantconnect.com/docs/i/bar-stream_rev0.png" class="img-responsive"/>
+<p>
+When there are no ticks during a period, the previous bar transmitted is copied and emitted at the request resolution. In QuantConnect, this is the default behavior for bar data and it is referred to as "filling the data forward". You can configure whether this is enabled when you <a class="docs-internal-link" href="/docs/algorithm-reference/initializing-algorithms#Initializing-Algorithms-Selecting-Asset-Data">request the security data</a>.
+</p>
