@@ -6,11 +6,11 @@ $getSettlementText = function($usBrokerage, $cashAccount=null, $marginAccount=nu
 
     if ($usBrokerage) {
         if ($cashAccount) {
-            $result .= "If you trade with a cash account, trades settle immediately. ";
+            $result .= "If you trade with a margin account, trades settle immediately. ";
         }
 
         if ($marginAccount) {
-            $result .= "If you trade with a margin account, ";
+            $result .= "If you trade with a cash account, ";
 
             if ($equities) {
                 $result .= "Equity trades settle 3 days after the transaction date (T+3)";
