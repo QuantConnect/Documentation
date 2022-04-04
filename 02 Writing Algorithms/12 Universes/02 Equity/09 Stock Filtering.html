@@ -1,1 +1,41 @@
+<p>Corporate data can be used in your algorithms to screen for stocks and create a universe of stocks to trade. The Data Market lists all of the corporate data points included in the <a href="https://www.quantconnect.com/datasets/morning-star-us-fundamentals">US Fundamental Data from Morningstar</a>. To create a stock screener that uses corporate data, call <code>AddUniverse</code> in <code>Initialize</code> and provide two stock selection functions. The first selection function allows you to screen for stocks with corporate data. The second selection function allows you to screen for stocks using the corporate data provided by Morningstar. The following snippet demonstrates a way to screen for the 100 stocks with the lowest PE Ratio. For a full example, refer to <a href="https://www.quantconnect.com/datasets/morning-star-us-fundamentals/examples">this backtest</a>.</p>
+
+<div class="section-example-container">
+<pre class="python">class MyAlgorithm(QCAlgorithm):
+    def Initialize(self):
+        self.AddUniverse(self.CoarseSelection, self.FineSelection)
+
+    def CoarseSelection(self, coarse):
+        return [c.Symbol for c in coarse if c.HasFundamentalData]
+
+    def FineSelection(self, fine):
+        sorted_by_pe = sorted(fine, key=lambda x.ValuationRatios.PERatio)
+        return [x.Symbol for x in sorted_by_pe[:100]]
+</pre>
+</div>
+
+<p>In addition to valuation ratios, the <a href="https://www.quantconnect.com/datasets/morning-star-us-fundamentals">US Fundamental Data from Morningstar</a> has many other data point attributes, including over 200 different categorization fields for each US stock. These are grouped into sectors, industry groups and industries. These groups can be used to target specific sectors, industry groups and industries within your trading strategies. The following sections demonstrate the process of screening for stocks based on each of these groups. For a full list of the available options, refer to the Data Market.</p>
+
+<h4>Sectors</h4>
+<p>Sectors are large super categories of data. They are accessed with the <code>MorningstarSectorCode</code> property. The following snippet demonstrates the process of screening for stocks in the technology sector:</p>
+<div class="section-example-container">
+<pre class="python">tech = [x for x in fine if x.AssetClassification.MorningstarSectorCode == MorningstarSectorCode.Technology]
+</pre>
+</div>
+
+<h4>Industry groups</h4>
+<p>Industry groups are clusters of related industries that tie together. They are accessed with the <code>MorningstarIndustryGroupCode</code> property. The following snippet demonstrates the process of screening for stocks in the agriculture industry group:</p>
+<div class="section-example-container">
+<pre class="python">ag = [x for x in fine if x.AssetClassification.MorningstarIndustryGroupCode == MorningstarIndustryGroupCode.Agriculture]
+</pre>
+</div>
+
+<h4>Industries</h4>
+<p>Industries are the finest level of classification available. They are the individual industries according to the Morningstar classification system. They are accessed with the <code>MorningstarIndustryCode</code>. The following snippet demonstrates the process of screening for stocks in the coal industry:</p>
+<div class="section-example-container">
+<pre class="python">coal = [x for x in fine if x.AssetClassification.MorningstarIndustryCode == MorningstarSectorCode.Coal]
+</pre>
+</div>
+
+
 <div>## TODO: <br></div><div>- Explain that AddEquity should not be used to add securities that Universe Selection has added since they are added to a different universe (user-defined universe)</div><div>- Universe.Unchanged<br></div>
