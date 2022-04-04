@@ -6,3 +6,6 @@
 <div>-Tick quote definition: a bid or offer to purchase the security for a specific price</div><div>-Quote ticks contain non-zero BidPrice, BidSize, AskPrice, and AskSize properties</div><div></div>
 
 <div>-Tick data is raw and unfiltered</div><div>-may contain bad ticks which skew your trade results</div><div>-Some ticks come from dark pools, not tradable</div><div>-We recommend only using tick data if you understand the risks and are able to perform your own online tick filtering.</div><div>-Suspicious Ticks https://www.quantconnect.com/docs/v2/our-platform/live-trading/data-feeds/us-equities#05-Suspicious-Ticks <br>-Tick filtering: https://www.quantconnect.com/docs/v2/our-platform/live-trading/data-feeds/us-equities#04-Bar-Building</div><div></div><div></div>
+
+<br>
+-Add snippet of accessing Ticks in OnData
