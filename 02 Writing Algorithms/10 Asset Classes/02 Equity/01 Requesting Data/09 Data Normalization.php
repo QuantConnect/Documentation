@@ -10,3 +10,7 @@ What data normalization options are available:
 How to set the data normalization mode:
 <br>-Either with &lt;equity&gt;.SetDataNormalizationMode, UniverseSettings.DataNormalizationMode, or in a security initialize
 <br>-Example snippets
+
+<br><br>
+Ramifications:
+<br>-The normalization of the data returned from a History request matches the normalization of the data subscription.
