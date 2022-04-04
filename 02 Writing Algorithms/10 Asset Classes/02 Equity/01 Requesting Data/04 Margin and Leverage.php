@@ -1,0 +1,1 @@
+<div>What is margin/leverage:</div><div>-</div><div><br></div><div>Why is there margin/leverage:</div><div>-PDT</div><div><br></div><div>What margin/leverage is available:</div><div>-The default margin is<br></div><div><br></div><div>How do I set the margin/leverage:<br></div><div>- Pass to AddEquity or configure in the UniverseSettings<br></div>
