@@ -1,0 +1,26 @@
+<p>
+    $[Dividend,T:QuantConnect.Data.Market.Dividend] events are triggered on payment of a dividend. It provides the Distribution per share.
+</p>
+<div class="section-example-container">
+<pre class="python">
+def Initialize(self):
+    self.SetStartDate(2017, 6, 1)
+    self.SetEndDate(2017, 6, 28)
+    self.spy = self.AddEquity("SPY", Resolution.Hour) 
+    
+def OnData(self, data):
+    if not self.Portfolio.Invested:
+        self.Buy("SPY", 100)
+    
+    ## Condition to see if SPY is in the Dividend DataDictionary
+    if data.Dividends.ContainsKey("SPY"):
+        ## Log the dividend distribution
+        self.Log(f"SPY paid a dividend of {data.Dividends['SPY'].Distribution}")
+   
+</pre>
+</div>
+
+## TODO: <br>
+- Update to use Symbol
+<br>- ToString()
+<br>- Add ReferencePrice member
