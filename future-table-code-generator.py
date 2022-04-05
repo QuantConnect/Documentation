@@ -48,5 +48,5 @@ for key in symbols.keys():
 html += """</tbody>
 </table>"""
 
-with open("02 Writing Algorithms/10 Asset Classes/06 Futures/09 Supported Markets.html", "w", encoding="utf-8") as text:
+with open("Resources/datasets/supported-securities/future/supported-contracts.html", "w", encoding="utf-8") as text:
     text.write(html)

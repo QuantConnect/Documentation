@@ -125,7 +125,7 @@ html += """<h4>Morningstar ExchangeID Enumeration</h4>
 </div>
 <table class="table qc-table table-reflow" id="enum-code-table">
 <thead>
-<tr><th style="width: 10%;"><code>MorningstarExchangeID</code></th><th style="width: 90%;">Exchange represented</th></tr>
+<tr><th style="width: 20%;"><code>MorningstarExchangeID</code></th><th style="width: 80%;">Exchange represented</th></tr>
 </thead>
 <tbody>
 """
@@ -135,7 +135,7 @@ for id, e in exchange_ids.items():
 """
 html += "</tbody></table>"
 
-with open("02 Writing Algorithms/14 Datasets/04 Morningstar/01 US Fundamental Data/05 Data Point Attributes.html", "w", encoding="utf-8") as text:
+with open("Resources/datasets/data-point-attributes/fundamentals/enums.html", "w", encoding="utf-8") as text:
     text.write("""<style>
 #enum-code-table td:nth-child(2), 
 #enum-code-table th:nth-child(2) {

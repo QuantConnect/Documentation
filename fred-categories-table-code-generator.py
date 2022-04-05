@@ -25,7 +25,7 @@ for cat in subcategories:
 
 html = '''<table class="table qc-table table-reflow">
 <thead>
-<tr><th style="width: 10%;">Symbol</th><th style="width: 60%;">Summary</th><th style="width: 30%;">Accessor Code</th></tr>
+<tr><th style="width: 10%;">Symbol</th><th style="width: 30%;">Accessor Code</th><th style="width: 60%;">Summary</th></tr>
 </thead>
 <tbody>
 '''
@@ -35,16 +35,17 @@ for cat, key_dict in summaries.items():
 '''
 
     for key, (ticker, summary) in key_dict.items():
-        html += f'''<tr><td>{ticker}</td><td>{summary}</td><td><code>{key}</code></td></tr>
+        html += f'''<tr><td>{ticker}</td><td><code>{key}</code></td><td>{summary}</td></tr>
 '''
 
 html += """</tbody>
 </table>"""
 
-with open("02 Writing Algorithms/14 Datasets/17 FRED/01 US Federal Reserve (FRED)/05 Data Point Attributes.html", "w", encoding="utf-8") as text:
+with open("Resources/datasets/supported-securities/fred/supported-indicators.html", "w", encoding="utf-8") as text:
     text.write("""<h4>Fred Attributes</h4>
 <div data-tree="QuantConnect.DataSource.Fred"></div>
 
 <h4>Reference Table</h4>
 """)
     text.write(html)
+    
