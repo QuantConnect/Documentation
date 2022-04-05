@@ -7,4 +7,4 @@
 <?php echo file_get_contents(DOCS_RESOURCES."/datasets/opening-and-closing-auctions.html"); ?>
 
 <h4>Excluded Ticks</h4>
-<?php echo file_get_contents(DOCS_RESOURCES."/datasets/excluded-ticks.html"); ?>
+<?php echo file_get_contents(DOCS_RESOURCES."/data-feeds/excluded-ticks.html"); ?>
