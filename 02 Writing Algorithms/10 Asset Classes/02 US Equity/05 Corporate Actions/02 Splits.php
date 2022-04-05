@@ -39,3 +39,5 @@ Only applied to US Equity. Splits close all options positions. <br></div><div>-T
         <pre class="python">if self.msft in data.Splits:
     split = data.Splits[self.msft]</pre>
     </div>
+
+<div data-tree="QuantConnect.Data.Market.Split"></div>
