@@ -9,3 +9,5 @@
         <pre class="python">if self.googl in data.SymbolChangedEvents:
     symbolChangedEvent = data.SymbolChangedEvents[self.googl]</pre>
     </div>
+
+<div data-tree="QuantConnect.Data.Market.SymbolChangedEvent"></div>
