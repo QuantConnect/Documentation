@@ -1,1 +1,1 @@
-<p>To view the supported contracts, see the <a href='/docs/v2/writing-algorithms/datasets/oanda/cfd-data#04-Data-Summary'>CFD Data Summary</a>.</p>
+<?php include(DOCS_RESOURCES."/datasets/supported-securities/cfd/oanda.html"); ?>
