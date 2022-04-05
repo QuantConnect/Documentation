@@ -8,3 +8,5 @@
         <pre class="python">if data.ContainsKey(self.msft):
     delisting = data.Delistings[self.msft]</pre>
     </div>
+
+<div data-tree="QuantConnect.Data.Market.Delisting"></div>
