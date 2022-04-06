@@ -1,0 +1,1 @@
+## Copy from US Equity
