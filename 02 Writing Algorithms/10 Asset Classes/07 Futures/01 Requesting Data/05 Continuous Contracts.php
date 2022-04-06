@@ -1,4 +1,5 @@
 -The Future returned by the AddFuture method is the continuous future. 
+<br>-The continuous future security is setup as tradable and will never expire since it will map underlying future contracts accordingly
 <br>-It may be helpful to apply your indicators to the continuous future time series
 <br>-You can configure the continuous contract settings by passing arguments to the AddFuture method
 <br>-When the contract rolls over, you receive a SymbolChangedEvent in OnData
