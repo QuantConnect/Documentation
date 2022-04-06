@@ -1,1 +1,1 @@
-<div>VIX, SPX, NDX</div><div>&nbsp;&nbsp; - Explanation of each<br></div><div></div>
+## Copy from Index supported contracts
