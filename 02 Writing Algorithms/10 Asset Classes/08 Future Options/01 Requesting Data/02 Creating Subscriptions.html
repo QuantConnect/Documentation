@@ -1,3 +1,25 @@
 What:
 <br>- Create a security subscription
 
+<br><br>
+Why:
+<br>-To add a data feed for the security to your algorithm
+<br>&nbsp;&nbsp;- To enable trading / fills / quotes
+<br>&nbsp;&nbsp;- To receive data updates in your algorithm + portfolio
+<br>&nbsp;&nbsp;- To make trading decisions
+<br>-This adds the security to your "user-defined"
+
+<br><br>
+How: 
+<br>Technique 1: AddFuture + (Optional) SetFilter + AddFutureOption w/ optional selector function
+<br>gold_futures = self.AddFuture(Futures.Metals.Gold, Resolution.Minute)
+<br>gold_futures.SetFilter(0, 90)
+<br>self.AddFutureOption(gold_futures.Symbol, lambda universe: universe.Strikes(-5, +5))
+
+<br>Filtering for future options contracts is the same as options contracts at QC
+
+<br><br>Technique 2: FutureChainProvider + AddFutureContract + OptionChainProvider + AddOptionContract
+<br>example: https://github.com/QuantConnect/Lean/blob/master/Algorithm.Python/FutureOptionPutOTMExpiryRegressionAlgorithm.py
+<br>-Faster backtesting because fewer subscriptions
+
+<br><br>-To remove a subscription, use RemoveSecurity()/RemoveOptionContract
