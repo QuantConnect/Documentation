@@ -1,1 +1,1 @@
-<?php include(DOCS_RESOURCES."/datasets/market-hours/202 Forex oanda generic/04 Post-market Hours.html"); ?>
+<?php include(DOCS_RESOURCES."/datasets/market-hours/forex/oanda/generic/post-market-hours.html"); ?>
