@@ -1,1 +1,1 @@
-<?php include(DOCS_RESOURCES."/datasets/market-hours/india/usa/generic/early-closes.html"); ?>
+<?php include(DOCS_RESOURCES."/datasets/market-hours/india/generic/early-closes.html"); ?>
