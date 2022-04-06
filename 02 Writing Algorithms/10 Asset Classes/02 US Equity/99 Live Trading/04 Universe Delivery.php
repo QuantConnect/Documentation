@@ -1,0 +1,1 @@
+- The live data for coarse and fine universe selection arrives at 7 AM Eastern Standard Time (EST), so coarse and fine universe selection runs for live algorithms between 7 and 8 AM EST. This timing allows you to place trades before the market opens. Don't schedule anything for midnight because the universe selection data isn't ready yet.
