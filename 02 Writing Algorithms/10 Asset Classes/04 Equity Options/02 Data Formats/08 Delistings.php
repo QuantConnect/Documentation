@@ -3,4 +3,4 @@
 <br>- Show example of accessing delistings in OnData
 
 
-<div data-tree="QuantConnect.Data.Market.OpenInterest"></div>
+<div data-tree="QuantConnect.Data.Market.Delisting"></div>
