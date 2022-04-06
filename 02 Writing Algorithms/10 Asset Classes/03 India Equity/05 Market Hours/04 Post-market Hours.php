@@ -1,1 +1,1 @@
-<?php include(DOCS_RESOURCES."/datasets/market-hours/india/generic/post-market-hours.html"); ?>
+<?php include(DOCS_RESOURCES."/datasets/market-hours/equity/india/generic/post-market-hours.html"); ?>
