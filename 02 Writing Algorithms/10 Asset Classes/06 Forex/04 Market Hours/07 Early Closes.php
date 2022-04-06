@@ -1,1 +1,1 @@
-<?php include(DOCS_RESOURCES."/datasets/market-hours/202 Forex oanda generic/06 Early Closes.html"); ?>
+<?php include(DOCS_RESOURCES."/datasets/market-hours/forex/oanda/generic/early-closes.html"); ?>
