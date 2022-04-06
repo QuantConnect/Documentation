@@ -1,0 +1,1 @@
+<?php include(DOCS_RESOURCES."/datasets/market-hours/202 Forex oanda generic/02 Pre-market Hours.html"); ?>

@@ -1,0 +1,1 @@
+<?php include(DOCS_RESOURCES."/datasets/supported-securities/cfd/oanda.html"); ?>

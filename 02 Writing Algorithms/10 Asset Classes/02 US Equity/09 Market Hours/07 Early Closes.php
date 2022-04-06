@@ -1,0 +1,1 @@
+<?php include(DOCS_RESOURCES."/datasets/market-hours/01 Equity usa generic/06 Early Closes.html"); ?>

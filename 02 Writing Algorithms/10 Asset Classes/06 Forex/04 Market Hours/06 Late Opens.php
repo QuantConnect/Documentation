@@ -1,0 +1,1 @@
+<?php include(DOCS_RESOURCES."/datasets/market-hours/202 Forex oanda generic/07 Late Opens.html"); ?>
