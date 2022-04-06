@@ -1,2 +1,1 @@
-<p>The following table shows the regular trading hours for the Forex market:</p>
-<?php include(DOCS_RESOURCES."/datasets/market-hours/202 Forex oanda generic/03 Market Opening Hours.html"); ?>
+<?php include(DOCS_RESOURCES."/datasets/market-hours/forex/oanda/generic/market-opening-hours.html"); ?>
