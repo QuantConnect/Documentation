@@ -1,13 +1,12 @@
-<meta name="tag" content="universes" />
-<meta name="tag" content="configuring securities" />
+<meta name="tag" content="universes">
+<meta name="tag" content="configuring securities">
 <p>
-When adding securities from the universe, some algorithms need raw or partially adjusted price data. This can be controlled by the <code>SetSecurityInitializer()</code> method. With this method, you can apply any fill model or special data requests on a per-security basis.
+Instead of configuring global universe settings, you can individually configure the settings of each security in the universe with the <code>SetSecurityInitializer()</code> method. With this method, you can apply any fill model or special data requests on a per-security basis.
 </p>
-<p>The most common request is for raw, unadjusted price information. This can be achieved by combining the SetSecurityInitializer method with $[SetDataNormalizationMode(),M:QuantConnect.Securities.Security.SetDataNormalizationMode] method. As each security is added to the universe, its data will be set to any of the $[DataNormalizationMode,T:QuantConnect.DataNormalizationMode] enum values.
+<p>The most common request is for raw, unadjusted price information. This can be achieved by combining the SetSecurityInitializer method with $[SetDataNormalizationMode(),M:QuantConnect.Securities.Security.SetDataNormalizationMode] method. As each security is added to the universe, its data is set to the $[DataNormalizationMode,T:QuantConnect.DataNormalizationMode] enum value you provide.
 </p>
-<div class="section-example-container" >
-<pre class="csharp" >
-//In Initialize
+<div class="section-example-container">
+<pre class="csharp">//In Initialize
 SetSecurityInitializer(CustomSecurityInitializer);
 
 private void CustomSecurityInitializer(Security security)
@@ -16,8 +15,7 @@ private void CustomSecurityInitializer(Security security)
 	security.SetDataNormalizationMode(DataNormalizationMode.Raw);
 }
 </pre>
-<pre class="python" >
-#In Initialize
+<pre class="python">#In Initialize
 self.SetSecurityInitializer(self.CustomSecurityInitializer)
 
 def CustomSecurityInitializer(self, security):
@@ -31,27 +29,22 @@ For simple requests, you can use the functional implementation of the security i
 </p>
 
 <div class="section-example-container">
-<pre class="csharp">
-//Most common request; requesting raw prices for universe securities.
-SetSecurityInitializer(x => x.SetDataNormalizationMode(DataNormalizationMode.Raw));
+<pre class="csharp">//Most common request; requesting raw prices for universe securities.
+SetSecurityInitializer(x =&gt; x.SetDataNormalizationMode(DataNormalizationMode.Raw));
 </pre>
-<pre class="python">
-# Most common request; requesting raw prices for universe securities.
+<pre class="python"># Most common request; requesting raw prices for universe securities.
 self.SetSecurityInitializer(lambda x: x.SetDataNormalizationMode(DataNormalizationMode.Raw))
 </pre>
 </div>
 
 ## TODO: You can also use the following snippet to set the models within a specific brokerage model and set a seeder:
 <div class="section-example-container">
-<pre class="csharp">
-SetSecurityInitializer(new BrokerageModelSecurityInitializer(new DefaultBrokerageModel(),
+<pre class="csharp">SetSecurityInitializer(new BrokerageModelSecurityInitializer(new DefaultBrokerageModel(),
     new FuncSecuritySeeder(GetLastKnownPrices)));
 </pre>
-</div>
+</div><div>
 
-## TODO: To just set the last price, use:
-<div class="section-example-container">
-<pre class="csharp">
-SetSecurityInitializer(x => x.SetMarketPrice(GetLastKnownPrices));
+## TODO: To just set the last price, use: <br></div><div>- This allows you to avoid the error of not having a security in the current slice.<br></div><div class="section-example-container">
+<pre class="csharp">SetSecurityInitializer(x =&gt; x.SetMarketPrice(GetLastKnownPrices));
 </pre>
 </div>
