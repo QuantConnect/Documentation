@@ -43,19 +43,25 @@ th.summary {
 </style>
 
 <p>
-The universe API supports performing universe selection based on corporate fundamental data. This data is powered by <a href="https://www.quantconnect.com/data#provider/morningstar">Morningstar®</a> and includes approximately 5,000 tickers with 900 properties each. The data comes delivered as a  $[FineFundamental,T:QuantConnect.Data.Fundamental.FineFundamental] type.
+The universe API supports performing universe selection based on corporate fundamental data. This data is powered by <a href="/datasets/morning-star-us-fundamentals">Morningstar®</a> and includes approximately <?php include(DOCS_RESOURCES."/kpis/fundamental-universe-size.php");?> tickers with 900 properties each. The data comes delivered as a  $[FineFundamental,T:QuantConnect.Data.Fundamental.FineFundamental] type.
 </p>
 
 <p>Due to the sheer volume of information, Fundamental selection is performed on the <i>output</i> of the coarse universe. You can think of this as a 2-stage filter; first, coarse universe can select all of the liquid assets, then fine fundamental universe can select those which meet your targets.
 </p>
 
+
+<figure>
+<img src="https://cdn.quantconnect.com/docs/i/filters.png" class="img-responsive">
+<figcaption>QuantConnect Coarse and Fine Universe Selection</figcaption>
+</figure>
+
 <p>
-For the $[FineFundamental, T:QuantConnect.Data.Fundamental.FineFundamental] properties, please check out our <a href="https://www.quantconnect.com/data#fundamentals/usa/morningstar">data library</a> page.
+To view all of the $[FineFundamental, T:QuantConnect.Data.Fundamental.FineFundamental] properties, see the <a href="/docs/v2/writing-algorithms/datasets/morningstar/us-fundamental-data#05-Data-Point-Attributes">US Fundmantal Data Point Attributes</a>.
 </p>
 
 <div class="tip">
   <i class="fa fa-lightbulb-o"></i><span class="tip-title">Tip:</span>
-  <p>Only 5,000 assets have fundamental data. When working with fundamental data, you should always include the "HasFundamentalData" filter in your Coarse Universe filter. See the example below for how to do this in your algorithm.</p>
+  <p>Only 5,000 assets have fundamental data. When working with fundamental data, you should always include the <code>HasFundamentalData</code> filter in your Coarse Universe filter. See the example below for how to do this in your algorithm.</p>
 </div>
 
 <h4>Requesting a Fundamental Universe</h4>
