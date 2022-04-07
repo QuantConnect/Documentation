@@ -12,13 +12,43 @@ Why:
 <br><br>
 How: 
 <br>Technique 1: AddFuture + (Optional) SetFilter + AddFutureOption w/ optional selector function
-<br>gold_futures = self.AddFuture(Futures.Metals.Gold, Resolution.Minute)
-<br>gold_futures.SetFilter(0, 90)
-<br>self.AddFutureOption(gold_futures.Symbol, lambda universe: universe.Strikes(-5, +5))
 
-<br>Filtering for future options contracts is the same as options contracts at QC
+<br>- Example
+<div class="section-example-container">
+    <pre class="csharp">public override void Initialize()
+{
+    SetStartDate(2017, 01, 01);
+    SetEndDate(2018, 06, 30);  
+    SetCash(50000);  
+    var FutureGold = AddFuture(Futures.Metals.Gold));
+    Symbol symbol = FutureGold.Symbol;
+    AddFutureOption(symbol,optionContracts =&gt;{return optionContracts.Where(x =&gt; x.ID.StrikePrice &lt;= 3200m &amp;&amp; x.ID.OptionRight == OptionRight.Call);});
+}
+</pre>
+    <pre class="python">gold_futures = self.AddFuture(Futures.Metals.Gold, Resolution.Minute)
+gold_futures.SetFilter(0, 90)
+self.AddFutureOption(gold_futures.Symbol, lambda universe: universe.Strikes(-5, +5))</pre>
+</div>Filtering for future options contracts is the same as options contracts at QC
 
-<br><br>Technique 2: FutureChainProvider + AddFutureContract + OptionChainProvider + AddOptionContract
+(Import from Asset Classes &gt; Options)<div>- Example of isolated selector function</div>
+
+<div class="section-example-container">
+    <pre class="python">def Initialize(self):
+    self.SetStartDate(2017, 1, 1)  
+    self.SetEndDate(2018, 06, 30)  
+    self.SetCash(50000)  
+    future_gold = self.AddFuture(Futures.Metals.Gold)
+    self.symbol = future_gold.Symbol
+    self.AddFutureOption(self.symbol,self.OptionContractUniverseFilterFunction)<br>
+def OptionContractUniverseFilterFunction(self, optionContracts:OptionFilterUniverse):
+    return [x for x in optionContracts if x.ID.StrikePrice &lt;= 3200.0 and x.ID.OptionRight == OptionRight.Call]
+</pre>
+</div>
+
+
+
+
+<div></div><div>-The Future contract is the Underlying</div><div><br></div><br>Technique 2: FutureChainProvider + AddFutureContract + OptionChainProvider + AddOptionContract
 <br>example: https://github.com/QuantConnect/Lean/blob/master/Algorithm.Python/FutureOptionPutOTMExpiryRegressionAlgorithm.py
 <br>-Faster backtesting because fewer subscriptions
 
