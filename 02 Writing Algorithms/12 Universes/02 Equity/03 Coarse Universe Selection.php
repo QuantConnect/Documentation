@@ -138,6 +138,8 @@ private class SelectionData
 </pre>
 </div>
 
+<p>Note that the preceding SelectionData class uses a <a href='/docs/v2/writing-algorithms/indicators/manual-indicators'>manual</a> EMA indicator instead of the <a href='/docs/v2/writing-algorithms/indicators/automatic-indicators'>automatic version</a>.
+
 <h4>Example 3: Take 10 stocks the furthest above their 10 day SMA of volume.</h4>
 <p>
 Getting the 10-day SMA stock volume is the same process as applying other indicators to data from Example 2. First, you should define a SelectionData class which performs the averaging. For this example, the following class will serve this purpose:
