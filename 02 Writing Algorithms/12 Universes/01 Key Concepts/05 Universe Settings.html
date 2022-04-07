@@ -2,19 +2,19 @@
 Universes are created according to default settings objects. You can configure these settings objects to create your own customized universes. Below is the UniverseSettings object and its members that are used most frequently: 
 </p>
 
-<div data-tree="QuantConnect.Data.UniverseSelection.UniverseSettings"></div>
-
 <div class="section-example-container">
 	<pre class="csharp">UniverseSettings.Resolution             // What resolution should added assets use
                 .Leverage               // What leverage should assets use in the universe?
                 .FillForward            // Should asset data fill forward?
-                .MinimumTimeInUniverse  // Minimum time assets should be in universe<br>                .DataNormalizationMode  //
+                .MinimumTimeInUniverse  // Minimum time assets should be in universe
+                .DataNormalizationMode  // How should historical prices be adjusted?
                 .ExtendedMarketHours    // Should assets also feed extended market hours?
 </pre>
 	<pre class="python">self.UniverseSettings.Resolution             # What resolution should added assets use
                      .Leverage               # What leverage should assets use in the universe?
                      .FillForward            # Should asset data fill forward?
                      .MinimumTimeInUniverse  # Minimum time assets should be in universe
+                     .DataNormalizationMode  # How should historical prices be adjusted?
                      .ExtendedMarketHours    # Should assets also feed extended market hours?
 </pre>
 </div>
@@ -25,6 +25,7 @@ These settings should be configured in your <code>Initialize()</code> method bef
 <pre class="csharp">public class MyCustomSettingsUniverseAlgorithm : QCAlgorithm {
     public override void Initialize()
     {
+        // Request second resolution data. This will be slow!
         UniverseSettings.Resolution = Resolution.Second;
         AddUniverse(MySecondResolutionCoarseFilterFunction);
     }
@@ -37,5 +38,3 @@ These settings should be configured in your <code>Initialize()</code> method bef
          self.AddUniverse(self.MySecondResolutionCoarseFilterFunction)
 </pre>
 </div><div>
-
-## TODO: <br></div><div>- Add DataNormalizationMode, DataMappingMode, ContractDepthOffset, SubscriptionDataTypes, <br></div>
