@@ -76,12 +76,15 @@ public class MyUniverseAlgorithm : QCAlgorithm {
     }
     // filter based on CoarseFundamental
     IEnumerable&lt;Symbol&gt; MyCoarseFilterFunction(IEnumerable&lt;CoarseFundamental&gt; coarse) {
-         // return list of symbols
+         // In addition to further coarse universe selection, ensure the security has fundamental data
+         return return (from c in coarse
+                        where c.HasFundamentalData
+                        select c.Symbol);
     }
     // filter based on FineFundamental
     public IEnumerable&lt;Symbol&gt; FineSelectionFunction(IEnumerable&lt;FineFundamental&gt; fine)
     {
-        // return list of symbols
+        // Return a list of Symbols
     }
 }
 </pre>
@@ -91,10 +94,11 @@ class MyUniverseAlgorithm(QCAlgorithm):
          self.AddUniverse(self.MyCoarseFilterFunction, self.MyFineFundamentalFunction)
 
     def MyCoarseFilterFunction(self, coarse):
-         pass
+         # In addition to further coarse universe selection, ensure the security has fundamental data
+         return [c.Symbol for c in coarse if c.HasFundamentalData]
 
     def MyFineFundamentalFunction(self, fine):
-         pass
+         # Return a list of Symbols
 </pre>
 </div>
 
@@ -144,6 +148,28 @@ Due to licensing restrictions, QuantConnect does not have the iconic S&amp;P500 
 <span class="python"><a href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.Python/ConstituentsQC500GeneratorAlgorithm.py" target="_BLANK">QC500 example algorithm</a></span>
 <span class="csharp"><a href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.CSharp/ConstituentsQC500GeneratorAlgorithm.cs" target="_BLANK">QC500 example algorithm</a></span>.
 </p>
+
+<h4>Asset Categories</h4>
+<p>In addition to valuation ratios, the <a href="https://www.quantconnect.com/datasets/morning-star-us-fundamentals">US Fundamental Data from Morningstar</a> has many other data point attributes, including over 200 different categorization fields for each US stock. These are grouped into sectors, industry groups and industries.</p>
+
+<p>Sectors are large super categories of data. They are accessed with the <code>MorningstarSectorCode</code> property. The following snippet demonstrates the process of screening for stocks in the technology sector:</p>
+<div class="section-example-container">
+<pre class="python">tech = [x for x in fine if x.AssetClassification.MorningstarSectorCode == MorningstarSectorCode.Technology]
+</pre>
+</div>
+
+<p>Industry groups are clusters of related industries that tie together. They are accessed with the <code>MorningstarIndustryGroupCode</code> property. The following snippet demonstrates the process of screening for stocks in the agriculture industry group:</p>
+<div class="section-example-container">
+<pre class="python">ag = [x for x in fine if x.AssetClassification.MorningstarIndustryGroupCode == MorningstarIndustryGroupCode.Agriculture]
+</pre>
+</div>
+
+<p>Industries are the finest level of classification available. They are the individual industries according to the Morningstar classification system. They are accessed with the <code>MorningstarIndustryCode</code>. The following snippet demonstrates the process of screening for stocks in the coal industry:</p>
+<div class="section-example-container">
+<pre class="python">coal = [x for x in fine if x.AssetClassification.MorningstarIndustryCode == MorningstarSectorCode.Coal]
+</pre>
+</div>
+
 
 <h4>Practical Limitations</h4>
 <p>
