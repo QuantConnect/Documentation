@@ -219,3 +219,15 @@ With this helper, we've defined a ratio of today's volume to the historical volu
 Complex universe filters can be constructed using the SelectionData helper class pattern. We have implemented a full example of this case in Github, which you can view 
 <span class="csharp"><a href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.CSharp/EmaCrossUniverseSelectionAlgorithm.cs" target="_BLANK">here</a></span>
 <span class="python"><a href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.Python/EmaCrossUniverseSelectionAlgorithm.py" target="_BLANK">here</a></span>. We've also made a Boot Camp for this example, which you can do <a href="/learning/task/153/">here</a>. </p>
+
+<h4>Shortcut Method</h4>
+<p>Instead of providing a custom coarse filter function, you can use a shortcut method. We currently provide a shortcut method to select the top <span class='latex-variable'>n</span> most liquid Equities. You can use this shortcut to quickly choose your universe. </p>
+
+<div class="section-example-container">
+<pre class="csharp">// Helper: Add US-equity universe for the top 50 stocks by dollar volume
+AddUniverse(Universe.DollarVolume.Top(50));
+</pre>
+<pre class="python">// Helper: Add US-equity universe for the top 50 stocks by dollar volume
+self.AddUniverse(self.Universe.DollarVolume.Top(50))
+</pre>
+</div><div>
