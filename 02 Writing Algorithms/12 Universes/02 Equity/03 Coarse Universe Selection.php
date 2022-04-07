@@ -230,4 +230,4 @@ AddUniverse(Universe.DollarVolume.Top(50));
 <pre class="python">// Helper: Add US-equity universe for the top 50 stocks by dollar volume
 self.AddUniverse(self.Universe.DollarVolume.Top(50))
 </pre>
-</div><div>
+</div>
