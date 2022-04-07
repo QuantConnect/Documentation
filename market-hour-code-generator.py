@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 from pathlib import Path
 from urllib.request import urlopen
 
@@ -9,20 +9,6 @@ raw = urlopen("https://raw.githubusercontent.com/QuantConnect/Lean/master/Data/m
 raw_dict = eval(raw)
 entries = raw_dict["entries"]
 sorted_assets = {}
-
-json_script = '''<script>
-function ShowHide(event, idName) {{
-    var x = document.getElementById(idName);
-    if (x.style.display == "none") {{
-        x.style.display = "block";
-        event.target.innerHTML = "<span>Hide Details <img src='https://cdn.quantconnect.com/i/tu/api-chevron-hide.svg' alt='arrow-hide'></span>";
-    }}
-    else {{
-        x.style.display = "none";
-        event.target.innerHTML = "<span>Show Details <img src='https://cdn.quantconnect.com/i/tu/api-chevron-show.svg' alt='arrow-show'></span>";
-    }}
-}};
-</script>'''
 
 days = ["sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"]
 # j = 1
@@ -60,6 +46,8 @@ for asset_class, assets in sorted_assets.items():
         count = 0
 
         for symbol in sec:
+            if (asset_class == "Index" or asset_class == "IndexOption") and exchange == "usa" and symbol != "[*]": continue
+        
             if count == 6:
                 html += '</tr>\n<tr>'
                 
@@ -90,13 +78,14 @@ for asset_class, assets in sorted_assets.items():
                         
             holiday_html = ""
             if "holidays" not in entry or not entry["holidays"]:
-                holiday_html += f'<p>There is no market close date for {symbol.replace("[*]", "generic")} {asset_class}</p>'
+                holiday_html += f'<p>There is no holidays for {symbol if "[*]" not in symbol else exchange} {asset_class}</p>'
             
             else:
-                holidays = sorted([datetime.strptime(holiday, "%m/%d/%Y") for holiday in entry["holidays"]])
+                holidays = sorted([datetime.strptime(holiday, "%m/%d/%Y") for holiday in entry["holidays"]
+                                if datetime.today() <= datetime.strptime(holiday, "%m/%d/%Y") <= datetime.today() + timedelta(days=365)])
                 holiday_html += '''<table class="table qc-table table-reflow">
 <thead>
-<tr><th colspan="5">Holidays</th></tr>
+<tr><th colspan="5">Date</th></tr>
 </thead>
 <tbody>
 <tr>'''
@@ -117,10 +106,11 @@ for asset_class, assets in sorted_assets.items():
 
             early_close_html = ""
             if "earlyCloses" not in entry or not entry["earlyCloses"]:
-                early_close_html += f'<p>There is no early close date for {symbol.replace("[*]", "generic")} {asset_class}</p>'
+                early_close_html += '<p>There are no days with early closes.</p>'
             
             else:
-                early_closes = sorted([(datetime.strptime(date, "%m/%d/%Y"), time) for date, time in entry["earlyCloses"].items()], key=lambda x: x[0])
+                early_closes = sorted([(datetime.strptime(date, "%m/%d/%Y"), time) for date, time in entry["earlyCloses"].items()
+                                if datetime.today() <= datetime.strptime(date, "%m/%d/%Y") <= datetime.today() + timedelta(days=365)], key=lambda x: x[0])
                 early_close_html += f'''<table class="table qc-table table-reflow">
 <thead>
 <tr><th style="width: 50%;">Date</th><th style="width: 50%;">Time Of Market Close ({entry["exchangeTimeZone"].replace("_", " ")})</th></tr>
@@ -129,26 +119,27 @@ for asset_class, assets in sorted_assets.items():
 '''
                 for date, time in early_closes:
                     early_close_html += f'''<tr><td>{date.strftime("%Y-%m-%d")}</td><td>{time}</td></tr>
-    '''
+'''
                         
                 early_close_html += '''</tbody>
 </table>'''
 
             late_open_html = ""
             if "lateOpens" not in entry or not entry["lateOpens"]:
-                late_open_html += f'<p>There is no late open date for {symbol.replace("[*]", "generic")} {asset_class}</p>'
+                late_open_html += '<p>There are no days with late opens.</p>'
             
             else:
-                late_opens = sorted([(datetime.strptime(date, "%m/%d/%Y"), time) for date, time in entry["lateOpens"].items()], key=lambda x: x[0])
-                late_open_html += '''<table class="table qc-table table-reflow">
+                late_opens = sorted([(datetime.strptime(date, "%m/%d/%Y"), time) for date, time in entry["lateOpens"].items()
+                                if datetime.today() <= datetime.strptime(date, "%m/%d/%Y") <= datetime.today() + timedelta(days=365)], key=lambda x: x[0])
+                late_open_html += f'''<table class="table qc-table table-reflow">
 <thead>
-<tr><th style="width: 50%;">Date</th><th style="width: 50%;">Time Of Market Open {entry["exchangeTimeZone"].replace("_", " ")}</th></tr>
+<tr><th style="width: 50%;">Date</th><th style="width: 50%;">Time Of Market Open ({entry["exchangeTimeZone"].replace("_", " ")})</th></tr>
 </thead>
 <tbody>
 '''
                 for date, time in late_opens:
                     late_open_html += f'''<tr><td>{date.strftime("%Y-%m-%d")}</td><td>{time}</td></tr>
-    '''
+'''
                         
                 late_open_html += '''</tbody>
 </table>'''
@@ -156,19 +147,21 @@ for asset_class, assets in sorted_assets.items():
             with open(symbol_path / "time-zone.html", "w", encoding="utf-8") as html_file:
                 html_file.write(f'''<!-- Code generated by market-hour-code-generator.py -->
 
-<p>The {symbol.replace("[*]", "generic")} {asset_class} is traded in the <code>{entry["exchangeTimeZone"].replace("_", " ")}</code> time zone.</p>''')
+<p>The {symbol if "[*]" not in symbol else exchange} {asset_class} is traded in the <code>{entry["exchangeTimeZone"].replace("_", " ")}</code> time zone.</p>''')
             
             for page_name, hour_list in {"pre-market-hours": premarket_html, "market-opening-hours": market_html, "post-market-hours": postmarket_html}.items():
                 if all([x == [] for x in hour_list.values()]):
                     with open(symbol_path / f"{page_name}.html", "w", encoding="utf-8") as html_file:
                         html_file.write(f'''<!-- Code generated by market-hour-code-generator.py -->
 
-<p>{page_name} trading is not available for {symbol.replace("[*]", "generic")} {asset_class}.</p>''')
+<p>{"Pre-market" if page_name == "pre-market-hours" else "Post-market"} trading is not available.</p>''')
                         
                     continue
                 
                 with open(symbol_path / f"{page_name}.html", "w", encoding="utf-8") as html_file:
                     html_file.write(f'''<!-- Code generated by market-hour-code-generator.py -->
+                                    
+<p>The following table shows the {"pre-market" if page_name == "pre-market-hours" else "post-market" if page_name == "post-market-hours" else "regular" if asset_class == "Index" else "regular trading"} hours for the {symbol if "[*]" not in symbol else exchange} {asset_class}{"" if asset_class == "Index" else " market"}:</p>
 
 <table class="table qc-table table-reflow">
 <thead>
@@ -187,17 +180,10 @@ for asset_class, assets in sorted_assets.items():
                 html_file.write("<!-- Code generated by market-hour-code-generator.py -->")
                     
                 if "table" in holiday_html and asset_class != "Forex":
-                    html_file.write(f"""                        
-{json_script}
-<p>The following days are non-trading days (market closed) for {symbol.replace("[*]", "generic")} {asset_class}.</p>
+                    html_file.write(f"""
+<p>The following table shows the dates of holidays for the {symbol if "[*]" not in symbol else exchange} {asset_class}.</p>
 
-<div class="details-btn">
-    <button class="show-hide-detail" onclick="ShowHide(event, '{asset_class}-{symbol}-holiday')"><span>Show Details <img src='https://cdn.quantconnect.com/i/tu/api-chevron-show.svg' alt='arrow-show'></span></button>
-</div>
-
-<div class="method-details" id="{asset_class}-{symbol}-holiday" style="display: none;" >
-{holiday_html}
-</div>""")
+{holiday_html}""")
                 else:
                     html_file.write(f"""
 {holiday_html}""")
@@ -208,16 +194,9 @@ for asset_class, assets in sorted_assets.items():
                     
                     if "table" in hour_html and asset_class != "Forex":
                         html_file.write(f"""
-{json_script}
-<p>The following days are non-trading days (market closed) for {symbol.replace("[*]", "generic")} {asset_class}.</p>
+<p>The following table shows the {page_name.replace("-", " ")} for the {symbol if "[*]" not in symbol else exchange} {asset_class}.</p>
 
-<div class="details-btn">
-    <button class="show-hide-detail" onclick="ShowHide(event, '{asset_class}-{symbol}-{page_name}')"><span>Show Details <img src='https://cdn.quantconnect.com/i/tu/api-chevron-show.svg' alt='arrow-show'></span></button>
-</div>
-
-<div class="method-details" id="{asset_class}-{symbol}-{page_name}" style="display: none;" >
-{hour_html}
-</div>""")
+{hour_html}""")
                     
                     else:
                         html_file.write(f"""
@@ -232,3 +211,40 @@ for asset_class, assets in sorted_assets.items():
 
     with open(destination_folder / f"{asset_class}.html", "w", encoding="utf-8") as html_file:
         html_file.write(html.replace('[*]', 'Generic'))
+
+for asset_class in ["Index", "IndexOption"]:
+    with open(destination_folder / asset_class.lower() / "usa" / "generic"/ "market-opening-hours.html", "w", encoding="utf-8") as html_file:
+        exchange = "usa"
+        
+        html_file.write(f'''<!-- Code generated by market-hour-code-generator.py -->
+                                        
+    <p>The following table shows the regular hours for the USA Index:</p>
+
+    <table class="table qc-table table-reflow">
+    <thead>
+    <tr><th style="width: 10%;">Weekday</th>''')
+        
+        market_html = {}
+                
+        for symbol in ["SPX", "NDX", "VIX"]:
+            market_html[symbol] = {day: [] for day in days}
+            entry = entries[f"{asset_class}-{exchange}-{symbol}"]
+            
+            html_file.write(f'<th style="width: 30%;">{symbol} ({entry["exchangeTimeZone"].replace("_", " ")})</th>')
+        
+            for day in days:
+                if day in entry:
+                    for x in entry[day]:
+                        if x['state'] == "market":
+                            market_html[symbol][day].append(f'{x["start"]} to {x["end"].replace("1.00", "24")}')
+                            
+        html_file.write(f'''
+    </thead>
+    <tbody>
+    <tr><td>Monday</td><td>{", ".join(market_html["SPX"]["monday"])}</td><td>{", ".join(market_html["NDX"]["monday"])}</td><td>{", ".join(market_html["VIX"]["monday"])}</td></tr>
+    <tr><td>Tuesday</td><td>{", ".join(market_html["SPX"]["tuesday"])}</td><td>{", ".join(market_html["NDX"]["tuesday"])}</td><td>{", ".join(market_html["VIX"]["tuesday"])}</td></tr>
+    <tr><td>Wednesday</td><td>{", ".join(market_html["SPX"]["wednesday"])}</td><td>{", ".join(market_html["NDX"]["wednesday"])}</td><td>{", ".join(market_html["VIX"]["wednesday"])}</td></tr>
+    <tr><td>Thursday</td><td>{", ".join(market_html["SPX"]["thursday"])}</td><td>{", ".join(market_html["NDX"]["thursday"])}</td><td>{", ".join(market_html["VIX"]["thursday"])}</td></tr>
+    <tr><td>Friday</td><td>{", ".join(market_html["SPX"]["friday"])}</td><td>{", ".join(market_html["NDX"]["friday"])}</td><td>{", ".join(market_html["VIX"]["friday"])}</td></tr>
+    </tbody>
+    </table>''')
