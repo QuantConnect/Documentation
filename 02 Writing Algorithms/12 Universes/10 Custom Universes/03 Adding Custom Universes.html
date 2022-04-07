@@ -1,17 +1,15 @@
-<div class="section-example-container" >
-<pre class="csharp" >
-// Add custom universe type and define the filter function.
-AddUniverse&lt;NyseTopGainers&gt;("myCustomUniverse", Resolution.Daily, nyseTopGainersList => {
+<p>After you define a custom universe type, add the universe to your algorithm in the Initialize method. In the call to AddUniverse, provide a filter function to reduce the securities in the file into the securities you want to add to your algorithm.<br></p><div class="section-example-container">
+<pre class="csharp">// Add custom universe type and define the filter function.
+AddUniverse&lt;NyseTopGainers&gt;("myCustomUniverse", Resolution.Daily, nyseTopGainersList =&gt; {
       return from singleStockData in nyseTopGainersList
-             where singleStockData.Rank > 5
+             where singleStockData.Rank &gt; 5
              select singleStockData.Symbol;
 });
 </pre>
-<pre class="python" >
-# add the custom universe in initialize 
+<pre class="python"># add the custom universe in initialize 
 self.AddUniverse(NyseTopGainers, "myCustomUniverse", Resolution.Daily, self.nyseTopGainers)
 # filter function using your custom data
 def nyseTopGainers(self, data):
-    return [ x.Symbol for x in data if x["Rank"] > 5 ]
+    return [ x.Symbol for x in data if x["Rank"] &gt; 5 ]
 </pre>
 </div>
