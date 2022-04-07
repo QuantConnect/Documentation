@@ -1,35 +1,93 @@
-## TODO: QC500? 
-<br>ConstituentUniverseDefinitions? https://lean-api-docs.netlify.app/ConstituentUniverseDefinitions_8cs_source.html
-
-<h4>Requesing and ETF Constituents Universe</h4>
-
-<div class="section-example-container">
-<pre class="csharp">
-public class MyUniverseAlgorithm : QCAlgorithm {
+-ETF Constituent selections lets you select a universe of securities in an ETF. The <a href="/datasets/quantconnect-us-etf-constituents">US ETF Constituents dataset</a> includes 2,650 US ETFs you can use to create your universe. 
+<br><div>- To view the supported ETFs, see the <a href="/datasets/quantconnect-us-etf-constituents/explorer">US ETF Constituents Data Explorer.</a></div><div>- To request an ETF Constituents universe, use the <code>Universe.ETF</code> method.</div><div>- You can pass the following arguments to the Universe.ETF method:</div><div>&nbsp;&nbsp;&nbsp; - A ticker or Symbol</div><div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - If you pass a ticker, the next argument must be the Market of the ETF (Market.USA). If you don't pass a Market, it uses the default SecurityType.Index market from your algorithms brokerage model.</div><div>&nbsp;&nbsp;&nbsp; - UniverseSettings</div><div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - If you don't pass universe settings, it will use your algorithm's universe settings</div><div>&nbsp;&nbsp;&nbsp; - A filter function</div><div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - The filter function receives ETFConstituentData objects and must return Symbol objects. The ETFConstituentsData objects represent each security in the ETF/Index</div><div>-Example of passing a Symbol and selecting all of the constituents:<br></div><div class="section-example-container">
+<pre class="csharp">public class ETFConstituentsAlgorithm : QCAlgorithm {
     public override void Initialize() {
-        AddUniverse(MyCoarseFilterFunction, MyFineFundamentalFilterFunction);
-    }
-    // filter based on CoarseFundamental
-    IEnumerable&lt;Symbol&gt; MyCoarseFilterFunction(IEnumerable&lt;CoarseFundamental&gt; coarse) {
-         // In addition to further coarse universe selection, ensure the security has fundamental data
-         return return (from c in coarse
-                        where c.HasFundamentalData
-                        select c.Symbol);
-    }
-    // filter based on FineFundamental
-    public IEnumerable&lt;Symbol&gt; FineSelectionFunction(IEnumerable&lt;FineFundamental&gt; fine)
-    {
-        // Return a list of Symbols
+        var spy = QuantConnect.Symbol.Create("SPY", SecurityType.Equity, Market.USA);
+        var universe = Universe.ETF(spy, UniverseSettings, constituents =&gt; from x in constituents select x.Symbol);
+        AddUniverse(universe);
     }
 }
 </pre>
-<pre class="python">
-class ETFConstituentsDataAlgorithm(QCAlgorithm):
+<pre class="python">class ETFConstituentsAlgorithm(QCAlgorithm):
     def Initialize(self):        
-        spy = self.AddEquity("SPY").Symbol
-        self.AddUniverse(self.Universe.ETF(spy))
+        spy = Symbol.Create("SPY", SecurityType.Equity, Market.USA)
+        filter_function = lambda constituents: [x.Symbol for x in constituents]
+        universe = self.Universe.ETF(spy, self.UniverseSettings, filter_function)
+        self.AddUniverse(universe)
+</pre>
+</div>
+
+<div>- ^ In the preceeding example, we create the SPY symbol without creating a subscription for SPY. You can also use AddEquity().Symbol if you want the SPY in your universe.</div><div><br></div><div>- Example of passing a ticker and selecting all of the constituents:<br></div><div><br></div>
+
+<div class="section-example-container">
+<pre class="csharp">public class ETFConstituentsAlgorithm : QCAlgorithm {
+    public override void Initialize() {
+        var universe = Universe.ETF("SPY", Market.USA, UniverseSettings, 
+                                    constituents =&gt; from x in constituents select x.Symbol);
+        AddUniverse(universe);
+    }
+}
+</pre>
+<pre class="python">class ETFConstituentsAlgorithm(QCAlgorithm):
+    def Initialize(self):        
+        spy = Symbol.Create("SPY", SecurityType.Equity, Market.USA)
+        filter_function = lambda constituents: [x.Symbol for x in constituents]
+        universe = self.Universe.ETF(spy, self.UniverseSettings, filter_function)
+        self.AddUniverse(universe)
+</pre>
+</div>
+
+<div><br></div><div>- Properties of the ETFConstituentsData object:</div>
+
+<div data-tree="QuantConnect.Data.UniverseSelection.ETFConstituentData"></div><div><br></div><div>- To perform more filtering on the ETFConstituentsData objects, it may be helpful to define an isolated method.<br></div>
+
+
+<div class="section-example-container">
+<pre class="csharp">public class ETFConstituentsAlgorithm : QCAlgorithm {
+    public override void Initialize() {
+        var universe = Universe.ETF("SPY", Market.USA, UniverseSettings, ETFConstituentsFilter);
+        AddUniverse(universe);
+    }
+
+    private IEnumerable<symbol> ETFConstituentsFilter(IEnumerable<etfconstituentdata> constituents)
+    {
+        // Get the 10 securities with the largest weight in the index
+        return constituents.OrderByDescending(c =&gt; c.Weight).Take(10).Select(c =&gt; c.Symbol);
+    }
+}
+</etfconstituentdata></symbol></pre>
+<pre class="python">class ETFConstituentsAlgorithm(QCAlgorithm):
+    def Initialize(self):        
+        spy = Symbol.Create("SPY", SecurityType.Equity, Market.USA)
+        universe = self.Universe.ETF(spy, self.UniverseSettings, self.ETFConstituentsFilter)
+        self.AddUniverse(universe)
+
+    def ETFConstituentsFilter(self, constituents):
+        # Get the 10 securities with the largest weight in the index
+        selected = sorted([c for c in constituents if c.Weight],
+            key=lambda c: c.Weight, reverse=True)[:10]
+        return [c.Symbol for c in selected]
 </pre>
 </div>
 
 
-<br>- To view the supported ETFs, see the <a href='/datasets/quantconnect-us-etf-constituents/explorer'>US ETF Constituents Data Explorer</a>.
+<div><br> </div><div><br></div>-Since you only pass 1 argument to <code>AddUniverse</code> when you create an ETF constituents universe, you can use the ETF Constituents universe as your coarse universe selection filter and add a fundamentals selection filter. To add a fundamentals selection filter, pass it as a second argument to <code>AddUniverse</code>.
+<div class="section-example-container">
+<pre class="csharp">public class ETFConstituentsAlgorithm : QCAlgorithm {
+    public override void Initialize() {
+        var spy = QuantConnect.Symbol.Create("SPY", SecurityType.Equity, Market.USA);
+        var universe = Universe.ETF(spy, UniverseSettings, constituents =&gt; from x in constituents select x.Symbol);
+        AddUniverse(universe, SelectFine);
+    }
+}
+</pre>
+<pre class="python">class ETFConstituentsAlgorithm(QCAlgorithm):
+    def Initialize(self):        
+        spy = Symbol.Create("SPY", SecurityType.Equity, Market.USA)
+        filter_function = lambda constituents: [x.Symbol for x in constituents]
+        universe = self.Universe.ETF(spy, self.UniverseSettings, filter_function)
+        self.AddUniverse(universe, self.SelectFine)
+</pre>
+</div>
+
+For information on defining the fundamental filter method, see the Fundamentals Selection section.
