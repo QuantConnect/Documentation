@@ -1,0 +1,17 @@
+<div class="section-example-container" >
+<pre class="csharp" >
+// Add custom universe type and define the filter function.
+AddUniverse&lt;NyseTopGainers&gt;("myCustomUniverse", Resolution.Daily, nyseTopGainersList => {
+      return from singleStockData in nyseTopGainersList
+             where singleStockData.Rank > 5
+             select singleStockData.Symbol;
+});
+</pre>
+<pre class="python" >
+# add the custom universe in initialize 
+self.AddUniverse(NyseTopGainers, "myCustomUniverse", Resolution.Daily, self.nyseTopGainers)
+# filter function using your custom data
+def nyseTopGainers(self, data):
+    return [ x.Symbol for x in data if x["Rank"] > 5 ]
+</pre>
+</div>
