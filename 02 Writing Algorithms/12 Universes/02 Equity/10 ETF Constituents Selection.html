@@ -1,2 +1,35 @@
 ## TODO: QC500? 
 <br>ConstituentUniverseDefinitions? https://lean-api-docs.netlify.app/ConstituentUniverseDefinitions_8cs_source.html
+
+<h4>Requesing and ETF Constituents Universe</h4>
+
+<div class="section-example-container">
+<pre class="csharp">
+public class MyUniverseAlgorithm : QCAlgorithm {
+    public override void Initialize() {
+        AddUniverse(MyCoarseFilterFunction, MyFineFundamentalFilterFunction);
+    }
+    // filter based on CoarseFundamental
+    IEnumerable&lt;Symbol&gt; MyCoarseFilterFunction(IEnumerable&lt;CoarseFundamental&gt; coarse) {
+         // In addition to further coarse universe selection, ensure the security has fundamental data
+         return return (from c in coarse
+                        where c.HasFundamentalData
+                        select c.Symbol);
+    }
+    // filter based on FineFundamental
+    public IEnumerable&lt;Symbol&gt; FineSelectionFunction(IEnumerable&lt;FineFundamental&gt; fine)
+    {
+        // Return a list of Symbols
+    }
+}
+</pre>
+<pre class="python">
+class ETFConstituentsDataAlgorithm(QCAlgorithm):
+    def Initialize(self):        
+        spy = self.AddEquity("SPY").Symbol
+        self.AddUniverse(self.Universe.ETF(spy))
+</pre>
+</div>
+
+
+<br>- To view the supported ETFs, see the <a href='/datasets/quantconnect-us-etf-constituents/explorer'>US ETF Constituents Data Explorer</a>.
