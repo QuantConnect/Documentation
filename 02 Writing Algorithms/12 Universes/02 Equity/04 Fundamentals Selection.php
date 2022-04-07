@@ -98,6 +98,8 @@ class MyUniverseAlgorithm(QCAlgorithm):
 </pre>
 </div>
 
+<p>Similar to coarse universe selection, the fine filter function is provided a list of { FineFundamental} objects and must return a list of Symbol objects. If you don't want to make any changes to the current universe, you can return <code>Universe.Unchanged</code>. The Equities you return from the fine filter function are automatically added to your universe. Don't call <code>AddEquity</code>.
+
 <h4>Example 1: From the top 50 stocks with the highest volume, take 10 with lowest PE-ratio.</h4>
 <p>
 The simplest example of accessing the fundamental object would be harnessing the iconic PE ratio for a stock. This is a ratio of the price it commands to the earnings of a stock. The lower the PE ratio for a stock, the more affordable it appears.
@@ -145,6 +147,5 @@ Due to licensing restrictions, QuantConnect does not have the iconic S&amp;P500 
 
 <h4>Practical Limitations</h4>
 <p>
-	Like coarse universes, fine universes allow you to select an unlimited universe of symbols to analyze. Each asset added consumes approximately 5MB of RAM, so you may quickly run out of memory if your universe filter selects many symbols. QuantConnect provides unlimited backtesting and a free 8GB of RAM per backtest. If you run into memory issues, you can increase this with a subscription or memory packs. You can help keep your algorithm fast and efficient by only subscribing to the assets you need.
+	Like coarse universes, fine universes allow you to select an unlimited universe of symbols to analyze. Each asset added consumes approximately 5MB of RAM, so you may quickly run out of memory if your universe filter selects many symbols. If you backtest your algorithms in the Algorithm Lab, familiarize yourself with the RAM capacity of your <a href='/docs/v2/our-platform/organizations/resources#02-Backtesting-Nodes'>backtesting</a> and <a href='/docs/v2/our-platform/organizations/resources#04-Live-Trading-Nodes'>live trading nodes</a>. You can help keep your algorithm fast and efficient by only subscribing to the assets you need.
 </p>
-
