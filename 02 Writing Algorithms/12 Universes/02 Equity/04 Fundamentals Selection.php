@@ -61,7 +61,7 @@ To view all of the $[FineFundamental, T:QuantConnect.Data.Fundamental.FineFundam
 
 <div class="tip">
   <i class="fa fa-lightbulb-o"></i><span class="tip-title">Tip:</span>
-  <p>Only 5,000 assets have fundamental data. When working with fundamental data, you should always include the <code>HasFundamentalData</code> filter in your Coarse Universe filter. See the example below for how to do this in your algorithm.</p>
+  <p>Only <?php include(DOCS_RESOURCES."/kpis/fundamental-universe-size.php");?> assets have fundamental data. When working with fundamental data, you should always include the <code>HasFundamentalData</code> filter in your Coarse Universe filter. See the example below for how to do this in your algorithm.</p>
 </div>
 
 <h4>Requesting a Fundamental Universe</h4>
