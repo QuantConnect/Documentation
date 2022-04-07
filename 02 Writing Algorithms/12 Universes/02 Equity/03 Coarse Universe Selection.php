@@ -2,7 +2,7 @@
 <meta name="tag" content="coarse universes">
 
 <p>
-Coarse Universe selection allows you to pick a set of stocks by its volume, price, or whether it has fundamental data. This is helpful to narrow down your universe to liquid assets, or assets which pass a technical indicator filter. The total number of stocks in the <a href='/datasets/quantconnect-us-equity-security-master'>US Equity Security Master dataset</a> is <?php include(DOCS_RESOURCES."/kpis/us-equity-security-master-size.php"); ?>, but you won't receive all of these at one time because the US Equity Security Master dataset is free of survivorship-bias and some of the securities have delisted over time. The number of securities that are passed into your coarse selection function depends on the date of your algorithm. Currently, there are about <?php include(DOCS_RESOURCES."/kpis/coarse-universe-size.php"); ?> securities passed into your coarse selection function.
+Coarse Universe selection allows you to pick a set of stocks by its volume, price, or whether it has fundamental data. This is helpful to narrow down your universe to liquid assets, or assets which pass a technical indicator filter. 
 </p>
 
 <p>
@@ -29,7 +29,7 @@ To use a coarse universe, you must request it using an $[AddUniverse(), M:QuantC
 </div>
 
 <p>
-The coarse filter function is provided a list of $[CoarseFundamental,T:QuantConnect.Data.UniverseSelection.CoarseFundamental] objects. The most important properties of this object are: <code>Price</code> (raw), <code>DollarVolume</code> and <code>HasFundamentaData</code>. <br></p>
+The coarse filter function is provided a list of $[CoarseFundamental,T:QuantConnect.Data.UniverseSelection.CoarseFundamental] objects. The total number of stocks in the <a href='/datasets/quantconnect-us-equity-security-master'>US Equity Security Master dataset</a> is <?php include(DOCS_RESOURCES."/kpis/us-equity-security-master-size.php");?>, but you won't receive all of these at one time because the US Equity Security Master dataset is free of survivorship-bias and some of the securities have delisted over time. The number of securities that are passed into your coarse filter function depends on the date of your algorithm. Currently, there are about <?php include(DOCS_RESOURCES."/kpis/coarse-universe-size.php"); ?> securities passed into your coarse filter function. The most important properties of the $[CoarseFundamental,T:QuantConnect.Data.UniverseSelection.CoarseFundamental] object are: <code>Price</code> (raw), <code>DollarVolume</code> and <code>HasFundamentaData</code>. <br></p>
 
 <p>Typical examples of filter functions you might want sound like: <br></p>
 <h4>Example 1: Take 500 stocks worth more than $10, with more than $10M daily trading volume.</h4>
