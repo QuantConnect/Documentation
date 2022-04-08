@@ -26,7 +26,7 @@ This property configures the behavior when your algorithm attempts to subscribe 
 ";
 
 $supportsIQFeed = true;
-$requiresSubscription = false;
+$requiresSubscription = true;
 
 $getDeployLocalAlgorithmsText("Interactive Brokers", $brokerageDetails, $dataFeedDetails, $supportsIQFeed, $requiresSubscription);
 ?>
