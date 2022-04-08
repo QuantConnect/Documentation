@@ -1,4 +1,4 @@
-<div>To transport binary files, use the <code>pickle</code> and <code>base64</code> packages.<br></div><div><br></div><div>Follow these steps to transport binary files:</div>
+<p>Follow these steps to transport binary files:</p>
 
 <div>1) Add the following imports to your program:</div>
 
@@ -10,18 +10,21 @@ import base64
 
 
 
-<div>2) Serialize your object and encode it into a base64 string.<br></div>
+<div>2) Serialize your object into bytes.<br></div>
 
+<div class="section-example-container">
+<pre class="python">pickle_bytes = pickle.dumps(my_object)</pre>
+</div><div>3) Encode the bytes object using Base64 and then decode the result into ASCII.<br>
 <div class="section-example-container">
 <pre class="python">pickle_bytes = pickle.dumps(my_object)
 base64_str = base64.b64encode(pickle_bytes).decode('ascii')
 </pre>
-</div><div>3) Save the base64 string into <br>
 
 
-</div><div><br></div><div>---------
+</div><div>4) Save the base64 string representation of your object into the ObjectStore or one of the supported external sources.</div><div><br></div><div>5) Load the base64 string representation of your object into your trading algorithm.</div><div><br></div><div>6) Restore the object.<br></div>
 
-</div><div><br></div><p>
-How to transport binary files?
-What formats does it need to be in, imports?
-</p>
+<div class="section-example-container">
+<pre class="python">base64_bytes = base64_str.encode('ascii')
+model = base64.b64decode(base64_bytes)
+restored_model = pickle.loads(model)
+</pre>
