@@ -6,6 +6,76 @@ Custom type required to tell LEAN how to read data.
 
 </p>
 
+<div class="section-example-container">
+<pre class="csharp">public class Weather : BaseData
+{
+    public decimal MaxC = 0;
+    public decimal MinC = 0;
+    public string errString = "";
+
+    public override SubscriptionDataSource GetSource(
+        SubscriptionDataConfig config,
+        DateTime date,
+        bool isLive)
+    {
+        var source = "https://www.dropbox.com/s/8v6z949n25hyk9o/custom_weather_data.csv?dl=1";
+
+          return new SubscriptionDataSource(source,
+              SubscriptionTransportMedium.RemoteFile);
+    }
+
+    public override BaseData Reader(
+        SubscriptionDataConfig config,
+        string line,
+        DateTime date,
+        bool isLive)
+    {
+        if (string.IsNullOrWhiteSpace(line) ||
+            char.IsLetter(line[0]))
+            return null;
+
+        var data = line.Split(',');
+
+        return new Weather()
+        {
+            // Make sure we only get this data AFTER trading day - don't want forward bias.
+            Time = DateTime.ParseExact(data[0], "yyyyMMdd", null).AddHours(20),
+            Symbol = config.Symbol,
+            MaxC = Convert.ToDecimal(data[1]),
+            Value = Convert.ToDecimal(data[2]),
+            MinC = Convert.ToDecimal(data[3]),
+        };
+    }
+}
+</pre>
+<pre class="python">class MyCustomDataType(PythonData):
+    def GetSource(self, config, date, isLive):
+        return SubscriptionDataSource("&lt;yourSourceURL&gt;", SubscriptionTransportMedium.&lt;enumValue&gt;);
+
+    def Reader(self, config, line, date, isLive):
+        data = line.split(',')
+        custom = MyCustomDataType()
+        custom.Symbol = config.Symbol
+
+        # Make sure we only get this data AFTER trading day - don't want look-ahead bias.
+        custom.Time = datetime.strptime(data[0], '%Y%m%d') + timedelta(hours=20) 
+
+        custom.Value = decimal.Decimal(data[1])
+        custom["property1"] = float(data[2])
+        return custom
+	
+class MyAlgorithm(QCAlgorithm):
+    def Initialize(self):
+        self.symbol = self.AddData(MyCustomDataType, "&lt;name&gt;", Resolution.&lt;enumValue&gt;).Symbol
+        
+    def OnData(self, data):
+        if data.ContainsKey(self.symbol):
+            custom_data = data[self.symbol]
+            value = custom_data.Value
+            property1 = custom_data.GetProperty('property1')
+</pre>
+</div>
+
 <p>response type (available options) table -- what does each mean</p>
 
 <h4>response type </h4>
