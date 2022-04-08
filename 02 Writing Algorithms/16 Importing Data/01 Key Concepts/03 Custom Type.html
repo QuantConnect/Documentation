@@ -1,16 +1,37 @@
 <p>
-Custom type required to tell LEAN how to read data. 
+	You must create a custom type to instruct LEAN where to get your data and how to read it. All data must extend from $[BaseData,T:QuantConnect.Data.BaseData]
+	and override the $[Reader,M:QuantConnect.Data.BaseData.Reader] and $[GetSource,M:QuantConnect.Data.BaseData.Reader] methods.
+</p>
+<p>
+	$[GetSource,M:QuantConnect.Data.BaseData.Reader] instructs LEAN where to find your data. It must return a $[SubscriptionDataSource,T:QuantConnect.Data.SubscriptionDataSource] object
+	containing the string URL to find your data, and the format of the data (SubscriptionTransportMedium). When
+	the source returned changes URL, the data is downloaded again. This allows LEAN to cache large files and only download new data
+	when requested. This also allows you to break up large intraday data into smaller daily files, speeding up the backtest.
+</p>
 
- // Class definition / properties + Reader()
- // Defining response type (available options)
-
+<p>
+	$[Reader,M:QuantConnect.Data.BaseData.Reader] takes one line of data provided by the source and parses it into one of your custom objects. In addition to setting your custom type properties, you should also take care to set three required
+	properties:
+</p>
+<ul>
+	<li>
+		Symbol - Should always be set to config.Symbol
+	</li>
+	<li>
+		Time - Required synchronization of custom data
+	</li>
+	<li>
+		Value - Required for purchasing and portfolio calculations
+	</li>
+</ul>
+<p>
+	When there is no usable data in a line, your type should return <code class="csharp">null</code><code class="python">None</code>.
 </p>
 
 <div class="section-example-container">
-<pre class="csharp">public class Weather : BaseData
+<pre class="csharp">public class MyCustomDataType : BaseData
 {
-    public decimal MaxC = 0;
-    public decimal MinC = 0;
+    public decimal Property1 = 0;
     public string errString = "";
 
     public override SubscriptionDataSource GetSource(
@@ -18,10 +39,7 @@ Custom type required to tell LEAN how to read data.
         DateTime date,
         bool isLive)
     {
-        var source = "https://www.dropbox.com/s/8v6z949n25hyk9o/custom_weather_data.csv?dl=1";
-
-          return new SubscriptionDataSource(source,
-              SubscriptionTransportMedium.RemoteFile);
+          return new SubscriptionDataSource("&lt;sourceURLOrPath&gt;", SubscriptionTransportMedium.&lt;enumValue&gt;);
     }
 
     public override BaseData Reader(
@@ -30,27 +48,21 @@ Custom type required to tell LEAN how to read data.
         DateTime date,
         bool isLive)
     {
-        if (string.IsNullOrWhiteSpace(line) ||
-            char.IsLetter(line[0]))
-            return null;
-
         var data = line.Split(',');
-
-        return new Weather()
+        return new MyCustomDataType()
         {
-            // Make sure we only get this data AFTER trading day - don't want forward bias.
+            // Make sure we only get this data AFTER trading day - don't want look-ahead bias.
             Time = DateTime.ParseExact(data[0], "yyyyMMdd", null).AddHours(20),
             Symbol = config.Symbol,
-            MaxC = Convert.ToDecimal(data[1]),
-            Value = Convert.ToDecimal(data[2]),
-            MinC = Convert.ToDecimal(data[3]),
+            Value = Convert.ToDecimal(data[1]),
+            Property1 = Convert.ToDecimal(data[2])
         };
     }
 }
 </pre>
 <pre class="python">class MyCustomDataType(PythonData):
     def GetSource(self, config, date, isLive):
-        return SubscriptionDataSource("&lt;yourSourceURL&gt;", SubscriptionTransportMedium.&lt;enumValue&gt;);
+        return SubscriptionDataSource("&lt;sourceURLOrPath&gt;", SubscriptionTransportMedium.&lt;enumValue&gt;);
 
     def Reader(self, config, line, date, isLive):
         data = line.split(',')
@@ -76,16 +88,48 @@ class MyAlgorithm(QCAlgorithm):
 </pre>
 </div>
 
-<p>response type (available options) table -- what does each mean</p>
+You can even change source locations for backtesting and live modes. We support many different data types and formats. The following sections describe each response type.
+<h4>Local Files</h4>
+<p>
+When you use $[SubscriptionTransportMedium.LocalFile,T:QuantConnect.SubscriptionTransportMedium], the subscription's data comes from your local disk.
+</p>
 
-<h4>response type </h4>
-<p>what it means and 1-liner on how to use it.</p>
+<div class="section-example-container">
+<pre class="csharp">return new SubscriptionDataSource("&lt;filePath&gt;", SubscriptionTransportMedium.LocalFile);</pre>
+<pre class="python">return SubscriptionDataSource("&lt;filePath&gt;", SubscriptionTransportMedium.LocalFile)</pre>
+</div>
 
-<h4>response type </h4>
-<p>what it means and 1-liner on how to use it.</p>
+<h4>Remote Files</h4>
+<p>
+When you use $[SubscriptionTransportMedium.RemoteFile,T:QuantConnect.SubscriptionTransportMedium], the subscription's data is downloaded from a remote source.
+</p>
 
-<h4>response type </h4>
-<p>what it means and 1-liner on how to use it.</p>
+<div class="section-example-container">
+<pre class="csharp">return new SubscriptionDataSource("&lt;sourceURL&gt;", SubscriptionTransportMedium.RemoteFile);</pre>
+<pre class="python">return SubscriptionDataSource("&lt;sourceURL&gt;", SubscriptionTransportMedium.RemoteFile)</pre>
+</div>
+
+<h4>REST API</h4>
+<p>
+When you use $[SubscriptionTransportMedium.Rest,T:QuantConnect.SubscriptionTransportMedium], he subscription's data comes from a rest call that is polled and returns a single line/data point of information. The URL provided is polled at each Resolution time step and is assumed to be sufficient for 1-data point. This is generally intended for live data sources.
+</p>
+
+<div class="section-example-container">
+<pre class="csharp">return new SubscriptionDataSource("&lt;sourceURL&gt;", SubscriptionTransportMedium.Rest);</pre>
+<pre class="python">return SubscriptionDataSource("&lt;sourceURL&gt;", SubscriptionTransportMedium.Rest)</pre>
+</div>
+
+<h4>Streaming Sources</h4>
+<p>
+When you use $[SubscriptionTransportMedium.Streaming,T:QuantConnect.SubscriptionTransportMedium], the subscription's data is streamed. This is generally intended for live data sources.
+</p>
+
+<div class="section-example-container">
+<pre class="csharp">return new SubscriptionDataSource("&lt;sourceURL&gt;", SubscriptionTransportMedium.Streaming);</pre>
+<pre class="python">new SubscriptionDataSource("&lt;sourceURL&gt;", SubscriptionTransportMedium.Streaming)</pre>
+</div>
+
+
 
 <h4>response type </h4>
 <p>what it means and 1-liner on how to use it.</p>
