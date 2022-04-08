@@ -1,23 +1,23 @@
-<p>
-Download()
-
-headers
-</p>
-
-<meta name="tag" content="custom data">
-<p>
-	You may want to import a single static reference file - such as loading a daily symbol list, or an AI-training file. This is possible with the $[Download(),M:QuantConnect.Algorithm.QCAlgorithm.Download] method. The&nbsp;<code style="font-size: 1em; background-color: rgb(255, 255, 255);">Download</code> method downloads a URL and returns it as a string. It can take header settings for authentication, and a username and password for basic authentication.</p>
+<p>The <code>Download</code> method downloads the content served from a URL and returns it as a string. It is a common request to download data from a public Dropbox file. In this case, you should ensure you're downloading the direct file link, not the HTML page of the file. To specify this, add <code>&amp;dl=1</code> to the end of the Dropbox download URL.</p>
 
 <div class="section-example-container">
-<pre class="csharp">// If using dropbox remember to add the &amp;dl=1 to trigger a download
-var file = Download("https://www.dropbox.com?....&amp;dl=1");
+<pre class="csharp">var file = Download("https://www.dropbox.com?....&amp;dl=1");
 </pre>
-<pre class="python"># If using dropbox remember to add the &amp;dl=1 to trigger a download
-csv = self.Download("https://www.dropbox.com?....&amp;dl=1")
+<pre class="python">csv = self.Download("https://www.dropbox.com?....&amp;dl=1")
 
-# read file (which needs to be a csv) to a pandas DataFrame. include following imports above
-# from io import StringIO
-# import pandas as pd
+# If your Dropbox file is a CSV, convert it to a DataFrame with the read_csv method.<br># To use the read_csv method, add the following imports to your algorithm:
+#   from io import StringIO
+#   import pandas as pd
 df = pd.read_csv(StringIO(csv))
-</pre><p>It is a common request to download data from a public Dropbox file. In this case, you should ensure you're downloading the direct file link - not the HTML page of the download. You can specify this by adding <code>&amp;dl=1</code> to the end of the Dropbox download URL.</p>
+</pre>
+</div>
+
+<p>The <code>Download</code> method can take header settings for authentication and a username and password for basic authentication.</p>
+
+<div class="section-example-container">
+<pre class="csharp">Download(string address, IEnumerable&lt;keyvaluepair&lt;string, string=""&gt;&gt; headers);
+Download(string address, IEnumerable&lt;keyvaluepair&lt;string, string=""&gt;&gt; headers, string userName, string password);
+</keyvaluepair<string,></pre>
+<pre class="python">self.Download(address, headers={"1" ; 1})
+self.Download(address, headers={"1" ; 1}, user_name="name", password="pass")</pre>
 </div>
