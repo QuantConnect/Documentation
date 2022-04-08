@@ -1,16 +1,15 @@
-<p>To read your custom universe file, you need to define a custom data reader. Custom universe types extend from $[BaseData,T:QuantConnect.Data.BaseData], so implement a <code>Reader()</code> method which parses the lines of the file.
+<p>Custom universe types extend from $[BaseData,T:QuantConnect.Data.BaseData], so implement a <code>Reader()</code> method which parses the lines of the file.
 </p>
 <p>
-Each of the custom universe data points is 1 line of the source file. The Reader method is called repeatedly until the date/time advances or it reaches the end of file. This way you can group universe data and pass it as a single collection into the filter function.
+Each of the custom universe data points is 1 line of the source file. The Reader method will be called repeatedly until the date/time advances, or the end of file is reached. This way you can group universe data and pass it as a single collection into the filter function.
 </p>
-
-<div data-tree="QuantConnect.SubscriptionTransportMedium"></div>
 
 <p>
 Custom universes need a type defined to perform the parsing of the file. This pattern is almost identical to <a href="/docs/v2/writing-algorithms/importing-data/key-concepts">importing custom data</a> to your algorithm, except the data is used for choosing the universe data subscription instead of a price feed.
 </p>
-<div class="section-example-container">
-<pre class="csharp">//Example custom universe data; it is virtually identical to other custom data types.
+<div class="section-example-container" >
+<pre class="csharp" >
+//Example custom universe data; it is virtually identical to other custom data types.
 public class NyseTopGainers : BaseData 
 {
     public int TopGainersRank;
@@ -34,7 +33,8 @@ public class NyseTopGainers : BaseData
     }
 }
 </pre>
-<pre class="python"># Example custom universe data; it is virtually identical to other custom data types.
+<pre class="python" >
+# Example custom universe data; it is virtually identical to other custom data types.
 class NyseTopGainers(PythonData):
 
     def GetSource(self, config, date, isLiveMode):
