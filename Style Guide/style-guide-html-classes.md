@@ -14,7 +14,7 @@ The following table describes HTML classes that you may use when writing documen
 | `field-name` | GUI field names (ie: text fields and drop-down menus) |
 | `highlight` | Important notes |
 | `icon-name` | Icon names |
-| `key-combinations` | Keyboard keystroke names |
+| `key-combinations` | Keyboard keystroke names (ie: Shift+F5) |
 | `latex-variable` | Latex variable names embedded in paragraphs (ie: where `x` is ...) |
 | `live-url` | Active URLs, not examples |
 | `menu-name` | Menu items |
