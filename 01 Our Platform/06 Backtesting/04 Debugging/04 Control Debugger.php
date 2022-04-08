@@ -43,8 +43,6 @@
   </tbody>
 </table>
 
-<p>You can also control the debugger with <a href='/docs/v2/our-platform/projects/ide#11-Keyboard-Shortcuts'>keyboard shortcuts</a>.</p>
-
 <style>
 #debugger-button-table td:first-child,
 #debugger-button-table th:first-child {
