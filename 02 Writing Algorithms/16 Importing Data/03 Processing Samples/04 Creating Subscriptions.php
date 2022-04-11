@@ -9,7 +9,7 @@ To receive your custom data in the OnData method, after you define your custom d
 </p>
 
 <div class="section-example-container">
-	<pre class="csharp">public class BubbleAlgorithm : QCAlgorithm
+	<pre class="csharp">public class MyAlgorithm : QCAlgorithm
 {
     private Symbol _symbol;
     public override void Initialize()
