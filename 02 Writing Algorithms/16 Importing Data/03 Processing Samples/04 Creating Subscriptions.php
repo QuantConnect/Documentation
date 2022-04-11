@@ -9,11 +9,17 @@ To receive your custom data in the OnData method, after you define your custom d
 </p>
 
 <div class="section-example-container">
-	<pre class="csharp">// In Initialize method:
-_symbol = AddData&lt;MyCustomDataType&gt;("&lt;name&gt;", Resolution.Daily).Symbol;
-</pre>
-	<pre class="python"># In Initialize method:
-self.symbol = self.AddData(MyCustomDataType, "&lt;name&gt;", Resolution.Daily).Symbol
+	<pre class="csharp">public class BubbleAlgorithm : QCAlgorithm
+{
+    private Symbol _symbol;
+    public override void Initialize()
+    {
+        _symbol = AddData&lt;MyCustomDataType&gt;("&lt;name&gt;", Resolution.Daily).Symbol;
+    }
+}</pre>
+<pre class="python">class MyAlgorithm(QCAlgorithm): 
+    def Initialize(self):
+        self.symbol = self.AddData(MyCustomDataType, "&lt;name&gt;", Resolution.Daily).Symbol
 </pre>
 </div>
 
