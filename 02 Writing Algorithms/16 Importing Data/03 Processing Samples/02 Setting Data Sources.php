@@ -1,5 +1,5 @@
 <p>
-	$[GetSource,M:QuantConnect.Data.BaseData.Reader] instructs LEAN where to find your data. It must return a $[SubscriptionDataSource,T:QuantConnect.Data.SubscriptionDataSource] object
+	In your custom data class, the $[GetSource,M:QuantConnect.Data.BaseData.Reader] method instructs LEAN where to find your data. It must return a $[SubscriptionDataSource,T:QuantConnect.Data.SubscriptionDataSource] object
 	containing the location to find your data, and the format of the data (SubscriptionTransportMedium). You can even change source locations for backtesting and live modes. We support many different data types and formats. <br></p>
 
 <h4>Local Files</h4>
