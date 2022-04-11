@@ -43,7 +43,7 @@ To download data from a remote URL like GitHub and Dropbox, use $[SubscriptionTr
 
 ## Import examples of github and dropbox urls from Key Concepts
 
-<h4>REST API</h4>
+<h4>REST APIs</h4>
 <p>
 To retrieve data from a REST endpoint, use $[SubscriptionTransportMedium.Rest,T:QuantConnect.SubscriptionTransportMedium]. The endpoint is polled at each <code>Resolution</code> time step that you set when you initialize the data subscription. This is generally intended for live data sources.
 </p>
