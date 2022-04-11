@@ -10,15 +10,14 @@ To receive your custom data in the OnData method, after you define your custom d
 
 <div class="section-example-container">
 	<pre class="csharp">// In Initialize method:
-AddData&lt;MyCustomDataType&gt;("&lt;name&gt;", Resolution.Daily);
+_symbol = AddData&lt;MyCustomDataType&gt;("&lt;name&gt;", Resolution.Daily).Symbol;
 </pre>
 	<pre class="python"># In Initialize method:
-self.AddData(MyCustomDataType, "&lt;name&gt;", Resolution.Daily)
+self.symbol = self.AddData(MyCustomDataType, "&lt;name&gt;", Resolution.Daily).Symbol
 </pre>
 </div>
 
 ## TODO: 
-<br>-Update to save symbol so that we can access the custom data in OnData, also add example of accessing in OnData
 <br>-What resolution should you set?
 <br>&nbsp;&nbsp;&nbsp;- Match the resolution of your custom dataset
 <br>&nbsp;&nbsp;&nbsp;- The max reasonable resolute is every minute. Anything more frequent than minute will be very slow to execute.
