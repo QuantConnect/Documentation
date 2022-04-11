@@ -1,23 +1,21 @@
 <p>The most common request is to create bars based on a period of time. QuantConnect has created a helper for this called <code class="csharp">Consolidate()</code><code class="python">self.Consolidate()</code>. The consolidate method looks up the Symbol requested, creates a consolidator for the given period, and passes the output to the provided function event handler. With just one line of code, you can create data in any format required. The consolidate helper accepts a <code>timedelta</code>, <code>Resolution</code>, or <code>Calendar</code> period specifier:</p>
 <div class="section-example-container">
-<pre class="csharp">
-// Consolidate 1min SPY -> 45min Bars
+<pre class="csharp">// Consolidate 1min SPY -&gt; 45min Bars
 Consolidate("SPY", TimeSpan.FromMinutes(45), FortyFiveMinuteBarHandler)
 
-// Consolidate 1min SPY -> 1-Hour Bars
+// Consolidate 1min SPY -&gt; 1-Hour Bars
 Consolidate("SPY", Resolution.Hour, HourBarHandler)
 
-// Consolidate 1min SPY -> 1-Week Bars
+// Consolidate 1min SPY -&gt; 1-Week Bars
 Consolidate("SPY", Calendar.Weekly, WeekBarHandler)
 </pre>
-<pre class="python">
-# Consolidate 1min SPY -> 45min Bars
+<pre class="python"># Consolidate 1min SPY -&gt; 45min Bars
 self.Consolidate("SPY", timedelta(minutes=45), self.FortyFiveMinuteBarHandler)
 
-# Consolidate 1min SPY -> 1-Hour Bars
+# Consolidate 1min SPY -&gt; 1-Hour Bars
 self.Consolidate("SPY", Resolution.Hour, self.HourBarHandler)
 
-# Consolidate 1min SPY -> 1-Week Bars
+# Consolidate 1min SPY -&gt; 1-Week Bars
 self.Consolidate("SPY", Calendar.Weekly, self.WeekBarHandler)
 </pre>
 </div>
@@ -29,19 +27,21 @@ For a full example, see the <a target="_BLANK" class="csharp" href="https://gith
 
 
 <div class="section-example-container">
-<pre class="csharp">
-// Example event handler from Consolidate helper.
+<pre class="csharp">// Example event handler from Consolidate helper.
 void FortyFiveMinuteBarHandler(TradeBar consolidated) {
     Log($"{consolidated.EndTime:o} 45 minute consolidated.");
 }
 </pre>
-<pre class="python">
-# Example event handler from Consolidate helper.
+<pre class="python"># Example event handler from Consolidate helper.
 def FortyFiveMinuteBarHandler(self, consolidated):
-      self.Log(f"{consolidated.EndTime} >> FortyFiveMinuteBarHandler >> {consolidated.Close}")
+      self.Log(f"{consolidated.EndTime} &gt;&gt; FortyFiveMinuteBarHandler &gt;&gt; {consolidated.Close}")
 </pre>
 </div>
-<h4>Most Common Error: Adding Braces<h5>
+<h4>Most Common Error: Adding Braces</h4><h5>
 <p>
-The most common error is to put braces "<code>()</code>" at the end of your function call when defining the event handler. Using braces causes the method to be executed, and the <i>result</i> passed in as the event handler. Remember to simply pass the name of your function to the event system. i.e. It should be <code class="csharp">EventHandler</code><code class="python">self.EventHandler</code> not <code class="csharp">EventHandler()</code><code class="python">self.EventHandler()</code>.
-</p>
+The most common error is to put braces "<code>()</code>" at the end of your function call when defining the event handler. Using braces causes the method to be executed, and the <i>result</i> passed in as the event handler. Remember to simply pass the name of your function to the event system. i.e. It should be <code class="csharp">EventHandler</code><code class="python">self.EventHandler</code> not <code class="csharp">EventHandler()</code><code class="python">self.EventHandler()</code>. <br></p><p><br></p><p>Calendar Period Consolidators<br></p><p>- Weekly 
+<br>- Monthly
+<br>- Quarterly 
+<br> https://github.com/QuantConnect/Lean/blob/master/Common/Data/Consolidators/Calendar.cs
+<br> https://github.com/QuantConnect/Lean/pull/3022</p>
+</h5>
