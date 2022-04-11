@@ -1,25 +1,21 @@
-$[Reader,M:QuantConnect.Data.BaseData.Reader] takes one line of data provided by the source and parses it into one of your custom objects. In addition to setting your custom type properties, you should also take care to set three required
-	properties:
+<p>In your custom data class, the $[Reader,M:QuantConnect.Data.BaseData.Reader] method takes one line of data provided by the source and parses it into one of your custom objects. In addition to setting your custom type properties, set the following three required properties:</p>
 
 <ul>
 	<li>
-		Symbol - Should always be set to config.Symbol
+		<code>Symbol</code> - Should always be set to config.Symbol
 	</li>
 	<li>
-		Time - Required synchronization of custom data
+		<code>Time</code> - Required synchronization of custom data
 	</li>
 	<li>
-		Value - Required for purchasing and portfolio calculations
+		<code>Value</code> - Required for purchasing and portfolio calculations
 	</li>
 </ul>
 <p>-Your reader method should return data points in chronological order. If
  a data point has a timestamp that is the same or earlier than the 
 timestamp of the previous data point, it's not injected into your 
 algorithm.
-	</p><p>When there is no usable data in a line, your type should return <code class="csharp">null</code><code class="python">None</code>. <br></p>
-
--If your data source returns multiple samples within a single <code>line</code> (like a list with multiple JSON line in it), order the samples by their timestamp and then <code>return BaseDataCollection(endTime, endTime, config.Symbol, data)</code> where <code>data</code> is a list of your custom data type (<code>MyCustomDataType</code> in this case) .
-<br>&nbsp;&nbsp;&nbsp;-Example: https://www.quantconnect.com/terminal/processCache/?request=embedded_backtest_444c6a94f8dd6f6b538ff6e5466aa0c7.html
+	</p><p>- When there is no usable data in a line, your type should return <code class="csharp">null</code><code class="python">None</code>. <br></p>
 
 <div class="section-example-container">
 <pre class="csharp">public class MyCustomDataType : BaseData
@@ -60,4 +56,7 @@ algorithm.
 </pre>
 </div>
 
-<div>- Add example of JSON and XML</div><br>
+-If your data source returns multiple samples within a single <code>line</code> (like a list with multiple JSON line in it), order the samples by their timestamp and then <code>return BaseDataCollection(endTime, endTime, config.Symbol, data)</code> where <code>data</code> is a list of your custom data type (<code>MyCustomDataType</code> in this case) .
+<br>&nbsp;&nbsp;&nbsp;-Example: https://www.quantconnect.com/terminal/processCache/?request=embedded_backtest_444c6a94f8dd6f6b538ff6e5466aa0c7.html
+
+<br>
