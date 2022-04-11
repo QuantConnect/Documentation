@@ -17,9 +17,13 @@ self.AddData(MyCustomDataType, "&lt;name&gt;", Resolution.Daily)
 </pre>
 </div>
 
-## TODO: Update to save symbol so that we can access the custom data in OnData, also add example of accessing in OnData
+## TODO: 
+<br>-Update to save symbol so that we can access the custom data in OnData, also add example of accessing in OnData
+<br>-What resolution should you set?
+<br>&nbsp;&nbsp;&nbsp;- Match the resolution of your custom dataset
+<br>&nbsp;&nbsp;&nbsp;- The max reasonable resolute is every minute. Anything more frequent than minute will be very slow to execute.
 
 <p>
-	The framework checks for new data as instructed by the <code>Resolution</code> period.The following table shows the polling frequency of each resolution:</p> 
+	The framework checks for new data as instructed by the <code>Resolution</code> period. The following table shows the polling frequency of each resolution:</p> 
 
 <?php include(DOCS_RESOURCES."/datasets/live-dataset-polling-frequency-table.html"); ?>
