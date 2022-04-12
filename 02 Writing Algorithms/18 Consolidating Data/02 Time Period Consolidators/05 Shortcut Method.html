@@ -1,4 +1,7 @@
-<p>The most common request is to create bars based on a period of time. We has created a helper for this called <code class="csharp">Consolidate()</code><code class="python">self.Consolidate()</code>. The consolidate method looks up the Symbol requested, creates a consolidator for the given period, and passes the output to the provided function event handler. With just one line of code, you can create data in any format required. The consolidate helper accepts a <code>timedelta</code>, <code>Resolution</code>, or <code>Calendar</code> period specifier:</p>
+<p>The <code class="csharp">Consolidate</code><code class="python">self.Consolidate</code> method is a helper method to create time period consolidators. With just one line of code, you can create data in any of the <a href="/docs/v2/writing-algorithms/consolidating-data/time-period-consolidators#02-Supported-Time-Periods">supported time periods</a>.</p>
+
+<h4>Creating Consolidators</h4>
+<p>To create a consolidator with the shortcut method, call <code class="csharp">Consolidate</code><code class="python">self.Consolidate</code> with a <code>Symbol</code>, a time period, and an event handler. If you don't pass the method a <code>Symbol</code>, it looks up the <code>Symbol</code> internally.</p>
 <div class="section-example-container">
 <pre class="csharp">// Consolidate 1min SPY -&gt; 45min Bars
 Consolidate("SPY", TimeSpan.FromMinutes(45), FortyFiveMinuteBarHandler)
@@ -20,11 +23,8 @@ self.Consolidate("SPY", Calendar.Weekly, self.WeekBarHandler)
 </pre>
 </div>
 
-<p>The event handler function of <code>Consolidate</code> accepts one argument, the resulting bar. For most data sources, this defaults to TradeBar format. 
-
-For a full example, see the <a target="_BLANK" class="csharp" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.CSharp/DataConsolidationAlgorithm.cs#L94">demonstration algorithm</a><a target="_BLANK" class="python" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.Python/DataConsolidationAlgorithm.py#L94">demonstration algorithm</a>. 
-</p>
-
+<h4>Receiving Consolidated Bars</h4>
+<p>The <code class="csharp">Consolidate</code><code class="python">self.Consolidate</code> method creates a consolidator for the time period you provide and passes the consolidated bars to the function event handler. The event handler function accepts one argument, the consolidated TradeBar or QuoteBar.<br></p>
 
 <div class="section-example-container">
 <pre class="csharp">// Example event handler from Consolidate helper.
@@ -38,5 +38,6 @@ def FortyFiveMinuteBarHandler(self, consolidated):
 </pre>
 </div>
 
-<p>If you use this shortcut method to create a consolidator, you can't remove the consolidator.
+<h4>Removing Consolidators</h4>
+<p>If you create a consolidator with the shortcut method, you can't remove the consolidator.
 </p>
