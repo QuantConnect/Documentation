@@ -69,7 +69,7 @@ private void ConsolidationHandler(object sender, TradeBar consolidatedBar) {
 <p>The consolidation handler accepts two arguments, the sender (consolidator object) and the consolidated bar. The consolidated bars are automatically passed to your consolidation handler when the consolidated bar closes.<br>
 
 </p><h4>Removing Consolidators</h4>
-<p>If you manually create a consolidator for a universe subscription, you should remember to remove it again later once the security leaves your universe. If you do not "tidy up", these can compound internally, causing your algorithm to slow down and eventually die once it runs out of RAM. You will need to save a reference to the consolidator to remove it cleanly. We recommend using a class to organize all of the symbol-specific objects created over the lifetime of a security in your universe. See this example Alpha as an example of removing consolidators from universe subscriptions. </p>
+<p>If you manually create a consolidator for a universe subscription and register it to automatic updates, remove the consolidator once the security leaves your universe. If you do not "tidy up", the consolidators can compound internally, causing your algorithm to slow down and eventually die once it runs out of RAM. To remove consolidators, save a reference to the consolidator when you create it. We recommend using a class to organize all of the symbol-specific objects created over the lifetime of a security in your universe. See this example Alpha as an example of removing consolidators from universe subscriptions. </p>
 
 <div class="section-example-container">
 <pre class="csharp">self.SubscriptionManager.RemoveConsolidator(_symbol, _consolidator)
