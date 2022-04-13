@@ -3,16 +3,47 @@ A common request is to use consolidators with indicators to create indicators wi
 </p>
 
 <div class="section-example-container">
-<pre class="csharp" >
-// Generate 7 minute bars; then SMA-10 generates the average of last 10 bars.
-AddEquity("SPY", Resolution.Minute);
-var sma = new SimpleMovingAverage(10);
-RegisterIndicator("SPY", sma, TimeSpan.FromMinutes(7));
+<pre class="csharp">// Generate 7 minute bars; then SMA-10 generates the average of last 10 bars.
+var symbol = AddEquity("SPY", Resolution.Minute).Symbol;
+var indicator = new SimpleMovingAverage(10);
+RegisterIndicator(symbol, sma, TimeSpan.FromMinutes(7));
 </pre>
-<pre class="python" >
-# Generate 7 minute bars; then SMA-10 generates the average of last 10 bars.
-self.AddEquity("SPY", Resolution.Minute)
-self.sma = SimpleMovingAverage(10)
-self.RegisterIndicator("SPY", self.sma, timedelta(minutes=7))
+<pre class="python"># Generate 7 minute bars; then SMA-10 generates the average of last 10 bars.
+self.symbol = self.AddEquity("SPY", Resolution.Minute).Symbol
+self.indicator = SimpleMovingAverage(10)
+self.RegisterIndicator(self.symbol, self.sma, timedelta(minutes=7))
 </pre>
+</div>
+
+- The RegisterIndicator method can accept a timedelta/TimeSpan, Resolution, or an unregistered consolidator. 
+<div class="section-example-container">
+<pre class="csharp">// TimeSpan
+RegisterIndicator(symbol, indicator, TimeSpan.FromMinutes(7));
+
+// Resolution
+RegisterIndicator(symbol, indicator, Resolution.Hour);
+
+// Consolidator
+RegisterIndicator(symbol, indicator, new TradeBarConsolidator(30))
+</pre>
+<pre class="python"># timedelta
+self.RegisterIndicator(self.symbol, self.indicator, timedelta(minutes=7))
+
+# Resolution
+self.RegisterIndicator(self.symbol, self.indicator, Resolution.Hour)
+
+# Consolidator
+self.RegisterIndicator(self.symbol, self.indicator, TradeBarConsolidator(30))
+</pre>
+</div><div>
+For more information on creating an unregistered consolidator, see the documentation on each consolidator type. <br></div><div><br></div><p>The data point indicators use only a single price data in their calculations. By default, those indicators use the closing price. For equity, that price is the trade bar closing price. For other asset classes with quote bar data (bid/ask price), those indicators are calculated with the mid-price of the bid closing price and the ask closing price. </p><p>If you want to create an indicator with the other fields like Open, High, Low, or Close, you can specify the selector argument in the indicator helper method with the available fields. </p>
+<div class="section-example-container">
+<pre class="csharp">// define a 10-period RSI with indicator constructor
+_rsi = new RelativeStrengthIndex(10, MovingAverageType.Simple);
+// register the daily High price data to automatically update the indicator
+RegisterIndicator(symbol, _rsi, Resolution.Daily, Field.High);</pre>
+<pre class="python"># define a 10-period RSI with indicator constructor
+self.rsi = RelativeStrengthIndex(10, MovingAverageType.Simple)
+# register the daily High price data to automatically update the indicator
+self.RegisterIndicator(self.symbol, self.rsi, Resolution.Daily, Field.High)</pre>
 </div>
