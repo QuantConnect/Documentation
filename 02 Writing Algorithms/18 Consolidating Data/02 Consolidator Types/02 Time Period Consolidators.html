@@ -64,7 +64,7 @@ private void ConsolidationHandler(object sender, TradeBar consolidatedBar) {
 <p>if you consolidate minute-resolution crypto data, you receive the consolidated bar at midnight UTC. If you consolidated minute-resolution Equity data, you receive the consolidated bar at 9:31AM the next day because 4:00pm (closing time) isn't the end of the day.</p>
 
 <h4>Shortcut Method</h4>
-<p>The <code class="csharp">Consolidate</code><code class="python">self.Consolidate</code> method is a helper method to create time period consolidators. With just one line of code, you can create data in any of the <a href="/docs/v2/writing-algorithms/consolidating-data/time-period-consolidators#02-Supported-Time-Periods">supported time periods</a>. To create a consolidator with the shortcut method, call <code class="csharp">Consolidate</code><code class="python">self.Consolidate</code> with a <code>Symbol</code>, a time period, and an event handler. If you don't pass the method a <code>Symbol</code>, it looks up the <code>Symbol</code> internally.</p>
+<p>The <code class="csharp">Consolidate</code><code class="python">self.Consolidate</code> method is a helper method to create time period consolidators. With just one line of code, you can create data in any time period with a timedelta/TimeSpan, Resolution, or Calendar object. To create a consolidator with the shortcut method, call <code class="csharp">Consolidate</code><code class="python">self.Consolidate</code> with a <code>Symbol</code>, time period, and event handler. If you don't pass the method a <code>Symbol</code>, it looks up the <code>Symbol</code> internally.</p>
 <div class="section-example-container">
 <pre class="csharp">// Consolidate 1min SPY -&gt; 45min Bars
 Consolidate("SPY", TimeSpan.FromMinutes(45), FortyFiveMinuteBarHandler)
@@ -99,13 +99,13 @@ self.Consolidate(symbol, Resolution.Hour, TickType.Quote, self.ConsolidationHand
 
 <div class="section-example-container">
 <pre class="csharp">// Example event handler from Consolidate helper.
-void FortyFiveMinuteBarHandler(TradeBar consolidated) {
-    Log($"{consolidated.EndTime:o} 45 minute consolidated.");
+void ConsolidationHandler(TradeBar consolidatedBar) {
+    Log($"{consolidatedBar.EndTime:o} 45 minute consolidated.");
 }
 </pre>
 <pre class="python"># Example event handler from Consolidate helper.
-def FortyFiveMinuteBarHandler(self, consolidated):
-      self.Log(f"{consolidated.EndTime} &gt;&gt; FortyFiveMinuteBarHandler &gt;&gt; {consolidated.Close}")
+def ConsolidationHandler(self, consolidated_bar):
+      self.Log(f"{consolidated_bar.EndTime}: {consolidated_bar.Close}")
 </pre>
 </div>
 
