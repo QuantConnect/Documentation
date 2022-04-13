@@ -1,2 +1,0 @@
-
-## Import from key concepts
