@@ -6,13 +6,14 @@ What are time period consolidators?
 <br><br>
 Why use time period consolidators?
 <br>- To build custom time period bars. For instance, you can aggregate several 1-minute bars to build 7-minute bars, 30-minute bars, or even 1-day bars.
-<br>- These time periods are less researched than the standard resolution bars.
-
-<h4>Standard Time Periods</h4>
-<div>&nbsp;&nbsp;&nbsp; - The time starts from the beginning of the day, not the beginning of the market open or the first data point. If you do timedelta(minutes=7), the 7-minute counter starts at midnight.</div><div>&nbsp;&nbsp;&nbsp; - It's relative to the data time zone, not the algorithm time zone. (Daily consolidation on Crypto is received at midnight UTC).<br></div><div><br></div><div>-Resolutions</div><div>&nbsp;&nbsp; - Second</div><div>&nbsp;&nbsp; - Minute</div><div>&nbsp;&nbsp; - Hour</div><div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - If you do hourly, the consolidator ends at the top of the hour. For equities, that's 10AM, not 10:30AM.<br></div><div>&nbsp;&nbsp; - Daily<br></div><div><br></div><div>-Calendar periods</div><div>&nbsp; - Weekly <br></div><div>&nbsp; - Monthly</div><div>&nbsp; - Quarterly</div><div>&nbsp; - Yearly<br></div>
+<br><h4>Standard Time Periods</h4>-Resolutions<div>&nbsp;&nbsp; - Second</div><div>&nbsp;&nbsp; - Minute</div><div>&nbsp;&nbsp; - Hour</div><div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - If you do hourly, the consolidator ends at the top of the hour. For equities, that's 10AM, not 10:30AM.<br></div><div>&nbsp;&nbsp; - Daily<br></div><div><br></div><div>-Calendar periods</div><div>&nbsp; - Weekly <br></div><div>&nbsp; - Monthly</div><div>&nbsp; - Quarterly</div><div>&nbsp; - Yearly<br></div>
 
 <h4>Custom Time Periods</h4>
-<div>-timedelta (python); TimeSpan (C#) <br></div>
+<div>-timedelta (python); TimeSpan (C#) <br></div><div><div>&nbsp;&nbsp;&nbsp; - The time starts from the beginning of the day, not the 
+beginning of the market open or the first data point. If you do 
+timedelta(minutes=7), the 7-minute counter starts at midnight.</div>&nbsp;&nbsp;&nbsp;
+ - It's relative to the data time zone, not the algorithm time zone. 
+(Daily consolidation on Crypto is received at midnight UTC).</div>
 -If you need something more specific than the preceding time periods, create your own custom time period to set the start and end time of the consolidated bars.
 
 <br>
@@ -23,7 +24,7 @@ Why use time period consolidators?
     period = timedelta(7)
     dt = dt.replace(hour=17, minute=0, second=0, microsecond=0)
     delta = 1+dt.weekday()
-    if delta > 6:
+    if delta &gt; 6:
         delta = 0
     start = dt-timedelta(delta)
     return CalendarInfo(start, period)</pre>
