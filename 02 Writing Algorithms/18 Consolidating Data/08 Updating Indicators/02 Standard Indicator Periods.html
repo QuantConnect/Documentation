@@ -12,4 +12,12 @@ sma = self.SMA("SPY", 14, Resolution.Daily)
 </pre>
 </div>
 
-<p>^^ Only use this technique if your universe is static. If your universe is dynamic, manually update the consolidator. For more information, see <a href='/docs/v2/writing-algorithms/consolidating-data/updating-indicators#05-Removing-Indicator-Consolidators'>Removing Indicator Consolidators</a>.<br></p>
+<p>^^ Only use this technique if your universe is static. If your universe is dynamic, keep a reference to the consolidator so you can remove it when the security is removed from your universe.<!--?p-->
+</p><div class="section-example-container"><pre></pre>
+<pre class="python">self.ema = ExponentialMovingAverage(14)
+self.consolidator = TradeBarConsolidator(1)
+self.consolidator.DataConsolidated += (lambda sender, consolidated_bar : self.ema.Update(consolidated_bar))
+self.SubscriptionManager.AddConsolidator(self.symbol, self.consolidator)
+</pre>
+</div>
+<p>For more information, see <a href="/docs/v2/writing-algorithms/consolidating-data/updating-indicators#05-Removing-Indicator-Consolidators">Removing Indicator Consolidators</a>.<br></p>
