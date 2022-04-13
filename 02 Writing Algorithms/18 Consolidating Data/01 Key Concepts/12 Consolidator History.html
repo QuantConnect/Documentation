@@ -1,0 +1,25 @@
+-To access historical bars that were passed to your consolidation handler, save the bars as they are produced. You can use RollingWindow objects to save the consolidated bars and easily access them later on in your algorithm.
+<p>
+A common request is to compare a current consolidated bar with one from the past. This can be achieved by combining a <a class="docs-internal-link" href="/docs/algorithm-reference/rolling-window">RollingWindow</a> with a Consolidator. This is easy to achieve with the individual tools provided here and in the RollingWindow documentation. First, you must create a consolidator for the data you need, and then you must add it to the rolling window in the event handler. Building this will allow you to easily compare recent custom-bars with previous ones created.
+</p>
+<div class="section-example-container">
+<pre class="csharp">
+// In initialize create a consolidator and add its bars to the window
+_window = new RollingWindow&lt;TradeBar&gt;(2);
+Consolidate("SPY", TimeSpan.FromMinutes(45), x => _window.Add(x));
+
+// Now you can use the bar history; _window[0] is current, _window[1] is previous bar.
+if (_window.IsReady &amp;&amp; _window[0].Close &gt; _window[1].Close) { 
+     Log("Current close price higher than the one 45 minutes ago");
+}
+</pre>
+<pre class="python">
+# In initialize create a consolidator and add its bars to the window
+self.window = RollingWindow[TradeBar](2)
+self.Consolidate("SPY", timedelta(minutes=45), lambda x: self.window.Add(x))
+
+# Now you can use the bar history; window[0] is current, window[1] is previous bar.
+if self.window.IsReady and window[0].Close > window[1].Close:
+     self.Log("Current close price higher than the one 45 minutes ago")
+</pre>
+</div>
