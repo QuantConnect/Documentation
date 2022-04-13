@@ -1,3 +1,4 @@
+-By default, the consolidators update the indicator with the close price of the security.
 
 <p>The data point indicators use only a single price data in their calculations. By default, those indicators use the closing price. For Equity, that price is the trade bar closing price. For other asset classes with quote bar data (bid/ask price), those indicators are calculated with the mid-price of the bid closing price and the ask closing price. </p><p>If you want to create an indicator with the other fields like Open, High, Low, or Close, you can specify the selector argument in the indicator helper method with the available fields. </p>
 <div class="section-example-container">
