@@ -5,15 +5,17 @@
 History data is returned in an ascending order from oldest to newest. This is required for piping the data into indicators to perform warm-up. 
 </p>
 
-<span class="python">
+<h4>Single Symbol History Requests</h4>
+
 <p class="python">
-History requests for a known set of Symbols return a Data Frame. Each row of the Data Frame represents the prices at a point of time. Each <i>column</i> of the Data Frame is a property of that price data (e.g. open, high, low, close). 
+History requests for a known set of Symbol objects return a DataFrame. Each row of the DataFrame represents the prices at a point of time. Each column of the DataFrame is a property of that price data (for example, open, high, low, and close). 
 </p>
 
-<h4>Single Symbol Request Examples</h4>
 <p class="python">
 History API calls follow the following pattern: <code>self.History(symbol, bar_count, resolution = null)</code>
 </p>
+
+<p class="csharp">When requesting a single Symbol, LEAN can infer the type of the returning data is fixed and directly returns an array of bars. This is convenient for quickly warming up an indicator.</p>
 
 <div class="section-example-container">
 <pre class="python">
@@ -39,33 +41,7 @@ self.df = self.History(self.Symbol("IBM"), timedelta(5), Resolution.Minute)
 <img class="img-thumbnail img-responsive" src="https://cdn.quantconnect.com/docs/i/history-dataframe-period-minute_rev0.png" />
 # Important Note: Period history requests are relative to "now" algorithm time. The example above would return 5 minute bars if requested *at* market close. If you wait for 16.05 it will return nothing.
 </pre>
-</div>
 
-<h4>Multiple Symbol Request Examples</h4>
-<p>
-To request history for multiple symbols at a time, you need to pass an array of Symbol objects to the same API methods as above.
-</p>
-<p>
-Multi-Symbol History API calls follow the following pattern: <code>self.History( symbols[], bar_count, resolution = null )</code>
-</p>
-
-<div class="section-example-container">
-<pre class="python">
-<b># EXAMPLE 5: Multi-Symbol History Request.</b>
-
-self.df = self.History([self.Symbol("IBM"), self.Symbol("AAPL")], 2)
-<img class="img-responsive img-thumbnail " src="https://cdn.quantconnect.com/docs/i/history-stacked-multi-symbol-python_rev0.png">
-</pre>
-</div>
-</span>
-
-<span class="csharp"> 
-<h4 class="csharp">Single Symbol History Request</h4>
-<p class="csharp">
-When requesting a single Symbol, LEAN can infer the type of the returning data is fixed and directly returns an array of bars. This is convenient for quickly warming up an indicator.
-</p>
-
-<div class="section-example-container">
 <pre class="csharp"><b>// Single Symbol History Method Arguments: </b>
 var bars = History&lt;Type&gt;(Symbol symbol, int barCount, Resolution resolution = null);
 var bars = History&lt;Type&gt;(Symbol symbol, TimeSpan period, Resolution = null);
@@ -88,13 +64,30 @@ var bars = History&lt;TradeBar&gt;(ibm, TimeSpan.FromHours(6), Resolution.Minute
 var eurusd = AddForex("EURUSD", Resolution.Minute).Symbol;
 var quoteBars = History&lt;QuoteBar&gt;(eurusd, TimeSpan.FromHours(6), Resolution.Minute);
 </pre>
+
 </div>
 
-<h4 class="csharp">Multiple Symbols History Request</h4>
+<h4>Multiple Symbol Request Examples</h4>
+<p>
+To request history for multiple symbols at a time, you need to pass an array of Symbol objects to the same API methods as above.
+</p>
+<p>
+Multi-Symbol History API calls follow the following pattern: <code>self.History( symbols[], bar_count, resolution = null )</code>
+</p>
+
 <p class="csharp">
 History requests with an array of Symbols objects return an array of slices. This provides a container that supports all data types. For example, a history request for FX-QuoteBars and Equity-TradeBars has the FX data located under <code>slices.QuoteBars</code>, and the Equity data located under <code>slices.Bars</code>.
 </p>
+
 <div class="section-example-container">
+<pre class="python">
+<b># EXAMPLE 5: Multi-Symbol History Request.</b>
+
+self.df = self.History([self.Symbol("IBM"), self.Symbol("AAPL")], 2)
+<img class="img-responsive img-thumbnail " src="https://cdn.quantconnect.com/docs/i/history-stacked-multi-symbol-python_rev0.png">
+</pre>
+
+
 <pre class="csharp"><b>// Multi-Symbol History Method Arguments:</b>
 var slices = History(symbols[], int barCount, Resolution resolution = null);
 var slices = History(Symbol[] symbols, TimeSpan period, Resolution = null);
