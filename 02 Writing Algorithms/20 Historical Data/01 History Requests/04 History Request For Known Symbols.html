@@ -18,27 +18,23 @@ History API calls follow the following pattern: <code>self.History(symbol, bar_c
 <p class="csharp">When requesting a single Symbol, LEAN can infer the type of the returning data is fixed and directly returns an array of bars. This is convenient for quickly warming up an indicator.</p>
 
 <div class="section-example-container">
-<pre class="python">
-<b># EXAMPLE 1: Requesting By Bar Count: 5 IBM TradeBars, defaulting to security resolution:</b>
+<pre class="python"><b># EXAMPLE 1: Requesting By Bar Count: 5 IBM TradeBars, defaulting to security resolution:</b>
 self.AddEquity("IBM", Resolution.Daily)
 self.df = self.History(self.Symbol("IBM"), 5)
 <img class="img-responsive img-thumbnail " src="https://cdn.quantconnect.com/docs/i/history-dataframe-tradebars-single_rev0.png">
 </pre>
-<pre class="python">
-<b># EXAMPLE 2: Requesting By Bar Count: 5 IBM Minute TradeBars:</b>
+<pre class="python"><b># EXAMPLE 2: Requesting By Bar Count: 5 IBM Minute TradeBars:</b>
 self.df = self.History(self.Symbol("IBM"), 5, Resolution.Minute)
 <img class="img-responsive img-thumbnail " src="https://cdn.quantconnect.com/docs/i/history-dataframe-tradebars-single-minute_rev0.png">
 </pre>
-<pre class="python">
-<b># EXAMPLE 3: Requesting By Period: 1 Week IBM TradeBars, defaulting to security resolution:</b> 
+<pre class="python"><b># EXAMPLE 3: Requesting By Period: 1 Week IBM TradeBars, defaulting to security resolution:</b> 
 self.df = self.History(self.Symbol("IBM"), timedelta(7)) 
 <img class="img-responsive img-thumbnail " src="https://cdn.quantconnect.com/docs/i/history-dataframe-period-daily_rev0.png">
 # Imporant Note: April 19th is Easter Friday, which has a bar EndTime = 20th, is not present.
 </pre>
-<pre class="python">
-<b># EXAMPLE 4: Requesting By Period: 5 Minutes IBM TradeBars:</b> 
+<pre class="python"><b># EXAMPLE 4: Requesting By Period: 5 Minutes IBM TradeBars:</b> 
 self.df = self.History(self.Symbol("IBM"), timedelta(5), Resolution.Minute)
-<img class="img-thumbnail img-responsive" src="https://cdn.quantconnect.com/docs/i/history-dataframe-period-minute_rev0.png" />
+<img class="img-thumbnail img-responsive" src="https://cdn.quantconnect.com/docs/i/history-dataframe-period-minute_rev0.png">
 # Important Note: Period history requests are relative to "now" algorithm time. The example above would return 5 minute bars if requested *at* market close. If you wait for 16.05 it will return nothing.
 </pre>
 
@@ -46,8 +42,7 @@ self.df = self.History(self.Symbol("IBM"), timedelta(5), Resolution.Minute)
 var bars = History&lt;Type&gt;(Symbol symbol, int barCount, Resolution resolution = null);
 var bars = History&lt;Type&gt;(Symbol symbol, TimeSpan period, Resolution = null);
 </pre>
-<pre class="csharp">
-<b>// EXAMPLE 1: 100 Bars of Single Symbol, Specifying Type, Default to Security Resolution:</b>
+<pre class="csharp"><b>// EXAMPLE 1: 100 Bars of Single Symbol, Specifying Type, Default to Security Resolution:</b>
 var ibm = AddEquity("IBM", Resolution.Minute).Symbol;
 var bars = History&lt;TradeBar&gt;(ibm, 100);
 
@@ -55,8 +50,7 @@ var bars = History&lt;TradeBar&gt;(ibm, 100);
 var eurusd = AddForex("EURUSD", Resolution.Minute).Symbol;
 var quoteBars = History&lt;QuoteBar&gt;(eurusd, 100);
 </pre>
-<pre class="csharp">
-<b>// EXAMPLE 2: Six Hours of Bars of Single Symbol, Setting Resolution:</b>
+<pre class="csharp"><b>// EXAMPLE 2: Six Hours of Bars of Single Symbol, Setting Resolution:</b>
 var ibm = AddEquity("IBM", Resolution.Minute).Symbol;
 var bars = History&lt;TradeBar&gt;(ibm, TimeSpan.FromHours(6), Resolution.Minute);
 
@@ -80,8 +74,7 @@ History requests with an array of Symbols objects return an array of slices. Thi
 </p>
 
 <div class="section-example-container">
-<pre class="python">
-<b># EXAMPLE 5: Multi-Symbol History Request.</b>
+<pre class="python"><b># EXAMPLE 5: Multi-Symbol History Request.</b>
 
 self.df = self.History([self.Symbol("IBM"), self.Symbol("AAPL")], 2)
 <img class="img-responsive img-thumbnail " src="https://cdn.quantconnect.com/docs/i/history-stacked-multi-symbol-python_rev0.png">
@@ -92,26 +85,36 @@ self.df = self.History([self.Symbol("IBM"), self.Symbol("AAPL")], 2)
 var slices = History(symbols[], int barCount, Resolution resolution = null);
 var slices = History(Symbol[] symbols, TimeSpan period, Resolution = null);
 </pre>
-<pre class="csharp">
-<b>// EXAMPLE 1: Symbol array, 5 Bars, Default to Security Resolution:</b>
+<pre class="csharp"><b>// EXAMPLE 1: Symbol array, 5 Bars, Default to Security Resolution:</b>
 var ibm = AddEquity("IBM", Resolution.Minute).Symbol;
 var aapl = AddEquity("AAPL", Resolution.Minute).Symbol;
 var bars = History(new[] { ibm, aapl }, 5);
 </pre>
-<pre class="csharp">
-<b>// EXAMPLE 2: Symbol array, 6 Hours, Specifying Resolution:</b>
+<pre class="csharp"><b>// EXAMPLE 2: Symbol array, 6 Hours, Specifying Resolution:</b>
 var ibm = AddEquity("IBM", Resolution.Minute).Symbol;
 var aapl = AddEquity("AAPL", Resolution.Minute).Symbol;
 var bars = History(new[] { ibm, aapl }, TimeSpan.FromHours(6), Resolution.Minute);
 </pre>
 </div>
-</span>
+
 
 <h4>Assumed Default Values</h4>
-<ul>
-<li> Resolution: LEAN attempts to guess the resolution you request by looking at any securities you already have in your algorithm. If you have a matching Symbol, QuantConnect will use the same resolution. When no default values can be located <code>Resolution.Minute</code> is selected.
-</li>
-<li class="csharp">
-When no type is specified for the history request, <code>TradeBar</code> is assumed for Equity, Futures, Crypto, and Options securities. Assets with QuoteBar data must explicitly specify Quotes to receive their history (Forex, Futures, Options, and Crypto).
-</li>
-</ul>
+<p>The following table describes the assumptions made by the History API:</p>
+<table class="table qc-table">
+    <thead>
+        <tr>
+            <th>Argument</th>
+            <th>Assumption</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>Resolution</td>
+            <td>LEAN guesses the resolution you request by looking at the securities you already have in your algorithm. If you have a security subscription in your algorithm with a matching Symbol, the history request uses the same resolution at the subscription. If you don't have a security subscription in your algorithm with a matching Symbol, <code>Resolution.Minute</code> is used by default.</td>
+        </tr>
+        <tr class="csharp">
+            <td>Bar type</td>
+            <td>If you don't specify a type for the history request, <code>TradeBar</code> is assumed for Equity, Futures, Crypto, and Options securities. Assets with QuoteBar data must explicitly specify Quotes to receive their history (Forex, Futures, Options, and Crypto).</td>
+        </tr>
+    </tbody>
+</table>
