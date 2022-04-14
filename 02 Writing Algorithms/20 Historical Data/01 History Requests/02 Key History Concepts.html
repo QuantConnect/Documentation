@@ -40,32 +40,32 @@ th.summary {
 </style>
 
 <p>
-The QuantConnect historical data API has many different options to give you the greatest flexibility in how to apply it to your algorithm. Over the years it has evolved to handle different data formats, data resolutions, and use cases, but we have always strived to keep two constants to its design:
+The historical data API has many different options to give you the greatest flexibility in how to apply it to your algorithm. Over the years, it has evolved to handle different data formats, data resolutions, and use cases, but we always strive to keep two constants to its design:
 </p>
 <div class="work-in-progress"> 
     <i class="fa fa-lightbulb-o"></i> <b>Key Concept #1: Request Options</b>
 <ul>
-<li>History requests can be done by a bar <i>count</i>; or,</li>
+<li>History requests can be done by a bar <i>count.</i></li>
 <li>History requests can be done for a <i>period</i> of time.</li> 
 </ul>
 </div> 
 <p style="margin-top: 25px">
-Secondly, when placing a history request, it's important to consider what data will be returned as each asset type comes in slightly different data shapes. <span class="python">All python history requests return a Data Frame, which has different columns depending on the type of data requested.</span> Data is returned as <a class="docs-internal-link" href="/docs/algorithm-reference/handling-data#Handling-Data-TradeBars">TradeBars</a>, <a class="docs-internal-link" href="/docs/algorithm-reference/handling-data#Handling-Data-QuoteBars">QuoteBars</a>, or <a class="docs-internal-link" href="/docs/algorithm-reference/handling-data#Handling-Data-Time-Slices">Slice</a> objects depending on how you request it and the data available for your security.
+Secondly, each asset type comes in slightly different data shapes. When you place a history request, consider what data returns. <span class="python">All python history requests return a Data Frame, which has different columns depending on the type of data requested.</span> Data is returned as <a class="docs-internal-link" href="/docs/algorithm-reference/handling-data#Handling-Data-TradeBars">TradeBars</a>, <a class="docs-internal-link" href="/docs/algorithm-reference/handling-data#Handling-Data-QuoteBars">QuoteBars</a>, or <a class="docs-internal-link" href="/docs/algorithm-reference/handling-data#Handling-Data-Time-Slices">Slice</a> objects, depending on how you request it and the data available for your security.
 </p> 
 
 <div class="work-in-progress"> 
     <i class="fa fa-lightbulb-o"></i> <b>Key Concept #2: Return Format</b>
 <ul> 
-<li class="csharp">Single security requests return data as an array of the security data type. E.g. <code>TradeBar[]</code>.</li>
-<li class="csharp">Multi-security (batch) requests return data as an array of <code>Slice</code> objects.</li>
+<li class="csharp">If you request data for a single security, an array of the security data type returns (for example,<code> TradeBar[]</code>).</li>
+<li class="csharp">If you request data for multiple securities, an array of <code>Slice</code> objects returns.</li>
 
-<li class="python">History requests with symbols provided return data as a pandas data frame.</li>
-<li>History requests without symbols provided fetch history for the entire universe of your securities, and return it as an array of <code>Slice</code> objects.</li> 
+<li class="python">If you provide Symbol objects when you request data, a DataFrame returns.</li>
+<li>If you don't provide Symbol objects when you request data, an array of  <code>Slice</code> objects that contain the entire universe returns.</li> 
 </ul>
 </div>
 
 <p style="margin-top: 15px">
-Finally, when reviewing the results of your history requests, remember they are indexed by the <i>EndTime</i> of each data point. For daily data, this results in data points appearing on Saturday and skipping Monday's bar. 
+Finally, when you review the results of your history requests, remember they are indexed by the <i>EndTime</i> of each data point. For daily data, this results in data points appearing on Saturday and skipping Monday. 
 </p>
 
 <div class="work-in-progress"> 
