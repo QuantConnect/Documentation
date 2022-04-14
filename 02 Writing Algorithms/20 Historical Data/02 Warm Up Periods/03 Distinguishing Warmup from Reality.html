@@ -1,0 +1,21 @@
+<p>
+Your algorithm may need to distinguish warm-up data from real data. QuantConnect makes this possible with a boolean flag <span class="csharp"> $[IsWarmingUp,P:QuantConnect.Algorithm.QCAlgorithm.IsWarmingUp] </span><span class="python"><code>self.IsWarmingUp</code></span>. A common application of this flag might look like this: 
+</p>
+<div class="section-example-container">
+<pre class="csharp">// In Initialize
+var emaFast = EMA("IBM", 50);
+var emaSlow = EMA("IBM", 100);
+SetWarmup(100);
+
+// In OnData: Don't run if we're warming up our indicators.
+if (IsWarmingUp) return;
+</pre>
+<pre class="python"># In Initialize
+self.emaFast = self.EMA("IBM", 50);
+self.emaSlow = self.EMA("IBM", 100);
+self.SetWarmup(100);
+
+// In OnData: Don't run if we're warming up our indicators.
+if self.IsWarmingUp: return
+</pre>
+</div>
