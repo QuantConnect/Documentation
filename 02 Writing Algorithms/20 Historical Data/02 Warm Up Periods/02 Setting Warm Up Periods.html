@@ -1,21 +1,35 @@
-
-
 <p>
 The Warm Up API supports a set number of bars or a period-based warm-up. To set a warm up, in your algorithm's <code>Initialize</code> method, call <code>SetWarmUp</code>.</p>
 
 <div class="section-example-container">
-<pre class="csharp"> // Wind time back 7 days from start:
+<pre class="csharp">// Wind time back 7 days from start
 SetWarmUp(TimeSpan.FromDays(7));
 
-// Feed in 100 bars before start date:
+// Feed in 100 daily bars before the start date
+SetWarmUp(100, Resolution.Daily);
+
+// Feed in 100 bars before start date
 SetWarmUp(100);
 </pre>
-<pre class="python"> # Wind time back 7 days from start:
+<pre class="python"># Wind time back 7 days from start
 self.SetWarmUp(timedelta(7))
 
-# Feed in 100 bars before start date:
+# Feed in 100 daily bars before the start date
+self.SetWarmUp(100, Resolution.Daily)
+
+# Feed in 100 bars before start date
 self.SetWarmUp(100)
 </pre>
 </div>
 
-^^ Add example of passing Resolution, works with count and period-based warmup
+<p>If you call <code>SetWarmUp</code> with just an integer argument, the warm up period consists of 100 bars at the highest resolution in your universe. In the following example, the warm up period is 100 minute bars.</p>
+<div class="section-example-container">
+<pre class="csharp">AddEquity("SPY", Resolution.Minute);
+AddCrypto("BTCUSD", Resolution.Second);
+SetWarmUp(100);
+</pre>
+<pre class="python">self.AddEquity("SPY", Resolution.Minute)
+self.AddCrypto("BTCUSD", Resolution.Second)
+self.SetWarmUp(100)
+</pre>
+</div>
