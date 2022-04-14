@@ -1,4 +1,4 @@
-<p>A <code>RollingWindow</code> is a array of a fixed-size that holds data. Use RollingWindow objects to hold periods of data instead of making multiple historical data requests. It's much more efficient since you just update the RollingWindow with the latest data point, while a History call fetches the whole requested period and synchronizes the data.</p>
+<p>A <code>RollingWindow</code> is a array of a fixed-size that holds trailing data. Use RollingWindow objects to hold periods of data instead of making multiple historical data requests because it's more efficient. With a RollingWindow, you just update the latest data point, while a History call fetches the whole requested period and synchronizes the data.</p>
 
 <h3>Supported Types</h3>
 <p>RollingWindow objects can store any native or C# types.</p>
@@ -15,7 +15,7 @@ self.quote_bar_window = RollingWindow[QuoteBar](2)
 <p>To be notified when RollingWindow objects support additional types, subscribe to <a rel="nofollow" target="_blank" href="https://github.com/QuantConnect/Lean/issues/6199">GitHub Issue #6199</a>.</p>
 
 <h3>Adding Data</h3>
-<p>To add data to RollingWindow objects, call the Add method.</p>
+<p>To add data to a RollingWindow, call the Add method.</p>
 <div class="section-example-container">
 	<pre class="csharp">closeWindow.Add(data["SPY"].Close);
 tradeBarWindow.Add(data["SPY"]);
@@ -25,8 +25,8 @@ self.trade_bar_window.Add(data["SPY"])
 self.quote_bar_window.Add(data["EURUSD"])</pre>
 </div>
 
-<h3>Checking Readiness</h4>
-<p>When RollingWindow objects are full, their <code>IsReady</code> flag is true.</p>
+<h3>Checking Readiness</h3>
+<p>When a RollingWindow is full, its <code>IsReady</code> flag is true.</p>
 <div class="section-example-container">
 	<pre class="csharp">if (!closeWindow.IsReady) 
 {
