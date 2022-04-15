@@ -4,6 +4,7 @@
 <ol>
     <li>Update the <span class='page-section-name'>Asset Classes</span> and <span class='page-section-name'>Assets Available</span> sections of the <a href='/docs/v2/our-platform/live-trading/brokerages'>brokerage guides</a>.</li>
     <li>Update the <span class='page-section-name'>Sourcing</span> section of the <a href='/docs/v2/our-platform/live-trading/data-feeds'>data feed guides</a>.</li>
+    <li>Update the <span class='page-section-name'>Supported Data Format</span> section of the <a href='/docs/v2/writing-algorithms/historical-data/history-requests'>History Requests</a> tutorial.</li>
 </ol>
 
 <p>After we merge your dataset into production, we will update the <a href='/docs/v2/our-platform/welcome#04-Data-Library'>Data Library image</a> if this is your organization's first dataset contribution and we will update the <a href='/docs/v2/our-platform/datasets/categories'>Categories</a> documentation if your dataset falls under a new category.</p>
