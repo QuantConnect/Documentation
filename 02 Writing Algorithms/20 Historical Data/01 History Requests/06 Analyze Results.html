@@ -46,6 +46,23 @@ self.dataframe["close"].unstack(level=0)
 </pre>
 </div>
 
+<p>A common error is to try to access rows or columns in the DataFrame when the History method returned an empty DataFrame. To avoid the error, check if the DataFrame is empty before wrangling its contents.</p>
+
+<div class="section-example-container">
+<pre class="python">df = self.History(symbol, 10).close    # raises an exception if the DataFrame is empty
+
+# To avoid the issue, check if the DataFrame is empty.
+def GetSafeHistoryCloses(symbols):
+    if not symbols:
+        self.Log(f'No symbols on {self.Time}')
+        return  False, None
+    df = self.History(symbols, 100, Resolution.Daily)
+    if df.empty:
+        self.Log(f'Empy history for {symbols} on {self.Time}')
+        return  False, None
+     return True, df.close.unstack(0)</pre>
+</div>
+
 </span>
 
 
