@@ -1,31 +1,55 @@
 <p>
-The QuantConnect platform hosts a specific set of data so the history data is limited to a few specific formats. See the table below for a guide to the format of data by security type:
+Our platform provides a specific set of data so history requests are limited to specific formats. The following table shows the supported data formats of each asset class:
 </p>
 
-<table class="table qc-table table-striped">
-<thead>
-	<tr>
-		<th style="width: 30%;">
-			Security Type
-		</th>
-		<th>
-			Supported Types
-		</th>
-	</tr>
-</thead>
-<tbody>
-	<tr><td>Equity</td> <td>TradeBar <br><small style="font-size: 0.8em">Tick, Second, Minute, Hour, Daily</small></td> </tr>
-	<tr><td>Forex, CFD</td> <td>QuoteBar<br><small style="font-size: 0.8em">Tick, Second, Minute, Hour, Daily</small></td> </tr>
-	<tr><td>Crypto</td> <td>TradeBar (default), QuoteBar (available)<br><small style="font-size: 0.8em">Tick, Second, Minute, Hour, Daily</small></td> </tr> 
-	<tr><td>Future Contracts</td> <td>TradeBar (default), QuoteBar (available)<br><small style="font-size: 0.8em">Tick, Second, Minute</small></td> </tr>
-	<tr><td>Option Contracts</td> <td>TradeBar (default), QuoteBar (available)<br><small style="font-size: 0.8em">Minute</small></td> </tr>
-</tbody>
+<table class="table qc-table">
+    <thead>
+        <tr>
+            <th style="width: 30%">Asset Class</th>
+            <th>Types</th>
+            <th>Resolutions</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>US Equity</td>
+            <td>TradeBar, QuoteBar<br>
+            </td><td>Tick, Second, Minute, Hour, Daily</td>
+        </tr>
+        <tr>
+            <td>India Equity</td>
+            <td>TradeBar, QuoteBar<br>
+            </td><td>Tick, Second, Minute, Hour, Daily</td>
+        </tr>
+        <tr>
+            <td>Crypto</td>
+            <td>TradeBar, QuoteBar</td>
+            <td>Tick, Second, Minute, Hour, Daily</td>
+        </tr>
+        <tr>
+            <td>Forex</td>
+            <td>QuoteBar<br>
+            </td><td>Tick, Second, Minute, Hour, Daily</td>
+        </tr>
+        <tr>
+            <td>Futures</td>
+            <td>TradeBar, QuoteBar</td>
+            <td>Tick, Second, Minute</td>
+        </tr>
+        <tr>
+            <td>Options</td>
+            <td>TradeBar, QuoteBar</td>
+            <td>Minute</td>
+        </tr>
+        <tr>
+            <td>Index</td>
+            <td>TradeBar</td>
+            <td>Tick, Second, Minute, Hour, Daily</td>
+        </tr>
+        <tr>
+            <td>CFD</td>
+            <td>QuoteBar<br>
+            </td><td>Tick, Second, Minute, Hour, Daily</td>
+        </tr>
+    </tbody>
 </table>
-<p class="csharp">
-History is returned in TradeBars by default, but for Futures, Crypto and Options QuoteBars are also available. To request data as <a class="docs-internal-link" href="/docs/algorithm-reference/handling-data#Handling-Data-QuoteBars">QuoteBars</a> you must specify the type in the query.
-</p>
-<div class="section-example-container csharp">
-<pre class="csharp">// Get BTCUSD symbol and use it to request history 
-var btcusd = AddCrypto("BTCUSD", Resolution.Daily, Market.GDAX).Symbol;
-var quotes = History&lt;QuoteBar&gt;(btcusd, 14, Resolution.Daily)</pre>
-</div>**^^ Update this to link to the dataset listings or import from Resources? This will get outdated quickly<br>
