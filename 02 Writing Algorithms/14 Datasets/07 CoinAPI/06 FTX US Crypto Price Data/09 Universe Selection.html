@@ -1,0 +1,49 @@
+<p>You can perform universe selection by adding a CryptoCoarseFundamentalUniverse, which filters Cryptocurrency pairs by the following metrics:</p>
+
+<ul><li>OHLCV values from the previous day</li>
+    <li>Dollar volume (as of UTC 00:00), denominated in the base or quote currency</li>
+</ul><div class="section-example-container">
+<pre class="python">def Initialize(self):
+    self.UniverseSettings.Resolution = Resolution.Daily
+    self.SetBrokerageModel(BrokerageName.FTXUS, AccountType.Margin)
+
+    # Add universe selection for Crypto based on coarse fundamentals
+    self.AddUniverse(CryptoCoarseFundamentalUniverse(Market.FTXUS, self.UniverseSettings, self.UniverseSelectionFilter))
+
+def UniverseSelectionFilter(self, data):
+    universe = []
+    for datum in data:
+        self.Log(f"{datum.Symbol},{datum.Price},{datum.Volume},{datum.VolumeInQuoteCurrency},{datum.VolumeInUsd},{datum.Open},{datum.High},{datum.Low},{datum.Close}")
+            
+        # define our selection criteria
+        if datum.Volume &gt;= 100 and datum.VolumeInUsd &gt; 10000:
+            universe.append(datum.Symbol)
+        
+    return universe</pre>
+<pre class="csharp">public override void Initialize()
+{
+    UniverseSettings.Resolution = Resolution.Daily;
+    SetBrokerageModel(BrokerageName.FTXUS, AccountType.Margin);
+
+    // Add universe selection for Crypto based on coarse fundamentals
+    AddUniverse(new CryptoCoarseFundamentalUniverse(Market.FTXUS, UniverseSettings, UniverseSelectionFilter));
+}
+
+private IEnumerable&lt;Symbol&gt; UniverseSelectionFilter(IEnumerable data)
+{
+    var universe = new List&lt;Symbol&gt;();
+
+    foreach (var datum in data)
+    {
+        Log($"{datum.Symbol},{datum.Price},{datum.Volume},{datum.VolumeInQuoteCurrency},{datum.VolumeInUsd},{datum.Open},{datum.High},{datum.Low},{datum.Close}");
+
+         // define our selection criteria
+         if (datum.Volume &gt;= 100m &amp;&amp; datum.VolumeInUsd &gt; 10000m)
+         {
+             universe.Add(datum.Symbol);
+         }
+     }
+
+     return universe;
+}</pre>
+</div>

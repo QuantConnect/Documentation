@@ -1,0 +1,37 @@
+<p>You can add an universe to select equities based on QuiverWikipedia data.</p>
+
+<div class="section-example-container">
+<pre class="python">def Initialize(self):
+    self.UniverseSettings.Resolution = Resolution.Daily
+
+    # add a custom universe data source (defaults to usa-equity)
+    self.AddUniverse(QuiverWikipediaUniverse, "QuiverWikipediaUniverse", Resolution.Daily, self.UniverseSelection)
+
+def UniverseSelection(self, data):
+    for datum in data:
+        self.Log(f"{datum.Symbol},{datum.PageViews},{datum.WeekPercentChange},{datum.MonthPercentChange}")
+
+    # define our selection criteria
+    return [d.Symbol for d in data \
+                if d.PageViews &gt; 100 \
+                and d.WeekPercentChange &lt; 0.2]
+</pre>
+<pre class="csharp">public override void Initialize()
+{
+    UniverseSettings.Resolution = Resolution.Daily;
+
+    // add a custom universe data source (defaults to usa-equity)
+    AddUniverse("QuiverWikipediaUniverse", Resolution.Daily, data =&gt;
+    {
+        foreach (var datum in data)
+        {
+            Log($"{datum.Symbol},{datum.PageViews},{datum.WeekPercentChange},{datum.MonthPercentChange}");
+        }
+
+        // define our selection criteria
+        return from d in data
+                where d.PageViews &gt; 100m &amp;&amp; d.MonthPercentChange &gt; 0.2m
+                select d.Symbol;
+    });
+}</pre>
+</div>

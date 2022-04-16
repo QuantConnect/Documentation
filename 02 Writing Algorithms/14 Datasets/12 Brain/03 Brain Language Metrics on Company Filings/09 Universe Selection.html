@@ -1,0 +1,53 @@
+<p>You can filter and select US equities based by AddUniverse&lt;BrainCompanyFilingLanguageMetricsUniverse{ReportType}&gt;() based on daily Brain Company Filing Language Metrics data.
+</p>
+<div class="section-example-container">
+<pre class="python">def Initialize(self):
+    # Data ADDED via universe selection is added with Daily resolution.
+    self.UniverseSettings.Resolution = Resolution.Daily
+
+    # add a custom universe data source (defaults to usa-equity)
+    self.AddUniverse(BrainCompanyFilingLanguageMetricsUniverseAll, "BrainCompanyFilingLanguageMetricsUniverseAll", Resolution.Daily, self.UniverseSelection)
+
+def UniverseSelection(self, data):
+    for datum in data:
+            self.Log(f"""{datum.Symbol},
+                    {datum.ReportSentiment.Sentiment},
+                    {datum.RiskFactorsStatementSentiment.Uncertainty},
+                    {datum.ManagementDiscussionAnalyasisOfFinancialConditionAndResultsOfOperations.Litigious},
+                    {datum.ReportSentiment.Constraining},
+                    {datum.RiskFactorsStatementSentiment.Interesting},
+                    {datum.ManagementDiscussionAnalyasisOfFinancialConditionAndResultsOfOperations.Readability},
+                    {datum.ReportSentiment.LexicalRichness},
+                    {datum.RiskFactorsStatementSentiment.LexicalDensity},
+                    {datum.ManagementDiscussionAnalyasisOfFinancialConditionAndResultsOfOperations.SpecificDensity},
+                    {datum.ReportSentiment.SentenceCount},
+                    {datum.RiskFactorsStatementSentiment.MeanSentenceLength}""")
+
+    # define our selection criteria
+    return [d.Symbol for d in data \
+                if d.ReportSentiment.Sentiment &gt; 0 \
+                and d.ManagementDiscussionAnalyasisOfFinancialConditionAndResultsOfOperations.Sentiment &gt; 0]</pre>
+<pre class="csharp">AddUniverse&lt;BrainCompanyFilingLanguageMetricsUniverseAll&gt;("BrainCompanyFilingLanguageMetricsUniverseAll", Resolution.Daily, data =&gt;
+{
+    foreach (var datum in data)
+    {
+        Log($@"{datum.Symbol},
+        {datum.ReportSentiment.Sentiment},
+        {datum.RiskFactorsStatementSentiment.Uncertainty},
+        {datum.ManagementDiscussionAnalyasisOfFinancialConditionAndResultsOfOperations.Litigious},
+        {datum.ReportSentiment.Constraining},
+        {datum.RiskFactorsStatementSentiment.Interesting},
+        {datum.ManagementDiscussionAnalyasisOfFinancialConditionAndResultsOfOperations.Readability},
+        {datum.ReportSentiment.LexicalRichness},
+        {datum.RiskFactorsStatementSentiment.LexicalDensity},
+        {datum.ManagementDiscussionAnalyasisOfFinancialConditionAndResultsOfOperations.SpecificDensity},
+        {datum.ReportSentiment.SentenceCount},
+        {datum.RiskFactorsStatementSentiment.MeanSentenceLength}");
+    }
+
+    // define our selection criteria
+    return from d in data 
+        where d.ReportSentiment.Sentiment &gt; 0m &amp;&amp; d.ManagementDiscussionAnalyasisOfFinancialConditionAndResultsOfOperations.Sentiment &gt; 0m
+        select d.Symbol;
+});</pre>
+</div>

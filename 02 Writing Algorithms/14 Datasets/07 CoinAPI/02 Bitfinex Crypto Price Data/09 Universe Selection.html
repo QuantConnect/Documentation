@@ -1,0 +1,46 @@
+<p>You can perform an universe selection by adding a CryptoCoarseFundamentalUniverse, which filters cryptocurrency pairs by their previous day OHLCV, dollar volume in quote currency and USD if available (as of UTC 00:00).</p>
+
+<div class="section-example-container">
+<pre class="python">def Initialize(self):
+    self.UniverseSettings.Resolution = Resolution.Daily
+    self.SetBrokerageModel(BrokerageName.Bitfinex, AccountType.Margin)
+
+    # Add universe selection of cryptos based on coarse fundamentals
+    self.AddUniverse(CryptoCoarseFundamentalUniverse(Market.Kraken, self.UniverseSettings, self.UniverseSelectionFilter))
+
+def UniverseSelectionFilter(self, data):
+    for datum in data:
+        self.Log(f"{datum.Symbol},{datum.Price},{datum.Volume},{datum.VolumeInQuoteCurrency},{datum.VolumeInUsd},{datum.Open},{datum.High},{datum.Low},{datum.Close}")
+            
+        # define our selection criteria
+        if datum.Volume &gt;= 100 and datum.VolumeInUsd &gt; 10000:
+            universe.append(datum.Symbol)
+        
+    return universe</pre>
+<pre class="csharp">public override void Initialize()
+{
+    UniverseSettings.Resolution = Resolution.Daily;
+    SetBrokerageModel(BrokerageName.Bitfinex, AccountType.Margin);
+
+    // Add universe selection of cryptos based on coarse fundamentals
+    AddUniverse(new CryptoCoarseFundamentalUniverse(Market.Kraken, UniverseSettings, UniverseSelectionFilter));
+}
+
+private IEnumerable UniverseSelectionFilter(IEnumerable data)
+{
+    var universe = new List&lt;Symbol&gt;();
+
+    foreach (var datum in data)
+    {
+        Log($"{datum.Symbol},{datum.Price},{datum.Volume},{datum.VolumeInQuoteCurrency},{datum.VolumeInUsd},{datum.Open},{datum.High},{datum.Low},{datum.Close}");
+
+         // define our selection criteria
+         if (datum.Volume &gt;= 100m &amp;&amp; datum.VolumeInUsd &gt; 10000m)
+         {
+             universe.Add(datum.Symbol);
+         }
+     }
+
+     return universe;
+}</pre>
+</div>

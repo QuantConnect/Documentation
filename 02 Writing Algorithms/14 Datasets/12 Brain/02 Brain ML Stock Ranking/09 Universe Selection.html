@@ -1,0 +1,32 @@
+<p>You can filter and select US equities based by AddUniverse() based on daily Brain Stock Ranking data.</p>
+
+<div class="section-example-container">
+<pre class="python">def Initialize(self):
+    # Data ADDED via universe selection is added with Daily resolution.
+    self.UniverseSettings.Resolution = Resolution.Daily
+
+    # add a custom universe data source (defaults to usa-equity)
+    self.AddUniverse(BrainStockRankingUniverse, "BrainStockRankingUniverse", Resolution.Daily, self.UniverseSelection)
+
+def UniverseSelection(self, data):
+    for datum in data:
+        self.Log(f"{datum.Symbol},{datum.Rank2Days},{datum.Rank3Days},{datum.Rank5Days},{datum.Rank10Days},{datum.Rank21Days}")
+
+    # define our selection criteria
+    return [d.Symbol for d in data \
+                if d.Rank2Days &gt; 0 \
+                and d.Rank3Days &gt; 0 \
+                and d.Rank5Days &gt; 0]</pre>
+<pre class="csharp">AddUniverse&lt;BrainStockRankingUniverse&gt;("BrainStockRankingUniverse", Resolution.Daily, data =&gt;
+{
+    foreach (var datum in data)
+    {
+        Log($"{datum.Symbol},{datum.Rank2Days},{datum.Rank3Days},{datum.Rank5Days},{datum.Rank10Days},{datum.Rank21Days}");
+    }
+
+    // define our selection criteria
+    return from d in data 
+        where d.Rank2Days &gt; 0m &amp;&amp; d.Rank3Days &gt; 0m  &amp;&amp; d.Rank5Days &gt; 0m
+        select d.Symbol;
+});</pre>
+</div>
