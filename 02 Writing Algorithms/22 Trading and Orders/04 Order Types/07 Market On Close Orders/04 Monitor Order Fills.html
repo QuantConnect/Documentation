@@ -1,6 +1,14 @@
+<p>Market on close orders fill at the closing auction. To monitor the fills of your order, save a reference to the <a href="/docs/v2/writing-algorithms/trading-and-orders/order-tickets">order ticket</a>.</p>
+
+<div class="section-example-container">
+<pre class="csharp">// Buy 10 shares of SPY at the market close
+var ticket = MarketOnCloseOrder("SPY", 10);
+Debug($"Quantity filled: {ticket.QuantityFilled}; Fill price: {ticket.AverageFillPrice}");</pre>
+<pre class="python"># Buy 10 shares of SPY at the market close
+ticket = self.MarketOnCloseOrder("SPY", 10)
+self.Debug(f"Quantity filled: {ticket.QuantityFilled}; Fill price: {ticket.AverageFillPrice}")</pre>
+</div>
+
 <p>
-When you place a market on open or close order, you do not know its fill price until after the order is completed. If your order quantity is too close to your total portfolio buying power, you have a high chance of it being rejected as there may be large changes in price overnight. We recommend you consider this when sizing your portfolio to increase your probability of successful trades.
-</p>
-
-
-<p>For more information on updating orders, see <a href="#Trading-and-Orders-Updating-Orders">Updating Orders</a>.</p>
+- When you place a market on close order, you do not know its fill price until after the order is completed. If your order quantity is too close to your total portfolio buying power, you have a high chance of it being rejected as there may be large changes in price overnight. We recommend you consider this when sizing your portfolio to increase your probability of successful trades. You may need to adjust your cash buffer<br></p>
+- Not guaranteed to fill if the auction is heavily skewed to one side of the order book 
