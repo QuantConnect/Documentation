@@ -1,6 +1,15 @@
-<p>
-When you place a market on open or close order, you do not know its fill price until after the order is completed. If your order quantity is too close to your total portfolio buying power, you have a high chance of it being rejected as there may be large changes in price overnight. We recommend you consider this when sizing your portfolio to increase your probability of successful trades.
-</p><div>
 
-The Market On Open <code>Quantity</code> and <code>Tag</code> properties can be updated after creation until the last two minutes before close.</div><div><br></div><div>## TODO: Not guaranteed to fill if the auction is heavily skewed to one side of the order book (double-check with Alex)
+<p>Market on open orders fill at the opening auction. To monitor the fills of your order, save a reference to the <a href="/docs/v2/writing-algorithms/trading-and-orders/order-tickets">order ticket</a>.</p>
+
+<div class="section-example-container">
+<pre class="csharp">// Buy 10 shares of SPY at the market open
+var ticket = MarketOnOpenOrder("SPY", 10);
+Debug($"Quantity filled: {ticket.QuantityFilled}; Fill price: {ticket.AverageFillPrice}");</pre>
+<pre class="python"># Buy 10 shares of SPY at the market open
+ticket = self.MarketOnOpenOrder("SPY", 10)
+self.Debug(f"Quantity filled: {ticket.QuantityFilled}; Fill price: {ticket.AverageFillPrice}")</pre>
 </div>
+
+- You won't know the order fill price until after the order is completed. If your order quantity is too close to your total portfolio buying power, you have a high chance of it being rejected as there may be large changes in price overnight. Consider this when sizing your portfolio to increase your probability of successful trades.
+<br>- The Market On Open <code>Quantity</code> and <code>Tag</code> properties can be updated after creation until the last two minutes before close.
+<br>- Not guaranteed to fill if the auction is heavily skewed to one side of the order book 
