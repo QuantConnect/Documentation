@@ -1,1 +1,34 @@
-## TODO: Add image
+- When you place a stop limit buy (sell) order, set the stop price above (below) the current market price
+
+<p>To send a stop limit order, you must provide a symbol, quantity, stop price, and limit price. If you do not have sufficient capital for the order, it is rejected.</p>
+
+<div class="section-example-container">
+<pre class="csharp">// When SPY trades up to $500, buy 10 shares with a limit order at $490
+var marketableBuyTicket = StopMarketOrder("SPY", 10, 500, 490);
+
+// When SPY trades up to $500, buy 10 shares with a limit order at $510
+var unmarketableBuyTicket = StopMarketOrder("SPY", 10, 500, 510);
+
+// When SPY trades down to $400, sell 10 shares with a limit order at $390
+var marketableSellTicket = StopLimitOrder("SPY", -10, 400, 390);
+
+// When SPY trades down to $400, sell 10 shares with a limit order at $410
+var unmarketableSellTicket = StopLimitOrder("SPY", -10, 400, 410);</pre>
+<pre class="python"># When SPY trades up to $500, buy 10 shares with a limit order at $490
+marketable_buy_ticket = self.StopLimitOrder("SPY", 10, 500, 490)
+
+# When SPY trades up to $500, buy 10 shares with a limit order at $510
+unmarketable_buy_ticket = self.StopLimitOrder("SPY", 10, 500, 510)
+
+# When SPY trades down to $400, sell 10 shares with a limit order at $390
+marketable_sell_ticket = self.StopLimitOrder("SPY", -10, 400, 390)
+
+# When SPY trades down to $400, sell 10 shares with a limit order at $410
+unmarketable_sell_ticket = self.StopLimitOrder("SPY", -10, 400, 410)</pre>
+</div>
+
+<p>You can provide a tag and <a href="/docs/v2/writing-algorithms/trading-and-orders/order-properties">order properties</a> to the <code>StopLimitOrder</code> method.</p>
+<div class="section-example-container">
+<pre class="csharp">StopLimitOrder(symbol, quantity, stopPrice, limitPrice, tag, orderProperties);</pre>
+<pre class="python">self.StopLimitOrder(symbol, quantity, stop_rice, limit_price, tag, order_properties)</pre>
+</div>
