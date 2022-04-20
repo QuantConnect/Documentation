@@ -1,1 +1,39 @@
+<p>
+You can update the tag, quantity, and limit price of limit orders. To update an order, pass a $[UpdateOrderFields, T:QuantConnect.Orders.UpdateOrderFields] object to the Update method on the $[OrderTicket, T:QuantConnect.Orders.OrderTicket]. The Update method returns an $[OrderResponse, T:QuantConnect.Orders.OrderResponse] to signal the success or failure of the update request. You can update other orders until they are filled or the brokerage prevents modifications.
+</p>
 
+<div class="section-example-container">
+<pre class="csharp">// Create a new order and save the order ticket
+var ticket = LimitOrder("SPY", 100, 221.05, tag: "original tag");
+
+// Update the order
+var response = ticket.Update(new UpdateOrderFields() { 
+  Tag = "new tag",
+  Quantity = 80,
+  LimitPrice = 222.00
+});
+
+// Check if the update was successful
+if (response.IsSuccess) { 
+     Debug("Order updated successfully");
+}
+</pre>
+<pre class="python"># Create a new order and save the order ticket
+ticket = self.LimitOrder("SPY", 100, 221.05, tag="original tag")
+
+# Update the order
+update_settings = UpdateOrderFields()
+update_settings.Tag = "new tag"
+update_settings.Quantity = 80
+update_settings.LimitPrice = 222.00
+response = ticket.Update(update_settings)
+
+# Check if the update was successful
+if response.IsSuccess:
+     self.Debug("Order updated successfully")
+</pre>
+</div>
+
+<div>-You can also update individual fields of an order with the following methods:<br></div><div>&nbsp; - UpdateTag</div><div>&nbsp; - UpdateQuantity (can pass in a tag)</div><div>&nbsp; - UpdateLimitPrice (can pass in a tag)</div><div><br></div><div>-To get a list of update requests for the order, call the UpdateRequests
+ method. It returns an UpdateOrderRequest which has the following 
+properties: Quantity, LimitPrice,<br></div><div><br></div>
