@@ -8,9 +8,9 @@ var ticket = LimitOrder("SPY", 100, 221.05, tag: "original tag");
 
 // Update the order
 var response = ticket.Update(new UpdateOrderFields() { 
-  Tag = "new tag",
   Quantity = 80,
-  LimitPrice = 222.00
+  LimitPrice = 222.00,
+  Tag = "new tag"
 });
 
 // Check if the update was successful
@@ -23,9 +23,9 @@ ticket = self.LimitOrder("SPY", 100, 221.05, tag="original tag")
 
 # Update the order
 update_settings = UpdateOrderFields()
-update_settings.Tag = "new tag"
 update_settings.Quantity = 80
 update_settings.LimitPrice = 222.00
+update_settings.Tag = "new tag"
 response = ticket.Update(update_settings)
 
 # Check if the update was successful
@@ -33,6 +33,9 @@ if response.IsSuccess:
      self.Debug("Order updated successfully")
 </pre>
 </div>
+
+
+-If an order update is not successful, you can check the ErrorCode/ErrorMessage. For more information, see <a href="/docs/v2/writing-algorithms/trading-and-orders/order-errors">Order Errors</a>.<br><br>
 
 <div>-You can also update individual fields of an order with the following methods:<br></div><div>&nbsp; - UpdateQuantity (can pass in a tag)</div><div>&nbsp; - UpdateLimitPrice (can pass in a tag)</div><div>&nbsp; - UpdateTag</div><div><br></div><div>-To get a list of update requests for the order, call the UpdateRequests
  method. It returns an UpdateOrderRequest which has the following 
