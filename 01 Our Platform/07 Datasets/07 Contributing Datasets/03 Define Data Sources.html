@@ -1,6 +1,6 @@
 <p>You must set up your environment before you define the <code>DataSource</code> class for your dataset.</p>
 
-<p>You can set up a data sources to provide trading data, universe selection data, or both. Trading data is passed to the <code>OnData</code> method in algorithms and is meant to inform trading decisions on an existing universe of securities. Universe selection data used to select a universe of securities on a daily basis.</p>
+<p>You can set up a data sources to provide trading data, universe selection data, or both. Trading data is passed to the <code>OnData</code> method in algorithms and is meant to inform trading decisions on an existing universe of securities. Universe selection data used to select a universe of securities on a daily basis. If your dataset doesn't provide trading data, delete the <span class="private-file-name">Lean.DataSource.<span class="placeholder-text">vendorNameDatasetName</span>/<span class="placeholder-text">vendorNameDatasetName</span>.cs</span> file. If your dataset doesn't provide universe selection data, delete the <span class="private-file-name">Lean.DataSource.<span class="placeholder-text">vendorNameDatasetName</span>/<span class="placeholder-text">vendorNameDatasetName</span>Universe.cs</span> file.</p>
 
 <h4>Set Up Trading Data Sources</h4>
 <p>Follow these steps to define the <code>DataSource</code> class for trading data:</p>
@@ -17,7 +17,7 @@
     <li>Define the <code>GetSource</code> method to point to the path of your dataset file(s).</li>
     <p>Abide by the following rules while you implement the <code>GetSource</code> method:</p>
     <ul>
-        <li>The path should be completely lowercase unless absolutely required. You may not use special characters in your output path, except <code>-</code> in directories names and <code>_</code> in file names.</li>
+        <li>The path should be completely lowercase unless absolutely required. Don't use special characters in your output path, except <code>-</code> in directories names and <code>_</code> in file names.</li>
         <li>If your file path contains a date, use the <code>date</code> parameter to get the date of data being requested.</li>
         <li>If your file path contains the current ticker of the security, use <code>config.Symbol.Value</code> to get the current ticker.</li>
         <li>Your output file(s) must be in CSV format.</li>
@@ -39,8 +39,33 @@
     <p>If a member does not specify a resolution when they subscribe to your dataset, Lean uses the <code>DefaultResolution</code>.</p>
     <li>Define the <code>SupportedResolutions</code> method to return a list of resolutions that your dataset supports.</li>
     <li>Define the <code>DataTimeZone</code> method to return the timezone of your dataset.</li>
-    <li><span class="qualifier">(Optional)</span>  Define the <code>ToString</code> method to return a string that contains the values of your dataset properties and is easy to read.</li>
+    <li>Define the <code>ToString</code> method to return a string that contains the values of your dataset properties and is easy to read.</li>
 </ol>
 
 <h4>Set Up Universe Selection Data Sources</h4>
 <p>Follow these steps to define the <code>DataSource</code> class for universe selection data:</p>
+
+<ol>
+    <li>Open the <span class="private-file-name">Lean.DataSource.<span class="placeholder-text">vendorNameDatasetName</span>/<span class="placeholder-text">vendorNameDatasetName</span>Universe.cs</span> file.</li>
+    <li>Follow these steps to define the properties of your dataset:</li>
+    <ol>
+        <li>Duplicate lines 33-36 or 38-41 (depending on the data type) for as many properties as there are in your dataset.</li>
+        <li>Rename the <code>SomeCustomProperty</code>/<code>SomeNumericProperty</code> properties to the names of your dataset properties (for example, <code>Destination</code>/<code>FlightPassengerCount</code>).</li>
+        <li>Replace the “Some custom data property” comments with a description of each property in your dataset.</li>
+    </ol>
+    <li>Define the <code>GetSource</code> method to point to the path of your dataset file(s).</li>
+    <p>Abide by the following rules while you implement the <code>GetSource</code> method:</p>
+    <ul>
+        <li>The path should be completely lowercase unless absolutely required. Don't use special characters in your output path, except <code>-</code> in directories names and <code>_</code> in file names.</li>
+        <li>Use the <code>date</code> parameter as the file name to get the date of data being requested.</li>
+        <li>Your output file(s) must be in CSV format.</li>
+    </ul>
+    <p>An example output file path is <span class="private-file-name">/output/alternative/xyzairline/ticketsales/universe/20200320.csv</span>.</p>
+    <li>Define the <code>Reader</code> method to return instances of your universe class.</li>
+    <p>The first column in your data file must be the security identifier and the second column must be the point-in-time ticker. With this configuration, use <code>new Symbol(SecurityIdentifier.Parse(csv[0]), csv[1])</code> to create the security <code>Symbol</code>.</p>
+    <p>The date in your data file must be the date that the data point is available for consumption. With this configuration, set the <code>Time</code> to <code>date - Period</code></p>
+    <li>Define the <code>IsSparseData</code> method to return <code>true</code> if your dataset is sparse, <code>false</code> otherwise.</li>
+    <p>If your dataset is missing data for at least one sample, it is sparse.</p>
+    <li>Define the <code>DataTimeZone</code> method to return the timezone of your dataset.</li>
+    <li>Define the <code>ToString</code> method to return a string that contains the values of your dataset properties and is easy to read.</li>
+</ol>
