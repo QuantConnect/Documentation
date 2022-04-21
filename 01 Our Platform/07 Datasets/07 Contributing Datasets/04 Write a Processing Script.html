@@ -33,31 +33,24 @@
     </table>
 
     <li>In the <span class="private-file-name">process.*</span> or <span class="private-file-name">Program.cs</span> file, write a script to process your data and output the results to the <span class="private-directory-name">Lean.DataSource.<span class="placeholder-text">vendorNameDatasetName</span>/output</span> directory.</li>
-    <p>To view an example, see the <a rel='nofollow' target='_blank' href='https://github.com/QuantConnect/Lean.DataSource.QuiverQuantTwitterFollowers/blob/master/DataProcessing/process.py'>process.py</a> and <a rel='nofollow' target='_blank' href='https://github.com/QuantConnect/Lean.DataSource.QuiverQuantTwitterFollowers/blob/master/DataProcessing/Program.cs'>Program.cs</a> files of the Twitter Followers dataset.</p>
+    <p>To view an example, see the <a rel="nofollow" target="_blank" href="https://github.com/QuantConnect/Lean.DataSource.QuiverQuantTwitterFollowers/blob/master/DataProcessing/process.py">process.py</a> and <a rel="nofollow" target="_blank" href="https://github.com/QuantConnect/Lean.DataSource.QuiverQuantTwitterFollowers/blob/master/DataProcessing/Program.cs">Program.cs</a> files of the Twitter Followers dataset.</p>
     <p>If your dataset is for universe selection data and it's at a higher frequency than a daily resolution, resample your data to a daily resolution.</p> 
-    <p>If your dataset is related to Equities and your dataset does not account for ticker changes, follow these steps to adjust the tickers over the historical data:</p>
+    <p>If your dataset is related to Equities and your dataset does not account for ticker changes, follow these steps adjust the tickers over the historical data:</p>
     <ol>
-        <li>Import the required classes.</li>
+        <li><a href='/datasets/quantconnect-us-equity-security-master/cli'>Download the US Equity Security Master dataset</a>.</li>
+        <li>Import the <code>CLRImports</code> package.</li>
         <div class="section-example-container">
-            <pre class="python">from QuantConnect.Data.Auxiliary import *
-from QuantConnect import *</pre>
+            <pre class="python">from CLRImports import *</pre>
         </div>
-        <li>Create a <code>MapFileResolver</code>.</li>
+        <li>Create and initialize a map file provider.</li>
         <div class="section-example-container">
-            <pre class="python">resolver = MapFileResolver.Create(Globals.DataFolder, Market.USA)</pre>
+            <pre class="python">map_file_provider = LocalZipMapFileProvider()
+map_file_provider.Initialize(DefaultDataProvider())<br></pre>
         </div>
-        <li>For each ticker you encounter while you process the dataset, call the <code>ResolveMapFile</code> method with the current ticker and time.</li>
+        <li>Create a security identifier.</li>
         <div class="section-example-container">
-            <pre class="python">map_file = resolver.ResolveMapFile(current_ticker, datetime.now())</pre>
-        </div>
-        <li>Call the <code>GetMappedSymbol</code> method with the historical date to get the ticker of the Equity on the provided date.</li>
-        <div class="section-example-container">
-            <pre class="python">ticker = map_file.GetMappedSymbol(datetime(2018, 1, 1))</pre>
-        </div>
-        <li>If you need a <code>Symbol</code>, create one.</li>
-        <div class="section-example-container">
-            <pre class="python">security_id = SecurityIdentifier.GenerateEquity(map_file.FirstDate, ticker, Market.USA)
-symbol = Symbol(security_id, ticker)</pre>
+            <pre class="python">sid = SecurityIdentifier.GenerateEquity(point_in_time_ticker, Market.USA, True, 
+                                        map_file_provider, csv_date)</pre>
         </div>
     </ol>
     <li>Run the <span class="private-file-name">process.*</span> or <span class="private-file-name">Program.cs</span> file to populate the <span class="private-directory-name">Lean.DataSource.<span class="placeholder-text">vendorNameDatasetName</span>/output</span> directory.</li>
