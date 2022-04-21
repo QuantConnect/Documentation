@@ -3,18 +3,18 @@
 <p>Follow these steps to test if your demonstration algorithm will run in production with the processed data:</p>
 
 <ol>
-    <li>Copy the contents of the <span class='private-file-name'>Lean.DataSource.<span class='placeholder-text'>vendorNameDatasetName</span>/output</span> directory and paste them into the <span class='private-directory-name'>Lean/Data</span> directory.</li>
-    <li>Copy the <span class='private-file-name'>Lean.DataSource.<span class='placeholder-text'>vendorNameDatasetName</span>/<span class='placeholder-text'>vendorNameDatasetName</span>Algorithm.cs</span> file and paste it in the <span class='private-file-name'>Lean/Algorithm.CSharp</span> directory. </li>
-    <li>Open the <span class='private-file-name'>Lean.DataSource.<span class='placeholder-text'>vendorNameDatasetName</span>/QuantConnect.DataSource.csproj</span> file in Visual Studio.</li>
+    <li>Copy the contents of the <span class='private-file-name'>Lean.DataSource.&lt;vendorNameDatasetName&gt;/output</span> directory and paste them into the <span class='private-directory-name'>Lean/Data</span> directory.</li>
+    <li>Copy the <span class='private-file-name'>Lean.DataSource.&lt;vendorNameDatasetName&gt;/&lt;vendorNameDatasetName&gt;Algorithm.cs</span> file and paste it in the <span class='private-file-name'>Lean/Algorithm.CSharp</span> directory. </li>
+    <li>Open the <span class='private-file-name'>Lean.DataSource.&lt;vendorNameDatasetName&gt;/QuantConnect.DataSource.csproj</span> file in Visual Studio.</li>
     <li>In the top menu bar of Visual Studio, click <span class='menu-name'>Build > Build Solution</span>.</li>
     <p>The Output panel displays the build status of the project.</p>
     <li>Close Visual Studio.</li>
     <li>Open the <span class='private-file-name'>Lean/QuantConnect.Lean.sln</span> file in Visual Studio.</li>
     <li>In the Solution Explorer panel of Visual Studio, right-click <span class='private-file-name'>QuantConnect.Algorithm.CSharp</span> and then click <span class='menu-name'>Add > Existing Item…</span>.</li>
-    <li>In the Add Existing Item window, click the <span class='private-file-name'>Lean.DataSource.<span class='placeholder-text'>vendorNameDatasetName</span>/<span class='placeholder-text'>vendorNameDatasetName</span>Algorithm.cs</span> file and then click Add.</li>
+    <li>In the Add Existing Item window, click the <span class='private-file-name'>Lean.DataSource.&lt;vendorNameDatasetName&gt;/&lt;vendorNameDatasetName&gt;Algorithm.cs</span> file and then click Add.</li>
     <li>In the Solution Explorer panel, right-click <span class='private-file-name'>QuantConnect.Algorithm.CSharp</span> and then click <span class='menu-name'>Add > Project Reference...</span>.</li>
     <li>In the Reference Manager window, click <span class='button-name'>Browse…</span>.</li>
-    <li>In the Select the files to reference… window, click the <span class='private-file-name'>Lean.DataSource.<span class='placeholder-text'>vendorNameDatasetName</span>/bin/Debug/net5.0/QuantConnect.DataSource.dll</span> file and then click <span class='button-name'>Add</span>.</li>
+    <li>In the Select the files to reference… window, click the <span class='private-file-name'>Lean.DataSource.&lt;vendorNameDatasetName&gt;/bin/Debug/net5.0/QuantConnect.DataSource.dll</span> file and then click <span class='button-name'>Add</span>.</li>
     <p>The Reference Manager window displays the <span class='private-file-name'>QuantConnect.DataSource.dll</span> file with the check box beside it enabled.</p>
     <li>Click <span class='button-name'>OK</span>.</li>
     <p>The Solution Explorer panel adds the <span class='private-file-name'>QuantConnect.DataSource.dll</span> file under <span class='menu-name'>QuantConnect.Algorithm.CSharp > Dependencies > Assemblies</span>.</p>
@@ -50,7 +50,7 @@
         <pre>"data-provider": "QuantConnect.Lean.Engine.DataFeeds.FakeDataQueue",</pre>
     </div>
     <li>Press <span class='key-combinations'>F5</span> to run your demonstration algorithm in live mode.</li>
-    <li>Add a dummy entry to the bottom of a data file in your <span class='private-file-name'>Lean.DataSource.<span class='placeholder-text'>vendorNameDatasetName</span>/output</span> directory and then save the file.</li>
+    <li>Add a dummy entry to the bottom of a data file in your <span class='private-file-name'>Lean.DataSource.&lt;vendorNameDatasetName&gt;/output</span> directory and then save the file.</li>
     <li>Check if the data point that you added in the previous step is injected into your demonstration algorithm through the <code>OnData</code> method.</li>
     <p>If the <code>OnData</code> method receives the new data point, your algorithm works in live mode.</p>
     <p>You may need to wait for the new data point to be polled before it is injected into your algorithm. Lean polls for new data at various intervals, depending on the resolution of the data. The following table shows the polling frequency of each resolution:</p>
