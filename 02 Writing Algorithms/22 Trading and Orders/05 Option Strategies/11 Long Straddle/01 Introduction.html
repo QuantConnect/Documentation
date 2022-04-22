@@ -1,0 +1,29 @@
+<p>
+	Long Straddle is an options trading strategy involving the going long in both a call and a put option, where both options have the same underlying asset, strike price and expiration date. This strategy aims to profit from volatile movements in the underlying stock, either positive or negative.
+</p>
+<div class="section-example-container">
+
+<pre class="python">price = np.arange(750,1000,1)
+strike = 900 # strike price for both call and put
+premium_call = 20 # premium of call option
+premium_put = 10 # premium of put option
+# payoff for the long call
+payoff_long_call = [max(-premium_call, i-strike-premium_call) for i in price]
+# payoff for the long put
+payoff_long_put = [max(-premium_put, strike-i-premium_put) for i in price]
+payoff = np.sum([payoff_long_call, payoff_long_put], axis=0)
+plt.figure(figsize=(20,15))
+plt.plot(price, payoff_long_call, label = 'Long Call')
+plt.plot(price, payoff_long_put, label = 'long put')
+plt.plot(price, payoff, label = 'Long Straddle')
+plt.legend(fontsize = 20)
+plt.xlabel('Stock Price at Expiry',fontsize = 15)
+plt.ylabel('payoff',fontsize = 15)
+plt.title('Long Straddle Payoff',fontsize = 20)
+plt.grid(True)
+</pre>
+</div>
+<img class="img-responsive" src="https://cdn.quantconnect.com/tutorials/i/Tutorial03-long-straddle.png" alt="long straddle strategy payoff"/>
+<p>
+ Given this plot, if the stock price moves significantly away from the strike price in either direction, the Long Straddle will profit. The potential profit is unlimited on the upside because the stock price can rise indefinitely. On the downside, the potential profit is substantial but limited since the stock price can't fall below zero. The potential loss is limited to the premium of both call and put options. The maximum loss will be realized if the stock price is exactly equal to the strike price at expiration, and both options will expire worthless.
+</p>
