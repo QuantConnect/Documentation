@@ -8,4 +8,11 @@ Market orders are automatically converted into Market On Open orders when the ma
 <p>
 If the last price data point was more than 10 minutes old, LEAN will flag the orders with a warning tag indicating the price may not be representative. This can happen on illiquid assets or if you are scheduling intraday events using daily data.
 </p>
-<p>To fix this, we recommend using the highest resolution data possible for a high fidelity backtest.</p><p>- You can use the self.Settings.StalePriceTimeSpan to adjust the stale fill time <br></p><p>## TODO: Add "Why do I get Backtest Handled Error: Order Error: id: XXX, Insufficient buying power to complete order" using SetHoldings() method call?" (https://github.com/QuantConnect/Documentation/issues/133)</p><p>## - Maximum orders per day (depends on tier for backtesting)<br></p>
+<p>To fix this, we recommend using the highest resolution data possible for a high fidelity backtest.</p><p>- You can use the self.Settings.StalePriceTimeSpan to adjust the stale fill time <br></p>
+
+<h4>Why do I get "Backtest Handled Error: Order Error: id: XXX, Insufficient buying power to complete order" calling the <code>SetHoldings</code> method?</h4><div>
+
+- Most cases are Daily data close price -&gt; open price has different value, making the order fail because the price moved. <br></div><div>- The answer is to give your algorithm a larger cash buffer and/or switch to a higher res data.
+
+</div><h4>Why can I only place 10,000 orders in a backtest?<br><p>Each organization tier has a quota on the number of orders they can place in a single backtest.</p><p># Import table from&nbsp; https://www.quantconnect.com/docs/v2/our-platform/backtesting/deployment#05-Orders<br></p>
+</h4>
