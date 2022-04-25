@@ -170,3 +170,5 @@ ticket.Update(update_fields)</pre>
 <h4>Fill Time</h4>
 <p>IB has a 400 millisecond fill time for live orders.</p>
 
+<h4>Financial Advisor Group Orders</h4>
+<p>To place FA group orders, see <a href='/docs/v2/our-platform/live-trading/brokerages/interactive-brokers#03-Financial-Advisors'>Financial Advisors</a>.</p>
