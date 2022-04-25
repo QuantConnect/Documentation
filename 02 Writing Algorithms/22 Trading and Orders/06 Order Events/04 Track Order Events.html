@@ -1,5 +1,5 @@
 <p>
-Each order generates events over its life as the status changes. These events are passed to the <code>OnOrderEvent()</code> method, which you can use for information about your order states. The event handler is passed an $[OrderEvent, T:QuantConnect.Orders.OrderEvent] object, which has information about the order status.
+Each order generates events over its life as the status changes. These events are passed to the <code>OnOrderEvent</code> and <code>On</code><code><code>Assignment</code>OrderEvent</code> method, which you can use for information about your order states. The event handler is passed an $[OrderEvent, T:QuantConnect.Orders.OrderEvent] object, which has information about the order status.
 </p>
 
 <div class="section-example-container">
@@ -8,11 +8,20 @@ Each order generates events over its life as the status changes. These events ar
     if (orderEvent.Status == OrderStatus.Filled) 
          Console.WriteLine("{0}: {1}: {2}", Time, order.Type, orderEvent);
 }
+
+public override void OnAssignmentOrderEvent(OrderEvent assignmentEvent)
+{
+    Log(assignmentEvent.ToString());
+}
 </pre>
 <pre class="python">def OnOrderEvent(self, orderEvent):
     order = self.Transactions.GetOrderById(orderEvent.OrderId)
     if orderEvent.Status == OrderStatus.Filled: 
         self.Log("{0}: {1}: {2}".format(self.Time, order.Type, orderEvent))
+
+
+def OnAssignmentOrderEvent(self, assignmentEvent):
+    self.Log(str(assignmentEvent))
 </pre>
 </div>
 
