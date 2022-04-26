@@ -9,7 +9,7 @@ symbol = ""
 html = '''<h4>Reference Table</h4>
 <table class="table qc-table table-reflow">
 <thead>
-<tr><th style="width: 45%;">symbol</th><th style="width: 10%;">Error Code</th><th style="width: 45%;">Description</th></tr>
+<tr><th style="width: 10%;">Symbol</th><th style="width: 45%;">Accessor Code</th><th style="width: 45%;">Description</th></tr>
 </thead>
 <tbody>
 '''
@@ -20,13 +20,15 @@ for line in raw:
         
     if "           public static class " in line:
         country = [x for x in line.split(' ') if x != ''][-1]
+        html += f"""<tr><td colspan="3"><b>{country}</b></td></tr>
+"""
         
     if " = " in line:
         item = line.split(" = ")
         code = item[0].split(" ")[-1]
         symbol = item[-1].replace('"', "").replace(";", "").replace(" ", "")
         
-        html += f'''<tr><td>USEnergy.{country}.{code}</td><td>{symbol}</td><td>{description}</td></tr>
+        html += f'''<tr><td>{symbol}</td><td><code>USEnergy.{country}.{code}</code></td><td>{description}</td></tr>
 '''
 
 html += """</tbody>
