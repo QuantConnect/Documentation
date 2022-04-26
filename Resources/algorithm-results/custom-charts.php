@@ -38,7 +38,7 @@ $getCustomChartText = function($backtest) {
         ";
     }
     echo "
-            <p>You can create up to 10 custom chart series per backtest. If you exceed the quota, your algorithm stops executing and the Cloud Terminal displays the following message:</p>
+            <p>You can create up to 10 custom chart series per algorithm. If you exceed the quota, your algorithm stops executing and the Cloud Terminal displays the following message:</p>
             <p><span class='error-messages'>Exceeded maximum series count: Each backtest can have up to 10 series in total.</span></p>
         ";
     
