@@ -1,282 +1,41 @@
-<meta name="tag" content="trading and orders"/>
-<meta name="tag" content="order errors"/>
-<p>
-    When an order fails to process it returns with a negative order-id. These error codes mean different things as described in the table below.
-</p>
-<table class="qc-table table table-responsive">
-    <thead>
-    <tr>
-        <th>
-            Id
-        </th>
-        <th>
-            Interpretation
-        </th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr>
-        <td>
-            <b>-1</b>
-        </td>
-        <td style="text-align: left;">
-            <b>ProcessingError</b>
-            - Unknown error.
-        </td>
-    </tr>
-    <tr>
-        <td>
-            <b>-2</b>
-        </td>
-        <td style="text-align: left;">
-            <b>OrderAlreadyExists</b>
-            - Cannot submit because order already exists.
-        </td>
-    </tr>
-    <tr>
-        <td>
-            <b>-3</b>
-        </td>
-        <td style="text-align: left;">
-            <b>InsufficientBuyingPower</b>
-            - Not enough money to to submit order.
-        </td>
-    </tr>
-    <tr>
-        <td>
-            <b>-4</b>
-        </td>
-        <td style="text-align: left;">
-            <b>BrokerageModelRefusedToSubmitOrder</b>
-            - Internal logic invalidated submit order.
-        </td>
-    </tr>
-    <tr>
-        <td>
-            <b>-5</b>
-        </td>
-        <td style="text-align: left;">
-            <b>BrokerageFailedToSubmitOrder</b>
-            - Brokerage rejected order.
-        </td>
-    </tr>
-    <tr>
-        <td>
-            <b>-6</b>
-        </td>
-        <td style="text-align: left;">
-            <b>BrokerageFailedToUpdateOrder</b>
-            - Failed to update order.
-        </td>
-    </tr>
-    <tr>
-        <td>
-            <b>-7</b>
-        </td>
-        <td style="text-align: left;">
-            <b>BrokerageHandlerRefusedToUpdateOrder</b>
-            - Brokerage rejected update request.
-        </td>
-    </tr>
-    <tr>
-        <td>
-            <b>-8</b>
-        </td>
-        <td style="text-align: left;">
-            <b>BrokerageFailedToCancelOrder</b>
-            - Brokerage refused to cancel order.
-        </td>
-    </tr>
-    <tr>
-        <td>
-            <b>-9</b>
-        </td>
-        <td style="text-align: left;">
-            <b>InvalidOrderStatus</b>
-            - Only pending orders can be cancelled
-        </td>
-    </tr>
-    <tr>
-        <td>
-            <b>-10</b>
-        </td>
-        <td style="text-align: left;">
-            <b>UnableToFindOrder</b>
-            - Cannot find order with that id.
-        </td>
-    </tr>
-    <tr>
-        <td>
-            <b>-11</b>
-        </td>
-        <td style="text-align: left;">
-            <b>OrderQuantityZero</b>
-            - Cannot submit or update orders with zero quantity.
-        </td>
-    </tr>
-    <tr>
-        <td>
-            <b>-12</b>
-        </td>
-        <td style="text-align: left;">
-            <b>UnsupportedRequestType</b>
-            - This type of request is unsupported.
-        </td>
-    </tr>
-    <tr>
-        <td>
-            <b>-13</b>
-        </td>
-        <td style="text-align: left;">
-            <b>PreOrderChecksError</b>
-            - Pre-placement order checks failed.
-        </td>
-    </tr>
-    <tr>
-        <td>
-            <b>-14</b>
-        </td>
-        <td style="text-align: left;">
-            <b>MissingSecurity</b>
-            - Security is missing. Probably did not subscribe.
-        </td>
-    </tr>
-    <tr>
-        <td>
-            <b>-15</b>
-        </td>
-        <td style="text-align: left;">
-            <b>ExchangeNotOpen</b>
-            - Some order types require open exchange.
-        </td>
-    </tr>
-    <tr>
-        <td>
-            <b>-16</b>
-        </td>
-        <td style="text-align: left;">
-            <b>SecurityPriceZero</b>
-            - There isn't any market data yet for the security.
-        </td>
-    </tr>
-    <tr>
-        <td>
-            <b>-17</b>
-        </td>
-        <td style="text-align: left;">
-            <b>ForexBaseAndQuoteCurrenciesRequired</b>
-            - Need both currencies in cashbook to trade a pair.
-        </td>
-    </tr>
-    <tr>
-        <td>
-            <b>-18</b>
-        </td>
-        <td style="text-align: left;">
-            <b>ForexConversionRateZero</b>
-            - Need conversion rate to account currency.
-        </td>
-    </tr>
-    <tr>
-        <td>
-            <b>-19</b>
-        </td>
-        <td style="text-align: left;">
-            <b>SecurityHasNoData</b>
-            - Should not attempt trading without at least one data point.
-        </td>
-    </tr>
-    <tr>
-        <td>
-            <b>-20</b>
-        </td>
-        <td style="text-align: left;">
-            <b>ExceededMaximumOrders</b>
-            - Transaction manager's cache is full.
-        </td>
-    </tr>
-    <tr>
-        <td>
-            <b>-21</b>
-        </td>
-        <td style="text-align: left;">
-            <b>MarketOnCloseOrderTooLate</b>
-            - Need to submit market on close orders at least 11 minutes before exchange close.
-        </td>
-    </tr>
-    <tr>
-        <td>
-            <b>-22</b>
-        </td>
-        <td style="text-align: left;">
-            <b>InvalidRequest</b>
-            - Request is invalid or null.
-        </td>
-    </tr>
-    <tr>
-        <td>
-            <b>-23</b>
-        </td>
-        <td style="text-align: left;">
-            <b>RequestCanceled</b>
-            - Request was canceled by user.
-        </td>
-    </tr>
-    <tr>
-        <td>
-            <b>-24</b>
-        </td>
-        <td style="text-align: left;">
-            <b>AlgorithmWarmingUp</b>
-            - All orders are invalidated while algorithm is warming up.
-        </td>
-    </tr>
-    <tr>
-        <td>
-            <b>-25</b>
-        </td>
-        <td style="text-align: left;">
-            <b>BrokerageModelRefusedToUpdateOrder</b>
-            - Internal logic invalidated update order.
-        </td>
-    </tr>
-    <tr>
-        <td>
-            <b>-26</b>
-        </td>
-        <td style="text-align: left;">
-            <b>QuoteCurrencyRequired</b>
-            - Need quote currency in cashbook to trade.
-        </td>
-    </tr>
-    <tr>
-        <td>
-            <b>-27</b>
-        </td>
-        <td style="text-align: left;">
-            <b>ConversionRateZero</b>
-            - Need conversion rate to account currency.
-        </td>
-    </tr>
-    <tr>
-        <td>
-            <b>-28</b>
-        </td>
-        <td style="text-align: left;">
-            <b>NonTradableSecurity</b>
-            - The order's symbol references a non-tradable security.
-        </td>
-    </tr>
-    <tr>
-        <td>
-            <b>-29</b>
-        </td>
-        <td style="text-align: left;">
-            <b>NonExercisableSecurity</b>
-            - The order's symbol references a non-exercisable security.
-        </td>
-    </tr>
-    </tbody>
-</table>
-
-<p>## TODO: Add errors -30 to -32 https://github.com/QuantConnect/Lean/blob/master/Common/Orders/OrderResponseErrorCode.cs</p>
+<p>When an order fails to process it returns with a negative order-id. These error codes mean different things as described in the table below.</p>
+<table>
+<thead>
+<th style="width: 5%;">Enum</th><th style="width: 20%;">Error Code</th><th style="width: 75%;">Description</th>
+</thead>
+<tbody>
+<tr><td>0</td><td>None</td><td>No error</td></tr>
+<tr><td>-1</td><td>ProcessingError</td><td>Unknown error</td></tr>
+<tr><td>-2</td><td>OrderAlreadyExists</td><td>Cannot submit because order already exists</td></tr>
+<tr><td>-3</td><td>InsufficientBuyingPower</td><td>Not enough money to to submit order</td></tr>
+<tr><td>-4</td><td>BrokerageModelRefusedToSubmitOrder</td><td>Internal logic invalidated submit order</td></tr>
+<tr><td>-5</td><td>BrokerageFailedToSubmitOrder</td><td>Brokerage submit error</td></tr>
+<tr><td>-6</td><td>BrokerageFailedToUpdateOrder</td><td>Brokerage update error</td></tr>
+<tr><td>-7</td><td>BrokerageHandlerRefusedToUpdateOrder</td><td>Internal logic invalidated update order</td></tr>
+<tr><td>-8</td><td>BrokerageFailedToCancelOrder</td><td>Brokerage cancel error</td></tr>
+<tr><td>-9</td><td>InvalidOrderStatus</td><td>Only pending orders can be canceled</td></tr>
+<tr><td>-10</td><td>UnableToFindOrder</td><td>Missing order</td></tr>
+<tr><td>-11</td><td>OrderQuantityZero</td><td>Cannot submit or update orders with zero quantity</td></tr>
+<tr><td>-12</td><td>UnsupportedRequestType</td><td>This type of request is unsupported</td></tr>
+<tr><td>-13</td><td>PreOrderChecksError</td><td>Unknown error during pre order request validation</td></tr>
+<tr><td>-14</td><td>MissingSecurity</td><td>Security is missing. Probably did not subscribe.</td></tr>
+<tr><td>-15</td><td>ExchangeNotOpen</td><td>Some order types require open exchange</td></tr>
+<tr><td>-16</td><td>SecurityPriceZero</td><td>Zero security price is probably due to bad data</td></tr>
+<tr><td>-17</td><td>ForexBaseAndQuoteCurrenciesRequired</td><td>Need both currencies in cashbook to trade a pair</td></tr>
+<tr><td>-18</td><td>ForexConversionRateZero</td><td>Need conversion rate to account currency</td></tr>
+<tr><td>-19</td><td>SecurityHasNoData</td><td>Should not attempt trading without at least one data point</td></tr>
+<tr><td>-20</td><td>ExceededMaximumOrders</td><td>Transaction manager's cache is full</td></tr>
+<tr><td>-21</td><td>MarketOnCloseOrderTooLate</td><td>Need 11 minute buffer before exchange close</td></tr>
+<tr><td>-22</td><td>InvalidRequest</td><td>Request is invalid or null</td></tr>
+<tr><td>-23</td><td>RequestCanceled</td><td>Request was canceled by user</td></tr>
+<tr><td>-24</td><td>AlgorithmWarmingUp</td><td>All orders are invalidated while algorithm is warming up</td></tr>
+<tr><td>-25</td><td>BrokerageModelRefusedToUpdateOrder</td><td>Internal logic invalidated update order</td></tr>
+<tr><td>-26</td><td>QuoteCurrencyRequired</td><td>Need quote currency in cashbook to trade</td></tr>
+<tr><td>-27</td><td>ConversionRateZero</td><td>Need conversion rate to account currency</td></tr>
+<tr><td>-28</td><td>NonTradableSecurity</td><td>The order's symbol references a non-tradable security</td></tr>
+<tr><td>-29</td><td>NonExercisableSecurity</td><td>The order's symbol references a non-exercisable security</td></tr>
+<tr><td>-30</td><td>OrderQuantityLessThanLoteSize</td><td>Cannot submit or update orders with quantity that is less than lot size</td></tr>
+<tr><td>-31</td><td>ExceedsShortableQuantity</td><td>The order's quantity exceeds the max shortable quantity set by the brokerage</td></tr>
+<tr><td>-32</td><td>InvalidNewOrderStatus</td><td>Cannot update/cancel orders with OrderStatus.New</td></tr>
+</tbody>
+<table>
