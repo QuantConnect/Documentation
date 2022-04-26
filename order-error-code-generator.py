@@ -6,9 +6,9 @@ description = ""
 code = ""
 enum = ""
 html = '''<p>When an order fails to process it returns with a negative order-id. These error codes mean different things as described in the table below.</p>
-<table>
+<table class="table qc-table table-reflow">
 <thead>
-<th style="width: 5%;">Enum</th><th style="width: 20%;">Error Code</th><th style="width: 75%;">Description</th>
+<tr><th style="width: 5%;">Enum</th><th style="width: 25%;">Error Code</th><th style="width: 70%;">Description</th></tr>
 </thead>
 <tbody>
 '''
