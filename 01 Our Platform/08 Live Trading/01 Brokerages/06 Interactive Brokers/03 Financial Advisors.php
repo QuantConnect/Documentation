@@ -15,7 +15,7 @@ self.DefaultOrderProperties.FaProfile = "TestProfileP"
 self.DefaultOrderProperties.Account = "DU123456"</pre>
 </div>
 
-<?php echo file_get_contents(DOCS_RESOURCES."/specs/backtest-nodes.html"); ?>
+<?php echo file_get_contents(DOCS_RESOURCES."/order-types/financial-advisors/allocation-methods.html"); ?>
 
 <div class="section-example-container">
     <pre class="csharp">public override void Initialize()
