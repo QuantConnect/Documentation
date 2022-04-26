@@ -4,6 +4,27 @@ Some reality models are portfolio level models.
 <p>
 	To set a security-specific model, first fetch the security object and apply your model. 
 	</p><div class="section-example-container">	
-	<pre class="all">//Set IBM to have a constant $1 transaction fee. 
-Securities["IBM"].FeeModel = new ConstantFeeTransactionModel(1); </pre>
+	<pre class="csharp">// Set IBM to have a constant $1 transaction fee 
+Securities["IBM"].SetFeeModel(new ConstantFeeModel(1)); </pre>
+        <pre class="python"># Set IBM to have a constant $1 transaction fee
+Securities["IBM"].SetFeeModel(ConstantFeeModel(1));</pre>
+</div>
+
+You can also set the security-specific models inside a security initializer. 
+
+<div class="section-example-container">
+<pre class="csharp">//In Initialize
+SetSecurityInitializer(CustomSecurityInitializer);
+
+private void CustomSecurityInitializer(Security security)
+{
+	security.SetFeeModel(new ConstantFeeModel(1));
+}
+</pre>
+<pre class="python">#In Initialize
+self.SetSecurityInitializer(self.CustomSecurityInitializer)
+
+def CustomSecurityInitializer(self, security):
+    security.SetFeeModel(ConstantFeeModel(1))
+</pre>
 </div>
