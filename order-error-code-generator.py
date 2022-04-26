@@ -27,7 +27,7 @@ for line in raw:
 '''
 
 html += """</tbody>
-<table>"""
+</table>"""
 
 with open("02 Writing Algorithms/22 Trading and Orders/10 Order Errors/19 Order Error Code Reference.html", "w", encoding="utf-8") as file:
     file.write(html)
