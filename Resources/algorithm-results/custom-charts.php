@@ -30,13 +30,17 @@ $getCustomChartText = function($backtest) {
 <span class='pln'>                   </span><span class='pun'>.</span><span class='typ'>TriangleDown</span></pre></div>
     ";
 
+    echo "<h4>Chart Quotas</h4>";
     if ($backtest) {
         echo "
-            <h4>Chart Quotas</h4>
-            <p>Custom charts are limited to 4,000 data points. Intensive charting requires hundreds of megabytes of data, which is too much to stream online or display in a web browser. If you exceed the limit, the Cloud Terminal displays the following message:</p>
+            <p>Custom charts are limited to 4,000 data points. Intensive charting requires hundreds of megabytes of data, which is too much to stream online or display in a web browser. If you exceed the quota, the Cloud Terminal displays the following message:</p>
             <p><span class='error-messages'>Exceeded maximum points per chart, data skipped</span></p>
         ";
     }
+    echo "
+            <p>You can create up to 10 custom chart series per backtest. If you exceed the quota, your algorithm stops executing and the Cloud Terminal displays the following message:</p>
+            <p><span class='error-messages'>Exceeded maximum series count: Each backtest can have up to 10 series in total.</span></p>
+        ";
     
     echo "
         <h4>Demonstration</h4>
