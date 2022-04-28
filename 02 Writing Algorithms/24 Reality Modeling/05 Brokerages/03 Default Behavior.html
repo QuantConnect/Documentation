@@ -1,82 +1,9 @@
-<meta name="tag" content="trading and orders"/>
-<meta name="tag" content="brokerage models"/>
-<meta name="tag" content="transaction fees and slippage"/>
-<meta name="tag" content="custom transaction models"/>
-<meta name="tag" content="custom slippage models "/>
-<p>
-We provide a shortcut to set common models and properties relating to each of the brokerages we support. These
-    brokerage models set fees, fill models, slippage models, and trading markets for a brokerage. In addition they
-    validate that it is possible to submit trades to the brokerage (e.g. submitting equity trades to a forex only brokerage).
-</p>
-<p>Brokerage models set:</p>
-<ul>
-	<li>
-        Transaction fees.
-    </li>
-	<li>
-        Supported asset classes for the brokerage.
-    </li>
-	<li>
-        Validate order types and settings.
-    </li>
-	<li>
-        Default account type (margin or cash account).
-    </li>
-	<li>
-        Support for extended market hours.
-    </li>
-	<li>
-        Default leverage for assets
-    </li>
-	<li>
-        Default settlement models
-    </li>
-</ul>
-<p>This gives you enormous control over your algorithm behavior, and allows you to model virtually any brokerage in the world.</p>
-<p>
-    In addition to our default brokerage model (<a href='https://www.quantconnect.com/lean/docs#topic8588.html' target='_BLANK' class='lean-documentation' title='Open DefaultBrokerageModel API Documentation'>DefaultBrokerageModel</a>), we provide brokerage models for Interactive
-    Brokers (<a href='https://www.quantconnect.com/lean/docs#topic8640.html' target='_BLANK' class='lean-documentation' title='Open InteractiveBrokersBrokerageModel API Documentation'>InteractiveBrokersBrokerageModel</a>), OANDA (<a href='https://www.quantconnect.com/lean/docs#topic8651.html' target='_BLANK' class='lean-documentation' title='Open OandaBrokerageModel API Documentation'>OandaBrokerageModel</a>),
-    Coinbase Pro (<a href='https://www.quantconnect.com/lean/docs#topic8628.html' target='_BLANK' class='lean-documentation' title='Open GDAX API Documentation'>GDAXBrokerageModel</a>), and Bitfinex (<a href='https://www.quantconnect.com/lean/docs#topic8628.html' target='_BLANK' class='lean-documentation' title='Open BitfinexBrokerageModel API Documentation'>Bitfinex</a>)
-</p>
-<p>
-    Brokerage models override any other models you may set for a security.
-</p>
-<div class="section-example-container">
-	<pre class="csharp">
-// Set brokerage model using helper methods:
-SetBrokerageModel(BrokerageName.OandaBrokerage); // Defaults to margin account
-SetBrokerageModel(BrokerageName.Bitfinex, AccountType.Margin); //Or override account type
+<div>-The default brokerage model is the DefaultBrokerageModel but we provide many other brokerage models you can use in your algorithms <br></div><div><br></div>-To check which security-level models the DefaultBrokerageModel  assigns to securities in your algorithm, see the following pages:
+<br>&nbsp;&nbsp;&nbsp;&nbsp;-Trade Fills
+<br>&nbsp;&nbsp;&nbsp;&nbsp;-Slippage
+<br>&nbsp;&nbsp;&nbsp;&nbsp;-Trasaction Fees
+<br>&nbsp;&nbsp;&nbsp;&nbsp;-Buying Power
+<br>&nbsp;&nbsp;&nbsp;&nbsp;-Settlement
+<br>&nbsp;&nbsp;&nbsp;&nbsp;-Option Models
 
-// Supported brokerage names:
-BrokerageName.InteractiveBrokersBrokerage
-             .OandaBrokerage
-             .GDAX
-             .Bitfinex
-</pre>
-<pre class="csharp">
-// You can also create your own brokerage model: IBrokerageModel
-class MyBrokerage: DefaultBrokerageModel {
-   // Custom implementation of brokerage here.
-} 
-
-SetBrokerageModel(new MyBrokerage());
-</pre>
-<pre class="python">
-# Set brokerage model using helper methods:
-self.SetBrokerageModel(BrokerageName.OandaBrokerage) # Defaults to margin account
-self.SetBrokerageModel(BrokerageName.Bitfinex, AccountType.Margin) # Or override account type
-
-# Supported brokerage names:
-BrokerageName.InteractiveBrokersBrokerage
-             .OandaBrokerage
-             .GDAX
-             .Bitfinex
-</pre>
-<pre class="python">
-# You can also create your own brokerage model: IBrokerageModel
-class MyBrokerage(DefaultBrokerageModel):
-   # Custom implementation of brokerage here.
-
-self.SetBrokerageModel(MyBrokerage())
-</pre>
-</div>
+<br><br>-To check the margin call model that the DefaultBrokerageModel uses, see Margin Calls.
