@@ -1,32 +1,29 @@
-<meta name="tag" content="trading and orders" />
-<meta name="tag" content="brokerage models" />
-<meta name="tag" content="transaction fees fills buying power slippage" />
-<meta name="tag" content="custom transaction models" />
-<meta name="tag" content="order events" />
+<meta name="tag" content="trading and orders">
+<meta name="tag" content="brokerage models">
+<meta name="tag" content="transaction fees fills buying power slippage">
+<meta name="tag" content="custom transaction models">
+<meta name="tag" content="order events">
 <p>
-	Fee models set the fees for each order. We provide customized fee models for all brokerages, but you can also set your own. Like all models, they must be set on a security by security basis.
+	We provide customized fee models for all brokerages, but you can also set your own. Like all models, they must be set on a security by security basis.
 </p>
 <p>
 	Fee models implement the $[IFeeModel,T:QuantConnect.Orders.Fees.IFeeModel] interface. If you wish to implement your own fee model, you can start with the $[FeeModel,T:QuantConnect.Orders.Fees.FeeModel] and override methods you wish to change. $[IFeeModel.GetOrderFee,M:QuantConnect.Orders.Fees.IFeeModel.GetOrderFee] accepts a single parameter of type $[OrderFeeParameters,T:QuantConnect.Orders.Fees.OrderFeeParameters] and returns an $[OrderFee,T:QuantConnect.Orders.Fees.OrderFee] that represents a cash amount with a given currency.
 </p>
 
-<div class="section-example-container" >
-<pre class="csharp" >
-// Set IBM to use a fixed $1.5 per trade fee model.
+<div class="section-example-container">
+<pre class="csharp">// Set IBM to use a fixed $1.5 per trade fee model.
 Securities["IBM"].FeeModel = new ConstantFeeModel(1.5);
 
 // Set EURUSD to use OANDA's transaction fees:
 Securities["EURUSD"].FeeModel = new OandaFeeModel();
 </pre>
-<pre class="python" >
-# Set IBM to use a fixed $1.5 per trade fee model.
+<pre class="python"># Set IBM to use a fixed $1.5 per trade fee model.
 self.Securities["IBM"].FeeModel = ConstantFeeModel(1.5)
 
 # Set EURUSD to use Oanda's transaction fees:
 self.Securities["EURUSD"].FeeModel = OandaFeeModel()
 </pre>
-<pre class="csharp" >
-// Assigning securities custom fee models:
+<pre class="csharp">// Assigning securities custom fee models:
 Securities["SPY"].SetFeeModel(new CustomFeeModel());
 
 // Custom fee implementation
@@ -48,8 +45,7 @@ public class NonAccountCurrencyCustomFeeModel : FeeModel {
 }
 
 </pre>
-<pre class="python" >
-# Assigning securities custom fee models:
+<pre class="python"># Assigning securities custom fee models:
 self.Securities["SPY"].SetFeeModel(CustomFeeModel())
 
 # Custom fee implementation
