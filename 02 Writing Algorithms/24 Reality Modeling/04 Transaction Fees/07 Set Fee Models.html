@@ -1,1 +1,27 @@
+<div>The brokerage model of your algorithm automatically sets the fee model for each security. <br></div><div><br></div><div>To set the fee model of a security, call the SetFeeModel method on the Security object.</div>
+<div class="section-example-container">
+    <pre class="csharp">// In Initialize
+var security = AddEquity("SPY");
+security.SetFeeModel(new ConstantFeeModel(0));</pre>
+    <pre class="python"># In Initialize
+security = self.AddEquity("SPY")
+security.SetFeeModel(ConstantFeeModel(0))</pre>
+</div>
 
+Alternatively, set the fee model in a security initializer.
+If your algorithm has a dynamic universe, use the security initializer technique.<div class="section-example-container">
+<pre class="csharp">// In Initialize
+SetSecurityInitializer(CustomSecurityInitializer);
+
+private void CustomSecurityInitializer(Security security)
+{
+    security.SetFeeModel(new ConstantFeeModel(0));
+}
+</pre>
+<pre class="python"># In Initialize
+self.SetSecurityInitializer(self.CustomSecurityInitializer)
+
+def CustomSecurityInitializer(self, security):
+    security.SetFeeModel(ConstantFeeModel(0))
+</pre>
+</div>
