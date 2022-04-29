@@ -1,2 +1,34 @@
 
 Buying power models implement the $[IBuyingPowerModel, T:QuantConnect.Securities.IBuyingPowerModel] interface and default to the $[BuyingPowerModel, T:QuantConnect.Securities.BuyingPowerModel] class. If you wish to implement your own buying power model, you can start with the default and override methods you wish to change. 
+
+
+<div class="section-example-container">
+<pre class="csharp" style="">public class CustomBuyingPowerModel : BuyingPowerModel
+{
+    public override GetMaximumOrderQuantityResult GetMaximumOrderQuantityForTargetBuyingPower(
+        GetMaximumOrderQuantityForTargetBuyingPowerParameters parameters)
+    {
+        var quantity = base.GetMaximumOrderQuantityForTargetBuyingPower(parameters).Quantity;
+        quantity = Math.Floor(quantity / 100) * 100;
+        return new GetMaximumOrderQuantityResult(quantity);
+    }
+
+    public override HasSufficientBuyingPowerForOrderResult HasSufficientBuyingPowerForOrder(
+        HasSufficientBuyingPowerForOrderParameters parameters)
+    {
+        // if portfolio doesn't have enough buying power:
+        //     parameters.Insufficient()
+
+        // this model never allows a lack of funds get in the way of buying securities
+        return parameters.Sufficient();
+    }
+}</pre>
+<pre class="python">class CustomBuyingPowerModel(BuyingPowerModel):
+    def GetMaximumOrderQuantityForTargetBuyingPower(self, parameters):
+        quantity = super().GetMaximumOrderQuantityForTargetBuyingPower(parameters).Quantity
+        quantity = np.floor(quantity / 100) * 100
+        return GetMaximumOrderQuantityResult(quantity)
+
+    def HasSufficientBuyingPowerForOrder(self, parameters):
+        return HasSufficientBuyingPowerForOrderResult(True)</pre>
+</div>
