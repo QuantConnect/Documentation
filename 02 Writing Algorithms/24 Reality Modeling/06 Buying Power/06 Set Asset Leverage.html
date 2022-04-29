@@ -1,26 +1,37 @@
-<div>The buying power model of your algorithm sets the leverage for each security.<br></div><div><br></div><div>To override the buying power model and set the leverage for all securities in your algorithm, set the UniverseSettings.Leverage property.
+<p>The buying power model sets the leverage for each security in your algorithm, but you can override the leverage it sets.</p>
 
-</div><div class="section-example-container">
-	<pre class="csharp">// In Initialize
-UniverseSettings.Leverage = 2;</pre>
-	<pre class="python"># In Initialize
-self.UniverseSettings.Leverage = 2</pre>
+<p>To set the leverage when you create a security subscription, pass in a <code>leverage</code> argument.</p>
+<div class="section-example-container">
+<pre class="csharp">// In Initialize
+AddEquity("SPY", leverage: 3);</pre>
+<pre class="python"># In Initialize
+AddEquity("SPY", leverage=3)</pre>
 </div>
 
-To set the leverage on a security basis, use a security initializer.
+<p>You can also set the security leverage in a security initializer. In order to initialize securities with the security initializer, call SetSecurityInitializer before you create security subscriptions. If you pass in a <code>leverage</code> argument when you create the security subscription, the <code>leverage</code> argument takes precedence over the SetLeverage call in the security initializer.<br></p>
+
 <div class="section-example-container">
 <pre class="csharp">// In Initialize
 SetSecurityInitializer(CustomSecurityInitializer);
+AddEquity("SPY");
 
 private void CustomSecurityInitializer(Security security)
 {
-    security.SetLeverage(2);
-}
-</pre>
+    security.SetLeverage(3);
+}</pre>
 <pre class="python"># In Initialize
 self.SetSecurityInitializer(self.CustomSecurityInitializer)
+AddEquity("SPY")
 
 def CustomSecurityInitializer(self, security):
-    security.SetLeverage(2)
-</pre>
+    security.SetLeverage(3)</pre>
+</div>
+
+<p>To set the leverage for all securities in a universe, set the UniverseSettings.Leverage property.</p>
+
+<div class="section-example-container">
+	<pre class="csharp">// In Initialize
+UniverseSettings.Leverage = 3;</pre>
+	<pre class="python"># In Initialize
+self.UniverseSettings.Leverage = 3</pre>
 </div>
