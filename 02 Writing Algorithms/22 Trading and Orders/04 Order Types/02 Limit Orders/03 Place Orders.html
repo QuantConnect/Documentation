@@ -1,19 +1,4 @@
-<p>To send a limit order, call the <code>LimitOrder</code> method with a symbol, quantity, and limit price. If you do not have sufficient capital for the order, it's rejected.</p>
-
-<div class="section-example-container">
-<pre class="csharp">// Buy 1 Bitcoin at $40,000
-var buyTicket = LimitOrder("BTCUSD", 1, 40000);
-
-// Sell 1 Bitcoin at $40,000
-var sellTicket = LimitOrder("BTCUSD", -1, 40000);</pre>
-<pre class="python"># Buy 1 Bitcoin at $40,000
-buy_ticket = self.LimitOrder("BTCUSD", 1, 40000)
-
-# Sell 1 Bitcoin at $40,000
-sell_ticket = self.LimitOrder("BTCUSD", -1, 40000)</pre>
-</div>
-
-<p>You can provide a tag and <a href="/docs/v2/writing-algorithms/trading-and-orders/order-properties">order properties</a> to the <code>LimitOrder</code> method.</p>
+<p>To send a limit order, call the <code>LimitOrder</code> method with a symbol, quantity, and limit price. If you do not have sufficient capital for the order, it's rejected. You can provide a tag and <a href="/docs/v2/writing-algorithms/trading-and-orders/order-properties">order properties</a> to the <code>LimitOrder</code> method.</p>
 
 <div class="section-example-container">
 <pre class="csharp">LimitOrder(symbol, quantity, limitPrice, tag, orderProperties);</pre>
@@ -25,7 +10,21 @@ sell_ticket = self.LimitOrder("BTCUSD", -1, 40000)</pre>
 <p>To place a marketable sell limit order, set the limit price to the current bid price or lower.</p>
 
 <p>To place an unmarketable buy limit order, set the limit price below the current ask price.</p>
+
+<div class="section-example-container">
+<pre class="csharp">// Buy 1 Bitcoin when the price drops to $34,000
+var ticket = LimitOrder("BTCUSD", 1, 34000);</pre>
+<pre class="python"># Buy 1 Bitcoin when the price drops to $34,000
+ticket = self.LimitOrder("BTCUSD", 1, 40000)</pre>
+</div>
+
 <img class="docs-image" src="https://cdn.quantconnect.com/i/tu/unmarketable-buy-limit-order.png" alt="When the asset currently trades at 55,000, the limit price is set at 34,000. The limit order is filled when the price drops to 34,000.">
 
 <p>To place an unmarketable sell limit order, set the limit price above the current bid price.</p>
+<div class="section-example-container">
+<pre class="csharp">// Sell 1 Bitcoin when the price moves up to $60,000
+var ticket = LimitOrder("BTCUSD", -1, 60000);</pre>
+<pre class="python"># Sell 1 Bitcoin when the price moves up to $60,000
+buy_ticket = self.LimitOrder("BTCUSD", -1, 60000)</pre>
+</div>
 <img class="docs-image" src="https://cdn.quantconnect.com/i/tu/unmarketable-sell-limit-order.png" alt="When the asset currently trades at 45,000, the limit price is set at 60,000. The limit order is filled when the price move up to 60,000.">
