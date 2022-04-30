@@ -2,10 +2,12 @@
 <div class="section-example-container">
     <pre class="csharp">// In Initialize
 var security = AddEquity("SPY");
-security.SettlementModel = new DelayedSettlementModel(3, new TimeSpan.FromHours(8, 0, 0));</pre>
+// Set a security to a delayed settlement model: settle 7 days later, at 8am.
+security.SettlementModel = new DelayedSettlementModel(7, new TimeSpan.FromHours(8, 0, 0));</pre>
     <pre class="python"># In Initialize
 security = self.AddEquity("SPY")
-security.SettlementModel = DelayedSettlementModel(3, timedelta(hours=8))</pre>
+# Set a security to a delayed settlement model: settle 7 days later, at 8am.
+security.SettlementModel = DelayedSettlementModel(7, timedelta(hours=8))</pre>
 </div>
 
 Alternatively, set the settlement model in a security initializer.
@@ -19,7 +21,7 @@ AddEquity("SPY");
 
 private void CustomSecurityInitializer(Security security)
 {
-    security.SettlementModel = new DelayedSettlementModel(3, new TimeSpan.FromHours(8, 0, 0));
+    security.SettlementModel = new DelayedSettlementModel(7, new TimeSpan.FromHours(8, 0, 0));
 }
 </pre>
 <pre class="python"># In Initialize
@@ -27,6 +29,6 @@ self.SetSecurityInitializer(self.CustomSecurityInitializer)
 self.AddEquity("SPY")
 
 def CustomSecurityInitializer(self, security):
-    security.SettlementModel = DelayedSettlementModel(3, timedelta(hours=8))
+    security.SettlementModel = DelayedSettlementModel(7, timedelta(hours=8))
 </pre>
 </div>
