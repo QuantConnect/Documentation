@@ -1,0 +1,30 @@
+When your portfolio's remaining margin drops below 5% of the total portfolio value, we notify your algorithm through the OnMarginCallWarning event handler.
+
+<div class="section-example-container">
+	<pre class="csharp">public override void OnMarginCallWarning()
+{
+    Debug("Warning: Close to margin call");
+}</pre>
+	<pre class="python">def OnMarginCallWarning(self):
+    self.Debug(f"Warning: Close to margin call")</pre>
+</div>
+
+Before we send the orders that the margin call model produces, we notify your algorithm through the OnMarginCall event handler. This notification gives your algorithm a chance to liquidate some positions or modify the margin call orders. To modify the orders, adjust the list of SubmitOrderRequest objects the event handler receives.<br><div class="section-example-container">
+	<pre class="csharp">public override void OnMarginCall(List<submitorderrequest> requests)
+    foreach (var order in requests.ToList())
+    {
+        // liquidate an extra 10% each time we get a margin call to give us more padding
+        var newQuantity = (int)(Math.Sign(order.Quantity) * order.Quantity * 1.1m);
+        requests.Remove(order);
+        requests.Add(new SubmitOrderRequest(order.OrderType, order.SecurityType, 
+                                            order.Symbol, newQuantity, order.StopPrice, 
+                                            order.LimitPrice, Time, "OnMarginCall"));
+    }</submitorderrequest></pre>
+	<pre class="python">def OnMarginCall(self, requests):
+    for order in requests:
+        # liquidate an extra 10% each time we get a margin call to give us more padding
+        newQuantity = int(np.sign(order.Quantity) * order.Quantity * 1.1)
+        requests.remove(order)
+        requests.append(SubmitOrderRequest(order.OrderType, order.SecurityType, order.Symbol, newQuantity, order.StopPrice, order.LimitPrice, self.Time, "OnMarginCall"))
+</pre>
+</div>
