@@ -1,9 +1,22 @@
 <meta name="tag" content="trading and orders">
-<p>
-The volatility model is a property of a security. Exactly how volatility is calculated varies a lot between strategies, so we've provided an override point here. Volatility models get updated with data each time step and are expected to be updated immediately. This is primarily required for options backtesting.
-</p>
-<p>
-	Volatility models implement the $[VolatilityModel,T:QuantConnect.Securities.VolatilityModel] interface. We default to the NullVolatilityModel which returns 0 volatility at all times. As a helper, we also provide the $[RelativeStandardDeviationVolatilityModel,T:QuantConnect.Securities.RelativeStandardDeviationVolatilityModel], which calculates the volatility based on standard deviation.
-</p><div>
+<p>- The Greeks and implied volatility of Option contracts are a function of the historical volatility of the underlying asset.
+</p><p>- The volatility model is a property of a security. Exactly how volatility is calculated varies a lot between strategies, so we've provided an override point here. Volatility models get updated with data each time step and are expected to be updated immediately. This is primarily required for options backtesting. <br></p>
+<p><br></p><p>Supported Volatility Models:</p><p>- StandardDeviationOfReturnsVolatilityModel: Computes the annualized sample standard deviation of daily returns as the volatility of the security<br></p><p>- RelativeStandardDeviationVolatilityModel: computes the relative standard deviation as the volatility of the security</p><p>- IndicatorVolatilityModel: uses an indicator to compute its value</p><p>- NullVolatilityModel: always returns 0 for its volatility <br></p><p><br></p><p>Default Behavior: <br></p><p>- StandardDeviationOfReturnsVolatilityModel based on 30 days of minute-resolution data<br></p><p><br></p><p>Set Volatility Models:</p><p>- To <br></p><p><br></p><p>Warm Up Volatility Models</p><p>- (What/Why) You need to warm up the volatility model on the underlying security in order for the option price model to accurately calculate the IV, Greeks, and theoretical pricing values.</p><p>- (How)</p><p>&nbsp;&nbsp;&nbsp; - If you add all options with AddOption, set a warm up period to warm up the volaility models.<br></p><div>
 
+<div class="section-example-container">
+    <pre class="csharp">// In Initialize
+SetWarmUp(30, Resolution.Daily);</pre>
+    <pre class="python"># In Initialize
+self.SetWarmUp(30, Resolution.Daily)</pre>
+</div>
+
+
+
+
+</div><div><br></div><div>Custom Volatility Models:</div><div><br></div><div>- Volatility models implement the 
+$[VolatilityModel,T:QuantConnect.Securities.VolatilityModel] interface. 
+We default to the NullVolatilityModel which returns 0 volatility at all 
+times. As a helper, we also provide the 
+$[RelativeStandardDeviationVolatilityModel,T:QuantConnect.Securities.RelativeStandardDeviationVolatilityModel],
+ which calculates the volatility based on standard deviation. </div><div><br></div><div><br></div><div><br>
 ## TODO: How to warm up the volatility model <br></div><div>https://www.quantconnect.com/tutorials/introduction-to-options/historical-volatility-and-implied-volatility</div><div>https://www.quantconnect.com/tutorials/introduction-to-options/local-volatility-and-stochastic-volatility<br></div><div>https://github.com/QuantConnect/Documentation/issues/102<br></div>
