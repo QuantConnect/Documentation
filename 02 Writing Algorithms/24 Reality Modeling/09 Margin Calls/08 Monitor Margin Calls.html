@@ -9,9 +9,7 @@ When your portfolio's remaining margin drops below 5% of the total portfolio val
     self.Debug(f"Warning: Close to margin call")</pre>
 </div>
 
-Before we send the orders that the margin call model produces, we notify your algorithm through the OnMarginCall event handler. This notification gives your algorithm a chance to liquidate some positions or modify the margin call orders. The event handler receives a list of SubmitOrderRequest objects that represent the orders.
-
-<div class="section-example-container">
+Before we send the orders that the margin call model produces, we notify your algorithm through the OnMarginCall event handler. This notification gives your algorithm a chance to liquidate some positions or modify the margin call orders. To modify the orders, adjust the list of SubmitOrderRequest objects the event handler receives.<br><div class="section-example-container">
 	<pre class="csharp">public override void OnMarginCall(List<submitorderrequest> requests)
     foreach (var order in requests.ToList())
     {
@@ -30,5 +28,3 @@ Before we send the orders that the margin call model produces, we notify your al
         requests.append(SubmitOrderRequest(order.OrderType, order.SecurityType, order.Symbol, newQuantity, order.StopPrice, order.LimitPrice, self.Time, "OnMarginCall"))
 </pre>
 </div>
-
-
