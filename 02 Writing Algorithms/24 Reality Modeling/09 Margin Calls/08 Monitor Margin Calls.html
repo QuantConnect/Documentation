@@ -24,10 +24,10 @@ Before we send the orders that the margin call model produces, we notify your al
     }</submitorderrequest></pre>
 	<pre class="python">def OnMarginCall(self, requests):
     for order in requests:
-    # liquidate an extra 10% each time we get a margin call to give us more padding
-    newQuantity = int(np.sign(order.Quantity) * order.Quantity * 1.1)
-    requests.remove(order)
-    requests.append(SubmitOrderRequest(order.OrderType, order.SecurityType, order.Symbol, newQuantity, order.StopPrice, order.LimitPrice, self.Time, "OnMarginCall"))
+        # liquidate an extra 10% each time we get a margin call to give us more padding
+        newQuantity = int(np.sign(order.Quantity) * order.Quantity * 1.1)
+        requests.remove(order)
+        requests.append(SubmitOrderRequest(order.OrderType, order.SecurityType, order.Symbol, newQuantity, order.StopPrice, order.LimitPrice, self.Time, "OnMarginCall"))
 </pre>
 </div>
 
