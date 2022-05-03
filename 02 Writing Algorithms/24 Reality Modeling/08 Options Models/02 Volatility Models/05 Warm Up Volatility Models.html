@@ -1,8 +1,46 @@
-<div>What/Why?<br></div><div>- You need to warm up the volatility model on the underlying security in order for the option price model to accurately calculate the IV, Greeks, and theoretical pricing values.</div><p><br></p><p>How?<br></p><p>- If you add all options with AddOption, set a warm up period to warm up the volaility models. The duration of the warm up period should be at least as long as the data the volatility model needs to compute values. <br></p><div>
+<div>What/Why?<br></div><div>- You need to warm up the volatility model on the underlying security in order for the option price model to accurately calculate the IV, Greeks, and theoretical pricing values.</div><p><br></p><p>How?<br></p><p>- If you add all options with AddOption, set a warm up period to warm up the volaility models. The duration of the warm up period should be at least as long as the data the volatility model needs to compute values. <br></p>
 
 <div class="section-example-container">
     <pre class="csharp">// In Initialize
 SetWarmUp(30, Resolution.Daily);<br><br>// In OnData<br>if (IsWarmingUp) return;<br></pre>
     <pre class="python"># In Initialize
 self.SetWarmUp(30, Resolution.Daily)<br><br># In OnData<br>if self.IsWarmingUp:<br>    return<br></pre>
-</div></div>
+</div>
+
+- If you have a dynamic universe of underlying assets and add Option contracts to your algorithm with AddOptionContract, you need to warm up the volatility model when the underlying asset enters your universe. You can warm up the underlying volatility model in the security initializer
+
+
+<div class="section-example-container">
+<pre class="csharp" style="">// In Initialize
+SetSecurityInitializer(CustomSecurityInitializer);
+AddEquity("SPY");
+
+private void CustomSecurityInitializer(Security security)
+{
+    if (security.Type == SecurityType.Equity)
+    {
+        security.VolatilityModel = new StandardDeviationOfReturnsVolatilityModel(30);
+        var history = History&lt;TradeBar&gt;(security.Symbol, 30, Resolution.Daily);
+        foreach (var tradeBar in history)
+        {
+            security.VolatilityModel.Update(security. tradeBar);
+        }
+    }
+}
+</pre>
+<pre class="python"># In Initialize
+self.SetSecurityInitializer(self.CustomSecurityInitializer)
+AddEquity("SPY")
+
+def CustomSecurityInitializer(self, security):
+    if security.Type == SecurityType.Equity:
+        security.VolatilityModel = StandardDeviationOfReturnsVolatilityModel(30)
+        history = self.History(security.Symbol, 30, Resolution.Daily)
+        if history.empty or 'close' not in history.columns:
+            return
+
+        for time, row in history.loc[security.Symbol].iterrows():
+            trade_bar = TradeBar(time, security.Symbol, row.open, row.high, row.low, row.close, row.volume)    
+            security.VolatilityModel.Update(security, trade_bar)  
+</pre>
+</div>
