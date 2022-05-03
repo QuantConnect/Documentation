@@ -1,1 +1,8 @@
+<div>What/Why?<br></div><div>- You need to warm up the volatility model on the underlying security in order for the option price model to accurately calculate the IV, Greeks, and theoretical pricing values.</div><p><br></p><p>How?<br></p><p>- If you add all options with AddOption, set a warm up period to warm up the volaility models. The duration of the warm up period should be at least as long as the data the volatility model needs to compute values. <br></p><div>
 
+<div class="section-example-container">
+    <pre class="csharp">// In Initialize
+SetWarmUp(30, Resolution.Daily);<br><br>// In OnData<br>if (IsWarmingUp) return;<br></pre>
+    <pre class="python"># In Initialize
+self.SetWarmUp(30, Resolution.Daily)<br><br># In OnData<br>if self.IsWarmingUp:<br>    return<br></pre>
+</div></div>
