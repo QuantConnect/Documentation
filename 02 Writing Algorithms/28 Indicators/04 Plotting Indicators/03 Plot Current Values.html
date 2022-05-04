@@ -1,26 +1,23 @@
 <p>
 To plot the current value of indicators, call the <code>Plot</code> method. The method accepts up to 4 indicators.
 </p>
-<div class="section-example-container">
-	<pre class="csharp">Plot(string chart, Indicator[] indicators)</pre>
-	<pre class="python">self.Plot(string chart, Indicator[] indicators)</pre>
-</div>
-<p>
-    Note that not all indicators share the same base type(T) so may not work together as some indicators require points where others require TradeBars.  
-</p>
-<div class="section-example-container">
-	<pre class="csharp">//Plot array of indicator objects; extending "Indicator" type.
-Plot("Indicators", sma, rsi); 
 
-//Plot array of indicator objects; extending "TradeBarIndicator" type.
-Plot("Indicators", atr, aroon); 
-</pre>
-	<pre class="python">#Plot array of indicator objects; extending "Indicator" type.
-self.Plot("Indicators", sma, rsi); 
 
-#Plot array of indicator objects; extending "TradeBarIndicator" type.
-self.Plot("Indicators", atr, aroon); 
-</pre>
+<div class="section-example-container">
+    <pre class="csharp">// In Initialize
+var symbol = AddEquity("SPY");
+var smaShort = SMA(symbol, 10);
+var smaLong = SMA(symbol, 20);
+
+// In OnData
+Plot("&lt;chartName&gt;", smaShort, smaLong)</pre>
+    <pre class="python"># In Initialize
+symbol = self.AddEquity("SPY")
+sma_short = self.SMA(symbol, 10)
+sma_long = self.SMA(symbol, 20)
+
+# In OnData
+self.PlotIndicator("&lt;chartName&gt;", sma_short, sma_long)</pre>
 </div>
 
 <p>For more information about the charting API, see <a href="/docs/v2/writing-algorithms/charting">Charting</a>.</p>
