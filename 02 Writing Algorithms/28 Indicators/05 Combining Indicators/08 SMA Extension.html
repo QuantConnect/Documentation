@@ -3,3 +3,33 @@
 						var rsiAvg = rsi.SMA(10);
 					</div>
 								<small>Of extension helper for SMA method.</small>
+
+
+<div class="section-example-container">
+<pre class="csharp">public class IndicatorTests : QCAlgorithm
+{
+    //Save off reference to indicator objects
+    RelativeStrengthIndex _rsi;
+    SimpleMovingAverage _rsiSMA;
+
+    public override void Initialize()
+    {
+       //In addition to other initialize logic:
+       _rsi = RSI("SPY", 14); // Creating a RSI
+       _rsiSMA = _rsi.SMA(3); // Creating the SMA on the RSI
+    }
+    
+    public override void OnData(Slice data)
+    {
+       Plot("RSI", _rsi, _rsiSMA);
+    }
+}
+</pre>
+<pre class="python">class IndicatorTests(QCAlgorithm):
+    def Initialize():
+       # In addition to other initialize logic:
+       self.rsi = self.RSI("SPY", 14)                     # Creating a RSI
+       self.rsiSMA = IndicatorExtensions.SMA(self.rsi, 3) # Creating the SMA on the RSI
+       self.PlotIndicator("RSI", self.rsi, self.rsiSMA)
+</pre>
+</div>
