@@ -21,26 +21,26 @@ if not history.empty:
 </div>
 
 <h4>Algorithm Warm Up</h4>
-If you create indicators at the beginning of your algorithm and register them for automatic updates, you can set a <a href="/docs/v2/writing-algorithms/historical-data/warm-up-periods">algorithm  warm up period</a> to warm up the indicators.
+If you create indicators at the beginning of your algorithm, you can set a <a href="/docs/v2/writing-algorithms/historical-data/warm-up-periods">algorithm  warm up period</a> to warm up the indicators.
 
 <div class="section-example-container">
     <pre class="csharp">private SimpleMovingAverage _sma;
 
 // In Initialize
-var symbol = AddEquity("SPY").Symbol;
+var symbol = AddEquity("SPY", Resolution.Daily).Symbol;
 _sma = SimpleMovingAverage(20);
-SetWarmUp(20, Resolution.Daily);
+SetWarmUp(20);
 
-// In OnData<br>_sma.Update(data["SPY"]);
+// In OnData<br>_sma.Update(data["SPY"]); // Delete this line if you registered the indicator for automatic updates
 if (IsWarmingUp) {
     return;
 }</pre>
     <pre class="python"># In Initialize
-symbol = self.AddEquity("SPY").Symbol
-self.sma = self.SMA(symbol, 20, Resolution.Daily)
-self.SetWarmUp(20, Resolution.Daily)
+symbol = self.AddEquity("SPY", Resolution.Daily).Symbol
+self.sma = SimpleMovingAverage(20)
+self.SetWarmUp(20)
 
-# In OnData<br>self.sma.Update(data["SPY"])
+# In OnData<br>self.sma.Update(data["SPY"]) # Delete this line if you registered the indicator for automatic updates
 if self.IsWarmingUp:
     return</pre>
 </div>
