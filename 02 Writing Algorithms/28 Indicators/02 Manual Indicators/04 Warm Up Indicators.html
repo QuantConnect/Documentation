@@ -1,5 +1,25 @@
 Indicators compute their value based on historical data. Before you start trading with an indicator, warm it up. There are several ways to warm up automatic indicators.
 
+<h4>Manual Indicator Warm Up</h4>If you access to the QCAlgorithm object, you can manually warm up indicators with a history request. 
+
+<div class="section-example-container">
+    <pre class="csharp">private SimpleMovingAverage _sma;
+
+_sma = SimpleMovingAverage(20);
+var history = algorithm.History(symbol, 20, Resolution.Daily);
+foreach (var bar in history)
+{
+    sma.Update(bar.Time, bar.Close);
+}
+</pre>
+    <pre class="python">self.sma = SimpleMovingAverage(20)
+history = algorithm.History(symbol, 20, Resolution.Daily)
+if not history.empty:
+    for time, row in history.loc[symbol].iterrows():
+        self.sma.Update(time, row.close)
+</pre>
+</div>
+
 <h4>Algorithm Warm Up</h4>
 If you create indicators at the beginning of your algorithm, you can set a <a href="/docs/v2/writing-algorithms/historical-data/warm-up-periods">algorithm  warm up period</a> to warm up the indicators.
 
@@ -23,32 +43,4 @@ self.SetWarmUp(20, Resolution.Daily)
 # In OnData<br>self.sma.Update(data["SPY"])
 if self.IsWarmingUp:
     return</pre>
-</div>
-
-<h4>Manual Indicator Warm Up</h4>
-
-You can manually warm up indicators with a history request. 
-
-<div class="section-example-container">
-    <pre class="csharp">private SimpleMovingAverage _sma;
-
-// In Initialize
-var symbol = AddEquity("SPY").Symbol;
-_sma = SMA(symbol, 20, Resolution.Daily);
-
-var history = History(symbol, 20, Resolution.Daily);
-foreach (var bar in history)
-{
-    sma.Update(bar.Time, bar.Close);
-}
-</pre>
-    <pre class="python"># In Initialize
-symbol = self.AddEquity("SPY").Symbol
-self.sma = self.SMA(symbol, 20, Resolution.Daily)
-
-history = self.History(symbol, 20, Resolution.Daily)
-if not history.empty:
-    for time, row in history.loc[symbol].iterrows():
-        self.sma.Update(time, row.close)
-</pre>
 </div>
