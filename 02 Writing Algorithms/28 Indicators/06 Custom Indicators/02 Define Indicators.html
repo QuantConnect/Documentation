@@ -1,1 +1,20 @@
+Python indicators subsclass the PythonIndicator class.
 
+<div class="section-example-container">
+    <pre class="csharp"></pre>
+    <pre class="python">class CustomSimpleMovingAverage(PythonIndicator):
+    def __init__(self, name, period):
+        self.Name = name
+        self.Time = datetime.min
+        self.Value = 0
+        self.queue = deque(maxlen=period)
+
+
+    # Update method is mandatory
+    def Update(self, input):
+        self.queue.appendleft(input.Close)
+        count = len(self.queue)
+        self.Time = input.EndTime
+        self.Value = sum(self.queue) / count
+        return count == self.queue.maxlen</pre>
+</div>
