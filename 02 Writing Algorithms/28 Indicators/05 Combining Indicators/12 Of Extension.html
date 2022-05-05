@@ -1,29 +1,7 @@
-#
-
-<div class="indicators-method-usage">var rsi = RSI("SPY", 10);</div><div class="indicators-method-usage">
-					var sma = new SimpleMovingAverage(14); <br></div><div class="indicators-method-usage">
-						 var rsiAverage= IndicatorExtensions.Of( sma, rsi );
-					</div>
-								<div><small>Feed an indicator output into input of another.</small></div><div><small><br></small></div><p>The first argument of the <code>IndicatorExtensions.Of</code> method must be an unregistered indicator. If you pass a registered indicator as the argument, that first indicator is updated twice. The first update is from the registered security and the second update is from the <code>IndicatorExtensions</code> class. To see how to create unregistered indicators, open the <a href="/docs/v2/writing-algorithms/indicators/indicator-reference">Indicator Reference</a>, click an indicator, and scroll down to the <span class="page-section-name">Manual Usage</span> section. The following example demonstrates how to create an unregistered <code>SimpleMovingAverage</code> indicator:<br></p>
+<p>The <code>Of</code> extension feeds an indicator's <code>.Current.Value</code> into the input of another indicator. The first argument of the <code>IndicatorExtensions.Of</code> method must be an unregistered indicator. If you pass a registered indicator as the argument, that first indicator is updated twice. The first update is from the registered security and the second update is from the <code>IndicatorExtensions</code> class. To see how to create unregistered indicators, open the <a href="/docs/v2/writing-algorithms/indicators/indicator-reference">Indicator Reference</a>, click an indicator, and scroll down to the <span class="page-section-name">Manual Usage</span> section. The following example demonstrates how to create an unregistered <code>SimpleMovingAverage</code> indicator:<br></p>
 <div class="section-example-container">
-<pre class="csharp">public class IndicatorTests : QCAlgorithm
-{
-    private Symbol _symbol;
-    private RelativeStrengthIndex _rsi;
-    private SimpleMovingAverage _rsiSMA;
-
-    public override void Initialize()
-    {
-        _symbol = AddEquity("SPY", Resolution.Daily).Symbol;
-        _rsi = RSI(_symbol, 14);
-        _rsiSMA = IndicatorExtensions.Of(new SimpleMovingAverage(10), _rsi);
-    }
-}
-</pre>
-<pre class="python">class IndicatorTests(QCAlgorithm):
-    def Initialize():
-       self.symbol = self.AddEquity("SPY", Resolution.Daily).Symbol
-       rsi = self.RSI(self.symbol, 14)
-       self.rsi_sma = IndicatorExtensions.Of(SimpleMovingAverage(10), rsi)
-</pre>
+<pre class="csharp">var rsi = RSI("SPY", 14);
+var rsiSMA = IndicatorExtensions.Of(new SimpleMovingAverage(10), rsi);</pre>
+<pre class="python">rsi = self.RSI("SPY", 14)
+self.rsi_sma = IndicatorExtensions.Of(SimpleMovingAverage(10), rsi)</pre>
 </div>
