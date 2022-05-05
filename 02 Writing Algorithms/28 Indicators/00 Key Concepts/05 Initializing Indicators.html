@@ -1,59 +1,15 @@
-<p>
-	You can use two methods to prime technical indicators and get them ready to be used.
-</p>
-<h4>Algorithm Warm-Up</h4>
-<p>
-	When we set an algorithm warm-up period, the engine pumps data in and automatically update all the indicators from before the start date (see <a class="docs-internal-link" href="/docs/algorithm-reference/historical-data">Setting Warm Up Period</a>).
-	To ensure that all the indicators are ready after the algorithm warm-up period, you need to choose a lookback period that contains the required data.
-</p>
+There are two ways to create indicators. You can create indicators with the indicator constructor or use a helper method in the QCAlgorithm class. If you use the helper method, the indicator is automatically registered for updates as new data arrives to your algorithm.
 <div class="section-example-container">
-	<pre class="python">def Initialize(self):
-    self.AddEquity("SPY", Resolution.Hour)
-    # define a 10-period daily RSI indicator with shortcut helper method
-    self.rsi = self.RSI("SPY", 10,  MovingAverageType.Simple, Resolution.Daily)
-    # set a warm-up period to initialize the indicator
-    self.SetWarmUp(timedelta(20))
-    # Warm-up the indicator with bar count
-    # self.SetWarmUp(10, Resolution.Daily)
-</pre>
-	<pre class="csharp fsharp">public override void Initialize()
-{
-	AddEquity(_symbol, Resolution.Hour);
-    // define a 10-period daily RSI indicator with shortcut helper method
-    _rsi = RSI(_symbol, 10,  MovingAverageType.Simple, Resolution.Daily);
-    // set a warm-up period to initialize the indicator
-    SetWarmUp(TimeSpan.FromDays(20));
-    // Or warm up the indicator with bar count
-    // SetWarmUp(10, Resolution.Daily)
-}
-</pre>
-</div>
+    <pre class="csharp">// Create a manual indicator with the indicator constructor
+var manualSMA = SimpleMovingAverage(20, Resolution.Daily);
 
+// Create an automatic indicator with the helper method
+var symbol = AddCrypto("BTCUSD");
+var autoSMA = SMA(symbol, 20, Resolution.Daily);</pre>
+    <pre class="python"># Create a manual indicator with the indicator constructor
+self.manual_sma = SimpleMovingAverage(20, Resolution.Daily)
 
-<h4>History Request Warm-Up</h4>
-<p>
-	Alternatively, we can request for historical data to update the indicator manually (see <a class="docs-internal-link" href="docs/algorithm-reference/historical-data#Historical-Data-Historical-Data-Requests">Historical Data Requests</a>).
-</p>
-<div class="section-example-container">
-	<pre class="python">def Initialize(self):
-    self.AddEquity("SPY", Resolution.Hour)
-    # define a 10-period daily RSI indicator with shortcut helper method
-    self.rsi = self.RSI("SPY", 10,  MovingAverageType.Simple, Resolution.Daily)
-    # initialize the indicator with the daily history close price
-    history = self.History(["SPY"], 10, Resolution.Daily)
-        for time, row in history.loc["SPY"].iterrows():
-            self.rsi.Update(time, row["close"])
-
-</pre>
-	<pre class="csharp fsharp">public override void Initialize() {
-    AddEquity(_symbol, Resolution.Hour);
-    // define a 10-period daily RSI indicator with shortcut helper method
-    _rsi = RSI(_symbol, 10,  MovingAverageType.Simple, Resolution.Daily);
-    // initialize the indicator with the daily history close price
-    var history = History(_symbol, 10, Resolution.Daily);
-    foreach (var bar in history) {
-        _rsi.Update(bar.EndTime, bar.Close);
-    }
-}
-</pre>
+# Create an automatic indicator with the helper method
+symbol = self.AddCrypto("BTCUSD");
+auto_sma = self.SMA(symbol, 20, Resolution.Daily)</pre>
 </div>
