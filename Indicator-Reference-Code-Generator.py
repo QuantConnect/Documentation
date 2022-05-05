@@ -12,6 +12,18 @@ raw = urlopen("https://www.quantconnect.com/services/inspector?type=T:QuantConne
     .replace("null", "None")
 raw_dict = eval(raw)
 methods = raw_dict["methods"]
+methods = [method for method in methods if 'QuantConnect.Indicators' in str(method["method-return-type-full-name"]) \
+    and str(method["method-return-type-short-name"]) != 'IndicatorBase<IndicatorDataPoint>']
+
+raw_candle = urlopen("https://www.quantconnect.com/services/inspector?type=T:QuantConnect.Algorithm.CandlestickPatterns").read().decode("utf-8") \
+    .replace("true", "True") \
+    .replace("false", "False") \
+    .replace("null", "None")
+raw_candle_dict = eval(raw_candle)
+methods_candle = raw_candle_dict["methods"]
+candle = [str(method["method-return-type-short-name"]) for method in methods_candle]
+
+methods += methods_candle
 
 names = {}
 descriptions = {}
@@ -26,67 +38,85 @@ if os.path.isdir(root):
     shutil.rmtree(root)
 
 for method in methods:
-    if 'QuantConnect.Indicators' in str(method["method-return-type-full-name"]) \
-    and str(method["method-return-type-short-name"]) != 'IndicatorBase<IndicatorDataPoint>':
-        item = str(method["method-return-type-short-name"])
-        names[item] = str(method["method-name"])
-        args[item] = tuple(x["argument-name"] for x in method["method-arguments"] if not x["argument-optional"])
-        plots[item] = []
-        
+    item = str(method["method-return-type-short-name"])
+    names[item] = str(method["method-name"])
+    args[item] = tuple(x["argument-name"] for x in method["method-arguments"] if not x["argument-optional"])
+    plots[item] = []
+    
+    if item not in candle:
         ind = urlopen(f"https://www.quantconnect.com/services/inspector?type=T:QuantConnect.Indicators.{item}").read().decode("utf-8") \
-                .replace("true", "True") \
-                .replace("false", "False") \
-                .replace("null", "None")
+            .replace("true", "True") \
+            .replace("false", "False") \
+            .replace("null", "None")
         ind_dict = eval(ind)
-        
+
         detail_description = str(ind_dict['description']).replace("Represents", "This indicator represents")
         if "Source: " in detail_description:
             link_split = detail_description.split("http")
             detail_description = link_split[0].replace("Source: ", f'<sup><a href="https{link_split[1]}">source</a></sup>')
-        descriptions[item] = detail_description
+
+    else:
+        ind = urlopen(f"https://www.quantconnect.com/services/inspector?type=T:QuantConnect.Indicators.CandlestickPatterns.{item}").read().decode("utf-8") \
+            .replace("true", "True") \
+            .replace("false", "False") \
+            .replace("null", "None")
+        ind_dict = eval(ind)
+
+        detail_description = f"Create a new {ind_dict['description']} to indicate the pattern's presence."
+
+    descriptions[item] = detail_description
+    
+    for prop in ind_dict["properties"]:
+        prop_name = str(prop["property-name"])
+        if "MovingAverageType" not in prop_name\
+        and "IsReady" not in prop_name\
+        and "WarmUpPeriod" not in prop_name\
+        and "Name" not in prop_name\
+        and "Samples" not in prop_name:
+            plots[item].append(prop_name)
+            
+    while True:
+        if "QuantConnect.Indicators.Indicator" in ind_dict["base-type-full-name"]:
+            updates[item] = (0, tuple(("data[symbol].EndTime", "data[symbol].High")))
+            update_value[item] = "time/decimal pair"
+            break
         
-        for prop in ind_dict["properties"]:
-            prop_name = str(prop["property-name"])
-            if "MovingAverageType" not in prop_name\
-            and "IsReady" not in prop_name\
-            and "WarmUpPeriod" not in prop_name\
-            and "Name" not in prop_name\
-            and "Samples" not in prop_name:
-                plots[item].append(prop_name)
-                
-        while True:
-            if "QuantConnect.Indicators.Indicator" in ind_dict["base-type-full-name"]:
-                updates[item] = (0, tuple(("data[symbol].EndTime", "data[symbol].High")))
-                update_value[item] = "time/decimal pair"
-                break
-            
-            elif "QuantConnect.Indicators.BarIndicator" in ind_dict["base-type-full-name"]:
-                updates[item] = (1, tuple(("data.QuoteBars[symbol]",)))
-                update_value[item] = "a <code>TradeBar</code>, <code>QuoteBar</code>, or an <code>IndicatorDataPoint</code>"
-                break
-            
-            elif "QuantConnect.Indicators.TradeBarIndicator" in ind_dict["base-type-full-name"]:
-                updates[item] = (2, tuple(("data.Bars[symbol]",)))
-                update_value[item] = "a <code>TradeBar</code>"
-                break
-            
-            else:
-                end = ind_dict["base-type-full-name"].split(".")[-1]
-                ind = urlopen(f"https://www.quantconnect.com/services/inspector?type=T:QuantConnect.Indicators.{end}").read().decode("utf-8") \
-                        .replace("true", "True") \
-                        .replace("false", "False") \
-                        .replace("null", "None")
-                ind_dict = eval(ind)
+        elif "QuantConnect.Indicators.BarIndicator" in ind_dict["base-type-full-name"]:
+            updates[item] = (1, tuple(("data.QuoteBars[symbol]",)))
+            update_value[item] = "a <code>TradeBar</code>, <code>QuoteBar</code>, or an <code>IndicatorDataPoint</code>"
+            break
         
-i = 1
+        elif "QuantConnect.Indicators.TradeBarIndicator" in ind_dict["base-type-full-name"]\
+            or "QuantConnect.Indicators.CandlestickPatterns.CandlestickPattern" in ind_dict["base-type-full-name"]:
+            updates[item] = (2, tuple(("data.Bars[symbol]",)))
+            update_value[item] = "a <code>TradeBar</code>"
+            break
+        
+        else:
+            end = ind_dict["base-type-full-name"].split(".")[-1]
+            ind = urlopen(f"https://www.quantconnect.com/services/inspector?type=T:QuantConnect.Indicators.{end}").read().decode("utf-8") \
+                    .replace("true", "True") \
+                    .replace("false", "False") \
+                    .replace("null", "None")
+            ind_dict = eval(ind)
+
+i = 0
+k = 0
 
 for full, short in dict(sorted(names.items())).items():
     name = " ".join(re.findall('[a-zA-Z][^A-Z]*', full))
-    base = f"{root}/{i:02} {name}"
+   
+    if full not in candle:
+        i += 1
+        base = f"{root}/{i:02} {name}"
+        source_link = f"https://raw.githubusercontent.com/QuantConnect/Lean/master/Indicators/{'Stochastics' if full == 'Stochastic' else 'Momersion' if full == 'MomersionIndicator' else full}.cs"
+    else:
+        k += 1
+        base = f"{root}/00 Candlestick Pattern/{k:02} {name}"
+        source_link = f"https://raw.githubusercontent.com/QuantConnect/Lean/master/Indicators/CandlestickPatterns/{full}.cs"
+
     destination_folder = pathlib.Path(base)
     destination_folder.mkdir(parents=True, exist_ok=True)
-    
-    source_link = f"https://raw.githubusercontent.com/QuantConnect/Lean/master/Indicators/{'Stochastics' if full == 'Stochastic' else 'Momersion' if full == 'MomersionIndicator' else full}.cs"
     source = urlopen(source_link).read().decode("utf-8")
     lines = source.split("\n")
     
@@ -147,7 +177,7 @@ for full, short in dict(sorted(names.items())).items():
                 temp["args"] = {}
                 
             else: 
-                for x in [k.split(" ") for k in constructor_args]:
+                for x in [a.split(" ") for a in constructor_args]:
                     if "=" in x:
                         ind = x.index("=")
                         temp["args"][f"*{''.join(x[:(ind-1)])}"] = x[ind - 1]
@@ -188,9 +218,10 @@ for full, short in dict(sorted(names.items())).items():
                 
             if not active and f'<a id="{short}-header"></a>' in line:
                 active = True
-        
-    with open(destination_folder / "02 Automatic Usage.html", "w", encoding="utf-8") as html_file:
-        html_file.write(f"""<!-- Code generated by Indicator-Reference-Code-Generator.py -->
+    
+    if full not in candle:
+        with open(destination_folder / "02 Automatic Usage.html", "w", encoding="utf-8") as html_file:
+            html_file.write(f"""<!-- Code generated by Indicator-Reference-Code-Generator.py -->
                         
 <style>
 
@@ -388,7 +419,7 @@ function ShowHide(event, idName) {{
 }};
 </script>
 
-<p>You can create an <code>{full}</code> indicator that does not automatically update. This lets you update the indicator with any data you choose. The following reference table describes the <code>{full}</code> constructor.</p>
+<p>You can create an <code>{full}</code> {"indicator that does not automatically update. This lets you update the indicator with any data you choose." if full not in candle else "Candlestick Pattern indicator that requires manual update"} The following reference table describes the <code>{full}</code> constructor.</p>
 
 <div class="method-container">
 """)
@@ -460,7 +491,9 @@ function ShowHide(event, idName) {{
 <p>Create a consolidator and then call the <code>RegisterIndicator</code> method to update the indicator with the consolidated bars.</p>
         
 <div class="section-example-container">
-    <pre class="csharp">private {full} _{short.lower()};
+    <pre class="csharp">{"using QuantConnect.Indicators.CandlestickPatterns;" if full in candle else ""}
+
+private {full} _{short.lower()};
 
 // In Initialize()
 _{short.lower()} = new {full}{str(tuple(x for x, y in full_apis[full][index_min]["param"].items() if "Optional" not in y)[::-1]).replace("'", "").replace('"', '').replace(',)', ')')};
@@ -477,7 +510,9 @@ if (_{short.lower()}.IsReady)
 {{
     var indicatorValue = _{short.lower()}.Current.Value;
 }}</pre>
-    <pre class="python"># In Initialize()
+    <pre class="python">{"from QuantConnect.Indicators.CandlestickPatterns import " + full if full in candle else ""}
+    
+# In Initialize()
 self.{short.lower()} = {full}{str(tuple(x for x, y in full_apis[full][index_min]["param"].items() if "Optional" not in y)[::-1]).replace("'", "").replace('"', '').replace(',)', ')')}
 self.{short.lower()}.Updated += self.IndicatorUpdateMethod
 
@@ -496,11 +531,13 @@ if self.{short.lower()}.IsReady:
 <p>Updating your indicator manually enables you to control when the indicator is updated and what data you use to update it. To manually update the indicator, call the <code>Update</code> method that with {update_value[full]}. The indicator will only be ready after you prime it with enough data.</p>
 
 <div class="section-example-container">
-    <pre class="csharp">private {full} _{short.lower()};
+    <pre class="csharp">{"using QuantConnect.Indicators.CandlestickPatterns;" if full in candle else ""}
+    
+private {full} _{short.lower()};
 {'private Symbol symbol;' if 'symbol' in args[full] else 'private List&lt;Symbol&gt; symbols;' if 'symbols' in args[full] else ''}
 
 // In Initialize()
-_{short.lower()} = new {full}{str(tuple(x for x, y in full_apis[full][index_min]["param"].items() if "Optional" not in y)[::-1]).replace("'", "").replace('"', '').replace(',)', ')')};
+_{short.lower()} = new {full}{str(tuple(x for x, y in full_apis[full][index_min]["param"].items() if "Optional" not in y)[::-1]).replace("'", "").replace('"', '').replace(',)', ')').replace('name, ', '').replace('name', '')};
 {'symbol = AddEquity("SPY").Symbol;' if 'symbol' in args[full] else 'symbols = new List&lt;Symbol&gt; {AddEquity("SPY").Symbol, AddEquity("QQQ").Symbol};' if 'symbols' in args[full] else ''}
 
 // In OnData()
@@ -512,8 +549,10 @@ if (_{short.lower()}.IsReady)
 {{
     var indicatorValue = _{short.lower()}.Current.Value;
 }}</pre>
-    <pre class="python"># In Initialize()
-self.{short.lower()} = {full}{str(tuple(x for x, y in full_apis[full][index_min]["param"].items() if "Optional" not in y)[::-1]).replace("'", "").replace('"', '').replace(',)', ')')}
+    <pre class="python">{"from QuantConnect.Indicators.CandlestickPatterns import " + full if full in candle else ""}
+    
+# In Initialize()
+self.{short.lower()} = {full}{str(tuple(x for x, y in full_apis[full][index_min]["param"].items() if "Optional" not in y)[::-1]).replace("'", "").replace('"', '').replace(',)', ')').replace('name, ', '').replace('name', '')}
 {'self.symbol = self.AddEquity("SPY").Symbol' if 'symbol' in args[full] else 'self.symbols = [self.AddEquity("SPY").Symbol, self.AddEquity("QQQ").Symbol]' if 'symbols' in args[full] else ''}
 
 # In OnData()
@@ -535,7 +574,7 @@ if self.{short.lower()}.IsReady:
 
 // In Initialize()
 {'var symbol = AddEquity("SPY").Symbol;' if 'symbol' in args[full] else 'var symbols = new[] {AddEquity("SPY").Symbol, AddEquity("QQQ").Symbol};' if 'symbols' in args[full] else ''}
-_{short.lower()} = {short}{str(args[full]).replace("'", "").replace('"', '').replace(',)', ')')};
+_{short.lower()} = {short}{str(args[full]).replace("'", "").replace('"', '').replace(',)', ')').replace('name, ', '').replace('name', '')};
 
 // In OnData()
 if (_{short.lower()}.IsReady)
@@ -549,7 +588,7 @@ if (_{short.lower()}.IsReady)
             html_file.write(f"""}}</pre>
     <pre class="python"># In Initialize()
 {'symbol = self.AddEquity("SPY").Symbol' if 'symbol' in args[full] else 'symbols = [self.AddEquity("SPY").Symbol, self.AddEquity("QQQ").Symbol]' if 'symbols' in args[full] else ''}
-self.{short.lower()} = self.{short}{str(args[full]).replace("'", "").replace('"', '').replace(',)', ')')}
+self.{short.lower()} = self.{short}{str(args[full]).replace("'", "").replace('"', '').replace(',)', ')').replace('name, ', '').replace('name', '')}
 
 # In OnData()
 if self.{short.lower()}.IsReady:
@@ -568,5 +607,3 @@ if self.{short.lower()}.IsReady:
             
     else:
         print(f"Image is not found for {short}, no visualization page is generated.")
-        
-    i += 1
