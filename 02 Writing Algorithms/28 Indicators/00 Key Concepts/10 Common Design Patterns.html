@@ -14,18 +14,24 @@ If your algorithm has multiple assets or a dynamic universe of assets, abstract 
 	<pre class="python">class SymbolData:
     def __init__(self, algorithm, symbol):
         self.algorithm = algorithm
-        self.symbol = symbol
+	self.symbol = symbol
 
         # Create an indicator
         self.sma = SimpleMovingAverage(20)
 
         # Create a consolidator to update the indicator
-        #self.consolidator = 
+        self.consolidator = TradeBarConsolidator(1) 
+        self.consolidator.DataConsolidated += self.consolidation_handler
 
         # Register the consolidator to update the indicator
-        #self.algorithm.SubscriptionManager.AddConsolidator(   )         
+        algorithm.SubscriptionManager.AddConsolidator(symbol, self.consolidator)       
 
         # Warm up the indicator
+        algorithm.WarmUpIndicator(symbol, self.sma)
+<br>
+    def consolidation_handler(self, sender, consolidated_bar):
+        self.sma.Update(consolidated_bar.EndTime, consolidated_bar.Close)
+
 
     # If you have a dynamic universe, remove consolidators for the securities removed from the universe
     def dispose(self):
