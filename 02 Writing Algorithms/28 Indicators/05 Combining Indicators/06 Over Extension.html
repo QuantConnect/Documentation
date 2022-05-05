@@ -3,3 +3,28 @@
 					var emaAverage = ema5.Plus(ema10).Over(2);
 				</div>
 							<small>Divide indicator chain by constant or indicator.</small>
+
+The <code>.Over(IIndicator)</code> extension divides the <code>.Current.Value</code> of an indicator by the  <code>.Current.Value</code> of another indicator or a fixed value.<p></p>
+
+<div class="section-example-container">
+<pre class="csharp">// Sum the output of two indicators
+var rsiShort = RSI("SPY", 14);
+var rsiLong = RSI("SPY", 21);
+var rsiDivision = rsiShort.Over(rsiLong);
+
+// Sum the output of an indicator and a fixed value
+var rsiAverage = rsiShort.Plus(rsiLong).Over(2);</pre>
+<pre class="python"># Sum the output of two indicators
+rsi_short = self.RSI("SPY", 14)
+rsi_long = self.RSI("SPY", 21)
+rsi_division = rsiShort.Over(rsi_long)
+
+# Sum the output of an indicator and a fixed value
+rsi_average = rsiShort.Plus(rsi_long).Over(2)</pre>
+</div>
+
+<p>If you pass an indicator to the <code>.Over</code><code>(IIndicator)</code> extension, you can name the composite indicator.</p>
+<div class="section-example-container">
+<pre class="csharp">var namedIndicator = rsiShort.Over(rsiLong, "RSI Division");</pre>
+<pre class="python">named_indicator = rsiShort.Over(rsi_long, "RSI Division")</pre>
+</div>
