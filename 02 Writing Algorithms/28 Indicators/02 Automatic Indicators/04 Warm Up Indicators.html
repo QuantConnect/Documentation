@@ -74,3 +74,35 @@ symbol = self.AddEquity("SPY").Symbol
 self.EnableAutomaticIndicatorWarmUp = True
 self.sma = self.SMA(symbol, 20, Resolution.Daily)</pre>
 </div>
+
+<h4>Warm Up Helper Method</h4>
+
+<p>If an indicator inherits the <code>IIndicatorWarmUpPeriodProvider</code> class, you can warm it up with the <code>WarmUpIndicator</code> method.</p>
+
+
+<div class="section-example-container">
+    <pre class="csharp">_sma = SMA(20);
+WarmUpIndicator(_symbol, _sma);</pre>
+    <pre class="python">self.sma = SMA(20)
+WarmUpIndicator(self.symbol, self.sma)</pre>
+</div>
+
+<p>To warm up the indicator with a resolution that's different from the security resolution, pass a resolution or <code class="csharp">TimeSpan</code><code class="python">timedelta</code> argument to the <code>WarmUpIndicator</code> method. The resolution you provide should be greater than or equity to the security resolution. For example, if the security has minute resolution data, the indicator should be warmed up with minute, hour, or daily resolution data.<br></p>
+<div class="section-example-container">
+    <pre class="csharp">// Warm up with daily bars
+WarmUpIndicator(_symbol, _sma, Resolution.Daily);
+
+// Warm up with 3-day bars
+WarmUpIndicator(_symbol, _sma, TimeSpan.FromDays(3));</pre>
+    <pre class="python"># Warm up with daily bars
+WarmUpIndicator(self.symbol, self.sma, Resolution.Daily)
+
+# Warm up with 3-day bars
+WarmUpIndicator(self.symbol, self.sma, timedelta(days=3))</pre>
+</div>
+
+<p>The <code>WarmUpIndicator</code> method uses the default <code>Value</code> of the historical data to warm up the indicator. In most cases, this is the closing price. To warm up the indicator with a different data field, pass a <code>Field</code> argument to the method.</p>
+<div class="section-example-container">
+    <pre class="csharp">WarmUpIndicator(_symbol, _sma, Resolution.Daily, Field.High);</pre>
+    <pre class="python">WarmUpIndicator(self.symbol, self.sma, Resolution.Daily, Field.High)</pre>
+</div>
