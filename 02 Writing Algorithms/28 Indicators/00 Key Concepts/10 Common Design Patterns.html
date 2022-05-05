@@ -1,1 +1,54 @@
+<br>The location in your algorithm where you create and manage the indicators depends on the number of securities in your algorithm.
 
+<h4>Single-Asset Algorithms</h4>
+
+If you only have one security in your algorithm, you can create an automatic indicator in the Initialize method.
+<br># Example Code snippet 
+
+
+<h4>Multi-Asset Algorithms</h4>
+
+If your algorithm has multiple assets or a dynamic universe of assets, abstract your indicator management logic into a seperate class. 
+
+<div class="section-example-container">
+	<pre class="python">class SymbolData:
+    def __init__(self, algorithm, symbol):
+        self.algorithm = algorithm
+
+        # Create an indicator
+        self.sma = SimpleMovingAverage(20)
+
+        # Create a consolidator to update the indicator
+        #self.consolidator = 
+
+        # Register the consolidator to update the indicator
+        #self.algorithm.SubscriptionManager.AddConsolidator(   )         
+
+        # Warm up the indicator
+
+    # If you have a dynamic universe, remove consolidators for the securities removed from the universe
+    def dispose(self):
+        # Remove the consolidator
+        self.algorithm.SubscriptionManager.RemoveConsolidator(self.consolidator)
+</pre>
+	<pre class="csharp fsharp"></pre>
+</div>
+
+Each time a security is added or removed from your universe, you can create or dispose of the respective SymbolData object.
+
+<div class="section-example-container">
+	<pre class="python">class MyAlgorithm(QCAlgorithm):
+    symbol_data_by_symbol = {}
+
+    def OnSecuritiesChanged(self, changes):
+        for security in changes.AddedSecurities:
+            self.symbol_data_by_symbol[security.Symbol] = SymbolData(self, security.Symbol)
+
+        # If you have a dynamic universe, track removed securities
+        for security in changes.RemovedSecurities:
+            symbol_data = self.symbol_data_by_symbol.pop(security.Symbol, None)
+            if symbol_data:
+                symbol_data.dispose()
+</pre>
+	<pre class="csharp fsharp"></pre>
+</div>
