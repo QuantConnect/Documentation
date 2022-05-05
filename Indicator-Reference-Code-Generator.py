@@ -419,7 +419,7 @@ function ShowHide(event, idName) {{
 }};
 </script>
 
-<p>You can create an <code>{full}</code> {"indicator that does not automatically update. This lets you update the indicator with any data you choose." if full not in candle else "Candlestick Pattern indicator that requires manual update"} The following reference table describes the <code>{full}</code> constructor.</p>
+<p>You can create an <code>{full}</code> {"indicator that does not automatically update. This lets you update the indicator with any data you choose." if full not in candle else "Candlestick Pattern indicator that requires manual update."} The following reference table describes the <code>{full}</code> constructor.</p>
 
 <div class="method-container">
 """)
