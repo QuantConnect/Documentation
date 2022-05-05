@@ -14,6 +14,7 @@ If your algorithm has multiple assets or a dynamic universe of assets, abstract 
 	<pre class="python">class SymbolData:
     def __init__(self, algorithm, symbol):
         self.algorithm = algorithm
+	self.symbol = symbol
 
         # Create an indicator
         self.sma = SimpleMovingAverage(20)
@@ -29,7 +30,7 @@ If your algorithm has multiple assets or a dynamic universe of assets, abstract 
     # If you have a dynamic universe, remove consolidators for the securities removed from the universe
     def dispose(self):
         # Remove the consolidator
-        self.algorithm.SubscriptionManager.RemoveConsolidator(self.consolidator)
+        self.algorithm.SubscriptionManager.RemoveConsolidator(self.symbol, self.consolidator)
 </pre>
 	<pre class="csharp fsharp"></pre>
 </div>
