@@ -1,7 +1,6 @@
 <p>Python indicators subsclass the PythonIndicator class. The indicator must have <code>Name</code>, <code>Time</code>, and <code>Value</code> attributes, and an .<code>Update</code> method. The <code>Update</code> method should accept an <code>IndicatorDataPoint</code>, <code>QuoteBar</code>, or <code>TradeBar</code> and return a boolean that represents if the indicator is ready.</p>
 
-<h4>Data Point Indicators</h4>
-<p>The following definition provides an example of a custom simple moving average indicator that updates with <code>IndicatorDataPoint</code> objects:</p>
+<p>The following definition provides an example of a custom simple moving average indicator:</p>
 
 <div class="section-example-container">
     <pre class="csharp"></pre>
@@ -12,29 +11,10 @@
         self.Value = 0
         self.queue = deque(maxlen=period)
 
-    def Update(self, indicator_data_point):
-        self.queue.appendleft(indicator_data_point.Value)
+    def Update(self, input):
+        self.queue.appendleft(input.Value)
         count = len(self.queue)
-        self.Time = indicator_data_point.Time
-        self.Value = sum(self.queue) / count
-        return count == self.queue.maxlen</pre>
-</div>
-
-<h4>Bar and TradeBar Indicators</h4>
-<p>The following definition provides an example of a custom simple moving average indicator that updates with <code>QuoteBar</code> or <code>TradeBar</code> objects:</p>
-<div class="section-example-container">
-    <pre class="csharp"></pre>
-    <pre class="python">class CustomSimpleMovingAverage(PythonIndicator):
-    def __init__(self, name, period):
-        self.Name = name
-        self.Time = datetime.min
-        self.Current = 0
-        self.queue = deque(maxlen=period)
-
-    def Update(self, bar):
-        self.queue.appendleft(bar.Close)
-        count = len(self.queue)
-        self.Time = bar.EndTime
+        self.Time = input.Time
         self.Value = sum(self.queue) / count
         return count == self.queue.maxlen</pre>
 </div>
