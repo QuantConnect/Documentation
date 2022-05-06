@@ -1,9 +1,43 @@
-<p>Python indicators subsclass the PythonIndicator class. The indicator must have <code>Name</code>, <code>Time</code>, and <code>Value</code> attributes, and an .<code>Update</code> method. The <code>Update</code> method should accept an <code>IndicatorDataPoint</code>, <code>QuoteBar</code>, or <code>TradeBar</code> and return a boolean that represents if the indicator is ready.</p>
+<p class='python'>Custom indicators subsclass the <code>PythonIndicator</code> class. The indicator must have <code>Name</code>, <code>Time</code>, and <code>Value</code> attributes, and an .<code>Update</code> method. The <code>Update</code> method should accept an <code>IndicatorDataPoint</code>, <code>QuoteBar</code>, or <code>TradeBar</code> and return a boolean that represents if the indicator is ready.</p>
+
+<p class='csharp'>Custom indicators subsclass the <code>IndicatorBase&lt;IndicatorDataPoint&gt;</code> class.</p>
 
 <p>The following definition provides an example of a custom simple moving average indicator:</p>
 
 <div class="section-example-container">
-    <pre class="csharp"></pre>
+    <pre class="csharp">public class CustomSimpleMovingAverage : IndicatorBase<IndicatorDataPoint> 
+{
+    public Sum RollingSum;
+
+    public override bool IsReady => RollingSum.IsReady;
+
+    public new long Samples = 0;
+
+    public CustomSimpleMovingAverage(string name, int period) : base(name)
+    {
+        RollingSum = new Sum(name + "_Sum", period);
+    }
+
+    protected override decimal ComputeNextValue(IndicatorDataPoint input)
+    {
+        return default(decimal);
+    }
+    
+    public override bool Update(IBaseData input)
+    {
+        Samples++;
+        RollingSum.Update(input.Time, input.Value);
+        Current = new IndicatorDataPoint(input.Time, RollingSum.Current.Value / RollingSum.WarmUpPeriod);
+        return IsReady;
+    }
+    
+    public override void Reset()
+    {
+        Samples = 0;
+        RollingSum.Reset();
+        Current = new IndicatorDataPoint(DateTime.MinValue, default(decimal));
+    }
+}</pre>
     <pre class="python">class CustomSimpleMovingAverage(PythonIndicator):
     def __init__(self, name, period):
         self.Name = name
