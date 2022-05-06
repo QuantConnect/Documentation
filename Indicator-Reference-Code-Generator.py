@@ -430,8 +430,8 @@ function ShowHide(event, idName) {{
             
             if len(code["args"].items()) > 0:
                 length = max([len(x) for x in code["args"].keys()]) + 2
-                for arg_type, arg_name in code["args"].items():
-                    html_file.write(f"""    &emsp;<code>{arg_type}</code>{" " * (length - len(arg_type))}{arg_name},
+                for e, (arg_type, arg_name) in enumerate(code["args"].items()):
+                    html_file.write(f"""    &emsp;<code>{arg_type}</code>{" " * (length - len(arg_type))}{arg_name}{"," if e != len(code["args"])-1 else ""}
 """)
                 
             html_file.write(f"""   )
