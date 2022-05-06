@@ -1,4 +1,6 @@
-<p>Python indicators subsclass the PythonIndicator class. The indicator should have <code>Name</code>, <code>Time</code>, and <code>Value</code> attributes.</p>
+<p>Python indicators subsclass the PythonIndicator class. The indicator should have <code>Name</code>, <code>Time</code>, and <code>Current</code> attributes. The <code>Update</code> method should accept an <code>IndicatorDataPoint</code>, <code>Bar</code>, or <code>TradeBar</code> and return a boolean that represents if the indicator is ready.</p>
+
+<p>The following definition provides an example of a custom simple moving average indicator that updates with <code>IndicatorDataPoint</code> objects:</p>
 
 <div class="section-example-container">
     <pre class="csharp"></pre>
@@ -6,15 +8,31 @@
     def __init__(self, name, period):
         self.Name = name
         self.Time = datetime.min
-        self.Value = 0
+        self.Current = IndicatorDataPoint(datetime.min, 0)
         self.queue = deque(maxlen=period)
 
-
-    # Update method is mandatory
-    def Update(self, input):
-        self.queue.appendleft(input.Close)
+    def Update(self, indicator_data_point):
+        self.queue.appendleft(indicator_data_point.Value)
         count = len(self.queue)
-        self.Time = input.EndTime
-        self.Value = sum(self.queue) / count
+        self.Time = indicator_data_point.Time
+        self.Current = IndicatorDataPoint(self.Time, sum(self.queue) / count)
+        return count == self.queue.maxlen</pre>
+</div>
+
+<p>The following definition provides an example of a custom simple moving average indicator that updates with <code>IndicatorDataPoint</code> objects:</p>
+<div class="section-example-container">
+    <pre class="csharp"></pre>
+    <pre class="python">class CustomSimpleMovingAverage(PythonIndicator):
+    def __init__(self, name, period):
+        self.Name = name
+        self.Time = datetime.min
+        self.Current = IndicatorDataPoint(datetime.min, 0)
+        self.queue = deque(maxlen=period)
+
+    def Update(self, bar):
+        self.queue.appendleft(bar.Close)
+        count = len(self.queue)
+        self.Time = bar.EndTime
+        self.Current = IndicatorDataPoint(self.Time, sum(self.queue) / count)
         return count == self.queue.maxlen</pre>
 </div>
