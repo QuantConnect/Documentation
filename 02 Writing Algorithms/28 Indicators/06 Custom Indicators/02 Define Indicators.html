@@ -8,14 +8,14 @@
     def __init__(self, name, period):
         self.Name = name
         self.Time = datetime.min
-        self.Current = IndicatorDataPoint(datetime.min, 0)
+        self.Value = 0
         self.queue = deque(maxlen=period)
 
     def Update(self, indicator_data_point):
         self.queue.appendleft(indicator_data_point.Value)
         count = len(self.queue)
         self.Time = indicator_data_point.Time
-        self.Current = IndicatorDataPoint(self.Time, sum(self.queue) / count)
+        self.Value = sum(self.queue) / count
         return count == self.queue.maxlen</pre>
 </div>
 
@@ -26,13 +26,13 @@
     def __init__(self, name, period):
         self.Name = name
         self.Time = datetime.min
-        self.Current = IndicatorDataPoint(datetime.min, 0)
+        self.Current = 0
         self.queue = deque(maxlen=period)
 
     def Update(self, bar):
         self.queue.appendleft(bar.Close)
         count = len(self.queue)
         self.Time = bar.EndTime
-        self.Current = IndicatorDataPoint(self.Time, sum(self.queue) / count)
+        self.Value = sum(self.queue) / count
         return count == self.queue.maxlen</pre>
 </div>
