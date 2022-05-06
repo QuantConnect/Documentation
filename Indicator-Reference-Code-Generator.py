@@ -190,9 +190,6 @@ for full, short in dict(sorted(names.items())).items():
                         
                     elif len(x) == 2:
                         temp["args"][x[0]] = x[1]
-                        
-                    else:
-                        temp["args"][x[0]] = "/"
             
             if full in full_apis:
                 full_apis[full].append(temp)
@@ -428,7 +425,7 @@ function ShowHide(event, idName) {{
             html_file.write(f"""    <div class="method-header">
         <h3>{full}()<span class="method-order">{e+1}/{len(full_apis[full])}</span></h3>
         <pre>
-            <font color="#8F9CA3">{full}</font> QuantConnect.Indicators.{full} (
+            <font color="#8F9CA3">{full}</font> QuantConnect.Indicators.{"CandlestickPatterns." + full if full in candle else full} (
 """)
             
             if len(code["args"].items()) > 0:
