@@ -469,9 +469,7 @@ def Box(input_, doc_attr, doc_ref, type_map, j):
         
     </div>
 
-</div>
-
-"""
+</div>"""
 
     return write_up, description
 
@@ -484,32 +482,34 @@ keys = doc["keys"]
 
 type_map = {}
 for key in keys.items():
-    if "Type" in key[1]:
-        t_ = key[1]["Type"]
-        
-        if "[" in t_:
-            n = t_.count('[')
-            t_ = t_.split("[")
-            t = ""
-            
-            for i in range(n):
-                if len(t) > 0 and t[-4:] == "&gt;":
-                    t += ", "
-                    
-                t += t_[i].split(".")[-1].split("`")[0]
-                t += "&lt;"
-                
-                if "]" in t_[i+1]:
-                    t += t_[i+1].split("]")[0].split(".")[-1]
-                    t += "&gt;" * t_[i+1].count(']')
-                    
-            type_map[key[0]] = t
-            
+    d = '['
+    s =  [s+d for s in key[1]["Type"].split(d)]
+    d = ','
+    s = [s_.split(",") for s_ in s]
+    
+    tmp = []
+    for s_ in s:
+        if len(s_) > 1:
+            x_ = []
+            for i_, x in enumerate(s_):
+                if i_ != len(s_) - 1:
+                    x_.append(x + ",")
+                else:
+                    x_.append(x)
+            tmp.append(x_)
         else:
-            type_map[key[0]] = t_.split(".")[-1]
-            
-    else:
-        type_map[key[0]] = key[1]["ShortType"]
+            tmp.append(s_)
+    
+    s = [item.split(".")[-1] for sublist in tmp for item in sublist]
+    
+    t_ = []
+    for s_ in s:
+        if "`" in s_:
+            t_.append(s_.split("`")[0] + "&lt;")
+        else:
+            t_.append(s_.replace("[", "").replace("]", "&gt;").replace(",", ", "))
+    
+    type_map[key[0]] = "".join(t_)
         
 algo_methods = doc["tree"]["core"]["data"][0]["children"]
 previous_name = ""
