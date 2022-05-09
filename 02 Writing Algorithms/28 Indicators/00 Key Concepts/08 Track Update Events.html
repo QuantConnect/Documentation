@@ -1,1 +1,24 @@
+<p>When an indicator receives a new data point and updates its state, it triggers an update event. To be notified of update events, attach and event handler to the indicator object. The event handler receives 2 arguments: the indicator object and its latest <code>IndicatorDataPoint</code>.</p>
 
+<div class="section-example-container">
+	<pre class="python"># After you create the indicator, attach an event handler
+self.indicator.Updated += self.update_event_handler
+
+# Define the event handler within the same class
+def update_event_handler(self, indicator, indicator_data_point):
+    if indicator.IsReady:
+        self.Plot("Indicator", "Value", indicator_data_point.Value)
+</pre>
+	<pre class="csharp">// After you create the indicator, attach an event handler
+_indicator.Updated += updateEventHandler;
+
+// Define the event handler within the same class
+private void updateEventHandler(object indicator, IndicatorDataPoint indicatorDataPoint)
+{
+    if (indicator.IsReady)
+    {
+        Plot("Indicator", "Value", indicatorDataPoint.Value);
+    }
+}
+</pre>
+</div>
