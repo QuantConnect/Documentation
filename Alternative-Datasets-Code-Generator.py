@@ -1,5 +1,11 @@
+import os
 import pathlib
+import shutil
 from urllib.request import urlopen
+
+for clean_up in os.listdir('02 Writing Algorithms/14 Datasets'):
+    if not '01 Overview' in clean_up and not "readme" in clean_up:
+        shutil.rmtree('02 Writing Algorithms/14 Datasets/' + clean_up)
 
 url = urlopen("https://s3.amazonaws.com/cdn.quantconnect.com/web/docs/alternative-data-dump-v2021-12-06.json")
 response = url.read().decode("utf-8")
@@ -28,6 +34,8 @@ for dataset in doc:
     destination_folder.mkdir(parents=True, exist_ok=True)
     
     for item in dataset["about"]:
+        if not item["title"]: continue
+        
         content = item["content"].replace("\/", "/") \
                     .replace('<div class="qc-embed-frame"><div class="qc-embed-dummy"></div><div class="qc-embed-element"><iframe class="qc-embed-backtest"',
                                             '<div class="qc-embed-frame python" style="display: inline-block; position: relative; width: 100%; min-height: 100px; min-width: 300px;"><div class="qc-embed-dummy" style="padding-top: 56.25%;"></div><div class="qc-embed-element" style="position: absolute; top: 0; bottom: 0; left: 0; right: 0;"><iframe class="qc-embed-backtest"') \
