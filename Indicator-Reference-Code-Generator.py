@@ -530,31 +530,6 @@ function ShowHide(event, idName) {{
 
 {"".join(api)}
 <br/>
-<p>The resolution of the indicator should be greater than or equal to the resolution of the security. For instance, if you subscribe to hourly data for a security, you should update its indicator with data that spans 1 hour or longer.</p>
-
-<p>To retrieve the numerical value of the indicator, use its <code>Current.Value</code> attribute.</p>
-
-<div class="section-example-container">
-    <pre class="csharp">private {full} _{short.lower()};
-
-// In Initialize()
-{'var symbol = AddEquity("SPY").Symbol;' if 'symbol' in args[full] else 'var symbols = new[] {AddEquity("SPY").Symbol, AddEquity("QQQ").Symbol};' if 'symbols' in args[full] else ''}
-_{short.lower()} = {short}{str(args[full]).replace("'", "").replace('"', '').replace(',)', ')')};
-
-// In OnData()
-if (_{short.lower()}.IsReady)
-{{
-    var indicatorValue = _{short.lower()}.Current.Value;
-}}</pre>
-    <pre class="python"># In Initialize()
-{'symbol = self.AddEquity("SPY").Symbol' if 'symbol' in args[full] else 'symbols = [self.AddEquity("SPY").Symbol, self.AddEquity("QQQ").Symbol]' if 'symbols' in args[full] else ''}
-self.{short.lower()} = self.{short}{str(args[full]).replace("'", "").replace('"', '').replace(',)', ')')}
-
-# In OnData()
-if self.{short.lower()}.IsReady:
-    indicator_value = self.{short.lower()}.Current.Value
-</pre>
-</div>
 
 <p>If you don't provide a resolution, it defauls to the security resolution. If you provide a resolution, it must be greater than or equal to the resolution of the security. For instance, if you subscribe to hourly data for a security, you should update its indicator with data that spans 1 hour or longer.</p>
 <p>For more information about the selector argument, see <a href="https://www.quantconnect.com/docs/v2/writing-algorithms/indicators/automatic-indicators#07-Alternative-Price-Fields">Alternative Price Fields</a>.</p>""")
@@ -616,7 +591,7 @@ if (_{short.lower()}.IsReady)
 """)
         
             for x in plots[full]:
-                html_file.write(f'''    Plot("My Indicators", "{short} {" ".join(re.findall("[a-zA-Z][^A-Z]*", x))}", _{short.lower()}.{x});
+                html_file.write(f'''    Plot("My Indicators", "{x.lower() if x != "Current" else full.lower()}", _{short.lower()}.{x});
 ''')
                             
             html_file.write(f"""}}</pre>
@@ -629,7 +604,7 @@ if self.{short.lower()}.IsReady:
 """)
                             
             for x in plots[full]:
-                html_file.write(f'''    self.Plot("My Indicators", "{short} {" ".join(re.findall("[a-zA-Z][^A-Z]*", x))}", self.{short.lower()}.{x})
+                html_file.write(f'''    self.Plot("My Indicators", "{x.lower() if x != "Current" else full.lower()}", self.{short.lower()}.{x})
 ''')
         
             with open(image_file, "rb") as image_file:
