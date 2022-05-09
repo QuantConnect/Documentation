@@ -14,10 +14,10 @@
     <li>In the Add Existing Item window, click the <span class='private-file-name'>Lean.DataSource.&lt;vendorNameDatasetName&gt;/&lt;vendorNameDatasetName&gt;Algorithm.cs</span> file and then click Add.</li>
     <li>In the Solution Explorer panel, right-click <span class='private-file-name'>QuantConnect.Algorithm.CSharp</span> and then click <span class='menu-name'>Add > Project Reference...</span>.</li>
     <li>In the Reference Manager window, click <span class='button-name'>Browse…</span>.</li>
-    <li>In the Select the files to reference… window, click the <span class='private-file-name'>Lean.DataSource.&lt;vendorNameDatasetName&gt;/bin/Debug/net5.0/QuantConnect.DataSource.dll</span> file and then click <span class='button-name'>Add</span>.</li>
-    <p>The Reference Manager window displays the <span class='private-file-name'>QuantConnect.DataSource.dll</span> file with the check box beside it enabled.</p>
+    <li>In the Select the files to reference… window, click the <span class='private-file-name'>Lean.DataSource.&lt;vendorNameDatasetName&gt;/bin/Debug/net6.0/QuantConnect.DataSource.&lt;vendorNameDatasetName&gt;.dll</span> file and then click <span class='button-name'>Add</span>.</li>
+    <p>The Reference Manager window displays the <span class='private-file-name'>QuantConnect.DataSource.&lt;vendorNameDatasetName&gt;.dll</span> file with the check box beside it enabled.</p>
     <li>Click <span class='button-name'>OK</span>.</li>
-    <p>The Solution Explorer panel adds the <span class='private-file-name'>QuantConnect.DataSource.dll</span> file under <span class='menu-name'>QuantConnect.Algorithm.CSharp > Dependencies > Assemblies</span>.</p>
+    <p>The Solution Explorer panel adds the <span class='private-file-name'>QuantConnect.DataSource.&lt;vendorNameDatasetName&gt;.dll</span> file under <span class='menu-name'>QuantConnect.Algorithm.CSharp > Dependencies > Assemblies</span>.</p>
     <li>In the Solution Explorer panel, click <span class='private-file-name'>QuantConnect.Lean.Launcher > config.json</span>.</li>
     <li>In the <span class='private-file-name'>config.json</span> file, replace</li>
     <div class="section-example-container">
