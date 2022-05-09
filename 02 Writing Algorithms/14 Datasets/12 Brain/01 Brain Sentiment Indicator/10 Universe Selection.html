@@ -1,0 +1,51 @@
+<p>You can filter and select US equities based by AddUniverse&lt;BrainSentimentIndicatorUniverse&gt;() based on daily Brain Sentiment Indicator data.
+</p>
+<div class="section-example-container">
+<pre class="python">def Initialize(self):
+    # Data ADDED via universe selection is added with Daily resolution.
+    self.UniverseSettings.Resolution = Resolution.Daily
+
+    # add a custom universe data source (defaults to usa-equity)
+    self.AddUniverse(BrainSentimentIndicatorUniverse, "BrainSentimentIndicatorUniverse", Resolution.Daily, self.UniverseSelection)
+
+def UniverseSelection(self, data):
+    for datum in data:
+        self.Log(f"""{datum.Symbol},
+                {datum.TotalArticleMentions7Days},
+                {datum.SentimentalArticleMentions7Days},
+                {datum.Sentiment7Days},
+                {datum.TotalBuzzVolume7Days},
+                {datum.SentimentalBuzzVolume7Days},
+                {datum.TotalArticleMentions30Days},
+                {datum.SentimentalArticleMentions30Days},
+                {datum.Sentiment30Days},
+                {datum.TotalBuzzVolume30Days},
+                {datum.SentimentalBuzzVolume30Days}""")
+
+    # define our selection criteria
+    return [d.Symbol for d in data \
+                if d.TotalArticleMentions7Days &gt; 0 \
+                and d.Sentiment7Days]</pre>
+<pre class="csharp">AddUniverse&lt;BrainSentimentIndicatorUniverse&gt;("BrainSentimentIndicatorUniverse", Resolution.Daily, data =&gt;
+{
+    foreach (var datum in data)
+    {
+        Log($@"{datum.Symbol},
+               {datum.TotalArticleMentions7Days},
+               {datum.SentimentalArticleMentions7Days},
+               {datum.Sentiment7Days},
+               {datum.TotalBuzzVolume7Days},
+               {datum.SentimentalBuzzVolume7Days},
+               {datum.TotalArticleMentions30Days},
+               {datum.SentimentalArticleMentions30Days},
+               {datum.Sentiment30Days},
+               {datum.TotalBuzzVolume30Days},
+               {datum.SentimentalBuzzVolume30Days}");
+    }
+
+    // define our selection criteria
+    return from d in data 
+           where d.TotalArticleMentions7Days &gt; 0m &amp;&amp; d.Sentiment7Days &gt; 0m
+           select d.Symbol;
+});</pre>
+</div>

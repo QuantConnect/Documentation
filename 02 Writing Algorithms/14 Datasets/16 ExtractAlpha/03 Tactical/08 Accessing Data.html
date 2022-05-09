@@ -1,0 +1,21 @@
+<p>Data can be accessed via Slice events. Slice delivers unique events to your algorithm as they happen. We recommend saving the symbol object when you add the data for easy access to slice later. Data is available in daily resolution. You can see an example of the slice accessor in the code below.</p>
+<div class="section-example-container">
+<pre class="python">def OnData(self, data):
+    points = data.Get(ExtractAlphaTacticalModel)
+    for kvp in points:
+        self.Log(f'Symbol: {kvp.Key} - Reversal: {kvp.Value.Reversal} - Factor Momentum: {kvp.Value.FactorMomentum} - '
+            f'Liquidity Shock: {kvp.Value.LiquidityShock} - Seasonality: {kvp.Value.Seasonality} - Score: {kvp.Value.Score}')
+</pre>
+<pre class="csharp">namespace QuantConnect
+{    
+    public override void OnData(Slice data)
+    {
+        var points = data.Get&lt;ExtractAlphaTacticalModel&gt;();
+        foreach (var point in points.Values)
+        {
+            Log($@"Symbol: {kvp.Key} - Reversal: {kvp.Value.Reversal} - Factor Momentum: {kvp.Value.FactorMomentum} - 
+                Liquidity Shock: {kvp.Value.LiquidityShock} - Seasonality: {kvp.Value.Seasonality} - Score: {kvp.Value.Score}");
+        }
+    }
+}</pre>
+</div>

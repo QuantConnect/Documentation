@@ -1,0 +1,18 @@
+<p>Data can be accessed via Slice events. Slice delivers unique events to your algorithm as they happen. We recommend saving the symbol object when you add the data for easy access to slice later. Data is available in tick, second, and minute resolutions. You can see an example of the slice accessor in the code below.</p>
+<div class="section-example-container">
+<pre class="python">def OnData(self, data):
+    for kvp in data.FutureChains:
+        for contract in kvp.Value:
+            self.Log(f"Time: {self.Time}; Underlying Symbol: {kvp.Key}; Contract: {contract}; Open Interest: {contract.OpenInterest}; Expiry: {contract.Expiry}; Last price: {contract.LastPrice}; Volume: {contract.Volume}; Bid price: {contract.BidPrice}; Bid size: {contract.BidSize}; Ask price: {contract.AskPrice}; Ask size: {contract.AskSize};")</pre>
+<pre class="csharp">
+public override void OnData(Slice data)
+{
+    foreach (var kvp in data.FutureChains)
+    {
+        foreach (var contract in kvp.Value)
+        {
+            Log($"Time: {Time}; Underlying Symbol: {kvp.Key}; Contract: {contract}; Open Interest: {contract.OpenInterest}; Expiry: {contract.Expiry}; Last price: {contract.LastPrice}; Volume: {contract.Volume}; Bid price: {contract.BidPrice}; Bid size: {contract.BidSize}; Ask price: {contract.AskPrice}; Ask size: {contract.AskSize};");
+        }
+    }
+}</pre>
+</div>

@@ -1,0 +1,68 @@
+<p>Data can be accessed via Slice events. Slice delivers unique events to your algorithm as they happen. We recommend saving the symbol object when you add the data for easy access to slice later. Data is available in daily resolution. You can see an example of the slice accessor in the code below.</p>
+<div class="section-example-container">
+<pre class="python">def OnData(self, data):
+    consensus = data.Get(EstimizeConsensus)
+    for symbol, value in consensus.items():
+        self.Log(f"""Symbol: {symbol} - Consensus Source: {value.Source},
+                  Consensus Type: {value.Type}, Mean: {value.Mean}, 
+                  Value: {value.Value}, High: {value.High}, Low: {value.Low}, 
+                  Standard Deviation: {value.StandardDeviation}, Count: {value.Count},
+                  Fiscal Year: {value.FiscalYear}, Fiscal Quarter: {value.FiscalQuarter}""")
+
+    estimate = data.Get(EstimizeEstimate)
+    for symbol, value in estimate.items():
+        self.Log(f"""Symbol: {symbol} - EPS: {value.Eps}, Revenue: {value.Revenue},
+                  Fiscal Year: {value.FiscalYear}, Fiscal Quarter: {value.FiscalQuarter},
+                  User Name: {value.UserName}, Analyst Id: {value.AnalystId}, 
+                  Flagged: {value.Flagged}""")
+
+    release = data.Get(EstimizeRelease)
+    for symbol, value in release.items():
+        self.Log(f"""Symbol: {symbol} - EPS: {value.Eps}, Revenue: {value.Revenue},
+                  Fiscal Year: {value.FiscalYear}, Fiscal Quarter: {value.FiscalQuarter},
+                  Wall Street EPS Estimate: {value.WallStreetEpsEstimate}, 
+                  Wall Street Revenue Estimate: {value.WallStreetRevenueEstimate},
+                  Consensus Street EPS Estimate: {value.ConsensusEpsEstimate}, 
+                  Consensus Revenue Estimate: {value.ConsensusRevenueEstimate},
+                  Consensus Weighted Street EPS Estimate: {value.ConsensusWeightedEpsEstimate}, 
+                  Consensus Weighted Revenue Estimate: {value.ConsensusWeightedRevenueEstimate}""")
+</pre>
+<pre class="csharp">namespace QuantConnect
+{    
+        public override void OnData(Slice data)
+        {
+            var consensus = data.Get&lt;EstimizeConsensus&gt;();
+            foreach (var kvp in consensus)
+            {
+                Log($@"Symbol: {kvp.Key} - Consensus Source: {kvp.Value.Source},
+                      Consensus Type: {kvp.Value.Type}, Mean: {kvp.Value.Mean}, 
+                      Value: {kvp.Value.Value}, High: {kvp.Value.High}, Low: {kvp.Value.Low}, 
+                      Standard Deviation: {kvp.Value.StandardDeviation}, Count: {kvp.Value.Count},
+                      Fiscal Year: {kvp.Value.FiscalYear}, Fiscal Quarter: {kvp.Value.FiscalQuarter}");
+            }
+            
+            var estimate = data.Get&lt;EstimizeEstimate&gt;();
+            foreach (var kvp in estimate)
+            {
+                Log($@"Symbol: {kvp.Key} - EPS: {kvp.Value.Eps}, Revenue: {kvp.Value.Revenue},
+                      Fiscal Year: {kvp.Value.FiscalYear}, Fiscal Quarter: {kvp.Value.FiscalQuarter},
+                      User Name: {kvp.Value.UserName}, Analyst Id: {kvp.Value.AnalystId}, 
+                      Flagged: {kvp.Value.Flagged}");
+            }
+            
+            var release = data.Get&lt;EstimizeRelease&gt;();
+            foreach (var kvp in release)
+            {
+                Log($@"Symbol: {kvp.Key} - EPS: {kvp.Value.Eps}, Revenue: {kvp.Value.Revenue},
+                      Fiscal Year: {kvp.Value.FiscalYear}, Fiscal Quarter: {kvp.Value.FiscalQuarter},
+                      Wall Street EPS Estimate: {kvp.Value.WallStreetEpsEstimate}, 
+                      Wall Street Revenue Estimate: {kvp.Value.WallStreetRevenueEstimate},
+                      Consensus Street EPS Estimate: {kvp.Value.ConsensusEpsEstimate}, 
+                      Consensus Revenue Estimate: {kvp.Value.ConsensusRevenueEstimate},
+                      Consensus Weighted Street EPS Estimate: {kvp.Value.ConsensusWeightedEpsEstimate}, 
+                      Consensus Weighted Revenue Estimate: {kvp.Value.ConsensusWeightedRevenueEstimate}");
+            }
+        }
+    }
+}</pre>
+</div>
