@@ -3,7 +3,7 @@ To make Alpha Models as useful and pluggable as possible, we recommend you follo
 <p><b>1. Use Assets Defined By Universe Selection Model</b>
 </p>
 <p>The <a class="docs-internal-link" href="/docs/algorithm-framework/universe-selection">Universe Selection Model</a> is in charge of selecting assets, so you should not assume any fixed set of assets. When assets are added to your universe, they will trigger an $[OnSecuritiesChanged(),M:QuantConnect.Algorithm.Framework.Alphas.CompositeAlphaModel.OnSecuritiesChanged] event. From there, you can initialize any state or history required for your Alpha Model.
-<div class="section-example-container">
+</p><div class="section-example-container">
 		<pre class="csharp"> // Event fired each time the we add/remove securities from the data feed
 public void OnSecuritiesChanged(QCAlgorithmFramework algorithm, SecurityChanges changes)
 {
@@ -35,11 +35,11 @@ public void OnSecuritiesChanged(QCAlgorithmFramework algorithm, SecurityChanges 
 private class SymbolData
 {
     public Security Security { get; set; }
-    public Symbol Symbol => Security.Symbol;
+    public Symbol Symbol =&gt; Security.Symbol;
     public ExponentialMovingAverage Fast { get; set; }
     public ExponentialMovingAverage Slow { get; set; }
     public bool FastIsOverSlow { get; set; }
-    public bool SlowIsOverFast => !FastIsOverSlow;
+    public bool SlowIsOverFast =&gt; !FastIsOverSlow;
 }
 </pre>
 		<pre class="python">    def OnSecuritiesChanged(self, algorithm, changes):
@@ -73,7 +73,7 @@ class SymbolData:
     def SlowIsOverFast(self):
         return not self.FastIsOverSlow</pre>
 	</div>
-	<p><b>2. Give Alpha Models A Unique Name</b>
+	<p><b>## ^ Update to Manual Indicators<br></b></p><p><b>2. Give Alpha Models A Unique Name</b>
 	</p>
 	<p>To ensure your Alpha Model can be used by all <a class="docs-internal-link" href="/docs/algorithm-framework/portfolio-construction">Portfolio Construction Models</a>, you should assign a unique name to your Alpha Model. Some Portfolio Construction Models can combine multiple Alpha Models together, and it can be important to distinguish between them. By default, we use the class-type name as the Alpha Model name.
 </p>
