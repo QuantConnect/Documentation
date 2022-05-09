@@ -1,0 +1,32 @@
+<p>To add US Future Options data to your algorithm, use the AddData() method to request the data. As with all datasets, you should save a reference to your symbol for easy use later in your algorithm. For detailed documentation on requesting market data, see <a href="https://www.quantconnect.com/docs/algorithm-reference/initializing-algorithms#Initializing-Algorithms-Selecting-Asset-Data">Selecting Asset Data</a>.</p>
+
+<div class="section-example-container">
+<pre class="python">class FutureOptionDataAlgorithm(QCAlgorithm):
+
+    def Initialize(self):
+        self.SetStartDate(2020, 1, 28)
+        self.SetEndDate(2020, 6, 1)
+        self.SetCash(100000)
+
+        gold_futures = self.AddFuture(Futures.Metals.Gold, Resolution.Minute)
+        gold_futures.SetFilter(0, 90)
+        self.AddFutureOption(gold_futures.Symbol, lambda universe: universe.Strikes(-5, +5))</pre>
+<pre class="csharp">namespace QuantConnect
+{
+    public class FutureOptionDataAlgorithm : QCAlgorithm
+    {
+        public override void Initialize()
+        {
+            SetStartDate(2020, 1, 28);
+            SetEndDate(2020, 6, 1);
+            SetCash(100000);
+            
+            var goldFutures = AddFuture(Futures.Metals.Gold, Resolution.Minute);
+            goldFutures.SetFilter(0, 90);
+            AddFutureOption(goldFutures.Symbol, universe =&gt; universe.Strikes(-5, +5));
+        }
+    }
+}</pre>
+</div>
+
+<p>The Future resolution must be less than or equal to the Future Option resolution. Future Options only have minute resolution available, so the Future must have tick, second, or minute resolution.</p>

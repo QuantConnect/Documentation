@@ -1,0 +1,33 @@
+<p>You can add an universe to select Equities based on QuiverQuantTwitterFollowers daily data.</p>
+
+<div class="section-example-container">
+<pre class="python">
+def Initialize(self):
+    # add a custom universe data source (defaults to usa-equity)
+    self.AddUniverse(QuiverQuantTwitterFollowersUniverse, "QuiverQuantTwitterFollowersUniverse", Resolution.Daily, self.UniverseSelection)
+        
+def UniverseSelection(self, data):
+    for datum in data:
+        self.Log(f"{datum.Symbol},{datum.Followers},{datum.DayPercentChange},{datum.WeekPercentChange}")
+        
+    # define our selection criteria
+    return [d.Symbol for d in data \
+                if d.Followers &gt; 200000 \
+                and d.WeekPercentChange &gt; 0]</pre>
+<pre class="csharp">public override void Initialize()
+{
+    // add a custom universe data source (defaults to usa-equity)
+    AddUniverse("QuiverQuantTwitterFollowersUniverse", Resolution.Daily, data =&gt;
+    {
+        foreach (var datum in data)
+        {
+            Log($"{datum.Symbol},{datum.Followers},{datum.DayPercentChange},{datum.WeekPercentChange}");
+        }
+
+        // define our selection criteria
+        return from d in data 
+            where d.Followers &gt; 200000 &amp;&amp; d.WeekPercentChange &gt; 0m 
+            select d.Symbol;
+    });
+}</pre>
+</div>

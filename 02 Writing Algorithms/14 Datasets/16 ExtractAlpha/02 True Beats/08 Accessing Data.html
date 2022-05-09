@@ -1,0 +1,26 @@
+<p>Data can be accessed via Slice events. Slice delivers unique events to your algorithm as they happen. We recommend saving the symbol object when you add the data for easy access to slice later. Data is available in daily resolution. You can see an example of the slice accessor in the code below.</p>
+<div class="section-example-container">
+<pre class="python">def OnData(self, data):
+    points = data.Get(ExtractAlphaTrueBeats)
+    for kvp in points:
+        for trueBeat in kvp.Value:
+            self.Log(f"""Symbol: {point.Key} - Fiscal Period: {trueBeat.FiscalPeriod.Annual}
+		             - Analyst Estimates Count: {trueBeat.AnalystEstimatesCount} - True Beats: {trueBeat.TrueBeat}
+		             - Expert Beats: {trueBeat.ExpertBeat} - Trend Beats: {trueBeat.TrendBeat}
+		             - Management Beats: {trueBeat.ManagementBeat}""")  
+</pre>
+<pre class="csharp">public override void OnData(Slice data)
+{
+    var points = data.Get&lt;ExtractAlphaTrueBeats&gt;();
+    foreach (var point in points)
+    {
+        foreach (ExtractAlphaTrueBeat trueBeat in point.Value)
+        {
+            Log($@"Symbol: {point.Key} - Fiscal Period: {trueBeat.FiscalPeriod.Annual} - 
+		            Analyst Estimates Count: {trueBeat.AnalystEstimatesCount} - True Beats: {trueBeat.TrueBeat}
+		            - Expert Beats: {trueBeat.ExpertBeat} - Trend Beats: {trueBeat.TrendBeat}
+		            - Management Beats: {trueBeat.ManagementBeat}");
+        }
+    }
+}</pre>
+</div>

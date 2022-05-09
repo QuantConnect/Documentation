@@ -1,0 +1,38 @@
+<p>You can add an universe based on QuiverQallStreetBets data.</p>
+
+<div class="section-example-container">
+<pre class="python">def Initialize(self):
+    # Data ADDED via universe selection is added with Daily resolution.
+    self.UniverseSettings.Resolution = Resolution.Daily
+
+    # add a custom universe data source (defaults to usa-equity)
+    self.AddUniverse(QuiverWallStreetBetsUniverse, "QuiverWallStreetBetsUniverse", Resolution.Daily, self.UniverseSelection)
+        
+def UniverseSelection(self, data):
+    for datum in data:
+        self.Log(f"{datum.Symbol},{datum.Mentions},{datum.Rank},{datum.Sentiment}")
+        
+    # define our selection criteria
+    return [d.Symbol for d in data \
+                if d.Mentions &gt; 100 \
+                and d.Rank &lt; 100]</pre>
+<pre class="csharp">public override void Initialize()
+{
+    // Data ADDED via universe selection is added with Daily resolution.
+    UniverseSettings.Resolution = Resolution.Daily;
+
+    // add a custom universe data source (defaults to usa-equity)
+    AddUniverse("QuiverWallStreetBetsUniverse", Resolution.Daily, data =&gt;
+    {
+        foreach (var datum in data)
+        {
+            Log($"{datum.Symbol},{datum.Mentions},{datum.Rank},{datum.Sentiment}");
+        }
+
+        // define our selection criteria
+        return from d in data
+            where d.Mentions &gt; 10 &amp;&amp; d.Rank &gt; 10
+            select d.Symbol;
+    });
+}</pre>
+</div>

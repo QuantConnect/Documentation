@@ -1,0 +1,21 @@
+<p>Data can be accessed via Slice events. Slice delivers unique events to your algorithm as they happen. We recommend saving the symbol object when you add the data for easy access to slice later. Data is available in minute resolution. You can see an example of the slice accessor in the code below.</p>
+<div class="section-example-container">
+<pre class="python">def OnData(self, data):
+    for kvp in data.OptionChains:
+        underlying_future_contract = kvp.Key.Underlying
+        chain = kvp.Value
+        for contract in chain:
+            self.Debug(f"Time: {self.Time}; Canonical Symbol: {kvp.Key}; Underlying Future contract: {underlying_future_contract} Contract: {contract}; Right: {contract.Right}; Expiry: {contract.Expiry}; Bid price: {contract.BidPrice}; Ask price: {contract.AskPrice}; ImpliedVolatility: {contract.ImpliedVolatility}; Delta: {contract.Greeks.Delta}; Gamma: {contract.Greeks.Gamma}; Vega: {contract.Greeks.Vega}; Rho: {contract.Greeks.Rho}; Lambda: {contract.Greeks.Lambda}")</pre>
+<pre class="csharp">public override void OnData(Slice data)
+{
+    foreach (var kvp in data.OptionChains)
+    {
+        var underlyingFutureContract = kvp.Key.Underlying;
+        var chain = kvp.Value;
+        foreach (var contract in chain)
+        {
+            algorithm.Debug($"Time: {algorithm.Time}; Canonical Symbol: {kvp.Key}; Underlying Future contract: {underlyingFutureContract} Contract: {contract}; Right: {contract.Right}; Expiry: {contract.Expiry}; Bid price: {contract.BidPrice}; Ask price: {contract.AskPrice}; ImpliedVolatility: {contract.ImpliedVolatility}; Delta: {contract.Greeks.Delta}; Gamma: {contract.Greeks.Gamma}; Vega: {contract.Greeks.Vega}; Rho: {contract.Greeks.Rho}; Lambda: {contract.Greeks.Lambda}");
+        }
+    }
+}</pre>
+</div>
