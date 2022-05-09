@@ -1,0 +1,44 @@
+<p>(1) Define a SelectionData class that contains the selection indicators<br></p>
+
+<div class="section-example-container">
+	<pre class="python">class SelectionData(object):
+    def __init__(self, symbol):
+        self.symbol = symbol
+        self.tolerance = 1.01
+        self.fast = ExponentialMovingAverage(100)
+        self.slow = ExponentialMovingAverage(300)
+        self.is_uptrend = False
+        self.scale = 0
+
+    def update(self, time, value):
+        if self.fast.Update(time, value) and self.slow.Update(time, value):
+            fast = self.fast.Current.Value
+            slow = self.slow.Current.Value
+            self.is_uptrend = fast &gt; slow * self.tolerance
+
+        if self.is_uptrend:
+            self.scale = (fast - slow) / ((fast + slow) / 2.0)</pre>
+	<pre class="csharp">private class SelectionData
+{
+    public readonly ExponentialMovingAverage Fast;
+    public readonly ExponentialMovingAverage Slow;
+
+    public SelectionData()
+    {
+        Fast = new ExponentialMovingAverage(100);
+        Slow = new ExponentialMovingAverage(300);
+    }
+
+    // computes an object score of how much large the fast is than the slow
+    public decimal ScaledDelta
+    {
+        get { return (Fast - Slow)/((Fast + Slow)/2m); }
+    }
+
+    // updates the EMA50 and EMA100 indicators, returning true when they're both ready
+    public bool Update(DateTime time, decimal value)
+    {
+        return Fast.Update(time, value) && Slow.Update(time, value);
+    }
+}</pre>
+</div>
