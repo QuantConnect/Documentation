@@ -72,6 +72,7 @@ for method in methods:
         and "IsReady" not in prop_name\
         and "WarmUpPeriod" not in prop_name\
         and "Name" not in prop_name\
+        and "Period" not in prop_name\
         and "Samples" not in prop_name:
             plots[item].append(prop_name)
             
@@ -140,7 +141,7 @@ for full, short in dict(sorted(names.items())).items():
                         temp["param"][param] = temp["param"][param].strip() + "."
                     
                 elif "</summary>" in lines[j]:
-                    temp["summary"] = lines[j-1].split("/// ")[-1].replace('<see cref="', '<code>').replace('"/>', '</code>')
+                    temp["summary"] = lines[j-1].split("/// ")[-1].replace('<see cref="', '<code>').replace('"/>', '</code>').replace('" />', '</code>')
                     
                     if temp["summary"].strip()[-1] != ".":
                         temp["summary"] = temp["summary"].strip() + "."
