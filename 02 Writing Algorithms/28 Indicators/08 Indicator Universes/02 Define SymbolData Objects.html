@@ -1,1 +1,22 @@
+<p>(1) Define a SymbolData class that contains the selection indicators<br></p>
 
+<div class="section-example-container">
+	<pre class="python">class SymbolData(object):
+    def __init__(self, symbol):
+        self.symbol = symbol
+        self.tolerance = 1.01
+        self.fast = ExponentialMovingAverage(100)
+        self.slow = ExponentialMovingAverage(300)
+        self.is_uptrend = False
+        self.scale = 0
+
+    def update(self, time, value):
+        if self.fast.Update(time, value) and self.slow.Update(time, value):
+            fast = self.fast.Current.Value
+            slow = self.slow.Current.Value
+            self.is_uptrend = fast &gt; slow * self.tolerance
+
+        if self.is_uptrend:
+            self.scale = (fast - slow) / ((fast + slow) / 2.0)</pre>
+	<pre class="csharp fsharp"></pre>
+</div>
