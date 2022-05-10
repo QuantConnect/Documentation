@@ -1,1 +1,22 @@
+The CoarseFundamentalUniverseSelectionModel is a fundamental universe selection model for US Equities that selects assets based on CoarseFundamental data.<br><div class="section-example-container">
+	<pre class="csharp">public override void Initialize()
+{
+    AddUniverseSelection(new CoarseFundamentalUniverseSelectionModel(CoarseSelectionFunction));
+}
 
+private IEnumerable&lt;Symbol&gt; CoarseSelectionFunction(IEnumerable&lt;CoarseFundamental&gt; coarse)
+{
+    return (from cf in coarse
+            where !cf.HasFundamentalData
+            orderby cf.DollarVolume descending
+            select cf.Symbol).Take(20);
+}</pre>
+	<pre class="python"># In Initialize
+def Initialize(self):
+    self.AddUniverseSelection(CoarseFundamentalUniverseSelectionModel(self.CoarseSelectionFunction))
+
+def CoarseSelectionFunction(self, coarse):
+    sortedByDollarVolume = sorted(coarse, key=lambda x: x.DollarVolume, reverse=True)
+    filtered = [ x.Symbol for x in sortedByDollarVolume if not x.HasFundamentalData ]
+    return filtered[:20]</pre>
+</div>
