@@ -1,1 +1,26 @@
 
+<div class="section-example-container">
+	<pre class="csharp">public override void Initialize()
+{
+    AddUniverseSelection(
+        new FutureUniverseSelectionModel(TimeSpan.FromDays(1), SelectFutureChainSymbols)
+    );
+}
+
+private static IEnumerable&lt;Symbol&gt; SelectFutureChainSymbols(DateTime utcTime)
+{
+    return new[] {
+        QuantConnect.Symbol.Create(Futures.Indices.SP500EMini, SecurityType.Future, Market.CME),
+        QuantConnect.Symbol.Create(Futures.Metals.Gold, SecurityType.Future, Market.COMEX)
+    };
+}</pre>
+	<pre class="python">from Selection.FutureUniverseSelectionModel import FutureUniverseSelectionModel
+
+def Initialize(self):
+    universe = FutureUniverseSelectionModel(timedelta(days=1), self.future_chain_symbol_selector)
+    self.SetUniverseSelection(universe)
+
+def future_chain_symbol_selector(self, utc_time):
+    return [ Symbol.Create(Futures.Indices.SP500EMini, SecurityType.Future, Market.CME),
+             Symbol.Create(Futures.Metals.Gold, SecurityType.Future, Market.COMEX) ]</pre>
+</div>
