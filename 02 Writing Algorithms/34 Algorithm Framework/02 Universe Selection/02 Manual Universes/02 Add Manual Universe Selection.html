@@ -4,16 +4,15 @@
 <div class="section-example-container">
 	<pre class="csharp">public override void Initialize()
 {
-     // Set requested data resolution
-     UniverseSettings.Resolution = Resolution.Minute;
-     AddUniverseSelection(
-        new ManualUniverseSelectionModel(
-             QuantConnect.Symbol.Create("SPY", SecurityType.Equity, Market.USA)
-     ));
+    UniverseSettings.Resolution = Resolution.Minute;
+    var tickers = new[] {"SPY", "QQQ", "TLT"};
+    var symbols = tickers.Select(ticker =&gt; QuantConnect.Symbol.Create(ticker, SecurityType.Equity, Market.USA));
+    AddUniverseSelection(new ManualUniverseSelectionModel(symbols));
 }
 </pre>
 	<pre class="python">def Initialize(self):
-     self.UniverseSettings.Resolution = Resolution.Minute
-     symbols = [ Symbol.Create("SPY", SecurityType.Equity, Market.USA) ]
-     self.AddUniverseSelection(ManualUniverseSelectionModel(symbols))</pre>
+    self.UniverseSettings.Resolution = Resolution.Minute
+    tickers = ["SPY", "QQQ", "TLT"]
+    symbols = [ Symbol.Create(ticker, SecurityType.Equity, Market.USA) for ticker in tickers]
+    self.AddUniverseSelection(ManualUniverseSelectionModel(symbols))</pre>
 </div>
