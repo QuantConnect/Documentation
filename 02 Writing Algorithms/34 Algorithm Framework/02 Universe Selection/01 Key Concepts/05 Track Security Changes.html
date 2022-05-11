@@ -1,1 +1,22 @@
+When the universe selection model adjusts the universe constituents, we notify your algorithm through the OnSecuritiesChanged method on your other framework components. The method receives a QCAlgorithm and SecurityChanges objects. To access the added securities, check the changes.AddedSecurities property. To access the removed securities, check the changes.RemovedSecurities property.<br>
 
+<div class="section-example-container">
+	<pre class="csharp">public override void OnSecuritiesChanged(QCAlgorithm algorithm, SecurityChanges changes)
+{
+    foreach (var security in changes.AddedSecurities)
+    {
+        Log($"Added {security.Symbol}");
+    }
+
+    foreach (var security in changes.RemovedSecurities)
+    {
+        Log($"Removed {security.Symbol}");
+    }
+}</pre>
+	<pre class="python">def OnSecuritiesChanged(self, algorithm, changes):
+    for security in changes.AddedSecurities:
+        self.Log(f"Added {security.Symbol}")
+
+    for security in changes.RemovedSecurities:
+        self.Log(f"Removed {security.Symbol}")</pre>
+</div>
