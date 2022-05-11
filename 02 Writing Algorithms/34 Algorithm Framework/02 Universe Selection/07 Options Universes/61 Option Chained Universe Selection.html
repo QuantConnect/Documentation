@@ -1,1 +1,23 @@
+An option chained universe subscribes to Option contracts on the constituents of an <a href="https://www.quantconnect.com/docs/v2/writing-algorithms/universes/equity">US Equity universe</a>. To create an option chained universe, call the AddUniverseOptions method. The method accepts a Universe and an Option filter function. The filter function receives and returns an OptionFilterUniverse to select the Option contracts.<br>
 
+<div class="section-example-container">
+	<pre class="csharp">public override void Initialize()
+{
+    var universe = AddUniverse(Universe.DollarVolume.Top(10));
+    AddUniverseOptions(universe, OptionFilterFunction);
+}
+
+private OptionFilterUniverse OptionFilterFunction(OptionFilterUniverse optionFilterUniverse)
+{
+    return optionFilterUniverse.Strikes(-2, +2).FrontMonth().CallsOnly();
+}</pre>
+	<pre class="python">def Initialize(self):
+    universe = self.AddUniverse(self.Universe.DollarVolume.Top(10))
+    self.AddUniverseOptions(universe, self.OptionFilterFunction)
+
+def OptionFilterFunction(self, option_filter_universe):
+    return option_filter_universe.Strikes(-2, +2).FrontMonth().CallsOnly()</pre>
+</div>
+
+OptionFilterUniverse have the following methods:
+<br>-### List all methods here 
