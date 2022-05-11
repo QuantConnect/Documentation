@@ -1,1 +1,27 @@
+The OpenInterestFutureUniverseSelectionModel selects the Future contracts with the greatest open interest. The constructor accepts the following arguments:<br><br>
+-algorithm: Your QCAlgorithm object
+<br>-futureChainSymbolSelector: A function that receives a datetime and returns a list of Future Symbol objects. Selects symbols from the provided future chain
+<br>-(optional) chainContractsLookupLimit : Limit on how many contracts to query for open interest (cuts off oldest expiring contracts) ; default 6
+<br>-(optional) resultsLimit : Limit on how many contracts will be part of the universe
+<br>
 
+<div class="section-example-container">
+	<pre class="csharp">public override void Initialize()
+{
+    var symbols = new[] {
+        QuantConnect.Symbol.Create(Futures.Indices.SP500EMini, SecurityType.Future, Market.CME),
+        QuantConnect.Symbol.Create(Futures.Metals.Gold, SecurityType.Future, Market.COMEX)
+    }; 
+    AddUniverseSelection(new OpenInterestFutureUniverseSelectionModel(this, dateTime =&gt; symbols));
+}
+</pre>
+	<pre class="python">from Selection.FutureUniverseSelectionModel import FutureUniverseSelectionModel
+
+def Initialize(self):
+    universe = FutureUniverseSelectionModel(timedelta(days=1), self.future_chain_symbol_selector)
+    self.SetUniverseSelection(universe)
+
+def future_chain_symbol_selector(self, utc_time):
+    return [ Symbol.Create(Futures.Indices.SP500EMini, SecurityType.Future, Market.CME),
+             Symbol.Create(Futures.Metals.Gold, SecurityType.Future, Market.COMEX) ]</pre>
+</div>
