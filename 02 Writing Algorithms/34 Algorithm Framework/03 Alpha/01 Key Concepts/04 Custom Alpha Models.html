@@ -32,3 +32,16 @@ class MyAlphaModel:
 </div>
 <p>
 You can access all the normal QCAlgorithm messages such as <code>Log</code>, and <code>Debug</code> from the algorithm object; for example logging is located at <code>algorithm.Log("message")</code>. The <code>slice</code> parameter contains the latest data available to the algorithm. <br></p><p><br></p><p>## TODO: <br></p><p>- The `algorithm` passed to the alpha:Update method isn’t the algorithm object you defined on main as it doesn't include the user-defined attributes such as self.histories. In other words, we can only count with attributes of the base class (QCAlgorithm). We have two alternatives: 1. Use a Global variable; 2. Pass the reference to the object with the constructor. both alternatives violate the separation of concerns principle. <br></p><p>- These examples should subclass the AlphaModel class.</p><p>- Note that OnSecuritiesChanged is not required<br></p>
+
+
+<p>To ensure your Alpha Model can be used by all <a class="docs-internal-link" href="/docs/algorithm-framework/portfolio-construction">Portfolio Construction Models</a>, you should assign a unique name to your Alpha Model. Some Portfolio Construction Models can combine multiple Alpha Models together, and it can be important to distinguish between them. By default, we use the class-type name as the Alpha Model name.
+</p>
+	<div class="section-example-container">
+		<pre class="python" style="display: none;">class RsiAlphaModel(AlphaModel):
+     self.Name = "RsiAlphaModel"</pre>
+		<pre class="csharp">public class RsiAlphaModel : AlphaModel
+{
+     // Give your alpha a name (perhaps based on its constructor args?)
+     public override string Name { get; }
+}</pre>
+	</div>
