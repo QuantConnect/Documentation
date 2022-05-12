@@ -1,18 +1,19 @@
 <p>
-Alpha models are intended to be easy to create and the primary location for iterating your strategy. To create Alpha Models, you must implement the $[IAlphaModel,T:QuantConnect.Algorithm.Framework.Alphas.IAlphaModel] interface as shown in the examples below. This has two methods:
+Alpha models are intended to be easy to create and the primary location for iterating your strategy. To create Alpha Models, you must implement the $[IAlphaModel,T:QuantConnect.Algorithm.Framework.Alphas.AlphaModel] class as shown in the examples below. This has two methods:
 </p>
-<p>1. $[Update(),M:QuantConnect.Algorithm.Framework.Alphas.AlphaModel.Update] - Generate Insight objects.<br>2. $[OnSecuritiesChanged(),M:QuantConnect.Algorithm.Framework.Alphas.AlphaModel.OnSecuritiesChanged] - Receive notifications about security changes. (optional)</p>
+<p>1. $[Update(),M:QuantConnect.Algorithm.Framework.Alphas.AlphaModel.Update] - Generate Insight objects.<br>2. $[OnSecuritiesChanged(),M:QuantConnect.Algorithm.Framework.Alphas.AlphaModel.OnSecuritiesChanged] - Receive notifications about security changes.
+</p>
 <div class="section-example-container">
 	<pre class="csharp">// Algorithm framework model that produces insights
-class MyAlphaModel : IAlphaModel, INotifiedSecurityChanges
+class MyAlphaModel : AlphaModel, INotifiedSecurityChanges
 {
     // Updates this alpha model with the latest data from the algorithm.
     // This is called each time the algorithm receives data for subscribed securities
-    public Enumerable&lt;Insight&gt; Update(QCAlgorithm algorithm, Slice data) {
+    public override Enumerable&lt;Insight&gt; Update(QCAlgorithm algorithm, Slice data) {
          // Generate insights on the securities in universe.
     }
 
-    public void OnSecuritiesChanged(QCAlgorithm algorithm, SecurityChanges changes) {
+    public override void OnSecuritiesChanged(QCAlgorithm algorithm, SecurityChanges changes) {
          // Handle security changes in from your universe model.
     }
 }</pre>
