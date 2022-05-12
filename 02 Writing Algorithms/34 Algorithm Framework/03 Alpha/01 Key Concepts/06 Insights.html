@@ -1,5 +1,8 @@
 <p>
-The Update method returns an array of Insight objects. An Insight is a <i>single</i> prediction for an asset. These can be thought of as actionable trading signals, indicating the asset direction, magnitude, and confidence in the near future. All insights can take a weight parameter to set the desired weighting for the insight. Insight classes have the following important properties:
+The Update method returns an array of Insight objects. An Insight is a <i>single</i> prediction for an asset. These can be thought of as actionable trading signals, indicating the asset direction, magnitude, and confidence in the near future. All insights can take a weight parameter to set the desired weighting for the insight.</p>
+
+<h4>Insight Properties</h4>
+<p>Insight classes have the following important properties:
 </p>
 <div class="section-example-container">
 	<pre class="csharp">class Insight {
@@ -34,6 +37,9 @@ The Update method returns an array of Insight objects. An Insight is a <i>single
     self.Weight # Weighting of the insight (optional, double) 
 </pre>
 </div>
+
+<h4>Create Insights</h4>
+
 <p>An $[Insight,T:QuantConnect.Algorithm.Framework.Alphas.Insight] constructor takes the following arguments:</p>
 <div class="section-example-container">
 	<pre class="python"># Insight Constructor Arguments:
@@ -58,4 +64,5 @@ insight = Insight.Price("IBM", timedelta(minutes = 20), InsightDirection.Up, Non
 var insight = Insight.Price("IBM", TimeSpan.FromMinutes(20), InsightDirection.Up, null, null, null, 0.25);</pre>
 	</div>
 
+<h4>Insights and Scheduled Events</h4>
 Don’t place a scheduled event in your alpha model to emit insights with EmitInsights (and returning an empty list in Update). Instead, use the Schedule event to set a flag, then you can still return insights in the Update method.
