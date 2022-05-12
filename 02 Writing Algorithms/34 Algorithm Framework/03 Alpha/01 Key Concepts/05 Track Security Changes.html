@@ -1,6 +1,6 @@
 <p>The <a class="docs-internal-link" href="/docs/algorithm-framework/universe-selection">Universe Selection Model</a> is in charge of selecting assets, so you should not assume any fixed set of assets. When assets are added to or removed from your universe, they will trigger an $[OnSecuritiesChanged(),M:QuantConnect.Algorithm.Framework.Alphas.CompositeAlphaModel.OnSecuritiesChanged] event. From there, you can initialize any state or history required for your Alpha Model.
 </p><div class="section-example-container">
-		<pre class="csharp">class MyAlphaModel : IAlphaModel, INotifiedSecurityChanges
+		<pre class="csharp">class MyAlphaModel : AlphaModel
 {
     private Dictionary&lt;symbol, symboldata&gt; _symbolDataBySymbol = new Dictionary&lt;symbol, symboldata&gt;();
     
@@ -45,7 +45,7 @@
         }
     }
 }</pre>
-		<pre class="python">class MyAlphaModel:
+		<pre class="python">class MyAlphaModel(AlphaModel):
     symbol_data_by_symbol = {}
 
     def OnSecuritiesChanged(self, algorithm, changes):
