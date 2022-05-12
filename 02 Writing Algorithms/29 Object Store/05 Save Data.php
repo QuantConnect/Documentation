@@ -12,3 +12,6 @@
 <br>&nbsp;&nbsp;&nbsp;&nbsp;-Method depends on data being stored
 <br>&nbsp;&nbsp;&nbsp;&nbsp;-Need to provide key and value
 <br>&nbsp;&nbsp;&nbsp;&nbsp;-<snippet example of using each method>
+
+<br><br>-In backtesting, we should save the data less frequently, at the OnEndOfAlgorithm.
+<br>-In live trading, we can save the data with more frequency (maybe in a scheduled event or at the end of the Train method, or after universe selection)
