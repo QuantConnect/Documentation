@@ -1,76 +1,75 @@
-<p>The <a class="docs-internal-link" href="/docs/algorithm-framework/universe-selection">Universe Selection Model</a> is in charge of selecting assets, so you should not assume any fixed set of assets. When assets are added to your universe, they will trigger an $[OnSecuritiesChanged(),M:QuantConnect.Algorithm.Framework.Alphas.CompositeAlphaModel.OnSecuritiesChanged] event. From there, you can initialize any state or history required for your Alpha Model.
+<p>The <a class="docs-internal-link" href="/docs/algorithm-framework/universe-selection">Universe Selection Model</a> is in charge of selecting assets, so you should not assume any fixed set of assets. When assets are added to or removed from your universe, they will trigger an $[OnSecuritiesChanged(),M:QuantConnect.Algorithm.Framework.Alphas.CompositeAlphaModel.OnSecuritiesChanged] event. From there, you can initialize any state or history required for your Alpha Model.
 </p><div class="section-example-container">
-		<pre class="csharp"> // Event fired each time the we add/remove securities from the data feed
-public void OnSecuritiesChanged(QCAlgorithmFramework algorithm, SecurityChanges changes)
+		<pre class="csharp">class MyAlphaModel : IAlphaModel, INotifiedSecurityChanges
 {
-    foreach (var added in changes.AddedSecurities)
-    {
-        SymbolData symbolData;
-        if (!_symbolDataBySymbol.TryGetValue(added.Symbol, out symbolData))
-        {
-            // create fast/slow EMAs
-            var fast = algorithm.EMA(added.Symbol, _fastPeriod);
-            var slow = algorithm.EMA(added.Symbol, _slowPeriod);
-            _symbolDataBySymbol[added.Symbol] = new SymbolData
-            {
-                Security = added,
-                Fast = fast,
-                Slow = slow
-            };
+    private Dictionary<symbol, symboldata=""> _symbolDataBySymbol = new Dictionary<symbol, symboldata="">();
+<insight><insight>
+    public void OnSecuritiesChanged(QCAlgorithm algorithm, SecurityChanges changes) {
+        foreach (var security in changes.AddedSecurities)
+        {               
+            _symbolDataBySymbol[security.Symbol] = new SymbolData(algorithm, security.Symbol);
         }
-        else
+
+        foreach (var security in changes.RemovedSecurities)
         {
-            // a security that was already initialized was re-added, reset the indicators
-            symbolData.Fast.Reset();
-            symbolData.Slow.Reset();
+            if (_symbolDataBySymbol.ContainsKey(security.Symbol))
+            {
+                _symbolDataBySymbol[security.Symbol].dispose();
+                _symbolDataBySymbol.Remove(security.Symbol);
+            }
+        }
+    }
+
+    public class SymbolData 
+    {
+        private QCAlgorithm _algorithm;
+        private Symbol _symbol;
+        private SimpleMovingAverage _indicator;
+        private TradeBarConsolidator _consolidator;
+
+        public SymbolData(QCAlgorithm algorithm, Symbol symbol)
+        {
+            _algorithm = algorithm;
+            _symbol = symbol;
+
+            _indicator = new SimpleMovingAverage(20);
+            _consolidator = new TradeBarConsolidator(1);
+            algorithm.SubscriptionManager.AddConsolidator(symbol, _consolidator);
+            algorithm.RegisterIndicator(symbol, _indicator, _consolidator);
+            algorithm.WarmUpIndicator(symbol, _indicator);
+        }
+
+        public void dispose()
+        {
+            _algorithm.SubscriptionManager.RemoveConsolidator(_symbol, _consolidator);
         }
     }
 }
+</insight></insight></symbol,></symbol,></pre>
+		<pre class="python">class MyAlphaModel:
+    symbol_data_by_symbol = {}
 
-// Contains data specific to a symbol required by this model
-private class SymbolData
-{
-    public Security Security { get; set; }
-    public Symbol Symbol =&gt; Security.Symbol;
-    public ExponentialMovingAverage Fast { get; set; }
-    public ExponentialMovingAverage Slow { get; set; }
-    public bool FastIsOverSlow { get; set; }
-    public bool SlowIsOverFast =&gt; !FastIsOverSlow;
-}
-</pre>
-		<pre class="python">    def OnSecuritiesChanged(self, algorithm, changes):
-        '''Event fired each time the we add/remove securities from the data feed
-        Args:
-            algorithm: The algorithm instance that experienced the change in securities
-            changes: The security additions and removals from the algorithm'''
-        for added in changes.AddedSecurities:
-            symbolData = self.symbolDataBySymbol.get(added.Symbol)
-            if symbolData is None:
-                # create fast/slow EMAs
-                symbolData = SymbolData(added)
-                symbolData.Fast = algorithm.EMA(added.Symbol, self.fastPeriod)
-                symbolData.Slow = algorithm.EMA(added.Symbol, self.slowPeriod)
-                self.symbolDataBySymbol[added.Symbol] = symbolData
-            else:
-                # a security that was already initialized was re-added, reset the indicators
-                symbolData.Fast.Reset()
-                symbolData.Slow.Reset()
+    def OnSecuritiesChanged(self, algorithm, changes):
+        for security in changes.AddedSecurities:
+            self.symbol_data_by_symbol[security.Symbol] = SymbolData(algorithm, security.Symbol)
+
+        for security in changes.RemovedSecurities:
+            if security.Symbol in self.symbol_data_by_symbol:
+                symbol_data = self.symbol_data_by_symbol.pop(security.Symbol, None)
+                if symbol_data:
+                    symbol_data.dispose()
 
 class SymbolData:
-    '''Contains data specific to a symbol required by this model'''
-    def __init__(self, security):
-        self.Security = security
-        self.Symbol = security.Symbol
-        self.Fast = None
-        self.Slow = None
-        self.FastIsOverSlow = False
+    def __init__(self, algorithm, symbol):
+        self.algorithm = algorithm
+        self.symbol = symbol
 
-    @property
-    def SlowIsOverFast(self):
-        return not self.FastIsOverSlow</pre>
+        self.indicator = SimpleMovingAverage(20)
+        self.consolidator = TradeBarConsolidator(1)
+        algorithm.SubscriptionManager.AddConsolidator(symbol, self.consolidator)
+        algorithm.RegisterIndicator(symbol, self.indicator, self.consolidator)
+        algorithm.WarmUpIndicator(self.symbol, self.indicator)
+    
+    def dispose(self):
+        self.algorithm.SubscriptionManager.RemoveConsolidator(self.symbol, self.consolidator)</pre>
 	</div>
-	<p><b>## ^ Update to Manual Indicators<br></b></p><p><b></b>
-	</p>
-
-
-<p>- Manage securities with NotifiedSecurityChanges (C# only)</p><p>- Python version: self.securities += changes.AddedSecurities</p>
