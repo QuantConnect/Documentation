@@ -1,0 +1,17 @@
+<p><a href="/docs/v2/writing-algorithms/historical-data/history-requests">Get some historical market data</a> to train and test the model. For example, to get daily data for the SPY ETF in the last 2 year, run:</p>
+
+<div class="section-example-container">
+    <pre class="python">self.spy = self.AddEquity("SPY", Resolution.Daily).Symbol
+history = self.History(self.spy, 252*2, Resolution.Daily).loc[self.spy]</pre>
+</div>
+
+<p>A First-In-First-Out queue is needed to store and update the data for making new predictions. To do so, create and warm-up a <code>RollingWindow&lt;TradeBar&gt;</code>by:</p>
+
+<div class="section-example-container">
+    <pre class="python"># set up a RollingWindow to store updated TradeBar for new predictions
+self.window = RollingWindow[TradeBar](7)
+# Warm up the RollingWindow with TradeBar objects created from the last 7 datapoints of historical data
+for row in history.iloc[-8:-1].itertuples():
+    trade_bar = TradeBar(row.Index, self.spy, row.open, row.high, row.low, row.close, row.volume)
+    self.window.Add(trade_bar)</pre>
+</div>

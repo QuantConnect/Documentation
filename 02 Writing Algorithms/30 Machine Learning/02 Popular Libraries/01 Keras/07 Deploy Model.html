@@ -1,0 +1,43 @@
+<p>You need to  <a href="#05-Train-Models">build and train the model</a> before you deploy it for backtesting and trading. Follow these steps to deploy the model:</p>
+
+<ol>
+    <li>Update the <code>RollingWindow</code> with the new <code>TradeBar</code> data received.</li>
+    <div class="section-example-container">
+        <pre class="python">def OnData(self, data):
+    # return if no new tradebar data received
+    if not data.Bars.ContainsKey(self.spy): return
+
+    self.window.Add(data.Bars[self.spy])</pre>
+    </div>
+
+    <li>convert the <code>RollingWindow</code> data into a dataframe.</li>
+    <div class="section-example-container">
+        <pre class="python">df = pd.DataFrame({"open": [x.Open for x in self.window],
+            "high": [x.High for x in self.window],
+            "low": [x.Low for x in self.window],
+            "close": [x.Close for x in self.window],
+            "volume": [x.Volume for x in self.window],},
+           index=[x.EndTime for x in self.window])
+# reverse the order for chronological order
+df = df[::-1]</pre>
+    </div>
+
+    <li>Process the new dataframe.</li>
+    <div class="section-example-container">
+        <pre class="python">new_X, __ = self.ProcessData(df)</pre>
+    </div>
+
+    <li>Make new prediction.</li>
+    <div class="section-example-container">
+        <pre class="python">prediction = self.model.predict(new_X)
+prediction = float(prediction[-1])</pre>
+    </div>
+
+    <li>Trade based on the new prediction.</li>
+    <div class="section-example-container">
+        <pre class="python">if prediction > 0:
+    self.SetHoldings(self.spy, 1)
+elif prediction < 0:            
+    self.SetHoldings(self.spy, -1)</pre>
+    </div>
+</ol>
