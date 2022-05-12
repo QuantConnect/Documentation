@@ -1,1 +1,76 @@
+<p>The <a class="docs-internal-link" href="/docs/algorithm-framework/universe-selection">Universe Selection Model</a> is in charge of selecting assets, so you should not assume any fixed set of assets. When assets are added to your universe, they will trigger an $[OnSecuritiesChanged(),M:QuantConnect.Algorithm.Framework.Alphas.CompositeAlphaModel.OnSecuritiesChanged] event. From there, you can initialize any state or history required for your Alpha Model.
+</p><div class="section-example-container">
+		<pre class="csharp"> // Event fired each time the we add/remove securities from the data feed
+public void OnSecuritiesChanged(QCAlgorithmFramework algorithm, SecurityChanges changes)
+{
+    foreach (var added in changes.AddedSecurities)
+    {
+        SymbolData symbolData;
+        if (!_symbolDataBySymbol.TryGetValue(added.Symbol, out symbolData))
+        {
+            // create fast/slow EMAs
+            var fast = algorithm.EMA(added.Symbol, _fastPeriod);
+            var slow = algorithm.EMA(added.Symbol, _slowPeriod);
+            _symbolDataBySymbol[added.Symbol] = new SymbolData
+            {
+                Security = added,
+                Fast = fast,
+                Slow = slow
+            };
+        }
+        else
+        {
+            // a security that was already initialized was re-added, reset the indicators
+            symbolData.Fast.Reset();
+            symbolData.Slow.Reset();
+        }
+    }
+}
+
+// Contains data specific to a symbol required by this model
+private class SymbolData
+{
+    public Security Security { get; set; }
+    public Symbol Symbol =&gt; Security.Symbol;
+    public ExponentialMovingAverage Fast { get; set; }
+    public ExponentialMovingAverage Slow { get; set; }
+    public bool FastIsOverSlow { get; set; }
+    public bool SlowIsOverFast =&gt; !FastIsOverSlow;
+}
+</pre>
+		<pre class="python">    def OnSecuritiesChanged(self, algorithm, changes):
+        '''Event fired each time the we add/remove securities from the data feed
+        Args:
+            algorithm: The algorithm instance that experienced the change in securities
+            changes: The security additions and removals from the algorithm'''
+        for added in changes.AddedSecurities:
+            symbolData = self.symbolDataBySymbol.get(added.Symbol)
+            if symbolData is None:
+                # create fast/slow EMAs
+                symbolData = SymbolData(added)
+                symbolData.Fast = algorithm.EMA(added.Symbol, self.fastPeriod)
+                symbolData.Slow = algorithm.EMA(added.Symbol, self.slowPeriod)
+                self.symbolDataBySymbol[added.Symbol] = symbolData
+            else:
+                # a security that was already initialized was re-added, reset the indicators
+                symbolData.Fast.Reset()
+                symbolData.Slow.Reset()
+
+class SymbolData:
+    '''Contains data specific to a symbol required by this model'''
+    def __init__(self, security):
+        self.Security = security
+        self.Symbol = security.Symbol
+        self.Fast = None
+        self.Slow = None
+        self.FastIsOverSlow = False
+
+    @property
+    def SlowIsOverFast(self):
+        return not self.FastIsOverSlow</pre>
+	</div>
+	<p><b>## ^ Update to Manual Indicators<br></b></p><p><b></b>
+	</p>
+
+
 <p>- Manage securities with NotifiedSecurityChanges (C# only)</p><p>- Python version: self.securities += changes.AddedSecurities</p>
