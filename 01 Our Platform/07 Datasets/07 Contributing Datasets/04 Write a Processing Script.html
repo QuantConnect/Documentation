@@ -38,11 +38,19 @@
     <p>If your dataset is related to Equities and your dataset does not account for ticker changes, follow these steps adjust the tickers over the historical data:</p>
     <ol>
         <li><a href='/datasets/quantconnect-us-equity-security-master/cli'>Download the US Equity Security Master dataset</a>.</li>
+<<<<<<< HEAD
         <li class='python'>Remove the statements of the Main method of Program.cs and compile the data processing project.</li>
+=======
+        <li class='python'>Remove the statements of the Main method of Program.cs and compile the data processing project.
+>>>>>>> 4d28f5b11 (Improve Processing Data Section)
         <div class="cli section-example-container">
             <pre>$ dotnet build .\DataProcessing\DataProcessing.csproj</pre>
         </div>
         This step will generate a file used by the <code>CLRImports</code> library.
+<<<<<<< HEAD
+=======
+        </li>
+>>>>>>> 4d28f5b11 (Improve Processing Data Section)
         <li class='python'>Import the <code>CLRImports</code> library.</li>
         <div class="python section-example-container">
             <pre class="python">from CLRImports import *</pre>
@@ -51,6 +59,8 @@
         <div class="section-example-container">
             <pre class="python">map_file_provider = LocalZipMapFileProvider()
 map_file_provider.Initialize(DefaultDataProvider())<br></pre>
+            <pre class="csharp">var mapFileProvider = new LocalZipMapFileProvider();
+var mapFileProvider.Initialize(new DefaultDataProvider())<br></pre>
         </div>
         <div class="section-example-container">
             <pre class="csharp">var mapFileProvider = new LocalZipMapFileProvider();
@@ -60,12 +70,23 @@ var mapFileProvider.Initialize(new DefaultDataProvider())<br></pre>
         <div class="section-example-container">
             <pre class="python">sid = SecurityIdentifier.GenerateEquity(point_in_time_ticker, Market.USA, True,
                                         map_file_provider, csv_date)</pre>
+            <pre class="csharp">var sid = SecurityIdentifier.GenerateEquity(pointInIimeTicker, Market.USA, true,
+                                        mapFileProvider, csvDate)</pre>
         </div>
         <div class="section-example-container">
             <pre class="csharp">var sid = SecurityIdentifier.GenerateEquity(pointInIimeTicker, Market.USA, true,
                                         mapFileProvider, csvDate)</pre>
         </div>
     </ol>
+<<<<<<< HEAD
     <li>Run the <span class="private-file-name">process.*</span> or <span class="private-file-name">Program.cs</span> file to populate the <span class="private-directory-name">Lean.DataSource.&lt;vendorNameDatasetName&gt;/output</span> directory.</li>
+=======
+    <li class="csharp">Compile the data processing project to generate the <span class="private-file-name">process.exe</span> excutable file.
+    <div class="cli section-example-container">
+      <pre>$ dotnet build .\DataProcessing\DataProcessing.csproj</pre>
+    </div>
+    </li>
+    <li>Run the <span class="private-file-name">process.*</span> file to populate the <span class="private-directory-name">Lean.DataSource.&lt;vendorNameDatasetName&gt;/output</span> directory.</li>
+>>>>>>> 4d28f5b11 (Improve Processing Data Section)
     Note: The pull request must contain sample data.
 </ol>
