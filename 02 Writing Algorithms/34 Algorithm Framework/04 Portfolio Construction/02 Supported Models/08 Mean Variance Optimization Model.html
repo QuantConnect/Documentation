@@ -3,13 +3,17 @@ The Mean Variance Portfolio Construction Model is an implementation of the class
 
 
 The model accepts the following arguments: 
-<br>-
-<br>-
-<br>-
-
-
-
-<div class="section-example-container">
+<br>-rebalance: Rebalancing parameter. If it is a timedelta, date rules or Resolution, it will be converted into a function.
+                              If None will be ignored.
+                              The function returns the next expected rebalance time for a given algorithm UTC DateTime.
+                              The function returns null if unknown, in which case the function will be called again in the
+                              next loop. Returning current time will trigger rebalance.; default Resolution.Daily
+<br>-portfolioBias: Specifies the bias of the portfolio (Short, Long/Short, Long); default PortfolioBias.LongShort
+<br>-lookback(int): Historical return lookback period; default 1
+<br>-period(int): The time interval of history price to calculate the weight; default 63
+<br>-targetReturn: The target portfolio return; default 0.02
+<br>-resolution: The resolution of the history price; default Resolution.Daily
+<br><div>-optimizer(class): Method used to compute the portfolio weights; default None</div><div><br></div><div>If you don't provide an optimizer, the default one is the MinimumVariancePortfolioOptimizer(lower, upper, targetReturn) where lower = 0 if portfolioBias == PortfolioBias.Long else -1 and  upper = 0 if portfolioBias == PortfolioBias.Short else 1<br></div><div><br></div><div class="section-example-container">
 	<pre class="csharp">SetPortfolioConstruction(new MeanVarianceOptimizationPortfolioConstructionModel(rebalance, portfolioBias, lookback, period, resolution, targetReturn, optimizer));</pre>
 	<pre class="python">self.SetPortfolioConstruction(MeanVarianceOptimizationPortfolioConstructionModel(rebalance, portfolio_bias, lookback, period, resolution, target_return, optimizer))</pre>
 </div>
