@@ -1,1 +1,15 @@
-<p></p>
+<p>The InsightWeightingPortfolioConstructionModel generates target portfolio weights based on the <code>Insight.Weight</code>. The target percent holdings of each Symbol is given by the Insight.Weight from the last active Insight for that symbol. For insights of direction InsightDirection.Up, long targets are returned and for insights of direction InsightDirection.Down, short targets are returned. If the sum of all the last active Insight per symbol is bigger than 1, it will factor down each target percent holdings proportionally so the sum is 1. It will ignore Insight that have no Insight.Weight value.</p>
+
+The model accepts the following arguments: 
+<br>-rebalance: Rebalancing parameter. If it is a timedelta, date rules or Resolution, it will be converted into a function.
+                              If None will be ignored.
+                              The function returns the next expected rebalance time for a given algorithm UTC DateTime.
+                              The function returns null if unknown, in which case the function will be called again in the
+                              next loop. Returning current time will trigger rebalance.; Default Resolution.Daily
+<br>-portfolioBias: Specifies the bias of the portfolio (Short, Long/Short, Long) ;default PortfolioBias.LongShort
+<br><br>
+
+<div class="section-example-container">
+	<pre class="csharp">SetPortfolioConstruction(new InsightWeightingPortfolioConstructionModel(rebalance, portfolioBias));</pre>
+	<pre class="python">self.SetPortfolioConstruction(InsightWeightingPortfolioConstructionModel(rebalance, portfolio_bias))</pre>
+</div>
