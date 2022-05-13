@@ -1,0 +1,18 @@
+<h4>Create Subscriptions</h4>
+<p>You need to <a href="https://www.quantconnect.com/docs/v2/writing-algorithms/asset-classes/key-concepts">subscribe to some data</a> to train the model. For example, to get daily data for the SPY ETF in the last 2 year, run:</p>
+
+<div class="section-example-container">
+    <pre class="python">self.spy = self.AddEquity("SPY", Resolution.Daily).Symbol</pre>
+</div>
+
+<h4>Set Training Schedule</h4>
+<p>To initialize and train the model, you can call the <code>Train</code> method in <code>Initialize</code>.</p>
+<div class="section-example-container">
+    <pre class="python">def Initialize(self):
+    self.Train(self.MyTrainingMethod)</pre>
+</div>
+<p>You can also recalibrate the model periodically by calling the <code>Train</code> method as a scheduled event.</p>
+<div class="section-example-container">
+    <pre class="python"># Set MyTrainingMethod to be executed at 8:00 am every Sunday
+self.Train(self.DateRules.Every(DayOfWeek.Sunday), self.TimeRules.At(8,0), self.MyTrainingMethod)</pre>
+</div>

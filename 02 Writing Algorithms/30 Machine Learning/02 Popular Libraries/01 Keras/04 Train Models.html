@@ -1,0 +1,106 @@
+<p>In this example, a neural-network regression prediction model using the following features and labels will be trained:</p>
+
+<table class="qc-table table">
+    <thead>
+        <tr>
+            <th>Data Category</th>
+            <th>Description</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>Features</td>
+            <td>Daily percent change of the open, high, low, close, and volume of the SPY over the last 5 days</td>
+        </tr>
+        <tr>
+            <td>Labels</td>
+            <td>Daily percent return of the SPY over the next day</td>
+        </tr>
+    </tbody>
+</table>
+
+<p>The following image shows the time difference between the features and labels:</p>
+<img class="docs-image" src="https://cdn.quantconnect.com/i/tu/ml-keras-function.png">
+
+<p>Follow these steps to create a method to train your model:</p>
+
+<h4>History Call</h4>
+<p>You need historical data to train the model. Call <code>History</code> with <code>Symbol</code>, timerule, and resolution to obtain historical data. In this example, 2 years of daily trade bar data is used.</p>
+<div class="section-example-container">
+    <pre class="python">self.History(self.spy, 252*2, Resolution.Daily)</pre>
+</div>
+
+<h4>Prepare Data</h4>
+<p>Follow the below steps to create a method to prepare the data for training and prediction.</p>
+<ol>
+    <li>Create a method to process the data for the algorithm class, with input data and number of timestep as arguments.</li>
+    <div class="section-example-container">
+        <pre class="python">def ProcessData(self, data, n_tsteps=5):</pre>
+    </div>
+
+    <li>Call the <code>pct_change</code> and <code>dropna</code> methods.</li>
+    <div class="section-example-container">
+        <pre class="python">    daily_pct_change = history.pct_change().dropna()</pre>
+    </div>
+
+    <li>Loop through the <code>daily_pct_change</code> DataFrame and collect the features and labels.</li>
+    <div class="section-example-container">
+        <pre class="python">    n_steps = 5<br>    features = []
+    labels = []
+    for i in range(len(daily_pct_change)-n_steps):
+        features.append(daily_pct_change.iloc[i:i+n_steps].values)
+        labels.append(daily_pct_change['close'].iloc[i+n_steps])</pre>
+    </div>
+
+    <li>Convert the lists of features and labels into <code>numpy</code> arrays and return them.</li>
+    <div class="section-example-container">
+        <pre class="python">    features = np.array(features)
+    labels = np.array(labels)
+
+    return features, labels</pre>
+    </div>
+</ol>
+
+<h4>Build Model</h4>
+<p>Follow the below steps to create a method to build the model.</p>
+<ol>
+    <li>Create a method to build the model for the algorithm class.</li>
+    <div class="section-example-container">
+        <pre class="python">def BuildModel(self):</pre>
+    </div>
+
+    <li>Call the <code>Sequential</code> constructor with a list of layers.</li>
+    <div class="section-example-container">
+        <pre class="python">    model = Sequential([Dense(10, input_shape=(5,5), activation='relu'),
+                        Dense(10, activation='relu'),
+                        Flatten(),
+                        Dense(1)])</pre>
+    </div>
+    <p>Set the <code>input_shape</code> of the first layer to <code>(5, 5)</code> because each sample contains the percent change of 5 factors (percent change of the open, high, low, close, and volume) over the previous 5 days. Call the <code>Flatten</code> constructor because the input is 2-dimensional but the output is just a single value.</p>
+
+    <li>Call the <code>compile</code> method with a loss function, an optimizer, and a list of metrics to monitor.</li>
+    <div class="section-example-container">
+        <pre class="python">    model.compile(loss='mse',
+                optimizer=Adam(),
+                metrics=['mae', 'mse'])</pre>
+    </div>
+
+    <li>return the trained model.</li>
+    <div class="section-example-container">
+        <pre class="python">    return model</pre>
+    </div>
+</ol>
+
+<h4>Fit Model</h4>
+<p>Follow the below steps to fit the model with the prepared data.</p>
+<ol>
+    <li>Instantiate the model and save it as a class variable.</li>
+    <div class="section-example-container">
+        <pre class="python">self.model = self.BuildModel()</pre>
+    </div>
+
+    <li>Call the <code>fit</code> method with the features and labels of the training dataset and a number of epochs.</li>
+    <div class="section-example-container">
+        <pre class="python">self.model.fit(X_train, y_train, epochs=5)</pre>
+    </div>
+</ol>

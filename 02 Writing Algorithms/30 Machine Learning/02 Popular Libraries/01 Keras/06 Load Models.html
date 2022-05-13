@@ -1,0 +1,21 @@
+<p>You can load and trade with pre-trained <code>keras</code> models that saved in ObjectStore. To do so, follow these steps to load it:</p>
+<ol>
+    <li>Check if the <code>ObjectStore</code> already has the model saved during <code>Initialize</code> with the model key.</li>
+    <div class="section-example-container">
+        <pre class="python">def Initialize(self):
+    if self.ObjectStore.ContainsKey(model_key):</pre>
+    </div>
+    <p>This method returns a boolean that represents if the <code>model_key</code> is in the ObjectStore. If the ObjectStore does not contain the <code>model_key</code>, save the model using the <code>model_key</code> before you proceed.</p>
+
+    <li>Call the <code>GetFilePath</code> method with the key name.</li>
+    <div class="section-example-container">
+        <pre class="python">        file_name = self.ObjectStore.GetFilePath(model_key)</pre>
+    </div>
+    <p>This method returns the path where the model is stored.</p>
+
+    <li>Call the <code>load_model</code> method with the file path.</li>
+    <div class="section-example-container">
+        <pre class="python">         self.model = load_model(file_name)</pre>
+    </div>
+    <p>This method returns the saved model.</p>
+</ol>
