@@ -34,12 +34,16 @@
 
     <li>In the <span class="private-file-name">process.*</span> or <span class="private-file-name">Program.cs</span> file, write a script to process your data and output the results to the <span class="private-directory-name">Lean.DataSource.&lt;vendorNameDatasetName&gt;/output</span> directory.</li>
     <p>To view an example, see the <a rel="nofollow" target="_blank" href="https://github.com/QuantConnect/Lean.DataSource.QuiverQuantTwitterFollowers/blob/master/DataProcessing/process.py">process.py</a> and <a rel="nofollow" target="_blank" href="https://github.com/QuantConnect/Lean.DataSource.QuiverQuantTwitterFollowers/blob/master/DataProcessing/Program.cs">Program.cs</a> files of the Twitter Followers dataset.</p>
-    <p>If your dataset is for universe selection data and it's at a higher frequency than a daily resolution, resample your data to a daily resolution.</p>     
+    <p>If your dataset is for universe selection data and it's at a higher frequency than a daily resolution, resample your data to a daily resolution.</p>
     <p>If your dataset is related to Equities and your dataset does not account for ticker changes, follow these steps adjust the tickers over the historical data:</p>
     <ol>
         <li><a href='/datasets/quantconnect-us-equity-security-master/cli'>Download the US Equity Security Master dataset</a>.</li>
-        <li class='python'>Compile the data processing project.</li>
-        <li class='python'>Import the <code>CLRImports</code> package.</li>
+        <li class='python'>Remove the statements of the Main method of Program.cs and compile the data processing project.</li>
+        <div class="cli section-example-container">
+            <pre>$ dotnet build .\DataProcessing\DataProcessing.csproj</pre>
+        </div>
+        This step will generate a file used by the <code>CLRImports</code> library.
+        <li class='python'>Import the <code>CLRImports</code> library.</li>
         <div class="python section-example-container">
             <pre class="python">from CLRImports import *</pre>
         </div>
@@ -48,11 +52,20 @@
             <pre class="python">map_file_provider = LocalZipMapFileProvider()
 map_file_provider.Initialize(DefaultDataProvider())<br></pre>
         </div>
+        <div class="section-example-container">
+            <pre class="csharp">var mapFileProvider = new LocalZipMapFileProvider();
+var mapFileProvider.Initialize(new DefaultDataProvider())<br></pre>
+        </div>
         <li>Create a security identifier.</li>
         <div class="section-example-container">
-            <pre class="python">sid = SecurityIdentifier.GenerateEquity(point_in_time_ticker, Market.USA, True, 
+            <pre class="python">sid = SecurityIdentifier.GenerateEquity(point_in_time_ticker, Market.USA, True,
                                         map_file_provider, csv_date)</pre>
+        </div>
+        <div class="section-example-container">
+            <pre class="csharp">var sid = SecurityIdentifier.GenerateEquity(pointInIimeTicker, Market.USA, true,
+                                        mapFileProvider, csvDate)</pre>
         </div>
     </ol>
     <li>Run the <span class="private-file-name">process.*</span> or <span class="private-file-name">Program.cs</span> file to populate the <span class="private-directory-name">Lean.DataSource.&lt;vendorNameDatasetName&gt;/output</span> directory.</li>
+    Note: The pull request must contain sample data.
 </ol>
