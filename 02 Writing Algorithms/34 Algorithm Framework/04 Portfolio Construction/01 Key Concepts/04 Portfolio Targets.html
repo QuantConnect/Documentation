@@ -1,21 +1,21 @@
 <p>
-The PortfolioTarget class accepts two parameters for its constructor: Symbol and Quantity. This is consumed by the execution model, which seeks to reach this target as efficiently as possible; you should not assume orders are filled immediately.
-</p>
+The portfolio construction model returns PortfolioTarget objects, which are passed to the risk management model. <br></p><p>To create PortfolioTarget objects based on a quantity, pass the Symbol and quantity to the PortfolioTarget constructor.<br></p>
 <div class="section-example-container">
 	<pre class="csharp">// Create a new portfolio target for 1200 IBM shares.
 var target = new PortfolioTarget("IBM", 1200);</pre>
 	<pre class="python"># Create a new portfolio target for 1200 IBM shares.
 target = PortfolioTarget("IBM", 1200)</pre>
 </div>
-<p>Margin accounts can also use the $[Percent(algorithm, Symbol, percent),M:QuantConnect.Algorithm.Framework.Portfolio.PortfolioTarget.Percent] helper method. This calculates a quantity equivalent to a percentage of portfolio value.
-</p>
+<p>If you have a margin account, you can use the $[Percent(algorithm, Symbol, 
+percent),M:QuantConnect.Algorithm.Framework.Portfolio.PortfolioTarget.Percent]
+ helper method to create PortfolioTarget objects based on a portfolio weight. <br></p>
 <div class="section-example-container">
 	<pre class="csharp">// Calculate target equivalent to 10% of portfolio value
 var target = PortfolioTarget.Percent(algorithm, "IBM", 0.1);</pre>
 	<pre class="python"># Calculate target equivalent to 10% of portfolio value
 target = PortfolioTarget.Percent(algorithm, "IBM", 0.1)</pre>
 </div>
-<p>Your Portfolio Construction Model should return a targets array from your $[CreateTargets,M:QuantConnect.Algorithm.Framework.Portfolio.IPortfolioConstructionModel.CreateTargets] method:
+<p>Your Portfolio Construction Model should return an array of PortfolioTarget objects from its&nbsp; $[CreateTargets,M:QuantConnect.Algorithm.Framework.Portfolio.IPortfolioConstructionModel.CreateTargets] method.
 </p>
 <div class="section-example-container">
 	<pre class="csharp">// Return an array of targets
