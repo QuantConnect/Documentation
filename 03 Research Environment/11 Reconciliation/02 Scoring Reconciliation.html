@@ -1,8 +1,19 @@
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});
+</script>
+<script type="text/javascript"
+    src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
 <p>
- Reconciliation is scored using two metrics: returns correlation and dynamic time warping (DTW) distance.
+Reconciliation is scored using two metrics: returns correlation and dynamic time warping (DTW) distance.
 </p>
 <h4>What is DTW Distance?</h4>
-<p>Dynamic Time Warp (DTW) Distance quantifies the difference between two time-series. It is an algorithm that measures the shortest path between the points of two time-series. It uses Euclidean distance as a measurement of point-to-point distance and returns an overall measurement of the distance on the scale of the initial time-series values. We apply DTW to the returns curve of the live and OOS performance, so the DTW distance measurement is on the scale of percent returns. </p>
+<p>Dynamic Time Warp (DTW) Distance quantifies the difference between two time-series. It is an algorithm that measures the shortest path between the points of two time-series. It uses Euclidean distance as a measurement of <b>point-to-point distance</b> and returns an overall measurement of the distance on the scale of the initial time-series values. We apply DTW to the returns curve of the live and OOS performance, so the DTW distance measurement is on the scale of percent returns. </p>
+
+$$\begin{equation}
+DTW(X,Y) = min\bigg\{\sum_{l=1}^{L}\left(x_{m_l} - y_{n_l}\right)^{2}\in P^{N\times M}\bigg\}
+\end{equation}$$
 
 <p>For the reasons outlined in our research notebook on the topic (linked below), QuantConnect annualizes the daily DTW. An annualized distance provides a user with a measurement of the annual difference in the magnitude of returns between the two curves. A perfect score is 0, meaning the returns for each day were precisely the same. A DTW score of 0 is nearly impossible to achieve, and we consider anything below 0.2 to be a decent score. A distance of 0.2 means the returns between an algorithm's live and OOS performance deviated by 20% over a year.</p>
 
@@ -10,6 +21,11 @@
 <p>
 Returns correlation is the simple Pearson correlation between the live and OOS returns. Correlation gives us a rudimentary understanding of how the returns move together. Do they trend up and down at the same time? Do they deviate in direction or timing?
 </p>
+
+$$\begin{equation}
+\rho_{XY} = \frac{cov(X, Y)}{\sigma_X\sigma_Y}
+\end{equation}$$
+
 <p>
 An algorithm's returns correlation should be as close to 1 as possible. We consider a good score to be 0.8 or above, meaning that there is a strong positive correlation. This indicates that the returns move together most of the time and that for any given return you see from one of the curves, the other curve usually has a similar direction return (positive or negative).
 </p>
