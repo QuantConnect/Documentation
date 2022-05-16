@@ -1,4 +1,4 @@
-<p>You can filter and select US equities based by AddUniverse&lt;BrainCompanyFilingLanguageMetricsUniverse{ReportType}&gt;() based on daily Brain Company Filing Language Metrics data.
+<p>You can filter and select US equities based by AddUniverse&lt;BrainCompanyFilingLanguageMetricsUniverse10K&gt;() and/or AddUniverse&lt;BrainCompanyFilingLanguageMetricsUniverseAll&gt;() based on daily Brain Company Filing Language Metrics data.
 </p>
 <div class="section-example-container">
 <pre class="python">def Initialize(self):
@@ -8,8 +8,8 @@
     # add a custom universe data source (defaults to usa-equity)
     self.AddUniverse(BrainCompanyFilingLanguageMetricsUniverseAll, "BrainCompanyFilingLanguageMetricsUniverseAll", Resolution.Daily, self.UniverseSelection)
 
-def UniverseSelection(self, data):
-    for datum in data:
+def UniverseSelection(self, alt_coarse):
+    for datum in alt_coarse:
             self.Log(f"""{datum.Symbol},
                     {datum.ReportSentiment.Sentiment},
                     {datum.RiskFactorsStatementSentiment.Uncertainty},
@@ -24,12 +24,12 @@ def UniverseSelection(self, data):
                     {datum.RiskFactorsStatementSentiment.MeanSentenceLength}""")
 
     # define our selection criteria
-    return [d.Symbol for d in data \
+    return [d.Symbol for d in alt_coarse \
                 if d.ReportSentiment.Sentiment &gt; 0 \
                 and d.ManagementDiscussionAnalyasisOfFinancialConditionAndResultsOfOperations.Sentiment &gt; 0]</pre>
-<pre class="csharp">AddUniverse&lt;BrainCompanyFilingLanguageMetricsUniverseAll&gt;("BrainCompanyFilingLanguageMetricsUniverseAll", Resolution.Daily, data =&gt;
+<pre class="csharp">AddUniverse&lt;BrainCompanyFilingLanguageMetricsUniverseAll&gt;("BrainCompanyFilingLanguageMetricsUniverseAll", Resolution.Daily, altCoarse =&gt;
 {
-    foreach (var datum in data)
+    foreach (var datum in altCoarse)
     {
         Log($@"{datum.Symbol},
         {datum.ReportSentiment.Sentiment},
@@ -46,7 +46,7 @@ def UniverseSelection(self, data):
     }
 
     // define our selection criteria
-    return from d in data 
+    return from d in altCoarse 
         where d.ReportSentiment.Sentiment &gt; 0m &amp;&amp; d.ManagementDiscussionAnalyasisOfFinancialConditionAndResultsOfOperations.Sentiment &gt; 0m
         select d.Symbol;
 });</pre>

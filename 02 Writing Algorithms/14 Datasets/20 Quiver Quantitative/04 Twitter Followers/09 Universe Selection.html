@@ -6,26 +6,26 @@ def Initialize(self):
     # add a custom universe data source (defaults to usa-equity)
     self.AddUniverse(QuiverQuantTwitterFollowersUniverse, "QuiverQuantTwitterFollowersUniverse", Resolution.Daily, self.UniverseSelection)
         
-def UniverseSelection(self, data):
-    for datum in data:
+def UniverseSelection(self, alt_coarse):
+    for datum in alt_coarse:
         self.Log(f"{datum.Symbol},{datum.Followers},{datum.DayPercentChange},{datum.WeekPercentChange}")
         
     # define our selection criteria
-    return [d.Symbol for d in data \
+    return [d.Symbol for d in alt_coarse\
                 if d.Followers &gt; 200000 \
                 and d.WeekPercentChange &gt; 0]</pre>
 <pre class="csharp">public override void Initialize()
 {
     // add a custom universe data source (defaults to usa-equity)
-    AddUniverse("QuiverQuantTwitterFollowersUniverse", Resolution.Daily, data =&gt;
+    AddUniverse("QuiverQuantTwitterFollowersUniverse", Resolution.Daily, altCoarse =&gt;
     {
-        foreach (var datum in data)
+        foreach (var datum in altCoarse)
         {
             Log($"{datum.Symbol},{datum.Followers},{datum.DayPercentChange},{datum.WeekPercentChange}");
         }
 
         // define our selection criteria
-        return from d in data 
+        return from d in altCoarse
             where d.Followers &gt; 200000 &amp;&amp; d.WeekPercentChange &gt; 0m 
             select d.Symbol;
     });

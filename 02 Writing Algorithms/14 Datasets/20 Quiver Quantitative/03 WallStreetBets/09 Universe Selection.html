@@ -8,12 +8,12 @@
     # add a custom universe data source (defaults to usa-equity)
     self.AddUniverse(QuiverWallStreetBetsUniverse, "QuiverWallStreetBetsUniverse", Resolution.Daily, self.UniverseSelection)
         
-def UniverseSelection(self, data):
-    for datum in data:
+def UniverseSelection(self, alt_coarse):
+    for datum in alt_coarse:
         self.Log(f"{datum.Symbol},{datum.Mentions},{datum.Rank},{datum.Sentiment}")
         
     # define our selection criteria
-    return [d.Symbol for d in data \
+    return [d.Symbol for d in alt_coarse \
                 if d.Mentions &gt; 100 \
                 and d.Rank &lt; 100]</pre>
 <pre class="csharp">public override void Initialize()
@@ -22,15 +22,15 @@ def UniverseSelection(self, data):
     UniverseSettings.Resolution = Resolution.Daily;
 
     // add a custom universe data source (defaults to usa-equity)
-    AddUniverse("QuiverWallStreetBetsUniverse", Resolution.Daily, data =&gt;
+    AddUniverse("QuiverWallStreetBetsUniverse", Resolution.Daily, altCoarse =&gt;
     {
-        foreach (var datum in data)
+        foreach (var datum in altCoarse)
         {
             Log($"{datum.Symbol},{datum.Mentions},{datum.Rank},{datum.Sentiment}");
         }
 
         // define our selection criteria
-        return from d in data
+        return from d in altCoarse
             where d.Mentions &gt; 10 &amp;&amp; d.Rank &gt; 10
             select d.Symbol;
     });

@@ -8,8 +8,8 @@
     # add a custom universe data source (defaults to usa-equity)
     self.AddUniverse(BrainSentimentIndicatorUniverse, "BrainSentimentIndicatorUniverse", Resolution.Daily, self.UniverseSelection)
 
-def UniverseSelection(self, data):
-    for datum in data:
+def UniverseSelection(self, alt_coarse):
+    for datum in alt_coarse:
         self.Log(f"""{datum.Symbol},
                 {datum.TotalArticleMentions7Days},
                 {datum.SentimentalArticleMentions7Days},
@@ -23,12 +23,12 @@ def UniverseSelection(self, data):
                 {datum.SentimentalBuzzVolume30Days}""")
 
     # define our selection criteria
-    return [d.Symbol for d in data \
+    return [d.Symbol for d in alt_coarse \
                 if d.TotalArticleMentions7Days &gt; 0 \
                 and d.Sentiment7Days]</pre>
-<pre class="csharp">AddUniverse&lt;BrainSentimentIndicatorUniverse&gt;("BrainSentimentIndicatorUniverse", Resolution.Daily, data =&gt;
+<pre class="csharp">AddUniverse&lt;BrainSentimentIndicatorUniverse&gt;("BrainSentimentIndicatorUniverse", Resolution.Daily, altCoarse=&gt;
 {
-    foreach (var datum in data)
+    foreach (var datum in altCoarse)
     {
         Log($@"{datum.Symbol},
                {datum.TotalArticleMentions7Days},
@@ -44,7 +44,7 @@ def UniverseSelection(self, data):
     }
 
     // define our selection criteria
-    return from d in data 
+    return from d in altCoarse 
            where d.TotalArticleMentions7Days &gt; 0m &amp;&amp; d.Sentiment7Days &gt; 0m
            select d.Symbol;
 });</pre>

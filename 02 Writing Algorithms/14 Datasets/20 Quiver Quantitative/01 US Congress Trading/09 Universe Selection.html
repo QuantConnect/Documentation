@@ -1,0 +1,30 @@
+<p>You can select Equities by AddUniverse&lt;QuiverQuantCongresssUniverse&gt;() based on Quiver Quant Congress Trading data.</p>
+
+<div class="section-example-container">
+<pre class="python">
+def Initialize(self):
+    self.AddUniverse(QuiverQuantCongressUniverse, "QuiverQuantCongresssUniverse", Resolution.Daily, self.UniverseSelection)
+
+def UniverseSelection(self, alt_coarse):
+    for datum in alt_coarse:
+        self.Log(f"{datum.Symbol},{datum.Representative},{datum.Amount},{datum.Transaction}")
+
+    # define our selection criteria
+    return [d.Symbol for d in alt_coarse \
+        if d.Amount &gt; 200000 and d.Transaction == OrderDirection.Buy]
+</pre>
+<pre class="csharp">
+AddUniverse("QuiverQuantCongresssUniverse", Resolution.Daily, altCoarse =&gt;
+{
+    foreach (var datum in altCoarse)
+    {
+        Log($"{datum.Symbol},{datum.Representative},{datum.Amount},{datum.Transaction}");
+    }
+
+    // define our selection criteria
+    return from d in altCoarse 
+        where d.Amount &gt; 200000 &amp;&amp; d.Transaction == OrderDirection.Buy 
+        select d.Symbol;
+});
+</pre>
+</div>

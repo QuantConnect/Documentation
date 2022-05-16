@@ -2,12 +2,20 @@
 <pre class="python">from QuantConnect.Data.Custom.SmartInsider import *
 
 self.aapl = self.AddEquity("AAPL", Resolution.Minute).Symbol
+
 self.smart_insider_intention = self.AddData(SmartInsiderIntention, self.aapl).Symbol
-self.smart_insider_transaction = self.AddData(SmartInsiderTransaction, self.aapl).Symbol</pre>
+self.smart_insider_transaction = self.AddData(SmartInsiderTransaction, self.aapl).Symbol
+
+self.AddUniverse(SmartInsiderIntentionUniverse, "SmartInsiderIntentionUniverse", Resolution.Daily, self.IntentionSelection)
+self.AddUniverse(SmartInsiderTransactionUniverse, "SmartInsiderTransactionUniverse", Resolution.Daily, self.TransactionSelection)</pre>
 <pre class="csharp">using QuantConnect.Data.Custom.SmartInsider;
 
 _aapl = AddEquity("AAPL", Resolution.Minute).Symbol;
+
 _smartInsiderIntention = AddData&lt;SmartInsiderIntention&gt;(_aapl).Symbol;
 _smartInsiderTransaction = AddData&lt;SmartInsiderTransaction&gt;(_aapl).Symbol;
+
+AddUniverse&lt;SmartInsiderIntentionUniverse&gt;("SmartInsiderIntentionUniverse", Resolution.Daily, IntentionSelection);
+AddUniverse&lt;SmartInsiderTransactionUniverse&gt;("SmartInsiderTransactionUniverse", Resolution.Daily, TransactionSelection);
 </pre>
 </div>

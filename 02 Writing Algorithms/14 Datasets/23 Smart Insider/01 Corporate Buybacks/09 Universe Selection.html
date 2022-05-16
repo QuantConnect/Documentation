@@ -1,0 +1,60 @@
+<p>You can filter and select US Equities based on SmartInsider Corporate Buyback data by AddUniverse&lt;SmartInsiderIntentionUniverse&gt; and/or AddUniverse&lt;SmartInsiderTransactionUniverse&gt;.</p>
+
+<div class="section-example-container">
+<pre class="python">
+def Initialize(self):
+    self.AddUniverse(SmartInsiderIntentionUniverse, "SmartInsiderIntentionUniverse", Resolution.Daily, self.IntentionSelection)
+    self.AddUniverse(SmartInsiderTransactionUniverse, "SmartInsiderTransactionUniverse", Resolution.Daily, self.TransactionSelection)
+
+def IntentionSelection(self, alt_coarse):
+    for datum in alt_coarse:
+        self.Log(f"{datum.Symbol},{datum.Amount},{datum.AmountValue},{datum.Percentage},{datum.MinimumPrice},{datum.MaximumPrice},{datum.USDMarketCap}")
+
+    # define our selection criteria
+    return [d.Symbol for d in alt_coarse \
+                if d.Percentage &gt; 0.005 \
+                and d.USDMarketCap &gt; 100000000]
+
+def TransactionSelection(self, alt_coarse):
+    for datum in alt_coarse:
+        self.Log(f"{datum.Symbol},{datum.Amount},{datum.MinimumExecutionPrice},{datum.MaximumExecutionPrice},{datum.USDValue},{datum.BuybackPercentage},{datum.VolumePercentage},{datum.USDMarketCap}")
+
+    # define our selection criteria
+    return [d.Symbol for d in alt_coarse \
+                if d.BuybackPercentage &gt; 0.005 \
+                and d.USDMarketCap &gt; 100000000]
+</pre>
+<pre class="csharp">
+public override void Initialize()
+{
+    AddUniverse("SmartInsiderIntentionUniverse", Resolution.Daily, IntentionSelection);
+    AddUniverse("SmartInsiderTransactionUniverse", Resolution.Daily, TransactionSelection);
+}
+
+private IEnumerable&lt;Symbol&gt; IntentionSelection(IEnumerable&lt;SmartInsiderIntentionUniverse&gt; altCoarse)
+{
+    foreach (var datum in altCoarse)
+    {
+        Log($"{datum.Symbol},{datum.Amount},{datum.AmountValue},{datum.Percentage},{datum.MinimumPrice},{datum.MaximumPrice},{datum.USDMarketCap}");
+    }
+
+    // define our selection criteria
+    return from d in altCoarse 
+        where d.Percentage &gt; 0.005m &amp;&amp; d.USDMarketCap &gt; 100000000m
+        select d.Symbol;
+}
+
+private IEnumerable&lt;Symbol&gt; TransactionSelection(IEnumerable&lt;SmartInsiderTransactionUniverse&gt; altCoarse)
+{
+    foreach (var datum in altCoarse)
+    {
+        Log($"{datum.Symbol},{datum.Amount},{datum.MinimumExecutionPrice},{datum.MaximumExecutionPrice},{datum.USDValue},{datum.BuybackPercentage},{datum.VolumePercentage},{datum.USDMarketCap}");
+    }
+
+    // define our selection criteria
+    return from d in altCoarse 
+        where d.BuybackPercentage &gt; 0.005m &amp;&amp; d.USDMarketCap &gt; 100000000m
+        select d.Symbol;
+}
+</pre>
+</div>
