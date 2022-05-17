@@ -10,5 +10,6 @@
     delisting = data.Delistings[self.msft]</pre>
     </div>
 -^ Add SetOrderTicket method and add the Ticket member to get the order ticket that liquidates the position
+<br>-For a full example, see the DelistingEventsAlgorithm.
 
 <div data-tree="QuantConnect.Data.Market.Delisting"></div>
