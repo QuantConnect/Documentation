@@ -1,29 +1,22 @@
-<meta name="tag" content="using quantconnect" />
+<meta name="tag" content="using quantconnect">
 <p>
     The QuantConnect LEAN engine was designed to support international trading across multiple time zones and markets. Consequently, we need to define a reference time zone for the algorithm to set the $[Time, P:QuantConnect.Algorithm.QCAlgorithm.Time]. By default, New York time is used.
 </p>
 <p>
-    You can set a different time zone for your convenience using the $[SetTimeZone(), M:QuantConnect.Algorithm.QCAlgorithm.SetTimeZone] method. This should be called in your Initialize() function. This method accepts either a string following the <a href="https://en.wikipedia.org/wiki/List_of_tz_database_time_zones">IANA Time Zone database</a> convention or <a href="https://nodatime.org/">NodaTime</a>.DateTimeZone objects. The $[TimeZones, T:QuantConnect.TimeZones] class provides access to common time zones.
+    To set a different time zone, call the $[SetTimeZone(), M:QuantConnect.Algorithm.QCAlgorithm.SetTimeZone] method. This method accepts either a string following the <a href="https://en.wikipedia.org/wiki/List_of_tz_database_time_zones">IANA Time Zone database</a> convention or a <a href="https://nodatime.org/">NodaTime</a>.DateTimeZone object. The $[TimeZones, T:QuantConnect.TimeZones] class provides access to common time zones.
 </p>
-<div class="section-example-container" >
-<pre class="csharp" >
-SetTimeZone("Europe/London");
+<div class="section-example-container">
+<pre class="csharp">SetTimeZone("Europe/London");
 SetTimeZone(NodaTime.DateTimeZone.Utc);
 SetTimeZone(TimeZones.Chicago);
 </pre>
-<pre class="fsharp" >
-this.SetTimeZone("Europe/London")
-this.SetTimeZone(NodaTime.DateTimeZone.Utc)
-this.SetTimeZone(TimeZones.Chicago)
-</pre>
-<pre class="python" >
-self.SetTimeZone("Europe/London")
+<pre class="python">self.SetTimeZone("Europe/London")
 self.SetTimeZone(NodaTime.DateTimeZone.Utc)
 self.SetTimeZone(TimeZones.Chicago)
 </pre>
 </div>
 <p>
-    The algorithm $[TimeZone, P:QuantConnect.Algorithm.QCAlgorithm.TimeZone] may be different from the data time zone (e.g.: Forex trading). In this case it might appear like there is a lag between the algorithm time and the first bar of a history request, however, this is just the difference in time zone. All the data is internally synchronized in UTC time and arrives in the same "time slice" or $[Slice,T:QuantConnect.Data.Slice] object. A slice is a sliver of time with all the data available for this moment.
+    The algorithm $[TimeZone, P:QuantConnect.Algorithm.QCAlgorithm.TimeZone] may be different from the data time zone (e.g.: Forex trading). In this case, it might appear like there is a lag between the algorithm time and the first bar of a history request, however, this is just the difference in time zone. All the data is internally synchronized in UTC time and arrives in the same "time slice" or $[Slice,T:QuantConnect.Data.Slice] object. A slice is a sliver of time with all the data available for this moment.
 </p>
 <p>
     To keep trades easy to compare between asset classes, we mark all orders in $[UtcTime, P:QuantConnect.Algorithm.QCAlgorithm.UtcTime].
