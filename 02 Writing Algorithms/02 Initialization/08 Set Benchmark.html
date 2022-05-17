@@ -1,17 +1,25 @@
-<meta name="tag" content="securities and portfolio" />
-<meta name="tag" content="portfolio setup" />
+<meta name="tag" content="securities and portfolio">
+<meta name="tag" content="portfolio setup">
 <p>
-	You can set a custom benchmark for your algorithm using the $[SetBenchmark(), M:QuantConnect.Algorithm.QCAlgorithm.SetBenchmark] method. This should be called in your Initialize() function.
-</p>
+	The benchmark performance is input to calculate several statistics on your algorithm, including alpha and beta. To set a benchmark for your algorithm, call the $[SetBenchmark(), M:QuantConnect.Algorithm.QCAlgorithm.SetBenchmark] method. You can set the benchmark to a security, a constant value, or a value from a custom data source. By default, the benchmark is SPY.<br></p>
 
-<div class="section-example-container" >
-<pre class="csharp" >
-// Defaults to Equity market
-SetBenchmark("IBM"); 
-</pre>
-<pre class="python" >
-self.SetBenchmark("SPY")
-</pre>
+<div class="section-example-container">
+<pre class="csharp">// Set the benchmark to IBM
+SetBenchmark("IBM");
+
+// Set the benchmark to a constant value of 0
+SetBenchmark(x =&gt; 0);
+
+// Set the benchmark to a value from a custom data source
+var symbol = AddData&lt;CustomData&gt;("CustomData", Resolution.Hour).Symbol;
+SetBenchmark(symbol);</pre>
+<pre class="python"># Set the benchmark to IBM
+self.SetBenchmark("IBM")
+
+# Set the benchmark to a constant value of 0
+self.SetBenchmark(lambda x: 0)
+
+# Set the benchmark to a value from a custom data source
+self.symbol = self.AddData(ExampleCustomData, "ExampleCustomData", Resolution.Hour).Symbol
+self.SetBenchmark(self.symbol)</pre>
 </div>
-
-## TODO: Setting a constant benchmark, using a custom data benchmark, explain importance of a benchmark.
