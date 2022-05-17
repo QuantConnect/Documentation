@@ -1,4 +1,62 @@
-<p>The process to creating a consolidator depends on the type of consolidator you want to create. For instructions on the various consolidators we support, see <a href='/docs/v2/writing-algorithms/consolidating-data/consolidator-types'>Consolidator Types</a>.</p>
+<p>The process to manually creating a consolidator depends on the type of consolidator you want to create. For instructions on the various consolidators we support, see <a href="/docs/v2/writing-algorithms/consolidating-data/consolidator-types">Consolidator Types</a>.</p>
+
+<h4>Shortcut Methods</h4>
+<p>To create consolidators with the shortcut method, call the CreateConsolidator method. The <span class="python">timedelta</span><span class="csharp">TimeSpan</span> you pass to the method should be at a lower resolution than the security resolution. For instance, if the security resolution is minute, the <span class="python">timedelta</span><span class="csharp">TimeSpan</span> should span at least 1 minute.</p>
+
+<div class="section-example-container">
+<pre class="python"># Create a daily TradeBar consolidator
+self.tradebar_consolidator = self.CreateConsolidator(timedelta(days=1), TradeBar)
+
+# Create a minute QuoteBar consolidator
+self.quotebar_consolidator = self.CreateConsolidator(timedelta(minutes=1), QuoteBar)
+
+# Create a tick consolidator
+self.tick_consolidator = self.CreateConsolidator(timedelta(milliseconds=1), Tick)
+
+# Create a tick quote consolidator
+self.CreateConsolidator(timedelta(milliseconds=1), Tick, TickType.Quote)</pre>
+<pre class="csharp">// Create a daily TradeBar consolidator
+var tradebarConsolidator = CreateConsolidator(TimeSpan.FromDays(1), typeof(TradeBar));
+
+// Create a minute QuoteBar consolidator
+var quoteBarConsolidator = CreateConsolidator(TimeSpan.FromMinutes(1), typeof(QuoteBar));
+
+// Create a tick consolidator
+var tickConsolidator = CreateConsolidator(TimeSpan.FromMilliseconds(1), typeof(Tick));
+
+// Create a tick quote consolidator
+var tickQuoteConsolidator = CreateConsolidator(TimeSpan.FromMilliseconds(1), typeof(Tick), TickType.Quote);</pre>
+</div>
+
+<p>To create the default consolidator for the specified symbol and resolution, call the <code>ResolveConsolidator</code> method. If you don't provide a <span class='csharp'>TimeSpan</span><span class='python'>timedelta</span> or Resolution argument, the method uses the resolution of the security subscription. If the data resolution contains both TradeBar and QuoteBar objects, the method returns a TradeBarConsolidator.<br></p>
+
+<div class="section-example-container">
+<pre class="python"># Create the default consolidator using the symbol resolution
+self.default_consolidator = self.ResolveConsolidator(symbol)
+
+# Create a 10-day consolidator
+self.ten_day_consolidator = self.ResolveConsolidator(symbol, timedelta(days=10))
+
+# Create a 1-minute consolidator
+self.one_min_consolidator = self.ResolveConsolidator(symbol, Resolution.Minute)
+
+# Create a tick consolidator
+self.tick_quote_consolidator = self.ResolveConsolidator(symbol, Resolution.Tick)
+</pre>
+<pre class="csharp">// Create the default consolidator using the symbol resolution
+var defaultConsolidator = ResolveConsolidator(symbol);
+
+// Create a 10-day consolidator
+var tenDayConsolidator = ResolveConsolidator(symbol, TimeSpan.FromDays(10));
+
+// Create a 1-minute consolidator
+var oneMinuteConsolidator = ResolveConsolidator(symbol, Resolution.Minute);
+
+// Create a tick consolidator
+var tickConsolidator = ResolveConsolidator(symbol, Resolution.Tick);</pre>
+</div>
+
+<h4>Common Errors</h4>
 
 <p>
 The most common error when creating consolidators is to put parenthesis <code>()</code> at the end of your function name when setting the event handler of the consolidator. If you use parenthesis, the method executes and the result is passed as the event handler instead of the method itself. Remember to pass the name of your method to the event system. Specifically, it should be <code class="csharp">ConsolidationHandler</code><code class="python">self.ConsolidationHandler</code>, not <code class="csharp">ConsolidationHandler()</code><code class="python">self.ConsolidationHandler()</code>.</p>
