@@ -31,5 +31,6 @@ def OnData(self, data):
 }</pre>
         <pre class="python">if self.googl in data.Dividends:<br>    dividend = data.Dividends[self.googl]</pre>
     </div>
+- For a full example, see the DividendAlgorithm
 
 <div data-tree="QuantConnect.Data.Market.Dividend"></div>
