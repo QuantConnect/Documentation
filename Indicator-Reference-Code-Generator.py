@@ -301,7 +301,7 @@ function ShowHide(event, idName) {{
 }};
 </script>
 
-<p>{"You can create manually create <code>{full}</code> an indicator, so it doesn’t automatically update." if full not in candle else "A candlestick pattern indicator requires manual creation and update with a <code>TradeBar</code> object."} Manual indicators let you update their values with any data you choose. The following reference table describes the <code>{full}</code> constructor.</p>
+<p>{f"You can manually create a <code>{full}</code> indicator, so it doesn’t automatically update." if full not in candle else "A candlestick pattern indicator requires manual creation and update with a <code>TradeBar</code> object."} Manual indicators let you update their values with any data you choose. The following reference table describes the <code>{full}</code> constructor.</p>
 
 <div class="method-container">
 """)
