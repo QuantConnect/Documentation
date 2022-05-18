@@ -1,1 +1,26 @@
 
+<div class="section-example-container">
+<pre class="python">def Initialize(self):
+    self.UniverseSettings.Resolution = Resolution.Daily
+    self.SetBrokerageModel(BrokerageName.GDAX, AccountType.Cash)
+
+    # Add universe selection of cryptos based on coarse fundamentals
+    self.AddUniverse(CryptoCoarseFundamentalUniverse(Market.GDAX, self.UniverseSettings, self.UniverseSelectionFilter))
+
+def UniverseSelectionFilter(self, crypto_coarse):
+    # Define the universe selection function
+    return [cf.Symbol for cf in crypto_coarse if cf.Volume &gt;= 100 and cf.VolumeInUsd &gt; 10000]</pre>
+<pre class="csharp">public override void Initialize()
+{
+    UniverseSettings.Resolution = Resolution.Daily;
+    SetBrokerageModel(BrokerageName.GDAX, AccountType.Cash);
+
+    // Add universe selection of cryptos based on coarse fundamentals
+    AddUniverse(new CryptoCoarseFundamentalUniverse(Market.GDAX, UniverseSettings, UniverseSelectionFilter));
+}
+
+private IEnumerable&lt;Symbol&gt; UniverseSelectionFilter(IEnumerable&lt;CryptoCoarseFundamental&gt; cryptoCoarse)
+{
+    return cryptoCoarse.FindAll(cf => cf.Volume &gt;= 100m &amp;&amp; cf.VolumeInUsd &gt; 10000m).Select(x => x.Symbol);
+}</pre>
+</div>
