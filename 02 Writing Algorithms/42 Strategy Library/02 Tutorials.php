@@ -766,10 +766,6 @@ $strategyMap = [
     </tbody>
 </table>
 <style>
-    .documentation .page-sub-heading {
-        display: none;
-    }
-
     .documentation #strategy-library-search-box {
         margin: 30px 0;
     }
