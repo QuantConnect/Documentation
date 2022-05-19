@@ -29,8 +29,8 @@
     <li>Add a bot to your Telegram group.</li>
     <p>If you want to use our bot, the username is @quantconnect_notifications_bot.</p>
     <li>On the live deployment wizard, click <span class="button-name">Telegram</span>.</li>
-    <li>Enter your group Id.</li>
-    <p>Your group Id is in the URL when you open your group chat in the Telegram web interface. For example, the group Id of <span class="live-url">web.telegram.org/z/#-503016366</span> is -503016366.</p>
+    <li>Enter your user Id or group Id.</li>
+    <p><?php echo file_get_contents(DOCS_RESOURCES."/notifications/telegram-group-id.html"); ?></p>
     <li>If you are not using our notification bot, enter the token of your bot.</li>
     <li>Click <span class="button-name">Add</span>.</li>
     <p>To add more Telegram notifications, click <span class="button-name">Add Notification</span> and then continue from step 2.</p>
