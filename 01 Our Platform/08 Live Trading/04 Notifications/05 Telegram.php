@@ -37,4 +37,4 @@
 </ol>
 
 <h4>Send In Your Code Files</h4>
-<?php echo file_get_contents(DOCS_RESOURCES."/notifications/telegram-setup.html"); ?>
+<?php include(DOCS_RESOURCES."/notifications/telegram-setup.php"); ?>
