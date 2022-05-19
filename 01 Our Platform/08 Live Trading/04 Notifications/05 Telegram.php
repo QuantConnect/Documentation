@@ -1,4 +1,4 @@
-<p>Telegram notifications are automated messages to a Telegram group. These notifications are rate-limited to 20 requests per 30 minutes. If you exceed the limit, each additional Telegram notification costs 5 QCC. <br></p>
+<?php echo file_get_contents(DOCS_RESOURCES."/notifications/telegram-intro.html"); ?>
 
 <h4>Set Up in the Deployment Wizard</h4>
 <p>Follow these steps to set up Telegram notifications in the deployment wizard:</p>
@@ -37,8 +37,4 @@
 </ol>
 
 <h4>Send In Your Code Files</h4>
-<p>To send Telegram notifications in your code files, run:</p>
-<div class="section-example-container">
-    <pre class="csharp">Notify.Telegram(id, message, token);</pre>
-    <pre class="python">self.Notify.Telegram(id, message, token)</pre>
-</div>
+<?php echo file_get_contents(DOCS_RESOURCES."/notifications/telegram-setup.html"); ?>
