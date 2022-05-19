@@ -4,7 +4,7 @@
 
 <?php 
 include(DOCS_RESOURCES."/algorithm-results/runtime-statistics-table.php");
-$getRuntimeStatisticsTable(true);
+$getRuntimeStatisticsTable(false);
 ?>
 
 <p>The capacity statistic is only available for live algorithms.</p>
