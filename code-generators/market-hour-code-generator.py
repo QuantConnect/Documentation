@@ -41,7 +41,7 @@ for asset_class, assets in sorted_assets.items():
 <tr><th colspan="6">Security Symbol</th></tr>
 </thead>
 <tbody>
-<tr>''' % exchange
+<tr>''' % exchange.title()
         
         count = 0
 
@@ -53,7 +53,7 @@ for asset_class, assets in sorted_assets.items():
                 
                 count = 0
                 
-            html += f'<td><a href="{asset_class.lower()}/{exchange}/time-zone.html">{symbol}</a></td>'
+            html += f'''<td><a href="{exchange + '/' + symbol.lower() if "[*]" not in symbol else exchange}">{symbol}</a></td>'''
         
             count += 1
                 
