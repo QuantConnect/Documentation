@@ -2,8 +2,6 @@
 
 <img class='docs-image' src="https://cdn.quantconnect.com/i/tu/live-runtime-statistics-1.png">
 
-<p>The following table shows the performance statistics that display by default:</p>
-
 <?php 
 include(DOCS_RESOURCES."/algorithm-results/runtime-statistics-table.php");
 $getRuntimeStatisticsTable(true);
