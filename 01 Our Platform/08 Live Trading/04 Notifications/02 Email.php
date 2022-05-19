@@ -1,4 +1,4 @@
-<p>Email notifications can include up to 10KB of text content in the message body. These notifications can be slow since they go through your email provider. If you don't receive an email notification that you're expecting, check your junk folders. These notifications are rate-limited to 20 messages per hour. If you exceed the limit, each additional email notification costs 10 <a href="/docs/v2/our-platform/organizations/credit">QuantConnect Credit (QCC)</a>.</p>
+<?php echo file_get_contents(DOCS_RESOURCES."/notifications/email-intro.html"); ?>
 
 <h4>Set Up in the Deployment Wizard</h4>
 <p>Follow these steps to set up email notifications in the deployment wizard:</p>
@@ -34,8 +34,4 @@
 </ol>
 
 <h4>Send In Your Code Files</h4>
-<p>To send email notifications in your code files, run:</p>
-<div class="section-example-container">
-    <pre class="csharp">Notify.Email(emailAddress, subject, body, attachment, headers);</pre>
-    <pre class="python">self.Notify.Email(email_address, subject, body, attachment, headers)</pre>
-</div>
+<?php echo file_get_contents(DOCS_RESOURCES."/notifications/email-setup.html"); ?>

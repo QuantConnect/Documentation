@@ -1,4 +1,4 @@
-<p>SMS notifications are the only type of notification that you don't need an internet connection to receive. These notifications are rate-limited to 20 messages per hour. If you exceed the limit, each additional SMS notification costs 5 QCC.</p>
+<?php echo file_get_contents(DOCS_RESOURCES."/notifications/sms-intro.html"); ?>
 
 <h4>Set Up in the Deployment Wizard</h4>
 <p>Follow these steps to set up SMS notifications in the deployment wizard:</p>
@@ -32,8 +32,4 @@
 </ol>
 
 <h4>Send In Your Code Files</h4>
-<p>To send SMS notifications in your code files, run:</p>
-<div class="section-example-container">
-    <pre class="csharp">Notify.Sms(phoneNumber, message);</pre>
-    <pre class="python">self.Notify.Sms(phone_number, message)</pre>
-</div>
+<?php echo file_get_contents(DOCS_RESOURCES."/notifications/sms-setup.html"); ?>
