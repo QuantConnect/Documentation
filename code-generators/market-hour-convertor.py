@@ -9,7 +9,7 @@ conversions = {
 
 for dir, target in conversions.items():
     path = Path(f'{root_dir}{dir}')
-    subdirs = [str(subdir.name).title() for subdir in path.iterdir() if subdir.is_dir()]
+    subdirs = [str(subdir.name).upper() for subdir in path.iterdir() if subdir.is_dir()]
     
     i = 1
     
@@ -21,7 +21,7 @@ for dir, target in conversions.items():
         j = 1
 
         for html in (market_dir / 'generic').glob('**/*.html'):
-            page_name = str(html.name).replace('-', ' ').title()
+            page_name = str(html.name).replace('-', ' ').upper()
             
             codes = open(html).read()
             with open(output_dir / f'{j:02} {page_name.replace("Html", "html")}', 'w', encoding='utf-8') as html_file:
@@ -29,12 +29,12 @@ for dir, target in conversions.items():
             
             j += 1
             
-        codes = open(f'{root_dir}{dir.title()}.html').read().split(f'<h4>{subdir.title()}</h4>')[-1].split('</table>')[0].split('</h4>')[-1] + '</table>'
-        with open(output_dir / f'{j:02} Supported Assets.html', 'w', encoding='utf-8') as html_file:
+        codes = open(f'{root_dir}{dir.upper()}.html').read().split(f'<h4>{subdir.upper()}</h4>')[-1].split('</table>')[0].split('</h4>')[-1] + '</table>'
+        with open(output_dir / f'{j:02} Specific Assets.html', 'w', encoding='utf-8') as html_file:
             html_file.write("<p>Below table shows specific symbols with their special market hours.</p>\n")
-            html_file.write(codes)
+            html_file.write(codes.replace(f'<tr><td><a href="{subdir.lower()}">Generic</a></td></tr>', '').replace(f'<td><a href="{subdir.lower()}">Generic</a></td>', ''))
             
-        assets_subdirs = [str(subdir.name).title() for subdir in market_dir.iterdir() if subdir.is_dir() and subdir.name != "generic"]
+        assets_subdirs = [str(subdir.name).upper() for subdir in market_dir.iterdir() if subdir.is_dir() and subdir.name != "generic"]
         
         k = 1
         
@@ -46,7 +46,7 @@ for dir, target in conversions.items():
             n = 1
             
             for html in asset_dir.glob('**/*.html'):
-                page_name = str(html.name).replace('-', ' ').title()
+                page_name = str(html.name).replace('-', ' ').upper()
 
                 codes = open(html).read()
                 with open(asset_page_dir / f'{n:02} {page_name.replace("Html", "html")}', 'w', encoding='utf-8') as html_file:
