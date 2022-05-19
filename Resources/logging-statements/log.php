@@ -9,7 +9,7 @@ $getLogText = function($isOnOurPlatform) {
     {
         $result .= "If you execute algorithm in QC Cloud, l" ;
     }
-    $result .= "og length is <a href='/docs/v2/our-platform/organizations/resources#09-Log-Quotas'>capped by organization tier</a>. If your organization hits the daily limit, <a href="/contact">contact us</a>. If you log the same content multiple times, only the first instance is added to the log file. To bypass this rate-limiting, add a timestamp to your log messages.</p>";
+    $result .= "og length is <a href='/docs/v2/our-platform/organizations/resources#09-Log-Quotas'>capped by organization tier</a>. If your organization hits the daily limit, <a href=\"/contact\">contact us</a>. If you log the same content multiple times, only the first instance is added to the log file. To bypass this rate-limiting, add a timestamp to your log messages.</p>";
      
     $result .= "<div class='section-example-container'>
                     <pre class='csharp'>Log(\"My log message\");</pre>
