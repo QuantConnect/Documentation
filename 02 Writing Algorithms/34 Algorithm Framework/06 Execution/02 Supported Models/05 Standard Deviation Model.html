@@ -1,24 +1,43 @@
 <p>
-The Standard Deviation Execution Model seeks to fill orders when the price is more than 2 standard deviations lower than the normal stock price for a given period. The intent is to find dips in the market to place trades. Unfortunately, in strongly trending markets, this can result in delayed trade placement as it might be a while before the next price dip.</p>
+The <code>StandardDeviationExecutionModel</code> seeks to fill orders when the price is more than 2 standard deviations lower than the average price over a trailing period. The intent is to find dips in the market to place trades. In strongly trending markets, this procedure can result in delayed trade placement since it might be a while before the next price spike or dip.</p>
 
 <div class="section-example-container">
-	<pre class="csharp">SetExecution( new StandardDeviationExecutionModel() );</pre>
-	<pre class="python">self.SetExecution( StandardDeviationExecutionModel() )</pre>
+	<pre class="csharp">SetExecution(new StandardDeviationExecutionModel());</pre>
+	<pre class="python">self.SetExecution(StandardDeviationExecutionModel())</pre>
 </div>
-<p>This model has the following optional parameters:</p>
-<div class="section-example-container">
-	<pre class="all">StandardDeviationExecutionModel( deviations = 2, period = 60, resolution=Resolution.Minute )</pre>
-</div>
-<p>
-	</p><ul>
-		<li><code>deviations</code> - Minimum deviations from mean before trading.
-		</li>
-		<li><code>period</code> - Period of the standard deviation indicator.
-		</li>
-		<li><code>resolution</code> - Resolution of the deviation indicators.
-		</li>
-	</ul>
-<p></p>
+
+<p>The following table describes the arguments the model accepts:</p>
+
+<table class="qc-table table">
+    <thead>
+        <tr>
+            <th>Argument</th>
+            <th>Data Type</th>
+            <th>Description</th>
+            <th>Default Value</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><code>period</code></td>
+	    <td><code>decimal</code></td>
+            <td>Period of the standard deviation indicator</td>
+            <td>60</td>
+        </tr>
+        <tr>
+            <td><code>deviations</code></td>
+	    <td><code>int</code></td>
+            <td>The number of deviations away from the mean before submitting an order</td>
+            <td>2</td>
+        </tr>
+        <tr>
+            <td><code>resolution</code></td>
+	    <td><code>Resolution</code></td>
+            <td>The resolution of the STD and SMA indicators</td>
+            <td><code>Resolution.Minute</code></td>
+        </tr>
+    </tbody>
+</table>
 
 
 <p>To view the implementation of this model, see the <span class="csharp"><a target="_blank" rel="nofollow" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.Framework/Execution/StandardDeviationExecutionModel.cs">LEAN GitHub repository</a></span><span class="python"><a target="_blank" rel="nofollow" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.Framework/Execution/StandardDeviationExecutionModel.py">LEAN GitHub repository</a></span>.</p>
