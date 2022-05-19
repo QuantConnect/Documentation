@@ -15,6 +15,9 @@ $getLogText = function($isOnOurPlatform) {
                     <pre class='csharp'>Log(\"My log message\");</pre>
                     <pre class='python'>self.Log(\"My log message\")</pre>
                 </div>";
+    
+    $result .= "<p>If you need to record the algorithm state when the algorithm finishes executing, add log statements to the <code>OnEndOfAlgorithm</code> event handler.</p>
+    
     echo $result;
 }
 
