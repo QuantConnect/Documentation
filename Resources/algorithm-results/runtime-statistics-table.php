@@ -59,4 +59,5 @@ $getRuntimeStatisticsTable = function($isLiveMode) {
     echo "    
       </tbody>
     </table>";
+}
 ?>
