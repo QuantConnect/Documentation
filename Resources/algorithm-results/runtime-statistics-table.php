@@ -47,7 +47,7 @@ $getRuntimeStatisticsTable = function($isLiveMode) {
           <td>{$definitionByTerm['volume']}</td>
         </tr>";
 
-    if ($isLiveMode) 
+    if (!$isLiveMode) 
     {
         echo "
         <tr>
