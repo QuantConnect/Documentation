@@ -1,13 +1,35 @@
-<p>The MaximumDrawdownPercentPortfolio model monitors the portfolio drawdown. The drawdown can be relative to the starting portfolio value or the maximum portfolio value. When the portfolio value drops below a percentage threshold, the model liquidates the portfolio. To liquidate the portfolio, the model must receive at least 1 PortfolioTarget after the drawdown threshold is passed. After the portfolio is liquidated, the model resets.</p><p>- The PCM needs to provide some PortfolioTarget objects for this model to function<br></p>
+<p>The <code>MaximumDrawdownPercentPortfolio</code> model monitors the portfolio drawdown. The drawdown can be relative to the starting portfolio value or the maximum portfolio value. When the portfolio value drops below a percentage threshold, the model liquidates the portfolio. To liquidate the portfolio, the model must receive at least 1 <code>PortfolioTarget</code> after the drawdown threshold is passed. After the portfolio is liquidated, the model resets. This model can operate even when the Portfolio Construction model provides an empty list of <code>PortfolioTarget</code> objects.</p>
 
-
-
-The model accepts the following arguments:
-<br>-maximumDrawdownPercent: The maximum percentage drawdown allowed for algorithm portfolio compared with starting value; default 0.05 (5%)
-<br><div>-isTrailing: If "false", the drawdown will be relative to the starting value of the portfolio.
-                        If "true", the drawdown will be relative the last maximum portfolio value; default False <br></div><div><br></div><div class="section-example-container">
-	<pre class="csharp">AddRiskManagement( new MaximumDrawdownPercentPerSecurity(maximumDrawdownPercent, isTrailing) );</pre>
-	<pre class="python">self.AddRiskManagement( MaximumDrawdownPercentPerSecurity(maximum_drawdown_percent, is_trailing) )</pre>
+<div class="section-example-container">
+	<pre class="csharp">AddRiskManagement(new MaximumDrawdownPercentPerSecurity());</pre>
+	<pre class="python">self.AddRiskManagement(MaximumDrawdownPercentPerSecurity())</pre>
 </div>
+
+<table class="qc-table table">
+    <thead>
+        <tr>
+            <th>Argument</th>
+            <th>Data Type</th>
+            <th>Description</th>
+            <th>Default Value</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><code>maximumDrawdownPercent</code></td>
+	    <td><code>decimal</code></td>
+            <td>Maximum spread accepted comparing to current price in percentage</td>
+            <td>0.05 (5%)</td>
+        </tr>
+        <tr>
+            <td><code>acceptingSpreadPercent</code></td>
+	    <td><code>bool</code></td>
+            <td>If "false", the drawdown is relative to the starting value of the portfolio. If "true", the drawdown is relative the last maximum portfolio value</td>
+            <td><code class="python">False</code><code class="csharp">false</code></td>
+        </tr>
+
+    </tbody>
+</table>
+
 
 <p>To view the implementation of this model, see the <span class="csharp"><a target="_blank" rel="nofollow" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.Framework/Risk/MaximumDrawdownPercentPortfolio.cs">LEAN GitHub repository</a></span><span class="python"><a target="_blank" rel="nofollow" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.Framework/Risk/MaximumDrawdownPercentPortfolio.py">LEAN GitHub repository</a></span>.</p>
