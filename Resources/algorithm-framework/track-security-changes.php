@@ -8,7 +8,7 @@ $getTrackSecurityChangesText = function($modelName, $modelClassName, $callsBaseC
 {
     private Dictionary&lt;symbol, symboldata&gt; _symbolDataBySymbol = new Dictionary&lt;symbol, symboldata&gt;();
 
-    void OnSecuritiesChanged(QCAlgorithmFramework algorithm, SecurityChanges changes)
+    public override void OnSecuritiesChanged(QCAlgorithmFramework algorithm, SecurityChanges changes)
     {";
   
   if ($callsBaseClass)
