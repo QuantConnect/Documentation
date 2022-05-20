@@ -1,45 +1,32 @@
+<p>The following example shows how to plot the daily closing price of the S&P 500 index ETF, SPY:</p>
 
 <div class="section-example-container">
-	<pre class="csharp">// In your initialize method:
+	<pre class="csharp">public class ChartingDemoAlgorithm : QCAlgorithm
+{
+    public override void Initialize()
+    {
+        SetStartDate(2021, 1, 1);
+        SetEndDate(2022, 1, 1);
+        AddEquity("SPY", Resolution.Daily);
+    }
 
-// Chart - Master Container for the Chart:
-var stockPlot = new Chart("Trade Plot");
-// On the Trade Plotter Chart we want 3 series: trades and price:
-var buyOrders = new Series("Buy", SeriesType.Scatter, 0);
-var sellOrders = new Series("Sell", SeriesType.Scatter, 0);
-var assetPrice = new Series("Price", SeriesType.Line, 0);
-// Or Using Custom Chart
-// Import the necessary module before using Custom color
-using System.Drawing;
-var buyOrders = new Series("Buy", SeriesType.Scatter, "$", Color.Red, ScatterMarkerSymbol.Triangle);
-var sellOrders = new Series("Sell", SeriesType.Scatter, "$", Color.Blue, ScatterMarkerSymbol.TriangleDown);
-var assetPrice = new Series("Price", SeriesType.Line, "$", Color.Green);
-stockPlot.AddSeries(buyOrders);
-stockPlot.AddSeries(sellOrders);
-stockPlot.AddSeries(assetPrice);
-AddChart(stockPlot);
+    public override void OnEndOfDay(Symbol symbol)
+    {
+        Plot("Price", "SPY", Securities[symbol].Price);
+    }
+}</pre>
+	<pre class="python">class ChartingDemoAlgorithm(QCAlgorithm):
 
-// Later in your OnData(Slice data):
-Plot("Trade Plot", "Price", data.Bars["SPY"].Close);
-</pre>
-	<pre class="python"># In your initialize method:
-# Note - use single quotation marks: ' instead of double "
-# Chart - Master Container for the Chart:
-stockPlot = Chart('Trade Plot')
-# On the Trade Plotter Chart we want 3 series: trades and price:
-stockPlot.AddSeries(Series('Buy', SeriesType.Scatter, 0))
-stockPlot.AddSeries(Series('Sell', SeriesType.Scatter, 0))
-stockPlot.AddSeries(Series('Price', SeriesType.Line, 0))
-# Or using custom chart
-# Import the necessary module before using Custom color
-from System.Drawing import Color
-stockPlot.AddSeries(Series('Price', SeriesType.Line, '$', Color.Green))
-stockPlot.AddSeries(Series('Buy', SeriesType.Scatter, '$', Color.Red, ScatterMarkerSymbol.Triangle))
-stockPlot.AddSeries(Series('Sell', SeriesType.Scatter, '$', Color.Blue, ScatterMarkerSymbol.TriangleDown))
-self.AddChart(stockPlot)
+    def Initialize(self):
+        self.SetStartDate(2021, 1, 1)
+        self.SetEndDate(2022, 1, 1)
+        self.AddEquity("SPY", Resolution.Daily)
 
-# Later in your OnData(self, data):
-self.Plot('Trade Plot', 'Price', data.Bars["SPY"].Close)<br></pre>
+    def OnEndOfDay(self, symbol):
+        self.Plot("Price", "SPY", self.Securities[symbol].Price)</pre>
 </div>
+
+<img src='https://cdn.quantconnect.com/i/tu/spy-price-chart.png' class='docs-image' alt='Time series of SPY closing price during 2021.'>
+
 
 <p>To see a full example, run the <span class='python'><a href='https://www.quantconnect.com/terminal/clone/12747258/47554d69f4558e65e7b2054efd6bce79/clone-of%3A-custom-charting-algorithm'>CustomChartingAlgorithm</a></span><span class='csharp'><a href='https://www.quantconnect.com/terminal/clone/12747282/a218071709dec191ba1c06e5abc85ca2/clone-of%3A-custom-charting-algorithm'>CustomChartingAlgorithm</a></span>.</p>
