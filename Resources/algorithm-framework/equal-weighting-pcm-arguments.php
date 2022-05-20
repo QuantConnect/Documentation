@@ -48,7 +48,7 @@ $getPCMArgumentText = function($supportsPortfolioBias) {
     </tbody>
 </table>
 
-<p class=\"csharp\">The following table describes the arguments that can replace the <code>rebalance</code> argument:</p>
+<p class=\"csharp\">The following table describes the arguments that can replace the <code>resolution</code> argument:</p>
 
 
 <table class=\"csharp qc-table table\">
