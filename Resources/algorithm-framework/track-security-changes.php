@@ -14,7 +14,7 @@ $getTrackSecurityChangesText = function($modelName, $modelClassName, $callsBaseC
   if ($callsBaseClass)
   {
       $result .= "
-        base.OnSecuritiesChanged(algorithm, changes);" 
+        base.OnSecuritiesChanged(algorithm, changes)";
   }
   
   $result .= "
