@@ -5,6 +5,6 @@
 	<pre class="python">self.SetPortfolioConstruction(ConfidenceWeightedPortfolioConstructionModel())</pre>
 </div>
 
-<?php echo file_get_contents(DOCS_RESOURCES."/algorithm-framework/equal-weighting-pcm-arguments.html"); 
+<?php echo file_get_contents(DOCS_RESOURCES."/algorithm-framework/equal-weighting-pcm-arguments.html"); ?>
 
 <p>To view the implementation of this model, see the <span class='csharp'><a target="_blank" rel='nofollow' href='https://github.com/QuantConnect/Lean/blob/master/Algorithm.Framework/Portfolio/ConfidenceWeightedPortfolioConstructionModel.cs'>LEAN GitHub repository</a></span><span class='python'><a target="_blank" rel='nofollow' href='https://github.com/QuantConnect/Lean/blob/master/Algorithm.Framework/Portfolio/ConfidenceWeightedPortfolioConstructionModel.py'>LEAN GitHub repository</a></span>.</p>
