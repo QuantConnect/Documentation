@@ -27,7 +27,6 @@ $getTrackSecurityChangesText = function($modelName, $modelClassName, $callsBaseC
         {
             if (_symbolDataBySymbol.ContainsKey(security.Symbol))
             {
-                _symbolDataBySymbol[security.Symbol].dispose();
                 _symbolDataBySymbol.Remove(security.Symbol);
             }
         }
