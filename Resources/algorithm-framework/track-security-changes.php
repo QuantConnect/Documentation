@@ -1,7 +1,7 @@
 <?php
 $getTrackSecurityChangesText = function($modelName, $modelClassName, $callsBaseClass) {
 
-    $result = "<p>The <a href='/docs/v2/writing-algorithms/algorithm-framework/universe-selection/key-concepts'>Universe Selection model</a> may select a dynamic universe of assets, so you should not assume a fixed set of assets in the Execution model. When the Universe Selection model adds and removes assets from the universe, it triggers an <code>OnSecuritiesChanged</code> event. In the <code>OnSecuritiesChanged</code> event handler, you can initialize the security-specific state or load any history required for your {$modelName}.</p>";
+    $result = "<p>The <a href='/docs/v2/writing-algorithms/algorithm-framework/universe-selection/key-concepts'>Universe Selection model</a> may select a dynamic universe of assets, so you should not assume a fixed set of assets in the Execution model. When the Universe Selection model adds and removes assets from the universe, it triggers an <code>OnSecuritiesChanged</code> event. In the <code>OnSecuritiesChanged</code> event handler, you can initialize the security-specific state or load any history required for your {$modelName} model.</p>";
     $result .= "
 <div class=\"section-example-container\">
 		<pre class=\"csharp\">class My{$modelClassName} : {$modelClassName}
