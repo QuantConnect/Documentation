@@ -1,5 +1,5 @@
 <p>
-The Risk Management Model should extend the RiskManagementModel class and has one required method: $[ManageRisk(),M:QuantConnect.Algorithm.Framework.Risk.IRiskManagementModel.ManageRisk], which receives an array of $[PortfolioTarget,T:QuantConnect.Algorithm.Framework.Portfolio.IPortfolioTarget] objects. When an adjustment of the targets is required, you should return the <i>changed</i> targets only. Optionally you can also use the $[OnSecuritiesChanged(),M:QuantConnect.Algorithm.Framework.Risk.RiskManagementModel.OnSecuritiesChanged] event.
+Risk Management models should extend the <code>RiskManagementModel</code> class. Extensions of the <code>RiskManagementModel</code> class must implement the <code>ManageRisk</code> method, which receives an array of <code>PortfolioTarget</code> objects from the Portfolio Construction model and should return an array of risk-adjusted  <code>PortfolioTarget</code> objects. The method should only return the adjusted targets, not all of targets.
 </p>
 <div class="section-example-container">
 	<pre class="csharp">class MyRiskManagementModel : RiskManagementModel
@@ -25,6 +25,4 @@ The Risk Management Model should extend the RiskManagementModel class and has on
     def OnSecuritiesChanged(self, algorithm, changes):
         pass
 </pre>
-</div>
-
-- The `algorithm` passed to each of the components is the base QCAlgorithm class, not your subclass of it
+<p>The <code>algorithm</code> argument that the methods receive is an instance of the base <code>QCAlgorithm</code> class, not your subclass of it.</p>
