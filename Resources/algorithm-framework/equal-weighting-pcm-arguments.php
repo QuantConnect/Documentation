@@ -27,24 +27,24 @@ $getPCMArgumentText = function($supportsPortfolioBias) {
                      </ul>
                  </span>
             </td>
+	    <td><span class=\"csharp\">Rebalancing frequency</span><span class=\"python\">Rebalancing parameter. If it's a <code>timedelta</code>, <code>DateRules</code> or <code>Resolution</code>, it's converted into a function. If it's <code>None</code>, it's ignored. The function returns the next expected rebalance time for a given algorithm UTC DateTime. The function returns </span><span class=\"python\"><span class=\"python\"><code>None </code></span>if unknown, in which case the function will be called again in the
+                              next loop. If the function returns the current time, the portfolio rebalances.</span></td>
+            <td><code>Resolution.Daily</code></td>
+        </tr>
 ";
     if ($supportsPortfolioBias)
     {
         $result .= "
-            <td><span class=\"csharp\">Rebalancing frequency</span><span class=\"python\">Rebalancing parameter. If it's a <code>timedelta</code>, <code>DateRules</code> or <code>Resolution</code>, it's converted into a function. If it's <code>None</code>, it's ignored. The function returns the next expected rebalance time for a given algorithm UTC DateTime. The function returns </span><span class=\"python\"><span class=\"python\"><code>None </code></span>if unknown, in which case the function will be called again in the
-                              next loop. If the function returns the current time, the portfolio rebalances.</span></td>
-            <td><code>Resolution.Daily</code></td>
-";
-    }
-
-    $result .= "
-        </tr>
         <tr>
             <td><code>portfolioBias</code></td>
 	    <td><code>PortfolioBias </code></td>
             <td>The bias of the portfolio</td>
             <td><code>PortfolioBias.LongShort</code></td>
         </tr>
+";
+    }
+
+    $result .= "
     </tbody>
 </table>
 
