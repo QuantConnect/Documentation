@@ -1,6 +1,6 @@
 <?php
 include(DOCS_RESOURCES."/algorithm-framework/track-security-changes.php"); 
-$modelName = "Execution Model";
+$modelName = "Execution";
 $modelClassName = "ExecutionModel";
 $callsBaseClass = false;
 $getTrackSecurityChangesText($modelName, $modelClassName, $callsBaseClass);
