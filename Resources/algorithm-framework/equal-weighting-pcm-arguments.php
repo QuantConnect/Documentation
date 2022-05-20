@@ -86,3 +86,5 @@ $getPCMArgumentText = function($supportsPortfolioBias) {
 	
     echo $result;
 }
+
+?>
