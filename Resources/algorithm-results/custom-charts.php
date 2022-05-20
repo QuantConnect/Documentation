@@ -44,7 +44,7 @@ $getCustomChartText = function($backtest) {
     
     echo "
         <h4>Demonstration</h4>
-        <p>For more information about creating custom charts, see <a href='/docs/v2/writing-algorithms/user-guides/charting'>Charting</a>.
+        <p>For more information about creating custom charts, see <a href='/docs/v2/writing-algorithms/charting'>Charting</a>.
     ";
 }
 ?>
