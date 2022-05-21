@@ -23,6 +23,12 @@
 	    <td>Rebalancing frequency</td>
             <td><code>Resolution.Daily</code></td>
         </tr>
+        <tr>
+            <td><code>portfolioBias</code></td>
+	    <td><code>PortfolioBias</code></td>
+            <td>The bias of the portfolio</td>
+            <td><code>PortfolioBias.LongShort</code></td>
+        </tr>
     </tbody>
 </table>
 <p>To view the implementation of this model, see the <span class='csharp'><a target="_blank" rel='nofollow' href='https://github.com/QuantConnect/Lean/blob/master/Algorithm.Framework/Portfolio/ConfidenceWeightedPortfolioConstructionModel.cs'>LEAN GitHub repository</a></span><span class='python'><a target="_blank" rel='nofollow' href='https://github.com/QuantConnect/Lean/blob/master/Algorithm.Framework/Portfolio/ConfidenceWeightedPortfolioConstructionModel.py'>LEAN GitHub repository</a></span>.</p>
