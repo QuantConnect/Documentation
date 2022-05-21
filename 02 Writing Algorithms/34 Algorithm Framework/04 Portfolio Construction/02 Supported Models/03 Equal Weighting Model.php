@@ -5,7 +5,9 @@
 	<pre class="python">self.SetPortfolioConstruction(EqualWeightingPortfolioConstructionModel())</pre>
 </div>
 
-<table class=\"qc-table table\">
+<p>The following table describes the arguments the model accepts:</p>
+
+<table class="qc-table table">
     <thead>
         <tr>
             <th>Argument</th>
@@ -16,7 +18,7 @@
     </thead>
     <tbody>
         <tr>
-            <td><code class=\"python\">rebalance</code><code class=\"csharp\">resolution</code></td>
+            <td><code class="python">rebalance</code><code class="csharp">resolution</code></td>
 	    <td><code>Resolution</code></td>
 	    <td>Rebalancing frequency</td>
             <td><code>Resolution.Daily</code></td>
