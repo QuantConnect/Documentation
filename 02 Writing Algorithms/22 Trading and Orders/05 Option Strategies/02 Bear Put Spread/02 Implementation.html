@@ -1,1 +1,48 @@
-## Follow pattern of Iron Condor, but use the BearPutSpread OptionStrategy
+<p>Follow the below steps to implement the bear call spread strategy</p>
+
+<ol>
+    <li>Initialize your algorithm by setting the start date, the end date and the cash for your algorithm. Then, implement the coarse selection of option contracts.</li>
+    <div class="section-example-container">
+        <pre class="python">def Initialize(self):
+    self.SetStartDate(2017, 2, 1)
+    self.SetEndDate(2017, 3, 1)
+    self.SetCash(500000)
+
+    option = self.AddOption("GOOG", Resolution.Minute)
+    self.symbol = option.Symbol
+    option.SetFilter(self.UniverseFunc)
+
+def UniverseFunc(self, universe):
+    return universe.IncludeWeeklys().Strikes(-15, 15).Expiration(timedelta(0), timedelta(31))</pre>
+    </div>
+
+    <li>Choose the contracts with the same expiration date. For demonstration purpose here we sorted the contracts by their expiration dates and choose the options with the furthest expiration date in the option chain.</li>
+    <div class="section-example-container">
+        <pre class="python">def OnData(self, data):
+    if self.Portfolio.Invested: return
+
+    chain = data.OptionChains.get(self.symbol, None)
+    if not chain: return
+
+    # sorted the optionchain by expiration date and choose the furthest date
+    expiry = sorted(chain, key = lambda x: x.Expiry, reverse=True)[0].Expiry</pre>
+    </div>
+    
+    <li>Filter the put options from the contracts which expire on the furthest expiration date in the option chain.</li>
+    <div class="section-example-container">
+        <pre class="python">puts = [i for i in chain if i.Expiry == expiry and i.Right == OptionRight.Put]
+if len(puts) == 0: return</pre>
+    </div>
+
+    <li>Sort the put options with the same expiration date according to their strike price.</li>
+    <div class="section-example-container">
+        <pre class="python">put_strikes = sorted([x.Strike for x in puts])</pre>
+    </div>
+
+    <li>Call <code>OptionStrategies.BearPutSpread</code> to buy the put option with the highest strike price and sell the put with the lowest strike price.</li>
+    <div class="section-example-container">
+        <pre class="python">option_strategy = OptionStrategies.BearPutSpread(self.symbol, put_strikes[0], put_strikes[-1], expiry)
+# We open a position with 1 unit of the option strategy
+self.Buy(option_strategy, 1)</pre>
+    </div>
+</ol>
