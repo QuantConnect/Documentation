@@ -1,8 +1,6 @@
 <p>
-Portfolio Construction Models have one primary method: $[CreateTargets(),M:QuantConnect.Algorithm.Framework.Portfolio.PortfolioConstructionModel.CreateTargets]. This method takes the algorithm object and a list of $[Insight,T:QuantConnect.Algorithm.Framework.Alphas.Insight] objects. You should seek to answer the question "how many shares/contracts should I buy based on the insight predictions I've been presented?"
-</p>
-<p>Like all Algorithm Framework models, the Portfolio Construction Model also receives the $[OnSecuritiesChanged(),M:QuantConnect.Algorithm.Framework.Portfolio.PortfolioConstructionModel.OnSecuritiesChanged] event, which can optionally be used to perform actions when there are security additions or removals. If you are inheriting from the $[PortfolioConstructionModel,T:QuantConnect.Algorithm.Framework.Portfolio.IPortfolioConstructionModel] base class, this is an optional method.
-</p>
+Portfolio Construction models should extend the <code>PortfolioConstructionModel</code> class. Extensions of the <code>PortfolioConstructionModel</code> class should implement the <code>CreateTargets</code> method, which receives an array of <code>Insight</code> objects from the Alpha model and returns an array of <code>PortfolioTarget</code> objects. The Portfolio Construction model seeks to answer the question "how many shares/contracts should I buy based on the insight predictions I've been presented?"</p>
+
 <div class="section-example-container">
 	<pre class="csharp">// Portfolio construction scaffolding class; basic method args.
 class MyPortfolioConstructionModel : PortfolioConstructionModel
@@ -35,6 +33,14 @@ class MyPortfolioConstructionModel(PortfolioConstructionModel):
         # changes.RemovedSecurities:
         pass
 </pre>
-</div><div>- The `algorithm` passed to each of the components is the base QCAlgorithm class, not your subclass of it</div><div><br></div><div>- You may use the PortfolioBias enum in your portfolio construction models.</div><div>&nbsp;&nbsp; - Long, Short, LongShort<br>
-</div><div><br></div><div>- You don't need to define CreateTargets. The EqualWeightingPortfolioConstructionModel doesn't. If you don't define CreateTargets, the CreateTargets definition in the PCM base class is used.
 </div>
+
+<p>The <code>algorithm</code> argument that the methods receive is an instance of the base <code>QCAlgorithm</code> class, not your subclass of it.</p>
+
+<p>You may use the <code>PortfolioBias</code> enumeration in the definition of Portfolio Construction model methods. The <code>PortfolioBias</code> enumeration has the following values:</p>
+
+<ul>
+    <li><code>PortfolioBias.Long</code></li>
+    <li><code>PortfolioBias.Short</code></li>
+    <li><code>PortfolioBias.LongShort</code></li>
+</ul>
