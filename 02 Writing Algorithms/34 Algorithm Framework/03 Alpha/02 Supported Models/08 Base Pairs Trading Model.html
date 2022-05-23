@@ -1,8 +1,4 @@
-The BasePairsTradingAlphaModel analyzes every possible pair combination from securities selected by the universe selection model. This model calculates ratio between the two securities by dividing their historical prices over the lookback window. It then calculates the mean of this ratio by taking the 500-period EMA of the quotient. When the ratio diverges far enough from the mean ratio, this model emits generates alternating long ratio/short ratio insights emitted as a group. <br><br>
-The model accepts the following arguments:
-<br>-lookback: Lookback period of the analysis; Default 1
-<br>-resolution: Analysis resolution; Default Resolution.Daily
-<br>-threshold: The percent [0, 100] deviation of the ratio from the mean before emitting an insight; Default 1
+<p>The <code>BasePairsTradingAlphaModel</code> analyzes every possible pair combination from securities that the Universe Selection model selects. This model calculates a ratio between the two securities by dividing their historical prices over a lookback window. It then calculates the mean of this ratio by taking the 500-period EMA of the quotient. When the ratio diverges far enough from the mean ratio, this model emits generates alternating long ratio/short ratio insights emitted as a group to capture the reversion of the ratio.</p>
 
 <div class="section-example-container">
 	<pre class="csharp">AddAlpha(new BasePairsTradingAlphaModel(lookback, resolution, threshold));</pre>
@@ -22,10 +18,22 @@ The model accepts the following arguments:
     </thead>
     <tbody>
         <tr>
-            <td><code>maximumDrawdownPercent</code></td>
+            <td><code>lookback</code></td>
+	    <td><code>int</code></td>
+            <td>Lookback period of the analysis</td>
+            <td>1</td>
+        </tr>
+        <tr>
+            <td><code>resolution</code></td>
+	    <td><code>Resolution</code></td>
+            <td>Analysis resolution</td>
+            <td><code>Resolution.Daily</code></td>
+        </tr>
+        <tr>
+            <td><code>threshold</code></td>
 	    <td><code>decimal</code></td>
-            <td>The maximum percentage drawdown allowed for any single security holding</td>
-            <td>0.05 (5%)</td>
+            <td>The percent [0, 100] deviation of the ratio from the mean before emitting an insight</td>
+            <td>1</td>
         </tr>
     </tbody>
 </table>
