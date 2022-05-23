@@ -8,7 +8,10 @@ for clean_up in os.listdir('02 Writing Algorithms/14 Datasets'):
         shutil.rmtree('02 Writing Algorithms/14 Datasets/' + clean_up)
 
 url = urlopen("https://s3.amazonaws.com/cdn.quantconnect.com/web/docs/alternative-data-dump-v2021-12-06.json")
-response = url.read().decode("utf-8")
+response = url.read().decode("utf-8") \
+    .replace("true", "True") \
+    .replace("false", "False") \
+    .replace("null", "None")
 doc = eval(response)
 
 vendor_count = 2
