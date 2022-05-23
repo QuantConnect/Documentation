@@ -1,10 +1,12 @@
-<p>The <code>MeanVarianceOptimizationPortfolioConstructionModel</code> seeks to build a portfolio with the least volatility possible and achieve a target return.</p>
+<p>
+The <code>BlackLittermanOptimizationPortfolioConstructionModel</code> receives <code>Insight</code> objects from multiple Alphas and combines them into a single portfolio. These multiple sources of Alpha models can be seen as the "investor views" required in the classical model. <br></p>
+
+
 
 <div class="section-example-container">
-	<pre class="csharp">SetPortfolioConstruction(new MeanVarianceOptimizationPortfolioConstructionModel());</pre>
-	<pre class="python">self.SetPortfolioConstruction(MeanVarianceOptimizationPortfolioConstructionModel())</pre>
+	<pre class="csharp">SetPortfolioConstruction(new BlackLittermanOptimizationPortfolioConstructionModel());</pre>
+	<pre class="python">self.SetPortfolioConstruction(BlackLittermanOptimizationPortfolioConstructionModel())</pre>
 </div>
-
 
 
 <p>The following table describes the arguments the model accepts:</p>
@@ -50,10 +52,22 @@
             <td><code>Resolution.Daily</code></td>
         </tr>
         <tr>
-            <td><code>targetReturn</code></td>
+            <td><code class="python">risk_free_rate</code><code class="csharp">riskFreeRate</code></td>
 	    <td><code>double</code></td>
-            <td>The target portfolio return</td>
-            <td>0.02 (2%)</td>
+            <td>The risk free rate</td>
+            <td>0.0</td>
+        </tr>
+        <tr>
+            <td><code>delta</code></td>
+	    <td><code>double</code></td>
+            <td>The risk aversion coefficient of the market portfolio</td>
+            <td>2.5</td>
+        </tr>
+        <tr>
+            <td><code>tau</code></td>
+	    <td><code>double</code></td>
+            <td>The model parameter indicating the uncertainty of the CAPM prior</td>
+            <td>0.05</td>
         </tr>
         <tr>
             <td><code>optimizer</code></td>
@@ -64,6 +78,8 @@
     </tbody>
 </table>
 
+
 <p>If you don't provide an <code>optimizer</code> argument, the default one is the <a href="/docs/v2/writing-algorithms/algorithm-framework/portfolio-construction/supported-optimizers#03-Minimum-Variance-Optimizer">MinimumVariancePortfolioOptimizer</a> with upper and lower weights that respect the <code>portfolioBias</code>.</p>
 
-<p>To view the implementation of this model, see the <span class="csharp"><a target="_blank" rel="nofollow" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.Framework/Portfolio/MeanVarianceOptimizationPortfolioConstructionModel.cs">LEAN GitHub repository</a></span><span class="python"><a target="_blank" rel="nofollow" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.Framework/Portfolio/MeanVarianceOptimizationPortfolioConstructionModel.py">LEAN GitHub repository</a></span>.</p>
+
+<p>To view the implementation of this model, see the <span class="csharp"><a target="_blank" rel="nofollow" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.Framework/Portfolio/BlackLittermanOptimizationPortfolioConstructionModel.cs">LEAN GitHub repository</a></span><span class="python"><a target="_blank" rel="nofollow" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.Framework/Portfolio/BlackLittermanOptimizationPortfolioConstructionModel.py">LEAN GitHub repository</a></span>.</p>
