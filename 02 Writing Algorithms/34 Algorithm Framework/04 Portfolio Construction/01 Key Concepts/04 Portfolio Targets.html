@@ -1,25 +1,24 @@
-<p>
-The portfolio construction model returns PortfolioTarget objects, which are passed to the risk management model. <br></p><p>To create PortfolioTarget objects based on a quantity, pass the Symbol and quantity to the PortfolioTarget constructor.<br></p>
+<p>The Portfolio Construction model returns <code>PortfolioTarget</code> objects, which are passed to the Risk Management model.</p>
+
+<p>To create a <code>PortfolioTarget</code> object based on a quantity, pass the <code>Symbol</code> and quantity to the <code>PortfolioTarget</code> constructor.</p>
+
 <div class="section-example-container">
 	<pre class="csharp">// Create a new portfolio target for 1200 IBM shares.
 var target = new PortfolioTarget("IBM", 1200);</pre>
 	<pre class="python"># Create a new portfolio target for 1200 IBM shares.
 target = PortfolioTarget("IBM", 1200)</pre>
 </div>
-<p>If you have a margin account, you can use the $[Percent(algorithm, Symbol, 
-percent),M:QuantConnect.Algorithm.Framework.Portfolio.PortfolioTarget.Percent]
- helper method to create PortfolioTarget objects based on a portfolio weight. <br></p>
+
+<p>To create a <code>PortfolioTarget</code> object based on a portfolio weight, call the <code>Percent</code> method. This method is only available for margin accounts.</p>
 <div class="section-example-container">
 	<pre class="csharp">// Calculate target equivalent to 10% of portfolio value
 var target = PortfolioTarget.Percent(algorithm, "IBM", 0.1);</pre>
 	<pre class="python"># Calculate target equivalent to 10% of portfolio value
 target = PortfolioTarget.Percent(algorithm, "IBM", 0.1)</pre>
 </div>
-<p>Your Portfolio Construction Model should return an array of PortfolioTarget objects from its&nbsp; $[CreateTargets,M:QuantConnect.Algorithm.Framework.Portfolio.IPortfolioConstructionModel.CreateTargets] method.
-</p>
+
+<p>The <code>CreateTargets</code> method of your Portfolio Construction model must return an array of <code>PortfolioTarget</code> objects.</p>
 <div class="section-example-container">
-	<pre class="csharp">// Return an array of targets
-return new PortfolioTarget[] {  new PortfolioTarget("IBM", 1200)  };</pre>
-	<pre class="python"># Return an array of targets
-return [ PortfolioTarget("IBM", 1200) ]</pre>
+	<pre class="csharp">return new PortfolioTarget[] {  new PortfolioTarget("IBM", 1200)  };</pre>
+	<pre class="python">return [ PortfolioTarget("IBM", 1200) ]</pre>
 </div>
