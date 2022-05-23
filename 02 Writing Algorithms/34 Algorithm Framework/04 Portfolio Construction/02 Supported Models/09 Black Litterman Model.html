@@ -1,28 +1,85 @@
 <p>
-The Black Litterman Portfolio Construction Model takes Insights from multiple alphas and combines them into a single portfolio. These multiple Alpha Model sources can be seen as the "investor views" required of the classical model. The model adjusts equilibrium market returns by incorporating views from multiple alpha models and therefore to get the optimal risky portfolio reflecting those views. If insights of all alpha models have None magnitude or there are linearly dependent vectors in link matrix of views, the expected return would be the implied excess equilibrium return. The interval of weights in optimization method can be changed based on the long-short algorithm.</p>
+The <code>BlackLittermanOptimizationPortfolioConstructionModel</code> receives <code>Insight</code> objects from multiple Alphas and combines them into a single portfolio. These multiple sources of Alpha models can be seen as the "investor views" required in the classical model. <br></p>
 
 
-The model accepts the following arguments: 
-<br>-rebalance: Rebalancing parameter. If it is a timedelta, date rules or Resolution, it will be converted into a function.
-                              If None will be ignored.
-                              The function returns the next expected rebalance time for a given algorithm UTC DateTime.
-                              The function returns null if unknown, in which case the function will be called again in the
-                              next loop. Returning current time will trigger rebalance.; Default Resolution.Daily
-<br>-portfolioBias: Specifies the bias of the portfolio (Short, Long/Short, Long)
-; Default PortfolioBias.LongShort<br>-lookback(int): Historical return lookback period
-; Default 1<br>-period(int): The time interval of history price to calculate the weight
-; Default 63<br>-resolution: The resolution of the history price
-; Default Resolution.Daily<br>-risk_free_rate(float): The risk free rate
-; Default 0<br>-delta(float): The risk aversion coeffficient of the market portfolio
-; Default 2.5<br><div>-tau(float): The model parameter indicating the uncertainty of the CAPM prior
 
-; Default 0.05</div><div>-optimizer: Method used to compute the portfolio weights; default None</div><div><br></div><div>If you don't provide an optimizer, the default one is the <span class="pl-v"><span class="pl-token" data-hydro-click="{&quot;event_type&quot;:&quot;code_navigation.click_on_symbol&quot;,&quot;payload&quot;:{&quot;action&quot;:&quot;click_on_symbol&quot;,&quot;repository_id&quot;:27251463,&quot;ref&quot;:&quot;master&quot;,&quot;language&quot;:&quot;Python&quot;,&quot;backend&quot;:&quot;ALEPH_PRECISE&quot;,&quot;code_nav_context&quot;:&quot;BLOB_VIEW&quot;,&quot;retry_backend&quot;:&quot;&quot;,&quot;originating_url&quot;:&quot;https://github.com/QuantConnect/Lean/find-definition?q=MaximumSharpeRatioPortfolioOptimizer&amp;blob_path=Algorithm.Framework%2FPortfolio%2FBlackLittermanOptimizationPortfolioConstructionModel.py&amp;ref=master&amp;language=Python&amp;row=64&amp;col=25&amp;code_nav_context=BLOB_VIEW&quot;,&quot;user_id&quot;:38889814}}" data-hydro-click-hmac="761aa3a67a0428584d99faac3d4d47bea3855e19c47031a677adf12a381a1f0e">MaximumSharpeRatioPortfolioOptimizer</span></span>(<span class="pl-s1">lower</span>, <span class="pl-s1">upper</span>, <span class="pl-s1"><span class="pl-token" data-hydro-click="{&quot;event_type&quot;:&quot;code_navigation.click_on_symbol&quot;,&quot;payload&quot;:{&quot;action&quot;:&quot;click_on_symbol&quot;,&quot;repository_id&quot;:27251463,&quot;ref&quot;:&quot;master&quot;,&quot;language&quot;:&quot;Python&quot;,&quot;backend&quot;:&quot;ALEPH_PRECISE&quot;,&quot;code_nav_context&quot;:&quot;BLOB_VIEW&quot;,&quot;retry_backend&quot;:&quot;&quot;,&quot;originating_url&quot;:&quot;https://github.com/QuantConnect/Lean/find-definition?q=risk_free_rate&amp;blob_path=Algorithm.Framework%2FPortfolio%2FBlackLittermanOptimizationPortfolioConstructionModel.py&amp;ref=master&amp;language=Python&amp;row=64&amp;col=76&amp;code_nav_context=BLOB_VIEW&quot;,&quot;user_id&quot;:38889814}}" data-hydro-click-hmac="a8b9744242001a19e6d70cc63481308269cca93e9ff5cc0cdd9e3c18be61d538">risk_free_rate</span></span>) where <br>
-                <span class="pl-s1">upper</span> <span class="pl-c1">=</span> <span class="pl-c1">0</span> <span class="pl-k">if</span> <span class="pl-s1">portfolioBias</span> <span class="pl-c1">==</span> <span class="pl-v"><span class="pl-token" data-hydro-click="{&quot;event_type&quot;:&quot;code_navigation.click_on_symbol&quot;,&quot;payload&quot;:{&quot;action&quot;:&quot;click_on_symbol&quot;,&quot;repository_id&quot;:27251463,&quot;ref&quot;:&quot;master&quot;,&quot;language&quot;:&quot;Python&quot;,&quot;backend&quot;:&quot;ALEPH_PRECISE&quot;,&quot;code_nav_context&quot;:&quot;BLOB_VIEW&quot;,&quot;retry_backend&quot;:&quot;&quot;,&quot;originating_url&quot;:&quot;https://github.com/QuantConnect/Lean/find-definition?q=PortfolioBias&amp;blob_path=Algorithm.Framework%2FPortfolio%2FBlackLittermanOptimizationPortfolioConstructionModel.py&amp;ref=master&amp;language=Python&amp;row=63&amp;col=38&amp;code_nav_context=BLOB_VIEW&quot;,&quot;user_id&quot;:38889814}}" data-hydro-click-hmac="a153f08945a6a6a3074aead6efaf4763603eedc0eea289cff6586ed20b7ac513">PortfolioBias</span></span>.<span class="pl-v">Short</span> <span class="pl-k">else</span> <span class="pl-c1">1 and</span><table class="highlight tab-size js-file-line-container js-code-nav-container js-tagsearch-file" data-tab-size="4" data-paste-markdown-skip="" data-tagsearch-lang="Python" data-tagsearch-path="Algorithm.Framework/Portfolio/BlackLittermanOptimizationPortfolioConstructionModel.py"><tbody><tr><td id="LC63" class="blob-code blob-code-inner js-file-line"><span class="pl-s1"><span class="pl-token" data-hydro-click="{&quot;event_type&quot;:&quot;code_navigation.click_on_symbol&quot;,&quot;payload&quot;:{&quot;action&quot;:&quot;click_on_symbol&quot;,&quot;repository_id&quot;:27251463,&quot;ref&quot;:&quot;master&quot;,&quot;language&quot;:&quot;Python&quot;,&quot;backend&quot;:&quot;ALEPH_PRECISE&quot;,&quot;code_nav_context&quot;:&quot;BLOB_VIEW&quot;,&quot;retry_backend&quot;:&quot;&quot;,&quot;originating_url&quot;:&quot;https://github.com/QuantConnect/Lean/find-definition?q=lower&amp;blob_path=Algorithm.Framework%2FPortfolio%2FBlackLittermanOptimizationPortfolioConstructionModel.py&amp;ref=master&amp;language=Python&amp;row=62&amp;col=8&amp;code_nav_context=BLOB_VIEW&quot;,&quot;user_id&quot;:38889814}}" data-hydro-click-hmac="23a666baa4c4dd0e482964dd8240e46fc0e6a9e5395a320bddd085102f167d43">lower</span></span> <span class="pl-c1">=</span> <span class="pl-c1">0</span> <span class="pl-k">if</span> <span class="pl-s1"><span class="pl-token" data-hydro-click="{&quot;event_type&quot;:&quot;code_navigation.click_on_symbol&quot;,&quot;payload&quot;:{&quot;action&quot;:&quot;click_on_symbol&quot;,&quot;repository_id&quot;:27251463,&quot;ref&quot;:&quot;master&quot;,&quot;language&quot;:&quot;Python&quot;,&quot;backend&quot;:&quot;ALEPH_PRECISE&quot;,&quot;code_nav_context&quot;:&quot;BLOB_VIEW&quot;,&quot;retry_backend&quot;:&quot;&quot;,&quot;originating_url&quot;:&quot;https://github.com/QuantConnect/Lean/find-definition?q=portfolioBias&amp;blob_path=Algorithm.Framework%2FPortfolio%2FBlackLittermanOptimizationPortfolioConstructionModel.py&amp;ref=master&amp;language=Python&amp;row=62&amp;col=21&amp;code_nav_context=BLOB_VIEW&quot;,&quot;user_id&quot;:38889814}}" data-hydro-click-hmac="c408e5ef263336fc1b07ff7b364ff4f94bf36a7449a34bf76304adc44515eddf">portfolioBias</span></span> <span class="pl-c1">==</span> <span class="pl-v">PortfolioBias</span>.<span class="pl-v">Long</span> <span class="pl-k">else</span> <span class="pl-c1">-</span><span class="pl-c1">1</span></td>
-        </tr><tr>
-          </tr></tbody></table></div><br>
 <div class="section-example-container">
 	<pre class="csharp">SetPortfolioConstruction( new BlackLittermanOptimizationPortfolioConstructionModel() );</pre>
 	<pre class="python">self.SetPortfolioConstruction( BlackLittermanOptimizationPortfolioConstructionModel() )</pre>
 </div>
+
+
+<p>The following table describes the arguments the model accepts:</p>
+
+<table class="qc-table table">
+    <thead>
+        <tr>
+            <th>Argument</th>
+            <th>Data Type</th>
+            <th>Description</th>
+            <th>Default Value</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><code class="python">rebalance</code><code class="csharp">rebalanceResolution</code></td>
+	    <td><code>Resolution</code></td>
+	    <td>Rebalancing frequency</td>
+            <td><code>Resolution.Daily</code></td>
+        </tr>
+        <tr>
+            <td><code>portfolioBias</code></td>
+	    <td><code>PortfolioBias</code></td>
+            <td>The bias of the portfolio</td>
+            <td><code>PortfolioBias.LongShort</code></td>
+        </tr>
+        <tr>
+            <td><code>lookback</code></td>
+	    <td><code>int</code></td>
+            <td>Historical return lookback period</td>
+            <td>1</td>
+        </tr>
+        <tr>
+            <td><code>period</code></td>
+	    <td><code>int</code></td>
+            <td>The time interval of history price to calculate the weight</td>
+            <td>63</td>
+        </tr>
+        <tr>
+            <td><code>resolution</code></td>
+	    <td><code>Resolution</code></td>
+            <td>The resolution of the history price</td>
+            <td><code>Resolution.Daily</code></td>
+        </tr>
+        <tr>
+            <td><code class="python">risk_free_rate</code><code class="csharp">riskFreeRate</code></td>
+	    <td><code>double</code></td>
+            <td>The risk free rate</td>
+            <td>0.0</td>
+        </tr>
+        <tr>
+            <td><code>delta</code></td>
+	    <td><code>double</code></td>
+            <td>The risk aversion coefficient of the market portfolio</td>
+            <td>2.5</td>
+        </tr>
+        <tr>
+            <td><code>tau</code></td>
+	    <td><code>double</code></td>
+            <td>The model parameter indicating the uncertainty of the CAPM prior</td>
+            <td>0.05</td>
+        </tr>
+        <tr>
+            <td><code>optimizer</code></td>
+	    <td><code>IPortfolioOptimizer</code></td>
+            <td>The portfolio optimization algorithm</td>
+            <td><code class="csharp">null</code><code class="python">None</code></td>
+        </tr>
+    </tbody>
+</table>
+
+
+<p>If you don't provide an <code>optimizer</code> argument, the default one is the <a href="/docs/v2/writing-algorithms/algorithm-framework/portfolio-construction/supported-optimizers#03-Minimum-Variance-Optimizer">MinimumVariancePortfolioOptimizer</a> with upper and lower weights that respect the <code>portfolioBias</code>.</p>
+
 
 <p>To view the implementation of this model, see the <span class="csharp"><a target="_blank" rel="nofollow" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.Framework/Portfolio/BlackLittermanOptimizationPortfolioConstructionModel.cs">LEAN GitHub repository</a></span><span class="python"><a target="_blank" rel="nofollow" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.Framework/Portfolio/BlackLittermanOptimizationPortfolioConstructionModel.py">LEAN GitHub repository</a></span>.</p>
