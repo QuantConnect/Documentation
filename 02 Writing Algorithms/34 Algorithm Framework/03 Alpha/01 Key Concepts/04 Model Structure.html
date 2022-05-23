@@ -1,16 +1,16 @@
 <p>
-Alpha models are intended to be easy to create and the primary location for iterating your strategy. To create Alpha Models, you must implement the $[IAlphaModel,T:QuantConnect.Algorithm.Framework.Alphas.AlphaModel] class as shown in the examples below. This has two methods:
-</p>
-<p>1. $[Update(),M:QuantConnect.Algorithm.Framework.Alphas.AlphaModel.Update] - Generate Insight objects.<br>2. $[OnSecuritiesChanged(),M:QuantConnect.Algorithm.Framework.Alphas.AlphaModel.OnSecuritiesChanged] - Receive notifications about security changes. (optional)</p>
+Alpha models should extend the AlphaModel class. Extensions of the <code>AlphaModel</code> class must implement the <code>Update</code> method, which receives a <a href="/docs/v2/writing-algorithms/key-concepts/time-modeling/timeslices">Slice</a> object and returns an array of <code>Insight</code> objects. Extensions should also implement the <code>OnSecuritiesChanged</code> method to track security changes in the universe.</p>
+
 <div class="section-example-container">
 	<pre class="csharp">// Algorithm framework model that produces insights
 class MyAlphaModel : AlphaModel
 {
-    // Updates this alpha model with the latest data from the algorithm.
+    // Updates this Alpha model with the latest data from the algorithm.
     // This is called each time the algorithm receives data for subscribed securities
     public override Enumerable&lt;Insight&gt; Update(QCAlgorithm algorithm, Slice data) 
     {
-         // Generate insights on the securities in universe.
+         var insights = new List&lt;Insight&gt;();
+         return insights;
     }
 
     public override void OnSecuritiesChanged(QCAlgorithm algorithm, SecurityChanges changes) 
@@ -25,7 +25,7 @@ class MyAlphaModel : AlphaModel
 class MyAlphaModel(AlphaModel):
 
     def Update(self, algorithm, data):
-        # Updates this alpha model with the latest data from the algorithm.
+        # Updates this Alpha model with the latest data from the algorithm.
         # This is called each time the algorithm receives data for subscribed securities
         # Generate insights on the securities in the universe.
         insights = []
@@ -41,18 +41,14 @@ class MyAlphaModel(AlphaModel):
 
 <h4>Method Parameters</h4>
 
-<p>- The `algorithm` parameter passed to the alpha:Update method isn’t the algorithm 
-object you defined on main as it doesn't include the user-defined 
-attributes such as self.histories. In other words, we can only count 
-with attributes of the base class (QCAlgorithm). We have two 
-alternatives: 1. Use a Global variable; 2. Pass the reference to the 
-object with the constructor. both alternatives violate the separation of
- concerns principle. </p><p>The <code>slice</code> parameter contains the latest data available to the algorithm. <br></p><div>The <code>changes</code> parameter contains the universe changes. </div><div><br></div>
+<p>The <code>algorithm</code> parameter that the methods receive is an instance of the base <code>QCAlgorithm</code> class, not your subclass of it. To access members of your algorithm object, either use a global variable or pass a reference to Alpha model constructor. Both of these approaches violate the seperation of concerns principle.<br></p>
+
+<p>The <code>data</code> parameter contains the latest data available to the algorithm. <br></p><div>The <code>changes</code> parameter contains the universe changes. </div><div><br></div>
 
 
 <h4>Model Names</h4>
 
-<p>To ensure your Alpha Model can be used by all <a class="docs-internal-link" href="/docs/algorithm-framework/portfolio-construction">Portfolio Construction Models</a>, you should assign a unique name to your Alpha Model. Some Portfolio Construction Models can combine multiple Alpha Models together, and it can be important to distinguish between them. By default, we use the class-type name as the Alpha Model name.
+<p>To ensure your Alpha model is compatible with all <a href="/docs/v2/writing-algorithms/algorithm-framework/portfolio-construction/supported-models">Portfolio Construction models</a>, assign a unique name to your Alpha model. Some Portfolio Construction models can combine multiple Alpha models together, so it can be important to distinguish between the Alpha models. By default, we use the class-type name as the Alpha model name.
 </p>
 	<div class="section-example-container">
 		<pre class="python" style="display: none;">class RsiAlphaModel(AlphaModel):
