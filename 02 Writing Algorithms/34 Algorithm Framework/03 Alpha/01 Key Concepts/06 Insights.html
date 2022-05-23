@@ -1,96 +1,142 @@
-<p>
-The Update method returns an array of Insight objects. An Insight is a <i>single</i> prediction for an asset. These can be thought of as actionable trading signals, indicating the asset direction, magnitude, and confidence in the near future. All insights can take a weight parameter to set the desired weighting for the insight.</p><p># The information that you put in the insights depends on how the PCM handles insights (it's all up to the PCM is defined, it's up to the PCM to interpret the information from the Insights). Insights give information to the person that receives the insights or the PCM. The PCM may not utilize all the Insight properties that you set. For example, the equal weighting PCM doesn't consider the Insight weight. The PCM consumes the insights and decides what portfolio targets to set. In the pre-built PCMs in lean, we assume flat or expired insights close the positions</p><p># If you change the cash of the algorithm, it will affect the orders, but not necessarily the insights.</p>
+<p>An Insight is a single prediction for an asset. The <code>Update</code> method returns an array of Insight objects. You can think of these as actionable trading signals, indicating the asset direction, magnitude, and confidence in the near future. All insights can take a weight parameter to set the desired weighting for the insight.</p>
+
+<p># The information that you put in the insights depends on how the PCM handles insights (it's all up to the PCM is defined, it's up to the PCM to interpret the information from the Insights). Insights give information to the person that receives the insights or the PCM. The PCM may not utilize all the Insight properties that you set. For example, the equal weighting PCM doesn't consider the Insight weight. The PCM consumes the insights and decides what portfolio targets to set. In the pre-built PCMs in lean, we assume flat or expired insights close the positions</p><p># If you change the cash of the algorithm, it will affect the orders, but not necessarily the insights.</p>
 
 <h4>Insight Properties</h4>
-<p>Insight classes have the following important properties:
-</p>
-<div class="section-example-container">
-	<pre class="csharp">class Insight {
-    // Symbol of this Insight
-    Symbol Symbol;
+<p>The following table describes the properties of the Insight class:</p>
 
-    // Gets the type of insight, for example, price insight or volatility insight
-    InsightType Type;
-
-    // Gets the predicted direction, Down, Flat or Up.
-    InsightDirection Direction;
-
-    // Gets the period over which this insight is expected to come to fruition
-    TimeSpan Period;
-
-    // Gets the predicted percent change in the insight type (price/volatility) (optional)
-    double? Magnitude;
-
-    // Gets the confidence in this insight (optional)
-    double? Confidence;
-
-    // The weight in this insight (optional)
-    double? Weight;
-}</pre>
-	<pre class="python">class Insight:
-    self.Symbol # Symbol of this Insight
-    self.Type # Type of insight (price or volatility)
-    self.Direction # Insight Direction (down, flat or up)
-    self.Period # Insight period (TimeSpan)
-    self.Magnitude # Expected percent change (optional, double)
-    self.Confidence # Confidence in insight (optional, double)
-    self.Weight # Weighting of the insight (optional, double) 
-</pre>
-</div>
+<table class="qc-table table">
+    <thead>
+        <tr>
+            <th>Property</th>
+            <th>Data Type</th>
+            <th>Description</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><code>Symbol</code></td>
+            <td><code>Symbol</code></td>
+	    <td>Symbol of this Insight</td>
+        </tr>
+        <tr>
+            <td><code>Type</code></td>
+            <td><code>InsightType</code></td>
+	    <td>The type of insight</td>
+        </tr>
+        <tr>
+            <td><code>Direction</code></td>
+            <td><code>InsightDirection</code></td>
+	    <td>The predicted direction</td>
+        </tr>
+        <tr>
+            <td><code>Period</code></td>
+            <td><code>TimeSpan</code></td>
+	    <td>The period over which the insight is expected to come to fruition</td>
+        </tr>
+        <tr>
+            <td><code>Magnitude</code></td>
+            <td><code>double?</code></td>
+	    <td><span class="qualifier">(Optional)</span> The predicted percent change in the insight type</td>
+        </tr>
+        <tr>
+            <td><code>Confidence</code></td>
+            <td><code>double?</code></td>
+	    <td><span class="qualifier">(Optional)</span> The confidence in the insight</td>
+        </tr>
+        <tr>
+            <td><code>Weight</code></td>
+            <td><code>double?</code></td>
+	    <td><span class="qualifier">(Optional)</span> The weight in the insight</td>
+        </tr>
+    </tbody>
+</table>
 
 <h4>InsightType Values<br></h4>
-<p>The following table describes the <code>InsightType</code> values:</p>
-- InsightType.Price : A prediction on the asset price
-<br>-InsightType.Volatility: A prediction on the asset volatility
+<p>The following table describes the <code>InsightType</code> enumeration values:</p>
 
+<table class="qc-table table">
+    <thead>
+        <tr>
+            <th>Value</th>
+            <th>Description</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><code>InsightType.Price</code></td>
+	    <td>A prediction on the asset price</td>
+        </tr>
+        <tr>
+            <td><code>InsightType.Volatility</code></td>
+	    <td>A prediction on the asset volatility</td>
+        </tr>
+    </tbody>
+</table>
 
 
 <h4>InsightDirection Values<br></h4>
-<p>The following table describes the <code>InsightDirection</code> values:</p>
--InsightDirection.Up : A prediction that the asset price/volatility will increase
-<br>-InsightDirection.Flat : A prediction that the asset price/volatility will not change
-<br>-InsightDirection.Down : A prediction that the asset price/volatility will decrease
+<p>The following table describes the <code>InsightDirection</code> enumeration values:</p>
+
+<table class="qc-table table">
+    <thead>
+        <tr>
+            <th>Value</th>
+            <th>Description</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><code>InsightDirection.Up</code></td>
+	    <td>A prediction that the asset price/volatility will increase</td>
+        </tr>
+        <tr>
+            <td><code>InsightDirection.Flat </code></td>
+	    <td>A prediction that the asset price/volatility will not change</td>
+        </tr>
+        <tr>
+            <td><code>InsightDirection.Down </code></td>
+	    <td>A prediction that the asset price/volatility will decrease</td>
+        </tr>
+    </tbody>
+</table>
 
 
 <h4>Create Insights</h4>
 
-<p>An $[Insight,T:QuantConnect.Algorithm.Framework.Alphas.Insight] constructor takes the following arguments:</p>
+<p>To create an <code>Insight</code>, call the <code>Insight</code> constructor.</p>
 <div class="section-example-container">
-	<pre class="python"># Insight Constructor Arguments:
-# Insight(symbol, timedelta, type, direction, magnitude=None, confidence=None, sourceModel=None)
- Insight("IBM", timedelta(minutes=20), InsightType.Price, InsightDirection.Up, 0.0025, 1.00, None, 0.1)</pre>
-	<pre class="csharp">// Insight Constructor Arguments
-// new Insight(symbol, period, type, confidence=null, magnitude=null, source=null, weighting=null);
-var insight = new Insight("IBM", TimeSpan.FromMinutes(20), InsightType.Price, InsightDirection.Up, null, weight:0.1);</pre>
+	<pre class="python"># Insight(symbol, period, type, direction, magnitude=None, confidence=None, sourceModel=None, weight=None)
+Insight("IBM", timedelta(minutes=20), InsightType.Price, InsightDirection.Up)</pre>
+	<pre class="csharp">// new Insight(symbol, period, type, direction, magnitude=null, confidence=null, sourceModel=null, weight=null);
+var insight = new Insight("IBM", TimeSpan.FromMinutes(20), InsightType.Price, InsightDirection.Up);</pre>
 </div>
 
-	<p>We have provided a helper method to make creating Insights easier. This can be used in your Update method to create insight objects for your Alpha Model of the Price type:</p>  
-	<div class="section-example-container">
-		<pre class="python">insight = Insight.Price("IBM", timedelta(minutes = 20), InsightDirection.Up)</pre>
-		<pre class="csharp">var insight = Insight.Price("IBM", TimeSpan.FromMinutes(20), InsightDirection.Up);</pre>
-	</div>
+<p>In the <code>Insight</code> constructor, the <code>period</code> argument can be a <code class="python">timedelta</code><code class="csharp">TimeSpan</code> object or a function that receives a <code class="csharp">DateTime</code><code class="python">datetime</code> object and returns the expiry <code class="csharp">DateTime</code><code class="python">datetime</code>.
 
-	<p>If you are creating a portfolio style of algorithm where the Insights can recommend a specific weighting, you can specify the "Weight" property, which most portfolio construction systems will allocate capital to accordingly.</p>  
-	<div class="section-example-container">
-		<pre class="python"># Skipping magnitude, confidence and source model and assigning 25% to weighting.
-insight = Insight.Price("IBM", timedelta(minutes = 20), InsightDirection.Up, None, None, None, 0.25)</pre>
-		<pre class="csharp">// Skipping magnitude, confidence and source model and assigning 25% to weighting.
-var insight = Insight.Price("IBM", TimeSpan.FromMinutes(20), InsightDirection.Up, null, null, null, 0.25);</pre>
-	</div>
+</p><p>You can also use the helper method to create Insight objects of the Price type.</p>  
+<div class="section-example-container">
+		<pre class="python"># Insight.Price(symbol, period, direction, magnitude=None, confidence=None, sourceModel=None, weight=None) 
+insight = Insight.Price("IBM", timedelta(minutes = 20), InsightDirection.Up)
+
+# Insight.Price(symbol, resolution, barCount, direction, magnitude=None, confidence=None, sourceModel=None, weight=None) 
+insight = Insight.Price("IBM", Resolution.Minute, 20, InsightDirection.Up)</pre>
+		<pre class="csharp">// new Insight(symbol, period, direction, magnitude=null, confidence=null, sourceModel=null, weight=null)
+var insight = Insight.Price("IBM", TimeSpan.FromMinutes(20), InsightDirection.Up);
+
+// new Insight(symbol, resolution, barCount, direction, magnitude=null, confidence=null, sourceModel=null, weight=null)
+var insight = Insight.Price("IBM", Resolution.Minute, 20, InsightDirection.Up);</pre>
+</div>
+
+<p>In the <code>Price</code> method, the <code>period</code> argument can be a <code class="python">timedelta</code><code class="csharp">TimeSpan</code> object, a <code class="csharp">DateTime</code><code class="python">datetime</code> object, or a function that receives a <code class="csharp">DateTime</code><code class="python">datetime</code> object and returns the expiry <code class="csharp">DateTime</code><code class="python">datetime</code>.</p>
 
 <h4>Group Insights</h4>
-<p>
-Sometimes an algorithm's performance relies on multiple insights being traded together - such as pairs trading and an options straddle. These insights should be <i>grouped</i>. Insight groups signal to the execution models that the insights need to be acted on as a single unit to maximize the alpha created.
-</p>
-<p>When you return the grouped insights from your Alpha Model, simply use the <code>Insight.Group()</code> helper method to mark the insights as a set.
-</p>
+<p>Sometimes an algorithm's performance relies on multiple insights being traded together, like in pairs trading and options straddles. These types insights should be grouped. Insight groups signal to the Execution model that the insights need to be acted on as a single unit to maximize the alpha created.</p>
+
+<p>To mark insights as a group, call the <code>Insight.Group</code> method.</p>
+
 <div class="section-example-container">
-	<pre class="csharp"> // Insight helper for grouping insights together
-return Insight.Group(insight1, insight2, insight3);</pre>
-	<pre class="python"># Insight helper for grouping insights together
-return Insight.Group( [ insight1, insight2, insight3 ] )
+	<pre class="csharp"> return Insight.Group(insight1, insight2, insight3);</pre>
+	<pre class="python">return Insight.Group([insight1, insight2,insight3])
 </pre>
 </div>
-
-<h4>Insights and Scheduled Events</h4>
-Don’t place a scheduled event in your alpha model to emit insights with EmitInsights (and returning an empty list in Update). Instead, use the Schedule event to set a flag, then you can still return insights in the Update method.
