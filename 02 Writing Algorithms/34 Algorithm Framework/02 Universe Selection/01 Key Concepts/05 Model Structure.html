@@ -1,11 +1,20 @@
 <p>
-Universe Selection models must implement the <code>IUniverseSelectionModel</code> interface. The interface has one method, <code>CreateUniverses</code>, which receives an <code>algorithm</code> object and returns an array of <code>Universe</code> objects.</p>
+Universe Selection models should extend the <code>UniverseSelectionModel</code> class. Extensions of the <code>UniverseSelectionModel</code> class must implement the <code>CreateUniverses</code> method, which receives an <code>algorithm</code> object and returns an array of <code>Universe</code> objects.</p>
 <div class="section-example-container">
-	<pre class="all">// Algorithm framework model that defines the universes to be used by an algorithm
-interface IUniverseSelectionModel
+    <pre class="csharp">public class MyUniverseSelectionModel : UniverseSelectionModel
 {
-   // Creates the universes for this algorithm, called once after IAlgorithm.Initialize
-   IEnumerable&lt;Universe&gt; CreateUniverses(QCAlgorithm algorithm);
+    public virtual IEnumerable&lt;Universe&gt; CreateUniverses(QCAlgorithm algorithm)
+    {
+        return new List&lt;Universe&gt;();
+    }
 }</pre>
+    <pre class="python">class MyUniverseSelectionModel(UniverseSelectionModel):
+
+    def CreateUniverses(self, algorithm):
+        universes = []
+        return universes</pre>
 </div>
+
+<p>The <code>algorithm</code> argument that the methods receive is an instance of the base <code>QCAlgorithm</code> class, not your subclass of it.</p>
+
 <p>Generally, you should be able to extend one of the pre-built Universe Selection types. If you need to do something that doesn't fit into the pre-built types, let us know and we'll create a new foundational type of Universe Selection model.</p>
