@@ -47,8 +47,17 @@ $getUniverseSettingsText = function($isFramework) {
 </table>
 
 
-<p>To set the <code>UniverseSettings</code>, update the preceding properties in the <code>Initialize</code> method before you add the universe. These settings are globals, so they apply to all universes you create.</p>
-";	
+<p>To set the <code>UniverseSettings</code>, update the preceding properties in the <code>Initialize</code> method before you add the ";	
+    if ($isFramework) 
+    {
+	$result .= "Universe Selection model";
+    }
+    else
+    {
+	$result .= "universe";
+    }
+    $result .= ". These settings are globals, so they apply to all universes you create.</p>";
+
   
     if ($isFramework) 
     {
