@@ -1,12 +1,4 @@
-The EmaCrossUniverseSelectionModel is a fundamental universe selection model for US Equities. The model accepts the following arguments:
-
-<br>fastPeriod: Fast EMA period; Default 100
-<br>slowPeriod: Slow EMA period; Default 300
-<br>universeCount: Maximum number of members of this universe selection; Default 500
-<br>universeSettings: The settings used when adding symbols to the algorithm, specify null to use algorthm.UniverseSettings; Default: None
-<br>
-<br>
-The model selects symbols with the larger delta by percentage between the two exponential moving averages.
+<p>The <code>EmaCrossUniverseSelectionModel</code> applies two exponential moving average indicators to the assets price history and then selects the assets with the largest percentage delta between the indicators.</p>
 
 <div class="section-example-container">
 	<pre class="csharp">public override void Initialize()
@@ -17,4 +9,46 @@ The model selects symbols with the larger delta by percentage between the two ex
     self.AddUniverseSelection(EmaCrossUniverseSelectionModel())</pre>
 </div>
 
-<p>To view the implementation of this model, see the <span class='csharp'><a target="_blank" rel='nofollow' href='https://github.com/QuantConnect/Lean/blob/master/Algorithm.Framework/Selection/EmaCrossUniverseSelectionModel.cs'>LEAN GitHub repository</a></span><span class='python'><a target="_blank" rel='nofollow' href='https://github.com/QuantConnect/Lean/blob/master/Algorithm.Framework/Selection/EmaCrossUniverseSelectionModel.py'>LEAN GitHub repository</a></span>.</p>
+<p>The following table describes the arguments the model accepts:</p>
+
+<table class="qc-table table">
+    <thead>
+        <tr>
+            <th>Argument</th>
+            <th>Data Type</th>
+            <th>Description</th>
+            <th>Default Value</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><code>fastPeriod</code></td>
+	    <td><code>int</code></td>
+            <td>Fast EMA period</td>
+            <td>100</td>
+        </tr>
+        <tr>
+            <td><code>slowPeriod</code></td>
+	    <td><code>int</code></td>
+            <td>Slow EMA period</td>
+            <td>300</td>
+        </tr>
+        <tr>
+            <td><code>universeCount</code></td>
+	    <td><code>int</code></td>
+            <td>Maximum number of members of this universe selection</td>
+            <td>500</td>
+        </tr>
+        <tr>
+            <td><code>universeSettings</code></td>
+	    <td><code>UniverseSettings</code></td>
+            <td>The settings used when adding symbols to the algorithm</td>
+            <td><code class="python">None</code><code class="csharp">null</code></td>
+        </tr>
+    </tbody>
+</table>
+
+<p>If you don't provide a <code>universeSettings</code> argument, the <code>algorithm.UniverseSettings</code> are used by default.</p>
+
+
+<p>To view the implementation of this model, see the <span class="csharp"><a target="_blank" rel="nofollow" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.Framework/Selection/EmaCrossUniverseSelectionModel.cs">LEAN GitHub repository</a></span><span class="python"><a target="_blank" rel="nofollow" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.Framework/Selection/EmaCrossUniverseSelectionModel.py">LEAN GitHub repository</a></span>.</p>
