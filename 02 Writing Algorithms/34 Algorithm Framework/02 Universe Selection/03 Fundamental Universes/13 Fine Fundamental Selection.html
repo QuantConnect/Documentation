@@ -7,7 +7,7 @@
      AddUniverseSelection(new FineFundamentalUniverseSelectionModel(SelectCoarse, SelectFine));
 }
 
-IEnumerable&lt;Symbol&gt; SelectCoarse(IEnumerable&lt;CoarseFundamental&gt; coarse)
+private IEnumerable&lt;Symbol&gt; SelectCoarse(IEnumerable&lt;CoarseFundamental&gt; coarse)
 {
     // Return most liquid assets w/ fundamentals
     return coarse.Where(c =&gt; c.HasFundamentalData)
@@ -16,7 +16,7 @@ IEnumerable&lt;Symbol&gt; SelectCoarse(IEnumerable&lt;CoarseFundamental&gt; coar
                  .Select(c =&gt; c.Symbol);
 }
 
-IEnumerable&lt;Symbol&gt; SelectFine(IEnumerable&lt;FineFundamental&gt; fine) {
+private IEnumerable&lt;Symbol&gt; SelectFine(IEnumerable&lt;FineFundamental&gt; fine) {
     // Return assets with lowest P/E ratios
     return fine.OrderBy(f =&gt; f.ValuationRatios.PERatio)
                .Take(10)
