@@ -1,7 +1,7 @@
 <?php
 
 $getUniverseSettingsText = function($isFramework) {
-    $result = "<p>The universe settings of your algorithm configures some properties of the universe constituents. The following table describes the <code>UniverseSettings</code> object:</p>
+    $result = "<p>The universe settings of your algorithm configure some properties of the universe constituents. The following table describes the <code>UniverseSettings</code> object:</p>
 
 <table class=\"qc-table table\">
     <thead>
@@ -13,7 +13,7 @@ $getUniverseSettingsText = function($isFramework) {
     <tbody>
 	<tr>
             <td><code>UniverseSettings.ContractDepthOffset</code></td>
-	    <td>What offset from the current front month should be used for continous contracts? 0 (default) uses the front month and 1 uses the back month contract.</td>
+	    <td>What offset from the current front month should be used for continuous contracts? 0 (default) uses the front month and 1 uses the back month contract.</td>
         </tr>
 	<tr>
             <td><code>UniverseSettings.DataMappingMode</code></td>
@@ -37,11 +37,11 @@ $getUniverseSettingsText = function($isFramework) {
         </tr>
         <tr>
             <td><code>UniverseSettings.MinimumTimeInUniverse</code></td>
-	    <td>What's the minimum time assets should be in universe?</td>
+	    <td>What's the minimum time assets should be in the universe?</td>
         </tr>
         <tr>
             <td><code>UniverseSettings.Resolution</code></td>
-	    <td>What resolution should added assets use?</td>
+	    <td>What resolution should assets use?</td>
         </tr>
     </tbody>
 </table>
