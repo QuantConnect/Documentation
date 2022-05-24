@@ -8,29 +8,6 @@ $Payout_{ITM\ put}=(Strike_{ITM\ put}-Price_{underlying})^{+}$
 $Profit/Loss=(Payout_{ITM\ put}-Payout_{OTM\ put}+credit\ received_{OTM\ put}-debit\ paid_{ITM\ put})\times multiplier-commissions$
 <br><br>
 
-<div class="section-example-container">
-    <pre class="python">price = np.arange(750,1150,1)
-k_low = 900 # lower strike price for put
-k_high = 1000 # higher strike price for put
-price_low = 20 # premium of put option with lower strike
-price_high = 70 # premium of put option with higher strike
-
-# short put with higher strike
-payoff_short_put = [min(price_low, -(k_low-i-price_low)) for i in price]
-# long put with lower strike
-payoff_long_put = [max(-price_high, k_high-i-price_high) for i in price]
-payoff = np.sum([payoff_long_put, payoff_short_put], axis=0)
-
-plt.figure(figsize=(20,11))
-plt.plot(price, payoff_long_put, label = 'long put')
-plt.plot(price, payoff_short_put, label = 'short put')
-plt.plot(price, payoff, label = 'Bear Put Spread')
-plt.legend(fontsize = 20)
-plt.xlabel('Stock Price at Expiry',fontsize = 15)
-plt.ylabel('payoff',fontsize = 15)
-plt.title('Bear Put Spread Payoff at Expiration',fontsize = 20)
-plt.grid(True)</pre>
-</div>
 <img class="docs-image" src="https://cdn.quantconnect.com/i/tu/bear-put-spread-20220524.png">
 
 <p>The maximum profit is the spread between the 2 options' strike prices minus net debit paid when opening the trade. If the price is declined and lower than the strike prices of both puts, they will worth <span class="latex-variable">$(strike - underlying price)</span> at expiration.</p>

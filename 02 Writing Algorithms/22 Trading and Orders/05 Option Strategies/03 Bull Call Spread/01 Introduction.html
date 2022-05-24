@@ -13,29 +13,7 @@ $Payout_{ITM\ call}=(Price_{underlying}-Strike_{ITM\ call})^{+}$
 <br><br>
 $Profit/Loss=(Payout_{ITM\ call}-Payout_{OTM\ call}+credit\ received_{OTM\ call}-debit\ paid_{ITM\ call})\times multiplier-commissions$
 <br><br>
-<div class="section-example-container">
-    <pre class="python">price = np.arange(750,1150,1)
-k_low = 900 # lower strike price for call
-k_high = 1000 # higher strike price for call
-price_low = 70 # premium of call option with lower strike
-price_high = 20 # premium of call option with higher strike
 
-# short call with higher strike
-payoff_short_call = [min(price_high, -(i-k_high-price_high)) for i in price]
-# long call with lower strike
-payoff_long_call = [max(-price_low, i-k_low-price_low) for i in price]
-payoff = np.sum([payoff_long_call, payoff_short_call], axis=0)
-
-plt.figure(figsize=(20,11))
-plt.plot(price, payoff_long_call, label = 'long call')
-plt.plot(price, payoff_short_call, label = 'short call')
-plt.plot(price, payoff, label = 'Bull Call Spread')
-plt.legend(fontsize = 20)
-plt.xlabel('Stock Price at Expiry',fontsize = 15)
-plt.ylabel('payoff',fontsize = 15)
-plt.title('Bull Call Spread Payoff at Expiration',fontsize = 20)
-plt.grid(True)</pre>
-</div>
 <img class="docs-image" src="https://cdn.quantconnect.com/i/tu/bull-call-spread-20220524.png">
 
 <p>The maximum profit is the spread between the 2 options' strike prices minus net debit paid when opening the trade after commission. If the price is increased to exceed both strikes, both calls will worth <span class="latex-variable">$(underlying price - strike)</span> at expiration.</p>
