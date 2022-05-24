@@ -1,47 +1,43 @@
-<p>The <code>FineFundamentalUniverseSelectionModel</code> is a universe selection model that provides corporate fundamental data on US Equities. To use the model, define a coarse selection function and a fine selection function. The coarse selection function receives a list of 
-$[CoarseFundamental,T:QuantConnect.Data.UniverseSelection.CoarseFundamental]
- objects and should return a list of Symbol objects. To filter the CoarseFundamental down to the securities that have fundamental data, add a HasFundamentalData filter ot the coarse selection function. The Fine selection function receives a subset of 
-$[FineFundamental,T:QuantConnect.Data.Fundamental.FineFundamental] 
-objects generated from coarse selection results and should return a list
- of Symbol objects. The Symbol objects you return from the fine selection function are the constituents of the universe.
-</p><div class="section-example-container">
-	<pre class="csharp"> // Setting Universe Model in QCAlgorithm
-public override void Initialize()
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <br><p>The <code>FineFundamentalUniverseSelectionModel</code> selects assets based on <code>CoarseFundamental</code> and <code>FineFundamental</code> data. This is the only model that provides corporate fundamental data to your algorithm. To use this model, define a coarse selection function and a fine selection function. The coarse selection function receives a list of 
+<code>CoarseFundamental</code> objects and returns a list of <code>Symbol</code> objects. To filter the <code>CoarseFundamental</code> down to the securities that have fundamental data, add a <code>HasFundamentalData</code> filter to the coarse selection function. The fine selection function receives a subset of <code>FineFundamental</code> objects generated from coarse selection results and returns a list of <code>Symbol</code> objects. The <code>Symbol</code> objects you return from the fine selection function are the constituents of the universe.</p>
+
+<div class="section-example-container">
+	<pre class="csharp">public override void Initialize()
 {
      AddUniverseSelection(new FineFundamentalUniverseSelectionModel(SelectCoarse, SelectFine));
 }
 
 IEnumerable&lt;Symbol&gt; SelectCoarse(IEnumerable&lt;CoarseFundamental&gt; coarse)
 {
-    var tickers = new[] { "AAPL", "AIG", "IBM" };
-    return tickers.Select(x =&gt;
-        QuantConnect.Symbol.Create(x, SecurityType.Equity, Market.USA)
-    );
+    // Return most liquid assets w/ fundamentals
+    return coarse.Where(c =&gt; c.HasFundamentalData)
+                 .OrderByDescending(c =&gt; c.DollarVolume)
+                 .Take(100)
+                 .Select(c =&gt; c.Symbol);
 }
 
 IEnumerable&lt;Symbol&gt; SelectFine(IEnumerable&lt;FineFundamental&gt; fine) {
-     return fine.Select(f =&gt; f.Symbol);
+    // Return assets with lowest P/E ratios
+    return fine.OrderBy(f =&gt; f.ValuationRatios.PERatio)
+               .Take(10)
+               .Select(f =&gt; f.Symbol);
 }
 </pre>
-	<pre class="python"> # Setting Universe Model in QCAlgorithm 
-def Initialize(self):
-    self.AddUniverseSelection(
-           FineFundamentalUniverseSelectionModel(self.SelectCoarse, self.SelectFine)
-    )
+	<pre class="python">def Initialize(self):
+    self.AddUniverseSelection(FineFundamentalUniverseSelectionModel(self.SelectCoarse, self.SelectFine))
 
 def SelectCoarse(self, coarse):
-    tickers = ["AAPL", "AIG", "IBM"]
-    return [Symbol.Create(x, SecurityType.Equity, Market.USA) for x in tickers]
+    selected = [c for c in coarse if c.HasFundamentalData]
+    sorted_by_dollar_volume = sorted(selected, key=lambda c: c.DollarVolume, reverse=True)
+    return [c.Symbol for c in sorted_by_dollar_volume[:100]] # Return most liquid assets w/ fundamentals
 
 def SelectFine(self, fine):
-    return [f.Symbol for f in fine] </pre>
+    sorted_by_pe_ratio = sorted(fine, key=lambda x: x.ValuationRatios.PERatio, reverse=False)
+    return [c.Symbol for c in sorted_by_pe_ratio[:10]] # Return assets with lowest P/E ratios</pre>
 </div>
-<p><br></p>
 
-<p>- To return the current universe constituents from, return Universe.Unchanged.</p>
+<p>To return the current universe constituents from the coarse or fine selection function, return <code>Universe.Unchanged</code>.</p>
 
-- If you add a FineFundamentalUniverseSelectionModel to your algorithm, you can access fundamental data in the fine selection function or from the securtity object. To access fundamental data from the security object, use the <code>Fundamentals</code> property of the <code>Equity</code> object.
-
-
+<p>If you add a <code>FineFundamentalUniverseSelectionModel</code> to your algorithm, you can access fundamental data in the fine selection function or from the <code>Equity</code> object. To access fundamental data from the <code>Equity</code> object, use the <code>Equity.Fundamentals</code> property.</p>
 
 <p>To view the implementation of this model, see the <a target="_blank" rel="nofollow" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.Framework/Selection/FineFundamentalUniverseSelectionModel.cs">LEAN GitHub repository</a>.</p>
