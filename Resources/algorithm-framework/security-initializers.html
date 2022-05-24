@@ -1,0 +1,48 @@
+<p>
+Instead of configuring global universe settings, you can individually configure the settings of each security in the universe with a security initializer. Security initializers let you apply any fill model or special data requests on a per-security basis. To set the security initializer, in the <code>Initialize</code> method, call the <code>SetSecurityInitializer()</code> method.</p>
+</p>
+<p>The most common request is for raw, unadjusted price information. To achieve this, in the security initializer, call the <code>SetDataNormalizationMode</code> method. As the universe adds new securities, the security data is set to the <code>DataNormalizationMode</code> enum value you provide.</p>
+<div class="section-example-container">
+<pre class="csharp">//In Initialize
+SetSecurityInitializer(CustomSecurityInitializer);
+
+private void CustomSecurityInitializer(Security security)
+{
+	//Initialize the security with raw prices
+	security.SetDataNormalizationMode(DataNormalizationMode.Raw);
+}
+</pre>
+<pre class="python">#In Initialize
+self.SetSecurityInitializer(self.CustomSecurityInitializer)
+
+def CustomSecurityInitializer(self, security):
+    '''Initialize the security with raw prices'''
+    security.SetDataNormalizationMode(DataNormalizationMode.Raw)
+</pre>
+</div>
+
+<p>For simple requests, you can use the functional implementation of the security initializer. This style lets you configure and return the security object with 1 line of code.</p>
+<div class="section-example-container">
+<pre class="csharp">//Most common request; requesting raw prices for universe securities.
+SetSecurityInitializer(x =&gt; x.SetDataNormalizationMode(DataNormalizationMode.Raw));
+</pre>
+<pre class="python"># Most common request; requesting raw prices for universe securities.
+self.SetSecurityInitializer(lambda x: x.SetDataNormalizationMode(DataNormalizationMode.Raw))
+</pre>
+</div>
+
+<p>In some cases, you may want to trade a security in the same time loop that you create the security subscription. To avoid errors, use a security initializer to set the market price of each security to the last known price.</p>
+<div class="section-example-container">
+<pre class="csharp">SetSecurityInitializer(security =&gt; security.SetMarketPrice(GetLastKnownPrices));</pre>
+<pre class="python">self.SetSecurityInitializer(lambda security: security.SetMarketPrice(self.GetLastKnownPrices));</pre>
+</div>
+
+<p>You can also use the following snippet to set the models within a specific brokerage model and set a seeder:</p>
+<div class="section-example-container">
+<pre class="csharp">SetSecurityInitializer(new BrokerageModelSecurityInitializer(new DefaultBrokerageModel(),
+    new FuncSecuritySeeder(GetLastKnownPrices)));
+</pre>
+<pre class="python">self.SetSecurityInitializer(BrokerageModelSecurityInitializer(DefaultBrokerageModel(),
+    FuncSecuritySeeder(self.GetLastKnownPrices)));
+</pre>
+</div>
