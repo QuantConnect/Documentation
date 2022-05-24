@@ -1,13 +1,11 @@
 <p>
-Universe Models must implement a $[IUniverseSelectionModel,T:QuantConnect.Algorithm.Framework.Selection.IUniverseSelectionModel] interface. It has one method, $[CreateUniverses(QCAlgorithm algorithm),M:QuantConnect.Algorithm.Framework.Selection.UniverseSelectionModel.CreateUniverses]. The algorithm object is passed into the method to give you access to the QuantConnect API, and it should return an array of Universe objects.
-</p>
+Universe Selection models must implement the <code>IUniverseSelectionModel</code> interface. The interface has one method, <code>CreateUniverses</code>, which receives an <code>algorithm</code> object and returns an array of <code>Universe</code> objects.</p>
 <div class="section-example-container">
 	<pre class="all">// Algorithm framework model that defines the universes to be used by an algorithm
 interface IUniverseSelectionModel
 {
    // Creates the universes for this algorithm, called once after IAlgorithm.Initialize
-   IEnumerable&lt;Universe&gt; CreateUniverses(QCAlgorithmFramework algorithm);
+   IEnumerable&lt;Universe&gt; CreateUniverses(QCAlgorithm algorithm);
 }</pre>
 </div>
-<p>Generally, you should be able to extend one of the universes described above, so if you ever find yourself needing to do something that doesn't fit into the categories above, please let us know, and we'll create a new foundational type of universe model.</p><p>- To return the current universe constituents from the CreateUniverses method, return Universe.Unchanged.
-</p>
+<p>Generally, you should be able to extend one of the pre-built Universe Selection types. If you need to do something that doesn't fit into the pre-built types, let us know and we'll create a new foundational type of Universe Selection model.</p>
