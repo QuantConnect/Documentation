@@ -1,1 +1,58 @@
-## Follow pattern of Iron Condor, but use the CallButterfly OptionStrategy
+<p>Follow these steps to implement the long call butterfly strategy.</p>
+
+<ol>
+    <li>In the Initialize method, set the start date, end date, cash, and <a href="https://www.quantconnect.com/docs/v2/writing-algorithms/universes/equity-options">Option universe</a>.</li>
+    <div class="section-example-container">
+        <pre class="python">def Initialize(self):
+    self.SetStartDate(2017, 2, 1)
+    self.SetEndDate(2017, 3, 5)
+    self.SetCash(500000)
+
+    option = self.AddOption("GOOG", Resolution.Minute)
+    self.symbol = option.Symbol
+    option.SetFilter(self.UniverseFunc)
+
+def UniverseFunc(self, universe):
+    return universe.IncludeWeeklys().Strikes(-15, 15).Expiration(timedelta(0), timedelta(31))</pre>
+    </div>
+
+    <li>In the OnData method, select the Option contracts.</li>
+    <div class="section-example-container">
+        <pre class="python">def OnData(self, data):
+    # avoid extra orders
+    if self.Portfolio.Invested: return
+
+    # Get the OptionChain of the self.symbol
+    chain = data.OptionChains.get(self.symbol, None)
+    if not chain: return
+
+    # sorted the optionchain by expiration date and choose the furthest date
+    expiry = sorted(chain, key = lambda x: x.Expiry, reverse=True)[0].Expiry
+    
+    # filter the call options from the contracts which expire on the furthest expiration date in the option chain.
+    calls = [i for i in chain if i.Expiry == expiry and i.Right == OptionRight.Call]
+    if len(calls) == 0: return
+
+    # sort the call options with the same expiration date according to their strike price.
+    call_strikes = sorted([x.Strike for x in calls])
+
+    # get at-the-money strike
+    atm_strike = sorted(calls, key=lambda x: abs(x.Strike - chain.Underlying.Price))[0].Strike
+
+    # Get the distance between lowest strike price and ATM strike, and highest strike price and ATM strike. 
+    # Get the lower value as the spread distance as equidistance is needed for both side.
+    spread = min(abs(call_strikes[0] - atm_strike), abs(call_strikes[-1] - atm_strike))
+
+    # select the strike prices for forming the option legs
+    itm_strike = atm_strike - spread
+    otm_strike = atm_strike + spread</pre>
+    </div>
+
+    <li>In the OnData method, call the <code>OptionStrategies.CallButterfly</code> method and then submit the order.</li>
+    <div class="section-example-container">
+        <pre class="python">option_strategy = OptionStrategies.CallButterfly(self.symbol, otm_strike, atm_strike, itm_strike, expiry)
+# We open a position with 1 unit of the option strategy
+self.Buy(option_strategy, 1)
+# self.Sell(option_strategy, 1) if short call butterfly</pre>
+    </div>
+</ol>
