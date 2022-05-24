@@ -1,25 +1,29 @@
-The CoarseFundamentalUniverseSelectionModel is a fundamental universe selection model for US Equities that selects assets based on CoarseFundamental data.<br><div class="section-example-container">
+<p>The <code>CoarseFundamentalUniverseSelectionModel</code> selects assets based on <code>CoarseFundamental</code> data. To use this model, define a coarse selection function. The coarse selection function receives a list of 
+<code>CoarseFundamental</code> objects and returns a list of <code>Symbol</code> objects.  The <code>Symbol</code> objects you return from the coarse selection function are the constituents of the universe.</p>
+
+<div class="section-example-container">
 	<pre class="csharp">public override void Initialize()
 {
     AddUniverseSelection(new CoarseFundamentalUniverseSelectionModel(CoarseSelectionFunction));
 }
 
-private IEnumerable&lt;Symbol&gt; CoarseSelectionFunction(IEnumerable&lt;CoarseFundamental&gt; coarse)
+IEnumerable&lt;Symbol&gt; SelectCoarse(IEnumerable&lt;CoarseFundamental&gt; coarse)
 {
-    return (from cf in coarse
-            where !cf.HasFundamentalData
-            orderby cf.DollarVolume descending
-            select cf.Symbol).Take(20);
+    // Return most liquid assets w/ fundamentals
+    return coarse.Where(c =&gt; c.HasFundamentalData)
+                 .OrderByDescending(c =&gt; c.DollarVolume)
+                 .Take(100)
+                 .Select(c =&gt; c.Symbol);
 }</pre>
 	<pre class="python">def Initialize(self):
     self.AddUniverseSelection(CoarseFundamentalUniverseSelectionModel(self.CoarseSelectionFunction))
 
-def CoarseSelectionFunction(self, coarse):
-    sortedByDollarVolume = sorted(coarse, key=lambda x: x.DollarVolume, reverse=True)
-    filtered = [ x.Symbol for x in sortedByDollarVolume if not x.HasFundamentalData ]
-    return filtered[:20]</pre>
+def SelectCoarse(self, coarse):
+    selected = [c for c in coarse if c.HasFundamentalData]
+    sorted_by_dollar_volume = sorted(selected, key=lambda c: c.DollarVolume, reverse=True)
+    return [c.Symbol for c in sorted_by_dollar_volume[:100]] # Return most liquid assets w/ fundamentals</pre>
 </div>
 
-<p>- To return the current universe constituents from, return Universe.Unchanged.</p>
+<p>To return the current universe constituents from the coarse or fine selection function, return <code>Universe.Unchanged</code>.</p>
 
-<p>To view the implementation of this model, see the <a target="_blank" rel='nofollow' href='https://github.com/QuantConnect/Lean/blob/master/Algorithm.Framework/Selection/CoarseFundamentalUniverseSelectionModel.cs'>LEAN GitHub repository</a>.</p>
+<p>To view the implementation of this model, see the <a target="_blank" rel="nofollow" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.Framework/Selection/CoarseFundamentalUniverseSelectionModel.cs">LEAN GitHub repository</a>.</p>
