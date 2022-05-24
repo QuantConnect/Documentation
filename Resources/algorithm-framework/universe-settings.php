@@ -52,7 +52,7 @@ $getUniverseSettingsText = function($isFramework) {
   
     if ($isFramework) 
     {
-        $result =. "
+        $result .= "
         <div class=\"section-example-container\">
 <pre class=\"csharp\">// Request second resolution data. This will be slow!
 UniverseSettings.Resolution = Resolution.Second;
@@ -65,7 +65,7 @@ self.AddUniverseSelection(VolatilityETFUniverse())</pre>
     }
     else
     {
-        $result =. "
+        $result .= "
         <div class=\"section-example-container\">
 <pre class=\"csharp\">// Request second resolution data. This will be slow!
 UniverseSettings.Resolution = Resolution.Second;
