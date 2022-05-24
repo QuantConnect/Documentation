@@ -1,11 +1,11 @@
-<p>Follow the below steps to implement the bear call spread strategy.</p>
+<p>Follow these steps to implement the bear call spread strategy.</p>
 
 <ol>
-    <li>Initialize your algorithm by setting the start date, the end date and the cash for your algorithm. Then, implement the coarse selection of option contracts.</li>
+    <li>In the Initialize method, set the start date, end date, cash, and <a href="https://www.quantconnect.com/docs/v2/writing-algorithms/universes/equity-options">Option universe</a>.</li>
     <div class="section-example-container">
         <pre class="python">def Initialize(self):
     self.SetStartDate(2017, 2, 1)
-    self.SetEndDate(2017, 3, 1)
+    self.SetEndDate(2017, 3, 20)
     self.SetCash(500000)
 
     option = self.AddOption("GOOG", Resolution.Minute)
@@ -16,32 +16,35 @@ def UniverseFunc(self, universe):
     return universe.IncludeWeeklys().Strikes(-15, 15).Expiration(timedelta(0), timedelta(31))</pre>
     </div>
 
-    <li>Choose the contracts with the same expiration date. For demonstration purpose here we sorted the contracts by their expiration dates and choose the options with the furthest expiration date in the option chain.</li>
+    <li>In the OnData method, select the Option contracts.</li>
     <div class="section-example-container">
         <pre class="python">def OnData(self, data):
+    # avoid extra orders
     if self.Portfolio.Invested: return
 
+    # Get the OptionChain of the self.symbol
     chain = data.OptionChains.get(self.symbol, None)
     if not chain: return
 
     # sorted the optionchain by expiration date and choose the furthest date
-    expiry = sorted(chain, key = lambda x: x.Expiry, reverse=True)[0].Expiry</pre>
-    </div>
+    expiry = sorted(chain, key = lambda x: x.Expiry, reverse=True)[0].Expiry
     
-    <li>Filter the call options from the contracts which expire on the furthest expiration date in the option chain.</li>
-    <div class="section-example-container">
-        <pre class="python">calls = [i for i in chain if i.Expiry == expiry and i.Right == OptionRight.Call]
-if len(calls) == 0: return</pre>
+    # filter the call options from the contracts which expire on the furthest expiration date in the option chain.
+    calls = [i for i in chain if i.Expiry == expiry and i.Right == OptionRight.Call]
+    if len(calls) == 0: return
+
+    # sort the call options with the same expiration date according to their strike price.
+    call_strikes = sorted([x.Strike for x in calls])
+
+    # select the strike prices for forming the option legs
+    # the ITM call option with the lowest strike price (short) and the OTM call with the highest strike price (long).
+    itm_strike = call_strikes[0]
+    otm_strike = call_strikes[-1]</pre>
     </div>
 
-    <li>Sort the call options with the same expiration date according to their strike price.</li>
+    <li>In the OnData method, call the <code>OptionStrategies.BearCallSpread</code> method and then submit the order.</li>
     <div class="section-example-container">
-        <pre class="python">call_strikes = sorted([x.Strike for x in calls])</pre>
-    </div>
-
-    <li>Call <code>OptionStrategies.BearCallSpread</code> to buy the call option with the highest strike price and sell the call with the lowest strike price.</li>
-    <div class="section-example-container">
-        <pre class="python">option_strategy = OptionStrategies.BearCallSpread(self.symbol, call_strikes[0], call_strikes[-1], expiry)
+        <pre class="python">option_strategy = OptionStrategies.BearCallSpread(self.symbol, itm_strike, otm_strike, expiry)
 # We open a position with 1 unit of the option strategy
 self.Buy(option_strategy, 1)</pre>
     </div>

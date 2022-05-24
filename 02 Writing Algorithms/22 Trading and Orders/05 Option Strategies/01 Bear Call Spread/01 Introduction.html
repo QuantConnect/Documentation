@@ -1,12 +1,44 @@
-<h4>Explanation</h4>
-<p><b>Bear call spread</b>, which is also known as <b>short call spread</b>, consists of one short call with a lower strike price and one long call with a higher strike price. Both calls have the same underlying stock and the same expiration date. The higher-strike longed call serve as a hedge of the lower-strike shorted call.</p>
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});
+</script>
+<script type="text/javascript"
+    src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+<p><span class="new-term">Bear call spread</span>, which is also known as <span class="new-term">short call spread</span>, consists of buying an OTM call and selling an ITM call. Both calls have the same underlying stock and the same expiration date. The OTM call serves as a hedge of the ITM call.</p>
 <p>It is a option strategy profitting from a decline in underlying asset price, as well as the time decay value of the shorted option contract. This is a limited-reward-limited-risk strategy.</p>
+$Payout_{OTM\ call}=(Price_{underlying}-Strike_{OTM\ call})^{+}$
+<br><br>
+$Payout_{ITM\ call}=(Price_{underlying}-Strike_{ITM\ call})^{+}$
+<br><br>
+$Profit/Loss=(Payout_{OTM\ call}-Payout_{ITM\ call}+credit\ received_{ITM\ call}-debit\ paid_{OTM\ call})\times multiplier-commissions$
+<br><br>
+<div class="section-example-container">
+    <pre class="python">price = np.arange(750,1150,1)
+k_low = 900 # lower strike price for call
+k_high = 1000 # higher strike price for call
+price_low = 70 # premium of call option with lower strike
+price_high = 10 # premium of call option with higher strike
 
-<h4>Maximum Profit</h4>
+# long call with higher strike
+payoff_long_call = [min(price_low, -(i-k_low-price_low)) for i in price]
+# short call with lower strike
+payoff_short_call = [max(-price_high, i-k_high-price_high) for i in price]
+
+payoff = np.sum([payoff_long_call, payoff_short_call], axis=0)
+
+plt.figure(figsize=(20,11))
+plt.plot(price, payoff_long_call, label = 'long call')
+plt.plot(price, payoff_short_call, label = 'short call')
+plt.plot(price, payoff, label = 'Bear Call Spread')
+plt.legend(fontsize = 20)
+plt.xlabel('Stock Price at Expiry',fontsize = 15)
+plt.ylabel('payoff',fontsize = 15)
+plt.title('Bear Call Spread Payoff at Expiration',fontsize = 20)
+plt.grid(True)</pre>
+</div>
+<img class="docs-image" src="https://cdn.quantconnect.com/i/tu/bear-call-spread.png">
+
 <p>The maximum profit is the net credit received after commission when opening the trade. If the price is declining, both calls will become worthless at expiration.</p>
-
-<h4>Potential Risk</h4>
 <p>Maximum loss is the spread between the 2 options' strike prices minus net credit received when opening the trade, where is underlying price is above both strike prices and the options being exercised/assigned.</p>
 <p>If the option is American option, there will be a risk of early assignment on the shorted option.</p>
-
-<img src="https://cdn.quantconnect.com/i/tu/bear-call-spread-20220522.png">
