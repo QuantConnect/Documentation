@@ -11,18 +11,6 @@ $getUniverseSettingsText = function($isFramework) {
         </tr>
     </thead>
     <tbody>
-	<tr>
-            <td><code>UniverseSettings.ContractDepthOffset</code></td>
-	    <td>What offset from the current front month should be used for continuous contracts? 0 (default) uses the front month and 1 uses the back month contract.</td>
-        </tr>
-	<tr>
-            <td><code>UniverseSettings.DataMappingMode</code></td>
-	    <td>How should continuous Future contracts be mapped?</td>
-        </tr>
-	<tr>
-            <td><code>UniverseSettings.DataNormalizationMode</code></td>
-	    <td>How should historical Equity prices be adjusted?</td>
-        </tr>
         <tr>
             <td><code>UniverseSettings.ExtendedMarketHours</code></td>
 	    <td>Should assets also feed extended market hours?</td>
@@ -32,16 +20,28 @@ $getUniverseSettingsText = function($isFramework) {
 	    <td>Should asset data fill forward?</td>
         </tr>
         <tr>
-            <td><code>UniverseSettings.Leverage</code></td>
-	    <td>What leverage should assets use in the universe?</td>
-        </tr>
-        <tr>
             <td><code>UniverseSettings.MinimumTimeInUniverse</code></td>
 	    <td>What's the minimum time assets should be in the universe?</td>
         </tr>
         <tr>
             <td><code>UniverseSettings.Resolution</code></td>
 	    <td>What resolution should assets use?</td>
+        </tr>
+	<tr>
+            <td><code>UniverseSettings.ContractDepthOffset</code></td>
+	    <td>What offset from the current front month should be used for continuous Future contracts? 0 (default) uses the front month and 1 uses the back month contract. This setting is only available fo rFuture Assets</td>
+        </tr>
+	<tr>
+            <td><code>UniverseSettings.DataMappingMode</code></td>
+	    <td>How should continuous Future contracts be mapped? This setting is only available for Future assets.</td>
+        </tr>
+	<tr>
+            <td><code>UniverseSettings.DataNormalizationMode</code></td>
+	    <td>How should historical prices be adjusted? This setting is only available for Equity and Futures assets.</td>
+        </tr>
+        <tr>
+            <td><code>UniverseSettings.Leverage</code></td>
+	    <td>What leverage should assets use in the universe? This setting is not available for derivative assets.</td>
         </tr>
     </tbody>
 </table>
