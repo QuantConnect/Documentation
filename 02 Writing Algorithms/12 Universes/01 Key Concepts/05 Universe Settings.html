@@ -1,40 +1,49 @@
+<p>The universe settings of your algorithm configures some properties of the universe constituents. The following table describes the <code>UniverseSettings</code> object:</p>
+
+
+<table class="qc-table table">
+    <thead>
+        <tr>
+            <th>Property</th>
+            <th>Description</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><code>UniverseSettings.Resolution</code></td>
+	    <td>What resolution should added assets use?</td>
+        </tr>
+        <tr>
+            <td><code>UniverseSettings.Leverage</code></td>
+	    <td>What leverage should assets use in the universe?</td>
+        </tr>
+        <tr>
+            <td><code>UniverseSettings.FillForward</code></td>
+	    <td>Should asset data fill forward?</td>
+        </tr>
+        <tr>
+            <td><code>UniverseSettings.MinimumTimeInUniverse</code></td>
+	    <td>What's the minimum time assets should be in universe?</td>
+        </tr>
+        <tr>
+            <td><code>UniverseSettings.DataNormalizationMode</code></td>
+	    <td>How should historical Equity prices be adjusted?</td>
+        </tr>
+        <tr>
+            <td><code>UniverseSettings.ExtendedMarketHours</code></td>
+	    <td>Should assets also feed extended market hours?</td>
+        </tr>
+    </tbody>
+</table>
+
 <p>
-Universes are created according to default settings objects. You can configure these settings objects to create your own customized universes. Below is the UniverseSettings object and its members that are used most frequently: 
-</p>
+To set the <code>UniverseSettings</code>, update the preceding properties in the <code>Initialize</code> method before you add the universe. They settings are globals, so they apply to all universes you create.</p>
 
 <div class="section-example-container">
-	<pre class="csharp">UniverseSettings.Resolution             // What resolution should added assets use
-                .Leverage               // What leverage should assets use in the universe?
-                .FillForward            // Should asset data fill forward?
-                .MinimumTimeInUniverse  // Minimum time assets should be in universe
-                .DataNormalizationMode  // How should historical prices be adjusted?
-                .ExtendedMarketHours    // Should assets also feed extended market hours?
-</pre>
-	<pre class="python">self.UniverseSettings.Resolution             # What resolution should added assets use
-                     .Leverage               # What leverage should assets use in the universe?
-                     .FillForward            # Should asset data fill forward?
-                     .MinimumTimeInUniverse  # Minimum time assets should be in universe
-                     .DataNormalizationMode  # How should historical prices be adjusted?
-                     .ExtendedMarketHours    # Should assets also feed extended market hours?
-</pre>
-</div>
-<p>
-These settings should be configured in your <code>Initialize()</code> method before you request your universe. They are globals, so they will apply to all universes you create.
-</p>
-<div class="section-example-container">
-<pre class="csharp">public class MyCustomSettingsUniverseAlgorithm : QCAlgorithm {
-    public override void Initialize()
-    {
-        // Request second resolution data. This will be slow!
-        UniverseSettings.Resolution = Resolution.Second;
-        AddUniverse(MySecondResolutionCoarseFilterFunction);
-    }
-}
-</pre>
-<pre class="python">class MyCustomSettingsUniverseAlgorithm(QCAlgorithm):
-     def Initialize(self):
-         # Request second resolution data. This will be slow!
-         self.UniverseSettings.Resolution = Resolution.Second
-         self.AddUniverse(self.MySecondResolutionCoarseFilterFunction)
-</pre>
+<pre class="csharp">// Request second resolution data. This will be slow!
+UniverseSettings.Resolution = Resolution.Second;
+AddUniverse(MySecondResolutionCoarseFilterFunction);</pre>
+<pre class="python"># Request second resolution data. This will be slow!
+self.UniverseSettings.Resolution = Resolution.Second
+self.AddUniverse(self.MySecondResolutionCoarseFilterFunction)</pre>
 </div>
