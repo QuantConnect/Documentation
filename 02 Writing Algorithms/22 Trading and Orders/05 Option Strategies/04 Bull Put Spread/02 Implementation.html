@@ -1,11 +1,11 @@
-<p>Follow the below steps to implement the bull put spread strategy.</p>
+<p>Follow these steps to implement the bull put spread strategy.</p>
 
 <ol>
-    <li>Initialize your algorithm by setting the start date, the end date and the cash for your algorithm. Then, implement the coarse selection of option contracts.</li>
+    <li>In the Initialize method, set the start date, end date, cash, and <a href="https://www.quantconnect.com/docs/v2/writing-algorithms/universes/equity-options">Option universe</a>.</li>
     <div class="section-example-container">
         <pre class="python">def Initialize(self):
     self.SetStartDate(2017, 2, 1)
-    self.SetEndDate(2017, 3, 1)
+    self.SetEndDate(2017, 3, 5)
     self.SetCash(500000)
 
     option = self.AddOption("GOOG", Resolution.Minute)
@@ -16,32 +16,35 @@ def UniverseFunc(self, universe):
     return universe.IncludeWeeklys().Strikes(-15, 15).Expiration(timedelta(0), timedelta(31))</pre>
     </div>
 
-    <li>Choose the contracts with the same expiration date. For demonstration purpose here we sorted the contracts by their expiration dates and choose the options with the furthest expiration date in the option chain.</li>
+    <li>In the OnData method, select the Option contracts.</li>
     <div class="section-example-container">
         <pre class="python">def OnData(self, data):
+    # avoid extra orders
     if self.Portfolio.Invested: return
 
+    # Get the OptionChain of the self.symbol
     chain = data.OptionChains.get(self.symbol, None)
     if not chain: return
 
     # sorted the optionchain by expiration date and choose the furthest date
-    expiry = sorted(chain, key = lambda x: x.Expiry, reverse=True)[0].Expiry</pre>
-    </div>
+    expiry = sorted(chain, key = lambda x: x.Expiry, reverse=True)[0].Expiry
     
-    <li>Filter the put options from the contracts which expire on the furthest expiration date in the option chain.</li>
-    <div class="section-example-container">
-        <pre class="python">puts = [i for i in chain if i.Expiry == expiry and i.Right == OptionRight.Put]
-if len(puts) == 0: return</pre>
+    # filter the put options from the contracts which expire on the furthest expiration date in the option chain.
+    puts = [i for i in chain if i.Expiry == expiry and i.Right == OptionRight.Put]
+    if len(puts) == 0: return
+
+    # sort the put options with the same expiration date according to their strike price.
+    put_strikes = sorted([x.Strike for x in puts])
+
+    # select the strike prices for forming the option legs
+    # the OTM put option with the lowest strike price (long) and the ITM put with the highest strike price (short).
+    otm_strike = put_strikes[0]
+    itm_strike = put_strikes[-1]</pre>
     </div>
 
-    <li>Sort the put options with the same expiration date according to their strike price.</li>
+    <li>In the OnData method, call the <code>OptionStrategies.BullPutSpread</code> method and then submit the order.</li>
     <div class="section-example-container">
-        <pre class="python">put_strikes = sorted([x.Strike for x in puts])</pre>
-    </div>
-
-    <li>Call <code>OptionStrategies.BullPutSpread</code> to buy the put option with the lowest strike price and sell the put with the highest strike price.</li>
-    <div class="section-example-container">
-        <pre class="python">option_strategy = OptionStrategies.BullPutSpread(self.symbol, put_strikes[-1], put_strikes[0], expiry)
+        <pre class="python">option_strategy = OptionStrategies.BullPutSpread(self.symbol, itm_strike, otm_strike, expiry)
 # We open a position with 1 unit of the option strategy
 self.Buy(option_strategy, 1)</pre>
     </div>

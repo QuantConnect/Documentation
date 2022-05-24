@@ -1,12 +1,38 @@
-<h4>Explanation</h4>
-<p><b>Bull put spread</b>, which is also known as <b>long put spread</b>, consists of one long put with a lower strike price and one short put with a higher strike price. Both puts have the same underlying stock and the same expiration date. The lower-strike longed put serve as a hedge of the higher-strike shorted put.</p>
+<p><span class="new-term">Bull put spread</span>, which is also known as <span class="new-term">long put spread</span>, consists of buying an OTM put and selling an ITM put. Both puts have the same underlying stock and the same expiration date. The OTM put serve as a hedge of the ITM put.</p>
 <p>It is a option strategy profitting from a rise in underlying asset price. This is a limited-reward-limited-risk strategy.</p>
 
-<h4>Maximum Profit</h4>
-<p>The maximum profit is the net credit received after commission when opening the trade. If the price rised and higher than the higher strike price of the shorted put, both puts become worthless.</p>
+$Payout_{OTM\ put}=(Strike_{OTM\ put}-Price_{underlying})^{+}$
+<br><br>
+$Payout_{ITM\ put}=(Strike_{ITM\ put}-Price_{underlying})^{+}$
+<br><br>
+$Profit/Loss=(Payout_{OTM\ put}-Payout_{ITM\ put}+credit\ received_{ITM\ put}-debit\ paid_{OTM\ put})\times multiplier-commissions$
+<br><br>
 
-<h4>Potential Risk</h4>
-<p>Maximum loss is the spread between the 2 options' strike prices minus net credit received when opening the trade, where is underlying price is below both strike prices and the options being exercised/assigned.</p>
+<div class="section-example-container">
+    <pre class="python">price = np.arange(750,1150,1)
+k_low = 900 # lower strike price for put
+k_high = 1000 # higher strike price for put
+price_low = 20 # premium of put option with lower strike
+price_high = 70 # premium of put option with higher strike
+
+# short put with higher strike
+payoff_short_put = [min(price_high, -(k_high-i-price_high)) for i in price]
+# long put with lower strike
+payoff_long_put = [max(-price_low, k_low-i-price_low) for i in price]
+payoff = np.sum([payoff_long_put, payoff_short_put], axis=0)
+
+plt.figure(figsize=(20,11))
+plt.plot(price, payoff_long_put, label = 'long put')
+plt.plot(price, payoff_short_put, label = 'short put')
+plt.plot(price, payoff, label = 'Bull Put Spread')
+plt.legend(fontsize = 20)
+plt.xlabel('Stock Price at Expiry',fontsize = 15)
+plt.ylabel('payoff',fontsize = 15)
+plt.title('Bull Put Spread Payoff at Expiration',fontsize = 20)
+plt.grid(True)</pre>
+</div>
+<img class="docs-image" src="https://cdn.quantconnect.com/i/tu/bull-put-spread-20220524-2.png">
+
+<p>The maximum profit is the net credit received after commission when opening the trade. If the price rised and higher than the strike prices of both puts, both puts become worthless.</p>
+<p>Maximum loss is the spread between the 2 options' strike prices minus net credit received when opening the trade, where the underlying price is below both strike prices and the options being exercised/assigned at expiration.</p>
 <p>If the option is American option, there will be a risk of early assignment on the shorted option.</p>
-
-<img src="https://cdn.quantconnect.com/i/tu/bull-put-spread.png">
