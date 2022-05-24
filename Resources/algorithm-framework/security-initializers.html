@@ -1,33 +1,32 @@
 <p>
-Instead of configuring global universe settings, you can individually configure the settings of each security in the universe with a security initializer. Security initializers let you apply any fill model or special data requests on a per-security basis. To set the security initializer, in the <code>Initialize</code> method, call the <code>SetSecurityInitializer()</code> method.</p>
+Instead of configuring global universe settings, you can individually configure the settings of each security in the universe with a security initializer. Security initializers let you apply any <a href='/docs/v2/writing-algorithms/reality-modeling/key-concepts#02-Security-Level-Models'>security-level reality model</a> or special data requests on a per-security basis. To set the security initializer, in the <code>Initialize</code> method, call the <code>SetSecurityInitializer</code> method and define the security initializer.</p>
 </p>
-<p>The most common request is for raw, unadjusted price information. To achieve this, in the security initializer, call the <code>SetDataNormalizationMode</code> method. As the universe adds new securities, the security data is set to the <code>DataNormalizationMode</code> enum value you provide.</p>
 <div class="section-example-container">
 <pre class="csharp">//In Initialize
 SetSecurityInitializer(CustomSecurityInitializer);
 
 private void CustomSecurityInitializer(Security security)
 {
-    //Initialize the security with raw prices
-    security.SetDataNormalizationMode(DataNormalizationMode.Raw);
+    // Disable trading fees
+    security.SetFeeModel(new ConstantFeeModel(0, "USD"));
 }
 </pre>
 <pre class="python">#In Initialize
 self.SetSecurityInitializer(self.CustomSecurityInitializer)
 
 def CustomSecurityInitializer(self, security):
-    '''Initialize the security with raw prices'''
-    security.SetDataNormalizationMode(DataNormalizationMode.Raw)
+    # Disable trading fees
+    security.SetFeeModel(ConstantFeeModel(0, "USD"))
 </pre>
 </div>
 
 <p>For simple requests, you can use the functional implementation of the security initializer. This style lets you configure and return the security object with 1 line of code.</p>
 <div class="section-example-container">
 <pre class="csharp">//Most common request; requesting raw prices for universe securities.
-SetSecurityInitializer(x =&gt; x.SetDataNormalizationMode(DataNormalizationMode.Raw));
+SetSecurityInitializer(x =&gt; x.SetFeeModel(new ConstantFeeModel(0, "USD")));
 </pre>
 <pre class="python"># Most common request; requesting raw prices for universe securities.
-self.SetSecurityInitializer(lambda x: x.SetDataNormalizationMode(DataNormalizationMode.Raw))
+self.SetSecurityInitializer(lambda x: x.SetFeeModel(ConstantFeeModel(0, "USD")))
 </pre>
 </div>
 
