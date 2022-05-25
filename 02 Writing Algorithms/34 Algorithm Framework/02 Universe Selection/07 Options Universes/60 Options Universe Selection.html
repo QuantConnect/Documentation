@@ -1,5 +1,44 @@
+<p>The <code>OptionUniverseSelectionModel</code> selects all the available contracts for the Options you specify. To use this model, provide a <code>refreshInterval</code> and a selector function. The <code>refreshInterval</code><code></code> defines the time period between refreshes. The selector function receives a <code class="csharp">DateTime</code><code class="python">datetime</code> object that represents the current Coordinated Universal Time (UTC) and returns a list of <code>Symbol</code> objects. The <code>Symbol</code> objects you return from the selector function are the Options of the universe.</p>
 
-<div>The standard OptionUniverseSelectionModel selects all the available contracts for the Options you specify. The constructor accepts the following arguments: <br></div><div>- refreshInterval: Time interval between universe refreshes</div><div>- optionChainSymbolSelector: A function that accepts an UTC datetime object and returns a list of Option Symbol objects. This function selects symbols from the provided option chain<br></div><div>- (optional) universeSettings: Universe settings define attributes of created subscriptions, such as their resolution and the minimum time in universe before they can be removed. If you don't provide one, it uses the algorithm UniverseSettings.</div><div><br></div><div class="section-example-container">
+<div class="section-example-container">
+	<pre class="csharp">AddUniverseSelection(new OptionUniverseSelectionModel(refreshInterval, optionChainSymbolSelector));</pre>
+	<pre class="python">from Selection.OptionUniverseSelectionModel import OptionUniverseSelectionModel 
+
+self.AddUniverseSelection(OptionUniverseSelectionModel(refreshInterval, optionChainSymbolSelector))</pre>
+</div>
+
+<p>The following table describes the arguments the model accepts:</p>
+
+<table class="qc-table table">
+    <thead>
+        <tr>
+            <th>Argument</th>
+            <th>Data Type</th>
+            <th>Description</th>
+            <th>Default Value</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><code>refreshInterval</code></td>
+	    <td><code class="csharp">TimeSpan</code><code class="python">timedelta</code></td>
+            <td>Time interval between universe refreshes</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td><code>optionChainSymbolSelector</code></td>
+	    <td><code class="csharp">Func&lt;DateTime, IEnumerable&lt;Symbol&gt;&gt;</code><span class="python">Function</span></td>
+            <td>A function that selects the Option symbols<br></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td><code>universeSettings</code></td>
+	    <td><code>UniverseSettings</code></td>
+            <td>Universe settings define attributes of created subscriptions, such as their resolution and the minimum time in universe before they can be removed</td>
+            <td><code class="csharp">null</code><code class="python">None</code></td>
+        </tr>
+    </tbody>
+</table>If you don't provide a <code>universeSettings</code> argument, the <code>algorithm.UniverseSettings</code> is used by default.<div><br></div><div class="section-example-container">
 	<pre class="csharp">public override void Initialize()
 {
     AddUniverseSelection(
@@ -10,7 +49,7 @@
 private static IEnumerable&lt;Symbol&gt; SelectOptionChainSymbols(DateTime utcTime)
 {
     var tickers = new[] {"SPY", "QQQ", "TLT"};
-    return tickers.Select(ticker => QuantConnect.Symbol.Create(ticker, SecurityType.Option, Market.USA));
+    return tickers.Select(ticker =&gt; QuantConnect.Symbol.Create(ticker, SecurityType.Option, Market.USA));
 }</pre>
 	<pre class="python">from Selection.OptionUniverseSelectionModel import OptionUniverseSelectionModel 
 
@@ -23,8 +62,7 @@ def option_chain_symbol_selector(self, utc_time):
     return [Symbol.Create(ticker, SecurityType.Option, Market.USA) for ticker in tickers]</pre>
 </div>
 
-<p>To view the implementation of this model, see the <span class='csharp'><a target="_blank" rel='nofollow' href='https://github.com/QuantConnect/Lean/blob/master/Algorithm.Framework/Selection/OptionUniverseSelectionModel.cs'>LEAN GitHub repository</a></span><span class='python'><a target="_blank" rel='nofollow' href='https://github.com/QuantConnect/Lean/blob/master/Algorithm.Framework/Selection/OptionUniverseSelectionModel.py'>LEAN GitHub repository</a></span>.</p>
+<p>To view the implementation of this model, see the <span class="csharp"><a target="_blank" rel="nofollow" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.Framework/Selection/OptionUniverseSelectionModel.cs">LEAN GitHub repository</a></span><span class="python"><a target="_blank" rel="nofollow" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.Framework/Selection/OptionUniverseSelectionModel.py">LEAN GitHub repository</a></span>.</p>
 
 
-
-- If you want to use a different filter for the contracts, subclass the OptionUniverseSelectionModel and define a Filter method. The Filter method should accept and return a OptionFilterUniverse object. For a full example, see the <a href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.Python/BasicTemplateOptionsFrameworkAlgorithm.py">BasicTemplateOptionsFrameworkAlgorithm</a>.
+<p>This model uses the default Option filter, which returns all of the Option contracts. To use a different filter for the contracts, subclass the <code>OptionUniverseSelectionModel</code> and define a <code>Filter</code> method. The <code>Filter</code> method must accept and return a <code>OptionFilterUniverse</code> object. For a full example, see the <a href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.Python/BasicTemplateOptionsFrameworkAlgorithm.py">BasicTemplateOptionsFrameworkAlgorithm</a>.</p>
