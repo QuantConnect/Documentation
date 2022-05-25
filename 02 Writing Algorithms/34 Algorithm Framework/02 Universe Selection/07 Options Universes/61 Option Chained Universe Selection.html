@@ -34,28 +34,7 @@
     </tbody>
 </table>
 
-<p>The <code>optionFilter</code> function receives and returns an <code>OptionFilterUniverse</code> to select the Option contracts.</p>
-
-<div class="section-example-container">
-	<pre class="csharp">public override void Initialize()
-{
-    var universe = AddUniverse(Universe.DollarVolume.Top(10));
-    AddUniverseOptions(universe, OptionFilterFunction);
-}
-
-private OptionFilterUniverse OptionFilterFunction(OptionFilterUniverse optionFilterUniverse)
-{
-    return optionFilterUniverse.Strikes(-2, +2).FrontMonth().CallsOnly();
-}</pre>
-	<pre class="python">def Initialize(self):
-    universe = self.AddUniverse(self.Universe.DollarVolume.Top(10))
-    self.AddUniverseOptions(universe, self.OptionFilterFunction)
-
-def OptionFilterFunction(self, option_filter_universe):
-    return option_filter_universe.Strikes(-2, +2).FrontMonth().CallsOnly()</pre>
-</div>
-
-<p>The following table describes the methods of the <code>OptionFilterUniverse</code> class:</p>
+<p>The <code>optionFilter</code> function receives and returns an <code>OptionFilterUniverse</code> to select the Option contracts. The following table describes the methods of the <code>OptionFilterUniverse</code> class:</p>
 
 
 <table class="qc-table table">
@@ -120,6 +99,25 @@ def OptionFilterFunction(self, option_filter_universe):
         </tr>
     </tbody>
 </table>
+
+<div class="section-example-container">
+	<pre class="csharp">public override void Initialize()
+{
+    var universe = AddUniverse(Universe.DollarVolume.Top(10));
+    AddUniverseOptions(universe, OptionFilterFunction);
+}
+
+private OptionFilterUniverse OptionFilterFunction(OptionFilterUniverse optionFilterUniverse)
+{
+    return optionFilterUniverse.Strikes(-2, +2).FrontMonth().CallsOnly();
+}</pre>
+	<pre class="python">def Initialize(self):
+    universe = self.AddUniverse(self.Universe.DollarVolume.Top(10))
+    self.AddUniverseOptions(universe, self.OptionFilterFunction)
+
+def OptionFilterFunction(self, option_filter_universe):
+    return option_filter_universe.Strikes(-2, +2).FrontMonth().CallsOnly()</pre>
+</div>
 
 
 <p>To view the implementation of this model, see the <a target="_blank" rel="nofollow" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm/Selection/OptionChainedUniverseSelectionModel.cs">LEAN GitHub repository</a>.</p>
