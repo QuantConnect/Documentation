@@ -1,6 +1,5 @@
-<p>
-A "semaphore" is a thread-safe flag you can use to synchronize program operation across different threads. Because your model trainings can take a long time, they are processed in a separate thread from your algorithm data. You need to confirm the model is ready to use before using it to generate predictions. 
-</p>
+
+<p>In backtests, the <code>Train</code> method is synchronous, so it blocks your algorithm execution while the model trains. In live trading, the <code>Train</code> method is asynchronously, so ensure your model is trained before you continue the algorithm execution. This training occurs on a separate thread, so we recommend a boolean flag to notify your algorithm of the model state. A "semaphore" is a thread-safe flag you can use to synchronize program operation across different threads. <br></p>
 <div class="section-example-container">
 <pre>class SemaphoreTrainingAlgorithm(QCAlgorithm):
 
