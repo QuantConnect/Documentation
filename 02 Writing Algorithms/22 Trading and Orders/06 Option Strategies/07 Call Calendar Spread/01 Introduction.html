@@ -1,13 +1,36 @@
-What is a call calendar spread:
-<br>-Sell X call options with strike S and expiration E_1. Buy X call options with strike S and expiration E_2 > E_1.
-<br>-The strike should be as close to the underlying price as possible
-<br>-AKA inter-delivery, intra-market, time spread, or horizontal spreads
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});
+</script>
+<script type="text/javascript"
+    src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
 
-<br><br>What is the max profit/loss:
-<br>Max profit: No cap on profit
-<br>-Max loss: The amount paid to open the strategy
+<p><span class="new-term">Call calendar spread</span> is a combination of a longer-term (far-leg/front-month) call and a shorter-term (near-leg/back-month) call, where all calls have the same underlying stock and the same strike price.</p>
+<h4>Long Call Calendar Spread</h4>
+<p>It consists of buying a longer-term call and selling a shorter-term call. It is a option strategy profitting from an decrease in price movement, as well as time decay value. It is because the theta $\theta$ (option price decay by 1 day closer to maturity) of shorter-term call is in larger extent than longer-term.</p>
+<p>This is a limited-reward-limited-risk strategy. The payoff is taken at the shorter-term expiration.</p>
+$Payout_{shorter\ term\ call}=(Price_{underlying}-Strike)^{+}$
+<br><br>
+$Profit/Loss^{t}=(Price^{t}_{longer\ term\ call}-Payout_{shorter\ term\ call}+credit\ received_{shorter\ term\ call}-debit\ paid_{longer\ term\ call})\times multiplier-commissions$
+<br>
+$ where\ t=expiration\ of\ shorter\ term\ call$
+<br><br>
 
-<br><br>-Since you sell a call option, there is a risk of early assignment
+<img class="docs-image" src="https://cdn.quantconnect.com/i/tu/long-call-calendar-spread.png">
+<p>The maximum profit is undetermined as a dependent of volatility but limited, where the underlying price stays the same as the trade opened and the spread of the calls are at maximum.</p>
+<p>Maximum loss is the net debit paid after commission when opening the trade, where the underlying price moves very deep ITM or OTM so the spread of both calls close to zero.</p>
+<p>If the option is American option, there will be a risk of early assignment on the shorted option. Naked longed call would pose risk of losing all debit paid if its position is not closed with shorted call together and the price dropped below its strike.</p>
 
+<h4>Short Call Butterfly</h4>
+<p>It consists of selling a longer-term call and buying a shorter-term call. It is a option strategy profitting from an increase in price movement.</p>
+<p>The payoff is taken at the shorter-term expiration. This is a limited-reward-limited-risk strategy.</p>
+$Profit/Loss^{t}=(Payout_{shorter\ term\ call}-Price^{t}_{longer\ term\ call}+credit\ received_{longer\ term\ call}-debit\ paid_{shorter\ term\ call})\times multiplier-commissions$
+<br>
+$ where\ t=expiration\ of\ shorter\ term\ call$
+<br><br>
 
-<br><br>-Add strategy payoff chart
+<img class="docs-image" src="https://cdn.quantconnect.com/i/tu/short-call-calendar-spread.png">
+
+<p>The maximum profit is the net credit received after commission when opening the trade, where the underlying price moves very deep ITM or OTM so the spread of both calls close to zero.</p>
+<p>Maximum loss is undetermined as a dependent of volatility but limited, where the underlying price is at the same level when the trade opened and the spread of the 2 calls are at its maximum.</p>
+<p>If the option is American option, there will be a risk of early assignment on the shorted option. Also, if the call positions are not closed together, the naked shorted call will have unlimited drawdown risk after the longed call expires.</p>
