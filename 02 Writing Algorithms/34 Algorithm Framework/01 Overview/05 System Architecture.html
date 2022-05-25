@@ -1,18 +1,13 @@
-<p>
-The Algorithm Framework is built into the $[QCAlgorithm,T:QuantConnect.Algorithm.QCAlgorithm] class giving your strategy access to all the normal methods you use for algorithm development. You should be able to copy and paste your algorithms across without any changes. <b>No separate class is required.</b>
+<p>The Algorithm Framework is built into the <code>QCAlgorithm</code> class, so your strategy can access all the normal methods you use for algorithm development. You should be able to copy and paste your algorithms across without any changes. You don't need a separate class.</p>
+
+<img src="https://cdn.quantconnect.com/web/i/docs/algorithm-framework/class-structure_rev2.png" class="docs-image" alt="The Algorithm Framework modules communicate w">
+
+<p>The framework data output of each module flows into the following module. The assets that the Universe Selection model selects are fed into the Alpha model to generate trade signals (<code>Insight</code> objects). The <code>Insight</code> objects from Alpha model are fed into the Portfolio Construction model to create <code>PortfolioTarget</code> objects, which contain the target number of units to hold for each asset. The <code>PortfolioTarget</code> objects from the Portfolio Construction model are fed into the Risk Management model to ensure the targets are within safe risk parameters and to adjust the <code>PortfolioTarget</code> objects if necessary. The <code>PortfolioTarget</code> objects from the Risk Management model are fed into the Execution model, which efficiently places trades to aquire the target portfolio.
 </p>
-<figure><img src="https://cdn.quantconnect.com/web/i/docs/algorithm-framework/class-structure_rev2.png" class="img-responsive">
-	<figcaption>Algorithm Framework Class Hierarchy</figcaption>
-</figure>
-<p>The framework data output of each module flows into the next predictably. Assets selected by the <i>Universe Selection</i> Model are fed into your <i>Alpha</i> Model to generate trade signals. The trade signals (<i>Insights</i>) are converted into <i>Portfolio Targets</i> by the <i>Portfolio Construction</i> Model. The Portfolio Targets hold a target share quantity we'd like the algorithm to hold. To execute these targets efficiently, the <i>Execution</i> module fills the targets over time. Finally, the <i>Risk Management</i> Model ensures our targets are still within safe risk parameters and adjusts the portfolio targets if required.
-</p>
-<figure><img src="https://cdn.quantconnect.com/web/i/docs/algorithm-framework/algorithm-framework.png" class="img-responsive">
-	<figcaption>
-QuantConnect Algorithm Framework Architecture.
-</figcaption>
-</figure>
+
+<img src="https://cdn.quantconnect.com/web/i/docs/algorithm-framework/algorithm-framework.png" class="docs-image" alt="The flow of data between the Algorithm Framework modules">
 <div class="section-example-container">
-	<pre class="csharp">public class MyFrameworkAlgorithm : QCAlgorithm {
+	<pre class="csharp">public class MyFrameworkAlgorithm : QCAlgorithm <br>{
       public void Initialize() {
            // Setup Requested Modules
       }
@@ -21,4 +16,4 @@ QuantConnect Algorithm Framework Architecture.
      def Initialize(self):
            # Setup Requested Modules </pre>
 </div>
-<p>For simple strategies, this may seem like overkill to abstract out your algorithm concepts; however, even simple strategies can benefit from reusing the ecosystem of modules available in QuantConnect. Imagine pairing your EMA-cross with a better execution system, or simply plugging in an open-source trailing stop risk management model.</p>
+<p>For simple strategies, it may seem like overkill to abstract out your algorithm concepts. However, even simple strategies can benefit from reusing the ecosystem of modules available in QuantConnect. Imagine pairing your EMA-cross Alpha model with a better execution system or plugging in an open-source <a href='/docs/v2/writing-algorithms/algorithm-framework/risk-management/supported-models#07-Trailing-Stop-Model'>trailing stop Risk Management model</a>.</p>
