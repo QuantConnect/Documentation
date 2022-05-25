@@ -7,7 +7,8 @@ OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 links = {
     "Security": "https://www.quantconnect.com/services/inspector?type=T:QuantConnect.Securities.Security",
     "SecurityPortfolioManager": "https://www.quantconnect.com/services/inspector?type=T:QuantConnect.Securities.SecurityPortfolioManager",
-    "SecurityHolding": "https://www.quantconnect.com/services/inspector?type=T:QuantConnect.Securities.SecurityHolding"
+    "SecurityHolding": "https://www.quantconnect.com/services/inspector?type=T:QuantConnect.Securities.SecurityHolding",
+    "SymbolProperties": "https://www.quantconnect.com/services/inspector?type=T:QuantConnect.Securities.SymbolProperties"
 }
 
 for item, url in links.items():
