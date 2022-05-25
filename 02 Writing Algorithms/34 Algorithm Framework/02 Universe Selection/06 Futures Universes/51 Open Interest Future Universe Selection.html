@@ -1,9 +1,48 @@
-The OpenInterestFutureUniverseSelectionModel selects the Future contracts with the greatest open interest. The constructor accepts the following arguments:<br><br>
--algorithm: Your QCAlgorithm object
-<br>-futureChainSymbolSelector: A function that receives a datetime and returns a list of Future Symbol objects. Selects symbols from the provided future chain
-<br>-(optional) chainContractsLookupLimit : Limit on how many contracts to query for open interest (cuts off oldest expiring contracts) ; default 6
-<br>-(optional) resultsLimit : Limit on how many contracts will be part of the universe
-<br>
+<p>The <code>OpenInterestFutureUniverseSelectionModel</code> selects the contracts with the greatest open interest for a set of Futures you specify. To use this model, provide a selector function. The selector function receives a  object that represents the current Coordinated Universal Time (UTC) and returns a list of <code>Symbol</code> objects. The <code>Symbol</code> objects you return from the selector function are the Futures of the universe. The model refreshes the universe of contracts on a daily basis.</p>
+
+<div class="section-example-container">
+	<pre class="csharp">AddUniverseSelection(new OpenInterestFutureUniverseSelectionModel(algorithm, futureChainSymbolSelector));</pre>
+</div>
+
+<p>The following table describes the arguments the model accepts:</p>
+
+<table class="qc-table table">
+    <thead>
+        <tr>
+            <th>Argument</th>
+            <th>Data Type</th>
+            <th>Description</th>
+            <th>Default Value</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><code>algorithm</code></td>
+	    <td><code>IAlgorithm</code></td>
+            <td>Algorithm</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td><code>futureChainSymbolSelector</code></td>
+	    <td><code class="csharp">Func&lt;DateTime, IEnumerable&lt;Symbol&gt;&gt;</code></td>
+            <td>A function that selects the Future symbols<br></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td><code>chainContractsLookupLimit</code></td>
+	    <td><code>int?</code></td>
+            <td>Limit on how many contracts to query for open interest</td>
+            <td>6</td>
+        </tr>
+        <tr>
+            <td><code>resultsLimit</code></td>
+	    <td><code>int?</code></td>
+            <td>Limit on how many contracts will be part of the universe</td>
+            <td>1</td>
+        </tr>
+    </tbody>
+</table>
+
 
 <div class="section-example-container">
 	<pre class="csharp">public override void Initialize()
@@ -13,9 +52,7 @@ The OpenInterestFutureUniverseSelectionModel selects the Future contracts with t
         QuantConnect.Symbol.Create(Futures.Metals.Gold, SecurityType.Future, Market.COMEX)
     }; 
     AddUniverseSelection(new OpenInterestFutureUniverseSelectionModel(this, dateTime =&gt; symbols));
-}
-</pre>
-	<pre class="python"></pre>
+}</pre>
 </div>
 
-<p>To view the implementation of this model, see the <a target="_blank" rel='nofollow' href='https://github.com/QuantConnect/Lean/blob/master/Algorithm.Framework/Selection/OpenInterestFutureUniverseSelectionModel.cs'>LEAN GitHub repository</a>.</p>
+<p>To view the implementation of this model, see the <a target="_blank" rel="nofollow" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.Framework/Selection/OpenInterestFutureUniverseSelectionModel.cs">LEAN GitHub repository</a>.</p>
