@@ -1,4 +1,4 @@
-<?php echo file_get_contents(DOCS_RESOURCES."/securities/symbolproperties.html"); ?>
+<?php echo file_get_contents(DOCS_RESOURCES."/securities/symbol_properties.html"); ?>
 <p>
 The <code>SymbolProperties</code> is a property of the <code>Security</code> object that provides three important values for calculating the order quantity: <code>LotSize</code>, <code>MinimumOrderSize</code>, and <code>MinimumPriceVariation</code>:
 </p>
