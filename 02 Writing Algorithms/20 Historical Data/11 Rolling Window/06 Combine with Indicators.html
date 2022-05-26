@@ -1,34 +1,26 @@
-<meta name="tag" content="using data">
-<meta name="tag" content="history and warm up">
-<meta name="tag" content="history">
-<meta name="tag" content="warm up">
-<meta name="tag" content="indicators">
-<meta name="tag" content="rolling windows">
-<p>A particularly common and helpful use of the RollingWindow class is to store past indicator values. Indicators emit an <code>Updated</code> event after they have been updated. To create a RollingWindow of indicator points, attach an event handler function to <code>Updated</code> that adds the last value of the indicator to the rolling window. The value is an $[IndicatorDataPoint, C:QuantConnect.Indicators.IndicatorDataPoint] object that represents a piece of data at a specific time. The following examples create an indicator and add its values to a rolling window when the indicator is updated.
-</p>
+<p>The <code>RollingWindow</code> class can store historical indicator values. Indicators emit an <code>Updated</code> event after they have been updated. To create a <code>RollingWindow</code> of indicator points, attach an event handler function to the <code>Updated</code> member that adds the last value of the indicator to the <code>RollingWindow</code>. The value is an <code>IndicatorDataPoint</code> object that represents a piece of data at a specific time.</p>
 <div class="section-example-container">
-<pre class="csharp">// In Initialize, create the rolling windows
-public override void Initialize()
+<pre class="csharp">public override void Initialize()
 {
-    // Creates an indicator and adds to a rolling window when it is updated
+   // Create an indicator and adds to a RollingWindow when it is updated
    smaWindow = new RollingWindow&lt;IndicatorDataPoint&gt;(5);
    SMA("SPY", 5).Updated += (sender, updated) =&gt; smaWindow.Add(updated);
 }
 </pre> 
 	<pre class="python">def Initialize(self):
-    # Creates an indicator and adds to a rolling window when it is updated
+    # Creates an indicator and adds to a RollingWindow when it is updated
     self.sma_window = RollingWindow[IndicatorDataPoint](5)
     self.SMA("SPY", 5).Updated += (lambda sender, updated: self.sma_window.Add(updated))</pre>
 </div>
 <p></p>
 
-<p>- To view how to access individual members in an indicator, see <a href='/docs/v2/writing-algorithms/indicators/key-concepts#07-Get-Indicator-Values'>Get Indicator Values</a>.</p><p># Example code snippet saving bollinger bands members<br></p><p>The current (most recent) SMA value is stored at index 0, the previous value is at index 1, and so on until the length of the window.</p>
+<p>- To view how to access individual members in an indicator, see <a href="/docs/v2/writing-algorithms/indicators/key-concepts#07-Get-Indicator-Values">Get Indicator Values</a>.</p><p># Example code snippet saving bollinger bands members<br></p><p>The current (most recent) indicator value is stored at index 0, the previous value is at index 1, and so on until the length of the window.</p>
 
 <div class="section-example-container">
 	<pre class="csharp">var currentSma = smaWin[0];
 var previousSma = smaWin[1];
-var oldestSma = smaWin[ smaWin.Count - 1 ];</pre>
+var oldestSma = smaWin[smaWin.Count - 1];</pre>
 	<pre class="python">current_sma = self.sma_window[0]
 previous_sma = self.sma_window[1]
-oldest_sma = self.sma_window[ sma_window.Count - 1 ]</pre>
+oldest_sma = self.sma_window[sma_window.Count - 1]</pre>
 </div> 
