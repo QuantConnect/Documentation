@@ -29,10 +29,11 @@ var bbLowerBand = _bb.LowerBand.Current.Value</pre>
 </div>
 
 <h4>Historical Indicator Values</h4>
-
-
-# Import from https://www.quantconnect.com/docs/v2/writing-algorithms/historical-data/rolling-window#06-Combine-with-Indicators
-
+<?php 
+include(DOCS_RESOURCES."/indicators/historical-values.php "); 
+$linkToIndicatorsPage = false;
+$getHistoricalValuesText($linkToIndicatorsPage);
+?>
 
 
 <br>-Add section on RollingWindow to this chapter, need to cover PandasConverter.GetIndicatorDataFrame
