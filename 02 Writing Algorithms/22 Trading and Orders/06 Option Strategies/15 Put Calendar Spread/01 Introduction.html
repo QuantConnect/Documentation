@@ -13,3 +13,38 @@ What is a put calendar spread:
 
 
 <br><br>-Add strategy payoff chart
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});
+</script>
+<script type="text/javascript"
+    src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+<p><span class="new-term">Put calendar spread</span>, which also known as <span class="new-term">put horizontal spread</span>, is a combination of a longer-term (far-leg/front-month) put and a shorter-term (near-leg/back-month) put, where all puts have the same underlying stock and the same strike price.</p>
+<h4>Long Put Calendar Spread</h4>
+<p>It consists of buying a longer-term put and selling a shorter-term put. It is a option strategy profitting from an decrease in price movement, as well as time decay value. It is because the theta $\theta$ (the option price decay by 1 day closer to maturity) of shorter-term put is larger than longer-term.</p>
+<p>This is a limited-reward-limited-risk strategy. The payoff is taken at the shorter-term expiration.</p>
+$Payoff_{shorter\ term\ put}=(Strike-Price_{underlying})^{+}$
+<br><br>
+$Profit/Loss^{t}=(Price^{t}_{longer\ term\ put}-Payoff_{shorter\ term\ put}+credit\ received_{shorter\ term\ put}-debit\ paid_{longer\ term\ put})\times multiplier-commissions$
+<br><br>
+<p>where $t$ is the expiration of shorter-term put</p>
+
+<img class="docs-image" src="https://cdn.quantconnect.com/i/tu/long-put-calendar-spread.png">
+<p>The maximum profit is undetermined as a dependent of volatility but limited, where the underlying price stays the same as the trade opened and the spread of the puts are at maximum.</p>
+<p>Maximum loss is the net debit paid after commission when opening the trade, where the underlying price moves very deep ITM or OTM so the spread of both puts close to zero.</p>
+<p>If the option is American option, there will be a risk of early assignment on the shorted option. Naked longed put would pose risk of losing all debit paid if its position is not closed with shorted put together and the price dropped below its strike.</p>
+
+<h4>Short Put Butterfly</h4>
+<p>It consists of selling a longer-term put and buying a shorter-term put. It is a option strategy profitting from an increase in price movement.</p>
+<p>The payoff is taken at the shorter-term expiration. This is a limited-reward-limited-risk strategy.</p>
+$Profit/Loss^{t}=(Payoff_{shorter\ term\ put}-Price^{t}_{longer\ term\ put}+credit\ received_{longer\ term\ put}-debit\ paid_{shorter\ term\ put})\times multiplier-commissions$
+<br><br>
+<p>where $t$ is the expiration of shorter-term put</p>
+
+<img class="docs-image" src="https://cdn.quantconnect.com/i/tu/short-put-calendar-spread.png">
+
+<p>The maximum profit is the net credit received after commission when opening the trade, where the underlying price moves very deep ITM or OTM so the spread of both puts close to zero.</p>
+<p>Maximum loss is undetermined as a dependent of volatility but limited, where the underlying price is at the same level when the trade opened and the spread of the 2 puts are at its maximum.</p>
+<p>If the option is American option, there will be a risk of early assignment on the shorted option. Also, if the put positions are not closed together, the naked shorted put will have unlimited drawdown risk after the longed put expires.</p>
