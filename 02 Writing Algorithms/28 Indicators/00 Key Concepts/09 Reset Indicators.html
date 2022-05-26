@@ -6,7 +6,7 @@
 </div>
 
 
-<p>If you are live trading Equities or backtesting Equities without the adjusted <a href="/docs/v2/writing-algorithms/asset-classes/us-equity/requesting-data#09-Data-Normalization">data normalization mode</a>, reset your indicators when <a href="/docs/v2/writing-algorithms/asset-classes/us-equity/corporate-actions#02-Splits">splits</a> and <a href="/docs/v2/writing-algorithms/asset-classes/us-equity/corporate-actions#03-Dividends">dividends</a> occur. If a split or dividend occurs, the data in your indicators becomes invalid because it doesn't account for the price adjustments caused by the split or dividend. To replace your indicator history with the newly-adjusted prices, call the <code>Reset</code> method and then warm up the indicator with a <code>History</code> call.</p>
+<p>If you are live trading Equities or backtesting Equities without the adjusted <a href="/docs/v2/writing-algorithms/securities/asset-classes/us-equity/requesting-data#09-Data-Normalization">data normalization mode</a>, reset your indicators when <a href="/docs/v2/writing-algorithms/securities/asset-classes/us-equity/corporate-actions#02-Splits">splits</a> and <a href="/docs/v2/writing-algorithms/securities/asset-classes/us-equity/corporate-actions#03-Dividends">dividends</a> occur. If a split or dividend occurs, the data in your indicators becomes invalid because it doesn't account for the price adjustments that the split or dividend causes. To replace your indicator history with the newly-adjusted prices, call the <code>Reset</code> method and then warm up the indicator.</p>
 
 <div class="section-example-container">
 	<pre class="python"># In OnData
@@ -14,11 +14,7 @@ if data.Splits.ContainsKey(self.symbol) or data.Dividends.ContainsKey(self.symbo
     # Reset the indicator
     self.sma.Reset() 
 
-    # Warm up the indicator
-    history = self.History(self.symbol, self.sma.Period, Resolution.Daily)
-    if not history.empty:
-        for time, close in history.loc[self.symbol].close.iteritems():
-            self.sma.Update(time, close)</pre>
+    # Warm up the indicator</pre>
 	<pre class="csharp fsharp">// In OnData
 if (data.Splits.ContainsKey(_symbol) || data.Dividends.ContainsKey(_symbol))
 {
@@ -26,11 +22,8 @@ if (data.Splits.ContainsKey(_symbol) || data.Dividends.ContainsKey(_symbol))
     _sma.Reset();
 
     // Warm up the indicator
-    var history = History(_symbol, _sma.Period, Resolution.Daily);
-    foreach (var bar in history)
-    {
-        _sma.Update(bar.EndTime, bar.Close);
-    }
 }</pre>
 </div>
+
+<p>The process to warm up your indicator depends on if it's a <a href='/docs/v2/writing-algorithms/indicators/manual-indicators#06-Warm-Up-Indicators'>manual</a> or <a href='/docs/v2/writing-algorithms/indicators/automatic-indicators#08-Warm-Up-Indicators'>automatic indicator</a>.</p>
 
