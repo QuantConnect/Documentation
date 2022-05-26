@@ -1,12 +1,18 @@
-<br>The location in your algorithm where you create and manage the indicators depends on the number of securities in your algorithm.
+<br>The location in your algorithm where you create and manage indicators depends on the type of universe in your algorithm.<p></p>
 
-<h4>Single-Asset Algorithms</h4>
+<h4>One Asset In a Static Universe</h4>
 
-If you only have one security in your algorithm, you can create an automatic indicator in the Initialize method.
-<br># Example Code snippet 
+<p>If you only have one security in your algorithm, you can create an automatic indicator in the <code>Initialize</code> method.</p>
+
+<div class="section-example-container">
+	<pre class="python">self.symbol = self.AddEquity("SPY").Symbol
+self.EnableAutomaticIndicatorWarmUp = True
+self.sma = self.SMA(self.symbol, 20, Resolution.Daily)</pre>
+	<pre class="csharp"></pre>
+</div>
 
 
-<h4>Multi-Asset Algorithms</h4>
+<h4>Mulitple Assets or a Dynamic Universe</h4>
 
 <p>If your algorithm has multiple assets or a dynamic universe of assets, abstract your indicator management logic into a separate class.</p>
 
@@ -35,7 +41,6 @@ If you only have one security in your algorithm, you can create an automatic ind
 
     # If you have a dynamic universe, remove consolidators for the securities removed from the universe
     def dispose(self):
-        # Remove the consolidator
         self.algorithm.SubscriptionManager.RemoveConsolidator(self.symbol, self.consolidator)
 </pre>
 	<pre class="csharp fsharp"></pre>
