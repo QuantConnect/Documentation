@@ -1,10 +1,36 @@
-# Import from https://www.quantconnect.com/docs/v2/research-environment/object-store/storing-data
+<p>Follow these steps to get all of the keys, values, and file paths in the Object Store:</p>
 
-<br><br>-What is gathering keys:
-<br>-Gathering all of the keys stored in the ObjectStore key-value dictionary
-<br>-Why gather keys:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;- So you can see what is available in the ObjectStore
-<br>&nbsp;&nbsp;&nbsp;&nbsp;- So you don't over-write a key-value pair in the OS
-<br>-How(?):
- <br>&nbsp;&nbsp;&nbsp;&nbsp;-can be gathered by using the GetEnumerator method
-<br>         keys = [str(j).split(',')[0][1:] for _, j in enumerate(self.ObjectStore.GetEnumerator())]
+<ol>
+    <li class="csharp">Load the required libraries and files.</li>
+    <div class="csharp section-example-container">
+        <pre class="csharp">#load "../Initialize.csx"
+#load "../QuantConnect.csx"
+
+using System.Xml.Linq;
+using QuantConnect;
+using QuantConnect.Data;
+using QuantConnect.Algorithm;
+using QuantConnect.Research;</pre>
+    </div>
+
+    <li>Instantiate a <code>QuantBook</code> object.</li>
+    <div class="section-example-container">
+        <pre class="csharp">var qb = new QuantBook();</pre>
+        <pre class="python">qb = QuantBook()</pre>
+    </div>
+    <li>Iterate the <code>ObjectStore</code> member:</li>
+    <div class="section-example-container">
+        <pre class="csharp">foreach (var kvp in qb.ObjectStore)
+{
+    var key = kvp.Key;
+    var value = kvp.Value;
+    var filePath = objectStore.GetFilePath(key);
+    Console.WriteLine($"{key} : {filePath}");
+}</pre>
+        <pre class="python">for kvp in qb.ObjectStore:
+    key = kvp.Key
+    value = kvp.Value
+    file_path = object_store.GetFilePath(key)
+    print(f"{key} : {file_path}")</pre>
+    </div>
+</ol>
