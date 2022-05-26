@@ -32,7 +32,7 @@
 <h4 class="csharp">JSON</h4>
 <p class="csharp">To save a JSON object, call the <code>SaveJson&lt;T&gt;</code> method. This method helps to serialize the data into JSON format.</p>
 <div class="csharp section-example-container">
-    <pre class="csharp">var saveSuccessful = ObjectStore&lt;Dictionary&lt;string, int&gt;&gt;.SaveJson("jsonKey", sample);</pre>
+    <pre class="csharp">var saveSuccessful = ObjectStore&lt;Dictionary&lt;string, int&gt;&gt;.SaveJson("jsonKey", dictSample);</pre>
 </div>
 
 <h4 class="csharp">XML</h4>
