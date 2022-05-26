@@ -30,7 +30,7 @@ var bbLowerBand = _bb.LowerBand.Current.Value</pre>
 
 <h4>Historical Indicator Values</h4>
 <?php 
-include(DOCS_RESOURCES."/indicators/historical-values.php "); 
+include(DOCS_RESOURCES."/indicators/historical-values.php"); 
 $linkToIndicatorsPage = false;
 $getHistoricalValuesText($linkToIndicatorsPage);
 ?>
