@@ -15,8 +15,6 @@
 
 <p class='python'>You can save <code>Bytes</code> and <code>string</code> objects in the Object Store.</p>
 
-<p>The following save methods return a boolean that represents if the object was saved successfully.</p>
-
 <h4>Bytes</h4>
 <p>To save a <code>Bytes</code> object, call the <code>SaveBytes</code> method.</p>
 <div class="section-example-container">
