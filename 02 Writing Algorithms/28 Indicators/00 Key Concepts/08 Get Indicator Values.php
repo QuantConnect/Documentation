@@ -34,6 +34,3 @@ include(DOCS_RESOURCES."/indicators/historical-values.php");
 $linkToIndicatorsPage = false;
 $getHistoricalValuesText($linkToIndicatorsPage);
 ?>
-
-
-<br>-Add section on RollingWindow to this chapter, need to cover PandasConverter.GetIndicatorDataFrame
