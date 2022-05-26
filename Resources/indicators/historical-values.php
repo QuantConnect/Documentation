@@ -24,7 +24,7 @@ $getHistoricalValuesText = function($linkToIndicatorsPage) {
     }
 
     $result .= "
-<p>The current (most recent) indicator value is stored at index 0, the previous value is at index 1, and so on until the length of the window.</p>        
+<p>The current (most recent) indicator value is at index 0, the previous value is at index 1, and so on until the length of the window.</p>        
 
 <div class=\"section-example-container\">
 	<pre class=\"csharp\">var currentSma = smaWin[0];
