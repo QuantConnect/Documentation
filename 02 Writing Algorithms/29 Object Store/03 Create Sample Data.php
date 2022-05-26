@@ -5,21 +5,20 @@
 <ol>
     <li>Create a dictionary.</li>
     <div class="section-example-container">
-        <pre class="csharp">var sample = new Dictionary&lt;string, int&gt; { {"One", 1}, {"Two", 2}, {"Three", 3} };</pre>
-        <pre class="python">sample = {"One": 1, "Two": 2, "Three": 3}</pre>
+        <pre class="csharp">var dictSample = new Dictionary&lt;string, int&gt; { {"One", 1}, {"Two", 2}, {"Three", 3} };</pre>
+        <pre class="python">dict_sample = {"One": 1, "Two": 2, "Three": 3}</pre>
     </div>
 
-    <li>Convert the dictionary to a <code>string</code>.</li>
+    <li>Create a <code>string</code>.</li>
     <div class="section-example-container">
-        <pre class="csharp">var stringSample = string.Join(Environment.NewLine, sample);</pre>
-        <pre class="python">string_sample = str(sample)</pre>
+        <pre class="csharp">var stringSample = "My string";</pre>
+        <pre class="python">string_sample = "My string"</pre>
     </div>
 
-    <li>Convert the string to a <code>Bytes</code> object.</li>
+    <li>Create a <code>Bytes</code> object.</li>
     <div class="section-example-container">
-        <pre class="csharp">var bytesSample = Encoding.UTF8.GetBytes(stringSample);</pre>
-        <pre class="python">import json
-bytes_sample = json.dumps(string_sample).encode('utf-8')</pre>
+        <pre class="csharp">var bytesSample = Encoding.UTF8.GetBytes("My String");</pre>
+        <pre class="python">bytes_sample = str.encode("My String")</pre>
     </div>
 
     <li class="csharp">Convert the dictionary to an <code>XML</code>-formatted object.</li>
