@@ -1,13 +1,8 @@
-Indicators compute their value based on historical data. Before you start trading with an indicator, warm it up. There are several ways to warm up automatic indicators.
+<p>Indicators compute their value based on historical data. Before you start trading with an indicator, warm it up. There are several ways to warm up automatic indicators.</p>
 
-<h4>Algorithm Warm Up</h4>
-You can set a <a href="/docs/v2/writing-algorithms/historical-data/warm-up-periods">algorithm  warm up period</a> to warm up the indicators.
+<h4>Algorithm Warm-up</h4>
+<p>You can set a <a href="/docs/v2/writing-algorithms/historical-data/warm-up-periods">algorithm warm-up period</a> to warm up the indicators. When you set an algorithm warm-up period, the engine pumps data in and automatically update all the indicators from before the start date. To ensure that all the indicators are ready after the algorithm warm-up period, choose a look-back period that contains sufficient data.</p>
 
-When you set an algorithm warm-up period, the engine pumps data in and 
-automatically update all the indicators from before the start date.
-	To ensure that all the indicators are ready after the algorithm warm-up
- period, choose a lookback period that contains sufficient
- data.
 <div class="section-example-container">
     <pre class="csharp">private SimpleMovingAverage _sma;
 
@@ -17,7 +12,7 @@ _sma = SMA(symbol, 20, Resolution.Daily);
 SetWarmUp(20, Resolution.Daily);
 
 // In OnData
-if (IsWarmingUp) {
+if (IsWarmingUp)<br>{
     return;
 }</pre>
     <pre class="python"># In Initialize
@@ -30,9 +25,9 @@ if self.IsWarmingUp:
     return</pre>
 </div>
 
-<h4>Manual Indicator Warm Up</h4>
+<h4>Manual Indicator Warm-up</h4>
 
-You can manually warm up indicators with a history request. 
+<p>You can manually warm up indicators with a <a href="/docs/v2/writing-algorithms/historical-data/history-requests">history request</a>.</p>
 
 <div class="section-example-container">
     <pre class="csharp">private SimpleMovingAverage _sma;
@@ -58,8 +53,8 @@ if not history.empty:
 </pre>
 </div>
 
-<h4>Automatic Indicator Warm Up</h4>
-You can set the <code>EnableAutomaticIndicatorWarmUp</code> property to true before you create indicators to warm up them up upon creation.
+<h4>Automatic Indicator Warm-up</h4>
+<p>You can set the <code>EnableAutomaticIndicatorWarmUp</code> property to true before you create indicators to automatically warm them up.</p>
 
 <div class="section-example-container">
     <pre class="csharp">private SimpleMovingAverage _sma;
@@ -75,7 +70,7 @@ self.EnableAutomaticIndicatorWarmUp = True
 self.sma = self.SMA(symbol, 20, Resolution.Daily)</pre>
 </div>
 
-<h4>Warm Up Helper Method</h4>
+<h4>Warm-up Helper Method</h4>
 
 <p>If an indicator inherits the <code>IIndicatorWarmUpPeriodProvider</code> class, you can warm it up with the <code>WarmUpIndicator</code> method.</p>
 
@@ -87,7 +82,10 @@ WarmUpIndicator(_symbol, _sma);</pre>
 WarmUpIndicator(self.symbol, self.sma)</pre>
 </div>
 
-<p>To warm up the indicator with a resolution that's different from the security resolution, pass a resolution or <code class="csharp">TimeSpan</code><code class="python">timedelta</code> argument to the <code>WarmUpIndicator</code> method. The resolution you provide should be greater than or equity to the security resolution. For example, if the security has minute resolution data, the indicator should be warmed up with minute, hour, or daily resolution data.<br></p>
+<p>To warm up the indicator with a resolution that's different from the security resolution, pass a resolution or <code class="csharp">TimeSpan</code><code class="python">timedelta</code> argument to the <code>WarmUpIndicator</code> method. The resolution you provide should be greater than or equal to the 
+security resolution. For example, if the security has minute resolution 
+data, you should warm-up the indicator with data that spans at least one
+ minute.</p>
 <div class="section-example-container">
     <pre class="csharp">// Warm up with daily bars
 WarmUpIndicator(_symbol, _sma, Resolution.Daily);
