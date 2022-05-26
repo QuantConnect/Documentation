@@ -1,51 +1,44 @@
-<div>- RegisterIndicator (save a reference to the consolidator so you can remove it later)</div><div>&nbsp;&nbsp;&nbsp;
- - See 
-https://www.quantconnect.com/docs/v2/writing-algorithms/consolidating-data/updating-indicators#05-Remove-Indicator-Consolidators</div><div>&nbsp;&nbsp;&nbsp; - If you use RegisterIndicator, don't update the indicator in the consolidation handler (double updates)<br></div><div>&nbsp;&nbsp;&nbsp; - Can use any field you want <br></div><div><br></div>
+<p>With automatic updates, your indicators automatically update with the security data on a schedule you set. To configure automatic updates, create a consolidator and then call the <code>RegisterIndicator</code> method. If your algorithm has a dynamic universe, save a reference to the consolidator so you can <a href="/docs/v2/writing-algorithms/consolidating-data/updating-indicators#05-Remove-Indicator-Consolidators">remove it</a> when the universe removes the security. If you register an indicator for automatic updates, don't call the indicator's <code>Update</code> method or else the indicator will receive double updates.</p>
 
 <div class="section-example-container">
-	<pre class="python"># request the equity data in minute resolution
-self.AddEquity("SPY", Resolution.Minute)
-# define a 10-period RSI indicator with indicator constructor
-self.rsi = RelativeStrengthIndex(10, MovingAverageType.Simple)
-# create the 30-minutes data consolidator
-thirtyMinuteConsolidator = TradeBarConsolidator(timedelta(minutes=30))
-self.SubscriptionManager.AddConsolidator("SPY", thirtyMinuteConsolidator)
-# register the 30-minute consolidated bar data to automatically update the indicator
-self.RegisterIndicator("SPY", self.rsi, thirtyMinuteConsolidator)
+	<pre class="python"># Create a security subscription 
+self.symbol = self.AddEquity("SPY", Resolution.Minute).Symbol
+
+# Create a manual indicator
+self.indicator = RelativeStrengthIndex(10, MovingAverageType.Simple)
+
+# Create a consolidator
+self.consolidator = TradeBarConsolidator(1)
+
+# Add the consolidator to the SubscriptionManager
+self.SubscriptionManager.AddConsolidator(self.symbol, self.consolidator)
+
+# Register the indicator to update with the consolidated data
+self.RegisterIndicator(self.symbol, self.indicator, self.consolidator)</pre>
+	<pre class="csharp">// Create a security subscription 
+_symbol = AddEquity("SPY", Resolution.Hour);
+
+// Create a manual indicator
+_indicator = new RelativeStrengthIndex(10, MovingAverageType.Simple);
+
+// Create a consolidator
+_consolidator = new TradeBarConsolidator(1);
+
+// Add the consolidator to the SubscriptionManager
+SubscriptionManager.AddConsolidator(_symbol, _consolidator);
+
+// Register the indicator to update with the consolidated data
+RegisterIndicator(_symbol, _indicator, _consolidator);</pre>
+</div>
+
+<p>Data point indicators use only a single price data in their calculations. By default, those indicators use the closing price. For assets with <code>TradeBar</code> data, that price is the <code>TradeBar</code> close price. For assets with <code>QuoteBar</code> data, that price is the mid-price of the bid closing price and the ask closing price. To create an indicator with the other fields like the <code>Open</code>, <code>High</code>, <code>Low</code>, or <code>Close</code>, provide a <code>selector</code> argument to the <code>RegisterIndicator</code> method.</p><div class="section-example-container">
+	<pre class="python">self.RegisterIndicator(self.symbol, self.indicator, self.consolidator, Field.High)
 </pre>
-	<pre class="csharp fsharp">// request the equity data in minute resolution
-AddEquity(_symbol, Resolution.Hour);
-// define a 10-period RSI indicator with indicator constructor
-_rsi = new RelativeStrengthIndex(10, MovingAverageType.Simple);
-// create the 30-minutes data consolidator
-var thirtyMinuteConsolidator = new TradeBarConsolidator(TimeSpan.FromMinutes(30));
-SubscriptionManager.AddConsolidator("SPY", thirtyMinuteConsolidator);
-// register the 30-minute consolidated bar data to automatically update the indicator
-RegisterIndicator("SPY", _rsi,thirtyMinuteConsolidator);
+	<pre class="csharp">RegisterIndicator(_symbol, _rsi, _consolidator, Field.High);
 </pre>
 </div>
 
-
-
-<p>The data point indicators use only a single price data in their calculations. By default, those indicators use the closing price. For equity, that price is the trade bar closing price. For other asset classes with quote bar data (bid/ask price), those indicators are calculated with the mid-price of the bid closing price and the ask closing price.
-</p>
-<p>
-	If you want to create an indicator with the other fields like <code>Open</code>, <code>High</code>, <code>Low</code>, or <code>Close</code>, you can specify the <code>selector</code> argument in the indicator helper method with the available fields.
-</p>
-
-<p>To register the price data with the specified field, call <code>RegisterIndicator</code>.</p>
-<div class="section-example-container">
-	<pre class="python"># define a 10-period RSI with indicator constructor
-self.rsi = RelativeStrengthIndex(10, MovingAverageType.Simple)
-# register the daily High price data to automatically update the indicator
-self.RegisterIndicator("SPY", self.rsi, Resolution.Daily, Field.High)
-</pre>
-	<pre class="csharp">// define a 10-period RSI with indicator constructor
-_rsi = new RelativeStrengthIndex(10, MovingAverageType.Simple);
-// register the daily High price data to automatically update the indicator
-RegisterIndicator("SPY", _rsi, Resolution.Daily, Field.High);
-</pre>
-</div>
+<p>The following table describes the available <code>Field</code> enumeration values:</p> 
 
 <?php 
 echo file_get_contents(DOCS_RESOURCES."/enumerations/field.html"); 
