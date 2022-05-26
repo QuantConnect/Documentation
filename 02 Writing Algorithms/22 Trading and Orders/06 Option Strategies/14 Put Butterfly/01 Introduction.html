@@ -1,1 +1,35 @@
-Long Put Butterfly Spread<br>&lt;br&gt;<br>----------------------------<br>&lt;br&gt;What is a long put butterfly spread:<br>&lt;br&gt;-Buy 1 OTM put Option at strike S_1, sell 2 ATM put Options at S_2, buy 1 ITM put Option at strike S_3 &gt; S_1<br>&lt;br&gt;<br><br>&lt;br&gt;&lt;br&gt;What is the max profit/loss:<br>&lt;br&gt;-Max profit: S_3 - S_2 - premiumPaid <br>&lt;br&gt;-Max profit achieved when the underlying stays at the ATM strikes<br>&lt;br&gt;-Max loss: premiumPaid + commissionPaid<br><br>&lt;br&gt;&lt;br&gt;-Risk of early assignment since you sell contracts<br><br>&lt;br&gt;&lt;br&gt;-Add strategy payoff chart<br><br><br>&lt;br&gt;&lt;br&gt;&lt;br&gt;Short Put Butterfly Spread<br>&lt;br&gt;<br>----------------------------<br>&lt;br&gt;What is a short put butterfly spread:<br>&lt;br&gt;-Sell 1 OTM put Option at strike S_1, buy 2 ATM put Options at strike S_2, sell 1 ITM put Option at strike S_3 &gt; S_1<br>&lt;br&gt;<br><br>&lt;br&gt;&lt;br&gt;What is the max profit/loss:<br>&lt;br&gt;-Max profit: premiumsReceived<br>&lt;br&gt;-Max profit achieved when underlying price is above S_3 or below S_1 at expiry<br>&lt;br&gt;-Max loss: S_3 - S_2 - premiumReceived<br><br>&lt;br&gt;&lt;br&gt;-Risk of early assignment since you sell contracts<br><br>&lt;br&gt;&lt;br&gt;-Add strategy payoff chart
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});
+</script>
+<script type="text/javascript"
+    src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+<p><span class="new-term">Put butterfly</span> is the combination of a bull put spread and a bear put spread. All puts have the same underlying stock and the same expiration date, and the strike price distance of ITM-ATM and OTM-ATM put pairs are the same.</p>
+<h4>Long Put Butterfly</h4>
+<p>It consists of buying an ITM put & an OTM put, while selling 2 ATM puts. It is a option strategy profitting from a low volatility. This is a limited-reward-limited-risk strategy.</p>
+$Payoff_{OTM\ put}$
+$=(Strike_{OTM\ put}-Price_{underlying})^{+}$
+<br><br>
+$Payoff_{ITM\ put}$
+$=(Strike_{ITM\ put}-Price_{underlying})^{+}$
+<br><br>
+$Payoff_{ATM\ put}=(Strike_{ATM\ put}-Price_{underlying})^{+}$
+<br><br>
+$Profit/Loss=(Payoff_{ITM\ put}+Payoff_{OTM\ put}-2\times Payoff_{ATM\ put}+2\times credit\ received_{ATM\ put}-debit\ paid_{ITM\ put}-debit\ paid_{OTM\ put})\times multiplier-commissions$
+<br><br>
+
+<img class="docs-image" src="https://cdn.quantconnect.com/i/tu/long-put-butterfly.png">
+<p>The maximum profit is the range of 1 strike spread (ATM strike - ITM strike) minus net debit paid when opening the trade after commission, if the underlying price is staying the same as the trade opened at expiration, where combined bull and bear put spreads' payouts at its maximum.</p>
+<p>Maximum loss is the net debit paid after commission when opening the trade, where the underlying price is less than ITM strike or greater than OTM strike.</p>
+<p>If the option is American option, there will be a risk of early assignment on the shorted option.</p>
+
+<h4>Short Put Butterfly</h4>
+<p>It consists of selling an ITM put & an OTM put, while buying 2 ATM puts. It is a option strategy profitting from a drastic change in underlying price. This is a limited-reward-limited-risk strategy.</p>
+$Profit/Loss=(2\times Payoff_{ATM\ put}-Payoff_{ITM\ put}-Payoff_{OTM\ put}-2\times debit\ paid_{ATM\ put}-credit\ received_{ITM\ put}-credit\ received_{OTM\ put})\times multiplier-commissions$
+<br><br>
+<img class="docs-image" src="https://cdn.quantconnect.com/i/tu/short-put-butterfly.png">
+
+<p>The maximum profit is the net credit received after commission when opening the trade, if the underlying price less than ITM strike or greater than OTM strike at expiration.</p>
+<p>Maximum loss is the range of 1 strike spread (ATM strike - ITM strike) minus net credit received when opening the trade after commission, where the underlying price is at the same level when the trade opened.</p>
+<p>If the option is American option, there will be a risk of early assignment on the shorted option.</p>
