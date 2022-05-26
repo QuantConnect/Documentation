@@ -1,7 +1,7 @@
 <?php
 $getHistoricalValuesText = function($linkToIndicatorsPage) {
     $result = "
-<p>The <code>RollingWindow</code> class can store historical indicator values. Indicators emit an <code>Updated</code> event after they have been updated. To create a <code>RollingWindow</code> of indicator points, attach an event handler function to the <code>Updated</code> member that adds the last value of the indicator to the <code>RollingWindow</code>. The value is an <code>IndicatorDataPoint</code> object that represents a piece of data at a specific time.</p>
+<p>To track historical indicator values, use a <code>RollingWindow</code>. Indicators emit an <code>Updated</code> event when they update. To create a <code>RollingWindow</code> of indicator points, attach an event handler function to the <code>Updated</code> member that adds the last value of the indicator to the <code>RollingWindow</code>. The value is an <code>IndicatorDataPoint</code> object that represents a piece of data at a specific time.</p>
 <div class=\"section-example-container\">
 <pre class=\"csharp\">public override void Initialize()
 {
