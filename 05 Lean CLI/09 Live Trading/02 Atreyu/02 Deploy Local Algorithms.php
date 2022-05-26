@@ -39,5 +39,5 @@ $dataFeedDetails = "";
 $supportsIQFeed = true;
 $requiresSubscription = true;
 
-$getDeployLocalAlgorithmsText("<a target='_blank' href='https://qnt.co/atreyu'>Atreyu Trading</a>", $brokerageDetails, $dataFeedDetails, $supportsIQFeed, $requiresSubscription);
+$getDeployLocalAlgorithmsText("Atreyu", $brokerageDetails, $dataFeedDetails, $supportsIQFeed, $requiresSubscription);
 ?>
