@@ -16,7 +16,7 @@
 
 <div class="section-example-container">
 	<pre class="python">def Initialize(self):
-    self.AddEquity("SPY", Resolution.Daily)
+    self.symbol = self.AddEquity("SPY", Resolution.Daily).Symbol
 
     self.rsi = RelativeStrengthIndex(10, MovingAverageType.Simple)
     self.max = Maximum(10)
@@ -28,16 +28,18 @@
 
 def OnData(self, data):
     # Update the RSI indicator value with the new input close price every day
-    if data.Bars.ContainsKey("SPY"):
-        bar = data["SPY"]
+    if data.Bars.ContainsKey(self.symbol):
+        bar = data[self.symbol]
         self.rsi.Update(bar.EndTime, bar.Close)
 </pre>
-	<pre class="csharp fsharp">public override void Initialize() {
+	<pre class="csharp fsharp">public override void Initialize()
+{
     AddEquity(_symbol, Resolution.Daily);
     _rsi = new RelativeStrengthIndex(10, MovingAverageType.Simple);
 }
 
-public override void OnData(Slice data) {
+public override void OnData(Slice data)
+{
     // update the indicator value with the new input close price every day
     if (data.Bars.ContainsKey(_symbol)) {
         _rsi.Update(data[_symbol].EndTime, data[_symbol].Close);
