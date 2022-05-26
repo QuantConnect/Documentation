@@ -23,7 +23,7 @@
 
     self.consolidator = TradeBarConsolidator(timedelta(days=3))
     # Update the AD indicator with the consolidated bar
-    self.consolidator.DataConsolidated += (lambda s, bar : self.ad.Update(bar))
+    self.consolidator.DataConsolidated += (lambda _, bar : self.ad.Update(bar))
     self.SubscriptionManager.AddConsolidator(self.symbol, self.consolidator)
 
 def OnData(self, data):
@@ -39,6 +39,7 @@ private AccumulationDistribution _ad;
 public override void Initialize()
 {
     _symbol = AddEquity("SPY", Resolution.Daily).Symbol;
+    
     _rsi = new RelativeStrengthIndex(10, MovingAverageType.Simple);
     _ad = new AccumulationDistribution();
 
