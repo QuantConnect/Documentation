@@ -38,7 +38,7 @@ RegisterIndicator(_symbol, _indicator, _consolidator);</pre>
 </pre>
 </div>
 
-<p>The following table describes the available <code>Field</code> enumeration values:</p> 
+<p>The following table describes the available <code>Field</code> values:</p> 
 
 <?php 
 echo file_get_contents(DOCS_RESOURCES."/enumerations/field.html"); 
