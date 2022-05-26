@@ -24,71 +24,36 @@
 
 
 <h4>Bytes</h4>
-<ol>
-    <p>Call <code>ReadBytes</code> method to read data from a stored bytes object.</p>
-    <div class="section-example-container">
-        <pre class="csharp">var bytesData = objectStore.Read("saveBytes");</pre>
-        <pre class="python">byte_data = object_store.Read("save_bytes")</pre>
-    </div>
 
-    <li class="csharp">Convert to string.</li>
-    <li class="python">Call <code>json.loads</code> to restore the data string.</li>
-    <div class="section-example-container">
-        <pre class="csharp">var stringData = Encoding.UTF8.GetString(bytesData);</pre>
-        <pre class="python">string_data = json.loads(bytearray(byte_data).decode('utf-8'))</pre>
-    </div>
+<p>To read a <code>Bytes</code> object, call the <code>ReadBytes</code> method.</p>
 
-    <li>Restore as dictionary.</li>
-    <div class="section-example-container">
-        <pre class="csharp">var dict = stringFromBytes.Split(new[] {'\n'}, StringSplitOptions.RemoveEmptyEntries)
-               .Select(part => part.Split('[')[1]).Select(part => part.Split(']')[0]).Select(part => part.Split(','))
-               .ToDictionary(split => split[0], split => split[1]);</pre>
-        <pre class="python">recovered_dict = eval(string_data)
-recovered_dict, type(recovered_dict)</pre>
-    </div>
-    <img class="csharp" src="https://cdn.quantconnect.com/i/tu/storing-cs-6.png">
-    <img class="python" src="https://cdn.quantconnect.com/i/tu/storing-py-4.png">
-</ol>
+<div class="section-example-container">
+    <pre class="csharp">var bytesData = ObjectStore.Read("bytesKey");</pre>
+    <pre class="python">byte_data = self.ObjectStore.Read("bytes_key")</pre>
+</div>
 
 <h4>Strings</h4>
-<ol>
-    <p>Call <code>Read</code> or <code>ReadString</code> method to read the stored string object.</p>
-    <div class="section-example-container">
-        <pre class="csharp">var stringData = objectStore.Read("saveString");</pre>
-        <pre class="python">string_data = object_store.Read("save_string")</pre>
-    </div>
 
-    <li>Restore as dictionary.</li>
-    <div class="section-example-container">
-        <pre class="csharp">var dict = stringData.Split(new[] {'\n'}, StringSplitOptions.RemoveEmptyEntries)
-               .Select(part => part.Split('[')[1]).Select(part => part.Split(']')[0]).Select(part => part.Split(','))
-               .ToDictionary(split => split[0], split => split[1]);</pre>
-        <pre class="python">recovered_dict = eval(string_data)
-recovered_dict, type(recovered_dict)</pre>
-    </div>
-    <img class="csharp" src="https://cdn.quantconnect.com/i/tu/storing-cs-16.png">
-    <img class="python" src="https://cdn.quantconnect.com/i/tu/storing-py-6.png">
-</ol>
+<p>To read a <code>string</code> object, call the <code>Read</code> or <code>ReadString</code> method.</p>
+
+<div class="section-example-container">
+    <pre class="csharp">var stringData = ObjectStore.Read("stringKey");</pre>
+    <pre class="python">string_data = self.ObjectStore.Read("string_key")</pre>
+</div>
 
 <h4 class="csharp">JSON</h4>
-<ol class="csharp">
-    <li class="csharp">Call the <code>ReadJson&lt;T&gt;</code> method to read the stored JSON object.</li>
-    <div class="csharp section-example-container">
-        <pre class="csharp">var jsonData = objectStore.ReadJson&lt;Dictionary&lt;string, int&gt;&gt;("saveJson");</pre>
-    </div>
-    <img class="csharp" src="https://cdn.quantconnect.com/i/tu/storing-cs-10.png">
-</ol>
+<p class="csharp">To read a JSON object, call the <code>ReadJson&lt;T&gt;</code> method.</p>
+<div class="csharp section-example-container">
+    <pre class="csharp">var jsonData = ObjectStore.ReadJson&lt;Dictionary&lt;string, int&gt;&gt;("jsonKey");</pre>
+</div>
 
 <h4 class="csharp">XML</h4>
-<ol class="csharp">
-    <li class="csharp">Call the <code>ReadXml&lt;T&gt;</code> method to read the stored XML object.</li>
-    <div class="csharp section-example-container">
-        <pre class="csharp">var xmlData = objectStore.ReadXml&lt;XElement&gt;("saveXml");</pre>
-    </div>
+<p class="csharp">To read an XML-formatted object, call the <code>ReadXml&lt;T&gt;</code> method.</p>
+<div class="csharp section-example-container">
+    <pre class="csharp">var xmlData = objectStore.ReadXml&lt;XElement&gt;("xmlKey");</pre>
+</div>
 
-    <li class="csharp">Reconstruct as a dictionary.</li>
-    <div class="csharp section-example-container">
-        <pre class="csharp">var dict = xmlData.Elements().ToDictionary(x => x.Name.LocalName, x => int.Parse(x.Value));</pre>
-    </div>
-    <img class="csharp" src="https://cdn.quantconnect.com/i/tu/storing-cs-12.png">
-</ol>
+<p class="csharp">If you created the XML object from a dictionary, reconstruct the dictionary.</p>
+<div class="csharp section-example-container">
+    <pre class="csharp">var dict = xmlData.Elements().ToDictionary(x => x.Name.LocalName, x => int.Parse(x.Value));</pre>
+</div>
