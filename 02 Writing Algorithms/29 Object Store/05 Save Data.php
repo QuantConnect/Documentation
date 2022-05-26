@@ -1,17 +1,46 @@
-# Import from https://www.quantconnect.com/docs/v2/research-environment/object-store/storing-data
+<p>The Object Store saves objects under a key-value system. If you save objects in backtests, you can access them from the Research Environment. To avoid slowing down your backtests, save data once in the <code>OnEndOfAlgorithm</code> event handler. In live trading, you can save data more frequently like at the end of a <code>Train</code> method or after universe selection.</p>
+
+<p>If you run algorithms in QC Cloud, you need <a href='/docs/v2/our-platform/organizations/members#06-Permissions'>storage create permissions</a> to save data in the Object Store.</p>
+
+<p>If you don't have data to store, <a href='/docs/v2/writing-algorithms/object-store#03-Create-Sample-Data'>create some sample data</a>.</p>
+
+<p class='csharp'>You can save the following types of objects in the Object Store:</p>
+
+<ul class='csharp'>
+    <li><code>Bytes</code> objects</li>
+    <li><code>string</code> objects</li>
+    <li>JSON objects</li>
+    <li>XML-formatted objects</li>
+</ul>
+
+<p class='python'>You can save <code>Bytes</code> and <code>string</code> objects in the Object Store.</p>
+
+<p>The following save methods return a boolean that represents if the object was saved successfully.</p>
+
+<h4>Bytes</h4>
+<p>To save a <code>Bytes</code> object, call the <code>SaveBytes</code> method.</p>
+<div class="section-example-container">
+    <pre class="csharp">var saveSuccessful = ObjectStore.SaveBytes("bytesKey", bytesSample)</pre>
+    <pre class="python">save_successful = self.ObjectStore.SaveBytes("bytes_key", bytes_sample)</pre>
+</div>
+
+<h4>Strings</h4>
+<p>To save a <code>string</code> object, call the <code>Save</code> or <code>SaveString</code> method.</p>
+<div class="section-example-container">
+    <pre class="csharp">var saveSuccessful = ObjectStore.Save("stringKey", stringSample);</pre>
+    <pre class="python">save_successful = self.ObjectStore.Save("string_key", string_sample)</pre>
+</div>
+
+<h4 class="csharp">JSON</h4>
+<p class="csharp">To save a JSON object, call the <code>SaveJson&lt;T&gt;</code> method. This method helps to serialize the data into JSON format.</p>
+<div class="csharp section-example-container">
+    <pre class="csharp">var saveSuccessful = ObjectStore&lt;Dictionary&lt;string, int&gt;&gt;.SaveJson("jsonKey", sample);</pre>
+</div>
+
+<h4 class="csharp">XML</h4>
+<p class="csharp">To save an XML-formatted object, call the <code>SaveXml&lt;T&gt;</code> method.</p>
+<div class="csharp section-example-container">
+    <pre class="csharp">var saveSuccessful = ObjectStore.SaveXml("xmlKey", xmlSample);</pre>
+</div>
 
 
-<br>-What is storing data:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;- Storing an object in the ObjectStore underneath a key
-<br>-Why store data:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;- Saving algorithm variable values between deployments
-<br>&nbsp;&nbsp;&nbsp;&nbsp;- Transporting data between the backtesting environment and the research environment
-<br>&nbsp;&nbsp;&nbsp;&nbsp;- Training machine learning models in the research environment before deploying them to live trading
-<br>-How(?):
-<br>&nbsp;&nbsp;&nbsp;&nbsp;-Using Save, SaveBytes, SaveJson, SaveXML
-<br>&nbsp;&nbsp;&nbsp;&nbsp;-Method depends on data being stored
-<br>&nbsp;&nbsp;&nbsp;&nbsp;-Need to provide key and value
-<br>&nbsp;&nbsp;&nbsp;&nbsp;-<snippet example of using each method>
-
-<br><br>-In backtesting, we should save the data less frequently, at the OnEndOfAlgorithm.
-<br>-In live trading, we can save the data with more frequency (maybe in a scheduled event or at the end of the Train method, or after universe selection)
