@@ -1,21 +1,22 @@
-Indicators compute their value based on historical data. Before you start trading with an indicator, warm it up. There are several ways to warm up manual indicators.
+<p>Indicators use historical data to compute their value. Before you start trading with an indicator, warm it up. There are several ways to warm up manual indicators.</p>
 
-<h4>Manual Indicator Warm Up</h4>If you have access to the QCAlgorithm object, you can manually warm up indicators with a history request. 
+<h4>Manual Indicator Warm Up</h4>
+<p>If you have access to the <code>QCAlgorithm</code> object, you can manually warm up indicators with a history request.</p>
 
 <div class="section-example-container">
     <pre class="csharp">private SimpleMovingAverage _sma;
 
 _sma = SimpleMovingAverage(20);
-var history = algorithm.History(symbol, 20, Resolution.Daily);
+var history = algorithm.History(_symbol, 20, Resolution.Daily);
 foreach (var bar in history)
 {
     sma.Update(bar.Time, bar.Close);
 }
 </pre>
     <pre class="python">self.sma = SimpleMovingAverage(20)
-history = algorithm.History(symbol, 20, Resolution.Daily)
+history = algorithm.History(self.symbol, 20, Resolution.Daily)
 if not history.empty:
-    for time, row in history.loc[symbol].iterrows():
+    for time, row in history.loc[self.symbol].iterrows():
         self.sma.Update(time, row.close)</pre>
 </div>
 
@@ -31,7 +32,7 @@ algorithm.WarmUpIndicator(_symbol, _sma);</pre>
 algorithm.WarmUpIndicator(self.symbol, self.sma)</pre>
 </div>
 
-<p>To warm up the indicator with a resolution that's different from the security resolution, pass a resolution or <code class="csharp">TimeSpan</code><code class="python">timedelta</code> argument to the <code>WarmUpIndicator</code> method. The resolution you provide should be greater than or equity to the security resolution. For example, if the security has minute resolution data, the indicator should be warmed up with minute, hour, or daily resolution data.<br></p>
+<p>To warm up the indicator with a resolution that's different from the security resolution, pass a resolution or <code class="csharp">TimeSpan</code><code class="python">timedelta</code> argument to the <code>WarmUpIndicator</code> method. The resolution you provide should be greater than or equal to the security resolution. For example, if the security has minute resolution data, you should warm up the indicator with data that spans atleast one minute.<br></p>
 <div class="section-example-container">
     <pre class="csharp">// Warm up with daily bars
 algorithm.WarmUpIndicator(_symbol, _sma, Resolution.Daily);
@@ -52,12 +53,7 @@ algorithm.WarmUpIndicator(self.symbol, self.sma, timedelta(days=3))</pre>
 </div>
 
 <h4>Algorithm Warm Up</h4>
-If you create indicators at the beginning of your algorithm, you can set a <a href="/docs/v2/writing-algorithms/historical-data/warm-up-periods">algorithm  warm up period</a> to warm up the indicators.
-When you set an algorithm warm-up period, the engine pumps data in and 
-automatically update all the indicators from before the start date.
-	To ensure that all the indicators are ready after the algorithm warm-up
- period, choose a lookback period that contains sufficient
- data.
+<p>If you create indicators at the beginning of your algorithm, you can set an <a href="/docs/v2/writing-algorithms/historical-data/warm-up-periods">algorithm  warm up period</a> to warm up the indicators. When you set an algorithm warm up period, the engine pumps data in and automatically updates all the indicators from before the start date of the algorithm. To ensure that all the indicators are ready after the algorithm warm up period, choose a lookback period that contains sufficient data.</p>
 
 <div class="section-example-container">
     <pre class="csharp">private SimpleMovingAverage _sma;
@@ -68,15 +64,15 @@ _sma = SimpleMovingAverage(20);
 SetWarmUp(20);
 
 // In OnData<br>_sma.Update(data["SPY"]); // Delete this line if you registered the indicator for automatic updates
-if (IsWarmingUp) {
+if (IsWarmingUp)<br>{
     return;
 }</pre>
     <pre class="python"># In Initialize
-symbol = self.AddEquity("SPY", Resolution.Daily).Symbol
+self.symbol = self.AddEquity("SPY", Resolution.Daily).Symbol
 self.sma = SimpleMovingAverage(20)
 self.SetWarmUp(20)
 
-# In OnData<br>self.sma.Update(data["SPY"]) # Delete this line if you registered the indicator for automatic updates
+# In OnData<br>self.sma.Update(data[self.symbol]) # Delete this line if you registered the indicator for automatic updates
 if self.IsWarmingUp:
     return</pre>
 </div>
