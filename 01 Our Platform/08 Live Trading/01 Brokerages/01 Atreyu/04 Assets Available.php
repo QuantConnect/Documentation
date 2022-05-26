@@ -2,5 +2,5 @@
 
 <?php
 include(DOCS_RESOURCES."/brokerages/us-etfs.php");
-$getUSETFText("Atreyu");
+$getUSETFText("<a target='_blank' href='https://qnt.co/atreyu'>Atreyu Trading</a>");
 ?>

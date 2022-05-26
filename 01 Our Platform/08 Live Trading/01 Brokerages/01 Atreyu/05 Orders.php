@@ -1,7 +1,7 @@
-<p>We model the Atreyu API by supporting several order types, order properties, and order updates. When you deploy live algorithms, you can place manual orders through the IDE.</p>
+<p>We model the <a target='_blank' href='https://qnt.co/atreyu'>Atreyu Trading</a> API by supporting several order types, order properties, and order updates. When you deploy live algorithms, you can place manual orders through the IDE.</p>
 
 <h4>Order Types</h4>
-<p>Atreyu supports the following order types:</p>
+<p><a target='_blank' href='https://qnt.co/atreyu'>Atreyu Trading</a> supports the following order types:</p>
 <ul>
     <li><code>MarketOrder</code></li>
     <li><code>LimitOrder</code></li>
@@ -22,7 +22,7 @@ self.MarketOnCloseOrder(self.symbol, quantity)</pre>
 
 
 <h4>Order Properties</h4>
-<p>We model custom order properties from the Atreyu API. The following table describes the members of the <code>AtreyuOrderProperties</code> object that you can set to customize order execution:</p>
+<p>We model custom order properties from the <a target='_blank' href='https://qnt.co/atreyu'>Atreyu Trading</a> API. The following table describes the members of the <code>AtreyuOrderProperties</code> object that you can set to customize order execution:</p>
 
 <table class="table qc-table">
    <thead>
@@ -86,7 +86,7 @@ def OnData(self, data):
 </div>
 
 <h4>Updates</h4>
-<p>We model the Atreyu API by supporting order updates. You can define the following members of an <code>UpdateOrderFields</code> object to update active orders:</p>
+<p>We model the <a target='_blank' href='https://qnt.co/atreyu'>Atreyu Trading</a> API by supporting order updates. You can define the following members of an <code>UpdateOrderFields</code> object to update active orders:</p>
 
 <ul>
     <li><code>Quantity</code></li>

@@ -3,7 +3,7 @@ include(DOCS_RESOURCES."/brokerages/cli-deployment/deploy-local-algorithms.php")
 
 
 $brokerageDetails = "
-<li>Enter the Atreyu server configuration.
+<li>Enter the <a target='_blank' href='https://qnt.co/atreyu'>Atreyu Trading</a> server configuration.
 <div class='cli section-example-container'>
 <pre>$ lean live \"My Project\"
 Host:
@@ -12,7 +12,7 @@ Subscribe port:</pre>
 </div>
 </li>
 
-<li>Enter your Atreyu credentials.
+<li>Enter your <a target='_blank' href='https://qnt.co/atreyu'>Atreyu Trading</a> credentials.
 <div class='cli section-example-container'>
 <pre>$ lean live \"My Project\"
 Username:
@@ -39,5 +39,5 @@ $dataFeedDetails = "";
 $supportsIQFeed = true;
 $requiresSubscription = true;
 
-$getDeployLocalAlgorithmsText("Atreyu", $brokerageDetails, $dataFeedDetails, $supportsIQFeed, $requiresSubscription);
+$getDeployLocalAlgorithmsText("<a target='_blank' href='https://qnt.co/atreyu'>Atreyu Trading</a>", $brokerageDetails, $dataFeedDetails, $supportsIQFeed, $requiresSubscription);
 ?>
