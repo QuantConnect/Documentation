@@ -1,4 +1,4 @@
-<p>Delete objects in the Object Store to remove objects that you no longer need. If you run algorithms in QC Cloud, you must stay within your <a href='/docs/v2/our-platform/projects/data-storage#03-Storage-Sizes'>storage quota</a> to avoid issues. To delete data in the cloud Object Store, you need <a href='/docs/v2/our-platform/organizations/members#06-Permissions'>storage delete permissions</a>.</p>
+<p>Delete objects in the Object Store to remove objects that you no longer need. If you run algorithms in QC Cloud, you need <a href='/docs/v2/our-platform/organizations/members#06-Permissions'>storage delete permissions</a> to delete data from the Object Store.</p>
 
 <p>To delete objects from the Object Store, call the <code>Delete</code> method. Before you delete data, check if the key exists. If you try to delete an object with a key that doesn't exist in the Object Store, the method raises an exception.</p>
 
