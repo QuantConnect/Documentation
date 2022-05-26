@@ -19,11 +19,11 @@
     self.symbol = self.AddEquity("SPY", Resolution.Daily).Symbol
 
     self.rsi = RelativeStrengthIndex(10, MovingAverageType.Simple)
-    self.max = Maximum(10)
+    self.ad = AccumulationDistribution()
 
     self.consolidator = TradeBarConsolidator(timedelta(days=3))
-    # Update the maximum indicator with the consolidated bar
-    self.consolidator.DataConsolidated += (lambda sender, consolidated_bar : self.max.Update(consolidated_bar))
+    # Update the AD indicator with the consolidated bar
+    self.consolidator.DataConsolidated += (lambda sender, consolidated_bar : self.ad.Update(consolidated_bar))
     self.SubscriptionManager.AddConsolidator(self.symbol, self.consolidator)
 
 def OnData(self, data):
