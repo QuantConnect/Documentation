@@ -23,31 +23,38 @@
 
     self.consolidator = TradeBarConsolidator(timedelta(days=3))
     # Update the AD indicator with the consolidated bar
-    self.consolidator.DataConsolidated += (lambda sender, consolidated_bar : self.ad.Update(consolidated_bar))
+    self.consolidator.DataConsolidated += (lambda s, bar : self.ad.Update(bar))
     self.SubscriptionManager.AddConsolidator(self.symbol, self.consolidator)
 
 def OnData(self, data):
     # Update the RSI indicator value with the new input close price every day
     if data.Bars.ContainsKey(self.symbol):
-        bar = data[self.symbol]
+        bar = data.Bars[self.symbol]
         self.rsi.Update(bar.EndTime, bar.Close)
 </pre>
-	<pre class="csharp fsharp">public override void Initialize()
+	<pre class="csharp fsharp">private Symbol _symbol;
+private RelativeStrengthIndex _rsi;
+private AccumulationDistribution _ad;
+
+public override void Initialize()
 {
-    AddEquity(_symbol, Resolution.Daily);
+    _symbol = AddEquity("SPY", Resolution.Daily).Symbol;
     _rsi = new RelativeStrengthIndex(10, MovingAverageType.Simple);
+    _ad = new AccumulationDistribution();
+
+    var consolidator = new TradeBarConsolidator(TimeSpan.FromDays(3));
+    //Update the AD indicator with the consolidated bar
+    consolidator.DataConsolidated += (_, bar) =&gt; _ad.Update(bar);
+    SubscriptionManager.AddConsolidator(_symbol, consolidator);
 }
 
 public override void OnData(Slice data)
 {
-    // update the indicator value with the new input close price every day
-    if (data.Bars.ContainsKey(_symbol)) {
-        _rsi.Update(data[_symbol].EndTime, data[_symbol].Close);
-    }
-    // check if the indicator is ready
-    if (_rsi.IsReady) {
-        // get the current RSI value
-        var rsiValue = _rsi;
+    // Update the RSI indicator value with the new input close price every day
+    if (data.Bars.ContainsKey(_symbol))
+    {
+        var bar = data.Bars[_symbol];
+        _rsi.Update(bar.EndTime, bar.Close);
     }
 }
 </pre>
