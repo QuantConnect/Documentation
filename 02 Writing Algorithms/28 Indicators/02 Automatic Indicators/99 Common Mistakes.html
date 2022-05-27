@@ -16,19 +16,19 @@
 </div>
 
 <h4>Manually Registering an Automatic Indicator for Updates</h4>
-<p>If you create an automatic indicator and then register it for automatics updates or call the <code>Update</code> method, the indicator receives multiple input values during each update cycle. To avoid issues, don't register automatic indicators for automatic updates or call the <code>Update</code> method.</p>
+<p>If you create an automatic indicator and then register it for automatics updates or call the <code>Update</code> method, the indicator receives multiple input values during each update cycle. To avoid issues, <a href="/docs/v2/writing-algorithms/indicators/automatic-indicators#03-Create-Automatic-Indicators">create automatic indicators</a> but don't register them for <a href="/docs/v2/writing-algorithms/indicators/manual-indicators#05-Automatic-Updates">automatic updates</a> or call the <code>Update</code> method.</p>
 
 <div class="section-example-container">
-    <pre class="csharp">// Don't do this
+    <pre class="csharp">// Create automatic indicators
 _indicator = SMA(_symbol, 5);
-var consolidator = new TradeBarConsolidator(1);
-SubscriptionManager.AddConsolidator(_symbol, consolidator);
-RegisterIndicator(_symbol, _indicator, consolidator)</pre>
-    <pre class="python"># Don't do this
+
+// Don't do this:
+RegisterIndicator(_symbol, _indicator, Resolution.Daily)</pre>
+    <pre class="python"># Create automatic indicators
 self.indicator = self.SMA(self.symbol, 5)
-consolidator = TradeBarConsolidator(1)
-self.SubscriptionManager.AddConsolidator(self.symbol, consolidator)
-self.RegisterIndicator(self.symbol, self.indicator, consolidator)</pre>
+
+# Don't do this:
+self.RegisterIndicator(self.symbol, self.indicator, Resolution.Daily)</pre>
 </div>
 
 
