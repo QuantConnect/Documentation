@@ -42,7 +42,7 @@ RegisterIndicator(_symbol, _indicator, _consolidator);</pre>
 echo file_get_contents(DOCS_RESOURCES."/enumerations/field.html"); 
 ?>
 
-<p class='csharp'></p>
+<p class='csharp'>To create a custom <code>selector</code> argument, provide a function that calculates the value.</p>
 
 <div class='csharp'>
     <div class="section-example-container">
@@ -50,7 +50,6 @@ echo file_get_contents(DOCS_RESOURCES."/enumerations/field.html");
 {
     var bar = x as IBaseDataBar;
     return (bar.Low + bar.High) / 2;
-});
-       </pre>
+});</pre>
     </div>
 </div>
