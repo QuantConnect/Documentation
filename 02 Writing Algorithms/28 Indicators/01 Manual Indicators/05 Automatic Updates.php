@@ -42,7 +42,7 @@ RegisterIndicator(_symbol, _indicator, _consolidator);</pre>
 echo file_get_contents(DOCS_RESOURCES."/enumerations/field.html"); 
 ?>
 
-<p class='csharp'>To create a custom <code>selector</code> argument, provide a function that calculates the value.</p>
+<p class='csharp'>To create a custom <code>selector</code>, define a function that calculates the value.</p>
 
 <div class='csharp'>
     <div class="section-example-container">
