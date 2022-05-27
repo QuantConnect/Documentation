@@ -105,11 +105,6 @@ Select a data feed:
             If you already have a live environment configured in your <a href='/docs/v2/lean-cli/initialization/configuration#03-Lean-Configuration'>Lean configuration file</a>, you can skip the interactive wizard by providing the <code>--environment &lt;value&gt;</code> option in step 2.
             The value of this option must be the name of an environment which has <code>live-mode</code> set to <code>true</code>.
         </p>
-
-        <p>
-            If you are using the <a href='/docs/v2/lean-cli/projects/gui'>local GUI</a>, monitor and control the live deployment through there by providing the <code>--gui</code> flag in step 2.
-        </p>
     ";
 }
-
 ?>
