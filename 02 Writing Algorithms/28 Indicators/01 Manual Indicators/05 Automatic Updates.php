@@ -41,3 +41,16 @@ RegisterIndicator(_symbol, _indicator, _consolidator);</pre>
 <?php 
 echo file_get_contents(DOCS_RESOURCES."/enumerations/field.html"); 
 ?>
+
+<p class='csharp'></p>
+
+<div class='csharp'>
+    <div class="section-example-container">
+        <pre class="csharp">RegisterIndicator(_symbol, _indicator, _consolidator, x =>
+{
+    var bar = x as IBaseDataBar;
+    return (bar.Low + bar.High) / 2;
+});
+       </pre>
+    </div>
+</div>
