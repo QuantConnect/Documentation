@@ -1,5 +1,4 @@
-<p>
-    The TimeInForce property determines how long an order should remain open if unfilled. This does not apply to market orders as they are generally filled instantly. Time in force is useful to automatically cancel old trades.
+<p>The TimeInForce property determines how long an order should remain open if unfilled. This does not apply to market orders as they are generally filled instantly. Time in force is useful to automatically cancel old trades.
 </p>
 <table class="qc-table table table-condensed table-responsive">
 	<thead>
@@ -56,6 +55,8 @@ self.LimitOrder("IBM", 100, lastClose * decimal.Decimal(.999))
 # Set Market Order to be good until noon
 self.DefaultOrderProperties.TimeInForce = TimeInForce.GoodTilDate(datetime(2019, 6, 19, 12, 0, 0))
 self.MarketOrder("IBM", 100)</pre>
-    </div><div><br></div><div>-Depending on the brokerage you use, you may not have access to all of these TimeInForce options. To see the TimeInForce options supported by the brokerage you're using, see the <span class="page-section-name">Orders</span> section of the <a href="https://www.quantconnect.com/docs/v2/our-platform/live-trading/brokerages">integration documentation for your brokerage</a>.
+    </div><div><br></div><div>
+-We need to note that TimeInForce.Day is incompatible with securities that subscribe to daily resolution data because it will look for the market close time (e.g.: 4 pm) and the daily data only has events at midnight (same issue we have with scheduled events) <br>
+-Depending on the brokerage you use, you may not have access to all of these TimeInForce options. To see the TimeInForce options supported by the brokerage you're using, see the <span class="page-section-name">Orders</span> section of the <a href="https://www.quantconnect.com/docs/v2/our-platform/live-trading/brokerages">integration documentation for your brokerage</a>.
 
 </div>
