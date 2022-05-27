@@ -35,23 +35,59 @@ public override void Initialize()
 
         # Create a consolidator to update the indicator
         self.consolidator = TradeBarConsolidator(1) 
-        self.consolidator.DataConsolidated += self.consolidation_handler
+        self.consolidator.DataConsolidated += self.OnDataConsolidated
 
         # Register the consolidator to update the indicator
         algorithm.SubscriptionManager.AddConsolidator(symbol, self.consolidator)       
 
         # Warm up the indicator
         algorithm.WarmUpIndicator(symbol, self.sma)
-<br>
-    def consolidation_handler(self, sender, consolidated_bar):
-        self.sma.Update(consolidated_bar.EndTime, consolidated_bar.Close)
 
+    def OnDataConsolidated(self, sender, consolidated_bar):
+        self.sma.Update(consolidated_bar.EndTime, consolidated_bar.Close)
 
     # If you have a dynamic universe, remove consolidators for the securities removed from the universe
     def dispose(self):
         self.algorithm.SubscriptionManager.RemoveConsolidator(self.symbol, self.consolidator)
 </pre>
-	<pre class="csharp fsharp"></pre>
+	<pre class="csharp">public class SymbolData
+{
+    private QCAlgorithm _algorithm;
+    private Symbol _symbol;
+    private SimpleMovingAverage _sma;
+    private TradeBarConsolidator _consolidator;
+
+    public SymbolData(QCAlgorithm algorithm, Symbol symbol)
+    {
+        _algorithm = algorithm;
+        _symbol = symbol;
+
+        // Create an indicator
+        _sma = new SimpleMovingAverage(20);
+
+        // Create a consolidator to update the indicator
+        _consolidator = new TradeBarConsolidator(1);
+        _consolidator.DataConsolidated += OnDataConsolidated;
+
+        // Register the consolidator to update the indicator
+        algorithm.SubscriptionManager.AddConsolidator(symbol, _consolidator);
+
+        // Warm up the indicator
+        algorithm.WarmUpIndicator(symbol, _sma);
+        }
+
+    private void OnDataConsolidated(object sender, TradeBar consolidatedBar)
+    {
+        _sma.Update(consolidatedBar.EndTime, consolidatedBar.Close);
+    }
+
+    // If you have a dynamic universe, remove consolidators for the securities removed from the universe
+    public void Dispose()
+    {
+        _algorithm.SubscriptionManager.RemoveConsolidator(_symbol, _consolidator);
+    }
+}
+	</pre>
 </div>
 
 <p>Every time the universe adds or removes a security, create or dispose of the respective <code>SymbolData</code> object in the <code>OnSecuritiesChanged</code> event handler.</p>
@@ -70,5 +106,26 @@ public override void Initialize()
             if symbol_data:
                 symbol_data.dispose()
 </pre>
-	<pre class="csharp fsharp"></pre>
+	<pre class="csharp">public class MyAlgorithm : QCAlgorithm
+{
+    private Dictionary<Symbol, SymbolData> _symbolDataBySymbol = new();
+
+    public override void OnSecuritiesChanged(SecurityChanges changes)
+    {
+        foreach (var security in changes.AddedSecurities)
+        {
+            _symbolDataBySymbol[security.Symbol] = new SymbolData(this, security.Symbol);
+        }
+
+        // If you have a dynamic universe, track removed securities
+        foreach (var security in changes.RemovedSecurities)
+        {
+            if (_symbolDataBySymbol.TryGetValue(security.Symbol, out var symbolData))
+            {
+                symbolData.Dispose();
+            }
+        }
+    }
+}	
+	</pre>
 </div>
