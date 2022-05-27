@@ -3,37 +3,27 @@
 <p class="csharp">Custom indicators subsclass the <code>IndicatorBase&lt;IndicatorDataPoint&gt;</code>, <code>BarIndicator</code>, or <code>TradeBarIndicator </code>class, depending on the <a href="/docs/v2/writing-algorithms/indicators/key-concepts#03-Indicator-Types">indicator type</a>. The following definition provides an example of a custom simple moving average indicator that inherits the <code>IndicatorBase&lt;IndicatorDataPoint&gt;</code> class. To view examples of indicators that inherit the <code>BarIndicator</code> or <code>TradeBarIndicator </code>class, see the <a rel="nofollow" target="_blank" href="https://github.com/QuantConnect/Lean/blob/master/Indicators/AverageTrueRange.cs">AverageTrueRange</a> or <a rel="nofollow" target="_blank" href="https://github.com/QuantConnect/Lean/blob/master/Indicators/VolumeWeightedAveragePriceIndicator.cs">VolumeWeightedAveragePriceIndicator</a> implementation in the LEAN GitHub repository.</p>
 
 <div class="section-example-container">
-    <pre class="csharp">public class CustomSimpleMovingAverage : IndicatorBase&lt;IndicatorDataPoint&gt; 
+    <pre class="csharp">public class CustomSimpleMovingAverage : IndicatorBase&lt;IndicatorDataPoint&gt;, IIndicatorWarmUpPeriodProvider
 {
-    public Sum RollingSum;
-
-    public override bool IsReady =&gt; RollingSum.IsReady;
-
-    public new long Samples = 0;
+    private RollingWindow&lt;decimal&gt; _window;
+    public override bool IsReady => _window.IsReady;
+    public int WarmUpPeriod => _window.Size;
 
     public CustomSimpleMovingAverage(string name, int period) : base(name)
     {
-        RollingSum = new Sum(name + "_Sum", period);
+        _window = new RollingWindow&lt;decimal&gt;(period);
     }
 
     protected override decimal ComputeNextValue(IndicatorDataPoint input)
     {
-        return default(decimal);
+        _window.Add(input.Value);
+        return _window.Sum() / _window.Size;
     }
-    
-    public override bool Update(IBaseData input)
-    {
-        Samples++;
-        RollingSum.Update(input.Time, input.Value);
-        Current = new IndicatorDataPoint(input.Time, RollingSum.Current.Value / RollingSum.WarmUpPeriod);
-        return IsReady;
-    }
-    
+
     public override void Reset()
     {
-        Samples = 0;
-        RollingSum.Reset();
-        Current = new IndicatorDataPoint(DateTime.MinValue, default(decimal));
+        _window.Reset();
+        base.Reset();
     }
 }</pre>
     <pre class="python">class CustomSimpleMovingAverage(PythonIndicator):
