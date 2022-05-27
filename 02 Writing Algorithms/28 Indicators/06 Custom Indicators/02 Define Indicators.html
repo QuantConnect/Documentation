@@ -1,4 +1,4 @@
-<p class="python">Custom indicators subsclass the <code>PythonIndicator</code> class. The indicator must have <code>Name</code> attribute, <code>Time</code> attribute, <code></code> <code>Value</code> attribute, and an <code>Update</code> method. The <code>Update</code> method should accept an <code>IndicatorDataPoint</code>, <code>QuoteBar</code>, or <code>TradeBar</code> and return a boolean that represents if the indicator is ready.</p>
+<p class="python">Custom indicators subsclass the <code>PythonIndicator</code> class. The indicator must an <code>Update</code> method and <code>Name</code>, <code>Time</code>, and <code></code> <code>Current</code> attributes. The <code>Update</code> method should accept an <code>IndicatorDataPoint</code>, <code>QuoteBar</code>, or <code>TradeBar</code> and return a boolean that represents if the indicator is ready.</p>
 
 <p class="csharp">Custom indicators subsclass the <code>IndicatorBase&lt;IndicatorDataPoint&gt;</code> class.</p>
 
@@ -42,14 +42,14 @@
     def __init__(self, name, period):
         self.Name = name
         self.Time = datetime.min
-        self.Value = 0
+        self.Current = IndicatorDataPoint(self.Time, 0)
         self.queue = deque(maxlen=period)
 
     def Update(self, input):
         self.queue.appendleft(input.Value)
         count = len(self.queue)
         self.Time = input.Time
-        self.Value = sum(self.queue) / count
+        self.Current = IndicatorDataPoint(self.Time, sum(self.queue) / count)
         return count == self.queue.maxlen</pre>
 </div>
 
