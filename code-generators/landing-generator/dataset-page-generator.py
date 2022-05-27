@@ -1,5 +1,5 @@
-SOURCE = "https://s3.amazonaws.com/cdn.quantconnect.com/web/docs/alternative-data-dump-v2021-12-06.json"
-CSS_FILE = "html_style.css"
+SOURCE = "code-generators/landing-generator/alternative-data-dump-v2021-12-06.json"
+CSS_FILE = "code-generators/landing-generator/html_style.css"
 DATASET_PAGE_DIR = "dataset-page"
 SECTIONS = {
     "Introduction": {
