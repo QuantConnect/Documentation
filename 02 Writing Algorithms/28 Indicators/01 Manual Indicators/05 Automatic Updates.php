@@ -10,9 +10,6 @@ self.indicator = RelativeStrengthIndex(10, MovingAverageType.Simple)
 # Create a consolidator
 self.consolidator = TradeBarConsolidator(1)
 
-# Add the consolidator to the SubscriptionManager
-self.SubscriptionManager.AddConsolidator(self.symbol, self.consolidator)
-
 # Register the indicator to update with the consolidated data
 self.RegisterIndicator(self.symbol, self.indicator, self.consolidator)</pre>
 	<pre class="csharp">// Create a security subscription 
@@ -23,9 +20,6 @@ _indicator = new RelativeStrengthIndex(10, MovingAverageType.Simple);
 
 // Create a consolidator
 _consolidator = new TradeBarConsolidator(1);
-
-// Add the consolidator to the SubscriptionManager
-SubscriptionManager.AddConsolidator(_symbol, _consolidator);
 
 // Register the indicator to update with the consolidated data
 RegisterIndicator(_symbol, _indicator, _consolidator);</pre>
