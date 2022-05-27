@@ -1,0 +1,25 @@
+<p>In live trading, Scheduled Events execute in a parallel thread based on a real-time clock. If you set a Scheduled Event to fire at 10:00 AM, it executes at exactly 10:00 AM. In backtesting, Scheduled Events are part of the main algorithm manager loop, so they may not execute exactly when you set them. For example, if your algorithm subscribes to minute resolution US Equity data and you set a Scheduled Event to occur at 2:00 AM, your Scheduled Event will execute at 9:31 AM when the next bar is fed into your algorithm. In this example, there is no data between the market close of the previous day (4:00 PM) and the market open of the current day (9:30 AM).</p>
+
+<p>The difference between live trading and backtesting is important to note because it can affect your algorithm's behavior. There are two common scenarios to consider.</p>
+
+<h4>Execution Timing and Backtest Timeouts</h4>
+<p>Take the following scenario:</p>
+
+<ul>
+    <li>You set Scheduled Events for 2:00 AM, 3:00 AM, and 4:00 AM each day.</li>
+    <li>Each Scheduled Event takes eight minutes to execute.</li>
+    <li>Your algorithm only subscribes to US Equity securities without extended market hours (9:30 AM - 4:00 PM).</li>
+</ul>
+
+<p>In this scenario, in live trading, the Scheduled Events each fire at the correct time and execute without error. In backtesting, all of the Scheduled Events execute at 9:31 AM when your algorithm receives the first bar of the trading day. Since all the Scheduled Events take eight minutes to execute, the algorithm tries to execute all the Scheduled Events but reaches the 10 minute timeout and the algorithm stops execution.</p>
+
+<h4>Live Data Delays</h4>
+<p>In backtests, your algorithm receives data at perfect timing. If you request minute resolution data, your algorithm receives the bars at the top of each minute. In live trading, bars have a slight delay, so you may receive them milliseconds after than the top of each minute. As a result, take the following scenario:</p>
+
+<ul>
+    <li>You subscribe to minute resolution data</li>
+    <li>You set a Scheduled Event for 10:00 AM</li>
+    <li>The Scheduled Event checks the current asset price</li>
+</ul>
+
+<p>In live trading, the Scheduled Event will execute at exactly 10:00 AM but your algorithm may receive the 9:59-10:00 AM bar at 10:00:00.01 AM. Therefore, when you check the price in the Scheduled Event, the price from the 9:58-9:59 AM bar will be the current price. In backtesting, the Scheduled Event will access the price from the 9:59-10:00 AM bar since your algorithm receives the bar at perfect timing.</p>
