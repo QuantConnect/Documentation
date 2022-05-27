@@ -1,3 +1,4 @@
+import re
 from urllib.request import urlopen
 
 destination = "Resources/enumerations"
@@ -104,7 +105,7 @@ def TableCreation(raw, namespace=""):
     html += """</tbody>
 </table>"""
 
-    with open(f"{destination}/{object_.lower()}.html", "w", encoding="utf-8") as file:
+    with open(f"{destination}/{'_'.join([x.lower() for x in re.findall('[a-zA-Z][^A-Z]*', object_)])}.html", "w", encoding="utf-8") as file:
         file.write(html)
 
 for url in enum_objects:
