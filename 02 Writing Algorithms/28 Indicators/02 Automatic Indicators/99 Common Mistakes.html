@@ -1,1 +1,34 @@
-<div>Creating automatic indicators in a dynamic universe</div><div>- This causes your algorithm to slow down over time since the underlying consolidators are not removed from the algorithm manager, and you can't manually remove them</div><div>- To resolve the issue, use manual indicators in a dynamic universe<br></div><div><br></div><div>Using indicator values before the indicator is warmed up</div><div>- To resolve the issue, check the IsReady flag before using the indicator value, also warm up the indicator</div><div># Show code snippet example<br></div><div><br></div><div>Creating an automatic indicator and then registering it for automatic updates<br></div><div># Show code snippet example<br></div><div>- This causes the indicator to be updated twice for each period, making the indicator values inaccurate.</div><div>- To resolve the issue, don't register automatic indicators for updates<br></div><p></p>
+<p>Avoid the following common mistakes when you use automatic indicators.</p>
+
+<h4>Creating Automatic Indicators in a Dynamic Universe</h4>
+<p>You can't currently remove the consolidator that LEAN creates to update automatic indicators. If you add consolidators to a dynamic universe, the consolidators build up over time and slow down your algorithm. To avoid issues, if you algorithm has a dynamic universe, use <a href="/docs/v2/writing-algorithms/indicators/manual-indicators">manual indicators</a>.</p>
+
+<h4>Using Indicator Values Before the Indicator Is Warmed Up</h4>
+<p>Indicators can provide inaccurate output values before they are warmed up. To avoid issues, always check the <code>IsReady</code> flag before you use indicator output values.</p>
+
+<div class="section-example-container">
+    <pre class="csharp">if (_indicator.IsReady)
+{
+    var value = _indicator.Current.Value;
+}</pre>
+    <pre class="python">if self.indicator.IsReady:
+    value = self.indicator.Current.Value</pre>
+</div>
+
+<h4>Manually Registering an Automatic Indicator for Updates</h4>
+<p>If you create an automatic indicator and then register it for automatics updates or call the <code>Update</code> method, the indicator receives multiple input values during each update cycle. To avoid issues, don't register automatic indicators for automatic updates or call the <code>Update</code> method.</p>
+
+<div class="section-example-container">
+    <pre class="csharp">// Don't do this
+_indicator = SMA(_symbol, 5);
+var consolidator = new TradeBarConsolidator(1);
+SubscriptionManager.AddConsolidator(_symbol, consolidator);
+RegisterIndicator(_symbol, _indicator, consolidator)</pre>
+    <pre class="python"># Don't do this
+self.indicator = self.SMA(self.symbol, 5)
+consolidator = TradeBarConsolidator(1)
+self.SubscriptionManager.AddConsolidator(self.symbol, consolidator)
+self.RegisterIndicator(self.symbol, self.indicator, consolidator)</pre>
+</div>
+
+
