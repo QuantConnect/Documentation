@@ -1,4 +1,4 @@
-<p>You need to <a href="/docs/v2/writing-algorithms/indicators/indicator-universes#02-Define-SelectionData-Objects">define SymbolData objects</a> before you define the universe that selects securities.</p>
+<p>You need to <a href="/docs/v2/writing-algorithms/indicators/indicator-universes#02-Define-SymbolData-Objects">define SymbolData objects</a> before you define the universe that selects securities.</p>
 
 <p>When your universe function receives an object that contains all Symbol objects for the possible securities, create a SymbolData object for each new security and update the remaining SymbolData objects with their daily price or some other data point. For example, the following universe definition selects US Equities that have the greatest difference between two moving averages.<br></p>
 
@@ -6,7 +6,7 @@
 	<pre class="python">class EmaCrossUniverseSelectionAlgorithm(QCAlgorithm):
      def Initialize(self):
          # In addition to other initialization method calls...
-         self.selection_data_by_symbol = {}
+         self.symbol_data_by_symbol = {}
          self.coarse_count = 10
          self.AddUniverse(self.CoarseFilterFunction)
 
@@ -15,15 +15,15 @@
 
         # Use a dictionary to refer the object that will keep the moving averages
         for c in coarse:
-            if c.Symbol not in self.selection_data_by_symbol:
-                self.selection_data_by_symbol[c.Symbol] = SymbolData(c.Symbol)
+            if c.Symbol not in self.symbol_data_by_symbol:
+                self.symbol_data_by_symbol[c.Symbol] = SymbolData(c.Symbol)
 
             # Update the SymbolData object with the current EOD price
-            selection_data = self.selection_data_by_symbol[c.Symbol]
-            selection_data.update(c.EndTime, c.AdjustedPrice)
+            symbol_data = self.symbol_data_by_symbol[c.Symbol]
+            symbol_data.update(c.EndTime, c.AdjustedPrice)
 
         # Filter the values of the dict: target only want up-trending securities
-        values = list(filter(lambda x: x.is_uptrend, self.selection_data_by_symbol.values()))
+        values = list(filter(lambda x: x.is_uptrend, self.symbol_data_by_symbol.values()))
 
         # Sorts the values of the dict: target those with greater difference between the moving averages
         values.sort(key=lambda x: x.scale, reverse=True)
