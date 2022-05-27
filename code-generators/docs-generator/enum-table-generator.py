@@ -3,7 +3,8 @@ from urllib.request import urlopen
 
 destination = "Resources/enumerations"
 enum_objects = [
-    "https://raw.githubusercontent.com/QuantConnect/Lean/master/Common/Global.cs"
+    "https://raw.githubusercontent.com/QuantConnect/Lean/master/Common/Global.cs",
+    "https://raw.githubusercontent.com/QuantConnect/Lean/master/Common/Orders/OrderResponseErrorCode.cs"
 ]
 
 quotation = '\"'
