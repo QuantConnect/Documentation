@@ -1,6 +1,6 @@
-<p>You need to define SymbolData objects before you define the universe that selects securities.</p>
+<p>You need to <a href="/docs/v2/writing-algorithms/indicators/indicator-universes#02-Define-SelectionData-Objects">define SymbolData objects</a> before you define the universe that selects securities.</p>
 
-<p>When your universe function receives coarse/fine objects, create a SymbolData object for each new security, and update the remaining SymbolData objects with their daily price or some other data point attribute. The following universe selects US Equities that have the greatest difference between two moving averages. For more information about universes, see <a href="/docs/v2/writing-algorithms/universes/key-concepts">Universes</a>.<br></p>
+<p>When your universe function receives an object that contains all Symbol objects for the possible securities, create a SymbolData object for each new security and update the remaining SymbolData objects with their daily price or some other data point. For example, the following universe definition selects US Equities that have the greatest difference between two moving averages.<br></p>
 
 <div class="section-example-container">
 	<pre class="python">class EmaCrossUniverseSelectionAlgorithm(QCAlgorithm):
@@ -16,7 +16,7 @@
         # Use a dictionary to refer the object that will keep the moving averages
         for c in coarse:
             if c.Symbol not in self.selection_data_by_symbol:
-                self.selection_data_by_symbol[c.Symbol] = SelectionData(c.Symbol)
+                self.selection_data_by_symbol[c.Symbol] = SymbolData(c.Symbol)
 
             # Update the SymbolData object with the current EOD price
             selection_data = self.selection_data_by_symbol[c.Symbol]
@@ -36,20 +36,20 @@
     const decimal Tolerance = 0.01m;
     private const int Count = 10;
     // holds our coarse fundamental indicators by symbol
-    private readonly ConcurrentDictionary&lt;Symbol, SelectionData&gt; _selectionDataBySymbol = new ConcurrentDictionary&lt;Symbol, SelectionData&gt;();
+    private readonly ConcurrentDictionary&lt;Symbol, SymbolData&gt; _symbolDataBySymbol = new ConcurrentDictionary&lt;Symbol, SymbolData&gt;();
 
     public override void Initialize()
     {
         // In addition to other initialization method calls...
-        AddUniverse(coarse =>
+        AddUniverse(coarse =&gt;
         {
             return (from cf in coarse
-                    // grab the SelectionData instance for this symbol
-                    let avg = _selectionDataBySymbol.GetOrAdd(cf.Symbol, sym => new SelectionData())
+                    // grab the SymbolData instance for this symbol
+                    let avg = _symbolDataBySymbol.GetOrAdd(cf.Symbol, sym =&gt; new SymbolData())
                     // Update returns true when the indicators are ready, so don't accept until they are
                     where avg.Update(cf.EndTime, cf.AdjustedPrice)
                     // only pick symbols who have their 50 day ema over their 100 day ema
-                    where avg.Fast > avg.Slow*(1 + Tolerance)
+                    where avg.Fast &gt; avg.Slow*(1 + Tolerance)
                     // prefer symbols with a larger delta by percentage between the two averages
                     orderby avg.ScaledDelta descending
                     // we only need to return the symbol and return 'Count' symbols
