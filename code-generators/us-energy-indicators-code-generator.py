@@ -1,6 +1,7 @@
 from urllib.request import urlopen
 
 raw = urlopen("https://raw.githubusercontent.com/QuantConnect/Lean.DataSource.USEnergy/master/USEnergy.Category.cs").read().decode("utf-8").split('\n')
+destination = "Resources/datasets/data-point-attributes/us-energy/supported-indicators.html"
 
 description = ""
 code = ""
@@ -34,5 +35,5 @@ for line in raw:
 html += """</tbody>
 </table>"""
 
-with open("Resources/datasets/data-point-attributes/us-energy/supported-indicators.html", "w", encoding="utf-8") as file:
+with open(destination, "w", encoding="utf-8") as file:
     file.write(html)

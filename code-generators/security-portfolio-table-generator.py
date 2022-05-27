@@ -28,7 +28,11 @@ for item, url in links.items():
     json = urlopen(url).read().decode("utf-8") \
             .replace("true", "True") \
             .replace("false", "False") \
-            .replace("null", "None")
+            .replace("null", "None") \
+            .replace("<", "&lt;") \
+            .replace(">", "&gt;") \
+            .replace('&lt;see cref=\\"P:', '<code>') \
+            .replace('\\" /&gt;', '</code>')
     json_dict = eval(json)
 
     html_code = f"""<p>The following table describes the properties of the <code>{item}</code> class:</p>

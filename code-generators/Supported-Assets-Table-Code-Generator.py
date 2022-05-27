@@ -1,6 +1,9 @@
 from urllib.request import urlopen
 
 raw = urlopen("https://raw.githubusercontent.com/QuantConnect/Lean/master/Data/symbol-properties/symbol-properties-database.csv").read().decode("utf-8").split('\n')
+crypto_destination = "Resources/datasets/supported-securities/crypto"
+forex_destination = "Resources/datasets/supported-securities/crypto"
+cfd_destination = "Resources/datasets/supported-securities/crypto"
 
 cryptos_exchange = {"binance": "Binance", "binanceus": "BinanceUS", "bitfinex": "Bitfinex", "gdax": "Coinbase Pro", "ftx": "FTX", "ftxus": "FTXUS", "kraken": "Kraken"}
 forex_exchanges = {"oanda": "Oanda"}
@@ -35,7 +38,7 @@ for exchange, name in cryptos_exchange.items():
 </table>
 </div>\n"""
     
-    with open(f"Resources/datasets/supported-securities/crypto/{exchange}.html", "w", encoding="utf-8") as text:
+    with open(f"{crypto_destination}/{exchange}.html", "w", encoding="utf-8") as text:
         text.write(html)
 
 for exchange, name in forex_exchanges.items():
@@ -67,7 +70,7 @@ for exchange, name in forex_exchanges.items():
 </table>
 </div>\n"""
     
-    with open(f"Resources/datasets/supported-securities/forex/{exchange}.html", "w", encoding="utf-8") as text:
+    with open(f"{forex_destination}/{exchange}.html", "w", encoding="utf-8") as text:
         text.write(html)
 
 for exchange, name in cfd_exchanges.items():
@@ -99,5 +102,5 @@ for exchange, name in cfd_exchanges.items():
 </table>
 </div>\n"""
     
-    with open(f"Resources/datasets/supported-securities/cfd/{exchange}.html", "w", encoding="utf-8") as text:
+    with open(f"{cfd_destination}/{exchange}.html", "w", encoding="utf-8") as text:
         text.write(html)

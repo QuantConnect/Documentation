@@ -1,6 +1,7 @@
 from urllib.request import urlopen
 
 base = "https://raw.githubusercontent.com/QuantConnect/Lean.DataSource.FRED/master/"
+destination = "Resources/datasets/data-point-attributes/fred/supported-indicators.html"
 subcategories = ["CBOE", "CentralBankInterventions", "CommercialPaper", "ICEBofAML", "LIBOR", "OECDRecessionIndicators", "TradeWeightedIndexes", "Wilshire"]
 summaries = {}
 
@@ -41,7 +42,7 @@ for cat, key_dict in summaries.items():
 html += """</tbody>
 </table>"""
 
-with open("Resources/datasets/supported-securities/fred/supported-indicators.html", "w", encoding="utf-8") as text:
+with open(destination, "w", encoding="utf-8") as text:
     text.write("""<h4>Fred Attributes</h4>
 <div data-tree="QuantConnect.DataSource.Fred"></div>
 

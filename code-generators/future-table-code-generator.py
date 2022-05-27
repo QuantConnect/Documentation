@@ -1,6 +1,7 @@
 from urllib.request import urlopen
 
 futs = urlopen("https://raw.githubusercontent.com/QuantConnect/Lean/master/Common/Securities/Future/Futures.cs").read().decode("utf-8").split('\n')
+destination = "Resources/datasets/supported-securities/future/supported-contracts.html"
 
 one = "Futures"
 two = ""
@@ -48,5 +49,5 @@ for key in symbols.keys():
 html += """</tbody>
 </table>"""
 
-with open("Resources/datasets/supported-securities/future/supported-contracts.html", "w", encoding="utf-8") as text:
+with open(destination, "w", encoding="utf-8") as text:
     text.write(html)

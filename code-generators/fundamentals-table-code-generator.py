@@ -1,6 +1,7 @@
 from urllib.request import urlopen
 
 raw = urlopen("https://raw.githubusercontent.com/QuantConnect/Lean/master/Common/Data/Fundamental/AssetClassificationHelper.cs").read().decode("utf-8").split('\n')
+destination = "Resources/datasets/data-point-attributes/fundamentals/enums.html"
 exchange_ids = {
     'NYS': "New York Stock Exchange (NYSE)",
     'NAS': "NASDAQ", 
@@ -135,7 +136,7 @@ for id, e in exchange_ids.items():
 """
 html += "</tbody></table>"
 
-with open("Resources/datasets/data-point-attributes/fundamentals/enums.html", "w", encoding="utf-8") as text:
+with open(destination, "w", encoding="utf-8") as text:
     text.write("""<style>
 #enum-code-table td:nth-child(2), 
 #enum-code-table th:nth-child(2) {

@@ -26,7 +26,7 @@ for language, cmd in CMD.items():
         maxlen = max(maxlen, len(key))
         libraries[key] = value
 
-    filename = 'Resources\libraries\supported-libraries.php'
+    filename = 'Resources/libraries/supported-libraries.php'
 
     with open(filename, mode='a', encoding='utf-8') as fp:
         fp.write(f'<pre class="{language}">')
