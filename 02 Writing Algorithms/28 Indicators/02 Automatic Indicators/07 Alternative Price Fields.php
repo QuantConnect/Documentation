@@ -13,3 +13,15 @@ _rsi = RSI("SPY", 10,  MovingAverageType.Simple, Resolution.Daily, Field.Open);<
 <?php 
 echo file_get_contents(DOCS_RESOURCES."/enumerations/field.html"); 
 ?>
+
+<p class='csharp'>To create a custom <code>selector</code>, define a function that calculates the value.</p>
+
+<div class='csharp'>
+    <div class="section-example-container">
+        <pre class="csharp">_rsi = RSI("SPY", 10,  MovingAverageType.Simple, Resolution.Daily, x =>
+{
+    var bar = x as IBaseDataBar;
+    return (bar.Low + bar.High) / 2;
+});</pre>
+    </div>
+</div>
