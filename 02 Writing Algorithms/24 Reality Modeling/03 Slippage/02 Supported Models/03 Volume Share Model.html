@@ -1,4 +1,45 @@
-<div>-The VolumeShareSlippageModel calculates the slippage of each order by multiplying the price impact constant by the square of the ratio of the order to the total volume. <br></div><div>-CFD, Forex, and Crypto data often doesn't report volume. If there is no volume reported for these asset classes, the model returns zero slippage</div><div>-If the bar volume is zero, the slippage percent is volumeLimit^2 * priceImpact.</div><div>-If the bar volume &gt; 0, the slippage percent is <br></div><div>&nbsp;&nbsp;&nbsp; min(abs(orderQuantity) / barVolume, volumeLimit)^2 * priceImpact<br></div><div class="section-example-container">
-<pre class="csharp">new VolumeShareSlippageModel(volumeLimit, priceImpact);</pre>
-<pre class="python">VolumeShareSlippageModel(volume_limit, price_impact)</pre>
+<p>The <code>VolumeShareSlippageModel</code> calculates the slippage of each order by multiplying the price impact constant by the square of the ratio of the order to the total volume. If the volume of the current bar is zero, the slippage percent is</p>
+
+<img style="max-height: 30px" src="https://cdn.quantconnect.com/i/tu/volume-share-case-1.png" class="docs-image">
+
+<p>where <span class="latex-variable">volumeLimit</span> and <span class="latex-variable">priceImpact</span> are custom input variables. If the volume of the current bar is positive, the slippage percent is</p>
+
+<img style="max-height: 58px" src="https://cdn.quantconnect.com/i/tu/volume-share-case-2.png" class="docs-image">
+
+<p>where <span class="latex-variable">orderQuantity</span> is the quantity of the order and <span class="latex-variable">barVolume</span> is the volume of the current bar. If the security subscription provides <code>TradeBar</code> data, the <span class="latex-variable">barVolume</span> is the volume of the current bar. If the security subscription provides <code>QuoteBar</code> data, the <span class="latex-variable">barVolume</span> is the bid or ask size of the current bar. CFD, Forex, and Crypto data often doesn't include volume. If there is no volume reported for these asset classes, the model returns zero slippage.</p>
+
+<div class="section-example-container">
+<pre class="csharp">security.SetSlippageModel(new VolumeShareSlippageModel());</pre>
+<pre class="python">security.SetSlippageModel(VolumeShareSlippageModel())</pre>
 </div>
+
+
+<p>The following table describes the arguments the model accepts:</p>
+
+<table class="qc-table table">
+    <thead>
+        <tr>
+            <th>Argument</th>
+            <th>Data Type</th>
+            <th>Description</th>
+            <th>Default Value</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><code>volumeLimit</code></td>
+	    <td><code>decimal</code></td>
+            <td></td>
+            <td>0.025</td>
+        </tr>
+        <tr>
+            <td><code>priceImpact</code></td>
+	    <td><code>decimal</code></td>
+            <td>Defines how large of an impact the order will have on the price calculation</td>
+            <td>0.1</td>
+        </tr>
+    </tbody>
+</table>
+
+
+<p>To view the implementation of this model, see the <a target="_blank" rel="nofollow" href="https://github.com/QuantConnect/Lean/blob/master/Common/Orders/Slippage/VolumeShareSlippageModel.cs">LEAN GitHub repository</a>.</p>
