@@ -1,31 +1,66 @@
-<p>The <code>ImmediateFillModel</code> fills trades completely and immediately, The fill price of each order depends on the order type.</p>
+<p>The <code>ImmediateFillModel</code> fills trades completely and immediately, The fill logic of each order depends on the order type, the data format of the security subscription, and the order direction.</p>
 
 <h4>Market Orders</h4>
 
-<p>The model determines the fill price of market orders based on the data format of the security subscription. The following table describes the fill logic of each data format:<br></p>
-
-
+<p>The following table describes the fill price of market orders for each data format and order direction:<br></p>
 
 <table class="qc-table table">
     <thead>
         <tr>
             <th>Data Format</th>
-            <th>Fill Logic</th>
+            <th><code>TickType</code></th>
+            <th>Order Direction</th>
+            <th>Fill Price</th>
         </tr>
     </thead>
     <tbody>
         <tr>
             <td><code>Tick</code></td>
-            <td>If the most recent tick is of type <code>TickType.Quote</code>, buy orders fill at the ask price and sell orders fill at the bid price.<br>
-                 If the most recent tick is of type <code>TickType.Trade</code>, orders fill at the last trade price.</td>
+            <td><code>Quote</code></td>
+            <td>Buy</td>
+            <td>quote price + slippage</td>
+        </tr>
+        <tr>
+            <td><code>Tick</code></td>
+            <td><code>Quote</code></td>
+            <td>Sell</td>
+            <td>quote price - slippage</td>
+        </tr>
+        <tr>
+            <td><code>Tick</code></td>
+            <td><code>Trade</code></td>
+            <td>Buy</td>
+            <td>trade price + slippage</td>
+        </tr>
+        <tr>
+            <td><code>Tick</code></td>
+            <td><code>Trade</code></td>
+            <td>Sell</td>
+            <td>trade price - slippage</td>
         </tr>
         <tr>
             <td><code>QuoteBar</code></td>
-            <td>Buy orders fill at the most recent closing ask price.<br>Sell orders fill at the most recent closing bid price. <br></td>
+            <td><br></td>
+            <td>Buy</td>
+            <td>ask close price + slippage</td>
+        </tr>
+        <tr>
+            <td><code>QuoteBar</code></td>
+            <td><br></td>
+            <td>Sell</td>
+            <td>bid close price - slippage</td>
         </tr>
         <tr>
             <td><code>TradeBar</code></td>
-            <td>Orders fill at the most recent closing price.<br></td>
+            <td><br></td>
+            <td>Buy</td>
+            <td>close price + slippage</td>
+        </tr>
+        <tr>
+            <td><code>TradeBar</code></td>
+            <td><br></td>
+            <td>Sell</td>
+            <td>close price - slippage</td>
         </tr>
     </tbody>
 </table>
@@ -35,7 +70,7 @@
 
 <h4>Limit Orders</h4>
 
-<p>The model determines the fill logic of limit orders based on the data format of the security subscription. The following table describes the fill logic of each data format:<br></p>
+<p>The following table describes the fill logic of limit orders for each data format and order direction:<br></p>
 
 
 
@@ -114,7 +149,7 @@
 
 <h4>Limit if Touched Orders</h4>
 
-<p>The model converts a limit if touched order to a limit order when the trigger condition is met. The trigger condition depends on the data format of the security subscription and the order side. The following table describes the trigger logic of each data format and order side:</p>
+<p>The model converts a limit if touched order to a limit order when the trigger condition is met. The following table describes the trigger condition of limit if touched orders for each data format and order direction:</p>
 
 
 
@@ -168,15 +203,13 @@
 </table>
 
 
-<p>After the limit if touched order triggers, to fill the order, the model checks the bid price for buy orders and the ask price for sell orders.</p>
+<p>Once the limit if touched order triggers, to fill the order, the model checks the bid price for buy orders and the ask price for sell orders.</p>
 
 <p>To get the bid price, the model uses the following procedure:</p>
 
 <ol>
     <li>If the subscription provides <code>Tick</code> data and the most recent batch of ticks contains a buy quote, use the bid price.</li>
     <li>If the subscription provides <code>QuoteBar</code> data, use the closing bid price of the most recent <code>QuoteBar</code>.</li>
-    <li>If the subscription provides <code>Tick</code> data and the most recent batch of ticks contains a tick of type <code>TickType.Trade</code>, use the last trade price.</li>
-    <li>If the subscription provides <code>TradeBar</code> data, use the closing bid price of the most recent <code>QuoteBar</code>.</li>
 </ol>
 
 <p>To get the ask price, the model uses the following procedure:</p>
@@ -184,9 +217,14 @@
 <ol>
     <li>If the subscription provides <code>Tick</code> data and the most recent batch of ticks contains an sell quote, use the ask price.</li>
     <li>If the subscription provides <code>QuoteBar</code> data, use the closing ask price of the most recent <code>QuoteBar</code>.</li>
+</ol>
+
+<p>If neither of the preceding procedures yield a result, the model uses the following procedure to get the bid or ask price:</p>
+<ol>
     <li>If the subscription provides <code>Tick</code> data and the most recent batch of ticks contains a tick of type <code>TickType.Trade</code>, use the last trade price.</li>
     <li>If the subscription provides <code>TradeBar</code> data, use the closing bid price of the most recent <code>QuoteBar</code>.</li>
 </ol>
+
 
 <p>Buy orders fill when the bid price &lt;= limit price and sell orders fill when the ask price &gt;= limit price. The order fills at the limit price. The model won't trigger or fill limit if touched orders with stale data.<br></p>
 
@@ -196,7 +234,7 @@
 
 
 
-<p>The model determines the fill logic of stop market orders based on the data format of the security subscription and the order side. The following table describes the fill logic of each data format and order side:<br></p>
+<p>The following table describes the fill logic of stop market orders for each data format and order direction. Once the stop condition is met, the model fills the orders and sets the fill price.<br></p>
 
 
 
@@ -274,7 +312,7 @@
 <h4>Stop Limit Orders</h4>
 
 
-<p>The model determines the fill logic of stop market orders based on the data format of the security subscription and the order side. The following table describes the fill logic of each data format and order side:<br></p>
+<p>The following table describes the fill logic of stop limit orders for each data format and order direction. Once the stop condition is met, the model starts to check the fill condition. Once the fill condition is met, the model fills the orders and sets the fill price.<br></p>
 
 
 
@@ -365,7 +403,137 @@ limit price)</td>
 
 <h4>Market on Open Orders</h4>
 
-<p>The model fills market on open orders with the 
+<p>The following table describes the fill price of market on open orders for each data format and order side.<br></p>
 
-</p><div><div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - Won't fill on stale data</div><div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - Won't fill during pre-market<br></div><div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - Filled at the open price (QuoteBar if it's available, otherwise it's the TradeBar)</div></div>
-<h4>Market on Closed Orders</h4><div><div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - Won't fill on stale data</div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - Filled at the market close (QuoteBar if it's available, otherwise it's the TradeBar)</div><div><br></div>
+
+
+<table class="qc-table table">
+    <thead>
+        <tr>
+            <th>Data Format</th>
+            <th><code>TickType</code></th>
+            <th>Order Direction</th>
+            <th>Fill Price</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><code>Tick</code></td>
+            <td><code>Quote</code></td>
+            <td>Buy</td>
+            <td>quote price + slippage</td>
+        </tr>
+        <tr>
+            <td><code>Tick</code></td>
+            <td><code>Quote</code></td>
+            <td>Sell</td>
+            <td>quote price - slippage</td>
+        </tr>
+        <tr>
+            <td><code>Tick</code></td>
+            <td><code>Trade</code></td>
+            <td>Buy</td>
+            <td>trade price + slippage</td>
+        </tr>
+        <tr>
+            <td><code>Tick</code></td>
+            <td><code>Trade</code></td>
+            <td>Sell</td>
+            <td>trade price - slippage</td>
+        </tr>
+        <tr>
+            <td><code>QuoteBar</code></td>
+            <td><br></td>
+            <td>Buy</td>
+            <td>ask open price + slippage</td>
+        </tr>
+        <tr>
+            <td><code>QuoteBar</code></td>
+            <td><br></td>
+            <td>Sell</td>
+            <td>bid open price - slippage</td>
+        </tr>
+        <tr>
+            <td><code>TradeBar</code></td>
+            <td><br></td>
+            <td>Buy</td>
+            <td>open price + slippage</td>
+        </tr>
+        <tr>
+            <td><code>TradeBar</code></td>
+            <td><br></td>
+            <td>Sell</td>
+            <td>open price - slippage</td>
+        </tr>
+    </tbody>
+</table>
+
+<p>The model won't fill market on open orders during pre-market hours.</p>
+
+
+<h4>Market on Closed Orders</h4>
+
+<p>The following table describes the fill price of market on close orders for each data format and order side:<br></p>
+
+
+
+<table class="qc-table table">
+    <thead>
+        <tr>
+            <th>Data Format</th>
+            <th><code>TickType</code></th>
+            <th>Order Direction</th>
+            <th>Fill Price</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><code>Tick</code></td>
+            <td><code>Quote</code></td>
+            <td>Buy</td>
+            <td>quote price + slippage</td>
+        </tr>
+        <tr>
+            <td><code>Tick</code></td>
+            <td><code>Quote</code></td>
+            <td>Sell</td>
+            <td>quote price - slippage</td>
+        </tr>
+        <tr>
+            <td><code>Tick</code></td>
+            <td><code>Trade</code></td>
+            <td>Buy</td>
+            <td>trade price + slippage</td>
+        </tr>
+        <tr>
+            <td><code>Tick</code></td>
+            <td><code>Trade</code></td>
+            <td>Sell</td>
+            <td>trade price - slippage</td>
+        </tr>
+        <tr>
+            <td><code>QuoteBar</code></td>
+            <td><br></td>
+            <td>Buy</td>
+            <td>ask close price + slippage</td>
+        </tr>
+        <tr>
+            <td><code>QuoteBar</code></td>
+            <td><br></td>
+            <td>Sell</td>
+            <td>bid close price - slippage</td>
+        </tr>
+        <tr>
+            <td><code>TradeBar</code></td>
+            <td><br></td>
+            <td>Buy</td>
+            <td>close price + slippage</td>
+        </tr>
+        <tr>
+            <td><code>TradeBar</code></td>
+            <td><br></td>
+            <td>Sell</td>
+            <td>close price - slippage</td>
+        </tr>
+    </tbody>
+</table>
