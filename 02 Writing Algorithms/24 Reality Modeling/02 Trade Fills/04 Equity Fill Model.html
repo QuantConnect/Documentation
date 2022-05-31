@@ -107,7 +107,114 @@
  - Same as ImmediateFillModel</p>
 
 <h4>Market on Open Orders</h4>
-<p>a</p><div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - Tick data: wait for up to 1 minute to get the opening auction price, otherwise use the first trade price <br></div><div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - TradeBar data: Use opening price</div><div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - QuoteBar data: Use best effort bid/ask price <br></div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - Checks Tick =&gt; TradeBar =&gt; QuoteBar in order<p></p>
+<p>The following table describes the fill price of market on open orders for each data format and order direction:<br></p>
+
+
+<table class="qc-table table">
+    <thead>
+        <tr>
+            <th>Data Format</th>
+            <th>Order Direction</th>
+            <th>Fill Price<br></th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><code>Tick</code></td>
+            <td>Buy</td>
+            <td>If the model receives the official opening auction price within one minute, the order fills at is official open price + slippage. After one minute, the order fills at the most recent trade price + slippage. If the security doesn't trade within the first two minutes, the order fills at the best effort ask price + slippage.</td>
+        </tr>
+        <tr>
+            <td><code>Tick</code></td>
+            <td>Sell</td>
+            <td>If the model receives the official opening auction price within one minute, the order fills at the official open price - slippage. After one minute, the order fills at the most recent trade price - slippage. If the security doesn't trade within the first two minutes, the order fills at the best effort bid price - slippage.</td>
+        </tr>
+        <tr>
+            <td><code>TradeBar</code></td>
+            <td>Buy</td>
+            <td>open price + slippage<br></td>
+        </tr>
+        <tr>
+            <td><code>TradeBar</code></td>
+            <td>Sell</td>
+            <td>open price - slippage<br></td>
+        </tr>
+        <tr>
+            <td><code>QuoteBar</code></td>
+            <td>Buy</td>
+            <td>best effort ask price + slippage<br></td>
+        </tr>
+        <tr>
+            <td><code>QuoteBar</code></td>
+            <td>Sell</td>
+            <td>best effort bid price - slippage<br></td>
+        </tr>
+    </tbody>
+</table>
+
+
+<p>The model checks the data format in the following order:</p>
+
+<ol>
+    <li><code>Tick</code></li>
+    <li><code>TradeBar</code></li>
+    <li><code>QuoteBar</code></li>
+</ol>
+
+
 
 <h4>Market on Close Orders</h4>
-<p>a</p><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - Tick data: wait for up to 1 minute to get the closing auction price, otherwise use the last trade price</p><div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - TradeBar data: Use closing price</div><div>&nbsp; &nbsp; &nbsp; &nbsp;&nbsp; - QuoteBar data: Use best effort bid/ask price <br></div><div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - Checks Tick =&gt; TradeBar =&gt; QuoteBar in order</div><div><br></div><br>
+
+<p>The following table describes the fill price of market on close orders for each data format and order direction:<br></p>
+
+
+<table class="qc-table table">
+    <thead>
+        <tr>
+            <th>Data Format</th>
+            <th>Order Direction</th>
+            <th>Fill Price<br></th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><code>Tick</code></td>
+            <td>Buy</td>
+            <td>If the model receives the official opening auction price within one minute after the close, the order fills at is official close price + slippage. After one minute, the order fills at the most recent trade price + slippage. If the security doesn't trade within the first two minutes, the order fills at the best effort ask price + slippage.</td>
+        </tr>
+        <tr>
+            <td><code>Tick</code></td>
+            <td>Sell</td>
+            <td>If the model receives the official opening auction price within one minute after the close, the order fills at the official close price - slippage. After one minute, the order fills at the most recent trade price - slippage. If the security doesn't trade within the first two minutes after the close, the order fills at the best effort bid price - slippage.</td>
+        </tr>
+        <tr>
+            <td><code>TradeBar</code></td>
+            <td>Buy</td>
+            <td>open price + slippage<br></td>
+        </tr>
+        <tr>
+            <td><code>TradeBar</code></td>
+            <td>Sell</td>
+            <td>open price - slippage<br></td>
+        </tr>
+        <tr>
+            <td><code>QuoteBar</code></td>
+            <td>Buy</td>
+            <td>best effort ask price + slippage<br></td>
+        </tr>
+        <tr>
+            <td><code>QuoteBar</code></td>
+            <td>Sell</td>
+            <td>best effort bid price - slippage<br></td>
+        </tr>
+    </tbody>
+</table>
+
+
+<p>The model checks the data format in the following order:</p>
+
+<ol>
+    <li><code>Tick</code></li>
+    <li><code>TradeBar</code></li>
+    <li><code>QuoteBar</code></li>
+</ol>
