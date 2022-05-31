@@ -11,7 +11,7 @@
 <p>To get the ask price, the model uses the following procedure:</p>
 
 <ol>
-    <li>If the subscription provides <code>Tick</code> data and the most recent batch of ticks contains an sell quote, use the ask price of the most recent quote tick.</li>
+    <li>If the subscription provides <code>Tick</code> data and the most recent batch of ticks contains a sell quote, use the ask price of the most recent quote tick.</li>
     <li>If the subscription provides <code>QuoteBar</code> data, use the closing ask price of the most recent <code>QuoteBar</code>.</li>
 </ol>
 
