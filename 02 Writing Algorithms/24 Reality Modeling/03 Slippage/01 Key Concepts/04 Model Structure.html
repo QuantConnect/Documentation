@@ -1,44 +1,15 @@
-<meta name="tag" content="trading and orders">
-<meta name="tag" content="transaction fees and slippage">
-<meta name="tag" content="custom slippage models ">
-
-<p>
-	Slippage models implement the $[ISlippageModel,T:QuantConnect.Orders.Slippage.ISlippageModel] interface. Advanced users may wish to implement their own volatility based slippage model - increasing the accuracy of your backtests in volatile markets.
-</p>
-
+<p>Slippage models should implement the <code>ISlippageModel</code> interface. Extensions of the <code>ISlippageModel</code> interface must implement the <code>GetSlippageApproximation</code> method which receives a <code>Security</code> and <code>Order</code> object and returns a slippage quantity.</p>
 
 <div class="section-example-container">
-<pre class="csharp">// Assigning securities custom slippage models:
-Securities["SPY"].SetSlippageModel(new CustomSlippageModel(this));
-
-// Custom slippage implementation
-public class CustomSlippageModel : ISlippageModel {
-    private readonly QCAlgorithm _algorithm;
-
-    public CustomSlippageModel(QCAlgorithm algorithm) {
-        _algorithm = algorithm;
-    }
+<pre class="csharp">public class MySlippageModel : ISlippageModel {
 
     public decimal GetSlippageApproximation(Security asset, Order order) {
-        // custom slippage math
-        var slippage = asset.Price*0.0001m*(decimal) Math.Log10(2*(double) order.AbsoluteQuantity);
-        _algorithm.Log("CustomSlippageModel: " + slippage);
-        return slippage;
+        return asset.Price*0.0001m*(decimal) Math.Log10(2*(double) order.AbsoluteQuantity);
     }
 }
 </pre>
-<pre class="python"># Assigning securities custom slippage models:
-self.Securities["SPY"].SetSlippageModel(CustomSlippageModel(self))
-
-# Custom slippage implementation
-class CustomSlippageModel:
-    def __init__(self, algorithm):
-        self.algorithm = algorithm
+<pre class="python">class MySlippageModel:
 
     def GetSlippageApproximation(self, asset, order):
-        # custom slippage math
-        slippage = asset.Price * d.Decimal(0.0001 * np.log10(2*float(order.AbsoluteQuantity)))
-        self.algorithm.Log("CustomSlippageModel: " + str(slippage))
-        return slippage
-</pre>
+        return asset.Price * d.Decimal(0.0001 * np.log10(2*float(order.AbsoluteQuantity)))</pre>
 </div>
