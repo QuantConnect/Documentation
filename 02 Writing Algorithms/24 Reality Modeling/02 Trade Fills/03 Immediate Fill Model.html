@@ -193,7 +193,10 @@
 
 <h4>Stop Market Orders</h4>
 
-<p>The model determines the fill price of market orders based on the data format of the security subscription. The following table describes the fill logic of each data format:<br></p>
+
+
+
+<p>The model determines the fill logic of stop market orders based on the data format of the security subscription and the order side. The following table describes the fill logic of each data format and order side:<br></p>
 
 
 
@@ -201,44 +204,73 @@
     <thead>
         <tr>
             <th>Data Format</th>
-            <th>Fill Logic</th>
+            <th><code>TickType</code></th>
+            <th>Order Side
+            </th><th>Fill Condition</th>
+            <th>Fill Price</th>
         </tr>
     </thead>
     <tbody>
         <tr>
             <td><code>Tick</code></td>
-            <td>If the most recent tick is of type <code>TickType.Quote</code>, buy orders fill at the ask price and sell orders fill at the bid price.<br>
-                 If the most recent tick is of type <code>TickType.Trade</code>, orders fill at the last trade price.</td>
+            <td><code>Quote</code></td>
+            <td>Buy</td>
+            <td>quote price &gt; stop price</td>
+            <td>max(stop price, quote price + slippage)</td>
+        </tr>
+        <tr>
+            <td><code>Tick</code></td>
+            <td><code>Quote</code></td>
+            <td>Sell</td>
+            <td>quote price &lt; stop price</td>
+            <td>min(stop price, quote price - slippage)</td>
+        </tr>
+        <tr>
+            <td><code>Tick</code></td>
+            <td><code>Trade</code></td>
+            <td>Buy</td>
+            <td>trade price &gt; stop price</td>
+            <td>max(stop price, last trade price + slippage)</td>
+        </tr>
+        <tr>
+            <td><code>Tick</code></td>
+            <td><code>Trade</code></td>
+            <td>Sell</td>
+            <td>trade price &lt; stop price</td>
+            <td>min(stop price, last trade price - slippage)</td>
         </tr>
         <tr>
             <td><code>QuoteBar</code></td>
-            <td>Buy orders fill at the most recent closing ask price.<br>Sell orders fill at the most recent closing bid price. <br></td>
+            <td><br></td>
+            <td>Buy</td>
+            <td>ask high price &gt; stop price</td>
+            <td>max(stop price, ask close price + slippage)</td>
+        </tr>
+        <tr>
+            <td><code>QuoteBar</code></td>
+            <td><br></td>
+            <td>Sell</td>
+            <td>bid low price &lt; stop price</td>
+            <td>min(stop price, bid close price - slippage)</td>
         </tr>
         <tr>
             <td><code>TradeBar</code></td>
-            <td>Orders fill at the most recent closing price.<br></td>
+            <td><br></td>
+            <td>Buy</td>
+            <td>high price &gt; stop price</td>
+            <td>max(stop price, close price + slippage)</td>
+        </tr>
+        <tr>
+            <td><code>TradeBar</code></td>
+            <td><br></td>
+            <td>Sell</td>
+            <td>low price &lt; stop price</td>
+            <td>min(stop price, close price - slippage)</td>
         </tr>
     </tbody>
 </table>
 
-
-<div><div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - Only stop/filled if exchange is open</div><div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - Won't stop/fill on stale data<br></div><div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - Tick data</div><div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - If the last tick is a quote<br></div><div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
- - If buying, converts to a market order when quotePrice &gt; stopPrice.
- Fills at max(stopPrice, quotePrice + slippage)</div><div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
- - If selling, converts to a market order when quotePrice &lt; 
-stopPrice. Fills at min(stopPrice, quotePrice - slippage)</div><div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - If the last tick is a trade tick</div><div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
- - If buying, converts to a market order when lastTradePrice &gt; 
-stopPrice. Fills at max(stopPrice, lastTradePrice + slippage)</div><div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
- - If selling, converts to a market order when lastTradePrice &lt; 
-stopPrice. Fills at min(stopPrice, lastTradePrice - slippage)</div><div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - QuoteBar data</div><div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
- - If buying, converts to a market order when askHighPrice &gt; 
-stopPrice. Fills at max(stopPrice, askClosePrice + slippage)</div><div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
- - If selling, converts to a market order when bidLowPrice &lt; 
-stopPrice. Fills at min(stopPrice, bidClosePrice - slippage)</div><div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - TradeBar data</div><div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
- - If buying, converts to a market order when highPrice &gt; stopPrice. 
-Fills at max(stopPrice, closePrice + slippage)</div><div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -
- If selling, converts to a market order when lowPrice &lt; stopPrice. 
-Fills at min(stopPrice, closePrice - slippage)</div></div>
+<p>The model only fills stop market orders when the exchange is open. The model won't fill stop market orders with stale data.</p>
 <h4>Stop Limit Orders</h4>
 
 <p>The model determines the fill price of market orders based on the data format of the security subscription. The following table describes the fill logic of each data format:<br></p>
