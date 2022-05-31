@@ -28,7 +28,7 @@
 <p>The model fills buy market orders at the best effort ask price and fills sell market orders at the best effort bid price. The model only fills market orders during regular trading hours.</p><p></p>
 
 <h4>Limit Orders</h4>
-<p>a</p><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - Same as ImmediateFillModel</p>
+<?php echo file_get_contents(DOCS_RESOURCES."/reality-modeling/trade-fills/limit-orders.html"); ?>
 
 <h4>Limit if Touched Orders</h4>
 
@@ -100,11 +100,10 @@
 </table>The model won't trigger or fill limit if touched orders with stale data.<p></p>
 
 <h4>Stop Market Orders</h4>
-<p>a</p><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - Same as ImmediateFillModel</p>
+<?php echo file_get_contents(DOCS_RESOURCES."/reality-modeling/trade-fills/stop-market-orders.html"); ?>
 
 <h4>Stop Limit Orders</h4>
-<p>a</p><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
- - Same as ImmediateFillModel</p>
+<?php echo file_get_contents(DOCS_RESOURCES."/reality-modeling/trade-fills/stop-limit-orders.html"); ?>
 
 <h4>Market on Open Orders</h4>
 <p>The following table describes the fill price of market on open orders for each data format and order direction:<br></p>
