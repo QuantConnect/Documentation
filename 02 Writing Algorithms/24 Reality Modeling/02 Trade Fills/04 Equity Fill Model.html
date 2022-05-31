@@ -1,3 +1,113 @@
+<p>If you trade Equities with the <code>DefaultBrokerageModel</code>, the <code>EquityFillModel</code> is the default fill model. This fill model fills trades completely and immediately. The fill logic of each order depends on the order type, the
+ data format of the security subscription, and the order direction. Sometimes, this model uses a best effort bid or ask price to fill some orders.</p>
 
-<div>- If you are trading Equities, the default model to use for filling trades in backtests is the EquityFillModel</div><div>- The EquityFillModel fills orders at the following prices (before applying slippage) and assumes the trades fill completley</div><div><div>&nbsp;&nbsp;&nbsp; - Market orders</div><div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - Only fills during regular trading hours</div><div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - Can fill on stale data</div><div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - If buying, fills at best effort ask price</div><div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - To get best effort ask price:</div><div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (1) If tick data, check the askPrice of the most recent quote tick in the slice</div><div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (2) If QuoteBar data, check the closing ask price</div><div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (3) If tick data, check the lastTrade price</div><div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (4) If TradeBar data, check the close price of the current bar</div><div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - If selling, fills at the best effort bid price</div><div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - To get best effort bid price:</div><div><div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (1) If tick data, check the bidPrice of the most recent quote tick in the slice</div><div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (2) If QuoteBar data, check the closing bid price</div><div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (3) If tick data, check the lastTrade price</div><div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (4) If TradeBar data, check the close price of the current bar</div></div><div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <br></div><div><div><br></div><div>&nbsp;&nbsp;&nbsp;&nbsp; - Limit orders</div><div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - Same as ImmediateFillModel<br></div><div><div><br></div><div>&nbsp;&nbsp;&nbsp;&nbsp; - LimitIfTouched orders</div><div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - Can trigger/fill during pre/post market</div><div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - Wont fill on stale data</div><div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - Convert to limit order when...</div><div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - Tick data</div><div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - If buying, when lastTradePrice &lt;= triggerPrice</div><div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - If selling, when lastTradePrice &gt;= triggerPrice</div><div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - TradeBar data</div><div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - If buying, when lowPrice &lt;= triggerPrice</div><div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - if selling, when highPrice &gt;= triggerPrice</div><div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - Fill limit order when...</div><div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - If buying, when bestEffortAsk &lt;= limitPrice, at min(bestEffortAsk, limitPrice)</div><div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - if selling, when bestEffortBid &gt;= limitPrice, at max(bestEffortBid, limitPrice)<br></div></div></div><div><br></div><div>&nbsp;&nbsp;&nbsp; - StopMarket orders</div><div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - Same as ImmediateFillModel<br></div><div><br></div><div>&nbsp;&nbsp;&nbsp; - StopLimit orders</div><div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
- - Same as ImmediateFillModel</div></div><div><div><br></div><div>&nbsp;&nbsp;&nbsp;&nbsp; - MOO</div><div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - Tick data: wait for up to 1 minute to get the opening auction price, otherwise use the first trade price <br></div><div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - TradeBar data: Use opening price</div><div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - QuoteBar data: Use best effort bid/ask price <br></div><div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - Checks Tick =&gt; TradeBar =&gt; QuoteBar in order<br></div><div><br></div><div>&nbsp;&nbsp;&nbsp;&nbsp; - MOC</div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - Tick data: wait for up to 1 minute to get the closing auction price, otherwise use the last trade price</div><div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - TradeBar data: Use closing price</div><div>&nbsp; &nbsp; &nbsp; &nbsp;&nbsp; - QuoteBar data: Use best effort bid/ask price <br></div><div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - Checks Tick =&gt; TradeBar =&gt; QuoteBar in order</div>
+<p>To get the bid price, the model uses the following procedure:</p>
+
+<ol>
+    <li>If the subscription provides <code>Tick</code> data and the most recent batch of ticks contains a buy quote, use the bid price of the most recent quote tick.</li>
+    <li>If the subscription provides <code>QuoteBar</code> data, use the closing bid price of the most recent <code>QuoteBar</code>.</li>
+</ol>
+
+<p>To get the ask price, the model uses the following procedure:</p>
+
+<ol>
+    <li>If the subscription provides <code>Tick</code> data and the most recent batch of ticks contains an sell quote, use the ask price of the most recent quote tick.</li>
+    <li>If the subscription provides <code>QuoteBar</code> data, use the closing ask price of the most recent <code>QuoteBar</code>.</li>
+</ol>
+
+<p>If neither of the preceding procedures yield a result, the model uses the following procedure to get the bid or ask price:</p>
+<ol>
+    <li>If the subscription provides <code>Tick</code> data and the most recent batch of ticks contains a tick of type <code>TickType.Trade</code>, use the last trade price.</li>
+    <li>If the subscription provides <code>TradeBar</code> data, use the closing bid price of the most recent <code>QuoteBar</code>.</li>
+</ol>
+
+
+<p>To view the implementation of this model, see the <a target="_blank" rel="nofollow" href="https://github.com/QuantConnect/Lean/blob/master/Common/Orders/Fills/EquityFillModel.cs">LEAN GitHub repository</a>.</p>
+
+<h4>Market Orders</h4>
+<p>The model fills buy market orders at the best effort ask price and fills sell market orders at the best effort bid price. The model only fills market orders during regular trading hours.</p><p></p>
+
+<h4>Limit Orders</h4>
+<p>a</p><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - Same as ImmediateFillModel</p>
+
+<h4>Limit if Touched Orders</h4>
+
+
+<p>The model converts a limit if touched order to a limit order when the trigger condition is met. The following table describes the trigger condition of limit if touched orders for each data format and order direction:</p>
+
+
+
+<table class="qc-table table">
+    <thead>
+        <tr>
+            <th>Data Format</th>
+            <th><code>TickType</code></th>
+            <th>Order Direction</th>
+            <th>Trigger Condition</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><code>Tick</code></td>
+            <td><code>Quote</code></td>
+            <td>Buy</td>
+            <td>trade price &lt;= trigger price<br></td>
+        </tr>
+        <tr>
+            <td><code>Tick</code></td>
+            <td><code>Quote</code></td>
+            <td>Sell</td>
+            <td>trade price &gt;= trigger price</td>
+        </tr>
+        <tr>
+            <td><code>TradeBar</code></td>
+            <td><br></td>
+            <td>Buy</td>
+            <td>low price &lt;= trigger price</td>
+        </tr>
+        <tr>
+            <td><code>TradeBar</code></td>
+            <td><br></td>
+            <td>Sell</td>
+            <td>high price &gt;= trigger price</td>
+        </tr>
+    </tbody>
+</table>
+
+
+<p>Once the limit if touched order triggers, to fill the order, the model checks the fill condition. The following table describes the fill condition and price of each order direction.<br></p>
+
+<table class="qc-table table">
+    <thead>
+        <tr>
+            <th>Order Direction</th>
+            <th>Fill Condition</th>
+            <th>Fill Price</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>Buy</td>
+            <td>best effort ask price &lt;= limit price<br></td>
+            <td>min(best effort ask price, limit price)</td>
+        </tr>
+        <tr>
+            <td>Sell</td>
+            <td>best effort bid price &gt;= limit price<br></td>
+            <td>max(best effort bid price, limit price)</td>
+        </tr>
+    </tbody>
+</table>The model won't trigger or fill limit if touched orders with stale data.<p></p>
+
+<h4>Stop Market Orders</h4>
+<p>a</p><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - Same as ImmediateFillModel</p>
+
+<h4>Stop Limit Orders</h4>
+<p>a</p><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+ - Same as ImmediateFillModel</p>
+
+<h4>Market on Open Orders</h4>
+<p>a</p><div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - Tick data: wait for up to 1 minute to get the opening auction price, otherwise use the first trade price <br></div><div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - TradeBar data: Use opening price</div><div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - QuoteBar data: Use best effort bid/ask price <br></div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - Checks Tick =&gt; TradeBar =&gt; QuoteBar in order<p></p>
+
+<h4>Market on Close Orders</h4>
+<p>a</p><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - Tick data: wait for up to 1 minute to get the closing auction price, otherwise use the last trade price</p><div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - TradeBar data: Use closing price</div><div>&nbsp; &nbsp; &nbsp; &nbsp;&nbsp; - QuoteBar data: Use best effort bid/ask price <br></div><div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - Checks Tick =&gt; TradeBar =&gt; QuoteBar in order</div><div><br></div><br>
