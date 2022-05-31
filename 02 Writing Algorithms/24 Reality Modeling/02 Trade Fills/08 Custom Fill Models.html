@@ -1,15 +1,5 @@
-<meta name="tag" content="trading and orders">
-<meta name="tag" content="brokerage models">
-<meta name="tag" content="transaction fees fills buying power slippage">
-<meta name="tag" content="custom transaction models">
-<meta name="tag" content="order events">
-
-<p>
-	The Fill Models implement the $[IFillModel,T:QuantConnect.Orders.Fills.IFillModel] interface. If you wish to implement your own fill model, you can start with the $[FillModel,T:QuantConnect.Orders.Fills.FillModel] and override methods you wish to change.
-	Each supported order type is passed through a dedicated method and 
-returns an $[OrderEvent,T:QuantConnect.Orders.OrderEvent] object. 
-OrderEvents are used to carry information about order partial fills or 
-errors. <br></p>
+<p>Fill Models should extend the <code>FillModel</code> class. To implement your own fill model, override the methods in the <code>FillModel</code> class you wish to change.
+	The class has a dedicated method for each order type. The method receives a <code>Security</code> and <code>Order</code> object and returns an <code>OrderEvent</code> object that contains information about the order status, fill quantity, and errors. The following example demonstrates a fill model implementation that supports partial fills:<br></p>
 <div class="section-example-container">
 <pre class="csharp">// Custom fill model implementation stub
 public class CustomFillModel : FillModel {
