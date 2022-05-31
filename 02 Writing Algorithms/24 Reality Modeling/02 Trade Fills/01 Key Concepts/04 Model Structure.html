@@ -1,64 +1,58 @@
 <p>Fill Models should extend the <code>FillModel</code> class. To implement your own fill model, override the methods in the <code>FillModel</code> class you wish to change.
-	The class has a dedicated method for each order type. The method receives a <code>Security</code> and <code>Order</code> object and returns an <code>OrderEvent</code> object that contains information about the order status, fill quantity, and errors. The following example demonstrates a fill model implementation that supports partial fills:<br></p>
+	The class has a dedicated method for each order type. The method receives a <code>Security</code> and <code>Order</code> object and returns an <code>OrderEvent</code> object that contains information about the order status, fill quantity, and errors. <br></p>
 <div class="section-example-container">
-<pre class="csharp">// Custom fill model implementation stub
-public class CustomFillModel : FillModel {
-    private readonly QCAlgorithm _algorithm;
-    private readonly Random _random = new Random(387510346); // seed it for reproducibility
-    private readonly Dictionary&lt;long, decimal&gt; _absoluteRemainingByOrderId = new Dictionary&lt;long, decimal&gt;();
-
-    public CustomFillModel(QCAlgorithm algorithm) {
-        _algorithm = algorithm;
-    }
+<pre class="csharp">public class MyFillModel : FillModel {
 
     public override OrderEvent MarketFill(Security asset, MarketOrder order) {
-        // this model randomly fills market orders
-        decimal absoluteRemaining;
-        if (!_absoluteRemainingByOrderId.TryGetValue(order.Id, out absoluteRemaining)) {
-            absoluteRemaining = order.AbsoluteQuantity;
-            _absoluteRemainingByOrderId.Add(order.Id, order.AbsoluteQuantity);
-        }
-        var fill = base.MarketFill(asset, order);
-        var absoluteFillQuantity = (int) (Math.Min(absoluteRemaining, _random.Next(0, 2*(int)order.AbsoluteQuantity)));
-        fill.FillQuantity = Math.Sign(order.Quantity) * absoluteFillQuantity;
+        return base.MarketFill(asset, order);
+    }
 
-        if (absoluteRemaining == absoluteFillQuantity) {
-            fill.Status = OrderStatus.Filled;
-            _absoluteRemainingByOrderId.Remove(order.Id);
-        }
-        else {
-            absoluteRemaining = absoluteRemaining - absoluteFillQuantity;
-            _absoluteRemainingByOrderId[order.Id] = absoluteRemaining;
-            fill.Status = OrderStatus.PartiallyFilled;
-        }
-        _algorithm.Log("CustomFillModel: " + fill);
-        return fill;
+    public override OrderEvent LimitFill(Security asset, MarketOrder order) {
+        return base.LimitFill(asset, order);
+    }
+
+    public override OrderEvent LimitIfTouchedFill(Security asset, MarketOrder order) {
+        return base.LimitIfTouchedFill(asset, order);
+    }
+
+    public override OrderEvent StopMarketFill(Security asset, MarketOrder order) {
+        return base.StopMarketFill(asset, order);
+    }
+
+    public override OrderEvent StopLimitFill(Security asset, MarketOrder order) {
+        return base.StopLimitFill(asset, order);
+    }
+
+    public override OrderEvent MarketOnOpenFill(Security asset, MarketOrder order) {
+        return base.MarketOnOpenFill(asset, order);
+    }
+
+    public override OrderEvent MarketOnCloseFill(Security asset, MarketOrder order) {
+        return base.MarketOnCloseFill(asset, order);
     }
 }
 </pre>
-<pre class="python"># Custom fill model implementation stub
-class CustomFillModel(FillModel):
-    def __init__(self, algorithm):
-        self.algorithm = algorithm
-        self.absoluteRemainingByOrderId = {}
-        random.seed(100)
+<pre class="python">class MyFillModel(FillModel):
 
     def MarketFill(self, asset, order):
-        #if not _absoluteRemainingByOrderId.TryGetValue(order.Id, absoluteRemaining):
-        absoluteRemaining = order.AbsoluteQuantity
-        self.absoluteRemainingByOrderId[order.Id] = order.AbsoluteQuantity
-        fill = super().MarketFill(asset, order)
-        absoluteFillQuantity = int(min(absoluteRemaining, random.randint(0, 2*int(order.AbsoluteQuantity))))
-        fill.FillQuantity = np.sign(order.Quantity) * absoluteFillQuantity
-        if absoluteRemaining == absoluteFillQuantity:
-            fill.Status = OrderStatus.Filled
-            if self.absoluteRemainingByOrderId.get(order.Id):
-                self.absoluteRemainingByOrderId.pop(order.Id)
-        else:
-            absoluteRemaining = absoluteRemaining - absoluteFillQuantity
-            self.absoluteRemainingByOrderId[order.Id] = absoluteRemaining
-            fill.Status = OrderStatus.PartiallyFilled
-        self.algorithm.Log("CustomFillModel: " + str(fill))
-        return fill
+        return super().MarketFill(asset, order)
+
+    def LimitFill(self, asset, order):
+        return super().LimitFill(asset, order)
+
+    def LimitIfTouchedFill(self, asset, order):
+        return super().LimitIfTouchedFill(asset, order)
+
+    def StopMarketFill(self, asset, order):
+        return super().StopMarketFill(asset, order)
+
+    def StopLimitFill(self, asset, order):
+        return super().StopLimitFill(asset, order)
+
+    def MarketOnOpenFill(self, asset, order):
+        return super().MarketOnOpenFill(asset, order)
+
+    def MarketOnCloseFill(self, asset, order):
+        return super().MarketOnCloseFill(asset, order)
 </pre>
 </div>
