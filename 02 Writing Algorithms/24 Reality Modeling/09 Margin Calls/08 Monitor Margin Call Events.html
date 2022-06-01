@@ -1,4 +1,4 @@
-When your portfolio's remaining margin drops below 5% of the total portfolio value, we notify your algorithm through the OnMarginCallWarning event handler.
+<p>When the remaining margin in your portfolio drops below 5% of the total portfolio value, we notify your algorithm through the <code>OnMarginCallWarning</code> event handler.</p>
 
 <div class="section-example-container">
 	<pre class="csharp">public override void OnMarginCallWarning()
@@ -9,8 +9,10 @@ When your portfolio's remaining margin drops below 5% of the total portfolio val
     self.Debug(f"Warning: Close to margin call")</pre>
 </div>
 
-Before we send the orders that the margin call model produces, we notify your algorithm through the OnMarginCall event handler. This notification gives your algorithm a chance to liquidate some positions or modify the margin call orders. To modify the orders, adjust the list of SubmitOrderRequest objects the event handler receives.<br><div class="section-example-container">
-	<pre class="csharp">public override void OnMarginCall(List<submitorderrequest> requests)
+<p>Before we send the orders that the margin call model produces, we notify your algorithm through the <code>OnMarginCall</code> event handler. This notification gives your algorithm a chance to liquidate some positions or modify the margin call orders. To modify the orders, adjust the list of <code>SubmitOrderRequest</code> objects the event handler receives.</p>
+
+<div class="section-example-container">
+	<pre class="csharp">public override void OnMarginCall(List&lt;SubmitOrderRequest&gt; requests)
     foreach (var order in requests.ToList())
     {
         // liquidate an extra 10% each time we get a margin call to give us more padding
@@ -28,3 +30,7 @@ Before we send the orders that the margin call model produces, we notify your al
         requests.append(SubmitOrderRequest(order.OrderType, order.SecurityType, order.Symbol, newQuantity, order.StopPrice, order.LimitPrice, self.Time, "OnMarginCall"))
 </pre>
 </div>
+
+<p><code>SubmitOrderRequest</code> objects have the following properties:</p>
+
+<div data-tree='QuantConnect.Orders.SubmitOrderRequest'></div> 
