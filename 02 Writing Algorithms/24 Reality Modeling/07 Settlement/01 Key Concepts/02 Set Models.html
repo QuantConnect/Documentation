@@ -1,19 +1,17 @@
-<div>The brokerage model of your algorithm automatically sets the settlement model for each security, but you can override it.<br></div><div><br></div><div>To set the settlement model of a security, set the SettlementModel property on the Security object.</div>
+<p>The brokerage model of your algorithm automatically sets the settlement model for each security, but you can override it. To manually set the settlement model of a security, set the <code>SettlementModel</code> property on the <code>Security</code> object.</p>
 <div class="section-example-container">
     <pre class="csharp">// In Initialize
 var security = AddEquity("SPY");
-// Set a security to a delayed settlement model: settle 7 days later, at 8am.
+// Set a delayed settlement model that settles 7 days after the trade at 8 AM
 security.SettlementModel = new DelayedSettlementModel(7, new TimeSpan.FromHours(8, 0, 0));</pre>
     <pre class="python"># In Initialize
 security = self.AddEquity("SPY")
-# Set a security to a delayed settlement model: settle 7 days later, at 8am.
+# Set a delayed settlement model that settles 7 days after the trade at 8 AM
 security.SettlementModel = DelayedSettlementModel(7, timedelta(hours=8))</pre>
 </div>
 
-Alternatively, set the settlement model in a security initializer.
-If your algorithm has a universe, use the security initializer technique. In order to initialize single security subscriptions with the security 
-initializer, call SetSecurityInitializer before you create the 
-subscriptions.
+<p>You can also set the settlement model in a security initializer. If your algorithm has a universe, use the security initializer technique. In order to initialize single security subscriptions with the security initializer, call <code>SetSecurityInitializer</code> before you create the subscriptions.</p>
+
 <div class="section-example-container">
 <pre class="csharp">// In Initialize
 SetSecurityInitializer(CustomSecurityInitializer);
