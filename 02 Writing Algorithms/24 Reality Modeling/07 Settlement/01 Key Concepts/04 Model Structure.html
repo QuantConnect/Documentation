@@ -1,4 +1,47 @@
-<p>
-	Settlement models implement the $[ISettlementModel,T:QuantConnect.Securities.ISettlementModel] interface. You can create your own settlement model by implementing this method. Most users will not need to create their own settlement model and can use one of the ones provided above.
-</p>
+<p>Settlement models must extend the <code>ISettlementModel</code> interface. Extensions of the <code>ISettlementModel</code> interface must implement the <code>ApplyFunds</code> method, which applies the cash settlement rules.</p>
 
+
+
+<div class="section-example-container">
+<pre class="csharp"></pre>
+<pre class="python"></pre>
+</div>
+
+<p>The following table describes the arguments of the <code>ApplyFunds</code> method:</p>
+
+<table class="qc-table table">
+    <thead>
+        <tr>
+            <th>Argument</th>
+            <th>Data Type</th>
+            <th>Description</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><code>portfolio</code></td>
+	    <td><code>SecurityPortfolioManager</code></td>
+            <td>The algorithm's portfolio</td>
+        </tr>
+        <tr>
+            <td><code>security</code></td>
+	    <td><code>Security</code></td>
+            <td>The fill's security</td>
+        </tr>
+        <tr>
+            <td><code>applicationTimeUtc</code></td>
+	    <td><code>DateTime</code></td>
+            <td>The fill time in Coordinated Universal Time (UTC)</td>
+        </tr>
+        <tr>
+            <td><code>currency</code></td>
+	    <td><code>string</code></td>
+            <td>The currency symbol</td>
+        </tr>
+        <tr>
+            <td><code>amount</code></td>
+	    <td><code>decimal</code></td>
+            <td>The amount of cash to apply</td>
+        </tr>
+    </tbody>
+</table>
