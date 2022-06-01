@@ -1,4 +1,6 @@
-<div>The brokerage model of your algorithm automatically sets the fee model for each security. <br></div><div><br></div><div>To set the fee model of a security, call the SetFeeModel method on the Security object.</div>
+<p>The brokerage model of your algorithm automatically sets the fee model for each security. To manually set the fee model of a security, call the <code>SetFeeModel</code> method on the <code>Security</code> object.</p>
+
+
 <div class="section-example-container">
     <pre class="csharp">// In Initialize
 var security = AddEquity("SPY");
@@ -8,8 +10,9 @@ security = self.AddEquity("SPY")
 security.SetFeeModel(ConstantFeeModel(0))</pre>
 </div>
 
-Alternatively, set the fee model in a security initializer.
-If your algorithm has a dynamic universe, use the security initializer technique.<div class="section-example-container">
+<p>You can also set the fee model in a security initializer. If your algorithm has a dynamic universe, use the security initializer technique.</p>
+
+<div class="section-example-container">
 <pre class="csharp">// In Initialize
 SetSecurityInitializer(CustomSecurityInitializer);
 
@@ -26,4 +29,4 @@ def CustomSecurityInitializer(self, security):
 </pre>
 </div>
 
-- In live trading, the SetFeeModel is not ignored. The fee model is used to calculate the order quantity if we use order helpers like SetHoldings. However, the algorithm receives the fee from the brokerage and updates the cash book with this value
+<p>In live trading, the <code>SetFeeModel</code> isn't ignored. If we use order helper methods like <code>SetHoldings</code>, the fee model helps to calculate the order quantity. However, the algorithm doesn't update the <a href="/docs/v2/writing-algorithms/portfolio/cashbook">cash book</a> with the fee from the fee model. The algorithm uses the actual fee from the brokerage to update the cash book.</p>
