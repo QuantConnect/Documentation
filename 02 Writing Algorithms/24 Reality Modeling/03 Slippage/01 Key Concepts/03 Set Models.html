@@ -1,4 +1,4 @@
-<p>The brokerage model of your algorithm automatically sets the slippage model for each security, but you can override it. To manually set the slippage model of a security, call the <code>SetSlippageModel</code> method on the <code>Security</code> object.</p>
+<p>The brokerage model of your algorithm automatically sets the slippage model for each security. To manually set the slippage model of a security, call the <code>SetSlippageModel</code> method on the <code>Security</code> object.</p>
 
 <div class="section-example-container">
     <pre class="csharp">// In Initialize
@@ -9,11 +9,12 @@ security = self.AddEquity("SPY")
 security.SetSlippageModel(VolumeShareSlippageModel())</pre>
 </div>
 
-<p>You can also set the slippage model in a security initializer. If your algorithm has a dynamic universe, use the security initializer technique.</p>
+<p>You can also set the slippage model in a security initializer. If your algorithm has a dynamic universe, use the security initializer technique. In order to initialize single security subscriptions with the security initializer, call <code>SetSecurityInitializer</code> before you create the subscriptions.</p>
 
 <div class="section-example-container">
 <pre class="csharp">// In Initialize
 SetSecurityInitializer(CustomSecurityInitializer);
+AddEquity("SPY");
 
 private void CustomSecurityInitializer(Security security)
 {
@@ -22,6 +23,7 @@ private void CustomSecurityInitializer(Security security)
 </pre>
 <pre class="python"># In Initialize
 self.SetSecurityInitializer(self.CustomSecurityInitializer)
+self.AddEquity("SPY")
 
 def CustomSecurityInitializer(self, security):
     security.SetSlippageModel(VolumeShareSlippageModel())
