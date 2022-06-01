@@ -1,5 +1,39 @@
-- The DelayedSettlementModel immediately removes the cash from your portfolio when your buy orders fill.<br><div>
-- When your sell orders fill, it adds the cash to your unsettled cashbook. When the settlement period ends, the unsettled cash is added to your portfolio.</div><div>- On the settlement date, the security officially becomes owned by you</div><div>- The default settlement days for the following asset classes:</div><div>&nbsp;&nbsp;&nbsp;&nbsp; - Equities: T+3 at 8AM (This will change to the updated T+2 rule, https://github.com/QuantConnect/Lean/issues/6184)</div><div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - If you sell on monday, the trade settles on Thursday at 8AM</div><div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - If you sell on Thursday, the trade settles Tuesday at 8AM<br></div><div>&nbsp;&nbsp;&nbsp;&nbsp; - Futures: T+1 at 8AM<br></div><div>&nbsp;&nbsp;&nbsp;&nbsp; - Options: T+1 at 8AM</div>- You can trade with unsettled cash (?)<br><div class="section-example-container">
-<pre class="csharp">new DelayedSettlementModel(settlementDays, settlementTime);</pre>
-<pre class="python">DelayedSettlementModel(settlement_days, settlement_time);</pre>
+<p>The <code>DelayedSettlementModel</code> immediately removes the cash from your portfolio when your buy orders fill.  When your sell orders fill, it adds the cash to your <a href="/docs/v2/writing-algorithms/portfolio/cashbook#03-Settled-vs-Unsettled-Cash">unsettled cash book</a>. When the settlement period ends, the unsettled cash is added to your portfolio.</p>
+
+
+
+
+
+<div class="section-example-container">
+<pre class="csharp">security.SettlementModel = new new DelayedSettlementModel(7, new TimeSpan.FromHours(8, 0, 0));</pre>
+<pre class="python">security.SettlementModel = DelayedSettlementModel(7, timedelta(hours=8))</pre>
 </div>
+
+<p>The following table describes the arguments the model accepts:</p>
+
+<table class="qc-table table">
+    <thead>
+        <tr>
+            <th>Argument</th>
+            <th>Data Type</th>
+            <th>Description</th>
+            <th>Default Value</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><code>numberOfDays</code></td>
+	    <td><code>int</code></td>
+            <td>The number of days required for settlement</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td><code>timeOfDay</code></td>
+	    <td><code class="csharp">TimeSpan</code><code class="python">timedelta</code></td>
+            <td>The time of day used for settlement</td>
+            <td></td>
+        </tr>
+    </tbody>
+</table>
+
+<p>To view the implementation of this model, see the <a target="_blank" rel="nofollow" href="https://github.com/QuantConnect/Lean/blob/master/Common/Securities/DelayedSettlementModel.cs">LEAN GitHub repository</a>.</p>
