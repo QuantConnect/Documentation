@@ -1,4 +1,4 @@
-<p>The brokerage model of your algorithm automatically sets the fee model for each security, but you can override it. To manually set the fee model of a security, call the <code>SetFeeModel</code> method on the <code>Security</code> object.</p>
+<p>The brokerage model of your algorithm automatically sets the fee model for each security. To manually set the fee model of a security, call the <code>SetFeeModel</code> method on the <code>Security</code> object.</p>
 
 
 <div class="section-example-container">
@@ -10,11 +10,12 @@ security = self.AddEquity("SPY")
 security.SetFeeModel(ConstantFeeModel(0))</pre>
 </div>
 
-<p>You can also set the fee model in a security initializer. If your algorithm has a dynamic universe, use the security initializer technique.</p>
+<p>You can also set the fee model in a security initializer. If your algorithm has a dynamic universe, use the security initializer technique. In order to initialize single security subscriptions with the security initializer, call <code>SetSecurityInitializer</code> before you create the subscriptions.</p>
 
 <div class="section-example-container">
 <pre class="csharp">// In Initialize
 SetSecurityInitializer(CustomSecurityInitializer);
+AddEquity("SPY");
 
 private void CustomSecurityInitializer(Security security)
 {
@@ -23,6 +24,7 @@ private void CustomSecurityInitializer(Security security)
 </pre>
 <pre class="python"># In Initialize
 self.SetSecurityInitializer(self.CustomSecurityInitializer)
+self.AddEquity("SPY")
 
 def CustomSecurityInitializer(self, security):
     security.SetFeeModel(ConstantFeeModel(0))
