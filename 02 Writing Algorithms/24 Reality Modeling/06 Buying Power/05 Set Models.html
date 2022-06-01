@@ -1,4 +1,5 @@
-<div>The brokerage model of your algorithm automatically sets the buying power model for each security, but you can override it. <br></div><div><br></div><div>To set the buying power model of a security, call the SetBuyingPowerModel method on the Security object.</div>
+<p>The brokerage model of your algorithm automatically sets the buying power model for each security. To manually set the buying power model of a security, call the <code>SetBuyingPowerModel</code> method on the <code>Security</code> object.</p>
+
 <div class="section-example-container">
     <pre class="csharp" style="">// In Initialize
 var security = AddEquity("SPY");
@@ -8,14 +9,16 @@ security = self.AddEquity("SPY")
 security.SetFeeModel(SecurityMarginModel(3))</pre>
 </div>
 
-You can also set the buying power model in a security initializer. If your algorithm has a universe, use the security initializer technique. In order to initialize single security subscriptions with the security initializer, call SetSecurityInitializer before you create the subscriptions.<div class="section-example-container">
+<p>You can also set the buying power model in a security initializer. If your algorithm has a universe, use the security initializer technique. In order to initialize single security subscriptions with the security initializer, call <code>SetSecurityInitializer</code> before you create the subscriptions.</p>
+
+<div class="section-example-container">
 <pre class="csharp" style="">// In Initialize
 SetSecurityInitializer(CustomSecurityInitializer);
 AddEquity("SPY");
 
 private void CustomSecurityInitializer(Security security)
 {
-    security.SetFeeModel(new SecurityMarginModel(3m));
+    security.SetBuyingPowerModel(new SecurityMarginModel(3m));
 }
 </pre>
 <pre class="python"># In Initialize
@@ -23,6 +26,6 @@ self.SetSecurityInitializer(self.CustomSecurityInitializer)
 AddEquity("SPY")
 
 def CustomSecurityInitializer(self, security):
-    security.SetFeeModel(SecurityMarginModel(3))
+    security.SetBuyingPowerModel(SecurityMarginModel(3))
 </pre>
 </div>
