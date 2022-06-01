@@ -1,53 +1,15 @@
-<meta name="tag" content="trading and orders">
-<meta name="tag" content="brokerage models">
-<meta name="tag" content="transaction fees fills buying power slippage">
-<meta name="tag" content="custom transaction models">
-<meta name="tag" content="order events">
-<p>
-	We provide customized fee models for all brokerages, but you can also set your own. Like all models, they must be set on a security by security basis.
-</p>
-<p>
-	Fee models implement the $[IFeeModel,T:QuantConnect.Orders.Fees.IFeeModel] interface. If you wish to implement your own fee model, you can start with the $[FeeModel,T:QuantConnect.Orders.Fees.FeeModel] and override methods you wish to change. $[IFeeModel.GetOrderFee,M:QuantConnect.Orders.Fees.IFeeModel.GetOrderFee] accepts a single parameter of type $[OrderFeeParameters,T:QuantConnect.Orders.Fees.OrderFeeParameters] and returns an $[OrderFee,T:QuantConnect.Orders.Fees.OrderFee] that represents a cash amount with a given currency.
-</p>
+<p>Fee models should extend the <code>FeeModel</code> class. Extensions of the <code>FeeModel</code> class must implement the <code>GetOrderFee</code> method, which receives <code>OrderFeeParameters</code> and returns an <code>OrderFee</code> that represents a cash amount in a currency.</p>
 
 <div class="section-example-container">
-<pre class="csharp">// Assigning securities custom fee models:
-Securities["SPY"].SetFeeModel(new CustomFeeModel());
-
-// Custom fee implementation
-public class CustomFeeModel : FeeModel {
-    public override OrderFee GetOrderFee(OrderFeeParameters parameters) {
-        // custom fee math
-        var fee = Math.Max(1m, parameters.Security.Price 
-                           * parameters.Order.AbsoluteQuantity 
-                           * 0.00001m);
-        return new OrderFee(new CashAmount(fee, "USD"));
+<pre class="csharp">public class MyFeeModel : FeeModel 
+{
+    public override OrderFee GetOrderFee(OrderFeeParameters parameters) 
+    {
+        return new OrderFee(new CashAmount(0.5m, "USD"));
     }
-}
+}</pre>
+<pre class="python">class MyFeeModel(FeeModel):
 
-// Non accountCurrency custom fee model to pay order fees in a desired currency
-public class NonAccountCurrencyCustomFeeModel : FeeModel {
-    public override OrderFee GetOrderFee(OrderFeeParameters parameters) {
-        return new OrderFee(new CashAmount(1m, "ETH"));
-    }
-}
-
-</pre>
-<pre class="python"># Assigning securities custom fee models:
-self.Securities["SPY"].SetFeeModel(CustomFeeModel())
-
-# Custom fee implementation
-class CustomFeeModel:
     def GetOrderFee(self, parameters):
-        fee = max(1, parameters.Security.Price
-                  * parameters.Order.AbsoluteQuantity
-                  * 0.00001)
-        return OrderFee(CashAmount(fee, 'USD'))
-
-# Non accountCurrency custom fee model to pay order fees in a desired currency
-class NonAccountCurrencyCustomFeeModel:
-    def GetOrderFee(self, parameters):
-        return OrderFee(CashAmount(1, 'ETH'))
-
-</pre>
+        return OrderFee(CashAmount(0.5, 'USD'))</pre>
 </div>
