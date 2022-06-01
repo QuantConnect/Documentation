@@ -1,16 +1,11 @@
+<p>To set a brokerage model, in the <code>Initialize</code> method, call the <code>SetBrokerageModel</code> method with a <code>BrokerageName</code> and an <code>AccountType</code>. If you set a brokerage model, it overrides any <a href='/docs/v2/writing-algorithms/reality-modeling/key-concepts#02-Security-Level-Models'>security level models</a> you manually set in your algorithm.</p>
 
-We provide a shortcut to set common models and properties relating to each of the brokerages we support.
-
-<br><div>-If you set a brokerage model, it override any other security-level models you may in your algorithm.</div><div>-To set a brokerage model, call the SetBrokerageModel method with a BrokerageName and an AccountType.<br> 
-
-</div><div class="section-example-container">
-	<pre class="csharp">// In Initialize
-SetBrokerageModel(BrokerageName.OandaBrokerage); // Defaults to margin account
+<div class="section-example-container">
+	<pre class="csharp">SetBrokerageModel(BrokerageName.OandaBrokerage); // Defaults to margin account
 SetBrokerageModel(BrokerageName.Bitfinex, AccountType.Margin); // Overrides the default account type
 </pre>
-<pre class="python"># In Initialize
-self.SetBrokerageModel(BrokerageName.OandaBrokerage) # Defaults to margin account
+<pre class="python">self.SetBrokerageModel(BrokerageName.OandaBrokerage) # Defaults to margin account
 self.SetBrokerageModel(BrokerageName.Bitfinex, AccountType.Margin) # Overrides the default account type
 </pre></div>
 
--In live trading your call SetBrokerageModel is not ignored. Some of the brokerage model rules are used to avoid placing orders that will be rejected by your real brokerage.
+<p>In live trading, LEAN doesn't ignore your <code>SetBrokerageModel</code> method calls. LEAN uses some of the brokerage model rules to catch invalid orders before they reach your real brokerage.</p>
