@@ -1,1 +1,11 @@
-Margin models implement the IMarginCallModel interface. If you wish to implement your own margin call model, you can start with the DefaultMarginCallModel and override methods you wish to change. 
+<p>Margin call models must extend the <code>DefaultMarginCallModel</code> class. Extensions of the <code>DefaultMarginCallModel</code> class can override the <code>GetMarginCallOrders</code> and <code>ExecuteMarginCall</code> methods.</p>
+
+<p>The <code>GetMarginCallOrders</code> method scans the portfolio and the updated data for a potential margin call situation that may get the holdings below zero. The method must return a list of <code>SubmitOrderRequest</code> objects that represent the margin call orders. To issue a margin call warning during this method, set the <code>issueMarginCallWarning</code> argument of the method to true. </p>
+
+<p>The <code>ExecuteMarginCall</code> method receives the list of <code>SubmitOrderRequest</code> objects from the <code>GetMarginCallOrders</code> method, executes some of them, and returns a list of <code>OrderTicket</code> objects.</p>
+
+<div class="section-example-container">
+	<pre class="csharp"></pre>
+	<pre class="python"></pre>
+</div>
+
