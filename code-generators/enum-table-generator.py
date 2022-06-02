@@ -2,9 +2,40 @@ import re
 from urllib.request import urlopen
 
 destination = "Resources/enumerations"
+root_url = "https://raw.githubusercontent.com/QuantConnect/Lean/master/"
 enum_objects = [
-    "https://raw.githubusercontent.com/QuantConnect/Lean/master/Common/Global.cs",
-    "https://raw.githubusercontent.com/QuantConnect/Lean/master/Common/Orders/OrderResponseErrorCode.cs"
+    "Algorithm/Portfolio/PortfolioBias.cs",
+    "Common/Algorithm/Framework/Alphas/InsightScoreType.cs",
+    "Common/Algorithm/Framework/Alphas/InsightType.cs",
+    "Common/Algorithm/Framework/Alphas/InsightDirection.cs",
+    "Common/Brokerages/BrokerageMessageType.cs",
+    "Common/Chart.cs",
+    "Common/Data/Auxiliary/QuoteConditionFlags.cs",
+    "Common/Data/Auxiliary/TradeConditionFlags.cs",
+    "Common/Data/FileFormat.cs",
+    "Common/Data/Market/BarDirection.cs",
+    "Common/Data/Market/RenkoType.cs",
+    "Common/Global.cs",
+    "Common/Optimizer/OptimizationStatus.cs",
+    "Common/Orders/IndiaOrderProperties.cs",
+    "Common/Orders/OrderError.cs",
+    "Common/Orders/OrderField.cs",
+    "Common/Orders/OrderRequestStatus.cs",
+    "Common/Orders/OrderRequestType.cs",
+    "Common/Orders/OrderResponseErrorCode.cs",
+    "Common/Orders/OrderTypes.cs",
+    "Common/Securities/CashBook.cs",
+    "Common/Securities/MarketHoursState.cs",
+    "Common/Securities/Option/StrategyMatcher/PredicateTargetValue.cs",
+    "Common/Series.cs",
+    "Common/Statistics/TradeEnums.cs",
+    "Common/TradingDay.cs",
+    "Indicators/CandlestickPatterns/CandleEnums.cs",
+    "Indicators/IndicatorStatus.cs",
+    "Indicators/MovingAverageType.cs",
+    "Indicators/PivotPointsHighLow.cs",
+    "Indicators/SwissArmyKnife.cs",
+    "Report/CrisisEvent.cs"
 ]
 
 quotation = '\"'
@@ -38,7 +69,7 @@ def TableCreation(raw, namespace=""):
             if "=" in line:
                 item = line.split(" = ")
                 enum = item[0].strip()
-                code = int(item[-1].split(",")[0])
+                code = int(item[-1].split(",")[0].split("<<")[-1].strip())
                 current_object[enum] = {"code": code, "description": description}
             
             else:
@@ -110,5 +141,6 @@ def TableCreation(raw, namespace=""):
         file.write(html)
 
 for url in enum_objects:
-    raw = urlopen(url).read().decode("utf-8").split('\n')
+    print(url)
+    raw = urlopen(f'{root_url}{url}').read().decode("utf-8").split('\n')
     html = TableCreation(raw)
