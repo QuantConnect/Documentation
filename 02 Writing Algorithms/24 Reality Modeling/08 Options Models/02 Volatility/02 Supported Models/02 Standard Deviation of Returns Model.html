@@ -1,4 +1,4 @@
-<p>The <code>StandardDeviationOfReturnsVolatilityModel</code> Computes the annualized sample standard deviation of daily returns as the volatility of the security.</p>
+<p>The <code>StandardDeviationOfReturnsVolatilityModel</code> sets the volatility of the security to the annualized sample standard deviation of trailing daily returns.</p>
 
 <div class="section-example-container">
 	<pre class="csharp">underlying_security.VolatilityModel = new StandardDeviationOfReturnsVolatilityModel(30);</pre>
@@ -20,20 +20,20 @@
         <tr>
             <td><code>periods</code></td>
 	    <td><code>int</code></td>
-            <td>The max number of samples in the rolling window to be considered for calculating the standard deviation of returns</td>
+            <td>The max number of samples to use when calculating the standard deviation of returns. This value must be greater than two.<br></td>
             <td></td>
         </tr>
         <tr>
             <td><code>resolution</code></td>
-	    <td><code class='csharp'>Resolution?</code><span class='python'><code>Resolution</code>/<code>NoneType</code></span></td>
-            <td>Resolution of the price data inserted into the rolling window series to calculate standard deviation. Will be used as the default value for update frequency if a value is not provided for <code>updateFrequency</code>. This only has a material effect in live mode. For backtesting, this value does not cause any behavioral changes.</td>
-            <td><code class='csharp'>null</code><code class='python'>None</code></td>
+	    <td><code class="csharp">Resolution?</code><span class="python"><code>Resolution</code>/<code>NoneType</code></span></td>
+            <td>The resolution of the price data used to calculate standard deviation. <br></td>
+            <td><code class="csharp">null</code><code class="python">None</code></td>
         </tr>
         <tr>
             <td><code>updateFrequency</code></td>
-	    <td><code class='csharp'>TimeSpan?</code><span class='python'><code>timedelta</code>/<code>NoneType</code></span></td>
-            <td>The resolution of historical data</td>
-            <td><code class='csharp'>null</code><code class='python'>None</code></td>
+	    <td><code class="csharp">TimeSpan?</code><span class="python"><code>timedelta</code>/<code>NoneType</code></span></td>
+            <td>The frequency at which new values are inserted into the rolling window for the standard deviation calculation. If the value is <code class="csharp">null</code><code class="python">None</code>, it defaults to the <code class="csharp">TimeSpan</code><code class="python">timedelta</code> representation of <code>resolution</code>. If the value and <code>resolution</code> are <code class="csharp">null</code><code class="python">None</code>, it defaults to a <code class="csharp">TimeSpan</code><code class="python">timedelta</code> of one day.</td>
+            <td><code class="csharp">null</code><code class="python">None</code></td>
         </tr>
     </tbody>
 </table>
