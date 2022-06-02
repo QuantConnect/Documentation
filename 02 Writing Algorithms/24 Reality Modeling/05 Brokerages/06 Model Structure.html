@@ -83,40 +83,40 @@
         self.AccountType = accountType
         self.ShortableProvider = NullShortableProvider()
     
-    def CanSubmitOrder(self, security, order, message):
+    def CanSubmitOrder(self, security: Security, order: Order, message: BrokerageMessageEvent): -> bool
         return super().CanSubmitOrder(security, order, message)
 
-    def CanUpdateOrder(self, security, order, request, message):
+    def CanUpdateOrder(self, security: Security, order: Order, request: UpdateOrderRequest, message: BrokerageMessageEvent): -> bool
         return super().CanUpdateOrder(security, order, message)
 
-    def CanExecuteOrder(self, security, order):
+    def CanExecuteOrder(self, security: Security, order: Order): -> bool
         return super().CanExecuteOrder(security, order)
 
-    def ApplySplit(self, tickets, split):
+    def ApplySplit(self, tickets: list[OrderTicket], split: Split): -> None
         super().ApplySplit(tickets, split)
 
-    def GetLeverage(self, security):
+    def GetLeverage(self, security: Security): -> float
         return super().GetLeverage(security)
 
-    def GetBenchmark(self, securities):
+    def GetBenchmark(self, securities: SecurityManager): -> IBenchmark
         return super().GetBenchmark(securities)
 
-    def GetFillModel(self, security):
+    def GetFillModel(self, security: Security): -> IFillModel
         return super().GetFillModel(security)
 
-    def GetFeeModel(self, security):
+    def GetFeeModel(self, security: Security): -> IFeeModel 
         return super().GetFeeModel(security)
 
-    def GetSlippageModel(self, security):
+    def GetSlippageModel(self, security: Security): -> ISlippageModel
         return super().GetSlippageModel(security)
 
-    def GetSettlementModel(self, security):
+    def GetSettlementModel(self, security: Security): -> ISettlementModel
         return super().GetSettlementModel(security)
 
-    def GetBuyingPowerModel(self, security):
+    def GetBuyingPowerModel(self, security: Security): -> IBuyingPowerModel
         return super().GetBuyingPowerModel(security)
 
-    def GetShortableProvider(self):
+    def GetShortableProvider(self): -> IShortableProvider
         return self.ShortableProvider
 </pre>
 </div>
