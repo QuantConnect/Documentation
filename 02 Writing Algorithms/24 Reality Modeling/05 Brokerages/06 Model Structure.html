@@ -1,13 +1,123 @@
 <p>Brokerage models should extend the <code>DefaultBrokerageModel</code> class. Extensions of the <code>DefaultBrokerageModel</code> class should implement the following methods:</p>
 
 <div class="section-example-container">
-<pre class="csharp">class MyBrokerageModel: DefaultBrokerageModel 
+<pre class="csharp">class MyBrokerageModel : DefaultBrokerageModel
 {
-   
-} 
+    public static new readonly IReadOnlyDictionary<SecurityType, string> DefaultMarketMap;
+
+    public override decimal RequiredFreeBuyingPowerPercent { get; }
+
+    public override IReadOnlyDictionary<SecurityType, string> DefaultMarkets => DefaultMarketMap;
+
+    public MyBrokerageModel(AccountType accountType = AccountType.Margin) : base(accountType)
+    {
+        ShortableProvider = new NullShortableProvider();
+    }
+
+    public override bool CanSubmitOrder(Security security, Order order, out BrokerageMessageEvent message)
+    {
+        return base.CanSubmitOrder(security, order, out message);
+    }
+
+    public override bool CanUpdateOrder(Security security, Order order, UpdateOrderRequest request, out BrokerageMessageEvent message)
+    {
+        return base.CanUpdateOrder(security, order, request, out message);
+    }
+
+    public override bool CanExecuteOrder(Security security, Order order)
+    {
+        return base.CanExecuteOrder(security, order);
+    }
+
+    public override void ApplySplit(List<OrderTicket> tickets, Split split)
+    {
+        base.ApplySplit(tickets, split);
+    }
+
+    public override decimal GetLeverage(Security security)
+    {
+        return base.GetLeverage(security);
+    }
+
+    public override IBenchmark GetBenchmark(SecurityManager securities)
+    {
+        return base.GetBenchmark(securities);
+    }
+
+    public override IFillModel GetFillModel(Security security)
+    {
+        return base.GetFillModel(security);
+    }
+
+    public override IFeeModel GetFeeModel(Security security)
+    {
+        return base.GetFeeModel(security);
+    }
+
+    public override ISlippageModel GetSlippageModel(Security security)
+    {
+        return base.GetSlippageModel(security);
+    }
+
+    public override ISettlementModel GetSettlementModel(Security security)
+    {
+        return base.GetSettlementModel(security);
+    }
+
+    public override IBuyingPowerModel GetBuyingPowerModel(Security security)
+    {
+        return base.GetBuyingPowerModel(security);
+    }
+
+    public override IShortableProvider GetShortableProvider()
+    {
+        return ShortableProvider;
+    }
+}
 </pre>
 <pre class="python">class MyBrokerageModel(DefaultBrokerageModel):
+    DefaultMarkets = {}
+    RequiredFreeBuyingPowerPercent = 0
+
+    def __init__(self, accountType = AccountType.Margin):
+        self.AccountType = accountType
+        self.ShortableProvider = NullShortableProvider()
     
+    def CanSubmitOrder(self, security, order, message):
+        return super().CanSubmitOrder(security, order, message)
+
+    def CanUpdateOrder(self, security, order, request, message):
+        return super().CanUpdateOrder(security, order, message)
+
+    def CanExecuteOrder(self, security, order):
+        return super().CanExecuteOrder(security, order)
+
+    def ApplySplit(self, tickets, split):
+        super().ApplySplit(tickets, split)
+
+    def GetLeverage(self, security):
+        return super().GetLeverage(security)
+
+    def GetBenchmark(self, securities):
+        return super().GetBenchmark(securities)
+
+    def GetFillModel(self, security):
+        return super().GetFillModel(security)
+
+    def GetFeeModel(self, security):
+        return super().GetFeeModel(security)
+
+    def GetSlippageModel(self, security):
+        return super().GetSlippageModel(security)
+
+    def GetSettlementModel(self, security):
+        return super().GetSettlementModel(security)
+
+    def GetBuyingPowerModel(self, security):
+        return super().GetBuyingPowerModel(security)
+
+    def GetShortableProvider(self):
+        return self.ShortableProvider
 </pre>
 </div>
 
