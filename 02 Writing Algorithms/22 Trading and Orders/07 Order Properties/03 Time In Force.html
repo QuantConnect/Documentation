@@ -1,44 +1,36 @@
-<p>The TimeInForce property determines how long an order should remain open if unfilled. This does not apply to market orders as they are generally filled instantly. Time in force is useful to automatically cancel old trades.
-</p>
-<table class="qc-table table table-condensed table-responsive">
-	<thead>
-		<tr>
-			<th>
-            Time In Force
-        </th>
-			<th>
-            Property Value
-        </th>
-		</tr>
-	</thead>
-	<tbody>
-		<tr>
-			<td>Good Until Canceled</td>
-			<td style="text-align: left;"><code>TimeInForce.GoodTilCanceled</code><br>
-				<small>Order is valid until filled (default).</small>                
-			</td>
-		</tr>
-		<tr>
-			<td>
-            Day
-            </td>
-			<td style="text-align: left;"><code>TimeInForce.Day</code><br>
-				<small>Order is valid until filled or the market closes.</small>                
-			</td>
-		</tr>
-		<tr>
-			<td>
-            Good Until Date
-        </td>
-			<td style="text-align: left;"><code>TimeInForce.GoodTilDate(DateTime expiry)</code><br>
-				<small>Order is valid until filled or the specified expiration time.</small>
-			</td>
-		</tr>
-	</tbody>
+<p>The <code>TimeInForce</code> property determines how long an order should remain open if it doesn't fill. This property doesn't apply to market orders since they usually fill immediately. Time in force is useful to automatically cancel old trades.</p>
+
+<table class="qc-table table">
+    <thead>
+        <tr>
+            <th>Member</th>
+            <th>Example</th>
+            <th>Description</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><code>GoodTilCanceled</code></td>
+            <td><code>TimeInForce.GoodTilCanceled</code></td>
+            <td>Order is valid until filled (default)</td>
+        </tr>
+        <tr>
+            <td><code>Day</code></td>
+            <td><code>TimeInForce.Day</code></td>
+            <td>Order is valid until filled or the market closes</td>
+        </tr>
+        <tr>
+            <td><code class="csharp">GoodTilDate(DateTime expiry)</code><code class="python">GoodTilDate(datetime expiry)</code></td>
+            <td><code class="csharp">TimeInForce.GoodTilDate(new DateTime(2019, 6, 19, 12, 0, 0))</code><code class="python">GoodTilDate(datetime(2019, 6, 19, 12, 0, 0))</code></td>
+            <td>Order is valid until filled or the specified expiration time</td>
+        </tr>
+    </tbody>
 </table>
+
+
 <p>
     By default, orders remain open until they are canceled (<code>TimeInForce.GoodTilCanceled</code>). 
-To update the value, set the <code>DefaultOrderProperties.TimeInForce</code> before placing an order. Doing so will change the default value for all future orders unless reassigned again.
+To update the value, set the <code>DefaultOrderProperties.TimeInForce</code> before you place an order. If you update the <code>DefaultOrderProperties</code>, it applies the order properties to all future orders.
 </p>
 <div class="section-example-container">
         <pre class="csharp">// Set Limit Order to be good until market close
