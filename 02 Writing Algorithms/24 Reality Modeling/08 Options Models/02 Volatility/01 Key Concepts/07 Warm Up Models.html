@@ -1,13 +1,19 @@
-<div>What/Why?<br></div><div>- You need to warm up the volatility model on the underlying security in order for the option price model to accurately calculate the IV, Greeks, and theoretical pricing values.</div><p><br></p><p>How?<br></p><p>- If you add all options with AddOption, set a warm up period to warm up the volaility models. The duration of the warm up period should be at least as long as the data the volatility model needs to compute values. <br></p>
+<p>To get the Option pricing model to accurately calculate the implied volatility, Greeks, and theoretical prices, you need to warm up the volatility model on the underlying security. If you add all options with the <code>AddOption</code> method, set a <a href='/docs/v2/writing-algorithms/historical-data/warm-up-periods'>warm up period</a> to warm up their volatility models. The warm up period should provide the volatility models with enough data to compute their values.</p>
 
 <div class="section-example-container">
     <pre class="csharp">// In Initialize
-SetWarmUp(30, Resolution.Daily);<br><br>// In OnData<br>if (IsWarmingUp) return;<br></pre>
+SetWarmUp(30, Resolution.Daily);
+
+// In OnData<br>if (IsWarmingUp) return;</pre>
     <pre class="python"># In Initialize
-self.SetWarmUp(30, Resolution.Daily)<br><br># In OnData<br>if self.IsWarmingUp:<br>    return<br></pre>
+self.SetWarmUp(30, Resolution.Daily)
+
+# In OnData
+if self.IsWarmingUp:
+    return</pre>
 </div>
 
-- If you have a dynamic universe of underlying assets and add Option contracts to your algorithm with AddOptionContract, you need to warm up the volatility model when the underlying asset enters your universe. You can warm up the underlying volatility model in the security initializer
+<p>If you have a dynamic universe of underlying assets and add Option contracts to your algorithm with the <code>AddOptionContract</code> method, you need to warm up the volatility model when the underlying asset enters your universe. We recommend you do this is inside a security initializer.</p>
 
 
 <div class="section-example-container">
