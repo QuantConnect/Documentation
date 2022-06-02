@@ -9,15 +9,32 @@
 
 <p><code>OptionExerciseOrder</code> objects have the following attributes:</p>
 
-<div data-tree='QuantConnect.Orders.OptionExerciseOrder'></div>
+<div data-tree="QuantConnect.Orders.OptionExerciseOrder"></div>
 
 <h4>OrderEvent Objects</h4>
 
 <p>To create an <code>OrderEvent</code> object, call it's constructor and then update any of the object's members.</p>
 
 <div class="section-example-container">
-    <pre class="csharp">// OrderEvents constructor example</pre>
-    <pre class="python"># OrderEvents constructor example</pre>
+    <pre class="csharp">var orderEvent = new OrderEvent(order.Id,
+                                option.Symbol,
+                                option.LocalTime.ConvertToUtc(option.Exchange.TimeZone),
+                                OrderStatus.Filled,
+                                GetOrderDirection(order.Quantity),
+                                0.0m,
+                                order.Quantity,
+                                OrderFee.Zero,
+                                "Option Exercise") { IsAssignment = false };</pre>
+    <pre class="python">order_event = OrderEvent(order.Id,
+                         option.Symbol,
+                         option.LocalTime.ConvertToUtc(option.Exchange.TimeZone),
+                         OrderStatus.Filled,
+                         GetOrderDirection(order.Quantity),
+                         0.0,
+                         order.Quantity,
+                         OrderFee.Zero,
+                         "Option Exercise")
+order_event.IsAssignment = False</pre>
 </div>
 
 <p>The following table describes the arguments of the <code>OrderEvent</code> constructor:</p>
@@ -33,26 +50,56 @@
     </thead>
     <tbody>
         <tr>
-            <td><code>fastPeriod</code></td>
+            <td><code>orderId</code></td>
 	    <td><code>int</code></td>
-            <td>The fast EMA period</td>
-            <td>12</td>
+            <td>Id of the parent order</td>
+            <td></td>
         </tr>
         <tr>
-            <td><code>slowPeriod</code></td>
-	    <td><code>int</code></td>
-            <td>The slow EMA period</td>
-            <td>26</td>
+            <td><code>symbol</code></td>
+	    <td><code>Symbol</code></td>
+            <td>Asset Symbol</td>
+            <td></td>
         </tr>
         <tr>
-            <td><code>resolution</code></td>
-	    <td><code>Resolution</code></td>
-            <td>The resolution of data sent into the EMA indicators</td>
-            <td><code>Resolution.Daily</code></td>
+            <td><code>utcTime</code></td>
+	    <td><code class="csharp">DateTime</code><code class="python">datetime</code></td>
+            <td>Date/time of this event</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td><code>direction</code></td>
+	    <td><code>OrderDirection</code></td>
+            <td>The direction of the order</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td><code>fillPrice</code></td>
+	    <td><code>decimal</code></td>
+            <td>Fill price information if applicable</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td><code>fillQuantity</code></td>
+	    <td><code>decimal</code></td>
+            <td>Fill quantity</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td><code>orderFee</code></td>
+	    <td><code>OrderFee</code></td>
+            <td>The order fee</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td><code>message</code></td>
+	    <td><code>string</code></td>
+            <td>Message from the exchange</td>
+            <td>""</td>
         </tr>
     </tbody>
 </table>
 
 <p><code>OrderEvent</code> objects have the following attributes:</p>
 
-<div data-tree='QuantConnect.Orders.OrderEvent'></div>
+<div data-tree="QuantConnect.Orders.OrderEvent"></div>
