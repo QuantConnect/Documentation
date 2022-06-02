@@ -1,8 +1,8 @@
-<p>The <code>HistoricalReturnsAlphaModel</code> buys securities that have a positive trailing return and sells securities that have a negative trailing return. It sets the magnitude of the Insight objects to the trailing rate of change.</p>
+<p>The <code>StandardDeviationOfReturnsVolatilityModel</code> Computes the annualized sample standard deviation of daily returns as the volatility of the security.</p>
 
 <div class="section-example-container">
-	<pre class="csharp">AddAlpha(new HistoricalReturnsAlphaModel());</pre>
-	<pre class="python">self.AddAlpha(HistoricalReturnsAlphaModel())</pre>
+	<pre class="csharp">underlying_security.VolatilityModel = new StandardDeviationOfReturnsVolatilityModel(30);</pre>
+	<pre class="python">underlying_security.VolatilityModel = StandardDeviationOfReturnsVolatilityModel(30)</pre>
 </div>
 
 <p>The following table describes the arguments the model accepts:</p>
@@ -18,19 +18,25 @@
     </thead>
     <tbody>
         <tr>
-            <td><code>lookback </code></td>
+            <td><code>periods</code></td>
 	    <td><code>int</code></td>
-            <td>Historical return lookback period</td>
-            <td>1</td>
+            <td>The max number of samples in the rolling window to be considered for calculating the standard deviation of returns</td>
+            <td></td>
         </tr>
         <tr>
             <td><code>resolution</code></td>
-	    <td><code>Resolution</code></td>
+	    <td><code class='csharp'>Resolution?</code><span class='python'><code>Resolution</code>/<code>NoneType</code></span></td>
+            <td>Resolution of the price data inserted into the rolling window series to calculate standard deviation. Will be used as the default value for update frequency if a value is not provided for <code>updateFrequency</code>. This only has a material effect in live mode. For backtesting, this value does not cause any behavioral changes.</td>
+            <td><code class='csharp'>null</code><code class='python'>None</code></td>
+        </tr>
+        <tr>
+            <td><code>updateFrequency</code></td>
+	    <td><code class='csharp'>TimeSpan?</code><span class='python'><code>timedelta</code>/<code>NoneType</code></span></td>
             <td>The resolution of historical data</td>
-            <td><code>Resolution.Daily</code></td>
+            <td><code class='csharp'>null</code><code class='python'>None</code></td>
         </tr>
     </tbody>
 </table>
 
 
-<p>To view the implementation of this model, see the <span class="csharp"><a target="_blank" rel="nofollow" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.Framework/Alphas/HistoricalReturnsAlphaModel.cs">LEAN GitHub repository</a></span><span class="python"><a target="_blank" rel="nofollow" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.Framework/Alphas/HistoricalReturnsAlphaModel.py">LEAN GitHub repository</a></span>.</p>
+<p>To view the implementation of this model, see the <a target="_blank" rel="nofollow" href="https://github.com/QuantConnect/Lean/blob/master/Common/Securities/Volatility/StandardDeviationOfReturnsVolatilityModel.cs">LEAN GitHub repository</a>.</p>
