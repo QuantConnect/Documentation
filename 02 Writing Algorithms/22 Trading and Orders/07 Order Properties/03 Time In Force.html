@@ -30,8 +30,7 @@
 
 <p>
     By default, orders remain open until they are canceled (<code>TimeInForce.GoodTilCanceled</code>). 
-To update the value, set the <code>DefaultOrderProperties.TimeInForce</code> before you place an order. If you update the <code>DefaultOrderProperties</code>, it applies the order properties to all future orders.
-</p>
+To update the value, set the <code>DefaultOrderProperties.TimeInForce</code> before you place an order.</p>
 <div class="section-example-container">
         <pre class="csharp">// Set Limit Order to be good until market close
 DefaultOrderProperties.TimeInForce = TimeInForce.Day;
@@ -47,8 +46,8 @@ self.LimitOrder("IBM", 100, lastClose * 0.999)
 # Set Market Order to be good until noon
 self.DefaultOrderProperties.TimeInForce = TimeInForce.GoodTilDate(datetime(2019, 6, 19, 12, 0, 0))
 self.MarketOrder("IBM", 100)</pre>
-    </div><div><br></div><div>
--We need to note that TimeInForce.Day is incompatible with securities that subscribe to daily resolution data because it will look for the market close time (e.g.: 4 pm) and the daily data only has events at midnight (same issue we have with scheduled events) <br>
--Depending on the brokerage you use, you may not have access to all of these TimeInForce options. To see the TimeInForce options supported by the brokerage you're using, see the <span class="page-section-name">Orders</span> section of the <a href="https://www.quantconnect.com/docs/v2/our-platform/live-trading/brokerages">integration documentation for your brokerage</a>.
+    </div>
 
-</div>
+<p><code>TimeInForce.Day</code> is incompatible with daily data because it cancels the order at the market close time (e.g.: 4 pm) and the daily data only has events at midnight (same issue we have with scheduled events)</p>
+
+<p>The brokerage you use may not support all of the <code>TimeInForce</code> options. To see the options that your brokerage supports, see the <span class="page-section-name">Orders</span> section of the <a href="/docs/v2/our-platform/live-trading/brokerages">brokerage integration documentation</a>.</p>
