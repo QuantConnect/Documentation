@@ -1,8 +1,12 @@
-<p>The <code>StandardDeviationOfReturnsVolatilityModel</code> Computes the annualized sample standard deviation of daily returns as the volatility of the security.</p>
+<p>The <code>RelativeStandardDeviationVolatilityModel</code> sets the volatility of the security to its relative standard deviation such that the value is</p>
+
+<img src='https://cdn.quantconnect.com/i/tu/relativestandarddeviationvolatilitymodel-formula.png' class='docs-image' style='max-height: 65px'>
+
+<p>where <span class='latex-variable'>mean</span> is the average of the asset price samples and <span class='latex-variable'>std</span> is the standard deviation of the samples.</p>
 
 <div class="section-example-container">
-	<pre class="csharp">underlyingSecurity.VolatilityModel = new StandardDeviationOfReturnsVolatilityModel(30);</pre>
-	<pre class="python">underlying_security.VolatilityModel = StandardDeviationOfReturnsVolatilityModel(30)</pre>
+	<pre class="csharp">underlyingSecurity.VolatilityModel = new RelativeStandardDeviationVolatilityModel(30);</pre>
+	<pre class="python">underlying_security.VolatilityModel = RelativeStandardDeviationVolatilityModel(30)</pre>
 </div>
 
 <p>The following table describes the arguments the model accepts:</p>
@@ -18,22 +22,16 @@
     </thead>
     <tbody>
         <tr>
-            <td><code>periods</code></td>
-	    <td><code>int</code></td>
-            <td>The max number of samples in the rolling window to be considered for calculating the standard deviation of returns</td>
+            <td><code>periodSpan</code></td>
+	    <td><code class="csharp">TimeSpan</code><code class="python">timedelta</code></td>
+            <td>The period of time to wait between each sample of the security price<br></td>
             <td></td>
         </tr>
         <tr>
-            <td><code>resolution</code></td>
-	    <td><code class='csharp'>Resolution?</code><span class='python'><code>Resolution</code>/<code>NoneType</code></span></td>
-            <td>Resolution of the price data inserted into the rolling window series to calculate standard deviation. Will be used as the default value for update frequency if a value is not provided for <code>updateFrequency</code>. This only has a material effect in live mode. For backtesting, this value does not cause any behavioral changes.</td>
-            <td><code class='csharp'>null</code><code class='python'>None</code></td>
-        </tr>
-        <tr>
-            <td><code>updateFrequency</code></td>
-	    <td><code class='csharp'>TimeSpan?</code><span class='python'><code>timedelta</code>/<code>NoneType</code></span></td>
-            <td>The resolution of historical data</td>
-            <td><code class='csharp'>null</code><code class='python'>None</code></td>
+            <td><code>periods</code></td>
+	    <td><code>int</code></td>
+            <td>The number of samples to use to calculate the volatility value<br></td>
+            <td></td>
         </tr>
     </tbody>
 </table>
