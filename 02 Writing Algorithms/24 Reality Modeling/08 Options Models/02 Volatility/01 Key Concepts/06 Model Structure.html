@@ -1,8 +1,1 @@
-<p>Volatility models should extend the <code>BaseVolatilityModel</code> class. Extensions of the <code>BaseVolatilityModel</code> class should </p> 
-<div>- Volatility models implement the 
-$[VolatilityModel,T:QuantConnect.Securities.VolatilityModel] interface. 
-We default to the NullVolatilityModel which returns 0 volatility at all 
-times. As a helper, we also provide the 
-$[RelativeStandardDeviationVolatilityModel,T:QuantConnect.Securities.RelativeStandardDeviationVolatilityModel],
- which calculates the volatility based on standard deviation. </div>
-- Volatility models get updated with data each time step and are expected to be updated immediately
+<p>Volatility models should extend the <code>BaseVolatilityModel</code> class. Extensions of the <code>BaseVolatilityModel</code> class must have <code>Update</code> and <code>GetHistoryRequirements</code> methods and a <code>Volatility</code> property. The <code>Update</code> method receives <code>Security</code> and <code>BaseData</code> objects and then updates the <code>Volatility</code>. The <code>GetHistoryRequirements</code> method receives <code>Security</code> and <code class='csharp'>DateTime</code><code class='csharp'>datetime</code> objects and then returns a list of <code>HistoryRequest</code> objects that represent the history requests to warm up the model. Volatility models receive data at each time step in the algorithm to update their state.</p> 
