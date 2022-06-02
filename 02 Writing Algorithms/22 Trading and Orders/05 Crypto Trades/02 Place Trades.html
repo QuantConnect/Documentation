@@ -1,19 +1,24 @@
--Don't use the CalculateOrderQuantity or SetHoldings methods when trading crypto.
-<br>-Instead, calculate the order quantity using the currency amounts in the CashBook and place manual orders.
-<br>-You need to ensure that you have a sufficient balance of the base/quote currency when selling/buying Crypto.
-<br>-For example, if your portfolio holds multiple currencies and you want to purchase BTCUSD, you need to first convert all of the currencies into USD and then you can purchase BTCUSD
+<p>When you place Crypto trades, don't use the <code>CalculateOrderQuantity</code> or <code>SetHoldings</code> methods. Instead, calculate the order quantity based on the currency amounts in your cash book and place manual orders.</p>
 
-<br><br>The following code snippet demonstrates how to allocate 90% of the portfolio to BTC. This example assumes that 90% of the capital in the portfolio is stored in USD or BTC before the trade
-<br><br># Example code snippet
-<br>target_quantity = 0.9 * self.Portfolio.TotalPortfolioValue / self.Securities["BTCUSD"].Price
-<br>quantity = target_quantity - self.Portfolio.CashBook['BTC'].Amount
-<br>self.MarketOrder("BTCUSD", quantity)
+<p>The following code snippet demonstrates how to allocate 90% of the portfolio to BTC.</p>
 
-<br><br>The following example demonstrates how to form an equal-weighted Crypto portfolio, while considering the cash buffer. This example assumes all of the capital is store in USD before the trade.
-<br># Example code snippet
-<br>usd_per_symbol = self.Portfolio.CashBook['USD'].Amount * (1 - self.cash_buffer) / len(self.symbols)
-<br>for symbol in self.symbols:
-<br>&nbsp;&nbsp;&nbsp;&nbsp;self.MarketOrder(symbol, usd_per_symbol / data[symbol].Price)
+<div class="section-example-container">
+<pre class="csharp"></pre>
+<pre class="python">target_quantity = 0.9 * self.Portfolio.TotalPortfolioValue / self.Securities["BTCUSD"].Price
+quantity = target_quantity - self.Portfolio.CashBook['BTC'].Amount
+self.MarketOrder("BTCUSD", quantity) </pre>
+</div>
 
 
-<br><br>For a full example of placing crypto trades, see the BasicTemplateCryptoAlgorithm
+<p>The following example demonstrates how to form an equal-weighted Crypto portfolio, while considering the cash buffer.</p>
+
+<div class="section-example-container">
+<pre class="csharp"></pre>
+<pre class="python">usd_per_symbol = self.Portfolio.CashBook['USD'].Amount * (1 - self.cash_buffer) / len(self.symbols)
+for symbol in self.symbols:
+    self.MarketOrder(symbol, usd_per_symbol / data[symbol].Price) </pre>
+</div>
+
+<p>When you place Crypto trades, ensure you have a sufficient balance of the base or quote currency before each trade. The preceding example assume all of your portfolio capital is in USD. If you hold multiple assets and you want to put all of your capital into BTCUSD, you need to first convert all your non-BTC assets into USD and then purchase BTCUSD.</p>
+
+<p>For a full example of placing crypto trades, see the <span class="python"><a href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.Python/BasicTemplateCryptoAlgorithm.py">BasicTemplateCryptoAlgorithm</a></span><span class="csharp"><a href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.CSharp/BasicTemplateCryptoAlgorithm.cs">BasicTemplateCryptoAlgorithm</a></span>.</p>
