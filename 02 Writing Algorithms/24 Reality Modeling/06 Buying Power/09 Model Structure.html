@@ -2,10 +2,129 @@
 Extensions of the <code>BuyingPowerModel</code> class should implement the following methods: </p>
 
 <div class="section-example-container">
-<pre class="csharp" style="">public class MyBuyingPowerModel : BuyingPowerModel
+<pre class="csharp" style="">class MyBuyingPowerModel : BuyingPowerModel
 {
+    public MyBuyingPowerModel(
+        decimal leverage = 2m,
+        decimal requiredFreeBuyingPowerPercent = 0m
+        )
+        : base(leverage, requiredFreeBuyingPowerPercent)
+    {
+    }
 
+    public override decimal GetLeverage(Security security)
+    {
+       return base.GetLeverage(security);
+    }
+
+	public override void SetLeverage(Security security, decimal leverage)
+	{
+		base.SetLeverage(security, leverage);
+	}
+
+	public override InitialMargin GetInitialMarginRequiredForOrder(
+		InitialMarginRequiredForOrderParameters parameters
+		)
+	{
+		return base.GetInitialMarginRequiredForOrder(parameters);
+	}
+
+	public override MaintenanceMargin GetMaintenanceMargin(MaintenanceMarginParameters parameters)
+	{
+		return base.GetMaintenanceMargin(parameters);
+	}
+
+	protected override decimal GetMarginRemaining(
+		SecurityPortfolioManager portfolio,
+		Security security,
+		OrderDirection direction
+		)
+	{
+		return base.GetMarginRemaining(portfolio, security, direction);
+	}
+
+	public override InitialMargin GetInitialMarginRequirement(InitialMarginParameters parameters)
+	{
+		return base.GetInitialMarginRequirement(parameters);
+	}
+
+	public override HasSufficientBuyingPowerForOrderResult HasSufficientBuyingPowerForOrder(HasSufficientBuyingPowerForOrderParameters parameters)
+	{
+		return base.HasSufficientBuyingPowerForOrder(parameters);
+	}
+
+	public override GetMaximumOrderQuantityResult GetMaximumOrderQuantityForDeltaBuyingPower(
+		GetMaximumOrderQuantityForDeltaBuyingPowerParameters parameters)
+	{
+		return base.GetMaximumOrderQuantityForDeltaBuyingPower(parameters);
+	}
+
+	public override GetMaximumOrderQuantityResult GetMaximumOrderQuantityForTargetBuyingPower(GetMaximumOrderQuantityForTargetBuyingPowerParameters parameters)
+	{
+		return base.GetMaximumOrderQuantityForTargetBuyingPower(parameters);
+	}
+
+	public override ReservedBuyingPowerForPosition GetReservedBuyingPowerForPosition(ReservedBuyingPowerForPositionParameters parameters)
+	{
+		return base.GetReservedBuyingPowerForPosition(parameters);
+	}
+
+	public override BuyingPower GetBuyingPower(BuyingPowerParameters parameters)
+	{
+		return base.GetBuyingPower(parameters);
+	}
 }</pre>
 <pre class="python">class MyBuyingPowerModel(BuyingPowerModel):
-    pass</pre>
+    def __init__(self,
+        leverage = 2,
+        requiredFreeBuyingPowerPercent = 0
+        ):
+        super().__init__(leverage, requiredFreeBuyingPowerPercent)
+
+    def GetLeverage(self, security: Security) -> float: 
+        return super().GetLeverage(security)
+
+    def SetLeverage(self, security: Security, leverage: float) -> None: 
+        super().SetLeverage(security, leverage)
+
+    def GetInitialMarginRequiredForOrder(self,
+         parameters: InitialMarginRequiredForOrderParameters) -> InitialMargin:
+        return super().GetInitialMarginRequiredForOrder(parameters)
+
+    def GetMaintenanceMargin(self,
+         parameters: MaintenanceMarginParameters)-> MaintenanceMargin: 
+        return super().GetMaintenanceMargin(parameters)
+
+    def GetMarginRemaining(self,
+         portfolio: SecurityPortfolioManager,
+         security: Security,
+         direction: OrderDirection
+        ) -> float: 
+        return super().GetMarginRemaining(portfolio, security, direction)
+
+    def GetInitialMarginRequirement(self,
+         parameters: InitialMarginParameters) -> InitialMargin:
+        return super().GetInitialMarginRequirement(parameters)
+
+    def HasSufficientBuyingPowerForOrder(self, 
+          parameters: HasSufficientBuyingPowerForOrderParameters
+        ) -> HasSufficientBuyingPowerForOrderResult: 
+        return super().HasSufficientBuyingPowerForOrder(parameters)
+
+    def GetMaximumOrderQuantityForDeltaBuyingPower(self, 
+         parameters: GetMaximumOrderQuantityForDeltaBuyingPowerParameters) -> GetMaximumOrderQuantityResult:
+        return super().GetMaximumOrderQuantityForDeltaBuyingPower(parameters)
+
+    def GetMaximumOrderQuantityForTargetBuyingPower(self, 
+         parameters: GetMaximumOrderQuantityForTargetBuyingPowerParameters) -> GetMaximumOrderQuantityResult:
+        return super().GetMaximumOrderQuantityForTargetBuyingPower(parameters)
+
+    def GetReservedBuyingPowerForPosition(self, 
+         parameters: ReservedBuyingPowerForPositionParameters) -> ReservedBuyingPowerForPosition:
+        return super().GetReservedBuyingPowerForPosition(parameters)
+
+    def GetBuyingPower(self,
+         parameters: BuyingPowerParameters) -> BuyingPower:
+        return super().GetBuyingPower(parameters)
+</pre>
 </div>
