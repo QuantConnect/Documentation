@@ -14,7 +14,7 @@ $getUpdateIndividualFieldsText = function($supportedMethods) {
     
     foreach ($fieldsToMethod as $key => $value)
     {
-        if (in_array($key, $supportedMethods)
+        if (in_array($key, $supportedMethods))
         {
             echo "<li><code>{$key}</code></li>";
         }
@@ -28,7 +28,7 @@ $getUpdateIndividualFieldsText = function($supportedMethods) {
         
     foreach ($fieldsToMethod as $key => $value)
     {
-        if (in_array($key, $supportedMethods)
+        if (in_array($key, $supportedMethods))
         {
             echo $value["C#"];
             echo "
@@ -40,7 +40,7 @@ $getUpdateIndividualFieldsText = function($supportedMethods) {
 <pre class=\"python\">";
     foreach ($fieldsToMethod as $key => $value)
     {
-        if (in_array($key, $supportedMethods)
+        if (in_array($key, $supportedMethods))
         {
             echo $value["Python"];
             echo "
