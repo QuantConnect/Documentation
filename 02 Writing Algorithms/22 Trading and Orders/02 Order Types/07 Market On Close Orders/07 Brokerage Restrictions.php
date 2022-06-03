@@ -1,4 +1,4 @@
 <?php
 include(DOCS_RESOURCES."/order-types/brokerage-restrictions.php");
-$getBrokerageRestrictionsText("market on close orders");
+$getBrokerageRestrictionsText("MOC orders");
 ?>
