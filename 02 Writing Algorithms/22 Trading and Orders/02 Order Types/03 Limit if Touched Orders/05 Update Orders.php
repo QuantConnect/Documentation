@@ -47,21 +47,3 @@ echo file_get_contents(DOCS_RESOURCES."/order-types/update-requests.html");
 
 ?>
 
-<p>To update individual fields of an order, call any of the following methods:</p>
-
-<ul>
-    <li><code>UpdateLimitPrice</code></li>
-    <li><code>UpdateQuantity</code></li>
-    <li><code>UpdateTag</code></li>
-</ul>
-
-<div class="section-example-container">
-<pre class="csharp">
-  - UpdateLimitPrice (can pass in a tag)
-  - UpdateQuantity (can pass in a tag)
-  - UpdateTag</pre>
-<pre class="python">  - UpdateLimitPrice (can pass in a tag)
-  - UpdateQuantity (can pass in a tag)
-  - UpdateTag</pre>
-</div>
-
