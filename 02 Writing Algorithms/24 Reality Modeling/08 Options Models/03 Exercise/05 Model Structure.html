@@ -1,8 +1,70 @@
 <p>Option exercise models should extend the <code>DefaultExerciseModel</code> class. Extensions of the <code>DefaultExerciseModel</code> class must implement the <code>OptionExercise</code> method, which receives <code>Option</code> and <code>OptionExerciseOrder</code> objects and then returns a list of <code>OrderEvent</code> objects that contain the order fill information.</p>
 
 <div class="section-example-container">
-    <pre class="csharp">// Custom exercise model structure</pre>
-    <pre class="python"># Custom exercise model structure</pre>
+    <pre class="csharp">public class MyExerciseModel : IOptionExerciseModel
+{
+    public IEnumerable&lt;OrderEvent&gt; OptionExercise(Option option, OptionExerciseOrder order)
+    {
+        var underlying = option.Underlying;
+        var utcTime = option.LocalTime.ConvertToUtc(option.Exchange.TimeZone);
+
+        var inTheMoney = option.IsAutoExercised(underlying.Close);
+        var isAssignment = inTheMoney && option.Holdings.IsShort;
+
+        yield return new OrderEvent(
+            order.Id,
+            option.Symbol,
+            utcTime,
+            OrderStatus.Filled,
+            GetOrderDirection(order.Quantity),
+            0.0m,
+            order.Quantity,
+            OrderFee.Zero,
+            GetContractHoldingsAdjustmentFillTag(inTheMoney, isAssignment)
+        ) { IsAssignment = isAssignment }
+    }
+
+    private static string GetContractHoldingsAdjustmentFillTag(bool inTheMoney, bool isAssignment)
+    {
+        var action = isAssignment ? "Assignment" : "Exercise";
+        if (inTheMoney)
+        {
+            return $"Automatic {action}";
+        }
+
+        return "OTM";
+    }
+}</pre>
+    <pre class="python">class MyExerciseModel:
+    def OptionExercise(self, option, order):
+        underlying = option.Underlying
+        utcTime = option.LocalTime.ConvertToUtc(option.Exchange.TimeZone)
+        
+        inTheMoney = option.IsAutoExercised(underlying.Close)
+        isAssignment = (inTheMoney & option.Holdings.IsShort)
+        
+        order_event = OrderEvent(
+            order.Id,
+            option.Symbol,
+            utcTime,
+            OrderStatus.Filled,
+            GetOrderDirection(order.Quantity),
+            0.0,
+            order.Quantity,
+            OrderFee.Zero,
+            self.GetContractHoldingsAdjustmentFillTag(inTheMoney, isAssignment)
+        )
+        order_event.IsAssignment = isAssignment
+
+        yield order_event
+        
+    def GetContractHoldingsAdjustmentFillTag(self, inTheMoney, isAssignment):
+        action = "Assignment" if isAssignment else "Exercise"
+        
+        if inTheMoney:
+            return f"Automatic {action}"
+        
+        return "OTM"</pre>
 </div>
 
 <h4>OptionExerciseOrder Objects</h4>

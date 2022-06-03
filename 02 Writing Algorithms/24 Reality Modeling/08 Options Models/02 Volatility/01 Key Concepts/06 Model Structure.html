@@ -1,6 +1,49 @@
 <p>Volatility models should extend the <code>BaseVolatilityModel</code> class. Extensions of the <code>BaseVolatilityModel</code> class must have <code>Update</code> and <code>GetHistoryRequirements</code> methods and a <code>Volatility</code> property. The <code>Update</code> method receives <code>Security</code> and <code>BaseData</code> objects and then updates the <code>Volatility</code>. The <code>GetHistoryRequirements</code> method receives <code>Security</code> and <code class='csharp'>DateTime</code><code class='csharp'>datetime</code> objects and then returns a list of <code>HistoryRequest</code> objects that represent the history requests to warm up the model. Volatility models receive data at each time step in the algorithm to update their state.</p> 
 
 <div class="section-example-container">
-    <pre class="csharp"></pre>
-    <pre class="python"></pre>
+    <pre class="csharp">public class MyVolatilityModel : BaseVolatilityModel
+{
+    public override decimal Volatility { get; }
+
+    public override void SetSubscriptionDataConfigProvider(
+        ISubscriptionDataConfigProvider subscriptionDataConfigProvider)
+    {
+        SubscriptionDataConfigProvider = subscriptionDataConfigProvider;
+    }
+
+    public override void Update(Security security, BaseData data)
+    {
+    }
+
+    public override IEnumerable&lt;HistoryRequest&gt; GetHistoryRequirements(
+        Security security,
+        DateTime utcTime
+        )
+    {
+        return base.GetHistoryRequirements(security, utcTime);
+    }
+
+    public IEnumerable&lt;HistoryRequest&gt; GetHistoryRequirements(
+        Security security, 
+        DateTime utcTime,
+        Resolution? resolution,
+        int barCount)
+    {
+        return base.GetHistoryRequirements(security, utcTime, resolution, barCount);
+    }
+}</pre>
+    <pre class="python">class MyVolatilityModel(BaseVolatilityModel):
+    Volatility = 0
+
+    def SetSubscriptionDataConfigProvider(self, subscriptionDataConfigProvider):
+        SubscriptionDataConfigProvider = subscriptionDataConfigProvider
+
+    def Update(self, security, data):
+        pass
+
+    def GetHistoryRequirements(self, security, utcTime):
+        return super().GetHistoryRequirements(security, utcTime)
+
+    def GetHistoryRequirements(self, security, utcTime, resolution=None, barCount=None):
+        return super().GetHistoryRequirements(security, utcTime, resolution, barCount)</pre>
 </div>

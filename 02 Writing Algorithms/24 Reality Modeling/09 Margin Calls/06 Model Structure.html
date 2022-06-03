@@ -5,7 +5,31 @@
 <p>The <code>ExecuteMarginCall</code> method receives the list of <code>SubmitOrderRequest</code> objects from the <code>GetMarginCallOrders</code> method, executes some of them, and returns a list of <code>OrderTicket</code> objects.</p>
 
 <div class="section-example-container">
-	<pre class="csharp"></pre>
-	<pre class="python"></pre>
+	<pre class="csharp">public class MyMarginCallModel : DefaultMarginCallModel
+{
+	public MyMarginCallModel(SecurityPortfolioManager portfolio, IOrderProperties defaultOrderProperties)
+		: base(portfolio, defaultOrderProperties)
+	{
+	}
+	
+	protected override SubmitOrderRequest GenerateMarginCallOrder(Security security, decimal totalPortfolioValue, decimal totalUsedMargin)
+	{
+		return base.GenerateMarginCallOrder(security, totalPortfolioValue, totalUsedMargin)
+	}
+
+	public override List&lt;OrderTicket&gt; ExecuteMarginCall(IEnumerable&lt;SubmitOrderRequest&gt; generatedMarginCallOrders)
+	{
+		return base.ExecuteMarginCall(generatedMarginCallOrders)
+	}
+}</pre>
+	<pre class="python">class MyMarginCallModel(DefaultMarginCallModel):
+	def __init__(self, portfolio, defaultOrderProperties):
+		super(portfolio, defaultOrderProperties)
+	
+	def GenerateMarginCallOrder(self, security, totalPortfolioValue, totalUsedMargin):
+		return super.GenerateMarginCallOrder(security, totalPortfolioValue, totalUsedMargin)
+
+	def ExecuteMarginCall(self, generatedMarginCallOrders):
+		return super.ExecuteMarginCall(generatedMarginCallOrders)</pre>
 </div>
 
