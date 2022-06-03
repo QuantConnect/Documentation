@@ -41,7 +41,6 @@ quotation = '\"'
 def TableCreation(raw, namespace=""):
     object_ = ""
     active = False
-    first_description = ""
     description = ""
     code = ""
     enum = ""
@@ -83,8 +82,6 @@ def TableCreation(raw, namespace=""):
             if "remarks" not in line and "summary" not in line:
                 description += " "
             
-            if not active:
-                first_description = description
             continue
                 
         else:
@@ -101,9 +98,6 @@ def TableCreation(raw, namespace=""):
 
 <table class="qc-table table">
 <thead>
-    <tr>
-        <th colspan="3">{namespace}.{object_} - {first_description.replace("<see cref=" + quotation, "<code>").replace(quotation + "/>", "</code>")}</th>
-    </tr>
     <tr>
         <th style="width: 25%;">Member</th>
         <th style="width: 5%;">Value</th>
