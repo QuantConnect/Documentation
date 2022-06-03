@@ -34,10 +34,7 @@ if response.IsSuccess:
 </pre>
 </div>
 
-<p><code>OrderResponse</code> objects have the following attributes:</p>
-<div data-tree="QuantConnect.Orders.OrderResponse"></div>
-
-<p>If your order update fails, check the <code>ErrorCode</code> or <code>ErrorMessage</code>. For more information about specific order errors, see the <a href="/docs/v2/writing-algorithms/trading-and-orders/order-errors#19-Error-Code-Reference">Error Code Reference</a>.</p>
+<?php echo file_get_contents(DOCS_RESOURCES."/order-types/order-response.html"); ?>
 
 <p>To update individual fields of an order, call any of the following methods:</p>
 
@@ -58,13 +55,6 @@ if response.IsSuccess:
 </div>
 
 
-<p>To get a list of update requests for the order, call the <code>UpdateRequests</code> method, which returns an <code>UpdateOrderRequest</code> object.</p>
+<?php echo file_get_contents(DOCS_RESOURCES."/order-types/update-requests.html"); ?>
 
-<div class="section-example-container">
-<pre class="csharp"># UpdateRequests code snippet</pre>
-<pre class="python">// UpdateRequests code snippet</pre>
-</div>
 
-<p><code>UpdateOrderRequest</code> objects have the following attributes:</p>
-
-<div data-tree="QuantConnect.Orders.UpdateOrderRequest"></div>
