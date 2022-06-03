@@ -35,10 +35,33 @@ if response.IsSuccess:
 </pre>
 </div>
 
-<?php echo file_get_contents(DOCS_RESOURCES."/order-types/order-response.html"); ?>
+<?php 
 
+echo file_get_contents(DOCS_RESOURCES."/order-types/order-response.html"); 
 
-<div>-You can also update individual fields of an order with the following methods:<br></div><div>&nbsp; - UpdateQuantity (can pass in a tag)</div><div>&nbsp; - UpdateLimitPrice (can pass in a tag)</div><div>&nbsp; - UpdateTag</div><div><br></div>
+include(DOCS_RESOURCES."/order-types/update-individual-fields.php");
+$supportedMethods = array("UpdateLimitPrice", "UpdateQuantity", "UpdateTag");
+$getUpdateIndividualFieldsText($supportedMethods);
 
+echo file_get_contents(DOCS_RESOURCES."/order-types/update-requests.html");
 
-<?php echo file_get_contents(DOCS_RESOURCES."/order-types/update-requests.html"); ?>
+?>
+
+<p>To update individual fields of an order, call any of the following methods:</p>
+
+<ul>
+    <li><code>UpdateLimitPrice</code></li>
+    <li><code>UpdateQuantity</code></li>
+    <li><code>UpdateTag</code></li>
+</ul>
+
+<div class="section-example-container">
+<pre class="csharp">
+  - UpdateLimitPrice (can pass in a tag)
+  - UpdateQuantity (can pass in a tag)
+  - UpdateTag</pre>
+<pre class="python">  - UpdateLimitPrice (can pass in a tag)
+  - UpdateQuantity (can pass in a tag)
+  - UpdateTag</pre>
+</div>
+
