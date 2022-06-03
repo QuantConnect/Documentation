@@ -1,11 +1,10 @@
-<p>
-If you are looking to size positions but not use <i>market orders</i> for the trades, you can use the $[CalculateOrderQuantity, M:QuantConnect.Algorithm.QCAlgorithm.CalculateOrderQuantity] method to get an accurate estimate of the number of shares available to purchase with a given buying power fraction. The share quantity is calculated based on the current price of the asset and adjusted for the fee model attached to that security. 
-</p>
+<p>The <code>SetHoldings</code> method uses market order to reach the targets you give it. If you want to use a different order type, you need to specify the quantity to trade. To calculate the number of units to trade based on a portfolio weight, call the <code>CalculateOrderQuantity</code> method. The method calculates the quantity based on the current price of the asset and adjusts it for the fee model attached to the security. The target weight you provide is an unleveraged value. For instance, if you have 2x leverage and request a 100% weight, the method calculates the quantity that uses half of your available margin.</p>
+
 <div class="section-example-container">
-<pre class="csharp">// Calculate the fee adjusted quantity of shares with given buying power
+<pre class="csharp">// Calculate the fee-adjusted quantity of shares with given buying power
 var quantity = CalculateOrderQuantity("IBM", 0.4);
 </pre>
-<pre class="python"> # Calculate the fee adjusted quantity of shares with given buying power
+<pre class="python"> # Calculate the fee-adjusted quantity of shares with given buying power
 quantity = self.CalculateOrderQuantity("IBM", 0.4)
 </pre>
 </div>
