@@ -34,27 +34,16 @@ if response.IsSuccess:
 </pre>
 </div>
 
-<?php echo file_get_contents(DOCS_RESOURCES."/order-types/order-response.html"); ?>
+<?php 
 
-<p>To update individual fields of an order, call any of the following methods:</p>
+echo file_get_contents(DOCS_RESOURCES."/order-types/order-response.html"); 
 
-<ul>
-    <li><code>UpdateLimitPrice</code></li>
-    <li><code>UpdateQuantity</code></li>
-    <li><code>UpdateTag</code></li>
-</ul>
+include(DOCS_RESOURCES."/order-types/update-individual-fields.php");
+$supportedMethods = array("UpdateLimitPrice", "UpdateQuantity", "UpdateTag");
+$getUpdateIndividualFieldsText($supportedMethods);
 
-<div class="section-example-container">
-<pre class="csharp">
-  - UpdateLimitPrice (can pass in a tag)
-  - UpdateQuantity (can pass in a tag)
-  - UpdateTag</pre>
-<pre class="python">  - UpdateLimitPrice (can pass in a tag)
-  - UpdateQuantity (can pass in a tag)
-  - UpdateTag</pre>
-</div>
+echo file_get_contents(DOCS_RESOURCES."/order-types/update-requests.html");
 
-
-<?php echo file_get_contents(DOCS_RESOURCES."/order-types/update-requests.html"); ?>
+?>
 
 
