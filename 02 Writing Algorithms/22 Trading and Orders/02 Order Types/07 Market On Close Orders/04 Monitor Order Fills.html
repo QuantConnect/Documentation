@@ -1,4 +1,4 @@
-<p>Market on close orders fill at the closing auction. To monitor the fills of your order, save a reference to the <a href="/docs/v2/writing-algorithms/trading-and-orders/order-management/order-tickets">order ticket</a>.</p>
+<p>Market on close orders fill at the closing auction. If the auction is heavily skewed to one side of the market, your market on close order may not fill. To monitor the fills of your order, save a reference to the <a href="/docs/v2/writing-algorithms/trading-and-orders/order-management/order-tickets">order ticket</a>.</p>
 
 <div class="section-example-container">
 <pre class="csharp">// Buy 10 shares of SPY at the market close
@@ -9,10 +9,6 @@ ticket = self.MarketOnCloseOrder("SPY", 10)
 self.Debug(f"Quantity filled: {ticket.QuantityFilled}; Fill price: {ticket.AverageFillPrice}")</pre>
 </div>
 
-<p>
-- When you place a market on close order, you do not know its fill price until after the order is completed. If your order quantity is too close to your total portfolio buying power and the security is very volatile, your order may be rejected. We recommend you consider this when sizing your portfolio to increase your probability of successful trades. You may need to adjust your cash buffer<br></p>
-- Not guaranteed to fill if the auction is heavily skewed to one side of the order book 
-
-
+<p>You won't know the fill price of the order until after the market closes. If the asset price moves before the market close to where you can't afford the quantity of the order, the brokerage rejects your order. To increase the probability of a successful trade, leave a sufficient <a href="/docs/v2/writing-algorithms/trading-and-orders/position-sizing#05-Buying-Power-Buffer">buying power buffer</a> to handle the price movements before the close.</p>
 
 <p>For more information about how LEAN models order fills in backtests, see <a href="/docs/v2/writing-algorithms/reality-modeling/trade-fills/key-concepts">Trade Fills</a>.</p>
