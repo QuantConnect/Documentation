@@ -1,1 +1,36 @@
-<div>What are OCO orders?</div><div>- They are a set of orders that when one is filled, the rest of the orders are canceled.</div><div>- An example is setting a take-profit and stop-loss orders right after entering a position. When one is filled, you cancel the other.<br></div><div><br></div><div>Why use OCO orders?</div><div>- Bracket orders create an upper and lower bound on the exit threshold price of your trade</div><div>- Risk management.<br></div><div><br></div><div>Why not use OCO orders?</div><div>- Depending on how you set them up, they can be prone to errors. For instance, if multiple exit OCO orders are filled at once.<br></div><div><br></div><div>How to use OCO orders?</div><div>- You can set the OCO orders with real orders or manually simulate them.</div><div>&nbsp;&nbsp;&nbsp;&nbsp; - If you set real OCO orders, the orders need to be far enough apart from eachother so that multiple orders aren't triggered in a single time step (bar).</div><div>&nbsp;&nbsp;&nbsp;&nbsp; - The benefit of manually simulating the orders is that the OCO orders can't both be triggered in the same time step.<br></div><div>- To manually simulate the OCO orders, save the OCO order prices using the fill price of the entry order. (starting point: https://www.quantconnect.com/forum/discussion/13538/es-scalping-onorderevent-oco-problem/p1/comment-39887), this simulates <br></div><div>- To place OCO orders, An alternative is to set the OCO orders in the OnOrderEvent handler when the entry order is filled (https://www.quantconnect.com/forum/discussion/562/one-cancels-other-or-all-and-order-attachment/p1/comment-22133), <br></div><div>-It's best practice to set the price of your OCO orders by a function of the entry order fill price. If your entry order isn't a market order, you can get the fill price of the entry order in OnOrderEvent.</div><div>- ^Provide examples of these techniques<br></div>
+<p>One cancels the other (OCO) orders are a set of orders that when one fills, it cancels the rest of the orders in the set. An example is to set a take-profit and a stop-loss order right after you enter a position. In this example, when either the take-profit or stop-loss order fills, you cancel the other order. OCO orders usually create an upper and lower bound on the exit price of a trade. </p>
+
+<p>When you place OCO orders, their price levels are usually relative to the fill price of an entry trade. If your entry trade is a synchronous market order, you can immediately get the fill price from the order ticket. If your entry trade doesn't execute immediately, you can get the fill price in the <a href="/docs/v2/writing-algorithms/trading-and-orders/order-events#04-Track-Order-Events">OnOrderEvents</a> event handler.</p> 
+
+<div class="section-example-container">
+<pre class="csharp">// Get the fill price from the order ticket of a sync market order
+
+// Get the fill price from the OnOrderEvent event handler</pre>
+<pre class="python"># Get the fill price from the order ticket of a sync market order
+
+# Get the fill price from the OnOrderEvent event handler</pre>
+</div>
+
+<p>After you have the target price levels, to implement the OCO orders, you can you can place active orders or track the security price to simulate them.</p>
+
+<h4>Place Active Orders</h4>
+
+<p>If you set active OCO orders, the orders need to have price levels that are far enough apart from eachother so that multiple orders aren't triggered in a single time step.</p>
+
+To place OCO orders, An alternative is to set the OCO orders in the OnOrderEvent handler when the entry order is filled ()
+
+
+<div class="section-example-container">
+<pre class="csharp">// Starting point: https://www.quantconnect.com/forum/discussion/562/one-cancels-other-or-all-and-order-attachment/p1/comment-22133</pre>
+<pre class="python"># Starting point: https://www.quantconnect.com/forum/discussion/562/one-cancels-other-or-all-and-order-attachment/p1/comment-22133</pre>
+</div>
+
+<h4>Simulate Orders</h4>
+<p>The benefit of manually simulating the OCO orders is that both the OCO orders can't fill in the same time step.</p>
+
+To manually simulate the OCO orders, save the OCO order prices using the fill price of the entry order. (starting point: )
+
+<div class="section-example-container">
+<pre class="csharp">// Starting point https://www.quantconnect.com/forum/discussion/13538/es-scalping-onorderevent-oco-problem/p1/comment-39887</pre>
+<pre class="python"># Starting point https://www.quantconnect.com/forum/discussion/13538/es-scalping-onorderevent-oco-problem/p1/comment-39887</pre>
+</div>
