@@ -1,5 +1,5 @@
 <p>
-You can update the quantity and tag of market on close orders. To update an order, pass a $[UpdateOrderFields, T:QuantConnect.Orders.UpdateOrderFields] object to the Update method on the $[OrderTicket, T:QuantConnect.Orders.OrderTicket]. The Update method returns an $[OrderResponse, T:QuantConnect.Orders.OrderResponse] to signal the success or failure of the update request. You can update orders until they are filled or the brokerage prevents modifications.
+You can update the quantity and tag of market on close orders until the order fills or the brokerage prevents modifications. To update an order, pass an <code>UpdateOrderFields</code> object to the <code>Update</code> method on the <code>OrderTicket</code>. The <code>Update</code> method returns an <code>OrderResponse</code> to signal the success or failure of the update request.
 </p>
 
 <div class="section-example-container">
