@@ -14,16 +14,16 @@
         if self.fast.Update(time, value) and self.slow.Update(time, value):
             fast = self.fast.Current.Value
             slow = self.slow.Current.Value
-            self.is_uptrend = fast &gt; slow * self.tolerance
+            self.is_uptrend = fast > slow * self.tolerance
 
         if self.is_uptrend:
             self.scale = (fast - slow) / ((fast + slow) / 2.0)</pre>
-	<pre class="csharp">private class SymbolData
+	<pre class="csharp">private class SelectionData
 {
     public readonly ExponentialMovingAverage Fast;
     public readonly ExponentialMovingAverage Slow;
 
-    public SymbolData()
+    public SelectionData()
     {
         Fast = new ExponentialMovingAverage(100);
         Slow = new ExponentialMovingAverage(300);
@@ -38,7 +38,7 @@
     // updates the EMA50 and EMA100 indicators, returning true when they're both ready
     public bool Update(DateTime time, decimal value)
     {
-        return Fast.Update(time, value) &amp;&amp; Slow.Update(time, value);
+        return Fast.Update(time, value) && Slow.Update(time, value);
     }
 }</pre>
 </div>
