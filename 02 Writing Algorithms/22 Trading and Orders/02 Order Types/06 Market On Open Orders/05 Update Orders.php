@@ -31,9 +31,14 @@ if response.IsSuccess:
      self.Debug("Order updated successfully")
 </pre>
 </div>
+<?php 
 
--If an order update is not successful, you can check the ErrorCode/ErrorMessage. For more information, see <a href="/docs/v2/writing-algorithms/trading-and-orders/order-errors">Order Errors</a>.<br><br>
+echo file_get_contents(DOCS_RESOURCES."/order-types/order-response.html"); 
 
-<div>-You can also update individual fields of an order with the following methods:<br></div><div>&nbsp; - UpdateQuantity (can pass in a tag)</div><div>&nbsp; - UpdateTag</div><div><br></div><div>-To get a list of update requests for the order, call the UpdateRequests
- method. It returns an UpdateOrderRequest which has the following 
-properties: Quantity<br></div><div><br></div>
+include(DOCS_RESOURCES."/order-types/update-individual-fields.php");
+$supportedMethods = array("UpdateQuantity", "UpdateTag");
+$getUpdateIndividualFieldsText($supportedMethods);
+
+echo file_get_contents(DOCS_RESOURCES."/order-types/update-requests.html");
+
+?>
