@@ -1,9 +1,9 @@
 <?php
 $getUpdateIndividualFieldsText = function($supportedMethods) {
     $fieldsToMethod = array(
-      "UpdateLimitPrice" => array("C#" => "var limitResponse = ticket.UpdateLimitPrice(limitPrice, tag);", "Python" => "limit_response = ticket.UpdateLimitPrice(limitPrice, tag)"), 
-      "UpdateQuantity"  => array("C#" => "var quantityResponse = ticket.UpdateQuantity(quantity, tag);", "Python" => "limit_response = ticket.UpdateQuantity(quantity, tag)"), 
-      "UpdateStopPrice"  => array("C#" => "var stopResponse = ticket.UpdateStopPrice(stopPrice, tag);", "Python" => "limit_response = ticket.UpdateStopPrice(stopPrice, tag)"), 
+      "UpdateLimitPrice" => array("C#" => "var limitResponse = ticket.UpdateLimitPrice(limitPrice, tag);", "Python" => "response = ticket.UpdateLimitPrice(limitPrice, tag)"), 
+      "UpdateQuantity"  => array("C#" => "var quantityResponse = ticket.UpdateQuantity(quantity, tag);", "Python" => "response = ticket.UpdateQuantity(quantity, tag)"), 
+      "UpdateStopPrice"  => array("C#" => "var stopResponse = ticket.UpdateStopPrice(stopPrice, tag);", "Python" => "response = ticket.UpdateStopPrice(stopPrice, tag)"), 
       "UpdateTag" => array("C#" => "var tagResponse = ticket.UpdateTag(tag);", "Python" => "limit_response = ticket.UpdateTag(tag)")
     );
   
