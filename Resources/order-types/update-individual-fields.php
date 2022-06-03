@@ -5,7 +5,7 @@ $getUpdateIndividualFieldsText = function($supportedMethods) {
       "UpdateQuantity"  => array("C#" => "var quantityResponse = ticket.UpdateQuantity(quantity, tag);", "Python" => "limit_response = ticket.UpdateQuantity(quantity, tag)"), 
       "UpdateStopPrice"  => array("C#" => "var stopResponse = ticket.UpdateStopPrice(stopPrice, tag);", "Python" => "limit_response = ticket.UpdateStopPrice(stopPrice, tag)"), 
       "UpdateTag" => array("C#" => "var tagResponse = ticket.UpdateTag(tag);", "Python" => "limit_response = ticket.UpdateTag(tag)")
-    )
+    );
   
     echo "
         <p>To update individual fields of an order, call any of the following methods:</p>
