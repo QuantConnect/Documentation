@@ -10,8 +10,6 @@ enum_objects = [
     "Common/Algorithm/Framework/Alphas/InsightDirection.cs",
     "Common/Brokerages/BrokerageMessageType.cs",
     "Common/Chart.cs",
-    "Common/Data/Auxiliary/QuoteConditionFlags.cs",
-    "Common/Data/Auxiliary/TradeConditionFlags.cs",
     "Common/Data/FileFormat.cs",
     "Common/Data/Market/BarDirection.cs",
     "Common/Data/Market/RenkoType.cs",
@@ -99,7 +97,7 @@ def TableCreation(raw, namespace=""):
             
     if not current_object: return
 
-    html = f'''<p>The following table describes the <code>{object_}</code> class selector methods:</p>
+    html = f'''<p>The following table describes the <code>{object_}</code> enumerator members:</p>
 
 <table class="qc-table table">
 <thead>
@@ -107,8 +105,8 @@ def TableCreation(raw, namespace=""):
         <th colspan="3">{namespace}.{object_} - {first_description.replace("<see cref=" + quotation, "<code>").replace(quotation + "/>", "</code>")}</th>
     </tr>
     <tr>
-        <th style="width: 5%;">Enum</th>
-        <th style="width: 25%;">Value</th>
+        <th style="width: 25%;">Member</th>
+        <th style="width: 5%;">Value</th>
         <th style="width: 70%;">Description</th>
     </tr>
 </thead>
@@ -128,8 +126,8 @@ def TableCreation(raw, namespace=""):
 
     for enum, content in sorted(current_object.items(), key=lambda x: int(x[1]["code"])):
         html += f'''    <tr>
-        <td>{content["code"]}</td>
         <td>{enum}</td>
+        <td>{content["code"]}</td>
         <td>{content["description"].replace("<see cref=" + quotation, "<code>").replace(quotation + "/>", "</code>")}</td>
     </tr>
 '''
