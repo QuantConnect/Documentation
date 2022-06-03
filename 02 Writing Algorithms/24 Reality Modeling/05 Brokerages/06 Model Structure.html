@@ -3,23 +3,26 @@
 <div class="section-example-container">
 <pre class="csharp">class MyBrokerageModel : DefaultBrokerageModel
 {
-    public static new readonly IReadOnlyDictionary<SecurityType, string> DefaultMarketMap;
+    public static new readonly IReadOnlyDictionary<securitytype, string=""> DefaultMarketMap;
 
     public override decimal RequiredFreeBuyingPowerPercent { get; }
 
-    public override IReadOnlyDictionary<SecurityType, string> DefaultMarkets => DefaultMarketMap;
+    public override IReadOnlyDictionary<securitytype, string=""> DefaultMarkets =&gt; DefaultMarketMap;
 
-    public MyBrokerageModel(AccountType accountType = AccountType.Margin) : base(accountType)
+    public MyBrokerageModel(AccountType accountType = AccountType.Margin)
+        : base(accountType)
     {
         ShortableProvider = new NullShortableProvider();
     }
 
-    public override bool CanSubmitOrder(Security security, Order order, out BrokerageMessageEvent message)
+    public override bool CanSubmitOrder(Security security, Order order,
+        out BrokerageMessageEvent message)
     {
         return base.CanSubmitOrder(security, order, out message);
     }
 
-    public override bool CanUpdateOrder(Security security, Order order, UpdateOrderRequest request, out BrokerageMessageEvent message)
+    public override bool CanUpdateOrder(Security security, Order order,
+        UpdateOrderRequest request, out BrokerageMessageEvent message)
     {
         return base.CanUpdateOrder(security, order, request, out message);
     }
@@ -29,7 +32,7 @@
         return base.CanExecuteOrder(security, order);
     }
 
-    public override void ApplySplit(List<OrderTicket> tickets, Split split)
+    public override void ApplySplit(List<orderticket> tickets, Split split)
     {
         base.ApplySplit(tickets, split);
     }
@@ -74,7 +77,7 @@
         return ShortableProvider;
     }
 }
-</pre>
+</orderticket></securitytype,></securitytype,></pre>
 <pre class="python">class MyBrokerageModel(DefaultBrokerageModel):
     DefaultMarkets = {}
     RequiredFreeBuyingPowerPercent = 0
@@ -83,40 +86,42 @@
         self.AccountType = accountType
         self.ShortableProvider = NullShortableProvider()
     
-    def CanSubmitOrder(self, security: Security, order: Order, message: BrokerageMessageEvent): -> bool
+    def CanSubmitOrder(self, security: Security, order: Order,
+         message: BrokerageMessageEvent) -&gt; bool:
         return super().CanSubmitOrder(security, order, message)
 
-    def CanUpdateOrder(self, security: Security, order: Order, request: UpdateOrderRequest, message: BrokerageMessageEvent): -> bool
+    def CanUpdateOrder(self, security: Security, order: Order,
+         request: UpdateOrderRequest, message: BrokerageMessageEvent) -&gt; bool:
         return super().CanUpdateOrder(security, order, message)
 
-    def CanExecuteOrder(self, security: Security, order: Order): -> bool
+    def CanExecuteOrder(self, security: Security, order: Order) -&gt; bool:
         return super().CanExecuteOrder(security, order)
 
-    def ApplySplit(self, tickets: list[OrderTicket], split: Split): -> None
+    def ApplySplit(self, tickets: list[OrderTicket], split: Split) -&gt; None:
         super().ApplySplit(tickets, split)
 
-    def GetLeverage(self, security: Security): -> float
+    def GetLeverage(self, security: Security) -&gt; float:
         return super().GetLeverage(security)
 
-    def GetBenchmark(self, securities: SecurityManager): -> IBenchmark
+    def GetBenchmark(self, securities: SecurityManager) -&gt; IBenchmark:
         return super().GetBenchmark(securities)
 
-    def GetFillModel(self, security: Security): -> IFillModel
+    def GetFillModel(self, security: Security) -&gt; IFillModel:
         return super().GetFillModel(security)
 
-    def GetFeeModel(self, security: Security): -> IFeeModel 
+    def GetFeeModel(self, security: Security) -&gt; IFeeModel:
         return super().GetFeeModel(security)
 
-    def GetSlippageModel(self, security: Security): -> ISlippageModel
+    def GetSlippageModel(self, security: Security) -&gt; ISlippageModel:
         return super().GetSlippageModel(security)
 
-    def GetSettlementModel(self, security: Security): -> ISettlementModel
+    def GetSettlementModel(self, security: Security) -&gt; ISettlementModel:
         return super().GetSettlementModel(security)
 
-    def GetBuyingPowerModel(self, security: Security): -> IBuyingPowerModel
+    def GetBuyingPowerModel(self, security: Security) -&gt; IBuyingPowerModel:
         return super().GetBuyingPowerModel(security)
 
-    def GetShortableProvider(self): -> IShortableProvider
+    def GetShortableProvider(self) -&gt; IShortableProvider:
         return self.ShortableProvider
 </pre>
 </div>
