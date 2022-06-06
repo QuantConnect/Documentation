@@ -1,7 +1,6 @@
 <span class="python">
 <p>
-The History method returns a multi-index DataFrame where the first index is the symbol. The data is then sorted in rows according to the second index, the <a target="_BLANK" href="/docs/key-concepts/understanding-time">EndTime</a> of the bar. By learning a few helpful short cuts, you can directly access the history values you need for your algorithm.
-</p>
+The History method returns a multi-index DataFrame where the first index is the <code>Symbol</code>. The data is then sorted in rows according to the second index, the <a target="_BLANK" href="/docs/v2/writing-algorithms/key-concepts/time-modeling/periods">EndTime</a> of the bar. By learning a few helpful short cuts, you can directly access the history values you need for your algorithm.</p>
 <div class="section-example-container">
 <pre class="python"># Setup the universe:
 eurusd = self.AddForex("EURUSD", Resolution.Daily).Symbol
@@ -22,14 +21,10 @@ if not self.df.empty:
 # STEP 3: Extract and manipulate a single column with the string column name
 spread = eurusd_quotebars["askclose"] - eurusd_quotebars["bidclose"]
 <img class="img-responsive img-thumbnail" src="https://cdn.quantconnect.com/docs/i/history-dataframe-column-spread.png">
-# Make sure to use the lowercase string column name.
-</pre>
+# Make sure to use the lowercase string column name.</pre>
 </div>
 
-<p>
-It's possible to also perform analysis <i>between</i> symbols by
-    <a target="_BLANK" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.unstack.html">unstacking the DataFrame</a>.
-Unstacking transforms each column into the Symbol values for one of the price-columns you select. 
+<p>It's possible to also perform analysis between assets by <a target="_BLANK" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.unstack.html">unstacking the DataFrame</a>. Unstacking transforms each column into the <code>Symbol</code> values for one of the price-columns you select. 
 </p>
 
 <div class="section-example-container">
@@ -42,11 +37,10 @@ self.dataframe = self.History([self.Symbol("IBM"), self.Symbol("AAPL")], 3)
 # Transform using unstack:
 self.dataframe["close"].unstack(level=0)
 <img class="img-responsive img-thumbnail" src="https://cdn.quantconnect.com/docs/i/history-dataframe-unstack_rev1.png">
-# Make sure to use the lowercase string column name.
-</pre>
+# Make sure to use the lowercase string column name.</pre>
 </div>
 
-<p>A common error is to try to access rows or columns in the DataFrame when the History method returned an empty DataFrame. To avoid the error, check if the DataFrame is empty before wrangling its contents.</p>
+<p>A common error is to try to access rows or columns in the DataFrame when the <code>History</code> method returned an empty DataFrame. To avoid the error, check if the DataFrame is empty before wrangling its contents.</p>
 
 <div class="section-example-container">
 <pre class="python">df = self.History(symbol, 10).close    # raises an exception if the DataFrame is empty
@@ -68,7 +62,7 @@ def GetSafeHistoryCloses(symbols):
 
 <span class="csharp">
 
-<p>The History method returns an array of <code>TradeBar</code>, <code>QuoteBar</code>, or <code>Slice</code> objects, depending on how you call the method. You can iterate over these objects in a for loop to access the members of each individual <code>TradeBar</code>, <code>QuoteBar</code>, or <code>Slice</code>.</p>
+<p>The History method returns an array of <code>TradeBar</code>, <code>QuoteBar</code>, or <code>Slice</code> objects, depending on how you call the method. To access the members of each of these objects, iterate over the objects in a for loop.</p>
 
 
 <div class="section-example-container">
