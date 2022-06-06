@@ -1,27 +1,39 @@
-<p>
-To cancel an order, use its $[OrderTicket, T:QuantConnect.Orders.OrderTicket]. You can't cancel market orders because they transmitted to the brokerage immediately. The <code>Cancel()</code> method returns an $[OrderResponse, T:QuantConnect.Orders.OrderResponse] object to determine if the operation was successful.
+<p>To cancel an order, call the <code>Cancel</code> method on the <code>OrderTicket</code>. You can't cancel market orders because they transmitted to the brokerage immediately. The method returns an <code>OrderResponse</code> object to signal the success or failure of the cancel request. 
 </p>
 
 <div class="section-example-container">
 <pre class="csharp">// Create an order and save its ticket
 var ticket = LimitOrder("SPY", 100, 221.05, tag: "SPY Trade to Cancel");
 
-//Later cancel the order via the order ticket.
-var response = ticket.Cancel();
+// Cancel the order
+var response = ticket.Cancel("Canceled SPY trade");
 
-// Use order response object to read status
-if (response.IsSuccess) {
+// Use the order response object to read the status
+if (response.IsSuccess) <br>{
        Debug("Order successfully canceled");
 }
 </pre>
 <pre class="python"> # Create an order and save its ticket
 ticket = self.LimitOrder("SPY", 100, 221.05, False, "SPY Trade to Cancel")
 
-# Tag order later
+# Cancel the order
 response = ticket.Cancel("Canceled SPY Trade")
 
-# Use order response object to read status
+# Use the order response object to read the status
 if response.IsSuccess:
      self.Debug("Order successfully canceled")
 </pre>
-</div><div>-If an order is not successful, you can check the ErrorCode/ErrorMessage. For more information, see <a href='/docs/v2/writing-algorithms/trading-and-orders/order-errors'>Order Errors</a>.<br></div><div>- To get the CancelOrderRequest, call the CancelRequest method. It gets the CancelOrderRequest if the order was cancelled. Otherwise, it returns null. <br></div><div>- You can also pass in a tag to the Cancel method.<br></div>
+</div><div>-If an order is not successful, you can check the ErrorCode/ErrorMessage. For more information, see <a href="/docs/v2/writing-algorithms/trading-and-orders/order-errors">Order Errors</a>.<br></div>
+
+
+
+<p>When you cancel an order, LEAN creates a <code>CancelOrderRequest</code>, which have the following attributes:</p>
+<div data-tree='QuantConnect.Orders.CancelOrderRequest'></div>
+
+<p>To get the <code>CancelOrderRequest</code> for an order, call the <code>CancelRequest</code> method. The method returns <code class='csharp'>null</code><code class='python'>None</code> if the order hasn't been cancelled.</p>
+
+<div class="section-example-container">
+<pre class="csharp">var request = orderTicket.CancelOrderRequest();</pre>
+<pre class="python">request = order_ticket.CancelOrderRequest()</pre>
+</div>
+
