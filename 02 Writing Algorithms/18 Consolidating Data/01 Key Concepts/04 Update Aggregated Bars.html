@@ -2,32 +2,36 @@
 <p>You can update the consolidator manually or automatically.</p>
 
 <h4>Manual Updates</h4>
-<p>To manually update a consolidator, pass a Tick, TradeBar, or QuoteBar (depending on the type of consolidator) to it's `Update` method.</p>
+<p>To manually update a consolidator, call its <code>Update</code> method. Depending on the type of consolidator it is, pass a <code>Tick</code>, <code>TradeBar</code>, or <code>QuoteBar</code> to the method.</p>
 <div class="section-example-container">
 <pre class="python">self.consolidator.Update(data)</pre>
 <pre class="csharp">_consolidator.Update(data);</pre>
 </div>
 
 <h4>Automatic Updates</h4>
-<p>To automatically update a consolidator with a data subscription, create the subscription and then register the consolidator with the Subscription Manager.</p>
+<p>To automatically update a consolidator with a data subscription, create the subscription and then call the <code>AddConsolidator</code> method on the Subscription Manager.</p>
 <div class="section-example-container">
 <pre class="python">def Initialize(self):
-    # Make sure you have the data you need
+    # Create the security subscription
     self.symbol = self.AddEquity("QQQ", Resolution.Minute).Symbol
-    # Create consolidator you need and attach event handler
+
+    # Create the consolidator and attach the event handler
     self.consolidator = TradeBarConsolidator(timedelta(minutes=30))
     self.consolidator.DataConsolidated += self.consolidation_handler
-    # Register consolidator to get automatically updated with minute data
+
+    # Register the consolidator for automatic updates
     self.SubscriptionManager.AddConsolidator(self.symbol, self.consolidator)
 </pre>
 <pre class="csharp">public override void Initialize()
 { 
-     // Make sure you have the data you need
+     // Create the security subscription
     _symbol = AddEquity("QQQ", Resolution.Minute).Symbol;
-    // Create consolidator you need and attach event handler
+
+    // Create the consolidator and attach the event handler
     _consolidator = new TradeBarConsolidator(TimeSpan.FromMinutes(30));
     _consolidator.DataConsolidated += ConsolidationHandler;
-    // Register consolidator to get automatically updated with minute data
+
+    // Register the consolidator for automatic updates
     SubscriptionManager.AddConsolidator(_symbol, _consolidator);
 }
 </pre>
