@@ -1,1 +1,59 @@
-# Add example like Stop Market Orders page
+<p>The following backtest verifies the <code>StopMarketOrder</code> behavior. On even days, the algorithm buys SPY at the current market price and sells when the price drops 1%. On odd days, the algorithm shorts SPY and buys when the price rises 1%. The following table shows the first four trades in the backtest:</p>
+
+<table class="qc-table table" id="research-nodes-table">
+    <thead>
+        <tr>
+            <th>Time</th>
+            <th>Symbol</th>
+            <th>Price</th>
+            <th>Quantity</th>
+            <th>Type</th>
+            <th>Status</th>
+            <th>Value</th>
+            <th>Tag</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>2021-07-01T09:31:00Z</td>
+            <td>SPY</td>
+            <td>429.11</td>
+            <td>10</td>
+            <td>Market</td>
+            <td>Filled</td>
+            <td>4291.10</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>2021-07-02T09:31:00Z</td>
+            <td>SPY</td>
+            <td>431.54</td>
+            <td>-10</td>
+            <td>Market</td>
+            <td>Filled</td>
+            <td>-4315.40</td>
+            <td></td>
+        </tr>
+    </tbody>
+</table>
+
+<style>
+#research-nodes-table td:nth-child(3), 
+#research-nodes-table th:nth-child(3), 
+#research-nodes-table td:nth-child(4), 
+#research-nodes-table th:nth-child(4), 
+#research-nodes-table td:nth-child(7), 
+#research-nodes-table th:nth-child(7) {
+    text-align: right;
+}
+</style>
+
+<p>The algorithm sets a condition that if no position in the portfolio and the date is on the 1st, it would buy 10 shares of SPY. It is expected that for a liquid stock like SPY, the market order will be filled in the first bar’s close price of the day, which in this case is indeed submitted and brought 10 shares at 09:31:00 at $429.11.</p>
+
+<p>For the second condition: if there be any position in the portfolio and the date is on the 2nd, it would sell 10 shares of SPY. Just like the first order, it is expected that the market order will be filled in the first bar’s close price of the day, which in this case is indeed submitted and sold 10 shares at 09:31:00 at $431.54.</p>
+
+<p>To reproduce these results, backtest the following algorithm:</p>
+
+<div class="python"><div class="qc-embed-frame" style="display: inline-block; position: relative; width: 100%; min-height: 100px; min-width: 300px;"><div class="qc-embed-dummy" style="padding-top: 56.25%;"></div><div class="qc-embed-element" style="position: absolute; top: 0; bottom: 0; left: 0; right: 0;"><iframe class="qc-embed-backtest" src=" https://www.quantconnect.com/terminal/processCache?request=embedded_backtest_a5a247107ee88f142cbe0cfa79667c1c.html " style="max-width: calc(100vw - 30px); max-height: 100vw; overflow: hidden;" scrolling="no" width="100%" height="100%"></iframe></div></div></div>
+
+<div class="csharp"><div class="qc-embed-frame" style="display: inline-block; position: relative; width: 100%; min-height: 100px; min-width: 300px;"><div class="qc-embed-dummy" style="padding-top: 56.25%;"></div><div class="qc-embed-element" style="position: absolute; top: 0; bottom: 0; left: 0; right: 0;"><iframe class="qc-embed-backtest" src=" https://www.quantconnect.com/terminal/processCache?request=embedded_backtest_75457eb9d37d5d05e239e8ba59eee975.html " style="max-width: calc(100vw - 30px); max-height: 100vw; overflow: hidden;" scrolling="no" width="100%" height="100%"></iframe></div></div></div>
