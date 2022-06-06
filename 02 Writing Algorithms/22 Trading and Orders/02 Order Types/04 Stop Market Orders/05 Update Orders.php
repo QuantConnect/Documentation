@@ -1,5 +1,5 @@
 <p>
-You can update the quantity, stop price, and tag of stop market orders until the order fills or the brokerage prevents modifications. To update an order, pass an <code>UpdateOrderFields</code> object to the <code>Update</code> method on the <code>OrderTicket</code>. The <code>Update</code> method returns an <code>OrderResponse</code> to signal the success or failure of the update request.
+You can update the quantity, stop price, and tag of stop market orders until the order fills or the brokerage prevents modifications. To update an order, pass an <code>UpdateOrderFields</code> object to the <code>Update</code> method on the <code>OrderTicket</code>. The <code>Update</code> method returns an <a href='/docs/v2/writing-algorithms/trading-and-orders/order-management/order-tickets#06-Order-Response'>OrderResponse</a> to signal the success or failure of the update request.
 </p>
 
 <div class="section-example-container">
@@ -36,9 +36,6 @@ if response.IsSuccess:
 
 
 <?php 
-
-echo file_get_contents(DOCS_RESOURCES."/order-types/order-response.html"); 
-
 include(DOCS_RESOURCES."/order-types/update-individual-fields.php");
 $supportedMethods = array("UpdateQuantity", "UpdateStopPrice", "UpdateTag");
 $getUpdateIndividualFieldsText($supportedMethods);
