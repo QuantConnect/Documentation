@@ -55,7 +55,6 @@ $supportedMethods = array("UpdateLimitPrice", "UpdateQuantity", "UpdateStopPrice
 $getUpdateIndividualFieldsText($supportedMethods);
 
 echo file_get_contents(DOCS_RESOURCES."/order-types/update-requests.html");
-
 ?>
 
 <div class="base-tree-container"></div>
