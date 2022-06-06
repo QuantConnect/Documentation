@@ -1,5 +1,4 @@
 <p>As the state or your order updates over time, your order ticket automatically updates. You can use the order ticket to get the following properties of your order:</p>
-<div data-tree="QuantConnect.Orders.OrderTicket"></div>
 
 <p>To get an order field, call the <code>Get</code> method with an <code>OrderField</code>.</p> 
 
