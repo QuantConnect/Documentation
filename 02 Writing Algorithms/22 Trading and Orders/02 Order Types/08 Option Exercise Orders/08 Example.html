@@ -1,3 +1,67 @@
+<p>The following backtest verifies the <code>ExerciseOption</code> behavior. The following table shows the first three trades in the backtest:</p>
 
-# Add an example like Stop Market Orders
-<br>Starting point: https://www.quantconnect.com/terminal/processCache?request=embedded_backtest_e1b788e557dc3fc7e6c57e1bc6778ba2.html
+<table class="qc-table table" id="research-nodes-table">
+    <thead>
+        <tr>
+            <th>Time</th>
+            <th>Symbol</th>
+            <th>Price</th>
+            <th>Quantity</th>
+            <th>Type</th>
+            <th>Status</th>
+            <th>Value</th>
+            <th>Tag</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>2021-07-01T09:31:00Z</td>
+            <td>SPY 221216C00085000</td>
+            <td>345.30</td>
+            <td>1</td>
+            <td>Buy Market</td>
+            <td>Filled</td>
+            <td>34530.00</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>2021-07-01T09:31:00Z</td>
+            <td>SPY 221216C00085000</td>
+            <td>0.00</td>
+            <td>-1</td>
+            <td>Sell Option Exercise</td>
+            <td>Filled</td>
+            <td>0.00</td>
+            <td>Automatic Exercise</td>
+        </tr>
+        <tr>
+            <td>2021-07-01T09:31:00Z</td>
+            <td>SPY</td>
+            <td>85.00</td>
+            <td>100</td>
+            <td>Sell Option Exercise</td>
+            <td>Filled</td>
+            <td>8500.00</td>
+            <td>Option Exercise</td>
+        </tr>
+    </tbody>
+</table>
+
+<style>
+#research-nodes-table td:nth-child(3), 
+#research-nodes-table th:nth-child(3), 
+#research-nodes-table td:nth-child(4), 
+#research-nodes-table th:nth-child(4), 
+#research-nodes-table td:nth-child(7), 
+#research-nodes-table th:nth-child(7) {
+    text-align: right;
+}
+</style>
+
+<p>The algorithm first brought a deep ITM option based on the set option selection conditions by $345.30, then exercise it actively, so 100 shares of SPY (in which 1 contract represents) was brought at its strike price at $85.00, with the option discarded from the portfolio.</p>
+
+<p>To reproduce these results, backtest the following algorithm:</p>
+
+<div class="python"><div class="qc-embed-frame" style="display: inline-block; position: relative; width: 100%; min-height: 100px; min-width: 300px;"><div class="qc-embed-dummy" style="padding-top: 56.25%;"></div><div class="qc-embed-element" style="position: absolute; top: 0; bottom: 0; left: 0; right: 0;"><iframe class="qc-embed-backtest" src="https://www.quantconnect.com/terminal/processCache?request=embedded_backtest_8a1106b77f80658af1c82ae125a7cfe5.html" style="max-width: calc(100vw - 30px); max-height: 100vw; overflow: hidden;" scrolling="no" width="100%" height="100%"></iframe></div></div></div>
+
+<div class="csharp"><div class="qc-embed-frame" style="display: inline-block; position: relative; width: 100%; min-height: 100px; min-width: 300px;"><div class="qc-embed-dummy" style="padding-top: 56.25%;"></div><div class="qc-embed-element" style="position: absolute; top: 0; bottom: 0; left: 0; right: 0;"><iframe class="qc-embed-backtest" src="https://www.quantconnect.com/terminal/processCache?request=embedded_backtest_fbbce595c3fdc4b0a1b360dd30526422.html" style="max-width: calc(100vw - 30px); max-height: 100vw; overflow: hidden;" scrolling="no" width="100%" height="100%"></iframe></div></div></div>
