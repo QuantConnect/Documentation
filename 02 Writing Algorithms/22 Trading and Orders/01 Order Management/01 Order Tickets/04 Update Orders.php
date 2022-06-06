@@ -50,9 +50,6 @@ if response.IsSuccess:
 </div>
 
 <?php 
-
-echo file_get_contents(DOCS_RESOURCES."/order-types/order-response.html"); 
-
 include(DOCS_RESOURCES."/order-types/update-individual-fields.php");
 $supportedMethods = array("UpdateLimitPrice", "UpdateQuantity", "UpdateStopPrice", "UpdateTag");
 $getUpdateIndividualFieldsText($supportedMethods);
