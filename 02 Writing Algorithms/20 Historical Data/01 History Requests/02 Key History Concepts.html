@@ -39,41 +39,24 @@ th.summary {
 }
 </style>
 
-<p>
-The historical data API has many different options to give you the greatest flexibility in how to apply it to your algorithm. Over the years, it has evolved to handle different data formats, data resolutions, and use cases, but we always strive to keep two constants to its design:
-</p>
-<div class="work-in-progress"> 
-    <i class="fa fa-lightbulb-o"></i> <b>Key Concept #1: Request Options</b>
+<p>The historical data API has many different options to give you the greatest flexibility in how to apply it to your algorithm.</p>
+
+
+<h4>Request Options</h4>
+<p>You can request historical data based on a trailing number of bars or period of time.</p>
+
+<h4>Return Formats</h4>
+<p>Each asset class supports slightly different data formats. When you make a history request, consider what data returns. <span class="python">Depending on how you request the data, history requests return a DataFrame or Slice objects.</span><span class="csharp">Depending on how you request the data and the data that's available for your security, history requests return <code>TradeBars</code>, <code>QuoteBars</code>, or <code>Slice</code> objects.</span>. The <code>History</code> API holds to the following rules:</p> 
+
 <ul>
-<li>History requests can be done by a bar <i>count.</i></li>
-<li>History requests can be done for a <i>period</i> of time.</li> 
-</ul>
-</div> 
-<p style="margin-top: 25px">
-Secondly, each asset type comes in slightly different data shapes. When you place a history request, consider what data returns. <span class="python">History requests return a DataFrame or Slice objects, depending on how you request the data.</span><span class="csharp">History request returned <a class="docs-internal-link" href="/docs/algorithm-reference/handling-data#Handling-Data-TradeBars">TradeBars</a>, <a class="docs-internal-link" href="/docs/algorithm-reference/handling-data#Handling-Data-QuoteBars">QuoteBars</a>, or <a class="docs-internal-link" href="/docs/algorithm-reference/handling-data#Handling-Data-Time-Slices">Slice</a> objects, depending on how you request it and the data available for your security.</span>
-</p> 
+    <li class="csharp">If you request data for a single security, you get an array of the security data type (for example,<code> TradeBar[]</code>).</li>
+    <li class="csharp">If you request data for multiple securities, you get an array of <code>Slice</code> objects.</li>
 
-<div class="work-in-progress"> 
-    <i class="fa fa-lightbulb-o"></i> <b>Key Concept #2: Return Format</b>
-<ul> 
-<li class="csharp">If you request data for a single security, you get an array of the security data type (for example,<code> TradeBar[]</code>).</li>
-<li class="csharp">If you request data for multiple securities, you get an array of <code>Slice</code> objects.</li>
-
-<li class="python">If you provide Symbol objects, you get a DataFrame.</li>
-<li>If you don't provide Symbol objects, you get  <code>Slice</code> objects that contain the entire universe.</li> 
+    <li class="python">If you provide <code>Symbol</code> objects, you get a DataFrame.</li>
+    <li>If you don't provide Symbol objects, you get <code>Slice</code> objects that contain the entire universe.</li> 
 </ul>
 </div>
 
-<p style="margin-top: 15px">
-Finally, when you review the results of your history requests, remember they are indexed by the <i>EndTime</i> of each data point. For daily data, this results in data points appearing on Saturday and skipping Monday. 
-</p>
+<h4>Time Index</h4>
 
-<div class="work-in-progress"> 
-    <i class="fa fa-lightbulb-o"></i> <b>Key Concept #3: Time Index</b> 
-<ul>
-<li>History results are indexed by the <a href="/docs/key-concepts/understanding-time#Understanding-Time-Ticks-Bars-and-the-Time-Frontier" class="docs-internal-link">EndTime</a> of a bar.</li> 
-</ul>
-</div> 
-<p style="margin-top: 15px">
-This can seem a little complex at first, but we'll step through each of these in the sections below.
-</p>
+<p>The data is a history request is indexed by the <code>EndTime</code> of each data point. For daily data, this results in data points appearing on Saturday and skipping Monday.</p>
