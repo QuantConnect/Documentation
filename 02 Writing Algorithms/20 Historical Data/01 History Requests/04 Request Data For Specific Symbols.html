@@ -1,21 +1,15 @@
-<p>The simplest form of history request is for a known set of Symbols. This is common for fixed universes of securities, or when you'd like to prepare new securities added to your algorithm. <span class="csharp">History requests return slightly different data depending on the overload you reach.</span>
+<p>The simplest form of history request is for a known set of <code>Symbol</code> objects. This is common for fixed universes of securities or when you need to prepare new securities added to your algorithm. <span class="csharp">History requests return slightly different data depending on the overload you call.</span>
 </p>
 
-<p>
-History data is returned in an ascending order from oldest to newest. This is required for piping the data into indicators to perform warm-up. 
-</p>
+<p>Historical data is in ascending order from oldest to newest. This order is necessary to use the data to warm up indicators.</p>
 
 <h4>Single Symbol History Requests</h4>
 
 <p class="python">
-History requests for a known set of Symbol objects return a DataFrame. Each row of the DataFrame represents the prices at a point of time. Each column of the DataFrame is a property of that price data (for example, open, high, low, and close). 
+History requests for a known set of <code>Symbol</code> objects return a DataFrame. Each row of the DataFrame represents the prices at a point of time. Each column of the DataFrame is a property of that price data (for example, open, high, low, and close). 
 </p>
 
-<p class="python">
-History API calls follow the following pattern: <code>self.History(symbol, bar_count, resolution = null)</code>
-</p>
-
-<p class="csharp">When you request a single Symbol, LEAN can infer the type of the returning data is fixed and directly returns an array of bars. This is convenient for quickly warming up an indicator.</p>
+<p class="csharp">When you request data for a single <code>Symbol</code>, LEAN can infer the type of the returning data is fixed and directly returns an array of bars.</p>
 
 <div class="section-example-container">
 <pre class="python"><b># EXAMPLE 1: Requesting By Bar Count: 5 IBM TradeBars, defaulting to security resolution:</b>
@@ -63,13 +57,8 @@ var quoteBars = History&lt;QuoteBar&gt;(eurusd, TimeSpan.FromHours(6), Resolutio
 <p>
 To request history for multiple symbols at a time, pass an array of Symbol objects to the same API methods shown in the preceding section.
 </p>
-<p>
-Multi-Symbol History API calls follow the following pattern: <code>self.History( symbols[], bar_count, resolution = null )</code>
-</p>
 
-<p class="csharp">
-History requests with an array of Symbols objects return an array of Slice objects. This provides a container that supports all data types. For example, a history request for FX QuoteBars and Equity TradeBars has the FX data located under <code>slices.QuoteBars</code>, and the Equity data located under <code>slices.Bars</code>.
-</p>
+<p class="csharp">History requests with an array of <code>Symbol</code> objects return an array of <code>Slice</code> objects. This method call provides a container that supports all data types. For example, a history request for Forex <code>QuoteBars</code> and Equity <code>TradeBars</code> has the Forex data under <code>slices.QuoteBars</code> and the Equity data under <code>slices.Bars</code>.</p>
 
 <div class="section-example-container">
 <pre class="python"><b># EXAMPLE 5: Multi-Symbol History Request.</b>
