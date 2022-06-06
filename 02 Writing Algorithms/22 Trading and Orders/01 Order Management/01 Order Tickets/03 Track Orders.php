@@ -10,4 +10,4 @@
 <?php echo file_get_contents(DOCS_RESOURCES."/enumerations/order_field.html"); ?>
 
 
-<p>Instead of using order tickets to track orders, you can receive <a href='/docs/v2/writing-algorithms/trading-and-orders/order-events'>order events</a> through the <code>OnOrderEvent</code> event handler.</p>
+<p>In addition to using order tickets to track orders, you can receive <a href='/docs/v2/writing-algorithms/trading-and-orders/order-events'>order events</a> through the <code>OnOrderEvent</code> event handler.</p>
