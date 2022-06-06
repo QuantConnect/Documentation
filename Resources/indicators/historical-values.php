@@ -18,10 +18,11 @@ $getHistoricalValuesText = function($linkToIndicatorsPage) {
   
     if ($linkToIndicatorsPage)
     {
-        $result .= "
-<p>To view how to access individual members in an indicator, see <a href=\"/docs/v2/writing-algorithms/indicators/key-concepts#08-Get-Indicator-Values\">Get Indicator Values</a>.</p>
-
-<p>The current (most recent) indicator value is at index 0, the previous value is at index 1, and so on until the length of the window.</p>        
+        $result .= "<p>To view how to access individual members in an indicator, see <a href=\"/docs/v2/writing-algorithms/indicators/key-concepts#08-Get-Indicator-Values\">Get Indicator Values</a>.</p>";
+    }
+    else 
+    {
+        $result .= "<p>The current (most recent) indicator value is at index 0, the previous value is at index 1, and so on until the length of the window.</p>        
 
 <div class=\"section-example-container\">
 	<pre class=\"csharp\">var currentSma = smaWin[0];
@@ -30,7 +31,7 @@ var oldestSma = smaWin[smaWin.Count - 1];</pre>
 	<pre class=\"python\">current_sma = self.sma_window[0]
 previous_sma = self.sma_window[1]
 oldest_sma = self.sma_window[sma_window.Count - 1]</pre>
-</div>";   
+</div>"; 
     }
 	
     echo $result;
