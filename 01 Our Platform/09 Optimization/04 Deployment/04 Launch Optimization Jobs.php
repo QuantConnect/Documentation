@@ -33,6 +33,7 @@
     
     <li>In the <span class='page-section-name'>Estimated Number and Cost of Backtests</span>, click the <span class='field-name'>Choose Optimization Strategy</span> field and then select a <a href='/docs/v2/our-platform/optimization/strategies'>strategy</a> from the drop-down menu.</li>
     <li>Click the <span class='field-name'>Select Target</span> field and then select a target from the drop-down menu.</li>
+    <p>The target (also known as objective) is the performance metric the optimizer uses to compare the backtest performance of different parameter values.</p>
     <li>Click <span class='box-name'>Maximize</span> or <span class='box-name'>Minimize</span> to maximize or minimize the optimization target, respectively.</li>
     <li>Click <span class='button-name'>Launch Optimization</span>.</li>
     <p>The <a href='/docs/v2/our-platform/optimization/results#02-View-Optimization-Results'>optimization results page</a> displays. As the optimization job runs, you can close or refresh the window without interrupting the job because the nodes are processing on our servers.</p>
