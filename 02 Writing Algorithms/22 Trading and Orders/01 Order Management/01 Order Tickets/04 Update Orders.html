@@ -1,6 +1,4 @@
-<p>
-To update an order, use its $[OrderTicket, T:QuantConnect.Orders.OrderTicket]. The specific properties that you can update depends on the order type. Market orders are transmitted to the brokerage almost immediately, so you can only update the tag on the order. You can update other orders until they are filled or the brokerage prevents modifications.
-</p>
+<p>To update an order, use its <code>OrderTicket</code>.  You can update other orders until they are filled or the brokerage prevents modifications. The specific properties you can update depends on the order type. The following table shows the properties you can update for each order type.<br></p>
 
 <table class="qc-table table  table-condensed">
 <thead>
@@ -10,7 +8,7 @@ To update an order, use its $[OrderTicket, T:QuantConnect.Orders.OrderTicket]. T
 </tr>
 </thead>
 <tbody>
-<tr><td>Market Order</td><td><code>Tag</code></td></tr>
+<tr><td>Market Order</td><td><br></td></tr>
 <tr><td>Limit Order</td><td><code>Tag</code>, <code>Quantity</code>, <code>LimitPrice</code></td></tr>
 <tr><td>Limit If Touched Order</td><td><code>Tag</code>, <code>Quantity</code>, <code>TriggerPrice</code>, <code>LimitPrice</code></td></tr>
 <tr><td>Stop Market Order</td><td><code>Tag</code>, <code>Quantity</code>, <code>StopPrice</code></td></tr>
@@ -20,45 +18,55 @@ To update an order, use its $[OrderTicket, T:QuantConnect.Orders.OrderTicket]. T
 </tbody>
 </table>
 
-<p>
-Orders are updated by passing a $[UpdateOrderFields, T:QuantConnect.Orders.UpdateOrderFields] object to the Update method. The Update method returns an $[OrderResponse, T:QuantConnect.Orders.OrderResponse] to signal the success or failure of the update request. 
+<p>To update an order, pass an <code>UpdateOrderFields</code> object to the <code>Update</code> method. The method method returns an <code>OrderResponse</code> to signal the success or failure of the update request. 
 </p>
 
 <div class="section-example-container">
-<pre class="csharp">// Tag an order on creation
+<pre class="csharp">// Create an order 
 var ticket = LimitOrder("SPY", 100, 221.05, tag: "New SPY trade");
 
-//Tag order later
+// Update the order tag and limit price
 var response = ticket.Update(new UpdateOrderFields() { 
   Tag = "Our New Tag for SPY Trade",
   LimitPrice = 222.00
 });
 
-// Check response with the OrderResponse
+// Check the OrderResponse
 if (response.IsSuccess) { 
      Debug("Order updated successfully");
-}
-</pre>
-<pre class="python"> # Tag an order on creation
+}</pre>
+<pre class="python"> # Create an order 
 ticket = self.LimitOrder("SPY", 100, 221.05, False, "New SPY trade")
 
-# Tag order later
+# Update the order tag and limit price
 updateSettings = UpdateOrderFields()
 updateSettings.LimitPrice = 222.00
 updateSettings.Tag = "Limit Price Updated for SPY Trade"
 response = ticket.Update(updateSettings)
 
-# Validate the response is OK
+# Check the OrderResponse
 if response.IsSuccess:
-     self.Debug("Order updated successfully")
-</pre>
+     self.Debug("Order updated successfully")</pre>
 </div>
+
+<?php 
+
+echo file_get_contents(DOCS_RESOURCES."/order-types/order-response.html"); 
+
+include(DOCS_RESOURCES."/order-types/update-individual-fields.php");
+$supportedMethods = array("UpdateLimitPrice", "UpdateQuantity", "UpdateStopPrice", "UpdateTag");
+$getUpdateIndividualFieldsText($supportedMethods);
+
+echo file_get_contents(DOCS_RESOURCES."/order-types/update-requests.html");
+
+?>
 
 <div class="base-tree-container"></div>
 <div><script data-tree="QuantConnect.Orders.OrderResponse"></script><script type="text/javascript">
     $(document).ready(function () {
         var dataTree = $("script[data-tree]").data("tree").split(",");
         initializeTreeView(dataTree);
-    }); </script></div><div>-You can also update individual fields of an order with the following methods:<br></div><div>&nbsp; - UpdateTag</div><div>&nbsp; - UpdateQuantity (can pass in a tag)</div><div>&nbsp; - UpdateLimitPrice (can pass in a tag)</div><div>&nbsp; - UpdateStopPrice (can pass in a tag)</div><div><br></div><div>-To get a list of update requests for the order, call the UpdateRequests
- method. It returns an UpdateOrderRequest which has the following 
-properties: Quantity, LimitPrice, StopPrice, TriggerPrice</div><div><br></div><div>- Not all brokerages support order updates. To check if your brokerage supports order updates, see <a href="/docs/v2/our-platform/live-trading/brokerages">the documentation for the brokerage you're using</a>.<br></div>
+    }); </script></div>
+
+
+<p>Not all brokerages support order updates. To check if your brokerage supports order updates, see the <a href="/docs/v2/our-platform/live-trading/brokerages">brokerage integration documentation</a>.</p>
