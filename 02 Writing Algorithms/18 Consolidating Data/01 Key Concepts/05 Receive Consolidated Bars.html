@@ -1,14 +1,16 @@
-<p>The result of the consolidation is passed into an <i>event handler</i>. An event handler is a function in your algorithm designed to receive the bar. It can have any name but must have the required parameters.
-Depending on how you're using the consolidator system, you must use one of the method patterns below. If you build the consolidator manually, the consolidation event handler accepts two parameters. If you build the consolidator with the shortcut Consolidate method, the consolidation event handler accepts one parameter.
-</p>
+<p>LEAN passes consolidated bars to the consolidator event handler in your algorithm. The event handler can have any name, but must have the required parameters. Depending on how you're using the consolidator system, you must use one of the following method headers. If you call a consolidator constructor to create a consolidator, the event handler accepts two parameters. If you call the <code>Consolidate</code> to create a consolidator, the event handler accepts one parameter.</p>
 
 <div class="section-example-container">
 <pre class="csharp">// Manually Created Event Handler
-void ConsolidationHandler(object sender, TradeBar consolidatedBar) {
+void ConsolidationHandler(object sender, TradeBar consolidatedBar)
+{
+
 }
 
-// self.Consolidate() Event Handler
-void ConsolidationHandler(TradeBar consolidatedBar) {
+// Consolidate() Event Handler
+void ConsolidationHandler(TradeBar consolidatedBar)
+{
+
 }</pre>
 <pre class="python"># Manually Created Event Handler
 def consolidation_handler(self, sender, consolidated_bar):
@@ -19,5 +21,4 @@ def consolidation_handler(self, consolidated_bar):
     pass</pre>
 </div>
 
-- Event flow: Scheduled events =&gt; consolidator event handlers =&gt; OnData.
-<br><div>- Consolidated bars are emitted when the consolidated bar closes.</div>
+<p>The consolidation event handlers receive bars when the consolidated bar closes. If you subscribe to minute resolution data for Bitcoin and create an hourly consolidator, you receive consolidated bars at the top of each hour. However, if you subscribe to minute resolution data for the regular trading hours of US Equities and create a daily consolidator, you receive consolidated bars at 9:31 AM Eastern Standard Time (EST). The consolidated bar for US Equities doesn't close at 4:00 PM because the day isn't over. The consolidated bar for US Equities also doesn't close at midnight because your algorithm doesn't minute resolution data after 4:00 PM until 9:31 AM.</p>
