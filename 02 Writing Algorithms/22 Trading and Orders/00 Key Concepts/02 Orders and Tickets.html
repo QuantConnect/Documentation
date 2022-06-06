@@ -1,16 +1,3 @@
-<p>You can place orders <a href="#Trading-and-Orders-Automatic-Position-Sizing-SetHoldings">automatically</a> with helper methods or manually through methods on the algorithm API. A critical concept required before diving into specific order types is the Order Ticket. When you create an order you are given an $[OrderTicket,T:QuantConnect.Orders.OrderTicket] object to update and cancel your order. All orders return an order ticket.</p><p>-When you use one of the order methods, the algorithm creates an Order and an OrderTicket. The OrderTicket is sent to the brokerage. The brokerage returns an OrderTicket. The OrderTicket is compared against the Order to see if the order has been satisified.</p>
+<p>When you create an order with one of the order methods, LEAN creates <code>Order</code> and <a href="https://www.quantconnect.com/docs/v2/writing-algorithms/trading-and-orders/order-management/order-tickets">OrderTicket</a> objects. The order ticket is sent to your brokerage. As the brokerage processes your order, it returns another order ticket and it's compared against the order to see if the order is satisfied. Orders are asynchronous in live trading, so if you want to change an order, you must request it with the order ticket. Order changes are not guaranteed since your order may fill by the time brokerage receives the request.</p>
 
-<p>
-In live trading, orders are asynchronous, and any operations to update the order must be <i>requested</i> with the order ticket. Whether the update is processed successfully is not guaranteed as the trade may already be filled by the time the request is sent.
-</p>
 <img class="img-responsive" src="https://cdn.quantconnect.com/docs/i/trading-and-orders-order-tickets.png">
-<p>
-In the following sections, we'll explore how to use the Order Ticket to update and cancel orders you have created.
-</p>
-
-<iframe src="https://www.youtube-nocookie.com/embed/HykXfstdNW0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen="" width="757" height="433" frameborder="0"></iframe>
-
-
-
-<p>## TODO:
-<br>-Order Tickets have the following properties: OrderId, Status, Symbol, SecurityType, Quantity, AverageFillPrice, QuantityFilled, Time, OrderType, Tag, SubmitRequest, UpdateRequests, CancelRequest, OrderEvents, OrderClosed, HasORder, OrderSet <br></p><p>&nbsp;&nbsp; - Redirect to Order Events page for OrderStatus enum values<br></p>
