@@ -5,7 +5,7 @@ You can set a warm up period based on a number of bars or a period of time. To s
 <pre class="csharp">// Wind time back 7 days from start
 SetWarmUp(TimeSpan.FromDays(7));
 
-// Feed in 100 daily bars before the start date
+// Feed in data for 100 trading days before the start date
 SetWarmUp(100, Resolution.Daily);
 
 // Feed in 100 bars before start date
@@ -14,7 +14,7 @@ SetWarmUp(100);
 <pre class="python"># Wind time back 7 days from start
 self.SetWarmUp(timedelta(7))
 
-# Feed in 100 daily bars before the start date
+# Feed in data for 100 trading days before the start date
 self.SetWarmUp(100, Resolution.Daily)
 
 # Feed in 100 bars before start date
@@ -22,7 +22,9 @@ self.SetWarmUp(100)
 </pre>
 </div>
 
-<p>If you call <code>SetWarmUp</code> with just an integer argument, the warm up period consists of <span class="latex-variable">n</span> bars at the highest resolution in your universe. In the following example, the warm up period is 100 minute bars.</p>
+<p>If you pass an integer and a resolution to the <code>SetWarmUp</code> method, LEAN calculates the start of the warm up period from the arguments. If you call <code class="python">self.SetWarmUp(100, Resolution.Daily)</code><code class="csharp">self.SetWarmUp(100, Resolution.Daily)</code>, the warm up period consists of 100 trading days. If your security subscription is for daily data, it's simply 100 bars. If your security subscription is for minute resolution data, its warm up data is 100 days worth of minute bars.</p>
+
+<p>If you call <code>SetWarmUp</code> with just an integer argument, the resolution argument is set to the highest resolution in your universe. In the following example, the warm up period is 100 minutes worth of data. If your algorithm doesn't have any data subscriptions, the resolution argument it set to the <code>UniverseSettings.Resolution</code>.</p>
 <div class="section-example-container">
 <pre class="csharp">AddEquity("SPY", Resolution.Minute);
 AddCrypto("BTCUSD", Resolution.Second);
