@@ -18,7 +18,7 @@
 </tbody>
 </table>
 
-<p>To update an order, pass an <code>UpdateOrderFields</code> object to the <code>Update</code> method. The method method returns an <code>OrderResponse</code> to signal the success or failure of the update request. 
+<p>To update an order, pass an <code>UpdateOrderFields</code> object to the <code>Update</code> method. The method returns an <code>OrderResponse</code> to signal the success or failure of the update request. 
 </p>
 
 <div class="section-example-container">
