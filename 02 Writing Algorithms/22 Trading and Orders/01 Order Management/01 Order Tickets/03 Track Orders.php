@@ -15,8 +15,5 @@
 <pre class="csharp">var response = orderTicket.GetMostRecentOrderResponse();</pre>
 <pre class="python">response = order_ticket.GetMostRecentOrderResponse()</pre>
 </div>
-<p>This method returns an <code>OrderResponse</code> object, which have the following attributes:</p>
-<div data-tree='QuantConnect.Orders.OrderResponse'></div>
-
 
 <p>Instead of using order tickets to track orders, you can receive <a href='/docs/v2/writing-algorithms/trading-and-orders/order-events'>order events</a> through the <code>OnOrderEvent</code> event handler.</p>
