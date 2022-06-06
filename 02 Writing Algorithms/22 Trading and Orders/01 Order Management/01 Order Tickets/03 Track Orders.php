@@ -19,4 +19,4 @@
 <div data-tree='QuantConnect.Orders.OrderResponse'></div>
 
 
-<p>Instead of using an order ticket to check the current state of an order, you can receive <a href='/docs/v2/writing-algorithms/trading-and-orders/order-events'>order events</a> through the <code>OnOrderEvent</code> event handler.</p>
+<p>Instead of using order tickets to track orders, you can receive <a href='/docs/v2/writing-algorithms/trading-and-orders/order-events'>order events</a> through the <code>OnOrderEvent</code> event handler.</p>
