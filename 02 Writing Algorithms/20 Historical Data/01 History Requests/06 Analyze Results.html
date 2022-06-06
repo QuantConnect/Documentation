@@ -12,7 +12,7 @@ self.df = self.History([eurusd, nzdusd], 3)
 
 
 # STEP 2: Check if the DataFrame is empty and lock onto a Symbol index with the `loc[]` method.
-<br>You can access a security’s data in a DataFrame by using the Symbol or the string representation of the Symbol
+#  You can access a security’s data in a DataFrame by using the Symbol or the string representation of the Symbol
 if not self.df.empty:
     eurusd_quotebars = self.df.loc[eurusd] # or just "EURUSD" instead of Symbol
 <img class="img-responsive img-thumbnail" src="https://cdn.quantconnect.com/docs/i/history-dataframe-loc-single_rev0.png">
@@ -38,23 +38,6 @@ self.dataframe = self.History([self.Symbol("IBM"), self.Symbol("AAPL")], 3)
 self.dataframe["close"].unstack(level=0)
 <img class="img-responsive img-thumbnail" src="https://cdn.quantconnect.com/docs/i/history-dataframe-unstack_rev1.png">
 # Make sure to use the lowercase string column name.</pre>
-</div>
-
-<p>A common error is to try to access rows or columns in the DataFrame when the <code>History</code> method returned an empty DataFrame. To avoid the error, check if the DataFrame is empty before wrangling its contents.</p>
-
-<div class="section-example-container">
-<pre class="python">df = self.History(symbol, 10).close    # raises an exception if the DataFrame is empty
-
-# To avoid the issue, check if the DataFrame is empty.
-def GetSafeHistoryCloses(symbols):
-    if not symbols:
-        self.Log(f'No symbols on {self.Time}')
-        return  False, None
-    df = self.History(symbols, 100, Resolution.Daily)
-    if df.empty:
-        self.Log(f'Empy history for {symbols} on {self.Time}')
-        return  False, None
-     return True, df.close.unstack(0)</pre>
 </div>
 
 </span>
