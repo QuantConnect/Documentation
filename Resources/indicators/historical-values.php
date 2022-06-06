@@ -31,7 +31,8 @@ var oldestSma = smaWin[smaWin.Count - 1];</pre>
 previous_sma = self.sma_window[1]
 oldest_sma = self.sma_window[sma_window.Count - 1]</pre>
 </div>";   
-  
+    }
+	
     echo $result;
 }
 ?>
