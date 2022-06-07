@@ -42,7 +42,7 @@
     </tbody>
 </table>
 
-<p>If you need something more specific than the preceding time periods, define a method to set the start and end time of consolidated bars. The method should receive the current time and return a <code>CalendarInfo</code> object, which contains the start time of the bar and the duration of the consolidation period.</p>
+<p>If you need something more specific than the preceding time periods, define a method to set the start and end times of consolidated bars. The method should receive the current time and return a <code>CalendarInfo</code> object, which contains the start time of the bar and the duration of the consolidation period.</p>
 
 <br>
 ## TODO: Add example of Custom Consolidator period for weekly bars in Forex
