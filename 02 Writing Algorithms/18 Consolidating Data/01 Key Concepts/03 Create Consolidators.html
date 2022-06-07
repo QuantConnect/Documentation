@@ -1,6 +1,5 @@
 <p>The process to manually create a consolidator depends on the type of consolidator you want to create. For instructions on each type of consolidator, see <a href="/docs/v2/writing-algorithms/consolidating-data/consolidator-types">Consolidator Types</a>.</p>
 
-<h4>Shortcut Methods</h4>
 <p>To create consolidators with the shortcut method, call the <code>CreateConsolidator</code> method. The <span class="python">timedelta</span><span class="csharp">TimeSpan</span> you pass to the method should be at a lower resolution than the security resolution. For instance, if the security resolution is minute, the <span class="python">timedelta</span><span class="csharp">TimeSpan</span> should span at least 1 minute.</p>
 
 <div class="section-example-container">
@@ -49,7 +48,3 @@ var oneMinuteConsolidator = ResolveConsolidator(symbol, Resolution.Minute);
 // Create a tick consolidator
 var tickConsolidator = ResolveConsolidator(symbol, Resolution.Tick);</pre>
 </div>
-
-<h4>Common Errors</h4>
-
-<p>The most common error when creating consolidators is to put parenthesis <code>()</code> at the end of your function name when setting the event handler of the consolidator. If you use parenthesis, the method executes and the result is passed as the event handler instead of the method itself. Remember to pass the name of your method to the event system. Specifically, it should be <code class="csharp">ConsolidationHandler</code><code class="python">self.ConsolidationHandler</code>, not <code class="csharp">ConsolidationHandler()</code><code class="python">self.ConsolidationHandler()</code>.</p>
