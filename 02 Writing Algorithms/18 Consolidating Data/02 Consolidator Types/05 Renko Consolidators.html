@@ -1,49 +1,10 @@
-  <p>
-Renko bars are the consolidation of fixed price movements instead of fixed time periods. When you define a $[RenkoConsolidator, T:QuantConnect.Data.Consolidators.RenkoConsolidator] you set the <i>price movement</i> instead of the period of the consolidation. 
-</p>
-
-## Delete the demo algorithm? See https://github.com/QuantConnect/Lean/blob/master/Common/Data/Consolidators/RenkoConsolidator.cs#L25-L26
-
-
-<p>
-Follow these steps to manually create a consolidator:</p>
-<p>1) Create a RenkoConsolidator object and pass the constructor bar size.</p>
-
-<p>2) Define the consolidation event handler</p>
-
-<p>3) Add the event handler to the consolidator</p>
+<p>Renko consolidators aggregate bars based on a fixed price movement. A $1 renko consolidator produces a new bar that spans $1 each time an asset closes $1 above the high of the previous bar or $1 below the low of the previous bar. To create a renko consolidator, pass the renko bar size to the <code>RenkoConsolidator</code> constructor.</p>
 
 <div class="section-example-container">
-<pre class="python">def Initialize(self):
-    # Create Renko consolidator to trigger event when price moves $2.50
-    self.consolidator = RenkoConsolidator(2.5)
-    self.consolidator.DataConsolidated += self.consolidation_handler
-    
-def consolidation_handler(self, sender, consolidated_bar):
-    # Bar period is now 30 min from the consolidator above.
-    self.Debug(str(consolidated_bar.EndTime - consolidated_bar.Time) + " " + consolidated_bar.ToString())</pre>
-<pre class="csharp">public override void Initialize()
-{ 
-    // Create Renko consolidator to trigger event when price moves $2.50
-    _consolidator = new RenkoConsolidator(2.5m);
-    _consolidator.DataConsolidated += ConsolidationHandler;
-}
-
-private void ConsolidationHandler(object sender, TradeBar consolidatedBar) 
-    Debug((consolidatedBar.EndTime - consolidatedBar.Time).ToString() + " " + consolidatedBar.ToString());
-}</pre>
+<pre class="python"># Create a Renko consolidator that emits a bar when the price moves $1
+self.consolidator = RenkoConsolidator(1)</pre>
+<pre class="csharp">// Create a Renko consolidator that emits a bar when the price moves $1
+_consolidator = new RenkoConsolidator(1m);</pre>
 </div>
 
-<p>Received when a new Renko bar is created based on the price movement of the asset </p>
-
-  <div class="example-fieldset">
-    <div class="example-legend">Demonstration Algorithms</div>
-    
-    <a class="python example-algorithm-link" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.Python/ClassicRenkoConsolidatorAlgorithm.py" target="_BLANK">
-        ClassicRenkoConsolidatorAlgorithm.py <span class="badge-python pull-right">Python</span>
-    </a>   
-    
-    <a class="csharp example-algorithm-link" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.CSharp/ClassicRenkoConsolidatorAlgorithm.cs" target="_BLANK">
-        ClassicRenkoConsolidatorAlgorithm.cs <span class="badge-csharp pull-right">C#</span>
-    </a>
-  </div>
+<p>When the consolidator produces a new renko bar, it passes the consolidated bar to the <a href='/docs/v2/writing-algorithms/consolidating-data/key-concepts#04-Receive-Consolidated-Bars'>event handler</a>. To view a full example of a renko consolidator, see the <a href='https://github.com/QuantConnect/Lean/blob/master/Algorithm.Python/ClassicRenkoConsolidatorAlgorithm.py' class='python' rel='nofollow' target='_blank'>ClassicRenkoConsolidatorAlgorithm</a><a href='https://github.com/QuantConnect/Lean/blob/master/Algorithm.CSharp/ClassicRenkoConsolidatorAlgorithm.cs' class='csharp' rel='nofollow' target='_blank'>ClassicRenkoConsolidatorAlgorithm</a> in the LEAN GitHub repository.</p>
