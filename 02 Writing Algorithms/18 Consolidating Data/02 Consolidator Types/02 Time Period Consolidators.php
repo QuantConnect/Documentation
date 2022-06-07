@@ -92,7 +92,7 @@ self.custom_consolidator = TradeBarConsolidator(self.my_calendarinfo_method)</pr
 </div>
 
 <h4>Shortcut Method</h4>
-<p>The <code class="csharp">Consolidate</code><code class="python">self.Consolidate</code> method is a helper method to create time period consolidators for algorithms with static universes. With just one line of code, you can create data in any time period with a <code class='python'>timedelta</code><code class='csharp'>TimeSpan</code>, <code>Resolution</code>, or <code>CalendarInfo</code> object. To create a consolidator with the shortcut method, call <code>Consolidate</code> with a <code>Symbol</code>, time period, and <a href='/docs/v2/writing-algorithms/consolidating-data/key-concepts#04-Receive-Consolidated-Bars'>event handler</a>. If you don't pass the method a <code>Symbol</code>, it looks up the <code>Symbol</code> internally.</p>
+<p>The <code>Consolidate</code> method is a helper method to create time period consolidators for algorithms with static universes. With just one line of code, you can create data in any time period with a <code class='python'>timedelta</code><code class='csharp'>TimeSpan</code>, <code>Resolution</code>, or <code>CalendarInfo</code> object. To create a consolidator with the shortcut method, call <code>Consolidate</code> with a <code>Symbol</code>, time period, and <a href='/docs/v2/writing-algorithms/consolidating-data/key-concepts#04-Receive-Consolidated-Bars'>event handler</a>. If you don't pass the method a <code>Symbol</code>, it looks up the <code>Symbol</code> internally.</p>
 
 <div class="section-example-container">
 <pre class="csharp">// Consolidate 1min SPY -&gt; 45min Bars
