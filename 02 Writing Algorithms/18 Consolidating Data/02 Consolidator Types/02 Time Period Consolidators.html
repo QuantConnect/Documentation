@@ -1,12 +1,14 @@
-What are time period consolidators?
-<br>-Time period consolidators aggregate data based on a length of time.
-<br>-Data can be aggregated according to a period, with the time of the bars used to perform the consolidation. This requires the input data to be of a lower resolution than the desired consolidation period, e.g. to build a 1.5 hour bar you need minute data. 
-<br>-You can consolidate Trade Ticks and TradeBars into TradeBars // Quote Ticks and QuoteBars into QuoteBars
+<p>Time period consolidators aggregate data based on a period of time. The consolidator time period must be greater than or equal to the resolution of the security subscription. For instance, you can aggregate minute bars into 10-minute bars, but you can't aggregate hour bars into 10-minute bars. To set the time period for the consolidator, you can use either a <code class='python'>timedelta</code><code class='csharp'>TimeSpan</code>, <code>Resolution</code>, or <code>CalendarInfo</code> object.</p>
 
-<br><br>
-Why use time period consolidators?
-<br>- To build custom time period bars. For instance, you can aggregate several 1-minute bars to build 7-minute bars, 30-minute bars, or even 1-day bars.
-<br><h4>Standard Time Periods</h4>-Resolutions<div>&nbsp;&nbsp; - Second</div><div>&nbsp;&nbsp; - Minute</div><div>&nbsp;&nbsp; - Hour</div><div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - If you do hourly, the consolidator ends at the top of the hour. For equities, that's 10AM, not 10:30AM.<br></div><div>&nbsp;&nbsp; - Daily<br></div><div><br></div><div>-Calendar periods</div><div>&nbsp; - Weekly <br></div><div>&nbsp; - Monthly</div><div>&nbsp; - Quarterly</div><div>&nbsp; - Yearly<br></div>
+
+<h4>Resolution Periods</h4>
+
+<?php echo file_get_contents(DOCS_RESOURCES."//enumerations/resolution.html"); ?>
+
+<p>If you do hourly consolidation, the consolidator ends at the top of the hour. For US Equities, that's 10 AM Eastern Standard Time (EST), not 10:30 AM.</p>
+
+<h4>CalendarInfo Periods</h4>
+
 
 <h4>Custom Time Periods</h4>
 <div>-timedelta (python); TimeSpan (C#) <br></div><div><div>&nbsp;&nbsp;&nbsp; - The time starts from the beginning of the day, not the 
