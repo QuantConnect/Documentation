@@ -23,7 +23,7 @@ echo file_get_contents(DOCS_RESOURCES."/enumerations/field.html");
 
 <div class='csharp'>
     <div class="section-example-container">
-        <pre class="csharp">_rsi = RegisterIndicator(_symbol, _rsi,  Resolution.Daily, x =>
+        <pre class="csharp">RegisterIndicator(_symbol, _rsi,  Resolution.Daily, x =>
 {
     var bar = x as IBaseDataBar;
     return (bar.Low + bar.High) / 2;
