@@ -1,23 +1,20 @@
-<p>
-Consolidated data can easily be used with indicators along the period-resolution boundaries. This is possible with one line of code by the basic indicator API, as shown below. Using these helper methods, the required consolidators are created, and the output bar is automatically used to update the indicator. See the <a class="docs-internal-link" href="/docs/algorithm-reference/indicators">Indicators</a> documentation for more information.
-</p>
+<p>If your algorithm has a static universe, you can <a href='/docs/v2/writing-algorithms/indicators/automatic-indicators#03-Create-Automatic-Indicators'>create automatic indicators</a> in just one line of code. When you create an automatic indicator, LEAN creates a consolidators, hooks it up for automatic updates, and then updates the indicator with the consolidated bars.</p>
+
 <div class="section-example-container">
-<pre class="csharp"> // Consolidating minute SPY into 14-bar daily indicators
+<pre class="csharp">// Consolidate minute SPY data into 14-bar daily indicators
 var ema = EMA("SPY", 14, Resolution.Daily);
-var sma = SMA("SPY", 14, Resolution.Daily);
-</pre>
-<pre class="python"> # Consolidating minute SPY into 14-bar daily indicators
+var sma = SMA("SPY", 14, Resolution.Daily);</pre>
+<pre class="python"> # Consolidate minute SPY into 14-bar daily indicators
 ema = self.EMA("SPY", 14, Resolution.Daily)
-sma = self.SMA("SPY", 14, Resolution.Daily)
-</pre>
+sma = self.SMA("SPY", 14, Resolution.Daily)</pre>
 </div>
 
-<p>^^ Only use this technique if your universe is static. If your universe is dynamic, keep a reference to the consolidator so you can remove it when the security is removed from your universe.<!--?p-->
-</p><div class="section-example-container"><pre></pre>
+<p>If your algorithm has a dynamic universe, <a href='/docs/v2/writing-algorithms/indicators/manual-indicators#03-Create-Manual-Indicators'>create a manual indicator</a> and then <a href='/docs/v2/writing-algorithms/consolidating-data/consolidator-types#02-Time-Period-Consolidators'>create a time period consolidator</a> that updates the indicator at each time step. Keep a reference to the consolidator so you can <a href='/docs/v2/writing-algorithms/consolidating-data/key-concepts#07-Remove-Consolidators'>remove it</a> when your algorithm removes the security from the universe.</p>
+
+<div class="section-example-container"><pre></pre>
 <pre class="python">self.ema = ExponentialMovingAverage(14)
 self.consolidator = TradeBarConsolidator(1)
 self.consolidator.DataConsolidated += (lambda sender, consolidated_bar : self.ema.Update(consolidated_bar))
 self.SubscriptionManager.AddConsolidator(self.symbol, self.consolidator)
 </pre>
 </div>
-<p>For more information, see <a href="/docs/v2/writing-algorithms/consolidating-data/updating-indicators#05-Removing-Indicator-Consolidators">Removing Indicator Consolidators</a>.<br></p>
