@@ -3,35 +3,28 @@ You can update the quantity, trigger price, limit price, and tag of LIT orders u
 
 <div class="section-example-container">
 <pre class="csharp">// Create a new order and save the order ticket
-var ticket = LimitIfTouchedOrder("SPY", 100, 350, 340, tag: "original tag");
+var ticket = LimitIfTouchedOrder("SPY", 100, 350, 340, tag: "Original tag");
 
 // Update the order
-var response = ticket.Update(new UpdateOrderFields() { 
-  Quantity = 80,
-  TriggerPrice = 380,
-  LimitPrice = 370,
-  Tag = "new tag"
-});
-
-// Check if the update was successful
-if (response.IsSuccess) { 
-     Debug("Order updated successfully");
+var updateOrderFields = new UpdateOrderFields()
+{ 
+    Quantity = 80,
+    TriggerPrice = 380,
+    LimitPrice = 370,
+    Tag = "New tag"
 }
+_response = ticket.Update(updateOrderFields);
 </pre>
 <pre class="python"># Create a new order and save the order ticket
-ticket = self.LimitOrder("SPY", 100, 350, 340, tag="original tag")
+ticket = self.LimitIfTouchedOrder("SPY", 100, 350, 340, tag="Original tag")
 
 # Update the order
-update_settings = UpdateOrderFields()
-update_settings.Quantity = 80
-update_settings.TriggerPrice = 380
-update_settings.LimitPrice = 370
-update_settings.Tag = "new tag"
-response = ticket.Update(update_settings)
-
-# Check if the update was successful
-if response.IsSuccess:
-     self.Debug("Order updated successfully")
+update_order_fields = UpdateOrderFields()
+update_order_fields.Quantity = 80
+update_order_fields.TriggerPrice = 380
+update_order_fields.LimitPrice = 370
+update_order_fields.Tag = "New tag"
+self.response = ticket.Update(update_settings)
 </pre>
 </div>
 
