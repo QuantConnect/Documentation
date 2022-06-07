@@ -11,10 +11,14 @@ sma = self.SMA("SPY", 14, Resolution.Daily)</pre>
 
 <p>If your algorithm has a dynamic universe, <a href="/docs/v2/writing-algorithms/indicators/manual-indicators#03-Create-Manual-Indicators">create a manual indicator</a> and then <a href="/docs/v2/writing-algorithms/consolidating-data/consolidator-types#02-Time-Period-Consolidators">create a time period consolidator</a> that updates the indicator at each time step. Keep a reference to the consolidator so you can <a href="/docs/v2/writing-algorithms/consolidating-data/key-concepts#07-Remove-Consolidators">remove it</a> when your algorithm removes the security from the universe.</p>
 
-<div class="section-example-container"><pre></pre>
+<div class="section-example-container"><pre>_ema = new ExponentialMovingAverage(14);
+_consolidator = new TradeBarConsolidator(1);
+_consolidator.DataConsolidated += (_, bar) => ema.Update(bar.EndTime, bar.Close);
+SubscriptionManager.AddConsolidator(_symbol, _consolidator);
+</pre>
 <pre class="python">self.ema = ExponentialMovingAverage(14)
 self.consolidator = TradeBarConsolidator(1)
-self.consolidator.DataConsolidated += (lambda sender, consolidated_bar : self.ema.Update(consolidated_bar))
+self.consolidator.DataConsolidated += lambda _, bar: self.ema.Update(bar.EndTime, bar.Close)
 self.SubscriptionManager.AddConsolidator(self.symbol, self.consolidator)
 </pre>
 </div>
