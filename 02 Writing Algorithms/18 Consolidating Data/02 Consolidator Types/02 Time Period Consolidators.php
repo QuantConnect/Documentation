@@ -125,7 +125,7 @@ Consolidate(symbol, Resolution.Hour, TickType.Quote, ConsolidationHandler);</pre
 <pre class="python">symbol = self.AddEquity("SPY", Resolution.Minute).Symbol
 
 # Create QuoteBar objects
-self.Consolidate(symbol, Resolution.Hour, TickType.Quote, self.ConsolidationHandler)</pre>
+self.Consolidate(symbol, Resolution.Hour, TickType.Quote, self.consolidation_handler)</pre>
 </div>
 
 <p>When the consolidator receives a bar that reaches or passes the consolidation period, it passes the consolidated bar to the <a href='/docs/v2/writing-algorithms/consolidating-data/key-concepts#04-Receive-Consolidated-Bars'>event handler</a>. If you create a consolidator with the <code>Consolidate</code> method, you can't remove the consolidator.</p>
