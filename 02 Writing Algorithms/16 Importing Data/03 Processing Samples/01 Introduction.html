@@ -1,7 +1,3 @@
-<p>- To read your external data line-by-line instead of bulk download, you 
-need to define a custom data type so that you can read the data source 
-and convert it into a form that LEAN is familar with + can use.</p><p>-Unlike custom data; naitive QC data gets the full benefit of security modeling (Splits, dividends etc). Custom data is ignorant of everything about the actual market. Things like market hours, delistings, mergers etc none of that works with Custom data. Its made mostly for indicators</p>
+<p>To receive your custom data in the <code>OnData</code> method instead of in a bulk download, create a custom type and then create a data subscription. The custom data type tells LEAN where to get your data and how to read it. All custom data types must extend from <code class='csharp'>BaseData</code><code class='python'>PythonData</code> and override the <code>Reader</code> and <code>GetSource</code> methods. </p>
 
-<p>
-	To receive your data in the OnData method, you must create a custom type to instruct LEAN where to get your data and how to read it. All data must extend from $[BaseData,T:QuantConnect.Data.BaseData]
-	and override the $[Reader,M:QuantConnect.Data.BaseData.Reader] and $[GetSource,M:QuantConnect.Data.BaseData.Reader] methods. After you define your custom data type, create a data subscription in your algorithm and the custom data is injected into your algorithm's <code>OnData</code> method.<br></p>
+<p>Unlike custom data, native QC data gets the full benefit of security modeling like splits and dividends. Custom data is ignorant of everything about the actual market. Things like market hours, delistings, and mergers don't work with custom data.</p>
