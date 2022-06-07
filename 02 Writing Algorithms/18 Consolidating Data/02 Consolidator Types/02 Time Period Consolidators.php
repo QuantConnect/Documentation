@@ -5,7 +5,7 @@
 
 <?php echo file_get_contents(DOCS_RESOURCES."//enumerations/resolution.html"); ?>
 
-<p>If you do hourly consolidation, the consolidator ends at the top of the hour. For US Equities, that's 10 AM Eastern Standard Time (EST), not 10:30 AM.</p>
+<p>If you do hourly consolidation, the consolidator ends at the top of the hour, not every hour after the market open. For US Equities, that's 10 AM Eastern Standard Time (EST), not 10:30 AM.</p>
 
 <h4>CalendarInfo Periods</h4>
 
