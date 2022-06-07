@@ -1,21 +1,21 @@
-<p>
-A common request is to use consolidators with indicators to create indicators with exotic data (e.g. 35-minute EMA). To do this, you will need to create the indicator and register it to receive updates. This is done with the $[RegisterIndicator,M:QuantConnect.Algorithm.QCAlgorithm.RegisterIndicator] function. Registering the indicator wires it up to get data updates from LEAN automatically.
+<p>To update indicators with exotic data (for example, 35-minute EMA), <a href="/docs/v2/writing-algorithms/indicators/manual-indicators#03-Create-Manual-Indicators">create a manual indicator</a> and then call the <code>RegisterIndicator</code> method. The <code>RegisterIndicator</code> method wires up the indicator for automatic updates at the time interval you provide.
 </p>
 
 <div class="section-example-container">
-<pre class="csharp">// Generate 7 minute bars; then SMA-10 generates the average of last 10 bars.
+<pre class="csharp">// Calculate the SMA with 10 7-minute bars
 var symbol = AddEquity("SPY", Resolution.Minute).Symbol;
 var indicator = new SimpleMovingAverage(10);
 RegisterIndicator(symbol, sma, TimeSpan.FromMinutes(7));
 </pre>
-<pre class="python"># Generate 7 minute bars; then SMA-10 generates the average of last 10 bars.
+<pre class="python"># Calculate the SMA with 10 7-minute bars
 self.symbol = self.AddEquity("SPY", Resolution.Minute).Symbol
 self.indicator = SimpleMovingAverage(10)
 self.RegisterIndicator(self.symbol, self.sma, timedelta(minutes=7))
 </pre>
 </div>
 
-- The RegisterIndicator method can accept a timedelta/TimeSpan, Resolution, or an unregistered consolidator. 
+<p>The <code>RegisterIndicator</code> method can accept a <code class="python">timedelta</code><code class="csharp">TimeSpan</code>, <code>Resolution</code>, or an unregistered consolidator. If you apply the indicator to a security in a dynamic universe, provide an consolidator so that you can <a href="/docs/v2/writing-algorithms/consolidating-data/key-concepts#07-Remove-Consolidators">remove it</a> when your algorithm removes the security from the universe.</p>
+
 <div class="section-example-container">
 <pre class="csharp">// TimeSpan
 RegisterIndicator(symbol, indicator, TimeSpan.FromMinutes(7));
@@ -24,7 +24,7 @@ RegisterIndicator(symbol, indicator, TimeSpan.FromMinutes(7));
 RegisterIndicator(symbol, indicator, Resolution.Hour);
 
 // Consolidator
-RegisterIndicator(symbol, indicator, new TradeBarConsolidator(30));
+RegisterIndicator(symbol, indicator, new TradeBarConsolidator(35));
 </pre>
 <pre class="python"># timedelta
 self.RegisterIndicator(self.symbol, self.indicator, timedelta(minutes=7))
@@ -33,7 +33,6 @@ self.RegisterIndicator(self.symbol, self.indicator, timedelta(minutes=7))
 self.RegisterIndicator(self.symbol, self.indicator, Resolution.Hour)
 
 # Consolidator
-self.RegisterIndicator(self.symbol, self.indicator, TradeBarConsolidator(30))
+self.RegisterIndicator(self.symbol, self.indicator, TradeBarConsolidator(35))
 </pre>
-</div><div>
-For more information on creating an unregistered consolidator, see the documentation on each consolidator type. <br></div>
+</div>
