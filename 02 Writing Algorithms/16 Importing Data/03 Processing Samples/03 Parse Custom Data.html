@@ -1,21 +1,27 @@
-<p>In your custom data class, the $[Reader,M:QuantConnect.Data.BaseData.Reader] method takes one line of data provided by the source and parses it into one of your custom objects. In addition to setting your custom type properties, set the following three required properties:</p>
+<p>The <code>Reader</code> method of your custom data class takes one line of data from the source location and parses it into one of your custom objects. You can add as many properties to your custom data objects as you need, but the following table describes the properties you must set. When there is no usable data in a line, the method should return <code class="csharp">null</code><code class="python">None</code>.</p>
 
-<ul>
-	<li>
-		<code>Symbol</code> - Should always be set to config.Symbol
-	</li>
-	<li>
-		<code>Time</code> - Required synchronization of custom data
-	</li>
-	<li>
-		<code>Value</code> - Required for purchasing and portfolio calculations
-	</li>
-</ul>
-<p>-Your reader method should return data points in chronological order. If
- a data point has a timestamp that is the same or earlier than the 
-timestamp of the previous data point, it's not injected into your 
-algorithm.
-	</p><p>- When there is no usable data in a line, your type should return <code class="csharp">null</code><code class="python">None</code>. <br></p>
+<table class="qc-table table">
+    <thead>
+        <tr>
+            <th>Property</th>
+            <th>Description</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><code>Symbol</code></td>
+            <td>Set this property to <code>config.Symbol</code></td>
+        </tr>
+        <tr>
+            <td><code>Time</code></td>
+            <td>Time of the data sample<br></td>
+        </tr>
+        <tr>
+            <td><code>Value</code></td>
+            <td>Default data point value<br></td>
+        </tr>
+    </tbody>
+</table>
 
 <div class="section-example-container">
 <pre class="csharp">public class MyCustomDataType : BaseData
@@ -56,7 +62,32 @@ algorithm.
 </pre>
 </div>
 
--If your data source returns multiple samples within a single <code>line</code> (like a list with multiple JSON line in it), order the samples by their timestamp and then <code>return BaseDataCollection(endTime, endTime, config.Symbol, data)</code> where <code>data</code> is a list of your custom data type (<code>MyCustomDataType</code> in this case) .
-<br>&nbsp;&nbsp;&nbsp;-Example: https://www.quantconnect.com/terminal/processCache/?request=embedded_backtest_444c6a94f8dd6f6b538ff6e5466aa0c7.html
+<p>Your <code>Reader</code> method should return data points in chronological order. If a data point has a timestamp that is the same or earlier than the timestamp of the previous data point, LEAN ignores it.</p>
+
+<p>If your data source returns multiple samples within a single <code>line</code>, order the samples by their timestamp and then return a <code>BaseDataCollection(endTime, config.Symbol, objects)</code> where <code>objects</code> is a list of your custom data objects.</p>
+
+<div class="section-example-container">
+<pre class="python">class Bitcoin(PythonData):
+    def GetSource(self, config, date, isLiveMode):
+        return SubscriptionDataSource("https://raw.githubusercontent.com/DerekMelchin/custom-data-test-2/main/abcd.json", SubscriptionTransportMedium.RemoteFile, FileFormat.UnfoldingCollection)
+
+    def Reader(self, config, line, date, isLiveMode):
+        objects = []
+        data = json.loads(line)
+        endTime = None
+        for j, i in enumerate(data):
+            coin = Bitcoin()
+            coin.Symbol = config.Symbol
+
+            ts = int(i['timestamp'])
+            coin.Time = datetime.utcfromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S')
+            coin.EndTime = coin.Time + timedelta(days=1)
+            endTime = coin.EndTime
+
+            coin.Value = j
+
+            objects.append(coin)
+        return BaseDataCollection(endTime, config.Symbol, objects)</pre>
+</div>&nbsp;^ Example: https://www.quantconnect.com/terminal/processCache/?request=embedded_backtest_444c6a94f8dd6f6b538ff6e5466aa0c7.html
 
 <br>
