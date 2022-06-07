@@ -42,7 +42,7 @@
     </tbody>
 </table>
 
-<p>If you need something more specific than the preceding time periods, define a method to set the start and end time of consolidated bars. The method receives the current time and returns a <code>CalendarInfo</code> object that contains the start time of the bar and the consolidation period.</p>
+<p>If you need something more specific than the preceding time periods, define a method to set the start and end time of consolidated bars. The method should receive the current time and return a <code>CalendarInfo</code> object, which contains the start time of the bar and the duration of the consolidation period.</p>
 
 <br>
 ## TODO: Add example of Custom Consolidator period for weekly bars in Forex
@@ -67,35 +67,33 @@ Another example: https://www.quantconnect.com/terminal/processCache/?request=emb
 
 
 
-<h4>Creating Time Period Consolidators</h4>
+<h4>Create Time Period Consolidators</h4>
 
-<p>
-Follow these steps to manually create a consolidator:</p><p>1) Create a consolidator object (TradeBarConsolidator, QuoteBarConsolidator, TickConsolidator, or TickQuoteConsolidator)</p><p>2) Define the consolidation event handler</p><p>3) Add the event handler to the consolidator</p>
-
+<p>To create a time period consolidator, pass the time period to the consolidator constructor.</p>
 <div class="section-example-container">
-<pre class="python">def Initialize(self):
-    self.consolidator = TradeBarConsolidator(timedelta(minutes=30))
-    self.consolidator.DataConsolidated += self.consolidation_handler
-    
-def consolidation_handler(self, sender, consolidated_bar):
-    # Bar period is now 30 min from the consolidator above.
-    self.Debug(str(consolidated_bar.EndTime - consolidated_bar.Time) + " " + consolidated_bar.ToString())</pre>
-<pre class="csharp">public override void Initialize()
-{ 
-    _consolidator = new TradeBarConsolidator(TimeSpan.FromMinutes(30));
-    _consolidator.DataConsolidated += ConsolidationHandler;
-}
+<pre class="python"># timedelta argument
+self.timedelta_trade_bar = TradeBarConsolidator(timedelta(days=1))
+self.timedelta_quote_bar = QuoteBarConsolidator(timedelta(days=1))
+self.timedelta_trade_tick = TickConsolidator(timedelta(seconds=1))
+self.timedelta_quote_tick = TickQuoteBarConsolidator(timedelta(seconds=1))
 
-private void ConsolidationHandler(object sender, TradeBar consolidatedBar) {
-    // Bar period is 30 min from the consolidator above.
-    Debug((consolidatedBar.EndTime - consolidatedBar.Time).ToString() + " " + consolidatedBar.ToString());
-}</pre>
+# Resolution argument (only works for TradeBarConsolidator)
+self.resolution_trade_bar = TradeBarConsolidator.FromResolution(Resolution.Daily)
+
+# Calendar method argument
+self.calendar_trade_bar = TradeBarConsolidator(Calendar.Yearly)
+self.calendar_quote_bar = QuoteBarConsolidator(Calendar.Quarterly)
+self.calendar_trade_tick = TickConsolidator(Calendar.Monthly)
+self.calendar_quote_tick = TickQuoteBarConsolidator(Calendar.Weekly)
+
+# Custom method argument
+self.custom_consolidator = TradeBarConsolidator(self.my_calendarinfo_method)</pre>
+<pre class="csharp"></pre>
 </div>
 
-<p>if you consolidate minute-resolution crypto data, you receive the consolidated bar at midnight UTC. If you consolidated minute-resolution Equity data, you receive the consolidated bar at 9:31AM the next day because 4:00pm (closing time) isn't the end of the day.</p>
-
 <h4>Shortcut Method</h4>
-<p>The <code class="csharp">Consolidate</code><code class="python">self.Consolidate</code> method is a helper method to create time period consolidators for algorithms with static universes. With just one line of code, you can create data in any time period with a timedelta/TimeSpan, Resolution, or Calendar object. To create a consolidator with the shortcut method, call <code class="csharp">Consolidate</code><code class="python">self.Consolidate</code> with a <code>Symbol</code>, time period, and event handler. If you don't pass the method a <code>Symbol</code>, it looks up the <code>Symbol</code> internally.</p>
+<p>The <code class="csharp">Consolidate</code><code class="python">self.Consolidate</code> method is a helper method to create time period consolidators for algorithms with static universes. With just one line of code, you can create data in any time period with a <code class='python'>timedelta</code><code class='csharp'>TimeSpan</code>, <code>Resolution</code>, or <code>CalendarInfo</code> object. To create a consolidator with the shortcut method, call <code>Consolidate</code> with a <code>Symbol</code>, time period, and <a href='/docs/v2/writing-algorithms/consolidating-data/key-concepts#04-Receive-Consolidated-Bars'>event handler</a>. If you don't pass the method a <code>Symbol</code>, it looks up the <code>Symbol</code> internally.</p>
+
 <div class="section-example-container">
 <pre class="csharp">// Consolidate 1min SPY -&gt; 45min Bars
 Consolidate("SPY", TimeSpan.FromMinutes(45), FortyFiveMinuteBarHandler)
@@ -117,28 +115,17 @@ self.Consolidate("SPY", Calendar.Weekly, self.WeekBarHandler)
 </pre>
 </div>
 
-<p>The <code class="csharp">Consolidate</code><code class="python">self.Consolidate</code> method usually produces TradeBars by default, but it produces QuoteBars for Forex since Forex data doesn't have TradeBars. If your data subscription provides both trades and quotes, you can pass a <code>TickType</code> to the <code class="csharp">Consolidate</code><code class="python">self.Consolidate</code> method to specify the data format you want to consolidate.</p>
+<p>If your data subscription provides both trades and quotes, you can pass a <code>TickType</code> to the <code>Consolidate</code> method to specify the data format you want to consolidate.</p>
 
 <div class="section-example-container">
 <pre class="csharp">var symbol = AddEquity("SPY", Resolution.Minute).Symbol;
+
+// Create QuoteBar objects
 Consolidate(symbol, Resolution.Hour, TickType.Quote, ConsolidationHandler);</pre>
 <pre class="python">symbol = self.AddEquity("SPY", Resolution.Minute).Symbol
+
+# Create QuoteBar objects
 self.Consolidate(symbol, Resolution.Hour, TickType.Quote, self.ConsolidationHandler)</pre>
 </div>
 
-<p>The <code class="csharp">Consolidate</code><code class="python">self.Consolidate</code> method creates a consolidator for the time period you provide and passes the consolidated bars to the function event handler. The event handler function accepts one argument, the consolidated TradeBar or QuoteBar.<br></p>
-
-<div class="section-example-container">
-<pre class="csharp">// Example event handler from Consolidate helper.
-void ConsolidationHandler(TradeBar consolidatedBar) {
-    Log($"{consolidatedBar.EndTime:o} 45 minute consolidated.");
-}
-</pre>
-<pre class="python"># Example event handler from Consolidate helper.
-def ConsolidationHandler(self, consolidated_bar):
-      self.Log(f"{consolidated_bar.EndTime}: {consolidated_bar.Close}")
-</pre>
-</div>
-
-<p>If you create a consolidator with the shortcut method, you can't remove the consolidator.
-</p>
+<p>When the consolidator receives a bar that reaches or passes the consolidation period, it passes the consolidated bar to the <a href='/docs/v2/writing-algorithms/consolidating-data/key-concepts#04-Receive-Consolidated-Bars'>event handler</a>. If you create a consolidator with the <code>Consolidate</code> method, you can't remove the consolidator.</p>
