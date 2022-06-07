@@ -18,7 +18,7 @@ def GetSource(self, config, date, isLive):
 <p>The most common remote file providers to use are GitHub and Dropbox. To access remote files, add <code>?dl=1</code> to the end of the file URL. This parameter lets you download the direct file link, not the HTML page of the file.</p>
 
 <h5>GitHub</h5>
-<p>If you store your custom data in GitHub, you can use public or private repositories. When you download the data, use the raw file (for example, <span class="public-file-name">https://raw.githubusercontent.com/&lt;organization&gt;/&lt;repo&gt;/&lt;path&gt;</span>). For instructions on accessing the raw file, see <a rel="nofollow" target="_blank" href="https://docs.github.com/en/enterprise-cloud@latest/repositories/working-with-files/using-files/viewing-a-file#viewing-or-copying-the-raw-file-content">Viewing or copying the raw file content</a> in the GitHub documentation.</p>
+<?php echo file_get_contents(DOCS_RESOURCES."/datasets/custom-data/github.html"); ?>
 
 <div class="section-example-container">
 <pre class="csharp"></pre>
@@ -31,7 +31,7 @@ def GetSource(self, config, date, isLive):
 </div>
 
 <h5>Dropbox</h5>
-<p>If you store your custom data in Dropbox, you need to create a link to the file. To create file links, see <a href='https://help.dropbox.com/files-folders/share/share-file-or-folder' rel='nofollow' target='_blank'>How to share files or folders</a> in the Dropbox documentation.</p>
+<?php echo file_get_contents(DOCS_RESOURCES."/datasets/custom-data/dropbox.html"); ?>
 <div class="section-example-container">
 <pre class="csharp"></pre>
 <pre class="python"># Import Technique 1: Bulk downloads
