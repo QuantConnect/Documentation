@@ -1,5 +1,9 @@
 <p>Time period consolidators aggregate data based on a period of time. The consolidator time period must be greater than or equal to the resolution of the security subscription. For instance, you can aggregate minute bars into 10-minute bars, but you can't aggregate hour bars into 10-minute bars. To set the time period for the consolidator, you can use either a <code class='python'>timedelta</code><code class='csharp'>TimeSpan</code>, <code>Resolution</code>, or <code>CalendarInfo</code> object.</p>
 
+<h4 class='python'>timedelta Periods</h4>
+<h4 class='csharp'>TimeSpan Periods</h4>
+
+<p>If you define the time period with a <code class='python'>timedelta</code><code class='csharp'>TimeSpan</code> object, the time starts from the beginning of the day, not the beginning of the market open or the first data point. For example, if you use <code class='python'>timedelta(minutes=7)</code><code class='csharp'>TimeSpan.FromMinutes(7)</code>, the 7-minute counter starts at midnight. Additionally, the time period is relative to the <a href='/docs/v2/writing-algorithms/key-concepts/time-modeling/time-zones#05-Data-Time-Zone'>data time zone</a>, not the <a href='/docs/v2/writing-algorithms/key-concepts/time-modeling/time-zones#04-Algorithm-Time-Zone'>algorithm time zone</a>. If you consolidate Crypto data into daily bars, the event handler receives the consolidated bars at midnight 12:00 AM Coordinated Universal Time (UTC), regardless of the algorithm time zone.</p>
 
 <h4>Resolution Periods</h4>
 
@@ -9,14 +13,36 @@
 
 <h4>CalendarInfo Periods</h4>
 
+<p>You can use the built-in <code>CalendarInfo</code> objects or create your own. The follow table describes the helper methods that the <code>Calendar</code> class provides to create the built-in <code>CalendarInfo</code> objects:</p>
 
-<h4>Custom Time Periods</h4>
-<div>-timedelta (python); TimeSpan (C#) <br></div><div><div>&nbsp;&nbsp;&nbsp; - The time starts from the beginning of the day, not the 
-beginning of the market open or the first data point. If you do 
-timedelta(minutes=7), the 7-minute counter starts at midnight.</div>&nbsp;&nbsp;&nbsp;
- - It's relative to the data time zone, not the algorithm time zone. 
-(Daily consolidation on Crypto is received at midnight UTC).</div>
--If you need something more specific than the preceding time periods, create your own custom time period to set the start and end time of the consolidated bars.
+<table class="qc-table table">
+    <thead>
+        <tr>
+            <th>Method</th>
+            <th>Description</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><code>Calendar.Weekly</code></td>
+	    <td>Computes the start of week (previous Monday) of the given date/time</td>
+        </tr>
+        <tr>
+            <td><code>Calendar.Monthly</code></td>
+	    <td>Computes the start of month (1st of the current month) of the given date/time</td>
+        </tr>
+        <tr>
+            <td><code>Calendar.Quarterly</code></td>
+	    <td>Computes the start of quarter (1st of the starting month of the current quarter) of the given date/time</td>
+        </tr>
+        <tr>
+            <td><code>Calendar.Yearly</code></td>
+	    <td>Computes the start of year (1st of the current year) of the given date/time</td>
+        </tr>
+    </tbody>
+</table>
+
+<p>If you need something more specific than the preceding time periods, define a method to set the start and end time of consolidated bars. The method receives the current time and returns a <code>CalendarInfo</code> object that contains the start time of the bar and the consolidation period.</p>
 
 <br>
 ## TODO: Add example of Custom Consolidator period for weekly bars in Forex
@@ -37,6 +63,9 @@ timedelta(minutes=7), the 7-minute counter starts at midnight.</div>&nbsp;&nbsp;
 
 
 Another example: https://www.quantconnect.com/terminal/processCache/?request=embedded_backtest_cbb86a544cd77a7e1fd72d7581719041.html
+
+
+
 
 <h4>Creating Time Period Consolidators</h4>
 
