@@ -34,7 +34,11 @@
         return SubscriptionDataSource("&lt;sourceURL&gt;", SubscriptionTransportMedium.RemoteFile)</pre>
 </div>
 
-## Import examples of github and dropbox urls from Key Concepts
+<p> To access remote files, add <code>?dl=1</code> to the end of the file URL. This parameter lets you download the direct file link, not the HTML page of the file.</p>
+
+<?php echo file_get_contents(DOCS_RESOURCES."/datasets/custom-data/github.html"); ?>
+
+<?php echo file_get_contents(DOCS_RESOURCES."/datasets/custom-data/dropbox.html"); ?>
 
 <h4>REST APIs</h4>
 <p>To retrieve data from a REST endpoint, use <code>SubscriptionTransportMedium.Rest</code>. LEAN polls the endpoint at each <code>Resolution</code> time step that you set when you initialize the data subscription. This <code>SubscriptionTransportMedium</code> is generally for live data sources.</p>
