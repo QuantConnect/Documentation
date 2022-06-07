@@ -13,7 +13,7 @@
 
 <h4>CalendarInfo Periods</h4>
 
-<p>You can use the built-in <code>CalendarInfo</code> objects or create your own. The follow table describes the helper methods that the <code>Calendar</code> class provides to create the built-in <code>CalendarInfo</code> objects:</p>
+<p>You can use the built-in <code>CalendarInfo</code> objects or create your own. The following table describes the helper methods that the <code>Calendar</code> class provides to create the built-in <code>CalendarInfo</code> objects:</p>
 
 <table class="qc-table table">
     <thead>
