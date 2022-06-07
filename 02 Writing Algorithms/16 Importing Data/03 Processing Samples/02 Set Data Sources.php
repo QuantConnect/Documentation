@@ -16,7 +16,7 @@
         return SubscriptionDataSource("&lt;filePath&gt;", SubscriptionTransportMedium.LocalFile)</pre>
 </div>
 
-## Import example of local path from Key Concepts
+<p>The <code>&lt;filePath&gt;</code> is relative to the project root. For example, if you have a structure like <span class="private-file-name">&lt;projectName&gt;/custom-data/file.csv</span>, use <code>"custom-data/file.csv"</code>.</p>
 
 <h4>Remote Files</h4>
 <p>To download data from a remote URL like GitHub and Dropbox, use <code>SubscriptionTransportMedium.RemoteFile</code>.</p>
