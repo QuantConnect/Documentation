@@ -1,30 +1,20 @@
-<div>What are count consolidators?
-<br>-Count consolidators aggregate data based on a number of bars or ticks<br>-You can consolidate Trade Ticks and TradeBars into TradeBars // Quote Ticks and QuoteBars into QuoteBars <br></div><div>- You can consolidate a certain number of bars or ticks using the count 
-constructor of the consolidators. It will have the effect of joining 
-n-bars together.</div><div><br></div>
-
-
-<p>
-Follow these steps to manually create a consolidator:</p><p>1) Create a consolidator object (TradeBarConsolidator, QuoteBarConsolidator, TickConsolidator, or TickQuoteConsolidator) and provide the constructor with the number of ticks/bars to consolidate.<br></p><p>2) Define the consolidation event handler</p><p>3) Add the event handler to the consolidator</p>
+<p>Count consolidators aggregate data based on a number of bars or ticks. This type of consolidator aggregates <span class='latex-variable'>n</span> samples together, regardless of the time period the samples span across. To create a count consolidator, pass the number of samples to the consolidator constructor.</p>
 
 <div class="section-example-container">
-<pre class="python">def Initialize(self):
-    self.consolidator = TradeBarConsolidator(30)
-    self.consolidator.DataConsolidated += self.consolidation_handler
-    
-def consolidation_handler(self, sender, consolidated_bar):
-    self.Debug(str(consolidated_bar.EndTime - consolidated_bar.Time) + " " + consolidated_bar.ToString())
-</pre>
-<pre class="csharp">public override void Initialize()
-{ 
-    _consolidator = new TradeBarConsolidator(30);
-    _consolidator.DataConsolidated += ConsolidationHandler;
-}
+<pre class="python">self.trade_bar_consolidator = TradeBarConsolidator(10)
 
-private void ConsolidationHandler(object sender, TradeBar consolidatedBar) {
-    Debug((consolidatedBar.EndTime - consolidatedBar.Time).ToString() + " " + consolidatedBar.ToString());
-}
-</pre>
+self.quote_bar_consolidator = QuoteBarConsolidator(10)
+
+self.tick_trade_consolidator = TickConsolidator(10)
+
+self.tick_quote_consolidator = TickQuoteBarConsolidator(10)</pre>
+<pre class="csharp">_tradeBarConsolidator = new TradeBarConsolidator(10);
+
+_quoteBarConsolidator = new QuoteBarConsolidator(10);
+
+_tickTradeConsolidator = new TickConsolidator(10);
+
+_tickQuoteConsolidator = new TickQuoteBarConsolidator(10);</pre>
 </div>
 
-<p>The consolidation handler receives the consolidated bar as soon as the nth bar is passed to the consolidator.</p>
+<p>The <a href='/docs/v2/writing-algorithms/consolidating-data/key-concepts#04-Receive-Consolidated-Bars'>consolidation handler</a> receives the consolidated bar as soon as the consolidator receives the <span class='latex-variable'>n</span>-th bar or tick.</p>
