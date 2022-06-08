@@ -1,6 +1,23 @@
-<p>ETF Constituents Universe Selection lets you select a universe of securities in an ETF. The <a href="https://www.quantconnect.com/datasets/quantconnect-us-etf-constituents">US ETF Constituents dataset</a> includes 2,650 US ETFs you can use to create your universe. To request an ETF Constituents universe, call the <code>Universe.ETF</code> method. The following table describes the arguments the method accepts:
+<p>ETF Constituents Universe Selection lets you select a universe of securities in an ETF. The <a href="https://www.quantconnect.com/datasets/quantconnect-us-etf-constituents">US ETF Constituents dataset</a> includes 2,650 US ETFs you can use to create your universe. To request an ETF Constituents universe, call the <code>Universe.ETF</code> method.</p>
 
-</p><table class="qc-table table">
+<div class="section-example-container">
+<pre class="csharp">public class ETFConstituentsAlgorithm : QCAlgorithm {
+    public override void Initialize() {
+        var universe = Universe.ETF("SPY", Market.USA, UniverseSettings, 
+                                    constituents =&gt; from x in constituents select x.Symbol);
+        AddUniverse(universe);
+    }
+}</pre>
+<pre class="python">class ETFConstituentsAlgorithm(QCAlgorithm):
+    def Initialize(self):        
+        filter_function = lambda constituents: [x.Symbol for x in constituents]
+        universe = self.Universe.ETF("SPY", Market.USA, self.UniverseSettings, filter_function)
+        self.AddUniverse(universe)</pre>
+</div>
+
+<p>The following table describes the arguments the <code>ETF</code> method accepts:</p>
+
+<table class="qc-table table">
     <thead>
         <tr>
             <th>Argument</th>
@@ -36,21 +53,6 @@
         </tr>
     </tbody>
 </table>
-
-<div class="section-example-container">
-<pre class="csharp">public class ETFConstituentsAlgorithm : QCAlgorithm {
-    public override void Initialize() {
-        var universe = Universe.ETF("SPY", Market.USA, UniverseSettings, 
-                                    constituents =&gt; from x in constituents select x.Symbol);
-        AddUniverse(universe);
-    }
-}</pre>
-<pre class="python">class ETFConstituentsAlgorithm(QCAlgorithm):
-    def Initialize(self):        
-        filter_function = lambda constituents: [x.Symbol for x in constituents]
-        universe = self.Universe.ETF("SPY", Market.USA, self.UniverseSettings, filter_function)
-        self.AddUniverse(universe)</pre>
-</div>
 
 <p>The filter function receives <code>ETFConstituentData</code> objects, which represent one of the ETF constituents. <code>ETFConstituentsData</code> objects have the following attributes:</p>
 
