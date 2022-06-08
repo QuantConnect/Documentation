@@ -47,7 +47,7 @@ th.summary {
 <figcaption>QuantConnect Coarse and Fine Universe Selection</figcaption>
 </figure>
 
-<p>To add a fundamental universe, in the <code>Initialize</code> method, pass two filter functions to the <code>AddUniverse</code> method. The first filter function can be a <a href='/docs/v2/writing-algorithms/universes/equity#02-Coarse-Universe-Selection'>coarse universe filter</a>, <a href='/docs/v2/writing-algorithms/universes/equity#03-Dollar-Volume-Selection'>dollar volume filter</a>, or an <a href='/docs/v2/writing-algorithms/universes/equity#04-ETF-Constituents-Selection'>ETF constituents filter</a>. The second filter function receives a list of <code>FineFundamental</code> objects and must return a list of <code>Symbol</code> objects. The list of <code>FineFundamental</code> objects contains a subset of the <code>Symbol</code> objects the first filter function returns. The <code>Symbol</code> objects you return from the second function are the constituents of the fundamental universe and LEAN automatically creates subscriptions for them.</p>
+<p>To add a fundamental universe, in the <code>Initialize</code> method, pass two filter functions to the <code>AddUniverse</code> method. The first filter function can be a <a href='/docs/v2/writing-algorithms/universes/equity#02-Coarse-Universe-Selection'>coarse universe filter</a>, <a href='/docs/v2/writing-algorithms/universes/equity#03-Dollar-Volume-Selection'>dollar volume filter</a>, or an <a href='/docs/v2/writing-algorithms/universes/equity#04-ETF-Constituents-Selection'>ETF constituents filter</a>. The second filter function receives a list of <code>FineFundamental</code> objects and must return a list of <code>Symbol</code> objects. The list of <code>FineFundamental</code> objects contains a subset of the <code>Symbol</code> objects the first filter function returns. The <code>Symbol</code> objects you return from the second function are the constituents of the fundamental universe and LEAN automatically creates subscriptions for them. Don't call <code>AddEquity</code> in the filter function.</p>
 
 <div class="tip">
   <i class="fa fa-lightbulb-o"></i><span class="tip-title">Tip:</span>
@@ -90,7 +90,10 @@ class MyUniverseAlgorithm(QCAlgorithm):
 </pre>
 </div>
 
-<p>Similar to coarse universe selection, the fine filter function is provided a list of { FineFundamental} objects and must return a list of Symbol objects. If you don't want to make any changes to the current universe, you can return <code>Universe.Unchanged</code>. The Equities you return from the fine filter function are automatically added to your universe. Don't call <code>AddEquity</code>.
+<p><code>CoarseFundamental</code> objects have the following attributes:</p>
+<div data-tree='QuantConnect.Data.UniverseSelection.CoarseFundamental'></div>
+
+
 
 <h4>Example 1: From the top 50 stocks with the highest volume, take 10 with lowest PE-ratio.</h4>
 <p>
