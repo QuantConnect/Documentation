@@ -15,7 +15,7 @@ def GetSource(self, config, date, isLive):
 
 
 <h4>Remote Files</h4>
-<p>The most common remote file providers to use are GitHub and Dropbox. To access remote files, add <code>?dl=1</code> to the end of the file URL. This parameter lets you download the direct file link, not the HTML page of the file.</p>
+<p>The most common remote file providers to use are GitHub and Dropbox.</p>
 
 <h5>GitHub</h5>
 <?php echo file_get_contents(DOCS_RESOURCES."/datasets/custom-data/github.html"); ?>
@@ -23,15 +23,16 @@ def GetSource(self, config, date, isLive):
 <div class="section-example-container">
 <pre class="csharp"></pre>
 <pre class="python"># Import Technique 1: Bulk downloads
-data = self.Download("https://raw.githubusercontent.com/&lt;organization&gt;/&lt;repo&gt;/&lt;path&gt;?dl=1")
+data = self.Download("https://raw.githubusercontent.com/&lt;organization&gt;/&lt;repo&gt;/&lt;path&gt;")
 
 # Import Technique 2: Processing samples
 def GetSource(self, config, date, isLive):
-    return SubscriptionDataSource("https://raw.githubusercontent.com/&lt;organization&gt;/&lt;repo&gt;/&lt;path&gt;?dl=1", SubscriptionTransportMedium.RemoteFile)</pre>
+    return SubscriptionDataSource("https://raw.githubusercontent.com/&lt;organization&gt;/&lt;repo&gt;/&lt;path&gt;", SubscriptionTransportMedium.RemoteFile)</pre>
 </div>
 
 <h5>Dropbox</h5>
 <?php echo file_get_contents(DOCS_RESOURCES."/datasets/custom-data/dropbox.html"); ?>
+
 <div class="section-example-container">
 <pre class="csharp"></pre>
 <pre class="python"># Import Technique 1: Bulk downloads
