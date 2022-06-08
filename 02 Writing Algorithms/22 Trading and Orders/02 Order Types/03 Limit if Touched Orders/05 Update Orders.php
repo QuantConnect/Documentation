@@ -13,7 +13,14 @@ var updateOrderFields = new UpdateOrderFields()
     LimitPrice = 370,
     Tag = "New tag"
 }
-_response = ticket.Update(updateOrderFields);
+var response = ticket.Update(updateOrderFields);
+
+// Check the OrderResponse
+if (response.IsSuccess)
+{ 
+     Debug("Order updated successfully");
+}
+
 </pre>
 <pre class="python"># Create a new order and save the order ticket
 ticket = self.LimitIfTouchedOrder("SPY", 100, 350, 340, tag="Original tag")
@@ -24,7 +31,11 @@ update_order_fields.Quantity = 80
 update_order_fields.TriggerPrice = 380
 update_order_fields.LimitPrice = 370
 update_order_fields.Tag = "New tag"
-self.response = ticket.Update(update_settings)
+response = ticket.Update(update_settings)
+
+# Check the OrderResponse
+if response.IsSuccess:
+     self.Debug("Order updated successfully")
 </pre>
 </div>
 
