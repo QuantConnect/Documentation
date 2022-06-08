@@ -95,7 +95,7 @@ class MyUniverseAlgorithm(QCAlgorithm):
 
 
 
-<h4>Example 1: From the top 50 stocks with the highest volume, take 10 with lowest PE-ratio.</h4>
+<h4>Example</h4>
 <p>
 The simplest example of accessing the fundamental object would be harnessing the iconic PE ratio for a stock. This is a ratio of the price it commands to the earnings of a stock. The lower the PE ratio for a stock, the more affordable it appears.
 </p>
@@ -129,33 +129,23 @@ def FineSelectionFunction(self, fine):
     return [ x.Symbol for x in sortedByPeRatio[:10] ]
 </pre>
 </div>
-<p>
-There are 900 properties you can use to perform your own filtering. We recommend you review the <a href="https://www.quantconnect.com/data#fundamentals/usa/morningstar">data library</a> page dedicated to this data to fully understand each property.
-</p>
-
-<h4>Example 2: The "QC-500", 500 companies which are liquid, profitable and more than 1B volume.
-<p>
-Due to licensing restrictions, QuantConnect does not have the iconic S&amp;P500 index list, however, we have reconstructed a homemade version which is a 90% replication which we call the QC-500. The QC-500 is too large to paste into this documentation, but we have open sourced the implementation for educational purposes. For more information, see the 
-<span class="python"><a href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.Python/ConstituentsQC500GeneratorAlgorithm.py" target="_BLANK">QC500 example algorithm</a></span>
-<span class="csharp"><a href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.CSharp/ConstituentsQC500GeneratorAlgorithm.cs" target="_BLANK">QC500 example algorithm</a></span>.
-</p>
 
 <h4>Asset Categories</h4>
 <p>In addition to valuation ratios, the <a href="https://www.quantconnect.com/datasets/morning-star-us-fundamentals">US Fundamental Data from Morningstar</a> has many other data point attributes, including over 200 different categorization fields for each US stock. These are grouped into sectors, industry groups and industries.</p>
 
-<p>Sectors are large super categories of data. They are accessed with the <code>MorningstarSectorCode</code> property. The following snippet demonstrates the process of screening for stocks in the technology sector:</p>
+<p>Sectors are large super categories of data. To get the sector of a stock, use the <code>MorningstarSectorCode</code> property.</p>
 <div class="section-example-container">
 <pre class="python">tech = [x for x in fine if x.AssetClassification.MorningstarSectorCode == MorningstarSectorCode.Technology]
 </pre>
 </div>
 
-<p>Industry groups are clusters of related industries that tie together. They are accessed with the <code>MorningstarIndustryGroupCode</code> property. The following snippet demonstrates the process of screening for stocks in the agriculture industry group:</p>
+<p>Industry groups are clusters of related industries that tie together. To get the industry group of a stock, use the <code>MorningstarIndustryGroupCode</code> property.</p>
 <div class="section-example-container">
 <pre class="python">ag = [x for x in fine if x.AssetClassification.MorningstarIndustryGroupCode == MorningstarIndustryGroupCode.Agriculture]
 </pre>
 </div>
 
-<p>Industries are the finest level of classification available. They are the individual industries according to the Morningstar classification system. They are accessed with the <code>MorningstarIndustryCode</code>. The following snippet demonstrates the process of screening for stocks in the coal industry:</p>
+<p>Industries are the finest level of classification available. They are the individual industries according to the Morningstar classification system. To get the industry of a stock, use the <code>MorningstarIndustryCode</code>.</p>
 <div class="section-example-container">
 <pre class="python">coal = [x for x in fine if x.AssetClassification.MorningstarIndustryCode == MorningstarSectorCode.Coal]
 </pre>
@@ -164,5 +154,5 @@ Due to licensing restrictions, QuantConnect does not have the iconic S&amp;P500 
 
 <h4>Practical Limitations</h4>
 <p>
-	Like coarse universes, fine universes allow you to select an unlimited universe of symbols to analyze. Each asset added consumes approximately 5MB of RAM, so you may quickly run out of memory if your universe filter selects many symbols. If you backtest your algorithms in the Algorithm Lab, familiarize yourself with the RAM capacity of your <a href='/docs/v2/our-platform/organizations/resources#02-Backtesting-Nodes'>backtesting</a> and <a href='/docs/v2/our-platform/organizations/resources#04-Live-Trading-Nodes'>live trading nodes</a>. You can help keep your algorithm fast and efficient by only subscribing to the assets you need.
+	Like coarse universes, fine universes allow you to select an unlimited universe of assets to analyze. Each asset in the universe consumes approximately 5MB of RAM, so you may quickly run out of memory if your universe filter selects many assets. If you backtest your algorithms in the Algorithm Lab, familiarize yourself with the RAM capacity of your <a href='/docs/v2/our-platform/organizations/resources#02-Backtesting-Nodes'>backtesting</a> and <a href='/docs/v2/our-platform/organizations/resources#04-Live-Trading-Nodes'>live trading nodes</a>. To keep your algorithm fast and efficient, only subscribe to the assets you need.
 </p>
