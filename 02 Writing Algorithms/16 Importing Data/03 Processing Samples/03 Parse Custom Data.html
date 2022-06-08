@@ -10,18 +10,20 @@
     <tbody>
         <tr>
             <td><code>Symbol</code></td>
-            <td>Set this property to <code>config.Symbol</code></td>
+            <td>Set this property to <code>config.Symbol.</code></td>
         </tr>
         <tr>
-            <td><code>Time</code></td>
-            <td>Time of the data sample<br></td>
+            <td><code>EndTime</code></td>
+            <td>The time when the data sample ends and when LEAN should add the sample to a <a href="/docs/v2/writing-algorithms/key-concepts/time-modeling/timeslices">Slice</a>.</td>
         </tr>
         <tr>
             <td><code>Value</code></td>
-            <td>Default data point value<br></td>
+            <td>The default data point value.<br></td>
         </tr>
     </tbody>
 </table>
+
+
 
 <div class="section-example-container">
 <pre class="csharp">public class MyCustomDataType : BaseData
@@ -39,7 +41,7 @@
         return new MyCustomDataType()
         {
             // Make sure we only get this data AFTER trading day - don't want look-ahead bias.
-            Time = DateTime.ParseExact(data[0], "yyyyMMdd", null).AddHours(20),
+            EndTime = DateTime.ParseExact(data[0], "yyyyMMdd", null).AddHours(20),
             Symbol = config.Symbol,
             Value = Convert.ToDecimal(data[1]),
             Property1 = Convert.ToDecimal(data[2])
@@ -54,7 +56,7 @@
         custom.Symbol = config.Symbol
 
         # Make sure we only get this data AFTER trading day - don't want look-ahead bias.
-        custom.Time = datetime.strptime(data[0], '%Y%m%d') + timedelta(hours=20) 
+        custom.EndTime = datetime.strptime(data[0], '%Y%m%d') + timedelta(hours=20) 
 
         custom.Value = float(data[1])
         custom["property1"] = float(data[2])
