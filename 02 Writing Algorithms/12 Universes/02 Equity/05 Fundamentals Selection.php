@@ -90,8 +90,8 @@ class MyUniverseAlgorithm(QCAlgorithm):
 </pre>
 </div>
 
-<p><code>CoarseFundamental</code> objects have the following attributes:</p>
-<div data-tree='QuantConnect.Data.UniverseSelection.CoarseFundamental'></div>
+<p><code>FineFundamental</code> objects have the following attributes:</p>
+<div data-tree='QuantConnect.Data.Fundamental.FineFundamental'></div>
 
 
 
