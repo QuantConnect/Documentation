@@ -96,22 +96,22 @@ self.custom_consolidator = TradeBarConsolidator(self.my_calendarinfo_method)</pr
 
 <div class="section-example-container">
 <pre class="csharp">// Consolidate 1min SPY -&gt; 45min Bars
-Consolidate("SPY", TimeSpan.FromMinutes(45), FortyFiveMinuteBarHandler)
+_timespanConsolidator = Consolidate("SPY", TimeSpan.FromMinutes(45), FortyFiveMinuteBarHandler)
 
 // Consolidate 1min SPY -&gt; 1-Hour Bars
-Consolidate("SPY", Resolution.Hour, HourBarHandler)
+_resolutionConsolidator = Consolidate("SPY", Resolution.Hour, HourBarHandler)
 
 // Consolidate 1min SPY -&gt; 1-Week Bars
-Consolidate("SPY", Calendar.Weekly, WeekBarHandler)
+_calendarConsolidator = Consolidate("SPY", Calendar.Weekly, WeekBarHandler)
 </pre>
 <pre class="python"># Consolidate 1min SPY -&gt; 45min Bars
-self.Consolidate("SPY", timedelta(minutes=45), self.FortyFiveMinuteBarHandler)
+self.timedelta_consolidator = self.Consolidate("SPY", timedelta(minutes=45), self.FortyFiveMinuteBarHandler)
 
 # Consolidate 1min SPY -&gt; 1-Hour Bars
-self.Consolidate("SPY", Resolution.Hour, self.HourBarHandler)
+self.resolution_consolidator = self.Consolidate("SPY", Resolution.Hour, self.HourBarHandler)
 
 # Consolidate 1min SPY -&gt; 1-Week Bars
-self.Consolidate("SPY", Calendar.Weekly, self.WeekBarHandler)
+self.calendar_consolidator = self.Consolidate("SPY", Calendar.Weekly, self.WeekBarHandler)
 </pre>
 </div>
 
@@ -121,11 +121,11 @@ self.Consolidate("SPY", Calendar.Weekly, self.WeekBarHandler)
 <pre class="csharp">var symbol = AddEquity("SPY", Resolution.Minute).Symbol;
 
 // Create QuoteBar objects
-Consolidate(symbol, Resolution.Hour, TickType.Quote, ConsolidationHandler);</pre>
+_consolidator = Consolidate(symbol, Resolution.Hour, TickType.Quote, ConsolidationHandler);</pre>
 <pre class="python">symbol = self.AddEquity("SPY", Resolution.Minute).Symbol
 
 # Create QuoteBar objects
-self.Consolidate(symbol, Resolution.Hour, TickType.Quote, self.consolidation_handler)</pre>
+self.consolidator = self.Consolidate(symbol, Resolution.Hour, TickType.Quote, self.consolidation_handler)</pre>
 </div>
 
-<p>When the consolidator receives a bar that reaches or passes the consolidation period, it passes the consolidated bar to the <a href='/docs/v2/writing-algorithms/consolidating-data/key-concepts#04-Receive-Consolidated-Bars'>event handler</a>. If you create a consolidator with the <code>Consolidate</code> method, you can't remove the consolidator.</p>
+<p>When the consolidator receives a bar that reaches or passes the consolidation period, it passes the consolidated bar to the <a href='/docs/v2/writing-algorithms/consolidating-data/key-concepts#04-Receive-Consolidated-Bars'>event handler</a>.</p>
