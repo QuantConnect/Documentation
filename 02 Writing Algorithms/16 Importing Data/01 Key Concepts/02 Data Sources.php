@@ -1,7 +1,7 @@
 <p>You can import data from local files, remote files, or REST endpoints.</p>
 
 <h4>Local Files</h4>
-<p>To access local files in your algorithms, you must run local algorithms with the <a href="/docs/v2/lean-cli/key-concepts/getting-started">CLI</a>. The file path is relative to the project root. For example, if you have a structure like <span class="private-file-name">&lt;projectName&gt;/custom-data/file.csv</span>, use the following snippets:</p>
+<p>To access local files in your algorithms, you must run local algorithms with the <a href="/docs/v2/lean-cli/key-concepts/getting-started">CLI</a>. The file path is relative to the project root. For example, if you save the file at <span class="private-file-name">&lt;projectName&gt;/custom-data/file.csv</span>, use the following snippets:</p>
 
 <div class="section-example-container">
 <pre class="csharp"></pre>
