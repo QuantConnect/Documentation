@@ -1,6 +1,3 @@
-<meta name="tag" content="universes">
-<meta name="tag" content="coarse universes">
-<meta name="tag" content="fine universes">
 <style>
 .work-in-progress {
     width: 100%;
@@ -42,12 +39,7 @@ th.summary {
 }
 </style>
 
-<p>
-The universe API supports performing universe selection based on corporate fundamental data. This data is powered by <a href="/datasets/morning-star-us-fundamentals">Morningstar®</a> and includes approximately <?php include(DOCS_RESOURCES."/kpis/fundamental-universe-size.php");?> tickers with 900 properties each. The data comes delivered as a  $[FineFundamental,T:QuantConnect.Data.Fundamental.FineFundamental] type.
-</p>
-
-<p>Due to the sheer volume of information, Fundamental selection is performed on the <i>output</i> of the coarse universe. You can think of this as a 2-stage filter; first, coarse universe can select all of the liquid assets, then fine fundamental universe can select those which meet your targets.
-</p>
+<p>A fundamental universe lets you select stocks based on corporate fundamental data. This data is powered by <a href="/datasets/morning-star-us-fundamentals">Morningstar®</a> and includes approximately <?php include(DOCS_RESOURCES."/kpis/fundamental-universe-size.php");?> tickers with 900 properties each. Due to the sheer volume of information, fundamental selection is performed on the output of another universe filter. Think of this process as a 2-stage filter. An initial filter function selects a set of stocks and then a fine fundamental filter function selects a subset of those stocks.</p>
 
 
 <figure>
@@ -55,19 +47,13 @@ The universe API supports performing universe selection based on corporate funda
 <figcaption>QuantConnect Coarse and Fine Universe Selection</figcaption>
 </figure>
 
-<p>
-To view all of the $[FineFundamental, T:QuantConnect.Data.Fundamental.FineFundamental] properties, see the <a href="/docs/v2/writing-algorithms/datasets/morningstar/us-fundamental-data#05-Data-Point-Attributes">US Fundmantal Data Point Attributes</a>.
-</p>
+<p>To add a fundamental universe, in the <code>Initialize</code> method, pass two filter functions to the <code>AddUniverse</code> method. The first filter function can be a <a href='/docs/v2/writing-algorithms/universes/equity#02-Coarse-Universe-Selection'>coarse universe filter</a>, <a href='/docs/v2/writing-algorithms/universes/equity#03-Dollar-Volume-Selection'>dollar volume filter</a>, or an <a href='/docs/v2/writing-algorithms/universes/equity#04-ETF-Constituents-Selection'>ETF constituents filter</a>. The second filter function receives a list of <code>FineFundamental</code> objects and must return a list of <code>Symbol</code> objects. The list of <code>FineFundamental</code> objects contains a subset of the <code>Symbol</code> objects the first filter function returns. The <code>Symbol</code> objects you return from the second function are the constituents of the fundamental universe and LEAN automatically creates subscriptions for them.</p>
 
 <div class="tip">
   <i class="fa fa-lightbulb-o"></i><span class="tip-title">Tip:</span>
-  <p>Only <?php include(DOCS_RESOURCES."/kpis/fundamental-universe-size.php");?> assets have fundamental data. When working with fundamental data, you should always include the <code>HasFundamentalData</code> filter in your Coarse Universe filter. See the example below for how to do this in your algorithm.</p>
+  <p>Only <?php include(DOCS_RESOURCES."/kpis/fundamental-universe-size.php");?> assets have fundamental data. If your first filter function receives <code>CoarseFundamental</code> data, you should only select assets that have a true value for their <code>HasFundamentalData</code> property.</p>
 </div>
 
-<h4>Requesting a Fundamental Universe</h4>
-<p>
-To request a fundamental universe, pass a second filter-function into the <code>AddUniverse()</code> method. The second function handles the filtering of your FineFundamental objects:
-</p>
 <div class="section-example-container">
 <pre class="csharp">
 public class MyUniverseAlgorithm : QCAlgorithm {
