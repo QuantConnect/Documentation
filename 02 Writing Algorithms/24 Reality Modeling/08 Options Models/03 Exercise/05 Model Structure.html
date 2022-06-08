@@ -5,66 +5,41 @@
 {
     public IEnumerable&lt;OrderEvent&gt; OptionExercise(Option option, OptionExerciseOrder order)
     {
-        var underlying = option.Underlying;
-        var utcTime = option.LocalTime.ConvertToUtc(option.Exchange.TimeZone);
-
-        var inTheMoney = option.IsAutoExercised(underlying.Close);
+        var inTheMoney = option.IsAutoExercised(option.Underlying.Close);
         var isAssignment = inTheMoney && option.Holdings.IsShort;
 
         yield return new OrderEvent(
             order.Id,
             option.Symbol,
-            utcTime,
+            option.LocalTime.ConvertToUtc(option.Exchange.TimeZone),
             OrderStatus.Filled,
             GetOrderDirection(order.Quantity),
             0.0m,
             order.Quantity,
             OrderFee.Zero,
-            GetContractHoldingsAdjustmentFillTag(inTheMoney, isAssignment)
+            "Tag"
         ) { IsAssignment = isAssignment }
-    }
-
-    private static string GetContractHoldingsAdjustmentFillTag(bool inTheMoney, bool isAssignment)
-    {
-        var action = isAssignment ? "Assignment" : "Exercise";
-        if (inTheMoney)
-        {
-            return $"Automatic {action}";
-        }
-
-        return "OTM";
     }
 }</pre>
     <pre class="python">class MyExerciseModel:
-    def OptionExercise(self, option, order):
-        underlying = option.Underlying
-        utcTime = option.LocalTime.ConvertToUtc(option.Exchange.TimeZone)
-        
-        inTheMoney = option.IsAutoExercised(underlying.Close)
+    def OptionExercise(self, option: Option, order: OptionExerciseOrder) -&gt; List[OrderEvent]:
+        inTheMoney = option.IsAutoExercised(option.Underlying.Close)
         isAssignment = (inTheMoney & option.Holdings.IsShort)
         
         order_event = OrderEvent(
             order.Id,
             option.Symbol,
-            utcTime,
+            option.LocalTime.ConvertToUtc(option.Exchange.TimeZone),
             OrderStatus.Filled,
             GetOrderDirection(order.Quantity),
             0.0,
             order.Quantity,
             OrderFee.Zero,
-            self.GetContractHoldingsAdjustmentFillTag(inTheMoney, isAssignment)
+            "Tag"
         )
         order_event.IsAssignment = isAssignment
 
-        yield order_event
-        
-    def GetContractHoldingsAdjustmentFillTag(self, inTheMoney, isAssignment):
-        action = "Assignment" if isAssignment else "Exercise"
-        
-        if inTheMoney:
-            return f"Automatic {action}"
-        
-        return "OTM"</pre>
+        yield order_event</pre>
 </div>
 
 <h4>OptionExerciseOrder Objects</h4>

@@ -35,15 +35,12 @@
     <pre class="python">class MyVolatilityModel(BaseVolatilityModel):
     Volatility = 0
 
-    def SetSubscriptionDataConfigProvider(self, subscriptionDataConfigProvider):
+    def SetSubscriptionDataConfigProvider(self, subscriptionDataConfigProvider: ISubscriptionDataConfigProvider) -&gt; None:
         SubscriptionDataConfigProvider = subscriptionDataConfigProvider
 
-    def Update(self, security, data):
+    def Update(self, security: Security, data: BaseData) -&gt; None:
         pass
 
-    def GetHistoryRequirements(self, security, utcTime):
-        return super().GetHistoryRequirements(security, utcTime)
-
-    def GetHistoryRequirements(self, security, utcTime, resolution=None, barCount=None):
+    def GetHistoryRequirements(self, security: Security, utcTime: datetime, resolution=None: Resolution, barCount=None: int) -> List[HistoryRequest]:
         return super().GetHistoryRequirements(security, utcTime, resolution, barCount)</pre>
 </div>
