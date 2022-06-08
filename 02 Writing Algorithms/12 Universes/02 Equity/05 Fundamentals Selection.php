@@ -57,11 +57,13 @@ th.summary {
 <div class="section-example-container">
 <pre class="csharp">
 public class MyUniverseAlgorithm : QCAlgorithm {
-    public override void Initialize() {
+    public override void Initialize() 
+    {
         AddUniverse(MyCoarseFilterFunction, MyFineFundamentalFilterFunction);
     }
     // filter based on CoarseFundamental
-    IEnumerable&lt;Symbol&gt; MyCoarseFilterFunction(IEnumerable&lt;CoarseFundamental&gt; coarse) {
+    IEnumerable&lt;Symbol&gt; MyCoarseFilterFunction(IEnumerable&lt;CoarseFundamental&gt; coarse) 
+    {
          // In addition to further coarse universe selection, ensure the security has fundamental data
          return return (from c in coarse
                         where c.HasFundamentalData
