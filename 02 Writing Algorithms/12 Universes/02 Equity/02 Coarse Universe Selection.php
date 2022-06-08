@@ -1,9 +1,6 @@
-<meta name="tag" content="universes">
-<meta name="tag" content="coarse universes">
+<p>Coarse Universe selection lets you pick a set of stocks based on <code>CoarseFundamental</code> data. <code>CoarseFundamental</code> objects have the following attributes:</p>
 
-<p>
-Coarse Universe selection allows you to pick a set of stocks by its volume, price, or whether it has fundamental data. This is helpful to narrow down your universe to liquid assets, or assets which pass a technical indicator filter. 
-</p>
+<div data-tree='QuantConnect.Data.UniverseSelection.CoarseFundamental'></div>
 
 <p>
 To use a coarse universe, you must request it using an $[AddUniverse(), M:QuantConnect.Algorithm.QCAlgorithm.AddUniverse] call from the Initialize() method of your algorithm. You should pass in a function that will be used to filter the stocks down to the assets you are interested in using.
