@@ -58,7 +58,25 @@
 </table>
 
 
-<p>By default, LEAN adds all of the available Option contracts to the <a href="/docs/v2/writing-algorithms/key-concepts/time-modeling/timeslices">Slice</a> it passes to the <code>OnData</code> method. To narrow down the universe of Option contracts, call the <code>SetFilter</code> method. </p><p>We provide the $[SetFilter,M:QuantConnect.Securities.Option.Option.SetFilter] method to help narrow the option strike and expiry dates down to a range you are interested in.
+<p>If you add an Option universe for an underlying Equity that you don't have a subscription for, LEAN automatically subscribes to the underlying Equity. By default, LEAN adds all of the available Option contracts to the <a href="/docs/v2/writing-algorithms/key-concepts/time-modeling/timeslices">Slice</a> it passes to the <code>OnData</code> method. To narrow down the universe of Option contracts, call the <code>SetFilter</code> method. There are many ways you can call the <code>SetFilter</code> method.</p>
+
+
+<div class="section-example-container">
+    <pre class="csharp"></pre>
+    <pre class="python"># Select contracts that have a strike price within 1 strike level above and below the underlying price
+self.SetFilter(minStrike=-1, maxStrike=1)
+
+# Select contracts that expire within 30 days
+self.SetFilter(minExpiry=timedelta(days=0), maxExpiry=timedelta(days=30))
+<br># Select contracts that have a strike price within 1 strike level and expire within 30 days
+self.SetFilter(minStrike=-1, maxStrike=1, minExpiry=timedelta(days=0), maxExpiry=timedelta(days=30))
+</pre>
+</div>
+
+
+
+
+<p>We provide the $[SetFilter,M:QuantConnect.Securities.Option.Option.SetFilter] method to help narrow the option strike and expiry dates down to a range you are interested in.
 </p><div>-Technique 1: AddOption + SetFilter<br></div><div>&nbsp;&nbsp; - AddEquity() + AddOption() <br></div><div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - https://www.quantconnect.com/docs/data-library/options#Options-Requesting-Options-Data---Universe<br></div><div>&nbsp; &nbsp; &nbsp; - Must use raw data normalization<br></div><div>&nbsp; &nbsp; &nbsp; - Save a reference to the canonical Symbol; Explain what canonical Symbol means.<br></div><div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - By default, the option universe is filtered down to contracts that 
 expire within 35 days, one contract below and another above ATM, and 
 exclude weekly. A different set of contracts can be chosen with the <code>SetFilter</code> method</div><div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - Refer to Universes &gt; Equity Options</div><div><div>&nbsp; -Contract subscriptions in the chain are determined with the SetFilter method</div><div>&nbsp;&nbsp;&nbsp; - You can use:</div><div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - min-max expiry</div><div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - min-max strike price</div><div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - min-max expiry and min-max strike price</div><div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - User-defined</div><div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - Calls only</div><div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - Puts only <br></div><div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - Standards only</div><div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - Include weeklys</div><div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - Weeklys only</div><div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - Front month</div><div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - Back month(s)</div><div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - Individual contract filters<br></div><div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - Apply filter at market open<br></div><div>&nbsp;&nbsp;&nbsp; - You can chain universe filters</div></div><p></p><p>- Option contracts are added to the chain when they pass the SetFilter method criteria. In backtests, contracts are removed from the chain on the NEXT DAY when they no longer satisify the SetFilter method. In live trading, they can be removed every 15 mins.</p><p>&nbsp;&nbsp; - As a result, your chain may have more contracts that you expect at times. See https://github.com/QuantConnect/Lean/issues/6294<br></p>
