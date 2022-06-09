@@ -1,7 +1,7 @@
 <p>To set the volatility model of the underlying security of an Option, set the <code>VolatilityModel</code> property of the <code>Security</code> object. The volatility model can have a different resolution than the underlying asset subscription.</p>
 
 <div class="section-example-container">
-    <pre class="csharp" style="">// In Initialize
+    <pre class="csharp">// In Initialize
 var underlyingSecurity= AddEquity("SPY");
 underlyingSecurity.VolatilityModel = new StandardDeviationOfReturnsVolatilityModel(30);</pre>
     <pre class="python"># In Initialize
@@ -13,7 +13,7 @@ underlying_security.VolatilityModel = StandardDeviationOfReturnsVolatilityModel(
 <p>You can also set the volatility model in a security initializer. If your algorithm has a universe of underlying assets, use the security initializer technique. In order to initialize single security subscriptions with the security initializer, call <code>SetSecurityInitializer</code> before you create the subscriptions.</p>
 
 <div class="section-example-container">
-<pre class="csharp" style="">// In Initialize
+<pre class="csharp">// In Initialize
 SetSecurityInitializer(CustomSecurityInitializer);
 AddEquity("SPY");
 
@@ -29,7 +29,8 @@ private void CustomSecurityInitializer(Security security)
 self.SetSecurityInitializer(self.CustomSecurityInitializer)
 AddEquity("SPY")
 
-def CustomSecurityInitializer(self, security):<br>    if security.Type == SecurityType.Equity:
+def CustomSecurityInitializer(self, security: Security) -&gt; None:
+    if security.Type == SecurityType.Equity:
         security.VolatilityModel = StandardDeviationOfReturnsVolatilityModel(30)
 </pre>
 </div>

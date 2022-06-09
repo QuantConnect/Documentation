@@ -1,50 +1,50 @@
 <p>Follow these steps to implement the protective collar strategy.</p>
 
 <ol>
-	<li>In the Initialize method, set the start date, end date, cash, and <a href="https://www.quantconnect.com/docs/v2/writing-algorithms/universes/equity-options">Option universe</a>.</li>
+    <li>In the Initialize method, set the start date, end date, cash, and <a href="https://www.quantconnect.com/docs/v2/writing-algorithms/universes/equity-options">Option universe</a>.</li>
     <div class="section-example-container">
-		<pre class="python">def Initialize(self):
-	self.SetStartDate(2017, 4, 1)
-	self.SetEndDate(2017, 4, 30)
-	self.SetCash(100000)
-	
-	equity = self.AddEquity("GOOG", Resolution.Minute)
-	option = self.AddOption("GOOG", Resolution.Minute)
-	self.symbol = option.Symbol
+        <pre class="python">def Initialize(self):
+    self.SetStartDate(2017, 4, 1)
+    self.SetEndDate(2017, 4, 30)
+    self.SetCash(100000)
+    
+    equity = self.AddEquity("GOOG", Resolution.Minute)
+    option = self.AddOption("GOOG", Resolution.Minute)
+    self.symbol = option.Symbol
 
-	# set our strike/expiry filter for this option chain
-	option.SetFilter(-10, +10, timedelta(0), timedelta(30))
-		</pre>
-	</div>
+    # set our strike/expiry filter for this option chain
+    option.SetFilter(-10, +10, timedelta(0), timedelta(30))
+        </pre>
+    </div>
 
-	<li>In the OnData method, select the Option contracts.</li>
+    <li>In the OnData method, select the Option contracts.</li>
     <div class="section-example-container">
-		<pre class="python">def OnData(self, data):
-	# avoid extra orders
-	if self.Portfolio.Invested: return
+        <pre class="python">def OnData(self, data):
+    # avoid extra orders
+    if self.Portfolio.Invested: return
 
-	# Get the OptionChain of the self.symbol
-	chain = data.OptionChains.get(self.symbol, None)
-	if not chain: return
+    # Get the OptionChain of the self.symbol
+    chain = data.OptionChains.get(self.symbol, None)
+    if not chain: return
 
-	# choose the furthest expiration date within 30 days from now on
-	expiry = sorted(chain, key = lambda x: x.Expiry)[-1].Expiry
-	# filter the call options contracts
-	call = [x for x in chain if x.Right == OptionRight.Call and x.Expiry == expiry]
-	# filter the put options contracts
-	put = [x for x in chain if x.Right == OptionRight.Put and x.Expiry == expiry]
+    # choose the furthest expiration date within 30 days from now on
+    expiry = sorted(chain, key = lambda x: x.Expiry)[-1].Expiry
+    # filter the call options contracts
+    call = [x for x in chain if x.Right == OptionRight.Call and x.Expiry == expiry]
+    # filter the put options contracts
+    put = [x for x in chain if x.Right == OptionRight.Put and x.Expiry == expiry]
 
-	if not call or not put: return
+    if not call or not put: return
 
-	self.otm_call = sorted(call, key = lambda x: x.Strike)[-1]
-	self.otm_put = sorted(put, key = lambda x: x.Strike)[0]</pre>
-	</div>
+    self.otm_call = sorted(call, key = lambda x: x.Strike)[-1]
+    self.otm_put = sorted(put, key = lambda x: x.Strike)[0]</pre>
+    </div>
 
-	<li>In the OnData method, submit the order.</li>
+    <li>In the OnData method, submit the order.</li>
     <div class="section-example-container">
-		<pre class="python">self.Sell(self.otm_call.Symbol, 1) # sell the OTM call
+        <pre class="python">self.Sell(self.otm_call.Symbol, 1) # sell the OTM call
 self.Buy(self.otm_put.Symbol, 1) # buy the OTM put
-self.Buy("GOOG",100)	 # buy 100 shares of the underlying stock
-		</pre>
-	</div>
+self.Buy("GOOG",100)     # buy 100 shares of the underlying stock
+        </pre>
+    </div>
 </ol>

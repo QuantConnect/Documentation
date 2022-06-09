@@ -4,15 +4,15 @@
     <li>In the Initialize method, set the start date, end date, cash, and <a href="https://www.quantconnect.com/docs/v2/writing-algorithms/universes/equity-options">Option universe</a>.</li>
     <div class="section-example-container">
         <pre class="python">def Initialize(self):
-	self.SetStartDate(2017, 4, 1)
-	self.SetEndDate(2017, 6, 30)
-	self.SetCash(100000)
-	
-	option = self.AddOption("GOOG", Resolution.Minute)
-	self.symbol = option.Symbol
+    self.SetStartDate(2017, 4, 1)
+    self.SetEndDate(2017, 6, 30)
+    self.SetCash(100000)
+    
+    option = self.AddOption("GOOG", Resolution.Minute)
+    self.symbol = option.Symbol
 
-	# set our strike/expiry filter for this option chain
-	option.SetFilter(-5, 5, timedelta(30), timedelta(60))</pre>
+    # set our strike/expiry filter for this option chain
+    option.SetFilter(-5, 5, timedelta(30), timedelta(60))</pre>
     </div>
 
     <li>In the OnData method, select the Option contracts.</li>
@@ -26,18 +26,18 @@
     if not chain: return
 
     # sort the optionchain by expiration date and choose the furthest date
-	expiry = sorted(chain,key = lambda x: x.Expiry, reverse=True)[0].Expiry
+    expiry = sorted(chain,key = lambda x: x.Expiry, reverse=True)[0].Expiry
 
-	# filter the call options from the contracts expires on that date
-	call = [i for i in chain if i.Expiry == expiry and i.Right == 0]
+    # filter the call options from the contracts expires on that date
+    call = [i for i in chain if i.Expiry == expiry and i.Right == 0]
 
-	# sort the contracts according to their strike prices
-	call_contracts = sorted(call,key = lambda x: x.Strike)
+    # sort the contracts according to their strike prices
+    call_contracts = sorted(call,key = lambda x: x.Strike)
 
-	if len(call_contracts) == 0: return
-	self.call = call_contracts[0]
+    if len(call_contracts) == 0: return
+    self.call = call_contracts[0]
 
-	for i in chain:
+    for i in chain:
         if i.Expiry == expiry and i.Right == 1 and i.Strike == call_contracts[0].Strike:
             self.put = i</pre>
     </div>

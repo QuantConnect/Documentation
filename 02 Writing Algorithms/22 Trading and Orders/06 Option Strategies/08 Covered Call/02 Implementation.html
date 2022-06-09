@@ -7,14 +7,12 @@
     self.SetStartDate(2016, 1, 1)
     self.SetEndDate(2016, 3, 1)
     self.SetCash(100000)
+
     equity = self.AddEquity("IBM", Resolution.Minute)
     option = self.AddOption("IBM", Resolution.Minute)
     self.symbol = option.Symbol
     # set our strike/expiry filter for this option chain
-    option.SetFilter(-3, +3, timedelta(0), timedelta(30))
-    # use the underlying equity as the benchmark
-    self.SetBenchmark(equity.Symbol)
-    self.call = "IBM" # Initialize the call contract</pre>
+    option.SetFilter(-3, +3, timedelta(0), timedelta(30))</pre>
     </div>
   
     <li>Filter out the call options from candidate contracts.</li>
@@ -25,7 +23,8 @@
     <li>Select the most ATM contract with the furthest expiration date from call options contracts. Sell this call contract for each 100 shares of stock you own. Here you can also choose ITM or OTM contract based on your expected level of profit and the level of risk you can take.</li>
     <div class="section-example-container">
         <pre class="python">def TradeOptions(self,slice):
-		if slice.OptionChains.Count == 0: return
+    if slice.OptionChains.Count == 0: return
+
     for i in slice.OptionChains:
         if i.Key != self.symbol: continue
         chain = i.Value
