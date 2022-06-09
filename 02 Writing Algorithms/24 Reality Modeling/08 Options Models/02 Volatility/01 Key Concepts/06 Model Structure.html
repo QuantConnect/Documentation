@@ -1,4 +1,4 @@
-<p>Volatility models should extend the <code>BaseVolatilityModel</code> class. Extensions of the <code>BaseVolatilityModel</code> class must have <code>Update</code> and <code>GetHistoryRequirements</code> methods and a <code>Volatility</code> property. The <code>Update</code> method receives <code>Security</code> and <code>BaseData</code> objects and then updates the <code>Volatility</code>. The <code>GetHistoryRequirements</code> method receives <code>Security</code> and <code class='csharp'>DateTime</code><code class='csharp'>datetime</code> objects and then returns a list of <code>HistoryRequest</code> objects that represent the history requests to warm up the model. Volatility models receive data at each time step in the algorithm to update their state.</p> 
+<p>Volatility models should extend the <code>BaseVolatilityModel</code> class. Extensions of the <code>BaseVolatilityModel</code> class must have <code>Update</code> and <code>GetHistoryRequirements</code> methods and a <code>Volatility</code> property. The <code>Update</code> method receives <code>Security</code> and <code>BaseData</code> objects and then updates the <code>Volatility</code>. The <code>GetHistoryRequirements</code> method receives <code>Security</code> and <code class="csharp">DateTime</code><code class="csharp">datetime</code> objects and then returns a list of <code>HistoryRequest</code> objects that represent the history requests to warm up the model. Volatility models receive data at each time step in the algorithm to update their state.</p> 
 
 <div class="section-example-container">
     <pre class="csharp">public class MyVolatilityModel : BaseVolatilityModel
@@ -33,14 +33,19 @@
     }
 }</pre>
     <pre class="python">class MyVolatilityModel(BaseVolatilityModel):
-    Volatility = 0
+    Volatility: float = 0
 
-    def SetSubscriptionDataConfigProvider(self, subscriptionDataConfigProvider: ISubscriptionDataConfigProvider) -&gt; None:
+    def SetSubscriptionDataConfigProvider(self,
+         subscriptionDataConfigProvider: ISubscriptionDataConfigProvider) -&gt; None:
         SubscriptionDataConfigProvider = subscriptionDataConfigProvider
 
     def Update(self, security: Security, data: BaseData) -&gt; None:
         pass
 
-    def GetHistoryRequirements(self, security: Security, utcTime: datetime, resolution=None: Resolution, barCount=None: int) -&gt; List[HistoryRequest]:
+    def GetHistoryRequirements(self,
+         security: Security,
+         utcTime: datetime,
+         resolution: Resolution = None,
+         barCount: int = None) -&gt; List[HistoryRequest]:
         return super().GetHistoryRequirements(security, utcTime, resolution, barCount)</pre>
 </div>
