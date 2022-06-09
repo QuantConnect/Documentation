@@ -71,31 +71,123 @@ self.symbol = future.Symbol</pre>
 
 
 
+<p>By default, LEAN adds all of the available Future contracts to the <a href="/docs/v2/writing-algorithms/key-concepts/time-modeling/timeslices">Slice</a> it passes to the <code>OnData</code> method. To narrow down the universe of Future contracts, in the <code>Initialize</code> method, call the <code>SetFilter</code> method of the <code>Future</code> object. The following table describes the available filter techniques:</p>
 
-<div>Technique 1: - AddFuture() + SetFilter()<br>https://www.quantconnect.com/docs/data-library/futures#Futures-Requesting-Futures-Data<br></div><div>&nbsp;&nbsp; - Save a reference to the canonical Symbol (the continuous future Symbol)<br></div><div>&nbsp;&nbsp; - Usually called in OnData</div><div><div>-Contract subscriptions in the chain are determined with the SetFilter method</div><div>&nbsp;&nbsp;&nbsp; - You can use</div><div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - Min expiry-max expiry (days)<br></div><div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - User defined<br></div><div><div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - Standards only</div><div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - Include weeklys</div><div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - Weeklys only</div><div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - Front month</div><div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - Back month(s)</div><div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - Individual contract filters<br></div><div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - Apply filter at market open<br></div>&nbsp;&nbsp;&nbsp; - You can chain universe filters</div><div>&nbsp; - Examples <br></div><div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - SetFilter(numDays, numDays) <br></div><div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - SetFilter(TimeSpan/timedelta, TimeSpan/timedelta)</div><div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - Universe selection function<br></div></div><div><br></div><div class="section-example-container">
-    <pre class="csharp">future_gold = self.AddFuture(Futures.Metals.Gold)
+<table class="table qc-table">
+    <thead>
+        <tr>
+            <th>Method<br></th>
+            <th>Description</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><code>SetFilter(int minExpiryDays, int maxExpiryDays)</code></td>
+	    <td>Selects the contracts that expire within the range you set.<br></td>
+        </tr>
+        <tr>
+            <td><code>SetFilter(Func&lt;FutureFilterUniverse, FutureFilterUniverse&gt; universeFunc)</code></td>
+	    <td>Selects the contracts that a function selects.</td>
+        </tr>
+    </tbody>
+</table>
 
-# Select the contracts which expire no later than 182 days
-future_gold.SetFilter(0, 182)
 
-# Select the contracts which expire no later than 182 days
-future_gold.SetFilter(timedelta(0), timedelta(182))
+<div class="section-example-container">
+    <pre class="csharp"># Select the contracts which expire within 182 days
+future.SetFilter(0, 182)
 
 # Select the front month contract
-future_gold.SetFilter(lambda x: x.FrontMonth().OnlyApplyFilterAtMarketOpen())</pre>
-    <pre class="python">var futureGold = AddFuture(Futures.Metals.Gold);
-
-// Select the contracts which expire no later than 182 days
-futureGold.SetFilter(0, 182);
-
-// Select the contracts which expire no later than 182 days
-futureGold.SetFilter(TimeSpan.FromDays(0), TimeSpan.FromDays(182));
+future.SetFilter(lambda x: x.FrontMonth())</pre>
+    <pre class="python">// Select the contracts which expire within 182 days
+future.SetFilter(0, 182);
 
 // Select the front month contract
-futureGold.SetFilter(x =&gt; x.FrontMonth().OnlyApplyFilterAtMarketOpen());
+future.SetFilter(x =&gt; x.FrontMonth().OnlyApplyFilterAtMarketOpen());
 </pre>
 </div>
 
+<p>The following table describes the filter methods of the <code>FutureFilterUniverse</code> class:</p>
+
+<table class="qc-table table">
+    <thead>
+        <tr>
+            <th>Method</th>
+            <th>Description</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><code>StandardsOnly()</code></td>
+            <td>Selects standard contracts</td>
+        </tr>
+        <tr>
+            <td><code>IncludeWeeklys()</code></td>
+            <td>Selects non-standard weekly contracts</td>
+        </tr>
+        <tr>
+            <td><code>WeeklysOnly()</code></td>
+            <td>Selects weekly contracts</td>
+        </tr>
+        <tr>
+            <td><code>FrontMonth()</code></td>
+            <td>Selects the front month contract</td>
+        </tr>
+        <tr>
+            <td><code>BackMonths()</code></td>
+            <td>Selects the non-front month contracts</td>
+        </tr>
+        <tr>
+            <td><code>BackMonth()</code></td>
+            <td>Selects the back month contracts<br></td>
+        </tr>
+        <tr>
+            <td><code>Expiration(<span class="csharp">TimeSpan</span><span class="python">timedelta</span> minExpiry, <span class="csharp">TimeSpan</span><span class="python">timedelta</span> maxExpiry)</code></td>
+            <td>Selects contracts that expire within a range of dates relative to the current day<br></td>
+        </tr>
+        <tr>
+            <td><code>Expiration(int minExpiryDays, int maxExpiryDays)</code></td>
+            <td>Selects contracts that expire within a range of dates relative to the current day</td>
+        </tr>
+        <tr>
+            <td><code>Contracts(IEnumerable&lt;Symbol&gt; contracts)</code></td>
+            <td>Selects a list of contracts</td>
+        </tr>
+        <tr>
+            <td><code>Contracts(Func&lt;IEnumerable&lt;Symbol&gt;, IEnumerable&lt; Symbol&gt;&gt; contractSelector)</code></td>
+            <td>Selects contracts that a selector function selects</td>
+        </tr>
+        <tr>
+            <td><code>OnlyApplyFilterAtMarketOpen()</code></td>
+            <td>Instructs the engine to only filter contracts on the first time step of each market day</td>
+        </tr>
+    </tbody>
+</table>
+
+<p>The preceding methods return an <code>OptionFilterUniverse</code>, so you can chain the methods together.</p>
+
+<div class="section-example-container">
+    <pre class="csharp"></pre>
+    <pre class="python"># Select the front month call contracts
+option.SetFilter(lambda future_filter_universe: future_filter_universe.StandardsOnly().FrontMonth())</pre>
+</div>
+
+
+<p>To get all of the contracts in the <code>FutureFilterUniverse</code>, call the <code>GetEnumerator</code> method.</p>
+<div class="section-example-container">
+    <pre class="csharp"></pre>
+    <pre class="python"># In Initialize
+option.SetFilter(self.future_contract_filter)
+    
+def future_contract_filter(self, future_filter_universe):
+    puts = future_filter_universe.StandardsOnly()
+    symbols = []
+    for _, symbol in enumerate(puts.GetEnumerator()):
+        contract = Future(symbol, future_filter_universe.Underlying)
+        if contract.OpenInterest &gt; 0: 
+            symbols.append(contract.Symbol)
+    return future_filter_universe.Contracts(symbols)</pre>
+</div>
 
 
 <p>By default, LEAN adds contracts to the <code>FutureChain</code> that pass the filter criteria at every time step in your algorithm. In backtests, if a contract in the chain doesn't pass the filter criteria, LEAN removes it from the chain at the start of the next day. In live trading, LEAN removes these contracts from the chain every 15 minutes.</p>
