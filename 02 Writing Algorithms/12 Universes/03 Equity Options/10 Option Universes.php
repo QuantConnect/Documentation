@@ -128,9 +128,9 @@ option.SetFilter(lambda option_filter_universe: option_filter_universe.CallsOnly
 <div class="section-example-container">
     <pre class="csharp"></pre>
     <pre class="python"># In Initialize
-option.SetFilter(self.option_contract_filter)
+option.SetFilter(self.contract_selector)
     
-def option_contract_filter(self, option_filter_universe):
+def contract_selector(self, option_filter_universe):
     puts = option_filter_universe.PutsOnly()
     symbols = []
     for _, symbol in enumerate(puts.GetEnumerator()):
