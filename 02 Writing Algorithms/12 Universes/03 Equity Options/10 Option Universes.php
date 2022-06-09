@@ -60,7 +60,7 @@ self.symbol = option.Symbol</pre>
 
 <p>If you add an Option universe for an underlying Equity that you don't have a subscription for, LEAN automatically subscribes to the underlying Equity with a <a href='/docs/v2/writing-algorithms/securities/asset-classes/us-equity/requesting-data#09-Data-Normalization'>data normalization mode</a> of <code>Raw</code>. If you already have a subscription to the underlying Equity but it's not <code>Raw</code>, LEAN automatically changes it to <code>Raw</code>.</p>
 
-<p>By default, LEAN adds all of the available Option contracts to the <a href="/docs/v2/writing-algorithms/key-concepts/time-modeling/timeslices">Slice</a> it passes to the <code>OnData</code> method. To narrow down the universe of Option contracts, call the <code>SetFilter</code> method of the <code>Option</code> object. The following table describes the available filter techniques:</p>
+<p>By default, LEAN adds all of the available Option contracts to the <a href="/docs/v2/writing-algorithms/key-concepts/time-modeling/timeslices">Slice</a> it passes to the <code>OnData</code> method. To narrow down the universe of Option contracts, in the <code>Initialize</code> method, call the <code>SetFilter</code> method of the <code>Option</code> object. The following table describes the available filter techniques:</p>
 
 
 <table class="table qc-table">
