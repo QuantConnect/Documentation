@@ -1,4 +1,4 @@
-<p>To create a universe of Cryptocurrencies from a single brokerage, add a <code>CryptoCoarseFundamentalUniverse</code> universe. You need to provide the Crypto market, some universe settings, and a universe filter function.</p>
+<p>To add a universe of Cryptocurrencies, in the <code>Initialize</code> method, pass a <code>CryptoCoarseFundamentalUniverse</code> to the <code>AddUniverse</code> method. <br></p>
 
 <div class="section-example-container">
 <pre class="python">def Initialize(self):
@@ -6,9 +6,66 @@
     self.SetBrokerageModel(BrokerageName.GDAX, AccountType.Cash)
 
     # Add universe selection of cryptos based on coarse fundamentals
-    self.AddUniverse(CryptoCoarseFundamentalUniverse(Market.GDAX, self.UniverseSettings, self.UniverseSelectionFilter))
+    filter_function = lambda crypto_coarse: [c.Symbol for c in crypto_coarse]
+    self.AddUniverse(CryptoCoarseFundamentalUniverse(Market.GDAX, self.UniverseSettings, filter_function))</pre>
+<pre class="csharp">public override void Initialize()
+{
+    UniverseSettings.Resolution = Resolution.Daily;
+    SetBrokerageModel(BrokerageName.GDAX, AccountType.Cash);
 
-def UniverseSelectionFilter(self, crypto_coarse):
+    // Add universe selection of cryptos based on coarse fundamentals
+    AddUniverse(new CryptoCoarseFundamentalUniverse(Market.GDAX, UniverseSettings, cryptoCoarse =&gt; from x in cryptoCoarse select x.Symbol));
+}</pre>
+</div>
+
+<p>The following table describes the <code>CryptoCoarseFundamentalUniverse</code> constructor arguments:</p>
+
+<table class="qc-table table">
+    <thead>
+        <tr>
+            <th>Argument</th>
+            <th>Data Type</th>
+            <th>Description</th>
+            <th>Default Value</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><code>market</code></td>
+	    <td><code>string</code></td>
+            <td>The market of the Cryptocurrencies. To view the available Crypto markets, see the CoinAPI datasets in the Data Market.</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td><code>universeSettings</code></td>
+	    <td><code>UniverseSettings</code></td>
+            <td>The <a href="/docs/v2/writing-algorithms/universes/key-concepts#05-Universe-Settings">universe settings</a>.</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td><code>universeFilterFunc</code></td>
+	    <td><code>Func&lt;IEnumerable&lt;CryptoCoarseFundamental&gt;, IEnumerable&lt;Symbol&gt;&gt;</code></td>
+            <td>A function to select some of the Cryptocurrencies for the universe.<br></td>
+            <td></td>
+        </tr>
+    </tbody>
+</table>
+
+<p>The filter function receives <code>CryptoCoarseFundamental</code> objects, which represent one of the Cryptocurrencies in the market. The filter function must return a list of <code>Symbol</code> objects, which represent the universe constituents. <code>CryptoCoarseFundamental</code> have the following attributes:</p>
+<div data-tree="QuantConnect.DataSource.CryptoCoarseFundamental"></div>
+
+
+<p>To perform thorough filtering on the <code>CryptoCoarseFundamental</code> objects, you can define an isolated filter method.</p>
+
+<div class="section-example-container">
+<pre class="python">def Initialize(self):
+    self.UniverseSettings.Resolution = Resolution.Daily
+    self.SetBrokerageModel(BrokerageName.GDAX, AccountType.Cash)
+
+    # Add universe selection of cryptos based on coarse fundamentals
+    self.AddUniverse(CryptoCoarseFundamentalUniverse(Market.GDAX, self.UniverseSettings, self.universe_filter))
+
+def universe_filter(self, crypto_coarse):
     # Define the universe selection function
     return [cf.Symbol for cf in crypto_coarse if cf.Volume &gt;= 100 and cf.VolumeInUsd &gt; 10000]</pre>
 <pre class="csharp">public override void Initialize()
@@ -17,17 +74,11 @@ def UniverseSelectionFilter(self, crypto_coarse):
     SetBrokerageModel(BrokerageName.GDAX, AccountType.Cash);
 
     // Add universe selection of cryptos based on coarse fundamentals
-    AddUniverse(new CryptoCoarseFundamentalUniverse(Market.GDAX, UniverseSettings, UniverseSelectionFilter));
+    AddUniverse(new CryptoCoarseFundamentalUniverse(Market.GDAX, UniverseSettings, UniverseFilter));
 }
 
-private IEnumerable&lt;Symbol&gt; UniverseSelectionFilter(IEnumerable&lt;CryptoCoarseFundamental&gt; cryptoCoarse)
+private IEnumerable&lt;Symbol&gt; UniverseFilter(IEnumerable&lt;CryptoCoarseFundamental&gt; cryptoCoarse)
 {
     return cryptoCoarse.Where(cf =&gt; cf.Volume &gt;= 100m &amp;&amp; cf.VolumeInUsd &gt; 10000m).Select(x =&gt; x.Symbol);
 }</pre>
 </div>
-
-<p>To analyze Crypto assets from multiple markets, add multiple universes, each with a different Market argument.</p>
-
-
-<p><code>CryptoCoarseFundamental</code> objects have the following attributes:</p>
-<div data-tree="QuantConnect.DataSource.CryptoCoarseFundamental"></div>
