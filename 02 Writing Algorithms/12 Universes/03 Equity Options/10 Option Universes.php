@@ -137,7 +137,7 @@ def option_contract_filter(self, option_filter_universe):
         contract = OptionContract(symbol, option_filter_universe.Underlying)
         if contract.Greeks.Delta > 0: 
             symbols.append(contract.Symbol)
-    return option_filter_universe.Contracts(contracts)</pre>
+    return option_filter_universe.Contracts(symbols)</pre>
 </div>
 
 
