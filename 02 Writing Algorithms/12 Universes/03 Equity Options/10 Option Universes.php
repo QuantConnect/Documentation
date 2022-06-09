@@ -134,7 +134,7 @@ def option_filter(self, option_filter_universe):
     puts = option_filter_universe.PutsOnly()
     symbols = []
     for _, symbol in enumerate(puts.GetEnumerator()):
-    	contract = OptionContract(symbol, option_filter_universe.Underlying)
+        contract = OptionContract(symbol, option_filter_universe.Underlying)
         if contract.Greeks.Delta > 0: 
             symbols.append(contract.Symbol)
     return option_filter_universe.Contracts(contracts)</pre>
