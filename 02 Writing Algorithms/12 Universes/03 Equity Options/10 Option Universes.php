@@ -1,10 +1,10 @@
-<p>When you add an Option to an algorithm it adds many individual Option contract securities. LEAN models these contracts as a universe of Option contracts.</p>
-
-<p>To add a universe of Option contracts, in the <code>Initialize</code> method, call the <code>AddOption</code> method.</p>
+<p>To add a universe of Option contracts, in the <code>Initialize</code> method, call the <code>AddOption</code> method. This method returns an <code>Option</code> object, which contains the canonical <code>Symbol</code>. You can trade with the canonical Option <code>Symbol</code>, but save a reference to it so you can easily access the Option contracts in the <a href='/docs/v2/writing-algorithms/securities/asset-classes/equity-options/handling-data#04-Options-Chain'>OptionChain</a> that LEAN passes to the <code>OnData</code> method.</p>
 
 <div class="section-example-container">
-    <pre class="csharp">var option = AddOption("SPY");</pre>
-    <pre class="python">option = self.AddOption("SPY")</pre>
+    <pre class="csharp">var option = AddOption("SPY");
+_symbol = option.Symbol;</pre>
+    <pre class="python">option = self.AddOption("SPY")
+self.symbol = option.Symbol</pre>
 </div>
 
 <p>The following table describes the <code>AddOption</code> method arguments:</p>
@@ -58,7 +58,9 @@
 </table>
 
 
-<p>If you add an Option universe for an underlying Equity that you don't have a subscription for, LEAN automatically subscribes to the underlying Equity. By default, LEAN adds all of the available Option contracts to the <a href="/docs/v2/writing-algorithms/key-concepts/time-modeling/timeslices">Slice</a> it passes to the <code>OnData</code> method. To narrow down the universe of Option contracts, call the <code>SetFilter</code> method of the <code>Option</code> object. The following table describes the available filter techniques:</p>
+<p>If you add an Option universe for an underlying Equity that you don't have a subscription for, LEAN automatically subscribes to the underlying Equity with a <a href='/docs/v2/writing-algorithms/securities/asset-classes/us-equity/requesting-data#09-Data-Normalization'>data normalization mode</a> of <code>Raw</code>. If you already have a subscription to the underlying Equity but it's not <code>Raw</code>, LEAN automatically changes it to <code>Raw</code>.</p>
+
+<p>By default, LEAN adds all of the available Option contracts to the <a href="/docs/v2/writing-algorithms/key-concepts/time-modeling/timeslices">Slice</a> it passes to the <code>OnData</code> method. To narrow down the universe of Option contracts, call the <code>SetFilter</code> method of the <code>Option</code> object. The following table describes the available filter techniques:</p>
 
 
 <table class="table qc-table">
@@ -114,8 +116,13 @@ option.SetFilter(lambda option_filter_universe: option_filter_universe.CallsOnly
 
 <?php echo file_get_contents(DOCS_RESOURCES."/universes/option/option-filter-universe.html"); ?>
 
+<p>The preceding methods return an <code>OptionFilterUniverse</code>, so you can chain the methods together.</p>
+
+<div class="section-example-container">
+    <pre class="csharp"></pre>
+    <pre class="python"># Select the front month call contracts
+option.SetFilter(lambda option_filter_universe: option_filter_universe.CallsOnly().FrontMonth())</pre>
+</div>
 
 
-
-
-<p><br></p><div>-Technique 1: AddOption + SetFilter<br></div><div>&nbsp; &nbsp; &nbsp; - Must use raw data normalization<br></div><div>&nbsp; &nbsp; &nbsp; - Save a reference to the canonical Symbol; Explain what canonical Symbol means.<br></div><div>&nbsp; - You can chain universe filters</div><p></p><p>- Option contracts are added to the chain when they pass the SetFilter method criteria. In backtests, contracts are removed from the chain on the NEXT DAY when they no longer satisify the SetFilter method. In live trading, they can be removed every 15 mins.</p><p>&nbsp;&nbsp; - As a result, your chain may have more contracts that you expect at times. See https://github.com/QuantConnect/Lean/issues/6294<br></p>
+<p>By default, LEAN adds contracts to the <code>OptionChain</code> that pass the filter criteria at every time step in your algorithm. In backtests, if a contract in the chain doesn't pass the filter criteria, LEAN removes it from the chain at the start of the next day. In live trading, LEAN removes these contracts from the chain every 15 minutes.</p>
