@@ -73,7 +73,7 @@ self.symbol = option.Symbol</pre>
     <tbody>
         <tr>
             <td><code>SetFilter(int minStrike, int maxStrike)</code></td>
-	    <td>Selects the contracts that have a strike price within a minimum and maximum strike level relative to the undelrying price. For example, say the underlying price is $302 and there are strikes at every $5. If you set <code>minStrike</code> to -1 and <code>maxStrike</code> to 1, LEAN selects the contracts that have a strike of $300 or $305. <br></td>
+	    <td>Selects the contracts that have a strike price within a minimum and maximum strike level relative to the underlying price. For example, say the underlying price is $302 and there are strikes at every $5. If you set <code>minStrike</code> to -1 and <code>maxStrike</code> to 1, LEAN selects the contracts that have a strike of $300 or $305. <br></td>
         </tr>
         <tr>
             <td><code>SetFilter(TimeSpan minExpiry, TimeSpan maxExpiry)</code></td>
