@@ -21,58 +21,10 @@
         ) { IsAssignment = isAssignment }
     }
 }</pre>
-    <pre class="python">class MyExerciseModel:
-    def OptionExercise(self, option: Option, order: OptionExerciseOrder) -&gt; List[OrderEvent]:
-        inTheMoney = option.IsAutoExercised(option.Underlying.Close)
-        isAssignment = (inTheMoney & option.Holdings.IsShort)
-        
-        order_event = OrderEvent(
-            order.Id,
-            option.Symbol,
-            option.LocalTime.ConvertToUtc(option.Exchange.TimeZone),
-            OrderStatus.Filled,
-            GetOrderDirection(order.Quantity),
-            0.0,
-            order.Quantity,
-            OrderFee.Zero,
-            "Tag"
-        )
-        order_event.IsAssignment = isAssignment
-
-        yield order_event</pre>
+    <pre class="python"># Not currently supported</pre>
 </div>
 
-<h4>OptionExerciseOrder Objects</h4>
-
-<p><code>OptionExerciseOrder</code> objects have the following attributes:</p>
-
-<div data-tree="QuantConnect.Orders.OptionExerciseOrder"></div>
-
-<h4>OrderEvent Objects</h4>
-
-<p>To create an <code>OrderEvent</code> object, call its constructor and then update any of the object's members.</p>
-
-<div class="section-example-container">
-    <pre class="csharp">var orderEvent = new OrderEvent(order.Id,
-                                option.Symbol,
-                                option.LocalTime.ConvertToUtc(option.Exchange.TimeZone),
-                                OrderStatus.Filled,
-                                GetOrderDirection(order.Quantity),
-                                0.0m,
-                                order.Quantity,
-                                OrderFee.Zero,
-                                "Option Exercise") { IsAssignment = false };</pre>
-    <pre class="python">order_event = OrderEvent(order.Id,
-                         option.Symbol,
-                         option.LocalTime.ConvertToUtc(option.Exchange.TimeZone),
-                         OrderStatus.Filled,
-                         GetOrderDirection(order.Quantity),
-                         0.0,
-                         order.Quantity,
-                         OrderFee.Zero,
-                         "Option Exercise")
-order_event.IsAssignment = False</pre>
-</div>
+<p class='python'>LEAN doesn't currently support custom option exercise model in Python. To track the feature progress, subscribe to <a rel='nofollow' target='_blank' href='https://github.com/QuantConnect/Lean/issues/6390'>GitHub Issue #6390</a>.</p>
 
 <p>The following table describes the arguments of the <code>OrderEvent</code> constructor:</p>
 
