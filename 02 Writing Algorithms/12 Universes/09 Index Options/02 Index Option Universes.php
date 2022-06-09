@@ -7,3 +7,10 @@ option</span><span class="pun">.</span><span class="typ">SetFilter</span><span c
 self</span><span class="pun">.</span><span class="pln">option_symbol </span><span class="pun">=</span><span class="pln"> option</span><span class="pun">.</span><span class="typ">Symbol</span></code></pre></div>
 
 <div>&nbsp; - Example of Option selector function (inline and in an isolated method)<br></div>
+
+
+
+
+
+
+<p>By default, LEAN adds contracts to the <code>OptionChain</code> that pass the filter criteria at every time step in your algorithm. In backtests, if a contract in the chain doesn't pass the filter criteria, LEAN removes it from the chain at the start of the next day. In live trading, LEAN removes these contracts from the chain every 15 minutes.</p>
