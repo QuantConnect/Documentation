@@ -124,5 +124,21 @@ option.SetFilter(lambda option_filter_universe: option_filter_universe.CallsOnly
 option.SetFilter(lambda option_filter_universe: option_filter_universe.CallsOnly().FrontMonth())</pre>
 </div>
 
+<p>To get all of the contracts in the <code>OptionFilterUniverse</code>, call the <code>GetEnumerator</code> method.</p>
+<div class="section-example-container">
+    <pre class="csharp"></pre>
+    <pre class="python"># In Initialize
+option.SetFilter(self.option_filter)
+    
+def option_filter(self, option_filter_universe):
+    puts = option_filter_universe.PutsOnly()
+    symbols = []
+    for symbol in puts.GetEnumerator():
+    	contract = OptionContract(symbol, option_filter_universe.Underlying)
+	if contract.Greeks.Delta > 0: 
+            symbols.append(contract.Symbol)
+    return option_filter_universe.Contracts(contracts)</pre>
+</div>
+
 
 <p>By default, LEAN adds contracts to the <code>OptionChain</code> that pass the filter criteria at every time step in your algorithm. In backtests, if a contract in the chain doesn't pass the filter criteria, LEAN removes it from the chain at the start of the next day. In live trading, LEAN removes these contracts from the chain every 15 minutes.</p>
