@@ -1,8 +1,101 @@
-<p>
-When you add a futures asset to your algorithm, it adds all the contracts which match your filter as a universe of futures contracts in a similar way to option. The primary difference is that futures don't have a strike price, so the universe filter is primarily focused on the future expiration date.</p>
-<p>## Copy from Asset Classes &gt; Futures &gt; Requesting Data &gt; Creating Subscriptions &gt; Technique 1</p><p>- Future contracts are added to the chain when they pass the 
-SetFilter method criteria. In backtests, contracts are removed from the 
-chain on the NEXT DAY when they no longer satisify the SetFilter method.
- In live trading, they can be removed every 15 mins.</p>&nbsp;&nbsp; - As a 
-result, your chain may have more contracts that you expect at times. See
- https://github.com/QuantConnect/Lean/issues/6294<p></p>
+<p>To add a universe of Future contracts, in the <code>Initialize</code> method, call the <code>AddFuture</code> method. This method returns an <code>Future</code> object, which contains the canonical <code>Symbol</code>. The canonical <code>Symbol</code> represents the <a href="/docs/v2/writing-algorithms/securities/asset-classes/futures/requesting-data#05-Continuous-Contracts">continuous Future contract</a> and is the key to access the contracts in the <a href="/docs/v2/writing-algorithms/securities/asset-classes/futures/handling-data#04-Futures-Chain">FutureChain</a> that LEAN passes to the <code>OnData</code> method. contracts. When you create the Future subscription, save a reference to the canonical <code>Symbol</code> so you can use it later in your algorithm.</p>
+
+<div class="section-example-container">
+    <pre class="csharp">var future = AddFuture(Futures.Currencies.BTC);
+_symbol = future.Symbol;</pre>
+    <pre class="python">future = self.AddFuture(Futures.Currencies.BTC)
+self.symbol = future.Symbol</pre>
+</div>
+
+<p>The following table describes the <code>AddFuture</code> method arguments:</p>
+<table class="qc-table table">
+    <thead>
+        <tr>
+            <th>Argument</th>
+            <th>Data Type</th>
+            <th>Description</th>
+            <th>Default Value</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><code>ticker</code></td>
+	    <td><code>string</code></td>
+            <td>The Future ticker. To view the supported assets in the US Futures dataset, see <a href="/docs/v2/writing-algorithms/securities/asset-classes/futures/requesting-data#03-Supported-Markets">Supported Markets</a>.<br></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td><code>resolution</code></td>
+	    <td><code>Resolution?</code></td>
+            <td>The resolution of the market data.</td>
+            <td><code class="python">None</code><code class="csharp">null</code></td>
+        </tr>
+        <tr>
+            <td><code>market</code></td>
+	    <td><code>string</code></td>
+            <td>The Futures market. To view the supported markets in the US Futures dataset, see <a href="/docs/v2/writing-algorithms/securities/asset-classes/futures/requesting-data#03-Supported-Markets">Supported Markets</a>.</td>
+            <td><code class="python">None</code><code class="csharp">null</code></td>
+        </tr>
+        <tr>
+            <td><code>fillDataForward</code></td>
+	    <td><code>bool</code></td>
+            <td>If true, the current slice contains the last available data even if there is no data at the current time.</td>
+            <td><code class="python">True</code><code class="csharp">true</code></td>
+        </tr>
+        <tr>
+            <td><code>leverage</code></td>
+	    <td><code>decimal</code><br></td>
+            <td>The leverage for this Future.</td>
+            <td><code>Security.NullLeverage</code></td>
+        </tr>
+        <tr>
+            <td><code>dataMappingMode</code></td>
+	    <td><code>DataMappingMode?</code></td>
+            <td>The contract mapping mode to use for the continuous future contract</td>
+            <td><code class="python">None</code><code class="csharp">null</code></td>
+        </tr>
+        <tr>
+            <td><code>dataNormalizationMode</code></td>
+	    <td><code>DataNormalizationMode?</code></td>
+            <td>The price scaling mode to use for the continuous future contract</td>
+            <td><code class="python">None</code><code class="csharp">null</code></td>
+        </tr>
+        <tr>
+            <td><code>contractDepthOffset</code></td>
+	    <td><code>int </code></td>
+            <td>The continuous future contract desired offset from the current front month. For example, 0 is the front month, 1 is&nbsp; the back month contract.</td>
+            <td>0</td>
+        </tr>
+    </tbody>
+</table>
+
+
+
+
+<div>Technique 1: - AddFuture() + SetFilter()<br>https://www.quantconnect.com/docs/data-library/futures#Futures-Requesting-Futures-Data<br></div><div>&nbsp;&nbsp; - Save a reference to the canonical Symbol (the continuous future Symbol)<br></div><div>&nbsp;&nbsp; - Usually called in OnData</div><div><div>-Contract subscriptions in the chain are determined with the SetFilter method</div><div>&nbsp;&nbsp;&nbsp; - You can use</div><div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - Min expiry-max expiry (days)<br></div><div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - User defined<br></div><div><div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - Standards only</div><div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - Include weeklys</div><div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - Weeklys only</div><div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - Front month</div><div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - Back month(s)</div><div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - Individual contract filters<br></div><div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - Apply filter at market open<br></div>&nbsp;&nbsp;&nbsp; - You can chain universe filters</div><div>&nbsp; - Examples <br></div><div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - SetFilter(numDays, numDays) <br></div><div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - SetFilter(TimeSpan/timedelta, TimeSpan/timedelta)</div><div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - Universe selection function<br></div></div><div><br></div><div class="section-example-container">
+    <pre class="csharp">future_gold = self.AddFuture(Futures.Metals.Gold)
+
+# Select the contracts which expire no later than 182 days
+future_gold.SetFilter(0, 182)
+
+# Select the contracts which expire no later than 182 days
+future_gold.SetFilter(timedelta(0), timedelta(182))
+
+# Select the front month contract
+future_gold.SetFilter(lambda x: x.FrontMonth().OnlyApplyFilterAtMarketOpen())</pre>
+    <pre class="python">var futureGold = AddFuture(Futures.Metals.Gold);
+
+// Select the contracts which expire no later than 182 days
+futureGold.SetFilter(0, 182);
+
+// Select the contracts which expire no later than 182 days
+futureGold.SetFilter(TimeSpan.FromDays(0), TimeSpan.FromDays(182));
+
+// Select the front month contract
+futureGold.SetFilter(x =&gt; x.FrontMonth().OnlyApplyFilterAtMarketOpen());
+</pre>
+</div>
+
+
+
+<p>By default, LEAN adds contracts to the <code>FutureChain</code> that pass the filter criteria at every time step in your algorithm. In backtests, if a contract in the chain doesn't pass the filter criteria, LEAN removes it from the chain at the start of the next day. In live trading, LEAN removes these contracts from the chain every 15 minutes.</p>
