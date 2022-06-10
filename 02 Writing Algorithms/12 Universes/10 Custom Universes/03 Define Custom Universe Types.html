@@ -1,15 +1,11 @@
-<p>Custom universe types extend from $[BaseData,T:QuantConnect.Data.BaseData], so implement a <code>Reader()</code> method which parses the lines of the file.
-</p>
-<p>
-Each of the custom universe data points is 1 line of the source file. The Reader method will be called repeatedly until the date/time advances, or the end of file is reached. This way you can group universe data and pass it as a single collection into the filter function.
-</p>
+<p>Custom universes should extend the <code class="csharp">BaseData</code><code class="python">PythonData</code> class. Extensions of the <code class="csharp">BaseData</code><code class="python">PythonData</code> class must implement a <code>GetSource</code> and <code>Reader</code> method. <br></p>
 
-<p>
-Custom universes need a type defined to perform the parsing of the file. This pattern is almost identical to <a href="/docs/v2/writing-algorithms/importing-data/key-concepts">importing custom data</a> to your algorithm, except the data is used for choosing the universe data subscription instead of a price feed.
-</p>
-<div class="section-example-container" >
-<pre class="csharp" >
-//Example custom universe data; it is virtually identical to other custom data types.
+<p>The <code>GetSource</code> method in your custom data class instructs LEAN where to find the data. This method must return a <code>SubscriptionDataSource</code> object, which contains the data location and format (<code>SubscriptionTransportMedium</code>). You can even change source locations for backtesting and live modes. We support many different data sources.</p>
+
+
+<p>The <code>Reader</code> method of your custom data class takes one line of data from the source location and parses it into one of your custom objects. You can add as many properties to your custom data objects as you need, but must set <code>Symbol</code> and <code>EndTime</code> properties. When there is no useable data in a line, the method should return <code class="csharp">null</code><code class="python">None</code>. LEAN repeatedly calls the <code>Reader</code> method until the date/time advances or it reads the entire file. <br></p>
+<div class="section-example-container">
+<pre class="csharp">//Example custom universe data; it is virtually identical to other custom data types.
 public class NyseTopGainers : BaseData 
 {
     public int TopGainersRank;
@@ -33,8 +29,7 @@ public class NyseTopGainers : BaseData
     }
 }
 </pre>
-<pre class="python" >
-# Example custom universe data; it is virtually identical to other custom data types.
+<pre class="python"># Example custom universe data; it is virtually identical to other custom data types.
 class NyseTopGainers(PythonData):
 
     def GetSource(self, config, date, isLiveMode):
@@ -52,7 +47,8 @@ class NyseTopGainers(PythonData):
 </pre>
 </div>
 
-<p>Your reader method should return data points in chronological order. If a data point has a timestamp that is the same or earlier than the timestamp of the previous data point, it's not injected into your algorithm.</p>
+<?php echo file_get_contents(DOCS_RESOURCES."/datasets/custom-data/reader-method.html"); ?>
 
--If your data source returns multiple samples within a single <code>line</code>, order the samples by their timestamp and then <code>return BaseDataCollection(endTime, endTime, config.Symbol, data)</code> where <code>data</code> is a list of your custom universe type (<code>NyseTopGainers</code>) in this case.
-<br>&nbsp;&nbsp;&nbsp;-Example
+<pre class="csharp">// Example</pre>
+<pre class="python"># Example</pre>
+</div>
