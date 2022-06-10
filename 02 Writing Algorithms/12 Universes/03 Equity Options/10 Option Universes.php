@@ -63,51 +63,11 @@ self.symbol = option.Symbol</pre>
 <?php echo file_get_contents(DOCS_RESOURCES."/universes/option/set-filter.html"); ?>
 
 
-<div class="section-example-container">
-    <pre class="csharp"></pre>
-    <pre class="python"># Select contracts that have a strike price within 1 strike level above and below the underlying price
-option.SetFilter(minStrike=-1, maxStrike=1)
-
-# Select contracts that expire within 30 days
-option.SetFilter(minExpiry=timedelta(days=0), maxExpiry=timedelta(days=30))
-
-# Select contracts that have a strike price within 1 strike level and expire within 30 days
-option.SetFilter(minStrike=-1, maxStrike=1, minExpiry=timedelta(days=0), maxExpiry=timedelta(days=30))
-
-# Select call contracts
-option.SetFilter(lambda option_filter_universe: option_filter_universe.CallsOnly())
-</pre>
-</div>
-
-
-
 <p>The following table describes the filter methods of the <code>OptionFilterUniverse</code> class:</p>
 
-<?php echo file_get_contents(DOCS_RESOURCES."/universes/option/option-filter-universe.html"); ?>
-
-<p>The preceding methods return an <code>OptionFilterUniverse</code>, so you can chain the methods together.</p>
-
-<div class="section-example-container">
-    <pre class="csharp"></pre>
-    <pre class="python"># Select the front month call contracts
-option.SetFilter(lambda option_filter_universe: option_filter_universe.CallsOnly().FrontMonth())</pre>
-</div>
-
-<p>To get all of the contracts in the <code>OptionFilterUniverse</code>, call the <code>GetEnumerator</code> method.</p>
-<div class="section-example-container">
-    <pre class="csharp"></pre>
-    <pre class="python"># In Initialize
-option.SetFilter(self.contract_selector)
-    
-def contract_selector(self, option_filter_universe):
-    puts = option_filter_universe.PutsOnly()
-    symbols = []
-    for _, symbol in enumerate(puts.GetEnumerator()):
-        contract = OptionContract(symbol, option_filter_universe.Underlying)
-        if contract.Greeks.Delta > 0: 
-            symbols.append(contract.Symbol)
-    return option_filter_universe.Contracts(symbols)</pre>
-</div>
-
+<?php 
+echo file_get_contents(DOCS_RESOURCES."/universes/option/option-filter-universe.html"); 
+echo file_get_contents(DOCS_RESOURCES."/universes/option/filter-examples.html"); 
+?>
 
 <p>By default, LEAN adds contracts to the <code>OptionChain</code> that pass the filter criteria at every time step in your algorithm. In backtests, if a contract in the chain doesn't pass the filter criteria, LEAN removes it from the chain at the start of the next day. In live trading, LEAN removes these contracts from the chain every 15 minutes.</p>
