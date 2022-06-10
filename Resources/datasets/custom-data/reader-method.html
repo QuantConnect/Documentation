@@ -1,0 +1,8 @@
+<p>Your <code>Reader</code> method should return data points in chronological order. If a data point has a timestamp that is the same or earlier than the timestamp of the previous data point, LEAN ignores it.</p>
+
+<p>If your data source returns multiple samples within a single <code>line</code>, follow these steps:</p>
+
+<ol>
+    <li>In the <code>GetSource</code> method, pass <code>FileFormat.UnfoldingCollection</code> as the third argument to the <code>SubscriptionDataSource</code> constructor.</li>
+    <li>In the <code>Reader</code> method, order the samples by their timestamp and then return a <code>BaseDataCollection(endTime, config.Symbol, objects)</code> where <code>objects</code> is a list of your custom data objects.</li>
+</ol>
