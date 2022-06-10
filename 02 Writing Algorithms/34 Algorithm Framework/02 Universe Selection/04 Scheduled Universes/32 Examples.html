@@ -1,89 +1,78 @@
-<div class="section-example-container" >
-    <pre class="csharp">
-// Universe scheduled to fire at a specific date/time
+<div class="section-example-container">
+    <pre class="csharp">// Select the universe on a specific date at a specific time 
 AddUniverseSelection(new ScheduledUniverseSelectionModel(
     DateRules.On(2013, 10, 7),
     TimeRules.At(13, 0),
     SelectSymbols));
 
-// Universe scheduled to fire every trading day for a security
-// The time rule here tells it to fire 10 minutes after SPY's market open
+// Select the universe 10 minutes after SPY starts trading each day
 AddUniverseSelection(new ScheduledUniverseSelectionModel(
     DateRules.EveryDay("SPY"),
     TimeRules.AfterMarketOpen("SPY", 10),
     SelectSymbols));
 
-// Universe scheduled to fire every trading day for a security
-// The time rule here tells it to fire 10 minutes before SPY's market close
+// Select the universe 10 minutes before SPY stops trading each day
 AddUniverseSelection(new ScheduledUniverseSelectionModel(
     DateRules.EveryDay("SPY"),
     TimeRules.BeforeMarketClose("SPY", 10),
     SelectSymbols));
 
-// Universe scheduled to fire on certain days of the week
+// Select the universe on Monday and Friday at noon
 AddUniverseSelection(new ScheduledUniverseSelectionModel(
     DateRules.Every(DayOfWeek.Monday, DayOfWeek.Friday),
     TimeRules.At(12, 0),
     SelectSymbols));
 
-// Universe scheduled to fire once today at when this method is called (now)
+// Select the universe now
 AddUniverseSelection(new ScheduledUniverseSelectionModel(
     DateRules.Today,
     TimeRules.Now,
     SelectSymbols));
 
-// Universe scheduled to fire once tomorrow at midnight
+// Select the universe tomorrow at midnight
 AddUniverseSelection(new ScheduledUniverseSelectionModel(
     DateRules.Tomorrow,
     TimeRules.Midnight,
     SelectSymbols));
 
-// Universe scheduled to fire once today at noon
+// Select the universe today at noon
 AddUniverseSelection(new ScheduledUniverseSelectionModel(
     DateRules.Today,
     TimeRules.Noon,
     SelectSymbols));
 
-// Universe scheduled to fire every 10 minutes
+// Select the universe every 10 minutes on everyday 
 AddUniverseSelection(new ScheduledUniverseSelectionModel(
     DateRules.EveryDay(), 
     TimeRules.Every(TimeSpan.FromMinutes(10)),
     SelectSymbols));
             
-// Universe scheduled to fire at the beginning of the month, the symbol is optional. 
-// if specified, it will fire the first trading day for that symbol of the month,
-// if not specified it will fire on the first day of the month
+// Select the universe at the market open on the first day of the month the SPY starts trading
 AddUniverseSelection(new ScheduledUniverseSelectionModel(
     DateRules.MonthStart("SPY"),
     TimeRules.AfterMarketOpen("SPY"),
     SelectSymbols));
 
-// Universe scheduled to fire at the end of the month, the symbol is optional. 
-// if specified, it will fire the last trading day for that symbol of the month,
-// if not specified it will fire on the first day of the month
+// Select the universe at the market close on the last day of the month the SPY trades
 AddUniverseSelection(new ScheduledUniverseSelectionModel(
     DateRules.MonthEnd("SPY"),
     TimeRules.BeforeMarketClose("SPY"),
     SelectSymbols));
 
-// Universe scheduled to fire at the beginning of the week, the symbol is optional. 
-// if specified, it will fire the first trading day for that symbol of the week,
-// if not specified it will fire on the first day of the week
+// Select the universe 5 minutes after SPY starts trading each week
 AddUniverseSelection(new ScheduledUniverseSelectionModel(
     DateRules.WeekStart("SPY"),
     TimeRules.AfterMarketOpen("SPY", 5),
     SelectSymbols));
 
-// Universe scheduled to fire at the end of the week, the symbol is optional. 
-// if specified, it will fire the last trading day for that symbol of the week,
-// if not specified it will fire on the first day of the week
+// Select the universe 5 minutes before the SPY stops trading each week
 AddUniverseSelection(new ScheduledUniverseSelectionModel(
     DateRules.WeekEnd("SPY"),
     TimeRules.BeforeMarketClose("SPY", 5),
     SelectSymbols));
 
 
-// Create selection function which returns symbol objects.
+// Define a selection function that returns Symbol objects
 private IEnumerable&lt;Symbol&gt; SelectSymbols(DateTime dateTime)
 {
     var tickers = new[] {"SPY", "AAPL", "IBM"};
@@ -91,92 +80,81 @@ private IEnumerable&lt;Symbol&gt; SelectSymbols(DateTime dateTime)
         QuantConnect.Symbol.Create(ticker, SecurityType.Equity, Market.USA));
 }      
 </pre>
-    <pre class="python" >
-# Universe scheduled to fire at a specific date/time
+    <pre class="python"># Select the universe on a specific date at a specific time 
 self.AddUniverseSelection(ScheduledUniverseSelectionModel(
     self.DateRules.On(2013, 10, 7), 
     self.TimeRules.At(13, 0),
     self.SelectSymbols))
     
-# Universe scheduled to fire every trading day for a security the
-# time rule here tells it to fire 10 minutes after SPY's market open
+# Select the universe 10 minutes after SPY starts trading each day
 self.AddUniverseSelection(ScheduledUniverseSelectionModel(
     self.DateRules.EveryDay("SPY"), 
     self.TimeRules.AfterMarketOpen("SPY", 10),
     self.SelectSymbols))
 
-# Universe scheduled to fire every trading day for a security the
-# time rule here tells it to fire 10 minutes before SPY's market close
+# Select the universe 10 minutes before SPY stops trading each day
 self.AddUniverseSelection(ScheduledUniverseSelectionModel(
     self.DateRules.EveryDay("SPY"),
     self.TimeRules.BeforeMarketClose("SPY", 10),
     self.SelectSymbols))
 
-# Universe scheduled to fire on certain days of the week
+# Select the universe on Monday and Friday at noon
 self.AddUniverseSelection(ScheduledUniverseSelectionModel(
     self.DateRules.Every(DayOfWeek.Monday, DayOfWeek.Friday),
     self.TimeRules.At(12, 0),
     self.SelectSymbols))
 
-# Universe scheduled to fire once today at when this method is called (now)
+# Select the universe now
 self.AddUniverseSelection(ScheduledUniverseSelectionModel(
     self.DateRules.Today,
     self.TimeRules.Now,
     self.SelectSymbols))
 
-# Universe scheduled to fire once tomorrow at midnight
+# Select the universe tomorrow at midnight
 self.AddUniverseSelection(ScheduledUniverseSelectionModel(
     self.DateRules.Tomorrow,
     self.TimeRules.Midnight,
     self.SelectSymbols))
     
-# Universe scheduled to fire once today at noon
+# Select the universe today at noon
 self.AddUniverseSelection(ScheduledUniverseSelectionModel(
     self.DateRules.Today,
     self.TimeRules.Noon,
     self.SelectSymbols))
 
-# Universe scheduled to fire every 10 minutes
+# Select the universe every 10 minutes on everyday 
 self.AddUniverseSelection(ScheduledUniverseSelectionModel(
     self.DateRules.EveryDay(), 
     self.TimeRules.Every(timedelta(minutes=10)),
     self.SelectSymbols))
 
-# Universe scheduled to fire at the beginning of the month, the symbol is optional. 
-# if specified, it will fire the first trading day for that symbol of the month,
-# if not specified it will fire on the first day of the month
+# Select the universe at the market open on the first day of the month the SPY starts trading
 self.AddUniverseSelection(ScheduledUniverseSelectionModel(
     self.DateRules.MonthStart("SPY"),
     self.TimeRules.AfterMarketOpen("SPY"),
     self.SelectSymbols))
 
-# Universe scheduled to fire at the end of the month, the symbol is optional. 
-# if specified, it will fire the last trading day for that symbol of the month,
-# if not specified it will fire on the first day of the month
+# Select the universe at the market close on the last day of the month the SPY trades
 self.AddUniverseSelection(ScheduledUniverseSelectionModel(
     self.DateRules.MonthEnd("SPY"),
     self.TimeRules.BeforeMarketClose("SPY"),
     self.SelectSymbols))
 
-# Universe scheduled to fire at the beginning of the week, the symbol is optional. 
-# if specified, it will fire the first trading day for that symbol of the week,
-# if not specified it will fire on the first day of the week
+# Select the universe 5 minutes after SPY starts trading each week
 self.AddUniverseSelection(ScheduledUniverseSelectionModel(
     self.DateRules.WeekStart("SPY"),
     self.TimeRules.AfterMarketOpen("SPY", 5),
     self.SelectSymbols))
 
-# Universe scheduled to fire at the end of the week, the symbol is optional.
-# if specified, it will fire the last trading day for that symbol of the week,
-# if not specified it will fire on the first day of the week
+# Select the universe 5 minutes before the SPY stops trading each week
 self.AddUniverseSelection(ScheduledUniverseSelectionModel(
     self.DateRules.WeekEnd("SPY"),
     self.TimeRules.BeforeMarketClose("SPY", 5),
     self.SelectSymbols))
 
 
-# Create selection function which returns symbol objects.
-def SelectSymbols(self, dateTime: datetime) -> list[Symbol]:
+# Define a selection function that returns Symbol objects
+def SelectSymbols(self, dateTime: datetime) -&gt; list[Symbol]:
     tickers = ['SPY', 'AAPL', 'IBM']
     return [Symbol.Create(ticker, SecurityType.Equity, Market.USA)
         for ticker in tickers]
@@ -186,18 +164,8 @@ def SelectSymbols(self, dateTime: datetime) -> list[Symbol]:
 
 <div class="example-fieldset">
     <div class="example-legend">Demonstration Algorithms</div>
-    <a
-        class="python example-algorithm-link"
-        href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.Python/ScheduledUniverseSelectionModelRegressionAlgorithm.py"
-        target="_BLANK"
-        >ScheduledUniverseSelectionModelRegressionAlgorithm.py
-        <span class="badge-python pull-right">Python</span></a
-    >
-  <a
-        class="csharp example-algorithm-link"
-        href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.CSharp/ScheduledUniverseSelectionModelRegressionAlgorithm.cs"
-        target="_BLANK"
-        >ScheduledUniverseSelectionModelRegressionAlgorithm.cs
-        <span class="badge-csharp pull-right">C#</span></a
-    >
+    <a class="python example-algorithm-link" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.Python/ScheduledUniverseSelectionModelRegressionAlgorithm.py" target="_BLANK">ScheduledUniverseSelectionModelRegressionAlgorithm.py
+        <span class="badge-python pull-right">Python</span></a>
+  <a class="csharp example-algorithm-link" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.CSharp/ScheduledUniverseSelectionModelRegressionAlgorithm.cs" target="_BLANK">ScheduledUniverseSelectionModelRegressionAlgorithm.cs
+        <span class="badge-csharp pull-right">C#</span></a>
 </div>
