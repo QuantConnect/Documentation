@@ -1,4 +1,4 @@
-<p>To add a universe of Index Option contracts, in the <code>Initialize</code> method, call the <code>AddIndexOption</code> method. This method This method returns an <code>Option</code> object, which contains the canonical <code>Symbol</code>. You can't trade with the canonical Option <code>Symbol</code>, but save a reference to it so you can easily access the Option contracts in the <a href='/docs/v2/writing-algorithms/securities/asset-classes/index-options/handling-data#03-Options-Chain'>OptionChain</a> that LEAN passes to the <code>OnData</code> method.</p>
+<p>To add a universe of Index Option contracts, in the <code>Initialize</code> method, call the <code>AddIndexOption</code> method. This method returns an <code>Option</code> object, which contains the canonical <code>Symbol</code>. You can't trade with the canonical Option <code>Symbol</code>, but save a reference to it so you can easily access the Option contracts in the <a href='/docs/v2/writing-algorithms/securities/asset-classes/index-options/handling-data#03-Options-Chain'>OptionChain</a> that LEAN passes to the <code>OnData</code> method.</p>
 
 
 <div class="section-example-container">
