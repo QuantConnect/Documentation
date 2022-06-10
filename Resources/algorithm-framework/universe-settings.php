@@ -40,7 +40,7 @@ $getUniverseSettingsText = function($isFramework) {
 	<tr>
             <td><code>ContractDepthOffset</code></td>
 	    <td><code>int</code></td>
-	    <td>What offset from the current front month should be used for continuous Future contracts? 0 (default) uses the front month and 1 uses the back month contract. This setting is only available fo rFuture Assets</td>
+	    <td>What offset from the current front month should be used for <a href='/docs/v2/writing-algorithms/securities/asset-classes/futures/requesting-data#05-Continuous-Contracts'>continuous Future contracts</a>? 0 uses the front month and 1 uses the back month contract. This setting is only available for Future assets.</td>
 	    <td>0</td>
         </tr>
 	<tr>
