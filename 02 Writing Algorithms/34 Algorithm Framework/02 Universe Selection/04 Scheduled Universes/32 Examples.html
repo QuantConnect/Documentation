@@ -84,13 +84,13 @@ private IEnumerable&lt;Symbol&gt; SelectSymbols(DateTime dateTime)
 self.AddUniverseSelection(ScheduledUniverseSelectionModel(
     self.DateRules.On(2013, 10, 7), 
     self.TimeRules.At(13, 0),
-    self.SelectSymbols))
+    self.select_symbols))
     
 # Select the universe 10 minutes after SPY starts trading each day
 self.AddUniverseSelection(ScheduledUniverseSelectionModel(
     self.DateRules.EveryDay("SPY"), 
     self.TimeRules.AfterMarketOpen("SPY", 10),
-    self.SelectSymbols))
+    self.select_symbols))
 
 # Select the universe 10 minutes before SPY stops trading each day
 self.AddUniverseSelection(ScheduledUniverseSelectionModel(
@@ -132,29 +132,29 @@ self.AddUniverseSelection(ScheduledUniverseSelectionModel(
 self.AddUniverseSelection(ScheduledUniverseSelectionModel(
     self.DateRules.MonthStart("SPY"),
     self.TimeRules.AfterMarketOpen("SPY"),
-    self.SelectSymbols))
+    self.select_symbols))
 
 # Select the universe at the market close on the last day of the month the SPY trades
 self.AddUniverseSelection(ScheduledUniverseSelectionModel(
     self.DateRules.MonthEnd("SPY"),
     self.TimeRules.BeforeMarketClose("SPY"),
-    self.SelectSymbols))
+    self.select_symbols))
 
 # Select the universe 5 minutes after SPY starts trading each week
 self.AddUniverseSelection(ScheduledUniverseSelectionModel(
     self.DateRules.WeekStart("SPY"),
     self.TimeRules.AfterMarketOpen("SPY", 5),
-    self.SelectSymbols))
+    self.select_symbols))
 
 # Select the universe 5 minutes before the SPY stops trading each week
 self.AddUniverseSelection(ScheduledUniverseSelectionModel(
     self.DateRules.WeekEnd("SPY"),
     self.TimeRules.BeforeMarketClose("SPY", 5),
-    self.SelectSymbols))
+    self.select_symbols))
 
 
 # Define a selection function that returns Symbol objects
-def SelectSymbols(self, dateTime: datetime) -&gt; list[Symbol]:
+def select_symbols(self, date_time: datetime) -&gt; list[Symbol]:
     tickers = ['SPY', 'AAPL', 'IBM']
     return [Symbol.Create(ticker, SecurityType.Equity, Market.USA)
         for ticker in tickers]
