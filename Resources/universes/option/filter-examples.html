@@ -1,0 +1,23 @@
+<p>The preceding methods return an <code>OptionFilterUniverse</code>, so you can chain the methods together.</p>
+
+<div class="section-example-container">
+    <pre class="csharp"></pre>
+    <pre class="python"># Select the front month call contracts
+option.SetFilter(lambda option_filter_universe: option_filter_universe.CallsOnly().FrontMonth())</pre>
+</div>
+
+<p>To get all of the contracts in the <code>OptionFilterUniverse</code>, call the <code>GetEnumerator</code> method.</p>
+<div class="section-example-container">
+    <pre class="csharp"></pre>
+    <pre class="python"># In Initialize
+option.SetFilter(self.contract_selector)
+    
+def contract_selector(self, option_filter_universe):
+    puts = option_filter_universe.PutsOnly()
+    symbols = []
+    for _, symbol in enumerate(puts.GetEnumerator()):
+        contract = OptionContract(symbol, option_filter_universe.Underlying)
+        if contract.Greeks.Delta > 0: 
+            symbols.append(contract.Symbol)
+    return option_filter_universe.Contracts(symbols)</pre>
+</div>
