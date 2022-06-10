@@ -1,15 +1,20 @@
-<p>After you define a custom universe type, add the universe to your algorithm in the Initialize method. In the call to AddUniverse, provide a filter function to reduce the securities in the file to the securities you want to add to your algorithm.<br></p><div class="section-example-container">
-<pre class="csharp">// Add custom universe type and define the filter function.
+<p>You must define a custom universe type before you can add it to your algorithm.</p>
+
+<p>To add a custom universe to your algorithm, in the <code>Initialize</code> method, pass your universe type and a selector function to the <code>AddUniverse</code> method. The selector function receives a list of your custom objects and must return a list of <code>Symbol</code> objects. In the selector function defintion, you can use any of the properties of your custom data type. The <code>Symbol</code> objects that you return from the selector function set the constituents of the universe.</p>
+
+<div class="section-example-container">
+<pre class="csharp">// In Initialize
 AddUniverse&lt;NyseTopGainers&gt;("myCustomUniverse", Resolution.Daily, nyseTopGainersList =&gt; {
       return from singleStockData in nyseTopGainersList
              where singleStockData.Rank &gt; 5
              select singleStockData.Symbol;
 });
 </pre>
-<pre class="python"># add the custom universe in initialize 
-self.AddUniverse(NyseTopGainers, "myCustomUniverse", Resolution.Daily, self.nyseTopGainers)
-# filter function using your custom data
-def nyseTopGainers(self, data):
+<pre class="python"># In Initialize
+self.AddUniverse(NyseTopGainers, "myCustomUniverse", Resolution.Daily, self.selector_function)
+
+# Define the selector function
+def selector_function(self, data):
     return [ x.Symbol for x in data if x["Rank"] &gt; 5 ]
 </pre>
 </div>
