@@ -19,6 +19,8 @@ vendors = {}
 product_count = {}
 attr = False
 
+json_00 = {}
+
 priority = ["QuantConnect", "AlgoSeek", "Morningstar", "TickData", "TrueData", "CoinAPI", "OANDA"]
 vendor_names = priority + sorted([x for x in [dataset["vendorName"].strip() for dataset in doc] if x not in priority])
 for vendor in vendor_names:
@@ -26,6 +28,15 @@ for vendor in vendor_names:
         vendors[vendor] = vendor_count
         product_count[vendor] = 1
         vendor_count += 1
+        
+        json_00[vendor] = {
+  "type" : "landing",
+  "heading" : vendor,
+  "subHeading" : "",
+  "content" : "",
+  "alsoLinks" : [],
+  "featureShortDescription": {}
+}
         
 universe_html = """<p>The following alternative datasets support universe selection:</p>
 <ul>
@@ -53,8 +64,15 @@ for dataset in doc:
                                 '<pre class="csharp">') \
                     .replace('</code>',
                                 '')
+                    
+        if item["title"].lower() == "about the provider":
+            json_00[vendorName]["content"] = content
+            json_00[vendorName]["featureShortDescription"][f"{product_count[vendorName]:02}"] = ""
+            
+            with open(f'02 Writing Algorithms/14 Datasets/{vendors[vendorName]:02} {vendorName}/00.json', 'w', encoding='utf-8') as html_file:
+                html_file.write(str(json_00[vendorName]).replace('"', '\\"').replace("'", '"'))
         
-        if item["title"] == "Example Applications":
+        if item["title"].lower() == "example applications":
             with open(destination_folder / f'99 {item["title"].strip()}.html', "w", encoding="utf-8") as html_file:
                 html_file.write(content)
         else: 
