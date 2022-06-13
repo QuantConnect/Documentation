@@ -77,7 +77,7 @@ for dataset in doc:
                                 '')
                 
         if item["title"].strip() == "Universe Selection" and vendorName not in priority:
-            universe_html += f"""    <li><a href="https://www.quantconnect.com/docs/v2/writing-algorithms/datasets/{vendorName.lower()}/{datasetName.lower().replace(' ', '-')}#{i:02}-Universe-Selection">{datasetName}</a></li>
+            universe_html += f"""    <li><a href="https://www.quantconnect.com/docs/v2/writing-algorithms/datasets/{vendorName.lower().replace(' ', '-')}/{datasetName.lower().replace(' ', '-')}#{i:02}-Universe-Selection">{datasetName}</a></li>
 """
         
         if item["title"] == "Data Point Attributes" and attr:
