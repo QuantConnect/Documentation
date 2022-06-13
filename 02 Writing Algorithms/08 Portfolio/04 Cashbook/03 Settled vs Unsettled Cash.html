@@ -1,13 +1,7 @@
-What:
-<br>-The Portfolio has two independent cashbooks: one for settled and another for unsettled cash
-<br>-Transactions can take time to settle. 
-<br>-You can spend unsettled cash
-<br>-If you trade with a margin account, trades settle immediately.
-<br>-Unsettled cash should not be mistaken for margin available because Forex uses margin even though the total cash value is not impact
-<br>-Equity trades settle in T+3; For example, if you sold shares of stock on Monday, the transaction settles Thursday. (GitHub issue to settle in the new T+2: rule https://github.com/QuantConnect/Lean/issues/6184)
-<br>-Option trades settle in T+1; For example, if you sold an option on Monday, the transaction settles Tuesday.
-
-<br><br>
-How:
-<br>-To get settled cash, use self.Portfolio.Cash
-<br>-To get unsettled cash, use self.Portfolio.UnsettledCash
+<p>The <code>Portfolio</code> has two independent cashbooks. The <code>CashBook</code> tracks settled cash and the <code>UnsettledCashBook</code> tracks unsettled cash, which you can't spend. If you trade with a margin account, trades settle immediately so LEAN credits and debits the <code>CashBook</code> at the time of the trade. In some cases, transactions can take time to settle. For example, Equity trades in a cash account settle in T+3. Therefore, if you sell shares of stock on Monday, the transaction settles on Thursday. In contrast, Option trades settle in T+1. <br></p>
+<div class="section-example-container">
+    <pre class="csharp">var settledCashBook = Portfolio.CashBook;
+var unsettledCashBook = Portfolio.UnsettledCashBook;</pre>
+    <pre class="python">settled_cash_book = self.Portfolio.CashBook
+unsettled_cash_book = self.Portfolio.UnsettledCashBook</pre>
+</div>
