@@ -26,13 +26,18 @@ for vendor in vendor_names:
         vendors[vendor] = vendor_count
         product_count[vendor] = 1
         vendor_count += 1
+        
+universe_html = """<p>The following alternative datasets support universe selection:</p>
+<ul>
+"""
 
 for dataset in doc:
     i = 1
     vendorName = dataset["vendorName"].strip()
+    datasetName = dataset["name"].strip()
         
     # Create path if not exist
-    main_dir = f'02 Writing Algorithms/14 Datasets/{vendors[vendorName]:02} {vendorName}/{product_count[vendorName]:02} {dataset["name"].strip()}'
+    main_dir = f'02 Writing Algorithms/14 Datasets/{vendors[vendorName]:02} {vendorName}/{product_count[vendorName]:02} {datasetName}'
     destination_folder = pathlib.Path(main_dir)
     destination_folder.mkdir(parents=True, exist_ok=True)
     
@@ -70,6 +75,10 @@ for dataset in doc:
                                 '<pre class="csharp">') \
                     .replace('</code>',
                                 '')
+                
+        if item["title"].strip() == "Universe Selection" and vendorName not in priority:
+            universe_html += f"""    <li><a href="https://www.quantconnect.com/docs/v2/writing-algorithms/datasets/{vendorName.lower()}/{datasetName.lower().replace(' ', '-')}#{i:02}-Universe-Selection">{datasetName}</a></li>
+"""
         
         if item["title"] == "Data Point Attributes" and attr:
             continue
@@ -80,3 +89,7 @@ for dataset in doc:
             
     print(f'Documentation of {dataset["name"]} is generated and inplace!')
     product_count[vendorName] = product_count[vendorName] + 1
+    
+universe_html += "</ul>"
+with open('02 Writing Algorithms/12 Universes/11 Alternative Data Universes/02 Supported Datasets.html', "w", encoding="utf-8") as html_file:
+    html_file.write(universe_html)
