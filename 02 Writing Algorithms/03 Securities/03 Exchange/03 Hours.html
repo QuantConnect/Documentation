@@ -8,12 +8,50 @@
 
 <p>The preceeding code snippet returns a <code>SecurityExchangeHours</code> object, which has the following attributes:</p>
 
-<div data-tree='QuantConnect.Securities.SecurityExchangeHours'></div>
+<div data-tree="QuantConnect.Securities.SecurityExchangeHours"></div>
+
+<p>To check if the exchange is open at a specific time, call the <code>IsOpen</code> method.</p>
+
+<div class="section-example-container">
+    <pre class="csharp">// Check if the exchange is open at a specific time
+var isOpenNow = securityExchangeHours.IsOpen(Time, extendedMarket: false);
+
+// Check if the exchange is open at any point in time over a specific interval
+var isOpen = securityExchangeHours.IsOpen(Time, Time.AddDays(1), extendedMarket: false);</pre>
+    <pre class="python"># Check if the exchange is open at a specific time
+is_open_now = security_exchange_hours.IsOpen(self.Time, extendedMarket=False)
+
+# Check if the exchange is open at any point in time over a specific interval
+is_open = security_exchange_hours.IsOpen(self.Time, self.Time + timedelta(days=1), extendedMarket=False)</pre>
+</div>
 
 
--Access the SecurityExchangeHours object through &lt;security&gt;.Exchange.Hours
-or through MarketHoursDatabase.GetExchangeHours()<br>-It has these properties: IsOpen, IsDateOpen, GetMarketHours, GetNextMarketOpen, GetNextMarketClose, GetPreviousTradingDay, GetNextTradingDay
+<p>To check if the exchange is open on a specific date, call the <code>IsDateOpen</code> method.</p>
+<div class="section-example-container">
+    <pre class="csharp">var isOpen = securityExchangeHours.IsDateOpen(Time);</pre>
+    <pre class="python">is_open = security_exchange_hours.IsDateOpen(self.Time)</pre>
+</div>
 
-<br><br>- To get time zone of a security, use self.MarketHoursDatabase.GetDataTimeZone() 
-- Also Security.Exchange.TimeZone
-<br># Example code snippet
+<p>To get the next market open time, call the <code>GetNextMarketOpen</code> method.</p>
+<div class="section-example-container">
+    <pre class="csharp">var marketOpenTime = securityExchangeHours.GetNextMarketOpen(Time, extendedMarket: false);</pre>
+    <pre class="python">market_open_time = security_exchange_hours.GetNextMarketOpen(self.Time, extendedMarket=False)</pre>
+</div>
+
+<p>To get the next market close time, call the <code>GetNextMarketClose</code> method.</p>
+<div class="section-example-container">
+    <pre class="csharp">var marketCloseTime = securityExchangeHours.GetNextMarketClose(Time, extendedMarket: false);</pre>
+    <pre class="python">market_close_time = security_exchange_hours.GetNextMarketClose(self.Time, extendedMarket=False)</pre>
+</div>
+
+<p>To get the previous trading day, call the <code>GetPreviousTradingDay</code> method.</p>
+<div class="section-example-container">
+    <pre class="csharp">var day = securityExchangeHours.GetPreviousTradingDay(Time);</pre>
+    <pre class="python">day = security_exchange_hours.GetPreviousTradingDay(self.Time)</pre>
+</div>
+
+<p>To get the next trading day, call the <code>GetNextTradingDay</code> method.</p>
+<div class="section-example-container">
+    <pre class="csharp">var day = securityExchangeHours.GetNextTradingDay(Time);</pre>
+    <pre class="python">day = security_exchange_hours.GetNextTradingDay(self.Time)</pre>
+</div>
