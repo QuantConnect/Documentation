@@ -1,4 +1,11 @@
-<div>We model buying power and margin calls to ensure your algorithm stays within the margin requirements.</div><div><br></div><div>Why is there margin/leverage:</div><div>-PDT</div><div><br></div><div>What margin/leverage is available:</div><div>-The default leverage is 2x leverage for margin accounts. If you trade live, the brokerage determines the amount of leverage you may use.<br>-Leverage is not available for cash accounts.</div><div><br></div><div>How do I set the margin/leverage:<br></div><div>- Pass to AddEquity or configure in the UniverseSettings<br></div>
+<p>LEAN models buying power and margin calls to ensure your algorithm stays within the margin requirements. In backtests, the default leverage for margin accounts is 2x leverage and leverage is not available for cash accounts. To change the amount of leverage you can use for a security, pass a <code>leverage</code> argument to the <code>AddEquity</code> method.</p>
+
+<div class="section-example-container">
+    <pre class="csharp">_symbol = AddEquity("SPY", leverage: 3).Symbol;</pre>
+    <pre class="python">self.symbol = self.AddEquity("SPY", leverage=3).Symbol</pre>
+</div>
+
+<p>In live trading, the brokerage determines how much leverage you may use.</p>
 
 <?php include(DOCS_RESOURCES."/brokerages/margin-calls.html"); ?>
 
