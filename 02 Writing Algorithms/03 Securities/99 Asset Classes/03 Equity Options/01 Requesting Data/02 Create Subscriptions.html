@@ -1,4 +1,4 @@
-<p>To create an Equity Option contract subscription, pass the contract <code>Symbol</code> to the <code>AddOptionContract</code> method. The <code>AddOptionContract</code> method returns an <code>Option</code> object, which contains a canonical <code>Symbol</code>. You can't trade with the canonical Option <code>Symbol</code>, but save a reference to it so you can easily access the Option contract in the <a href='/docs/v2/writing-algorithms/securities/asset-classes/equity-options/handling-data#04-Options-Chain'>OptionChain</a> that LEAN passes to the <code>OnData</code> method.</p>
+<p>To create an Equity Option contract subscription, pass the contract <code>Symbol</code> to the <code>AddOptionContract</code> method. The <code>AddOptionContract</code> method returns an <code>Option</code> object, which contains the canonical <code>Symbol</code>. You can't trade with the canonical Option <code>Symbol</code>, but save a reference to it so you can easily access the Option contract in the <a href="/docs/v2/writing-algorithms/securities/asset-classes/equity-options/handling-data#04-Options-Chain">OptionChain</a> that LEAN passes to the <code>OnData</code> method.</p>
 
 <div class="section-example-container">
     <pre class="csharp">_symbol = AddOptionContract(contractSymbol).Symbol;</pre>
@@ -9,9 +9,54 @@
 
 <p>To view the supported assets in the US Equities dataset, see the <a href="/data/tree/option/usa/minute">Data Explorer</a>.</p>
 
+<p>If you called the <code>AddEquity</code> method to create the underlying Equity subscription, in the <code>Initialize</code> method, follow these steps:</p>
+<ol>
+    <li>Set the Equity data normalization to <code>DataNormalizationMode.Raw</code>.</li>
+    <li>Set the underlying <a href="/docs/v2/writing-algorithms/reality-modeling/options-models/volatility/key-concepts">volatility model</a>.</li>
+    <li><a href="/docs/v2/writing-algorithms/reality-modeling/options-models/volatility/key-concepts#07-Warm-Up-Models">Warm up the volatility model</a>.</li>
+</ol>
 
-<br><div><br></div><div>How:</div><div>## Note for tomorrow: Maybe this section should just show how to create a static universe</div><div><pre class="c-mrkdwn__pre" data-stringify-type="pre" style="box-sizing: inherit; margin: 4px 0px; padding: 8px; --saf-0:rgba(var(--sk_foreground_low,29,28,29),0.13); font-size: 12px; line-height: 1.50001; font-variant-ligatures: none; white-space: pre-wrap; overflow-wrap: break-word; word-break: normal; tab-size: 4; font-family: Monaco, Menlo, Consolas, &quot;Courier New&quot;, monospace !important; border: 1px solid var(--saf-0); border-radius: 4px; background: rgba(var(--sk_foreground_min,29,28,29),0.04); counter-reset: list-0 0 list-1 0 list-2 0 list-3 0 list-4 0 list-5 0 list-6 0 list-7 0 list-8 0 list-9 0; color: rgb(209, 210, 211); font-style: normal; font-variant-caps: normal; font-weight: 400; letter-spacing: normal; orphans: 2; text-align: left; text-indent: 0px; text-transform: none; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; text-decoration-thickness: initial; text-decoration-style: initial; text-decoration-color: initial;">symbol = Symbol.CreateOption(...)
-self.AddOptionContract(symbol)</pre></div><div>because the following techniques are "universes"<br></div><div><br></div><div><div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - You create a equity subscription</div><div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - Create an option subscription using the equity ticker</div><div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - Can provide a contract selection method</div><div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - All the universe selection options we have</div><div><div>&nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp;&nbsp; - Creates Option contracts</div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;&nbsp; - Creates Option chain</div></div><div><br></div><div>- Technique 1: OptionChainProvider</div><div>&nbsp;&nbsp;&nbsp; - https://www.quantconnect.com/docs/data-library/options#Options-Requesting-Options-Data---OptionChainProvider<br></div><div>&nbsp;&nbsp;&nbsp; - If you add an option in the current slice, you'll need to wait until the next slice to receive data and trade the option. You can override this with by setting the current price of the option with a security initializer<br></div><div>&nbsp;&nbsp;&nbsp;&nbsp; -Instead of subscribing to the entire chain at every timestep, you can use OptionChainProvider/FutureChainProvider and AddOptionContract/AddFutureContract</div><div>&nbsp;&nbsp;&nbsp; - If you use AddOptionContract, you must manually set the underlying volatility model. (https://github.com/QuantConnect/Documentation/issues/102)<br></div><div>&nbsp;&nbsp;&nbsp; - Need to wait 1 timestep, or you can create a security initializer to set the last price</div><div><br></div><div>- For a universe, see Universes &gt; Equity Options<br></div><div><br></div><div></div>
+<div class="section-example-container">
+    <pre class="csharp"></pre>
+    <pre class="python">self.SubscriptionManager \
+  .SubscriptionDataConfigService \
+  .GetSubscriptionDataConfigs(equity.Symbol) \
+  .SetDataNormalizationMode(DataNormalizationMode.Raw)
+equity.VolatilityModel = StandardDeviationOfReturnsVolatilityModel(30)
+self.SetWarmup(30, Resolution.Daily)</pre>
+</div>
 
 
-<div>-To remove a subscription, use RemoveSecurity() / RemoveOptionContract()</div>
+<p>If your algorithm has a dynamic <a href="/docs/v2/writing-algorithms/universes/equity">universe</a> of Equities, follow these steps:</p>
+<ol>
+    <li>In the <code>Initialize</code> method, set the universe data normalization mode to <code>DataNormalizationMode.Raw</code>.</li>
+    <li>Before you add the Option contract subscription, set the underlying <a href="https://www.quantconnect.com/docs/v2/writing-algorithms/reality-modeling/options-models/volatility/key-concepts">volatility model</a>.</li>
+    <p>If you trade Options for every Equity in the universe, add this logic to a <a href="/docs/v2/writing-algorithms/initialization#07-Set-Security-Initializer">security initializer</a>.</p>
+    <li><a href="https://www.quantconnect.com/docs/v2/writing-algorithms/reality-modeling/options-models/volatility/key-concepts#07-Warm-Up-Models">Warm up the volatility model</a></li>
+</ol>
+
+<div class="section-example-container">
+    <pre class="csharp"></pre>
+    <pre class="python"># In Initialize
+self.UniverseSettings.DataNormalizationMode = DataNormalizationMode.Raw
+self.SetSecurityInitializer(self.CustomSecurityInitializer)
+
+def CustomSecurityInitializer(self, security: Security) -&gt; None:
+    if security.Type == SecurityType.Equity:
+        security.VolatilityModel = StandardDeviationOfReturnsVolatilityModel(30)
+        history = self.History(security.Symbol, 30, Resolution.Daily)
+        if history.empty or 'close' not in history.columns:
+            return
+
+        for time, row in history.loc[security.Symbol].iterrows():
+            trade_bar = TradeBar(time, security.Symbol, row.open, row.high, row.low, row.close, row.volume)    
+            security.VolatilityModel.Update(security, trade_bar)</pre>
+</div>
+
+<p>To get the Option contract <code>Symbol</code>, call the <code>CreateOption</code> method or use the <code>OptionChainProvider</code>.</p>
+
+<p>To create an </p>
+
+
+
+<br><div><br></div><br><div>- Technique 1: OptionChainProvider</div><div>&nbsp;&nbsp;&nbsp; - https://www.quantconnect.com/docs/data-library/options#Options-Requesting-Options-Data---OptionChainProvider<br></div><div>&nbsp;&nbsp;&nbsp; - If you add an option in the current slice, you'll need to wait until the next slice to receive data and trade the option. You can override this with by setting the current price of the option with a security initializer<br></div><div>&nbsp;&nbsp;&nbsp; - Need to wait 1 timestep, or you can create a security initializer to set the last price</div>
