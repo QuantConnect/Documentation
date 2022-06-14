@@ -1,4 +1,4 @@
-<p>The data normalization modes defines how historical data is adjusted for corporate actions. By default, our US Equity data is adjusted for splits and dividends to produce a smooth price curve. The following table describes the data normalization modes:</p>
+<p>The data normalization modes defines how historical data is adjusted for corporate actions. By default, LEAN adjusts US Equity data for splits and dividends to produce a smooth price curve. The following table describes the available data normalization modes:</p>
 
 <?php include(DOCS_RESOURCES."/datasets/data-normalization.html"); ?>
 
