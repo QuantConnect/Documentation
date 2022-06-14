@@ -1,10 +1,17 @@
 <p>To create an Equity subscription, in the <code>Initialize</code> method, call the <code>AddEquity</code> method. The <code>AddEquity</code> method returns a <code>Security</code> object, which contains a <code>Symbol</code>. Save a reference to the <code>Symbol</code> so you can use it in <code>OnData</code> to access the security data in the <code>Slice</code>.</p>
 
 <div class="section-example-container">
-    <pre class="csharp">_symbol = AddEquity("SPY");</pre>
-    <pre class="python">self.symbol = self.AddEquity("SPY")</pre>
+    <pre class="csharp">_symbol = AddEquity("SPY").Symbol;</pre>
+    <pre class="python">self.symbol = self.AddEquity("SPY").Symbol</pre>
 </div>
 
-<p>The <code>AddEquity</code> method creates a static subscription for a single Equity asset. To add a dynamic collection of Equities, add an <a href="/docs/v2/writing-algorithms/universes/equity">Equity universe</a> or an <a href="/docs/v2/writing-algorithms/algorithm-framework/universe-selection/key-concepts">Equity Universe Selection model</a>.</p>
+<p>The <code>AddEquity</code> method creates a subscription for a single Equity asset and adds it to your <span class="new-term">user-defined</span> universe. To create a dynamic collection of Equities, add an <a href="/docs/v2/writing-algorithms/universes/equity">Equity universe</a> or an <a href="/docs/v2/writing-algorithms/algorithm-framework/universe-selection/key-concepts">Equity Universe Selection model</a>.</p>
 
-<p></p>Why:<div>-To add a data feed for the security to your algorithm</div><div>&nbsp;&nbsp; - To enable trading / fills / quotes</div><div>&nbsp;&nbsp; - To receive data updates in your algorithm + portfolio<br></div><div>&nbsp;&nbsp; - To make trading decisions</div><div>-This adds the security to your "user-defined" / static universe<br></div><div><br></div>-To remove a subscription, use RemoveSecurity()
+<p>To remove a subscription that you created with the <code>AddEquity</code> method, call the <code>RemoveSecurity</code> method.</p>
+
+<div class="section-example-container">
+    <pre class="csharp">RemoveSecurity(_symbol);</pre>
+    <pre class="python">self.RemoveSecurity(self.symbol)</pre>
+</div>
+
+<p>The <code>RemoveSecurity</code> method cancels your open orders for the security and liquidates your holdings.</p>
