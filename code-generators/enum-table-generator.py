@@ -14,6 +14,7 @@ enum_objects = [
     "Common/Data/Market/BarDirection.cs",
     "Common/Data/Market/RenkoType.cs",
     "Common/Global.cs",
+    "Common/Market.cs",
     "Common/Optimizer/OptimizationStatus.cs",
     "Common/Orders/IndiaOrderProperties.cs",
     "Common/Orders/OrderError.cs",
@@ -40,7 +41,8 @@ quotation = '\"'
 
 def TableCreation(raw, namespace=""):
     object_ = ""
-    active = False
+    enum_active = False
+    static_class_active = False
     description = ""
     code = ""
     enum = ""
@@ -54,7 +56,11 @@ def TableCreation(raw, namespace=""):
         
         if "public enum" in line:
             object_ = line.split("public enum")[-1].strip()
-            active = True
+            enum_active = True
+            continue
+        
+        elif "public static class" in line:
+            object_ = line.split("public static class")[-1].strip()
             continue
             
         if line.strip() != "" \
@@ -62,7 +68,7 @@ def TableCreation(raw, namespace=""):
         and "}" not in line \
         and "///" not in line \
         and "[" not in line \
-        and active:
+        and enum_active:
             if "=" in line:
                 item = line.split(" = ")
                 enum = item[0].strip()
@@ -73,6 +79,13 @@ def TableCreation(raw, namespace=""):
                 enum = line.split(",")[0].strip()
                 code = None
                 current_object[enum] = {"code": code, "description": description}
+                
+        if "public const string" in line:
+            static_class_active = True
+            item = line.split(" = ")
+            enum = item[0].split("public const string")[-1].strip()
+            code = item[-1].split(";")[0].strip()
+            current_object[enum] = {"code": code, "description": description}
             
         if "///" in line:
             description += line.split("///")[-1]\
@@ -84,11 +97,15 @@ def TableCreation(raw, namespace=""):
             
             continue
                 
+        elif "EnumMember" in line: 
+            continue
+        
         else:
             description = ""
                 
-        if "}" in line and active:
-            active = False
+        if "}" in line and (enum_active or static_class_active):
+            enum_active = False
+            static_class_active = False
             TableCreation(raw[i:], namespace)
             break
             
@@ -117,8 +134,12 @@ def TableCreation(raw, namespace=""):
             
             current_object[enum]["code"] = n
             n += 1
-
-    for enum, content in sorted(current_object.items(), key=lambda x: int(x[1]["code"])):
+    try:
+        sorted_ = sorted(current_object.items(), key=lambda x: int(x[1]["code"]))
+    except:
+        sorted_ = current_object.items()
+        
+    for enum, content in sorted_:
         html += f'''    <tr>
         <td>{enum}</td>
         <td>{content["code"]}</td>
