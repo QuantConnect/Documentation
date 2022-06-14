@@ -6,7 +6,3 @@
 </div>
 
 <p>In live trading, the brokerage determines how much leverage you may use. For more information about the leverage they provide, see <a href='/docs/v2/our-platform/live-trading/brokerages'>Brokerages</a>.</p>
-
-<?php include(DOCS_RESOURCES."/brokerages/margin-calls.html"); ?>
-
-<?php include(DOCS_RESOURCES."/brokerages/pattern-day-trader-rule.html"); ?>
