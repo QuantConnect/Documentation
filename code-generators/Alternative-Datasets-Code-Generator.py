@@ -109,5 +109,5 @@ for dataset in doc:
     product_count[vendorName] = product_count[vendorName] + 1
     
 universe_html += "</ul>"
-with open('02 Writing Algorithms/12 Universes/11 Alternative Data Universes/02 Supported Datasets.html', "w", encoding="utf-8") as html_file:
+with open('Resources/datasets/supported-alternative-dataset-universe.html', "w", encoding="utf-8") as html_file:
     html_file.write(universe_html)
