@@ -7,7 +7,7 @@
  <div class="section-example-container">
     <pre class="csharp">var equity = AddEquity("YESBANK", market: Market.India);
 equity.SetDataNormalizationMode(DataNormalizationMode.Raw);</pre>
-    <pre class="python">equity = equity = AddEquity("YESBANK", market=Market.India)
+    <pre class="python">equity = AddEquity("YESBANK", market=Market.India)
 equity.SetDataNormalizationMode(DataNormalizationMode.Raw)</pre>
 </div>
 
