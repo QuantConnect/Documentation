@@ -1,5 +1,7 @@
 <p>Before you can subscribe to an Option contract, you must configure the underlying Equity.</p>
 
+<h4>Configure the Underlying Equity</h4>
+
 <p>If you called the <code>AddEquity</code> method to subscribe to the underlying Equity, in the <code>Initialize</code> method, follow these steps to configure the asset:</p>
 <ol>
     <li>Set the Equity data normalization to <code>DataNormalizationMode.Raw</code>.</li>
@@ -44,6 +46,7 @@ def CustomSecurityInitializer(self, security: Security) -&gt; None:
             security.VolatilityModel.Update(security, trade_bar)</pre>
 </div>
 
+<h4>Get Contract Symbols</h4>
 
 <p>To subscribe to an Option contract, you need the contract <code>Symbol</code>. You can get the contract <code>Symbol</code> from the <code>CreateOption</code> method or from the <code>OptionChainProvider</code>. To use the <code>CreateOption</code> method, you need to know the specific contract details.</p>
 
@@ -59,6 +62,7 @@ def CustomSecurityInitializer(self, security: Security) -&gt; None:
     <pre class="python"># Example of GetOptionContractList; it should create OptionContract objects so that it can filter</pre>
 </div>
 
+<h4>Subscribe to Contracts</h4>
 
 <p>To create an Equity Option contract subscription, pass the contract <code>Symbol</code> to the <code>AddOptionContract</code> method. The <code>AddOptionContract</code> method returns an <code>Option</code> object, which contains the canonical <code>Symbol</code>. You can't trade with the canonical Option <code>Symbol</code>, but save a reference to it so you can easily access the Option contract in the <a href="/docs/v2/writing-algorithms/securities/asset-classes/equity-options/handling-data#04-Options-Chain">OptionChain</a> that LEAN passes to the <code>OnData</code> method.</p>
 
@@ -75,5 +79,7 @@ def CustomSecurityInitializer(self, security: Security) -&gt; None:
     <pre class="csharp">// Example of security initializer. Since this h3 already has a security initializer, we should check the SecurityType == Option in the security initializer code to set the last price.</pre>
     <pre class="python"># Example of security initializer. Since this h3 already has a security initializer, we should check the SecurityType == Option in the security initializer code to set the last price.</pre>
 </div>
+
+<h4>Supported Assets</h4>
 
 <p>To view the supported assets in the US Equities dataset, see the <a href="/data/tree/option/usa/minute">Data Explorer</a>.</p>
