@@ -1,4 +1,4 @@
-<p>The datasets integrated into the Dataset Market cover the following markets:</p>
+<p>The datasets integrated into the Dataset Market cover many markets.</p>
 
 <?php echo file_get_contents(DOCS_RESOURCES."/enumerations/market.html"); ?>
 
