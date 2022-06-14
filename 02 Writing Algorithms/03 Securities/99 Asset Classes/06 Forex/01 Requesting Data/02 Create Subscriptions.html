@@ -1,2 +1,10 @@
-<div>What:</div><div>- Create a security subscription<br></div><div><br></div><div>Why:</div><div>-To add a data feed for the security to your algorithm</div><div>&nbsp;&nbsp; - To enable trading / fills / quotes</div><div>&nbsp;&nbsp; - To receive data updates in your algorithm + portfolio<br></div><div>&nbsp;&nbsp; - To make trading decisions</div><div>-This adds the security to your "user-defined" / static universe<br></div><div><br></div><div>How:<br></div><div>- AddForex() <br></div><div>&nbsp;&nbsp; - Save a reference to the Symbol<br></div><div>&nbsp;&nbsp; - Usually called in OnData</div>
--To remove a subscription, use RemoveSecurity()
+<p>To create a Forex subscription, in the <code>Initialize</code> method, call the <code>AddForex</code> method. The <code>AddForex</code> method returns a <code>Forex</code> object, which contains a <code>Symbol</code>. Save a reference to the <code>Symbol</code> so you can use it in <code>OnData</code> to access the security data in the <code>Slice</code>.</p>
+
+<div class="section-example-container">
+    <pre class="csharp">_symbol = AddForex("EURUSD").Symbol;</pre>
+    <pre class="python">self.symbol = self.AddForex("EURUSD").Symbol</pre>
+</div>
+
+<p>The <code>AddForex</code> method creates a subscription for a single Forex pair and adds it to your <span class="new-term">user-defined</span> universe.</p>
+
+<p>To view the supported assets, see <a href="/docs/v2/writing-algorithms/datasets/oanda/forex-data#05-Supported-Assets">Supported Assets</a>.</p>
