@@ -7,4 +7,4 @@
     <pre class="python">self.symbol = self.AddEquity("SPY", market=Market.USA).Symbol</pre>
 </div>
 
-<p>The <a href='/docs/v2/writing-algorithms/reality-modeling/brokerages'>brokerage models</a> have a default market for each asset class. If you set a brokerage model, you may not need to specify the market to use. </p>
+<?php echo file_get_contents(DOCS_RESOURCES."/securities/supported-markets.html"); ?>
