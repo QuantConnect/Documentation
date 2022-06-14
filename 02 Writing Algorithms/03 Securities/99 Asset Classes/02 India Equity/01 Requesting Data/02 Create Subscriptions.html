@@ -1,2 +1,10 @@
-<div>What:</div><div>- Create a security subscription<br></div><div><br></div><div>Why:</div><div>-To add a data feed for the security to your algorithm</div><div>&nbsp;&nbsp; - To enable trading / fills / quotes</div><div>&nbsp;&nbsp; - To receive data updates in your algorithm + portfolio<br></div><div>&nbsp;&nbsp; - To make trading decisions</div><div>-This adds the security to your "user-defined" / static universe<br></div><div><br></div><div>How:<br></div><div>- AddEquity()&nbsp; <br></div><div>&nbsp;&nbsp; - Usually called in OnData</div>
--To remove a subscription, use RemoveSecurity()
+<p>To create an India Equity subscription, in the <code>Initialize</code> method, call the <code>AddEquity</code> method. The <code>AddEquity</code> method returns a <code>Security</code> object, which contains a <code>Symbol</code>. Save a reference to the <code>Symbol</code> so you can use it in <code>OnData</code> to access the security data in the <code>Slice</code>.</p>
+
+<div class="section-example-container">
+    <pre class="csharp">_equity = AddEquity("YESBANK", market: Market.India).Symbol;</pre>
+    <pre class="python">self.equity = AddEquity("YESBANK", market=Market.India).Symbol</pre>
+</div>
+
+<p>If you set the <a href='/docs/v2/writing-algorithms/reality-modeling/brokerages'>brokerage model</a> to an India brokerage, you don't need to pass a <code>market</code> argument. To view the integrated brokerages that offer India Equities, see <a href='/docs/v2/our-platform/live-trading/brokerages'>Brokerages</a>.</p>
+
+<p>To view the supported assets in the India Equities dataset, see the <a href="/data/tree/equity/india/daily">Data Explorer</a>.</p>
