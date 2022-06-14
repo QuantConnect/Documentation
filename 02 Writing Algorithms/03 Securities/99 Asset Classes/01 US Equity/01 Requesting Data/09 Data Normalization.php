@@ -6,10 +6,16 @@
 <p>To set the data normalization mode for a security, call the <code>SetDataNormalizationMode</code> method.</p>
 
  <div class="section-example-container">
-    <pre class="csharp">var equity = AddEquity("SPY");
-equity.SetDataNormalizationMode(DataNormalizationMode.Raw);</pre>
-    <pre class="python">equity = self.AddEquity("SPY", leverage=3)
-equity.SetDataNormalizationMode(DataNormalizationMode.Raw)</pre>
+    <pre class="csharp">_symbol = AddEquity("SPY").Symbol;
+SubscriptionManager
+  .SubscriptionDataConfigService
+  .GetSubscriptionDataConfigs(_symbol)
+  .SetDataNormalizationMode(DataNormalizationMode.Raw);</pre>
+    <pre class="python">self.symbol = self.AddEquity("SPY").Symbol
+self.SubscriptionManager
+  .SubscriptionDataConfigService
+  .GetSubscriptionDataConfigs(_symbol)
+  .SetDataNormalizationMode(DataNormalizationMode.Raw)</pre>
 </div>
 
 <p>To set the data normalization mode for all securities in an algorithm, set the <code>DataNormalizationMode</code> <a href='/docs/v2/writing-algorithms/universes/key-concepts#05-Universe-Settings'>universe setting</a> before you create the security subscriptions.</p>
