@@ -12,9 +12,9 @@ SubscriptionManager
   .GetSubscriptionDataConfigs(_symbol)
   .SetDataNormalizationMode(DataNormalizationMode.Raw);</pre>
     <pre class="python">self.symbol = self.AddEquity("SPY").Symbol
-self.SubscriptionManager
-  .SubscriptionDataConfigService
-  .GetSubscriptionDataConfigs(_symbol)
+self.SubscriptionManager \
+  .SubscriptionDataConfigService \
+  .GetSubscriptionDataConfigs(self.symbol) \
   .SetDataNormalizationMode(DataNormalizationMode.Raw)</pre>
 </div>
 
