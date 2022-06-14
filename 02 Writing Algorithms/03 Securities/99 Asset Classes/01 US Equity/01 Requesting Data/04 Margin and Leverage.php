@@ -5,7 +5,7 @@
     <pre class="python">self.symbol = self.AddEquity("SPY", leverage=3).Symbol</pre>
 </div>
 
-<p>In live trading, the brokerage determines how much leverage you may use.</p>
+<p>In live trading, the brokerage determines how much leverage you may use. For more information about the leverage they provide, see <a href='/docs/v2/our-platform/live-trading/brokerages'>Brokerages</a>.</p>
 
 <?php include(DOCS_RESOURCES."/brokerages/margin-calls.html"); ?>
 
