@@ -38,6 +38,8 @@ enum_objects = [
 ]
 
 quotation = '\"'
+market = None
+market_data = None
 
 def TableCreation(raw, namespace=""):
     object_ = ""
@@ -111,10 +113,6 @@ def TableCreation(raw, namespace=""):
             
     if not current_object: return
 
-    if object_ == "Market":
-        sym_prop = urlopen("https://raw.githubusercontent.com/QuantConnect/Lean/master/Data/symbol-properties/symbol-properties-database.csv").read().decode("utf-8").split('\n')
-        market = set({x.split(",")[0]: x.split(",")[2].lower().strip() for x in sym_prop if len(x.split(",")) > 2 and x.split(",")[2].lower().strip() != "type" and " " not in x.split(",")[2].lower().strip()}.items())
-        
     n = 0
     exist_n = [x["code"] for x in current_object.values()]
     
@@ -131,14 +129,12 @@ def TableCreation(raw, namespace=""):
         sorted_ = current_object.items()
 
     if object_ == "Market":
-        html = ""
-        
-        for x in set([m[1] for m in market]):
-            items = [y[0] for y in market if y[1] == x]
-            html += HtmlGeneration(object_, [y for y in sorted_ if y[0].lower() in items], f' for {x.replace("option", " Option").title()} markets')
-            
-    else:
-        html = HtmlGeneration(object_, sorted_)
+        sym_prop = urlopen("https://raw.githubusercontent.com/QuantConnect/Lean/master/Data/symbol-properties/symbol-properties-database.csv").read().decode("utf-8").split('\n')
+        global market, market_data
+        market = set({x.split(",")[0]: x.split(",")[2].lower().strip() for x in sym_prop if len(x.split(",")) > 2 and x.split(",")[2].lower().strip() != "type" and " " not in x.split(",")[2].lower().strip()}.items())
+        market_data = sorted_
+
+    html = HtmlGeneration(object_, sorted_)
         
     with open(f"{destination}/{'_'.join([x.lower() for x in re.findall('[a-zA-Z][^A-Z]*', object_)])}.html", "w", encoding="utf-8") as file:
         file.write(html)
@@ -177,3 +173,10 @@ for url in enum_objects:
     print(url)
     raw = urlopen(f'{root_url}{url}').read().decode("utf-8").split('\n')
     html = TableCreation(raw)
+    
+for x in set([m[1] for m in market]):
+    items = [y[0] for y in market if y[1] == x]
+    html = HtmlGeneration("Market", [y for y in market_data if y[0].lower() in items], f' for {x.replace("option", " Option").title()} markets')
+    
+    with open(f"{destination}/market-{x}.html", "w", encoding="utf-8") as file:
+        file.write(html)
