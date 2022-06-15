@@ -1,0 +1,1 @@
+## TODO: Waiting for the <a href='https://www.quantconnect.com/docs/v2/writing-algorithms/datasets/algoseek/us-future-options#04-Data-Summary'>supported contracts table</a> to be in the Resources
