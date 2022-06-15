@@ -13,17 +13,17 @@
 </p>
 <div class="section-example-container">
     <pre class="python">class MyPipelineAlgorithm(QCAlgorithm):
-    def Initialize(self):
+    def Initialize(self) -&gt; None:
         self.SetStartDate(2020, 1, 1)
         self.SetEndDate(2020, 10, 20)
 
         self.AddUniverse(self.CoarseSelectionFunction, self.FineSelectionFunction)
 
-    def CoarseSelectionFunction(self, coarse):
+    def CoarseSelectionFunction(self, coarse: List[CoarseFundamental]) -&gt; List[Symbol]:
         # Allows all Symbols through, no filtering applied
         return [coarse_data.Symbol for coarse_data in coarse]
 
-    def FineSelectionFunction(self, fine):
+    def FineSelectionFunction(self, fine: List[FineFundamental]) -&gt; List[Symbol]:
         # Allows all Symbols through, no filtering applied
         return [fine_data.Symbol for fine_data in fine]</pre>
 </div>
@@ -54,13 +54,13 @@ run_pipeline(pipe, '2020-01-01', '2020-10-20')</pre>
     <pre class="python">from datetime import datetime, timedelta
 
 class MyPipelineAlgorithm(QCAlgorithm):
-    def Initialize(self):
+    def Initialize(self) -&gt; None:
         self.SetStartDate(2020, 1, 1)
         self.SetEndDate(2020, 10, 20)
 
         self.AddUniverse(self.CoarseSelectionFunction, self.FineSelectionFunction)
 
-    def CoarseSelectionFunction(self, coarse):
+    def CoarseSelectionFunction(self, coarse: List[CoarseFundamental]) -&gt; List[Symbol]:
         # Allows all Symbols through, no filtering applied
         dollar_volume_filter_symbols = [coarse_data.Symbol for coarse_data in coarse if coarse_data.DollarVolume > 50000000]
 
@@ -76,7 +76,7 @@ class MyPipelineAlgorithm(QCAlgorithm):
         # Filters out any Symbol that is not in the DataFrame
         return [s for s in dollar_volume_filter_symbols if str(s) in dataframe_screen]
 
-    def FineSelectionFunction(self, fine):
+    def FineSelectionFunction(self, fine: List[FineFundamental]) -&gt; List[Symbol]:
         # We receive the filtered symbols from before, and we filter by EPS > 0 in this step
        return [s.Symbol for s in fine if s.EarningReports.BasicEPS.ThreeMonths > 0]</pre>
 </div>

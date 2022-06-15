@@ -9,7 +9,7 @@
     }
 }</pre>
 <pre class="python">class ETFConstituentsAlgorithm(QCAlgorithm):
-    def Initialize(self):        
+    def Initialize(self) -&gt; None:        
         filter_function = lambda constituents: [x.Symbol for x in constituents]
         universe = self.Universe.ETF("SPY", Market.USA, self.UniverseSettings, filter_function)
         self.AddUniverse(universe)</pre>
@@ -79,11 +79,11 @@
 }
 </pre>
 <pre class="python">class ETFConstituentsAlgorithm(QCAlgorithm):
-    def Initialize(self):
+    def Initialize(self) -&gt; None:
         universe = self.Universe.ETF("SPY", Market.USA, self.UniverseSettings, self.ETFConstituentsFilter)
         self.AddUniverse(universe)
 
-    def ETFConstituentsFilter(self, constituents):
+    def ETFConstituentsFilter(self, constituents: List[ETFConstituentData]) -&gt; List[Symbol]:
         # Get the 10 securities with the largest weight in the index
         selected = sorted([c for c in constituents if c.Weight],
             key=lambda c: c.Weight, reverse=True)[:10]

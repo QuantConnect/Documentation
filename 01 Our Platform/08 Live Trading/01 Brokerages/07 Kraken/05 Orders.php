@@ -111,7 +111,7 @@ public override void OnData(Slice data)
                    ConditionalOrder = StopLimitOrder(_symbol, -quantity, stopLimitPrice, stopPrice)
                });
 }</pre>
-    <pre class="python">def Initialize(self):
+    <pre class="python">def Initialize(self) -&gt; None:
     # Set the default order properties
     self.DefaultOrderProperties = KrakenOrderProperties()
     self.DefaultOrderProperties.TimeInForce = TimeInForce.GoodTilCanceled
@@ -120,7 +120,7 @@ public override void OnData(Slice data)
     self.DefaultOrderProperties.FeeInQuote = False
     self.DefaultOrderProperties.NoMarketPriceProtection = True
 
-def OnData(self, data):
+def OnData(self, data: Slice) -&gt; None:
     # Use default order order properties
     self.LimitOrder(self.symbol, quantity, limit_price)
     

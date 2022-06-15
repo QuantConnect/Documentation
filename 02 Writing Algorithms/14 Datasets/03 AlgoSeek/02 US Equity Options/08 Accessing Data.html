@@ -1,6 +1,6 @@
 <p>Data can be accessed via Slice events. Slice delivers unique events to your algorithm as they happen. We recommend saving the symbol object when you add the data for easy access to slice later. Data is available in minute resolution. You can see an example of the slice accessor in the code below.</p>
 <div class="section-example-container">
-<pre class="python">def OnData(self, data):
+<pre class="python">def OnData(self, data: Slice) -&gt; None:
     for kvp in data.OptionChains:
         for contract in kvp.Value:
             self.Debug(f"Time: {self.Time}; Canonical Symbol: {kvp.Key}; Contract: {contract}; Right: {contract.Right}; Expiry: {contract.Expiry}; Bid price: {contract.BidPrice}; Ask price: {contract.AskPrice}; ImpliedVolatility: {contract.ImpliedVolatility}; Delta: {contract.Greeks.Delta}; Gamma: {contract.Greeks.Gamma}; Vega: {contract.Greeks.Vega}; Rho: {contract.Greeks.Rho}; Lambda: {contract.Greeks.Lambda}")</pre>

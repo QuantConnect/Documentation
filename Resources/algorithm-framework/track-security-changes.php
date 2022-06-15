@@ -46,7 +46,7 @@ $getTrackSecurityChangesText = function($modelName, $modelClassName, $callsBaseC
 		<pre class=\"python\">class My{$modelClassName}($modelClassName):
     symbol_data_by_symbol = {}
 
-    def OnSecuritiesChanged(self, algorithm, changes):";
+    def OnSecuritiesChanged(self, algorithm: QCAlgorithm, changes: SecurityChanges) -&gt; None:";
   
     
   if ($callsBaseClass)

@@ -50,11 +50,11 @@ private OptionFilterUniverse OptionFilterFunction(OptionFilterUniverse optionFil
 {
     return optionFilterUniverse.Strikes(-2, +2).FrontMonth().CallsOnly();
 }</pre>
-	<pre class="python">def Initialize(self):
+	<pre class="python">def Initialize(self) -&gt; None:
     universe = self.AddUniverse(self.Universe.DollarVolume.Top(10))
     self.AddUniverseOptions(universe, self.OptionFilterFunction)
 
-def OptionFilterFunction(self, option_filter_universe):
+def OptionFilterFunction(self, option_filter_universe: OptionFilterUniverse) -&gt; OptionFilterUniverse:
     return option_filter_universe.Strikes(-2, +2).FrontMonth().CallsOnly()</pre>
 </div>
 

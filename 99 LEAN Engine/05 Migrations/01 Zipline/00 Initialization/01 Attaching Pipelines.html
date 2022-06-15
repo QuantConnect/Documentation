@@ -22,17 +22,17 @@
 </p>
 <div class="section-example-container">
     <pre class="python">class MyUniverseAlgorithm(QCAlgorithm):
-    def Initialize(self):
+    def Initialize(self) -&gt; None:
         self.SetStartDate(2020, 1, 1)
         self.SetEndDate(2020, 2, 1)
 
         self.UniverseSettings.Resolution = Resolution.Minute
         self.AddUniverse(self.CoarseSelectionFunction, self.FineSelectionFunction)
 
-    def CoarseSelectionFunction(self, coarse):
+    def CoarseSelectionFunction(self, coarse: List[CoarseFundamental]) -&gt; List[Symbol]:
         return [i.Symbol for i in coarse if i.DollarVolume > 500000 and i.HasFundamentalData]
 
-    def FineSelectionFunction(self, fine):
+    def FineSelectionFunction(self, fine: List[FineFundamental]) -&gt; List[Symbol]:
         return [i.Symbol for i in fine if i.EarningReports.BasicEPS.OneMonth > 0]</pre>
 </div>
 <p>
@@ -40,7 +40,7 @@
 </p>
 <div class="section-example-container">
     <pre class="python">class MyUniverseAlgorithm(QCAlgorithm):
-    def Initialize(self):
+    def Initialize(self) -&gt; None:
         self.UniverseSettings.Resolution = Resolution.Minute
         self.UniverseSettings.DataNormalizationMode = DataNormalizationMode.Adjusted
         self.UniverseSettings.Leverage = 1.0

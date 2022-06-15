@@ -66,11 +66,11 @@ public override void OnData(Slice data)
                    TimeInForce = TimeInForce.GoodTilDate(new DateTime(year, month, day)) 
                });
 }</pre>
-    <pre class="python">def Initialize(self):
+    <pre class="python">def Initialize(self) -&gt; None:
     # Set the default order properties
     self.DefaultOrderProperties.TimeInForce = TimeInForce.GoodTilCanceled
 
-def OnData(self, data):
+def OnData(self, data: Slice) -&gt; None:
     # Use default order order properties
     self.LimitOrder(self.symbol, quantity, limit_price)
     

@@ -10,7 +10,7 @@ $getHistoricalValuesText = function($linkToIndicatorsPage) {
    SMA(\"SPY\", 5).Updated += (sender, updated) =&gt; smaWindow.Add(updated);
 }
 </pre> 
-	<pre class=\"python\">def Initialize(self):
+	<pre class=\"python\">def Initialize(self) -&gt; None:
     # Creates an indicator and adds to a RollingWindow when it is updated
     self.sma_window = RollingWindow[IndicatorDataPoint](5)
     self.SMA(\"SPY\", 5).Updated += (lambda sender, updated: self.sma_window.Add(updated))</pre>

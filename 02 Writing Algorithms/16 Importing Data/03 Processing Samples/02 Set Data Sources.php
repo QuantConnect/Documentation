@@ -12,7 +12,7 @@
     }
 }</pre>
 <pre class="python">class MyCustomDataType(PythonData):
-    def GetSource(self, config, date, isLive):
+    def GetSource(self, config: SubscriptionDataConfig, date: datetime, isLive: bool) -&gt; SubscriptionDataSource:
         return SubscriptionDataSource("&lt;filePath&gt;", SubscriptionTransportMedium.LocalFile)</pre>
 </div>
 
@@ -30,7 +30,7 @@
     }
 }</pre>
 <pre class="python">class MyCustomDataType(PythonData):
-    def GetSource(self, config, date, isLive):
+    def GetSource(self, config: SubscriptionDataConfig, date: datetime, isLive: bool) -&gt; SubscriptionDataSource:
         return SubscriptionDataSource("&lt;sourceURL&gt;", SubscriptionTransportMedium.RemoteFile)</pre>
 </div>
 
@@ -52,6 +52,6 @@
     }
 }</pre>
 <pre class="python">class MyCustomDataType(PythonData):
-    def GetSource(self, config, date, isLive):
+    def GetSource(self, config: SubscriptionDataConfig, date: datetime, isLive: bool) -&gt; SubscriptionDataSource:
         return SubscriptionDataSource("&lt;sourceURL&gt;", SubscriptionTransportMedium.Rest)</pre>
 </div>

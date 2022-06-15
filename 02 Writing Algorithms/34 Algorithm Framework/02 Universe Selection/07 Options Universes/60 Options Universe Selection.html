@@ -57,11 +57,11 @@ private static IEnumerable&lt;Symbol&gt; SelectOptionChainSymbols(DateTime utcTi
 }</pre>
 	<pre class="python">from Selection.OptionUniverseSelectionModel import OptionUniverseSelectionModel 
 
-def Initialize(self):
+def Initialize(self) -&gt; None:
     universe = OptionUniverseSelectionModel(timedelta(days=1), self.option_chain_symbol_selector)
     self.SetUniverseSelection(universe)
 
-def option_chain_symbol_selector(self, utc_time):
+def option_chain_symbol_selector(self, utc_time: datetime) -&gt; List[Symbol]:
     tickers = ["SPY", "QQQ", "TLT"]
     return [Symbol.Create(ticker, SecurityType.Option, Market.USA) for ticker in tickers]</pre>
 </div>

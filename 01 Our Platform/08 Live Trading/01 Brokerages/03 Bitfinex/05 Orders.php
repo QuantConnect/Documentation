@@ -98,14 +98,14 @@ public override void OnData(Slice data)
                    PostOnly = true
                });
 }</pre>
-    <pre class="python">def Initialize(self):
+    <pre class="python">def Initialize(self) -&gt; None:
     # Set the default order properties
     self.DefaultOrderProperties = BitfinexOrderProperties()
     self.DefaultOrderProperties.TimeInForce = TimeInForce.GoodTilCanceled
     self.DefaultOrderProperties.Hidden = False
     self.DefaultOrderProperties.PostOnly = False
 
-def OnData(self, data):
+def OnData(self, data: Slice) -&gt; None:
     # Use default order order properties
     self.LimitOrder(self.symbol, quantity, limit_price)
     

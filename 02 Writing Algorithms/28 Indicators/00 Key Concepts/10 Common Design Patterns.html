@@ -43,11 +43,11 @@ public override void Initialize()
         # Warm up the indicator
         algorithm.WarmUpIndicator(symbol, self.sma)
 
-    def OnDataConsolidated(self, sender, consolidated_bar):
+    def OnDataConsolidated(self, sender: object, consolidated_bar: TradeBar) -&gt; None:
         self.sma.Update(consolidated_bar.EndTime, consolidated_bar.Close)
 
     # If you have a dynamic universe, remove consolidators for the securities removed from the universe
-    def dispose(self):
+    def dispose(self) -&gt; None:
         self.algorithm.SubscriptionManager.RemoveConsolidator(self.symbol, self.consolidator)
 </pre>
 	<pre class="csharp">public class SymbolData
@@ -96,7 +96,7 @@ public override void Initialize()
 	<pre class="python">class MyAlgorithm(QCAlgorithm):
     symbol_data_by_symbol = {}
 
-    def OnSecuritiesChanged(self, changes):
+    def OnSecuritiesChanged(self, changes: SecurityChanges) -&gt; None:
         for security in changes.AddedSecurities:
             self.symbol_data_by_symbol[security.Symbol] = SymbolData(self, security.Symbol)
 

@@ -63,11 +63,11 @@ using QuantConnect.Research;</pre>
     <pre class="python">
 class Nifty(PythonData):
     '''NIFTY Custom Data Class'''
-    def GetSource(self, config, date, isLiveMode):
+    def GetSource(self, config: SubscriptionDataConfig, date: datetime, isLiveMode: bool) -&gt; SubscriptionDataSource:
         url = "http://cdn.quantconnect.com.s3.us-east-1.amazonaws.com/uploads/CNXNIFTY.csv"
         return SubscriptionDataSource(url, SubscriptionTransportMedium.RemoteFile)
 
-    def Reader(self, config, line, date, isLiveMode):
+    def Reader(self, config: SubscriptionDataConfig, line: str, date: datetime, isLiveMode: bool) -&gt; BaseData:
         if not (line.strip() and line[0].isdigit()): return None
 
         # New Nifty object

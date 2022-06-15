@@ -2,12 +2,12 @@
     $[Dividend,T:QuantConnect.Data.Market.Dividend] events are triggered on payment of a dividend. It provides the Distribution per share.
 </p>
 <div class="section-example-container">
-<pre class="python">def Initialize(self):
+<pre class="python">def Initialize(self) -&gt; None:
     self.SetStartDate(2017, 6, 1)
     self.SetEndDate(2017, 6, 28)
     self.spy = self.AddEquity("SPY", Resolution.Hour) 
     
-def OnData(self, data):
+def OnData(self, data: Slice) -&gt; None:
     if not self.Portfolio.Invested:
         self.Buy("SPY", 100)
     

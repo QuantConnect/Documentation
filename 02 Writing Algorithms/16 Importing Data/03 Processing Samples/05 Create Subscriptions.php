@@ -15,7 +15,7 @@
     }
 }</pre>
 <pre class="python">class MyAlgorithm(QCAlgorithm): 
-    def Initialize(self):
+    def Initialize(self) -&gt; None:
         self.symbol = self.AddData(MyCustomDataType, "&lt;name&gt;", Resolution.Daily).Symbol
 </pre>
 </div>

@@ -59,11 +59,11 @@ private static IEnumerable&lt;Symbol&gt; SelectFutureChainSymbols(DateTime utcTi
 }</pre>
 	<pre class="python">from Selection.FutureUniverseSelectionModel import FutureUniverseSelectionModel
 
-def Initialize(self):
+def Initialize(self) -&gt; None:
     universe = FutureUniverseSelectionModel(timedelta(days=1), self.future_chain_symbol_selector)
     self.SetUniverseSelection(universe)
 
-def future_chain_symbol_selector(self, utc_time):
+def future_chain_symbol_selector(self, utc_time: datetime) -&gt; List[Symbol]:
     return [ Symbol.Create(Futures.Indices.SP500EMini, SecurityType.Future, Market.CME),
              Symbol.Create(Futures.Metals.Gold, SecurityType.Future, Market.COMEX) ]</pre>
 </div>

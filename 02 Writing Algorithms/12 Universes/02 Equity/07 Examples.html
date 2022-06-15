@@ -15,7 +15,7 @@ The most common use case is to select a lot of liquid stocks. With a coarse univ
             select c.Symbol).Take(500);
     }
 </pre>
-<pre class="python">    def MyCoarseFilterFunction(self, coarse):
+<pre class="python">    def MyCoarseFilterFunction(self, coarse: List[CoarseFundamental]) -&gt; List[Symbol]:
          sortedByDollarVolume = sorted(coarse, key=lambda x: x.DollarVolume, reverse=True)
          filtered = [ x.Symbol for x in sortedByDollarVolume 
                       if x.Price &gt; 10 and x.DollarVolume &gt; 10000000 ]
@@ -47,7 +47,7 @@ Another common request is to filter the universe by a technical indicator, such 
 <pre class="python">    # setup state storage in initialize method
     self.stateData = { }
 
-    def MyCoarseFilterFunction(self, coarse):
+    def MyCoarseFilterFunction(self, coarse: List[CoarseFundamental]) -&gt; List[Symbol]:
         # We are going to use a dictionary to refer the object that will keep the moving averages
         for c in coarse:
             if c.Symbol not in self.stateData:
@@ -149,7 +149,7 @@ This class tracks the ratio of today's volume relative to historical volumes. Yo
 </p>
 
 <div class="section-example-container">
-<pre class="python">def CoarseFilterFunction(self, coarse):
+<pre class="python">def CoarseFilterFunction(self, coarse: List[CoarseFundamental]) -&gt; List[Symbol]:
     for c in coarse:
         if c.Symbol not in self.stateData:
             self.stateData[c.Symbol] = SelectionData(c.Symbol, 10)

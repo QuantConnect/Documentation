@@ -1,14 +1,14 @@
 <p>You can filter and select US equities based by AddUniverse&lt;BrainSentimentIndicatorUniverse&gt;() based on daily Brain Sentiment Indicator data.
 </p>
 <div class="section-example-container">
-<pre class="python">def Initialize(self):
+<pre class="python">def Initialize(self) -&gt; None:
     # Data ADDED via universe selection is added with Daily resolution.
     self.UniverseSettings.Resolution = Resolution.Daily
 
     # add a custom universe data source (defaults to usa-equity)
     self.AddUniverse(BrainSentimentIndicatorUniverse, "BrainSentimentIndicatorUniverse", Resolution.Daily, self.UniverseSelection)
 
-def UniverseSelection(self, alt_coarse):
+def UniverseSelection(self, alt_coarse: List[BrainSentimentIndicatorUniverse]) -&gt; List[Symbol]:
     for datum in alt_coarse:
         self.Log(f"""{datum.Symbol},
                 {datum.TotalArticleMentions7Days},

@@ -1,12 +1,12 @@
 <p>Data can be accessed via the IEnumerable object that is piped into the user-defined selector function. The symbol objects that are selected by the coarse selection function are the symbols that comprise the Fine Fundamental IEnumerable object passed to the fine fundamental selection function. Fundamental data is available in daily resolution. You can see an example of using this data in the code below.</p>
 
 <div class="section-example-container">
-<pre class="python">def SelectCoarse(self, coarse):
+<pre class="python">def SelectCoarse(self, coarse: List[CoarseFundamental]) -&gt; List[Symbol]:
     selected = [c for c in coarse if c.HasFundamentalData]
     sorted_by_dollar_volume = sorted(selected, key=lambda c: c.DollarVolume, reverse=True)
     return [ c.Symbol for c in sorted_by_dollar_volume[:20] ]
     
-def SelectFine(self, fine):
+def SelectFine(self, fine: List[FineFundamental]) -&gt; List[Symbol]:
     sorted_by_pe_ratio = sorted(fine, key=lambda f: f.ValuationRatios.PERatio, reverse=True)
     return [ f.Symbol for f in sorted_by_pe_ratio[:5] ]</pre>
 <pre class="csharp">public IEnumerable&lt;Symbol&gt; SelectCoarse(IEnumerable&lt;CoarseFundamental&gt; coarse)

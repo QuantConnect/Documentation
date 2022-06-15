@@ -15,10 +15,10 @@
 }
 </pre>
 <pre class="python">class MyCoarseUniverseAlgorithm(QCAlgorithm):
-    def Initialize(self):
+    def Initialize(self) -&gt; None:
         self.AddUniverse(self.MyCoarseFilterFunction)
 
-    def MyCoarseFilterFunction(self, coarse):
+    def MyCoarseFilterFunction(self, coarse: List[CoarseFundamental]) -&gt; List[Symbol]:
         sorted_by_dollar_volume = sorted(coarse, key=lambda x: x.DollarVolume, reverse=True) 
         return [c.Symbol for c in sorted_by_dollar_volume[:100]]</pre>
 </div>

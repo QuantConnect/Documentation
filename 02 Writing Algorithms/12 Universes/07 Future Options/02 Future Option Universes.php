@@ -66,7 +66,7 @@ self.AddFutureOption(future.Symbol)</pre>
     <pre class="python"># In Initialize
 self.AddFutureOption(future.Symbol, self.contract_selector)
     
-def contract_selector(self, option_filter_universe):
+def contract_selector(self, option_filter_universe: Callable[OptionFilterUniverse, OptionFilterUniverse]) -&gt; OptionFilterUniverse:
     puts = option_filter_universe.PutsOnly()
     symbols = []
     for _, symbol in enumerate(puts.GetEnumerator()):

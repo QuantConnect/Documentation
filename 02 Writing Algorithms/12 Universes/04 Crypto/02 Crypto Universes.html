@@ -1,7 +1,7 @@
 <p>To add a universe of Cryptocurrencies, in the <code>Initialize</code> method, pass a <code>CryptoCoarseFundamentalUniverse</code> to the <code>AddUniverse</code> method. <br></p>
 
 <div class="section-example-container">
-<pre class="python">def Initialize(self):
+<pre class="python">def Initialize(self) -&gt; None:
     self.UniverseSettings.Resolution = Resolution.Daily
     self.SetBrokerageModel(BrokerageName.GDAX, AccountType.Cash)
 
@@ -58,14 +58,14 @@
 <p>To perform thorough filtering on the <code>CryptoCoarseFundamental</code> objects, define an isolated filter method.</p>
 
 <div class="section-example-container">
-<pre class="python">def Initialize(self):
+<pre class="python">def Initialize(self) -&gt; None:
     self.UniverseSettings.Resolution = Resolution.Daily
     self.SetBrokerageModel(BrokerageName.GDAX, AccountType.Cash)
 
     # Add universe selection of cryptos based on coarse fundamentals
     self.AddUniverse(CryptoCoarseFundamentalUniverse(Market.GDAX, self.UniverseSettings, self.universe_filter))
 
-def universe_filter(self, crypto_coarse):
+def universe_filter(self, crypto_coarse: List[CryptoCoarseFundamental]) -&gt; List[Symbol]:
     # Define the universe selection function
     return [cf.Symbol for cf in crypto_coarse if cf.Volume &gt;= 100 and cf.VolumeInUsd &gt; 10000]</pre>
 <pre class="csharp">public override void Initialize()

@@ -78,14 +78,14 @@ public class MyUniverseAlgorithm : QCAlgorithm {
 </pre>
 <pre class="python">
 class MyUniverseAlgorithm(QCAlgorithm):
-     def Initialize(self):
+     def Initialize(self) -&gt; None:
          self.AddUniverse(self.MyCoarseFilterFunction, self.MyFineFundamentalFunction)
 
-    def MyCoarseFilterFunction(self, coarse):
+    def MyCoarseFilterFunction(self, coarse: List[CoarseFundamental]) -&gt; List[Symbol]:
          # In addition to further coarse universe selection, ensure the security has fundamental data
          return [c.Symbol for c in coarse if c.HasFundamentalData]
 
-    def MyFineFundamentalFunction(self, fine):
+    def MyFineFundamentalFunction(self, fine: List[FineFundamental]) -&gt; List[Symbol]:
          # Return a list of Symbols
 </pre>
 </div>
@@ -119,12 +119,12 @@ AddUniverse(
 	<pre class="python"># In Initialize:
 self.AddUniverse(self.CoarseSelectionFunction, self.FineSelectionFunction)
 
-def CoarseSelectionFunction(self, coarse):
+def CoarseSelectionFunction(self, coarse: List[CoarseFundamental]) -&gt; List[Symbol]:
     sortedByDollarVolume = sorted(coarse, key=lambda x: x.DollarVolume, reverse=True)
     filtered = [ x.Symbol for x in sortedByDollarVolume if x.HasFundamentalData ]
     return filtered[:50]
 
-def FineSelectionFunction(self, fine):
+def FineSelectionFunction(self, fine: List[FineFundamental]) -&gt; List[Symbol]:
     sortedByPeRatio = sorted(fine, key=lambda x: x.ValuationRatios.PERatio, reverse=False)
     return [ x.Symbol for x in sortedByPeRatio[:10] ]
 </pre>

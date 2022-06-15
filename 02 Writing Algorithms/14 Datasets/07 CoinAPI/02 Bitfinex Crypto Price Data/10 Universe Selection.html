@@ -1,14 +1,14 @@
 <p>You can perform an universe selection by adding a CryptoCoarseFundamentalUniverse, which filters cryptocurrency pairs by their previous day OHLCV, dollar volume in quote currency and USD if available (as of UTC 00:00).</p>
 
 <div class="section-example-container">
-<pre class="python">def Initialize(self):
+<pre class="python">def Initialize(self) -&gt; None:
     self.UniverseSettings.Resolution = Resolution.Daily
     self.SetBrokerageModel(BrokerageName.Bitfinex, AccountType.Margin)
 
     # Add universe selection of cryptos based on coarse fundamentals
     self.AddUniverse(CryptoCoarseFundamentalUniverse(Market.Kraken, self.UniverseSettings, self.UniverseSelectionFilter))
 
-def UniverseSelectionFilter(self, crypto_coarse):
+def UniverseSelectionFilter(self, crypto_coarse: List[CryptoCoarseFundamental]) -&gt; List[Symbol]:
     for datum in crypto_coarse:
         self.Log(f"{datum.Symbol},{datum.Price},{datum.Volume},{datum.VolumeInQuoteCurrency},{datum.VolumeInUsd},{datum.Open},{datum.High},{datum.Low},{datum.Close}")
             

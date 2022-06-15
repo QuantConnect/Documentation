@@ -50,7 +50,7 @@
 }
 </pre>
 <pre class="python">class MyCustomDataType(PythonData):
-    def Reader(self, config, line, date, isLive):
+    def Reader(self, config: SubscriptionDataConfig, line: str, date: datetime, isLive: bool) -&gt; BaseData:
         data = line.split(',')
         custom = MyCustomDataType()
         custom.Symbol = config.Symbol
@@ -68,10 +68,10 @@
 
 <div class="section-example-container">
 <pre class="python">class MyCustomDataType(PythonData):
-    def GetSource(self, config, date, isLiveMode):
+    def GetSource(self, config: SubscriptionDataConfig, date: datetime, isLiveMode: bool) -&gt; SubscriptionDataSource:
         return SubscriptionDataSource("https://raw.githubusercontent.com/DerekMelchin/custom-data-test-2/main/abcd.json", SubscriptionTransportMedium.RemoteFile, FileFormat.UnfoldingCollection)
 
-    def Reader(self, config, line, date, isLiveMode):
+    def Reader(self, config: SubscriptionDataConfig, line: str, date: datetime, isLiveMode: bool) -&gt; BaseData:
         objects = []
         data = json.loads(line)
         endTime = None

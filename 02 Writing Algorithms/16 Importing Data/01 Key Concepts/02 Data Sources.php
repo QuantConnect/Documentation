@@ -9,7 +9,7 @@
 data = self.Download("custom-data/file.csv")
 
 # Import Technique 2: Processing samples
-def GetSource(self, config, date, isLive):
+def GetSource(self, config: SubscriptionDataConfig, date: datetime, isLive: bool) -&gt; SubscriptionDataSource:
     return SubscriptionDataSource("custom-data/file.csv", SubscriptionTransportMedium.LocalFile)</pre>
 </div>
 
@@ -26,7 +26,7 @@ def GetSource(self, config, date, isLive):
 data = self.Download("https://raw.githubusercontent.com/&lt;organization&gt;/&lt;repo&gt;/&lt;path&gt;")
 
 # Import Technique 2: Processing samples
-def GetSource(self, config, date, isLive):
+def GetSource(self, config: SubscriptionDataConfig, date: datetime, isLive: bool) -&gt; SubscriptionDataSource:
     return SubscriptionDataSource("https://raw.githubusercontent.com/&lt;organization&gt;/&lt;repo&gt;/&lt;path&gt;", SubscriptionTransportMedium.RemoteFile)</pre>
 </div>
 
@@ -39,7 +39,7 @@ def GetSource(self, config, date, isLive):
 data = self.Download("https://www.dropbox.com/&lt;filePath&gt;?dl=1")
 
 # Import Technique 2: Processing samples
-def GetSource(self, config, date, isLive):
+def GetSource(self, config: SubscriptionDataConfig, date: datetime, isLive: bool) -&gt; SubscriptionDataSource:
     return SubscriptionDataSource("https://www.dropbox.com/&lt;filePath&gt;?dl=1", SubscriptionTransportMedium.RemoteFile)</pre>
 </div>
 
@@ -52,6 +52,6 @@ def GetSource(self, config, date, isLive):
 data = self.Download("&lt;sourceURL&gt;")
 
 # Import Technique 2: Processing samples
-def GetSource(self, config, date, isLive):
+def GetSource(self, config: SubscriptionDataConfig, date: datetime, isLive: bool) -&gt; SubscriptionDataSource:
     return SubscriptionDataSource("&lt;sourceURL&gt;", SubscriptionTransportMedium.Rest)</pre>
 </div>

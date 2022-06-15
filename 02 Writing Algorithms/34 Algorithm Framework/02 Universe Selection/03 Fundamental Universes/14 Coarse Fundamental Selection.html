@@ -15,10 +15,10 @@ private IEnumerable&lt;Symbol&gt; SelectCoarse(IEnumerable&lt;CoarseFundamental&
                  .Take(100)
                  .Select(c =&gt; c.Symbol);
 }</pre>
-	<pre class="python">def Initialize(self):
+	<pre class="python">def Initialize(self) -&gt; None:
     self.AddUniverseSelection(CoarseFundamentalUniverseSelectionModel(self.SelectCoarse))
 
-def SelectCoarse(self, coarse):
+def SelectCoarse(self, coarse: List[CoarseFundamental]) -&gt; List[Symbol]:
     selected = [c for c in coarse if c.HasFundamentalData]
     sorted_by_dollar_volume = sorted(selected, key=lambda c: c.DollarVolume, reverse=True)
     return [c.Symbol for c in sorted_by_dollar_volume[:100]] # Return most liquid assets w/ fundamentals</pre>

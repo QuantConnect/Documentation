@@ -1,7 +1,7 @@
 <p>Once we are confident in our hypothesis, we can export this code into backtesting. One way to accomodate this model into backtest is to create a scheduled event which uses our model to predict the expected return. If we predict the price will go up, we long SPY, else, we short it.</p>
 
 <div class="section-example-container">
-    <pre class="python">def Initialize(self):
+    <pre class="python">def Initialize(self) -&gt; None:
 
     #1. Required: Five years of backtest history
     self.SetStartDate(2016, 1, 1)
@@ -37,7 +37,7 @@
 <p>We'll also need to create a function to train and update our model from time to time.</p>
 
 <div class="section-example-container">
-    <pre class="python">def BuildModel(self):
+    <pre class="python">def BuildModel(self) -&gt; None:
     qb = self
     
     ### Preparing Data
@@ -97,7 +97,7 @@
 <p>Now we export our model into the scheduled event method. We will switch <code>qb</code> with <code>self</code> and replace methods with their <code>QCAlgorithm</code> counterparts as needed. In this example, this is not an issue because all the methods we used in research also exist in <code>QCAlgorithm</code>.</p>
 
 <div class="section-example-container">
-    <pre class="python">def EveryDayBeforeMarketClose(self):
+    <pre class="python">def EveryDayBeforeMarketClose(self) -&gt; None:
     qb = self
     # Fetch history on our universe
     history = qb.History(qb.Securities.Keys, 60, Resolution.Daily)

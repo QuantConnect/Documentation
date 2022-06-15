@@ -3,14 +3,14 @@
 <ul><li>OHLCV values from the previous day</li>
     <li>Dollar volume (as of UTC 00:00), denominated in the base or quote currency</li>
 </ul><div class="section-example-container">
-<pre class="python">def Initialize(self):
+<pre class="python">def Initialize(self) -&gt; None:
     self.UniverseSettings.Resolution = Resolution.Daily
     self.SetBrokerageModel(BrokerageName.FTXUS, AccountType.Margin)
 
     # Add universe selection for Crypto based on coarse fundamentals
     self.AddUniverse(CryptoCoarseFundamentalUniverse(Market.FTXUS, self.UniverseSettings, self.UniverseSelectionFilter))
 
-def UniverseSelectionFilter(self, crypto_coarse):
+def UniverseSelectionFilter(self, crypto_coarse: List[CryptoCoarseFundamental]) -&gt; List[Symbol]:
     universe = []
     for datum in crypto_coarse:
         self.Log(f"{datum.Symbol},{datum.Price},{datum.Volume},{datum.VolumeInQuoteCurrency},{datum.VolumeInUsd},{datum.Open},{datum.High},{datum.Low},{datum.Close}")

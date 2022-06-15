@@ -1,7 +1,7 @@
 <p>Pairs trading is exactly a 2-asset version of statistical arbitrage. Thus, we can just modify the algorithm from <a href="https://www.quantconnect.com/docs/v2/research-environment/tutorials/research-to-production/kalman-filters-and-statistical-arbitrage#10-Set-Up-Algorithm">the Kalman Filter and Statistical Arbitrage tutorial</a>, except we're using only a single cointegrating unit vector so no optimization of cointegration subspace is needed.</p>
 
 <div class="section-example-container">
-    <pre class="python">def Initialize(self):
+    <pre class="python">def Initialize(self) -&gt; None:
 
     #1. Required: Five years of backtest history
     self.SetStartDate(2014, 1, 1)
@@ -38,7 +38,7 @@
         self.EveryDayBeforeMarketClose)
         
         
-def Recalibrate(self):
+def Recalibrate(self) -&gt; None:
     qb = self
     history = qb.History(self.assets, 252*2, Resolution.Daily)
     if history.empty: return
@@ -112,7 +112,7 @@ def Recalibrate(self):
     self.trading_weight = coint_vector / np.sum(abs(coint_vector))
     
         
-def EveryDayBeforeMarketClose(self):
+def EveryDayBeforeMarketClose(self) -&gt; None:
     qb = self
     
     # Get the real-time log close price for all assets and store in a Series

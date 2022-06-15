@@ -32,10 +32,10 @@ public class NyseTopGainers : BaseData
 <pre class="python"># Example custom universe data; it is virtually identical to other custom data types.
 class NyseTopGainers(PythonData):
 
-    def GetSource(self, config, date, isLiveMode):
+    def GetSource(self, config: SubscriptionDataConfig, date: datetime, isLiveMode: bool) -&gt; SubscriptionDataSource:
         return SubscriptionDataSource(@"your-remote-universe-data", SubscriptionTransportMedium.RemoteFile)
 
-    def Reader(self, config, line, date, isLiveMode):
+    def Reader(self, config: SubscriptionDataConfig, line: str, date: datetime, isLiveMode: bool) -&gt; BaseData:
         # Generate required data, then return an instance of your class.
         nyse = NyseTopGainers()
         nyse.Time = date

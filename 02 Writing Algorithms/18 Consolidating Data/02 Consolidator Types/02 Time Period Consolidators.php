@@ -48,7 +48,7 @@
 ## TODO: Add example of Custom Consolidator period for weekly bars in Forex
 
 <div class="section-example-container">
-<pre class="python">def CustomPeriod(self, dt):
+<pre class="python">def CustomPeriod(self, dt: datetime) -&gt; CalendarInfo:
     period = timedelta(7)
     dt = dt.replace(hour=17, minute=0, second=0, microsecond=0)
     delta = 1+dt.weekday()
