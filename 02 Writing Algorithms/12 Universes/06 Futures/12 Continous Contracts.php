@@ -10,15 +10,46 @@
 </div>
 
 <h4>Price Scaling</h4>
+<p>The <code>dataNormalizationMode</code> argument defines how the price series of two contracts are stitched together when the contract rollovers occur.</p>
 
-<?php echo file_get_contents(DOCS_RESOURCES."/enumerations/data_mapping_mode.html"); ?>
+<p>The following table describes the <code>DataNormalizatoinMode</code> enumerator members for continuous contracts:</p>
+
+<table class="qc-table table">
+<thead>
+    <tr>
+        <th style="width: 25%;">Member</th>
+        <th style="width: 5%;">Value</th>
+        <th style="width: 70%;">Description</th>
+    </tr>
+</thead>
+<tbody>
+    <tr>
+        <td>Raw</td>
+        <td>0</td>
+        <td>No price adjustment between the two contracts.</td>
+    </tr>
+    <tr>
+        <td>ForwardPanamaCanal</td>
+        <td>4</td>
+        <td>Eliminates price jumps between two consecutive contracts, adding a factor based on the difference of their prices. First contract is the true one, factor 0.</td>
+    </tr>
+    <tr>
+        <td>BackwardsPanamaCanal</td>
+        <td>5</td>
+        <td>Eliminates price jumps between two consecutive contracts, adding a factor based on the difference of their prices. Last contract is the true one, factor 0.</td>
+    </tr>
+    <tr>
+        <td>BackwardsRatio</td>
+        <td>6</td>
+        <td>Eliminates price jumps between two consecutive contracts, multiplying the prices by their ratio. Last contract is the true one, factor 1.</td>
+    </tr>
+</tbody>
+</table>
 
 <h4>Contract Rollover Logic</h4>
-(dataNormalizationMode)
-<br>-LastTradingDay: The contract maps on the previous day of expiration of the front month.
-<br>-FirstDayMonth: The contract maps on the first date of the delivery month of the front month. If the contract expires prior to this date, then it rolls on the contract's last trading date instead.
-<br>-OpenInterest: The contract maps when the back month contract has a higher traded volume that the current front month.
+<p>The <code>dataMappingMode</code> argument defines when contract rollovers occur.</p>
+<?php echo file_get_contents(DOCS_RESOURCES."/enumerations/data_mapping_mode.html"); ?>
+
 
 <h4>Front and Back Months</h4>
-(contractDepthOffset)
-<br>- From the `AddFuture` API `contractDepthOffset` will allow specifying which contract to use, 0 (default) is the front month, 1 the following back month and so on. Initially we have added support for the first 2 back months contracts.
+<p>The <code>contractDepthOffset</code> argument defines which contract to use. 0 (default) is the front month contract, 1 the following back month contract, and 3 is the second back month contract.</p>
