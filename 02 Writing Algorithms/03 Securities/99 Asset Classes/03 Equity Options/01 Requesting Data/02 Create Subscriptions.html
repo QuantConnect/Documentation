@@ -10,11 +10,18 @@
 </ol>
 
 <div class="section-example-container">
-    <pre class="csharp"></pre>
-    <pre class="python">self.SubscriptionManager \
-  .SubscriptionDataConfigService \
-  .GetSubscriptionDataConfigs(equity.Symbol) \
-  .SetDataNormalizationMode(DataNormalizationMode.Raw)
+    <pre class="csharp">SubscriptionManager
+    .SubscriptionDataConfigService
+    .GetSubscriptionDataConfigs(equity.Symbol)
+    .SetDataNormalizationMode(DataNormalizationMode.Raw);
+equity.VolatilityModel = new StandardDeviationOfReturnsVolatilityModel(30);
+SetWarmup(30, Resolution.Daily);
+</pre>
+    <pre class="python">SubscriptionDataConfigExtensions.SetDataNormalizationMode(
+    self.SubscriptionManager\
+        .SubscriptionDataConfigService\
+        .GetSubscriptionDataConfigs(equity.Symbol),
+    DataNormalizationMode.Raw)
 equity.VolatilityModel = StandardDeviationOfReturnsVolatilityModel(30)
 self.SetWarmup(30, Resolution.Daily)</pre>
 </div>
@@ -29,21 +36,29 @@ self.SetWarmup(30, Resolution.Daily)</pre>
 </ol>
 
 <div class="section-example-container">
-    <pre class="csharp"></pre>
+    <pre class="csharp">// In Initialize
+UniverseSettings.DataNormalizationMode = DataNormalizationMode.Raw
+SetSecurityInitializer(security =>
+{
+    if (security.Type == SecurityType.Equity)
+    {
+        security.VolatilityModel = new StandardDeviationOfReturnsVolatilityModel(30);
+        foreach (var tradeBar in History(security.Symbol, 30, Resolution.Daily))
+        {
+            security.VolatilityModel.Update(security, tradeBar);
+        }
+    }
+});</pre>
     <pre class="python"># In Initialize
 self.UniverseSettings.DataNormalizationMode = DataNormalizationMode.Raw
 self.SetSecurityInitializer(self.CustomSecurityInitializer)
 
-def CustomSecurityInitializer(self, security: Security) -&gt; None:
-    if security.Type == SecurityType.Equity:
-        security.VolatilityModel = StandardDeviationOfReturnsVolatilityModel(30)
-        history = self.History(security.Symbol, 30, Resolution.Daily)
-        if history.empty or 'close' not in history.columns:
-            return
-
-        for time, row in history.loc[security.Symbol].iterrows():
-            trade_bar = TradeBar(time, security.Symbol, row.open, row.high, row.low, row.close, row.volume)    
-            security.VolatilityModel.Update(security, trade_bar)</pre>
+def CustomSecurityInitializer(self, security: security) -> None:
+if security.Type == SecurityType.Equity:
+    security.VolatilityModel = StandardDeviationOfReturnsVolatilityModel(30)
+    for index, row in self.History(security.Symbol, 30, Resolution.Daily).iterrows():
+        trade_bar = TradeBar(index[1], security.Symbol, row.open, row.high, row.low, row.close, row.volume)
+        security.VolatilityModel.Update(security, trade_bar)</pre>
 </div>
 
 <h4>Get Contract Symbols</h4>
