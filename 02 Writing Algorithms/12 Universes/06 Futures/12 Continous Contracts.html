@@ -1,16 +1,17 @@
--The Future returned by the AddFuture method is the continuous future. 
-<br>-The continuous future security is setup as tradable and will never expire since it will map underlying future contracts accordingly
-<br>-It may be helpful to apply your indicators to the continuous future time series
-<br>-You can configure the continuous contract settings by passing arguments to the AddFuture method
-<br>-When the contract rolls over, you receive a SymbolChangedEvent in OnData
-<br>&nbsp;&nbsp;&nbsp;-Example
+<p>A continuous Future contract represents a series of separate contracts stitched together to form a continuous price. The <code>Future</code> object that the <code>AddFuture</code> method returns contains a <code>Mapped</code> property that references the current contract in the continuous contract series. As the contracts rollover, the <code>Mapped</code> property references the next contract in the series. If you need a lot of historical data to warm up an indicator, apply the indicator to the continuous contract price series.</p>
+
+<p>To configure how LEAN identifies the current Future contract in the continuous series, provide <code>dataMappingMode</code>, <code>dataNormalizationMode</code>, and <code>contractDepthOffset</code> arguments to the <code>AddFuture</code> method. When the contract rolls over, you receive a <code>SymbolChangedEvent</code> object in the <code>OnData</code> method. The <code>SymbolChangedEvent</code> references the old contract <code>Symbol</code> and the new contract <code>Symbol</code>.</p>
+
+<div class="section-example-container">
+    <pre class="csharp"></pre>
+    <pre class="python">def OnData(self, data):
+    for changed_event in data.SymbolChangedEvents.Values:
+        self.Log(f"Contract rollover from {changed_event.OldSymbol} to {changed_event.NewSymbol}")</pre>
+</div>
 
 <h4>Price Scaling</h4>
-(dataMappingMode)
-<br>-ForwardPanamaCanal: Eliminates price jumps between two consecutive contracts, adding a factor based on the difference of their prices. First contract is the true one, factor 0
-<br>-BackwardsPanamaCanal: Eliminates price jumps between two consecutive contracts, adding a factor based on the difference of their prices. Last contract is the true one, factor 0
-<br>-BackwardsRatio: Eliminates price jumps between two consecutive contracts, multiplying the prices by their ratio. Last contract is the true one, factor 1.
-<br>-Raw: No price adjustment is made.
+
+<?php echo file_get_contents(DOCS_RESOURCES."/enumerations/data_mapping_mode.html"); ?>
 
 <h4>Contract Rollover Logic</h4>
 (dataNormalizationMode)
