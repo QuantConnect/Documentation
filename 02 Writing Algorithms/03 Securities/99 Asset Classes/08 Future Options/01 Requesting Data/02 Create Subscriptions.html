@@ -1,15 +1,85 @@
-What:
-<br>- Create a security subscription
+<p>Before you can subscribe to a Future Option contract, you must configure the underlying Future and get the contract <code>Symbol</code>.</p>
 
-<br><br>
-Why:
-<br>-To add a data feed for the security to your algorithm
-<br>&nbsp;&nbsp;- To enable trading / fills / quotes
-<br>&nbsp;&nbsp;- To receive data updates in your algorithm + portfolio
-<br>&nbsp;&nbsp;- To make trading decisions
-<br>-This adds the security to your "user-defined"
+<h4>Configure the Underlying Equity</h4>
 
-<br><br>
+<p>If you called the <code>AddFuture</code> method to subscribe to the underlying Future, in the <code>Initialize</code> method, set the underlying <a href="https://www.quantconnect.com/docs/v2/writing-algorithms/reality-modeling/options-models/volatility/key-concepts">volatility model</a> and <a href="/docs/v2/writing-algorithms/reality-modeling/options-models/volatility/key-concepts#07-Warm-Up-Models">warm it up</a>.</p>
+
+
+<div class="section-example-container">
+    <pre class="csharp">future.VolatilityModel = new StandardDeviationOfReturnsVolatilityModel(30);
+SetWarmup(30, Resolution.Daily);
+</pre>
+    <pre class="python">future.VolatilityModel = StandardDeviationOfReturnsVolatilityModel(30)
+self.SetWarmup(30, Resolution.Daily)</pre>
+</div>
+
+<p>If your algorithm has a dynamic <a href="/docs/v2/writing-algorithms/universes/futures">universe</a> of Future contracts, before you add the Option contract subscription, set the underlying <a href="https://www.quantconnect.com/docs/v2/writing-algorithms/reality-modeling/options-models/volatility/key-concepts">volatility model</a> and <a href="/docs/v2/writing-algorithms/reality-modeling/options-models/volatility/key-concepts#07-Warm-Up-Models">warm it up</a>. If you trade Options for every Future contract in the universe, add this logic to a <a href="/docs/v2/writing-algorithms/initialization#07-Set-Security-Initializer">security initializer</a>.</p>
+
+<div class="section-example-container">
+    <pre class="csharp">// In Initialize
+SetSecurityInitializer(security =&gt;
+{
+    if (security.Type == SecurityType.Future)
+    {
+        security.VolatilityModel = new StandardDeviationOfReturnsVolatilityModel(30);
+        foreach (var tradeBar in History(security.Symbol, 30, Resolution.Daily))
+        {
+            security.VolatilityModel.Update(security, tradeBar);
+        }
+    }
+});</pre>
+    <pre class="python"># In Initialize
+self.SetSecurityInitializer(self.CustomSecurityInitializer)
+
+def CustomSecurityInitializer(self, security: Security) -&gt; None:
+if security.Type == SecurityType.Future:
+    security.VolatilityModel = StandardDeviationOfReturnsVolatilityModel(30)
+    for index, row in self.History(security.Symbol, 30, Resolution.Daily).iterrows():
+        trade_bar = TradeBar(index[1], security.Symbol, row.open, row.high, row.low, row.close, row.volume)
+        security.VolatilityModel.Update(security, trade_bar)</pre>
+</div>
+
+<h4>Get Contract Symbols</h4>
+
+<p>To subscribe to an Option contract, you need the contract <code>Symbol</code>. You can get the contract <code>Symbol</code> from the <code>CreateOption</code> method or from the <code>OptionChainProvider</code>. To use the <code>CreateOption</code> method, you need to know the specific contract details.</p>
+
+<div class="section-example-container">
+    <pre class="csharp">// Example of CreateOption</pre>
+    <pre class="python"># Example of CreateOption</pre>
+</div>
+
+<p>Another way to get an Option contract <code>Symbol</code> is to use the <code>OptionChainProvider</code>. The <code>GetOptionContractList</code> method of <code>OptionChainProvider</code> returns a list of Option contracts that are available for a given underlying Equity on a given date.</p>
+
+<div class="section-example-container">
+    <pre class="csharp">// Example of GetOptionContractList; it should create OptionContract objects so that it can filter</pre>
+    <pre class="python"># Example of GetOptionContractList; it should create OptionContract objects so that it can filter</pre>
+</div>
+
+<h4>Subscribe to Contracts</h4>
+
+<p>To create an Equity Option contract subscription, pass the contract <code>Symbol</code> to the <code>AddOptionContract</code> method. Save a reference to the contract it <code>Symbol</code> so you can easily access the Option contract in the <a href="/docs/v2/writing-algorithms/securities/asset-classes/equity-options/handling-data#04-Options-Chain">OptionChain</a> that LEAN passes to the <code>OnData</code> method.</p>
+
+<div class="section-example-container">
+    <pre class="csharp">AddOptionContract(_contractSymbol);</pre>
+    <pre class="python">self.AddOptionContract(self.contract_symbol).Symbol</pre>
+</div>
+
+<p>The <code>AddOptionContract</code> method creates a subscription for a single Option contract and adds it to your <span class="new-term">user-defined</span> universe. To create a dynamic universe of Option contracts, add an <a href="/docs/v2/writing-algorithms/universes/equity-options">Equity Options universe</a> or an <a href="/docs/v2/writing-algorithms/algorithm-framework/universe-selection/options-universes">Options Universe Selection model</a>.</p>
+
+<h4>Warm Up Contract Prices</h4>
+
+<p>If you subscribe to an Option contract with <code>AddOptionContract</code>, you'll need to wait until the next <code>Slice</code> to receive data and trade the contract. To trade the contract in the same time step you subscribe to the contract, set the current price of the contract in a security initializer.</p>
+
+<div class="section-example-container">
+    <pre class="csharp">// Example of security initializer. Since this h3 already has a security initializer, we should check the SecurityType == Option in the security initializer code to set the last price.</pre>
+    <pre class="python"># Example of security initializer. Since this h3 already has a security initializer, we should check the SecurityType == Option in the security initializer code to set the last price.</pre>
+</div>
+
+<h4>Supported Assets</h4>
+
+<p>To view the supported assets in the US Equities dataset, see the <a href="/data/tree/option/usa/minute">Data Explorer</a>.</p>
+
+<br><br><br>
 How: 
 <br>Technique 1: AddFuture + AddFutureOptionContract
 
@@ -20,4 +90,4 @@ How:
 <br>example: https://github.com/QuantConnect/Lean/blob/master/Algorithm.Python/FutureOptionPutOTMExpiryRegressionAlgorithm.py
 <br>-Faster backtesting because fewer subscriptions
 
-<br><br><div>-To remove a subscription, use RemoveSecurity()/RemoveOptionContract <br></div><div><br></div><div>-Alternatively, define a FutureOptions universe: https://www.quantconnect.com/docs/v2/writing-algorithms/universes/future-options<br></div>
+<br>
