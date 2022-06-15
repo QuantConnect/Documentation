@@ -111,19 +111,10 @@ def TableCreation(raw, namespace=""):
             
     if not current_object: return
 
-    html = f'''<p>The following table describes the <code>{object_}</code> enumerator members:</p>
-
-<table class="qc-table table">
-<thead>
-    <tr>
-        <th style="width: 25%;">Member</th>
-        <th style="width: 5%;">Value</th>
-        <th style="width: 70%;">Description</th>
-    </tr>
-</thead>
-<tbody>
-'''
-
+    if object_ == "Market":
+        sym_prop = urlopen("https://raw.githubusercontent.com/QuantConnect/Lean/master/Data/symbol-properties/symbol-properties-database.csv").read().decode("utf-8").split('\n')
+        market = set({x.split(",")[0]: x.split(",")[2].lower().strip() for x in sym_prop if len(x.split(",")) > 2 and x.split(",")[2].lower().strip() != "type" and " " not in x.split(",")[2].lower().strip()}.items())
+        
     n = 0
     exist_n = [x["code"] for x in current_object.values()]
     
@@ -138,8 +129,37 @@ def TableCreation(raw, namespace=""):
         sorted_ = sorted(current_object.items(), key=lambda x: int(x[1]["code"]))
     except:
         sorted_ = current_object.items()
+
+    if object_ == "Market":
+        html = ""
         
-    for enum, content in sorted_:
+        for x in set([m[1] for m in market]):
+            items = [y[0] for y in market if y[1] == x]
+            html += HtmlGeneration(object_, [y for y in sorted_ if y[0].lower() in items], f' for {x.replace("option", " Option").title()} markets')
+            
+    else:
+        html = HtmlGeneration(object_, sorted_)
+        
+    with open(f"{destination}/{'_'.join([x.lower() for x in re.findall('[a-zA-Z][^A-Z]*', object_)])}.html", "w", encoding="utf-8") as file:
+        file.write(html)
+        
+def HtmlGeneration(obj_name, sorted_obj, extra=None):
+    html = f'<p>The following table describes the <code>{obj_name}</code> enumerator members{extra}:</p>'
+    
+    html += f'''
+
+<table class="qc-table table">
+<thead>
+    <tr>
+        <th style="width: 25%;">Member</th>
+        <th style="width: 5%;">Value</th>
+        <th style="width: 70%;">Description</th>
+    </tr>
+</thead>
+<tbody>
+'''
+
+    for enum, content in sorted_obj:
         html += f'''    <tr>
         <td>{enum}</td>
         <td>{content["code"]}</td>
@@ -148,10 +168,10 @@ def TableCreation(raw, namespace=""):
 '''
 
     html += """</tbody>
-</table>"""
+</table>
+"""
 
-    with open(f"{destination}/{'_'.join([x.lower() for x in re.findall('[a-zA-Z][^A-Z]*', object_)])}.html", "w", encoding="utf-8") as file:
-        file.write(html)
+    return html
 
 for url in enum_objects:
     print(url)
