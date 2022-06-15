@@ -139,7 +139,7 @@ def TableCreation(raw, namespace=""):
     with open(f"{destination}/{'_'.join([x.lower() for x in re.findall('[a-zA-Z][^A-Z]*', object_)])}.html", "w", encoding="utf-8") as file:
         file.write(html)
         
-def HtmlGeneration(obj_name, sorted_obj, extra=None):
+def HtmlGeneration(obj_name, sorted_obj, extra=''):
     html = f'<p>The following table describes the <code>{obj_name}</code> enumerator members{extra}:</p>'
     
     html += f'''
