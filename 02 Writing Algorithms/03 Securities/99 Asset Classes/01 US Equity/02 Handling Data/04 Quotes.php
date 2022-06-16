@@ -13,4 +13,4 @@
 # The examples on this page should check if the slice contains the data before indexing it.</pre>
 </div>
 
-<p><code>QuoteBar</code> make simulated trade fills more realistic by accounting for spread costs.</p>
+<p><code>QuoteBar</code> objects let LEAN incorporate spread costs into your simulated trade fills to make backtest results more realistic.</p>
