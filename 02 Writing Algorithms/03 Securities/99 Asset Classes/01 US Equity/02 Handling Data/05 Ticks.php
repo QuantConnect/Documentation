@@ -14,4 +14,4 @@
 # The examples on this page should check if the slice contains the data before indexing it.</pre>
 </div>
 
-<p>Tick data is raw and unfiltered, so it can contain bad ticks that skew your trade results. For example, some ticks come from dark pools, which aren't tradable. We recommend you only use tick data if you understand the risks and are able to perform your own online tick filtering. If <a href='/docs/v2/our-platform/live-trading/data-feeds/us-equities#05-Suspicious-Ticks'>we detect a ticks may be suspicious</a>, we mark it with their <code>Suspicious</code> flag.</p>
+<p>Tick data is raw and unfiltered, so it can contain bad ticks that skew your trade results. For example, some ticks come from dark pools, which aren't tradable. We recommend you only use tick data if you understand the risks and are able to perform your own online tick filtering. If <a href='/docs/v2/our-platform/live-trading/data-feeds/us-equities#05-Suspicious-Ticks'>we detect a tick that may be suspicious</a>, we set their <code>Suspicious</code> flag to true.</p>
