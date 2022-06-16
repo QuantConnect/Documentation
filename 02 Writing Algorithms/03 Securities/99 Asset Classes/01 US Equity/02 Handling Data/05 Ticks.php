@@ -1,7 +1,7 @@
 <p><code>Tick</code> objects represent a single trade or quote at a moment in time. A trade tick is a record of a transaction for the security. A quote tick is an offer to buy or sell a security for a specific price. <code>Tick</code> objects have the following properties:</p>
 <div data-tree="QuantConnect.Data.Market.Tick"></div>
 
-<p>Trade ticks have a non-zero value for the <code>Quantity</code> and <code>Price</code> properties but they a zero value for the <code>BidPrice</code>, <code>BidSize</code>, <code>AskPrice</code>, and <code>AskSize</code> properties. Quote ticks have non-zero values for <code>BidPrice</code> and <code>BidSize</code> properties or have non-zero values for <code>AskPrice</code> and <code>AskSize</code> properties. To check if a tick is a trade or a quote, use the <code>TickType</code> property.</p>
+<p>Trade ticks have a non-zero value for the <code>Quantity</code> and <code>Price</code> properties, but they a zero value for the <code>BidPrice</code>, <code>BidSize</code>, <code>AskPrice</code>, and <code>AskSize</code> properties. Quote ticks have non-zero values for <code>BidPrice</code> and <code>BidSize</code> properties or have non-zero values for <code>AskPrice</code> and <code>AskSize</code> properties. To check if a tick is a trade or a quote, use the <code>TickType</code> property.</p>
 
 <?php echo file_get_contents(DOCS_RESOURCES."/enumerations/tick_type.html"); ?>
 
