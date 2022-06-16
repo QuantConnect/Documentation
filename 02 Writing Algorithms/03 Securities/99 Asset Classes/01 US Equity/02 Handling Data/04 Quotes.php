@@ -1,4 +1,4 @@
-<p><code>QuoteBar</code> objects are bars that consolidate NBBO quotes from the exchanges. They contains the open, high, low, and close prices of the bid and ask. The <code>Open</code>, <code>High</code>, <code>Low</code>, and <code>Close</code> properties of the <code>QuoteBar</code> object are the mean of the respective bid and ask prices. If the bid or ask portion of the <code>QuoteBar</code> has no data, the <code>QuoteBar</code> properties copy the values of the <code>Bid</code> or <code>Ask</code>.</p>
+<p><code>QuoteBar</code> objects are bars that consolidate NBBO quotes from the exchanges. They contains the open, high, low, and close prices of the bid and ask. The <code>Open</code>, <code>High</code>, <code>Low</code>, and <code>Close</code> properties of the <code>QuoteBar</code> object are the mean of the respective bid and ask prices. If the bid or ask portion of the <code>QuoteBar</code> has no data, the <code>QuoteBar</code> properties copy the values of either the <code>Bid</code> or <code>Ask</code> instead of taking their mean.</p>
 
 <img src="https://cdn.quantconnect.com/docs/i/dataformat-quotebar.png" class="img-responsive">
 
