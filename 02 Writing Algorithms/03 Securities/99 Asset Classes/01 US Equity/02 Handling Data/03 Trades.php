@@ -15,7 +15,3 @@
 </div>
 
 <p>We adjust the daily open and close price of bars to reflect the official <a href='/docs/v2/writing-algorithms/securities/asset-classes/us-equity/data-preparation#05-Market-Auction-Prices'>auction prices</a>.</p>
-
-<div>-Prices from tradebars are used fill trades in backtests (hour, daily resolutions)</div>
-
-
