@@ -2,7 +2,7 @@
 
 <h4>Configure the Underlying Volatility Model</h4>
 
-<p>If you called the <code>AddFuture</code> method to subscribe to the underlying Future, in the <code>Initialize</code> method, set the underlying volatility model and <a href="/docs/v2/writing-algorithms/reality-modeling/options-models/volatility/key-concepts#07-Warm-Up-Models">warm it up</a>.</p>
+<p>If you called the <code>AddFuture</code> method to subscribe to the underlying Future, in the <code>Initialize</code> method, set the underlying volatility model on the Future and <a href="/docs/v2/writing-algorithms/reality-modeling/options-models/volatility/key-concepts#07-Warm-Up-Models">warm it up</a>.</p>
 
 
 <div class="section-example-container">
@@ -13,7 +13,7 @@ SetWarmup(30, Resolution.Daily);
 self.SetWarmup(30, Resolution.Daily)</pre>
 </div>
 
-<p>If your algorithm has a dynamic <a href="/docs/v2/writing-algorithms/universes/futures">universe</a> of Future contracts, before you add the Option contract subscription, set the underlying volatility model and <a href="/docs/v2/writing-algorithms/reality-modeling/options-models/volatility/key-concepts#07-Warm-Up-Models">warm it up</a>. If you trade Options for many Future contracts in the universe, add this logic to a <a href="/docs/v2/writing-algorithms/initialization#07-Set-Security-Initializer">security initializer</a>.</p>
+<p>If you called the <code>AddFutureContract</code> method to <a href="https://www.quantconnect.com/docs/v2/writing-algorithms/securities/asset-classes/futures/requesting-data#02-Create-Subscriptions">subscribe to individual Future contracts</a>, before you add the Option contract subscription, set the underlying volatility model on the Future contract and <a href="/docs/v2/writing-algorithms/reality-modeling/options-models/volatility/key-concepts#07-Warm-Up-Models">warm it up</a>. If you trade Options for many Future contracts you subscribe to, add this logic to a <a href="/docs/v2/writing-algorithms/initialization#07-Set-Security-Initializer">security initializer</a>.</p>
 
 <div class="section-example-container">
     <pre class="csharp">// In Initialize
@@ -32,11 +32,11 @@ SetSecurityInitializer(security =&gt;
 self.SetSecurityInitializer(self.CustomSecurityInitializer)
 
 def CustomSecurityInitializer(self, security: Security) -&gt; None:
-if security.Type == SecurityType.Future:
-    security.VolatilityModel = StandardDeviationOfReturnsVolatilityModel(30)
-    for index, row in self.History(security.Symbol, 30, Resolution.Daily).iterrows():
-        trade_bar = TradeBar(index[1], security.Symbol, row.open, row.high, row.low, row.close, row.volume)
-        security.VolatilityModel.Update(security, trade_bar)</pre>
+    if security.Type == SecurityType.Future:
+        security.VolatilityModel = StandardDeviationOfReturnsVolatilityModel(30)
+        for index, row in self.History(security.Symbol, 30, Resolution.Daily).iterrows():
+            trade_bar = TradeBar(index[1], security.Symbol, row.open, row.high, row.low, row.close, row.volume)
+            security.VolatilityModel.Update(security, trade_bar)</pre>
 </div>
 
 <h4>Get Contract Symbols</h4>
@@ -48,10 +48,10 @@ if security.Type == SecurityType.Future:
     <pre class="python"># Example of CreateOption</pre>
 </div>
 
-<p>Another way to get a Future Option contract <code>Symbol</code> is to use the <code>OptionChainProvider</code>. The <code>GetOptionContractList</code> method of <code>OptionChainProvider</code> returns a list of Option contracts that are available for a given underlying Future on a given date.</p>
+<p>Another way to get a Future Option contract <code>Symbol</code> is to use the <code>OptionChainProvider</code>. The <code>GetOptionContractList</code> method of <code>OptionChainProvider</code> returns a list of Option contracts that are available for a given underlying Future contract on a given date. The <code>Symbol</code> you pass to the method can reference the continous Future contract, a contract in the <a href='/docs/v2/writing-algorithms/universes/futures'>Futures universe</a>, or a contract that you added with <code>AddFutureContract</code>.</p>
 
 <div class="section-example-container">
-    <pre class="csharp">// Example of GetOptionContractList; it should create OptionContract objects so that it can filter</pre>
+    <pre class="csharp">// Example of GetOptionContractList; it should create OptionContract objects so that it can filter; can use </pre>
     <pre class="python"># Example of GetOptionContractList; it should create OptionContract objects so that it can filter</pre>
 </div>
 
