@@ -3,4 +3,4 @@
 
 <p>For more information about Greeks, see <a href='/tutorials/introduction-to-options/the-greek-letters'>The Greek Letters</a>.</p>
 
-<p>To get the Option contracts in the <code>Slice</code>, navigate the Options chain.</p>
+<p>To get the Option contracts in the <code>Slice</code>, navigate the Option chain.</p>
