@@ -1,4 +1,4 @@
-<p>Open interest is the number of outstanding contracts that haven't settled. It provides a measure of investor interest and the Option liquidity, so it's a popular metric to use for contract selection. <code>OpenInterest</code> objects represent the open interest of Option contracts. They have the following properties:</p>
+<p>Open interest is the number of outstanding contracts that haven't been settled. It provides a measure of investor interest and the Option liquidity, so it's a popular metric to use for contract selection. <code>OpenInterest</code> objects represent the open interest of Option contracts. They have the following properties:</p>
 
 <div data-tree="QuantConnect.Data.Market.OpenInterest"></div>
 
