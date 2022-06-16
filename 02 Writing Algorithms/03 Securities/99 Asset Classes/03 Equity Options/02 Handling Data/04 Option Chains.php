@@ -9,7 +9,7 @@
     <pre class="python"># Example of getting the OptionChain in OnData</pre>
 </div>
 
-<p>You can also loop through each <code>OptionChains</code> to get each <code>OptionChain</code>.</p>
+<p>You can also loop through the <code>OptionChains</code> property to get each <code>OptionChain</code>.</p>
 <div class="section-example-container">
     <pre class="csharp">// Example of looping through OptionChains</pre>
     <pre class="python"># Example of looping through OptionChains</pre>
