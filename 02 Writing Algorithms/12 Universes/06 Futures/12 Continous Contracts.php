@@ -9,7 +9,7 @@
         self.Log(f"Contract rollover from {changed_event.OldSymbol} to {changed_event.NewSymbol}")</pre>
 </div>
 
-<h4>Price Scaling</h4>
+<h4>Data Normalization Modes</h4>
 <p>The <code>dataNormalizationMode</code> argument defines how the price series of two contracts are stitched together when the contract rollovers occur.</p>
 
 <p>The following table describes the <code>DataNormalizatoinMode</code> enumerator members for continuous contracts:</p>
@@ -46,10 +46,10 @@
 </tbody>
 </table>
 
-<h4>Contract Rollover Logic</h4>
+<h4>Data Mapping Modes</h4>
 <p>The <code>dataMappingMode</code> argument defines when contract rollovers occur.</p>
 <?php echo file_get_contents(DOCS_RESOURCES."/enumerations/data_mapping_mode.html"); ?>
 
 
-<h4>Front and Back Months</h4>
+<h4>Contract Depth Offsets</h4>
 <p>The <code>contractDepthOffset</code> argument defines which contract to use. 0 (default) is the front month contract, 1 the following back month contract, and 3 is the second back month contract.</p>
