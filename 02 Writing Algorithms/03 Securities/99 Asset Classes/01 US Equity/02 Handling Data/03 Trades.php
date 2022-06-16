@@ -9,7 +9,8 @@
 
 <div class="section-example-container">
     <pre class="csharp">// Example of accessing TradeBar objects in OnData
-// The examples on this page should check if the slice contains the data before indexing it.</pre>
+// The examples on this page should check if the slice contains the data before indexing it.
+// Maybe the C# version should show an example of OnData(TradeBar) in addition to OnData(Slice)</pre>
     <pre class="python"># Example of accessing TradeBar objects in OnData
 # The examples on this page should check if the slice contains the data before indexing it.</pre>
 </div>
