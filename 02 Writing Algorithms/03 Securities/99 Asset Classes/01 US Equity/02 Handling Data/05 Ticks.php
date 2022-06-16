@@ -1,4 +1,4 @@
-<p><code>Tick</code> objects represent a single trade or quote at a moment in time. A trade <code>Tick</code> is a record of a transaction or sale for the security. A quote <code>Tick</code> is a bid or offer to purchase the security for a specific price. In backtests, LEAN groups ticks into one millisecond buckets. In live trading, LEAN groups ticks into ~70 millisecond buckets.</p>
+<p><code>Tick</code> objects represent a single trade or quote at a moment in time. A trade tick is a record of a transaction or sale for the security. A quote tick is an offer to buy or sell a security for a specific price. In backtests, LEAN groups ticks into one millisecond buckets. In live trading, LEAN groups ticks into ~70 millisecond buckets.</p>
 
 <p><code>Tick</code> objects have the following properties:</p>
 <div data-tree="QuantConnect.Data.Market.Tick"></div>
