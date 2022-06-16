@@ -1,1 +1,5 @@
-<?php echo file_get_contents(DOCS_RESOURCES."/securities/handling-data-intro.html"); ?>
+<?php 
+include(DOCS_RESOURCES."/securities/handling-data-intro.html"); 
+$dataFormat = "TradeBar";
+$getIntroText($dataFormat);
+?>
