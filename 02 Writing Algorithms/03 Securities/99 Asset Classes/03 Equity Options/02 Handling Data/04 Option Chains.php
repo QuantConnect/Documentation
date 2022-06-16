@@ -1,4 +1,4 @@
-<p><code>OptionChain</code> objects represents entire chain of Option contracts for a single underlying security. They have the following properties:</p>
+<p><code>OptionChain</code> objects represent and entire chain of Option contracts for a single underlying security. They have the following properties:</p>
 <div data-tree="QuantConnect.Data.Market.OptionChain"></div>
 
 
