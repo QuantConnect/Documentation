@@ -7,7 +7,7 @@
 
 <p><code>QuoteBar</code> objects are only available for second and minute resolution data. They make simulated trade fills more realistic by accounting for spread costs.</p>
 
-<p>To get the <code>TradeBar</code> objects in the <code>Slice</code>, index the <code>Slice</code> or index the <code>Bars</code> property of the <code>Slice</code> with a <code>Symbol</code>. If the security doesn't actively trade or you are in the same time step as when you add the security subscription, the <code>Slice</code> may not contain data for your <code>Symbol</code>. To avoid issues, check if the <code>Slice</code> contains data for your security before you index the <code>Slice</code> with the security <code>Symbol</code>.</p>
+<p>To get the <code>QuoteBar</code> objects in the <code>Slice</code>, index the <code>Slice</code> or index the <code>QuoteBars</code> property of the <code>Slice</code> with a <code>Symbol</code>. If the security doesn't actively get quotes or you are in the same time step as when you added the security subscription, the <code>Slice</code> may not contain data for your <code>Symbol</code>. To avoid issues, check if the <code>Slice</code> contains data for your security before you index the <code>Slice</code> with the security <code>Symbol</code>.</p>
 <div class="section-example-container">
     <pre class="csharp">// Example of accessing TradeBar objects in OnData
 // The examples on this page should check if the slice contains the data before indexing it.</pre>
