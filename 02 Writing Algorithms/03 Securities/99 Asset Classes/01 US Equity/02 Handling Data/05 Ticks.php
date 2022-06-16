@@ -5,7 +5,7 @@
 
 <p>Trade ticks have a non-zero value for the <code>Quantity</code> and <code>Price</code> properties but they a zero value for the <code>BidPrice</code>, <code>BidSize</code>, <code>AskPrice</code>, and <code>AskSize</code> properties. Quote ticks have non-zero values for <code>BidPrice</code> and <code>BidSize</code> properties or have non-zero values for <code>AskPrice</code> and <code>AskSize</code> properties.</p>
 
-<p>To get the <code>Tick</code> objects in the <code>Slice</code>, index <code>Ticks</code> property of the <code>Slice</code> with a <code>Symbol</code>. If the security doesn't actively trade or you are in the same time step as when you added the security subscription, the <code>Slice</code> may not contain data for your <code>Symbol</code>. To avoid issues, check if the <code>Slice</code> contains data for your security before you index the <code>Slice</code> with the security <code>Symbol</code>.</p>
+<p>To get the <code>Tick</code> objects in the <code>Slice</code>, index the <code>Ticks</code> property of the <code>Slice</code> with a <code>Symbol</code>. If the security doesn't actively trade or you are in the same time step as when you added the security subscription, the <code>Slice</code> may not contain data for your <code>Symbol</code>. To avoid issues, check if the <code>Slice</code> contains data for your security before you index the <code>Slice</code> with the security <code>Symbol</code>.</p>
 
 <div class="section-example-container">
     <pre class="csharp">// Example of accessing Tick objects in OnData
