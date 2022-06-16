@@ -3,7 +3,7 @@
 
 <p>For more information about Greeks, see <a href='/tutorials/introduction-to-options/the-greek-letters'>The Greek Letters</a>.</p>
 
-<p>To get the Option contracts in the <code>Slice</code>, use the <code>Contracts</code> property of the <code>OptionChain</code>..</p>
+<p>To get the Option contracts in the <code>Slice</code>, use the <code>Contracts</code> property of the <code>OptionChain</code>.</p>
 
 <div class="section-example-container">
     <pre class="csharp">// Example of accessing OptionContract objects in OnData</pre>
