@@ -14,7 +14,7 @@
 # The examples on this page should check if the slice contains the data before indexing it.</pre>
 </div>
 
-<p>We adjust the open and close price of bars to reflect the official <a href='/docs/v2/writing-algorithms/securities/asset-classes/us-equity/data-preparation#05-Market-Auction-Prices'>opening and closing auction prices</a>.</p>
+<p>We adjust the daily open and close price of bars to reflect the official <a href='/docs/v2/writing-algorithms/securities/asset-classes/us-equity/data-preparation#05-Market-Auction-Prices'>auction prices</a>.</p>
 
 <div>-Prices from tradebars are used fill trades in backtests (hour, daily resolutions)</div>
 
