@@ -1,15 +1,17 @@
-<!-- <p>Datasets are used in your trading to inform decisions and fulfill trades. Datasets include market data and alternative data. The market and alternative data are sourced from data providers.</p> -->
+<p><code>Tick</code> objects represent a single trade or quote at a moment in time. A trade <code>Tick</code> is a record of a transaction or sale for the security. A quote <code>Tick</code> is a bid or offer to purchase the security for a specific price. In backtests, LEAN groups ticks into one millisecond buckets. In live trading, LEAN groups ticks into ~70 millisecond buckets.</p>
 
--Ticks have a type of either Trade or Quote<br><div>-In backtesting, ticks are grouped together into milisecond buckets</div><div>-In live trading, ticks are streamed directly to your algorithm as soon as they occur (about ~70 millisecond buckets)<br></div><div></div>
-
-<div>-Tick trade Definition: a record of a transaction or sale for the security</div><div>-Contains Quantity and Price values</div><div></div><div></div>
-
-
-<div>-Tick quote definition: a bid or offer to purchase the security for a specific price</div><div>-Quote ticks contain non-zero BidPrice, BidSize, AskPrice, and AskSize properties</div><div></div>
-
-<div>-Tick data is raw and unfiltered</div><div>-may contain bad ticks which skew your trade results</div><div>-Some ticks come from dark pools, not tradable</div><div>-We recommend only using tick data if you understand the risks and are able to perform your own online tick filtering.</div><div>- Ticks which QuantConnect believes are suspicious are marked with the boolean Suspicious flag. <br>-Suspicious Ticks https://www.quantconnect.com/docs/v2/our-platform/live-trading/data-feeds/us-equities#05-Suspicious-Ticks <br>-Tick filtering: https://www.quantconnect.com/docs/v2/our-platform/live-trading/data-feeds/us-equities#04-Bar-Building</div><div></div><div></div>
-
+<p><code>Tick</code> objects have the following properties:</p>
 <div data-tree="QuantConnect.Data.Market.Tick"></div>
 
-<br>
--Add snippet of accessing Ticks in OnData
+<p>Trade ticks have a non-zero value for the <code>Quantity</code> and <code>Price</code> properties but they a zero value for the <code>BidPrice</code>, <code>BidSize</code>, <code>AskPrice</code>, and <code>AskSize</code> properties. Quote ticks have non-zero values for <code>BidPrice</code> and <code>BidSize</code> properties or have non-zero values for <code>AskPrice</code> and <code>AskSize</code> properties.</p>
+
+<p>To get the <code>Tick</code> objects in the <code>Slice</code>, index <code>Ticks</code> property of the <code>Slice</code> with a <code>Symbol</code>. If the security doesn't actively trade or you are in the same time step as when you added the security subscription, the <code>Slice</code> may not contain data for your <code>Symbol</code>. To avoid issues, check if the <code>Slice</code> contains data for your security before you index the <code>Slice</code> with the security <code>Symbol</code>.</p>
+
+<div class="section-example-container">
+    <pre class="csharp">// Example of accessing Tick objects in OnData
+// The examples on this page should check if the slice contains the data before indexing it.</pre>
+    <pre class="python"># Example of accessing Tick objects in OnData
+# The examples on this page should check if the slice contains the data before indexing it.</pre>
+</div>
+
+<p>Tick data is raw and unfiltered, so it can contain bad ticks that skew your trade results. For example, some ticks come from dark pools, which aren't tradable. We recommend you only use tick data if you understand the risks and are able to perform your own online tick filtering. If <a href='/docs/v2/our-platform/live-trading/data-feeds/us-equities#05-Suspicious-Ticks'>we detect a ticks may be suspicious</a>, we mark it with their <code>Suspicious</code> flag.</p>
