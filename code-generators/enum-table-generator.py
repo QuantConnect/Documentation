@@ -93,8 +93,9 @@ def TableCreation(raw, namespace=""):
             description += line.split("///")[-1]\
                 .replace("<remarks>", "").replace("</remarks>", "")\
                 .replace("<summary>", "").replace("</summary>", "").strip()
-                
-            if "remarks" not in line and "summary" not in line:
+            
+            if ("remarks" not in line and "summary" not in line) \
+            or ("remarks" in line and i < len(raw)-1 and "remarks" in raw[i+1]):
                 description += " "
             
             continue
