@@ -1,2 +1,16 @@
-<div>-Definition; a list of all option contracts at the current time for the given underlying security<br></div><div>-easier to make a contract selection</div><div>-Keyed by canonical symbol, values are all the available options</div><div>-Passed to algorithm at each timestep (OnData/Update)</div><div>-Example of navigating the chain<br></div>
+<p><code>OptionChain</code> objects represents entire chain of Option contracts for a single underlying security. They have the following properties:</p>
 <div data-tree="QuantConnect.Data.Market.OptionChain"></div>
+
+
+<p>To get the <code>OptionChain</code>, index the <code>OptionChains</code> property of the <code>Slice</code> with the canonical <code>Symbol</code>.</p>
+
+<div class="section-example-container">
+    <pre class="csharp">// Example of getting the OptionChain in OnData</pre>
+    <pre class="python"># Example of getting the OptionChain in OnData</pre>
+</div>
+
+<p>You can also loop through each <code>OptionChains</code> to get each <code>OptionChain</code>.</p>
+<div class="section-example-container">
+    <pre class="csharp">// Example of looping through OptionChains</pre>
+    <pre class="python"># Example of looping through OptionChains</pre>
+</div>
