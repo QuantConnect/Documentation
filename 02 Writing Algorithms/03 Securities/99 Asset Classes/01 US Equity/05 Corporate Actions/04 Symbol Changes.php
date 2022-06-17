@@ -2,7 +2,7 @@
 
 <div data-tree="QuantConnect.Data.Market.SymbolChangedEvent"></div>
 
-<p>To get the <code>SymbolChangedEvent</code> objects in the <code>Slice</code>, index the <code>SymbolChangedEvents</code> property of the <code>Slice</code> with the security <code>Symbol</code>. The <code>Slice</code> may not contain data for your <code>Symbol</code>. To avoid issues, check if the <code>SymbolChangedEvents</code> property contains data for your security before you index the it with the security <code>Symbol</code>.</p>
+<p>To get the <code>SymbolChangedEvent</code> objects in the <code>Slice</code>, index the <code>SymbolChangedEvents</code> property of the <code>Slice</code> with the security <code>Symbol</code>. The <code>Slice</code> may not contain data for your <code>Symbol</code>. To avoid issues, check if the <code>SymbolChangedEvents</code> property contains data for your security before you index it with the security <code>Symbol</code>.</p>
 
 <div class="section-example-container">
         <pre class="csharp">if (data.SymbolChangedEvents.ContainsKey(_symbol))
