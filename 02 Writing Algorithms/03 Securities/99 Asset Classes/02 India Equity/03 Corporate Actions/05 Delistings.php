@@ -1,1 +1,1 @@
-## Copy from US Equity
+<?php include(DOCS_RESOURCES."/securities/corporate-actions/delistings.php"); ?>
