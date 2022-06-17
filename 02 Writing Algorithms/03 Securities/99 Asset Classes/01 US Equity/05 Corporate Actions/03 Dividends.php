@@ -3,7 +3,7 @@
 
 <p>If you backtest with the <code>Adjusted</code> or <code>TotalReturn</code> data normalization mode, the dividends are factored into the price. If you backtest with the other data normalization modes or trade live, when a dividend payment occurs, LEAN automatically adds the payment amount to your cashbook. If you have indicators in your algorithm, <a href='https://www.quantconnect.com/docs/v2/writing-algorithms/indicators/key-concepts#09-Reset-Indicators'>reset your indicators</a> when dividend payments occur so that the data in your indicators account for the price adjustments that the dividend causes.</p>
 
-<p>To get the <code>Dividend</code> objects in the <code>Slice</code>, index the <code>Dividends</code> property of the <code>Slice</code> with the security <code>Symbol</code>. The <code>Slice</code> may not contain data for your <code>Symbol</code>. To avoid issues, check if the <code>Dividends</code> property contains data for your security before you index the <code>Dividends</code> property with the security <code>Symbol</code>.</p>
+<p>To get the <code>Dividend</code> objects in the <code>Slice</code>, index the <code>Dividends</code> property of the <code>Slice</code> with the security <code>Symbol</code>. The <code>Slice</code> may not contain data for your <code>Symbol</code>. To avoid issues, check if the <code>Dividends</code> property contains data for your security before you index it with the security <code>Symbol</code>.</p>
 
 <div class="section-example-container">
         <pre class="csharp">if (data.Dividends.ContainsKey(_symbol))
