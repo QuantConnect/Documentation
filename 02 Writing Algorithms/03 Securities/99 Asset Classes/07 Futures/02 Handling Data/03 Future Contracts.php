@@ -1,3 +1,9 @@
-<div>- Information on the future (Symbol, Expiry, Price, OpenInterest, LastPrice, Volume, BidPrice, etc...)</div><div>-prices for all assets listed on the CME, CBOT, NYMEX, and Comex since May 2009</div><div>-Data is timestamped to the millisecond</div><div>-survivorship-bias free</div><div>-trades and quotes</div><div>--Usually contracts are provided by an futures universe, but you can add a single option contract with AddFutureContract</div><div>-timezone depends on exchange</div><div>&nbsp;&nbsp; - CME or CBOT have their data set in Chicago Time</div><div>&nbsp;&nbsp; - NYMEX and Comex have their data set in New York Time</div><div></div>
-
+<p><code>FuturesContract</code> objects represent a single Future contract in the market. They have the following properties:</p>
 <div data-tree="QuantConnect.Data.Market.FuturesContract"></div>
+
+<p>To get the Option contracts in the <code>Slice</code>, use the <code>Contracts</code> property of the <code>FuturesChain</code>.</p>
+
+<div class="section-example-container">
+    <pre class="csharp">// Example of accessing FuturesContract objects in OnData</pre>
+    <pre class="python"># Example of accessing FuturesContract objects in OnData</pre>
+</div>
