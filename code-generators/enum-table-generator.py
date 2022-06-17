@@ -141,11 +141,15 @@ def TableCreation(raw, namespace=""):
         file.write(html)
         
 def HtmlGeneration(obj_name, sorted_obj, extra=''):
-    html = f'<p>The following table describes the <code>{obj_name}</code> enumerator members{extra}:</p>'
-    
-    html += f'''
+    html = f'''<style>
+#enum-table td:nth-child(2)
+#enum-table th:nth-child(2)
+{{ text-align: right; }}
+</style>
 
-<table class="qc-table table">
+<p>The following table describes the <code>{obj_name}</code> enumerator members{extra}:</p>
+
+<table class="qc-table table" id="enum-table">
 <thead>
     <tr>
         <th style="width: 25%;">Member</th>
