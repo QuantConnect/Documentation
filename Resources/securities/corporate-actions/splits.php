@@ -26,6 +26,13 @@ $getSplitsText = function($dataNormalizationModeLink, $factorFilesLink)
     split = data.Splits[self.symbol]</pre>
 </div>
 
+<p>You can also iterate through the <code>Splits</code> dictionary. The keys of the dictionary are the <code>Symbol</code> objects and the values are the <code>Split</code> objects.</p>
+<div class='section-example-container'>
+        <pre class='csharp'>// Example</pre>
+        <pre class='python'># Example</pre>
+</div>
+
+
 <p>LEAN stores the data for stock splits in factor files. To view some example factor files, see the <a rel='nofollow' target='_blank' href='{$factorFilesLink}'>LEAN GitHub repository</a>. In backtests, your algorithm receives <code>Split</code> objects at midnight. In live trading, your algorithm receives <code>Split</code> objects when the factor files are ready.</p>
 
 
