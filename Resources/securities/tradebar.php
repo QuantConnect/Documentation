@@ -18,6 +18,13 @@ $getTradeBarText = function($securityName, $pythonVariable, $cSharpVariable)
 # The examples on this page should check if the slice contains the data before indexing it.
 {$pythonVariable}</pre>
 </div>
+
+
+<p>You can also iterate through the <code>TradeBars</code> dictionary. The keys of the dictionary are the <code>Symbol</code> objects and the values are the <code>TradeBar</code> objects.</p>
+<div class='section-example-container'>
+        <pre class='csharp'>// Example</pre>
+        <pre class='python'># Example</pre>
+</div>
     ";
 
 }
