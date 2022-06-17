@@ -1,6 +1,5 @@
-<p>When a company stops trading on an exchange, it's delisted. <code>Delisting</code> objects have the following properties:</p>
+<p>When a company is delisting from an exchange, LEAN sends a <code>Delisting</code> object to the <code>OnData</code> method. <code>Delisting</code> objects have the following properties:</p>
 <div data-tree="QuantConnect.Data.Market.Delisting"></div>
-
 
 <p>You receive <code>Delisting</code> objects when a delisting is in the near future and when it occurs. To know if the delisting occurs in the near future or now, check the <code>Type</code> property.</p>
 <?php echo file_get_contents(DOCS_RESOURCES."/enumerations/delisting_type.html"); ?>
