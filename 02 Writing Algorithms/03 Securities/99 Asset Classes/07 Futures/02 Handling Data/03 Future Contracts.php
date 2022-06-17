@@ -1,4 +1,4 @@
-<p><code>FuturesContract</code> objects represent a single Futures contract in the market. They have the following properties:</p>
+<p><code>FuturesContract</code> objects represent the data of a single Futures contract in the market. They have the following properties:</p>
 <div data-tree="QuantConnect.Data.Market.FuturesContract"></div>
 
 <p>To get the Futures contracts in the <code>Slice</code>, use the <code>Contracts</code> property of the <code>FuturesChain</code>.</p>
