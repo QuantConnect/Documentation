@@ -6,7 +6,7 @@
 <p>You receive <code>Split</code> objects when a split is in the near future and when it occurs. To know if the split occurs in the near future or now, check the <code>Type</code> property.</p>
 <?php echo file_get_contents(DOCS_RESOURCES."/enumerations/split_type.html"); ?>
 
-<p>To get the <code>Split</code> objects in the <code>Slice</code>, index the <code>Splits</code> property of the <code>Split</code> with the security <code>Symbol</code>. The <code>Slice</code> may not contain data for your <code>Symbol</code>. To avoid issues, check if the <code>Split</code> contains data for your security before you index the <code>Split</code> with the security <code>Symbol</code>.</p>
+<p>To get the <code>Split</code> objects in the <code>Slice</code>, index the <code>Splits</code> property of the <code>Slice</code> with the security <code>Symbol</code>. The <code>Slice</code> may not contain data for your <code>Symbol</code>. To avoid issues, check if the <code>Split</code> contains data for your security before you index the <code>Split</code> with the security <code>Symbol</code>.</p>
 
 <div class="section-example-container">
         <pre class="csharp">if (data.Splits.ContainsKey(_symbol))
@@ -21,18 +21,9 @@
 
 <p>In backtests, your algorithm receives <code>Split</code> objects at midnight. In live trading, your algorithm receives <code>Split</code> objects when the factor files are ready.</p>
 
+<p>If you backtest without <code>Raw</code> data normalization mode, the splits are factored into the price and volume. If you backtest with <code>Raw</code> data normalization or trade live, your positions automatically adjust based on the <code>SplitFactor</code> when a split occurs. If the post-split quantity isn't a valid lot size, LEAN credits the remaining value to your cash book in your account currency. </p>
 
-
-- Splits are handled by the engine depeding on the data normalization mode or whether the algorithm is running in live mode
-<br>&nbsp;&nbsp; - Raw data and live mode:
-<br>&nbsp;&nbsp; - It's information is used by the engine to adjust the quantity of the positions accordingly ("SplitOccurred")
-<br>&nbsp;&nbsp; - If the quantity is not a valid lot size, the remaining value is credited to your account currency.
-<br>- Other mode with backtesting:
-<br>&nbsp;&nbsp; - The splts are factored into the price and volume.<br>
-
-Splits close all options positions. <br>
-
--By default, data is split adjusted. When using Raw data, splits are applied directly to your portfolio quantity<br>
+<p>If you hold an Option contract for an underlying Equity when a split occurs, it closes your Option contract position.</p>
 
 
 
