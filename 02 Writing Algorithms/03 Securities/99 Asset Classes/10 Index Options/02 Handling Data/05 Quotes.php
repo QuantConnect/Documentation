@@ -1,1 +1,7 @@
-<?php echo file_get_contents(DOCS_RESOURCES."/securities/quotebar.html"); ?>
+<?php 
+include(DOCS_RESOURCES."/securities/quotebar.php"); 
+$securityName = "contract";
+$pythonVariable = "self.contract_symbol";
+$cSharpVariable = "_contractSymbol";
+$getQuoteBarText($securityName, $pythonVariable, $cSharpVariable);
+?>

@@ -1,1 +1,7 @@
-<?php echo file_get_contents(DOCS_RESOURCES."/securities/tradebar.html"); ?>
+<?php 
+include(DOCS_RESOURCES."/securities/tradebar.php"); 
+$securityName = "security";
+$pythonVariable = "self.symbol";
+$cSharpVariable = "_symbol";
+$getTradeBarText($securityName, $pythonVariable, $cSharpVariable);
+?>

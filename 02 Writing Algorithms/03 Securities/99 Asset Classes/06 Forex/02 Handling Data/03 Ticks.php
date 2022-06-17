@@ -1,1 +1,7 @@
-<?php echo file_get_contents(DOCS_RESOURCES."/securities/tick.html"); ?>
+<?php 
+include(DOCS_RESOURCES."/securities/tick.php"); 
+$securityName = "Forex pair";
+$pythonVariable = "self.symbol";
+$cSharpVariable = "_symbol";
+$getTickText($securityName, $pythonVariable, $cSharpVariable);
+?>

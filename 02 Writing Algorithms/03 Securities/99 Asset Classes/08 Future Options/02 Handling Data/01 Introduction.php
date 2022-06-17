@@ -1,5 +1,6 @@
 <?php 
 include(DOCS_RESOURCES."/securities/handling-data-intro.php"); 
 $dataFormat = "TradeBar";
-$getIntroText($dataFormat);
+$securityName = "Futures Option contract";
+$getIntroText($dataFormat, $securityName);
 ?>
