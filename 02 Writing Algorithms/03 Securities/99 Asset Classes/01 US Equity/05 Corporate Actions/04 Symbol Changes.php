@@ -13,7 +13,7 @@
     symbolChangedEvent = data.SymbolChangedEvents[self.symbol]</pre>
 </div>
 
-<p>If you have an open order for a security when they change their ticker, LEAN cancels your orders. To maintain your position, in the <code>OnOrderEvent</code> method, get the quantity and <code>Symbol</code> of the liquidation order and submit a new order.</p> 
+<p>If you have an open order for a security when they change their ticker, LEAN cancels your order. If you have a position in the company that you want to maintain after the ticker change, in the <code>OnOrderEvent</code> method, get the quantity and <code>Symbol</code> of the liquidation order and submit a new order.</p> 
 
 <div class="section-example-container">
         <pre class="csharp">// Example ^^</pre>
