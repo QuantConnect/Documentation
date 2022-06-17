@@ -1,1 +1,1 @@
-<?php include(DOCS_RESOURCES."/datasets/market-hours/cfd/oanda/generic/post-market-hours.html"); ?>
+<?php include(DOCS_RESOURCES."/datasets/market-hours/cfd/generic/post-market-hours.html"); ?>

@@ -67,7 +67,10 @@ for asset_class, assets in sorted_assets.items():
             html += f'''<tr><td><a href="{exchange + '/' + symbol.lower() if "[*]" not in symbol else exchange}">{symbol}</a></td><td>{contracts_real[symbol]}</td></tr>
 '''
                 
-            symbol_path = destination_folder / asset_class.lower() / exchange / symbol.replace("[*]", "generic")
+            if asset_class.lower() == "cfd":
+                symbol_path = destination_folder / asset_class.lower() / symbol.replace("[*]", "generic")
+            else:
+                symbol_path = destination_folder / asset_class.lower() / exchange / symbol.replace("[*]", "generic")
             symbol_path.mkdir(parents=True, exist_ok=True)
             
             with open(symbol_path / 'introduction.html', 'w', encoding='utf-8') as html_file:
