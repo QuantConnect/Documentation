@@ -1,6 +1,6 @@
 <?php 
 include(DOCS_RESOURCES."/securities/handling-data-intro.php"); 
 $dataFormat = "Tick";
-$securityName = "security";
+$securityName = "Index";
 $getIntroText($dataFormat, $securityName);
 ?>
