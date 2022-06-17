@@ -23,15 +23,16 @@
 
 
 
-<div>- Splits are handled by the engine depeding on the data normalization mode or whether the algorithm is running in live mode<br>&nbsp;&nbsp; - Raw data and live mode:<br>&nbsp;&nbsp; - It's information is used by the engine to adjust the quantity of the positions accordingly ("SplitOccurred")<br>&nbsp;&nbsp; - If the quantity is not a valid lot size, the remaining value is credited to your account currency.<br>
-- Other mode with backtesting:<br>&nbsp;&nbsp; - The splts are factored into the price and volume.<br>
+- Splits are handled by the engine depeding on the data normalization mode or whether the algorithm is running in live mode
+<br>&nbsp;&nbsp; - Raw data and live mode:
+<br>&nbsp;&nbsp; - It's information is used by the engine to adjust the quantity of the positions accordingly ("SplitOccurred")
+<br>&nbsp;&nbsp; - If the quantity is not a valid lot size, the remaining value is credited to your account currency.
+<br>- Other mode with backtesting:
+<br>&nbsp;&nbsp; - The splts are factored into the price and volume.<br>
 
-Splits close all options positions. <br></div>
+Splits close all options positions. <br>
 
-<div>-By default, data is split adjusted. When using Raw data, splits are applied directly to your portfolio quantity<br></div>
-
-<div>&nbsp;&nbsp;&nbsp; - Type<br></div><div>-Show values for SplitType enum</div><div>&nbsp;&nbsp;&nbsp;&nbsp; - Warning</div><div>&nbsp;&nbsp;&nbsp;&nbsp; - SplitOccurred</div>
--Data saved in factor files<br></div><div></div>
+-By default, data is split adjusted. When using Raw data, splits are applied directly to your portfolio quantity<br>
 
 
 
