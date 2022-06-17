@@ -142,7 +142,7 @@ def TableCreation(raw, namespace=""):
         
 def HtmlGeneration(obj_name, sorted_obj, extra=''):
     html = f'''<style>
-#enum-table td:nth-child(2)
+#enum-table td:nth-child(2),
 #enum-table th:nth-child(2)
 {{ text-align: right; }}
 </style>
