@@ -15,6 +15,12 @@
     delisting = data.Delistings[self.symbol]</pre>
 </div>
 
+<p>You can also iterate through the <code>Delistings</code> dictionary. The keys of the dictionary are the <code>Symbol</code> objects and the values are the <code>Delisting</code> objects.</p>
+<div class='section-example-container'>
+        <pre class='csharp'>// Example</pre>
+        <pre class='python'># Example</pre>
+</div>
+
 <p>The delist warning occurs on the final trading day of the stock to give you time to gracefully exit out of positions before LEAN automatically liquidates them. To set the ticket for the order that liquidates the position, call the <code>SetOrderTicket</code> method on the <code>Delisting</code> object.</p>
 
 <div class="section-example-container">
