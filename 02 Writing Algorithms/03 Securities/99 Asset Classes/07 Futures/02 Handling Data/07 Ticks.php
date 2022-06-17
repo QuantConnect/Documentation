@@ -1,1 +1,7 @@
-<?php echo file_get_contents(DOCS_RESOURCES."/securities/tick.html"); ?>
+<?php 
+include(DOCS_RESOURCES."/securities/tick.php"); 
+$securityName = "contract";
+$pythonVariable = "self.contract_symbol";
+$cSharpVariable = "_contractSymbol";
+$getTickText($securityName, $pythonVariable, $cSharpVariable);
+?>
