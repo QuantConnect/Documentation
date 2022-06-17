@@ -17,13 +17,11 @@
     split = data.Splits[self.symbol]</pre>
 </div>
 
-<p>LEAN stores the data for stock splits in factor files. To view some example factor files, see the <a rel='nofollow' target="_blank" href='https://github.com/QuantConnect/Lean/tree/master/Data/equity/usa/factor_files'>LEAN GitHub repository</a>.</p>
+<p>LEAN stores the data for stock splits in factor files. To view some example factor files, see the <a rel='nofollow' target="_blank" href='https://github.com/QuantConnect/Lean/tree/master/Data/equity/usa/factor_files'>LEAN GitHub repository</a>. In backtests, your algorithm receives <code>Split</code> objects at midnight. In live trading, your algorithm receives <code>Split</code> objects when the factor files are ready.</p>
 
-<p>In backtests, your algorithm receives <code>Split</code> objects at midnight. In live trading, your algorithm receives <code>Split</code> objects when the factor files are ready.</p>
+<p>If you backtest without the <code>Raw</code> <a href='/docs/v2/writing-algorithms/securities/asset-classes/us-equity/requesting-data#09-Data-Normalization'>data normalization mode</a>, the splits are factored into the price and volume. If you backtest with the <code>Raw</code> data normalization or trade live, when a split occurs, LEAN automatically adjusts your positions based on the <code>SplitFactor</code>. If the post-split quantity isn't a valid <a href='/docs/v2/writing-algorithms/securities/properties#50-Symbol-Properties'>lot size</a>, LEAN credits the remaining value to your <a href='/docs/v2/writing-algorithms/portfolio/cashbook'>cashbook</a> in your account currency. If you have indicators in your algorithm, <a href='/docs/v2/writing-algorithms/indicators/key-concepts#09-Reset-Indicators'>reset your indicators</a> when split occur. so that the data in your indicators account for the price adjustments that the split causes.</p>
 
-<p>If you backtest without <code>Raw</code> data normalization mode, the splits are factored into the price and volume. If you backtest with <code>Raw</code> data normalization or trade live, your positions automatically adjust based on the <code>SplitFactor</code> when a split occurs. If the post-split quantity isn't a valid lot size, LEAN credits the remaining value to your cash book in your account currency. </p>
-
-<p>If you hold an Option contract for an underlying Equity when a split occurs, it closes your Option contract position.</p>
+<p>If you hold an Option contract for an underlying Equity when a split occurs, LEAN closes your Option contract position.</p>
 
 
 
