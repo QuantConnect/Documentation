@@ -14,4 +14,11 @@
     dividend = data.Dividends[self.symbol]</pre>
     </div>
 
+
+<p>You can also iterate through the <code>Dividends</code> dictionary. The keys of the dictionary are the <code>Symbol</code> objects and the values are the <code>Dividend</code> objects.</p>
+<div class='section-example-container'>
+        <pre class='csharp'>// Example</pre>
+        <pre class='python'># Example</pre>
+</div>
+
 <p>For a full example, see the <a rel='nofollow' target='_blank' class='csharp' href='https://github.com/QuantConnect/Lean/blob/master/Algorithm.CSharp/DividendAlgorithm.cs'>DividendAlgorithm</a><a rel='nofollow' target='_blank' href='https://github.com/QuantConnect/Lean/blob/master/Algorithm.Python/DividendAlgorithm.py' class='python'>DividendAlgorithm</a> in the LEAN GitHub repository.</p>
