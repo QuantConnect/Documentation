@@ -2,13 +2,11 @@
 
 <?php include(DOCS_RESOURCES."/datasets/data-normalization.html"); ?>
 
-<p>To set the data normalization mode for a security, call the <code>SetDataNormalizationMode</code> method.</p>
+<p>To set the data normalization mode for a security, pass a <code>dataNormalizationMode</code> argument to the <code>AddEquity</code> method..</p>
 
  <div class="section-example-container">
-    <pre class="csharp">var equity = AddEquity("YESBANK", market: Market.India);
-equity.SetDataNormalizationMode(DataNormalizationMode.Raw);</pre>
-    <pre class="python">equity = AddEquity("YESBANK", market=Market.India)
-equity.SetDataNormalizationMode(DataNormalizationMode.Raw)</pre>
+    <pre class="csharp">_symbol = AddEquity("YESBANK", market: Market.India, dataNormalizationMode: DataNormalizationMode.Raw).Symbol;</pre>
+    <pre class="python">self.symbol = AddEquity("YESBANK", market=Market.India, dataNormalizationMode=DataNormalizationMode.Raw).Symbol</pre>
 </div>
 
 <p>To set the data normalization mode for all securities in an algorithm, set the <code>DataNormalizationMode</code> <a href='/docs/v2/writing-algorithms/universes/key-concepts#05-Universe-Settings'>universe setting</a> before you create the security subscriptions.</p>
