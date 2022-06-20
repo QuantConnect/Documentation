@@ -1,6 +1,6 @@
 <p>
-   QuantConnect recommends developing an algorithmic trading strategy based on a central hypothesis. 
-   An algorithm hypothesis should be developed at the start of your research, and the remaining time spent exploring how to test your theory. If you find yourself deviating from your core theory, or introducing code that isn't based around that hypothesis, you should stop and go back to thesis development. 
+   We recommend you develop an algorithmic trading strategy based on a central hypothesis. 
+   You should develop an algorithm hypothesis at the start of your research and spend the remaining time exploring how to test your theory. If you find yourself deviating from your core theory or introducing code that isn't based around that hypothesis, you should stop and go back to thesis development. 
 </p>
 
 <p>Wang et al. (2014) illustrate the danger of creating your hypothesis based on test results. In their research, they examined the earnings yield factor in the technology sector over time. During 1998-1999, before the tech bubble burst, the factor was unprofitable. If you saw the results and then decided to bet against the factor during 2000-2002, you would have lost a lot of money because the factor performed extremely well during that time.</p>
@@ -12,9 +12,14 @@
    A change in {cause} leads to an {effect}.
 </blockquote>
 <p></p>
-<p>
-   You can search for inspiration by considering causes from your own experience, intuition, or the media. Generally, causes of financial market movements fall into three categories: human psychology, real-world events/fundamentals, or invisible financial actions. 
-</p>
+<p>To search for inspiration, consider causes from your own experience, intuition, or the media. Generally, causes of financial market movements fall into the following categories:</p>
+
+<ul>
+   <li>Human psychology</li>
+   <li>Real-world events/fundamentals</li>
+   <li>Invisible financial actions</li>
+</ul> 
+
 <p>
    Consider the following examples:
 </p>
@@ -44,9 +49,9 @@
    </thead>
    <tbody>
       <tr>
-         <td>Share class stocks are the same company so any price divergence is irrational...</td>
+         <td>Share class stocks are the same company, so any price divergence is irrational...</td>
          <td style="text-align: center; padding-top: 15px;"><i class="fa fa-chevron-right"></i></td>
-         <td>A perfect pairs trade. Since they are the same company the price will revert.</td>
+         <td>A perfect pairs trade. Since they are the same company, the price will revert.</td>
       </tr>
       <tr>
          <td>New stock addition to the S&amp;P500 Index causes fund managers to buy up stock...</td>
@@ -56,7 +61,7 @@
       <tr>
          <td>Increase in sunshine-hours increases the production of oranges...</td>
          <td style="text-align: center; padding-top: 15px;"><i class="fa fa-chevron-right"></i></td>
-         <td>An increase in the supply of oranges, decreasing price of Orange Juice Futures.</td>
+         <td>An increase in the supply of oranges, decreasing the price of Orange Juice Futures.</td>
       </tr>
       <tr>
          <td>Allegations of fraud by the CEO causes investor faith in the stock to fall...</td>
