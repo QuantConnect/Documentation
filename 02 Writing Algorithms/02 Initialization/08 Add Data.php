@@ -1,4 +1,4 @@
-<p>You can manually subscribe to data for specific assets or use <a href="/docs/v2/writing-algorithms/universes/key-concepts">universes</a> to choose groups of assets. The <a href="https://www.quantconnect.com/datasets">Dataset Market</a> provides <!--?php echo file_get_contents(DOCS_RESOURCES."/kpis/dataset-size.php"); ?--> of data.</p>
+<p>You can manually subscribe to data for specific assets or use <a href="/docs/v2/writing-algorithms/universes/key-concepts">universes</a> to choose groups of assets. The <a href="https://www.quantconnect.com/datasets">Dataset Market</a> provides <?php echo file_get_contents(DOCS_RESOURCES."/kpis/dataset-size.php"); ?> of data.</p>
 
 <h4>Asset Data</h4>
 
