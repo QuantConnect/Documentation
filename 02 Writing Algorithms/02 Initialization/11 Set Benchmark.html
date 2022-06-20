@@ -1,4 +1,4 @@
-<p>The benchmark performance is input to calculate several statistics on your algorithm, including alpha and beta. To set a benchmark for your algorithm, call the <code>SetBenchmark</code> method. You can set the benchmark to a security, a constant value, or a value from a <a href='/docs/v2/writing-algorithms/importing-data/key-concepts'>custom data source</a>. By default, the benchmark is SPY.</p>
+<p>The benchmark performance is input to calculate several statistics on your algorithm, including alpha and beta. To set a benchmark for your algorithm, call the <code>SetBenchmark</code> method. You can set the benchmark to a security, a constant value, or a value from a <a href="/docs/v2/writing-algorithms/importing-data/key-concepts">custom data source</a>. If you don't set a <a href="/docs/v2/writing-algorithms/reality-modeling/brokerages">brokerage model</a>, the default benchmark is SPY. If you set a brokerage model, the model defines the default benchmark.</p>
 
 <div class="section-example-container">
 <pre class="csharp">// Set the benchmark to IBM
@@ -20,3 +20,5 @@ self.SetBenchmark(lambda x: 0)
 self.symbol = self.AddData(ExampleCustomData, "ExampleCustomData", Resolution.Hour).Symbol
 self.SetBenchmark(self.symbol)</pre>
 </div>
+
+<p>If you pass a ticker to the <code>SetBenchmark</code> method, LEAN checks if you have a subscription for it. If you have a subscription for it, LEAN uses the security subscription. If you don't have a subscription for it, LEAN creates a US Equity subscription with the ticker. Since the ticker you pass may not be a US Equity, we recommend you subscribe to the benchmark security before you call the <code>SetBenchmark</code> method.</p>
