@@ -83,7 +83,7 @@ $getUniverseSettingsText = function($isFramework) {
         <div class=\"section-example-container\">
 <pre class=\"csharp\">// Request second resolution data. This will be slow!
 UniverseSettings.Resolution = Resolution.Second;
-.AddUniverseSelection(new VolatilityETFUniverse());</pre>
+AddUniverseSelection(new VolatilityETFUniverse());</pre>
 <pre class=\"python\"># Request second resolution data. This will be slow!
 self.UniverseSettings.Resolution = Resolution.Second
 self.AddUniverseSelection(VolatilityETFUniverse())</pre>
