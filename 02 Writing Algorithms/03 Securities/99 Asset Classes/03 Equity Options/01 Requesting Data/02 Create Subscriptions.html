@@ -2,26 +2,19 @@
 
 <h4>Configure the Underlying Equity</h4>
 
-<p>If you called the <code>AddEquity</code> method to subscribe to the underlying Equity, in the <code>Initialize</code> method, follow these steps to configure the asset:</p>
+<p>If you want to subscribe to the underlying Equity in the <code>Initialize</code> method, follow these steps to configure the asset:</p>
 <ol>
-    <li>Set the Equity data normalization to <code>DataNormalizationMode.Raw</code>.</li>
+    <li>Set the Equity <a href='/docs/v2/writing-algorithms/securities/asset-classes/us-equity/requesting-data#09-Data-Normalization'>data normalization</a> to <code>DataNormalizationMode.Raw</code>.</li>
     <li>Set the underlying <a href="/docs/v2/writing-algorithms/reality-modeling/options-models/volatility/key-concepts">volatility model</a>.</li>
     <li><a href="/docs/v2/writing-algorithms/reality-modeling/options-models/volatility/key-concepts#07-Warm-Up-Models">Warm up the volatility model</a>.</li>
 </ol>
 
 <div class="section-example-container">
-    <pre class="csharp">SubscriptionManager
-    .SubscriptionDataConfigService
-    .GetSubscriptionDataConfigs(equity.Symbol)
-    .SetDataNormalizationMode(DataNormalizationMode.Raw);
+    <pre class="csharp">var equity = AddEquity("SPY", dataNormalizationMode: DataNormalizationMode.Raw);
 equity.VolatilityModel = new StandardDeviationOfReturnsVolatilityModel(30);
 SetWarmup(30, Resolution.Daily);
 </pre>
-    <pre class="python">SubscriptionDataConfigExtensions.SetDataNormalizationMode(
-    self.SubscriptionManager\
-        .SubscriptionDataConfigService\
-        .GetSubscriptionDataConfigs(equity.Symbol),
-    DataNormalizationMode.Raw)
+    <pre class="python">equity = self.AddEquity("SPY", dataNormalizationMode=DataNormalizationMode.Raw)
 equity.VolatilityModel = StandardDeviationOfReturnsVolatilityModel(30)
 self.SetWarmup(30, Resolution.Daily)</pre>
 </div>
