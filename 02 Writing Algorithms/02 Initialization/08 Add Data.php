@@ -21,7 +21,7 @@ self.AddForex("EURUSD", Resolution.Second) # Add EURUSD 1 second bars
 
 <h4>Custom Data</h4>
 
-<p>To add custom custom data in an algorithm, call the <code>AddData</code> method. For more information about custom data, see <a href="https://www.quantconnect.com/docs/v2/writing-algorithms/importing-data/key-concepts">Importing Data</a>.</p>
+<p>To add custom data to an algorithm, call the <code>AddData</code> method. For more information about custom data, see <a href="https://www.quantconnect.com/docs/v2/writing-algorithms/importing-data/key-concepts">Importing Data</a>.</p>
 
 <h4>Limitations</h4>
 <p>There is no official limit to how much data
