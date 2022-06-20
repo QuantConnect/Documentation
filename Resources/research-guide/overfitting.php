@@ -1,8 +1,8 @@
 <p>
-  Overfitting happens when the parameters of an algorithm are fine-tuned to fit
+  Overfitting occurs when you fine-tune the parameters of an algorithm to fit
   the detail and noise of backtesting data to the extent that it negatively
   impacts the performance of the algorithm on new data. The problem is that the
-  parameters do not necessarily apply to new data and thus negatively impact the
+  parameters don't necessarily apply to new data and thus negatively impact the
   algorithm's ability to generalize and trade well in all market conditions. The following
   table shows ways that overfitting can manifest itself:
 </p>
