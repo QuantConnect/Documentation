@@ -1,2 +1,1 @@
-## Import TrueData "About the Provider" from Resources
-https://www.quantconnect.com/docs/v2/writing-algorithms/datasets/truedata/india-equities#02-About-the-Provider
+<?php echo file_get_contents(DOCS_RESOURCES."/datasets/true-data-about-the-provider.html"); ?>
