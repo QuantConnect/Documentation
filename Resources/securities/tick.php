@@ -15,13 +15,67 @@ $getTickText = function($securityName, $pythonVariable, $cSharpVariable)
 <p> In backtests, LEAN groups ticks into one millisecond buckets. In live trading, LEAN groups ticks into ~70-millisecond buckets. To get the <code>Tick</code> objects in the <code>Slice</code>, index the <code>Ticks</code> property of the <code>Slice</code> with a <code>Symbol</code>. If the {$securityName} doesn't actively trade or you are in the same time step as when you added the {$securityName} subscription, the <code>Slice</code> may not contain data for your <code>Symbol</code>. To avoid issues, check if the <code>Slice</code> contains data for your {$securityName} before you index the <code>Slice</code> with the {$securityName} <code>Symbol</code>.</p>
 
 <div class='section-example-container'>
-    <pre class='csharp'>// Example of accessing Tick objects in OnData
-// The examples on this page should check if the slice contains the data before indexing it.
-// Maybe the C# version should show an example of OnData(TradeBar) in addition to OnData(Slice)
-{$cSharpVariable}</pre>
-    <pre class='python'># Example of accessing Tick objects in OnData
-# The examples on this page should check if the slice contains the data before indexing it.
-{$pythonVariable}</pre>
+    <pre class='csharp'>public override void OnData(Slice slice)
+{
+    if (slice.Ticks.ContainsKey(_symbol))
+    {
+        var ticks = slice.Ticks[_symbol];
+        foreach (var tick in ticks)
+        {
+            //
+        }
+    }
+}
+
+public void OnData(Ticks ticks)
+{
+    if (ticks.ContainsKey(_symbol))
+    {
+        foreach (var tick in ticks[_symbol])
+        {
+            //
+        }
+    }
+}
+</pre>
+    <pre class='python'>def OnData(self, slice: Slice) -> None:
+    if {$pythonVariable} in slice.Ticks:
+        ticks = slice.Ticks[{$pythonVariable}]
+        for tick in ticks:
+            pass
+    </pre>
+</div>
+
+<p>You can also iterate through the <code>Ticks</code> dictionary. The keys of the dictionary are the <code>Symbol</code> objects and the values are the <code class='csharp'>List&lt;Tick&gt;</code><code class='python'>list[Tick]</code> objects.</p>
+<div class='section-example-container'>
+    <pre class='csharp'>public override void OnData(Slice slice)
+{
+    foreach (var kvp in slice.Ticks)
+    {
+        var symbol = kvp.Key;
+        var ticks = kvp.Value;
+        foreach (var tick in ticks)
+        {
+            //
+        }
+    }
+}
+
+public void OnData(Ticks ticks)
+{
+    foreach (var kvp in ticks)
+    {
+        var symbol = kvp.Key;
+        foreach (var tick in kvp.Value)
+        {
+            //
+        }
+    }
+}</pre>
+    <pre class='python'>def OnData(self, slice: Slice) -> None:
+    for symbol, ticks in slice.Ticks.items():
+        for tick in ticks:
+            pass</pre>
 </div>
 
 <p>Tick data is raw and unfiltered, so it can contain bad ticks that skew your trade results. For example, some ticks come from dark pools, which aren't tradable. We recommend you only use tick data if you understand the risks and are able to perform your own online tick filtering.</p>

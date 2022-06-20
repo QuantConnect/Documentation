@@ -8,24 +8,54 @@ $getTradeBarText = function($securityName, $pythonVariable, $cSharpVariable)
 <p><code>TradeBar</code> objects have the following properties:</p>    
 <div data-tree='QuantConnect.Data.Market.TradeBar'></div>    
 <p>To get the <code>TradeBar</code> objects in the <code>Slice</code>, index the <code>Slice</code> or index the <code>Bars</code> property of the <code>Slice</code> with the {$securityName} <code>Symbol</code>. If the {$securityName} doesn't actively trade or you are in the same time step as when you added the {$securityName} subscription, the <code>Slice</code> may not contain data for your <code>Symbol</code>. To avoid issues, check if the <code>Slice</code> contains data for your {$securityName} before you index the <code>Slice</code> with the {$securityName} <code>Symbol</code>.</p>
-    
+
 <div class='section-example-container'>
-    <pre class='csharp'>// Example of accessing TradeBar objects in OnData
-// The examples on this page should check if the slice contains the data before indexing it.
-// Maybe the C# version should show an example of OnData(TradeBar) in addition to OnData(Slice)
-{$cSharpVariable}</pre>
-    <pre class='python'># Example of accessing TradeBar objects in OnData
-# The examples on this page should check if the slice contains the data before indexing it.
-{$pythonVariable}</pre>
+    <pre class='csharp'>public override void OnData(Slice slice)
+{
+    if (slice.Bars.ContainsKey({$cSharpVariable}))
+    {
+        var tradeBar = slice.Bars[{$cSharpVariable}];
+    }
+}
+
+public void OnData(TradeBars tradeBars)
+{
+    if (tradeBars.ContainsKey({$cSharpVariable}))
+    {
+        var tradeBar = tradeBars[{$cSharpVariable}];
+    }
+}
+</pre>
+    <pre class='python'>def OnData(self, slice: Slice) -> None:
+    if {$pythonVariable} in slice.Bars:
+        trade_bar = slice.Bars[{$pythonVariable}]
+    </pre>
 </div>
 
 
 <p>You can also iterate through the <code>TradeBars</code> dictionary. The keys of the dictionary are the <code>Symbol</code> objects and the values are the <code>TradeBar</code> objects.</p>
 <div class='section-example-container'>
-        <pre class='csharp'>// Example</pre>
-        <pre class='python'># Example</pre>
+    <pre class='csharp'>public override void OnData(Slice slice)
+{
+    foreach (var kvp in slice.Bars)
+    {
+        var symbol = kvp.Key;
+        var tradeBar = kvp.Value;
+    }
+}
+
+public void OnData(TradeBars tradeBars)
+{
+    foreach (var kvp in tradeBars)
+    {
+        var symbol = kvp.Key;
+        var tradeBar = kvp.Value;
+    }
+}</pre>
+    <pre class='python'>def OnData(self, slice: Slice) -> None:
+    for symbol, trade_bar in slice.Bars.items():
+        pass</pre>
 </div>
     ";
-
 }
 ?>

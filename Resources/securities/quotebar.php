@@ -12,15 +12,51 @@ $getQuoteBarText = function($securityName, $pythonVariable, $cSharpVariable)
     
 <p>To get the <code>QuoteBar</code> objects in the <code>Slice</code>, index the <code>QuoteBars</code> property of the <code>Slice</code> with the {$securityName} <code>Symbol</code>. If the {$securityName} doesn't actively get quotes or you are in the same time step as when you added the {$securityName} subscription, the <code>Slice</code> may not contain data for your <code>Symbol</code>. To avoid issues, check if the <code>Slice</code> contains data for your {$securityName} before you index the <code>Slice</code> with the {$securityName} <code>Symbol</code>.</p>
     
-    
 <div class='section-example-container'>
-    <pre class='csharp'>// Example of accessing QuoteBar objects in OnData
-// The examples on this page should check if the slice contains the data before indexing it.
-// Maybe the C# version should show an example of OnData(TradeBar) in addition to OnData(Slice)
-{$cSharpVariable}</pre>
-    <pre class='python'># Example of accessing QuoteBar objects in OnData
-# The examples on this page should check if the slice contains the data before indexing it.
-{$pythonVariable}</pre>
+    <pre class='csharp'>public override void OnData(Slice slice)
+{
+    if (slice.QuoteBars.ContainsKey({$cSharpVariable}))
+    {
+        var quoteBar = slice.QuoteBars[{$cSharpVariable}];
+    }
+}
+
+public void OnData(QuoteBars quoteBars)
+{
+    if (quoteBars.ContainsKey({$cSharpVariable}))
+    {
+        var quoteBar = quoteBars[{$cSharpVariable}];
+    }
+}
+</pre>
+    <pre class='python'>def OnData(self, slice: Slice) -> None:
+    if {$pythonVariable} in slice.QuoteBars:
+        quote_bar = slice.QuoteBars[{$pythonVariable}]
+    </pre>
+</div>
+
+<p>You can also iterate through the <code>QuoteBars</code> dictionary. The keys of the dictionary are the <code>Symbol</code> objects and the values are the <code>QuoteBar</code> objects.</p>
+<div class='section-example-container'>
+    <pre class='csharp'>public override void OnData(Slice slice)
+{
+    foreach (var kvp in slice.QuoteBars)
+    {
+        var symbol = kvp.Key;
+        var quoteBar = kvp.Value;
+    }
+}
+
+public void OnData(QuoteBars quoteBars)
+{
+    foreach (var kvp in quoteBars)
+    {
+        var symbol = kvp.Key;
+        var quoteBar = kvp.Value;
+    }
+}</pre>
+    <pre class='python'>def OnData(self, slice: Slice) -> None:
+    for symbol, quote_bar in slice.QuoteBars.items():
+        pass</pre>
 </div>
 
 <p><code>QuoteBar</code> objects let LEAN incorporate spread costs into your <a href='/docs/v2/writing-algorithms/reality-modeling/trade-fills/key-concepts'>simulated trade fills</a> to make backtest results more realistic.</p>
