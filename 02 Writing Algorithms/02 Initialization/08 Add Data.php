@@ -5,20 +5,11 @@
 <p>To subscribe to asset data, call one of the asset subscription methods (for example, the <code>AddEquity</code> method). Each asset class has its own method to create subscriptions. For more information about how to create subscriptions for each asset class, see <a href="https://www.quantconnect.com/docs/v2/writing-algorithms/asset-classes/key-concepts">Asset Classes</a>.</p>
 
 <div class="section-example-container">
-	<pre class="all">// Complete Add Equity API - Including Default Parameters:
-AddEquity(string ticker, Resolution resolution = Resolution.Minute, string market = Market.USA, bool fillDataForward = true, decimal leverage = 0m, bool extendedMarketHours = false)
-
-//Complete Add Forex API - Including Default Parameters:
-AddForex(string ticker, Resolution resolution = Resolution.Minute, string market = Market.OANDA, bool fillDataForward = true, decimal leverage = 0m)
+	<pre class="csharp">AddEquity("AAPL"); // Add Apple 1 minute bars (minute by default)
+AddForex("EURUSD", Resolution.Second); // Add EURUSD 1 second bars
 </pre>
-</div>
-
-<div class="section-example-container">
-	<pre class="csharp">AddEquity("AAPL"); // Add Apple 1 minute bars (minute by default).
-AddForex("EURUSD", Resolution.Second); // Add EURUSD 1 second bars.
-</pre>
-	<pre class="python">self.AddEquity("SPY")  # Default to minute bars
-self.AddForex("EURUSD", Resolution.Second) # Set second bars.
+	<pre class="python">self.AddEquity("SPY")  # Add Apple 1 minute bars (minute by default)
+self.AddForex("EURUSD", Resolution.Second) # Add EURUSD 1 second bars
 </pre>
 </div>
 
