@@ -1,25 +1,22 @@
-<p>
-	You may need some historical data at the start of your algorithm to prime technical indicators or populate historical data arrays. The <a href='/docs/v2/writing-algorithms/historical-data/warm-up-periods'>warm up period</a> pumps data into your algorithm from before the start date. To set a warm up period, call the $[SetWarmUp(TimeSpan period),M:QuantConnect.Algorithm.QCAlgorithm.SetWarmUp] or
-	$[SetWarmUp(int barCount),M:QuantConnect.Algorithm.QCAlgorithm.SetWarmUp] method.
-</p>
+<p>You may need some historical data at the start of your algorithm to prime technical indicators or populate historical data arrays. The <a href='/docs/v2/writing-algorithms/historical-data/warm-up-periods'>warm up period</a> pumps data into your algorithm from before the start date. To set a warm up period, call the <code>SetWarmUp</code> method.</p>
 
 <div class="section-example-container">
-<pre class="csharp">// Wind time back 7 days from start
+<pre class="csharp">// Wind time back 7 days from the start date
 SetWarmUp(TimeSpan.FromDays(7));
 
-// Feed in 100 daily bars before the start date
+// Feed in 100 trading days worth of data before the start date
 SetWarmUp(100, Resolution.Daily);
 
-// Feed in 100 bars before start date
+// If you don't provide a resolution argument, it uses the lowest resolution in your subscriptions
 SetWarmUp(100);
 </pre>
-<pre class="python"># Wind time back 7 days from start
+<pre class="python"># Wind time back 7 days from the start date
 self.SetWarmUp(timedelta(7))
 
-# Feed in 100 daily bars before the start date
+# Feed in 100 trading days worth of data before the start date
 self.SetWarmUp(100, Resolution.Daily)
 
-# Feed in 100 bars before start date
+# If you don't provide a resolution argument, it uses the lowest resolution in your subscriptions
 self.SetWarmUp(100)
 </pre>
 </div>
