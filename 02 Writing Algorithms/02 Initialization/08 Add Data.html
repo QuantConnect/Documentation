@@ -1,12 +1,8 @@
-<p>
-Algorithms can manually subscribe to data for specific assets they need or use <a href="/docs/v2/writing-algorithms/universes/key-concepts">universes</a> to choose groups of assets based on
-	filtering criteria (e.g. all stocks with volumes greater than $10M/day). QuantConnect provides {import dataset-size KPI} of data in the <a href="https://www.quantconnect.com/datasets">Dataset Market</a>.
-</p>
+<p>You can manually subscribe to data for specific assets or use <a href="/docs/v2/writing-algorithms/universes/key-concepts">universes</a> to choose groups of assets. The <a href="https://www.quantconnect.com/datasets">Dataset Market</a> provides <!--?php echo file_get_contents(DOCS_RESOURCES."/kpis/dataset-size.php"); ?--> of data.</p>
 
 <h4>Asset Data</h4>
 
-<p>
-	To manually subscribe to a specific asset, call one of the following methods:</p><p>- AddEquity</p><p>- AddOption</p><p>- AddOptionContract<br></p><p>- AddCrypto</p><p>- AddForex</p><p>- AddFuture</p><p>- AddFutureContract<br></p><p>- AddFutureOption</p><p>- AddFutureOptionContract<br></p><p>- AddIndex<br></p><p>- AddIndexOption</p><p>- AddIndexOptionContract<br></p><p>- AddCfd</p><p>For more information about these methods, see the Requesting Data pages in the <a href="/docs/v2/writing-algorithms/asset-classes/key-concepts">Asset Classes</a> chapter.</p>
+<p>To subscribe to asset data, call one of the asset subscription methods (for example, the <code>AddEquity</code> method). Each asset class has its own method to create subscriptions. For more information about how to create subscriptions for each asset class, see <a href="https://www.quantconnect.com/docs/v2/writing-algorithms/asset-classes/key-concepts">Asset Classes</a>.</p>
 
 <div class="section-example-container">
 	<pre class="all">// Complete Add Equity API - Including Default Parameters:
@@ -18,32 +14,23 @@ AddForex(string ticker, Resolution resolution = Resolution.Minute, string market
 </div>
 
 <div class="section-example-container">
-	<pre class="csharp">AddEquity("AAPL"); //Add Apple 1 minute bars (minute by default).
-AddForex("EURUSD", Resolution.Second); //Add EURUSD 1 second bars.
+	<pre class="csharp">AddEquity("AAPL"); // Add Apple 1 minute bars (minute by default).
+AddForex("EURUSD", Resolution.Second); // Add EURUSD 1 second bars.
 </pre>
 	<pre class="python">self.AddEquity("SPY")  # Default to minute bars
 self.AddForex("EURUSD", Resolution.Second) # Set second bars.
 </pre>
-</div><div><p>The resolution of the data available depends on the type of data. These are specified by the
-	$[Resolution,T:QuantConnect.Resolution] enum. <br></p><p>QuantConnect supports international trading across multiple timezones 
-and markets. The $[Market,T:QuantConnect.Market] parameter is used
-	to distinguish between the same tickers on different exchanges (e.g. 
-BTCUSDT trades at different prices on FTX and Coinbase Pro).
-</p>
-<p>
-	If there is a gap in the data (e.g. because there are no trades), by default the data is still pumped into your strategy on
-	each time step. This behavior is called "fillForward" and defaults to true. To disable this setting, set fillForward to false. </p>
+</div>
 
-</div><div>Extended market hours is available for some asset classes. To view which asset classes have extended market hours trading, see the Market Hours pages in the <a href="https://www.quantconnect.com/docs/v2/writing-algorithms/asset-classes/key-concepts">Asset Classes</a> chapter.<br></div><div><br></div><div>## TODO: Show an example of all Add&lt;securityType&gt; methods?</div>
-<br>-In live trading, you define the securities you want, but lean also gets the securities in your live portfolio. For the live portfolio securities, it selects the minimum resolution of the subscriptions you created. For example, if you created subscriptions in your algorithm for securities with Second, Minute, and Hour resolutions, the assets in your live portfolio are given a resolution of Second.
+<p>In live trading, you define the securities you want, but LEAN also gets the securities in your live portfolio and sets their resolution to the lowest resolution of the subscriptions you made. For example, if you create subscriptions in your algorithm for securities with Second, Minute, and Hour resolutions, the assets in your live portfolio are given a resolution of Second.</p>
 
 <h4>Fundamental and Alternative Data</h4>
 
-<p>To add fundamental and alternative datasets to an algorithm, call the AddData method. For full examples, select a dataset in the <a href="/docs/v2/writing-algorithms/datasets/overview">Datasets</a> chapter and see the <span class="page-section-name">Requesting Data</span> section.</p>
+<p>To add alternative datasets to an algorithm, call the <code>AddData</code> method. For full examples, in the <a href="/docs/v2/writing-algorithms/datasets/overview">Datasets</a> chapter, select a dataset and see the <span class="page-section-name">Requesting Data</span> section.</p>
 
 <h4>Custom Data</h4>
 
-<p>To add custom custom data in an algorithm, call the AddData method. For more information about custom data, see <a href="https://www.quantconnect.com/docs/v2/writing-algorithms/importing-data/key-concepts">Importing Data</a>.</p>
+<p>To add custom custom data in an algorithm, call the <code>AddData</code> method. For more information about custom data, see <a href="https://www.quantconnect.com/docs/v2/writing-algorithms/importing-data/key-concepts">Importing Data</a>.</p>
 
 <h4>Limitations</h4>
 <p>There is no official limit to how much data
