@@ -1,1 +1,0 @@
-live is real time but backtesting is not promised to be realtime. Only promise -48 business hours.
