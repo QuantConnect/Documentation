@@ -31,8 +31,7 @@ public void OnData(QuoteBars quoteBars)
 </pre>
     <pre class='python'>def OnData(self, slice: Slice) -> None:
     if {$pythonVariable} in slice.QuoteBars:
-        quote_bar = slice.QuoteBars[{$pythonVariable}]
-    </pre>
+        quote_bar = slice.QuoteBars[{$pythonVariable}]</pre>
 </div>
 
 <p>You can also iterate through the <code>QuoteBars</code> dictionary. The keys of the dictionary are the <code>Symbol</code> objects and the values are the <code>QuoteBar</code> objects.</p>
