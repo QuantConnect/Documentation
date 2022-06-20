@@ -42,8 +42,7 @@ public void OnData(Ticks ticks)
     if {$pythonVariable} in slice.Ticks:
         ticks = slice.Ticks[{$pythonVariable}]
         for tick in ticks:
-            pass
-    </pre>
+            pass</pre>
 </div>
 
 <p>You can also iterate through the <code>Ticks</code> dictionary. The keys of the dictionary are the <code>Symbol</code> objects and the values are the <code class='csharp'>List&lt;Tick&gt;</code><code class='python'>list[Tick]</code> objects.</p>
