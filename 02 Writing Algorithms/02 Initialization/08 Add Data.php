@@ -2,7 +2,7 @@
 
 <h4>Asset Data</h4>
 
-<p>To subscribe to asset data, call one of the asset subscription methods (for example, the <code>AddEquity</code> method). Each asset class has its own method to create subscriptions. For more information about how to create subscriptions for each asset class, see <a href="https://www.quantconnect.com/docs/v2/writing-algorithms/asset-classes/key-concepts">Asset Classes</a>.</p>
+<p>To subscribe to asset data, call one of the asset subscription methods like <code>AddEquity</code> or <code>AddForex</code>. Each asset class has its own method to create subscriptions. For more information about how to create subscriptions for each asset class, see <a href="https://www.quantconnect.com/docs/v2/writing-algorithms/asset-classes/key-concepts">Asset Classes</a>.</p>
 
 <div class="section-example-container">
 	<pre class="csharp">AddEquity("AAPL"); // Add Apple 1 minute bars (minute by default)
