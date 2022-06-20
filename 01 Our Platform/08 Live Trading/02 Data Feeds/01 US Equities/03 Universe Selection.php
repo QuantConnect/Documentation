@@ -1,7 +1,7 @@
 <p>The US Equities data feed enables you to create a dynamic universe of securities.</p>
 
 <h4>Coarse-Fine Universe</h4>
-<p>The live data for coarse and fine universe selection arrives at 7 AM Eastern Standard Time (EST), so coarse and fine universe selection runs for live algorithms between 7 and 8 AM EST. This timing allows you to place trades before the market opens. Don't schedule anything for midnight because the universe selection data isn't ready yet.</p>
+<?php echo file_get_contents(DOCS_RESOURCES."/data-feeds/us-equities/coarse-fine-data-availability.html"); ?>
 <div class="section-example-container">
     <pre class="csharp">AddUniverse(SelectCoarse, SelectFine);</pre>
     <pre class="python">self.AddUniverse(self.SelectCoarse, self.SelectFine)</pre>
