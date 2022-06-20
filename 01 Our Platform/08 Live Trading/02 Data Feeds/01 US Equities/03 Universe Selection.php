@@ -8,7 +8,7 @@
 </div>
 
 <h4>ETF Constituent Universe</h4>
-<p>The US Equities data feed enables you to create a universe of securities to match the constituents of an ETF. For more information about ETF universes, see the <a href='/datasets/quantconnect-us-etf-constituents'>US ETF Constituents dataset listing</a>.</p>
+<p>The US Equities data feed enables you to create a universe of securities to match the constituents of an ETF. For more information about ETF universes, see <a href='/docs/v2/writing-algorithms/universes/equity#04-ETF-Constituents-Selection'>ETF Constituents Selection </a>.</p>
 
 <div class="section-example-container">
     <pre class="csharp">var spy = AddEquity("SPY").Symbol;
