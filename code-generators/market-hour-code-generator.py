@@ -62,7 +62,10 @@ for asset_class, assets in sorted_assets.items():
 <tbody>
 ''' % exchange.upper()
 
-        elif '<table class="table qc-table table-reflow">' not in html:
+        elif html != "":
+            html = html[:-18]
+            
+        else:
             html += '''<table class="table qc-table table-reflow">
 <thead>
 <tr><th>Symbol</th><th>Contract</th></tr>
@@ -73,10 +76,10 @@ for asset_class, assets in sorted_assets.items():
         for symbol in sec:
             if (asset_class == "Index" or asset_class == "IndexOption") and exchange == "usa" and "[*]" not in symbol and "generic" not in symbol.lower(): continue
         
-            if asset_class.lower() != "cfd" and symbol != "[*]":
+            if asset_class.lower() != "cfd" and symbol != "[*]" and  symbol != "Generic":
                 html += f'''<tr><td><a href="{exchange + '/' + symbol.lower() if "[*]" not in symbol else exchange}">{symbol}</a></td><td>{contracts_real[symbol]}</td></tr>
 '''
-            elif "</table>" not in html and symbol != "[*]":
+            elif symbol not in html and symbol != "[*]":
                 html += f'''<tr><td><a href="market-hours/{symbol.lower() if "[*]" not in symbol else exchange}">{symbol}</a></td><td>{contracts_real[symbol]}</td></tr>
 '''
                 
@@ -85,9 +88,6 @@ for asset_class, assets in sorted_assets.items():
             else:
                 symbol_path = destination_folder / asset_class.lower() / exchange / symbol.replace("[*]", "generic")
             symbol_path.mkdir(parents=True, exist_ok=True)
-            
-            with open(symbol_path / 'introduction.html', 'w', encoding='utf-8') as html_file:
-                html_file.write(f"""<p>This page explains the market opening dates, hours and holidays of {contracts_real[symbol] + " (" + symbol +") traded in " if "[*]" not in symbol else ""}{exchange.upper() + " " if asset_class.lower() != "cfd" else ""}{asset_class} market.</p>""")
             
             entry = entries[f"{asset_class}-{exchange}-{symbol}"]
             
@@ -107,16 +107,16 @@ for asset_class, assets in sorted_assets.items():
                         
             holiday_html = ""
             if "holidays" not in entry or not entry["holidays"]:
-                holiday_html += f'<p>There is no holidays for {contracts_real[symbol] + " in " if "[*]" not in symbol else ""}{exchange.upper() + " " if asset_class.lower() != "cfd" else ""}{asset_class} market.</p>'
+                holiday_html += f'<p>There is no holidays for the {contracts_real[symbol] + " contract in the " if "[*]" not in symbol else ""}{exchange.replace("usa", "us").upper().replace("INDIA", "India") + " " if asset_class.lower() != "cfd" else ""}{asset_class.replace("Cfd", "CFD")} market.</p>'.replace("US Option", "Equity Option")
             
             else:
                 holidays = sorted([datetime.strptime(holiday, "%m/%d/%Y") for holiday in entry["holidays"]
-                                if datetime.today() <= datetime.strptime(holiday, "%m/%d/%Y") <= datetime.today() + timedelta(days=365)])
+                                if datetime.strptime(holiday, "%m/%d/%Y") <= datetime.today() + timedelta(days=365)])
                 
                 if holidays:
                     holiday_html += '''<table class="table qc-table table-reflow">
 <thead>
-<tr><th colspan="5">Date</th></tr>
+<tr><th colspan="5">Date (<i>yyyy-mm-dd</i>)</th></tr>
 </thead>
 <tbody>
 <tr>'''
@@ -135,7 +135,7 @@ for asset_class, assets in sorted_assets.items():
 </tbody>
 </table>'''
                 else:
-                    holiday_html += f'<p>There is no holidays for {contracts_real[symbol] + " in " if "[*]" not in symbol else ""}{exchange.upper() + " " if asset_class.lower() != "cfd" else ""}{asset_class} market.</p>'
+                    holiday_html += f'<p>There are no holidays for the {contracts_real[symbol] + " contract in the " if "[*]" not in symbol else ""}{exchange.replace("usa", "us").upper().replace("INDIA", "India") + " " if asset_class.lower() != "cfd" else ""}{asset_class.replace("Cfd", "CFD")} market.</p>'.replace("US Option", "Equity Option")
 
             early_close_html = ""
             if "earlyCloses" not in entry or not entry["earlyCloses"]:
@@ -143,12 +143,12 @@ for asset_class, assets in sorted_assets.items():
             
             else:
                 early_closes = sorted([(datetime.strptime(date, "%m/%d/%Y"), time) for date, time in entry["earlyCloses"].items()
-                                if datetime.today() <= datetime.strptime(date, "%m/%d/%Y") <= datetime.today() + timedelta(days=365)], key=lambda x: x[0])
+                                if datetime.strptime(date, "%m/%d/%Y") <= datetime.today() + timedelta(days=365)], key=lambda x: x[0])
                 
                 if early_closes:
                     early_close_html += f'''<table class="table qc-table table-reflow">
 <thead>
-<tr><th style="width: 50%;">Date</th><th style="width: 50%;">Time Of Market Close ({entry["exchangeTimeZone"].replace("_", " ")})</th></tr>
+<tr><th style="width: 50%;">Date (<i>yyyy-mm-dd</i>)</th><th style="width: 50%;">Time Of Market Close ({entry["exchangeTimeZone"].replace("_", " ")})</th></tr>
 </thead>
 <tbody>
 '''
@@ -167,12 +167,12 @@ for asset_class, assets in sorted_assets.items():
             
             else:
                 late_opens = sorted([(datetime.strptime(date, "%m/%d/%Y"), time) for date, time in entry["lateOpens"].items()
-                                if datetime.today() <= datetime.strptime(date, "%m/%d/%Y") <= datetime.today() + timedelta(days=365)], key=lambda x: x[0])
+                                if datetime.strptime(date, "%m/%d/%Y") <= datetime.today() + timedelta(days=365)], key=lambda x: x[0])
                 
                 if late_opens:
                     late_open_html += f'''<table class="table qc-table table-reflow">
 <thead>
-<tr><th style="width: 50%;">Date</th><th style="width: 50%;">Time Of Market Open ({entry["exchangeTimeZone"].replace("_", " ")})</th></tr>
+<tr><th style="width: 50%;">Date (<i>yyyy-mm-dd</i>)</th><th style="width: 50%;">Time Of Market Open ({entry["exchangeTimeZone"].replace("_", " ")})</th></tr>
 </thead>
 <tbody>
 '''
@@ -188,7 +188,7 @@ for asset_class, assets in sorted_assets.items():
             with open(symbol_path / "time-zone.html", "w", encoding="utf-8") as html_file:
                 html_file.write(f'''<!-- Code generated by market-hour-code-generator.py -->
 
-<p>The {contracts_real[symbol] + " in " if "[*]" not in symbol else ""}{exchange.upper() + " " if asset_class.lower() != "cfd" else ""}{asset_class} is traded in the <code>{entry["exchangeTimeZone"].replace("_", " ")}</code> time zone.</p>''')
+<p>The {contracts_real[symbol] + " contract in the " if "[*]" not in symbol else ""}{exchange.replace("usa", "us").upper().replace("INDIA", "India") + " " if asset_class.lower() != "cfd" else ""}{asset_class.replace("Cfd", "CFD")} market trades in the <code>{entry["exchangeTimeZone"].replace("_", " ")}</code> time zone.</p>'''.replace("US Option", "Equity Option"))
             
             for page_name, hour_list in {"pre-market-hours": premarket_html, "market-opening-hours": market_html, "post-market-hours": postmarket_html}.items():
                 if all([x == [] for x in hour_list.values()]):
@@ -202,14 +202,15 @@ for asset_class, assets in sorted_assets.items():
                 with open(symbol_path / f"{page_name}.html", "w", encoding="utf-8") as html_file:
                     html_file.write(f'''<!-- Code generated by market-hour-code-generator.py -->
                                     
-<p>The following table shows the {"pre-market" if page_name == "pre-market-hours" else "post-market" if page_name == "post-market-hours" else "regular" if asset_class == "Index" else "regular trading"} hours for the {contracts_real[symbol] + " in " if "[*]" not in symbol else ""}{exchange.upper() + " " if asset_class.lower() != "cfd" else ""}{asset_class}{"" if asset_class == "Index" else " market"}:</p>
+<p>The following table shows the {"pre-market" if page_name == "pre-market-hours" else "post-market" if page_name == "post-market-hours" else "regular" if asset_class == "Index" else "regular trading"} hours for the {contracts_real[symbol] + " contract in the " if "[*]" not in symbol else ""}{exchange.replace("usa", "us").upper().replace("INDIA", "India") + " " if asset_class.lower() != "cfd" else ""}{asset_class.replace("Cfd", "CFD")}{"" if asset_class == "Index" else " market"}:</p>
 
 <table class="table qc-table table-reflow">
 <thead>
 <tr><th style="width: 20%;">Weekday</th><th style="width: 80%;">Time ({entry["exchangeTimeZone"].replace("_", " ")})</th></tr>
 </thead>
 <tbody>
-''')
+'''.replace("US Option", "Equity Option"))
+                    
                     for day, hour in hour_list.items():
                         if hour:
                             html_file.write(f'''<tr><td>{day.title()}</td><td>{", ".join(hour)}</td></tr>
@@ -222,7 +223,7 @@ for asset_class, assets in sorted_assets.items():
                     
                 if "table" in holiday_html and asset_class != "Forex":
                     html_file.write(f"""
-<p>The following table shows the dates of holidays for the {contracts_real[symbol] + " in " if "[*]" not in symbol else ""}{exchange.upper() + " " if asset_class.lower() != "cfd" else ""}{asset_class} market.</p>
+<p>The following table shows the dates of holidays for the {contracts_real[symbol] + " contract in the " if "[*]" not in symbol else ""}{exchange.replace("usa", "us").upper().replace("INDIA", "India") + " " if asset_class.lower() != "cfd" else ""}{asset_class.replace("Cfd", "CFD")} market:</p>
 
 {holiday_html}""")
                 else:
@@ -235,9 +236,9 @@ for asset_class, assets in sorted_assets.items():
                     
                     if "table" in hour_html and asset_class != "Forex":
                         html_file.write(f"""
-<p>The following table shows the {page_name.replace("-", " ")} for the {contracts_real[symbol] + " in " if "[*]" not in symbol else ""}{exchange.upper() + " " if asset_class.lower() != "cfd" else ""}{asset_class} market.</p>
+<p>The following table shows the {page_name.replace("-", " ")} for the {contracts_real[symbol] + " contract in the " if "[*]" not in symbol else ""}{exchange.replace("usa", "us").upper().replace("INDIA", "India") + " " if asset_class.lower() != "cfd" else ""}{asset_class.replace("Cfd", "CFD")} market:</p>
 
-{hour_html}""")
+{hour_html}""".replace("US Option", "Equity Option"))
                     
                     else:
                         html_file.write(f"""
@@ -245,11 +246,18 @@ for asset_class, assets in sorted_assets.items():
                 
             # j += 1
     
-        if asset_class.lower() != "cfd" or "</table>" not in html:
-            html += """</tbody>
+            if ("[*]" in symbol or "Generic" in symbol) and (sec != ["[*]"] and sec != ["Generic"]):
+                with open(symbol_path / 'introduction.html', 'w', encoding='utf-8') as html_file:
+                    html_file.write(f"""<p>This page shows the trading hours, holidays, time zone, and supported assets of the {exchange.replace("usa", "us").upper().replace("INDIA", "India") + " " if asset_class.lower() != "cfd" else ""}{asset_class.replace("Cfd", "CFD")} market.</p>""".replace("US Option", "Equity Option"))
+
+            else:            
+                with open(symbol_path / 'introduction.html', 'w', encoding='utf-8') as html_file:
+                    html_file.write(f"""<p>This page shows the trading hours, holidays, and time zone of the {contracts_real[symbol] + " (" + symbol +") contract in the " if "[*]" not in symbol else ""}{exchange.replace("usa", "us").upper().replace("INDIA", "India") + " " if asset_class.lower() != "cfd" else ""}{asset_class.replace("Cfd", "CFD")} market.</p>""".replace("US Option", "Equity Option"))
+
+        html += """</tbody>
 </table>
 """
-
+    
     with open(destination_folder / f"{asset_class}.html", "w", encoding="utf-8") as html_file:
         html_file.write(html.replace('[*]', 'Generic'))
 
@@ -259,7 +267,7 @@ for asset_class in ["Index", "IndexOption"]:
         
         html_file.write(f'''<!-- Code generated by market-hour-code-generator.py -->
                                         
-<p>The following table shows the regular hours for the USA Index:</p>
+<p>The following table shows the regular hours for the US Indices:</p>
 
 <table class="table qc-table table-reflow">
 <thead>
