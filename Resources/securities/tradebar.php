@@ -28,8 +28,7 @@ public void OnData(TradeBars tradeBars)
 </pre>
     <pre class='python'>def OnData(self, slice: Slice) -> None:
     if {$pythonVariable} in slice.Bars:
-        trade_bar = slice.Bars[{$pythonVariable}]
-    </pre>
+        trade_bar = slice.Bars[{$pythonVariable}]</pre>
 </div>
 
 
