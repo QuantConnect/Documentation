@@ -18,8 +18,8 @@ namespace QuantConnect.Algorithm.CSharp
             // Set the starting cash balance to $100,000 USD
             SetCash(100000);
 
-            // Add minute data for the S&amp;P500 index ETF
-            AddEquity("SPY", Resolution.Minute);
+            // Add data for the S&amp;P500 index ETF
+            AddEquity("SPY");
         }
 
         // OnData event is the primary entry point for your algorithm. Each new data point will be pumped in here.
@@ -27,6 +27,7 @@ namespace QuantConnect.Algorithm.CSharp
         //     - Slice object keyed by symbol containing the stock data
         public override void OnData(Slice data)
         {
+	    // Allocate 100% of the portfolio to SPY
             if (!Portfolio.Invested)
             {
                 SetHoldings("SPY", 1);
@@ -46,14 +47,15 @@ class BasicTemplateAlgorithm(QCAlgorithm):
         # Set the starting cash balance to $100,000 USD
         self.SetCash(100000)
 
-        # Add minute data for the S&amp;P500 index ETF
-        self.AddEquity("SPY", Resolution.Minute)
+        # Add data for the S&amp;P500 index ETF
+        self.AddEquity("SPY")
 
     def OnData(self, data: Slice): -&gt; None
         '''OnData event is the primary entry point for your algorithm. Each new data point will be pumped in here.
         Arguments:
             data: Slice object keyed by symbol containing the stock data
         '''
+	# Allocate 100% of the portfolio to SPY
         if not self.Portfolio.Invested:
             self.SetHoldings("SPY", 1)</pre>
 </div>
