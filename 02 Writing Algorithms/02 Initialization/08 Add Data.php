@@ -15,7 +15,7 @@ self.AddForex("EURUSD", Resolution.Second) # Add EURUSD 1 second bars
 
 <p>In live trading, you define the securities you want, but LEAN also gets the securities in your live portfolio and sets their resolution to the lowest resolution of the subscriptions you made. For example, if you create subscriptions in your algorithm for securities with Second, Minute, and Hour resolutions, the assets in your live portfolio are given a resolution of Second.</p>
 
-<h4>Fundamental and Alternative Data</h4>
+<h4>Alternative Data</h4>
 
 <p>To add alternative datasets to an algorithm, call the <code>AddData</code> method. For full examples, in the <a href="/docs/v2/writing-algorithms/datasets/overview">Datasets</a> chapter, select a dataset and see the <span class="page-section-name">Requesting Data</span> section.</p>
 
