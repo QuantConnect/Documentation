@@ -7,7 +7,7 @@
 <pre class="csharp">var timeZone = TimeZone;</pre>
 </div> 
 
- <p>To get the algorithm time in the Coordinated Universal Time (UTC), use the <code>UtcTime</code> property.</p>
+ <p>To get the algorithm time in Coordinated Universal Time (UTC), use the <code>UtcTime</code> property.</p>
 
 
 <div class="section-example-container">
