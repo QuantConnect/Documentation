@@ -1,6 +1,6 @@
 <?php echo file_get_contents(DOCS_RESOURCES."/time-zone.html"); ?>
 
-<p>To get the time zone of your algorithm, use the <code>TimeZone</code> property of your algorithm.</p>
+<p>To get the time zone of your algorithm, use the <code>TimeZone</code> property.</p>
 
 <div class="section-example-container">
 <pre class="python">time_zone = self.TimeZone</pre>
