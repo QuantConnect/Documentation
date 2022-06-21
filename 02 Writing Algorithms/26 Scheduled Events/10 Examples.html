@@ -1,41 +1,40 @@
-<div class="section-example-container" >
-    <pre class="csharp" >
-// Schedule an event to fire at a specific date/time
+<div class="section-example-container">
+    <pre class="csharp">// Schedule an event to fire at a specific date/time
 Schedule.On(DateRules.On(2013, 10, 7),
             TimeRules.At(13, 0),
-            () => Log($"SpecificTime: Fired at : {Time}"));
+            () =&gt; Log($"SpecificTime: Fired at : {Time}"));
 
 // Schedule an event to fire every trading day for a security
 // The time rule here tells it to fire 10 minutes after SPY's market open
 Schedule.On(DateRules.EveryDay("SPY"),
             TimeRules.AfterMarketOpen("SPY", 10),
-            () => Log($"EveryDay.SPY 10 min after open: Fired at: {Time}"));
+            () =&gt; Log($"EveryDay.SPY 10 min after open: Fired at: {Time}"));
 
 // Schedule an event to fire every trading day for a security
 // The time rule here tells it to fire 10 minutes before SPY's market close
 Schedule.On(DateRules.EveryDay("SPY"),
             TimeRules.BeforeMarketClose("SPY", 10),
-            () => Log($"EveryDay.SPY 10 min before close: Fired at: {Time}"));
+            () =&gt; Log($"EveryDay.SPY 10 min before close: Fired at: {Time}"));
 
 // Schedule an event to fire on certain days of the week
 Schedule.On(DateRules.Every(DayOfWeek.Monday, DayOfWeek.Friday),
             TimeRules.At(12, 0),
-            () => Log($"Mon/Fri at 12pm: Fired at: {Time}"));
+            () =&gt; Log($"Mon/Fri at 12pm: Fired at: {Time}"));
 
 // Schedule an event to fire once today at when this method is called (now)
 Schedule.On(DateRules.Today,
             TimeRules.Now,
-            () => Log($"Now: Fired at: {Time}"));
+            () =&gt; Log($"Now: Fired at: {Time}"));
 
 // Schedule an event to fire once tomorrow at midnight
 Schedule.On(DateRules.Tomorrow,
             TimeRules.Midnight,
-            () => Log($"Tomorrow at midnight: Fired at: {Time}"));
+            () =&gt; Log($"Tomorrow at midnight: Fired at: {Time}"));
 
 // Schedule an event to fire once today at noon
 Schedule.On(DateRules.Today,
             TimeRules.Noon,
-            () => Log($"Today at noon: Fired at: {Time}"));
+            () =&gt; Log($"Today at noon: Fired at: {Time}"));
 
 // The scheduling methods return the ScheduledEvent object which can be used 
 // for other things here I set the event up to check the portfolio value every
@@ -77,7 +76,7 @@ Schedule.On(DateRules.WeekEnd("SPY"),
 private void LiquidateUnrealizedLosses()
 {
     // if we have over 1000 dollars in unrealized losses, liquidate
-    if (Portfolio.TotalUnrealizedProfit < -1000)
+    if (Portfolio.TotalUnrealizedProfit &lt; -1000)
     {
         Log($"Liquidated due to unrealized losses at: {Time}");
         Liquidate();
@@ -89,8 +88,7 @@ private void RebalancingCode()
     // Good spot for rebalancing code?
 }            
 </pre>
-    <pre class="python" >
-# Schedule an event to fire at a specific date/time
+    <pre class="python"># Schedule an event to fire at a specific date/time
 self.Schedule.On(self.DateRules.On(2013, 10, 7), 
                  self.TimeRules.At(13, 0), 
                  lambda: self.Log(f"SpecificTime: Fired at : {self.Time}"))
@@ -164,13 +162,13 @@ self.Schedule.On(self.DateRules.WeekEnd("SPY"),
 
 
 # The following methods are not defined in Initialize:
-def LiquidateUnrealizedLosses(self):
+def LiquidateUnrealizedLosses(self) -&gt; None:
     ''' if we have over 1000 dollars in unrealized losses, liquidate'''
-    if self.Portfolio.TotalUnrealizedProfit < -1000:
+    if self.Portfolio.TotalUnrealizedProfit &lt; -1000:
         self.Log(f"Liquidated due to unrealized losses at: {self.Time}")
         self.Liquidate()
 
-def RebalancingCode(self):
+def RebalancingCode(self) -&gt; None:
     ''' Good spot for rebalancing code?'''
     pass
 </pre>
