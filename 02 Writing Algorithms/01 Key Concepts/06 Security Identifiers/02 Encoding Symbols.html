@@ -46,15 +46,17 @@
 
 <img class="img-responsive" src="https://cdn.quantconnect.com/docs/i/symbol-encoding-examples_rev0.png" style="max-width: 400px">
 
-<p>LEAN assumes the ticker you pass to the <a href='https://www.quantconnect.com/docs/v2/writing-algorithms/securities/asset-classes/us-equity/requesting-data#02-Create-Subscriptions'>AddEquity</a> method is the current ticker of the Equity asset. To access this ticker, use the <code>Value</code> property of the <code>Symbol</code> object.</p>
+<p>LEAN assumes the ticker you pass to the <a href="https://www.quantconnect.com/docs/v2/writing-algorithms/securities/asset-classes/us-equity/requesting-data#02-Create-Subscriptions">AddEquity</a> method is the current ticker of the Equity asset. To access this ticker, use the <code>Value</code> property of the <code>Symbol</code> object.</p>
 
 <div class="section-example-container">
 <pre class="python">self.symbol = self.AddEquity("GOOG").Symbol
-self.Debug(self.symbol.ID)     # Prints "GOOCV VP83T1ZUHROL"
-self.Debug(self.symbol.Value)  # Prints "GOOG"
+self.Debug(self.symbol.ID.Value) # Prints "GOOCV"
+self.Debug(self.symbol.Value)    # Prints "GOOG"
 </pre>
 <pre class="csharp">var symbol = AddEquity("GOOG").Symbol;
-Debug(symbol.ID.ToString()); // Prints "GOOCV VP83T1ZUHROL"
-Debug(symbol.Value);         // Prints "GOOG"
+Debug(symbol.ID.Value); // Prints "GOOCV"
+Debug(symbol.Value);    // Prints "GOOG"
 </pre>
 </div>
+
+<p>If you create the security subscription with a universe selection function, the <code>Value</code> property of the <code>Symbol</code> object is the point-in-time ticker.</p>
