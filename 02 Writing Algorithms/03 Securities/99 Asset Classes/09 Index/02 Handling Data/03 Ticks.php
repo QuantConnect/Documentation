@@ -6,7 +6,7 @@
 <p> In backtests, LEAN groups ticks into one millisecond buckets. In live trading, LEAN groups ticks into ~70-millisecond buckets. To get the <code>Tick</code> objects in the <code>Slice</code>, index the <code>Ticks</code> property of the <code>Slice</code> with a <code>Symbol</code>. The <code>Slice</code> may not contain data for your <code>Symbol</code> at every time step. To avoid issues, check if the <code>Slice</code> contains data for your Index before you index the <code>Slice</code> with the Index <code>Symbol</code>.</p>
 
 <div class='section-example-container'>
-    <pre class='csharp'>public override void OnDate(TradeBar data)
+    <pre class='csharp'>public override void OnData(TradeBar data)
 {
     if (data.Ticks.ContainsKey(symbol))
     {

@@ -6,7 +6,7 @@
 <p>To get the <code>TradeBar</code> objects in the <code>Slice</code>, index the <code>Slice</code> or index the <code>Bars</code> property of the <code>Slice</code> with the Index <code>Symbol</code>. The <code>Slice</code> may not contain data for your <code>Symbol</code> at every time step. To avoid issues, check if the <code>Slice</code> contains data for your Index before you index the <code>Slice</code> with the Index <code>Symbol</code>.</p>
     
 <div class='section-example-container'>
-    <pre class='csharp'>public override void OnDate(Slice data)
+    <pre class='csharp'>public override void OnData(Slice data)
 {
     if (data.Bars.ContainsKey(symbol))
     {
@@ -18,7 +18,7 @@
     }
 }
 
-public override void OnDate(TradeBar data)
+public override void OnData(TradeBar data)
 {
     if (data.ContainsKey(symbol))
     {
