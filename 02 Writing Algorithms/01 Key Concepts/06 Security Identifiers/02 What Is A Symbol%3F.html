@@ -46,16 +46,15 @@
 
 <img class="img-responsive" src="https://cdn.quantconnect.com/docs/i/symbol-encoding-examples_rev0.png" style="max-width: 400px">
 
-<p>When you manually request data with the <code>AddSecurity/AddEquity</code> methods, QuantConnect assumes you are adding the ticker as of "today" and automatically looks up the first ticker that an asset was listed with. Using the Google example above:</p>
+<p>LEAN assumes the ticker you pass to the <code>AddEquity</code> method is the current ticker of the Equity asset. To access this ticker, use the <code>Value</code> property of the <code>Symbol</code> object.</p>
 
 <div class="section-example-container">
-<pre class="python">self.goog = self.AddEquity("GOOG").Symbol
-self.Debug(self.goog.ID) # Prints "GOOCV VP83T1ZUHROL"
-self.Debug(self.goog)    # Prints Your Reference "GOOG"
+<pre class="python">self.symbol = self.AddEquity("GOOG").Symbol
+self.Debug(self.symbol.ID)     # Prints "GOOCV VP83T1ZUHROL"
+self.Debug(self.symbol.Value)  # Prints "GOOG"
 </pre>
-<pre class="csharp">var goog = AddEquity("GOOG").Symbol;
-Debug(goog.ID.ToString()); // Prints "GOOCV VP83T1ZUHROL"
-Debug(goog);               // Prints Your Reference "GOOG"
+<pre class="csharp">var symbol = AddEquity("GOOG").Symbol;
+Debug(symbol.ID.ToString()); // Prints "GOOCV VP83T1ZUHROL"
+Debug(symbol.Value);         // Prints "GOOG"
 </pre>
 </div>
-<p>To access your reference value for a Symbol, you can use the <code>Symbol.Value</code> property which returns the string ticker you used to add the data to your algorithm (i.e. "GOOG" in our example).</p>
