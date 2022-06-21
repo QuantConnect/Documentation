@@ -4,17 +4,21 @@
 
 <div class="section-example-container">
 <pre class="csharp">// In Initialize
-AddUniverse&lt;NyseTopGainers&gt;("myCustomUniverse", Resolution.Daily, nyseTopGainersList =&gt; {
-      return from singleStockData in nyseTopGainersList
-             where singleStockData.Rank &gt; 5
-             select singleStockData.Symbol;
+AddUniverse&lt;MyCustomUniverseDataClass&gt;("myCustomUniverse", Resolution.Daily, data =&gt; {
+    return from singleStockData in data
+           where singleStockData.CustomAttribute1 &gt; 0
+           orderby singleStockData.CustomAttribute2 descending
+           select singleStockData.Symbol;
 });
 </pre>
 <pre class="python"># In Initialize
-self.AddUniverse(NyseTopGainers, "myCustomUniverse", Resolution.Daily, self.selector_function)
+self.AddUniverse(MyCustomUniverseDataClass, "myCustomUniverse", Resolution.Daily, self.selector_function)
 
 # Define the selector function
-def selector_function(self, data: List[CustomUniverseDataClass]) -&gt; List[Symbol]:
-    return [ x.Symbol for x in data if x["Rank"] &gt; 5 ]
+def selector_function(self, data: List[MyCustomUniverseDataClass]) -&gt; List[Symbol]:
+    sorted_data = sorted([ x for x in data if x["CustomAttribute1"] &gt; 0 ],
+                         key=lambda x: x["CustomAttribute2"],
+                         reverse=True)
+    return [x.Symbol for x in sorted_data]
 </pre>
 </div>

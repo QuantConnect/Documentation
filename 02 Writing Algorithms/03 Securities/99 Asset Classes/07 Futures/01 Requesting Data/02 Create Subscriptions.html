@@ -4,16 +4,19 @@
 <p>To get Futures contract <code>Symbol</code> objects, call the <code>CreateFuture</code> method or use the <code>FutureChainProvider</code>. If you use the <code>CreateFuture</code> method, you need to know the specific contract details.</p>
 
 <div class="section-example-container">
-    <pre class="csharp">// Example of CreateFuture</pre>
-    <pre class="python"># Example of CreateFuture</pre>
+    <pre class="csharp">var expiry = DateTime.Today + TimeSpan.FromDays(30);
+var futureContract = Symbol.CreateFuture(Futures.Metals.Gold, Market.COMEX, expiry);</pre>
+    <pre class="python">expiry = datetime.today + timedelta(days=30)
+future_contract = Symbol.CreateFuture(Futures.Metals.Gold, Market.COMEX, expiry)</pre>
 </div>
 
 <p>If you use the <code>FutureChainProvider</code>, you need to create the continuous contract <code>Symbol </code>of the Future. The <code>GetFutureContractList</code> method of <code>FutureChainProvider </code>returns a list of Futures contracts that are available for a given underlying Future on a given date.</p>
 
 <div class="section-example-container">
-    <pre class="csharp">// Example of GetFutureContractList; it should create FuturesContract objects so that it can filter</pre>
-    <pre class="python">continuous_contract_symbol = Symbol.Create(Futures.Indices.SP500EMini, SecurityType.Future, Market.CME)
-contract_symbols = self.FutureChainProvider.GetFutureContractList(continuous_contract_symbol, self.Time)</pre>
+    <pre class="csharp">var continuousFutureSymbol = Symbol.Create(Futures.Indices.SP500EMini, SecurityType.Future, Market.CME);
+contractSymbols = FutureChainProvider.GetFutureContractList(continuousFutureSymbol, Time);</pre>
+    <pre class="python">continuous_future_symbol = Symbol.Create(Futures.Indices.SP500EMini, SecurityType.Future, Market.CME)
+contract_symbols = self.FutureChainProvider.GetFutureContractList(continuous_future_symbol, self.Time)</pre>
 </div>
 
 
@@ -34,8 +37,19 @@ contract_symbols = self.FutureChainProvider.GetFutureContractList(continuous_con
 <p>If you subscribe to a Futures contract with <code>AddFutureContract</code>, you'll need to wait until the next <code>Slice</code> to receive data and trade the contract. To trade the contract in the same time step you subscribe to the contract, set the current price of the contract in a security initializer.</p>
 
 <div class="section-example-container">
-    <pre class="csharp">// Example of security initializer. Since this h3 already has a security initializer, we should check the SecurityType == Future in the security initializer code to set the last price.</pre>
-    <pre class="python"># Example of security initializer. Since this h3 already has a security initializer, we should check the SecurityType == Future in the security initializer code to set the last price.</pre>
+    <pre class="csharp">SetSecurityInitializer(security =&gt; {
+    if (security.Type == SecurityType.Future)
+    {
+        security.SetMarketPrice(GetLastKnownPrice(security));
+    }
+});
+    </pre>
+    <pre class="python">self.SetSecurityInitializer(self.CustomSecurityInitializer)
+
+def CustomSecurityInitializer(self, security: Security) -&gt; None:
+    if security.Type == SecurityType.Future:
+        security.SetMarketPrice(self.GetLastKnownPrice(security))
+    </pre>
 </div>
 
 

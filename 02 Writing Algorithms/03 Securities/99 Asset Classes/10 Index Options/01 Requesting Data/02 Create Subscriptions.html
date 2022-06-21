@@ -4,15 +4,23 @@
 <p>To get Index Option contract <code>Symbol</code> objects, call the <code>CreateOption</code> method or use the <code>OptionChainProvider</code>. If you use the <code>CreateOption</code> method, you need to know the specific contract details.</p>
 
 <div class="section-example-container">
-    <pre class="csharp">// Example of CreateOption</pre>
-    <pre class="python"># Example of CreateOption</pre>
+    <pre class="csharp">var strike = 100m;
+var expiry = DateTime.Today + TimeSpan.FromDays(30);
+var index = Symbol.Create("VIX", SecurityType.Index, Market.USA);
+var option = Symbol.CreateOption(index, Market.USA, OptionStyle.American, OptionRight.Put, strike, expiry);</pre>
+    <pre class="python">strike = 100
+expiry = datetime.today + timedelta(days=30)
+index = Symbol.Create("CL", SecurityType.Index, Market.USA)
+option = Symbol.CreateOption(index, Market.USA, OptionStyle.American, OptionRight.Put, strike, expiry)</pre>
 </div>
 
 <p>Another way to get an Index Option contract <code>Symbol</code> is to use the <code>OptionChainProvider</code>. The <code>GetOptionContractList</code> method of <code>OptionChainProvider </code>returns a list of Option contracts that are available for a given underlying Index on a given date.</p>
 
 <div class="section-example-container">
-    <pre class="csharp">// Example of GetOptionContractList; it should create OptionContract objects so that it can filter</pre>
-    <pre class="python"># Example of GetOptionContractList; it should create OptionContract objects so that it can filter</pre>
+    <pre class="csharp">var index = Symbol.Create("VIX", SecurityType.Index, Market.USA);
+var indexOptionContracts = OptionChainProvider.GetOptionContractList(index, Time);</pre>
+    <pre class="python">index = Symbol.Create("CL", SecurityType.Index, Market.USA)
+index_option_contracts = self.OptionChainProvider.GetOptionContractList(index, self.Time)</pre>
 </div>
 
 
@@ -33,8 +41,19 @@
 <p>If you subscribe to an Index Option contract with <code>AddOptionContract</code>, you'll need to wait until the next <code>Slice</code> to receive data and trade the contract. To trade the contract in the same time step you subscribe to the contract, set the current price of the contract in a security initializer.</p>
 
 <div class="section-example-container">
-    <pre class="csharp">// Example of security initializer. Since this h3 already has a security initializer, we should check the SecurityType == Future in the security initializer code to set the last price.</pre>
-    <pre class="python"># Example of security initializer. Since this h3 already has a security initializer, we should check the SecurityType == Future in the security initializer code to set the last price.</pre>
+    <pre class="csharp">SetSecurityInitializer(security =&gt; {
+    if (security.Type == SecurityType.IndexOption)
+    {
+        security.SetMarketPrice(GetLastKnownPrice(security));
+    }
+});
+    </pre>
+    <pre class="python">self.SetSecurityInitializer(self.CustomSecurityInitializer)
+
+def CustomSecurityInitializer(self, security: Security) -&gt; None:
+    if security.Type == SecurityType.IndexOption:
+        security.SetMarketPrice(self.GetLastKnownPrice(security))
+    </pre>
 </div>
 
 
