@@ -1,7 +1,6 @@
--The slice passed to OnData vs self.CurrentSlice<br><p>
+<p>
+The core technology behind QuantConnect algorithmic trading is an event-based, streaming analysis system called <a href="https://www.lean.io" target="_BLANK">LEAN</a>. LEAN attempts to model the stream of time as accurately as possible, presenting data ("events") to your algorithms in the order it arrives, as you would experience in reality.
 </p>
 
-<p>
-Data comes in two different "shapes" according to the time period it covers: point values, or period values. These have different properties in LEAN which determine when the data is emitted to your algorithm. The coordination of emitting this data is controlled by the <i>Time Frontier</i>.
-In QuantConnect, Ticks are point values, and Bars have a period.</p>
-<img src="https://cdn.quantconnect.com/docs/i/time-v-endtime_rev0.png" class="img-responsive"/>
+<p>All QuantConnect algorithms have this time-stream baked in as the primary event handler, <code>OnData</code>. The <code>Slice</code> object this method receives represents all of the data at a moment of time, a <span class="new-term">time-slice</span>. No matter what data you request, you receive it in the order created according to simulated algorithm time. By only letting your algorithm see the present and past moments, we can prevent the most common quantitative-analysis error, <a href="/docs/v2/writing-algorithms/key-concepts/research-guide#07-Look-ahead-Bias">look-ahead bias</a>.
+</p>
