@@ -1,7 +1,4 @@
-<p><code>Symbol</code> objects have several public properties you can use to uniquely identify the asset. When you serialize these properties, this class allows the unique identification of millions of different security objects all within a self-contained reference. </p>
-<img src="https://cdn.quantconnect.com/alpha/docs/i/what-is-symbol_rev0.png" class="img-responsive">
-
-<p>The following table describes the preceding properties:</p>
+<p><code>SecurityIdentifier</code> objects have several public properties to uniquely identify each asset. The following table describes these properties:</p>
 
 <table class="qc-table table">
     <thead>
@@ -23,8 +20,8 @@
             <td>Security Types include Equity, Option, Future, Forex, Crypto and Cfd.</td>
         </tr>
         <tr>
-            <td><code>OptionType</code></td>
-            <td><code>string</code></td>
+            <td><code>OptionStyle</code></td>
+            <td><code>OptionStyle</code></td>
             <td>American or European Option.</td>
         </tr>
         <tr>
@@ -34,7 +31,7 @@
         </tr>
         <tr>
             <td><code>Date</code></td>
-            <td><code></code></td>
+            <td><code class="python">datetime</code><code class="csharp">DateTime</code></td>
             <td>Earliest listing date if equities, expiry for future/option.</td>
         </tr>
         <tr>
@@ -45,31 +42,12 @@
     </tbody>
 </table>
 
-<div data-tree='QuantConnect.SecurityIdentifier'></div>
-
-<div class="section-example-container">
-<pre class="all">Symbol.Market            # Market USA, GDAX, Bitfinex, Oanda. Liquidity venues.
-Symbol.SecurityType      # Security Types include Equity, Option, Future, Forex, Crypto and Cfd.
-Symbol.OptionType        # American or European Option.
-Symbol.OptionRight       # OptionRight indicates if a Put or Call.
-Symbol.Date              # Earliest listing date if equities, expiry for future/option.
-Symbol.HasUnderlying     # Is a derivative asset with another underlying asset.
-</pre>
-</div>
-
-<p>
-All of this data is encoded into the symbol object. QuantConnect does our best to hide the details of this from your algorithm, but occasionally you'll see it come through as an encoded hash like this: <code>AAPL R735QTJ8XC9X</code>. The first half of the encoded string represents the <b>first</b> ticker AAPL was listed under, the other letters at the end of the string represent other information for the asset (Security Type, Date Listed, Expiry Date, Strike Price, and Listed Market). 
-</p>
+<p>We encode the preceding properties to create <code>Symbol</code> objects. We do our best to hide the details of this process from your algorithm, but you'll occasionally see it come through as an encoded hash like <code>AAPL R735QTJ8XC9X</code>. The first half of the encoded string represents the first ticker AAPL was listed under. The other letters at the end of the string represent the serialized form of the preceding <code>SecurityIdentifier</code> properties. This serialization approach lets LEAN assign a short, unique string to octillions of different security objects.</p>
 
 <img class="img-responsive" src="https://cdn.quantconnect.com/docs/i/symbol-encoding-examples_rev0.png" style="max-width: 400px">
 
+<p>When you manually request data with the <code>AddSecurity/AddEquity</code> methods, QuantConnect assumes you are adding the ticker as of "today" and automatically looks up the first ticker that an asset was listed with. Using the Google example above:</p>
 
-<h4>
-Important: Adding Securities
-</h4>
-<p>
-When you manually request data with <code>AddSecurity()/AddEquity()</code> methods, QuantConnect assumes you are adding the ticker as of <i>"today"</i> and automatically looks up the first ticker that an asset was listed with. Using the Google example above:
-</p>
 <div class="section-example-container">
 <pre class="python">self.goog = self.AddEquity("GOOG").Symbol
 self.Debug(self.goog.ID) # Prints "GOOCV VP83T1ZUHROL"
