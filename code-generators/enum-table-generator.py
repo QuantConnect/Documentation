@@ -141,13 +141,7 @@ def TableCreation(raw, namespace=""):
         file.write(html)
         
 def HtmlGeneration(obj_name, sorted_obj, extra=''):
-    html = f'''<style>
-#enum-table td:nth-child(2),
-#enum-table th:nth-child(2)
-{{ text-align: right; }}
-</style>
-
-<p>The following table describes the <code>{obj_name}</code> enumerator members{extra}:</p>
+    html = f'''<p>The following table describes the <code>{obj_name}</code> enumerator members{extra}:</p>
 
 <table class="qc-table table" id="enum-table">
 <thead>
@@ -171,6 +165,14 @@ def HtmlGeneration(obj_name, sorted_obj, extra=''):
     html += """</tbody>
 </table>
 """
+
+    if all([str(y["code"]).replace("-", "").isnumeric() for x, y in sorted_obj]):
+        html += '''
+<style>
+#enum-table td:nth-child(2),
+#enum-table th:nth-child(2)
+{ text-align: right; }
+</style>'''
 
     return html
 
