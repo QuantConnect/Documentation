@@ -5,20 +5,51 @@
 
 <p>To get the <code>Dividend</code> objects in the <code>Slice</code>, index the <code>Dividends</code> property of the <code>Slice</code> with the security <code>Symbol</code>. The <code>Slice</code> may not contain data for your <code>Symbol</code>. To avoid issues, check if the <code>Dividends</code> property contains data for your security before you index it with the security <code>Symbol</code>.</p>
 
-<div class="section-example-container">
-        <pre class="csharp">if (data.Dividends.ContainsKey(_symbol))
+<div class='section-example-container'>
+    <pre class='csharp'>public override void OnData(Slice slice)
 {
-    var dividend = data.Dividends[_symbol];
-}</pre>
-        <pre class="python">if self.symbol in data.Dividends:
-    dividend = data.Dividends[self.symbol]</pre>
-    </div>
+    if (slice.Dividends.ContainsKey(_symbol))
+    {
+        var dividend = slice.Dividends[_symbol];
+    }
+}
 
+public void OnData(Dividends dividends)
+{
+    if (dividends.ContainsKey(_symbol))
+    {
+        var dividend = dividends[_symbol];
+    }
+}
+</pre>
+    <pre class='python'>def OnData(self, slice: Slice) -> None:
+    dividend = slice.Dividends.get(self.symbol)
+    if dividend:
+        pass</pre>
+</div>
 
 <p>You can also iterate through the <code>Dividends</code> dictionary. The keys of the dictionary are the <code>Symbol</code> objects and the values are the <code>Dividend</code> objects.</p>
 <div class='section-example-container'>
-        <pre class='csharp'>// Example</pre>
-        <pre class='python'># Example</pre>
+    <pre class='csharp'>public override void OnData(Slice slice)
+{
+    foreach (var kvp in slice.Dividends)
+    {
+        var symbol = kvp.Key;
+        var dividend = kvp.Value;
+    }
+}
+
+public void OnData(Dividends dividends)
+{
+    foreach (var kvp in dividends)
+    {
+        var symbol = kvp.Key;
+        var dividend = kvp.Value;
+    }
+}</pre>
+    <pre class='python'>def OnData(self, slice: Slice) -> None:
+    for symbol, dividend in slice.Dividends.items():
+        pass</pre>
 </div>
 
 <p>For a full example, see the <a rel='nofollow' target='_blank' class='csharp' href='https://github.com/QuantConnect/Lean/blob/master/Algorithm.CSharp/DividendAlgorithm.cs'>DividendAlgorithm</a><a rel='nofollow' target='_blank' href='https://github.com/QuantConnect/Lean/blob/master/Algorithm.Python/DividendAlgorithm.py' class='python'>DividendAlgorithm</a> in the LEAN GitHub repository.</p>

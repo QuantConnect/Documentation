@@ -17,9 +17,9 @@ $getTickText = function($securityName, $pythonVariable, $cSharpVariable)
 <div class='section-example-container'>
     <pre class='csharp'>public override void OnData(Slice slice)
 {
-    if (slice.Ticks.ContainsKey(_symbol))
+    if (slice.Ticks.ContainsKey({$cSharpVariable}))
     {
-        var ticks = slice.Ticks[_symbol];
+        var ticks = slice.Ticks[{$cSharpVariable}];
         foreach (var tick in ticks)
         {
             //
@@ -29,9 +29,9 @@ $getTickText = function($securityName, $pythonVariable, $cSharpVariable)
 
 public void OnData(Ticks ticks)
 {
-    if (ticks.ContainsKey(_symbol))
+    if (ticks.ContainsKey({$cSharpVariable}))
     {
-        foreach (var tick in ticks[_symbol])
+        foreach (var tick in ticks[{$cSharpVariable}])
         {
             //
         }

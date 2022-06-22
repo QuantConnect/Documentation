@@ -18,18 +18,50 @@ $getSplitsText = function($dataNormalizationModeLink, $factorFilesLink)
 <p>To get the <code>Split</code> objects in the <code>Slice</code>, index the <code>Splits</code> property of the <code>Slice</code> with the security <code>Symbol</code>. The <code>Slice</code> may not contain data for your <code>Symbol</code>. To avoid issues, check if the <code>Splits</code> property contains data for your security before you index it with the security <code>Symbol</code>.</p>
 
 <div class='section-example-container'>
-        <pre class='csharp'>if (data.Splits.ContainsKey(_symbol))
+    <pre class='csharp'>public override void OnData(Slice slice)
 {
-    var split = data.Splits[_symbol];
-}</pre>
-        <pre class='python'>if self.symbol in data.Splits:
-    split = data.Splits[self.symbol]</pre>
+    if (slice.Splits.ContainsKey(_symbol))
+    {
+        var split = slice.Splits[_symbol];
+    }
+}
+
+public void OnData(Splits splits)
+{
+    if (splits.ContainsKey(_symbol))
+    {
+        var split = splits[_symbol];
+    }
+}
+</pre>
+    <pre class='python'>def OnData(self, slice: Slice) -> None:
+    split = slice.Splits.get(self.symbol)
+    if split:
+        pass</pre>
 </div>
 
 <p>You can also iterate through the <code>Splits</code> dictionary. The keys of the dictionary are the <code>Symbol</code> objects and the values are the <code>Split</code> objects.</p>
 <div class='section-example-container'>
-        <pre class='csharp'>// Example</pre>
-        <pre class='python'># Example</pre>
+    <pre class='csharp'>public override void OnData(Slice slice)
+{
+    foreach (var kvp in slice.Splits)
+    {
+        var symbol = kvp.Key;
+        var split = kvp.Value;
+    }
+}
+
+public void OnData(Splits splits)
+{
+    foreach (var kvp in splits)
+    {
+        var symbol = kvp.Key;
+        var split = kvp.Value;
+    }
+}</pre>
+    <pre class='python'>def OnData(self, slice: Slice) -> None:
+    for symbol, split in slice.Splits.items():
+        pass</pre>
 </div>
 
 
@@ -41,5 +73,3 @@ $getSplitsText = function($dataNormalizationModeLink, $factorFilesLink)
 }
 
 ?>
-
-
