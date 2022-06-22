@@ -14,39 +14,8 @@ $getRuntimeStatisticsTable = function($isLiveMode) {
         </tr>
       </thead>
       <tbody>
-        <tr>
-          <td>PSR</td>
-          <td>{$definitionByTerm['probabilistic sharpe ratio (PSR)']}</td>
-        </tr>
-        <tr>
-          <td>Unrealized</td>
-          <td>{$definitionByTerm['unrealized']}</td>
-        </tr>
-        <tr>
-          <td>Fees</td>
-          <td>{$definitionByTerm['total fees']}</td>
-        </tr>
-        <tr>
-          <td>Net Profit</td>
-          <td>{$definitionByTerm['net profit']['dollar-value']}</td>
-        </tr>
-        <tr>
-          <td>Return</td>
-          <td>{$definitionByTerm['net profit']['percent']}</td>
-        </tr>
-        <tr>
-          <td>Equity</td>
-          <td>{$definitionByTerm['equity']}</td>
-        </tr>
-        <tr>
-          <td>Holdings</td>
-          <td>{$definitionByTerm['holdings']}</td>
-        </tr>
-        <tr>
-          <td>Volume</td>
-          <td>{$definitionByTerm['volume']}</td>
-        </tr>";
-
+      ";
+    
     if (!$isLiveMode) 
     {
         echo "
@@ -55,8 +24,40 @@ $getRuntimeStatisticsTable = function($isLiveMode) {
           <td>{$definitionByTerm['capacity']}</td>
         </tr>"; 
     }
-
-    echo "    
+    
+    echo "
+        <tr>
+          <td>Equity</td>
+          <td>{$definitionByTerm['equity']}</td>
+        </tr>
+        <tr>
+          <td>Fees</td>
+          <td>{$definitionByTerm['total fees']}</td>
+        </tr>
+        <tr>
+          <td>Holdings</td>
+          <td>{$definitionByTerm['holdings']}</td>
+        </tr>
+        <tr>
+          <td>Net Profit</td>
+          <td>{$definitionByTerm['net profit']['dollar-value']}</td>
+        </tr>
+        <tr>
+          <td>PSR</td>
+          <td>{$definitionByTerm['probabilistic sharpe ratio (PSR)']}</td>
+        </tr>
+        <tr>
+          <td>Return</td>
+          <td>{$definitionByTerm['net profit']['percent']}</td>
+        </tr>
+        <tr>
+          <td>Unrealized</td>
+          <td>{$definitionByTerm['unrealized']}</td>
+        </tr>
+        <tr>
+          <td>Volume</td>
+          <td>{$definitionByTerm['volume']}</td>
+        </tr>    
       </tbody>
     </table>";
 }
