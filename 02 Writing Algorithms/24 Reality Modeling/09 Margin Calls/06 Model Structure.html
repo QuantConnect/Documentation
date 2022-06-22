@@ -7,29 +7,51 @@
 <div class="section-example-container">
     <pre class="csharp">public class MyMarginCallModel : DefaultMarginCallModel
 {
-    public MyMarginCallModel(SecurityPortfolioManager portfolio, IOrderProperties defaultOrderProperties)
+    public MyMarginCallModel(
+        SecurityPortfolioManager portfolio,
+        IOrderProperties defaultOrderProperties)
         : base(portfolio, defaultOrderProperties)
     {
     }
-    
-    protected override SubmitOrderRequest GenerateMarginCallOrder(Security security, decimal totalPortfolioValue, decimal totalUsedMargin)
-    {
-        return base.GenerateMarginCallOrder(security, totalPortfolioValue, totalUsedMargin)
-    }
 
-    public override List&lt;OrderTicket&gt; ExecuteMarginCall(IEnumerable&lt;SubmitOrderRequest&gt; generatedMarginCallOrders)
+    public override List&lt;OrderTicket&gt; ExecuteMarginCall(
+        IEnumerable&lt;SubmitOrderRequest&gt; generatedMarginCallOrders)
     {
         return base.ExecuteMarginCall(generatedMarginCallOrders)
     }
-}</pre>
-    <pre class="python">class MyMarginCallModel(DefaultMarginCallModel):
-    def __init__(self, portfolio: SecurityPortfolioManager, defaultOrderProperties: IOrderProperties):
-        super().__init__(portfolio, defaultOrderProperties)
     
-    def GenerateMarginCallOrder(self, security: Security, totalPortfolioValue: float, totalUsedMargin: float) -&gt; SubmitOrderRequest:
-        return super().GenerateMarginCallOrder(security, totalPortfolioValue, totalUsedMargin)
+    protected override SubmitOrderRequest GenerateMarginCallOrder(
+        Security security,
+        decimal totalPortfolioValue,
+        decimal totalUsedMargin)
+    {
+        return base.GenerateMarginCallOrder(
+            security, totalPortfolioValue, totalUsedMargin)
+    }
 
-    def ExecuteMarginCall(self, generatedMarginCallOrders: List[SubmitOrderRequest]) -&gt; List[OrderTicket]:
-        return super().ExecuteMarginCall(generatedMarginCallOrders)</pre>
+    public List&lt;SubmitOrderRequest&gt;<submitorderrequest> GetMarginCallOrders(out bool issueMarginCallWarning)
+    {
+        return base.GetMarginCallOrders(issueMarginCallWarning)
+    }
+}</submitorderrequest></pre>
+    <pre class="python">class MyMarginCallModel(DefaultMarginCallModel):
+    def __init__(self,
+         portfolio: SecurityPortfolioManager,
+         defaultOrderProperties: IOrderProperties):
+        super().__init__(portfolio, defaultOrderProperties)
+
+    def ExecuteMarginCall(self,
+         generatedMarginCallOrders: List[SubmitOrderRequest]) -&gt; List[OrderTicket]:
+        return super().ExecuteMarginCall(generatedMarginCallOrders)
+    
+    def GenerateMarginCallOrder(self,
+         security: Security,
+         totalPortfolioValue: float,
+         totalUsedMargin: float) -&gt; SubmitOrderRequest:
+        return super().GenerateMarginCallOrder(
+            security, totalPortfolioValue, totalUsedMargin)
+
+    def GetMarginCallOrders(self,
+         issueMarginCallWarning: bool) -&gt; List[SubmitOrderRequest]:<br>        return super().GetMarginCallOrders(issueMarginCallWarning)<br></pre>
 </div>
 
