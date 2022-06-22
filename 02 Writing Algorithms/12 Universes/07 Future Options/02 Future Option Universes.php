@@ -62,7 +62,25 @@ self.AddFutureOption(future.Symbol)</pre>
 
 <p>To get all of the contracts in the <code>OptionFilterUniverse</code>, call the <code>GetEnumerator</code> method.</p>
 <div class="section-example-container">
-    <pre class="csharp"></pre>
+    <pre class="csharp"># In Initialize
+AddFutureOption(future.Symbol, Selector);
+        
+private FutureFilterUniverse Selector(FutureFilterUniverse futureFilterUniverse)
+{
+    List&lt;Symbol&gt; symbols = new();
+    var standards = futureFilterUniverse.StandardsOnly();
+
+    foreach (var symbol in standards)
+    {
+        var contract = new OptionContract(symbol, futureFilterUniverse.Underlying.Symbol);
+        if (contract.OpenInterest &gt; 0)
+        { 
+            symbols.Add(contract.Symbol);
+        }
+    }
+
+    return futureFilterUniverse.Contracts(symbols);
+}</pre>
     <pre class="python"># In Initialize
 self.AddFutureOption(future.Symbol, self.contract_selector)
     
@@ -70,7 +88,7 @@ def contract_selector(self, option_filter_universe: Callable[OptionFilterUnivers
     puts = option_filter_universe.PutsOnly()
     symbols = []
     for _, symbol in enumerate(puts.GetEnumerator()):
-        contract = OptionContract(symbol, option_filter_universe.Underlying)
+        contract = OptionContract(symbol, option_filter_universe.Underlying.Symbol)
         if contract.Greeks.Delta > 0: 
             symbols.append(contract.Symbol)
     return option_filter_universe.Contracts(symbols)</pre>

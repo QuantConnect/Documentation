@@ -186,7 +186,7 @@ private FutureFilterUniverse Selector(FutureFilterUniverse futureFilterUniverse)
 
     foreach (var symbol in standards)
     {
-        var contract = new FutureContract(symbol, futureFilterUniverse.Underlying);
+        var contract = new FuturesContract(symbol, futureFilterUniverse.Underlying.Symbol);
         if (contract.OpenInterest &gt; 0)
         { 
             symbols.Add(contract.Symbol);
@@ -201,8 +201,8 @@ future.SetFilter(self.contract_selector)
 def contract_selector(self, future_filter_universe: Callable[FutureFilterUniverse, FutureFilterUniverse]) -&gt; FutureFilterUniverse:
     standards = future_filter_universe.StandardsOnly()
     symbols = []
-    for symbol in standards:
-        contract = FutureContract(symbol, future_filter_universe.Underlying)
+    for _, symbol in enumerate(standards.GetEnumerator()):
+        contract = FuturesContract(symbol, future_filter_universe.Underlying.Symbol)
         if contract.OpenInterest &gt; 0: 
             symbols.append(contract.Symbol)
     return future_filter_universe.Contracts(symbols)</pre>
