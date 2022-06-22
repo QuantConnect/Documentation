@@ -5,3 +5,25 @@
 <div>-“For example, if I am getting a daily update on 50 stocks, will I get a single OnData call once all 50 are updated passing in the 50 in an array?”</div>
 <div>-Use this forum thread as a starting point: https://www.quantconnect.com/forum/discussion/12075/is-there-an-quot-event-flow-diagram-quot/p1</div>
 <div>-In live mode, Initialize method is called, the engine loads the holdings, cashbook, and open (submitted) orders from your brokerage account when the algorithm is deployed to add the populate the Securities, Portfolio, and Transactions objects and add the data susbcriptions</div><div>- # Explain what data event iteration means. Algorithms must execute a data event iteration within 10 minutes<br></div>
+
+
+<ol>
+    <li>If it's a backtest, check if there are <a href="/docs/v2/writing-algorithms/scheduled-events">Scheduled Events</a> in the past that didn't fire because there was no data between the previous <a href="/docs/v2/writing-algorithms/key-concepts/time-modeling/timeslices">slice</a> and the current slice.</li>
+    <li>Update the algorithm time.</li>
+    <li>Update the <code>CurrentSlice</code>.</li>
+    <li>Cancel all open orders for securities that <a href="/docs/v2/writing-algorithms/securities/asset-classes/us-equity/corporate-actions#04-Symbol-Changes">changed their ticker</a>.</li>
+    <li>Add a <code>Security</code> object to the <code>Securities</code> collection for each new security in the universe.</li>
+    <li>Update the <code>Security</code> objects with the latest data.</li>
+    <li>Update the <code>Cash</code> objects in the <a href="/docs/v2/writing-algorithms/portfolio/cashbook">CashBook</a> with the latest data.</li>
+    <li></li>
+    <li>Submit market on open orders to liquidate Equity Option contracts if the underlying Equity has a <a href="/docs/v2/writing-algorithms/securities/asset-classes/us-equity/corporate-actions#02-Splits">split warning</a>.</li>
+    <li>Process <a href="/docs/v2/writing-algorithms/reality-modeling/margin-calls">margin calls</a>.<br></li>
+    <li>If it's time to settle <a href="/docs/v2/writing-algorithms/portfolio/cashbook#03-Settled-vs-Unsettled-Cash">unsettled cash</a>, perform settlement.</li>
+    <li>Call the <a href="/docs/v2/writing-algorithms/universes/key-concepts#07-Security-Changed-Events">OnSecuritiesChanged</a> method with the latest security changes.</li>
+    <li>Apply dividends to the portfolio.</li>
+    <li>For securities that have a split warning, update their portfolio holdings and adjust their open orders to account for the split.</li>
+    <li>Update <a href='/docs/v2/writing-algorithms/consolidating-data/key-concepts'>consolidators</a> with the latest data.<br></li>
+    <li></li>
+    <li></li>
+    <li></li>
+</ol>
