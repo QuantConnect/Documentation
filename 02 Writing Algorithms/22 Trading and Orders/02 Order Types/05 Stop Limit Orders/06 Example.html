@@ -19,20 +19,7 @@
     <tbody>
         <tr>
             <td>2021-07-01T09:31:00Z</td>
-            <td>2021-07-01T09:31:00Z</td>
-            <td>SPY</td>
-            <td>/</td>
-            <td>/</td>
-            <td>429.11</td>
-            <td>10</td>
-            <td>Market</td>
-            <td>Filled</td>
-            <td>4291.10</td>
-            <td></td>
-        </tr>
-        <tr>
-            <td>2021-07-02T09:31:00Z</td>
-            <td>2021-07-02T09:37:00Z</td>
+            <td>2021-07-01T09:37:00Z</td>
             <td>SPY</td>
             <td>428.95</td>
             <td>429.00</td>
@@ -45,20 +32,7 @@
         </tr>
         <tr>
             <td>2021-07-02T09:31:00Z</td>
-            <td>2021-07-02T09:31:00Z</td>
-            <td>SPY</td>
-            <td>/</td>
-            <td>/</td>
-            <td>431.54</td>
-            <td>-10</td>
-            <td>Market</td>
-            <td>Filled</td>
-            <td>4315.40</td>
-            <td></td>
-        </tr>
-        <tr>
-            <td>2021-07-01T09:31:00Z</td>
-            <td>2021-07-01T10:12:00Z</td>
+            <td>2021-07-02T10:12:00Z</td>
             <td>SPY</td>
             <td>431.80</td>
             <td>431.75</td>
@@ -69,52 +43,27 @@
             <td>4317.50</td>
             <td>Stop Price: ¤431.80 Limit Price: ¤431.75</td>
         </tr>
-        <tr>
-            <td>2021-07-02T10:31:00Z</td>
-            <td>2021-07-02T10:31:00Z</td>
-            <td>SPY</td>
-            <td>/</td>
-            <td>/</td>
-            <td>431.83</td>
-            <td>-10</td>
-            <td>Market</td>
-            <td>Filled</td>
-            <td>-4318.30</td>
-            <td></td>
-        </tr>
-        <tr>
-            <td>2021-07-02T10:31:00Z</td>
-            <td>/</td>
-            <td>SPY</td>
-            <td>450.00</td>
-            <td>445.00</td>
-            <td>/</td>
-            <td>10</td>
-            <td>Stop Limit</td>
-            <td>Submitted</td>
-            <td>/</td>
-            <td>Stop Price: ¤450.00 Limit Price: ¤445.00</td>
-        </tr>
     </tbody>
 </table>
 
 <style>
-#research-nodes-table td:nth-child(3), 
-#research-nodes-table th:nth-child(3), 
 #research-nodes-table td:nth-child(4), 
 #research-nodes-table th:nth-child(4), 
+#research-nodes-table td:nth-child(5), 
+#research-nodes-table th:nth-child(5), 
+#research-nodes-table td:nth-child(6), 
+#research-nodes-table th:nth-child(6), 
 #research-nodes-table td:nth-child(7), 
-#research-nodes-table th:nth-child(7) {
+#research-nodes-table th:nth-child(7),
+#research-nodes-table td:nth-child(10), 
+#research-nodes-table th:nth-child(10) {
     text-align: right;
 }
 </style>
 
-<p>The first 2 trades are paired-trades of buying 10 shares of SPY at market price on 1st July 9:31am, and a stop loss limit order of the previous order with triggered price (stop price) at $428.95 and limit price $429.00. It worked as expected that it brought 10 shares of SPY at $429.11 immediately at 9:31am, the limit order with limit price $429.00 was submitted only when the price dropped on or below $428.95, and filled afterwards when the price rised on or above $429.00.</p>
+<p>On July 1, 2021 at 9:31 AM Eastern Time (ET), the algorithm places a stop limit order to sell SPY with a stop price of $428.95 and a limit price of $429. At the time of the order submission, the ask high price is $429.16 and the ask close price is $429.11. The order fills 9:37 AM ET at a price of $429. The <a href="/docs/v2/writing-algorithms/reality-modeling/trade-fills/supported-models/immediate-model#06-Stop-Limit-Orders">fill model</a> triggers the stop for buy orders when the ask high price is greater than the top price, fills the order when the ask close price is less than the limit price, and sets the fill price to the maximum of the ask high price and the limit price. <br></p><p>On July 2, 2021 at 9:31 AM ET, the algorithm places a stop limit order to buy SPY with a stop price of $431.80 and a limit price of $431.75. At the time of the order submissions, the bid low price is $431.49 and the bid close price is $431.54. The order fills at 10:12 AM ET at a price of $431.75. The fill model triggers the stop for sell orders when bid low price is less than the stop price, fills the order when the ask close price is less than the limit price, and sets the fill price to the minimum of the ask high price and the limit price.<br></p>
 
-<p>The third and fourth trades are paired-trades of selling 10 shares of SPY at market price on 2nd July 9:31am, and a stop loss limit order of the previous order with triggered price (stop price) at $431.80 and limit price $431.75. It worked as expected that it sold 10 shares of SPY at $431.54 immediately at 9:31am, the limit order with limit price $431.75 was submitted only when the price rised on or above $431.80, and filled afterwards when the price dropped on or below $431.75.</p>
 
-<p>The fifth and sixth trades are paired-trades of selling 10 shares of SPY at market price on 2nd July 10:31am, and a stop loss limit order of the previous order with triggered price (stop price) at $450.00 and limit price $445.00. It sold 10 shares of SPY at $431.83 immediately at 10:31am, the limit order with limit price $445.00 was never submitted since the price never rise on or above its stop price $450.00.</p>
+<p>To reproduce these results, backtest the following algorithm:</p><div class="python"><div class="qc-embed-frame" style="display: inline-block; position: relative; width: 100%; min-height: 100px; min-width: 300px;"><div class="qc-embed-dummy" style="padding-top: 56.25%;"></div><div class="qc-embed-element" style="position: absolute; top: 0; bottom: 0; left: 0; right: 0;"><iframe class="qc-embed-backtest" src="https://www.quantconnect.com/terminal/processCache?request=embedded_backtest_3962c4491d07d31f4339cf8e6cceaf00.html" style="max-width: calc(100vw - 30px); max-height: 100vw; overflow: hidden;" scrolling="no" width="100%" height="100%"></iframe></div></div></div>
 
-<div class="python"><div class="qc-embed-frame" style="display: inline-block; position: relative; width: 100%; min-height: 100px; min-width: 300px;"><div class="qc-embed-dummy" style="padding-top: 56.25%;"></div><div class="qc-embed-element" style="position: absolute; top: 0; bottom: 0; left: 0; right: 0;"><iframe class="qc-embed-backtest" src="https://www.quantconnect.com/terminal/processCache?request=embedded_backtest_5dcbfc8c4329be857b0a9675374ddb95.html" style="max-width: calc(100vw - 30px); max-height: 100vw; overflow: hidden;" scrolling="no" width="100%" height="100%"></iframe></div></div></div>
-
-<div class="csharp"><div class="qc-embed-frame" style="display: inline-block; position: relative; width: 100%; min-height: 100px; min-width: 300px;"><div class="qc-embed-dummy" style="padding-top: 56.25%;"></div><div class="qc-embed-element" style="position: absolute; top: 0; bottom: 0; left: 0; right: 0;"><iframe class="qc-embed-backtest" src="https://www.quantconnect.com/terminal/processCache?request=embedded_backtest_4aff96f874c0e8ed79f4142a187a71ce.html" style="max-width: calc(100vw - 30px); max-height: 100vw; overflow: hidden;" scrolling="no" width="100%" height="100%"></iframe></div></div></div>
+<div class="csharp"><div class="qc-embed-frame" style="display: inline-block; position: relative; width: 100%; min-height: 100px; min-width: 300px;"><div class="qc-embed-dummy" style="padding-top: 56.25%;"></div><div class="qc-embed-element" style="position: absolute; top: 0; bottom: 0; left: 0; right: 0;"><iframe class="qc-embed-backtest" src="https://www.quantconnect.com/terminal/processCache?request=embedded_backtest_d999dfbab5c609568d01645e5865e836.html" style="max-width: calc(100vw - 30px); max-height: 100vw; overflow: hidden;" scrolling="no" width="100%" height="100%"></iframe></div></div></div>
