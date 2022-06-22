@@ -1,7 +1,10 @@
 <p>When you deploy an algorithm, LEAN first calls the <a href="/docs/v2/writing-algorithms/initialization">Initialize</a> method. In live mode, the engine loads your holdings and open orders from your brokerage account to add data subscriptions and populate the <code>Securities</code>, <code>Portfolio</code>, and <code>Transactions</code> objects. LEAN then performs the following steps with each new <a href="/docs/v2/writing-algorithms/key-concepts/time-modeling/timeslices">timeslice</a> that your data subscriptions produce. Your algorithm must process each timeslice within 10 minutes unless you call the <a href="/docs/v2/writing-algorithms/machine-learning/training-models">Train</a> method.</p>
 
 <ol>
-    <li>If it's a backtest, check if there are <a href="/docs/v2/writing-algorithms/scheduled-events">Scheduled Events</a> in the past that didn't fire because there was no data between the previous <a href="/docs/v2/writing-algorithms/key-concepts/time-modeling/timeslices">slice</a> and the current slice.</li>
+    <li>If it's a backtest, check if there are <a href="/docs/v2/writing-algorithms/scheduled-events">Scheduled Events</a> in the past that didn't fire because there was no data between the previous <a href="/docs/v2/writing-algorithms/key-concepts/time-modeling/timeslices">slice</a> and the current slice. LEAN automatically creates a Scheduled Event to call the <code>OnEndOfDay</code> method at the end of each day.</li>
+
+    <p>In live mode, Scheduled Events occur in a separate thread from the algorithm manager, so they run at the correct time.</p>
+
     <li>Update the algorithm time.</li>
     <li>Update the <code>CurrentSlice</code>.</li>
     <li>Cancel all open orders for securities that <a href="/docs/v2/writing-algorithms/securities/asset-classes/us-equity/corporate-actions#04-Symbol-Changes">changed their ticker</a>.</li>
@@ -31,3 +34,9 @@
     <li>Pass the <code>PortfolioTarget</code> objects from the Portfolio Construction model to each <a href="/docs/v2/writing-algorithms/algorithm-framework/risk-management/key-concepts">Risk Management model</a>.</li>
     <li>Pass the risk-adjusted <code>PortfolioTarget</code> objects from the Risk Management models to the <a href="/docs/v2/writing-algorithms/algorithm-framework/execution/key-concepts">Execution model</a>.</li>
 </ol>
+
+<p>When your algorithm stops executing, LEAN calls the <code>OnEndOfAlgorithm</code> method.</p>
+<div class="section-example-container">
+<pre class="python"># Example OnEndOfAlgorithm </pre>
+<pre class="csharp">// Example OnEndOfAlgorithm</pre>
+</div>
