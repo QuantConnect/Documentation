@@ -6,34 +6,23 @@
 <p>To get the <code>TradeBar</code> objects in the <code>Slice</code>, index the <code>Slice</code> or index the <code>Bars</code> property of the <code>Slice</code> with the Index <code>Symbol</code>. The <code>Slice</code> may not contain data for your <code>Symbol</code> at every time step. To avoid issues, check if the <code>Slice</code> contains data for your Index before you index the <code>Slice</code> with the Index <code>Symbol</code>.</p>
     
 <div class='section-example-container'>
-    <pre class='csharp'>public override void OnData(Slice data)
+    <pre class='csharp'>public override void OnData(Slice slice)
 {
-    if (data.Bars.ContainsKey(symbol))
+    if (slice.Bars.ContainsKey(_symbol))
     {
-        var open = data.Bars[symbol].Open;
-        var high = data.Bars[symbol].High;
-        var low = data.Bars[symbol].Low;
-        var close = data.Bars[symbol].Close;
-        var volume = data.Bars[symbol].Volume;
+        var tradeBar = slice.Bars[_symbol];
     }
 }
 
-public override void OnData(TradeBar data)
+public void OnData(TradeBars tradeBars)
 {
-    if (data.ContainsKey(symbol))
+    if (tradeBars.ContainsKey(_symbol))
     {
-        var open = data[symbol].Open;
-        var high = data[symbol].High;
-        var low = data[symbol].Low;
-        var close = data[symbol].Close;
-        var volume = data[symbol].Volume;
+        var tradeBar = tradeBars[_symbol];
     }
-}</pre>
-    <pre class='python'>def OnData(self, data: Slice) -&gt; None:
-    if data.Bars.ContainsKey(symbol):
-        open = data.Bars[symbol].Open
-        high = data.Bars[symbol].High
-        low = data.Bars[symbol].Low
-        close = data.Bars[symbol].Close
-        volume = data.Bars[symbol].Volume</pre>
+}
+</pre>
+    <pre class='python'>def OnData(self, slice: Slice) -&gt; None:
+    if self.symbol in slice.Bars:
+        trade_bar = slice.Bars[self.symbol]</pre>
 </div>
