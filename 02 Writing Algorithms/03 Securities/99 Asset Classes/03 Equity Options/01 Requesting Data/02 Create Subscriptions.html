@@ -11,10 +11,12 @@
 
 <div class="section-example-container">
     <pre class="csharp">var equity = AddEquity("SPY", dataNormalizationMode: DataNormalizationMode.Raw);
+_symbol = equity.Symbol;
 equity.VolatilityModel = new StandardDeviationOfReturnsVolatilityModel(30);
 SetWarmup(30, Resolution.Daily);
 </pre>
     <pre class="python">equity = self.AddEquity("SPY", dataNormalizationMode=DataNormalizationMode.Raw)
+self.symbol = equity.Symbol
 equity.VolatilityModel = StandardDeviationOfReturnsVolatilityModel(30)
 self.SetWarmup(30, Resolution.Daily)</pre>
 </div>
@@ -47,11 +49,12 @@ self.UniverseSettings.DataNormalizationMode = DataNormalizationMode.Raw
 self.SetSecurityInitializer(self.CustomSecurityInitializer)
 
 def CustomSecurityInitializer(self, security: Security) -&gt; None:
-if security.Type == SecurityType.Equity:
-    security.VolatilityModel = StandardDeviationOfReturnsVolatilityModel(30)
-    for index, row in self.History(security.Symbol, 30, Resolution.Daily).iterrows():
-        trade_bar = TradeBar(index[1], security.Symbol, row.open, row.high, row.low, row.close, row.volume)
-        security.VolatilityModel.Update(security, trade_bar)</pre>
+    if security.Type == SecurityType.Equity:
+        security.VolatilityModel = StandardDeviationOfReturnsVolatilityModel(30)
+        for index, row in self.History(security.Symbol, 30, Resolution.Daily).iterrows():
+            trade_bar = TradeBar(index[1], security.Symbol,
+                row.open, row.high, row.low, row.close, row.volume)
+            security.VolatilityModel.Update(security, trade_bar)</pre>
 </div>
 
 <h4>Get Contract Symbols</h4>
@@ -59,22 +62,18 @@ if security.Type == SecurityType.Equity:
 <p>To subscribe to an Option contract, you need the contract <code>Symbol</code>. You can get the contract <code>Symbol</code> from the <code>CreateOption</code> method or from the <code>OptionChainProvider</code>. If you use the <code>CreateOption</code> method, you need to provide the details of an existing contract.</p>
 
 <div class="section-example-container">
-    <pre class="csharp">var strike = 100m;
-var expiry = DateTime.Today + TimeSpan.FromDays(30);
-var option = Symbol.CreateOption("SPY", Market.USA, OptionStyle.American, OptionRight.Put, strike, expiry);</pre>
-    <pre class="python">strike = 100
-expiry = datetime.today + timedelta(days=30)
-option = Symbol.CreateOption("SPY", Market.USA, OptionStyle.American, OptionRight.Put, strike, expiry)</pre>
+    <pre class="csharp">_contractSymbol = QuantConnect.Symbol.CreateOption(_symbol, Market.USA,
+    OptionStyle.American, OptionRight.Call, 365, new DateTime(2022, 6, 17));</pre>
+    <pre class="python">self.contract_symbol = Symbol.CreateOption(self.symbol, Market.USA,
+    OptionStyle.American, OptionRight.Call, 365, datetime(2022, 6, 17))</pre>
 </div>
 
 <p>Another way to get an Option contract <code>Symbol</code> is to use the <code>OptionChainProvider</code>. The <code>GetOptionContractList</code> method of <code>OptionChainProvider</code> returns a list of Option contracts that are available for a given underlying Equity on a given date.</p>
 
 <div class="section-example-container">
-    <pre class="csharp">var symbol = AddEquity("SPY");
-var optionContractList = OptionChainProvider.GetOptionContractList(symbol, Time);
+    <pre class="csharp">var optionContractList = OptionChainProvider.GetOptionContractList(_symbol, Time);
     </pre>
-    <pre class="python">symbol = self.AddEquity("SPY")
-option_contract_list = self.OptionChainProvider.GetOptionContractList(symbol, self.Time)</pre>
+    <pre class="python">option_contract_list = self.OptionChainProvider.GetOptionContractList(self.symbol, self.Time)</pre>
 </div>
 
 <h4>Subscribe to Contracts</h4>
@@ -93,18 +92,11 @@ option_contract_list = self.OptionChainProvider.GetOptionContractList(symbol, se
 <p>If you subscribe to an Option contract with <code>AddOptionContract</code>, you'll need to wait until the next <code>Slice</code> to receive data and trade the contract. To trade the contract in the same time step you subscribe to the contract, set the current price of the contract in a security initializer.</p>
 
 <div class="section-example-container">
-    <pre class="csharp">SetSecurityInitializer(security =&gt; {
-    if (security.Type == SecurityType.Option)
-    {
-        security.SetMarketPrice(GetLastKnownPrice(security));
-    }
-});
+    <pre class="csharp">SetSecurityInitializer(new BrokerageModelSecurityInitializer(BrokerageModel,
+    new FuncSecuritySeeder(GetLastKnownPrices)));
     </pre>
-    <pre class="python">self.SetSecurityInitializer(self.CustomSecurityInitializer)
-
-def CustomSecurityInitializer(self, security: Security) -&gt; None:
-    if security.Type == SecurityType.Option:
-        security.SetMarketPrice(self.GetLastKnownPrice(security))
+    <pre class="python">self.SetSecurityInitializer(BrokerageModelSecurityInitializer(self.BrokerageModel,
+    FuncSecuritySeeder(self.GetLastKnownPrices)));
     </pre>
 </div>
 
