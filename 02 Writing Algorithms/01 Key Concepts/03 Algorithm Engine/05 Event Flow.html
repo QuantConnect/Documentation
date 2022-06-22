@@ -1,11 +1,4 @@
-
-<div>
--a listing of the events an app normally got, and the order they fired. <br></div><div>-what should be done in each event (method)</div>
-<div>-Do a version for Classic and Framework algos</div>
-<div>-“For example, if I am getting a daily update on 50 stocks, will I get a single OnData call once all 50 are updated passing in the 50 in an array?”</div>
-<div>-Use this forum thread as a starting point: https://www.quantconnect.com/forum/discussion/12075/is-there-an-quot-event-flow-diagram-quot/p1</div>
-<div>-In live mode, Initialize method is called, the engine loads the holdings, cashbook, and open (submitted) orders from your brokerage account when the algorithm is deployed to add the populate the Securities, Portfolio, and Transactions objects and add the data susbcriptions</div><div>- # Explain what data event iteration means. Algorithms must execute a data event iteration within 10 minutes<br></div>
-
+<p>When you deploy an algorithm, LEAN calls the <a href="/docs/v2/writing-algorithms/initialization">Initialize</a> method. In live mode, the engine loads your holdings and open orders from your brokerage account to add the data subscriptions and populate the <code>Securities</code>, <code>Portfolio</code>, and <code>Transactions</code> objects. LEAN then performs the following steps with each new <a href="/docs/v2/writing-algorithms/key-concepts/time-modeling/timeslices">timeslice</a> that your subscriptions produce. Your algorithm must process each timeslice within 10 minutes, unless you call the <a href="/docs/v2/writing-algorithms/machine-learning/training-models">Train</a> method.</p>
 
 <ol>
     <li>If it's a backtest, check if there are <a href="/docs/v2/writing-algorithms/scheduled-events">Scheduled Events</a> in the past that didn't fire because there was no data between the previous <a href="/docs/v2/writing-algorithms/key-concepts/time-modeling/timeslices">slice</a> and the current slice.</li>
@@ -15,15 +8,26 @@
     <li>Add a <code>Security</code> object to the <code>Securities</code> collection for each new security in the universe.</li>
     <li>Update the <code>Security</code> objects with the latest data.</li>
     <li>Update the <code>Cash</code> objects in the <a href="/docs/v2/writing-algorithms/portfolio/cashbook">CashBook</a> with the latest data.</li>
-    <li></li>
+    <li>Process <a href="/docs/v2/writing-algorithms/reality-modeling/trade-fills/key-concepts">fill models</a> for non-market orders.<br></li>
     <li>Submit market on open orders to liquidate Equity Option contracts if the underlying Equity has a <a href="/docs/v2/writing-algorithms/securities/asset-classes/us-equity/corporate-actions#02-Splits">split warning</a>.</li>
     <li>Process <a href="/docs/v2/writing-algorithms/reality-modeling/margin-calls">margin calls</a>.<br></li>
     <li>If it's time to settle <a href="/docs/v2/writing-algorithms/portfolio/cashbook#03-Settled-vs-Unsettled-Cash">unsettled cash</a>, perform settlement.</li>
     <li>Call the <a href="/docs/v2/writing-algorithms/universes/key-concepts#07-Security-Changed-Events">OnSecuritiesChanged</a> method with the latest security changes.</li>
     <li>Apply dividends to the portfolio.</li>
     <li>For securities that have a split warning, update their portfolio holdings and adjust their open orders to account for the split.</li>
-    <li>Update <a href='/docs/v2/writing-algorithms/consolidating-data/key-concepts'>consolidators</a> with the latest data.<br></li>
-    <li></li>
-    <li></li>
-    <li></li>
+    <li>Update <a href="/docs/v2/writing-algorithms/consolidating-data/key-concepts">consolidators</a> with the latest data.<br></li>
+    <li class="csharp">Pass custom data to the <code>OnData</code> method.</li>
+    <li class="csharp">Pass dividends to the <code>OnData</code> method.</li>
+    <li class="csharp">Pass splits to the <code>OnData</code> method.</li>
+    <li class="csharp">Pass delistings to the <code>OnData</code> method.</li>
+    <li class="csharp">Pass <code>TradeBars</code> to the <code>OnData</code> method.</li>
+    <li class="csharp">Pass <code>QuoteBars</code> to the <code>OnData</code> method.</li>
+    <li class="csharp">Pass <code>OptionChains</code> to the <code>OnData</code> method.</li>
+    <li class="csharp">Pass <code>Ticks</code> to the <code>OnData</code> method.</li>
+    <li>Pass the <code>Slice</code> to the <code>OnData</code> method.</li>
+    <li>Perform <a href="/docs/v2/writing-algorithms/algorithm-framework/universe-selection/key-concepts">universe selection</a>.</li>
+    <li>Pass the <code>Slice</code> to the <code>Update</code> method of each <a href="/docs/v2/writing-algorithms/algorithm-framework/alpha/key-concepts">Alpha model</a>.</li>
+    <li>Pass the <code>Insight</code> objects from the Alpha model to the <a href="/docs/v2/writing-algorithms/algorithm-framework/portfolio-construction/key-concepts">Portfolio Construction model</a>.</li>
+    <li>Pass the <code>PortfolioTarget</code> objects from the Portfolio Construction model to each <a href="/docs/v2/writing-algorithms/algorithm-framework/risk-management/key-concepts">Risk Management model</a>.</li>
+    <li>Pass the risk-adjusted <code>PortfolioTarget</code> objects from the Risk Management models to the <a href="/docs/v2/writing-algorithms/algorithm-framework/execution/key-concepts">Execution model</a>.</li>
 </ol>
