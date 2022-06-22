@@ -6,20 +6,21 @@
 The most common use case is to select a lot of liquid stocks. With a coarse universe filter, this is simple and fast. The following example selects the top most liquid 500 stocks over $10 per share.
 </p>
 <div class="section-example-container">
-<pre class="csharp">    IEnumerable&lt;Symbol&gt; MyCoarseFilterFunction(IEnumerable&lt;CoarseFundamental&gt; coarse) {
-        // Linq makes this a piece of cake;
-        return (from c in coarse
-            where c.DollarVolume &gt; 10000000 &amp;&amp;
-                  c.Price &gt; 10
-            orderby c.DollarVolume descending
-            select c.Symbol).Take(500);
-    }
+<pre class="csharp">IEnumerable&lt;Symbol&gt; MyCoarseFilterFunction(IEnumerable&lt;CoarseFundamental&gt; coarse) 
+{
+    // Linq makes this a piece of cake;
+    return (from c in coarse
+        where c.DollarVolume &gt; 10000000 &amp;&amp;
+            c.Price &gt; 10
+        orderby c.DollarVolume descending
+        select c.Symbol).Take(500);
+}
 </pre>
-<pre class="python">    def MyCoarseFilterFunction(self, coarse: List[CoarseFundamental]) -&gt; List[Symbol]:
-         sortedByDollarVolume = sorted(coarse, key=lambda x: x.DollarVolume, reverse=True)
-         filtered = [ x.Symbol for x in sortedByDollarVolume 
-                      if x.Price &gt; 10 and x.DollarVolume &gt; 10000000 ]
-         return filtered[:500]
+<pre class="python">def MyCoarseFilterFunction(self, coarse: List[CoarseFundamental]) -&gt; List[Symbol]:
+    sortedByDollarVolume = sorted(coarse, key=lambda x: x.DollarVolume, reverse=True)
+    filtered = [ x.Symbol for x in sortedByDollarVolume 
+                if x.Price &gt; 10 and x.DollarVolume &gt; 10000000 ]
+    return filtered[:500]
 </pre>
 </div>
 
@@ -29,42 +30,42 @@ The most common use case is to select a lot of liquid stocks. With a coarse univ
 Another common request is to filter the universe by a technical indicator, such as only picking stocks above their 200-day EMA. The <code>CoarseFundamental</code> object has adjusted price and volume information, so you can do any price-related analysis.
 </p>
 <div class="section-example-container">
-<pre class="csharp">    ConcurrentDictionary&lt;Symbol, SelectionData&gt;
-        _stateData = new ConcurrentDictionary&lt;Symbol, SelectionData&gt;();
+<pre class="csharp">ConcurrentDictionary&lt;Symbol, SelectionData&gt;
+    _stateData = new ConcurrentDictionary&lt;Symbol, SelectionData&gt;();
 
-    // Coarse filter function
-    IEnumerable&lt;Symbol&gt; MyCoarseFilterFunction(IEnumerable&lt;CoarseFundamental&gt; coarse) {
-        // Linq makes this a piece of cake;
-        return (from c in coarse
-            let avg = _stateData.GetOrAdd(c.Symbol, sym =&gt; new SelectionData(200))
-            where avg.Update(c.EndTime, c.AdjustedPrice)
-            where c.DollarVolume &gt; 1000000000 &amp;&amp;
-                  c.Price &gt; avg.Ema
-            orderby c.DollarVolume descending
-            select c.Symbol).Take(10);
-    }
+// Coarse filter function
+IEnumerable&lt;Symbol&gt; MyCoarseFilterFunction(IEnumerable&lt;CoarseFundamental&gt; coarse) {
+    // Linq makes this a piece of cake;
+    return (from c in coarse
+        let avg = _stateData.GetOrAdd(c.Symbol, sym =&gt; new SelectionData(200))
+        where avg.Update(c.EndTime, c.AdjustedPrice)
+        where c.DollarVolume &gt; 1000000000 &amp;&amp;
+                c.Price &gt; avg.Ema
+        orderby c.DollarVolume descending
+        select c.Symbol).Take(10);
+}
 </pre>
-<pre class="python">    # setup state storage in initialize method
-    self.stateData = { }
+<pre class="python"># setup state storage in initialize method
+self.stateData = { }
 
-    def MyCoarseFilterFunction(self, coarse: List[CoarseFundamental]) -&gt; List[Symbol]:
-        # We are going to use a dictionary to refer the object that will keep the moving averages
-        for c in coarse:
-            if c.Symbol not in self.stateData:
-                self.stateData[c.Symbol] = SelectionData(c.Symbol, 200)
+def MyCoarseFilterFunction(self, coarse: List[CoarseFundamental]) -&gt; List[Symbol]:
+    # We are going to use a dictionary to refer the object that will keep the moving averages
+    for c in coarse:
+        if c.Symbol not in self.stateData:
+            self.stateData[c.Symbol] = SelectionData(c.Symbol, 200)
 
-            # Updates the SymbolData object with current EOD price
-            avg = self.stateData[c.Symbol]
-            avg.update(c.EndTime, c.AdjustedPrice, c.DollarVolume)
+        # Updates the SymbolData object with current EOD price
+        avg = self.stateData[c.Symbol]
+        avg.update(c.EndTime, c.AdjustedPrice, c.DollarVolume)
 
-        # Filter the values of the dict to those above EMA and more than $1B vol.
-        values = [x for x in self.stateData.values() if x.is_above_ema and x.volume &gt; 1000000000]
-        
-        # sort by the largest in volume.
-        values.sort(key=lambda x: x.volume, reverse=True)
+    # Filter the values of the dict to those above EMA and more than $1B vol.
+    values = [x for x in self.stateData.values() if x.is_above_ema and x.volume &gt; 1000000000]
+    
+    # sort by the largest in volume.
+    values.sort(key=lambda x: x.volume, reverse=True)
 
-        # we need to return only the symbol objects
-        return [ x.symbol for x in values[:10] ]
+    # we need to return only the symbol objects
+    return [ x.symbol for x in values[:10] ]
 </pre>
 </div>
 <p>

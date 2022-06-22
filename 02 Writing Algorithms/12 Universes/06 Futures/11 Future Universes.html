@@ -167,7 +167,8 @@ future.SetFilter(x =&gt; x.FrontMonth());
 <p>The preceding methods return an <code>FutureFilterUniverse</code>, so you can chain the methods together.</p>
 
 <div class="section-example-container">
-    <pre class="csharp"></pre>
+    <pre class="csharp">// Select the front month call contracts
+future.SetFilter(futureFilterUniverse => futureFilterUniverse.StandardsOnly().FrontMonth());</pre>
     <pre class="python"># Select the front month call contracts
 future.SetFilter(lambda future_filter_universe: future_filter_universe.StandardsOnly().FrontMonth())</pre>
 </div>
@@ -175,14 +176,32 @@ future.SetFilter(lambda future_filter_universe: future_filter_universe.Standards
 
 <p>To get all of the contracts in the <code>FutureFilterUniverse</code>, call the <code>GetEnumerator</code> method.</p>
 <div class="section-example-container">
-    <pre class="csharp"></pre>
+    <pre class="csharp">// In Initialize
+future.SetFilter(Selector);
+    
+private FutureFilterUniverse Selector(FutureFilterUniverse futureFilterUniverse)
+{
+    List&lt;Symbol&gt; symbols = new();
+    var standards = futureFilterUniverse.StandardsOnly();
+
+    foreach (var symbol in standards)
+    {
+        var contract = new FutureContract(symbol, futureFilterUniverse.Underlying);
+        if (contract.OpenInterest &gt; 0)
+        { 
+            symbols.Add(contract.Symbol);
+        }
+    }
+
+    return futureFilterUniverse.Contracts(symbols);
+}</pre>
     <pre class="python"># In Initialize
 future.SetFilter(self.contract_selector)
     
 def contract_selector(self, future_filter_universe: Callable[FutureFilterUniverse, FutureFilterUniverse]) -&gt; FutureFilterUniverse:
     standards = future_filter_universe.StandardsOnly()
     symbols = []
-    for _, symbol in enumerate(standards.GetEnumerator()):
+    for symbol in standards:
         contract = FutureContract(symbol, future_filter_universe.Underlying)
         if contract.OpenInterest &gt; 0: 
             symbols.append(contract.Symbol)

@@ -20,37 +20,37 @@ self.symbol = option.Symbol</pre>
     <tbody>
         <tr>
             <td><code>ticker</code></td>
-	    <td><code>string</code></td>
+	        <td><code>string</code></td>
             <td>The underlying Equity ticker.</td>
             <td></td>
         </tr>
         <tr>
             <td><code>resolution</code></td>
-	    <td><code>Resolution?</code></td>
+	        <td><code>Resolution?</code></td>
             <td>The resolution of the market data.</td>
             <td><code class="python">None</code><code class="csharp">null</code></td>
         </tr>
         <tr>
             <td><code>market</code></td>
-	    <td><code>string</code></td>
+	        <td><code>string</code></td>
             <td>The underlying Equity market.</td>
             <td><code class="python">None</code><code class="csharp">null</code></td>
         </tr>
         <tr>
             <td><code>fillDataForward</code></td>
-	    <td><code>bool</code></td>
+	        <td><code>bool</code></td>
             <td>If true, the current slice contains the last available data even if there is no data at the current time.</td>
             <td><code class="python">True</code><code class="csharp">true</code></td>
         </tr>
         <tr>
             <td><code>leverage</code></td>
-	    <td><code>decimal</code><br></td>
+	        <td><code>decimal</code><br></td>
             <td>The leverage for this Equity.</td>
             <td><code>Security.NullLeverage</code></td>
         </tr>
         <tr>
             <td><code>extendedMarketHours</code></td>
-	    <td><code>bool</code></td>
+	        <td><code>bool</code></td>
             <td>A flag that signals if LEAN should send data during pre- and post-market trading hours.</td>
             <td><code class="python">False</code><code class="csharp">false</code></td>
         </tr>

@@ -7,59 +7,59 @@ $getUniverseSettingsText = function($isFramework) {
     <thead>
         <tr>
             <th>Property</th>
-	    <th>Data Type</th>
+	        <th>Data Type</th>
             <th>Description</th>
-	    <th>Default Value</th>
+	        <th>Default Value</th>
         </tr>
     </thead>
     <tbody>
         <tr>
             <td><code>ExtendedMarketHours</code></td>
-	    <td><code>bool</code></td>
-	    <td>Should assets also feed extended market hours?</td>
-	    <td></td>
+            <td><code>bool</code></td>
+            <td>Should assets also feed extended market hours?</td>
+            <td><code class='csharp'>false</code><code class='python'>False</code></td>
         </tr>
         <tr>
             <td><code>FillForward</code></td>
-	    <td><code>bool</code></td>
-	    <td>Should asset data fill forward?</td>
-	    <td></td>
+            <td><code>bool</code></td>
+            <td>Should asset data fill forward?</td>
+            <td><code class='csharp'>true</code><code class='python'>True</code></td>
         </tr>
         <tr>
             <td><code>MinimumTimeInUniverse</code></td>
-	    <td><code class='csharp'>TimeSpan</code><code class='python'>timedelta</code></td>
-	    <td>What's the minimum time assets should be in the universe?</td>
-	    <td></td>
+            <td><code class='csharp'>TimeSpan</code><code class='python'>timedelta</code></td>
+            <td>What's the minimum time assets should be in the universe?</td>
+            <td><code class='csharp'>TimeSpan.FromDays(1)</code><code class='python'>timedelta(1)</code></td>
         </tr>
         <tr>
             <td><code>Resolution</code></td>
-	    <td><code>Resolution</code></td>
-	    <td>What resolution should assets use?</td>
-	    <td><code></code></td>
+            <td><code>Resolution</code></td>
+            <td>What resolution should assets use?</td>
+            <td><code>Resolution.Minute</code></td>
         </tr>
 	<tr>
             <td><code>ContractDepthOffset</code></td>
-	    <td><code>int</code></td>
-	    <td>What offset from the current front month should be used for <a href='/docs/v2/writing-algorithms/securities/asset-classes/futures/requesting-data#05-Continuous-Contracts'>continuous Future contracts</a>? 0 uses the front month and 1 uses the back month contract. This setting is only available for Future assets.</td>
-	    <td>0</td>
+            <td><code>int</code></td>
+            <td>What offset from the current front month should be used for <a href='/docs/v2/writing-algorithms/securities/asset-classes/futures/requesting-data#05-Continuous-Contracts'>continuous Future contracts</a>? 0 uses the front month and 1 uses the back month contract. This setting is only available for Future assets.</td>
+            <td>0</td>
         </tr>
 	<tr>
             <td><code>DataMappingMode</code></td>
-	    <td><code>DataMappingMode</code></td>
-	    <td>How should continuous Future contracts be mapped? This setting is only available for Future assets.</td>
-	    <td><code>DataMappingMode.OpenInterest</code></td>
+            <td><code>DataMappingMode</code></td>
+            <td>How should continuous Future contracts be mapped? This setting is only available for Future assets.</td>
+            <td><code>DataMappingMode.OpenInterest</code></td>
         </tr>
 	<tr>
             <td><code>DataNormalizationMode</code></td>
-	    <td><code>DataNormalizationMode</code></td>
-	    <td>How should historical prices be adjusted? This setting is only available for Equity and Futures assets.</td>
-	    <td><code>DataNormalizationMode.Adjusted</code></td>
+            <td><code>DataNormalizationMode</code></td>
+            <td>How should historical prices be adjusted? This setting is only available for Equity and Futures assets.</td>
+            <td><code>DataNormalizationMode.Adjusted</code></td>
         </tr>
         <tr>
             <td><code>Leverage</code></td>
-	    <td><code>decimal</code></td>
-	    <td>What leverage should assets use in the universe? This setting is not available for derivative assets.</td>
-	    <td></td>
+            <td><code class='csharp'>decimal</code><code class='python'>float</code></td>
+            <td>What leverage should assets use in the universe? This setting is not available for derivative assets.</td>
+            <td><code>Security.NullLeverage</code></td>
         </tr>
     </tbody>
 </table>
