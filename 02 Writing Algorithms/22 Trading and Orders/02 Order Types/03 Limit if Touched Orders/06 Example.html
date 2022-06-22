@@ -1,4 +1,4 @@
-<p>The following backtest verifies the <code>LimitIfTouchedOrder</code> behavior. The following table shows the first four trades in the backtest:</p>
+<p>The following backtest verifies the <code>LimitIfTouchedOrder</code> behavior. The following table shows the trades in the backtest:</p>
 
 <table class="qc-table table" id="research-nodes-table">
     <thead>
@@ -6,7 +6,7 @@
             <th>Submitted Time</th>
             <th>Filled Time</th>
             <th>Symbol</th>
-            <th>Triggered Price</th>
+            <th>Trigger Price</th>
             <th>Limit Price</th>
             <th>Filled Price</th>
             <th>Quantity</th>
@@ -83,15 +83,10 @@
 }
 </style>
 
-<p>The algorithm sets a condition that on the 1st July 9:31am, it would submit a limit-if-touched order to buy 10 shares of SPY at a limit price below $428.95 if the price of SPY ever touches $429.00. It is expected to be filled at the limit price for a liquid stock like SPY after it was triggered, since its trading price would most likely be continuous with high involvement of market makers. It turns out indeed it was filled at $429.00. Generally, for buy-limit-if-touched orders of both liquid and illquid assets, the filling price would be the minumum between the ask high price and limit price of the next bar that has ask low price below the limit price, after the triggered price was reached and the limit order was submitted.</p>
-
-<p>Another condition would be on the 2nd July 9:31am, it would submit a limit-if-touched order to sell 10 shares of SPY at a limit price above $431.75 if the price of SPY ever touches $431.70. Just like the first order, it is expected that the limit order will be filled at the limit price, which indeed is true. Generally, for sell-limit-if-touched orders of both liquid and illquid assets, the filling price would be the maximum between the ask low price and limit price of the next bar that has ask high price above the limit price, after the triggered price was reached and the limit order was submitted.</p>
-
-<p>The third order is submitted alongside with the second order. It will submit a limit order to buy 10 shares of SPY if its price was fallen below $400.00 once the price of SPY touched $431.70. It was being submitted since the triggered price was touched, but as the limit price was never met, it remained unfilled.</p>
-
-<p>The fourth order is submitted alongside with the second order. It will submit a limit order to buy 10 shares of SPY if its price was fallen below $400.00 once the price of SPY touched $400.00. It was not being submitted since the triggered price was never touched.</p>
-
-<p>To reproduce these results, backtest the following algorithm:</p>
+<p>Only July 1, 2021 at 9:31 AM Eastern Time (ET), the algorithm places a LIT order to buy SPY with a trigger price of $429 and limit price of $428.95. At the time of the order submission, the low price was $428.80 and the bid close price was $429.10. The order fills at 9:38 AM ET at a price of $428.95. The <a href="/docs/v2/writing-algorithms/reality-modeling/trade-fills/key-concepts">fill model</a> sets the limit price for buy orders when the low price is less than or equal to the trigger price, fills the order when the bid close price is less than or equal to the limit price, and sets the fill price to the minimum of the ask price and the limit price.</p><p>On July 2, 2021 at 9:31 AM ET, the algorithm places a LIT order to sell SPY with a trigger price of $431.70 and a limit price of $431.75. At the time of the order submission, the high price was $431.78 and the ask close price was $431.55. The order fills at 9:49 AM ET at a price of The fill model sets the limit price for sell orders when the high price is greater than or 
+equal to the trigger price, fills the order when the ask close price is 
+less than or equal to the limit price, and sets the fill price to the 
+maximum of the bid price and the limit price.</p><p>On July 2, 2021, the algorithm places a third LIT order to buy SPY with a trigger price of $431.70 and a limit price of $400. The fill model sets the fill price, but it doesn't fill the order because the limit price is too low. On the same day, the algorithm places a fourth LIT order to buy SPY with a trigger price of $400 and a limit price of $400. The fill model doesn't set the limit price for this order because SPY doesn't touch the trigger price before the backtest ends.<br></p><p>To reproduce these results, backtest the following algorithm:</p>
 
 <div class="python"><div class="qc-embed-frame" style="display: inline-block; position: relative; width: 100%; min-height: 100px; min-width: 300px;"><div class="qc-embed-dummy" style="padding-top: 56.25%;"></div><div class="qc-embed-element" style="position: absolute; top: 0; bottom: 0; left: 0; right: 0;"><iframe class="qc-embed-backtest" src="https://www.quantconnect.com/terminal/processCache?request=embedded_backtest_05e02071a20ed545a94d1489e7c050dc.html" style="max-width: calc(100vw - 30px); max-height: 100vw; overflow: hidden;" scrolling="no" width="100%" height="100%"></iframe></div></div></div>
 
