@@ -71,9 +71,9 @@ public void OnData(SymbolChangedEvents symbolChangedEvents)
         }
     } 
 }</pre>
-        <pre class='python'>def OnOrderEvent(self, orderEvent: OrderEvent) -&gt; None:
-    if orderEvent.Status == OrderStatus.Canceled:
-        ticket = self.Transactions.GetOrderTicket(orderEvent.OrderId)
+        <pre class='python'>def OnOrderEvent(self, order_event: OrderEvent) -&gt; None:
+    if order_event.Status == OrderStatus.Canceled:
+        ticket = self.Transactions.GetOrderTicket(order_event.OrderId)
         if \"symbol changed event\" in ticket.Tag:
             self.Transactions.AddOrder(ticket.SubmitRequest)</pre>
     </div>
