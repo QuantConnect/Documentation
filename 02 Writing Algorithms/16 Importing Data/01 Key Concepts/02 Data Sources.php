@@ -21,7 +21,14 @@ def GetSource(self, config: SubscriptionDataConfig, date: datetime, isLive: bool
 <?php echo file_get_contents(DOCS_RESOURCES."/datasets/custom-data/github.html"); ?>
 
 <div class="section-example-container">
-<pre class="csharp"></pre>
+<pre class="csharp">// Import Technique 1: Bulk downloads
+var data = Download("https://raw.githubusercontent.com/&lt;organization&gt;/&lt;repo&gt;/&lt;path&gt;");
+
+// Import Technique 2: Processing samples
+private SubscriptionDataSource GetSource(SubscriptionDataConfig config, DateTime date, bool isLive)
+{
+    return SubscriptionDataSource("https://raw.githubusercontent.com/&lt;organization&gt;/&lt;repo&gt;/&lt;path&gt;", SubscriptionTransportMedium.RemoteFile);
+}</pre>
 <pre class="python"># Import Technique 1: Bulk downloads
 data = self.Download("https://raw.githubusercontent.com/&lt;organization&gt;/&lt;repo&gt;/&lt;path&gt;")
 
@@ -34,7 +41,14 @@ def GetSource(self, config: SubscriptionDataConfig, date: datetime, isLive: bool
 <?php echo file_get_contents(DOCS_RESOURCES."/datasets/custom-data/dropbox.html"); ?>
 
 <div class="section-example-container">
-<pre class="csharp"></pre>
+<pre class="csharp">// Import Technique 1: Bulk downloads
+var data = Download("https://www.dropbox.com/&lt;filePath&gt;?dl=1");
+
+// Import Technique 2: Processing samples
+private SubscriptionDataSource GetSource(SubscriptionDataConfig config, DateTime date, bool isLive)
+{
+    return SubscriptionDataSource("https://www.dropbox.com/&lt;filePath&gt;?dl=1", SubscriptionTransportMedium.RemoteFile);
+}</pre>
 <pre class="python"># Import Technique 1: Bulk downloads
 data = self.Download("https://www.dropbox.com/&lt;filePath&gt;?dl=1")
 
@@ -47,7 +61,14 @@ def GetSource(self, config: SubscriptionDataConfig, date: datetime, isLive: bool
 <p>To access the data from REST endpoints, pass the endpoint URL to the <code>Download</code> method or the <code>SubscriptionDataSource</code> constructor.</p>
 
 <div class="section-example-container">
-<pre class="csharp"></pre>
+<pre class="csharp">// Import Technique 1: Bulk downloads
+var data = Download("&lt;sourceURL&gt;");
+
+// Import Technique 2: Processing samples
+private SubscriptionDataSource GetSource(SubscriptionDataConfig config, DateTime date, bool isLive)
+{
+    return SubscriptionDataSource("&lt;sourceURL&gt;", SubscriptionTransportMedium.Rest);
+}</pre>
 <pre class="python"># Import Technique 1: Bulk downloads
 data = self.Download("&lt;sourceURL&gt;")
 

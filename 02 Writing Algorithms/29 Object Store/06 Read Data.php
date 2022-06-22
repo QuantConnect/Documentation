@@ -28,8 +28,8 @@
 <p>To read a <code>Bytes</code> object, call the <code>ReadBytes</code> method.</p>
 
 <div class="section-example-container">
-    <pre class="csharp">var bytesData = ObjectStore.Read("bytesKey");</pre>
-    <pre class="python">byte_data = self.ObjectStore.Read("bytes_key")</pre>
+    <pre class="csharp">var bytesData = ObjectStore.ReadBytes("bytesKey");</pre>
+    <pre class="python">byte_data = self.ObjectStore.ReadBytes("bytes_key")</pre>
 </div>
 
 <h4>Strings</h4>

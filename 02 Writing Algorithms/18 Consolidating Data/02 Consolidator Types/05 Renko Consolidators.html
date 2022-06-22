@@ -7,4 +7,14 @@ self.consolidator = RenkoConsolidator(1)</pre>
 _consolidator = new RenkoConsolidator(1m);</pre>
 </div>
 
-<p>When the consolidator produces a new Renko bar, it passes the consolidated bar to the <a href="/docs/v2/writing-algorithms/consolidating-data/key-concepts#04-Receive-Consolidated-Bars">event handler</a>. To view a full example of a Renko consolidator, see the <a href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.Python/ClassicRenkoConsolidatorAlgorithm.py" class="python" rel="nofollow" target="_blank">ClassicRenkoConsolidatorAlgorithm</a><a href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.CSharp/ClassicRenkoConsolidatorAlgorithm.cs" class="csharp" rel="nofollow" target="_blank">ClassicRenkoConsolidatorAlgorithm</a> in the LEAN GitHub repository.</p>
+<p>When the consolidator produces a new Renko bar, it passes the consolidated bar to the <a href="/docs/v2/writing-algorithms/consolidating-data/key-concepts#04-Receive-Consolidated-Bars">event handler</a>.</p>
+
+<p>Other data field can also be implemented through <code>ClassicRenkoConsolidator</code>. For example, volume bar can be set up:</p>
+<div class="section-example-container">
+<pre class="python"># Create a Classic Renko consolidator that emits a bar when the volume moves 1000. Note that TradeBar is neded for its update.
+self.consolidator = ClassicRenkoConsolidator(1000, lambda x: x.Volume, lambda x: x.Volume)</pre>
+<pre class="csharp">// Create a Classic Renko consolidator that emits a bar when the volume moves 1000. Note that TradeBar is neded for its update.
+_consolidator = new ClassicRenkoConsolidator(1000m, x => x.Volume, x => x.Volume);</pre>
+</div>
+
+<p>To view a full example of a Renko consolidator, see the <a href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.Python/ClassicRenkoConsolidatorAlgorithm.py" class="python" rel="nofollow" target="_blank">ClassicRenkoConsolidatorAlgorithm</a><a href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.CSharp/ClassicRenkoConsolidatorAlgorithm.cs" class="csharp" rel="nofollow" target="_blank">ClassicRenkoConsolidatorAlgorithm</a> in the LEAN GitHub repository.</p>

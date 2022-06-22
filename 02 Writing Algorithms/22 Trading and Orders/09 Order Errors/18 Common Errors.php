@@ -25,6 +25,6 @@ If you place a market order when the market is closed, LEAN automatically conver
 
 <p>The number of orders you can place in a single backtest depends on the tier of your organization. The following table shows the number of orders you can place on each tier:</p>
 
-<?php echo file_get_contents(DOCS_RESOURCES."/quotas/orders.html"); ?>
+<?php echo file_get_contents(DOCS_RESOURCES."/quotas/orders.html"); ?>
 
 <p>To place more orders in a backtest, <a href='/docs/v2/our-platform/organizations/billing#07-Change-Organization-Tiers'>upgrade your organization</a>.<br></p>
