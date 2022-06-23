@@ -1,2 +1,3 @@
+<p>When you <a href='/docs/v2/our-platform/projects/project-management#02-View-All-Projects'>open a project</a>, it starts a coding session. When you close the project, the coding session stops. You can have up to one coding session across all of your free organizations. If you connect as an paid organization, you can have multiple coding sessions open. The following table shows how many coding sessions you can have open on each organization tier:</p>
 
 <?php echo file_get_contents(DOCS_RESOURCES."/quotas/coding-sessions.html"); ?>
