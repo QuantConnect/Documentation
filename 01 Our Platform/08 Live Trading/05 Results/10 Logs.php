@@ -7,3 +7,6 @@
 
 <h4>Download Log File</h4>
 <p>To download the log file, open the live result page, click the <span class="tab-name">Logs</span> tab, and then click <span class="button-name">Download Logs</span>.</p>
+
+<h4>Quotas</h4>
+<p>The log files of each project can store up to 100,000 lines for up to one year. If you log more than 100,000 lines or some lines become older than one year, we remove the oldest lines in the files so your project stays within the quota.</p>
