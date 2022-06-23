@@ -1,8 +1,7 @@
 <p>Additional methods of collaboration include cloning, sharing, and migrating projects.</p>
 
 <h4>Clone Projects</h4>
-<p>Clone a project to create a new copy of the project and save it within the same organization. When you clone a project, the project files are duplicated but the backtest results and the content stored in the ObjectStore is not retained. Cloning enables you to test small changes in your projects before merging the changes back into the original project. Cloning also enables you to clear ObjectStore storage while keeping the project files because you can clone the project and then <a href="/docs/v2/our-platform/projects/project-management#11-Delete-Projects">delete the original version of the project</a>.</p>
-
+<?php echo file_get_contents(DOCS_RESOURCES."/ide/clone-projects.html"); ?>
 <p>To clone projects, <a href="/docs/v2/our-platform/projects/project-management#02-View-All-Projects">open the project</a> you want to clone and then, in the Project panel, click <span class="button-name">Clone</span>. "Project cloned successfully" displays.</p>
 
 <h4>Share Projects</h4>
@@ -17,7 +16,7 @@
 
 
 <h4>Migrate Projects</h4>
-<p>Migrate a project to clone the project and move the cloned version of the project from an organization that you own to another organization of which you're a member. You must be the organization administrator to migrate projects out of the organization. Migrate a project to run the project using resources from a different organization and to collaborate on the project with members from a different organization. When you migrate projects, the project files are copied but the content stored in the ObjectStore is not retained. </p>
+<?php echo file_get_contents(DOCS_RESOURCES."/ide/migrate-projects.html"); ?>
 
 <p>Follow these steps to migrate projects:</p>
 <ol>
