@@ -3,9 +3,7 @@
 $getOpenInterestText = function($contractTypeName, $chainTypeName, $variableName)
 {
     echo "
-    <p>Open interest is the number of outstanding contracts that haven't been settled. It provides a measure of investor interest and the market liquidity, so it's a popular metric to use for contract selection. <code>OpenInterest</code> objects represent the open interest of contracts. They have the following properties:</p>
-    <div data-tree='QuantConnect.Data.Market.OpenInterest'></div>    
-    <p>Open interest is calculated once per day. To get the latest open interest value, use the <code>OpenInterest</code> property of the <code>{$contractTypeName}</code> or <code>{$contractTypeName}Contract</code>.</p>
+    <p>Open interest is the number of outstanding contracts that haven't been settled. It provides a measure of investor interest and the market liquidity, so it's a popular metric to use for contract selection. Open interest is calculated once per day. To get the latest open interest value, use the <code>OpenInterest</code> property of the <code>{$contractTypeName}</code> or <code>{$contractTypeName}Contract</code>.</p>
 
 <div class='section-example-container'>
     <pre class='csharp'>public override void OnData(Slice slice)
