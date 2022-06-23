@@ -1,1 +1,1 @@
-<?php echo file_get_contents(DOCS_RESOURCES."/environments/quota.php"); ?>
+<?php include(DOCS_RESOURCES."/environments/quota.php"); ?>
