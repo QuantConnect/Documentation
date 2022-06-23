@@ -1,4 +1,4 @@
-<p>If you have a project open, it uses a coding session. Your account can have up to one coding session across all of your free organizations. If you connect as an paid organization, your account can have multiple active coding sessions. The following table shows how many active coding sessions you can have on each organization tier:</p>
+<p>If you have a project open, it uses a coding session. Your account can have up to one coding session across all of your free organizations. If you connect as a paid organization, your account can have multiple active coding sessions. The following table shows how many active coding sessions you can have on each organization tier:</p>
 
 <?php echo file_get_contents(DOCS_RESOURCES."/quotas/coding-sessions.html"); ?>
 
