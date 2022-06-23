@@ -1,13 +1,29 @@
-<p>As your data reader reads your custom data file, LEAN adds the data points in the <code>Slice</code> it passes to your algorithm's <code>OnData</code> method. To collect the custom data, use the <code>Symbol</code> or name of your custom data subscription. You can access the <code>Value</code> and custom properties of your custom data class from the <code>Slice</code>. To access the custom properties, pass the property name to the <code>GetProperty</code> method.</p>
+<p>As your data reader reads your custom data file, LEAN adds the data points in the <code>Slice</code> it passes to your algorithm's <code>OnData</code> method. To collect the custom data, use the <code>Symbol</code> or name of your custom data subscription. You can access the <code>Value</code> and custom properties of your custom data class from the <code>Slice</code>. To access the custom properties, <span class="csharp">directly call the custom attribute</span><span class="python">pass the property name to the <code>GetProperty</code> method</span>.</p>
 
 <div class="section-example-container">
-<pre class="csharp"></pre>
+<pre class="csharp">public class MyAlgorithm : QCAlgorithm
+{
+    public override void OnData(Slice slice)
+    {
+        if (slice.ContainsKey(_symbol))
+        {
+            var customData = slice[_symbol];
+            var value = customData.Value;
+            var property1 = customData.CustomAttribute1;
+        }
+    }
+
+    // Can also get the data instance directly with OnData(dataClass) method
+    public void OnData(MuCustomDataClass data)
+    {
+        var value = data.Value;
+        var property1 = data.CustomAttribute1;
+    }
+}</pre>
 <pre class="python">class MyAlgorithm(QCAlgorithm):        
     def OnData(self, data: Slice) -&gt; None:
         if data.ContainsKey(self.symbol):
             custom_data = data[self.symbol]
             value = custom_data.Value
             property1 = custom_data.GetProperty('property1')</pre>
-</div><div>
-
-- ^ Add C# Example.</div><div>&nbsp;&nbsp;&nbsp; - Instead of adding the logic to <code>OnData(Slice data)</code>, you can also define a seperate OnData method to receive just the custom data points. <code>OnData(MyCustomDataType data)</code>.</div><div>&nbsp;&nbsp;&nbsp; - ^ If you do this, what order are they called in?<br></div>
+</div>
