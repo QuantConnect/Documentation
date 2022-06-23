@@ -141,7 +141,7 @@ def TableCreation(raw, namespace=""):
         file.write(html)
         
 def HtmlGeneration(obj_name, sorted_obj, extra=''):
-    html = f'''<p>The following table describes the <code>{obj_name}</code> enumerator members{extra}:</p>
+    html = f'''<p>The following table describes the <code>{obj_name}</code> enumeration members{extra}:</p>
 
 <table class="qc-table table" id="enum-table">
 <thead>
