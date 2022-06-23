@@ -3,13 +3,41 @@
 
 <p>To get the <code>FuturesChain</code>, index the <code>FuturesChains</code> property of the <code>Slice</code> with the continuous contract <code>Symbol</code>.</p>
 
-<div class="section-example-container">
-    <pre class="csharp">// Example of getting the FuturesChain in OnData</pre>
-    <pre class="python"># Example of getting the FuturesChain in OnData</pre>
+<div class='section-example-container'>
+    <pre class='csharp'>public override void OnData(Slice slice)
+{
+    if (slice.FuturesChains.TryGetValue(_contract.Canonical, out var chain))
+    {
+        //
+    }
+}
+</pre>
+    <pre class='python'>def OnData(self, slice: Slice) -> None:
+    chain = slice.FuturesChains.get(self.contract_symbol.Canonical)
+    if chain:
+        pass</pre>
 </div>
 
 <p>You can also loop through the <code>FuturesChains</code> property to get each <code>FuturesChain</code>.</p>
-<div class="section-example-container">
-    <pre class="csharp">// Example of looping through FuturesChains</pre>
-    <pre class="python"># Example of looping through FuturesChains</pre>
+<div class='section-example-container'>
+    <pre class='csharp'>public override void OnData(Slice slice)
+{
+    foreach (var kvp in slice.FuturesChains)
+    {
+        var canonical = kvp.Key;
+        var chain = kvp.Value;
+    }
+}
+
+public void OnData(FuturesChains futuresChains)
+{
+    foreach (var kvp in futuresChains)
+    {
+        var canonical = kvp.Key;
+        var chain = kvp.Value;
+    }
+}</pre>
+    <pre class='python'>def OnData(self, slice: Slice) -> None:
+    for canonical, chain in slice.FuturesChains.items():
+        pass</pre>
 </div>
