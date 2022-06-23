@@ -1,5 +1,5 @@
 <?php 
-include(DOCS_RESOURCES."/securities/open-interest.html"); 
+include(DOCS_RESOURCES."/securities/open-interest.php"); 
 $contractTypeName = "Future";
 $chainTypeName = "FuturesChains";
 $variableName = "futuresChains";
