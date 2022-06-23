@@ -1,4 +1,4 @@
-<p>You can edit your organization's image, name, and description.</p>
+<p>You can edit your organization's image and name.</p>
 
 <h4>Image</h4>
 <p>Follow these steps to change your organization image:</p>
@@ -16,17 +16,7 @@
 <ol>
     <li>Open the <a href='/docs/v2/our-platform/organizations/administration#05-View-the-Organization-Homepage'>organization homepage</a>.</li>
     <li>Hover over the organization name and then click the <span class='icon-name'>pencil</span> icon that appears.</li>
-    <img class='docs-image' style='max-height: 120px' src="https://cdn.quantconnect.com/i/tu/edit-organization-name.jpg">
+    <img class='docs-image' style='max-height: 180px' src="https://cdn.quantconnect.com/i/tu/change-organization-name.png">
     <li>Enter the new organization name and then click <span class='button-name'>Save Changes</span>.</li>
     <p>"Organization Name Updated Successfully" displays.</p>
-</ol>
-
-<h4>Description</h4>
-<p>Follow these steps to change your organization description:</p>
-<ol>
-    <li>Open the <a href='/docs/v2/our-platform/organizations/administration#05-View-the-Organization-Homepage'>organization homepage</a>.</li>
-    <li>Hover over the organization description and then click the <span class='icon-name'>pencil</span> icon that appears.</li>
-    <img class='docs-image' style='max-height: 120px' src="https://cdn.quantconnect.com/i/tu/edit-organization-description.jpg">
-    <li>Enter the new organization description and then click <span class='button-name'>Save Changes</span>.<br></li>
-    <p>"Organization Short Description Updated Successfully" displays.</p>
 </ol>
