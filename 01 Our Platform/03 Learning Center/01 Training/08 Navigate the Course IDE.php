@@ -1,5 +1,5 @@
 <p>The course IDE automatically displays when you enroll in a course.</p>
-<img class='docs-image' src='https://cdn.quantconnect.com/i/tu/navigate-course-ide.jpg'>
+<img class='docs-image' src='https://cdn.quantconnect.com/i/tu/navigate-the-learning-center-ide.png'>
 
 <p>Follow these steps to navigate the course IDE:</p>
 <ol>
