@@ -1,26 +1,41 @@
-<p>To get the current <code>Slice</code> object, define an <code>OnData</code> method or use the <code>CurrentSlice</code> property of your algorithm. The <code>Slice</code> contains all the data for a given moment in time. The <code>TradeBars</code> and <code>QuoteBars</code> properties are <code>Symbol</code>/string indexed dictionaries. The <code>Ticks</code> property is a list of ticks for that moment of time, indexed by the <code>Symbol</code>. To check which data formats are available for each asset class, see the Data Formats page in the <a href="https://www.quantconnect.com/docs/v2/writing-algorithms/asset-classes/key-concepts">Asset Classes</a> chapter.</p><p>The <code>Slice</code> object gives you the follow ways to access your data:</p>
+<p>To get the current <code>Slice</code> object, define an <code>OnData</code> method or use the <code>CurrentSlice</code> property of your algorithm. The <code>Slice</code> contains all the data for a given moment in time. The <code>TradeBars</code> and <code>QuoteBars</code> properties are <code>Symbol</code>/string indexed dictionaries. The <code>Ticks</code> property is a list of ticks for that moment of time, indexed by the <code>Symbol</code>. To check which data formats are available for each asset class, see the Data Formats page in the <a href="https://www.quantconnect.com/docs/v2/writing-algorithms/asset-classes/key-concepts">Asset Classes</a> chapter.</p><p>The <code>Slice</code> object gives you the following ways to access your data:</p>
 
 <ul>
     <li>Indexing the <code>Slice</code>, which returns a dynamic object of your type.
     </li>
     <div class="section-example-container">
-        <pre class="python"># Example slice["IBM"] and slice[self.symbol]</pre>
-        <pre class="csharp">// Example slice["IBM"] and slice[self.symbol]</pre>
+        <pre class="python">def OnData(self, slice: Slice) -> None:
+    data = slice[self.symbol]</pre>
+        <pre class="csharp">public override void OnData(Slice slice)
+{
+    var data = slice[_symbol];
+}</pre>
     </div>
 
     <li>
         Indexing the static properties, which returns the type you specify.
     </li>
     <div class="section-example-container">
-        <pre class="python"># Example slice.Bars[] and slice.QuoteBars[]</pre>
-        <pre class="csharp">// Example slice.Bars[] and slice.QuoteBars[]</pre>
-    </div>
+        <pre class="python">def OnData(self, slice: Slice) -> None:
+    trade_bar = slice.Bars[self.symbol]
+    quote_bar = slice.QuoteBars[self.symbol]</pre>
+        <pre class="csharp">public override void OnData(Slice slice)
+{
+    var tradeBars = slice.Bars[_symbol];
+    var quoteBars = slice.QuoteBars[_symbol];
+}</pre></div>
+
 
     <li class="csharp">
         Calling the <code>Get&lt;T&gt;()</code> helper method.
     </li>
     <div class="csharp section-example-container">
-        <pre class="csharp">// Example </pre>
+        <pre class="csharp">public override void OnData(Slice slice)
+{
+    var tradeBar = slice.Get&lt;TradeBar&gt;(_symbol);
+    var quoteBar = slice.Get&lt;QuoteBar&gt;(_symbol);
+    var ticks = slice.Get&lt;Ticks&gt;(_symbol);
+}</pre>
     </div>
 </ul>
 
@@ -31,6 +46,14 @@
  check if the data exists in the dictionary before you try to index it. To check if the <code>Slice</code> contains for a security, call the <code>ContainsKey</code> method. Note: if the <code>Slice</code> object doesn't contain any market data but it contains auxiliary data, the <code>slice.ContainsKey(symbol)</code> method can return true while <code>slice[symbol]</code> returns <code class="python">None</code><code class="csharp">null</code>.</p>
 
 <div class="section-example-container">
-    <pre class="python"># Example ContainsKey</pre>
-    <pre class="csharp">// Example ContainsKey</pre>
+    <pre class="python">def OnData(self, slice: Slice) -> None:
+    if slice.ContainsKey(self.symbol) and slice[self.symbol] is not None:
+        data = slice[self.symbol]</pre>
+    <pre class="csharp">public override void OnData(Slice slice)
+{
+    if (slice.ContainsKey(_symbol))
+    {
+        var data = slice[_symbol];
+    }
+}</pre>
 </div>
