@@ -2,4 +2,4 @@
 
 <?php echo file_get_contents(DOCS_RESOURCES."/quotas/coding-sessions.html"); ?>
 
-<p>The quota for free organizations is a global quota, so you can open one coding session for all of your free organizations. The quotas for paid organizations are at the organization level. For instance, if you are in two Quant Researcher organizations, you can open two coding sessions in one of those organizations and another two sessions in the other organization.</p>
+<p>The quota for free organizations is a global quota, so you can open one coding session for all of your free organizations. The quotas for paid organizations are at the organization level. Therefore, if you are in two Quant Researcher organizations, you can open two coding sessions in one of those organizations and another two sessions in the other organization.</p>
