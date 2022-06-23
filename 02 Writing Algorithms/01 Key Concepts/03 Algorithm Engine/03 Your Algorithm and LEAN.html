@@ -11,24 +11,23 @@
 <div class="section-example-container">
 <pre class="csharp">public class QCAlgorithm
 {
-    SecurityManager Securities;               //Array of Security objects.
+    SecurityManager Securities;               // Array of Security objects.
     SecurityPortfolioManager Portfolio;       // Array of SecurityHolding objects
     SecurityTransactionManager Transactions;  // Transactions helper
     ScheduleManager Schedule;                 // Scheduling helper
-    NotificationManager Notify;               //Email, SMS helper
+    NotificationManager Notify;               // Email, SMS helper
     UniverseManager Universe;                 // Universe helper
 
     // Set up Requested Data, Cash, Time Period.
     public virtual void Initialize() { ... };
 
     // Event Handlers:
-    public virtual OnData(Slice data) { ... };
-    public virtual OnDividend() { ... };
-    public virtual OnEndOfDay() { ... };
-    public virtual OnEndOfAlgorithm() { ... };
+    public virtual void OnData(Slice data) { ... };
+    public virtual void OnEndOfDay(Symbol symbol) { ... };
+    public virtual boic OnEndOfAlgorithm() { ... };
 
     // Indicator Helpers
-    public SimpleMovingAverage SMA();
+    public SimpleMovingAverage SMA(Symbol symbol, int period) { ... };
 }</pre>
 <pre class="python">class QCAlgorithm:
     Securities   # Array of Security objects.
@@ -47,5 +46,5 @@
     def OnEndOfAlgorithm(self) -&gt; None:
 
     # Indicator Helpers
-    def SMA():</pre>
+    def SMA(self, symbol: Symbol, period: int) -&gt; SimpleMovingAverage:</pre>
 </div>
