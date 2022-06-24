@@ -1,1 +1,7 @@
-<?php echo file_get_contents(DOCS_RESOURCES."/securities/open-interest.html"); ?>
+<?php 
+include(DOCS_RESOURCES."/securities/open-interest.php"); 
+$contractTypeName = "Option";
+$chainTypeName = "OptionChains";
+$variableName = "optionChains";
+$getOpenInterestText($contractTypeName, $chainTypeName, $variableName);
+?>
