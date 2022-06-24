@@ -2,19 +2,21 @@
 
 <h4>Configure the Underlying Volatility Model</h4>
 
-<p>If you called the <code>AddFuture</code> method to subscribe to the underlying Future, in the <code>Initialize</code> method, set the underlying volatility model on the Future and <a href="/docs/v2/writing-algorithms/reality-modeling/options-models/volatility/key-concepts#07-Warm-Up-Models">warm it up</a>.</p>
-
-
+<p>Before you add the Option contract subscription, set the underlying volatility model on the Future contract and <a href="/docs/v2/writing-algorithms/reality-modeling/options-models/volatility/key-concepts#07-Warm-Up-Models">warm it up</a>.</p>
 <div class="section-example-container">
-    <pre class="csharp">future.VolatilityModel = new StandardDeviationOfReturnsVolatilityModel(30);
-SetWarmup(30, Resolution.Daily);
+    <pre class="csharp">futureContract.VolatilityModel = new StandardDeviationOfReturnsVolatilityModel(30);
+foreach (var tradeBar in History(futureContract.Symbol, 30, Resolution.Daily))
+{
+    futureContract.VolatilityModel.Update(futureContract, tradeBar);
+}
 </pre>
-    <pre class="python">future.VolatilityModel = StandardDeviationOfReturnsVolatilityModel(30)
-self.SetWarmup(30, Resolution.Daily)</pre>
+    <pre class="python">future_contract.VolatilityModel = StandardDeviationOfReturnsVolatilityModel(30)
+for index, row in self.History(future_contract.Symbol, 30, Resolution.Daily).iterrows():
+    trade_bar = TradeBar(index[1], future_contract.Symbol, row.open, row.high, row.low, row.close, row.volume)
+    future_contract.VolatilityModel.Update(future_contract, trade_bar)</pre>
 </div>
 
-<p>If you called the <code>AddFutureContract</code> method to <a href="https://www.quantconnect.com/docs/v2/writing-algorithms/securities/asset-classes/futures/requesting-data#02-Create-Subscriptions">subscribe to individual Future contracts</a>, before you add the Option contract subscription, set the underlying volatility model on the Future contract and <a href="/docs/v2/writing-algorithms/reality-modeling/options-models/volatility/key-concepts#07-Warm-Up-Models">warm it up</a>. If you trade Options for many Future contracts you subscribe to, add this logic to a <a href="/docs/v2/writing-algorithms/initialization#07-Set-Security-Initializer">security initializer</a>.</p>
-
+<p>If you trade Options for many Future contracts you subscribe to, add this logic to a <a href="/docs/v2/writing-algorithms/initialization#07-Set-Security-Initializer">security initializer</a> instead of the previous method.</p>
 <div class="section-example-container">
     <pre class="csharp">// In Initialize
 SetSecurityInitializer(security =&gt;
@@ -44,14 +46,15 @@ def CustomSecurityInitializer(self, security: Security) -&gt; None:
 <p>To subscribe to a Future Option contract, you need the contract <code>Symbol</code>. You can get the contract <code>Symbol</code> from the <code>CreateOption</code> method or from the <code>OptionChainProvider</code>. If you use the <code>CreateOption</code> method, you need to provide the contract details.</p>
 
 <div class="section-example-container">
-    <pre class="csharp">var strike = 100m;
-var expiry = DateTime.Today + TimeSpan.FromDays(30);
-var future = Symbol.Create("CL", SecurityType.Future, Market.NYMEX);
-var option = Symbol.CreateOption(future, Market.NYMEX, OptionStyle.American, OptionRight.Put, strike, expiry);</pre>
-    <pre class="python">strike = 100
-expiry = datetime.today + timedelta(days=30)
-future = Symbol.Create("CL", SecurityType.Future, Market.NYMEX)
-option = Symbol.CreateOption(future, Market.NYMEX, OptionStyle.American, OptionRight.Put, strike, expiry)</pre>
+    <pre class="csharp">_futureContractSymbol = QuantConnect.Symbol.CreateFuture(Futures.Indices.SP500EMini,
+    Market.CME, new DateTime(2022, 6, 17));
+_optionContractSymbol = QuantConnect.Symbol.CreateOption(_futureContractSymbol,
+    Market.CME, OptionStyle.American, OptionRight.Call, 3600, new DateTime(2022, 6, 17))</pre>
+    <pre class="python">self.future_contract_symbol = Symbol.CreateFuture(Futures.Indices.SP500EMini,
+    Market.CME, datetime(2022, 6, 17))
+self.option_contract_symbol = Symbol.CreateOption(self.future_contract_symbol,
+    Market.CME, OptionStyle.American, OptionRight.Call, 3600, datetime(2022, 6, 17))
+</pre>
 </div>
 
 <p>Another way to get a Future Option contract <code>Symbol</code> is to use the <code>OptionChainProvider</code>. The <code>GetOptionContractList</code> method of <code>OptionChainProvider</code> returns a list of <code>Symbol</code> objects that reference the available Option contracts for a given underlying Future contract on a given date. The <code>Symbol</code> you pass to the method can reference any of the following Futures contracts:</p>
@@ -63,11 +66,9 @@ option = Symbol.CreateOption(future, Market.NYMEX, OptionStyle.American, OptionR
 </ul>
     
 <div class="section-example-container">
-    <pre class="csharp">var continuousFutureSymbol = Symbol.Create(Futures.Indices.SP500EMini, SecurityType.Future, Market.CME);
-var optionContractSymbols = OptionChainProvider.GetOptionContractList(continuousFutureSymbol, Time);
+    <pre class="csharp">var optionContractList = OptionChainProvider.GetOptionContractList(_futureContractSymbol, Time);
     </pre>
-    <pre class="python">continuous_future_symbol = Symbol.Create(Futures.Indices.SP500EMini, SecurityType.Future, Market.CME)
-option_contract_symbols = self.OptionChainProvider.GetOptionContractList(continuous_future_symbol, self.Time)</pre>
+    <pre class="python">option_contract_list = self.OptionChainProvider.GetOptionContractList(self.future_contract_symbol, self.Time)</pre>
 </div>
 
 <h4>Subscribe to Contracts</h4>
@@ -76,7 +77,7 @@ option_contract_symbols = self.OptionChainProvider.GetOptionContractList(continu
 
 <div class="section-example-container">
     <pre class="csharp">AddOptionContract(_optionContractSymbol);</pre>
-    <pre class="python">self.AddOptionContract(self.option_contract_symbol).Symbol</pre>
+    <pre class="python">self.AddOptionContract(self.option_contract_symbol)</pre>
 </div>
 
 <p>The <code>AddOptionContract</code> method creates a subscription for a single Option contract and adds it to your <span class="new-term">user-defined</span> universe. To create a dynamic universe of Future Option contracts, add a <a href="/docs/v2/writing-algorithms/universes/future-options">Future Options universe</a>.</p>
@@ -84,21 +85,11 @@ option_contract_symbols = self.OptionChainProvider.GetOptionContractList(continu
 <h4>Warm Up Contract Prices</h4>
 
 <p>If you subscribe to a Future Option contract with <code>AddOptionContract</code>, you'll need to wait until the next <code>Slice</code> to receive data and trade the contract. To trade the contract in the same time step you subscribe to the contract, set the current price of the contract in a security initializer.</p>
-
 <div class="section-example-container">
-    <pre class="csharp">SetSecurityInitializer(security =&gt; {
-    if (security.Type == SecurityType.FutureOption)
-    {
-        security.SetMarketPrice(GetLastKnownPrice(security));
-    }
-});
-    </pre>
-    <pre class="python">self.SetSecurityInitializer(self.CustomSecurityInitializer)
-
-def CustomSecurityInitializer(self, security: Security) -&gt; None:
-    if security.Type == SecurityType.FutureOption:
-        security.SetMarketPrice(self.GetLastKnownPrice(security))
-    </pre>
+    <pre class="csharp">SetSecurityInitializer(new BrokerageModelSecurityInitializer(BrokerageModel,
+    new FuncSecuritySeeder(GetLastKnownPrices)));</pre>
+    <pre class="python">self.SetSecurityInitializer(BrokerageModelSecurityInitializer(self.BrokerageModel,
+    FuncSecuritySeeder(self.GetLastKnownPrices)));</pre>
 </div>
 
 <h4>Supported Assets</h4>
