@@ -1,5 +1,7 @@
 <?php 
 include(DOCS_RESOURCES."/securities/option-chains.php"); 
-$isFutureOptionUniverse = true;
-$getOptionChainsText($isFutureOptionUniverse);
+$isFutureOptionUniverse = false;
+$cSharpVariableName = "_contractSymbol.Canonical";
+$pythonVariableName = "self.contract_symbol.Canonical";
+$getOptionChainsText($isFutureOptionUniverse, $cSharpVariableName, $pythonVariableName);
 ?>
