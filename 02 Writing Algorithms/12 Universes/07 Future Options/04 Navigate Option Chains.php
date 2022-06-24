@@ -1,7 +1,7 @@
 <?php 
 include(DOCS_RESOURCES."/securities/option-chains.php"); 
-$isFutureOptionUniverse = true;
+$path = "future-option";
 $pythonMemberName = "";
 $cSharpMemberName = "";
-$getOptionChainsText($isFutureOptionUniverse, $pythonMemberName, $cSharpMemberName);
+$getOptionChainsText($path , $pythonMemberName, $cSharpMemberName);
 ?>
