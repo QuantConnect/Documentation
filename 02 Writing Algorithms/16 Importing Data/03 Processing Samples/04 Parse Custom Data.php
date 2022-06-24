@@ -67,27 +67,74 @@
 <?php echo file_get_contents(DOCS_RESOURCES."/datasets/custom-data/reader-method.html"); ?>
 
 <div class="section-example-container">
-<pre class="python">class MyCustomDataType(PythonData):
-    def GetSource(self, config: SubscriptionDataConfig, date: datetime, isLiveMode: bool) -&gt; SubscriptionDataSource:
-        return SubscriptionDataSource("https://raw.githubusercontent.com/DerekMelchin/custom-data-test-2/main/abcd.json", SubscriptionTransportMedium.RemoteFile, FileFormat.UnfoldingCollection)
+<pre class="csharp">public class MyCustomUniverseDataClass : BaseData 
+{
+    [JsonProperty(PropertyName = "Attr1")]
+    public int CustomAttribute1 { get; set; }
 
-    def Reader(self, config: SubscriptionDataConfig, line: str, date: datetime, isLiveMode: bool) -&gt; BaseData:
-        objects = []
-        data = json.loads(line)
-        endTime = None
-        for j, i in enumerate(data):
-            coin = Bitcoin()
-            coin.Symbol = config.Symbol
+    [JsonProperty(PropertyName = "Ticker")]
+    public string Ticker { get; set; }
+    
+    [JsonProperty(PropertyName = "date")]
+    public DateTime Date { get; set; }
 
-            ts = int(i['timestamp'])
-            coin.Time = datetime.utcfromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S')
-            coin.EndTime = coin.Time + timedelta(days=1)
-            endTime = coin.EndTime
+    public override DateTime EndTime 
+    {
+        // define end time as exactly 1 day after Time
+        get { return Time + QuantConnect.Time.OneDay; }
+        set { Time = value - QuantConnect.Time.OneDay; }
+    }
 
-            coin.Value = j
+    public MyCustomUniverseDataClass()
+    {
+        Symbol = Symbol.Empty;
+        DataType = MarketDataType.Base;
+    }
+    
+    public override SubscriptionDataSource GetSource(SubscriptionDataConfig config, DateTime date, bool isLiveMode)
+    {
+        return new SubscriptionDataSource(@"your-data-source-url", 
+            SubscriptionTransportMedium.RemoteFile,
+            FileFormat.UnfoldingCollection);
+    }
 
-            objects.append(coin)
-        return BaseDataCollection(endTime, config.Symbol, objects)</pre>
+    public override BaseData Reader(SubscriptionDataConfig config, string line, DateTime date, bool isLiveMode) 
+    {
+        var items = JsonConvert.DeserializeObject&lt;List&lt;MyCustomUniverseDataClass&gt;&gt;(line);
+        var endTime = items.Last().Date;
+
+        foreach (var item in items)
+        {
+            item.Symbol = Symbol.Create(item.Ticker, SecurityType.Equity, Market.USA);
+            item.Time = item.Date;
+            item.Value = (decimal) item.CustomAttribute1;
+        }
+
+        return new BaseDataCollection(endTime, config.Symbol, items);
+    }
+}</pre>
+<pre class="python">class MyCustomUniverseDataClass(PythonData):
+    
+    def GetSource(self, config, date, isLive):
+        return SubscriptionDataSource("your-data-source-url", SubscriptionTransportMedium.RemoteFile, FileFormat.UnfoldingCollection)
+
+    def Reader(self, config, line, date, isLive):
+        json_response = json.loads(line)
+        
+        endTime = datetime.strptime(json_response[-1]["date"], '%Y-%m-%d') + timedelta(1)
+
+        data = list()
+
+        for json_datum in json_response:
+            datum = MyCustomUniverseDataClass()
+            datum.Symbol = Symbol.Create(json_datum["Ticker"], SecurityType.Equity, Market.USA)
+            datum.Time = datetime.strptime(json_datum["date"], '%Y-%m-%d') 
+            datum.EndTime = datum.Time + timedelta(1)
+            datum['CustomAttribute1'] = int(json_datum['Attr1'])
+            datum.Value = float(json_datum['Attr1'])
+            data.append(datum)
+
+        return BaseDataCollection(endTime, config.Symbol, data)</pre>
 </div>
 
 <div class="python">

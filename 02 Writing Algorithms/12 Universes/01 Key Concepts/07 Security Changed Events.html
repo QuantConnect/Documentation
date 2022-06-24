@@ -53,7 +53,21 @@ def OnSecuritiesChanged(self, changes: SecurityChanges) -> None:
 <p>If you need to save data or create objects for each security in the universe, maintain a dictionary of custom <code>SymbolData</code> objects. This technique is useful if you want to track stop loss levels or add <a href="https://www.quantconnect.com/docs/v2/writing-algorithms/indicators/key-concepts">indicators</a> for each asset in the universe.</p>
 
 <div class="section-example-container">
-<pre class="csharp"></pre>
+<pre class="csharp">// In Initialize
+Dictionary&lt;Symbol, SymbolData&gt; _symbolDataBySymbol = new();
+
+public override void OnSecuritiesChanged(SecurityChanges changes)
+{
+    foreach (var security in changes.AddedSecurities)
+    {
+        _symbolDataBySymbol.Add(security.Symbol, new SymbolData());  // You need to define this class
+    }
+
+    foreach (var security in changes.RemovedSecurities)
+    {
+        _symbolDataBySymbol.Remove(security.Symbol);
+    }
+}</pre>
 <pre class="python"># In Initialize
 self.symbol_data_by_symbol = {}
 

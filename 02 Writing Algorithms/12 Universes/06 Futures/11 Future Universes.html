@@ -20,49 +20,49 @@ self.symbol = future.Symbol</pre>
     <tbody>
         <tr>
             <td><code>ticker</code></td>
-	    <td><code>string</code></td>
+	        <td><code class="csharp">string</code><code class="python">str</code></td>
             <td>The Future ticker. To view the supported assets in the US Futures dataset, see <a href="/docs/v2/writing-algorithms/securities/asset-classes/futures/requesting-data#03-Supported-Markets">Supported Markets</a>.<br></td>
             <td></td>
         </tr>
         <tr>
             <td><code>resolution</code></td>
-	    <td><code>Resolution?</code></td>
+	        <td><code class="csharp">Resolution?</code><code class="python">Resolution/NoneType</code></td>
             <td>The resolution of the market data. If you don't provide a value, it uses <code>Resolution.Minute</code> by default.</td>
             <td><code class="python">None</code><code class="csharp">null</code></td>
         </tr>
         <tr>
             <td><code>market</code></td>
-	    <td><code>string</code></td>
+	        <td><code class="csharp">string</code><code class="python">str</code></td>
             <td>The Futures market. To view the supported markets in the US Futures dataset, see <a href="/docs/v2/writing-algorithms/securities/asset-classes/futures/requesting-data#03-Supported-Markets">Supported Markets</a>. If you don't provide a value, it uses the default Future market of your <a href="https://www.quantconnect.com/docs/v2/writing-algorithms/reality-modeling/brokerages">brokerage model</a>.</td>
             <td><code class="python">None</code><code class="csharp">null</code></td>
         </tr>
         <tr>
             <td><code>fillDataForward</code></td>
-	    <td><code>bool</code></td>
+	        <td><code>bool</code></td>
             <td>If true, the current slice contains the last available data even if there is no data at the current time.</td>
             <td><code class="python">True</code><code class="csharp">true</code></td>
         </tr>
         <tr>
             <td><code>leverage</code></td>
-	    <td><code>decimal</code><br></td>
+	        <td><code class="csharp">decimal</code><code class="python">float</code></td>
             <td>The leverage for this Future.</td>
             <td><code>Security.NullLeverage</code></td>
         </tr>
         <tr>
             <td><code>dataMappingMode</code></td>
-	    <td><code>DataMappingMode?</code></td>
+	        <td><code class="csharp">DataMappingMode?</code><code class="python">DataMappingMode/NoneType</code></td>
             <td>The contract mapping mode to use for the continuous future contract</td>
             <td><code class="python">None</code><code class="csharp">null</code></td>
         </tr>
         <tr>
             <td><code>dataNormalizationMode</code></td>
-	    <td><code>DataNormalizationMode?</code></td>
+            <td><code class="csharp">DataNormalizationMode?</code><code class="python">DataNormalizationMode/NoneType</code></td>
             <td>The price scaling mode to use for the continuous future contract</td>
             <td><code class="python">None</code><code class="csharp">null</code></td>
         </tr>
         <tr>
             <td><code>contractDepthOffset</code></td>
-	    <td><code>int </code></td>
+	        <td><code>int</code></td>
             <td>The continuous future contract desired offset from the current front month. For example, 0 is the front month, 1 is the back month contract.</td>
             <td>0</td>
         </tr>
@@ -82,12 +82,12 @@ self.symbol = future.Symbol</pre>
     </thead>
     <tbody>
         <tr>
-            <td><code>SetFilter(int minExpiryDays, int maxExpiryDays)</code></td>
-	    <td>Selects the contracts that expire within the range you set.<br></td>
+            <td><code class="csharp">SetFilter(int minExpiryDays, int maxExpiryDays)</code><code class="python">SetFilter(minExpiryDays: int, maxExpiryDays: int)</code></td>
+	        <td>Selects the contracts that expire within the range you set.<br></td>
         </tr>
         <tr>
-            <td><code>SetFilter(Func&lt;FutureFilterUniverse, FutureFilterUniverse&gt; universeFunc)</code></td>
-	    <td>Selects the contracts that a function selects.</td>
+            <td><code class="csharp">SetFilter(Func&lt;FutureFilterUniverse, FutureFilterUniverse&gt; universeFunc)</code><code class="python">SetFilter(universeFunc: callable[FutureFilterUniverse, FutureFilterUniverse])</code></td>
+	        <td>Selects the contracts that a function selects.</td>
         </tr>
     </tbody>
 </table>
@@ -142,19 +142,19 @@ future.SetFilter(x =&gt; x.FrontMonth());
             <td>Selects the back month contracts<br></td>
         </tr>
         <tr>
-            <td><code>Expiration(<span class="csharp">TimeSpan</span><span class="python">timedelta</span> minExpiry, <span class="csharp">TimeSpan</span><span class="python">timedelta</span> maxExpiry)</code></td>
+            <td><code class="csharp">Expiration(TimeSpan minExpiry, TimeSpan maxExpiry)</code><code class="python">Expiration(minExpiry: timedelta, maxExpiry: timedelta)</code></td>
             <td>Selects contracts that expire within a range of dates relative to the current day<br></td>
         </tr>
         <tr>
-            <td><code>Expiration(int minExpiryDays, int maxExpiryDays)</code></td>
+            <td><code class="csharp">Expiration(int minExpiryDays, int maxExpiryDays)</code><code class="python">Expiration(minExpiryDays: int, maxExpiryDays: int)</code></td>
             <td>Selects contracts that expire within a range of dates relative to the current day</td>
         </tr>
         <tr>
-            <td><code>Contracts(IEnumerable&lt;Symbol&gt; contracts)</code></td>
+            <td><code class="csharp">Contracts(IEnumerable&lt;Symbol&gt; contracts)</code><code class="python">Contracts(contracts: List[Symbol])</code></td>
             <td>Selects a list of contracts</td>
         </tr>
         <tr>
-            <td><code>Contracts(Func&lt;IEnumerable&lt;Symbol&gt;, IEnumerable&lt; Symbol&gt;&gt; contractSelector)</code></td>
+            <td><code class="csharp">Contracts(Func&lt;IEnumerable&lt;Symbol&gt;, IEnumerable&lt; Symbol&gt;&gt; contractSelector)</code><code class="python">Contracts(contractSelector: callable[List[Symbol], List[Symbol]])</code></td>
             <td>Selects contracts that a selector function selects</td>
         </tr>
         <tr>

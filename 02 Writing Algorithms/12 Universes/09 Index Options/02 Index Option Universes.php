@@ -21,25 +21,25 @@ self.symbol = option.Symbol</pre>
     <tbody>
         <tr>
             <td><code>ticker</code></td>
-	    <td><code>string</code></td>
+	        <td><code class="csharp">string</code><code class="python">str</code></td>
             <td>The underlying Index ticker. To view the available indices, see <a href='/docs/v2/writing-algorithms/securities/asset-classes/index/requesting-data#03-Supported-Indices'>Supported Indices</a>.</td>
             <td></td>
         </tr>
         <tr>
             <td><code>resolution</code></td>
-	    <td><code>Resolution?</code></td>
+	        <td><code class="csharp">Resolution?</code><code class="python">Resolution/NoneType</code></td>
             <td>The resolution of the market data.</td>
             <td><code class="python">None</code><code class="csharp">null</code></td>
         </tr>
         <tr>
             <td><code>market</code></td>
-	    <td><code>string</code></td>
+	        <td><code class="csharp">string</code><code class="python">str</code></td>
             <td>The Index Option market.</td>
             <td><code>Market.USA</code></td>
         </tr>
         <tr>
             <td><code>fillDataForward</code></td>
-	    <td><code>bool</code></td>
+	        <td><code>bool</code></td>
             <td>If true, the current slice contains the last available data even if there is no data at the current time.</td>
             <td><code class="python">True</code><code class="csharp">true</code></td>
         </tr>

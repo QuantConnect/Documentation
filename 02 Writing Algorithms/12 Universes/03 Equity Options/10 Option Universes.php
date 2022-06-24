@@ -20,19 +20,19 @@ self.symbol = option.Symbol</pre>
     <tbody>
         <tr>
             <td><code>ticker</code></td>
-	        <td><code>string</code></td>
+	        <td><code class="csharp">string</code><code class="python">str</code></td>
             <td>The underlying Equity ticker.</td>
             <td></td>
         </tr>
         <tr>
             <td><code>resolution</code></td>
-	        <td><code>Resolution?</code></td>
+	        <td><code class="csharp">Resolution?</code><code class="python">Resolution/NoneType</code></td>
             <td>The resolution of the market data.</td>
             <td><code class="python">None</code><code class="csharp">null</code></td>
         </tr>
         <tr>
             <td><code>market</code></td>
-	        <td><code>string</code></td>
+	        <td><code class="csharp">string</code><code class="python">str</code></td>
             <td>The underlying Equity market.</td>
             <td><code class="python">None</code><code class="csharp">null</code></td>
         </tr>
@@ -44,7 +44,7 @@ self.symbol = option.Symbol</pre>
         </tr>
         <tr>
             <td><code>leverage</code></td>
-	        <td><code>decimal</code><br></td>
+	        <td><code class="csharp">decimal</code><code class="python">float</code></td>
             <td>The leverage for this Equity.</td>
             <td><code>Security.NullLeverage</code></td>
         </tr>
