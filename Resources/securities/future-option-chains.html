@@ -1,9 +1,9 @@
-<p>To get the <code>OptionChain</code>, index the <code>OptionChains</code> property of the <code>Slice</code> with the canonical <code>Symbol</code>.</p>
+<p>To get the <code>OptionChain</code>, index the <code>OptionChains</code> property of the <code>Slice</code> with a Futures contract <code>Symbol</code>. After you get the <code>OptionChain</code>, you can sort and filter the Option contracts in the chain.</p>
 
 <div class='section-example-container'>
     <pre class='csharp'>public override void OnData(Slice slice)
 {
-    if (slice.OptionChains.TryGetValue(_contractSymbol.Canonical, out var chain))
+    if (slice.OptionChains.TryGetValue(futuresContract.Symbol, out var chain))
     {
         //
     }
@@ -11,13 +11,13 @@
 
 public void OnData(OptionChains optionChains)
 {
-    if (optionChains.TryGetValue(_contractSymbol.Canonical, out var chain))
+    if (optionChains.TryGetValue(futuresContract.Symbol, out var chain))
     {
         //
     }
 }</pre>
     <pre class='python'>def OnData(self, slice: Slice) -> None:
-    chain = slice.OptionChains.get(self.contract_symbol.Canonical)
+    chain = slice.OptionChains.get(futures_contract.Symbol)
     if chain:
         pass</pre>
 </div>
@@ -28,7 +28,7 @@ public void OnData(OptionChains optionChains)
 {
     foreach (var kvp in slice.OptionChains)
     {
-        var canonical = kvp.Key;
+        var futuresContractSymbol = kvp.Key;
         var chain = kvp.Value;
     }
 }
@@ -37,11 +37,11 @@ public void OnData(OptionChains optionChains)
 {
     foreach (var kvp in optionChains)
     {
-        var canonical = kvp.Key;
+        var futuresContractSymbol = kvp.Key;
         var chain = kvp.Value;
     }
 }</pre>
     <pre class='python'>def OnData(self, slice: Slice) -> None:
-    for canonical, chain in slice.OptionChains.items():
+    for futures_contract_symbol, chain in slice.OptionChains.items():
         pass</pre>
 </div>
