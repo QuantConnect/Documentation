@@ -15,8 +15,14 @@ self.contract_symbol = Symbol.CreateOption(self.symbol, Market.USA,
 <p>Another way to get an Index Option contract <code>Symbol</code> is to use the <code>OptionChainProvider</code>. The <code>GetOptionContractList</code> method of <code>OptionChainProvider </code>returns a list of <code>Symbol</code> objects that reference the available Option contracts for a given underlying Index on a given date.</p>
 
 <div class="section-example-container">
-    <pre class="csharp">var optionContractSymbols = OptionChainProvider.GetOptionContractList(_symbol, Time);</pre>
-    <pre class="python">option_contract_symbols = self.OptionChainProvider.GetOptionContractList(self.symbol, self.Time)</pre>
+    <pre class="csharp">var contractSymbols = OptionChainProvider.GetOptionContractList(_symbol, Time);
+var expiry = contractSymbols.Select(symbol => symbol.ID.Date).Min();
+var filteredSymbols = contractSymbols.Where(symbol => symbol.ID.Date == expiry && symbol.ID.OptionRight == OptionRight.Call);
+_contractSymbol = filteredSymbols.OrderByDescending(symbol => symbol.ID.StrikePrice).Last();</pre>
+    <pre class="python">contract_symbols = self.OptionChainProvider.GetOptionContractList(self.symbol, self.Time)
+expiry = min([symbol.ID.Date for symbol in contract_symbols])
+filtered_symbols = [symbol for symbol in contract_symbols if symbol.ID.Date == expiry and symbol.ID.OptionRight == OptionRight.Call]
+self.contract_symbol = sorted(filtered_symbols, key=lambda symbol: symbol.ID.StrikePrice)[0]</pre>
 </div>
 
 <h4>Subscribe to Contracts</h4>
