@@ -5,7 +5,12 @@
 {
     if (slice.OptionChains.TryGetValue(_symbol, out var chain))
     {
-        //
+        // Example: Find an at-the-money (ATM) put contract with the farthest expiration
+        var contract = chain
+            .OrderByDescending(x => x.Expiry)
+            .ThenBy(x => Math.Abs(chain.Underlying.Price - x.Strike))
+            .ThenByDescending(x => x.Right)
+            .FirstOrDefault();
     }
 }
 
@@ -19,7 +24,11 @@ public void OnData(OptionChains optionChains)
     <pre class='python'>def OnData(self, slice: Slice) -> None:
     chain = slice.OptionChains.get(self.symbol)
     if chain:
-        pass</pre>
+        # Example: Find an at-the-money (ATM) put contract with the farthest expiration
+        contract = sorted(sorted(sorted(chain, \
+            key = lambda x: abs(chain.Underlying.Price - x.Strike)), \
+            key = lambda x: x.Expiry, reverse=True), \
+            key = lambda x: x.Right, reverse=True)[0]</pre>
 </div>
 
 <p>You can also loop through the <code>OptionChains</code> property to get each <code>OptionChain</code>.</p>
