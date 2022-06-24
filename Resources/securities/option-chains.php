@@ -1,12 +1,12 @@
 <?php
-$getOptionChainsText = function($isFutureOption)
+$getOptionChainsText = function($isFutureOptionUniverse)
 {
     echo "
 <p><code>OptionChain</code> objects represent and entire chain of Option contracts for a single underlying security. They have the following properties:</p>
 <div data-tree='QuantConnect.Data.Market.OptionChain'></div>";
     
     
-    if ($isFutureOption)
+    if ($isFutureOptionUniverse)
     {
         $path = "future";
     }
