@@ -59,15 +59,3 @@ self.symbol = option.Symbol</pre>
 
 
 <p>If you add an Option universe for an underlying Equity that you don't have a subscription for, LEAN automatically subscribes to the underlying Equity with a <a href='/docs/v2/writing-algorithms/securities/asset-classes/us-equity/requesting-data#09-Data-Normalization'>data normalization mode</a> of <code>Raw</code>. If you already have a subscription to the underlying Equity but it's not <code>Raw</code>, it automatically changes to <code>Raw</code>.</p>
-
-<?php echo file_get_contents(DOCS_RESOURCES."/universes/option/set-filter.html"); ?>
-
-
-<p>The following table describes the filter methods of the <code>OptionFilterUniverse</code> class:</p>
-
-<?php 
-echo file_get_contents(DOCS_RESOURCES."/universes/option/option-filter-universe.html"); 
-echo file_get_contents(DOCS_RESOURCES."/universes/option/filter-examples.html"); 
-?>
-
-<p>By default, LEAN adds contracts to the <code>OptionChain</code> that pass the filter criteria at every time step in your algorithm. In backtests, if a contract in the chain doesn't pass the filter criteria, LEAN removes it from the chain at the start of the next day. In live trading, LEAN removes these contracts from the chain every 15 minutes.</p>
