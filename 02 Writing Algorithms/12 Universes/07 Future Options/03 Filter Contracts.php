@@ -20,37 +20,26 @@
 </div>
 
 
-<p>To get all of the contracts in the <code>OptionFilterUniverse</code>, follow the below example.</p>
+<p>To perform thorough filtering on the <code>OptionFilterUniverse</code>, you can define an isolated filter method.</p>
+
 <div class="section-example-container">
     <pre class="csharp"># In Initialize
 AddFutureOption(future.Symbol, Selector);
         
-private FutureFilterUniverse Selector(FutureFilterUniverse futureFilterUniverse)
+private OptionFilterUniverse Selector(OptionFilterUniverse optionFilterUniverse)
 {
-    List&lt;Symbol&gt; symbols = new();
-    var standards = futureFilterUniverse.StandardsOnly();
-
-    foreach (var symbol in standards)
-    {
-        var contract = new OptionContract(symbol, futureFilterUniverse.Underlying.Symbol);
-        if (contract.OpenInterest &gt; 0)
-        { 
-            symbols.Add(contract.Symbol);
-        }
-    }
-
-    return futureFilterUniverse.Contracts(symbols);
+    var symbols = optionFilterUniverse.PutsOnly();
+    var strike = symbols.Select(symbol => symbol.ID.StrikePrice).Min();
+    symbols = symbols.Where(symbol => symbol.ID.StrikePrice == strike);
+    return optionFilterUniverse.Contracts(symbols);
 }</pre>
     <pre class="python"># In Initialize
 self.AddFutureOption(future.Symbol, self.contract_selector)
-    
-def contract_selector(self, option_filter_universe: Callable[OptionFilterUniverse, OptionFilterUniverse]) -&gt; OptionFilterUniverse:
-    puts = option_filter_universe.PutsOnly()
-    symbols = []
-    for symbol in puts:
-        contract = OptionContract(symbol, option_filter_universe.Underlying.Symbol)
-        if contract.Greeks.Delta > 0: 
-            symbols.append(contract.Symbol)
+
+def contract_selector(self, option_filter_universe: OptionFilterUniverse) -> OptionFilterUniverse:
+    symbols = option_filter_universe.PutsOnly()
+    strike = min([symbol.ID.StrikePrice for symbol in symbols])
+    symbols = [symbol for symbol in symbols if symbol.ID.StrikePrice == strike]
     return option_filter_universe.Contracts(symbols)</pre>
 </div>
 
