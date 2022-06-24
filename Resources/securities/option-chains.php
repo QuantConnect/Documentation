@@ -12,7 +12,7 @@ $getOptionChainsText = function($isFutureOptionUniverse, $cSharpVariableName, $p
     }
     else
     {
-        include(DOCS_RESOURCES."/securities/regular-option-chains.html");
+        include(DOCS_RESOURCES."/securities/regular-option-chains.php");
         $getRegularOptionChainsText($cSharpVariableName, $pythonVariableName);
     }
 }
