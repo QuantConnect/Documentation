@@ -1,5 +1,5 @@
 <?php
-$getRegularOptionChainsText = function($cSharpMemberName, $pythonMemberName, $cSharpVariablName="canonicalSymbol", $pythonVariableName="canonical_symbol")
+$getRegularOptionChainsText = function($cSharpMemberName, $pythonMemberName, $cSharpVariablName, $pythonVariableName)
 {
     echo "
 <p>To get the <code>OptionChain</code>, index the <code>OptionChains</code> property of the <code>Slice</code> with the canonical <code>Symbol</code>.</p>
