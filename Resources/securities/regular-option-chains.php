@@ -1,5 +1,5 @@
 <?php
-$getRegularOptionChainsText = function($variableName)
+$getRegularOptionChainsText = function($cSharpVariableName, $pythonVariableName)
 {
     echo "
 <p>To get the <code>OptionChain</code>, index the <code>OptionChains</code> property of the <code>Slice</code> with the canonical <code>Symbol</code>.</p>
@@ -7,7 +7,7 @@ $getRegularOptionChainsText = function($variableName)
 <div class='section-example-container'>
     <pre class='csharp'>public override void OnData(Slice slice)
 {
-    if (slice.OptionChains.TryGetValue({$variableName}, out var chain))
+    if (slice.OptionChains.TryGetValue({$cSharpVariableName}, out var chain))
     {
         //
     }
@@ -15,13 +15,13 @@ $getRegularOptionChainsText = function($variableName)
 
 public void OnData(OptionChains optionChains)
 {
-    if (optionChains.TryGetValue({$variableName}, out var chain))
+    if (optionChains.TryGetValue({$cSharpVariableName}, out var chain))
     {
         //
     }
 }</pre>
     <pre class='python'>def OnData(self, slice: Slice) -> None:
-    chain = slice.OptionChains.get({$variableName})
+    chain = slice.OptionChains.get({$pythonVariableName})
     if chain:
         pass</pre>
 </div>
