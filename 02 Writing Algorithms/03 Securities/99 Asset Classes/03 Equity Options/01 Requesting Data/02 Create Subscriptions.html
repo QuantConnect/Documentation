@@ -73,7 +73,10 @@ def CustomSecurityInitializer(self, security: Security) -&gt; None:
 <div class="section-example-container">
     <pre class="csharp">var optionContractList = OptionChainProvider.GetOptionContractList(_symbol, Time);
     </pre>
-    <pre class="python">option_contract_list = self.OptionChainProvider.GetOptionContractList(self.symbol, self.Time)</pre>
+    <pre class="python">option_contract_symbols = self.OptionChainProvider.GetOptionContractList(self.symbol, self.Time)
+expiry = min([symbol.ID.Date for symbol in option_contract_symbols])
+filtered_symbols = [symbol for symbol in option_contract_symbols if symbol.ID.Date == expiry and symbol.ID.OptionRight == OptionRight.Call]
+self.contract_symbol = sorted(filtered_symbols, key=lambda symbol: symbol.ID.StrikePrice)[0]</pre>
 </div>
 
 <h4>Subscribe to Contracts</h4>
