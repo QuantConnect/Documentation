@@ -14,9 +14,11 @@
 
 <div class="section-example-container">
     <pre class="csharp">var continuousFutureSymbol = QuantConnect.Symbol.Create(Futures.Indices.SP500EMini, SecurityType.Future, Market.CME);
-contractSymbols = FutureChainProvider.GetFutureContractList(continuousFutureSymbol, Time);</pre>
+var contractSymbols = FutureChainProvider.GetFutureContractList(continuousFutureSymbol, Time);
+_contractSymbol = contractSymbols.OrderByDescending(symbol => symbol.ID.Date).Last();</pre>
     <pre class="python">continuous_future_symbol = Symbol.Create(Futures.Indices.SP500EMini, SecurityType.Future, Market.CME)
-contract_symbols = self.FutureChainProvider.GetFutureContractList(continuous_future_symbol, self.Time)</pre>
+contract_symbols = self.FutureChainProvider.GetFutureContractList(continuous_future_symbol, self.Time)
+self.contract_symbol = sorted(contract_symbols, key=lambda symbol: symbol.ID.Date)[0]</pre>
 </div>
 
 <h4>Subscribe to Contracts</h4>
