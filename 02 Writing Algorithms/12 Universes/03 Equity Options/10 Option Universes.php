@@ -58,7 +58,7 @@ self.symbol = option.Symbol</pre>
 </table>
 
 
-<p>If you add an Option universe for an underlying Equity that you don't have a subscription for, LEAN automatically subscribes to the underlying Equity with a <a href='/docs/v2/writing-algorithms/securities/asset-classes/us-equity/requesting-data#09-Data-Normalization'>data normalization mode</a> of <code>Raw</code>. If you already have a subscription to the underlying Equity but it's not <code>Raw</code>, LEAN automatically changes it to <code>Raw</code>.</p>
+<p>If you add an Option universe for an underlying Equity that you don't have a subscription for, LEAN automatically subscribes to the underlying Equity with a <a href='/docs/v2/writing-algorithms/securities/asset-classes/us-equity/requesting-data#09-Data-Normalization'>data normalization mode</a> of <code>Raw</code>. If you already have a subscription to the underlying Equity but it's not <code>Raw</code>, it automatically changes to <code>Raw</code>.</p>
 
 <?php echo file_get_contents(DOCS_RESOURCES."/universes/option/set-filter.html"); ?>
 
