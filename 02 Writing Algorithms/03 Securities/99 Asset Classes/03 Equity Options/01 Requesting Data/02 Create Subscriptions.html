@@ -71,7 +71,7 @@ def CustomSecurityInitializer(self, security: Security) -&gt; None:
 
 <div class="section-example-container">
     <pre class="csharp">var optionContractSymbols = OptionChainProvider.GetOptionContractList(_symbol, Time);
-var expiry = optionContractSymbols.OrderByDescending(symbol => symbol.ID.Date).Last().ID.Date;
+var expiry = optionContractSymbols.Select(symbol => symbol.ID.Date).Min();
 var filteredSymbols = optionContractSymbols.Where(symbol => symbol.ID.Date == expiry && symbol.ID.OptionRight == OptionRight.Call);
 _contractSymbol = filteredSymbols.OrderByDescending(symbol => symbol.ID.StrikePrice).Last();</pre>
     <pre class="python">option_contract_symbols = self.OptionChainProvider.GetOptionContractList(self.symbol, self.Time)
