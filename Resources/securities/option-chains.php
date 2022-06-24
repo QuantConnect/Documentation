@@ -1,5 +1,5 @@
 <?php
-$getOptionChainsText = function($isFutureOptionUniverse, $cSharpMemberName, $pythonMemberName, $cSharpVariableame, $pythonVariableName)
+$getOptionChainsText = function($isFutureOptionUniverse, $cSharpMemberName, $pythonMemberName, $cSharpVariablName="canonicalSymbol", $pythonVariableName="canonical_symbol")
 {
     echo "
 <p><code>OptionChain</code> objects represent and entire chain of Option contracts for a single underlying security. They have the following properties:</p>
@@ -13,7 +13,7 @@ $getOptionChainsText = function($isFutureOptionUniverse, $cSharpMemberName, $pyt
     else
     {
         include(DOCS_RESOURCES."/securities/regular-option-chains.php");
-        $getRegularOptionChainsText($cSharpMemberName, $pythonMemberName, $cSharpVariableame, $pythonVariableName);
+        $getRegularOptionChainsText($cSharpMemberName, $pythonMemberName, $cSharpVariablName, $pythonVariableName);
     }
 }
 ?>
