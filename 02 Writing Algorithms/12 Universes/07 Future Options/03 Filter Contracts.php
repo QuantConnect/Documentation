@@ -20,7 +20,7 @@
 </div>
 
 
-<p>To perform thorough filtering on the <code>OptionFilterUniverse</code>, you can define an isolated filter method.</p>
+<p>To perform thorough filtering on the <code>OptionFilterUniverse</code>, define an isolated filter method.</p>
 
 <div class="section-example-container">
     <pre class="csharp"># In Initialize
