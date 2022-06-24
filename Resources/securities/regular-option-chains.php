@@ -1,5 +1,5 @@
 <?php
-$getRegularOptionChainsText = function($cSharpMemberName, $pythonMemberName, $cSharpVariableame, $pythonVariableName)
+$getRegularOptionChainsText = function($cSharpMemberName, $pythonMemberName, $cSharpVariablName="canonicalSymbol", $pythonVariableName="canonical_symbol")
 {
     echo "
 <p>To get the <code>OptionChain</code>, index the <code>OptionChains</code> property of the <code>Slice</code> with the canonical <code>Symbol</code>.</p>
@@ -32,7 +32,7 @@ public void OnData(OptionChains optionChains)
 {
     foreach (var kvp in slice.OptionChains)
     {
-        var {$cSharpVariableame} = kvp.Key;
+        var {$cSharpVariablName} = kvp.Key;
         var chain = kvp.Value;
     }
 }
@@ -41,7 +41,7 @@ public void OnData(OptionChains optionChains)
 {
     foreach (var kvp in optionChains)
     {
-        var {$cSharpVariableame} = kvp.Key;
+        var {$cSharpVariablName} = kvp.Key;
         var chain = kvp.Value;
     }
 }</pre>
