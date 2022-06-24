@@ -101,38 +101,20 @@ future.SetFilter(lambda future_filter_universe: future_filter_universe.Standards
 </div>
 
 
-<p>To perform thorough filtering on the <code>FutureFilterUniverse</code>, define an isolated filter method.</p>
+<p>You can also define an isolated filter method.</p>
 <div class="section-example-container">
     <pre class="csharp">// In Initialize
 future.SetFilter(Selector);
     
 private FutureFilterUniverse Selector(FutureFilterUniverse futureFilterUniverse)
 {
-    List&lt;Symbol&gt; symbols = new();
-    var standards = futureFilterUniverse.StandardsOnly();
-
-    foreach (var symbol in standards)
-    {
-        var contract = new FuturesContract(symbol, futureFilterUniverse.Underlying.Symbol);
-        if (contract.OpenInterest &gt; 0)
-        { 
-            symbols.Add(contract.Symbol);
-        }
-    }
-
-    return futureFilterUniverse.Contracts(symbols);
+    return futureFilterUniverse.StandardsOnly().FrontMonth();
 }</pre>
     <pre class="python"># In Initialize
 future.SetFilter(self.contract_selector)
     
-def contract_selector(self, future_filter_universe: Callable[FutureFilterUniverse, FutureFilterUniverse]) -&gt; FutureFilterUniverse:
-    standards = future_filter_universe.StandardsOnly()
-    symbols = []
-    for symbol in standards:
-        contract = FuturesContract(symbol, future_filter_universe.Underlying.Symbol)
-        if contract.OpenInterest &gt; 0: 
-            symbols.append(contract.Symbol)
-    return future_filter_universe.Contracts(symbols)</pre>
+def contract_selector(self, future_filter_universe: Callable[FutureFilterUniverse, FutureFilterUniverse]) -> FutureFilterUniverse:
+    return future_filter_universe.StandardsOnly().FrontMonth()</pre>
 </div>
 
 
