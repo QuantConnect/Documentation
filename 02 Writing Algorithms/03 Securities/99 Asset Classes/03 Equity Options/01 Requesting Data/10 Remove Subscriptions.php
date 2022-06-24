@@ -1,1 +1,6 @@
-<?php echo file_get_contents(DOCS_RESOURCES."/securities/remove-option-contract.html"); ?>
+<?php 
+include(DOCS_RESOURCES."/securities/remove-option-contract.php"); 
+$pythonVariableName = "self.contract_symbol";
+$cSharpVariableName = "_contractSymbol";
+$getRemoveOptionContractText($pythonVariableName, $cSharpVariableName); 
+?>
