@@ -3,9 +3,22 @@
 <div class='section-example-container'>
     <pre class='csharp'>public override void OnData(Slice slice)
 {
-    if (slice.OptionChains.TryGetValue(futuresContract.Symbol, out var chain))
+    foreach (var kvp in slice.FuturesChains)
     {
-        //
+        var futuresCanonicalSymbol = kvp.Key;
+        var futuresChain = kvp.Value;
+        foreach (var futuresContractSymbol in futuresChain)
+        {
+            if (slice.OptionChains.TryGetValue(futuresContractSymbol, out var optionChain))
+            {
+                // Example: Find an at-the-money (ATM) put contract with the farthest expiration
+                var contract = optionChain
+                    .OrderByDescending(x => x.Expiry)
+                    .ThenBy(x => Math.Abs(chain.Underlying.Price - x.Strike))
+                    .ThenByDescending(x => x.Right)
+                    .FirstOrDefault();
+            }
+        }
     }
 }
 
