@@ -1,5 +1,5 @@
 <?php
-$getRegularOptionChainsText = function($cSharpVariableName, $pythonVariableName)
+$getRegularOptionChainsText = function($cSharpMemberName, $pythonMemberName, $cSharpVariableame, $pythonVariableName)
 {
     echo "
 <p>To get the <code>OptionChain</code>, index the <code>OptionChains</code> property of the <code>Slice</code> with the canonical <code>Symbol</code>.</p>
@@ -7,7 +7,7 @@ $getRegularOptionChainsText = function($cSharpVariableName, $pythonVariableName)
 <div class='section-example-container'>
     <pre class='csharp'>public override void OnData(Slice slice)
 {
-    if (slice.OptionChains.TryGetValue({$cSharpVariableName}, out var chain))
+    if (slice.OptionChains.TryGetValue({$cSharpMemberName}, out var chain))
     {
         //
     }
@@ -15,13 +15,13 @@ $getRegularOptionChainsText = function($cSharpVariableName, $pythonVariableName)
 
 public void OnData(OptionChains optionChains)
 {
-    if (optionChains.TryGetValue({$cSharpVariableName}, out var chain))
+    if (optionChains.TryGetValue({$cSharpMemberName}, out var chain))
     {
         //
     }
 }</pre>
     <pre class='python'>def OnData(self, slice: Slice) -> None:
-    chain = slice.OptionChains.get({$pythonVariableName})
+    chain = slice.OptionChains.get({$pythonMemberName})
     if chain:
         pass</pre>
 </div>
@@ -32,7 +32,7 @@ public void OnData(OptionChains optionChains)
 {
     foreach (var kvp in slice.OptionChains)
     {
-        var canonicalSymbol = kvp.Key;
+        var {$cSharpVariableame} = kvp.Key;
         var chain = kvp.Value;
     }
 }
@@ -41,12 +41,12 @@ public void OnData(OptionChains optionChains)
 {
     foreach (var kvp in optionChains)
     {
-        var canonicalSymbol = kvp.Key;
+        var {$cSharpVariableame} = kvp.Key;
         var chain = kvp.Value;
     }
 }</pre>
     <pre class='python'>def OnData(self, slice: Slice) -> None:
-    for canonical_symbol, chain in slice.OptionChains.items():
+    for {$pythonVariableName}, chain in slice.OptionChains.items():
         pass</pre>
 </div>";
 
