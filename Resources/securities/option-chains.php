@@ -1,5 +1,5 @@
 <?php
-$getOptionChainsText = function($isFutureOptionUniverse)
+$getOptionChainsText = function($isFutureOptionUniverse, $variableName)
 {
     echo "
 <p><code>OptionChain</code> objects represent and entire chain of Option contracts for a single underlying security. They have the following properties:</p>
@@ -8,12 +8,12 @@ $getOptionChainsText = function($isFutureOptionUniverse)
     
     if ($isFutureOptionUniverse)
     {
-        $path = "future";
+        echo file_get_contents(DOCS_RESOURCES."/securities/future-option-chains.html");
     }
     else
     {
-        $path = "regular";
+        include(DOCS_RESOURCES."/securities/regular-option-chains.html");
+        $getRegularOptionChainsText($variableName);
     }
-    echo file_get_contents(DOCS_RESOURCES."/securities/{$path}-option-chains.html");
 }
 ?>
