@@ -625,3 +625,25 @@ with open("Resources/indicators/indicator_count.html", "w", encoding="utf-8") as
         
 with open("Resources/indicators/candlestick_pattern_count.html", "w", encoding="utf-8") as html_file:
     html_file.write(f"There are {k} candlestick pattern indicators.")
+
+with open("02 Writing Algorithms/28 Indicators/07 Indicator Reference/00 Candlestick Pattern/00.json", "w", encoding="utf-8") as html_file:
+    data = {f"{n:02}": "" for n in range(1, k)}
+    html_file.write(f"""{{
+  "type" : "landing",
+  "heading" : "Candlestick Pattern",
+  "subHeading" : "",
+  "content" : "<p>Candlestick Pattern for each individual Candlestick Pattern indicator that QuantConnect supported. Click one to learn more.</p>",
+  "alsoLinks" : [],
+  "featureShortDescription": {str(data).replace("'", '"')}
+}}""")
+        
+with open("02 Writing Algorithms/28 Indicators/07 Indicator Reference/00.json", "w", encoding="utf-8") as html_file:
+    data = {f"{n:02}": "" for n in range(0, i)}
+    html_file.write(f"""{{
+  "type" : "landing",
+  "heading" : "Indicator Reference",
+  "subHeading" : "",
+  "content" : "<p>Indicator reference for each individual indicator that QuantConnect supported. Click one to learn more.</p>",
+  "alsoLinks" : [],
+  "featureShortDescription": {str(data).replace("'", '"')}
+}}""")
