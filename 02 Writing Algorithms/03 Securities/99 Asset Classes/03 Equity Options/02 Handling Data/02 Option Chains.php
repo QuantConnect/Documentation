@@ -1,1 +1,5 @@
-<?php echo file_get_contents(DOCS_RESOURCES."/securities/option-chains.html"); ?>
+<?php 
+include(DOCS_RESOURCES."/securities/option-chains.php"); 
+$isFutureOption = false;
+$getOptionChainsText($isFutureOption);
+?>
