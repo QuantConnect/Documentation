@@ -27,7 +27,7 @@
         </tr>
         <tr>
             <td><code>optionFilter</code></td>
-	    <td><code>Func&lt;OptionFilterUniverse, OptionFilterUniverse&lt;Symbol&gt;&gt;</code></td>
+	    <td><code class="csharp">Func&lt;OptionFilterUniverse, OptionFilterUniverse&gt;</code><code class="python">callable[OptionFilterUniverse, OptionFilterUniverse]</code></td>
             <td>The Option filter universe to use</td>
             <td></td>
         </tr>
