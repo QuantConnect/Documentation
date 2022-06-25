@@ -5,7 +5,6 @@
 {
     foreach (var kvp in slice.FuturesChains)
     {
-        var futuresCanonicalSymbol = kvp.Key;
         var futuresChain = kvp.Value;
         foreach (var futuresContractSymbol in futuresChain)
         {
@@ -30,9 +29,16 @@ public void OnData(OptionChains optionChains)
     }
 }</pre>
     <pre class='python'>def OnData(self, slice: Slice) -> None:
-    chain = slice.OptionChains.get(futures_contract.Symbol)
-    if chain:
-        pass</pre>
+    for kvp in slice.FuturesChain:
+        futures_chain = kvp.Value
+        for futures_contract_symbol in futures_chain:
+            option_chain = slice.OptionChains.get(futures_contract_symbol)
+            if option_chain:
+                # Example: Find an at-the-money (ATM) put contract with the farthest expiration
+                contract = sorted(sorted(sorted(chain, \
+                    key = lambda x: abs(chain.Underlying.Price - x.Strike)), \
+                    key = lambda x: x.Expiry, reverse=True), \
+                    key = lambda x: x.Right, reverse=True)[0]</pre>
 </div>
 
 <p>You can also loop through the <code>OptionChains</code> property to get each <code>OptionChain</code>.</p>
