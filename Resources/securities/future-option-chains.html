@@ -1,55 +1,17 @@
-<p>To get the <code>OptionChain</code>, index the <code>OptionChains</code> property of the <code>Slice</code> with a Futures contract <code>Symbol</code>. After you get the <code>OptionChain</code>, you can sort and filter the Option contracts in the chain.</p>
+<p>To get the <code>OptionChain</code> loop through the <code>OptionChains</code> property. After you get the <code>OptionChain</code>, you can sort and filter the Option contracts in the chain.</p>
 
-<div class='section-example-container'>
-    <pre class='csharp'>public override void OnData(Slice slice)
-{
-    foreach (var kvp in slice.FuturesChains)
-    {
-        var futuresChain = kvp.Value;
-        foreach (var futuresContractSymbol in futuresChain)
-        {
-            if (slice.OptionChains.TryGetValue(futuresContractSymbol, out var optionChain))
-            {
-                // Example: Find an at-the-money (ATM) put contract with the farthest expiration
-                var contract = optionChain
-                    .OrderByDescending(x => x.Expiry)
-                    .ThenBy(x => Math.Abs(chain.Underlying.Price - x.Strike))
-                    .ThenByDescending(x => x.Right)
-                    .FirstOrDefault();
-            }
-        }
-    }
-}
-
-public void OnData(OptionChains optionChains)
-{
-    if (optionChains.TryGetValue(futuresContract.Symbol, out var chain))
-    {
-        //
-    }
-}</pre>
-    <pre class='python'>def OnData(self, slice: Slice) -> None:
-    for kvp in slice.FuturesChain:
-        futures_chain = kvp.Value
-        for futures_contract_symbol in futures_chain:
-            option_chain = slice.OptionChains.get(futures_contract_symbol)
-            if not option_chain:
-                continue
-            # Example: Find an at-the-money (ATM) put contract with the farthest expiration
-            contract = sorted(sorted(sorted(chain, \
-                key = lambda x: abs(chain.Underlying.Price - x.Strike)), \
-                key = lambda x: x.Expiry, reverse=True), \
-                key = lambda x: x.Right, reverse=True)[0]</pre>
-</div>
-
-<p>You can also loop through the <code>OptionChains</code> property to get each <code>OptionChain</code>.</p>
 <div class='section-example-container'>
     <pre class='csharp'>public override void OnData(Slice slice)
 {
     foreach (var kvp in slice.OptionChains)
     {
-        var futuresContractSymbol = kvp.Key;
         var chain = kvp.Value;
+        // Example: Find an at-the-money (ATM) put contract with the farthest expiration
+        var contract = optionChain
+            .OrderByDescending(x => x.Expiry)
+            .ThenBy(x => Math.Abs(chain.Underlying.Price - x.Strike))
+            .ThenByDescending(x => x.Right)
+            .FirstOrDefault();
     }
 }
 
@@ -57,11 +19,14 @@ public void OnData(OptionChains optionChains)
 {
     foreach (var kvp in optionChains)
     {
-        var futuresContractSymbol = kvp.Key;
         var chain = kvp.Value;
     }
 }</pre>
     <pre class='python'>def OnData(self, slice: Slice) -> None:
-    for futures_contract_symbol, chain in slice.OptionChains.items():
-        pass</pre>
+    for _, chain in slice.OptionChains.items():
+        # Example: Find an at-the-money (ATM) put contract with the farthest expiration
+        contract = sorted(sorted(sorted(chain, \
+            key = lambda x: abs(chain.Underlying.Price - x.Strike)), \
+            key = lambda x: x.Expiry, reverse=True), \
+            key = lambda x: x.Right, reverse=True)[0]</pre>
 </div>
