@@ -29,8 +29,12 @@ self.contract_symbol = sorted(filtered_symbols, key=lambda symbol: symbol.ID.Str
 <p>To create an Index Option contract subscription, pass the contract <code>Symbol</code> to the <code>AddOptionContract</code> method. Save a reference to the contract <code>Symbol</code> so you can easily access the contract in the <a href="/docs/v2/writing-algorithms/securities/asset-classes/index-options/handling-data#03-Options-Chain">OptionChain</a> that LEAN passes to the <code>OnData</code> method.</p>
 
 <div class="section-example-container">
-    <pre class="csharp">AddOptionContract(_contractSymbol);</pre>
-    <pre class="python">self.AddOptionContract(self.contract_symbol)</pre>
+    <pre class="csharp">var option = AddOptionContract(_contractSymbol);
+option.PriceModel = OptionPriceModels.BlackScholes();
+    </pre>
+    <pre class="python">option = self.AddOptionContract(self.contract_symbol)
+option.PriceModel = OptionPriceModels.BlackScholes()
+    </pre>
 </div>
 
 <p>The <code>AddOptionContract</code> method creates a subscription for a single Index Option contract and adds it to your <span class="new-term">user-defined</span> universe. To create a dynamic universe of Index Option contracts, add an <a href="https://www.quantconnect.com/docs/v2/writing-algorithms/universes/index-options">Index Option universe</a>.</p>

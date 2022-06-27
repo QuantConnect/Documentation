@@ -85,8 +85,10 @@ self.contract_symbol = sorted(filtered_symbols, key=lambda symbol: symbol.ID.Str
 <p>To create an Equity Option contract subscription, pass the contract <code>Symbol</code> to the <code>AddOptionContract</code> method. Save a reference to the contract <code>Symbol</code> so you can easily access the Option contract in the <a href="/docs/v2/writing-algorithms/securities/asset-classes/equity-options/handling-data#02-Option-Chains">OptionChain</a> that LEAN passes to the <code>OnData</code> method. This method returns an <code>Option</code> object.</p>
 
 <div class="section-example-container">
-    <pre class="csharp">var option = AddOptionContract(_contractSymbol);</pre>
-    <pre class="python">option = self.AddOptionContract(self.contract_symbol)</pre>
+    <pre class="csharp">var option = AddOptionContract(_contractSymbol);
+option.PriceModel = OptionPriceModels.BjerksundStensland();</pre>
+    <pre class="python">option = self.AddOptionContract(self.contract_symbol)
+option.PriceModel = OptionPriceModels.BjerksundStensland()</pre>
 </div>
 
 <p>The <code>AddOptionContract</code> method creates a subscription for a single Option contract and adds it to your <span class="new-term">user-defined</span> universe. To create a dynamic universe of Option contracts, add an <a href="/docs/v2/writing-algorithms/universes/equity-options">Equity Options universe</a> or an <a href="/docs/v2/writing-algorithms/algorithm-framework/universe-selection/options-universes">Options Universe Selection model</a>.</p>
