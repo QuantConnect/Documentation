@@ -1,42 +1,19 @@
-<p>
-QuantBook gives you access to the vast amounts of data QuantConnect hosts. Similar to backtesting, you can access that data using history calls. You can also create indicators, consolidate data, and access charting features. However, keep in mind that event-driven features available in backtesting, like universe selection and OnData events, are not available in research.
-</p>
-
-<p>
-To use QuantBook, you’ll need to add these references and dependencies at the start of the notebook. This is important to note for local instances of a notebook, but in the QuantConnect research environment, these references are automatically added to the notebook and hidden from sight.
-</p>
+<p>The following snippet demonstrates how to use the Research Environment to plot price of the S&amp;P 500 index ETF, SPY, and its Bollinger Bands:</p>
 
 <div class="section-example-container">
-	<pre class="all">from clr import AddReference
-AddReference("System")
-AddReference("QuantConnect.Common")
-AddReference("QuantConnect.Research")
-AddReference("QuantConnect.Indicators")
-from System import *
-from QuantConnect import *
-from QuantConnect.Data.Market import TradeBar, QuoteBar
-from QuantConnect.Research import *
-from QuantConnect.Indicators import *
-from datetime import datetime, timedelta
-import matplotlib.pyplot as plt
-import pandas as pd
-
-# Create an instance
+	<pre class="python"># Create a QuantBook
 qb = QuantBook()
-</pre>
-</div>
 
-<h4>QuantBook Example</h4>
-<p>Using QuantBook to subscribe to SPY data and then making a history call for daily resolution SPY data.</p>
-<div class="section-example-container">
-	<pre class="all">spy = qb.AddEquity("SPY")
+# Create a security subscription
+spy = qb.AddEquity("SPY")
+
+# Request some historical data
 history = qb.History(qb.Securities.Keys, 360, Resolution.Daily)
-</pre>
-<p>
-Using QuantBook to create a Bollinger Band indicator for SPY, dropping the <i>standard deviation</i> column and then plotting it.
-</p>
-<pre class="all">bbdf = qb.Indicator(BollingerBands(30, 2), spy.Symbol, 360, Resolution.Daily)
-bbdf.drop('standarddeviation', 1).plot()
-</pre>
+
+# Calculate the Bollinger Bands
+bbdf = qb.Indicator(BollingerBands(30, 2), spy.Symbol, 360, Resolution.Daily)
+
+# Plot the data
+bbdf.drop('standarddeviation', 1).plot()</pre>
 <img src="https://www.dropbox.com/s/6c3h1ndt3oo0ioc/notebook%203.PNG?dl=1" class="img-responsive" title="" style="">
 </div>
