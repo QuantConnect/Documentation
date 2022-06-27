@@ -30,3 +30,57 @@ public void OnData(OptionChains optionChains)
             key = lambda x: x.Expiry, reverse=True), \
             key = lambda x: x.Right, reverse=True)[0]</pre>
 </div>
+
+
+<p>You can also iterate through the <code>FuturesChains</code> first.</p>
+
+<div class='section-example-container'>
+    <pre class='csharp'>public override void OnData(Slice slice)
+{
+    foreach (var kvp in slice.FuturesChains)
+    {
+        var continuousContractSymbol = kvp.Key;
+        var futuresChain = kvp.Value;
+        
+        // Select a Future Contract and create its canonical FOP Symbol
+        var futuresContract = futuresChain.First();
+        var canonicalFOPSymbol = Symbol.CreateCanonicalOption(futuresContract.Symbol);
+        if (slice.OptionChains.TryGetValue(canonicalFOPSymbol, out var optionChain))
+        {
+            foreach (var optionContract in optionChain)
+            {
+                // 
+            }
+        }
+    }
+}
+public void OnData(FuturesChains futuresChains)
+{
+    foreach (var kvp in futuresChains)
+    {
+        var continuousContractSymbol = kvp.Key;
+        var futuresChain = kvp.Value;
+        
+        // Select a Future Contract and create its canonical FOP Symbol
+        var futuresContract = futuresChain.First();
+        var canonicalFOPSymbol = Symbol.CreateCanonicalOption(futuresContract.Symbol);
+        if (slice.OptionChains.TryGetValue(canonicalFOPSymbol, out var optionChain))
+        {
+            foreach (var optionContract in optionChain)
+            {
+                // 
+            }
+        }
+    }
+}</pre>
+    <pre class='python'>def OnData(self, slice: Slice) -> None:
+    for continuous_future_symbol, futures_chain in slice.FuturesChains.items():
+        # Select a Future Contract and create its canonical FOP Symbol
+        futures_contract = [contract for contract in futures_chain][0]
+        canonical_fop_symbol = Symbol.CreateCanonicalOption(futures_contract.Symbol)
+        option_chain = slice.OptionChains.get(canonical_fop_symbol)
+        if option_chain:
+            option_contract = option_chain.Contracts.get(self.option_contract_symbol)
+            if option_contract:
+                pass</pre>
+</div> 
