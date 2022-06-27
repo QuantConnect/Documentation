@@ -38,3 +38,24 @@ self.AddFutureOption(future.Symbol)</pre>
 </table>
 
 
+<p>To set the <a href='/docs/v2/writing-algorithms/reality-modeling/options-models/pricing'>price model</a> of the Options, set their <code>PriceModel</code> property in a <a href='/docs/v2/writing-algorithms/universes/key-concepts#06-Configure-Universe-Securities'>security initializer</a>.</p>
+
+<pre class="csharp">//In Initialize
+SetSecurityInitializer(CustomSecurityInitializer);
+
+private void CustomSecurityInitializer(Security security)
+{
+    if (security.Type == SecurityType.FutureOption)
+    {
+        security.PriceModel = OptionPriceModels.CrankNicolsonFD();
+    }
+}
+</pre>
+<pre class="python">#In Initialize
+self.SetSecurityInitializer(self.CustomSecurityInitializer)
+
+def CustomSecurityInitializer(self, security: Security) -&gt; None:
+    if security.Type == SecurityType.FutureOption:
+        security.PriceModel = OptionPriceModels.CrankNicolsonFD()
+</pre>
+</div>
