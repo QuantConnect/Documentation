@@ -60,17 +60,6 @@ public void OnData(FuturesChains futuresChains)
     {
         var continuousContractSymbol = kvp.Key;
         var futuresChain = kvp.Value;
-        
-        // Select a Future Contract and create its canonical FOP Symbol
-        var futuresContract = futuresChain.First();
-        var canonicalFOPSymbol = Symbol.CreateCanonicalOption(futuresContract.Symbol);
-        if (slice.OptionChains.TryGetValue(canonicalFOPSymbol, out var optionChain))
-        {
-            foreach (var optionContract in optionChain)
-            {
-                // 
-            }
-        }
     }
 }</pre>
     <pre class='python'>def OnData(self, slice: Slice) -> None:
@@ -80,7 +69,6 @@ public void OnData(FuturesChains futuresChains)
         canonical_fop_symbol = Symbol.CreateCanonicalOption(futures_contract.Symbol)
         option_chain = slice.OptionChains.get(canonical_fop_symbol)
         if option_chain:
-            option_contract = option_chain.Contracts.get(self.option_contract_symbol)
-            if option_contract:
+            for contract in option_chain:
                 pass</pre>
 </div> 
