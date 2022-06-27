@@ -1,1 +1,5 @@
-<?php echo file_get_contents(DOCS_RESOURCES."/securities/option-contracts.html"); ?>
+<?php 
+include(DOCS_RESOURCES."/securities/option-contracts.php"); 
+$isFutureOptions = false;
+$getOptionContractText($isFutureOptions);
+?>
