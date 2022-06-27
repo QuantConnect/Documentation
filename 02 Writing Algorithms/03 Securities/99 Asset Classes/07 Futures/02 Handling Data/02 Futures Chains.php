@@ -1,1 +1,6 @@
-<?php echo file_get_contents(DOCS_RESOURCES."/securities/future-chains.html"); ?>
+<?php 
+include(DOCS_RESOURCES."/securities/future-chains.php"); 
+$pythonMemberName = "self.contract_symbol";
+$cSharpMemberName = "_contractSymbol";
+$getFutureChainsText($pythonMemberName, $cSharpMemberName);
+?>
