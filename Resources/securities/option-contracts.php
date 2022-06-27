@@ -9,7 +9,7 @@ $getOptionContractText = function($isFutureOptions)
 
 <p>To get the Option contracts in the <code>Slice</code>, use the <code>Contracts</code> property of the <code>OptionChain</code>.</p>
 ";
-    if () 
+    if ($isFutureOptions) 
     {
         echo "
 <div class='section-example-container'>
