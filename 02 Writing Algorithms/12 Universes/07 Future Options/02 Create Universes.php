@@ -40,6 +40,7 @@ self.AddFutureOption(future.Symbol)</pre>
 
 <p>To set the <a href='/docs/v2/writing-algorithms/reality-modeling/options-models/pricing'>price model</a> of the Options, set their <code>PriceModel</code> property in a <a href='/docs/v2/writing-algorithms/universes/key-concepts#06-Configure-Universe-Securities'>security initializer</a>.</p>
 
+<div class="section-example-container">
 <pre class="csharp">//In Initialize
 SetSecurityInitializer(CustomSecurityInitializer);
 
