@@ -42,6 +42,7 @@ public void OnData(OptionChains optionChains)
             pass</pre>
 </div>  
 
+<p>You can also iterate through the <code>FuturesChains</code> first.</p>
 
 <div class='section-example-container'>
     <pre class='csharp'>public override void OnData(Slice slice)
@@ -49,10 +50,10 @@ public void OnData(OptionChains optionChains)
     foreach (var kvp in slice.FuturesChains)
     {
         var continuousContractSymbol = kvp.Key;
-        var chain = kvp.Value;
+        var futuresChain = kvp.Value;
         
         // Select a Future Contract and create its canonical FOP Symbol
-        var contract = chain.First();
+        var contract = futuresChain.First();
         var canonicalFOPSymbol = Symbol.CreateCanonicalOption(contract.Symbol);
         if (slice.OptionChains.TryGetValue(canonicalFOPSymbol, out var optionChain))
         {
@@ -69,10 +70,10 @@ public void OnData(FuturesChains futuresChains)
     foreach (var kvp in futuresChains)
     {
         var continuousContractSymbol = kvp.Key;
-        var chain = kvp.Value;
+        var futuresChain = kvp.Value;
         
         // Select a Future Contract and create its canonical FOP Symbol
-        var contract = chain.First();
+        var contract = futuresChain.First();
         var canonicalFOPSymbol = Symbol.CreateCanonicalOption(contract.Symbol);
         if (slice.OptionChains.TryGetValue(canonicalFOPSymbol, out var optionChain))
         {
