@@ -49,3 +49,10 @@ self.symbol = option.Symbol</pre>
 
 <p>If you add an Option universe for an underlying Index that you don't have a subscription for, LEAN automatically subscribes to the underlying Index.</p>
 
+
+<p>To set the <a href='/docs/v2/writing-algorithms/reality-modeling/options-models/pricing'>price model</a> of the Option, set its <code>PriceModel</code> property.</p>
+
+<div class="section-example-container">
+    <pre class="csharp">option.PriceModel =  OptionPriceModels.CrankNicolsonFD();</pre>
+    <pre class="python">option.PriceModel = OptionPriceModels.CrankNicolsonFD()</pre>
+</div>
