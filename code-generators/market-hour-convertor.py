@@ -89,7 +89,7 @@ for dir, target in conversions.items():
 """)
                 html_file.write(codes)
             
-        assets_subdirs = [str(subdir.name) for subdir in market_dir.iterdir() if subdir.is_dir() and subdir.name != "generic"]
+        assets_subdirs = [str(subdir.name).upper() for subdir in market_dir.iterdir() if subdir.is_dir() and subdir.name != "generic"]
         
         k = 11
         
