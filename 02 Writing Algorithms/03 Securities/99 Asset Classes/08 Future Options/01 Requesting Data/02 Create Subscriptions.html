@@ -69,7 +69,7 @@ var expiry = optionContractSymbols.Select(symbol =&gt; symbol.ID.Date).Min();
 var filteredSymbols = optionContractSymbols.Where(symbol =&gt; symbol.ID.Date == expiry &amp;&amp; symbol.ID.OptionRight == OptionRight.Call);
 _optionContractSymbol = filteredSymbols.OrderByDescending(symbol =&gt; symbol.ID.StrikePrice).Last();</pre>
     <pre class="python">option_contract_symbols = self.OptionChainProvider.GetOptionContractList(self.future_contract_symbol, self.Time)
-expiry = min([symbol.ID.Date for symbol in contract_symbols])
+expiry = min([symbol.ID.Date for symbol in option_contract_symbols])
 filtered_symbols = [symbol for symbol in option_contract_symbols if symbol.ID.Date == expiry and symbol.ID.OptionRight == OptionRight.Call]
 self.option_contract_symbol = sorted(filtered_symbols, key=lambda symbol: symbol.ID.StrikePrice)[0]</pre>
 </div>
