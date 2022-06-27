@@ -54,7 +54,7 @@ public void OnData(OptionChains optionChains)
         
         // Select a Future Contract and create its canonical FOP Symbol
         var futuresContract = futuresChain.First();
-        var canonicalFOPSymbol = Symbol.CreateCanonicalOption(futuresContract.Symbol);
+        var canonicalFOPSymbol = QuantConnect.Symbol.CreateCanonicalOption(futuresContract.Symbol);
         if (slice.OptionChains.TryGetValue(canonicalFOPSymbol, out var optionChain))
         {
             if (optionChain.Contracts.TryGetValue(_optionContractSymbol, out var optionContract))
@@ -74,7 +74,7 @@ public void OnData(FuturesChains futuresChains)
         
         // Select a Future Contract and create its canonical FOP Symbol
         var futuresContract = futuresChain.First();
-        var canonicalFOPSymbol = Symbol.CreateCanonicalOption(futuresContract.Symbol);
+        var canonicalFOPSymbol = QuantConnect.Symbol.CreateCanonicalOption(futuresContract.Symbol);
         if (slice.OptionChains.TryGetValue(canonicalFOPSymbol, out var optionChain))
         {
             if (optionChain.Contracts.TryGetValue(_optionContractSymbol, out var optionContract))
@@ -95,8 +95,7 @@ public void OnData(FuturesChains futuresChains)
             if option_contract:
                 pass</pre>
 </div> 
-        
-        ";   
+";   
     }
     else 
     {
