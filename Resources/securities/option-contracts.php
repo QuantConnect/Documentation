@@ -46,33 +46,51 @@ public void OnData(OptionChains optionChains)
 <div class='section-example-container'>
     <pre class='csharp'>public override void OnData(Slice slice)
 {
-    if (slice.OptionChains.TryGetValue(_contractSymbol.Canonical, out var chain))
+    foreach (var kvp in slice.FuturesChains)
     {
-        if (chain.Contracts.TryGetValue(_contractSymbol, out var contract))
+        var continuousContractSymbol = kvp.Key;
+        var chain = kvp.Value;
+        
+        // Select a Future Contract and create its canonical FOP Symbol
+        var contract = chain.First();
+        var canonicalFOPSymbol = Symbol.CreateCanonicalOption(contract.Symbol);
+        if (slice.OptionChains.TryGetValue(canonicalFOPSymbol, out var optionChain))
         {
-            //
+            if (optionChain.Contracts.TryGetValue(_optionContractSymbol, out var contract))
+            {
+                //
+            }
         }
     }
 }
 
-public void OnData(OptionChains optionChains)
+public void OnData(FuturesChains futuresChains)
 {
-    if (optionChains.TryGetValue(_contractSymbol.Canonical, out var chain))
+    foreach (var kvp in futuresChains)
     {
-        if (chain.Contracts.TryGetValue(_contractSymbol, out var contract))
+        var continuousContractSymbol = kvp.Key;
+        var chain = kvp.Value;
+        
+        // Select a Future Contract and create its canonical FOP Symbol
+        var contract = chain.First();
+        var canonicalFOPSymbol = Symbol.CreateCanonicalOption(contract.Symbol);
+        if (slice.OptionChains.TryGetValue(canonicalFOPSymbol, out var optionChain))
         {
-            //
+            if (optionChain.Contracts.TryGetValue(_optionContractSymbol, out var contract))
+            {
+                //
+            }
         }
     }
 }</pre>
     <pre class='python'>def OnData(self, slice: Slice) -> None:
     for continuous_future_symbol, futures_chain in slice.FuturesChains.items():
-        # Select a Future Contract and create it's canonical FOP symbol
+        # Select a Future Contract and create its canonical FOP Symbol
         contract = [contract for contract in futures_chain][0]
         canonical_fop_symbol = Symbol.CreateCanonicalOption(contract.Symbol)
-        chain = data.OptionChains.get(canonical_fop_symbol)
-        if chain:
-            contract = chain.Contracts.get(self.option_contract_symbol)
+        option_chain = slice.OptionChains.get(canonical_fop_symbol)
+        if option_chain:
+            contract = option_chain.Contracts.get(self.option_contract_symbol)
             if contract:
                 pass</pre>
 </div> 
