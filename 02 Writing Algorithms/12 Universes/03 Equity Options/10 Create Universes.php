@@ -59,3 +59,10 @@ self.symbol = option.Symbol</pre>
 
 
 <p>If you add an Option universe for an underlying Equity that you don't have a subscription for, LEAN automatically subscribes to the underlying Equity with a <a href='/docs/v2/writing-algorithms/securities/asset-classes/us-equity/requesting-data#09-Data-Normalization'>data normalization mode</a> of <code>Raw</code>. If you already have a subscription to the underlying Equity but it's not <code>Raw</code>, it automatically changes to <code>Raw</code>.</p>
+
+<p>To set the <a href='/docs/v2/writing-algorithms/reality-modeling/options-models/pricing'>price model</a> of the Option, set its <code>PriceModel</code> property.</p>
+
+<div class="section-example-container">
+    <pre class="csharp">option.PriceModel =  OptionPriceModels.CrankNicolsonFD();</pre>
+    <pre class="python">option.PriceModel = OptionPriceModels.CrankNicolsonFD()</pre>
+</div>
