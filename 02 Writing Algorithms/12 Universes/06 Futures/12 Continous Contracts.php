@@ -3,15 +3,15 @@
 <p>To configure how LEAN identifies the current Future contract in the continuous series, provide <code>dataMappingMode</code>, <code>dataNormalizationMode</code>, and <code>contractDepthOffset</code> arguments to the <code>AddFuture</code> method. The <code>Future</code> object that the <code>AddFuture</code> method returns contains a <code>Mapped</code> property that references the current contract in the continuous contract series. As the contracts roll over, the <code>Mapped</code> property references the next contract in the series and you receive a <code>SymbolChangedEvent</code> object in the <code>OnData</code> method. The <code>SymbolChangedEvent</code> references the old contract <code>Symbol</code> and the new contract <code>Symbol</code>.</p>
 
 <div class="section-example-container">
-    <pre class="csharp">public override void OnData(Slice data)
+    <pre class="csharp">public override void OnData(Slice slice)
 {
-    foreach (var changedEvent in data.SymbolChangedEvents.Values)
+    foreach (var changedEvent in slice.SymbolChangedEvents.Values)
     {
         Log($"Symbol changed: {changedEvent.OldSymbol} -> {changedEvent.NewSymbol}");
     }
 }</pre>
-    <pre class="python">def OnData(self, data):
-    for changed_event in data.SymbolChangedEvents.Values:
+    <pre class="python">def OnData(self, slice: Slice) -> None:
+    for changed_event in slice.SymbolChangedEvents.Values:
         self.Log(f"Contract rollover from {changed_event.OldSymbol} to {changed_event.NewSymbol}")</pre>
 </div>
 
