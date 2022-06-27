@@ -16,9 +16,9 @@ self.contract_symbol = Symbol.CreateOption(self.symbol, Market.USA,
 
 <div class="section-example-container">
     <pre class="csharp">var contractSymbols = OptionChainProvider.GetOptionContractList(_symbol, Time);
-var expiry = contractSymbols.Select(symbol => symbol.ID.Date).Min();
-var filteredSymbols = contractSymbols.Where(symbol => symbol.ID.Date == expiry && symbol.ID.OptionRight == OptionRight.Call);
-_contractSymbol = filteredSymbols.OrderByDescending(symbol => symbol.ID.StrikePrice).Last();</pre>
+var expiry = contractSymbols.Select(symbol =&gt; symbol.ID.Date).Min();
+var filteredSymbols = contractSymbols.Where(symbol =&gt; symbol.ID.Date == expiry &amp;&amp; symbol.ID.OptionRight == OptionRight.Call);
+_contractSymbol = filteredSymbols.OrderByDescending(symbol =&gt; symbol.ID.StrikePrice).Last();</pre>
     <pre class="python">contract_symbols = self.OptionChainProvider.GetOptionContractList(self.symbol, self.Time)
 expiry = min([symbol.ID.Date for symbol in contract_symbols])
 filtered_symbols = [symbol for symbol in contract_symbols if symbol.ID.Date == expiry and symbol.ID.OptionRight == OptionRight.Call]
@@ -26,7 +26,7 @@ self.contract_symbol = sorted(filtered_symbols, key=lambda symbol: symbol.ID.Str
 </div>
 
 <h4>Subscribe to Contracts</h4>
-<p>To create an Index Option contract subscription, pass the contract <code>Symbol</code> to the <code>AddOptionContract</code> method. Save a reference to the contract <code>Symbol</code> so you can easily access the contract in the <a href="/docs/v2/writing-algorithms/securities/asset-classes/index-options/handling-data#03-Options-Chain">OptionChain</a> that LEAN passes to the <code>OnData</code> method.</p>
+<p>To create an Index Option contract subscription, pass the contract <code>Symbol</code> to the <code>AddOptionContract</code> method. Save a reference to the contract <code>Symbol</code> so you can easily access the contract in the <a href="/docs/v2/writing-algorithms/securities/asset-classes/index-options/handling-data#03-Options-Chain">OptionChain</a> that LEAN passes to the <code>OnData</code> method. To set the <a href="https://www.quantconnect.com/docs/v2/writing-algorithms/reality-modeling/options-models/pricing">price model</a> of the Option, set its <code>PriceModel</code> property.</p>
 
 <div class="section-example-container">
     <pre class="csharp">var option = AddOptionContract(_contractSymbol);
