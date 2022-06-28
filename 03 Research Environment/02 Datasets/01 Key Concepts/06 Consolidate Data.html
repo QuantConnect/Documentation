@@ -1,38 +1,45 @@
-<p>History requests usually return data in one of the standard <a href="/docs/v2/writing-algorithms/securities/subscriptions#03-Resolutions">resolutions</a>. To analyze data on custom time frames like 5-minute bars or 4-hour bars, consolidate the data. <br></p>
-
-<h4>Resample </h4>
-
-<p>The <a rel="nofollow" target="_blank" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.resample.html">resample</a> method converts the frequency of a time series DataFrame into a custom frequency. Consider an example where you make a history call for minute resolution data and want to create 5-minute resolution data.</p> 
+<p>History requests usually return data in one of the standard <a href="/docs/v2/writing-algorithms/securities/subscriptions#03-Resolutions">resolutions</a>. To analyze data on custom time frames like 5-minute bars or 4-hour bars, you need to aggregate it. Consider an example where you make a history call for minute resolution data and want to create 5-minute resolution data. <br></p>
 
 <div class="section-example-container">
-	<pre class="python">qb = QuantBook()
-
-spy = qb.AddEquity("SPY")
-
-startDate = datetime(2018, 4, 1)
-endDate = datetime(2018, 7, 15)
-
-df = qb.History(spy.Symbol, startDate, endDate, Resolution.Minute)</pre>
+    <pre class="python">qb = QuantBook()
+symbol = qb.AddEquity("SPY").Symbol
+start_date = datetime(2018, 4, 1)
+end_date = datetime(2018, 7, 15)
+df = qb.History(symbol, start_date, end_date, Resolution.Minute)</pre>
+<pre class="csharp"></pre>
 </div>
 
 <img src="https://www.dropbox.com/s/y01mvb29qtaya3e/notebook%2025.PNG?dl=1" class="img-responsive" title="" style="">
 
-<p>The <code>resample</code> method only works on DataFrame objects that have a <code>datetime</code> index. The <code>History</code> method returns a DataFrame with a multi-index. The first index is a <code>Symbol</code> index for each security and the second index is a time index for the timestamps of each row of data. To make the DataFrame compatible with the <code>resample</code> method, call the <a href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.reset_index.html">reset_index</a> method to drop the <code>Symbol</code> index.</p>
+<p class="python">To aggregate the data, use a <a href="/docs/v2/writing-algorithms/consolidating-data/key-concepts">consolidator</a> or the <code>pandas</code> <a rel="nofollow" target="_blank" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.resample.html">resample</a> method.<br></p>
+<p class="csharp">To aggregate the data, use a <a href="/docs/v2/writing-algorithms/consolidating-data/key-concepts">consolidator</a>.<br></p>
 
+<h4 class="python">Consolidators</h4>
+<div class="section-example-container">
+    <pre class="python"></pre>
+    <pre class="csharp"></pre>
+</div>
+
+<h4 class="python">Resample Method</h4>
+
+<p class="python">The <code>resample</code> method converts the frequency of a time series DataFrame into a custom frequency. The method only works on DataFrame objects that have a <code>datetime</code> index. The <code>History</code> method returns a DataFrame with a multi-index. The first index is a <code>Symbol</code> index for each security and the second index is a time index for the timestamps of each row of data. To make the DataFrame compatible with the <code>resample</code> method, call the <a href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.reset_index.html">reset_index</a> method to drop the <code>Symbol</code> index.</p>
+
+<div class="python">
 <div class="section-example-container">
 	<pre class="python"># Drop level 0 index (Symbol index) from the DataFrame
 df.reset_index(level = 0, drop = True, inplace=True)
 </pre>
-</div>
+</div></div>
 
-<img src="https://www.dropbox.com/s/7f86n9w82rya8vr/notebook%2023.PNG?dl=1" class="img-responsive" title="" style="">
+<img src="https://www.dropbox.com/s/7f86n9w82rya8vr/notebook%2023.PNG?dl=1" class="python img-responsive" title="" style="">
 
-<p>The <code>resample</code> method returns a <code>Resampler</code> object, which needs to be downsampled using one of the pandas <a rel="nofollow" target="_blank" href="https://pandas.pydata.org/pandas-docs/stable/reference/resampling.html">downsampling computations</a>. For example, you can use the <a rel="nofollow" target="_blank" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.core.resample.Resampler.ohlc.html">Resampler.ohlc</a> downsampling method to aggregate price data. </p>
+<p class="python">The <code>resample</code> method returns a <code>Resampler</code> object, which needs to be downsampled using one of the pandas <a rel="nofollow" target="_blank" href="https://pandas.pydata.org/pandas-docs/stable/reference/resampling.html">downsampling computations</a>. For example, you can use the <a rel="nofollow" target="_blank" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.core.resample.Resampler.ohlc.html">Resampler.ohlc</a> downsampling method to aggregate price data. </p>
 
-<p>
+<p class="python">
 When you resample a DataFrame with the <code>ohlc</code> downsampling method, it creates an OHLC row for each column in the DataFrame. To just calculate the OHLC of the close column, select the close column before you resample the DataFrame. A resample offset of 5T corresponds to a 5-minute resample. Other resampling offsets include 2D = 2 days, 5H = 5 hours, and 3S = 3 seconds.
 </p>
 
+<div class="python">
 <div class="section-example-container">
 	<pre class="python">close_prices = df["close"]
 
@@ -40,8 +47,9 @@ offset = "5T"
 close_5min_ohlc = close_prices.resample(offset).ohlc()
 </pre>
 </div>
+</div>
 
-<img src="https://www.dropbox.com/s/t7vrv4ofiupbtzk/notebook%2024.PNG?dl=1" class="img-responsive" title="" style="">
+<img src="https://www.dropbox.com/s/t7vrv4ofiupbtzk/notebook%2024.PNG?dl=1" class="python img-responsive" title="" style="">
 
 
 
