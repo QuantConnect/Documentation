@@ -24,6 +24,31 @@
 </table>
 
 
+<div class="section-example-container">
+<pre class="csharp">public class QuantBook : QCAlgorithm
+{
+    public IEnumerable&lt;DataDictionary&lt;dynamic&gt;&gt; GetFundamental(
+        Symbol symbol, string selector = null, 
+        DateTime? start = null, DateTime? end = null) 
+        { ... };
+
+    public FutureHistory GetFutureHistory(
+        Symbol symbol, DateTime start, DateTime? end = null, Resolution? resolution = null) 
+        { ... };
+
+    public OptionHistory GetOptionHistory(
+        Symbol symbol, DateTime start, DateTime? end = null, Resolution? resolution = null) 
+        { ... };
+}</pre>
+<pre class="python">class QCAlgorithm:
+    def GetFundamental(self, symbols: List[Symbol], selector: string, start: datetime, end: datetime):
+
+    def GetFutureHistory(self, symbol: Symbol, start: datetime, end: datetime, resolution: Resolution) -&gt; FutureHistory:
+
+    def GetOptionHistory(self, symbol: Symbol, start: datetime, end: datetime, resolution: Resolution) -&gt; OptionHistory:</pre>
+</div>
+
+
 <p>QuantBook gives you access to the vast amounts of data in the Dataset Market. Similar to backtesting, you can access that data using history 
 calls. You can also create indicators, consolidate data, and access 
 charting features. However, keep in mind that event-driven features 
@@ -32,7 +57,7 @@ available in backtesting, like universe selection and OnData events, are
 </p>
 
 <div class="section-example-container">
-	<pre class="all"># Initialize QuantBook
+	<pre class="python"># Initialize QuantBook
 qb = QuantBook()
 
 # Subscribe to SPY data with QuantBook
@@ -48,7 +73,7 @@ To use the preceding code in a backtest, replace <code>qb = QuantBook()</code> w
 </p>
 
 <div class="section-example-container">
-	<pre class="all">def Initialize(self) -&gt; None:
+	<pre class="python">def Initialize(self) -&gt; None:
 
     # Set qb to instance of QCAlgorithm
     qb = self
