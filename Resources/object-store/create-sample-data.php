@@ -7,10 +7,9 @@ $getCreateSampleDataText = function($cSharpMethodName="Log")
 <p>Follow these steps to create some sample data:</p>
 
 <ol>
-    <li>Create a dictionary.</li>
-    <div class='section-example-container'>
+    <li class='csharp'>Create a dictionary.</li>
+    <div class='csharp section-example-container'>
         <pre class='csharp'>var dictSample = new Dictionary&lt;string, int&gt; { {\"One\", 1}, {\"Two\", 2}, {\"Three\", 3} };</pre>
-        <pre class='python'>dict_sample = {\"One\": 1, \"Two\": 2, \"Three\": 3}</pre>
     </div>
     <li>Create a <code>string</code>.</li>
     <div class='section-example-container'>
@@ -25,7 +24,7 @@ $getCreateSampleDataText = function($cSharpMethodName="Log")
     <li class='csharp'>Convert the dictionary to an <code>XML</code>-formatted object.</li>
     <div class='csharp section-example-container'>
         <pre class='csharp'>var xmlSample = new XElement(\"sample\",
-    sample.Select(kvp => new XElement(kvp.Key, kvp.Value)));
+    dictSample.Select(kvp => new XElement(kvp.Key, kvp.Value)));
 {$cSharpMethodName}(xmlSample.ToString());</pre>
     </div>
     <img class='csharp' src='https://cdn.quantconnect.com/i/tu/store-data-xml-cs.png'>
