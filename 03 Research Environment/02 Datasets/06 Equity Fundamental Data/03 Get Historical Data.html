@@ -1,8 +1,7 @@
-<p><a href="requesting-historical-data/equities#05-Adjust-Universe-Size">Create subscriptions to all of the Equities</a> for which you want fundamental historical data and then call the <code>GetFundamental</code> method with a list of <code>Symbol</code>s, a required fundamental data field name <code>string</code>, start <code class="csharp">DateTime</code><code class="python">datetime</code>, and end <code class="csharp">DateTime</code><code class="python">datetime</code> to request fundamental historical data for those specific securities. For example, to get data for air companies over 2014, run:</p>
+<p><a href="requesting-historical-data/equities#05-Adjust-Universe-Size">Create subscriptions to all of the Equities</a> for which you want fundamental historical data and then call the <code>GetFundamental</code> method with a list of <code>Symbol</code>s, a required fundamental data field name <code>string</code>, start <code class="csharp">DateTime</code><code class="python">datetime</code>, and end <code class="csharp">DateTime</code><code class="python">datetime</code> to request fundamental historical data for those specific securities. To view the possible fundamental data field names, see the <code>FineFundamental</code> attributes in <a href='/docs/v2/writing-algorithms/datasets/morningstar/us-fundamental-data#06-Data-Point-Attributes'>Data Point Attributes</a>. For example, to get data for air companies over 2014, run:</p>
 
 <div class="section-example-container">
-    <pre class="csharp">
-var symbols = new [] 
+    <pre class="csharp">var symbols = new [] 
     {
         "AAL",  // American Airlines Group, Inc.
         "ALGT", // Allegiant Travel Company
@@ -12,15 +11,14 @@ var symbols = new []
         "SKYW"  // SkyWest, Inc.
         "UAL",  // United Air Lines
     }
-	.Select(ticker => qb.AddEquity(ticker).Symbol);
+	.Select(ticker =&gt; qb.AddEquity(ticker).Symbol);
 
 var startTime = new DateTime(2014, 1, 1);
 var endTime = new DateTime(2015, 1, 1);
 var peRatios  = qb.GetFundamental(symbols, "ValuationRatios.PERatio",
     startTime, endTime);
 	</pre>
-    <pre class="python">
-symbols = [qb.AddEquity(ticker).Symbol
+    <pre class="python">symbols = [qb.AddEquity(ticker).Symbol
     for ticker in [
         "AAL",   # American Airlines Group, Inc.
         "ALGT",  # Allegiant Travel Company
@@ -43,7 +41,7 @@ pe_ratios = qb.GetFundamental(symbols, "ValuationRatios.PERatio",
 <img class="python" style="max-width: 100%; display: block" src="https://cdn.quantconnect.com/i/tu/fundamentals-pe.png">
 <p class="csharp">The <code>GetFundamental</code> method returns an <code>IEnumerable&lt;DataDictionary&gt;</code> for multiple-security requests.</p>
 
-<h4>One Equity<h4>
+<h4>One Equity</h4><h4>
 <p>Call the <code>GetFundamental</code> method with a single <code>Symbol</code> to request fundamental historical data for it.</p>
 <div class="section-example-container">
     <pre class="csharp">var markerCap = qb.GetFundamental("LUV", "CompanyProfile.MarketCap",
@@ -54,7 +52,7 @@ pe_ratios = qb.GetFundamental(symbols, "ValuationRatios.PERatio",
 <img class="python" style="max-width: 100%; display: block" src="https://cdn.quantconnect.com/i/tu/fundamentals-hist.png">
 <p>You can use the security ticker, a <code>string</code> object, because of its implictly conversion to <code>Symbol</code> supported when an Equity is subscribed with the <code>AddEquity</code> method.</p>
 
-<h4>All Equities<h4>
+</h4><h4>All Equities</h4><h4>
 <p>Call the <code>GetFundamental</code> method with <code>qb.Securities.Keys</code> to request fundamental historical data for all Equities that has susbcriptions.</p>
 <div class="section-example-container">
     <pre class="csharp">var selector = "FinancialStatements.IncomeStatement.EBITDA.TwelveMonths";
@@ -62,4 +60,4 @@ var ebitda = qb.GetFundamental(qb.Securities.Keys, selector, startTime, endTime)
     <pre class="python">selector = "FinancialStatements.IncomeStatement.EBITDA.TwelveMonths"
 ebitda = qb.GetFundamental(qb.Securities.Keys, selector, start_time, end_time)</pre>
 </div>
-<img class="python" style="max-width: 100%; display: block" src="https://cdn.quantconnect.com/i/tu/fundamentals-ebitda.png">
+<img class="python" style="max-width: 100%; display: block" src="https://cdn.quantconnect.com/i/tu/fundamentals-ebitda.png"></h4>
