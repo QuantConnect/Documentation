@@ -31,5 +31,5 @@ $getCreateSampleDataText = function($cSharpMethodName="Log")
     <img class='csharp' src='https://cdn.quantconnect.com/i/tu/store-data-xml-cs.png'>
 </ol>
 ";
-  
+}
 ?>
