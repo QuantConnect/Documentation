@@ -1,14 +1,34 @@
+<p>To analyze data with LEAN, create an instance of the <code>QuantBook</code> class. <code>QuantBook </code>is a wrapper on <code>QCAlgorithm</code>, which means <code>QuantBook </code>allows you to access all the methods available to <code>QCAlgorithm</code> and some additional methods. The following table describes the helper methods of the <code>QuantBook</code> class that aren't available in the <code>QCAlgorithm</code> class:</p>
 
-<p>
-The most notable difference is that research uses QuantBook while backtesting uses QCAlgorithm. QuantBook is a wrapper on QCAlgorithm, which means QuantBook allows you to access all the methods available to QCAlgorithm; However, QuantBook contains some additional methods not found in QCAlgorithm, like <code>GetFutureHistory</code> and <code>GetOptionHistory</code>. This means that if we utilize one of these methods in research to request historical data, we will need to replace them with their QCAlgorithm counterpart <code>GetHistory</code>. <code>GetFundamental</code> in research does not have any counterpart in backtesting. Fundamental data is accessed through universe selection in backtesting. Visit the <a href="https://www.quantconnect.com/docs/algorithm-reference/universes">Universe Selection </a>documentation to learn more. <br></p><p>////</p><p>QuantBook gives you access to the vast amounts of data QuantConnect 
-hosts. Similar to backtesting, you can access that data using history 
+<table class="qc-table table">
+    <thead>
+        <tr>
+            <th>Method</th>
+            <th>Description</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><code>GetFundamental</code></td>
+            <td>Get fundamental data for some Symbol(s).</td>
+        </tr>
+        <tr>
+            <td><code>GetFutureHistory</code></td>
+            <td>Get the expiration, open interest, and price data of the contracts in a Futures chain.</td>
+        </tr>
+        <tr>
+            <td><code>GetOptionHistory</code></td>
+            <td>Get the strike, expiration, open interest, option right, and price data of the contracts in an Options chain.</td>
+        </tr>
+    </tbody>
+</table>
+
+
+<p>QuantBook gives you access to the vast amounts of data in the Dataset Market. Similar to backtesting, you can access that data using history 
 calls. You can also create indicators, consolidate data, and access 
 charting features. However, keep in mind that event-driven features 
 available in backtesting, like universe selection and OnData events, are
- not available in research. <br></p><p>////<br></p>
-
-<p>
-We can, for most intents and purposes, replace <code>qb</code> with <code>self</code> when exporting code to backtesting. For example, consider the following code in the research environment.
+ not available in research. After you analyze a dataset in the Research Environment, you can easily transfer the logic to the backtesting environment. For most intents and purposes, to move logic from the Research Environment to the backtesting environment, replace <code>qb</code> with <code>self</code>. For example, consider the following code in the Research Environment:
 </p>
 
 <div class="section-example-container">
@@ -24,7 +44,7 @@ history = qb.History(spy.Symbol, timedelta(days=10), Resolution.Daily)
 </div>
 
 <p>
-We can export this into backtesting by removing QuantBook and replacing <code>qb</code> with <code>self</code> by setting <code>qb = self</code>.
+To use the preceding code in a backtest, replace <code>qb = QuantBook()</code> with <code>qb = self</code>.
 </p>
 
 <div class="section-example-container">
@@ -40,6 +60,3 @@ We can export this into backtesting by removing QuantBook and replacing <code>qb
     history = qb.History(spy.Symbol, timedelta(days=10), Resolution.Daily)
 </pre>
 </div>
-
-<p>
-Keep in mind that in the research environment, all the data is directly available. While in backtesting, the available data is purposefully limited to the data at or before the agorithm time. This means that if we make a history request for the previous 10 days of data, in research we will receive the previous  10 days of data from today's date, while in backtesting we will receive the previous  10 days of data from the algorithm time. <br></p><p>^ Move this paragraph to Datasets &gt; Key Concepts, explaining look-ahead bias<br></p>
