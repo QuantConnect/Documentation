@@ -45,4 +45,5 @@ $getSaveDataText = function($cSharpPrefix="", $pythonPrefix="self.", $sampleData
     <pre class='csharp'>var saveSuccessful = {$cSharpPrefix}ObjectStore.SaveXml(\"xmlKey\", xmlSample);</pre>
 </div>
 ";
+}
 ?>
