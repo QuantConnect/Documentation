@@ -1,4 +1,4 @@
-<p>The <code>OptionUniverseSelectionModel</code> selects all the available contracts for the Options you specify. To use this model, provide a <code>refreshInterval</code> and a selector function. The <code>refreshInterval</code><code></code> defines the time period between refreshes. The selector function receives a <code class="csharp">DateTime</code><code class="python">datetime</code> object that represents the current Coordinated Universal Time (UTC) and returns a list of <code>Symbol</code> objects. The <code>Symbol</code> objects you return from the selector function are the Options of the universe.</p>
+<p>The <code>OptionUniverseSelectionModel</code> selects all the available contracts for the Equity Options and Index Options you specify. To use this model, provide a <code>refreshInterval</code> and a selector function. The <code>refreshInterval</code><code></code> defines the time period between refreshes. The selector function receives a <code class="csharp">DateTime</code><code class="python">datetime</code> object that represents the current Coordinated Universal Time (UTC) and returns a list of <code>Symbol</code> objects. The <code>Symbol</code> objects you return from the selector function are the Options of the universe.</p>
 
 <div class="section-example-container">
 	<pre class="csharp">AddUniverseSelection(new OptionUniverseSelectionModel(refreshInterval, optionChainSymbolSelector));</pre>
@@ -52,8 +52,13 @@ self.AddUniverseSelection(OptionUniverseSelectionModel(refreshInterval, optionCh
 
 private static IEnumerable&lt;Symbol&gt; SelectOptionChainSymbols(DateTime utcTime)
 {
-    var tickers = new[] {"SPY", "QQQ", "TLT"};
-    return tickers.Select(ticker =&gt; QuantConnect.Symbol.Create(ticker, SecurityType.Option, Market.USA));
+    // Equity Options example:
+    //var tickers = new[] {"SPY", "QQQ", "TLT"};
+    //return tickers.Select(ticker =&gt; QuantConnect.Symbol.Create(ticker, SecurityType.Option, Market.USA));
+
+    // Index Options example:
+    var tickers = new[] {"VIX", "SPX"};
+    return tickers.Select(ticker =&gt; QuantConnect.Symbol.Create(ticker, SecurityType.IndexOption, Market.USA));
 }</pre>
 	<pre class="python">from Selection.OptionUniverseSelectionModel import OptionUniverseSelectionModel 
 
@@ -62,8 +67,14 @@ def Initialize(self) -&gt; None:
     self.SetUniverseSelection(universe)
 
 def option_chain_symbol_selector(self, utc_time: datetime) -&gt; List[Symbol]:
-    tickers = ["SPY", "QQQ", "TLT"]
-    return [Symbol.Create(ticker, SecurityType.Option, Market.USA) for ticker in tickers]</pre>
+    # Equity Options example:
+    #tickers = ["SPY", "QQQ", "TLT"]
+    #return [Symbol.Create(ticker, SecurityType.Option, Market.USA) for ticker in tickers]
+
+    # Index Options example:
+    tickers = ["VIX", "SPX"]
+    return [Symbol.Create(ticker, SecurityType.IndexOption, Market.USA) for ticker in tickers]
+</pre>
 </div>
 
 <p>To view the implementation of this model, see the <span class="csharp"><a target="_blank" rel="nofollow" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.Framework/Selection/OptionUniverseSelectionModel.cs">LEAN GitHub repository</a></span><span class="python"><a target="_blank" rel="nofollow" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.Framework/Selection/OptionUniverseSelectionModel.py">LEAN GitHub repository</a></span>.</p>
