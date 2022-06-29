@@ -1,10 +1,10 @@
 <p>
-Imagine that you've developed the following hypothesis: stocks that are below 1 standard deviation of their 30 day mean are due to revert and increase in value. The following code in research to pick out such stocks from a preselected basket of stocks.
+Imagine that you've developed the following hypothesis: stocks that are below 1 standard deviation of their 30 day mean are due to revert and increase in value. The following Research Environment code picks out such stocks from a preselected basket of stocks:
 </p>
 
 
 <div class="section-example-container">
-	<pre class="all">import numpy as np
+	<pre class="python">import numpy as np
 qb = QuantBook()
 
 symbols = {}
@@ -39,82 +39,71 @@ selected = zip(classifier, magnitude)
 </div>
 
 <p>
-Once we are confident in our hypothesis, we can export this code into backtesting. We want to ultimately go long on the stocks that have been selected. One way to accomodate this model into research is to create a scheduled event which uses our model to pick stocks and goes long.
+Once you are confident in your hypothesis, you can export this code into the backtesting environment. The algorithm will ultimately go long on the stocks that pass the classifier logic. One way to accomodate this model into a backtest is to create a <a href="/docs/v2/writing-algorithms/scheduled-events">Scheduled Event</a> that uses the model to pick stocks and place orders.
 </p>
 
 <div class="section-example-container">
-	<pre class="all">def Initialize(self) -&gt; None:
-
-        #1. Required: Five years of backtest history
-        self.SetStartDate(2014, 1, 1)
+	<pre class="python">def Initialize(self) -&gt; None:
+    self.SetStartDate(2014, 1, 1)
+    self.SetCash(1000000)
+    self.SetBenchmark("SPY")
     
-        #2. Required: Alpha Streams Models:
-        self.SetBrokerageModel(BrokerageName.AlphaStreams)
+    self.SetPortfolioConstruction(EqualWeightingPortfolioConstructionModel())
+    self.SetExecution(ImmediateExecutionModel())
     
-        #3. Required: Significant AUM Capacity
-        self.SetCash(1000000)
-
-        #4. Required: Benchmark to SPY
-        self.SetBenchmark("SPY")
-        
-        self.SetPortfolioConstruction(EqualWeightingPortfolioConstructionModel())
-        self.SetExecution(ImmediateExecutionModel())
+    self.assets = ["IEF", "SHY", "TLT", "IEI", "SHV", "TLH", "EDV", "BIL",
+                   "SPTL", "TBT", "TMF", "TMV", "TBF", "VGSH", "VGIT",
+                   "VGLT", "SCHO", "SCHR", "SPTS", "GOVT"]
     
-        self.assets = ["IEF", "SHY", "TLT", "IEI", "SHV", "TLH", "EDV", "BIL",
-                      "SPTL", "TBT", "TMF", "TMV", "TBF", "VGSH", "VGIT",
-                      "VGLT", "SCHO", "SCHR", "SPTS", "GOVT"]
-
-        self.symbols = {}
+    self.symbols = {}
+    
+    # Add Equity ------------------------------------------------ 
+    for i in range(len(self.assets)):
+        self.symbols[self.assets[i]] = self.AddEquity(self.assets[i], Resolution.Minute).Symbol 
         
-        # Add Equity ------------------------------------------------ 
-        for i in range(len(self.assets)):
-            self.symbols[self.assets[i]] = self.AddEquity(self.assets[i],Resolution.Minute).Symbol 
-        
-        # Set Scheduled Event Method For Our Model
-        self.Schedule.On(self.DateRules.Every(DayOfWeek.Monday), self.TimeRules.AfterMarketOpen("IEF", 1), self.EveryDayAfterMarketOpen)
+    # Set the Scheduled Event method
+    self.Schedule.On(self.DateRules.Every(DayOfWeek.Monday), self.TimeRules.AfterMarketOpen("IEF", 1), self.EveryDayAfterMarketOpen)
 </pre>
 </div>
 
 <p>
-Now we export our model into the scheduled event method. We will switch <code>qb</code> with <code>self</code> and replace methods with their QCAlgorithm counterparts as needed. In this example, this is not an issue because all the methods we used in research also exist in QCAlgorithm.
+Now that the <code>Initialize </code>method of the algorithm is set, export the model into the Scheduled Event method. You just need to switch <code>qb</code> with <code>self</code> and replace <code>QuantBook </code>methods with their <code>QCAlgorithm </code>counterparts. In this example, you don't need to switch any methods because the model only uses methods that exist in <code>QCAlgorithm</code>.
 </p>
 
 
 <div class="section-example-container">
-	<pre class="all"> def EveryDayAfterMarketOpen(self):
-        qb = self
-        # Fetch history on our universe
-        df = qb.History(qb.Securities.Keys, 5, Resolution.Daily)
-
-        # Make all of them into a single time index.
-        df = df.close.unstack(level=0)
-
-        # Calculate the truth value of the most recent price being less than 1 std away from the mean
-        classifier = df.le(df.mean().subtract(df.std())).tail(1)
-
-        # Get indexes of the True values
-        classifier_indexes = np.where(classifier)[1]
-
-        # Get the Symbols for the True values
-        classifier = classifier.transpose().iloc[classifier_indexes].index.values
-
-        # Get the std values for the True values (used for magnitude)
-        magnitude = df.std().transpose()[classifier_indexes].values
-
-        # Zip together to iterate over later
-        selected = zip(classifier, magnitude)
-
-        # ==============================
-        
-        insights = []
-
-        for symbol, magnitude in selected:
-            insights.append( Insight.Price(symbol, timedelta(days=5), InsightDirection.Up, magnitude) )
-
-        self.EmitInsights(insights)
+	<pre class="python">def EveryDayAfterMarketOpen(self):
+    qb = self
+    # Fetch history on our universe
+    df = qb.History(qb.Securities.Keys, 5, Resolution.Daily)
+    
+    # Make all of them into a single time index.
+    df = df.close.unstack(level=0)
+    
+    # Calculate the truth value of the most recent price being less than 1 std away from the mean
+    classifier = df.le(df.mean().subtract(df.std())).tail(1)
+    
+    # Get indexes of the True values
+    classifier_indexes = np.where(classifier)[1]
+    
+    # Get the Symbols for the True values
+    classifier = classifier.transpose().iloc[classifier_indexes].index.values
+    
+    # Get the std values for the True values (used for magnitude)
+    magnitude = df.std().transpose()[classifier_indexes].values
+    
+    # Zip together to iterate over later
+    selected = zip(classifier, magnitude)
+    
+    # ==============================
+    
+    insights = []
+    
+    for symbol, magnitude in selected:
+        insights.append(Insight.Price(symbol, timedelta(days=5), InsightDirection.Up, magnitude))
+    
+    self.EmitInsights(insights)
 </pre>
 </div>
 
-<p>
-Now that our model in research has been exported to backtesting, we can further analyze its performance with its backtesting metrics. And if we are still confident in our model, we can eventually live trade this strategy.
-</p>
+<p>With the Research Environment model now in the backtesting environment, you can further analyze its performance with its <a href='/docs/v2/our-platform/backtesting/results'>backtesting metrics</a>. If you are confident in the backtest, you can eventually live trade this strategy.</p>
