@@ -36,6 +36,14 @@ available in backtesting, like universe selection and OnData events, are
 </p>
 
 <div class="section-example-container">
+    <pre class="csharp">// Initialize QuantBook
+var qb = new QuantBook();
+
+// Subscribe to SPY data with QuantBook
+var symbol = qb.AddEquity("SPY").Symbol;
+
+// Make history call with QuantBook
+var history = qb.History(symbol, TimeSpan.FromDays(10), Resolution.Daily);</pre>
 	<pre class="python"># Initialize QuantBook
 qb = QuantBook()
 
@@ -48,10 +56,21 @@ history = qb.History(symbol, timedelta(days=10), Resolution.Daily)
 </div>
 
 <p>
-To use the preceding code in a backtest, replace <code>QuantBook()</code> with <code>self</code>.
+To use the preceding code in a backtest, replace <code>QuantBook()</code> with <code class="python">self</code><code class="csharp">this</code>.
 </p>
 
 <div class="section-example-container">
+    <pre class="csharp">public override void Initialize()
+{
+    // Set qb to instance of QCAlgorithm
+    var qb = this;
+    
+    // Subscribe to SPY data with QCAlgorithm
+    var symbol = qb.AddEquity("SPY").Symbol;
+    
+    // Make history call with QCAlgorithm
+    var history = qb.History(symbol, TimeSpan.FromDays(10), Resolution.Daily);
+}</pre>
 	<pre class="python">def Initialize(self) -&gt; None:
 
     # Set qb to instance of QCAlgorithm

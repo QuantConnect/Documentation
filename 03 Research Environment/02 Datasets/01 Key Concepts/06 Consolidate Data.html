@@ -6,10 +6,14 @@ symbol = qb.AddEquity("SPY").Symbol
 start_date = datetime(2018, 4, 1)
 end_date = datetime(2018, 7, 15)
 df = qb.History(symbol, start_date, end_date, Resolution.Minute)</pre>
-<pre class="csharp"></pre>
+    <pre class="csharp">var qb = new QuantBook();
+var symbol = qb.AddEquity("SPY").Symbol;
+var startDate = new DateTime(2018, 4, 1);
+var endDate = new DateTime(2018, 7, 15);
+var history = qb.History(symbol, startDate, endDate, Resolution.Minute);</pre>
 </div>
 
-<img src="https://www.dropbox.com/s/y01mvb29qtaya3e/notebook%2025.PNG?dl=1" class="img-responsive" title="" style="">
+<img src="https://www.dropbox.com/s/y01mvb29qtaya3e/notebook%2025.PNG?dl=1" class='docs-image' title="" style="">
 
 <p class="python">To aggregate the data, use a <a href="/docs/v2/writing-algorithms/consolidating-data/key-concepts">consolidator</a> or the <code>pandas</code> <a rel="nofollow" target="_blank" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.resample.html">resample</a> method.<br></p>
 <p class="csharp">To aggregate the data, use a <a href="/docs/v2/writing-algorithms/consolidating-data/key-concepts">consolidator</a>.<br></p>
@@ -19,8 +23,49 @@ df = qb.History(symbol, start_date, end_date, Resolution.Minute)</pre>
 <p class='python'>The following snippet demonstrates how to use a consolidator to aggregate data:</p>
 
 <div class="section-example-container">
-    <pre class="python"></pre>
-    <pre class="csharp"></pre>
+    <pre class="csharp">// Set up a consolidator and a RollingWindow to save the data
+var consolidator = new TradeBarConsolidator(TimeSpan.FromDays(7));
+var window = new RollingWindow&lt;TradeBar&gt;(20);
+
+// Set a handler method to feed data into the consolidator, print out the consolidated bars and save them in the RollingWindow.
+consolidator.DataConsolidated += (sender, consolidated) =>
+{
+    Console.WriteLine($@"{consolidated.Time} : {consolidated.EndTime} :: 
+    Open: {consolidated.Open},
+    High: {consolidated.High},
+    Low: {consolidated.Low},
+    Close: {consolidated.Close},
+    Volume: {consolidated.Volume}");
+
+    window.Add(consolidated);
+};
+
+// Iterate the historical market data and feed into the consolidator
+foreach(var bar in history)
+{
+    consolidator.Update(bar);
+}</pre>
+    <pre class="python"># Set up a consolidator and a RollingWindow to save the data
+consolidator = TradeBarConsolidator(timedelta(7))
+window = RollingWindow[TradeBar](20)
+
+# Set a handler method to feed data into the consolidator, print out the consolidated bars and save them in the RollingWindow.
+def ConsolidationHandler(sender, consolidated):
+    print(f"""{consolidated.Time} : {consolidated.EndTime} :: 
+    Open: {consolidated.Open},
+    High: {consolidated.High},
+    Low: {consolidated.Low},
+    Close: {consolidated.Close},
+    Volume: {consolidated.Volume}""")
+
+    window.Add(consolidated)
+
+consolidator.DataConsolidated += ConsolidationHandler
+
+# Iterate the historical market data and feed into the consolidator
+for bar in close_history.itertuples():
+    tradebar = TradeBar(bar.Index[1], bar.Index[0], bar.open, bar.high, bar.low, bar.close, bar.volume)
+    consolidator.Update(tradebar)</pre>
 </div>
 
 <h4 class="python">Resample Method</h4>
@@ -34,7 +79,7 @@ df.reset_index(level = 0, drop = True, inplace=True)
 </pre>
 </div></div>
 
-<img src="https://www.dropbox.com/s/7f86n9w82rya8vr/notebook%2023.PNG?dl=1" class="python img-responsive" title="" style="">
+<img src="https://www.dropbox.com/s/7f86n9w82rya8vr/notebook%2023.PNG?dl=1" class='python docs-image' title="" style="">
 
 <p class="python">The <code>resample</code> method returns a <code>Resampler</code> object, which needs to be downsampled using one of the pandas <a rel="nofollow" target="_blank" href="https://pandas.pydata.org/pandas-docs/stable/reference/resampling.html">downsampling computations</a>. For example, you can use the <a rel="nofollow" target="_blank" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.core.resample.Resampler.ohlc.html">Resampler.ohlc</a> downsampling method to aggregate price data. </p>
 
@@ -52,7 +97,7 @@ close_5min_ohlc = close_prices.resample(offset).ohlc()
 </div>
 </div>
 
-<img src="https://www.dropbox.com/s/t7vrv4ofiupbtzk/notebook%2024.PNG?dl=1" class="python img-responsive" title="" style="">
+<img src="https://www.dropbox.com/s/t7vrv4ofiupbtzk/notebook%2024.PNG?dl=1" class='python docs-image' title="" style="">
 
 
 
