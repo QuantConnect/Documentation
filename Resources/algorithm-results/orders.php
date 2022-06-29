@@ -6,11 +6,11 @@ $getOrdersText = function($isLiveMode) {
     
     if ($isLiveMode)
     {
-        echo "your algorithm time.";
+        echo "Coordinated Universal Time (UTC).";
     }
     else
     {
-        echo "Coordinated Universal Time (UTC).";
+        echo "your algorithm time.";
     }
     echo "</p>";
     
