@@ -2,15 +2,15 @@
 $getOrdersText = function($isLiveMode) {
     $pageName = $isLiveMode ? "live" : "backtest";
     
-    echo "<p>The {$pageName} results page displays the orders of your algorithm and you can download them to your local machine. ";
+    echo "<p>The {$pageName} results page displays the orders of your algorithm and you can download them to your local machine. The order timestamps are in ";
     
     if ($isLiveMode)
     {
-        echo "The timestamps of the orders are in your algorithm time.";
+        echo "your algorithm time.";
     }
     else
     {
-        echo "The timestamps of the orders are in Coordinated Universal Time (UTC).";
+        echo "Coordinated Universal Time (UTC).";
     }
     echo "</p>";
     
