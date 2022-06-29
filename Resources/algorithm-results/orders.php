@@ -2,9 +2,19 @@
 $getOrdersText = function($isLiveMode) {
     $pageName = $isLiveMode ? "live" : "backtest";
     
+    echo "<p>The {$pageName} results page displays the orders of your algorithm and you can download them to your local machine. ";
+    
+    if ($isLiveMode)
+    {
+        echo "The timestamps of the orders are in your algorithm time.";
+    }
+    else
+    {
+        echo "The timestamps of the orders are in Coordinated Universal Time (UTC).";
+    }
+    echo "</p>";
+    
     echo "
-        <p>The {$pageName} results page displays the orders of your algorithm and you can download them to your local machine.</p>
-
         <h4>View in the GUI</h4>
         <p>To see the orders that your algorithm created, open the {$pageName} results page and then click the <span class='tab-name'>Orders</span> tab. If there are more than 10 orders, use the pagination tools at the bottom of the Orders Summary table to see all of the orders. Click on an individual order in the Orders Summary table to reveal additional information regarding the following:</p>
 
