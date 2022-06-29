@@ -55,7 +55,7 @@ self.MarketOnCloseOrder(self.symbol, quantity)</pre>
     };
 }
 
-public override void OnData(Slice data)
+public override void OnData(Slice slice)
 {
     // Use default order order properties
     LimitOrder(_symbol, quantity, limitPrice);
@@ -74,7 +74,7 @@ public override void OnData(Slice data)
     self.DefaultOrderProperties.TimeInForce = TimeInForce.Day
     self.DefaultOrderProperties.PostOnly = False
 
-def OnData(self, data: Slice) -&gt; None:
+def OnData(self, slice: Slice) -&gt; None:
     # Use default order order properties
     self.LimitOrder(self.symbol, quantity, limit_price)
     

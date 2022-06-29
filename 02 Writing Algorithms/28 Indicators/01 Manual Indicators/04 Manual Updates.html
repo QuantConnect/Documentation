@@ -26,10 +26,10 @@
     self.consolidator.DataConsolidated += (lambda _, bar : self.ad.Update(bar))
     self.SubscriptionManager.AddConsolidator(self.symbol, self.consolidator)
 
-def OnData(self, data: Slice) -&gt; None:
+def OnData(self, slice: Slice) -&gt; None:
     # Update the RSI indicator value with the new input close price every day
-    if data.Bars.ContainsKey(self.symbol):
-        bar = data.Bars[self.symbol]
+    if slice.Bars.ContainsKey(self.symbol):
+        bar = slice.Bars[self.symbol]
         self.rsi.Update(bar.EndTime, bar.Close)
 </pre>
 	<pre class="csharp fsharp">private Symbol _symbol;
@@ -49,12 +49,12 @@ public override void Initialize()
     SubscriptionManager.AddConsolidator(_symbol, consolidator);
 }
 
-public override void OnData(Slice data)
+public override void OnData(Slice slice)
 {
     // Update the RSI indicator value with the new input close price every day
-    if (data.Bars.ContainsKey(_symbol))
+    if (slice.Bars.ContainsKey(_symbol))
     {
-        var bar = data.Bars[_symbol];
+        var bar = slice.Bars[_symbol];
         _rsi.Update(bar.EndTime, bar.Close);
     }
 }

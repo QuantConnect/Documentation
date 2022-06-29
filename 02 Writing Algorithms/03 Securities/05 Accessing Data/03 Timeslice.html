@@ -3,16 +3,16 @@
 <p>To access data in the <code>Slice</code>, index it with the security <code>Symbol</code>. If you use the security ticker instead of the <code>Symbol</code>, LEAN automatically finds the <code>Symbol</code>.</p>
 
 <div class="section-example-container">
-    <pre class="csharp">public override void OnData(Slice data)
+    <pre class="csharp">public override void OnData(Slice slice)
 {
-    if (data.ContainsKey(_symbol))
+    if (slice.ContainsKey(_symbol))
     {
-        var myData = data[_symbol];
+        var myData = slice[_symbol];
     }
 }</pre>
-    <pre class="python">def OnData(self, data: Slice) -&gt; None:
-    if data.ContainsKey(self.symbol):
-        my_data = data[self.symbol]</pre>
+    <pre class="python">def OnData(self, slice: Slice) -&gt; None:
+    if slice.ContainsKey(self.symbol):
+        my_data = slice[self.symbol]</pre>
 </div>
 
 
@@ -42,16 +42,16 @@
 </table>
 
 <div class="section-example-container">
-    <pre class="csharp">public override void OnData(Slice data)
+    <pre class="csharp">public override void OnData(Slice slice)
 {
-    if (data.ContainsKey(_symbol))
+    if (slice.ContainsKey(_symbol))
     {
-        var bar = data.Bars[_symbol];
+        var bar = slice.Bars[_symbol];
     }
 }</pre>
-    <pre class="python">def OnData(self, data: Slice) -&gt; None:
-    if data.ContainsKey(self.symbol):
-        bar = data.Bars[self.symbol]</pre>
+    <pre class="python">def OnData(self, slice: Slice) -&gt; None:
+    if slice.ContainsKey(self.symbol):
+        bar = slice.Bars[self.symbol]</pre>
 </div>
 
 <p>If you just index the <code>Slice</code> instead of the preceding properties, it returns the correct object. If your data subscription provides <code>QuoteBar</code> objects and you index the <code>Slice</code> with the security <code>Symbol</code>, it returns the <code>QuoteBar</code>.</p>

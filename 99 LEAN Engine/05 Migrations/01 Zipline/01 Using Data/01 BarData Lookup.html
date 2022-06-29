@@ -4,7 +4,7 @@
 </p>
 <p>
     In Quantopian, data is handled via the <code>handle_data(context, data)</code> function.
-    In QuantConnect, data is handled via the <code>OnData(self, data)</code> method.
+    In QuantConnect, data is handled via the <code>OnData(self, slice)</code> method.
 
     Both of these functions accept data whenever new data exists for a given point in time.
     Although these two functions share the same method signature, the handling of the data is different.
@@ -40,12 +40,12 @@ class MyHistoryAlgorithm(QCAlgorithm):
     def Initialize(self) -&gt; None:
         self.aapl = self.AddEquity("AAPL", Resolution.Daily)
 
-    def OnData(self, data: Slice) -&gt; None:
+    def OnData(self, slice: Slice) -&gt; None:
         # Gets a DataFrame of AAPL history going back 30 days
         aapl_history = self.History([self.aapl.Symbol], timedelta(days=30), Resolution.Daily)
 
         # Gets the most recent AAPL Trade data (OHLCV)
-        aapl_current = data.Bars[self.aapl.Symbol]
+        aapl_current = slice.Bars[self.aapl.Symbol]
     </pre>
 </div>
 <p>
@@ -101,22 +101,22 @@ class MyDataAlgorithm(QCAlgorithm):
         self.aapl_security = self.AddEquity("AAPL", Resolution.Daily)
         self.aapl_symbol = self.aapl_security.Symbol
 
-    def OnData(self, data: Slice) -&gt; None:
+    def OnData(self, slice: Slice) -&gt; None:
         # Gets 30 days of AAPL history
         aapl_history = self.History([self.aapl_symbol], timedelta(days=30), Resolution.Daily)
 
         # We must first check to make sure we have AAPL data, since this point-in-time
         # might not have had any trades for AAPL (this is in case you trade a low
         # liquidity asset. The data can potentially be missing for a point-in-time).
-        if self.aapl_symbol in data.Bars:
-            aapl_current_trade = data.Bars[self.aapl_symbol]
+        if self.aapl_symbol in slice.Bars:
+            aapl_current_trade = slice.Bars[self.aapl_symbol]
             Log(f"{self.Time} :: TRADE :: {self.aapl_symbol} - O: {aapl_current_trade.Open} H: {aapl_current_trade.High} L: {aapl_current_trade.Low} C: {aapl_current_trade.Close} V: {aapl_current_trade.Volume}")
 
         # Check to make sure we have AAPL data first, since there might not have
         # been any quote updates since the previous for AAPL (this is in case you trade
         # a low liquidity asset. The data can potentially be missing for a point-in-time).
         if self.aapl_symbol in data.QuoteBars:
-            aapl_current_quote = data.QuoteBars[self.aapl_symbol]
+            aapl_current_quote = slice.QuoteBars[self.aapl_symbol]
             if aapl_current_quote.Bid is not None:
                 Log(f"{} :: QUOTE :: {} - Bid O: {} Bid H: {} Bid L: {} Bid C: {} Bid size: {}".format(
                     str(self.Time),

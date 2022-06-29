@@ -49,7 +49,7 @@ self.ExerciseOption(self.option_symbol, quantity)</pre>
     DefaultOrderProperties.TimeInForce = TimeInForce.GoodTilCanceled;
 }
 
-public override void OnData(Slice data)
+public override void OnData(Slice slice)
 {
     // Use default order order properties
     LimitOrder(_symbol, quantity, limitPrice);
@@ -70,7 +70,7 @@ public override void OnData(Slice data)
     # Set the default order properties
     self.DefaultOrderProperties.TimeInForce = TimeInForce.GoodTilCanceled
 
-def OnData(self, data: Slice) -&gt; None:
+def OnData(self, slice: Slice) -&gt; None:
     # Use default order order properties
     self.LimitOrder(self.symbol, quantity, limit_price)
     

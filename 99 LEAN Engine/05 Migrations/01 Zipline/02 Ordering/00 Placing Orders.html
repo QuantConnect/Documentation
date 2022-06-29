@@ -40,9 +40,9 @@ def handle_data(context, data):
         self.symbol = self.AddEquity("SPY", Resolution.Minute).Symbol
         self.ordered = False
 
-    def OnData(self, data: Slice) -&gt; None:
-        if not self.ordered and data.ContainsKey(self.symbol):
-            close = data[self.symbol].Close
+    def OnData(self, slice: Slice) -&gt; None:
+        if not self.ordered and slice.ContainsKey(self.symbol):
+            close = slice[self.symbol].Close
             self.MarketOrder(self.symbol, 10)
             self.LimitOrder(self.symbol, 10, close * 0.9)
             self.StopMarketOrder(self.symbol, -10, close * 0.85)

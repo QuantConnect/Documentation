@@ -79,7 +79,7 @@ def OnOrderEvent(self, orderEvent: OrderEvent) -&gt; None:
 <div class="section-example-container">
 <pre class="csharp">decimal _entryPrice;
 
-public override void OnData(Slice data)
+public override void OnData(Slice slice)
 {
     if (!Portfolio.Invested)
     {
@@ -87,28 +87,28 @@ public override void OnData(Slice data)
         _entryPrice = ticket.AverageFillPrice;
     }
 
-    if (!data.Bars.ContainsKey("SPY")) return;
+    if (!slice.Bars.ContainsKey("SPY")) return;
 
-    if (data.Bars["SPY"].Price >= _entryPrice * 1.10m)
+    if (slice.Bars["SPY"].Price >= _entryPrice * 1.10m)
     {
         Liquidate("SPY", -1, "take profit");
     }
-    else if (data.Bars["SPY"].Price <= _entryPrice * 0.95m)
+    else if (slice.Bars["SPY"].Price <= _entryPrice * 0.95m)
     {
         Liquidate("SPY", -1, "stop loss");
     }
 }
 </pre>
-<pre class="python">def OnData(self, data: Slice) -&gt; None:
+<pre class="python">def OnData(self, slice: Slice) -&gt; None:
     if not self.Portfolio.Invested:
         ticket = self.MarketOrder("SPY", 1)
         self.entry_price = ticket.AverageFillPrice
 
-    if data.Bars.ContainsKey("SPY"):
-        if data.Bars["SPY"].Price >= self.entry_price * 1.10:
+    if slice.Bars.ContainsKey("SPY"):
+        if slice.Bars["SPY"].Price >= self.entry_price * 1.10:
             self.Liquidate("SPY", -1, "take profit")
 
-        elif data.Bars["SPY"].Price <=> self.entry_price * 0.95:
+        elif slice.Bars["SPY"].Price <=> self.entry_price * 0.95:
             self.Liquidate("SPY", -1, "stop loss")
 </pre>
 </div>
