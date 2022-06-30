@@ -8,7 +8,7 @@
 </div>
 
 <p>The <code>OrderField</code> enumeration has the following members:</p>
-<div data-tree="QuantConnect.OrderField"></div>
+<div data-tree="QuantConnect.Orders.OrderField"></div>
 
 
 <p>In addition to using order tickets to track orders, you can receive <a href='/docs/v2/writing-algorithms/trading-and-orders/order-events'>order events</a> through the <code>OnOrderEvent</code> event handler.</p>
