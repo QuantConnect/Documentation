@@ -5,3 +5,5 @@
 	<pre class="csharp">SetBrokerageModel(BrokerageName.InteractiveBrokersBrokerage, AccountType.Margin);</pre>
 	<pre class="python">self.SetBrokerageModel(BrokerageName.InteractiveBrokersBrokerage, AccountType.Cash)</pre>
 </div>
+
+<?php echo file_get_contents(DOCS_RESOURCES."/enumerations/account_type.html"); ?>
