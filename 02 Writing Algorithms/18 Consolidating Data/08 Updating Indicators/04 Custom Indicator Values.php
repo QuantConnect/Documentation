@@ -16,9 +16,9 @@ self.RegisterIndicator(self.symbol, self.rsi, Resolution.Daily, Field.High)</pre
 
 <p>The <code>RegisterIndicator</code> method can accept a <code class="python">timedelta</code><code class="csharp">TimeSpan</code>, <code>Resolution</code>, or an unregistered consolidator. If you apply the indicator to a security in a dynamic universe, provide a consolidator so that you can <a href="/docs/v2/writing-algorithms/consolidating-data/key-concepts#07-Remove-Consolidators">remove it</a> when your algorithm removes the security from the universe.</p>
 
-<?php 
-echo file_get_contents(DOCS_RESOURCES."/enumerations/field.html"); 
-?>
+<p>The <code>Field</code> enumeration has the following members:</p>
+<div data-tree="QuantConnect.Field"></div>
+
 
 <p class='csharp'>To create a custom <code>selector</code>, define a function that calculates the value.</p>
 
