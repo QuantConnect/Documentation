@@ -42,7 +42,7 @@ $getSaveDataText = function($cSharpPrefix="", $pythonPrefix="self.", $sampleData
 <h4 class='csharp'>XML</h4>
 <p class='csharp'>To save an XML-formatted object, call the <code>SaveXml&lt;T&gt;</code> method.</p>
 <div class='csharp section-example-container'>
-    <pre class='csharp'>var saveSuccessful = {$cSharpPrefix}ObjectStore.SaveXml(\"xmlKey\", xmlSample);</pre>
+    <pre class='csharp'>var saveSuccessful = {$cSharpPrefix}ObjectStore.SaveXml&lt;XElement&gt;(\"xmlKey\", xmlSample);</pre>
 </div>
 ";
 }
