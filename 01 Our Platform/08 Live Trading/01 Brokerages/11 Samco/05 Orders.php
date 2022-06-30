@@ -35,6 +35,7 @@ self.LimitIfTouchedOrder(self.symbol, quantity, trigger_price, limit_price)</pre
 
 <p>We model custom order properties from the Samco API. The following table describes the members of the <code>IndiaOrderProperties</code> object that you can set to customize order execution:</p>
 
+<p>Here:</p>
 <div data-tree="QuantConnect.Orders.IndiaOrderProperties.IndiaProductType"></div>
 
 <table class="table qc-table">
