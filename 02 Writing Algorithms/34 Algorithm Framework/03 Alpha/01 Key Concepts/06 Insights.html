@@ -1,15 +1,12 @@
 <p>An Insight is a single prediction for an asset. The <code>Update</code> method returns an array of Insight objects. You can think of these as actionable trading signals, indicating the asset direction, magnitude, and confidence in the near future. All insights can take a weight parameter to set the desired weighting for the insight. If you change the cash of the algorithm, it will affect the orders, but not necessarily the insights.</p>
 
-<p>The Portfolio Construction model consumes the Insight objects from the Alpha model. It's up to the Portfolio Construction model to define how Insight objects are converted into <code>PortfolioTarget</code> objects. In the pre-built Portfolio Construction models, down insights translate to short-biased trades and up insights translate to long-biased trades, but this doesn't have to be the case in <a href='/docs/v2/writing-algorithms/algorithm-framework/portfolio-construction/key-concepts#03-Model-Structure'>custom Portfolio Construction models</a>.</p>
+<p>The Portfolio Construction model consumes the Insight objects from the Alpha model. It's up to the Portfolio Construction model to define how Insight objects are converted into <code>PortfolioTarget</code> objects. In the pre-built Portfolio Construction models, down insights translate to short-biased trades and up insights translate to long-biased trades, but this doesn't have to be the case in <a href="/docs/v2/writing-algorithms/algorithm-framework/portfolio-construction/key-concepts#03-Model-Structure">custom Portfolio Construction models</a>.</p>
 
 
 <h4>Insight Properties</h4>
 <p><code>Insight</code> objects have the following properties:</p>
 <div data-tree="QuantConnect.Algorithm.Framework.Alphas.Insight"></div>
 
-
-
-<p>The optional properties are optional to create the <code>Insight</code> object, but some of the Portfolio Construction models may require these properties. To check which <code>Insight</code> properties a Portfolio Construction model requires, see <a href='https://beta.quantconnect.com/docs/v2/writing-algorithms/algorithm-framework/portfolio-construction/supported-models'>Supported Models</a>.</p>
 <h4>Create Insights</h4>
 
 <p>To create an <code>Insight</code>, call the <code>Insight</code> constructor.</p>
@@ -20,9 +17,9 @@ insight = Insight("IBM", timedelta(minutes=20), InsightType.Price, InsightDirect
 var insight = new Insight("IBM", TimeSpan.FromMinutes(20), InsightType.Price, InsightDirection.Up);</pre>
 </div>
 
-<p>In the <code>Insight</code> constructor, the <code>period</code> argument can be a <code class="python">timedelta</code><code class="csharp">TimeSpan</code> object or a function that receives a <code class="csharp">DateTime</code><code class="python">datetime</code> object and returns the expiry <code class="csharp">DateTime</code><code class="python">datetime</code>.
+<p>In the <code>Insight</code> constructor, the <code>period</code> argument can be a <code class="python">timedelta</code><code class="csharp">TimeSpan</code> object or a function that receives a <code class="csharp">DateTime</code><code class="python">datetime</code> object and returns the expiry <code class="csharp">DateTime</code><code class="python">datetime</code>. Some of the constructor arguments are optional to create the <code>Insight</code> object, but some of the Portfolio Construction models may require these properties. To check which <code>Insight</code> properties a Portfolio Construction model requires, see <a href="/docs/v2/writing-algorithms/algorithm-framework/portfolio-construction/supported-models">Supported Models</a>.</p>
 
-</p><p>You can also use the helper method to create Insight objects of the Price type.</p>  
+<p>You can also use the helper method to create Insight objects of the Price type.</p>  
 <div class="section-example-container">
 		<pre class="python"># Insight.Price(symbol, period, direction, magnitude=None, confidence=None, sourceModel=None, weight=None) 
 insight = Insight.Price("IBM", timedelta(minutes = 20), InsightDirection.Up)
