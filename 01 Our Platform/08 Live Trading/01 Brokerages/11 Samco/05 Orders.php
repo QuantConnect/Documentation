@@ -35,9 +35,6 @@ self.LimitIfTouchedOrder(self.symbol, quantity, trigger_price, limit_price)</pre
 
 <p>We model custom order properties from the Samco API. The following table describes the members of the <code>IndiaOrderProperties</code> object that you can set to customize order execution:</p>
 
-<p>Here:</p>
-<div data-tree="QuantConnect.Orders.IndiaOrderProperties.IndiaProductType"></div>
-
 <table class="table qc-table">
     <thead>
         <tr>
@@ -48,7 +45,7 @@ self.LimitIfTouchedOrder(self.symbol, quantity, trigger_price, limit_price)</pre
     <tbody>
         <tr>
             <td><code>Exchange</code></td>
-            <td>Select the exchange for sending the order to. The following instructions are supported:
+            <td>Select the exchange for sending the order to. The following instructions are available:
                 <ul>
                     <li><code>NSE</code></li>
                     <li><code>BSE</code></li>
@@ -58,13 +55,31 @@ self.LimitIfTouchedOrder(self.symbol, quantity, trigger_price, limit_price)</pre
         <tr>
             <td><code>ProductType</code></td>
             <td>
-                A <code>ProductType</code> instruction to apply to the order. The <code>IndiaProductType</code> enumeration has the following members:
-                <div data-tree="QuantConnect.Orders.IndiaOrderProperties.IndiaProductType"></div>
+                A <code>ProductType</code> instruction to apply to the order. The following instructions are available:
+                <table class="table qc-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 25%">Enumeration</th>
+                            <th style="width: 75%">Product Type</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><code>MIS</code></td><td>Margin Intraday Square Off</td>
+                        </tr>
+                        <tr>
+                            <td><code>CNC</code></td><td>Cash and Carry</td>
+                        </tr>
+                        <tr>
+                            <td><code>NRML</code></td><td>Normal</td>
+                        </tr>
+                    </tbody>
+                </table>
             </td>
         </tr>
         <tr>
             <td><code>TimeInForce</code></td>
-            <td>A <code>TimeInForce</code> instruction to apply to the order. The following instructions are supported:
+            <td>A <code>TimeInForce</code> instruction to apply to the order. The following instructions are available:
                 <ul>
                     <li><code>Day</code></li>
                     <li><code>GoodTilCanceled</code></li>
