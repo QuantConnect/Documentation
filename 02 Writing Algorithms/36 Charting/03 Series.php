@@ -107,17 +107,7 @@ Series(name, type, unit, color, symbol)
 
 <h4>Types</h4>
 
-<p>The following <code>SeriesType</code> values are available:</p>
-<ul>
-    <li><code>SeriesType.Bar</code></li>
-    <li><code>SeriesType.Candle</code></li>
-    <li><code>SeriesType.Flag</code></li>
-    <li><code>SeriesType.Line</code></li>
-    <li><code>SeriesType.Pie</code></li>
-    <li><code>SeriesType.Scatter</code></li>
-    <li><code>SeriesType.StackedArea</code></li>
-    <li><code>SeriesType.Treemap</code></li>
-</ul>
+<?php echo file_get_contents(DOCS_RESOURCES."/enumerations/series_type.html"); ?>
 
 <h4>Index</h4>
 
@@ -134,12 +124,4 @@ Series(name, type, unit, color, symbol)
 
 <h4>Scatter Marker Symbols</h4>
 
-<p>The following <code>ScatterMarkerSymbol</code> values are available:</p>
-<ul>
-    <li><code>ScatterMarkerSymbol.Circle</code></li>
-    <li><code>ScatterMarkerSymbol.Diamond</code></li>
-    <li><code>ScatterMarkerSymbol.None</code></li>
-    <li><code>ScatterMarkerSymbol.Square</code></li>
-    <li><code>ScatterMarkerSymbol.Triangle</code></li>
-    <li><code>ScatterMarkerSymbol.TriangleDown</code></li>
-</ul>
+<?php echo file_get_contents(DOCS_RESOURCES."/enumerations/scatter_marker_symbol.html"); ?>
