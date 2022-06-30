@@ -1,8 +1,9 @@
 <p>When a company is delisting from an exchange, LEAN sends a <code>Delisting</code> object to the <code>OnData</code> method. <code>Delisting</code> objects have the following properties:</p>
 <div data-tree="QuantConnect.Data.Market.Delisting"></div>
 
-<p>You receive <code>Delisting</code> objects when a delisting is in the near future and when it occurs. To know if the delisting occurs in the near future or now, check the <code>Type</code> property.</p>
-<?php echo file_get_contents(DOCS_RESOURCES."/enumerations/delisting_type.html"); ?>
+<p>You receive <code>Delisting</code> objects when a delisting is in the near future and when it occurs. To know if the delisting occurs in the near future or now, check the <code>Type</code> property. The <code>DelistingType</code> enumeration has the following members:</p>
+<div data-tree="QuantConnect.DelistingType"></div>
+
 
 <p>To get the <code>Delisting</code> objects in the <code>Slice</code>, index the <code>Delistings</code> property of the <code>Slice</code> with the security <code>Symbol</code>. The <code>Slice</code> may not contain data for your <code>Symbol</code>. To avoid issues, check if the <code>Delistings</code> property contains data for your security before you index it with the security <code>Symbol</code>.</p>
 
