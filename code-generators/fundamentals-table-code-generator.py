@@ -60,7 +60,7 @@ active = False
 for x in raw:
     if "class MorningstarSectorCode" in x:
         html += """<h4>MorningstarSectorCode Enumeration</h4>
-<p>Sectors are large super categories of data. They are accessed with the <code>MorningstarSectorCode</code> property:</p>
+<p>Sectors are large super categories of data. To access the sector of an Equity, use the <code>MorningstarSectorCode</code> property.</p>
 <div class="section-example-container">
     <pre class="csharp">filteredFine = fine.Where(x => x.AssetClassification.MorningstarIndustryGroupCode == MorningstarSectorCode.Technology);</pre>
     <pre class="python">filtered_fine = [x for x in fine if x.AssetClassification.MorningstarSectorCode == MorningstarSectorCode.Technology]</pre>
@@ -74,7 +74,7 @@ for x in raw:
         
     elif "class MorningstarIndustryGroupCode" in x:
         html += """<h4>MorningstarIndustryGroupCode Enumeration</h4>
-<p>Industry groups are clusters of related industries which tie together. They are accessed with the <code>MorningstarIndustryGroupCode</code> property:</p>
+<p>Industry groups are clusters of related industries which tie together. To access the industry group of an Equity, use the <code>MorningstarIndustryGroupCode</code> property.</p>
 <div class="section-example-container">
     <pre class="csharp">filteredFine = fine.Where(x => x.AssetClassification.MorningstarIndustryGroupCode == MorningstarIndustryGroupCode.ApplicationSoftware);</pre>
     <pre class="python">filtered_fine = [x for x in fine if x.AssetClassification.MorningstarIndustryGroupCode == MorningstarIndustryGroupCode.ApplicationSoftware]</pre>
@@ -88,7 +88,7 @@ for x in raw:
         
     elif "class MorningstarIndustryCode" in x:
         html += """<h4>MorningstarIndustryCode Enumeration</h4>
-<p>Industries are the finest level of classification available, and are the individual industries according to the Morningstar classification system. They are accessed with the <code>MorningstarIndustryCode</code> property:</p>
+<p>Industries are the finest level of classification available, and are the individual industries according to the Morningstar classification system.  To access the industry group of an Equity, use the <code>MorningstarIndustryCode</code> property:</p>
 <div class="section-example-container">
     <pre class="csharp">filteredFine = fine.Where(x => x.AssetClassification.MorningstarIndustryGroupCode == MorningstarIndustryCode.SoftwareApplication);</pre>
     <pre class="python">filtered_fine = [x for x in fine if x.AssetClassification.MorningstarIndustryCode == MorningstarSectorCode.SoftwareInfrastructure]</pre>
@@ -119,7 +119,7 @@ for x in raw:
 '''
 
 html += """<h4>Morningstar ExchangeID Enumeration</h4>
-<p>Exchange ID is mapped to represent the exchange of the equity listed in. They are accessed with the <code>PrimaryExchangeID</code> property:</p>
+<p>Exchange ID is mapped to represent the exchange that lists the Equity. To access the exchange ID of an Equity, use the <code>PrimaryExchangeID</code> property.</p>
 <div class="section-example-container">
     <pre class="csharp">filteredFine = fine.Where(x => x.CompanyReference.PrimaryExchangeID == "NAS");</pre>
     <pre class="python">filtered_fine = [x for x in fine if x.CompanyReference.PrimaryExchangeID == "NAS"]</pre>
