@@ -107,6 +107,10 @@ Series(name, type, unit, color, symbol)
 
 <h4>Types</h4>
 
+<p>The <code>SeriesType</code> enumeration has the following members:</p>
+<div data-tree="QuantConnect.SeriesType"></div>
+
+
 <?php echo file_get_contents(DOCS_RESOURCES."/enumerations/series_type.html"); ?>
 
 <h4>Index</h4>
