@@ -61,8 +61,8 @@ self.Securities[self.future.Mapped].Price # Raw price of the currently selected 
 </table>
 
 <h4>Data Mapping Modes</h4>
-<p>The <code>dataMappingMode</code> argument defines when contract rollovers occur.</p>
-<?php echo file_get_contents(DOCS_RESOURCES."/enumerations/data_mapping_mode.html"); ?>
+<p>The <code>dataMappingMode</code> argument defines when contract rollovers occur. The <code>DataMappingMode</code> enumeration has the following members:</p>
+<div data-tree="QuantConnect.DataMappingMode"></div>
 
 
 <h4>Contract Depth Offsets</h4>
