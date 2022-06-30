@@ -5,13 +5,7 @@ $getCustomChartText = function($backtest) {
         <p>The results page shows the custom charts that you create.</p>
         <h4>Supported Chart Types</h4>
         <p>We support the following types of charts:</p>
-        <div class='section-example-container'>
-        <pre class='all prettyprint prettyprinted'>
-<span class='typ'>SeriesType</span><span class='pun'>.</span><span class='typ'>Line</span>
-<span class='pln'>          </span><span class='pun'>.</span><span class='typ'>Scatter</span>
-<span class='pln'>          </span><span class='pun'>.</span><span class='typ'>Candle</span>
-<span class='pln'>          </span><span class='pun'>.</span><span class='typ'>Bar</span>
-<span class='pln'>          </span><span class='pun'>.</span><span class='typ'>Flag</span></pre></div>
+        <div data-tree='QuantConnect.SeriesType'></div>
      ";
 
     if ($backtest) {
@@ -21,13 +15,7 @@ $getCustomChartText = function($backtest) {
     echo "
         <h4>Supported Markers</h4>
         <p>When you create scatter plots, you can set a marker symbol. We support the following marker symbols:</p>
-        <div class='section-example-container'>
-        <pre class='all prettyprint prettyprinted'>
-<span class='typ'>ScatterMarkerSymbol</span><span class='pun'>.</span><span class='typ'>Circle</span>
-<span class='pln'>                   </span><span class='pun'>.</span><span class='typ'>Diamond</span>
-<span class='pln'>                   </span><span class='pun'>.</span><span class='typ'>Square</span>
-<span class='pln'>                   </span><span class='pun'>.</span><span class='typ'>Triangle</span>
-<span class='pln'>                   </span><span class='pun'>.</span><span class='typ'>TriangleDown</span></pre></div>
+        <div data-tree='QuantConnect.ScatterMarkerSymbol'></div>
     ";
 
     echo "<h4>Chart Quotas</h4>";
