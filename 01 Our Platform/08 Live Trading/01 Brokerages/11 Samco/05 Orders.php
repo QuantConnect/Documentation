@@ -55,26 +55,8 @@ self.LimitIfTouchedOrder(self.symbol, quantity, trigger_price, limit_price)</pre
         <tr>
             <td><code>ProductType</code></td>
             <td>
-                A <code>ProductType</code> instruction to apply to the order. The following instructions are supported:
-                <table class="table qc-table">
-                    <thead>
-                        <tr>
-                            <th style="width: 25%">Enumeration</th>
-                            <th style="width: 75%">Product Type</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td><code>MIS</code></td><td>Margin Intraday Square Off</td>
-                        </tr>
-                        <tr>
-                            <td><code>CNC</code></td><td>Cash and Carry</td>
-                        </tr>
-                        <tr>
-                            <td><code>NRML</code></td><td>Normal</td>
-                        </tr>
-                    </tbody>
-                </table>
+                A <code>ProductType</code> instruction to apply to the order. The <code>IndiaProductType</code> enumeration has the following members:
+                <div data-tree="QuantConnect.Orders.IndiaOrderProperties.IndiaProductType"></div>
             </td>
         </tr>
         <tr>
