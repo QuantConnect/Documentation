@@ -7,11 +7,7 @@ $getTickText = function($securityName, $pythonVariable, $cSharpVariable)
 <div data-tree='QuantConnect.Data.Market.Tick'></div>
 
 <p>Trade ticks have a non-zero value for the <code>Quantity</code> and <code>Price</code> properties, but they have a zero value for the <code>BidPrice</code>, <code>BidSize</code>, <code>AskPrice</code>, and <code>AskSize</code> properties. Quote ticks have non-zero values for <code>BidPrice</code> and <code>BidSize</code> properties or have non-zero values for <code>AskPrice</code> and <code>AskSize</code> properties. To check if a tick is a trade or a quote, use the <code>TickType</code> property.</p>
-";
-    
-    echo file_get_contents(DOCS_RESOURCES."/enumerations/tick_type.html");
-    
-    echo "
+
 <p> In backtests, LEAN groups ticks into one millisecond buckets. In live trading, LEAN groups ticks into ~70-millisecond buckets. To get the <code>Tick</code> objects in the <code>Slice</code>, index the <code>Ticks</code> property of the <code>Slice</code> with a <code>Symbol</code>. If the {$securityName} doesn't actively trade or you are in the same time step as when you added the {$securityName} subscription, the <code>Slice</code> may not contain data for your <code>Symbol</code>. To avoid issues, check if the <code>Slice</code> contains data for your {$securityName} before you index the <code>Slice</code> with the {$securityName} <code>Symbol</code>.</p>
 
 <div class='section-example-container'>
