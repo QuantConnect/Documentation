@@ -7,9 +7,11 @@
 
 <h4>Resolution Periods</h4>
 
-<?php echo file_get_contents(DOCS_RESOURCES."//enumerations/resolution.html"); ?>
+<p>The <code>Resolution</code> enumeration has the following members:</p>
+<div data-tree="QuantConnect.Resolution"></div>
 
-<p>If you do hourly consolidation, the consolidator ends at the top of the hour, not every hour after the market open. For US Equities, that's 10 AM Eastern Time (ET), not 10:30 AM ET.</p>
+
+<p>If you consolidate on an hourly basis, the consolidator ends at the top of the hour, not every hour after the market open. For US Equities, that's 10 AM Eastern Time (ET), not 10:30 AM ET.</p>
 
 <h4>CalendarInfo Periods</h4>
 
