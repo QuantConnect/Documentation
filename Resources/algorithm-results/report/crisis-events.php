@@ -78,16 +78,4 @@
    </tbody>
 </table>
 
-<p>To limit your backtest to a single crisis event, set the dates of your backtest with the <code>CrisisEvent</code> enumeration.</p>
 
-<div class="section-example-container">
-<pre class="csharp">var crisis = Crisis.Events[CrisisEvent.COVID19];
-SetStartDate(crisis.Start);
-SetEndDate(crisis.End);</pre>
-<pre class="python">crisis = Crisis.Events[CrisisEvent.COVID19]
-self.SetStartDate(crisis.Start)
-self.SetEndDate(crisis.End)</pre>
-</div>
-
-<p>The <code>CrisisEvent</code> enumeration has the following members:</p>
-<div data-tree="QuantConnect.Report.CrisisEvent"></div>
