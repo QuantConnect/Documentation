@@ -1,3 +1,4 @@
-<p>The <code>SubscriptionDataSource</code> constructor can accept a <code>format</code> argument.</p>
+<p>The <code>SubscriptionDataSource</code> constructor can accept a <code>format</code> argument. The <code>FileFormat</code> enumeration has the following members:</p>
 
-<?php echo file_get_contents(DOCS_RESOURCES."/enumerations/file_format.html"); ?>
+<div data-tree="QuantConnect.FileFormat"></div>
+
