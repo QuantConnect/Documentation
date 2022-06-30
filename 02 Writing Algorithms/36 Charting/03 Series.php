@@ -110,9 +110,6 @@ Series(name, type, unit, color, symbol)
 <p>The <code>SeriesType</code> enumeration has the following members:</p>
 <div data-tree="QuantConnect.SeriesType"></div>
 
-
-<?php echo file_get_contents(DOCS_RESOURCES."/enumerations/series_type.html"); ?>
-
 <h4>Index</h4>
 
 <p>The series index refers to its position in the chart. If all the series are at index 0, they lay on top of each other. If each series has its own index, each series will be separate on the chart. The following image shows an EMA cross chart with both EMA series set to the same index:</p>
@@ -127,5 +124,5 @@ Series(name, type, unit, color, symbol)
 <p>To view the available <code>Color</code> options, see the <a rel="nofollow" target="_blank" href="https://docs.microsoft.com/en-us/dotnet/api/system.drawing.color?view=net-6.0#properties">Color Struct Properties</a> in the .NET documentation.</p>
 
 <h4>Scatter Marker Symbols</h4>
-
-<?php echo file_get_contents(DOCS_RESOURCES."/enumerations/scatter_marker_symbol.html"); ?>
+<p>The <code>ScatterMarkerSymbol</code> enumeration has the following members:</p>
+<div data-tree="QuantConnect.ScatterMarkerSymbol"></div>
