@@ -1,6 +1,6 @@
-<p>Resolution is the duration of time that's used to sample a data source. </p>
+<p>Resolution is the duration of time that's used to sample a data source. The <code>Resolution </code> enumeration has the following members:</p>
 
-<?php echo file_get_contents(DOCS_RESOURCES."/enumerations/resolution.html"); ?>
+<div data-tree="QuantConnect.Resolution"></div>
 
 <p>To set the resolution for a security, set the <code>resolution</code> argument when you create the security subscription.</p>
 
