@@ -662,7 +662,7 @@ with open("02 Writing Algorithms/28 Indicators/07 Indicator Reference/00 Candles
   "type" : "landing",
   "heading" : "Candlestick Pattern",
   "subHeading" : "",
-  "content" : "<p>Candlestick Pattern for each individual Candlestick Pattern indicator that QuantConnect supported. Click one to learn more.</p>",
+  "content" : "<p>You can use any of the following candlestick patterns. Click one to learn more.</p>",
   "alsoLinks" : [],
   "featureShortDescription": {str(data).replace("'", '"')}
 }}""")
@@ -673,7 +673,7 @@ with open("02 Writing Algorithms/28 Indicators/07 Indicator Reference/00.json", 
   "type" : "landing",
   "heading" : "Indicator Reference",
   "subHeading" : "",
-  "content" : "<p>Indicator reference for each individual indicator that QuantConnect supported. Click one to learn more.</p>",
+  "content" : "<p>You can use any of the following indicators. Click one to learn more.</p>",
   "alsoLinks" : [],
   "featureShortDescription": {str(data).replace("'", '"')}
 }}""")
