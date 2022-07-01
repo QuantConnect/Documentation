@@ -6,8 +6,8 @@
     <pre class="csharp">public class CustomSimpleMovingAverage : IndicatorBase&lt;IndicatorDataPoint&gt;, IIndicatorWarmUpPeriodProvider
 {
     private RollingWindow&lt;decimal&gt; _window;
-    public override bool IsReady => _window.IsReady;
-    public int WarmUpPeriod => _window.Size;
+    public override bool IsReady =&gt; _window.IsReady;
+    public int WarmUpPeriod =&gt; _window.Size;
 
     public CustomSimpleMovingAverage(string name, int period) : base(name)
     {
@@ -33,7 +33,7 @@
         self.Value = 0
         self.queue = deque(maxlen=period)
 
-    def Update(self, input):
+    def Update(self, input: BaseData) -&gt; bool:
         self.queue.appendleft(input.Value)
         count = len(self.queue)
         self.Time = input.Time
