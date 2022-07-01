@@ -26,14 +26,16 @@
 var ticket = LimitOrder("SPY", 100, 221.05, tag: "New SPY trade");
 
 // Update the order tag and limit price
-var response = ticket.Update(new UpdateOrderFields() { 
-  Tag = "Our New Tag for SPY Trade",
-  LimitPrice = 222.00
+var response = ticket.Update(new UpdateOrderFields()
+{ 
+    Tag = "Our New Tag for SPY Trade",
+    LimitPrice = 222.00
 });
 
 // Check the OrderResponse
-if (response.IsSuccess) { 
-     Debug("Order updated successfully");
+if (response.IsSuccess)
+{ 
+    Debug("Order updated successfully");
 }</pre>
 <pre class="python"> # Create an order 
 ticket = self.LimitOrder("SPY", 100, 221.05, False, "New SPY trade")
@@ -46,7 +48,7 @@ response = ticket.Update(updateSettings)
 
 # Check the OrderResponse
 if response.IsSuccess:
-     self.Debug("Order updated successfully")</pre>
+    self.Debug("Order updated successfully")</pre>
 </div>
 
 <?php 
