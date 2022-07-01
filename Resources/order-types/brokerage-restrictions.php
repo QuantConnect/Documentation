@@ -1,5 +1,5 @@
 <?php
-$getBrokerageRestrictionsText = function($orderType, $brokerageName="Default") {
+$getBrokerageRestrictionsText = function($orderType, $brokerageName="QuantConnectBrokerage") {
     echo "
     <p>Each brokerage has a set of assets and order types they support. To avoid issues with {$orderType}, <a href='/docs/v2/writing-algorithms/initialization#05-Set-Brokerage-and-Cash-Model'>set the brokerage model</a> to a brokerage that supports them.</p>
     
