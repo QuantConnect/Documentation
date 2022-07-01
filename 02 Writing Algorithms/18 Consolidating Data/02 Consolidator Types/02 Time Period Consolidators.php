@@ -76,7 +76,7 @@
 consolidator = TradeBarConsolidator(self.CustomPeriod)</pre>
 </div>
 
-<p>Below shows an example of implementation of Custom Consolidator for weekly bars in Forex</p>
+<p>The following example demonstrates how to create a custom consolidator for weekly Forex bars:</p>
 
 <div class="csharp">
     <div class="qc-embed-frame" style="display: inline-block; position: relative; width: 100%; min-height: 100px; min-width: 300px;">
