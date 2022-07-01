@@ -43,6 +43,4 @@ def contract_selector(self, option_filter_universe: OptionFilterUniverse) -> Opt
     return option_filter_universe.Contracts(symbols)</pre>
 </div>
 
-
-
-<p>By default, LEAN adds contracts to the <code>OptionChain</code> that pass the filter criteria at every time step in your algorithm. In backtests, if a contract in the chain doesn't pass the filter criteria, LEAN removes it from the chain at the start of the next day. In live trading, LEAN removes these contracts from the chain every 15 minutes.</p>
+<p>By default, LEAN adds contracts to the <code>OptionChain</code> that pass the filter criteria at every time step in your algorithm. LEAN removes contracts from the <code>OptionChain</code> that don't pass the filter criteria at different times, depending on the execution mode. In backtests, if a contract in the chain doesn't pass the filter criteria, LEAN removes it from the chain at the start of the next day. In live trading, LEAN removes these contracts from the chain every 15 minutes to avoid subscription restrictions from brokerages.</p>
