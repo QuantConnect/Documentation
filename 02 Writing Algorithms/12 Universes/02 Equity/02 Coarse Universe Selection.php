@@ -10,9 +10,9 @@
 
     private IEnumerable&lt;Symbol&gt; MyCoarseFilterFunction(IEnumerable&lt;CoarseFundamental&gt; coarse)
     {
-        return coarse
-            .OrderByDescending(x => x.DollarVolume)
-            .Take(100).Select(x => x.Symbol);
+        return (from c in coarse
+            orderby c.DollarVolume descending
+            select c.Symbol).Take(100);
     }
 }
 </pre>
