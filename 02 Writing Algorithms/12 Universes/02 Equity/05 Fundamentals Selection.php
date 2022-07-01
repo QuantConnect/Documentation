@@ -135,7 +135,7 @@ def FineSelectionFunction(self, fine: List[FineFundamental]) -&gt; List[Symbol]:
 
 <p>Sectors are large super categories of data. To get the sector of a stock, use the <code>MorningstarSectorCode</code> property.</p>
 <div class="section-example-container">
-<pre class="csharp">var tech = fine.Where(x =&gt; if x.AssetClassification.MorningstarSectorCode == MorningstarSectorCode.Technology);</pre>
+<pre class="csharp">var tech = fine.Where(x =&gt; x.AssetClassification.MorningstarSectorCode == MorningstarSectorCode.Technology);</pre>
 <pre class="python">tech = [x for x in fine if x.AssetClassification.MorningstarSectorCode == MorningstarSectorCode.Technology]
 </pre>
 </div>
