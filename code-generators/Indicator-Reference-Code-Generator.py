@@ -104,21 +104,24 @@ for method in methods:
 i = 0
 k = 0
 
-moving_average_table = """<table class="table qc-table table-reflow">
-<thead><tr><th>Enum</th><th>Moving Average Type</th></tr></thead>
+moving_average_table = """<p>The following table shows the <code>MovingAverageType</code> enumeration members and the indicator that implements each one:</p>
+<table class="table qc-table table-reflow">
+<thead><tr><th><code>MovingAverageType</code></th><th>Underlying Indicator</th></tr></thead>
 <tbody>
-<tr><td><code>MovingAverageType.Simple</code></td><td><a href="https://www.quantconnect.com/docs/v2/writing-algorithms/indicators/indicator-reference/simple-moving-average#02-Create-Manual-Indicators">Simple Moving Average</a></td></tr>
-<tr><td><code>MovingAverageType.Exponential</code></td><td><a href="https://www.quantconnect.com/docs/v2/writing-algorithms/indicators/indicator-reference/exponential-moving-average#02-Create-Manual-Indicators">Exponential Moving Average</a></td></tr>
-<tr><td><code>MovingAverageType.Wilders</code></td><td><a href="https://www.quantconnect.com/docs/v2/writing-algorithms/indicators/indicator-reference/wilder-moving-average#02-Create-Manual-Indicators">Wilder Moving Average</a></td></tr>
-<tr><td><code>MovingAverageType.LinearWeightedMovingAverage</code></td><td><a href="https://www.quantconnect.com/docs/v2/writing-algorithms/indicators/indicator-reference/linear-weighted-moving-average#02-Create-Manual-Indicators">Linear Weighted Moving Average</a></td></tr>
-<tr><td><code>MovingAverageType.DoubleExponential</code></td><td><a href="https://www.quantconnect.com/docs/v2/writing-algorithms/indicators/indicator-reference/double-exponential-moving-average#02-Create-Manual-Indicators">Double Exponential Moving Average</a></td></tr>
-<tr><td><code>MovingAverageType.TripleExponential</code></td><td><a href="https://www.quantconnect.com/docs/v2/writing-algorithms/indicators/indicator-reference/triple-exponential-moving-average#02-Create-Manual-Indicators">Triple Exponential Moving Average</a></td></tr>
-<tr><td><code>MovingAverageType.Triangular</code></td><td><a href="https://www.quantconnect.com/docs/v2/writing-algorithms/indicators/indicator-reference/triangular-moving-average#02-Create-Manual-Indicators">Triangular Moving Average</a></td></tr>
-<tr><td><code>MovingAverageType.T3</code></td><td><a href="https://www.quantconnect.com/docs/v2/writing-algorithms/indicators/indicator-reference/t3-moving-average#02-Create-Manual-Indicators">T3 Moving Average</a></td></tr>
-<tr><td><code>MovingAverageType.Kama</code></td><td><a href="https://www.quantconnect.com/docs/v2/writing-algorithms/indicators/indicator-reference/kaufman-adaptive-moving-average#02-Create-Manual-Indicators">Kaufman Adaptive Moving Average</a></td></tr>
-<tr><td><code>MovingAverageType.Hull</code></td><td><a href="https://www.quantconnect.com/docs/v2/writing-algorithms/indicators/indicator-reference/hull-moving-average#02-Create-Manual-Indicators">Hull Moving Average</a></td></tr>
-<tr><td><code>MovingAverageType.Alma</code></td><td><a href="https://www.quantconnect.com/docs/v2/writing-algorithms/indicators/indicator-reference/arnaud-legoux-moving-average#02-Create-Manual-Indicators">Arnaud Legoux Moving Average</a></td></tr>
+<tr><td><code>Simple</code></td><td><a href="https://www.quantconnect.com/docs/v2/writing-algorithms/indicators/indicator-reference/simple-moving-average">Simple Moving Average</a></td></tr>
+<tr><td><code>Exponential</code></td><td><a href="https://www.quantconnect.com/docs/v2/writing-algorithms/indicators/indicator-reference/exponential-moving-average">Exponential Moving Average</a></td></tr>
+<tr><td><code>Wilders</code></td><td><a href="https://www.quantconnect.com/docs/v2/writing-algorithms/indicators/indicator-reference/wilder-moving-average">Wilder Moving Average</a></td></tr>
+<tr><td><code>LinearWeightedMovingAverage</code></td><td><a href="https://www.quantconnect.com/docs/v2/writing-algorithms/indicators/indicator-reference/linear-weighted-moving-average">Linear Weighted Moving Average</a></td></tr>
+<tr><td><code>DoubleExponential</code></td><td><a href="https://www.quantconnect.com/docs/v2/writing-algorithms/indicators/indicator-reference/double-exponential-moving-average">Double Exponential Moving Average</a></td></tr>
+<tr><td><code>TripleExponential</code></td><td><a href="https://www.quantconnect.com/docs/v2/writing-algorithms/indicators/indicator-reference/triple-exponential-moving-average">Triple Exponential Moving Average</a></td></tr>
+<tr><td><code>Triangular</code></td><td><a href="https://www.quantconnect.com/docs/v2/writing-algorithms/indicators/indicator-reference/triangular-moving-average">Triangular Moving Average</a></td></tr>
+<tr><td><code>T3</code></td><td><a href="https://www.quantconnect.com/docs/v2/writing-algorithms/indicators/indicator-reference/t3-moving-average">T3 Moving Average</a></td></tr>
+<tr><td><code>Kama</code></td><td><a href="https://www.quantconnect.com/docs/v2/writing-algorithms/indicators/indicator-reference/kaufman-adaptive-moving-average">Kaufman Adaptive Moving Average</a></td></tr>
+<tr><td><code>Hull</code></td><td><a href="https://www.quantconnect.com/docs/v2/writing-algorithms/indicators/indicator-reference/hull-moving-average">Hull Moving Average</a></td></tr>
+<tr><td><code>Alma</code></td><td><a href="https://www.quantconnect.com/docs/v2/writing-algorithms/indicators/indicator-reference/arnaud-legoux-moving-average">Arnaud Legoux Moving Average</a></td></tr>
 </tbody></table>"""
+swiss_kinfe_tool_datatree = '''<p>The <code>SwissArmyKnifeTool</code> enumeration has the following members:</p>
+<div data-tree="QuantConnect.Indicators.SwissArmyKnifeTool"></div>'''
 
 for full, short in dict(sorted(names.items())).items():
     name = " ".join(re.findall('[a-zA-Z][^A-Z]*', full))
@@ -392,7 +395,7 @@ function ShowHide(event, idName) {{
             html_file.write(moving_average_table)
         
         if full == "SwissArmyKnife":
-            html_file.write('<div data-tree="QuantConnect.Indicators.SwissArmyKnife"></div>')
+            html_file.write(swiss_kinfe_tool_datatree)
 
     with open(destination_folder / "03 Update Manual Indicators.html", "w", encoding="utf-8") as html_file:
         html_file.write(f"""<!-- Code generated by Indicator-Reference-Code-Generator.py -->
@@ -557,7 +560,7 @@ function ShowHide(event, idName) {{
 <p>The following reference table describes the <code>{short}</code> method:</p>
 
 {"".join(api)}
-<br/>{'<div data-tree="QuantConnect.Indicators.SwissArmyKnife"></div>' if full == "SwissArmyKnife" else ""}{moving_average_table if moving_average else ""}
+<br/>{swiss_kinfe_tool_datatree if full == "SwissArmyKnife" else ""}{moving_average_table if moving_average else ""}
 
 <p>If you don't provide a resolution, it defauls to the security resolution. If you provide a resolution, it must be greater than or equal to the resolution of the security. For instance, if you subscribe to hourly data for a security, you should update its indicator with data that spans 1 hour or longer.</p>
 <p>For more information about the selector argument, see <a href="https://www.quantconnect.com/docs/v2/writing-algorithms/indicators/automatic-indicators#07-Alternative-Price-Fields">Alternative Price Fields</a>.</p>""")
