@@ -99,6 +99,23 @@ consolidator = TradeBarConsolidator(self.CustomPeriod)</pre>
 
 <p>To create a time period consolidator, pass the time period to the consolidator constructor.</p>
 <div class="section-example-container">
+<pre class="csharp">// TimeSpan argument
+_timeSpanTradeBar = new TradeBarConsolidator(TimeSpan.FromDays(1))
+_timeSpanQuoteBar = new QuoteBarConsolidator(TimeSpan.FromDays(1))
+_timeSpanTradeTick = new TickConsolidator(TimeSpan.FromSeconds(1))
+_timeSpanQuoteTick = new TickQuoteBarConsolidator(TimeSpan.FromSeconds(1))
+
+// Resolution argument (only works for TradeBarConsolidator)
+_resolutionTradeBar = new TradeBarConsolidator.FromResolution(Resolution.Daily)
+
+// Calendar method argument
+_calendarTradeBar = new TradeBarConsolidator(Calendar.Yearly)
+_calendarQuoteBar = new QuoteBarConsolidator(Calendar.Quarterly)
+_calendarTradeTick = new TickConsolidator(Calendar.Monthly)
+_calendarQuoteTick = new TickQuoteBarConsolidator(Calendar.Weekly)
+
+// Custom method argument
+_customConsolidator = new TradeBarConsolidator(CustomPeriod)</pre>
 <pre class="python"># timedelta argument
 self.timedelta_trade_bar = TradeBarConsolidator(timedelta(days=1))
 self.timedelta_quote_bar = QuoteBarConsolidator(timedelta(days=1))
@@ -115,8 +132,7 @@ self.calendar_trade_tick = TickConsolidator(Calendar.Monthly)
 self.calendar_quote_tick = TickQuoteBarConsolidator(Calendar.Weekly)
 
 # Custom method argument
-self.custom_consolidator = TradeBarConsolidator(self.my_calendarinfo_method)</pre>
-<pre class="csharp"></pre>
+self.custom_consolidator = TradeBarConsolidator(self.CustomPeriod)</pre>
 </div>
 
 <h4>Shortcut Method</h4>
