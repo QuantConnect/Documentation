@@ -4,31 +4,29 @@
 <pre class="csharp">public override void OnOrderEvent(OrderEvent orderEvent)
 {
     var order = Transactions.GetOrderById(orderEvent.OrderId);
-    if (orderEvent.Status == OrderStatus.Filled) 
-         Console.WriteLine("{0}: {1}: {2}", Time, order.Type, orderEvent);
+    if (orderEvent.Status == OrderStatus.Filled)
+    {
+        Debug($"{Time}: {order.Type}: {orderEvent}");
+    }
 }
 
 public override void OnAssignmentOrderEvent(OrderEvent assignmentEvent)
 {
     Log(assignmentEvent.ToString());
-}
-</pre>
+}</pre>
 <pre class="python">def OnOrderEvent(self, orderEvent: OrderEvent) -&gt; None:
     order = self.Transactions.GetOrderById(orderEvent.OrderId)
-    if orderEvent.Status == OrderStatus.Filled: 
-        self.Log("{0}: {1}: {2}".format(self.Time, order.Type, orderEvent))
-
+    if orderEvent.Status == OrderStatus.Filled:
+        self.Debug(f"{self.Time}: {order.Type}: {orderEvent}")
 
 def OnAssignmentOrderEvent(self, assignmentEvent: AssignmentEvent) -&gt; None:
-    self.Log(str(assignmentEvent))
-</pre>
+    self.Log(str(assignmentEvent))</pre>
 </div>
 
 <p>To get a list of all <code>OrderEvent</code> objects for an order, call the <code>OrderEvents</code> method of the <a href='/docs/v2/writing-algorithms/trading-and-orders/order-management/order-tickets'>order ticket</a>.
 
 <div class="section-example-container">
-<pre class="csharp">var orderEvents = orderTicket.OrderEvents();
-</pre>
+<pre class="csharp">var orderEvents = orderTicket.OrderEvents();</pre>
 <pre class="python">order_events = order_ticket.OrderEvents()</pre>
 </div>
 
