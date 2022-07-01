@@ -35,20 +35,13 @@ foreach (var slice in history)
 var consolidator = new TradeBarConsolidator(TimeSpan.FromDays(7));
 var window = new RollingWindow&lt;TradeBar&gt;(20);
 
-// Set a handler method to feed data into the consolidator, print out the consolidated bars and save them in the RollingWindow.
+// Attach a consolidation handler method that saves the consolidated bars in the RollingWindow
 consolidator.DataConsolidated += (sender, consolidated) =>
 {
-    Console.WriteLine($@"{consolidated.Time} : {consolidated.EndTime} :: 
-    Open: {consolidated.Open},
-    High: {consolidated.High},
-    Low: {consolidated.Low},
-    Close: {consolidated.Close},
-    Volume: {consolidated.Volume}");
-
     window.Add(consolidated);
 };
 
-// Iterate the historical market data and feed into the consolidator
+// Iterate the historical market data and feed each bar into the consolidator
 foreach(var bar in history)
 {
     consolidator.Update(bar);
@@ -57,20 +50,10 @@ foreach(var bar in history)
 consolidator = TradeBarConsolidator(timedelta(7))
 window = RollingWindow[TradeBar](20)
 
-# Set a handler method to feed data into the consolidator, print out the consolidated bars and save them in the RollingWindow.
-def ConsolidationHandler(sender, consolidated):
-    print(f"""{consolidated.Time} : {consolidated.EndTime} :: 
-    Open: {consolidated.Open},
-    High: {consolidated.High},
-    Low: {consolidated.Low},
-    Close: {consolidated.Close},
-    Volume: {consolidated.Volume}""")
+# Attach a consolidation handler method that saves the consolidated bars in the RollingWindow   
+consolidator.DataConsolidated += lambda _, bar: window.Add(bar)
 
-    window.Add(consolidated)
-
-consolidator.DataConsolidated += ConsolidationHandler
-
-# Iterate the historical market data and feed into the consolidator
+# Iterate the historical market data and feed each bar into the consolidator
 for bar in close_history.itertuples():
     tradebar = TradeBar(bar.Index[1], bar.Index[0], bar.open, bar.high, bar.low, bar.close, bar.volume)
     consolidator.Update(tradebar)</pre>
