@@ -65,9 +65,9 @@ public class MyUniverseAlgorithm : QCAlgorithm {
     IEnumerable&lt;Symbol&gt; MyCoarseFilterFunction(IEnumerable&lt;CoarseFundamental&gt; coarse) 
     {
          // In addition to further coarse universe selection, ensure the security has fundamental data
-         return return (from c in coarse
-                        where c.HasFundamentalData
-                        select c.Symbol);
+         return (from c in coarse
+             where c.HasFundamentalData
+             select c.Symbol);
     }
     // filter based on FineFundamental
     public IEnumerable&lt;Symbol&gt; FineSelectionFunction(IEnumerable&lt;FineFundamental&gt; fine)
@@ -121,12 +121,12 @@ self.AddUniverse(self.CoarseSelectionFunction, self.FineSelectionFunction)
 
 def CoarseSelectionFunction(self, coarse: List[CoarseFundamental]) -&gt; List[Symbol]:
     sortedByDollarVolume = sorted(coarse, key=lambda x: x.DollarVolume, reverse=True)
-    filtered = [ x.Symbol for x in sortedByDollarVolume if x.HasFundamentalData ]
+    filtered = [x.Symbol for x in sortedByDollarVolume if x.HasFundamentalData]
     return filtered[:50]
 
 def FineSelectionFunction(self, fine: List[FineFundamental]) -&gt; List[Symbol]:
     sortedByPeRatio = sorted(fine, key=lambda x: x.ValuationRatios.PERatio, reverse=False)
-    return [ x.Symbol for x in sortedByPeRatio[:10] ]
+    return [x.Symbol for x in sortedByPeRatio[:10]]
 </pre>
 </div>
 
@@ -135,18 +135,21 @@ def FineSelectionFunction(self, fine: List[FineFundamental]) -&gt; List[Symbol]:
 
 <p>Sectors are large super categories of data. To get the sector of a stock, use the <code>MorningstarSectorCode</code> property.</p>
 <div class="section-example-container">
+<pre class="csharp">var tech = fine.Where(x =&gt; if x.AssetClassification.MorningstarSectorCode == MorningstarSectorCode.Technology);</pre>
 <pre class="python">tech = [x for x in fine if x.AssetClassification.MorningstarSectorCode == MorningstarSectorCode.Technology]
 </pre>
 </div>
 
 <p>Industry groups are clusters of related industries that tie together. To get the industry group of a stock, use the <code>MorningstarIndustryGroupCode</code> property.</p>
 <div class="section-example-container">
+<pre class="csharp">var ag = fine.Where(x =&gt; x.AssetClassification.MorningstarIndustryGroupCode == MorningstarIndustryGroupCode.Agriculture);</pre>
 <pre class="python">ag = [x for x in fine if x.AssetClassification.MorningstarIndustryGroupCode == MorningstarIndustryGroupCode.Agriculture]
 </pre>
 </div>
 
 <p>Industries are the finest level of classification available. They are the individual industries according to the Morningstar classification system. To get the industry of a stock, use the <code>MorningstarIndustryCode</code>.</p>
 <div class="section-example-container">
+<pre class="csharp">var coal = fine.Where(x =&gt; x.AssetClassification.MorningstarIndustryCode == MorningstarSectorCode.Coal);</pre>
 <pre class="python">coal = [x for x in fine if x.AssetClassification.MorningstarIndustryCode == MorningstarSectorCode.Coal]
 </pre>
 </div>
@@ -154,5 +157,5 @@ def FineSelectionFunction(self, fine: List[FineFundamental]) -&gt; List[Symbol]:
 
 <h4>Practical Limitations</h4>
 <p>
-	Like coarse universes, fine universes allow you to select an unlimited universe of assets to analyze. Each asset in the universe consumes approximately 5MB of RAM, so you may quickly run out of memory if your universe filter selects many assets. If you backtest your algorithms in the Algorithm Lab, familiarize yourself with the RAM capacity of your <a href='/docs/v2/our-platform/organizations/resources#02-Backtesting-Nodes'>backtesting</a> and <a href='/docs/v2/our-platform/organizations/resources#04-Live-Trading-Nodes'>live trading nodes</a>. To keep your algorithm fast and efficient, only subscribe to the assets you need.
+Like coarse universes, fine universes allow you to select an unlimited universe of assets to analyze. Each asset in the universe consumes approximately 5MB of RAM, so you may quickly run out of memory if your universe filter selects many assets. If you backtest your algorithms in the Algorithm Lab, familiarize yourself with the RAM capacity of your <a href='/docs/v2/our-platform/organizations/resources#02-Backtesting-Nodes'>backtesting</a> and <a href='/docs/v2/our-platform/organizations/resources#04-Live-Trading-Nodes'>live trading nodes</a>. To keep your algorithm fast and efficient, only subscribe to the assets you need.
 </p>
