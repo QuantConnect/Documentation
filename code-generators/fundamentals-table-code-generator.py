@@ -1,6 +1,3 @@
-from urllib.request import urlopen
-
-raw = urlopen("https://raw.githubusercontent.com/QuantConnect/Lean/master/Common/Data/Fundamental/AssetClassificationHelper.cs").read().decode("utf-8").split('\n')
 destination = "Resources/datasets/data-point-attributes/fundamentals/enums.html"
 exchange_ids = {
     'NYS': "New York Stock Exchange (NYSE)",
@@ -53,81 +50,50 @@ exchange_ids = {
     'NEOE': "NEO Exchange"
 }
 
-html = ""
+html = """<p>The US Fundamentals dataset provides FineFundamental objects. To filter FineFundamental objects, you can use the MorningstarSectorCode, MorningstarIndustryGroupCode, and MorningstarIndustryCode enumeration values.</p>
 
-active = False
+<h4>FineFundamental Attributes</h4>
+<p>FineFundamental objects have the following attributes:</p>
+<div data-tree="QuantConnect.Data.Fundamental.FineFundamental"></div>
 
-for x in raw:
-    if "class MorningstarSectorCode" in x:
-        html += """<h4>MorningstarSectorCode Enumeration</h4>
-<p>Sectors are large super categories of data. To access the sector of an Equity, use the <code>MorningstarSectorCode</code> property.</p>
+<h4>MorningstarSectorCode Enumeration</h4>
+<p>Sectors are large super categories of data. To access the sector of an Equity, use the <b>MorningstarSectorCode</b> property.</p>
 <div class="section-example-container">
-    <pre class="csharp">filteredFine = fine.Where(x => x.AssetClassification.MorningstarIndustryGroupCode == MorningstarSectorCode.Technology);</pre>
-    <pre class="python">filtered_fine = [x for x in fine if x.AssetClassification.MorningstarSectorCode == MorningstarSectorCode.Technology]</pre>
+    <pre><code class="language-cs">filteredFine = fine.Where(x =&gt; x.AssetClassification.MorningstarSectorCode == MorningstarSectorCode.Technology);</code></pre>
+    <pre><code class="language-python">filtered_fine = [x for x in fine if x.AssetClassification.MorningstarSectorCode == MorningstarSectorCode.Technology]</code></pre>
 </div>
-<table class="table qc-table table-reflow" id="enum-code-table">
-<thead>
-<tr><th style="width: 80%;"><code>MorningstarSectorCode</code></th><th style="width: 20%;">Sector Code</th></tr>
-</thead>
-<tbody>"""
-        active = True
-        
-    elif "class MorningstarIndustryGroupCode" in x:
-        html += """<h4>MorningstarIndustryGroupCode Enumeration</h4>
-<p>Industry groups are clusters of related industries which tie together. To access the industry group of an Equity, use the <code>MorningstarIndustryGroupCode</code> property.</p>
-<div class="section-example-container">
-    <pre class="csharp">filteredFine = fine.Where(x => x.AssetClassification.MorningstarIndustryGroupCode == MorningstarIndustryGroupCode.ApplicationSoftware);</pre>
-    <pre class="python">filtered_fine = [x for x in fine if x.AssetClassification.MorningstarIndustryGroupCode == MorningstarIndustryGroupCode.ApplicationSoftware]</pre>
-</div>
-<table class="table qc-table table-reflow" id="enum-code-table">
-<thead>
-<tr><th style="width: 80%;"><code>MorningstarIndustryGroupCode</code></th><th style="width: 20%;">Industry Group Code</th></tr>
-</thead>
-<tbody>"""
-        active = True
-        
-    elif "class MorningstarIndustryCode" in x:
-        html += """<h4>MorningstarIndustryCode Enumeration</h4>
-<p>Industries are the finest level of classification available, and are the individual industries according to the Morningstar classification system.  To access the industry group of an Equity, use the <code>MorningstarIndustryCode</code> property:</p>
-<div class="section-example-container">
-    <pre class="csharp">filteredFine = fine.Where(x => x.AssetClassification.MorningstarIndustryGroupCode == MorningstarIndustryCode.SoftwareApplication);</pre>
-    <pre class="python">filtered_fine = [x for x in fine if x.AssetClassification.MorningstarIndustryCode == MorningstarSectorCode.SoftwareInfrastructure]</pre>
-</div>
-<table class="table qc-table table-reflow" id="enum-code-table">
-<thead>
-<tr><th style="width: 80%;"><code>MorningstarIndustryCode</code></th><th style="width: 20%;">Industry Code</th></tr>
-</thead>
-<tbody>"""
-        active = True
-        
-    elif "}" in x and active:
-        html += """</tbody>
-</table>
+<p>The <b>MorningstarSectorCode</b> enumeration has the following members:</p>
+<div data-tree="QuantConnect.Data.Fundamental.MorningstarSectorCode"></div>
 
-"""
-        active = False
-        
-    if active and " = " in x:
-        equal_sign_split = x.split(" = ")
-        
-        space_split = equal_sign_split[0].split(" ")
 
-        enum = space_split[-1]
-        code = equal_sign_split[-1][:-1]
-        
-        html += f'''<tr><td><code>{enum}</code></td><td align="right">{code}</td></tr>
-'''
-
-html += """<h4>Morningstar ExchangeID Enumeration</h4>
-<p>Exchange ID is mapped to represent the exchange that lists the Equity. To access the exchange ID of an Equity, use the <code>PrimaryExchangeID</code> property.</p>
+<h4>MorningstarIndustryGroupCode Enumeration</h4>
+<p>Industry groups are clusters of related industries which tie together.  To access the industry group of an Equity, use the <b>MorningstarIndustryGroupCode</b> property.</p>
 <div class="section-example-container">
-    <pre class="csharp">filteredFine = fine.Where(x => x.CompanyReference.PrimaryExchangeID == "NAS");</pre>
-    <pre class="python">filtered_fine = [x for x in fine if x.CompanyReference.PrimaryExchangeID == "NAS"]</pre>
+    <pre><code class="language-cs">filteredFine = fine.Where(x =&gt; x.AssetClassification.MorningstarIndustryGroupCode == MorningstarIndustryGroupCode.ApplicationSoftware);</code></pre>
+    <pre><code class="language-python">filtered_fine = [x for x in fine if x.AssetClassification.MorningstarIndustryGroupCode == MorningstarIndustryGroupCode.ApplicationSoftware]</code></pre>
 </div>
-<table class="table qc-table table-reflow" id="enum-code-table">
-<thead>
-<tr><th style="width: 20%;"><code>MorningstarExchangeID</code></th><th style="width: 80%;">Exchange represented</th></tr>
-</thead>
+<p>The <b>MorningstarIndustryGroupCode</b> enumeration has the following members:</p>
+<div data-tree="QuantConnect.Data.Fundamental.MorningstarIndustryGroupCode"></div>
+
+
+<h4>MorningstarIndustryCode Enumeration</h4>
+<p>Industries are the finest level of classification available and are the individual industries according to the Morningstar classification system.  To access the industry group of an Equity, use the <b>MorningstarIndustryCode</b> property:</p>
+<div class="section-example-container">
+    <pre><code class="language-cs">filteredFine = fine.Where(x =&gt; x.AssetClassification.MorningstarIndustryCode == MorningstarIndustryCode.SoftwareApplication);</code></pre>
+    <pre><code class="language-python">filtered_fine = [x for x in fine if x.AssetClassification.MorningstarIndustryCode == MorningstarIndustryCode.SoftwareApplication]</code></pre>
+</div>
+<p>The <b>MorningstarIndustryCode</b> enumeration has the following members:</p>
+<div data-tree="QuantConnect.Data.Fundamental.MorningstarIndustryCode"></div>
+
+<h4>Exchange ID Values</h4>
+<p>Exchange ID is mapped to represent the exchange that lists the Equity.  To access the exchange ID of an Equity, use the <b>PrimaryExchangeID</b> property.</p>
+<div class="section-example-container">
+    <pre><code class="language-cs">filteredFine = fine.Where(x =&gt; x.CompanyReference.PrimaryExchangeID == "NAS");</code></pre>
+    <pre><code class="language-python">filtered_fine = [x for x in fine if x.CompanyReference.PrimaryExchangeID == "NAS"]</code></pre>
+</div>
+<p>The exchanges are represented by the following string values:</p>
+<table class="table qc-table table-reflow">
+<thead><tr><th>String Representation</th><th>Exchange</th></tr></thead>
 <tbody>
 """
 
@@ -137,15 +103,4 @@ for id, e in exchange_ids.items():
 html += "</tbody></table>"
 
 with open(destination, "w", encoding="utf-8") as text:
-    text.write("""<style>
-#enum-code-table td:nth-child(2), 
-#enum-code-table th:nth-child(2) {
-    text-align: right;
-}
-</style>
-
-<h4>FineFundamental Attributes</h4>
-<div data-tree="QuantConnect.Data.Fundamental.FineFundamental"></div>
-
-""")
     text.write(html)
