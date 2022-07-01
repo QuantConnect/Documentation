@@ -7,7 +7,7 @@ var ticket = LimitIfTouchedOrder("SPY", 100, 350, 340, tag: "Original tag");
 
 // Update the order
 var updateOrderFields = new UpdateOrderFields()
-{ 
+{
     Quantity = 80,
     TriggerPrice = 380,
     LimitPrice = 370,
@@ -18,10 +18,8 @@ var response = ticket.Update(updateOrderFields);
 // Check the OrderResponse
 if (response.IsSuccess)
 { 
-     Debug("Order updated successfully");
-}
-
-</pre>
+    Debug("Order updated successfully");
+}</pre>
 <pre class="python"># Create a new order and save the order ticket
 ticket = self.LimitIfTouchedOrder("SPY", 100, 350, 340, tag="Original tag")
 
@@ -35,8 +33,7 @@ response = ticket.Update(update_settings)
 
 # Check the OrderResponse
 if response.IsSuccess:
-     self.Debug("Order updated successfully")
-</pre>
+    self.Debug("Order updated successfully")</pre>
 </div>
 
 <?php 
@@ -47,4 +44,3 @@ $getUpdateIndividualFieldsText($supportedMethods);
 echo file_get_contents(DOCS_RESOURCES."/order-types/update-requests.html");
 
 ?>
-
