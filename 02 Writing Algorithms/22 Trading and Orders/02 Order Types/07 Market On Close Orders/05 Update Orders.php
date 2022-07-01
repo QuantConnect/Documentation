@@ -7,16 +7,17 @@ You can update the quantity and tag of MOC orders until the order fills or the b
 var ticket = MarketOnCloseOrder("SLV", 25, "original tag");
 
 // Update the order
-var response = ticket.Update(new UpdateOrderFields() { 
-  Quantity = 50,
-  Tag = "new tag"
+var response = ticket.Update(new UpdateOrderFields()
+{
+    Quantity = 50,
+    Tag = "new tag"
 });
 
 // Check if the update was successful
-if (response.IsSuccess) { 
-     Debug("Order updated successfully");
-}
-</pre>
+if (response.IsSuccess)
+{
+    Debug("Order updated successfully");
+}</pre>
 <pre class="python"># Create a new order and save the order ticket
 ticket = self.MarketOnOpenOrder("SLV", 25, "original tag")
 
@@ -28,8 +29,7 @@ response = ticket.Update(update_settings)
 
 # Check if the update was successful
 if response.IsSuccess:
-     self.Debug("Order updated successfully")
-</pre>
+    self.Debug("Order updated successfully")</pre>
 </div>
 
 <?php 
