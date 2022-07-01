@@ -6,7 +6,7 @@ def Initialize(self) -&gt; None:
     self.AddUniverse(SmartInsiderIntentionUniverse, "SmartInsiderIntentionUniverse", Resolution.Daily, self.IntentionSelection)
     self.AddUniverse(SmartInsiderTransactionUniverse, "SmartInsiderTransactionUniverse", Resolution.Daily, self.TransactionSelection)
 
-def IntentionSelection(self, alt_coarse):
+def IntentionSelection(self, alt_coarse: List[SmartInsiderIntentionUniverse]) -&gt; List[Symbol]:
     for datum in alt_coarse:
         self.Log(f"{datum.Symbol},{datum.Amount},{datum.AmountValue},{datum.Percentage},{datum.MinimumPrice},{datum.MaximumPrice},{datum.USDMarketCap}")
 
@@ -15,7 +15,7 @@ def IntentionSelection(self, alt_coarse):
                 if d.Percentage &gt; 0.005 \
                 and d.USDMarketCap &gt; 100000000]
 
-def TransactionSelection(self, alt_coarse):
+def TransactionSelection(self, alt_coarse: List[SmartInsiderTransactionUniverse]) -&gt; List[Symbol]:
     for datum in alt_coarse:
         self.Log(f"{datum.Symbol},{datum.Amount},{datum.MinimumExecutionPrice},{datum.MaximumExecutionPrice},{datum.USDValue},{datum.BuybackPercentage},{datum.VolumePercentage},{datum.USDMarketCap}")
 

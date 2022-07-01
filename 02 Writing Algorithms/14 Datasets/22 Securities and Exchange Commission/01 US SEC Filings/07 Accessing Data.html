@@ -2,21 +2,21 @@
 <div class="section-example-container">
 <pre class="python">
 class SECReportAlgorithm(QCAlgorithm):
-    def OnData(self, data: Slice) -&gt; None:
-        if self.report8K in data:
-            report8K_data = data.Get(SECReport8K, self.report8K)
+    def OnData(self, slice: Slice) -&gt; None:
+        if self.report8K in slice:
+            report8K_data = slice.Get(SECReport8K, self.report8K)
             documentsCount = len(report8K_data.Report.Documents);
             self.Log(f'{documentsCount} found for {self.aapl} on {self.Time}');
 </pre>
 
 <pre class="csharp">
-namespace QuantConnect
+public class SECReportAlgorithm : QCAlgorithm
 {
-    public class SECReportAlgorithm : QCAlgorithm
+    public override void OnData(Slice slice)
     {
-        if (data.ContainsKey(_report8K))
+        if (slice.ContainsKey(_report8K))
         {
-            var report8KData = data.Get(_report8K);
+            var report8KData = slice.Get(_report8K);
             var documentsCount = report8KData.Report.Documents.Count;
             Log($"{documentsCount} found for {_aapl} on {Time}");
         }

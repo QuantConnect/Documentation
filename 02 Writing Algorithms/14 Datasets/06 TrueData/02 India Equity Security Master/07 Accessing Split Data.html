@@ -2,18 +2,18 @@
 
 <div class="section-example-container">
 <pre class="python">
-def OnData(self, data: Slice) -&gt; None:
-    split = data.Splits.get(self.symbol)
+def OnData(self, slice: Slice) -&gt; None:
+    split = slice.Splits.get(self.symbol)
     if split:
         splitType = {0: "Warning", 1: "SplitOccurred"}.get(split.Type)
         self.Log(f'Split: {split.Symbol}\t{split.SplitFactor}\t{split.ReferencePrice}\t{splitType}')
 </pre>
 <pre class="csharp">
-public override void OnData(Slice data)
+public override void OnData(Slice slice)
 {
-    if (data.Splits.ContainsKey(_symbol))
+    if (slice.Splits.ContainsKey(_symbol))
     {
-        var split = data.Splits[_symbol];
+        var split = slice.Splits[_symbol];
         Log($"Split: {split.Symbol}\t{split.SplitFactor}\t{split.ReferencePrice}\t{split.Type}");
     }
 }</pre>

@@ -1,24 +1,24 @@
 <p>Data can be accessed via Slice events. Slice delivers unique events to your algorithm as they happen. We recommend saving the symbol object when you add the data for easy access to slice later. Data is available in daily resolution. You can see an example of the slice accessor in the code below.</p>
 <div class="section-example-container">
-<pre class="python">def OnData(self, data: Slice) -&gt; None:
-    if data.ContainsKey(self.smart_insider_intention):
-        intention = data[self.smart_insider_intention]
+<pre class="python">def OnData(self, slice: Slice) -&gt; None:
+    if slice.ContainsKey(self.smart_insider_intention):
+        intention = slice[self.smart_insider_intention]
         self.Log(f"Intention to buyback for company {intention.CompanyName}")
         
-    if data.ContainsKey(self.smart_insider_transaction):
-        intention = data[self.smart_insider_transaction]
+    if slice.ContainsKey(self.smart_insider_transaction):
+        intention = slice[self.smart_insider_transaction]
         self.Log(f"Buyback transaction took place for company {intention.CompanyName}")</pre>
-<pre class="csharp">public override void OnData(Slice data)
+<pre class="csharp">public override void OnData(Slice slice)
 {
-    if (data.ContainsKey(_smartInsiderIntention))
+    if (slice.ContainsKey(_smartInsiderIntention))
     {
-        var intention = data[_smartInsiderIntention];
+        var intention = slice[_smartInsiderIntention];
         Log($"Intention to buyback for company {intention.CompanyName}");
     }
     
-    if (data.ContainsKey(_smartInsiderTransaction))
+    if (slice.ContainsKey(_smartInsiderTransaction))
     {
-        var transaction = data[_smartInsiderTransaction];
+        var transaction = slice[_smartInsiderTransaction];
         Log($"Buyback transaction took place for company {transaction.CompanyName}");
     }
 }</pre>

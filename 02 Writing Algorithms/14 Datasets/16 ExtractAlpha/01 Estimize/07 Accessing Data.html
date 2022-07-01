@@ -1,7 +1,7 @@
 <p>Data can be accessed via Slice events. Slice delivers unique events to your algorithm as they happen. We recommend saving the symbol object when you add the data for easy access to slice later. Data is available in daily resolution. You can see an example of the slice accessor in the code below.</p>
 <div class="section-example-container">
-<pre class="python">def OnData(self, data: Slice) -&gt; None:
-    consensus = data.Get(EstimizeConsensus)
+<pre class="python">def OnData(self, slice: Slice) -&gt; None:
+    consensus = slice.Get(EstimizeConsensus)
     for symbol, value in consensus.items():
         self.Log(f"""Symbol: {symbol} - Consensus Source: {value.Source},
                   Consensus Type: {value.Type}, Mean: {value.Mean}, 
@@ -9,14 +9,14 @@
                   Standard Deviation: {value.StandardDeviation}, Count: {value.Count},
                   Fiscal Year: {value.FiscalYear}, Fiscal Quarter: {value.FiscalQuarter}""")
 
-    estimate = data.Get(EstimizeEstimate)
+    estimate = slice.Get(EstimizeEstimate)
     for symbol, value in estimate.items():
         self.Log(f"""Symbol: {symbol} - EPS: {value.Eps}, Revenue: {value.Revenue},
                   Fiscal Year: {value.FiscalYear}, Fiscal Quarter: {value.FiscalQuarter},
                   User Name: {value.UserName}, Analyst Id: {value.AnalystId}, 
                   Flagged: {value.Flagged}""")
 
-    release = data.Get(EstimizeRelease)
+    release = slice.Get(EstimizeRelease)
     for symbol, value in release.items():
         self.Log(f"""Symbol: {symbol} - EPS: {value.Eps}, Revenue: {value.Revenue},
                   Fiscal Year: {value.FiscalYear}, Fiscal Quarter: {value.FiscalQuarter},
@@ -29,9 +29,9 @@
 </pre>
 <pre class="csharp">namespace QuantConnect
 {    
-        public override void OnData(Slice data)
+        public override void OnData(Slice slice)
         {
-            var consensus = data.Get&lt;EstimizeConsensus&gt;();
+            var consensus = slice.Get&lt;EstimizeConsensus&gt;();
             foreach (var kvp in consensus)
             {
                 Log($@"Symbol: {kvp.Key} - Consensus Source: {kvp.Value.Source},
@@ -41,7 +41,7 @@
                       Fiscal Year: {kvp.Value.FiscalYear}, Fiscal Quarter: {kvp.Value.FiscalQuarter}");
             }
             
-            var estimate = data.Get&lt;EstimizeEstimate&gt;();
+            var estimate = slice.Get&lt;EstimizeEstimate&gt;();
             foreach (var kvp in estimate)
             {
                 Log($@"Symbol: {kvp.Key} - EPS: {kvp.Value.Eps}, Revenue: {kvp.Value.Revenue},
@@ -50,7 +50,7 @@
                       Flagged: {kvp.Value.Flagged}");
             }
             
-            var release = data.Get&lt;EstimizeRelease&gt;();
+            var release = slice.Get&lt;EstimizeRelease&gt;();
             foreach (var kvp in release)
             {
                 Log($@"Symbol: {kvp.Key} - EPS: {kvp.Value.Eps}, Revenue: {kvp.Value.Revenue},

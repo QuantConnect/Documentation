@@ -1,9 +1,9 @@
 <p>Data can be accessed via Slice events. Slice delivers unique events to your algorithm as they happen. We recommend saving the symbol object when you add the data for easy access to slice later. You can see an example of the slice accessor in the code below.</p>
 <div class="section-example-container">
-<pre class="python">def OnData(self, data: Slice) -&gt; None:
-    if data.ContainsKey(self.symbol) and data[self.symbol] is not None:
+<pre class="python">def OnData(self, slice: Slice) -&gt; None:
+    if slice.ContainsKey(self.symbol) and slice[self.symbol] is not None:
         # The marketData object can be a TradeBar, QuoteBar, or a List of Tick
-        marketData = data[self.symbol]
+        marketData = slice[self.symbol]
 
         # If it's TradeBar or QuoteBar:
         self.Log(f"Time: {self.Time}; Symbol: {self.symbol}; Open: {marketData.Open}; High: {marketData.High}; Low: {marketData.Low}; Close: {marketData.Close}; Volume: {marketData.Volume}")
@@ -14,12 +14,12 @@
 </pre>
 <pre class="csharp">namespace QuantConnect
 {    
-    public override void OnData(Slice data)
+    public override void OnData(Slice slice)
     {
-        if (data.ContainsKey(_symbol) &amp;&amp; data[_symbol] != None)
+        if (slice.ContainsKey(_symbol) &amp;&amp; slice[_symbol] != None)
         {
             // The marketData object can be a TradeBar, QuoteBar, or a List of Tick
-            var marketData = data[_symbol];
+            var marketData = slice[_symbol];
             
             // If it's TradeBar or QuoteBar:
             Log($"Time: {Time}; Symbol: {_symbol} Open: {marketData.Open}; High: {marketData.High}; Low: {marketData.Low}; Close: {marketData .Close}");

@@ -1,7 +1,7 @@
 <p>Data can be accessed via Slice events. Slice delivers unique events to your algorithm as they happen. We recommend saving the symbol object when you add the data for easy access to slice later. Data is available in daily resolution. You can see an example of the slice accessor in the code below.</p>
 <div class="section-example-container">
-<pre class="python"> def OnData(self, data: Slice) -&gt; None:
-    points = data.Get(BlockchainBitcoinData)
+<pre class="python"> def OnData(self, slice: Slice) -&gt; None:
+    points = slice.Get(BlockchainBitcoinData)
     for kvp in points:
         Log(f"""{Symbol} - Difficulty {Difficulty},
                 My Wallet Number of Users {MyWalletNumberofUsers},
@@ -27,9 +27,9 @@
                 My Wallet Number of Transaction Per Day {MyWalletNumberofTransactionPerDay},
                 My Wallet Transaction Volume {MyWalletTransactionVolume}""")
 </pre>
-<pre class="csharp"> public override void OnData(Slice data)
+<pre class="csharp"> public override void OnData(Slice slice)
 {
-    var points = data.Get&lt;BitcoinMetadata&gt;();
+    var points = slice.Get&lt;BitcoinMetadata&gt;();
     foreach (var point in points.Values)
     {
         Log($@"{Symbol} - Difficulty {Difficulty},

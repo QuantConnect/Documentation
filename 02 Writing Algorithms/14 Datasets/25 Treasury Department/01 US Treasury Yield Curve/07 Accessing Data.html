@@ -1,13 +1,13 @@
 <p>Data can be accessed via Slice events. Slice delivers unique events to your algorithm as they happen. We recommend saving the symbol object when you add the data for easy access to slice later. Data is available in daily resolution. You can see an example of the slice accessor in the code below.</p>
 
 <div class="section-example-container">
-<pre class="python">def OnData(self, data: Slice) -&gt; None:
-    points = data.Get(USTreasuryYieldCurveRate)
+<pre class="python">def OnData(self, slice: Slice) -&gt; None:
+    points = slice.Get(USTreasuryYieldCurveRate)
     for point in points.Values:
         self.Log(f"Date {self.Time}; OneMonth: {point.OneMonth}; TwoMonth: {point.TwoMonth}; ThreeMonth: {point.ThreeMonth}; SixMonth: {point.SixMonth}; OneYear: {point.OneYear}; TwoYear: {point.TwoYear}; ThreeYear: {point.ThreeYear}; FiveYear: {point.FiveYear}; SevenYear: {point.SevenYear}; TenYear: {point.TenYear}; TwentyYear: {point.TwentyYear}; ThirtyYear: {point.ThirtyYear}")</pre>
-<pre class="csharp">public override void OnData(Slice data)
+<pre class="csharp">public override void OnData(Slice slice)
 {
-    var points = data.Get&lt;USTreasuryYieldCurveRate&gt;();
+    var points = slice.Get&lt;USTreasuryYieldCurveRate&gt;();
     foreach (var point in points.Values)
     {
         Log($"Date {Time}; OneMonth: {point.OneMonth}; TwoMonth: {point.TwoMonth}; ThreeMonth: {point.ThreeMonth}; SixMonth: {point.SixMonth}; OneYear: {point.OneYear}; TwoYear: {point.TwoYear}; ThreeYear: {point.ThreeYear}; FiveYear: {point.FiveYear}; SevenYear: {point.SevenYear}; TenYear: {point.TenYear}; TwentyYear: {point.TwentyYear}; ThirtyYear: {point.ThirtyYear}");    

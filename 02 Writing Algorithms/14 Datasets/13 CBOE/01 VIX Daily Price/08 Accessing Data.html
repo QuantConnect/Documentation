@@ -1,25 +1,17 @@
 <p>Data can be accessed via Slice events. Slice delivers unique events to your algorithm as they happen. We recommend saving the symbol object when you add the data for easy access to slice later. Data is available in daily resolution. You can see an example of the slice accessor in the code below.</p>
 <div class="section-example-container">
-<pre class="python">class CboeDataAlgorithm(QCAlgorithm):
-    
-   def OnData(self, data: Slice) -&gt; None:
-        if data.ContainsKey(self.cboeVix):
-            vix = data.Get(CBOE, self.cboeVix)
-            self.Log(f"VIX: {vix}")
+<pre class="python">def OnData(self, slice: Slice) -&gt; None:
+    if slice.ContainsKey(self.cboeVix):
+        vix = slice.Get(CBOE, self.cboeVix)
+        self.Log(f"VIX: {vix}")
 
 </pre>
-<pre class="csharp">namespace QuantConnect.Algorithm.CSharp.AltData
-{    
-    public class CboeDataAlgorithm : QCAlgorithm
+<pre class="csharp">public override void OnData(Slice slice)
+{
+    if (slice.ContainsKey(_cboeVix))
     {
-       public override void OnData(Slice data)
-        {
-            if (data.ContainsKey(_cboeVix))
-            {
-                var vix = data.Get(_cboeVix);
-                Log($"VIX: {vix}");
-            }
-        }
+        var vix = slice.Get(_cboeVix);
+        Log($"VIX: {vix}");
     }
 }
 </pre>

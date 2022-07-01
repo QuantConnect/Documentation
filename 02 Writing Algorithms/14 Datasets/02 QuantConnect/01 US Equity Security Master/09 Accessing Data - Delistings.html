@@ -2,18 +2,18 @@
 
 <div class="section-example-container">
 <pre class="python">
-def OnData(self, data: Slice) -&gt; None:
-    delisting = data.Delistings.get(self.symbol)
+def OnData(self, slice: Slice) -&gt; None:
+    delisting = slice.Delistings.get(self.symbol)
     if delisting:
         delistingType = {0: "Warning", 1: "Delisted"}.get(delisting.Type)
         self.Log(f'Delistings: {delistingType}')
 </pre>
 <pre class="csharp">
-public override void OnData(Slice data)
+public override void OnData(Slice slice)
 {
-    if (data.Delistings.ContainsKey(_symbol))
+    if (slice.Delistings.ContainsKey(_symbol))
     {
-        var delisting = data.Delistings[_symbol];
+        var delisting = slice.Delistings[_symbol];
         Log($"Delistings: {delisting.Type}");
     }
 }</pre>

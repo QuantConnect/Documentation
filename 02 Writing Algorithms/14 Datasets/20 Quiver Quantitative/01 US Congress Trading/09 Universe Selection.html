@@ -5,7 +5,7 @@
 def Initialize(self) -&gt; None:
     self.AddUniverse(QuiverQuantCongressUniverse, "QuiverQuantCongresssUniverse", Resolution.Daily, self.UniverseSelection)
 
-def UniverseSelection(self, alt_coarse):
+def UniverseSelection(self, alt_coarse: List[QuiverQuantCongresssUniverse]) -&gt; List[Symbol]:
     for datum in alt_coarse:
         self.Log(f"{datum.Symbol},{datum.Representative},{datum.Amount},{datum.Transaction}")
 
@@ -14,7 +14,7 @@ def UniverseSelection(self, alt_coarse):
         if d.Amount &gt; 200000 and d.Transaction == OrderDirection.Buy]
 </pre>
 <pre class="csharp">
-AddUniverse("QuiverQuantCongresssUniverse", Resolution.Daily, altCoarse =&gt;
+AddUniverse&lt;QuiverQuantCongresssUniverse&gt;("QuiverQuantCongresssUniverse", Resolution.Daily, altCoarse =&gt;
 {
     foreach (var datum in altCoarse)
     {

@@ -1,15 +1,17 @@
 <p>Data can be accessed via Slice events. Slice delivers unique events to your algorithm as they happen. We recommend saving the symbol object when you add the data for easy access to slice later. Data is available in daily resolution. You can see an example of the slice accessor in the code below.</p>
 <div class="section-example-container">
-<pre class="python">def OnData(self, data: Slice) -&gt; None:
-    points = data.Get(QuiverQuantTwitterFollowers)
+<pre class="python">def OnData(self, slice: Slice) -&gt; None:
+    points = slice.Get(QuiverQuantTwitterFollowers)
     for kvp in points:
         Log(f’Symbol: {kvp.Key} - Followers: {kvp.Value.Followers} - Day Change: {kvp.Value.DayPercentChange}’)
 </pre>
 <pre class="csharp">namespace QuantConnect
-{    
-        public override void OnData(Slice data)
+{
+    public class QuiverQuantTwitterFollowersDataAlgorithm : QCAlgorithm
+    {
+        public override void OnData(Slice slice)
         {
-            var points = data.Get&lt;QuiverQuantTwitterFollowers&gt;();
+            var points = slice.Get&lt;QuiverQuantTwitterFollowers&gt;();
             foreach (var point in points.Values)
             {
                 Log($"Symbol: {kvp.Key} - Followers: {kvp.Value.Followers} - Day Change: {kvp.Value.DayPercentChange}");

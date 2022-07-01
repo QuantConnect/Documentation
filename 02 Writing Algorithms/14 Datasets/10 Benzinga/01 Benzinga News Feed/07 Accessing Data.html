@@ -1,15 +1,15 @@
 <p>Data can be accessed via Slice events. Slice delivers unique events to your algorithm as they happen. We recommend saving the symbol object when you add the data for easy access to slice later. Data is available in second resolution. You can see an example of the slice accessor in the code below.</p>
 <div class="section-example-container">
-<pre class="python">def OnData(self, data: Slice) -&gt; None:
-    if data.ContainsKey(self.benzinga_symbol):
-        article = data[self.benzinga_symbol]
+<pre class="python">def OnData(self, slice: Slice) -&gt; None:
+    if slice.ContainsKey(self.benzinga_symbol):
+        article = slice[self.benzinga_symbol]
         self.Log(f"Received Benzinga News article at {self.Time}; ID: {article.Id}; Author {article.Author}; Created at: {article.CreatedAt}; Updated at: {article.UpdatedAt}; Title: {article.Title}; Teaser {article.Teaser}; Contents: {article.Contents}; Symbols: {article.Symbols}; Tags: {article.Tags}; EndTime {article.EndTime}")
 </pre>
-<pre class="csharp">public override void OnData(Slice data)
+<pre class="csharp">public override void OnData(Slice slice)
 {
-    if (data.ContainsKey(_benzingaSymbol))
+    if (slice.ContainsKey(_benzingaSymbol))
     {
-        var article = data[_benzingaSymbol];
+        var article = slice[_benzingaSymbol];
         Log($"Received Benzinga News article at {Time}; ID: {article.Id}; Author {article.Author}; Created at: {article.CreatedAt}; Updated at: {article.UpdatedAt}; Title: {article.Title}; Teaser {article.Teaser}; Contents: {article.Contents}; Symbols: {article.Symbols}; Tags: {article.Tags}; EndTime {article.EndTime}");
     }
 }</pre>
