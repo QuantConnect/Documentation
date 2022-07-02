@@ -59,10 +59,10 @@ th.summary {
 public class MyUniverseAlgorithm : QCAlgorithm {
     public override void Initialize() 
     {
-        AddUniverse(MyCoarseFilterFunction, MyFineFundamentalFilterFunction);
+        AddUniverse(CoarseFilterFunction, FineFundamentalFilterFunction);
     }
     // filter based on CoarseFundamental
-    IEnumerable&lt;Symbol&gt; MyCoarseFilterFunction(IEnumerable&lt;CoarseFundamental&gt; coarse) 
+    IEnumerable&lt;Symbol&gt; CoarseFilterFunction(IEnumerable&lt;CoarseFundamental&gt; coarse) 
     {
          // In addition to further coarse universe selection, ensure the security has fundamental data
          return (from c in coarse
@@ -70,7 +70,7 @@ public class MyUniverseAlgorithm : QCAlgorithm {
              select c.Symbol);
     }
     // filter based on FineFundamental
-    public IEnumerable&lt;Symbol&gt; FineSelectionFunction(IEnumerable&lt;FineFundamental&gt; fine)
+    public IEnumerable&lt;Symbol&gt; FineFundamentalFilterFunction(IEnumerable&lt;FineFundamental&gt; fine)
     {
         // Return a list of Symbols
     }
@@ -79,13 +79,13 @@ public class MyUniverseAlgorithm : QCAlgorithm {
 <pre class="python">
 class MyUniverseAlgorithm(QCAlgorithm):
      def Initialize(self) -&gt; None:
-         self.AddUniverse(self.MyCoarseFilterFunction, self.MyFineFundamentalFunction)
+         self.AddUniverse(self.CoarseFilterFunction, self.FineFundamentalFunction)
 
-    def MyCoarseFilterFunction(self, coarse: List[CoarseFundamental]) -&gt; List[Symbol]:
+    def CoarseFilterFunction(self, coarse: List[CoarseFundamental]) -&gt; List[Symbol]:
          # In addition to further coarse universe selection, ensure the security has fundamental data
          return [c.Symbol for c in coarse if c.HasFundamentalData]
 
-    def MyFineFundamentalFunction(self, fine: List[FineFundamental]) -&gt; List[Symbol]:
+    def FineFundamentalFunction(self, fine: List[FineFundamental]) -&gt; List[Symbol]:
          # Return a list of Symbols
 </pre>
 </div>
