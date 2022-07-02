@@ -5,22 +5,21 @@
 {
     public override void Initialize()
     {
-        AddUniverse(MyCoarseFilterFunction);
+        AddUniverse(CoarseFilterFunction);
     }
 
-    private IEnumerable&lt;Symbol&gt; MyCoarseFilterFunction(IEnumerable&lt;CoarseFundamental&gt; coarse)
+    private IEnumerable&lt;Symbol&gt; CoarseFilterFunction(IEnumerable&lt;CoarseFundamental&gt; coarse)
     {
         return (from c in coarse
             orderby c.DollarVolume descending
             select c.Symbol).Take(100);
     }
-}
-</pre>
+}</pre>
 <pre class="python">class MyCoarseUniverseAlgorithm(QCAlgorithm):
     def Initialize(self) -&gt; None:
-        self.AddUniverse(self.MyCoarseFilterFunction)
+        self.AddUniverse(self.CoarseFilterFunction)
 
-    def MyCoarseFilterFunction(self, coarse: List[CoarseFundamental]) -&gt; List[Symbol]:
+    def CoarseFilterFunction(self, coarse: List[CoarseFundamental]) -&gt; List[Symbol]:
         sorted_by_dollar_volume = sorted(coarse, key=lambda x: x.DollarVolume, reverse=True) 
         return [c.Symbol for c in sorted_by_dollar_volume[:100]]</pre>
 </div>
