@@ -113,37 +113,26 @@
         return new BaseDataCollection(endTime, config.Symbol, items);
     }
 }</pre>
-<pre class="python">class MyCustomUniverseDataClass(PythonData):
+<pre class="python">class MyCustomDataType(PythonData):
+    def GetSource(self, config, date, isLiveMode):
+        return SubscriptionDataSource("https://raw.githubusercontent.com/QuantConnect/Documentation/master/Resources/datasets/custom-data/unfolding-collection-example.json", SubscriptionTransportMedium.RemoteFile, FileFormat.UnfoldingCollection)
     
-    def GetSource(self, config, date, isLive):
-        return SubscriptionDataSource("your-data-source-url", SubscriptionTransportMedium.RemoteFile, FileFormat.UnfoldingCollection)
+    def Reader(self, config, line, date, isLiveMode):
+        objects = []
+        data = json.loads(line)
+        end_time = None
+        for index, sample in enumerate(data):
+            custom_data = MyCustomData()
+            custom_data.Symbol = config.Symbol
 
-    def Reader(self, config, line, date, isLive):
-        json_response = json.loads(line)
+            timestamp = int(sample['timestamp'])
+            custom_data.Time = datetime.utcfromtimestamp(timestamp).strftime('%Y-%m-%d %H:%M:%S')
+            custom_data.EndTime = custom_data.Time + timedelta(days=1)
+            end_time = custom_data.EndTime
+
+            custom_data.Value = index
+
+            objects.append(custom_data)
         
-        endTime = datetime.strptime(json_response[-1]["date"], '%Y-%m-%d') + timedelta(1)
-
-        data = list()
-
-        for json_datum in json_response:
-            datum = MyCustomUniverseDataClass()
-            datum.Symbol = Symbol.Create(json_datum["Ticker"], SecurityType.Equity, Market.USA)
-            datum.Time = datetime.strptime(json_datum["date"], '%Y-%m-%d') 
-            datum.EndTime = datum.Time + timedelta(1)
-            datum['CustomAttribute1'] = int(json_datum['Attr1'])
-            datum.Value = float(json_datum['Attr1'])
-            data.append(datum)
-
-        return BaseDataCollection(endTime, config.Symbol, data)</pre>
+        return BaseDataCollection(end_time, config.Symbol, objects)</pre>
 </div>
-
-<div class="python">
-    <div class="qc-embed-frame" style="display: inline-block; position: relative; width: 100%; min-height: 100px; min-width: 300px;">
-        <div class="qc-embed-dummy" style="padding-top: 56.25%;"></div>
-        <div class="qc-embed-element" style="position: absolute; top: 0; bottom: 0; left: 0; right: 0;">
-            <iframe class="qc-embed-backtest" height="100%" width="100%" style="border: 1px solid #ccc; padding: 0; margin: 0;" src="https://www.quantconnect.com/terminal/processCache/?request=embedded_backtest_444c6a94f8dd6f6b538ff6e5466aa0c7.html"></iframe>
-        </div>
-    </div>
-</div>
-
-<br>
