@@ -2,10 +2,31 @@
 <p>You can update the consolidator manually or automatically.</p>
 
 <h4>Manual Updates</h4>
-<p>To manually update a consolidator, call its <code>Update</code> method. Depending on the type of consolidator it is, pass a <code>Tick</code>, <code>TradeBar</code>, or <code>QuoteBar</code> to the method.</p>
+<p>To manually update a consolidator, call its <code>Update</code> method. Depending on the type of consolidator it is, pass a <code>Tick</code>, <code>TradeBar</code>, or <code>QuoteBar</code> to the method. You can update the consolidator with data from the <a href="/docs/v2/writing-algorithms/key-concepts/time-modeling/timeslices">Slice</a> object in the <code>OnData</code> method or with data from a <a href="/docs/v2/writing-algorithms/historical-data/history-requests">history request</a>.</p>
 <div class="section-example-container">
-<pre class="python">self.consolidator.Update(data)</pre>
-<pre class="csharp">_consolidator.Update(data);</pre>
+<pre class="python"># Example 1: Update the consolidator with data from the Slice object
+def OnData(self, slice: Slice) -&gt; None:
+    trade_bar = slice.Bars[self.symbol]
+    self.consolidator.Update(trade_bar)
+
+# Example 2: Update the consolidator with data from a history request
+history = self.History(self.symbol, 30, Resolution.Minute)
+for index, row in history.iterrows():
+    trade_bar = TradeBar(index[1], self.symbol, row.open, row.high, row.low, row.close, row.volume)
+    consolidator.Update(trade_bar)</pre>
+<pre class="csharp">// Example 1: Update the consolidator with data from the Slice object
+public override void OnData(Slice slice)
+{
+    var tradeBar = slice.Bars[_symbol];
+    _consolidator.Update(tradeBar);
+}
+
+// Example 2: Update the consolidator with data from a history request
+var history = History&lt;TradeBar&gt;(_symbol, 30, Resolution.Minute);
+foreach (var tradeBar in history)
+{
+    _consolidator.Update(tradeBar);
+}</pre>
 </div>
 
 <h4>Automatic Updates</h4>
