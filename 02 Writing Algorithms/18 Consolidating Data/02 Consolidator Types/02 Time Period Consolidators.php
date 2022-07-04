@@ -60,8 +60,7 @@
     var start = newDateTime.AddDays(-delta);
 
     return new CalendarInfo(start, period);
-});
-    </pre>    
+});</pre>    
     <pre class="python"># Define a consolidation period method
 def consolidation_period(self, dt: datetime) -&gt; CalendarInfo:
     period = timedelta(7)
