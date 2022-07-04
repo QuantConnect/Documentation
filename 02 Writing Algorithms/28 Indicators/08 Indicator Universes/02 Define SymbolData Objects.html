@@ -14,7 +14,7 @@
         if self.fast.Update(time, value) and self.slow.Update(time, value):
             fast = self.fast.Current.Value
             slow = self.slow.Current.Value
-            self.is_uptrend = fast > slow * self.tolerance
+            self.is_uptrend = fast &gt; slow * self.tolerance
 
         if self.is_uptrend:
             self.scale = (fast - slow) / ((fast + slow) / 2.0)</pre>
@@ -29,16 +29,14 @@
         Slow = new ExponentialMovingAverage(300);
     }
 
-    // computes an object score of how much large the fast is than the slow
     public decimal ScaledDelta
     {
         get { return (Fast - Slow)/((Fast + Slow)/2m); }
     }
 
-    // updates the EMA50 and EMA100 indicators, returning true when they're both ready
     public bool Update(DateTime time, decimal value)
     {
-        return Fast.Update(time, value) && Slow.Update(time, value);
+        return Fast.Update(time, value) &amp;&amp; Slow.Update(time, value);
     }
 }</pre>
 </div>
