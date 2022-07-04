@@ -82,7 +82,7 @@
 
     public override BaseData Reader(SubscriptionDataConfig config, string line, DateTime date, bool isLiveMode) 
     {
-        var objects = new List<MyCustomDataType>();
+        var objects = new List&lt;MyCustomDataType&gt;();
         var data = JsonConvert.DeserializeObject&lt;List&lt;Dictionary&lt;string, string&gt;&gt;&gt;(line);
         var endTime = DateTime.MinValue;
 
