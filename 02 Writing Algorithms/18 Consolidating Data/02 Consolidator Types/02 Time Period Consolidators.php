@@ -44,7 +44,7 @@
     </tbody>
 </table>
 
-<p>If you need something more specific than the preceding time periods, define a method to set the start and end times of consolidated bars. The method should receive the current time and return a <code>CalendarInfo</code> object, which contains the start time of the bar and the duration of the consolidation period.</p>
+<p>If you need something more specific than the preceding time periods, define a method to set the start and end times of consolidated bars. The method should receive the current time and return a <code>CalendarInfo</code> object, which contains the start time of the bar and the duration of the consolidation period. The following example demonstrates how to create a custom consolidator for weekly bars:</p>
 
 <div class="section-example-container">
     <pre class="csharp">var consolidator = new TradeBarConsolidator(datetime => {
@@ -76,25 +76,6 @@ def consolidation_period(self, dt: datetime) -&gt; CalendarInfo:
 
 # Create the consolidator with the consolidation period method
 consolidator = TradeBarConsolidator(self.consolidation_period)</pre>
-</div>
-
-<p>The following example demonstrates how to create a custom consolidator for weekly Forex bars:</p>
-
-<div class="csharp">
-    <div class="qc-embed-frame" style="display: inline-block; position: relative; width: 100%; min-height: 100px; min-width: 300px;">
-        <div class="qc-embed-dummy" style="padding-top: 56.25%;"></div>
-        <div class="qc-embed-element" style="position: absolute; top: 0; bottom: 0; left: 0; right: 0;">
-            <iframe class="qc-embed-backtest" height="100%" width="100%" style="border: 1px solid #ccc; padding: 0; margin: 0;" src="https://www.quantconnect.com/terminal/processCache?request=embedded_backtest_89581b39d384a97b21d619437a6560e6.html"></iframe>
-        </div>
-    </div>
-</div>
-<div class="python">
-    <div class="qc-embed-frame" style="display: inline-block; position: relative; width: 100%; min-height: 100px; min-width: 300px;">
-        <div class="qc-embed-dummy" style="padding-top: 56.25%;"></div>
-        <div class="qc-embed-element" style="position: absolute; top: 0; bottom: 0; left: 0; right: 0;">
-            <iframe class="qc-embed-backtest" height="100%" width="100%" style="border: 1px solid #ccc; padding: 0; margin: 0;" src="https://www.quantconnect.com/terminal/processCache/?request=embedded_backtest_cbb86a544cd77a7e1fd72d7581719041.html"></iframe>
-        </div>
-    </div>
 </div>
 
 <h4>Create Time Period Consolidators</h4>
