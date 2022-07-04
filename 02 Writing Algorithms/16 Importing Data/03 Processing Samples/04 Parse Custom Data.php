@@ -67,25 +67,9 @@
 <?php echo file_get_contents(DOCS_RESOURCES."/datasets/custom-data/reader-method.html"); ?>
 
 <div class="section-example-container">
-<pre class="csharp">public class MyCustomUniverseDataClass : BaseData 
+<pre class="csharp">public class MyCustomDataType : BaseData 
 {
-    [JsonProperty(PropertyName = "Attr1")]
-    public int CustomAttribute1 { get; set; }
-
-    [JsonProperty(PropertyName = "Ticker")]
-    public string Ticker { get; set; }
-    
-    [JsonProperty(PropertyName = "date")]
-    public DateTime Date { get; set; }
-
-    public override DateTime EndTime 
-    {
-        // define end time as exactly 1 day after Time
-        get { return Time + QuantConnect.Time.OneDay; }
-        set { Time = value - QuantConnect.Time.OneDay; }
-    }
-
-    public MyCustomUniverseDataClass()
+    public MyCustomDataType()
     {
         Symbol = Symbol.Empty;
         DataType = MarketDataType.Base;
@@ -93,24 +77,32 @@
     
     public override SubscriptionDataSource GetSource(SubscriptionDataConfig config, DateTime date, bool isLiveMode)
     {
-        return new SubscriptionDataSource(@"your-data-source-url", 
-            SubscriptionTransportMedium.RemoteFile,
-            FileFormat.UnfoldingCollection);
+        return new SubscriptionDataSource("https://raw.githubusercontent.com/QuantConnect/Documentation/master/Resources/datasets/custom-data/unfolding-collection-example.json", SubscriptionTransportMedium.RemoteFile, FileFormat.UnfoldingCollection);
     }
 
     public override BaseData Reader(SubscriptionDataConfig config, string line, DateTime date, bool isLiveMode) 
     {
-        var items = JsonConvert.DeserializeObject&lt;List&lt;MyCustomUniverseDataClass&gt;&gt;(line);
-        var endTime = items.Last().Date;
+        var objects = new List<MyCustomDataType>();
+        var data = JsonConvert.DeserializeObject<List<Dictionary<string, string>>>(line);
+        var endTime = DateTime.MinValue;
 
-        foreach (var item in items)
+        var i = 0;
+        foreach (var sample in data)
         {
-            item.Symbol = Symbol.Create(item.Ticker, SecurityType.Equity, Market.USA);
-            item.Time = item.Date;
-            item.Value = (decimal) item.CustomAttribute1;
+            var customData = new MyCustomDataType();
+            customData.Symbol = config.Symbol;
+
+            var timestamp = (long)Convert.ToDouble(sample["timestamp"]);
+            customData.Time = DateTimeOffset.FromUnixTimeSeconds(timestamp).UtcDateTime;
+            customData.EndTime = customData.Time.AddDays(1);
+            endTime = customData.EndTime;
+
+            customData.Value = i++;
+            
+            objects.Add(customData);
         }
 
-        return new BaseDataCollection(endTime, config.Symbol, items);
+        return new BaseDataCollection(endTime, config.Symbol, objects);
     }
 }</pre>
 <pre class="python">class MyCustomDataType(PythonData):
