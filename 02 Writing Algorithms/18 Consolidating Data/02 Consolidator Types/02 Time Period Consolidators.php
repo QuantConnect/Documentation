@@ -62,7 +62,8 @@
     return new CalendarInfo(start, period);
 });
     </pre>    
-    <pre class="python">def CustomPeriod(self, dt: datetime) -&gt; CalendarInfo:
+    <pre class="python"># Define a consolidation period method
+def consolidation_period(self, dt: datetime) -&gt; CalendarInfo:
     period = timedelta(7)
 
     dt = dt.replace(hour=17, minute=0, second=0, microsecond=0)
@@ -73,7 +74,8 @@
 
     return CalendarInfo(start, period)
 
-consolidator = TradeBarConsolidator(self.CustomPeriod)</pre>
+# Create the consolidator with the consolidation period method
+consolidator = TradeBarConsolidator(self.consolidation_period)</pre>
 </div>
 
 <p>The following example demonstrates how to create a custom consolidator for weekly Forex bars:</p>
