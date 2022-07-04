@@ -36,12 +36,51 @@ SetSecurityInitializer(security =&gt; seeder.SeedSecurity(security));</pre>
 self.SetSecurityInitializer(lambda security: seeder.SeedSecurity(security))</pre>
 </div>
 
-<p>You can also use the following snippet to set the models within a specific brokerage model and set a seeder:</p>
+
+<p>If you call the <code>SetSecurityInitializer</code> method, it overwrites the default security initializer. The default security initializer uses the <a href='/docs/v2/writing-algorithms/reality-modeling/key-concepts#02-Security-Level-Models'>security-level reality models</a> of the brokerage model to set the following reality models of each security:</p>
+
+<ul>
+    <li><a href="/docs/v2/writing-algorithms/reality-modeling/trade-fills/key-concepts">Fill</a></li>
+    <li><a href="/docs/v2/writing-algorithms/reality-modeling/slippage/key-concepts">Slippage</a></li>
+    <li><a href="/docs/v2/writing-algorithms/reality-modeling/transaction-fees/key-concepts">Fee</a></li>
+    <li><a href="/docs/v2/writing-algorithms/reality-modeling/buying-power">Buying Power</a></li>
+    <li><a href="/docs/v2/writing-algorithms/reality-modeling/settlement/key-concepts">Settlement </a></li>
+    <li><a href="/docs/v2/writing-algorithms/reality-modeling/short-availability/key-concepts">Short availability</a></li>
+</ul>
+<p>The default security initializer also sets the leverage of each security and intializes each security with a seeder function. To extend upon the default brokerage settings instead of overwriting them, create a custom <code>BrokerageModelSecurityInitializer</code>.</p>
 <div class="section-example-container">
-<pre class="csharp">SetSecurityInitializer(new BrokerageModelSecurityInitializer(BrokerageModel,
-    new FuncSecuritySeeder(GetLastKnownPrices)));
-</pre>
-<pre class="python">self.SetSecurityInitializer(BrokerageModelSecurityInitializer(self.BrokerageModel,
-    FuncSecuritySeeder(self.GetLastKnownPrices)))
-</pre>
+<pre class="csharp">// In Initialize
+SetSecurityInitializer(new BrokerageModelSecurityInitializer(BrokerageModel, new FuncSecuritySeeder(GetLastKnownPrices)));
+
+class CustomSecurityInitializer : BrokerageModelSecurityInitializer
+{
+    public CustomSecurityInitializer(IBrokerageModel brokerageModel, ISecuritySeeder securitySeeder)
+        : base(brokerageModel, securitySeeder) {}
+    
+    public override void Initialize(Security security)
+    {
+        // First, call the superclass definition
+        base.Initialize(security);
+
+        // Next, overwrite some of the reality models
+        security.SetFeeModel(new ConstantFeeModel(0, "USD"));
+        }
+    }
+}</pre>
+<pre class="python"># In Initialize
+self.SetSecurityInitializer(MySecurityInitializer(self.BrokerageModel, FuncSecuritySeeder(self.GetLastKnownPrices)))
+
+
+class MySecurityInitializer(BrokerageModelSecurityInitializer):
+
+    def __init__(self, brokerage_model: IBrokerageModel, security_seeder: ISecuritySeeder) -> None:
+        super().__init__(brokerage_model, security_seeder)
+
+    def Initialize(self, security: Security) -> None:
+        # First, call the superclass definition
+        super().Initialize(security)
+
+        # Next, overwrite some of the reality models
+        security.SetFeeModel(ConstantFeeModel(0, "USD"))</pre>
 </div>
+
