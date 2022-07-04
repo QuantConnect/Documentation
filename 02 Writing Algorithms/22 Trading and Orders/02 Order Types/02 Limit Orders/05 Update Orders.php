@@ -2,13 +2,13 @@
 
 <div class="section-example-container">
 <pre class="csharp">// Create a new order and save the order ticket
-var ticket = LimitOrder("SPY", 100, 221.05, tag: "original tag");
+var ticket = LimitOrder("SPY", 100, 221.05m, tag: "original tag");
 
 // Update the order
 var response = ticket.Update(new UpdateOrderFields() 
 {
     Quantity = 80,
-    LimitPrice = 222.00,
+    LimitPrice = 222.00m,
     Tag = "new tag"
 });
 
