@@ -29,6 +29,7 @@ $definitionByTerm = array(
     "unrealized" => "The amount of profit a portfolio would capture if it liquidated all open positions and paid the fees for transacting and crossing the spread.",
     "volume" => "The total value of assets traded for all of an algorithm's transactions.",
     "win rate" => "The proportion of trades that were profitable."
+);
     
 $getGlossaryTermHTML = function($term)
 {
@@ -45,5 +46,4 @@ $getGlossaryTermHTML = function($term)
         }
     }
 }
-);
 ?>
