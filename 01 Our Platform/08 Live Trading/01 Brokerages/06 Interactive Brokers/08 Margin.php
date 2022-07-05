@@ -5,7 +5,10 @@
 
 <?php include(DOCS_RESOURCES."/brokerages/margin-calls.html"); ?>
 
-<?php include(DOCS_RESOURCES."/brokerages/pattern-day-trader-rule.html"); ?>
+<?php 
+include(DOCS_RESOURCES."/brokerages/pattern-day-trader-rule.php"); 
+$getPDTText();
+?>
 
 <p>If you have less than $25,000 in your account and you try to open a 4th day trade for an Equity asset in a 5 business day period, you'll get the following error message:</p>
 
