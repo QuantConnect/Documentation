@@ -44,7 +44,7 @@ $getRuntimeStatisticsTable = function($isLiveMode) {
         </tr>
         <tr>
           <td>PSR</td>
-          <td>{$definitionByTerm['probabilistic sharpe ratio (PSR)']}</td>
+          <td>{$definitionByTerm['Probabilistic Sharpe ratio']}</td>
         </tr>
         <tr>
           <td>Return</td>
