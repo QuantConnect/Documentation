@@ -1,14 +1,15 @@
-<p><span class='new-term'>Tickers</span> are a string shortcode representation for an asset. Some examples of popular tickers include "AAPL" for Apple Corporation and "IBM" for International Business Machines Corporation. These tickers often change when the company rebrands or they undergo a merger or reverse merger.</p>
+<p><span class="new-term">Tickers</span> are a string shortcode representation for an asset. Some examples of popular tickers include "AAPL" for Apple Corporation and "IBM" for International Business Machines Corporation. These tickers often change when the company rebrands or they undergo a merger or reverse merger.</p>
 
 <p>The ticker of an asset is not the same as the <code>Symbol</code>. <code>Symbol</code> objects are permanent and track the underlying entity. When a company rebrands or changes its name, the <code>Symbol</code> object remains constant, giving algorithms a way to reliably track assets over time.</p>
 
 <p>Tickers are also often reused by different brokerages. For example Coinbase, a leading US Crypto Brokerage lists the "BTCUSD" ticker for trading. Its competitor, Bitfinex, also lists "BTCUSD". You can trade both tickers with LEAN. <code>Symbol</code> objects allow LEAN to identify which market you reference in your algorithms.</p>
 
-<div class="section-example-container hide">
-<pre class="all">gdax = qb.AddCrypto("EURUSD", Resolution.Daily, Market.GDAX).Symbol
-bitf = qb.AddCrypto("EURUSD", Resolution.Daily, Market.Bitfinex).Symbol
-print(gdax.ID)      # BTCUSD 2423423
-print(bitf.ID)      # BTCUSD 456578
-</pre>
-<b>Example 1: String Encoded Symbol Object. </b> 
+<p>To create a <code>Symbol</code> object for a point-in-time ticker, call the <code>GenerateEquity</code> method to create the security identifier and then call the <code>Symbol</code> constructor. For example, Heliogen, Inc. changed their ticker from ATHN to HLGN on December 31, 2021. To convert the ATHN ticker to the Equity<code> Symbol</code>, type:</p>
+<div class="section-example-container">
+<pre class="python">security_id = SecurityIdentifier.GenerateEquity("ATHN", Market.USA, mappingResolveDate=datetime(2021, 12, 1))
+symbol = Symbol(security_id, "ATHN")</pre>
+<pre class="csharp">var securityID = SecurityIdentifier.GenerateEquity("ATHN", Market.USA, mappingResolveDate:new DateTime(2021, 12, 1));
+var symbol = new Symbol(securityID, "ATHN");</pre>
 </div>
+
+<p>In the preceding code snippet, the <code>mappingResolveDate</code> must be a date when the point-in-time ticker was trading.</p>
