@@ -39,12 +39,16 @@ $getGlossaryTermHTML = function($term)
     {
         echo "<p>{$definition}</p>";
     }
-    else 
+    else if (is_array($definition))
     {
         foreach ($definition as $key => $value)
         {
             echo "<p><span class='qualifier'>({$key})</span> {$value}</p>";
         }
+    }
+    else
+    {
+        echo "returned {$definition}";
     }
 };
 ?>
