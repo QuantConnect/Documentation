@@ -31,9 +31,8 @@ $definitionByTerm = array(
     "win rate" => "The proportion of trades that were profitable."
 );
     
-$getGlossaryTermHTML = function($term)
+$getGlossaryTermHTML = function($term) use ($definitionByTerm)
 {
-    global $definitionByTerm;
     $definition = $definitionByTerm[$term];
     if (is_string($definition))
     {
