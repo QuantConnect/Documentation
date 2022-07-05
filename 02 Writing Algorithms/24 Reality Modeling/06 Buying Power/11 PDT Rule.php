@@ -1,1 +1,1 @@
-
+<?php include(DOCS_RESOURCES."/brokerages/pattern-day-trader-rule.html"); ?>
