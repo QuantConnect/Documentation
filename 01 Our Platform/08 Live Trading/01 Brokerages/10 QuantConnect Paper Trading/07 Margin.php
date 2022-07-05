@@ -5,4 +5,7 @@
 
 <?php include(DOCS_RESOURCES."/brokerages/margin-calls.html"); ?>
 
-<?php include(DOCS_RESOURCES."/brokerages/pattern-day-trader-rule.html"); ?>
+<?php 
+include(DOCS_RESOURCES."/brokerages/pattern-day-trader-rule.php"); 
+$getPDTText();
+?>
