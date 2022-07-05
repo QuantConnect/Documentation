@@ -158,7 +158,7 @@ foreach (var s in slices) {
 </table>
 
 <h4>Additional Options</h4>
-<p>If you pass a list of <code>Symbol</code> objects to the <code>History</code> method, you can pass the following additional arguments:</p>
+<p>If you call the <code>History</code> method with a list of <code>Symbol</code> objects, a start date, and an end date, then you can pass the following additional arguments:</p>
 
 <table class="qc-table table">
     <thead>
@@ -205,6 +205,16 @@ foreach (var s in slices) {
 
 
 <div class="section-example-container">
-    <pre class="python"></pre>
+    <pre class="python">self.future = self.AddFuture(Futures.Currencies.BTC)
+history = self.History(
+    symbols=[self.future.symbol], 
+    start=self.Time - timedelta(days=15), 
+    end=self.Time, 
+    resolution=Resolution.Minute,
+    fillForward=False,
+    extendedMarket=False,
+    dataMappingMode=DataMappingMode.OpenInterest,
+    dataNormalizationMode=DataNormalizationMode.Raw,
+    contractDepthOffset=0)</pre>
     <pre class="csharp"></pre>
 </div>
