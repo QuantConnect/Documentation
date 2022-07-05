@@ -33,11 +33,11 @@ echo "
         </tr>
         <tr>
             <td>PSR</td>
-            <td>{$definitionByTerm['probabilistic sharpe ratio (PSR)']}</td>
+            <td>{$definitionByTerm['Probabilistic Sharpe ratio']}</td>
         </tr>
         <tr>
             <td>Sharpe Ratio</td>
-            <td>{$definitionByTerm['sharpe ratio']}</td>
+            <td>{$definitionByTerm['Sharpe ratio']}</td>
         </tr>
         <tr>
             <td>Information Ratio</td>
