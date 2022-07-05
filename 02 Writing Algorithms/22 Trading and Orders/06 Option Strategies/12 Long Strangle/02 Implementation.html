@@ -3,6 +3,19 @@
 <ol>
     <li>In the Initialize method, set the start date, end date, cash, and <a href="https://www.quantconnect.com/docs/v2/writing-algorithms/universes/equity-options">Option universe</a>.</li>
     <div class="section-example-container">
+        <pre class="csharp">private Symbol _symbol;
+
+public override void Initialize()
+{
+    SetStartDate(2017, 4, 1);
+    SetEndDate(2017, 4, 30);
+    SetCash(100000);
+
+    var option = AddOption("GOOG", Resolution.Minute);
+    _symbol = option.Symbol;
+    option.SetFilter(universe => universe.Strikes(-5, 5)
+                                            .Expiration(TimeSpan.FromDays(0), TimeSpan.FromDays(30)));
+}</pre>
         <pre class="python">def Initialize(self) -&gt; None:
     self.SetStartDate(2017, 4, 1)
     self.SetEndDate(2017, 4, 30)
@@ -17,6 +30,29 @@
 
     <li>In the OnData method, select the Option contracts.</li>
     <div class="section-example-container">
+        <pre class="csharp">public override void OnData(Slice slice)
+{
+    if (Portfolio.Invested) return;
+
+    // Get the OptionChain of the symbol
+    var chain = slice.OptionChains.get(_symbol, null);
+    if (chain == null || chain.Count() == 0) return;
+
+    // sort the optionchain by expiration date and choose the furthest date
+    var expiry = chain.OrderBy(x => x.Expiry).Last().Expiry;
+
+    // filter the call and put options from the contracts expires on that date
+    var calls = chain.Where(x => x.Expiry == expiry && x.Right == OptionRight.Call);
+    var puts = chain.Where(x => x.Expiry == expiry && x.Right == OptionRight.Put);
+    if (calls.Count() == 0 || puts.Count() == 0) return;
+
+    // sort the contracts according to their strike prices
+    var callContracts = calls.OrderBy(x => x.Strike);
+    var putContracts = puts.OrderBy(x => x.Strike);
+
+    // select the furthest OTM contracts
+    var call = callContracts.Last();
+    var put = putContracts.First();</pre>
         <pre class="python">def OnData(self, slice: Slice) -&gt; None:
     # avoid extra orders
     if self.Portfolio.Invested: return
@@ -26,7 +62,7 @@
     if not chain: return
 
     # sort the optionchain by expiration date and choose the furthest date
-    expiry = sorted(chain,key = lambda x: x.Expiry, reverse=True)[0].Expiry
+    expiry = sorted(chain, key = lambda x: x.Expiry, reverse=True)[0].Expiry
 
     # filter the call and put options from the contracts expires on that date
     call = [i for i in chain if i.Expiry == expiry and i.Right == 0]
@@ -43,6 +79,9 @@
 
     <li>Buy the call option and the put option at the same time and wait until expiration.</li>
     <div class="section-example-container">
+        <pre class="csharp">    Buy(call.Symbol, 1);
+    Buy(put.Symbol, 1);
+}</pre>
         <pre class="python">self.Buy(self.call.Symbol, 1)
 self.Buy(self.put.Symbol, 1)</pre>
     </div>

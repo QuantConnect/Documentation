@@ -1,11 +1,24 @@
-<p>Follow these steps to implement the Short Iron Condor strategy.</p>
+<p>Follow these steps to implement the Long Iron Condor strategy.</p>
 
 <ol>
     <li>In the Initialize method, set the start date, end date, cash, and <a href="https://www.quantconnect.com/docs/v2/writing-algorithms/universes/equity-options">Option universe</a>.</li>
     <div class="section-example-container">
+        <pre class="csharp">private Symbol _symbol;
+
+public override void Initialize()
+{
+    SetStartDate(2017, 2, 1);
+    SetEndDate(2017, 3, 1);
+    SetCash(100000);
+
+    var option = AddOption("GOOG", Resolution.Minute);
+    _symbol = option.Symbol;
+    option.SetFilter(universe => universe.Strikes(-10, 10)
+                                            .Expiration(TimeSpan.FromDays(0), TimeSpan.FromDays(30)));
+}</pre>
         <pre class="python">def Initialize(self) -&gt; None:
     self.SetStartDate(2017, 2, 1)
-    self.SetEndDate(2017, 3, 31)
+    self.SetEndDate(2017, 3, 1)
     self.SetCash(300000)
 
     option = self.AddOption("GOOG", Resolution.Minute)
@@ -15,6 +28,18 @@
 
     <li>Break the candidate contracts into the call and put options.</li>
     <div class="section-example-container">
+        <pre class="csharp">public override void OnData(Slice slice)
+{
+    if (Portfolio.Invested) return;
+
+    // Get the OptionChain of the symbol
+    var chain = slice.OptionChains.get(_symbol, null);
+    if (chain == null || chain.Count() == 0) return;
+
+    // filter the call options from the contracts which is ATM in the option chain.
+    var calls = chain.Where(x => x.Right == OptionRight.Call);
+    var puts = chain.Where(x => x.Right == OptionRight.Put);
+    if (calls.Count() == 0 || puts.Count() == 0) return;</pre>
         <pre class="python">def OnData(self, slice: Slice) -&gt; None:
     # avoid extra orders
     if self.Portfolio.Invested: return
@@ -25,29 +50,45 @@
 
     # filter the call and put options from the contracts
     call = [i for i in chain if i.Right == 0]
-    put = [i for i in chain if i.Right == 1]</pre>
-    </div>
-
-    <li>Sort the call and put options according to their strike prices. <code>option.SetFilter(-10, 10, timedelta(0), timedelta(30))</code> helps us choose 21 call options and 21 put options which expire within 30 days from now. Then for the call options, the first 10 contracts are in the money and the last 10 contracts are out of the money. The middle one is an at the money option. For the put options, the first 10 contracts are out of the money and the last 10 contracts are in the money.</li>
-    <div class="section-example-container">
-        <pre class="python">>call_contracts = sorted(call, key = lambda x: x.Strike)
-put_contracts = sorted(put, key = lambda x: x.Strike)
-if len(call_contracts) == 0 or len(put_contracts) == 0 : continue</pre>
+    put = [i for i in chain if i.Right == 1]
+    if len(call) == 0 or len(put) == 0 : continue</pre>
     </div>
 
     <li>Find the specific contracts to trade.</li>
     <div class="section-example-container">
-        <pre class="python"># Sell 1 near-OTM Put 
+        <pre class="csharp">    // sort the contracts by strike prices
+    var callContracts = calls.OrderByDescending(x => x.Strike);
+    var putContracts = puts.OrderBy(x => x.Strike);
+
+    // Get the nearer OTM contracts by strike prices
+    var farCallContract = callContracts.First();
+    var farPutContract = putContracts.First();
+    var nearCallContract = callContracts.Skip(2).First();
+    var nearPutContract = putContracts.Skip(2).First();
+
+    // Sell 1 near-OTM Call
+    Sell(nearCallContract.Symbol, 1);
+    // Sell 1 near-OTM Put 
+    Sell(nearPutContract.Symbol, 1);
+    // Buy 1 far-OTM Call 
+    Buy(farCallContract.Symbol, 1);
+    // Buy 1 far-OTM Put 
+    Buy(farPutContract.Symbol, 1);
+}</pre>
+        <pre class="python">call_contracts = sorted(call, key = lambda x: x.Strike)
+put_contracts = sorted(put, key = lambda x: x.Strike)
+
+# Buy 1 near-OTM Put 
 near_put = call_contracts[-2]
-self.Sell(near_put.Symbol, 1)
-# Sell 1 near-OTM Call
+self.Buy(near_put.Symbol, 1)
+# Buy 1 near-OTM Call
 near_call = put_contracts[1]
-self.Sell(near_call.Symbol, 1)
-# Buy 1 far-OTM Call 
+self.Buy(near_call.Symbol, 1)
+# Sell 1 far-OTM Call 
 far_call = call_contracts[-1]
-self.Buy(far_call.Symbol, 1)
-# Buy 1 far-OTM Put 
+self.Sell(far_call.Symbol, 1)
+# Sell 1 far-OTM Put 
 far_put = put_contracts[0]
-self.Buy(far_put.Symbol, 1)</pre>
+self.Sell(far_put.Symbol, 1)</pre>
     </div>
 </ol>

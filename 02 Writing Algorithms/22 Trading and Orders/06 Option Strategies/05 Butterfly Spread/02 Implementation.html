@@ -1,8 +1,20 @@
-<p>Follow these steps to implement the bull put spread strategy.</p>
+<p>Follow these steps to implement a bull butterfly spread with calls strategy.</p>
 
 <ol>
     <li>In the Initialize method, set the start date, end date, cash, and <a href="https://www.quantconnect.com/docs/v2/writing-algorithms/universes/equity-options">Option universe</a>.</li>
     <div class="section-example-container">
+        <pre class="csharp">private Symbol _symbol;
+
+public override void Initialize()
+{
+    SetStartDate(2017, 4, 1);
+    SetEndDate(2017, 5, 30);
+    SetCash(150000);
+
+    var option = AddOption("GOOG", Resolution.Minute);
+    _symbol = option.Symbol;
+    option.SetFilter(-9, 9, TimeSpan.FromDays(30), TimeSpan.FromDays(60));
+}</pre>
         <pre class="python">def Initialize(self) -&gt; None:
     self.SetStartDate(2017, 4, 1)
     self.SetEndDate(2017, 5, 30)
@@ -15,6 +27,29 @@
 
     <li>In the OnData method, select the Option contracts.</li>
     <div class="section-example-container">
+        <pre class="csharp">public override void OnData(Slice slice)
+{
+    // avoid extra orders
+    if (Portfolio.Invested) return;
+
+    // Get the OptionChain of the symbol
+    var chain = slice.OptionChains.get(_symbol, null);
+    if (chain == null || chain.Count() == 0) return;
+
+    // sorted the optionchain by expiration date and choose the furthest date
+    var expiry = chain.OrderBy(x => x.Expiry).Last().Expiry;
+    // filter the call options from the contracts expires on that date
+    var calls = chain.Where(x => x.Expiry == expiry && x.Right == OptionRight.Call);
+    // sorted the contracts according to their strike prices
+    var callContracts = calls.OrderBy(x => x.Strike);
+    if (callContracts.Count() == 0) return;
+
+    // choose OTM call
+    var otmCall = callContracts.Last();
+    // choose ITM call
+    var itmCall = callContracts.First();
+    // choose ATM call
+    var atmCall = callContracts.OrderBy(x => Math.Abs(chain.Underlying.Price - x.Strike)).First();</pre>
         <pre class="python">def OnData(self, slice: Slice) -&gt; None:
     # avoid extra orders
     if self.Portfolio.Invested: return
@@ -29,20 +64,24 @@
     calls = [i for i in chain if i.Expiry == expiry and i.Right == 0]
     # sorted the contracts according to their strike prices
     call_contracts = sorted(calls, key = lambda x: x.Strike)
-    if len(call_contracts) == 0: continue
+    if len(call_contracts) == 0: return
 
     # choose OTM call
     self.otm_call = call_contracts[-1]
     # choose ITM call
     self.itm_call = call_contracts[0]
     # choose ATM call
-    self.atm_call = sorted(call_contracts,key = lambda x: abs(chain.Underlying.Price - x.Strike))[0]</pre>
+    self.atm_call = sorted(call_contracts, key = lambda x: abs(chain.Underlying.Price - x.Strike))[0]</pre>
     </div>
     
     <li>In the OnData method, buy the ITM and OTM calls.</li>
     <div class="section-example-container">
-        <pre class="python">self.Sell(self.atm_call.Symbol ,2)
-self.Buy(self.itm_call.Symbol ,1)
-self.Buy(self.otm_call.Symbol ,1)</pre>
+        <pre class="csharp">    Sell(atmCall.Symbol, 2);
+    Buy(itmCall.Symbol, 1);
+    Buy(otmCall.Symbol, 1);
+}</pre>
+        <pre class="python">self.Sell(self.atm_call.Symbol, 2)
+self.Buy(self.itm_call.Symbol, 1)
+self.Buy(self.otm_call.Symbol, 1)</pre>
     </div>
 </ol>

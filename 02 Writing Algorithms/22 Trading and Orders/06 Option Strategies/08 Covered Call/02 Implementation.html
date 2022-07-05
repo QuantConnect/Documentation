@@ -3,6 +3,21 @@
 <ol>
     <li>Initialize the Algorithm: At the beginning of your algorithm, you need to set the start date, the end date and the cash required for the algorithm. For options algorithm, you need to add the equity and the options written on this equity.</li>
     <div class="section-example-container">
+        <pre class="csharp">private Symbol _equity;
+private Symbol _symbol;
+
+public override void Initialize()
+{
+    SetStartDate(2016, 1, 1);
+    SetEndDate(2016, 3, 1);
+    SetCash(100000);
+
+    _equity = AddEquity("IBM", Resolution.Minute).Symbol;
+    var option = AddOption("IBM", Resolution.Minute);
+    _symbol = option.Symbol;
+    option.SetFilter(universe => universe.Strikes(-3, 3)
+                                            .Expiration(TimeSpan.FromDays(0), TimeSpan.FromDays(30)));
+}</pre>
         <pre class="python">def Initialize(self) -&gt; None:
     self.SetStartDate(2016, 1, 1)
     self.SetEndDate(2016, 3, 1)
@@ -15,29 +30,55 @@
     option.SetFilter(-3, +3, timedelta(0), timedelta(30))</pre>
     </div>
   
-    <li>Filter out the call options from candidate contracts.</li>
+    <li>In the OnData method, select the Option contracts.</li>
     <div class="section-example-container">
-        <pre class="python">call = [x for x in chain if x.Right == OptionRight.Call]</pre>
-    </div>
-    
-    <li>Select the most ATM contract with the furthest expiration date from call options contracts. Sell this call contract for each 100 shares of stock you own. Here you can also choose ITM or OTM contract based on your expected level of profit and the level of risk you can take.</li>
-    <div class="section-example-container">
-        <pre class="python">def TradeOptions(self, slice: Slice) -&gt; None:
-    if slice.OptionChains.Count == 0: return
+        <pre class="csharp">public override void OnData(Slice slice)
+{
+    if (Portfolio.Invested) return;
 
-    for i in slice.OptionChains:
-        if i.Key != self.symbol: continue
-        chain = i.Value
-        call = [x for x in chain if x.Right == 0] # filter the call options contracts
-        # sorted the contracts according to their expiration dates and choose the ATM options
-        contracts = sorted(sorted(call, key = lambda x: abs(chain.Underlying.Price - x.Strike)),
-                                        key = lambda x: x.Expiry, reverse=True)
-        if len(contracts) == 0: return
-        contract = contracts[0]
-        self.call = contract.Symbol
-        self.Sell(self.call, 1) # short the call options
-        if self.Portfolio["IBM"].Quantity == 0:
-            self.Buy("IBM",100)     # buy 100 the underlying stock
-            self.Log("The stock price at time 0 S(0): {}".format(self.Securities["IBM"].Price))</pre>
+    // Get the OptionChain of the symbol
+    var chain = slice.OptionChains.get(_symbol, null);
+    if (chain == null || chain.Count() == 0) return;
+
+    // get at-the-money strike
+    var atmStrike = chain.OrderBy(x => Math.Abs(x.Strike - chain.Underlying.Price)).First().Strike;
+
+    // filter the call options from the contracts which is ATM in the option chain.
+    var calls = chain.Where(x => x.Strike == atmStrike && x.Right == OptionRight.Call);
+    if (calls.Count() == 0) return;
+
+    // sort the contracts by expiration date
+    var contracts = calls.OrderBy(x => x.Expiry);
+
+    // select the farest expiry as far-leg expiry, and the nearest expiry as near-leg expiry
+    var contract = contracts.Last();</pre>
+        <pre class="python">def OnData(self, slice: Slice) -&gt; None:
+    # avoid extra orders
+    if self.Portfolio.Invested: return
+
+    # Get the OptionChain of the self.symbol
+    chain = slice.OptionChains.get(self.symbol, None)
+    if not chain: return
+
+    # Get ATM strike price
+    atm_strike = sorted(chain, key = lambda x: abs(chain.Underlying.Price - x.Strike))[0].Strike
+
+    # filter ATM call options contracts
+    calls = [x for x in chain if x.Strike == atm_strike and x.Right == OptionRight.Call] 
+    if len(calls) == 0: return
+
+    # sorted the ATM contracts according to their expiration dates
+    contracts = sorted(calls, key=lambda x: x.Expiry, reverse=True)
+
+    # Select the furthest expiring contract
+    contract = contracts[0]</pre>
+
+    <li>In the OnData method, sell the selected option and buy the corresponding amount of underlying asset.</li>
+    <div class="section-example-container">
+        <pre class="csharp">    Sell(contract.Symbol, 1);
+    Buy(_equity, 100);
+}</pre>
+        <pre class="python">self.Sell(contract.Symbol, 1) # short the call options
+    self.Buy("IBM", 100)           # buy 100 (multiplier) the underlying stock</pre>
     </div>
 </ol>

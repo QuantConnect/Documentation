@@ -3,6 +3,20 @@
 <ol>
     <li>In the Initialize method, set the start date, end date, cash, and <a href="https://www.quantconnect.com/docs/v2/writing-algorithms/universes/equity-options">Option universe</a>.</li>
     <div class="section-example-container">
+        <pre class="csharp">private Symbol _symbol;
+
+public override void Initialize()
+{
+    SetStartDate(2017, 2, 1);
+    SetEndDate(2017, 2, 19);
+    SetCash(500000);
+
+    var option = AddOption("GOOG", Resolution.Minute);
+    _symbol = option.Symbol;
+    option.SetFilter(universe => universe.IncludeWeeklys()
+                                            .Strikes(-1, 1)
+                                            .Expiration(TimeSpan.FromDays(0), TimeSpan.FromDays(62)));
+}</pre>
         <pre class="python">def Initialize(self) -&gt; None:
     self.SetStartDate(2017, 2, 1)
     self.SetEndDate(2017, 2, 19)
@@ -18,6 +32,27 @@ def UniverseFunc(self, universe: OptionFilterUniverse) -&gt; OptionFilterUnivers
 
     <li>In the OnData method, select the Option contracts.</li>
     <div class="section-example-container">
+        <pre class="csharp">public override void OnData(Slice slice)
+{
+    if (Portfolio.Invested) return;
+
+    // Get the OptionChain of the symbol
+    var chain = slice.OptionChains.get(_symbol, null);
+    if (chain == null || chain.Count() == 0) return;
+
+    // get at-the-money strike
+    var atmStrike = chain.OrderBy(x => Math.Abs(x.Strike - chain.Underlying.Price)).First().Strike;
+
+    // filter the call options from the contracts which is ATM in the option chain.
+    var calls = chain.Where(x => x.Strike == atmStrike && x.Right == OptionRight.Call);
+    if (calls.Count() == 0) return;
+
+    // sorted the optionchain by expiration date
+    var expiries = calls.Select(x => x.Expiry).OrderBy(x => x);
+
+    // select the farest expiry as far-leg expiry, and the nearest expiry as near-leg expiry
+    var nearExpiry = expiries.First();
+    var farExpiry = expiries.Last();</pre>
         <pre class="python">def OnData(self, slice: Slice) -&gt; None:
     # avoid extra orders
     if self.Portfolio.Invested: return
@@ -34,7 +69,7 @@ def UniverseFunc(self, universe: OptionFilterUniverse) -&gt; OptionFilterUnivers
     if len(calls) == 0: return
 
     # sorted the optionchain by expiration date
-    expiries = sorted([x.Expiry for x in calls], key = lambda x: x)
+    expiries = sorted([x.Expiry for x in calls])
     
     # select the farest expiry as far-leg expiry, and the nearest expiry as near-leg expiry
     near_expiry = expiries[0]
@@ -43,6 +78,11 @@ def UniverseFunc(self, universe: OptionFilterUniverse) -&gt; OptionFilterUnivers
 
     <li>In the OnData method, call the <code>OptionStrategies.CallCalendarSpread</code> method and then submit the order.</li>
     <div class="section-example-container">
+        <pre class="csharp">    var optionStrategy = OptionStrategies.CallCalendarSpread(_symbol, atmStrike, nearExpiry, farExpiry);
+    // We open a position with 1 unit of the option strategy
+    Buy(optionStrategy, 1);        // if long call calendar spread
+    Sell(optionStrategy, 1);     // if short call calendar spread
+}</pre>
         <pre class="python">option_strategy = OptionStrategies.CallCalendarSpread(self.symbol, atm_strike, near_expiry, far_expiry)
 # We open a position with 1 unit of the option strategy
 self.Buy(option_strategy, 1)    # if long call calendar spread
