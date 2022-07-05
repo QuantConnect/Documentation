@@ -40,7 +40,7 @@ $getRuntimeStatisticsTable = function($isLiveMode) {
         </tr>
         <tr>
           <td>Net Profit</td>
-          <td>{$definitionByTerm['net profit']['dollar-value']}</td>
+          <td>{$definitionByTerm['net profit']['Dollar-value']}</td>
         </tr>
         <tr>
           <td>PSR</td>
@@ -48,7 +48,7 @@ $getRuntimeStatisticsTable = function($isLiveMode) {
         </tr>
         <tr>
           <td>Return</td>
-          <td>{$definitionByTerm['net profit']['percent']}</td>
+          <td>{$definitionByTerm['net profit']['Percent']}</td>
         </tr>
         <tr>
           <td>Unrealized</td>
