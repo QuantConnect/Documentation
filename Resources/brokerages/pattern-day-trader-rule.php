@@ -18,7 +18,7 @@ $getPDTText = function($includeh4=true)
 
 <p>Pattern day traders must maintain a minimum equity of $25,000 in their margin account to continue trading. For more information about pattern day trading, see <a rel='nofollow' target='_blank' href='https://www.finra.org/investors/learn-to-invest/advanced-investing/day-trading-margin-requirements-know-rules'>Am I a Pattern Day Trader?</a> on the FINRA website.</p>
 
-<p>The <code>PatternDayTradingMarginModel</code> doesn't enforce minimum equity rules and doesn't limit your trade, but it adjusts your available leverage based on the market state. During regular market hours, you can use up to 4x leverage. During extended market hours, you can use up to 2x leverage.</p>
+<p>The <code>PatternDayTradingMarginModel</code> doesn't enforce minimum equity rules and doesn't limit your trades, but it adjusts your available leverage based on the market state. During regular market hours, you can use up to 4x leverage. During extended market hours, you can use up to 2x leverage.</p>
 
 <div class='section-example-container'>
     <pre class='csharp'>security.MarginModel = new PatternDayTradingMarginModel();</pre>
