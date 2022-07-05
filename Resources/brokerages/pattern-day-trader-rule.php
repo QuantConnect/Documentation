@@ -1,5 +1,5 @@
 <?php
-$getPDTText = function($includeh4=false)
+$getPDTText = function($includeh4=true)
 {
     if ($includeh4)
     {
