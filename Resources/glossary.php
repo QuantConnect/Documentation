@@ -33,6 +33,7 @@ $definitionByTerm = array(
     
 $getGlossaryTermHTML = function($term)
 {
+    global $definitionByTerm;
     $definition = $definitionByTerm[$term];
     if (is_string($definition))
     {
@@ -45,5 +46,5 @@ $getGlossaryTermHTML = function($term)
             echo "<p><span class='qualifier'>({$key})</span> {$value}</p>";
         }
     }
-}
+};
 ?>
