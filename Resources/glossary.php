@@ -16,11 +16,11 @@ $definitionByTerm = array(
     "look-ahead bias" => "The practice of making decisions using information that would not be available until some time in the future.", 
     "loss rate" => "The proportion of trades that were not profitable.",
     "lowest capacity asset" => "The asset an algorithm traded that has the lowest capacity.",
-    "net profit" => array("percent" => "The rate of return across the entire trading period.", "dollar-value" => "The dollar-value return across the entire trading period."),
-    "probabilistic sharpe ratio (PSR)" => "The probability that the estimated Sharpe ratio of an algorithm is greater than a benchmark (1).",
+    "net profit" => array("Percent" => "The rate of return across the entire trading period.", "Dollar-value" => "The dollar-value return across the entire trading period."),
+    "Probabilistic Sharpe ratio" => "The probability that the estimated Sharpe ratio of an algorithm is greater than a benchmark (1).",
     "profit-loss ratio" => "The ratio of the average win rate to the average loss rate.",
     "return" => "The rate of return across the entire trading period.",
-    "sharpe ratio" => "A measure of the risk-adjusted return, developed by William Sharpe.",
+    "Sharpe ratio" => "A measure of the risk-adjusted return, developed by William Sharpe.",
     "total fees" => "The total quantity of fees paid for all the transactions.",
     "total net profit" => "The rate of return across the entire trading period.", 
     "total trades" => "The number of orders that were filled or partially filled.",
@@ -29,5 +29,21 @@ $definitionByTerm = array(
     "unrealized" => "The amount of profit a portfolio would capture if it liquidated all open positions and paid the fees for transacting and crossing the spread.",
     "volume" => "The total value of assets traded for all of an algorithm's transactions.",
     "win rate" => "The proportion of trades that were profitable."
+    
+$getGlossaryTermHTML = function($term)
+{
+    $definition = $definitionByTerm[$term];
+    if (is_string($definition))
+    {
+        echo "<p>{$definition}</p>";
+    }
+    else 
+    {
+        foreach ($definition as $key => $value)
+        {
+            echo "<p><span class='qualifier'>({$key})</span> {$value}</p>";
+        }
+    }
+}
 );
 ?>
