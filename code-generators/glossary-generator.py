@@ -19,7 +19,7 @@ for line in source:
         keys.append(line.split("=>")[0].strip())
 
 for i, key in enumerate(keys):
-    with open(f"{dir}/{i+2:02} {key.replace(backslash, '').title()}.php", "w", encoding="utf-8") as php:
+    with open(f"{dir}/{i+2:02} {key.replace(backslash, '')}.php", "w", encoding="utf-8") as php:
         php.write(f'''<?php 
 include(DOCS_RESOURCES."/glossary.php");
 $getGlossaryTermHTML({key});
