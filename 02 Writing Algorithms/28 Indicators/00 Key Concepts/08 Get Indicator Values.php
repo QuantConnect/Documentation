@@ -2,7 +2,7 @@
 
 <h4>Current Indicator Values</h4>
 
-<p>To access the indicator value, use the <code>.Current.Value</code> property. Some indicators have one output and some indicators have multiple outputs. The <code>SimpleMovingAverage</code> indicator only has one output, the average price over the last n periods, so the <code>.Current.Value</code> property returns this value. The <code>BollingerBand</code> indicator has multiple outputs because it has a simple moving average, an upper band, and a lower band. For indicators that have multiple outputs, refer to the Indicator Reference to see how to access the output values.</p>
+<p>To access the indicator value, use the <code>.Current.Value</code> property. Some indicators have one output and some indicators have multiple outputs. The <code>SimpleMovingAverage</code> indicator only has one output, the average price over the last n periods, so the <code>.Current.Value</code> property returns this value. The <code>BollingerBand</code> indicator has multiple outputs because it has a simple moving average, an upper band, and a lower band. For indicators that have multiple outputs, refer to the <a href='/docs/v2/writing-algorithms/indicators/indicator-reference'>Indicator Reference</a> to see how to access the output values.</p>
 
 <div class="section-example-container">
 	<pre class="python">sma = self.sma.Current.Value
