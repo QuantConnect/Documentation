@@ -1,14 +1,14 @@
 <?php
 include(DOCS_RESOURCES."/brokerages/cli-deployment/deploy-local-algorithms.php");
 
-$brokerageName = "FTX";
+$brokerageName = "FTX or FTX US";
 $dataFeedName = "";
 $isBrokerage = true;
 $brokerageDetails = "
-<li>Enter the FTX exchange to use.
+<li>Enter the exchange to use.
 <div class='cli section-example-container'>
 <pre>$ lean live \"My Project\"
-FTX Exchange [FTX|FTXUS]:</pre>
+FTX Exchange (FTX, FTXUS):</pre>
 </div>
 </li>
 
@@ -25,6 +25,7 @@ API secret: </pre>
 $dataFeedDetails = "";
 $supportsIQFeed = false;
 $requiresSubscription = true;
+$moduleName = "FTX";
 
-$getDeployLocalAlgorithmsText($brokerageName, $dataFeedName, $isBrokerage, $brokerageDetails, $dataFeedDetails, $supportsIQFeed, $requiresSubscription);
+$getDeployLocalAlgorithmsText($brokerageName, $dataFeedName, $isBrokerage, $brokerageDetails, $dataFeedDetails, $supportsIQFeed, $requiresSubscription, $moduleName);
 ?>
