@@ -94,7 +94,7 @@ Select a data feed:
 ";
         }
 
-        echo "Enter an option:</pre>
+        echo "To enter multiple options, separate them with comma.:</pre>
             </div>
             </li>";
         if ($isBrokerage)
