@@ -67,7 +67,7 @@ if __name__=="__main__":
     q=queue.Queue()
     global hyperlinks,website
     hyperlinks=set()
-    website= 'https://www.sozcu.com.tr/' #Target website 
+    website= 'https://www.quantconnect.com/docs/' #Target website 
     for x in range(30):
         t=threading.Thread(target=threader)
         t.deamon=True
