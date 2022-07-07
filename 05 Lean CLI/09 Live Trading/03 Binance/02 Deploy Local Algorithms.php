@@ -5,7 +5,7 @@ $brokerageName = "Binance or Binance US";
 $dataFeedName = "";
 $isBrokerage = true;
 $brokerageDetails = "
-<li>Enter the Exchange to use.
+<li>Enter the exchange to use.
 <div class='cli section-example-container'>
 <pre>$ lean live \"My Project\"
 Binance Exchange (Binance, BinanceUS): BinanceUS</pre>
