@@ -19,7 +19,7 @@ Use the testnet? (live, paper): live</pre>
 </div>
 </li>
 
-<li>Enter your API key and API secret. You can create a new API key on the <a href='https://www.binance.com/en/my/settings/api-management' target='_blank'>API Management page</a>.
+<li>Enter your API key and API secret. To create a new API key, see <a rel='nofollow' href='https://www.binance.com/en/support/faq/360002502072' target='_blank'>How to Create API</a> on the Binance website.
 <div class='cli section-example-container'>
 <pre>$ lean live \"My Project\"
 API key: 6d3ef5ca2d2fa52e4ee55624b0471261
