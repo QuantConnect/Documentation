@@ -40,7 +40,7 @@ for dir, target in conversions.items():
   "content" : "<p>Market hours of different exchanges.</p>",
   "alsoLinks" : [],
   "featureShortDescription": ''')
-            json.write(str(content_dict.replace("'", '"')))
+            json.write(str(content_dict).replace("'", '"'))
             json.write("}")
     
     else:
