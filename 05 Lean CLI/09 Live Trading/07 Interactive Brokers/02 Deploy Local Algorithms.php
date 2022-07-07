@@ -15,9 +15,7 @@ Account id: DU1234567
 Account password: ****************</pre>
 </div>
 </li>
-";
 
-$dataFeedDetails = "
 <li>Enter whether you want to enable delayed market data.
 <div class='cli section-example-container'>
 <pre>$ lean live \"My Project\"
@@ -26,6 +24,8 @@ Enable delayed market data? [y/N]: y</pre>
 This property configures the behavior when your algorithm attempts to subscribe to market data for which you don't have a market data subscription on Interactive Brokers. When enabled, your algorithm continues running using delayed market data. When disabled, live trading will stop and LEAN will shut down.
 </li>
 ";
+
+$dataFeedDetails = "";
 
 $supportsIQFeed = true;
 $requiresSubscription = true;
