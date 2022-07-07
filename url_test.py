@@ -10,6 +10,7 @@ def get_url_status(urls):
                 print("404 Status: " + url)
         except Exception as e:
             print(url + "\tNA FAILED TO CONNECT\t" + str(e))
+            
 
 root = "https://www.quantconnect.com/"
 quote = "'"
@@ -36,7 +37,7 @@ for root_dir in ["01 Our Platform/", "02 Writing Algorithms/", "03 Research Envi
                     else:
                         url = f"{root}{url}"
                 
-                url = url.replace("//", "/").replace("https:/", "https://")
+                url = url.replace("//", "/").replace(":/", "://")
                 if url not in urls:
                     urls.append(url)
 
