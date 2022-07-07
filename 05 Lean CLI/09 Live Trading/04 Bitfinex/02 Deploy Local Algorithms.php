@@ -1,7 +1,9 @@
 <?php
 include(DOCS_RESOURCES."/brokerages/cli-deployment/deploy-local-algorithms.php");
 
-
+$brokerageName = "Bitfinex";
+$dataFeedName = "";
+$isBrokerage = true;
 $brokerageDetails = "
 <li>Enter your API key id and secret. You can generate new API credentials on the <a href='https://www.bitfinex.com/api' target='_blank'>API Management page</a>.
 <div class='cli section-example-container'>
@@ -16,5 +18,5 @@ $dataFeedDetails = "";
 $supportsIQFeed = false;
 $requiresSubscription = false;
 
-$getDeployLocalAlgorithmsText("Bitfinex", $brokerageDetails, $dataFeedDetails, $supportsIQFeed, $requiresSubscription);
+$getDeployLocalAlgorithmsText($brokerageName, $dataFeedName, $isBrokerage, $brokerageDetails, $dataFeedDetails, $supportsIQFeed, $requiresSubscription);
 ?>
