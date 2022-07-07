@@ -8,7 +8,7 @@ $brokerageDetails = "
 <li>Enter the environment to use.
 <div class='cli section-example-container'>
 <pre>$ lean live \"My Project\"
-Use sandbox? (live, paper):</pre>
+Use sandbox? (live, paper): live</pre>
 </div>
 </li>
 
