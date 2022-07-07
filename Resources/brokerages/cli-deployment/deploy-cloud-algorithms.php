@@ -23,14 +23,14 @@ Select a brokerage:
 1) Paper Trading
 2) Interactive Brokers
 3) Tradier
-4) OANDA
+4) Oanda
 5) Bitfinex
 6) Coinbase Pro
 7) Binance
-8) Kraken
-9) FTX
-10) Zerodha
-11) Samco
+8) Zerodha
+9) Samco
+10) Kraken
+11) FTX
 Enter an option:</pre>
 </div>
             </li>
