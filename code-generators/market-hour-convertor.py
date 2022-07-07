@@ -31,7 +31,7 @@ for dir, target in conversions.items():
     i = 11
     
     if dir != "cfd":
-        with open(target_apth / "00.json", "w", encoding="utf-8") as json:
+        with open(target_path / "00.json", "w", encoding="utf-8") as json:
             content_dict = {f"{count+11:02}": "" for count in range(len(subdirs))}
             json.write('''{
   "type" : "landing",
