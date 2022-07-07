@@ -73,14 +73,8 @@ Select a data feed:
 11) Kraken
 12) FTX
 13) IQFeed
-";
-    if ($brokerageName == "QuantConnect Paper Trading")
-    {
-        echo "14) Custom data only
-";
-    }
-
-    echo "To enter multiple options, separate them with comma.:</pre>
+14) Custom data only
+To enter multiple options, separate them with comma.:</pre>
             </div>
             </li>";
     if ($isBrokerage)
