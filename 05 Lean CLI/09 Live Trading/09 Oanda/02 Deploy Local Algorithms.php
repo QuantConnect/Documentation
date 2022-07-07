@@ -1,7 +1,9 @@
 <?php
 include(DOCS_RESOURCES."/brokerages/cli-deployment/deploy-local-algorithms.php");
 
-
+$brokerageName = "Oanda";
+$dataFeedName = "";
+$isBrokerage = true;
 $brokerageDetails = "
 <li>Enter your OANDA account id. You can find this number on your <a href='https://www.oanda.com/account/statement/' target='_blank'>Account Statement page</a>.
 <div class='cli section-example-container'>
@@ -29,5 +31,5 @@ $dataFeedDetails = "";
 $supportsIQFeed = true;
 $requiresSubscription = false;
 
-$getDeployLocalAlgorithmsText("Oanda", $brokerageDetails, $dataFeedDetails, $supportsIQFeed, $requiresSubscription);
+$getDeployLocalAlgorithmsText($brokerageName, $dataFeedName, $isBrokerage, $brokerageDetails, $dataFeedDetails, $supportsIQFeed, $requiresSubscription);
 ?>
