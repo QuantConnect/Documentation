@@ -74,7 +74,7 @@ Select a data feed:
         if ($brokerageName == 'QuantConnect Paper Trading') {
             echo "1) Interactive Brokers
 2) Tradier
-3) OANDA
+3) Oanda
 4) Bitfinex
 5) Coinbase Pro
 6) Binance
@@ -82,10 +82,10 @@ Select a data feed:
 8) Samco
 9) Terminal Link
 10) Trading Technologies
-11) Custom data only
-12) Kraken
-13) FTX
-14) IQFeed
+11) Kraken
+12) FTX
+13) IQFeed
+14) Custom data only
 ";
         }
         else {
