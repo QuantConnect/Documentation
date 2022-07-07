@@ -92,8 +92,8 @@ for dir, target in conversions.items():
 """)
                 html_file.write(codes)
             
-        assets_subdirs = sorted([str(subdir.name).upper() for subdir in market_dir.iterdir() if subdir.is_dir() and subdir.name != "generic"])
-        
+        assets_subdirs = sorted([str(subdir2.name).upper() for subdir2 in market_dir.iterdir() if subdir2.is_dir() and subdir2.name != "generic"])
+        print(len(assets_subdirs))
         k = 11
         
         for asset in assets_subdirs:
