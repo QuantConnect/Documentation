@@ -41,7 +41,7 @@ Enter an option: {$brokeragePromptInput}</pre>
     ";
 
     if ($requiresSubscription) {
-        $module = $moduleName != "" ? $brokerageName : $moduleName
+        $module = $moduleName != "" ? $brokerageName : $moduleName;
         echo "
         <li>Enter the number of the organization that has a subscription for the {$module} module.
         <div class='cli section-example-container'>
