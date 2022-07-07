@@ -1,7 +1,9 @@
 <?php
 include(DOCS_RESOURCES."/brokerages/cli-deployment/deploy-local-algorithms.php");
 
-
+$brokerageName = "Interactive Brokers";
+$dataFeedName = "";
+$isBrokerage = true;
 $brokerageDetails = "
 <li>Set up IB Key Security via IBKR Mobile. For instructions, see <a href='https://guides.interactivebrokers.com/iphone/log_in/ibkey.htm?tocpath=IB%20Key%20Security%20Protocol%7C_____0' target='_blank' rel='nofollow'>IB Key Security via IBKR Mobile</a> on the IB website.</li>
 
@@ -28,5 +30,5 @@ This property configures the behavior when your algorithm attempts to subscribe 
 $supportsIQFeed = true;
 $requiresSubscription = true;
 
-$getDeployLocalAlgorithmsText("Interactive Brokers", $brokerageDetails, $dataFeedDetails, $supportsIQFeed, $requiresSubscription);
+$getDeployLocalAlgorithmsText($brokerageName, $dataFeedName, $isBrokerage, $brokerageDetails, $dataFeedDetails, $supportsIQFeed, $requiresSubscription);
 ?>

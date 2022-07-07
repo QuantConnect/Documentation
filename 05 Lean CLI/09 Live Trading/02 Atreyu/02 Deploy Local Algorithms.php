@@ -1,7 +1,9 @@
 <?php
 include(DOCS_RESOURCES."/brokerages/cli-deployment/deploy-local-algorithms.php");
 
-
+$brokerageName = "Atreyu";
+$dataFeedName = "";
+$isBrokerage = true;
 $brokerageDetails = "
 <li>Enter the <a target='_blank' href='https://qnt.co/atreyu'>Atreyu Trading</a> server configuration.
 <div class='cli section-example-container'>
@@ -39,5 +41,5 @@ $dataFeedDetails = "";
 $supportsIQFeed = true;
 $requiresSubscription = true;
 
-$getDeployLocalAlgorithmsText("Atreyu", $brokerageDetails, $dataFeedDetails, $supportsIQFeed, $requiresSubscription);
+$getDeployLocalAlgorithmsText($brokerageName, $dataFeedName, $isBrokerage, $brokerageDetails, $dataFeedDetails, $supportsIQFeed, $requiresSubscription);
 ?>

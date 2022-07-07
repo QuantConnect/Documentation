@@ -1,7 +1,9 @@
 <?php
 include(DOCS_RESOURCES."/brokerages/cli-deployment/deploy-local-algorithms.php");
 
-
+$brokerageName = "FTX";
+$dataFeedName = "";
+$isBrokerage = true;
 $brokerageDetails = "
 <li>Enter the FTX exchange to use.
 <div class='cli section-example-container'>
@@ -24,5 +26,5 @@ $dataFeedDetails = "";
 $supportsIQFeed = false;
 $requiresSubscription = true;
 
-$getDeployLocalAlgorithmsText("FTX", $brokerageDetails, $dataFeedDetails, $supportsIQFeed, $requiresSubscription);
+$getDeployLocalAlgorithmsText($brokerageName, $dataFeedName, $isBrokerage, $brokerageDetails, $dataFeedDetails, $supportsIQFeed, $requiresSubscription);
 ?>
