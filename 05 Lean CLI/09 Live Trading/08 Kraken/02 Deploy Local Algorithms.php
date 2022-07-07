@@ -17,11 +17,7 @@ To get your API credentials, see the <a target='_blank' rel='nofollow' href='htt
 <li>Enter your verification tier.
 <div class='cli section-example-container'>
 <pre>$ lean live \"My Project\"
-Select the Verification Tier:
-1) Starter
-2) Intermediate
-3) Pro
-Enter an option:</pre>
+Select the Verification Tier (Starter, Intermediate, Pro): </pre>
 </div>
 For more information about verification tiers, see <a href='https://support.kraken.com/hc/en-us/articles/360001395743-Verification-levels-explained' target='_blank' rel='nofollow'>Verification levels explained</a> on the Kraken website.
 </li>
