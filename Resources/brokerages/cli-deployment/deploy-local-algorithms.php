@@ -69,10 +69,7 @@ Enter an option: 1</pre>
             <div class='cli section-example-container'>
 <pre>$ lean live 'My Project'
 Select a data feed:
-";
-
-        if ($brokerageName == 'QuantConnect Paper Trading') {
-            echo "1) Interactive Brokers
+1) Interactive Brokers
 2) Tradier
 3) Oanda
 4) Bitfinex
@@ -86,15 +83,7 @@ Select a data feed:
 12) FTX
 13) IQFeed
 14) Custom data only
-";
-        }
-        else {
-            echo "1) {$brokerageName}
-2) IQFeed
-";
-        }
-
-        echo "To enter multiple options, separate them with comma.:</pre>
+To enter multiple options, separate them with comma.:</pre>
             </div>
             </li>";
         if ($isBrokerage)
