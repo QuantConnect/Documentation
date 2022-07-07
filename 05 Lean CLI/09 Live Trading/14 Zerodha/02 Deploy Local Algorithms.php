@@ -1,7 +1,9 @@
 <?php
 include(DOCS_RESOURCES."/brokerages/cli-deployment/deploy-local-algorithms.php");
 
-
+$brokerageName = "Zerodha";
+$dataFeedName = "";
+$isBrokerage = true;
 $brokerageDetails = "
 <li>Enter your <a href='https://kite.trade/' target='_blank'>Kite Connect</a> API key and access token.
 <div class='cli section-example-container'>
@@ -80,5 +82,5 @@ Do you have a history API subscription? [y/N]: y</pre>
 $supportsIQFeed = false;
 $requiresSubscription = true;
 
-$getDeployLocalAlgorithmsText("Zerodha", $brokerageDetails, $dataFeedDetails, $supportsIQFeed, $requiresSubscription);
+$getDeployLocalAlgorithmsText($brokerageName, $dataFeedName, $isBrokerage, $brokerageDetails, $dataFeedDetails, $supportsIQFeed, $requiresSubscription);
 ?>
