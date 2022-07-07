@@ -1,5 +1,5 @@
 <?php
-$getDeployLocalAlgorithmsText = function($brokerageName, $dataFeedName, $isBrokerage, $brokerageDetails, $dataFeedDetails, $supportsIQFeed, $requiresSubscription) {
+$getDeployLocalAlgorithmsText = function($brokerageName, $dataFeedName, $isBrokerage, $brokerageDetails, $dataFeedDetails, $supportsIQFeed, $requiresSubscription, $moduleName="") {
 
     echo "<p>Follow these steps to start local live trading with the ";
 
@@ -41,11 +41,12 @@ Enter an option: {$brokeragePromptInput}</pre>
     ";
 
     if ($requiresSubscription) {
+        $module = $moduleName != "" ? $brokerageName : $moduleName
         echo "
-        <li>Enter the number of the organization that has a subscription for the {$brokerageName} module.
+        <li>Enter the number of the organization that has a subscription for the {$module} module.
         <div class='cli section-example-container'>
 <pre>$ lean live \"My Project\"
-Select the organization with the {$brokerageName} module subscription:
+Select the organization with the {$module} module subscription:
 1) Organization 1
 2) Organization 2
 3) Organization 3
