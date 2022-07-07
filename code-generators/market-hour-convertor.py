@@ -21,7 +21,12 @@ page_order = {
 
 for dir, target in conversions.items():
     path = Path(f'{root_dir}{dir}')
-    subdirs = [str(subdir.name).upper() for subdir in path.iterdir() if subdir.is_dir()]
+    subdirs = sorted([str(subdir.name).upper() for subdir in path.iterdir() if subdir.is_dir()])
+    
+    target_path = f"{target_dir}{target}"
+    if os.path.exists(target_path):
+        shutil.rmtree(target_path)
+    target_path.mkdir(parents=True, exist_ok=True)
     
     i = 11
     
@@ -62,10 +67,6 @@ for dir, target in conversions.items():
         if subdir == "FXCM" or subdir == "GENERIC": continue
         
         market_dir = path / subdir.lower() if dir != "cfd" else path / subdir.upper()
-        output_dir = Path(f'{target_dir}{target}/{i:02} {subdir}')
-        if os.path.exists(output_dir):
-            shutil.rmtree(output_dir)
-        output_dir.mkdir(parents=True, exist_ok=True)
         
         j = 1
 
@@ -89,7 +90,7 @@ for dir, target in conversions.items():
 """)
                 html_file.write(codes)
             
-        assets_subdirs = [str(subdir.name).upper() for subdir in market_dir.iterdir() if subdir.is_dir() and subdir.name != "generic"]
+        assets_subdirs = sorted([str(subdir.name).upper() for subdir in market_dir.iterdir() if subdir.is_dir() and subdir.name != "generic"])
         
         k = 11
         
