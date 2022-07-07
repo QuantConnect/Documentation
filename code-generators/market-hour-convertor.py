@@ -93,12 +93,12 @@ for dir, target in conversions.items():
                 html_file.write(codes)
             
         assets_subdirs = sorted([str(subdir2.name).upper() for subdir2 in market_dir.iterdir() if subdir2.is_dir() and subdir2.name != "generic"])
-        print(len(assets_subdirs))
+        
         k = 11
         
         for asset in assets_subdirs:
             contract_name = asset.replace("__", " ").replace("_", " ").upper()
-            raw_asset_dir = market_dir / asset.lower()
+            raw_asset_dir = market_dir / asset.upper()
             asset_dir = output_dir/ f'{k:02} {contract_name}'
             asset_dir.mkdir(parents=True, exist_ok=True)
         
