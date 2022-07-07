@@ -23,7 +23,7 @@ for dir, target in conversions.items():
     path = Path(f'{root_dir}{dir}')
     subdirs = sorted([str(subdir.name).upper() for subdir in path.iterdir() if subdir.is_dir()])
     
-    target_path = f"{target_dir}{target}"
+    target_path = Path(f"{target_dir}{target}")
     if os.path.exists(target_path):
         shutil.rmtree(target_path)
     target_path.mkdir(parents=True, exist_ok=True)
@@ -67,6 +67,7 @@ for dir, target in conversions.items():
         if subdir == "FXCM" or subdir == "GENERIC": continue
         
         market_dir = path / subdir.lower() if dir != "cfd" else path / subdir.upper()
+        output_dir = Path(f'{target_dir}{target}/{i:02} {subdir}')
         
         j = 1
 
