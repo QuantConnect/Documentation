@@ -8,7 +8,7 @@ $brokerageDetails = "
 <li>Enter the exchange to use.
 <div class='cli section-example-container'>
 <pre>$ lean live \"My Project\"
-FTX Exchange (FTX, FTXUS):</pre>
+FTX Exchange (FTX, FTXUS): FTXUS</pre>
 </div>
 </li>
 
