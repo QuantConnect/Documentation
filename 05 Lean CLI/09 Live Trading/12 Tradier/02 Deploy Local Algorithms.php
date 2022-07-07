@@ -1,7 +1,9 @@
 <?php
 include(DOCS_RESOURCES."/brokerages/cli-deployment/deploy-local-algorithms.php");
 
-
+$brokerageName = "Tradier";
+$dataFeedName = "";
+$isBrokerage = true;
 $brokerageDetails = "
 <li>Enter your Tradier account id and access token. You can find these credentials on your <a href='https://dash.tradier.com/settings/api' target='_blank'>Settings/API Access</a> page.
 <div class='cli section-example-container'>
@@ -22,5 +24,5 @@ $dataFeedDetails = "";
 $supportsIQFeed = true;
 $requiresSubscription = false;
 
-$getDeployLocalAlgorithmsText("Tradier", $brokerageDetails, $dataFeedDetails, $supportsIQFeed, $requiresSubscription);
+$getDeployLocalAlgorithmsText($brokerageName, $dataFeedName, $isBrokerage, $brokerageDetails, $dataFeedDetails, $supportsIQFeed, $requiresSubscription);
 ?>
