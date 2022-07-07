@@ -16,7 +16,7 @@ API secret: *******************************************</pre>
 
 $dataFeedDetails = "";
 $supportsIQFeed = false;
-$requiresSubscription = false;
+$requiresSubscription = true;
 
 $getDeployLocalAlgorithmsText($brokerageName, $dataFeedName, $isBrokerage, $brokerageDetails, $dataFeedDetails, $supportsIQFeed, $requiresSubscription);
 ?>
