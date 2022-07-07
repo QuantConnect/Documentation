@@ -56,16 +56,7 @@ Enter an option: 1</pre>
 
     echo $brokerageDetails;
 
-    if ($supportsIQFeed) {
-        echo "<li>";
-        if ($brokerageName != 'QuantConnect Paper Trading') {
-            echo "If you are on a Windows computer, e";
-        }
-        else {
-            echo "E";
-        }    
-
-        echo "nter the number of the data feed to use and then follow the steps required for the data connection.
+    echo "Enter the number of the data feed to use and then follow the steps required for the data connection.
             <div class='cli section-example-container'>
 <pre>$ lean live 'My Project'
 Select a data feed:
@@ -86,12 +77,10 @@ Select a data feed:
 To enter multiple options, separate them with comma.:</pre>
             </div>
             </li>";
-        if ($isBrokerage)
-        {
-        	echo "<p>If you select IQFeed, see <a href='/docs/v2/lean-cli/live-trading/other-data-feeds/iqfeed'>IQFeed</a> for set up instructions.</p>";
-        }
+    if ($isBrokerage)
+    {
+        echo "<p>If you select IQFeed, see <a href='/docs/v2/lean-cli/live-trading/other-data-feeds/iqfeed'>IQFeed</a> for set up instructions.</p>";
     }
-
 
     echo $dataFeedDetails;
 
