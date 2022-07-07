@@ -30,7 +30,20 @@ for dir, target in conversions.items():
     
     i = 11
     
-    if dir == "cfd":
+    if dir != "cfd":
+        with open(target_apth / "00.json", "w", encoding="utf-8") as json:
+            content_dict = {f"{count+11:02}": "" for count in range(len(subdirs))}
+            json.write('''{
+  "type" : "landing",
+  "heading" : "Market Hours",
+  "subHeading" : "",
+  "content" : "<p>Market hours of different exchanges.</p>",
+  "alsoLinks" : [],
+  "featureShortDescription": ''')
+            json.write(str(content_dict))
+            json.write("}")
+    
+    else:
         j = 1
 
         ref_pages = sorted((path / "generic").glob('*.html'), key=lambda x: page_order[x.name])
