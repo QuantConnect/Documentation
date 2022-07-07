@@ -1,7 +1,9 @@
 <?php
 include(DOCS_RESOURCES."/brokerages/cli-deployment/deploy-local-algorithms.php");
 
-
+$brokerageName = "Samco";
+$dataFeedName = "";
+$isBrokerage = true;
 $brokerageDetails = "
 <li>Enter your Samco credentials.
 <div class='cli section-example-container'>
@@ -83,5 +85,5 @@ $dataFeedDetails = "";
 $supportsIQFeed = false;
 $requiresSubscription = true;
 
-$getDeployLocalAlgorithmsText("Samco", $brokerageDetails, $dataFeedDetails, $supportsIQFeed, $requiresSubscription);
+$getDeployLocalAlgorithmsText($brokerageName, $dataFeedName, $isBrokerage, $brokerageDetails, $dataFeedDetails, $supportsIQFeed, $requiresSubscription);
 ?>
