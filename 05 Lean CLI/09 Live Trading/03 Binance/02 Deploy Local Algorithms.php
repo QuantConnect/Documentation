@@ -1,6 +1,9 @@
 <?php
 include(DOCS_RESOURCES."/brokerages/cli-deployment/deploy-local-algorithms.php");
 
+$brokerageName = "Binance";
+$dataFeedName = "";
+$isBrokerage = true;
 $brokerageDetails = "
 <li>Enter your API key and API secret. You can create a new API key on the <a href='https://www.binance.com/en/my/settings/api-management' target='_blank'>API Management page</a>.
 <div class='cli section-example-container'>
@@ -22,5 +25,5 @@ $dataFeedDetails = "";
 $supportsIQFeed = false;
 $requiresSubscription = true;
 
-$getDeployLocalAlgorithmsText("Binance", $brokerageDetails, $dataFeedDetails, $supportsIQFeed, $requiresSubscription);
+$getDeployLocalAlgorithmsText($brokerageName, $dataFeedName, $isBrokerage, $brokerageDetails, $dataFeedDetails, $supportsIQFeed, $requiresSubscription);
 ?>
