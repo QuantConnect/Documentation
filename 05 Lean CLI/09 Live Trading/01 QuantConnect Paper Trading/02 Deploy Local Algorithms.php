@@ -20,5 +20,5 @@ $dataFeedDetails = "
 $supportsIQFeed = true;
 $requiresSubscription = false;
 
-$getDeployLocalAlgorithmsText($brokerageName, $dataFeedName, $brokerageDetails, $dataFeedDetails, $supportsIQFeed, $requiresSubscription);
+$getDeployLocalAlgorithmsText($brokerageName, $dataFeedName, $isBrokerage, $brokerageDetails, $dataFeedDetails, $supportsIQFeed, $requiresSubscription);
 ?>
