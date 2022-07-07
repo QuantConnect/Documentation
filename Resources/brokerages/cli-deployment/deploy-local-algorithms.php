@@ -1,11 +1,23 @@
 <?php
-$getDeployLocalAlgorithmsText = function($brokerageName, $brokerageDetails, $dataFeedDetails, $supportsIQFeed, $requiresSubscription) {
+$getDeployLocalAlgorithmsText = function($brokerageName, $dataFeedName, $isBrokerage, $brokerageDetails, $dataFeedDetails, $supportsIQFeed, $requiresSubscription) {
 
+    echo "<p>Follow these steps to start local live trading with the ";
+
+    if ($isBrokerage)
+    {
+    	echo "{$brokerageName} brokerage:</p>";
+    }
+    else
+    {
+    	echo "{$dataFeedName} data feed:</p>";
+    }
+
+    $word = $isBrokerage ? 'the' : 'a';
+    $brokeragePromptInput = $isBrokerage ? '' : '1';
     echo "
-        <p>Follow these steps to start local live trading with the {$brokerageName} brokerage:</p>
         <ol>
             <li>Open a terminal in your <a href='/docs/v2/lean-cli/initialization/directory-structure#02-lean-init'>CLI root directory</a>.</li>
-            <li>Run <code>lean live \"&lt;projectName&gt;\"</code> to start a live deployment wizard for the project in <span class='private-directory-name'>./&lt;projectName&gt;</span> and then enter the brokerage number.
+            <li>Run <code>lean live \"&lt;projectName&gt;\"</code> to start a live deployment wizard for the project in <span class='private-directory-name'>./&lt;projectName&gt;</span> and then enter {$word} brokerage number.
             <div class='cli section-example-container'>
 <pre>$ lean live 'My Project'
 Select a brokerage:
@@ -23,7 +35,7 @@ Select a brokerage:
 12) Trading Technologies
 13) Kraken
 14) FTX 
-Enter an option:</pre>
+Enter an option: {$brokeragePromptInput}</pre>
 </div>
             </li>
     ";
@@ -85,8 +97,10 @@ Select a data feed:
         echo "Enter an option:</pre>
             </div>
             </li>";
-        echo "<p>If you select IQFeed, see <a href='/docs/v2/lean-cli/live-trading/other-data-feeds/iqfeed'>IQFeed</a> for set up instructions.</p>";
-
+        if ($isBrokerage)
+        {
+        	echo "<p>If you select IQFeed, see <a href='/docs/v2/lean-cli/live-trading/other-data-feeds/iqfeed'>IQFeed</a> for set up instructions.</p>";
+        }
     }
 
 
@@ -99,8 +113,6 @@ Select a data feed:
                 You can save results to a different directory by providing the <code>--output &lt;path&gt;</code> option in step 2.
             </li>
         </ol>
-
-
         <p>
             If you already have a live environment configured in your <a href='/docs/v2/lean-cli/initialization/configuration#03-Lean-Configuration'>Lean configuration file</a>, you can skip the interactive wizard by providing the <code>--environment &lt;value&gt;</code> option in step 2.
             The value of this option must be the name of an environment which has <code>live-mode</code> set to <code>true</code>.
