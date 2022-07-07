@@ -1,7 +1,7 @@
 <?php
 include(DOCS_RESOURCES."/brokerages/cli-deployment/deploy-local-algorithms.php");
 
-$brokerageName = "Binance";
+$brokerageName = "Binance or Binance US";
 $dataFeedName = "";
 $isBrokerage = true;
 $brokerageDetails = "
@@ -31,6 +31,7 @@ API secret: ********************************</pre>
 $dataFeedDetails = "";
 $supportsIQFeed = false;
 $requiresSubscription = true;
+$moduleName = "Binance";
 
-$getDeployLocalAlgorithmsText($brokerageName, $dataFeedName, $isBrokerage, $brokerageDetails, $dataFeedDetails, $supportsIQFeed, $requiresSubscription);
+$getDeployLocalAlgorithmsText($brokerageName, $dataFeedName, $isBrokerage, $brokerageDetails, $dataFeedDetails, $supportsIQFeed, $requiresSubscription, $moduleName);
 ?>
