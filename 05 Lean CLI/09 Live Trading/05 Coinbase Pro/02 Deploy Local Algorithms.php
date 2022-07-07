@@ -5,7 +5,7 @@ $brokerageName = "Coinbase Pro";
 $dataFeedName = "";
 $isBrokerage = true;
 $brokerageDetails = "
-<li>Enter the environment to use.</li>
+<li>Enter the environment to use.
 <div class='cli section-example-container'>
 <pre>$ lean live \"My Project\"
 Use sandbox? (live, paper):</pre>
@@ -20,14 +20,6 @@ API secret: ********************************************************************
 Passphrase: ****************</pre>
 </div>
 </li>
-
-<li>Enter whether the sandbox should be used.
-<div class='cli section-example-container'>
-<pre>$ lean live \"My Project\"
-Use the sandbox? [y/N]: n</pre>
-</div>
-</li>
-
 ";
 $dataFeedDetails = "";
 $supportsIQFeed = false;
