@@ -10,7 +10,6 @@ def get_url_status(urls):
                 print("404 Status: " + url)
         except Exception as e:
             print(url + "\tNA FAILED TO CONNECT\t" + str(e))
-    return None
 
 root = "https://www.quantconnect.com/"
 quote = "'"
