@@ -2,18 +2,19 @@
 include(DOCS_RESOURCES."/brokerages/cli-deployment/deploy-cloud-algorithms.php");
 
 $brokerageDetails = "
-<li>Enter your Tradier account id and access token. You can find these credentials on your <a href='https://dash.tradier.com/settings/api' target='_blank'>Settings/API Access</a> page.
+<li>Enter your Tradier account ID and access token.
 <div class='cli section-example-container'>
 <pre>$ lean cloud live \"My Project\" --push --open
 Account id: VA000001
 Access token: ****************</pre>
 </div>
+To get these credentials, see your <a href='https://dash.tradier.com/settings/api' target='_blank' rel='nofollow'>Settings/API Access page</a> on the Tradier website.
 </li>
 
-<li>Enter which environment you want to use. You can either choose <code>demo</code> or <code>real</code>.
+<li>Enter whether the developer sandbox should be used.
 <div class='cli section-example-container'>
 <pre>$ lean cloud live \"My Project\" --push --open
-Environment (demo, real): demo</pre>
+Use the developer sandbox? (live, paper): </pre>
 </div>
 </li>
 ";
