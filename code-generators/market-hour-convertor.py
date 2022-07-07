@@ -68,6 +68,7 @@ for dir, target in conversions.items():
         
         market_dir = path / subdir.lower() if dir != "cfd" else path / subdir.upper()
         output_dir = Path(f'{target_dir}{target}/{i:02} {subdir}')
+        output_dir.mkdir(parents=True, exist_ok=True)
         
         j = 1
 
