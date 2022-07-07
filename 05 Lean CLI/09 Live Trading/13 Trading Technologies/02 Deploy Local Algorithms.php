@@ -1,7 +1,9 @@
 <?php
 include(DOCS_RESOURCES."/brokerages/cli-deployment/deploy-local-algorithms.php");
 
-
+$brokerageName = "Trading Technologies";
+$dataFeedName = "";
+$isBrokerage = true;
 $brokerageDetails = "
 <li>Enter your Trading Technologies credentials.
 <div class='cli section-example-container'>
@@ -53,5 +55,5 @@ $dataFeedDetails = "";
 $supportsIQFeed = true;
 $requiresSubscription = true;
 
-$getDeployLocalAlgorithmsText("Trading Technologies", $brokerageDetails, $dataFeedDetails, $supportsIQFeed, $requiresSubscription);
+$getDeployLocalAlgorithmsText($brokerageName, $dataFeedName, $isBrokerage, $brokerageDetails, $dataFeedDetails, $supportsIQFeed, $requiresSubscription);
 ?>
