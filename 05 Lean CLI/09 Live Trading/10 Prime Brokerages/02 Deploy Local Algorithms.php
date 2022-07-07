@@ -5,7 +5,7 @@ $brokerageName = "Terminal Link";
 $dataFeedName = "";
 $isBrokerage = true;
 $brokerageDetails = "
-<li>Enter the environment to run in. This property must be either <code>Production</code> or <code>Beta</code>.
+<li>Enter the environment to use.
 <div class='cli section-example-container'>
 <pre>$ lean live \"My Project\"
 Environment (Production, Beta): Production</pre>
