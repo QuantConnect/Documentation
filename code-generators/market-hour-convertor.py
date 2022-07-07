@@ -61,7 +61,7 @@ for dir, target in conversions.items():
     for subdir in subdirs:
         if subdir == "FXCM" or subdir == "GENERIC": continue
         
-        market_dir = path / subdir.lower()
+        market_dir = path / subdir.lower() if dir != "cfd" else path / subdir.upper()
         output_dir = Path(f'{target_dir}{target}/{i:02} {subdir}')
         if os.path.exists(output_dir):
             shutil.rmtree(output_dir)
