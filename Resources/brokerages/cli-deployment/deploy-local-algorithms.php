@@ -56,7 +56,7 @@ Enter an option: 1</pre>
 
     echo $brokerageDetails;
 
-    echo "Enter the number of the data feed to use and then follow the steps required for the data connection.
+    echo "<li>Enter the number of the data feed to use and then follow the steps required for the data connection.
             <div class='cli section-example-container'>
 <pre>$ lean live 'My Project'
 Select a data feed:
