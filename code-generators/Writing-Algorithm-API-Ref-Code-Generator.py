@@ -263,7 +263,7 @@ def Table(input_, previous_name, type_map, j):
 
     else:
         with open(path_ / f'02.html', "rb+") as html_file:
-            html_file.seek(-10, os.SEEK_END)
+            html_file.seek(-8, os.SEEK_END)
             html_file.truncate()
 
         with open(path_ / f'02.html', "a", encoding="utf-8") as html_file:
