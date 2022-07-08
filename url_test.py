@@ -2,17 +2,25 @@ import gc
 import glob
 import os
 import requests
-import threading
 import time
 
 def get_url_status(url, files):
     try:
-        r = requests.get(url)
+        session = requests.session()
+        r = session.get(url)
+        
         if r.status_code == 404:
             print("\033[2;31;43m 404 Status:\n\t" + url + "\n\t- " + "\n\t- ".join(files))
     except Exception as e:
         print(url + "\n\t" + str(e) + "\n\t- " + "\n\t- ".join(files))
-    return None
+        
+    try:
+        session.close()  # close session !!
+        r.close()
+    except:
+        pass
+    
+    return
 
 if __name__ == '__main__':
     root = "https://www.quantconnect.com/"
@@ -46,19 +54,13 @@ if __name__ == '__main__':
                     urls[url].append(filename)
 
     start = time.perf_counter()
-    threads = []
 
     for i, (url, files) in enumerate(urls.items()):
-        t = threading.Thread(target=get_url_status, args=[url, files])
-        t.start()
-        threads.append(t)
+        get_url_status(url, files)
+        gc.collect()
         
-        if i % 8 == 0:
-            for thread in threads:
-                thread.join()
-            
-            gc.collect()                
+        if i % 50 == 0:
             print(f"Done {i+1}/{len(urls)} ({i*100/len(urls):.2f}%)")
-        
+            
     end = time.perf_counter()
     print(f'Finished in {round(end-start, 2)} second(s)') 
