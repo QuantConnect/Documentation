@@ -53,7 +53,7 @@ for method in methods:
         detail_description = str(ind_dict['description']).replace("Represents", "This indicator represents")
         if "Source: " in detail_description:
             link_split = detail_description.split("http")
-            detail_description = link_split[0].replace("Source: ", f'<sup><a href="https{link_split[1]}">source</a></sup>')
+            detail_description = link_split[0].replace("Source: ", f'<sup><a href="https{link_split[1]}">source</a></sup>'.replace("httpss", "https"))
 
     else:
         ind = urlopen(f"https://www.quantconnect.com/services/inspector?type=T:QuantConnect.Indicators.CandlestickPatterns.{item}").read().decode("utf-8") \
