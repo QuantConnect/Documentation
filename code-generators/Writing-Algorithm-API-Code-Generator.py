@@ -7,7 +7,7 @@ source = "http://cdn.quantconnect.com.s3.us-east-1.amazonaws.com/terminal/cache/
 base = "02 Writing Algorithms/98 API Reference/"
 
 dir_ = []
-raw = urlopen("https://raw.githubusercontent.com/QuantConnect/Lean/master/Algorithm/QCAlgorithm.cs").read().decode("utf-8").split(os.linesep)
+raw = urlopen("https://raw.githubusercontent.com/QuantConnect/Lean/master/Algorithm/QCAlgorithm.cs").read().decode("utf-8").split('\n')
 active = False
 
 for line in raw:
@@ -100,7 +100,7 @@ document.getElementById("All_button").click()
   <div>''')
     
     for topic in dir_:
-        html_file.write(f'''    <button id="{topic}_button" class="tablinks" onclick="openTab(event, '{topic}')">{topic}</button>{os.linesep}''')
+        html_file.write(f'''    <button id="{topic}_button" class="tablinks" onclick="openTab(event, '{topic}')">{topic}</button>\n''')
     
     html_file.write('''  </div>
                     
@@ -316,7 +316,7 @@ def Box(input_, doc_attr, doc_ref, type_map, j):
                     args[item["Name"]]["Description"] = args[item["Name"]]["Description"] + "."
                 
             if "EnumValues" in item:
-                args[item["Name"]]["Description"] = args[item["Name"]]["Description"] + f'<br/><i>{os.linesep}' + f'Options: {item["EnumValues"]}</i>'
+                args[item["Name"]]["Description"] = args[item["Name"]]["Description"] + '<br/><i>\n' + f'Options: {item["EnumValues"]}</i>'
 
             args[item["Name"]]["Type"] = type_map[str(item["typeId"])]
             
@@ -347,7 +347,7 @@ def Box(input_, doc_attr, doc_ref, type_map, j):
                     new_substring = '<code>' + new_substring.split('(')[0].split(".")[-1].split('"')[0] + '</code>'
                 
                 if "seealso" in substring:
-                    new_substring = f"{os.linesep}See also: {new_substring}.{os.linesep}"
+                    new_substring = "\nSee also: " + new_substring + ".\n"
                 
                 description = description.replace(substring, new_substring)
                 start = description.find("<", end)
@@ -365,8 +365,8 @@ def Box(input_, doc_attr, doc_ref, type_map, j):
     else:
         params += "<p>This method requires no argument input.</p>"
     
-    ret = f"""        <div class="method-return">
-            <h4>Return</h4>{os.linesep}"""
+    ret = """        <div class="method-return">
+            <h4>Return</h4>\n"""
     
     if "ReturnValue" in input_:
         if "Name" in input_["ReturnValue"]:
@@ -376,7 +376,7 @@ def Box(input_, doc_attr, doc_ref, type_map, j):
             ret_ = type_map[str(input_["ReturnValue"]["typeId"])]
             
         if ret_ == "Void":
-            ret += f"            <p>{ret_} - This method provides no return.</p>{os.linesep}"
+            ret += f"            <p>{ret_} - This method provides no return.</p>\n"
             
         elif ret_ == "Security":
             ret += f"            <p>{ret_} - The new Security"
@@ -385,13 +385,13 @@ def Box(input_, doc_attr, doc_ref, type_map, j):
             ret += f'            <p>{ret_}'
                 
             if "Description" in input_["ReturnValue"]:
-                ret += f' - {input_["ReturnValue"]["Description"]}</p>{os.linesep}'
+                ret += f' - {input_["ReturnValue"]["Description"]}</p>\n'
                 
             else:
-                ret += f'</p>{os.linesep}'
+                ret += '</p>\n'
             
     else:
-        ret += f"            <p>This method provides no return.</p>{os.linesep}"
+        ret += "            <p>This method provides no return.</p>\n"
         
     ret += "        </div>"
         
@@ -418,9 +418,9 @@ def Box(input_, doc_attr, doc_ref, type_map, j):
     else: 
         description = ""
     
-    this_ = f" ({os.linesep}&emsp;"
+    this_ = " (\n&emsp;"
     head_ = '<font color="#8F9CA3">' + ret_ + "</font> QuantConnect.Algorithm.QCAlgorithm." + input_["Name"] + this_
-    next_ = f",{os.linesep}" + "&emsp;"
+    next_ = ",\n" + "&emsp;"
     
     max_ = 0
     for value in args.values():
@@ -431,10 +431,10 @@ def Box(input_, doc_attr, doc_ref, type_map, j):
         
     call_ = head_ + \
         next_.join(["<code>" + str(value["Type"]) + "</code>" + " " * (max_ + 2 - len(str(value["Type"]))) + str(key) for key, value in args.items()]) + \
-        os.linesep + ")"
-    call_ = call_.replace(os.linesep, os.linesep + " " * 3)
+        "\n" + ")"
+    call_ = call_.replace("\n", "\n" + " " * 3)
         
-    buttons = os.linesep.join([f'''<button class="method-tag" onclick="openTopTab(event, '{attr_}')">{attr_}</button>''' for attr_ in doc_attr])
+    buttons = "\n".join([f'''<button class="method-tag" onclick="openTopTab(event, '{attr_}')">{attr_}</button>''' for attr_ in doc_attr])
     
     name = input_["Name"] if "Name" in input_ else input_["ShortType"]
     
