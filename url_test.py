@@ -1,3 +1,4 @@
+import gc
 import glob
 import os
 import requests
@@ -55,7 +56,8 @@ if __name__ == '__main__':
         if i % 8 == 0:
             for thread in threads:
                 thread.join()
-                
+            
+            gc.collect()                
             print(f"Done {i+1}/{len(urls)} ({i*100/len(urls):.2f}%)")
         
     end = time.perf_counter()
