@@ -2,9 +2,37 @@
 
 <h4>Single Symbol History Requests</h4>
 
-<p class="python">History requests for a known set of <code>Symbol</code> objects return an array of bars or a DataFrame. To get an array of bars, specify the data format. To get a DataFrame, omit the data format. Each row of the DataFrame represents the prices at a point in time. Each column of the DataFrame is a property of that price data (for example, open, high, low, and close).</p>
+<p>To request history for a single asset, pass the asset <code>Symbol</code> to the <code>History</code> method. The return type of the method call depends on the history request <code class='python'>[Type]</code><code class='csharp'>&lt;Type&gt;</code>. The following table describes the return type of each request <code class='python'>[Type]</code><code class='csharp'>&lt;Type&gt;</code>:</p>
 
-<p class="csharp">When you request data for a single <code>Symbol</code>, LEAN can infer the type of the returning data is fixed and directly returns an array of bars.</p>
+<table class="qc-table table">
+    <thead>
+        <tr>
+            <th>Request Type</th>
+            <th>Return Data Type</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>No argument</td>
+	    <td><code class='python'>DataFrame</code><code class='csharp'>List&lt;TradeBar&gt;</code></td>
+        </tr>
+        <tr>
+	    <td><code>TradeBar</code></td>
+	    <td><code class='python'>List[TradeBars]</code><code class='csharp'>List&lt;TradeBar&gt;</code></td>
+        </tr>
+        <tr>
+	    <td><code>QuoteBar</code></td>
+	    <td><code class='python'>List[QuoteBars]</code><code class='csharp'>List&lt;QuoteBar&gt;</code></td>
+        </tr>
+        <tr>
+	    <td><code>Tick</code></td>
+	    <td><code class='python'>List[Ticks]</code><code class='csharp'>List&lt;Tick&gt;</code></td>
+        </tr>
+    </tbody>
+</table>
+
+
+<p class="python">Each row of the DataFrame represents the prices at a point in time. Each column of the DataFrame is a property of that price data (for example, open, high, low, and close).</p>
 
 <div class="section-example-container">
 <pre class="python"><b># EXAMPLE 1: Requesting By Bar Count: 5 bars at the security resolution:</b>
