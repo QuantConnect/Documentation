@@ -1,32 +1,32 @@
-<p>The simplest form of history request is for a known set of <code>Symbol</code> objects. This is common for fixed universes of securities or when you need to prepare new securities added to your algorithm. <span class="csharp">History requests return slightly different data depending on the overload you call.</span></p>
-
-<p>Historical data is in ascending order from oldest to newest. This order is necessary to use the data to warm up indicators.</p>
+<p>The simplest form of history request is for a known set of <code>Symbol</code> objects. This is common for fixed universes of securities or when you need to prepare new securities added to your algorithm. History requests return slightly different data depending on the overload you call. The data that returns is in ascending order from oldest to newest. This order is necessary to use the data to warm up indicators.</p>
 
 <h4>Single Symbol History Requests</h4>
 
-<p class="python">
-History requests for a known set of <code>Symbol</code> objects return a DataFrame. Each row of the DataFrame represents the prices at a point in time. Each column of the DataFrame is a property of that price data (for example, open, high, low, and close). 
-</p>
+<p class="python">History requests for a known set of <code>Symbol</code> objects return an array of bars or a DataFrame. To get an array of bars, specify the data format. To get a DataFrame, omit the data format. Each row of the DataFrame represents the prices at a point in time. Each column of the DataFrame is a property of that price data (for example, open, high, low, and close).</p>
 
 <p class="csharp">When you request data for a single <code>Symbol</code>, LEAN can infer the type of the returning data is fixed and directly returns an array of bars.</p>
 
 <div class="section-example-container">
 <pre class="python"><b># EXAMPLE 1: Requesting By Bar Count: 5 IBM TradeBars, defaulting to security resolution:</b>
 symbol = self.AddEquity("IBM", Resolution.Daily).Symbol
-self.df = self.History(symbol, 5)
+trade_bars = self.History[TradeBar](symbol, 5)
+df = self.History(symbol, 5)
 <img class="img-responsive img-thumbnail " src="https://cdn.quantconnect.com/docs/i/history-dataframe-tradebars-single_rev0.png">
 </pre>
 <pre class="python"><b># EXAMPLE 2: Requesting By Bar Count: 5 IBM Minute TradeBars:</b>
-self.df = self.History(symbol, 5, Resolution.Minute)
+trade_bars = self.History[TradeBar](symbol, 5, Resolution.Minute)
+df = self.History(symbol, 5, Resolution.Minute)
 <img class="img-responsive img-thumbnail " src="https://cdn.quantconnect.com/docs/i/history-dataframe-tradebars-single-minute_rev0.png">
 </pre>
 <pre class="python"><b># EXAMPLE 3: Requesting By Period: 1 Week IBM TradeBars, defaulting to security resolution:</b> 
-self.df = self.History(symbol, timedelta(7)) 
+trade_bars = self.History[TradeBar](symbol, timedelta(7)) 
+df = self.History(symbol, timedelta(7)) 
 <img class="img-responsive img-thumbnail " src="https://cdn.quantconnect.com/docs/i/history-dataframe-period-daily_rev0.png">
 # Imporant Note: April 19th is Easter Friday, which has a bar EndTime = 20th, is not present.
 </pre>
 <pre class="python"><b># EXAMPLE 4: Requesting By Period: 5 Minutes IBM TradeBars:</b> 
-self.df = self.History(symbol, timedelta(5), Resolution.Minute)
+trade_bars = self.History[TradeBar](symbol, timedelta(5), Resolution.Minute)
+df = self.History(symbol, timedelta(5), Resolution.Minute)
 <img class="img-thumbnail img-responsive" src="https://cdn.quantconnect.com/docs/i/history-dataframe-period-minute_rev0.png">
 # Important Note: Period history requests are relative to "now" algorithm time. The preceding example returns 5 minute bars if you request it at the market close. If you request it at 16:05, it returns nothing.
 </pre>
@@ -172,33 +172,33 @@ foreach (var s in slices) {
     <tbody>
         <tr>
             <td><code>fillForward</code></td>
-	        <td><code class='csharp'>bool?</code><code class='python'>bool/NoneType</code></td>
-            <td>True to <a href='/docs/v2/writing-algorithms/securities/subscriptions#05-Fill-Forward'>fill forward</a> missing data. Otherwise, false.</td>
-            <td><code class='csharp'>null</code><code class='python'>None</code></td>
+	        <td><code class="csharp">bool?</code><code class="python">bool/NoneType</code></td>
+            <td>True to <a href="/docs/v2/writing-algorithms/securities/subscriptions#05-Fill-Forward">fill forward</a> missing data. Otherwise, false.</td>
+            <td><code class="csharp">null</code><code class="python">None</code></td>
         </tr>
         <tr>
             <td><code>extendedMarket</code></td>
-	        <td><code class='csharp'>bool?</code><code class='python'>bool/NoneType</code></td>
+	        <td><code class="csharp">bool?</code><code class="python">bool/NoneType</code></td>
             <td>True to include extended market hours data. Otherwise, false.</td>
-            <td><code class='csharp'>null</code><code class='python'>None</code></td>
+            <td><code class="csharp">null</code><code class="python">None</code></td>
         </tr>
         <tr>
             <td><code>dataMappingMode</code></td>
-	        <td><code class='csharp'>DataMappingMode?</code><code class='python'>DataMappingMode/NoneType</code></td>
-            <td>The <a href='/docs/v2/writing-algorithms/universes/futures#12-Continous-Contracts'>contract mapping mode</a> to use for the security history request.</td>
-            <td><code class='csharp'>null</code><code class='python'>None</code></td>
+	        <td><code class="csharp">DataMappingMode?</code><code class="python">DataMappingMode/NoneType</code></td>
+            <td>The <a href="/docs/v2/writing-algorithms/universes/futures#12-Continous-Contracts">contract mapping mode</a> to use for the security history request.</td>
+            <td><code class="csharp">null</code><code class="python">None</code></td>
         </tr>
         <tr>
             <td><code>dataNormalizationMode</code></td>
-            <td><code class='csharp'>DataNormalizationMode?</code><code class='python'>DataNormalizationMode/NoneType</code></td>
-            <td>The price scaling mode to use for <a href='/docs/v2/writing-algorithms/securities/asset-classes/us-equity/requesting-data#09-Data-Normalization'>US Equities</a> or <a href='/docs/v2/writing-algorithms/universes/futures#12-Continous-Contracts'>continuous Futures contracts</a>. If you don't provide a value, it uses the data normalization mode of the security subscription.</td>
-            <td><code class='csharp'>null</code><code class='python'>None</code></td>
+            <td><code class="csharp">DataNormalizationMode?</code><code class="python">DataNormalizationMode/NoneType</code></td>
+            <td>The price scaling mode to use for <a href="/docs/v2/writing-algorithms/securities/asset-classes/us-equity/requesting-data#09-Data-Normalization">US Equities</a> or <a href="/docs/v2/writing-algorithms/universes/futures#12-Continous-Contracts">continuous Futures contracts</a>. If you don't provide a value, it uses the data normalization mode of the security subscription.</td>
+            <td><code class="csharp">null</code><code class="python">None</code></td>
         </tr>
         <tr>
             <td><code>contractDepthOffset</code></td>
-            <td><code class='csharp'>int?</code><code class='python'>int/NoneType</code></td>
-            <td>The desired offset from the current front month for <a href='/docs/v2/writing-algorithms/universes/futures#12-Continous-Contracts'>continuous Futures contracts</a>.</td>
-            <td><code class='csharp'>null</code><code class='python'>None</code></td>
+            <td><code class="csharp">int?</code><code class="python">int/NoneType</code></td>
+            <td>The desired offset from the current front month for <a href="/docs/v2/writing-algorithms/universes/futures#12-Continous-Contracts">continuous Futures contracts</a>.</td>
+            <td><code class="csharp">null</code><code class="python">None</code></td>
         </tr>
     </tbody>
 </table>
