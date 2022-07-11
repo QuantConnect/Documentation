@@ -116,17 +116,17 @@ namespace QuantConnect.Tests
                         HttpRequester(url, files).ContinueWith(response => {
                             var statusCode = response.Result;
                             
-                            if (statusCode == HttpStatusCode.NotFound)
+                            if (statusCode == HttpStatusCode.BadRequest)
                             {
-                                Log.Error($"404 Not found:\n\t{url}\n\t[\n\t\t{string.Join("\n\t\t", files)}\n\t]");
+                                Log.Trace($"400 Bad Request:\n\t{url}\n\t[\n\t\t{string.Join("\n\t\t", files)}\n\t]");
                             }
                             else if (statusCode == HttpStatusCode.Unauthorized)
                             {
                                 Log.Trace($"403 Unauthorized:\n\t{url}\n\t[\n\t\t{string.Join("\n\t\t", files)}\n\t]");
                             }
-                            else if (statusCode == HttpStatusCode.BadRequest)
+                            else if (statusCode == HttpStatusCode.NotFound)
                             {
-                                Log.Trace($"400 Bad Request:\n\t{url}\n\t[\n\t\t{string.Join("\n\t\t", files)}\n\t]");
+                                Log.Error($"404 Not found:\n\t{url}\n\t[\n\t\t{string.Join("\n\t\t", files)}\n\t]");
                             }
                         })
                     );
@@ -159,7 +159,7 @@ namespace QuantConnect.Tests
         /// <param name="url">URL to send GET request for</param>
         /// <param name="files">files containing the url</param>
         /// <returns>Content as string</returns>
-        /// <exception cref="Exception">Failed to get data after exceeding retries</exception>
+        /// <exception cref="Exception">Failed to request</exception>
         private static async Task<HttpStatusCode> HttpRequester(string url, List<string> files)
         {
             try
@@ -168,15 +168,17 @@ namespace QuantConnect.Tests
                 {
                     var response = await client.GetAsync(url);
                     var status = response.StatusCode;
-
+                    response.Dispose();
                     
                     return status;
                 }
             }
             catch
             {
-                return HttpStatusCode.BadRequest;
+                Thread.Sleep(1000);
             }
+
+            throw new Exception($"Request failed:\n\t{url}\n\t[\n\t\t{string.Join("\n\t\t", files)}\n\t]");
         }
     }
 }
