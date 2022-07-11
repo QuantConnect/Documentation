@@ -12,15 +12,27 @@ btc_symbol = self.AddCrypto("BTCUSD", Resolution.Minute).Symbol
 trade_bars = self.History[TradeBar](btc_symbol, 5)
 quote_bars = self.History[QuoteBar](btc_symbol, 5)
 df = self.History(btc_symbol, 5)
-
 <img class="img-responsive img-thumbnail " src="https://cdn.quantconnect.com/docs/i/history-dataframe-tradebars-single_rev0.png">
 </pre>
+<pre class="csharp"><b>// EXAMPLE 1: Requesting By Bar Count: 5 bars at the security resolution:</b>
+var btcSymbol = AddCrypto("BTCUSD", Resolution.Minute).Symbol;
+var tradeBars = History&lt;TradeBar&gt;(btcSymbol, 5);
+var quoteBars = History&lt;QuoteBar&gt;(btcSymbol, 5);
+var tradeBars2 = History(btcSymbol, 5);</pre>
+
+	
 <pre class="python"><b># EXAMPLE 2: Requesting By Bar Count: 5 bars with a specific resolution:</b>
 trade_bars = self.History[TradeBar](btc_symbol, 5, Resolution.Daily)
 quote_bars = self.History[QuoteBar](btc_symbol, 5, Resolution.Minute)
 df = self.History(btc_symbol, 5, Resolution.Minute)
 <img class="img-responsive img-thumbnail " src="https://cdn.quantconnect.com/docs/i/history-dataframe-tradebars-single-minute_rev0.png">
 </pre>
+<pre class="csharp"><b>// EXAMPLE 2: Requesting By Bar Count: 5 bars with a specific resolution:</b>
+var tradeBars = History&lt;TradeBar&gt;(btcSymbol, 5, Resolution.Daily);
+var quoteBars = History&lt;QuoteBar&gt;(btcSymbol, 5, Resolution.Minute);
+var tradeBars2 = History(btcSymbol, 5, Resolution.Minute);</pre>
+
+
 <pre class="python"><b># EXAMPLE 3: Requesting By Period: 3 days of data at the security resolution:</b> 
 eth_symbol = self.AddCrypto("ETHUSD", Resolution.Tick).Symbol
 ticks = self.History[Tick](eth_symbol, timedelta(days=3))
@@ -31,6 +43,16 @@ df = self.History(btc_symbol, timedelta(days=3))
 <img class="img-responsive img-thumbnail " src="https://cdn.quantconnect.com/docs/i/history-dataframe-period-daily_rev0.png">
 # Imporant Note: April 19th is Easter Friday, which has a bar EndTime = 20th, is not present.
 </pre>
+<pre class="csharp"><b>// EXAMPLE 3: Requesting By Period: 3 days of data at the security resolution:</b>
+var ethSymbol = AddCrypto("ETHUSD", Resolution.Tick).Symbol;
+var ticks = History&lt;Tick&gt;(ethSymbol, TimeSpan.FromDays(3));
+
+var tradeBars = History&lt;TradeBar&gt;(btcSymbol, TimeSpan.FromDays(3));
+var quoteBars = History&lt;QuoteBar&gt;(btcSymbol, TimeSpan.FromDays(3));
+var tradeBars2 = History(btcSymbol, TimeSpan.FromDays(3));</pre>
+	
+	
+	
 <pre class="python"><b># EXAMPLE 4: Requesting By Period: 3 days of data with a specific resolution:</b> 
 trade_bars = self.History[TradeBar](btc_symbol, timedelta(days=3), Resolution.Daily) 
 quote_bars = self.History[QuoteBar](btc_symbol, timedelta(days=3), Resolution.Minute)
@@ -40,25 +62,12 @@ df = self.History(btc_symbol, timedelta(days=3), Resolution.Hour)
 # Important Note: Period history requests are relative to "now" algorithm time. The preceding example returns 5 minute bars if you request it at the market close. If you request it at 16:05, it returns nothing.
 </pre>
 
-<pre class="csharp"><b>// Single Symbol History Method Arguments: </b>
-var bars = History&lt;Type&gt;(Symbol symbol, int barCount, Resolution resolution = null);
-var bars = History&lt;Type&gt;(Symbol symbol, TimeSpan period, Resolution = null);
-</pre>
-<pre class="csharp"><b>// EXAMPLE 1: 100 Bars of Single Symbol, Specifying Type, Default to Security Resolution:</b>
-var ibm = AddEquity("IBM", Resolution.Minute).Symbol;
-var bars = History&lt;TradeBar&gt;(ibm, 100);
 
-// Same request but for QuoteBars
-var eurusd = AddForex("EURUSD", Resolution.Minute).Symbol;
-var quoteBars = History&lt;QuoteBar&gt;(eurusd, 100);
-</pre>
-<pre class="csharp"><b>// EXAMPLE 2: Six Hours of Bars of Single Symbol, Setting Resolution:</b>
-var bars = History&lt;TradeBar&gt;(ibm, TimeSpan.FromHours(6), Resolution.Minute);
-
-// Same request but for QuoteBars
-var quoteBars = History&lt;QuoteBar&gt;(eurusd, TimeSpan.FromHours(6), Resolution.Minute);
-</pre>
-
+<pre class="csharp"><b>// EXAMPLE 4: Requesting By Period: 3 days of data with a specific resolution:</b>
+var tradeBars = History&lt;TradeBar&gt;(btcSymbol, TimeSpan.FromDays(3));
+var quoteBars = History&lt;QuoteBar&gt;(btcSymbol, TimeSpan.FromDays(3));
+var ticks = History&lt;Tick&gt;(ethSymbol, TimeSpan.FromDays(3));
+var tradeBars2 = History(btcSymbol, TimeSpan.FromDays(3));</pre>
 </div>
 
 <h4>Multiple Symbol History Requests</h4>
