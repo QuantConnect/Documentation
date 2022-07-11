@@ -75,7 +75,37 @@ var tradeBars2 = History(btcSymbol, TimeSpan.FromDays(3), Resolution.Minute);</p
 To request history for multiple symbols at a time, pass an array of Symbol objects to the same API methods shown in the preceding section.
 </p>
 
-<p class="csharp">History requests with an array of <code>Symbol</code> objects return an array of <code>Slice</code> objects. This method call provides a container that supports all data types. For example, a history request for Forex <code>QuoteBars</code> and Equity <code>TradeBars</code> has the Forex data under <code>slices.QuoteBars</code> and the Equity data under <code>slices.Bars</code>.</p>
+<p>The return type of the method call depends on the history request <code class='python'>[Type]</code><code class='csharp'>&lt;Type&gt;</code>. The following table describes the return type of each request <code class='python'>[Type]</code><code class='csharp'>&lt;Type&gt;</code>.</p>
+
+<table class="qc-table table">
+    <thead>
+        <tr>
+            <th>Request Type</th>
+            <th>Return Data Type</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>No argument</td>
+	    <td><code class='python'>DataFrame</code><code class='csharp'>List&lt;Slice&gt;</code></td>
+        </tr>
+        <tr>
+	    <td><code>TradeBar</code></td>
+	    <td><code class='python'>List[TradeBars]</code><code class='csharp'>List&lt;TradeBars&gt;</code></td>
+        </tr>
+        <tr>
+	    <td><code>QuoteBar</code></td>
+	    <td><code class='python'>List[QuoteBars]</code><code class='csharp'>List&lt;QuoteBars&gt;</code></td>
+        </tr>
+        <tr>
+	    <td><code>Tick</code></td>
+	    <td><code class='python'>List[Ticks]</code><code class='csharp'>List&lt;Ticks&gt;</code></td>
+        </tr>
+    </tbody>
+</table>
+
+
+<p class="csharp">This <code>Slice</code> return type provides a container that supports all data types. For example, a history request for Forex <code>QuoteBars</code> and Equity <code>TradeBars</code> has the Forex data under <code>slices.QuoteBars</code> and the Equity data under <code>slices.Bars</code>.</p>
 
 <div class="section-example-container">
 <pre class="python"><b># EXAMPLE 5: Requesting By Bar Count for Multiple Symbols: 5 bars at the security resolution:</b>
