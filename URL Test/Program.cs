@@ -178,7 +178,7 @@ namespace QuantConnect.Tests
                 Thread.Sleep(1000);
             }
 
-            throw new Exception($"Request failed:\n\t{url}\n\t[\n\t\t{string.Join("\n\t\t", files)}\n\t]");
+            return HttpStatusCode.BadRequest;
         }
     }
 }
