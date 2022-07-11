@@ -2,7 +2,7 @@
 
 <h4>Single Symbol History Requests</h4>
 
-<p>To request history for a single asset, pass the asset <code>Symbol</code> to the <code>History</code> method. The return type of the method call depends on the history request <code class='python'>[Type]</code><code class='csharp'>&lt;Type&gt;</code>. The following table describes the return type of each request <code class='python'>[Type]</code><code class='csharp'>&lt;Type&gt;</code>:</p>
+<p>To request history for a single asset, pass the asset <code>Symbol</code> to the <code>History</code> method. The return type of the method call depends on the history request <code class="python">[Type]</code><code class="csharp">&lt;Type&gt;</code>. The following table describes the return type of each request <code class="python">[Type]</code><code class="csharp">&lt;Type&gt;</code>:</p>
 
 <table class="qc-table table">
     <thead>
@@ -14,19 +14,19 @@
     <tbody>
         <tr>
             <td>No argument</td>
-	    <td><code class='python'>DataFrame</code><code class='csharp'>List&lt;TradeBar&gt;</code></td>
+	    <td><code class="python">DataFrame</code><code class="csharp">List&lt;TradeBar&gt;</code></td>
         </tr>
         <tr>
 	    <td><code>TradeBar</code></td>
-	    <td><code class='python'>List[TradeBars]</code><code class='csharp'>List&lt;TradeBar&gt;</code></td>
+	    <td><code class="python">List[TradeBars]</code><code class="csharp">List&lt;TradeBar&gt;</code></td>
         </tr>
         <tr>
 	    <td><code>QuoteBar</code></td>
-	    <td><code class='python'>List[QuoteBars]</code><code class='csharp'>List&lt;QuoteBar&gt;</code></td>
+	    <td><code class="python">List[QuoteBars]</code><code class="csharp">List&lt;QuoteBar&gt;</code></td>
         </tr>
         <tr>
 	    <td><code>Tick</code></td>
-	    <td><code class='python'>List[Ticks]</code><code class='csharp'>List&lt;Tick&gt;</code></td>
+	    <td><code class="python">List[Ticks]</code><code class="csharp">List&lt;Tick&gt;</code></td>
         </tr>
     </tbody>
 </table>
@@ -40,7 +40,7 @@ btc_symbol = self.AddCrypto("BTCUSD", Resolution.Minute).Symbol
 trade_bars = self.History[TradeBar](btc_symbol, 5)
 quote_bars = self.History[QuoteBar](btc_symbol, 5)
 df = self.History(btc_symbol, 5)
-<img class="img-responsive img-thumbnail " src="https://cdn.quantconnect.com/docs/i/history-dataframe-tradebars-single_rev0.png">
+<img class="img-responsive img-thumbnail " src="https://cdn.quantconnect.com/i/tu/history-request-single-symbol-1.png">
 </pre>
 <pre class="csharp"><b>// EXAMPLE 1: Requesting By Bar Count: 5 bars at the security resolution:</b>
 var btcSymbol = AddCrypto("BTCUSD", Resolution.Minute).Symbol;
@@ -53,7 +53,7 @@ var tradeBars2 = History(btcSymbol, 5);</pre>
 trade_bars = self.History[TradeBar](btc_symbol, 5, Resolution.Daily)
 quote_bars = self.History[QuoteBar](btc_symbol, 5, Resolution.Minute)
 df = self.History(btc_symbol, 5, Resolution.Minute)
-<img class="img-responsive img-thumbnail " src="https://cdn.quantconnect.com/docs/i/history-dataframe-tradebars-single-minute_rev0.png">
+<img class="img-responsive img-thumbnail " src="https://cdn.quantconnect.com/i/tu/history-request-single-symbol-1.png">
 </pre>
 <pre class="csharp"><b>// EXAMPLE 2: Requesting By Bar Count: 5 bars with a specific resolution:</b>
 var tradeBars = History&lt;TradeBar&gt;(btcSymbol, 5, Resolution.Daily);
@@ -68,9 +68,7 @@ ticks = self.History[Tick](eth_symbol, timedelta(days=3))
 trade_bars = self.History[TradeBar](btc_symbol, timedelta(days=3)) 
 quote_bars = self.History[QuoteBar](btc_symbol, timedelta(days=3))
 df = self.History(btc_symbol, timedelta(days=3)) 
-<img class="img-responsive img-thumbnail " src="https://cdn.quantconnect.com/docs/i/history-dataframe-period-daily_rev0.png">
-# Imporant Note: April 19th is Easter Friday, which has a bar EndTime = 20th, is not present.
-</pre>
+<img class="img-responsive img-thumbnail " src="https://cdn.quantconnect.com/i/tu/history-request-single-symbol-2.png"></pre>
 <pre class="csharp"><b>// EXAMPLE 3: Requesting By Period: 3 days of data at the security resolution:</b>
 var ethSymbol = AddCrypto("ETHUSD", Resolution.Tick).Symbol;
 var ticks = History&lt;Tick&gt;(ethSymbol, TimeSpan.FromDays(3));
@@ -86,9 +84,8 @@ trade_bars = self.History[TradeBar](btc_symbol, timedelta(days=3), Resolution.Da
 quote_bars = self.History[QuoteBar](btc_symbol, timedelta(days=3), Resolution.Minute)
 ticks = self.History[Tick](eth_symbol, timedelta(days=3), Resolution.Tick)
 df = self.History(btc_symbol, timedelta(days=3), Resolution.Hour) 
-<img class="img-thumbnail img-responsive" src="https://cdn.quantconnect.com/docs/i/history-dataframe-period-minute_rev0.png">
-# Important Note: Period history requests are relative to "now" algorithm time. The preceding example returns 5 minute bars if you request it at the market close. If you request it at 16:05, it returns nothing.
-</pre>
+<img class="img-thumbnail img-responsive" src="https://cdn.quantconnect.com/i/tu/history-request-single-symbol-3.png">
+# Important Note: Period history requests are relative to "now" algorithm time.</pre>
 
 
 <pre class="csharp"><b>// EXAMPLE 4: Requesting By Period: 3 days of data with a specific resolution:</b>
@@ -100,7 +97,7 @@ var tradeBars2 = History(btcSymbol, TimeSpan.FromDays(3), Resolution.Minute);</p
 
 <h4>Multiple Symbol History Requests</h4>
 <p>
-To request history for multiple symbols at a time, pass an array of Symbol objects to the same API methods shown in the preceding section. The return type of the method call depends on the history request <code class='python'>[Type]</code><code class='csharp'>&lt;Type&gt;</code>. The following table describes the return type of each request <code class='python'>[Type]</code><code class='csharp'>&lt;Type&gt;</code>:</p>
+To request history for multiple symbols at a time, pass an array of Symbol objects to the same API methods shown in the preceding section. The return type of the method call depends on the history request <code class="python">[Type]</code><code class="csharp">&lt;Type&gt;</code>. The following table describes the return type of each request <code class="python">[Type]</code><code class="csharp">&lt;Type&gt;</code>:</p>
 
 <table class="qc-table table">
     <thead>
@@ -112,19 +109,19 @@ To request history for multiple symbols at a time, pass an array of Symbol objec
     <tbody>
         <tr>
             <td>No argument</td>
-	    <td><code class='python'>DataFrame</code><code class='csharp'>List&lt;Slice&gt;</code></td>
+	    <td><code class="python">DataFrame</code><code class="csharp">List&lt;Slice&gt;</code></td>
         </tr>
         <tr>
 	    <td><code>TradeBar</code></td>
-	    <td><code class='python'>List[TradeBars]</code><code class='csharp'>List&lt;TradeBars&gt;</code></td>
+	    <td><code class="python">List[TradeBars]</code><code class="csharp">List&lt;TradeBars&gt;</code></td>
         </tr>
         <tr>
 	    <td><code>QuoteBar</code></td>
-	    <td><code class='python'>List[QuoteBars]</code><code class='csharp'>List&lt;QuoteBars&gt;</code></td>
+	    <td><code class="python">List[QuoteBars]</code><code class="csharp">List&lt;QuoteBars&gt;</code></td>
         </tr>
         <tr>
 	    <td><code>Tick</code></td>
-	    <td><code class='python'>List[Ticks]</code><code class='csharp'>List&lt;Ticks&gt;</code></td>
+	    <td><code class="python">List[Ticks]</code><code class="csharp">List&lt;Ticks&gt;</code></td>
         </tr>
     </tbody>
 </table>
@@ -133,27 +130,27 @@ To request history for multiple symbols at a time, pass an array of Symbol objec
 <p class="csharp">The <code>Slice</code> return type provides a container that supports all data types. For example, a history request for Forex <code>QuoteBars</code> and Equity <code>TradeBars</code> has the Forex data under <code>slices.QuoteBars</code> and the Equity data under <code>slices.Bars</code>.</p>
 
 <div class="section-example-container">
-<pre class="python"><b># EXAMPLE 5: Requesting By Bar Count for Multiple Symbols: 5 bars at the security resolution:</b>
-ibm = AddEquity("IBM", Resolution.Minute).Symbol
-aapl = AddEquity("AAPL", Resolution.Minute).Symbol
-trade_bars_list = self.History[TradeBar]([ibm, aapl], 5)
-quote_bars_list = self.History[QuoteBar]([ibm, aapl], 5)
-df = self.History([ibm, aapl], 5)
-<img class="img-responsive img-thumbnail " src="https://cdn.quantconnect.com/docs/i/history-stacked-multi-symbol-python_rev0.png">
+<pre class="python"><b># EXAMPLE 5: Requesting By Bar Count for Multiple Symbols: 2 bars at the security resolution:</b>
+ibm = self.AddEquity("IBM", Resolution.Minute).Symbol
+aapl = self.AddEquity("AAPL", Resolution.Minute).Symbol
+trade_bars_list = self.History[TradeBar]([ibm, aapl], 2)
+quote_bars_list = self.History[QuoteBar]([ibm, aapl], 2)
+df = self.History([ibm, aapl], 2)
+<img class="img-responsive img-thumbnail " src="https://cdn.quantconnect.com/i/tu/history-request-single-symbol-4.png">
 </pre>
 
-<pre class="csharp"><b>// EXAMPLE 5: Requesting By Bar Count for Multiple Symbols: 5 bars at the security resolution:</b>
+<pre class="csharp"><b>// EXAMPLE 5: Requesting By Bar Count for Multiple Symbols: 2 bars at the security resolution:</b>
 var ibm = AddEquity("IBM", Resolution.Minute).Symbol;
 var aapl = AddEquity("AAPL", Resolution.Minute).Symbol;
-var tradeBarsList = History&lt;TradeBar&gt;(new[] { ibm, aapl }, 5);
-var quoteBarsList = History&lt;QuoteBar&gt;(new[] { ibm, aapl }, 5);
+var tradeBarsList = History&lt;TradeBar&gt;(new[] { ibm, aapl }, 2);
+var quoteBarsList = History&lt;QuoteBar&gt;(new[] { ibm, aapl }, 2);
 </pre>
 	
 <pre class="python"><b># EXAMPLE 6: Requesting By Bar Count for Multiple Symbols: 5 bars with a specific resolution:</b>
-trade_bars_list = self.History[TradeBar]([ibm, aapl], 5)
-quote_bars_list = self.History[QuoteBar]([ibm, aapl], 5)
-df = self.History([ibm, aapl], 5)
-<img class="img-responsive img-thumbnail " src="https://cdn.quantconnect.com/docs/i/history-stacked-multi-symbol-python_rev0.png">
+trade_bars_list = self.History[TradeBar]([ibm, aapl], 5, Resolution.Daily)
+quote_bars_list = self.History[QuoteBar]([ibm, aapl], 5, Resolution.Minute)
+df = self.History([ibm, aapl], 5, Resolution.Daily)
+<img class="img-responsive img-thumbnail " src="https://cdn.quantconnect.com/i/tu/history-request-single-symbol-5.png">
 </pre>
 
 <pre class="csharp"><b>// EXAMPLE 6: Requesting By Bar Count for Multiple Symbols: 5 bars with a specific resolution:</b>
@@ -168,9 +165,7 @@ ticks = self.History[Tick]([eth_symbol], timedelta(days=3))
 trade_bars = self.History[TradeBar]([btc_symbol], timedelta(days=3)) 
 quote_bars = self.History[QuoteBar]([btc_symbol], timedelta(days=3))
 df = self.History([btc_symbol], timedelta(days=3)) 
-<img class="img-responsive img-thumbnail " src="https://cdn.quantconnect.com/docs/i/history-dataframe-period-daily_rev0.png">
-# Imporant Note: April 19th is Easter Friday, which has a bar EndTime = 20th, is not present.
-</pre>
+<img class="img-responsive img-thumbnail " src="https://cdn.quantconnect.com/i/tu/history-request-single-symbol-6.png"></pre>
 <pre class="csharp"><b>// EXAMPLE 7: Requesting By Period: 3 days of data at the security resolution:</b>
 var ticks = History&lt;Tick&gt;(new[] {ethSymbol}, TimeSpan.FromDays(3));
 
@@ -193,23 +188,22 @@ self.AddEquity("AAPL", Resolution.Daily)
 # Request history data and enumerate results
 slices = self.History(5)
 for s in slices:
-    print(str(s.Time) + \
-          " AAPL:" + str(s.Bars["AAPL"].Close) + " IBM:" + str(s.Bars["IBM"].Close))
-<img class="img-responsive img-thumbnail " src="https://cdn.quantconnect.com/docs/i/history-all-security-slices_rev0.png">
+    self.Log(str(s.Time) + " AAPL:" + str(s.Bars["AAPL"].Close) + " IBM:" + str(s.Bars["IBM"].Close))
+<img class="img-responsive img-thumbnail " src="https://cdn.quantconnect.com/i/tu/history-request-single-symbol-7.png">
 </pre>
 
 <pre class="csharp"><b>// EXAMPLE 1: Requesting 5 bars for all securities at their respective resolution:</b>
 
 // Set up the universe
-AddEquity("IBM", Resolution.Daily)
-AddEquity("AAPL", Resolution.Daily)
+AddEquity("IBM", Resolution.Daily);
+AddEquity("AAPL", Resolution.Daily);
 
 // Request history data and enumerate results:
-var slices = History(5)
+var slices = History(5);
 foreach (var s in slices) {
     Debug($"{s.Time} AAPL: {s.Bars["AAPL"].Close} IBM: {s.Bars["IBM"].Close}");
 }
-<img class="img-responsive img-thumbnail " src="https://cdn.quantconnect.com/docs/i/history-debug-all-securities_rev0.png">
+<img class="img-responsive img-thumbnail " src="https://cdn.quantconnect.com/i/tu/history-request-single-symbol-9.png">
 </pre>
 </div>
 
@@ -218,9 +212,8 @@ foreach (var s in slices) {
 
 slices = self.History(timedelta(minutes=5), Resolution.Minute)
 for s in slices:
-    print(str(s.Time) + \
-          " AAPL:" + str(s.Bars["AAPL"].Close) + " IBM:" + str(s.Bars["IBM"].Close))
-<img class="img-responsive img-thumbnail " src="https://cdn.quantconnect.com/docs/i/history-all-security-slices-minute_rev0.png">
+    self.Log(str(s.Time) + " AAPL:" + str(s.Bars["AAPL"].Close) + " IBM:" + str(s.Bars["IBM"].Close))
+<img class="img-responsive img-thumbnail " src="https://cdn.quantconnect.com/i/tu/history-request-single-symbol-8.png">
 # timedelta history requests are relative to "now" in Algorithm Time. If you request this data at 16:05, it returns an empty array because the market is closed.</pre>
 
     
@@ -230,8 +223,8 @@ var slices = History(TimeSpan.FromHours(24), Resolution.Hour);
 foreach (var s in slices) {
      Debug($"{s.Time} AAPL: {s.Bars["AAPL"].Close} IBM: {s.Bars["IBM"].Close}");
 }
-<img class="img-responsive img-thumbnail" src="https://cdn.quantconnect.com/docs/i/history-debug-all-securities-timespan-6hours_rev0.png">
-// TimeSpan history requests are relative to "now" in Algorithm Time.  If you request this data at 16:05, it returns an empty array because the market is closed.</pre>
+<img class="img-responsive img-thumbnail" src="https://cdn.quantconnect.com/i/tu/history-request-single-symbol-10.png">
+// TimeSpan history requests are relative to "now" in Algorithm Time.</pre>
 
 </div>
 
