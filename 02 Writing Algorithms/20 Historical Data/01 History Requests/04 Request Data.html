@@ -78,25 +78,53 @@ To request history for multiple symbols at a time, pass an array of Symbol objec
 <p class="csharp">History requests with an array of <code>Symbol</code> objects return an array of <code>Slice</code> objects. This method call provides a container that supports all data types. For example, a history request for Forex <code>QuoteBars</code> and Equity <code>TradeBars</code> has the Forex data under <code>slices.QuoteBars</code> and the Equity data under <code>slices.Bars</code>.</p>
 
 <div class="section-example-container">
-<pre class="python"><b># EXAMPLE 5: Multi-Symbol History Request.</b>
-ibm = AddEquity("IBM", Resolution.Minute).Symbol;<br>aapl = AddEquity("AAPL", Resolution.Minute).Symbol;
-self.df = self.History([ibm, aapl], 2)
+<pre class="python"><b># EXAMPLE 5: Requesting By Bar Count for Multiple Symbols: 5 bars at the security resolution:</b>
+ibm = AddEquity("IBM", Resolution.Minute).Symbol
+aapl = AddEquity("AAPL", Resolution.Minute).Symbol
+trade_bars_list = self.History[TradeBar]([ibm, aapl], 5)
+quote_bars_list = self.History[QuoteBar]([ibm, aapl], 5)
+df = self.History([ibm, aapl], 5)
 <img class="img-responsive img-thumbnail " src="https://cdn.quantconnect.com/docs/i/history-stacked-multi-symbol-python_rev0.png">
 </pre>
 
-
-<pre class="csharp"><b>// Multi-Symbol History Method Arguments:</b>
-var slices = History(symbols[], int barCount, Resolution resolution = null);
-var slices = History(Symbol[] symbols, TimeSpan period, Resolution = null);
-</pre>
-<pre class="csharp"><b>// EXAMPLE 1: Symbol array, 5 Bars, Default to Security Resolution:</b>
+<pre class="csharp"><b>// EXAMPLE 5: Requesting By Bar Count for Multiple Symbols: 5 bars at the security resolution:</b>
 var ibm = AddEquity("IBM", Resolution.Minute).Symbol;
 var aapl = AddEquity("AAPL", Resolution.Minute).Symbol;
-var bars = History(new[] { ibm, aapl }, 5);
+var tradeBarsList = History&lt;TradeBar&gt;(new[] { ibm, aapl }, 5);
+var quoteBarsList = History&lt;QuoteBar&gt;(new[] { ibm, aapl }, 5);
 </pre>
-<pre class="csharp"><b>// EXAMPLE 2: Symbol array, 6 Hours, Specifying Resolution:</b>
-var bars = History(new[] { ibm, aapl }, TimeSpan.FromHours(6), Resolution.Minute);
+	
+<pre class="python"><b># EXAMPLE 6: Requesting By Bar Count for Multiple Symbols: 5 bars with a specific resolution:</b>
+trade_bars_list = self.History[TradeBar]([ibm, aapl], 5)
+quote_bars_list = self.History[QuoteBar]([ibm, aapl], 5)
+df = self.History([ibm, aapl], 5)
+<img class="img-responsive img-thumbnail " src="https://cdn.quantconnect.com/docs/i/history-stacked-multi-symbol-python_rev0.png">
 </pre>
+
+<pre class="csharp"><b>// EXAMPLE 6: Requesting By Bar Count for Multiple Symbols: 5 bars with a specific resolution:</b>
+var tradeBarsList = History&lt;TradeBar&gt;(new[] { ibm, aapl }, 5, Resolution.Minute);
+var quoteBarsList = History&lt;QuoteBar&gt;(new[] { ibm, aapl }, 5, Resolution.Minute);
+</pre>
+	
+	
+<pre class="python"><b># EXAMPLE 7: Requesting By Period: 3 days of data at the security resolution:</b> 
+eth_symbol = self.AddCrypto("ETHUSD", Resolution.Tick).Symbol
+ticks = self.History[Tick]([eth_symbol], timedelta(days=3))
+
+trade_bars = self.History[TradeBar]([btc_symbol], timedelta(days=3)) 
+quote_bars = self.History[QuoteBar]([btc_symbol], timedelta(days=3))
+df = self.History([btc_symbol], timedelta(days=3)) 
+<img class="img-responsive img-thumbnail " src="https://cdn.quantconnect.com/docs/i/history-dataframe-period-daily_rev0.png">
+# Imporant Note: April 19th is Easter Friday, which has a bar EndTime = 20th, is not present.
+</pre>
+<pre class="csharp"><b>// EXAMPLE 7: Requesting By Period: 3 days of data at the security resolution:</b>
+var ethSymbol = AddCrypto("ETHUSD", Resolution.Tick).Symbol;
+var ticks = History&lt;Tick&gt;(new[] {ethSymbol}, TimeSpan.FromDays(3));
+
+var tradeBars = History&lt;TradeBar&gt;(new[] {btcSymbol}, TimeSpan.FromDays(3));
+var quoteBars = History&lt;QuoteBar&gt;(new[] {btcSymbol}, TimeSpan.FromDays(3));
+var tradeBars2 = History(new[] {btcSymbol}, TimeSpan.FromDays(3));</pre>	
+
 </div>
 
 <h4>All Symbol History Requests</h4>
