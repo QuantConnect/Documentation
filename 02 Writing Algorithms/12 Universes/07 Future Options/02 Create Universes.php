@@ -30,7 +30,7 @@ self.AddFutureOption(future.Symbol)</pre>
         </tr>
         <tr>
             <td><code>optionFilter</code></td>
-	        <td><code class="csharp">Func&lt;OptionFilterUniverse, OptionFilterUniverse&gt;</code><code class="python">callable[OptionFilterUniverse, OptionFilterUniverse]</code></td>
+	        <td><code class="csharp">Func&lt;OptionFilterUniverse, OptionFilterUniverse&gt;</code><code class="python">Callable[[OptionFilterUniverse], OptionFilterUniverse]</code></td>
             <td>A function that selects Future Option contracts</td>
             <td><code class='csharp'>null</code><code class='python'>None</code></td>
         </tr>
