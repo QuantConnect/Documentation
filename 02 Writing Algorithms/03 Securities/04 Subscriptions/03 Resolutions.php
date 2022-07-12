@@ -2,7 +2,7 @@
 
 <div data-tree="QuantConnect.Resolution"></div>
 
-<p>To set the resolution for a security, set the <code>resolution</code> argument when you create the security subscription.</p>
+<p>The default resolution for market data is <code>Minute</code>. To set the resolution for a security, set the <code>resolution</code> argument when you create the security subscription.</p>
 
 <div class="section-example-container">
     <pre class="csharp">AddEquity("SPY", Resolution.Daily);</pre>
