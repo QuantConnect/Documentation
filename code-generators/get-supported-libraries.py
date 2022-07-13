@@ -1,8 +1,8 @@
 from os import popen
 
 CMD = {
-    'csharp': "dotnet list ../Lean/QuantConnect.Lean.sln package",
-    'python': "docker run --entrypoint bash quantconnect/lean:latest -c \"conda list\""
+    'csharp': "dotnet list package",
+    'python': "conda list"
 }
 filename = 'Resources/libraries/supported-libraries.php'
 code = ""

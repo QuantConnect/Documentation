@@ -1,4 +1,4 @@
-name: Run All Code Generators
+name: Get C# Libraries
 
 on:
   workflow_dispatch:  # Run on manual trigger
@@ -6,9 +6,13 @@ on:
 jobs:
   build:
     runs-on: ubuntu-20.04
-
+    container:
+        image: quantconnect/lean:foundation
     steps:
       - uses: actions/checkout@v2
+
+      - name: Build
+        run: dotnet build /p:Configuration=Release /v:quiet /p:WarningLevel=1 QuantConnect.Lean.sln
       
       - name: Install dependencies
         run: |
