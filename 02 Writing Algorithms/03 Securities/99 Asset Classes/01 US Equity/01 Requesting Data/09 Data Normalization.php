@@ -1,3 +1,6 @@
+<p>test</p>
+<div data-tree='QuantConnect.DataNormalizationMode' data-members='Raw, Adjusted'></div>
+
 <p>The data normalization mode defines how historical data is adjusted for <a href='/docs/v2/writing-algorithms/securities/asset-classes/us-equity/corporate-actions'>corporate actions</a>. The data normalization mode affects the data that LEAN passes to <code>OnData</code> and the data from <a href='/docs/v2/writing-algorithms/historical-data/history-requests'>history request</a>. By default, LEAN adjusts US Equity data for splits and dividends to produce a smooth price curve. The following table describes the available data normalization modes:</p>
 
 <?php include(DOCS_RESOURCES."/datasets/data-normalization.html"); ?>
