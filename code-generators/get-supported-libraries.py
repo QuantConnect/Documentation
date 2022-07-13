@@ -2,8 +2,10 @@ from os import popen
 
 CMD = {
     'csharp': "dotnet list ../Lean/QuantConnect.Lean.sln package",
-    'python': 'docker run --entrypoint bash quantconnect/lean:latest -c "conda list"'
+    'python': "docker run --entrypoint bash quantconnect/lean:latest -c \"conda list\""
 }
+filename = 'Resources/libraries/supported-libraries.php'
+code = ""
 
 for language, cmd in CMD.items():
     print(cmd)
@@ -25,14 +27,14 @@ for language, cmd in CMD.items():
             key, value = line[:2]
         maxlen = max(maxlen, len(key))
         libraries[key] = value
-
-    filename = 'Resources/libraries/supported-libraries.php'
-
-    with open(filename, mode='a', encoding='utf-8') as fp:
-        fp.write(f'<pre class="{language}">')
-        for key, value in sorted(libraries.items()):
-            count = maxlen - len(key)
-            fp.write(f'{key + " " * count} {value}\n')
-        fp.write('</pre>')
-
-    print(f'{filename} file written with {len(libraries)-1} entries')
+        
+    code += f"<pre class=\"{language}\">"
+    for key, value in sorted(libraries.items()):
+        count = maxlen - len(key)
+        code += f'{key + " " * count} {value}\n'
+    code += "</pre>\n"
+"""
+with open(filename, mode='w', encoding='utf-8') as fp:
+    fp.write(f'<div class="section-example-container">\n{code}</div>')
+"""
+print(code)
