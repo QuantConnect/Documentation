@@ -1,5 +1,5 @@
 <div class="section-example-container">
-<pre class="csharp"># Name                               Version
+<pre class="csharp">// Name                               Version
 Accord                               3.6.0
 Accord.Audio                         3.6.0
 Accord.Fuzzy                         3.6.0
