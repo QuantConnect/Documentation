@@ -1,3 +1,5 @@
+<div data-tree='QuantConnect.DataNormalizationMode'></div>
+
 <p>By default, LEAN only subscribes to the continuous Future contract. A continuous Future contract represents a series of separate contracts stitched together to form a continuous price. If you need a lot of historical data to warm up an indicator, apply the indicator to the continuous contract price series. The <code>Future</code> object has a <code>Symbol</code> property and a <code>Mapped</code> property. The price of the <code>Symbol</code> property is the adjusted price of the continuous contract. The price of the <code>Mapped</code> property is the raw price of the currently selected contract in the continuous contract series.</p>
 
 <div class="section-example-container">
