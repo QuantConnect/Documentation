@@ -4,6 +4,10 @@ CMD = {
     'csharp': "dotnet list ../Lean/QuantConnect.Lean.sln package",
     'python': 'docker run --entrypoint bash quantconnect/lean:latest -c "conda list"'
 }
+filename = 'Resources/libraries/supported-libraries.php'
+
+with open(filename, mode='w', encoding='utf-8') as fp:
+    fp.write('<div class="section-example-container">')
 
 for language, cmd in CMD.items():
     print(cmd)
@@ -26,8 +30,6 @@ for language, cmd in CMD.items():
         maxlen = max(maxlen, len(key))
         libraries[key] = value
 
-    filename = 'Resources/libraries/supported-libraries.php'
-
     with open(filename, mode='a', encoding='utf-8') as fp:
         fp.write(f'<pre class="{language}">')
         for key, value in sorted(libraries.items()):
@@ -36,3 +38,6 @@ for language, cmd in CMD.items():
         fp.write('</pre>')
 
     print(f'{filename} file written with {len(libraries)-1} entries')
+    
+with open(filename, mode='a', encoding='utf-8') as fp:
+    fp.write('</div>')
