@@ -1,4 +1,6 @@
-<?php echo file_get_contents(DOCS_RESOURCES."/enumerations/market-crypto.html"); ?>
+<p>The following <code>Market</code> enumeration members are available for Futures:</p>
+
+<div data-tree='QuantConnect.Market' data-fields='Bitfinex,GDAX,Kraken,Binance,FTX,FTXUS,BinanceUS'></div>
 
 <p>To set the market for a security, pass a <code>market</code> argument to the <code>AddCrypto</code> method.</p>
 
