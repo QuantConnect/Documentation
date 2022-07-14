@@ -1,5 +1,3 @@
-<div data-tree='QuantConnect.DataNormalizationMode'></div>
-
 <p>By default, LEAN only subscribes to the continuous Future contract. A continuous Future contract represents a series of separate contracts stitched together to form a continuous price. If you need a lot of historical data to warm up an indicator, apply the indicator to the continuous contract price series. The <code>Future</code> object has a <code>Symbol</code> property and a <code>Mapped</code> property. The price of the <code>Symbol</code> property is the adjusted price of the continuous contract. The price of the <code>Mapped</code> property is the raw price of the currently selected contract in the continuous contract series.</p>
 
 <div class="section-example-container">
@@ -32,41 +30,8 @@ raw_price = self.Securities[self.future.Mapped].Price</pre>
 </div>
 
 <h4>Data Normalization Modes</h4>
-<p>The <code>dataNormalizationMode</code> argument defines how the price series of two contracts are stitched together when the contract rollovers occur.</p>
-
-<p>The following table describes the <code>DataNormalizatoinMode</code> enumerator members for continuous contracts:</p>
-
-<table class="qc-table table">
-<thead>
-    <tr>
-        <th style="width: 25%;">Member</th>
-        <th style="width: 5%;">Value</th>
-        <th style="width: 70%;">Description</th>
-    </tr>
-</thead>
-<tbody>
-    <tr>
-        <td>Raw</td>
-        <td>0</td>
-        <td>No price adjustment between the two contracts.</td>
-    </tr>
-    <tr>
-        <td>ForwardPanamaCanal</td>
-        <td>4</td>
-        <td>Eliminates price jumps between two consecutive contracts, adding a factor based on the difference of their prices. First contract is the true one, factor 0.</td>
-    </tr>
-    <tr>
-        <td>BackwardsPanamaCanal</td>
-        <td>5</td>
-        <td>Eliminates price jumps between two consecutive contracts, adding a factor based on the difference of their prices. Last contract is the true one, factor 0.</td>
-    </tr>
-    <tr>
-        <td>BackwardsRatio</td>
-        <td>6</td>
-        <td>Eliminates price jumps between two consecutive contracts, multiplying the prices by their ratio. Last contract is the true one, factor 1.</td>
-    </tr>
-</tbody>
-</table>
+<p>The <code>dataNormalizationMode</code> argument defines how the price series of two contracts are stitched together when the contract rollovers occur. The following <code>DataNormalizatoinMode</code> enumeration members are available for continuous contracts:</p>
+<div data-tree='QuantConnect.DataNormalizationMode' data-fields='Raw,ForwardPanamaCanal,BackwardsPanamaCanal,BackwardsRatio'></div>
 
 <h4>Data Mapping Modes</h4>
 <p>The <code>dataMappingMode</code> argument defines when contract rollovers occur. The <code>DataMappingMode</code> enumeration has the following members:</p>
