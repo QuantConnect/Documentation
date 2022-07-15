@@ -10,9 +10,9 @@ foreach (var tradeBar in History(futureContract.Symbol, 30, Resolution.Daily))
     futureContract.VolatilityModel.Update(futureContract, tradeBar);
 }</pre>
     <pre class="python">future_contract.VolatilityModel = StandardDeviationOfReturnsVolatilityModel(30)
-for index, row in self.History(future_contract.Symbol, 30, Resolution.Daily).iterrows():
-    trade_bar = TradeBar(index[1], future_contract.Symbol, row.open, row.high, row.low, row.close, row.volume)
-    future_contract.VolatilityModel.Update(future_contract, trade_bar)</pre>
+trade_bars = self.History[TradeBar](future_contract.Symbol, 30, Resolution.Daily)
+for trade_bar in trade_bars:
+    future_contract.VolatilityModel.Update(future_contract, trade_bar) </pre>
 </div>
 
 <p>If you trade Options for many Future contracts you subscribe to, add this logic to a <a href="/docs/v2/writing-algorithms/initialization#07-Set-Security-Initializer">security initializer</a>.</p>
@@ -35,8 +35,8 @@ self.SetSecurityInitializer(self.CustomSecurityInitializer)
 def CustomSecurityInitializer(self, security: Security) -&gt; None:
     if security.Type == SecurityType.Future:
         security.VolatilityModel = StandardDeviationOfReturnsVolatilityModel(30)
-        for index, row in self.History(security.Symbol, 30, Resolution.Daily).iterrows():
-            trade_bar = TradeBar(index[1], security.Symbol, row.open, row.high, row.low, row.close, row.volume)
+        trade_bars = self.History[TradeBar](security.Symbol, 30, Resolution.Daily)
+        for trade_bar in trade_bars:
             security.VolatilityModel.Update(security, trade_bar)</pre>
 </div>
 
