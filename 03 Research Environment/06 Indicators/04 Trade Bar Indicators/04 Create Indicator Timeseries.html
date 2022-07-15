@@ -20,12 +20,12 @@ window['volumeweightedaveragepriceindicator'] = RollingWindow[float](50)
     </div>
     <li>Set handler methods to update the <code>RollingWindow</code>s.</li>
     <div class="section-example-container">
-        <pre class="csharp">vwap.Updated += (sender, updated) => 
+        <pre class="csharp">vwap.Updated += (sender, updated) =&gt; 
 {
     time.Add(updated.EndTime);
     window["volumeweightedaveragepriceindicator"].Add(updated);
 };</pre>
-        <pre class="python">def UpdateVWAPWindow(self, sender: object, updated: IndicatorDataPoint) -&gt; None:
+        <pre class="python">def UpdateVWAPWindow(sender: object, updated: IndicatorDataPoint) -&gt; None:
     window['time'].Add(updated.EndTime)
     window["volumeweightedaveragepriceindicator"].Add(updated.Value)
 
@@ -47,10 +47,10 @@ vwap.Updated += UpdateVWAPWindow</pre>
     </div>
     <li class="csharp">Display the data.</li>
     <div class="csharp section-example-container">
-        <pre class="csharp">Console.WriteLine($"time,{string.Join(',', window.Select(kvp => kvp.Key))}");
+        <pre class="csharp">Console.WriteLine($"time,{string.Join(',', window.Select(kvp =&gt; kvp.Key))}");
 foreach (var i in Enumerable.Range(0, 5).Reverse())
 {
-    var data = string.Join(", ", window.Select(kvp => Math.Round(kvp.Value[i],6)));
+    var data = string.Join(", ", window.Select(kvp =&gt; Math.Round(kvp.Value[i],6)));
     Console.WriteLine($"{time[i]:yyyyMMdd}, {data}");
 }</pre>
     </div>
