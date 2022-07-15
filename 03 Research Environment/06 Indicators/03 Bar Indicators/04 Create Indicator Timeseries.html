@@ -22,14 +22,14 @@ window["truerange"] = RollingWindow[float](50)
     </div>
     <li>Set handler methods to update the <code>RollingWindow</code>s.</li>
     <div class="section-example-container">
-        <pre class="csharp">atr.Updated += (sender, updated) => 
+        <pre class="csharp">atr.Updated += (sender, updated) =&gt; 
 {
     var indicator = (AverageTrueRange)sender;
     time.Add(updated.EndTime);
     window["averagetruerange"].Add(updated);
     window["truerange"].Add(indicator.TrueRange);
 };</pre>
-        <pre class="python">def UpdateAverageTrueRangeWindow(self, sender: object, updated: IndicatorDataPoint) -&gt; None:
+        <pre class="python">def UpdateAverageTrueRangeWindow(sender: object, updated: IndicatorDataPoint) -&gt; None:
     indicator = sender
     window['time'].Add(updated.EndTime)
     window["averagetruerange"].Add(updated.Value)
@@ -53,10 +53,10 @@ atr.Updated += UpdateAverageTrueRangeWindow</pre>
     </div>
     <li class="csharp">Display the data.</li>
     <div class="csharp section-example-container">
-        <pre class="csharp">Console.WriteLine($"time,{string.Join(',', window.Select(kvp => kvp.Key))}");
+        <pre class="csharp">Console.WriteLine($"time,{string.Join(',', window.Select(kvp =&gt; kvp.Key))}");
 foreach (var i in Enumerable.Range(0, 5).Reverse())
 {
-    var data = string.Join(", ", window.Select(kvp => Math.Round(kvp.Value[i],6)));
+    var data = string.Join(", ", window.Select(kvp =&gt; Math.Round(kvp.Value[i],6)));
     Console.WriteLine($"{time[i]:yyyyMMdd}, {data}");
 }</pre>
     </div>
