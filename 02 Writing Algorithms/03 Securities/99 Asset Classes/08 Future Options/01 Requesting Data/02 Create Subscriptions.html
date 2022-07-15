@@ -18,26 +18,52 @@ for trade_bar in trade_bars:
 <p>If you trade Options for many Future contracts you subscribe to, add this logic to a <a href="/docs/v2/writing-algorithms/initialization#07-Set-Security-Initializer">security initializer</a>.</p>
 <div class="section-example-container">
     <pre class="csharp">// In Initialize
-SetSecurityInitializer(security =&gt;
+var seeder = SecuritySeeder.Null;
+SetSecurityInitializer(new MySecurityInitializer(BrokerageModel, seeder));
+
+class MySecurityInitializer : BrokerageModelSecurityInitializer
 {
-    if (security.Type == SecurityType.Future)
+    public CustomSecurityInitializer(IBrokerageModel brokerageModel, ISecuritySeeder securitySeeder)
+        : base(brokerageModel, securitySeeder) {}
+    
+    public override void Initialize(Security security)
     {
-        security.VolatilityModel = new StandardDeviationOfReturnsVolatilityModel(30);
-        foreach (var tradeBar in History(security.Symbol, 30, Resolution.Daily))
+        // First, call the superclass definition
+        // This method sets the reality models of each security using the default reality models of the brokerage model
+        base.Initialize(security);
+
+        // Next, set and warm up the volatility model
+        if (security.Type == SecurityType.Future)
         {
-            security.VolatilityModel.Update(security, tradeBar);
+            security.VolatilityModel = new StandardDeviationOfReturnsVolatilityModel(30);
+            foreach (var tradeBar in History(security.Symbol, 30, Resolution.Daily))
+            {
+                security.VolatilityModel.Update(security, tradeBar);
+            }
         }
     }
-});</pre>
+}
+</pre>
     <pre class="python"># In Initialize
-self.SetSecurityInitializer(self.CustomSecurityInitializer)
+seeder = SecuritySeeder.Null
+self.SetSecurityInitializer(MySecurityInitializer(self.BrokerageModel, seeder))
 
-def CustomSecurityInitializer(self, security: Security) -&gt; None:
-    if security.Type == SecurityType.Future:
-        security.VolatilityModel = StandardDeviationOfReturnsVolatilityModel(30)
-        trade_bars = self.History[TradeBar](security.Symbol, 30, Resolution.Daily)
-        for trade_bar in trade_bars:
-            security.VolatilityModel.Update(security, trade_bar)</pre>
+class MySecurityInitializer(BrokerageModelSecurityInitializer):
+
+    def __init__(self, brokerage_model: IBrokerageModel, security_seeder: ISecuritySeeder) -> None:
+        super().__init__(brokerage_model, security_seeder)
+
+    def Initialize(self, security: Security) -> None:
+        # First, call the superclass definition
+        # This method sets the reality models of each security using the default reality models of the brokerage model
+        super().Initialize(security)
+
+        # Next, set and warm up the volatility model
+        if security.Type == SecurityType.Future:
+            security.VolatilityModel = StandardDeviationOfReturnsVolatilityModel(30)
+            trade_bars = self.History[TradeBar](security.Symbol, 30, Resolution.Daily)
+            for trade_bar in trade_bars:
+                security.VolatilityModel.Update(security, trade_bar)</pre>
 </div>
 
 <h4>Get Contract Symbols</h4>
@@ -94,10 +120,10 @@ option.PriceModel = OptionPriceModels.BjerksundStensland()</pre>
 
 <p>If you subscribe to a Future Option contract with <code>AddOptionContract</code>, you'll need to wait until the next <code>Slice</code> to receive data and trade the contract. To trade the contract in the same time step you subscribe to the contract, set the current price of the contract in a security initializer.</p>
 <div class="section-example-container">
-    <pre class="csharp">SetSecurityInitializer(new BrokerageModelSecurityInitializer(BrokerageModel,
-    new FuncSecuritySeeder(GetLastKnownPrices)));</pre>
-    <pre class="python">self.SetSecurityInitializer(BrokerageModelSecurityInitializer(self.BrokerageModel,
-    FuncSecuritySeeder(self.GetLastKnownPrices)));</pre>
+    <pre class="csharp">var seeder = new FuncSecuritySeeder(GetLastKnownPrices);
+SetSecurityInitializer(new MySecurityInitializer(BrokerageModel, seeder));</pre>
+    <pre class="python">seeder = FuncSecuritySeeder(self.GetLastKnownPrices)
+self.SetSecurityInitializer(MySecurityInitializer(self.BrokerageModel, seeder))</pre>
 </div>
 
 <h4>Supported Assets</h4>
