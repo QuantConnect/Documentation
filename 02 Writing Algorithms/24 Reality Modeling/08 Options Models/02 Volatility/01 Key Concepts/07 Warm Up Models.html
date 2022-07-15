@@ -39,12 +39,8 @@ self.SetSecurityInitializer(self.CustomSecurityInitializer)
 def CustomSecurityInitializer(self, security: Security) -&gt; None:
     if security.Type == SecurityType.Equity:
         security.VolatilityModel = StandardDeviationOfReturnsVolatilityModel(30)
-        history = self.History(security.Symbol, 30, Resolution.Daily)
-        if history.empty or 'close' not in history.columns:
-            return
-
-        for time, row in history.loc[security.Symbol].iterrows():
-            trade_bar = TradeBar(time, security.Symbol, row.open, row.high, row.low, row.close, row.volume)    
+        trade_bars = self.History[TradeBar](security.Symbol, 30, Resolution.Daily)
+        for trade_bar in trade_bars:
             security.VolatilityModel.Update(security, trade_bar)  
 </pre>
 </div>
