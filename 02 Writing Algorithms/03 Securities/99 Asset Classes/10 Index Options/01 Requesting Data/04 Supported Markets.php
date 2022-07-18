@@ -1,1 +1,1 @@
-<p>The only market available for Index Options is <code>Market.USA</code>. You don't need to pass a <code>Market</code> argument to the <code>AddOptionContract</code> method because the contract <code>Symbol</code> already contains the market.</p>
+<p>The only market available for Index Options is <code>Market.USA</code>. You don't need to pass a <code>Market</code> argument to the <code>AddIndexOptionContract</code> method because the contract <code>Symbol</code> already contains the market.</p>
