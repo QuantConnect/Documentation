@@ -12,7 +12,7 @@ index.VolatilityModel = StandardDeviationOfReturnsVolatilityModel(30)
 self.SetWarmup(30, Resolution.Daily)</pre>
 </div>
 
-<p>If you trade Options for many Indices in your algorithm, add this logic to a <a href='/docs/v2/writing-algorithms/initialization#07-Set-Security-Initializer'>security initializer</a>.</p>
+<p>If you trade Options for many Indices in your algorithm, add this logic to a <a href="/docs/v2/writing-algorithms/initialization#07-Set-Security-Initializer">security initializer</a>.</p>
 
 <div class="section-example-container">
     <pre class="csharp">// In Initialize
@@ -114,10 +114,10 @@ option.PriceModel = OptionPriceModels.BlackScholes()<br></pre>
 <h4>Warm Up Contract Prices</h4>
 <p>If you subscribe to an Index Option contract with <code>AddIndexOptionContract</code>, you'll need to wait until the next <code>Slice</code> to receive data and trade the contract. To trade the contract in the same time step you subscribe to the contract, set the current price of the contract in a security initializer.</p>
 <div class="section-example-container">
-    <pre class="csharp">SetSecurityInitializer(new BrokerageModelSecurityInitializer(BrokerageModel,
-    new FuncSecuritySeeder(GetLastKnownPrices)));</pre>
-    <pre class="python">self.SetSecurityInitializer(BrokerageModelSecurityInitializer(self.BrokerageModel,
-    FuncSecuritySeeder(self.GetLastKnownPrices)))</pre>
+    <pre class="csharp">var seeder = new FuncSecuritySeeder(GetLastKnownPrices);
+SetSecurityInitializer(new MySecurityInitializer(BrokerageModel, seeder, this));</pre>
+    <pre class="python">seeder = FuncSecuritySeeder(self.GetLastKnownPrices)
+self.SetSecurityInitializer(MySecurityInitializer(self.BrokerageModel, seeder, self))</pre>
 </div>
 
 <h4>Supported Assets</h4>
