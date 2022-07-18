@@ -1,4 +1,4 @@
-<p>To add Estimize dataset by ExtractAlpha to your algorithm, use the AddData() method to request the data. As with all datasets, you should save a reference to your symbol for easy use later in your algorithm. For detailed documentation on using custom data, see <a href="https://www.quantconnect.com/docs/algorithm-reference/importing-custom-data">Importing Custom Data</a>.</p>
+<p>To add Estimize data to your algorithm, call the <b>AddData</b> method. Save a reference to the dataset <b>Symbol</b> so you can access the data later in your algorithm.</p>
 
 <div class="section-example-container">
 <pre class="python">class ExtractAlphaEstimizeDataAlgorithm(QCAlgorithm):
@@ -8,25 +8,26 @@
         self.SetEndDate(2020, 6, 1)
         self.SetCash(100000)
 
-        self.aapl = self.AddEquity("AAPL", Resolution.Daily).Symbol
-        estimize_consensus_symbol = self.AddData(EstimizeConsensus, self.aapl).Symbol
-        estimize_estimate_symbol = self.AddData(EstimizeEstimate, self.aapl).Symbol
-        estimize_release_symbol = self.AddData(EstimizeRelease, self.aapl).Symbol</pre>
-<pre class="csharp">
-namespace QuantConnect
+        self.symbol = self.AddEquity("AAPL", Resolution.Daily).Symbol
+        self.estimize_consensus_symbol = self.AddData(EstimizeConsensus, self.symbol).Symbol
+        self.estimize_estimate_symbol = self.AddData(EstimizeEstimate, self.symbol).Symbol
+        self.estimize_release_symbol = self.AddData(EstimizeRelease, self.symbol).Symbol</pre>
+<pre class="csharp">namespace QuantConnect
 {
     public class ExtractAlphaEstimizeDataAlgorithm : QCAlgorithm
     {
+        private Symbol _symbol, _estimizeConsensusSymbol, _estimizeEstimateSymbol, _estimizeReleaseSymbol;
+
         public override void Initialize()
         {
             SetStartDate(2019, 1, 1);
             SetEndDate(2020, 6, 1);
             SetCash(100000);
 
-            var aapl = AddEquity("AAPL", Resolution.Daily).Symbol;
-            var estimizeConsensusSymbol = AddData&lt;EstimizeConsensus&gt;(aapl).Symbol;
-            var estimizeEstimateSymbol = AddData&lt;EstimizeEstimate&gt;(aapl).Symbol; 
-            var estimizeReleaseSymbol = AddData&lt;EstimizeRelease&gt;(aapl).Symbol;
+            _symbol = AddEquity("AAPL", Resolution.Daily).Symbol;
+            _estimizeConsensusSymbol = AddData&lt;EstimizeConsensus&gt;(_symbol).Symbol;
+            _estimizeEstimateSymbol = AddData&lt;EstimizeEstimate&gt;(_symbol).Symbol; 
+            _estimizeReleaseSymbol = AddData&lt;EstimizeRelease&gt;(_symbol).Symbol;
         }
     }
 }</pre>

@@ -1,4 +1,4 @@
-<p>To add NFT Sales dataset by CryptoSlam! to your algorithm, use the AddData() method to request the data. As with all datasets, you should save a reference to your symbol for easy use later in your algorithm. For detailed documentation on using custom data, see <a href="https://www.quantconnect.com/docs/algorithm-reference/importing-custom-data">Importing Custom Data</a>.</p>
+<p>To add NFT Sales data to your algorithm, call the <b>AddData</b> method. Save a reference to the dataset <b>Symbol</b> so you can access the data later in your algorithm.</p>
 
 <div class="section-example-container">
 <pre class="python">class CryptoSlamNFTSalesAlgorithm(QCAlgorithm):
@@ -8,20 +8,22 @@
         self.SetEndDate(2020, 6, 1)
         self.SetCash(100000)
 
-        self.ethusd = self.AddCrypto("ETHUSD", Resolution.Daily, Market.Bitfinex).Symbol
-        self.cryptoSlam_nft_sales_symbol = self.AddData(CryptoSlamNFTSales, "ETH").Symbol</pre>
+        self.symbol = self.AddCrypto("ETHUSD", Resolution.Daily, Market.Bitfinex).Symbol
+        self.dataset_symbol = self.AddData(CryptoSlamNFTSales, self.symbol).Symbol</pre>
 <pre class="csharp">namespace QuantConnect
 {
     public class CryptoSlamNFTSalesAlgorithm: QCAlgorithm
     {
+        private Symbol _symbol, _datasetSymbol;
+
         public override void Initialize()
         {
             SetStartDate(2019, 1, 1);
             SetEndDate(2020, 6, 1);
             SetCash(100000);
 
-            var ethusd = AddCrypto("ETHUSD", Resolution.Daily, Market.Bitfinex).Symbol;
-            var cryptoSlamNFTSalesSymbol = AddData&lt;CryptoSlamNFTSales&gt;("ETH").Symbol;
+            _symbol = AddCrypto("ETHUSD", Resolution.Daily, Market.Bitfinex).Symbol;
+            _datasetSymbol = AddData&lt;CryptoSlamNFTSales&gt;(_symbol).Symbol;
         }
     }
 }

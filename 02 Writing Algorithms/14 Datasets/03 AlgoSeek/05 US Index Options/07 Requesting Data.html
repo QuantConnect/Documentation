@@ -1,4 +1,4 @@
-<p>To add US Index Options data to your algorithm, use the AddData() method to request the data. As with all datasets, you should save a reference to your symbol for easy use later in your algorithm. For detailed documentation on using custom data, see <a href="https://www.quantconnect.com/docs/algorithm-reference/importing-custom-data">Importing Custom Data</a>.</p>
+<p>To add US Index Options data to your algorithm, call the <b>AddIndexOption</b> method. Save a reference to the Index Option <b>Symbol</b> so you can access the data later in your algorithm.</p>
 
 <div class="section-example-container">
 <pre class="python">class IndexOptionsDataAlgorithm(QCAlgorithm):
@@ -7,8 +7,8 @@
         self.SetEndDate(2021, 6, 1);
         self.SetCash(1000000);
         
-        self.indexSymbol = self.AddIndex('VIX').Symbol
-        option = self.AddIndexOption(self.indexSymbol)
+        self.index_symbol = self.AddIndex('VIX').Symbol
+        option = self.AddIndexOption(self.index_symbol)
         option.SetFilter(-2, 2, 0, 90)
         self.option_symbol = option.Symbol</pre>
 <pre class="csharp">namespace QuantConnect
@@ -34,3 +34,5 @@
 </div>
 
 <p>The Index resolution must be less than or equal to the Index Option resolution. Index Options only have minute resolution available, so the Index must have tick, second, or minute resolution.</p>
+
+<p>For more information about creating US Index Option subscriptions, see <a href="https://www.quantconnect.com/docs/v2/writing-algorithms/securities/asset-classes/index-options/requesting-data">Requesting Data</a> or <a href="https://www.quantconnect.com/docs/v2/writing-algorithms/universes/index-options">Index Options Universes</a>.</p>

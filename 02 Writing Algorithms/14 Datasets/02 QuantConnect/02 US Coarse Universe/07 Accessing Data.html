@@ -1,14 +1,12 @@
-<p>Data can be accessed via the IEnumerable object that is piped into the user-defined selector function. Coarse data is available in daily resolution. You can see an example of using this data in the code below.</p>
+<p>To access US Coarse Universe data, use the <b>CoarseFundamental</b> objects in your selection function. The data is available in daily resolution.</p>
 <div class="section-example-container">
 <pre class="python">def CoarseSelectionFunction(self, coarse: List[CoarseFundamental]) -&gt; List[Symbol]:
 
-    sortedByDollarVolume = sorted(coarse, key=lambda x: x.DollarVolume, reverse=True)[:3]
-    for cf in sortedByDollarVolume :
+    sorted_by_dollar_volume = sorted(coarse, key=lambda x: x.DollarVolume, reverse=True)[:3]
+    for cf in sorted_by_dollar_volume:
         self.Debug(f"{cf.EndTime} :: {cf.Symbol} : {cf.AdjustedPrice} :: {cf.DollarVolume}")
 
-    return [ x.Symbol for x in sortedByDollarVolume]    
-
-</pre>
+    return [ x.Symbol for x in sortedByDollarVolume]</pre>
 <pre class="csharp">
 public IEnumerable&lt;Symbol&gt; CoarseSelectionFunction(IEnumerable&lt;CoarseFundamental&gt; coarse)
 {

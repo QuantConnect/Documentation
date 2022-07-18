@@ -1,15 +1,12 @@
-<p>Delistings data can be accessed via Slice events. Slice delivers unique events to your algorithm as they happen. We recommend saving the symbol object when you add the data for easy access to slice later. You can see an example of the slice accessor in the code below.</p>
+<p>To get the current Delistings data, index the <b>Delistings</b> property of the current <b>Slice</b> with the Equity <b>Symbol</b>. Slice objects deliver unique events to your algorithm as they happen, but the <b>Slice</b> may not contain data for your security at every time step. To avoid issues, check if the <b>Slice</b> contains the data you want before you index it.</p>
 
 <div class="section-example-container">
-<pre class="python">
-def OnData(self, slice: Slice) -&gt; None:
-    delisting = slice.Delistings.get(self.symbol)
-    if delisting:
-        delistingType = {0: "Warning", 1: "Delisted"}.get(delisting.Type)
-        self.Log(f'Delistings: {delistingType}')
-</pre>
-<pre class="csharp">
-public override void OnData(Slice slice)
+<pre class="python">def OnData(self, slice: Slice) -&gt; None:
+    if slice.Delistings.ContainsKey(self.symbol):
+        delisting = slice.Delistings[self.symbol]
+        delisting_type = {0: "Warning", 1: "Delisted"}.get(delisting.Type)
+        self.Log(f'Delistings: {delisting_type}')</pre>
+<pre class="csharp">public override void OnData(Slice slice)
 {
     if (slice.Delistings.ContainsKey(_symbol))
     {
@@ -18,3 +15,5 @@ public override void OnData(Slice slice)
     }
 }</pre>
 </div>
+
+<p>For more information about accessing delistings, see <a href="https://www.quantconnect.com/docs/v2/writing-algorithms/securities/asset-classes/india-equity/corporate-actions#05-Delistings">Delistings</a>.</p>

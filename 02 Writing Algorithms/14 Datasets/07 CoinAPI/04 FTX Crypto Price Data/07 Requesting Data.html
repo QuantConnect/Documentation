@@ -1,4 +1,4 @@
-<p>To add FTX data from CoinAPI to your algorithm, use the AddCrypto() method to request the data. As with all datasets, you should save a reference to your symbol for easy use later in your algorithm. When requesting data, you have the option to use several crypto markets. For detailed documentation on requesting market data, see <a href="https://www.quantconnect.com/docs/algorithm-reference/initializing-algorithms#Initializing-Algorithms-Selecting-Asset-Data">Selecting Asset Data</a>.</p>
+<p>To add FTX Crypto Price data to your algorithm, call the <b>AddCrypto</b> method. Save a reference to the Crypto <b>Symbol</b> so you can access the data later in your algorithm.</p>
 
 <div class="section-example-container">
 <pre class="python">class CoinAPIDataAlgorithm(QCAlgorithm):
@@ -11,13 +11,12 @@
         # FTX accepts both Cash and Margin type account.
         self.SetBrokerageModel(BrokerageName.FTX, AccountType.Margin)
         
-        self.btcusd = self.AddCrypto("BTCUSD", Resolution.Minute, Market.FTX).Symbol</pre>
+        self.symbol = self.AddCrypto("BTCUSD", Resolution.Minute, Market.FTX).Symbol</pre>
 <pre class="csharp">namespace QuantConnect
 {
     public class CoinAPIDataAlgorithm : QCAlgorithm
     {
-        private Symbol _coinbaseBtcusd;
-        private Symbol _bitfinexBtcusd;
+        private Symbol _symbol;
         
         public override void Initialize()
         {
@@ -28,8 +27,10 @@
             // FTX accepts both Cash and Margin type account.
             SetBrokerageModel(BrokerageName.FTX, AccountType.Margin);
             
-            _btcusd = AddCrypto("BTCUSD", Resolution.Minute, Market.FTX).Symbol;
+            _symbol = AddCrypto("BTCUSD", Resolution.Minute, Market.FTX).Symbol;
         }
     }
 }</pre>
 </div>
+
+<p>For more information about creating Crypto subscriptions, see <a href="https://www.quantconnect.com/docs/v2/writing-algorithms/securities/asset-classes/crypto/requesting-data">Requesting Data</a>.</p>

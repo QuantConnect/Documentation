@@ -1,19 +1,19 @@
-<p>To add FRED data to your algorithm, use the AddData() method to request the data. As with all datasets, you should save a reference to your symbol for easy use later in your algorithm. For detailed documentation on using custom data, see <a href="https://www.quantconnect.com/docs/algorithm-reference/importing-custom-data">Importing Custom Data</a>.</p><div class="section-example-container">
-<pre class="python">
-class FredAlternativeDataAlgorithm(QCAlgorithm):
+<p>To add FRED data to your algorithm, call the <b>AddData</b> method. Save a reference to the dataset <b>Symbol</b> so you can access the data later in your algorithm.</p>
+
+<div class="section-example-container">
+<pre class="python">class FredAlternativeDataAlgorithm(QCAlgorithm):
 
     def Initialize(self) -&gt; None:
         self.SetStartDate(2003, 1, 1)
         self.SetEndDate(2019, 10, 11)
         self.SetCash(100000)
 
-        self.fred_peak_to_trough = self.AddData(Fred, Fred.OECDRecessionIndicators.UnitedStatesFromPeakThroughTheTrough, Resolution.Daily).Symbol</pre>
-<pre class="csharp">
-namespace QuantConnect
+        self.dataset_symbol = self.AddData(Fred, Fred.OECDRecessionIndicators.UnitedStatesFromPeakThroughTheTrough, Resolution.Daily).Symbol</pre>
+<pre class="csharp">namespace QuantConnect
 {
     public class FredAlternativeDataAlgorithm : QCAlgorithm
     {
-        private Symbol _fredPeakToTrough;
+        private Symbol _datasetSymbol;
 
         public override void Initialize()
         {
@@ -21,7 +21,7 @@ namespace QuantConnect
             SetEndDate(2019, 10, 11);
             SetCash(100000);
             
-            _fredPeakToTrough = AddData&lt;Fred&gt;(Fred.OECDRecessionIndicators.UnitedStatesFromPeakThroughTheTrough, Resolution.Daily).Symbol;
+            _datasetSymbol = AddData&lt;Fred&gt;(Fred.OECDRecessionIndicators.UnitedStatesFromPeakThroughTheTrough, Resolution.Daily).Symbol;
         }
     }
 }</pre>

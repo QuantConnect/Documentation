@@ -1,21 +1,44 @@
-<p>Data can be accessed via Slice events. Slice delivers unique events to your algorithm as they happen. We recommend saving the symbol object when you add the data for easy access to slice later. Data is available in minute resolution. You can see an example of the slice accessor in the code below.</p>
+<p>To get the current US Index Options data, index the <b>OptionChains</b> property of the current <a href="https://www.quantconnect.com/docs/v2/writing-algorithms/key-concepts/time-modeling/timeslices"><b>Slice</b></a> with the canonical Index Option <b>Symbol</b>. Slice objects deliver unique events to your algorithm as they happen, but the <b>Slice</b> may not contain data for your Index Option at every time step.</p>
+
 <div class="section-example-container">
 <pre class="python">def OnData(self, slice: Slice) -&gt; None:
     chain = slice.OptionChains.get(self.option_symbol)
     if chain:
         for contract in chain:
-            self.Log(f"Bar received for {contract.Symbol} at {slice.Time}")
+            self.Log(f"{contract.Symbol} price at {slice.Time}: {contract.LastPrice}")
 </pre>
 <pre class="csharp">public override void OnData(Slice slice)
 {
     if (slice.OptionChains.ContainsKey(_optionSymbol))
     {
         var chain = slice.OptionChains[_optionSymbol];
-
         foreach (var contract in chain)
         {
-            Log($"Bar received for {contract.Symbol} at {slice.Time}");
+            Log($"{contract.Symbol} price at {slice.Time}: {contract.LastPrice}");
         }
     }
 }</pre>
 </div>
+
+<p>You can also iterate through all of the <b>OptionChain</b> objects in the current <b>Slice</b>.</p>
+<div class="section-example-container">
+<pre class="python">def OnData(self, slice: Slice) -&gt; None:
+    for canonical_symbol, chain in slice.OptionChains.items():
+        for contract in chain:
+            self.Log(f"{contract.Symbol} price at {slice.Time}: {contract.LastPrice}")
+</pre>
+<pre class="csharp">public override void OnData(Slice slice)
+{
+    foreach (var kvp in slice.OptionChains)
+    {
+        var canonicalSymbol = kvp.Key;
+        var chain = kvp.Value;
+        foreach (var contract in chain)
+        {
+            Log($"{contract.Symbol} price at {slice.Time}: {contract.LastPrice}");
+        }
+    }
+}</pre>
+</div>
+
+<p>For more information about accessing US Index Options data, see <a href="https://www.quantconnect.com/docs/v2/writing-algorithms/securities/asset-classes/index-options/handling-data">Handling Data</a>.</p>

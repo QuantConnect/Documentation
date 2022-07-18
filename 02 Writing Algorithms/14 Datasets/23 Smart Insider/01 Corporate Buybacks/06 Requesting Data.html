@@ -1,4 +1,4 @@
-<p>To add Corporate Buybacks data to your algorithm, use the AddData() method to request the data. As with all datasets, you should save a reference to your symbol for easy use later in your algorithm. For detailed documentation on using custom data, see <a href="https://www.quantconnect.com/docs/algorithm-reference/importing-custom-data">Importing Custom Data</a>.</p>
+<p>To add Corporate Buybacks data to your algorithm, call the <b>AddData</b> method. Save a reference to the dataset <b>Symbol</b> so you can access the data later in your algorithm.</p>
 
 <div class="section-example-container">
 <pre class="python">class CorporateBuybacksDataAlgorithm(QCAlgorithm):
@@ -8,16 +8,14 @@
         self.SetEndDate(2021, 1, 1)
         self.SetCash(100000)
  
-        self.aapl = self.AddEquity("AAPL", Resolution.Minute).Symbol
-        self.smart_insider_intention = self.AddData(SmartInsiderIntention, self.aapl).Symbol
-        self.smart_insider_transaction = self.AddData(SmartInsiderTransaction, self.aapl).Symbol</pre>
+        self.symbol = self.AddEquity("AAPL", Resolution.Minute).Symbol
+        self.intention_symbol = self.AddData(SmartInsiderIntention, self.symbol).Symbol
+        self.transaction_symbol = self.AddData(SmartInsiderTransaction, self.symbol).Symbol</pre>
 <pre class="csharp">namespace QuantConnect.Algorithm.CSharp.AltData
 {
     public class CorporateBuybacksDataAlgorithm : QCAlgorithm
     {
-        private Symbol _aapl;
-        private Symbol _smartInsiderIntention;
-        private Symbol _smartInsiderTransaction;
+        private Symbol _symbol, _intentionSymbol, _transactionSymbol;
         
         public override void Initialize()
         {
@@ -25,9 +23,9 @@
             SetEndDate(2021, 1, 1);
             SetCash(100000);
 
-            _aapl = AddEquity("AAPL", Resolution.Minute).Symbol;
-            _smartInsiderIntention = AddData&lt;SmartInsiderIntention&gt;(_aapl).Symbol;
-            _smartInsiderTransaction = AddData&lt;SmartInsiderTransaction&gt;(_aapl).Symbol;
+            _symbol = AddEquity("AAPL", Resolution.Minute).Symbol;
+            _intentionSymbol = AddData&lt;SmartInsiderIntention&gt;(_symbol).Symbol;
+            _transactionSymbol = AddData&lt;SmartInsiderTransaction&gt;(_symbol).Symbol;
         }
     }
 }</pre>

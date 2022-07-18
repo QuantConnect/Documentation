@@ -1,4 +1,4 @@
-<p>To add SEC Fillings data to your algorithm, use the AddData() method to request the data. As with all datasets, you should save a reference to your symbol for easy use later in your algorithm. For detailed documentation on using custom data, see <a href="https://www.quantconnect.com/docs/algorithm-reference/importing-custom-data">Importing Custom Data</a>.</p>
+<p>To add US SEC Filings data to your algorithm, call the <b>AddData</b> method. Save a reference to the dataset <b>Symbol</b> so you can access the data later in your algorithm.</p>
 
 <div class="section-example-container">
 <pre class="python">
@@ -8,10 +8,10 @@ class SECReportAlgorithm(QCAlgorithm):
         self.SetEndDate(2019, 8, 21)
         self.SetCash(100000)
 
-        self.aapl= self.AddEquity("AAPL", Resolution.Minute).Symbol
-        self.report8K = self.AddData(SECReport8K, self.aapl).Symbol
-        self.report10K = self.AddData(SECReport10K, self.aapl).Symbol
-        self.report10Q = self.AddData(SECReport10Q, self.aapl).Symbol
+        self.symbol = self.AddEquity("AAPL", Resolution.Minute).Symbol
+        self.report_8k_symbol = self.AddData(SECReport8K, self.symbol).Symbol
+        self.report_10k_symbol = self.AddData(SECReport10K, self.symbol).Symbol
+        self.report_10q_symbol = self.AddData(SECReport10Q, self.symbol).Symbol
 </pre>
 
 <pre class="csharp">
@@ -19,10 +19,7 @@ namespace QuantConnect
 {
     public class SECReportAlgorithm : QCAlgorithm
     {
-        private Symbol _aapl;
-        private Symbol _report8K;
-        private Symbol _report10K;
-        private Symbol _report10Q;
+        private Symbol _symbol, _report8KSymbol, _report10KSymbol, _report10QSymbol;
 
         public override void Initialize()
         {
@@ -30,10 +27,10 @@ namespace QuantConnect
             SetEndDate(2019, 8, 21);
             SetCash(100000);
 
-            _aapl = AddEquity("AAPL", Resolution.Daily).Symbol;
-            _report8K = AddData&lt;SECReport8K&gt;(_aapl, Resolution.Daily).Symbol;
-            _report10K = AddData&lt;SECReport10K&gt;(_aapl, Resolution.Daily).Symbol;
-            _report10Q = AddData&lt;SECReport10Q&gt;(_aapl, Resolution.Daily).Symbol;
+            _symbol = AddEquity("AAPL", Resolution.Daily).Symbol;
+            _report8KSymbol = AddData&lt;SECReport8K&gt;(_symbol, Resolution.Daily).Symbol;
+            _report10KSymbol = AddData&lt;SECReport10K&gt;(_symbol, Resolution.Daily).Symbol;
+            _report10QSymbol = AddData&lt;SECReport10Q&gt;(_symbol, Resolution.Daily).Symbol;
         }
     }
 }</pre>

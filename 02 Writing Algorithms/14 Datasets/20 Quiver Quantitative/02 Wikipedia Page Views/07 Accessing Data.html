@@ -1,16 +1,34 @@
-<p>Data can be accessed via Slice events. Slice delivers unique events to your algorithm as they happen. We recommend saving the symbol object when you add the data for easy access to slice later. Data is available in daily resolution. You can see an example of the slice accessor in the code below.</p>
+<p>To get the current Wikipedia Page Views data, index the current <a href="https://www.quantconnect.com/docs/v2/writing-algorithms/key-concepts/time-modeling/timeslices"><b>Slice</b></a> with the dataset <b>Symbol</b>. Slice objects deliver unique events to your algorithm as they happen, but the <b>Slice</b> may not contain data for your dataset at every time step. To avoid issues, check if the <b>Slice</b> contains the data you want before you index it.</p>
 
 <div class="section-example-container">
 <pre class="python">def OnData(self, slice: Slice) -&gt; None:
-    points = slice.Get(QuiverWikipedia)
-    for point in points.Values:
-        self.Log(f"Symbol: {point.Symbol.Underlying} Date: {point.Date}; PageViews: {point.PageViews}; WeekPercentChange: {point.WeekPercentChange}; MonthPercentChange: {point.MonthPercentChange}") </pre>
+    if slice.ContainsKey(self.dataset_symbol):
+        data_point = slice[self.dataset_symbol]
+        self.Log(f"{self.dataset_symbol} weekly page views percentage change at {slice.Time}: {data_point.WeekPercentChange}")</pre>
 <pre class="csharp">public override void OnData(Slice slice)
 {
-    var points = slice.Get&lt;QuiverWikipedia&gt;();
-    foreach (var point in points.Values)
+    if (slice.ContainsKey(_datasetSymbol))
     {
-        Log($"Symbol: {point.Symbol.Underlying}; Date: {point.Date}; PageViews: {point.PageViews}; WeekPercentChange: {point.WeekPercentChange}; MonthPercentChange: {point.MonthPercentChange}");
+        var dataPoint = slice[_datasetSymbol];
+        Log($"{_datasetSymbol} weekly page views percentage change at {slice.Time}: {dataPoint.WeekPercentChange}");
+    }
+}</pre>
+</div>
+
+<p>To iterate through all of the dataset objects in the current <b>Slice</b>, call the <b>Get</b> method.</p>
+
+<div class="section-example-container">
+<pre class="python">def OnData(self, slice: Slice) -&gt; None:
+    for dataset_symbol, data_point in slice.Get(QuiverWikipedia).items():
+        self.Log(f"{dataset_symbol} weekly page views percentage change at {slice.Time}: {data_point.WeekPercentChange}")
+</pre>
+<pre class="csharp">public override void OnData(Slice slice)
+{
+    foreach (var kvp in slice.Get&lt;QuiverWikipedia&gt;())
+    {
+        var datasetSymbol = kvp.Key;
+        var dataPoint = kvp.Value;
+        Log($"{datasetSymbol} weekly page views percentage change at {slice.Time}: {dataPoint.WeekPercentChange}");
     }
 }</pre>
 </div>

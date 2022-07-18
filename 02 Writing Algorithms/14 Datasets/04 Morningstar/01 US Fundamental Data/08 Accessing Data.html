@@ -1,4 +1,4 @@
-<p>Data can be accessed via the IEnumerable object that is piped into the user-defined selector function. The symbol objects that are selected by the coarse selection function are the symbols that comprise the Fine Fundamental IEnumerable object passed to the fine fundamental selection function. Fundamental data is available in daily resolution. You can see an example of using this data in the code below.</p>
+<p>To access fundamental data, use the <b>FineFundamental</b> objects in your second selection function or use the <b>Fundamental</b> property of the <b>Equity</b> objects in your algorithm. The <b>Symbol</b> objects you return from the coarse selection function are the <b>Symbol</b> objects that comprise the <b>FineFundamental</b> objects in your fine fundamental selection function.</p>
 
 <div class="section-example-container">
 <pre class="python">def SelectCoarse(self, coarse: List[CoarseFundamental]) -&gt; List[Symbol]:
@@ -19,4 +19,10 @@ public IEnumerable&lt;Symbol&gt; SelectFine(IEnumerable&lt;FineFundamental&gt; f
     return fine.OrderByDescending(x =&gt; x.ValuationRatios.PERatio).Take(5).Select(x =&gt; x.Symbol);
 }</pre>
 </div>
-<p>Many of the MorningStar values are <b>MultiPeriodField</b> objects. These represent a timespan of data, normally either <b>OneMonth</b>, <b>ThreeMonths</b>, <b>SixMonths</b>, or <b>TwelveMonths</b>. You can see <a href="https://raw.githubusercontent.com/QuantConnect/Lean/master/Common/Data/Fundamental/Generated/MultiPeriodValueTypes.cs">the auto-generated classes on Github</a> if you'd like to see the objects.</p>
+<p>Many of the MorningStar values are <b>MultiPeriodField</b> objects. These objects represent a timespan of data, normally either <b>OneMonth</b>, <b>ThreeMonths</b>, <b>SixMonths</b>, or <b>TwelveMonths</b>. To view the objects, see the <a href="https://raw.githubusercontent.com/QuantConnect/Lean/master/Common/Data/Fundamental/Generated/MultiPeriodValueTypes.cs">the auto-generated classes</a> in the LEAN GitHub repository.</p>
+
+<p>To access fundamental data outside of your fine fundamental selection function, use the <b>Fundamental</b> property of the <b>Equity</b> objects in your algorithm.</p>
+<div class="section-example-container">
+<pre class="python">fundamentals = self.Securities[symbol].Fundamentals</pre>
+<pre class="csharp">var fundamentals = Securities[symbol].Fundamentals;</pre>
+</div>

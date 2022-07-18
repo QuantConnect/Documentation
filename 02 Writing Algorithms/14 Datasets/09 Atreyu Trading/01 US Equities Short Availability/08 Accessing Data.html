@@ -1,27 +1,26 @@
-<p>Data can be accessed via QCAlgorithm methods: AllShortableSymbols, ShortableQuantity, and Shortable.</p>
+<p>To check if a security has shares available to short, call the <b>Shortable</b> method.</p>
 
 <div class="section-example-container">
-<pre class="python"># Gets all Symbols that are shortable, as well as the quantity shortable for them.
-# Returns a Dictionary of quantity shortable (long) keyed by Symbol.
-all_shortable_symbols = self.AllShortableSymbols()
+    <pre class="csharp">// Check if there are any shares available to short a security
+var isShortable = Shortable(_symbol);
 
-# Gets the quantity shortable for the given asset. Zero if not shortable
-shortable_quantity = self.ShortableQuantity(self.appl)
+// Check if there are a certain quantity of shares available
+var isShortableQuantity = Shortable(_symbol, quantity);</pre>
+    <pre class="python"># Check if there are any shares available to short a security
+is_shortable = self.Shortable(self.symbol)
 
-# Determines if the Symbol is shortable at the brokerage.
-# Use a given order's quantity to check if it is currently shortable,
-# taking into account current holdings and open orders.
-is_shortable = self.Shortable(self.appl, 1000000)
-</pre>
-<pre class="csharp">// Gets all Symbols that are shortable, as well as the quantity shortable for them.
-// Returns a Dictionary of quantity shortable (long) keyed by Symbol.
-var AllShortableSymbols = AllShortableSymbols();
-            
-// Gets the quantity shortable for the given asset. Zero if not shortable
-var shortableQuantity = ShortableQuantity(_appl);
+# Check if there are a certain quantity of shares available
+is_shortable_quantity = self.Shortable(self.symbol, quantity)</pre>
+</div>
 
-// Determines if the Symbol is shortable at the brokerage.
-// Use a given order's quantity to check if it is currently shortable,
-// taking into account current holdings and open orders.
-var isShortable = Shortable(_appl, 1000000);</pre>
+<p>To check how many shares are available for a security to short, call the <b>ShortableQuantity</b> method.</p>
+<div class="section-example-container">
+    <pre class="csharp">var quantity = ShortableQuantity(_symbol);</pre>
+    <pre class="python">quantity = self.ShortableQuantity(self.symbol)</pre>
+</div>
+
+<p>To get all the symbols that are shortable and their respective shortable quantities, call the <b>AllShortableSymbols</b> method.</p>
+<div class="section-example-container">
+    <pre class="csharp">var quantityBySymbol = AllShortableSymbols();</pre>
+    <pre class="python">quantity_by_symbol = self.AllShortableSymbols()</pre>
 </div>

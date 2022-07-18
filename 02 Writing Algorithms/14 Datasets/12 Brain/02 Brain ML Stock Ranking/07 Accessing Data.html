@@ -1,16 +1,115 @@
-<p>Data can be accessed via Slice events. Slice delivers unique events to your algorithm as they happen. We recommend saving the symbol object when you add the data for easy access to slice later. Data is available in daily resolution. You can see an example of the slice accessor in the code below.</p>
+<p>To get the current Brain ML Stock Ranking data, index the current <a href="https://www.quantconnect.com/docs/v2/writing-algorithms/key-concepts/time-modeling/timeslices"><b>Slice</b></a> with the dataset <b>Symbol</b>. Slice objects deliver unique events to your algorithm as they happen, but the <b>Slice</b> may not contain data for your dataset at every time step. To avoid issues, check if the <b>Slice</b> contains the data you want before you index it.</p>
+
 <div class="section-example-container">
 <pre class="python">def OnData(self, slice: Slice) -&gt; None:
-    points = slice.Get(BrainStockRanking2Day)
-    for point in points.Values:
-        self.Log(f"Ranking for {point.Symbol} at {data.Time}: {point.Rank}")
-</pre>
+    if slice.ContainsKey(self.two_day_symbol):
+        data_point = slice[self.two_day_symbol]
+        self.Log(f"{self.two_day_symbol} rank at {slice.Time}: {data_point.Rank}")
 
+    if slice.ContainsKey(self.three_day_symbol):
+        data_point = slice[self.three_day_symbol]
+        self.Log(f"{self.three_day_symbol} rank at {slice.Time}: {data_point.Rank}")
+
+    if slice.ContainsKey(self.five_day_symbol):
+        data_point = slice[self.five_day_symbol]
+        self.Log(f"{self.five_day_symbol} rank at {slice.Time}: {data_point.Rank}")
+
+    if slice.ContainsKey(self.ten_day_symbol):
+        data_point = slice[self.ten_day_symbol]
+        self.Log(f"{self.ten_day_symbol} rank at {slice.Time}: {data_point.Rank}")
+
+    if slice.ContainsKey(self.thirty_day_symbol):
+        data_point = slice[self.thirty_day_symbol]
+        self.Log(f"{self.thirty_day_symbol} rank at {slice.Time}: {data_point.Rank}")</pre>
 <pre class="csharp">public override void OnData(Slice slice)
 {
-    var points = slice.Get&lt;BrainStockRanking2Day&gt;();
-    foreach (var point in points.Values)
+    if (slice.ContainsKey(_2DaySymbol))
     {
-        Log($"Ranking for {point.Symbol} at {data.Time}: {point.Rank}");
+        var dataPoint = slice[_2DaySymbol];
+        Log($"{_2DaySymbol} rank at {slice.Time}: {dataPoint.Rank}");
     }
-}</pre></div>
+
+    if (slice.ContainsKey(_3DaySymbol))
+    {
+        var dataPoint = slice[_3DaySymbol];
+        Log($"{_3DaySymbol} rank at {slice.Time}: {dataPoint.Rank}");
+    }
+
+    if (slice.ContainsKey(_5DaySymbol))
+    {
+        var dataPoint = slice[_5DaySymbol];
+        Log($"{_5DaySymbol} rank at {slice.Time}: {dataPoint.Rank}");
+    }
+
+    if (slice.ContainsKey(_10DaySymbol))
+    {
+        var dataPoint = slice[_10DaySymbol];
+        Log($"{_10DaySymbol} rank at {slice.Time}: {dataPoint.Rank}");
+    }
+
+    if (slice.ContainsKey(_30DaySymbol))
+    {
+        var dataPoint = slice[_30DaySymbol];
+        Log($"{_30DaySymbol} rank at {slice.Time}: {dataPoint.Rank}");
+    }
+}
+</pre>
+</div>
+
+<p>To iterate through all of the dataset objects in the current <b>Slice</b>, call the <b>Get</b> method.</p>
+
+<div class="section-example-container">
+<pre class="python">def OnData(self, slice: Slice) -&gt; None:
+    for dataset_symbol, data_point in slice.Get(BrainStockRanking2Day).items():
+        self.Log(f"{dataset_symbol} rank at {slice.Time}: {data_point.Rank}")
+
+    for dataset_symbol, data_point in slice.Get(BrainStockRanking3Day).items():
+        self.Log(f"{dataset_symbol} rank at {slice.Time}: {data_point.Rank}")
+
+    for dataset_symbol, data_point in slice.Get(BrainStockRanking5Day).items():
+        self.Log(f"{dataset_symbol} rank at {slice.Time}: {data_point.Rank}")
+
+    for dataset_symbol, data_point in slice.Get(BrainStockRanking10Day).items():
+        self.Log(f"{dataset_symbol} rank at {slice.Time}: {data_point.Rank}")
+
+    for dataset_symbol, data_point in slice.Get(BrainStockRanking30Day).items():
+        self.Log(f"{dataset_symbol} rank at {slice.Time}: {data_point.Rank}")
+</pre>
+<pre class="csharp">public override void OnData(Slice slice)
+{
+    foreach (var kvp in slice.Get&lt;BrainStockRanking2Day&gt;())
+    {
+        var datasetSymbol = kvp.Key;
+        var dataPoint = kvp.Value;
+        Log($"{datasetSymbol} rank at {slice.Time}: {dataPoint.Rank}");
+    }
+
+    foreach (var kvp in slice.Get&lt;BrainStockRanking3Day&gt;())
+    {
+        var datasetSymbol = kvp.Key;
+        var dataPoint = kvp.Value;
+        Log($"{datasetSymbol} rank at {slice.Time}: {dataPoint.Rank}");
+    }
+
+    foreach (var kvp in slice.Get&lt;BrainStockRanking5Day&gt;())
+    {
+        var datasetSymbol = kvp.Key;
+        var dataPoint = kvp.Value;
+        Log($"{datasetSymbol} rank at {slice.Time}: {dataPoint.Rank}");
+    }
+
+    foreach (var kvp in slice.Get&lt;BrainStockRanking10Day&gt;())
+    {
+        var datasetSymbol = kvp.Key;
+        var dataPoint = kvp.Value;
+        Log($"{datasetSymbol} rank at {slice.Time}: {dataPoint.Rank}");
+    }
+
+    foreach (var kvp in slice.Get&lt;BrainStockRanking30Day&gt;())
+    {
+        var datasetSymbol = kvp.Key;
+        var dataPoint = kvp.Value;
+        Log($"{datasetSymbol} rank at {slice.Time}: {dataPoint.Rank}");
+    }
+}</pre>
+</div>

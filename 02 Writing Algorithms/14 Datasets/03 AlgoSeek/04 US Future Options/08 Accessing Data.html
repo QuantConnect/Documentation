@@ -1,21 +1,54 @@
-<p>Data can be accessed via Slice events. Slice delivers unique events to your algorithm as they happen. We recommend saving the symbol object when you add the data for easy access to slice later. Data is available in minute resolution. You can see an example of the slice accessor in the code below.</p>
+<p>To get the current Future Options data, iterate through the <b>OptionChains</b> of the current <a href="https://www.quantconnect.com/docs/v2/writing-algorithms/key-concepts/time-modeling/timeslices"><b>Slice</b></a>. Slice objects deliver unique events to your algorithm as they happen, but the <b>Slice</b> may not contain data for your Future Options at every time step.</p>
+
 <div class="section-example-container">
 <pre class="python">def OnData(self, slice: Slice) -&gt; None:
-    for kvp in slice.OptionChains:
-        underlying_future_contract = kvp.Key.Underlying
-        chain = kvp.Value
+    for canonical_fop_symbol, chain in slice.OptionChains.items():
         for contract in chain:
-            self.Debug(f"Time: {self.Time}; Canonical Symbol: {kvp.Key}; Underlying Future contract: {underlying_future_contract} Contract: {contract}; Right: {contract.Right}; Expiry: {contract.Expiry}; Bid price: {contract.BidPrice}; Ask price: {contract.AskPrice}; ImpliedVolatility: {contract.ImpliedVolatility}; Delta: {contract.Greeks.Delta}; Gamma: {contract.Greeks.Gamma}; Vega: {contract.Greeks.Vega}; Rho: {contract.Greeks.Rho}; Lambda: {contract.Greeks.Lambda}")</pre>
+            self.Log(f"{contract.Symbol} price at {slice.Time}: {contract.LastPrice}")</pre>
 <pre class="csharp">public override void OnData(Slice slice)
 {
     foreach (var kvp in slice.OptionChains)
     {
-        var underlyingFutureContract = kvp.Key.Underlying;
+        var canonicalFOPSymbol = kvp.Key;
         var chain = kvp.Value;
         foreach (var contract in chain)
         {
-            algorithm.Debug($"Time: {algorithm.Time}; Canonical Symbol: {kvp.Key}; Underlying Future contract: {underlyingFutureContract} Contract: {contract}; Right: {contract.Right}; Expiry: {contract.Expiry}; Bid price: {contract.BidPrice}; Ask price: {contract.AskPrice}; ImpliedVolatility: {contract.ImpliedVolatility}; Delta: {contract.Greeks.Delta}; Gamma: {contract.Greeks.Gamma}; Vega: {contract.Greeks.Vega}; Rho: {contract.Greeks.Rho}; Lambda: {contract.Greeks.Lambda}");
+            Log($"{contract.Symbol} price at {slice.Time}: {contract.LastPrice}");
         }
     }
 }</pre>
 </div>
+
+<p>You can also iterate through the <b>FuturesChains</b> in the current <b>Slice</b> first.</p>
+<div class="section-example-container">
+<pre class="python">def OnData(self, slice: Slice) -&gt; None:
+    for continuous_future_symbol, futures_chain in slice.FuturesChains.items():
+        # Select a Future Contract and create its canonical FOP Symbol
+        futures_contract = [contract for contract in futures_chain][0]
+        canonical_fop_symbol = Symbol.CreateCanonicalOption(futures_contract.Symbol)
+        option_chain = slice.OptionChains.get(canonical_fop_symbol)
+        if option_chain:
+            for fop_contract in option_chain:
+                self.Log(f"{fop_contract.Symbol} price at {slice.Time}: {fop_contract.LastPrice}")</pre>
+<pre class="csharp">public override void OnData(Slice slice)
+{
+    foreach (var kvp in slice.FuturesChains)
+    {
+        var continuousContractSymbol = kvp.Key;
+        var futuresChain = kvp.Value;
+        
+        // Select a Future Contract and create its canonical FOP Symbol
+        var futuresContract = futuresChain.First();
+        var canonicalFOPSymbol = QuantConnect.Symbol.CreateCanonicalOption(futuresContract.Symbol);
+        if (slice.OptionChains.TryGetValue(canonicalFOPSymbol, out var optionChain))
+        {
+            foreach (var fopContract in optionChain)
+            {
+                Log($"{fopContract.Symbol} price at {slice.Time}: {fopContract.LastPrice}");
+            }
+        }
+    }
+}</pre>
+</div>
+
+<p>For more information about accessing Future Options data, see <a href="https://www.quantconnect.com/docs/v2/writing-algorithms/securities/asset-classes/future-options/handling-data">Handling Data</a>.</p>

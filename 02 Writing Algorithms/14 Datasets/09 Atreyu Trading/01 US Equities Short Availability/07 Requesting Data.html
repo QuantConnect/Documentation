@@ -1,15 +1,14 @@
-<p>To add Short Availability data to your algorithm, use the SetBrokerageModel() method to request the data as the ShortableProvider is a brokerage property. The AtreyuBrokerageModel includes the AtreyuShortableProvider ready to use. If we want to extend other brokerage models, we need to create a custom brokerage model. to use this data. For detailed documentation on using brokerage models, see <a href="https://www.quantconnect.com/docs/algorithm-reference/reality-modelling">Reality Modelling</a>.
+<p>To add US Equities Short Availability data to your algorithm, set the <a href="https://www.quantconnect.com/docs/v2/writing-algorithms/reality-modeling/short-availability/key-concepts">shortable provider</a> of each US Equity in your algorithm. The <a href="https://www.quantconnect.com/docs/v2/writing-algorithms/reality-modeling/brokerages">brokerage model</a> of your algorithm automatically sets the shortable provider for each security. The <b>AtreyuBrokerageModel</b> includes the <a href="https://www.quantconnect.com/docs/v2/writing-algorithms/reality-modeling/short-availability/supported-providers#03-Atreyu-Provider">AtreyuShortableProvider</a>, so you can set your brokerage model to the <b>AtreyuBrokerageModel</b> to add US Equities Short Availability data. If we want to extend <a href="https://www.quantconnect.com/docs/v2/writing-algorithms/reality-modeling/brokerages#03-Supported-Models">other brokerage models</a>, create a <a href="https://www.quantconnect.com/docs/v2/writing-algorithms/reality-modeling/brokerages#06-Model-Structure">custom brokerage model</a>. </p>
 
-</p><div class="section-example-container">
-<pre class="python">
-class ShortAvailabilityDataAlgorithm(QCAlgorithm):
+<div class="section-example-container">
+<pre class="python">class ShortAvailabilityDataAlgorithm(QCAlgorithm):
 
     def Initialize(self) -&gt; None:
         self.SetStartDate(2019, 1, 1)
         self.SetEndDate(2020, 6, 1)
         self.SetCash(100000) 
-        aapl = self.AddEquity("AAPL", Resolution.Minute).Symbol
         self.SetBrokerageModel(InteractiveBrokersBrokerageModelWithShortable())
+        self.symbol = self.AddEquity("AAPL", Resolution.Minute).Symbol
  
 class InteractiveBrokersBrokerageModelWithShortable(InteractiveBrokersBrokerageModel):
     def __init__(self) -&gt; None:
@@ -17,19 +16,20 @@ class InteractiveBrokersBrokerageModelWithShortable(InteractiveBrokersBrokerageM
         self.ShortableProvider = AtreyuShortableProvider(SecurityType.Equity, Market.USA)
 </pre>
 
-<pre class="csharp">
-using QuantConnect.Data.Shortable;
+<pre class="csharp">using QuantConnect.Data.Shortable;
 namespace QuantConnect
 {
     public class ShortAvailabilityDataAlgorithm : QCAlgorithm
     {
+        private Symbol _symbol;
+
         public override void Initialize()
         {
             SetStartDate(2019, 1, 1);
             SetEndDate(2020, 6, 1);
             SetCash(100000);
-            var aapl = AddEquity("AAPL", Resolution.Daily).Symbol;
             SetBrokerageModel(new InteractiveBrokersBrokerageModelWithShortable());
+            _symbol = AddEquity("AAPL", Resolution.Daily).Symbol;
         }
         
         public override void OnEndOfDay(Symbol symbol) =&gt;

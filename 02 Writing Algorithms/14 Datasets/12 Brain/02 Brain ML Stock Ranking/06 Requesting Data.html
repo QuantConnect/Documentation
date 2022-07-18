@@ -1,4 +1,4 @@
-<p>To add Brain ML Ranking data to your algorithm, use the AddData() method to request the data. As with all datasets, you should save a reference to your symbol for easy use later in your algorithm. For detailed documentation on using custom data, see <a href="https://www.quantconnect.com/docs/algorithm-reference/importing-custom-data">Importing Custom Data</a>.</p>
+<p>To add Brain ML Stock Ranking data to your algorithm, call the <b>AddData</b> method. Save a reference to the dataset <b>Symbol</b> so you can access the data later in your algorithm.</p>
 
 <div class="section-example-container">
 <pre class="python">class BrainMLRankingDataAlgorithm(QCAlgorithm):
@@ -8,13 +8,16 @@
         self.SetCash(100000) 
         
         self.symbol = self.AddEquity("AAPL", Resolution.Daily).Symbol
-        self.dataset_symbol = self.AddData(BrainStockRanking2Day, symbol).Symbol</pre>
+        self.two_day_symbol = self.AddData(BrainStockRanking2Day, self.symbol).Symbol
+        self.three_day_symbol = self.AddData(BrainStockRanking3Day, self.symbol).Symbol
+        self.five_day_symbol = self.AddData(BrainStockRanking5Day, self.symbol).Symbol
+        self.ten_day_symbol = self.AddData(BrainStockRanking10Day, self.symbol).Symbol
+        self.thirty_day_symbol = self.AddData(BrainStockRanking30Day, self.symbol).Symbol</pre>
 <pre class="csharp">namespace QuantConnect
 {
     public class BrainMLRankingDataAlgorithm : QCAlgorithm
     {
-    	private Symbol _symbol;
-    	private Symbol _datasetSymbol;
+    	private Symbol _symbol, _2DaySymbol, _3DaySymbol, _5DaySymbol, _10DaySymbol, _30DaySymbol;
     	
         public override void Initialize()
         {
@@ -23,7 +26,11 @@
             SetCash(100000);
             
             _symbol = AddEquity("AAPL", Resolution.Daily).Symbol;
-            _datasetSymbol = AddData&lt;BrainStockRanking2Day&gt;(symbol).Symbol;
+            _2DaySymbol = AddData&lt;BrainStockRanking2Day&gt;(_symbol).Symbol;
+            _3DaySymbol = AddData&lt;BrainStockRanking3Day&gt;(_symbol).Symbol;
+            _5DaySymbol = AddData&lt;BrainStockRanking5Day&gt;(_symbol).Symbol;
+            _10DaySymbol = AddData&lt;BrainStockRanking10Day&gt;(_symbol).Symbol;
+            _30DaySymbol = AddData&lt;BrainStockRanking30Day&gt;(_symbol).Symbol;
         }
     }
 }</pre></div>

@@ -1,4 +1,4 @@
-<p>To add Binance data from CoinAPI to your algorithm, use the AddCrypto() method to request the data. As with all datasets, you should save a reference to your symbol for easy use later in your algorithm. When requesting data, you have the option to use several crypto markets. For detailed documentation on requesting market data, see <a href="https://www.quantconnect.com/docs/algorithm-reference/initializing-algorithms#Initializing-Algorithms-Selecting-Asset-Data">Selecting Asset Data</a>.</p>
+<p>To add Binance Crypto Price data to your algorithm, call the <b>AddCrypto</b> method. Save a reference to the Crypto <b>Symbol</b> so you can access the data later in your algorithm.</p>
 
 <div class="section-example-container">
 <pre class="python">class CoinAPIDataAlgorithm(QCAlgorithm):
@@ -14,12 +14,12 @@
         # Binance accepts both Cash and Margin account types.
         self.SetBrokerageModel(BrokerageName.Binance, AccountType.Margin)
         
-        self.btcbusd = self.AddCrypto("BTCBUSD", Resolution.Minute, Market.Binance).Symbol</pre>
+        self.symbol = self.AddCrypto("BTCBUSD", Resolution.Minute, Market.Binance).Symbol</pre>
 <pre class="csharp">namespace QuantConnect
 {
     public class CoinAPIDataAlgorithm : QCAlgorithm
     {
-        private Symbol _btcbusd;
+        private Symbol _symbol;
         
         public override void Initialize()
         {
@@ -33,8 +33,10 @@
             // Binance accepts both Cash and Margin account types.
             SetBrokerageModel(BrokerageName.Binance, AccountType.Margin);
             
-            _btcbusd = AddCrypto("BTCBUSD", Resolution.Minute, Market.Binance).Symbol;
+            _symbol = AddCrypto("BTCBUSD", Resolution.Minute, Market.Binance).Symbol;
         }
     }
 }</pre>
 </div>
+
+<p>For more information about creating Crypto subscriptions, see <a href="https://www.quantconnect.com/docs/v2/writing-algorithms/securities/asset-classes/crypto/requesting-data">Requesting Data</a>.</p>

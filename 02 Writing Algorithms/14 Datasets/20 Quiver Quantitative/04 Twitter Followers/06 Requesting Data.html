@@ -1,4 +1,4 @@
-<p>To add QuiverQuantTwitterFollowers data to your algorithm, use the AddData() method to request the data. As with all datasets, you should save a reference to your symbol for easy use later in your algorithm. For detailed documentation on using custom data, see <a href="https://www.quantconnect.com/docs/algorithm-reference/importing-custom-data">Importing Custom Data</a>.</p>
+<p>To add Twitter Followers data to your algorithm, call the <b>AddData</b> method. Save a reference to the dataset <b>Symbol</b> so you can access the data later in your algorithm.</p>
 
 <div class="section-example-container">
 <pre class="python">from QuantConnect.DataSource import *
@@ -8,20 +8,22 @@ class QuiverQuantTwitterFollowersDataAlgorithm(QCAlgorithm):
         self.SetEndDate(2021, 6, 1)
         self.SetCash(100000)
 
-        aapl = self.AddEquity("AAPL", Resolution.Daily).Symbol
-        quiverQuantTwitterFollowers = self.AddData(QuiverQuantTwitterFollowers, aapl).Symbol</pre>
+        self.symbol = self.AddEquity("AAPL", Resolution.Daily).Symbol
+        self.dataset_symbol = self.AddData(QuiverQuantTwitterFollowers, self.symbol).Symbol</pre>
 <pre class="csharp">using QuantConnect.DataSource;
 namespace QuantConnect
 {
     public class QuiverQuantTwitterFollowersDataAlgorithm : QCAlgorithm
     {
+        private Symbol _symbol, _datasetSymbol;
+
         public override void Initialize()
         {
             SetStartDate(2021, 1, 1);
             SetEndDate(2021, 6, 1);
             SetCash(100000);
-            var aapl = AddEquity("AAPL", Resolution.Daily).Symbol;
-            var quiverQuantTwitterFollowers = AddData&lt;QuiverQuantTwitterFollowers&gt;(aapl).Symbol;
+            _symbol = AddEquity("AAPL", Resolution.Daily).Symbol;
+            _datasetSymbol = AddData&lt;QuiverQuantTwitterFollowers&gt;(_symbol).Symbol;
         }
     }
 }</pre>

@@ -1,16 +1,55 @@
-<p>Data can be accessed via Slice events. Slice delivers unique events to your algorithm as they happen. We recommend saving the symbol object when you add the data for easy access to slice later. Data is available in daily resolution. You can see an example of the slice accessor in the code below.</p>
+<p>To get the current Brain Language Metrics on Company Filings data, index the current <a href="https://www.quantconnect.com/docs/v2/writing-algorithms/key-concepts/time-modeling/timeslices"><b>Slice</b></a> with the dataset <b>Symbol</b>. Slice objects deliver unique events to your algorithm as they happen, but the <b>Slice</b> may not contain data for your dataset at every time step. To avoid issues, check if the <b>Slice</b> contains the data you want before you index it.</p>
+
 <div class="section-example-container">
 <pre class="python">def OnData(self, slice: Slice) -&gt; None:
-    if slice.ContainsKey(self.dataset_symbol):
-        point = slice[self.dataset_symbol]
-        self.Log(f"Data point received for {self.dataset_symbol} at {slice.Time}. Sentiment: {point.ReportSentiment.Sentiment}")
+    if slice.ContainsKey(self.dataset_10k_symbol):
+        data_point = slice[self.dataset_10k_symbol]
+        self.Log(f"{self.dataset_10k_symbol} report sentiment at {slice.Time}: {data_point.ReportSentiment.Sentiment}")
+
+    if slice.ContainsKey(self.dataset_all_symbol):
+        data_point = slice[self.dataset_all_symbol]
+        self.Log(f"{self.dataset_all_symbol} report sentiment at {slice.Time}: {data_point.ReportSentiment.Sentiment}")</pre>
+<pre class="csharp">public override void OnData(Slice slice)
+{
+    if (slice.ContainsKey(_dataset10KSymbol))
+    {
+        var dataPoint = slice[_dataset10KSymbol];
+        Log($"{_dataset10KSymbol} report sentiment at {slice.Time}: {dataPoint.ReportSentiment.Sentiment}");
+    }
+
+    if (slice.ContainsKey(_datasetAllSymbol))
+    {
+        var dataPoint = slice[_datasetAllSymbol];
+        Log($"{_datasetAllSymbol} report sentiment at {slice.Time}: {dataPoint.ReportSentiment.Sentiment}");
+    }
+}
+</pre>
+</div>
+
+<p>To iterate through all of the dataset objects in the current <b>Slice</b>, call the <b>Get</b> method.</p>
+
+<div class="section-example-container">
+<pre class="python">def OnData(self, slice: Slice) -&gt; None:
+    for dataset_symbol, data_point in slice.Get(BrainCompanyFilingLanguageMetrics10K).items():
+        self.Log(f"{dataset_symbol} report sentiment at {slice.Time}: {data_point.ReportSentiment.Sentiment}")
+
+    for dataset_symbol, data_point in slice.Get(BrainCompanyFilingLanguageMetricsAll).items():
+        self.Log(f"{dataset_symbol} report sentiment at {slice.Time}: {data_point.ReportSentiment.Sentiment}")
 </pre>
 <pre class="csharp">public override void OnData(Slice slice)
 {
-    if (slice.ContainsKey(_datasetSymbol))
+    foreach (var kvp in slice.Get&lt;BrainCompanyFilingLanguageMetrics10K&gt;())
     {
-        var point = slice[_datasetSymbol];
-        Log(f"Data point received for {_datasetSymbol} at {slice.Time}. Sentiment: {point.ReportSentiment.Sentiment}");
+        var datasetSymbol = kvp.Key;
+        var dataPoint = kvp.Value;
+        Log($"{datasetSymbol} report sentiment at {slice.Time}: {dataPoint.ReportSentiment.Sentiment}");
+    }
+
+    foreach (var kvp in slice.Get&lt;BrainCompanyFilingLanguageMetricsAll&gt;())
+    {
+        var datasetSymbol = kvp.Key;
+        var dataPoint = kvp.Value;
+        Log($"{datasetSymbol} report sentiment at {slice.Time}: {dataPoint.ReportSentiment.Sentiment}");
     }
 }</pre>
 </div>

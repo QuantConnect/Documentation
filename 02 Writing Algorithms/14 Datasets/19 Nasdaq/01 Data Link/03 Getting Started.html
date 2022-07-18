@@ -1,33 +1,32 @@
+<p>The following snippet demonstrates how to request data from the Data Link dataset:</p>
+
 <div class="section-example-container">
 <pre class="python">
-# For premium datasets, you need to provide your API Key
-NasdaqDataLink.SetAuthCode("your-api-key")
+# For premium datasets, provide your API Key
+# NasdaqDataLink.SetAuthCode("&lt;apiKey&gt;")
 
-### Requesting Data in Initialize method
-# The default column will be used is "close".
-self.nasdaq_ibm = self.AddData(NasdaqDataLink, 'WIKI/IBM', Resolution.Daily).Symbol
+self.pe_ratio_symbol = self.AddData(NasdaqDataLink, "MULTPL/SP500_PE_RATIO_MONTH", Resolution.Daily).Symbol
+# This dataset has one data column ("Value")
 
-# We can create a custom sub-class to select a column in the dataset.
-self.nasdaq_fb = self.AddData(NasdaqCustomColumns, 'WIKI/FB', Resolution.Daily).Symbol
+self.position_change_symbol = self.AddData(NasdaqCustomColumns, "CFTC/066393_FO_L_CHG", Resolution.Daily).Symbol
+# This dataset has multiple data columns. Create a subclass to set the default value column.
 
 class NasdaqCustomColumns(NasdaqDataLink):
     def __init__(self) -&gt; None:
-        # Select the column "adj. close".
-        self.ValueColumnName = "adj. close"</pre>
-<pre class="csharp">
-// For premium datasets, you need to provide your API Key
-NasdaqDataLink.SetAuthCode("your-api-key");
+        # Select the column "open interest - change".
+        self.ValueColumnName = "open interest - change"</pre>
+<pre class="csharp">// For premium datasets, provide your API Key
+// NasdaqDataLink.SetAuthCode("&lt;apiKey&gt;");
 
-/// Requesting Data in Initialize method
-// The default column will be used is "close".
-var nasdaqIbm = AddData&lt;NasdaqDataLink&gt;('WIKI/IBM', Resolution.Daily).Symbol;
+_peRatioSymbol = AddData&lt;NasdaqDataLink&gt;("MULTPL/SP500_PE_RATIO_MONTH", Resolution.Daily).Symbol;
+// This dataset has one data column ("Value")
 
-// We can create a custom sub-class to select a column in the dataset.
-var nasdaqFb = AddData&lt;NasdaqCustomColumns&gt;('WIKI/FB', Resolution.Daily).Symbol;
+_positionChangeSymbol = AddData&lt;NasdaqCustomColumns&gt;("CFTC/066393_FO_L_CHG", Resolution.Daily).Symbol;
+// This dataset has multiple data columns. Create a subclass to set the default value column.
 
 public class NasdaqCustomColumns : NasdaqDataLink
 {
-    // Select the column "adj. close".
-    public NasdaqCustomColumns() : base(valueColumnName: "adj. close") { }
+    // Select the column "open interest - change"
+    public NasdaqCustomColumns() : base(valueColumnName: "open interest - change") { }
 }</pre>
 </div>
