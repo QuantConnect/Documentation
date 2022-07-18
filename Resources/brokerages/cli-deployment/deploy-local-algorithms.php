@@ -74,7 +74,8 @@ Select a data feed:
 11) Kraken
 12) FTX
 13) IQFeed
-14) Custom data only
+14) Polygon
+15) Custom data only
 To enter multiple options, separate them with comma.:</pre>
             </div>
             </li>";
