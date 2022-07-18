@@ -1,4 +1,75 @@
-<p>Before you can subscribe to an Index Option contract, you must get the contract <code>Symbol</code>.</p>
+<p>Before you can subscribe to an Index Option contract, you must configure the underlying Index and get the contract <code>Symbol</code>.</p>
+
+<h4>Configure the Underlying Index</h4>
+<p>If you want to subscribe to the underlying Index in the <code>Initialize</code> method, set the underlying volatility model of the Index and <a href="/docs/v2/writing-algorithms/reality-modeling/options-models/volatility/key-concepts#07-Warm-Up-Models">warm it up</a>.</p>
+
+<div class="section-example-container">
+    <pre class="csharp">var index = AddIndex("VIX");
+index.VolatilityModel = new StandardDeviationOfReturnsVolatilityModel(30);
+SetWarmup(30, Resolution.Daily);</pre>
+    <pre class="python">index = self.AddIndex("VIX")
+index.VolatilityModel = StandardDeviationOfReturnsVolatilityModel(30)
+self.SetWarmup(30, Resolution.Daily)</pre>
+</div>
+
+<p>If you trade Options for many Indices in your algorithm, add this logic to a <a href='/docs/v2/writing-algorithms/initialization#07-Set-Security-Initializer'>security initializer</a>.</p>
+
+<div class="section-example-container">
+    <pre class="csharp">// In Initialize
+var seeder = SecuritySeeder.Null;
+SetSecurityInitializer(new MySecurityInitializer(BrokerageModel, seeder, this));
+
+
+class MySecurityInitializer : BrokerageModelSecurityInitializer
+{
+    private QCAlgorithm _algorithm;
+
+    public MySecurityInitializer(IBrokerageModel brokerageModel, ISecuritySeeder securitySeeder, QCAlgorithm algorithm)
+        : base(brokerageModel, securitySeeder) 
+    {
+        _algorithm = algorithm;
+    }
+    
+    public override void Initialize(Security security)
+    {
+        // First, call the superclass definition
+        // This method sets the reality models of each security using the default reality models of the brokerage model
+        base.Initialize(security);
+
+        // Next, set and warm up the volatility model
+        if (security.Type == SecurityType.Index)
+        {
+            security.VolatilityModel = new StandardDeviationOfReturnsVolatilityModel(30);
+            foreach (var tradeBar in _algorithm.History(security.Symbol, 30, Resolution.Daily))
+            {
+                security.VolatilityModel.Update(security, tradeBar);
+            }
+        }
+    }
+}</pre>
+    <pre class="python"># In Initialize
+seeder = SecuritySeeder.Null
+self.SetSecurityInitializer(MySecurityInitializer(self.BrokerageModel, seeder, self))
+
+
+class MySecurityInitializer(BrokerageModelSecurityInitializer):
+
+    def __init__(self, brokerage_model: IBrokerageModel, security_seeder: ISecuritySeeder, algorithm: QCAlgorithm) -&gt; None:
+        super().__init__(brokerage_model, security_seeder)
+        self.algorithm = algorithm
+
+    def Initialize(self, security: Security) -&gt; None:
+        # First, call the superclass definition
+        # This method sets the reality models of each security using the default reality models of the brokerage model
+        super().Initialize(security)
+
+        # Next, set and warm up the volatility model
+        if security.Type == SecurityType.Index:
+            security.VolatilityModel = StandardDeviationOfReturnsVolatilityModel(30)
+            trade_bars = self.algorithm.History[TradeBar](security.Symbol, 30, Resolution.Daily)
+            for trade_bar in trade_bars:
+                security.VolatilityModel.Update(security, trade_bar)</pre>
+</div>
 
 <h4>Get Contract Symbols</h4>
 <p>To get Index Option contract <code>Symbol</code> objects, call the <code>CreateOption</code> method or use the <code>OptionChainProvider</code>. If you use the <code>CreateOption</code> method, you need to know the specific contract details.</p>
@@ -29,7 +100,7 @@ self.contract_symbol = sorted(filtered_symbols, key=lambda symbol: symbol.ID.Str
 <div data-tree="QuantConnect.OptionRight"></div>
 
 <h4>Subscribe to Contracts</h4>
-<p>To create an Index Option contract subscription, pass the contract <code>Symbol</code> to the <code>AddOptionContract</code> method. Save a reference to the contract <code>Symbol</code> so you can easily access the contract in the <a href="/docs/v2/writing-algorithms/securities/asset-classes/index-options/handling-data#03-Options-Chain">OptionChain</a> that LEAN passes to the <code>OnData</code> method. To set the <a href="https://www.quantconnect.com/docs/v2/writing-algorithms/reality-modeling/options-models/pricing">price model</a> of the Option, set its <code>PriceModel</code> property.</p>
+<p>To create an Index Option contract subscription, pass the contract <code>Symbol</code> to the <code>AddIndexOptionContract</code> method. Save a reference to the contract <code>Symbol</code> so you can easily access the contract in the <a href="/docs/v2/writing-algorithms/securities/asset-classes/index-options/handling-data#03-Options-Chain">OptionChain</a> that LEAN passes to the <code>OnData</code> method. To set the <a href="https://www.quantconnect.com/docs/v2/writing-algorithms/reality-modeling/options-models/pricing">price model</a> of the Option, set its <code>PriceModel</code> property.</p>
 
 <div class="section-example-container">
     <pre class="csharp">var option = AddIndexOptionContract(_contractSymbol);
@@ -41,7 +112,7 @@ option.PriceModel = OptionPriceModels.BlackScholes()<br></pre>
 <p>The <code>AddOptionContract</code> method creates a subscription for a single Index Option contract and adds it to your <span class="new-term">user-defined</span> universe. To create a dynamic universe of Index Option contracts, add an <a href="https://www.quantconnect.com/docs/v2/writing-algorithms/universes/index-options">Index Option universe</a>.</p>
 
 <h4>Warm Up Contract Prices</h4>
-<p>If you subscribe to an Index Option contract with <code>AddOptionContract</code>, you'll need to wait until the next <code>Slice</code> to receive data and trade the contract. To trade the contract in the same time step you subscribe to the contract, set the current price of the contract in a security initializer.</p>
+<p>If you subscribe to an Index Option contract with <code>AddIndexOptionContract</code>, you'll need to wait until the next <code>Slice</code> to receive data and trade the contract. To trade the contract in the same time step you subscribe to the contract, set the current price of the contract in a security initializer.</p>
 <div class="section-example-container">
     <pre class="csharp">SetSecurityInitializer(new BrokerageModelSecurityInitializer(BrokerageModel,
     new FuncSecuritySeeder(GetLastKnownPrices)));</pre>
