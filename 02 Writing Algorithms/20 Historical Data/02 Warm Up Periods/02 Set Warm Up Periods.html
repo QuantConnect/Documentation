@@ -18,15 +18,15 @@ self.SetWarmUp(100)
 
 <p>If you pass a <code class="python">timedelta</code><code class="csharp">TimeSpan</code> argument, the warm up period consists of that <code class="python">timedelta</code><code class="csharp">TimeSpan</code> before the start date and pipes in data that matches the resolution of your data subscriptions.</p>
 
-<p>If you pass just an integer argument, LEAN calculates the start of the warm up period by using the number of bars you specify and the lowest resolution of your data subscriptions. For instance, in the following example, the warm up period consists of 100 minute resolution bars for SPY and 100 * 60 = 6,000 second resolution bars for BTCUSD. However, if you change the resolution for BTCUSD to&nbsp;<code>Resolution.Minute</code>, then the warm up period for BTCUSD would also be 100 minute resolution bars.</p>
+<p>If you pass just an integer argument, LEAN calculates the start of the warm up period for each of your security subscriptions by using the number of bars you specify and the trading calendar of each security. After it calculates the start time of the warm up period for each security, it sets the earliest start time as the start of the warm up period. For instance, in the following example, the warm up period consists of 100 minute resolution bars for SPY and as many second resolution bars for BTCUSD that occur over that time period.</p>
 
 <div class="section-example-container">
-<pre class="csharp">AddEquity("SPY", Resolution.Minute);
-AddCrypto("BTCUSD", Resolution.Second);
+<pre class="csharp">AddEquity("SPY", Resolution.Minute, fillDataForward: false);
+AddCrypto("BTCUSD", Resolution.Second, fillDataForward: false);
 SetWarmUp(100);
 </pre>
-<pre class="python">self.AddEquity("SPY", Resolution.Minute)
-self.AddCrypto("BTCUSD", Resolution.Second)
+<pre class="python">self.AddEquity("SPY", Resolution.Minute, fillDataForward=False)
+self.AddCrypto("BTCUSD", Resolution.Second, fillDataForward=False)
 self.SetWarmUp(100)
 </pre>
 </div>
@@ -40,19 +40,19 @@ SetWarmUp(100, Resolution.Daily);</pre>
 self.SetWarmUp(100, Resolution.Daily)</pre>
 </div>
 
-<p>If you pass an integer and a resolution, the warm up period consists of the number of bars and resolution you set, regardless of the resolution of your data subscriptions. If you have registered indicators or consolidators for automatic updates, the resolution must be less than or equal to the lowest resolution of your automatic indicators and consolidators. For instance, in the following example, since the indicators use minute resolution data, you can set the warm up period to use tick, second, or minute resolution data.</p>
+<p>If you pass an integer and a resolution, the warm up period consists of the number of bars and resolution you set, regardless of the resolution of your data subscriptions. If you registered indicators or consolidators for automatic updates, the resolution must be less than or equal to the lowest resolution of your automatic indicators and consolidators. For instance, in the following example, since the indicators use minute resolution data, you can set the warm up period to use tick, second, or minute resolution data.</p>
 
 <div class="section-example-container">
-<pre class="csharp">_spy = AddEquity("SPY", Resolution.Minute).Symbol;
-_btc = AddCrypto("BTCUSD", Resolution.Second).Symbol;
+<pre class="csharp">_spy = AddEquity("SPY", Resolution.Minute, fillDataForward: false).Symbol;
+_btc = AddCrypto("BTCUSD", Resolution.Second, fillDataForward: false).Symbol;
 
 _spySma = SMA(_spy, 10);
 _btcSMA = SMA(_btc, 10, Resolution.Minute);
 
 SetWarmUp(100, Resolution.Minute);
 </pre>
-<pre class="python">self.spy = self.AddEquity("SPY", Resolution.Minute).Symbol
-self.btc = self.AddCrypto("BTCUSD", Resolution.Second).Symbol
+<pre class="python">self.spy = self.AddEquity("SPY", Resolution.Minute, fillDataForward=False).Symbol
+self.btc = self.AddCrypto("BTCUSD", Resolution.Second, fillDataForward=False).Symbol
 
 self.spy_sma = self.SMA(self.spy, 10)
 self.btc_sma = self.SMA(self.btc, 10, Resolution.Minute)
