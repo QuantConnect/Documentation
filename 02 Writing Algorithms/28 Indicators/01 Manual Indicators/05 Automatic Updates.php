@@ -32,9 +32,8 @@ RegisterIndicator(_symbol, _indicator, _consolidator);</pre>
 </pre>
 </div>
 
-<?php 
-echo file_get_contents(DOCS_RESOURCES."/enumerations/field.html"); 
-?>
+<p>The <code>Field</code> class has the following <code>selector</code> properties:</p>
+<div data-tree='QuantConnect.Field'></div>
 
 <p class='csharp'>To create a custom <code>selector</code>, define a function that calculates the value.</p>
 
