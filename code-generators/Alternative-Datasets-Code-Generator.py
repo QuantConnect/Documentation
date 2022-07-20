@@ -80,9 +80,10 @@ for dataset in doc:
                 attr = True
                 
             elif item["title"].lower() == "introduction":
+                backslash = '\\'
                 content += f"""
                 
-<p>For more information about the {datasetName} dataset, including CLI commands and pricing, see the <a href=\"https://www.quantconnect.com{dataset['url']}\">dataset listing</a>.<p>"""
+<p>For more information about the {datasetName} dataset, including CLI commands and pricing, see the <a href=\"https://www.quantconnect.com{dataset['url'].replace(backslash, '')}\">dataset listing</a>.<p>"""
                 
             with open(destination_folder / f'{i:02} {item["title"].strip()}.html', "w", encoding="utf-8") as html_file:
                 html_file.write(content)
