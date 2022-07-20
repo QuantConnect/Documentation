@@ -1,17 +1,15 @@
 <p>The following snippet demonstrates how to request data from the Corporate Buybacks dataset:</p>
 
 <div class="section-example-container">
-<pre class="python">self.aapl = self.AddEquity("AAPL", Resolution.Minute).Symbol
-
-self.smart_insider_intention = self.AddData(SmartInsiderIntention, self.aapl).Symbol
-self.smart_insider_transaction = self.AddData(SmartInsiderTransaction, self.aapl).Symbol
+<pre class="python">self.symbol = self.AddEquity("AAPL", Resolution.Minute).Symbol
+self.intention_symbol = self.AddData(SmartInsiderIntention, self.symbol).Symbol
+self.transaction_symbol = self.AddData(SmartInsiderTransaction, self.symbol).Symbol
 
 self.AddUniverse(SmartInsiderIntentionUniverse, "SmartInsiderIntentionUniverse", Resolution.Daily, self.IntentionSelection)
 self.AddUniverse(SmartInsiderTransactionUniverse, "SmartInsiderTransactionUniverse", Resolution.Daily, self.TransactionSelection)</pre>
-<pre class="csharp">_aapl = AddEquity("AAPL", Resolution.Minute).Symbol;
-
-_smartInsiderIntention = AddData&lt;SmartInsiderIntention&gt;(_aapl).Symbol;
-_smartInsiderTransaction = AddData&lt;SmartInsiderTransaction&gt;(_aapl).Symbol;
+<pre class="csharp">_symbol = AddEquity("AAPL", Resolution.Minute).Symbol;
+_intentionSymbol = AddData&lt;SmartInsiderIntention&gt;(_symbol).Symbol;
+_transactionSymbol = AddData&lt;SmartInsiderTransaction&gt;(_symbol).Symbol;
 
 AddUniverse&lt;SmartInsiderIntentionUniverse&gt;("SmartInsiderIntentionUniverse", Resolution.Daily, IntentionSelection);
 AddUniverse&lt;SmartInsiderTransactionUniverse&gt;("SmartInsiderTransactionUniverse", Resolution.Daily, TransactionSelection);

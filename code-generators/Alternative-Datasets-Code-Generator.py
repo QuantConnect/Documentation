@@ -79,6 +79,11 @@ for dataset in doc:
             if item["title"] == "Data Point Attributes":
                 attr = True
                 
+            elif item["title"].lower() == "introduction":
+                content += f"""
+                
+<p>For more information about the {datasetName} dataset, including CLI commands and pricing, see the <a href=\"https://www.quantconnect.com{dataset['url']}\">dataset listing</a>.<p>"""
+                
             with open(destination_folder / f'{i:02} {item["title"].strip()}.html', "w", encoding="utf-8") as html_file:
                 html_file.write(content)
                 i += 1

@@ -1,4 +1,4 @@
-<p>You can filter and select US Equities based on SmartInsider Corporate Buyback data by AddUniverse&lt;SmartInsiderIntentionUniverse&gt; and/or AddUniverse&lt;SmartInsiderTransactionUniverse&gt;.</p>
+<p>To select a dynamic universe of US Equities based on Corporate Buybacks data, call the <b>AddUniverse</b> method with the <b>SmartInsiderIntentionUniverse</b> class or the <b>SmartInsiderTransactionUniverse</b> and a selection function.</p> 
 
 <div class="section-example-container">
 <pre class="python">
@@ -7,19 +7,11 @@ def Initialize(self) -&gt; None:
     self.AddUniverse(SmartInsiderTransactionUniverse, "SmartInsiderTransactionUniverse", Resolution.Daily, self.TransactionSelection)
 
 def IntentionSelection(self, alt_coarse: List[SmartInsiderIntentionUniverse]) -&gt; List[Symbol]:
-    for datum in alt_coarse:
-        self.Log(f"{datum.Symbol},{datum.Amount},{datum.AmountValue},{datum.Percentage},{datum.MinimumPrice},{datum.MaximumPrice},{datum.USDMarketCap}")
-
-    # define our selection criteria
     return [d.Symbol for d in alt_coarse \
                 if d.Percentage &gt; 0.005 \
                 and d.USDMarketCap &gt; 100000000]
 
 def TransactionSelection(self, alt_coarse: List[SmartInsiderTransactionUniverse]) -&gt; List[Symbol]:
-    for datum in alt_coarse:
-        self.Log(f"{datum.Symbol},{datum.Amount},{datum.MinimumExecutionPrice},{datum.MaximumExecutionPrice},{datum.USDValue},{datum.BuybackPercentage},{datum.VolumePercentage},{datum.USDMarketCap}")
-
-    # define our selection criteria
     return [d.Symbol for d in alt_coarse \
                 if d.BuybackPercentage &gt; 0.005 \
                 and d.USDMarketCap &gt; 100000000]
@@ -33,12 +25,6 @@ public override void Initialize()
 
 private IEnumerable&lt;Symbol&gt; IntentionSelection(IEnumerable&lt;SmartInsiderIntentionUniverse&gt; altCoarse)
 {
-    foreach (var datum in altCoarse)
-    {
-        Log($"{datum.Symbol},{datum.Amount},{datum.AmountValue},{datum.Percentage},{datum.MinimumPrice},{datum.MaximumPrice},{datum.USDMarketCap}");
-    }
-
-    // define our selection criteria
     return from d in altCoarse 
         where d.Percentage &gt; 0.005m &amp;&amp; d.USDMarketCap &gt; 100000000m
         select d.Symbol;
@@ -46,15 +32,11 @@ private IEnumerable&lt;Symbol&gt; IntentionSelection(IEnumerable&lt;SmartInsider
 
 private IEnumerable&lt;Symbol&gt; TransactionSelection(IEnumerable&lt;SmartInsiderTransactionUniverse&gt; altCoarse)
 {
-    foreach (var datum in altCoarse)
-    {
-        Log($"{datum.Symbol},{datum.Amount},{datum.MinimumExecutionPrice},{datum.MaximumExecutionPrice},{datum.USDValue},{datum.BuybackPercentage},{datum.VolumePercentage},{datum.USDMarketCap}");
-    }
-
-    // define our selection criteria
     return from d in altCoarse 
         where d.BuybackPercentage &gt; 0.005m &amp;&amp; d.USDMarketCap &gt; 100000000m
         select d.Symbol;
 }
 </pre>
 </div>
+
+<p>For more information about dynamic universes, see <a href="/docs/v2/writing-algorithms/universes/key-concepts">Universes</a>.</p>

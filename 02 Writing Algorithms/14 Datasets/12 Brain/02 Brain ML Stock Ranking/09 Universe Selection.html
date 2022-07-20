@@ -1,32 +1,20 @@
-<p>You can filter and select US equities by AddUniverse() based on daily Brain Stock Ranking data.</p>
+<p>To select a dynamic universe of US Equities based on Brain ML Stock Ranking data, call the <b>AddUniverse</b> method with the <b>BrainStockRankingUniverse</b> class and a selection function.</p> 
 
 <div class="section-example-container">
 <pre class="python">def Initialize(self) -&gt; None:
-    # Data ADDED via universe selection is added with Daily resolution.
-    self.UniverseSettings.Resolution = Resolution.Daily
-
-    # add a custom universe data source (defaults to usa-equity)
     self.AddUniverse(BrainStockRankingUniverse, "BrainStockRankingUniverse", Resolution.Daily, self.UniverseSelection)
 
 def UniverseSelection(self, alt_coarse: List[BrainStockRankingUniverse]) -&gt; List[Symbol]:
-    for datum in alt_coarse:
-        self.Log(f"{datum.Symbol},{datum.Rank2Days},{datum.Rank3Days},{datum.Rank5Days},{datum.Rank10Days},{datum.Rank21Days}")
-
-    # define our selection criteria
     return [d.Symbol for d in alt_coarse \
                 if d.Rank2Days &gt; 0 \
                 and d.Rank3Days &gt; 0 \
                 and d.Rank5Days &gt; 0]</pre>
 <pre class="csharp">AddUniverse&lt;BrainStockRankingUniverse&gt;("BrainStockRankingUniverse", Resolution.Daily, altCoarse =&gt;
 {
-    foreach (var datum in altCoarse)
-    {
-        Log($"{datum.Symbol},{datum.Rank2Days},{datum.Rank3Days},{datum.Rank5Days},{datum.Rank10Days},{datum.Rank21Days}");
-    }
-
-    // define our selection criteria
     return from d in altCoarse 
         where d.Rank2Days &gt; 0m &amp;&amp; d.Rank3Days &gt; 0m  &amp;&amp; d.Rank5Days &gt; 0m
         select d.Symbol;
 });</pre>
 </div>
+
+<p>For more information about dynamic universes, see <a href="/docs/v2/writing-algorithms/universes/key-concepts">Universes</a>.</p>
