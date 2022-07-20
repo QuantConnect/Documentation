@@ -10,9 +10,8 @@ self.rsi = self.RSI("SPY", 10,  MovingAverageType.Simple, Resolution.Daily, Fiel
 _rsi = RSI("SPY", 10,  MovingAverageType.Simple, Resolution.Daily, Field.Open);</pre>
 </div>
 
-<?php 
-echo file_get_contents(DOCS_RESOURCES."/enumerations/field.html"); 
-?>
+<p>The <code>Field</code> class has the following <code>selector</code> properties:</p>
+<div data-tree='QuantConnect.Field'></div>
 
 <p class='csharp'>To create a custom <code>selector</code>, define a function that calculates the value.</p>
 
