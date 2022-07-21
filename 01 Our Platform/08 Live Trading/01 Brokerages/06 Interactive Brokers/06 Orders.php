@@ -66,6 +66,8 @@ self.LimitIfTouchedOrder(self.symbol, quantity, trigger_price, limit_price)
 self.ExerciseOption(self.option_symbol, quantity)</pre>
 </div>
 
+<p>Market on open orders are not available for Futures or Future Options.</p>
+
 <h4>Order Properties</h4>
 
 <p>We model custom order properties from the IB API. The following table describes the members of the <code>InteractiveBrokersOrderProperties</code> object that you can set to customize order execution. The table does not include the preceding methods for FA accounts.</p>
