@@ -1,4 +1,4 @@
-<p>When you deploy an algorithm, LEAN first calls the <a href="/docs/v2/writing-algorithms/initialization">Initialize</a> method. In live mode, the engine loads your holdings and open orders from your brokerage account to add data subscriptions and populate the <code>Securities</code>, <code>Portfolio</code>, and <code>Transactions</code> objects. LEAN then performs the following steps with each new <a href="/docs/v2/writing-algorithms/key-concepts/time-modeling/timeslices">timeslice</a> that your data subscriptions produce. Your algorithm must process each timeslice within 10 minutes unless you call the <a href="/docs/v2/writing-algorithms/machine-learning/training-models">Train</a> method.</p>
+<p>When you deploy an algorithm, LEAN first calls the <a href="/docs/v2/writing-algorithms/initialization">Initialize</a> method. In live mode, the engine loads your holdings and open orders from your brokerage account to add data subscriptions and populate the <code>Securities</code>, <code>Portfolio</code>, and <code>Transactions</code> objects. LEAN receives the data from the subscriptions, synchronizes the data to create a&nbsp;<a href="https://www.quantconnect.com/docs/v2/writing-algorithms/key-concepts/time-modeling/timeslices" style="background-color: rgb(255, 255, 255);">timeslice</a>, and then performs the following steps. Your algorithm can spend up to 10 minutes on each timeslice unless you call the <a href="/docs/v2/writing-algorithms/machine-learning/training-models">Train</a> method.</p>
 
 <ol>
     <li>If it's a backtest, check if there are <a href="/docs/v2/writing-algorithms/scheduled-events">Scheduled Events</a> in the past that didn't fire because there was no data between the previous <a href="/docs/v2/writing-algorithms/key-concepts/time-modeling/timeslices">slice</a> and the current slice. LEAN automatically creates a Scheduled Event to call the <code>OnEndOfDay</code> method at the end of each day.</li>
@@ -37,7 +37,7 @@
 
 <p>When your algorithm stops executing, LEAN calls the <code>OnEndOfAlgorithm</code> method.</p>
 <div class="section-example-container">
-<pre class="python">def OnEndOfAlgorithm(self) -> None:
+<pre class="python">def OnEndOfAlgorithm(self) -&gt; None:
     self.Debug("Algorithm done")</pre>
 <pre class="csharp">public override void OnEndOfAlgorithm()
 {
