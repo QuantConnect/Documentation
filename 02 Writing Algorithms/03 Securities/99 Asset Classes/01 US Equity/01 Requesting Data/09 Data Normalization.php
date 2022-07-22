@@ -2,14 +2,14 @@
 
 <div data-tree='QuantConnect.DataNormalizationMode' data-fields='Raw,Adjusted,SplitAdjusted,TotalReturn'></div>
 
+<?php include(DOCS_RESOURCES."/datasets/data-normalization.html"); ?>
+
 <p>To set the data normalization mode for a security, pass a <code>dataNormalizationMode</code> argument to the <code>AddEquity</code> method.</p>
 
  <div class="section-example-container">
     <pre class="csharp">_symbol = AddEquity("SPY", dataNormalizationMode: DataNormalizationMode.Raw).Symbol;</pre>
     <pre class="python">self.symbol = self.AddEquity("SPY", dataNormalizationMode=DataNormalizationMode.Raw).Symbol</pre>
 </div>
-
-<?php include(DOCS_RESOURCES."/datasets/data-normalization.html"); ?>
 
 <p>To set the data normalization mode for all securities in an algorithm, set the <code>DataNormalizationMode</code> <a href='/docs/v2/writing-algorithms/universes/key-concepts#05-Universe-Settings'>universe setting</a> before you create the security subscriptions.</p>
 
