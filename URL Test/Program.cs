@@ -157,7 +157,7 @@ namespace QuantConnect.Tests
 
                 if (i % 50 == 0)
                 {
-                    Log.Trace($"\tDone {i}/{count} ({i/count:0.##}%)");
+                    Log.Trace($"\tDone {i}/{count} ({string.Format("{0:0.00}", i/count)}%)");
                 }
                 
                 Interlocked.Increment(ref i);
