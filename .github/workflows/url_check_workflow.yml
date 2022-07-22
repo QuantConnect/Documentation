@@ -1,0 +1,19 @@
+name: Run All Code Generators
+
+on:
+  schedule:
+    - cron:  "0 10 * * 1" # Runs "at 10 UTC every Monday" (see https://crontab.guru)
+  workflow_dispatch:  # Run on manual trigger
+    
+jobs:
+  runs-on: ubuntu-20.04
+  container:
+      image: quantconnect/lean:foundation
+  steps:
+    - uses: actions/checkout@v2
+      
+    - name: Build and run the url tester csproj
+      run: |
+      cd "URL Test"
+      dotnet build /p:Configuration=Release /v:quiet /p:WarningLevel=1 URLTest.csproj
+      dotnet run bin/Debug/net6.0/process.dll

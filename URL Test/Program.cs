@@ -34,6 +34,7 @@ namespace QuantConnect.Tests
     {
         private static readonly string _root = "https://www.quantconnect.com/";
         private static Dictionary<string, List<string>> _urlFiles = new();
+        private static bool _errorFlag = false;
 
         /// <summary>
         /// URL tester program
@@ -42,6 +43,12 @@ namespace QuantConnect.Tests
         {
             _urlFiles = GetAllUrls("../");
             TestUrls(_urlFiles);
+            
+            // raise an exception to fail the workflow if any broken links there
+            if (_errorFlag)
+            {
+                throw new Exception("There is/are broken link(s) in the docs! Refer to the above logs for reference.");
+            }
         }
 
         /// <summary>
@@ -65,18 +72,29 @@ namespace QuantConnect.Tests
                         {
                             var url = href.Split('\"').First();
 
+                            if (url.Contains("{") || url.Contains("}")) continue;
+
                             if (!url.Contains("http"))
                             {
-                                if (url[0] != '/')
+                                if (url[0] == '#')
                                 {
-                                    var subUrl = string.Join("/", file.Split(Path.PathSeparator).SkipLast(2)).ToLower().Replace(" ", "-");
-                                    url = $"{_root}{subUrl}/{url}";
+                                    var subUrl = string.Join("/", file.Split(Path.DirectorySeparatorChar).SkipLast(1).Select(x => x.Remove(0, 2).Trim()))
+                                                 .ToLower().Replace(" ", "-");
+                                    url = $"{_root}docs/v2{subUrl}{url}";
                                 }
-                                else
+                                else if (url[0] != '/')
                                 {
-                                    url = $"{_root}{url}";
+                                    var subUrl = string.Join("/", file.Split(Path.DirectorySeparatorChar).SkipLast(2).Select(x => x.Remove(0, 2).Trim()))
+                                                 .ToLower().Replace(" ", "-");
+                                    url = $"{_root}docs/v2{subUrl}/{url}";
+                                }
+                                else if (!url.Contains("mailto:"))
+                                {
+                                    url = $"{_root}{url.Remove(0, 1)}";
                                 }
                             }
+
+                            if (url.Contains("sources")) continue;
 
                             if (!allUrls.ContainsKey(url))
                             {
@@ -114,19 +132,17 @@ namespace QuantConnect.Tests
                 {        
                     tasks.Add(
                         HttpRequester(url, files).ContinueWith(response => {
-                            var statusCode = response.Result;
+                            var content = response.Result;
                             
-                            if (statusCode == HttpStatusCode.BadRequest)
+                            if (content.Contains("400 Bad Request:") || content.Contains("400 Bad Request:") || content.Contains("400 Bad Request:"))
                             {
-                                Log.Trace($"400 Bad Request:\n\t{url}\n\t[\n\t\t{string.Join("\n\t\t", files)}\n\t]");
+                                Log.Error(content);
+                                _errorFlag = true;
                             }
-                            else if (statusCode == HttpStatusCode.Unauthorized)
-                            {
-                                Log.Trace($"403 Unauthorized:\n\t{url}\n\t[\n\t\t{string.Join("\n\t\t", files)}\n\t]");
-                            }
-                            else if (statusCode == HttpStatusCode.NotFound)
+                            else if (content.Contains("Sorry we couldn't find that page."))
                             {
                                 Log.Error($"404 Not found:\n\t{url}\n\t[\n\t\t{string.Join("\n\t\t", files)}\n\t]");
+                                _errorFlag = true;
                             }
                         })
                     );
@@ -136,7 +152,7 @@ namespace QuantConnect.Tests
                     Log.Error(e, $":\n\t{url}\n\t[\n\t\t{string.Join("\n\t\t", files)}\n\t]");
                 }
 
-                if (i % 20 == 0)
+                if (i % 50 == 0)
                 {
                     Log.Trace($"\tDone {i}/{count} ({i/count:0.00}%)");
                 }
@@ -160,17 +176,33 @@ namespace QuantConnect.Tests
         /// <param name="files">files containing the url</param>
         /// <returns>Content as string</returns>
         /// <exception cref="Exception">Failed to request</exception>
-        private static async Task<HttpStatusCode> HttpRequester(string url, List<string> files)
+        private static async Task<string> HttpRequester(string url, List<string> files)
         {
             try
             {
                 using (var client = new HttpClient())
                 {
                     var response = await client.GetAsync(url);
-                    var status = response.StatusCode;
+                    var statusCode = response.StatusCode;
+
+                    if (statusCode == HttpStatusCode.BadRequest)
+                    {
+                        return $"400 Bad Request:\n\t{url}\n\t[\n\t\t{string.Join("\n\t\t", files)}\n\t]";
+                    }
+                    else if (statusCode == HttpStatusCode.Unauthorized)
+                    {
+                        return $"403 Unauthorized:\n\t{url}\n\t[\n\t\t{string.Join("\n\t\t", files)}\n\t]";
+                    }
+                    else if (statusCode == HttpStatusCode.NotFound)
+                    {
+                        return $"404 Not found:\n\t{url}\n\t[\n\t\t{string.Join("\n\t\t", files)}\n\t]";
+                    }
+
+                    response.EnsureSuccessStatusCode();
+                    var content = await response.Content.ReadAsStringAsync();
                     response.Dispose();
                     
-                    return status;
+                    return content;
                 }
             }
             catch
@@ -178,7 +210,7 @@ namespace QuantConnect.Tests
                 Thread.Sleep(1000);
             }
 
-            return HttpStatusCode.BadRequest;
+            return $"Fail to request:\n\t{url}\n\t[\n\t\t{string.Join("\n\t\t", files)}\n\t]";
         }
     }
 }
