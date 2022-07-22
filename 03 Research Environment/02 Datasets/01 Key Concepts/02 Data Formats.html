@@ -26,3 +26,146 @@ foreach (var slice in history)
 
 <img src="https://cdn.quantconnect.com/i/tu/data-formats-spy-btc.png" class="python docs-image" title="">
 <img src="https://cdn.quantconnect.com/i/tu/data-formats-spy-btc-csharp.png" class="csharp docs-image" title="">
+
+----------------------------
+
+<p>The simplest form of history request is for a known set of <code>Symbol</code> objects. History requests return slightly different data depending on the overload you call. The data that returns is in ascending order from oldest to newest. </p>
+
+<h4>Single Symbol History Requests</h4>
+
+<p>To request history for a single asset, pass the asset <code>Symbol</code> to the <code>History</code> method. The return type of the method call depends on the history request <code class="python">[Type]</code><code class="csharp">&lt;Type&gt;</code>. The following table describes the return type of each request <code class="python">[Type]</code><code class="csharp">&lt;Type&gt;</code>:</p>
+
+<table class="qc-table table">
+    <thead>
+        <tr>
+            <th>Request Type</th>
+            <th>Return Data Type</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>No argument</td>
+	    <td><code class="python">DataFrame</code><code class="csharp">List&lt;TradeBar&gt;</code></td>
+        </tr>
+        <tr>
+	    <td><code>TradeBar</code></td>
+	    <td><code class="python">List[TradeBars]</code><code class="csharp">List&lt;TradeBar&gt;</code></td>
+        </tr>
+        <tr>
+	    <td><code>QuoteBar</code></td>
+	    <td><code class="python">List[QuoteBars]</code><code class="csharp">List&lt;QuoteBar&gt;</code></td>
+        </tr>
+        <tr>
+	    <td><code>Tick</code></td>
+	    <td><code class="python">List[Ticks]</code><code class="csharp">List&lt;Tick&gt;</code></td>
+        </tr>
+    </tbody>
+</table>
+
+<p class="python">Each row of the DataFrame represents the prices at a point in time. Each column of the DataFrame is a property of that price data (for example, open, high, low, and close).</p>
+<img src="https://cdn.quantconnect.com/i/tu/data-formats-spy-btc.png" class="python docs-image" title="">
+
+<h4>Multiple Symbol History Requests</h4>
+// Different
+<p>
+To request history for multiple symbols at a time, pass an array of <code>Symbol</code> objects to the <code>History</code> method. The return type of the method call depends on the history request <code class="python">[Type]</code><code class="csharp">&lt;Type&gt;</code>. The following table describes the return type of each request <code class="python">[Type]</code><code class="csharp">&lt;Type&gt;</code>:</p>
+
+<table class="qc-table table">
+    <thead>
+        <tr>
+            <th>Request Type</th>
+            <th>Return Data Type</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>No argument</td>
+	    <td><code class="python">DataFrame</code><code class="csharp">List&lt;Slice&gt;</code></td>
+        </tr>
+        <tr>
+	    <td><code>TradeBar</code></td>
+	    <td><code class="python">List[TradeBars]</code><code class="csharp">List&lt;TradeBars&gt;</code></td>
+        </tr>
+        <tr>
+	    <td><code>QuoteBar</code></td>
+	    <td><code class="python">List[QuoteBars]</code><code class="csharp">List&lt;QuoteBars&gt;</code></td>
+        </tr>
+        <tr>
+	    <td><code>Tick</code></td>
+	    <td><code class="python">List[Ticks]</code><code class="csharp">List&lt;Ticks&gt;</code></td>
+        </tr>
+    </tbody>
+</table>
+
+<p class="csharp">The <code>Slice</code> return type provides a container that supports all data types. For example, a history request for Forex <code>QuoteBars</code> and Equity <code>TradeBars</code> has the Forex data under <code>slices.QuoteBars</code> and the Equity data under <code>slices.Bars</code>.</p>
+
+<h4>All Symbol History Requests</h4>
+// Different
+<p>You can request history for all the securities that you have subscriptions for in your notebook. The parameters are very similar to other history method calls, but the return type is an array of <a href="/docs/v2/writing-algorithms/key-concepts/time-modeling/timeslices">Slice</a> objects. The <code>Slice</code> object holds all of the results in a sorted enumerable collection that you can iterate over with a loop.</p>
+
+<h4>Assumed Default Values</h4>
+<p>The following table describes the assumptions of the History API:</p>
+<table class="table qc-table">
+    <thead>
+        <tr>
+            <th>Argument</th>
+            <th>Assumption</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>Resolution</td>
+            <td>LEAN guesses the resolution you request by looking at the securities you already have in your algorithm. If you have a security subscription in your algorithm with a matching <code>Symbol</code>, the history request uses the same resolution as the subscription. If you don't have a security subscription in your algorithm with a matching <code>Symbol</code>, <code>Resolution.Minute</code> is the default.</td>
+        </tr>
+        <tr class="csharp">
+            <td>Bar type</td>
+            <td>If you don't specify a type for the history request, <code>TradeBar</code> is the default. If the asset you request data for doesn't have <code>TradeBar</code> data, specify the <code>QuoteBar</code> type to receive history.</td>
+        </tr>
+    </tbody>
+</table>
+
+<h4>Additional Options</h4>
+<p>If you call the <code>History</code> method with a list of <code>Symbol</code> objects, a start date, an end date, and a resolution, then you can pass the following additional arguments:</p>
+
+<table class="qc-table table">
+    <thead>
+        <tr>
+            <th>Argument</th>
+            <th>Data Type</th>
+            <th>Description</th>
+            <th>Default Value</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><code>fillForward</code></td>
+	        <td><code class="csharp">bool?</code><code class="python">bool/NoneType</code></td>
+            <td>True to <a href="/docs/v2/writing-algorithms/securities/subscriptions#05-Fill-Forward">fill forward</a> missing data. Otherwise, false.</td>
+            <td><code class="csharp">null</code><code class="python">None</code></td>
+        </tr>
+        <tr>
+            <td><code>extendedMarket</code></td>
+	        <td><code class="csharp">bool?</code><code class="python">bool/NoneType</code></td>
+            <td>True to include extended market hours data. Otherwise, false.</td>
+            <td><code class="csharp">null</code><code class="python">None</code></td>
+        </tr>
+        <tr>
+            <td><code>dataMappingMode</code></td>
+	        <td><code class="csharp">DataMappingMode?</code><code class="python">DataMappingMode/NoneType</code></td>
+            <td>The <a href="/docs/v2/writing-algorithms/universes/futures#12-Continous-Contracts">contract mapping mode</a> to use for the security history request.</td>
+            <td><code class="csharp">null</code><code class="python">None</code></td>
+        </tr>
+        <tr>
+            <td><code>dataNormalizationMode</code></td>
+            <td><code class="csharp">DataNormalizationMode?</code><code class="python">DataNormalizationMode/NoneType</code></td>
+            <td>The price scaling mode to use for <a href="/docs/v2/writing-algorithms/securities/asset-classes/us-equity/requesting-data#09-Data-Normalization">US Equities</a> or <a href="/docs/v2/writing-algorithms/universes/futures#12-Continous-Contracts">continuous Futures contracts</a>. If you don't provide a value, it uses the data normalization mode of the security subscription.</td>
+            <td><code class="csharp">null</code><code class="python">None</code></td>
+        </tr>
+        <tr>
+            <td><code>contractDepthOffset</code></td>
+            <td><code class="csharp">int?</code><code class="python">int/NoneType</code></td>
+            <td>The desired offset from the current front month for <a href="/docs/v2/writing-algorithms/universes/futures#12-Continous-Contracts">continuous Futures contracts</a>.</td>
+            <td><code class="csharp">null</code><code class="python">None</code></td>
+        </tr>
+    </tbody>
+</table>
