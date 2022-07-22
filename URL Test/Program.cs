@@ -137,7 +137,7 @@ namespace QuantConnect.Tests
                         HttpRequester(url, files).ContinueWith(response => {
                             var content = response.Result;
                             
-                            if (content.Contains("400 Bad Request:") || content.Contains("400 Bad Request:") || content.Contains("400 Bad Request:"))
+                            if (content.Contains("400 Bad Request") || content.Contains("403 Unauthorized") || content.Contains("404 Not found"))
                             {
                                 Log.Error(content);
                                 _errorFlag = true;
