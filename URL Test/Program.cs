@@ -159,7 +159,7 @@ namespace QuantConnect.Tests
                 
                 Interlocked.Increment(ref i);
 
-                if (tasks.Count == 20)
+                if (tasks.Count == 10)
                 {
                     Task.WaitAll(tasks.ToArray());
                     tasks.Clear();
