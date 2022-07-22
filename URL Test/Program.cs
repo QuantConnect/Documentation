@@ -82,13 +82,16 @@ namespace QuantConnect.Tests
                                                  .ToLower().Replace(" ", "-");
                                     url = $"{_root}docs/v2{subUrl}{url}";
                                 }
+                                else if (url.Contains("mailto:"))
+                                {
+                                }
                                 else if (url[0] != '/')
                                 {
                                     var subUrl = string.Join("/", file.Split(Path.DirectorySeparatorChar).SkipLast(2).Select(x => x.Remove(0, 2).Trim()))
                                                  .ToLower().Replace(" ", "-");
                                     url = $"{_root}docs/v2{subUrl}/{url}";
                                 }
-                                else if (!url.Contains("mailto:"))
+                                else
                                 {
                                     url = $"{_root}{url.Remove(0, 1)}";
                                 }
@@ -154,7 +157,7 @@ namespace QuantConnect.Tests
 
                 if (i % 50 == 0)
                 {
-                    Log.Trace($"\tDone {i}/{count} ({i/count:0.00}%)");
+                    Log.Trace($"\tDone {i}/{count} ({i/count:0.##}%)");
                 }
                 
                 Interlocked.Increment(ref i);
