@@ -1,4 +1,6 @@
-<p>The data normalization mode defines how historical data is adjusted for <a href='/docs/v2/writing-algorithms/securities/asset-classes/india-equity/corporate-actions'>corporate actions</a>. The data normalization mode affects the data that LEAN passes to <code>OnData</code> and the data from <a href='/docs/v2/writing-algorithms/historical-data/history-requests'>history request</a>. By default, LEAN adjusts India Equity data for splits and dividends to produce a smooth price curve. The following table describes the available data normalization modes:</p>
+<p>The data normalization mode defines how historical data is adjusted for <a href='/docs/v2/writing-algorithms/securities/asset-classes/india-equity/corporate-actions'>corporate actions</a>. The data normalization mode affects the data that LEAN passes to <code>OnData</code> and the data from <a href='/docs/v2/writing-algorithms/historical-data/history-requests'>history request</a>. By default, LEAN adjusts India Equity data for splits and dividends to produce a smooth price curve. The following data normalization modes are available:</p>
+
+<div data-tree='QuantConnect.DataNormalizationMode'></div>
 
 <?php include(DOCS_RESOURCES."/datasets/data-normalization.html"); ?>
 
