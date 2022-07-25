@@ -163,7 +163,7 @@ namespace QuantConnect.Tests
                                     .Replace('#', Path.DirectorySeparatorChar)
                                     .ToLower();
                                 
-                                var section = string.Join(string.Empty, url.Split('#').Skip(1))
+                                var section = string.Join('#', url.Split('#').Skip(1))
                                     .Replace('-', ' ')
                                     .Replace("#", string.Empty)
                                     .Replace("Look ahead", "Look-ahead")    // special case
@@ -197,7 +197,7 @@ namespace QuantConnect.Tests
 
                 if (i % 50 == 0)
                 {
-                    Log.Trace($"\tDone {i}/{count} ({string.Format("{0:0.00}", i/count)}%)");
+                    Log.Trace($"\tDone {i}/{count} ({Convert.ToDecimal(i)*100/count:0.00}%)");
                 }
                 
                 Interlocked.Increment(ref i);
