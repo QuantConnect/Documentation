@@ -9,7 +9,7 @@ $getKeyHistoryConceptsText = function($isWritingAlgorithms)
 
 
 <h4>Request Options</h4>
-<p>You can request historical data based on a trailing number of bars, trailing period of time, or a defined period of time.</p>
+<p>You can request historical data based on a trailing number of bars, a trailing period of time, or a defined period of time.</p>
 
 <h4>Return Formats</h4>
 <p>Each asset class supports slightly different data formats. When you make a history request, consider what data returns. Depending on how you request the data, history requests return a specific data type. For example, if you don't provide <code>Symbol</code> objects, you get <code>Slice</code> objects that contain {$universeText}.</p>
