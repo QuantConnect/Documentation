@@ -1,1 +1,1 @@
-
+<p>LEAN groups all of the US Equity exchanges under <code>Market.USA</code>.</p>
