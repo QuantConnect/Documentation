@@ -1,6 +1,6 @@
 
 <?php 
 include(DOCS_RESOURCES."/datasets/markets.php");
-$isWritingAlgorithms = true;
+$isWritingAlgorithms = false;
 $getMarketsText($isWritingAlgorithms);
 ?>
