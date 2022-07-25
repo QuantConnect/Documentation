@@ -8,7 +8,7 @@ $getKeyHistoryConceptsText = function($isWritingAlgorithms)
 <p>The historical data API has many different options to give you the greatest flexibility in how to apply it to your algorithm.</p>
 
 
-<h4>Request Options</h4>
+<h4>Time Period Options</h4>
 <p>You can request historical data based on a trailing number of bars, a trailing period of time, or a defined period of time.</p>
 
 <h4>Return Formats</h4>
