@@ -155,6 +155,7 @@ namespace QuantConnect.Tests
                                     .Replace('/', Path.DirectorySeparatorChar)
                                     .Replace('-', ' ')
                                     .Replace("Look ahead", "Look-ahead")    // special case
+                                    .Replace("look ahead", "look-ahead")    // special case
                                     .Replace("profit loss", "profit-loss")    // special case
                                     .Replace("Built in", "Built-in")    // special case
                                     .Replace("Scikit Learn", "Scikit-Learn")    // special case
@@ -165,6 +166,7 @@ namespace QuantConnect.Tests
                                 var section = url.Split('#').Last()
                                     .Replace('-', ' ')
                                     .Replace("Look ahead", "Look-ahead")    // special case
+                                    .Replace("look ahead", "look-ahead")    // special case
                                     .Replace("profit loss", "profit-loss")    // special case
                                     .Replace("Built in", "Built-in");    // special case
                                 var allFiles = Directory.GetFiles("..", $"{section}.*", SearchOption.AllDirectories);
