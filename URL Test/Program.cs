@@ -154,22 +154,27 @@ namespace QuantConnect.Tests
                                 var expected = url.Split("docs/v2/").Last()
                                     .Replace('/', Path.DirectorySeparatorChar)
                                     .Replace('-', ' ')
+                                    .Replace('#', Path.DirectorySeparatorChar)
                                     .Replace("Look ahead", "Look-ahead")    // special case
                                     .Replace("look ahead", "look-ahead")    // special case
                                     .Replace("profit loss", "profit-loss")    // special case
                                     .Replace("Built in", "Built-in")    // special case
                                     .Replace("scikit learn", "scikit-learn")    // special case
                                     .Replace("third party", "third-party")    // special case
-                                    .Replace('#', Path.DirectorySeparatorChar)
+                                    .Replace("C and Visual Studio", "C# and Visual Studio")    // special case
+                                    .Replace("C and VS Code", "C# and VS Code")    // special case
+                                    .Replace("C and Rider", "C# and Rider")    // special case
                                     .ToLower();
                                 
-                                var section = string.Join('#', url.Split('#').Skip(1))
+                                var section = url.Split('#').Last()
                                     .Replace('-', ' ')
-                                    .Replace("#", string.Empty)
                                     .Replace("Look ahead", "Look-ahead")    // special case
                                     .Replace("look ahead", "look-ahead")    // special case
                                     .Replace("profit loss", "profit-loss")    // special case
-                                    .Replace("Built in", "Built-in");    // special case
+                                    .Replace("Built in", "Built-in")    // special case
+                                    .Replace("C and Visual Studio", "C# and Visual Studio")    // special case
+                                    .Replace("C and VS Code", "C# and VS Code")    // special case
+                                    .Replace("C and Rider", "C# and Rider");    // special case
                                 var allFiles = Directory.GetFiles("..", $"{section}.*", SearchOption.AllDirectories);
                                 var noEquals = allFiles.All(dir => 
                                 {
