@@ -1,5 +1,5 @@
 <?php 
-include(DOCS_RESOURCES."/datasets/resolutions.php");
+include(DOCS_RESOURCES."/datasets/markets.php");
 $isWritingAlgorithms = true;
 $getResolutionsText($isWritingAlgorithms);
 ?>
