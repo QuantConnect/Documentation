@@ -5,7 +5,7 @@
 symbol = qb.AddEquity("SPY").Symbol
 start_date = datetime(2018, 4, 1)
 end_date = datetime(2018, 7, 15)
-df = qb.History(symbol, start_date, end_date, Resolution.Minute)</pre>
+history = qb.History(symbol, start_date, end_date, Resolution.Minute)</pre>
     <pre class="csharp">var qb = new QuantBook();
 var symbol = qb.AddEquity("SPY").Symbol;
 var startDate = new DateTime(2018, 4, 1);
@@ -20,15 +20,15 @@ foreach (var slice in history)
 }</pre>
 </div>
 
-<img src="https://www.dropbox.com/s/y01mvb29qtaya3e/notebook%2025.PNG?dl=1" class='python docs-image' title="">
-<img src="https://cdn.quantconnect.com/i/tu/reserach-keyconcept-csharp.png" class='csharp docs-image' title="">
+<img src="https://www.dropbox.com/s/y01mvb29qtaya3e/notebook%2025.PNG?dl=1" class="python docs-image" title="">
+<img src="https://cdn.quantconnect.com/i/tu/reserach-keyconcept-csharp.png" class="csharp docs-image" title="">
 
 <p class="python">To aggregate the data, use a <a href="/docs/v2/writing-algorithms/consolidating-data/key-concepts">consolidator</a> or the <code>pandas</code> <a rel="nofollow" target="_blank" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.resample.html">resample</a> method.<br></p>
 <p class="csharp">To aggregate the data, use a <a href="/docs/v2/writing-algorithms/consolidating-data/key-concepts">consolidator</a>.<br></p>
 
 <h4 class="python">Consolidators</h4>
 
-<p class='python'>The following snippet demonstrates how to use a consolidator to aggregate data:</p>
+<p class="python">The following snippet demonstrates how to use a consolidator to aggregate data:</p>
 
 <div class="section-example-container">
     <pre class="csharp">// Set up a consolidator and a RollingWindow to save the data
@@ -36,7 +36,7 @@ var consolidator = new TradeBarConsolidator(TimeSpan.FromDays(7));
 var window = new RollingWindow&lt;TradeBar&gt;(20);
 
 // Attach a consolidation handler method that saves the consolidated bars in the RollingWindow
-consolidator.DataConsolidated += (sender, consolidated) =>
+consolidator.DataConsolidated += (sender, consolidated) =&gt;
 {
     window.Add(consolidated);
 };
@@ -54,7 +54,7 @@ window = RollingWindow[TradeBar](20)
 consolidator.DataConsolidated += lambda _, bar: window.Add(bar)
 
 # Iterate the historical market data and feed each bar into the consolidator
-for bar in close_history.itertuples():
+for bar in history.itertuples():
     tradebar = TradeBar(bar.Index[1], bar.Index[0], bar.open, bar.high, bar.low, bar.close, bar.volume)
     consolidator.Update(tradebar)</pre>
 </div>
@@ -66,11 +66,11 @@ for bar in close_history.itertuples():
 <div class="python">
 <div class="section-example-container">
 	<pre class="python"># Drop level 0 index (Symbol index) from the DataFrame
-df.reset_index(level = 0, drop = True, inplace=True)
+history.reset_index(level = 0, drop = True, inplace=True)
 </pre>
 </div></div>
 
-<img src="https://www.dropbox.com/s/7f86n9w82rya8vr/notebook%2023.PNG?dl=1" class='python docs-image' title="">
+<img src="https://www.dropbox.com/s/7f86n9w82rya8vr/notebook%2023.PNG?dl=1" class="python docs-image" title="">
 
 <p class="python">The <code>resample</code> method returns a <code>Resampler</code> object, which needs to be downsampled using one of the pandas <a rel="nofollow" target="_blank" href="https://pandas.pydata.org/pandas-docs/stable/reference/resampling.html">downsampling computations</a>. For example, you can use the <a rel="nofollow" target="_blank" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.core.resample.Resampler.ohlc.html">Resampler.ohlc</a> downsampling method to aggregate price data. </p>
 
@@ -80,7 +80,7 @@ When you resample a DataFrame with the <code>ohlc</code> downsampling method, it
 
 <div class="python">
 <div class="section-example-container">
-	<pre class="python">close_prices = df["close"]
+	<pre class="python">close_prices = history["close"]
 
 offset = "5T" 
 close_5min_ohlc = close_prices.resample(offset).ohlc()
@@ -88,7 +88,7 @@ close_5min_ohlc = close_prices.resample(offset).ohlc()
 </div>
 </div>
 
-<img src="https://www.dropbox.com/s/t7vrv4ofiupbtzk/notebook%2024.PNG?dl=1" class='python docs-image' title="">
+<img src="https://www.dropbox.com/s/t7vrv4ofiupbtzk/notebook%2024.PNG?dl=1" class="python docs-image" title="">
 
 
 
