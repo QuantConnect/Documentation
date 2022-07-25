@@ -17,10 +17,10 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Globalization;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
-using System.Net.Http.Headers;
 using System.Threading;
 using System.Threading.Tasks;
 using QuantConnect.Logging;
@@ -146,6 +146,34 @@ namespace QuantConnect.Tests
                             {
                                 Log.Error($"404 Not found:\n\t{url}\n\t[\n\t\t{string.Join("\n\t\t", files)}\n\t]");
                                 _errorFlag = true;
+                            }
+
+                            // Check "go to section" mapping is wrong
+                            if (url.Contains('#') && url.Contains("/docs/v2") && !url.Contains("api-reference"))
+                            {
+                                var expected = url.Split("docs/v2/").Last()
+                                    .Replace('/', Path.DirectorySeparatorChar)
+                                    .Replace('-', ' ')
+                                    .Replace('#', Path.DirectorySeparatorChar)
+                                    .ToLower();
+                                
+                                var section = url.Split('#').Last().Replace('-', ' ');
+                                var allFiles = Directory.GetFiles("..", $"{section}.*", SearchOption.AllDirectories);
+                                var noEquals = allFiles.All(dir => 
+                                {
+                                    var subPaths = dir.Split(Path.DirectorySeparatorChar).Skip(1);
+                                    var nonNumberedPath = String.Join(Path.DirectorySeparatorChar, 
+                                        subPaths.SkipLast(1).Select(x => new String(x.Where(c => (c < '0' || c > '9')).ToArray()).Trim()));
+                                    var sectionPath = subPaths.Last().Split('.').First();
+
+                                    return $"{nonNumberedPath}{Path.DirectorySeparatorChar}{sectionPath}".ToLower() != expected;
+                                });
+
+                                if (noEquals || allFiles.Count() == 0)
+                                {
+                                    Log.Error($"No Section \"{section}\" was found:\n\t{url}\n\t[\n\t\t{string.Join("\n\t\t", files)}\n\t]");
+                                    _errorFlag = true;
+                                }
                             }
                         })
                     );
