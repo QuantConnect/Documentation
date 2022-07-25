@@ -231,7 +231,9 @@ for s in slices:
 // Request history data and enumerate results:
 var slices = {$cVar}History(5);
 foreach (var s in slices) {
-    {$cPrintMethod}($\"{s.Time} AAPL: {s.Bars[\"AAPL\"].Close} IBM: {s.Bars[\"IBM\"].Close}\");
+    var aaplClose = s.Bars[\"AAPL\"].Close;
+    var ibmClose = s.Bars[\"IBM\"].Close;
+    {$cPrintMethod}($\"{s.Time} AAPL: {aaplClose} IBM: {ibmClose}\");
 }
 <img class='img-responsive img-thumbnail' src='https://cdn.quantconnect.com/i/tu/history-request-single-symbol-9.png'>
 </pre>
@@ -251,7 +253,9 @@ for s in slices:
 
 var slices = {$cVar}History(TimeSpan.FromHours(24), Resolution.Hour);
 foreach (var s in slices) {
-     {$cPrintMethod}($\"{s.Time} AAPL: {s.Bars[\"AAPL\"].Close} IBM: {s.Bars[\"IBM\"].Close}\");
+    var aaplClose = s.Bars[\"AAPL\"].Close;
+    var ibmClose = s.Bars[\"IBM\"].Close;
+    {$cPrintMethod}($\"{s.Time} AAPL: {aaplClose} IBM: {ibmClose}\");
 }
 <img class='img-responsive img-thumbnail' src='https://cdn.quantconnect.com/i/tu/history-request-single-symbol-10.png'>
 // TimeSpan history requests are relative to \"now\" in {$envName} Time.</pre>
