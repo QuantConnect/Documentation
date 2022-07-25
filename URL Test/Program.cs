@@ -154,10 +154,19 @@ namespace QuantConnect.Tests
                                 var expected = url.Split("docs/v2/").Last()
                                     .Replace('/', Path.DirectorySeparatorChar)
                                     .Replace('-', ' ')
+                                    .Replace("Look ahead", "Look-ahead")    // special case
+                                    .Replace("profit loss", "profit-loss")    // special case
+                                    .Replace("Built in", "Built-in")    // special case
+                                    .Replace("Scikit Learn", "Scikit-Learn")    // special case
+                                    .Replace("Third Party", "Third-Party")    // special case
                                     .Replace('#', Path.DirectorySeparatorChar)
                                     .ToLower();
                                 
-                                var section = url.Split('#').Last().Replace('-', ' ');
+                                var section = url.Split('#').Last()
+                                    .Replace('-', ' ')
+                                    .Replace("Look ahead", "Look-ahead")    // special case
+                                    .Replace("profit loss", "profit-loss")    // special case
+                                    .Replace("Built in", "Built-in");    // special case
                                 var allFiles = Directory.GetFiles("..", $"{section}.*", SearchOption.AllDirectories);
                                 var noEquals = allFiles.All(dir => 
                                 {
