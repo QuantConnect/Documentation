@@ -158,13 +158,14 @@ namespace QuantConnect.Tests
                                     .Replace("look ahead", "look-ahead")    // special case
                                     .Replace("profit loss", "profit-loss")    // special case
                                     .Replace("Built in", "Built-in")    // special case
-                                    .Replace("Scikit Learn", "Scikit-Learn")    // special case
-                                    .Replace("Third Party", "Third-Party")    // special case
+                                    .Replace("scikit learn", "scikit-learn")    // special case
+                                    .Replace("third party", "third-party")    // special case
                                     .Replace('#', Path.DirectorySeparatorChar)
                                     .ToLower();
                                 
-                                var section = url.Split('#').Last()
+                                var section = string.Join(string.Empty, url.Split('#').Skip(1))
                                     .Replace('-', ' ')
+                                    .Replace("#", string.Empty)
                                     .Replace("Look ahead", "Look-ahead")    // special case
                                     .Replace("look ahead", "look-ahead")    // special case
                                     .Replace("profit loss", "profit-loss")    // special case
