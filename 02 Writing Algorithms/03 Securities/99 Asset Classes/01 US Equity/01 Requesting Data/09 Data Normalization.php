@@ -4,7 +4,7 @@
 
 <?php 
 include(DOCS_RESOURCES."/datasets/data-normalization.php"); 
-$getDataNormalizatoinModeText(true);
+$getDataNormalizationModeText(true);
 ?>
 
 <p>To set the data normalization mode for a security, pass a <code>dataNormalizationMode</code> argument to the <code>AddEquity</code> method.</p>
