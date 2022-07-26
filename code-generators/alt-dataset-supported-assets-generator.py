@@ -42,7 +42,7 @@ if __name__ == '__main__':
         for dataset in datasets:
             dataset_dir = f"{PROCESSED_DIR}/{vendor.lower()}/{dataset.lower()}"
             if not os.path.exists(dataset_dir): 
-                print("{dataset_dir} does not exist!")
+                print(f"{dataset_dir} does not exist!")
                 continue
             
             files = glob.glob(f"{dataset_dir}/*.csv")
