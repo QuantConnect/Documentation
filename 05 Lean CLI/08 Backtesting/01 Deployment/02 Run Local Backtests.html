@@ -62,3 +62,73 @@ Pulling quantconnect/lean:11154...
 </div>
     </li>
 </ol>
+
+<h4>Equity Options Algorithms</h4>
+<p>Follow these steps to run a local Equity Options backtest:</p>
+<ol>
+    <li>
+        Download the <a href="https://www.quantconnect.com/datasets/quantconnect-us-equity-security-master/cli">US Equity Security Master</a> dataset.
+        <div class="cli section-example-container">
+<pre>$ lean data download --dataset "US Equity Security Master"</pre>
+</div>
+    </li>
+
+    <li>
+        Download minute resolution trade data from the <a href="https://www.quantconnect.com/datasets/algoseek-us-equities/cli">US Equity</a> dataset.
+        <div class="cli section-example-container">
+<pre>$ lean data download --dataset "US Equities" --data-type "Trade" --ticker "SPY" --resolution "Minute" --start "20210101" --end "20210720"</pre>
+</div>
+    </li>
+
+    <li>
+        Download minute resolution trade and quote data from the <a href="https://www.quantconnect.com/datasets/algoseek-us-equity-options/cli">US Equity Options</a> dataset.
+        <div class="cli section-example-container">
+<pre>$ lean data download --dataset "US Equity Options" --data-type "Trade" --option-style "American" --ticker "SPY" --resolution "Minute" --start "20210101" --end "20210720"
+
+$ lean data download --dataset "US Equity Options" --data-type "Quote" --option-style "American" --ticker "SPY" --resolution "Minute" --start "20210101" --end "20210720"</pre>
+</div>
+    </li>
+
+    <li>
+        <a href="https://www.quantconnect.com/docs/v2/lean-cli/projects/project-management#02-Create-Projects">Create a new local project</a>.
+        <div class="cli section-example-container">
+<pre>$ lean create-project --language python "&lt;projectName&gt;"</pre>
+</div>
+
+          You can use the following example algorithm:</li>
+<div class="qc-embed-frame" style="display: inline-block; position: relative; width: 100%; min-height: 100px; min-width: 300px;"><div class="qc-embed-dummy" style="padding-top: 56.25%;"></div><div class="qc-embed-element" style="position: absolute; top: 0; bottom: 0; left: 0; right: 0;"><iframe class="qc-embed-backtest" src="https://www.quantconnect.com/terminal/processCache?request=embedded_backtest_41797474c754bc04b9c0a370092c11d0.html" style="max-width: calc(100vw - 30px); max-height: 100vw; overflow: hidden;" scrolling="no" width="100%" height="100%"></iframe></div></div>
+    
+</ol>
+
+<p>If you get different <a href="https://www.quantconnect.com/docs/v2/our-platform/backtesting/results#08-Key-Statistics">overall statistics</a> when you run the algorithm on your local machine and in the cloud, delete your <a href="https://www.quantconnect.com/docs/v2/lean-cli/datasets/local-data">local data files</a> and <a href="https://www.quantconnect.com/docs/v2/lean-cli/datasets/downloading-quantconnect-data">re-download them</a>. Some of your local files may be outdated and the preceding download commands didn't update them.</p>
+
+<p>The following table shows a breakdown of the data costs for this example algorithm:</p>
+<table class="qc-table table">
+    <thead>
+        <tr>
+            <th>Dataset</th>
+            <th>Initial Cost (USD)</th>
+            <th>Update Cost (USD)</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>US Equity Security Master</td>
+            <td>$1,200/year</td>
+            <td>$1,200/year</td>
+        </tr>
+        <tr>
+            <td>US Equity</td>
+            <td>$7.05</td>
+            <td>$0.05/day</td>
+        </tr>
+        <tr>
+            <td>US Equity Options</td>
+            <td>$41.70</td>
+            <td>$0.30/day</td>
+        </tr>
+    </tbody>
+</table>
+
+
+
