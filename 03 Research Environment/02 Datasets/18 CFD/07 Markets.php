@@ -1,0 +1,1 @@
+<p>The only market available for CFD contracts is <code>Market.Oanda</code>.</p>

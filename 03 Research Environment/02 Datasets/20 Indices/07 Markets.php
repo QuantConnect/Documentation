@@ -1,0 +1,1 @@
+<p>The only market available for Indices is <code>Market.USA</code>.</p>
