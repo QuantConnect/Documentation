@@ -1,34 +1,112 @@
 <p>You need a <a href="#03-Create-Subscriptions">subscription</a> before you can request historical data for a security. You can request an amount of historical data based on a trailing number of bars, a trailing period of time, or a defined period of time.</p>
 
 <h4>Trailing Number of Bars<br></h4>
-<p>Call the <code>History</code> method with a symbol, integer, and resolution to request historical data based on the given number of trailing bars and resolution.</p>
+<p>To get historical data for a number of trailing bars, call the <code>History</code> method with the <code>Symbol</code> object(s) and an integer.</p>
 <div class="section-example-container">
-    <pre class="csharp">var history = qb.History(symbol, 10, Resolution.Daily);</pre>
-    <pre class="python">history = qb.History(symbol, 10, Resolution.Daily)</pre>
+    <pre class="csharp">// Slice objects
+var singleHistorySlice = qb.History(spx, 10);
+var subsetHistorySlice = qb.History(new[] {spx, usb}, 10);
+var allHistorySlice = qb.History(10);
+
+// QuoteBar objects
+var singleHistoryQuoteBars = qb.History&lt;QuoteBar&gt;(spx, 10);
+var subsetHistoryQuoteBars = qb.History&lt;QuoteBar&gt;(new[] {spx, usb}, 10);
+var allHistoryQuoteBars = qb.History&lt;QuoteBar&gt;(qb.Securities.Keys, 10);</pre>
+    <pre class="python"># DataFrame
+single_history_df = qb.History(spx, 10)
+subset_history_df = qb.History([spx, usb], 10)
+all_history_df = qb.History(qb.Securities.Keys, 10)
+
+# Slice objects
+all_history_slice = qb.History(10)
+
+# QuoteBar objects
+single_history_quote_bars = qb.History[QuoteBar](spx, 10)
+subset_history_quote_bars = qb.History[QuoteBar]([spx, usb], 10)
+all_history_quote_bars = qb.History[QuoteBar](qb.Securities.Keys, 10)</pre>
 </div>
-<p>The call returns the most recent bars, excluding periods of time when the exchange was closed.</p>
+<p>The preceding calls return the most recent bars, excluding periods of time when the exchange was closed.</p>
 
 <h4>Trailing Period of Time<br></h4>
-<p>Call the <code>History</code> method with a symbol, <code class="csharp">TimeSpan</code><code class="python">timedelta</code>, and resolution to request historical data based on the given trailing period of time and resolution.</p>
+<p>To get historical data for a trailing period of time, call the <code>History</code> method with the&nbsp;<code style="font-size: 15px; background-color: rgb(255, 255, 255);">Symbol</code>&nbsp;object(s) and a&nbsp;<code class="csharp">TimeSpan</code><code class="python">timedelta</code>.</p>
 <div class="section-example-container">
-    <pre class="csharp">var history = qb.History(symbol, TimeSpan.FromDays(10), Resolution.Daily);</pre>
-    <pre class="python">history = qb.History(symbol, timedelta(days=10), Resolution.Daily)</pre>
+    <pre class="csharp">// Slice objects
+var singleHistorySlice = qb.History(spx, TimeSpan.FromDays(3));
+var subsetHistorySlice = qb.History(new[] {spx, usb}, TimeSpan.FromDays(3));
+var allHistorySlice = qb.History(10);
+
+// QuoteBar objects
+var singleHistoryQuoteBars = qb.History&lt;QuoteBar&gt;(spx, TimeSpan.FromDays(3), Resolution.Minute);
+var subsetHistoryQuoteBars = qb.History&lt;QuoteBar&gt;(new[] {spx, usb}, TimeSpan.FromDays(3), Resolution.Minute);
+var allHistoryQuoteBars = qb.History&lt;QuoteBar&gt;(qb.Securities.Keys, TimeSpan.FromDays(3), Resolution.Minute);
+
+// Tick objects
+var singleHistoryTicks = qb.History&lt;Tick&gt;(spx, TimeSpan.FromDays(3), Resolution.Tick);
+var subsetHistoryTicks = qb.History&lt;Tick&gt;(new[] {spx, usb}, TimeSpan.FromDays(3), Resolution.Tick);<br>var allHistoryTicks = qb.History&lt;Tick&gt;(qb.Securities.Keys, TimeSpan.FromDays(3), Resolution.Tick);<br></pre>
+    <pre class="python"># DataFrame
+single_history_df = qb.History(spx, timedelta(days=3))
+subset_history_df = qb.History([spx, usb], timedelta(days=3))
+all_history_df = qb.History(qb.Securities.Keys, timedelta(days=3))
+
+# Slice objects
+all_history_slice = qb.History(timedelta(days=3))
+
+# QuoteBar objects
+single_history_quote_bars = qb.History[QuoteBar](spx, timedelta(days=3), Resolution.Minute)
+subset_history_quote_bars = qb.History[QuoteBar]([spx, usb], timedelta(days=3), Resolution.Minute)
+all_history_quote_bars = qb.History[QuoteBar](qb.Securities.Keys, timedelta(days=3), Resolution.Minute)
+
+# Tick objects
+single_history_ticks = qb.History[Tick](spx, timedelta(days=3), Resolution.Tick)
+subset_history_ticks = qb.History[Tick]([spx, usb], timedelta(days=3), Resolution.Tick)
+all_history_ticks = qb.History[Tick](qb.Securities.Keys, timedelta(days=3), Resolution.Tick)</pre>
 </div>
-<p>The call returns the most recent bars, excluding periods of time when the exchange was closed.</p>
+<p>The preceding calls return the most recent bars or ticks, excluding periods of time when the exchange was closed.</p>
 
 <h4>Defined Period of Time<br></h4>
-<p>Call the <code>History</code> method with a symbol, start  <code class="csharp">DateTime</code><code class="python">datetime</code>, end  <code class="csharp">DateTime</code><code class="python">datetime</code>, and resolution to request historical data based on the defined period of time and resolution.</p>
+<p>To get historical data for a specific period of time, call the&nbsp;<code style="font-size: 15px; background-color: rgb(255, 255, 255);">History</code>&nbsp;method with the&nbsp;<code style="font-size: 15px; background-color: rgb(255, 255, 255);">Symbol</code>&nbsp;object(s), a start  <code class="csharp">DateTime</code><code class="python">datetime</code>, and an end  <code class="csharp">DateTime</code><code class="python">datetime</code>.</p>
 
 <div class="section-example-container">
     <pre class="csharp">var startTime = new DateTime(2021, 1, 1);
 var endTime = new DateTime(2021, 2, 1);
-var history = qb.History(symbol, startTime, endTime, Resolution.Daily);</pre>
+
+// Slice objects
+var singleHistorySlice = qb.History(spx, startTime, endTime);
+var subsetHistorySlice = qb.History(new[] {spx, usb}, startTime, endTime);
+var allHistorySlice = qb.History(startTime, endTime);
+
+// QuoteBar objects
+var singleHistoryQuoteBars = qb.History&lt;QuoteBar&gt;(spx, startTime, endTime, Resolution.Minute);
+var subsetHistoryQuoteBars = qb.History&lt;QuoteBar&gt;(new[] {spx, usb}, startTime, endTime, Resolution.Minute);
+var allHistoryQuoteBars = qb.History&lt;QuoteBar&gt;(qb.Securities.Keys, startTime, endTime, Resolution.Minute);
+
+// Tick objects
+var singleHistoryTicks = qb.History&lt;Tick&gt;(spx, startTime, endTime, Resolution.Tick);
+var subsetHistoryTicks = qb.History&lt;Tick&gt;(new[] {spx, usb}, startTime, endTime, Resolution.Tick);
+var allHistoryTicks = qb.History&lt;Tick&gt;(qb.Securities.Keys, startTime, endTime, Resolution.Tick);</pre>
     <pre class="python">start_time = datetime(2021, 1, 1)
 end_time = datetime(2021, 2, 1)
-history = qb.History(symbol, start_time, end_time, Resolution.Daily)</pre>
+
+# DataFrame
+single_history_df = qb.History(spx, start_time, end_time)
+subset_history_df = qb.History([spx, usb], start_time, end_time)
+all_history_df = qb.History(qb.Securities.Keys, start_time, end_time)
+
+# Slice objects
+all_history_slice = qb.History(start_time, end_time)
+
+# QuoteBar objects
+single_history_quote_bars = qb.History[QuoteBar](spx, start_time, end_time, Resolution.Minute)
+subset_history_quote_bars = qb.History[QuoteBar]([spx, usb], start_time, end_time, Resolution.Minute)
+all_history_quote_bars = qb.History[QuoteBar](qb.Securities.Keys, start_time, end_time, Resolution.Minute)
+
+# Tick objects
+single_history_ticks = qb.History[Tick](spx, start_time, end_time, Resolution.Tick)
+subset_history_ticks = qb.History[Tick]([spx, usb], start_time, end_time, Resolution.Tick)
+all_history_ticks = qb.History[Tick](qb.Securities.Keys, start_time, end_time, Resolution.Tick)</pre>
 </div>
 
-<p>The call returns the bars that are timestamped within the defined period of time.</p>
+<p>The preceding calls return the bars or ticks that have a timestamp within the defined period of time.</p>
 
 <p class="python">In all of the cases above, the <code>History</code> method returns a <code>DataFrame</code> with a <code>MultiIndex</code>.</p>
 
