@@ -16,8 +16,8 @@ $getDataNormalizationText = function($isWritingAlgorithms)
 
     $cVariableName = $isWritingAlgorithms ? "" : "qb." ;
     $pyVariableName = $isWritingAlgorithms ? "self" : "qb" ;
-    $cAssignmentName = $isWritingAlgorithms ? "_symbol" : "var symbol" ;
-    $pyAssignmentName = $isWritingAlgorithms ? "self.symbol" : "symbol" ;
+    $cAssignmentName = $isWritingAlgorithms ? "_symbol" : "var spy" ;
+    $pyAssignmentName = $isWritingAlgorithms ? "self.symbol" : "spy" ;
     
     echo "
 <p>To set the data normalization mode for a security, pass a <code>dataNormalizationMode</code> argument to the <code>AddEquity</code> method.</p>    
