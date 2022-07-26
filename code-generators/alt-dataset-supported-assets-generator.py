@@ -6,8 +6,8 @@ import shutil
 DESTINATION = "Resources/datasets/supported-securities/alternatives"
 PROCESSED_DIR = "/nas/alternative"
 DATASETS = {
-    "atreyu": [""],
-    "brain": [""]
+    "brain": ["rankings", "sentiment", "report_10k", "report_all"],
+    "quiver": ["wallstreetbets", "twitter", "wikipedia", "congresstrading", "governmentcontracts", "cnbc", "lobbying"],
 }
 
 def TableCreation(files):
@@ -40,7 +40,12 @@ if __name__ == '__main__':
         
     for vendor, datasets in DATASETS.items():
         for dataset in datasets:
-            files = glob.glob(f"{PROCESSED_DIR}/{vendor.lower()}/{dataset.lower()}/*.csv")
+            dataset_dir = f"{PROCESSED_DIR}/{vendor.lower()}/{dataset.lower()}"
+            if not os.path.exists(dataset_dir): 
+                print("{dataset_dir} does not exist!")
+                continue
+            
+            files = glob.glob(f"{dataset_dir}/*.csv")
             html_table = TableCreation(files)
             
             with open(DESTINATION / vendor.lower() / dataset.lower() / "support-assets.html") as html_file:
