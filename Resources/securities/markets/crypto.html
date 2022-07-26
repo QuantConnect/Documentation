@@ -1,0 +1,3 @@
+<p>The following <code>Market</code> enumeration members are available for Crypto:</p>
+
+<div data-tree='QuantConnect.Market' data-fields='Bitfinex,GDAX,Kraken,Binance,FTX,FTXUS,BinanceUS'></div>
