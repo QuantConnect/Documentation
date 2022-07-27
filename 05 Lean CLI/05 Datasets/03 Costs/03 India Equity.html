@@ -1,26 +1,74 @@
-<p>If you trade India Equities, you need the <a href="/datasets/truedata-india-equity-security-master/pricing">India Equity Security Master</a> and some data from the <a href="/datasets/truedata-india-equities/pricing">India Equities</a> dataset. The India Equities dataset is available is several resolutions. The resolution you need depends on the India Equity subscriptions you create in your algorithm. The following table describes the file format of the available resolutions in the India Equities dataset:</p>
+<p>India Equities algorithms require the <a href="/datasets/truedata-india-equity-security-master/pricing">India Equity Security Master</a> and some data from the <a href="/datasets/truedata-india-equities/pricing">India Equities</a> dataset. If you have a LEAN CLI subscription, the India Equity Security Master is free. The India Equities dataset is available is several resolutions. The resolution you need depends on the India Equity subscriptions you create in your algorithm and the resolution of data you get in&nbsp;<a href="https://www.quantconnect.com/docs/v2/writing-algorithms/historical-data/history-requests" style="background-color: rgb(255, 255, 255);">history requests</a>. The following table describes the file format and costs of each resolution:</p>
 
 <table class="qc-table table">
     <thead>
         <tr>
-            <th style="width:50%">Resolution</th>
-            <th style="width:50%">File Format</th>
+            <th>Resolution</th>
+            <th>File Format</th>
+            <th>Cost per file</th>
         </tr>
     </thead>
     <tbody>
         <tr>
             <td>Minute</td>
-            <td>One file per security per day</td>
+            <td>One file per security per trading day.</td>
+            <td>4 QCC = $0.04 USD</td>
         </tr>
         <tr>
             <td>Hour</td>
-            <td>One file per security</td>
+            <td>One file per security.</td>
+            <td>300 QCC = $3 USD</td>
         </tr>
         <tr>
             <td>Daily</td>
-            <td>One file per security</td>
+            <td>One file per security.</td>
+            <td>100 QCC = $1 USD</td>
         </tr>
     </tbody>
 </table>
 
-<p>To view the pricing of each dataset, click the preceding dataset links.</p>
+<p>For example, the following algorithm creates a subscribes to minute resolution data for one security:</p>
+
+<div class="section-example-container">
+<pre class="csharp">namespace QuantConnect.Algorithm.CSharp
+{
+    public class IndiaEquityDataAlgorithm : QCAlgorithm
+    {
+        public override void Initialize()
+        {
+            SetStartDate(2020, 1, 1);
+            SetEndDate(2021, 1, 1);
+            AddEquity("YESBANK", Resolution.Minute, Market.India).Symbol;
+        }
+    }
+}</pre>
+<pre class="python">class IndiaEquityDataAlgorithm(QCAlgorithm):
+    def Initialize(self) -&gt; None:
+        self.SetStartDate(2020, 1, 1)
+        self.SetEndDate(2021, 1, 1)
+        self.AddEquity("YESBANK", Resolution.Minute, Market.India).Symbol</pre>
+</div>
+
+<p>The following table shows the data cost of the preceding algorithm:</p>
+
+<table class="qc-table table">
+    <thead>
+        <tr>
+            <th>Dataset</th>
+            <th>Initial Cost Breakdown</th>
+            <th>Update Cost Breakdown</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>India Equity Security Master</td>
+            <td>$0 USD</td>
+            <td>$0 USD</td>
+        </tr>
+        <tr>
+            <td>India Equity</td>
+            <td>1 file per security per trading day for 1 security over 252 trading days<br>=&gt; 1 * 1 * 252 files<br>= 252 files<br><br>252 files @ 4 QCC per file<br>=&gt; 1,008 QCC<br>= $10.08 USD</td>
+            <td>1 file per security per trading day for 1 security<br>=&gt; 1 file per trading day<br><br>1 file per trading day @ 4 QCC per file<br>=&gt; 4 QCC per trading day<br>= $0.04 USD per trading day<br></td>
+        </tr>
+    </tbody>
+</table>
