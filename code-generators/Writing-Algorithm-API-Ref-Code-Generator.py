@@ -226,9 +226,6 @@ function openTopTab(event, category) {
 done = []
     
 def Table(input_, previous_name, type_map, j):
-    if input_ in done: return previous_name, j
-    done.append(input_)
-    
     if "DocumentationAttributes" not in input_ or not input_["DocumentationAttributes"]:
         if "concentrate" in input_:
             for item in input_["concentrate"]:
@@ -239,6 +236,11 @@ def Table(input_, previous_name, type_map, j):
                 previous_name, j = Table(item, previous_name, type_map, j)
                 
         return previous_name, j
+    
+    param_ = set([x['typeId'] for x in input_['Parameters']]) if 'Parameters' in input_ else set()
+    comb = (input_['Name'], param_)
+    if comb in done: return previous_name, j
+    done.append(comb)
     
     doc_attr = [x["tag"] for x in input_["DocumentationAttributes"]]
     name = input_["Name"] if "Name" in input_ else input_["ShortType"]
