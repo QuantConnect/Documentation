@@ -223,7 +223,12 @@ function openTopTab(event, category) {
 
 <hr>""")
     
+done = []
+    
 def Table(input_, previous_name, type_map, j):
+    if input_ in done: return previous_name, j
+    done.append(input_)
+    
     if "DocumentationAttributes" not in input_ or not input_["DocumentationAttributes"]:
         if "concentrate" in input_:
             for item in input_["concentrate"]:
@@ -299,7 +304,6 @@ def Table(input_, previous_name, type_map, j):
                     html_file.write(line)
 
     return name.strip(), j
-
 
 def Box(input_, doc_attr, doc_ref, type_map, j):
     args = {}
@@ -511,7 +515,8 @@ for key in keys.items():
     
     type_map[key[0]] = "".join(t_)
         
-algo_methods = doc["tree"]["core"]["data"][0]["children"]
+algo_methods = sorted(doc["keys"]["380"]["Methods"] + doc["tree"]["core"]["data"][0]["children"], 
+                      key=lambda x: x['Name'] if 'Name' in x else x['text'])
 previous_name = ""
 j = 1
 
