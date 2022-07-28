@@ -14,53 +14,40 @@ using QuantConnect.Securities;
 using QuantConnect.Securities.Option;
 using QuantConnect.Research;</pre>
     </div>
-    <li>Instantiate a <code>QuantBook</code>.</li>
+    <li>Create a <code>QuantBook</code>.</li>
     <div class="section-example-container">
         <pre class="csharp">var qb = new QuantBook();</pre>
         <pre class="python">qb = QuantBook()</pre>
     </div>
-    <li>Call the <code>AddEquity</code> method with a ticker and resolution.</li>
+    <li>Subscribe to the underlying Equity with raw data normalization and save a reference to the Equity&nbsp;<span style="color: rgb(220, 67, 67);">Symbol</span>.</li>
     <div class="section-example-container">
-        <pre class="csharp">var equity = qb.AddEquity("SPY", Resolution.Minute);</pre>
-        <pre class="python">equity = qb.AddEquity("SPY", Resolution.Minute)</pre>
-    </div>
-    <p>If you do not pass a resolution argument, <code>Resolution.Minute</code> is used by default</p>
-    <li>Call the <code>SetDataNormalizationMode</code> method with <code>DataNormalizationMode.Raw</code>.</li>
-    <div class="section-example-container">
-        <pre class="csharp">equity.SetDataNormalizationMode(DataNormalizationMode.Raw);</pre>
-        <pre class="python">equity.SetDataNormalizationMode(DataNormalizationMode.Raw)</pre>
-    </div>
-    <p class="csharp">The call to <code>SetDataNormalizationMode</code> above throws an error because it is obsolete. Use the following code snippet to avoid the warning and ensure all subscriptions of the security have the same <a href='/docs/v2/our-platform/datasets/misconceptions#05-Data-Normalization'>data normalization mode</a>:</p>
-    <div class="csharp section-example-container">
-        <pre class="csharp">qb.SubscriptionManager
-  .SubscriptionDataConfigService
-  .GetSubscriptionDataConfigs(equity.Symbol)
-  .SetDataNormalizationMode(DataNormalizationMode.Raw);</pre>
+        <pre class="csharp">var equitySymbol = qb.AddEquity("SPY", dataNormalizationMode: DataNormalizationMode.Raw).Symbol;</pre>
+        <pre class="python">equity_symbol = qb.AddEquity("SPY", dataNormalizationMode=DataNormalizationMode.Raw).Symbol</pre></div><div class="csharp section-example-container">
     </div>
     <li>Call the <code>AddOption</code> method with the underlying Equity <code>Symbol</code>.</li>
     <div class="section-example-container">
-        <pre class="csharp">var option = qb.AddOption(equity.Symbol);</pre>
-        <pre class="python">option = qb.AddOption(equity.Symbol)</pre>
+        <pre class="csharp">var option = qb.AddOption(equitySymbol);</pre>
+        <pre class="python">option = qb.AddOption(equity_symbol)</pre>
     </div>
-    <li><i>(Optional)</i> Call the <code>SetFilter</code> method with strike and expiration boundary values.</li>
+    <li><i>(Optional)</i>&nbsp;Set a <a href="/docs/v2/writing-algorithms/universes/equity-options#11-Filter-Contracts">contract filter</a>.</li>
     <div class="section-example-container">
         <pre class="csharp">option.SetFilter(-1, 1, 0, 90);</pre>
         <pre class="python">option.SetFilter(-1, 1, 0, 90)</pre>
     </div>
-    <p>If you don't call the <code>SetFilter</code> method, the default values of the <code>minStrike</code>, <code>maxStrike</code>, <code>minExpiryDays</code>, and <code>maxExpiryDays </code>parameters are <code>-1</code>, <code>1</code>, <code>0</code>, and <code>35</code>, respectively.</p>
+    <p>The filter determines which contracts the <code>GetOptionHistory</code> method returns. If you don't set a filter, the method returns all of the contracts.</p>
 </ol>
 
-<p>If you want historical data on individual contracts and their <code>OpenInterest</code>, you need to subscribe to the individual contracts. You need to subscribe to the underlying <code>Equity</code> before you can subscribe to its Option contracts. Follow these steps to subscribe to individual Equity Option contracts:</p>
+<p>If you want historical data on individual contracts and their <code>OpenInterest</code>, follow these steps to subscribe to the individual Equity Option contracts:</p>
 <ol>
     <li>Call the <code>GetOptionsContractList</code> method with the underlying <code>Equity</code> <code>Symbol</code> and a <code class="python">datetime</code><code class="csharp">DateTime</code>.</li>
     <div class="section-example-container">
         <pre class="csharp">var startDate = new DateTime(2021, 12, 31);
-var symbols = qb.OptionChainProvider.GetOptionContractList(equity.Symbol, startDate);</pre>
+var contractSymbols = qb.OptionChainProvider.GetOptionContractList(equitySymbol, startDate);</pre>
     <pre class="python">start_date = datetime(2021, 12, 31)
-symbols = qb.OptionChainProvider.GetOptionContractList(equity.Symbol, start_date)</pre>
+contract_symbols = qb.OptionChainProvider.GetOptionContractList(equity_symbol, start_date)</pre>
     </div>
-    <p>The call returns a list of <code>Symbol</code>s that reference the <code>OptionContract</code>s that were trading at the given time.</p>
-    <li>Select the <code>Symbol</code> of the <code>OptionContract</code>(s) for which you want to get historical data.</li>
+    <p>This method returns a list of <code>Symbol</code>&nbsp;objects that reference the Option contracts that were trading at the given time.</p>
+    <li>Select the <code>Symbol</code> of the <code>OptionContract</code>&nbsp;object(s) for which you want to get historical data.</li>
     <p>For example, select an arbitrary <code>Symbol</code>.</p>
     <div class="section-example-container">
       <pre class="csharp">var contractSymbol = symbols.ToArray()[1370];</pre>
