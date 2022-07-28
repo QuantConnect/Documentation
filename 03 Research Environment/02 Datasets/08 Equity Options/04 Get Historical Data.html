@@ -113,7 +113,11 @@ var allHistoryOpenInterest = qb.History&lt;OpenInterest&gt;(qb.Securities.Keys, 
     <pre class="python">start_time = datetime(2021, 12, 1)
 end_time = datetime(2021, 12, 31)
 
+# OptionHistory object
+option_history = qb.GetOptionHistory(equity_symbol, end_time-timedelta(days=2), end_time, Resolution.Minute)
+
 # DataFrame
+option_chain_history_df = option_history.GetAllData()
 single_history_df = qb.History(contract_symbol, start_time, end_time)
 subset_history_df = qb.History([contract_symbol], start_time, end_time)
 all_history_df = qb.History(qb.Securities.Keys, start_time, end_time)
@@ -130,7 +134,13 @@ single_history_quote_bars = qb.History[QuoteBar](contract_symbol, start_time, en
 # OpenInterest objects
 single_history_open_interest = qb.History[OpenInterest](contract_symbol, start_time, end_time)
 subset_history_open_interest = qb.History[OpenInterest]([contract_symbol], start_time, end_time)
-all_history_open_interest = qb.History[OpenInterest](qb.Securities.Keys, start_time, end_time)</pre>
+all_history_open_interest = qb.History[OpenInterest](qb.Securities.Keys, start_time, end_time)
+
+# datetime objects
+option_chain_expiries = option_history.GetExpiryDates()
+
+# float objects
+option_chain_strikes = option_history.GetStrikes()</pre>
 </div>
 
-<p>The preceding calls return the bars that have a timestamp within the defined period of time.</p>
+<p>The preceding calls return data that have a timestamp within the defined period of time.</p>
