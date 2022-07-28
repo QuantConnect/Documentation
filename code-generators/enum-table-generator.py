@@ -186,6 +186,7 @@ for x in set([m[1] for m in market]):
     items = [y[0] for y in market_data if y[0].lower() in items]
     
     with open(f"{destination}/market-{x}.html", "w", encoding="utf-8") as file:
-        file.write(f"""<p>The following <code>Market</code> enumeration members are available for {x.title().replace("option", " Option")}:</p>
+        x = "Futures" if x == "future" else x
+        file.write(f"""<p>The following <code>Market</code> enumeration members are available for {x.title().replace("option", " Options")}:</p>
 
 <div data-tree='QuantConnect.Market' data-fields='{",".join(items)}'></div>""")
