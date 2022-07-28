@@ -1,4 +1,4 @@
-<p class="python">You need some <a href="/docs/v2/research-environment/datasets/equity#04-Get-Historical-Data">historical data</a> to perform wrangling operations. The process to manipulate the historical data depends on its data type. To display <code style="font-size: 15px; background-color: rgb(255, 255, 255);">pandas</code> objects, run a cell in a notebook with the <code style="font-size: 15px; background-color: rgb(255, 255, 255);">pandas</code> object as the last line. To display other data formats, call the&nbsp;<span style="color: rgb(220, 67, 67);">print&nbsp;</span>method.</p>
+<p class="python">You need some <a href="/docs/v2/research-environment/datasets/equity#04-Get-Historical-Data">historical data</a> to perform wrangling operations. The process to manipulate the historical data depends on its data type. To display <code>pandas</code> objects, run a cell in a notebook with the <code>pandas</code> object as the last line. To display other data formats, call the <code>print</code>method.</p>
 
 <p class="csharp">You need some <a href="/docs/v2/research-environment/datasets/equity#04-Get-Historical-Data">historical data</a> to perform wrangling operations. Use LINQ to wrangle the data and then call the <code>Console.WriteLine</code> method in a Jupyter Notebook to display the data. The process to manipulate the historical data depends on its data type.</p>
 
@@ -36,17 +36,17 @@
 
 <img class="python docs-image" src="https://cdn.quantconnect.com/i/tu/us-equity-research-data-4.jpg">
 
-<p class="python">If you prefer to display the ticker of each&nbsp;<code>Symbol</code> instead of the string representation of the <code>SecurityIdentifier</code>, follow these steps:</p>
+<p class="python">If you prefer to display the ticker of each <code>Symbol</code> instead of the string representation of the <code>SecurityIdentifier</code>, follow these steps:</p>
 <ol class="python">
   <li>Create a dictionary where the keys are the string representations of each&nbsp;<code>SecurityIdentifier</code> and the values are the ticker.</li>
   <div class="section-example-container python">
     <pre class="python">tickers_by_id = {str(x.ID): x.Value for x in qb.Securities.Keys}</pre>
   </div>
-  <li>Get the values of the symbol level of the <code>DataFrame.Index</code> and create a list of tickers.</li>
+  <li>Get the values of the symbol level of the <code>DataFrame</code> index and create a list of tickers.</li>
   <div class="section-example-container python">
     <pre class="python">tickers = set([tickers_by_id[x] for x in all_history_df.index.get_level_values('symbol')])</pre>
   </div>
-  <li>Set the values of the symbol level of the <code>DataFrame.Index</code> to the list of tickers.</li>
+  <li>Set the values of the symbol level of the <code>DataFrame</code> index to the list of tickers.</li>
   <div class="section-example-container python">
     <pre class="python">all_history_df.index.set_levels(tickers, 'symbol', inplace=True)</pre>
   </div>
