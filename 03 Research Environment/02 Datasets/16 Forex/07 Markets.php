@@ -1,1 +1,1 @@
-<?php echo file_get_contents(DOCS_RESOURCES."/enumerations/market-forex.html"); ?>
+<p>The only market available for Forex pairs is <code>Market.Oanda</code>.</p>
