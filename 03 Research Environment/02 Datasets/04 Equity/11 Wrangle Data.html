@@ -4,64 +4,61 @@
 
 <h4 class="python">DataFrame Objects</h4>
 
-<p class="python">To select the historical data of a security, index the <code>loc</code> property of the <code>DataFrame</code> with the Equity <code>Symbol</code>.</p>
+<p>If the <code>History</code> method returns a <code>DataFrame</code>, the first level of the <code>DataFrame</code> index is the Equity <code>Symbol</code> and the second level is the <code>EndTime</code> of the data sample. The columns of the <code>DataFrame</code> are the data properties.</p>
+
+<img class="docs-image" src="https://cdn.quantconnect.com/i/tu/us-equity-research-data-1.jpg" alt="DataFrame of two US Equities">
+
+<p class="python">To select the historical data of a single US Equity, index the <code>loc</code> property of the <code>DataFrame</code> with the Equity <code>Symbol</code>.</p>
 
 <div class="python section-example-container">
-<pre class="python">history.loc[spy]
-history.loc['SPY']   # Valid alternative
+<pre class="python">all_history_df.loc[spy]  # or all_history_df.loc["SPY"]
 </pre>
 </div>
 
-<p class="python">The Jupyter Notebook displays a <code>DataFrame</code> containing the open, high, low, close, and volume of the security.</p>
-
-<img class="python docs-image" src="https://cdn.quantconnect.com/i/tu/reserachhistoryequityonesecuritylocspydataframe.png">
+<img class="python docs-image" src="https://cdn.quantconnect.com/i/tu/us-equity-research-data-2.jpg">
 
 <p class="python">To select a column of the <code>DataFrame</code>, index it with the column name.</p>
 
 <div class="python section-example-container">
-<pre class="python">history.loc[symbol]['close']
+<pre class="python">all_history_df.loc[spy]['close']
 </pre>
 </div>
 
-<p class="python">The <code>DataFrame</code> is transformed into a <code>Series</code> of closing prices.</p>
-
-<img class="python docs-image" src="https://cdn.quantconnect.com/i/tu/reserachhistoryequityonesecuritylocspyclosedataframe.png">
+<img class="python docs-image" src="https://cdn.quantconnect.com/i/tu/us-equity-research-data-3.jpg">
 
 <p class="python">If you request historical data for multiple Equities, you can transform the <code>DataFrame</code> so that it's a time series of closing prices for all of the securities. To transform the <code>DataFrame</code>, select the column you want to display for each security and then call the <code>unstack</code> method.</p>
 
 <div class="section-example-container python">
-    <pre class="python">history['close'].unstack(level=0)</pre>
+    <pre class="python">all_history_df['close'].unstack(level=0)</pre>
 </div>
 
 <p class="python">The <code>DataFrame</code> is transformed so that the column indices are the <code>Symbol</code> of each security and each row contains the closing price.</p>
 
-<img class="python docs-image" src="https://cdn.quantconnect.com/i/tu/reserachhistoryequitymultiplesecuritiesunstackdataframe.png">
+<img class="python docs-image" src="https://cdn.quantconnect.com/i/tu/us-equity-research-data-4.jpg">
 
-<p class="python">If you prefer displaying the ticker of <code>Symbol</code> instead of the string representation of the <code>SecurityIdentifier</code>, follow these steps:</p>
+<p class="python">If you prefer to display the ticker of each&nbsp;<code>Symbol</code> instead of the string representation of the <code>SecurityIdentifier</code>, follow these steps:</p>
 <ol class="python">
-  <li>Create a dictionary keyed by the string representation of the <code>SecurityIdentifier</code> and the ticker of <code>Symbol</code>: <code>Symbol.Value</code>:</li>
+  <li>Create a dictionary where the keys are the string representations of each&nbsp;<code>SecurityIdentifier</code> and the values are the ticker.</li>
   <div class="section-example-container python">
     <pre class="python">tickers_by_id = {str(x.ID): x.Value for x in qb.Securities.Keys}</pre>
   </div>
-  <li>Get the values of the symbol level of the <code>DataFrame.Index</code> and create a list of tickers</li>
+  <li>Get the values of the symbol level of the <code>DataFrame.Index</code> and create a list of tickers.</li>
   <div class="section-example-container python">
-    <pre class="python">tickers = set([tickers_by_id[x] for x in history.index.get_level_values('symbol')])</pre>
+    <pre class="python">tickers = set([tickers_by_id[x] for x in all_history_df.index.get_level_values('symbol')])</pre>
   </div>
-  <li>Set the values of the symbol level of the <code>DataFrame.Index</code> with the list of tickers</li>
+  <li>Set the values of the symbol level of the <code>DataFrame.Index</code> to the list of tickers.</li>
   <div class="section-example-container python">
-    <pre class="python">history.index.set_levels(tickers, 'symbol', inplace=True)</pre>
+    <pre class="python">all_history_df.index.set_levels(tickers, 'symbol', inplace=True)</pre>
   </div>
 </ol>
 
-<p class="python">The new <code>DataFrame</code> is keyed by the ticker, and you cannot use the <code>Symbol</code> object to access the values with the <code>loc</code> method. You need to use the <code>Symbol.Value</code>:</p>
+<p class="python">The new <code>DataFrame</code> is keyed by the ticker.</p>
 <div class="section-example-container python">
-  <pre class="python">history.loc[symbol.Value]
-history.loc['SPY']   # Valid alternative
-  </pre>
+  <pre class="python">all_history_df.loc[spy.Value]  # or all_history_df.loc["SPY"]  </pre>
 </div>
 
 <p class="python">After the index renaming, the unstacked <code>DataFrame</code> has the following format:</p>
-<img class="python docs-image" src="https://cdn.quantconnect.com/i/tu/researchhistoryequitymultiplesecuritiesunstackdataframeticker.png">
+<img class="python docs-image" src="https://cdn.quantconnect.com/i/tu/us-equity-research-data-5.jpg">
 
 
 
