@@ -183,7 +183,9 @@ for url in enum_objects:
     
 for x in set([m[1] for m in market]):
     items = [y[0] for y in market if y[1] == x]
-    html = HtmlGeneration("Market", [y for y in market_data if y[0].lower() in items], f' for {x.replace("option", " Option").title()} markets')
+    items = [y[0] for y in market_data if y[0].lower() in items]
     
     with open(f"{destination}/market-{x}.html", "w", encoding="utf-8") as file:
-        file.write(html)
+        file.write(f"""<p>The following <code>Market</code> enumeration members are available for {x.title().replace("option", " Option")}:</p>
+
+<div data-tree='QuantConnect.Market' data-fields='{",".join(items)}'></div>""")
