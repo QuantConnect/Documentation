@@ -1,39 +1,93 @@
-<p>You need a <a href="#03-Create-Subscriptions">subscription</a> before you can request historical data for a dataset. You can request an amount of historical data based on a trailing number of bars, a trailing period of time, or a defined period of time.</p>
+<p>You need a <a href="/docs/v2/research-environment/datasets/alternative-data#03-Create-Subscriptions">subscription</a> before you can request historical data for a dataset. On the time dimension, you can request an amount of historical data based on a trailing number of bars, a trailing period of time, or a defined period of time. On the dataset dimension, you can request historical data for a single dataset subscription, a subset of the dataset subscriptions you created in your notebook, or all of the dataset subscriptions in your notebook.</p>
 
 <h4>Trailing Number of Bars<br></h4>
-<p>Call the <code>History</code> method with a symbol, integer, and resolution to request historical data based on the given number of trailing bars and resolution.</p>
+<p>To get historical data for a number of trailing bars, call the <code>History</code> method with the <code>Symbol</code> object(s) and an integer.</p>
 <div class="section-example-container">
-    <pre class="csharp">var history = qb.History&lt;CBOE&gt;(symbol, 10, Resolution.Daily);</pre>
-    <pre class="python">history = qb.History(symbol, 10, Resolution.Daily)</pre>
+    <pre class="csharp">// Slice objects
+var singleHistorySlice = qb.History(vix, 10);
+var subsetHistorySlice = qb.History(new[] {vix, v3m}, 10);
+var allHistorySlice = qb.History(10);
+
+// CBOE objects
+var singleHistoryTradeBars = qb.History&lt;CBOE&gt;(vix, 10);
+var subsetHistoryTradeBars = qb.History&lt;CBOE&gt;(new[] {vix, v3m}, 10);
+var allHistoryTradeBars = qb.History&lt;CBOE&gt;(qb.Securities.Keys, 10);</pre>
+    <pre class="python"># DataFrame
+single_history_df = qb.History(vix, 10)
+subset_history_df = qb.History([vix, v3m], 10)
+all_history_df = qb.History(qb.Securities.Keys, 10)
+
+# Slice objects
+all_history_slice = qb.History(10)
+
+# CBOE objects
+single_history_trade_bars = qb.History[CBOE](vix, 10)
+subset_history_trade_bars = qb.History[CBOE]([vix, v3m], 10)
+all_history_trade_bars = qb.History[CBOE](qb.Securities.Keys, 10)</pre>
 </div>
-<p>The call returns the most recent bars, excluding periods of time when the exchange was closed.</p>
+<p>The preceding calls return the most recent bars, excluding periods of time when the exchange was closed.</p>
 
 <h4>Trailing Period of Time<br></h4>
-<p>Call the <code>History</code> method with a symbol, <code class="csharp">TimeSpan</code><code class="python">timedelta</code>, and resolution to request historical data based on the given trailing period of time and resolution.</p>
+<p>To get historical data for a trailing period of time, call the <code>History</code> method with the <code>Symbol</code> object(s) and a <code class="csharp">TimeSpan</code><code class="python">timedelta</code>.</p>
 <div class="section-example-container">
-    <pre class="csharp">var history = qb.History&lt;CBOE&gt;(symbol, TimeSpan.FromDays(10), Resolution.Daily);</pre>
-    <pre class="python">history = qb.History(symbol, timedelta(days=10), Resolution.Daily)</pre>
+    <pre class="csharp">// Slice objects
+var singleHistorySlice = qb.History(vix, TimeSpan.FromDays(3));
+var subsetHistorySlice = qb.History(new[] {vix, v3m}, TimeSpan.FromDays(3));
+var allHistorySlice = qb.History(10);
+
+// CBOE objects
+var singleHistoryTradeBars = qb.History&lt;CBOE&gt;(vix, TimeSpan.FromDays(3));
+var subsetHistoryTradeBars = qb.History&lt;CBOE&gt;(new[] {vix, v3m}, TimeSpan.FromDays(3));
+var allHistoryTradeBars = qb.History&lt;CBOE&gt;(TimeSpan.FromDays(3));</pre>
+    <pre class="python"># DataFrame
+single_history_df = qb.History(vix, timedelta(days=3))
+subset_history_df = qb.History([vix, v3m], timedelta(days=3))
+all_history_df = qb.History(qb.Securities.Keys, timedelta(days=3))
+
+# Slice objects
+all_history_slice = qb.History(timedelta(days=3))
+
+# CBOE objects
+single_history_trade_bars = qb.History[CBOE](vix, timedelta(days=3))
+subset_history_trade_bars = qb.History[CBOE]([vix, v3m], timedelta(days=3))
+all_history_trade_bars = qb.History[CBOE](qb.Securities.Keys, timedelta(days=3))</pre>
 </div>
-<p>The call returns the most recent bars, excluding periods of time when the exchange was closed.</p>
+<p>The preceding calls return the most recent bars or ticks, excluding periods of time when the exchange was closed.</p>
 
 <h4>Defined Period of Time<br></h4>
-<p>Call the <code>History</code> method with a symbol, start  <code class="csharp">DateTime</code><code class="python">datetime</code>, end  <code class="csharp">DateTime</code><code class="python">datetime</code>, and resolution to request historical data based on the defined period of time and resolution.</p>
+<p>To get historical data for a specific period of time, call the <code>History</code> method with the <code>Symbol</code> object(s), a start <code class="csharp">DateTime</code><code class="python">datetime</code>, and an end  <code class="csharp">DateTime</code><code class="python">datetime</code>.</p>
 
 <div class="section-example-container">
     <pre class="csharp">var startTime = new DateTime(2021, 1, 1);
 var endTime = new DateTime(2021, 2, 1);
-var history = qb.History&lt;CBOE&gt;(symbol, startTime, endTime, Resolution.Daily);</pre>
+
+// Slice objects
+var singleHistorySlice = qb.History(vix, startTime, endTime);
+var subsetHistorySlice = qb.History(new[] {vix, v3m}, startTime, endTime);
+var allHistorySlice = qb.History(startTime, endTime);
+
+// CBOE objects
+var singleHistoryTradeBars = qb.History&lt;CBOE&gt;(vix, startTime, endTime);
+var subsetHistoryTradeBars = qb.History&lt;CBOE&gt;(new[] {vix, v3m}, startTime, endTime);
+var allHistoryTradeBars = qb.History&lt;CBOE&gt;(qb.Securities.Keys, startTime, endTime);</pre>
     <pre class="python">start_time = datetime(2021, 1, 1)
 end_time = datetime(2021, 2, 1)
-history = qb.History(symbol, start_time, end_time, Resolution.Daily)</pre>
+
+# DataFrame
+single_history_df = qb.History(vix, start_time, end_time)
+subset_history_df = qb.History([vix, v3m], start_time, end_time)
+all_history_df = qb.History(qb.Securities.Keys, start_time, end_time)
+
+# Slice objects
+all_history_slice = qb.History(start_time, end_time)
+
+# CBOE objects
+single_history_trade_bars = qb.History[CBOE](vix, start_time, end_time)
+subset_history_trade_bars = qb.History[CBOE]([vix, v3m], start_time, end_time)
+all_history_trade_bars = qb.History[CBOE](qb.Securities.Keys, start_time, end_time)</pre>
 </div>
 
-<p>The call returns the bars that are timestamped within the defined period of time.</p>
+<p>The preceding calls return the bars or ticks that have a timestamp within the defined period of time.</p>
 
-<p class="python">In all of the cases above, the <code>History</code> method returns a <code>DataFrame</code> with a <code>MultiIndex</code>.</p>
 
-<img class="python docs-image" src="https://cdn.quantconnect.com/i/tu/research-history-alternative-onesecurity-fulldataframe.png">
-
-<p class="python">If you do not pass a resolution to the <code>History</code> method, the <code>History</code> method uses the resolution that the <code>AddData</code> method used when you created the <a href="#03-Create-Subscriptions">subscription</a>.</p>
-
-<p class="csharp">In all of the cases above, the <code>History</code> method returns an <code>IEnumerable&lt;CBOE&gt;</code> for single-data requests. If you do not pass a resolution to the <code>History</code> method, the <code>History</code> method uses the resolution that the <code>AddData</code> method used when you created the <a href="#03-Create-Subscriptions">subscription</a>.</p>
+<p>If you do not pass a resolution to the <code>History</code> method, the <code>History</code> method uses the resolution that the <code>AddData</code> method used when you created the <a href="/docs/v2/research-environment/datasets/alternative-data#03-Create-Subscriptions">subscription</a>.</p>
