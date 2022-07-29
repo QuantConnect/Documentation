@@ -114,6 +114,8 @@ var ticks = {$cVar}History&lt;Tick&gt;(ethSymbol, TimeSpan.FromDays(3), Resoluti
 var tradeBars2 = {$cVar}History(btcSymbol, TimeSpan.FromDays(3), Resolution.Minute);</pre>
 </div>
 
+<p>If you request tick data and there are multiple ticks with the same timestamp, the <code>History</code> method only returns the last tick of the collection.</p>
+
 <h4>Multiple Symbol History Requests</h4>
 <p>To request history for multiple symbols at a time, pass an array of <code>Symbol</code> objects to the same API methods shown in the preceding section. The return type of the method call depends on the history request <code class='python'>[Type]</code><code class='csharp'>&lt;Type&gt;</code>. The following table describes the return type of each request <code class='python'>[Type]</code><code class='csharp'>&lt;Type&gt;</code>:</p>
 
@@ -191,6 +193,8 @@ var quoteBars = {$cVar}History&lt;QuoteBar&gt;(new[] {btcSymbol}, TimeSpan.FromD
 var tradeBars2 = {$cVar}History(new[] {btcSymbol}, TimeSpan.FromDays(3));</pre>	
 
 </div>
+
+<p>If you request tick data and there are multiple ticks with the same timestamp for a single security, the <code>History</code> method only returns the last tick of the collection.</p>
 
 <h4>All Symbol History Requests</h4>
 
