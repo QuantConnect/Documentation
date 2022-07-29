@@ -1,5 +1,5 @@
 <?php
-$getWrangleDataText = function($assetClass='Equity', $singularAssetClass='Equity', $pluralAssetClass='Equities', $historicalDataLink, $primarySymbol='spy', $primaryTicker='SPY', $secondarySymbol='tlt', $dataFrameImages, $dataFrameColumnName='close', $columnNameEnglish='close', $supportsTrades, $supportsQuotes, $supportsTicks)
+$getWrangleDataText = function($assetClass, $singularAssetClass, $pluralAssetClass, $historicalDataLink, $primarySymbol, $primaryTicker, $secondarySymbol, $dataFrameImages, $dataFrameColumnName, $columnNameEnglish, $supportsTrades, $supportsQuotes, $supportsTicks, $supportsAltData=false)
 {
     echo "
 <p class='python'>You need some <a href='{$historicalDataLink}'>historical data</a> to perform wrangling operations. The process to manipulate the historical data depends on its data type. To display <code>pandas</code> objects, run a cell in a notebook with the <code>pandas</code> object as the last line. To display other data formats, call the <code>print</code> method.</p>
@@ -30,13 +30,13 @@ $getWrangleDataText = function($assetClass='Equity', $singularAssetClass='Equity
 
 <img class='python docs-image' src='{$dataFrameImages[2]}' alt='Series of {$dataFrameColumnName} values'>
 
-<p class='python'>If you request historical data for multiple {$pluralAssetClass}, you can transform the <code>DataFrame</code> so that it's a time series of {$columnNameEnglish} prices for all of the securities. To transform the <code>DataFrame</code>, select the column you want to display for each {$singularAssetClass} and then call the <a href='https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.unstack.html' rel='nofollow' target='_blank'>unstack</a> method.</p>
+<p class='python'>If you request historical data for multiple {$pluralAssetClass}, you can transform the <code>DataFrame</code> so that it's a time series of {$columnNameEnglish} values for all of the {$pluralAssetClass}. To transform the <code>DataFrame</code>, select the column you want to display for each {$singularAssetClass} and then call the <a href='https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.unstack.html' rel='nofollow' target='_blank'>unstack</a> method.</p>
 
 <div class='section-example-container python'>
     <pre class='python'>all_history_df['{$dataFrameColumnName}'].unstack(level=0)</pre>
 </div>
 
-<p class='python'>The <code>DataFrame</code> is transformed so that the column indices are the <code>Symbol</code> of each {$singularAssetClass} and each row contains the {$columnNameEnglish} price.</p>
+<p class='python'>The <code>DataFrame</code> is transformed so that the column indices are the <code>Symbol</code> of each {$singularAssetClass} and each row contains the {$columnNameEnglish} value.</p>
 
 <img class='python docs-image' src='{$dataFrameImages[3]}'>
 ";
@@ -77,6 +77,14 @@ $getWrangleDataText = function($assetClass='Equity', $singularAssetClass='Equity
 <div class='section-example-container'>
 <pre class='csharp'>foreach (var slice in allHistorySlice)
 {";
+    if ($supportsAltData)
+    {
+        echo "
+    if (slice.ContainsKey({$primarySymbol}))
+    {
+        var data = slice[{$primarySymbol}];
+    }";        
+    }
 
     if ($supportsTrades)
     {
@@ -100,6 +108,13 @@ $getWrangleDataText = function($assetClass='Equity', $singularAssetClass='Equity
 }</pre>
 <pre class='python'>for slice in all_history_slice:";
 
+    if ($supportsAltData)
+    {
+        echo "
+    if slice.ContainsKey({$primarySymbol}):
+        data = slice[{$primarySymbol}]";
+    }
+
     if ($supportsTrades)
     {
         echo "
@@ -117,67 +132,70 @@ $getWrangleDataText = function($assetClass='Equity', $singularAssetClass='Equity
     echo "</pre>
 </div>";
 
-    echo "<p>You can also iterate through each ";
+    if (!$supportsAltData)
+    {
+        echo "<p>You can also iterate through each ";
 
-    if ($supportsTrades and !$supportsQuotes)
-    {
-        echo "<code>TradeBar</code>";
-    }
-    if (!$supportsTrades and $supportsQuotes)
-    {
-        echo "<code>QuoteBar</code>";
-    }
-    if ($supportsTrades and $supportsQuotes)
-    {
-        echo "<code>TradeBar</code> and <code>QuoteBar</code>";
-    }
-    echo " in the <code>Slice</code>.</p>
+        if ($supportsTrades and !$supportsQuotes)
+        {
+            echo "<code>TradeBar</code>";
+        }
+        if (!$supportsTrades and $supportsQuotes)
+        {
+            echo "<code>QuoteBar</code>";
+        }
+        if ($supportsTrades and $supportsQuotes)
+        {
+            echo "<code>TradeBar</code> and <code>QuoteBar</code>";
+        }
+        echo " in the <code>Slice</code>.</p>
 
 <div class='section-example-container'>
 <pre class='csharp'>foreach (var slice in allHistorySlice)
 {";
 
-    if ($supportsTrades)
-    {
-        echo "
+        if ($supportsTrades)
+        {
+            echo "
     foreach (var kvp in slice.Bars)
     {
         var symbol = kvp.Key;
         var tradeBar = kvp.Value;
     }";
-    }
-    if ($supportsQuotes)
-    {
-        echo "
+        }
+        if ($supportsQuotes)
+        {
+            echo "
     foreach (var kvp in slice.QuoteBars)
     {
         var symbol = kvp.Key;
         var quoteBar = kvp.Value;
     }";
-    }
+        }
 
-    echo "
+        echo "
 }</pre>
 <pre class='python'>for slice in all_history_slice:";
 
-    if ($supportsTrades)
-    {
-        echo "
+        if ($supportsTrades)
+        {
+            echo "
     for kvp in slice.Bars:
         symbol = kvp.Key
         trade_bar = kvp.Value";
-    }
-    if ($supportsQuotes)
-    {
-        echo "
+        }
+        if ($supportsQuotes)
+        {
+            echo "
     for kvp in slice.QuoteBars:
         symbol = kvp.Key
         quote_bar = kvp.Value";
-    }
+        }
 
-    echo "</pre>
+        echo "</pre>
 </div>
 ";
+    }
 
     if ($supportsTrades)
     {
