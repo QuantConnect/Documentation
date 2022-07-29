@@ -239,7 +239,7 @@ $getWrangleDataText = function($assetClass='Equity', $singularAssetClass='Equity
 {
     Console.WriteLine(quoteBar);
 }</pre>
-<pre class='python;>for quote_bar in single_history_quote_bars:
+<pre class='python'>for quote_bar in single_history_quote_bars:
     print(quote_bar)</pre>
 </div>
 
