@@ -9,7 +9,7 @@
 
 
 <h4>Trailing Number of Bars<br></h4>
-<p>To get historical data for a number of trailing bars, call the <code>History</code> method with the <code>Symbol</code> object(s) and an integer.</p>
+<p>To get historical data for a number of trailing bars, call the <code>History</code> method with the contract&nbsp;<code>Symbol</code> object(s) and an integer.</p>
 <div class="section-example-container">
     <pre class="csharp">// Slice objects
 var singleHistorySlice = qb.History(contractSymbol, 10);
@@ -32,8 +32,14 @@ var subsetHistoryOpenInterest = qb.History&lt;OpenInterest&gt;(new[] {contractSy
 var allHistoryOpenInterest = qb.History&lt;OpenInterest&gt;(qb.Securities.Keys, 400);</pre>
     <pre class="python"># DataFrame
 single_history_df = qb.History(contract_symbol, 10)
+single_history_trade_bar_df = qb.History(TradeBar, contract_symbol, 10)
+single_history_open_interest_df = qb.History(OpenInterest, contract_symbol, 400)
 subset_history_df = qb.History([contract_symbol], 10)
+subset_history_trade_bar_df = qb.History(TradeBar, [contract_symbol], 10)
+subset_history_open_interest_df = qb.History(OpenInterest, [contract_symbol], 400)
 all_history_df = qb.History(qb.Securities.Keys, 10)
+all_history_trade_bar_df = qb.History(TradeBar, qb.Securities.Keys, 10)
+all_history_open_interest_df = qb.History(OpenInterest, qb.Securities.Keys, 400)
 
 # Slice objects
 all_history_slice = qb.History(10)
@@ -54,7 +60,7 @@ all_history_open_interest = qb.History[OpenInterest](qb.Securities.Keys, 400)</p
 <p>The preceding calls return the most recent bars, excluding periods of time when the exchange was closed.</p>
 
 <h4>Trailing Period of Time<br></h4>
-<p>To get historical data for a trailing period of time, call the <code>History</code> method with the <code>Symbol</code> object(s) and a <code class="csharp">TimeSpan</code><code class="python">timedelta</code>.</p>
+<p>To get historical data for a trailing period of time, call the <code>History</code> method with the contract&nbsp;<code>Symbol</code> object(s) and a <code class="csharp">TimeSpan</code><code class="python">timedelta</code>.</p>
 <div class="section-example-container">
     <pre class="csharp">// Slice objects
 var singleHistorySlice = qb.History(contractSymbol, TimeSpan.FromDays(3));
@@ -71,13 +77,23 @@ var singleHistoryOpenInterest = qb.History&lt;OpenInterest&gt;(contractSymbol, T
 var subsetHistoryOpenInterest = qb.History&lt;OpenInterest&gt;(new[] {contractSymbol}, TimeSpan.FromDays(2));
 var allHistoryOpenInterest = qb.History&lt;OpenInterest&gt;(qb.Securities.Keys, TimeSpan.FromDays(2));</pre>
     <pre class="python"># DataFrame
-single_history_df = qb.History(contract_symbol, timedelta(days=3))<br>subset_history_df = qb.History([contract_symbol], timedelta(days=3))<br>all_history_df = qb.History(qb.Securities.Keys, timedelta(days=3))
+single_history_df = qb.History(contract_symbol, timedelta(days=3))
+single_history_trade_bar_df = qb.History(TradeBar, contract_symbol, timedelta(days=3))
+single_history_open_interest_df = qb.History(OpenInterest, contract_symbol, timedelta(days=3))
+subset_history_df = qb.History([contract_symbol], timedelta(days=3))
+subset_history_trade_bar_df = qb.History(TradeBar, [contract_symbol], timedelta(days=3))
+subset_history_open_interest_df = qb.History(OpenInterest, [contract_symbol], timedelta(days=3))
+all_history_df = qb.History(qb.Securities.Keys, timedelta(days=3))
+all_history_trade_bar_df = qb.History(TradeBar, qb.Securities.Keys, timedelta(days=3))
+all_history_open_interest_df = qb.History(OpenInterest, qb.Securities.Keys, timedelta(days=3))
 
 # Slice objects
 all_history_slice = qb.History(timedelta(days=3))
 
 # TradeBar objects
-single_history_trade_bars = qb.History[TradeBar](contract_symbol, timedelta(days=3))<br>subset_history_trade_bars = qb.History[TradeBar]([contract_symbol], timedelta(days=3))<br>all_history_trade_bars = qb.History[TradeBar](qb.Securities.Keys, timedelta(days=3))
+single_history_trade_bars = qb.History[TradeBar](contract_symbol, timedelta(days=3))
+subset_history_trade_bars = qb.History[TradeBar]([contract_symbol], timedelta(days=3))
+all_history_trade_bars = qb.History[TradeBar](qb.Securities.Keys, timedelta(days=3))
 
 # QuoteBar objects
 single_history_quote_bars = qb.History[QuoteBar](contract_symbol, timedelta(days=3), Resolution.Minute)
@@ -86,12 +102,13 @@ all_history_quote_bars = qb.History[QuoteBar](qb.Securities.Keys, timedelta(days
 
 # OpenInterest objects
 single_history_open_interest = qb.History[OpenInterest](contract_symbol, timedelta(days=2))
-subset_history_open_interest = qb.History[OpenInterest]([contract_symbol], timedelta(days=2))<br>all_history_open_interest = qb.History[OpenInterest](qb.Securities.Keys, timedelta(days=2))<br></pre>
+subset_history_open_interest = qb.History[OpenInterest]([contract_symbol], timedelta(days=2))
+all_history_open_interest = qb.History[OpenInterest](qb.Securities.Keys, timedelta(days=2))<br></pre>
 </div>
 <p>The preceding calls return the most recent bars, excluding periods of time when the exchange was closed.</p>
 
 <h4>Defined Period of Time<br></h4>
-<p>To get historical data for a specific period of time, call the&nbsp;<code>History</code> method with the <code>Symbol</code> object(s), a start  <code class="csharp">DateTime</code><code class="python">datetime</code>, and an end <code class="csharp">DateTime</code><code class="python">datetime</code>.</p>
+<p>To get historical data for individual Option contracts during a specific period of time, call the&nbsp;<code>History</code> method with the contract&nbsp;<code>Symbol</code> object(s), a start  <code class="csharp">DateTime</code><code class="python">datetime</code>, and an end <code class="csharp">DateTime</code><code class="python">datetime</code>.</p>
 
 <div class="section-example-container">
     <pre class="csharp">var startTime = new DateTime(2021, 12, 1);
@@ -113,14 +130,16 @@ var allHistoryOpenInterest = qb.History&lt;OpenInterest&gt;(qb.Securities.Keys, 
     <pre class="python">start_time = datetime(2021, 12, 1)
 end_time = datetime(2021, 12, 31)
 
-# OptionHistory object
-option_history = qb.GetOptionHistory(equity_symbol, end_time-timedelta(days=2), end_time, Resolution.Minute, fillForward=False, extendedMarket=False)
-
 # DataFrame
-option_chain_history_df = option_history.GetAllData()
 single_history_df = qb.History(contract_symbol, start_time, end_time)
+single_history_trade_bar_df = qb.History(TradeBar, contract_symbol, start_time, end_time)
+single_history_open_interest_df = qb.History(OpenInterest, contract_symbol, start_time, end_time)
 subset_history_df = qb.History([contract_symbol], start_time, end_time)
+subset_history_trade_bar_df = qb.History(TradeBar, [contract_symbol], start_time, end_time)
+subset_history_open_interest_df = qb.History(OpenInterest, [contract_symbol], start_time, end_time)
 all_history_df = qb.History(qb.Securities.Keys, start_time, end_time)
+all_history_trade_bar_df = qb.History(TradeBar, qb.Securities.Keys, start_time, end_time)
+all_history_trade_open_interest_df = qb.History(OpenInterest, qb.Securities.Keys, start_time, end_time)
 
 # Slice objects
 all_history_slice = qb.History(start_time, end_time)
@@ -134,13 +153,13 @@ single_history_quote_bars = qb.History[QuoteBar](contract_symbol, start_time, en
 # OpenInterest objects
 single_history_open_interest = qb.History[OpenInterest](contract_symbol, start_time, end_time)
 subset_history_open_interest = qb.History[OpenInterest]([contract_symbol], start_time, end_time)
-all_history_open_interest = qb.History[OpenInterest](qb.Securities.Keys, start_time, end_time)
+all_history_open_interest = qb.History[OpenInterest](qb.Securities.Keys, start_time, end_time)<br></pre>
+</div>
 
-# datetime objects
-option_chain_expiries = option_history.GetExpiryDates()
+<p class="python">To get historical data for all of the Option contracts that pass your <a href="/docs/v2/research-environment/datasets/equity-options#03-Create-Subscriptions">filter</a> during a specific period of time, call the <code>GetOptionHistory</code> method with the underlying Equity <code>Symbol</code> object, a start  <code class="csharp">DateTime</code><code class="python">datetime</code>, and an end <code class="csharp">DateTime</code><code class="python">datetime</code>.</p>
 
-# float objects
-option_chain_strikes = option_history.GetStrikes()</pre>
+<div class="python section-example-container">
+    <pre class="python">option_history = qb.GetOptionHistory(equity_symbol, end_time-timedelta(days=2), end_time, Resolution.Minute, fillForward=False, extendedMarket=False)</pre>
 </div>
 
 <p>The preceding calls return data that have a timestamp within the defined period of time.</p>
