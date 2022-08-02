@@ -228,7 +228,7 @@ for full, short in dict(sorted(names.items())).items():
         
         for line in lines:
             if active and 'button class="method-tag"' not in line:
-                api.append(line)
+                api.append(line.split("<a id")[0])
                 
                 if "</div>" in line and "    " not in line:
                     active = False
@@ -583,7 +583,7 @@ if (_{short.lower()}.IsReady)
 """)
         
         for x in plots[full]:
-            html_file.write(f'''    var {x[0].lower()+x[1:]} = _{short.lower()}.{x}.Value;
+            html_file.write(f'''    var {x[0].lower()+x[1:]} = _{short.lower()}.{x}{".Current" if x != "Current" else ""}.Value;
 ''')
                             
         html_file.write(f"""}}</pre>
@@ -596,7 +596,7 @@ if self.{short.lower()}.IsReady:
 """)
                             
         for x in plots[full]:
-            html_file.write(f'''    {"_".join([y.lower() for y in re.findall('[A-Z][^A-Z]*', x) if y])} = self.{short.lower()}.{x}.Value
+            html_file.write(f'''    {"_".join([y.lower() for y in re.findall('[A-Z][^A-Z]*', x) if y])} = self.{short.lower()}.{x}{".Current" if x != "Current" else ""}.Value
 ''')
         
         html_file.write(f"""</pre>
