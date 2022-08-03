@@ -237,7 +237,7 @@ def Table(input_, previous_name, type_map, j):
                 
         return previous_name, j
     
-    param_ = set([x['typeId'] for x in input_['Parameters']]) if 'Parameters' in input_ else set()
+    param_ = sorted([x['typeId'] for x in input_['Parameters']]) if 'Parameters' in input_ else []
     comb = (input_['Name'], param_)
     if comb in done: return previous_name, j
     done.append(comb)
