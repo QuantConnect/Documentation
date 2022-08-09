@@ -9,11 +9,16 @@ def OnData(self, slice: Slice) -&gt; None:
     trade_bar = slice.Bars[self.symbol]
     self.consolidator.Update(trade_bar)
 
-# Example 2: Update the consolidator with data from a history request
+# Example 2.1: Update the consolidator with data from a history request
 history = self.History(self.symbol, 30, Resolution.Minute)
 for index, row in history.iterrows():
     trade_bar = TradeBar(index[1], self.symbol, row.open, row.high, row.low, row.close, row.volume)
-    consolidator.Update(trade_bar)</pre>
+    self.consolidator.Update(trade_bar)
+
+# Example 2.2: Update the consolidator with data from a tradebar history request
+history = self.History[TradeBar](self.symbol, 30, Resolution.Minute)
+for trade_bar in history:
+    self.consolidator.Update(trade_bar)</pre>
 <pre class="csharp">// Example 1: Update the consolidator with data from the Slice object
 public override void OnData(Slice slice)
 {

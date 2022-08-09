@@ -1,0 +1,37 @@
+<p>You can warm up a <code>RollingWindow</code> by calling the <a href="#03-Add-Data">Add</a> method on <a href="/docs/v2/writing-algorithms/historical-data/history-requests">Historical Data</a> iteration.</p>
+<div class="section-example-container">
+	<pre class="csharp">var spy = AddEquity("SPY", Resolution.Daily).Symbol;
+var historyTradeBar = History&lt;TradeBar&gt;(spy, 10, Resolution.Daily);
+var historyQuoteBar = History&lt;QuoteBar&gt;(spy, 10, Resolution.Minute);
+
+// Warm up close price and trade bar rolling window by the previous 10-day trade bar data
+var closePriceWindow = new RollingWindow&lt;decimal&gt;(10);
+var tradeBarWindow = new RollingWindow&lt;TradeBar&gt;(10);
+foreach (var tradeBar in historyTradeBar)
+{
+    closePriceWindow.Add(tradeBar.Close);
+    tradeBarWindow.Add(tradeBar);
+}
+
+// Warm up quote bar rolling window by the previous 10-minute quote bar data
+var quoteBarWindow = new RollingWindow&lt;QuoteBar&gt;(10);
+foreach (var quoteBar in historyQuoteBar)
+{
+    quoteBarWindow.Add(quoteBar);
+}</pre>
+	<pre class="python">spy = self.AddEquity("SPY", Resolution.Daily).Symbol
+history_trade_bar = self.History[TradeBar](spy, 10, Resolution.Daily)
+history_quote_bar = self.History[QuoteBar](spy, 10, Resolution.Minute)
+
+# Warm up close price and trade bar rolling window by the previous 10-day trade bar data
+close_price_window = RollingWindow[float](10)
+trade_bar_window = RollingWindow[TradeBar](10)
+for trade_bar in history_trade_bar:
+    close_price_window.Add(trade_bar.Close)
+    trade_bar_window.Add(trade_bar)
+
+# Warm up quote bar rolling window by the previous 10-minute quote bar data
+quote_bar_window = RollingWindow[QuoteBar](10)
+for quote_bar in history_quote_bar:
+    quote_bar_window.Add(quote_bar)</pre>
+</div>
