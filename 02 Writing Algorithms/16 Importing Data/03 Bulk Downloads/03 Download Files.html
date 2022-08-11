@@ -1,0 +1,73 @@
+<p>The <code>Download</code> method downloads the content served from a local file or URL and then returns it as a string.</p>
+
+<div class="section-example-container">
+<pre class="csharp">var file = Download("&lt;filePathOrURL&gt;");
+</pre>
+<pre class="python">file = self.Download("&lt;filePathOrURL&gt;")
+
+# If your file is in CSV format, convert it to a DataFrame with the `read_csv` method.
+from io import StringIO
+import pandas as pd
+df = pd.read_csv(StringIO(file))
+
+# If your file is in JSON format, parse it with the `loads` method.
+import json
+data = json.loads(file)
+
+# If your file is in XML format, parse it with the `fromstring` method.
+import xml.etree.ElementTree as ET
+root = ET.fromstring(file)
+</pre>
+</div>
+
+<p>The <code>Download</code> method can accept header settings, a username, and a password for authentication.</p>
+
+<table class="qc-table table">
+    <thead>
+        <tr>
+            <th>Argument</th>
+            <th>Data Type</th>
+            <th>Description</th>
+            <th>Default Value</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><code>address</code></td>
+            <td><code class="csharp">string</code><code class="python">str</code></td>
+            <td>A string containing the URI to download</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td><code>headers</code></td>
+            <td>
+                <code class="csharp">IEnumerable&lt;KeyValuePair&lt;string, string&gt;&gt;</code>
+                <code class="python">Dict[str,str]</code>
+            </td>
+            <td>Defines header values to add to the request</td>
+            <td><code class="csharp">Enumerable.Empty&lt;KeyValuePair&lt;string, string&gt;&gt;()</code><code class="python">dict()</code></td>
+        </tr>
+        <tr>
+            <td><code>userName</code></td>
+            <td><code class="csharp">string</code><code class="python">str</code></td>
+            <td>The user name associated with the credentials</td>
+            <td><code class="csharp">null</code><code class="python">None</code></td>
+        </tr>
+        <tr>
+            <td><code>password</code></td>
+            <td><code class="csharp">string</code><code class="python">str</code></td>
+            <td>The password for the user name associated with the credentials</td>
+            <td><code class="csharp">null</code><code class="python">None</code></td>
+        </tr>
+        </tbody>
+</table>
+
+<div class="section-example-container">
+<pre class="csharp">var headers = new Dictionary<string, string> { { "1", "1" } };
+Download(address, headers);
+Download(address, headers, userName, password);
+</pre>
+<pre class="python">header = { "1": "1" }
+self.Download(address, headers)
+self.Download(address, headers, user_name, password)</pre>
+</div>
