@@ -1,5 +1,11 @@
 <p>You must define a custom type that extend from <code class='csharp'>BaseData</code><code class='python'>PythonData</code> and override the <code>Reader</code> and <code>GetSource</code> methods.</p>
-<p>Since JSON file is read as single line with data from multiple time points, the returned <code>SubscriptionDataSource</code> in the <code>GetSource</code> method should contain a format argument <code>FileFormat.UnfoldingCollection</code>. Also, <code>Reader</code> method should return a <code>BaseDataCollection</code> object which contains a list of all data points.</p>
+
+<p>If you need to create multiple objects in your <code>Reader</code> method from a single <code>line</code>, follow these steps:</p>
+
+<ol>
+    <li>In the <code>GetSource</code> method, pass <code>FileFormat.UnfoldingCollection</code> as the third argument to the <code>SubscriptionDataSource</code> constructor.</li>
+    <li>In the <code>Reader</code> method, order the objects by their timestamp and then return a <code>BaseDataCollection(endTime, config.Symbol, objects)</code> where <code>objects</code> is a list of your custom data objects.</li>
+</ol>
 
 <div class="section-example-container">
     <pre class="csharp">using Newtonsoft.Json;
