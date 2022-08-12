@@ -26,13 +26,10 @@
 <?php echo file_get_contents(DOCS_RESOURCES."/datasets/custom-data/local-files.html"); ?>
 
 <h4>Remote Files</h4>
-<p>The most common remote file providers to use are GitHub, Google Sheets, and Dropbox.</p>
+<p>The most common remote file providers to use are GitHub and Dropbox.</p>
 
 <h5>GitHub</h5>
 <?php echo file_get_contents(DOCS_RESOURCES."/datasets/custom-data/github.html"); ?>
-
-<h5>Google Sheets</h5>
-<?php echo file_get_contents(DOCS_RESOURCES."/datasets/custom-data/google-sheets.html"); ?>
 
 <h5>Dropbox</h5>
 <?php echo file_get_contents(DOCS_RESOURCES."/datasets/custom-data/dropbox.html"); ?>
