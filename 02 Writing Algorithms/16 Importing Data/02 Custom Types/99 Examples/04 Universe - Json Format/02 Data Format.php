@@ -26,7 +26,7 @@
 <?php echo file_get_contents(DOCS_RESOURCES."/datasets/custom-data/local-files.html"); ?>
 
 <h4>Remote Files</h4>
-<p>The most common remote file providers to use are GitHub and Dropbox.</p>
+<p>The most common remote file providers to use are GitHub and Dropbox. Google Sheets don't support exporting data in Json format.</p>
 
 <h5>GitHub</h5>
 <?php echo file_get_contents(DOCS_RESOURCES."/datasets/custom-data/github.html"); ?>
