@@ -1,0 +1,1 @@
+<?php include(DOCS_RESOURCES."/live-trading/reconciliation/differences-from-modeling.html"); ?>
