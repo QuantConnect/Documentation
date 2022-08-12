@@ -1,4 +1,4 @@
-<p>You must create a file with data in <span class="public-file-name">JSON</span> format, ensuring the data in the file is in chronological order.</p>
+<p>You must create a file with data in <span class="public-file-name">JSON</span> format. Ensure the data in the file is in chronological order.</p>
 
 <div class="section-example-container"><pre>
 [
