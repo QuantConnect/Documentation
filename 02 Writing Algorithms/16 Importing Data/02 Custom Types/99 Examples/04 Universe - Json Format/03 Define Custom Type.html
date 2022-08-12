@@ -1,0 +1,74 @@
+<p>You must define a custom type that extend from <code class='csharp'>BaseData</code><code class='python'>PythonData</code> and override the <code>Reader</code> and <code>GetSource</code> methods.</p>
+
+<p>If you need to create multiple objects in your <code>Reader</code> method from a single <code>line</code>, follow these steps:</p>
+
+<ol>
+    <li>In the <code>GetSource</code> method, pass <code>FileFormat.UnfoldingCollection</code> as the third argument to the <code>SubscriptionDataSource</code> constructor.</li>
+    <li>In the <code>Reader</code> method, order the objects by their timestamp and then return a <code>BaseDataCollection(endTime, config.Symbol, objects)</code> where <code>objects</code> is a list of your custom data objects.</li>
+</ol>
+
+<div class="section-example-container">
+    <pre class="csharp">using Newtonsoft.Json;
+
+public class StockDataSource : BaseData
+{
+    [JsonProperty("Symbols")]
+    public List&lt;string&gt; Symbols { get; set; }
+    [JsonProperty("Date")]
+    public string Date;
+    public override DateTime EndTime =&gt; Time.AddDays(1);
+
+    public override SubscriptionDataSource GetSource(
+        SubscriptionDataConfig config,
+        DateTime date,
+        bool isLiveMode)
+    {
+        return new SubscriptionDataSource("https://www.dropbox.com/s/7xe7lfac52mdfpe/custom-universe.json?dl=1", 
+                                          SubscriptionTransportMedium.RemoteFile,
+                                          FileFormat.UnfoldingCollection);
+    }
+
+    public override BaseData Reader(
+        SubscriptionDataConfig config,
+        string line,
+        DateTime date,
+        bool isLiveMode)
+    {
+        var objects = JsonConvert.DeserializeObject&lt;List&lt;StockDataSource&gt;&gt;(line).Select(stocks =>
+        {
+            stocks.Time = DateTime.ParseExact(stocks.Date, "yyyyMMdd", null);
+            return stocks;
+        }).ToList();
+
+        return new BaseDataCollection(objects.Last().EndTime, config.Symbol, objects);
+    }
+}</pre>
+<pre class="python">class StockDataSource(PythonData):
+
+    def GetSource(self,
+         config: SubscriptionDataConfig,
+         date: datetime,
+         isLive: bool) -&gt; SubscriptionDataSource:
+        return SubscriptionDataSource("https://www.dropbox.com/s/7xe7lfac52mdfpe/custom-universe.json?dl=1", 
+                                      SubscriptionTransportMedium.RemoteFile,
+                                      FileFormat.UnfoldingCollection)
+
+    def Reader(self,
+         config: SubscriptionDataConfig,
+         line: str,
+         date: datetime,
+         isLive: bool) -&gt; BaseData:
+        
+        objects = []
+        data = json.loads(line)
+
+        for datum in data:
+            stocks = StockDataSource()
+            stocks.Symbol = config.Symbol
+
+            stocks.Time = datetime.strptime(datum["Date"], "%Y%m%d")
+            stocks["Symbols"] = datum["Symbols"]
+            objects.append(stocks)
+
+        return BaseDataCollection(objects[-1].EndTime, config.Symbol, objects)</pre>
+</div>

@@ -8,22 +8,19 @@
         if (slice.ContainsKey(_symbol))
         {
             var customData = slice[_symbol];
-            var value = customData.Value;
-            var property1 = customData.CustomAttribute1;
+            var close = customData.Close;
         }
     }
 
     // Can also get the data instance directly with OnData(dataClass) method
-    public void OnData(MuCustomDataClass slice)
+    public void OnData(Nifty customData)
     {
-        var value = slice.Value;
-        var property1 = slice.CustomAttribute1;
+        var close = customData.Close;
     }
 }</pre>
-<pre class="python">class MyAlgorithm(QCAlgorithm):        
+<pre class="python">class MyAlgorithm(QCAlgorithm):
     def OnData(self, slice: Slice) -&gt; None:
         if slice.ContainsKey(self.symbol):
             custom_data = slice[self.symbol]
-            value = custom_data.Value
-            property1 = custom_data.GetProperty('property1')</pre>
+            close = custom_data.GetProperty('close')</pre>
 </div>
