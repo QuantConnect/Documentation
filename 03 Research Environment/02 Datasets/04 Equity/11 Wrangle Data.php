@@ -4,7 +4,8 @@ $assetClass = 'Equity';
 $singularAssetClass = 'Equity';
 $pluralAssetClass = 'Equities';
 $historicalDataLink = "/docs/v2/research-environment/datasets/equity#04-Get-Historical-Data";
-$primarySymbol = 'spy';
+$primarySymbolPy = 'spy';
+$primarySymbolC = 'spy';
 $primaryTicker = 'SPY';
 $secondarySymbol = 'tlt';
 $dataFrameImages = array(
@@ -18,5 +19,5 @@ $columnNameEnglish = 'close';
 $supportsTrades = true;
 $supportsQuotes = true;
 $supportsTicks = true;
-$getWrangleDataText($assetClass, $singularAssetClass, $pluralAssetClass, $historicalDataLink, $primarySymbol, $primaryTicker, $secondarySymbol, $dataFrameImages, $dataFrameColumnName, $columnNameEnglish, $supportsTrades, $supportsQuotes, $supportsTicks);
+$getWrangleDataText($assetClass, $singularAssetClass, $pluralAssetClass, $historicalDataLink, $primarySymbolPy, $primarySymbolC, $primaryTicker, $secondarySymbol, $dataFrameImages, $dataFrameColumnName, $columnNameEnglish, $supportsTrades, $supportsQuotes, $supportsTicks);
 ?>
