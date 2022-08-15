@@ -2,7 +2,7 @@
 $getHistoricalDataText = function($createSubscriptionsLink, $optionType, $underlyingSymbolVariable)
 {
     echo "
-<p>You need a <a href='{$createSubscriptionsLink}'>subscription</a> before you can request historical data for {$assetClass} Option contracts. On the time dimension, you can request an amount of historical data based on a trailing number of bars, a trailing period of time, or a defined period of time. On the contract dimension, you can request historical data for a single contract, a subset of the contracts you created subscriptions for in your notebook, or all of the contracts in your notebook.</p>
+<p>You need a <a href='{$createSubscriptionsLink}'>subscription</a> before you can request historical data for {$optionType} Option contracts. On the time dimension, you can request an amount of historical data based on a trailing number of bars, a trailing period of time, or a defined period of time. On the contract dimension, you can request historical data for a single contract, a subset of the contracts you created subscriptions for in your notebook, or all of the contracts in your notebook.</p>
 
 <p>Before you request historical data, call the <code>SetStartDate</code> method with a <code class='python'>datetime</code><code class='csharp'>DateTime </code> to reduce the risk of <a href='/docs/v2/writing-algorithms/key-concepts/glossary#16-look-ahead-bias'>look-ahead bias</a>.</p>
 <div class='section-example-container'>
