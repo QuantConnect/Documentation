@@ -60,7 +60,7 @@
         custom = MyCustomDataType()
         custom.EndTime = datetime.strptime(data[0], '%Y%m%d') + timedelta(1)
         custom.Value = float(data[1])
-        custom["property1"] = float(data[2])
+        custom["Property1"] = float(data[2])
         return custom</pre>
 </div>
 
