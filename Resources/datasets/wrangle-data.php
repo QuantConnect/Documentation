@@ -23,13 +23,13 @@ $getWrangleDataText = function($assetClass, $singularAssetClass, $pluralAssetCla
 <p class='python'>The columns of the <code>DataFrame</code> are the data properties. Depending on how you request data, the <code>DataFrame</code> may contain data for the underlying security, which causes the first 3 index levels to be an empty string for the corresponding rows.</p>
 <img class='python docs-image' src='{$dataFrameImages[0]}'>
 
-<p class='python'>To select the rows of the contract(s) that expiry on a specific day, index the <code>loc</code> property of the <code>DataFrame</code> with the expiry date.</p>
+<p class='python'>To select the rows of the contract(s) that expire on a specific day, index the <code>loc</code> property of the <code>DataFrame</code> with the expiry date.</p>
 <div class='python section-example-container'>
 <pre class='python'>all_history_df.loc[{$contractExpiryDate}]</pre>
 </div>
 <img class='python docs-image' src='{$dataFrameImages[1]}'>
 
-<p class='python'>If you remove the first three index levels, you can index the <code>DataFrame</code> with just the contract <code>Symbol</code>, similiar to how you would with non-deriviate asset classes. To remove the first three index levels, call the <a href='https://pandas.pydata.org/docs/reference/api/pandas.Index.droplevel.html' rel='nofollow' target='_blank'>droplevel</a> method.</p>
+<p class='python'>If you remove the first three index levels, you can index the <code>DataFrame</code> with just the contract <code>Symbol</code>, similiar to how you would with non-derivative asset classes. To remove the first three index levels, call the <a href='https://pandas.pydata.org/docs/reference/api/pandas.Index.droplevel.html' rel='nofollow' target='_blank'>droplevel</a> method.</p>
 <div class='python section-example-container'>
 <pre class='python'>all_history_df.index = all_history_df.index.droplevel([0,1,2])</pre>
 </div>
