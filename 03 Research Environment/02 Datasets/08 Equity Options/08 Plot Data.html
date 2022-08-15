@@ -1,17 +1,17 @@
-<p class="csharp">Jupyter Notebooks don't currently support libraries to plot historical data, but we are working on adding the functionality. Until we add the functionality, use Python to plot historical Equity Options data.</p>
+<p class="csharp">Jupyter Notebooks don't currently support libraries to plot historical data, but we are working on adding the functionality. Until we add the functionality, use Python to plot historical Equity data.</p>
 
-<p class="python">You need to <a href="/docs/v2/research-environment/datasets/equity-options#04-Get-Historical-Data">get some historical Equity Options data</a> to plot it. You can use many of the <a href="/docs/v2/research-environment/charting">supported plotting libraries</a> to visualize data in various formats. For example, you can plot candlestick and line charts.</p>
+<p class="python">You need some&nbsp;<a href="/docs/v2/research-environment/datasets/equity-options#04-Get-Historical-Data">historical Equity Options data</a> to produce plots. You can use many of the <a href="/docs/v2/research-environment/charting">supported plotting libraries</a> to visualize data in various formats. For example, you can plot candlestick and line charts.</p>
 
 <h4 class="python">Candlestick Chart<br></h4>
 
 <p class="python">Follow these steps to plot candlestick charts:</p>
 
 <ol class="python">
-    <li>Call the <code>History</code> method with an <code>OptionContract</code> <code>Symbol</code> and a <code>timedelta</code>.</li>
+    <li>Get some historical data.</li>
 	<div class="section-example-container">
-        <pre class="python">history = qb.History(contract_symbol, timedelta(1))</pre>
+        <pre class="python">history = qb.History(contract_symbol, datetime(2021, 12, 30), datetime(2021, 12, 31))</pre>
     </div>
-    <li>Drop the first four index levels of the <code>DataFrame</code> that returns.<br></li>
+    <li>Drop the first four index levels of the <code>DataFrame</code> that returns.</li>
 	<div class="section-example-container">
         <pre class="python">history.index = history.index.droplevel([0,1,2,3])</pre>
     </div>
@@ -19,7 +19,7 @@
     <div class="section-example-container">
         <pre class="python">import plotly.graph_objects as go</pre>
     </div>
-    <li>Call the <code>Candlestick</code> constructor with the timestamp and price series.<br></li>
+    <li>Create a <code>Candlestick</code>.</li>
     <div class="section-example-container">
         <pre class="python">candlestick = go.Candlestick(x=history.index,
                              open=history['open'],
@@ -27,14 +27,14 @@
                              low=history['low'],
                              close=history['close'])</pre>
     </div>
-    <li>Call the <code>Layout</code> constructor with some titles.<br></li>
+    <li>Create a <code>Layout</code>.</li>
     <div class="section-example-container">
         <pre class="python">layout = go.Layout(title=go.layout.Title(text=f'{symbol.Value} OHLC'),
                    xaxis_title='Date',
                    yaxis_title='Price',
                    xaxis_rangeslider_visible=False)</pre>
     </div>
-    <li>Call the <code>Figure</code> constructor with the <code>Candlestick</code> and <code>Layout</code>.</li>
+    <li>Create a <code>Figure</code>.</li>
     <div class="section-example-container">
         <pre class="python">fig = go.Figure(data=[candlestick], layout=layout)</pre>
     </div>
@@ -52,27 +52,27 @@
 <p class="python">Follow these steps to plot line charts using built-in methods:</p>
 
 <ol class="python">
-    <li>Call the <code>History</code> method with the <code>OpenInterest</code> class, <code>OptionContract</code> <code>Symbol</code>s, and a <code>timedelta</code>.</li>
+    <li>Get some historical data.</li>
     <div class="section-example-container">
-        <pre class="python">history = qb.History(OpenInterest, selected_symbols, timedelta(days=30))</pre>
+        <pre class="python">history = qb.History(OpenInterest, contract_symbol, datetime(2021, 12, 1), datetime(2021, 12, 31))</pre>
     </div>
-    <li>Drop the first three index levels of <code>DataFrame</code> that returns.<br></li>
+    <li>Drop the first three index levels of the&nbsp;<code>DataFrame</code> that returns.<br></li>
     <div class="section-example-container">
-        <pre class="python">history.index = history.index.droplevel([0,1,2])</pre>
+        <pre class="python">history.index = history.index.droplevel([0, 1, 2])</pre>
     </div>
-    <li>Select the open interest property and then call the <code>unstack</code> method.</li>
+    <li>Select the open interest data.</li>
     <div class="section-example-container">
-        <pre class="python">open_interests = history['openinterest'].unstack(level=0)</pre>
+        <pre class="python">df = history['openinterest'].unstack(level=0)</pre>
     </div>
-	<li>Rename the columns to the <code>Symbol</code> of each contract.</li>
+	<li>Rename the column to the <code>Symbol</code> of the contract.</li>
     <div class="section-example-container">
-        <pre class="python">open_interests.columns = [
-    Symbol.GetAlias(SecurityIdentifier.Parse(x), equity.Symbol)
-        for x in open_interests.columns]</pre>
+        <pre class="python">df.columns = [
+    Symbol.GetAlias(SecurityIdentifier.Parse(x), equity_symbol)
+        for x in df.columns]</pre>
     </div>
     <li>Call the <code>plot</code> method with a title.</li>
     <div class="section-example-container">
-        <pre class="python">open_interests.plot(title="Open Interest")</pre>
+        <pre class="python">df.plot(title="Open Interest")</pre>
     </div>
     <li>Call the <code>show</code> method.</li>
     <div class="section-example-container">
@@ -81,4 +81,4 @@
     <p>The Jupyter Notebook displays a line chart of open interest data.<br></p>
 </ol>
 
-<img class="python docs-image" src="https://cdn.quantconnect.com/i/tu/research-history-equity-options-openinterest-lineplot-2022.png" alt="line chart of open interest">
+<img class="python docs-image" src="https://cdn.quantconnect.com/i/tu/us-equity-option-research-plot-line-chart.jpg" alt="line chart of open interest">
