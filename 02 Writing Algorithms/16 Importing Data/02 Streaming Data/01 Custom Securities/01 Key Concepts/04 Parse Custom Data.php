@@ -112,7 +112,7 @@
 
         if isLiveMode:
             data = json.loads(line)
-            custom.EndTime =  datetime.utcnow().astimezone(timezone(str(config.ExchangeTimeZone))).replace(tzinfo=None)
+            custom.EndTime =  Extensions.ConvertFromUtc(datetime.utcnow(), config.ExchangeTimeZone)
             custom.Value = data["value"]
             return custom
 

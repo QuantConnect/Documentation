@@ -10,17 +10,3 @@ Date,Open,High,Low,Close,SharesTraded,Tur11er(Rs.Cr)
 2014-07-25,7828.2,7840.95,7748.6,7790.45,153936037,7827.61
 2014-07-28,7792.9,7799.9,7722.65,7748.7,116534670,6107.78
 </pre></div>
-
-<p>You can import data from local files, remote files, or REST endpoints.</p>
-
-<h4>Remote Files</h4>
-<p>The most common remote file providers to use are GitHub, Google Sheets, and Dropbox.</p>
-
-<h5>GitHub</h5>
-<?php echo file_get_contents(DOCS_RESOURCES."/datasets/custom-data/github.html"); ?>
-
-<h5>Google Sheets</h5>
-<?php echo file_get_contents(DOCS_RESOURCES."/datasets/custom-data/google-sheets.html"); ?>
-
-<h5>Dropbox</h5>
-<?php echo file_get_contents(DOCS_RESOURCES."/datasets/custom-data/dropbox.html"); ?>

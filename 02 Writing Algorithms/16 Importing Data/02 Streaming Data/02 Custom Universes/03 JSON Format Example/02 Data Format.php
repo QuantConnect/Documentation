@@ -19,14 +19,3 @@
       "Symbols": ["QQQ", "IWM", "FB", "BAC", "GOOGL"]
     }
 ]</pre></div>
-
-<p>You can import data from local files, remote files, or REST endpoints.</p>
-
-<h4>Remote Files</h4>
-<p>The most common remote file providers to use are GitHub and Dropbox. Google Sheets don't support exporting data in Json format.</p>
-
-<h5>GitHub</h5>
-<?php echo file_get_contents(DOCS_RESOURCES."/datasets/custom-data/github.html"); ?>
-
-<h5>Dropbox</h5>
-<?php echo file_get_contents(DOCS_RESOURCES."/datasets/custom-data/dropbox.html"); ?>

@@ -22,5 +22,5 @@
     def OnData(self, slice: Slice) -&gt; None:
         if slice.ContainsKey(self.symbol):
             custom_data = slice[self.symbol]
-            close = custom_data.GetProperty('close')</pre>
+            close = custom_data.Close</pre>
 </div>
