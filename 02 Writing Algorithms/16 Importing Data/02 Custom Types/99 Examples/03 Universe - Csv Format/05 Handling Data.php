@@ -1,26 +1,19 @@
-<p>As your filtered assets from your custom universe selection piped, LEAN adds their data points in the <code>Slice</code> that passes to your algorithm's <code>OnData</code> method.</p>
+<p>As your data reader reads your custom data file, LEAN adds the data points into a <code class="python">List[StockDataSource])</code><code class="csharp">IEnumerable&lt;StockDataSource&gt;</code> object it passes to your algorithm's filter function. Your filter function needs to return a list of <code>Symbol</code> or <code class="python">str</code><code class="csharp">string</code> object. LEAN automatically subscribes to these new symbols and adds them to your algorithm.<p>
 
 <div class="section-example-container">
-<pre class="csharp">public class MyAlgorithm : QCAlgorithm
+    <pre class="csharp">public class MyAlgorithm : QCAlgorithm
 {
-    public override void OnData(Slice slice)
+    private IEnumerable&lt;string&gt; FilterFunction(IEnumerable&lt;StockDataSource&gt; stockDataSource)
     {
-        if (slice.Bars.Count == 0) return;
-
-        var percentage = 1m / slice.Bars.Count;
-        foreach (var tradeBar in slice.Bars.Values)
-        {
-            Log($"{Time} :: {tradeBar.Symbol} :: {tradeBar.ToString}");
-            SetHoldings(tradeBar.Symbol, percentage);
-        }
+        return stockDataSource.SelectMany(x => x.Symbols);
     }
 }</pre>
-<pre class="python">class MyAlgorithm(QCAlgorithm):
-    def OnData(self, slice: Slice) -&gt; None:
-        if slice.Bars.Count == 0: return
-
-        percentage = 1 / slice.Bars.Count
-        for trade_bar in slice.Bars.Values:
-            self.Log(f"{self.Time} :: {trade_bar.Symbol} :: {trade_bar.ToString}")
-            self.SetHoldings(trade_bar.Symbol, percentage)</pre>
+    <pre class="python">class MyAlgorithm(QCAlgorithm):
+    def FilterFunction(self, data: List[StockDataSource]) -&gt; List[str]:
+        list = []
+        for item in data:
+            for symbol in item["Symbols"]:
+                list.append(symbol)
+        return list
+    </pre>
 </div>
