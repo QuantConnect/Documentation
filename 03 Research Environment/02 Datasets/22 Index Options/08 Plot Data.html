@@ -7,9 +7,9 @@
 <p class="python">Follow these steps to plot candlestick charts:</p>
 
 <ol class="python">
-    <li>Call the <code>History</code> method with an <code>OptionContract</code> <code>Symbol</code> and a <code>timedelta</code>.</li>
+    <li>Get some historical data.</li>
 	<div class="section-example-container">
-        <pre class="python">history = qb.History(contract_symbol, timedelta(1))</pre>
+        <pre class="python">history = qb.History(contract_symbol, datetime(2021, 12, 30), datetime(2021, 12, 31))</pre>
     </div>
     <li>Drop the first four index levels of <code>DataFrame</code> that returns.<br></li>
 	<div class="section-example-container">
@@ -19,7 +19,7 @@
     <div class="section-example-container">
         <pre class="python">import plotly.graph_objects as go</pre>
     </div>
-    <li>Call the <code>Candlestick</code> constructor with the timestamp and price series.</li>
+    <li>Create a <code>Candlestick</code>.</li>
     <div class="section-example-container">
         <pre class="python">candlestick = go.Candlestick(x=history.index,
                              open=history['open'],
@@ -27,14 +27,14 @@
                              low=history['low'],
                              close=history['close'])</pre>
     </div>
-    <li>Call the <code>Layout</code> constructor with some titles.</li>
+    <li>Create a <code>Layout</code>.</li>
     <div class="section-example-container">
         <pre class="python">layout = go.Layout(title=go.layout.Title(text=f'{symbol.Value} OHLC'),
                    xaxis_title='Date',
                    yaxis_title='Price',
                    xaxis_rangeslider_visible=False)</pre>
     </div>
-    <li>Call the <code>Figure</code> constructor with the <code>Candlestick</code> and <code>Layout</code>.</li>
+    <li>Create a&nbsp;<code>Figure</code>.</li>
     <div class="section-example-container">
         <pre class="python">fig = go.Figure(data=[candlestick], layout=layout)</pre>
     </div>
@@ -45,30 +45,30 @@
     <p>The Jupyter Notebook displays a candlestick chart of the Option contract's price.</p>
 </ol>
 
-<img class="python docs-image" src="https://cdn.quantconnect.com/i/tu/research-history-index-options-contract-candlestick-2022.png">
+<img class="python docs-image" src="https://cdn.quantconnect.com/i/tu/index-option-research-candlestick-chart.jpg">
 
 
 <h4 class="python">Line Chart</h4>
 <p class="python">Follow these steps to plot line charts using built-in methods:</p>
 
 <ol class="python">
-    <li>Call the <code>History</code> method with the <code>OpenInterest</code> class, <code>OptionContract</code> <code>Symbol</code>s, and a <code>timedelta</code>.</li>
+    <li>Get some historical data.</li>
     <div class="section-example-container">
-        <pre class="python">history = qb.History(OpenInterest, selected_symbols, timedelta(days=30))</pre>
+        <pre class="python">history = qb.History(OpenInterest, contract_symbol, datetime(2021, 12, 1), datetime(2021, 12, 31))</pre>
     </div>
-    <li>Drop the first three index levels of the returned <code>DataFrame</code>.</li>
+    <li>Drop the first three index levels of the <code>DataFrame</code> that returns.</li>
     <div class="section-example-container">
         <pre class="python">history.index = history.index.droplevel([0,1,2])</pre>
     </div>
-    <li>Select the open interest property, call the <code>unstack</code> method, then call the <code>ffill</code> method.</li>
+    <li>Select the open interest data.</li>
     <div class="section-example-container">
-        <pre class="python">open_interests = history['openinterest'].unstack(level=0).ffill()</pre>
+        <pre class="python">history = history['openinterest'].unstack(level=0).ffill()</pre>
     </div>
-	<li>Rename the columns to be the <code>Symbol</code> of each contract.</li>
+	<li>Rename the column to be the <code>Symbol</code> of each contract.</li>
     <div class="section-example-container">
-        <pre class="python">open_interests.columns = [
-    Symbol.GetAlias(SecurityIdentifier.Parse(x), index.Symbol)
-        for x in open_interests.columns]</pre>
+        <pre class="python">history.columns = [
+    Symbol.GetAlias(SecurityIdentifier.Parse(x), index_symbol)
+        for x in history.columns]</pre>
     </div>
     <li>Call the <code>plot</code> method with a title and figure size.</li>
     <div class="section-example-container">
@@ -81,4 +81,4 @@
     <p>The Jupyter Notebook displays a line chart of open interest data.</p>
 </ol>
 
-<img class="python docs-image" src="https://cdn.quantconnect.com/i/tu/research-history-index-options-openinterest-lineplot-2022.png">
+<img class="python docs-image" src="https://cdn.quantconnect.com/i/tu/index-option-research-line-chart.jpg">
