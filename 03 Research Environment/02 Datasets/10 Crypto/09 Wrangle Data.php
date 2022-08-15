@@ -4,7 +4,8 @@ $assetClass = 'Crypto';
 $singularAssetClass = 'Crypto pair';
 $pluralAssetClass = 'Crypto pairs';
 $historicalDataLink = "https://www.quantconnect.com/docs/v2/research-environment/datasets/crypto#04-Get-Historical-Data";
-$primarySymbol = 'btcusd';
+$primarySymbolPy = 'btcusd';
+$primarySymbolC = 'btcusd';
 $primaryTicker = 'BTCUSD';
 $secondarySymbol = 'ethusd';
 $dataFrameImages = array(
@@ -18,5 +19,5 @@ $columnNameEnglish = 'close';
 $supportsTrades = true;
 $supportsQuotes = true;
 $supportsTicks = true;
-$getWrangleDataText($assetClass, $singularAssetClass, $pluralAssetClass, $historicalDataLink, $primarySymbol, $primaryTicker, $secondarySymbol, $dataFrameImages, $dataFrameColumnName, $columnNameEnglish, $supportsTrades, $supportsQuotes, $supportsTicks);
+$getWrangleDataText($assetClass, $singularAssetClass, $pluralAssetClass, $historicalDataLink, $primarySymbolPy, $primarySymbolC, $primaryTicker, $secondarySymbol, $dataFrameImages, $dataFrameColumnName, $columnNameEnglish, $supportsTrades, $supportsQuotes, $supportsTicks);
 ?>

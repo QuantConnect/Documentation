@@ -4,7 +4,8 @@ $assetClass = 'dataset';
 $singularAssetClass = 'ticker';
 $pluralAssetClass = 'tickers';
 $historicalDataLink = "/docs/v2/research-environment/datasets/alternative-data#04-Get-Historical-Data";
-$primarySymbol = 'vix';
+$primarySymbolPy = 'vix';
+$primarySymbolC = 'vix';
 $primaryTicker = 'VIX';
 $secondarySymbol = 'v3m';
 $dataFrameImages = array(
@@ -19,5 +20,5 @@ $supportsTrades = false;
 $supportsQuotes = false;
 $supportsTicks = false;
 $supportsAltData = true;
-$getWrangleDataText($assetClass, $singularAssetClass, $pluralAssetClass, $historicalDataLink, $primarySymbol, $primaryTicker, $secondarySymbol, $dataFrameImages, $dataFrameColumnName, $columnNameEnglish, $supportsTrades, $supportsQuotes, $supportsTicks, $supportsAltData);
+$getWrangleDataText($assetClass, $singularAssetClass, $pluralAssetClass, $historicalDataLink, $primarySymbolPy, $primarySymbolC, $primaryTicker, $secondarySymbol, $dataFrameImages, $dataFrameColumnName, $columnNameEnglish, $supportsTrades, $supportsQuotes, $supportsTicks, $supportsAltData);
 ?>

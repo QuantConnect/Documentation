@@ -5,7 +5,8 @@ $assetClass = 'Forex';
 $singularAssetClass = 'Forex pair';
 $pluralAssetClass = 'Forex pairs';
 $historicalDataLink = "https://www.quantconnect.com/docs/v2/research-environment/datasets/forex#04-Get-Historical-Data";
-$primarySymbol = 'eurusd';
+$primarySymbolPy = 'eurusd';
+$primarySymbolC = 'eurusd';
 $primaryTicker = 'EURUSD';
 $secondarySymbol = 'gbpusd';
 $dataFrameImages = array(
@@ -19,7 +20,7 @@ $columnNameEnglish = 'close';
 $supportsTrades = false;
 $supportsQuotes = true;
 $supportsTicks = true;
-$getWrangleDataText($assetClass, $singularAssetClass, $pluralAssetClass, $historicalDataLink, $primarySymbol, $primaryTicker, $secondarySymbol, $dataFrameImages, $dataFrameColumnName, $columnNameEnglish, $supportsTrades, $supportsQuotes, $supportsTicks);
+$getWrangleDataText($assetClass, $singularAssetClass, $pluralAssetClass, $historicalDataLink, $primarySymbolPy, $primarySymbolC, $primaryTicker, $secondarySymbol, $dataFrameImages, $dataFrameColumnName, $columnNameEnglish, $supportsTrades, $supportsQuotes, $supportsTicks);
 ?>
 
 

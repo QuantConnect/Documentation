@@ -1,5 +1,5 @@
 <?php
-$getWrangleDataText = function($assetClass, $singularAssetClass, $pluralAssetClass, $historicalDataLink, $primarySymbol, $primaryTicker, $secondarySymbol, $dataFrameImages, $dataFrameColumnName, $columnNameEnglish, $supportsTrades, $supportsQuotes, $supportsTicks, $supportsAltData=false)
+$getWrangleDataText = function($assetClass, $singularAssetClass, $pluralAssetClass, $historicalDataLink, $primarySymbolPy, $primarySymbolC, $primaryTicker, $secondarySymbol, $dataFrameImages, $dataFrameColumnName, $columnNameEnglish, $supportsTrades, $supportsQuotes, $supportsTicks, $supportsAltData=false, $supportsOpenInterest=false, $supportsOptionHistory=false, $contractExpiryDate=NULL)
 {
     echo "
 <p class='python'>You need some <a href='{$historicalDataLink}'>historical data</a> to perform wrangling operations. The process to manipulate the historical data depends on its data type. To display <code>pandas</code> objects, run a cell in a notebook with the <code>pandas</code> object as the last line. To display other data formats, call the <code>print</code> method.</p>
@@ -7,7 +7,66 @@ $getWrangleDataText = function($assetClass, $singularAssetClass, $pluralAssetCla
 <p class='csharp'>You need some <a href='{$historicalDataLink}'>historical data</a> to perform wrangling operations. Use LINQ to wrangle the data and then call the <code>Console.WriteLine</code> method in a Jupyter Notebook to display the data. The process to manipulate the historical data depends on its data type.</p>
 
 <h4 class='python'>DataFrame Objects</h4>
+";
 
+    if ($supportsOptionHistory)
+    {
+        echo "
+<p class='python'>If your history request returns a <code>DataFrame</code>, the <code>DataFrame</code> has the following index levels:</p>
+<ol class='python'>
+    <li>Contract expiry</li>
+    <li>Contract strike price</li>
+    <li>Contract type (call or put)</li>
+    <li>Contract <code>Symbol</code></li>
+    <li>The <code>EndTime</code> of the data sample</li>
+</ol>
+<p class='python'>The columns of the <code>DataFrame</code> are the data properties. Depending on how you request data, the <code>DataFrame</code> may contain data for the underlying security, which causes the first 3 index levels to be an empty string for the corresponding rows.</p>
+<img class='python docs-image' src='{$dataFrameImages[0]}'>
+
+<p class='python'>To select the rows of the contract(s) that expiry on a specific day, index the <code>loc</code> property of the <code>DataFrame</code> with the expiry date.</p>
+<div class='python section-example-container'>
+<pre class='python'>all_history_df.loc[{$contractExpiryDate}]</pre>
+</div>
+<img class='python docs-image' src='{$dataFrameImages[1]}'>
+
+<p class='python'>If you remove the first three index levels, you can index the <code>DataFrame</code> with just the contract <code>Symbol</code>, similiar to how you would with non-deriviate asset classes. To remove the first three index levels, call the <a href='https://pandas.pydata.org/docs/reference/api/pandas.Index.droplevel.html' rel='nofollow' target='_blank'>droplevel</a> method.</p>
+<div class='python section-example-container'>
+<pre class='python'>all_history_df.index = all_history_df.index.droplevel([0,1,2])</pre>
+</div>
+<img class='python docs-image' src='{$dataFrameImages[2]}'>
+
+<p class='python'>To select the historical data of a single {$assetClass} contract, index the <code>loc</code> property of the <code>DataFrame</code> with the contract <code>Symbol</code>.</p>
+
+<div class='python section-example-container'>
+<pre class='python'>all_history_df.loc[{$primarySymbolPy}]
+</pre>
+</div>
+
+<img class='python docs-image' src='{$dataFrameImages[3]}' alt='DataFrame of one {$assetClass}'>
+
+<p class='python'>To select a column of the <code>DataFrame</code>, index it with the column name.</p>
+
+<div class='python section-example-container'>
+<pre class='python'>all_history_df.loc[{$primarySymbolPy}]['{$dataFrameColumnName}']
+</pre>
+</div>
+
+<img class='python docs-image' src='{$dataFrameImages[4]}' alt='Series of {$dataFrameColumnName} values'>
+
+<p class='python'>If you request historical data for multiple {$pluralAssetClass}, you can transform the <code>DataFrame</code> so that it's a time series of {$columnNameEnglish} values for all of the {$pluralAssetClass}. To transform the <code>DataFrame</code>, select the column you want to display for each {$singularAssetClass} and then call the <a href='https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.unstack.html' rel='nofollow' target='_blank'>unstack</a> method.</p>
+
+<div class='section-example-container python'>
+    <pre class='python'>all_history_df['{$dataFrameColumnName}'].unstack(level=0)</pre>
+</div>
+
+<p class='python'>The <code>DataFrame</code> is transformed so that the column indices are the <code>Symbol</code> of each security and each row contains the {$columnNameEnglish} value.</p>
+
+<img class='python docs-image' src='{$dataFrameImages[5]}'>
+    ";
+    }
+    else 
+    {
+        echo "
 <p class='python'>If the <code>History</code> method returns a <code>DataFrame</code>, the first level of the <code>DataFrame</code> index is the {$assetClass} <code>Symbol</code> and the second level is the <code>EndTime</code> of the data sample. The columns of the <code>DataFrame</code> are the data properties.</p>
 
 <img class='python docs-image' src='{$dataFrameImages[0]}' alt='DataFrame of two {$pluralAssetClass}'>
@@ -15,7 +74,7 @@ $getWrangleDataText = function($assetClass, $singularAssetClass, $pluralAssetCla
 <p class='python'>To select the historical data of a single {$assetClass}, index the <code>loc</code> property of the <code>DataFrame</code> with the {$assetClass} <code>Symbol</code>.</p>
 
 <div class='python section-example-container'>
-<pre class='python'>all_history_df.loc[{$primarySymbol}]  # or all_history_df.loc['{$primaryTicker}']
+<pre class='python'>all_history_df.loc[{$primarySymbolPy}]  # or all_history_df.loc['{$primaryTicker}']
 </pre>
 </div>
 
@@ -24,7 +83,7 @@ $getWrangleDataText = function($assetClass, $singularAssetClass, $pluralAssetCla
 <p class='python'>To select a column of the <code>DataFrame</code>, index it with the column name.</p>
 
 <div class='python section-example-container'>
-<pre class='python'>all_history_df.loc[{$primarySymbol}]['{$dataFrameColumnName}']
+<pre class='python'>all_history_df.loc[{$primarySymbolPy}]['{$dataFrameColumnName}']
 </pre>
 </div>
 
@@ -40,6 +99,7 @@ $getWrangleDataText = function($assetClass, $singularAssetClass, $pluralAssetCla
 
 <img class='python docs-image' src='{$dataFrameImages[3]}'>
 ";
+    }
 
     if ($assetClass == "Equity")
     {
@@ -80,27 +140,27 @@ $getWrangleDataText = function($assetClass, $singularAssetClass, $pluralAssetCla
     if ($supportsAltData)
     {
         echo "
-    if (slice.ContainsKey({$primarySymbol}))
+    if (slice.ContainsKey({$primarySymbolC}))
     {
-        var data = slice[{$primarySymbol}];
+        var data = slice[{$primarySymbolC}];
     }";        
     }
 
     if ($supportsTrades)
     {
         echo "
-    if (slice.Bars.ContainsKey({$primarySymbol}))
+    if (slice.Bars.ContainsKey({$primarySymbolC}))
     {
-        var tradeBar = slice.Bars[{$primarySymbol}];
+        var tradeBar = slice.Bars[{$primarySymbolC}];
     }";
     }
 
     if ($supportsQuotes)
     {
         echo "
-    if (slice.QuoteBars.ContainsKey({$primarySymbol}))
+    if (slice.QuoteBars.ContainsKey({$primarySymbolC}))
     {
-        var quoteBar = slice.QuoteBars[{$primarySymbol}];
+        var quoteBar = slice.QuoteBars[{$primarySymbolC}];
     }";
     }
 
@@ -111,22 +171,22 @@ $getWrangleDataText = function($assetClass, $singularAssetClass, $pluralAssetCla
     if ($supportsAltData)
     {
         echo "
-    if slice.ContainsKey({$primarySymbol}):
-        data = slice[{$primarySymbol}]";
+    if slice.ContainsKey({$primarySymbolPy}):
+        data = slice[{$primarySymbolPy}]";
     }
 
     if ($supportsTrades)
     {
         echo "
-    if slice.Bars.ContainsKey({$primarySymbol}):
-        trade_bar = slice.Bars[{$primarySymbol}]";
+    if slice.Bars.ContainsKey({$primarySymbolPy}):
+        trade_bar = slice.Bars[{$primarySymbolPy}]";
     }
 
     if ($supportsQuotes)
     {
         echo "
-    if slice.QuoteBars.ContainsKey({$primarySymbol}):
-        quote_bar = slice.QuoteBars[{$primarySymbol}]";
+    if slice.QuoteBars.ContainsKey({$primarySymbolPy}):
+        quote_bar = slice.QuoteBars[{$primarySymbolPy}]";
     }
 
     echo "</pre>
@@ -216,14 +276,14 @@ $getWrangleDataText = function($assetClass, $singularAssetClass, $pluralAssetCla
 <div class='section-example-container'>
 <pre class='csharp'>foreach (var tradeBars in allHistoryTradeBars)
 {
-    if (tradeBars.ContainsKey({$primarySymbol}))
+    if (tradeBars.ContainsKey({$primarySymbolC}))
     {
-        var tradeBar = tradeBars[{$primarySymbol}];
+        var tradeBar = tradeBars[{$primarySymbolC}];
     }
 }</pre>
 <pre class='python'>for trade_bars in all_history_trade_bars:
-    if trade_bars.ContainsKey({$primarySymbol}):
-        trade_bar = trade_bars[{$primarySymbol}]</pre>
+    if trade_bars.ContainsKey({$primarySymbolPy}):
+        trade_bar = trade_bars[{$primarySymbolPy}]</pre>
 </div>
 
 <p>You can also iterate through each of the <code>TradeBars</code>.</p>
@@ -266,14 +326,14 @@ $getWrangleDataText = function($assetClass, $singularAssetClass, $pluralAssetCla
 <div class='section-example-container'>
 <pre class='csharp'>foreach (var quoteBars in allHistoryQuoteBars)
 {
-    if (quoteBars.ContainsKey({$primarySymbol}))
+    if (quoteBars.ContainsKey({$primarySymbolC}))
     {
-        var quoteBar = quoteBars[{$primarySymbol}];
+        var quoteBar = quoteBars[{$primarySymbolC}];
     }
 }</pre>
 <pre class='python'>for quote_bars in all_history_quote_bars:
-    if quote_bars.ContainsKey({$primarySymbol}):
-        quote_bar = quote_bars[{$primarySymbol}]</pre>
+    if quote_bars.ContainsKey({$primarySymbolPy}):
+        quote_bar = quote_bars[{$primarySymbolPy}]</pre>
 </div>
 
 <p>You can also iterate through each of the <code>QuoteBars</code>.</p>
@@ -315,14 +375,14 @@ $getWrangleDataText = function($assetClass, $singularAssetClass, $pluralAssetCla
 <div class='section-example-container'>
 <pre class='csharp'>foreach (var ticks in allHistoryTicks)
 {
-    if (ticks.ContainsKey({$primarySymbol}))
+    if (ticks.ContainsKey({$primarySymbolC}))
     {
-        var tick = ticks[{$primarySymbol}];
+        var tick = ticks[{$primarySymbolC}];
     }
 }</pre>
 <pre class='python'>for ticks in all_history_ticks:
-    if ticks.ContainsKey({$primarySymbol}):
-        ticks = ticks[{$primarySymbol}]</pre>
+    if ticks.ContainsKey({$primarySymbolPy}):
+        ticks = ticks[{$primarySymbolPy}]</pre>
 </div>
 
 <p>You can also iterate through each of the <code>Ticks</code>.</p>
@@ -343,6 +403,78 @@ $getWrangleDataText = function($assetClass, $singularAssetClass, $pluralAssetCla
 </div>
 ";
     }
+
+    if ($supportsOpenInterest)
+    {
+        echo "
+<h4>OpenInterest Objects</h4>
+<p>If the <code>History</code> method returns <code>OpenInterest</code> objects, iterate through the <code>OpenInterest</code> objects to get each one.</p>
+<div class='section-example-container'>
+<pre class='csharp'>foreach (var openInterest in singleHistoryOpenInterest)
+{
+    Console.WriteLine(openInterest);
+}</pre>
+<pre class='python'>for open_interest in single_history_open_interest:
+    print(open_interest)</pre>
+</div>
+
+<p>If the <code>History</code> method returns a dictionary of <code>OpenInterest</code> objects, iterate through the dictionary to get the <code>OpenInterest</code> of each {$singularAssetClass}. The dictionary of <code>OpenInterest</code> objects may not have data for all of your {$assetClass} contract subscriptions. To avoid issues, check if the dictionary contains data for your contract before you index it with the {$assetClass} contract <code>Symbol</code>.</p>
+
+<div class='section-example-container'>
+<pre class='csharp'>foreach (var openInterestDict in allHistoryOpenInterest)
+{
+    if (openInterestDict.ContainsKey({$primarySymbolC}))
+    {
+        var openInterest = openInterestDict[{$primarySymbolC}];
+    }
+}</pre>
+<pre class='python'>for open_interest_dict in all_history_open_interest:
+    if open_interest_dict.ContainsKey({$primarySymbolPy}):
+        open_interest = open_interest_dict[{$primarySymbolPy}]</pre>
+</div>
+
+<p>You can also iterate through each of the <code>OpenInterest</code> dictionaries.</p>
+
+<div class='section-example-container'>
+<pre class='csharp'>foreach (var openInterestDict in allHistoryOpenInterest)
+{
+    foreach (var kvp in openInterestDict)
+    {
+        var symbol = kvp.Key;
+        var openInterest = kvp.Value;
+    }
+}</pre>
+<pre class='python'>for open_interest_dict in all_history_open_interest:
+    for kvp in open_interest_dict:
+        symbol = kvp.Key
+        open_interest = kvp.Value/pre>
+</div>
+";        
+    }
+
+
+    if ($supportsOptionHistory)
+    {
+        echo "
+<h4 class='python'>OptionHistory Objects</h4>
+<p class='python'>The <code>GetOptionHistory</code> method returns an <code>OptionHistory</code> object. To convert the <code>OptionHistory</code> object to a <code>DataFrame</code> that contains the trade and quote information of each contract and the underlying, call the <code>GetAllData</code> method.</p>
+<div class='python section-example-container'>
+<pre class='python'>option_history.GetAllData()</pre>
+</div>
+
+<p class='python'>To get the expiration dates of all the contracts in an <code>OptionHistory</code> object, call the <code>GetExpiryDates</code> method.</p>
+<div class='python section-example-container'>
+<pre class='python'>option_history.GetExpiryDates()</pre>
+</div>
+
+<p class='python'>To get the strike prices of all the contracts in an <code>OptionHistory</code> object, call the <code>GetStrikes</code> method.</p>
+<div class='python section-example-container'>
+<pre class='python'>option_history.GetStrikes()</pre>
+</div>
+";
+    }
 }
+
+
 
 ?>

@@ -4,7 +4,8 @@ $assetClass = 'CFD';
 $singularAssetClass = 'CFD contract';
 $pluralAssetClass = 'CFD contracts';
 $historicalDataLink = "https://www.quantconnect.com/docs/v2/research-environment/datasets/cfd#04-Get-Historical-Data";
-$primarySymbol = 'spx';
+$primarySymbolPy = 'spx';
+$primarySymbolC = 'spx';
 $primaryTicker = 'SPX500USD';
 $secondarySymbol = 'usb';
 $dataFrameImages = array(
@@ -18,5 +19,5 @@ $columnNameEnglish = 'close';
 $supportsTrades = false;
 $supportsQuotes = true;
 $supportsTicks = true;
-$getWrangleDataText($assetClass, $singularAssetClass, $pluralAssetClass, $historicalDataLink, $primarySymbol, $primaryTicker, $secondarySymbol, $dataFrameImages, $dataFrameColumnName, $columnNameEnglish, $supportsTrades, $supportsQuotes, $supportsTicks);
+$getWrangleDataText($assetClass, $singularAssetClass, $pluralAssetClass, $historicalDataLink, $primarySymbolPy, $primarySymbolC, $primaryTicker, $secondarySymbol, $dataFrameImages, $dataFrameColumnName, $columnNameEnglish, $supportsTrades, $supportsQuotes, $supportsTicks);
 ?>
