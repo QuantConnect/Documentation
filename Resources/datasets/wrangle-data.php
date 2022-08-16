@@ -1,5 +1,5 @@
 <?php
-$getWrangleDataText = function($assetClass, $singularAssetClass, $pluralAssetClass, $historicalDataLink, $primarySymbolPy, $primarySymbolC, $primaryTicker, $secondarySymbol, $dataFrameImages, $dataFrameColumnName, $columnNameEnglish, $supportsTrades, $supportsQuotes, $supportsTicks, $supportsAltData=false, $supportsOpenInterest=false, $supportsOptionHistory=false, $contractExpiryDate=NULL)
+$getWrangleDataText = function($assetClass, $singularAssetClass, $pluralAssetClass, $historicalDataLink, $primarySymbolPy, $primarySymbolC, $primaryTicker, $secondarySymbol, $dataFrameImages, $dataFrameColumnName, $columnNameEnglish, $supportsTrades, $supportsQuotes, $supportsTicks, $supportsAltData, $supportsOpenInterest, $supportsOptionHistory, $supportsFutureHistory, $contractExpiryDate)
 {
     echo "
 <p class='python'>You need some <a href='{$historicalDataLink}'>historical data</a> to perform wrangling operations. The process to manipulate the historical data depends on its data type. To display <code>pandas</code> objects, run a cell in a notebook with the <code>pandas</code> object as the last line. To display other data formats, call the <code>print</code> method.</p>
@@ -9,30 +9,69 @@ $getWrangleDataText = function($assetClass, $singularAssetClass, $pluralAssetCla
 <h4 class='python'>DataFrame Objects</h4>
 ";
 
-    if ($supportsOptionHistory)
+    if ($supportsOptionHistory || $supportsFutureHistory)
     {
         echo "
 <p class='python'>If your history request returns a <code>DataFrame</code>, the <code>DataFrame</code> has the following index levels:</p>
 <ol class='python'>
     <li>Contract expiry</li>
+        ";
+
+        if ($supportsOptionHistory)
+        {
+            echo "
     <li>Contract strike price</li>
     <li>Contract type (call or put)</li>
+            ";
+        }
+        echo "
     <li>Contract <code>Symbol</code></li>
     <li>The <code>EndTime</code> of the data sample</li>
 </ol>
+        ";
+
+        if ($supportsOptionHistory)
+        {
+            echo "
 <p class='python'>The columns of the <code>DataFrame</code> are the data properties. Depending on how you request data, the <code>DataFrame</code> may contain data for the underlying security, which causes the first 3 index levels to be an empty string for the corresponding rows.</p>
+            ";
+        }
+        else 
+        {
+            echo "
+<p class='python'>The columns of the <code>DataFrame</code> are the data properties. Depending on how you request data, the <code>DataFrame</code> may contain data for the continuous Futures contract, which has an expiry date before the year 1900.</p>
+            ";
+        }
+        echo "
 <img class='python docs-image' src='{$dataFrameImages[0]}'>
 
-<p class='python'>To select the rows of the contract(s) that expire on a specific day, index the <code>loc</code> property of the <code>DataFrame</code> with the expiry date.</p>
+<p class='python'>To select the rows of the contract(s) that expire at a specific time, index the <code>loc</code> property of the <code>DataFrame</code> with the expiry time.</p>
 <div class='python section-example-container'>
 <pre class='python'>all_history_df.loc[{$contractExpiryDate}]</pre>
 </div>
 <img class='python docs-image' src='{$dataFrameImages[1]}'>
+        ";
 
+        if ($supportsOptionHistory)
+        {
+            echo "
 <p class='python'>If you remove the first three index levels, you can index the <code>DataFrame</code> with just the contract <code>Symbol</code>, similiar to how you would with non-derivative asset classes. To remove the first three index levels, call the <a href='https://pandas.pydata.org/docs/reference/api/pandas.Index.droplevel.html' rel='nofollow' target='_blank'>droplevel</a> method.</p>
 <div class='python section-example-container'>
 <pre class='python'>all_history_df.index = all_history_df.index.droplevel([0,1,2])</pre>
 </div>
+            ";
+        }
+        else
+        {
+            echo "
+<p class='python'>If you remove the first index level, you can index the <code>DataFrame</code> with just the contract <code>Symbol</code>, similiar to how you would with non-derivative asset classes. To remove the first index level, call the <a href='https://pandas.pydata.org/docs/reference/api/pandas.Index.droplevel.html' rel='nofollow' target='_blank'>droplevel</a> method.</p>
+<div class='python section-example-container'>
+<pre class='python'>all_history_df.index = all_history_df.index.droplevel(0)</pre>
+</div>
+            ";
+        }
+
+        echo "
 <img class='python docs-image' src='{$dataFrameImages[2]}'>
 
 <p class='python'>To select the historical data of a single {$assetClass} contract, index the <code>loc</code> property of the <code>DataFrame</code> with the contract <code>Symbol</code>.</p>
@@ -62,9 +101,9 @@ $getWrangleDataText = function($assetClass, $singularAssetClass, $pluralAssetCla
 <p class='python'>The <code>DataFrame</code> is transformed so that the column indices are the <code>Symbol</code> of each security and each row contains the {$columnNameEnglish} value.</p>
 
 <img class='python docs-image' src='{$dataFrameImages[5]}'>
-    ";
+        ";
     }
-    else 
+    else
     {
         echo "
 <p class='python'>If the <code>History</code> method returns a <code>DataFrame</code>, the first level of the <code>DataFrame</code> index is the {$assetClass} <code>Symbol</code> and the second level is the <code>EndTime</code> of the data sample. The columns of the <code>DataFrame</code> are the data properties.</p>
