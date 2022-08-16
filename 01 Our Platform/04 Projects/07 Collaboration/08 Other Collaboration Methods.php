@@ -2,7 +2,7 @@
 
 <h4>Clone Projects</h4>
 <?php echo file_get_contents(DOCS_RESOURCES."/ide/clone-projects.html"); ?>
-<p>To clone projects, <a href="/docs/v2/our-platform/projects/project-management#02-View-All-Projects">open the project</a> you want to clone and then, in the Project panel, click <span class="button-name">Clone</span>. "Project cloned successfully" displays.</p>
+<p>To clone projects, <a href="/docs/v2/our-platform/projects/getting-started#02-View-All-Projects">open the project</a> you want to clone and then, in the Project panel, click <span class="button-name">Clone</span>. "Project cloned successfully" displays.</p>
 
 <h4>Share Projects</h4>
 <p><a href="/docs/v2/our-platform/backtesting/deployment#08-Run-Backtests">Run a backtest</a> and then <a href="/docs/v2/our-platform/backtesting/results#14-Share-Results">make the backtest results public</a> to share a project. Once a backtest is made public, a link is generated for you that opens the backtest results and the project files. You can directly give the link to others, attach the backtest to a forum discussion, or embed the backtest into a website. However, note that when you make a backtest public, the project files are accessible to anyone who visits the link, even after you delete the project. As a result, we don't recommend collaborating on projects by making backtests public and sharing the link with your collaborators. Instead, add team members to your project since it protects your intellectual property.</p>
@@ -21,7 +21,7 @@
 
 <p>Follow these steps to migrate projects:</p>
 <ol>
-    <li><a href="/docs/v2/our-platform/projects/project-management#02-View-All-Projects">Open the project</a> you want to migrate.</li>
+    <li><a href="/docs/v2/our-platform/projects/getting-started#02-View-All-Projects">Open the project</a> you want to migrate.</li>
     <li>In the Project panel, click <span class="button-name">Migrate</span>.</li>
     <li>Click the name of the organization to which you want to migrate the project and then click <span class="button-name">Migrate</span>.</li>
     <p>The top navigation bar displays <span class="button-name">Connected as: <span class="placeholder-text">theOrganizationYouMigratedTo</span></span>.</p>
