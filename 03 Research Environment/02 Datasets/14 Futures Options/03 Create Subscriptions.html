@@ -15,13 +15,13 @@ using QuantConnect.Securities.Future;
 using QuantConnect.Research;</pre>
     </div>
 
-    <li>Instantiate a <code>QuantBook</code>.</li>
+    <li>Create a <code>QuantBook</code>.</li>
     <div class="section-example-container">
         <pre class="csharp">var qb = new QuantBook();</pre>
         <pre class="python">qb = QuantBook()</pre>
     </div>
 
-    <li>Call the <code>AddFuture</code> method with a ticker, resolution, and contract rollover settings.</li>
+    <li>Call the <code>AddFuture</code> method with a ticker and resolution.</li>
     <div class="section-example-container">
         <pre class="csharp">var future = qb.AddFuture(Futures.Indices.SP500EMini, Resolution.Minute);</pre>
         <pre class="python">future = qb.AddFuture(Futures.Indices.SP500EMini, Resolution.Minute)</pre>
@@ -48,8 +48,7 @@ future_symbols = qb.FutureChainProvider.GetFutureContractList(future.Symbol, sta
 	<p>For example, select the  <code>Symbol</code> of the contract with the closest expiry.<br></p>
 	<div class="section-example-container">
 		<pre class="csharp">var futureContractSymbol = futureSymbols.OrderBy(s =&gt; s.ID.Date).FirstOrDefault();
-qb.AddFutureContract(futureContractSymbol, fillDataForward: false);
-        </pre>
+qb.AddFutureContract(futureContractSymbol, fillDataForward: false);<br></pre>
 		<pre class="python">future_contract_symbol = sorted(future_symbols, key=lambda s: s.ID.Date)[0]
 qb.AddFutureContract(future_contract_symbol, fillDataForward = False)</pre>
 	</div>
@@ -64,7 +63,7 @@ qb.AddFutureContract(future_contract_symbol, fillDataForward = False)</pre>
     <li>Select the Symbol of the <code>OptionContract</code>(s) for which you want to get historical data.</li>
     <p class="python">For example, select an arbitrary <code>Symbol</code>.</p>
 	<div class="section-example-container">
-		<pre class="csharp">symbols.OrderBy(s => Math.Abs(s.ID.StrikePrice - qb.Securities[s.Underlying].Price)).FirstOrDefault();</pre>
+		<pre class="csharp">symbols.OrderBy(s =&gt; Math.Abs(s.ID.StrikePrice - qb.Securities[s.Underlying].Price)).FirstOrDefault();</pre>
 		<pre class="python">contract_symbol = symbols[-1]</pre>
 	</div>
 
