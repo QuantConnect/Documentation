@@ -14,50 +14,66 @@ using QuantConnect.Securities;
 using QuantConnect.Securities.Future;
 using QuantConnect.Research;</pre>
     </div>
-    <li>Instantiate a <code>QuantBook</code>.</li>
+    <li>Create a <code>QuantBook</code>.</li>
     <div class="section-example-container">
         <pre class="csharp">var qb = new QuantBook();</pre>
         <pre class="python">qb = QuantBook()</pre>
     </div>
-    <li>Call the <code>AddFuture</code> method with a ticker, resolution, and contract rollover settings.</li>
+    <li>Call the <code>AddFuture</code> method with a ticker, resolution, and <a href="/docs/v2/writing-algorithms/universes/futures#12-Continous-Contracts">contract rollover settings</a>.</li>
     <div class="section-example-container">
         <pre class="csharp">var future = qb.AddFuture(Futures.Indices.SP500EMini, Resolution.Minute,
                 dataNormalizationMode: DataNormalizationMode.BackwardsRatio,
                 dataMappingMode: DataMappingMode.LastTradingDay,
-                contractDepthOffset: 0
-            );</pre>
+                contractDepthOffset: 0);</pre>
         <pre class="python">future = qb.AddFuture(Futures.Indices.SP500EMini, Resolution.Minute,
                 dataNormalizationMode = DataNormalizationMode.BackwardsRatio,
                 dataMappingMode = DataMappingMode.LastTradingDay,
                 contractDepthOffset = 0)</pre>
     </div>
-    <p>If you do not pass a resolution argument, <code>Resolution.Minute</code> is used by default. If you do not pass rollover setting arguments, the default values of <code>dataNormalizationMode</code>, <code>dataMappingMode</code>, and <code>contractDepthOffset </code> are <code>DataNormalizationMode.Adjusted</code>, <code>DataMappingMode.OpenInterest</code>, and 0, respectively.</p>
-    <li>Save a reference to the Future <code>Symbol</code>.</li>
-    <div class="section-example-container">
-        <pre class="csharp">var symbol = future.Symbol;</pre>
-        <pre class="python">symbol = future.Symbol</pre>
-    </div>
-    <p>The Future <code>Symbol</code> references the continuous contract.</p>
-    <li><i>(Optional)</i> Call the <code>SetFilter</code> method with a specified expiration range value.</li>
+    <p>If you do not pass a resolution argument, <code>Resolution.Minute</code> is used by default. If you do not pass rollover setting arguments, see the following table for the default values:</p>
+    <table class="qc-table table" id="resolution-and-data-formats">
+        <thead>
+            <tr>
+                <th>Argument</th>
+                <th>Default Value</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><code>dataNormalizationMode</code></td>
+                <td><code>DataNormalizationMode.Adjusted</code></td>
+            </tr>
+            <tr>
+                <td><code>dataMappingMode</code></td>
+                <td><code>DataMappingMode.OpenInterest</code></td>
+            </tr>
+            <tr>
+                <td><code>contractDepthOffset</code></td>
+                <td>0</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <li><i>(Optional)</i> Call the <code>SetFilter</code> method with a contract expiration range values.</li>
     <div class="section-example-container">
         <pre class="csharp">future.SetFilter(0, 90);</pre>
         <pre class="python">future.SetFilter(0, 90)</pre>
     </div>
-    <p>If you don't call the <code>SetFilter</code> method, the <code>GetFutureHistory</code> method will not return historical data.</p>
+    <p>If you don't call the <code>SetFilter</code> method, the <code>GetFutureHistory</code> method won't return historical data.</p>
 </ol>
 
-<p>If you want historical data on individual contracts and their <code>OpenInterest</code>, you need to subscribe to the individual contracts. You need to subscribe to the underlying <code>Future</code> before you can subscribe to its contracts. Follow these steps to subscribe to individual Future contracts:</p>
+<p>If you want historical data on individual contracts and their <code>OpenInterest</code>, follow these steps to subscribe to individual Future contracts:</p>
 <ol>
   <li>Call the <code>GetFuturesContractList</code> method with the underlying <code>Future</code> <code>Symbol</code> and a <code class="python">datetime</code><code class="csharp">DateTime</code>.</li>
 	<div class="section-example-container">
 		<pre class="csharp">var startDate = new DateTime(2021,12,20);
-var symbols = qb.FutureChainProvider.GetFutureContractList(symbol, startDate);</pre>
+var symbols = qb.FutureChainProvider.GetFutureContractList(future.Symbol, startDate);</pre>
 		<pre class="python">start_date = datetime(2021,12,20)
-symbols = qb.FutureChainProvider.GetFutureContractList(symbol, start_date)</pre>
+symbols = qb.FutureChainProvider.GetFutureContractList(future.Symbol, start_date)</pre>
 	</div>
-	<p>The call returns a list of <code>Symbol</code>s that reference the <code>FutureContract</code>s that were trading at the given time.</p>
-	<li>Select the <code>Symbol</code> of the <code>FutureContract</code>(s) for which you want to get historical data.</li>
-	<p>For example, select the  <code>Symbol</code> of the contract with the closest expiry to match the continuous Future defined above.<br></p>
+	<p>This method returns a list of <code>Symbol</code>&nbsp;objects that reference the Future contracts&nbsp;that were trading at the given time.</p>
+	<li>Select the <code>Symbol</code> of the <code>FutureContract</code>&nbsp;object(s) for which you want to get historical data.</li>
+	<p>For example, select the  <code>Symbol</code> of the contract with the closest expiry to match the continuous Future defined in the preceding steps.<br></p>
 	<div class="section-example-container">
 		<pre class="csharp">var contractSymbol = symbols.OrderBy(s =&gt; s.ID.Date).FirstOrDefault();</pre>
 		<pre class="python">contract_symbol = sorted(symbols, key=lambda s: s.ID.Date)[0]</pre>
