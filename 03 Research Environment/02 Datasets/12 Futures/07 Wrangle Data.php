@@ -9,12 +9,12 @@ $primarySymbolC = 'contractSymbol';
 $primaryTicker = '';
 $secondarySymbol = '';
 $dataFrameImages = array(
-    'https://cdn.quantconnect.com/i/tu/future-research-data-1.jpg',
-    'https://cdn.quantconnect.com/i/tu/future-research-data-2.jpg',
-    'https://cdn.quantconnect.com/i/tu/future-research-data-3.jpg',
-    'https://cdn.quantconnect.com/i/tu/future-research-data-4.jpg',
-    'https://cdn.quantconnect.com/i/tu/future-research-data-5.jpg',
-    'https://cdn.quantconnect.com/i/tu/future-research-data-6.jpg'
+    'https://cdn.quantconnect.com/i/tu/futures-research-data-1.jpg',
+    'https://cdn.quantconnect.com/i/tu/futures-research-data-2.jpg',
+    'https://cdn.quantconnect.com/i/tu/futures-research-data-3.jpg',
+    'https://cdn.quantconnect.com/i/tu/futures-research-data-4.jpg',
+    'https://cdn.quantconnect.com/i/tu/futures-research-data-5.jpg',
+    'https://cdn.quantconnect.com/i/tu/futures-research-data-6.jpg'
 );
 $dataFrameColumnName = 'close';
 $columnNameEnglish = 'close';
