@@ -1,5 +1,5 @@
 <?php
-    echo "<p>QuantConnect enables you to run your algorithms in live mode with real-time market data. Deploy your algorithms using QuantConnect because our infrastructure is battle-tested. We have successfully hosted more than ";
+    echo "<p>A live algorithm is an algorithm that trades in real-time with real market data. QuantConnect enables you to run your algorithms in live mode with real-time market data. Deploy your algorithms using QuantConnect because our infrastructure is battle-tested. We have successfully hosted more than ";
     echo file_get_contents(DOCS_RESOURCES."/kpis/live-algorithms-count.php");
     echo " live algorithms and have had more than ";
     echo file_get_contents(DOCS_RESOURCES."/kpis/volume-traded.php");
