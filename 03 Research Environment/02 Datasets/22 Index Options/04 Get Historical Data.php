@@ -1,7 +1,8 @@
 <?php
-include(DOCS_RESOURCES."/datasets/research-environment/get-historical-options-data.php");
+include(DOCS_RESOURCES."/datasets/research-environment/get-historical-data.php");
 $createSubscriptionsLink = "/docs/v2/research-environment/datasets/index-options#03-Create-Subscriptions";
-$optionType = "Index";
+$assetClass = "Index Option";
 $underlyingSymbolVariable = "index_symbol";
-$getHistoricalDataText($createSubscriptionsLink, $optionType, $underlyingSymbolVariable);
+$underlyingAssetClass = "Index";
+$getHistoricalDataText($createSubscriptionsLink, $assetClass, $underlyingSymbolVariable, $underlyingAssetClass);
 ?>

@@ -19,6 +19,11 @@ $columnNameEnglish = 'close';
 $supportsTrades = true;
 $supportsQuotes = false;
 $supportsTicks = true;
-$getWrangleDataText($assetClass, $singularAssetClass, $pluralAssetClass, $historicalDataLink, $primarySymbolPy, $primarySymbolC, $primaryTicker, $secondarySymbol, $dataFrameImages, $dataFrameColumnName, $columnNameEnglish, $supportsTrades, $supportsQuotes, $supportsTicks);
+$supportsAltData = false;
+$supportsOpenInterest = false;
+$supportsOptionHistory = false;
+$supportsFutureHistory = false;
+$contractExpiryDate = '';
+$getWrangleDataText($assetClass, $singularAssetClass, $pluralAssetClass, $historicalDataLink, $primarySymbolPy, $primarySymbolC, $primaryTicker, $secondarySymbol, $dataFrameImages, $dataFrameColumnName, $columnNameEnglish, $supportsTrades, $supportsQuotes, $supportsTicks, $supportsAltData, $supportsOpenInterest, $supportsOptionHistory, $supportsFutureHistory, $contractExpiryDate);
 ?>
 

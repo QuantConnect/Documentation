@@ -1,7 +1,8 @@
 <?php
-include(DOCS_RESOURCES."/datasets/research-environment/get-historical-options-data.php");
+include(DOCS_RESOURCES."/datasets/research-environment/get-historical-data.php");
 $createSubscriptionsLink = "/docs/v2/research-environment/datasets/equity-options#03-Create-Subscriptions";
-$optionType = "Equity";
+$assetClass = "Equity Option";
 $underlyingSymbolVariable = "equity_symbol";
-$getHistoricalDataText($createSubscriptionsLink, $optionType, $underlyingSymbolVariable);
+$underlyingAssetClass = "Equity";
+$getHistoricalDataText($createSubscriptionsLink, $assetClass, $underlyingSymbolVariable, $underlyingAssetClass);
 ?>
