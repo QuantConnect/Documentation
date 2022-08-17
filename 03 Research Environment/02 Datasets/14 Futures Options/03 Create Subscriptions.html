@@ -21,55 +21,78 @@ using QuantConnect.Research;</pre>
         <pre class="python">qb = QuantBook()</pre>
     </div>
 
-    <li>Call the <code>AddFuture</code> method with a ticker and resolution.</li>
+    <li><a href="/docs/v2/research-environment/datasets/futures#03-Create-Subscriptions">Subscribe to a Futures contract</a>.</li>
     <div class="section-example-container">
-        <pre class="csharp">var future = qb.AddFuture(Futures.Indices.SP500EMini, Resolution.Minute);</pre>
-        <pre class="python">future = qb.AddFuture(Futures.Indices.SP500EMini, Resolution.Minute)</pre>
-    </div>
-    <p>If you do not pass a resolution argument, <code>Resolution.Minute</code> is used by default.</p>
-    
-    <li><i>(Optional)</i> Call the <code>SetFilter</code> method with a specified expiration range value.</li>
-    <div class="section-example-container">
-        <pre class="csharp">future.SetFilter(0, 90);</pre>
-        <pre class="python">future.SetFilter(0, 90)</pre>
-    </div>
-    <p>If you don't call the <code>SetFilter</code> method, the default values of the <code>minExpiryDays</code> and <code>maxExpiryDays</code> parameters are 0 and 35 respectively.</p>
-
-    <li>Call the <code>GetFuturesContractList</code> method with the underlying <code>Future</code> <code>Symbol</code> and a <code class="python">datetime</code><code class="csharp">DateTime</code>.</li>
-	<div class="section-example-container">
-		<pre class="csharp">var startDate = new DateTime(2021,12,20);
-var futureSymbols = qb.FutureChainProvider.GetFutureContractList(future.Symbol, startDate);</pre>
-		<pre class="python">start_date = datetime(2021,12,20)
-future_symbols = qb.FutureChainProvider.GetFutureContractList(future.Symbol, start_date)</pre>
-	</div>
-	<p>The call returns a list of <code>Symbol</code>s that reference the <code>FutureContract</code>s that were trading at the given time.</p>
-	
-    <li>Select the <code>Symbol</code> of the <code>FutureContract</code>(s) for which you want to get historical data.</li>
-	<p>For example, select the  <code>Symbol</code> of the contract with the closest expiry.<br></p>
-	<div class="section-example-container">
-		<pre class="csharp">var futureContractSymbol = futureSymbols.OrderBy(s =&gt; s.ID.Date).FirstOrDefault();
-qb.AddFutureContract(futureContractSymbol, fillDataForward: false);<br></pre>
-		<pre class="python">future_contract_symbol = sorted(future_symbols, key=lambda s: s.ID.Date)[0]
+        <pre class="csharp">var future = qb.AddFuture(Futures.Indices.SP500EMini, Resolution.Minute);
+var startDate = new DateTime(2021,12,20);
+var futureSymbols = qb.FutureChainProvider.GetFutureContractList(future.Symbol, startDate);
+var futureContractSymbol = futureSymbols.OrderBy(s =&gt; s.ID.Date).FirstOrDefault();
+qb.AddFutureContract(futureContractSymbol, fillDataForward: false);</pre>
+        <pre class="python">future = qb.AddFuture(Futures.Indices.SP500EMini, Resolution.Minute)
+start_date = datetime(2021,12,20)
+future_symbols = qb.FutureChainProvider.GetFutureContractList(future.Symbol, start_date)
+future_contract_symbol = sorted(future_symbols, key=lambda s: s.ID.Date)[0]
 qb.AddFutureContract(future_contract_symbol, fillDataForward = False)</pre>
-	</div>
+    </div>
 
 	<li>Call the <code>GetOptionsContractList</code> method with the underlying Future Contract Symbol and a <code class="python">datetime</code> <code class="csharp">DateTime</code> object.</li>
 	<div class="section-example-container">
-		<pre class="csharp">var symbols = qb.OptionChainProvider.GetOptionContractList(futureContractSymbol, startDate);</pre>
-		<pre class="python">symbols = qb.OptionChainProvider.GetOptionContractList(future_contract_symbol, start_date)</pre>
+		<pre class="csharp">var fopContractSymbols = qb.OptionChainProvider.GetOptionContractList(futureContractSymbol, startDate);</pre>
+		<pre class="python">fop_contract_symbols = qb.OptionChainProvider.GetOptionContractList(future_contract_symbol, start_date)</pre>
 	</div>
-    <p>The call returns a list of <code>Symbol</code>s that reference the <code>OptionContracts</code> that were trading at the given time.</p>
+    <p>This method returns a list of <code>Symbol</code> objects that reference the Option contracts that were trading for the underlying Future contract at the given time.</p>
 
-    <li>Select the Symbol of the <code>OptionContract</code>(s) for which you want to get historical data.</li>
+    <li>Select the Symbol of the <code>OptionContract</code> object(s) for which you want to get historical data.</li>
+    <p>To filter and select contracts, you can use the following properties of each&nbsp;<code>Symbol</code> object:</p>
+    <table class="qc-table table">
+        <thead>
+            <tr>
+                <th>Property</th>
+                <th>Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                 <td><code>ID.Date</code></td>
+                 <td>The expiration date of the contract.</td>
+            </tr>
+            <tr>
+                 <td><code>ID.StrikePrice</code></td>
+                 <td>The strike price of the contract.</td>
+            </tr>
+            <tr>
+                 <td><code>ID.OptionRight</code></td>
+                 <td>
+                     The contract type. The <code>OptionRight</code> enumeration has the following members:
+                     <div data-tree="QuantConnect.OptionRight"></div>
+                  </td>
+            </tr>
+            <tr>
+                 <td><code>ID.OptionStyle</code></td>
+                 <td>
+                     The contract style. The <code>OptionStyle</code> enumeration has the following members:
+                     <div data-tree="QuantConnect.OptionStyle"></div>
+                  </td>
+            </tr>
+        </tbody>
+    </table>
+
+
     <p class="python">For example, select an arbitrary <code>Symbol</code>.</p>
 	<div class="section-example-container">
-		<pre class="csharp">symbols.OrderBy(s =&gt; Math.Abs(s.ID.StrikePrice - qb.Securities[s.Underlying].Price)).FirstOrDefault();</pre>
-		<pre class="python">contract_symbol = symbols[-1]</pre>
+		<pre class="csharp">var closestExpiry = fopContractSymbols.Select(c =&gt; c.ID.Date).Min();
+var fopContractSymbol = fopContractSymbols
+    .Where(c =&gt; c.ID.Date == closestExpiry &amp;&amp; c.ID.OptionRight == OptionRight.Call)
+    .OrderBy(c =&gt; c.ID.StrikePrice).FirstOrDefault();</pre>
+		<pre class="python">closest_expiry = min([c.ID.Date for c in fop_contract_symbols])
+calls = [c for c in fop_contract_symbols if c.ID.Date == closest_expiry and c.ID.OptionRight == OptionRight.Call]
+fop_contract_symbol = sorted(calls, key=lambda c: c.ID.StrikePrice)[0]</pre>
 	</div>
 
-    <li>Call the <code>GetOptionContractList</code> method with an <code>OptionContract</code> Symbol and disable fill-forward.</li>
+    <li>Call the <code>AddFutureOptionContract</code>&nbsp;method with an <code>OptionContract</code> Symbol and disable fill-forward.</li>
 	<div class="section-example-container">
-		<pre class="csharp">qb.AddFutureOptionContract(contractSymbol, fillDataForward: false);</pre>
-		<pre class="python">qb.AddFutureOptionContract(contract_symbol, fillDataForward = False)</pre>
+		<pre class="csharp">qb.AddFutureOptionContract(fopContractSymbol, fillDataForward: false);</pre>
+		<pre class="python">qb.AddFutureOptionContract(for_contract_symbol, fillDataForward = False)</pre>
 	</div>
+    <p>Disable fill-forward because there are only a few <code>OpenInterest</code> data points per day.</p>
 </ol>
