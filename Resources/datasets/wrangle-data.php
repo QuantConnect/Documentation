@@ -33,7 +33,7 @@ $getWrangleDataText = function($assetClass, $singularAssetClass, $pluralAssetCla
         if ($supportsOptionHistory)
         {
             echo "
-<p class='python'>The columns of the <code>DataFrame</code> are the data properties. Depending on how you request data, the <code>DataFrame</code> may contain data for the underlying security, which causes the first 3 index levels to be an empty string for the corresponding rows.</p>
+<p class='python'>The columns of the <code>DataFrame</code> are the data properties. Depending on how you request data, the <code>DataFrame</code> may contain data for the underlying security, which causes some of the index levels to be an empty string for the corresponding rows.</p>
             ";
         }
         else 
@@ -486,7 +486,7 @@ $getWrangleDataText = function($assetClass, $singularAssetClass, $pluralAssetCla
 <pre class='python'>for open_interest_dict in all_history_open_interest:
     for kvp in open_interest_dict:
         symbol = kvp.Key
-        open_interest = kvp.Value/pre>
+        open_interest = kvp.Value</pre>
 </div>
 ";        
     }
@@ -509,6 +509,22 @@ $getWrangleDataText = function($assetClass, $singularAssetClass, $pluralAssetCla
 <p class='python'>To get the strike prices of all the contracts in an <code>OptionHistory</code> object, call the <code>GetStrikes</code> method.</p>
 <div class='python section-example-container'>
 <pre class='python'>option_history.GetStrikes()</pre>
+</div>
+";
+    }
+
+    if ($supportsFutureHistory)
+    {
+        echo "
+<h4 class='python'>FutureHistory Objects</h4>
+<p class='python'>The <code>GetFutureHistory</code> method returns a <code>FutureHistory</code> object. To convert the <code>FutureHistory</code> object to a <code>DataFrame</code> that contains the trade and quote information of each contract, call the <code>GetAllData</code> method.</p>
+<div class='python section-example-container'>
+<pre class='python'>option_history.GetAllData()</pre>
+</div>
+
+<p class='python'>To get the expiration dates of all the contracts in an <code>FutureHistory</code> object, call the <code>GetExpiryDates</code> method.</p>
+<div class='python section-example-container'>
+<pre class='python'>option_history.GetExpiryDates()</pre>
 </div>
 ";
     }
