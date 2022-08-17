@@ -1,5 +1,4 @@
-<p>In live trading, LEAN gets your account details to populate the <a href="/docs/v2/writing-algorithms/portfolio/"><code>Portfolio</code></a> object with your account balance and holdings and the <a href="/docs/v2/writing-algorithms/trading-and-orders/order-management/transaction-manager"><code>Transactions</code></a> object with your account open positions. LEAN subscribes to receive data for the securities with holdings and open orders. The smallest resolution of the assets added in <code>Initialize</code> will be used.</p>
-
+<p>In live trading, LEAN populates the <a href="/docs/v2/writing-algorithms/portfolio/"><code>Portfolio</code></a> object with your account holdings and the <a href="/docs/v2/writing-algorithms/trading-and-orders/order-management/transaction-manager"><code>Transactions</code></a> object with your open positions. If you don't manually subscribe to the assets in your account, LEAN subscribes to them with the lowest resolution of the subscriptions in your algorithm. For example, say you hold AAPL shares in your account and create the following subscriptions in your algorithm:</p>
 <div class="section-example-container">
     <pre class="csharp">AddEquity("SPY", Resolution.Hour);
 AddEquity("MSFT", Resolution.Second);</pre>
@@ -7,4 +6,4 @@ AddEquity("MSFT", Resolution.Second);</pre>
 self.AddEquity("MSFT", Resolution.Second)</pre>
 </div>
 
-<p>If your brokerage account holds 100 shares of AAPL at $150.00, LEAN will susbcribe to receive second-resolution data for AAPL since the smallest resolution is <code>Resolution.Second</code> of MSFT.</p>
+<p>In this case, LEAN subscribes to second-resolution data for AAPL since the lowest resolution in your algorithm is <code>Resolution.Second</code>.</p>
