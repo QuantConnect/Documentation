@@ -25,20 +25,20 @@ using QuantConnect.Research;</pre>
     <div class="section-example-container">
         <pre class="csharp">var future = qb.AddFuture(Futures.Indices.SP500EMini, Resolution.Minute);
 var startDate = new DateTime(2021,12,20);
-var futureSymbols = qb.FutureChainProvider.GetFutureContractList(future.Symbol, startDate);
-var futureContractSymbol = futureSymbols.OrderBy(s =&gt; s.ID.Date).FirstOrDefault();
-qb.AddFutureContract(futureContractSymbol, fillDataForward: false);</pre>
+var futuresContractSymbols = qb.FutureChainProvider.GetFutureContractList(future.Symbol, startDate);
+var futuresContractSymbol = futuresContractSymbols.OrderBy(s =&gt; s.ID.Date).FirstOrDefault();
+qb.AddFutureContract(futuresContractSymbol, fillDataForward: false);</pre>
         <pre class="python">future = qb.AddFuture(Futures.Indices.SP500EMini, Resolution.Minute)
 start_date = datetime(2021,12,20)
-future_symbols = qb.FutureChainProvider.GetFutureContractList(future.Symbol, start_date)
-future_contract_symbol = sorted(future_symbols, key=lambda s: s.ID.Date)[0]
-qb.AddFutureContract(future_contract_symbol, fillDataForward = False)</pre>
+futures_contract_symbols = qb.FutureChainProvider.GetFutureContractList(future.Symbol, start_date)
+futures_contract_symbol = sorted(futures_contract_symbols, key=lambda s: s.ID.Date)[0]
+qb.AddFutureContract(futures_contract_symbol, fillDataForward = False)</pre>
     </div>
 
 	<li>Call the <code>GetOptionsContractList</code> method with the underlying Futures Contract <code>Symbol</code> and a <code class="python">datetime</code> <code class="csharp">DateTime</code> object.</li>
 	<div class="section-example-container">
-		<pre class="csharp">var fopContractSymbols = qb.OptionChainProvider.GetOptionContractList(futureContractSymbol, startDate);</pre>
-		<pre class="python">fop_contract_symbols = qb.OptionChainProvider.GetOptionContractList(future_contract_symbol, start_date)</pre>
+		<pre class="csharp">var fopContractSymbols = qb.OptionChainProvider.GetOptionContractList(futuresContractSymbol, startDate);</pre>
+		<pre class="python">fop_contract_symbols = qb.OptionChainProvider.GetOptionContractList(futures_contract_symbol, start_date)</pre>
 	</div>
     <p>This method returns a list of <code>Symbol</code> objects that reference the Option contracts that were trading for the underlying Future contract at the given time.</p>
 
@@ -81,7 +81,8 @@ qb.AddFutureContract(future_contract_symbol, fillDataForward = False)</pre>
 		<pre class="csharp">var closestExpiry = fopContractSymbols.Select(c =&gt; c.ID.Date).Min();
 var fopContractSymbol = fopContractSymbols
     .Where(c =&gt; c.ID.Date == closestExpiry &amp;&amp; c.ID.OptionRight == OptionRight.Call)
-    .OrderBy(c =&gt; c.ID.StrikePrice).FirstOrDefault();</pre>
+    .OrderBy(c =&gt; c.ID.StrikePrice)
+    .FirstOrDefault();</pre>
 		<pre class="python">closest_expiry = min([c.ID.Date for c in fop_contract_symbols])
 calls = [c for c in fop_contract_symbols if c.ID.Date == closest_expiry and c.ID.OptionRight == OptionRight.Call]
 fop_contract_symbol = sorted(calls, key=lambda c: c.ID.StrikePrice)[0]</pre>
