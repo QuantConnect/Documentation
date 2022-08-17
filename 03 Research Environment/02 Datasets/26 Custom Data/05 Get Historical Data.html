@@ -1,11 +1,13 @@
 <p>You need a <a href="#04-Create-Subscriptions">subscription</a> before you can request historical data for a security. You can request an amount of historical data based on a trailing number of bars, a trailing period of time, or a defined period of time.</p>
 
-<p><i>(Optional)</i> Call <code>SetStartDate</code> to set the algorithm <code>Time</code>:</p>
+<p>Before you request data, call <code>SetStartDate</code> method with a <code class="python">datetime</code><code class="csharp">DateTime </code> to reduce the risk of <a href="/docs/v2/writing-algorithms/key-concepts/glossary#16-look-ahead-bias">look-ahead bias</a>.</p>
 <div class="section-example-container">
     <pre class="csharp">qb.SetStartDate(2014, 7, 29);</pre>
     <pre class="python">qb.SetStartDate(2014, 7, 29)</pre>
 </div>
-<p>To avoid lookahead bias, the algorithm <code>Time</code> is last date that a historical data request can get, and his value is internally used to calculate the requested period in the next methods. Since you have access to the file with the data, you can set the start date with the date of the last row, in this case, Jul 28th, 2014</p>
+
+<p>If you call the <code>SetStartDate</code> method, the date that you pass to the method is the latest date for which your history requests will return data.</p>
+
 
 <h4>Trailing Number of Bars<br></h4>
 <p>Call the <code>History</code> method with a symbol, integer, and resolution to request historical data based on the given number of trailing bars and resolution.</p>
@@ -13,7 +15,7 @@
     <pre class="csharp">var history = qb.History(symbol, 10);</pre>
     <pre class="python">history = qb.History(symbol, 10)</pre>
 </div>
-<p>The call returns the most recent bars, including periods of time when the there is no data, e.g., closed exchanged.</p>
+<p>This method returns the most recent bars, excluding periods of time when the exchange was closed.</p>
 
 <h4>Trailing Period of Time<br></h4>
 <p>Call the <code>History</code> method with a symbol, <code class="csharp">TimeSpan</code><code class="python">timedelta</code>, and resolution to request historical data based on the given trailing period of time and resolution.</p>
@@ -21,7 +23,7 @@
     <pre class="csharp">var history = qb.History(symbol, TimeSpan.FromDays(10));</pre>
     <pre class="python">history = qb.History(symbol, timedelta(days=10))</pre>
 </div>
-<p>The call returns the most recent bars, including periods of time when the there is no data, e.g., closed exchanged.</p>
+<p>This method returns the most recent bars, excluding periods of time when the exchange was closed.</p>
 
 <h4>Defined Period of Time<br></h4>
 <p>Call the <code>History</code> method with a symbol, start  <code class="csharp">DateTime</code><code class="python">datetime</code>, end  <code class="csharp">DateTime</code><code class="python">datetime</code>, and resolution to request historical data based on the defined period of time and resolution.</p>
@@ -34,7 +36,7 @@ var history = qb.History(symbol, startTime, endTime);</pre>
 end_time = datetime(2014, 7, 29)
 history = qb.History(symbol, start_time, end_time)</pre>
 </div>
-<p>The call returns the bars that are timestamped within the defined period of time.</p>
+<p>This method returns the bars that are timestamped within the defined period of time.</p>
 
 <p class="python">In all of the cases above, the <code>History</code> method returns a <code>DataFrame</code> with a <code>MultiIndex</code>.</p>
 
@@ -43,25 +45,23 @@ history = qb.History(symbol, start_time, end_time)</pre>
 <p class="csharp">In all of the cases above, the <code>History</code> method returns an <code>IEnumerable&lt;Nifty&gt;</code> for single-security requests.</p>
 
 <h4>Download Method<br></h4>
-<p>Call the <code>Download</code> method with the custom data URL.</p>
+<p>To download the data directly from the remote file location instead of using your custom data class, call the <code>Download</code> method with the data URL.</p>
 <div class="section-example-container">
-    <pre class="csharp">var url = "http://cdn.quantconnect.com.s3.us-east-1.amazonaws.com/uploads/CNXNIFTY.csv";
-var content = qb.Download(url);</pre>
-<pre class="python">url = "http://cdn.quantconnect.com.s3.us-east-1.amazonaws.com/uploads/CNXNIFTY.csv"
-content = qb.Download(url)</pre>
+    <pre class="csharp">var content = qb.Download("http://cdn.quantconnect.com.s3.us-east-1.amazonaws.com/uploads/CNXNIFTY.csv");</pre>
+<pre class="python">content = qb.Download("http://cdn.quantconnect.com.s3.us-east-1.amazonaws.com/uploads/CNXNIFTY.csv")</pre>
 </div>
 
-<p class="python">Follow these steps to convert the downloaded content to a <code>DataFrame</code>:</p>
+<p class="python">Follow these steps to convert the content to a <code>DataFrame</code>:</p>
 <ol class="python">
-  <li>Import the <code>StringIO</code> from the <code>io</code> library</li>
+  <li>Import the <code>StringIO</code> from the <code>io</code> library.</li>
   <div class="python section-example-container">
       <pre class="python">from io import StringIO</pre>
   </div>
-  <li>Create a <code>StringIO</code> with the downloaded content</li>
+  <li>Create a <code>StringIO</code>.</li>
   <div class="python section-example-container">
       <pre class="python">data = StringIO(content)</pre>
   </div>
-  <li>Call the <code>read_csv</code> method to convert the data to a <code>DataFrame</code></li>
+  <li>Call the <code>read_csv</code> method.</li>
   <div class="python section-example-container">
       <pre class="python">dataframe = pd.read_csv(data, index_col=0)</pre>
   </div>
