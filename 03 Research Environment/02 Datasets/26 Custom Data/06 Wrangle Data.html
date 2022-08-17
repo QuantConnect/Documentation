@@ -1,63 +1,38 @@
-<p class="python">You need some <a href="https://www.quantconnect.com/docs/v2/research-environment/datasets/custom-data#05-Get-Historical-Data">historical data</a> to perform wrangling operations. Run a cell in a Jupyter Notebook with the <code>pandas</code> object as the last line to display the historical data.</p>
+<p class='python'>You need some <a href='/docs/v2/research-environment/datasets/custom-data#05-Get-Historical-Data'>historical data</a> to perform wrangling operations. To display <code>pandas</code> objects, run a cell in a notebook with the <code>pandas</code> object as the last line. To display other data formats, call the <code>print</code> method.</p>
 
-<p class="csharp">You need some <a href="https://www.quantconnect.com/docs/v2/research-environment/datasets/custom-data#05-Get-Historical-Data">historical data</a> to perform wrangling operations. Use LINQ to wrangle the data and then call the <code>Console.WriteLine</code> method in a Jupyter Notebook to display the data.</p>
+<p class='csharp'>You need some <a href='/docs/v2/research-environment/datasets/custom-data#05-Get-Historical-Data'>historical data</a> to perform wrangling operations. Use LINQ to wrangle the data and then call the <code>Console.WriteLine</code> method in a Jupyter Notebook to display the data.</p>
 
+<p class="python">The <code>DataFrame</code> that the <code>History</code> method returns has the following index levels:</p>
 
-<h4>Select One Custom Data<br></h4>
-<p class="csharp">Iterate through the <code>IEnumerable&lt;Nifty&gt;</code> to get the historical custom data.</p>
+<ol class='python'>
+    <li>Dataset <code>Symbol</code></li>
+    <li>The <code>EndTime</code> of the data sample</li>
+</ol>
+<p class='python'>The columns of the <code>DataFrame</code> are the data properties.</p>
 
-<p class="python">Index the <code>DataFrame</code> with a <code>Symbol</code> to select the historical custom data.</p>
+<img src='https://cdn.quantconnect.com/i/tu/custom-research-data-1.jpg' class='python docs-image'>
 
-<div class="section-example-container">
-<pre class="csharp">foreach(var bar in history.TakeLast(5))
-{
-    Console.WriteLine($"{bar} EndTime: {bar.EndTime}");
-}
-</pre>
+<p class='python'>To select the data of a single dataset, index the <code>loc</code> property of the <code>DataFrame</code> with the data <code>Symbol</code>.</p>
+<div class="python section-example-container">
 <pre class="python">history.loc[symbol]
 </pre>
 </div>
+<img src='https://cdn.quantconnect.com/i/tu/custom-research-data-2.jpg' class='python docs-image'>
 
-<p class="csharp">The Jupyter Notebook displays the contents of the last 5 <code>Nifty</code> object.</p>
+<p class='python'>To select a column of the <code>DataFrame</code>, index it with the column name.</p>
 
-<!--img class="csharp docs-image" src="https://cdn.quantconnect.com/i/tu/vix-alternative-dataset-select-one-alt-data.png"-->
+<div class='python section-example-container'>
+<pre class='python'>history.loc[symbol]['close']
+</pre>
+</div>
+<img src='https://cdn.quantconnect.com/i/tu/custom-research-data-3.jpg' class='python docs-image'>
 
-<p class="python">The Jupyter Notebook displays a <code>DataFrame</code> that contains the open, high, low, close, and value attributes of the <code>Nifty</code> object.</p>
+<p class='csharp'>To get each custom data object, iterate through the result of the history request.</p>
 
-<img class="python docs-image" src="https://cdn.quantconnect.com/i/tu/research-history-custom-loc.png">
-
-<h4>Select a Data Property<br></h4>
-<p class="csharp">Iterate through the <code>IEnumerable&lt;Nifty&gt;</code> and select a property of the <code>Nifty</code> object to get the historical values of the property.</p>
-
-<p class="python">Index the <code>DataFrame</code> with a <code>Symbol</code> to select the historical data of the security and then select a property column to get the historical values of the property.</p>
-
-<div class="section-example-container">
-<pre class="csharp">var values = history.Select(data =&gt; $"{data.Symbol} Value: {data.Value} EndTime: {data.EndTime}");
-foreach(var value in values.TakeLast(5))
+<div class="csharp section-example-container">
+<pre class="csharp">foreach(var nifty in history)
 {
-    Console.WriteLine(value);
+    Console.WriteLine($"{nifty} EndTime: {nifty.EndTime}");
 }
 </pre>
-<pre class="python">history.loc[symbol]['value']
-</pre>
 </div>
-
-<p class="csharp">The Jupyter Notebook displays the last 5 values of the <code>Nifty</code> object.</p>
-
-<!--img class="csharp docs-image" src="https://cdn.quantconnect.com/i/tu/vix-alternative-dataset-select-a-data-property.png"-->
-
-<p class="python">The <code>DataFrame</code> is transformed into a <code>Series</code> of NIFTY values.</p>
-
-<img class="python docs-image" src="https://cdn.quantconnect.com/i/tu/research-history-custom-series.png">
-
-
-<h4 class="python">Unstack the Dataframe</h4>
-<p class="python">If you request historical data for multiple data in an custom data class, you can transform the <code>DataFrame</code> so that it is a time series of values for all of the custom data. Select the column that you want to display for each custom data and then call the <code>unstack</code> method to transform the <code>DataFrame</code> into the desired format.</p>
-
-<div class="section-example-container python">
-    <pre class="python">history['value'].unstack(level=0)</pre>
-</div>
-
-<p class="python">The <code>DataFrame</code> is transformed so that the column indices are the <code>Symbol</code> of each custom data and each row contains the value.</p>
-
-<img class="python docs-image" src="https://cdn.quantconnect.com/i/tu/research-history-custom-unstack.png">
