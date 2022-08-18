@@ -1,4 +1,4 @@
-<p>You must create a file with data in <span class="public-file-name">CSV</span> format. Ensure the data in the file is in chronological order.</p>
+<p>The following snippet shows an example <span class="public-file-name">CSV</span> file:</p>
 
 <div class="section-example-container"><pre>
 Date,Open,High,Low,Close,SharesTraded,Tur11er(Rs.Cr)
@@ -10,3 +10,5 @@ Date,Open,High,Low,Close,SharesTraded,Tur11er(Rs.Cr)
 2014-07-25,7828.2,7840.95,7748.6,7790.45,153936037,7827.61
 2014-07-28,7792.9,7799.9,7722.65,7748.7,116534670,6107.78
 </pre></div>
+
+<p>The data in the file must be in chronological order.</p>
