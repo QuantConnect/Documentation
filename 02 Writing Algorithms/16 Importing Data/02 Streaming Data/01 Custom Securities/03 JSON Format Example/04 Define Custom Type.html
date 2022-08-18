@@ -1,4 +1,4 @@
-<p>To define a custom data type, inherit the <code class="csharp">BaseData</code><code class="python">PythonData</code> class and override the <a href='/docs/v2/writing-algorithms/importing-data/streaming-data/custom-securities/key-concepts#03-Set-Data-Sources'>GetSource</a> and <a href='/docs/v2/writing-algorithms/importing-data/streaming-data/custom-securities/key-concepts#04-Parse-Custom-Data'>Reader</a> methods.</p>
+<p>To define a custom data type, inherit the <code class="csharp">BaseData</code><code class="python">PythonData</code> class and override the <a href="/docs/v2/writing-algorithms/importing-data/streaming-data/custom-securities/key-concepts#03-Set-Data-Sources">GetSource</a> and <a href="/docs/v2/writing-algorithms/importing-data/streaming-data/custom-securities/key-concepts#04-Parse-Custom-Data">Reader</a> methods.</p>
 
 <p>If you need to create multiple objects in your <code>Reader</code> method from a single <code>line</code>, follow these steps:</p>
 
@@ -10,7 +10,7 @@
 <div class="section-example-container">
     <pre class="csharp">using Newtonsoft.Json;
         
-public class Nifty : BaseData
+public class MyCustomDataType : BaseData
 {
     [JsonProperty("Date")]
     public string Date;
@@ -23,7 +23,7 @@ public class Nifty : BaseData
     [JsonProperty("Close")]
     public decimal Close = 0;
 
-    public override DateTime EndTime => Time.AddDays(1);
+    public override DateTime EndTime =&gt; Time.AddDays(1);
 
     public override SubscriptionDataSource GetSource(
         SubscriptionDataConfig config,
@@ -44,7 +44,7 @@ public class Nifty : BaseData
             return null;
         }
 
-        var objects = JsonConvert.DeserializeObject&lt;List&lt;Nifty&gt;&gt;(line).Select(index =>
+        var objects = JsonConvert.DeserializeObject&lt;List&lt;MyCustomDataType&gt;&gt;(line).Select(index =&gt;
         {
             index.Symbol = config.Symbol;
             index.Time = DateTime.Parse(x.Date, CultureInfo.InvariantCulture);
