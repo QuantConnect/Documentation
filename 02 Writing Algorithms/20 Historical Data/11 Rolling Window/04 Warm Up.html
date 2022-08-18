@@ -4,7 +4,7 @@
 var historyTradeBar = History&lt;TradeBar&gt;(spy, 10, Resolution.Daily);
 var historyQuoteBar = History&lt;QuoteBar&gt;(spy, 10, Resolution.Minute);
 
-// Warm up close price and trade bar rolling window by the previous 10-day trade bar data
+// Warm up the close price and trade bar rolling windows with the previous 10-day trade bar data
 var closePriceWindow = new RollingWindow&lt;decimal&gt;(10);
 var tradeBarWindow = new RollingWindow&lt;TradeBar&gt;(10);
 foreach (var tradeBar in historyTradeBar)
@@ -13,7 +13,7 @@ foreach (var tradeBar in historyTradeBar)
     tradeBarWindow.Add(tradeBar);
 }
 
-// Warm up quote bar rolling window by the previous 10-minute quote bar data
+// Warm up the quote bar rolling window with the previous 10-minute quote bar data
 var quoteBarWindow = new RollingWindow&lt;QuoteBar&gt;(10);
 foreach (var quoteBar in historyQuoteBar)
 {
