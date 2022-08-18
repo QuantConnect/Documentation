@@ -12,8 +12,8 @@
         }
     }
 
-    // Can also get the data instance directly with OnData(dataClass) method
-    public void OnData(Nifty customData)
+    // You can also get the data directly with OnData(dataClass) method
+    public void OnData(MyCustomDataType customData)
     {
         var close = customData.Close;
     }
