@@ -1,4 +1,4 @@
-<p>You must create a file with data in <span class="public-file-name">JSON</span> format. Ensure the data in the file is in chronological order.</p>
+<p>The following code snippet shows an example <span class="public-file-name">JSON</span> file</p>
 
 <div class="section-example-container"><pre>
 [
@@ -41,3 +41,5 @@
     }
 ]
 </pre></div>
+
+<p>The data in the file must be in chronological order.</p>
