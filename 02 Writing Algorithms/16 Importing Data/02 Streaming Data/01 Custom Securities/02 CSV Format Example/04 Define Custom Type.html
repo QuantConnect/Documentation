@@ -1,7 +1,7 @@
-<p>To define a custom data type, inherit the <code class="csharp">BaseData</code><code class="python">PythonData</code> class and override the <a href='/docs/v2/writing-algorithms/importing-data/streaming-data/custom-securities/key-concepts#03-Set-Data-Sources'>GetSource</a> and <a href='/docs/v2/writing-algorithms/importing-data/streaming-data/custom-securities/key-concepts#04-Parse-Custom-Data'>Reader</a> methods.</p>
+<p>To define a custom data type, inherit the <code class="csharp">BaseData</code><code class="python">PythonData</code> class and override the <a href="/docs/v2/writing-algorithms/importing-data/streaming-data/custom-securities/key-concepts#03-Set-Data-Sources">GetSource</a> and <a href="/docs/v2/writing-algorithms/importing-data/streaming-data/custom-securities/key-concepts#04-Parse-Custom-Data">Reader</a> methods.</p>
 
 <div class="section-example-container">
-    <pre class="csharp">public class Nifty : BaseData
+    <pre class="csharp">public class MyCustomDataType : BaseData
 {
     public decimal Open;
     public decimal High;
@@ -27,7 +27,7 @@
             return null;
         }
 
-        var index = new Nifty();
+        var index = new MyCustomDataType();
 
         try
         {
@@ -47,7 +47,7 @@
         return index;
     }
 }</pre>
-<pre class="python">class Nifty(PythonData):
+<pre class="python">class MyCustomDataType(PythonData):
 
     def GetSource(self,
          config: SubscriptionDataConfig,
@@ -64,7 +64,7 @@
         if not (line.strip()):
             return None
 
-        index = Nifty()
+        index = MyCustomDataType()
         index.Symbol = config.Symbol
 
         try:
