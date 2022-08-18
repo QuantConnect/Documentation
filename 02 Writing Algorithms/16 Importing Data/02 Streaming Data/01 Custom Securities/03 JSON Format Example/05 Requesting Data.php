@@ -2,16 +2,16 @@
 
 <div class="section-example-container">
     <pre class="csharp">public class MyAlgorithm : QCAlgorithm
+{
+    private Symbol _symbol;
+    public override void Initialize()
     {
-        private Symbol _symbol;
-        public override void Initialize()
-        {
-            _symbol = AddData&lt;Nifty&gt;("NIFTY", Resolution.Daily).Symbol;
-        }
-    }</pre>
+        _symbol = AddData&lt;MyCustomDataType&gt;("MyCustomDataType", Resolution.Daily).Symbol;
+    }
+}</pre>
     <pre class="python">class MyAlgorithm(QCAlgorithm): 
-        def Initialize(self) -&gt; None:
-            self.symbol = self.AddData(Nifty, "NIFTY", Resolution.Daily).Symbol
+    def Initialize(self) -&gt; None:
+        self.symbol = self.AddData(MyCustomDataType, "MyCustomDataType", Resolution.Daily).Symbol
     </pre>
 </div>
 
