@@ -5,4 +5,4 @@
     <pre class="python">content = self.Download("&lt;filePathOrURL&gt;")</pre>
 </div>
 
-<?php echo file_get_contents(DOCS_RESOURCES."/datasets/custom-data/download-use-cases.html"); ?>
+<p>For more information about bulk downloads, see <a href='/docs/v2/writing-algorithms/importing-data/bulk-downloads'>Bulk Downloads</a>.</p>

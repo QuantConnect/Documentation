@@ -64,6 +64,4 @@
         return custom</pre>
 </div>
 
-<?php echo file_get_contents(DOCS_RESOURCES."/datasets/custom-data/create-subscriptions.html"); ?>
-
-<?php echo file_get_contents(DOCS_RESOURCES."/datasets/custom-data/receive-custom-data.html"); ?>
+<p>For more information about custom data types, see <a href='/docs/v2/writing-algorithms/importing-data/streaming-data/key-concepts'>Streaming Data</a>.</p>
