@@ -1,30 +1,34 @@
-<p>The following snippet demonstrates how to implement an algorithm that buys and holds an S&amp;P 500 index ETF:</p>
-<div class="section-example-container">
-	<pre class="csharp">using System.Collections.Generic;
-using QuantConnect.Data;
-using QuantConnect.Interfaces;
+<p>The following video demonstrates how to implement an algorithm that buys and holds an S&amp;P 500 index ETF:</p>
 
+<img src='https://cdn.quantconnect.com/i/tu/example-algorithm-py.gif' class='python doc-image'>
+<img src='https://cdn.quantconnect.com/i/tu/example-algorithm-c.gif' class='csharp doc-image'>
+
+<div class="section-example-container">
+	<pre class="csharp">// Import all the functionality you need to run algorithms
+using QuantConnect.Data;
+
+// Define a trading algorithm that is a subclass of QCAlgorithm
 namespace QuantConnect.Algorithm.CSharp
 {
-    // Define a trading algorithm that is a subclass of QCAlgorithm
     public class MyAlgorithm : QCAlgorithm
     {
+        // Define an Initialize method.
+        // This method is the entry point of your algorithm where you define a series of settings.
+        // LEAN only calls this method one time, at the start of your algorithm.
         public override void Initialize()
         {
             // Set the start and end dates
             SetStartDate(2018, 1, 1);
             SetEndDate(2022, 6, 1);
-
             // Set the starting cash balance to $100,000 USD
             SetCash(100000);
-
-            // Add data for the S&amp;P500 index ETF
+            // Add data for the S&P500 index ETF
             AddEquity("SPY");
         }
 
-        // OnData event is the primary entry point for your algorithm. Each new data point will be pumped in here.
-        // Arguments:
-        //     - Slice object keyed by symbol containing the stock data
+        // Define an OnData method. 
+        // This method receives all the data you subscribe to in discrete time slices.
+        // It's where you make trading decisions.
         public override void OnData(Slice slice)
         {
             // Allocate 100% of the portfolio to SPY
@@ -35,26 +39,27 @@ namespace QuantConnect.Algorithm.CSharp
         }
     }
 }</pre>
-	<pre class="python">from AlgorithmImports import *
+	<pre class="python"># Import all the functionality you need to run algorithms
+from AlgorithmImports import *
 
 # Define a trading algorithm that is a subclass of QCAlgorithm
 class MyAlgorithm(QCAlgorithm):
-    def Initialize(self) -&gt; None:
+    # Define an Initialize method.
+    # This method is the entry point of your algorithm where you define a series of settings.
+    # LEAN only calls this method one time, at the start of your algorithm.
+    def Initialize(self) -> None:
         # Set start and end dates
         self.SetStartDate(2018, 1, 1)
         self.SetEndDate(2022, 6, 1)
-
         # Set the starting cash balance to $100,000 USD
         self.SetCash(100000)
-
-        # Add data for the S&amp;P500 index ETF
+        # Add data for the S&P500 index ETF
         self.AddEquity("SPY")
 
-    def OnData(self, slice: Slice) -&gt; None:
-        '''OnData event is the primary entry point for your algorithm. Each new data point will be pumped in here.
-        Arguments:
-            slice: Slice object keyed by symbol containing the stock data
-        '''
+    # Define an OnData method. 
+    # This method receives all the data you subscribe to in discrete time slices.
+    # It's where you make trading decisions.
+    def OnData(self, slice: Slice) -> None:
         # Allocate 100% of the portfolio to SPY
         if not self.Portfolio.Invested:
             self.SetHoldings("SPY", 1)</pre>
