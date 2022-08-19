@@ -1,0 +1,16 @@
+<p>You need to <a href="#04-Train-Models">build and train the model</a> before you deploy it for backtesting and trading. Follow these steps to deploy the model:</p>
+
+<ol>
+    <li>Predict with the label of the data.</li>
+    <div class="section-example-container">
+        <pre class="python">self.labels = self.model.predict(standard_close.T)</pre>
+    </div>
+
+    <li>Trade each cluster in equal weighting with each assets within cluster equal weighted.</li>
+    <div class="section-example-container">
+        <pre class="python">for i in set(self.labels):
+    assets_in_cluster = self.standard_close.columns[[n for n, k in enumerate(self.labels) if k == i]]
+    size = 1/6/len(assets_in_cluster)
+    self.SetHoldings([PortfolioTarget(symbol, size) for symbol in assets_in_cluster])</pre>
+    </div>
+</ol>
