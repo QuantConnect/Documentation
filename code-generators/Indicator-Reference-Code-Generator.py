@@ -562,7 +562,7 @@ function ShowHide(event, idName) {{
 {"".join(api)}
 <br/>{swiss_kinfe_tool_datatree if full == "SwissArmyKnife" else ""}{moving_average_table if moving_average else ""}
 
-<p>If you don't provide a resolution, it defauls to the security resolution. If you provide a resolution, it must be greater than or equal to the resolution of the security. For instance, if you subscribe to hourly data for a security, you should update its indicator with data that spans 1 hour or longer.</p>
+<p>If you don't provide a resolution, it defaults to the security resolution. If you provide a resolution, it must be greater than or equal to the resolution of the security. For instance, if you subscribe to hourly data for a security, you should update its indicator with data that spans 1 hour or longer.</p>
 <p>For more information about the selector argument, see <a href="https://www.quantconnect.com/docs/v2/writing-algorithms/indicators/automatic-indicators#07-Alternative-Price-Fields">Alternative Price Fields</a>.</p>""")
         
     with open(destination_folder / "05 Get Indicator Values.html", "w", encoding="utf-8") as html_file:
