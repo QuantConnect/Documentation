@@ -1,12 +1,16 @@
-<p>You need to <a href="/docs/v2/research-environment/quantconnect-api/backtests/reading-orders#03-Get-Orders">get your backtest orders</a> to plot your order fills.</p>
+<?php
+$getPlotTradesText = function($getOrdersLink, $algorithmType)
+{
+	echo "
+<p>You need to <a href='{$getOrdersLink}'>get your {$algorithmType} orders</a> to plot your order fills.</p>
 
-<p>Follow these steps to plot the daily buy and sell fill prices for the securities in your backtest:</p>
+<p>Follow these steps to plot the daily buy and sell fill prices for the securities in your algorithm:</p>
 
 <ol>
     <li>
         Organize the trade times and prices for each security into a dictionary.
-        <div class="section-example-container">
-            <pre class="python">class OrderData:
+        <div class='section-example-container'>
+            <pre class='python'>class OrderData:
     def __init__(self):
         self.buy_fill_times = []
         self.buy_fill_prices = []
@@ -25,9 +29,9 @@ for order in orders:
     </li>
 
     <li>
-        Get the price history of each security you traded during the backtest.
-        <div class="section-example-container">
-            <pre class="python">qb = QuantBook()
+        Get the price history of each security you traded.
+        <div class='section-example-container'>
+            <pre class='python'>qb = QuantBook()
 start_date = datetime.max.date()
 end_date = datetime.min.date()
 for symbol, order_data in order_data_by_symbol.items():
@@ -40,8 +44,8 @@ all_history = qb.History(list(order_data_by_symbol.keys()), start_date, end_date
 
     <li>
         Create a candlestick plot for each security and annotate each plot with buy and sell markers.
-      <div class="section-example-container">
-            <pre class="python">import plotly.express as px
+      <div class='section-example-container'>
+            <pre class='python'>import plotly.express as px
 import plotly.graph_objects as go
 
 for symbol, order_data in order_data_by_symbol.items():
@@ -66,8 +70,8 @@ for symbol, order_data in order_data_by_symbol.items():
         x=order_data.buy_fill_times,
         y=order_data.buy_fill_prices,
         marker=go.scatter.Marker(color='aqua', symbol='triangle-up', size=10),
-        mode="markers",
-        name="Buys",
+        mode='markers',
+        name='Buys',
     ))
 
     # Plot sells
@@ -75,8 +79,8 @@ for symbol, order_data in order_data_by_symbol.items():
         x=order_data.sell_fill_times,
         y=order_data.sell_fill_prices,
         marker=go.scatter.Marker(color='indigo', symbol='triangle-down', size=10),
-        mode="markers",
-        name="Sells",
+        mode='markers',
+        name='Sells',
     ))
 
     fig.show()</pre>
@@ -84,7 +88,10 @@ for symbol, order_data in order_data_by_symbol.items():
      </li>
 </ol>
 
-<img src="https://cdn.quantconnect.com/i/tu/plot-backtest-trades-in-research-env-aapl.png" class="docs-image" alt="Plot of AAPL price with buy/sell markers">
-<img src="https://cdn.quantconnect.com/i/tu/plot-backtest-trades-in-research-env-spy.png" class="docs-image" alt="Plot of SPY price with buy/sell markers">
+<img src='https://cdn.quantconnect.com/i/tu/plot-backtest-trades-in-research-env-aapl.png' class='docs-image' alt='Plot of AAPL price with buy/sell markers'>
+<img src='https://cdn.quantconnect.com/i/tu/plot-backtest-trades-in-research-env-spy.png' class='docs-image' alt='Plot of SPY price with buy/sell markers'>
 
 <p>Note: The preceding plots only show the last fill of each trade. If your trade has partial fills, the plots only display the last fill.</p>
+	";
+}
+?>
