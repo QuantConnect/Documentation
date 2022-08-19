@@ -4,7 +4,7 @@ include(DOCS_RESOURCES."/brokerages/cli-deployment/deploy-cloud-algorithms.php")
 $brokerageDetails = "
 <li>Enter the exchange to use.
 <div class='cli section-example-container'>
-<pre>$ lean cloud live \"My Project\" --push --open
+<pre>$ lean cloud live deploy \"My Project\" --push --open
 Binance Exchange (Binance, BinanceUS): </pre>
 </div>
 </li>
@@ -12,14 +12,14 @@ Binance Exchange (Binance, BinanceUS): </pre>
 
 <li>Enter the environment to use.
 <div class='cli section-example-container'>
-<pre>$ lean cloud live \"My Project\" --push --open
+<pre>$ lean cloud live deploy \"My Project\" --push --open
 Environment (live, paper): </pre>
 </div>
 </li>
 
 <li>Enter your Binance API key and secret.
 <div class='cli section-example-container'>
-<pre>$ lean cloud live \"My Project\" --push --open
+<pre>$ lean cloud live deploy \"My Project\" --push --open
 API key: wL1waeOC7VD447skCFeiat9pP3r1uKXfYomGg43uyCOgzl8xsI9SZsX97AXP4zWv
 API secret: ****************************************************************</pre>
 </div>

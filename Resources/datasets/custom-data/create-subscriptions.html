@@ -1,7 +1,4 @@
-<p>After you define the custom data class, call
-    <span class="csharp"><code>AddData&lt;T&gt;(string ticker, Resolution resolution = Resolution.Daily)</code> in the <code>Initialize</code> method of your algorithm. This method gives LEAN the T-type factory to create the objects, the name of the data, and the resolution at which to poll the data source for updates.</span>
-    <span class="python"><code>self.AddData(Type class, string ticker, Resolution resolution = Resolution.Daily)</code> in the <code>Initialize</code> method of your algorithm. This method gives LEAN the type factory to create the data objects, the name of the data, and the resolution to poll the data source for updates.</span>
-</p>
+<p>To create a subscription for the custom type, in the <code>Initialize</code> method, call the <code>AddData</code> method. The <code>AddData</code> method returns a <code>Security</code> object, which contains a <code>Symbol</code>. Save a reference to the <code>Symbol</code> so you can use it in <code>OnData</code> to access the security data in the <code>Slice</code>.</p>
 
 <div class="section-example-container">
     <pre class="csharp">public class MyAlgorithm : QCAlgorithm
@@ -9,11 +6,13 @@
     private Symbol _symbol;
     public override void Initialize()
     {
-        _symbol = AddData&lt;MyCustomDataType&gt;("&lt;name&gt;", Resolution.Daily).Symbol;
+        _symbol = AddData&lt;MyCustomDataType&gt;("MyCustomDataType", Resolution.Daily).Symbol;
     }
 }</pre>
     <pre class="python">class MyAlgorithm(QCAlgorithm): 
     def Initialize(self) -&gt; None:
-        self.symbol = self.AddData(MyCustomDataType, "&lt;name&gt;", Resolution.Daily).Symbol
+        self.symbol = self.AddData(MyCustomDataType, "MyCustomDataType", Resolution.Daily).Symbol
     </pre>
 </div>
+
+<p>The <code>AddData</code> method creates a subscription for a single custom data asset and adds it to your <span class="new-term">user-defined</span> universe.</p>

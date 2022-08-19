@@ -1,0 +1,294 @@
+<p>
+    Starts local live trading in a Docker container using the <a href="https://hub.docker.com/r/quantconnect/lean" target="_blank">quantconnect/lean</a> Docker image.
+    The logs of the algorithm are shown in real-time and the full results are stored in the <span class='private-directory-name'>&lt;project&gt;/live/&lt;timestamp&gt;</span> directory.
+    You can use the <code>--output</code> option to change the output directory.
+</p>
+
+<p>
+    The given <code>&lt;project&gt;</code> argument must be either a project directory or a file containing the algorithm to backtest.
+    If it is a project directory, the CLI looks for a <span class='private-file-name'>main.py</span> or <span class='private-file-name'>Main.cs</span> file, assuming the first file it finds to contain the algorithm to run.
+</p>
+
+<p>
+    By default, an interactive wizard is shown letting you configure the brokerage and data feed to use.
+    When <code>--environment</code>, <code>--brokerage</code>, or <code>--data-feed</code> is given, the command runs in non-interactive mode and does not prompt for input.
+</p>
+
+<p>
+    When the <code>--environment</code> option is given, the environment with the given name is used.
+    The given environment must be one of the live environments stored in your <a href="/docs/v2/lean-cli/initialization/configuration#03-Lean-Configuration">Lean configuration file</a>.
+    This means the environment must have the <code>live-mode</code> property set to <code>true</code>.
+</p>
+
+<p>
+    When <code>--brokerage</code> or <code>--data-feed</code> is given, the live configuration is read from the command-line options.
+    In case a required option has not been provided, the command falls back to the property with the same name in your Lean configuration file.
+    The command aborts if this property also hasn't been set.
+    The required options depend on the selected brokerage or data feed.
+</p>
+
+<p>
+    The following options are required for each brokerage in non-interactive mode:
+</p>
+
+
+<table class="qc-table table">
+    <thead>
+        <tr>
+            <th style='width: 25%'><code>--brokerage</code></th>
+            <th>Required Options</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><code>"Paper Trading"</code></td>
+            <td>N/A</td>
+        </tr>
+
+        <tr>
+            <td rowspan="9"><code>"Atreyu"</code></td>
+            <td><code>--atreyu-organization</code></td>
+        </tr>
+        <tr><td><code>--atreyu-host</code></td></tr>
+        <tr><td><code>--atreyu-req-port</code></td></tr>
+        <tr><td><code>--atreyu-sub-port</code></td></tr>
+        <tr><td><code>--atreyu-username</code></td></tr>
+        <tr><td><code>--atreyu-password</code></td></tr>
+        <tr><td><code>--atreyu-client-id</code></td></tr>
+        <tr><td><code>--atreyu-broker-mpid</code></td></tr>
+        <tr><td><code>--atreyu-locate-rqd</code></td></tr>
+
+        <tr>
+            <td rowspan="3"><code>"Binance"</code></td>
+            <td><code>--binance-api-key</code></td>
+        </tr>
+        <tr><td><code>--binance-api-secret</code></td></tr>
+        <tr><td><code>--binance-use-testnet</code></td></tr>
+
+        <tr>
+            <td rowspan="2"><code>"Bitfinex"</code></td>
+            <td><code>--bitfinex-api-key</code></td>
+        </tr>
+        <tr><td><code>--bitfinex-api-secret</code></td></tr>
+
+        <tr>
+            <td rowspan="4"><code>"Coinbase Pro"</code></td>
+            <td><code>--gdax-api-key</code></td>
+        </tr>
+        <tr><td><code>--gdax-api-secret</code></td></tr>
+        <tr><td><code>--gdax-passphrase</code></td></tr>
+        <tr><td><code>--gdax-use-sandbox</code></td></tr>
+
+        <tr>
+            <td rowspan="4"><code>"FTX"</code></td>
+            <td><code>--ftx-api-key</code></td>
+        </tr>
+        <tr><td><code>--ftx-api-secret</code></td></tr>
+        <tr><td><code>--ftx-account-tier</code></td></tr>
+        <tr><td><code>--ftx-exchange-name</code></td></tr>
+
+
+        <tr>
+            <td rowspan="4"><code>"Interactive Brokers"</code></td>
+            <td><code>--ib-organization</code></td>            
+        </tr>
+        <tr><td><code>--ib-user-name</code></td></tr>
+        <tr><td><code>--ib-account</code></td></tr>
+        <tr><td><code>--ib-password</code></td></tr>
+
+        <tr>
+            <td rowspan="3"><code>"Kraken"</code></td>
+            <td><code>--kraken-api-key</code></td>
+        </tr>
+        <tr><td><code>--kraken-api-secret</code></td></tr>
+        <tr><td><code>--kraken-verification-tier</code></td></tr>
+
+        <tr>
+            <td rowspan="3"><code>"OANDA"</code></td>
+            <td><code>--oanda-account-id</code></td>
+        </tr>
+        <tr><td><code>--oanda-access-token</code></td></tr>
+        <tr><td><code>--oanda-environment</code></td></tr>
+
+
+        <tr>
+            <td rowspan="5"><code>"Samco"</code></td>
+            <td><code>--samco-client-id</code></td>
+        </tr>
+        <tr><td><code>--samco-client-password</code></td></tr>
+        <tr><td><code>--samco-year-of-birth</code></td></tr>
+        <tr><td><code>--samco-product-type</code></td></tr>
+        <tr><td><code>--samco-trading-segment</code></td></tr>
+
+
+        <tr>
+            <td rowspan="6"><code>"Terminal Link"</code></td>
+            <td><code>--terminal-link-organization</code></td>
+        </tr>
+        <tr><td><code>--bloomberg-environment</code></td></tr>
+        <tr><td><code>--bloomberg-server-host</code></td></tr>
+        <tr><td><code>--bloomberg-server-port</code></td></tr>
+        <tr><td><code>--bloomberg-emsx-broker</code></td></tr>
+        <tr><td><code>--bloomberg-allow-modification</code></td></tr>
+
+        <tr>
+            <td rowspan="3"><code>"Tradier"</code></td>
+            <td><code>--tradier-account-id</code></td>
+        </tr>
+        <tr><td><code>--tradier-access-token</code></td></tr>
+        <tr><td><code>--tradier-use-sandbox</code></td></tr>
+
+        <tr>
+            <td rowspan="16"><code>"Trading Technologies"</code></td>
+            <td><code>--tt-organization</code></td>
+        </tr>
+        <tr><td><code>--tt-user-name</code></td></tr>
+        <tr><td><code>--tt-session-password</code></td></tr>
+        <tr><td><code>--tt-account-name</code></td></tr>
+        <tr><td><code>--tt-rest-app-key</code></td></tr>
+        <tr><td><code>--tt-rest-app-secret</code></td></tr>
+        <tr><td><code>--tt-rest-environment</code></td></tr>
+        <tr><td><code>--tt-market-data-sender-comp-id</code></td></tr>
+        <tr><td><code>--tt-market-data-target-comp-id</code></td></tr>
+        <tr><td><code>--tt-market-data-host</code></td></tr>
+        <tr><td><code>--tt-market-data-port</code></td></tr>
+        <tr><td><code>--tt-order-routing-sender-comp-id</code></td></tr>
+        <tr><td><code>--tt-order-routing-target-comp-id</code></td></tr>
+        <tr><td><code>--tt-order-routing-host</code></td></tr>
+        <tr><td><code>--tt-order-routing-port</code></td></tr>
+        <tr><td><code>--tt-log-fix-messages</code></td></tr>
+
+        <tr>
+            <td rowspan="4"><code>"Zerodha"</code></td>
+            <td><code>--zerodha-api-key</code></td>
+        </tr>
+        <tr><td><code>--zerodha-access-token</code></td></tr>
+        <tr><td><code>--zerodha-product-type</code></td></tr>
+        <tr><td><code>--zerodha-trading-segment</code></td></tr>
+
+    </tbody>
+</table>
+
+<p>
+    The following options are required for each data feed in non-interactive mode:
+</p>
+
+
+<table class="qc-table table">
+    <thead>
+        <tr>
+            <th style='width: 25%'><code>--data-feed</code></th>
+            <th>Required Options</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><code>"Atreyu"</code></td>
+            <td>All options required by <code>--brokerage "Atreyu"</code>.</td>
+        </tr>
+
+        <tr>
+            <td><code>"Binance"</code></td>
+            <td>All options required by <code>--brokerage "Binance"</code>.</td>
+        </tr>
+
+        <tr>
+            <td><code>"Bitfinex"</code></td>
+            <td>All options required by <code>--brokerage "Bitfinex"</code>.</td>
+        </tr>
+
+        <tr>
+            <td><code>"Coinbase Pro"</code></td>
+            <td>All options required by <code>--brokerage "Coinbase Pro"</code>.</td>
+        </tr>
+
+        <tr>
+            <td><code>"Custom data only"</code></td>
+            <td>N/A</td>
+        </tr>
+
+        <tr>
+            <td><code>"FTX"</code></td>
+            <td>All options required by <code>--brokerage "FTX"</code>.</td>
+        </tr>
+
+        <tr>
+            <td rowspan="2"><code>"Interactive Brokers"</code></td>
+            <td>All options required by <code>--brokerage "Interactive Brokers"</code>.</td>
+        </tr>
+        <tr><td><code>--ib-enable-delayed-streaming-data</code></td></tr>
+
+        <tr>
+            <td rowspan="6"><code>"IQFeed"</code></td>
+            <td>All options required by <code>--brokerage "IQFeed"</code>.</td>
+        </tr>
+        <tr><td><code>--iqfeed-iqconnect</code></td></tr>
+        <tr><td><code>--iqfeed-username</code></td></tr>
+        <tr><td><code>--iqfeed-password</code></td></tr>
+        <tr><td><code>--iqfeed-product-name</code></td></tr>
+        <tr><td><code>--iqfeed-version</code></td></tr>
+
+        <tr>
+            <td><code>"Kraken"</code></td>
+            <td>All options required by <code>--brokerage "Kraken"</code>.</td>
+        </tr>
+        <tr>
+            <td><code>"OANDA"</code></td>
+            <td>All options required by <code>--brokerage "OANDA"</code>.</td>
+        </tr>
+
+        <tr>
+            <td><code>"Samco"</code></td>
+            <td>All options required by <code>--brokerage "Samco"</code>.</td>
+        </tr>
+
+        <tr>
+            <td><code>"Terminal Link"</code></td>
+            <td>All options required by <code>--brokerage "Terminal Link"</code>.</td>
+        </tr>
+
+        <tr>
+            <td><code>"Tradier"</code></td>
+            <td>All options required by <code>--brokerage "Tradier"</code>.</td>
+        </tr>
+
+        <tr>
+            <td><code>"Trading Technologies"</code></td>
+            <td>All options required by <code>--brokerage "Trading Technologies"</code>.</td>
+        </tr>
+
+        <tr>
+            <td rowspan="2"><code>"Zerodha"</code></td>
+            <td>All options required by <code>--brokerage "Zerodha"</code>.</td>
+        </tr>
+        <tr><td><code>--zerodha-history-subscription</code></td></tr>
+
+    </tbody>
+</table>
+
+<p>
+    Example non-interactive usage:
+</p>
+
+<div class="cli section-example-container">
+<pre>$ lean live deploy "My Project" \
+    --brokerage "Paper Trading" \
+    --data-feed "Interactive Brokers" \
+    --ib-organization "MyOrganization" \
+    --ib-user-name "trader777" \
+    --ib-account "DU1234567" \
+    --ib-password "hunter2" \
+    --ib-enable-delayed-streaming-data yes</pre>
+</div>
+
+<p>
+    The Docker image that is used contains the same libraries as the ones <a href="/docs/v2/lean-cli/projects/libraries/third-party-libraries">available on QuantConnect</a>.
+    If the selected project is a C# project, it is compiled before starting live trading.
+</p>
+
+<p>
+    By default, the official LEAN engine image is used.
+    You can override this using the <code>--image &lt;value&gt;</code> option.
+    Alternatively, you can set the default engine image for all commands using <code>lean config set engine-image &lt;value&gt;</code>.
+    The image is pulled before starting the local live trading if it doesn't exist locally yet or if you pass the <code>--update</code> flag.
+</p>

@@ -7,7 +7,7 @@ $isBrokerage = true;
 $brokerageDetails = "
 <li>Enter your <a href='https://kite.trade/' target='_blank'>Kite Connect</a> API key and access token.
 <div class='cli section-example-container'>
-<pre>$ lean live \"My Project\"
+<pre>$ lean live deploy \"My Project\"
 API key: hp9erb9ct0lqaxpm
 Access token: ********************</pre>
 </div>
@@ -15,7 +15,7 @@ Access token: ********************</pre>
 
 <li>Enter the product type.
 <div class='cli section-example-container'>
-<pre>$ lean live \"My Project\"
+<pre>$ lean live deploy \"My Project\"
 Product type (mis, cnc, nrml):</pre>
 </div>
 <p>The following table describes the product types:</p>
@@ -45,7 +45,7 @@ Product type (mis, cnc, nrml):</pre>
 
 <li>Enter the trading segment.
 <div class='cli section-example-container'>
-<pre>$ lean live \"My Project\"
+<pre>$ lean live deploy \"My Project\"
 Trading segment (equity, commodity):</pre>
 </div>
 <p>The following table describes when to use each trading segment:</p>
@@ -73,7 +73,7 @@ Trading segment (equity, commodity):</pre>
 $dataFeedDetails = "
 <li>Enter whether you have a history API subscription.
 <div class='cli section-example-container'>
-<pre>$ lean live \"My Project\"
+<pre>$ lean live deploy \"My Project\"
 Do you have a history API subscription? (true, false): true</pre>
 </div>
 </li>

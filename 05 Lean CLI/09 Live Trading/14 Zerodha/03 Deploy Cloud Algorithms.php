@@ -4,7 +4,7 @@ include(DOCS_RESOURCES."/brokerages/cli-deployment/deploy-cloud-algorithms.php")
 $brokerageDetails = "
 <li>Enter your <a href='https://kite.trade/' target='_blank'>Kite Connect</a> API key and access token.
 <div class='cli section-example-container'>
-<pre>$ lean cloud live \"My Project\" --push --open
+<pre>$ lean cloud live deploy \"My Project\" --push --open
 API key: hp9erb9ct0lqaxpm
 Access token: ********************</pre>
 </div>
@@ -13,7 +13,7 @@ Access token: ********************</pre>
 
 <li>Enter the product type.
 <div class='cli section-example-container'>
-<pre>$ lean cloud live \"My Project\" --push --open
+<pre>$ lean cloud live deploy \"My Project\" --push --open
 Product type (mis, cnc, nrml):</pre>
 </div>
 <p>The following table describes the product types:</p>
@@ -44,7 +44,7 @@ Product type (mis, cnc, nrml):</pre>
 
 <li>Enter the trading segment.
 <div class='cli section-example-container'>
-<pre>$ lean cloud live \"My Project\" --push --open
+<pre>$ lean cloud live deploy \"My Project\" --push --open
 Trading segment (equity, commodity):</pre>
 </div>
 <p>The following table describes when to use each trading segment:</p>

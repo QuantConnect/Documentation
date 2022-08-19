@@ -7,14 +7,14 @@ $isBrokerage = true;
 $brokerageDetails = "
 <li>Enter the environment to use.
 <div class='cli section-example-container'>
-<pre>$ lean live \"My Project\"
+<pre>$ lean live deploy \"My Project\"
 Environment (Production, Beta): Production</pre>
 </div>
 </li>
 
 <li>Enter the host and port of the Bloomberg server.
 <div class='cli section-example-container'>
-<pre>$ lean live \"My Project\"
+<pre>$ lean live deploy \"My Project\"
 Server host: 127.0.0.1
 Server port: 8194</pre>
 </div>
@@ -22,7 +22,7 @@ Server port: 8194</pre>
 
 <li>Enter the path to the symbol map file.
 <div class='cli section-example-container'>
-<pre>$ lean live \"My Project\"
+<pre>$ lean live deploy \"My Project\"
 Path to symbol map file: ~/Documents/symbol-map-file.json</pre>
 </div>
         The symbol map file must be a JSON file (comments are supported) in which the keys are the Bloomberg symbol names and the values are the corresponding QuantConnect symbols. This content can be used as an example:
@@ -44,7 +44,7 @@ Path to symbol map file: ~/Documents/symbol-map-file.json</pre>
 
 <li>Enter your EMSX configuration (properties followed by <code>[]</code> can be skipped by pressing enter).
 <div class='cli section-example-container'>
-<pre>$ lean live \"My Project\"
+<pre>$ lean live deploy \"My Project\"
 EMSX broker: someValue
 EMSX user timezone [UTC]:
 EMSX account []:
@@ -56,7 +56,7 @@ EMSX handling []:</pre>
 
 <li>Enter whether modification must be allowed.
 <div class='cli section-example-container'>
-<pre>$ lean live \"My Project\"
+<pre>$ lean live deploy \"My Project\"
 Allow modification (yes/no): no</pre>
 </div>
 </li>

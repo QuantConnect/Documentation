@@ -1,0 +1,110 @@
+<p>
+    Starts live trading for a cloud project.
+    Before starting live trading, the CLI shows an interactive wizard letting you configure the brokerage, the live node, and the notifications.
+    After starting live trading, the CLI displays a URL to the live results.
+    You can use the <code>--open</code> flag to automatically open this URL in the browser once the deployment starts.
+</p>
+
+<p>
+    If you specify the <code>--brokerage</code> option, the interactive wizard is skipped and the command runs in non-interactive mode.
+    In this mode, the command doesn't prompt for input or confirmation and reads all configuration from the provided command-line options.
+    In non-interactive mode, all options specific to the selected brokerage become required, as well as <code>--node</code>, <code>--auto-restart</code>, <code>--notify-order-events</code>, and <code>--notify-insights</code>.
+</p>
+
+<p>
+    The following options are required for each brokerage in non-interactive mode:
+</p>
+
+
+<table class="qc-table table">
+    <thead>
+        <tr>
+            <th><code>--brokerage</code></th>
+            <th>Required Options</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><code>"Paper Trading"</code></td>
+            <td>N/A</td>
+        </tr>
+
+        <tr>
+            <td rowspan="3"><code>"Binance"</code></td>
+            <td><code>--binance-api-key</code></td>
+        </tr>
+        <tr><td><code>--binance-api-secret</code></td></tr>
+        <tr><td><code>--binance-environment</code></td></tr>
+
+        <tr>
+            <td rowspan="2"><code>"Bitfinex"</code></td>
+            <td><code>--bitfinex-api-key</code></td>
+        </tr>
+        <tr><td><code>--bitfinex-api-secret</code></td></tr>
+
+        <tr>
+            <td rowspan="4"><code>"Coinbase Pro"</code></td>
+            <td><code>--gdax-api-key</code></td>
+        </tr>
+        <tr><td><code>--gdax-api-secret</code></td></tr>
+        <tr><td><code>--gdax-passphrase</code></td></tr>
+        <tr><td><code>--gdax-environment</code></td></tr>
+
+        <tr>
+            <td rowspan="4"><code>"FTX"</code></td>
+            <td><code>--ftx-api-key</code></td>
+        </tr>
+        <tr><td><code>--ftx-api-secret</code></td></tr>
+        <tr><td><code>--ftx-account-tier</code></td></tr>
+        <tr><td><code>--ftx-exchange-name</code></td></tr>
+
+        <tr>
+            <td rowspan="4"><code>"Interactive Brokers"</code></td>
+            <td><code>--ib-user-name</code></td>
+        </tr>
+        <tr><td><code>--ib-account</code></td></tr>
+        <tr><td><code>--ib-password</code></td></tr>
+        <tr><td><code>--ib-data-feed</code></td></tr>
+
+        <tr>
+            <td rowspan="3"><code>"Kraken"</code></td>
+            <td><code>--kraken-api-key</code></td>
+        </tr>
+        <tr><td><code>--kraken-api-secret</code></td></tr>
+        <tr><td><code>--kraken-verification-tier</code></td></tr>
+
+        <tr>
+            <td rowspan="3"><code>"OANDA"</code></td>
+            <td><code>--oanda-account-id</code></td>
+        </tr>
+        <tr><td><code>--oanda-access-token</code></td></tr>
+        <tr><td><code>--oanda-environment</code></td></tr>
+
+        <tr>
+            <td rowspan="3"><code>"Tradier"</code></td>
+            <td><code>--tradier-account-id</code></td>
+        </tr>
+        <tr><td><code>--tradier-access-token</code></td></tr>
+        <tr><td><code>--tradier-environment</code></td></tr>
+
+    </tbody>
+</table>
+
+<p>
+    Example non-interactive usage:
+</p>
+
+<div class="cli section-example-container">
+<pre>$ lean cloud live deploy "My Project" \
+    --brokerage "Paper Trading" \
+    --node "My Node" \
+    --auto-restart yes
+    --notify-order-events no \
+    --notify-insights no \
+    --push \
+    --open</pre>
+</div>
+
+<p>
+    If you have a local copy of the cloud project, you can use the <code>--push</code> option to push local modifications to the cloud before starting live trading.
+</p>

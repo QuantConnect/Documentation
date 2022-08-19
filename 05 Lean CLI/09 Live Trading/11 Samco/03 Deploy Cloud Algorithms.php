@@ -4,7 +4,7 @@ include(DOCS_RESOURCES."/brokerages/cli-deployment/deploy-cloud-algorithms.php")
 $brokerageDetails = "
 <li>Enter your Samco credentials.
 <div class='cli section-example-container'>
-<pre>$ lean cloud live \"My Project\" --push --open
+<pre>$ lean cloud live deploy \"My Project\" --push --open
 Client ID:
 Client Password:</pre>
 </div>
@@ -12,14 +12,14 @@ Client Password:</pre>
 
 <li>Enter your year of birth.
 <div class='cli section-example-container'>
-<pre>$ lean cloud live \"My Project\" --push --open
+<pre>$ lean cloud live deploy \"My Project\" --push --open
 Year of Birth:</pre>
 </div>
 </li>
 
 <li>Enter the product type.
 <div class='cli section-example-container'>
-<pre>$ lean cloud live \"My Project\" --push --open
+<pre>$ lean cloud live deploy \"My Project\" --push --open
 Product type (mis, cnc, nrml):</pre>
 </div>
 <p>The following table describes the product types:</p>
@@ -49,7 +49,7 @@ Product type (mis, cnc, nrml):</pre>
 
 <li>Enter the trading segment.
 <div class='cli section-example-container'>
-<pre>$ lean cloud live \"My Project\" --push --open
+<pre>$ lean cloud live deploy \"My Project\" --push --open
 Trading segment (equity, commodity):</pre>
 </div>
 <p>The following table describes when to use each trading segment:</p>
