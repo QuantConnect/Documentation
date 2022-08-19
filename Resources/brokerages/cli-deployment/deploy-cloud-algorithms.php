@@ -12,9 +12,9 @@ $getDeployCloudAlgorithmsText = function($brokerageName, $isSupported, $brokerag
         <ol>
             <li><a href='/docs/v2/lean-cli/initialization/authenticating-accounts#02-Log-In'>Log in</a> to the CLI if you haven't done so already.</li>
             <li>Open a terminal in your <a href='/docs/v2/lean-cli/initialization/directory-structure#02-lean-init'>CLI root directory</a>.</li>
-            <li>Run <code>lean cloud live '&lt;projectName&gt;' --push --open</code> to push <span class='private-directory-name'>./&lt;projectName&gt;</span>. to the cloud, start a live deployment wizard, and open the results in the browser once the deployment starts.
+            <li>Run <code>lean cloud live deploy '&lt;projectName&gt;' --push --open</code> to push <span class='private-directory-name'>./&lt;projectName&gt;</span>. to the cloud, start a live deployment wizard, and open the results in the browser once the deployment starts.
 <div class='cli section-example-container'>
-<pre>$ lean cloud live \"My Project\" --push --open
+<pre>$ lean cloud live deploy \"My Project\" --push --open
 [1/1] Pushing 'My Project'
 Successfully updated cloud file 'My Project/main.py'
 Started compiling project 'My Project'
@@ -44,7 +44,7 @@ Enter an option:</pre>
     echo "
             <li>Select the live node that you want to use. If you only have one idle live trading node, it is selected automatically and this step is skipped.
 <div class='cli section-example-container'>
-<pre>$ lean cloud live \"My Project\" --push --open
+<pre>$ lean cloud live deploy \"My Project\" --push --open
 Select a node:
 1) L-MICRO node 89c90172 - 1 CPU @ 2.4GHz, 0.5GB Ram
 2) L-MICRO node 85a52135 - 1 CPU @ 2.4GHz, 0.5GB Ram
@@ -54,7 +54,7 @@ Enter an option: 1</pre>
 
             <li>Configure your notification settings. You can configure any combination of email notifications, webhook notifications, and SMS notifications for order events and emitted insights.
             <div class='cli section-example-container'>
-<pre>$ lean cloud live \"My Project\" --push --open
+<pre>$ lean cloud live deploy \"My Project\" --push --open
 Do you want to send notifications on order events? [y/N]: y
 Do you want to send notifications on insights? [y/N]: y
 Email notifications: None
@@ -76,7 +76,7 @@ Do you want to add another notification method? [y/N]: n</pre>
 
             <li>Enable or disable automatic algorithm restarting. This feature attempts to restart your algorithm if it fails due to a runtime error, like a brokerage API disconnection.
             <div class='cli section-example-container'>
-<pre>$ lean cloud live \"My Project\" --push --open
+<pre>$ lean cloud live deploy \"My Project\" --push --open
 Do you want to enable automatic algorithm restarting? [Y/n]: y</pre>
 </div>
             </li>
@@ -85,7 +85,7 @@ Do you want to enable automatic algorithm restarting? [Y/n]: y</pre>
 
             <li>Verify the configured settings and confirm them to start the live deployment in the cloud.
             <div class='cli section-example-container'>
-<pre>$ lean cloud live \"My Project\" --push --open
+<pre>$ lean cloud live deploy \"My Project\" --push --open
 Brokerage: {$brokerageName}
 Project id: 1234567
 Environment: Live
