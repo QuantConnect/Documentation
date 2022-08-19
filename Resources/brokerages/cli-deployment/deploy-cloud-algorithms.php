@@ -12,7 +12,7 @@ $getDeployCloudAlgorithmsText = function($brokerageName, $isSupported, $brokerag
         <ol>
             <li><a href='/docs/v2/lean-cli/initialization/authenticating-accounts#02-Log-In'>Log in</a> to the CLI if you haven't done so already.</li>
             <li>Open a terminal in your <a href='/docs/v2/lean-cli/initialization/directory-structure#02-lean-init'>CLI root directory</a>.</li>
-            <li>Run <code>lean cloud live deploy '&lt;projectName&gt;' --push --open</code> to push <span class='private-directory-name'>./&lt;projectName&gt;</span>. to the cloud, start a live deployment wizard, and open the results in the browser once the deployment starts.
+            <li>Run <code>lean cloud live deploy \"&lt;projectName&gt;\" --push --open</code> to push <span class='private-directory-name'>./&lt;projectName&gt;</span>. to the cloud, start a live deployment wizard, and open the results in the browser once the deployment starts.
 <div class='cli section-example-container'>
 <pre>$ lean cloud live deploy \"My Project\" --push --open
 [1/1] Pushing 'My Project'

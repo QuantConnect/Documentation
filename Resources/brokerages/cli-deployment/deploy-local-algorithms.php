@@ -19,7 +19,7 @@ $getDeployLocalAlgorithmsText = function($brokerageName, $dataFeedName, $isBroke
             <li>Open a terminal in your <a href='/docs/v2/lean-cli/initialization/directory-structure#02-lean-init'>CLI root directory</a>.</li>
             <li>Run <code>lean live deploy \"&lt;projectName&gt;\"</code> to start a live deployment wizard for the project in <span class='private-directory-name'>./&lt;projectName&gt;</span> and then enter {$word} brokerage number.
             <div class='cli section-example-container'>
-<pre>$ lean live deploy 'My Project'
+<pre>$ lean live deploy \"My Project\"
 Select a brokerage:
 1) Paper Trading
 2) Interactive Brokers
@@ -59,7 +59,7 @@ Enter an option: 1</pre>
 
     echo "<li>Enter the number of the data feed to use and then follow the steps required for the data connection.
             <div class='cli section-example-container'>
-<pre>$ lean live deploy 'My Project'
+<pre>$ lean live deploy \"My Project\"
 Select a data feed:
 1) Interactive Brokers
 2) Tradier

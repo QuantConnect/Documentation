@@ -25,7 +25,7 @@ Year of Birth:</pre>
 <li>Enter the product type.
 <div class='cli section-example-container'>
 <pre>$ lean live deploy \"My Project\"
-Product type (MIS, CNC, NRML):</pre>
+Product type (mis, cnc, nrml):</pre>
 </div>
 
 <p>The following table describes the product types:</p>
@@ -38,15 +38,15 @@ Product type (MIS, CNC, NRML):</pre>
     </thead>
     <tbody>
         <tr>
-            <td><code>MIS</code></td>
+            <td><code>mis</code></td>
             <td>Intraday products</td>
         </tr>
         <tr>
-            <td><code>CNC</code></td>
+            <td><code>cnc</code></td>
             <td>Delivery products</td>
         </tr>
         <tr>
-            <td><code>NRML</code></td>
+            <td><code>nrml</code></td>
             <td>Carry forward products</td>
         </tr>
     </tbody>
@@ -57,7 +57,7 @@ Product type (MIS, CNC, NRML):</pre>
 <li>Enter the trading segment.
 <div class='cli section-example-container'>
 <pre>$ lean live deploy \"My Project\"
-Trading segment (EQUITY, COMMODITY):</pre>
+Trading segment (equity, commodity):</pre>
 </div>
 
 <p>The following table describes when to use each trading segment:</p>
@@ -70,11 +70,11 @@ Trading segment (EQUITY, COMMODITY):</pre>
     </thead>
     <tbody>
         <tr>
-            <td><code>EQUITY</code></td>
+            <td><code>equity</code></td>
             <td>For trading Equities on the National Stock Exchange of India (NSE) or the Bombay Stock Exchange (BSE)</td>
         </tr>
         <tr>
-            <td><code>COMMODITY</code></td>
+            <td><code>commodity</code></td>
             <td>For trading commodities on the Multi Commodity Exchange of India (MCX)</td>
         </tr>
     </tbody>
