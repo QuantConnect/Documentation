@@ -255,7 +255,7 @@ def ExampleWriting(request_object_properties, item_list, array=False, order=0):
                         type_ = prop_type + f'$({prop_type["format"]})' + " object"
                         
                         if prop_type["format"] == "date-time":
-                            example_ += "2021-11-26T15:18:27.693Z"
+                            example_ += '"2021-11-26T15:18:27.693Z"'
                             
                         else:
                             example_ += "0"
@@ -313,7 +313,7 @@ def ExampleWriting(request_object_properties, item_list, array=False, order=0):
         elif type_ == "string":
             if "format" in properties:
                 type_ += f'(${properties["format"]})'
-                example_ += "2021-11-26T15:18:27.693Z"
+                example_ += '"2021-11-26T15:18:27.693Z"'
                 
             else:
                 example_ += '"string"'
