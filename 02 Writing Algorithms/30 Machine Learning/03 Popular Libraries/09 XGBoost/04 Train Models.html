@@ -1,0 +1,96 @@
+<p>In this example, a gradient boost tree regression prediction model using the following features and labels will be trained:</p>
+
+<table class="qc-table table">
+    <thead>
+        <tr>
+            <th>Data Category</th>
+            <th>Description</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>Features</td>
+            <td>The last 5 closing prices</td>
+        </tr>
+        <tr>
+            <td>Labels</td>
+            <td>The following day's closing price</td>
+        </tr>
+    </tbody>
+</table>
+
+<p>The following image shows the time difference between the features and labels:</p>
+<img class="docs-image" src="https://cdn.quantconnect.com/i/tu/ml-keras-function.png">
+
+<p>Follow these steps to create a method to train your model:</p>
+
+<h4>History Call</h4>
+<p>You need historical data to train the model. Call <code>History</code> with <code>Symbol</code>, timerule, and resolution to obtain historical data. In this example, 2 years of daily trade bar data is used.</p>
+<div class="section-example-container">
+    <pre class="python">self.History(self.spy, 252*2, Resolution.Daily)</pre>
+</div>
+
+<h4>Prepare Data</h4>
+<p>Follow the below steps to create a method to prepare the data for training and prediction.</p>
+<ol>
+    <li>Create a method to process the data for the algorithm class, with input data and number of timestep as arguments.</li>
+    <div class="section-example-container">
+        <pre class="python">def ProcessData(self, history, n_steps=5):</pre>
+    </div>
+
+    <li>Perform fractional differencing on the historical data.</li>
+    <div class="section-example-container">
+        <pre class="python">    df = (history['close'] * 0.5 + history['close'].diff() * 0.5)[1:]</pre>
+    </div>
+
+    <li>Loop through the <code>df</code> DataFrame and collect the features and labels.</li>
+    <div class="section-example-container">
+        <pre class="python">    features = []
+    labels = []
+    for i in range(len(df)-n_steps):
+        features.append(df.iloc[i:i+n_steps].values)
+        labels.append(df.iloc[i+n_steps])</pre>
+    </div>
+
+    <li>Convert the lists of features and labels into <code>numpy</code> arrays.</li>
+    <div class="section-example-container">
+        <pre class="python">    features = np.array(features)
+    labels = np.array(labels)</pre>
+    </div>
+
+    <li>Standardize the features and labels</li>
+    <div class="section-example-container">
+        <pre class="python">    features = (features - features.mean()) / features.std()
+    labels = (labels - labels.mean()) / labels.std()</pre>
+    </div>
+
+    <li>Format training set into <code>XGBoost matrix</code> and return it.</li>
+    <div class="section-example-container">
+        <pre class="python">    d_matrix = xgb.DMatrix(features, label=labels)
+    return d_matrix</pre>
+    </div>
+</ol>
+
+<h4>Build and Fit Model</h4>
+<p>Follow the below steps to build and fit the model.</p>
+<ol>
+    <li>Get processed training data.</li>
+    <div class="section-example-container">
+        <pre class="python">dtrain = self.ProcessData(history)</pre>
+    </div>
+
+    <li>Call the <code>train</code> method to train the model with parameters, feature matrix and number of gradient boost round as arguments. Save that as a class variable.</li>
+    <div class="section-example-container">
+        <pre class="python">params = {
+  'booster': 'gbtree',
+  'colsample_bynode': 0.8,
+  'learning_rate': 0.1,
+  'lambda': 0.1,
+  'max_depth': 5,
+  'num_parallel_tree': 100,
+  'objective': 'reg:squarederror',
+  'subsample': 0.8,
+}
+self.model = xgb.train(params, dtrain, num_boost_round=10)</pre>
+    </div>
+</ol>
