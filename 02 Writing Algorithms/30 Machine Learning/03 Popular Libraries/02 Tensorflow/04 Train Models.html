@@ -1,0 +1,147 @@
+<p>In this example, a neural-network regression prediction model using the following features and labels will be trained:</p>
+
+<table class="qc-table table">
+    <thead>
+        <tr>
+            <th>Data Category</th>
+            <th>Description</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>Features</td>
+            <td>The last 5 closing prices</td>
+        </tr>
+        <tr>
+            <td>Labels</td>
+            <td>The following day's closing price</td>
+        </tr>
+    </tbody>
+</table>
+
+<p>The following image shows the time difference between the features and labels:</p>
+<img class="docs-image" src="https://cdn.quantconnect.com/i/tu/ml-keras-function.png">
+
+<p>Follow these steps to create a method to train your model:</p>
+
+<h4>History Call</h4>
+<p>You need historical data to train the model. Call <code>History</code> with <code>Symbol</code>, timerule, and resolution to obtain historical data. In this example, 2 years of daily trade bar data is used.</p>
+<div class="section-example-container">
+    <pre class="python">self.History(self.spy, 252*2, Resolution.Daily)</pre>
+</div>
+
+<h4>Prepare Data</h4>
+<p>Follow the below steps to create a method to prepare the data for training and prediction.</p>
+<ol>
+    <li>Create a method to process the data for the algorithm class, with input data and number of timestep as arguments.</li>
+    <div class="section-example-container">
+        <pre class="python">def ProcessData(self, history, lookback=5):</pre>
+    </div>
+
+    <li>Loop through the <code>history</code> DataFrame and collect the features and labels.</li>
+    <div class="section-example-container">
+        <pre class="python">    lookback_series = []
+    for i in range(1, lookback + 1):
+        df = history['close'].shift(i)[lookback:-1]
+        df.name = f"close_-{i}"
+        lookback_series.append(df)
+    features = pd.concat(lookback_series, axis=1).reset_index(drop=True)
+
+    labels = history['close'].shift(-1)
+    labels = labels[lookback:-1].reset_index(drop=True)</pre>
+    </div>
+
+    <li>Convert the series of features and labels into <code>numpy</code> arrays and return them.</li>
+    <div class="section-example-container">
+        <pre class="python">    features = features.values
+    labels = labels.values
+
+    return features, labels</pre>
+    </div>
+</ol>
+
+<h4>Build Model</h4>
+<p>Follow the below steps to create a method to build the model.</p>
+<ol>
+    <li>Create a method to build the model for the algorithm class.</li>
+    <div class="section-example-container">
+        <pre class="python">def BuildModel(self, features, labels):</pre>
+    </div>
+
+    <li>Call the <code>Session</code> constructor.</li>
+    <div class="section-example-container">
+        <pre class="python">    sess = tf.Session()</pre>
+    </div>
+
+    <li>Declare the number of factors and then create placeholders for the input and output layers.</li>
+    <div class="section-example-container">
+        <pre class="python">    num_factors = features.shape[1]
+            X = tf.placeholder(dtype=tf.float32, shape=[None, num_factors], name='X')
+            Y = tf.placeholder(dtype=tf.float32, shape=[None])</pre>
+    </div>
+
+    <li>Set up the weights and bias initializers for each layer.</li>
+    <div class="section-example-container">
+        <pre class="python">    weight_initializer = tf.variance_scaling_initializer(mode="fan_avg", distribution="uniform", scale=1)
+    bias_initializer = tf.zeros_initializer()</pre>
+    </div>
+
+    <li>Create hidden layers that use the <code>Relu</code> activator.</li>
+    <div class="section-example-container">
+        <pre class="python">    num_neurons_1 = 32
+    num_neurons_2 = 16
+    num_neurons_3 = 8
+    
+    W_hidden_1 = tf.Variable(weight_initializer([num_factors, num_neurons_1]))
+    bias_hidden_1 = tf.Variable(bias_initializer([num_neurons_1]))
+    hidden_1 = tf.nn.relu(tf.add(tf.matmul(X, W_hidden_1), bias_hidden_1))
+    
+    W_hidden_2 = tf.Variable(weight_initializer([num_neurons_1, num_neurons_2]))
+    bias_hidden_2 = tf.Variable(bias_initializer([num_neurons_2]))
+    hidden_2 = tf.nn.relu(tf.add(tf.matmul(hidden_1, W_hidden_2), bias_hidden_2))
+    
+    W_hidden_3 = tf.Variable(weight_initializer([num_neurons_2, num_neurons_3]))
+    bias_hidden_3 = tf.Variable(bias_initializer([num_neurons_3]))
+    hidden_3 = tf.nn.relu(tf.add(tf.matmul(hidden_2, W_hidden_3), bias_hidden_3))</pre>
+    </div>
+
+    <li>Create the output layer and give it a name.</li>
+    <div class="section-example-container">
+        <pre class="python">    W_out = tf.Variable(weight_initializer([num_neurons_3, 1]))
+    bias_out = tf.Variable(bias_initializer([1]))
+    output = tf.transpose(tf.add(tf.matmul(hidden_3, W_out), bias_out), name='outer')</pre>
+    </div>
+    <p>This snippet creates a 1-node output for both weight and bias. You must name the output layer so you can access it after you load and save the model.</p>
+
+    <li>Set up the loss function and optimizers for gradient descent optimization and backpropagation.</li>
+    <div class="section-example-container">
+        <pre class="python">    loss = tf.reduce_mean(tf.squared_difference(output, Y))
+    optimizer = tf.train.AdamOptimizer().minimize(loss)</pre>
+    </div>
+    <p>Use mean-square error as the loss function because the close price is a continuous data and use Adam as the optimizer because of its adaptive step size.</p>
+    
+    <li>return the built <code>Session</code>, output layer, and selected optimizer.</li>
+    <div class="section-example-container">
+        <pre class="python">    return sess, X, Y, output, optimizer</pre>
+    </div>
+</ol>
+
+<h4>Fit Model</h4>
+<p>Follow the below steps to fit the model with the prepared data.</p>
+<ol>
+    <li>Instantiate the model, input layers, output layer, and optimizer. Save them as class variables.</li>
+    <div class="section-example-container">
+        <pre class="python">self.model, self.X, self.Y, self.output, self.optimizer = self.BuildModel(features)</pre>
+    </div>
+
+    <li>Call the <code>run</code> method with the result from the <code>global_variables_initializer</code> method.</li>
+    <div class="section-example-container">
+        <pre class="python">self.model.run(tf.global_variables_initializer())</pre>
+    </div>
+
+    <li>Call the <code>run</code> method with the features and labels to train the model.</li>
+    <div class="section-example-container">
+        <pre class="python">features, labels = self.ProcessData(history)
+self.model.run(self.optimizer, feed_dict={self.X: features, self.Y: labels})</pre>
+    </div>
+</ol>

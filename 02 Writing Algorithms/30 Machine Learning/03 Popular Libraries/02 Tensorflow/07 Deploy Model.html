@@ -1,0 +1,22 @@
+<p>You need to <a href="#04-Train-Models">build and train the model</a> before you deploy it for backtesting and trading. Follow these steps to deploy the model:</p>
+
+<ol>
+    <li>Process new data in form of <code>pandas.Dataframe</code>.</li>
+    <div class="section-example-container">
+        <pre class="python">new_X, __ = self.ProcessData(df)</pre>
+    </div>
+
+    <li>Make new prediction.</li>
+    <div class="section-example-container">
+        <pre class="python">prediction = self.model.run(self.output, feed_dict={self.X: new_X})
+prediction = float(prediction.flatten()[-1])</pre>
+    </div>
+
+    <li>Trade based on the new prediction.</li>
+    <div class="section-example-container">
+        <pre class="python">if prediction > 0:
+    self.SetHoldings(self.spy, 1)
+elif prediction < 0:            
+    self.SetHoldings(self.spy, -1)</pre>
+    </div>
+</ol>
