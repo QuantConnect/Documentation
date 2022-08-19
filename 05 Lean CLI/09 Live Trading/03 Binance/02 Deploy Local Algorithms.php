@@ -7,21 +7,21 @@ $isBrokerage = true;
 $brokerageDetails = "
 <li>Enter the exchange to use.
 <div class='cli section-example-container'>
-<pre>$ lean live \"My Project\"
+<pre>$ lean live deploy \"My Project\"
 Binance Exchange (Binance, BinanceUS): BinanceUS</pre>
 </div>
 </li>
 
 <li>Enter the environment to use.
 <div class='cli section-example-container'>
-<pre>$ lean live \"My Project\"
+<pre>$ lean live deploy \"My Project\"
 Use the testnet? (live, paper): live</pre>
 </div>
 </li>
 
 <li>Enter your API key and API secret.
 <div class='cli section-example-container'>
-<pre>$ lean live \"My Project\"
+<pre>$ lean live deploy \"My Project\"
 API key: 6d3ef5ca2d2fa52e4ee55624b0471261
 API secret: ********************************</pre>
 </div>
