@@ -99,7 +99,39 @@ class MySecurityInitializer(BrokerageModelSecurityInitializer):
     OptionStyle.American, OptionRight.Call, 365, datetime(2022, 6, 17))</pre>
 </div>
 
-<p>Another way to get an Option contract <code>Symbol</code> is to use the <code>OptionChainProvider</code>. The <code>GetOptionContractList</code> method of <code>OptionChainProvider</code> returns a list of <code>Symbol</code> objects that reference the available Option contracts for a given underlying Equity on a given date.</p>
+<p>Another way to get an Option contract <code>Symbol</code> is to use the <code>OptionChainProvider</code>. The <code>GetOptionContractList</code> method of <code>OptionChainProvider</code> returns a list of <code>Symbol</code> objects that reference the available Option contracts for a given underlying Equity on a given date. To filter and select contracts, you can use the following properties of each <code>Symbol</code> object:</p>
+    <table class="qc-table table">
+        <thead>
+            <tr>
+                <th>Property</th>
+                <th>Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                 <td><code>ID.Date</code></td>
+                 <td>The expiration date of the contract.</td>
+            </tr>
+            <tr>
+                 <td><code>ID.StrikePrice</code></td>
+                 <td>The strike price of the contract.</td>
+            </tr>
+            <tr>
+                 <td><code>ID.OptionRight</code></td>
+                 <td>
+                     The contract type. The <code>OptionRight</code> enumeration has the following members:
+                     <div data-tree="QuantConnect.OptionRight"></div>
+                  </td>
+            </tr>
+            <tr>
+                 <td><code>ID.OptionStyle</code></td>
+                 <td>
+                     The contract style. The <code>OptionStyle</code> enumeration has the following members:
+                     <div data-tree="QuantConnect.OptionStyle"></div>
+                  </td>
+            </tr>
+        </tbody>
+    </table>
 
 <div class="section-example-container">
     <pre class="csharp">var contractSymbols = OptionChainProvider.GetOptionContractList(_symbol, Time);
