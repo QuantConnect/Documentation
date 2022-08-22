@@ -94,6 +94,40 @@ self.option_contract_symbol = Symbol.CreateOption(self.future_contract_symbol,
     <li>A contract in the <a href="/docs/v2/writing-algorithms/universes/futures">Futures universe</a></li>
     <li>A contract that you added with <code>AddFutureContract</code></li>
 </ul>
+
+<p>To filter and select contracts that the <code>GetOptionContractList</code> method returns, you can use the following properties of each <code>Symbol</code> object:</p>
+    <table class="qc-table table">
+        <thead>
+            <tr>
+                <th>Property</th>
+                <th>Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                 <td><code>ID.Date</code></td>
+                 <td>The expiration date of the contract.</td>
+            </tr>
+            <tr>
+                 <td><code>ID.StrikePrice</code></td>
+                 <td>The strike price of the contract.</td>
+            </tr>
+            <tr>
+                 <td><code>ID.OptionRight</code></td>
+                 <td>
+                     The contract type. The <code>OptionRight</code> enumeration has the following members:
+                     <div data-tree="QuantConnect.OptionRight"></div>
+                  </td>
+            </tr>
+            <tr>
+                 <td><code>ID.OptionStyle</code></td>
+                 <td>
+                     The contract style. The <code>OptionStyle</code> enumeration has the following members:
+                     <div data-tree="QuantConnect.OptionStyle"></div>
+                  </td>
+            </tr>
+        </tbody>
+    </table>
     
 <div class="section-example-container">
     <pre class="csharp">var optionContractSymbols = OptionChainProvider.GetOptionContractList(_futureContractSymbol, Time);
@@ -105,9 +139,6 @@ expiry = min([symbol.ID.Date for symbol in option_contract_symbols])
 filtered_symbols = [symbol for symbol in option_contract_symbols if symbol.ID.Date == expiry and symbol.ID.OptionRight == OptionRight.Call]
 self.option_contract_symbol = sorted(filtered_symbols, key=lambda symbol: symbol.ID.StrikePrice)[0]</pre>
 </div>
-
-<p>The <code>OptionRight</code> enumeration has the following members:</p>
-<div data-tree="QuantConnect.OptionRight"></div>
 
 <h4>Subscribe to Contracts</h4>
 
