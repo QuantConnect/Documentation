@@ -8,3 +8,5 @@ $getRuntimeStatisticsTable(true);
 
 echo file_get_contents(DOCS_RESOURCES."/algorithm-results/create-custom-runtime-statistic.html"); 
 ?>
+
+<p>If you <a href='/docs/v2/our-platform/live-trading/algorithm-control#05-Stop-the-Algorithm'>stop</a> and redeploy a live algorithm, the runtime statistics are reset.</p>
