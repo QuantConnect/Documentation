@@ -85,7 +85,39 @@ self.contract_symbol = Symbol.CreateOption(self.symbol, Market.USA,
     OptionStyle.European, OptionRight.Call, 3650, datetime(2022, 6, 17))</pre>
 </div>
 
-<p>Another way to get an Index Option contract <code>Symbol</code> is to use the <code>OptionChainProvider</code>. The <code>GetOptionContractList</code> method of <code>OptionChainProvider </code>returns a list of <code>Symbol</code> objects that reference the available Option contracts for a given underlying Index on a given date.</p>
+<p>Another way to get an Index Option contract <code>Symbol</code> is to use the <code>OptionChainProvider</code>. The <code>GetOptionContractList</code> method of <code>OptionChainProvider </code>returns a list of <code>Symbol</code> objects that reference the available Option contracts for a given underlying Index on a given date. To filter and select contracts, you can use the following properties of each <code>Symbol</code> object:</p>
+    <table class="qc-table table">
+        <thead>
+            <tr>
+                <th>Property</th>
+                <th>Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                 <td><code>ID.Date</code></td>
+                 <td>The expiration date of the contract.</td>
+            </tr>
+            <tr>
+                 <td><code>ID.StrikePrice</code></td>
+                 <td>The strike price of the contract.</td>
+            </tr>
+            <tr>
+                 <td><code>ID.OptionRight</code></td>
+                 <td>
+                     The contract type. The <code>OptionRight</code> enumeration has the following members:
+                     <div data-tree="QuantConnect.OptionRight"></div>
+                  </td>
+            </tr>
+            <tr>
+                 <td><code>ID.OptionStyle</code></td>
+                 <td>
+                     The contract style. The <code>OptionStyle</code> enumeration has the following members:
+                     <div data-tree="QuantConnect.OptionStyle"></div>
+                  </td>
+            </tr>
+        </tbody>
+    </table>
 
 <div class="section-example-container">
     <pre class="csharp">var contractSymbols = OptionChainProvider.GetOptionContractList(_symbol, Time);
@@ -97,9 +129,6 @@ expiry = min([symbol.ID.Date for symbol in contract_symbols])
 filtered_symbols = [symbol for symbol in contract_symbols if symbol.ID.Date == expiry and symbol.ID.OptionRight == OptionRight.Call]
 self.contract_symbol = sorted(filtered_symbols, key=lambda symbol: symbol.ID.StrikePrice)[0]</pre>
 </div>
-
-<p>The <code>OptionRight</code> enumeration has the following members:</p>
-<div data-tree="QuantConnect.OptionRight"></div>
 
 <h4>Subscribe to Contracts</h4>
 <p>To create an Index Option contract subscription, pass the contract <code>Symbol</code> to the <code>AddIndexOptionContract</code> method. Save a reference to the contract <code>Symbol</code> so you can easily access the contract in the <a href="/docs/v2/writing-algorithms/securities/asset-classes/index-options/handling-data#02-Option-Chains">OptionChain</a> that LEAN passes to the <code>OnData</code> method. To set the <a href="https://www.quantconnect.com/docs/v2/writing-algorithms/reality-modeling/options-models/pricing">price model</a> of the Option, set its <code>PriceModel</code> property.</p>
