@@ -12,6 +12,10 @@ echo "
     </thead>
     <tbody>
         <tr>
+            <td>Runtime Days</td>
+            <td>The number of days in the backtest or live trading period.</td>
+        </tr>
+        <tr>
             <td>Turnover</td>
             <td>The percentage of the algorithm's portfolio that was replaced in a given year.</td>
         </tr>
@@ -32,7 +36,7 @@ echo "
             <td>{$definitionByTerm['drawdown']}</td>
         </tr>
         <tr>
-            <td>PSR</td>
+            <td>Probabilistic SR</td>
             <td>{$definitionByTerm['Probabilistic Sharpe ratio']}</td>
         </tr>
         <tr>
