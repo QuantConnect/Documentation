@@ -384,7 +384,7 @@
         <tr>
             <th>Contract Symbol</th>
             <th>Market</th>
-            <th>Underlying futures Name</th>
+            <th>Underlying Futures Name</th>
             <th>Base Fee Per Contract ($)</th>
             <th>Exchange Fee Per Contract ($)</th>
         </tr>
