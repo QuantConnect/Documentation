@@ -7,14 +7,14 @@ $isBrokerage = true;
 $brokerageDetails = "
 <li>Enter the environment to use.
 <div class='cli section-example-container'>
-<pre>$ lean live deploy \"My Project\"
+<pre>$ lean live \"My Project\"
 Use sandbox? (live, paper): live</pre>
 </div>
 </li>
 
 <li>Enter your API key, API secret, and passphrase.
 <div class='cli section-example-container'>
-<pre>$ lean live deploy \"My Project\"
+<pre>$ lean live \"My Project\"
 API key: 6d3ef5ca2d2fa52e4ee55624b0471261
 API secret: ****************************************************************************************
 Passphrase: ****************</pre>

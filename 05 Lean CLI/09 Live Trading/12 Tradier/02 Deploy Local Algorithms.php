@@ -7,7 +7,7 @@ $isBrokerage = true;
 $brokerageDetails = "
 <li>Enter your Tradier account ID and access token.
 <div class='cli section-example-container'>
-<pre>$ lean live deploy \"My Project\"
+<pre>$ lean live \"My Project\"
 Account id: VA000001
 Access token: ****************</pre>
 </div>
@@ -16,7 +16,7 @@ To get these credentials, see your <a href='https://dash.tradier.com/settings/ap
 
 <li>Enter whether the developer sandbox should be used.
 <div class='cli section-example-container'>
-<pre>$ lean live deploy \"My Project\"
+<pre>$ lean live \"My Project\"
 Use the developer sandbox? (live, paper): live</pre>
 </div>
 </li>
