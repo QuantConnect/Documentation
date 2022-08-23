@@ -1,4 +1,4 @@
-<p>Follow these steps to implement a bull butterfly spread with calls strategy.</p>
+<p>Follow these steps to implement the long call butterfly spread strategy:</p>
 
 <ol>
     <li>In the Initialize method, set the start date, end date, cash, and <a href="https://www.quantconnect.com/docs/v2/writing-algorithms/universes/equity-options">Option universe</a>.</li>
@@ -29,57 +29,50 @@ public override void Initialize()
     <div class="section-example-container">
         <pre class="csharp">public override void OnData(Slice slice)
 {
-    // avoid extra orders
     if (Portfolio.Invested) return;
 
-    // Get the OptionChain of the symbol
+    // Get the OptionChain
     var chain = slice.OptionChains.get(_symbol, null);
     if (chain == null || chain.Count() == 0) return;
 
-    // sorted the optionchain by expiration date and choose the furthest date
-    var expiry = chain.OrderBy(x => x.Expiry).Last().Expiry;
-    // filter the call options from the contracts expires on that date
-    var calls = chain.Where(x => x.Expiry == expiry && x.Right == OptionRight.Call);
-    // sorted the contracts according to their strike prices
-    var callContracts = calls.OrderBy(x => x.Strike);
+    // Get the furthest expiration date of the contracts
+    var expiry = chain.OrderBy(x =&gt; x.Expiry).Last().Expiry;
+
+    // Select the call Option contracts with the furthest expiry
+    var calls = chain.Where(x =&gt; x.Expiry == expiry &amp;&amp; x.Right == OptionRight.Call);
     if (callContracts.Count() == 0) return;
 
-    // choose OTM call
+    // Select the ITM, ATM, and OTM contracts from the remaining contracts
+    var callContracts = calls.OrderBy(x =&gt; x.Strike);
     var otmCall = callContracts.Last();
-    // choose ITM call
     var itmCall = callContracts.First();
-    // choose ATM call
-    var atmCall = callContracts.OrderBy(x => Math.Abs(chain.Underlying.Price - x.Strike)).First();</pre>
+    var atmCall = callContracts.OrderBy(x =&gt; Math.Abs(chain.Underlying.Price - x.Strike)).First();</pre>
         <pre class="python">def OnData(self, slice: Slice) -&gt; None:
-    # avoid extra orders
     if self.Portfolio.Invested: return
 
-    # Get the OptionChain of the self.symbol
+    # Get the OptionChain
     chain = slice.OptionChains.get(self.symbol, None)
     if not chain: return
 
-    # sorted the optionchain by expiration date and choose the furthest date
+    # Get the furthest expiration date of the contracts
     expiry = sorted(chain, key = lambda x: x.Expiry, reverse=True)[0].Expiry
-    # filter the call options from the contracts expires on that date
+
+    # Select the call Option contracts with the furthest expiry
     calls = [i for i in chain if i.Expiry == expiry and i.Right == 0]
-    # sorted the contracts according to their strike prices
-    call_contracts = sorted(calls, key = lambda x: x.Strike)
     if len(call_contracts) == 0: return
 
-    # choose OTM call
+    # Select the ITM, ATM, and OTM contracts from the remaining contracts
+    call_contracts = sorted(calls, key = lambda x: x.Strike)
     self.otm_call = call_contracts[-1]
-    # choose ITM call
     self.itm_call = call_contracts[0]
-    # choose ATM call
     self.atm_call = sorted(call_contracts, key = lambda x: abs(chain.Underlying.Price - x.Strike))[0]</pre>
     </div>
     
-    <li>In the OnData method, buy the ITM and OTM calls.</li>
+    <li>In the OnData method, place the orders for the contracts.</li>
     <div class="section-example-container">
-        <pre class="csharp">    Sell(atmCall.Symbol, 2);
-    Buy(itmCall.Symbol, 1);
-    Buy(otmCall.Symbol, 1);
-}</pre>
+        <pre class="csharp">Sell(atmCall.Symbol, 2);
+Buy(itmCall.Symbol, 1);
+Buy(otmCall.Symbol, 1);<br></pre>
         <pre class="python">self.Sell(self.atm_call.Symbol, 2)
 self.Buy(self.itm_call.Symbol, 1)
 self.Buy(self.otm_call.Symbol, 1)</pre>
