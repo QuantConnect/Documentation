@@ -1,22 +1,14 @@
-<p>You need to  <a href="#04-Train-Models">build and train the model</a> before you deploy it for backtesting and trading. Follow these steps to deploy the model:</p>
+<h3>Predict Labels</h3>
+<p>To predict the labels of new data, get the most recent set of features and then call the predict method.</p>
+<div class="section-example-container">
+    <pre class="python">features = self.get_features()[-1]
+prediction = float(self.model.predict(features)[-1])</pre>
+</div>
 
-<ol>
-    <li>Process new data in form of <code>pandas.Dataframe</code>.</li>
-    <div class="section-example-container">
-        <pre class="python">new_X, __ = self.ProcessData(df)</pre>
-    </div>
-
-    <li>Make new prediction.</li>
-    <div class="section-example-container">
-        <pre class="python">prediction = self.model.predict(new_X)
-prediction = float(prediction[-1])</pre>
-    </div>
-
-    <li>Trade based on the new prediction.</li>
-    <div class="section-example-container">
+<p>After you predict the latest label, you can place orders.</p>
+<div class="section-example-container">
         <pre class="python">if prediction > 0:
     self.SetHoldings(self.spy, 1)
 elif prediction < 0:            
     self.SetHoldings(self.spy, -1)</pre>
-    </div>
-</ol>
+</div>
