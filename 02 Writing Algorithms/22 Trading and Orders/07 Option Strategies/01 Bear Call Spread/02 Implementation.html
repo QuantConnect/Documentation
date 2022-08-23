@@ -45,7 +45,7 @@ def UniverseFunc(self, universe: OptionFilterUniverse) -&gt; OptionFilterUnivers
     var calls = chain.Where(x =&gt; x.Expiry == expiry &amp;&amp; x.Right == OptionRight.Call);
     if (calls.Count() == 0) return;
 
-    // Select the highest and lowest strike prices of the remaining contracts
+    // Select the ITM and OTM strike prices of the remaining contracts
     var callStrikes = calls.Select(x =&gt; x.Strike).OrderBy(x =&gt; x);
     var itmStrike = callStrikes.First();
     var otmStrike = callStrikes.Last();</pre>
@@ -63,8 +63,7 @@ def UniverseFunc(self, universe: OptionFilterUniverse) -&gt; OptionFilterUnivers
     calls = [i for i in chain if i.Expiry == expiry and i.Right == OptionRight.Call]
     if len(calls) == 0: return
 
-    # Select the highest and lowest strike prices of the remaining contracts
-    call_strikes = sorted([x.Strike for x in calls])
+    # Select the ITM and OTM strike prices of the remaining contracts<br>    call_strikes = sorted([x.Strike for x in calls])
     itm_strike = call_strikes[0]
     otm_strike = call_strikes[-1]</pre>
     </div>
