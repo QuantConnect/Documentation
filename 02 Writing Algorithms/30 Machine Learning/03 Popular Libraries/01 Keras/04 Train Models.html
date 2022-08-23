@@ -47,5 +47,7 @@ self.Train(self.DateRules.Every(DayOfWeek.Sunday), self.TimeRules.At(8, 0), self
 <h4>Update Training Data</h4>
 <p>To update the training data as the algorithm executes, in the <code>OnData</code> method, add the current <code>TradeBar</code> to the <code>RollingWindow</code> that holds the training data.</p>
 <div class="section-example-container">
-    <pre class="python">self.training_data.Add(data.Bars[self.spy])</pre>
+    <pre class="python">def OnData(self, slice: Slice) -> None:
+    if self.symbol in slice.Bars:
+        self.training_data.Add(slice.Bars[self.spy])</pre>
 </div>
