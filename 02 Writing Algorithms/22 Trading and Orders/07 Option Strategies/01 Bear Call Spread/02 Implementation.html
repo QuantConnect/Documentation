@@ -13,7 +13,7 @@ public override void Initialize()
 
     var option = AddOption("GOOG", Resolution.Minute);
     _symbol = option.Symbol;
-    option.SetFilter(universe => universe.IncludeWeeklys()
+    option.SetFilter(universe =&gt; universe.IncludeWeeklys()
                                             .Strikes(-15, 15)
                                             .Expiration(TimeSpan.FromDays(0), TimeSpan.FromDays(31)));
 }</pre>
@@ -36,56 +36,44 @@ def UniverseFunc(self, universe: OptionFilterUniverse) -&gt; OptionFilterUnivers
 {
     if (Portfolio.Invested) return;
 
-    // Get the OptionChain of the symbol
+    // Get the OptionChain
     var chain = slice.OptionChains.get(_symbol, null);
     if (chain.Count() == 0) return;
 
-    // sorted the optionchain by expiration date and choose the furthest date
-    var expiry = chain.OrderByDescending(x => x.Expiry).First().Expiry;
-    
-    // filter the call options from the contracts which expire on the furthest expiration date in the option chain.
-    var calls = chain.Where(x => x.Expiry == expiry && x.Right == OptionRight.Call);
+    // Select the call Option contracts with the furthest expiry
+    var expiry = chain.OrderByDescending(x =&gt; x.Expiry).First().Expiry;    
+    var calls = chain.Where(x =&gt; x.Expiry == expiry &amp;&amp; x.Right == OptionRight.Call);
     if (calls.Count() == 0) return;
 
-    // sort the call options with the same expiration date according to their strike price.
-    var callStrikes = calls.Select(x => x.Strike).OrderBy(x => x);
-
-    // select the strike prices for forming the option legs
-    // the ITM call option with the lowest strike price (short) and the OTM call with the highest strike price (long).
+    // Select the highest and lowest strike prices of the remaining contracts
+    var callStrikes = calls.Select(x =&gt; x.Strike).OrderBy(x =&gt; x);
     var itmStrike = callStrikes.First();
     var otmStrike = callStrikes.Last();</pre>
         <pre class="python">def OnData(self, slice: Slice) -&gt; None:
-    # avoid extra orders
     if self.Portfolio.Invested: return
 
-    # Get the OptionChain of the self.symbol
+    # Get the OptionChain
     chain = slice.OptionChains.get(self.symbol, None)
     if not chain: return
 
-    # sorted the optionchain by expiration date and choose the furthest date
+    # Get the furthest expiry date of the contracts
     expiry = sorted(chain, key = lambda x: x.Expiry, reverse=True)[0].Expiry
     
-    # filter the call options from the contracts which expire on the furthest expiration date in the option chain.
+    # Select the call Option contracts with the furthest expiry
     calls = [i for i in chain if i.Expiry == expiry and i.Right == OptionRight.Call]
     if len(calls) == 0: return
 
-    # sort the call options with the same expiration date according to their strike price.
+    # Select the highest and lowest strike prices of the remaining contracts
     call_strikes = sorted([x.Strike for x in calls])
-
-    # select the strike prices for forming the option legs
-    # the ITM call option with the lowest strike price (short) and the OTM call with the highest strike price (long).
     itm_strike = call_strikes[0]
     otm_strike = call_strikes[-1]</pre>
     </div>
 
     <li>In the OnData method, call the <code>OptionStrategies.BearCallSpread</code> method and then submit the order.</li>
     <div class="section-example-container">
-        <pre class="csharp">    var optionStrategy = OptionStrategies.BearCallSpread(_symbol, itmStrike, otmStrike, expiry);
-    // We open a position with 1 unit of the option strategy
-    Buy(optionStrategy, 1);
-}</pre>
+        <pre class="csharp">var optionStrategy = OptionStrategies.BearCallSpread(_symbol, itmStrike, otmStrike, expiry);
+Buy(optionStrategy, 1);<br></pre>
         <pre class="python">option_strategy = OptionStrategies.BearCallSpread(self.symbol, itm_strike, otm_strike, expiry)
-# We open a position with 1 unit of the option strategy
 self.Buy(option_strategy, 1)</pre>
     </div>
 </ol>
