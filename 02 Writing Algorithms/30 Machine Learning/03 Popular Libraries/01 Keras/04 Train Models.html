@@ -3,7 +3,11 @@
 <h4>Warm Up Training Data</h4>
 <p>You need historical data to initially train the model at the start of your algorithm. To get the initial training data, in the <code>Initialize</code> method, make a <a href="/docs/v2/writing-algorithms/historical-data/history-requests">history request</a>.</p>
 <div class="section-example-container">
-    <pre class="python">self.training_data = self.History(self.spy, 252*2, Resolution.Daily).loc[self.spy]</pre>
+    <pre class="python">training_length = 252*2
+self.training_data = RollingWindow[TradeBar](training_length)
+history = self.History[TradeBar](self.spy, training_length, Resolution.Daily)
+for trade_bar in history:
+    self.training_data.Add(trade_bar)</pre>
 </div>
 
 <h4>Define a Training Method</h4>
@@ -11,7 +15,8 @@
 <div class="section-example-container">
     <pre class="python">def MyTrainingMethod(self):
     n_steps = 5
-    daily_pct_change = self.training_data.pct_change().dropna()
+    training_df = self.PandasConverter.GetDataFrame[TradeBar](list(self.training_data)[::-1])
+    daily_pct_change = training_df.pct_change().dropna()
 
     features = []
     labels = []
@@ -30,10 +35,9 @@
 <h4>Set Training Schedule</h4>
 <p>To train the model at the beginning of your algorithm, in the <code>Initialize</code> method, call the <code>Train</code> method.</p>
 <div class="section-example-container">
-    <pre class="python">def Initialize(self) -&gt; None:
-    self.Train(self.MyTrainingMethod)</pre>
+    <pre class="python">self.Train(self.MyTrainingMethod)</pre>
 </div>
-<p>To periodically re-train the model as your algorithm executes, call the <code>Train</code> method as a <a href="/docs/v2/writing-algorithms/scheduled-events">Scheduled Event</a>.</p>
+<p>To periodically re-train the model as your algorithm executes, in the <code>Initialize</code> method, call the <code>Train</code> method as a <a href="/docs/v2/writing-algorithms/scheduled-events">Scheduled Event</a>.</p>
 <div class="section-example-container">
     <pre class="python"># Train the model every Sunday at 8:00 AM
 self.Train(self.DateRules.Every(DayOfWeek.Sunday), self.TimeRules.At(8, 0), self.MyTrainingMethod)</pre>
@@ -41,3 +45,7 @@ self.Train(self.DateRules.Every(DayOfWeek.Sunday), self.TimeRules.At(8, 0), self
 
 
 <h4>Update Training Data</h4>
+<p>To update the training data as the algorithm executes, in the <code>OnData</code> method, add the current <code>TradeBar</code> to the <code>RollingWindow</code> that holds the training data.</p>
+<div class="section-example-container">
+    <pre class="python">self.training_data.Add(data.Bars[self.spy])</pre>
+</div>
