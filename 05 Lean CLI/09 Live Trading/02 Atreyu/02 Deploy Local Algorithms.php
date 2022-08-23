@@ -7,7 +7,7 @@ $isBrokerage = true;
 $brokerageDetails = "
 <li>Enter the <a target='_blank' href='https://qnt.co/atreyu'>Atreyu Trading</a> server configuration.
 <div class='cli section-example-container'>
-<pre>$ lean live deploy \"My Project\"
+<pre>$ lean live \"My Project\"
 Host:
 Request port:
 Subscribe port:</pre>
@@ -16,7 +16,7 @@ Subscribe port:</pre>
 
 <li>Enter your <a target='_blank' href='https://qnt.co/atreyu'>Atreyu Trading</a> credentials.
 <div class='cli section-example-container'>
-<pre>$ lean live deploy \"My Project\"
+<pre>$ lean live \"My Project\"
 Username:
 Password:
 Client id:</pre>
@@ -25,14 +25,14 @@ Client id:</pre>
 
 <li>Enter the broker MPID to use.
 <div class='cli section-example-container'>
-<pre>$ lean live deploy \"My Project\"
+<pre>$ lean live \"My Project\"
 Broker MPID:</pre>
 </div>
 </li>
 
 <li>Enter the locate rqd to use.
 <div class='cli section-example-container'>
-<pre>$ lean live deploy \"My Project\"
+<pre>$ lean live \"My Project\"
 Locate rqd:</pre>
 </div>
 </li>

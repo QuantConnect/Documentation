@@ -10,7 +10,7 @@ $brokerageDetails = "";
 $dataFeedDetails = "
     <li>Enter your Polygon API key.
 <div class='cli section-example-container'>
-<pre>$ lean live deploy \"My Project\"
+<pre>$ lean live \"My Project\"
 Configure credentials for Polygon Data Feed
 
 Your Polygon data feed API Key:</pre>

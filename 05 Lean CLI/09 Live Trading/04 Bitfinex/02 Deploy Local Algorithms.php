@@ -7,7 +7,7 @@ $isBrokerage = true;
 $brokerageDetails = "
 <li>Enter your API key id and secret.
 <div class='cli section-example-container'>
-<pre>$ lean live deploy \"My Project\"
+<pre>$ lean live \"My Project\"
 API key: bbbMsqbxjytVM9cGvnLpKguz9rZf2T5qACxaVx7E8Mm
 API secret: *******************************************</pre>
 </div>

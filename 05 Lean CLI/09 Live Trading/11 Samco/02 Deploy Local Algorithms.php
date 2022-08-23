@@ -7,7 +7,7 @@ $isBrokerage = true;
 $brokerageDetails = "
 <li>Enter your Samco credentials.
 <div class='cli section-example-container'>
-<pre>$ lean live deploy \"My Project\"
+<pre>$ lean live \"My Project\"
 Client ID:
 Client Password:</pre>
 </div>
@@ -16,7 +16,7 @@ Client Password:</pre>
 
 <li>Enter your year of birth.
 <div class='cli section-example-container'>
-<pre>$ lean live deploy \"My Project\"
+<pre>$ lean live \"My Project\"
 Year of Birth:</pre>
 </div>
 </li>
@@ -24,7 +24,7 @@ Year of Birth:</pre>
 
 <li>Enter the product type.
 <div class='cli section-example-container'>
-<pre>$ lean live deploy \"My Project\"
+<pre>$ lean live \"My Project\"
 Product type (mis, cnc, nrml):</pre>
 </div>
 
@@ -56,7 +56,7 @@ Product type (mis, cnc, nrml):</pre>
 
 <li>Enter the trading segment.
 <div class='cli section-example-container'>
-<pre>$ lean live deploy \"My Project\"
+<pre>$ lean live \"My Project\"
 Trading segment (equity, commodity):</pre>
 </div>
 
