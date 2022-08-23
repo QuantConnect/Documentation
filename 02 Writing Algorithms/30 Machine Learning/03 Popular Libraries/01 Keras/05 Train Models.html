@@ -13,8 +13,7 @@ for trade_bar in history:
 <h4>Define a Training Method</h4>
 <p>To train the model, define a method that fits the model with the training data.</p>
 <div class="section-example-container">
-    <pre class="python">def MyTrainingMethod(self):
-    n_steps = 5
+    <pre class="python">def get_features_and_labels(self, n_steps=5):
     training_df = self.PandasConverter.GetDataFrame[TradeBar](list(self.training_data)[::-1])
     daily_pct_change = training_df.pct_change().dropna()
 
@@ -26,8 +25,11 @@ for trade_bar in history:
     features = np.array(features)
     labels = np.array(labels)
 
-    self.model.fit(features, labels, epochs=5)
-</pre>
+    return features, labels
+
+def my_training_method(self):
+    features, labels = self.get_features_and_labels()
+    self.model.fit(features, labels, epochs=5)</pre>
 </div>
 
 
@@ -35,12 +37,12 @@ for trade_bar in history:
 <h4>Set Training Schedule</h4>
 <p>To train the model at the beginning of your algorithm, in the <code>Initialize</code> method, call the <code>Train</code> method.</p>
 <div class="section-example-container">
-    <pre class="python">self.Train(self.MyTrainingMethod)</pre>
+    <pre class="python">self.Train(self.my_training_method)</pre>
 </div>
 <p>To periodically re-train the model as your algorithm executes, in the <code>Initialize</code> method, call the <code>Train</code> method as a <a href="/docs/v2/writing-algorithms/scheduled-events">Scheduled Event</a>.</p>
 <div class="section-example-container">
     <pre class="python"># Train the model every Sunday at 8:00 AM
-self.Train(self.DateRules.Every(DayOfWeek.Sunday), self.TimeRules.At(8, 0), self.MyTrainingMethod)</pre>
+self.Train(self.DateRules.Every(DayOfWeek.Sunday), self.TimeRules.At(8, 0), self.my_training_method)</pre>
 </div>
 
 
