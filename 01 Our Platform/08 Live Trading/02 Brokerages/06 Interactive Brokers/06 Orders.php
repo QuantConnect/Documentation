@@ -21,6 +21,10 @@
       <td><a rel="nofollow" target="_blank" href="https://www.interactivebrokers.com/en/index.php?f=593">Limit Orders</a></td>
     </tr>
     <tr>
+      <td><code>LimitIfTouchedOrder</code></td>
+      <td><a rel="nofollow" target="_blank" href="https://www.interactivebrokers.com/en/index.php?f=592">Limit if Touched Orders</a></td>
+    </tr>
+    <tr>
       <td><code>StopMarketOrder</code></td>
       <td><a rel="nofollow" target="_blank" href="https://www.interactivebrokers.com/en/index.php?f=609">Stop Orders</a></td>
     </tr>
@@ -37,10 +41,6 @@
       <td><a rel="nofollow" target="_blank" href="https://www.interactivebrokers.com/en/index.php?f=599">Market-on-Close (MOC) Orders</a></td>
     </tr>
     <tr>
-      <td><code>LimitIfTouchedOrder</code></td>
-      <td><a rel="nofollow" target="_blank" href="https://www.interactivebrokers.com/en/index.php?f=592">Limit if Touched Orders</a></td>
-    </tr>
-    <tr>
       <td><code>ExerciseOption</code></td>
       <td><a rel="nofollow" target="_blank" href="https://www.interactivebrokers.ca/en/trading/exerciseCloseout.php">Options Exercise</a></td>
     </tr>
@@ -50,19 +50,19 @@
 <div class="section-example-container">
     <pre class="csharp">MarketOrder(_symbol, quantity);
 LimitOrder(_symbol, quantity, limitPrice);
+LimitIfTouchedOrder(_symbol, quantity, triggerPrice, limitPrice);
 StopMarketOrder(_symbol, quantity, stopPrice);
 StopLimitOrder(_symbol, quantity, stopPrice, limitPrice);
 MarketOnOpenOrder(_symbol, quantity);
 MarketOnCloseOrder(_symbol, quantity);
-LimitIfTouchedOrder(_symbol, quantity, triggerPrice, limitPrice);
 ExerciseOption(_optionSymbol, quantity);</pre>
     <pre class="python">self.MarketOrder(self.symbol, quantity)
 self.LimitOrder(self.symbol, quantity, limit_price)
+self.LimitIfTouchedOrder(self.symbol, quantity, trigger_price, limit_price)
 self.StopMarketOrder(self.symbol, quantity, stop_price)
 self.StopLimitOrder(self.symbol, quantity, stop_price, limit_price)
 self.MarketOnOpenOrder(self.symbol, quantity)
 self.MarketOnCloseOrder(self.symbol, quantity)
-self.LimitIfTouchedOrder(self.symbol, quantity, trigger_price, limit_price)
 self.ExerciseOption(self.option_symbol, quantity)</pre>
 </div>
 
