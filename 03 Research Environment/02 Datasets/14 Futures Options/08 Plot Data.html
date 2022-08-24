@@ -6,19 +6,14 @@
 <h4>Candlestick Chart</h4>
 <p>Follow these steps to plot candlestick charts:</p>
 <ol>
-    <li>Call the <code>History</code> method with an OptionContract <code>Symbol</code>, time argument(s) and resolution.</li>
+    <li>Get some historical data.</li>
     <div class="python section-example-container">
-        <pre class="python">history = qb.History(contract_symbol, start_time, end_time)</pre>
+        <pre class="python">history = qb.History(fop_contract_symbol, datetime(2021, 12, 2), datetime(2021, 12, 3))</pre>
     </div>
 
-    <li>Drop the first four index levels of the returned <code>pandas.DataFrame</code>.</li>
+    <li>Drop the first four index levels of the <code>DataFrame</code> that returns.</li>
     <div class="python section-example-container">
         <pre class="python">history.index = history.index.droplevel([0,1,2,3])</pre>
-    </div>
-
-    <li><i>(Optional)</i> Select just first few hours of the returned history.</li>
-    <div class="python section-example-container">
-        <pre class="python">history = history.loc[(history.index &lt; start_time+timedelta(hours=12))]</pre>
     </div>
 
     <li>Import the <code>Plotly</code> library.</li>
@@ -37,7 +32,7 @@
 
     <li>Create a <code>Layout</code>.</li>
     <div class="python section-example-container">
-        <pre class="python">layout = go.Layout(title=go.layout.Title(text=f'{symbol.Value} OHLC'),
+        <pre class="python">layout = go.Layout(title=go.layout.Title(text=f'{fop_contract_symbol.Value} OHLC'),
                    xaxis_title='Date',
                    yaxis_title='Price',
                    xaxis_rangeslider_visible=False)</pre>
@@ -48,20 +43,21 @@
         <pre class="python">fig = go.Figure(data=[candlestick], layout=layout)</pre>
     </div>
 
-    <li>Show the <code>Figure</code>. Candlestick charts display the open, high, low, and close prices of the contract.</li>
+    <li>Show the <code>Figure</code>.</li>
     <div class="python section-example-container">
         <pre class="python">fig.show()</pre>
     </div>
+    <p>Candlestick charts display the open, high, low, and close prices of the contract.</p>
 
-    <img class="docs-image" src="https://cdn.quantconnect.com/i/tu/request-historical-futureoption-py-plot-candle.png">
+    <img class="docs-image" src="https://cdn.quantconnect.com/i/tu/fop-candlestick-plot.jpg">
 </ol>
 
 <h4>Line Chart</h4>
 <p>Follow these steps to plot line charts using built-in methods:</p>
 <ol>
-    <li>Call the <code>History</code> method with the OptionContract <code>Symbol</code>s and defined period.</li>
+    <li>Get some historical data.</li>
     <div class="python section-example-container">
-        <pre class="python">history = qb.History(selected_symbols, start_time, end_time)</pre>
+        <pre class="python">history = qb.History(fop_contract_symbols[:5], datetime(2021, 12, 2), datetime(2021, 12, 30), Resolution.Daily)</pre>
     </div>
 
     <li>Drop the first three index levels of the returned <code>pandas.DataFrame</code>.</li>
@@ -70,23 +66,21 @@
     </div>
 
     <li>Select the data to plot.</li>
-    <p>In this tutorial, close price was chosen.</p>
     <div class="python section-example-container">
-        <pre class="python">close = history['close'].unstack(level=0)
-close.columns = [Symbol.GetAlias(SecurityIdentifier.Parse(x), contract_symbol)
-    for x in close.columns]</pre>
+        <pre class="python">closes = history['close'].unstack(level=0)</pre>
     </div>
 
     <li>Call the <code>plot</code> method on the <code>pandas</code> object.</li>
     <div class="python section-example-container">
-        <pre class="python">close.plot(title="Close", figsize=(15, 12))</pre>
+        <pre class="python">closes.plot(title="Close", figsize=(15, 5))</pre>
     </div>
 
     <li>Show the plot.</li>
     <div class="python section-example-container">
         <pre class="python">plt.show()</pre>
     </div>
+    <p>Line charts display the value of the property you selected in a time series.</p>
 
-    <img class="docs-image" src="https://cdn.quantconnect.com/i/tu/request-historical-futureoption-py-plot-line.png">
+    <img class="docs-image" src="https://cdn.quantconnect.com/i/tu/fop-line-plot.jpg">
 </ol>
 </div>
