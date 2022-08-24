@@ -1,12 +1,37 @@
 <p>We model the <a target='_blank' href='https://qnt.co/atreyu'>Atreyu Trading</a> API by supporting several order types, order properties, and order updates. When you deploy live algorithms, you can place manual orders through the IDE.</p>
 
 <h4>Order Types</h4>
-<p><a target='_blank' href='https://qnt.co/atreyu'>Atreyu Trading</a> supports the following order types:</p>
-<ul>
-    <li><code>MarketOrder</code></li>
-    <li><code>LimitOrder</code></li>
-    <li><code>MarketOnCloseOrder</code></li>
-</ul>
+<p>The following table describes the available order types for each asset class that <a target='_blank' href='https://qnt.co/atreyu'>Atreyu Trading</a> supports:</p>
+
+<table class="qc-table table" id='order-types-table'>
+   <thead>
+      <tr>
+        <th style='width: 50%'>Order Type</th>
+        <th>Equity</th>
+      </tr>
+   </thead>
+   <tbody>
+      <tr>
+        <td><a href='/docs/v2/writing-algorithms/trading-and-orders/order-types/market-orders'>MarketOrder</a></td>
+        <td><img src="https://cdn.quantconnect.com/i/tu/check.png" alt="green check" width="15px;"></td>
+      </tr>
+      <tr>
+        <td><a href='/docs/v2/writing-algorithms/trading-and-orders/order-types/limit-orders'>LimitOrder</a></td>
+        <td><img src="https://cdn.quantconnect.com/i/tu/check.png" alt="green check" width="15px;"></td>
+      </tr>
+      <tr>
+        <td><a href='/docs/v2/writing-algorithms/trading-and-orders/order-types/market-on-close-orders'>MarketOnCloseOrder</a></td>
+        <td><img src="https://cdn.quantconnect.com/i/tu/check.png" alt="green check" width="15px;"></td>
+      </tr>
+   </tbody>
+</table>
+
+<style>
+#order-types-table td:not(:first-child), 
+#order-types-table th:not(:first-child) {
+    text-align: center;
+}
+</style>
 
 <div class="section-example-container">
     <pre class="csharp">MarketOrder(_symbol, quantity);
