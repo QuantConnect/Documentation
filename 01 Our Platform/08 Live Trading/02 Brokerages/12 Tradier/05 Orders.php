@@ -1,16 +1,58 @@
 <p>We model the Tradier API by supporting several order types and the <code>TimeInForce</code> order property. Tradier partially supports order updates, but does not support trading during extended market hours. When you deploy live algorithms, you can place manual orders through the IDE.</p>
 
 <h4>Order Types</h4>
-<p>Tradier supports the following order types:</p>
 
-<ul>
-    <li><code>MarketOrder</code></li>
-    <li><code>LimitOrder</code></li>
-    <li><code>StopMarketOrder</code></li>
-    <li><code>StopLimitOrder</code></li>
-    <li><code>LimitIfTouchedOrder</code></li>
-    <li><code>ExerciseOption</code></li>
-</ul>
+<p>The following table describes the available order types for each asset class that Tradier supports:</p>
+
+<table class="qc-table table" id='order-types-table'>
+   <thead>
+      <tr>
+        <th style='width: 50%'>Order Type</th>
+        <th style='width: 25%'>Equity</th>
+        <th style='width: 25%'>Equity Options</th>
+      </tr>
+   </thead>
+   <tbody>
+      <tr>
+        <td><a href='/docs/v2/writing-algorithms/trading-and-orders/order-types/market-orders'>MarketOrder</a></td>
+        <td><img src="https://cdn.quantconnect.com/i/tu/check.png" alt="green check" width="15px;"></td>
+        <td><img src="https://cdn.quantconnect.com/i/tu/check.png" alt="green check" width="15px;"></td>
+      </tr>
+      <tr>
+        <td><a href='/docs/v2/writing-algorithms/trading-and-orders/order-types/limit-orders'>LimitOrder</a></td>
+        <td><img src="https://cdn.quantconnect.com/i/tu/check.png" alt="green check" width="15px;"></td>
+        <td><img src="https://cdn.quantconnect.com/i/tu/check.png" alt="green check" width="15px;"></td>
+      </tr>
+      <tr>
+        <td><a href='/docs/v2/writing-algorithms/trading-and-orders/order-types/limit-if-touched-orders'>LimitIfTouchedOrder</a></td>
+        <td><img src="https://cdn.quantconnect.com/i/tu/check.png" alt="green check" width="15px;"></td>
+        <td><img src="https://cdn.quantconnect.com/i/tu/check.png" alt="green check" width="15px;"></td>
+      </tr>
+      <tr>
+        <td><a href='/docs/v2/writing-algorithms/trading-and-orders/order-types/stop-market-orders'>StopMarketOrder</a></td>
+        <td><img src="https://cdn.quantconnect.com/i/tu/check.png" alt="green check" width="15px;"></td>
+        <td><img src="https://cdn.quantconnect.com/i/tu/check.png" alt="green check" width="15px;"></td>
+      </tr>
+      <tr>
+        <td><a href='/docs/v2/writing-algorithms/trading-and-orders/order-types/stop-limit-orders'>StopLimitOrder</a></td>
+        <td><img src="https://cdn.quantconnect.com/i/tu/check.png" alt="green check" width="15px;"></td>
+        <td><img src="https://cdn.quantconnect.com/i/tu/check.png" alt="green check" width="15px;"></td>
+      </tr>
+      <tr>
+        <td><a href='/docs/v2/writing-algorithms/trading-and-orders/order-types/option-exercise-orders'>ExerciseOption</a></td>
+        <td></td>
+        <td><img src="https://cdn.quantconnect.com/i/tu/check.png" alt="green check" width="15px;"></td>
+      </tr>
+   </tbody>
+</table>
+
+<style>
+#order-types-table td:not(:first-child), 
+#order-types-table th:not(:first-child) {
+    text-align: center;
+}
+</style>
+
 
 <div class="section-example-container">
     <pre class="csharp">MarketOrder(_symbol, quantity);
