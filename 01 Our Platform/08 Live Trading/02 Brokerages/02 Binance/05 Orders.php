@@ -1,12 +1,38 @@
 <p>We model the Binance and Binance US APIs by supporting several order types, supporting order properties, and not supporting order updates. When you deploy live algorithms, you can place manual orders through the IDE.</p>
 
 <h4>Order Types</h4>
-<p>Binance and Binance US support the following order types:</p>
-<ul>
-    <li><a href='/docs/v2/writing-algorithms/trading-and-orders/order-types/market-orders'>MarketOrder</a></li>
-    <li><a href='/docs/v2/writing-algorithms/trading-and-orders/order-types/limit-orders'>LimitOrder</a></li>
-    <li><a href='/docs/v2/writing-algorithms/trading-and-orders/order-types/stop-limit-orders'>StopLimitOrder</a></li>
-</ul>
+<p>The following table describes the available order types for each asset class that Binance and Binance US support:</p>
+
+<table class="qc-table table" id='order-types-table'>
+   <thead>
+      <tr>
+        <th style='width: 50%'>Order Type</th>
+        <th>Crypto</th>
+      </tr>
+   </thead>
+   <tbody>
+      <tr>
+        <td><a href='/docs/v2/writing-algorithms/trading-and-orders/order-types/market-orders'>MarketOrder</a></td>
+        <td><img src="https://cdn.quantconnect.com/i/tu/check.png" alt="green check" width="15px;"></td>
+      </tr>
+      <tr>
+        <td><a href='/docs/v2/writing-algorithms/trading-and-orders/order-types/limit-orders'>LimitOrder</a></td>
+        <td><img src="https://cdn.quantconnect.com/i/tu/check.png" alt="green check" width="15px;"></td>
+      </tr>
+      <tr>
+        <td><a href='/docs/v2/writing-algorithms/trading-and-orders/order-types/stop-limit-orders'>StopLimitOrder</a></td>
+        <td><img src="https://cdn.quantconnect.com/i/tu/check.png" alt="green check" width="15px;"></td>
+      </tr>
+   </tbody>
+</table>
+<style>
+#order-types-table td:not(:first-child), 
+#order-types-table th:not(:first-child) {
+    text-align: center;
+}
+</style>
+
+
 
 <div class="section-example-container">
     <pre class="csharp">MarketOrder(_symbol, quantity);
