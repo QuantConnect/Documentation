@@ -1,43 +1,19 @@
-<p><a href="/docs/v2/research-environment/datasets/equity#03-Create-Subscriptions">Create subscriptions to all of the Equities</a> for which you want fundamental historical data and then call the <code>GetFundamental</code> method with a list of <code>Symbol</code>s, a required fundamental data field name <code>string</code>, start <code class="csharp">DateTime</code><code class="python">datetime</code>, and end <code class="csharp">DateTime</code><code class="python">datetime</code> to request fundamental historical data for those specific securities. To view the possible fundamental data field names, see the <code>FineFundamental</code> attributes in <a href='/docs/v2/writing-algorithms/datasets/morningstar/us-fundamental-data#06-Data-Point-Attributes'>Data Point Attributes</a>. For example, to get data for air companies over 2014, run:</p>
+<p>You need a <a href="https://www.quantconnect.com/docs/v2/research-environment/datasets/equity-fundamental-data#03-Create-Subscriptions">subscription</a> before you can request historical fundamental data for a US Equity.</p>
+
+<p>To get historical data, call the <code>GetFundamental</code> method with a list of <code>Symbol</code> objects, a fundamental data field name, a start <code class="csharp">DateTime</code><code class="python">datetime</code>, and an end <code class="csharp">DateTime</code><code class="python">datetime</code>. To view the possible fundamental data field names, see the <code>FineFundamental</code> attributes in <a href="/docs/v2/writing-algorithms/datasets/morningstar/us-fundamental-data#06-Data-Point-Attributes">Data Point Attributes</a>. For example, to get data for airline companies over 2014, run:</p>
 
 <div class="section-example-container">
-    <pre class="csharp">var symbols = new [] 
-    {
-        "AAL",  // American Airlines Group, Inc.
-        "ALGT", // Allegiant Travel Company
-        "ALK",  // Alaska Air Group, Inc.
-        "DAL",  // Delta Air Lines, Inc.
-        "LUV",  // Southwest Airlines Company
-        "SKYW"  // SkyWest, Inc.
-        "UAL",  // United Air Lines
-    }
-	.Select(ticker =&gt; qb.AddEquity(ticker).Symbol);
-
-var startTime = new DateTime(2014, 1, 1);
+    <pre class="csharp">var startTime = new DateTime(2014, 1, 1);
 var endTime = new DateTime(2015, 1, 1);
-var peRatios  = qb.GetFundamental(symbols, "ValuationRatios.PERatio",
-    startTime, endTime);
-	</pre>
-    <pre class="python">symbols = [qb.AddEquity(ticker).Symbol
-    for ticker in [
-        "AAL",   # American Airlines Group, Inc.
-        "ALGT",  # Allegiant Travel Company
-        "ALK",   # Alaska Air Group, Inc.
-        "DAL",   # Delta Air Lines, Inc.
-        "LUV",   # Southwest Airlines Company
-        "SKYW"   # SkyWest, Inc.
-        "UAL",   # United Air Lines
-    ]]
-
-start_time = datetime(2014, 1, 1)
+var peRatios  = qb.GetFundamental(symbols, "ValuationRatios.PERatio", startTime, endTime);</pre>
+    <pre class="python">start_time = datetime(2014, 1, 1)
 end_time = datetime(2015, 1, 1)
-pe_ratios = qb.GetFundamental(symbols, "ValuationRatios.PERatio",
-    start_time, end_time)</pre>
+pe_ratios = qb.GetFundamental(symbols, "ValuationRatios.PERatio", start_time, end_time)</pre>
 </div>
 
-<p>The call returns the fundamental data field that are timestamped within the defined period of time.</p>
-
-<p class="python">The <code>GetFundamental</code> method returns a <code>pandas.DataFrame</code> where the index is the time and the columns are the Equity <code>Symbol</code>.</p>
+<p>The preceding method returns the fundamental data field values that are timestamped within the defined period of time.</p>
+-----------------
+<p class="python">The <code>GetFundamental</code> method returns a <code>DataFrame</code> where the index is the time and the columns are the Equity <code>Symbol</code>.</p>
 <img class="python docs-image" src="https://cdn.quantconnect.com/i/tu/fundamentals-pe.png">
 <p class="csharp">The <code>GetFundamental</code> method returns an <code>IEnumerable&lt;DataDictionary&gt;</code> for multiple-security requests.</p>
 
