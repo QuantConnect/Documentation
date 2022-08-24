@@ -57,15 +57,15 @@
 <div class="section-example-container">
     <pre class="csharp">MarketOrder(_symbol, quantity);
 LimitOrder(_symbol, quantity, limitPrice);
+LimitIfTouchedOrder(_symbol, quantity, triggerPrice, limitPrice);
 StopMarketOrder(_symbol, quantity, stopPrice);
 StopLimitOrder(_symbol, quantity, stopPrice, limitPrice);
-LimitIfTouchedOrder(_symbol, quantity, triggerPrice, limitPrice);
 ExerciseOption(_optionSymbol, quantity);</pre>
     <pre class="python">self.MarketOrder(self.symbol, quantity)
 self.LimitOrder(self.symbol, quantity, limit_price)
+self.LimitIfTouchedOrder(self.symbol, quantity, trigger_price, limit_price)
 self.StopMarketOrder(self.symbol, quantity, stop_price)
 self.StopLimitOrder(self.symbol, quantity, stop_price, limit_price)
-self.LimitIfTouchedOrder(self.symbol, quantity, trigger_price, limit_price)
 self.ExerciseOption(self.option_symbol, quantity)</pre>
 </div>
 
