@@ -1,14 +1,41 @@
 <p>We model the TT API by supporting several order types, the <code>TimeInForce</code> order property, and order updates. When you deploy live algorithms, you can place manual orders through the IDE.</p>
 
 <h4>Order Types</h4>
-<p>TT supports the following order types:</p>
 
-<ul>
-    <li><code>MarketOrder</code></li>
-    <li><code>LimitOrder</code></li>
-    <li><code>StopMarketOrder</code></li>
-    <li><code>StopLimitOrder</code></li>
-</ul>
+<p>The following table describes the available order types for each asset class that TT supports:</p>
+
+<table class="qc-table table" id='order-types-table'>
+   <thead>
+      <tr>
+        <th style='width: 50%'>Order Type</th>
+        <th>Futures</th>
+      </tr>
+   </thead>
+   <tbody>
+      <tr>
+        <td><a href='/docs/v2/writing-algorithms/trading-and-orders/order-types/market-orders'>MarketOrder</a></td>
+        <td><img src="https://cdn.quantconnect.com/i/tu/check.png" alt="green check" width="15px;"></td>
+      </tr>
+      <tr>
+        <td><a href='/docs/v2/writing-algorithms/trading-and-orders/order-types/limit-orders'>LimitOrder</a></td>
+        <td><img src="https://cdn.quantconnect.com/i/tu/check.png" alt="green check" width="15px;"></td>
+      </tr>
+      <tr>
+        <td><a href='/docs/v2/writing-algorithms/trading-and-orders/order-types/stop-market-orders'>StopMarketOrder</a></td>
+        <td><img src="https://cdn.quantconnect.com/i/tu/check.png" alt="green check" width="15px;"></td>
+      </tr>
+      <tr>
+        <td><a href='/docs/v2/writing-algorithms/trading-and-orders/order-types/stop-limit-orders'>StopLimitOrder</a></td>
+        <td><img src="https://cdn.quantconnect.com/i/tu/check.png" alt="green check" width="15px;"></td>
+      </tr>
+   </tbody>
+</table>
+<style>
+#order-types-table td:not(:first-child), 
+#order-types-table th:not(:first-child) {
+    text-align: center;
+}
+</style>
 
 <div class="section-example-container">
     <pre class="csharp">MarketOrder(_symbol, quantity);
