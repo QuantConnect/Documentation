@@ -311,11 +311,11 @@ $getWrangleDataText = function($assetClass, $singularAssetClass, $pluralAssetCla
 
         if ($supportsTrades)
         {
-            echo "var tradeBars = allHistorySlice.Where(slice => slice.Bars.ContainsKey({$primarySymbolC})).Select(slice => slice.Bars[spy]);";
+            echo "var tradeBars = allHistorySlice.Where(slice => slice.Bars.ContainsKey({$primarySymbolC})).Select(slice => slice.Bars[{$primarySymbolC}]);";
         }
         else
         {
-            echo "var quoteBars = allHistorySlice.Where(slice => slice.QuoteBars.ContainsKey({$primarySymbolC})).Select(slice => slice.QuoteBars[spy]);";
+            echo "var quoteBars = allHistorySlice.Where(slice => slice.QuoteBars.ContainsKey({$primarySymbolC})).Select(slice => slice.QuoteBars[{$primarySymbolC}]);";
         }
 
         echo "</pre>
