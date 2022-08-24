@@ -3,9 +3,9 @@
 <h4>Order Types</h4>
 <p>Binance and Binance US support the following order types:</p>
 <ul>
-    <li><code>MarketOrder</code></li>
-    <li><code>LimitOrder</code></li>
-    <li><code>StopLimitOrder</code></li>
+    <li><a href='/docs/v2/writing-algorithms/trading-and-orders/order-types/market-orders'>MarketOrder</a></li>
+    <li><a href='/docs/v2/writing-algorithms/trading-and-orders/order-types/limit-orders'>LimitOrder</a></li>
+    <li><a href='/docs/v2/writing-algorithms/trading-and-orders/order-types/stop-limit-orders'>StopLimitOrder</a></li>
 </ul>
 
 <div class="section-example-container">
