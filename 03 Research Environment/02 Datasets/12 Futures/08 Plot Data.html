@@ -7,17 +7,13 @@
 <p class="python">Follow these steps to plot candlestick charts:</p>
 
 <ol class="python">
-    <li>Drop the first index level.</li>
+    <li>Get some historical data.</li>
     <div class="section-example-container">
-        <pre class="python">history.index = history.index.droplevel(0)</pre>
+        <pre class="python">history = qb.History(contract_symbol, datetime(2021, 12, 1), datetime(2021, 12, 31), Resolution.Daily)</pre>
     </div>
-    <li>Select the contract <code>Symbol</code> index.</li>
+    <li>Drop the first two index levels.</li>
     <div class="section-example-container">
-        <pre class="python">history = history.loc[symbol]</pre>
-    </div>
-    <li><i>(Optional)</i> Select the first 30 data points.</li>
-	<div class="section-example-container">
-        <pre class="python">history = history.head(30)</pre>
+        <pre class="python">history.index = history.index.droplevel([0, 1])</pre>
     </div>
     <li>Import the <code>plotly</code> library.</li>
     <div class="section-example-container">
@@ -33,12 +29,12 @@
     </div>
     <li>Create a <code>Layout</code>.<br></li>
     <div class="section-example-container">
-        <pre class="python">layout = go.Layout(title=go.layout.Title(text='ES Continuous OHLC'),
+        <pre class="python">layout = go.Layout(title=go.layout.Title(text=f'{contract_symbol.Value} OHLC'),
                    xaxis_title='Date',
                    yaxis_title='Price',
                    xaxis_rangeslider_visible=False)</pre>
     </div>
-    <li>Create the <code>Figure</code>.<br></li>
+    <li>Create a <code>Figure</code>.<br></li>
     <div class="section-example-container">
         <pre class="python">fig = go.Figure(data=[candlestick], layout=layout)</pre>
     </div>
@@ -49,13 +45,17 @@
     <p>Candlestick charts display the open, high, low, and close prices of the contract.</p>
 </ol>
 
-<img class="python docs-image" src="https://cdn.quantconnect.com/i/tu/research-history-futures-continuous-candlestick-2022.png">
+<img class="python docs-image" src="https://cdn.quantconnect.com/i/tu/futures-candlestick-plot.jpg">
 
 
 <h4 class="python">Line Chart</h4>
 <p class="python">Follow these steps to plot line charts using built-in methods:</p>
 
 <ol class="python">
+    <li>Get some historical data.</li>
+	<div class="section-example-container">
+        <pre class="python">history = qb.History(symbols, datetime(2021, 12, 1), datetime(2021, 12, 31), Resolution.Daily)</pre>
+    </div>
     <li>Drop the first index level.</li>
 	<div class="section-example-container">
         <pre class="python">history.index = history.index.droplevel(0)</pre>
@@ -70,7 +70,7 @@
     </div>
     <li>Call the <code>plot</code> method on the <code>pandas</code> object.</li>
     <div class="section-example-container">
-        <pre class="python">closing_prices.plot(title="Close", figsize=(15, 10))</pre>
+        <pre class="python">closing_prices.plot(title="Close", figsize=(15, 8))</pre>
     </div>
     <li>Show the plot.</li>
     <div class="section-example-container">
@@ -79,4 +79,4 @@
     <p>Line charts display the value of the property you selected in a time series.</p>
 </ol>
 
-<img class="python docs-image" src="https://cdn.quantconnect.com/i/tu/research-history-futures-contract-lineplot-2022.png">
+<img class="python docs-image" src="https://cdn.quantconnect.com/i/tu/futures-line-plot.jpg">
