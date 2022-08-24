@@ -294,6 +294,33 @@ $getWrangleDataText = function($assetClass, $singularAssetClass, $pluralAssetCla
         echo "</pre>
 </div>
 ";
+        
+        echo "<p class='csharp'>You can also use LINQ to select each ";
+        if ($supportsTrades)
+        {
+            echo "<code>TradeBar</code>";
+        }
+        else
+        {
+            echo "<code>QuoteBar</code>";
+        }
+        echo " in the <code>Slice</code> for a given <code>Symbol</code></p>
+        
+<div class='section-example-container'>
+<pre class='csharp'>";
+
+        if ($supportsTrades)
+        {
+            echo "var tradeBars = allHistorySlice.Where(slice => slice.Bars.ContainsKey({$primarySymbolC})).Select(slice => slice.Bars[spy])";
+        }
+        else
+        {
+            echo "var quoteBars = allHistorySlice.Where(slice => slice.QuoteBars.ContainsKey({$primarySymbolC})).Select(slice => slice.QuoteBars[spy])";
+        }
+
+        echo "</pre>
+</div>
+";
     }
 
     if ($supportsTrades)
