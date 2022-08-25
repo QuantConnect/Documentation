@@ -1,44 +1,9 @@
-<p>You need to understand how to <a href="/docs/v2/research-environment/quantconnect-api/backtests/reading-results#03-Read-Backtest-Instance">Read Backtest Instance</a>.</p>
-<p>Follow these steps to update the name and/or note of the backtest by using the QuantConnect Api.</p>
+<p>To update the name or note of a backtest, call the <code>UpdateBacktest</code> method with the project ID, backtest ID, the new backtest name, and the new note.</p>
+<div class="section-example-container">
+    <pre class="csharp">var response = api.UpdateBacktest(projectId, backtestId, ""New Name", "New Note");</pre>
+    <pre class="python">response = api.UpdateBacktest(project_id, backtestId, "New Name", "New Note")</pre>
+</div>
 
-<ol>
-    <li>Display the name and note of the backtest before updating.</li>
-    <div class="section-example-container">
-        <pre class="csharp">Console.WriteLine($@"Backtest ID: {backtest.BacktestId}
-Name: {backtest.Name}
-Note: {backtest.Note}");</pre>
-        <pre class="python">print(f"""Backtest ID: {backtest.BacktestId}
-Name: {backtest.Name}
-Note: {backtest.Note}\n""")</pre>
-    </div>
+<p>The <code>UpdateBacktest</code> method returns a <code>RestResponse</code> object, which have the following attributes:</p>
 
-    <li>Call <code>UpdateBacktest</code> with the project ID, backtest ID, new backtest name and new backtest note. This will return a <code>RestResponse</code> from the Api.</li>
-    <div class="section-example-container">
-        <pre class="csharp">var response = api.UpdateBacktest(projectId, backtest.BacktestId, "New Name", "New Note");</pre>
-        <pre class="python">response = api.UpdateBacktest(project_id, backtest.BacktestId, "New Name", "New Note")</pre>
-    </div>
-
-    <li>Call <code>Success</code> attribute to see if the update task is successful.</li>
-    <div class="section-example-container">
-        <pre class="csharp">Console.WriteLine($"\n{response.Success}\n");</pre>
-        <pre class="python">print(str(response.Success)+"\n")</pre>
-    </div>
-
-    <li>Re-read the backtest.</li>
-    <div class="section-example-container">
-        <pre class="csharp">var backtest2 = api.ReadBacktest(projectId, backtest.BacktestId);</pre>
-        <pre class="python">backtest = api.ReadBacktest(project_id, backtest.BacktestId)</pre>
-    </div>
-
-    <li>Display the name and note of the backtest after updating.</li>
-    <div class="section-example-container">
-        <pre class="csharp">Console.WriteLine($@"Backtest ID: {backtest2.BacktestId}
-Name: {backtest2.Name}
-Note: {backtest2.Note}");</pre>
-        <pre class="python">print(f"""Backtest ID: {backtest.BacktestId}
-Name: {backtest.Name}
-Note: {backtest.Note}""")</pre>
-    </div>
-</ol>
-<img class="csharp docs-image" src="https://cdn.quantconnect.com/i/tu/api-backtest-update-cs.png">
-<img class="python docs-image" src="https://cdn.quantconnect.com/i/tu/api-backtest-update-py.png">
+<div data-tree='QuantConnect.Api.RestResponse'></div>
