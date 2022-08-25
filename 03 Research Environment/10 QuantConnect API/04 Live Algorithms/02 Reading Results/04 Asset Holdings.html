@@ -1,17 +1,7 @@
-<p>You need to understand how to <a href="#03-Read-Deployment-Instance">Read Deployment Instance</a> to read the asset holdings.</p>
-<p>Follow these steps to read the securities and cash holdings of a live algorithm.</p>
-<ol>
-    <li>Call <code>Holdings</code> and <code>Cash</code> attributes to retrieve the asset holdings.</li>
-    <div class="section-example-container">
-        <pre class="csharp">var holdings = results.Holdings;
-var cash = results.Cash;</pre>
-        <pre class="python">holdings = results.Holdings
-cash = results.Cash</pre>
-    </div>
+<p>To view the asset holdings of a live algorithm, <a href='/docs/v2/research-environment/quantconnect-api/live-algorithms/reading-results#03-Read-Deployment-Instance'>get the live trading results</a> and then print the <code>Holdings</code> and <code>Cash</code> attributes.</p>
 
-    <li>Display the assets holdings.</li>
-    <div class="section-example-container">
-        <pre class="csharp">foreach(var h in holdings.Values)
+<div class="section-example-container">
+        <pre class="csharp">foreach(var h in results.Holdings.Values)
 {
     Console.WriteLine($@"{h.Symbol} 
     Quantity: {h.Quantity} 
@@ -20,11 +10,14 @@ cash = results.Cash</pre>
     Market Value: {h.MarketValue}
     ");
 }
-foreach(var c in cash.Values)
+
+foreach(var c in results.Cash.Values)
 {
     Console.WriteLine($"{c.Symbol}: {c.CurrencySymbol} {c.Amount}");
-}</pre>
-        <pre class="python">for h in holdings.Values:
+}
+
+</pre>
+        <pre class="python">for h in results.Holdings.Values:
     print(f"""{h.Symbol} 
     Quantity: {h.Quantity} 
     Average Price: {h.AveragePrice} 
@@ -32,9 +25,6 @@ foreach(var c in cash.Values)
     Market Value: {h.MarketValue}
     """)
     
-for c in cash.Values:
+for c in results.Cash.Values:
     print(f"{c.Symbol}: {c.CurrencySymbol} {c.Amount}")</pre>
-    </div>
-    <img class="csharp docs-image" src="">
-    <img class="python docs-image" src="">
-</ol>
+</div>
