@@ -1,7 +1,33 @@
-<p>Follow these steps to read the logs from a live algorithm by using the QuantConnect Api.</p>
+<p>To get the logs of a live algorithm, call the <code>ReadLiveLogs</code> method with the project ID and deployment ID.</p>
 
-<ol>
-    <li>Call <code>ReadLiveLogs</code> with the project ID, deploy ID, <i>(optional)</i> start and <i>(optional)</i> end time of the logs.</li>
+<div class="section-example-container">
+    <pre class="csharp">var liveLogs = api.ReadLiveLogs(projectId, deployId);</pre>
+    <pre class="python">liveLogs = api.ReadLiveLogs(project_id, deploy_id)</pre>
+</div>
+
+<p>The <code>ReadLiveLogs</code> method accepts the following additional arguments so you can select the time period of the logs to return:</p>
+<table class="qc-table table">
+    <thead>
+        <tr>
+            <th>Argument</th>
+            <th>Data Type</th>
+            <th>Description</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><code>startTime</code></td>
+	    <td><code class='csharp'>DateTime</code><code class='python'>datetime</code></td>
+            <td>No logs will be returned before this time</td>
+        </tr>
+        <tr>
+            <td><code>endTime</code></td>
+	    <td><code class='csharp'>DateTime</code><code class='python'>datetime</code></td>
+            <td>No logs will be returned after this time</td>
+        </tr>
+    </tbody>
+</table>
+
     <div class="section-example-container">
         <pre class="csharp">var liveLogs = api.ReadLiveLogs(projectId: projectId, 
                                 algorithmId: deployId,
@@ -13,21 +39,5 @@
                             endTime=datetime(2022, 2, 3))</pre>
     </div>
 
-    <li>Call <code>Logs</code> attribute to get the logs message.</li>
-    <div class="section-example-container">
-        <pre class="csharp">var logs = liveLogs.Logs;</pre>
-        <pre class="python">logs = liveLogs.Logs</pre>
-    </div>
-
-    <li>Display the logs.</li>
-    <div class="section-example-container">
-        <pre class="csharp">foreach(var l in logs.Take(5))
-{
-    Console.WriteLine(l);
-}</pre>
-        <pre class="python">for l in logs[:5]:
-    print(l)</pre>
-    </div>
-    <img class="csharp docs-image" src="">
-    <img class="python docs-image" src="">
-</ol>
+<p>The <code>ReadLiveLogs</code> method returns a <code>LiveLog</code> object, which have the following attributes:</p>
+<div data-tree='QuantConnect.Api.LiveLog'></div>
