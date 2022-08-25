@@ -1,134 +1,40 @@
-<p>You need a <a href="/docs/v2/research-environment/datasets/equity#03-Create-Subscriptions">subscription</a> before you can request historical data for a security. You can request an amount of historical data based on a defined period of time.</p>
+<p class="python">You need some <a href="/docs/v2/research-environment/datasets/equity-fundamental-data#04-Get-Historical-Data">historical data</a> to perform wrangling operations. To display <code>pandas</code> objects, run a cell in a notebook with the <code>pandas</code> object as the last line. To display other data formats, call the <code>print</code> method.</p>
+<p class="csharp">You need some <a href="/docs/v2/research-environment/datasets/equity-fundamental-data#04-Get-Historical-Data">historical data</a> to perform wrangling operations. Use LINQ to wrangle the data and then call the <code>Console.WriteLine</code> method in a Jupyter Notebook to display the data.</p>
 
-<h4>Select One Security</h4>
-<p>Index the <code>DataFrame</code> with a Symbol to select the historical data of the security.</p>
+<p class="python">The <code>DataFrame</code> index is the <code>EndTime</code> of the data sample. The columns of the <code>DataFrame</code> are the Equity <code>Symbol</code> objects.</p>
+
+<img class="python docs-image" src="https://cdn.quantconnect.com/i/tu/research-equity-fundamental-data.jpg">
+
+<p class="csharp">To get the fundamental data points for each Equity, iterate through the history request result.</p>
+
+<p class="python">To select the historical data of a single Equity, index the <code>DataFrame</code> with the Equity <code>Symbol</code>. Each history slice may not have data for all of your Equity subscriptions. To avoid issues, check if it contains data for your Equity before you index it with the Equity <code>Symbol</code>.</p>
+
 <div class="section-example-container">
-    <pre class="csharp">// Take the first 10 slice as example.
-foreach(var bar in ebitda.Select(data =&gt; (data[symbol], data.Time)).Take(10))
+    <pre class="csharp">foreach (var slice in history)
 {
-    Console.WriteLine($"{bar}");
-}</pre>
-    <pre class="python"># Reset the column names
-ebitda.columns = [col.split(" ")[0] for col in ebitda.columns]
-
-# Select the column
-ebitda[symbol.Value]</pre>
-</div>
-<img class="csharp docs-image" src="https://cdn.quantconnect.com/i/tu/fundamentals-select-single-cs.png">
-<img class="python docs-image" src="https://cdn.quantconnect.com/i/tu/fundamentals-select-single.png">
-
-<h4>Select By Mean</h4>
-<p>We'd like to select the <code>Symbol</code>s with the highest and lowest average PE Ratio.</p>
-<ol class="csharp">
-    <li>Initialize a <code>Dictionary</code> to hold the data.</li>
-    <div class="csharp section-example-container">
-        <pre class="csharp">var meanPE = new Dictionary&lt;Symbol, decimal&gt;();</pre>
-    </div>
-
-    <li>Iterate each <code>Symbol</code> and calculate their mean, then add to the dictionary.</li>
-    <div class="csharp section-example-container">
-        <pre class="csharp">foreach(var sym in symbols){
-    var avg = peRatios.Select(data =&gt; (decimal) data[sym]).Average();
-    meanPE.Add(sym, avg);
-    Console.WriteLine($"The Average PE Ratio of {sym}: {avg}");
-}</pre>
-    </div>
-
-    <li>Select the <code>Symbol</code> with highest and lowest mean.</li>
-    <div class="csharp section-example-container">
-        <pre class="csharp">var symbolWithMaxPE = meanPE.FirstOrDefault(x =&gt; x.Value == meanPE.Values.Max()).Key; 
-var symbolWithMinPE = meanPE.FirstOrDefault(x =&gt; x.Value == meanPE.Values.Min()).Key; 
-Console.WriteLine($"The Highest Average PE Ratio: {symbolWithMaxPE}: {meanPE[symbolWithMaxPE]}");
-Console.WriteLine($"The Lowest Average PE Ratio: {symbolWithMinPE}: {meanPE[symbolWithMinPE]}");</pre>
-    </div>
-    <img class="csharp docs-image" src="https://cdn.quantconnect.com/i/tu/fundamentals-mean-pe-cs.png">
-</ol>
-<ol class="python">
-    <li>Obtain the mean of each <code>Symbol</code> by calling mean method.</li>
-    <div class="python section-example-container">
-        <pre class="python">mean_pe = pe_ratios.mean()</pre>
-    </div>
-
-    <li>Call <code>sort_values</code> to sort in ascending order.</li>
-    <div class="python section-example-container">
-        <pre class="python">sorted_by_mean_pe = pe_ratios.mean().sort_values()</pre>
-    </div>
-
-    <li>Select the <code>Symbol</code> with highest and lowest mean.</li>
-    <div class="python section-example-container">
-        <pre class="python">highest_avg_pe = qb.Symbol(sorted_by_mean_pe.index[-1])
-lowest_avg_pe = qb.Symbol(sorted_by_mean_pe.index[0])</pre>
-    </div>
-    <img class="python docs-image" src="https://cdn.quantconnect.com/i/tu/fundamentals-mean-pe.png">
-</ol>
-
-<h4>Select By Percentage Change</h4>
-<p>We'd like to select the <code>Symbol</code>s with the highest and lowest percentage change in the last PE Ratio.</p>
-<ol class="csharp">
-    <li>Initialize a <code>Dictionary</code> to hold the data.</li>
-    <div class="csharp section-example-container">
-        <pre class="csharp">var peOnUpdate = new Dictionary&lt;Symbol, List&lt;decimal&gt;&gt;();</pre>
-    </div>
-
-    <li>Iterate each <code>Symbol</code> and filter out the duplicates, then add to the dictionary.</li>
-    <div class="csharp section-example-container">
-        <pre class="csharp">foreach(var sym in symbols){
-    if (!peOnUpdate.ContainsKey(sym)){
-        peOnUpdate[sym] = new List&lt;decimal&gt;();
-    }
-    foreach(var bar in peRatios.Select(data =&gt; (decimal) data[sym])){
-        if (peOnUpdate[sym].Count() == 0 || bar != peOnUpdate[sym].Last()){
-            peOnUpdate[sym].Add(bar);
+    foreach (var symbol in symbols)
+    {
+        if (slice.ContainsKey(symbol))
+        {
+            var peRatio = slice[symbol];
         }
     }
 }</pre>
-    </div>
+    <pre class="python">history[symbols[1]]</pre>
+</div>
 
-    <li>Calculate the last PE Ratio % change, save as a dictionary.</li>
-    <div class="csharp section-example-container">
-        <pre class="csharp">var lastPctChgPE = peOnUpdate.ToDictionary(kvp =&gt; kvp.Key, 
-                          kvp =&gt; kvp.Value.Count() &gt; 2 ? 
-                          (kvp.Value.Last() - kvp.Value[kvp.Value.Count() - 2]) / kvp.Value[kvp.Value.Count() - 2] : 
-                          0m);
-foreach(var kvp in lastPctChgPE){
-    Console.WriteLine($"The latest % change in PE Ratio of {kvp.Key}: {kvp.Value}");
+<img class="python docs-image" src="https://cdn.quantconnect.com/i/tu/research-equity-fundamental-data-1.jpg">
+
+<p class="csharp">You can also iterate through each data point in the slice.</p>
+<div class="csharp section-example-container">
+    <pre class="csharp">foreach (var slice in history)
+{
+    foreach (var kvp in slice)
+    {
+        var symbol = kvp.Key;
+        var peRatio = kvp.Value;
+    }
 }</pre>
-    </div>
+</div>
 
-    <li>Select the <code>Symbol</code>s with highest and lowest % change.</li>
-    <div class="csharp section-example-container">
-        <pre class="csharp">var symbolWithMaxPEChg = lastPctChgPE.FirstOrDefault(x =&gt; x.Value == lastPctChgPE.Values.Max()).Key; 
-var symbolWithMinPEChg = lastPctChgPE.FirstOrDefault(x =&gt; x.Value == lastPctChgPE.Values.Min()).Key; 
-Console.WriteLine($"The Highest %Change PE Ratio: {symbolWithMaxPEChg}: {lastPctChgPE[symbolWithMaxPEChg]}");
-Console.WriteLine($"The Lowest %Change PE Ratio: {symbolWithMinPEChg}: {lastPctChgPE[symbolWithMinPEChg]}");</pre>
-    </div>
-    <img class="csharp docs-image" src="https://cdn.quantconnect.com/i/tu/fundamentals-pctchg-pe-cs.png">
-</ol>
-<ol class="python">
-    <li>Call <code>drop_duplicates</code> to retain the data points when the Fundamentals are updated.</li>
-    <div class="python section-example-container">
-        <pre class="python">pe_on_update = pe_ratios.drop_duplicates()</pre>
-    </div>
-
-    <li>Call <code>pct_change</code> to get their percentage change in Fundamentals.</li>
-    <div class="python section-example-container">
-        <pre class="python">pe_pct_chg = pe_on_update.pct_change()</pre>
-    </div>
-
-    <li>Get the latest data point by indexing -1.</li>
-    <div class="python section-example-container">
-        <pre class="python">latest_pe_pct_chg = pe_pct_chg.iloc[-1]</pre>
-    </div>
-
-    <li>Call <code>sort_values</code> to sort in ascending order.</li>
-    <div class="python section-example-container">
-        <pre class="python">sorted_by_pe_pct_chg = latest_pe_pct_chg.sort_values()</pre>
-    </div>
-
-    <li>Select the <code>Symbol</code>s with highest and lowest % change.</li>
-    <div class="python section-example-container">
-        <pre class="python">highest_pe_pct_chg = qb.Symbol(sorted_by_pe_pct_chg.index[-1])
-lowest_pe_pct_chg = qb.Symbol(sorted_by_pe_pct_chg.index[0])</pre>
-    </div>
-    <img class="python docs-image" src="https://cdn.quantconnect.com/i/tu/fundamentals-pctchg-pe.png">
-</ol>
+<p class="csharp">You can also use LINQ to select the historical data points.</p>
