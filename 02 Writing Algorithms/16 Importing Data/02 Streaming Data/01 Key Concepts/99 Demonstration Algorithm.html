@@ -1,3 +1,4 @@
+<p>The following example algorithm implements a custom data source for the Bitstamp API:</p>
 <div class="section-example-container">
     <pre class="csharp">using Newtonsoft.Json;
 
@@ -12,9 +13,9 @@ namespace QuantConnect.Algorithm.CSharp
             SetStartDate(2012, 9, 13);
             SetEndDate(2021, 6, 20);
 
-            _customDataSymbol = AddData-&lt;Bitstamp-&gt;("BTC", Resolution.Daily).Symbol;
+            _customDataSymbol = AddData&lt;Bitstamp&gt;("BTC", Resolution.Daily).Symbol;
 
-            var history = History-&lt;Bitstamp-&gt;(_customDataSymbol, 200, Resolution.Daily);
+            var history = History&lt;Bitstamp&gt;(_customDataSymbol, 200, Resolution.Daily);
             Debug($"We got {history.Count()} items from historical data request of {_customDataSymbol}.");
         }
 
@@ -85,19 +86,19 @@ namespace QuantConnect.Algorithm.CSharp
                 }
 
                 var data = line.Split(',');
-                coin.Value = data[4].IfNotNullOrEmpty(s =-&gt; decimal.Parse(s, NumberStyles.Any, CultureInfo.InvariantCulture));
+                coin.Value = data[4].IfNotNullOrEmpty(s =&gt; decimal.Parse(s, NumberStyles.Any, CultureInfo.InvariantCulture));
                 if (coin.Value == 0)
                 {
                     return null;
                 }
 
                 coin.EndTime = DateTime.Parse(data[0], CultureInfo.InvariantCulture).AddDays(1);
-                coin.Open = data[1].IfNotNullOrEmpty(s =-&gt; decimal.Parse(s, NumberStyles.Any, CultureInfo.InvariantCulture));
-                coin.High = data[2].IfNotNullOrEmpty(s =-&gt; decimal.Parse(s, NumberStyles.Any, CultureInfo.InvariantCulture));
-                coin.Low = data[3].IfNotNullOrEmpty(s =-&gt; decimal.Parse(s, NumberStyles.Any, CultureInfo.InvariantCulture));
-                coin.VolumeBTC = data[5].IfNotNullOrEmpty(s =-&gt; decimal.Parse(s, NumberStyles.Any, CultureInfo.InvariantCulture));
-                coin.VolumeUSD = data[6].IfNotNullOrEmpty(s =-&gt; decimal.Parse(s, NumberStyles.Any, CultureInfo.InvariantCulture));
-                coin.WeightedPrice = data[7].IfNotNullOrEmpty(s =-&gt; decimal.Parse(s, NumberStyles.Any, CultureInfo.InvariantCulture));
+                coin.Open = data[1].IfNotNullOrEmpty(s =&gt; decimal.Parse(s, NumberStyles.Any, CultureInfo.InvariantCulture));
+                coin.High = data[2].IfNotNullOrEmpty(s =&gt; decimal.Parse(s, NumberStyles.Any, CultureInfo.InvariantCulture));
+                coin.Low = data[3].IfNotNullOrEmpty(s =&gt; decimal.Parse(s, NumberStyles.Any, CultureInfo.InvariantCulture));
+                coin.VolumeBTC = data[5].IfNotNullOrEmpty(s =&gt; decimal.Parse(s, NumberStyles.Any, CultureInfo.InvariantCulture));
+                coin.VolumeUSD = data[6].IfNotNullOrEmpty(s =&gt; decimal.Parse(s, NumberStyles.Any, CultureInfo.InvariantCulture));
+                coin.WeightedPrice = data[7].IfNotNullOrEmpty(s =&gt; decimal.Parse(s, NumberStyles.Any, CultureInfo.InvariantCulture));
                 coin.Close = coin.Value;
                 return coin;
             }
@@ -189,4 +190,4 @@ class Bitstamp(PythonData):
         return coin</pre>
 </div>
 
-<p>To clone this algorithm, <span class='csharp'><a target="_blank" rel='nofollow' href='https://www.quantconnect.com/terminal/clone/13895473/ddeb48345eea46e0f1d7e33171579255/clone-of%3A-key-concepts-example-%5Bcs%5D'>click here</a></span><span class='python'><a target="_blank" rel='nofollow' href='https://www.quantconnect.com/terminal/clone/13895484/9619c8238a1f87f95f967d2db94f64bf/clone-of%3A-key-concepts-example-%5Bpy%5D'>click here</a></span>.</p>
+<p>To save this algorithm to your cloud projects, <span class='csharp'><a target="_blank" rel='nofollow' href='https://www.quantconnect.com/terminal/clone/13895473/ddeb48345eea46e0f1d7e33171579255/clone-of%3A-key-concepts-example-%5Bcs%5D'>clone it</a></span><span class='python'><a target="_blank" rel='nofollow' href='https://www.quantconnect.com/terminal/clone/13895484/9619c8238a1f87f95f967d2db94f64bf/clone-of%3A-key-concepts-example-%5Bpy%5D'>clone it</a></span>.</p>
