@@ -1,28 +1,21 @@
-<p>Follow these steps to create projects by using the QuantConnect Api.</p>
+<p>To create a project, call the <code>CreateProject</code> method with the project name, the project programming language, and the organization name.</p>
 
-<ol>
-    <li class="csharp">Load the required assembly files and data types.</li>
-    <div class="csharp section-example-container">
-        <pre class="csharp">#load "../Initialize.csx"
+<div class="section-example-container">
+    <pre class="csharp">#load "../Initialize.csx"
 #load "../QuantConnect.csx"
 
-using QuantConnect;</pre>
-    </div>
+using QuantConnect;
 
-    <li>Call <code>CreateProject</code> with a custom project name, the programming language and (optional) the selected organization ID. This will return a <code>ProjectResponse</code>.</li>
-    <div class="section-example-container">
-        <pre class="csharp">var newProject = api.CreateProject(name: "Project", 
+var newProject = api.CreateProject(name: "Project", 
                                    language: Language.CSharp,
                                    organizationId: "&lt;yourOrganizationName&gt;");</pre>
-        <pre class="python">new_project = api.CreateProject(name="Project", 
+    <pre class="python">new_project = api.CreateProject(name="Project", 
                                 language=Language.Python,
                                 organizationId="&lt;your_organization_name&gt;")</pre>
-    </div>
+</div>
 
-    <li>Call <code>Success</code> attribute to check if the creation request is successful.</li>
-    <div class="section-example-container">
-        <pre class="csharp">Console.WriteLine($"{newProject.Success}");</pre>
-        <pre class="python">print(f"{new_project.Success}")</pre>
-    </div>
-    <img class="docs-image" src="https://cdn.quantconnect.com/i/tu/research-true.png">
-</ol>
+<p>The <code>organizationId</code> argument is optional. If you omit it, the CLI adds the project to your <a href='/docs/v2/our-platform/organizations/administration#10-Set-a-Preferred-Organization'>preferred organization</a>.</p>
+
+<p>The <code>CreateProject</code> method returns a <code>ProjectResponse</code> object, which have the following attributes:</p>
+
+<div data-tree='QuantConnect.Api.ProjectResponse'></div>
