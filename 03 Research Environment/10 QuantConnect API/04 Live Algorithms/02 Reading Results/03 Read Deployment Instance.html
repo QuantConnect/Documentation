@@ -1,39 +1,15 @@
-<p>Follow these steps to read a live-deploying algorithm instance by the QuantConnect Api.</p>
+<p>To get the results of a live algorithm, call the <code>ReadLiveAlgorithm</code> method with the project ID and deployment ID.</p>
 
-<ol>
-    <li class="csharp">Load the required assembly files and data types.</li>
-    <div class="csharp section-example-container">
-        <pre class="csharp">#load "../Initialize.csx"
+<div class="section-example-container">
+    <pre class="csharp">#load "../Initialize.csx"
 #load "../QuantConnect.csx"
 
 using QuantConnect;
-using QuantConnect.Api;</pre>
-    </div>
+using QuantConnect.Api;
 
-    <li>Call <code>ReadLiveAlgorithm</code> with the project ID and deploy ID.</li>
-    <div class="section-example-container">
-        <pre class="csharp">var projectId = &lt;yourProjectId&gt;;
-var deployId = "&lt;yourDeploymentId&gt;";
 var liveAlgorithm = api.ReadLiveAlgorithm(projectId, deployId);</pre>
-        <pre class="python">project_id = &lt;your_project_id&gt;
-deploy_id = "&lt;your_deployment_id&gt;"
-live_algorithm = api.ReadLiveAlgorithm(project_id, deploy_id)</pre>
-    </div>
+    <pre class="python">live_algorithm = api.ReadLiveAlgorithm(project_id, deploy_id)</pre>
+</div>
 
-    <li>Call <code>Success</code> attribute to check if the request is successful.</li>
-    <div class="section-example-container">
-        <pre class="csharp">Console.WriteLine($"{liveAlgorithm.Success}");</pre>
-        <pre class="python">print(live_algorithm.Success)</pre>
-    </div>
-    <img class="csharp docs-image" src="">
-    <img class="python docs-image" src="">
-    
-    <li>Call <code>LiveResults.Results</code> attribute to obtain the live algorithm's results.</li>
-    <p>In this tutorial, <code>DefaultLiveAlgorithmSettings</code> is used for using QuantConnect's paper trading. For other brokerages, please refer to <a href="https://github.com/QuantConnect/Lean/blob/master/Common/Api/LiveAlgorithmSettings.cs">LiveAlgorithmSettings.cs</a> for reference.</p>
-    <div class="section-example-container">
-        <pre class="csharp">var results = liveAlgorithm.LiveResults.Results;</pre>
-        <pre class="python">results = live_algorithm.LiveResults.Results</pre>
-    </div>
-</ol>
-
-<p>Note that this would be a snapshot of the live algorithm at this instance. If more updated information is needed, you'll need to re-read it.</p>
+<p>The <code>ReadLiveAlgorithm</code> method returns a <code>LiveAlgorithmResults</code> object, which have the following attributes:</p>
+<div data-tree='QuantConnect.Api.LiveAlgorithmResults'></div>
