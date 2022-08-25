@@ -1,90 +1,21 @@
-<p class="csharp">Jupyter Notebooks don't currently support libraries to plot historical data, but we are working on adding the functionality. Until we add the functionality, use Python to plot historical fundamental data.</p>
+<p class="csharp">Jupyter Notebooks don't currently support libraries to plot historical data, but we are working on adding the functionality. Until we add the functionality, use Python to plot historical Equity fundamental data.</p>
 
-<p class="python">You need a <a href="/docs/v2/research-environment/datasets/equity#03-Create-Subscriptions">subscription</a> before you can request historical data for a security. You can request an amount of historical data based on a defined period of time.</p>
+<p class="python">You need some <a href="/docs/v2/research-environment/datasets/equity-fundamental-data#04-Get-Historical-Data">historical Equity fundamental data</a> to produce plots. You can use many of the <a href="/docs/v2/research-environment/charting">supported plotting libraries</a> to visualize data in various formats. For example, you can plot line charts.</p>
 
-<p class="python">We'll use <code>Plotly</code> library for plotting.</p>
-<div class="python section-example-container">
-    <pre class="python"># Import the plotly library.
-import plotly.graph_objects as go</pre>
-</div>
+<p class="python">Follow these steps to plot line charts using built-in methods:</p>
 
-<h4 class="python">PE Ratio Over Time</h4>
-<p class="python">We'd like to visualize how the PE Ratio evolve for airlines in 2014.</p>
 <ol class="python">
-    <li>Call <code>reset_index</code>.</li>
+    <li>Call the <code>plot</code> method on the history <code>DataFrame</code>.</li>
     <div class="python section-example-container">
-        <pre class="python">pe_cols = pe_ratios.columns
-pe_ratios_ = pe_ratios.reset_index()</pre>
+        <pre class="python">history.plot(title='PE Ratio Over Time', figsize=(15, 8))</pre>
     </div>
 
-    <li>Plot the lines.</li>
+    <li>Show the plot.</li>
     <div class="python section-example-container">
-        <pre class="python">fig = go.Figure()
-for i in range(len(pe_cols)):
-    fig.add_trace(go.Scatter(x=pe_ratios_['index'], 
-                             y=pe_ratios_[pe_cols[i]],
-                             name=pe_cols[i].split(" ")[0]))</pre>
+        <pre class="python">plt.show()</pre>
     </div>
-
-    <li>Set the title and axis labels.</li>
-    <div class="python section-example-container">
-        <pre class="python">fig.update_layout(title="PE Ratio Over Time",
-                 xaxis_title="Date",
-                 yaxis_title="PE Ratio")</pre>
-    </div>
-    
-    <li>Show the figure.</li>
-    <div class="python section-example-container">
-        <pre class="python">fig.show()</pre>
-    </div>
+    <p class='python'>Line charts display the value of the property you selected in a time series.</p>
 </ol>
-<img class="python docs-image" src="https://cdn.quantconnect.com/i/tu/fundamentals-plotly-pe-py.png">
 
-<h4 class="python">Buy Low Sell High</h4>
-<p class="python">We hypothesize that in the same sector, the relatively undervalued (lowest average PE Ratio) would out perform the relatively overvalued (higehest average PE Ratio) stock by market efficiency. We would visualize this for validation.</p>
-<ol class="python">
-    <li>Get historical data for the forward year's (2015) price data for the highest and lowest average PE Ratio airlines.</li>
-    <div class="python section-example-container">
-        <pre class="python">history = qb.History([highest_avg_pe, lowest_avg_pe], 
-                     datetime(2015, 1, 1), 
-                     datetime(2015, 12, 31), 
-                     Resolution.Daily).close.unstack(level=0)</pre>
-    </div>
+<img class="python docs-image" src="https://cdn.quantconnect.com/i/tu/equity-fundamental-data-plot.jpg">
 
-    <li>Calculate daily cumulative returns.</li>
-    <div class="python section-example-container">
-        <pre class="python">equity_value_over_time = (history.pct_change()[1:] + 1).cumprod()</pre>
-    </div>
-
-    <li>Call <code>reset_index</code>.</li>
-    <div class="python section-example-container">
-        <pre class="python">equity_value_over_time = equity_value_over_time.reset_index()</pre>
-    </div>
-
-    <li>Plot the lines.</li>
-    <div class="python section-example-container">
-        <pre class="python">fig = go.Figure()
-fig.add_trace(go.Scatter(x=equity_value_over_time['time'], 
-                         y=equity_value_over_time[lowest_avg_pe], 
-                         name=str(lowest_avg_pe)))
-fig.add_trace(go.Scatter(x=equity_value_over_time['time'], 
-                         y=equity_value_over_time[highest_avg_pe], 
-                         name=str(highest_avg_pe)))
-fig.add_trace(go.Scatter(x=equity_value_over_time['time'], 
-                         y=1 + equity_value_over_time[lowest_avg_pe] - equity_value_over_time[highest_avg_pe], 
-                         name=f"{str(lowest_avg_pe)}-{str(highest_avg_pe)}"))</pre>
-    </div>
-
-    <li>Set the title and axis labels.</li>
-    <div class="python section-example-container">
-        <pre class="python">fig.update_layout(title="Portfolio Value",
-                 xaxis_title="Date",
-                 yaxis_title="Relative Value")</pre>
-    </div>
-    
-    <li>Show the figure.</li>
-    <div class="python section-example-container">
-        <pre class="python">fig.show()</pre>
-    </div>
-</ol>
-<img class="python docs-image" src="https://cdn.quantconnect.com/i/tu/fundamentals-plotly-equity-curve-py.png">
