@@ -1,26 +1,25 @@
-<p>You need to understand how to <a href="#03-Read-Deployment-Instance">Read Deployment Instance</a> to read the charts.</p>
-<p class="csharp">Follow these steps to read chart data of a backtest.</p>
-<p class="python">Follow these steps to read and plot chart data of a backtest.</p>
+<p>To view the charts of a live algorithm, <a href='/docs/v2/research-environment/quantconnect-api/live-algorithms/reading-results#03-Read-Deployment-Instance'>get the live trading results</a> and then follow these steps:</p>
+
 <ol>
-    <li>Call <code>Charts</code> attribute of the live algorithm.</li>
+    <li>Save the <code>Charts</code> attribute of the live algorithm result.</li>
     <div class="section-example-container">
-        <pre class="csharp">var charts = results.Charts;</pre>
-        <pre class="python">charts = results.Charts</pre>
+        <pre class="csharp">var charts = liveAlgorithm.LiveResults.Charts;</pre>
+        <pre class="python">charts = live_algorithm.LiveResults.Charts</pre>
     </div>
 
-    <li>Hash the chart's name to obtain a particular chart's data.</li>
+    <li>Index the chart object with the chart name.</li>
     <div class="section-example-container">
         <pre class="csharp">var equityChart = charts["Strategy Equity"];</pre>
         <pre class="python">equity_chart = charts["Strategy Equity"]</pre>
     </div>
 
-    <li>Call <code>Series</code> attribute of the charts, then hash with the name of the desired series to obtain particular series's data.</li>
+    <li>Index the <code>Series</code> attribute of the charts with the series name.</li>
     <div class="section-example-container">
         <pre class="csharp">var equitySeries = equityChart.Series["Equity"].Values;</pre>
         <pre class="python">equity_series = equity_chart.Series["Equity"].Values</pre>
     </div>
 
-    <li>Iterate each data point of each series, store them in (nested) <code>Dictionary</code>.</li>
+    <li>Iterate each data point of each series and store them in <code>Dictionary</code> objects.</li>
     <div class="section-example-container">
         <pre class="csharp">var equityData = equitySeries
                  .Where(kvp => kvp != null)
@@ -37,17 +36,15 @@ foreach(var kvp in equityData.Take(5))
     Console.WriteLine($"{time} : {kvp.Value}");
 }</pre>
     </div>
-    <img class="csharp docs-image" src="">
 
-    <li class="python">Convert the dictionaries into <code>pandas.Series</code>.</li>
+    <li class="python">Convert the dictionaries into a <code>Series</code> object.</li>
     <div class="python section-example-container">
         <pre class="python">equity_data = pd.Series(equity_data)</pre>
     </div>
 
-    <li class="python">Call <code>plot</code> to plot the data.</li>
+    <li class="python">Call the <code>plot</code> on the pandas object.</li>
     <div class="python section-example-container">
         <pre class="python">equity_data.plot(figsize=(10, 6), title="Equity Curve")
 plt.show()</pre>
     </div>
-    <img class="python docs-image" src="">
 </ol>
