@@ -1,4 +1,4 @@
-<p>To use the Tradier brokerage, create an <code>TradierLiveAlgorithmSettings</code> object.</p>
+<p>To use the Tradier brokerage, create a <code>TradierLiveAlgorithmSettings</code> object.</p>
 
 <div class="section-example-container">
     <pre class="csharp">var liveSettings = new TradierLiveAlgorithmSettings(accessToken: "",
