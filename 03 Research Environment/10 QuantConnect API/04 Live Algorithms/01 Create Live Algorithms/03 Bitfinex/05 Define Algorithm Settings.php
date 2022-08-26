@@ -1,4 +1,4 @@
-<p>To use the Bitfinex brokerage, create an <code>BitfinexLiveAlgorithmSettings</code> object.</p>
+<p>To use the Bitfinex brokerage, create a <code>BitfinexLiveAlgorithmSettings</code> object.</p>
 
 <div class="section-example-container">
     <pre class="csharp">var liveSettings = new BitfinexLiveAlgorithmSettings(key: "", secret: "");</pre>
