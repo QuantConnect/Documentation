@@ -1,0 +1,38 @@
+<p>In this example, build a support vector regression prediction model using the following features and labels:</p>
+
+<table class="qc-table table">
+    <thead>
+        <tr>
+            <th>Data Category</th>
+            <th>Description</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>Features</td>
+            <td>Daily percent change of the open, high, low, close, and volume of the SPY over the last 5 days</td>
+        </tr>
+        <tr>
+            <td>Labels</td>
+            <td>Daily percent return of the SPY over the next day</td>
+        </tr>
+    </tbody>
+</table>
+
+<p>The following image shows the time difference between the features and labels:</p>
+<img class="docs-image" src="https://cdn.quantconnect.com/i/tu/ml-keras-function.png">
+
+<p>Follow these steps to create a method to build the model:</p>
+<ol>
+    <li>Set the choices of hyperparameters used for grid search testing.</li>
+    <div class="section-example-container">
+        <pre class="python">param_grid = {'C': [.05, .1, .5, 1, 5, 10], 
+              'epsilon': [0.001, 0.005, 0.01, 0.05, 0.1], 
+              'gamma': ['auto', 'scale']}</pre>
+    </div>
+
+    <li>Call the <code>GridSearchCV</code> constructor with the SVR model, the parameter grid, a scoring method, the number of cross-validation folds.</li>
+    <div class="section-example-container">
+        <pre class="python">gsc = GridSearchCV(SVR(), param_grid, scoring='neg_mean_squared_error', cv=5)</pre>
+    </div>
+</ol>
