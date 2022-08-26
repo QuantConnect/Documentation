@@ -1,13 +1,31 @@
-<p>Follow these steps to create an indicator timeseries:</p>
-
-<ol>
-	<li>Create an data-point indicator. In this tutorial, use a 20-period 2-standard-deviation <code>BollingerBands</code> indicator.</li>
-	<div class="section-example-container">
+<p>You need an indicator to create a timeseries of indicator values. In this example, use a 20-period 2-standard-deviation <code>BollingerBands</code> indicator.</p>
+<div class="section-example-container">
         <pre class="csharp">var bb = new BollingerBands(20, 2);</pre>
         <pre class="python">bb = BollingerBands(20, 2)</pre>
+</div>
+
+<p>You can create the indicator timeseries with the <code>Indicator</code> helper method or you can manually create the timeseries.</p>
+
+<h4>Indicator Helper Method</h4>
+<p>To create an indicator timeseries with the helper method, call the <code>Indicator</code> method.</p>
+<div class="section-example-container">
+    <pre class="csharp">var bbIndicator = qb.Indicator(bb, symbol, 50, Resolution.Daily);</pre>
+    <pre class="python">bb_indicator = qb.Indicator(bb, symbol, 50, Resolution.Daily)</pre>
+</div>
+<img class="python docs-image" src="https://cdn.quantconnect.com/i/tu/indicator-datapoint-py-helper-bb.png">
+
+
+<h4>Manually Create Indicator Timeseries</h4>
+<p>Follow these steps to manually create the indicator timeseries:</p>
+
+<ol>
+    <li>Get some <a href="/docs/v2/research-environment/datasets/key-concepts">historical data</a>.</li>
+    <div class="section-example-container">
+        <pre class="csharp">var history = qb.History(symbol, 70, Resolution.Daily);</pre>
+        <pre class="python">history = qb.History[TradeBar](symbol, 70, Resolution.Daily)</pre>
     </div>
+
     <li>Create a <code>RollingWindow</code> for each attribute of the indicator to hold their values.</li>
-    <p>In this example, save 50 data points.</p>
     <div class="section-example-container">
         <pre class="csharp">var time = new RollingWindow&lt;DateTime&gt;(50);
 var window = new Dictionary&lt;string, RollingWindow&lt;decimal&gt;&gt;();
@@ -32,7 +50,7 @@ window["standarddeviation"] = RollingWindow[float](50)
 window["price"] = RollingWindow[float](50)
 </pre>
     </div>
-    <li>Set handler methods to update the <code>RollingWindow</code>s.</li>
+    <li>Attach a handler method to the indicator that updates the <code>RollingWindow</code> objects.</li>
     <div class="section-example-container">
         <pre class="csharp">bb.Updated += (sender, updated) =&gt; 
 {
@@ -61,9 +79,9 @@ window["price"] = RollingWindow[float](50)
 
 bb.Updated += UpdateBollingerBandWindow</pre>
     </div>
-    <p>When the indicators receive new data, the handler will add the new <code>IndicatorDataPoints</code> into the <code>RollingWindow</code>s.</p>
+    <p>When the indicator receives new data, the preceding handler method adds the new <code>IndicatorDataPoint</code> values into the respective <code>RollingWindow</code>.</p>
 
-    <li>Iterate the <a href="#03 Get Historical Data">historical market data</a> to update the indicators and the <code>RollingWindow</code>s.</li>
+    <li>Iterate through the historical market data and update the indicator.</li>
     <div class="section-example-container">
         <pre class="csharp">foreach(var bar in history)
 {
@@ -83,17 +101,10 @@ foreach (var i in Enumerable.Range(0, 5).Reverse())
     </div>
     <img class="csharp docs-image" src="https://cdn.quantconnect.com/i/tu/indicator-datapoint-cs-classic-bb.png">
 
-    <li class="python">Convert the <code>RollingWindow</code>s' data into <code>pandas.DataFrame</code>.</li>
+    <li class="python">Populate a <code>DataFrame</code> with the data in the <code>RollingWindow</code> objects.</li>
     <div class="python section-example-container">
         <pre class="python">bb_dataframe = pd.DataFrame(window).set_index('time')</pre>
     </div>
     <img class="python docs-image" src="https://cdn.quantconnect.com/i/tu/indicator-datapoint-py-classic-bb.png">	
 </ol>
 
-<h4>Indicator Helper Method</h4>
-<p>Call the <code>qb.Indicator</code> method to create an indicator timeseries.</p>
-<div class="section-example-container">
-    <pre class="csharp">var bbIndicator = qb.Indicator(bb, symbol, 50, Resolution.Daily);</pre>
-    <pre class="python">bb_indicator = qb.Indicator(bb, symbol, 50, Resolution.Daily)</pre>
-</div>
-<img class="python docs-image" src="https://cdn.quantconnect.com/i/tu/indicator-datapoint-py-helper-bb.png">
