@@ -6,15 +6,31 @@
 
 <p><span class="new-term">Bear put spread</span>, also known as <span class="new-term">short put spread</span>, consists of buying an ITM put and selling an OTM put. Both puts have the same underlying Equity and the same expiration date. The OTM put serves as a hedge for the ITM put. The bear put spread profits from a decline in underlying asset price.</p>
 <p>The bear put spread is a limited-reward-limited-risk strategy. The payoff is</p>
-$Payoff_{OTM\ put}=(Strike_{OTM\ put}-Price_{underlying})^{+}$
-<br><br>
-$Payoff_{ITM\ put}=(Strike_{ITM\ put}-Price_{underlying})^{+}$
-<br><br>
-$Profit/Loss=(Payoff_{ITM\ put}-Payoff_{OTM\ put}+credit\ received_{OTM\ put}-debit\ paid_{ITM\ put})\times multiplier-commissions$
-<br><br>
-
+$$
+\begin{array}{rcll}
+P^{OTM}_T & = & (K^{OTM} - S_T)^{+}\\
+P^{ITM}_T & = & (K^{ITM} - S_T)^{+}\\
+P_T & = & (P^{ITM}_T - P^{OTM}_T + P^{OTM}_0 - P^{ITM}_0)\times m - fee\\
+\end{array}
+$$
+$$
+\begin{array}{rcll}
+\textrm{where} & P^{OTM}_T & = & \textrm{OTM put value at time T}\\
+& P^{ITM}_T & = & \textrm{ITM put value at time T}\\
+& S_T & = & \textrm{Underlying asset price at time T}\\
+& K^{OTM} & = & \textrm{OTM put strike price}\\
+& K^{ITM} & = & \textrm{ITM put strike price}\\
+& P_T & = & \textrm{Payout total at time T}\\
+& P^{ITM}_0 & = & \textrm{ITM put value at position opening (debit paid)}\\
+& P^{OTM}_0 & = & \textrm{OTM put value at position opening (credit received)}\\
+& m & = & \textrm{Contract multiplier}\\
+& T & = & \textrm{Time of expiration}
+\end{array}
+$$
+<br>
+<p>The following chart shows the payoff at expiration:</p>
 <img class="docs-image" src="https://cdn.quantconnect.com/i/tu/bear-put-spread-20220524.png">
 
-<p>The maximum profit is the spread between the strike prices of the 2 contracts minus the net debit paid when opening the trade. If the underlying price is lower than both strike prices, the contracts expire worth <span class="latex-variable">$(strike - underlying price)</span>.</p>
-<p>The maximum loss is the net debit paid after commission when opening the trade, where is underlying price is above both strike prices and the options become worthless.</p>
-<p>If the Option is an American Option, there is a risk of early assignment on the sold contract.</p>
+<p>The maximum profit is $K^{ITM} - K^{OTM} + P^{OTM}_0 - P^{ITM}_0$. If the price is declined and lower than the strike prices of both puts, they will worth $(K - S_T)$ at expiration.</p>
+<p>Maximum loss is the net debit paid: $P^{OTM}_0 - P^{ITM}_0$, where is underlying price is above both strike prices such that the Options become worthless.</p>
+<p>If the Option is American Option, there will be a risk of early assignment on the shorted Option.</p>

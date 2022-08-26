@@ -1,7 +1,7 @@
 <p>Follow these steps to implement the bear call spread strategy:</p>
 
 <ol>
-    <li>In the Initialize method, set the start date, end date, cash, and <a href="https://www.quantconnect.com/docs/v2/writing-algorithms/universes/equity-options">Option universe</a>.</li>
+    <li>In the <code>Initialize</code> method, set the start date, end date, cash, and <a href="https://www.quantconnect.com/docs/v2/writing-algorithms/universes/equity-options">Option universe</a>.</li>
     <div class="section-example-container">
         <pre class="csharp">private Symbol _symbol;
 
@@ -30,7 +30,7 @@ def UniverseFunc(self, universe: OptionFilterUniverse) -&gt; OptionFilterUnivers
     return universe.IncludeWeeklys().Strikes(-15, 15).Expiration(timedelta(0), timedelta(31))</pre>
     </div>
 
-    <li>In the OnData method, select the expiration and strikes of the contracts in the strategy legs.</li>
+    <li>In the <code>OnData</code> method, select the expiration and strikes of the contracts in the strategy legs.</li>
     <div class="section-example-container">
         <pre class="csharp">public override void OnData(Slice slice)
 {
@@ -45,7 +45,8 @@ def UniverseFunc(self, universe: OptionFilterUniverse) -&gt; OptionFilterUnivers
     var calls = chain.Where(x =&gt; x.Expiry == expiry &amp;&amp; x.Right == OptionRight.Call);
     if (calls.Count() == 0) return;
 
-    // Select the ITM and OTM contract strike prices from the remaining contracts<br>    var callStrikes = calls.Select(x =&gt; x.Strike).OrderBy(x =&gt; x);
+    // Select the ITM and OTM contract strike prices from the remaining contracts
+    var callStrikes = calls.Select(x =&gt; x.Strike).OrderBy(x =&gt; x);
     var itmStrike = callStrikes.First();
     var otmStrike = callStrikes.Last();</pre>
         <pre class="python">def OnData(self, slice: Slice) -&gt; None:
@@ -62,12 +63,13 @@ def UniverseFunc(self, universe: OptionFilterUniverse) -&gt; OptionFilterUnivers
     calls = [i for i in chain if i.Expiry == expiry and i.Right == OptionRight.Call]
     if len(calls) == 0: return
 
-    # Select the ITM and OTM contract strike prices from the remaining contracts<br>    call_strikes = sorted([x.Strike for x in calls])
+    # Select the ITM and OTM contract strike prices from the remaining contracts
+    call_strikes = sorted([x.Strike for x in calls])
     itm_strike = call_strikes[0]
     otm_strike = call_strikes[-1]</pre>
     </div>
 
-    <li>In the OnData method, call the <code>OptionStrategies.BearCallSpread</code> method and then submit the order.</li>
+    <li>In the <code>OnData</code> method, call the <code>OptionStrategies.BearCallSpread</code> method and then submit the order.</li>
     <div class="section-example-container">
         <pre class="csharp">var optionStrategy = OptionStrategies.BearCallSpread(_symbol, itmStrike, otmStrike, expiry);
 Buy(optionStrategy, 1);<br></pre>

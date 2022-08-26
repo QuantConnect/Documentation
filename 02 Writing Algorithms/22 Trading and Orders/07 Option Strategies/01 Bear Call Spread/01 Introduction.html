@@ -4,18 +4,33 @@
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
 </script>
 
-<p><span class="new-term">Bear call spread</span>, also known as <span class="new-term">short call spread</span>, consists of buying an OTM call and selling an ITM call. Both calls have the same underlying Equity and the same expiration date. The OTM call serves as a hedge for the ITM call. The bear call spread profits from a decline in underlying asset price&nbsp;and the time decay value of the ITM call.</p>
+<p><span class="new-term">Bear call spread</span>, also known as <span class="new-term">short call spread</span>, consists of selling an ITM call and buying an OTM call. Both calls have the same underlying Equity and the same expiration date. The ITM call serves as a hedge for the OTM call. The bear call spread profits from a drop in underlying asset price.</p>
 <p>The bear call spread is a limited-reward-limited-risk strategy. The payoff is</p>
-$Payoff_{OTM\ call}=(Price_{underlying}-Strike_{OTM\ call})^{+}$
-<br><br>
-$Payoff_{ITM\ call}=(Price_{underlying}-Strike_{ITM\ call})^{+}$
-<br><br>
-$Profit/Loss=(Payoff_{OTM\ call}-Payoff_{ITM\ call}+credit\ received_{ITM\ call}-debit\ paid_{OTM\ call})\times multiplier-commissions$
-<br><br>
-
+$$
+\begin{array}{rcll}
+C^{OTM}_T & = & (S_T - K^{OTM})^{+}\\
+C^{ITM}_T & = & (S_T - K^{ITM})^{+}\\
+P_T & = & (C^{OTM}_T - C^{ITM}_T + C^{ITM}_0 - C^{OTM}_0)\times m - fee\\
+\end{array}
+$$
+$$
+\begin{array}{rcll}
+\textrm{where} & C^{OTM}_T & = & \textrm{OTM call value at time T}\\
+& C^{ITM}_T & = & \textrm{ITM call value at time T}\\
+& S_T & = & \textrm{Underlying asset price at time T}\\
+& K^{OTM} & = & \textrm{OTM call strike price}\\
+& K^{ITM} & = & \textrm{ITM call strike price}\\
+& P_T & = & \textrm{Payout total at time T}\\
+& C^{ITM}_0 & = & \textrm{ITM call value at position opening (debit paid)}\\
+& C^{OTM}_0 & = & \textrm{OTM call value at position opening (credit received)}\\
+& m & = & \textrm{Contract multiplier}\\
+& T & = & \textrm{Time of expiration}
+\end{array}
+$$
+<br>
 <p>The following chart shows the payoff at expiration:</p>
 <img class="docs-image" src="https://cdn.quantconnect.com/i/tu/bear-call-spread.png">
 
-<p>The maximum profit is the net credit received after commission when opening the trade. If the price declines, both calls expire worthless.</p>
-<p>The maximum loss is the spread between the strike prices of the 2 contracts minus the net credit received when opening the trade, where is underlying price is above both strike prices and the options being exercised/assigned.</p>
-<p>If the Option is an American Option, there is a risk of early assignment on the sold contract.</p>
+<p>The maximum profit is the net credit received: $C^{ITM}_0 - C^{OTM}_0$. If the price is declining, both calls will become worthless at expiration.</p>
+<p>Maximum loss is $K^{OTM} - K^{ITM} + C^{ITM}_0 - C^{OTM}_0$, where is underlying price is above both strike prices.</p>
+<p>If the Option is American Option, there will be a risk of early assignment on the shorted Option.</p>
