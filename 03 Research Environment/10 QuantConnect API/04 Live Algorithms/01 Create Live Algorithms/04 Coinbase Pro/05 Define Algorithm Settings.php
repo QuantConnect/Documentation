@@ -4,3 +4,5 @@
     <pre class="csharp">var liveSettings = new GDAXLiveAlgorithmSettings(key: "", secret: "", passphrase: "");</pre>
     <pre class="python">live_settings = GDAXLiveAlgorithmSettings(key="", secret="", passphrase="")</pre>
 </div>
+
+<?php echo file_get_contents(DOCS_RESOURCES."/brokerages/create-credentials/coinbase-pro.html"); ?>
