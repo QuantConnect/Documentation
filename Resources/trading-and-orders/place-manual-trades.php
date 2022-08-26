@@ -1,6 +1,7 @@
 <?php
 $getManualTradesText = function($isCLI)
 {
+    echo "<p>";
     if ($isCLI)
     {
         echo "In local deployments, you can ";
