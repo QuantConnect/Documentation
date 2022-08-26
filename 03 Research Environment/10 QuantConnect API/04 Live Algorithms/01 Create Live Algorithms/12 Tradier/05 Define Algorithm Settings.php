@@ -10,3 +10,6 @@
                                              refreshToken="",
                                              account="")</pre>
 </div>
+
+
+<?php echo file_get_contents(DOCS_RESOURCES."/brokerages/create-credentials/tradier.html"); ?>
