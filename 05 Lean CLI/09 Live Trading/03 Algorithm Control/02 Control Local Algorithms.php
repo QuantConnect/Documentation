@@ -1,3 +1,5 @@
+<p>While your local algorithms run, you can add security subscriptions, submit orders, adjust orders, and stop their execution.</p>
+
 <h4>Add Security Subscriptions</h4>
 <p>You can manually create security subscriptions for your algorithm instead of calling the <code>Add<span class="placeholder-text">securityType</span></code> methods in your code files. If you add security subscriptions to your algorithm, you can place manual trades without having to edit and redeploy the algorithm. To add security subscriptions, open a terminal in your <a href='/docs/v2/lean-cli/initialization/directory-structure#02-lean-init'>CLI root directory</a> and then run <code>lean live add-security "My Project"</code>.</p>
 
