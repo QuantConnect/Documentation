@@ -54,8 +54,7 @@ $getStopAlgorithmText = function($environment)
 
     if ($environment == "Our Platform")
     {
-        echo ";
-<p>Follow these steps to stop your algorithm:</p>
+        echo "<p>Follow these steps to stop your algorithm:</p>
 
 <ol>
     <li>Open your algorithm's <a href='/docs/v2/our-platform/live-trading/results#02-View-Live-Results'>live results page</a>.</li>
