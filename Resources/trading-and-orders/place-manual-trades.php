@@ -16,9 +16,6 @@ $getManualTradesText = function($isCLI)
     <li>Your algorithm had bugs in it that caused it to purchase the wrong security</li>
     <li>You want to add a hedge to your portfolio without adjusting the algorithm code</li>
     <li>You want to rebalance your portfolio before the rebalance date</li>
-</ul>
-
-<p>Note that it's not currently possible to cancel manual orders.</p>
-    ";
+</ul>";
 }
 ?>
