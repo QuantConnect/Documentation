@@ -9,4 +9,4 @@ $getManualTradesText(true);
 <pre>$ lean live submit-order "My Project" --ticker "SPY" --market "usa" --security-type "equity" --order-type "market" --quantity 10</pre>
 </div>
 
-<p>For more information about the command options, see <a href='/docs/v2/lean-cli/api-reference/lean-live-add-security#04-Options'>Options</a>.</p>
+<p>For more information about the command options, see <a href='/docs/v2/lean-cli/api-reference/lean-live-submit-order#04-Options'>Options</a>.</p>
