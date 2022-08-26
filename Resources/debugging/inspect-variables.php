@@ -46,7 +46,8 @@ $getInspectVariablesText = function($isBacktest)
     else
     {
         echo "
-<p>The <span class='page-section-name'>Watch</span> section of the Run and Debug panel shows any custom expressions you add.</p>
+<p>The <span class='page-section-name'>Watch</span> section of the Run and Debug panel shows any custom expressions you add. For example, you can add an expression to show the a <code>datetime</code> object.</p>
+<img class='docs-image' src='https://cdn.quantconnect.com/i/tu/research-env-custom-expressions-debug.jpg'>
         ";
     }
     
