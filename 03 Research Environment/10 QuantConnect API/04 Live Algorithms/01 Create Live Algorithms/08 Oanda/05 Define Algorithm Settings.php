@@ -9,5 +9,7 @@
                                              account="&lt;account_id&gt;")</pre>
 </div>
 
+<?php echo file_get_contents(DOCS_RESOURCES."/brokerages/create-credentials/oanda.html"); ?>
+
 <p>The <code>BrokerageEnvironment</code> enumeration has the following members:</p>
 <div data-tree='QuantConnect.BrokerageEnvironment'></div>
