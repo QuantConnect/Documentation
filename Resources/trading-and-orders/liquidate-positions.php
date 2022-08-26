@@ -4,7 +4,7 @@ $getLiquidatePositionsText = function($isCLI)
     if ($isCLI)
     {
         echo "
-<p>The <code>lean live liquidate</code> command acts as a \"kill switch\" to sell all of your portfolio holdings. If your algorithm has a bug in it that caused it to purchase a lot of securities that you didn't want, this command let's you easily liquidate your portfolio instead of placing many manual trades. When you run the command, if the market is open for an asset you hold, the algorithm liquidates it with market orders. If the market is not open, the algorithm places market on open orders. After the algorithm submits the liquidation orders, it stops executing.</p>
+<p>The <code>lean cloud live liquidate</code> command acts as a \"kill switch\" to sell all of your portfolio holdings. If your algorithm has a bug in it that caused it to purchase a lot of securities that you didn't want, this command let's you easily liquidate your portfolio instead of placing many manual trades. When you run the command, if the market is open for an asset you hold, the algorithm liquidates it with market orders. If the market is not open, the algorithm places market on open orders. After the algorithm submits the liquidation orders, it stops executing.</p>
         ";
     }
     else 
