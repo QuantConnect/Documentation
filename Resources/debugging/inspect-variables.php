@@ -8,7 +8,7 @@ $getInspectVariablesText = function($isBacktest)
 <img class='python docs-image' src='https://cdn.quantconnect.com/i/tu/debugger-dataframe.png'>
 
 <h4>Local Variables</h4>
-<p>The <span class='page-section-name'>Variables</span> section of the Run and Debug panel shows the local variables at the current breakpoint. If a variable in the panel is an object, click it to see its members. The panel updates as the algorithm runs.</p>
+<p>The <span class='page-section-name'>Variables</span> section of the Run and Debug panel shows the local variables at the current breakpoint. If a variable in the panel is an object, click it to see its members. The panel updates as the {$location} runs.</p>
     ";
     
     if ($isBacktest)
