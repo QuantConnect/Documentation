@@ -1,1 +1,4 @@
-<?php echo file_get_contents(DOCS_RESOURCES."/getting-started/live-trading/liquidate-positions.html"); ?>
+<?php 
+include(DOCS_RESOURCES."/trading-and-orders/liquidate-positions.php"); 
+$getStopAlgorithmText("Our Platform");
+?>
