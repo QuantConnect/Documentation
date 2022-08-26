@@ -9,10 +9,23 @@ $getInspectVariablesText = function($isBacktest)
 
 <h4>Local Variables</h4>
 <p>The <span class='page-section-name'>Variables</span> section of the Run and Debug panel shows the local variables at the current breakpoint. If a variable in the panel is an object, click it to see its members. The panel updates as the algorithm runs.</p>
-
+    ";
+    
+    if ($isBacktest)
+    {
+        echo "
 <img class='python docs-image' src='https://cdn.quantconnect.com/i/tu/inspect-local-variables.gif'>
 <img class='csharp docs-image' src='https://cdn.quantconnect.com/i/tu/navigate-variables-debugger-c-sharp.gif'>
+        ";        
+    }
+    else
+    {
+        echo "
+<img class='python docs-image' src='https://cdn.quantconnect.com/i/tu/research-environment-local-variables-py.gif   '>
+        ";
+    }
 
+    echo "
 <p>Follow these steps to update the value of a variable:</p>
 <ol>
     <li>In the Run and Debug panel, right-click a variable and then click <span class='menu-name'>Set Value</span>.</li>
@@ -26,18 +39,18 @@ $getInspectVariablesText = function($isBacktest)
     {
         echo "
 <p>The <span class='page-section-name'>Watch</span> section of the Run and Debug panel shows any custom expressions you add. For example, you can add an expression to show the current date in the backtest.</p>
+<img class='csharp docs-image' src='https://cdn.quantconnect.com/i/tu/watch-variables-c-sharp.png'>
+<img class='python docs-image' src='https://cdn.quantconnect.com/i/tu/watch-variables.png'>
         ";        
     }
     else
     {
         echo "
-<p>The <span class='page-section-name'>Watch</span> section of the Run and Debug panel shows any custom expressions you add. For example, you can add an expression to show the date of a data object.</p>
+<p>The <span class='page-section-name'>Watch</span> section of the Run and Debug panel shows any custom expressions you add.</p>
         ";
     }
     
     echo "
-<img class='python docs-image' src='https://cdn.quantconnect.com/i/tu/watch-variables.png'>
-<img class='csharp docs-image' src='https://cdn.quantconnect.com/i/tu/watch-variables-c-sharp.png'>
     
 <p>Follow these steps to add a custom expression:</p>
 <ol>
