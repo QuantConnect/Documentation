@@ -7,7 +7,7 @@
     <li>Click the <img class="inline-icon" src="https://cdn.quantconnect.com/i/tu/deploy-live-icon.png"> <span class="icon-name">Deploy Live</span> icon.</li>
     <li>On the Deploy Live page, click the <span class="field-name">Brokerage</span> field and then click <span class="button-name">Coinbase | Pro</span> from the drop-down menu.</li>
     <li>Enter your Coinbase Pro API key, API secret, and passphrase.</li>
-    <p>To generate your API credentials, see <a href='/docs/v2/our-platform/live-trading/brokerages/coinbase-pro#02-Account-Types'>Account Types</a>. Your account details are not saved on QuantConnect.</p>
+    <?php echo file_get_contents(DOCS_RESOURCES."/brokerages/create-credentials/coinbase-pro.html"); ?>
     <li>Click on the <span class="field-name">Environment</span> field and then click one of the environments.</li>
     <p>The following table shows the supported environments:</p>
 
