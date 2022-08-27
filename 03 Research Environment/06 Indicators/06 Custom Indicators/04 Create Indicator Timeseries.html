@@ -1,10 +1,17 @@
+<p>You need to <a href="/docs/v2/research-environment/indicators/custom-indicators#03-Create-Subscriptions">subscribe to some market data</a> in order to calculate a timeseries of indicator values.</p>
+
 <p>Follow these steps to create an indicator timeseries:</p>
 
 <ol>
-	<li class="csharp">Define a custom indicator class, inherited from the <code>Indicator</code> superclass.</li>
-    <li class="python">Define a custom indicator class. Note that the <code>PythonIndicator</code> superclass inheritance, <code>Value</code> attribute and <code>Update</code> method is mandatory.</li>
-	<p class="csharp">In this tutorial, we're creating an ExpectedShortfallPercent indicator from Monte Carlo method to calculate the expected shortfall in return. We'll be using <code>WindowIndicator</code> superclass instead of <code>Indicator</code> for using a period of historical data stored in a <code>RollingWindow</code>.</p>
-    <p class="python">In this tutorial, we're creating an <Code>ExpectedShortfallPercent</Code> indicator from Monte Carlo method to calculate the expected shortfall in return.</p>
+    <li>Get some <a href="/docs/v2/research-environment/datasets/key-concepts">historical data</a>.</li>
+    <div class="section-example-container">
+        <pre class="csharp">var history = qb.History(symbol, 70, Resolution.Daily);</pre>
+        <pre class="python">history = qb.History[TradeBar](symbol, 70, Resolution.Daily)</pre>
+    </div>
+	<li class="csharp">Define a custom indicator class that inherits from the <code>Indicator</code> superclass.</li>
+    <li class="python">Define a custom indicator class. Note the <code>PythonIndicator</code> superclass inheritance, <code>Value</code> attribute, and <code>Update</code> method are mandatory.</li>
+	<p class="csharp">In this tutorial, create an <code>ExpectedShortfallPercent</code> indicator that uses Monte Carlo to calculate the expected shortfall of returns. Use the <code>WindowIndicator</code> superclass instead of <code>Indicator</code> for using a period of historical data stored in a <code>RollingWindow</code>.</p>
+    <p class="python">In this tutorial, create an <Code>ExpectedShortfallPercent</Code> indicator that uses Monte Carlo to calculate the expected shortfall of returns.</p>
     <div class="section-example-container">
         <pre class="csharp">public class ExpectedShortfallPercent : WindowIndicator&lt;IndicatorDataPoint&gt;, IIndicatorWarmUpPeriodProvider
 {
@@ -85,7 +92,7 @@
         return count >= 2</pre>
     </div>
 
-    <li>Initialize a new instance of the custom indicator. In this tutorial, 50-period 5% <code>ExpectedShortfallPercent</code> indicator is used.</li>
+    <li>Initialize a new instance of the custom indicator.</li>
 	<div class="section-example-container">
         <pre class="csharp">var es = new ExpectedShortfallPercent(50, 0.05m);</pre>
         <pre class="python">custom = ExpectedShortfallPercent(50, 0.05)</pre>
@@ -106,7 +113,7 @@ window['valueatrisk'] = RollingWindow[float](20)
 </pre>
     </div>
 
-    <li class="csharp">Set handler methods to update the <code>RollingWindow</code>s.</li>
+    <li>Attach a handler method to the indicator that updates the <code>RollingWindow</code> objects.</li>
     <div class="csharp section-example-container">
         <pre class="csharp">es.Updated += (sender, updated) =>
 {
@@ -116,9 +123,10 @@ window['valueatrisk'] = RollingWindow[float](20)
     window["valueatrisk"].Add(indicator.ValueAtRisk.Current);
 };</pre>
     </div>
-    <p class="csharp">When the indicators receive new data, the handler will add the new <code>IndicatorDataPoints</code> into the <code>RollingWindow</code>s.</p>
+    <p>When the indicator receives new data, the preceding handler method adds the new <code>IndicatorDataPoint</code> values into the respective <code>RollingWindow</code>.</p>
 
-    <li>Iterate the <a href="#03 Get Historical Data">historical market data</a> to update the indicators and the <code>RollingWindow</code>s.</li>
+
+    <li>Iterate through the historical market data and update the indicator.</li>
     <div class="section-example-container">
         <pre class="csharp">foreach(var bar in history){
     es.Update(bar.EndTime, bar.Close);
@@ -144,12 +152,9 @@ foreach (var i in Enumerable.Range(0, 5).Reverse())
     </div>
     <img class="csharp docs-image" src="https://cdn.quantconnect.com/i/tu/indicator-custom-indicator-cs-classic.png">
 
-    <li class="python">Convert the <code>RollingWindow</code>s' data into <code>pandas.DataFrame</code>.</li>
+    <li class="python">Populate a <code>DataFrame</code> with the data in the <code>RollingWindow</code> objects.</li>
     <div class="python section-example-container">
         <pre class="python">custom_dataframe = pd.DataFrame(window).set_index('time'))</pre>
     </div>
     <img class="python docs-image" src="https://cdn.quantconnect.com/i/tu/indicator-custom-indicator-py-classic.png">	
 </ol>
-
-<h4>Indicator Helper Method</h4>
-<p>Jupyter Notebooks don't currently support the <code>qb.Indicator</code> helper method for custom indicator. Please subscribe to <a href="https://github.com/QuantConnect/Research/issues/16">this GitHub issue</a> for update.</p>
