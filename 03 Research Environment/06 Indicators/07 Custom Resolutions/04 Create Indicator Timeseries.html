@@ -1,7 +1,15 @@
+<p>You need to <a href="/docs/v2/research-environment/indicators/data-point-indicators#03-Create-Subscriptions">subscribe to some market data</a> and create an indicator in order to calculate a timeseries of indicator values.</p>
+
 <p>Follow these steps to create an indicator timeseries:</p>
 
 <ol>
-	<li>Create an data-point indicator. In this tutorial, use a 20-period 2-standard-deviation <code>BollingerBands</code> indicator.</li>
+    <li>Get some <a href="/docs/v2/research-environment/datasets/key-concepts">historical data</a>.</li>
+    <div class="section-example-container">
+        <pre class="csharp">var history = qb.History(symbol, 70, Resolution.Daily);</pre>
+        <pre class="python">history = qb.History[TradeBar](symbol, 70, Resolution.Daily)</pre>
+    </div>
+
+	<li>Create a data-point indicator. In this example, use a 20-period 2-standard-deviation <code>BollingerBands</code> indicator.</li>
 	<div class="section-example-container">
         <pre class="csharp">var bb = new BollingerBands(20, 2);</pre>
         <pre class="python">bb = BollingerBands(20, 2)</pre>
@@ -34,7 +42,7 @@ window["price"] = RollingWindow[float](50)
 </pre>
     </div>
 
-    <li>Set handler methods to update the <code>RollingWindow</code>s.</li>
+    <li>Attach a handler method to the indicator that updates the <code>RollingWindow</code> objects.</li>
     <div class="section-example-container">
         <pre class="csharp">bb.Updated += (sender, updated) =&gt; 
 {
@@ -63,16 +71,15 @@ window["price"] = RollingWindow[float](50)
 
 bb.Updated += UpdateBollingerBandWindow</pre>
     </div>
-    <p>When the indicators receive new data, the handler will add the new <code>IndicatorDataPoints</code> into the <code>RollingWindow</code>s.</p>
+    <p>When the indicator receives new data, the preceding handler method adds the new <code>IndicatorDataPoint</code> values into the respective <code>RollingWindow</code>.</p>
 
-    <li>Create a <code>TradeBarConsolidator</code> to consolidate data into the custom resolution needed.</li>
-    <p>In this tutorial, 7-day bar will be used.</p>
+    <li>Create a <code>TradeBarConsolidator</code> to <a href='/docs/v2/writing-algorithms/consolidating-data/key-concepts'>consolidate data</a> into the custom resolution.</li>
     <div class="section-example-container">
         <pre class="csharp">var consolidator = new TradeBarConsolidator(TimeSpan.FromDays(7));</pre>
         <pre class="python">consolidator = TradeBarConsolidator(timedelta(days=7))</pre>
     </div>
 
-    <li>Set a handler method to feed data into the consolidator and generate consolidated bar.</li>
+    <li>Attach a handler method to feed data into the consolidator and update the indicator with the consolidated bars.</li>
     <div class="section-example-container">
         <pre class="csharp">consolidator.DataConsolidated += (sender, consolidated) =&gt;
 {
@@ -80,11 +87,12 @@ bb.Updated += UpdateBollingerBandWindow</pre>
 };</pre>
         <pre class="python">consolidator.DataConsolidated += lambda sender, consolidated: bb.Update(consolidated.EndTime, consolidated.Close)</pre>
     </div>
-    <p>When the consolidator receive data for every 7 days, the handler will generate a 7-day <code>TradeBar</code> and update the indicator.</p>
+    <p>When the consolidator receives 7 days of data, the handler generates a 7-day <code>TradeBar</code> and update the indicator.</p>
     
-    <li>Iterate the <a href="#03 Get Historical Data">historical market data</a> and feed into the consolidator to update the indicators and the <code>RollingWindow</code>s.</li>
+    <li>Iterate through the historical market data and update the indicator.</li>
     <div class="section-example-container">
-        <pre class="csharp">foreach(var bar in history){
+        <pre class="csharp">foreach(var bar in history)
+{
     consolidator.Update(bar);
 }</pre>
         <pre class="python">for bar in history:
@@ -102,7 +110,7 @@ foreach (var i in Enumerable.Range(0, 5).Reverse())
     </div>
     <img class="csharp docs-image" src="https://cdn.quantconnect.com/i/tu/indicator-custom-resolution-cs-classic-bb.png">
 
-    <li class="python">Convert the <code>RollingWindow</code>s' data into <code>pandas.DataFrame</code>.</li>
+    <li class="python">Populate a <code>DataFrame</code> with the data in the <code>RollingWindow</code> objects.</li>
     <div class="python section-example-container">
         <pre class="python">bb_dataframe = pd.DataFrame(window).set_index('time')</pre>
     </div>
