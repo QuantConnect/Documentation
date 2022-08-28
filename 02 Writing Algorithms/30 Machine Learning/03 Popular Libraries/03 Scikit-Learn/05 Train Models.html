@@ -5,7 +5,7 @@
 <div class="section-example-container">
     <pre class="python">training_length = 252*2
 self.training_data = RollingWindow[TradeBar](training_length)
-history = self.History[TradeBar](self.spy, training_length, Resolution.Daily)
+history = self.History[TradeBar](self.symbol, training_length, Resolution.Daily)
 for trade_bar in history:
     self.training_data.Add(trade_bar)</pre>
 </div>
@@ -20,7 +20,7 @@ for trade_bar in history:
     features = []
     labels = []
     for i in range(len(daily_pct_change)-n_steps):
-        features.append(daily_pct_change.iloc[i:i+n_steps].values)
+        features.append(daily_pct_change.iloc[i:i+n_steps].values.flatten())
         labels.append(daily_pct_change['close'].iloc[i+n_steps])
     features = np.array(features)
     labels = np.array(labels)
@@ -29,7 +29,7 @@ for trade_bar in history:
 
 def my_training_method(self):
     features, labels = self.get_features_and_labels()
-    self.model = gsc.fit(features, labels).best_estimator_</pre>
+    self.model = self.model.fit(features, labels).best_estimator_</pre>
 </div>
 
 <h4>Set Training Schedule</h4>
@@ -49,5 +49,5 @@ self.Train(self.DateRules.Every(DayOfWeek.Sunday), self.TimeRules.At(8, 0), self
 <div class="section-example-container">
     <pre class="python">def OnData(self, slice: Slice) -&gt; None:
     if self.symbol in slice.Bars:
-        self.training_data.Add(slice.Bars[self.spy])</pre>
+        self.training_data.Add(slice.Bars[self.symbol])</pre>
 </div>
