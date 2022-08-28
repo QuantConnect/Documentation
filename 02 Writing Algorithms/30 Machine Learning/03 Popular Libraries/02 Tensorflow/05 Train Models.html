@@ -5,7 +5,7 @@
 <div class="section-example-container">
     <pre class="python">training_length = 252*2
 self.training_data = RollingWindow[float](training_length)
-history = self.History[TradeBar](self.spy, training_length, Resolution.Daily)
+history = self.History[TradeBar](self.symbol, training_length, Resolution.Daily)
 for trade_bar in history:
     self.training_data.Add(trade_bar.Close)</pre>
 </div>
@@ -14,13 +14,13 @@ for trade_bar in history:
 <p>To train the model, define a method that fits the model with the training data.</p>
 <div class="section-example-container">
     <pre class="python">def get_features_and_labels(self, n_steps=5):
-    close_prices = self.PandasConverter.GetDataFrame[float](list(self.training_data)[::-1])
+    close_prices = list(self.training_data)[::-1]
     
     features = []
     labels = []
     for i in range(len(close_prices)-n_steps):
-        features.append(close_prices.iloc[i:i+n_steps].values)
-        labels.append(close_prices['close'].iloc[i+n_steps])
+        features.append(close_prices[i:i+n_steps])
+        labels.append(close_prices[i+n_steps])
     features = np.array(features)
     labels = np.array(labels)
 
@@ -48,5 +48,5 @@ self.Train(self.DateRules.Every(DayOfWeek.Sunday), self.TimeRules.At(8, 0), self
 <div class="section-example-container">
     <pre class="python">def OnData(self, slice: Slice) -&gt; None:
     if self.symbol in slice.Bars:
-        self.training_data.Add(slice.Bars[self.spy].Close)</pre>
+        self.training_data.Add(slice.Bars[self.symbol].Close)</pre>
 </div>
