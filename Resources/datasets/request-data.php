@@ -50,8 +50,8 @@ $getRequestDataText = function($isWritingAlgorithms)
 	    <td><code class='python'>List[Ticks]</code><code class='csharp'>List&lt;Tick&gt;</code></td>
         </tr>
 	<tr>
-	    <td><code class='placeholder-text'>altDataClass</code><br>(ex: <code>CBOE</code>)</td>
-	    <td><span class='python'><code>List[<span class='placeholder-text'>altDataClass</span>]</code><br>(ex: <code>List[CBOE]</code>)</span><span class='csharp'><code>List&lt;<span class='placeholder-text'>altDataClass</span>&gt;</code><br>(ex: <code>List&lt;CBOE&gt;</code>)</span></td>
+	    <td><code class='placeholder-text'>alternativeDataClass</code><br>(ex: <code>CBOE</code>)</td>
+	    <td><span class='python'><code>List[<span class='placeholder-text'>alternativeDataClass</span>]</code><br>(ex: <code>List[CBOE]</code>)</span><span class='csharp'><code>List&lt;<span class='placeholder-text'>alternativeDataClass</span>&gt;</code><br>(ex: <code>List&lt;CBOE&gt;</code>)</span></td>
         </tr>
     </tbody>
 </table>
@@ -156,8 +156,8 @@ var tradeBars2 = {$cVar}History(btcSymbol, TimeSpan.FromDays(3), Resolution.Minu
 	    <td><code class='python'>List[Ticks]</code><code class='csharp'>List&lt;Ticks&gt;</code></td>
         </tr>
 	<tr>
-	    <td><code class='placeholder-text'>altDataClass</code><br>(ex: <code>CBOE</code>)</td>
-	    <td><span class='python'><code>List[Dict[Symbol, <span class='placeholder-text'>altDataClass</span>]]</code><br>(ex: <code>List[Dict[Symbol, CBOE]]</code>)</span><span class='csharp'><code>List&lt;Dictionary&lt;Symbol, <span class='placeholder-text'>altDataClass</span>&gt;&gt;</code><br>(ex: <code>List&lt;Dictionary&lt;Symbol, CBOE&gt;&gt;</code>)</span></td>
+	    <td><code class='placeholder-text'>alternativeDataClass</code><br>(ex: <code>CBOE</code>)</td>
+	    <td><span class='python'><code>List[Dict[Symbol, <span class='placeholder-text'>alternativeDataClass</span>]]</code><br>(ex: <code>List[Dict[Symbol, CBOE]]</code>)</span><span class='csharp'><code>List&lt;Dictionary&lt;Symbol, <span class='placeholder-text'>alternativeDataClass</span>&gt;&gt;</code><br>(ex: <code>List&lt;Dictionary&lt;Symbol, CBOE&gt;&gt;</code>)</span></td>
         </tr>
     </tbody>
 </table>
