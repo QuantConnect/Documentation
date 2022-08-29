@@ -50,7 +50,7 @@ $getRequestDataText = function($isWritingAlgorithms)
 	    <td><code class='python'>List[Ticks]</code><code class='csharp'>List&lt;Tick&gt;</code></td>
         </tr>
 	<tr>
-	    <td><code class='placeholder-text'>altDataClass</code> (ex: <code>CBOE</code>)</td>
+	    <td><code class='placeholder-text'>altDataClass</code><br>(ex: <code>CBOE</code>)</td>
 	    <td><span class='python'><code>List[<span class='placeholder-text'>altDataClass</span>]</code><br>(ex: <code>List[CBOE]</code>)</span><span class='csharp'><code>List&lt;<span class='placeholder-text'>altDataClass</span>&gt;</code><br>(ex: <code>List&lt;CBOE&gt;</code>)</span></td>
         </tr>
     </tbody>
@@ -59,18 +59,20 @@ $getRequestDataText = function($isWritingAlgorithms)
 
 <div class='section-example-container'>
 <pre class='python'><b># EXAMPLE 1: Requesting By Bar Count: 5 bars at the security resolution:</b>
-btc_symbol = {$pyVar}.AddCrypto(\"BTCUSD\", Resolution.Minute).Symbol
 vix_symbol = {$pyVar}.AddData(CBOE, \"VIX\", Resolution.Daily).Symbol
 cboe_data = {$pyVar}.History[CBOE](vix_symbol, 5)
+
+btc_symbol = {$pyVar}.AddCrypto(\"BTCUSD\", Resolution.Minute).Symbol
 trade_bars = {$pyVar}.History[TradeBar](btc_symbol, 5)
 quote_bars = {$pyVar}.History[QuoteBar](btc_symbol, 5)
 df = {$pyVar}.History(btc_symbol, 5)
 <img class='img-responsive img-thumbnail' src='https://cdn.quantconnect.com/i/tu/history-request-single-symbol-1.png'>
 </pre>
 <pre class='csharp'><b>// EXAMPLE 1: Requesting By Bar Count: 5 bars at the security resolution:</b>
-var btcSymbol = {$cVar}AddCrypto(\"BTCUSD\", Resolution.Minute).Symbol;
 var vixSymbol = {$cVar}AddData&lt;CBOE&gt;(\"VIX\", Resolution.Daily).Symbol;
 var cboeData = {$cVar}History&lt;CBOE&gt;(vixSymbol, 5);
+
+var btcSymbol = {$cVar}AddCrypto(\"BTCUSD\", Resolution.Minute).Symbol;
 var tradeBars = {$cVar}History&lt;TradeBar&gt;(btcSymbol, 5);
 var quoteBars = {$cVar}History&lt;QuoteBar&gt;(btcSymbol, 5);
 var tradeBars2 = {$cVar}History(btcSymbol, 5);</pre>
@@ -154,7 +156,7 @@ var tradeBars2 = {$cVar}History(btcSymbol, TimeSpan.FromDays(3), Resolution.Minu
 	    <td><code class='python'>List[Ticks]</code><code class='csharp'>List&lt;Ticks&gt;</code></td>
         </tr>
 	<tr>
-	    <td><code class='placeholder-text'>altDataClass</code> (ex: <code>CBOE</code>)</td>
+	    <td><code class='placeholder-text'>altDataClass</code><br>(ex: <code>CBOE</code>)</td>
 	    <td><span class='python'><code>List[Dict[Symbol, <span class='placeholder-text'>altDataClass</span>]]</code><br>(ex: <code>List[Dict[Symbol, CBOE]]</code>)</span><span class='csharp'><code>List&lt;Dictionary&lt;Symbol, <span class='placeholder-text'>altDataClass</span>&gt;&gt;</code><br>(ex: <code>List&lt;Dictionary&lt;Symbol, CBOE&gt;&gt;</code>)</span></td>
         </tr>
     </tbody>
