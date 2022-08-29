@@ -60,6 +60,8 @@ $getRequestDataText = function($isWritingAlgorithms)
 <div class='section-example-container'>
 <pre class='python'><b># EXAMPLE 1: Requesting By Bar Count: 5 bars at the security resolution:</b>
 btc_symbol = {$pyVar}.AddCrypto(\"BTCUSD\", Resolution.Minute).Symbol
+vix_symbol = {$pyVar}.AddData(CBOE, \"VIX\", Resolution.Daily).Symbol
+cboe_data = {$pyVar}.History[CBOE](vix_symbol, 5)
 trade_bars = {$pyVar}.History[TradeBar](btc_symbol, 5)
 quote_bars = {$pyVar}.History[QuoteBar](btc_symbol, 5)
 df = {$pyVar}.History(btc_symbol, 5)
@@ -67,6 +69,8 @@ df = {$pyVar}.History(btc_symbol, 5)
 </pre>
 <pre class='csharp'><b>// EXAMPLE 1: Requesting By Bar Count: 5 bars at the security resolution:</b>
 var btcSymbol = {$cVar}AddCrypto(\"BTCUSD\", Resolution.Minute).Symbol;
+var vixSymbol = {$cVar}AddData&lt;CBOE&gt;(\"VIX\", Resolution.Daily).Symbol;
+var cboeData = {$cVar}History&lt;CBOE&gt;(vixSymbol, 5);
 var tradeBars = {$cVar}History&lt;TradeBar&gt;(btcSymbol, 5);
 var quoteBars = {$cVar}History&lt;QuoteBar&gt;(btcSymbol, 5);
 var tradeBars2 = {$cVar}History(btcSymbol, 5);</pre>
@@ -88,6 +92,7 @@ var tradeBars2 = {$cVar}History(btcSymbol, 5, Resolution.Minute);</pre>
 eth_symbol = {$pyVar}.AddCrypto('ETHUSD', Resolution.Tick).Symbol
 ticks = {$pyVar}.History[Tick](eth_symbol, timedelta(days=3))
 
+vix_data = {$pyVar}.History[CBOE](vix_symbol, timedelta(days=3)) 
 trade_bars = {$pyVar}.History[TradeBar](btc_symbol, timedelta(days=3)) 
 quote_bars = {$pyVar}.History[QuoteBar](btc_symbol, timedelta(days=3))
 df = {$pyVar}.History(btc_symbol, timedelta(days=3)) 
@@ -96,6 +101,7 @@ df = {$pyVar}.History(btc_symbol, timedelta(days=3))
 var ethSymbol = {$cVar}AddCrypto(\"ETHUSD\", Resolution.Tick).Symbol;
 var ticks = {$cVar}History&lt;Tick&gt;(ethSymbol, TimeSpan.FromDays(3));
 
+var cboeData = {$cVar}History&lt;CBOE&gt;(vixSymbol, TimeSpan.FromDays(3));
 var tradeBars = {$cVar}History&lt;TradeBar&gt;(btcSymbol, TimeSpan.FromDays(3));
 var quoteBars = {$cVar}History&lt;QuoteBar&gt;(btcSymbol, TimeSpan.FromDays(3));
 var tradeBars2 = {$cVar}History(btcSymbol, TimeSpan.FromDays(3));</pre>
@@ -146,6 +152,10 @@ var tradeBars2 = {$cVar}History(btcSymbol, TimeSpan.FromDays(3), Resolution.Minu
         <tr>
 	    <td><code>Tick</code></td>
 	    <td><code class='python'>List[Ticks]</code><code class='csharp'>List&lt;Ticks&gt;</code></td>
+        </tr>
+	<tr>
+	    <td><code class='placeholder-text'>altDataClass</code> (ex: <code>CBOE</code>)</td>
+	    <td><span class='python'><code>List[Dict[Symbol, <span class='placeholder-text'>altDataClass</span>]]</code> (ex: <code>List[Dict[Symbol, CBOE]]</code>)</span><span class='csharp'><code>List&lt;Dictionary&lt;Symbol, <span class='placeholder-text'>altDataClass</span>&gt;&gt;</code> (ex: <code>List&lt;Dictionary&lt;Symbol, CBOE&gt;&gt;</code>)</span></td>
         </tr>
     </tbody>
 </table>
