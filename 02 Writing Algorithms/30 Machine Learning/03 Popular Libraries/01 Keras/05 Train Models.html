@@ -5,7 +5,7 @@
 <div class="section-example-container">
     <pre class="python">training_length = 252*2
 self.training_data = RollingWindow[TradeBar](training_length)
-history = self.History[TradeBar](self.spy, training_length, Resolution.Daily)
+history = self.History[TradeBar](self.symbol, training_length, Resolution.Daily)
 for trade_bar in history:
     self.training_data.Add(trade_bar)</pre>
 </div>
@@ -51,5 +51,5 @@ self.Train(self.DateRules.Every(DayOfWeek.Sunday), self.TimeRules.At(8, 0), self
 <div class="section-example-container">
     <pre class="python">def OnData(self, slice: Slice) -> None:
     if self.symbol in slice.Bars:
-        self.training_data.Add(slice.Bars[self.spy])</pre>
+        self.training_data.Add(slice.Bars[self.symbol])</pre>
 </div>
