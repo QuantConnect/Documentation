@@ -6,7 +6,8 @@
     <li>Log in to the Algorithm Lab.</li>
     <li>In the left navigation bar, click <span class='menu-name'>Organization &gt; Home</span>.</li>
     <li>On the organization homepage, click <span class='button-name'>Edit Plan</span>.</li>
-    <li>Click <span class='button-name'>CHOOSE TIER</span> under the tier for which you want to change the organization.</li>
+    <li>Click the <span class='tab-name'>Choose a Plan</span> tab.</li>
+    <li>Click <span class='button-name'>CHOOSE TIER</span> under the organization tier you want.</li>
     <li>Select a tier pack.</li>
 
     <p>The following table describes the type of packs we have available:</p>
@@ -31,7 +32,7 @@
     </table>
 
     <li>Select monthly or annual billing.<br></li>
-    <li><span class='qualifier'>(Optional)</span> Click <span class='button-name'>Add Coupon</span> and then enter your coupon code.<br></li>
+    <li><span class='qualifier'>(Optional)</span> Click <span class='button-name'>+ Add Coupon</span> and then enter your coupon code.<br></li>
     <li>If your organization doesn't have a credit card added, click <span class='button-name'>Proceed to Checkout</span> and then enter your credit card details.</li>
     <li>Click <span class='button-name'>Update Subscriptions</span> or <span class='button-name'>Subscribe Now</span>.</li>
 </ol>
