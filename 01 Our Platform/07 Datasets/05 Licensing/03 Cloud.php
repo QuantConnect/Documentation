@@ -10,7 +10,7 @@
     <li>Open the <a href='/docs/v2/our-platform/datasets/navigating-the-market#02-View-All-Listings'>listing page of a dataset</a> for which you want to gain cloud access.</li>
     <li>On the dataset listing page, click the <span class='tab-name'>Pricing</span> tab.</li>
     <li>Under the <span class='page-section-name'>Cloud Access</span> section, click <span class='button-name'>SUBSCRIBE</span>.</li>
-    <li>On the Pricing page, click <span class='button-name'>Update Subscriptions</span>.</li>
+    <li>On the Pricing page, click <span class='button-name'>Proceed to Checkout</span>.</li>
 </ol>
 
 
@@ -20,6 +20,7 @@
 <ol>
     <li>Open the <a href="/docs/v2/our-platform/organizations/administration#05-View-the-Organization-Homepage">organization homepage</a>.</li>
     <li>Click <span class='button-name'>Edit Plan</span>.</li>
-    <li>On the Pricing page, under the <span class='page-section-name'>Market Subscriptions</span> section, click <span class='button-name'>Cancel Renew</span> next to the dataset to which you no longer want to have cloud access.</li>
-    <li>Click <span class='button-name'>Update Subscriptions</span>.</li>
+    <li>On the pricing page, click the <span class='tab-name'>Customize Plan > Build Your Own Pack > Data</span> tab.</li>
+    <li>In the <span class='page-section-name'>Datasets Subscriptions</span> section, next to the name of the dataset you want to remove, click <span class='button-name'>Added</span>.</li>
+    <li>Click <span class='button-name'>Proceed to Checkout</span>.</li>
 </ol>
