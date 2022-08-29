@@ -1,7 +1,7 @@
-<p>Follow these steps to implement the call butterfly strategy.</p>
+<p>Follow these steps to implement the call butterfly strategy:</p>
 
 <ol>
-    <li>In the Initialize method, set the start date, end date, cash, and <a href="https://www.quantconnect.com/docs/v2/writing-algorithms/universes/equity-options">Option universe</a>.</li>
+    <li>In the <code>Initialize</code> method, set the start date, end date, cash, and <a href="https://www.quantconnect.com/docs/v2/writing-algorithms/universes/equity-options">Option universe</a>.</li>
     <div class="section-example-container">
         <pre class="python">private Symbol _symbol;
 
@@ -13,7 +13,7 @@ public override void Initialize()
 
     var option = AddOption("GOOG", Resolution.Minute);
     _symbol = option.Symbol;
-    option.SetFilter(universe => universe.IncludeWeeklys()
+    option.SetFilter(universe =&gt; universe.IncludeWeeklys()
                                             .Strikes(-15, 15)
                                             .Expiration(TimeSpan.FromDays(0), TimeSpan.FromDays(31)));
 }</pre>
@@ -30,7 +30,7 @@ def UniverseFunc(self, universe: OptionFilterUniverse) -&gt; OptionFilterUnivers
     return universe.IncludeWeeklys().Strikes(-15, 15).Expiration(timedelta(0), timedelta(31))</pre>
     </div>
 
-    <li>In the OnData method, select the Option contracts.</li>
+    <li>In the <code>OnData</code> method, select the expiration and strikes of the contracts in the strategy legs.</li>
     <div class="section-example-container">
         <pre class="csharp">public override void OnData(Slice slice)
 {
@@ -41,17 +41,17 @@ def UniverseFunc(self, universe: OptionFilterUniverse) -&gt; OptionFilterUnivers
     if (chain == null || chain.Count() == 0) return;
 
     // sorted the optionchain by expiration date and choose the furthest date
-    var expiry = chain.OrderByDescending(x => x.Expiry).First().Expiry;
+    var expiry = chain.OrderByDescending(x =&gt; x.Expiry).First().Expiry;
     
     // filter the call options from the contracts which expire on the furthest expiration date in the option chain.
-    var calls = chain.Where(x => x.Expiry == expiry && x.Right == OptionRight.Call);
+    var calls = chain.Where(x =&gt; x.Expiry == expiry &amp;&amp; x.Right == OptionRight.Call);
     if (calls.Count() == 0) return;
 
     // sort the call options with the same expiration date according to their strike price.
-    var callStrikes = calls.Select(x => x.Strike).OrderBy(x => x);
+    var callStrikes = calls.Select(x =&gt; x.Strike).OrderBy(x =&gt; x);
 
     // get at-the-money strike
-    var atmStrike = calls.OrderBy(x => Math.Abs(x.Strike - chain.Underlying.Price)).First().Strike;
+    var atmStrike = calls.OrderBy(x =&gt; Math.Abs(x.Strike - chain.Underlying.Price)).First().Strike;
 
     // Get the distance between lowest strike price and ATM strike, and highest strike price and ATM strike. 
     // Get the lower value as the spread distance as equidistance is needed for both side.
@@ -90,7 +90,7 @@ def UniverseFunc(self, universe: OptionFilterUniverse) -&gt; OptionFilterUnivers
     otm_strike = atm_strike + spread</pre>
     </div>
 
-    <li>In the OnData method, call the <code>OptionStrategies.CallButterfly</code> method and then submit the order.</li>
+    <li>In the <code>OnData</code> method, call the <code>OptionStrategies.CallButterfly</code> method and then submit the order.</li>
     <div class="section-example-container">
         <pre class="csharp">    var optionStrategy = OptionStrategies.CallButterfly(_symbol, otmStrike, atmStrike, itmStrike, expiry);
     // We open a position with 1 unit of the option strategy
