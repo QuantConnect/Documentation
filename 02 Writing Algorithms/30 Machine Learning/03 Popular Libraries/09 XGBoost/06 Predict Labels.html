@@ -1,0 +1,16 @@
+<p>To predict the labels of new data, in the <code>OnData</code> method, get the most recent set of features and then call the <code>predict</code> method.</p>
+
+<div class="section-example-container">
+    <pre class="python">new_d_matrix = self.ProcessData(df)
+prediction = self.model.predict(new_d_matrix)
+prediction = prediction.flatten()</pre>
+</div>
+
+<p>You can use the label prediction to place orders.</p>
+
+<div class="section-example-container">
+    <pre class="python">if float(prediction[-1]) > float(prediction[-2]):
+    self.SetHoldings(self.symbol, 1)
+else:            
+    self.SetHoldings(self.symbol, -1)</pre>
+</div>
