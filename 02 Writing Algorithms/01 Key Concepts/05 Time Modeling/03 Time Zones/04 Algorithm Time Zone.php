@@ -1,4 +1,7 @@
-<?php echo file_get_contents(DOCS_RESOURCES."/time-zone.html"); ?>
+<?php 
+include(DOCS_RESOURCES."/initialization/set-time-zone.php"); 
+$getSetTimeZoneText(true);
+?>
 
 <p>To get the time zone of your algorithm, use the <code>TimeZone</code> property.</p>
 
