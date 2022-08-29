@@ -27,6 +27,5 @@ The default time zone is Eastern Time (ET), which is UTC-4 in summer and UTC-5 i
 </pre>
 </div>    
     ";
-    }
 }
 ?>
