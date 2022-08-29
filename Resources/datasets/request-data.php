@@ -51,7 +51,7 @@ $getRequestDataText = function($isWritingAlgorithms)
         </tr>
 	<tr>
 	    <td><code class='placeholder-text'>altDataClass</code> (ex: <code>CBOE</code>)</td>
-	    <td><span class='python'><code>List[<span class='placeholder-text'>altDataClass</span>]</code> (ex: <code>List[CBOE]</code>)</span><span class='csharp'><code>List&lt;<span class='placeholder-text'>altDataClass</span>&gt;</code> (ex: <code>List&lt;CBOE&gt;</code>)</span></td>
+	    <td><span class='python'><code>List[<span class='placeholder-text'>altDataClass</span>]</code><br>(ex: <code>List[CBOE]</code>)</span><span class='csharp'><code>List&lt;<span class='placeholder-text'>altDataClass</span>&gt;</code><br>(ex: <code>List&lt;CBOE&gt;</code>)</span></td>
         </tr>
     </tbody>
 </table>
@@ -155,7 +155,7 @@ var tradeBars2 = {$cVar}History(btcSymbol, TimeSpan.FromDays(3), Resolution.Minu
         </tr>
 	<tr>
 	    <td><code class='placeholder-text'>altDataClass</code> (ex: <code>CBOE</code>)</td>
-	    <td><span class='python'><code>List[Dict[Symbol, <span class='placeholder-text'>altDataClass</span>]]</code> (ex: <code>List[Dict[Symbol, CBOE]]</code>)</span><span class='csharp'><code>List&lt;Dictionary&lt;Symbol, <span class='placeholder-text'>altDataClass</span>&gt;&gt;</code> (ex: <code>List&lt;Dictionary&lt;Symbol, CBOE&gt;&gt;</code>)</span></td>
+	    <td><span class='python'><code>List[Dict[Symbol, <span class='placeholder-text'>altDataClass</span>]]</code><br>(ex: <code>List[Dict[Symbol, CBOE]]</code>)</span><span class='csharp'><code>List&lt;Dictionary&lt;Symbol, <span class='placeholder-text'>altDataClass</span>&gt;&gt;</code><br>(ex: <code>List&lt;Dictionary&lt;Symbol, CBOE&gt;&gt;</code>)</span></td>
         </tr>
     </tbody>
 </table>
@@ -164,6 +164,10 @@ var tradeBars2 = {$cVar}History(btcSymbol, TimeSpan.FromDays(3), Resolution.Minu
 
 <div class='section-example-container'>
 <pre class='python'><b># EXAMPLE 5: Requesting By Bar Count for Multiple Symbols: 2 bars at the security resolution:</b>
+vix = {$pyVar}.AddData[CBOE](\"VIX\", Resolution.Daily).Symbol
+v3m = {$pyVar}.AddData[CBOE](\"VIX3M\", Resolution.Daily).Symbol
+cboe_data = {$pyVar}.History[CBOE]([vix, v3m], 2)
+
 ibm = {$pyVar}.AddEquity(\"IBM\", Resolution.Minute).Symbol
 aapl = {$pyVar}.AddEquity(\"AAPL\", Resolution.Minute).Symbol
 trade_bars_list = {$pyVar}.History[TradeBar]([ibm, aapl], 2)
@@ -173,6 +177,10 @@ df = {$pyVar}.History([ibm, aapl], 2)
 </pre>
 
 <pre class='csharp'><b>// EXAMPLE 5: Requesting By Bar Count for Multiple Symbols: 2 bars at the security resolution:</b>
+var vixSymbol = {$cVar}AddData&lt;CBOE&gt;(\"VIX\", Resolution.Daily).Symbol;
+var v3mSymbol = {$cVar}AddData&lt;CBOE&gt;(\"VIX3m\", Resolution.Daily).Symbol;
+var cboeData = {$cVar}History&lt;CBOE&gt;(new[] { vix, v3m }, 2);
+
 var ibm = {$cVar}AddEquity(\"IBM\", Resolution.Minute).Symbol;
 var aapl = {$cVar}AddEquity(\"AAPL\", Resolution.Minute).Symbol;
 var tradeBarsList = {$cVar}History&lt;TradeBar&gt;(new[] { ibm, aapl }, 2);
