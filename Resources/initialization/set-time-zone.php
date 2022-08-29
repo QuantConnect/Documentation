@@ -5,7 +5,7 @@ $getSetTimeZoneText = function($isAlgorithm)
     
     if ($isAlgorithm)
     {
-        echo "LEAN supports international trading across multiple time zones and markets, so it needs a reference time zone for the algorithm to set the <code>Time</code>. "   
+        echo "LEAN supports international trading across multiple time zones and markets, so it needs a reference time zone for the algorithm to set the <code>Time</code>. ";
     }
     
     $pyCodePrefix = $isAlgorithm ? "self" : "qb" ;
