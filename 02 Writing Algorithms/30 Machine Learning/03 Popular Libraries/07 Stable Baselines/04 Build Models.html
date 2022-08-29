@@ -1,0 +1,95 @@
+<p>In this example, create a <code>gym</code> environment to initialize the training environment, agent and reward. Then, create a reinforcement learning model by a single-asset deep Q-network learning algorithm using the following observations and rewards:</p>
+
+<table class="qc-table table">
+    <thead>
+        <tr>
+            <th>Data Category</th>
+            <th>Description</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>Observations</td>
+            <td>The open, high, low, close, and volume of the SPY</td>
+        </tr>
+        <tr>
+            <td>Rewards</td>
+            <td>Maximum portfolio return</td>
+        </tr>
+    </tbody>
+</table>
+
+<p>Follow these steps to create a method to build the model:</p>
+
+<ol>
+    <li>Create a custom <code>gym</code> environment class.</li>
+    <p>In this example, create a custom environment with previous 5 OHLCV log-return data as observation and the highest portfolio value as reward.</p>
+    <div class="section-example-container">
+        <pre class="python">class TradingEnv(gym.Env):
+    FLAT = 0
+    LONG = 1
+    SHORT = 2
+
+    def __init__(self, ohlcv, ret):
+        super(TradingEnv, self).__init__()
+        
+        self.ohlcv = ohlcv
+        self.ret = ret
+        self.trading_cost = 0.01
+        self.reward = 1
+        
+        # The number of step the training has taken, starts at 5 since we're using the previous 5 data for observation.
+        self.current_step = 5
+        # The last action
+        self.last_action = 0
+
+        # Define action and observation space
+        # Example when using discrete actions, we have 3: LONG, SHORT and FLAT.
+        n_actions = 3
+        self.action_space = gym.spaces.Discrete(n_actions)
+        # The observation will be the coordinate of the agent, shape for (5 previous data poionts, OHLCV)
+        self.observation_space = gym.spaces.Box(low=-np.inf, high=np.inf, shape=(5, 5), dtype=np.float64)
+
+    def reset(self):
+        # Reset the number of step the training has taken
+        self.current_step = 5
+        # Reset the last action
+        self.last_action = 0
+        # must return np.array type
+        return self.ohlcv[self.current_step-5:self.current_step].astype(np.float32)
+
+    def step(self, action):
+        if action == self.LONG:
+            self.reward *= 1 + self.ret[self.current_step] - (self.trading_cost if self.last_action != action else 0)
+        elif action == self.SHORT:
+            self.reward *= 1 + -1 * self.ret[self.current_step] - (self.trading_cost if self.last_action != action else 0)
+        elif action == self.FLAT:
+             self.reward *= 1 - (self.trading_cost if self.last_action != action else 0)
+        else:
+            raise ValueError("Received invalid action={} which is not part of the action space".format(action))
+            
+        self.last_action = action
+        self.current_step += 1
+
+        # Have we iterate all data points?
+        done = (self.current_step == self.ret.shape[0]-1)
+
+        # Reward as return
+        return self.ohlcv[self.current_step-5:self.current_step].astype(np.float32), self.reward, done, {}</pre>
+    </div>
+
+    <li>Get processed training data.</li>
+    <div class="section-example-container">
+        <pre class="python">obs, rewards = self.get_observations_and_rewards()</pre>
+    </div>
+
+    <li>Initialize the environment with the observations and results.</li>
+    <div class="section-example-container">
+        <pre class="python">env = TradingEnv(obs, rewards)</pre>
+    </div>
+
+    <li>Call the <code>DQN</code> constructor with the learning policy, and <code>gym</code> environment.</li>
+    <div class="section-example-container">
+        <pre class="python">self.model = DQN(MlpPolicy, env)</pre>
+    </div>
+</ol>
