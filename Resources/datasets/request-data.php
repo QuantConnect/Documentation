@@ -49,6 +49,10 @@ $getRequestDataText = function($isWritingAlgorithms)
 	    <td><code>Tick</code></td>
 	    <td><code class='python'>List[Ticks]</code><code class='csharp'>List&lt;Tick&gt;</code></td>
         </tr>
+	<tr>
+	    <td><code class='placeholder-text'>altDataClass</code> (ex: <code>CBOE</code>)</td>
+	    <td><span class='python'><code>List[<span class='placeholder-text'>altDataClass</span>]</code> (ex: <code>List[CBOE]</code>)</span><span class='csharp'><code>List&lt;<span class='placeholder-text'>altDataClass</span>&gt;</code> (ex: <code>List&lt;CBOE&gt;</code>)</span></td>
+        </tr>
     </tbody>
 </table>
 <p class='python'>Each row of the DataFrame represents the prices at a point in time. Each column of the DataFrame is a property of that price data (for example, open, high, low, and close).</p>
