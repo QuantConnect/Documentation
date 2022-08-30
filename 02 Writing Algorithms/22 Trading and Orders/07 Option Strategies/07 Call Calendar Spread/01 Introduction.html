@@ -8,27 +8,52 @@
 <p><span class="new-term">Call calendar spread</span>, which also known as <span class="new-term">call horizontal spread</span>, is a combination of a longer-term (far-leg/front-month) call and a shorter-term (near-leg/back-month) call, where all calls have the same underlying stock and the same strike price.</p>
 <h4>Long Call Calendar Spread</h4>
 <p>It consists of buying a longer-term call and selling a shorter-term call. It is a option strategy profitting from an decrease in price movement, as well as time decay value. It is because the theta $\theta$ (the option price decay by 1 day closer to maturity) of shorter-term call is larger than longer-term.</p>
-<p>This is a limited-reward-limited-risk strategy. The payoff is taken at the shorter-term expiration. The payoff is as follows:</p>
-$Payoff_{shorter\ term\ call}=(Price_{underlying}-Strike)^{+}$
-<br><br>
-$Profit/Loss^{t}=(Price^{t}_{longer\ term\ call}-Payoff_{shorter\ term\ call}+credit\ received_{shorter\ term\ call}-debit\ paid_{longer\ term\ call})\times multiplier-commissions$
-<br><br>
-<p>where $t$ is the expiration of shorter-term call</p>
-
+<p>This is a limited-reward-limited-risk strategy. The payoff is taken at the shorter-term expiration. The payoff is:</p>
+$$
+\begin{array}{rcll}
+C^{\textrm{short-term}}_T &amp; = &amp; (S_T - K)^{+}\\
+P_T &amp; = &amp; (C^{\textrm{long-term}}_T - C^{\textrm{short-term}}_T + C^{\textrm{short-term}}_0 - C^{\textrm{long-term}}_0)\times m - fee\\
+\end{array}
+$$
+$$
+\begin{array}{rcll}
+\textrm{where} &amp; C^{\textrm{short-term}}_T &amp; = &amp; \textrm{Shorter term call value at time T}\\
+&amp; C^{\textrm{long-term}}_T &amp; = &amp; \textrm{Longer term call value at time T}\\
+&amp; S_T &amp; = &amp; \textrm{Underlying asset price at time T}\\
+&amp; K &amp; = &amp; \textrm{Strike price}\\
+&amp; P_T &amp; = &amp; \textrm{Payout total at time T}\\
+&amp; C^{\textrm{short-term}}_0 &amp; = &amp; \textrm{Shorter term call value at position opening (credit received)}\\
+&amp; C^{\textrm{long-term}}_0 &amp; = &amp; \textrm{Longer term call value at position opening (debit paid)}\\
+&amp; m &amp; = &amp; \textrm{Contract multiplier}\\
+&amp; T &amp; = &amp; \textrm{Time of shorter term call expiration}
+\end{array}
+$$
+<br>
+<p>The following chart shows the payoff at expiration:</p>
 <img class="docs-image" src="https://cdn.quantconnect.com/i/tu/long-call-calendar-spread.png">
 <p>The maximum profit is undetermined as a dependent of volatility but limited, where the underlying price stays the same as the trade opened and the spread of the calls are at maximum.</p>
-<p>Maximum loss is the net debit paid after commission when opening the trade, where the underlying price moves very deep ITM or OTM so the spread of both calls close to zero.</p>
+<p>Maximum loss is the net debit paid: $C^{\textrm{short-term}}_0 - C^{\textrm{long-term}}_0$, where the underlying price moves very deep ITM or OTM so the spread of both calls close to zero.</p>
 <p>If the option is American option, there will be a risk of early assignment on the shorted option. Naked longed call would pose risk of losing all debit paid if its position is not closed with shorted call together and the price dropped below its strike.</p>
 
 <h4>Short Call Butterfly</h4>
 <p>It consists of selling a longer-term call and buying a shorter-term call. It is a option strategy profitting from an increase in price movement.</p>
 <p>The payoff is taken at the shorter-term expiration. This is a limited-reward-limited-risk strategy. The payoff is as follows:</p>
 $Profit/Loss^{t}=(Payoff_{shorter\ term\ call}-Price^{t}_{longer\ term\ call}+credit\ received_{longer\ term\ call}-debit\ paid_{shorter\ term\ call})\times multiplier-commissions$
-<br><br>
-<p>where $t$ is the expiration of shorter-term call</p>
-
+$$
+\begin{array}{rcll}
+P_T &amp; = &amp; (C^{\textrm{short-term}}_T - C^{\textrm{long-term}}_T + C^{\textrm{long-term}}_0 - C^{\textrm{short-term}}_0)\times m - fee\\
+\end{array}
+$$
+$$
+\begin{array}{rcll}
+\textrm{where} C^{\textrm{short-term}}_0 &amp; = &amp; \textrm{Shorter term call value at position opening (debit paid)}\\
+&amp; C^{\textrm{long-term}}_0 &amp; = &amp; \textrm{Longer term call value at position opening (credit received)}\\
+\end{array}
+$$
+<br>
+<p>The following chart shows the payoff at expiration:</p>
 <img class="docs-image" src="https://cdn.quantconnect.com/i/tu/short-call-calendar-spread.png">
 
-<p>The maximum profit is the net credit received after commission when opening the trade, where the underlying price moves very deep ITM or OTM so the spread of both calls close to zero.</p>
+<p>The maximum profit is the net credit received: $C^{\textrm{long-term}}_0 - C^{\textrm{short-term}}_0$, where the underlying price moves very deep ITM or OTM so the spread of both calls close to zero.</p>
 <p>Maximum loss is undetermined as a dependent of volatility but limited, where the underlying price is at the same level when the trade opened and the spread of the 2 calls are at its maximum.</p>
 <p>If the option is American option, there will be a risk of early assignment on the shorted option. Also, if the call positions are not closed together, the naked shorted call will have unlimited drawdown risk after the longed call expires.</p>
