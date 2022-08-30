@@ -1,6 +1,8 @@
 <?php
 $getSaveDataText = function($cSharpPrefix="", $pythonPrefix="self.", $sampleDataLink="", $writingAlgorithmsText="To avoid slowing down your backtests, save data once in the <code>OnEndOfAlgorithm</code> event handler. In live trading, you can save data more frequently like at the end of a <code>Train</code> method or after universe selection.") 
 {
+    $keyText = "To store data, you need to provide a key. If you provide a key that is already in the Object Store, it will overwrite the data at that location. To avoid overwriting objects from other projects in your organization, prefix the key with your project ID. You can find the project ID in the URL of your browser when you open a project. For example, the ID of the project at <span class='public-file-name'>quantconnect.com/project/12345</span> is 12345.";
+    
     echo "
 <p>The Object Store saves objects under a key-value system. If you save objects in backtests, you can access them from the Research Environment. {$writingAlgorithmsText}</p>
 
@@ -17,7 +19,9 @@ $getSaveDataText = function($cSharpPrefix="", $pythonPrefix="self.", $sampleData
     <li>XML-formatted objects</li>
 </ul>
 
-<p class='python'>You can save <code>Bytes</code> and <code>string</code> objects in the Object Store. To store data, you need to provide a key. If you provide a key that is already in the Object Store, it will overwrite the data at that location. To avoid overwriting objects from other projects in your organization, prefix the key with your project ID. You can find the project ID in the URL of your browser when you open a project. For example, the ID of the project at <span class='public-file-name'>quantconnect.com/project/12345</span> is 12345.</p>
+<p class='csharp'>{$keyText}</p>
+
+<p class='python'>You can save <code>Bytes</code> and <code>string</code> objects in the Object Store. {$keyText}</p>
 
 <h4>Bytes</h4>
 <p>To save a <code>Bytes</code> object, call the <code>SaveBytes</code> method.</p>
