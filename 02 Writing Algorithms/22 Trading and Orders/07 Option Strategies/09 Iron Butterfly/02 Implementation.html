@@ -1,7 +1,7 @@
-<p>Follow these steps to implement the Short Iron Butterfly strategy.</p>
+<p>Follow these steps to implement the short iron butterfly strategy:</p>
 
 <ol>
-    <li>In the Initialize method, set the start date, end date, cash, and <a href="https://www.quantconnect.com/docs/v2/writing-algorithms/universes/equity-options">Option universe</a>.</li>
+    <li>In the <code>Initialize</code> method, set the start date, end date, cash, and <a href="https://www.quantconnect.com/docs/v2/writing-algorithms/universes/equity-options">Option universe</a>.</li>
     <div class="section-example-container">
         <pre class="csharp">private Symbol _symbol;
 
@@ -13,8 +13,8 @@ public override void Initialize()
 
     var option = AddOption("GOOG", Resolution.Minute);
     _symbol = option.Symbol;
-    option.SetFilter(universe => universe.Strikes(-10, 10)
-                                            .Expiration(TimeSpan.FromDays(0), TimeSpan.FromDays(30)));
+    option.SetFilter(universe =&gt; universe.Strikes(-10, 10)
+                                         .Expiration(TimeSpan.FromDays(0), TimeSpan.FromDays(30)));
 }</pre>
         <pre class="python">def Initialize(self) -&gt; None:
     self.SetStartDate(2017, 4, 1)
@@ -26,70 +26,64 @@ public override void Initialize()
     option.SetFilter(-10, 10, timedelta(0), timedelta(30))</pre>
     </div>
 
-    <li>Break the candidate contracts into the call and put options.</li>
+    <li>In the <code>OnData</code> method, select the contracts in the strategy legs.</li>
     <div class="section-example-container">
         <pre class="csharp">public override void OnData(Slice slice)
 {
     if (Portfolio.Invested) return;
 
-    // Get the OptionChain of the symbol
+    // Get the OptionChain
     var chain = slice.OptionChains.get(_symbol, null);
     if (chain == null || chain.Count() == 0) return;
 
-    // filter the call options from the contracts which is ATM in the option chain.
-    var calls = chain.Where(x => x.Right == OptionRight.Call);
-    var puts = chain.Where(x => x.Right == OptionRight.Put);
-    if (calls.Count() == 0 || puts.Count() == 0) return;</pre>
+    // Separate the call and put contracts
+    var calls = chain.Where(x =&gt; x.Right == OptionRight.Call);
+    var puts = chain.Where(x =&gt; x.Right == OptionRight.Put);
+    if (calls.Count() == 0 || puts.Count() == 0) return;
+
+    // Get the ATM strike price
+    var atmStrike = chain.OrderBy(x =&gt; Math.Abs(x.Strike - chain.Underlying.Price)).First().Strike;
+
+    // Select the OTM contracts
+    var otmCallContract = calls.OrderBy(x =&gt; x.Strike).Last();
+    var otmPutContract = puts.OrderBy(x =&gt; x.Strike).First();
+
+    // Select the ATM contracts
+    var atmCallContract = calls.Where(x =&gt; x.Strike == atmStrike).First();
+    var atmPutsContract = puts.Where(x =&gt; x.Strike == atmStrike).First();</pre>
         <pre class="python">def OnData(self, slice: Slice) -&gt; None:
-    # avoid extra orders
     if self.Portfolio.Invested: return
 
-    # Get the OptionChain of the self.symbol
+    # Get the OptionChain
     chain = slice.OptionChains.get(self.symbol, None)
     if not chain: return
 
-    # filter the call and put options from the contracts
+    # Separate the call and put contracts
     call = [i for i in chain if i.Right == 0]
     put = [i for i in chain if i.Right == 1]
-    if len(call) == 0 or len(put) == 0 : continue</pre>
+    if len(call) == 0 or len(put) == 0 : return
+
+    # Select the OTM contracts
+    otm_call = call_contracts[-1]
+    otm_put = put_contracts[0]
+    call_contracts = sorted(call, key = lambda x: x.Strike)
+    put_contracts = sorted(put, key = lambda x: x.Strike)
+
+    # Select the ATM contracts
+    atm_put = sorted(put_contracts, key = lambda x: abs(chain.Underlying.Price - x.Strike))[0]
+    atm_call = sorted(call_contracts, key = lambda x: abs(chain.Underlying.Price - x.Strike))[0]
+</pre>
     </div>
 
-    <li>Find the specific contracts to trade. At the money options have the minimum absolute difference between the underlying price and the strike price.</li>
+    <li>In the <code>OnData</code> method, submit the orders.</li>
     <div class="section-example-container">
-        <pre class="csharp">    // get at-the-money strike
-    var atmStrike = chain.OrderBy(x => Math.Abs(x.Strike - chain.Underlying.Price)).First().Strike;
-
-    // Get the furthest OTM contracts by strike prices
-    var otmCallContract = calls.OrderBy(x => x.Strike).Last();
-    var otmPutContract = puts.OrderBy(x => x.Strike).First();
-
-    // Get ATM contracts
-    var atmCallContract = calls.Where(x => x.Strike == atmStrike).First();
-    var atmPutsContract = puts.Where(x => x.Strike == atmStrike).First();
-
-    // Sell 1 ATM Put
-    Sell(atmPutsContract.Symbol, 1);
-    // Sell 1 ATM Call
-    Sell(atmCallContract.Symbol, 1);
-    // Buy 1 OTM Call
-    Buy(otmCallContract.Symbol, 1);
-    // Buy 1 OTM Put
-    Buy(otmPutContract.Symbol, 1);
-}</pre>
-        <pre class="python">call_contracts = sorted(call, key = lambda x: x.Strike)
-put_contracts = sorted(put, key = lambda x: x.Strike)
-
-# Sell 1 ATM Put
-self.atm_put = sorted(put_contracts, key = lambda x: abs(chain.Underlying.Price - x.Strike))[0]
-self.Sell(self.atm_put.Symbol, 1)
-# Sell 1 ATM Call
-self.atm_call = sorted(call_contracts, key = lambda x: abs(chain.Underlying.Price - x.Strike))[0]
-self.Sell(self.atm_call.Symbol, 1)
-# Buy 1 OTM Call
-self.otm_call = call_contracts[-1]
-self.Buy(self.otm_call.Symbol, 1)
-# Buy 1 OTM Put
-self.otm_put = put_contracts[0]
-self.Buy(self.otm_put.Symbol, 1)</pre>
+        <pre class="csharp">Sell(atmPutsContract.Symbol, 1);
+Sell(atmCallContract.Symbol, 1);
+Buy(otmCallContract.Symbol, 1);
+Buy(otmPutContract.Symbol, 1);</pre>
+        <pre class="python">self.Sell(self.atm_put.Symbol, 1)
+self.Sell(atm_call.Symbol, 1)
+self.Buy(otm_call.Symbol, 1)
+self.Buy(otm_put.Symbol, 1)</pre>
     </div>
 </ol>
