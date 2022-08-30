@@ -1,0 +1,56 @@
+<p>In this example, build a neural-network regression model that uses the following features and labels:</p>
+
+<table class="qc-table table">
+    <thead>
+        <tr>
+            <th>Data Category</th>
+            <th>Description</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>Features</td>
+            <td>The last 5 closing prices.</td>
+        </tr>
+        <tr>
+            <td>Labels</td>
+            <td>The following day's closing price</td>
+        </tr>
+    </tbody>
+</table>
+
+<p>The following image shows the time difference between the features and labels:</p>
+<img class="docs-image" src="https://cdn.quantconnect.com/i/tu/ml-keras-function.png">
+
+<p>Follow these steps to create a method to build the model:</p>
+
+<ol>
+    <li>Define a subclass of <code>nn.Module</code> to be the model.</li>
+    <p>In this example, use the ReLU activation function for each layer.</p>
+    <div class="section-example-container">
+        <pre class="python">class NeuralNetwork(nn.Module):
+    # Model Structure
+    def __init__(self):
+        super(NeuralNetwork, self).__init__()
+        self.flatten = nn.Flatten()
+        self.linear_relu_stack = nn.Sequential(
+            nn.Linear(5, 5),   # input size, output size of the layer
+            nn.ReLU(),         # Relu non-linear transformation
+            nn.Linear(5, 5),
+            nn.ReLU(),  
+            nn.Linear(5, 1),   # Output size = 1 for regression
+        )
+    
+    # Feed-forward training/prediction
+    def forward(self, x):
+        x = torch.from_numpy(x).float()   # Convert to tensor in type float
+        result = self.linear_relu_stack(x)
+        return result</pre>
+    </div>
+
+    <li>Create an instance of the model and set its configuration to train on the GPU if it's available.</li>
+    <div class="section-example-container">
+        <pre class="python">device = 'cuda' if torch.cuda.is_available() else 'cpu'
+self.model = NeuralNetwork().to(device)</pre>
+    </div>
+</ol>
