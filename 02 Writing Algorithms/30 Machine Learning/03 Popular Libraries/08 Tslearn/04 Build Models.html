@@ -1,12 +1,9 @@
-<p>In this example, a time-series clustering model will be trained. Instead of using real-time comparison, we could apply a technique call Dynamic Time Wrapping (DTW) with Barycenter Averaging (DBA). Intuitively, it is a technique of averaging a few time-series into a single one without losing much of their information. Since not all time-series would move efficiently like in ideal EMH assumption, this would allow similarity analysis of different time-series with sticky lags. Check the technical details from <a href="https://tslearn.readthedocs.io/en/stable/user_guide/dtw.html">tslearn documentation page</a>.</p>
+<p>In this example, train a model that clusters the universe of Equities into distinct groups and then allocate an equal portion of the portfolio to each cluster. To cluster the securities, instead of using a real-time comparison, apply Dynamic Time Wrapping Barycenter Averaging (DBA) to their historical prices and then run a k-means clustering algorithm. DBA is a technique of averaging a few time-series into a single one without losing much of their information. Since not all time-series move efficiently like in ideal EMH assumption, this technique allows similarity analysis of different time-series with sticky lags. The following image shows a visualization of the process. For more information about the technical details, see Dynamic Time Warping in the <a href="https://tslearn.readthedocs.io/en/stable/user_guide/dtw.html">tslearn documentation</a>.</p>
 
 <img class="docs-image" src="https://cdn.quantconnect.com/i/tu/dba.png">
 
-<p>We then can separate different clusters by KMean after DBA. Follow these steps to create a method to build the model:</p>
-<ol>
-    <li>Call the <code>TimeSeriesKMeans</code> constructor with a preset number of clusters, choice of distance measurement.</li>
-    <div class="section-example-container">
-        <pre class="python">self.model = TimeSeriesKMeans(n_clusters=6,   # We have 6 main groups
-                      metric="dtw")</pre>
-    </div>
-</ol>
+<p>To perform DBA and then cluster the securities by k-means, create a TimeSeriesKMeans model:</p>
+<div class="section-example-container">
+    <pre class="python">self.model = TimeSeriesKMeans(n_clusters=6,   # We have 6 main groups
+                    metric="dtw")</pre>
+</div>
