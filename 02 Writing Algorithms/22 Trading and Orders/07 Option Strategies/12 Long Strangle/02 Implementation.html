@@ -1,7 +1,7 @@
-<p>Follow these steps to implement the long strangle strategy.</p>
+<p>Follow these steps to implement the long strangle strategy:</p>
 
 <ol>
-    <li>In the Initialize method, set the start date, end date, cash, and <a href="https://www.quantconnect.com/docs/v2/writing-algorithms/universes/equity-options">Option universe</a>.</li>
+    <li>In the <code>Initialize</code> method, set the start date, end date, cash, and <a href="https://www.quantconnect.com/docs/v2/writing-algorithms/universes/equity-options">Option universe</a>.</li>
     <div class="section-example-container">
         <pre class="csharp">private Symbol _symbol;
 
@@ -13,7 +13,7 @@ public override void Initialize()
 
     var option = AddOption("GOOG", Resolution.Minute);
     _symbol = option.Symbol;
-    option.SetFilter(universe => universe.Strikes(-5, 5)
+    option.SetFilter(universe =&gt; universe.Strikes(-5, 5)
                                             .Expiration(TimeSpan.FromDays(0), TimeSpan.FromDays(30)));
 }</pre>
         <pre class="python">def Initialize(self) -&gt; None:
@@ -23,66 +23,55 @@ public override void Initialize()
     
     option = self.AddOption("GOOG", Resolution.Minute)
     self.symbol = option.Symbol
-
-    # set our strike/expiry filter for this option chain
     option.SetFilter(-5, 5, timedelta(0), timedelta(30))</pre>
     </div>
 
-    <li>In the OnData method, select the Option contracts.</li>
+    <li>In the <code>OnData</code> method, select the contracts in the strategy legs.</li>
     <div class="section-example-container">
         <pre class="csharp">public override void OnData(Slice slice)
 {
     if (Portfolio.Invested) return;
 
-    // Get the OptionChain of the symbol
+    // Get the OptionChain
     var chain = slice.OptionChains.get(_symbol, null);
     if (chain == null || chain.Count() == 0) return;
 
-    // sort the optionchain by expiration date and choose the furthest date
-    var expiry = chain.OrderBy(x => x.Expiry).Last().Expiry;
+    // Select an expiry date
+    var expiry = chain.OrderBy(x =&gt; x.Expiry).Last().Expiry;
 
-    // filter the call and put options from the contracts expires on that date
-    var calls = chain.Where(x => x.Expiry == expiry && x.Right == OptionRight.Call);
-    var puts = chain.Where(x => x.Expiry == expiry && x.Right == OptionRight.Put);
+    // Select the call and put contracts that expire on the selected date
+    var calls = chain.Where(x =&gt; x.Expiry == expiry &amp;&amp; x.Right == OptionRight.Call);
+    var puts = chain.Where(x =&gt; x.Expiry == expiry &amp;&amp; x.Right == OptionRight.Put);
     if (calls.Count() == 0 || puts.Count() == 0) return;
 
-    // sort the contracts according to their strike prices
-    var callContracts = calls.OrderBy(x => x.Strike);
-    var putContracts = puts.OrderBy(x => x.Strike);
-
-    // select the furthest OTM contracts
-    var call = callContracts.Last();
-    var put = putContracts.First();</pre>
+    // Select the contracts in the strategy legs
+    var call = calls.OrderBy(x =&gt; x.Strike).Last();
+    var put = puts.OrderBy(x =&gt; x.Strike).First();<br></pre>
         <pre class="python">def OnData(self, slice: Slice) -&gt; None:
-    # avoid extra orders
     if self.Portfolio.Invested: return
 
-    # Get the OptionChain of the self.symbol
+    # Get the OptionChain
     chain = slice.OptionChains.get(self.symbol, None)
     if not chain: return
 
-    # sort the optionchain by expiration date and choose the furthest date
+    # Select an expiry date
     expiry = sorted(chain, key = lambda x: x.Expiry, reverse=True)[0].Expiry
 
-    # filter the call and put options from the contracts expires on that date
-    call = [i for i in chain if i.Expiry == expiry and i.Right == 0]
-    put = [i for i in chain if i.Expiry == expiry and i.Right == 1]
+    # Select the call and put contracts that expire on the selected date
+    calls = [i for i in chain if i.Expiry == expiry and i.Right == OptionRight.Call]
+    puts = [i for i in chain if i.Expiry == expiry and i.Right == OptionRight.Put]
+    if len(calls) == 0 or len(puts) == 0: return
 
-    # sort the contracts according to their strike prices
-    call_contracts = sorted(call, key = lambda x: x.Strike)
-    put_contracts = sorted(put, key = lambda x: x.Strike)
-
-    if len(call_contracts) == 0 or len(put_contracts) == 0: return
-    self.call = call_contracts[-1]
-    self.put = put_contracts[0]</pre>
+    # Select the contracts in the strategy legs
+    call = sorted(calls, key = lambda x: x.Strike)[-1]
+    put = sorted(puts, key = lambda x: x.Strike)[0]</pre>
     </div>
 
-    <li>Buy the call option and the put option at the same time and wait until expiration.</li>
+    <li>In the <code>OnData</code> method, submit the orders.</li>
     <div class="section-example-container">
-        <pre class="csharp">    Buy(call.Symbol, 1);
-    Buy(put.Symbol, 1);
-}</pre>
-        <pre class="python">self.Buy(self.call.Symbol, 1)
-self.Buy(self.put.Symbol, 1)</pre>
+        <pre class="csharp">Buy(call.Symbol, 1);
+Buy(put.Symbol, 1);</pre>
+        <pre class="python">self.Buy(call.Symbol, 1)
+self.Buy(put.Symbol, 1)</pre>
     </div>
 </ol>
