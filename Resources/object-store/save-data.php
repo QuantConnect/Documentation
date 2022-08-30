@@ -22,27 +22,27 @@ $getSaveDataText = function($cSharpPrefix="", $pythonPrefix="self.", $sampleData
 <h4>Bytes</h4>
 <p>To save a <code>Bytes</code> object, call the <code>SaveBytes</code> method.</p>
 <div class='section-example-container'>
-    <pre class='csharp'>var saveSuccessful = {$cSharpPrefix}ObjectStore.SaveBytes(\"&lt;projectId&gt;bytesKey\", bytesSample)</pre>
-    <pre class='python'>save_successful = {$pythonPrefix}ObjectStore.SaveBytes(\"&lt;project_id&gt;bytes_key\", bytes_sample)</pre>
+    <pre class='csharp'>var saveSuccessful = {$cSharpPrefix}ObjectStore.SaveBytes(\"&lt;projectId&gt;/bytesKey\", bytesSample)</pre>
+    <pre class='python'>save_successful = {$pythonPrefix}ObjectStore.SaveBytes(\"&lt;project_id&gt;/bytes_key\", bytes_sample)</pre>
 </div>
 
 <h4>Strings</h4>
 <p>To save a <code>string</code> object, call the <code>Save</code> or <code>SaveString</code> method.</p>
 <div class='section-example-container'>
-    <pre class='csharp'>var saveSuccessful = {$cSharpPrefix}ObjectStore.Save(\"&lt;projectId&gt;stringKey\", stringSample);</pre>
-    <pre class='python'>save_successful = {$pythonPrefix}ObjectStore.Save(\"&lt;project_id&gt;string_key\", string_sample)</pre>
+    <pre class='csharp'>var saveSuccessful = {$cSharpPrefix}ObjectStore.Save(\"&lt;projectId&gt;/stringKey\", stringSample);</pre>
+    <pre class='python'>save_successful = {$pythonPrefix}ObjectStore.Save(\"&lt;project_id&gt;/string_key\", string_sample)</pre>
 </div>
 
 <h4 class='csharp'>JSON</h4>
 <p class='csharp'>To save a JSON object, call the <code>SaveJson&lt;T&gt;</code> method. This method helps to serialize the data into JSON format.</p>
 <div class='csharp section-example-container'>
-    <pre class='csharp'>var saveSuccessful = {$cSharpPrefix}ObjectStore.SaveJson&lt;Dictionary&lt;string, int&gt;&gt;(\"&lt;projectId&gt;jsonKey\", dictSample);</pre>
+    <pre class='csharp'>var saveSuccessful = {$cSharpPrefix}ObjectStore.SaveJson&lt;Dictionary&lt;string, int&gt;&gt;(\"&lt;projectId&gt;/jsonKey\", dictSample);</pre>
 </div>
 
 <h4 class='csharp'>XML</h4>
 <p class='csharp'>To save an XML-formatted object, call the <code>SaveXml&lt;T&gt;</code> method.</p>
 <div class='csharp section-example-container'>
-    <pre class='csharp'>var saveSuccessful = {$cSharpPrefix}ObjectStore.SaveXml&lt;XElement&gt;(\"&lt;projectId&gt;xmlKey\", xmlSample);</pre>
+    <pre class='csharp'>var saveSuccessful = {$cSharpPrefix}ObjectStore.SaveXml&lt;XElement&gt;(\"&lt;projectId&gt;/xmlKey\", xmlSample);</pre>
 </div>
 ";
 }
