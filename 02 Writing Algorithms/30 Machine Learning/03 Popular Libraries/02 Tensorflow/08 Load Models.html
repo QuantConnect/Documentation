@@ -1,71 +1,27 @@
-<p>You can load and trade with pre-trained <code>Tensorflow</code> models that saved in ObjectStore. To do so, follow these steps to load it:</p>
-<ol>
-    <li>Check if the <code>ObjectStore</code> already has the model saved during <code>Initialize</code> with the model key.</li>
-    <div class="section-example-container">
-        <pre class="python">def Initialize(self) -&gt; None:
-    if self.ObjectStore.ContainsKey('graph') amd self.ObjectStore.ContainsKey('weights'):</pre>
-    </div>
-    <p>This method returns a boolean that represents if <code>graph</code> and <code>weights</code> is in the ObjectStore. If the ObjectStore does not contain these , save the model using the <code>model_key</code> before you proceed.</p>
-
-    <li>Read the model graph and weights from the <code>ObjectStore</code>.</li>
-    <div class="section-example-container">
-        <pre class="python">json_graph = self.ObjectStore.Read('graph')
-json_weights = self.ObjectStore.Read('weights')</pre>
-    </div>
-
-    <li>Restore the <code>TensorFlow</code> graph from the JSON object.</li>
-    <div class="section-example-container">
-        <pre class="python">tf.reset_default_graph()
-graph_definition = json_format.Parse(json_graph, tf.compat.v1.MetaGraphDef())
-self.model = tf.Session()
-tf.compat.v1.train.import_meta_graph(graph_definition)</pre>
-    </div>
-
-    <li>Select the input and output tensors.</li>
-    <div class="section-example-container">
-        <pre class="python">self.X = tf.compat.v1.get_default_graph().get_tensor_by_name('X:0')
-self.output = tf.compat.v1.get_default_graph().get_tensor_by_name('outer:0')</pre>
-    </div>
-
-    <li>Restore the model weights from the JSON object.</li>
-    <div class="section-example-container">
-        <pre class="python">weights = [np.asarray(x) for x in json5.loads(json_weights)]
-assign_ops = []
-feed_dict = {}
-vs = tf.compat.v1.trainable_variables()
-zipped_values = zip(vs, weights)
-for var, value in zipped_values:
-    value = np.asarray(value)
-    assign_placeholder = tf.placeholder(var.dtype, shape=value.shape)
-    assign_op = var.assign(assign_placeholder)
-    assign_ops.append(assign_op)
-    feed_dict[assign_placeholder] = value
-self.model.run(assign_ops, feed_dict=feed_dict)</pre>
-    </div>
-</ol>
-
 <p>You can load and trade with pre-trained <code>tensorflow</code> models that you saved in the ObjectStore. To load a <code>tensorflow</code> model from the ObjectStore, in the <code>Initialize</code> method, get the file path to the saved model and then recall the graph and weights of the model.</p>
 <div class="section-example-container">
     <pre class="python">def Initialize(self) -&gt; None:
     if self.ObjectStore.ContainsKey('graph') and self.ObjectStore.ContainsKey('weights'):
         json_graph = self.ObjectStore.Read('graph')
         json_weights = self.ObjectStore.Read('weights')
-    
+
         # Restore the tensorflow graph from JSON objects
         tf.reset_default_graph()
-        graph_definition = json_format.Parse(json_graph, tf.compat.v1.MetaGraphDef())
+        graph_definition = json_format.Parse(json_graph, tf.MetaGraphDef())
         self.model = tf.Session()
-        tf.compat.v1.train.import_meta_graph(graph_definition)
-    
-        # Select the input and output tensors
-        self.X = tf.compat.v1.get_default_graph().get_tensor_by_name('X:0')
-        self.output = tf.compat.v1.get_default_graph().get_tensor_by_name('outer:0')
+        tf.train.import_meta_graph(graph_definition)
+
+        # Select the input, output tensors and optimizer
+        self.X = tf.get_default_graph().get_tensor_by_name('X:0')
+        self.Y = tf.get_default_graph().get_tensor_by_name('Y:0')
+        self.output = tf.get_default_graph().get_tensor_by_name('outer:0')
+        self.optimizer = tf.get_default_graph().get_collection('Variable/Adam')
         
         # Restore the model weights from the JSON object.
         weights = [np.asarray(x) for x in json5.loads(json_weights)]
         assign_ops = []
         feed_dict = {}
-        vs = tf.compat.v1.trainable_variables()
+        vs = tf.trainable_variables()
         zipped_values = zip(vs, weights)
         for var, value in zipped_values:
             value = np.asarray(value)
