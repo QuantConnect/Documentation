@@ -18,11 +18,11 @@ $getReadDataText = function($cSharpPrefix="", $pythonPrefix="self.", $writingAlg
 <p>Before you read data from the Object Store, check if the key exists.</p>
 
 <div class='section-example-container'>
-    <pre class='csharp'>if ({$cSharpPrefix}ObjectStore.ContainsKey(\"key\"))
+    <pre class='csharp'>if ({$cSharpPrefix}ObjectStore.ContainsKey(key))
 {
     // Read data
 }</pre>
-    <pre class='python'>if {$pythonPrefix}ObjectStore.ContainsKey(\"key\"):
+    <pre class='python'>if {$pythonPrefix}ObjectStore.ContainsKey(key):
     # Read data</pre>
 </div>
 
@@ -32,8 +32,8 @@ $getReadDataText = function($cSharpPrefix="", $pythonPrefix="self.", $writingAlg
 <p>To read a <code>Bytes</code> object, call the <code>ReadBytes</code> method.</p>
 
 <div class='section-example-container'>
-    <pre class='csharp'>var bytesData = {$cSharpPrefix}ObjectStore.ReadBytes(\"bytesKey\");</pre>
-    <pre class='python'>byte_data = {$pythonPrefix}ObjectStore.ReadBytes(\"bytes_key\")</pre>
+    <pre class='csharp'>var bytesData = {$cSharpPrefix}ObjectStore.ReadBytes(\"12345/bytesKey\");</pre>
+    <pre class='python'>byte_data = {$pythonPrefix}ObjectStore.ReadBytes(\"12345/bytes_key\")</pre>
 </div>
 
 <h4>Strings</h4>
@@ -41,20 +41,20 @@ $getReadDataText = function($cSharpPrefix="", $pythonPrefix="self.", $writingAlg
 <p>To read a <code>string</code> object, call the <code>Read</code> or <code>ReadString</code> method.</p>
 
 <div class='section-example-container'>
-    <pre class='csharp'>var stringData = {$cSharpPrefix}ObjectStore.Read(\"stringKey\");</pre>
-    <pre class='python'>string_data = {$pythonPrefix}ObjectStore.Read(\"string_key\")</pre>
+    <pre class='csharp'>var stringData = {$cSharpPrefix}ObjectStore.Read(\"12345/stringKey\");</pre>
+    <pre class='python'>string_data = {$pythonPrefix}ObjectStore.Read(\"12345/string_key\")</pre>
 </div>
 
 <h4 class='csharp'>JSON</h4>
 <p class='csharp'>To read a JSON object, call the <code>ReadJson&lt;T&gt;</code> method.</p>
 <div class='csharp section-example-container'>
-    <pre class='csharp'>var jsonData = {$cSharpPrefix}ObjectStore.ReadJson&lt;Dictionary&lt;string, int&gt;&gt;(\"jsonKey\");</pre>
+    <pre class='csharp'>var jsonData = {$cSharpPrefix}ObjectStore.ReadJson&lt;Dictionary&lt;string, int&gt;&gt;(\"12345/jsonKey\");</pre>
 </div>
 
 <h4 class='csharp'>XML</h4>
 <p class='csharp'>To read an XML-formatted object, call the <code>ReadXml&lt;T&gt;</code> method.</p>
 <div class='csharp section-example-container'>
-    <pre class='csharp'>var xmlData = {$cSharpPrefix}ObjectStore.ReadXml&lt;XElement&gt;(\"xmlKey\");</pre>
+    <pre class='csharp'>var xmlData = {$cSharpPrefix}ObjectStore.ReadXml&lt;XElement&gt;(\"12345/xmlKey\");</pre>
 </div>
 
 <p class='csharp'>If you created the XML object from a dictionary, reconstruct the dictionary.</p>
