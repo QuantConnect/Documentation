@@ -1,7 +1,7 @@
-<p>Follow these steps to implement the Long Iron Condor strategy.</p>
+<p>Follow these steps to implement the long iron condor strategy:</p>
 
 <ol>
-    <li>In the Initialize method, set the start date, end date, cash, and <a href="https://www.quantconnect.com/docs/v2/writing-algorithms/universes/equity-options">Option universe</a>.</li>
+    <li>In the <code>Initialize</code> method, set the start date, end date, cash, and <a href="https://www.quantconnect.com/docs/v2/writing-algorithms/universes/equity-options">Option universe</a>.</li>
     <div class="section-example-container">
         <pre class="csharp">private Symbol _symbol;
 
@@ -13,8 +13,8 @@ public override void Initialize()
 
     var option = AddOption("GOOG", Resolution.Minute);
     _symbol = option.Symbol;
-    option.SetFilter(universe => universe.Strikes(-10, 10)
-                                            .Expiration(TimeSpan.FromDays(0), TimeSpan.FromDays(30)));
+    option.SetFilter(universe =&gt; universe.Strikes(-10, 10)
+                                         .Expiration(TimeSpan.FromDays(0), TimeSpan.FromDays(30)));
 }</pre>
         <pre class="python">def Initialize(self) -&gt; None:
     self.SetStartDate(2017, 2, 1)
@@ -26,69 +26,62 @@ public override void Initialize()
     option.SetFilter(-10, 10, timedelta(0), timedelta(30))</pre>
     </div>
 
-    <li>Break the candidate contracts into the call and put options.</li>
+    <li>In the <code>OnData</code> method, select the contracts in the strategy legs.</li>
     <div class="section-example-container">
         <pre class="csharp">public override void OnData(Slice slice)
 {
     if (Portfolio.Invested) return;
 
-    // Get the OptionChain of the symbol
+    // Get the OptionChain
     var chain = slice.OptionChains.get(_symbol, null);
     if (chain == null || chain.Count() == 0) return;
 
-    // filter the call options from the contracts which is ATM in the option chain.
-    var calls = chain.Where(x => x.Right == OptionRight.Call);
-    var puts = chain.Where(x => x.Right == OptionRight.Put);
-    if (calls.Count() == 0 || puts.Count() == 0) return;</pre>
-        <pre class="python">def OnData(self, slice: Slice) -&gt; None:
-    # avoid extra orders
-    if self.Portfolio.Invested: return
+    // Separate the call and put contracts
+    var calls = chain.Where(x =&gt; x.Right == OptionRight.Call);
+    var puts = chain.Where(x =&gt; x.Right == OptionRight.Put);
+    if (calls.Count() == 0 || puts.Count() == 0) return;
 
-    # Get the OptionChain of the self.symbol
-    chain = slice.OptionChains.get(self.symbol, None)
-    if not chain: return
+    // Sort the contracts by their strike prices
+    var callContracts = calls.OrderByDescending(x =&gt; x.Strike);
+    var putContracts = puts.OrderBy(x =&gt; x.Strike);
 
-    # filter the call and put options from the contracts
-    call = [i for i in chain if i.Right == 0]
-    put = [i for i in chain if i.Right == 1]
-    if len(call) == 0 or len(put) == 0 : continue</pre>
-    </div>
-
-    <li>Find the specific contracts to trade.</li>
-    <div class="section-example-container">
-        <pre class="csharp">    // sort the contracts by strike prices
-    var callContracts = calls.OrderByDescending(x => x.Strike);
-    var putContracts = puts.OrderBy(x => x.Strike);
-
-    // Get the nearer OTM contracts by strike prices
+    // Select the contracts in the strategy legs
     var farCallContract = callContracts.First();
     var farPutContract = putContracts.First();
     var nearCallContract = callContracts.Skip(2).First();
-    var nearPutContract = putContracts.Skip(2).First();
+    var nearPutContract = putContracts.Skip(2).First();</pre>
+        <pre class="python">def OnData(self, slice: Slice) -&gt; None:
+    if self.Portfolio.Invested: return
 
-    // Sell 1 near-OTM Call
-    Sell(nearCallContract.Symbol, 1);
-    // Sell 1 near-OTM Put 
-    Sell(nearPutContract.Symbol, 1);
-    // Buy 1 far-OTM Call 
-    Buy(farCallContract.Symbol, 1);
-    // Buy 1 far-OTM Put 
-    Buy(farPutContract.Symbol, 1);
-}</pre>
-        <pre class="python">call_contracts = sorted(call, key = lambda x: x.Strike)
-put_contracts = sorted(put, key = lambda x: x.Strike)
+    # Get the OptionChain
+    chain = slice.OptionChains.get(self.symbol, None)
+    if not chain: return
 
-# Buy 1 near-OTM Put 
-near_put = call_contracts[-2]
-self.Buy(near_put.Symbol, 1)
-# Buy 1 near-OTM Call
-near_call = put_contracts[1]
+    # Separate the call and put contracts
+    call = [i for i in chain if i.Right == 0]
+    put = [i for i in chain if i.Right == 1]
+    if len(call) == 0 or len(put) == 0 : continue
+
+    # Sort the contracts by their strike prices
+    call_contracts = sorted(call, key = lambda x: x.Strike)
+    put_contracts = sorted(put, key = lambda x: x.Strike)
+
+    # Select the contracts in the strategy legs
+    near_put = call_contracts[-2]
+    near_call = put_contracts[1]
+    far_call = call_contracts[-1]
+    far_put = put_contracts[0]</pre>
+    </div>
+
+    <li>In the <code>OnData</code> method, submit the orders.</li>
+    <div class="section-example-container">
+        <pre class="csharp">Sell(nearCallContract.Symbol, 1);
+Sell(nearPutContract.Symbol, 1);
+Buy(farCallContract.Symbol, 1);
+Buy(farPutContract.Symbol, 1);</pre>
+        <pre class="python">self.Buy(near_put.Symbol, 1)
 self.Buy(near_call.Symbol, 1)
-# Sell 1 far-OTM Call 
-far_call = call_contracts[-1]
 self.Sell(far_call.Symbol, 1)
-# Sell 1 far-OTM Put 
-far_put = put_contracts[0]
 self.Sell(far_put.Symbol, 1)</pre>
     </div>
 </ol>
