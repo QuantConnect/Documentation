@@ -9,14 +9,9 @@ json_graph = json_format.MessageToJson(graph_definition)</pre>
 
     <li>Export the <code>TensorFlow</code> weights as a JSON object.</li>
     <div class="section-example-container">
-        <pre class="python"># Define a function to get the weights from the tensorflow session
-def get_json_weights(sess):
-    weights = sess.run(tf.compat.v1.trainable_variables())
-    weights = [w.tolist() for w in weights]
-    weights_list = json5.dumps(weights)
-    return weights_list
-    
-json_weights = get_json_weights(self.model)</pre>
+        <pre class="python">weights = self.model.run(tf.compat.v1.trainable_variables())
+weights = [w.tolist() for w in weights]
+json_weights = json5.dumps(weights)</pre>
     </div>
 
     <li>Save the graph and weights to the <code>ObjectStore</code>.</li>
