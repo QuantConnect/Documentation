@@ -64,10 +64,10 @@ public override void Initialize()
     if len(call) == 0 or len(put) == 0 : return
 
     # Select the OTM contracts
-    otm_call = call_contracts[-1]
-    otm_put = put_contracts[0]
     call_contracts = sorted(call, key = lambda x: x.Strike)
     put_contracts = sorted(put, key = lambda x: x.Strike)
+    otm_call = call_contracts[-1]
+    otm_put = put_contracts[0]
 
     # Select the ATM contracts
     atm_put = sorted(put_contracts, key = lambda x: abs(chain.Underlying.Price - x.Strike))[0]
