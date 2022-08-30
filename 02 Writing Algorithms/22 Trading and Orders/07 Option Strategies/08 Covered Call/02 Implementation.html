@@ -1,7 +1,7 @@
-<p>Follow these steps to implement the covered call strategy.</p>
+<p>Follow these steps to implement the covered call strategy:</p>
 
 <ol>
-    <li>Initialize the Algorithm: At the beginning of your algorithm, you need to set the start date, the end date and the cash required for the algorithm. For options algorithm, you need to add the equity and the options written on this equity.</li>
+    <li>In the <code>Initialize</code> method, set the start date, set the end date, cash, subscribe to the Underlying Equity, and create an <a href="https://www.quantconnect.com/docs/v2/writing-algorithms/universes/equity-options">Options universe</a>.</li>
     <div class="section-example-container">
         <pre class="csharp">private Symbol _equity;
 private Symbol _symbol;
@@ -15,8 +15,8 @@ public override void Initialize()
     _equity = AddEquity("IBM", Resolution.Minute).Symbol;
     var option = AddOption("IBM", Resolution.Minute);
     _symbol = option.Symbol;
-    option.SetFilter(universe => universe.Strikes(-3, 3)
-                                            .Expiration(TimeSpan.FromDays(0), TimeSpan.FromDays(30)));
+    option.SetFilter(universe =&gt; universe.Strikes(-3, 3)
+                                         .Expiration(TimeSpan.FromDays(0), TimeSpan.FromDays(30)));
 }</pre>
         <pre class="python">def Initialize(self) -&gt; None:
     self.SetStartDate(2016, 1, 1)
@@ -26,59 +26,53 @@ public override void Initialize()
     equity = self.AddEquity("IBM", Resolution.Minute)
     option = self.AddOption("IBM", Resolution.Minute)
     self.symbol = option.Symbol
-    # set our strike/expiry filter for this option chain
     option.SetFilter(-3, +3, timedelta(0), timedelta(30))</pre>
     </div>
   
-    <li>In the OnData method, select the Option contracts.</li>
+    <li>In the <code>OnData</code> method, select the Option contract.</li>
     <div class="section-example-container">
         <pre class="csharp">public override void OnData(Slice slice)
 {
     if (Portfolio.Invested) return;
 
-    // Get the OptionChain of the symbol
+    // Get the OptionChain
     var chain = slice.OptionChains.get(_symbol, null);
     if (chain == null || chain.Count() == 0) return;
 
-    // get at-the-money strike
-    var atmStrike = chain.OrderBy(x => Math.Abs(x.Strike - chain.Underlying.Price)).First().Strike;
+    // Get the ATM strike price
+    var atmStrike = chain.OrderBy(x =&gt; Math.Abs(x.Strike - chain.Underlying.Price)).First().Strike;
 
-    // filter the call options from the contracts which is ATM in the option chain.
-    var calls = chain.Where(x => x.Strike == atmStrike && x.Right == OptionRight.Call);
+    // Select the ATM call Option contracts
+    var calls = chain.Where(x =&gt; x.Strike == atmStrike &amp;&amp; x.Right == OptionRight.Call);
     if (calls.Count() == 0) return;
 
-    // sort the contracts by expiration date
-    var contracts = calls.OrderBy(x => x.Expiry);
-
-    // select the farest expiry as far-leg expiry, and the nearest expiry as near-leg expiry
+    // Select the contract with the furthest expiry
+    var contracts = calls.OrderBy(x =&gt; x.Expiry);
     var contract = contracts.Last();</pre>
         <pre class="python">def OnData(self, slice: Slice) -&gt; None:
-    # avoid extra orders
     if self.Portfolio.Invested: return
 
-    # Get the OptionChain of the self.symbol
+    # Get the OptionChain
     chain = slice.OptionChains.get(self.symbol, None)
     if not chain: return
 
-    # Get ATM strike price
+    # Get the ATM strike price
     atm_strike = sorted(chain, key = lambda x: abs(chain.Underlying.Price - x.Strike))[0].Strike
 
-    # filter ATM call options contracts
+    # Select the ATM call Option contracts
     calls = [x for x in chain if x.Strike == atm_strike and x.Right == OptionRight.Call] 
     if len(calls) == 0: return
 
-    # sorted the ATM contracts according to their expiration dates
+    # Select the contract with the furthest expiry
     contracts = sorted(calls, key=lambda x: x.Expiry, reverse=True)
-
-    # Select the furthest expiring contract
     contract = contracts[0]</pre>
+</div>
 
-    <li>In the OnData method, sell the selected option and buy the corresponding amount of underlying asset.</li>
+    <li>In the <code>OnData</code> method, sell the Option contract and buy the corresponding amount of shares in the underlying Equity.</li>
     <div class="section-example-container">
-        <pre class="csharp">    Sell(contract.Symbol, 1);
-    Buy(_equity, 100);
-}</pre>
-        <pre class="python">self.Sell(contract.Symbol, 1) # short the call options
-    self.Buy("IBM", 100)           # buy 100 (multiplier) the underlying stock</pre>
+        <pre class="csharp">Sell(contract.Symbol, 1); // Short the call Option
+Buy(_equity, 100);        // Buy 100 shares (contract multiplier) of the underlying stock</pre>
+        <pre class="python">self.Sell(contract.Symbol, 1) # Short the call Option
+self.Buy("IBM", 100)          # Buy 100 shares (contract multiplier) the underlying stock</pre>
     </div>
 </ol>
