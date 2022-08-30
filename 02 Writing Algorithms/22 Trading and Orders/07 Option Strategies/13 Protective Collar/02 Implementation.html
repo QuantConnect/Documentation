@@ -1,7 +1,7 @@
-<p>Follow these steps to implement the protective collar strategy.</p>
+<p>Follow these steps to implement the protective collar strategy:</p>
 
 <ol>
-    <li>In the Initialize method, set the start date, end date, cash, and <a href="https://www.quantconnect.com/docs/v2/writing-algorithms/universes/equity-options">Option universe</a>.</li>
+    <li>In the <code>Initialize</code> method, set the start date, set the end date, subscribe to the underlying Equity, and create an <a href="https://www.quantconnect.com/docs/v2/writing-algorithms/universes/equity-options">Option universe</a>.</li>
     <div class="section-example-container">
         <pre class="csharp">private Symbol _symbol;
 
@@ -11,80 +11,71 @@ public override void Initialize()
     SetEndDate(2017, 4, 30);
     SetCash(100000);
 
+    _equitySymbol = AddEquity("GOOG").Symbol;
     var option = AddOption("GOOG", Resolution.Minute);
-    _symbol = option.Symbol;
-    option.SetFilter(universe => universe.Strikes(-10, 10)
-                                            .Expiration(TimeSpan.FromDays(0), TimeSpan.FromDays(30)));
+    _optionSymbol = option.Symbol;
+    option.SetFilter(universe =&gt; universe.Strikes(-10, 10)
+                                         .Expiration(TimeSpan.FromDays(0), TimeSpan.FromDays(30)));
 }</pre>
         <pre class="python">def Initialize(self) -&gt; None:
     self.SetStartDate(2017, 4, 1)
     self.SetEndDate(2017, 4, 30)
     self.SetCash(100000)
     
-    equity = self.AddEquity("GOOG", Resolution.Minute)
+    self.equity_symbol = self.AddEquity("GOOG").Symbol
     option = self.AddOption("GOOG", Resolution.Minute)
-    self.symbol = option.Symbol
-
-    # set our strike/expiry filter for this option chain
-    option.SetFilter(-10, +10, timedelta(0), timedelta(30))
-        </pre>
+    self.option_symbol = option.Symbol
+    option.SetFilter(-10, +10, timedelta(0), timedelta(30))<br></pre>
     </div>
 
-    <li>In the OnData method, select the Option contracts.</li>
+    <li>In the <code>OnData</code> method, select the Option contracts.</li>
     <div class="section-example-container">
         <pre class="csharp">public override void OnData(Slice slice)
 {
     if (Portfolio.Invested) return;
 
-    // Get the OptionChain of the symbol
-    var chain = slice.OptionChains.get(_symbol, null);
+    // Get the OptionChain
+    var chain = slice.OptionChains.get(_optionSymbol, null);
     if (chain == null || chain.Count() == 0) return;
 
-    // sort the optionchain by expiration date and choose the furthest date
-    var expiry = chain.OrderBy(x => x.Expiry).Last().Expiry;
+    // Select an expiry date
+    var expiry = chain.OrderBy(x =&gt; x.Expiry).Last().Expiry;
 
-    // filter the call and put options from the contracts expires on that date
-    var calls = chain.Where(x => x.Expiry == expiry && x.Right == OptionRight.Call);
-    var puts = chain.Where(x => x.Expiry == expiry && x.Right == OptionRight.Put);
+    // Select the call and put contracts that expire on the selected date
+    var calls = chain.Where(x =&gt; x.Expiry == expiry &amp;&amp; x.Right == OptionRight.Call);
+    var puts = chain.Where(x =&gt; x.Expiry == expiry &amp;&amp; x.Right == OptionRight.Put);
     if (calls.Count() == 0 || puts.Count() == 0) return;
 
-    // sort the contracts according to their strike prices
-    var callContracts = calls.OrderBy(x => x.Strike);
-    var putContracts = puts.OrderBy(x => x.Strike);
-
-    // select the furthest OTM contracts
-    var call = callContracts.Last();
-    var put = putContracts.First();</pre>
+    // Select the OTM contracts
+    var call = calls.OrderBy(x =&gt; x.Strike).Last();
+    var put = puts.OrderBy(x =&gt; x.Strike).First();<br></pre>
         <pre class="python">def OnData(self, slice: Slice) -&gt; None:
-    # avoid extra orders
     if self.Portfolio.Invested: return
 
-    # Get the OptionChain of the self.symbol
+    # Get the OptionChain
     chain = slice.OptionChains.get(self.symbol, None)
     if not chain: return
 
-    # choose the furthest expiration date within 30 days from now on
+    # Select an expiry date
     expiry = sorted(chain, key = lambda x: x.Expiry)[-1].Expiry
-    # filter the call options contracts
-    call = [x for x in chain if x.Right == OptionRight.Call and x.Expiry == expiry]
-    # filter the put options contracts
-    put = [x for x in chain if x.Right == OptionRight.Put and x.Expiry == expiry]
 
-    if not call or not put: return
+    # Select the call and put contracts that expire on the selected date
+    calls = [x for x in chain if x.Right == OptionRight.Call and x.Expiry == expiry]
+    puts = [x for x in chain if x.Right == OptionRight.Put and x.Expiry == expiry]
+    if not calls or not puts: return
 
-    self.otm_call = sorted(call, key = lambda x: x.Strike)[-1]
-    self.otm_put = sorted(put, key = lambda x: x.Strike)[0]</pre>
+    # Select the OTM contracts
+    call = sorted(calls, key = lambda x: x.Strike)[-1]
+    put = sorted(puts, key = lambda x: x.Strike)[0]</pre>
     </div>
 
-    <li>In the OnData method, submit the order.</li>
+    <li>In the <code>OnData</code> method, submit the orders.</li>
     <div class="section-example-container">
-        <pre class="csharp">    Sell(call.Symbol, 1);
-    Buy(put.Symbol, 1);
-    Buy(_equity, 100);
-}</pre>
-                <pre class="python">self.Sell(self.otm_call.Symbol, 1) # sell the OTM call
-self.Buy(self.otm_put.Symbol, 1) # buy the OTM put
-self.Buy("GOOG", 100)     # buy 100 shares of the underlying stock
-        </pre>
+        <pre class="csharp">Sell(call.Symbol, 1);    // Sell the OTM call
+Buy(put.Symbol, 1);      // Buy the OTM call
+Buy(_equitySymbol, 100); // Buy 100 shares of the underlying stock<br></pre>
+                <pre class="python">self.Sell(call.Symbol, 1)          # Sell the OTM call
+self.Buy(put.Symbol, 1)            # Buy the OTM put
+self.Buy(self.equity_symbol, 100)  # Buy 100 shares of the underlying stock<br></pre>
     </div>
 </ol>
