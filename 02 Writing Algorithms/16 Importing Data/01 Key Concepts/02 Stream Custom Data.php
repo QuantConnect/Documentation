@@ -5,6 +5,7 @@
 <div class="section-example-container">
     <pre class="csharp">public class MyCustomDataType : BaseData
 {
+    public override DateTime EndTime { get; set; }
     public decimal Property1 { get; set; } = 0;
 
     public override SubscriptionDataSource GetSource(
@@ -58,7 +59,8 @@
          data = line.split(',')
 
         custom = MyCustomDataType()
-        custom.EndTime = datetime.strptime(data[0], '%Y%m%d') + timedelta(1)
+        custom.Time = datetime.strptime(data[0], '%Y%m%d')
+        custom.EndTime = custom.Time + timedelta(1)
         custom.Value = float(data[1])
         custom["Property1"] = float(data[2])
         return custom</pre>
