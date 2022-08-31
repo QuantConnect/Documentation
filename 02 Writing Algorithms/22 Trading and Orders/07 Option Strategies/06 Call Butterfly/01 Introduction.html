@@ -1,57 +1,6 @@
-<script type="text/x-mathjax-config">
-    MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});
-</script>
-<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
-</script>
-
 <p>The <span class="new-term">call butterfly</span> strategy is the combination of a <a href="/docs/v2/writing-algorithms/trading-and-orders/option-strategies/bull-call-spread">bull call spread</a> and a <a href="/docs/v2/writing-algorithms/trading-and-orders/option-strategies/bear-call-spread">bear call spread</a>. In the call butterfly, all of the calls should have the same underlying Equity, the same expiration date, and the same strike price distance between the ITM-ATM and OTM-ATM call pairs. The call butterfly can be long or short.</p>
 <h4>Long Call Butterfly</h4>
-<p>The long call butterfly consists of a long ITM call, a long OTM call, and 2 short ATM calls. This strategy profits from low volatility in the underlying Equity price.&nbsp;</p><p>This is a limited-reward-limited-risk strategy. The payoff is</p>
-$$
-\begin{array}{rcll}
-C^{OTM}_T &amp; = &amp; (S_T - K^{OTM})^{+}\\
-C^{ITM}_T &amp; = &amp; (S_T - K^{ITM})^{+}\\
-C^{ATM}_T &amp; = &amp; (S_T - K^{ATM})^{+}\\
-P_T &amp; = &amp; (C^{OTM}_T + C^{ITM}_T - 2\times C^{ATM}_T + 2\times C^{ATM}_0 - C^{ITM}_0 - C^{OTM}_0)\times m - fee\\
-\end{array}
-$$
-$$
-\begin{array}{rcll}
-\textrm{where} &amp; C^{OTM}_T &amp; = &amp; \textrm{OTM call value at time T}\\
-&amp; C^{ITM}_T &amp; = &amp; \textrm{ITM call value at time T}\\
-&amp; C^{ATM}_T &amp; = &amp; \textrm{ATM call value at time T}\\
-&amp; S_T &amp; = &amp; \textrm{Underlying asset price at time T}\\
-&amp; K^{OTM} &amp; = &amp; \textrm{OTM call strike price}\\
-&amp; K^{ITM} &amp; = &amp; \textrm{ITM call strike price}\\
-&amp; K^{ATM} &amp; = &amp; \textrm{ATM call strike price}\\
-&amp; P_T &amp; = &amp; \textrm{Payout total at time T}\\
-&amp; C^{ITM}_0 &amp; = &amp; \textrm{ITM call value at position opening (debit paid)}\\
-&amp; C^{OTM}_0 &amp; = &amp; \textrm{OTM call value at position opening (debit paid)}\\
-&amp; C^{ATM}_0 &amp; = &amp; \textrm{OTM call value at position opening (credit received)}\\
-&amp; m &amp; = &amp; \textrm{Contract multiplier}\\
-&amp; T &amp; = &amp; \textrm{Time of expiration}
-\end{array}
-$$
-<br>
-<p>The following chart shows the payoff at expiration:</p>
-<img class="docs-image" src="https://cdn.quantconnect.com/i/tu/long-call-butterfly.png">
-<p>The maximum profit is $K^{ATM} - K^{ITM} + 2\times C^{ATM}_0 - C^{ITM}_0 - C^{OTM}_0$. It occurs when the underlying price is the same price at expiration as it was when opening the position and the payouts of the bull and bear call spreads are at their maximum.</p>
-<p>The maximum loss is the net debit paid: $2\times C^{ATM}_0 - C^{ITM}_0 - C^{OTM}_0$. It occurs when the underlying price is less than ITM strike or greater than OTM strike at expiration.</p>
-<p>If the Option is an American Option, there is a risk of early assignment on the sold contracts.</p>
+<p>The long call butterfly consists of a long ITM call, a long OTM call, and 2 short ATM calls. This strategy profits from low volatility in the underlying Equity price.&nbsp;</p>
 
 <h4>Short Call Butterfly</h4>
 <p>The short call butterfly consists of a short ITM call, a short OTM call, and 2 long ATM calls. This strategy profits from high volatility in the underlying Equity price.</p>
-<p>This is a limited-reward-limited-risk strategy. The payoff is</p>
-$Profit/Loss=(2\times Payoff_{ATM\ call}-Payoff_{ITM\ call}-Payoff_{OTM\ call}-2\times debit\ paid_{ATM\ call}-credit\ received_{ITM\ call}-credit\ received_{OTM\ call})\times multiplier-commissions$
-<br><br>
-$$
-\begin{array}{rcll}
-P_T &amp; = &amp; (2\times C^{ATM}_T - C^{OTM}_T - C^{ITM}_T - 2\times C^{ATM}_0 + C^{ITM}_0 + C^{OTM}_0)\times m - fee
-\end{array}
-$$
-<p>The following chart shows the payoff at expiration:</p>
-<img class="docs-image" src="https://cdn.quantconnect.com/i/tu/short-call-butterfly.png">
-
-<p>The maximum profit is the net credit received: $C^{ITM}_0 + C^{OTM}_0 - 2\times C^{ATM}_0$. It occurs when the underlying price is less than ITM strike or greater than OTM strike at expiration.</p>
-<p>The maximum loss is $K^{ATM} - K^{ITM} + C^{ITM}_0 + C^{OTM}_0 - 2\times C^{ATM}_0$. It occurs when the underlying price is at the same level as when you opened the trade.</p>
-<p>If the Option is an American Option, there is a risk of early assignment on the sold contracts.<br></p>
