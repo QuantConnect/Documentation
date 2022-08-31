@@ -1,3 +1,48 @@
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});
+</script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+<p>The following table shows the price details of the assets in the algorithm:</p>
+
+<table class="table qc-table" id="payoff-table">
+<thead>
+<tr><th>Asset</th><th>Price ($)</th><th>Strike ($)</th></tr>
+</thead>
+<tbody>
+<tr><td>OTM call</td><td>4.40</td><td>835.00</td></tr>
+<tr><td>ITM call</td><td>36.80</td><td>767.50</td></tr>
+<tr><td>Underlying Equity at expiration</td><td>829.08</td><td>-</td></tr>
+</tbody>
+</table>
+
+<style>
+#payoff-table td:nth-child(2), 
+#payoff-table th:nth-child(2), 
+#payoff-table td:nth-child(3), 
+#payoff-table th:nth-child(3) {
+    text-align: right;
+}
+</style>
+
+<p>Therefore, the payoff is</p>
+$$
+\begin{array}{rcll}
+C^{OTM}_T & = & (S_T - K^{OTM})^{+}\\
+& = & (829.08-835.00)^{+}\\
+& = & 0\\
+C^{ITM}_T & = & (S_T - K^{ITM})^{+}\\
+& = & (829.08-767.50)^{+}\\
+& = & 61.58\\
+P_T & = & (C^{OTM}_T - C^{ITM}_T + C^{ITM}_0 - C^{OTM}_0)\times m - fee\\
+& = & (0-61.58+36.80-4.40)\times100-1.00\times2\\
+& = & -2920\\
+\end{array}
+$$
+<br>
+<p>So, the strategy losses $2,920.</p>
+
 <p>The following algorithm implements a bear call spread Option strategy:</p>
 
 <div class="python">
