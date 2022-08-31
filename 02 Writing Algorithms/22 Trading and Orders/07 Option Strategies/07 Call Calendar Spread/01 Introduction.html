@@ -1,58 +1,7 @@
-<script type="text/x-mathjax-config">
-    MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});
-</script>
-<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
-</script>
 
 <p><span class="new-term">Call calendar spread</span>, also known as <span class="new-term">call horizontal spread</span>, is a combination of a longer-term (far-leg/front-month) call and a shorter-term (near-leg/back-month) call, where all calls have the same underlying stock and the same strike price. The call calendar spread can be long or short.</p>
 <h4>Long Call Calendar Spread</h4>
 <p>The long call calendar spread consists of buying a longer-term call and selling a shorter-term call. This strategy profits from a decrease in the underlying price. It also profits from the time decay value because the theta $\theta$ (the Option price decay by 1 day closer to maturity) of the shorter-term call is larger than longer-term call.</p>
-<p>This is a limited-reward-limited-risk strategy. The payoff is taken at the shorter-term expiration. The payoff is:</p>
-$$
-\begin{array}{rcll}
-C^{\textrm{short-term}}_T &amp; = &amp; (S_T - K)^{+}\\
-P_T &amp; = &amp; (C^{\textrm{long-term}}_T - C^{\textrm{short-term}}_T + C^{\textrm{short-term}}_0 - C^{\textrm{long-term}}_0)\times m - fee\\
-\end{array}
-$$
-$$
-\begin{array}{rcll}
-\textrm{where} &amp; C^{\textrm{short-term}}_T &amp; = &amp; \textrm{Shorter term call value at time T}\\
-&amp; C^{\textrm{long-term}}_T &amp; = &amp; \textrm{Longer term call value at time T}\\
-&amp; S_T &amp; = &amp; \textrm{Underlying asset price at time T}\\
-&amp; K &amp; = &amp; \textrm{Strike price}\\
-&amp; P_T &amp; = &amp; \textrm{Payout total at time T}\\
-&amp; C^{\textrm{short-term}}_0 &amp; = &amp; \textrm{Shorter term call value at position opening (credit received)}\\
-&amp; C^{\textrm{long-term}}_0 &amp; = &amp; \textrm{Longer term call value at position opening (debit paid)}\\
-&amp; m &amp; = &amp; \textrm{Contract multiplier}\\
-&amp; T &amp; = &amp; \textrm{Time of shorter term call expiration}
-\end{array}
-$$
-<br>
-<p>The following chart shows the payoff at expiration:</p>
-<img class="docs-image" src="https://cdn.quantconnect.com/i/tu/long-call-calendar-spread.png">
-<p>The maximum profit is undetermined as its dependent on volatility but it's limited. It occurs when the underlying price stays the same as when opening the trade and the spread of the calls are at maximum.</p>
-<p>The maximum loss is the net debit paid, $C^{\textrm{short-term}}_0 - C^{\textrm{long-term}}_0$. It occurs when the underlying price moves very deep ITM or OTM so the spread of both calls close to zero.</p>
-<p>If the Option is American Option, there is risk of early assignment on the sold contract. Naked longed call pose risk of losing all the debit paid if its position isn't closed with shorted call together and the price dropped below its strike.</p>
 
 <h4>Short Call Calendar Spread</h4>
 <p>The short call calendar spread consists of selling a longer-term call and buying a shorter-term call. The strategy profits from from an increase in the underlying price.</p>
-<p>The payoff is taken at the shorter-term expiration. This is a limited-reward-limited-risk strategy. The payoff is as follows:</p>
-$Profit/Loss^{t}=(Payoff_{shorter\ term\ call}-Price^{t}_{longer\ term\ call}+credit\ received_{longer\ term\ call}-debit\ paid_{shorter\ term\ call})\times multiplier-commissions$
-$$
-\begin{array}{rcll}
-P_T &amp; = &amp; (C^{\textrm{short-term}}_T - C^{\textrm{long-term}}_T + C^{\textrm{long-term}}_0 - C^{\textrm{short-term}}_0)\times m - fee\\
-\end{array}
-$$
-$$
-\begin{array}{rcll}
-\textrm{where} C^{\textrm{short-term}}_0 &amp; = &amp; \textrm{Shorter term call value at position opening (debit paid)}\\
-&amp; C^{\textrm{long-term}}_0 &amp; = &amp; \textrm{Longer term call value at position opening (credit received)}\\
-\end{array}
-$$
-<br>
-<p>The following chart shows the payoff at expiration:</p>
-<img class="docs-image" src="https://cdn.quantconnect.com/i/tu/short-call-calendar-spread.png">
-
-<p>The maximum profit is the net credit received, $C^{\textrm{long-term}}_0 - C^{\textrm{short-term}}_0$. It occurs when the underlying price moves very deep ITM or OTM so the spread of both calls close to zero.</p>
-<p>The maximum loss is undetermined as it's dependent on volatility but it's limited. It occurs when the underlying price is at the same level as when the trade opened and the spread of the 2 calls are at their maximum.</p>
-<p>If the Option is American Option, there is risk of early assignment on the sold contract. If you don't close the call positions together, the naked short call will have unlimited drawdown risk after the long call expires.</p>
