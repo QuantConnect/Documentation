@@ -1,3 +1,47 @@
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});
+</script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+<p>The following table shows the price details of the assets in the algorithm:</p>
+
+<table class="table qc-table" id="payoff-table">
+<thead>
+<tr><th>Asset</th><th>Price ($)</th><th>Strike ($)</th></tr>
+</thead>
+<tbody>
+<tr><td>OTM put</td><td>5.70</td><td>767.50</td></tr>
+<tr><td>ITM put</td><td>35.50</td><td>835.00</td></tr>
+<tr><td>Underlying Equity at expiration</td><td>829.08</td><td>-</td></tr>
+</tbody>
+</table>
+
+<style>
+#payoff-table td:nth-child(2), 
+#payoff-table th:nth-child(2), 
+#payoff-table td:nth-child(3), 
+#payoff-table th:nth-child(3) {
+    text-align: right;
+}
+</style>
+
+<p>Therefore, the payoff is</p>
+$$
+\begin{array}{rcll}
+P^{OTM}_T & = & (K^{OTM} - S_T)^{+}\\
+& = & (767.50-829.08)^{+}\\
+& = & 0\\
+P^{ITM}_T & = & (K^{ITM} - S_T)^{+}\\
+& = & (835.00-829.08)^{+}\\
+& = & 5.92\\
+P_T & = & (P^{OTM}_T - P^{ITM}_T + P^{ITM}_0 - P^{OTM}_0)\times m - fee\\
+& = & (0-5.92+35.50-5.70)\times100-1.00\times2\\
+& = & 2386\\
+\end{array}
+$$
+<br>
+<p>So, the strategy profits $2,386.</p>
+
 <p>The following algorithm implements a bull put spread strategy:</p>
 
 <div class="python">
