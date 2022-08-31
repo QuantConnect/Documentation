@@ -13,6 +13,10 @@
             <td>You can set this property to <code>config.Symbol</code>.</td>
         </tr>
         <tr>
+            <td><code>Time</code></td>
+            <td>The time when the data sample starts.</td>
+        </tr>
+        <tr>
             <td><code>EndTime</code></td>
             <td>The time when the data sample ends and when LEAN should add the sample to a <a href="/docs/v2/writing-algorithms/key-concepts/time-modeling/timeslices">Slice</a>.</td>
         </tr>
