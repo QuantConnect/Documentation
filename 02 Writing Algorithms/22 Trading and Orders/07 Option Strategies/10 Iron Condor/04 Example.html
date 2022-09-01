@@ -11,10 +11,10 @@
 <tr><th>Asset</th><th>Price ($)</th><th>Strike ($)</th></tr>
 </thead>
 <tbody>
-<tr><td>OTM call</td><td>1.85</td><td>857.50</td></tr>
-<tr><td>OTM put</td><td>2.75</td><td>810.00</td></tr>
-<tr><td>ATM call</td><td>8.10</td><td>832.00</td></tr>
-<tr><td>ATM put</td><td>7.40</td><td>832.00</td></tr>
+<tr><td>Far-OTM call</td><td>1.85</td><td>857.50</td></tr>
+<tr><td>Far-OTM put</td><td>2.75</td><td>810.00</td></tr>
+<tr><td>Near-OTM call</td><td>1.35</td><td>855.00</td></tr>
+<tr><td>Near-OTM put</td><td>2.15</td><td>815.00</td></tr>
 <tr><td>Underlying Equity at expiration</td><td>851.20</td><td>-</td></tr>
 </tbody>
 </table>
@@ -31,33 +31,33 @@
 <p>Therefore, the payoff is</p>
 $$
 \begin{array}{rcll}
-C^{OTM}_T &amp; = &amp; (S_T - K^C_{OTM})^{+}\\
+C^{far}_T &amp; = &amp; (S_T - K^C_{far})^{+}\\
 &amp; = &amp; (851.20-857.50)^{+}\\
 &amp; = &amp; 0\\
-C^{ATM}_T &amp; = &amp; (S_T - K^C_{ATM})^{+}\\
-&amp; = &amp; (851.20-832.00)^{+}\\
-&amp; = &amp; 19.20\\
-P^{OTM}_T &amp; = &amp; (K^P_{OTM} - S_T)^{+}\\
-&amp; = &amp; (832.00-851.20)^{+}\\
+C^{near}_T &amp; = &amp; (S_T - K^C_{near})^{+}\\
+&amp; = &amp; (851.20-855.00)^{+}\\
 &amp; = &amp; 0\\
-P^{ATM}_T &amp; = &amp; (K^P_{ATM} - S_T)^{+}\\
+P^{far}_T &amp; = &amp; (K^P_{far} - S_T)^{+}\\
+&amp; = &amp; (815.00-851.20)^{+}\\
+&amp; = &amp; 0\\
+P^{near}_T &amp; = &amp; (K^P_{near} - S_T)^{+}\\
 &amp; = &amp; (810.00-851.20)^{+}\\
 &amp; = &amp; 0\\
-P_T &amp; = &amp; (C^{OTM}_T + P^{OTM}_T - C^{ATM}_T - P^{ATM}_T - C^{OTM}_0 - P^{OTM}_0 + C^{ATM}_0 + P^{ATM}_0)\times m - fee\\
-&amp; = &amp; (0+0-19.20-0+8.10+7.40-1.85-2.75)\times100-1\times4\\
-&amp; = &amp; -834
+P_T &amp; = &amp; (C^{near}_T + P^{near}_T - C^{far}_T - P^{far}_T - C^{near}_0 - P^{near}_0 + C^{far}_0 + P^{far}_0)\times m - fee\\
+&amp; = &amp; (0+0-0-0+1.35+2.15-1.85-2.75)\times100-1\times4\\
+&amp; = &amp; -114
 \end{array}
 $$
 <br>
-<p>So, the strategy losses $834.</p>
+<p>So, the strategy losses $114.</p>
 
-<p>The following algorithm implements a short iron butterfly Option strategy:</p>
+<p>The following algorithm implements a long iron condor Option strategy:</p>
 
 <div class="python">
     <div class="qc-embed-frame" style="display: inline-block; position: relative; width: 100%; min-height: 100px; min-width: 300px;">
         <div class="qc-embed-dummy" style="padding-top: 56.25%;"></div>
         <div class="qc-embed-element" style="position: absolute; top: 0; bottom: 0; left: 0; right: 0;">
-            <iframe class="qc-embed-backtest" height="100%" width="100%" style="border: 1px solid #ccc; padding: 0; margin: 0;" src="https://www.quantconnect.com/terminal/processCache/embedded_backtest_a2fe60a67bc1c78532ba4a1a93211c6c.html"></iframe>
+            <iframe class="qc-embed-backtest" height="100%" width="100%" style="border: 1px solid #ccc; padding: 0; margin: 0;" src="https://www.quantconnect.com/terminal/processCache/embedded_backtest_c2a81c53ec674492e16d3e8da52baecd.html"></iframe>
         </div>
     </div>
 </div>
@@ -66,7 +66,7 @@ $$
     <div class="qc-embed-frame" style="display: inline-block; position: relative; width: 100%; min-height: 100px; min-width: 300px;">
         <div class="qc-embed-dummy" style="padding-top: 56.25%;"></div>
         <div class="qc-embed-element" style="position: absolute; top: 0; bottom: 0; left: 0; right: 0;">
-            <iframe class="qc-embed-backtest" height="100%" width="100%" style="border: 1px solid #ccc; padding: 0; margin: 0;" src="https://www.quantconnect.com/terminal/processCache/embedded_backtest_a0c5c5c63338f09ad5a545b757c57f78.html"></iframe>
+            <iframe class="qc-embed-backtest" height="100%" width="100%" style="border: 1px solid #ccc; padding: 0; margin: 0;" src="https://www.quantconnect.com/terminal/processCache/embedded_backtest_006ea96e3f8c7b5d15f2fbc7c656d7ba.html"></iframe>
         </div>
     </div>
 </div>

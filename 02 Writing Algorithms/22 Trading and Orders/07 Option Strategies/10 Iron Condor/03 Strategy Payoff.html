@@ -1,0 +1,78 @@
+<p>The iron condor can be long or short.</p>
+<h4>Long Iron Condor</h4>
+<p>This is a limited-reward-limited-risk strategy. The payoff is</p>
+$$
+\begin{array}{rcll}
+C^{far}_T &amp; = &amp; (S_T - K^C_{far})^{+}\\
+C^{near}_T &amp; = &amp; (S_T - K^C_{near})^{+}\\
+P^{far}_T &amp; = &amp; (K^P_{far} - S_T)^{+}\\
+P^{near}_T &amp; = &amp; (K^P_{near} - S_T)^{+}\\
+P_T &amp; = &amp; (C^{near}_T + P^{near}_T - C^{far}_T - P^{far}_T - C^{near}_0 - P^{near}_0 + C^{far}_0 + P^{far}_0)\times m - fee
+\end{array}
+$$
+$$
+\begin{array}{rcll}
+\textrm{where} &amp; C^{far}_T &amp; = &amp; \textrm{Far OTM call value at time T}\\
+&amp; C^{near}_T &amp; = &amp; \textrm{Near OTM call value at time T}\\
+&amp; P^{far}_T &amp; = &amp; \textrm{Far OTM put value at time T}\\
+&amp; P^{near}_T &amp; = &amp; \textrm{Near ATM put value at time T}\\
+&amp; S_T &amp; = &amp; \textrm{Underlying asset price at time T}\\
+&amp; K^C_{far} &amp; = &amp; \textrm{Far OTM call strike price}\\
+&amp; K^C_{near} &amp; = &amp; \textrm{Near OTM call strike price}\\
+&amp; K^P_{far} &amp; = &amp; \textrm{Far OTM put strike price}\\
+&amp; K^P_{near} &amp; = &amp; \textrm{Near OTM put strike price}\\
+&amp; P_T &amp; = &amp; \textrm{Payout total at time T}\\
+&amp; C^{far}_0 &amp; = &amp; \textrm{Far OTM call value at position opening (credit received)}\\
+&amp; C^{near}_0 &amp; = &amp; \textrm{Near OTM call value at position opening (debit paid)}\\
+&amp; P^{far}_0 &amp; = &amp; \textrm{Far OTM put value at position opening (credit received)}\\
+&amp; P^{near}_0 &amp; = &amp; \textrm{Near OTM put value at position opening (debit paid)}\\
+&amp; m &amp; = &amp; \textrm{Contract multiplier}\\
+&amp; T &amp; = &amp; \textrm{Time of expiration}
+\end{array}
+$$
+<br>
+<p>The following chart shows the payoff at expiration:</p>
+<img class="docs-image" src="https://cdn.quantconnect.com/i/tu/long-iron-condor.png">
+
+<p>The maximum profit is $K^C_{far} - K^C_{near} - C^{near}_0 - P^{near}_0 + C^{far}_0 + P^{far}_0$, where $K^P_{OTM} &gt; S_T$ or $S_T &gt; K^C_{OTM}$.</p>
+<p>The maximum loss is the net debit paid: $C^{far}_0 + P^{far}_0 - C^{near}_0 - P^{near}_0$, where $K^P_{OTM} &lt; S_T &lt; K^C_{OTM}$.</p>
+<p>If the Option is American Option, there is a risk of early assignment on the sold contracts.</p>
+
+<h4>Short Iron Condor</h4>
+<p>This is a limited-reward-limited-risk strategy. The payoff is</p>
+$$
+\begin{array}{rcll}
+C^{far}_T &amp; = &amp; (S_T - K^C_{far})^{+}\\
+C^{near}_T &amp; = &amp; (S_T - K^C_{near})^{+}\\
+P^{far}_T &amp; = &amp; (K^P_{far} - S_T)^{+}\\
+P^{near}_T &amp; = &amp; (K^P_{near} - S_T)^{+}\\
+P_T &amp; = &amp; (C^{far}_T + P^{far}_T - C^{near}_T - P^{near}_T - C^{far}_0 - P^{far}_0 + C^{near}_0 + P^{near}_0)\times m - fee
+\end{array}
+$$
+$$
+\begin{array}{rcll}
+\textrm{where} &amp; C^{far}_T &amp; = &amp; \textrm{Far OTM call value at time T}\\
+&amp; C^{near}_T &amp; = &amp; \textrm{Near OTM call value at time T}\\
+&amp; P^{far}_T &amp; = &amp; \textrm{Far OTM put value at time T}\\
+&amp; P^{near}_T &amp; = &amp; \textrm{Near ATM put value at time T}\\
+&amp; S_T &amp; = &amp; \textrm{Underlying asset price at time T}\\
+&amp; K^C_{far} &amp; = &amp; \textrm{Far OTM call strike price}\\
+&amp; K^C_{near} &amp; = &amp; \textrm{Near OTM call strike price}\\
+&amp; K^P_{far} &amp; = &amp; \textrm{Far OTM put strike price}\\
+&amp; K^P_{near} &amp; = &amp; \textrm{Near OTM put strike price}\\
+&amp; P_T &amp; = &amp; \textrm{Payout total at time T}\\
+&amp; C^{far}_0 &amp; = &amp; \textrm{Far OTM call value at position opening (credit received)}\\
+&amp; C^{near}_0 &amp; = &amp; \textrm{Near OTM call value at position opening (debit paid)}\\
+&amp; P^{far}_0 &amp; = &amp; \textrm{Far OTM put value at position opening (credit received)}\\
+&amp; P^{near}_0 &amp; = &amp; \textrm{Near OTM put value at position opening (debit paid)}\\
+&amp; m &amp; = &amp; \textrm{Contract multiplier}\\
+&amp; T &amp; = &amp; \textrm{Time of expiration}
+\end{array}
+$$
+<br>
+<p>The following chart shows the payoff at expiration:</p>
+<img class="docs-image" src="https://cdn.quantconnect.com/i/tu/short-iron-condor.png">
+
+<p>The maximum profit is the net credit received after commission when opening the trade, where $K^P_{OTM} &lt; S_T &lt; K^C_{OTM}$.</p>
+<p>The maximum loss is $K^C_{far} - K^C_{near} + C^{near}_0 + P^{near}_0 - C^{far}_0 - P^{far}_0$, where $K^P_{OTM} &gt; S_T$ or $S_T &gt; K^C_{OTM}$.</p>
+<p>If the Option is American Option, there is risk of early assignment on the sold contracts.</p>
