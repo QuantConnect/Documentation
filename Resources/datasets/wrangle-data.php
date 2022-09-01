@@ -546,12 +546,12 @@ $getWrangleDataText = function($assetClass, $singularAssetClass, $pluralAssetCla
 <h4 class='python'>FutureHistory Objects</h4>
 <p class='python'>The <code>GetFutureHistory</code> method returns a <code>FutureHistory</code> object. To convert the <code>FutureHistory</code> object to a <code>DataFrame</code> that contains the trade and quote information of each contract, call the <code>GetAllData</code> method.</p>
 <div class='python section-example-container'>
-<pre class='python'>option_history.GetAllData()</pre>
+<pre class='python'>future_history.GetAllData()</pre>
 </div>
 
 <p class='python'>To get the expiration dates of all the contracts in an <code>FutureHistory</code> object, call the <code>GetExpiryDates</code> method.</p>
 <div class='python section-example-container'>
-<pre class='python'>option_history.GetExpiryDates()</pre>
+<pre class='python'>future_history.GetExpiryDates()</pre>
 </div>
 ";
     }
