@@ -1,36 +1,6 @@
-<script type="text/x-mathjax-config">
-    MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});
-</script>
-<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
-</script>
-
 <p><span class="new-term">Put butterfly</span> is the combination of a <a href="/docs/v2/writing-algorithms/trading-and-orders/option-strategies/bull-put-spread">bull put spread</a> and a <a href="/docs/v2/writing-algorithms/trading-and-orders/option-strategies/bear-put-spread">bear put spread</a>. In this strategy, all the puts have the same underlying stock, the same expiration date, and the strike price distance of ITM-ATM and OTM-ATM put pairs are the same. The put butterfly strategy can be long or short.</p>
 <h4>Long Put Butterfly</h4>
 <p>The long put butterfly strategy consists of buying an ITM put, buying an OTM put, and selling 2 ATM puts. This strategy profits from low volatility.</p>
-<p>This is a limited-reward-limited-risk strategy. The payoff is</p>
-$Payoff_{OTM\ put}$
-$=(Strike_{OTM\ put}-Price_{underlying})^{+}$
-<br><br>
-$Payoff_{ITM\ put}$
-$=(Strike_{ITM\ put}-Price_{underlying})^{+}$
-<br><br>
-$Payoff_{ATM\ put}=(Strike_{ATM\ put}-Price_{underlying})^{+}$
-<br><br>
-$Profit/Loss=(Payoff_{ITM\ put}+Payoff_{OTM\ put}-2\times Payoff_{ATM\ put}+2\times credit\ received_{ATM\ put}-debit\ paid_{ITM\ put}-debit\ paid_{OTM\ put})\times multiplier-commissions$
-<br><br>
-
-<img class="docs-image" src="https://cdn.quantconnect.com/i/tu/long-put-butterfly.png">
-<p>The maximum profit is the range of 1 strike spread (ATM strike - ITM strike) minus net debit paid when opening the trade after commission, if the underlying price is staying the same as the trade opened at expiration, where combined bull and bear put spreads' payouts at its maximum.</p>
-<p>The maximum loss is the net debit paid after commission when opening the trade, where the underlying price is less than ITM strike or greater than OTM strike.</p>
-<p>If the Option is American Option, there is risk of early assignment on the sold contracts.</p>
 
 <h4>Short Put Butterfly</h4>
 <p>The short put butterfly strategy consists of selling an ITM put, selling an OTM put, and buying 2 ATM puts. This strategy profits from a drastic change in underlying price.</p>
-<p>This is a limited-reward-limited-risk strategy. The payoff is</p>
-$Profit/Loss=(2\times Payoff_{ATM\ put}-Payoff_{ITM\ put}-Payoff_{OTM\ put}-2\times debit\ paid_{ATM\ put}-credit\ received_{ITM\ put}-credit\ received_{OTM\ put})\times multiplier-commissions$
-<br><br>
-<img class="docs-image" src="https://cdn.quantconnect.com/i/tu/short-put-butterfly.png">
-
-<p>The maximum profit is the net credit received after commission when opening the trade, if the underlying price less than ITM strike or greater than OTM strike at expiration.</p>
-<p>The maximum loss is the range of 1 strike spread (ATM strike - ITM strike) minus net credit received when opening the trade after commission, where the underlying price is at the same level when the trade opened.</p>
-<p>If the Option is American Option, there is risk of early assignment on the sold contracts.<br></p>
