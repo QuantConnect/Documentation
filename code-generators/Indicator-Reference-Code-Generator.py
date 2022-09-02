@@ -642,7 +642,7 @@ if self.{short.lower()}.IsReady:
                 encoded_string = base64.b64encode(image_file.read())                 
             html_file.write(f"""</pre>
 </div>
-
+<p>The following image shows the plot values in a <a href='/docs/v2/research-environment/charting/matplotlib'>matplotlib</a> plot. To load algorithm plot data into the Research Environment, see <a href='/docs/v2/research-environment/quantconnect-api/backtests/reading-results#07-Charts'>Charts</a>.</p>
 <img class="docs-image" src="data:image/png;base64,{encoded_string.decode('utf-8')}">
 
 <p>For more information about plotting indicators, see <a href="https://www.quantconnect.com/docs/v2/writing-algorithms/indicators/plotting-indicators">Plotting Indicators</a>.</p>""")
