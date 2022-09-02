@@ -122,6 +122,7 @@ moving_average_table = """<p>The following table shows the <code>MovingAverageTy
 </tbody></table>"""
 swiss_kinfe_tool_datatree = '''<p>The <code>SwissArmyKnifeTool</code> enumeration has the following members:</p>
 <div data-tree="QuantConnect.Indicators.SwissArmyKnifeTool"></div>'''
+ide_plot = ["indicator-reference-ADR.png", "indicator-reference-ADVR.png", "indicator-reference-B.png", "indicator-reference-FilteredIdentity.png", "indicator-reference-IntradayVwap.png", "indicator-reference-TP.png", "indicator-reference-TRIN.png", "indicator-reference-VP.png"]
 
 for full, short in dict(sorted(names.items())).items():
     name = " ".join(re.findall('[a-zA-Z][^A-Z]*', full))
@@ -638,11 +639,11 @@ if self.{short.lower()}.IsReady:
                 html_file.write(f'''    self.Plot("My Indicators", "{x.lower() if x != "Current" else full.lower()}", self.{short.lower()}.{x})
 ''')
         
-            with open(image_file, "rb") as image_file:
-                encoded_string = base64.b64encode(image_file.read())                 
+            with open(image_file, "rb") as image:
+                encoded_string = base64.b64encode(image.read())                 
             html_file.write(f"""</pre>
 </div>
-<p>The following image shows the plot values in a <a href='/docs/v2/research-environment/charting/matplotlib'>matplotlib</a> plot. To load algorithm plot data into the Research Environment, see <a href='/docs/v2/research-environment/quantconnect-api/backtests/reading-results#07-Charts'>Charts</a>.</p>
+{"<p>The following image shows the plot values in a <a href='/docs/v2/research-environment/charting/matplotlib'>matplotlib</a> plot. To load algorithm plot data into the Research Environment, see <a href='/docs/v2/research-environment/quantconnect-api/backtests/reading-results#07-Charts'>Charts</a>.</p>" if image_file.split("/")[-1] not in ide_plot else ""}
 <img class="docs-image" src="data:image/png;base64,{encoded_string.decode('utf-8')}">
 
 <p>For more information about plotting indicators, see <a href="https://www.quantconnect.com/docs/v2/writing-algorithms/indicators/plotting-indicators">Plotting Indicators</a>.</p>""")
