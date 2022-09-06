@@ -1,4 +1,8 @@
 <p>Additional methods of collaboration include cloning, sharing, and migrating projects.</p>
+<?php 
+include(DOCS_RESOURCES."/get-vimeo-player.php"); 
+$getVimeoPlayerText("https://vimeo.com/703026025");
+?>
 
 <h4>Clone Projects</h4>
 <?php echo file_get_contents(DOCS_RESOURCES."/ide/clone-projects.html"); ?>
