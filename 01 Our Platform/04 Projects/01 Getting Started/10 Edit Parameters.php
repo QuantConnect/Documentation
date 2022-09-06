@@ -1,5 +1,10 @@
 <p>You can add parameters, set default parameter values, and remove parameters from your projects.</p>
 
+<?php 
+include(DOCS_RESOURCES."/get-vimeo-player.php"); 
+$getVimeoPlayerText(696287618);
+?>
+
 <h4>Add Parameters</h4>
 <p>Follow these steps to add an algorithm parameter:</p>
 <ol>
