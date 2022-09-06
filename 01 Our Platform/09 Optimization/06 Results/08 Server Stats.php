@@ -1,5 +1,12 @@
 <p>The optimization results page displays a Server Statistics section to show the status of the nodes running the optimization job.</p>
 
+<?php 
+include(DOCS_RESOURCES."/get-vimeo-player.php"); 
+$getVimeoPlayerText(703026887);
+?>
+
+<p>The following image shows an example of the Server Statistics section:</p>
+
 <img class='docs-image' src="https://cdn.quantconnect.com/i/tu/optimization-server-statistics.png">
 
 <p>The following table describes the information that the Server Statistics section displays:</p>
