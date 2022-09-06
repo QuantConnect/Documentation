@@ -27,14 +27,14 @@ $getSaveDataText = function($cSharpPrefix="", $pythonPrefix="self.", $sampleData
 <p>To save a <code>Bytes</code> object, call the <code>SaveBytes</code> method.</p>
 <div class='section-example-container'>
     <pre class='csharp'>var saveSuccessful = {$cSharpPrefix}ObjectStore.SaveBytes($\"{{$cSharpPrefix}ProjectId}/bytesKey\", bytesSample)</pre>
-    <pre class='python'>save_successful = {$pythonPrefix}ObjectStore.SaveBytes(\"12345/bytes_key\", bytes_sample)</pre>
+    <pre class='python'>save_successful = {$pythonPrefix}ObjectStore.SaveBytes(f\"{{$pythonPrefix}ProjectId}/bytes_key\", bytes_sample)</pre>
 </div>
 
 <h4>Strings</h4>
 <p>To save a <code>string</code> object, call the <code>Save</code> or <code>SaveString</code> method.</p>
 <div class='section-example-container'>
     <pre class='csharp'>var saveSuccessful = {$cSharpPrefix}ObjectStore.Save($\"{{$cSharpPrefix}ProjectId}/stringKey\", stringSample);</pre>
-    <pre class='python'>save_successful = {$pythonPrefix}ObjectStore.Save(\"12345/string_key\", string_sample)</pre>
+    <pre class='python'>save_successful = {$pythonPrefix}ObjectStore.Save(f\"{{$pythonPrefix}ProjectId}/string_key\", string_sample)</pre>
 </div>
 
 <h4 class='csharp'>JSON</h4>
