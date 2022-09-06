@@ -1,10 +1,11 @@
 <?php
-include(DOCS_RESOURCES."/get-vimeo-player.php"); 
+
 $getAdjustChartsText = function($isLiveMode) {
     $pageName = $isLiveMode ? "live" : "backtest";
     
     echo "<p>You can manipulate the charts displayed on the {$pageName} results page.</p>";
-        
+    
+    include(DOCS_RESOURCES."/get-vimeo-player.php");        
     $getVimeoPlayerText(696285433);
 
     echo "
