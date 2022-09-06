@@ -1,10 +1,13 @@
 <?php
+include(DOCS_RESOURCES."/get-vimeo-player.php"); 
 $getAdjustChartsText = function($isLiveMode) {
     $pageName = $isLiveMode ? "live" : "backtest";
     
-    echo "
-        <p>You can manipulate the charts displayed on the {$pageName} results page.</p>
+    echo "<p>You can manipulate the charts displayed on the {$pageName} results page.</p>";
+        
+    $getVimeoPlayerText(696285433);
 
+    echo "
         <h4>Toggle Charts</h4>
         <p>To display and hide a chart on the {$pageName} results page, in the <span class='page-section-name'>Select Chart</span> section, click the name of a chart.</p>
 
