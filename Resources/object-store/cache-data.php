@@ -14,8 +14,8 @@ $getCacheDataText = function($isAlgorithm, $cSharpPrefix="", $pythonPrefix="self
     <p>To clear the cache, call the <code>Clear</code> method.</p>
     
 <div class='section-example-container'>
-    <pre class='csharp'>var filePath = {$cSharpPrefix}ObjectStore.Clear();</pre>
-    <pre class='python'>file_path = {$pythonPrefix}ObjectStore.Clear()</pre>
+    <pre class='csharp'>{$cSharpPrefix}ObjectStore.Clear();</pre>
+    <pre class='python'>{$pythonPrefix}ObjectStore.Clear()</pre>
 </div>
     ";  
 }
