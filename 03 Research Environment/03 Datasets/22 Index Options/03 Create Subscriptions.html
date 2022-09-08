@@ -24,19 +24,24 @@ using QuantConnect.Research;</pre>
         <pre class="csharp">var indexSymbol = qb.AddIndex("SPX", Resolution.Minute).Symbol;</pre>
         <pre class="python">index_symbol = qb.AddIndex("SPX", Resolution.Minute).Symbol</pre>
     </div>
-    <p>To view the available indices, see <a href='/docs/v2/writing-algorithms/datasets/tickdata/us-cash-indices#05-Supported-Indices'>Supported Indices</a>.</p>
+    <p>To view the available indices, see <a href="/docs/v2/writing-algorithms/datasets/tickdata/us-cash-indices#05-Supported-Indices">Supported Indices</a>.</p>
     <p>If you do not pass a resolution argument, <code>Resolution.Minute</code> is used by default. <br></p>
     <li>Call the <code>AddIndexOption</code> method with the underlying <code>Index</code> <code>Symbol</code>.</li>
     <div class="section-example-container">
         <pre class="csharp">var option = qb.AddIndexOption(indexSymbol);</pre>
         <pre class="python">option = qb.AddIndexOption(index_symbol)</pre>
     </div>
-    <li><i>(Optional)</i> Call the <code>SetFilter</code> method with strike and expiration boundary values.</li>
+    <li><i>(Optional)</i> Set a <a href='/docs/v2/writing-algorithms/universes/index-options#03-Filter-Contracts'>contract filter</a>.</li>
     <div class="section-example-container">
         <pre class="csharp">option.SetFilter(-1, 1, 0, 90);</pre>
         <pre class="python">option.SetFilter(-1, 1, 0, 90)</pre>
     </div>
-    <p>The filter determines which contracts the <code>GetOptionHistory</code> method returns. If you don't set a filter, the method returns all of the contracts.</p>
+    <p>The filter determines which contracts the <code>GetOptionHistory</code> method returns. If you don't set a filter, the default filter selects the contracts that have the following characteristics:</p>
+<ul>
+	<li>Standard type (exclude weeklys)</li>
+	<li>Within 1 strike price of the underlying asset price</li>
+	<li>Expire within 31 days</li>
+</ul>
 </ol>
 
 <p>If you want historical data on individual contracts and their <code>OpenInterest</code>, follow these steps to subscribe to individual Index Option contracts:</p>

@@ -36,6 +36,22 @@ qb.AddFutureContract(futures_contract_symbol, fillDataForward = False)</pre>
     </div>
     <p>To view the available underlying Futures in the US Future Options dataset, see <a href="/docs/v2/writing-algorithms/datasets/algoseek/us-future-options#05-Supported-Assets">Supported Assets</a>.</p>
 
+    <li><span class='qualifier'>(Optional)</span> Set a <a href='/docs/v2/writing-algorithms/universes/future-options#03-Filter-Contracts'>contract filter</a>.</li>
+<div class="section-example-container">
+        <pre class="csharp">qb.AddFutureOption(future.Symbol, optionFilterUniverse =&gt; optionFilterUniverse.Strikes(-1, 1));</pre>
+        <pre class="python">qb.AddFutureOption(future.Symbol, lambda option_filter_universe: option_filter_universe.Strikes(-1, 1))</pre>
+    </div>
+<p>The filter determines which contracts the <code>GetOptionHistory</code> method returns. If you don't set a filter, the default filter selects the contracts that have the following characteristics:</p>
+<ul>
+	<li>Standard type (exclude weeklys)</li>
+	<li>Within 1 strike price of the underlying asset price</li>
+	<li>Expire within 31 days</li>
+</ul>
+
+</ol>
+
+<p>If you want historical data on individual contracts and their <code>OpenInterest</code>, follow these steps to subscribe to the individual Futures Option contracts:</p>
+<ol>
 	<li>Call the <code>GetOptionsContractList</code> method with the underlying Futures Contract <code>Symbol</code> and a <code class="python">datetime</code> <code class="csharp">DateTime</code> object.</li>
 	<div class="section-example-container">
 		<pre class="csharp">var fopContractSymbols = qb.OptionChainProvider.GetOptionContractList(futuresContractSymbol, startDate);</pre>

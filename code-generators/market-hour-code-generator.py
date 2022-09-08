@@ -91,7 +91,7 @@ for asset_class, assets in sorted_assets.items():
                             premarket_html[day].append(f'{x["start"]} to {x["end"].replace("1.00", "24")}')
                         elif x['state'] == "market":
                             market_html[day].append(f'{x["start"]} to {x["end"].replace("1.00", "24")}')
-                        elif x['state'] == "ppostmarket":
+                        elif x['state'] == "postmarket":
                             postmarket_html[day].append(f'{x["start"]} to {x["end"].replace("1.00", "24")}')
                         
             holiday_html = ""

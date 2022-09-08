@@ -20,7 +20,6 @@ SetBenchmark(x =&gt; 0); // or the Symbol of the TESTBTCTESTUSD/TESTBTCTESTUSDT 
     <li>Enter your API key and secret.</li>
     <?php echo file_get_contents(DOCS_RESOURCES."/brokerages/create-credentials/bitfinex.html"); ?>
     
-    <p>To generate your API credentials, see <a href='/docs/v2/our-platform/live-trading/brokerages/bitfinex#02-Account-Types'>Account Types</a>. Your account details are not saved on QuantConnect.</p>
     <li>Click the <span class="field-name">Node</span> field and then click the live trading node that you want to use from the drop-down menu.</li>
     <li><span class="qualifier">(Optional)</span> <a href="/docs/v2/our-platform/live-trading/notifications">Set up notifications</a>.</li>
     <li>Configure the <span class="box-name">Automatically restart algorithm</span> setting.</li>

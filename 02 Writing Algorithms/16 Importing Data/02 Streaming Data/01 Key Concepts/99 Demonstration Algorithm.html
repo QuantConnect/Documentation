@@ -73,6 +73,7 @@ namespace QuantConnect.Algorithm.CSharp
                     //{"high": "441.00", "last": "421.86", "timestamp": "1411606877", "bid": "421.96", "vwap": "428.58", "volume": "14120.40683975", "low": "418.83", "ask": "421.99"}
                     coin = JsonConvert.DeserializeObject&lt;Bitstamp&gt;(line);
                     coin.EndTime = DateTime.UtcNow.ConvertFromUtc(config.ExchangeTimeZone);
+                    coin.Time = coin.EndTime.AddDays(-1);
                     coin.Value = coin.Close;
                     return coin;
                 }
@@ -92,7 +93,8 @@ namespace QuantConnect.Algorithm.CSharp
                     return null;
                 }
 
-                coin.EndTime = DateTime.Parse(data[0], CultureInfo.InvariantCulture).AddDays(1);
+                coin.Time = DateTime.Parse(data[0], CultureInfo.InvariantCulture);
+                coin.EndTime = coin.Time.AddDays(1);
                 coin.Open = data[1].IfNotNullOrEmpty(s =&gt; decimal.Parse(s, NumberStyles.Any, CultureInfo.InvariantCulture));
                 coin.High = data[2].IfNotNullOrEmpty(s =&gt; decimal.Parse(s, NumberStyles.Any, CultureInfo.InvariantCulture));
                 coin.Low = data[3].IfNotNullOrEmpty(s =&gt; decimal.Parse(s, NumberStyles.Any, CultureInfo.InvariantCulture));
@@ -156,6 +158,7 @@ class Bitstamp(PythonData):
                 return None
 
             coin.EndTime =  Extensions.ConvertFromUtc(datetime.utcnow(), config.ExchangeTimeZone)
+            coin.Time = coin.EndTime - timedelta(1)
             coin["Open"] = float(liveBTC["open"])
             coin["High"] = float(liveBTC["high"])
             coin["Low"] = float(liveBTC["low"])
@@ -179,7 +182,8 @@ class Bitstamp(PythonData):
         if coin.Value == 0:
             return None
 
-        coin.EndTime = datetime.strptime(data[0], "%Y-%m-%d") + timedelta(1)
+        coin.Time = datetime.strptime(data[0], "%Y-%m-%d")
+        coin.EndTime = coin.Time + timedelta(1)
         coin["Open"] = float(data[1])
         coin["High"] = float(data[2])
         coin["Low"] = float(data[3])
