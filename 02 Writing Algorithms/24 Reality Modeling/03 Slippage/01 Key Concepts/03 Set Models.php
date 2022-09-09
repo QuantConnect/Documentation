@@ -30,4 +30,15 @@ def CustomSecurityInitializer(self, security: Security) -&gt; None:
 </pre>
 </div>
 
+<?php echo file_get_contents(DOCS_RESOURCES."/reality-modeling/security-initializers.html");?>
+
+<p>To extend upon the default security initializer instead of overwriting it, create a custom <code>BrokerageModelSecurityInitializer</code>.</p>
+
+<?php
+include(DOCS_RESOURCES."/reality-modeling/brokerage-mondel-security-init.php");
+$overwriteCodePy = "security.SetSlippageModel(VolumeShareSlippageModel())";
+$overwriteCodeC = "security.SetSlippageModel(new VolumeShareSlippageModel());";
+$getBrokerageModelInitCodeBlock($overwriteCodePy, $overwriteCodeC);
+?>
+
 <p>To view all the pre-built slippage models, see <a href="/docs/v2/writing-algorithms/reality-modeling/slippage/supported-models">Supported Models</a>.</p>
