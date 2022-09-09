@@ -101,7 +101,7 @@ cymem                        2.0.6
 cython                       0.29.30
 dask                         2022.8.1
 deap                         1.3.3
-debugpy                      1.5.1
+debugpy                      1.6.3
 decorator                    5.1.1
 defusedxml                   0.7.1
 deprecated                   1.2.13
@@ -271,7 +271,6 @@ property-cached              1.6.4
 prophet                      1.1
 protobuf                     3.19.4
 psutil                       5.9.1
-ptvsd                        4.3.2
 ptyprocess                   0.7.0
 pulp                         2.6.0
 pure-eval                    0.2.2
@@ -283,7 +282,6 @@ pybind11                     2.10.0
 pycosat                      0.6.3
 pycparser                    2.21
 pydantic                     1.9.2
-pydevd-pycharm               201.8538.36
 pyerfa                       2.0.0.1
 pygments                     2.13.0
 pykalman                     0.9.5
