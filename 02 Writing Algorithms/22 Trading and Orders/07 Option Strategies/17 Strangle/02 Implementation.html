@@ -13,8 +13,7 @@ public override void Initialize()
 
     var option = AddOption("GOOG", Resolution.Minute);
     _symbol = option.Symbol;
-    option.SetFilter(universe =&gt; universe.Strikes(-5, 5)
-                                            .Expiration(TimeSpan.FromDays(0), TimeSpan.FromDays(30)));
+    option.SetFilter(-5, 5, TimeSpan.FromDays(0), TimeSpan.FromDays(30));
 }</pre>
         <pre class="python">def Initialize(self) -&gt; None:
     self.SetStartDate(2017, 4, 1)
@@ -26,7 +25,7 @@ public override void Initialize()
     option.SetFilter(-5, 5, timedelta(0), timedelta(30))</pre>
     </div>
 
-    <li>In the <code>OnData</code> method, select the contracts in the strategy legs.</li>
+    <li>In the <code>OnData</code> method, select the expiration date and strike prices of the contracts in the strategy legs.</li>
     <div class="section-example-container">
         <pre class="csharp">public override void OnData(Slice slice)
 {
@@ -36,17 +35,25 @@ public override void Initialize()
     var chain = slice.OptionChains.get(_symbol, null);
     if (chain == null || chain.Count() == 0) return;
 
-    // Select an expiry date
-    var expiry = chain.OrderBy(x =&gt; x.Expiry).Last().Expiry;
+    // Select an expiration date
+    var expiry = chain.OrderBy(contract =&gt; contract.Expiry).Last().Expiry;
 
-    // Select the call and put contracts that expire on the selected date
-    var calls = chain.Where(x =&gt; x.Expiry == expiry &amp;&amp; x.Right == OptionRight.Call);
-    var puts = chain.Where(x =&gt; x.Expiry == expiry &amp;&amp; x.Right == OptionRight.Put);
-    if (calls.Count() == 0 || puts.Count() == 0) return;
+    // Select the OTM call strike
+    var callStrikes = chain.Where(contract =&gt; contract.Expiry == expiry 
+                                              &amp;&amp; contract.Right == OptionRight.Call 
+                                              &amp;&amp; contract.Strike &gt; chain.Underlying.Price)
+                           .Select(contract =&gt; contract.Strike);
+    if (callStrikes.Count() == 0) return;
+    var callStrike = callStrikes.Min();
 
-    // Select the contracts in the strategy legs
-    var call = calls.OrderBy(x =&gt; x.Strike).Last();
-    var put = puts.OrderBy(x =&gt; x.Strike).First();<br></pre>
+    // Select the ITM put strike
+    var putStrikes = chain.Where(contract =&gt; contract.Expiry == expiry 
+                                              &amp;&amp; contract.Right == OptionRight.Put 
+                                              &amp;&amp; contract.Strike &lt; chain.Underlying.Price)
+                          .Select(contract =&gt; contract.Strike);
+    if (putStrikes.Count() == 0) return;
+    var putStrike = putStrikes.Max();
+}</pre>
         <pre class="python">def OnData(self, slice: Slice) -&gt; None:
     if self.Portfolio.Invested: return
 
@@ -54,24 +61,32 @@ public override void Initialize()
     chain = slice.OptionChains.get(self.symbol, None)
     if not chain: return
 
-    # Select an expiry date
-    expiry = sorted(chain, key = lambda x: x.Expiry, reverse=True)[0].Expiry
+    # Select an expiration date
+    expiry = sorted(chain, key=lambda contract: contract.Expiry, reverse=True)[0].Expiry
 
-    # Select the call and put contracts that expire on the selected date
-    calls = [i for i in chain if i.Expiry == expiry and i.Right == OptionRight.Call]
-    puts = [i for i in chain if i.Expiry == expiry and i.Right == OptionRight.Put]
-    if len(calls) == 0 or len(puts) == 0: return
+    # Select the OTM call strike
+    strikes = [contract.Strike for contract in chain if contract.Expiry == expiry]
+    call_strikes = [contract.Strike for contract in chain 
+        if contract.Expiry == expiry 
+        and contract.Right == OptionRight.Call
+        and contract.Strike > chain.Underlying.Price]
+    if len(call_strikes) == 0: return
+    call_strike = min(call_strikes)
 
-    # Select the contracts in the strategy legs
-    call = sorted(calls, key = lambda x: x.Strike)[-1]
-    put = sorted(puts, key = lambda x: x.Strike)[0]</pre>
+    # Select the OTM put strike
+    put_strikes = [contract.Strike for contract in chain 
+        if contract.Expiry == expiry 
+        and contract.Right == OptionRight.Put
+        and contract.Strike < chain.Underlying.Price]
+    if len(put_strikes) == 0: return
+    put_strike = max(put_strikes)</pre>
     </div>
 
-    <li>In the <code>OnData</code> method, submit the orders.</li>
+    <li>In the <code>OnData</code> method, call the <code>OptionStrategies.Strangle</code> method and then submit the order.</li>
     <div class="section-example-container">
-        <pre class="csharp">Buy(call.Symbol, 1);
-Buy(put.Symbol, 1);</pre>
-        <pre class="python">self.Buy(call.Symbol, 1)
-self.Buy(put.Symbol, 1)</pre>
+        <pre class="csharp">var optionStrategy = OptionStrategies.Strangle(_symbol, callStrike, putStrike, expiry);
+Buy(optionStrategy, 1);</pre>
+        <pre class="python">option_strategy = OptionStrategies.Strangle(self.symbol, call_strike, put_strike, expiry)
+self.Buy(option_strategy, 1)</pre>
     </div>
 </ol>
