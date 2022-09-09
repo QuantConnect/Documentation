@@ -29,3 +29,15 @@ def CustomSecurityInitializer(self, security: Security) -&gt; None:
     security.SetBuyingPowerModel(SecurityMarginModel(3))
 </pre>
 </div>
+
+
+<?php echo file_get_contents(DOCS_RESOURCES."/reality-modeling/security-initializers.html");?>
+
+<p>To extend upon the default security initializer instead of overwriting it, create a custom <code>BrokerageModelSecurityInitializer</code>.</p>
+
+<?php
+include(DOCS_RESOURCES."/reality-modeling/brokerage-mondel-security-init.php");
+$overwriteCodePy = "security.SetBuyingPowerModel(SecurityMarginModel(3))";
+$overwriteCodeC = "security.SetBuyingPowerModel(new SecurityMarginModel(3m));";
+$getBrokerageModelInitCodeBlock($overwriteCodePy, $overwriteCodeC);
+?>
