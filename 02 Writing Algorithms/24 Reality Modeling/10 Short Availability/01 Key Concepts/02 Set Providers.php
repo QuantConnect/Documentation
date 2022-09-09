@@ -10,7 +10,7 @@ security = self.AddEquity("SPY")
 security.SetShortableProvider(AtreyuShortableProvider(SecurityType.Equity, Market.USA))</pre>
 </div>
 
-<p>You can also set the shortable provider in a security initializer. If your algorithm has a universe, use the security initializer technique. In order to initialize single security subscriptions with the security initializer, call <code>SetShortableProvider</code> before you create the subscriptions.</p>
+<p>You can also set the shortable provider in a security initializer. If your algorithm has a universe, use the security initializer technique. In order to initialize single security subscriptions with the security initializer, call <code>SetSecurityInitializer</code> before you create the subscriptions.</p>
 
 <div class="section-example-container">
 <pre class="csharp" style="">// In Initialize
@@ -30,3 +30,16 @@ def CustomSecurityInitializer(self, security: Security) -&gt; None:
     security.SetShortableProvider(AtreyuShortableProvider(SecurityType.Equity, Market.USA))
 </pre>
 </div>
+
+<?php echo file_get_contents(DOCS_RESOURCES."/reality-modeling/security-initializers.html");?>
+
+<p>To extend upon the default security initializer instead of overwriting it, create a custom <code>BrokerageModelSecurityInitializer</code>.</p>
+
+<?php
+include(DOCS_RESOURCES."/reality-modeling/brokerage-mondel-security-init.php");
+$overwriteCodePy = "security.SetShortableProvider(AtreyuShortableProvider(SecurityType.Equity, Market.USA))";
+$overwriteCodeC = "security.SetShortableProvider(new AtreyuShortableProvider(SecurityType.Equity, Market.USA));";
+$getBrokerageModelInitCodeBlock($overwriteCodePy, $overwriteCodeC);
+?>
+
+<p>To view all the pre-built shortable providers, see <a href='/docs/v2/writing-algorithms/reality-modeling/short-availability/supported-providers'>Supported Providers</a>.</p>
