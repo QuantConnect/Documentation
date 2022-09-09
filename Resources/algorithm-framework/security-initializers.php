@@ -37,16 +37,8 @@ self.SetSecurityInitializer(lambda security: seeder.SeedSecurity(security))</pre
 </div>
 
 
-<p>If you call the <code>SetSecurityInitializer</code> method, it overwrites the default security initializer. The default security initializer uses the <a href='/docs/v2/writing-algorithms/reality-modeling/key-concepts#02-Security-Level-Models'>security-level reality models</a> of the brokerage model to set the following reality models of each security:</p>
+<?php echo file_get_contents(DOCS_RESOURCES."/reality-modeling/security-initializers.html");?>
 
-<ul>
-    <li><a href="/docs/v2/writing-algorithms/reality-modeling/trade-fills/key-concepts">Fill</a></li>
-    <li><a href="/docs/v2/writing-algorithms/reality-modeling/slippage/key-concepts">Slippage</a></li>
-    <li><a href="/docs/v2/writing-algorithms/reality-modeling/transaction-fees/key-concepts">Fee</a></li>
-    <li><a href="/docs/v2/writing-algorithms/reality-modeling/buying-power">Buying Power</a></li>
-    <li><a href="/docs/v2/writing-algorithms/reality-modeling/settlement/key-concepts">Settlement </a></li>
-    <li><a href="/docs/v2/writing-algorithms/reality-modeling/short-availability/key-concepts">Short availability</a></li>
-</ul>
 <p>The default security initializer also sets the leverage of each security and intializes each security with a seeder function. To extend upon the default security initializer instead of overwriting it, create a custom <code>BrokerageModelSecurityInitializer</code>.</p>
 <div class="section-example-container">
 <pre class="csharp">// In Initialize
