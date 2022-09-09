@@ -40,40 +40,10 @@ self.SetSecurityInitializer(lambda security: seeder.SeedSecurity(security))</pre
 <?php echo file_get_contents(DOCS_RESOURCES."/reality-modeling/security-initializers.html");?>
 
 <p>The default security initializer also sets the leverage of each security and intializes each security with a seeder function. To extend upon the default security initializer instead of overwriting it, create a custom <code>BrokerageModelSecurityInitializer</code>.</p>
-<div class="section-example-container">
-<pre class="csharp">// In Initialize
-SetSecurityInitializer(new MySecurityInitializer(BrokerageModel, new FuncSecuritySeeder(GetLastKnownPrices)));
 
-class MySecurityInitializer : BrokerageModelSecurityInitializer
-{
-    public MySecurityInitializer(IBrokerageModel brokerageModel, ISecuritySeeder securitySeeder)
-        : base(brokerageModel, securitySeeder) {}
-    
-    public override void Initialize(Security security)
-    {
-        // First, call the superclass definition
-        // This method sets the reality models of each security using the default reality models of the brokerage model
-        base.Initialize(security);
-
-        // Next, overwrite some of the reality models
-        security.SetFeeModel(new ConstantFeeModel(0, "USD"));
-    }
-}</pre>
-<pre class="python"># In Initialize
-self.SetSecurityInitializer(MySecurityInitializer(self.BrokerageModel, FuncSecuritySeeder(self.GetLastKnownPrices)))
-
-
-class MySecurityInitializer(BrokerageModelSecurityInitializer):
-
-    def __init__(self, brokerage_model: IBrokerageModel, security_seeder: ISecuritySeeder) -> None:
-        super().__init__(brokerage_model, security_seeder)
-
-    def Initialize(self, security: Security) -> None:
-        # First, call the superclass definition
-        # This method sets the reality models of each security using the default reality models of the brokerage model
-        super().Initialize(security)
-
-        # Next, overwrite some of the reality models
-        security.SetFeeModel(ConstantFeeModel(0, "USD"))</pre>
-</div>
-
+<?php
+include(DOCS_RESOURCES."/reality-modeling/brokerage-mondel-security-init.php");
+$overwriteCodePy = "security.SetFeeModel(ConstantFeeModel(0, \"USD\"))";
+$overwriteCodeC = "security.SetFeeModel(new ConstantFeeModel(0, \"USD\"));";
+$getBrokerageModelInitCodeBlock($overwriteCodePy, $overwriteCodeC);
+?>
