@@ -31,4 +31,15 @@ def CustomSecurityInitializer(self, security: Security) -&gt; None:
 </pre>
 </div>
 
+<?php echo file_get_contents(DOCS_RESOURCES."/reality-modeling/security-initializers.html");?>
+
+<p>To extend upon the default security initializer instead of overwriting it, create a custom <code>BrokerageModelSecurityInitializer</code>.</p>
+
+<?php
+include(DOCS_RESOURCES."/reality-modeling/brokerage-mondel-security-init.php");
+$overwriteCodePy = "security.SettlementModel = DelayedSettlementModel(7, timedelta(hours=8))";
+$overwriteCodeC = "security.SettlementModel = new DelayedSettlementModel(7, TimeSpan.FromHours(8));";
+$getBrokerageModelInitCodeBlock($overwriteCodePy, $overwriteCodeC);
+?>
+
 <p>To view all the pre-built settlement models, see <a href="/docs/v2/writing-algorithms/reality-modeling/settlement/supported-models">Supported Models</a>.</p>
