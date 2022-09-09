@@ -1,71 +1,46 @@
-<p>The optimization nodes that backtest your algorithm are not the <a href="/docs/v2/our-platform/organizations/resources#02-Backtesting-Nodes">backtesting nodes</a> in your organization. The optimization nodes are a cluster of nodes that exclusively run optimization jobs. The optimization can run with up to 24 nodes. If you use multiple nodes, the backtests run concurrently and all of the nodes are the same model. The following table shows the specifications of the optimization node models:</p> 
+<p>The optimization nodes that backtest your algorithm are not the <a href="/docs/v2/our-platform/organizations/resources#02-Backtesting-Nodes">backtesting nodes</a> in your organization. The optimization nodes are a cluster of nodes that exclusively run optimization jobs. The optimization can concurrently run multiple backtests if you use multiple nodes, but the maximum number of nodes you can use depends on the node type. The following table describes the node types:</p> 
 
-<table class="qc-table table">
+<table class="qc-table table" id='optimization-node-description-table'>
    <thead>
       <tr>
-         <th>Model</th>
+         <th>Type</th>
+         <th>Description</th>
          <th>Number of Cores</th>
          <th>RAM (GB)</th>
+         <th>Max Cluster Size</th>
       </tr>
    </thead>
    <tbody>
       <tr>
          <td>O2-8</td>
+         <td>Relatively simple strategies with less than 100 assets</td>
          <td>2</td>
          <td>8</td>
+         <td>10</td>
       </tr>
       <tr>
          <td>O4-12</td>
+         <td>Strategies with less than 500 assets and simple universe selections</td>
          <td>4</td>
          <td>12</td>
+         <td>6</td>
       </tr>
       <tr>
          <td>O8-16</td>
+         <td>Complex strategies and machine learning</td>
          <td>8</td>
          <td>16</td>
+         <td>4</td>
       </tr>
    </tbody>
 </table>
 
+<p>The following table shows the <a href="/docs/v2/our-platform/organizations/resources#08-Training-Quotas">training quotas</a> of the optimization node types:</p>
 
-<p>Select the optimization node that is most appropriate for your trading algorithm. The following table explains when to use each model:</p>
-<table class="table qc-table" id="optimization-node-usage-table">
-    <thead>
-        <tr>
-            <th style="width: 33%">Model</th>
-            <th style="width: 66%">Description</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr>
-            <td>O2-8</td>
-            <td>Relatively simple strategies with less than 100 assets</td>
-        </tr>
-        <tr>
-            <td>O4-12</td>
-            <td>Strategies with less than 500 assets and simple universe selections</td>
-        </tr>
-        <tr>
-            <td>O8-16</td>
-            <td>Complex strategies and machine learning</td>
-        </tr>
-    </tbody>
-</table>
-
-<style>
-#optimization-node-usage-table th:last-child,
-#optimization-node-usage-table td:last-child {
-    text-align: left;
-}
-</style>
-
-
-<p>The following table shows the <a href="/docs/v2/our-platform/organizations/resources#08-Training-Quotas">training quotas</a> of the optimization nodes:</p>
-
-<table class="qc-table table">
+<table class="qc-table table" class='optimization-node-quota-table'>
    <thead>
       <tr>
-         <th>Model</th>
+         <th style='wrap:nowrap'>Type</th>
          <th>Capacity (min)</th>
          <th>Refill Rate (min/day)</th>
       </tr>
@@ -90,29 +65,20 @@
 </table>
 
 <style>
-th:first-child {
-    width: 33%;
-}
-
-th:last-child {
-    text-align: right;
-    width: 33%;
-}
-
-th:nth-child(2) {
+#optimization-node-description-table th:nth-child(3),
+#optimization-node-description-table td:nth-child(3),
+#optimization-node-description-table th:nth-child(4),
+#optimization-node-description-table td:nth-child(4),
+#optimization-node-description-table th:nth-child(5),
+#optimization-node-description-table td:nth-child(5) {
     text-align: right;
 }
-
-td:last-child {
-    text-align: right;
+#optimization-node-description-table td:nth-child(1) {
+    white-space: nowrap;
 }
 
-td:nth-child(2) {
+#optimization-node-quota-table td:nth-child(2),
+#optimization-node-quota-table td:nth-child(3) {
     text-align: right;
-}
-
-#optimization-node-usage-table th:last-child,
-#optimization-node-usage-table td:last-child {
-    text-align: left;
 }
 </style>
