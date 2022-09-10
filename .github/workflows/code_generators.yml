@@ -1,0 +1,61 @@
+name: Run All Code Generators
+
+on:
+  schedule:
+    - cron:  "0 10 * * 1" # Runs "at 10 UTC every Monday" (see https://crontab.guru)
+  workflow_dispatch:  # Run on manual trigger
+
+jobs:
+  run_matrix:
+    strategy:
+      fail-fast: false
+      matrix:
+        script: [Indicator-Reference-Code-Generator,
+                 API-Reference-Code-Generator,
+                 Writing-Algorithm-API-Ref-Code-Generator,
+                 Alternative-Datasets-Code-Generator,
+                 fundamentals-table-code-generator,
+                 future-table-code-generator,
+                 Supported-Assets-Table-Code-Generator,
+                 fred-categories-table-code-generator,
+                 us-energy-indicators-code-generator,
+                 market-hour-code-generator,
+                 market-hour-convertor,
+                 security-portfolio-table-generator,
+                 enum-table-generator,
+                 glossary-generator]
+
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Install dependencies
+        run: |-
+          python -m pip install --upgrade pip
+          pip install numpy==1.22.3
+          pip install pandas==1.4.2
+
+      - name: Run ${{ matrix.script }} Python Script
+        run: python code-generators/${{ matrix.script }}.py
+
+      - name: Push to Branch
+        run: |-
+          if [[ $(git diff | wc -m) == 0 ]]; then
+            echo No changes
+          else
+            git config user.name GitHub Actions
+            git config user.email github-actions@github.com
+            git checkout -b ${{matrix.script}}
+            git add .
+            git commit -m "Code generated on $(date --utc +%Y-%m-%d)"
+            git push --set-upstream origin ${{matrix.script}} -f
+          fi
+
+  merge:
+    runs-on: ubuntu-20.04
+    needs: [ run_matrix ]
+    steps:
+      - uses: actions/checkout@v2
+      - name: Merge
+        run: |-
+          echo Hello Merge!
