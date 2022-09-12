@@ -1,9 +1,11 @@
-
-<?php
-include(DOCS_RESOURCES."/datasets/extended-market-hours.php");
-$isWritingAlgorithms = false;
-$getExtendedMarketHoursText($isWritingAlgorithms);
+<?php 
+include(DOCS_RESOURCES."/securities/extended-market-hours.php"); 
+$cCode = "AddEquity(\"SPY\", extendedMarketHours: true);";
+$pyCode = "self.AddEquity(\"SPY\", extendedMarketHours=True)";
+$supportedIntradayData = true;
+$getExtMarketHoursText($cCode, $pyCode, $supportedIntradayData);
 ?>
+
 
 <p>When you request historical data, the <code>History</code> method uses the extended market hours setting of your security subscription. To get historical data with a different extended market hours setting, pass an <code>extendedMarket</code> argument to the <code>History</code> method.</p>
 
