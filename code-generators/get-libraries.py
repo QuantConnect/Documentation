@@ -3,14 +3,17 @@ from os import popen
 CMD = {
     'csharp': ["dotnet list ../Lean/QuantConnect.Lean.sln package",
                "dotnet list ../Lean/QuantConnect.Lean.sln package",
+               "dotnet list ../Lean/QuantConnect.Lean.sln package",
                "dotnet list ../Lean/QuantConnect.Lean.sln package"],
-    'python': ['docker run --entrypoint bash quantconnect/lean:latest -c "conda list"',
-               'docker run --entrypoint bash quantconnect/lean:latest -c "conda list"',
-               'docker run --entrypoint bash quantconnect/lean:foundation -c "conda list"']
+    'python': ['docker run --entrypoint bash quantconnect/lean:latest -c "pip list"',
+               'docker run --entrypoint bash quantconnect/lean:latest -c "pip list"',
+               'docker run --entrypoint bash quantconnect/lean:latest -c ". /Foundation-Pomegranate/bin/activate && pip list"',
+               'docker run --entrypoint bash quantconnect/lean:latest -c ". /Foundation-Tensorforce/bin/activate && pip list"']
 }
 filenames = ['Resources/libraries/supported-libraries.php',
              'Resources/libraries/supported-libraries-cloud.php',
-             'Resources/libraries/supported-libraries-foundation.php']
+             'Resources/libraries/supported-libraries-foundation-pomegranate.php',
+             'Resources/libraries/supported-libraries-foundation-tensorforce.php']
 
 cloud_added = {
     "Accord": "3.6.0",
@@ -80,7 +83,9 @@ for j, filename in enumerate(filenames):
         maxlen, libraries = 0, {'# Name': 'Version'}
 
         for i, line in enumerate(content.readlines()):
-            if i < 3: continue
+            if i < 2: continue
+            if "WARNING" in line: break
+            
             line = [x for x in line.split(' ') if x != '']
             
             if language == "csharp":
@@ -100,8 +105,9 @@ for j, filename in enumerate(filenames):
 
         with open(filename, mode='a', encoding='utf-8') as fp:
             fp.write(f'<pre class="{language}">')
-            for key, value in sorted(libraries.items()):
+            for key, value in sorted(libraries.items(), key=lambda x: x[0].lower()):
                 count = maxlen - len(key)
+                value = value.replace("\n", "")
                 fp.write(f'{key + " " * count} {value}\n')
             fp.write('</pre>')
 
