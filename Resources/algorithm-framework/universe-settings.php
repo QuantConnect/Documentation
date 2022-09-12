@@ -16,7 +16,7 @@ $getUniverseSettingsText = function($isFramework) {
         <tr>
             <td><code>ExtendedMarketHours</code></td>
             <td><code>bool</code></td>
-            <td>Should assets also feed extended market hours?</td>
+            <td>Should assets also feed extended market hours? You only receive extended market hours data if you create the subscription with an intraday resolution. If you create the subscription with daily resolution, the daily bars only reflect the regular trading hours.</td>
             <td><code class='csharp'>false</code><code class='python'>False</code></td>
         </tr>
         <tr>
