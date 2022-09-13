@@ -43,6 +43,11 @@ single_history_trade_bar_df = qb.History(TradeBar, {$contractVariablePy}, 10)
 subset_history_trade_bar_df = qb.History(TradeBar, [{$contractVariablePy}], 10)
 all_history_trade_bar_df = qb.History(TradeBar, qb.Securities.Keys, 10)
 
+# DataFrame of quote data
+single_history_quote_bar_df = qb.History(QuoteBar, {$contractVariablePy}, 10)
+subset_history_quote_bar_df = qb.History(QuoteBar, [{$contractVariablePy}], 10)
+all_history_quote_bar_df = qb.History(QuoteBar, qb.Securities.Keys, 10)
+
 # DataFrame of open interest data
 single_history_open_interest_df = qb.History(OpenInterest, {$contractVariablePy}, 400)
 subset_history_open_interest_df = qb.History(OpenInterest, [{$contractVariablePy}], 400)
@@ -119,6 +124,11 @@ all_history_df = qb.History(qb.Securities.Keys, timedelta(days=3))
 single_history_trade_bar_df = qb.History(TradeBar, {$contractVariablePy}, timedelta(days=3))
 subset_history_trade_bar_df = qb.History(TradeBar, [{$contractVariablePy}], timedelta(days=3))
 all_history_trade_bar_df = qb.History(TradeBar, qb.Securities.Keys, timedelta(days=3))
+
+# DataFrame of quote data
+single_history_quote_bar_df = qb.History(QuoteBar, {$contractVariablePy}, timedelta(days=3))
+subset_history_quote_bar_df = qb.History(QuoteBar, [{$contractVariablePy}], timedelta(days=3))
+all_history_quote_bar_df = qb.History(QuoteBar, qb.Securities.Keys, timedelta(days=3))
 
 # DataFrame of open interest data
 single_history_open_interest_df = qb.History(OpenInterest, {$contractVariablePy}, timedelta(days=3))
@@ -214,6 +224,11 @@ all_history_df = qb.History(qb.Securities.Keys, start_time, end_time)
 single_history_trade_bar_df = qb.History(TradeBar, {$contractVariablePy}, start_time, end_time)
 subset_history_trade_bar_df = qb.History(TradeBar, [{$contractVariablePy}], start_time, end_time)
 all_history_trade_bar_df = qb.History(TradeBar, qb.Securities.Keys, start_time, end_time)
+
+# DataFrame of quote data
+single_history_quote_bar_df = qb.History(QuoteBar, {$contractVariablePy}, start_time, end_time)
+subset_history_quote_bar_df = qb.History(QuoteBar, [{$contractVariablePy}], start_time, end_time)
+all_history_quote_bar_df = qb.History(QuoteBar, qb.Securities.Keys, start_time, end_time)
 
 # DataFrame of open interest data
 single_history_open_interest_df = qb.History(OpenInterest, {$contractVariablePy}, start_time, end_time)
