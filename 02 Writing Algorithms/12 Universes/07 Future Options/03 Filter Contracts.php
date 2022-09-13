@@ -1,10 +1,4 @@
-<p>By default, LEAN subscribes to the Option contracts that have the following characteristics:</p>
-
-<ul>
-    <li>Standard type (exclude weeklys)</li>
-    <li>Within 1 strike price of the underlying asset price</li>
-    <li>Expire within 31 days</li>
-</ul>
+<?php include(DOCS_RESOURCES."/universes/option/set-filter.php"); ?>
 
 <p>LEAN adds all of the Option contracts that meet the filter requirements to the <a href="/docs/v2/writing-algorithms/key-concepts/time-modeling/timeslices">Slice</a> it passes to the <code>OnData</code> method. To adjust the universe of contracts, pass a filter function to the <code>AddFutureOption</code> method.</p>
 
