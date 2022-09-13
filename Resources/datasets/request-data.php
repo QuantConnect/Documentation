@@ -55,7 +55,7 @@ $getRequestDataText = function($isWritingAlgorithms)
         </tr>
     </tbody>
 </table>
-<p class='python'>Each row of the DataFrame represents the prices at a point in time. Each column of the DataFrame is a property of that price data. If you request a DataFrame object and pass <code>TradeBar</code> as the first argument, the DataFrame that returns only contains the open, high, low, close (OHLC), and volume columns. If you request a DataFrame object and pass <code>QuoteBar</code> as the first argument, the DataFrame that returns contains the OHLC of both the bid and it contains OHLC columns, which are the respective means of the bid and ask OHLC values.</p>
+<p class='python'>Each row of the DataFrame represents the prices at a point in time. Each column of the DataFrame is a property of that price data. If you request a DataFrame object and pass <code>TradeBar</code> as the first argument, the DataFrame that returns only contains the open, high, low, close (OHLC), and volume columns. If you request a DataFrame object and pass <code>QuoteBar</code> as the first argument, the DataFrame that returns contains the OHLC of the bid and ask and it contains OHLC columns, which are the respective means of the bid and ask OHLC values. If you request a DataFrame and don't pass <code>TradeBar</code> or <code>QuoteBar</code> as the first arugment, the DataFrame that returns contains columns for all of the data that's available for the given resolution.</p>
 
 <div class='section-example-container'>
 <pre class='python'><b># EXAMPLE 1: Requesting By Bar Count: 5 bars at the security resolution:</b>
