@@ -36,60 +36,7 @@ _future.SetFilter(futureFilterUniverse =&gt; futureFilterUniverse.FrontMonth());
 
 <p>The following table describes the filter methods of the <code>FutureFilterUniverse</code> class:</p>
 
-<table class="qc-table table">
-    <thead>
-        <tr>
-            <th>Method</th>
-            <th>Description</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr>
-            <td><code>StandardsOnly()</code></td>
-            <td>Selects standard contracts</td>
-        </tr>
-        <tr>
-            <td><code>IncludeWeeklys()</code></td>
-            <td>Selects non-standard weekly contracts</td>
-        </tr>
-        <tr>
-            <td><code>WeeklysOnly()</code></td>
-            <td>Selects weekly contracts</td>
-        </tr>
-        <tr>
-            <td><code>FrontMonth()</code></td>
-            <td>Selects the front month contract</td>
-        </tr>
-        <tr>
-            <td><code>BackMonths()</code></td>
-            <td>Selects the non-front month contracts</td>
-        </tr>
-        <tr>
-            <td><code>BackMonth()</code></td>
-            <td>Selects the back month contracts<br></td>
-        </tr>
-        <tr>
-            <td><code class="csharp">Expiration(TimeSpan minExpiry, TimeSpan maxExpiry)</code><code class="python">Expiration(minExpiry: timedelta, maxExpiry: timedelta)</code></td>
-            <td>Selects contracts that expire within a range of dates relative to the current day<br></td>
-        </tr>
-        <tr>
-            <td><code class="csharp">Expiration(int minExpiryDays, int maxExpiryDays)</code><code class="python">Expiration(minExpiryDays: int, maxExpiryDays: int)</code></td>
-            <td>Selects contracts that expire within a range of dates relative to the current day</td>
-        </tr>
-        <tr>
-            <td><code class="csharp">Contracts(IEnumerable&lt;Symbol&gt; contracts)</code><code class="python">Contracts(contracts: List[Symbol])</code></td>
-            <td>Selects a list of contracts</td>
-        </tr>
-        <tr>
-            <td><code class="csharp">Contracts(Func&lt;IEnumerable&lt;Symbol&gt;, IEnumerable&lt; Symbol&gt;&gt; contractSelector)</code><code class="python">Contracts(contractSelector: callable[List[Symbol], List[Symbol]])</code></td>
-            <td>Selects contracts that a selector function selects</td>
-        </tr>
-        <tr>
-            <td><code>OnlyApplyFilterAtMarketOpen()</code></td>
-            <td>Instructs the engine to only filter contracts on the first time step of each market day</td>
-        </tr>
-    </tbody>
-</table>
+<?php echo file_get_contents(DOCS_RESOURCES."/universes/future/future-filter-universe.html");?>
 
 <p>The preceding methods return an <code>FutureFilterUniverse</code>, so you can chain the methods together.</p>
 
