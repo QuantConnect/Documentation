@@ -22,7 +22,7 @@ self.symbol = option.Symbol</pre>
         <tr>
             <td><code>ticker</code></td>
 	        <td><code class="csharp">string</code><code class="python">str</code></td>
-            <td>The underlying Index ticker. To view the available indices, see <a href='/docs/v2/writing-algorithms/securities/asset-classes/index/requesting-data#03-Supported-Indices'>Supported Indices</a>.</td>
+            <td>The underlying Index ticker. To view the available indices, see <a href='/datasets/tickdata-us-cash-indices'>US Cash Indices dataset listing</a>.</td>
             <td></td>
         </tr>
         <tr>

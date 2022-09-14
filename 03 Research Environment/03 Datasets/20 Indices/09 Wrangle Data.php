@@ -3,7 +3,7 @@ include(DOCS_RESOURCES."/datasets/wrangle-data.php");
 $assetClass = 'Index';
 $singularAssetClass = 'Index';
 $pluralAssetClass = 'Indices';
-$historicalDataLink = "https://www.quantconnect.com/docs/v2/research-environment/datasets/indices#04-Get-Historical-Data";
+$historicalDataLink = "/docs/v2/research-environment/datasets/indices#04-Get-Historical-Data";
 $primarySymbolPy = 'spx';
 $primarySymbolC = 'spx';
 $primaryTicker = 'SPX';

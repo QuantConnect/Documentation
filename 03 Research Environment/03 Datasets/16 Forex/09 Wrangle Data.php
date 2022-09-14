@@ -4,7 +4,7 @@ include(DOCS_RESOURCES."/datasets/wrangle-data.php");
 $assetClass = 'Forex';
 $singularAssetClass = 'Forex pair';
 $pluralAssetClass = 'Forex pairs';
-$historicalDataLink = "https://www.quantconnect.com/docs/v2/research-environment/datasets/forex#04-Get-Historical-Data";
+$historicalDataLink = "/docs/v2/research-environment/datasets/forex#04-Get-Historical-Data";
 $primarySymbolPy = 'eurusd';
 $primarySymbolC = 'eurusd';
 $primaryTicker = 'EURUSD';

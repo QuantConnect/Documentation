@@ -13,7 +13,7 @@ $getExecutionText = function($linkScheduledEvents) {
     {
         $result .= "
 <li>Scheduled Events</li>
-<li><a href='/docs/v2/writing-algorithms/consolidating-data/key-concepts#05-Receive-Consolidated-Bars'>Consolidation event handlers</a></li>";
+<li><a href='/docs/v2/writing-algorithms/consolidating-data/key-concepts#04-Receive-Consolidated-Bars'>Consolidation event handlers</a></li>";
     }
   
     $result .= "

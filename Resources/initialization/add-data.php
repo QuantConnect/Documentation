@@ -7,7 +7,7 @@ $getAddDataText = function($isAlgorithm)
     $pyCodePrefix = $isAlgorithm ? "self" : "qb" ;
     $cCodePrefix = $isAlgorithm ? "" : "qb." ;
     
-    $assetClassLink = $isAlgorithm ? "<a href='https://www.quantconnect.com/docs/v2/writing-algorithms/securities/asset-classes'>Asset Classes</a>" : "the <span class='page-section-name'>Create Subscriptions</span> section of an asset class in the <a href='/docs/v2/research-environment/datasets/key-concepts'>Datasets</a> chapter" ;
+    $assetClassLink = $isAlgorithm ? "<a href='/docs/v2/writing-algorithms/securities/asset-classes'>Asset Classes</a>" : "the <span class='page-section-name'>Create Subscriptions</span> section of an asset class in the <a href='/docs/v2/research-environment/datasets/key-concepts'>Datasets</a> chapter" ;
     
     echo "
 <p>You can subscribe to asset, fundamental, alternative, and custom data. The <a href='https://www.quantconnect.com/datasets'>Dataset Market</a> provides {$dataMarketSize} of data that you can easily import into your {$location}.</p>

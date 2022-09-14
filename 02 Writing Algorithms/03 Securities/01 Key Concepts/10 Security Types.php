@@ -2,4 +2,4 @@
 
 <div data-tree="QuantConnect.SecurityType"></div>
 
-<p>The <code>Base</code> type is for non-financial assets like <a href='/docs/v2/writing-algorithms/importing-data/processing-samples'>custom</a> and alternative data objects.</p>
+<p>The <code>Base</code> type is for non-financial assets like <a href='/docs/v2/writing-algorithms/importing-data/streaming-data/key-concepts'>custom</a> and alternative data objects.</p>

@@ -328,7 +328,7 @@ foreach (var s in slices) {
         <tr>
             <td><code>fillForward</code></td>
 	        <td><code class='csharp'>bool?</code><code class='python'>bool/NoneType</code></td>
-            <td>True to <a href='/docs/v2/writing-algorithms/securities/subscriptions#05-Fill-Forward'>fill forward</a> missing data. Otherwise, false.</td>
+            <td>True to <a href='/docs/v2/writing-algorithms/securities/requesting-data#05-Fill-Forward'>fill forward</a> missing data. Otherwise, false.</td>
             <td><code class='csharp'>null</code><code class='python'>None</code></td>
         </tr>
         <tr>

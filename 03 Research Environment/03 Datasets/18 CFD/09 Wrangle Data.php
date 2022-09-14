@@ -3,7 +3,7 @@ include(DOCS_RESOURCES."/datasets/wrangle-data.php");
 $assetClass = 'CFD';
 $singularAssetClass = 'CFD contract';
 $pluralAssetClass = 'CFD contracts';
-$historicalDataLink = "https://www.quantconnect.com/docs/v2/research-environment/datasets/cfd#04-Get-Historical-Data";
+$historicalDataLink = "/docs/v2/research-environment/datasets/cfd#04-Get-Historical-Data";
 $primarySymbolPy = 'spx';
 $primarySymbolC = 'spx';
 $primaryTicker = 'SPX500USD';

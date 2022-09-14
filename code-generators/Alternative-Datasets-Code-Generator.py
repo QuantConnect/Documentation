@@ -86,7 +86,7 @@ for dataset in doc:
 <p>For more information about the {datasetName} dataset, including CLI commands and pricing, see the <a href=\"https://www.quantconnect.com{dataset['url'].lower().replace(backslash, '')}\">dataset listing</a>.<p>"""
                 
         if item["title"].strip() == "Universe Selection" and vendorName not in priority:
-            universe_html += f"""    <li><a href="https://www.quantconnect.com/docs/v2/writing-algorithms/datasets/{vendorName.lower().replace(' ', '-')}/{datasetName.lower().replace(' ', '-')}#{i:02}-Universe-Selection">{datasetName}</a></li>
+            universe_html += f"""    <li><a href="/docs/v2/writing-algorithms/datasets/{vendorName.lower().replace(' ', '-')}/{datasetName.lower().replace(' ', '-')}#{i:02}-Universe-Selection">{datasetName}</a></li>
 """
         
         with open(destination_folder / f'{i:02} {item["title"].strip()}.html', "w", encoding="utf-8") as html_file:

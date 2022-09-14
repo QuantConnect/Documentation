@@ -3,7 +3,7 @@ include(DOCS_RESOURCES."/datasets/wrangle-data.php");
 $assetClass = 'Crypto';
 $singularAssetClass = 'Crypto pair';
 $pluralAssetClass = 'Crypto pairs';
-$historicalDataLink = "https://www.quantconnect.com/docs/v2/research-environment/datasets/crypto#04-Get-Historical-Data";
+$historicalDataLink = "/docs/v2/research-environment/datasets/crypto#04-Get-Historical-Data";
 $primarySymbolPy = 'btcusd';
 $primarySymbolC = 'btcusd';
 $primaryTicker = 'BTCUSD';
