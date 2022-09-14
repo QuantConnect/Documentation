@@ -17,7 +17,6 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Globalization;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -32,6 +31,7 @@ namespace QuantConnect.Tests
     /// </summary>
     public class Program
     {
+        private static readonly string _path = "..";
         private static readonly string _root = "https://www.quantconnect.com/";
         private static Dictionary<string, List<string>> _urlFiles = new();
         private static bool _errorFlag = false;
@@ -41,8 +41,8 @@ namespace QuantConnect.Tests
         /// </summary>
         public static void Main()
         {
-            _urlFiles = GetAllUrls("../");
-            TestUrls(_urlFiles);
+            GetAllUrls();
+            TestUrls();
             
             // raise an exception to fail the workflow if any broken links there
             if (_errorFlag)
@@ -54,12 +54,10 @@ namespace QuantConnect.Tests
         /// <summary>
         /// Get all urls from all files in a root dir
         /// </summary>
-        /// <param name="path">root dir</param>
         /// <return>A dictionary with url as key and list of files containing the url as values</return>
-        private static Dictionary<string, List<string>> GetAllUrls(string path)
+        private static void GetAllUrls()
         {
-            var allUrls = new Dictionary<string, List<string>>();
-            var allFiles = Directory.GetFiles("..", "*.*", SearchOption.AllDirectories);
+            var allFiles = Directory.GetFiles(_path, "*.*", SearchOption.AllDirectories);
 
             foreach(var file in allFiles)
             {
@@ -67,12 +65,12 @@ namespace QuantConnect.Tests
                 {
                     if (line.Contains("a href"))
                     {
-                        var hrefs = line.Split("a href=\"").Skip(1);
+                        var hrefs = line.Replace('\'', '\"').Split("a href=\"").Skip(1);
                         foreach(var href in hrefs)
                         {
                             var url = href.Split('\"').First();
 
-                            if (url.Contains("{") || url.Contains("}")) continue;
+                            if (url.Contains('{') || url.Contains('}')) continue;
 
                             if (!url.Contains("http"))
                             {
@@ -99,38 +97,32 @@ namespace QuantConnect.Tests
 
                             if (url.Contains("sources")) continue;
 
-                            if (!allUrls.ContainsKey(url))
+                            if (!_urlFiles.ContainsKey(url))
                             {
-                                allUrls.Add(url, new List<string>());
+                                _urlFiles.Add(url, new List<string>());
                             }
 
-                            allUrls[url].Add(file);
+                            _urlFiles[url].Add(file);
                         }
                     }
                 }
             }
-
-            return allUrls;
         }
 
         /// <summary>
         /// Test all urls if successfully get
         /// </summary>
-        /// <param name="urls">URLs to be tested</param>
-        private static void TestUrls(Dictionary<string, List<string>> urls)
+        private static void TestUrls()
         {
             var stopwatch = Stopwatch.StartNew();
             Log.Trace($"Start Testing URLs...");
 
             var i = 1;
-            var count = urls.Count();
+            var count = _urlFiles.Count;
             var tasks = new List<Task>();
 
-            foreach (var kvp in urls)
+            foreach (var (url, files) in _urlFiles)
             {
-                var url = kvp.Key;
-                var files = kvp.Value;
-
                 try
                 {        
                     tasks.Add(
@@ -175,18 +167,18 @@ namespace QuantConnect.Tests
                                     .Replace("C and Visual Studio", "C# and Visual Studio")    // special case
                                     .Replace("C and VS Code", "C# and VS Code")    // special case
                                     .Replace("C and Rider", "C# and Rider");    // special case
-                                var allFiles = Directory.GetFiles("..", $"{section}.*", SearchOption.AllDirectories);
+                                var allFiles = Directory.GetFiles(_path, $"{section}.*", SearchOption.AllDirectories);
                                 var noEquals = allFiles.All(dir => 
                                 {
-                                    var subPaths = dir.Split(Path.DirectorySeparatorChar).Skip(1);
-                                    var nonNumberedPath = String.Join(Path.DirectorySeparatorChar, 
-                                        subPaths.SkipLast(1).Select(x => new String(x.Where(c => (c < '0' || c > '9')).ToArray()).Trim()));
+                                    var subPaths = dir.Split(Path.DirectorySeparatorChar).Where(x => int.TryParse(x.AsSpan(0, 1), out _));
+                                    var nonNumberedPath = string.Join(Path.DirectorySeparatorChar, 
+                                        subPaths.SkipLast(1).Select(x => new string(x.Where(c => (c < '0' || c > '9')).ToArray()).Trim()));
                                     var sectionPath = subPaths.Last().Split('.').First();
 
                                     return $"{nonNumberedPath}{Path.DirectorySeparatorChar}{sectionPath}".ToLower() != expected;
                                 });
 
-                                if (noEquals || allFiles.Count() == 0)
+                                if (noEquals || allFiles.Length == 0)
                                 {
                                     Log.Error($"No Section \"{section}\" was found:\n\t{url}\n\t[\n\t\t{string.Join("\n\t\t", files)}\n\t]");
                                     _errorFlag = true;
@@ -213,7 +205,13 @@ namespace QuantConnect.Tests
                     tasks.Clear();
                 }
             }
-                
+
+            if (tasks.Count > 0)
+            {
+                Task.WaitAll(tasks.ToArray());
+                tasks.Clear();
+            }
+
             Log.Trace($"Finished in {stopwatch.Elapsed.ToStringInvariant(null)}");
         }
 
