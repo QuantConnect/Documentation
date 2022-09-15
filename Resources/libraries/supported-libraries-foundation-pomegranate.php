@@ -242,11 +242,12 @@ pexpect                      4.8.0
 pickleshare                  0.7.5
 Pillow                       9.2.0
 pingouin                     0.5.2
-pip                          22.2.2
+pip                          22.0.4
 pkgutil_resolve_name         1.3.10
 platformdirs                 2.5.2
 plotly                       5.9.0
 pmdarima                     1.8.5
+pomegranate                  0.14.8
 ppscore                      1.2.0
 preshed                      3.0.7
 prettytable                  3.3.0
@@ -319,7 +320,7 @@ sdeint                       0.3.0
 seaborn                      0.11.2
 semantic-version             2.10.0
 Send2Trash                   1.8.0
-setuptools                   61.2.0
+setuptools                   56.0.0
 setuptools-git               1.2
 simpy                        4.0.1
 six                          1.16.0
