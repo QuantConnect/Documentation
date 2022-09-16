@@ -31,4 +31,4 @@ $getExtMarketHoursText($cCode, $pyCode, $supportedIntradayData, $marketHoursLink
     </tbody>
 </table>
 
-<p>We model it this way because some Futures, like VIX, have pre- and post-market hours, so we standardized it. With this segmentation, if you set a <a href='https://www.quantconnect.com/docs/v2/writing-algorithms/scheduled-events'>Scheduled Events</a> for the market open, it's set for 9:30 AM instead of midnight. Additionally, LEAN excludes market hours for other asset classes, so extended market hours for Futures is disabled by default to be consistent.</p>
+<p>We model it this way because some Futures, like VIX, have pre- and post-market hours, so we standardized it. With this segmentation, if you set a <a href='https://www.quantconnect.com/docs/v2/writing-algorithms/scheduled-events'>Scheduled Events</a> for the market open, it's set for 9:30 AM instead of midnight.</p>
