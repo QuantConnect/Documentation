@@ -6,6 +6,7 @@ $getCustomChartText = function($backtest) {
         <h4>Supported Chart Types</h4>
         <p>We support the following types of charts:</p>
         <div data-tree='QuantConnect.SeriesType'></div>
+        <p>If you use <code>SeriesType.Candle</code> and plot enough values, the plot displays candles. However, the <code>Plot</code> method only accepts one numerical value per time step, so you can't plot candles that represent the open, high, low, and close values of each bar in your algorithm. The charting software automatically groups the data points you provide to create the candlesticks, so you can't control the period of time that the candlesticks represent.</p>
      ";
 
     if ($backtest) {
