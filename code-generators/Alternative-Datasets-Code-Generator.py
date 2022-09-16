@@ -56,6 +56,8 @@ for dataset in doc:
     
     for _, item in all_sections.items():
         content = item["content"].replace("\/", "/") \
+                    .replace("https://www.quantconnect.com/docs/v2/", "/docs/v2/") \
+                    .replace("https://www.quantconnect.com/datasets/", "/datasets/") \
                     .replace('<div class="qc-embed-frame"><div class="qc-embed-dummy"></div><div class="qc-embed-element"><iframe class="qc-embed-backtest"',
                                             '<div class="qc-embed-frame python" style="display: inline-block; position: relative; width: 100%; min-height: 100px; min-width: 300px;"><div class="qc-embed-dummy" style="padding-top: 56.25%;"></div><div class="qc-embed-element" style="position: absolute; top: 0; bottom: 0; left: 0; right: 0;"><iframe class="qc-embed-backtest"') \
                     .replace('<pre><code class="language-python">', 
@@ -83,7 +85,7 @@ for dataset in doc:
                 backslash = '\\'
                 content += f"""
                 
-<p>For more information about the {datasetName} dataset, including CLI commands and pricing, see the <a href=\"https://www.quantconnect.com{dataset['url'].lower().replace(backslash, '')}\">dataset listing</a>.<p>"""
+<p>For more information about the {datasetName} dataset, including CLI commands and pricing, see the <a href=\"{dataset['url'].lower().replace(backslash, '')}\">dataset listing</a>.<p>"""
                 
         if item["title"].strip() == "Universe Selection" and vendorName not in priority:
             universe_html += f"""    <li><a href="/docs/v2/writing-algorithms/datasets/{vendorName.lower().replace(' ', '-')}/{datasetName.lower().replace(' ', '-')}#{i:02}-Universe-Selection">{datasetName}</a></li>
