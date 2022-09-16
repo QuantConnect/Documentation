@@ -93,7 +93,7 @@ self.StopLimitOrder(self.symbol, quantity, stop_price, limit_price)</pre>
         </tr>
         <tr>
             <td><code>ConditionalOrder</code></td>
-            <td>An <code>Order</code> that's submitted when the primary order is executed. The <code>ConditionalOrder</code> quantity must match the primary order quantity and the <code>ConditionalOrder</code> direction must be the opposite of the primary order direction.</td>
+            <td>An <code>Order</code> that's submitted when the primary order is executed. The <code>ConditionalOrder</code> quantity must match the primary order quantity and the <code>ConditionalOrder</code> direction must be the opposite of the primary order direction. This order property is only available for live algorithms.</td>
         </tr>
     </tbody>
 </table>
