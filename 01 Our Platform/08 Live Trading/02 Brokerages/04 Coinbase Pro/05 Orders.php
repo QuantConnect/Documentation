@@ -52,7 +52,7 @@ self.StopLimitOrder(self.symbol, quantity, stop_price, limit_price)</pre>
 </div>
 
 <h4>Order Properties</h4>
-<p>We model custom order properties from the Coinbase Pro API. The following table describes the members of the <code>CoinbaseProOrderProperties</code> object that you can set to customize order execution:</p>
+<p>We model custom order properties from the Coinbase Pro API. The following table describes the members of the <code>GDAXOrderProperties</code> object that you can set to customize order execution:</p>
 
 <table class="table qc-table">
     <thead>
@@ -78,7 +78,7 @@ self.StopLimitOrder(self.symbol, quantity, stop_price, limit_price)</pre>
     <pre class="csharp">public override void Initialize()
 {
     // Set the default order properties
-    DefaultOrderProperties = new CoinbaseProOrderProperties
+    DefaultOrderProperties = new GDAXOrderProperties
     {
         TimeInForce = TimeInForce.GoodTilCanceled,
         PostOnly = false
@@ -92,7 +92,7 @@ public override void OnData(Slice slice)
     
     // Override the default order properties
     LimitOrder(_symbol, quantity, limitPrice, 
-               orderProperties: new CoinbaseProOrderProperties
+               orderProperties: new GDAXOrderProperties
                { 
                    TimeInForce = TimeInForce.GoodTilCanceled,
                    PostOnly = true
@@ -100,7 +100,7 @@ public override void OnData(Slice slice)
 }</pre>
     <pre class="python">def Initialize(self) -&gt; None:
     # Set the default order properties
-    self.DefaultOrderProperties = CoinbaseProOrderProperties()
+    self.DefaultOrderProperties = GDAXOrderProperties()
     self.DefaultOrderProperties.TimeInForce = TimeInForce.GoodTilCanceled
     self.DefaultOrderProperties.PostOnly = False
 
@@ -109,7 +109,7 @@ def OnData(self, slice: Slice) -&gt; None:
     self.LimitOrder(self.symbol, quantity, limit_price)
     
     # Override the default order properties
-    order_properties = CoinbaseProOrderProperties()
+    order_properties = GDAXOrderProperties()
     order_properties.TimeInForce = TimeInForce.GoodTilCanceled
     order_properties.PostOnly = True
     self.LimitOrder(self.symbol, quantity, limit_price, orderProperties=order_properties)</pre>
