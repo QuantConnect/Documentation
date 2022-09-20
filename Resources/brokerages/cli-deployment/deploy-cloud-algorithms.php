@@ -52,7 +52,7 @@ Enter an option: 1</pre>
 </div>
             </li>
 
-            <li>Configure your notification settings. You can configure any combination of email notifications, webhook notifications, and SMS notifications for order events and emitted insights.
+            <li>Configure your notification settings. You can configure any combination of email, webhook, SMS, and Telegram notifications for order events and emitted insights.
             <div class='cli section-example-container'>
 <pre>$ lean cloud live \"My Project\" --push --open
 Do you want to send notifications on order events? [y/N]: y
@@ -64,12 +64,14 @@ Select a notification method:
 1) Email
 2) Webhook
 3) SMS
+4) Telegram
 Enter an option: 1
 Email address: john.doe@example.com
 Subject: Algorithm notification
 Email notifications: john.doe@example.com
 Webhook notifications: None
 SMS notifications: None
+Telegram notifications: None
 Do you want to add another notification method? [y/N]: n</pre>
 </div>
             </li>
@@ -98,6 +100,7 @@ Insight notifications: Yes
 Email notifications: john.doe@example.com
 Webhook notifications: None
 SMS notifications: None
+Telegram notifications: None
 Automatic algorithm restarting: Yes
 Are you sure you want to start live trading for project 'My Project'? [y/N]: y</pre>
 </div>
