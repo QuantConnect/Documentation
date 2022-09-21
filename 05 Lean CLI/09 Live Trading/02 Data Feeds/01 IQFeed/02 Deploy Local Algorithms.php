@@ -8,7 +8,8 @@ $isBrokerage = false;
 $brokerageDetails = "";
 
 $dataFeedDetails = "
-    <li>Enter the path to the IQConnect binary. The default path is <span class='private-file-name'>C:/Program Files (x86)/DTN/IQFeed/iqconnect.exe</span> if you used the default settings when installing the IQFeed client.
+    <li>Enter the path to the IQConnect binary. 
+    <p>The default path is <span class='private-file-name'>C:/Program Files (x86)/DTN/IQFeed/iqconnect.exe</span> if you used the default settings when installing the IQFeed client.</p>
 <div class='cli section-example-container'>
 <pre>$ lean live \"My Project\"
 IQConnect binary location [C:/Program Files (x86)/DTN/IQFeed/iqconnect.exe]:</pre>
@@ -31,7 +32,7 @@ Product version: 1.0</pre>
 </div>
     </li>
 
-    <li>If you don't have an IQFeed developer account, open <span class='private-file-name'>iqlink.exe</span> and then enter random numbers for the product id and version.
+    <li>If you don't have an IQFeed developer account, open <span class='private-file-name'>iqlink.exe</span>, log in to IQLink with your username and password, and then enter random numbers for the product id and version.
 <div class='cli section-example-container'>
 <pre>$ lean live \"My Project\"
 Product id: 123
