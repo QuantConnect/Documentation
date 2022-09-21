@@ -23,10 +23,18 @@ Password: **********</pre>
 </div>
     </li>
 
-    <li>Enter the product id and version of your IQFeed developer account.
+    <li>If you have an IQFeed developer account, enter the product id and version of your account.
 <div class='cli section-example-container'>
 <pre>$ lean live \"My Project\"
 Product id: &lt;yourID&gt;
+Product version: 1.0</pre>
+</div>
+    </li>
+
+    <li>If you don't have an IQFeed developer account, open <span class='private-file-name'>iqlink.exe</span> and then enter random numbers for the product id and version.
+<div class='cli section-example-container'>
+<pre>$ lean live \"My Project\"
+Product id: 123
 Product version: 1.0</pre>
 </div>
     </li>
