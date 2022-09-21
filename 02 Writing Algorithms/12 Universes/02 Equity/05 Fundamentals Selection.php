@@ -78,15 +78,15 @@ public class MyUniverseAlgorithm : QCAlgorithm {
 </pre>
 <pre class="python">
 class MyUniverseAlgorithm(QCAlgorithm):
-     def Initialize(self) -&gt; None:
-         self.AddUniverse(self.CoarseFilterFunction, self.FineFundamentalFunction)
+    def Initialize(self) -&gt; None:
+        self.AddUniverse(self.CoarseFilterFunction, self.FineFundamentalFunction)
 
     def CoarseFilterFunction(self, coarse: List[CoarseFundamental]) -&gt; List[Symbol]:
-         # In addition to further coarse universe selection, ensure the security has fundamental data
-         return [c.Symbol for c in coarse if c.HasFundamentalData]
+        # In addition to further coarse universe selection, ensure the security has fundamental data
+        return [c.Symbol for c in coarse if c.HasFundamentalData]
 
     def FineFundamentalFunction(self, fine: List[FineFundamental]) -&gt; List[Symbol]:
-         # Return a list of Symbols
+        # Return a list of Symbols
 </pre>
 </div>
 
