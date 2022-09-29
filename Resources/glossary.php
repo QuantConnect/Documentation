@@ -30,7 +30,7 @@ $definitionByTerm = array(
     "Treynor ratio" => "A measurement of the returns earned in an algorithm in excess of the risk-free rate per unit of benchmark risk, developed by Jack Treynor.",
     "unrealized" => "The amount of profit a portfolio would capture if it liquidated all open positions and paid the fees for transacting and crossing the spread.",
     "volume" => "The total value of assets traded for all of an algorithm's transactions.",
-    "win rate" => "The proportion of trades that were profitable."
+    "win rate" => "The proportion of trades that were profitable after transaction fees."
 );
     
 $getGlossaryTermHTML = function($term) use ($definitionByTerm)
