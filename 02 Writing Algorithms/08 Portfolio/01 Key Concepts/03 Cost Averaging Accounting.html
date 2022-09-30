@@ -8,3 +8,87 @@
 </ol>
 
 <p>In the preceding example, the average cost of your ABC position is (10*10 + 5*11 + 20*14 + 3*9) / (10 + 5 + 20 + 3) = $12.1579/share. In contrast, if you use the first-in, first-out (FIFO) accounting method, the cost of the first 10 shares is $10/share, not $12.1579/share.</p>
+
+<p>To get the cost of your security holdings, use the <code>HoldingsCost</code> property of the <a href="/docs/v2/writing-algorithms/portfolio/holdings">SecurityHolding object</a>. If you fill buy and sell orders, the holdings cost is a function of the average price of your holdings. The following table shows how the average price and holdings cost changes with each buy and sell order order in a long position:</p>
+
+<table class="qc-table table">
+    <thead>
+        <tr>
+            <th>Quantity</th>
+            <th>Fill Price ($)</th>
+            <th>Average Price ($)</th>
+            <th>Holdings Cost ($)</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+	    <td>2</td>
+            <td>10</td>
+            <td>(2 * 10) / 2 = 10</td>
+            <td>netQuantity * avgPrice = 2 * 10 = 20</td>
+        </tr>
+        <tr>
+	    <td>-1</td>
+            <td>11</td>
+            <td>(1 * 10) / 2 = 10</td>
+            <td>netQuantity * avgPrice = 1 * 10 = 10</td>
+        </tr>
+        <tr>
+	    <td>1</td>
+            <td>12</td>
+            <td>(1 * 10 + 1 * 12) / 2 = 11 <br></td>
+            <td>netQuantity * avgPrice = 2 * 11 = 22</td>
+        </tr>
+        <tr>
+	    <td>-2</td>
+            <td>13</td>
+            <td>0 <br></td>
+            <td>netQuantity * avgPrice = 0 * 0 = 0<br></td>
+        </tr>
+    </tbody>
+</table>
+
+<p>The following table shows how the average price and holdings cost changes with each buy and sell order order in a short position:
+
+</p><table class="qc-table table">
+    <thead>
+        <tr>
+            <th>Quantity</th>
+            <th>Fill Price ($)</th>
+            <th>Average Price ($)</th>
+            <th>Holdings Cost ($)</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+	    <td>-2</td>
+            <td>10</td>
+            <td>(-2 * 10) / -2 = 10</td>
+            <td>netQuantity * avgPrice = -2 * 10 = -20</td>
+        </tr>
+        <tr>
+	    <td>1</td>
+            <td>11</td>
+            <td>(-1 * 10) / -1 = 10</td>
+            <td>netQuantity * avgPrice = -1 * 10 = -10</td>
+        </tr>
+        <tr>
+	    <td>-1</td>
+            <td>12</td>
+            <td>(-1 * 10 - 1 * 12) / -2 = 11 <br></td>
+            <td>netQuantity * avgPrice = -2 * 11 = -22</td>
+        </tr>
+        <tr>
+	    <td>2</td>
+            <td>13</td>
+            <td>0</td>
+            <td>netQuantity * avgPrice = 0 * 0 = 0</td>
+        </tr>
+    </tbody>
+</table>
+
+<style>
+table th, td {
+    text-align: right;
+}
+</style>
