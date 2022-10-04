@@ -1,16 +1,31 @@
-<p>
-    To share code between Python projects, you can create library projects in the <span class="private-directory-name">Library</span> directory in to your <a href='/docs/v2/lean-cli/initialization/directory-structure#02-lean-init'>CLI root directory</a>.
-    For example, if you have a <span class="private-directory-name">Library/Logging</span> project with a <span class="private-directory-name">functions.py</span> file, you can import all its members in any other Python project using <code>from Logging.functions import *</code>.
-    Follow these steps to create a new library project:
-</p>
+<p>To create a Python library, open a terminal in your&nbsp;<a href="https://www.quantconnect.com/docs/v2/lean-cli/initialization/directory-structure#02-lean-init">CLI root directory</a> and then <a href="https://www.quantconnect.com/docs/v2/lean-cli/projects/project-management#02-Create-Projects">create a project</a> in the <span class="private-file-name">Library</span> directory.</p>
 
-<ol>
-    <li>Open a terminal in your CLI root directory.</li>
-    <li>Run <code>lean create-project --language python "Library/&lt;libraryName&gt;"</code> to create a new library project named <span class="private-directory-name">&lt;libraryName&gt;</span>.
+
 <div class="cli section-example-container">
-<pre>$ lean create-project --language python "Library/MyLibrary"
+<pre>$ lean create-project "Library/MyLibrary" --language python
 Successfully created Python project 'Library/MyLibrary'</pre>
 </div>
-        After running this command, you can import its members using <code>from &lt;libraryName&gt;.&lt;fileNameWithoutExtension&gt; import &lt;memberName&gt;</code> in any other Python project.
+
+<p>Follow these steps to use a Python library in a Python project:</p>
+
+<ol>
+    <li>Open a terminal in your <a href="https://www.quantconnect.com/docs/v2/lean-cli/initialization/directory-structure#02-lean-init">CLI root directory</a>.</li>
+    <li>Run <code>lean library add "&lt;projectName&gt;" "Library/&lt;libraryName&gt;"</code>.
+    <div class="cli section-example-container">
+<pre>$ lean library add "My Project" "Library/MyLibrary"
+Adding Lean CLI library D:\qc\lean-cli\Library\MyLibrary to project D:\qc\lean-cli\Library Test</pre>
+</div></li>
+
+    <li>In your project files, import the library class at the top of the page.
+
+<div class="section-example-container">
+<pre class="python">from MyLibrary.main import MyLibrary
+</pre></div>
+    </li>
+
+    <li>In your project files, instantiate the library class and call its methods.
+<div class="section-example-container">
+<pre class="python">x = MyLibrary()
+value = x.Add(1, 2)</pre></div>
     </li>
 </ol>
