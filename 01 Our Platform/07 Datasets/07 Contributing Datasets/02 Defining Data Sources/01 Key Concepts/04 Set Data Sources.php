@@ -39,7 +39,7 @@
     </tbody>
 </table>
 
-<p>Your data is hosted by QuantConnect. The <code>transportMedium</code> and the <code>format</code> must be <code>SubscriptionTransportMedium.LocalFile</code> and <code>FileFormat.Csv</code> respectively.</p>
+<p>QuantConnect hosts your data, so the <code>transportMedium</code> must be <code>SubscriptionTransportMedium.LocalFile</code> and the <code>format</code> must be <code>FileFormat.Csv</code>.</p>
 
 <p>The following table describes the arguments the <code>GetSource</code> method accepts:</p>
 
