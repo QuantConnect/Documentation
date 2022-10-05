@@ -18,9 +18,9 @@
         data_point = slice[self.ten_day_symbol]
         self.Log(f"{self.ten_day_symbol} rank at {slice.Time}: {data_point.Rank}")
 
-    if slice.ContainsKey(self.thirty_day_symbol):
-        data_point = slice[self.thirty_day_symbol]
-        self.Log(f"{self.thirty_day_symbol} rank at {slice.Time}: {data_point.Rank}")</pre>
+    if slice.ContainsKey(self.month_symbol):
+        data_point = slice[self.month_symbol]
+        self.Log(f"{self.month_symbol} rank at {slice.Time}: {data_point.Rank}")</pre>
 <pre class="csharp">public override void OnData(Slice slice)
 {
     if (slice.ContainsKey(_2DaySymbol))
@@ -47,10 +47,10 @@
         Log($"{_10DaySymbol} rank at {slice.Time}: {dataPoint.Rank}");
     }
 
-    if (slice.ContainsKey(_30DaySymbol))
+    if (slice.ContainsKey(_monthSymbol))
     {
-        var dataPoint = slice[_30DaySymbol];
-        Log($"{_30DaySymbol} rank at {slice.Time}: {dataPoint.Rank}");
+        var dataPoint = slice[_monthSymbol];
+        Log($"{_monthSymbol} rank at {slice.Time}: {dataPoint.Rank}");
     }
 }
 </pre>
@@ -72,7 +72,7 @@
     for dataset_symbol, data_point in slice.Get(BrainStockRanking10Day).items():
         self.Log(f"{dataset_symbol} rank at {slice.Time}: {data_point.Rank}")
 
-    for dataset_symbol, data_point in slice.Get(BrainStockRanking30Day).items():
+    for dataset_symbol, data_point in slice.Get(BrainStockRanking21Day).items():
         self.Log(f"{dataset_symbol} rank at {slice.Time}: {data_point.Rank}")
 </pre>
 <pre class="csharp">public override void OnData(Slice slice)
@@ -105,7 +105,7 @@
         Log($"{datasetSymbol} rank at {slice.Time}: {dataPoint.Rank}");
     }
 
-    foreach (var kvp in slice.Get&lt;BrainStockRanking30Day&gt;())
+    foreach (var kvp in slice.Get&lt;BrainStockRanking21Day&gt;())
     {
         var datasetSymbol = kvp.Key;
         var dataPoint = kvp.Value;
