@@ -15,19 +15,19 @@
         <tr>
             <td><code>source</code></td>
             <td><code>string</code></td>
-            <td>Data source location</td>
+            <td>Data source location. The path should be completely lowercase unless absolutely required. Don't use special characters in your output path, except <code>-</code> in directories names and <code>_</code> in file names.</td>
             <td></td>
         </tr>
         <tr>
             <td><code>transportMedium</code></td>
             <td><code>SubscriptionTransportMedium</code></td>
-            <td>The transport medium to be used to retrieve data from the source</td>
+            <td>The transport medium to be used to retrieve data from the source.</td>
             <td></td>
         </tr>
         <tr>
             <td><code>format</code></td>
             <td><code>FileFormat</code></td>
-            <td>The format of the data within the source</td>
+            <td>The format of the data within the source.</td>
             <td><code>FileFormat.Csv</code></td>
         </tr>
         <tr>
