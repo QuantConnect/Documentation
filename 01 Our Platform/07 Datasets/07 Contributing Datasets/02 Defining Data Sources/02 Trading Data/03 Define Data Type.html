@@ -1,4 +1,4 @@
-<p>Follow these steps to define the <code>DataSource</code> class that inherits the <code>BaseData</code> class and override the <a href="/docs/v2/our- platform/datasets/contributing-datasets/defining-data-sources/key-concepts#04-Set-Data-Sources">GetSource</a> and <a href="/docs/v2/our- platform/datasets/contributing-datasets/defining-data-sources/key-concepts#05-Parse-Custom-Data">Reader</a> methods:</p>
+<p>Follow these steps to define the <code>DataSource</code> class:</p>
 
 <ol>
     <li>Open the <span class="private-file-name">Lean.DataSource.&lt;vendorNameDatasetName&gt;/&lt;vendorNameDatasetName&gt;.cs</span> file.</li>
@@ -6,7 +6,7 @@
     <ol>
         <li>Duplicate lines 32-36 for as many properties as there are in your dataset.</li>
         <li>Rename the <code>SomeCustomProperty</code> properties to the names of your dataset properties (for example, <code>Destination</code>).</li>
-        <li>If your dataset is a streaming dataset like the <a href='/datasets/benzinga-news-feed'>Benzinga News Feed</a>, change the argument that is passed to the <code>ProtoMember</code> members so that they start at 10 and increment by one for each additional property in your dataset.</li>
+        <li>If your dataset is a streaming dataset like the <a href="/datasets/benzinga-news-feed">Benzinga News Feed</a>, change the argument that is passed to the <code>ProtoMember</code> members so that they start at 10 and increment by one for each additional property in your dataset.</li>
         <li>If your dataset isn't a streaming dataset, delete the <code>ProtoMember</code> members.</li>
         <li>Replace the “Some custom data property” comments with a description of each property in your dataset.</li>
     </ol>
@@ -20,19 +20,14 @@
     <p>An example output file path is <span class="private-file-name">/output/alternative/xyzairline/ticketsales/dal.csv</span>.</p>
     <li>Define the <code>Reader</code> method to return instances of your dataset class.</li>
     <p>You need to set <code>Symbol = config.Symbol</code> and set <code>EndTime</code> to the time that the datapoint first became available for consumption.</p>
-    <li>Define the <code>Clone</code> method to clone all of your dataset properties.</li>
-    <li>Define the <code>RequiresMapping</code> method to return <code>true</code> if your dataset is related to Equities, <code>false</code> otherwise.</li>
-    <p>Your dataset is related to Equities if any of the following statements are true:</p>
-    <ul>
-        <li>Your dataset describes market price properties of specific Equities (for example, the closing price of AAPL).</li>
-        <li>Your alternative dataset is linked to individual Equities (for example, the Wikipedia page view count of AAPL).</li>
-    </ul>
-    <p>If your dataset is not linked to a specific Equity (for example, if your dataset contains the weather of New York City), then your dataset is not related to Equities.</p>
-    <li>Define the <code>IsSparseData</code> method to return <code>true</code> if your dataset is sparse, <code>false</code> otherwise.</li>
-    <p>If your dataset is not tick resolution and your dataset is missing data for at least one sample, it is sparse.</p>
-    <li>Define the <code>DefaultResolution</code> method to return the default resolution of your data.</li>
-    <p>If a member does not specify a resolution when they subscribe to your dataset, Lean uses the <code>DefaultResolution</code>.</p>
-    <li>Define the <code>SupportedResolutions</code> method to return a list of resolutions that your dataset supports.</li>
-    <li>Define the <code>DataTimeZone</code> method to return the timezone of your dataset.</li>
-    <li>Define the <code>ToString</code> method to return a string that contains the values of your dataset properties and is easy to read.</li>
+    <li>Define the following methods of your dataset class:</li>
+        <ul>
+            <li><a href="/docs/v2/our-platform/datasets/contributing-datasets/defining-data-sources/key-concepts#06-Resolutions">DefaultResolution</a></li>
+            <li><a href="/docs/v2/our-platform/datasets/contributing-datasets/defining-data-sources/key-concepts#06-Resolutions">SupportedResolutions</a></li>
+            <li><a href="/docs/v2/our-platform/datasets/contributing-datasets/defining-data-sources/key-concepts#06-Resolutions">IsSparseData</a></li>
+            <li><a href="/docs/v2/our-platform/datasets/contributing-datasets/defining-data-sources/key-concepts#07-Time-Zones">DataTimeZone</a></li>
+            <li><a href="/docs/v2/our-platform/datasets/contributing-datasets/defining-data-sources/key-concepts#08-Linked-Datasets">RequiresMapping</a></li>
+            <li><a href="/docs/v2/our-platform/datasets/contributing-datasets/defining-data-sources/key-concepts#09-String-Representations">ToString</a></li>
+            <li><a href="/docs/v2/our-platform/datasets/contributing-datasets/defining-data-sources/key-concepts#10-Clone-Objects">Clone</a></li>
+        </ul>
 </ol>
