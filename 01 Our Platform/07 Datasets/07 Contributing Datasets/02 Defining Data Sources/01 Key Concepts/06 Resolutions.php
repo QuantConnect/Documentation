@@ -31,3 +31,23 @@
 
 <p>The following snippet provides an example implementation of the preceding methods:</p>
 
+<div class="section-example-container">
+    <pre>public class VendorNameDatasetName : BaseData
+{
+    public override List&lt;Resolution&gt; SupportedResolutions()
+    {
+        return DailyResolution;
+    }
+
+    public override Resolution DefaultResolution()
+    {
+        return Resolution.Daily;
+    }
+
+    public override bool IsSparseData()
+    {
+        return true;
+    }
+}</pre>
+</div>
+
