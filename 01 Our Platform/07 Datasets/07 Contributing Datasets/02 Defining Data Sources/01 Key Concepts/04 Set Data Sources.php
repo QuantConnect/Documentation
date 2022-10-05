@@ -15,7 +15,7 @@
         <tr>
             <td><code>source</code></td>
             <td><code>string</code></td>
-            <td>Data source location. The path should be completely lowercase unless absolutely required. Don't use special characters in your output path, except <code>-</code> in directories names and <code>_</code> in file names.</td>
+            <td>Data source location. The path should be completely lowercase unless absolutely required. Don't use special characters in your output path, except <code>-</code> in directories names and <code>_</code> in file names. Your output file(s) must be in CSV format.</td>
             <td></td>
         </tr>
         <tr>
