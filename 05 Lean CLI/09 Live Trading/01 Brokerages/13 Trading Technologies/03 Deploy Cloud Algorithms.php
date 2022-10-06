@@ -2,7 +2,7 @@
 include(DOCS_RESOURCES."/brokerages/cli-deployment/deploy-cloud-algorithms.php");
 
 $brokerageDetails = "
-<li>Enter your Trading Technolgoies credentials.
+<li>Enter your Trading Technologies credentials.
 <div class='cli section-example-container'>
 <pre>$ lean cloud live \"My Project\" --push --open
 User name: john
