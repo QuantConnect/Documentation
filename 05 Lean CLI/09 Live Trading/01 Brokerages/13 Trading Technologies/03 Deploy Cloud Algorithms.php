@@ -11,7 +11,7 @@ Account name: jane</pre></div>
 </li>
 
 
-<li>Enter the REST configuration
+<li>Enter the REST configuration.
 <div class='cli section-example-container'>
 <pre>$ lean cloud live \"My Project\" --push --open
 REST app key: my-rest-app-key
