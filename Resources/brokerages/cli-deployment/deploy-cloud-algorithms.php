@@ -1,5 +1,5 @@
 <?php
-$getDeployCloudAlgorithmsText = function($brokerageName, $isSupported, $brokerageDetails=null) {
+$getDeployCloudAlgorithmsText = function($brokerageName, $isSupported, $brokerageDetails=null, $supportsCashHoldings=false) {
 
     if (!$isSupported) {
 
@@ -83,9 +83,27 @@ Do you want to add another notification method? [y/N]: n</pre>
 Do you want to enable automatic algorithm restarting? [Y/n]: y</pre>
 </div>
             </li>
-
-
-
+    ";
+    
+    if ($supportsCashHoldings)
+    {
+        echo "
+            <li>Set your initial cash balance.</li>
+            <div class='cli section-example-container'>
+<pre>$ lean cloud live \"My Project\" --push --open
+Previous cash balance: [{'currency': 'USD', 'amount': 100000.0}]
+Do you want to set a different initial cash balance? [y/N]: y
+Setting initial cash balance...
+Currency: USD
+Amount: 95800
+Cash balance: [{'currency': 'USD', 'amount': 95800.0}]
+Do you want to add more currency? [y/N]: n</pre>
+</div>
+        ";
+    }
+    
+    
+    echo "
             <li>Verify the configured settings and confirm them to start the live deployment in the cloud.
             <div class='cli section-example-container'>
 <pre>$ lean cloud live \"My Project\" --push --open
