@@ -28,5 +28,7 @@ Order routing sender comp id: </pre></div>
 </li>
 ";
 
-$getDeployCloudAlgorithmsText("Trading Technologies", true, $brokerageDetails);
+$supportsCashHoldings = true;
+
+$getDeployCloudAlgorithmsText("Trading Technologies", true, $brokerageDetails, $supportsCashHoldings);
 ?>
