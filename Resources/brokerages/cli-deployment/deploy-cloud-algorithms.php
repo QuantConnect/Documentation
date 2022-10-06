@@ -88,7 +88,7 @@ Do you want to enable automatic algorithm restarting? [Y/n]: y</pre>
     if ($supportsCashHoldings)
     {
         echo "
-            <li>Set your initial cash balance.</li>
+            <li>Set your initial cash balance.
             <div class='cli section-example-container'>
 <pre>$ lean cloud live \"My Project\" --push --open
 Previous cash balance: [{'currency': 'USD', 'amount': 100000.0}]
@@ -98,7 +98,7 @@ Currency: USD
 Amount: 95800
 Cash balance: [{'currency': 'USD', 'amount': 95800.0}]
 Do you want to add more currency? [y/N]: n</pre>
-</div>
+</div></li>
         ";
     }
     
