@@ -119,7 +119,15 @@ Insight notifications: Yes
 Email notifications: john.doe@example.com
 Webhook notifications: None
 SMS notifications: None
-Telegram notifications: None
+Telegram notifications: None";
+    
+    if ($supportsCashHoldings)
+    {
+        echo "
+Initial live cash balance: [{'currency': 'USD', 'amount': 95800.0}]";
+    }
+    
+    echo "
 Automatic algorithm restarting: Yes
 Are you sure you want to start live trading for project 'My Project'? [y/N]: y</pre>
 </div>
