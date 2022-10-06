@@ -29,8 +29,9 @@ Select a brokerage:
 7) Binance
 8) Zerodha
 9) Samco
-10) Kraken
-11) FTX
+10) Trading Technologies
+11) Kraken
+12) FTX
 Enter an option:</pre>
 </div>
             </li>
