@@ -150,7 +150,7 @@ Project url: https://www.quantconnect.com/project/1234567
 Live status: Running
 Live id: L-1234567a8901d234e5e678ddd9b0123c
 Live url: https://www.quantconnect.com/project/1234567/live
-Brokerage: Paper Trading
+Brokerage: {$brokerageName}
 Launched: 2021-06-09 15:10:12 UTC</pre>
             </div>
             </li>
