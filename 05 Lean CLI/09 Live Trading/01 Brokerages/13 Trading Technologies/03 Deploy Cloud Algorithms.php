@@ -2,18 +2,28 @@
 include(DOCS_RESOURCES."/brokerages/cli-deployment/deploy-cloud-algorithms.php");
 
 $brokerageDetails = "
-<li>Enter your TT user name, session password, account name, app key, app secret, environment, and routing sender.
-
+<li>Enter your Trading Technolgoies credentials.
 <div class='cli section-example-container'>
 <pre>$ lean cloud live \"My Project\" --push --open
-User name:
-Session password: 
-Account name: 
-REST app key:
-REST app secret:
-REST environment:
-Order routing sender comp id: </div>
+User name: john
+Session password: ****************
+Account name: jane</pre></div>
+</li>
 
+
+<li>Enter the REST configuration
+<div class='cli section-example-container'>
+<pre>$ lean cloud live \"My Project\" --push --open
+REST app key: my-rest-app-key
+REST app secret: ******************
+REST environment: my-environment</pre></div>
+</li>
+
+
+<li>Enter the order routing configuration.
+<div class='cli section-example-container'>
+<pre>$ lean cloud live \"My Project\" --push --open
+Order routing sender comp id: </pre></div>
 <p>Our TT integration routes orders via the TT FIX 4.4 Connection. <a rel='nofollow' target='_blank' href='https://www.tradingtechnologies.com/contact/'>Contact your TT representative</a> to set the exchange where you would like your orders sent. Your account details are not saved on QuantConnect.</p>
 </li>
 ";
