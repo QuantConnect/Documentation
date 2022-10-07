@@ -175,7 +175,7 @@ all_history_open_interest = qb.History[OpenInterest](qb.Securities.Keys, timedel
 
     echo "
 <h4>Defined Period of Time</h4>
-<p>To get historical data for individual {$assetClass} contracts during a specific period of time, call the <code>History</code> method with the {$assetClass} contract <code>Symbol</code> object(s), a start  <code class='csharp'>DateTime</code><code class='python'>datetime</code>, and an end <code class='csharp'>DateTime</code><code class='python'>datetime</code>.</p>
+<p>To get historical data for individual {$assetClass} contracts during a specific period of time, call the <code>History</code> method with the {$assetClass} contract <code>Symbol</code> object(s), a start  <code class='csharp'>DateTime</code><code class='python'>datetime</code>, and an end <code class='csharp'>DateTime</code><code class='python'>datetime</code>.  The start and end times you provide are based in the <a href='/docs/v2/research-environment/initialization#04-Set-Time-Zone'>notebook time zone</a>.</p>
 
 <div class='section-example-container'>
     <pre class='csharp'>var startTime = new DateTime(2021, 12, 1);
