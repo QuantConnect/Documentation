@@ -17,7 +17,7 @@ $getOrdersText = function($isLiveMode) {
             <li>Option contract exercising</li>
         </ul>
         
-        <p>In the IDE, the timestamps of the orders are based in Eastern Time (ET).</p>
+        <p>The timestamps in the Order Summary table are based in Eastern Time (ET).</p>
 
         <h4>Download CSV</h4>
         <p>To download the orders in CSV format, open the {$pageName} results page, click the <span class='tab-name'>Orders</span> tab, and then click <span class='button-name'>Download Orders</span>. The content of the CSV file is the content displayed in the Orders Summary table when the table rows are collapsed.
