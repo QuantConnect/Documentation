@@ -29,6 +29,6 @@ $getOrdersText = function($isLiveMode) {
         ";
     }
 
-    echo "When you download the orders CSV, the timestamps of the orders are based in Coordinated Universal Time (UTC).</p>";
+    echo "The timestamps in the CSV and JSON file are based in Coordinated Universal Time (UTC).</p>";
 }
 ?>
