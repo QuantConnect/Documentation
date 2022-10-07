@@ -31,7 +31,7 @@ namespace QuantConnect.Tests
     /// </summary>
     public class Program
     {
-        private static readonly string _path = "..";
+        private static readonly string _path = "C:\\Users\\Alex\\Documentation";
         private static readonly string _root = "https://www.quantconnect.com/";
         private static Dictionary<string, List<string>> _urlFiles = new();
         private static bool _errorFlag = false;
@@ -57,7 +57,9 @@ namespace QuantConnect.Tests
         /// <return>A dictionary with url as key and list of files containing the url as values</return>
         private static void GetAllUrls()
         {
-            var allFiles = Directory.GetFiles(_path, "*.*", SearchOption.AllDirectories);
+            var allFiles = Directory.GetFiles(_path, "*.*", SearchOption.AllDirectories)
+                    // Exclude Documentation Updates since it may include broken links
+                    .Where(x => !x.EndsWith("Documentation Updates.html")).ToList();
 
             foreach(var file in allFiles)
             {
@@ -70,7 +72,7 @@ namespace QuantConnect.Tests
                         {
                             var url = href.Split('\"').First();
 
-                            if (url.Contains('{') || url.Contains('}')) continue;
+                            if (string.IsNullOrWhiteSpace(url) || url.Contains('{') || url.Contains('}')) continue;
 
                             if (!url.Contains("http"))
                             {
