@@ -31,7 +31,7 @@ namespace QuantConnect.Tests
     /// </summary>
     public class Program
     {
-        private static readonly string _path = "C:\\Users\\Alex\\Documentation";
+        private static readonly string _path = "..";
         private static readonly string _root = "https://www.quantconnect.com/";
         private static Dictionary<string, List<string>> _urlFiles = new();
         private static bool _errorFlag = false;
