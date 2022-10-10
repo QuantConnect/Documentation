@@ -4,5 +4,6 @@ $createSubscriptionsLink = "/docs/v2/research-environment/datasets/futures#03-Cr
 $assetClass = "Futures";
 $underlyingSymbolVariable = "future.Symbol";
 $underlyingAssetClass = "";
-$getHistoricalDataText($createSubscriptionsLink, $assetClass, $underlyingSymbolVariable, $underlyingAssetClass);
+$supportsTicks = true;
+$getHistoricalDataText($createSubscriptionsLink, $assetClass, $underlyingSymbolVariable, $underlyingAssetClass, $supportsTicks);
 ?>
