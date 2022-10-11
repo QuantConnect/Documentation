@@ -1,5 +1,5 @@
 <?php
-$getDeployLocalAlgorithmsText = function($brokerageName, $dataFeedName, $isBrokerage, $brokerageDetails, $dataFeedDetails, $supportsIQFeed, $requiresSubscription, $moduleName="", $supportsCashHoldings=false) {
+$getDeployLocalAlgorithmsText = function($brokerageName, $dataFeedName, $isBrokerage, $brokerageDetails, $dataFeedDetails, $supportsIQFeed, $requiresSubscription, $moduleName="", $supportsCashHoldings=false, $supportedPositionHoldings=false) {
 
     echo "<p>Follow these steps to start local live trading with the ";
 
@@ -100,8 +100,27 @@ Setting initial cash balance...
 Currency: USD
 Amount: 95800
 Cash balance: [{'currency': 'USD', 'amount': 95800.0}]
-Do you want to add more currency? [y/N]: n
-</pre>
+Do you want to add more currency? [y/N]: n</pre>
+            </div>
+            </li>
+        
+        ";
+    }
+    
+    if ($supportedPositionHoldings)
+    {
+        echo "<li>Set your initial portfolio holdings.
+                <div class='cli section-example-container'>
+                <pre>$ lean live \"My Project\"
+Do you want to set the initial portfolio holdings? [y/N]: y
+Do you want to use the last portfolio holdings? [] [y/N]: n
+Setting custom initial portfolio holdings...
+Symbol: GOOG
+Symbol ID: GOOCV VP83T1ZUHROL
+Quantity: 10
+Average Price: 50
+Portfolio Holdings: [{'symbol': 'GOOG', 'symbolId': 'GOOCV VP83T1ZUHROL', 'quantity': 10, 'averagePrice': 50.0}]
+Do you want to add more holdings? [y/N]: n</pre>
             </div>
             </li>
         
