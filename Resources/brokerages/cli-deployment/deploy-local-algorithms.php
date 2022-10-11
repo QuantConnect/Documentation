@@ -87,6 +87,8 @@ To enter multiple options, separate them with comma.:</pre>
         ";
     }
 
+    echo $dataFeedDetails;
+    
     if ($supportsCashHoldings)
     {
         echo "<li>Set your initial cash balance.
@@ -105,8 +107,6 @@ Do you want to add more currency? [y/N]: n
         
         ";
     }
-    
-    echo $dataFeedDetails;
     
     echo "
             <li>
