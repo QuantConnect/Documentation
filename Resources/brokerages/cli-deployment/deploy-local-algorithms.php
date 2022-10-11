@@ -1,5 +1,5 @@
 <?php
-$getDeployLocalAlgorithmsText = function($brokerageName, $dataFeedName, $isBrokerage, $brokerageDetails, $dataFeedDetails, $supportsIQFeed, $requiresSubscription, $moduleName="") {
+$getDeployLocalAlgorithmsText = function($brokerageName, $dataFeedName, $isBrokerage, $brokerageDetails, $dataFeedDetails, $supportsIQFeed, $requiresSubscription, $moduleName="", $supportsCashHoldings=false) {
 
     echo "<p>Follow these steps to start local live trading with the ";
 
@@ -87,8 +87,27 @@ To enter multiple options, separate them with comma.:</pre>
         ";
     }
 
+    if ($supportsCashHoldings)
+    {
+        echo "<li>Set your initial cash balance.
+                <div class='cli section-example-container'>
+                <pre>$ lean live \"My Project\"
+Previous cash balance: [{'currency': 'USD', 'amount': 100000.0}]
+Do you want to set a different initial cash balance? [y/N]: y 
+Setting initial cash balance...
+Currency: USD
+Amount: 95800
+Cash balance: [{'currency': 'USD', 'amount': 95800.0}]
+Do you want to add more currency? [y/N]: n
+</pre>
+            </div>
+            </li>
+        
+        ";
+    }
+    
     echo $dataFeedDetails;
-
+    
     echo "
             <li>
                 View the result in the <span class='private-directory-name'>&lt;projectName&gt;/live/&lt;timestamp&gt;</span> directory.
