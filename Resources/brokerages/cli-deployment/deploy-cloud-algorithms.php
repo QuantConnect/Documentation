@@ -1,5 +1,5 @@
 <?php
-$getDeployCloudAlgorithmsText = function($brokerageName, $isSupported, $brokerageDetails=null, $supportsCashHoldings=false) {
+$getDeployCloudAlgorithmsText = function($brokerageName, $isSupported, $brokerageDetails=null, $supportsCashHoldings=false, $supportsPositionHoldings=false) {
 
     if (!$isSupported) {
 
@@ -102,6 +102,25 @@ Do you want to add more currency? [y/N]: n</pre>
         ";
     }
     
+    if ($supportsPositionHoldings)
+    {
+        echo "
+            <li>Set your initial portfolio holdings.
+            <div class='cli section-example-container'>
+<pre>$ lean cloud live \"My Project\" --push --open
+Do you want to set the initial portfolio holdings? [y/N]: y
+Do you want to use the last portfolio holdings? [] [y/N]: n
+Setting custom initial portfolio holdings...
+Symbol: GOOG
+Symbol ID: GOOCV VP83T1ZUHROL
+Quantity: 10
+Average Price: 50
+Portfolio Holdings: [{'symbol': 'GOOG', 'symbolId': 'GOOCV VP83T1ZUHROL', 'quantity': 10, 'averagePrice': 50.0}]
+Do you want to add more holdings? [y/N]: n</pre>
+</div></li>
+        ";
+    }
+    
     
     echo "
             <li>Verify the configured settings and confirm them to start the live deployment in the cloud.
@@ -125,6 +144,12 @@ Telegram notifications: None";
     {
         echo "
 Initial live cash balance: [{'currency': 'USD', 'amount': 95800.0}]";
+    }
+    
+    if ($supportsPositionHoldings)
+    {
+        echo "
+Initial live portfolio holdings: [{'symbol': 'GOOG', 'symbolId': 'GOOCV VP83T1ZUHROL', 'quantity': 10, 'averagePrice': 50.0}]";
     }
     
     echo "
