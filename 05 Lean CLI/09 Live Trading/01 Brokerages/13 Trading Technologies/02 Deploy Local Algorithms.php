@@ -54,6 +54,7 @@ $dataFeedDetails = "";
 
 $supportsIQFeed = true;
 $requiresSubscription = true;
-
-$getDeployLocalAlgorithmsText($brokerageName, $dataFeedName, $isBrokerage, $brokerageDetails, $dataFeedDetails, $supportsIQFeed, $requiresSubscription);
+$moduleName = "";
+$supportsCashHoldings = true;
+$getDeployLocalAlgorithmsText($brokerageName, $dataFeedName, $isBrokerage, $brokerageDetails, $dataFeedDetails, $supportsIQFeed, $requiresSubscription, $moduleName, $supportsCashHoldings);
 ?>
