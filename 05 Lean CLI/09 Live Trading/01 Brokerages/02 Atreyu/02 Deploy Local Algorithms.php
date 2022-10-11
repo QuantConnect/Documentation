@@ -40,6 +40,8 @@ Locate rqd:</pre>
 $dataFeedDetails = "";
 $supportsIQFeed = true;
 $requiresSubscription = true;
+$moduleName = "";
+$supportsCashHoldings = true;
 
-$getDeployLocalAlgorithmsText($brokerageName, $dataFeedName, $isBrokerage, $brokerageDetails, $dataFeedDetails, $supportsIQFeed, $requiresSubscription);
+$getDeployLocalAlgorithmsText($brokerageName, $dataFeedName, $isBrokerage, $brokerageDetails, $dataFeedDetails, $supportsIQFeed, $requiresSubscription, $moduleName, $supportsCashHoldings);
 ?>
