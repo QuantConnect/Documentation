@@ -125,7 +125,6 @@ var tradeBars = {$cVar}History&lt;TradeBar&gt;(btcSymbol, TimeSpan.FromDays(3), 
 var quoteBars = {$cVar}History&lt;QuoteBar&gt;(btcSymbol, TimeSpan.FromDays(3), Resolution.Minute);
 var ticks = {$cVar}History&lt;Tick&gt;(ethSymbol, TimeSpan.FromDays(3), Resolution.Tick);
 var tradeBars2 = {$cVar}History(btcSymbol, TimeSpan.FromDays(3), Resolution.Minute);</pre>
-</div>
 
 
 <pre class='python'><b># EXAMPLE 5: Requesting By a Defined Period: 3 days of data at the security resolution:</b> 
