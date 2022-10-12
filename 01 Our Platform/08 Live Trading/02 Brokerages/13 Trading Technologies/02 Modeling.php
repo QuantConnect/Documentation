@@ -1,0 +1,16 @@
+<p>The <code>TradingTechnologiesBrokerageModel</code> does not have specific modeling for fees and slippage because TT is not a real brokerage. In live trading, TT reports the total fees of your orders after each order fill. Pass a different <code>BrokerageName</code> to <code>SetBrokerageModel</code> to backtest your algorithm with fee and slippage modeling. The brokerage model you set should support the asset classes and orders in your algorithm.</p>
+
+<?php echo file_get_contents(DOCS_RESOURCES."/brokerages/set-brokerage-model/trading-technologies.html"); ?>
+
+
+<h4>Create an Account</h4>
+<p>Follow the <a rel='nofollow' target='_blank' href='https://id.tradingtechnologies.com/register'>account creation wizard</a> on the TT website to create a TT account.</p>
+
+
+<h4>Paper Trading</h4>
+<p>Our TT integration does not support paper trading through the TT Simulation environment, but you can follow these steps to simulate it:</p>
+
+<ol>
+    <li>In the <code>Initialize</code> method of your algorithm, add one of the preceding <code>SetBrokerageModel</code> method calls.</li>
+    <li><a href='/docs/v2/our-platform/live-trading/brokerages/quantconnect-paper-trading#14-Deploy-Live-Algorithms'>Deploy your algorithm with the QuantConnect Paper Trading brokerage</a>.</li>
+</ol>
