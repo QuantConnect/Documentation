@@ -40,4 +40,4 @@ $overwriteCodeC = "security.SetFillModel(new ImmediateFillModel());";
 $getBrokerageModelInitCodeBlock($overwriteCodePy, $overwriteCodeC);
 ?>
 
-<p>To view all the pre-built fill models, see Supported Models.</p>
+<p>To view all the pre-built fill models, see <a href='/docs/v2/writing-algorithms/reality-modeling/trade-fills/supported-models'>Supported Models</a>.</p>
