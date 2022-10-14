@@ -8,4 +8,4 @@ echo file_get_contents(DOCS_RESOURCES."/universes/option/option-filter-universe.
 echo file_get_contents(DOCS_RESOURCES."/universes/option/filter-examples.html"); 
 ?>
 
-<p>By default, LEAN adds contracts to the <code>OptionChain</code> that pass the filter criteria at every time step in your algorithm. In backtests, if a contract in the chain doesn't pass the filter criteria, LEAN removes it from the chain at the start of the next day. In live trading, LEAN removes these contracts from the chain every 15 minutes.</p>
+<p>By default, LEAN adds contracts to the <code>OptionChain</code> that pass the filter criteria at every time step in your algorithm. If a contract has been in the universe for a duration that matches the <code>MinimumTimeInUniverse</code> <a href='/docs/v2/writing-algorithms/universes/key-concepts#05-Universe-Settings'>setting</a> and it no longer passes the filter criteria, LEAN removes it from the chain.</p>
