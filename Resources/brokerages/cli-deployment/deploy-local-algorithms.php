@@ -70,12 +70,11 @@ Select a data feed:
 7) Zerodha
 8) Samco
 9) Terminal Link
-10) Trading Technologies
-11) Kraken
-12) FTX
-13) IQFeed
-14) Polygon Data Feed
-15) Custom data only
+10) Kraken
+11) FTX
+12) IQFeed
+13) Polygon Data Feed
+14) Custom data only
 To enter multiple options, separate them with comma.:</pre>
             </div>
             </li>";
