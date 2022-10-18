@@ -75,6 +75,7 @@ cloud_added = {
 
 if not path.isfile("../Lean/QuantConnect.Lean.sln"):
     popen("git clone https://github.com/QuantConnect/Lean.git ../Lean").close()
+    popen("dotnet restore ../Lean/QuantConnect.Lean.sln").close()
 
 for j, filename in enumerate(filenames):
     with open(filename, mode='w', encoding='utf-8') as fp:
