@@ -1,4 +1,4 @@
-from os import popen
+from os import path, popen
 
 CMD = {
     'csharp': ["dotnet list ../Lean/QuantConnect.Lean.sln package",
@@ -72,6 +72,9 @@ cloud_added = {
     "TensorFlow.Keras": "0.7.0",
     "TensorFlow.NET": "0.70.1"
 }
+
+if not path.isfile("../Lean/QuantConnect.Lean.sln"):
+    popen("git clone https://github.com/QuantConnect/Lean.git ../Lean").close()
 
 for j, filename in enumerate(filenames):
     with open(filename, mode='w', encoding='utf-8') as fp:
