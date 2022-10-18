@@ -1,4 +1,39 @@
-<div class="section-example-container"><pre class="csharp"># Name Version
+<div class="section-example-container"><pre class="csharp"># Name                               Version
+Accord                               3.6.0
+Accord.Fuzzy                         3.6.0
+Accord.MachineLearning               3.6.0
+Accord.Math                          3.6.0
+Accord.Statistics                    3.6.0
+CloneExtensions                      1.3.0
+CoinAPI.WebSocket.V1                 1.6.7
+Common.Logging                       3.4.1
+Common.Logging.Core                  3.4.1
+CsvHelper                            19.0.0
+Deedle                               2.1.0
+DotNetZip                            1.16.0
+DynamicInterop                       0.9.1
+fasterflect                          3.0.0
+FSharp.Core                          4.5.2
+IQFeed.CSharpApiClient               2.5.1
+LaunchDarkly.EventSource             3.3.2
+MathNet.Numerics                     4.15.0
+McMaster.Extensions.CommandLineUtils 2.6.0
+Microsoft.IO.RecyclableMemoryStream  2.2.0
+Microsoft.NET.Test.Sdk               16.9.4
+Microsoft.TestPlatform.ObjectModel   16.9.4
+Moq                                  4.16.1
+NetMQ                                4.0.1.6
+Newtonsoft.Json                      12.0.3
+NodaTime                             3.0.5
+NUnit                                3.13.3
+NUnit3TestAdapter                    4.2.1
+protobuf-net                         3.0.29
+QLNet                                1.12.0
+QuantConnect.pythonnet               2.0.17
+R.NET                                1.9.0
+RestSharp                            106.12.0
+SharpZipLib                          1.3.3
+System.ComponentModel.Composition    6.0.0
 </pre><pre class="python"># Name                  Version
 absl-py                 0.15.0
 alphapy                 2.5.0
