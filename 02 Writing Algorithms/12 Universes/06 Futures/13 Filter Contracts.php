@@ -66,4 +66,4 @@ def contract_selector(self,
 </div>
 
 
-<p>By default, LEAN adds contracts to the <code>FutureChain</code> that pass the filter criteria at every time step in your algorithm. If a contract has been in the universe for a duration that matches the <code>MinimumTimeInUniverse</code> <a href='/docs/v2/writing-algorithms/universes/key-concepts#05-Universe-Settings'>setting</a> and it no longer passes the filter criteria, LEAN removes it from the chain</p>
+<p>By default, LEAN adds contracts to the <code>FutureChain</code> that pass the filter criteria at every time step in your algorithm. If a contract has been in the universe for a duration that matches the <code>MinimumTimeInUniverse</code> <a href='/docs/v2/writing-algorithms/universes/settings#02-Properties'>setting</a> and it no longer passes the filter criteria, LEAN removes it from the chain</p>
