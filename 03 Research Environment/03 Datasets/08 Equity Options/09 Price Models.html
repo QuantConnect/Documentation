@@ -33,7 +33,6 @@ for slice in history:
         # Create the Option contract
         contract = OptionContract.Create(symbol, symbol.Underlying, bar.EndTime, security, underlying_price)
         contract.LastPrice = bar.Close
-        lastPrice = contract.LastPrice
 
         # Evaluate the price model to get the IV, Greeks, and theoretical price
         result = security.PriceModel.Evaluate(security, None, contract)
@@ -47,7 +46,7 @@ for slice in history:
             "Vega": greeks.Vega,
             "Rho": greeks.Rho,
             "Theta": greeks.Theta,
-            "LastPrice": lastPrice,
+            "LastPrice": contract.LastPrice,
             "Close": security.Close,
             "theoreticalPrice" : result.TheoreticalPrice,
             "underlyingPrice": underlying_price,
