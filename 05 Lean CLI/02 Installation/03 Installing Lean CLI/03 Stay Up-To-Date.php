@@ -1,13 +1,8 @@
-<p>
-    We regularly update the CLI to add new features and to fix issues.
-    It is therefore important to keep both the CLI and the Docker images that the CLI uses up-to-date.
-</p>
-
-<h4>Keep the CLI Up-To-Date</h4>
-<p>
-    Run <code>pip install --upgrade lean</code> to update the CLI to the latest version.
-    The CLI automatically performs a version check once a day and warns you in case you are running an outdated version.
-</p>
+<?php
+include(DOCS_RESOURCES."/cli/install/cli/stay-up-to-date.php");
+$isCLIDocs = true;
+$getInstallText($isCLIDocs);
+?>
 
 <h4>Keep the Docker Images Up-To-Date</h4>
 <p>
