@@ -1,7 +1,7 @@
 <?php
 include(DOCS_RESOURCES."/cli/install/cli/stay-up-to-date.php");
 $isCLIDocs = true;
-$getInstallText($isCLIDocs);
+$getUpdateText($isCLIDocs);
 ?>
 
 <h4>Keep the Docker Images Up-To-Date</h4>
