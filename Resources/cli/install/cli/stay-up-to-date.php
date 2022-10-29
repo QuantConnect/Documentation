@@ -21,3 +21,4 @@ $getUpdateText = function($isCLIDocs)
 	";
 }
 ?>
+
