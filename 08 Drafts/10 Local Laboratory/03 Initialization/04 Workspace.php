@@ -12,7 +12,7 @@ $isCLIDocs = false;
 $getStructureText($isCLIDocs);
 ?>
 
-<h4>Create a Workspace</h4>
+<h4>Set the Initial Workspace</h4>
 
 <p>Follow these steps to create and set the initial workspace directory:</p>
 <ol>
