@@ -36,7 +36,7 @@ $getWSLText($isCLIDocs);
 <h4>Change the Workspace</h4>
 <p>Follow these steps to change the workspace directory:</p>
 
-<ul>
+<ol>
     <li><a href="/docs/v2/drafts/local-laboratory/initialization#02-Log-In">Log in to the Local Lab</a>.</li>
     <li>In the left navigation bar, click <img class="inline-icon" src="https://cdn.quantconnect.com/i/tu/local-lab-projects-tab.jpg"> <span class="icon-name">Project</span>.</li>
     <li>If a project is already open, in the Project panel, click <span class='button-name'>Close</span>.</li>
@@ -44,6 +44,6 @@ $getWSLText($isCLIDocs);
     <img class='docs-image' src='https://cdn.quantconnect.com/i/tu/local-labe-starting-project-panel.jpg'>
     <li>In the Update Lean CLI Workspace window, click the new workspace directory and then click <span class='button-name'>Select</span>.</li>
     <img class="docs-image" src="https://cdn.quantconnect.com/i/tu/local-lab-create-new-workspace.jpg">
-</ul>
+</ol>
 
 
