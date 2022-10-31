@@ -1,26 +1,9 @@
 <p>The Local Lab workspace is a directory that contains a <span class="private-file-name">data</span> directory, a Lean configuration file, and all your project files. You need the <span class="private-file-name">data</span> directory and a Lean configuration file to run the LEAN engine on your local machine.</p>
 
-<p>Follow these steps to set the initial workspace directory:</p>
-<ol>
-    <li><a href="/docs/v2/drafts/local-laboratory/initialization#02-Log-In">Log in to the Local Lab</a>.</li>
-    <li>In the Project panel, click <span class="button-name">Create LEAN Workspace</span> or <span class="button-name">Select LEAN Workspace</span>.</li>
-    <img class="docs-image" src="https://cdn.quantconnect.com/i/tu/local-lab-workspace-menu.jpg">
-    <p>You can create a new workspace directory or, if you use the LEAN CLI, you can set it to <a href="/docs/v2/lean-cli/initialization/directory-structure#02-lean-init">the directory that lean init creates</a>.</p>
-    <li>If you clicked <span class="button-name">Create LEAN Workspace</span>, in the Create Lean CLI Workspace window, create a directory to serve as the workspace and then click <span class="button-name">Select</span>.</li>
-     <img class="docs-image" src="https://cdn.quantconnect.com/i/tu/local-lab-create-new-workspace.jpg">
-</ol>
-
-<p>It takes a few minutes to create a new workspace directory. To view the progress, see the purple bar at the bottom of Visual Studio Code.</p>
-<img class="docs-image" src="https://cdn.quantconnect.com/i/tu/local-lab-workspace-progress.jpg">
-
-<?php 
-include(DOCS_RESOURCES."/cli/init/wsl.php");
-$isCLIDocs = true;
-$getWSLText($isCLIDocs);
-?>
+<h4>Structure</h4>
 
 <p>
-    If you create a new workspace, the workspace directory has following structure:
+    The workspace directory has following structure:
 </p>
 
 <?php
@@ -28,3 +11,39 @@ include(DOCS_RESOURCES."/cli/init/structure.php");
 $isCLIDocs = false;
 $getStructureText($isCLIDocs);
 ?>
+
+<h4>Create a Workspace</h4>
+
+<p>Follow these steps to create and set the initial workspace directory:</p>
+<ol>
+    <li><a href="/docs/v2/drafts/local-laboratory/initialization#02-Log-In">Log in to the Local Lab</a>.</li>
+    <li>In the Project panel, click <span class="button-name">Create LEAN Workspace</span> or <span class="button-name">Select LEAN Workspace</span>.</li>
+    <img class="docs-image" src="https://cdn.quantconnect.com/i/tu/local-lab-workspace-menu.jpg">
+    <p>You can create a new workspace directory or, if you use the LEAN CLI, you can set it to <a href="/docs/v2/lean-cli/initialization/directory-structure#02-lean-init">the directory that lean init creates</a>.</p>
+    <li>If you clicked <span class="button-name">Create LEAN Workspace</span>, in the Create Lean CLI Workspace window, create a directory to serve as the workspace and then click <span class="button-name">Select</span>.</li>
+    <img class="docs-image" src="https://cdn.quantconnect.com/i/tu/local-lab-create-new-workspace.jpg">
+</ol>
+
+<p>It takes a few minutes to create a new workspace directory. To view the progress, see the purple bar at the bottom of Visual Studio Code.</p>
+<img class="docs-image" src="https://cdn.quantconnect.com/i/tu/local-lab-workspace-progress.jpg">
+
+<?php 
+include(DOCS_RESOURCES."/cli/init/wsl.php");
+$isCLIDocs = false;
+$getWSLText($isCLIDocs);
+?>
+
+<h4>Change the Workspace</h4>
+<p>Follow these steps to change the workspace directory:</p>
+
+<ul>
+    <li><a href="/docs/v2/drafts/local-laboratory/initialization#02-Log-In">Log in to the Local Lab</a>.</li>
+    <li>In the left navigation bar, click <img class="inline-icon" src="https://cdn.quantconnect.com/i/tu/local-lab-projects-tab.jpg"> <span class="icon-name">Project</span>.</li>
+    <li>If a project is already open, in the Project panel, click <span class='button-name'>Close</span>.</li>
+    <li>Click <span class='button-name'>Change Here</span>.</li>
+    <img class='docs-image' src='https://cdn.quantconnect.com/i/tu/local-labe-starting-project-panel.jpg'>
+    <li>In the Update Lean CLI Workspace window, click the new workspace directory and then click <span class='button-name'>Select</span>.</li>
+    <img class="docs-image" src="https://cdn.quantconnect.com/i/tu/local-lab-create-new-workspace.jpg">
+</ul>
+
+
