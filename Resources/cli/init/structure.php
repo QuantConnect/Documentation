@@ -4,7 +4,7 @@ $getStructureText = function($isCLIDocs)
 {
     $localDataHTML = $isCLIDocs ? "<a href='/docs/v2/lean-cli/datasets/local-data'>local data</a>" : "local data";
     $leanConfigHTML = $isCLIDocs ? "<a href='/docs/v2/lean-cli/initialization/configuration#03-Lean-Configuration'>Lean configuration</a>" : "Lean configuration";
-    $leanConfigExtra = $isCLIDocs ? "" : "The Lean configuration contains settings for running the LEAN engine locally. The configuration is stored as JSON with support for both single-line and multiline comments. The Lean configuration file is based on the <a href='https://github.com/QuantConnect/Lean/blob/master/Launcher/config.json' rel='nofollow' target='_blank'>Launcher/config.json</a> file from the Lean repository. When you create a new workspace, the latest version of this file is downloaded and stored on your local drive.";
+    $leanConfigExtra = $isCLIDocs ? "" : "The configuration is stored as JSON with support for both single-line and multiline comments. The Lean configuration file is based on the <a href='https://github.com/QuantConnect/Lean/blob/master/Launcher/config.json' rel='nofollow' target='_blank'>Launcher/config.json</a> file from the Lean repository. When you create a new workspace, the latest version of this file is downloaded and stored on your local drive.";
     
     echo "
 <div class='section-example-container'>
