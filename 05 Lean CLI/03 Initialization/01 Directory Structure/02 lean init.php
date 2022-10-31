@@ -14,7 +14,11 @@ $getWSLText($isCLIDocs);
     <code>lean init</code> creates the following structure:
 </p>
 
-<?php echo file_get_contents(DOCS_RESOURCES."/cli/init/structure.html"); ?>
+<?php
+include(DOCS_RESOURCES."/cli/init/structure.php"); 
+$isCLIDocs = true;
+$getStructureText($isCLIDocs);
+?>
 
 <p>
     We recommend running all Lean CLI commands in your CLI root directory.
