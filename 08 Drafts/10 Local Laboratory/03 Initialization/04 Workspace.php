@@ -58,3 +58,4 @@ $getWSLText($isCLIDocs);
     <li>In the <span class='field-name'>QC &gt; Lean: Init</span> field, remove the workspace path.</li>
     <li>Restart Visual Studio Code.</li>
 </ol>
+<p>When you open Visual Studio Code again, it will prompt you to set the workspace.</p>
