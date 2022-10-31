@@ -48,6 +48,7 @@ $getWSLText($isCLIDocs);
 
 
 <h4>Remove the Workspace</h4>
+
 <p>Follow these steps to remove the existing workspace directory:</p>
 
 <ol>
