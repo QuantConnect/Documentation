@@ -13,4 +13,14 @@
 <p>It takes a few minutes to create a new workspace directory. To view the progress, see the purple bar at the bottom of Visual Studio Code.</p>
 <img class="docs-image" src="https://cdn.quantconnect.com/i/tu/local-lab-workspace-progress.jpg">
 
+<?php 
+include(DOCS_RESOURCES."/cli/init/wsl.php");
+$isCLIDocs = true;
+$getWSLText($isCLIDocs);
+?>
 
+<p>
+    If you create a new workspace, the workspace directory has following structure:
+</p>
+
+<?php echo file_get_contents(DOCS_RESOURCES."/cli/init/structure.html"); ?>
