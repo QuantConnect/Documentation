@@ -12,9 +12,9 @@ $isCLIDocs = false;
 $getStructureText($isCLIDocs);
 ?>
 
-<h4>Set the Initial Workspace</h4>
+<h4>Set the Workspace</h4>
 
-<p>Follow these steps to create and set the initial workspace directory:</p>
+<p>Follow these steps to set the workspace directory:</p>
 <ol>
     <li><a href="/docs/v2/drafts/local-laboratory/initialization#02-Log-In">Log in to the Local Lab</a>.</li>
     <li>In the Project panel, click <span class="button-name">Create LEAN Workspace</span> or <span class="button-name">Select LEAN Workspace</span>.</li>
