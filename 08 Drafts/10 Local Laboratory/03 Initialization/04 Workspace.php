@@ -23,4 +23,8 @@ $getWSLText($isCLIDocs);
     If you create a new workspace, the workspace directory has following structure:
 </p>
 
-<?php echo file_get_contents(DOCS_RESOURCES."/cli/init/structure.html"); ?>
+<?php
+include(DOCS_RESOURCES."/cli/init/structure.php"); 
+$isCLIDocs = false;
+$getStructureText($isCLIDocs);
+?>
