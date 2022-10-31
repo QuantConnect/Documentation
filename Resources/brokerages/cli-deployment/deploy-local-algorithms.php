@@ -43,7 +43,7 @@ Enter an option: {$brokeragePromptInput}</pre>
     if ($requiresSubscription) {
         $module = $moduleName == "" ? $brokerageName : $moduleName;
         echo "
-        <li>Enter the number of the organization that has a subscription for the {$module} module.
+        <li>Enter the number of the organization that has a {$module} brokerage seat.
         <div class='cli section-example-container'>
 <pre>$ lean live \"My Project\"
 Select the organization with the {$module} module subscription:
