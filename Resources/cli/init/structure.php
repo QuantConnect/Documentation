@@ -1,0 +1,57 @@
+<?php
+
+$getStructureText = function($isCLIDocs)
+{
+    $localDataHTML = $isCLIDocs ? "<a href='/docs/v2/lean-cli/datasets/local-data'>local data</a>" : "local data";
+    $leanConfigHTML = $isCLIDocs ? "<a href='/docs/v2/lean-cli/initialization/configuration#03-Lean-Configuration'>Lean configuration</a>" : "Lean configuration";
+    $leanConfigExtra = $isCLIDocs ? "" : "The Lean configuration contains settings for running the LEAN engine locally. The configuration is stored as JSON with support for both single-line and multiline comments. The Lean configuration file is based on the <a href='https://github.com/QuantConnect/Lean/blob/master/Launcher/config.json' rel='nofollow' target='_blank'>Launcher/config.json</a> file from the Lean repository. When you create a new workspace, the latest version of this file is downloaded and stored on your local drive.";
+    
+    echo "
+<div class='section-example-container'>
+<pre>.
+├── data/
+│&nbsp;&nbsp; ├── alternative/
+│&nbsp;&nbsp; ├── cfd/
+│&nbsp;&nbsp; ├── crypto/
+│&nbsp;&nbsp; ├── equity/
+│&nbsp;&nbsp; ├── forex/
+│&nbsp;&nbsp; ├── future/
+│&nbsp;&nbsp; ├── futureoption/
+│&nbsp;&nbsp; ├── index/
+│&nbsp;&nbsp; ├── indexoption/
+│&nbsp;&nbsp; ├── market-hours/
+│&nbsp;&nbsp; ├── option/
+│&nbsp;&nbsp; ├── symbol-properties/
+│&nbsp;&nbsp; └── readme.md
+└── lean.json</pre>
+</div>
+
+<p>
+    These files contain the following content:
+</p>
+
+<table class='qc-table table'>
+    <thead>
+        <tr>
+            <th>File/Directory</th>
+            <th>Description</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><span class='private-directory-name'>data/</span></td>
+            <td>This directory contains the {$localDataHTML} that is used when running the LEAN engine locally. This directory is filled with <a rel='nofollow' href='https://github.com/QuantConnect/Lean/tree/master/Data' target='_blank'>sample data from the QuantConnect/Lean repository</a>.</td>
+        </tr>
+    
+        <tr>
+            <td><span class='private-file-name'>lean.json</span></td>
+            <td>This file contains the {$leanConfigHTML} that is used when running the LEAN engine locally. {$leanConfigExtra}</td>
+        </tr>
+    </tbody>
+</table>
+    
+    ";   
+}
+    
+?>
+    
