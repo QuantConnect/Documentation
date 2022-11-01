@@ -14,11 +14,11 @@ $getRenameFileText = function($fileType, $openProjectLink, $isDesktopDocs=false,
 </ol>
 	";
 	
-	if (!is_null($videoLink))
-	{
-		echo "
+    if (!is_null($videoLink))
+    {
+        echo "
 <img class='docs-image' src='{$videoLink}'>
-		";
-	}
+        ";
+    }
 }
 ?>
