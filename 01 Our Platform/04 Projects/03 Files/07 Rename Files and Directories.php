@@ -4,5 +4,5 @@ $fileType = "file or directory";
 $openProjectLink = "/docs/v2/our-platform/projects/getting-started#02-View-All-Projects";
 $isDesktopDocs = false;
 $videoLink = "https://cdn.quantconnect.com/i/tu/rename-file-gif.gif";
-$getRenameFileText($fileType);
+$getRenameFileText($fileType, $openProjectLink, $isDesktopDocs, $videoLink);
 ?>
