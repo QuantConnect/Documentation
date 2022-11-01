@@ -3,7 +3,7 @@ $getRenameFileText = function($fileType, $openProjectLink, $isDesktopDocs=false,
 {
     $navSide = $isDesktopDocs ? "left" : "right";
     $sectionName = $isDesktopDocs ? "<span class='placeholder-text'>projectName</span>" : "Project (Workspace)";
-	echo "
+    echo "
 <p>Follow these steps to rename a {$fileType} in a project:</p>
 
 <ol>
