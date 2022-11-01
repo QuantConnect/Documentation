@@ -17,7 +17,7 @@ $getRenameFileText = function($fileType, $openProjectLink, $isDesktopDocs=false,
 	if (!is_null($videoLink))
 	{
 		echo "
-<img class='docs-image' src='https://cdn.quantconnect.com/i/tu/rename-file-gif.gif'>
+<img class='docs-image' src='{$videoLink}'>
 		";
 	}
 }
