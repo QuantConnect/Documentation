@@ -470,7 +470,7 @@ def Box(input_, doc_attr, doc_ref, type_map, j):
 {ret}
 
         <div class="method-def">
-            <p>Definition at <a href="https://github.com/QuantConnect/Lean/blob/master/{doc_ref[1]}#L{doc_ref[0]}">line {doc_ref[0]} of file {doc_ref[1]}.</a></p>
+            <p>Definition at <a rel="nofollow" target="_blank" href="https://github.com/QuantConnect/Lean/blob/master/{doc_ref[1]}#L{doc_ref[0]}">line {doc_ref[0]} of file {doc_ref[1]}.</a></p>
         </div>
         
     </div>
