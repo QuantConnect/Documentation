@@ -6,3 +6,5 @@
     <li>In the left navigation menu, click the <img class="inline-icon" src="https://cdn.quantconnect.com/i/tu/local-lab-projects-tab.jpg"> <span class="icon-name">Project</span> icon.</li>
     <li>In the Project panel, click <span class='button-name'>Clone</span>.</li>
 </ol>
+
+<p>The cloned version of the project opens in a new VS Code window.</p>
