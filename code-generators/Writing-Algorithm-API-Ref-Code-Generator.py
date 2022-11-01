@@ -516,8 +516,9 @@ for key in keys.items():
             t_.append(s_.replace("[", "").replace("]", "&gt;").replace(",", ", "))
     
     type_map[key[0]] = "".join(t_)
-        
-algo_methods = sorted(doc["keys"]["380"]["Methods"] + doc["tree"]["core"]["data"][0]["children"], 
+
+doc_keys = doc["keys"]
+algo_methods = sorted(doc_keys[[k for k, v in doc_keys.items() if "ShortType" in v and v["ShortType"] == "QCAlgorithm"][0]]["Methods"] + doc["tree"]["core"]["data"][0]["children"], 
                       key=lambda x: x['Name'] if 'Name' in x else x['text'])
 previous_name = ""
 j = 1
