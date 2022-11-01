@@ -1,5 +1,5 @@
 <?php
-$getCloseFilesText = function($isDesktopDocs, $openProjectLink)
+$getCloseFilesText = function($isDesktopDocs)
 {
     $env = $isDesktopDocs ? "VS Code" : "the IDE" ;
     echo "
