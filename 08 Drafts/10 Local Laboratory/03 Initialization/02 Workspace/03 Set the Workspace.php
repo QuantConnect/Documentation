@@ -8,7 +8,7 @@
     <img class="docs-image" src="https://cdn.quantconnect.com/i/tu/local-lab-create-new-workspace.jpg">
 </ol>
 
-<p>It takes a few minutes to create a new workspace directory. To view the progress, see the purple bar at the bottom of Visual Studio Code.</p>
+<p>It takes a few minutes to create a new workspace directory and populate it with the <a href='/docs/v2/drafts/local-laboratory/initialization/workspace#02-Structure'>the initial file structure</a>. To view the progress, see the purple bar at the bottom of Visual Studio Code.</p>
 <img class="docs-image" src="https://cdn.quantconnect.com/i/tu/local-lab-workspace-progress.jpg">
 
 <?php 
