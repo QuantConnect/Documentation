@@ -1,6 +1,6 @@
 <?php 
 include(DOCS_RESOURCES."/projects/structure/parameters.php");
-$addParametersLink = "/docs/v2/drafts/local-laboratory/projects/getting-started#10-Set-Descriptions";
+$addParametersLink = "/docs/v2/drafts/local-laboratory/projects/getting-started#11-Edit-Parameters";
 $parameterOptimizationsLink = "";
 $getParametersText($addParametersLink, $parameterOptimizationsLink);
 ?>
