@@ -1,5 +1,5 @@
 <?php
-$getDeleteFileText = function($fileType, $openProjectLink, $isDesktopDocs=false, $videoLink=null)
+$getDeleteFileText = function($fileType, $openProjectLink, $isDesktopDocs=false)
 {
     $navSide = $isDesktopDocs ? "left" : "right";
     $sectionName = $isDesktopDocs ? "<span class='placeholder-text'>projectName</span>" : "Project (Workspace)";
@@ -12,12 +12,5 @@ $getDeleteFileText = function($fileType, $openProjectLink, $isDesktopDocs=false,
     <li>Click <span class='button-name'>Delete</span>.</li>
 </ol>
 	";
-	
-    if (!is_null($videoLink))
-    {
-        echo "
-<img class='docs-image' src='{$videoLink}'>
-        ";
-    }
 }
 ?>
