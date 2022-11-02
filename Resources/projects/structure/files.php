@@ -7,7 +7,7 @@ $getFileStructureText = function($isDesktopDocs, $renameFilesLink)
     if ($isDesktopDocs)
     {
         echo "
-(<span class='private-file-name'>.py</span> or <span class='private-file-name'>.cs</span>), notebook files (<span class='private-file-name'>.ipynb</span>), and some other configuration files (<span class='private-file-name'>.json</span>)
+(<span class='private-file-name'>.py</span> or <span class='private-file-name'>.cs</span>), notebook files (<span class='private-file-name'>.ipynb</span>), and some configuration files (<span class='private-file-name'>.json</span>)
         ";
     }
     else
