@@ -1,5 +1,5 @@
 <?php
-$getLogIntroText = function($termianlLink)
+$getLogIntroText = function($terminalLink)
 {
     echo "
 <p>Logging statements are statements you can add to your algorithm in order to add information to the log file, add information to the <a href='{$terminalLink}'>Cloud Terminal</a>, or even stop the algorithm. Use these statements to debug your backtests and live algorithms. Consider adding them in the code block of an <code>if</code> statement to signify an error has been caught.</p>
