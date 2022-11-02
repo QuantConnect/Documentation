@@ -1,1 +1,6 @@
-<p>The debugger is a built-in tool to help you debug coding errors while backtesting. The debugger enables you to slow down the code execution, step through the program line-by-line, and inspect the variables to understand the internal state of the program. For more information about the backtesting debugger, see <a href='/docs/v2/our-platform/backtesting/debugging'>Debugging</a>.</p>
+<?php 
+include(DOCS_RESOURCES."/projects/debugging/debugger.php");
+$link = "/docs/v2/our-platform/backtesting/debugging";
+$getShortcutsText($openProjectLink);
+?>
+
