@@ -1,7 +1,7 @@
 <?php 
 include(DOCS_RESOURCES."/logging-statements/introduction.html"); 
 $terminalLink = "/docs/v2/our-platform/projects/ide#06-Cloud-Terminal";
-$getLogIntroText($termianlLink);
+$getLogIntroText($terminalLink);
 ?>
 
 <h4>Log</h4>
