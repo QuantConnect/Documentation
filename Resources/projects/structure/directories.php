@@ -1,5 +1,5 @@
 <?php
-$getDirectoriesText = function($isDesktopDocs, $renameFilesLink)
+$getDirectoriesText = function($isDesktopDocs)
 {
     $workspaceName = $isDesktopDocs ? "workspace" : "<a href='/docs/v2/our-platform/projects/getting-started#02-View-All-Projects'>directory of projects</a>" ;
     
