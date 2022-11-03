@@ -1,5 +1,5 @@
 <?php
-$getChangeBranchesText = function($openProjectLink, $createProjectLink)
+$getChangeBranchesText = function($isDesktopDocs, $openProjectLink, $createProjectLink)
 {        
     echo "
 <p>Follow these steps to change the LEAN engine branch that runs your backtests and live trading algorithms:</p>
@@ -8,7 +8,7 @@ $getChangeBranchesText = function($openProjectLink, $createProjectLink)
     <li><a href='{$openProjectLink}'>Open the project</a> for which you want to change the Lean engine branch.</li>
     ";
   
-    if ()
+    if ($isDesktopDocs)
     {
         echo "
 <li>In the left navigation menu, click the <img class='inline-icon' src='https://cdn.quantconnect.com/i/tu/local-lab-projects-tab.jpg'> <span class='icon-name'>Project</span> icon.</li>
