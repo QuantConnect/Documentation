@@ -1,6 +1,6 @@
 <?php
 $getUniverseSelectionText = function($dataFeedName, $availability=true) {
-    echo "<p>Universe selection is";
+    echo "<p><a href='/docs/v2/writing-algorithms/universes/key-concepts'>Universe selection</a> is";
     if (!$availability) {
         echo "n't";
     }
