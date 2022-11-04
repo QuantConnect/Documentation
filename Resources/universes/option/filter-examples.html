@@ -1,10 +1,16 @@
 <p>The preceding methods return an <code>OptionFilterUniverse</code>, so you can chain the methods together.</p>
 
 <div class="section-example-container">
-    <pre class="csharp">// Select the front month call contracts
-option.SetFilter(optionFilterUniverse => optionFilterUniverse.CallsOnly().FrontMonth());</pre>
-    <pre class="python"># Select the front month call contracts
-option.SetFilter(lambda option_filter_universe: option_filter_universe.CallsOnly().FrontMonth())</pre>
+    <pre class="csharp">// Example 1: Select the front month call contracts
+option.SetFilter(optionFilterUniverse => optionFilterUniverse.CallsOnly().FrontMonth());
+
+// Example 2: Select weekly contracts that expire in the next 90 days
+option.SetFilter(optionFilterUniverse => optionFilterUniverseIncludeWeeklys().Strikes(-20, 20).Expiration(0, 90));</pre>
+    <pre class="python"># Example 1: Select the front month call contracts
+option.SetFilter(lambda option_filter_universe: option_filter_universe.CallsOnly().FrontMonth())
+
+# Example 2: Select weekly contracts that expire in the next 90 days
+option.SetFilter(lambda option_filter_universe: option_filter_universe.IncludeWeeklys().Strikes(-20, 20).Expiration(0, 90))</pre>
 </div>
 
 <p>To perform thorough filtering on the <code>OptionFilterUniverse</code>, define an isolated filter method.</p>
