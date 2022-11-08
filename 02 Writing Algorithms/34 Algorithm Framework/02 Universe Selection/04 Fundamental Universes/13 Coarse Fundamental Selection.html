@@ -24,6 +24,42 @@ def SelectCoarse(self, coarse: List[CoarseFundamental]) -&gt; List[Symbol]:
     return [c.Symbol for c in sorted_by_dollar_volume[:100]] # Return most liquid assets w/ fundamentals</pre>
 </div>
 
+<p>To move the coarse selection function outside of the algorithm class, create a universe selection model that inherits the <code>CoarseFundamentalUniverseSelectionModel</code> class.</p>
+
+<div class="section-example-container">
+	<pre class="csharp">// In Initialize
+AddUniverseSelection(new MostLiquidFundamentalUniverseSelectionModel(UniverseSettings));
+
+// Outside the algorithm class
+class MostLiquidFundamentalUniverseSelectionModel : CoarseFundamentalUniverseSelectionModel
+{
+    public MostLiquidFundamentalUniverseSelectionModel(UniverseSettings universeSettings)
+        : base(default(Func&lt;IEnumerable&lt;CoarseFundamental&gt;, IEnumerable&lt;Symbol&gt;&gt;), universeSettings)
+    {
+    }
+
+    public override IEnumerable&lt;Symbol&gt; SelectCoarse(QCAlgorithm algorithm, IEnumerable&lt;CoarseFundamental&gt; coarse)
+    {
+        return coarse.Where(c =&gt; c.HasFundamentalData)
+                        .OrderByDescending(c =&gt; c.DollarVolume)
+                        .Take(100)
+                        .Select(c =&gt; c.Symbol);
+    }
+}</pre>
+	<pre class="python"># In Initialize
+self.AddUniverseSelection(MostLiquidFundamentalUniverseSelectionModel(self.UniverseSettings))
+
+# Outside of the algorithm class
+class MostLiquidFundamentalUniverseSelectionModel(CoarseFundamentalUniverseSelectionModel):
+    def __init__(self, universe_settings: UniverseSettings):
+        super().__init__(self.SelectCoarse, universe_settings)
+
+    def SelectCoarse(self, coarse: List[CoarseFundamental]) -&gt; List[Symbol]:
+        selected = [c for c in coarse if c.HasFundamentalData]
+        sorted_by_dollar_volume = sorted(selected, key=lambda c: c.DollarVolume, reverse=True)
+        return [c.Symbol for c in sorted_by_dollar_volume[:100]]</pre>
+</div>
+
 <p>To return the current universe constituents from the coarse or fine selection function, return <code>Universe.Unchanged</code>.</p>
 
 <p>To view the implementation of this model, see the <a target="_blank" rel="nofollow" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.Framework/Selection/CoarseFundamentalUniverseSelectionModel.cs">LEAN GitHub repository</a>.</p>
