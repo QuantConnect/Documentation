@@ -66,5 +66,40 @@ def ETFConstituentsFilter(self, constituents: List[ETFConstituentData]) -> List[
     return [c.Symbol for c in selected]</pre>
 </div>
 
+<p>To move the selection function outside of the algorithm class, create a universe selection model that inherits the <code>ETFConstituentsUniverseSelectionModel</code> class.</p>
+
+
+<div class="section-example-container">
+	<pre class="csharp">// In Initialize
+var symbol = QuantConnect.Symbol.Create("SPY", SecurityType.Equity, Market.USA);
+AddUniverseSelection(new LargestWeightETFUniverseSelectionModel(symbol, UniverseSettings));
+
+// Outside of the algorithm class
+class LargestWeightETFUniverseSelectionModel : ETFConstituentsUniverseSelectionModel
+{
+    public LargestWeightETFUniverseSelectionModel(Symbol symbol, UniverseSettings universeSettings = null)
+        : base(symbol, universeSettings, ETFConstituentsFilter)
+    {
+    }
+
+    static private IEnumerable&lt;Symbol&gt; ETFConstituentsFilter(IEnumerable&lt;ETFConstituentData&gt; constituents)
+    {
+        return constituents.OrderByDescending(c =&gt; c.Weight).Take(10).Select(c =&gt; c.Symbol);
+    }
+}</pre>
+	<pre class="python"># In Initialize
+symbol = Symbol.Create("SPY", SecurityType.Equity, Market.USA)
+self.AddUniverseSelection(LargestWeightETFUniverseSelectionModel(symbol, self.UniverseSettings))
+
+# Outside of the algorithm class
+class LargestWeightETFUniverseSelectionModel(ETFConstituentsUniverseSelectionModel):
+    def __init__(self, symbol: Symbol, universe_settings: UniverseSettings = None) -> None:
+        super().__init__(symbol, universe_settings, self.ETFConstituentsFilter)
+
+    def ETFConstituentsFilter(self, constituents: List[ETFConstituentData]) -> List[Symbol]:
+        selected = sorted([c for c in constituents if c.Weight],
+            key=lambda c: c.Weight, reverse=True)[:10]
+        return [c.Symbol for c in selected]</pre>
+</div>
 
 <p>To view the implementation of this model, see the <span class="csharp"><a target="_blank" rel="nofollow" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.Framework/Selection/ETFConstituentsUniverseSelectionModel.cs">LEAN GitHub repository</a></span><span class="python"><a target="_blank" rel="nofollow" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.Framework/Selection/ETFConstituentsUniverseSelectionModel.py">LEAN GitHub repository</a></span>.</p>
