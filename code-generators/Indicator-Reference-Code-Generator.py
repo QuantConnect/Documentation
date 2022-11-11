@@ -133,7 +133,7 @@ for full, short in dict(sorted(names.items())).items():
         source_link = f"https://raw.githubusercontent.com/QuantConnect/Lean/master/Indicators/{'Stochastics' if full == 'Stochastic' else 'Momersion' if full == 'MomersionIndicator' else full}.cs"
     else:
         k += 1
-        base = f"{root}/00 Candlestick Pattern/{k:02} {name}"
+        base = f"{root}/00 Candlestick Patterns/{k:02} {name}"
         source_link = f"https://raw.githubusercontent.com/QuantConnect/Lean/master/Indicators/CandlestickPatterns/{full}.cs"
 
     destination_folder = pathlib.Path(base)
@@ -657,7 +657,7 @@ with open("Resources/indicators/indicator_count.html", "w", encoding="utf-8") as
 with open("Resources/indicators/candlestick_pattern_count.html", "w", encoding="utf-8") as html_file:
     html_file.write(f"There are {k} candlestick pattern indicators.")
 
-with open(f"{root}/00 Candlestick Pattern/00.json", "w", encoding="utf-8") as html_file:
+with open(f"{root}/00 Candlestick Patterns/00.json", "w", encoding="utf-8") as html_file:
     data = {f"{n:02}": "" for n in range(1, k)}
     html_file.write(f"""{{
   "type" : "landing",
