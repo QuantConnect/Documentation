@@ -16,7 +16,7 @@ $getDeployLocalAlgorithmsText = function($brokerageName, $dataFeedName, $isBroke
     $brokeragePromptInput = $isBrokerage ? '' : '1';
     echo "
         <ol>
-            <li>Open a terminal in your <a href='/docs/v2/lean-cli/initialization/directory-structure#02-lean-init'>CLI root directory</a>.</li>
+            <li>Open a terminal in the <a href='/docs/v2/lean-cli/initialization/workspace'>workspace</a> that contains the project.</li>
             <li>Run <code>lean live \"&lt;projectName&gt;\"</code> to start a live deployment wizard for the project in <span class='private-directory-name'>./&lt;projectName&gt;</span> and then enter {$word} brokerage number.
             <div class='cli section-example-container'>
 <pre>$ lean live \"My Project\"
