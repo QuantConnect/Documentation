@@ -33,7 +33,7 @@ updates = {}
 update_value = {}
 full_apis = {}
 
-root = '02 Writing Algorithms/28 Indicators/07 Indicator Reference'
+root = '02 Writing Algorithms/28 Indicators/01 Supported Indicators'
 if os.path.isdir(root):
     shutil.rmtree(root)
 
@@ -108,17 +108,17 @@ moving_average_table = """<p>The following table shows the <code>MovingAverageTy
 <table class="table qc-table table-reflow">
 <thead><tr><th><code>MovingAverageType</code></th><th>Underlying Indicator</th></tr></thead>
 <tbody>
-<tr><td><code>Simple</code></td><td><a href="/docs/v2/writing-algorithms/indicators/indicator-reference/simple-moving-average">Simple Moving Average</a></td></tr>
-<tr><td><code>Exponential</code></td><td><a href="/docs/v2/writing-algorithms/indicators/indicator-reference/exponential-moving-average">Exponential Moving Average</a></td></tr>
-<tr><td><code>Wilders</code></td><td><a href="/docs/v2/writing-algorithms/indicators/indicator-reference/wilder-moving-average">Wilder Moving Average</a></td></tr>
-<tr><td><code>LinearWeightedMovingAverage</code></td><td><a href="/docs/v2/writing-algorithms/indicators/indicator-reference/linear-weighted-moving-average">Linear Weighted Moving Average</a></td></tr>
-<tr><td><code>DoubleExponential</code></td><td><a href="/docs/v2/writing-algorithms/indicators/indicator-reference/double-exponential-moving-average">Double Exponential Moving Average</a></td></tr>
-<tr><td><code>TripleExponential</code></td><td><a href="/docs/v2/writing-algorithms/indicators/indicator-reference/triple-exponential-moving-average">Triple Exponential Moving Average</a></td></tr>
-<tr><td><code>Triangular</code></td><td><a href="/docs/v2/writing-algorithms/indicators/indicator-reference/triangular-moving-average">Triangular Moving Average</a></td></tr>
-<tr><td><code>T3</code></td><td><a href="/docs/v2/writing-algorithms/indicators/indicator-reference/t3-moving-average">T3 Moving Average</a></td></tr>
-<tr><td><code>Kama</code></td><td><a href="/docs/v2/writing-algorithms/indicators/indicator-reference/kaufman-adaptive-moving-average">Kaufman Adaptive Moving Average</a></td></tr>
-<tr><td><code>Hull</code></td><td><a href="/docs/v2/writing-algorithms/indicators/indicator-reference/hull-moving-average">Hull Moving Average</a></td></tr>
-<tr><td><code>Alma</code></td><td><a href="/docs/v2/writing-algorithms/indicators/indicator-reference/arnaud-legoux-moving-average">Arnaud Legoux Moving Average</a></td></tr>
+<tr><td><code>Simple</code></td><td><a href="/docs/v2/writing-algorithms/indicators/supported-indicators/simple-moving-average">Simple Moving Average</a></td></tr>
+<tr><td><code>Exponential</code></td><td><a href="/docs/v2/writing-algorithms/indicators/supported-indicators/exponential-moving-average">Exponential Moving Average</a></td></tr>
+<tr><td><code>Wilders</code></td><td><a href="/docs/v2/writing-algorithms/indicators/supported-indicators/wilder-moving-average">Wilder Moving Average</a></td></tr>
+<tr><td><code>LinearWeightedMovingAverage</code></td><td><a href="/docs/v2/writing-algorithms/indicators/supported-indicators/linear-weighted-moving-average">Linear Weighted Moving Average</a></td></tr>
+<tr><td><code>DoubleExponential</code></td><td><a href="/docs/v2/writing-algorithms/indicators/supported-indicators/double-exponential-moving-average">Double Exponential Moving Average</a></td></tr>
+<tr><td><code>TripleExponential</code></td><td><a href="/docs/v2/writing-algorithms/indicators/supported-indicators/triple-exponential-moving-average">Triple Exponential Moving Average</a></td></tr>
+<tr><td><code>Triangular</code></td><td><a href="/docs/v2/writing-algorithms/indicators/supported-indicators/triangular-moving-average">Triangular Moving Average</a></td></tr>
+<tr><td><code>T3</code></td><td><a href="/docs/v2/writing-algorithms/indicators/supported-indicators/t3-moving-average">T3 Moving Average</a></td></tr>
+<tr><td><code>Kama</code></td><td><a href="/docs/v2/writing-algorithms/indicators/supported-indicators/kaufman-adaptive-moving-average">Kaufman Adaptive Moving Average</a></td></tr>
+<tr><td><code>Hull</code></td><td><a href="/docs/v2/writing-algorithms/indicators/supported-indicators/hull-moving-average">Hull Moving Average</a></td></tr>
+<tr><td><code>Alma</code></td><td><a href="/docs/v2/writing-algorithms/indicators/supported-indicators/arnaud-legoux-moving-average">Arnaud Legoux Moving Average</a></td></tr>
 </tbody></table>"""
 swiss_kinfe_tool_datatree = '''<p>The <code>SwissArmyKnifeTool</code> enumeration has the following members:</p>
 <div data-tree="QuantConnect.Indicators.SwissArmyKnifeTool"></div>'''
@@ -133,7 +133,7 @@ for full, short in dict(sorted(names.items())).items():
         source_link = f"https://raw.githubusercontent.com/QuantConnect/Lean/master/Indicators/{'Stochastics' if full == 'Stochastic' else 'Momersion' if full == 'MomersionIndicator' else full}.cs"
     else:
         k += 1
-        base = f"{root}/00 Candlestick Pattern/{k:02} {name}"
+        base = f"{root}/00 Candlestick Patterns/{k:02} {name}"
         source_link = f"https://raw.githubusercontent.com/QuantConnect/Lean/master/Indicators/CandlestickPatterns/{full}.cs"
 
     destination_folder = pathlib.Path(base)
@@ -657,24 +657,24 @@ with open("Resources/indicators/indicator_count.html", "w", encoding="utf-8") as
 with open("Resources/indicators/candlestick_pattern_count.html", "w", encoding="utf-8") as html_file:
     html_file.write(f"There are {k} candlestick pattern indicators.")
 
-with open("02 Writing Algorithms/28 Indicators/07 Indicator Reference/00 Candlestick Pattern/00.json", "w", encoding="utf-8") as html_file:
+with open(f"{root}/00 Candlestick Patterns/00.json", "w", encoding="utf-8") as html_file:
     data = {f"{n:02}": "" for n in range(1, k)}
     html_file.write(f"""{{
   "type" : "landing",
-  "heading" : "Candlestick Pattern",
+  "heading" : "Candlestick Patterns",
   "subHeading" : "",
   "content" : "<p>You can use any of the following candlestick patterns. Click one to learn more.</p>",
   "alsoLinks" : [],
   "featureShortDescription": {str(data).replace("'", '"')}
 }}""")
         
-with open("02 Writing Algorithms/28 Indicators/07 Indicator Reference/00.json", "w", encoding="utf-8") as html_file:
+with open(f"{root}/00.json", "w", encoding="utf-8") as html_file:
     data = {f"{n:02}": "" for n in range(0, i)}
     html_file.write(f"""{{
   "type" : "landing",
-  "heading" : "Indicator Reference",
+  "heading" : "Supported Indicators",
   "subHeading" : "",
-  "content" : "<p>You can use any of the following indicators. Click one to learn more.</p>",
+  "content" : "<p>Indicators translate a stream of data points into a numerical value you can use to detect trading opportunities. LEAN provides more than 100 pre-built technical indicators and candlestick patterns you can use in your algorithms. You can use any of the following indicators. Click one to learn more.</p>",
   "alsoLinks" : [],
   "featureShortDescription": {str(data).replace("'", '"')}
 }}""")
