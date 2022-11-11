@@ -39,22 +39,7 @@ Enter an option: {$brokeragePromptInput}</pre>
 </div>
             </li>
     ";
-
-    if ($requiresSubscription) {
-        $module = $moduleName == "" ? $brokerageName : $moduleName;
-        echo "
-        <li>Enter the number of the organization that has a {$module} brokerage seat.
-        <div class='cli section-example-container'>
-<pre>$ lean live \"My Project\"
-Select the organization with the {$module} module subscription:
-1) Organization 1
-2) Organization 2
-3) Organization 3
-Enter an option: 1</pre>
-</div>
-</li>";
-    }
-
+    
     echo $brokerageDetails;
 
     echo "<li>Enter the number of the data feed to use and then follow the steps required for the data connection.
