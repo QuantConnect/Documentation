@@ -1,5 +1,5 @@
 <p>
-    To create an workspace for one of your organizations, open a terminal in an empty directory and run <code>lean init</code>.
+    To create an workspace for one of your organizations, open a terminal in an empty directory, run <code>lean init</code> and then select an organization to link with the workspace.
     This command scaffolds a standard directory structure containing a <span class='private-file-name'>data</span> directory and a <a href="/docs/v2/lean-cli/initialization/configuration#03-Lean-Configuration">Lean configuration file</a>, both of which are required to run the LEAN engine locally.
 </p>
 
