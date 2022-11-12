@@ -11,6 +11,18 @@
     <p>Your account details are not saved on QuantConnect.</p>
 
     <li>Click the <span class="field-name">Node</span> field and then click the live trading node that you want to use from the drop-down menu.</li>
+    <li>If your brokerage account has existing cash holdings, follow these steps (<a href='https://vimeo.com/703024505' rel='nofollow' target="_blank">see video</a>):</li>
+    <ol>
+        <li>In the <span class="page-section-name">Algorithm Cash State</span> section, click <span class="button-name">Show</span>.</li>
+        <li>Click <span class="button-name">Add Currency</span>.</li>
+        <li>Enter the currency ticker (for example, USD or CAD) and a quantity.</li>
+    </ol>
+    <li>If your brokerage account has existing position holdings, follow these steps (<a href='https://vimeo.com/703024505' rel='nofollow' target="_blank">see video</a>):</li>
+    <ol>
+        <li>In the <span class="page-section-name">Algorithm Holdings State</span> section, click <span class="button-name">Show</span>.</li>
+        <li>Click <span class="button-name">Add Holding</span>.</li>
+        <li>Enter the symbol ID, symbol, quantity, and average price.</li>
+    </ol>
     <li><span class="qualifier">(Optional)</span> <a href="/docs/v2/our-platform/live-trading/notifications">Set up notifications</a>.</li>
     <li>Configure the <span class="box-name">Automatically restart algorithm</span> setting.</li>
     <p>By enabling automatic restarts, the algorithm will use best efforts to restart the algorithm if it fails due to a runtime error. This can help improve the algorithm's resilience to temporary outages such as a brokerage API disconnection.</p>
