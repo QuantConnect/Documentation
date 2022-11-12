@@ -5,9 +5,10 @@
 <ol>
     <li><a href="/docs/v2/our-platform/projects/getting-started#02-View-All-Projects">Open the project</a> that you want to deploy.</li>
     <li>Click the <img class="inline-icon" src="https://cdn.quantconnect.com/i/tu/deploy-live-icon.png"> <span class="icon-name">Deploy Live</span> icon.</li>
-    <li>On the Deploy Live page, click the <span class="field-name">Brokerage</span> field and then click <span class="button-name">Tradier</span> from the drop-down menu.</li>
+    <li>On the Deploy Live page, click the <span class="field-name">Brokerage</span> field and then click <span class="button-name">Wolverine Execution Services</span> from the drop-down menu.</li>
 
-    <li></li>
+    <li>Enter your Wolverine credentials.</li>
+    <p>Your account details are not saved on QuantConnect.</p>
 
     <li>Click the <span class="field-name">Node</span> field and then click the live trading node that you want to use from the drop-down menu.</li>
     <li><span class="qualifier">(Optional)</span> <a href="/docs/v2/our-platform/live-trading/notifications">Set up notifications</a>.</li>
