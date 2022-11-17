@@ -48,7 +48,7 @@ private void CustomSecurityInitializer(Security security)
 {
     if (security.Type == SecurityType.FutureOption)
     {
-        security.PriceModel = OptionPriceModels.CrankNicolsonFD();
+        (security as FutureOption).PriceModel = OptionPriceModels.CrankNicolsonFD();
     }
 }
 </pre>
