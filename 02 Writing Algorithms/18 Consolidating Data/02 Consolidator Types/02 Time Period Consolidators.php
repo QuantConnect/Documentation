@@ -44,7 +44,7 @@
     </tbody>
 </table>
 
-<p>If you need something more specific than the preceding time periods, define a method to set the start time and period of the consolidated bars. The method should receive a <code class='python'>datetime</code><code class='csharp'>DateTime</code> that is based in the <a href='/docs/v2/writing-algorithms/key-concepts/time-modeling/time-zones#05-Data-Time-Zone'>data time zone</a> and return a <code>CalendarInfo</code> object, which contains the start time of the bar in the data time zone and the duration of the consolidation period. The following example demonstrates how to create a custom consolidator for weekly bars:</p>
+<p>If you need something more specific than the preceding time periods, define a method to set the start time and period of the consolidated bars. The method should receive a <code class='python'>datetime</code><code class='csharp'>DateTime</code> object that's based in the <a href='/docs/v2/writing-algorithms/key-concepts/time-modeling/time-zones#05-Data-Time-Zone'>data time zone</a> and return a <code>CalendarInfo</code> object, which contains the start time of the bar in the data time zone and the duration of the consolidation period. The following example demonstrates how to create a custom consolidator for weekly bars:</p>
 
 <div class="section-example-container">
     <pre class="csharp">var consolidator = new TradeBarConsolidator(datetime => {
