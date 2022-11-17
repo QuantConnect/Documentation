@@ -5,9 +5,9 @@
 {
     foreach (var kvp in slice.OptionChains)
     {
-        var chain = kvp.Value;
+        var fopChain = kvp.Value;
         // Example: Find an at-the-money (ATM) put contract with the farthest expiration
-        var contract = optionChain
+        var contract = fopChain
             .OrderByDescending(x => x.Expiry)
             .ThenBy(x => Math.Abs(chain.Underlying.Price - x.Strike))
             .ThenByDescending(x => x.Right)
@@ -19,14 +19,14 @@ public void OnData(OptionChains optionChains)
 {
     foreach (var kvp in optionChains)
     {
-        var chain = kvp.Value;
+        var fopChain = kvp.Value;
     }
 }</pre>
     <pre class='python'>def OnData(self, slice: Slice) -> None:
-    for _, chain in slice.OptionChains.items():
+    for _, fop_chain in slice.OptionChains.items():
         # Example: Find an at-the-money (ATM) put contract with the farthest expiration
-        contract = sorted(sorted(sorted(chain, \
-            key = lambda x: abs(chain.Underlying.Price - x.Strike)), \
+        contract = sorted(sorted(sorted(fop_chain, \
+            key = lambda x: abs(fop_chain.Underlying.Price - x.Strike)), \
             key = lambda x: x.Expiry, reverse=True), \
             key = lambda x: x.Right, reverse=True)[0]</pre>
 </div>
@@ -44,7 +44,7 @@ public void OnData(OptionChains optionChains)
         
         // Select a Future Contract and create its canonical FOP Symbol
         var futuresContract = futuresChain.First();
-        var canonicalFOPSymbol = Symbol.CreateCanonicalOption(futuresContract.Symbol);
+        var canonicalFOPSymbol = QuantConnect.Symbol.CreateCanonicalOption(futuresContract.Symbol);
         if (slice.OptionChains.TryGetValue(canonicalFOPSymbol, out var optionChain))
         {
             foreach (var optionContract in optionChain)
@@ -67,8 +67,8 @@ public void OnData(FuturesChains futuresChains)
         # Select a Future Contract and create its canonical FOP Symbol
         futures_contract = [contract for contract in futures_chain][0]
         canonical_fop_symbol = Symbol.CreateCanonicalOption(futures_contract.Symbol)
-        option_chain = slice.OptionChains.get(canonical_fop_symbol)
-        if option_chain:
-            for contract in option_chain:
+        fop_chain = slice.OptionChains.get(canonical_fop_symbol)
+        if fop_chain:
+            for contract in fop_chain:
                 pass</pre>
 </div> 
