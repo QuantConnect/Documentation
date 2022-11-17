@@ -77,7 +77,7 @@ def consolidation_period(self, dt: datetime) -&gt; CalendarInfo:
 consolidator = TradeBarConsolidator(self.consolidation_period)</pre>
 </div>
 
-<p>If you use a custom consolidation period method, LEAN passes the consolidated bar to the consolidation handler is called when the consolidation period ends. The <code>Time</code> and <code>EndTime</code> properties of the consolidated bar reflect the data time zone, but the <code>Time</code> property of the algorithm still reflects the <a href='/docs/v2/writing-algorithms/key-concepts/time-modeling/time-zones#04-Algorithm-Time-Zone'>algorithm time zone</a>.</p>
+<p>If you use a custom consolidation period method, LEAN passes the consolidated bar to the consolidation handler when the consolidation period ends. The <code>Time</code> and <code>EndTime</code> properties of the consolidated bar reflect the data time zone, but the <code>Time</code> property of the algorithm still reflects the <a href='/docs/v2/writing-algorithms/key-concepts/time-modeling/time-zones#04-Algorithm-Time-Zone'>algorithm time zone</a>.</p>
 
 <h4>Create Time Period Consolidators</h4>
 
