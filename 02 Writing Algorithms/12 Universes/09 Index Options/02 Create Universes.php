@@ -53,6 +53,6 @@ self.symbol = option.Symbol</pre>
 <p>To set the <a href='/docs/v2/writing-algorithms/reality-modeling/options-models/pricing'>price model</a> of the Option, set its <code>PriceModel</code> property.</p>
 
 <div class="section-example-container">
-    <pre class="csharp">option.PriceModel =  OptionPriceModels.CrankNicolsonFD();</pre>
+    <pre class="csharp">option.PriceModel = OptionPriceModels.CrankNicolsonFD();</pre>
     <pre class="python">option.PriceModel = OptionPriceModels.CrankNicolsonFD()</pre>
 </div>
