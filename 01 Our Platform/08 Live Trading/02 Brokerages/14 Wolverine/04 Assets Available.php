@@ -2,5 +2,5 @@
 
 <?php
 include(DOCS_RESOURCES."/brokerages/us-etfs.php");
-$getUSETFText("Wolverine");
+$getUSETFText("Wolverine Execution Services");
 ?>
