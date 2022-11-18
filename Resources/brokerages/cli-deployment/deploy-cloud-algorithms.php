@@ -31,7 +31,6 @@ Select a brokerage:
 9) Samco
 10) Trading Technologies
 11) Kraken
-12) FTX
 Enter an option:</pre>
 </div>
             </li>
