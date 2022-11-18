@@ -9,7 +9,7 @@ $getBrokerageStabilityText("IB", "https://www.interactivebrokers.com/en/software
 <p>If you can't log in to TWS with your credentials, contact IB. If you can log in to TWS but can't log in to the deployment wizard, <a href='/contact'>contact us</a> and provide the algorithm ID and deployment ID.</p>
 
 <h4>SMS 2FA</h4>
-<p>Our IB integration doesn't support Two-Factor Authentication (2FA) via SMS. Use the <a rel="nofollow" target="_blank" href="https://guides.interactivebrokers.com/iphone/log_in/ibkey.htm?tocpath=IB%20Key%20Security%20Protocol%7C_____0">IB Key Security via IBKR Mobile</a> instead.</p>
+<p>Our IB integration doesn't support Two-Factor Authentication (2FA) via SMS or the Online Security Code Card. Use the <a rel="nofollow" target="_blank" href="https://guides.interactivebrokers.com/iphone/log_in/ibkey.htm?tocpath=IB%20Key%20Security%20Protocol%7C_____0">IB Key Security via IBKR Mobile</a> instead.</p>
 
 <h4>System Resets</h4>
 <p>If your IB account has 2FA enabled, you'll need to re-authenticate once a week. The reset schedule is available on the <a rel="nofollow" target="_blank" href="https://www.interactivebrokers.com/en/software/systemStatus.php">IB Status page</a>. If you miss the timeout period, your algorithm quits executing.</p>
