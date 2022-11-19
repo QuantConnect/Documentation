@@ -20,5 +20,7 @@ $getRenameProjectsText = function($openProjectLink, $isDesktopDocs)
     <li>In the <span class='field-name'>Name</span> field, enter the new project name and then click <span class='button-name'>Save Changes</span>.</li>
 </ol>  
     ";
+    
+    echo "<p>" . file_get_contents(DOCS_RESOURCES."/cli/project-name-rules.html") . "</p>" ;
 }
 ?>
