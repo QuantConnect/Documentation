@@ -68,11 +68,55 @@ def future_chain_symbol_selector(self, utc_time: datetime) -&gt; List[Symbol]:
              Symbol.Create(Futures.Metals.Gold, SecurityType.Future, Market.COMEX) ]</pre>
 </div>
 
-<p>To view the implementation of this model, see the <span class="csharp"><a target="_blank" rel="nofollow" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.Framework/Selection/FutureUniverseSelectionModel.cs">LEAN GitHub repository</a></span><span class="python"><a target="_blank" rel="nofollow" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.Framework/Selection/FutureUniverseSelectionModel.py">LEAN GitHub repository</a></span>.</p>
-
-
 <p>This model uses the default Future contract filter, which doesn't select any Futures contracts. To use a different filter, subclass the <code>FutureUniverseSelectionModel</code> and define a <code>Filter</code> method. The <code>Filter</code> method accepts and returns a <code>FutureFilterUniverse</code> object to select the Futures contracts. The following table describes the filter methods of the <code>FutureFilterUniverse</code> class:</p>
 
 <?php echo file_get_contents(DOCS_RESOURCES."/universes/future/future-filter-universe.html");?>
 	
-<p>Depending on how you define the contract filter, LEAN may call it once a day or at every time step. For a full example of a <code>FutureUniverseSelectionModel</code> subclass, see the <a target="_blank" rel="nofollow" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.Python/BasicTemplateFuturesFrameworkAlgorithm.py">BasicTemplateFuturesFrameworkAlgorithm</a>.</p>
+<p>Depending on how you define the contract filter, LEAN may call it once a day or at every time step.</p>
+
+<p>To move the selection functions outside of the algorithm class, create a universe selection model that inherits the <code>FutureUniverseSelectionModel</code> class.</p>
+
+<div class="section-example-container">
+	<pre class="csharp">// In Initialize
+AddUniverseSelection(new FrontMonthFutureUniverseSelectionModel());
+
+// Outside of the algorithm class
+class FrontMonthFutureUniverseSelectionModel : FutureUniverseSelectionModel
+{
+    public FrontMonthFutureUniverseSelectionModel()
+        : base(TimeSpan.FromDays(1), SelectFutureChainSymbols) {}
+
+    private static IEnumerable&lt;Symbol&gt; SelectFutureChainSymbols(DateTime utcTime)
+    {
+        return new List&lt;Symbol&gt; {
+            QuantConnect.Symbol.Create(Futures.Indices.SP500EMini, SecurityType.Future, Market.CME),
+            QuantConnect.Symbol.Create(Futures.Metals.Gold, SecurityType.Future, Market.COMEX)
+        };
+    }
+
+    protected override FutureFilterUniverse Filter(FutureFilterUniverse filter)
+    {
+        return filter.FrontMonth().OnlyApplyFilterAtMarketOpen();
+    }
+}</pre>
+	<pre class="python">from Selection.FutureUniverseSelectionModel import FutureUniverseSelectionModel
+
+# In Initialize
+self.AddUniverseSelection(FrontMonthFutureUniverseSelectionModel())
+
+# Outside of the algorithm class
+class FrontMonthFutureUniverseSelectionModel(FutureUniverseSelectionModel):
+    def __init__(self,) -> None:
+        super().__init__(timedelta(1), self.select_future_chain_symbols)
+
+    def select_future_chain_symbols(self, utcTime: datetime) -> List[Symbol]:
+        return [ 
+            Symbol.Create(Futures.Indices.SP500EMini, SecurityType.Future, Market.CME),
+            Symbol.Create(Futures.Metals.Gold, SecurityType.Future, Market.COMEX) 
+        ]
+
+    def Filter(self, filter: FutureFilterUniverse) -> FutureFilterUniverse:
+        return filter.FrontMonth().OnlyApplyFilterAtMarketOpen()</pre>
+</div>
+
+<p>To view the implementation of this model, see the <span class="csharp"><a target="_blank" rel="nofollow" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.Framework/Selection/FutureUniverseSelectionModel.cs">LEAN GitHub repository</a></span><span class="python"><a target="_blank" rel="nofollow" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.Framework/Selection/FutureUniverseSelectionModel.py">LEAN GitHub repository</a></span>.</p>
