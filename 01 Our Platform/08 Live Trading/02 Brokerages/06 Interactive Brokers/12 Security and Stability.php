@@ -12,4 +12,4 @@ $getBrokerageStabilityText("IB", "https://www.interactivebrokers.com/en/software
 <p>Our IB integration doesn't support Two-Factor Authentication (2FA) via SMS or the Online Security Code Card. Use the <a rel="nofollow" target="_blank" href="https://guides.interactivebrokers.com/iphone/log_in/ibkey.htm?tocpath=IB%20Key%20Security%20Protocol%7C_____0">IB Key Security via IBKR Mobile</a> instead.</p>
 
 <h4>System Resets</h4>
-<p>If your IB account has 2FA enabled, you'll need to re-authenticate once a week. The reset schedule is available on the <a rel="nofollow" target="_blank" href="https://www.interactivebrokers.com/en/software/systemStatus.php">IB Status page</a>. If you miss the timeout period, your algorithm quits executing.</p>
+<p>If your IB account has 2FA enabled, you receive a notification on your IB Key device once per week to re-authenticate. The reset schedule is available on the <a rel="nofollow" target="_blank" href="https://www.interactivebrokers.com/en/software/systemStatus.php">IB Status page</a>. If you miss the timeout period, your algorithm quits executing.</p>
