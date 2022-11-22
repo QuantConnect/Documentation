@@ -13,3 +13,4 @@
     If you have a local copy of a project when you pull it from the cloud, local files that don't exist in the cloud are not deleted, but the configuration values of your cloud project overwrite the <a href='/docs/v2/lean-cli/projects/configuration#02-Properties'>configuration values of the local version</a>. If you have renamed the project in the cloud, when you pull the project from the cloud, the local project is renamed to match the name of the cloud project.
 </p>
 
+<?php echo file_get_contents(DOCS_RESOURCES."/libraries/collaboration.html"); ?>
