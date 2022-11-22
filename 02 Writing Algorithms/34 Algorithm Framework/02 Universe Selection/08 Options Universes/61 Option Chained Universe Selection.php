@@ -58,5 +58,6 @@ def OptionFilterFunction(self, option_filter_universe: OptionFilterUniverse) -&g
     return option_filter_universe.Strikes(-2, +2).FrontMonth().CallsOnly()</pre>
 </div>
 
+<?php echo file_get_contents(DOCS_RESOURCES."/universes/option/filter-caveats.html"); ?>
 
 <p>To view the implementation of this model, see the <a target="_blank" rel="nofollow" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm/Selection/OptionChainedUniverseSelectionModel.cs">LEAN GitHub repository</a>.</p>
