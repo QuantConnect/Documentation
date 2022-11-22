@@ -165,4 +165,6 @@ class EarliestExpiringAtTheMoneyCallOptionUniverseSelectionModel(OptionUniverseS
         return option_filter_universe.Strikes(-1, -1).Expiration(0, 7).CallsOnly().OnlyApplyFilterAtMarketOpen()</pre>
 </div>
 
+<?php echo file_get_contents(DOCS_RESOURCES."/universes/option/filter-caveats.html"); ?>
+
 <p>To view the implementation of this model, see the <span class="csharp"><a target="_blank" rel="nofollow" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.Framework/Selection/OptionUniverseSelectionModel.cs">LEAN GitHub repository</a></span><span class="python"><a target="_blank" rel="nofollow" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.Framework/Selection/OptionUniverseSelectionModel.py">LEAN GitHub repository</a></span>.</p>
