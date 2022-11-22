@@ -139,12 +139,12 @@ class EarliestExpiringAtTheMoneyCallOptionUniverseSelectionModel : OptionUnivers
 	<pre class="python">from Selection.OptionUniverseSelectionModel import OptionUniverseSelectionModel 
 
 # In Initialize
-self.AddUniverseSelection(EarliestExpiringAtTheMoneyCallOptionUniverseSelectionModel())
+self.AddUniverseSelection(EarliestExpiringAtTheMoneyCallOptionUniverseSelectionModel(self))
 
 # Outside of the algorithm class
 class EarliestExpiringAtTheMoneyCallOptionUniverseSelectionModel(OptionUniverseSelectionModel):
     def __init__(self, algorithm):
-        self.algorithm = algorithm
+        self.algo = algorithm
         super().__init__(timedelta(1), self.select_option_chain_symbols)
     
     def select_option_chain_symbols(self, utc_time: datetime) -> List[Symbol]:
@@ -158,7 +158,7 @@ class EarliestExpiringAtTheMoneyCallOptionUniverseSelectionModel(OptionUniverseS
 
         # Future Options example:
         future_symbol = Symbol.Create(Futures.Indices.SP500EMini, SecurityType.Future, Market.CME)
-        future_contract_symbols = self.algorithm.FutureChainProvider.GetFutureContractList(future_symbol, self.algorithm.Time)
+        future_contract_symbols = self.algo.FutureChainProvider.GetFutureContractList(future_symbol, self.algo.Time)
         return [Symbol.CreateCanonicalOption(symbol) for symbol in future_contract_symbols]
 
     def Filter(self, option_filter_universe: OptionFilterUniverse) -> OptionFilterUniverse:
