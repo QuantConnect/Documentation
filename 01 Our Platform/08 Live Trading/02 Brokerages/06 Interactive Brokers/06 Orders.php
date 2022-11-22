@@ -66,7 +66,9 @@ self.MarketOnCloseOrder(self.symbol, quantity)
 self.ExerciseOption(self.option_symbol, quantity)</pre>
 </div>
 
-<p>Market on open orders are not available for Futures or Future Options.</p>
+<p>Market on open orders aren't available for Futures or Future Options.</p>
+
+<p>Option exercise orders aren't available for Index Options or cash-settled US Equity Options.</p>
 
 <h4>Order Properties</h4>
 
