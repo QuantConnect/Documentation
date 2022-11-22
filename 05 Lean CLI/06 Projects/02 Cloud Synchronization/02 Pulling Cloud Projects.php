@@ -41,3 +41,6 @@ Successfully pulled 'My Project/research.ipynb'</pre>
 </ol>
 
 <p>If you have a local copy of the project when you pull the project from the cloud, the configuration values of the cloud project overwrite the <a href='/docs/v2/lean-cli/projects/configuration#02-Properties'>configuration values of your local copy</a>.</p>
+
+<?php echo file_get_contents(DOCS_RESOURCES."/libraries/collaboration.html"); ?>
+
