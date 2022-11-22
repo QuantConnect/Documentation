@@ -6,7 +6,8 @@
 <?php 
 echo file_get_contents(DOCS_RESOURCES."/universes/option/option-filter-universe.html"); 
 echo file_get_contents(DOCS_RESOURCES."/universes/option/filter-examples.html"); 
-echo file_get_contents(DOCS_RESOURCES."/universes/option/filter-caveats.html");
+include(DOCS_RESOURCES."/universes/option/filter-caveats.php");
+$getFilterCaveatText("Option");
 ?>
 
 
