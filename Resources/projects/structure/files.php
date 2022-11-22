@@ -29,7 +29,7 @@ In your local workspace, the code files and notebook files can be any size.
     $location = $isDesktopDocs ? "VS Code" : "the web IDE" ;
     
     echo "
-To keep files small, files can import code from other code files. To aid navigation, you can <a href='{$renameFilesLink}'>rename, move, and delete files</a> in {$location}.</p>
+To keep files small, files can import code from other code files. To aid navigation, you can <a href='{$renameFilesLink}'>rename, move, and delete files</a> in {$location}. Notebook files include the JSON elements to display the input cells, but not the output cells.</p>
     ";
 }
 ?>
