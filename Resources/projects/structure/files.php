@@ -7,18 +7,14 @@ $getFileStructureText = function($isDesktopDocs, $renameFilesLink)
     if ($isDesktopDocs)
     {
         echo "
-(<span class='private-file-name'>.py</span> or <span class='private-file-name'>.cs</span>), notebook files (<span class='private-file-name'>.ipynb</span>), and some configuration files (<span class='private-file-name'>.json</span>)
-        ";
+(<span class='private-file-name'>.py</span> or <span class='private-file-name'>.cs</span>), notebook files (<span class='private-file-name'>.ipynb</span>), and some configuration files (<span class='private-file-name'>.json</span>)";
     }
     else
     {
         echo "
-(<span class='public-file-name'>.py</span> or <span class='public-file-name'>.cs</span>) and notebook files (<span class='public-file-name'>.ipynb</span>)
-        ";
+(<span class='public-file-name'>.py</span> or <span class='public-file-name'>.cs</span>) and notebook files (<span class='public-file-name'>.ipynb</span>)";
     }
-    echo "
-. Run backtests with code files and launch the Research Environment with notebook files. 
-    ";
+    echo ". Run backtests with code files and launch the Research Environment with notebook files. ";
     
     $intro = $isDesktopDocs ? "In QC Cloud, c" : "C" ;
     echo "{$intro}ode files can contain up to 64,000 characters and notebook files can be up to 128KB in size.";
