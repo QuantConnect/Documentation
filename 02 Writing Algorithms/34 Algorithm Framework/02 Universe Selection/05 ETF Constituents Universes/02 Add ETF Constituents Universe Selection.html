@@ -41,7 +41,7 @@
 
 <p>If you provide a <code>universeFilterFunc</code> argument, you can use the following attributes of the <code>ETFConstituentData</code> objects to select your universe:</p>
 
-<div data-tree='QuantConnect.Data.UniverseSelection.ETFConstituentData'></div>
+<div data-tree="QuantConnect.Data.UniverseSelection.ETFConstituentData"></div>
 
 <p>The following example shows how to select the 10 Equities with the largest weight in the SPY ETF:</p>
 <div class="section-example-container">
@@ -53,32 +53,32 @@
 
 private IEnumerable&lt;Symbol&gt; ETFConstituentsFilter(IEnumerable&lt;ETFConstituentData&gt; constituents)
 {
-    return constituents.OrderByDescending(c => c.Weight).Take(10).Select(c => c.Symbol);
+    return constituents.OrderByDescending(c =&gt; c.Weight).Take(10).Select(c =&gt; c.Symbol);
 }</pre>
 	<pre class="python">def Initialize(self) -&gt; None:
     symbol = Symbol.Create("SPY", SecurityType.Equity, Market.USA)
     universe = ETFConstituentsUniverseSelectionModel(symbol, self.UniverseSettings, self.ETFConstituentsFilter)
     self.AddUniverseSelection(universe)
 
-def ETFConstituentsFilter(self, constituents: List[ETFConstituentData]) -> List[Symbol]:
+def ETFConstituentsFilter(self, constituents: List[ETFConstituentData]) -&gt; List[Symbol]:
     selected = sorted([c for c in constituents if c.Weight],
         key=lambda c: c.Weight, reverse=True)[:10]
     return [c.Symbol for c in selected]</pre>
 </div>
 
-<p>To move the selection function outside of the algorithm class, create a universe selection model that inherits the <code>ETFConstituentsUniverseSelectionModel</code> class.</p>
+<p>To move the ETF <code>Symbol</code> and the selection function outside of the algorithm class, create a universe selection model that inherits the <code>ETFConstituentsUniverseSelectionModel</code> class.</p>
 
 
 <div class="section-example-container">
 	<pre class="csharp">// In Initialize
-var symbol = QuantConnect.Symbol.Create("SPY", SecurityType.Equity, Market.USA);
-AddUniverseSelection(new LargestWeightETFUniverseSelectionModel(symbol, UniverseSettings));
+AddUniverseSelection(new LargestWeightETFUniverseSelectionModel(UniverseSettings));
 
 // Outside of the algorithm class
 class LargestWeightETFUniverseSelectionModel : ETFConstituentsUniverseSelectionModel
 {
     public LargestWeightETFUniverseSelectionModel(Symbol symbol, UniverseSettings universeSettings = null)
-        : base(symbol, universeSettings, ETFConstituentsFilter)
+        : base(QuantConnect.Symbol.Create("SPY", SecurityType.Equity, Market.USA), 
+            universeSettings, ETFConstituentsFilter)
     {
     }
 
@@ -88,15 +88,15 @@ class LargestWeightETFUniverseSelectionModel : ETFConstituentsUniverseSelectionM
     }
 }</pre>
 	<pre class="python"># In Initialize
-symbol = Symbol.Create("SPY", SecurityType.Equity, Market.USA)
-self.AddUniverseSelection(LargestWeightETFUniverseSelectionModel(symbol, self.UniverseSettings))
+self.AddUniverseSelection(LargestSPYWeightETFUniverseSelectionModel(self.UniverseSettings))
 
 # Outside of the algorithm class
 class LargestWeightETFUniverseSelectionModel(ETFConstituentsUniverseSelectionModel):
-    def __init__(self, symbol: Symbol, universe_settings: UniverseSettings = None) -> None:
+    def __init__(self, universe_settings: UniverseSettings = None) -&gt; None:
+        symbol = Symbol.Create("SPY", SecurityType.Equity, Market.USA)
         super().__init__(symbol, universe_settings, self.ETFConstituentsFilter)
 
-    def ETFConstituentsFilter(self, constituents: List[ETFConstituentData]) -> List[Symbol]:
+    def ETFConstituentsFilter(self, constituents: List[ETFConstituentData]) -&gt; List[Symbol]:
         selected = sorted([c for c in constituents if c.Weight],
             key=lambda c: c.Weight, reverse=True)[:10]
         return [c.Symbol for c in selected]</pre>
