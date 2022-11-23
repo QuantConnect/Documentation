@@ -28,3 +28,7 @@ If you place a market order when the market is closed, LEAN automatically conver
 <?php echo file_get_contents(DOCS_RESOURCES."/quotas/orders.html"); ?>
 
 <p>To place more orders in a backtest, <a href='/docs/v2/our-platform/organizations/billing#07-Change-Organization-Tiers'>upgrade your organization</a>.<br></p>
+
+<h4>Why do I get "Backtest Handled Error: The security with symbol '/ES' is marked as non-tradable"?</h4>
+
+<p>This error occurs when you place an order for a continuous Futures contract, which isn't a tradable security. To fix the issue, place the order for a specific Futures contract. To access the currently selected contract in the continuous contract series, use the <code>Mapped</code> property of the <code>Future</code> object.</p>
