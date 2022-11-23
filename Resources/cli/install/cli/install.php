@@ -2,7 +2,11 @@
 $getInstallText = function($pipLink, $dockerLink)
 {
     echo "
-<p>Before you install the LEAN CLI, check if it's already installed. To check if it's already installed, open a terminal and then run <code>lean --version</code>. If the LEAN CLI is already installed, <a href='/docs/v2/lean-cli/installation/installing-lean-cli#03-Stay-Up-To-Date'>upgrade it</a> instead of installing it again.</p>
+<p>Before you install the LEAN CLI, check if it's already installed.</p>
+<div class='cli section-example-container'>
+     <pre>$ lean --version</pre>
+</div>
+<p>If the LEAN CLI is already installed, <a href='/docs/v2/lean-cli/installation/installing-lean-cli#03-Stay-Up-To-Date'>upgrade it</a> instead of installing it again.</p>
     
 <p>Follow these steps to install the LEAN CLI:</p>
 
