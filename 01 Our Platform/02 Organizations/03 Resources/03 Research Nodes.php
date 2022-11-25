@@ -1,4 +1,4 @@
-<p>Research nodes enable you to use the Research Environment. Several models of research nodes are available. More powerful research nodes allow you to handle more data and run faster computations in your notebooks. The following table shows the specifications of the research node models: </p>
+<p>Research nodes enable you to use the <a href="/docs/v2/research-environment">Research Environment</a>. Several models of research nodes are available. More powerful research nodes allow you to handle more data and run faster computations in your notebooks. The following table shows the specifications of the research node models: </p>
 
 <?php include(DOCS_RESOURCES."/specs/research-nodes.html"); ?>
 
