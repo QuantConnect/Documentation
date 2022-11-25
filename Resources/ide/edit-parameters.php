@@ -11,7 +11,7 @@ $getParametersText = function($openProjectLink, $isDesktopDocs)
         $getVimeoPlayerText(696287618);
     }
 
-    $openPanelStep = $isDesktopDocs ? "<li>In the left navigation menu, click the <img class='inline-icon' src='https://cdn.quantconnect.com/i/tu/local-lab-projects-tab.jpg'> <span class='icon-name'>Project</span> icon.</li>" : "";
+    $openPanelStep = $isDesktopDocs ? "<li>In the left navigation menu, click the <img class='inline-icon' src='https://cdn.quantconnect.com/i/tu/vscode-qc-icon.jpg'> <span class='icon-name'>QuantConnect</span> icon.</li>" : "";
     
     echo "   
 <h4>Add Parameters</h4>
