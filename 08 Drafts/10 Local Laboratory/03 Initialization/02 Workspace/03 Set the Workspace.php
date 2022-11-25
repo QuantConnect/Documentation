@@ -4,7 +4,7 @@
     <li>In the left navigation menu, click the <img class="inline-icon" src="https://cdn.quantconnect.com/i/tu/vscode-qc-icon.jpg"> <span class="icon-name">QuantConnect</span> icon.</li>
     <li>In the Project panel, click <span class="button-name">Create LEAN Workspace</span> or <span class="button-name">Select LEAN Workspace</span>.</li>
     <img class="docs-image" src="https://cdn.quantconnect.com/i/tu/local-lab-workspace-menu.jpg">
-    <p>You can create a new workspace directory or, if you use the LEAN CLI, you can set it to the <a href="/docs/v2/lean-cli/initialization/workspace">workspace that lean init creates</a>.</p>
+    <p>You can create a new workspace directory or, if you use the LEAN CLI, you can set it to the <a href="/docs/v2/lean-cli/initialization/workspace">CLI workspace</a>.</p>
     <li>If you clicked <span class="button-name">Create LEAN Workspace</span>, in the Create Lean CLI Workspace window, create a directory to serve as the workspace and then click <span class="button-name">Select</span>.</li>
     <img class="docs-image" src="https://cdn.quantconnect.com/i/tu/local-lab-create-new-workspace.jpg">
 </ol>
