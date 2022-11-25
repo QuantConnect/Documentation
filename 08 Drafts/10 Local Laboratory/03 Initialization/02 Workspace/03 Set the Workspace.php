@@ -1,6 +1,7 @@
 <p>Follow these steps to set the workspace directory:</p>
 <ol>
-    <li><a href="/docs/v2/drafts/local-laboratory/initialization#02-Log-In">Log in to the Local Lab</a>.</li>
+    <li><a href="/docs/v2/drafts/local-laboratory/initialization/account#02-Log-In">Log in to the Local Lab</a>.</li>
+    <li>In the left navigation menu, click the <img class="inline-icon" src="https://cdn.quantconnect.com/i/tu/vscode-qc-icon.jpg"> <span class="icon-name">QuantConnect</span> icon.</li>
     <li>In the Project panel, click <span class="button-name">Create LEAN Workspace</span> or <span class="button-name">Select LEAN Workspace</span>.</li>
     <img class="docs-image" src="https://cdn.quantconnect.com/i/tu/local-lab-workspace-menu.jpg">
     <p>You can create a new workspace directory or, if you use the LEAN CLI, you can set it to the <a href="/docs/v2/lean-cli/initialization/workspace">workspace that lean init creates</a>.</p>
