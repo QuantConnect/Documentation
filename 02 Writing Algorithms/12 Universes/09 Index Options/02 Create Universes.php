@@ -28,7 +28,7 @@ self.symbol = option.Symbol</pre>
         <tr>
             <td><code>resolution</code></td>
 	        <td><code class="csharp">Resolution?</code><code class="python">Resolution/NoneType</code></td>
-            <td>The resolution of the market data.</td>
+            <td>The resolution of the market data. To view the supported resolutions, see <a href='/docs/v2/writing-algorithms/securities/asset-classes/index-options/requesting-data#03-Resolutions'>Resolutions</a>.</td>
             <td><code class="python">None</code><code class="csharp">null</code></td>
         </tr>
         <tr>
