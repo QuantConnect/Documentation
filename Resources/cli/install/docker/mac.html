@@ -22,7 +22,26 @@
     <div class="cli section-example-container">
 <pre>$ sudo hdiutil attach Docker.dmg
 $ sudo /Volumes/Docker/Docker.app/Contents/MacOS/install
-$ sudo hdiutil detach /Volumes/Docker</pre>
+$ sudo hdiutil detach /Volumes/Docker
+$ docker pull --platform linux/amd64 quantconnect/lean</pre>
 </div>
+        <p>The last command enable you to run the amd64 LEAN image by taking advantages of the <a href='https://www.qemu.org/' rel='nofollow' target="_blank">qemu</a> emulator. In some cases, the container hangs, so to achieve the best performance and stability, use <a rel='nofollow' target='_blank' href='https://github.com/abiosoft/colima'>colima</a>, which will use the latest stable qemu version.</p>
+        <div class="cli section-example-container">
+<pre>$ brew install colima
+$ colima start --cpu 4 --memory 8</pre>
+</div>
+        <p>To verify it's working correctly, run:</p>
+        <div class="cli section-example-container">
+<pre>$ qemu-img --version
+qemu-img version 7.1.0 (or higher)
+$ docker context ls
+	should show colima as selected
+$ docker inspect quantconnect/lean
+	should show amd64 arch
+$ docker exec -it {lean container id} bash
+	$ uname -a
+		should should x86_x64/amd64 or similar</pre>
+</div>
+        <p>If <code>docker context ls</code> does not show colima, run <code>colima start --edit</code> and make sure docker is the selected context.</p>
     </li>
 </ol>
