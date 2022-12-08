@@ -20,8 +20,9 @@ $getSettlementText = function($usBrokerage, $cashAccount=null, $marginAccount=nu
             }
 
             if ($options) {
-                $result .= "Option trades settle on the business day following the transaction (T+1).";
+                $result .= "Option trades settle on the business day following the transaction (T+1)";
             }
+            $result .= ".";
         }
     }
     else {
