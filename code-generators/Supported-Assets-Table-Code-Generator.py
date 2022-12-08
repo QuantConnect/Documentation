@@ -5,7 +5,7 @@ crypto_destination = "Resources/datasets/supported-securities/crypto"
 forex_destination = "Resources/datasets/supported-securities/crypto"
 cfd_destination = "Resources/datasets/supported-securities/crypto"
 
-cryptos_exchange = {"binance": "Binance", "binanceus": "BinanceUS", "bitfinex": "Bitfinex", "gdax": "Coinbase Pro", "kraken": "Kraken"}
+cryptos_exchange = {"binance": "Binance", "binanceus": "BinanceUS", "bitfinex": "Bitfinex", "gdax": "Coinbase", "kraken": "Kraken"}
 forex_exchanges = {"oanda": "Oanda"}
 cfd_exchanges = {"oanda": "Oanda"}
 

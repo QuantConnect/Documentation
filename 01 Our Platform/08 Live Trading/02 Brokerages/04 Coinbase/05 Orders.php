@@ -1,8 +1,8 @@
-<p>We model the Coinbase Pro API by supporting several order types, supporting order properties, and not supporting order updates. When you deploy live algorithms, you can place manual orders through the IDE.</p>
+<p>We model the Coinbase API by supporting several order types, supporting order properties, and not supporting order updates. When you deploy live algorithms, you can place manual orders through the IDE.</p>
 
 <h4>Order Types</h4>
 
-<p>The following table describes the available order types for each asset class that Coinbase Pro supports:</p>
+<p>The following table describes the available order types for each asset class that Coinbase supports:</p>
 
 <table class="qc-table table" id='order-types-table'>
    <thead>
@@ -22,7 +22,7 @@
       </tr>
       <tr>
         <td><a href='/docs/v2/writing-algorithms/trading-and-orders/order-types/stop-market-orders'>StopMarketOrder</a></td>
-        <td><img src="https://cdn.quantconnect.com/i/tu/check.png" alt="green check" width="15px;"><br>Supported after 2019-03-23 in backtests. For reference, see the <a rel="nofollow" target="_blank" href="https://blog.coinbase.com/coinbase-pro-market-structure-update-fbd9d49f43d7">Coinbase Pro Market Structure Update</a> on the Coinbase website.</td>
+        <td><img src="https://cdn.quantconnect.com/i/tu/check.png" alt="green check" width="15px;"><br>Supported after 2019-03-23 in backtests. For reference, see the <a rel="nofollow" target="_blank" href="https://blog.coinbase.com/coinbase-pro-market-structure-update-fbd9d49f43d7">Coinbase Market Structure Update</a> on the Coinbase website.</td>
       </tr>
       <tr>
         <td><a href='/docs/v2/writing-algorithms/trading-and-orders/order-types/stop-limit-orders'>StopLimitOrder</a></td>
@@ -38,7 +38,7 @@
 </style>
 
 
-<p>Coinbase Pro supports the following order types:</p>
+<p>Coinbase supports the following order types:</p>
 
 <div class="section-example-container">
     <pre class="csharp">MarketOrder(_symbol, quantity);
@@ -52,7 +52,7 @@ self.StopLimitOrder(self.symbol, quantity, stop_price, limit_price)</pre>
 </div>
 
 <h4>Order Properties</h4>
-<p>We model custom order properties from the Coinbase Pro API. The following table describes the members of the <code>GDAXOrderProperties</code> object that you can set to customize order execution:</p>
+<p>We model custom order properties from the Coinbase API. The following table describes the members of the <code>GDAXOrderProperties</code> object that you can set to customize order execution:</p>
 
 <table class="table qc-table">
     <thead>
@@ -116,7 +116,7 @@ def OnData(self, slice: Slice) -&gt; None:
 </div>
 
 <h4>Updates</h4>
-<p>We model the Coinbase Pro API by not supporting order updates, but you can cancel an existing order and then create a new order with the desired arguments.</p>
+<p>We model the Coinbase API by not supporting order updates, but you can cancel an existing order and then create a new order with the desired arguments.</p>
 
 <div class="section-example-container">
     <pre class="csharp">var ticket = LimitOrder(_symbol, quantity, limitPrice);

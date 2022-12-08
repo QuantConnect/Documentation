@@ -16,9 +16,9 @@ API key: 6d3ef5ca2d2fa52e4ee55624b0471261
 API secret: ****************************************************************************************
 Passphrase: ****************
 </div>
-To create new API credentials, see the <a href='https://pro.coinbase.com/profile/api' target='_blank' rel='nofollow'>API settings page</a> on the Coinbase Pro website.
+To create new API credentials, see the <a href='https://pro.coinbase.com/profile/api' target='_blank' rel='nofollow'>API settings page</a> on the Coinbase website.
 </li>
 ";
 
-$getDeployCloudAlgorithmsText("Coinbase Pro", true, $brokerageDetails);
+$getDeployCloudAlgorithmsText("Coinbase", true, $brokerageDetails);
 ?>

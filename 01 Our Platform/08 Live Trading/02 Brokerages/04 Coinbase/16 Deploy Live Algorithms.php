@@ -5,9 +5,9 @@
 <ol>
     <li><a href="/docs/v2/our-platform/projects/getting-started#02-View-All-Projects">Open the project</a> you want to deploy.</li>
     <li>Click the <img class="inline-icon" src="https://cdn.quantconnect.com/i/tu/deploy-live-icon.png"> <span class="icon-name">Deploy Live</span> icon.</li>
-    <li>On the Deploy Live page, click the <span class="field-name">Brokerage</span> field and then click <span class="button-name">Coinbase | Pro</span> from the drop-down menu.</li>
-    <li>Enter your Coinbase Pro API key, API secret, and passphrase.</li>
-    <?php echo file_get_contents(DOCS_RESOURCES."/brokerages/create-credentials/coinbase-pro.html"); ?>
+    <li>On the Deploy Live page, click the <span class="field-name">Brokerage</span> field and then click <span class="button-name">Coinbase</span> from the drop-down menu.</li>
+    <li>Enter your Coinbase API key, API secret, and passphrase.</li>
+    <?php echo file_get_contents(DOCS_RESOURCES."/brokerages/create-credentials/coinbase.html"); ?>
     <li>Click on the <span class="field-name">Environment</span> field and then click one of the environments.</li>
     <p>The following table shows the supported environments:</p>
 
