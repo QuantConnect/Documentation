@@ -2,6 +2,6 @@
 <ul>
     <li>Binance & Binance US</li>
     <li>Bitfinex</li>
-    <li>Coinbase Pro</li>
+    <li>Coinbase</li>
     <li>Kraken</li>
 <ul>
