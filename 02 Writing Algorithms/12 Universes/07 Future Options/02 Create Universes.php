@@ -25,7 +25,7 @@ self.AddFutureOption(future.Symbol)</pre>
         <tr>
             <td><code>symbol</code></td>
 	        <td><code>Symbol</code></td>
-            <td>The Future canonical symbol</td>
+            <td>The continuous Future contract Symbol.</td>
             <td></td>
         </tr>
         <tr>
