@@ -21,13 +21,13 @@ self.symbol = option.Symbol</pre>
         <tr>
             <td><code>ticker</code></td>
 	        <td><code class="csharp">string</code><code class="python">str</code></td>
-            <td>The underlying Equity ticker.</td>
+            <td>The underlying Equity ticker. To view the supported underlying Equity tickers, see <a href='/docs/v2/writing-algorithms/datasets/algoseek/us-equity-options#05-Supported-Assets'>Supported Assets</a>.</td>
             <td></td>
         </tr>
         <tr>
             <td><code>resolution</code></td>
 	        <td><code class="csharp">Resolution?</code><code class="python">Resolution/NoneType</code></td>
-            <td>The resolution of the market data.</td>
+            <td>The resolution of the market data. To view the supported resolutions, see <a href='/docs/v2/writing-algorithms/securities/asset-classes/equity-options/requesting-data#03-Resolutions'>Resolutions</a>.</td>
             <td><code class="python">None</code><code class="csharp">null</code></td>
         </tr>
         <tr>
