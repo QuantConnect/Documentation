@@ -3,7 +3,7 @@
     <li><a href="/docs/v2/drafts/local-laboratory/initialization/account#02-Log-In">Log in to the Local Lab</a>.</li>
     <li>In the left navigation menu, click the <img class="inline-icon" src="https://cdn.quantconnect.com/i/tu/vscode-qc-icon.jpg"> <span class="icon-name">QuantConnect</span> icon.</li>
     <li>In the Select Workspace panel, click <span class="button-name">Pull Organization Workspace</span> or <span class="button-name">Use Existing Organization Workspace</span>.</li>
-    <img class="docs-image" src="https://cdn.quantconnect.com/i/tu/local-lab-workspace-menu.jpg">
+    <img class="docs-image" src="https://cdn.quantconnect.com/i/tu/select-workspace.png">
 
     <p>If you have pulled a workspace before or have set up a <a href='/docs/v2/lean-cli/initialization/workspace'>CLI workspace</a>, you can click <span class="button-name">Use Existing Organization Workspace</span>.</p>
 </ol>
