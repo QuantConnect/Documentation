@@ -27,6 +27,6 @@
 
 <h4>Use Existing Organization Workspace</h4>
 
-<p>If you clicked <span class="button-name">Use Existing Organization Workspace</span>, in the Update Organization Workspace window, navigate to the workspace and then click <span class="button-name">Select</span>.</p>
+<p>If you clicked <span class="button-name">Use Existing Organization Workspace</span>, in the Update Organization Workspace window, navigate to the workspace directory and then click <span class="button-name">Select</span>.</p>
 
 <img class="docs-image" src="https://cdn.quantconnect.com/i/tu/update-organization-workspace.png">
