@@ -11,7 +11,8 @@
 private TargetDownsideDeviation _tdd;
 
 // In Initialize()
-_tdd = new TargetDownsideDeviation(name, period);
+_roc = new RateOfChange(1);
+_tdd = (new TargetDownsideDeviation(period)).Of(_roc);
 _tdd.Updated += IndicatorUpdateMethod;
 
 RegisterIndicator(symbol, _tdd, Resolution.Daily);
@@ -24,7 +25,9 @@ if (_tdd.IsReady)
     <pre class="python">
     
 # In Initialize()
-self.tdd = TargetDownsideDeviation(name, period)
+tdd = TargetDownsideDeviation(period)
+self.roc = RateOfChange(1)
+self.tdd = IndicatorExtensions.Of(tdd, self.roc)
 self.tdd.Updated += self.IndicatorUpdateMethod
 
 self.RegisterIndicator(symbol, self.tdd, Resolution.Daily)
@@ -46,7 +49,8 @@ private TargetDownsideDeviation _tdd;
 private Symbol symbol;
 
 // In Initialize()
-_tdd = new TargetDownsideDeviation(period);
+_roc = new RateOfChange(1);
+_tdd = (new TargetDownsideDeviation(period)).Of(_roc);
 symbol = AddEquity("SPY").Symbol;
 
 // In OnData()
@@ -61,7 +65,9 @@ if (_tdd.IsReady)
     <pre class="python">
     
 # In Initialize()
-self.tdd = TargetDownsideDeviation(period)
+tdd = TargetDownsideDeviation(period)
+self.roc = RateOfChange(1)
+self.tdd = IndicatorExtensions.Of(tdd, self.roc)
 self.symbol = self.AddEquity("SPY").Symbol
 
 # In OnData()

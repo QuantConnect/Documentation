@@ -122,6 +122,11 @@ moving_average_table = """<p>The following table shows the <code>MovingAverageTy
 </tbody></table>"""
 swiss_kinfe_tool_datatree = '''<p>The <code>SwissArmyKnifeTool</code> enumeration has the following members:</p>
 <div data-tree="QuantConnect.Indicators.SwissArmyKnifeTool"></div>'''
+tddRegisterCSharp = '''_roc = new RateOfChange(1);
+_tdd = (new TargetDownsideDeviation(period)).Of(_roc)'''
+tddRegisterPy = '''tdd = TargetDownsideDeviation(period)
+self.roc = RateOfChange(1)
+self.tdd = IndicatorExtensions.Of(tdd, self.roc)'''
 ide_plot = ["indicator-reference-ADR.png", "indicator-reference-ADVR.png", "indicator-reference-B.png", "indicator-reference-FilteredIdentity.png", "indicator-reference-IntradayVwap.png", "indicator-reference-TP.png", "indicator-reference-TRIN.png", "indicator-reference-VP.png"]
 
 for full, short in dict(sorted(names.items())).items():
@@ -412,7 +417,7 @@ function ShowHide(event, idName) {{
 private {full} _{short.lower()};
 
 // In Initialize()
-_{short.lower()} = new {full}{str(tuple(x for x, y in full_apis[full][index_min]["param"].items() if "Optional" not in y)[::-1]).replace("'", "").replace('"', '').replace(',)', ')')};
+{tddRegisterCSharp if short.lower() == "tdd" else f'''_{short.lower()} = new {full}{str(tuple(x for x, y in full_apis[full][index_min]["param"].items() if "Optional" not in y)[::-1]).replace("'", "").replace('"', '').replace(',)', ')')}'''};
 _{short.lower()}.Updated += IndicatorUpdateMethod;
 
 RegisterIndicator(symbol, _{short.lower()}, Resolution.Daily);
@@ -425,7 +430,7 @@ if (_{short.lower()}.IsReady)
     <pre class="python">{"from QuantConnect.Indicators.CandlestickPatterns import " + full if full in candle else ""}
     
 # In Initialize()
-self.{short.lower()} = {full}{str(tuple(x for x, y in full_apis[full][index_min]["param"].items() if "Optional" not in y)[::-1]).replace("'", "").replace('"', '').replace(',)', ')')}
+{tddRegisterPy if short.lower() == "tdd" else f'''self.{short.lower()} = {full}{str(tuple(x for x, y in full_apis[full][index_min]["param"].items() if "Optional" not in y)[::-1]).replace("'", "").replace('"', '').replace(',)', ')')}'''}
 self.{short.lower()}.Updated += self.IndicatorUpdateMethod
 
 self.RegisterIndicator(symbol, self.{short.lower()}, Resolution.Daily)
@@ -447,7 +452,7 @@ private {full} _{short.lower()};
 {'private Symbol symbol;' if 'symbol' in args[full] else 'private List&lt;Symbol&gt; symbols;' if 'symbols' in args[full] else ''}
 
 // In Initialize()
-_{short.lower()} = new {full}{str(tuple(x for x, y in full_apis[full][index_min]["param"].items() if "Optional" not in y)[::-1]).replace("'", "").replace('"', '').replace(',)', ')').replace('name, ', '').replace('name', '')};
+{tddRegisterCSharp if short.lower() == "tdd" else f'''_{short.lower()} = new {full}{str(tuple(x for x, y in full_apis[full][index_min]["param"].items() if "Optional" not in y)[::-1]).replace("'", "").replace('"', '').replace(',)', ')').replace('name, ', '').replace('name', '')}'''};
 {'symbol = AddEquity("SPY").Symbol;' if 'symbol' in args[full] else 'symbols = new List&lt;Symbol&gt; {AddEquity("SPY").Symbol, AddEquity("QQQ").Symbol};' if 'symbols' in args[full] else ''}
 
 // In OnData()
@@ -462,7 +467,7 @@ if (_{short.lower()}.IsReady)
     <pre class="python">{"from QuantConnect.Indicators.CandlestickPatterns import " + full if full in candle else ""}
     
 # In Initialize()
-self.{short.lower()} = {full}{str(tuple(x for x, y in full_apis[full][index_min]["param"].items() if "Optional" not in y)[::-1]).replace("'", "").replace('"', '').replace(',)', ')').replace('name, ', '').replace('name', '')}
+{tddRegisterPy if short.lower() == "tdd" else f'''self.{short.lower()} = {full}{str(tuple(x for x, y in full_apis[full][index_min]["param"].items() if "Optional" not in y)[::-1]).replace("'", "").replace('"', '').replace(',)', ')').replace('name, ', '').replace('name', '')}'''}
 {'self.symbol = self.AddEquity("SPY").Symbol' if 'symbol' in args[full] else 'self.symbols = [self.AddEquity("SPY").Symbol, self.AddEquity("QQQ").Symbol]' if 'symbols' in args[full] else ''}
 
 # In OnData()
@@ -576,7 +581,7 @@ function ShowHide(event, idName) {{
 
 // In Initialize()
 {'var symbol = AddEquity("SPY").Symbol;' if 'symbol' in args[full] else 'var symbols = new[] {AddEquity("SPY").Symbol, AddEquity("QQQ").Symbol};' if 'symbols' in args[full] else ''}
-_{short.lower()} = {short}{str(args[full]).replace("'", "").replace('"', '').replace(',)', ')').replace('name, ', '').replace('name', '')};
+{tddRegisterCSharp if short.lower() == "tdd" else f'''_{short.lower()} = {short}{str(args[full]).replace("'", "").replace('"', '').replace(',)', ')').replace('name, ', '').replace('name', '')}'''};
 
 // In OnData()
 if (_{short.lower()}.IsReady)
@@ -590,7 +595,7 @@ if (_{short.lower()}.IsReady)
         html_file.write(f"""}}</pre>
     <pre class="python"># In Initialize()
 {'symbol = self.AddEquity("SPY").Symbol' if 'symbol' in args[full] else 'symbols = [self.AddEquity("SPY").Symbol, self.AddEquity("QQQ").Symbol]' if 'symbols' in args[full] else ''}
-self.{short.lower()} = self.{short}{str(args[full]).replace("'", "").replace('"', '').replace(',)', ')').replace('name, ', '').replace('name', '')}
+{tddRegisterPy if short.lower() == "tdd" else f'''self.{short.lower()} = self.{short}{str(args[full]).replace("'", "").replace('"', '').replace(',)', ')').replace('name, ', '').replace('name', '')}'''}
 
 # In OnData()
 if self.{short.lower()}.IsReady:
@@ -615,7 +620,7 @@ if self.{short.lower()}.IsReady:
 
 // In Initialize()
 {'var symbol = AddEquity("SPY").Symbol;' if 'symbol' in args[full] else 'var symbols = new[] {AddEquity("SPY").Symbol, AddEquity("QQQ").Symbol};' if 'symbols' in args[full] else ''}
-_{short.lower()} = {short}{str(args[full]).replace("'", "").replace('"', '').replace(',)', ')').replace('name, ', '').replace('name', '')};
+{tddRegisterCSharp if short.lower() == "tdd" else f'''_{short.lower()} = {short}{str(args[full]).replace("'", "").replace('"', '').replace(',)', ')').replace('name, ', '').replace('name', '')}'''};
 
 // In OnData()
 if (_{short.lower()}.IsReady)
@@ -629,7 +634,7 @@ if (_{short.lower()}.IsReady)
             html_file.write(f"""}}</pre>
     <pre class="python"># In Initialize()
 {'symbol = self.AddEquity("SPY").Symbol' if 'symbol' in args[full] else 'symbols = [self.AddEquity("SPY").Symbol, self.AddEquity("QQQ").Symbol]' if 'symbols' in args[full] else ''}
-self.{short.lower()} = self.{short}{str(args[full]).replace("'", "").replace('"', '').replace(',)', ')').replace('name, ', '').replace('name', '')}
+{tddRegisterPy if short.lower() == "tdd" else f'''self.{short.lower()} = self.{short}{str(args[full]).replace("'", "").replace('"', '').replace(',)', ')').replace('name, ', '').replace('name', '')}'''}
 
 # In OnData()
 if self.{short.lower()}.IsReady:

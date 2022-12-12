@@ -7,7 +7,8 @@
 
 // In Initialize()
 var symbol = AddEquity("SPY").Symbol;
-_tdd = TDD(symbol, period);
+_roc = new RateOfChange(1);
+_tdd = (new TargetDownsideDeviation(period)).Of(_roc);
 
 // In OnData()
 if (_tdd.IsReady)
@@ -16,7 +17,9 @@ if (_tdd.IsReady)
 }</pre>
     <pre class="python"># In Initialize()
 symbol = self.AddEquity("SPY").Symbol
-self.tdd = self.TDD(symbol, period)
+tdd = TargetDownsideDeviation(period)
+self.roc = RateOfChange(1)
+self.tdd = IndicatorExtensions.Of(tdd, self.roc)
 
 # In OnData()
 if self.tdd.IsReady:
