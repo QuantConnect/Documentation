@@ -7,4 +7,4 @@ echo "
 
 ?>
 
-<img class='img-responsive' src='https://cdn.quantconnect.com/i/tu/logo-wall.png' alt="A table of logos for the dataset providers">
+<img class='img-responsive' src='https://cdn.quantconnect.com/i/tu/logo-wall-2.png' alt="A table of logos for the dataset providers">
