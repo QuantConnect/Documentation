@@ -11,6 +11,6 @@
     <img class="docs-image" src="https://cdn.quantconnect.com/i/tu/pull-cloud-workspaces.png">
 </ol>
 
-<p>It takes a few minutes to create a new workspace directory and populate it with the <a href='/docs/v2/drafts/local-laboratory/initialization/workspace#02-Structure'>the initial file structure</a>. After the workspace directory is populated with the initial file structure, it pulls your cloud project files.</p>
+<p>It takes a few minutes to create a new workspace directory and populate it with the <a href='/docs/v2/drafts/local-laboratory/initialization/workspace#02-Structure'>the initial file structure</a>. After the workspace directory is populated with the initial file structure, it pulls <a href='https://www.quantconnect.com/docs/v2/our-platform/projects/getting-started#02-View-All-Projects'>your cloud project files</a>.</p>
 
 <?php echo file_get_contents(DOCS_RESOURCES."/cli/init/wsl.php"); ?>
