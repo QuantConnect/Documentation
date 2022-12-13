@@ -1,4 +1,4 @@
-<p>Follow these steps to pull one of your workspaces from the cloud and set it as your local workspace:</p>
+<p>Follow these steps to pull one of your <a href='https://www.quantconnect.com/docs/v2/our-platform/projects/getting-started#02-View-All-Projects'>cloud workspaces</a> and set it as your local workspace:</p>
 <ol>
     <li><a href="/docs/v2/drafts/local-laboratory/initialization/account#02-Log-In">Log in to the Local Lab</a>.</li>
     <li>In the left navigation menu, click the <img class="inline-icon" src="https://cdn.quantconnect.com/i/tu/vscode-qc-icon.jpg"> <span class="icon-name">QuantConnect</span> icon.</li>
