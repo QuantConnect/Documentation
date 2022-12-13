@@ -1,4 +1,4 @@
-<p>Follow these steps to set the workspace directory:</p>
+<p>Follow these steps to pull a workspace from the cloud and set it as your local workspace:</p>
 <ol>
     <li><a href="/docs/v2/drafts/local-laboratory/initialization/account#02-Log-In">Log in to the Local Lab</a>.</li>
     <li>In the left navigation menu, click the <img class="inline-icon" src="https://cdn.quantconnect.com/i/tu/vscode-qc-icon.jpg"> <span class="icon-name">QuantConnect</span> icon.</li>
