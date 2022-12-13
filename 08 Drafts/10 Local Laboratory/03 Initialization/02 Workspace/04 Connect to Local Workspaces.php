@@ -1,1 +1,1 @@
-
+<p>If you have pulled a cloud workspace before or have set up a <a href='/docs/v2/lean-cli/initialization/workspace'>CLI workspace</a>, you can click <span class="button-name">Use Existing Organization Workspace</span>.</p>
