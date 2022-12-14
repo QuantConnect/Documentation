@@ -1,5 +1,5 @@
 <?php
-$getRemoveMemberText = function($openProjectLink, $isLocal)
+$getRemoveMemberText = function($openProjectLink, $deleteProjectLink, $isLocal)
 {
 
     echo "
@@ -20,7 +20,7 @@ $getRemoveMemberText = function($openProjectLink, $isLocal)
     <li>Click <span class='button-name'>Remove User</span>.</li>
 </ol>
 
-</p>To remove yourself as a collaborator from a project you don't own, <a href='/docs/v2/our-platform/projects/getting-started#11-Delete-Projects'>delete the project</a>.</p>
+</p>To remove yourself as a collaborator from a project you don't own, <a href='{$deleteProjectLink}'>delete the project</a>.</p>
 
     ";
 }
