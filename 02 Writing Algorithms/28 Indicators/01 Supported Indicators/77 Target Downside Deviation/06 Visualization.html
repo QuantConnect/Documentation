@@ -3,11 +3,12 @@
 <p>To plot indicator values, in the <code>OnData</code> event handler, call the <code>Plot</code> method.</p>
                         
 <div class="section-example-container">
-    <pre class="csharp">private TargetDownsideDeviation _tdd;
+    <pre class="csharp">private RateOfChange _roc;
+private TargetDownsideDeviation _tdd;
 
 // In Initialize()
 var symbol = AddEquity("SPY").Symbol;
-_roc = new RateOfChange(1);
+_roc = ROC(symbol, 1);
 _tdd = (new TargetDownsideDeviation(period)).Of(_roc);
 
 // In OnData()
@@ -18,7 +19,7 @@ if (_tdd.IsReady)
     <pre class="python"># In Initialize()
 symbol = self.AddEquity("SPY").Symbol
 tdd = TargetDownsideDeviation(period)
-self.roc = RateOfChange(1)
+self.roc = self.ROC(symbol, 1)
 self.tdd = IndicatorExtensions.Of(tdd, self.roc)
 
 # In OnData()
