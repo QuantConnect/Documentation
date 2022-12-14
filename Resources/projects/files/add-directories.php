@@ -2,7 +2,7 @@
 $getAddDirectoriesText = function($videoLink, $isDesktopDocs, $openProjectLink)
 {        
     $navSide = $isDesktopDocs ? "left" : "right";
-    $sectionName = $isDesktopDocs ? "<span class='placeholder-text'>projectName</span>" : "Project (Workspace)";
+    $sectionName = $isDesktopDocs ? "QC (WORKSPACE)" : "WORKSPACE (WORKSPACE)";
     echo "
 <p>Follow these steps to add a directory to a project:</p>
 <ol>
