@@ -11,7 +11,7 @@ $getChangeBranchesText = function($isDesktopDocs, $openProjectLink, $createProje
     if ($isDesktopDocs)
     {
         echo "
-<li>In the left navigation menu, click the <img class='inline-icon' src='https://cdn.quantconnect.com/i/tu/local-lab-projects-tab.jpg'> <span class='icon-name'>Project</span> icon.</li>
+<li>In the left navigation menu, click the <img class='inline-icon' src='https://cdn.quantconnect.com/i/tu/vscode-qc-icon.jpg'> <span class='icon-name'>QuantConnect</span> icon.</li>
         "; 
     }
   
