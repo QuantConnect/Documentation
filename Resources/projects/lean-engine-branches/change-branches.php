@@ -5,7 +5,7 @@ $getChangeBranchesText = function($isDesktopDocs, $openProjectLink, $createProje
 <p>Follow these steps to change the LEAN engine branch that runs your backtests and live trading algorithms:</p>
 
 <ol>
-    <li><a href='{$openProjectLink}'>Open the project</a> for which you want to change the Lean engine branch.</li>
+    <li><a href='{$openProjectLink}'>Open a project</a>.</li>
     ";
   
     if ($isDesktopDocs)
