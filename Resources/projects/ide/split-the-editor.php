@@ -7,7 +7,7 @@ $getSplitText = function($isDesktopDocs, $openProjectLink, $gifLink)
 <ol>
     <li><a href='{$openProjectLink}'>Open a project</a>.</li>
     <li>In the {$navSide} navigation bar, click the <img class='inline-icon' src='https://cdn.quantconnect.com/i/tu/local-lab-explorer-icon.jpg'> <span class='icon-name'>Explorer</span> icon.</li>
-    <li>In the <span class='page-section-name placeholder-text'>projectName</span> section, drag and drop the files you want to open.</li>
+    <li>In the <span class='page-section-name'>QC (Workspace)</span> section, drag and drop the files you want to open.</li>
 </ol>
 
 <img class='docs-image' src='{$gifLink}'>
