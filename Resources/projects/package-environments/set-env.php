@@ -13,7 +13,7 @@ $getSetEnvText = function($isDesktopDocs, $projectLink)
         "; 
     }
     echo "
-    <li>In the Project panel, click the <span class='field-name'>LEAN Environment</span> field and then select an environment from the drop-down menu.</li>
+    <li>In the Project panel, click the <span class='field-name'>Python Foundation</span> field and then select an environment from the drop-down menu.</li>
 </ol>
     ";
 }
