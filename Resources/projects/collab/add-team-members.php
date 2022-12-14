@@ -21,7 +21,7 @@ $getAddMembersText = function($openProjectLink, $sharedLibraryLink, $isLocal)
     echo "
     <li>In the Collaborate section of the Project panel, click <span class='button-name'>Add Collaborator</span>.</li>
     <li>Click the <span class='field-name'>Select User...</span> field and then click a member from the drop-down menu.</li>
-    <li>If you want to give the member live control of the project, click the <span class='box-name'>Live Control</span> check box.</li>
+    <li>If you want to give the member live control of the project, select the <span class='box-name'>Live Control</span> check box.</li>
     <li>Click <span class='button-name'>Add User</span>.</li>
     <p>The member you add receives an email with a link to the project.</p>
 </ol>
