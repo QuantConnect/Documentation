@@ -2,7 +2,7 @@
 $getAddFilesText = function($videoLink, $isDesktopDocs, $openProjectLink)
 {        
     $navSide = $isDesktopDocs ? "left" : "right";
-    $sectionName = $isDesktopDocs ? "QC (WORKSPACE)" : "WORKSPACE (WORKSPACE)";
+    $sectionName = $isDesktopDocs ? "QC (Workspace)" : "Workspace (Workspace)";
     echo "
 <p>Follow these steps to add a file to a project:</p>
 <ol>
