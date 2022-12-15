@@ -1,5 +1,3 @@
-<p>If you have an M1 chip on a Mac, local live trading with IB isn't currently available. To be notified when it's available, subscribe to <a rel='nofollow' target="_blank" href='https://github.com/QuantConnect/Lean/issues/6707'>GitHub Issue #6707</a>.</p>
-
 <?php
 include(DOCS_RESOURCES."/brokerages/cli-deployment/deploy-local-algorithms.php");
 
