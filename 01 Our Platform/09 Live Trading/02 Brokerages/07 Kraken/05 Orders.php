@@ -1,4 +1,4 @@
-<p>We model the Kraken API by supporting several order types, supporting order properties, and not supporting order updates. When you deploy live algorithms, you can place manual orders through the IDE.</p>
+<p>We model the Kraken API by supporting several order types, supporting order properties, and not supporting order updates. When you deploy live algorithms, you can <a href='/docs/v2/our-platform/live-trading/algorithm-control#03-Place-Manual-Trades'>place manual orders</a> through the IDE.</p>
 
 <h4>Order Types</h4>
 <p>The following table describes the available order types for each asset class that Kraken supports:</p>

@@ -1,4 +1,4 @@
-<p>The <code>DefaultBrokerageModel</code> uses sets the buying power model based on the asset class of the security. The following table shows the default buying power model of each asset class:</p>
+<p>The <code>DefaultBrokerageModel</code> sets the buying power model based on the asset class of the security. The following table shows the default buying power model of each asset class:</p>
 
 <?php echo file_get_contents(DOCS_RESOURCES."/brokerages/default-buying-power-models.html"); ?>
 
