@@ -55,7 +55,6 @@ self.StopMarketOrder(self.symbol, quantity, stop_price)
 self.StopLimitOrder(self.symbol, quantity, stop_price, limit_price)</pre>
 </div>
 
-<h4>Order Properties</h4>
 
 <h4>Time In Force</h4>
 <p>We model custom order properties from the TD Ameritrade API. TD Ameritrade supports the following <code>TimeInForce</code> instructions:</p>
