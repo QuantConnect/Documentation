@@ -4,7 +4,7 @@ $getRemoveText = function($openProjectLink, $isLocal)
     echo "
 <p>Follow these steps to remove a library from your project:</p>
 <ol>
-    <li><a href='{$openProjectLink}'>Open the project</a> that contains the library that you want to remove.</li>
+    <li><a href='{$openProjectLink}'>Open the project</a> that contains the library you want to remove.</li>
     ";
     
     if ($isLocal)
