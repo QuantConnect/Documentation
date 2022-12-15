@@ -1,4 +1,4 @@
-<p>We model the Tradier API by supporting several order types and the <code>TimeInForce</code> order property. Tradier partially supports order updates, but does not support trading during extended market hours. When you deploy live algorithms, you can place manual orders through the IDE.</p>
+<p>We model the Tradier API by supporting several order types and the <code>TimeInForce</code> order property. Tradier partially supports order updates, but does not support trading during extended market hours. When you deploy live algorithms, you can <a href='/docs/v2/our-platform/live-trading/algorithm-control#03-Place-Manual-Trades'>place manual orders</a> through the IDE.</p>
 
 <h4>Order Types</h4>
 
@@ -155,3 +155,5 @@ ticket = self.LimitOrder(self.symbol, new_quantity, new_limit_price)</pre>
 <h4>Automatic Cancellations</h4>
 <p>Tradier automatically cancels the open orders that your algorithm has for securities that perform a reverse split.</p>
 
+<h4>Handling Splits</h4>
+<p>In live trading, if you're using raw <a href='/docs/v2/writing-algorithms/securities/asset-classes/us-equity/requesting-data#11-Data-Normalization'>data normalization</a> and you have active limit, stop limit, or stop market orders in the market for a US Equity when a <a href='/docs/v2/writing-algorithms/securities/asset-classes/us-equity/corporate-actions#02-Splits'>stock split</a> occurs, the quantity, limit price, and stop price of your orders are automatically adjusted to reflect the stock split. If it's a reverse stock split, all your active orders for the security are cancelled.</p>

@@ -1,4 +1,4 @@
-<p>We model the IB API by supporting several order types, order properties, and order updates. When you deploy live algorithms, you can place manual orders through the IDE.</p>
+<p>We model the IB API by supporting several order types, order properties, and order updates. When you deploy live algorithms, you can <a href='/docs/v2/our-platform/live-trading/algorithm-control#03-Place-Manual-Trades'>place manual orders</a> through the IDE.</p>
 
 <h4>Order Types</h4>
 <p>The following table describes the order types that IB supports. For specific details about each order type, refer to the IB documentation.<br></p>
@@ -176,3 +176,6 @@ ticket.Update(update_fields)</pre>
 
 <h4>Financial Advisor Group Orders</h4>
 <p>To place FA group orders, see <a href='/docs/v2/our-platform/live-trading/brokerages/interactive-brokers#03-Financial-Advisors'>Financial Advisors</a>.</p>
+
+<h4>Handling Splits</h4>
+<p>In live trading, if you're using raw <a href='/docs/v2/writing-algorithms/securities/asset-classes/us-equity/requesting-data#11-Data-Normalization'>data normalization</a> and you have active limit, stop limit, or stop market orders in the market for a US Equity when a <a href='/docs/v2/writing-algorithms/securities/asset-classes/us-equity/corporate-actions#02-Splits'>stock split</a> occurs, the quantity, limit price, and stop price of your orders are automatically adjusted to reflect the stock split.</p>

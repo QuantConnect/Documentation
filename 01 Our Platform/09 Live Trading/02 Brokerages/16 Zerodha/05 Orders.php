@@ -1,4 +1,4 @@
-<p>We model the Zerodha API by supporting several order types, supporting order properties, and order updates. When you deploy live algorithms, you can place manual orders through the IDE.</p>
+<p>We model the Zerodha API by supporting several order types, supporting order properties, and order updates. When you deploy live algorithms, you can <a href='/docs/v2/our-platform/live-trading/algorithm-control#03-Place-Manual-Trades'>place manual orders</a> through the IDE.</p>
 
 <h4>Order Types</h4>
 <p>The following table describes the available order types for each asset class that Zerodha supports:</p>
@@ -168,3 +168,5 @@ updateSettings.LimitPrice = new_limit_price
 ticket.Update(updateSettings)</pre>
 </div>
 
+<h4>Handling Splits</h4>
+<p>In live trading, if you're using raw <a href='/docs/v2/writing-algorithms/securities/asset-classes/india-equity/requesting-data#09-Data-Normalization'>data normalization</a> and you have active limit, stop limit, or stop market orders in the market for a US Equity when a <a href='/docs/v2/writing-algorithms/securities/asset-classes/india-equity/corporate-actions#02-Splits'>stock split</a> occurs, the quantity, limit price, and stop price of your orders are automatically adjusted to reflect the stock split.</p>

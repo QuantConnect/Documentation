@@ -190,5 +190,5 @@ ticket.Update(update_fields)</pre>
 </div>
 
 <h4>Handling Splits</h4>
-<p>If you have limit orders in an order book and a stock split occurs, the <code>DefaultBrokerageModel</code> automatically adjusts the quantity, limit price, and stop price of your orders.</p>
+<p>In live trading, if you're using raw <a href='/docs/v2/writing-algorithms/securities/asset-classes/us-equity/requesting-data#11-Data-Normalization'>data normalization</a> and you have active limit, stop limit, or stop market orders in the market for a US Equity when a <a href='/docs/v2/writing-algorithms/securities/asset-classes/us-equity/corporate-actions#02-Splits'>stock split</a> occurs, the quantity, limit price, and stop price of your orders are automatically adjusted to reflect the stock split.</p>
 
