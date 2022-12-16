@@ -12,7 +12,7 @@
         <tr>
             <td><code>SupportedResolutions</code></td>
 	    <td><code>List&lt;Resolution&gt;</code></td>
-            <td>Gets the supported resolutions for this dataset. <a href='/docs/v2/our-platform/datasets/contributing-datasets/defining-data-sources/universe'>Universe data</a> must have hour or daily resolution.</td>
+            <td>Gets the supported resolutions for this dataset. <a href='/docs/v2/lean-engine/contributing-datasets/defining-data-sources/universe'>Universe data</a> must have hour or daily resolution.</td>
         </tr>
         <tr>
             <td><code>DefaultResolution</code></td>
