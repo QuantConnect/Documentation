@@ -1,0 +1,142 @@
+<p>The following sections describe components of the brokerage implementation in the <span class='private-file-name'>Lean.Brokerages.&lt;brokerageName&gt;/QuantConnect.&lt;brokerageName&gt;/&lt;brokerageName&gt;Brokerage.cs</span> file.</p>
+
+<h4>Base Class</h4>
+
+<p>Using a base class is optional but allows you to reuse event methods we have provided. The <code>Brokerage</code> object implements these event handlers and marks the remaining items as <code>abstract</code>.</p>
+
+<p>LEAN provides an optional base class <code>BaseWebsocketsBrokerage</code> which seeks to connect and maintain a socket connection and pass messages to an event handler. As each socket connection is different, carefully consider before using this class. It might be easier and more maintainable to simply maintain your own socket connection.</p>
+
+<p>Brush up on the <code>partial</code> class keyword. It will help you break-up your class later.</p>
+
+
+<h4>Class Constructor</h4>
+<p>Once the scaffolding brokerage methods are in place (overrides of the abstract base classes), you can focus on the class constructor. If you are using a brokerage SDK, create a new instance of their library and store it to a class variable for later use. You should define the constructor so that it accepts all the arguments you pass it during the <code>CreateBrokerage</code> method you implemented in the <span class='private-file-name'>Lean.Brokerages.&lt;brokerageName&gt;/QuantConnect.&lt;brokerageName&gt;/&lt;brokerageName&gt;BrokerageFactory.cs</span> file.</p>
+
+<p>The following table provides some example implementations of the brokerage class constructor:</p>
+
+<table class="table qc-table">
+	<thead>
+		<tr>
+			<th>Brokerage</th>
+			<th>Description</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td><a rel='nofollow' target='_blank' href="https://github.com/QuantConnect/Lean.Brokerages.InteractiveBrokers/blob/master/QuantConnect.InteractiveBrokersBrokerage/InteractiveBrokersBrokerage.cs#L282">Interactive Brokers</a></td>
+			<td>Launches an external process to create the brokerage.</td>
+		</tr>
+		<tr>
+			<td><a href="https://github.com/QuantConnect/Lean.Brokerages.OANDA/blob/master/QuantConnect.OandaBrokerage/OandaBrokerage.cs#L76">OANDA</a></td>
+			<td>Creates an SDK instance and assigns internal event handlers.</td>
+		</tr>
+		<tr>
+			<td><a href="https://github.com/QuantConnect/Lean/blob/master/Brokerages/BaseWebsocketsBrokerage.cs#L91">Coinbase</a></td>
+			<td>Offloads constructor work to <code>BrokerageFactory</code> and uses the <code>BaseWebsocketBrokerage</code> base class.</td>
+		</tr>
+	</tbody>
+</table>
+
+
+<h4 class="implementation">string Name</h4>
+
+<p>The <code>Name</code> property is a human readable brokerage name for debugging and logging. For US Equity-regulated brokerages, convention states this name generally ends in the word "Brokerage".</p>
+
+
+<h4 class="implementation">void Connect()</h4>
+<p>The <code>Connect</code> method triggers logic for establishing a link to your brokerage. Normally, we don't do this in the constructor because it makes algorithms and brokerages die in the <code>BrokerageFactory</code> process. For most brokerages, to establish a connection with the brokerage, call the connect method on your SDK library. </p>
+
+<p>The following table provides some example implementations of the <code>Connect</code> method:</p>
+
+<table class="table qc-table">
+	<thead>
+		<tr>
+			<th>Brokerage</th>
+			<th>Description</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td><a rel='nofollow' target='_blank' href="https://github.com/QuantConnect/Lean.Brokerages.InteractiveBrokers/blob/master/QuantConnect.InteractiveBrokersBrokerage/InteractiveBrokersBrokerage.cs#L674">Interactive Brokers</a></td>
+			<td>Connects to an external process with the brokerage SDK.</td>
+		</tr>
+		<tr>
+			<td><a rel='nofollow' target='_blank' href="https://github.com/QuantConnect/Lean.Brokerages.OANDA/blob/master/QuantConnect.OandaBrokerage/OandaBrokerage.cs#L100">OANDA</a></td>
+			<td>Simple example that calls the brokerage SDK.</td>
+		</tr>
+		<tr>
+			<td><a rel='nofollow' target='_blank' href="https://github.com/QuantConnect/Lean.Brokerages.CoinbasePro/blob/master/QuantConnect.GDAXBrokerage/GDAXBrokerage.cs#L207">Coinbase</a></td>
+			<td>Establishes the websocket connection and monitoring in a thread.</td>
+		</tr>
+	</tbody>
+</table>
+
+<p>If a soft failure occurs like a lost internet connection or a server 502 error, create a new <code>BrokerageMessageEvent</code> so you allow the algorithm to <a href='https://www.quantconnect.com/docs/v2/writing-algorithms/live-trading/brokerages#05-Monitor-Brokerage-Messages'>handle the brokerage messages</a>. For example, Interactive Brokers resets socket connections at different times globally, so users in other parts of the world can get disconnected at strange times of the day. Knowing this, they may elect to have their algorithm ignore specific disconnection attempts.</p>
+
+<p>If a hard-failure occurs like an incorrect password or an unsupported API method, throw a real exception with details of the error.</p>
+
+
+
+<h4 class="implementation">void Disconnect()</h4>
+<p>The <code>Disconnect</code> method is called at the end of the algorithm before LEAN shuts down.</p>
+
+
+<h4 class="implementation">bool IsConnected</h4>
+<p>The <code>IsConnected</code> property is a boolean that indicates the state of the brokerage connection. Depending on your connection style, this may be automatically handled for you and simply require passing back the value from your SDK. Alternatively, you may need to maintain your own connection state flag in your brokerage class.</p>
+
+
+
+<h4 class="implementation">bool PlaceOrder(Order order)</h4>
+<p>The <code>PlaceOrder</code> method should send a new LEAN order to the brokerage and report back the success or failure. The <code>PlaceOrder</code> method accepts a generic <code>Order</code> object, which is the base class for all order types. The first step of placing an order is often to convert it from LEAN format into the format that the brokerage SDK requires. Your brokerage implementation should aim to support as many <a href='https://www.quantconnect.com/docs/v2/writing-algorithms/trading-and-orders/order-types'>LEAN order types</a> as possible. There may be other order types in the brokerage, but implementing them is considered out of scope of a rev-0 brokerage implementation.</p>
+
+<p>Converting order types is an error prone process and you should carefully review each order after you've ported it. Some brokerages have many properties on their orders, so check each required property for each order. To simplify the process, define an internal <code>BrokerOrder ConvertOrder(Order order)</code> method to convert orders between LEAN format and your brokerage format. Part of the order conversion might be converting the brokerage ticker (for example, LEAN name "EURUSD" vs OANDA name "EUR/USD"). This is done with a <code>BrokerageSymbolMapper</code> class. You can add this functionality later. For now, pass a request for the brokerage ticker to the stub implementation.</p>
+
+<p>Once the order type is converted, use the <code>IsConnected</code> to check if you're connected before placing the order. If you're not connected, throw an exception to halt the algorithm. Otherwise, send the order to your brokerage submit API. Oftentimes, you receive an immediate reply indicating the order was successfully placed. The <code>PlaceOrder</code> method should return true when the order is accepted by the brokerage. If the order is invalid, immediately rejected, or there is an internet outage, the method should return false.</p>
+
+
+
+<h4 class="implementation">bool UpdateOrder(Order order)</h4>
+<p>The <code>UpdateOrder</code> method transmits an update request to the API and returns true if it was successfully processed. Updating an order is one of the most tricky part of the brokerage implementations. You can easily run into synchronization issues.</p>
+
+<p>The following table provides some example implementations of the <code>UpdateOrder</code> method:</p>
+
+<table class="table qc-table">
+	<thead>
+		<tr>
+			<th>Brokerage</th>
+			<th>Description</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td><a rel='nofollow' target='_blank' href="https://github.com/QuantConnect/Lean.Brokerages.InteractiveBrokers/blob/master/QuantConnect.InteractiveBrokersBrokerage/InteractiveBrokersBrokerage.cs#L361">Interactive Brokers</a></td>
+			<td>Updates multiple asset classes with an external application.</td>
+		</tr>
+		<tr>
+			<td><a rel='nofollow' target='_blank' href="https://github.com/QuantConnect/Lean.Brokerages.OANDA/blob/master/QuantConnect.OandaBrokerage/OandaBrokerage.cs#L201">OANDA</a></td>
+			<td>Simple example that calls the brokerage SDK.</td>
+		</tr>
+		<tr>
+			<td><a rel='nofollow' target='_blank' href="https://github.com/QuantConnect/Lean.Brokerages.CoinbasePro/blob/master/QuantConnect.GDAXBrokerage/GDAXBrokerage.cs#L169">Coinbase</a></td>
+			<td>Throws an exception because order updates are not supported.</td>
+		</tr>
+	</tbody>
+</table>
+
+
+<h4 class="implementation">bool CancelOrder(Order order)</h4>
+
+<h4 class="implementation">bool UpdateOrder(Order order)</h4>
+
+<h4 class="implementation">List&lt;Order&gt; GetOpenOrders()</h4>
+
+<h4 class="implementation">List&lt;Holding&gt; GetAccountHoldings()</h4>
+
+<h4 class="implementation">List&lt;Cash&gt; GetCashBalance()</h4>
+
+<h4 class="implementation">bool AccountInstantlyUpdated</h4>
+
+<h4 class="implementation">IEnumerable&lt;BaseData&gt; GetHistory(HistoryRequest request)</h4>
+
+<h4 class="implementation">bool AccountInstantlyUpdated</h4>
+
