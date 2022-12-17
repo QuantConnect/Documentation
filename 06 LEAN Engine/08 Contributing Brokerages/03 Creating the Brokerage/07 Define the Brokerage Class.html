@@ -38,12 +38,12 @@
 </table>
 
 
-<h4 class="implementation">string Name</h4>
+<h4><code>string Name</code></h4>
 
 <p>The <code>Name</code> property is a human-readable brokerage name for debugging and logging. For US Equity-regulated brokerages, convention states this name generally ends in the word "Brokerage".</p>
 
 
-<h4 class="implementation">void Connect()</h4>
+<h4><code>void Connect()</code></h4>
 <p>The <code>Connect</code> method triggers logic for establishing a link to your brokerage. Normally, we don't do this in the constructor because it makes algorithms and brokerages die in the <code>BrokerageFactory</code> process. For most brokerages, to establish a connection with the brokerage, call the connect method on your SDK library. </p>
 
 <p>The following table provides some example implementations of the <code>Connect</code> method:</p>
@@ -77,16 +77,16 @@
 
 
 
-<h4 class="implementation">void Disconnect()</h4>
+<h4><code>void Disconnect()</code></h4>
 <p>The <code>Disconnect</code> method is called at the end of the algorithm before LEAN shuts down.</p>
 
 
-<h4 class="implementation">bool IsConnected</h4>
+<h4><code>bool IsConnected</code></h4>
 <p>The <code>IsConnected</code> property is a boolean that indicates the state of the brokerage connection. Depending on your connection style, this may be automatically handled for you and simply require passing back the value from your SDK. Alternatively, you may need to maintain your own connection state flag in your brokerage class.</p>
 
 
 
-<h4 class="implementation">bool PlaceOrder(Order order)</h4>
+<h4><code>bool PlaceOrder(Order order)</code></h4>
 <p>The <code>PlaceOrder</code> method should send a new LEAN order to the brokerage and report back the success or failure. The <code>PlaceOrder</code> method accepts a generic <code>Order</code> object, which is the base class for all order types. The first step of placing an order is often to convert it from LEAN format into the format that the brokerage SDK requires. Your brokerage implementation should aim to support as many <a href="https://www.quantconnect.com/docs/v2/writing-algorithms/trading-and-orders/order-types">LEAN order types</a> as possible. There may be other order types in the brokerage, but implementing them is considered out of scope of a rev-0 brokerage implementation.</p>
 
 <p>Converting order types is an error-prone process and you should carefully review each order after you've ported it. Some brokerages have many properties on their orders, so check each required property for each order. To simplify the process, define an internal <code>BrokerOrder ConvertOrder(Order order)</code> method to convert orders between LEAN format and your brokerage format. Part of the order conversion might be converting the brokerage ticker (for example, LEAN name "EURUSD" vs OANDA name "EUR/USD"). This is done with a <code>BrokerageSymbolMapper</code> class. You can add this functionality later. For now, pass a request for the brokerage ticker to the stub implementation.</p>
@@ -95,7 +95,7 @@
 
 
 
-<h4 class="implementation">bool UpdateOrder(Order order)</h4>
+<h4><code>bool UpdateOrder(Order order)</code></h4>
 <p>The <code>UpdateOrder</code> method transmits an update request to the API and returns true if it was successfully processed. Updating an order is one of the most tricky parts of brokerage implementations. You can easily run into synchronization issues.</p>
 
 <p>The following table provides some example implementations of the <code>UpdateOrder</code> method:</p>
@@ -124,19 +124,19 @@
 </table>
 
 
-<h4 class="implementation">bool CancelOrder(Order order)</h4>
+<h4><code>bool CancelOrder(Order order)</code></h4>
 
-<h4 class="implementation">bool UpdateOrder(Order order)</h4>
+<h4><code>bool UpdateOrder(Order order)</code></h4>
 
-<h4 class="implementation">List&lt;Order&gt; GetOpenOrders()</h4>
+<h4><code>List&lt;Order&gt; GetOpenOrders()</code></h4>
 
-<h4 class="implementation">List&lt;Holding&gt; GetAccountHoldings()</h4>
+<h4><code>List&lt;Holding&gt; GetAccountHoldings()</code></h4>
 
-<h4 class="implementation">List&lt;Cash&gt; GetCashBalance()</h4>
+<h4><code>List&lt;Cash&gt; GetCashBalance()</code></h4>
 
-<h4 class="implementation">bool AccountInstantlyUpdated</h4>
+<h4><code>bool AccountInstantlyUpdated</code></h4>
 
-<h4 class="implementation">IEnumerable&lt;BaseData&gt; GetHistory(HistoryRequest request)</h4>
+<h4><code>IEnumerable&lt;BaseData&gt; GetHistory(HistoryRequest request)</code></h4>
 
-<h4 class="implementation">bool AccountInstantlyUpdated</h4>
+<h4><code>bool AccountInstantlyUpdated</code></h4>
 
