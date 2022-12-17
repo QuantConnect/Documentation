@@ -4,7 +4,7 @@ include(DOCS_RESOURCES."/brokerages/cli-deployment/deploy-cloud-algorithms.php")
 $brokerageDetails = "
 <li>Enter your TD Ameritrade credentials.
 <div class='cli section-example-container'>
-<pre>$ lean live \"My Project\"
+<pre>$ lean cloud live \"My Project\"
 API key:
 OAuth Access Token: 
 Account number: </pre>
