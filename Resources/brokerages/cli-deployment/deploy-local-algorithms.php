@@ -34,6 +34,7 @@ Select a brokerage:
 11) Atreyu
 12) Trading Technologies
 13) Kraken
+14) TD Ameritrade
 Enter an option: {$brokeragePromptInput}</pre>
 </div>
             </li>
@@ -55,9 +56,10 @@ Select a data feed:
 8) Samco
 9) Terminal Link
 10) Kraken
-11) IQFeed
-12) Polygon Data Feed
-13) Custom data only
+11) TD Ameritrade
+12) IQFeed
+13) Polygon Data Feed
+14) Custom data only
 To enter multiple options, separate them with comma.:</pre>
             </div>
             </li>";
