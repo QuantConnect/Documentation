@@ -3,7 +3,7 @@
 <h4 class='python'>timedelta Periods</h4>
 <h4 class='csharp'>TimeSpan Periods</h4>
 
-<p>If you define the time period with a <code class='python'>timedelta</code><code class='csharp'>TimeSpan</code> object, the time starts from the beginning of the day, not the beginning of the market open or the first data point. For example, if you use <code class='python'>timedelta(minutes=7)</code><code class='csharp'>TimeSpan.FromMinutes(7)</code>, the 7-minute counter starts at midnight. Additionally, the time period is relative to the <a href='/docs/v2/writing-algorithms/key-concepts/time-modeling/time-zones#05-Data-Time-Zone'>data time zone</a>, not the <a href='/docs/v2/writing-algorithms/key-concepts/time-modeling/time-zones#04-Algorithm-Time-Zone'>algorithm time zone</a>. If you consolidate Crypto data into daily bars, the event handler receives the consolidated bars at midnight 12:00 AM Coordinated Universal Time (UTC), regardless of the algorithm time zone.</p>
+<p>If you define the time period with a <code class='python'>timedelta</code><code class='csharp'>TimeSpan</code> object, the time starts from the beginning of the day, not the beginning of the market open or the first data point. For example, if you use <code class='python'>timedelta(minutes=7)</code><code class='csharp'>TimeSpan.FromMinutes(7)</code>, the 7-minute counter starts at midnight. Additionally, the time period is relative to the <a href='/docs/v2/writing-algorithms/getting-started/time-modeling/time-zones#05-Data-Time-Zone'>data time zone</a>, not the <a href='/docs/v2/writing-algorithms/getting-started/time-modeling/time-zones#04-Algorithm-Time-Zone'>algorithm time zone</a>. If you consolidate Crypto data into daily bars, the event handler receives the consolidated bars at midnight 12:00 AM Coordinated Universal Time (UTC), regardless of the algorithm time zone.</p>
 
 <h4>Resolution Periods</h4>
 
@@ -44,7 +44,7 @@
     </tbody>
 </table>
 
-<p>If you need something more specific than the preceding time periods, define a method to set the start time and period of the consolidated bars. The method should receive a <code class='python'>datetime</code><code class='csharp'>DateTime</code> object that's based in the <a href='/docs/v2/writing-algorithms/key-concepts/time-modeling/time-zones#05-Data-Time-Zone'>data time zone</a> and should return a <code>CalendarInfo</code> object, which contains the start time of the bar in the data time zone and the duration of the consolidation period. The following example demonstrates how to create a custom consolidator for weekly bars:</p>
+<p>If you need something more specific than the preceding time periods, define a method to set the start time and period of the consolidated bars. The method should receive a <code class='python'>datetime</code><code class='csharp'>DateTime</code> object that's based in the <a href='/docs/v2/writing-algorithms/getting-started/time-modeling/time-zones#05-Data-Time-Zone'>data time zone</a> and should return a <code>CalendarInfo</code> object, which contains the start time of the bar in the data time zone and the duration of the consolidation period. The following example demonstrates how to create a custom consolidator for weekly bars:</p>
 
 <div class="section-example-container">
     <pre class="csharp">var consolidator = new TradeBarConsolidator(datetime => {
@@ -77,7 +77,7 @@ def consolidation_period(self, dt: datetime) -&gt; CalendarInfo:
 consolidator = TradeBarConsolidator(self.consolidation_period)</pre>
 </div>
 
-<p>If you use a custom consolidation period method, LEAN passes the consolidated bar to the consolidation handler when the consolidation period ends. The <code>Time</code> and <code>EndTime</code> properties of the consolidated bar reflect the data time zone, but the <code>Time</code> property of the algorithm still reflects the <a href='/docs/v2/writing-algorithms/key-concepts/time-modeling/time-zones#04-Algorithm-Time-Zone'>algorithm time zone</a>.</p>
+<p>If you use a custom consolidation period method, LEAN passes the consolidated bar to the consolidation handler when the consolidation period ends. The <code>Time</code> and <code>EndTime</code> properties of the consolidated bar reflect the data time zone, but the <code>Time</code> property of the algorithm still reflects the <a href='/docs/v2/writing-algorithms/getting-started/time-modeling/time-zones#04-Algorithm-Time-Zone'>algorithm time zone</a>.</p>
 
 <h4>Create Time Period Consolidators</h4>
 
@@ -120,7 +120,7 @@ self.custom_consolidator = TradeBarConsolidator(self.CustomPeriod)</pre>
 </div>
 
 <h4>Shortcut Method</h4>
-<p>The <code>Consolidate</code> method is a helper method to create time period consolidators for algorithms with static universes. With just one line of code, you can create data in any time period with a <code class='python'>timedelta</code><code class='csharp'>TimeSpan</code>, <code>Resolution</code>, or <code>CalendarInfo</code> object. To create a consolidator with the shortcut method, call <code>Consolidate</code> with a <code>Symbol</code>, time period, and <a href='/docs/v2/writing-algorithms/consolidating-data/key-concepts#04-Receive-Consolidated-Bars'>event handler</a>. If you don't pass the method a <code>Symbol</code>, it looks up the <code>Symbol</code> internally.</p>
+<p>The <code>Consolidate</code> method is a helper method to create time period consolidators for algorithms with static universes. With just one line of code, you can create data in any time period with a <code class='python'>timedelta</code><code class='csharp'>TimeSpan</code>, <code>Resolution</code>, or <code>CalendarInfo</code> object. To create a consolidator with the shortcut method, call <code>Consolidate</code> with a <code>Symbol</code>, time period, and <a href='/docs/v2/writing-algorithms/consolidating-data/getting-started#04-Receive-Consolidated-Bars'>event handler</a>. If you don't pass the method a <code>Symbol</code>, it looks up the <code>Symbol</code> internally.</p>
 
 <div class="section-example-container">
 <pre class="csharp">// Consolidate 1min SPY -&gt; 45min Bars
@@ -156,4 +156,4 @@ _consolidator = Consolidate(symbol, Resolution.Hour, TickType.Quote, Consolidati
 self.consolidator = self.Consolidate(symbol, Resolution.Hour, TickType.Quote, self.consolidation_handler)</pre>
 </div>
 
-<p>When the consolidator receives a bar that reaches or passes the consolidation period, it passes the consolidated bar to the <a href='/docs/v2/writing-algorithms/consolidating-data/key-concepts#04-Receive-Consolidated-Bars'>event handler</a>.</p>
+<p>When the consolidator receives a bar that reaches or passes the consolidation period, it passes the consolidated bar to the <a href='/docs/v2/writing-algorithms/consolidating-data/getting-started#04-Receive-Consolidated-Bars'>event handler</a>.</p>
