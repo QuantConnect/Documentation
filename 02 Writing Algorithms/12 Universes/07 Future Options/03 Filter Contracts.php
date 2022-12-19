@@ -2,7 +2,7 @@
 
 <?php echo file_get_contents(DOCS_RESOURCES."/universes/option/default-filter.html"); ?>
 
-<p>LEAN adds all of the Option contracts that meet the filter requirements to the <a href="/docs/v2/writing-algorithms/key-concepts/time-modeling/timeslices">Slice</a> it passes to the <code>OnData</code> method. To adjust the universe of contracts, pass a filter function to the <code>AddFutureOption</code> method.</p>
+<p>LEAN adds all of the Option contracts that meet the filter requirements to the <a href="/docs/v2/writing-algorithms/getting-started/time-modeling/timeslices">Slice</a> it passes to the <code>OnData</code> method. To adjust the universe of contracts, pass a filter function to the <code>AddFutureOption</code> method.</p>
 
 
 

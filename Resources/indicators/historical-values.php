@@ -18,7 +18,7 @@ $getHistoricalValuesText = function($linkToIndicatorsPage) {
   
     if ($linkToIndicatorsPage)
     {
-        $result .= "<p>To view how to access individual members in an indicator, see <a href=\"/docs/v2/writing-algorithms/indicators/key-concepts#08-Get-Indicator-Values\">Get Indicator Values</a>.</p>";
+        $result .= "<p>To view how to access individual members in an indicator, see <a href=\"/docs/v2/writing-algorithms/indicators/getting-started#08-Get-Indicator-Values\">Get Indicator Values</a>.</p>";
     }
     else 
     {
