@@ -3,11 +3,13 @@
 <p>To get the value of the indicator, use its <code>Current.Value</code> attribute.</p>
 
 <div class="section-example-container">
-    <pre class="csharp">private TargetDownsideDeviation _tdd;
+    <pre class="csharp">private RateOfChange _roc;
+private TargetDownsideDeviation _tdd;
 
 // In Initialize()
 var symbol = AddEquity("SPY").Symbol;
-_tdd = TDD(symbol, period);
+_roc = ROC(symbol, 1);
+_tdd = (new TargetDownsideDeviation(period)).Of(_roc);
 
 // In OnData()
 if (_tdd.IsReady)
@@ -16,7 +18,9 @@ if (_tdd.IsReady)
 }</pre>
     <pre class="python"># In Initialize()
 symbol = self.AddEquity("SPY").Symbol
-self.tdd = self.TDD(symbol, period)
+tdd = TargetDownsideDeviation(period)
+self.roc = self.ROC(symbol, 1)
+self.tdd = IndicatorExtensions.Of(tdd, self.roc)
 
 # In OnData()
 if self.tdd.IsReady:

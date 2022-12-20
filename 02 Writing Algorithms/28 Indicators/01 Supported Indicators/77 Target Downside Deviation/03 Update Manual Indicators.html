@@ -8,13 +8,14 @@
 <div class="section-example-container">
     <pre class="csharp">
 
+private RateOfChange _roc;
 private TargetDownsideDeviation _tdd;
 
 // In Initialize()
-_tdd = new TargetDownsideDeviation(name, period);
+var symbol = AddEquity("SPY").Symbol;
+_roc = ROC(symbol, 1);
+_tdd = (new TargetDownsideDeviation(period)).Of(_roc);
 _tdd.Updated += IndicatorUpdateMethod;
-
-RegisterIndicator(symbol, _tdd, Resolution.Daily);
 
 // In IndicatorUpdateMethod()
 if (_tdd.IsReady)
@@ -24,10 +25,10 @@ if (_tdd.IsReady)
     <pre class="python">
     
 # In Initialize()
-self.tdd = TargetDownsideDeviation(name, period)
+tdd = TargetDownsideDeviation(period)
+self.roc = self.ROC(symbol, 1)
+self.tdd = IndicatorExtensions.Of(tdd, self.roc)
 self.tdd.Updated += self.IndicatorUpdateMethod
-
-self.RegisterIndicator(symbol, self.tdd, Resolution.Daily)
 
 # In IndicatorUpdateMethod()
 if self.tdd.IsReady:
@@ -42,12 +43,13 @@ if self.tdd.IsReady:
 <div class="section-example-container">
     <pre class="csharp">
     
+private RateOfChange _roc;
 private TargetDownsideDeviation _tdd;
-private Symbol symbol;
 
 // In Initialize()
-_tdd = new TargetDownsideDeviation(period);
-symbol = AddEquity("SPY").Symbol;
+var symbol = AddEquity("SPY").Symbol;
+_roc = ROC(symbol, 1);
+_tdd = (new TargetDownsideDeviation(period)).Of(_roc)
 
 // In OnData()
 if (data.ContainsKey(_symbol))
@@ -61,7 +63,9 @@ if (_tdd.IsReady)
     <pre class="python">
     
 # In Initialize()
-self.tdd = TargetDownsideDeviation(period)
+tdd = TargetDownsideDeviation(period)
+self.roc = self.ROC(symbol, 1)
+self.tdd = IndicatorExtensions.Of(tdd, self.roc)
 self.symbol = self.AddEquity("SPY").Symbol
 
 # In OnData()
