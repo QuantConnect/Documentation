@@ -2,7 +2,7 @@ import glob
 import os
 import shutil
 
-dir = '02 Writing Algorithms/01 Getting Started/09 Glossary'
+dir = '02 Writing Algorithms/01 Key Concepts/09 Glossary'
 if os.path.exists(dir):
     shutil.rmtree(dir)
 os.makedirs(dir)

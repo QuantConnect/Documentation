@@ -58,7 +58,7 @@ public void OnData(QuoteBars quoteBars)
         pass</pre>
 </div>
 
-<p><code>QuoteBar</code> objects let LEAN incorporate spread costs into your <a href='/docs/v2/writing-algorithms/reality-modeling/trade-fills/getting-started'>simulated trade fills</a> to make backtest results more realistic.</p>
+<p><code>QuoteBar</code> objects let LEAN incorporate spread costs into your <a href='/docs/v2/writing-algorithms/reality-modeling/trade-fills/key-concepts'>simulated trade fills</a> to make backtest results more realistic.</p>
 ";
 
 }

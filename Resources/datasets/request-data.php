@@ -282,7 +282,7 @@ var tradeBars2 = {$cVar}History(new[] {btcSymbol}, startTime, endTime);</pre>
 	echo "<p>You can request history for all the securities you have created subscriptions for in your notebook session. ";
     }
 	
-    echo "The parameters are very similar to other history method calls, but the return type is an array of <a href='/docs/v2/writing-algorithms/getting-started/time-modeling/timeslices'>Slice</a> objects. The <code>Slice</code> object holds all of the results in a sorted enumerable collection that you can iterate over with a loop.</p>";
+    echo "The parameters are very similar to other history method calls, but the return type is an array of <a href='/docs/v2/writing-algorithms/key-concepts/time-modeling/timeslices'>Slice</a> objects. The <code>Slice</code> object holds all of the results in a sorted enumerable collection that you can iterate over with a loop.</p>";
 
     echo "
     

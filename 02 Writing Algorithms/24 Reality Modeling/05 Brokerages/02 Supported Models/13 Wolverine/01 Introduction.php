@@ -1,4 +1,4 @@
-<p>This page explains the default <a href='/docs/v2/writing-algorithms/reality-modeling/getting-started#02-Security-Level-Models'>security-level models</a> and markets of the <code>WolverineBrokerageModel</code>.</p>
+<p>This page explains the default <a href='/docs/v2/writing-algorithms/reality-modeling/key-concepts#02-Security-Level-Models'>security-level models</a> and markets of the <code>WolverineBrokerageModel</code>.</p>
 
 <?php echo file_get_contents(DOCS_RESOURCES."/brokerages/set-brokerage-model/wolverine.html"); ?>
 

@@ -1,0 +1,43 @@
+<p>LEAN passes consolidated bars to the consolidator event handler in your algorithm. To add an event handler to a consolidator, attach the method name to the <code>DataConsolidated</code> property. If you call the <code>Consolidate</code> method to create a consolidator, pass the event handler method name to the <code>Consolidate</code> method instead.<br></p>
+
+<div class="section-example-container">
+<pre class="csharp">_consolidator.DataConsolidated += ConsolidationHandler;</pre>
+<pre class="python">self.consolidator.DataConsolidated += self.consolidation_handler</pre>
+</div>
+
+<p>The most common error when creating consolidators is to put parenthesis <code>()</code> at the end of your method name when setting the event handler of the consolidator. If you use parenthesis, the method executes and the result is passed as the event handler instead of the method itself. Remember to pass the name of your method to the event system. Specifically, it should be <code class="csharp">ConsolidationHandler</code><code class="python">self.consolidation_handler</code>, not <code class="csharp">ConsolidationHandler()</code><code class="python">self.consolidation_handler()</code>.</p>
+
+<p>The event handler can have any name, but it must have the required parameters. Depending on how you're using the consolidator system, you must use one of the following method headers. If you call a consolidator constructor to create a consolidator, the event handler accepts two parameters. If you call the <code>Consolidate</code> method to create a consolidator, the event handler accepts one parameter.</p>
+
+<div class="section-example-container">
+<pre class="csharp">// Manually Created Event Handler
+void ConsolidationHandler(object sender, TradeBar consolidatedBar)
+{
+
+}
+
+void ConsolidationHandler(object sender, RenkoBar consolidatedBar)
+{
+
+}
+
+
+// Consolidate() Event Handler
+void ConsolidationHandler(TradeBar consolidatedBar)
+{
+
+}</pre>
+<pre class="python"># Manually Created Event Handlers
+def consolidation_handler(self, sender: object, consolidated_bar: TradeBar) -&gt; None:
+    pass
+
+def consolidation_handler(self, sender: object, consolidated_bar: RenkoBar) -&gt; None:
+    pass
+
+
+# self.Consolidate() Event Handler
+def consolidation_handler(self, consolidated_bar: TradeBar) -&gt; None:
+    pass</pre>
+</div>
+
+<p>The consolidation event handlers receive bars when the consolidated bar closes based on the <a href='/docs/v2/writing-algorithms/key-concepts/time-modeling/time-zones#05-Data-Time-Zone'>data time zone</a>. If you subscribe to minute resolution data for Bitcoin and create an hourly consolidator, you receive consolidated bars at the top of each hour. However, if you subscribe to minute resolution data for the regular trading hours of US Equities and create a daily consolidator, you receive consolidated bars at 9:31 AM Eastern Time (ET). The consolidated bar for US Equities doesn't close at 4:00 PM ET because the day isn't over. The consolidated bar for US Equities also doesn't close at midnight because your algorithm doesn't receive minute resolution data after 4:00 PM ET until 9:31 AM ET.</p>
