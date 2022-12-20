@@ -8,4 +8,4 @@
     <pre class="python">self.AddOptionContract(self.contract_symbol, Resolution.Minute)</pre>
 </div>
 
-<p>To create custom resolution periods, see <a href="/docs/v2/writing-algorithms/consolidating-data/getting-started">Consolidating Data</a>.</p>
+<p>To create custom resolution periods, see <a href="/docs/v2/writing-algorithms/consolidating-data/key-concepts">Consolidating Data</a>.</p>

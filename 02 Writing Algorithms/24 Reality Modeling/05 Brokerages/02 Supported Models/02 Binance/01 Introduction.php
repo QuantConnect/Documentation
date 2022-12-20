@@ -1,4 +1,4 @@
-<p>This page explains the default <a href='/docs/v2/writing-algorithms/reality-modeling/getting-started#02-Security-Level-Models'>security-level models</a> and markets of the <code>BinanceBrokerageModel</code> and the <code>BinanceUSBrokerageModel</code>.</p>
+<p>This page explains the default <a href='/docs/v2/writing-algorithms/reality-modeling/key-concepts#02-Security-Level-Models'>security-level models</a> and markets of the <code>BinanceBrokerageModel</code> and the <code>BinanceUSBrokerageModel</code>.</p>
 
 <?php echo file_get_contents(DOCS_RESOURCES."/brokerages/set-brokerage-model/binance.html"); ?>
 
