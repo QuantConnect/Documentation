@@ -13,9 +13,11 @@ private TargetDownsideDeviation _tdd;
 
 // In Initialize()
 var symbol = AddEquity("SPY").Symbol;
-_roc = ROC(symbol, 1);
-_tdd = (new TargetDownsideDeviation(period)).Of(_roc);
+_roc = new RateOfChange(1);
+_tdd = (new TargetDownsideDeviation(period)).Of(_roc)
 _tdd.Updated += IndicatorUpdateMethod;
+
+RegisterIndicator(symbol, _roc, Resolution.Daily);
 
 // In IndicatorUpdateMethod()
 if (_tdd.IsReady)
@@ -26,9 +28,11 @@ if (_tdd.IsReady)
     
 # In Initialize()
 tdd = TargetDownsideDeviation(period)
-self.roc = self.ROC(symbol, 1)
+self.roc = RateOfChange(1)
 self.tdd = IndicatorExtensions.Of(tdd, self.roc)
 self.tdd.Updated += self.IndicatorUpdateMethod
+
+self.RegisterIndicator(symbol, self.roc, Resolution.Daily)
 
 # In IndicatorUpdateMethod()
 if self.tdd.IsReady:
@@ -48,13 +52,13 @@ private TargetDownsideDeviation _tdd;
 
 // In Initialize()
 var symbol = AddEquity("SPY").Symbol;
-_roc = ROC(symbol, 1);
+_roc = new RateOfChange(1);
 _tdd = (new TargetDownsideDeviation(period)).Of(_roc)
 
 // In OnData()
 if (data.ContainsKey(_symbol))
 {
-    _tdd.Update(data[symbol].EndTime, data[symbol].High);
+    _roc.Update(data[symbol].EndTime, data[symbol].High);
 }
 if (_tdd.IsReady)
 {
@@ -64,13 +68,13 @@ if (_tdd.IsReady)
     
 # In Initialize()
 tdd = TargetDownsideDeviation(period)
-self.roc = self.ROC(symbol, 1)
+self.roc = RateOfChange(1)
 self.tdd = IndicatorExtensions.Of(tdd, self.roc)
 self.symbol = self.AddEquity("SPY").Symbol
 
 # In OnData()
 if data.ContainsKey(self.symbol):
-    self.tdd.Update(data[self.symbol].EndTime, data[self.symbol].High)
+    self.roc.Update(data[self.symbol].EndTime, data[self.symbol].High)
 if self.tdd.IsReady:
     indicator_value = self.tdd.Current.Value</pre>
 </div>
