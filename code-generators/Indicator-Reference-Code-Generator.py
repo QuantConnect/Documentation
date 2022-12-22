@@ -128,7 +128,7 @@ private TargetDownsideDeviation _tdd;
 // In Initialize()
 var symbol = AddEquity("SPY").Symbol;
 _roc = {"new RateOfChange(1);" if manual else "ROC(symbol, 1);"}
-_tdd = (new TargetDownsideDeviation(period)).Of(_roc)'''
+_tdd = (new TargetDownsideDeviation(period)).Of(_roc);'''
 tddRegisterPy = lambda manual: f'''tdd = TargetDownsideDeviation(period)
 self.roc = {"RateOfChange(1)" if manual else "self.ROC(symbol, 1)"}
 self.tdd = IndicatorExtensions.Of(tdd, self.roc)'''
@@ -592,7 +592,7 @@ function ShowHide(event, idName) {{
 
 // In Initialize()
 {'var symbol = AddEquity("SPY").Symbol;' if 'symbol' in args[full] else 'var symbols = new[] {AddEquity("SPY").Symbol, AddEquity("QQQ").Symbol};' if 'symbols' in args[full] else ''}
-_{short.lower()} = {short}{str(args[full]).replace("'", "").replace('"', '').replace(',)', ')').replace('name, ', '').replace('name', '')}'''};
+_{short.lower()} = {short}{str(args[full]).replace("'", "").replace('"', '').replace(',)', ')').replace('name, ', '').replace('name', '')};'''}
 
 // In OnData()
 if (_{short.lower()}.IsReady)
@@ -631,7 +631,7 @@ if self.{short.lower()}.IsReady:
 
 // In Initialize()
 {'var symbol = AddEquity("SPY").Symbol;' if 'symbol' in args[full] else 'var symbols = new[] {AddEquity("SPY").Symbol, AddEquity("QQQ").Symbol};' if 'symbols' in args[full] else ''}
-_{short.lower()} = {short}{str(args[full]).replace("'", "").replace('"', '').replace(',)', ')').replace('name, ', '').replace('name', '')}'''};
+_{short.lower()} = {short}{str(args[full]).replace("'", "").replace('"', '').replace(',)', ')').replace('name, ', '').replace('name', '')};'''}
 
 // In OnData()
 if (_{short.lower()}.IsReady)
