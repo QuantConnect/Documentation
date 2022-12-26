@@ -1,0 +1,24 @@
+<p>The following code snippet demonstrates a simple consolidator that aggregates 1-minute bars into 10-minutes bars:</p>
+
+<div class='section-example-container'>
+	<pre class='csharp'>// Add some class members
+private Symbol _symbol;
+private TradeBarConsolidator _consolidator;
+
+// In Initialize, subscribe to a security, create the consolidator, and register it for automatic updates
+_symbol = AddEquity("SPY", Resolution.Minute).Symbol;
+_consolidator = Consolidate(_symbol, TimeSpan.FromMinutes(10), ConsolidationHandler);
+
+// Define the consolidation handler
+void ConsolidationHandler(TradeBar consolidatedBar)
+{
+    
+}</pre>
+	<pre class='python'># In Initialize, subscribe to a security, create the consolidator, and register it for automatic updates
+self.symbol = self.AddEquity("SPY", Resolution.Minute).Symbol
+self.consolidator = self.Consolidate(self.symbol, timedelta(minutes=10), self.consolidation_handler)
+
+# Define the consolidation handler
+def consolidation_handler(self, consolidated_bar: TradeBar) -&gt; None:
+    pass</pre>
+</div>
