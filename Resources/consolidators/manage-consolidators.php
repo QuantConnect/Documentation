@@ -577,6 +577,6 @@ $getConsolidatorText = function($dataFormatInfo, $consolidatorInfo)
 </ol>
 	";
 
-	echo $consolidatorInfo->get_shortcut_text($consolidationHandlerType);
+	echo $consolidatorInfo->get_shortcut_text($dataFormatInfo->consolidationHandlerType);
 }
 ?>
