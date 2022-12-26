@@ -462,7 +462,7 @@ class ClassicRenkoConsolidatorInfo extends ConsolidatorInfo
 
 	function __construct($extraExamples = "")
 	{
-		$this->basedOnText = "**TODO";
+		$this->basedOnText = " the preceding Renko bar rules";
 		$this->extraExamples = $extraExamples;
 	}
 
