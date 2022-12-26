@@ -432,7 +432,7 @@ class RenkoConsolidatorInfo extends ConsolidatorInfo
 
 	function __construct()
 	{
-		$this->basedOnText = "***TODO";
+		$this->basedOnText = " the traditional Renko bar rules";
 	}
 
 	function get_create_consolidator_text($consolidatorClassName, $typeOf) 
