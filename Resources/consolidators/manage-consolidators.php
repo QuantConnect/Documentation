@@ -190,7 +190,7 @@ class TimePeriodConsolidatorInfo extends ConsolidatorInfo
 		$methodTyping = $consolidationHandlerType == "QuoteBar" ? "&lt;QuoteBar&gt;" : "";
 
 		$result = "
-<p {$this->shortcutClass1}>You can also use the <code>Consolidate</code> helper method to create period consolidators and register them for automatic updates. With just one line of code, you can create data in any time period with a <code class='python'>timedelta</code><code class='csharp'>TimeSpan</code> or <code>Resolution</code> object. To create a consolidator with the shortcut method, call <code>Consolidate</code> with a <code>Symbol</code>, time period, and event handler. The following snippets show examples of using <code class='python'>timedelta</code><code class='csharp'>TimeSpan</code> and <code>Resolution</code> objects:</p>
+<p {$this->shortcutClass1}>You can also use the <code>Consolidate</code> helper method to create period consolidators and register them for automatic updates. With just one line of code, you can create data in any time period based on a <code class='python'>timedelta</code><code class='csharp'>TimeSpan</code> or <code>Resolution</code> object:</p>
 
 <ul {$this->shortcutClass1}>
     <li class='csharp'><code>TimeSpan</code> Periods</li>
