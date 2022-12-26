@@ -175,7 +175,7 @@ class TimePeriodConsolidatorInfo extends ConsolidatorInfo
 
 	function get_define_handler_text()
 	{
-		$result = "<p>The consolidation event handler receives bars when the consolidated bar closes based on the <a href='/docs/v2/writing-algorithms/key-concepts/time-modeling/time-zones#05-Data-Time-Zone'>data time zone</a>. "
+		$result = "<p>The consolidation event handler receives bars when the consolidated bar closes based on the <a href='/docs/v2/writing-algorithms/key-concepts/time-modeling/time-zones#05-Data-Time-Zone'>data time zone</a>. ";
 		include(DOCS_RESOURCES."/consolidators/consolidation-handler-close-explanation.php");
 		$result = $getConsolidationExplanationText($this->consolidationTextResolution, $this->consolidationTextReceiveTime1, $this->consolidationTextReceiveTime2);
 		$result .= "</p>";
