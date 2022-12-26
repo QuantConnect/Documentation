@@ -560,7 +560,7 @@ $getConsolidatorText = function($dataFormatInfo, $consolidatorInfo)
 
         <li>Manual Updates</li>
 
-		<p>Manual updates let you control when the consolidator updates and what data you use to update it. If you need to warm up a consolidator with data outside of the <a href='/docs/v2/writing-algorithms/historical-data/warm-up-periods'>warm-up period</a>, you can update the consolidator with data from a <a href='/docs/v2/writing-algorithms/historical-data/history-requests'>history request</a>. To manually update a consolidator, call its <code>Update</code> method with a <code>{$dataFormatInfo->typeOf}</code> object. You can update the consolidator with data from the <a href='/docs/v2/writing-algorithms/key-concepts/time-modeling/timeslices'>Slice</a> object in the <code>OnData</code> method or with data from a <a href='/docs/v2/writing-algorithms/historical-data/history-requests'>history request</a>.</p>
+		<p>Manual updates let you control when the consolidator updates and what data you use to update it. If you need to warm up a consolidator with data outside of the <a href='/docs/v2/writing-algorithms/historical-data/warm-up-periods'>warm-up period</a>, you can manually update the consolidator. To manually update a consolidator, call its <code>Update</code> method with a <code>{$dataFormatInfo->typeOf}</code> object. You can update the consolidator with data from the <a href='/docs/v2/writing-algorithms/key-concepts/time-modeling/timeslices'>Slice</a> object in the <code>OnData</code> method or with data from a <a href='/docs/v2/writing-algorithms/historical-data/history-requests'>history request</a>.</p>
 		
 		{$dataFormatInfo->manualUpdateCode}
 
