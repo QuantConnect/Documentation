@@ -1,4 +1,6 @@
 <?php
+if (!class_exists('ConsolidatorFormatInfo'))
+{
 class ConsolidatorFormatInfo
 {
 	public $textName,
@@ -502,6 +504,7 @@ self.consolidator = ClassicRenkoConsolidator(1)</pre>
 	{
 		return "<p>The consolidation event handler receives bars when the price movement forms a new classic Renko bar.</p>";
 	}
+}
 }
 
 
