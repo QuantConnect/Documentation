@@ -289,7 +289,7 @@ class MixedModeConsolidatorInfo extends ConsolidatorInfo
 	{
 		$result = "<p>The consolidation event handler receives bars when the consolidated bar closes based on the <a href='/docs/v2/writing-algorithms/key-concepts/time-modeling/time-zones#05-Data-Time-Zone'>data time zone</a> or the number of samples, whichever occurs first. ";
 		include(DOCS_RESOURCES."/consolidators/consolidation-handler-close-explanation.php");
-		$result = $getConsolidationExplanationText($this->consolidationTextResolution, $this->consolidationTextReceiveTime1, $this->consolidationTextReceiveTime2);
+		$result .= $getConsolidationExplanationText($this->consolidationTextResolution, $this->consolidationTextReceiveTime1, $this->consolidationTextReceiveTime2);
 		$result .= "</p>";
 		return result;
 	}
