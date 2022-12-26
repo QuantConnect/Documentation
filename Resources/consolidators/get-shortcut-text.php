@@ -13,3 +13,4 @@ $getShortcutText = function($shortcutClass1, $shortcutClass2, $consolidationHand
 </div>
 	";
 }
+?>
