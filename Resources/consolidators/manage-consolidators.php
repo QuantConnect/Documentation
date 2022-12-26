@@ -291,7 +291,7 @@ class MixedModeConsolidatorInfo extends ConsolidatorInfo
 		include(DOCS_RESOURCES."/consolidators/consolidation-handler-close-explanation.php");
 		$result .= $getConsolidationExplanationText($this->consolidationTextResolution, $this->consolidationTextReceiveTime1, $this->consolidationTextReceiveTime2);
 		$result .= "</p>";
-		return result;
+		return $result;
 	}
 }
 
