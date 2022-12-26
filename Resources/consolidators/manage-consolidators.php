@@ -135,11 +135,7 @@ class TimePeriodConsolidatorInfo extends ConsolidatorInfo
 <ul>
 	<li class='python'><code>timedelta</code> Periods</li>
 	<li class='csharp'><code>TimeSpan</code> Periods</li>
-		";
 		
-		$result .= file_get_contents(DOCS_RESOURCES."/consolidators/time-period-start-time.html");
-
-		$result .= "
 	<div class='section-example-container'>
 		<pre class='csharp'>_consolidator = new {$consolidatorClassName}(TimeSpan.{$this->timeSpanPeriod});
 // Aliases:
@@ -150,7 +146,11 @@ class TimePeriodConsolidatorInfo extends ConsolidatorInfo
 # self.consolidator = self.CreateConsolidator(timedelta({$this->timeDeltaPeriod}), {$typeOf}{$this->createConsolidatorExtraArgs})
 # self.consolidator = self.ResolveConsolidator(self.symbol, timedelta({$this->timeDeltaPeriod}){$this->resolveConsolidatorExtraArgsPy})</pre>
 	</div>
+		";
+	
+		$result .= file_get_contents(DOCS_RESOURCES."/consolidators/time-period-start-time.html");
 
+		$result .= "
 
 	<li><code>Resolution</code> Periods</li>
 	<p>The <code>Resolution</code> enumeration has the following members:</p>
