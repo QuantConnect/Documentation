@@ -494,8 +494,6 @@ self.consolidator = ClassicRenkoConsolidator(1)</pre>
 	<pre class='python'>self.consolidator = ClassicRenkoConsolidator(1, evenBars = False)</pre>
 	<pre class='csharp'>_consolidator = new ClassicRenkoConsolidator(1m, evenBars: false);</pre>
 </div>
-
-<p>To view a full example of a <code>ClassicRenkoConsolidator</code>, see the <a href='https://github.com/QuantConnect/Lean/blob/master/Algorithm.Python/ClassicRenkoConsolidatorAlgorithm.py' class='python' rel='nofollow' target='_blank'>ClassicRenkoConsolidatorAlgorithm</a><a href='https://github.com/QuantConnect/Lean/blob/master/Algorithm.CSharp/ClassicRenkoConsolidatorAlgorithm.cs' class='csharp' rel='nofollow' target='_blank'>ClassicRenkoConsolidatorAlgorithm</a> in the LEAN GitHub repository.</p>
 		";
 	}
 
