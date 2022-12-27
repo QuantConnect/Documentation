@@ -356,7 +356,11 @@ class CalendarConsolidatorInfo extends ConsolidatorInfo
 # Alias:
 # self.consolidator = self.CreateConsolidator(Calendar.Weekly, {$typeOf}{$this->createConsolidatorExtraArgs})</pre>
 	</div>
-
+	
+	<p class='csharp'>To use the <code>Calendar</code> class, you may need to add the following code to the imports section because of ambiguity with <a rel='nofollow' target='_blank' href='https://learn.microsoft.com/en-us/dotnet/api/system.globalization.calendar?view=net-7.0'>.NET Calendar Class</a>:</p>
+	<div class='csharp section-example-container'>
+		<pre class='csharp'>using Calendar = QuantConnect.Data.Consolidators.Calendar;</pre>
+	</div>
 
 
 	<li>Custom Periods</li>
