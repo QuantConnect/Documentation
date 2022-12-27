@@ -1,3 +1,20 @@
+<p>The following method shows how to create a consolidation period that consolidates data into 20-minute <code>TradeBar</code> objects, starting at 9:30 AM:</p>
+
+<div class="section-example-container">
+<pre class="csharp">public CalendarInfo ConsolidationPeriod(DateTime datetime)
+{
+    var period = TimeSpan.FromMinutes(20);
+    var openTime = datetime.Date + new TimeSpan(9, 30, 0);
+    var start = openTime + (int)((datetime - openTime) / period) * period;            
+    return new CalendarInfo(start, period);
+}</pre>
+<pre class="python">def consolidation_period(self, dt: datetime) -> CalendarInfo:
+    period = timedelta(minutes=20)
+    open_time = dt.replace(hour=9, minute=30, second=0, microsecond=0)
+    start = open_time + ((dt - open_time) // period) * period
+    return CalendarInfo(start, period)</pre>
+</div>
+
   <div class="example-fieldset"> 
     <div class="example-legend">Demonstration Algorithms</div>
     
