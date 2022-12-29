@@ -172,22 +172,22 @@
       <tr>
          <td><code>TradeBar</code></td>
          <td><code>TradeBar</code></td>
-         <td><a href='/docs/v2/writing-algorithms/consolidating-data/consolidator-types/renko-consolidators/renko-consolidator#02-Consolidate-Trade-Bars'>RenkoConsolidator</a></td>
+         <td><a href='/docs/v2/writing-algorithms/consolidating-data/consolidator-types/renko-consolidators/renko-consolidators#02-Consolidate-Trade-Bars'>RenkoConsolidator</a></td>
       </tr>
       <tr>
          <td><code>QuoteBar</code></td>
          <td><code>QuoteBar</code></td>
-         <td><a href='/docs/v2/writing-algorithms/consolidating-data/consolidator-types/renko-consolidators/renko-consolidator#03-Consolidate-Quote-Bars'>RenkoConsolidator</a></td>
+         <td><a href='/docs/v2/writing-algorithms/consolidating-data/consolidator-types/renko-consolidators/renko-consolidators#03-Consolidate-Quote-Bars'>RenkoConsolidator</a></td>
       </tr>
       <tr>
          <td><code>Tick</code></td>
          <td><code>TradeBar</code></td>
-         <td><a href='/docs/v2/writing-algorithms/consolidating-data/consolidator-types/renko-consolidators/renko-consolidator#04-Consolidate-Trade-Ticks'>RenkoConsolidator</a></td>
+         <td><a href='/docs/v2/writing-algorithms/consolidating-data/consolidator-types/renko-consolidators/renko-consolidators#04-Consolidate-Trade-Ticks'>RenkoConsolidator</a></td>
       </tr>
       <tr>
          <td><code>Tick</code></td>
          <td><code>QuoteBar</code></td>
-         <td><a href='/docs/v2/writing-algorithms/consolidating-data/consolidator-types/renko-consolidators/renko-consolidator#05-Consolidate-Quote-Ticks'>RenkoConsolidator</a></td>
+         <td><a href='/docs/v2/writing-algorithms/consolidating-data/consolidator-types/renko-consolidators/renko-consolidators#05-Consolidate-Quote-Ticks'>RenkoConsolidator</a></td>
       </tr>
    </tbody>
 </table>
@@ -210,22 +210,22 @@
       <tr>
          <td><code>TradeBar</code></td>
          <td><code>TradeBar</code></td>
-         <td><a href='/docs/v2/writing-algorithms/consolidating-data/consolidator-types/renko-consolidators/classic-renko-consolidator#02-Consolidate-Trade-Bars'>ClassicRenkoConsolidator</a></td>
+         <td><a href='/docs/v2/writing-algorithms/consolidating-data/consolidator-types/renko-consolidators/classic-renko-consolidators#02-Consolidate-Trade-Bars'>ClassicRenkoConsolidator</a></td>
       </tr>
       <tr>
          <td><code>QuoteBar</code></td>
          <td><code>QuoteBar</code></td>
-         <td><a href='/docs/v2/writing-algorithms/consolidating-data/consolidator-types/renko-consolidators/classic-renko-consolidator#03-Consolidate-Quote-Bars'>ClassicRenkoConsolidator</a></td>
+         <td><a href='/docs/v2/writing-algorithms/consolidating-data/consolidator-types/renko-consolidators/classic-renko-consolidators#03-Consolidate-Quote-Bars'>ClassicRenkoConsolidator</a></td>
       </tr>
       <tr>
          <td><code>Tick</code></td>
          <td><code>TradeBar</code></td>
-         <td><a href='/docs/v2/writing-algorithms/consolidating-data/consolidator-types/renko-consolidators/classic-renko-consolidator#04-Consolidate-Trade-Ticks'>ClassicRenkoConsolidator</a></td>
+         <td><a href='/docs/v2/writing-algorithms/consolidating-data/consolidator-types/renko-consolidators/classic-renko-consolidators#04-Consolidate-Trade-Ticks'>ClassicRenkoConsolidator</a></td>
       </tr>
       <tr>
          <td><code>Tick</code></td>
          <td><code>QuoteBar</code></td>
-         <td><a href='/docs/v2/writing-algorithms/consolidating-data/consolidator-types/renko-consolidators/classic-renko-consolidator#05-Consolidate-Quote-Ticks'>ClassicRenkoConsolidator</a></td>
+         <td><a href='/docs/v2/writing-algorithms/consolidating-data/consolidator-types/renko-consolidators/classic-renko-consolidators#05-Consolidate-Quote-Ticks'>ClassicRenkoConsolidator</a></td>
       </tr>
    </tbody>
 </table>
