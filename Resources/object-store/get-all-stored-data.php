@@ -15,7 +15,7 @@ $getAllStoredDataText = function($cSharpPrefix="", $pythonPrefix="self.") {
     value = kvp.Value</pre>
 </div>
 
-<p>To get iterate through just the keys in the Object Store, iterate through the <code>Keys</code> property.</p>
+<p>To iterate through just the keys in the Object Store, iterate through the <code>Keys</code> property.</p>
 
 <div class='section-example-container'>
     <pre class='csharp'>foreach (var key in {$cSharpPrefix}ObjectStore.Keys)
