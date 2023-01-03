@@ -24,8 +24,13 @@ for dir, target in conversions.items():
     subdirs = sorted([str(subdir.name).upper() for subdir in path.iterdir() if subdir.is_dir()])
     
     target_path = Path(f"{target_dir}{target}")
+    temp_path = f"tmp/{target_dir}{target}"
     if os.path.exists(target_path):
+        shutil.copytree(target_path, temp_path, dirs_exist_ok=True,
+                        ignore=lambda dir, files: [f for f in files if os.path.isfile(os.path.join(dir, f)) and str(f) != "metadata.json"])
         shutil.rmtree(target_path)
+        shutil.copytree(temp_path, target_path, dirs_exist_ok=True)
+        shutil.rmtree(temp_path)
     target_path.mkdir(parents=True, exist_ok=True)
     
     i = 11

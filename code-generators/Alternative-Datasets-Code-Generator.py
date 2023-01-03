@@ -5,7 +5,14 @@ from urllib.request import urlopen
 
 for clean_up in os.listdir('02 Writing Algorithms/14 Datasets'):
     if not '01 Overview' in clean_up and not "readme" in clean_up:
-        shutil.rmtree('02 Writing Algorithms/14 Datasets/' + clean_up)
+        destination = '02 Writing Algorithms/14 Datasets/' + clean_up
+        temp = 'tmp/02 Writing Algorithms/14 Datasets/' + clean_up
+        if os.path.isdir(destination):
+            shutil.copytree(destination, temp, dirs_exist_ok=True,
+                            ignore=lambda dir, files: [f for f in files if os.path.isfile(os.path.join(dir, f)) and str(f) != "metadata.json"])
+            shutil.rmtree(destination)
+            shutil.copytree(temp, destination, dirs_exist_ok=True)
+            shutil.rmtree(temp)
 
 url = urlopen("https://s3.amazonaws.com/cdn.quantconnect.com/web/docs/alternative-data-dump-v2021-12-06.json")
 response = url.read().decode("utf-8") \

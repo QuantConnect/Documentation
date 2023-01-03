@@ -1,13 +1,19 @@
-<p>The following snippet demonstrates how to request data from the Coinbase Pro Crypto Price dataset:</p>
+<p>The following snippet demonstrates how to request data from the Coinbase Crypto Price dataset:</p>
 
 <div class="section-example-container">
-<pre class="python"># Coinbase Pro only accepts Cash account type
+<pre class="python">from QuantConnect.DataSource import *
+from QuantConnect.Data.UniverseSelection import *
+
+# Coinbase only accepts Cash account type
 self.SetBrokerageModel(BrokerageName.GDAX, AccountType.Cash)
 
 self.symbol = self.AddCrypto("BTCUSD", Resolution.Minute, Market.GDAX).Symbol
 
 self.AddUniverse(CryptoCoarseFundamentalUniverse(Market.GDAX, self.UniverseSettings, self.UniverseSelectionFilter))</pre>
-<pre class="csharp">// Coinbase Pro only accepts Cash account type
+<pre class="csharp">using QuantConnect.DataSource;
+using QuantConnect.Data.UniverseSelection;
+
+// Coinbase only accepts Cash account type
 SetBrokerageModel(BrokerageName.GDAX, AccountType.Cash);
 
 _symbol = AddCrypto("BTCUSD", Resolution.Minute, Market.GDAX).Symbol;

@@ -3,9 +3,14 @@ import os
 import shutil
 
 dir = '02 Writing Algorithms/01 Key Concepts/09 Glossary'
+temp_dir = 'tmp/02 Writing Algorithms/01 Key Concepts/09 Glossary'
 if os.path.exists(dir):
+    shutil.copytree(dir, temp_dir, dirs_exist_ok=True,
+                    ignore=lambda dir, files: [f for f in files if os.path.isfile(os.path.join(dir, f)) and str(f) != "metadata.json"])
     shutil.rmtree(dir)
-os.makedirs(dir)
+    shutil.copytree(temp_dir, dir, dirs_exist_ok=True)
+    shutil.rmtree(temp_dir)
+os.makedirs(dir, exist_ok=True)
 
 # Get items in the dict
 source = open("Resources/glossary.php", 'r', encoding="utf-8").readlines()

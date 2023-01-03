@@ -16,11 +16,16 @@ sorted_assets = {}
 
 days = ["sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"]
 destination_path = "Resources/datasets/market-hours"
+temp_path = "Resources/datasets/tmp/market-hours"
 destination_folder = Path(destination_path)
 
 if os.path.exists(destination_path):
+    shutil.copytree(destination_path, temp_path, dirs_exist_ok=True,
+                    ignore=lambda dir, files: [f for f in files if os.path.isfile(os.path.join(dir, f)) and str(f) != "metadata.json"])
     shutil.rmtree(destination_path)
-    destination_folder.mkdir()
+    shutil.copytree(temp_path, destination_path, dirs_exist_ok=True)
+    shutil.rmtree(temp_path)
+    destination_folder.mkdir(exist_ok=True, parents=True)
 
 # Get contract name from symbol
 contracts_real = {
