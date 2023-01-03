@@ -62,8 +62,7 @@ for asset_class, assets in sorted_assets.items():
 <tbody>
 ''' % exchange.upper()
 
-        elif asset_class == "Index" or asset_class == "IndexOption":
-            all_entries = [entries[f"{asset_class}-{exchange}-{symbol}"] for symbol in sec]
+        all_entries = [entries[f"{asset_class}-{exchange}-{symbol}"] for symbol in sec]
 
         for symbol in sec:
             if (asset_class == "Index" or asset_class == "IndexOption") and exchange == "usa" and "[*]" not in symbol and "generic" not in symbol.lower(): continue
