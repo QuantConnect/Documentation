@@ -158,6 +158,8 @@ namespace QuantConnect.Tests
                                     .Replace("C and Visual Studio", "C# and Visual Studio")    // special case
                                     .Replace("C and VS Code", "C# and VS Code")    // special case
                                     .Replace("C and Rider", "C# and Rider")    // special case
+                                    .Replace("C and Rider", "C# and Rider")    // special case
+                                    .Replace("mixed mode consolidators", "mixed-mode consolidators")    // special case
                                     .ToLower();
                                 
                                 var section = url.Split('#').Last()
