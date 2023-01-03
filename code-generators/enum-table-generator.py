@@ -132,7 +132,7 @@ def TableCreation(raw, namespace=""):
     if object_ == "Market":
         sym_prop = urlopen("https://raw.githubusercontent.com/QuantConnect/Lean/master/Data/symbol-properties/symbol-properties-database.csv").read().decode("utf-8").split('\n')
         global market, market_data
-        market = set({x.split(",")[0]: x.split(",")[2].lower().strip() for x in sym_prop if len(x.split(",")) > 2 and x.split(",")[2].lower().strip() != "type" and " " not in x.split(",")[2].lower().strip()}.items())
+        market = set([(x.split(",")[0], x.split(",")[2].lower().strip()) for x in sym_prop if len(x.split(",")) > 2 and x.split(",")[2].lower().strip() != "type" and " " not in x.split(",")[2].lower().strip()])
         market_data = sorted_
 
     html = HtmlGeneration(object_, sorted_)
@@ -180,7 +180,7 @@ for url in enum_objects:
     print(url)
     raw = urlopen(f'{root_url}{url}').read().decode("utf-8").split('\n')
     html = TableCreation(raw)
-    
+
 for x in set([m[1] for m in market]):
     items = [y[0] for y in market if y[1] == x]
     items = [y[0] for y in market_data if y[0].lower() in items]
