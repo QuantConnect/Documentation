@@ -1,4 +1,4 @@
-<p>Binance supports cash and margin accounts, but Binance US only supports cash accounts.</p>
+<p>Binance supports cash and margin accounts for spot trades, but only supports margin accounts for Futures trades. Binance US only supports cash accounts.</p>
 
 <?php echo file_get_contents(DOCS_RESOURCES."/brokerages/set-brokerage-model/binance.html"); ?>
 
@@ -12,13 +12,15 @@
 <h4>Paper Trading</h4>
 <p>Binance supports paper trading through the Binance Spot Test Network. You don't need a Binance account to create API credentials for the Spot Test Network.</p>
 
-<p>Follow these steps to set up paper trading with Binance:</p>
+<p>Follow these steps to set up paper trading with the Binance Spot Test Network:</p>
 <ol>
     <li>Log in to the <a rel="nofollow" target="_blank" href='https://testnet.binance.vision/'>Binance Spot Test Network</a> with your GitHub credentials.</li>
     <li>In the <span class='page-section-name'>API Keys</span> section, click <span class='button-name'>Generate HMAC_SHA256 Key</span>.</li>
     <li>Enter a description and then click <span class='button-name'>Generate</span>.</li>
     <li>Store your API key and API key secret somewhere safe.</li>
 </ol>
+
+<p>Paper trading Binance Crypto Futures isn't currently available.</p>
 
 <h4>Sub-Accounts</h4>
 <p>Our Binance and Binance US integrations don't support trading with sub-accounts. You must use your main account.</p>
