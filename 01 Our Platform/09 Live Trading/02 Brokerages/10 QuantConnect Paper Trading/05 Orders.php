@@ -118,8 +118,6 @@ self.MarketOnCloseOrder(self.symbol, quantity)
 self.ExerciseOption(self.option_symbol, quantity)</pre>
 </div>
 
-<p>Market on open orders are not available for Futures or Future Options.</p>
-
 <h4>Time In Force</h4>
 <p>The <code>DefaultBrokerageModel</code> supports the following <code>TimeInForce</code> instructions:</p>
 
