@@ -37,9 +37,6 @@
 }
 </style>
 
-
-<p>Coinbase supports the following order types:</p>
-
 <div class="section-example-container">
     <pre class="csharp">MarketOrder(_symbol, quantity);
 LimitOrder(_symbol, quantity, limitPrice);
