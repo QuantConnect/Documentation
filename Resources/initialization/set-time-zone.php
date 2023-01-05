@@ -22,7 +22,6 @@ The default time zone is Eastern Time (ET), which is UTC-4 in summer and UTC-5 i
 {$cCodePrefix}SetTimeZone(TimeZones.Chicago);
 </pre>
 <pre class='python'>{$pyCodePrefix}.SetTimeZone(\"Europe/London\")
-{$pyCodePrefix}.SetTimeZone(NodaTime.DateTimeZone.Utc)
 {$pyCodePrefix}.SetTimeZone(TimeZones.Chicago)
 </pre>
 </div>    
