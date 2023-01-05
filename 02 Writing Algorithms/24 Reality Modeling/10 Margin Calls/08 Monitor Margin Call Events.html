@@ -24,13 +24,13 @@
     }
 }</pre>
 	<pre class="python">def OnMarginCall(self, requests: List[SubmitOrderRequest]) -&gt; List[SubmitOrderRequest]:
-    for order in requests:
+    for order in requests[:]:
         # liquidate an extra 10% each time we get a margin call to give us more padding
-        newQuantity = int(np.sign(order.Quantity) * order.Quantity * 1.1)
+        new_quantity = int(np.sign(order.Quantity) * order.Quantity * 1.1)
         requests.remove(order)
         requests.append(SubmitOrderRequest(order.OrderType, order.SecurityType, 
-                                           order.Symbol, newQuantity, order.StopPrice, 
+                                           order.Symbol, new_quantity, order.StopPrice, 
                                            order.LimitPrice, 0, self.Time, "OnMarginCall"))
-        return requests
+    return requests
 </pre>
 </div>
