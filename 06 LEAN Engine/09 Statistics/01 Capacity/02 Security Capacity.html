@@ -69,7 +69,7 @@
 <p>Only a fraction of the market capacity dollar volume is available to be taken by a strategy’s orders because there are other market participants. The data resolution of the security determines how much of the market capacity dollar volume is available for the strategy to consume. The following table shows what percentage of the market capacity dollar volume is available for each of the data resolutions:</p>
 
 
-<table class="qc-table table" class="market-capacity-dollar-volume-table">
+<table class="qc-table table" id="market-capacity-dollar-volume-table">
     <thead>
         <tr>
             <th>Resolution</th>
@@ -114,13 +114,12 @@
 
 <p>To accommodate high-frequency trading strategies, the <code>_fastTradingVolumeDiscountFactor</code> variable scales down the market capacity dollar volume of the security proportional to the number of trades that it places per day for the security. The more frequently the strategy trades a security, the lower the capacity of the security goes since it becomes harder to get into a larger position without incurring significant market impact. The formula that LEAN uses to discount the capacity of the securities that the algorithm trades intraday is</p>
 
-\[
-d_i =
-\begin{dcases}
-1,& \text{if } i = 1\\
-\min(1, \max(0.2, d_{i-1} * \frac{m}{390})), & \text{if } i > 1
-\end{dcases}
-\]
+\[ d_i = \left\{
+  \begin{array}{ c l }
+    1,& \text{if } i = 1\\
+    \min(1, \max(0.2, d_{i-1} * \frac{m}{390})), & \text{if } i > 1
+  \end{array}
+\right. \]
 
 <p>where \( d_i\in{[0.2, 1]} \) is the fast trading volume discount factor after order \(i\) and \(m\) is the number of minutes since order \( i-1 \) was filled. We divide \( m \) by 390 because there are \( 390 = 6.5 * 60 \) minutes of trading in a regular Equity trading day.</p>
 
