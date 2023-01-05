@@ -1,0 +1,17 @@
+<p>Margin interest rate models should implement the <code>IMarginInterestRateModel</code> interface. Extensions of the <code>IMarginInterestRateModel</code> interface must implement the <code>ApplyMarginInterestRate</code> method, which applies margin interest payments to the portfolio.</p>
+
+<div class="section-example-container">
+    <pre class="csharp">public class MyMarginInterestRateModel : IMarginInterestRateModel 
+{
+    public void ApplyMarginInterestRate(MarginInterestRateParameters marginInterestRateParameters) 
+    {
+        var holdings = marginInterestRateParameters.Security.Holdings;
+        var positionValue = holdings.GetQuantityValue(holdings.Quantity);
+        positionValue.Cash.AddAmount(-1);
+    }
+}</pre>
+    <pre class="python"># Custom margin interest rate models are not currently available in Python
+# See https://github.com/QuantConnect/Lean/issues/6837</pre>
+</div>
+
+<p>The algorithm manager calls the <code>ApplyMarginInterestRate</code> method at the top of each hour.</p>
