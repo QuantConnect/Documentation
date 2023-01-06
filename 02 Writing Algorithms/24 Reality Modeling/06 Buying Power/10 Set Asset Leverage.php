@@ -10,22 +10,14 @@ AddEquity("SPY", leverage=3)</pre>
 
 <p>You can also set the asset leverage in a security initializer. In order to set the leverage of securities in the security initializer, call <code>SetSecurityInitializer</code> before you create security subscriptions and before you call <code>SetBrokerageModel</code>. If you pass in a <code>leverage</code> argument when you create the security subscription, the <code>leverage</code> argument takes precedence over the <code>SetLeverage</code> call in the security initializer.<br></p>
 
-<div class="section-example-container">
-<pre class="csharp">// In Initialize
-SetSecurityInitializer(CustomSecurityInitializer);
-AddEquity("SPY");
 
-private void CustomSecurityInitializer(Security security)
-{
-    security.SetLeverage(3);
-}</pre>
-<pre class="python"># In Initialize
-self.SetSecurityInitializer(self.CustomSecurityInitializer)
-AddEquity("SPY")
+<?php
+include(DOCS_RESOURCES."/reality-modeling/brokerage-mondel-security-init.php");
+$overwriteCodePy = "security.SetLeverage(3)";
+$overwriteCodeC = "security.SetLeverage(3);";
+$getBrokerageModelInitCodeBlock($overwriteCodePy, $overwriteCodeC, "the security leverage");
+?>
 
-def CustomSecurityInitializer(self, security: Security) -&gt; None:
-    security.SetLeverage(3)</pre>
-</div>
 
 <p>To set the leverage for all securities in a universe, set the <code>UniverseSettings.Leverage</code> property.</p>
 

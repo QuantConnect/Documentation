@@ -26,19 +26,12 @@ Securities["IBM"].SetFeeModel(new ConstantFeeModel(1)); </pre>
 self.Securities["IBM"].SetFeeModel(ConstantFeeModel(1))</pre>
 </div>
 
-<p>You can also set the security-specific models inside a security initializer.</p>
+<p>You can also set the security-specific models inside a <a href='/docs/v2/writing-algorithms/initialization#07-Set-Security-Initializer'>security initializer</a>.</p>
 
-<div class="section-example-container">
-<pre class="csharp">//In Initialize
-SetSecurityInitializer(CustomSecurityInitializer);
 
-private void CustomSecurityInitializer(Security security)
-{
-    security.SetFeeModel(new ConstantFeeModel(1));
-}</pre>
-<pre class="python">#In Initialize
-self.SetSecurityInitializer(self.CustomSecurityInitializer)
-
-def CustomSecurityInitializer(self, security: Security) -&gt; None:
-    security.SetFeeModel(ConstantFeeModel(1))</pre>
-</div>
+<?php
+include(DOCS_RESOURCES."/reality-modeling/brokerage-mondel-security-init.php");
+$overwriteCodePy = "security.SetFeeModel(ConstantFeeModel(1))";
+$overwriteCodeC = "security.SetFeeModel(new ConstantFeeModel(1));";
+$getBrokerageModelInitCodeBlock($overwriteCodePy, $overwriteCodeC);
+?>
