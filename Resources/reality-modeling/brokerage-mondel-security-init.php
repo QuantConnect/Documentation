@@ -1,18 +1,44 @@
 <?php
-$getBrokerageModelInitCodeBlock = function($overwriteCodePy, $overwriteCodeC, $comment=null)
+$getBrokerageModelInitCodeBlock = function($overwriteCodePy, $overwriteCodeC, $comment=null, $saveAlgorithm=false)
 {
     $comment = $comment ?? "some of the reality models";
+    if ($saveAlgorithm)
+    {
+        $extraArgsC = ", this";
+        $extraArgsPy = ", self";
+        $extraParamsC = ", QCAlgorithm algorithm";
+        $extraParamsPy = ", algorithm: QCAlgorithm";
+        $classMemberC = "private QCAlgorithm _algorithm;
 
+    ";
+        $contructorBodyC = "
+    {
+        _algorithm = algorithm;
+    }";
+        $contructorBodyPy = "
+        self.algorithm = algorithm";
+    }
+    else
+    {
+        $extraArgsC = "";
+        $extraArgsPy = "";
+        $extraParamsC = "";
+        $extraParamsPy = "";
+        $classMemberC = "";
+        $contructorBodyC = "{}";
+        $contructorBodyPy = "";
+    }
+    
     echo "
 <div class='section-example-container'>
 <pre class='csharp'>// In Initialize
-SetSecurityInitializer(new MySecurityInitializer(BrokerageModel, new FuncSecuritySeeder(GetLastKnownPrices)));
+SetSecurityInitializer(new MySecurityInitializer(BrokerageModel, new FuncSecuritySeeder(GetLastKnownPrices){$extraArgsC}));
 
 // Outside of the algorithm class
 class MySecurityInitializer : BrokerageModelSecurityInitializer
 {
-    public MySecurityInitializer(IBrokerageModel brokerageModel, ISecuritySeeder securitySeeder)
-        : base(brokerageModel, securitySeeder) {}
+    {$classMemberC}public MySecurityInitializer(IBrokerageModel brokerageModel, ISecuritySeeder securitySeeder{$extraParamsC})
+        : base(brokerageModel, securitySeeder) {$contructorBodyC}
     
     public override void Initialize(Security security)
     {
@@ -25,13 +51,13 @@ class MySecurityInitializer : BrokerageModelSecurityInitializer
     }
 }</pre>
 <pre class='python'># In Initialize
-self.SetSecurityInitializer(MySecurityInitializer(self.BrokerageModel, FuncSecuritySeeder(self.GetLastKnownPrices)))
+self.SetSecurityInitializer(MySecurityInitializer(self.BrokerageModel, FuncSecuritySeeder(self.GetLastKnownPrices){$extraArgsPy}))
 
 # Outside of the algorithm class
 class MySecurityInitializer(BrokerageModelSecurityInitializer):
 
-    def __init__(self, brokerage_model: IBrokerageModel, security_seeder: ISecuritySeeder) -> None:
-        super().__init__(brokerage_model, security_seeder)
+    def __init__(self, brokerage_model: IBrokerageModel, security_seeder: ISecuritySeeder{$extraParamsPy}) -> None:
+        super().__init__(brokerage_model, security_seeder){$contructorBodyPy}
 
     def Initialize(self, security: Security) -> None:
         # First, call the superclass definition
