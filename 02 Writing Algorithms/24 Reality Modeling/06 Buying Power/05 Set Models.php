@@ -9,31 +9,8 @@ security = self.AddEquity("SPY")
 security.SetFeeModel(SecurityMarginModel(3))</pre>
 </div>
 
-<p>You can also set the buying power model in a security initializer. If your algorithm has a universe, use the security initializer technique. In order to initialize single security subscriptions with the security initializer, call <code>SetSecurityInitializer</code> before you create the subscriptions.</p>
-
-<div class="section-example-container">
-<pre class="csharp">// In Initialize
-SetSecurityInitializer(CustomSecurityInitializer);
-AddEquity("SPY");
-
-private void CustomSecurityInitializer(Security security)
-{
-    security.SetBuyingPowerModel(new SecurityMarginModel(3m));
-}
-</pre>
-<pre class="python"># In Initialize
-self.SetSecurityInitializer(self.CustomSecurityInitializer)
-AddEquity("SPY")
-
-def CustomSecurityInitializer(self, security: Security) -&gt; None:
-    security.SetBuyingPowerModel(SecurityMarginModel(3))
-</pre>
-</div>
-
-
-<?php echo file_get_contents(DOCS_RESOURCES."/reality-modeling/security-initializers.html");?>
-
-<p>To extend upon the default security initializer instead of overwriting it, create a custom <code>BrokerageModelSecurityInitializer</code>.</p>
+<p>You can also set the buying power model in a <a href='/docs/v2/writing-algorithms/initialization#07-Set-Security-Initializer'>security initializer</a>
+. If your algorithm has a universe, use the security initializer technique. In order to initialize single security subscriptions with the security initializer, call <code>SetSecurityInitializer</code> before you create the subscriptions.</p>
 
 <?php
 include(DOCS_RESOURCES."/reality-modeling/brokerage-mondel-security-init.php");
