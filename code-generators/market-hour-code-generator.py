@@ -55,6 +55,8 @@ for x, y in sorted_assets.items():
         sorted_assets[x][k] = sorted(v)
 
 for asset_class, assets in sorted_assets.items():
+    if "Crypto" in asset_class: continue
+    
     html = ""
     
     for exchange, sec in assets.items():
