@@ -32,5 +32,5 @@ $overwriteCodeC = "if (security.Type == SecurityType.Equity) // Underlying asset
                 security.VolatilityModel.Update(security, tradeBar);
             }
         }";
-$getBrokerageModelInitCodeBlock($overwriteCodePy, $overwriteCodeC, "and warm up the volatility model");
+$getBrokerageModelInitCodeBlock($overwriteCodePy, $overwriteCodeC, "and warm up the volatility model", true);
 ?>
