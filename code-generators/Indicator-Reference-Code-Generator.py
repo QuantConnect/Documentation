@@ -644,7 +644,7 @@ if (_{short.lower()}.IsReady)
 """)
         
             for x in plots[full]:
-                html_file.write(f'''    Plot("My Indicators", "{x.lower() if x != "Current" else full.lower()}", _{short.lower()}.{x});
+                html_file.write(f'''    Plot("My Indicators", "{x.lower() if x != "Current" else full.lower()}", _{short.lower()}.{f'{x}.Current' if x != "Current" else x}.Value);
 ''')
                             
             html_file.write(f"""}}</pre>
@@ -657,7 +657,7 @@ if self.{short.lower()}.IsReady:
 """)
                             
             for x in plots[full]:
-                html_file.write(f'''    self.Plot("My Indicators", "{x.lower() if x != "Current" else full.lower()}", self.{short.lower()}.{x})
+                html_file.write(f'''    self.Plot("My Indicators", "{x.lower() if x != "Current" else full.lower()}", self.{short.lower()}.{f'{x}.Current' if x != "Current" else x}.Value)
 ''')
         
             with open(image_file, "rb") as image:
