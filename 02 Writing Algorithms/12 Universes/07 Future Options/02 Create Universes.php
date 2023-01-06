@@ -90,4 +90,4 @@ class MySecurityInitializer(BrokerageModelSecurityInitializer):
             security.PriceModel = OptionPriceModels.CrankNicolsonFD()</pre>
 </div>
 
-<?php echo file_get_contents(DOCS_RESOURCES."/reality-modeling/volatility.model.html"); ?>
+<?php echo file_get_contents(DOCS_RESOURCES."/reality-modeling/volatility-model.html"); ?>
