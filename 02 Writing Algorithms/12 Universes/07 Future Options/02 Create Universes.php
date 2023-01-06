@@ -38,25 +38,56 @@ self.AddFutureOption(future.Symbol)</pre>
 </table>
 
 
-<p>To set the <a href='/docs/v2/writing-algorithms/reality-modeling/options-models/pricing'>price model</a> of the Options, set their <code>PriceModel</code> property in a <a href='/docs/v2/writing-algorithms/universes/settings#03-Configure-Universe-Securities'>security initializer</a>.</p>
+<p>To override the default <a href="/docs/v2/writing-algorithms/reality-modeling/options-models/pricing">pricing model</a> of the Option, <a href='https://www.quantconnect.com/docs/v2/writing-algorithms/reality-modeling/options-models/pricing#03-Set-Models'>set a pricing model</a> in a security initializer.</p>
 
 <div class="section-example-container">
-<pre class="csharp">//In Initialize
-SetSecurityInitializer(CustomSecurityInitializer);
+    <pre class="csharp">// In Initialize
+var seeder = SecuritySeeder.Null;
+SetSecurityInitializer(new MySecurityInitializer(BrokerageModel, seeder, this));
 
-private void CustomSecurityInitializer(Security security)
+// Outside of the algorithm class
+class MySecurityInitializer : BrokerageModelSecurityInitializer
 {
-    if (security.Type == SecurityType.FutureOption)
-    {
-        (security as FutureOption).PriceModel = OptionPriceModels.CrankNicolsonFD();
-    }
-}
-</pre>
-<pre class="python">#In Initialize
-self.SetSecurityInitializer(self.CustomSecurityInitializer)
+    private QCAlgorithm _algorithm;
 
-def CustomSecurityInitializer(self, security: Security) -&gt; None:
-    if security.Type == SecurityType.FutureOption:
-        security.PriceModel = OptionPriceModels.CrankNicolsonFD()
-</pre>
+    public MySecurityInitializer(IBrokerageModel brokerageModel, ISecuritySeeder securitySeeder, QCAlgorithm algorithm)
+        : base(brokerageModel, securitySeeder) 
+    {
+        _algorithm = algorithm;
+    }
+    
+    public override void Initialize(Security security)
+    {
+        // First, call the superclass definition
+        // This method sets the reality models of each security using the default reality models of the brokerage model
+        base.Initialize(security);
+
+        // Next, set the price model
+        if (security.Type == SecurityType.FutureOption) // Option type
+        {
+            security.PriceModel = OptionPriceModels.CrankNicolsonFD();
+        }
+    }
+}</pre>
+    <pre class="python"># In Initialize
+seeder = SecuritySeeder.Null
+self.SetSecurityInitializer(MySecurityInitializer(self.BrokerageModel, seeder, self))
+
+# Outside of the algorithm class
+class MySecurityInitializer(BrokerageModelSecurityInitializer):
+
+    def __init__(self, brokerage_model: IBrokerageModel, security_seeder: ISecuritySeeder, algorithm: QCAlgorithm) -&gt; None:
+        super().__init__(brokerage_model, security_seeder)
+        self.algorithm = algorithm
+
+    def Initialize(self, security: Security) -&gt; None:
+        # First, call the superclass definition
+        # This method sets the reality models of each security using the default reality models of the brokerage model
+        super().Initialize(security)
+
+        # Next, set the price model
+        if security.Type == SecurityType.FutureOption: # Option type
+            security.PriceModel = OptionPriceModels.CrankNicolsonFD()</pre>
 </div>
+
+<?php echo file_get_contents(DOCS_RESOURCES."/reality-modeling/volatility.model.html"); ?>

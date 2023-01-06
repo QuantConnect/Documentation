@@ -1,10 +1,11 @@
-<p>To get the Option pricing model to accurately calculate the implied volatility, Greeks, and theoretical prices, you need to warm up the volatility model on the underlying security. If you add all options with the <code>AddOption</code> method, set a <a href="/docs/v2/writing-algorithms/historical-data/warm-up-periods">warm-up period</a> to warm up their volatility models. The warm-up period should provide the volatility models with enough data to compute their values.</p>
+<p>To use your volatility model as the <a href='/docs/v2/writing-algorithms/reality-modeling/options-models/pricing#03-What-Is-Implied-Volatility3F'>inital guess for the implied volatility</a>, warm up the volatility model of the underlying security. If you subscribe to all the Options in the <code>Initialize</code> method, set a <a href="/docs/v2/writing-algorithms/historical-data/warm-up-periods">warm-up period</a> to warm up their volatility models. The warm-up period should provide the volatility models with enough data to compute their values.</p>
 
 <div class="section-example-container">
     <pre class="csharp">// In Initialize
 SetWarmUp(30, Resolution.Daily);
 
-// In OnData<br>if (IsWarmingUp) return;</pre>
+// In OnData
+if (IsWarmingUp) return;</pre>
     <pre class="python"># In Initialize
 self.SetWarmUp(30, Resolution.Daily)
 
@@ -13,34 +14,62 @@ if self.IsWarmingUp:
     return</pre>
 </div>
 
-<p>If you have a dynamic universe of underlying assets and add Option contracts to your algorithm with the <code>AddOptionContract</code> method, you need to warm up the volatility model when the underlying asset enters your universe. We recommend you do this inside a security initializer.</p>
+<p>If you have a dynamic universe of underlying assets and add Option contracts to your algorithm with the <code>AddOptionContract</code>, <code>AddIndexOptionContract</code>, or <code>AddFutureOptionContract</code> methods, warm up the volatility model when the underlying asset enters your universe. We recommend you do this inside a <a href='/docs/v2/writing-algorithms/initialization#07-Set-Security-Initializer'>security initializer</a>.</p>
 
 
 <div class="section-example-container">
-<pre class="csharp">// In Initialize
-SetSecurityInitializer(CustomSecurityInitializer);
+    <pre class="csharp">// In Initialize
+var seeder = SecuritySeeder.Null;
+SetSecurityInitializer(new MySecurityInitializer(BrokerageModel, seeder, this));
 
-private void CustomSecurityInitializer(Security security)
+// Outside of the algorithm class
+class MySecurityInitializer : BrokerageModelSecurityInitializer
 {
-    if (security.Type == SecurityType.Equity)
+    private QCAlgorithm _algorithm;
+
+    public MySecurityInitializer(IBrokerageModel brokerageModel, ISecuritySeeder securitySeeder, QCAlgorithm algorithm)
+        : base(brokerageModel, securitySeeder) 
     {
-        security.VolatilityModel = new StandardDeviationOfReturnsVolatilityModel(30);
-        var history = History&lt;TradeBar&gt;(security.Symbol, 30, Resolution.Daily);
-        foreach (var tradeBar in history)
+        _algorithm = algorithm;
+    }
+    
+    public override void Initialize(Security security)
+    {
+        // First, call the superclass definition
+        // This method sets the reality models of each security using the default reality models of the brokerage model
+        base.Initialize(security);
+
+        // Next, set and warm up the volatility model
+        if (security.Type == SecurityType.Equity) // Underlying asset type
         {
-            security.VolatilityModel.Update(security, tradeBar);
+            security.VolatilityModel = new StandardDeviationOfReturnsVolatilityModel(30);
+            foreach (var tradeBar in _algorithm.History(security.Symbol, 30, Resolution.Daily))
+            {
+                security.VolatilityModel.Update(security, tradeBar);
+            }
         }
     }
-}
-</pre>
-<pre class="python"># In Initialize
-self.SetSecurityInitializer(self.CustomSecurityInitializer)
+}</pre>
+    <pre class="python"># In Initialize
+seeder = SecuritySeeder.Null
+self.SetSecurityInitializer(MySecurityInitializer(self.BrokerageModel, seeder, self))
 
-def CustomSecurityInitializer(self, security: Security) -&gt; None:
-    if security.Type == SecurityType.Equity:
-        security.VolatilityModel = StandardDeviationOfReturnsVolatilityModel(30)
-        trade_bars = self.History[TradeBar](security.Symbol, 30, Resolution.Daily)
-        for trade_bar in trade_bars:
-            security.VolatilityModel.Update(security, trade_bar)  
-</pre>
+# Outside of the algorithm class
+class MySecurityInitializer(BrokerageModelSecurityInitializer):
+
+    def __init__(self, brokerage_model: IBrokerageModel, security_seeder: ISecuritySeeder, algorithm: QCAlgorithm) -&gt; None:
+        super().__init__(brokerage_model, security_seeder)
+        self.algorithm = algorithm
+
+    def Initialize(self, security: Security) -&gt; None:
+        # First, call the superclass definition
+        # This method sets the reality models of each security using the default reality models of the brokerage model
+        super().Initialize(security)
+
+        # Next, set and warm up the volatility model
+        if security.Type == SecurityType.Equity:  # Underlying asset type
+            security.VolatilityModel = StandardDeviationOfReturnsVolatilityModel(30)
+            trade_bars = self.algorithm.History[TradeBar](security.Symbol, 30, Resolution.Daily)
+            for trade_bar in trade_bars:
+                security.VolatilityModel.Update(security, trade_bar)</pre>
 </div>
