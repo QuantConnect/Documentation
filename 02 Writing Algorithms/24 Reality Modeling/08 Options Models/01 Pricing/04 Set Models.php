@@ -21,5 +21,5 @@ $overwriteCodeC = "if (security.Type == SecurityType.Option) // Option type
         {
             security.PriceModel = OptionPriceModels.CrankNicolsonFD();
         }";
-$getBrokerageModelInitCodeBlock($overwriteCodePy, $overwriteCodeC, "the price model", true);
+$getBrokerageModelInitCodeBlock($overwriteCodePy, $overwriteCodeC, "the price model");
 ?>
