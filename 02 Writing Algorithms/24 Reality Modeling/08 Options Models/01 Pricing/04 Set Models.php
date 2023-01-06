@@ -59,6 +59,6 @@ class MySecurityInitializer(BrokerageModelSecurityInitializer):
         super().Initialize(security)
 
         # Next, set the price model
-        if security.Type == SecurityType.Equity: # Option type
+        if security.Type == SecurityType.Option: # Option type
             security.PriceModel = OptionPriceModels.CrankNicolsonFD()</pre>
 </div>
