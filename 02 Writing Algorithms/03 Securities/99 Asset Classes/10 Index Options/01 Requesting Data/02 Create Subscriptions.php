@@ -8,7 +8,7 @@
     <pre class="python">self.symbol = self.AddIndex("SPX").Symbol</pre>
 </div>
 
-<?php echo file_get_contents(DOCS_RESOURCES."/reality-modeling/volatility.model.html"); ?>
+<?php echo file_get_contents(DOCS_RESOURCES."/reality-modeling/volatility-model.html"); ?>
 
 <h4>Get Contract Symbols</h4>
 <p>To get Index Option contract <code>Symbol</code> objects, call the <code>CreateOption</code> method or use the <code>OptionChainProvider</code>. If you use the <code>CreateOption</code> method, you need to know the specific contract details.</p>
