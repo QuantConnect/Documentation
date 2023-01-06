@@ -2,91 +2,23 @@
 
 <h4>Configure the Underlying Equity</h4>
 
-<p>If you want to subscribe to the underlying Equity in the <code>Initialize</code> method, follow these steps to configure the asset:</p>
-<ol>
-    <li>Set the Equity <a href="/docs/v2/writing-algorithms/securities/asset-classes/us-equity/requesting-data#11-Data-Normalization">data normalization</a> to <code>DataNormalizationMode.Raw</code>.</li>
-    <li>Set the underlying <a href="/docs/v2/writing-algorithms/reality-modeling/options-models/volatility/key-concepts">volatility model</a>.</li>
-    <li><a href="/docs/v2/writing-algorithms/reality-modeling/options-models/volatility/key-concepts#07-Warm-Up-Models">Warm up the volatility model</a>.</li>
-</ol>
+<p>If you want to subscribe to the underlying Equity in the <code>Initialize</code> method, set the Equity <a href="/docs/v2/writing-algorithms/securities/asset-classes/us-equity/requesting-data#11-Data-Normalization">data normalization</a> to <code>DataNormalizationMode.Raw</code>.</p>
 
 <div class="section-example-container">
-    <pre class="csharp">var equity = AddEquity("SPY", dataNormalizationMode: DataNormalizationMode.Raw);
-_symbol = equity.Symbol;
-equity.VolatilityModel = new StandardDeviationOfReturnsVolatilityModel(30);
-SetWarmup(30, Resolution.Daily);</pre>
-    <pre class="python">equity = self.AddEquity("SPY", dataNormalizationMode=DataNormalizationMode.Raw)
-self.symbol = equity.Symbol
-equity.VolatilityModel = StandardDeviationOfReturnsVolatilityModel(30)
-self.SetWarmup(30, Resolution.Daily)</pre>
+    <pre class="csharp">_symbol = AddEquity("SPY", dataNormalizationMode: DataNormalizationMode.Raw).Symbol;</pre>
+    <pre class="python">self.symbol = self.AddEquity("SPY", dataNormalizationMode=DataNormalizationMode.Raw).Symbol</pre>
+</div>
+
+<p>If your algorithm has a dynamic <a href="/docs/v2/writing-algorithms/universes/equity">universe</a> of Equities, before you add the Equity universe in the <code>Initialize</code> method, set the universe data normalization mode to <code>DataNormalizationMode.Raw</code>.</p>
+
+<div class="section-example-container">
+    <pre class="csharp">UniverseSettings.DataNormalizationMode = DataNormalizationMode.Raw;</pre>
+    <pre class="python">self.UniverseSettings.DataNormalizationMode = DataNormalizationMode.Raw</pre>
 </div>
 
 
-<p>If your algorithm has a dynamic <a href="/docs/v2/writing-algorithms/universes/equity">universe</a> of Equities, follow these steps to configure the underlying asset:</p>
-<ol>
-    <li>In the <code>Initialize</code> method, set the universe data normalization mode to <code>DataNormalizationMode.Raw</code>.</li>
-    <li>Before you add the Option contract subscription, set the underlying <a href="/docs/v2/writing-algorithms/reality-modeling/options-models/volatility/key-concepts">volatility model</a>.</li>
-    <p>If you trade Options for every Equity in the universe, add this logic to a <a href="/docs/v2/writing-algorithms/initialization#07-Set-Security-Initializer">security initializer</a>.</p>
-    <li><a href="/docs/v2/writing-algorithms/reality-modeling/options-models/volatility/key-concepts#07-Warm-Up-Models">Warm up the volatility model</a></li>
-</ol>
 
-<div class="section-example-container">
-    <pre class="csharp">// In Initialize
-UniverseSettings.DataNormalizationMode = DataNormalizationMode.Raw;
-var seeder = SecuritySeeder.Null;
-SetSecurityInitializer(new MySecurityInitializer(BrokerageModel, seeder, this));
-
-
-class MySecurityInitializer : BrokerageModelSecurityInitializer
-{
-    private QCAlgorithm _algorithm;
-
-    public MySecurityInitializer(IBrokerageModel brokerageModel, ISecuritySeeder securitySeeder, QCAlgorithm algorithm)
-        : base(brokerageModel, securitySeeder) 
-    {
-        _algorithm = algorithm;
-    }
-    
-    public override void Initialize(Security security)
-    {
-        // First, call the superclass definition
-        // This method sets the reality models of each security using the default reality models of the brokerage model
-        base.Initialize(security);
-
-        // Next, set and warm up the volatility model
-        if (security.Type == SecurityType.Equity)
-        {
-            security.VolatilityModel = new StandardDeviationOfReturnsVolatilityModel(30);
-            foreach (var tradeBar in _algorithm.History(security.Symbol, 30, Resolution.Daily))
-            {
-                security.VolatilityModel.Update(security, tradeBar);
-            }
-        }
-    }
-}</pre>
-    <pre class="python"># In Initialize
-self.UniverseSettings.DataNormalizationMode = DataNormalizationMode.Raw
-seeder = SecuritySeeder.Null
-self.SetSecurityInitializer(MySecurityInitializer(self.BrokerageModel, seeder, self))
-
-
-class MySecurityInitializer(BrokerageModelSecurityInitializer):
-
-    def __init__(self, brokerage_model: IBrokerageModel, security_seeder: ISecuritySeeder, algorithm: QCAlgorithm) -&gt; None:
-        super().__init__(brokerage_model, security_seeder)
-        self.algorithm = algorithm
-
-    def Initialize(self, security: Security) -&gt; None:
-        # First, call the superclass definition
-        # This method sets the reality models of each security using the default reality models of the brokerage model
-        super().Initialize(security)
-
-        # Next, set and warm up the volatility model
-        if security.Type == SecurityType.Equity:
-            security.VolatilityModel = StandardDeviationOfReturnsVolatilityModel(30)
-            trade_bars = self.algorithm.History[TradeBar](security.Symbol, 30, Resolution.Daily)
-            for trade_bar in trade_bars:
-                security.VolatilityModel.Update(security, trade_bar)</pre>
-</div>
+<?php echo file_get_contents(DOCS_RESOURCES."/reality-modeling/volatility.model.html"); ?>
 
 <h4>Get Contract Symbols</h4>
 
@@ -146,7 +78,7 @@ self.contract_symbol = sorted(filtered_symbols, key=lambda symbol: symbol.ID.Str
 
 <h4>Subscribe to Contracts</h4>
 
-<p>To create an Equity Option contract subscription, pass the contract <code>Symbol</code> to the <code>AddOptionContract</code> method. Save a reference to the contract <code>Symbol</code> so you can easily access the Option contract in the <a href="/docs/v2/writing-algorithms/securities/asset-classes/equity-options/handling-data#02-Option-Chains">OptionChain</a> that LEAN passes to the <code>OnData</code> method. This method returns an <code>Option</code> object. To set the <a href="/docs/v2/writing-algorithms/reality-modeling/options-models/pricing">price model</a> of the Option, set its <code>PriceModel</code> property.</p>
+<p>To create an Equity Option contract subscription, pass the contract <code>Symbol</code> to the <code>AddOptionContract</code> method. Save a reference to the contract <code>Symbol</code> so you can easily access the Option contract in the <a href="/docs/v2/writing-algorithms/securities/asset-classes/equity-options/handling-data#02-Option-Chains">OptionChain</a> that LEAN passes to the <code>OnData</code> method. This method returns an <code>Option</code> object. To override the default <a href="/docs/v2/writing-algorithms/reality-modeling/options-models/pricing">pricing model</a> of the Option, <a href='https://www.quantconnect.com/docs/v2/writing-algorithms/reality-modeling/options-models/pricing#03-Set-Models'>set a pricing model</a>.</p>
 
 <div class="section-example-container">
     <pre class="csharp">var option = AddOptionContract(_contractSymbol);

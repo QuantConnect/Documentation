@@ -1,76 +1,8 @@
-<p>Before you can subscribe to a Future Option contract, you must configure the underlying <a href="/docs/v2/writing-algorithms/reality-modeling/options-models/volatility/key-concepts">volatility model</a> and get the contract <code>Symbol</code>.</p>
+<p>Before you can subscribe to a Future Option contract, you may configure the underlying <a href="/docs/v2/writing-algorithms/reality-modeling/options-models/volatility/key-concepts">volatility model</a> and you must get the contract <code>Symbol</code>.</p>
 
 <h4>Configure the Underlying Volatility Model</h4>
 
-<p>Before you add the Option contract subscription, set the underlying volatility model on the Future contract and <a href="/docs/v2/writing-algorithms/reality-modeling/options-models/volatility/key-concepts#07-Warm-Up-Models">warm it up</a>.</p>
-<div class="section-example-container">
-    <pre class="csharp">futureContract.VolatilityModel = new StandardDeviationOfReturnsVolatilityModel(30);
-foreach (var tradeBar in History(futureContract.Symbol, 30, Resolution.Daily))
-{
-    futureContract.VolatilityModel.Update(futureContract, tradeBar);
-}</pre>
-    <pre class="python">future_contract.VolatilityModel = StandardDeviationOfReturnsVolatilityModel(30)
-trade_bars = self.History[TradeBar](future_contract.Symbol, 30, Resolution.Daily)
-for trade_bar in trade_bars:
-    future_contract.VolatilityModel.Update(future_contract, trade_bar) </pre>
-</div>
-
-<p>If you trade Options for many Future contracts you subscribe to, add this logic to a <a href="/docs/v2/writing-algorithms/initialization#07-Set-Security-Initializer">security initializer</a>.</p>
-<div class="section-example-container">
-    <pre class="csharp">// In Initialize
-var seeder = SecuritySeeder.Null;
-SetSecurityInitializer(new MySecurityInitializer(BrokerageModel, seeder, this));
-
-class MySecurityInitializer : BrokerageModelSecurityInitializer
-{
-    private QCAlgorithm _algorithm;
-    
-    public MySecurityInitializer(IBrokerageModel brokerageModel, ISecuritySeeder securitySeeder)
-        : base(brokerageModel, securitySeeder)
-    {
-        _algorithm = algorithm;
-    }
-    
-    public override void Initialize(Security security)
-    {
-        // First, call the superclass definition
-        // This method sets the reality models of each security using the default reality models of the brokerage model
-        base.Initialize(security);
-
-        // Next, set and warm up the volatility model
-        if (security.Type == SecurityType.Future)
-        {
-            security.VolatilityModel = new StandardDeviationOfReturnsVolatilityModel(30);
-            foreach (var tradeBar in _algorithm.History(security.Symbol, 30, Resolution.Daily))
-            {
-                security.VolatilityModel.Update(security, tradeBar);
-            }
-        }
-    }
-}
-</pre>
-    <pre class="python"># In Initialize
-seeder = SecuritySeeder.Null
-self.SetSecurityInitializer(MySecurityInitializer(self.BrokerageModel, seeder, self))
-
-class MySecurityInitializer(BrokerageModelSecurityInitializer):
-
-    def __init__(self, brokerage_model: IBrokerageModel, security_seeder: ISecuritySeeder, algorithm: QCAlgorithm) -&gt; None:
-        super().__init__(brokerage_model, security_seeder)
-        self.algorithm = algorithm
-
-    def Initialize(self, security: Security) -&gt; None:
-        # First, call the superclass definition
-        # This method sets the reality models of each security using the default reality models of the brokerage model
-        super().Initialize(security)
-
-        # Next, set and warm up the volatility model
-        if security.Type == SecurityType.Future:
-            security.VolatilityModel = StandardDeviationOfReturnsVolatilityModel(30)
-            trade_bars = self.algorithm.History[TradeBar](security.Symbol, 30, Resolution.Daily)
-            for trade_bar in trade_bars:
-                security.VolatilityModel.Update(security, trade_bar)</pre>
-</div>
+<?php echo file_get_contents(DOCS_RESOURCES."/reality-modeling/volatility.model.html"); ?>
 
 <h4>Get Contract Symbols</h4>
 
@@ -142,7 +74,7 @@ self.option_contract_symbol = sorted(filtered_symbols, key=lambda symbol: symbol
 
 <h4>Subscribe to Contracts</h4>
 
-<p>To create a Future Option contract subscription, pass the contract <code>Symbol</code> to the <code>AddFutureOptionContract</code> method. Save a reference to the contract <code>Symbol</code> so you can easily access the Option contract in the <a href="/docs/v2/writing-algorithms/securities/asset-classes/future-options/handling-data#04-Option-Chains">OptionChain</a> that LEAN passes to the <code>OnData</code> method. To set the <a href="/docs/v2/writing-algorithms/reality-modeling/options-models/pricing">price model</a> of the Option, set its <code>PriceModel</code> property.</p>
+<p>To create a Future Option contract subscription, pass the contract <code>Symbol</code> to the <code>AddFutureOptionContract</code> method. Save a reference to the contract <code>Symbol</code> so you can easily access the Option contract in the <a href="/docs/v2/writing-algorithms/securities/asset-classes/future-options/handling-data#04-Option-Chains">OptionChain</a> that LEAN passes to the <code>OnData</code> method. To override the default <a href="/docs/v2/writing-algorithms/reality-modeling/options-models/pricing">pricing model</a> of the Option, <a href='https://www.quantconnect.com/docs/v2/writing-algorithms/reality-modeling/options-models/pricing#03-Set-Models'>set a pricing model</a>.</p>
 
 <div class="section-example-container">
     <pre class="csharp">var option = AddFutureOptionContract(_optionContractSymbol);
