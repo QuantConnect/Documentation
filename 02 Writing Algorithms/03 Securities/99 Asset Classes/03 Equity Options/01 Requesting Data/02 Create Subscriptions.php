@@ -18,7 +18,7 @@
 
 
 
-<?php echo file_get_contents(DOCS_RESOURCES."/reality-modeling/volatility.model.html"); ?>
+<?php echo file_get_contents(DOCS_RESOURCES."/reality-modeling/volatility-model.html"); ?>
 
 <h4>Get Contract Symbols</h4>
 
