@@ -1,14 +1,20 @@
 <p>The following snippet demonstrates how to request data from the Kraken Crypto Price dataset:</p>
 
 <div class="section-example-container">
-<pre class="python"># Kraken accepts both Cash and Margin type account.
+<pre class="python">from QuantConnect.DataSource import *
+from QuantConnect.Data.UniverseSelection import *
+
+# Kraken accepts both Cash and Margin type account.
 self.SetBrokerageModel(BrokerageName.Kraken, AccountType.Cash)
 self.SetBrokerageModel(BrokerageName.Kraken, AccountType.Margin)
 
 self.symbol = self.AddCrypto("BTCUSD", Resolution.Minute, Market.Kraken).Symbol
 
 self.AddUniverse(CryptoCoarseFundamentalUniverse(Market.Kraken, self.UniverseSettings, self.UniverseSelectionFilter))</pre>
-<pre class="csharp">// Kraken accepts both Cash and Margin type account.
+<pre class="csharp">using QuantConnect.DataSource;
+using QuantConnect.Data.UniverseSelection;
+
+// Kraken accepts both Cash and Margin type account.
 SetBrokerageModel(BrokerageName.Kraken, AccountType.Cash);
 SetBrokerageModel(BrokerageName.Kraken, AccountType.Margin);
 

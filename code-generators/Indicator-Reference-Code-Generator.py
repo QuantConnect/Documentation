@@ -34,8 +34,13 @@ update_value = {}
 full_apis = {}
 
 root = '02 Writing Algorithms/28 Indicators/01 Supported Indicators'
+temp_dir = 'tmp/02 Writing Algorithms/28 Indicators/01 Supported Indicators'
 if os.path.isdir(root):
+    shutil.copytree(root, temp_dir, dirs_exist_ok=True,
+                    ignore=lambda dir, files: [f for f in files if os.path.isfile(os.path.join(dir, f)) and str(f) != "metadata.json"])
     shutil.rmtree(root)
+    shutil.copytree(temp_dir, root, dirs_exist_ok=True)
+    shutil.rmtree(temp_dir)
 
 for method in methods:
     item = str(method["method-return-type-short-name"])
@@ -639,7 +644,7 @@ if (_{short.lower()}.IsReady)
 """)
         
             for x in plots[full]:
-                html_file.write(f'''    Plot("My Indicators", "{x.lower() if x != "Current" else full.lower()}", _{short.lower()}.{x});
+                html_file.write(f'''    Plot("My Indicators", "{x.lower() if x != "Current" else full.lower()}", _{short.lower()}.{f'{x}.Current' if x != "Current" else x}.Value);
 ''')
                             
             html_file.write(f"""}}</pre>
@@ -652,7 +657,7 @@ if self.{short.lower()}.IsReady:
 """)
                             
             for x in plots[full]:
-                html_file.write(f'''    self.Plot("My Indicators", "{x.lower() if x != "Current" else full.lower()}", self.{short.lower()}.{x})
+                html_file.write(f'''    self.Plot("My Indicators", "{x.lower() if x != "Current" else full.lower()}", self.{short.lower()}.{f'{x}.Current' if x != "Current" else x}.Value)
 ''')
         
             with open(image_file, "rb") as image:

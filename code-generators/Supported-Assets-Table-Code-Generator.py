@@ -24,7 +24,7 @@ for exchange, name in cryptos_exchange.items():
         splits = x.split(",")
         
         if exchange == str(splits[0]) and str(splits[2]) == "crypto":
-            html += f'<td><a href="https://www.quantconnect.com/data/tree/crypto/{exchange}/minute/{splits[1]}">{splits[1]}</a></td>'
+            html += f'<td>{splits[1]}</td>'
             
             count += 1
             
@@ -56,7 +56,7 @@ for exchange, name in forex_exchanges.items():
         splits = x.split(",")
         
         if exchange == str(splits[0]) and str(splits[2]) == "forex":
-            html += f'<td><a href="https://www.quantconnect.com/data/tree/forex/{exchange}/minute/{splits[1]}">{splits[1]}</a></td>'
+            html += f'<td>{splits[1]}</td>'
             
             count += 1
             
@@ -88,7 +88,7 @@ for exchange, name in cfd_exchanges.items():
         splits = x.split(",")
         
         if exchange == str(splits[0]) and str(splits[2]) == "cfd":
-            html += f'<td><a href="https://www.quantconnect.com/data/tree/cfd/{exchange}/minute/{splits[1]}">{splits[1]}</a></td>'
+            html += f'<td>{splits[1]}</td>'
             
             count += 1
             

@@ -4,6 +4,7 @@ import os
 import shutil
 
 DESTINATION = "Resources/datasets/supported-securities/alternatives"
+TEMP = "Resources/datasets/supported-securities/temp/alternatives"
 PROCESSED_DIR = "/nas/alternative"
 DATASETS = {
     "brain": ["rankings", "sentiment", "report_10k", "report_all"],
@@ -35,7 +36,11 @@ def TableCreation(files):
 if __name__ == '__main__':
     DESTINATION = Path(DESTINATION)
     if os.path.exists(DESTINATION):
+        shutil.copytree(DESTINATION, TEMP, dirs_exist_ok=True,
+                        ignore=lambda dir, files: [f for f in files if os.path.isfile(os.path.join(dir, f)) and str(f) != "metadata.json"])
         shutil.rmtree(DESTINATION)
+        shutil.copytree(TEMP, DESTINATION, dirs_exist_ok=True)
+        shutil.rmtree(TEMP)
     DESTINATION.mkdir(parents=True, exist_ok=True)
         
     for vendor, datasets in DATASETS.items():
