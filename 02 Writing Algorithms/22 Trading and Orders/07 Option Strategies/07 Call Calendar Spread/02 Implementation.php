@@ -82,7 +82,7 @@ self.Sell(option_strategy, 1)   # if short call calendar spread</pre>
     </div>
 
 <?php 
-$methodNames = list("Buy", "Sell");
+$methodNames = array("Buy", "Sell");
 include(DOCS_RESOURCES."/trading-and-orders/option-strategy-extra-args.php"); 
 ?>
 
