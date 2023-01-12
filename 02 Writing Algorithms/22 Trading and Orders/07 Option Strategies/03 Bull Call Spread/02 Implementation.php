@@ -80,7 +80,7 @@ self.Buy(option_strategy, 1)</pre>
     </div>
 
 <?php 
-$methodNames = list("Buy");
+$methodNames = array("Buy");
 include(DOCS_RESOURCES."/trading-and-orders/option-strategy-extra-args.php"); 
 ?>
 
