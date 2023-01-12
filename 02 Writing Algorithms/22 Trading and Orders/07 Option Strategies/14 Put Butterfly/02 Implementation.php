@@ -98,4 +98,10 @@ Sell(optionStrategy, 1);   // if short put butterfly<br></pre>
 self.Buy(option_strategy, 1)    # if long put butterfly
 self.Sell(option_strategy, 1)   # if short put butterfly</pre>
     </div>
+
+<?php 
+$methodNames = list("Buy", "Sell");
+include(DOCS_RESOURCES."/trading-and-orders/option-strategy-extra-args.php"); 
+?>
+    
 </ol>

@@ -1,0 +1,135 @@
+<p>To fill combo limit orders, the fill model first calculates the low and high price of the combo order. The low price of the combo order is the sum of low prices for each security in the order legs. The high price of the combo order is the sum of high prices for each security in the order legs. The following table describes the low and high price of each security for each data format and order direction. The order direction in the table represents the order direction of the order leg, not the order direction of the combo order.</p>
+
+
+<table class="qc-table table">
+    <thead>
+        <tr>
+            <th>Data Format</th>
+            <th><code>TickType</code></th>
+            <th>Order Direction</th>
+            <th>Low Price</th>
+            <th>High Price</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><code>Tick</code></td>
+            <td><code>Quote</code></td>
+            <td>Buy</td>
+            <td>Ask price</td>
+            <td>Ask price</td>
+        </tr>
+        <tr>
+            <td><code>Tick</code></td>
+            <td><code>Quote</code></td>
+            <td>Sell</td>
+            <td>Bid price</td>
+            <td>Bid price</td>
+        </tr>
+        <tr>
+            <td><code>Tick</code></td>
+            <td><code>Trade</code></td>
+            <td>Buy or sell</td>
+            <td>Trade price</td>
+            <td>Trade price</td>
+        </tr>
+        <tr>
+            <td><code>QuoteBar</code></td>
+            <td></td>
+            <td>Buy</td>
+            <td>Ask low price</td>
+            <td>Ask high price</td>
+        </tr>
+        <tr>
+            <td><code>QuoteBar</code></td>
+            <td></td>
+            <td>Sell</td>
+            <td>Bid low price</td>
+            <td>Bid high price</td>
+        </tr>
+        <tr>
+            <td><code>TradeBar</code></td>
+            <td><br></td>
+            <td>Buy or sell</td>
+            <td>Low price</td>
+            <td>High price</td>
+        </tr>
+    </tbody>
+</table>
+
+
+<p>After it calculates the low and high price of the combo order, the fill model checks if it should fill the order. The following table describes the fill logic of combo limit orders for each data format and order direction. The order direction in the table represents the order direction of the combo limit order.</p>
+
+
+<table class="qc-table table">
+    <thead>
+        <tr>
+            <th>Data Format</th>
+            <th><code>TickType</code></th>
+            <th>Order Direction</th>
+            <th>Fill Condition</th>
+            <th>Fill Price</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><code>Tick</code></td>
+            <td><code>Quote</code></td>
+            <td>Buy</td>
+            <td>Aggregate low price < combo limit price</td>
+            <td>Ask price</td>
+        </tr>
+        <tr>
+            <td><code>Tick</code></td>
+            <td><code>Quote</code></td>
+            <td>Sell</td>
+            <td>Aggregate high price > combo limit price</td>
+            <td>Bid price</td>
+        </tr>
+        <tr>
+            <td><code>Tick</code></td>
+            <td><code>Trade</code></td>
+            <td>Buy</td>
+            <td>Aggregate low price < combo limit price</td>
+            <td>Trade price</td>
+        </tr>
+        <tr>
+            <td><code>Tick</code></td>
+            <td><code>Trade</code></td>
+            <td>Sell</td>
+            <td>Aggregate high price > combo limit price</td>
+            <td>Trade price</td>
+        </tr>
+        <tr>
+            <td><code>QuoteBar</code></td>
+            <td><br></td>
+            <td>Buy</td>
+            <td>Aggregate low price < combo limit price</td>
+            <td>Ask low price</td>
+        </tr>
+        <tr>
+            <td><code>QuoteBar</code></td>
+            <td><br></td>
+            <td>Sell</td>
+            <td>Aggregate high price > combo limit price</td>
+            <td>Bid high price</td>
+        </tr>
+        <tr>
+            <td><code>TradeBar</code></td>
+            <td><br></td>
+            <td>Buy</td>
+            <td>Aggregate low price < combo limit price</td>
+            <td>Low price</td>
+        </tr>
+        <tr>
+            <td><code>TradeBar</code></td>
+            <td><br></td>
+            <td>Sell</td>
+            <td>Aggregate high price > combo limit price</td>
+            <td>High price</td>
+        </tr>
+    </tbody>
+</table>
+
+<p>The fill quantity of each leg is the product of the leg order quantity and the combo order quantity. The model only fills combo limit orders if the data isn't <a href='/docs/v2/writing-algorithms/reality-modeling/trade-fills/key-concepts#06-Stale-Fills'>stale</a> and all the legs can fill in the same <a href='/docs/v2/writing-algorithms/key-concepts/time-modeling/timeslices'>time step</a>.</p>
+

@@ -80,6 +80,33 @@
         <td><img src="https://cdn.quantconnect.com/i/tu/check.png" alt="green check" width="15px;"></td>
       </tr>
       <tr>
+        <td><a href='/docs/v2/writing-algorithms/trading-and-orders/order-types/combo-market-orders'>ComboMarketOrder</a></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td><img src="https://cdn.quantconnect.com/i/tu/check.png" alt="green check" width="15px;"></td>
+      </tr>
+      <tr>
+        <td><a href='/docs/v2/writing-algorithms/trading-and-orders/order-types/combo-limit-orders'>ComboLimitOrder</a></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td><img src="https://cdn.quantconnect.com/i/tu/check.png" alt="green check" width="15px;"></td>
+      </tr>
+      <tr>
+        <td><a href='/docs/v2/writing-algorithms/trading-and-orders/order-types/combo-leg-limit-orders'>ComboLegLimitOrder</a></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td><img src="https://cdn.quantconnect.com/i/tu/check.png" alt="green check" width="15px;"></td>
+      </tr>
+      <tr>
         <td><a href='/docs/v2/writing-algorithms/trading-and-orders/order-types/option-exercise-orders'>ExerciseOption</a></td>
         <td></td>
         <td></td>
@@ -107,6 +134,9 @@ StopMarketOrder(_symbol, quantity, stopPrice);
 StopLimitOrder(_symbol, quantity, stopPrice, limitPrice);
 MarketOnOpenOrder(_symbol, quantity);
 MarketOnCloseOrder(_symbol, quantity);
+ComboMarketOrder(legs, quantity);
+ComboLimitOrder(legs, quantity, limitPrice);
+ComboLegLimitOrder(legs, quantity);
 ExerciseOption(_optionSymbol, quantity);</pre>
     <pre class="python">self.MarketOrder(self.symbol, quantity)
 self.LimitOrder(self.symbol, quantity, limit_price)
@@ -115,6 +145,9 @@ self.StopMarketOrder(self.symbol, quantity, stop_price)
 self.StopLimitOrder(self.symbol, quantity, stop_price, limit_price)
 self.MarketOnOpenOrder(self.symbol, quantity)
 self.MarketOnCloseOrder(self.symbol, quantity)
+self.ComboMarketOrder(legs, quantity)
+self.ComboLimitOrder(legs, quantity, limit_price)
+self.ComboLegLimitOrder(legs, quantity)
 self.ExerciseOption(self.option_symbol, quantity)</pre>
 </div>
 
