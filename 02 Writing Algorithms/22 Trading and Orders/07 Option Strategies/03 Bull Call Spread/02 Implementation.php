@@ -1,4 +1,4 @@
-<p>Follow these steps to implement the bull put spread strategy:</p>
+<p>Follow these steps to implement the bull call spread strategy:</p>
 
 <ol>
     <li>In the <code>Initialize</code> method, set the start date, end date, cash, and <a href="/docs/v2/writing-algorithms/universes/equity-options">Option universe</a>.</li>
@@ -43,14 +43,14 @@ def UniverseFunc(self, universe: OptionFilterUniverse) -&gt; OptionFilterUnivers
     // Get the furthest expiration date of the contracts
     var expiry = chain.OrderByDescending(x =&gt; x.Expiry).First().Expiry;
     
-    // Select the put Option contracts with the furthest expiry
-    var puts = chain.Where(x =&gt; x.Expiry == expiry &amp;&amp; x.Right == OptionRight.Put);
-    if (puts.Count() == 0) return;
+    // Select the call Option contracts with the furthest expiry
+    var calls = chain.Where(x =&gt; x.Expiry == expiry &amp;&amp; x.Right == OptionRight.Call);
+    if (calls.Count() == 0) return;
 
     // Select the ITM and OTM contract strikes from the remaining contracts
-    var putStrikes = puts.Select(x =&gt; x.Strike).OrderBy(x =&gt; x);
-    var itmStrike = putStrikes.Last();
-    var otmStrike = putStrikes.First();</pre>
+    var putStrikes = calls.Select(x =&gt; x.Strike).OrderBy(x =&gt; x);
+    var itmStrike = putStrikes.First();
+    var otmStrike = putStrikes.Last();</pre>
         <pre class="python">def OnData(self, slice: Slice) -&gt; None:
     if self.Portfolio.Invested: return
 
@@ -61,21 +61,27 @@ def UniverseFunc(self, universe: OptionFilterUniverse) -&gt; OptionFilterUnivers
     # Get the furthest expiration date of the contracts
     expiry = sorted(chain, key = lambda x: x.Expiry, reverse=True)[0].Expiry
     
-    # Select the put Option contracts with the furthest expiry
-    puts = [i for i in chain if i.Expiry == expiry and i.Right == OptionRight.Put]
-    if len(puts) == 0: return
+    # Select the call Option contracts with the furthest expiry
+    calls = [i for i in chain if i.Expiry == expiry and i.Right == OptionRight.Call]
+    if len(calls) == 0: return
 
-    # Select the ITM and OTM contract strikes from the remaining contracts
-    put_strikes = sorted([x.Strike for x in puts])
-    otm_strike = put_strikes[0]
-    itm_strike = put_strikes[-1]</pre>
+    # Select the ITM and OTM contract strike prices from the remaining contracts
+    call_strikes = sorted([x.Strike for x in calls])
+    itm_strike = call_strikes[0]
+    otm_strike = call_strikes[-1]</pre>
     </div>
 
-    <li>In the <code>OnData</code> method, call the <code>OptionStrategies.BullPutSpread</code> method and then submit the order.</li>
+    <li>In the <code>OnData</code> method, call the <code>OptionStrategies.BullCallSpread</code> method and then submit the order.</li>
     <div class="section-example-container">
-        <pre class="csharp">var optionStrategy = OptionStrategies.BullPutSpread(_symbol, itmStrike, otmStrike, expiry);
+        <pre class="csharp">var optionStrategy = OptionStrategies.BullCallSpread(_symbol, itmStrike, otmStrike, expiry);
 Buy(optionStrategy, 1);<br></pre>
-        <pre class="python">option_strategy = OptionStrategies.BullPutSpread(self.symbol, itm_strike, otm_strike, expiry)
+        <pre class="python">option_strategy = OptionStrategies.BullCallSpread(self.symbol, itm_strike, otm_strike, expiry)
 self.Buy(option_strategy, 1)</pre>
     </div>
+
+<?php 
+$methodNames = list("Buy");
+include(DOCS_RESOURCES."/trading-and-orders/option-strategy-extra-args.php"); 
+?>
+
 </ol>

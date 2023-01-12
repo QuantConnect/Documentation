@@ -65,4 +65,10 @@ Buy(optionStrategy, 1);<br></pre>
         <pre class="python">option_strategy = OptionStrategies.Straddle(self.symbol, strike, expiry)
 self.Buy(option_strategy, 1)</pre>
     </div>
+
+<?php 
+$methodNames = list("Buy");
+include(DOCS_RESOURCES."/trading-and-orders/option-strategy-extra-args.php"); 
+?>
+
 </ol>

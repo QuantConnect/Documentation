@@ -1,4 +1,4 @@
-<p>Follow these steps to implement the bear call spread strategy:</p>
+<p>Follow these steps to implement the call butterfly strategy:</p>
 
 <ol>
     <li>In the <code>Initialize</code> method, set the start date, end date, cash, and <a href="/docs/v2/writing-algorithms/universes/equity-options">Option universe</a>.</li>
@@ -14,8 +14,8 @@ public override void Initialize()
     var option = AddOption("GOOG", Resolution.Minute);
     _symbol = option.Symbol;
     option.SetFilter(universe =&gt; universe.IncludeWeeklys()
-                                            .Strikes(-15, 15)
-                                            .Expiration(TimeSpan.FromDays(0), TimeSpan.FromDays(31)));
+                                         .Strikes(-15, 15)
+                                         .Expiration(TimeSpan.FromDays(0), TimeSpan.FromDays(31)));
 }</pre>
         <pre class="python">def Initialize(self) -&gt; None:
     self.SetStartDate(2017, 2, 1)
@@ -38,17 +38,25 @@ def UniverseFunc(self, universe: OptionFilterUniverse) -&gt; OptionFilterUnivers
 
     // Get the OptionChain
     var chain = slice.OptionChains.get(_symbol, null);
-    if (chain.Count() == 0) return;
+    if (chain == null || chain.Count() == 0) return;
 
+    // Get the furthest expiry date of the contracts
+    var expiry = chain.OrderByDescending(x =&gt; x.Expiry).First().Expiry;
+    
     // Select the call Option contracts with the furthest expiry
-    var expiry = chain.OrderByDescending(x =&gt; x.Expiry).First().Expiry;    
     var calls = chain.Where(x =&gt; x.Expiry == expiry &amp;&amp; x.Right == OptionRight.Call);
     if (calls.Count() == 0) return;
 
-    // Select the ITM and OTM contract strike prices from the remaining contracts
+    // Get the strike prices of the all the call Option contracts
     var callStrikes = calls.Select(x =&gt; x.Strike).OrderBy(x =&gt; x);
-    var itmStrike = callStrikes.First();
-    var otmStrike = callStrikes.Last();</pre>
+
+    // Get the ATM strike price
+    var atmStrike = calls.OrderBy(x =&gt; Math.Abs(x.Strike - chain.Underlying.Price)).First().Strike;
+
+    // Get the strike prices for the contracts not ATM
+    var spread = Math.Min(Math.Abs(callStrikes.First() - atmStrike), Math.Abs(callStrikes.Last() - atmStrike));
+    var itmStrike = atmStrike - spread;
+    var otmStrike = atmStrike + spread;</pre>
         <pre class="python">def OnData(self, slice: Slice) -&gt; None:
     if self.Portfolio.Invested: return
 
@@ -63,17 +71,31 @@ def UniverseFunc(self, universe: OptionFilterUniverse) -&gt; OptionFilterUnivers
     calls = [i for i in chain if i.Expiry == expiry and i.Right == OptionRight.Call]
     if len(calls) == 0: return
 
-    # Select the ITM and OTM contract strike prices from the remaining contracts
+    # Get the strike prices of the all the call Option contracts
     call_strikes = sorted([x.Strike for x in calls])
-    itm_strike = call_strikes[0]
-    otm_strike = call_strikes[-1]</pre>
+
+    # Get the ATM strike price
+    atm_strike = sorted(calls, key=lambda x: abs(x.Strike - chain.Underlying.Price))[0].Strike
+
+    # Get the strike prices for the contracts not ATM
+    spread = min(abs(call_strikes[0] - atm_strike), abs(call_strikes[-1] - atm_strike))
+    itm_strike = atm_strike - spread
+    otm_strike = atm_strike + spread</pre>
     </div>
 
-    <li>In the <code>OnData</code> method, call the <code>OptionStrategies.BearCallSpread</code> method and then submit the order.</li>
+    <li>In the <code>OnData</code> method, call the <code>OptionStrategies.CallButterfly</code> method and then submit the order.</li>
     <div class="section-example-container">
-        <pre class="csharp">var optionStrategy = OptionStrategies.BearCallSpread(_symbol, itmStrike, otmStrike, expiry);
-Buy(optionStrategy, 1);<br></pre>
-        <pre class="python">option_strategy = OptionStrategies.BearCallSpread(self.symbol, itm_strike, otm_strike, expiry)
-self.Buy(option_strategy, 1)</pre>
+        <pre class="csharp">var optionStrategy = OptionStrategies.CallButterfly(_symbol, otmStrike, atmStrike, itmStrike, expiry);
+Buy(optionStrategy, 1);    // if long call butterfly
+Sell(optionStrategy, 1);   // if short call butterfly</pre>
+        <pre class="python">option_strategy = OptionStrategies.CallButterfly(self.symbol, otm_strike, atm_strike, itm_strike, expiry)
+self.Buy(option_strategy, 1)    # if long call butterfly
+self.Sell(option_strategy, 1)   # if short call butterfly</pre>
     </div>
+
+<?php 
+$methodNames = list("Buy", "Sell");
+include(DOCS_RESOURCES."/trading-and-orders/option-strategy-extra-args.php"); 
+?>
+
 </ol>

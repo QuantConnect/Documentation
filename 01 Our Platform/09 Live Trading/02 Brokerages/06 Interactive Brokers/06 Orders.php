@@ -41,6 +41,18 @@
       <td><a rel="nofollow" target="_blank" href="https://www.interactivebrokers.com/en/index.php?f=599">Market-on-Close (MOC) Orders</a></td>
     </tr>
     <tr>
+      <td><code>ComboMarketOrder</code></td>
+      <td><a rel="nofollow" target="_blank" href="https://www.interactivebrokers.com/en/trading/orders/spread.php">Spread Orders</a></td>
+    </tr>
+    <tr>
+      <td><code>ComboLimitOrder</code></td>
+      <td><a rel="nofollow" target="_blank" href="https://www.interactivebrokers.com/en/trading/orders/spread.php">Spread Orders</a></td>
+    </tr>
+    <tr>
+      <td><code>ComboLegLimitOrder</code></td>
+      <td><a rel="nofollow" target="_blank" href="https://www.interactivebrokers.com/en/trading/orders/spread.php">Spread Orders</a></td>
+    </tr>
+    <tr>
       <td><code>ExerciseOption</code></td>
       <td><a rel="nofollow" target="_blank" href="https://www.interactivebrokers.ca/en/trading/exerciseCloseout.php">Options Exercise</a></td>
     </tr>
@@ -69,6 +81,8 @@ self.ExerciseOption(self.option_symbol, quantity)</pre>
 <p>Market on open orders aren't available for Futures or Future Options.</p>
 
 <p>Option exercise orders aren't available for Index Options or cash-settled US Equity Options.</p>
+
+<p>Combo orders are only available for Options.</p>
 
 <h4>Order Properties</h4>
 

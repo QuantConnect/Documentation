@@ -1,0 +1,45 @@
+<p>To send a combo market order, create multiple <code>Leg</code> objects to represent the legs of the combo order, then call the <code>ComboMarketOrder</code> method. Atleast one leg must have a positive quantity and atleast one leg must have a negative quantity. The legs must each target a unique contract. If you don't have sufficient capital for the order, it's rejected. By default, combo market orders are synchronous and fill immediately.</p>
+
+<div class="section-example-container">
+<pre class="csharp">foreach (var kvp in slice.OptionChains)
+{
+    // Select contracts
+    var contracts = kvp.Value.Contracts.Values.ToList();
+    if (contracts.Count < 2) 
+    {
+        return;
+    }
+
+    // Create order legs
+    var legs = new List&lgt;Leg&gt;()
+    {
+        Leg.Create(contracts[0].Symbol, 1),
+        Leg.Create(contracts[1].Symbol, -1)
+    };
+
+    // Place order
+    ComboMarketOrder(legs, 1);
+}</pre>
+<pre class="python">for canonical_symbol, chain in slice.OptionChains.items():
+    # Select contracts
+    contracts = [c for c in chain][:2]
+    if len(contracts) < 2:
+        return
+
+    # Create order legs
+    legs = []
+    quantities = [1, -1]
+    for i, contract in enumerate(contracts):
+        legs.append(Leg.Create(contract.Symbol, quantities[i]))
+    
+    # Place order
+    self.ComboMarketOrder(legs, 1)</pre>
+</div>
+
+<p>The quantity argument of the <code>ComboMarketOrder</code> method acts as a global multiplier. In the preceding example, if we set the global multiplier to two, then the algorithm buys two units of the first contract and sells two units of the second contract. The quantity also sets the order direction of the combo order, which affects how the <a href='/docs/v2/writing-algorithms/reality-modeling/trade-fills/supported-models/immediate-model'>fill model</a> fills the order.</p>
+
+<p>You can also provide a tag and <a href="/docs/v2/writing-algorithms/trading-and-orders/order-properties">order properties</a> to the <code>ComboMarketOrder</code> method.</p>
+<div class="section-example-container">
+<pre class="csharp">ComboMarketOrder(legs, quantity, tag: tag, orderProperties: orderProperties);</pre>
+<pre class="python">self.ComboMarketOrder(legs, quantity, tag=tag, orderProperties=order_properties)</pre>
+</div>
