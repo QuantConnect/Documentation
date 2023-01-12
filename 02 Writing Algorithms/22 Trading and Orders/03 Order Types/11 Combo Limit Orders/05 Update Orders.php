@@ -8,33 +8,33 @@ var tickets = ComboLimitOrder(legs, quantity: 1, limitPrice: limitPrice);
 // Update the leg orders
 foreach (var ticket in tickets)
 {
-	var response = ticket.Update(new UpdateOrderFields() 
-	{
-	    Quantity = 2 * Math.Sign(ticket.Quantity),
-	    LimitPrice = ticket.Get(OrderField.LimitPrice) + 0.01m,
-	    Tag = $"Update #{ticket.UpdateRequests.Count + 1}"
-	});	
+    var response = ticket.Update(new UpdateOrderFields() 
+    {
+        Quantity = 2 * Math.Sign(ticket.Quantity),
+        LimitPrice = ticket.Get(OrderField.LimitPrice) + 0.01m,
+        Tag = $"Update #{ticket.UpdateRequests.Count + 1}"
+    }); 
 
-	// Check if the update was successful
-	if (response.IsSuccess) 
-	{
-	    Debug($"Order updated successfully for {ticket.Symbol}");
-	}
+    // Check if the update was successful
+    if (response.IsSuccess) 
+    {
+        Debug($"Order updated successfully for {ticket.Symbol}");
+    }
 }</pre>
 <pre class="python"># Create a new order and save the order tickets
 tickets = self.ComboLimitOrder(legs, 1, limit_price)
 
 # Update the leg orders
 for ticket in tickets:
-	update_settings = UpdateOrderFields()
-	update_settings.Quantity = 2 * np.sign(ticket.Quantity)
-	update_settings.LimitPrice = ticket.Get(OrderField.LimitPrice) + 0.01
-	update_settings.Tag = f"Update #{len(ticket.UpdateRequests) + 1}"
-	response = ticket.Update(update_settings)
+    update_settings = UpdateOrderFields()
+    update_settings.Quantity = 2 * np.sign(ticket.Quantity)
+    update_settings.LimitPrice = ticket.Get(OrderField.LimitPrice) + 0.01
+    update_settings.Tag = f"Update #{len(ticket.UpdateRequests) + 1}"
+    response = ticket.Update(update_settings)
 
-	# Check if the update was successful
-	if response.IsSuccess:
-	    self.Debug(f"Order updated successfully for {ticket.Symbol}")</pre>
+    # Check if the update was successful
+    if response.IsSuccess:
+        self.Debug(f"Order updated successfully for {ticket.Symbol}")</pre>
 </div>
 
 <?php 
