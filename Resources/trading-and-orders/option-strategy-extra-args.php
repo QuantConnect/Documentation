@@ -1,4 +1,4 @@
-<p>Option strategies synchronously execute execute by default. To asynchronously execute Option strategies, set the <code>asynchronous</code> argument to <code class='python'>False</code><code class='csharp'>false</code>. You can also provide a tag and <a href="/docs/v2/writing-algorithms/trading-and-orders/order-properties">order properties</a> to the 
+<p>Option strategies synchronously execute by default. To asynchronously execute Option strategies, set the <code>asynchronous</code> argument to <code class='python'>False</code><code class='csharp'>false</code>. You can also provide a tag and <a href="/docs/v2/writing-algorithms/trading-and-orders/order-properties">order properties</a> to the 
 <?php
 foreach ($methodNames as $i=>$methodName)
 {
