@@ -233,6 +233,11 @@ ticket.Update(update_fields)</pre>
             <td>40</td>
         </tr>
         <tr>
+            <td>CZK</td>
+            <td>Czech Koruna</td>
+            <td>0</td>
+        </tr>
+        <tr>
             <td>DKK</td>
             <td>Danish Krone</td>
             <td>35</td>
@@ -251,6 +256,16 @@ ticket.Update(update_fields)</pre>
             <td>HKD</td>
             <td>Hong Kong Dollar</td>
             <td>50</td>
+        </tr>
+        <tr>
+            <td>HUF</td>
+            <td>Hungarian Forint</td>
+            <td>0</td>
+        </tr>
+        <tr>
+            <td>HKD</td>
+            <td>Israeli Shekel</td>
+            <td>0</td>
         </tr>
         <tr>
             <td>KRW</td>
