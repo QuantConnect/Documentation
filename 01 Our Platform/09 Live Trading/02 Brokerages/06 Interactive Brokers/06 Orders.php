@@ -198,7 +198,7 @@ ticket.Update(update_fields)</pre>
 
 <p>The following table shows the maximum number of units you can buy of each currency when the currency is the <a href='/docs/v2/writing-algorithms/securities/key-concepts#03-Quote-Currency'>base currency</a> in a Forex pair:</p>
 
-<table class="table qc-table">
+<table class="table qc-table" id="order-size-limits-table">
     <thead>
         <tr>
             <th>Base Currency</th>
@@ -310,4 +310,10 @@ ticket.Update(update_fields)</pre>
     </tbody>
 </table>
 
+<style>
+#order-size-limits-table td:last-child, 
+#order-size-limits-table th:last-child {
+    text-align: right;
+}
+</style>
 
