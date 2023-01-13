@@ -196,7 +196,7 @@ ticket.Update(update_fields)</pre>
 
 <h4>Order Size Limits</h4>
 
-<p>The following table shows the maximum number of units you can buy of each currency when the currency is the <a href='/docs/v2/writing-algorithms/securities/key-concepts#03-Quote-Currency'>base currency</a> in a currency pair:</p>
+<p>The following table shows the maximum number of units you can buy of each currency when the currency is the <a href='/docs/v2/writing-algorithms/securities/key-concepts#03-Quote-Currency'>base currency</a> in a Forex pair:</p>
 
 <table class="table qc-table">
     <thead>
