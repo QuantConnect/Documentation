@@ -27,4 +27,4 @@
     <li>Click <span class="button-name">Save</span>.</li>
 </ol>
 
-<p>The paper trading account simulates most aspects of a production TWS account, but you may encounter some differences due to its construction as a simulator with no execution or clearing abilities.</p>
+<p>The paper trading account simulates most aspects of a production Trader Workstation account, but you may encounter some differences due to its construction as a simulator with no execution or clearing abilities.</p>
