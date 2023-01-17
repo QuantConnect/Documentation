@@ -18,7 +18,9 @@ $getInstallText = function($pipLink, $dockerLink)
     <div class='cli section-example-container'>
         <pre>$ pip install lean</pre>
      </div>
-     This commands downloads all the CLI's dependencies and makes the <code>lean</code> command available in the terminal.
+     <p>This command downloads all the CLI's dependencies and makes the <code>lean</code> command available in the terminal.</p>
+         
+     <p>If you get an error message and you're using Windows, open PowerShell as an administrator and run the command again.</p>
      </li>
     <li>If you use Linux, you may need to install <code>tkinter</code>
     <div class='cli section-example-container'>
