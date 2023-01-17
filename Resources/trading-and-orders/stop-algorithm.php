@@ -20,7 +20,7 @@ $getStopAlgorithmText = function($environment)
         echo "
 <ul>
     <li>Update your project's code files</li>
-    <li>Upgrade the <a href='/docs/v2/our-platform/organizations/resources#04-Live-Trading-Nodes'>live trading node</a></li>
+    <li>Upgrade the <a href='/docs/v2/cloud-platform/organizations/resources#04-Live-Trading-Nodes'>live trading node</a></li>
     <li>Update the settings you entered into the deployment wizard</li>
     <li>Place manual orders through your brokerage account instead of the web IDE</li>
 </ul>
@@ -31,7 +31,7 @@ $getStopAlgorithmText = function($environment)
         echo "
 <ul>
     <li>Update your project's code files</li>
-    <li>Upgrade the <a href='/docs/v2/our-platform/organizations/resources#04-Live-Trading-Nodes'>live trading node</a></li>
+    <li>Upgrade the <a href='/docs/v2/cloud-platform/organizations/resources#04-Live-Trading-Nodes'>live trading node</a></li>
     <li>Update the settings you entered into the deployment command</li>
 </ul>
         ";
@@ -57,7 +57,7 @@ $getStopAlgorithmText = function($environment)
         echo "<p>Follow these steps to stop your algorithm:</p>
 
 <ol>
-    <li>Open your algorithm's <a href='/docs/v2/our-platform/live-trading/results#02-View-Live-Results'>live results page</a>.</li>
+    <li>Open your algorithm's <a href='/docs/v2/cloud-platform/live-trading/results#02-View-Live-Results'>live results page</a>.</li>
     <li>Click <span class='button-name'>Stop</span>.</li>
     <li>Click <span class='button-name'>Stop</span> again.</li>
 </ol>        

@@ -1,7 +1,7 @@
 <?php
 $getDirectoriesText = function($isDesktopDocs)
 {
-    $workspaceName = $isDesktopDocs ? "workspace" : "<a href='/docs/v2/our-platform/projects/getting-started#02-View-All-Projects'>directory of projects</a>" ;
+    $workspaceName = $isDesktopDocs ? "workspace" : "<a href='/docs/v2/cloud-platform/projects/getting-started#02-View-All-Projects'>directory of projects</a>" ;
     
     $fileType = $isDesktopDocs ? "private" : "public" ;
     
@@ -12,7 +12,7 @@ $getDirectoriesText = function($isDesktopDocs)
     if (!$isDesktopDocs)
     {
         echo "
-You can <a href='/docs/v2/our-platform/projects/getting-started#08-Create-Project-Directories'>create directories of projects</a> and <a href='/docs/v2/our-platform/projects/files#04-Add-Directories'>directories of files</a>.
+You can <a href='/docs/v2/cloud-platform/projects/getting-started#08-Create-Project-Directories'>create directories of projects</a> and <a href='/docs/v2/cloud-platform/projects/files#04-Add-Directories'>directories of files</a>.
         ";
     }
     

@@ -15,7 +15,7 @@ $getLiquidatePositionsText = function($isCLI)
 <p>Follow these steps to liquidate your positions:</p>
 
 <ol>
-    <li>Open your algorithm's <a href='/docs/v2/our-platform/live-trading/results#02-View-Live-Results'>live results page</a>.</li>
+    <li>Open your algorithm's <a href='/docs/v2/cloud-platform/live-trading/results#02-View-Live-Results'>live results page</a>.</li>
     <li>Click <span class='button-name'>Liquidate</span>.</li>
     <li>Click <span class='button-name'>Liquidate</span> again.</li>
 </ol>

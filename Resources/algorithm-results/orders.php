@@ -25,7 +25,7 @@ $getOrdersText = function($isLiveMode) {
 
     if (!$isLiveMode) {
         echo "
-             To retrieve all of the content in the Orders Summary table, <a href='/docs/v2/our-platform/backtesting/results#15-Download-Results'>download the backtest results JSON file</a>.
+             To retrieve all of the content in the Orders Summary table, <a href='/docs/v2/cloud-platform/backtesting/results#15-Download-Results'>download the backtest results JSON file</a>.
         ";
     }
 
