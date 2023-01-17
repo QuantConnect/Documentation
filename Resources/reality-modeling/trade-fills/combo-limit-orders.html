@@ -1,4 +1,4 @@
-<p>To fill combo limit orders, the fill model calculates the low and high price of the combo order. The low price of the combo order is the sum of low prices for each security in the order legs. The high price of the combo order is the sum of high prices for each security in the order legs. The low and high price of each security is a function of the data format and order direction. The following table shows how the fill model calculates the high and low prices. The order direction in the table represents the order direction of the order leg, not the order direction of the combo order.</p>
+<p>To fill combo limit orders, the fill model calculates the aggregate price of the combo order, which is the sum of prices for each security in the order legs. The price of each security is a function of the data format and order direction. The following table shows how the fill model calculates the security prices.</p>
 
 
 <table class="qc-table table">
@@ -6,59 +6,80 @@
         <tr>
             <th>Data Format</th>
             <th><code>TickType</code></th>
-            <th>Order Direction</th>
-            <th>Low Price</th>
-            <th>High Price</th>
+            <th>Combo Order Direction</th>
+            <th>Leg Order Direction</th>
+            <th>Price</th>
         </tr>
     </thead>
     <tbody>
         <tr>
             <td><code>Tick</code></td>
             <td><code>Quote</code></td>
+            <td>Buy or sell</td>
             <td>Buy</td>
-            <td>Ask price</td>
             <td>Ask price</td>
         </tr>
         <tr>
             <td><code>Tick</code></td>
             <td><code>Quote</code></td>
+            <td>Buy or sell</td>
             <td>Sell</td>
-            <td>Bid price</td>
             <td>Bid price</td>
         </tr>
         <tr>
             <td><code>Tick</code></td>
             <td><code>Trade</code></td>
             <td>Buy or sell</td>
-            <td>Trade price</td>
+            <td>Buy or sell</td>
             <td>Trade price</td>
         </tr>
         <tr>
             <td><code>QuoteBar</code></td>
             <td></td>
             <td>Buy</td>
+            <td>Buy</td>
             <td>Ask low price</td>
+        </tr>
+        <tr>
+            <td><code>QuoteBar</code></td>
+            <td></td>
+            <td>Buy</td>
+            <td>Sell</td>
+            <td>Bid low price</td>
+        </tr>
+        <tr>
+            <td><code>QuoteBar</code></td>
+            <td></td>
+            <td>Sell</td>
+            <td>Buy</td>
             <td>Ask high price</td>
         </tr>
         <tr>
             <td><code>QuoteBar</code></td>
             <td></td>
             <td>Sell</td>
-            <td>Bid low price</td>
+            <td>Sell</td>
             <td>Bid high price</td>
         </tr>
         <tr>
             <td><code>TradeBar</code></td>
-            <td><br></td>
+            <td></td>
+            <td>Buy</td>
             <td>Buy or sell</td>
             <td>Low price</td>
+        </tr>
+        <tr>
+            <td><code>TradeBar</code></td>
+            <td></td>
+            <td>Sell</td>
+            <td>Buy or sell</td>
             <td>High price</td>
         </tr>
     </tbody>
 </table>
 
 
-<p>After the fill model calculates the low and high price of the combo order, it checks if it should fill the order. The following table describes the fill logic of combo limit orders for each data format and order direction. The order direction in the table represents the order direction of the combo limit order.</p>
+<p>After the fill model calculates the aggregate price of the combo order, it checks if it should fill the order. The following table describes the fill condition of the combo order and the fill price price of each leg:</p>
 
 
 <table class="qc-table table">
@@ -66,8 +87,9 @@
         <tr>
             <th>Data Format</th>
             <th><code>TickType</code></th>
-            <th>Order Direction</th>
+            <th>Combo Order Direction</th>
             <th>Fill Condition</th>
+            <th>Leg Order Direction</th>
             <th>Fill Price</th>
         </tr>
     </thead>
@@ -76,56 +98,80 @@
             <td><code>Tick</code></td>
             <td><code>Quote</code></td>
             <td>Buy</td>
-            <td>Aggregate low price < combo limit price</td>
-            <td>Ask price</td>
+            <td>Aggregate price < combo limit price</td>
+            <td>Buy or sell</td>
+            <td>Quote price</td>
         </tr>
         <tr>
             <td><code>Tick</code></td>
             <td><code>Quote</code></td>
             <td>Sell</td>
-            <td>Aggregate high price > combo limit price</td>
-            <td>Bid price</td>
+            <td>Aggregate price > combo limit price</td>
+            <td>Buy or sell</td>
+            <td>Quote price</td>
         </tr>
         <tr>
             <td><code>Tick</code></td>
             <td><code>Trade</code></td>
             <td>Buy</td>
-            <td>Aggregate low price < combo limit price</td>
+            <td>Aggregate price < combo limit price</td>
+            <td>Buy or sell</td>
             <td>Trade price</td>
         </tr>
         <tr>
             <td><code>Tick</code></td>
             <td><code>Trade</code></td>
             <td>Sell</td>
-            <td>Aggregate high price > combo limit price</td>
+            <td>Aggregate price > combo limit price</td>
+            <td>Buy or sell</td>
             <td>Trade price</td>
         </tr>
         <tr>
             <td><code>QuoteBar</code></td>
             <td><br></td>
             <td>Buy</td>
-            <td>Aggregate low price < combo limit price</td>
+            <td>Aggregate price < combo limit price</td>
+            <td>Buy</td>
             <td>Ask low price</td>
         </tr>
         <tr>
             <td><code>QuoteBar</code></td>
             <td><br></td>
+            <td>Buy</td>
+            <td>Aggregate price < combo limit price</td>
             <td>Sell</td>
-            <td>Aggregate high price > combo limit price</td>
+            <td>Bid low price</td>
+        </tr>
+        <tr>
+            <td><code>QuoteBar</code></td>
+            <td><br></td>
+            <td>Sell</td>
+            <td>Aggregate price > combo limit price</td>
+            <td>Buy</td>
+            <td>Ask high price</td>
+        </tr>
+        <tr>
+            <td><code>QuoteBar</code></td>
+            <td><br></td>
+            <td>Sell</td>
+            <td>Aggregate price > combo limit price</td>
+            <td>Sell</td>
             <td>Bid high price</td>
         </tr>
         <tr>
             <td><code>TradeBar</code></td>
             <td><br></td>
             <td>Buy</td>
-            <td>Aggregate low price < combo limit price</td>
+            <td>Aggregate price < combo limit price</td>
+            <td>Buy or sell</td>
             <td>Low price</td>
         </tr>
         <tr>
             <td><code>TradeBar</code></td>
             <td><br></td>
             <td>Sell</td>
-            <td>Aggregate high price > combo limit price</td>
+            <td>Aggregate price > combo limit price</td>
+            <td>Buy or sell</td>
             <td>High price</td>
         </tr>
     </tbody>
