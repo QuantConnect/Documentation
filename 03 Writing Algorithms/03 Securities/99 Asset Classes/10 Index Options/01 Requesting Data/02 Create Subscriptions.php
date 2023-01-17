@@ -15,12 +15,26 @@
 
 <div class="section-example-container">
     <pre class="csharp">_symbol = QuantConnect.Symbol.Create("SPX", SecurityType.Index, Market.USA);
+
+// Standard contracts
 _contractSymbol = QuantConnect.Symbol.CreateOption(_symbol, Market.USA,
+    OptionStyle.European, OptionRight.Call, 3650, new DateTime(2022, 6, 17));
+
+// Weekly contracts
+_weeklyContractSymbol = QuantConnect.Symbol.CreateOption(_symbol, "SPXW", Market.USA,
     OptionStyle.European, OptionRight.Call, 3650, new DateTime(2022, 6, 17));</pre>
     <pre class="python">self.symbol = Symbol.Create("SPX", SecurityType.Index, Market.USA)
+
+# Standard contracts
 self.contract_symbol = Symbol.CreateOption(self.symbol, Market.USA,
+    OptionStyle.European, OptionRight.Call, 3650, datetime(2022, 6, 17))
+
+# Weekly contracts
+self.weekly_contract_symbol = Symbol.CreateOption(self.symbol, "SPXW", Market.USA,
     OptionStyle.European, OptionRight.Call, 3650, datetime(2022, 6, 17))</pre>
 </div>
+
+<p>To view all the available weekly Index Options, see <a href='/docs/v2/writing-algorithms/datasets/algoseek/us-index-options#05-Supported-Assets'>Supported Assets</a>.</p>
 
 <p>Another way to get an Index Option contract <code>Symbol</code> is to use the <code>OptionChainProvider</code>. The <code>GetOptionContractList</code> method of <code>OptionChainProvider </code>returns a list of <code>Symbol</code> objects that reference the available Option contracts for a given underlying Index on a given date. To filter and select contracts, you can use the following properties of each <code>Symbol</code> object:</p>
     <table class="qc-table table">
@@ -66,6 +80,8 @@ expiry = min([symbol.ID.Date for symbol in contract_symbols])
 filtered_symbols = [symbol for symbol in contract_symbols if symbol.ID.Date == expiry and symbol.ID.OptionRight == OptionRight.Call]
 self.contract_symbol = sorted(filtered_symbols, key=lambda symbol: symbol.ID.StrikePrice)[0]</pre>
 </div>
+
+<p>The <code>GetOptionContractList</code> isn't currently fully functional for weekly contracts. To track our progress of updating it, subscribe to <a href='https://github.com/QuantConnect/Lean/issues/6872' rel='nofollow' target='_blank'>GitHub Issue #6872</a>.</p> 
 
 <h4>Subscribe to Contracts</h4>
 <p>To create an Index Option contract subscription, pass the contract <code>Symbol</code> to the <code>AddIndexOptionContract</code> method. Save a reference to the contract <code>Symbol</code> so you can easily access the contract in the <a href="/docs/v2/writing-algorithms/securities/asset-classes/index-options/handling-data#02-Option-Chains">OptionChain</a> that LEAN passes to the <code>OnData</code> method. To override the default <a href="/docs/v2/writing-algorithms/reality-modeling/options-models/pricing">pricing model</a> of the Option, <a href='https://www.quantconnect.com/docs/v2/writing-algorithms/reality-modeling/options-models/pricing#04-Set-Models'>set a pricing model</a>.</p>
