@@ -50,7 +50,7 @@ $getAddDataText = function($isAlgorithm)
 
     $customDataLink = $isAlgorithm ? "<a href='/docs/v2/writing-algorithms/importing-data/key-concepts'>Importing Data</a>" : "<a href='/docs/v2/research-environment/datasets/custom-data'>Custom Data</a>";
     $limiationText = $isAlgorithm ? "run algorithms with bigger universes" : "request more data";
-    $resourceLink = $isAlgorithm ? "<a href='/docs/v2/our-platform/organizations/resources'>Resources</a>" : "<a href='/docs/v2/our-platform/organizations/resources#03-Research-Nodes'>Research Nodes</a>";
+    $resourceLink = $isAlgorithm ? "<a href='/docs/v2/cloud-platform/organizations/resources'>Resources</a>" : "<a href='/docs/v2/cloud-platform/organizations/resources#03-Research-Nodes'>Research Nodes</a>";
     echo "
 <h4>Custom Data</h4>
 

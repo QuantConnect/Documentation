@@ -4,7 +4,7 @@ $getBreakpointsText = function($isBacktest)
     $location = $isBacktest ? "algorithm" : "notebook";
     $fileName = $isBacktest ? "code files" : "notebook";
     echo "
-<p>Breakpoints are lines in your {$location} where execution pauses. You need at least one breakpoint in your {$fileName} to start the debugger. <a href='/docs/v2/our-platform/projects/getting-started#02-View-All-Projects'>Open a project</a> to start adjusting its breakpoints.</p>
+<p>Breakpoints are lines in your {$location} where execution pauses. You need at least one breakpoint in your {$fileName} to start the debugger. <a href='/docs/v2/cloud-platform/projects/getting-started#02-View-All-Projects'>Open a project</a> to start adjusting its breakpoints.</p>
 
 <h4>Add Breakpoints</h4>
     ";

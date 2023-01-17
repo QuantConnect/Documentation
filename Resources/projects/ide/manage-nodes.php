@@ -39,7 +39,7 @@ To view the Resources panel, <a href='{$projectLink}'>open a project</a> and the
     </tbody>
 </table>
 
-<p>To stop a running node, click the <span class='button-name'>stop</span> button next to it. You can stop nodes that you are using, but you need <a href='/docs/v2/our-platform/organizations/members#08-Permissions'>stop node permissions</a> to stop nodes other members are using.</p>
+<p>To stop a running node, click the <span class='button-name'>stop</span> button next to it. You can stop nodes that you are using, but you need <a href='/docs/v2/cloud-platform/organizations/members#08-Permissions'>stop node permissions</a> to stop nodes other members are using.</p>
 
 <p>By default, we select the best node available in your clusters when you launch a backtest or research notebook. To use a specific node, click the check box next to a node in the panel.</p>    ";
 }

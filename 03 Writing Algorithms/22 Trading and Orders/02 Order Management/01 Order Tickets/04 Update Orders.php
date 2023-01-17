@@ -67,4 +67,4 @@ echo file_get_contents(DOCS_RESOURCES."/order-types/update-requests.html");
     }); </script></div>
 
 
-<p>Not all brokerages support order updates. To check if your brokerage supports order updates, see the <a href="/docs/v2/our-platform/live-trading/brokerages">brokerage integration documentation</a>.</p>
+<p>Not all brokerages support order updates. To check if your brokerage supports order updates, see the <a href="/docs/v2/cloud-platform/live-trading/brokerages">brokerage integration documentation</a>.</p>

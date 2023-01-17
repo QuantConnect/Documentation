@@ -5,4 +5,4 @@
     <pre class="python">self.symbol = self.AddCryptoFuture("BTCUSD", leverage=3).Symbol</pre>
 </div>
 
-<p>For more information about the leverage each brokerage provides, see <a href='/docs/v2/our-platform/live-trading/brokerages'>Brokerages</a>.</p>
+<p>For more information about the leverage each brokerage provides, see <a href='/docs/v2/cloud-platform/live-trading/brokerages'>Brokerages</a>.</p>

@@ -9,7 +9,7 @@ API key:
 OAuth Access Token: 
 Account number: </pre>
 </div>
-<p>To get your account credentials, see <a href='https://www.quantconnect.com/docs/v2/our-platform/live-trading/brokerages/td-ameritrade#02-Account-Types'>Account Types</a>.</p>
+<p>To get your account credentials, see <a href='https://www.quantconnect.com/docs/v2/cloud-platform/live-trading/brokerages/td-ameritrade#02-Account-Types'>Account Types</a>.</p>
 </li>
 ";
 
