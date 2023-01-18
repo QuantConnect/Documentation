@@ -34,8 +34,6 @@ self.weekly_contract_symbol = Symbol.CreateOption(self.symbol, "SPXW", Market.US
     OptionStyle.European, OptionRight.Call, 3650, datetime(2022, 6, 17))</pre>
 </div>
 
-<p>To view all the available weekly Index Options, see <a href='/docs/v2/writing-algorithms/datasets/algoseek/us-index-options#05-Supported-Assets'>Supported Assets</a>.</p>
-
 <p>Another way to get an Index Option contract <code>Symbol</code> is to use the <code>OptionChainProvider</code>. The <code>GetOptionContractList</code> method of <code>OptionChainProvider </code>returns a list of <code>Symbol</code> objects that reference the available Option contracts for a given underlying Index on a given date. To filter and select contracts, you can use the following properties of each <code>Symbol</code> object:</p>
     <table class="qc-table table">
         <thead>
@@ -105,4 +103,4 @@ self.SetSecurityInitializer(BrokerageModelSecurityInitializer(self.BrokerageMode
 </div>
 
 <h4>Supported Assets</h4>
-<p>To view the supported assets in the US Index Options dataset, see the <a href="/docs/v2/writing-algorithms/datasets/tickdata/us-cash-indices#05-Supported-Indices">Supported Indices</a>.</p>
+<p>To view the supported assets in the US Index Options dataset, see <a href='/docs/v2/writing-algorithms/datasets/algoseek/us-index-options#05-Supported-Assets'>Supported Assets</a>.</p>
