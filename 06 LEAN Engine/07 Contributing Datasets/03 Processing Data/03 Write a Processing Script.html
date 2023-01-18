@@ -2,6 +2,14 @@
 
 <ol>
     <li>Change the structure of the <span class="private-directory-name">Lean.DataSource.&lt;vendorNameDatasetName&gt;/output</span> directory to match the path structure you defined in the <code>GetSource</code> method(s) above (for example, <span class="private-directory-name">output/alternative/xyzairline/ticketsales</span>).</li>
+    <li>Open the <span class="private-file-name">Lean.DataSource.&lt;vendorNameDatasetName&gt;</span> directory in Visual Studio Code,</li>
+    <li>Open Development Container, either
+        <ol>
+            <li>Select "Reopen in Container" from pop up box</li>
+            <li>Ctrl+Shift+P (Command Palette) and select "Remote-Containers: Rebuild and Reopen in Container"</li>
+        </ol>
+        <p>The Visual Studio Code's extensions will load, the OmniSharp extension will analyse the project, and ask to restore the dependecies (if necessary).</p>
+    </li>
     <li>In the <span class="private-directory-name">Lean.DataSource.&lt;vendorNameDatasetName&gt;/DataProcessing</span> directory, open one of the following files:</li>
     <table class="table qc-table">
         <thead>
@@ -31,10 +39,11 @@
     </table>
 
     <li>In the <span class="private-file-name">process.*</span> or <span class="private-file-name">Program.cs</span> file, write a script to process your data and output the results to the <span class="private-directory-name">Lean.DataSource.&lt;vendorNameDatasetName&gt;/output</span> directory.</li>
+    <p>To view an example, see the <a rel="nofollow" target="_blank" href="https://github.com/QuantConnect/Lean.DataSource.QuiverQuantTwitterFollowers/blob/master/DataProcessing/process.py">process.py</a> and <a rel="nofollow" target="_blank" href="https://github.com/QuantConnect/Lean.DataSource.QuiverQuantTwitterFollowers/blob/master/DataProcessing/Program.cs">Program.cs</a> files of the Twitter Followers dataset.</p>
     <p>If your dataset is for universe selection data and it's at a higher frequency than hour resolution, resample your data to hourly or daily resolution.</p>
     <p>If your dataset is related to Equities and your dataset does not account for ticker changes, follow these steps to adjust the tickers over the historical data:</p>
     <ol>
-        <li>If you don't have the <a href="https://www.quantconnect.com/datasets/quantconnect-us-equity-security-master/cli">US Equity Security Master dataset</a>, <a href="https://www.quantconnect.com/contact">contact us</a>.</li>
+        <li>If you don't have the <a href="/datasets/quantconnect-us-equity-security-master/cli">US Equity Security Master dataset</a>, <a href="/contact">contact us</a>.</li>
         <li class="python">Remove the statements of the <code>Main</code> method of <span class="private-file-name">Program.cs</span> and compile the data processing project.
         <div class="cli section-example-container">
             <pre>$ dotnet build .\DataProcessing\DataProcessing.csproj</pre>
@@ -60,9 +69,11 @@ var mapFileProvider.Initialize(new DefaultDataProvider())<br></pre>
     Market.USA, true, mapFileProvider, csvDate)</pre>
         </div>
     </ol>
-    <li class="csharp">Compile the data processing project to generate the <span class="private-file-name">process.exe</span> executable file.
-    <div class="cli section-example-container">
-      <pre>$ dotnet build .\DataProcessing\DataProcessing.csproj</pre>
-    </div>
+    <li>If you wrote a C# processing tool, you can debug your implementation as follows
+        <ol>
+            <li>Open the Run and Debug tab (Ctrl+Shift+D).</li>
+            <li>Select Launch and press Ctrl+F5.</li>
+        </ol>
+        <p>Visual Studio Code will compile the data processing project, launch the executable, and attach the debugger.</p>
     </li>
 </ol>

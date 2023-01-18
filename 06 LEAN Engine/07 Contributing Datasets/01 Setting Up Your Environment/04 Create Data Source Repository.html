@@ -1,0 +1,39 @@
+<p>Follow these steps to create a repository for your dataset:</p>
+
+<ol>
+    <li>Open the <a rel="nofollow" target="_blank" href="https://github.com/QuantConnect/Lean.DataSource.SDK">Lean.DataSource.SDK repository</a> and click <span class="button-name">Use this template</span>.</li>
+    <p>Start with the SDK repository instead of existing data source implementations because we periodically update the SDK repository.</p>
+    <li>On the Create a new repository from Lean.DataSource.SDK page, set the repository name to <span class="public-directory-name">Lean.DataSource.&lt;vendorNameDatasetName&gt;</span> (for example, <span class="public-directory-name">Lean.DataSource.XYZAirlineTicketSales</span>).</li>
+    <li>Click <span class="button-name">Create repository from template</span>.</li>
+    <li>Clone the <span class="public-directory-name">Lean.DataSource.&lt;vendorNameDatasetName&gt;</span> repository.</li>
+    <div class="cli section-example-container">
+        <pre>$ git clone https://github.com/username/Lean.DataSource.&lt;vendorNameDatasetName&gt;.git</pre>
+    </div>
+    <li>Open the <span class="private-file-name">Lean.DataSource.&lt;vendorNameDatasetName&gt;</span> directory in Visual Studio Code
+        <ol>
+            <li>Run the <span class="private-file-name">renameDataset.py</span> Python script in the Visual Studio Code's Terminal<br>
+                <div class="cli section-example-container">
+                    <pre>$ python renameDataset.py</pre>
+                </div>
+                <p>The Python script replaces some placeholder text in the <span class="private-directory-name">Lean.DataSource.&lt;vendorNameDatasetName&gt;</span> directory and renames some files according to your dataset's <span class='private-directory-name'>&lt;vendorNameDatasetName&gt;.</span></p>    
+            </li>
+            <li>Change the `mounts` property in the <span class="private-file-name">devcontainer.json</span> to set the `source` of the data. The data processing will save the data to this repository.</li>
+            <li>Open Development Container, either
+                <ol>
+                    <li>Select "Reopen in Container" from pop up box</li>
+                    <li>Ctrl+Shift+P (Command Palette) and select "Remote-Containers: Rebuild and Reopen in Container"</li>
+                </ol>
+            </li>
+            <li>Compile the data source project, either
+                <ol>
+                    <li>In the Visual Studio Code's Terminal
+                        <div class="cli section-example-container">
+                            <pre>$ dotnet build QuantConnect.DataSource.csproj</pre>
+                        </div>
+                    </li>
+                    <li>Ctrl+Shift+B (Build Palette) and select "build"</li>
+                </ol>             
+            </li>
+        </ol>
+    </li>
+</ol>

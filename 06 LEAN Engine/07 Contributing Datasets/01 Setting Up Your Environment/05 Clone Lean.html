@@ -1,0 +1,40 @@
+<p>Follow these steps to get <a rel="nofollow" target="_blank" href="https://github.com/QuantConnect/Lean">Lean</a> into <a href="/docs/v2">Visual Studio Code Dev Containers</a></p>
+
+<ol>
+    <li>Fork <a rel="nofollow" target="_blank" href="https://github.com/QuantConnect/Lean/fork">Lean repository</a>.</li>
+    <li>Clone the <span class="public-directory-name">Lean</span> repository.</li>
+    <div class="cli section-example-container">
+        <pre>$ git clone https://github.com/username/Lean.git</pre>
+    </div>
+    <li>Open the <span class="private-file-name">Lean</span> directory in Visual Studio Code
+        <ol>
+            <li>Change the <code>mounts</code> property in the <span class="private-file-name">devcontainer.json</span> to set the `source` of the data and the data source project.
+                <div class="cli section-example-container">
+                    "mounts": [ 
+                        "source=C:/Users/username/Lean/Data,target=/Data,type=bind,consistency=cached", 
+                        "source=C:/Users/username/Lean.DataSource.&lt;vendorNameDatasetName&gt;,target=/Lean.DataSource.&lt;vendorNameDatasetName&gt;,type=bind,consistency=cached" 
+                    ]
+                </div>
+            </li>
+            <li>Open Development Container, either
+                <ol>
+                    <li>Select "Reopen in Container" from pop up box</li>
+                    <li>Ctrl+Shift+P (Command Palette) and select "Remote-Containers: Rebuild and Reopen in Container"</li>
+                </ol>
+                <p>The Visual Studio Code's extensions will load, the OmniSharp extension will analyse the project, and ask to restore the dependecies.</p>
+            </li>
+            <li>Change the <code>data-folder</code> property in the <span class="private-file-name">/Lean/Launcher/config.json</span> to the mounted data directory.
+                <div class="cli section-example-container">
+                    "data-folder": "/Data/",
+                </div>
+            </li>
+            <li>Run Lean to assert successful installation
+                <ol>
+                    <li>Open the Run and Debug tab (Ctrl+Shift+D).</li>
+                    <li>Select Launch and press F5.</li>
+                </ol>
+                <p>Visual Studio Code will compile Lean and execute the C# version of <code>BasicTemplateFrameworkAlgorithm</code>.</p>
+            </li>
+        </ol>
+    </li>
+</ol>

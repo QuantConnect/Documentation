@@ -18,7 +18,7 @@
         </tr>
         <tr>
             <td><code>EndTime</code></td>
-            <td>The time when the data sample ends and when LEAN should add the sample to a <a href="https://www.quantconnect.com/docs/v2/writing-algorithms/key-concepts/time-modeling/timeslices">Slice</a>.</td>
+            <td>The time when the data sample ends and when LEAN should add the sample to a <a href="/docs/v2/writing-algorithms/key-concepts/time-modeling/timeslices">Slice</a>.</td>
         </tr>
         <tr>
             <td><code>Value</code></td>
