@@ -19,7 +19,7 @@ for trade_bar in history:
 
     obs = []
     rewards = []
-    for i in range(len(training_df)-n_step):
+    for i in range(len(daily_pct_change)-n_step):
         obs.append(training_df.iloc[i:i+n_step].values)
         rewards.append(float(daily_pct_change.iloc[i+n_step]))
     obs = np.array(obs)
@@ -28,8 +28,10 @@ for trade_bar in history:
     return obs, rewards
 
 def my_training_method(self):
-    features, labels = self.get_observations_and_rewards()
-    self.model.learn(total_timesteps=1000)</pre>
+    obs, rewards = self.get_observations_and_rewards()
+    self.env = TradingEnv(obs, rewards)
+    self.model = DQN("MlpPolicy", self.env)
+    self.model.learn(total_timesteps=500)</pre>
 </div>
 
 <h4>Set Training Schedule</h4>

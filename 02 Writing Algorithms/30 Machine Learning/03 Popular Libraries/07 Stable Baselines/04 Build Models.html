@@ -10,7 +10,7 @@
     <tbody>
         <tr>
             <td>Observations</td>
-            <td>The open, high, low, close, and volume of the SPY</td>
+            <td>The 5-day open, high, low, close, and volume of the SPY</td>
         </tr>
         <tr>
             <td>Rewards</td>
@@ -48,7 +48,7 @@
         n_actions = 3
         self.action_space = gym.spaces.Discrete(n_actions)
         # The observation will be the coordinate of the agent, shape for (5 previous data poionts, OHLCV)
-        self.observation_space = gym.spaces.Box(low=-np.inf, high=np.inf, shape=(5, 5), dtype=np.float64)
+        self.observation_space = gym.spaces.Box(low=-2, high=2, shape=(5, 5, 5), dtype=np.float64)
 
     def reset(self):
         # Reset the number of step the training has taken
@@ -64,7 +64,7 @@
         elif action == self.SHORT:
             self.reward *= 1 + -1 * self.ret[self.current_step] - (self.trading_cost if self.last_action != action else 0)
         elif action == self.FLAT:
-             self.reward *= 1 - (self.trading_cost if self.last_action != action else 0)
+                self.reward *= 1 - (self.trading_cost if self.last_action != action else 0)
         else:
             raise ValueError("Received invalid action={} which is not part of the action space".format(action))
             
@@ -85,7 +85,7 @@
 
     <li>Initialize the environment with the observations and results.</li>
     <div class="section-example-container">
-        <pre class="python">env = TradingEnv(obs, rewards)</pre>
+        <pre class="python">self.env = TradingEnv(obs, rewards)</pre>
     </div>
 
     <li>Call the <code>DQN</code> constructor with the learning policy, and <code>gym</code> environment.</li>
