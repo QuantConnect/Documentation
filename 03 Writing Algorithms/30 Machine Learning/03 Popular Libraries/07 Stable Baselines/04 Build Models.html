@@ -1,4 +1,4 @@
-<p>In this example, create a <code>gym</code> environment to initialize the training environment, agent and reward. Then, create a reinforcement learning model by a single-asset deep Q-network learning algorithm using the following observations and rewards:</p>
+<p>In this example, create a <code>gym</code> environment to initialize the training environment, agent, and reward. Then, create a reinforcement learning model by a single-asset deep Q-network learning algorithm using the following observations and rewards:</p>
 
 <table class="qc-table table">
     <thead>
@@ -10,7 +10,7 @@
     <tbody>
         <tr>
             <td>Observations</td>
-            <td>The 5-day open, high, low, close, and volume of the SPY</td>
+            <td>The 5-day open, high, low, close, and volume (OHLCV) of the SPY</td>
         </tr>
         <tr>
             <td>Rewards</td>
@@ -23,7 +23,7 @@
 
 <ol>
     <li>Create a custom <code>gym</code> environment class.</li>
-    <p>In this example, create a custom environment with previous 5 OHLCV log-return data as observation and the highest portfolio value as reward.</p>
+    <p>In this example, create a custom environment with the previous 5 OHLCV log-return data as observation and the highest portfolio value as reward.</p>
     <div class="section-example-container">
         <pre class="python">class TradingEnv(gym.Env):
     FLAT = 0
@@ -78,7 +78,7 @@
         return self.ohlcv[self.current_step-5:self.current_step].astype(np.float32), self.reward, done, {}</pre>
     </div>
 
-    <li>Get processed training data.</li>
+    <li>Get the processed training data.</li>
     <div class="section-example-container">
         <pre class="python">obs, rewards = self.get_observations_and_rewards()</pre>
     </div>
@@ -88,7 +88,7 @@
         <pre class="python">self.env = TradingEnv(obs, rewards)</pre>
     </div>
 
-    <li>Call the <code>DQN</code> constructor with the learning policy, and <code>gym</code> environment.</li>
+    <li>Call the <code>DQN</code> constructor with the learning policy and the&nbsp;<code>gym</code> environment.</li>
     <div class="section-example-container">
         <pre class="python">self.model = DQN(MlpPolicy, env)</pre>
     </div>
