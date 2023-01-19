@@ -1,8 +1,8 @@
 <p>The <code>SymbolProperties</code> are a property of the <code>Security</code> object. LEAN uses some of the <code>SymbolProperties</code> to prevent invalid orders and to <a href='/docs/v2/writing-algorithms/trading-and-orders/position-sizing'>calculate order quantities</a> for a given target. </p>
 
+<p><code>SymbolProperties</code> objects have the following properties:</p>
 <div data-tree='QuantConnect.Securities.SymbolProperties'></div>
 
-<?php echo file_get_contents(DOCS_RESOURCES."/securities/symbol_properties.html"); ?>
 <p>To get the <code>SymbolProperties</code>, use the property on the <code>Security</code> object.</p>
 
 <div class="section-example-container">
