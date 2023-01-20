@@ -13,7 +13,7 @@
 	        <td>Selects the contracts that expire within the range you set.<br></td>
         </tr>
         <tr>
-            <td><code class="csharp">SetFilter(Func&lt;FutureFilterUniverse, FutureFilterUniverse&gt; universeFunc)</code><code class="python">SetFilter(universeFunc: callable[FutureFilterUniverse, FutureFilterUniverse])</code></td>
+            <td><code class="csharp">SetFilter(Func&lt;FutureFilterUniverse, FutureFilterUniverse&gt; universeFunc)</code><code class="python">SetFilter(universeFunc: Callable[[FutureFilterUniverse], FutureFilterUniverse])</code></td>
 	        <td>Selects the contracts that a function selects.</td>
         </tr>
     </tbody>

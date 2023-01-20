@@ -26,7 +26,7 @@
 	        <td>Selects the contracts that expire and have a strike within the range you set.</td>
         </tr>
         <tr>
-            <td><code class="csharp">SetFilter(Func&lt;OptionFilterUniverse, OptionFilterUniverse&gt; universeFunc)</code><code class="python">SetFilter(universeFunc: callable[OptionFilterUniverse, OptionFilterUniverse])</code></td>
+            <td><code class="csharp">SetFilter(Func&lt;OptionFilterUniverse, OptionFilterUniverse&gt; universeFunc)</code><code class="python">SetFilter(universeFunc: Callable[[OptionFilterUniverse], OptionFilterUniverse])</code></td>
 	        <td>Selects the contracts that a function selects.</td>
         </tr>
     </tbody>
