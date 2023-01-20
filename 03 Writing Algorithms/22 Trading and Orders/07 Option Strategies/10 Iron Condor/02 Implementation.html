@@ -63,25 +63,32 @@ public override void Initialize()
     if len(call) == 0 or len(put) == 0 : return
 
     # Sort the contracts by their strike prices
-    call_contracts = sorted(call, key = lambda x: x.Strike)
+    call_contracts = sorted(call, key = lambda x: x.Strike, reverse=True)
     put_contracts = sorted(put, key = lambda x: x.Strike)
 
     # Select the contracts in the strategy legs
-    near_put = call_contracts[-2]
+    near_put = call_contracts[1]
     near_call = put_contracts[1]
-    far_call = call_contracts[-1]
+    far_call = call_contracts[0]
     far_put = put_contracts[0]</pre>
     </div>
 
-    <li>In the <code>OnData</code> method, submit the orders.</li>
+    <li>In the <code>OnData</code> method, submit a <code>ComboMarketOrder</code> with a list of <code>Leg</code> and total unit of purchase.</li>
     <div class="section-example-container">
-        <pre class="csharp">Sell(nearCallContract.Symbol, 1);
-Sell(nearPutContract.Symbol, 1);
-Buy(farCallContract.Symbol, 1);
-Buy(farPutContract.Symbol, 1);</pre>
-        <pre class="python">self.Buy(near_put.Symbol, 1)
-self.Buy(near_call.Symbol, 1)
-self.Sell(far_call.Symbol, 1)
-self.Sell(far_put.Symbol, 1)</pre>
+        <pre class="csharp">var legs = new List&lt;Leg&gt;
+{
+    Leg.Create(nearCallContract.Symbol, 1),
+    Leg.Create(nearPutContract.Symbol, 1),
+    Leg.Create(farCallContract.Symbol, -1),
+    Leg.Create(farPutContract.Symbol, -1)
+};
+ComboMarketOrder(legs, 1);</pre>
+        <pre class="python">legs = [
+    Leg.Create(near_call.Symbol, 1),
+    Leg.Create(near_put.Symbol, 1),
+    Leg.Create(far_call.Symbol, -1),
+    Leg.Create(far_put.Symbol, -1)
+]
+self.ComboMarketOrder(legs, 1)</pre>
     </div>
 </ol>
