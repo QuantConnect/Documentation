@@ -1,0 +1,31 @@
+name: SEO Image Update
+
+on:
+  schedule:
+    - cron:  "0 10 * * 1" # Runs "at 10 UTC every Monday" (see https://crontab.guru)
+  workflow_dispatch:      # Runs on manual trigger
+    
+jobs:
+  build:
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Install dependencies
+        run: |-
+          python -m pip install --upgrade pip
+          pip install Pillow==9.3.0
+
+      - name: Create Images
+        run: python code-generators/seo-image-creator.py
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_KEY }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET }}
+          aws-region: us-west-1
+
+      - name: Copy files to the S3 website content bucket
+        run: |-
+          aws s3 sync ./Resources/seo s3://${{ secrets.AWS_BUCKET }} --exclude "*" --include "*.png" --acl public-read --content-type "image/png"
