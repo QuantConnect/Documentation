@@ -1,7 +1,7 @@
 import pathlib
 import yaml
 
-documentations = {"Our Platform": "QuantConnect-Platform-2.0.0.yaml"}
+documentations = {"Cloud Platform": "QuantConnect-Platform-2.0.0.yaml"}
 
 def RequestTable(api_call, params):
     writeUp = '<table class="table qc-table">\n<thead>\n<tr>\n'
