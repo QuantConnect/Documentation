@@ -33,8 +33,9 @@ updates = {}
 update_value = {}
 full_apis = {}
 
-root = '02 Writing Algorithms/28 Indicators/01 Supported Indicators'
-temp_dir = 'tmp/02 Writing Algorithms/28 Indicators/01 Supported Indicators'
+writing_algorithms = '03 Writing Algorithms'
+root = f'{writing_algorithms}/28 Indicators/01 Supported Indicators'
+temp_dir = f'tmp/{writing_algorithms}/28 Indicators/01 Supported Indicators'
 if os.path.isdir(root):
     shutil.copytree(root, temp_dir, dirs_exist_ok=True,
                     ignore=lambda dir, files: [f for f in files if os.path.isfile(os.path.join(dir, f)) and str(f) != "metadata.json"])
@@ -238,7 +239,7 @@ for full, short in dict(sorted(names.items())).items():
 <p>{descriptions[full]}</p>""")
     
     api = []
-    with open("02 Writing Algorithms/98 API Reference/02.html", "r", encoding="utf-8") as fin:
+    with open(f"{writing_algorithms}/98 API Reference/02.html", "r", encoding="utf-8") as fin:
         lines = fin.readlines()
         active = False
         
