@@ -28,7 +28,7 @@
     <li>Enter the project name and then press <span class="key-combinations">Enter</span>.</li>
     <img class="docs-image" src="https://cdn.quantconnect.com/i/tu/name-project-window.png">
 
-    <p>The new project displays.</p>
+    <p>Congratulations! You just created your first local project.</p>
     <img class="python docs-image" src="https://cdn.quantconnect.com/i/tu/local-lab-new-project-py.png">
     <img class="csharp docs-image" src="https://cdn.quantconnect.com/i/tu/local-platform-new-project-c.png">
 
