@@ -1,4 +1,4 @@
-<p>Follow these steps to rename a project that you have on your local machine and in QC Cloud:</p>
+<p>Follow these steps to rename a project that you have on your local machine and in QuantConnect Cloud:</p>
 
 <ol>
     <li>Open the <a href='/docs/v2/lean-cli/initialization/workspace'>workspaces</a> on your local machine where you store the project.</li>
@@ -16,4 +16,4 @@ Renaming project in the cloud from 'My Project' to 'My Renamed Project'
 Successfully updated name and files and libraries for 'My Project'</pre>
 </div>
 
-<p>Alternatively, you can <a href='/docs/v2/cloud-platform/projects/getting-started#07-Rename-Projects'>rename the project</a> in QC Cloud and then <a href='/docs/v2/lean-cli/projects/cloud-synchronization#02-Pulling-Cloud-Projects'>pull the project</a> to your local machine.</p>
+<p>Alternatively, you can <a href='/docs/v2/cloud-platform/projects/getting-started#07-Rename-Projects'>rename the project</a> in QuantConnect Cloud and then <a href='/docs/v2/lean-cli/projects/cloud-synchronization#02-Pulling-Cloud-Projects'>pull the project</a> to your local machine.</p>

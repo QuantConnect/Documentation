@@ -16,7 +16,7 @@ $getFileStructureText = function($isDesktopDocs, $renameFilesLink)
     }
     echo ". Run backtests with code files and launch the Research Environment with notebook files. ";
     
-    $intro = $isDesktopDocs ? "In QC Cloud, c" : "C" ;
+    $intro = $isDesktopDocs ? "In QuantConnect Cloud, c" : "C" ;
     echo "{$intro}ode files can contain up to 64,000 characters and notebook files can be up to 128KB in size.";
     
     if ($isDesktopDocs)

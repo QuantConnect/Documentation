@@ -36,7 +36,7 @@ $getStopAlgorithmText = function($environment)
 </ul>
         ";
     }
-    else // QC Cloud
+    else // QuantConnect Cloud
     {
         echo "
 <ul>
