@@ -46,7 +46,7 @@ if __name__ == '__main__':
             if dir == product or 'metadata.json' not in files:
                 continue
             
-            lines = [line[3:] for line in dir.split('/')]
+            lines = [line[3:] for line in dir.split(os.path.sep)]
             
             outputfile = '/'.join([line.lower().replace(' ','-') for line in lines])
             outputfile = Path(location + outputfile)
