@@ -1,4 +1,4 @@
-<p>Before you use autocomplete, you may need to run the following command in a terminal to get the latest stubs:</p>
+<p>Before you use autocomplete, you may need to run the following command in a terminal to get the latest Python stubs:</p>
 <div class="cli section-example-container">
 <pre>$ pip install --upgrade quantconnect-stubs</pre>
 </div>
