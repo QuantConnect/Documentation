@@ -6,7 +6,7 @@ $getSaveDataText = function($cSharpPrefix="", $pythonPrefix="self.", $sampleData
     echo "
 <p>The Object Store saves objects under a key-value system. If you save objects in backtests, you can access them from the Research Environment. {$writingAlgorithmsText}</p>
 
-<p>If you run algorithms in QC Cloud, you need <a href='/docs/v2/cloud-platform/organizations/members#08-Permissions'>storage create permissions</a> to save data in the Object Store.</p>
+<p>If you run algorithms in QuantConnect Cloud, you need <a href='/docs/v2/cloud-platform/organizations/members#08-Permissions'>storage create permissions</a> to save data in the Object Store.</p>
 
 <p>If you don't have data to store, <a href='{$sampleDataLink}'>create some sample data</a>.</p>
 

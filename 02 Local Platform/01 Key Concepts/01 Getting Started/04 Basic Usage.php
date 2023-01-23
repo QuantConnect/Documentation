@@ -1,4 +1,4 @@
-<p>Follow these steps to create a new trading algorithm and backtest it in QC Cloud:</p>
+<p>Follow these steps to create a new trading algorithm and backtest it in QuantConnect Cloud:</p>
 
 <ol>
     <li>Log in to the Algorithm Lab.</li>

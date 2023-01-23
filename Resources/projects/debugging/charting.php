@@ -12,7 +12,7 @@ $getChartingText = function($isDesktopDocs)
 
     if ($isDesktopDocs)
     {
-        echo "<p>If you run your algorithm in QC Cloud, w";        
+        echo "<p>If you run your algorithm in QuantConnect Cloud, w";        
     }
     else
     {
