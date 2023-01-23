@@ -1,6 +1,6 @@
 <p>Follow these steps to create a new trading algorithm and backtest it in QC Cloud:</p>
 
-<ul>
+<ol>
     <li>Log in to the Algorithm Lab.</li>
     <li>Start <a href='/docs/v2/lean-cli/installation/installing-docker'>Docker Desktop</a>.</li>
     <li>Open Visual Studio Code.</li>
@@ -35,5 +35,5 @@
     <li>In the top-right corner of VS Code, click <img class='inline-icon' src="https://cdn.quantconnect.com/i/tu/build-button.png"> <span class="button-name">Build</span> and then click <img class='inline-icon' src='https://cdn.quantconnect.com/i/tu/backtest-button.png'> <span class='icon-name'>Backtest</span>.</li> 
 
     <p>The backtest results page displays your algorithm's performance over the backtest period.</p>
-    <img src='https://cdn.quantconnect.com/i/tu/backtest-results-page-local-platform.png'>
-</ul>
+    <img class='docs-image' src='https://cdn.quantconnect.com/i/tu/backtest-results-page-local-platform.png'>
+</ol>
