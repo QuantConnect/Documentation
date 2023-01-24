@@ -49,10 +49,10 @@ if __name__ == '__main__':
             lines = [line[3:] for line in dir.split(os.path.sep)]
             
             outputfile = '/'.join([line.lower().replace(' ','-') for line in lines])
+            url = f'https://cdn.quantconnect.com/docs/i/{outputfile}.png'
             outputfile = Path(location + outputfile)
             outputfile.parent.mkdir(parents=True, exist_ok=True)
 
-            url = f'https://cdn.quantconnect.com/docs/i/{name}/{outputfile.name}.png'
             image_generator.AddTextToImage(lines[1:], outputfile)
             counter += 1
 
