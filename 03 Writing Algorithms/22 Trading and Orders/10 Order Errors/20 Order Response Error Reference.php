@@ -169,7 +169,7 @@ if holding_quantity > 0:
 
 
 <h4>Forex Base and Quote Currencies Required</h4>
-<p><a id='forex-conversion-rate-zero'></a>The <code>OrderResponseErrorCode.ForexBaseAndQuoteCurrenciesRequired</code> (-17) error occurs when you place a trade for a Forex or Crypto pair but you don't have the base currency and <a href='/docs/v2/writing-algorithms/securities/key-concepts#03-Quote-Currency'>quote currency</a> in your <a href='/docs/v2/writing-algorithms/portfolio/cashbook'>cash book</a>.</p>
+<p><a id='forex-conversion-rate-zero'></a>The <code>OrderResponseErrorCode.ForexBaseAndQuoteCurrenciesRequired</code> (-17) error occurs when you place a trade for a Forex or Crypto pair but you don't have the base currency and <a href='/docs/v2/writing-algorithms/securities/key-concepts#03-Quote-Currency'>quote currency</a> in your <a href='/docs/v2/writing-algorithms/portfolio/cashbook'>cash book</a>. This error should never occur. If it does, create a bug report.</p>
 
 
 <h4>Forex Conversion Rate Zero</h4>
@@ -234,7 +234,7 @@ if holding_quantity > 0:
 
 
 <h4>Quote Currency Required</h4>
-<p><a id='conversion-rate-zero'></a>The <code>OrderResponseErrorCode.QuoteCurrencyRequired</code> (-26) error occurs when you place an order for a Forex or Crypto pair and don't have the <a href='/docs/v2/writing-algorithms/securities/key-concepts#03-Quote-Currency'>quote currency</a> of the pair in your <a href='/docs/v2/writing-algorithms/portfolio/cashbook'>cash book</a>.</p>
+<p><a id='conversion-rate-zero'></a>The <code>OrderResponseErrorCode.QuoteCurrencyRequired</code> (-26) error occurs when you place an order for a Forex or Crypto pair and don't have the <a href='/docs/v2/writing-algorithms/securities/key-concepts#03-Quote-Currency'>quote currency</a> of the pair in your <a href='/docs/v2/writing-algorithms/portfolio/cashbook'>cash book</a>. This error should never occur. If it does, create a bug report.</p>
 
 
 <h4>Conversion Rate Zero</h4>
