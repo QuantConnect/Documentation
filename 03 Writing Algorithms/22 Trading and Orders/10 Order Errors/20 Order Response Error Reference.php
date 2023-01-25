@@ -1,8 +1,8 @@
 <p><a id='none'></a>The following sections explain why each <code>OrderResponseErrorCode</code> occurs and how to avoid it.</p>
 
-<h4>None</h4>
+<h4><a id='processing-error'></a>None</h4>
 
-<p><a id='processing-error'></a>The <code>OrderResponseErrorCode.None</code> (0) error means there is no order response error.</p>
+<p>The <code>OrderResponseErrorCode.None</code> (0) error means there is no order response error.</p>
 
 
 <h4>Processing Error</h4>
@@ -185,27 +185,27 @@ if holding_quantity > 0:
 <h4>Exceeded Maximum Orders</h4>
 <p>The <code>OrderResponseErrorCode.ExceededMaximumOrders</code> (-20) error occurs when exceed your order quota in a backtest. The number of orders you can place in a single backtest depends on the tier of your <a href='/docs/v2/cloud-platform/organizations/getting-started'>organization</a>. The following table shows the number of orders you can place on each tier:</p>
 
-<?php echo file_get_contents(DOCS_RESOURCES."/quotas/orders.html"); ?>
+<a id='market-on-close-order-too-late'></a><?php echo file_get_contents(DOCS_RESOURCES."/quotas/orders.html"); ?>
 
-<p><a id='market-on-close-order-too-late'></a>To avoid this order response error, reduce the number of orders in your backtest or <a href='/docs/v2/cloud-platform/organizations/billing#07-Change-Organization-Tiers'>upgrade your organization</a>.<br></p>
+<p>To avoid this order response error, reduce the number of orders in your backtest or <a href='/docs/v2/cloud-platform/organizations/billing#07-Change-Organization-Tiers'>upgrade your organization</a>.<br></p>
 
 
 <h4>Market on Close Order Too Late</h4>
 <p>The <code>OrderResponseErrorCode.MarketOnCloseOrderTooLate</code> (-21) error occurs when you try to place a market on close (MOC) order too early in the trading day.</p>
 
-<p><a id='invalid-request'></a>To avoid this order response error, place the MOC order closer to the market close or adjust the submission time buffer. <?php echo file_get_contents(DOCS_RESOURCES."/order-types/moc-buffer.html"); ?>
+<p>To avoid this order response error, place the MOC order closer to the market close or adjust the submission time buffer. <a id='invalid-request'></a><?php echo file_get_contents(DOCS_RESOURCES."/order-types/moc-buffer.html"); ?>
 
 
 <h4>Invalid Request</h4>
-<p>The <code>OrderResponseErrorCode.InvalidRequest</code> (-22) error occurs when you try to cancel an order multiple times.</p>
+<p><a id='request-canceled'></a>The <code>OrderResponseErrorCode.InvalidRequest</code> (-22) error occurs when you try to cancel an order multiple times.</p>
 
-<p><a id='request-canceled'></a>To avoid this order response error, only try to cancel an order one time.</p>
+<p>To avoid this order response error, only try to cancel an order one time.</p>
 
 
 <h4>Request Canceled</h4>
-<p>The <code>OrderResponseErrorCode.RequestCanceled</code> (-23) error occurs when you try to cancel an order multiple times.</p>
+<p><a id='algorithm-warming-up'></a>The <code>OrderResponseErrorCode.RequestCanceled</code> (-23) error occurs when you try to cancel an order multiple times.</p>
 
-<p><a id='algorithm-warming-up'></a>To avoid this order response error, only try to cancel an order one time.</p>
+<p>To avoid this order response error, only try to cancel an order one time.</p>
 
 
 <h4>Algorithm Warming Up</h4>
@@ -227,9 +227,9 @@ if holding_quantity > 0:
 <h4>Brokerage Model Refused to Update Order</h4>
 <p>The <code>OrderResponseErrorCode.BrokerageModelRefusedToUpdateOrder</code> (-25) error occurs in backtests when you try to update an order in a way that the <a href='/docs/v2/writing-algorithms/reality-modeling/brokerages/key-concepts'>brokerage model</a> doesn't support.</p>
 
-<p>To avoid this issue, see the <span class='page-section-name'>Orders</span> section of the <a href='/docs/v2/cloud-platform/live-trading/brokerages'>integration documentation for your brokerage</a> to check its order requirements.</p>
+<p><a id='quote-currency-required'></a>To avoid this issue, see the <span class='page-section-name'>Orders</span> section of the <a href='/docs/v2/cloud-platform/live-trading/brokerages'>integration documentation for your brokerage</a> to check its order requirements.</p>
 
-<p><a id='quote-currency-required'></a>To investigate this order response error further, see the <code>CanUpdateOrder</code> method definition of your <a href='/docs/v2/writing-algorithms/reality-modeling/brokerages/supported-models'>brokerage model</a>.</p>
+<p>To investigate this order response error further, see the <code>CanUpdateOrder</code> method definition of your <a href='/docs/v2/writing-algorithms/reality-modeling/brokerages/supported-models'>brokerage model</a>.</p>
 
 
 
