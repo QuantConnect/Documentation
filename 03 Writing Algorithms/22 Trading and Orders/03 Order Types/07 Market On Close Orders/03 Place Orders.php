@@ -19,11 +19,6 @@ self.MarketOnCloseOrder("AAPL", -100)</pre>
 <pre class="python">self.MarketOnCloseOrder(symbol, quantity, tag=tag, orderProperties=order_properties)</pre>
 </div>
 
-<p>By default, you must place MOC orders at least 15.5 minutes before the close, but some exchanges let you submit them closer to the market closing time. To adjust the buffer period that's required, set the <code>MarketOnCloseOrder.SubmissionTimeBuffer</code> property.</p>
-
-<div class="section-example-container">
-<pre class="csharp">Orders.MarketOnCloseOrder.SubmissionTimeBuffer = TimeSpan.FromMinutes(10);</pre>
-<pre class="python">MarketOnCloseOrder.SubmissionTimeBuffer = timedelta(minutes=10)</pre>
-</div>
+<p><?php echo file_get_contents(DOCS_RESOURCES."/order-types/moc-buffer.html"); ?>
 
 <p>You can also place MOC orders after the market close.</p>
