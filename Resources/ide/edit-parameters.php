@@ -36,7 +36,7 @@ $getParametersText = function($openProjectLink, $isDesktopDocs)
     {$openPanelStep}
     <li>In the Project panel, hover over the algorithm parameter and then click the <span class='icon-name'>pencil</span> icon that appears.</li>
     <img class='docs-image' src='https://cdn.quantconnect.com/i/tu/set-default-value.png'>
-    <li>Enter a default value for the parameter and then click <span class='button-name'>Save</span></li>
+    <li>Enter a default value for the parameter and then click <span class='button-name'>Save</span>.</li>
     <p>The Project panel displays the default parameter value next to the parameter name.</p>
 </ol>
 
