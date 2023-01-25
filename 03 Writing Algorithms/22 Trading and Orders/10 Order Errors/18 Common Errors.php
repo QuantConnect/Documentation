@@ -17,18 +17,6 @@ If you place a market order when the market is closed, LEAN automatically conver
 
 <?php echo file_get_contents(DOCS_RESOURCES."/order-types/stale-fills.html"); ?>
 
-<h4>Why do I get "Backtest Handled Error: Order Error: id: XXX, Insufficient buying power to complete order" calling the <code>SetHoldings</code> method?</h4>
-
-<p>This error usually occurs when you place a market on open order with daily data. If you place the order with <code>SetHoldings</code> or use <code>CalculateOrderQuantity</code> to determine the order quantity, LEAN calculates the order quantity based on the market close price. If the open price on the following day makes your order more expensive, then you may have insufficient buying power. To avoid issues, use intraday data and place trades when the market is open or <a href='/docs/v2/writing-algorithms/trading-and-orders/position-sizing#05-Buying-Power-Buffer'>adjust your buying power buffer</a>.</p>
-
-<h4>Why can I only place 10,000 orders in a backtest?</h4>
-
-<p>The number of orders you can place in a single backtest depends on the tier of your organization. The following table shows the number of orders you can place on each tier:</p>
-
-<?php echo file_get_contents(DOCS_RESOURCES."/quotas/orders.html"); ?>
-
-<p>To place more orders in a backtest, <a href='/docs/v2/cloud-platform/organizations/billing#07-Change-Organization-Tiers'>upgrade your organization</a>.<br></p>
-
 <h4>Why do I get "Backtest Handled Error: The security with symbol '/ES' is marked as non-tradable"?</h4>
 
 <p>This error occurs when you place an order for a continuous Futures contract, which isn't a tradable security. To fix the issue, place the order for a specific Futures contract. To access the currently selected contract in the continuous contract series, use the <code>Mapped</code> property of the <code>Future</code> object.</p>
