@@ -8,11 +8,11 @@
 <h4><a id='processing-error'></a>Processing Error</h4>
 <p>The <code>OrderResponseErrorCode.ProcessingError</code> (-1) error occurs in the following situations:</p>
 <ul>
-    <li>When you submit a new order, but LEAN throws an exception while checking if you have sufficient buying power for the order.</li>
+    <li>When you submit a new order, but LEAN throws an exception while checking if you have sufficient <a href='/docs/v2/writing-algorithms/reality-modeling/buying-power'>buying power</a> for the order.</li>
     <li>When you try to update or cancel an order, but LEAN throws an exception.</li>
 </ul>
 
-<p>To investigate this issue further, see the <code>HandleSubmitOrderRequest</code>, <code>UpdateOrder</code>, and <code>CancelOrder</code> methods of the <a rel='nofollow' target='_blank' href='https://github.com/QuantConnect/Lean/blob/master/Engine/TransactionHandlers/BrokerageTransactionHandler.cs'>BrokerageTransactionHandler</a> in the LEAN GitHub repository.</p>
+<p>To investigate this order response error further, see the <code>HandleSubmitOrderRequest</code>, <code>UpdateOrder</code>, and <code>CancelOrder</code> methods of the <a rel='nofollow' target='_blank' href='https://github.com/QuantConnect/Lean/blob/master/Engine/TransactionHandlers/BrokerageTransactionHandler.cs'>BrokerageTransactionHandler</a> in the LEAN GitHub repository.</p>
 
 
 <h4><a id='order-already-exists'></a>Order Already Exists</h4>
@@ -60,10 +60,6 @@
 <p>To avoid this issue, see the <span class='page-section-name'>Orders</span> section of the <a href='/docs/v2/cloud-platform/live-trading/brokerages'>integration documentation for your brokerage</a> to check if your brokerage supports order updates.</p>
 
 <p>To investigate this order response error, see the <code>UpdateOrder</code> method definition of your <a href='/docs/v2/writing-algorithms/reality-modeling/brokerages/supported-models'>brokerage</a> or the <a rel='nofollow' target='_blank' href='https://github.com/QuantConnect/Lean/blob/master/Brokerages/Backtesting/BacktestingBrokerage.cs'>BacktestingBrokerage</a> in the LEAN GitHub repository.</p>
-
-
-<h4><a id='brokerage-handler-refused-to-update-order'></a>Brokerage Handler Refused to Update Order</h4>
-<p>The <code>OrderResponseErrorCode.BrokerageHandlerRefusedToUpdateOrder</code> (-7) error is deprecated.</p>
 
 
 <h4><a id='brokerage-failed-to-cancel-order'></a>Brokerage Failed to Cancel Order</h4>
@@ -121,10 +117,6 @@ if (holdingQuantity > 0)
 if holding_quantity > 0:
     self.ExerciseOption(self.contract_symbol, max(holding_quantity, exercise_quantity))</pre>
 </div>
-
-
-<h4><a id='pre-order-checks-error'></a>Pre-Order Checks Error</h4>
-<p>The <code>OrderResponseErrorCode.PreOrderChecksError</code> (-13) error is deprecated.</p>
 
 
 <h4><a id='missing-security'></a>Missing Security</h4>
