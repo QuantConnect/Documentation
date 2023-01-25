@@ -136,7 +136,7 @@ if holding_quantity > 0:
 <p>The <code>OrderResponseErrorCode.ExchangeNotOpen</code> (-15) error occurs in the following situations:</p>
 
 <ul>
-    <li>When you try to exercise an Option when the exchange is not open</li>
+    <li>When you try to exercise an Option while the exchange is not open</li>
     
     <p>To avoid the order response error in this case, check if the exchange is open before you exercise an Option contract.</p>
     
