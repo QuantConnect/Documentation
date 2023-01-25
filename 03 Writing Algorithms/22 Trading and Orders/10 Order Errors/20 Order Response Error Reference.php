@@ -16,11 +16,9 @@
 
 
 <h4><a id='order-already-exists'></a>Order Already Exists</h4>
-<p>The <code>OrderResponseErrorCode.OrderAlreadyExists</code> (-2) error occurs when you submit a new order but you already have an open order or a completed order with the same order ID.</p>
-<!-- How is this even possible? Can we reproduce it? --> 
+<p>The <code>OrderResponseErrorCode.OrderAlreadyExists</code> (-2) error occurs when you submit a new order but you already have an open order or a completed order with the same order ID. This order response error usually comes from a concurrency issue.</p>
 
-<p>To avoid this error ...</p>
-
+<p>To avoid this order response, don't place two asynchronous orders at the same time. <a rel='nofollow' target='_blank' href='https://github.com/QuantConnect/Lean/issues/6736'>GitHub Issue #6736</a> may address the underlying problem.</p>
 
 <h4><a id='insufficient-buying-power'></a>Insufficient Buying Power</h4>
 <p>The <code>OrderResponseErrorCode.InsufficientBuyingPower</code> (-3) error occurs when you place an order but the <a href='/docs/v2/writing-algorithms/reality-modeling/buying-power'>buying power model</a> determines you can't afford it.</p>
@@ -35,7 +33,7 @@
 
 
 <h4><a id='brokerage-model-refused-to-submit-order'></a>Brokerage Model Refused to Submit Order</h4>
-<p>The <code>OrderResponseErrorCode.BrokerageModelRefusedToSubmitOrder</code> (-4) error occurs when you place an order but the <a href='/docs/v2/writing-algorithms/reality-modeling/brokerages/key-concepts'>brokerage model</a> determines it's invalid.  The brokerage model usually checks the order you submit passes the following requirements before sending it to the brokerage:</p>
+<p>The <code>OrderResponseErrorCode.BrokerageModelRefusedToSubmitOrder</code> (-4) error occurs when you place an order but the <a href='/docs/v2/writing-algorithms/reality-modeling/brokerages/key-concepts'>brokerage model</a> determines it's invalid. The brokerage model usually checks your order meets the following requirements before sending it to the brokerage:</p>
 
 <ul>
     <li>Supported security types</li>
@@ -44,52 +42,55 @@
     <li>The order size is larger than the minimum order size</li>
 </ul>
 
-<p>Each brokerage model can have additional order requirements that the brokerage declares. To avoid this order response error, see the following resources:</p>
+<p>Each brokerage model can have additional order requirements that the brokerage declares. To avoid this order response error, see the <span class='page-section-name'>Orders</span> section of the <a href='/docs/v2/cloud-platform/live-trading/brokerages'>integration documentation for your brokerage</a>.</p>
 
-<ul>
-    <li>The <span class='page-section-name'>Orders</span> section of the <a href='/docs/v2/cloud-platform/live-trading/brokerages'>integration documentation for your brokerage</a></li>
-    <li>The <code>CanSubmitOrder</code> method definition of your <a href='/docs/v2/writing-algorithms/reality-modeling/brokerages/supported-models'>brokerage model</a></li>
-    <p>This order response error occurs when the <code>CanSubmitOrder</code> method returns <code class='csharp'>false</code><code class='python'>False</code>.</p>
-</ul>
+<p>To investigate this order response error further, see the <code>CanSubmitOrder</code> method definition of your <a href='/docs/v2/writing-algorithms/reality-modeling/brokerages/supported-models'>brokerage model</a>. This order response error occurs when the <code>CanSubmitOrder</code> method returns <code class='csharp'>false</code><code class='python'>False</code>.</p>
 
 
 <h4><a id='brokerage-failed-to-submit-order'></a>Brokerage Failed to Submit Order</h4>
-<p>The <code>OrderResponseErrorCode.BrokerageFailedToSubmitOrder</code> (-5) error occurs when you place an order in an algorithm but the 
-<code>PlaceOrder</code> method of the brokerage implementation either throws an error or returns <code class='csharp'>false</code><code class='python'>False</code>. As a result, the brokerage implementation fails to submit the order to your brokerage.</p>
+<p>The <code>OrderResponseErrorCode.BrokerageFailedToSubmitOrder</code> (-5) error occurs when you place an order but the brokerage implementation fails to submit the order to your brokerage.</p>
 
-<p>To investigate this order response error, see the <code>PlaceOrder</code> method definition of your <a href='/docs/v2/writing-algorithms/reality-modeling/brokerages/supported-models'>brokerage</a> or the <a rel='nofollow' target='_blank' href='https://github.com/QuantConnect/Lean/blob/master/Brokerages/Backtesting/BacktestingBrokerage.cs'>BacktestingBrokerage</a> in the LEAN GitHub repository.</p>
+<p>To investigate this order response error further, see the <code>PlaceOrder</code> method definition of your <a href='/docs/v2/writing-algorithms/reality-modeling/brokerages/supported-models'>brokerage</a> or the <a rel='nofollow' target='_blank' href='https://github.com/QuantConnect/Lean/blob/master/Brokerages/Backtesting/BacktestingBrokerage.cs'>BacktestingBrokerage</a> in the LEAN GitHub repository. This order response error occurs when the <code>PlaceOrder</code> method throws an error or returns <code>false</code>.</p>
 
 
 <h4><a id='brokerage-failed-to-update-order'></a>Brokerage Failed to Update Order</h4>
-<p>The <code>OrderResponseErrorCode.BrokerageFailedToUpdateOrder</code> (-6) error occurs when you try to update an order but the <code>UpdateOrder</code> method of the brokerage implementation either throws an error or returns <code class='csharp'>false</code><code class='python'>False</code>. As a result, the brokerage implementation fails to submit the order update request to your brokerage.</p>
+<p>The <code>OrderResponseErrorCode.BrokerageFailedToUpdateOrder</code> (-6) error occurs when you try to update an order but the brokerage implementation fails to submit the order update request to your brokerage.</p>
 
-<p>To avoid this issue, see the <span class='page-section-name'>Orders</span> section of the <a href='/docs/v2/cloud-platform/live-trading/brokerages'>integration documentation for your brokerage</a> to check if your brokerage supports order updates.</p>
+<p>To avoid this order response error, see the <span class='page-section-name'>Orders</span> section of the <a href='/docs/v2/cloud-platform/live-trading/brokerages'>integration documentation for your brokerage</a>.</p>
 
-<p>To investigate this order response error, see the <code>UpdateOrder</code> method definition of your <a href='/docs/v2/writing-algorithms/reality-modeling/brokerages/supported-models'>brokerage</a> or the <a rel='nofollow' target='_blank' href='https://github.com/QuantConnect/Lean/blob/master/Brokerages/Backtesting/BacktestingBrokerage.cs'>BacktestingBrokerage</a> in the LEAN GitHub repository.</p>
-
+<p>To investigate this order response error further, see the <code>UpdateOrder</code> method definition of your <a href='/docs/v2/cloud-platform/live-trading/brokeragess'>brokerage</a> or the <a rel='nofollow' target='_blank' href='https://github.com/QuantConnect/Lean/blob/master/Brokerages/Backtesting/BacktestingBrokerage.cs'>BacktestingBrokerage</a> in the LEAN GitHub repository. This order response error occurs when the <code>UpdateOrder</code> method throws an error or returns <code>false</code>.</p></p>
 
 <h4><a id='brokerage-failed-to-cancel-order'></a>Brokerage Failed to Cancel Order</h4>
-<p>The <code>OrderResponseErrorCode.BrokerageFailedToCancelOrder</code> (-8) error occurs when you try to cancel an order but the <code>CancelOrder</code> method of the brokerage implementation either throws an error or returns <code class='csharp'>false</code><code class='python'>False</code>.</p>
+<p>The <code>OrderResponseErrorCode.BrokerageFailedToCancelOrder</code> (-8) error occurs when you try to cancel an order but the brokerage implementation fails to submit the cancel request to your brokerage.</p>    
 
-<p>To investigate this order response error, see the <code>UpdateOrder</code> method definition of your <a href='/docs/v2/writing-algorithms/reality-modeling/brokerages/supported-models'>brokerage</a> or the <a rel='nofollow' target='_blank' href='https://github.com/QuantConnect/Lean/blob/master/Brokerages/Backtesting/BacktestingBrokerage.cs'>BacktestingBrokerage</a> in the LEAN GitHub repository.</p>
+<p>To investigate this order response error further, see the <code>CancelOrder</code> method definition of your <a href='/docs/v2/writing-algorithms/reality-modeling/brokerages/supported-models'>brokerage</a> or the <a rel='nofollow' target='_blank' href='https://github.com/QuantConnect/Lean/blob/master/Brokerages/Backtesting/BacktestingBrokerage.cs'>BacktestingBrokerage</a> in the LEAN GitHub repository. This order response error occurs when <code>CancelOrder</code> method throws an error or returns <code>false</code>.</p>
 
 
 <h4><a id='invalid-order-status'></a>Invalid Order Status</h4>
-<p>The <code>OrderResponseErrorCode.InvalidOrderStatus</code> (-9) error occurs when you try to update or cancel an order that's already complete. An order is complete if it has <code>OrderStatus.Filled</code>, <code>OrderStatus.Canceled</code>, or <code>OrderStatus.Invalid</code>.</p>
+<p>The <code>OrderResponseErrorCode.InvalidOrderStatus</code> (-9) error occurs when you try to update or cancel an order but the order is already complete. An order is complete if it has <code>OrderStatus.Filled</code>, <code>OrderStatus.Canceled</code>, or <code>OrderStatus.Invalid</code>.</p>
 
-<p>To avoid this order response error, check <code>Status</code> of an <a href='/docs/v2/writing-algorithms/trading-and-orders/order-management/order-tickets'>order ticket</a> before you try to update the order.</p>
+<p>To avoid this order response error, check <code>Status</code> of an <a href='/docs/v2/writing-algorithms/trading-and-orders/order-management/order-tickets'>order ticket</a> or <a href='/docs/v2/writing-algorithms/trading-and-orders/order-events'>order event</a> before you update or cancel the order.</p>
+
+<div class="section-example-container">
+<pre class="csharp">if (!_orderTicket.Status.IsClosed())
+{
+    _orderTicket.Cancel();
+}</pre>
+<pre class="python">if OrderExtensions.IsClosed(order_ticket.Status):
+    order_ticket.Cancel()</pre>
+</div>
 
 
 <h4><a id='unable-to-find-order'></a>Unable to Find Order</h4>
-<p>The <code>OrderResponseErrorCode.UnableToFindOrder</code> (-10) error occurs when you try to place, update, or cancel an order, but the <code>BrokerageTransactionHandler</code> can't find the order ID in it's <code>_completeOrders</code> or <code>_completeOrderTickets</code> dictionaries.</p>
+<p>The <code>OrderResponseErrorCode.UnableToFindOrder</code> (-10) error occurs when you try to place, update, or cancel an order, but the <code>BrokerageTransactionHandler</code> doesn't have a record of the order ID.</p>
 
-<p>To investigate this order response error, see <a rel='nofollow' target='_blank' href='https://github.com/QuantConnect/Lean/blob/master/Engine/TransactionHandlers/BrokerageTransactionHandler.cs'>BrokerageTransactionHandler.cs</a> in the LEAN GitHub repository.</p>
+<p>To investigate this order response error further, see <a rel='nofollow' target='_blank' href='https://github.com/QuantConnect/Lean/blob/master/Engine/TransactionHandlers/BrokerageTransactionHandler.cs'>BrokerageTransactionHandler.cs</a> in the LEAN GitHub repository. This order response error occurs when the <code>BrokerageTransactionHandler</code> can't find the order ID in it's <code>_completeOrders</code> or <code>_completeOrderTickets</code> dictionaries.</p>
 
 
 <h4><a id='order-quantity-zero'></a>Order Quantity Zero</h4>
 <p>The <code>OrderResponseErrorCode.OrderQuantityZero</code> (-11) error occurs when you place an order that has zero quantity or when you update an order to have a zero quantity. This error commonly occurs if you use the <a href='/docs/v2/writing-algorithms/trading-and-orders/position-sizing'>SetHoldings</a> method but the portfolio weight you provide to the method is too small to translate into a non-zero order quantity.</p>
 
-<p>To avoid this issue, check if the quantity of the order is non-zero before you place the order. If you use the <code>SetHoldings</code> method, consider replacing it with a combination of the <a href='/docs/v2/writing-algorithms/trading-and-orders/position-sizing#04-Calculate-Order-Quantities'>CalculateOrderQuantity</a> and <a href='/docs/v2/writing-algorithms/trading-and-orders/order-types/market-orders'>MarketOrder</a> methods.</p>
+<p>To avoid this order response error, check if the quantity of the order is non-zero before you place the order. If you use the <code>SetHoldings</code> method, replace it with a combination of the <a href='/docs/v2/writing-algorithms/trading-and-orders/position-sizing#04-Calculate-Order-Quantities'>CalculateOrderQuantity</a> and <a href='/docs/v2/writing-algorithms/trading-and-orders/order-types/market-orders'>MarketOrder</a> methods.</p>
 
 <div class="section-example-container">
 <pre class="csharp">var quantity = CalculateOrderQuantity(_symbol, 0.05);
@@ -108,10 +109,10 @@ if quantity:
 
 <ul>
     <li>When you try to exercise an Option contract for which you hold a short position</li>
-    <li>When you try to exercise an Option contract using a larger quantity than you hold</li>
+    <li>When you try to exercise more Option contracts than you hold</li>
 </ul>
 
-<p>To avoid this issue, check the quantity of your holdings before you try to exercise an Option contract.</p>
+<p>To avoid this order response error, check the quantity of your holdings before you try to exercise an Option contract.</p>
 
 <div class="section-example-container">
 <pre class="csharp">var holdingQuantity = Portfolio[_contractSymbol].Quantity;
@@ -126,9 +127,9 @@ if holding_quantity > 0:
 
 
 <h4><a id='missing-security'></a>Missing Security</h4>
-<p>The <code>OrderResponseErrorCode.MissingSecurity</code> (-14) error occurs when you place an order for a security that you don't have a subscription for in your algorithm.</p>
+<p>The <code>OrderResponseErrorCode.MissingSecurity</code> (-14) error occurs when you place an order for a security but you don't have a subscription for it in your algorithm.</p>
 
-<p>To avoid this issue, create a subscription for each security you want to trade in your algorithm. To create subscriptions, see the Requesting Data page of the <a href='/docs/v2/writing-algorithms/securities/asset-classes'>documentation for each asset class</a>.
+<p>To avoid this order response error, create a subscription for each security you want to trade. To create subscriptions, see the Requesting Data page of the <a href='/docs/v2/writing-algorithms/securities/asset-classes'>documentation for each asset class</a>.
 
 
 <h4><a id='exchange-not-open'></a>Exchange Not Open</h4>
@@ -136,19 +137,22 @@ if holding_quantity > 0:
 
 <ul>
     <li>When you try to exercise an Option when the exchange is not open</li>
-    <li>When you try to place a market on open order for a Futures contract or a Future Option contract</li>
-</ul>
-
-<p>To avoid this issue, check if the exchange is open before you exercise an Option contract.</p>
-
-<div class="section-example-container">
-<pre class="csharp">if (IsMarketOpen(_contractSymbol))
+    
+    <p>To avoid the order response error in this case, check if the exchange is open before you exercise an Option contract.</p>
+    
+    <div class="section-example-container">
+    <pre class="csharp">if (IsMarketOpen(_contractSymbol))
 {
     ExerciseOption(_contractSymbol, quantity);
 }</pre>
-<pre class="python">if self.IsMarketOpen(self.contract_symbol):
+    <pre class="python">if self.IsMarketOpen(self.contract_symbol):
     self.ExerciseOption(self.contract_symbol, quantity)</pre>
-</div>
+    </div>
+    
+    <li>When you try to place a market on open order for a Futures contract or a Future Option contract</li>
+</ul>
+
+
 
 
 <h4><a id='security-price-zero'></a>Security Price Zero</h4>
@@ -165,11 +169,11 @@ if holding_quantity > 0:
 
 
 <h4><a id='forex-base-and-quote-currencies-required'></a>Forex Base and Quote Currencies Required</h4>
-<p>The <code>OrderResponseErrorCode.ForexBaseAndQuoteCurrenciesRequired</code> (-17) error occurs when you place a trade for a Forex or Crypto pair when you don't have the base currency and <a href='/docs/v2/writing-algorithms/securities/key-concepts#03-Quote-Currency'>quote currency</a> in your <a href='/docs/v2/writing-algorithms/portfolio/cashbook'>cash book</a>.</p>
+<p>The <code>OrderResponseErrorCode.ForexBaseAndQuoteCurrenciesRequired</code> (-17) error occurs when you place a trade for a Forex or Crypto pair but you don't have the base currency and <a href='/docs/v2/writing-algorithms/securities/key-concepts#03-Quote-Currency'>quote currency</a> in your <a href='/docs/v2/writing-algorithms/portfolio/cashbook'>cash book</a>.</p>
 
 
 <h4><a id='forex-conversion-rate-zero'></a>Forex Conversion Rate Zero</h4>
-<p>The <code>OrderResponseErrorCode.ForexConversionRateZero</code> (-18) error occurs when you place a trade for a Forex or Crypto pair and LEAN can't convert the value of the base currency to your account currency. This error usually indicators a lack of data. Investigate the data and if there is some missing, <a href='/docs/v2/cloud-platform/datasets/data-issues#04-Report-New-Issues'>report it</a>.</p>
+<p>The <code>OrderResponseErrorCode.ForexConversionRateZero</code> (-18) error occurs when you place a trade for a Forex or Crypto pair and LEAN can't convert the value of the base currency to your account currency. This error usually indicates a lack of data. Investigate the data and if there is some missing, <a href='/docs/v2/cloud-platform/datasets/data-issues#04-Report-New-Issues'>report it</a>.</p>
 
 
 <h4><a id='security-has-no-data'></a>Security Has No Data</h4>
@@ -187,9 +191,9 @@ if holding_quantity > 0:
 
 
 <h4><a id='market-on-close-order-too-late'></a>Market on Close Order Too Late</h4>
-<p>The <code>OrderResponseErrorCode.MarketOnCloseOrderTooLate</code> (-21) error occurs when you try to place a market on close order before the market close time but you placed it too early in the trading day.</p>
+<p>The <code>OrderResponseErrorCode.MarketOnCloseOrderTooLate</code> (-21) error occurs when you try to place a market on close (MOC) order too early in the trading day.</p>
 
-<p>To avoid this order response error, place market on close orders closer to the market close or adjust the submission time buffer. <?php echo file_get_contents(DOCS_RESOURCES."/order-types/moc-buffer.html"); ?>
+<p>To avoid this order response error, place the MOC order closer to the market close or adjust the submission time buffer. <?php echo file_get_contents(DOCS_RESOURCES."/order-types/moc-buffer.html"); ?>
 
 
 <h4><a id='invalid-request'></a>Invalid Request</h4>
@@ -225,7 +229,7 @@ if holding_quantity > 0:
 
 <p>To avoid this issue, see the <span class='page-section-name'>Orders</span> section of the <a href='/docs/v2/cloud-platform/live-trading/brokerages'>integration documentation for your brokerage</a> to check its order requirements.</p>
 
-<p>To investigate this order response error, see the <code>CanUpdateOrder</code> method definition of your <a href='/docs/v2/writing-algorithms/reality-modeling/brokerages/supported-models'>brokerage</a> or the <a rel='nofollow' target='_blank' href='https://github.com/QuantConnect/Lean/blob/master/Brokerages/Backtesting/BacktestingBrokerage.cs'>BacktestingBrokerage</a> in the LEAN GitHub repository.</p>
+<p>To investigate this order response error further, see the <code>CanUpdateOrder</code> method definition of your <a href='/docs/v2/writing-algorithms/reality-modeling/brokerages/supported-models'>brokerage model</a>.</p>
 
 
 
@@ -234,15 +238,19 @@ if holding_quantity > 0:
 
 
 <h4><a id='conversion-rate-zero'></a>Conversion Rate Zero</h4>
-<p>The <code>OrderResponseErrorCode.ConversionRateZero</code> (-27) error occurs when you place an order for a Forex or Crypto pair and LEAN can't convert the value of the <a href='/docs/v2/writing-algorithms/securities/key-concepts#03-Quote-Currency'>quote currency</a> in the pair to your account currency. This error can happen because of a lack of data. Investigate the data and if there is data missing, <a href='/docs/v2/cloud-platform/datasets/data-issues#04-Report-New-Issues'>report it</a>.</p>
+<p>The <code>OrderResponseErrorCode.ConversionRateZero</code> (-27) error occurs when you place an order for a Forex or Crypto pair and LEAN can't convert the value of the <a href='/docs/v2/writing-algorithms/securities/key-concepts#03-Quote-Currency'>quote currency</a> in the pair to your account currency. This order response error usually indicates a lack of data. Investigate the data and if there is data missing, <a href='/docs/v2/cloud-platform/datasets/data-issues#04-Report-New-Issues'>report it</a>.</p>
 
 
 <h4><a id='non-tradable-security'></a>Non-Tradable Security</h4>
-<p>The <code>OrderResponseErrorCode.NonTradableSecurity</code> (-28) error occurs when you place an order for a security that's not <a href='/docs/v2/writing-algorithms/securities/key-concepts#07-Tradable-Status'>tradable</a>. To check if a security is tradable, use its <code>IsTradable</code> property.</p>
+<p>The <code>OrderResponseErrorCode.NonTradableSecurity</code> (-28) error occurs when you place an order for a security that's not <a href='/docs/v2/writing-algorithms/securities/key-concepts#07-Tradable-Status'>tradable</a>. To avoid this order response error, check if a security is tradable before you trade it.</p>
 
 <div class="section-example-container">
-    <pre class="csharp">var tradable = Securities[_symbol].IsTradable;</pre>
-    <pre class="python">tradable = self.Securities[self.symbol].IsTradable</pre>
+    <pre class="csharp">if (Securities[_symbol].IsTradable)
+{
+    MarketOrder(_symbol, quantity);
+}</pre>
+    <pre class="python">if self.Securities[self.symbol].IsTradable:
+    self.MarketOrder(self.symbol, quantity)</pre>
 </div>
 
 
@@ -267,18 +275,18 @@ if quantity >= lot_size:
 
 
 <h4><a id='exceeds-shortable-quantity'></a>Exceeds Shortable Quantity</h4>
-<p>The <code>OrderResponseErrorCode.ExceedsShortableQuantity</code> (-31) error occurs when you place an order to short a security but the quantity you want to sell requires you to borrow shares from the brokerage and the shortable provider of the brokerage states that there isn't enough shares to borrow. For a full example of this error, clone and run <a href='https://www.quantconnect.com/terminal/processCache?request=embedded_backtest_e1834ede9a0efa6d134f87bd9fd30a70.html'>this backtest</a>.</p>
+<p>The <code>OrderResponseErrorCode.ExceedsShortableQuantity</code> (-31) error occurs when you place an order to short a security but the shortable provider of the brokerage model states there isn't enough shares to borrow. For a full example of this error, clone and run <a href='https://www.quantconnect.com/terminal/processCache?request=embedded_backtest_e1834ede9a0efa6d134f87bd9fd30a70.html'>this backtest</a>.</p>
 
 <p>To avoid this order response error, check if there are enough shares available before you place an order to short a security.</p>
 
 <div class="section-example-container">
     <pre class="csharp">var availableToBorrow = BrokerageModel.GetShortableProvider().ShortableQuantity(_symbol, Time);
-if (quantityToBorrow <= availableToBorrow)
+if (availableToBorrow == null || quantityToBorrow <= availableToBorrow)
 {
     MarketOrder(_symbol, -quantityToBorrow);
 }</pre>
     <pre class="python">available_to_borrow = self.BrokerageModel.GetShortableProvider().ShortableQuantity(self.symbol, self.Time)
-if quantity_to_borrow <= available_to_borrow:
+if available_to_borrow == None or quantity_to_borrow <= available_to_borrow:
     self.MarketOrder(self.symbol, -quantity_to_borrow)</pre>
 </div>
 
@@ -286,7 +294,7 @@ if quantity_to_borrow <= available_to_borrow:
 <h4><a id='invalid-new-order-status'></a>Invalid New Order Status</h4>
 <p>The <code>OrderResponseErrorCode.InvalidNewOrderStatus</code> (-32) error occurs in live trading when you try to update or cancel an order while it still has <code>OrderStatus.New</code> status.</p>
 
-<p>To avoid this order response error, check the <code>Status</code> property of the <a href='/docs/v2/writing-algorithms/trading-and-orders/order-management/order-tickets'>order ticket</a> before you update or cancel an order.</p>
+<p>To avoid this order response error, check the <code>Status</code> property of the <a href='/docs/v2/writing-algorithms/trading-and-orders/order-management/order-tickets'>order ticket</a> or <a href='/docs/v2/writing-algorithms/trading-and-orders/order-events'>order event</a> before you update or cancel an order.</p>
 
 <div class="section-example-container">
     <pre class="csharp">if (_orderTicket.Status != OrderStatus.New)
