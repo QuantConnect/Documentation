@@ -21,7 +21,7 @@
         <tr>
             <td><code>transportMedium</code></td>
             <td><code>SubscriptionTransportMedium</code></td>
-            <td>The transport medium to be used to retrieve data from the source/td>
+            <td>The transport medium to be used to retrieve data from the source</td>
             <td></td>
         </tr>
         <tr>
