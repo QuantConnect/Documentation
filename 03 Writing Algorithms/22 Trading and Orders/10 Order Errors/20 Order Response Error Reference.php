@@ -1,8 +1,8 @@
 <p>The following sections explain why each <code>OrderResponseErrorCode</code> occurs and how you can avoid it.</p>
 
-<h4><a id='none'></a>None (0)</h4>
+<h4><a id='none'></a>None</h4>
 
-<p></p>
+<p>The <code>OrderResponseErrorCode.None</code> (0) error represents a situation when no there is no order response error.</p>
 
 
 <h4><a id='processing-error'></a>Processing Error</h4>
