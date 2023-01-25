@@ -58,7 +58,7 @@
 
 <p>To avoid this order response error, see the <span class='page-section-name'>Orders</span> section of the <a href='/docs/v2/cloud-platform/live-trading/brokerages'>integration documentation for your brokerage</a>.</p>
 
-<p><a id='brokerage-failed-to-cancel-order'></a>To investigate this order response error further, see the <code>UpdateOrder</code> method definition of your <a href='/docs/v2/cloud-platform/live-trading/brokeragess'>brokerage</a> or the <a rel='nofollow' target='_blank' href='https://github.com/QuantConnect/Lean/blob/master/Brokerages/Backtesting/BacktestingBrokerage.cs'>BacktestingBrokerage</a> in the LEAN GitHub repository. This order response error occurs when the <code>UpdateOrder</code> method throws an error or returns <code>false</code>.</p></p>
+<p><a id='brokerage-failed-to-cancel-order'></a>To investigate this order response error further, see the <code>UpdateOrder</code> method definition of your <a href='/docs/v2/cloud-platform/live-trading/brokerages'>brokerage</a> or the <a rel='nofollow' target='_blank' href='https://github.com/QuantConnect/Lean/blob/master/Brokerages/Backtesting/BacktestingBrokerage.cs'>BacktestingBrokerage</a> in the LEAN GitHub repository. This order response error occurs when the <code>UpdateOrder</code> method throws an error or returns <code>false</code>.</p></p>
 
 <h4>Brokerage Failed to Cancel Order</h4>
 <p>The <code>OrderResponseErrorCode.BrokerageFailedToCancelOrder</code> (-8) error occurs when you try to cancel an order but the brokerage implementation fails to submit the cancel request to your brokerage.</p>    
