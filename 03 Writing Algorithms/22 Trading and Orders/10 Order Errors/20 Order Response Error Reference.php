@@ -76,7 +76,7 @@
 {
     _orderTicket.Cancel();
 }</pre>
-<pre class="python">if OrderExtensions.IsClosed(order_ticket.Status):
+<pre class="python">if not OrderExtensions.IsClosed(order_ticket.Status):
     order_ticket.Cancel()</pre>
 </div>
 
