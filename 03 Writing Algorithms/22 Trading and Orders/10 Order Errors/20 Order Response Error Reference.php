@@ -2,7 +2,7 @@
 
 <h4><a id='none'></a>None</h4>
 
-<p>The <code>OrderResponseErrorCode.None</code> (0) error represents a situation when no there is no order response error.</p>
+<p>The <code>OrderResponseErrorCode.None</code> (0) error means there is no order response error.</p>
 
 
 <h4><a id='processing-error'></a>Processing Error</h4>
