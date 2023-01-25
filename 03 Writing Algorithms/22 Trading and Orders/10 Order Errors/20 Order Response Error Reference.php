@@ -8,8 +8,8 @@
 <h4><a id='processing-error'></a>Processing Error</h4>
 <p>The <code>OrderResponseErrorCode.ProcessingError</code> (-1) error occurs in the following situations:</p>
 <ul>
-    <li>You submit a new order, but LEAN throws an exception when checking if you have sufficient buying power for the order.</li>
-    <li>You try to update or cancel an order, but LEAN throws an exception.</li>
+    <li>When you submit a new order, but LEAN throws an exception while checking if you have sufficient buying power for the order.</li>
+    <li>When you try to update or cancel an order, but LEAN throws an exception.</li>
 </ul>
 
 <p>To investigate this issue further, see the <code>HandleSubmitOrderRequest</code>, <code>UpdateOrder</code>, and <code>CancelOrder</code> methods of the <a rel='nofollow' target='_blank' href='https://github.com/QuantConnect/Lean/blob/master/Engine/TransactionHandlers/BrokerageTransactionHandler.cs'>BrokerageTransactionHandler</a> in the LEAN GitHub repository.</p>
@@ -105,8 +105,8 @@ if quantity:
 <p>The <code>OrderResponseErrorCode.UnsupportedRequestType</code> (-12) error occurs in the following situations:</p>
 
 <ul>
-    <li>You try to exercise an Option contract for which you hold a short position</li>
-    <li>You try to exercise an Option contract using a larger quantity than you hold</li>
+    <li>When you try to exercise an Option contract for which you hold a short position</li>
+    <li>When you try to exercise an Option contract using a larger quantity than you hold</li>
 </ul>
 
 <p>To avoid this issue, check the quantity of your holdings before you try to exercise an Option contract.</p>
@@ -137,8 +137,8 @@ if holding_quantity > 0:
 <p>The <code>OrderResponseErrorCode.ExchangeNotOpen</code> (-15) error occurs in the following situations:</p>
 
 <ul>
-    <li>You try to exercise an Option when the exchange is not open</li>
-    <li>You try to place a market on open order for a Futures contract or a Future Option contract</li>
+    <li>When you try to exercise an Option when the exchange is not open</li>
+    <li>When you try to place a market on open order for a Futures contract or a Future Option contract</li>
 </ul>
 
 <p>To avoid this issue, check if the exchange is open before you exercise an Option contract.</p>
@@ -210,8 +210,8 @@ if holding_quantity > 0:
 <p>The <code>OrderResponseErrorCode.AlgorithmWarmingUp</code> (-24) error occurs in the following situations:</p>
 
 <ul>
-    <li>You try to place, update, or cancel an order during the <a href='/docs/v2/writing-algorithms/historical-data/warm-up-periods'>warm-up period</a></li>
-    <li>The <a href='/docs/v2/writing-algorithms/trading-and-orders/order-types/option-exercise-orders#07-Option-Assignments'>Option assignment simulator</a> assigns you to an Option during the warm-up period</li>
+    <li>When you try to place, update, or cancel an order during the <a href='/docs/v2/writing-algorithms/historical-data/warm-up-periods'>warm-up period</a></li>
+    <li>When the <a href='/docs/v2/writing-algorithms/trading-and-orders/order-types/option-exercise-orders#07-Option-Assignments'>Option assignment simulator</a> assigns you to an Option during the warm-up period</li>
 </ul>
 
 <p>To avoid this order response error, only manage orders after the warm-up period ends. To avoid trading during the warm-up period, add an <code>IsWarmingUp</code> guard to the top of the <code>OnData</code> method.</p>
