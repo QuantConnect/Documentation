@@ -156,7 +156,7 @@ if holding_quantity > 0:
 
 
 <h4><a id='security-price-zero'></a>Security Price Zero</h4>
-<p>The <code>OrderResponseErrorCode.SecurityPriceZero</code> (-16) error occurs when you place an order or exercise an Option contract when the security price is $0. The security price can be $0 for the following reasons:</p>
+<p>The <code>OrderResponseErrorCode.SecurityPriceZero</code> (-16) error occurs when you place an order or exercise an Option contract while the security price is $0. The security price can be $0 for the following reasons:</p>
 
 <ul>
     <li>The data is missing</li>
