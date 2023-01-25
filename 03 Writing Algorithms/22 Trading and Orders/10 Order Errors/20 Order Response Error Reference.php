@@ -1,4 +1,4 @@
-<p>The following sections explain why each <code>OrderResponseErrorCode</code> occurs and how you can avoid it.</p>
+<p>The following sections explain why each <code>OrderResponseErrorCode</code> occurs and how to avoid it.</p>
 
 <h4><a id='none'></a>None</h4>
 
@@ -23,14 +23,19 @@
 
 
 <h4><a id='insufficient-buying-power'></a>Insufficient Buying Power</h4>
-<p>The <code>OrderResponseErrorCode.InsufficientBuyingPower</code> (-3) error occurs when you place an order for a quantity that the <a href='/docs/v2/writing-algorithms/reality-modeling/buying-power'>buying power model</a> determines you can't afford.</p>
+<p>The <code>OrderResponseErrorCode.InsufficientBuyingPower</code> (-3) error occurs when you place an order but the <a href='/docs/v2/writing-algorithms/reality-modeling/buying-power'>buying power model</a> determines you can't afford it.</p>
 
-<p>This error commonly occurs when you place a market on open order with daily data. If you place the order with <code>SetHoldings</code> or use <code>CalculateOrderQuantity</code> to determine the order quantity, LEAN calculates the order quantity based on the market close price. If the open price on the following day makes your order more expensive, then you may have insufficient buying power. To avoid issues, use intraday data and place trades when the market is open or <a href='/docs/v2/writing-algorithms/trading-and-orders/position-sizing#05-Buying-Power-Buffer'>adjust your buying power buffer</a>.</p>
+<p>This error commonly occurs when you place a market on open order with daily data. If you place the order with <code>SetHoldings</code> or use <code>CalculateOrderQuantity</code> to determine the order quantity, LEAN calculates the order quantity based on the market close price. If the open price on the following day makes your order more expensive, then you may have insufficient buying power. To avoid the order response error in this case, either use intraday data and place trades when the market is open or <a href='/docs/v2/writing-algorithms/trading-and-orders/position-sizing#05-Buying-Power-Buffer'>adjust your buying power buffer</a>.</p>
+
+<div class="section-example-container">
+<pre class="csharp">Settings.FreePortfolioValuePercentage = 0.05m;</pre>
+<pre class="python">self.Settings.FreePortfolioValuePercentage = 0.05</pre>
+</div>
 
 
 
 <h4><a id='brokerage-model-refused-to-submit-order'></a>Brokerage Model Refused to Submit Order</h4>
-<p>The <code>OrderResponseErrorCode.BrokerageModelRefusedToSubmitOrder</code> (-4) error occurs when the place an order but the <code>CanSubmitOrder</code> method of the brokerage model returns <code class='csharp'>false</code><code class='python'>False</code>. The <code>CanSubmitOrder</code> method usually checks the order you submit passes the following requirements before sending it to the brokerage:</p>
+<p>The <code>OrderResponseErrorCode.BrokerageModelRefusedToSubmitOrder</code> (-4) error occurs when you place an order but the <a href='/docs/v2/writing-algorithms/reality-modeling/brokerages/key-concepts'>brokerage model</a> determines it's invalid.  The brokerage model usually checks the order you submit passes the following requirements before sending it to the brokerage:</p>
 
 <ul>
     <li>Supported security types</li>
@@ -44,6 +49,7 @@
 <ul>
     <li>The <span class='page-section-name'>Orders</span> section of the <a href='/docs/v2/cloud-platform/live-trading/brokerages'>integration documentation for your brokerage</a></li>
     <li>The <code>CanSubmitOrder</code> method definition of your <a href='/docs/v2/writing-algorithms/reality-modeling/brokerages/supported-models'>brokerage model</a></li>
+    <p>This order response error occurs when the <code>CanSubmitOrder</code> method returns <code class='csharp'>false</code><code class='python'>False</code>.</p>
 </ul>
 
 
