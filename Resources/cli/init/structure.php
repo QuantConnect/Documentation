@@ -39,7 +39,7 @@ $getStructureText = function($isCLIDocs)
     </thead>
     <tbody>
         <tr>
-            <td><span class='public-directory-name'>data &nbsp; /</span></td>
+            <td><span class='public-directory-name'>data /</span></td>
             <td>This directory contains the {$localDataHTML} that is used when running the LEAN engine locally. This directory is filled with <a rel='nofollow' href='https://github.com/QuantConnect/Lean/tree/master/Data' target='_blank'>sample data from the QuantConnect/Lean repository</a>.</td>
         </tr>
     

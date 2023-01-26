@@ -9,7 +9,7 @@
 <pre>$ lean project-create --language python "My Python Project"
 Successfully created Python project 'My Python Project'</pre>
 </div>
-        This command creates the <span class="public-directory-name">. &nbsp; / &nbsp; &lt;projectName&gt;</span> directory and creates a simple <span class="public-file-name">main.py</span> file, a Python-based research notebook, a <a href="/docs/v2/lean-cli/initialization/configuration#04-Project-Configuration">project configuration file</a>, and editor configuration for PyCharm and VS Code.
+        This command creates the <span class="public-directory-name">. / &lt;projectName&gt;</span> directory and creates a simple <span class="public-file-name">main.py</span> file, a Python-based research notebook, a <a href="/docs/v2/lean-cli/initialization/configuration#04-Project-Configuration">project configuration file</a>, and editor configuration for PyCharm and VS Code.
     </li>
 </ol>
 
@@ -24,7 +24,7 @@ Successfully created Python project 'My Python Project'</pre>
 <pre>$ lean project-create --language csharp "My CSharp Project"
 Successfully created C# project 'My CSharp Project'</pre>
 </div>
-        This command creates the <span class="public-directory-name">. &nbsp; / &nbsp; &lt;projectName&gt;</span> directory and creates a simple <span class="public-file-name">Main.cs</span> file, a C#-based research notebook, a <a href="/docs/v2/lean-cli/initialization/configuration#04-Project-Configuration">project configuration file</a>, and editor configuration for Visual Studio, Rider, and VS Code.
+        This command creates the <span class="public-directory-name">. / &lt;projectName&gt;</span> directory and creates a simple <span class="public-file-name">Main.cs</span> file, a C#-based research notebook, a <a href="/docs/v2/lean-cli/initialization/configuration#04-Project-Configuration">project configuration file</a>, and editor configuration for Visual Studio, Rider, and VS Code.
     </li>
 </ol>
 

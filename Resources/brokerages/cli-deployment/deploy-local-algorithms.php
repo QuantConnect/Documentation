@@ -17,7 +17,7 @@ $getDeployLocalAlgorithmsText = function($brokerageName, $dataFeedName, $isBroke
     echo "
         <ol>
             <li>Open a terminal in the <a href='/docs/v2/lean-cli/initialization/workspace'>workspace</a> that contains the project.</li>
-            <li>Run <code>lean live \"&lt;projectName&gt;\"</code> to start a live deployment wizard for the project in <span class='public-directory-name'>. &nbsp; / &nbsp; &lt;projectName&gt;</span> and then enter {$word} brokerage number.
+            <li>Run <code>lean live \"&lt;projectName&gt;\"</code> to start a live deployment wizard for the project in <span class='public-directory-name'>. / &lt;projectName&gt;</span> and then enter {$word} brokerage number.
             <div class='cli section-example-container'>
 <pre>$ lean live \"My Project\"
 Select a brokerage:
@@ -113,7 +113,7 @@ Do you want to add more holdings? [y/N]: n</pre>
     
     echo "
             <li>
-                View the result in the <span class='public-directory-name'>&lt;projectName&gt; &nbsp; / &nbsp; live &nbsp; / &nbsp; &lt;timestamp&gt;</span> directory.
+                View the result in the <span class='public-directory-name'>&lt;projectName&gt; / live / &lt;timestamp&gt;</span> directory.
                 Results are stored in real-time in JSON format.
                 You can save results to a different directory by providing the <code>--output &lt;path&gt;</code> option in step 2.
             </li>

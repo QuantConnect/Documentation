@@ -72,14 +72,14 @@
         </tr>
         <tr>
             <td>
-                <div class="error-messages">invalid mount config for type "bind": bind source path does not exist: <span class='public-directory-name'>/ &nbsp; var &nbsp; / &nbsp; folders &nbsp; / &nbsp; &lt;path&gt; &nbsp; / &nbsp; config.json</span></div>
+                <div class="error-messages">invalid mount config for type "bind": bind source path does not exist: <span class='public-directory-name'>/ var / folders / &lt;path&gt; / config.json</span></div>
                 <br>
-                <div class="error-messages">Mounts denied: The path  <span class='public-directory-name'>/ &nbsp; Users &nbsp; / &nbsp; &lt;path&gt; &nbsp; / &nbsp; data</span> is not shared from the host and is not known to Docker</div>
+                <div class="error-messages">Mounts denied: The path  <span class='public-directory-name'>/ Users / &lt;path&gt; / data</span> is not shared from the host and is not known to Docker</div>
             </td>
             <td>
                 Your Mac's Docker file sharing settings do not permit binding one or more directories that we need to share with the container.
-                Go to Docker's <span class="menu-name">Settings &gt; Resources &gt; File Sharing</span> and add <span class="public-directory-name">/ &nbsp; private &nbsp; / &nbsp; var &nbsp; / &nbsp; folders</span> and either <span class="public-directory-name">/ &nbsp; Users</span>
-                to share your entire <span class="public-directory-name">/ &nbsp; Users</span> directory, or <span class="public-file-name">/ &nbsp; Users &nbsp; / &nbsp; &lt;path&gt;</span> where <span class="public-file-name">&lt;path&gt;</span> is the path to your QuantConnect directory, which should have
+                Go to Docker's <span class="menu-name">Settings &gt; Resources &gt; File Sharing</span> and add <span class="public-directory-name">/ private / var / folders</span> and either <span class="public-directory-name">/ Users</span>
+                to share your entire <span class="public-directory-name">/ Users</span> directory, or <span class="public-file-name">/ Users / &lt;path&gt;</span> where <span class="public-file-name">&lt;path&gt;</span> is the path to your QuantConnect directory, which should have
                 a <span class="public-directory-name">data</span> child directory, and child directories for your individual projects.
             </td>
         </tr>
@@ -90,7 +90,7 @@
             <td>
                 You are running Docker on Windows using the legacy Hyper-V backend and haven't configured file sharing correctly.
                 You need to enable file sharing for your temporary directories and for your <a href='/docs/v2/lean-cli/initialization/workspace'>workspace directory</a>.
-                To do so, open your Docker settings, go to <span class="menu-name">Resources &gt; File Sharing</span> and add <span class="public-file-name">C: &nbsp; / &nbsp; Users &nbsp; / &nbsp; &lt;username&gt; &nbsp; / &nbsp; AppData &nbsp; / &nbsp; Local &nbsp; / &nbsp; Temp</span> and your workspace directory to the list.
+                To do so, open your Docker settings, go to <span class="menu-name">Resources &gt; File Sharing</span> and add <span class="public-file-name">C: / Users / &lt;username&gt; / AppData / Local / Temp</span> and your workspace directory to the list.
                 Click <span class="button-name">Apply &amp; Restart</span> after making the required changes.
             </td>
         </tr>

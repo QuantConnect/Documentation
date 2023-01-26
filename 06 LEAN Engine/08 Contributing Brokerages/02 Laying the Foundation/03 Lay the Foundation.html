@@ -1,19 +1,19 @@
 <p>Follow these steps to stub out the implementation and initialize a brokerage instance:</p>
 
 <ol>
-    <li>In the <span class='public-file-name'>Lean &nbsp; / &nbsp; Launcher &nbsp; / &nbsp; config.json</span> file, add a few key-value pairs with your brokerage configuration information.</li>
+    <li>In the <span class='public-file-name'>Lean / Launcher / config.json</span> file, add a few key-value pairs with your brokerage configuration information.</li>
 
     <p>For example, <code>oanda-access-token</code> and <code>oanda-account-id</code> keys. These key-value pairs will be used for most local debugging and testing as the default. LEAN automatically copies these pairs to the <a rel='nofollow' target='_blank' href="https://github.com/QuantConnect/Lean/blob/master/Common/Packets/LiveNodePacket.cs#L43">BrokerageData</a> member of the job packet as a dictionary of <code>&lt;string,string&gt;</code> pairs.</p>
 
 
-    <li>In the <span class='public-file-name'>Lean.Brokerages.&lt;brokerageName&gt; &nbsp; / &nbsp; QuantConnect.&lt;brokerageName&gt;Brokerage &nbsp; / &nbsp; &lt;brokerageName&gt;Factory.cs</span> file, update the <code>BrokerageData</code> member so it uses the <code>Config</code> class to load all the required configuration settings from the <span class='public-file-name'>Lean &nbsp; / &nbsp; Launcher &nbsp; / &nbsp; config.json</span> file.</li>
+    <li>In the <span class='public-file-name'>Lean.Brokerages.&lt;brokerageName&gt; / QuantConnect.&lt;brokerageName&gt;Brokerage / &lt;brokerageName&gt;Factory.cs</span> file, update the <code>BrokerageData</code> member so it uses the <code>Config</code> class to load all the required configuration settings from the <span class='public-file-name'>Lean / Launcher / config.json</span> file.</li>
 
     <p>For instance, <code>Config.Get("oanda-access-token")</code> returns the <code>"oanda-access-token"</code> value from the configuration file. For a full example, see the <a rel='nofollow' target='_blank' href="https://github.com/QuantConnect/Lean.Brokerages.Bitfinex/blob/master/QuantConnect.BitfinexBrokerage/BitfinexBrokerageFactory.cs#L49">BrokerageData member</a> in the <code>BitfinexBrokerageFactory</code>.</p>
 
 	<p>In the <code>IBrokerageFactory</code> examples, you'll see code like <code>Composer.Instance.AddPart&lt;IDataQueueHandler&gt;(dataQueueHandler)</code>, which adds parts to the <span class='new-term'>Composer</span>. The Composer is a system in LEAN for dynamically loading types. In this case, it's adding an instance of the <code>DataQueueHandler</code> for the brokerage to the composer. You can think of the Composer as a library and adding parts is like adding books to its collection.</p>
 
 
-    <li>In the <span class='public-file-name'>Lean &nbsp; / &nbsp; Common &nbsp; / &nbsp; Brokerages</span> folder, create a <span class='public-file-name'>&lt;brokerageName&gt;.cs</span> file with a stub implementation that inherits from the <a href='https://www.quantconnect.com/docs/v2/writing-algorithms/reality-modeling/brokerages/supported-models/quantconnect-paper-trading'>DefaultBrokerageModel</a>.</li>
+    <li>In the <span class='public-file-name'>Lean / Common / Brokerages</span> folder, create a <span class='public-file-name'>&lt;brokerageName&gt;.cs</span> file with a stub implementation that inherits from the <a href='https://www.quantconnect.com/docs/v2/writing-algorithms/reality-modeling/brokerages/supported-models/quantconnect-paper-trading'>DefaultBrokerageModel</a>.</li>
 
     <p>Brokerage models tell LEAN what order types a brokerage supports, whether we're allowed to update an order, and what <a href='https://www.quantconnect.com/docs/v2/writing-algorithms/reality-modeling/key-concepts'>reality models</a> to use. Use the following stub implementation for now:</p>
 
@@ -30,7 +30,7 @@
 	<p>where <code>BrokerageName</code> is the name of your brokerage. For example, if the brokerage name is XYZ, then <code>BrokerageNameBrokerageModel</code> should be <code>XYZBrokerageModel</code>. You'll extend this implementation later.</p>
 
 
-	<li>In the <span class='public-file-name'>Lean.Brokerages.&lt;BrokerageName&gt; &nbsp; / &nbsp; QuantConnect.&lt;brokerageName&gt;Brokerage &nbsp; / &nbsp; &lt;brokerageName&gt;BrokerageFactory.cs</span> file, define <code>GetBrokerageModel</code> to return an instance of your new brokerage model.</li>
+	<li>In the <span class='public-file-name'>Lean.Brokerages.&lt;BrokerageName&gt; / QuantConnect.&lt;brokerageName&gt;Brokerage / &lt;brokerageName&gt;BrokerageFactory.cs</span> file, define <code>GetBrokerageModel</code> to return an instance of your new brokerage model.</li>
 
 	<div class="section-example-container">	
     	<pre class="csharp">public override IBrokerageModel GetBrokerageModel(IOrderProvider orderProvider)
@@ -39,19 +39,19 @@
 }</pre>
 	</div>
 
-    <li>If your brokerage uses websockets to send data, in the <span class='public-file-name'>Lean.Brokerages.&lt;brokerageName&gt; &nbsp; / &nbsp; QuantConnect.&lt;brokerageName&gt; &nbsp; / &nbsp; &lt;brokerageName&gt;Brokerage.cs</span> file, replace the <code>Brokerage</code> base class for <code>BaseWebsocketsBrokerage</code>.</li>
+    <li>If your brokerage uses websockets to send data, in the <span class='public-file-name'>Lean.Brokerages.&lt;brokerageName&gt; / QuantConnect.&lt;brokerageName&gt; / &lt;brokerageName&gt;Brokerage.cs</span> file, replace the <code>Brokerage</code> base class for <code>BaseWebsocketsBrokerage</code>.</li>
 
 
-	<li>In the <span class='public-file-name'>Lean.Brokerages.&lt;brokerageName&gt; &nbsp; / &nbsp; QuantConnect.&lt;brokerageName&gt;Brokerage &nbsp; / &nbsp; &lt;brokerageName&gt;Brokerage.cs</span> file, update the constructor to save required authentication data to private variables.</li>
+	<li>In the <span class='public-file-name'>Lean.Brokerages.&lt;brokerageName&gt; / QuantConnect.&lt;brokerageName&gt;Brokerage / &lt;brokerageName&gt;Brokerage.cs</span> file, update the constructor to save required authentication data to private variables.</li>
 
 
 
-	<li>In the <span class='public-file-name'>Lean.Brokerages.&lt;brokerageName&gt; &nbsp; / &nbsp; QuantConnect.&lt;brokerageName&gt;Brokerage &nbsp; / &nbsp; &lt;brokerageName&gt;BrokerageFactory.cs</span> file, define the <code>CreateBrokerage</code> method to create and return an instance of your new brokerage model without connecting to the brokerage.</li>
+	<li>In the <span class='public-file-name'>Lean.Brokerages.&lt;brokerageName&gt; / QuantConnect.&lt;brokerageName&gt;Brokerage / &lt;brokerageName&gt;BrokerageFactory.cs</span> file, define the <code>CreateBrokerage</code> method to create and return an instance of your new brokerage model without connecting to the brokerage.</li>
 
 	<p>The Brokerage Factory uses a job packet to create an initialized brokerage instance in the <code>CreateBrokerage</code> method. Assume the <code>job</code> argument has the best source of data, not the <code>BrokerageData</code> property. The <code>BrokerageData</code> property in the factory are the starting default values from the configuration file, which can be overridden by a runtime job.</p>
 
 
-	<li>In the <span class='public-file-name'>Lean &nbsp; / &nbsp; Launcher &nbsp; / &nbsp; config.json</span> file, add a <code>live-&lt;brokerageName&gt;</code> key.</li>
+	<li>In the <span class='public-file-name'>Lean / Launcher / config.json</span> file, add a <code>live-&lt;brokerageName&gt;</code> key.</li>
 
 	<p>These <code>live-&lt;brokerageName&gt;</code> keys group configuration flags together and override the root configuration values. Use the following key-value pair as a starting point:</p>
 
@@ -73,7 +73,7 @@
 	<p>where <code>brokerage-name</code> and <code>"BrokerageName"</code> are placeholders for your brokerage name.</p>
 
 
-	<li>In the <span class='public-file-name'>Lean &nbsp; / &nbsp; Launcher &nbsp; / &nbsp; config.json</span> file, set the <code>environment</code> value to the your new brokerage environment.</li>
+	<li>In the <span class='public-file-name'>Lean / Launcher / config.json</span> file, set the <code>environment</code> value to the your new brokerage environment.</li>
 
 	<p>For example, <code>"live-brokerage-name"</code>.</p>
 
