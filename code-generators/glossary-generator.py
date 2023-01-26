@@ -2,8 +2,8 @@ import glob
 import os
 import shutil
 
-dir = '02 Writing Algorithms/01 Key Concepts/09 Glossary'
-temp_dir = 'tmp/02 Writing Algorithms/01 Key Concepts/09 Glossary'
+dir = '03 Writing Algorithms/01 Key Concepts/09 Glossary'
+temp_dir = 'tmp/03 Writing Algorithms/01 Key Concepts/09 Glossary'
 if os.path.exists(dir):
     shutil.copytree(dir, temp_dir, dirs_exist_ok=True,
                     ignore=lambda dir, files: [f for f in files if os.path.isfile(os.path.join(dir, f)) and str(f) != "metadata.json"])
@@ -42,7 +42,7 @@ with open(f"{dir}/01 Introduction.php", "w", encoding="utf-8") as php:
     php.write('<p>This page defines terms in QuantConnect products and documentation.</p>')
     
 # Search and replace all links
-for root_dir in ["01 Our Platform/", "02 Writing Algorithms/", "03 Research Environment/", "05 Lean CLI/", "99 LEAN Engine/"]:
+for root_dir in ["01 Cloud Platform/", "03 Writing Algorithms/", "04 Research Environment/", "05 Lean CLI/", "06 LEAN Engine/"]:
     for filename in list(glob.iglob(root_dir + "**/*.html", recursive=True)) + \
                     list(glob.iglob(root_dir + "**/*.php", recursive=True)) + \
                     list(glob.iglob(root_dir + "**/*.json", recursive=True)):

@@ -3,10 +3,10 @@ import pathlib
 import shutil
 from urllib.request import urlopen
 
-for clean_up in os.listdir('02 Writing Algorithms/14 Datasets'):
+for clean_up in os.listdir('03 Writing Algorithms/14 Datasets'):
     if not '01 Overview' in clean_up and not "readme" in clean_up:
-        destination = '02 Writing Algorithms/14 Datasets/' + clean_up
-        temp = 'tmp/02 Writing Algorithms/14 Datasets/' + clean_up
+        destination = '03 Writing Algorithms/14 Datasets/' + clean_up
+        temp = 'tmp/03 Writing Algorithms/14 Datasets/' + clean_up
         if os.path.isdir(destination):
             shutil.copytree(destination, temp, dirs_exist_ok=True,
                             ignore=lambda dir, files: [f for f in files if os.path.isfile(os.path.join(dir, f)) and str(f) != "metadata.json"])
@@ -55,7 +55,7 @@ for dataset in doc:
     datasetName = dataset["name"].strip()
         
     # Create path if not exist
-    main_dir = f'02 Writing Algorithms/14 Datasets/{vendors[vendorName]:02} {vendorName}/{product_count[vendorName][datasetName]:02} {datasetName}'
+    main_dir = f'03 Writing Algorithms/14 Datasets/{vendors[vendorName]:02} {vendorName}/{product_count[vendorName][datasetName]:02} {datasetName}'
     destination_folder = pathlib.Path(main_dir)
     destination_folder.mkdir(parents=True, exist_ok=True)
     
@@ -78,7 +78,7 @@ for dataset in doc:
             json_00[vendorName]["content"] = content
             json_00[vendorName]["featureShortDescription"][f"{product_count[vendorName][datasetName]:02}"] = ""
             
-            with open(f'02 Writing Algorithms/14 Datasets/{vendors[vendorName]:02} {vendorName}/00.json', 'w', encoding='utf-8') as html_file:
+            with open(f'03 Writing Algorithms/14 Datasets/{vendors[vendorName]:02} {vendorName}/00.json', 'w', encoding='utf-8') as html_file:
                 html_file.write(str(json_00[vendorName]).replace('"', '\\"').replace("'", '"'))
         
         if item["title"].lower() == "example applications":
