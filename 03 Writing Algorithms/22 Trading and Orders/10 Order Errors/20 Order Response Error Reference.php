@@ -301,7 +301,7 @@ if available_to_borrow == None or quantity_to_borrow <= available_to_borrow:
 {
     _orderTicket.Cancel();
 }</pre>
-    <pre class="python">if self.order_ticket != OrderStatus.New:
+    <pre class="python">if self.order_ticket.Status != OrderStatus.New:
     self.order_ticket.Cancel()</pre>
 </div>
 
