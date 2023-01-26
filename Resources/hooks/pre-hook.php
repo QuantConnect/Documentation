@@ -1,4 +1,13 @@
 <?php
+/**
+ * Available global variables
+ *
+ * $BREADCRUMBS    Array<String>, Example ["cloud-platform","organizations","data-storage"]
+ * $ANCHOR         String, Example "#remove-option-contract"
+ * $DOCS_RESOURCES String path to the docs resources folder
+ * $DOCS_ROOT      String path to the docs root folder
+ *
+ */
 
 /**
  * Add if does not exist the a method to get the docs url key form the breadcrumbs
@@ -22,3 +31,8 @@ if (!function_exists('DOCS_URL')) {
         return $BREADCRUMBS[$key];
     }
 }
+
+/**
+ * Here you can add variables to the environment
+ */
+$isCloud = DOCS_URL(0) == 'cloud-platform';
