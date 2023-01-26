@@ -72,9 +72,9 @@
         </tr>
         <tr>
             <td>
-                <div class="error-messages">invalid mount config for type "bind": bind source path does not exist: <span class='public-director-name'>/ &nbsp; var &nbsp; / &nbsp; folders &nbsp; / &nbsp; &lt;path&gt; &nbsp; / &nbsp; config.json</span></div>
+                <div class="error-messages">invalid mount config for type "bind": bind source path does not exist: <span class='public-directory-name'>/ &nbsp; var &nbsp; / &nbsp; folders &nbsp; / &nbsp; &lt;path&gt; &nbsp; / &nbsp; config.json</span></div>
                 <br>
-                <div class="error-messages">Mounts denied: The path  <span class='public-director-name'>/ &nbsp; Users &nbsp; / &nbsp; &lt;path&gt; &nbsp; / &nbsp; data</span> is not shared from the host and is not known to Docker</div>
+                <div class="error-messages">Mounts denied: The path  <span class='public-directory-name'>/ &nbsp; Users &nbsp; / &nbsp; &lt;path&gt; &nbsp; / &nbsp; data</span> is not shared from the host and is not known to Docker</div>
             </td>
             <td>
                 Your Mac's Docker file sharing settings do not permit binding one or more directories that we need to share with the container.
