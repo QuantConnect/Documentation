@@ -303,3 +303,10 @@ for asset_class in ["Index", "IndexOption"]:
 {f'<tr><td>Saturday</td><td>{", ".join(market_html["SPX"]["saturday"])}</td><td>{", ".join(market_html["NDX"]["saturday"])}</td><td>{", ".join(market_html["VIX"]["saturday"])}</td></tr>' if any([x != [] for x in [market_html["SPX"]["saturday"], market_html["NDX"]["saturday"], market_html["VIX"]["saturday"]]]) else ''}
 </tbody>
 </table>''')
+
+### special case
+# ICE do not have a [*]
+ice_path = Path('Resources/datasets/market-hours/future/ice/generic')
+ice_path.mkdir(parents=True, exist_ok=True)
+with open(ice_path / 'introduction.html', 'w', encoding='utf-8') as html_file:
+    html_file.write(f"<p>This page shows the trading hours, holidays, time zone, and supported assets of the ICE Futures market.</p>")
