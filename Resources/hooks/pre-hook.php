@@ -15,6 +15,7 @@ if (!function_exists('DOCS_URL')) {
      */
     function DOCS_URL($key = null)
     {
+        global $BREADCRUMBS;
         if ($key === null) {
             return join('/', $BREADCRUMBS);
         }
