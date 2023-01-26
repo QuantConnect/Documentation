@@ -9,7 +9,7 @@ $brokerageDetails = "";
 
 $dataFeedDetails = "
     <li>Enter the path to the IQConnect binary. 
-    <p>The default path is <span class='public-file-name'>C: &nbsp; / &nbsp; Program Files (x86) &nbsp; / &nbsp; DTN &nbsp; / &nbsp; IQFeed &nbsp; / &nbsp; iqconnect.exe</span> if you used the default settings when installing the IQFeed client.</p>
+    <p>The default path is <span class='public-file-name'>C: / Program Files (x86) / DTN / IQFeed / iqconnect.exe</span> if you used the default settings when installing the IQFeed client.</p>
 <div class='cli section-example-container'>
 <pre>$ lean live \"My Project\"
 IQConnect binary location [C:/Program Files (x86)/DTN/IQFeed/iqconnect.exe]:</pre>
