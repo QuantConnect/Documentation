@@ -127,7 +127,7 @@ if holding_quantity > 0:
 
 
 <h4>Missing Security</h4>
-<p>The <code>OrderResponseErrorCode.MissingSecurity</code> (-14) error occurs when you place an order for a security but you don't have a subscription for it in your algorithm.</p>
+<p>The <code>OrderResponseErrorCode.MissingSecurity</code> (-14) error occurs when you place an order for a security but you don't have a subscription for the security in your algorithm.</p>
 
 <p><a id='exchange-not-open'></a>To avoid this order response error, create a subscription for each security you want to trade. To create subscriptions, see the Requesting Data page of the <a href='/docs/v2/writing-algorithms/securities/asset-classes'>documentation for each asset class</a>.
 
