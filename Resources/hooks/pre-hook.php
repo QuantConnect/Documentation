@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Add if does not exist the a metod to get the docs url key form the breadcrumbs
+ * Add if does not exist the a method to get the docs url key form the breadcrumbs
  */
 if (function_exists('DOCS_URL')) {
 
