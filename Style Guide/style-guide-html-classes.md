@@ -21,10 +21,8 @@ The following table describes HTML classes that you may use when writing documen
 | `new-term` | Introducing a new term for the first time |
 | `page-section-name` | Page sections, but not windows, dialog boxs, wizards, page names, panes, or panels. This element isn't mentioned in the Rackspace Style Guide, but it's demonstrated in their [Invoice Details](https://docs.rackspace.com/docs/portal-onboarding-guide/understand_billing/invoice_details) example|
 | `placeholder-text` | Placeholder text examples |
-| `private-directory-name` | Directories on the member's local computer |
-| `private-file-name` | Files on the member's local computer |
-| `public-directory-name` | Directory names on the QC website/GUI/Algorithm Lab |
-| `public-file-name` | File names on the QC website/GUI/Algorithm Lab |
+| `public-directory-name` | Directory names |
+| `public-file-name` | File names |
 | `qualifier` | Identifying optional steps in tutorials *(Optional)* |
 | `tab-name` | Names of tabs |
 | `ul-option` | For highlighting options in unorganized lists. See [Lists](https://docs.rackspace.com/docs/style-guide/style/lists) in the Rackspace Style Guide. |
