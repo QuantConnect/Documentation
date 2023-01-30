@@ -1,12 +1,1 @@
-<?php
-
-$getSlippageText = function($brokerageName, $paperTradingSupported) {
-    $result = "<p>Orders through $brokerageName do not experience slippage in backtests. In";
-    if ($paperTradingSupported) {
-        $result .= " paper trading and";
-    }
-    $result .= " live trading, your orders may experience slippage.";
-    echo $result;
-}
-
-?>
+<p>Orders through <?=$brokerageName?> do not experience slippage in backtests. In<? if ($paperTradingSupported) { ?> paper trading and<? } ?> live trading, your orders may experience slippage.</p>
