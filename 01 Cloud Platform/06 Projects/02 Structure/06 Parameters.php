@@ -1,6 +1,5 @@
-<?php 
-include(DOCS_RESOURCES."/get-vimeo-player.php"); 
-$getVimeoPlayerText(696287618);
+<?
+DOCS_VIMEO(696287618);
 
 include(DOCS_RESOURCES."/projects/structure/parameters.php");
 $addParametersLink = "/docs/v2/cloud-platform/projects/getting-started#10-Edit-Parameters";

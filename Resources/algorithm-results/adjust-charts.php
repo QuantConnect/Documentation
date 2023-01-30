@@ -1,10 +1,5 @@
-    
 <p>You can manipulate the charts displayed on the <?=$pageName?> results page.</p>
-    
-<?php
-    $vimeoCode = 696285433;
-    include(DOCS_RESOURCES."/get-vimeo-player.php");
-?>
+<? DOCS_VIMEO(696285433); ?>
 
 <h4>Toggle Charts</h4>
 <p>To display and hide a chart on the <?=$pageName?> results page, in the <span class='page-section-name'>Select Chart</span> section, click the name of a chart.</p>

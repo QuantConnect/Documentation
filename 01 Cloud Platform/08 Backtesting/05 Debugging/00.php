@@ -1,4 +1,1 @@
-<?php 
-include(DOCS_RESOURCES."/get-vimeo-player.php"); 
-$getVimeoPlayerText(696285690);
-?>
+<? DOCS_VIMEO(696285690); ?>

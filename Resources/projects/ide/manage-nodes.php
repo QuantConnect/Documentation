@@ -6,10 +6,8 @@ $getManageNodesText = function($isDesktopDocs, $projectLink, $imgLink)
 <p>The Resources panel shows the {$nodeType}backtesting, research, and live trading nodes within your organization.
     ";
 
-    if (!$isDesktopDocs)
-    {
-        include(DOCS_RESOURCES."/get-vimeo-player.php"); 
-        $getVimeoPlayerText(696287022);
+    if (!$isDesktopDocs) { 
+        DOCS_VIMEO(696287022);
         echo "</p><p>";
     }
 
