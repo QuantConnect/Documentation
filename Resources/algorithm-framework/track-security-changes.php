@@ -1,23 +1,20 @@
-<?php
-$getTrackSecurityChangesText = function($modelName, $modelClassName, $callsBaseClass) {
+<p>The <a href='/docs/v2/writing-algorithms/algorithm-framework/universe-selection/key-concepts'>Universe Selection model</a> may select a dynamic universe of assets, so you should not assume a fixed set of assets in the <?=$modelName?> model. When the Universe Selection model adds and removes assets from the universe, it triggers an <code>OnSecuritiesChanged</code> event. In the <code>OnSecuritiesChanged</code> event handler, you can initialize the security-specific state or load any history required for your <?=$modelName?> model.</p>
 
-    $result = "<p>The <a href='/docs/v2/writing-algorithms/algorithm-framework/universe-selection/key-concepts'>Universe Selection model</a> may select a dynamic universe of assets, so you should not assume a fixed set of assets in the {$modelName} model. When the Universe Selection model adds and removes assets from the universe, it triggers an <code>OnSecuritiesChanged</code> event. In the <code>OnSecuritiesChanged</code> event handler, you can initialize the security-specific state or load any history required for your {$modelName} model.</p>";
-    $result .= "
-<div class=\"section-example-container\">
-		<pre class=\"csharp\">class My{$modelClassName} : {$modelClassName}
+<div class="section-example-container">
+    <pre class="csharp">class My<?=$modelClassName?> : <?=$modelClassName?>
 {
     private Dictionary&lt;symbol, symboldata&gt; _symbolDataBySymbol = new Dictionary&lt;symbol, symboldata&gt;();
 
     public override void OnSecuritiesChanged(QCAlgorithmFramework algorithm, SecurityChanges changes)
-    {";
-  
-  if ($callsBaseClass)
-  {
-      $result .= "
-        base.OnSecuritiesChanged(algorithm, changes)";
-  }
-  
-  $result .= "
+    {
+<?php
+if ($callsBaseClass)
+{
+?>
+        base.OnSecuritiesChanged(algorithm, changes);
+<?php
+}
+?>
         foreach (var security in changes.AddedSecurities)
         {               
             _symbolDataBySymbol[security.Symbol] = new SymbolData(security.Symbol);
@@ -43,19 +40,18 @@ $getTrackSecurityChangesText = function($modelName, $modelClassName, $callsBaseC
         }
     }
 }</pre>
-		<pre class=\"python\">class My{$modelClassName}($modelClassName):
+    <pre class="python">class My{$modelClassName}($modelClassName):
     symbol_data_by_symbol = {}
 
-    def OnSecuritiesChanged(self, algorithm: QCAlgorithm, changes: SecurityChanges) -&gt; None:";
-  
-    
-  if ($callsBaseClass)
-  {
-      $result .= "
-        super().OnSecuritiesChanged(algorithm, changes)";
-  }
-  
-  $result .= "
+    def OnSecuritiesChanged(self, algorithm: QCAlgorithm, changes: SecurityChanges) -&gt; None:
+<?php
+if ($callsBaseClass)
+{
+?>
+        super().OnSecuritiesChanged(algorithm, changes)
+<?php
+}
+?>
         for security in changes.AddedSecurities:
             self.symbol_data_by_symbol[security.Symbol] = SymbolData(security.Symbol)
 
@@ -67,9 +63,4 @@ class SymbolData:
     def __init__(self, symbol):
         self.symbol = symbol
         # Store and manage Symbol-specific data</pre>
-	</div>    
-";
-  
-    echo $result;
-}
-?>
+</div>
