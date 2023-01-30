@@ -1,14 +1,11 @@
-<?php
-
-$getAdjustChartsText = function($isLiveMode) {
-    $pageName = $isLiveMode ? "live" : "backtest";
     
-    echo "<p>You can manipulate the charts displayed on the {$pageName} results page.</p>";
+    <p>You can manipulate the charts displayed on the {$pageName} results page.</p>
     
+    <?php
     include(DOCS_RESOURCES."/get-vimeo-player.php");        
     $getVimeoPlayerText(696285433);
+    ?>
 
-    echo "
         <h4>Toggle Charts</h4>
         <p>To display and hide a chart on the {$pageName} results page, in the <span class='page-section-name'>Select Chart</span> section, click the name of a chart.</p>
 
@@ -39,6 +36,3 @@ $getAdjustChartsText = function($isLiveMode) {
 
         <h4>Refresh Charts</h4>
         <p>Refreshing the charts on the {$pageName} results page resets the zoom level on all the charts. If you refresh the charts while your algorithm is executing, only the data that was seen by the Lean engine after you refreshed the charts is displayed. To refresh the charts, in the <span class='page-section-name'>Select Chart</span> section, click the <span class='icon-name'>reset</span> icon.</p>
-    ";
-}
-?>
