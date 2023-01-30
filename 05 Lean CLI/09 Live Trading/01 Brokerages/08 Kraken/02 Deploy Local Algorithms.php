@@ -1,6 +1,4 @@
-<?php
-include(DOCS_RESOURCES."/brokerages/cli-deployment/deploy-local-algorithms.php");
-
+<?
 $brokerageName = "Kraken";
 $dataFeedName = "";
 $isBrokerage = true;
@@ -25,6 +23,5 @@ For more information about verification tiers, see <a href='https://support.krak
 $dataFeedDetails = "";
 $supportsIQFeed = false;
 $requiresSubscription = true;
-
-$getDeployLocalAlgorithmsText($brokerageName, $dataFeedName, $isBrokerage, $brokerageDetails, $dataFeedDetails, $supportsIQFeed, $requiresSubscription);
+include(DOCS_RESOURCES."/brokerages/cli-deployment/deploy-local-algorithms.php");
 ?>

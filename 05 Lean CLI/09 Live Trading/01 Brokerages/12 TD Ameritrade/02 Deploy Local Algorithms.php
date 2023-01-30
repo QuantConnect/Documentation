@@ -1,6 +1,4 @@
-<?php
-include(DOCS_RESOURCES."/brokerages/cli-deployment/deploy-local-algorithms.php");
-
+<?
 $brokerageName = "TD Ameritrade";
 $dataFeedName = "";
 $isBrokerage = true;
@@ -18,6 +16,5 @@ Account number: </pre>
 $dataFeedDetails = "";
 $supportsIQFeed = true;
 $requiresSubscription = true;
-
-$getDeployLocalAlgorithmsText($brokerageName, $dataFeedName, $isBrokerage, $brokerageDetails, $dataFeedDetails, $supportsIQFeed, $requiresSubscription);
+include(DOCS_RESOURCES."/brokerages/cli-deployment/deploy-local-algorithms.php");
 ?>

@@ -1,6 +1,4 @@
-<?php
-include(DOCS_RESOURCES."/brokerages/cli-deployment/deploy-local-algorithms.php");
-
+<?
 $brokerageName = "Tradier";
 $dataFeedName = "";
 $isBrokerage = true;
@@ -24,6 +22,5 @@ Use the developer sandbox? (live, paper): live</pre>
 $dataFeedDetails = "";
 $supportsIQFeed = true;
 $requiresSubscription = false;
-
-$getDeployLocalAlgorithmsText($brokerageName, $dataFeedName, $isBrokerage, $brokerageDetails, $dataFeedDetails, $supportsIQFeed, $requiresSubscription);
+include(DOCS_RESOURCES."/brokerages/cli-deployment/deploy-local-algorithms.php");
 ?>

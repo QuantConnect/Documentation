@@ -1,6 +1,4 @@
-<?php
-include(DOCS_RESOURCES."/brokerages/cli-deployment/deploy-local-algorithms.php");
-
+<?
 $brokerageName = "QuantConnect Paper Trading";
 $dataFeedName = "IQ Feed";
 $isBrokerage = false;
@@ -40,9 +38,7 @@ Product version: 1.0</pre>
 </div>
     </li>
 ";
-
 $supportsIQFeed = true;
 $requiresSubscription = false;
-
-$getDeployLocalAlgorithmsText($brokerageName, $dataFeedName, $isBrokerage, $brokerageDetails, $dataFeedDetails, $supportsIQFeed, $requiresSubscription);
+include(DOCS_RESOURCES."/brokerages/cli-deployment/deploy-local-algorithms.php");
 ?>

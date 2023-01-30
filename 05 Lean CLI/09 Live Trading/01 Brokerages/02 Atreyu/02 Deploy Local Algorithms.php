@@ -1,6 +1,4 @@
-<?php
-include(DOCS_RESOURCES."/brokerages/cli-deployment/deploy-local-algorithms.php");
-
+<?
 $brokerageName = "Atreyu";
 $dataFeedName = "";
 $isBrokerage = true;
@@ -43,6 +41,5 @@ $requiresSubscription = true;
 $moduleName = "";
 $supportsCashHoldings = true;
 $supportsPositionHoldings = true;
-
-$getDeployLocalAlgorithmsText($brokerageName, $dataFeedName, $isBrokerage, $brokerageDetails, $dataFeedDetails, $supportsIQFeed, $requiresSubscription, $moduleName, $supportsCashHoldings, $supportsPositionHoldings);
+include(DOCS_RESOURCES."/brokerages/cli-deployment/deploy-local-algorithms.php");
 ?>

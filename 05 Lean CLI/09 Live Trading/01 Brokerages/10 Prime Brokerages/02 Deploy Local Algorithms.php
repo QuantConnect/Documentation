@@ -1,6 +1,4 @@
-<?php
-include(DOCS_RESOURCES."/brokerages/cli-deployment/deploy-local-algorithms.php");
-
+<?
 $brokerageName = "Terminal Link";
 $dataFeedName = "";
 $isBrokerage = true;
@@ -64,6 +62,5 @@ Allow modification (yes/no): no</pre>
 $dataFeedDetails = "";
 $supportsIQFeed = true;
 $requiresSubscription = true;
-
-$getDeployLocalAlgorithmsText($brokerageName, $dataFeedName, $isBrokerage, $brokerageDetails, $dataFeedDetails, $supportsIQFeed, $requiresSubscription);
+include(DOCS_RESOURCES."/brokerages/cli-deployment/deploy-local-algorithms.php");
 ?>

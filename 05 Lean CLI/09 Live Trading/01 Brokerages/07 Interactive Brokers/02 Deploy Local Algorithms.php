@@ -1,6 +1,4 @@
-<?php
-include(DOCS_RESOURCES."/brokerages/cli-deployment/deploy-local-algorithms.php");
-
+<?
 $brokerageName = "Interactive Brokers";
 $dataFeedName = "";
 $isBrokerage = true;
@@ -29,6 +27,5 @@ This property configures the behavior when your algorithm attempts to subscribe 
 
 $supportsIQFeed = true;
 $requiresSubscription = true;
-
-$getDeployLocalAlgorithmsText($brokerageName, $dataFeedName, $isBrokerage, $brokerageDetails, $dataFeedDetails, $supportsIQFeed, $requiresSubscription);
+include(DOCS_RESOURCES."/brokerages/cli-deployment/deploy-local-algorithms.php");
 ?>

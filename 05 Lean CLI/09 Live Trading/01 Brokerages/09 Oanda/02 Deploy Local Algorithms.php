@@ -1,6 +1,4 @@
-<?php
-include(DOCS_RESOURCES."/brokerages/cli-deployment/deploy-local-algorithms.php");
-
+<?
 $brokerageName = "Oanda";
 $dataFeedName = "";
 $isBrokerage = true;
@@ -32,6 +30,5 @@ To create a token, see the <a href='https://www.oanda.com/account/tpa/personal_t
 $dataFeedDetails = "";
 $supportsIQFeed = true;
 $requiresSubscription = false;
-
-$getDeployLocalAlgorithmsText($brokerageName, $dataFeedName, $isBrokerage, $brokerageDetails, $dataFeedDetails, $supportsIQFeed, $requiresSubscription);
+include(DOCS_RESOURCES."/brokerages/cli-deployment/deploy-local-algorithms.php");
 ?>

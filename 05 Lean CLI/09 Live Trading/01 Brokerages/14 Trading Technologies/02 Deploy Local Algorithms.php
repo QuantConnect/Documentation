@@ -1,6 +1,4 @@
-<?php
-include(DOCS_RESOURCES."/brokerages/cli-deployment/deploy-local-algorithms.php");
-
+<?
 $brokerageName = "Trading Technologies";
 $dataFeedName = "";
 $isBrokerage = true;
@@ -51,10 +49,9 @@ Log FIX messages (yes/no): yes</pre>
 </li>";
 
 $dataFeedDetails = "";
-
 $supportsIQFeed = true;
 $requiresSubscription = true;
 $moduleName = "";
 $supportsCashHoldings = true;
-$getDeployLocalAlgorithmsText($brokerageName, $dataFeedName, $isBrokerage, $brokerageDetails, $dataFeedDetails, $supportsIQFeed, $requiresSubscription, $moduleName, $supportsCashHoldings);
+include(DOCS_RESOURCES."/brokerages/cli-deployment/deploy-local-algorithms.php");
 ?>

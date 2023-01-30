@@ -1,6 +1,4 @@
-<?php
-include(DOCS_RESOURCES."/brokerages/cli-deployment/deploy-local-algorithms.php");
-
+<?
 $brokerageName = "Binance or Binance US";
 $dataFeedName = "";
 $isBrokerage = true;
@@ -33,6 +31,5 @@ $dataFeedDetails = "";
 $supportsIQFeed = false;
 $requiresSubscription = true;
 $moduleName = "Binance";
-
-$getDeployLocalAlgorithmsText($brokerageName, $dataFeedName, $isBrokerage, $brokerageDetails, $dataFeedDetails, $supportsIQFeed, $requiresSubscription, $moduleName);
+include(DOCS_RESOURCES."/brokerages/cli-deployment/deploy-local-algorithms.php");
 ?>
