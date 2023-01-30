@@ -1,12 +1,4 @@
-<?php
-$getPDTText = function($includeh4=true)
-{
-    if ($includeh4)
-    {
-        echo "<h4>Pattern Day Trading</h4>";   
-    }
-    
-    echo "
+<? if ($includeh4) { ?><h4>Pattern Day Trading</h4><? } ?>
 
 <p>If all of the following statements are true, you are classified as a pattern day trader:</p>
 <ul>
@@ -23,8 +15,4 @@ $getPDTText = function($includeh4=true)
 <div class='section-example-container'>
     <pre class='csharp'>security.MarginModel = new PatternDayTradingMarginModel();</pre>
     <pre class='python'>security.MarginModel = PatternDayTradingMarginModel()</pre>
-</div>  
-    
-";
-}
-?>
+</div>

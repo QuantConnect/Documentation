@@ -6,6 +6,6 @@
 <?php include(DOCS_RESOURCES."/brokerages/margin-calls.html"); ?>
 
 <?php 
+$includeh4=true 
 include(DOCS_RESOURCES."/brokerages/pattern-day-trader-rule.php"); 
-$getPDTText();
 ?>
