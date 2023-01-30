@@ -2,7 +2,8 @@
 
 <?php
 include(DOCS_RESOURCES."/glossary.php");
-echo "
+?>
+
 <table class='table qc-table'>
     <thead>
         <tr>
@@ -21,7 +22,7 @@ echo "
         </tr>
         <tr>
             <td>CAGR</td>
-            <td>{$definitionByTerm['compounding annual return']}</td>
+            <td><?$definitionByTerm['compounding annual return']?></td>
         </tr>
         <tr>
             <td>Markets</td>
@@ -33,25 +34,23 @@ echo "
         </tr>
         <tr>
             <td>Drawdown</td>
-            <td>{$definitionByTerm['drawdown']}</td>
+            <td><?$definitionByTerm['drawdown']?></td>
         </tr>
         <tr>
             <td>Probabilistic SR</td>
-            <td>{$definitionByTerm['Probabilistic Sharpe ratio']}</td>
+            <td><?$definitionByTerm['Probabilistic Sharpe ratio']?></td>
         </tr>
         <tr>
             <td>Sharpe Ratio</td>
-            <td>{$definitionByTerm['Sharpe ratio']}</td>
+            <td><?$definitionByTerm['Sharpe ratio']?></td>
         </tr>
         <tr>
             <td>Information Ratio</td>
-            <td>{$definitionByTerm['information ratio']}</td>
+            <td><?$definitionByTerm['information ratio']?></td>
         </tr>
         <tr>
             <td>Strategy Capacity</td>
-            <td>{$definitionByTerm['capacity']}</td>
+            <td><?$definitionByTerm['capacity']?></td>
         </tr>
     </tbody>
-</table>";
-
-?>
+</table>
