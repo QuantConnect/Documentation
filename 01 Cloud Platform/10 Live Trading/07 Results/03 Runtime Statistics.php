@@ -3,8 +3,8 @@
 <img class='docs-image' src="https://cdn.quantconnect.com/i/tu/runtime-statistics-live-1.png">
 
 <?php 
+$pageName = "live";
 include(DOCS_RESOURCES."/algorithm-results/runtime-statistics-table.php");
-$getRuntimeStatisticsTable(true);
 
 echo file_get_contents(DOCS_RESOURCES."/algorithm-results/create-custom-runtime-statistic.html"); 
 ?>
