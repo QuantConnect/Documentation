@@ -164,7 +164,7 @@ def Box(input_, doc_attr, type_map, i, imax):
 
     filename, line = doc_attr[0]["fileName"], doc_attr[0]["line"]
 
-    buttons = "\n".join([f'''<button class="method-tag" onclick="openTopTab(event, '{attr_}')">{attr_}</button>''' for attr_ in doc_attr])
+    buttons = "\n".join([f'''<button class="method-tag" onclick="openTopTab(event, '{attr_['tag']}')">{attr_['tag']}</button>''' for attr_ in doc_attr])
 
     name = input_["Name"] if "Name" in input_ else input_["ShortType"]
 
