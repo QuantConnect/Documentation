@@ -1,8 +1,7 @@
-<?php 
-include(DOCS_RESOURCES."/securities/extended-market-hours.php"); 
+<?
 $cCode = "AddOptionContract(_contractSymbol, extendedMarketHours: true);";
 $pyCode = "self.AddOptionContract(self.contract_symbol, extendedMarketHours=True)";
 $supportedIntradayData = true;
 $marketHoursLink = "/docs/v2/writing-algorithms/securities/asset-classes/equity-options/market-hours";
-$getExtMarketHoursText($cCode, $pyCode, $supportedIntradayData, $marketHoursLink);
+include(DOCS_RESOURCES."/securities/extended-market-hours.php"); 
 ?>
