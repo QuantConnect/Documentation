@@ -12,16 +12,15 @@ underlying_security.VolatilityModel = StandardDeviationOfReturnsVolatilityModel(
 
 <p>You can also set the volatility model in a <a href='/docs/v2/writing-algorithms/initialization#07-Set-Security-Initializer'>security initializer</a>. If your algorithm has a universe of underlying assets, use the security initializer technique. In order to initialize single security subscriptions with the security initializer, call <code>SetSecurityInitializer</code> before you create the subscriptions.</p>
 
-
-<?php
-include(DOCS_RESOURCES."/reality-modeling/brokerage-mondel-security-init.php");
+<?
 $overwriteCodePy = "if security.Type == SecurityType.Equity:
             security.VolatilityModel = StandardDeviationOfReturnsVolatilityModel(30)";
 $overwriteCodeC = "if (security.Type == SecurityType.Equity)
         {
             security.VolatilityModel = new StandardDeviationOfReturnsVolatilityModel(30);
         }";
-$getBrokerageModelInitCodeBlock($overwriteCodePy, $overwriteCodeC, "the volatility model");
+$comment = "the volatility model";
+include(DOCS_RESOURCES."/reality-modeling/brokerage-model-security-init.php");
 ?>
 
 <p>To view all the pre-built volatility models, see <a href="/docs/v2/writing-algorithms/reality-modeling/options-models/volatility/supported-models">Supported Models</a>.</p>

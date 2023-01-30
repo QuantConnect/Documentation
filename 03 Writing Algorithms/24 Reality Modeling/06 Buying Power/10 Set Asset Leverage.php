@@ -12,10 +12,11 @@ AddEquity("SPY", leverage=3)</pre>
 
 
 <?php
-include(DOCS_RESOURCES."/reality-modeling/brokerage-mondel-security-init.php");
+
 $overwriteCodePy = "security.SetLeverage(3)";
 $overwriteCodeC = "security.SetLeverage(3);";
-$getBrokerageModelInitCodeBlock($overwriteCodePy, $overwriteCodeC, "the security leverage");
+$comment = "the security leverage";
+include(DOCS_RESOURCES."/reality-modeling/brokerage-mondel-security-init.php");
 ?>
 
 

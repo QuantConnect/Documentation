@@ -11,11 +11,10 @@ security.SetFillModel(ImmediateFillModel())</pre>
 <p>You can also set the fill model in a <a href='/docs/v2/writing-algorithms/initialization#07-Set-Security-Initializer'>security initializer</a>
 . If your algorithm has a dynamic universe, use the security initializer technique. In order to initialize single security subscriptions with the security initializer, call <code>SetSecurityInitializer</code> before you create the subscriptions.</p><p>
 
-<?php
-include(DOCS_RESOURCES."/reality-modeling/brokerage-mondel-security-init.php");
+<?
 $overwriteCodePy = "security.SetFillModel(ImmediateFillModel())";
 $overwriteCodeC = "security.SetFillModel(new ImmediateFillModel());";
-$getBrokerageModelInitCodeBlock($overwriteCodePy, $overwriteCodeC);
+include(DOCS_RESOURCES."/reality-modeling/brokerage-model-security-init.php");
 ?>
 
 <p>To view all the pre-built fill models, see <a href='/docs/v2/writing-algorithms/reality-modeling/trade-fills/supported-models'>Supported Models</a>.</p>

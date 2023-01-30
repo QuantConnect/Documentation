@@ -13,10 +13,9 @@ security.SettlementModel = DelayedSettlementModel(7, timedelta(hours=8))</pre>
 <p>You can also set the settlement model in a <a href='/docs/v2/writing-algorithms/initialization#07-Set-Security-Initializer'>security initializer</a>. If your algorithm has a universe, use the security initializer technique. In order to initialize single security subscriptions with the security initializer, call <code>SetSecurityInitializer</code> before you create the subscriptions.</p>
 
 <?php
-include(DOCS_RESOURCES."/reality-modeling/brokerage-mondel-security-init.php");
 $overwriteCodePy = "security.SettlementModel = DelayedSettlementModel(7, timedelta(hours=8))";
 $overwriteCodeC = "security.SettlementModel = new DelayedSettlementModel(7, TimeSpan.FromHours(8));";
-$getBrokerageModelInitCodeBlock($overwriteCodePy, $overwriteCodeC);
+include(DOCS_RESOURCES."/reality-modeling/brokerage-model-security-init.php");
 ?>
 
 <p>To view all the pre-built settlement models, see <a href="/docs/v2/writing-algorithms/reality-modeling/settlement/supported-models">Supported Models</a>.</p>

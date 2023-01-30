@@ -22,10 +22,8 @@ def CustomSecurityInitializer(self, security: Security) -&gt; None:
 
 <p>For simple requests, you can use the functional implementation of the security initializer. This style lets you configure the security object with one line of code.</p>
 <div class="section-example-container">
-<pre class="csharp">SetSecurityInitializer(security =&gt; security.SetFeeModel(new ConstantFeeModel(0, "USD")));
-</pre>
-<pre class="python">self.SetSecurityInitializer(lambda security: security.SetFeeModel(ConstantFeeModel(0, "USD")))
-</pre>
+<pre class="csharp">SetSecurityInitializer(security =&gt; security.SetFeeModel(new ConstantFeeModel(0, "USD")));</pre>
+<pre class="python">self.SetSecurityInitializer(lambda security: security.SetFeeModel(ConstantFeeModel(0, "USD")))</pre>
 </div>
 
 <p>In some cases, you may want to trade a security in the same time loop that you create the security subscription. To avoid errors, use a security initializer to set the market price of each security to the last known price.</p>
@@ -37,13 +35,12 @@ self.SetSecurityInitializer(lambda security: seeder.SeedSecurity(security))</pre
 </div>
 
 
-<?php echo file_get_contents(DOCS_RESOURCES."/reality-modeling/security-initializers.html");?>
+<? include(DOCS_RESOURCES."/reality-modeling/security-initializers.html");?>
 
 <p>The default security initializer also sets the leverage of each security and intializes each security with a seeder function. To extend upon the default security initializer instead of overwriting it, create a custom <code>BrokerageModelSecurityInitializer</code>.</p>
 
-<?php
-include(DOCS_RESOURCES."/reality-modeling/brokerage-mondel-security-init.php");
+<?
 $overwriteCodePy = "security.SetFeeModel(ConstantFeeModel(0, \"USD\"))";
 $overwriteCodeC = "security.SetFeeModel(new ConstantFeeModel(0, \"USD\"));";
-$getBrokerageModelInitCodeBlock($overwriteCodePy, $overwriteCodeC);
+include(DOCS_RESOURCES."/reality-modeling/brokerage-model-security-init.php");
 ?>

@@ -13,8 +13,7 @@ security.SetFeeModel(SecurityMarginModel(3))</pre>
 . If your algorithm has a universe, use the security initializer technique. In order to initialize single security subscriptions with the security initializer, call <code>SetSecurityInitializer</code> before you create the subscriptions.</p>
 
 <?php
-include(DOCS_RESOURCES."/reality-modeling/brokerage-mondel-security-init.php");
 $overwriteCodePy = "security.SetBuyingPowerModel(SecurityMarginModel(3))";
 $overwriteCodeC = "security.SetBuyingPowerModel(new SecurityMarginModel(3m));";
-$getBrokerageModelInitCodeBlock($overwriteCodePy, $overwriteCodeC);
+include(DOCS_RESOURCES."/reality-modeling/brokerage-mondel-security-init.php");
 ?>

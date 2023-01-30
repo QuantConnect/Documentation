@@ -18,7 +18,7 @@ if self.IsWarmingUp:
 
 
 <?php
-include(DOCS_RESOURCES."/reality-modeling/brokerage-mondel-security-init.php");
+
 $overwriteCodePy = "if security.Type == SecurityType.Equity:  # Underlying asset type
             security.VolatilityModel = StandardDeviationOfReturnsVolatilityModel(30)
             trade_bars = self.algorithm.History[TradeBar](security.Symbol, 30, Resolution.Daily)
@@ -32,5 +32,7 @@ $overwriteCodeC = "if (security.Type == SecurityType.Equity) // Underlying asset
                 security.VolatilityModel.Update(security, tradeBar);
             }
         }";
-$getBrokerageModelInitCodeBlock($overwriteCodePy, $overwriteCodeC, "and warm up the volatility model", true);
+$comment = "and warm up the volatility model";
+$saveAlgorithm = true;
+include(DOCS_RESOURCES."/reality-modeling/brokerage-model-security-init.php");
 ?>

@@ -14,12 +14,13 @@ option.PriceModel = OptionPriceModels.CrankNicolsonFD()</pre>
 <p>Otherwise, set the price model in a <a href='/docs/v2/writing-algorithms/initialization#07-Set-Security-Initializer'>security initializer</a>.</p>
 
 <?php
-include(DOCS_RESOURCES."/reality-modeling/brokerage-mondel-security-init.php");
+
 $overwriteCodePy = "if security.Type == SecurityType.Option: # Option type
             security.PriceModel = OptionPriceModels.CrankNicolsonFD()";
 $overwriteCodeC = "if (security.Type == SecurityType.Option) // Option type
         {
             security.PriceModel = OptionPriceModels.CrankNicolsonFD();
         }";
-$getBrokerageModelInitCodeBlock($overwriteCodePy, $overwriteCodeC, "the price model");
+$comment = "the price model";
+include(DOCS_RESOURCES."/reality-modeling/brokerage-model-security-init.php");
 ?>
