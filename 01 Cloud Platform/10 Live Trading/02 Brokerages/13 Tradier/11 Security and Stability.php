@@ -1,4 +1,5 @@
 <?php
+$brokerageName = "Tradier";
+$statusPageURL = "http://status.tradier.com/";
 include(DOCS_RESOURCES."/brokerages/security-and-stability.php");
-$getBrokerageStabilityText("Tradier", "http://status.tradier.com/");
 ?>
