@@ -1,6 +1,4 @@
 <?php
-include(DOCS_RESOURCES."/brokerages/cli-deployment/deploy-cloud-algorithms.php");
-
 $brokerageDetails = "
 <li>Enter your <a href='https://kite.trade/' target='_blank'>Kite Connect</a> API key and access token.
 <div class='cli section-example-container'>
@@ -75,6 +73,9 @@ Do you have a history API subscription? (true, false): true</pre>
 </div>
 </li>
 ";
-
-$getDeployCloudAlgorithmsText("Zerodha", true, $brokerageDetails);
+$brokerageName="Zerodha";
+$isSupported=true;
+$supportsCashHoldings=false;
+$supportsPositionHoldings=false;
+include(DOCS_RESOURCES."/brokerages/cli-deployment/deploy-cloud-algorithms.php");
 ?>

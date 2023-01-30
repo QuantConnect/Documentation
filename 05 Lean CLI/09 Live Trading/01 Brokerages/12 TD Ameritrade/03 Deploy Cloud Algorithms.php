@@ -1,6 +1,4 @@
 <?php
-include(DOCS_RESOURCES."/brokerages/cli-deployment/deploy-cloud-algorithms.php");
-
 $brokerageDetails = "
 <li>Enter your TD Ameritrade credentials.
 <div class='cli section-example-container'>
@@ -12,6 +10,9 @@ Account number: </pre>
 <p>To get your account credentials, see <a href='https://www.quantconnect.com/docs/v2/cloud-platform/live-trading/brokerages/td-ameritrade#02-Account-Types'>Account Types</a>.</p>
 </li>
 ";
-
-$getDeployCloudAlgorithmsText("TD Ameritrade", true, $brokerageDetails);
+$brokerageName="TD Ameritrade";
+$isSupported=true;
+$supportsCashHoldings=false;
+$supportsPositionHoldings=false;
+include(DOCS_RESOURCES."/brokerages/cli-deployment/deploy-cloud-algorithms.php");
 ?>

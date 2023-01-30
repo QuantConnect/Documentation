@@ -1,14 +1,6 @@
-<?php
-$getDeployCloudAlgorithmsText = function($brokerageName, $isSupported, $brokerageDetails=null, $supportsCashHoldings=false, $supportsPositionHoldings=false) {
+ <? if (!$isSupported) { ?> <p>The CLI doesn't currently support deploying cloud algorithms with <?=$brokerageName?>. <? return; } ?>
 
-    if (!$isSupported) {
-
-        echo "<p>The CLI doesn't currently support deploying cloud algorithms with {$brokerageName}.";
-        return;
-    }
-
-    echo "
-        <p>Follow these steps to start live trading a project in the cloud with the {$brokerageName} brokerage:</p>
+    <p>Follow these steps to start live trading a project in the cloud with the <?=$brokerageName?> brokerage:</p>
         <ol>
             <li><a href='/docs/v2/lean-cli/initialization/authenticating-accounts#02-Log-In'>Log in</a> to the CLI if you haven't done so already.</li>
             <li>Open a terminal in the <a href='/docs/v2/lean-cli/initialization/workspace'>workspace</a> that contains the project.</li>
@@ -36,13 +28,10 @@ Enter an option:</pre>
 </div>
             </li>
 
-            <li>Enter the number of the {$brokerageName} brokerage.</li>
-    ";
+            <li>Enter the number of the <?=$brokerageName?> brokerage.</li>
 
+    <?=$brokerageDetails?>
 
-    echo $brokerageDetails;
-
-    echo "
             <li>Select the live node that you want to use. If you only have one idle live trading node, it is selected automatically and this step is skipped.
 <div class='cli section-example-container'>
 <pre>$ lean cloud live \"My Project\" --push --open
@@ -83,12 +72,8 @@ Do you want to add another notification method? [y/N]: n</pre>
 Do you want to enable automatic algorithm restarting? [Y/n]: y</pre>
 </div>
             </li>
-    ";
     
-    if ($supportsCashHoldings)
-    {
-        echo "
-            <li>Set your initial cash balance.
+ <? if (!$supportsCashHoldings) { ?> <li>Set your initial cash balance.
             <div class='cli section-example-container'>
 <pre>$ lean cloud live \"My Project\" --push --open
 Previous cash balance: [{'currency': 'USD', 'amount': 100000.0}]
@@ -98,14 +83,9 @@ Currency: USD
 Amount: 95800
 Cash balance: [{'currency': 'USD', 'amount': 95800.0}]
 Do you want to add more currency? [y/N]: n</pre>
-</div></li>
-        ";
-    }
-    
-    if ($supportsPositionHoldings)
-    {
-        echo "
-            <li>Set your initial portfolio holdings.
+</div></li> <? } ?>
+
+ <? if (!$supportsPositionHoldings) { ?> <li>Set your initial portfolio holdings.
             <div class='cli section-example-container'>
 <pre>$ lean cloud live \"My Project\" --push --open
 Do you want to set the initial portfolio holdings? [y/N]: y
@@ -117,16 +97,12 @@ Quantity: 10
 Average Price: 50
 Portfolio Holdings: [{'symbol': 'GOOG', 'symbolId': 'GOOCV VP83T1ZUHROL', 'quantity': 10, 'averagePrice': 50.0}]
 Do you want to add more holdings? [y/N]: n</pre>
-</div></li>
-        ";
-    }
-    
-    
-    echo "
+</div></li> <? } ?>
+       
             <li>Verify the configured settings and confirm them to start the live deployment in the cloud.
             <div class='cli section-example-container'>
 <pre>$ lean cloud live \"My Project\" --push --open
-Brokerage: {$brokerageName}
+Brokerage: <?=$brokerageName?>
 Project id: 1234567
 Environment: Live
 Server name: L-MICRO node 89c90172
@@ -138,21 +114,12 @@ Insight notifications: Yes
 Email notifications: john.doe@example.com
 Webhook notifications: None
 SMS notifications: None
-Telegram notifications: None";
+Telegram notifications: None
     
-    if ($supportsCashHoldings)
-    {
-        echo "
-Initial live cash balance: [{'currency': 'USD', 'amount': 95800.0}]";
-    }
+<? if (!$supportsCashHoldings) { ?> Initial live cash balance: [{'currency': 'USD', 'amount': 95800.0}] <? } ?>
     
-    if ($supportsPositionHoldings)
-    {
-        echo "
-Initial live portfolio holdings: [{'symbol': 'GOOG', 'symbolId': 'GOOCV VP83T1ZUHROL', 'quantity': 10, 'averagePrice': 50.0}]";
-    }
-    
-    echo "
+<? if (!$supportsPositionHoldings) { ?> Initial live portfolio holdings: [{'symbol': 'GOOG', 'symbolId': 'GOOCV VP83T1ZUHROL', 'quantity': 10, 'averagePrice': 50.0}] <? } ?>
+
 Automatic algorithm restarting: Yes
 Are you sure you want to start live trading for project 'My Project'? [y/N]: y</pre>
 </div>
@@ -175,12 +142,8 @@ Project url: https://www.quantconnect.com/project/1234567
 Live status: Running
 Live id: L-1234567a8901d234e5e678ddd9b0123c
 Live url: https://www.quantconnect.com/project/1234567/live
-Brokerage: {$brokerageName}
+Brokerage: <?=$brokerageName?>
 Launched: 2021-06-09 15:10:12 UTC</pre>
             </div>
             </li>
         </ol>
-    ";
-}
-
-?>

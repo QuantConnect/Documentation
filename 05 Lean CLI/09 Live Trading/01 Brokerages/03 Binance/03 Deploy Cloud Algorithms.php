@@ -1,6 +1,4 @@
 <?php
-include(DOCS_RESOURCES."/brokerages/cli-deployment/deploy-cloud-algorithms.php");
-
 $brokerageDetails = "
 <li>Enter the exchange to use.
 <div class='cli section-example-container'>
@@ -26,6 +24,9 @@ API secret: ****************************************************************</pr
 To create a new API key, see the API Management page on <a rel='nofollow' href='https://www.binance.com/en/my/settings/api-management' target='_blank'>Binance</a> or <a rel='nofollow' href='https://www.binance.us/en/usercenter/settings/api-management' target='_blank'>Binance US</a>.
 </li>
 ";
-
-$getDeployCloudAlgorithmsText("Binance", true, $brokerageDetails);
+$brokerageName="Binance";
+$isSupported=true;
+$supportsCashHoldings=false;
+$supportsPositionHoldings=false;
+include(DOCS_RESOURCES."/brokerages/cli-deployment/deploy-cloud-algorithms.php");
 ?>

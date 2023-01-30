@@ -1,6 +1,4 @@
 <?php
-include(DOCS_RESOURCES."/brokerages/cli-deployment/deploy-cloud-algorithms.php");
-
 $brokerageDetails = "
 <li>Enter whether the sandbox should be used.
 <div class='cli section-example-container'>
@@ -19,6 +17,9 @@ Passphrase: ****************
 To create new API credentials, see the <a href='https://pro.coinbase.com/profile/api' target='_blank' rel='nofollow'>API settings page</a> on the Coinbase website.
 </li>
 ";
-
-$getDeployCloudAlgorithmsText("Coinbase", true, $brokerageDetails);
+$brokerageName="Coinbase";
+$isSupported=true;
+$supportsCashHoldings=false;
+$supportsPositionHoldings=false;
+include(DOCS_RESOURCES."/brokerages/cli-deployment/deploy-cloud-algorithms.php");
 ?>

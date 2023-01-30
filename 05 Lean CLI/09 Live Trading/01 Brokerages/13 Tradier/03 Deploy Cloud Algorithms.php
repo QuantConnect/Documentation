@@ -1,6 +1,4 @@
 <?php
-include(DOCS_RESOURCES."/brokerages/cli-deployment/deploy-cloud-algorithms.php");
-
 $brokerageDetails = "
 <li>Enter your Tradier account ID and access token.
 <div class='cli section-example-container'>
@@ -18,6 +16,9 @@ Use the developer sandbox? (live, paper): </pre>
 </div>
 </li>
 ";
-
-$getDeployCloudAlgorithmsText("Tradier", true, $brokerageDetails);
+$brokerageName="Tradier";
+$isSupported=true;
+$supportsCashHoldings=false;
+$supportsPositionHoldings=false;
+include(DOCS_RESOURCES."/brokerages/cli-deployment/deploy-cloud-algorithms.php");
 ?>
