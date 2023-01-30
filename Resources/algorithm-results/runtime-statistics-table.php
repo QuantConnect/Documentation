@@ -1,64 +1,54 @@
+<p>The following table describes the default runtime statistics:</p>
 <?php
-
-$getRuntimeStatisticsTable = function($isLiveMode) {
-
-    echo "<p>The following table describes the default runtime statistics:</p>";
-
     include(DOCS_RESOURCES."/glossary.php");
-    echo "
-    <table class='qc-table table'>
-      <thead>
-        <tr>
-          <th style='width: 25%'>Statistic</th>
-          <th style='width: 75%'>Description</th>
-        </tr>
-      </thead>
-      <tbody>
-      ";
-    
-    if (!$isLiveMode) 
-    {
-        echo "
-        <tr>
-          <td>Capacity</td>
-          <td>{$definitionByTerm['capacity']}</td>
-        </tr>"; 
-    }
-    
-    echo "
-        <tr>
-          <td>Equity</td>
-          <td>{$definitionByTerm['equity']}</td>
-        </tr>
-        <tr>
-          <td>Fees</td>
-          <td>{$definitionByTerm['total fees']}</td>
-        </tr>
-        <tr>
-          <td>Holdings</td>
-          <td>{$definitionByTerm['holdings']}</td>
-        </tr>
-        <tr>
-          <td>Net Profit</td>
-          <td>{$definitionByTerm['net profit']['Dollar-value']}</td>
-        </tr>
-        <tr>
-          <td>PSR</td>
-          <td>{$definitionByTerm['Probabilistic Sharpe ratio']}</td>
-        </tr>
-        <tr>
-          <td>Return</td>
-          <td>{$definitionByTerm['net profit']['Percent']}</td>
-        </tr>
-        <tr>
-          <td>Unrealized</td>
-          <td>{$definitionByTerm['unrealized']}</td>
-        </tr>
-        <tr>
-          <td>Volume</td>
-          <td>{$definitionByTerm['volume']}</td>
-        </tr>    
-      </tbody>
-    </table>";
-}
 ?>
+<table class='qc-table table'>
+  <thead>
+    <tr>
+      <th style='width: 25%'>Statistic</th>
+      <th style='width: 75%'>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    
+<? if ($pageName == "backtest") { ?>
+  <tr>
+    <td>Capacity</td>
+    <td><?=$definitionByTerm['capacity']?></td>
+  </tr>
+<? } ?>
+
+  <tr>
+    <td>Equity</td>
+    <td><?=$definitionByTerm['equity']?></td>
+  </tr>
+  <tr>
+    <td>Fees</td>
+    <td><?=$definitionByTerm['total fees']?></td>
+  </tr>
+  <tr>
+    <td>Holdings</td>
+    <td><?=$definitionByTerm['holdings']?></td>
+  </tr>
+  <tr>
+    <td>Net Profit</td>
+    <td><?=$definitionByTerm['net profit']['Dollar-value']?></td>
+  </tr>
+  <tr>
+    <td>PSR</td>
+    <td><?=$definitionByTerm['Probabilistic Sharpe ratio']?></td>
+  </tr>
+  <tr>
+    <td>Return</td>
+    <td><?=$definitionByTerm['net profit']['Percent']?></td>
+  </tr>
+  <tr>
+    <td>Unrealized</td>
+    <td><?=$definitionByTerm['unrealized']?></td>
+  </tr>
+  <tr>
+    <td>Volume</td>
+    <td><?=$definitionByTerm['volume']?></td>
+  </tr>    
+</tbody>
+</table>
