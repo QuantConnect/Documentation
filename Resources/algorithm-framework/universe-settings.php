@@ -1,7 +1,4 @@
-<?php
-
-$getUniverseSettingsText = function($isFramework) {
-    $result = "<p>The universe settings of your algorithm configure some properties of the universe constituents. The following table describes the properties of the <code>UniverseSettings</code> object:</p>
+<p>The universe settings of your algorithm configure some properties of the universe constituents. The following table describes the properties of the <code>UniverseSettings</code> object:</p>
 
 <table class='qc-table table vertical-table'>
     <tbody>
@@ -64,47 +61,30 @@ $getUniverseSettingsText = function($isFramework) {
 </tbody>
 </table>
 
-
-<p>To set the <code>UniverseSettings</code>, update the preceding properties in the <code>Initialize</code> method before you add the ";	
-    if ($isFramework) 
-    {
-	$result .= "Universe Selection model";
-    }
-    else
-    {
-	$result .= "universe";
-    }
-    $result .= ". These settings are globals, so they apply to all universes you create.</p>";
-
-  
-    if ($isFramework) 
-    {
-        $result .= "
-        <div class=\"section-example-container\">
-<pre class=\"csharp\">// Request second resolution data. This will be slow!
+<p>To set the <code>UniverseSettings</code>, update the preceding properties in the <code>Initialize</code> method before you add the 
+<? if ($isFramework) { ?>
+    "Universe Selection model"
+<? else ?>
+     "universe"
+<? } ?>
+These settings are globals, so they apply to all universes you create.</p>
+ 
+<? if ($isFramework) { ?>    
+<div class="section-example-container">
+<pre class="csharp">// Request second resolution data. This will be slow!
 UniverseSettings.Resolution = Resolution.Second;
 AddUniverseSelection(new VolatilityETFUniverse());</pre>
-<pre class=\"python\"># Request second resolution data. This will be slow!
+<pre class="python"># Request second resolution data. This will be slow!
 self.UniverseSettings.Resolution = Resolution.Second
 self.AddUniverseSelection(VolatilityETFUniverse())</pre>
 </div>
-";
-    }
-    else
-    {
-        $result .= "
-        <div class=\"section-example-container\">
-<pre class=\"csharp\">// Request second resolution data. This will be slow!
+<? } else { ?>
+<div class="section-example-container">
+<pre class="csharp">// Request second resolution data. This will be slow!
 UniverseSettings.Resolution = Resolution.Second;
 AddUniverse(MyCoarseFilterFunction);</pre>
-<pre class=\"python\"># Request second resolution data. This will be slow!
+<pre class="python"># Request second resolution data. This will be slow!
 self.UniverseSettings.Resolution = Resolution.Second
 self.AddUniverse(self.MyCoarseFilterFunction)</pre>
 </div>
-";
-    }
-  
-    echo $result;
-}
-
-?>
+<? } ?>

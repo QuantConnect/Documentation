@@ -7,14 +7,9 @@
 
     public override void OnSecuritiesChanged(QCAlgorithmFramework algorithm, SecurityChanges changes)
     {
-<?php
-if ($callsBaseClass)
-{
-?>
+<? if ($callsBaseClass) { ?>
         base.OnSecuritiesChanged(algorithm, changes);
-<?php
-}
-?>
+<? } ?>
         foreach (var security in changes.AddedSecurities)
         {               
             _symbolDataBySymbol[security.Symbol] = new SymbolData(security.Symbol);
@@ -44,14 +39,9 @@ if ($callsBaseClass)
     symbol_data_by_symbol = {}
 
     def OnSecuritiesChanged(self, algorithm: QCAlgorithm, changes: SecurityChanges) -&gt; None:
-<?php
-if ($callsBaseClass)
-{
-?>
+<? if ($callsBaseClass) { ?>
         super().OnSecuritiesChanged(algorithm, changes)
-<?php
-}
-?>
+<? } ?>
         for security in changes.AddedSecurities:
             self.symbol_data_by_symbol[security.Symbol] = SymbolData(security.Symbol)
 
