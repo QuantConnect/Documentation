@@ -1,4 +1,4 @@
-<?php
+<?
 $brokerageName = "IB";
 $statusPageURL = "https://www.interactivebrokers.com/en/software/systemStatus.php";
 include(DOCS_RESOURCES."/brokerages/security-and-stability.php");
