@@ -14,8 +14,10 @@
 <? if ($pageName == "backtest") { ?>
   <tr>
     <td>Capacity</td>
-    <td>{$definitionByTerm['capacity']}</td>
+    <td><?=$definitionByTerm['capacity']?></td>
   </tr>
+<? } ?>
+
   <tr>
     <td>Equity</td>
     <td><?=$definitionByTerm['equity']?></td>
@@ -50,4 +52,3 @@
   </tr>    
 </tbody>
 </table>
-<? } ?>
