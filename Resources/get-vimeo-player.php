@@ -1,4 +1,4 @@
-<?
+<?php
 $getVimeoPlayerText = function($vimeoCode)
 {
   echo "
