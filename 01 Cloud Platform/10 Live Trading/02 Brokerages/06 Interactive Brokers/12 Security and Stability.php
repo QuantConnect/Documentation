@@ -1,6 +1,7 @@
-<?php
+<?
+$brokerageName = "IB";
+$statusPageURL = "https://www.interactivebrokers.com/en/software/systemStatus.php";
 include(DOCS_RESOURCES."/brokerages/security-and-stability.php");
-$getBrokerageStabilityText("IB", "https://www.interactivebrokers.com/en/software/systemStatus.php");
 ?>
 
 <h4>Connections</h4>
