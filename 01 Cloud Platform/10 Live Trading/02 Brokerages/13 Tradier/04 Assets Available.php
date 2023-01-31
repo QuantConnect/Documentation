@@ -24,6 +24,6 @@
 
 <h4>ETFs</h4>
 <?php
+$brokerageName = "Tradier";
 include(DOCS_RESOURCES."/brokerages/us-etfs.php");
-$getUSETFText("Tradier");
 ?>
