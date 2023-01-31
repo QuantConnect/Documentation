@@ -1,4 +1,8 @@
-<p><?=$writingAlgorithmsText?>To read data from the Object Store, you need to provide the key you used to store the object.</p>
+<p><?=$writingAlgorithms ? "Read data from the Object Store to import algorithm variables between deployments, import data from the Research Environment, or load trained machine learning models. " : ""?>To read data from the Object Store, you need to provide the key you used to store the object.</p>
+<?
+$cSharpPrefix = $research ? "qb." : "";
+$pythonPrefix = $research ? "qb." : "self.";
+?>
 
 <p class='csharp'>You can load the following types of objects from the Object Store:</p>
 
