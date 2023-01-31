@@ -13,9 +13,9 @@
 
 
 <h4>Submit Orders</h4>
-<?php
+<?
+$isCLI = true;
 include(DOCS_RESOURCES."/trading-and-orders/place-manual-trades.php");
-$getManualTradesText(true);
 ?>
 
 <p>To submit orders, open a terminal in the <a href='/docs/v2/lean-cli/initialization/workspace'>workspace</a> that contains the project and then run <code>lean live submit-order "My Project"</code>.</p>
