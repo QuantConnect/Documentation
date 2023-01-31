@@ -1,9 +1,6 @@
-<? 
-$dataMarketSize = file_get_contents(DOCS_RESOURCES."/kpis/dataset-size.php");
-$location = $writingAlgorithms ? "algorithms" : "notebooks" ; 
-?>
+<? $location = $writingAlgorithms ? "algorithms" : "notebooks"; ?>
 
-<p>You can subscribe to asset, fundamental, alternative, and custom data. The <a href='https://www.quantconnect.com/datasets'>Dataset Market</a> provides <?=$dataMarketSize?> of data that you can easily import into your <?=$location?>.</p>
+<p>You can subscribe to asset, fundamental, alternative, and custom data. The <a href='https://www.quantconnect.com/datasets'>Dataset Market</a> provides <?=$kpi["dataset-size"] ?> of data that you can easily import into your <?=$location?>.</p>
 
 <h4>Asset Data</h4>
 
