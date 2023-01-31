@@ -1,4 +1,5 @@
-<?php 
-include(DOCS_RESOURCES."/data-feeds/introductions.php"); 
-$getDataFeedIntroText("Futures", "contracts trades, quotes and open interest");
+<?
+$dataFeedName = "Futures";
+$streamOfText = "contracts trades, quotes and open interest";
+include(DOCS_RESOURCES."/data-feeds/introductions.php");
 ?>

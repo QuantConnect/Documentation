@@ -1,4 +1,5 @@
-<?php 
-include(DOCS_RESOURCES."/data-feeds/introductions.php"); 
-$getDataFeedIntroText("Crypto", "security trades and quotes");
+<?
+$dataFeedName = "Crypto";
+$streamOfText = "security trades and quotes";
+include(DOCS_RESOURCES."/data-feeds/introductions.php");
 ?>
