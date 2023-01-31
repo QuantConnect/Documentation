@@ -1,4 +1,4 @@
-<?php
+<?
 $brokerageDetails = "
 <li>Enter your Tradier account ID and access token.
 <div class='cli section-example-container'>

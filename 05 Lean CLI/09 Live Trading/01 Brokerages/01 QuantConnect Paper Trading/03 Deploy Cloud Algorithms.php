@@ -1,4 +1,4 @@
-<?php
+<?
 $brokerageName="QuantConnect Paper Trading";
 $isSupported=true;
 $brokerageDetails="";

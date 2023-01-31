@@ -1,4 +1,4 @@
-<?php
+<?
 $brokerageDetails = "
 <li>Enter your API key id and secret.
 <div class='cli section-example-container'>

@@ -1,4 +1,4 @@
-<?php
+<?
 $brokerageDetails = "
 <li>Enter the environment to use. Enter <code>Trade</code> for fxTrade or <code>Practice</code> for fxTrade Practice.
 <div class='cli section-example-container'>

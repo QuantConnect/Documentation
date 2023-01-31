@@ -1,4 +1,4 @@
-<?php
+<?
 $brokerageDetails = "
 <li>Enter whether the sandbox should be used.
 <div class='cli section-example-container'>

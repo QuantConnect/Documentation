@@ -1,4 +1,4 @@
-<?php
+<?
 $brokerageDetails = "
 <li>Enter the exchange to use.
 <div class='cli section-example-container'>

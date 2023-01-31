@@ -1,4 +1,4 @@
-<?php
+<?
 $brokerageName="<a target='_blank' href='https://qnt.co/atreyu'>Atreyu Trading</a>";
 $isSupported=false;
 $brokerageDetails="";

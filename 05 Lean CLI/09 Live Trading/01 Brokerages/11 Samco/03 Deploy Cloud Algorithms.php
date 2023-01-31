@@ -1,4 +1,4 @@
-<?php
+<?
 $brokerageDetails = "
 <li>Enter your Samco credentials.
 <div class='cli section-example-container'>

@@ -1,4 +1,4 @@
-<?php
+<?
 $brokerageDetails = "
 <li>Enter your Trading Technologies credentials.
 <div class='cli section-example-container'>

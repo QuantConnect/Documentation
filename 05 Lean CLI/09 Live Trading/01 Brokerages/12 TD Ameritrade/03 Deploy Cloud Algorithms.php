@@ -1,4 +1,4 @@
-<?php
+<?
 $brokerageDetails = "
 <li>Enter your TD Ameritrade credentials.
 <div class='cli section-example-container'>
