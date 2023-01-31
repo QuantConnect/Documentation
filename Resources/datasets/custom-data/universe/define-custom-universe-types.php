@@ -57,7 +57,7 @@ class MyCustomUniverseDataClass(PythonData):
 </pre>
 </div>
 
-<?php echo file_get_contents(DOCS_RESOURCES."/datasets/custom-data/reader-method.html"); ?>
+<? include(DOCS_RESOURCES."/datasets/custom-data/reader-method.html"); ?>
 
 <div class="section-example-container">
 <pre class="csharp">public class MyCustomUniverseDataClass : BaseData 
