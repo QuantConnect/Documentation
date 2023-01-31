@@ -9,9 +9,9 @@ $pyPrintMethod = $writingAlgorithms ? "self.Log" : "print";
 
 <p>
     The simplest form of history request is for a known set of <code>Symbol</code> objects.
-    <? if ($isWritingAlgorithms) {?> This is common for fixed universes of securities or when you need to prepare new securities added to your algorithm.<? } ?>
+    <? if ($writingAlgorithms) {?> This is common for fixed universes of securities or when you need to prepare new securities added to your algorithm.<? } ?>
     History requests return slightly different data depending on the overload you call. The data that returns is in ascending order from oldest to newest.
-    <? if ($isWritingAlgorithms) {?> This order is necessary to use the data to warm up indicators. <? } ?>
+    <? if ($writingAlgorithms) {?> This order is necessary to use the data to warm up indicators. <? } ?>
 </p>
     
 <h4>Single Symbol History Requests</h4>
@@ -265,7 +265,7 @@ var tradeBars2 = <?=$cVar?>History(new[] {btcSymbol}, startTime, endTime);</pre>
 
 <h4>All Symbol History Requests</h4>
  
-<?=$isWritingAlgorithms ? "<p>You can request history for all active securities in your universe." : "<p>You can request history for all the securities you have created subscriptions for in your notebook session. "; ?> The parameters are very similar to other history method calls, but the return type is an array of <a href='/docs/v2/writing-algorithms/key-concepts/time-modeling/timeslices'>Slice</a> objects. The <code>Slice</code> object holds all of the results in a sorted enumerable collection that you can iterate over with a loop.</p>
+<?=$writingAlgorithms ? "<p>You can request history for all active securities in your universe." : "<p>You can request history for all the securities you have created subscriptions for in your notebook session. "; ?> The parameters are very similar to other history method calls, but the return type is an array of <a href='/docs/v2/writing-algorithms/key-concepts/time-modeling/timeslices'>Slice</a> objects. The <code>Slice</code> object holds all of the results in a sorted enumerable collection that you can iterate over with a loop.</p>
     
 <div class='section-example-container'>
 <pre class='python'><b># EXAMPLE 11: Requesting 5 bars for all securities at their respective resolution:</b>
