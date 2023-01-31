@@ -1,5 +1,2 @@
-<?php 
-echo file_get_contents(DOCS_RESOURCES."/brokerages/introduction-by-brokerage/zerodha.php");
-?>
-
+<? include(DOCS_RESOURCES."/brokerages/introduction-by-brokerage/zerodha.html"); ?>
 <p>The Zerodha data feed streams live asset prices from Zerodha. If you use this data feed and request historical data, the historical data comes from Zerodha.</p>
