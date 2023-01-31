@@ -1,4 +1,4 @@
-<?php echo file_get_contents(DOCS_RESOURCES."/notifications/telegram-intro.html"); ?>
+<? include(DOCS_RESOURCES."/notifications/telegram-intro.html"); ?>
 
 <h4>Set Up in the Deployment Wizard</h4>
 <p>Follow these steps to set up Telegram notifications in the deployment wizard:</p>
@@ -30,11 +30,11 @@
     <p>If you want to use our bot, the username is @quantconnect_notifications_bot.</p>
     <li>On the live deployment wizard, click <span class="button-name">Telegram</span>.</li>
     <li>Enter your user Id or group Id.</li>
-    <p><?php echo file_get_contents(DOCS_RESOURCES."/notifications/telegram-group-id.html"); ?></p>
+    <p><? include(DOCS_RESOURCES."/notifications/telegram-group-id.html"); ?></p>
     <li>If you are not using our notification bot, enter the token of your bot.</li>
     <li>Click <span class="button-name">Add</span>.</li>
     <p>To add more Telegram notifications, click <span class="button-name">Add Notification</span> and then continue from step 2.</p>
 </ol>
 
 <h4>Send In Your Code Files</h4>
-<?php include(DOCS_RESOURCES."/notifications/telegram-setup.php"); ?>
+<? include(DOCS_RESOURCES."/notifications/telegram-setup.php"); ?>
