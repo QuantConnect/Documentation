@@ -1,6 +1,6 @@
 <p>By default, LEAN subscribes to the Option contracts that have the following characteristics:</p>
 
-<?php echo file_get_contents(DOCS_RESOURCES."/universes/option/default-filter.html"); ?>
+<? echo file_get_contents(DOCS_RESOURCES."/universes/option/default-filter.html"); ?>
 
 <p>LEAN adds all of the Option contracts that meet the filter requirements to the <a href="/docs/v2/writing-algorithms/key-concepts/time-modeling/timeslices">Slice</a> it passes to the <code>OnData</code> method. To adjust the universe of contracts, pass a filter function to the <code>AddFutureOption</code> method.</p>
 
@@ -47,9 +47,9 @@ def contract_selector(self, option_filter_universe: OptionFilterUniverse) -> Opt
     return option_filter_universe.Contracts(symbols)</pre>
 </div>
 
-<?php 
+<?
+$assetClass("Option");
 include(DOCS_RESOURCES."/universes/option/filter-caveats.php");
-$getFilterCaveatText("Option");
 ?>
 
 <p>By default, LEAN adds contracts to the <code>OptionChain</code> that pass the filter criteria at every time step in your algorithm. If a contract has been in the universe for a duration that matches the <code>MinimumTimeInUniverse</code> <a href='/docs/v2/writing-algorithms/universes/settings#02-Properties'>setting</a> and it no longer passes the filter criteria, LEAN removes it from the chain.</p>
