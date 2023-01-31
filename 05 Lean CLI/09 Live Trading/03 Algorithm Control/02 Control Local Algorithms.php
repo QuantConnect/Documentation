@@ -56,8 +56,7 @@ $getManualTradesText(true);
 <p>For more information about the command options, see <a href='/docs/v2/lean-cli/api-reference/lean-live-liquidate#04-Options'>Options</a>.</p>
 
 <h4>Stop Algorithms</h4>
-<?
-$environment = "CLI Local"; 
+<? 
 include(DOCS_RESOURCES."/trading-and-orders/stop-algorithm.php");
 ?>
 

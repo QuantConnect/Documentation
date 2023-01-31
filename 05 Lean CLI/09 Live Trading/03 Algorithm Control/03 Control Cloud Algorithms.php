@@ -15,7 +15,6 @@ $getLiquidatePositionsText(true);
 
 <h4>Stop Algorithms</h4>
 <?
-$environment = "CLI Cloud";
 include(DOCS_RESOURCES."/trading-and-orders/stop-algorithm.php");
 ?>
 
