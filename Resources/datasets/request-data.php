@@ -1,25 +1,18 @@
-<?php
+<? 
+$pyVar = $writingAlgorithms ? "self" : "qb";
+$pyFutureVar = $writingAlgorithms ? "self." : "";
+$cVar = $writingAlgorithms ? "" : "qb.";
+$envName = $writingAlgorithms ? "algorithm" : "notebook";
+$cPrintMethod = $writingAlgorithms ? "Log" : "Console.WriteLine";
+$pyPrintMethod = $writingAlgorithms ? "self.Log" : "print";
+?>
 
-$getRequestDataText = function($isWritingAlgorithms)
-{
-    $pyVar = $isWritingAlgorithms ? "self" : "qb";
-    $pyFutureVar = $isWritingAlgorithms ? "self." : "";
-    $cVar = $isWritingAlgorithms ? "" : "qb.";
-    $envName = $isWritingAlgorithms ? "algorithm" : "notebook";
-    $cPrintMethod = $isWritingAlgorithms ? "Log" : "Console.WriteLine";
-    $pyPrintMethod = $isWritingAlgorithms ? "self.Log" : "print";
-	
-    echo "<p>The simplest form of history request is for a known set of <code>Symbol</code> objects. ";
-    if ($isWritingAlgorithms)
-    {
-        echo "This is common for fixed universes of securities or when you need to prepare new securities added to your algorithm. ";
-    }
-    echo "History requests return slightly different data depending on the overload you call. The data that returns is in ascending order from oldest to newest. ";
-    if ($isWritingAlgorithms)
-    {
-        echo "This order is necessary to use the data to warm up indicators."; 
-    }
-    echo "</p>
+<p>
+    The simplest form of history request is for a known set of <code>Symbol</code> objects.
+    <? if ($isWritingAlgorithms) {?> This is common for fixed universes of securities or when you need to prepare new securities added to your algorithm.<? } ?>
+    History requests return slightly different data depending on the overload you call. The data that returns is in ascending order from oldest to newest.
+    <? if ($isWritingAlgorithms) {?> This order is necessary to use the data to warm up indicators. <? } ?>
+</p>
     
 <h4>Single Symbol History Requests</h4>
 
@@ -59,109 +52,109 @@ $getRequestDataText = function($isWritingAlgorithms)
 
 <div class='section-example-container'>
 <pre class='python'><b># EXAMPLE 1: Requesting By Bar Count: 5 bars at the security resolution:</b>
-vix_symbol = {$pyVar}.AddData(CBOE, \"VIX\", Resolution.Daily).Symbol
-cboe_data = {$pyVar}.History[CBOE](vix_symbol, 5)
+vix_symbol = <?=$pyVar?>.AddData(CBOE, "VIX", Resolution.Daily).Symbol
+cboe_data = <?=$pyVar?>.History[CBOE](vix_symbol, 5)
 
-btc_symbol = {$pyVar}.AddCrypto(\"BTCUSD\", Resolution.Minute).Symbol
-trade_bars = {$pyVar}.History[TradeBar](btc_symbol, 5)
-quote_bars = {$pyVar}.History[QuoteBar](btc_symbol, 5)
-df = {$pyVar}.History(btc_symbol, 5)
+btc_symbol = <?=$pyVar?>.AddCrypto("BTCUSD", Resolution.Minute).Symbol
+trade_bars = <?=$pyVar?>.History[TradeBar](btc_symbol, 5)
+quote_bars = <?=$pyVar?>.History[QuoteBar](btc_symbol, 5)
+df = <?=$pyVar?>.History(btc_symbol, 5)
 <img class='img-responsive img-thumbnail' src='https://cdn.quantconnect.com/i/tu/history-request-single-symbol-1.png'>
 </pre>
 <pre class='csharp'><b>// EXAMPLE 1: Requesting By Bar Count: 5 bars at the security resolution:</b>
-var vixSymbol = {$cVar}AddData&lt;CBOE&gt;(\"VIX\", Resolution.Daily).Symbol;
-var cboeData = {$cVar}History&lt;CBOE&gt;(vixSymbol, 5);
+var vixSymbol = <?=$cVar?>AddData&lt;CBOE&gt;("VIX", Resolution.Daily).Symbol;
+var cboeData = <?=$cVar?>History&lt;CBOE&gt;(vixSymbol, 5);
 
-var btcSymbol = {$cVar}AddCrypto(\"BTCUSD\", Resolution.Minute).Symbol;
-var tradeBars = {$cVar}History&lt;TradeBar&gt;(btcSymbol, 5);
-var quoteBars = {$cVar}History&lt;QuoteBar&gt;(btcSymbol, 5);
-var tradeBars2 = {$cVar}History(btcSymbol, 5);</pre>
+var btcSymbol = <?=$cVar?>AddCrypto("BTCUSD", Resolution.Minute).Symbol;
+var tradeBars = <?=$cVar?>History&lt;TradeBar&gt;(btcSymbol, 5);
+var quoteBars = <?=$cVar?>History&lt;QuoteBar&gt;(btcSymbol, 5);
+var tradeBars2 = <?=$cVar?>History(btcSymbol, 5);</pre>
 
 	
 <pre class='python'><b># EXAMPLE 2: Requesting By Bar Count: 5 bars with a specific resolution:</b>
-trade_bars = {$pyVar}.History[TradeBar](btc_symbol, 5, Resolution.Daily)
-quote_bars = {$pyVar}.History[QuoteBar](btc_symbol, 5, Resolution.Minute)
-df = {$pyVar}.History(btc_symbol, 5, Resolution.Minute)
+trade_bars = <?=$pyVar?>.History[TradeBar](btc_symbol, 5, Resolution.Daily)
+quote_bars = <?=$pyVar?>.History[QuoteBar](btc_symbol, 5, Resolution.Minute)
+df = <?=$pyVar?>.History(btc_symbol, 5, Resolution.Minute)
 <img class='img-responsive img-thumbnail' src='https://cdn.quantconnect.com/i/tu/history-request-single-symbol-1.png'>
 </pre>
 <pre class='csharp'><b>// EXAMPLE 2: Requesting By Bar Count: 5 bars with a specific resolution:</b>
-var tradeBars = {$cVar}History&lt;TradeBar&gt;(btcSymbol, 5, Resolution.Daily);
-var quoteBars = {$cVar}History&lt;QuoteBar&gt;(btcSymbol, 5, Resolution.Minute);
-var tradeBars2 = {$cVar}History(btcSymbol, 5, Resolution.Minute);</pre>
+var tradeBars = <?=$cVar?>History&lt;TradeBar&gt;(btcSymbol, 5, Resolution.Daily);
+var quoteBars = <?=$cVar?>History&lt;QuoteBar&gt;(btcSymbol, 5, Resolution.Minute);
+var tradeBars2 = <?=$cVar?>History(btcSymbol, 5, Resolution.Minute);</pre>
 
 
 <pre class='python'><b># EXAMPLE 3: Requesting By a Trailing Period: 3 days of data at the security resolution:</b> 
-eth_symbol = {$pyVar}.AddCrypto('ETHUSD', Resolution.Tick).Symbol
-ticks = {$pyVar}.History[Tick](eth_symbol, timedelta(days=3))
+eth_symbol = <?=$pyVar?>.AddCrypto('ETHUSD', Resolution.Tick).Symbol
+ticks = <?=$pyVar?>.History[Tick](eth_symbol, timedelta(days=3))
 
-vix_data = {$pyVar}.History[CBOE](vix_symbol, timedelta(days=3)) 
-trade_bars = {$pyVar}.History[TradeBar](btc_symbol, timedelta(days=3)) 
-quote_bars = {$pyVar}.History[QuoteBar](btc_symbol, timedelta(days=3))
-df = {$pyVar}.History(btc_symbol, timedelta(days=3)) 
+vix_data = <?=$pyVar?>.History[CBOE](vix_symbol, timedelta(days=3)) 
+trade_bars = <?=$pyVar?>.History[TradeBar](btc_symbol, timedelta(days=3)) 
+quote_bars = <?=$pyVar?>.History[QuoteBar](btc_symbol, timedelta(days=3))
+df = <?=$pyVar?>.History(btc_symbol, timedelta(days=3)) 
 <img class='img-responsive img-thumbnail' src='https://cdn.quantconnect.com/i/tu/history-request-single-symbol-2.png'></pre>
 
 <pre class='csharp'><b>// EXAMPLE 3: Requesting By a Trailing Period: 3 days of data at the security resolution:</b>
-var ethSymbol = {$cVar}AddCrypto(\"ETHUSD\", Resolution.Tick).Symbol;
-var ticks = {$cVar}History&lt;Tick&gt;(ethSymbol, TimeSpan.FromDays(3));
+var ethSymbol = <?=$cVar?>AddCrypto("ETHUSD", Resolution.Tick).Symbol;
+var ticks = <?=$cVar?>History&lt;Tick&gt;(ethSymbol, TimeSpan.FromDays(3));
 
-var cboeData = {$cVar}History&lt;CBOE&gt;(vixSymbol, TimeSpan.FromDays(3));
-var tradeBars = {$cVar}History&lt;TradeBar&gt;(btcSymbol, TimeSpan.FromDays(3));
-var quoteBars = {$cVar}History&lt;QuoteBar&gt;(btcSymbol, TimeSpan.FromDays(3));
-var tradeBars2 = {$cVar}History(btcSymbol, TimeSpan.FromDays(3));</pre>
+var cboeData = <?=$cVar?>History&lt;CBOE&gt;(vixSymbol, TimeSpan.FromDays(3));
+var tradeBars = <?=$cVar?>History&lt;TradeBar&gt;(btcSymbol, TimeSpan.FromDays(3));
+var quoteBars = <?=$cVar?>History&lt;QuoteBar&gt;(btcSymbol, TimeSpan.FromDays(3));
+var tradeBars2 = <?=$cVar?>History(btcSymbol, TimeSpan.FromDays(3));</pre>
 	
 	
 	
 <pre class='python'><b># EXAMPLE 4: Requesting By a Trailing Period: 3 days of data with a specific resolution:</b> 
-trade_bars = {$pyVar}.History[TradeBar](btc_symbol, timedelta(days=3), Resolution.Daily) 
-quote_bars = {$pyVar}.History[QuoteBar](btc_symbol, timedelta(days=3), Resolution.Minute)
-ticks = {$pyVar}.History[Tick](eth_symbol, timedelta(days=3), Resolution.Tick)
-df = {$pyVar}.History(btc_symbol, timedelta(days=3), Resolution.Hour) 
+trade_bars = <?=$pyVar?>.History[TradeBar](btc_symbol, timedelta(days=3), Resolution.Daily) 
+quote_bars = <?=$pyVar?>.History[QuoteBar](btc_symbol, timedelta(days=3), Resolution.Minute)
+ticks = <?=$pyVar?>.History[Tick](eth_symbol, timedelta(days=3), Resolution.Tick)
+df = <?=$pyVar?>.History(btc_symbol, timedelta(days=3), Resolution.Hour) 
 <img class='img-thumbnail img-responsive' src='https://cdn.quantconnect.com/i/tu/history-request-single-symbol-3.png'>
-# Important Note: Period history requests are relative to \"now\" {$envName} time.</pre>
+# Important Note: Period history requests are relative to "now" <?=$envName?> time.</pre>
 
 
 <pre class='csharp'><b>// EXAMPLE 4: Requesting By a Trailing Period: 3 days of data with a specific resolution:</b>
-var tradeBars = {$cVar}History&lt;TradeBar&gt;(btcSymbol, TimeSpan.FromDays(3), Resolution.Daily);
-var quoteBars = {$cVar}History&lt;QuoteBar&gt;(btcSymbol, TimeSpan.FromDays(3), Resolution.Minute);
-var ticks = {$cVar}History&lt;Tick&gt;(ethSymbol, TimeSpan.FromDays(3), Resolution.Tick);
-var tradeBars2 = {$cVar}History(btcSymbol, TimeSpan.FromDays(3), Resolution.Minute);</pre>
+var tradeBars = <?=$cVar?>History&lt;TradeBar&gt;(btcSymbol, TimeSpan.FromDays(3), Resolution.Daily);
+var quoteBars = <?=$cVar?>History&lt;QuoteBar&gt;(btcSymbol, TimeSpan.FromDays(3), Resolution.Minute);
+var ticks = <?=$cVar?>History&lt;Tick&gt;(ethSymbol, TimeSpan.FromDays(3), Resolution.Tick);
+var tradeBars2 = <?=$cVar?>History(btcSymbol, TimeSpan.FromDays(3), Resolution.Minute);</pre>
 
 
 <pre class='python'><b># EXAMPLE 5: Requesting By a Defined Period: 3 days of data at the security resolution:</b> 
 start_time = datetime(2022, 1, 1)
 end_time = datetime(2022, 1, 4)
 
-vix_data = {$pyVar}.History[CBOE](vix_symbol, start_time, end_time) 
-trade_bars = {$pyVar}.History[TradeBar](btc_symbol, start_time, end_time) 
-quote_bars = {$pyVar}.History[QuoteBar](btc_symbol, start_time, end_time)
-ticks = {$pyVar}.History[Tick](eth_symbol, start_time, end_time)
-df = {$pyVar}.History(btc_symbol, start_time, end_time) 
+vix_data = <?=$pyVar?>.History[CBOE](vix_symbol, start_time, end_time) 
+trade_bars = <?=$pyVar?>.History[TradeBar](btc_symbol, start_time, end_time) 
+quote_bars = <?=$pyVar?>.History[QuoteBar](btc_symbol, start_time, end_time)
+ticks = <?=$pyVar?>.History[Tick](eth_symbol, start_time, end_time)
+df = <?=$pyVar?>.History(btc_symbol, start_time, end_time) 
 <img class='img-responsive img-thumbnail' src='https://cdn.quantconnect.com/i/tu/history-request-defined-period-default-resolution.jpg'></pre>
 
 <pre class='csharp'><b>// EXAMPLE 5: Requesting By a Defined Period: 3 specific days of data at the security resolution:</b>
 var startTime = new DateTime(2022, 1, 1);
 var endTime = new DateTime(2022, 1, 4);
 
-var cboeData = {$cVar}History&lt;CBOE&gt;(vixSymbol, startTime, endTime);
-var tradeBars = {$cVar}History&lt;TradeBar&gt;(btcSymbol, startTime, endTime);
-var quoteBars = {$cVar}History&lt;QuoteBar&gt;(btcSymbol, startTime, endTime);
-var ticks = {$cVar}History&lt;Tick&gt;(ethSymbol, startTime, endTime);
-var tradeBars2 = {$cVar}History(btcSymbol, startTime, endTime);</pre>
+var cboeData = <?=$cVar?>History&lt;CBOE&gt;(vixSymbol, startTime, endTime);
+var tradeBars = <?=$cVar?>History&lt;TradeBar&gt;(btcSymbol, startTime, endTime);
+var quoteBars = <?=$cVar?>History&lt;QuoteBar&gt;(btcSymbol, startTime, endTime);
+var ticks = <?=$cVar?>History&lt;Tick&gt;(ethSymbol, startTime, endTime);
+var tradeBars2 = <?=$cVar?>History(btcSymbol, startTime, endTime);</pre>
 
 	
 <pre class='python'><b># EXAMPLE 6: Requesting By a Defined Period: 3 days of data with a specific resolution:</b> 
-trade_bars = {$pyVar}.History[TradeBar](btc_symbol, start_time, end_time, Resolution.Daily) 
-quote_bars = {$pyVar}.History[QuoteBar](btc_symbol, start_time, end_time, Resolution.Minute)
-ticks = {$pyVar}.History[Tick](eth_symbol, start_time, end_time, Resolution.Tick)
-df = {$pyVar}.History(btc_symbol, start_time, end_time, Resolution.Hour) 
+trade_bars = <?=$pyVar?>.History[TradeBar](btc_symbol, start_time, end_time, Resolution.Daily) 
+quote_bars = <?=$pyVar?>.History[QuoteBar](btc_symbol, start_time, end_time, Resolution.Minute)
+ticks = <?=$pyVar?>.History[Tick](eth_symbol, start_time, end_time, Resolution.Tick)
+df = <?=$pyVar?>.History(btc_symbol, start_time, end_time, Resolution.Hour) 
 <img class='img-thumbnail img-responsive' src='https://cdn.quantconnect.com/i/tu/history-request-defined-period.jpg'></pre>
 
 
 <pre class='csharp'><b>// EXAMPLE 6: Requesting By a Defined Period: 3 days of data with a specific resolution:</b>
-var tradeBars = {$cVar}History&lt;TradeBar&gt;(btcSymbol, startTime, endTime, Resolution.Daily);
-var quoteBars = {$cVar}History&lt;QuoteBar&gt;(btcSymbol, startTime, endTime, Resolution.Minute);
-var ticks = {$cVar}History&lt;Tick&gt;(ethSymbol, startTime, endTime, Resolution.Tick);
-var tradeBars2 = {$cVar}History(btcSymbol, startTime, endTime, Resolution.Minute);</pre>
+var tradeBars = <?=$cVar?>History&lt;TradeBar&gt;(btcSymbol, startTime, endTime, Resolution.Daily);
+var quoteBars = <?=$cVar?>History&lt;QuoteBar&gt;(btcSymbol, startTime, endTime, Resolution.Minute);
+var ticks = <?=$cVar?>History&lt;Tick&gt;(ethSymbol, startTime, endTime, Resolution.Tick);
+var tradeBars2 = <?=$cVar?>History(btcSymbol, startTime, endTime, Resolution.Minute);</pre>
 </div>
 
 <p>If you request tick data and there are multiple ticks with the same timestamp, the <code>History</code> method only returns the last tick of the collection.</p>
@@ -204,114 +197,102 @@ var tradeBars2 = {$cVar}History(btcSymbol, startTime, endTime, Resolution.Minute
 
 <div class='section-example-container'>
 <pre class='python'><b># EXAMPLE 7: Requesting By Bar Count for Multiple Symbols: 2 bars at the security resolution:</b>
-vix = {$pyVar}.AddData[CBOE](\"VIX\", Resolution.Daily).Symbol
-v3m = {$pyVar}.AddData[CBOE](\"VIX3M\", Resolution.Daily).Symbol
-cboe_data = {$pyVar}.History[CBOE]([vix, v3m], 2)
+vix = <?=$pyVar?>.AddData[CBOE]("VIX", Resolution.Daily).Symbol
+v3m = <?=$pyVar?>.AddData[CBOE]("VIX3M", Resolution.Daily).Symbol
+cboe_data = <?=$pyVar?>.History[CBOE]([vix, v3m], 2)
 
-ibm = {$pyVar}.AddEquity(\"IBM\", Resolution.Minute).Symbol
-aapl = {$pyVar}.AddEquity(\"AAPL\", Resolution.Minute).Symbol
-trade_bars_list = {$pyVar}.History[TradeBar]([ibm, aapl], 2)
-quote_bars_list = {$pyVar}.History[QuoteBar]([ibm, aapl], 2)
-df = {$pyVar}.History([ibm, aapl], 2)
+ibm = <?=$pyVar?>.AddEquity("IBM", Resolution.Minute).Symbol
+aapl = <?=$pyVar?>.AddEquity("AAPL", Resolution.Minute).Symbol
+trade_bars_list = <?=$pyVar?>.History[TradeBar]([ibm, aapl], 2)
+quote_bars_list = <?=$pyVar?>.History[QuoteBar]([ibm, aapl], 2)
+df = <?=$pyVar?>.History([ibm, aapl], 2)
 <img class='img-responsive img-thumbnail' src='https://cdn.quantconnect.com/i/tu/history-request-single-symbol-4.png'>
 </pre>
 
 <pre class='csharp'><b>// EXAMPLE 7: Requesting By Bar Count for Multiple Symbols: 2 bars at the security resolution:</b>
-var vixSymbol = {$cVar}AddData&lt;CBOE&gt;(\"VIX\", Resolution.Daily).Symbol;
-var v3mSymbol = {$cVar}AddData&lt;CBOE&gt;(\"VIX3m\", Resolution.Daily).Symbol;
-var cboeData = {$cVar}History&lt;CBOE&gt;(new[] { vix, v3m }, 2);
+var vixSymbol = <?=$cVar?>AddData&lt;CBOE&gt;("VIX", Resolution.Daily).Symbol;
+var v3mSymbol = <?=$cVar?>AddData&lt;CBOE&gt;("VIX3m", Resolution.Daily).Symbol;
+var cboeData = <?=$cVar?>History&lt;CBOE&gt;(new[] { vix, v3m }, 2);
 
-var ibm = {$cVar}AddEquity(\"IBM\", Resolution.Minute).Symbol;
-var aapl = {$cVar}AddEquity(\"AAPL\", Resolution.Minute).Symbol;
-var tradeBarsList = {$cVar}History&lt;TradeBar&gt;(new[] { ibm, aapl }, 2);
-var quoteBarsList = {$cVar}History&lt;QuoteBar&gt;(new[] { ibm, aapl }, 2);
+var ibm = <?=$cVar?>AddEquity("IBM", Resolution.Minute).Symbol;
+var aapl = <?=$cVar?>AddEquity("AAPL", Resolution.Minute).Symbol;
+var tradeBarsList = <?=$cVar?>History&lt;TradeBar&gt;(new[] { ibm, aapl }, 2);
+var quoteBarsList = <?=$cVar?>History&lt;QuoteBar&gt;(new[] { ibm, aapl }, 2);
 </pre>
 	
 <pre class='python'><b># EXAMPLE 8: Requesting By Bar Count for Multiple Symbols: 5 bars with a specific resolution:</b>
-trade_bars_list = {$pyVar}.History[TradeBar]([ibm, aapl], 5, Resolution.Daily)
-quote_bars_list = {$pyVar}.History[QuoteBar]([ibm, aapl], 5, Resolution.Minute)
-df = {$pyVar}.History([ibm, aapl], 5, Resolution.Daily)
+trade_bars_list = <?=$pyVar?>.History[TradeBar]([ibm, aapl], 5, Resolution.Daily)
+quote_bars_list = <?=$pyVar?>.History[QuoteBar]([ibm, aapl], 5, Resolution.Minute)
+df = <?=$pyVar?>.History([ibm, aapl], 5, Resolution.Daily)
 <img class='img-responsive img-thumbnail' src='https://cdn.quantconnect.com/i/tu/history-request-single-symbol-5.png'>
 </pre>
 
 <pre class='csharp'><b>// EXAMPLE 8: Requesting By Bar Count for Multiple Symbols: 5 bars with a specific resolution:</b>
-var tradeBarsList = {$cVar}History&lt;TradeBar&gt;(new[] { ibm, aapl }, 5, Resolution.Minute);
-var quoteBarsList = {$cVar}History&lt;QuoteBar&gt;(new[] { ibm, aapl }, 5, Resolution.Minute);
+var tradeBarsList = <?=$cVar?>History&lt;TradeBar&gt;(new[] { ibm, aapl }, 5, Resolution.Minute);
+var quoteBarsList = <?=$cVar?>History&lt;QuoteBar&gt;(new[] { ibm, aapl }, 5, Resolution.Minute);
 </pre>
 	
 	
 <pre class='python'><b># EXAMPLE 9: Requesting By Trailing Period: 3 days of data at the security resolution:</b> 
-ticks = {$pyVar}.History[Tick]([eth_symbol], timedelta(days=3))
+ticks = <?=$pyVar?>.History[Tick]([eth_symbol], timedelta(days=3))
 
-trade_bars = {$pyVar}.History[TradeBar]([btc_symbol], timedelta(days=3)) 
-quote_bars = {$pyVar}.History[QuoteBar]([btc_symbol], timedelta(days=3))
-df = {$pyVar}.History([btc_symbol], timedelta(days=3)) 
+trade_bars = <?=$pyVar?>.History[TradeBar]([btc_symbol], timedelta(days=3)) 
+quote_bars = <?=$pyVar?>.History[QuoteBar]([btc_symbol], timedelta(days=3))
+df = <?=$pyVar?>.History([btc_symbol], timedelta(days=3)) 
 <img class='img-responsive img-thumbnail' src='https://cdn.quantconnect.com/i/tu/history-request-single-symbol-6.png'></pre>
 <pre class='csharp'><b>// EXAMPLE 9: Requesting By Trailing Period: 3 days of data at the security resolution:</b>
-var ticks = {$cVar}History&lt;Tick&gt;(new[] {ethSymbol}, TimeSpan.FromDays(3));
+var ticks = <?=$cVar?>History&lt;Tick&gt;(new[] {ethSymbol}, TimeSpan.FromDays(3));
 
-var tradeBars = {$cVar}History&lt;TradeBar&gt;(new[] {btcSymbol}, TimeSpan.FromDays(3));
-var quoteBars = {$cVar}History&lt;QuoteBar&gt;(new[] {btcSymbol}, TimeSpan.FromDays(3));
-var tradeBars2 = {$cVar}History(new[] {btcSymbol}, TimeSpan.FromDays(3));</pre>	
+var tradeBars = <?=$cVar?>History&lt;TradeBar&gt;(new[] {btcSymbol}, TimeSpan.FromDays(3));
+var quoteBars = <?=$cVar?>History&lt;QuoteBar&gt;(new[] {btcSymbol}, TimeSpan.FromDays(3));
+var tradeBars2 = <?=$cVar?>History(new[] {btcSymbol}, TimeSpan.FromDays(3));</pre>	
 
 <pre class='python'><b># EXAMPLE 10: Requesting By Defined Period: 3 days of data at the security resolution:</b> 
-trade_bars = {$pyVar}.History[TradeBar]([btc_symbol], start_time, end_time) 
-quote_bars = {$pyVar}.History[QuoteBar]([btc_symbol], start_time, end_time)
-ticks = {$pyVar}.History[Tick]([eth_symbol], start_time, end_time)
-df = {$pyVar}.History([btc_symbol], start_time, end_time) 
+trade_bars = <?=$pyVar?>.History[TradeBar]([btc_symbol], start_time, end_time) 
+quote_bars = <?=$pyVar?>.History[QuoteBar]([btc_symbol], start_time, end_time)
+ticks = <?=$pyVar?>.History[Tick]([eth_symbol], start_time, end_time)
+df = <?=$pyVar?>.History([btc_symbol], start_time, end_time) 
 <img class='img-responsive img-thumbnail' src='https://cdn.quantconnect.com/i/tu/history-request-defined-period-default-resolution.jpg'></pre>
 <pre class='csharp'><b>// EXAMPLE 10: Requesting By Defined Period: 3 days of data at the security resolution:</b>
-var tradeBars = {$cVar}History&lt;TradeBar&gt;(new[] {btcSymbol}, startTime, endTime);
-var quoteBars = {$cVar}History&lt;QuoteBar&gt;(new[] {btcSymbol}, startTime, endTime);
-var ticks = {$cVar}History&lt;Tick&gt;(new[] {ethSymbol}, startTime, endTime);
-var tradeBars2 = {$cVar}History(new[] {btcSymbol}, startTime, endTime);</pre>	
+var tradeBars = <?=$cVar?>History&lt;TradeBar&gt;(new[] {btcSymbol}, startTime, endTime);
+var quoteBars = <?=$cVar?>History&lt;QuoteBar&gt;(new[] {btcSymbol}, startTime, endTime);
+var ticks = <?=$cVar?>History&lt;Tick&gt;(new[] {ethSymbol}, startTime, endTime);
+var tradeBars2 = <?=$cVar?>History(new[] {btcSymbol}, startTime, endTime);</pre>	
 
 </div>
 
 <p>If you request tick data and there are multiple ticks with the same timestamp for a single security, the <code>History</code> method only returns the last tick of the collection.</p>
 
 <h4>All Symbol History Requests</h4>
-
-";
-    if ($isWritingAlgorithms)
-    {
-	echo "<p>You can request history for all active securities in your universe. ";
-    }
-    else
-    {
-	echo "<p>You can request history for all the securities you have created subscriptions for in your notebook session. ";
-    }
-	
-    echo "The parameters are very similar to other history method calls, but the return type is an array of <a href='/docs/v2/writing-algorithms/key-concepts/time-modeling/timeslices'>Slice</a> objects. The <code>Slice</code> object holds all of the results in a sorted enumerable collection that you can iterate over with a loop.</p>";
-
-    echo "
+ 
+<?=$isWritingAlgorithms ? "<p>You can request history for all active securities in your universe." : "<p>You can request history for all the securities you have created subscriptions for in your notebook session. "; ?> The parameters are very similar to other history method calls, but the return type is an array of <a href='/docs/v2/writing-algorithms/key-concepts/time-modeling/timeslices'>Slice</a> objects. The <code>Slice</code> object holds all of the results in a sorted enumerable collection that you can iterate over with a loop.</p>
     
 <div class='section-example-container'>
 <pre class='python'><b># EXAMPLE 11: Requesting 5 bars for all securities at their respective resolution:</b>
 
 # Create subscriptions
-{$pyVar}.AddEquity(\"IBM\", Resolution.Daily)
-{$pyVar}.AddEquity(\"AAPL\", Resolution.Daily)
+<?=$pyVar?>.AddEquity("IBM", Resolution.Daily)
+<?=$pyVar?>.AddEquity("AAPL", Resolution.Daily)
 
 # Request history data and enumerate results
-slices = {$pyVar}.History(5)
+slices = <?=$pyVar?>.History(5)
 for s in slices:
-    {$pyPrintMethod}(str(s.Time) + \" AAPL:\" + str(s.Bars[\"AAPL\"].Close) + \" IBM:\" + str(s.Bars[\"IBM\"].Close))
+    <?=$pyPrintMethod?>(str(s.Time) + " AAPL:" + str(s.Bars["AAPL"].Close) + " IBM:" + str(s.Bars["IBM"].Close))
 <img class='img-responsive img-thumbnail' src='https://cdn.quantconnect.com/i/tu/history-request-single-symbol-7.png'>
 </pre>
 
 <pre class='csharp'><b>// EXAMPLE 11: Requesting 5 bars for all securities at their respective resolution:</b>
 
 // Set up the universe
-{$cVar}AddEquity(\"IBM\", Resolution.Daily);
-{$cVar}AddEquity(\"AAPL\", Resolution.Daily);
+<?=$cVar?>AddEquity("IBM", Resolution.Daily);
+<?=$cVar?>AddEquity("AAPL", Resolution.Daily);
 
 // Request history data and enumerate results:
-var slices = {$cVar}History(5);
+var slices = <?=$cVar?>History(5);
 foreach (var s in slices) {
-    var aaplClose = s.Bars[\"AAPL\"].Close;
-    var ibmClose = s.Bars[\"IBM\"].Close;
-    {$cPrintMethod}($\"{s.Time} AAPL: {aaplClose} IBM: {ibmClose}\");
+    var aaplClose = s.Bars["AAPL"].Close;
+    var ibmClose = s.Bars["IBM"].Close;
+    <?=$cPrintMethod?>($"{s.Time} AAPL: {aaplClose} IBM: {ibmClose}");
 }
 <img class='img-responsive img-thumbnail' src='https://cdn.quantconnect.com/i/tu/history-request-single-symbol-9.png'>
 </pre>
@@ -320,23 +301,22 @@ foreach (var s in slices) {
 <div class='section-example-container'>  
 <pre class='python'><b># EXAMPLE 12: Requesting 5 minutes for all securities:</b>
 
-slices = {$pyVar}.History(timedelta(minutes=5), Resolution.Minute)
+slices = <?=$pyVar?>.History(timedelta(minutes=5), Resolution.Minute)
 for s in slices:
-    {$pyPrintMethod}(str(s.Time) + \" AAPL:\" + str(s.Bars[\"AAPL\"].Close) + \" IBM:\" + str(s.Bars[\"IBM\"].Close))
+    <?=$pyPrintMethod?>(str(s.Time) + " AAPL:" + str(s.Bars["AAPL"].Close) + " IBM:" + str(s.Bars["IBM"].Close))
 <img class='img-responsive img-thumbnail' src='https://cdn.quantconnect.com/i/tu/history-request-single-symbol-8.png'>
-# timedelta history requests are relative to \"now\" in {$envName} Time. If you request this data at 16:05, it returns an empty array because the market is closed.</pre>
-
+# timedelta history requests are relative to "now" in <?=$envName?> Time. If you request this data at 16:05, it returns an empty array because the market is closed.</pre>
     
 <pre class='csharp'><b>// EXAMPLE 12: Requesting 24 hours of hourly data for all securities:</b>
 
-var slices = {$cVar}History(TimeSpan.FromHours(24), Resolution.Hour);
+var slices = <?=$cVar?>History(TimeSpan.FromHours(24), Resolution.Hour);
 foreach (var s in slices) {
-    var aaplClose = s.Bars[\"AAPL\"].Close;
-    var ibmClose = s.Bars[\"IBM\"].Close;
-    {$cPrintMethod}($\"{s.Time} AAPL: {aaplClose} IBM: {ibmClose}\");
+    var aaplClose = s.Bars["AAPL"].Close;
+    var ibmClose = s.Bars["IBM"].Close;
+    <?=$cPrintMethod?>($"{s.Time} AAPL: {aaplClose} IBM: {ibmClose}");
 }
 <img class='img-responsive img-thumbnail' src='https://cdn.quantconnect.com/i/tu/history-request-single-symbol-10.png'>
-// TimeSpan history requests are relative to \"now\" in {$envName} Time.</pre>
+// TimeSpan history requests are relative to "now" in <?=$envName?> Time.</pre>
 
 </div>   
 
@@ -352,7 +332,7 @@ foreach (var s in slices) {
     <tbody>
         <tr>
             <td>Resolution</td>
-            <td>LEAN guesses the resolution you request by looking at the securities you already have in your {$envName}. If you have a security subscription in your {$envName} with a matching <code>Symbol</code>, the history request uses the same resolution as the subscription. If you don't have a security subscription in your {$envName} with a matching <code>Symbol</code>, <code>Resolution.Minute</code> is the default.</td>
+            <td>LEAN guesses the resolution you request by looking at the securities you already have in your <?=$envName?>. If you have a security subscription in your <?=$envName?> with a matching <code>Symbol</code>, the history request uses the same resolution as the subscription. If you don't have a security subscription in your <?=$envName?> with a matching <code>Symbol</code>, <code>Resolution.Minute</code> is the default.</td>
         </tr>
         <tr class='csharp'>
             <td>Bar type</td>
@@ -363,7 +343,6 @@ foreach (var s in slices) {
 
 <h4>Additional Options</h4>
 <p>If you call the <code>History</code> method with a list of <code>Symbol</code> objects, a start date, an end date, and a resolution, then you can pass the following additional arguments:</p>
-
 
 <table class='qc-table table'>
     <thead>
@@ -408,24 +387,23 @@ foreach (var s in slices) {
     </tbody>
 </table>
 
-
 <div class='section-example-container'>
-    <pre class='python'>{$pyFutureVar}future = {$pyVar}.AddFuture(Futures.Currencies.BTC)
-history = {$pyVar}.History(
-    tickers=[{$pyFutureVar}future.Symbol], 
-    start={$pyVar}.Time - timedelta(days=15), 
-    end={$pyVar}.Time, 
+    <pre class='python'><?=$pyFutureVar?>future = <?=$pyVar?>.AddFuture(Futures.Currencies.BTC)
+history = <?=$pyVar?>.History(
+    tickers=[<?=$pyFutureVar?>future.Symbol], 
+    start=<?=$pyVar?>.Time - timedelta(days=15), 
+    end=<?=$pyVar?>.Time, 
     resolution=Resolution.Minute, 
     fillForward=False, 
     extendedMarket=False, 
     dataMappingMode=DataMappingMode.OpenInterest, 
     dataNormalizationMode=DataNormalizationMode.Raw, 
     contractDepthOffset=0)</pre>
-    <pre class='csharp'>var future = {$cVar}AddFuture(Futures.Currencies.BTC);
-var history = {$cVar}History(
+    <pre class='csharp'>var future = <?=$cVar?>AddFuture(Futures.Currencies.BTC);
+var history = <?=$cVar?>History(
     symbols: new[] {future.Symbol}, 
-    start: {$cVar}Time - TimeSpan.FromDays(15),
-    end: {$cVar}Time,
+    start: <?=$cVar?>Time - TimeSpan.FromDays(15),
+    end: <?=$cVar?>Time,
     resolution: Resolution.Minute,
     fillForward: false,
     extendedMarket: false,
@@ -433,9 +411,3 @@ var history = {$cVar}History(
     dataNormalizationMode: DataNormalizationMode.Raw,
     contractDepthOffset: 0);</pre>
 </div>
-
-";
-	
-}
-
-?>
