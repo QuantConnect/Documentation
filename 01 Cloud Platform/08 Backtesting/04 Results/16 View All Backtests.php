@@ -1,10 +1,9 @@
-<?php echo file_get_contents(DOCS_RESOURCES."/getting-started/backtesting/view-all-backtests.html"); ?>
-
+<? include(DOCS_RESOURCES."/getting-started/backtesting/view-all-backtests.html"); ?>
 
 <h4>Rename Backtests</h4>
-<?php 
+<?
+$link = null;
 include(DOCS_RESOURCES."/getting-started/backtesting/rename-backtests.php"); 
-$getRenameBacktestsText();
 ?>
 
 <h4>Clone Backtests</h4>
