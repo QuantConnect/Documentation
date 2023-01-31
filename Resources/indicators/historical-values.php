@@ -4,7 +4,7 @@
 {
    // Create an indicator and adds to a RollingWindow when it is updated
    smaWindow = new RollingWindow&lt;IndicatorDataPoint&gt;(5);
-   SMA(\"SPY\", 5).Updated += (sender, updated) =&gt; smaWindow.Add(updated);
+   SMA("SPY", 5).Updated += (sender, updated) =&gt; smaWindow.Add(updated);
 }
 </pre> 
 	<pre class="python">def Initialize(self) -&gt; None:
