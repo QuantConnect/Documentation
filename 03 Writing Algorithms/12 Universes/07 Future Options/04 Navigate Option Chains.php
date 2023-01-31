@@ -1,7 +1,8 @@
 <?php 
-include(DOCS_RESOURCES."/securities/option-chains.php"); 
 $path = "future-option";
 $pythonMemberName = "";
 $cSharpMemberName = "";
-$getOptionChainsText($path , $pythonMemberName, $cSharpMemberName);
+$cSharpVariableName="canonicalSymbol";
+$pythonVariableName="canonical_symbol";
+include(DOCS_RESOURCES."/securities/option-chains.php"); 
 ?>

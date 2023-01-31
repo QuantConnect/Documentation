@@ -1,7 +1,3 @@
-<?php
-$getFutureContractText = function($pythonMemberName, $cSharpMemberName)    
-{
-    echo "
 <p><code>FuturesContract</code> objects represent the data of a single Futures contract in the market. They have the following properties:</p>
 <div data-tree='QuantConnect.Data.Market.FuturesContract'></div>
 
@@ -10,9 +6,9 @@ $getFutureContractText = function($pythonMemberName, $cSharpMemberName)
 <div class='section-example-container'>
     <pre class='csharp'>public override void OnData(Slice slice)
 {
-    if (slice.FuturesChains.TryGetValue({$cSharpMemberName}.Canonical, out var chain))
+    if (slice.FuturesChains.TryGetValue(<?=$cSharpMemberName?>.Canonical, out var chain))
     {
-        if (chain.Contracts.TryGetValue({$cSharpMemberName}, out var contract))
+        if (chain.Contracts.TryGetValue(<?=$cSharpMemberName?>, out var contract))
         {
             //
         }
@@ -21,21 +17,18 @@ $getFutureContractText = function($pythonMemberName, $cSharpMemberName)
 
 public void OnData(FuturesChains futuresChains)
 {
-    if (futuresChains.TryGetValue({$cSharpMemberName}.Canonical, out var chain))
+    if (futuresChains.TryGetValue(<?=$cSharpMemberName?>.Canonical, out var chain))
     {
-        if (chain.Contracts.TryGetValue({$cSharpMemberName}, out var contract))
+        if (chain.Contracts.TryGetValue(<?=$cSharpMemberName?>, out var contract))
         {
             //
         }
     }
 }</pre>
     <pre class='python'>def OnData(self, slice: Slice) -> None:
-    chain = slice.FuturesChains.get({$pythonMemberName}.Canonical)
+    chain = slice.FuturesChains.get(<?=$pythonMemberName?>.Canonical)
     if chain:
-        contract = chain.Contracts.get({$pythonMemberName})
+        contract = chain.Contracts.get(<?=$pythonMemberName?>)
         if contract:
             pass</pre>
-</div>    
-";
-}
-?>
+</div>   
