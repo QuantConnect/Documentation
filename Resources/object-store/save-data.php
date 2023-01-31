@@ -1,10 +1,14 @@
-<? $keyText = "To store data, you need to provide a key. If you provide a key that is already in the Object Store, it will overwrite the data at that location. To avoid overwriting objects from other projects in your organization, prefix the key with your project ID. You can find the project ID in the URL of your browser when you open a project. For example, the ID of the project at <span class='public-file-name'>quantconnect.com/project/12345</span> is 12345."; ?>
+<?
+$keyText = $writingAlgorithms ? "To store data, you need to provide a key. If you provide a key that is already in the Object Store, it will overwrite the data at that location. To avoid overwriting objects from other projects in your organization, prefix the key with your project ID. You can find the project ID in the URL of your browser when you open a project. For example, the ID of the project at <span class='public-file-name'>quantconnect.com/project/12345</span> is 12345." : "";
+$cSharpPrefix = $research ? "qb." : "";
+$pythonPrefix = $research ? "qb." : "self.";
+?>
 
 <p>The Object Store saves objects under a key-value system. If you save objects in backtests, you can access them from the Research Environment. <?=$writingAlgorithmsText?></p>
 
 <p>If you run algorithms in QuantConnect Cloud, you need <a href='/docs/v2/cloud-platform/organizations/members#08-Permissions'>storage create permissions</a> to save data in the Object Store.</p>
 
-<p>If you don't have data to store, <a href='<?=$sampleDataLink?>'>create some sample data</a>.</p>
+<p>If you don't have data to store, <a href='<?=$writingAlgorithms ? "/docs/v2/writing-algorithms/object-store#03-Create-Sample-Data" : "/docs/v2/research-environment/object-store#03-Create-Sample-Data" ?>'>create some sample data</a>.</p>
 
 <p class='csharp'>You can save the following types of objects in the Object Store:</p>
 
