@@ -1,8 +1,5 @@
-
-<?php
+<?
 include(DOCS_RESOURCES."/securities/data-normalization.php");
-$isWritingAlgorithms = false;
-$getDataNormalizationText($isWritingAlgorithms);
 ?>
 
 <p>When you request historical data, the <code>History</code> method uses the data normalization of your security subscription. To get historical data with a different data normalization, pass a <code>dataNormalizationMode</code> argument to the <code>History</code> method.</p>

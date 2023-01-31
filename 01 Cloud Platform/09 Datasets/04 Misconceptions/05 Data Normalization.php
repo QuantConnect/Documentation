@@ -2,7 +2,4 @@
 
 <div data-tree='QuantConnect.DataNormalizationMode'></div>
 
-<?php 
-include(DOCS_RESOURCES."/datasets/data-normalization.php"); 
-$getDataNormalizationAdjustmentText(true);
-?>
+<? include(DOCS_RESOURCES."/datasets/data-normalization.php"); ?>
