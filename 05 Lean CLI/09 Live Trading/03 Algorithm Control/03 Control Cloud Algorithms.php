@@ -14,9 +14,9 @@ $getLiquidatePositionsText(true);
 <p>For more information about the command options, see <a href='/docs/v2/lean-cli/api-reference/lean-cloud-live-liquidate#04-Options'>Options</a>.</p>
 
 <h4>Stop Algorithms</h4>
-<?php
+<?
+$environment = "CLI Local";
 include(DOCS_RESOURCES."/trading-and-orders/stop-algorithm.php");
-$getStopAlgorithmText("CLI Cloud");
 ?>
 
 <p>To stop an algorithm, open a terminal in the <a href='/docs/v2/lean-cli/initialization/workspace'>workspace</a> that contains the project and then run <code>lean cloud live stop "My Project"</code>.</p>
