@@ -39,12 +39,8 @@ for ticket in tickets:
         self.Debug(f"Order updated successfully for {ticket.Symbol}")</pre>
 </div>
 
-<?php 
-
-include(DOCS_RESOURCES."/order-types/update-individual-fields.php");
+<?
 $supportedMethods = array("UpdateLimitPrice", "UpdateQuantity", "UpdateTag");
-$getUpdateIndividualFieldsText($supportedMethods);
-
-echo file_get_contents(DOCS_RESOURCES."/order-types/update-requests.html");
-
+include(DOCS_RESOURCES."/order-types/update-individual-fields.php");
+include(DOCS_RESOURCES."/order-types/update-requests.html");
 ?>
