@@ -1,10 +1,7 @@
 <? include(DOCS_RESOURCES."/logging-statements/introduction.php"); ?>
 
 <h4>Log</h4>
-<?
-$isOnOurPlatform = true;
-include(DOCS_RESOURCES."/logging-statements/log.php");
-?>
+<? include(DOCS_RESOURCES."/logging-statements/log.php"); ?>
 
 <h4>Debug</h4>
 <? include(DOCS_RESOURCES."/logging-statements/debug.php"); ?>
