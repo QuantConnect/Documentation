@@ -5,5 +5,5 @@
     <pre class='python'>self.Plot(chart, series, value)</pre>
 </div>
 
-<p><?=$cloudPlatform ? "If you run your algorithm in QuantConnect Cloud, w" : "W" ?>e limit the number of points a chart can have to 4,000 because intensive charting generates hundreds of megabytes (200MB) of data, which is too much to stream online or display in a web browser. If you exceed the limit, the following error message is thrown:</p>
+<p><?=$cloudPlatform ? "If you run your algorithm in QuantConnect Cloud, we limit" : "We limit" ?> the number of points a chart can have to 4,000 because intensive charting generates hundreds of megabytes (200MB) of data, which is too much to stream online or display in a web browser. If you exceed the limit, the following error message is thrown:</p>
 <span class='error-messages'>Exceeded maximum data points per series, chart update skipped.</span>
