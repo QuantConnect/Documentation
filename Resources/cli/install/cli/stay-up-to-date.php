@@ -3,9 +3,7 @@
     Therefore, it's important to keep both the CLI and the Docker images that the CLI uses up-to-date.
 </p>
 
-<? if ($isCLIDocs) { ?>
-	<h4>Keep the CLI Up-To-Date</h4>
-<? } ?>
+<?=$leanCli ? "<h4>Keep the CLI Up-To-Date</h4>" : "" ?>
 
 <p>
     To update the CLI to the latest version, run <code>pip install --upgrade lean</code>.
