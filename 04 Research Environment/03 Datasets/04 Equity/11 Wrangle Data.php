@@ -1,5 +1,4 @@
-<?php
-include(DOCS_RESOURCES."/datasets/wrangle-data.php");
+<?
 $assetClass = 'Equity';
 $singularAssetClass = 'Equity';
 $pluralAssetClass = 'Equities';
@@ -24,5 +23,5 @@ $supportsOpenInterest = false;
 $supportsOptionHistory = false;
 $supportsFutureHistory = false;
 $contractExpiryDate = '';
-$getWrangleDataText($assetClass, $singularAssetClass, $pluralAssetClass, $historicalDataLink, $primarySymbolPy, $primarySymbolC, $primaryTicker, $secondarySymbol, $dataFrameImages, $dataFrameColumnName, $columnNameEnglish, $supportsTrades, $supportsQuotes, $supportsTicks, $supportsAltData, $supportsOpenInterest, $supportsOptionHistory, $supportsFutureHistory, $contractExpiryDate);
+include(DOCS_RESOURCES."/datasets/wrangle-data.php");
 ?>

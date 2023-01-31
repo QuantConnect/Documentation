@@ -1,5 +1,4 @@
-<?php
-include(DOCS_RESOURCES."/datasets/wrangle-data.php");
+<?
 $assetClass = 'Futures Option';
 $singularAssetClass = 'Futures Option contract';
 $pluralAssetClass = 'Futures Option contracts';
@@ -26,5 +25,5 @@ $supportsOpenInterest = true;
 $supportsOptionHistory = true;
 $supportsFutureHistory = false;
 $contractExpiryDate = 'datetime(2022, 3, 18)';
-$getWrangleDataText($assetClass, $singularAssetClass, $pluralAssetClass, $historicalDataLink, $primarySymbolPy, $primarySymbolC, $primaryTicker, $secondarySymbol, $dataFrameImages, $dataFrameColumnName, $columnNameEnglish, $supportsTrades, $supportsQuotes, $supportsTicks, $supportsAltData, $supportsOpenInterest, $supportsOptionHistory, $supportsFutureHistory, $contractExpiryDate);
+include(DOCS_RESOURCES."/datasets/wrangle-data.php");
 ?>
