@@ -6,5 +6,5 @@
     <li>The parameters that the method accepts (if the member is a method)</li>
 </ul>
 
-<p>Use Intellisense to speed up your algorithm development. It works with all of the default class members in Lean, but it doesn't currently support class names or user-defined objects. <?php if (!$isCloud) { ?>Local auto-complete is also available for <a href='/docs/v2/lean-cli/projects/autocomplete'>select IDEs</a>. <?php } ?></p>
+<p>Use Intellisense to speed up your algorithm development. It works with all of the default class members in Lean, but it doesn't currently support class names or user-defined objects. <?php if (!$cloudPlatform) { ?>Local auto-complete is also available for <a href='/docs/v2/lean-cli/projects/autocomplete'>select IDEs</a>. <?php } ?></p>
 

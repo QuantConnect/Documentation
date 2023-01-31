@@ -1,5 +1,5 @@
 <?php
-$fileType = $isCloud ? "public" : "private";
+$fileType = $cloudPlatform ? "public" : "private";
 ?>
 
 <p>The Lean engine supports C# and Python.  Python is less verbose, has more third-party libraries, and is more popular among the QuantConnect community than C#. C# is faster than Python and it's easier to contribute to Lean if you have features written in C# modules. Python is also the native language for the research notebooks, so it's easier to use in the Research Environment.</p>
