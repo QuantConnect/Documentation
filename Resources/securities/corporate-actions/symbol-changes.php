@@ -72,4 +72,4 @@ public void OnData(SymbolChangedEvents symbolChangedEvents)
             self.Transactions.AddOrder(ticket.SubmitRequest)</pre>
     </div>
 
-<p>LEAN stores the data for ticker changes in map files. To view some example map files, see the <a rel='nofollow' target='_blank' href='<?$mapFilesLink?>'>LEAN GitHub repository</a>.</p>
+<p>LEAN stores the data for ticker changes in map files. To view some example map files, see the <a rel='nofollow' target='_blank' href='<?=$mapFilesLink?>'>LEAN GitHub repository</a>.</p>
