@@ -1,9 +1,9 @@
 <? 
 $dataMarketSize = file_get_contents(DOCS_RESOURCES."/kpis/dataset-size.php");
-$location = $isAlgorithm ? "algorithms" : "notebooks" ;
-$pyCodePrefix = $isAlgorithm ? "self" : "qb" ;
-$cCodePrefix = $isAlgorithm ? "" : "qb." ;
-$assetClassLink = $isAlgorithm ? "<a href='/docs/v2/writing-algorithms/securities/asset-classes'>Asset Classes</a>" : "the <span class='page-section-name'>Create Subscriptions</span> section of an asset class in the <a href='/docs/v2/research-environment/datasets/key-concepts'>Datasets</a> chapter" ;
+$location = $writingAlgorithms ? "algorithms" : "notebooks" ;
+$pyCodePrefix = $writingAlgorithms ? "self" : "qb" ;
+$cCodePrefix = $writingAlgorithms ? "" : "qb." ;
+$assetClassLink = $writingAlgorithms ? "<a href='/docs/v2/writing-algorithms/securities/asset-classes'>Asset Classes</a>" : "the <span class='page-section-name'>Create Subscriptions</span> section of an asset class in the <a href='/docs/v2/research-environment/datasets/key-concepts'>Datasets</a> chapter" ;
 ?>
 
 <p>You can subscribe to asset, fundamental, alternative, and custom data. The <a href='https://www.quantconnect.com/datasets'>Dataset Market</a> provides <?=$dataMarketSize?> of data that you can easily import into your <?=$location?>.</p>
@@ -21,7 +21,7 @@ $assetClassLink = $isAlgorithm ? "<a href='/docs/v2/writing-algorithms/securitie
 </pre>
 </div>
 
-<? if ($isAlgorithm) { ?>
+<? if ($writingAlgorithms) { ?>
     <p>In live trading, you define the securities you want, but LEAN also gets the securities in your live portfolio and sets their resolution to the lowest resolution of the subscriptions you made. For example, if you create subscriptions in your algorithm for securities with Second, Minute, and Hour resolutions, the assets in your live portfolio are given a resolution of Second.</p>
 <? } ?>
 
@@ -29,7 +29,7 @@ $assetClassLink = $isAlgorithm ? "<a href='/docs/v2/writing-algorithms/securitie
 
 <p>To add alternative datasets to your <?=$location?>, call the <code>AddData</code> method.
     
-<? if ($isAlgorithm) { ?>
+<? if ($writingAlgorithms) { ?>
     For full examples, in the <a href='/docs/v2/writing-algorithms/datasets/overview'>Datasets</a> chapter, select a dataset and see the <span class='page-section-name'>Requesting Data</span> section.
 <? } else { ?>
     For a full example, see <a href='/docs/v2/research-environment/datasets/alternative-data'>Alternative Data</a>.
@@ -37,9 +37,9 @@ $assetClassLink = $isAlgorithm ? "<a href='/docs/v2/writing-algorithms/securitie
 </p>
 
 <? 
-$customDataLink = $isAlgorithm ? "<a href='/docs/v2/writing-algorithms/importing-data/key-concepts'>Importing Data</a>" : "<a href='/docs/v2/research-environment/datasets/custom-data'>Custom Data</a>";
-$limiationText = $isAlgorithm ? "run algorithms with bigger universes" : "request more data";
-$resourceLink = $isAlgorithm ? "<a href='/docs/v2/cloud-platform/organizations/resources'>Resources</a>" : "<a href='/docs/v2/cloud-platform/organizations/resources#03-Research-Nodes'>Research Nodes</a>";
+$customDataLink = $writingAlgorithms ? "<a href='/docs/v2/writing-algorithms/importing-data/key-concepts'>Importing Data</a>" : "<a href='/docs/v2/research-environment/datasets/custom-data'>Custom Data</a>";
+$limiationText = $writingAlgorithms ? "run algorithms with bigger universes" : "request more data";
+$resourceLink = $writingAlgorithms ? "<a href='/docs/v2/cloud-platform/organizations/resources'>Resources</a>" : "<a href='/docs/v2/cloud-platform/organizations/resources#03-Research-Nodes'>Research Nodes</a>";
 ?>
 
 <h4>Custom Data</h4>
