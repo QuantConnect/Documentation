@@ -7,8 +7,8 @@
 <p>Follow these steps to install the LEAN CLI:</p>
 
 <ol>
-    <li><a href=<?=$pipLink?>>Install pip</a>.</li>
-    <li><a href=<?=$dockerLink?>>Install Docker</a>.</li>
+    <li><a href='<?=$pipLink?>'>Install pip</a>.</li>
+    <li><a href='<?=$dockerLink?>'>Install Docker</a>.</li>
     <li>If you are on a Windows machine, open PowerShell as the adminstrator for the following commands.</li>
     <li>Install the LEAN CLI with pip.
     <div class='cli section-example-container'>
