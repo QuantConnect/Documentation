@@ -1,8 +1,4 @@
-<?php
-$getPlotTradesText = function($getOrdersLink, $algorithmType)
-{
-	echo "
-<p>You need to <a href='{$getOrdersLink}'>get your {$algorithmType} orders</a> to plot your order fills.</p>
+<p>You need to <a href='<?=$getOrdersLink?>'>get your <?=$algorithmType?> orders</a> to plot your order fills.</p>
 
 <p>Follow these steps to plot the daily buy and sell fill prices for the securities in your algorithm:</p>
 
@@ -92,6 +88,3 @@ for symbol, order_data in order_data_by_symbol.items():
 <img src='https://cdn.quantconnect.com/i/tu/plot-backtest-trades-in-research-env-spy.png' class='docs-image' alt='Plot of SPY price with buy/sell markers'>
 
 <p>Note: The preceding plots only show the last fill of each trade. If your trade has partial fills, the plots only display the last fill.</p>
-	";
-}
-?>
