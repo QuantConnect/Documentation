@@ -10,10 +10,10 @@ CMD = {
                'docker run --entrypoint bash quantconnect/lean:latest -c ". /Foundation-Pomegranate/bin/activate && pip list"',
                'docker run --entrypoint bash quantconnect/lean:latest -c ". /Foundation-Tensorforce/bin/activate && pip list"']
 }
-filenames = ['Resources/libraries/supported-libraries.php',
-             'Resources/libraries/supported-libraries-cloud.php',
-             'Resources/libraries/supported-libraries-foundation-pomegranate.php',
-             'Resources/libraries/supported-libraries-foundation-tensorforce.php']
+filenames = ['Resources/libraries/supported-libraries.html',
+             'Resources/libraries/supported-libraries-cloud.html',
+             'Resources/libraries/supported-libraries-foundation-pomegranate.html',
+             'Resources/libraries/supported-libraries-foundation-tensorforce.html']
 
 cloud_added = {
     "Accord": "3.6.0",
