@@ -1,6 +1,7 @@
-<?
+<?php
+include(DOCS_RESOURCES."/object-store/delete-data.php");
 $cSharpPrefix = "";
 $pythonPrefix = "self.";
 $context = "run algorithms";
-include(DOCS_RESOURCES."/object-store/delete-data.php");
+$getDeleteDataText($cSharpPrefix, $pythonPrefix, $context);
 ?>
