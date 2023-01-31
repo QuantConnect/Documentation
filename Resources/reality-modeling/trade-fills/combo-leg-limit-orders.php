@@ -1,10 +1,4 @@
-<?php
-if ($includeIntro)
-{
-    echo "<p>The following table describes the fill logic of combo leg limit orders for each data format and order direction. The order direction in the table represents the order direction of the order leg, not the order direction of the combo order.</p>";
-}
-?>
-
+<?php if ($includeIntro) { ?><p>The following table describes the fill logic of combo leg limit orders for each data format and order direction. The order direction in the table represents the order direction of the order leg, not the order direction of the combo order.</p><?php } ?>
 
 <table class="qc-table table">
     <thead>
