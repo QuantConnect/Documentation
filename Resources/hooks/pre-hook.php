@@ -69,6 +69,7 @@ $cloudPlatform      = $product == 'cloud-platform';
 $writingAlgorithms  = $product == 'writing-algorithms';
 $research           = $product == "research-environment";
 $leanCli            = $product == "lean-cli";
+$leanCliCloud       = $leanCli && str_contains(DOCS_URL(), "cloud");
 $leanEngine         = $product == "lean-engine";
 $localPlatform      = $product == "local-platform";
 
