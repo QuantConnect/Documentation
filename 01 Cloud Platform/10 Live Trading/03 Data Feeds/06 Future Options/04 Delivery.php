@@ -1,7 +1,6 @@
-<?php 
-include(DOCS_RESOURCES."/data-feeds/data-delay.php"); 
-$getDataFeedDataDelayText();
+<?
+include(DOCS_RESOURCES."/data-feeds/data-delay.php");
 
+$dataFeedName = "Future Options";
 include(DOCS_RESOURCES."/data-feeds/latency.php"); 
-$getDataFeedLatencyText("Future Options");
 ?>
