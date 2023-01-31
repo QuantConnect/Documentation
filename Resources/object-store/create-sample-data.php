@@ -21,7 +21,7 @@
     <div class='csharp section-example-container'>
         <pre class='csharp'>var xmlSample = new XElement("sample",
     dictSample.Select(kvp => new XElement(kvp.Key, kvp.Value)));
-<?=$cSharpMethodName?>(xmlSample.ToString());</pre>
+<?=$research ? "Console.WriteLine" : "Log"?>(xmlSample.ToString());</pre>
     </div>
     <img class='csharp' src='https://cdn.quantconnect.com/i/tu/store-data-xml-cs.png'>
 </ol>
