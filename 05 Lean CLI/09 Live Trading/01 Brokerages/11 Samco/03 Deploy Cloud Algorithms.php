@@ -1,6 +1,4 @@
-<?php
-include(DOCS_RESOURCES."/brokerages/cli-deployment/deploy-cloud-algorithms.php");
-
+<?
 $brokerageDetails = "
 <li>Enter your Samco credentials.
 <div class='cli section-example-container'>
@@ -73,6 +71,9 @@ Trading segment (equity, commodity):</pre>
 </table>
 </li>
 ";
-
-$getDeployCloudAlgorithmsText("Samco", true, $brokerageDetails);
+$brokerageName="Samco";
+$isSupported=true;
+$supportsCashHoldings=false;
+$supportsPositionHoldings=false;
+include(DOCS_RESOURCES."/brokerages/cli-deployment/deploy-cloud-algorithms.php");
 ?>

@@ -1,6 +1,4 @@
-<?php
-include(DOCS_RESOURCES."/brokerages/cli-deployment/deploy-cloud-algorithms.php");
-
+<?
 $brokerageDetails = "
 <li>Enter your Trading Technologies credentials.
 <div class='cli section-example-container'>
@@ -28,7 +26,9 @@ Order routing sender comp id: </pre></div>
 </li>
 ";
 
-$supportsCashHoldings = true;
-
-$getDeployCloudAlgorithmsText("Trading Technologies", true, $brokerageDetails, $supportsCashHoldings);
+$brokerageName="Trading Technologies";
+$isSupported=true;
+$supportsCashHoldings=true;
+$supportsPositionHoldings=false;
+include(DOCS_RESOURCES."/brokerages/cli-deployment/deploy-cloud-algorithms.php");
 ?>
