@@ -1,4 +1,1 @@
-<?php
-$isCLIDocs = true;
-include(DOCS_RESOURCES."/cli/install/pip/introduction.php");
-?>
+<? include(DOCS_RESOURCES."/cli/install/pip/introduction.php"); ?>
