@@ -3,11 +3,11 @@
 <h4>Buying Power</h4>
 <p>In the US, IB allows up to 2x leverage on Equity trades for margin accounts. In other countries, IB may offer different amounts of leverage. To figure out how much leverage you can access, check with your local legislation or contact an IB representative. We model the US version of IB leverage by default.</p>
 
-<?php include(DOCS_RESOURCES."/brokerages/margin-calls.html"); ?>
+<? include(DOCS_RESOURCES."/brokerages/margin-calls.html"); ?>
 
-<?php 
+<?
+$includeh4 = true;
 include(DOCS_RESOURCES."/brokerages/pattern-day-trader-rule.php"); 
-$getPDTText();
 ?>
 
 <p>In live trading, if you have less than $25,000 in your account and you try to open a 4th day trade for an Equity asset in a 5 business day period, you'll get the following error message:</p>
