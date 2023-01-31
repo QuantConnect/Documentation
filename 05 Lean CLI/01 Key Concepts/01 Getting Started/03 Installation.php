@@ -17,4 +17,4 @@ The following objects have been created:
 ...</pre>
 </div>
 
-<? include(DOCS_RESOURCES."/cli/init/wsl.php"); ?>
+<? include(DOCS_RESOURCES."/cli/init/wsl.html"); ?>
