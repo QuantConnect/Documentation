@@ -1,8 +1,6 @@
-<?php
-$getCacheDataText = function($isAlgorithm, $cSharpPrefix="", $pythonPrefix="self.") 
-{
-    $location = $isAlgorithm ? "algorithm" : "notebook" ;
-    echo "<p>When you write to or read from the Object Store, the {$location} caches the data. The cache speeds up the {$location} execution because if you try to read the Object Store data again with the same key, it returns the cached data instead of downloading the data again. The cache speeds up execution, but it can cause problems if you are trying to share data between two nodes under the same Object Store key. For example, consider the following scenario:</p>
+<? $location = $isAlgorithm ? "algorithm" : "notebook" ; ?>
+
+<p>When you write to or read from the Object Store, the <?=$location?> caches the data. The cache speeds up the <?=$location?> execution because if you try to read the Object Store data again with the same key, it returns the cached data instead of downloading the data again. The cache speeds up execution, but it can cause problems if you are trying to share data between two nodes under the same Object Store key. For example, consider the following scenario:</p>
     
     <ol>
         <li>You open project A and save data under the key <code>123</code>.</li>
@@ -14,9 +12,6 @@ $getCacheDataText = function($isAlgorithm, $cSharpPrefix="", $pythonPrefix="self
     <p>To clear the cache, call the <code>Clear</code> method.</p>
     
 <div class='section-example-container'>
-    <pre class='csharp'>{$cSharpPrefix}ObjectStore.Clear();</pre>
-    <pre class='python'>{$pythonPrefix}ObjectStore.Clear()</pre>
+    <pre class='csharp'><?=$cSharpPrefix?>ObjectStore.Clear();</pre>
+    <pre class='python'><?=$pythonPrefix?>ObjectStore.Clear()</pre>
 </div>
-    ";  
-}
-?>
