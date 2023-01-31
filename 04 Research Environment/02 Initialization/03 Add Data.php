@@ -1,4 +1,4 @@
-<?php
+<?
+$isAlgorithm = false;
 include(DOCS_RESOURCES."/initialization/add-data.php");
-$getAddDataText(false);
 ?>
