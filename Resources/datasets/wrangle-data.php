@@ -215,9 +215,9 @@
 <div class='section-example-container'>
 <pre class='csharp'>
 <? if ($supportsTrades) { ?>
-    var tradeBars = allHistorySlice.Where(slice => slice.Bars.ContainsKey(<?=$primarySymbolC?>)).Select(slice => slice.Bars[<?=$primarySymbolC?>]);
+var tradeBars = allHistorySlice.Where(slice => slice.Bars.ContainsKey(<?=$primarySymbolC?>)).Select(slice => slice.Bars[<?=$primarySymbolC?>]);
 <? } else { ?>
-    var quoteBars = allHistorySlice.Where(slice => slice.QuoteBars.ContainsKey(<?=$primarySymbolC?>)).Select(slice => slice.QuoteBars[<?=$primarySymbolC?>]);
+var quoteBars = allHistorySlice.Where(slice => slice.QuoteBars.ContainsKey(<?=$primarySymbolC?>)).Select(slice => slice.QuoteBars[<?=$primarySymbolC?>]);
 <? } ?>
 </pre>
 </div>
