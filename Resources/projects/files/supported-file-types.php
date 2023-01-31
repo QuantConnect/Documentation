@@ -1,1 +1,1 @@
-<p><?=$isCloud ? "The IDE" : "The local platform"?> supports <span class='public-file-name'>.cs</span>, <span class='public-file-name'>.ipynb</span>, and <span class='public-file-name'>.py</span> files.</p> 
+<p><?=$cloudPlatform ? "The IDE" : "The local platform"?> supports <span class='public-file-name'>.cs</span>, <span class='public-file-name'>.ipynb</span>, and <span class='public-file-name'>.py</span> files.</p> 

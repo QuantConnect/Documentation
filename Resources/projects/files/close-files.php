@@ -1,5 +1,5 @@
 <?php
-$env = $isCloud ? "the IDE" : "VS Code" ;
+$env = $cloudPlatform ? "the IDE" : "VS Code" ;
 ?>
 
 <p>To close a file, at the top of <?=$env?>, click the <span class='button-name'>x</span> button on the file tab you want to close.</p>
