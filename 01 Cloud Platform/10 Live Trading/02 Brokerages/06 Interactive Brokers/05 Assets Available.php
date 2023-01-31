@@ -39,7 +39,7 @@
 <p>You might need to purchase an IB data subscription for your trading. For more information about live data feeds, see <a href='/docs/v2/cloud-platform/live-trading/data-feeds'>Data Feeds</a>.</p>
 
 <h4>ETFs</h4>
-<?php
+<?
+$brokerageName = "Interactive Brokers";
 include(DOCS_RESOURCES."/brokerages/us-etfs.php");
-$getUSETFText("IB");
 ?>
