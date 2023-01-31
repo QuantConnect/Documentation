@@ -120,7 +120,7 @@ class FrontMonthFutureUniverseSelectionModel(FutureUniverseSelectionModel):
 </div>
 
 <?
-$assetClass("Future");
+$assetClass = "Future";
 include(DOCS_RESOURCES."/universes/option/filter-caveats.php");
 ?>
 

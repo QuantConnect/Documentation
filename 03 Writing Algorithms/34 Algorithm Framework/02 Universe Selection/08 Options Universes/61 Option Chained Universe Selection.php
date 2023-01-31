@@ -37,7 +37,7 @@
 <p>The <code>optionFilter</code> function receives and returns an <code>OptionFilterUniverse</code> to select the Option contracts. The following table describes the methods of the <code>OptionFilterUniverse</code> class:</p>
 
 
-<? echo file_get_contents(DOCS_RESOURCES."/universes/option/option-filter-universe.html"); ?>
+<? include(DOCS_RESOURCES."/universes/option/option-filter-universe.html"); ?>
 
 <div class="section-example-container">
 	<pre class="csharp">public override void Initialize()
@@ -59,12 +59,12 @@ def OptionFilterFunction(self, option_filter_universe: OptionFilterUniverse) -&g
 </div>
 
 <?
-$assetClass("Option");
+$assetClass = "Option";
 include(DOCS_RESOURCES."/universes/option/filter-caveats.php");
 ?>
 
 <p>To override the default <a href='https://www.quantconnect.com/docs/v2/writing-algorithms/reality-modeling/options-models/pricing'>pricing model</a> of the Options, <a href='https://www.quantconnect.com/docs/v2/writing-algorithms/reality-modeling/options-models/pricing#04-Set-Models'>set a pricing model</a> in a security initializer.</p>
 
-<? echo file_get_contents(DOCS_RESOURCES."/reality-modeling/volatility-model.html"); ?>
+<? include(DOCS_RESOURCES."/reality-modeling/volatility-model.html"); ?>
 
 <p>To view the implementation of this model, see the <a target="_blank" rel="nofollow" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm/Selection/OptionChainedUniverseSelectionModel.cs">LEAN GitHub repository</a>.</p>

@@ -48,7 +48,7 @@ def contract_selector(self, option_filter_universe: OptionFilterUniverse) -> Opt
 </div>
 
 <?
-$assetClass("Option");
+$assetClass = "Option";
 include(DOCS_RESOURCES."/universes/option/filter-caveats.php");
 ?>
 
