@@ -14,7 +14,6 @@
 
 <h4>Submit Orders</h4>
 <?
-$isCLI = true;
 include(DOCS_RESOURCES."/trading-and-orders/place-manual-trades.php");
 ?>
 
