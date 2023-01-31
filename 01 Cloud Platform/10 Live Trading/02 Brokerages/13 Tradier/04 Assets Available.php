@@ -23,7 +23,7 @@
 <p>You might need to purchase a Tradier data feed subscription. For more information about live data feeds, see <a href='/docs/v2/cloud-platform/live-trading/data-feeds'>Data Feeds</a>.</p>
 
 <h4>ETFs</h4>
-<?php
+<?
 $brokerageName = "Tradier";
 include(DOCS_RESOURCES."/brokerages/us-etfs.php");
 ?>
