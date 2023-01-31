@@ -36,11 +36,8 @@ if response.IsSuccess:
 </pre>
 </div>
 
-<?php 
-include(DOCS_RESOURCES."/order-types/update-individual-fields.php");
+<? 
 $supportedMethods = array("UpdateLimitPrice", "UpdateQuantity", "UpdateStopPrice", "UpdateTag");
-$getUpdateIndividualFieldsText($supportedMethods);
-
-echo file_get_contents(DOCS_RESOURCES."/order-types/update-requests.html");
-
+include(DOCS_RESOURCES."/order-types/update-individual-fields.php");
+include(DOCS_RESOURCES."/order-types/update-requests.html");
 ?>
