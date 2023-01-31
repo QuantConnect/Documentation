@@ -1,4 +1,5 @@
-<?php
+<?
+$orderType = "Option exercise orders";
+$brokerageName = "QuantConnectBrokerage";
 include(DOCS_RESOURCES."/order-types/brokerage-restrictions.php");
-$getBrokerageRestrictionsText("Option exercise orders");
 ?>

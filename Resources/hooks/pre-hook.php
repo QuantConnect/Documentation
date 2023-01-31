@@ -30,7 +30,7 @@ if (!function_exists('DOCS_URL')) {
         }
         return $BREADCRUMBS[$key];
     }
-
+    
     /**
      * Export Vimeo Video Template
      */
@@ -71,4 +71,13 @@ $research           = $product == "research-environment";
 $leanCli            = $product == "lean-cli";
 $leanEngine         = $product == "lean-engine";
 $localPlatform      = $product == "local-platform";
+
+$kpi["dataset-size"]                   = "400TB";
+$kpi["coarse-universe-size"]           = "10,000";
+$kpi["fundamental-universe-size"]      = "5,000";
+$kpi["live-algorithms-count"]          = "200,000";
+$kpi["member-count"]                   = "220,000";
+$kpi["us-equity-security-master-size"] = "30,000";
+$kpi["volume-traded"]                  = "$22B";
+   
 
