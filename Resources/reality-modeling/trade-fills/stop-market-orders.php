@@ -1,10 +1,4 @@
-<?php
-if ($includeIntro)
-{
-    echo "<p>The following table describes the fill logic of stop market orders for each data format and order direction. Once the stop condition is met, the model fills the orders and sets the fill price.</p>";
-}
-?>
-
+<?php if ($includeIntro) { ?><p>The following table describes the fill logic of stop market orders for each data format and order direction. Once the stop condition is met, the model fills the orders and sets the fill price.</p><?php } ?>
 
 <table class="qc-table table">
     <thead>

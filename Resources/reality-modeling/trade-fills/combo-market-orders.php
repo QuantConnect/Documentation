@@ -1,9 +1,4 @@
-<?php
-if ($includeIntro)
-{
-    echo "<p>The following table describes the fill price of combo market orders for each data format and order direction:</p>";
-}
-?>
+<?php if ($includeIntro) { ?><p>The following table describes the fill price of combo market orders for each data format and order direction:</p><?php } ?>
 
 <table class="qc-table table">
     <thead>
