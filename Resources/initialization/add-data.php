@@ -1,23 +1,20 @@
 <? 
 $dataMarketSize = file_get_contents(DOCS_RESOURCES."/kpis/dataset-size.php");
-$location = $writingAlgorithms ? "algorithms" : "notebooks" ;
-$pyCodePrefix = $writingAlgorithms ? "self" : "qb" ;
-$cCodePrefix = $writingAlgorithms ? "" : "qb." ;
-$assetClassLink = $writingAlgorithms ? "<a href='/docs/v2/writing-algorithms/securities/asset-classes'>Asset Classes</a>" : "the <span class='page-section-name'>Create Subscriptions</span> section of an asset class in the <a href='/docs/v2/research-environment/datasets/key-concepts'>Datasets</a> chapter" ;
+$location = $writingAlgorithms ? "algorithms" : "notebooks" ; 
 ?>
 
 <p>You can subscribe to asset, fundamental, alternative, and custom data. The <a href='https://www.quantconnect.com/datasets'>Dataset Market</a> provides <?=$dataMarketSize?> of data that you can easily import into your <?=$location?>.</p>
 
 <h4>Asset Data</h4>
 
-<p>To subscribe to asset data, call one of the asset subscription methods like <code>AddEquity</code> or <code>AddForex</code>. Each asset class has its own method to create subscriptions. For more information about how to create subscriptions for each asset class, see <?=$assetClassLink?>.</p>
+<p>To subscribe to asset data, call one of the asset subscription methods like <code>AddEquity</code> or <code>AddForex</code>. Each asset class has its own method to create subscriptions. For more information about how to create subscriptions for each asset class, see <?=$writingAlgorithms ? "<a href='/docs/v2/writing-algorithms/securities/asset-classes'>Asset Classes</a>" : "the <span class='page-section-name'>Create Subscriptions</span> section of an asset class in the <a href='/docs/v2/research-environment/datasets/key-concepts'>Datasets</a> chapter" ?>.</p>
 
 <div class='section-example-container'>
-	<pre class='csharp'><?=$cCodePrefix?>AddEquity("AAPL"); // Add Apple 1 minute bars (minute by default)
-<?=$cCodePrefix?>AddForex("EURUSD", Resolution.Second); // Add EURUSD 1 second bars
+	<pre class='csharp'><?=$writingAlgorithms ? "" : "qb."?>AddEquity("AAPL"); // Add Apple 1 minute bars (minute by default)
+<?=$writingAlgorithms ? "" : "qb."?>AddForex("EURUSD", Resolution.Second); // Add EURUSD 1 second bars
 </pre>
-	<pre class='python'><?=$pyCodePrefix?>.AddEquity("SPY")  # Add Apple 1 minute bars (minute by default)
-<?=$pyCodePrefix?>.AddForex("EURUSD", Resolution.Second) # Add EURUSD 1 second bars
+	<pre class='python'><?=$writingAlgorithms ? "self" : "qb"?>.AddEquity("SPY")  # Add Apple 1 minute bars (minute by default)
+<?=$writingAlgorithms ? "self" : "qb"?>.AddForex("EURUSD", Resolution.Second) # Add EURUSD 1 second bars
 </pre>
 </div>
 
@@ -27,24 +24,14 @@ $assetClassLink = $writingAlgorithms ? "<a href='/docs/v2/writing-algorithms/sec
 
 <h4>Alternative Data</h4>
 
-<p>To add alternative datasets to your <?=$location?>, call the <code>AddData</code> method.
-    
-<? if ($writingAlgorithms) { ?>
-    For full examples, in the <a href='/docs/v2/writing-algorithms/datasets/overview'>Datasets</a> chapter, select a dataset and see the <span class='page-section-name'>Requesting Data</span> section.
-<? } else { ?>
-    For a full example, see <a href='/docs/v2/research-environment/datasets/alternative-data'>Alternative Data</a>.
-<? } ?>
+<p>
+To add alternative datasets to your <?=$location?>, call the <code>AddData</code> method. <? if ($writingAlgorithms) { ?> For full examples, in the <a href='/docs/v2/writing-algorithms/datasets/overview'>Datasets</a> chapter, select a dataset and see the <span class='page-section-name'>Requesting Data</span> section.
+<? } else { ?> For a full example, see <a href='/docs/v2/research-environment/datasets/alternative-data'>Alternative Data</a>. <? } ?>
 </p>
-
-<? 
-$customDataLink = $writingAlgorithms ? "<a href='/docs/v2/writing-algorithms/importing-data/key-concepts'>Importing Data</a>" : "<a href='/docs/v2/research-environment/datasets/custom-data'>Custom Data</a>";
-$limiationText = $writingAlgorithms ? "run algorithms with bigger universes" : "request more data";
-$resourceLink = $writingAlgorithms ? "<a href='/docs/v2/cloud-platform/organizations/resources'>Resources</a>" : "<a href='/docs/v2/cloud-platform/organizations/resources#03-Research-Nodes'>Research Nodes</a>";
-?>
-
+ 
 <h4>Custom Data</h4>
 
-<p>To add custom data to your <?=$location?>, call the <code>AddData</code> method. For more information about custom data, see <?=$customDataLink?>.</p>    
+<p>To add custom data to your <?=$location?>, call the <code>AddData</code> method. For more information about custom data, see <?=$writingAlgorithms ? "<a href='/docs/v2/writing-algorithms/importing-data/key-concepts'>Importing Data</a>" : "<a href='/docs/v2/research-environment/datasets/custom-data'>Custom Data</a>"?>.</p>    
 
 <h4>Limitations</h4>
-<p>There is no official limit to how much data you can add to your <?=$location?>, but there are practical resource limitations. Each security subscription requires about 5MB of RAM, so larger machines let you <?=$limiationText?>. For more information about our cloud nodes, see <?=$resourceLink?>.</p>
+<p>There is no official limit to how much data you can add to your <?=$location?>, but there are practical resource limitations. Each security subscription requires about 5MB of RAM, so larger machines let you <?=$writingAlgorithms ? "run algorithms with bigger universes" : "request more data"?>. For more information about our cloud nodes, see <?=$writingAlgorithms ? "<a href='/docs/v2/cloud-platform/organizations/resources'>Resources</a>" : "<a href='/docs/v2/cloud-platform/organizations/resources#03-Research-Nodes'>Research Nodes</a>"?>.</p>
