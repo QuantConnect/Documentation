@@ -1,6 +1,4 @@
-<?php
-include(DOCS_RESOURCES."/ide/rename-projects.php");
+<?
 $openProjectLink = "/docs/v2/local-platform/projects/getting-started#04-Open-Projects";
-$isDesktopDocs = true;
-$getRenameProjectsText($openProjectLink, $isDesktopDocs);
+include(DOCS_RESOURCES."/ide/rename-projects.php");
 ?>
