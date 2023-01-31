@@ -20,7 +20,7 @@
     <li>In the Pull QuantConnect Organization Workspace window, create a directory to serve as the workspace and then click <span class="button-name">Select</span>.</li>
     <img class="docs-image" src="https://cdn.quantconnect.com/i/tu/pull-cloud-workspaces.png"></li>
 
-    <?php echo file_get_contents(DOCS_RESOURCES."/cli/init/wsl.php"); ?>
+    <? include(DOCS_RESOURCES."/cli/init/wsl.html"); ?>
 
     <li>In the Open Project panel, click <span class="button-name">Create Project</span>.</li>
     <img class="docs-image" src="https://cdn.quantconnect.com/i/tu/open-new-project.png">

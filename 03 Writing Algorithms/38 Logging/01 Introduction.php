@@ -1,4 +1,1 @@
-<?php 
-include(DOCS_RESOURCES."/logging-statements/introduction.php"); 
-$getLogIntroText("");
-?>
+<? include(DOCS_RESOURCES."/logging-statements/introduction.php"); ?>
