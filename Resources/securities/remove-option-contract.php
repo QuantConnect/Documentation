@@ -1,16 +1,8 @@
-<?php
-$getRemoveOptionContractText = function($pythonVariableName, $cSharpVariableName, $addContractMethodName="AddOptionContract")
-{
-    echo "
-<p>To remove a contract subscription that you created with <code>{$addContractMethodName}</code>, call the <code>RemoveOptionContract</code> method. This method is an alias for <code>RemoveSecurity</code>.</p>
+<p>To remove a contract subscription that you created with <code><?=$addContractMethodName?></code>, call the <code>RemoveOptionContract</code> method. This method is an alias for <code>RemoveSecurity</code>.</p>
 
 <div class='section-example-container'>
-    <pre class='csharp'>RemoveOptionContract({$cSharpVariableName});</pre>
-    <pre class='python'>self.RemoveOptionContract({$pythonVariableName})</pre>
+    <pre class='csharp'>RemoveOptionContract(<?=$cSharpVariableName?>);</pre>
+    <pre class='python'>self.RemoveOptionContract(<?=$pythonVariableName?>)</pre>
 </div>
 
 <p>The <code>RemoveOptionContract</code> method cancels your open orders for the contract and liquidates your holdings.</p>
-";
-    
-}
-?>
