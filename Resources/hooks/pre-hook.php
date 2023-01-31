@@ -72,6 +72,7 @@ $leanCli            = $product == "lean-cli";
 $leanCliCloud       = $leanCli && ( str_contains(DOCS_URL(), "cloud") || str_contains($ANCHOR, "cloud") );
 $leanEngine         = $product == "lean-engine";
 $localPlatform      = $product == "local-platform";
+$localPlatformOrCli = $localPlatform || $leanCli;
 
 $kpi["dataset-size"]                   = "400TB";
 $kpi["coarse-universe-size"]           = "10,000";
