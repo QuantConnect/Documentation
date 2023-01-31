@@ -40,6 +40,6 @@
 
 <h4>ETFs</h4>
 <?
-$brokerageName = "IB";
+$brokerageName = "Interactive Brokers";
 include(DOCS_RESOURCES."/brokerages/us-etfs.php");
 ?>
