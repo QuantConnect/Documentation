@@ -1,6 +1,4 @@
-<?php
-include(DOCS_RESOURCES."/brokerages/cli-deployment/deploy-cloud-algorithms.php");
-
+<?
 $brokerageDetails = "
 <li>Enter the environment to use. Enter <code>Trade</code> for fxTrade or <code>Practice</code> for fxTrade Practice.
 <div class='cli section-example-container'>
@@ -25,6 +23,9 @@ API token: ****************</pre>
 To create a token, see the <a href='https://www.oanda.com/account/tpa/personal_token' target='_blank'>Manage API Access page</a> on the OANDA website.
 </li>
 ";
-
-$getDeployCloudAlgorithmsText("Oanda", true, $brokerageDetails);
+$brokerageName="Oanda";
+$isSupported=true;
+$supportsCashHoldings=false;
+$supportsPositionHoldings=false;
+include(DOCS_RESOURCES."/brokerages/cli-deployment/deploy-cloud-algorithms.php");
 ?>
