@@ -1,5 +1,4 @@
 <?
-$isAlgorithm = true;
 include(DOCS_RESOURCES."/initialization/set-time-zone.php");
 ?>
 
