@@ -61,6 +61,14 @@ if (!function_exists('DOCS_URL')) {
 }
 
 /**
- * Here you can add variables to the environment
+ * Common Environment Variables
  */
-$isCloud = DOCS_URL(0) == 'cloud-platform';
+$product = DOCS_URL(0);
+
+$cloudPlatform      = $product == 'cloud-platform';
+$writingAlgorithms  = $product == 'writing-algorithms';
+$research           = $product == "research-environment";
+$leanCli            = $product == "lean-cli";
+$leanEngine         = $product == "lean-engine";
+$localPlatform      = $product == "local-platform";
+

@@ -1,5 +1,5 @@
 <?
-    $isBacktest = DOCS_URL(0) == "backtesting";
+    $isBacktest = DOCS_URL(1) == "backtesting";
     $location = $isBacktest ? "algorithm" : "notebook" ;
 ?>
 

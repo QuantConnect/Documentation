@@ -1,6 +1,6 @@
 <p>If you have a project open, it uses a coding session. Paid organizations can have multiple active coding sessions, but free users can only have one coding session open at a time. The following table shows how many active coding sessions you can have on each organization tier:</p>
 
-<?php echo file_get_contents(DOCS_RESOURCES."/quotas/coding-sessions.html"); ?>
+<? include(DOCS_RESOURCES."/quotas/coding-sessions.html"); ?>
 
 <p>If the organization you're in has more <a href='/docs/v2/cloud-platform/organizations/resources#04-Live-Trading-Nodes'>live trading nodes</a> than your initial coding session quota, then your coding session quota increases to the number of live trading nodes you have in the organization so you can view all your live strategies.</p>
 
