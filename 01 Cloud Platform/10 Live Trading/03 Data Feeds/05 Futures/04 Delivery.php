@@ -1,6 +1,6 @@
 <?
 include(DOCS_RESOURCES."/data-feeds/data-delay.php");
 
-$getDataFeedLatencyText = "Futures";
+$dataFeedName = "Futures";
 include(DOCS_RESOURCES."/data-feeds/latency.php"); 
 ?>
