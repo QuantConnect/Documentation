@@ -1,4 +1,5 @@
-<?php
+<?
+$orderType = "combo market orders";
+$brokerageName = "QuantConnectBrokerage";
 include(DOCS_RESOURCES."/order-types/brokerage-restrictions.php");
-$getBrokerageRestrictionsText("combo market orders");
 ?>
