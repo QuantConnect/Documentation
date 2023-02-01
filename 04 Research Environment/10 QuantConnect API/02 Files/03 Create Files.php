@@ -5,5 +5,7 @@
     <pre class="python">response = api.AddProjectFile(project_id, file_name, content)</pre>
 </div>
 
+<?php include(DOCS_RESOURCES."/qc-api/get-project-id-in-research.html"); ?>
+
 <p>The <code>AddProjectFile</code> method returns a <code>ProjectFilesResponse</code> object, which have the following attributes:</p>
 <div data-tree='QuantConnect.Api.ProjectFilesResponse'></div>

@@ -5,6 +5,8 @@
     <pre class="python">response = api.ReadProjectFiles(project_id)</pre>
 </div>
 
+<?php include(DOCS_RESOURCES."/qc-api/get-project-id-in-research.html"); ?>
+
 <p>To get details on a specific file in a project, call the <code>ReadProjectFile</code> method with the project Id and file name.</p>
 
 <div class="section-example-container">

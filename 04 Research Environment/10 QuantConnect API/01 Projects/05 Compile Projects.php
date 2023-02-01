@@ -4,6 +4,8 @@
     <pre class="python">compile = api.CreateCompile(project_id)</pre>
 </div>
 
+<?php include(DOCS_RESOURCES."/qc-api/get-project-id-in-research.html"); ?>
+
 <p>To read a compile packet job result, call the <code>ReadCompile</code> method with the project Id and compile ID.</p>
 <div class="section-example-container">
     <pre class="csharp">var compileResults = api.ReadCompile(projectId, compile.CompileId);</pre>

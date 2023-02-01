@@ -5,5 +5,7 @@
     <pre class="python">backtest = api.CreateBacktest(project_id, compile.CompileId, backtest_name)</pre>
 </div>
 
+<?php include(DOCS_RESOURCES."/qc-api/get-project-id-in-research.html"); ?>
+
 <p>The <code>CreateBacktest</code> method returns a <code>Backtest</code> object, which have the following attributes:</p>
 <div data-tree='QuantConnect.Api.Backtest'></div>

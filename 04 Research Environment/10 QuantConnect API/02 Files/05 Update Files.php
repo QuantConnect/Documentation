@@ -4,6 +4,8 @@
     <pre class="python">response = api.UpdateProjectFileName(project_id, old_file_name, new_file_name)</pre>
 </div>
 
+<?php include(DOCS_RESOURCES."/qc-api/get-project-id-in-research.html"); ?>
+
 <p>To update the content of a file, call the <code>UpdateProjectFileContent</code> method with the project ID, the file name, and the new content.</p>
 <div class="section-example-container">
     <pre class="csharp">var response = api.UpdateProjectFileContent(projectId, fileName, newContent);</pre>

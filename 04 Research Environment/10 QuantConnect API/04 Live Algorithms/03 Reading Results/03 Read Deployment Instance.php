@@ -11,5 +11,8 @@ var liveAlgorithm = api.ReadLiveAlgorithm(projectId, deployId);</pre>
     <pre class="python">live_algorithm = api.ReadLiveAlgorithm(project_id, deploy_id)</pre>
 </div>
 
+<?php include(DOCS_RESOURCES."/qc-api/get-project-id-in-research.html"); ?>
+<?php include(DOCS_RESOURCES."/qc-api/get-deployment-id-in-research.html"); ?>
+
 <p>The <code>ReadLiveAlgorithm</code> method returns a <code>LiveAlgorithmResults</code> object, which have the following attributes:</p>
 <div data-tree='QuantConnect.Api.LiveAlgorithmResults'></div>
