@@ -1,6 +1,6 @@
 <?
 $brokerageDetails = "
-<li>Enter your Tradier account ID and access token.
+<li>Enter your Tradier account Id and access token.
 <div class='cli section-example-container'>
 <pre>$ lean cloud live \"My Project\" --push --open
 Account id: VA000001

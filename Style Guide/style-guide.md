@@ -105,7 +105,7 @@ Many nouns are built from verbs, for example, _description_ and _explanation_. S
 |-------------------|-------------------|
 |The following table **describes** each of the products.|The following table **provides a description of** each of these products.|
 |**Install** the product by completing the following tasks.|**Perform the installation** of the product by completing the following tasks.|
-|The program **encrypts** user IDs and passwords.|The program **enables the encryption of** user IDs and passwords.|
+|The program **encrypts** user Id and passwords.|The program **enables the encryption of** user Id and passwords.|
 
 #### Use the simplest tense
  Simple verbs, such as verbs in the present tense, are easier to read and understand than complex verbs, such as verbs in the progressive or perfect tense, or verbs combined with helping verbs (such as _can_, _may_, _might_, _must_, and _should_).
@@ -231,7 +231,7 @@ Write each step as a complete and correctly punctuated imperative sentence (that
 
 **Examples** 
 1.  Log in to your QuantConnect Organization. 
-2.  Use the following command to get your user id  `uid`.
+2.  Use the following command to get your user Id  `uid`.
 
 ##### Provide context before the action
 If a step specifies where to perform an action, state where to perform the action before describing the action.

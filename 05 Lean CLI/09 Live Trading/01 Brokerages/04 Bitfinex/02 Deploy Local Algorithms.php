@@ -3,7 +3,7 @@ $brokerageName = "Bitfinex";
 $dataFeedName = "";
 $isBrokerage = true;
 $brokerageDetails = "
-<li>Enter your API key id and secret.
+<li>Enter your API key Id and secret.
 <div class='cli section-example-container'>
 <pre>$ lean live \"My Project\"
 API key: bbbMsqbxjytVM9cGvnLpKguz9rZf2T5qACxaVx7E8Mm
