@@ -1,5 +1,5 @@
 <?php 
-include(DOCS_RESOURCES."/consolidators/manage-consolidators.php");
+include(DOCS_RESOURCES."/consolidators/consolidator-format-info/tick-quotebar-definition.php");
 $dataFormatInfo = new TickQuoteBarConsolidatorFormatInfo();
 
 $createConsolidatorExtraArgs = ", TickType.Quote";
@@ -9,5 +9,5 @@ $shortCutTickTypeArg = "TickType.Quote, ";
 
 $consolidatorInfo = new CalendarConsolidatorInfo($createConsolidatorExtraArgs, $shortcutClass1, $shortcutClass2, $shortCutTickTypeArg);
 
-$getConsolidatorText($dataFormatInfo, $consolidatorInfo);
+include(DOCS_RESOURCES."/consolidators/manage-consolidators.php");
 ?>

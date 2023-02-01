@@ -1,5 +1,7 @@
 <?php 
-include(DOCS_RESOURCES."/consolidators/manage-consolidators.php");
+include(DOCS_RESOURCES."/consolidators/consolidator-format-info/tick-definition.php");
+$dataFormatInfo = new TickConsolidatorFormatInfo();
+
 $numSamples = 10;
 $timeSpanPeriod = "FromMilliseconds(100)";
 $timeDeltaPeriod = "milliseconds=100";
@@ -12,5 +14,5 @@ $consolidatorInfo = new MixedModeConsolidatorInfo($numSamples,
 	$consolidationTextResolution,
 	$consolidationTextReceiveTime1,
 	$consolidationTextReceiveTime2);
-$getConsolidatorText(new TickConsolidatorFormatInfo(), $consolidatorInfo);
+include(DOCS_RESOURCES."/consolidators/manage-consolidators.php");
 ?>

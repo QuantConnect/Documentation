@@ -1,5 +1,6 @@
 <?php 
-include(DOCS_RESOURCES."/consolidators/manage-consolidators.php");
+include(DOCS_RESOURCES."/consolidators/consolidator-format-info/tick-quotebar-definition.php");
+
 $dataFormatInfo = new TickQuoteBarConsolidatorFormatInfo();
 
 $timeSpanPeriod = "FromMilliseconds(100)";
@@ -33,5 +34,5 @@ $consolidatorInfo = new TimePeriodConsolidatorInfo($timeSpanPeriod,
 	$shortcutClass2,
 	$shortCutTickTypeArg);
 
-$getConsolidatorText($dataFormatInfo, $consolidatorInfo);
+include(DOCS_RESOURCES."/consolidators/manage-consolidators.php");
 ?>

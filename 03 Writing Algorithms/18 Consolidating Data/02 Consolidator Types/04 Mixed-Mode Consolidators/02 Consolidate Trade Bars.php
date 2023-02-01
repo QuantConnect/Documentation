@@ -1,5 +1,8 @@
 <?php 
-include(DOCS_RESOURCES."/consolidators/manage-consolidators.php");
+include(DOCS_RESOURCES."/consolidators/consolidator-format-info/trade-bar-definition.php");
+
+$dataFormatInfo = new TradeBarConsolidatorFormatInfo();
+
 $numSamples = 10;
 $timeSpanPeriod = "FromDays(1)";
 $timeDeltaPeriod = "days=1";
@@ -13,5 +16,5 @@ $consolidatorInfo = new MixedModeConsolidatorInfo($numSamples,
 	$consolidationTextReceiveTime1,
 	$consolidationTextReceiveTime2);
 
-$getConsolidatorText(new TradeBarConsolidatorFormatInfo(), $consolidatorInfo);
+include(DOCS_RESOURCES."/consolidators/manage-consolidators.php");
 ?>
