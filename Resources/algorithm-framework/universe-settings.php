@@ -64,7 +64,7 @@
 <p>To set the <code>UniverseSettings</code>, update the preceding properties in the <code>Initialize</code> method before you add the 
 <? if ($isFramework) { ?>
     "Universe Selection model"
-<? else ?>
+<? } else { ?>
      "universe"
 <? } ?>
 These settings are globals, so they apply to all universes you create.</p>

@@ -1,7 +1,7 @@
 <p>
  The Resources panel shows the <?=$cloudPlatform ? "cloud " : ""?>backtesting, research, and live trading nodes within your organization. 
  </p>
- <?=$cloudPlatform ? :  DOCS_VIMEO(696287022) : "" ?> 
+ <?=$cloudPlatform ? DOCS_VIMEO(696287022) : "" ?> 
 <p>
  To view the Resources panel, <a href='<?=$projectLink?>'>open a project</a> and then, in the <?=$cloudPlatform ? "right" : "left"?> navigation menu, click the <img class='inline-icon' src='https://cdn.quantconnect.com/i/tu/resources-icon.png'> <span class='icon-name'>Resources</span> icon.
  </p>
