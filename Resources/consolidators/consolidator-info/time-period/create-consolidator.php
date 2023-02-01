@@ -14,7 +14,7 @@
 # self.consolidator = self.ResolveConsolidator(self.symbol, timedelta(<?=$this->timeDeltaPeriod?>)<?=$this->resolveConsolidatorExtraArgsPy?>)</pre>
 	</div>
 
-	<?=file_get_contents(DOCS_RESOURCES."/consolidators/time-period-start-time.html")?>
+	<?php include(DOCS_RESOURCES."/consolidators/time-period-start-time.html");?>
 
 	<li><code>Resolution</code> Periods</li>
 	<p>The <code>Resolution</code> enumeration has the following members:</p>
@@ -27,6 +27,6 @@
 	</div>
 </ul>
 
-<?php if ($typeOf == "TradeBar" || $typeOf == "QuoteBar") { ?><p>If the security subscription in your algorithm provides <code>TradeBar</code> and <code>QuoteBar</code> data, <code>ResolveConsolidator</code> returns a <code>TradeBarConsolidator</code>.</p><?php ?>
+<?php if ($typeOf == "TradeBar" || $typeOf == "QuoteBar") { ?><p>If the security subscription in your algorithm provides <code>TradeBar</code> and <code>QuoteBar</code> data, <code>ResolveConsolidator</code> returns a <code>TradeBarConsolidator</code>.</p><?php } ?>
 
-<?=file_get_contents(DOCS_RESOURCES."/consolidators/time-period-end-time.html")?>
+<?php include(DOCS_RESOURCES."/consolidators/time-period-end-time.html"); ?>
