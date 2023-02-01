@@ -22,7 +22,7 @@ Password: **********</pre>
 </div>
     </li>
 
-    <li>If you have an IQFeed developer account, enter the product id and version of your account.
+    <li>If you have an IQFeed developer account, enter the product ID and version of your account.
 <div class='cli section-example-container'>
 <pre>$ lean live \"My Project\"
 Product id: &lt;yourID&gt;

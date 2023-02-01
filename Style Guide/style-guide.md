@@ -231,7 +231,7 @@ Write each step as a complete and correctly punctuated imperative sentence (that
 
 **Examples** 
 1.  Log in to your QuantConnect Organization. 
-2.  Use the following command to get your user id  `uid`.
+2.  Use the following command to get your user ID  `uid`.
 
 ##### Provide context before the action
 If a step specifies where to perform an action, state where to perform the action before describing the action.
