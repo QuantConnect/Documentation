@@ -4,7 +4,7 @@
 
 <p>The following image shows an example of the Server Statistics section:</p>
 
-<img class='docs-image' src="https://cdn.quantconnect.com/i/tu/optimization-server-statistics.png">
+<img class='docs-image' src="https://cdn.quantconnect.com/i/tu/optimization-server-statistics.png" alt="Optimization server statstics">
 
 <p>The following table describes the information that the Server Statistics section displays:</p>
 
