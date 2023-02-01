@@ -9,5 +9,3 @@
 $includeh4 = true;
 include(DOCS_RESOURCES."/brokerages/pattern-day-trader-rule.php"); 
 ?>
-
-<p>For default buying power and margin rate models, see <a href="/docs/v2/writing-algorithms/reality-modeling/brokerages/supported-models/td-ameritrade#05-Buying-Power">TD Ameritrade Supported Models</a>.
