@@ -552,3 +552,5 @@
 <p>If you trade a contract that's not in the preceding table, the base fee is $0.85/contract and the exchange fee is $1.60/contract.</p>
 
 <p>In addition to the base fee and exchange fee, there is a $0.02/contract regulatory fee.</p>
+
+<p>For default backtest fee model, see <a href="/docs/v2/writing-algorithms/reality-modeling/brokerages/supported-models/interactive-brokers#04-Fees">Interactive Brokers Supported Models</a>.
