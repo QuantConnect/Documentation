@@ -6,7 +6,7 @@
     <li><a href="/docs/v2/cloud-platform/projects/getting-started#02-View-All-Projects">Open the project</a>&nbsp;you want to deploy.</li>
     <li>Click the <img class="inline-icon" src="https://cdn.quantconnect.com/i/tu/deploy-live-icon.png"> <span class="icon-name">Deploy Live</span> icon.</li>
     <li>On the Deploy Live page, click the <span class="field-name">Brokerage</span> field and then click <span class="button-name">Oanda</span> from the drop-down menu.</li>
-    <li>Enter your Oanda account ID and access token.</li>
+    <li>Enter your Oanda account Id and access token.</li>
     <?php echo file_get_contents(DOCS_RESOURCES."/brokerages/create-credentials/oanda.html"); ?>
     <li>Click the <span class="field-name">Environment</span> field and then click one of the environments.</li>
 

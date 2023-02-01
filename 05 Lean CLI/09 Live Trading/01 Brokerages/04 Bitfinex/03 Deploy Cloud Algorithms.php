@@ -1,6 +1,6 @@
 <?
 $brokerageDetails = "
-<li>Enter your API key ID and secret.
+<li>Enter your API key Id and secret.
 <div class='cli section-example-container'>
 <pre>$ lean cloud live \"My Project\" --push --open
 API key: bbbMsqbxjytVM9cGvnLpKguz9rZf2T5qACxaVx7E8Mm
