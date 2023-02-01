@@ -9,7 +9,7 @@ for clean_up in os.listdir('03 Writing Algorithms/14 Datasets'):
         temp = 'tmp/03 Writing Algorithms/14 Datasets/' + clean_up
         if os.path.isdir(destination):
             shutil.copytree(destination, temp, dirs_exist_ok=True,
-                            ignore=lambda dir, files: [f for f in files if os.path.isfile(os.path.join(dir, f)) and str(f) != "metadata.json"])
+                            ignore=lambda dir, files: [f for f in files if os.path.isfile(os.path.join(dir, f)) and str(f) != "metadata.json" and str(f) != "00.json"])
             shutil.rmtree(destination)
             shutil.copytree(temp, destination, dirs_exist_ok=True)
             shutil.rmtree(temp)
@@ -26,8 +26,6 @@ vendors = {}
 product_count = {}
 attr = False
 
-json_00 = {}
-
 priority = ["QuantConnect", "AlgoSeek", "Morningstar", "TickData", "TrueData", "CoinAPI", "OANDA"]
 vendor_names = priority + sorted([x for x in [dataset["vendorName"].strip() for dataset in doc] if x not in priority])
 for vendor in vendor_names:
@@ -35,15 +33,6 @@ for vendor in vendor_names:
         vendors[vendor] = vendor_count
         product_count[vendor] = {dataset["name"].strip(): m+1 for m, dataset in enumerate(sorted([x for x in doc if x["vendorName"].strip() == vendor], key=lambda x: x['name']))}
         vendor_count += 1
-        
-        json_00[vendor] = {
-  "type" : "landing",
-  "heading" : vendor,
-  "subHeading" : "",
-  "content" : "",
-  "alsoLinks" : [],
-  "featureShortDescription": {}
-}
         
 universe_html = """<p>The following alternative datasets support universe selection:</p>
 <ul>
@@ -74,13 +63,6 @@ for dataset in doc:
                     .replace('</code>',
                                 '')
                     
-        if item["title"].lower() == "about the provider":
-            json_00[vendorName]["content"] = content
-            json_00[vendorName]["featureShortDescription"][f"{product_count[vendorName][datasetName]:02}"] = ""
-            
-            with open(f'03 Writing Algorithms/14 Datasets/{vendors[vendorName]:02} {vendorName}/00.json', 'w', encoding='utf-8') as html_file:
-                html_file.write(str(json_00[vendorName]).replace('"', '\\"').replace("'", '"'))
-        
         if item["title"].lower() == "example applications":
             with open(destination_folder / f'99 {item["title"].strip()}.html', "w", encoding="utf-8") as html_file:
                 html_file.write(content)
