@@ -4,4 +4,3 @@
 <p>Bitfinex allows up to 3.3x leverage for margin accounts.</p>
 
 <?php include(DOCS_RESOURCES."/brokerages/margin-calls.html"); ?>
-
