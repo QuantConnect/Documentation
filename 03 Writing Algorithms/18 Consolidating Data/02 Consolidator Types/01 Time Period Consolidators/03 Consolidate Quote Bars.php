@@ -1,5 +1,5 @@
 <?php 
-include(DOCS_RESOURCES."/consolidators/manage-consolidators.php");
+include(DOCS_RESOURCES."/consolidators/consolidator-format-info/quote-bar-definition.php");
 $dataFormatInfo = new QuoteBarConsolidatorFormatInfo();
 
 $timeSpanPeriod = "FromDays(1)";
@@ -32,5 +32,5 @@ $consolidatorInfo = new TimePeriodConsolidatorInfo($timeSpanPeriod,
 	$shortcutClass2,
 	$shortCutTickTypeArg);
 
-$getConsolidatorText($dataFormatInfo, $consolidatorInfo);
+include(DOCS_RESOURCES."/consolidators/manage-consolidators.php");
 ?>

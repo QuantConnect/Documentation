@@ -2,7 +2,7 @@
 
 <h4>Time Period Consolidators</h4>
 
-<?php echo file_get_contents(DOCS_RESOURCES."/consolidators/time-period-consolidator-intro.html"); ?>
+<?php echo file_get_contents(DOCS_RESOURCES."/consolidators/consolidator-info/time-period/introduction.html"); ?>
 
 <p>The following table shows which consolidator type to use based on the data format of the input and output:</p>
 
@@ -40,7 +40,7 @@
 
 <h4>Calendar Consolidators</h4>
 
-<?php echo file_get_contents(DOCS_RESOURCES."/consolidators/calendar-consolidator-intro.html"); ?>
+<?php echo file_get_contents(DOCS_RESOURCES."/consolidators/consolidator-info/calendar/intro.html"); ?>
 
 <p>The following table shows which consolidator type to use based on the data format of the input and output:</p>
 
@@ -79,7 +79,7 @@
 
 <h4>Count Consolidators</h4>
 
-<?php echo file_get_contents(DOCS_RESOURCES."/consolidators/count-consolidator-intro.html"); ?>
+<?php echo file_get_contents(DOCS_RESOURCES."/consolidators/consolidator-info/count/introduction.html"); ?>
 
 <p>The following table shows which consolidator type to use based on the data format of the input and output:</p>
 
@@ -117,7 +117,7 @@
 
 <h4>Mixed-Mode Consolidators</h4>
 
-<?php echo file_get_contents(DOCS_RESOURCES."/consolidators/mixed-mode-consolidator-intro.html"); ?>
+<?php echo file_get_contents(DOCS_RESOURCES."/consolidators/consolidator-info/mixed-mode/introduction.html"); ?>
 
 <p>The following table shows which consolidator type to use based on the data format of the input and output:</p>
 
@@ -156,7 +156,7 @@
 
 <h4>Renko Consolidators</h4>
 
-<?php echo file_get_contents(DOCS_RESOURCES."/consolidators/renko-consolidator-intro.html"); ?>
+<?php echo file_get_contents(DOCS_RESOURCES."/consolidators/consolidator-info/renko/introduction.html"); ?>
 
 <p>The following table shows which consolidator type to use based on the data format of the input and output:</p>
 
@@ -194,7 +194,7 @@
 
 <h4>Classic Renko Consolidators</h4>
 
-<?php echo file_get_contents(DOCS_RESOURCES."/consolidators/classic-renko-consolidator-intro.html"); ?>
+<?php echo file_get_contents(DOCS_RESOURCES."/consolidators/consolidator-info/classic-renko/introduction.html"); ?>
 
 <p>The following table shows which consolidator type to use based on the data format of the input and output:</p>
 

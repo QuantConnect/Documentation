@@ -1,5 +1,7 @@
 <?php 
-include(DOCS_RESOURCES."/consolidators/manage-consolidators.php");
+include(DOCS_RESOURCES."/consolidators/consolidator-format-info/tick-quotebar-definition.php");
+$dataFormatInfo = new TickQuoteBarConsolidatorFormatInfo();
+
 $numSamples = 10;
 $timeSpanPeriod = "FromMilliseconds(100)";
 $timeDeltaPeriod = "milliseconds=100";
@@ -12,5 +14,6 @@ $consolidatorInfo = new MixedModeConsolidatorInfo($numSamples,
 	$consolidationTextResolution,
 	$consolidationTextReceiveTime1,
 	$consolidationTextReceiveTime2);
-$getConsolidatorText(new TickQuoteBarConsolidatorFormatInfo(), $consolidatorInfo);
+
+include(DOCS_RESOURCES."/consolidators/manage-consolidators.php");
 ?>

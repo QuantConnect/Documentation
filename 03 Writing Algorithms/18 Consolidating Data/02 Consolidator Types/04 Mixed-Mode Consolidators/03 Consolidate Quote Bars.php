@@ -1,5 +1,7 @@
 <?php 
-include(DOCS_RESOURCES."/consolidators/manage-consolidators.php");
+include(DOCS_RESOURCES."/consolidators/consolidator-format-info/quote-bar-definition.php");
+$dataFormatInfo = new QuoteBarConsolidatorFormatInfo();
+
 $numSamples = 10;
 $timeSpanPeriod = "FromDays(1)";
 $timeDeltaPeriod = "days=1";
@@ -12,5 +14,6 @@ $consolidatorInfo = new MixedModeConsolidatorInfo($numSamples,
 	$consolidationTextResolution,
 	$consolidationTextReceiveTime1,
 	$consolidationTextReceiveTime2);
-$getConsolidatorText(new QuoteBarConsolidatorFormatInfo(), $consolidatorInfo);
+
+include(DOCS_RESOURCES."/consolidators/manage-consolidators.php");
 ?>

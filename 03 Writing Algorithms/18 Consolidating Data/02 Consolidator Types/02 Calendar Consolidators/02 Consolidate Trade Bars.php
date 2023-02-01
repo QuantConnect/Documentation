@@ -1,5 +1,6 @@
 <?php 
-include(DOCS_RESOURCES."/consolidators/manage-consolidators.php");
+include(DOCS_RESOURCES."/consolidators/consolidator-format-info/trade-bar-definition.php");
+
 $dataFormatInfo = new TradeBarConsolidatorFormatInfo();
 
 $createConsolidatorExtraArgs = "";
@@ -9,5 +10,5 @@ $shortCutTickTypeArg = "";
 
 $consolidatorInfo = new CalendarConsolidatorInfo($createConsolidatorExtraArgs, $shortcutClass1, $shortcutClass2, $shortCutTickTypeArg);
 
-$getConsolidatorText($dataFormatInfo, $consolidatorInfo);
+include(DOCS_RESOURCES."/consolidators/manage-consolidators.php");
 ?>
