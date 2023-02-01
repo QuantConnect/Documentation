@@ -9,6 +9,12 @@
  *
  */
 
+if (!function_exists('str_contains')) {
+    function str_contains($haystack, $needle) {
+        return $needle !== '' && mb_strpos($haystack, $needle) !== false;
+    }
+}
+
 /**
  * Add if does not exist the a method to get the docs url key form the breadcrumbs
  */
