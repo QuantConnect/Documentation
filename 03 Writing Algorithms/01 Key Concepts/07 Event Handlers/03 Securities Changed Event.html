@@ -1,1 +1,32 @@
-<p> </p>
+<div class="section-example-container">
+<pre class="csharp">public override void OnSecuritiesChanged(SecurityChanges changes)
+{
+    foreach (var security in changes.AddedSecurities)
+    {
+        Debug($"{Time}: Added {security.Symbol}");
+    }
+    foreach (var security in changes.RemovedSecurities)
+    {
+        Debug($"{Time}: Removed {security.Symbol}");
+        
+        if (security.Invested)
+        {
+            Liquidate(security.Symbol, "Removed from Universe");
+        }
+    }
+}</pre>
+<pre class="python">def OnSecuritiesChanged(self, changes: SecurityChanges) -> None:
+    for security in changes.AddedSecurities:
+        self.Debug(f"{self.Time}: Added {security.Symbol}")
+
+    for security in changes.RemovedSecurities:
+        self.Debug(f"{self.Time}: Removed {security.Symbol}")
+        
+        if security.Invested:
+            self.Liquidate(security.Symbol, "Removed from Universe")</pre>
+</div>
+<p>
+The <code>OnSecuritiesChanged</code> event notifies the algorithm when assets are added or removed from the universe. This can be due to changes in the <a href="/docs/v2/writing-algorithms/universes/key-concepts#07-Security-Changed-Events">Universe constituents</a>, or an explicit call to the <a href="/docs/v2/writing-algorithms/securities/requesting-data#07-Remove-Subscriptions">RemoveSecurity</a> method.
+</p>
+<p>The event is triggered immediately when the asset is removed from the universe; however the data feed for the asset may remain active if the algorithm has open orders.</p>
+<p>For more information, see how to use <a href="/docs/v2/writing-algorithms/universes/key-concepts#07-Security-Changed-Events">Security Changed Events</a>.</p>
