@@ -11,9 +11,9 @@ $brokerageDetails = "
 Username: trader777
 Account id: DU1234567
 Account password: ****************</pre>
-</div>
-</li>
-";
+</div>".file_get_contents(DOCS_RESOURCES."/live-trading/ib-capital-issue.html")."
+</li>";
+
 
 $dataFeedDetails = "
 <li>Enter whether you want to enable delayed market data.

@@ -6,7 +6,8 @@
     <li><a href="/docs/v2/cloud-platform/projects/getting-started#02-View-All-Projects">Open the project</a> that you want to deploy.</li>
     <li>Click the <img class="inline-icon" src="https://cdn.quantconnect.com/i/tu/deploy-live-icon.png" alt="Lightning icon"> <span class="icon-name">Deploy Live</span> icon.</li>
     <li>On the Deploy Live page, click the <span class="field-name">Brokerage</span> field and then click <span class="button-name">Interactive Brokers</span> from the drop-down menu.</li>
-    <li>Enter your IB user name, ID, and password.</li>
+    <li>Enter your IB user name, Id, and password.</li>
+    <?php include(DOCS_RESOURCES."/live-trading/ib-capital-issue.html");?>
     <p>Your account details are not saved on QuantConnect.</p>
     <li>In the <span class="field-name">Weekly Restart UTC</span> field, enter the Coordinated Universal Time (UTC) time of when you want to receive notifications on Sundays to re-authenticate your account connection.</li>
     <p>For example, 4 PM UTC is equivalent to 11 AM Eastern Standard Time, 12 PM Eastern Daylight Time, 8 AM Pacific Standard Time, and 9 AM Pacific Daylight Time. To convert from UTC to a different time zone, see the <a rel='nofollow' target='_blank' href='https://www.utctime.net/utc-time-zone-converter'>UTC Time Zone Converter</a> on the UTC Time website.</p>

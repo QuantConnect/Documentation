@@ -8,7 +8,7 @@ $brokerageDetails = "
 Username: trader777
 Account id: DU1234567
 Account password: ****************</pre>
-</div>
+</div>".file_get_contents(DOCS_RESOURCES."/live-trading/ib-capital-issue.html")."
 </li>
 
 <li>Enter whether you want to use the <a href='https://www.quantconnect.com/docs/v2/cloud-platform/live-trading/data-feeds/brokerage-data-feeds/interactive-brokers'>price data feed from Interactive Brokers</a> instead of the one from QuantConnect. Enabling this feature requires you to have active Interactive Brokers market data subscriptions for all data required by your algorithm.
