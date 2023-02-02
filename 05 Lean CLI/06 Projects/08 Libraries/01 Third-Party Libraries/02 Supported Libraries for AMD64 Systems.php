@@ -5,6 +5,4 @@
     The following libraries are available on AMD64-based systems:
 </p>
 
-<?php
-echo file_get_contents(DOCS_RESOURCES."/libraries/supported-libraries.html");
-?>
+<? include(DOCS_RESOURCES."/libraries/supported-libraries.php"); ?>
