@@ -2,6 +2,8 @@
 
 include(DOCS_RESOURCES."/consolidators/consolidator-format-info/base-class-definition.php");
 
+if (class_exists('QuoteBarConsolidatorFormatInfo')) return;
+
 class QuoteBarConsolidatorFormatInfo extends ConsolidatorFormatInfo
 {
 	function __construct($output = "<code>QuoteBar</code> objects of the same size or larger", $consolidationHandlerType = "QuoteBar")

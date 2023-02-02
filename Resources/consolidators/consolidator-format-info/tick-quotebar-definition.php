@@ -2,6 +2,8 @@
 
 include(DOCS_RESOURCES."/consolidators/consolidator-format-info/base-class-definition.php");
 
+if (class_exists('TickQuoteBarConsolidatorFormatInfo')) return;
+
 class TickQuoteBarConsolidatorFormatInfo extends ConsolidatorFormatInfo
 {
 	function __construct($output = "<code>QuoteBar</code> objects", $consolidationHandlerType = "QuoteBar")

@@ -1,4 +1,7 @@
 <?php
+
+if (class_exists('ConsolidatorInfo')) return;
+
 class ConsolidatorInfo
 {
 	public $basedOnText, 

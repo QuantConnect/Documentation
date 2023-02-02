@@ -2,6 +2,8 @@
 
 include(DOCS_RESOURCES."/consolidators/consolidator-format-info/base-class-definition.php");
 
+if (class_exists('TickConsolidatorFormatInfo')) return;
+
 class TickConsolidatorFormatInfo extends ConsolidatorFormatInfo
 {
 	function __construct($output = "<code>TradeBar</code> objects", $consolidationHandlerType = "TradeBar")

@@ -2,6 +2,8 @@
 
 include(DOCS_RESOURCES."/consolidators/consolidator-info/base-class-definition.php");
 
+if (class_exists('ClassicRenkoConsolidatorInfo')) return;
+
 class ClassicRenkoConsolidatorInfo extends ConsolidatorInfo
 {
 	public $extraExamples;
