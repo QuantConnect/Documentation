@@ -1,0 +1,163 @@
+<p>You need a <a href="/docs/v2/research-environment/datasets/crypto-futures#03-Create-Subscriptions">subscription</a> before you can request historical data for a security. You can request an amount of historical data based on a trailing number of bars, a trailing period of time, or a defined period of time. You can also request historical data for a single contract, a subset of the contracts you created subscriptions for in your notebook, or all of the contracts in your notebook.</p>
+
+<h4>Trailing Number of Bars<br></h4>
+<p>To get historical data for a number of trailing bars, call the <code>History</code> method with the <code>Symbol</code> object(s) and an integer.</p>
+<div class="section-example-container">
+    <pre class="csharp">// Slice objects
+var singleHistorySlice = qb.History(btcusd, 10);
+var subsetHistorySlice = qb.History(new[] {btcusd, ethusd}, 10);
+var allHistorySlice = qb.History(10);
+
+// TradeBar objects
+var singleHistoryTradeBars = qb.History&lt;TradeBar&gt;(btcusd, 10);
+var subsetHistoryTradeBars = qb.History&lt;TradeBar&gt;(new[] {btcusd, ethusd}, 10);
+var allHistoryTradeBars = qb.History&lt;TradeBar&gt;(qb.Securities.Keys, 10);
+
+// QuoteBar objects
+var singleHistoryQuoteBars = qb.History&lt;QuoteBar&gt;(btcusd, 10);
+var subsetHistoryQuoteBars = qb.History&lt;QuoteBar&gt;(new[] {btcusd, ethusd}, 10);
+var allHistoryQuoteBars = qb.History&lt;QuoteBar&gt;(qb.Securities.Keys, 10);</pre>
+    <pre class="python"># DataFrame of trade and quote data
+single_history_df = qb.History(btcusd, 10)
+subset_history_df = qb.History([btcusd, ethusd], 10)
+all_history_df = qb.History(qb.Securities.Keys, 10)
+
+# DataFrame of trade data
+single_history_trade_bar_df = qb.History(TradeBar, btcusd, 10)
+subset_history_trade_bar_df = qb.History(TradeBar, [btcusd, ethusd], 10)
+all_history_trade_bar_df = qb.History(TradeBar, qb.Securities.Keys, 10)
+
+# DataFrame of quote data
+single_history_quote_bar_df = qb.History(QuoteBar, btcusd, 10)
+subset_history_quote_bar_df = qb.History(QuoteBar, [btcusd, ethusd], 10)
+all_history_quote_bar_df = qb.History(QuoteBar, qb.Securities.Keys, 10)
+
+# Slice objects
+all_history_slice = qb.History(10)
+
+# TradeBar objects
+single_history_trade_bars = qb.History[TradeBar](btcusd, 10)
+subset_history_trade_bars = qb.History[TradeBar]([btcusd, ethusd], 10)
+all_history_trade_bars = qb.History[TradeBar](qb.Securities.Keys, 10)
+
+# QuoteBar objects
+single_history_quote_bars = qb.History[QuoteBar](btcusd, 10)
+subset_history_quote_bars = qb.History[QuoteBar]([btcusd, ethusd], 10)
+all_history_quote_bars = qb.History[QuoteBar](qb.Securities.Keys, 10)</pre>
+</div>
+
+<h4>Trailing Period of Time<br></h4>
+<p>To get historical data for a trailing period of time, call the <code>History</code> method with the <code>Symbol</code> object(s) and a <code class="csharp">TimeSpan</code><code class="python">timedelta</code>.</p>
+<div class="section-example-container">
+    <pre class="csharp">// Slice objects
+var singleHistorySlice = qb.History(btcusd, TimeSpan.FromDays(3));
+var subsetHistorySlice = qb.History(new[] {btcusd, ethusd}, TimeSpan.FromDays(3));
+var allHistorySlice = qb.History(10);
+
+// TradeBar objects
+var singleHistoryTradeBars = qb.History&lt;TradeBar&gt;(btcusd, TimeSpan.FromDays(3));
+var subsetHistoryTradeBars = qb.History&lt;TradeBar&gt;(new[] {btcusd, ethusd}, TimeSpan.FromDays(3));
+var allHistoryTradeBars = qb.History&lt;TradeBar&gt;(TimeSpan.FromDays(3));
+
+// QuoteBar objects
+var singleHistoryQuoteBars = qb.History&lt;QuoteBar&gt;(btcusd, TimeSpan.FromDays(3), Resolution.Minute);
+var subsetHistoryQuoteBars = qb.History&lt;QuoteBar&gt;(new[] {btcusd, ethusd}, TimeSpan.FromDays(3), Resolution.Minute);
+var allHistoryQuoteBars = qb.History&lt;QuoteBar&gt;(qb.Securities.Keys, TimeSpan.FromDays(3), Resolution.Minute);
+
+// Tick objects
+var singleHistoryTicks = qb.History&lt;Tick&gt;(btcusd, TimeSpan.FromDays(3), Resolution.Tick);
+var subsetHistoryTicks = qb.History&lt;Tick&gt;(new[] {btcusd, ethusd}, TimeSpan.FromDays(3), Resolution.Tick);
+var allHistoryTicks = qb.History&lt;Tick&gt;(qb.Securities.Keys, TimeSpan.FromDays(3), Resolution.Tick);<br></pre>
+    <pre class="python"># DataFrame of trade and quote data
+single_history_df = qb.History(btcusd, timedelta(days=3))
+subset_history_df = qb.History([btcusd, ethusd], timedelta(days=3))
+all_history_df = qb.History(qb.Securities.Keys, timedelta(days=3))
+
+# DataFrame of trade data
+single_history_trade_bar_df = qb.History(TradeBar, btcusd, timedelta(days=3))
+subset_history_trade_bar_df = qb.History(TradeBar, [btcusd, ethusd], timedelta(days=3))
+all_history_trade_bar_df = qb.History(TradeBar, qb.Securities.Keys, timedelta(days=3))
+
+# DataFrame of quote data
+single_history_quote_bar_df = qb.History(QuoteBar, btcusd, timedelta(days=3))
+subset_history_quote_bar_df = qb.History(QuoteBar, [btcusd, ethusd], timedelta(days=3))
+all_history_quote_bar_df = qb.History(QuoteBar, qb.Securities.Keys, timedelta(days=3))
+
+# Slice objects
+all_history_slice = qb.History(timedelta(days=3))
+
+# TradeBar objects
+single_history_trade_bars = qb.History[TradeBar](btcusd, timedelta(days=3))
+subset_history_trade_bars = qb.History[TradeBar]([btcusd, ethusd], timedelta(days=3))
+all_history_trade_bars = qb.History[TradeBar](qb.Securities.Keys, timedelta(days=3))
+
+# QuoteBar objects
+single_history_quote_bars = qb.History[QuoteBar](btcusd, timedelta(days=3), Resolution.Minute)
+subset_history_quote_bars = qb.History[QuoteBar]([btcusd, ethusd], timedelta(days=3), Resolution.Minute)
+all_history_quote_bars = qb.History[QuoteBar](qb.Securities.Keys, timedelta(days=3), Resolution.Minute)
+
+# Tick objects
+single_history_ticks = qb.History[Tick](btcusd, timedelta(days=3), Resolution.Tick)
+subset_history_ticks = qb.History[Tick]([btcusd, ethusd], timedelta(days=3), Resolution.Tick)
+all_history_ticks = qb.History[Tick](qb.Securities.Keys, timedelta(days=3), Resolution.Tick)</pre>
+</div>
+
+<h4>Defined Period of Time<br></h4>
+<p>To get historical data for a specific period of time, call the <code >History</code> method with the <code>Symbol</code> object(s), a start  <code class="csharp">DateTime</code><code class="python">datetime</code>, and an end <code class="csharp">DateTime</code><code class="python">datetime</code>. The start and end times you provide are based in the <a href='/docs/v2/research-environment/initialization#04-Set-Time-Zone'>notebook time zone</a>.</p>
+
+<div class="section-example-container">
+    <pre class="csharp">var startTime = new DateTime(2021, 1, 1);
+var endTime = new DateTime(2021, 2, 1);
+
+// Slice objects
+var singleHistorySlice = qb.History(btcusd, startTime, endTime);
+var subsetHistorySlice = qb.History(new[] {btcusd, ethusd}, startTime, endTime);
+var allHistorySlice = qb.History(qb.Securities.Keys, startTime, endTime);
+
+// TradeBar objects
+var singleHistoryTradeBars = qb.History&lt;TradeBar&gt;(btcusd, startTime, endTime);
+var subsetHistoryTradeBars = qb.History&lt;TradeBar&gt;(new[] {btcusd, ethusd}, startTime, endTime);
+var allHistoryTradeBars = qb.History&lt;TradeBar&gt;(qb.Securities.Keys, startTime, endTime);
+
+// QuoteBar objects
+var singleHistoryQuoteBars = qb.History&lt;QuoteBar&gt;(btcusd, startTime, endTime, Resolution.Minute);
+var subsetHistoryQuoteBars = qb.History&lt;QuoteBar&gt;(new[] {btcusd, ethusd}, startTime, endTime, Resolution.Minute);
+var allHistoryQuoteBars = qb.History&lt;QuoteBar&gt;(qb.Securities.Keys, startTime, endTime, Resolution.Minute);
+
+// Tick objects
+var singleHistoryTicks = qb.History&lt;Tick&gt;(btcusd, startTime, endTime, Resolution.Tick);
+var subsetHistoryTicks = qb.History&lt;Tick&gt;(new[] {btcusd, ethusd}, startTime, endTime, Resolution.Tick);
+var allHistoryTicks = qb.History&lt;Tick&gt;(qb.Securities.Keys, startTime, endTime, Resolution.Tick);</pre>
+    <pre class="python">start_time = datetime(2021, 1, 1)
+end_time = datetime(2021, 2, 1)
+
+# DataFrame of trade and quote data
+single_history_df = qb.History(btcusd, start_time, end_time)
+subset_history_df = qb.History([btcusd, ethusd], start_time, end_time)
+all_history_df = qb.History(qb.Securities.Keys, start_time, end_time)
+
+# DataFrame of trade data
+single_history_trade_bar_df = qb.History(TradeBar, btcusd, start_time, end_time)
+subset_history_trade_bar_df = qb.History(TradeBar, [btcusd, ethusd], start_time, end_time)
+all_history_trade_bar_df = qb.History(TradeBar, qb.Securities.Keys, start_time, end_time)
+
+# DataFrame of quote data
+single_history_quote_bar_df = qb.History(QuoteBar, btcusd, start_time, end_time)
+subset_history_quote_bar_df = qb.History(QuoteBar, [btcusd, ethusd], start_time, end_time)
+all_history_quote_bar_df = qb.History(QuoteBar, qb.Securities.Keys, start_time, end_time)
+
+# TradeBar objects
+single_history_trade_bars = qb.History[TradeBar](btcusd, start_time, end_time)
+subset_history_trade_bars = qb.History[TradeBar]([btcusd, ethusd], start_time, end_time)
+all_history_trade_bars = qb.History[TradeBar](qb.Securities.Keys, start_time, end_time)
+
+# QuoteBar objects
+single_history_quote_bars = qb.History[QuoteBar](btcusd, start_time, end_time, Resolution.Minute)
+subset_history_quote_bars = qb.History[QuoteBar]([btcusd, ethusd], start_time, end_time, Resolution.Minute)
+all_history_quote_bars = qb.History[QuoteBar](qb.Securities.Keys, start_time, end_time, Resolution.Minute)
+
+# Tick objects
+single_history_ticks = qb.History[Tick](btcusd, start_time, end_time, Resolution.Tick)
+subset_history_ticks = qb.History[Tick]([btcusd, ethusd], start_time, end_time, Resolution.Tick)
+all_history_ticks = qb.History[Tick](qb.Securities.Keys, start_time, end_time, Resolution.Tick)</pre>
+</div>

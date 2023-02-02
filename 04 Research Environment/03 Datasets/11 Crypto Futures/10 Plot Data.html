@@ -1,0 +1,70 @@
+<p class="csharp">Jupyter Notebooks don't currently support libraries to plot historical data, but we are working on adding the functionality. Until we add the functionality, use Python to plot historical Crypto Futures data.</p>
+
+<p class="python">You need some <a href="/docs/v2/research-environment/datasets/crypto-futures#04-Get-Historical-Data">historical Crypto Futures data</a> to produce plots. You can use many of the <a href="/docs/v2/research-environment/charting">supported plotting libraries</a> to visualize data in various formats. For example, you can plot candlestick and line charts.</p>
+
+<h4 class="python">Candlestick Chart<br></h4>
+
+<p class="python">Follow these steps to plot candlestick charts:</p>
+
+<ol class="python">
+    <li>Get some historical data.</li>
+    <div class="section-example-container">
+        <pre class="python">history = qb.History(btcusd, datetime(2021, 11, 23), datetime(2021, 12, 8), Resolution.Daily).loc[btcusd]</pre>
+    </div>
+    <li>Import the <code>plotly</code> library.</li>
+    <div class="section-example-container">
+        <pre class="python">import plotly.graph_objects as go</pre>
+    </div>
+    <li>Create a <code>Candlestick</code>.<br></li>
+    <div class="section-example-container">
+        <pre class="python">candlestick = go.Candlestick(x=history.index,
+                             open=history['open'],
+                             high=history['high'],
+                             low=history['low'],
+                             close=history['close'])</pre>
+    </div>
+    <li>Create a <code>Layout</code>.<br></li>
+    <div class="section-example-container">
+        <pre class="python">layout = go.Layout(title=go.layout.Title(text='BTCUSD 18R OHLC'),
+                   xaxis_title='Date',
+                   yaxis_title='Price',
+                   xaxis_rangeslider_visible=False)</pre>
+    </div>
+    <li>Create the <code>Figure</code>.<br></li>
+    <div class="section-example-container">
+        <pre class="python">fig = go.Figure(data=[candlestick], layout=layout)</pre>
+    </div>
+    <li>Show the <code>Figure</code>.<br></li>
+    <div class="section-example-container">
+        <pre class="python">fig.show()</pre>
+    </div>
+    <p>Candlestick charts display the open, high, low, and close prices of the security.</p>
+</ol>
+
+<img class="python docs-image" src="https://cdn.quantconnect.com/i/tu/research-history-crypto-future-candlestick-plot.jpg" alt="Candlestick plot of BTCUSD 18R OHLC">
+
+
+<h4 class="python">Line Chart</h4>
+<p class="python">Follow these steps to plot line charts using built-in methods:</p>
+
+<ol class="python">
+    <li>Get some historical data.</li>
+    <div class="section-example-container">
+        <pre class="python">history = qb.History([btcusd, ethusd], datetime(2021, 11, 23), datetime(2021, 12, 8), Resolution.Daily)</pre>
+    </div>
+    <li>Select the data to plot.</li>
+    <div class="section-example-container">
+        <pre class="python">volume = history['volume'].unstack(level=0)</pre>
+    </div>
+    <li>Call the <code>plot</code> method on the <code>pandas</code> object.</li>
+    <div class="section-example-container">
+        <pre class="python">volume.plot(title="Volume", figsize=(15, 10))</pre>
+    </div>
+    <li>Show the plot.</li>
+    <div class="section-example-container">
+        <pre class="python">plt.show()</pre>
+    </div>
+    <p>Line charts display the value of the property you selected in a time series.</p>
+</ol>
+
+<img class="python docs-image" src="https://cdn.quantconnect.com/i/tu/research-env-crypto-future-volume-plot.jpg" alt="Line chart of volume of BTCUSD, & ETHUSD">

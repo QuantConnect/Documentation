@@ -1,1 +1,23 @@
-<p> </p>
+<div class="section-example-container">
+    <pre class="csharp">public override void OnData(Slice slice)
+{
+    if (slice.ContainsKey(_symbol))
+    {
+        var myData = slice[_symbol];
+    }
+}</pre>
+    <pre class="python">def OnData(self, slice: Slice) -&gt; None:
+    if slice.ContainsKey(self.symbol):
+        my_data = slice[self.symbol]</pre>
+</div>
+<p>
+The <code>OnData</code> method is the primary event handler for receiving financial data events to your algorithm. It is triggered sequentially at the point in time the data is available; in backtesting and live. For daily data this means the event is processed at midnight in backtesting or 6am the following day in live trading. 
+</p>
+
+<p>All data for a given moment of time is grouped in a single event, including custom data types. This data is passed with the Slice object.</p>
+
+<p>If the handler takes a long time to process, events will be queued up and the next event will be triggered again immediately. In live trading it is important to ensure your event handlers process quickly. Perform intensive computation before the market opens with a <a href="/docs/v2/writing-algorithms/scheduled-events">Scheduled Event</a>, or a <a href="/docs/v2/writing-algorithms/machine-learning/training-models#02-Train-Models">Train</a> event. </p>
+
+<p>
+    For more information on the <code>Slice</code> object and OnData event, see <a href="/docs/v2/writing-algorithms/securities/handling-data#03-Timeslice">Handling Data</a>.
+</p>
