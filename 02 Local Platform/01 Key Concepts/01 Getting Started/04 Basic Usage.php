@@ -5,7 +5,7 @@
     <li>Start <a href='/docs/v2/lean-cli/installation/installing-docker'>Docker Desktop</a>.</li>
     <li>Open Visual Studio Code.</li>
     <li>In the Initialization Checklist panel, click <span class="button-name">Login to QuantConnect</span>.</li>
-    <img class='docs-image' src='https://cdn.quantconnect.com/i/tu/initialization-checklist-1.png' alt="initialization checklist panel">
+    <img class='docs-image' src='https://cdn.quantconnect.com/i/tu/initialization-checklist-1.png' alt="Initialization checklist panel">
 
     <li>In the Visual Studio Code window, click <span class="button-name">Open</span>.</li>
     <img class='docs-image' src='https://cdn.quantconnect.com/i/tu/local-lab-log-in-pop-up.jpg' alt="VSCode login popup">
