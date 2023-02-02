@@ -9,6 +9,7 @@ class ConsolidatorFormatInfo
 		$className,
 		$typeOf,
 		$consolidationHandlerType,
-		$manualUpdateCode;
+		$manualUpdateCode,
+		$isSecurityData;
 } 
 ?>

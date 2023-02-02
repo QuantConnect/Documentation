@@ -15,6 +15,7 @@ class TradeBarConsolidatorFormatInfo extends ConsolidatorFormatInfo
 		$this->input = "<code>TradeBar</code> objects";
 		$this->typeOf = "TradeBar";
 		$this->manualUpdateCode = file_get_contents(DOCS_RESOURCES."/consolidators/trade-bar-manual-update.html");
+		$this->isSecurityData = true;
 	}
 }
 
