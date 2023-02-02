@@ -1,0 +1,1 @@
+<? include(DOCS_RESOURCES."/learning-center-training/paid-courses.html"); ?>
