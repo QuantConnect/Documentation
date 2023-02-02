@@ -8,7 +8,7 @@
     <img class='docs-image' src='https://cdn.quantconnect.com/i/tu/initialization-checklist-1.png' alt="Initialization checklist panel">
 
     <li>In the Visual Studio Code window, click <span class="button-name">Open</span>.</li>
-    <img class='docs-image' src='https://cdn.quantconnect.com/i/tu/local-lab-log-in-pop-up.jpg' alt="VSCode login popup">
+    <img class='docs-image' src='https://cdn.quantconnect.com/i/tu/local-lab-log-in-pop-up.jpg' alt="VS Code login popup">
 
     <li>On the Code Extension Login page, click <span class="button-name">Grant Access</span>.</li>
 
@@ -35,5 +35,5 @@
     <li>In the top-right corner of VS Code, click <img class='inline-icon' src="https://cdn.quantconnect.com/i/tu/build-button.png"> <span class="button-name">Build</span> and then click <img class='inline-icon' src='https://cdn.quantconnect.com/i/tu/backtest-button.png'> <span class='icon-name'>Backtest</span>.</li> 
 
     <p>The backtest results page displays your algorithm's performance over the backtest period.</p>
-    <img class='docs-image' src='https://cdn.quantconnect.com/i/tu/backtest-results-page-local-platform.png' alt="local backtest result interface">
+    <img class='docs-image' src='https://cdn.quantconnect.com/i/tu/backtest-results-page-local-platform.png' alt="Local backtest result interface">
 </ol>
