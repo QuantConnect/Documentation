@@ -8,12 +8,12 @@
     <img class='docs-image' src='https://cdn.quantconnect.com/i/tu/initialization-checklist-1.png' alt="initialization checklist panel">
 
     <li>In the Visual Studio Code window, click <span class="button-name">Open</span>.</li>
-    <img class='docs-image' src='https://cdn.quantconnect.com/i/tu/local-lab-log-in-pop-up.jpg' alt="vscode login popup">
+    <img class='docs-image' src='https://cdn.quantconnect.com/i/tu/local-lab-log-in-pop-up.jpg' alt="VSCode login popup">
 
     <li>On the Code Extension Login page, click <span class="button-name">Grant Access</span>.</li>
 
     <li>In VS Code, in the Select Workspace panel, click <span class="button-name">Pull Organization Workspace</span>.</li>
-    <img class="docs-image" src="https://cdn.quantconnect.com/i/tu/select-workspace.png" alt="select workspace">
+    <img class="docs-image" src="https://cdn.quantconnect.com/i/tu/select-workspace.png" alt="Select workspace">
     <li>In the Pull QuantConnect Organization Workspace window, click the cloud workspace (<a href='https://www.quantconnect.com/docs/v2/cloud-platform/organizations'>organization</a>) that you want to pull.</li>
     <img class="docs-image" src="https://cdn.quantconnect.com/i/tu/pull-cloud-organization.png" alt="Pull cloud organization">
     
@@ -26,7 +26,7 @@
     <img class="docs-image" src="https://cdn.quantconnect.com/i/tu/open-new-project.png" alt="Open a new project">
 
     <li>Enter the project name and then press <span class="key-combinations">Enter</span>.</li>
-    <img class="docs-image" src="https://cdn.quantconnect.com/i/tu/name-project-window.png" alt="name a new project">
+    <img class="docs-image" src="https://cdn.quantconnect.com/i/tu/name-project-window.png" alt="Name a new project">
 
     <p>Congratulations! You just created your first local project.</p>
     <img class="python docs-image" src="https://cdn.quantconnect.com/i/tu/local-lab-new-project-py.png" alt="Python local lab interface">

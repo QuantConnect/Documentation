@@ -3,7 +3,7 @@
     <li><a href="/docs/v2/local-platform/initialization/account#02-Log-In">Log in to the local platform</a>.</li>
     <li>In the left navigation menu, click the <img class="inline-icon" src="https://cdn.quantconnect.com/i/tu/vscode-qc-icon.jpg" alt="VSCode QuantConnect icon"> <span class="icon-name">QuantConnect</span> icon.</li>
     <li>In the Select Workspace panel, click <span class="button-name">Pull Organization Workspace</span>.</li>
-    <img class="docs-image" src="https://cdn.quantconnect.com/i/tu/select-workspace.png" alt="select workspace">
+    <img class="docs-image" src="https://cdn.quantconnect.com/i/tu/select-workspace.png" alt="Select workspace">
     <li>In the Pull QuantConnect Organization Workspace window, click the cloud workspace (<a href='https://www.quantconnect.com/docs/v2/cloud-platform/organizations'>organization</a>) that you want to pull.</li>
     <img class="docs-image" src="https://cdn.quantconnect.com/i/tu/pull-cloud-organization.png" alt="Pull cloud organization">
     
