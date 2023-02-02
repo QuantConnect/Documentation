@@ -43,7 +43,7 @@ th.summary {
 
 
 <figure>
-<img src="https://cdn.quantconnect.com/docs/i/filters.png" class="img-responsive">
+<img src="https://cdn.quantconnect.com/docs/i/filters.png" class="img-responsive" alt="Fundamental selection process">
 <figcaption>QuantConnect Coarse and Fine Universe Selection</figcaption>
 </figure>
 

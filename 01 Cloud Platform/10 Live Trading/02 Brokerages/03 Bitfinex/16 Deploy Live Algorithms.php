@@ -15,7 +15,7 @@ SetBenchmark(x =&gt; 0); // or the Symbol of the TESTBTCTESTUSD/TESTBTCTESTUSDT 
 </pre>
     </div>
     
-    <li>Click the <img class='inline-icon' src='https://cdn.quantconnect.com/i/tu/deploy-live-icon.png'> <span class='icon-name'>Deploy Live</span> icon.</li>
+    <li>Click the <img class='inline-icon' src='https://cdn.quantconnect.com/i/tu/deploy-live-icon.png' alt="Lightning icon"> <span class='icon-name'>Deploy Live</span> icon.</li>
     <li>On the Deploy Live page, click the <span class="field-name">Brokerage</span> field and then click <span class="button-name">Bitfinex Exchange</span> from the drop-down menu.</li>
     <li>Enter your API key and secret.</li>
     <?php echo file_get_contents(DOCS_RESOURCES."/brokerages/create-credentials/bitfinex.html"); ?>

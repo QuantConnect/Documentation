@@ -1,22 +1,80 @@
-<p>To update an order, use its <code>OrderTicket</code>.  You can update other orders until they are filled or the brokerage prevents modifications. The specific properties you can update depends on the order type. The following table shows the properties you can update for each order type.<br></p>
+<p>To update an order, use its <code>OrderTicket</code>. You can update other orders until they are filled or the brokerage prevents modifications. The specific properties you can update depends on the order type. The following table shows the properties you can update for each order type.<br></p>
 
 <table class="qc-table table  table-condensed">
 <thead>
 <tr>
-<th width="30%">Order Type</th>
-<th>Updatable Properties</th> 
+<th width="25%" rowspan="2">Order Type</th>
+<th colspan="5">Updatable Properties</th> 
+</tr>
+<tr>
+<th width="15%">Tag</th> 
+<th width="15%">Quantity</th> 
+<th width="15%">LimitPrice</th> 
+<th width="15%">TriggerPrice</th> 
+<th width="15%">StopPrice</th> 
 </tr>
 </thead>
 <tbody>
-<tr><td>Market Order</td><td><br></td></tr>
-<tr><td>Limit Order</td><td><code>Tag</code>, <code>Quantity</code>, <code>LimitPrice</code></td></tr>
-<tr><td>Limit If Touched Order</td><td><code>Tag</code>, <code>Quantity</code>, <code>TriggerPrice</code>, <code>LimitPrice</code></td></tr>
-<tr><td>Stop Market Order</td><td><code>Tag</code>, <code>Quantity</code>, <code>StopPrice</code></td></tr>
-<tr><td>Stop Limit Order</td><td><code>Tag</code>, <code>Quantity</code>, <code>StopPrice</code>, <code>LimitPrice</code></td></tr>
-<tr><td>Market On Open Order</td><td><code>Tag</code>, <code>Quantity</code></td></tr>
-<tr><td>Market On Close Order</td><td><code>Tag</code>, <code>Quantity</code></td></tr>
+<tr>
+    <td>Market Order</td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+</tr>
+<tr>
+    <td>Limit Order</td>
+    <td><img src="https://cdn.quantconnect.com/i/tu/check.png" alt="green check" width="15px;"></td>
+    <td><img src="https://cdn.quantconnect.com/i/tu/check.png" alt="green check" width="15px;"></td>
+    <td><img src="https://cdn.quantconnect.com/i/tu/check.png" alt="green check" width="15px;"></td>
+    <td></td>
+    <td></td>
+</tr>
+<tr>
+    <td>Limit If Touched Order</td>
+    <td><img src="https://cdn.quantconnect.com/i/tu/check.png" alt="green check" width="15px;"></td>
+    <td><img src="https://cdn.quantconnect.com/i/tu/check.png" alt="green check" width="15px;"></td>
+    <td><img src="https://cdn.quantconnect.com/i/tu/check.png" alt="green check" width="15px;"></td>
+    <td><img src="https://cdn.quantconnect.com/i/tu/check.png" alt="green check" width="15px;"></td>
+    <td></td>
+</tr>
+<tr>
+    <td>Stop Market Order</td>
+    <td><img src="https://cdn.quantconnect.com/i/tu/check.png" alt="green check" width="15px;"></td>
+    <td><img src="https://cdn.quantconnect.com/i/tu/check.png" alt="green check" width="15px;"></td>
+    <td></td>
+    <td></td>
+    <td><img src="https://cdn.quantconnect.com/i/tu/check.png" alt="green check" width="15px;"></td>
+</tr>
+<tr>
+    <td>Stop Limit Order</td>
+    <td><img src="https://cdn.quantconnect.com/i/tu/check.png" alt="green check" width="15px;"></td>
+    <td><img src="https://cdn.quantconnect.com/i/tu/check.png" alt="green check" width="15px;"></td>
+    <td><img src="https://cdn.quantconnect.com/i/tu/check.png" alt="green check" width="15px;"></td>
+    <td></td>
+    <td><img src="https://cdn.quantconnect.com/i/tu/check.png" alt="green check" width="15px;"></td>
+</tr>
+<tr>
+    <td>Market On Open Order</td>
+    <td><img src="https://cdn.quantconnect.com/i/tu/check.png" alt="green check" width="15px;"></td>
+    <td><img src="https://cdn.quantconnect.com/i/tu/check.png" alt="green check" width="15px;"></td>
+    <td></td>
+    <td></td>
+    <td></td>
+</tr>
+<tr>
+    <td>Market On Close Order</td>
+    <td><img src="https://cdn.quantconnect.com/i/tu/check.png" alt="green check" width="15px;"></td>
+    <td><img src="https://cdn.quantconnect.com/i/tu/check.png" alt="green check" width="15px;"></td>
+    <td></td>
+    <td></td>
+    <td></td>
+</tr>
 </tbody>
 </table>
+
+<p>Note that orders cannot be placed, canceled, or updated during warm up and initialization.</p>
 
 <p>To update an order, pass an <code>UpdateOrderFields</code> object to the <code>Update</code> method. The method returns an <code>OrderResponse</code> to signal the success or failure of the update request. 
 </p>

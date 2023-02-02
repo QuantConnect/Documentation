@@ -1,5 +1,5 @@
 <p>You can't trade Indices, but <code>TradeBar</code> objects are bars that represent the open, high, low, and close of an Index price over a period of time.</p>
-<img src='https://cdn.quantconnect.com/i/tu/index-trade-bar.png' class='img-responsive'>
+<img src='https://cdn.quantconnect.com/i/tu/index-trade-bar.png' class='img-responsive' alt="Trade bar breakdown">
 <p><code>TradeBar</code> objects have the following properties:</p>    
 <div data-tree='QuantConnect.Data.Market.TradeBar'></div>  
   
