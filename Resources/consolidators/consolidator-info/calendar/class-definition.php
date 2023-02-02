@@ -2,6 +2,8 @@
 
 include(DOCS_RESOURCES."/consolidators/consolidator-info/base-class-definition.php");
 
+if (class_exists('CalendarConsolidatorInfo')) return;
+
 class CalendarConsolidatorInfo extends ConsolidatorInfo
 {
 	public $createConsolidatorExtraArgs,

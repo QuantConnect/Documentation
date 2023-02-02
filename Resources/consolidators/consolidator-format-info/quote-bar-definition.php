@@ -13,6 +13,7 @@ class QuoteBarConsolidatorFormatInfo extends ConsolidatorFormatInfo
 		$this->input = "<code>QuoteBar</code> objects";
 		$this->typeOf = "QuoteBar";
 		$this->manualUpdateCode = file_get_contents(DOCS_RESOURCES."/consolidators/quote-bar-manual-update.html");
+		$this->isSecurityData = true;
 	}
 }
 

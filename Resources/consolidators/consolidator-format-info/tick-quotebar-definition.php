@@ -2,6 +2,8 @@
 
 include(DOCS_RESOURCES."/consolidators/consolidator-format-info/base-class-definition.php");
 
+if (class_exists('TickQuoteBarConsolidatorFormatInfo')) return;
+
 class TickQuoteBarConsolidatorFormatInfo extends ConsolidatorFormatInfo
 {
 	function __construct($output = "<code>QuoteBar</code> objects", $consolidationHandlerType = "QuoteBar")
@@ -13,6 +15,7 @@ class TickQuoteBarConsolidatorFormatInfo extends ConsolidatorFormatInfo
 		$this->input = "<code>Tick</code> objects that represent quotes";
 		$this->typeOf = "Tick";
 		$this->manualUpdateCode = file_get_contents(DOCS_RESOURCES."/consolidators/tick-manual-update.html");
+		$this->isSecurityData = true;
 	}
 }
 

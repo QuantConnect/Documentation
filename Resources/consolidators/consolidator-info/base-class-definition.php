@@ -18,7 +18,7 @@ class ConsolidatorInfo
 		return ob_get_clean();
 	}
 
-	function get_define_handler_text()
+	function get_define_handler_text($isSecurityData)
 	{
 		ob_start();
 		include(DOCS_RESOURCES.$this->define_handler_resource_path);

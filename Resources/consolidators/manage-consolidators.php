@@ -21,7 +21,7 @@
 		<pre class='python'>def consolidation_handler(self, sender: object, consolidated_bar: <?=$dataFormatInfo->consolidationHandlerType?>) -&gt; None:
     pass</pre>
 	</div>
-	<?=$consolidatorInfo->get_define_handler_text()?>
+	<?=$consolidatorInfo->get_define_handler_text($dataFormatInfo->isSecurityData)?>
 
 
 	<li>Update the consolidator.</li>
@@ -31,7 +31,7 @@
 	<ul>
         <li>Automatic Updates</li>
 
-		<p>To automatically update a consolidator with data from the security subscription, call the <code>AddConsolidator</code> method of the Subscription Manager.</p>
+		<p>To automatically update a consolidator with data from the <?=$dataFormatInfo->isSecurityData ? "security" : "data"?> subscription, call the <code>AddConsolidator</code> method of the Subscription Manager.</p>
 		<div class='section-example-container'>
 			<pre class='python'>self.SubscriptionManager.AddConsolidator(self.symbol, self.consolidator)</pre>
 			<pre class='csharp'>SubscriptionManager.AddConsolidator(_symbol, _consolidator);</pre>

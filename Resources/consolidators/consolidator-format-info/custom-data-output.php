@@ -1,0 +1,1 @@
+<code>&lt;dataType&gt;</code> objects of the same size or larger. If you consolidate <a href='/docs/v2/writing-algorithms/importing-data/streaming-data/key-concepts'>custom data</a> or alternative datasets, check the definition of the data class to see its data type

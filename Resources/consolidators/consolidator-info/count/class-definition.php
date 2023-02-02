@@ -2,6 +2,8 @@
 
 include(DOCS_RESOURCES."/consolidators/consolidator-info/base-class-definition.php");
 
+if (class_exists('CountConsolidatorInfo')) return;
+
 class CountConsolidatorInfo extends ConsolidatorInfo
 {
 	public $numSamples;
