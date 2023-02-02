@@ -22,8 +22,6 @@ public override void Initialize()
             content = self.Download(url_to_remote_file)
             # Convert content to self.parameters
 
-        self.Schedule.On(
-            self.DateRules.EveryDay(),
-            self.TimeRules.Every(timedelta(minutes=1)),
-            download_parameters)</pre>
+        self.Schedule.On(self.DateRules.EveryDay(), self.TimeRules.Every(timedelta(minutes=1)), download_parameters)
+</pre>
 </div>
