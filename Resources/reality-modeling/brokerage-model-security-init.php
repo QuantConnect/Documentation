@@ -34,7 +34,7 @@ SetSecurityInitializer(new MySecurityInitializer(BrokerageModel, new FuncSecurit
 // Outside of the algorithm class
 class MySecurityInitializer : BrokerageModelSecurityInitializer
 {
-    {$classMemberC}public MySecurityInitializer(IBrokerageModel brokerageModel, ISecuritySeeder securitySeeder<?=$extraParamsC?>)
+    <?=$classMemberC?>public MySecurityInitializer(IBrokerageModel brokerageModel, ISecuritySeeder securitySeeder<?=$extraParamsC?>)
         : base(brokerageModel, securitySeeder) <?=$contructorBodyC ?>
     
     public override void Initialize(Security security)
