@@ -61,3 +61,5 @@ public void OnData(Splits splits)
 
 
 <p>If you hold an Option contract for an underlying Equity when a split occurs, LEAN closes your Option contract position.</p>
+
+<? include(DOCS_RESOURCES."/securities/corporate-actions/splits-order.html"); ?>
