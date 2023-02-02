@@ -20,7 +20,7 @@
 <p>If you adjust the zoom on a chart, it affects all of the charts.</p>
 
 <p>After you zoom in on a chart, slide the horizontal bar at the bottom of the chart to adjust the time frame that displays.</p>
-<img class='docs-image' src='https://cdn.quantconnect.com/i/tu/scroll-on-display-charts.gif' alt="Demostration of scolling for time period on charts">
+<img class='docs-image' src='https://cdn.quantconnect.com/i/tu/scroll-on-display-charts.gif' alt="Demostration of scrolling for time period on charts">
 
 <h4>Resize Charts</h4>
 <p>To resize a chart on the <?=$pageName?> results page, hover over the bottom-right corner of the chart. When the resize cursor appears, hold the left mouse button and then drag to the desired size.</p>
