@@ -40,7 +40,7 @@
 
 <h4>Calendar Consolidators</h4>
 
-<?php echo file_get_contents(DOCS_RESOURCES."/consolidators/consolidator-info/calendar/intro.html"); ?>
+<?php echo file_get_contents(DOCS_RESOURCES."/consolidators/consolidator-info/calendar/introduction.html"); ?>
 
 <p>The following table shows which consolidator type to use based on the data format of the input and output:</p>
 
