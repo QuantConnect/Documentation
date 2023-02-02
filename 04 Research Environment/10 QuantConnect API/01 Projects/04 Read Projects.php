@@ -5,6 +5,8 @@
     <pre class="python">response = api.ReadProject(project_id)</pre>
 </div>
 
+<?php include(DOCS_RESOURCES."/qc-api/get-project-id-in-research.html"); ?>
+
 <p>The <code>ReadProject</code> method returns a <code>ProjectResponse</code> object, which have the following attributes:</p>
 
 <div data-tree="QuantConnect.Api.ProjectResponse"></div>

@@ -5,6 +5,9 @@
     <pre class="python">liveLogs = api.ReadLiveLogs(project_id, deploy_id)</pre>
 </div>
 
+<?php include(DOCS_RESOURCES."/qc-api/get-project-id-in-research.html"); ?>
+<?php include(DOCS_RESOURCES."/qc-api/get-deployment-id-in-research.html"); ?>
+
 <p>The <code>ReadLiveLogs</code> method accepts the following additional arguments so you can select the time period of the logs to return:</p>
 <table class="qc-table table">
     <thead>

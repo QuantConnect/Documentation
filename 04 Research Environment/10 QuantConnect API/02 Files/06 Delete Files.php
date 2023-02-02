@@ -4,5 +4,7 @@
     <pre class="python">response = api.DeleteProjectFile(project_id, file_name)</pre>
 </div>
 
+<?php include(DOCS_RESOURCES."/qc-api/get-project-id-in-research.html"); ?>
+
 <p>The <code>DeleteProjectFile</code> method returns a <code>RestResponse</code> object, which have the following attributes:</p>
 <div data-tree='QuantConnect.Api.RestResponse'></div>
