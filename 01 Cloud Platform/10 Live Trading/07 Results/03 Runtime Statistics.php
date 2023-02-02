@@ -1,6 +1,6 @@
 <p>The banner at the top of the live results page displays the performance statistics of your algorithm.</p>
 
-<img class='docs-image' src="https://cdn.quantconnect.com/i/tu/runtime-statistics-live-1.png" alt="live runtime statistics">
+<img class='docs-image' src="https://cdn.quantconnect.com/i/tu/runtime-statistics-live-1.png" alt="Live runtime statistics">
 
 <?php 
 $pageName = "live";
