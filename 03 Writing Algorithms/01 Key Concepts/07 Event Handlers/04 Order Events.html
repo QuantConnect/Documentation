@@ -1,1 +1,26 @@
-<p> </p>
+<div class="section-example-container">
+<pre class="csharp">public override void OnOrderEvent(OrderEvent orderEvent)
+{
+    var order = Transactions.GetOrderById(orderEvent.OrderId);
+    if (orderEvent.Status == OrderStatus.Filled)
+    {
+        Debug($"{Time}: {order.Type}: {orderEvent}");
+    }
+}
+
+public override void OnAssignmentOrderEvent(OrderEvent assignmentEvent)
+{
+    Log(assignmentEvent.ToString());
+}</pre>
+<pre class="python">def OnOrderEvent(self, orderEvent: OrderEvent) -&gt; None:
+    order = self.Transactions.GetOrderById(orderEvent.OrderId)
+    if orderEvent.Status == OrderStatus.Filled:
+        self.Debug(f"{self.Time}: {order.Type}: {orderEvent}")
+
+def OnAssignmentOrderEvent(self, assignmentEvent: OrderEvent) -&gt; None:
+    self.Log(str(assignmentEvent))</pre>
+</div>
+<p>
+The <code>OnOrderEvent</code> event notifies the algorithm of new orders, and changes in the order status such as fill events and cancelations. 
+</p>
+<p>In backtesting order events are triggered synchronously after the main data events. In live trading, order events are asynchronously as order events occur. Market orders are fill synchronously </p>
