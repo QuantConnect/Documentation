@@ -1,8 +1,8 @@
 <?php
 
+if (class_exists('DynamicDataConsolidatorFormatInfo')) return;
 include(DOCS_RESOURCES."/consolidators/consolidator-format-info/base-class-definition.php");
 
-if (class_exists('DynamicDataConsolidatorFormatInfo')) return;
 
 class DynamicDataConsolidatorFormatInfo extends ConsolidatorFormatInfo
 {
