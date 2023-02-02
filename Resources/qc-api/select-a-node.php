@@ -5,7 +5,7 @@
     <pre class="python">nodes = api.ReadNodes(organization_id)</pre>
 </div>
 
-<p>To get the organization Id, <a href='/docs/v2/cloud-platform/organizations/administration#05-View-the-Organization-Homepage'>open the organization homepage</a>. The organization Id is in the URL. For example, the organization ID of https://www.quantconnect.com/organization/d6d62db48592c72e67b534553413b691 is d6d62db48592c72e67b534553413b691.</p>
+<?php include(DOCS_RESOURCES."/qc-api/get-project-id-in-research.html"); ?>
 
 <p>The <code>ReadNodes</code> method returns a <code>NodeList</code> object, which have the following attributes:</p>
 
