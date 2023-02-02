@@ -1,0 +1,25 @@
+<p>Now that we have the values to calculate the capacity of each security, we can compute the capacity of the portfolio.</p>
+
+<h4>Snapshot Capacity</h4>
+
+<p>To calculate the strategy capactiy, weekly snapshots are taken. When it’s time to take a snapshot, the capacity of the strategy for the current snapshot is calculated by first selecting the security with the least market capacity dollar volume available. The fraction of trading volume that was available for this security is scaled down by the number of orders that were filled for the security during the week. The result is scaled down further by the largest value between the weight of the security’s sale volume in the portfolio sale volume and the weight of the security’s holding value in the total portfolio value. The result of this final scaling is the strategy’s capacity in the current snapshot. </p>
+
+\[ Snapshot \ Capacity = \frac{\frac{Market \ Capacity \ Dollar \ Volume}{Number \ Of \ Trades}}{\max(\frac{Sale \ Volume}{Portfolio \ Sale \ Volume}, \frac{Buying \ Power \ Used}{Total \ Portfolio \ Value})} \]
+
+
+<p>When any of the denominators are 0 in the preceding formula, the quotient that the denominator is part of defaults to a value of 0. After the snapshot is taken, the sale volume and market capacity dollar volume of each security is reset to 0.</p>
+
+
+
+<h4>Strategy Capacity</h4>
+
+<p>Instead of using the strategy’s capacity at the current snapshot as the final strategy capacity value, the strategy capacity is smoothed across the weekly snapshots. First, the capacity estimate of the current snapshot is calculated, then the final strategy capacity value is set using the following exponentially-weighted model:</p>
+
+\[ Strategy \ Capacity = \left\{
+  \begin{array}{ c l }
+    S_{i},& \text{if } i = 1\\
+    0.66 * S_{i-1} + 0.33 * S_{i}, & \text{if } i > 1
+  \end{array}
+\right. \]
+
+<p>where \( S_i \) is the snapshot capacity of week \(i\).</p>
