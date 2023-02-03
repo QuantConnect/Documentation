@@ -1,6 +1,7 @@
 <p>Follow these steps to define the data source class:</p>
 
 <ol>
+    <li>If your dataset doesn't provide trading data, delete the <span class="public-file-name">Lean.DataSource.&lt;vendorNameDatasetName&gt; / &lt;vendorNameDatasetName&gt;.cs</span> file. If your dataset doesn't provide universe selection data, delete the <span class="public-file-name">Lean.DataSource.&lt;vendorNameDatasetName&gt; / &lt;vendorNameDatasetName&gt;Universe.cs</span> file.</li>
     <li>Open the <span class="public-file-name">Lean.DataSource.&lt;vendorNameDatasetName&gt; / &lt;vendorNameDatasetName&gt;Universe.cs</span> file.</li>
     <li>Follow these steps to define the properties of your dataset:</li>
     <ol>
