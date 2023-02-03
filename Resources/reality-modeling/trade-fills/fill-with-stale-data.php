@@ -1,0 +1,1 @@
+<p>The model won't fill <?=$orderType ?> orders with <a href='/docs/v2/writing-algorithms/reality-modeling/trade-fills/key-concepts#06-Stale-Fills'>stale data</a> or data with the order timestamp to avoid look-ahead bias.</p>

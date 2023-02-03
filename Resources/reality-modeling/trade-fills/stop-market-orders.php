@@ -70,4 +70,8 @@
     </tbody>
 </table>
 
-<p>The model only fills stop market orders when the exchange is open. The model won't fill stop market orders with <a href='/docs/v2/writing-algorithms/reality-modeling/trade-fills/key-concepts#06-Stale-Fills'>stale data</a>.</p>
+<p>The model only fills stop market orders when the exchange is open.</p>
+<?
+$orderType = "stop market";
+include(DOCS_RESOURCES."/reality-modeling/trade-fills/fill-with-stale-data.php");
+?>
