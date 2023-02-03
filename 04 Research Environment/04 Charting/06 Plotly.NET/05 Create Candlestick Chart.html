@@ -1,0 +1,48 @@
+<p>You must <a href="#03-Import-Libraries">import the plotting libraries</a> and <a href="#04-Get-Historical-Data">get some historical data</a> to create candlestick charts.</p>
+
+<p>In this example, you create a candlestick chart that shows the open, high, low, and close prices of one of the banking securities. Follow these steps to create the candlestick chart:</p>
+
+<ol>
+    <li>Select a <code>Symbol</code>.</li>
+    <div class="csharp section-example-container">
+        <pre>symbol = symbols.First()</pre>
+    </div>
+
+    <li>Call the <code>Chart2D.Chart.Candlestick</code> constructor with the time and open, high, low, and close price <code>IEnumerable</code>.</li>
+    <div class="csharp section-example-container">
+        <pre>var chart = Chart2D.Chart.Candlestick&lt;decimal, decimal, decimal, decimal, DateTime, string&gt;(
+    history.Select(x => x.Open),
+    history.Select(x => x.High),
+    history.Select(x => x.Low),
+    history.Select(x => x.Close),
+    history.Select(x => x.EndTime)
+);</pre>
+    </div>
+
+    <li>Call the <code>Layout</code> constructor and set the <code>title</code>, <code>xaxis</code>, and <code>yaxis</code> properties as the title and axes label objects.<br></li>
+    <div class="csharp section-example-container">
+        <pre>LinearAxis xAxis = new LinearAxis();
+xAxis.SetValue("title", "Time");
+LinearAxis yAxis = new LinearAxis();
+yAxis.SetValue("title", "Price ($)");
+Title title = Title.init($"{symbol} OHLC");
+
+Layout layout = new Layout();
+layout.SetValue("xaxis", xAxis);
+layout.SetValue("yaxis", yAxis);
+layout.SetValue("title", title);</pre>
+    </div>
+
+    <li>Assign the <code>Layout</code> to the chart.<br></li>
+    <div class="csharp section-example-container">
+        <pre>chart.WithLayout(layout);</pre>
+    </div>
+
+    <li>Show the plot.<br></li>
+    <div class="csharp section-example-container">
+        <pre>HTML(GenericChart.toChartHTML(chart))</pre>
+    </div>
+    <p>The Jupyter Notebook displays the candlestick chart.</p>
+</ol>
+
+<img class="docs-image" src="https://cdn.quantconnect.com/i/tu/reserachhistoryequityonesecuritycandlestickplotcsharp.png" alt="Candlestick plot of SPY OHLC">
