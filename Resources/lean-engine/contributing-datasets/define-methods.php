@@ -1,4 +1,4 @@
-<li>Define the methods in your dataset class that define the <a href='/docs/v2/lean-engine/contributing-datasets/defining-data-sources/key-concepts#06-Resolutions'>dataset frequency</a>.</li>
+<li>Define the methods in your dataset class that define the <a href='/docs/v2/lean-engine/contributing-datasets/key-concepts#06-Resolutions'>dataset frequency</a>.</li>
 <div class="section-example-container">
     <pre>public class VendorNameDatasetName<?=$classNameEnding?> : BaseData
 {
@@ -19,7 +19,7 @@
 }</pre>
 </div>
 
-<li>Define the <a href='/docs/v2/lean-engine/contributing-datasets/defining-data-sources/key-concepts#07-Time-Zones'>DataTimeZone</a> method.</li>
+<li>Define the <a href='/docs/v2/lean-engine/contributing-datasets/key-concepts#07-Time-Zones'>DataTimeZone</a> method.</li>
 <div class="section-example-container">
     <pre>public class VendorNameDatasetName<?=$classNameEnding?> : BaseData
 {
@@ -30,7 +30,7 @@
 }</pre>
 </div>
 
-<li>Define the <a href='/docs/v2/lean-engine/contributing-datasets/defining-data-sources/key-concepts#08-Linked-Datasets'>RequiresMapping</a> method.</li>
+<li>Define the <a href='/docs/v2/lean-engine/contributing-datasets/key-concepts#08-Linked-Datasets'>RequiresMapping</a> method.</li>
 <div class="section-example-container">
     <pre>public class VendorNameDatasetName<?=$classNameEnding?> : BaseData
 {
@@ -41,7 +41,7 @@
 }</pre>
 </div>
 
-<li>Define the <a href='/docs/v2/lean-engine/contributing-datasets/defining-data-sources/key-concepts#09-String-Representations'>ToString</a> method.</li>
+<li>Define the <a href='/docs/v2/lean-engine/contributing-datasets/key-concepts#09-String-Representations'>ToString</a> method.</li>
 <div class="section-example-container">
     <pre>public class VendorNameDatasetName<?=$classNameEnding?> : BaseData
 {
@@ -52,7 +52,7 @@
 }</pre>
 </div>
 
-<li>Define the <a href='/docs/v2/lean-engine/contributing-datasets/defining-data-sources/key-concepts#10-Clone-Objects'>Clone</a> method.</li>
+<li>Define the <a href='/docs/v2/lean-engine/contributing-datasets/key-concepts#10-Clone-Objects'>Clone</a> method.</li>
 <div class="section-example-container">
     <pre>public class VendorNameDatasetName<?=$classNameEnding?> : BaseData
 {
