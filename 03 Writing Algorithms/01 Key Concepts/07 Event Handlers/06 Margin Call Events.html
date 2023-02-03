@@ -1,1 +1,26 @@
-<p> </p>
+<div class="section-example-container">
+<pre class="csharp">public override void OnMarginCall(List<SubmitOrderRequest> requests)
+{
+    foreach (var orderRequest in requests) {
+    }
+}
+
+public override void OnBrokerageDisconnect()
+{
+    Log($"Brokerage disconnection detected at {Time}.");
+}</pre>
+<pre class="python">def OnMarginCall(self, requests): -&gt; List[SubmitOrderRequest]: 
+    # Modify order requests to choose what to liquidate.
+    return requests
+
+def OnMarginCallWarning()(self) -&gt; None:
+    self.Log("Margin call warning, 5% margin remaining")</pre>
+</div>
+
+<p>The <code>OnMarginCallWarning</code> and <code>OnMarginCall</code> event handlers provide information and control over how to reduce algorithm leverage when performance is poor. </p>
+
+<p>The <code>OnMarginCallWarning</code> method is called when there is less than 5% margin remaining, this gives you an opportunity to reduce leverage before an official margin call is performed by the brokerage. The <code>OnMarginCall</code> event handler is passed a list of <code>SubmitOrderRequest</code> objects which will be executed on exiting the method.</p>
+
+<p>Margin events are called before the data events are processed. </p>
+
+<p>The following <a class="csharp" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.CSharp/MarginCallEventsAlgorithm.cs">demonstration</a> <a class="python" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.Python/MarginCallEventsAlgorithm.py">demonstration</a> processes suggested orders and modifies the qualities to liquidate more than necessary and prevent a second margin call. For more information, see how to handle <a href="/docs/v2/writing-algorithms/reality-modeling/margin-calls">Margin Calls</a>.</p>
