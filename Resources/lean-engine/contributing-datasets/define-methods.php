@@ -19,7 +19,7 @@
 }</pre>
 </div>
 
-<li>Define the <code>DataTimeZone</code> method.</li>
+<li>Define the <a href='/docs/v2/lean-engine/contributing-datasets/defining-data-sources/key-concepts#07-Time-Zones'>DataTimeZone</a> method.</li>
 <div class="section-example-container">
     <pre>public class VendorNameDatasetName<?=$classNameEnding?> : BaseData
 {
@@ -30,7 +30,7 @@
 }</pre>
 </div>
 
-<li>Define the <code>RequiresMapping</code> method.</li>
+<li>Define the <a href='/docs/v2/lean-engine/contributing-datasets/defining-data-sources/key-concepts#08-Linked-Datasets'>RequiresMapping</a> method.</li>
 <div class="section-example-container">
     <pre>public class VendorNameDatasetName<?=$classNameEnding?> : BaseData
 {
@@ -41,7 +41,7 @@
 }</pre>
 </div>
 
-<li>Define the <code>ToString</code> method.</li>
+<li>Define the <a href='/docs/v2/lean-engine/contributing-datasets/defining-data-sources/key-concepts#09-String-Representations'>ToString</a> method.</li>
 <div class="section-example-container">
     <pre>public class VendorNameDatasetName<?=$classNameEnding?> : BaseData
 {
@@ -52,7 +52,7 @@
 }</pre>
 </div>
 
-<li>Define the <code>Clone</code> method.</li>
+<li>Define the <a href='/docs/v2/lean-engine/contributing-datasets/defining-data-sources/key-concepts#10-Clone-Objects'>Clone</a> method.</li>
 <div class="section-example-container">
     <pre>public class VendorNameDatasetName<?=$classNameEnding?> : BaseData
 {
