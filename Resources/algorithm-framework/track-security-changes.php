@@ -35,7 +35,7 @@
         }
     }
 }</pre>
-    <pre class="python">class My{$modelClassName}($modelClassName):
+    <pre class="python">class My<?=$modelClassName?>(<?=$modelClassName?>):
     symbol_data_by_symbol = {}
 
     def OnSecuritiesChanged(self, algorithm: QCAlgorithm, changes: SecurityChanges) -&gt; None:
