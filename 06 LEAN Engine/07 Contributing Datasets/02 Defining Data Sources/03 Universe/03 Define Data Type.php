@@ -13,12 +13,9 @@
     <li>Define the <a href="/docs/v2/lean-engine/contributing-datasets/defining-data-sources/key-concepts#05-Parse-Custom-Data">Reader</a> method to return instances of your universe class.</li>
     <p>The first column in your data file must be the security identifier and the second column must be the point-in-time ticker. With this configuration, use <code>new Symbol(SecurityIdentifier.Parse(csv[0]), csv[1])</code> to create the security <code>Symbol</code>.</p>
     <p>The date in your data file must be the date that the data point is available for consumption. With this configuration, set the <code>Time</code> to <code>date - Period</code>.</p>
-    <li>Define the following methods in your dataset class:</li>
-        <ul>
-            <li><a href="/docs/v2/lean-engine/contributing-datasets/defining-data-sources/key-concepts#06-Resolutions">DefaultResolution</a></li>
-            <li><a href="/docs/v2/lean-engine/contributing-datasets/defining-data-sources/key-concepts#06-Resolutions">SupportedResolutions</a></li>
-            <li><a href="/docs/v2/lean-engine/contributing-datasets/defining-data-sources/key-concepts#06-Resolutions">IsSparseData</a></li>
-            <li><a href="/docs/v2/lean-engine/contributing-datasets/defining-data-sources/key-concepts#07-Time-Zones">DataTimeZone</a></li>
-            <li><a href="/docs/v2/lean-engine/contributing-datasets/defining-data-sources/key-concepts#09-String-Representations">ToString</a></li>
-        </ul>
-    </ol>
+    
+    <?php 
+    $classNameEnding = "Universe";
+    include(DOCS_RESOURCES."/lean-engine/contributing-datasets/define-methods.php"); 
+    ?>
+</ol>
