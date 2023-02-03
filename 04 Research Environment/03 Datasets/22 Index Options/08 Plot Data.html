@@ -1,84 +1,150 @@
-<p class="csharp">Jupyter Notebooks don't currently support libraries to plot historical data, but we are working on adding the functionality. Until we add the functionality, use Python to plot historical Index Options data.</p>
+<p>You need some&nbsp;<a href="/docs/v2/research-environment/datasets/index-options#04-Get-Historical-Data">historical Index Options data</a> to produce plots. You can use <span class="python">many of the <a href="/docs/v2/research-environment/charting">supported plotting libraries</a></span><span class="csharp"><code>Plot.NET</code> package</span> to visualize data in various formats. For example, you can plot candlestick and line charts.</p>
 
-<p class="python">You need to <a href="/docs/v2/research-environment/datasets/index-options#04-Get-Historical-Data">get some historical Index Option data</a> to plot it. You can use many of the <a href="/docs/v2/research-environment/charting">supported plotting libraries</a> to visualize data in various formats. For example, you can plot candlestick and line charts.</p>
+<h4>Candlestick Chart<br></h4>
 
-<h4 class="python">Candlestick Chart<br></h4>
+<p>Follow these steps to plot candlestick charts:</p>
 
-<p class="python">Follow these steps to plot candlestick charts:</p>
-
-<ol class="python">
+<ol>
     <li>Get some historical data.</li>
 	<div class="section-example-container">
         <pre class="python">history = qb.History(contract_symbol, datetime(2021, 12, 30), datetime(2021, 12, 31))</pre>
+        <pre class="csharp">var history = qb.History&lt;QuoteBar&gt;(contractSymbol, new DateTime(2021, 12, 30), new DateTime(2021, 12, 30));</pre>
     </div>
-    <li>Drop the first four index levels of <code>DataFrame</code> that returns.<br></li>
-	<div class="section-example-container">
-        <pre class="python">history.index = history.index.droplevel([0,1,2,3])</pre>
+
+    <li class="python">Drop the first four index levels of <code>DataFrame</code> that returns.<br></li>
+	<div class="python section-example-container">
+        <pre>history.index = history.index.droplevel([0,1,2,3])</pre>
     </div>
-    <li>Import the <code>plotly</code> library.</li>
+
+    <li>Import the <code class="python">plotly</code><code class="csharp">Plotly.NET</code> library.</li>
     <div class="section-example-container">
         <pre class="python">import plotly.graph_objects as go</pre>
+        <pre class="csharp">#r "../Plotly.NET.dll"
+using Plotly.NET;
+using Plotly.NET.LayoutObjects;</pre>
     </div>
-    <li>Create a <code>Candlestick</code>.</li>
+
+    <li>Create a <code>Candlestick</code>.<br></li>
     <div class="section-example-container">
         <pre class="python">candlestick = go.Candlestick(x=history.index,
                              open=history['open'],
                              high=history['high'],
                              low=history['low'],
                              close=history['close'])</pre>
+        <pre class="csharp">var chart = Chart2D.Chart.Candlestick&lt;decimal, decimal, decimal, decimal, DateTime, string&gt;(
+    history.Select(x => x.Open),
+    history.Select(x => x.High),
+    history.Select(x => x.Low),
+    history.Select(x => x.Close),
+    history.Select(x => x.EndTime)
+);</pre>
     </div>
+
     <li>Create a <code>Layout</code>.</li>
     <div class="section-example-container">
         <pre class="python">layout = go.Layout(title=go.layout.Title(text=f'{symbol.Value} OHLC'),
                    xaxis_title='Date',
                    yaxis_title='Price',
                    xaxis_rangeslider_visible=False)</pre>
+        <pre class="csharp">LinearAxis xAxis = new LinearAxis();
+xAxis.SetValue("title", "Time");
+LinearAxis yAxis = new LinearAxis();
+yAxis.SetValue("title", "Price ($)");
+Title title = Title.init($"{contractSymbol} OHLC");
+
+Layout layout = new Layout();
+layout.SetValue("xaxis", xAxis);
+layout.SetValue("yaxis", yAxis);
+layout.SetValue("title", title);</pre>
     </div>
-    <li>Create a&nbsp;<code>Figure</code>.</li>
-    <div class="section-example-container">
-        <pre class="python">fig = go.Figure(data=[candlestick], layout=layout)</pre>
+
+    <li class="python">Create a <code>Figure</code>.<br></li>
+    <div class="python section-example-container">
+        <pre>fig = go.Figure(data=[candlestick], layout=layout)</pre>
     </div>
-    <li>Call the <code>show</code> method.</li>
+
+    <li class="csharp">Assign the <code>Layout</code> to the chart.<br></li>
+    <div class="csharp section-example-container">
+        <pre>chart.WithLayout(layout);</pre>
+    </div>
+
+    <li>Show the <code>Figure</code>.<br></li>
     <div class="section-example-container">
         <pre class="python">fig.show()</pre>
+        <pre class="csharp">HTML(GenericChart.toChartHTML(chart))</pre>
     </div>
     <p>The Jupyter Notebook displays a candlestick chart of the Option contract's price.</p>
 </ol>
 
 <img class="python docs-image" src="https://cdn.quantconnect.com/i/tu/index-option-research-candlestick-chart.jpg" alt="Candlestick plot of SPX option contract OHLC">
+<img class="csharp docs-image" src="https://cdn.quantconnect.com/i/tu/index-option-research-candlestick-chart-csharp.png" alt="Candlestick plot of SPX option contract OHLC">
 
+<h4>Line Chart</h4>
+<p>Follow these steps to plot line charts using <span class="python">built-in methods</span><span class="csharp"><code>Plotly.NET</code> package</span>:</p>
 
-<h4 class="python">Line Chart</h4>
-<p class="python">Follow these steps to plot line charts using built-in methods:</p>
-
-<ol class="python">
+<ol>
     <li>Get some historical data.</li>
     <div class="section-example-container">
         <pre class="python">history = qb.History(OpenInterest, contract_symbol, datetime(2021, 12, 1), datetime(2021, 12, 31))</pre>
+        <pre class="csharp">var history = qb.History&lt;OpenInterest&gt;(contractSymbol, new DateTime(2021, 12, 1), new DateTime(2021, 12, 31));</pre>
     </div>
-    <li>Drop the first three index levels of the <code>DataFrame</code> that returns.</li>
-    <div class="section-example-container">
-        <pre class="python">history.index = history.index.droplevel([0,1,2])</pre>
+
+    <li class="python">Drop the first three index levels of the <code>DataFrame</code> that returns.</li>
+    <div class="python section-example-container">
+        <pre>history.index = history.index.droplevel([0,1,2])</pre>
     </div>
-    <li>Select the open interest data.</li>
-    <div class="section-example-container">
-        <pre class="python">history = history['openinterest'].unstack(level=0).ffill()</pre>
+
+    <li class="python">Select the open interest data.</li>
+    <div class="python section-example-container">
+        <pre>history = history['openinterest'].unstack(level=0).ffill()</pre>
     </div>
-	<li>Rename the column to be the <code>Symbol</code> of each contract.</li>
-    <div class="section-example-container">
-        <pre class="python">history.columns = [
+
+	<li class="python">Rename the column to be the <code>Symbol</code> of each contract.</li>
+    <div class="python section-example-container">
+        <pre>history.columns = [
     Symbol.GetAlias(SecurityIdentifier.Parse(x), index_symbol)
         for x in history.columns]</pre>
     </div>
-    <li>Call the <code>plot</code> method with a title and figure size.</li>
-    <div class="section-example-container">
-        <pre class="python">history.plot(title="Open Interest", figsize=(16, 8))</pre>
+
+    <li class="python">Call the <code>plot</code> method with a title and figure size.</li>
+    <div class="python section-example-container">
+        <pre>history.plot(title="Open Interest", figsize=(16, 8))</pre>
     </div>
-    <li>Call the <code>show</code> method.</li>
+
+    <li class="csharp">Create <code>Line</code> charts.</li>
+    <div class="csharp section-example-container">
+        <pre>var chart = Chart2D.Chart.Line&lt;DateTime, decimal, string&gt;(
+    history.Select(x => x.EndTime),
+    history.Select(x => x.Value)
+);</pre>
+    </div>
+
+    <li class="csharp">Create a <code>Layout</code>.<br></li>
+    <div class="csharp section-example-container">
+        <pre>LinearAxis xAxis = new LinearAxis();
+xAxis.SetValue("title", "Time");
+LinearAxis yAxis = new LinearAxis();
+yAxis.SetValue("title", "Open Interest");
+Title title = Title.init($"{contractSymbol} Open Interest");
+
+Layout layout = new Layout();
+layout.SetValue("xaxis", xAxis);
+layout.SetValue("yaxis", yAxis);
+layout.SetValue("title", title);</pre>
+    </div>
+
+    <li class="csharp">Assign the <code>Layout</code> to the chart.<br></li>
+    <div class="csharp section-example-container">
+        <pre>chart.WithLayout(layout);</pre>
+    </div>
+    
+    <li>Show the plot.</li>
     <div class="section-example-container">
         <pre class="python">plt.show()</pre>
+        <pre class="csharp">HTML(GenericChart.toChartHTML(chart))</pre>
     </div>
     <p>The Jupyter Notebook displays a line chart of open interest data.</p>
 </ol>
 
 <img class="python docs-image" src="https://cdn.quantconnect.com/i/tu/index-option-research-line-chart.jpg" alt="Line chart of SPX option contract open interest">
+<img class="csharp docs-image" src="https://cdn.quantconnect.com/i/tu/index-option-research-line-chart-csharp.png" alt="Line chart of SPX option contract open interest">

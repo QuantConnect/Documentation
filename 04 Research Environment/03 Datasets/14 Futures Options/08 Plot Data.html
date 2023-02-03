@@ -7,80 +7,138 @@
 <p>Follow these steps to plot candlestick charts:</p>
 <ol>
     <li>Get some historical data.</li>
-    <div class="python section-example-container">
+    <div class="section-example-container">
         <pre class="python">history = qb.History(fop_contract_symbol, datetime(2021, 12, 2), datetime(2021, 12, 3))</pre>
+        <pre class="csharp">var history = qb.History&lt;QuoteBar&gt;(fopContractSymbol, new DateTime(2021, 12, 2), new DateTime(2021, 12, 3));</pre>
     </div>
 
-    <li>Drop the first four index levels of the <code>DataFrame</code> that returns.</li>
+    <li class="python">Drop the first four index levels of the <code>DataFrame</code> that returns.</li>
     <div class="python section-example-container">
-        <pre class="python">history.index = history.index.droplevel([0,1,2,3])</pre>
+        <pre>history.index = history.index.droplevel([0,1,2,3])</pre>
     </div>
 
-    <li>Import the <code>Plotly</code> library.</li>
-    <div class="python section-example-container">
+    <li>Import the <code class="python">plotly</code><code class="csharp">Plotly.NET</code> library.</li>
+    <div class="section-example-container">
         <pre class="python">import plotly.graph_objects as go</pre>
+        <pre class="csharp">#r "../Plotly.NET.dll"
+using Plotly.NET;
+using Plotly.NET.LayoutObjects;</pre>
     </div>
 
-    <li>Create a <code>Candlestick</code>.</li>
-    <div class="python section-example-container">
+    <li>Create a <code>Candlestick</code>.<br></li>
+    <div class="section-example-container">
         <pre class="python">candlestick = go.Candlestick(x=history.index,
                              open=history['open'],
                              high=history['high'],
                              low=history['low'],
                              close=history['close'])</pre>
+        <pre class="csharp">var chart = Chart2D.Chart.Candlestick&lt;decimal, decimal, decimal, decimal, DateTime, string&gt;(
+    history.Select(x => x.Open),
+    history.Select(x => x.High),
+    history.Select(x => x.Low),
+    history.Select(x => x.Close),
+    history.Select(x => x.EndTime)
+);</pre>
     </div>
 
-    <li>Create a <code>Layout</code>.</li>
-    <div class="python section-example-container">
+    <li>Create a <code>Layout</code>.<br></li>
+    <div class="section-example-container">
         <pre class="python">layout = go.Layout(title=go.layout.Title(text=f'{fop_contract_symbol.Value} OHLC'),
                    xaxis_title='Date',
                    yaxis_title='Price',
                    xaxis_rangeslider_visible=False)</pre>
+        <pre class="csharp">LinearAxis xAxis = new LinearAxis();
+xAxis.SetValue("title", "Time");
+LinearAxis yAxis = new LinearAxis();
+yAxis.SetValue("title", "Price ($)");
+Title title = Title.init($"{fopContractSymbol} OHLC");
+
+Layout layout = new Layout();
+layout.SetValue("xaxis", xAxis);
+layout.SetValue("yaxis", yAxis);
+layout.SetValue("title", title);</pre>
     </div>
 
-    <li>Create the <code>Figure</code>.</li>
+    <li class="python">Create the <code>Figure</code>.<br></li>
     <div class="python section-example-container">
-        <pre class="python">fig = go.Figure(data=[candlestick], layout=layout)</pre>
+        <pre>fig = go.Figure(data=[candlestick], layout=layout)</pre>
     </div>
 
-    <li>Show the <code>Figure</code>.</li>
-    <div class="python section-example-container">
+    <li class="csharp">Assign the <code>Layout</code> to the chart.<br></li>
+    <div class="csharp section-example-container">
+        <pre>chart.WithLayout(layout);</pre>
+    </div>
+
+    <li>Show the <code>Figure</code>.<br></li>
+    <div class="section-example-container">
         <pre class="python">fig.show()</pre>
+        <pre class="csharp">HTML(GenericChart.toChartHTML(chart))</pre>
     </div>
     <p>Candlestick charts display the open, high, low, and close prices of the contract.</p>
-
-    <img class="docs-image" src="https://cdn.quantconnect.com/i/tu/fop-candlestick-plot.jpg" alt="Candlestick plot of Future Option contracts OHLC">
 </ol>
 
+<img class="python docs-image" src="https://cdn.quantconnect.com/i/tu/fop-candlestick-plot.jpg" alt="Candlestick plot of Future Option contracts OHLC">
+<img class="csharp docs-image" src="https://cdn.quantconnect.com/i/tu/fop-candlestick-plot-csharp.png" alt="Candlestick plot of Future Option contract OHLC">
+
 <h4>Line Chart</h4>
-<p>Follow these steps to plot line charts using built-in methods:</p>
+<p>Follow these steps to plot line charts using <span class="python">built-in methods</span><span class="csharp"><code>Plotly.NET</code> package</span>:</p>
+
 <ol>
-    <li>Get some historical data.</li>
+    <li class="python">Get some historical data.</li>
     <div class="python section-example-container">
-        <pre class="python">history = qb.History(fop_contract_symbols[:5], datetime(2021, 12, 2), datetime(2021, 12, 30), Resolution.Daily)</pre>
+        <pre>history = qb.History(fop_contract_symbols[:5], datetime(2021, 12, 2), datetime(2021, 12, 30), Resolution.Daily)</pre>
     </div>
 
-    <li>Drop the first three index levels of the returned <code>pandas.DataFrame</code>.</li>
+    <li class="python">Drop the first three index levels of the returned <code>pandas.DataFrame</code>.</li>
     <div class="python section-example-container">
-        <pre class="python">history.index = history.index.droplevel([0,1,2])</pre>
+        <pre>history.index = history.index.droplevel([0,1,2])</pre>
     </div>
 
-    <li>Select the data to plot.</li>
+    <li class="python">Select the data to plot.</li>
     <div class="python section-example-container">
-        <pre class="python">closes = history['close'].unstack(level=0)</pre>
+        <pre>closes = history['close'].unstack(level=0)</pre>
     </div>
 
-    <li>Call the <code>plot</code> method on the <code>pandas</code> object.</li>
+    <li class="python">Call the <code>plot</code> method on the <code>pandas</code> object.</li>
     <div class="python section-example-container">
-        <pre class="python">closes.plot(title="Close", figsize=(15, 5))</pre>
+        <pre>closes.plot(title="Close", figsize=(15, 5))</pre>
+    </div>
+    
+    <li class="csharp">Create <code>Line</code> charts.</li>
+    <div class="csharp section-example-container">
+        <pre>var chart = Chart2D.Chart.Line&lt;DateTime, decimal, string&gt;(
+    history.Select(x => x.EndTime),
+    history.Select(x => x.Close)
+);</pre>
     </div>
 
+    <li class="csharp">Create a <code>Layout</code>.<br></li>
+    <div class="csharp section-example-container">
+        <pre>LinearAxis xAxis = new LinearAxis();
+xAxis.SetValue("title", "Time");
+LinearAxis yAxis = new LinearAxis();
+yAxis.SetValue("title", "Price ($)");
+Title title = Title.init($"{fopContractSymbol} Close");
+
+Layout layout = new Layout();
+layout.SetValue("xaxis", xAxis);
+layout.SetValue("yaxis", yAxis);
+layout.SetValue("title", title);</pre>
+    </div>
+
+    <li class="csharp">Assign the <code>Layout</code> to the chart.<br></li>
+    <div class="csharp section-example-container">
+        <pre>chart.WithLayout(layout);</pre>
+    </div>
+    
     <li>Show the plot.</li>
-    <div class="python section-example-container">
+    <div class="section-example-container">
         <pre class="python">plt.show()</pre>
+        <pre class="csharp">HTML(GenericChart.toChartHTML(chart))</pre>
     </div>
     <p>Line charts display the value of the property you selected in a time series.</p>
 
     <img class="docs-image" src="https://cdn.quantconnect.com/i/tu/fop-line-plot.jpg" alt="Line chart of close price of Future Option contracts">
+    <img class="docs-image" src="https://cdn.quantconnect.com/i/tu/fop-line-plot-csharp-2.png" alt="Line chart of close price of Future Option contract">
 </ol>
 </div>
