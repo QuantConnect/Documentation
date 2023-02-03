@@ -4,4 +4,4 @@
 
 <p>Before backtesting or live trading with machine learning models, you may find it beneficial to train them in the Research Environment, save them in the ObjectStore, and then load them from the ObjectStore into the backtesting and live trading environment</p>
 
-<p>In the Research Environment, you can also use the QuantConnect API to <a href="/docs/v2/research-environment/quantconnect-api/backtests/reading-results">import your backtest results</a> for further analysis.</p>
+<p>In the Research Environment, you can also use the QuantConnect API to <a href="/docs/v2/research-environment/meta-analysis/backtest-analysis">import your backtest results</a> for further analysis.</p>
