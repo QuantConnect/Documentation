@@ -14,14 +14,9 @@
     <p>Set the file name to the security ticker with <code>config.Symbol.Value</code>. An example output file path is <span class="public-file-name">/ output / alternative / xyzairline / ticketsales / dal.csv</span>.</p>
     <li>Define the <a href="/docs/v2/lean-engine/contributing-datasets/defining-data-sources/key-concepts#05-Parse-Custom-Data">Reader</a> method to return instances of your dataset class.</li>
     <p>Set <code>Symbol = config.Symbol</code> and set <code>EndTime</code> to the time that the datapoint first became available for consumption.</p>
-    <li>Define the following methods of your dataset class:</li>
-        <ul>
-            <li><a href="/docs/v2/lean-engine/contributing-datasets/defining-data-sources/key-concepts#06-Resolutions">DefaultResolution</a></li>
-            <li><a href="/docs/v2/lean-engine/contributing-datasets/defining-data-sources/key-concepts#06-Resolutions">SupportedResolutions</a></li>
-            <li><a href="/docs/v2/lean-engine/contributing-datasets/defining-data-sources/key-concepts#06-Resolutions">IsSparseData</a></li>
-            <li><a href="/docs/v2/lean-engine/contributing-datasets/defining-data-sources/key-concepts#07-Time-Zones">DataTimeZone</a></li>
-            <li><a href="/docs/v2/lean-engine/contributing-datasets/defining-data-sources/key-concepts#08-Linked-Datasets">RequiresMapping</a></li>
-            <li><a href="/docs/v2/lean-engine/contributing-datasets/defining-data-sources/key-concepts#09-String-Representations">ToString</a></li>
-            <li><a href="/docs/v2/lean-engine/contributing-datasets/defining-data-sources/key-concepts#10-Clone-Objects">Clone</a></li>
-        </ul>
+
+    <?php 
+    $classNameEnding = "";
+    include(DOCS_RESOURCES."/lean-engine/contributing-datasets/define-methods.php"); 
+    ?>
 </ol>
