@@ -16,7 +16,7 @@ namespace QuantConnect.Algorithm.CSharp
         private TaxesCalculator _taxesCalculator = new();
     }
 }</pre>
-    <pre class='python'>from Calculators import TaxesCalculator
+    <pre class='python'>from Calculators.TaxesCalculator import TaxesCalculator
 class AddLibraryAlgorithm(QCAlgorithm):
     taxes_calculator = TaxesCalculator()</pre>
     </div>
