@@ -7,11 +7,11 @@
     <p>If your dataset is related to Equities and your dataset does not account for ticker changes, follow these steps to adjust the tickers over the historical data:</p>
     <ol>
         <li>If you don't have the <a href="https://www.quantconnect.com/datasets/quantconnect-us-equity-security-master/cli">US Equity Security Master dataset</a>, <a href="https://www.quantconnect.com/contact">contact us</a>.</li>
-        <li class="python">Remove the statements of the <code>Main</code> method of <span class="public-file-name">Program.cs</span> and compile the data processing project.
+        <li class="python">In the <span class="public-file-name">Lean.DataSource.&lt;vendorNameDatasetName&gt; / DataProcessing / Program.cs</span> file, remove the statements of the <code>Main</code> method and compile the data processing project.
         <div class="cli section-example-container">
             <pre>$ dotnet build .\DataProcessing\DataProcessing.csproj</pre>
         </div>
-        This step will generate a file used by the <code>CLRImports</code> library.
+        This step generates a file that the <code>CLRImports</code> library uses.
         </li>
         <li class="python">Import the <code>CLRImports</code> library.</li>
         <div class="python section-example-container">
@@ -21,20 +21,59 @@
         <div class="section-example-container">
             <pre class="python">map_file_provider = LocalZipMapFileProvider()
 map_file_provider.Initialize(DefaultDataProvider())<br></pre>
-            <pre class="csharp">var mapFileProvider = new LocalZipMapFileProvider();
-var mapFileProvider.Initialize(new DefaultDataProvider())<br></pre>
         </div>
         <li>Create a security identifier.</li>
         <div class="section-example-container">
             <pre class="python">sid = SecurityIdentifier.GenerateEquity(point_in_time_ticker,
     Market.USA, True, map_file_provider, csv_date)</pre>
-            <pre class="csharp">var sid = SecurityIdentifier.GenerateEquity(pointInIimeTicker,
-    Market.USA, true, mapFileProvider, csvDate)</pre>
         </div>
     </ol>
-    <li class="csharp">Compile the data processing project to generate the <span class="public-file-name">process.exe</span> executable file.
-    <div class="cli section-example-container">
-      <pre>$ dotnet build .\DataProcessing\DataProcessing.csproj</pre>
-    </div>
-    </li>
+    <li>Run the <span class="public-file-name">process.sample.py</span> file to populate the <span class="public-directory-name">Lean.DataSource.&lt;vendorNameDatasetName&gt; / output</span> directory.</li>
+    <p>You need to process the entire dataset to collect the following information:</p>
+
+<table class="table qc-table">
+    <thead>
+        <tr>
+            <th>Property</th>
+            <th>Description</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>Start Date</td>
+            <td>Date and time of the first data point</td>
+        </tr>
+        <tr>
+            <td>Asset Coverage</td>
+            <td>Number of assets covered by the dataset</td>
+        </tr>
+        <tr>
+            <td>Data density</td>
+            <td>Dense for tick data. Regular or Sparse according to the frequency.</td>
+        </tr>
+        <tr>
+            <td>Resolution</td>
+            <td>Options: Tick, Second, Minute, Hourly, &amp; Daily.</td>
+        </tr>
+        <tr>
+            <td>Timezone</td>
+            <td>Data timezone. This is a property of the data source.</td>
+        </tr>
+        <tr>
+            <td>Data process time</td>
+            <td>Time and days of the week to process the data.</td>
+        </tr>
+        <tr>
+            <td>Data process duration</td>
+            <td>Time to process the entire the dataset.</td>
+        </tr>
+        <tr>
+            <td>Update process duration</td>
+            <td>Time to update the dataset.</td>
+        </tr>
+    </tbody>
+</table>
+
+    <div class="highlight">Note: The pull request you make at the end must contain sample data so we can review it and run the demonstration algorithms.</div>
+
 </ol>
