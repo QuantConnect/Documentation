@@ -2,6 +2,13 @@
 
 <ol>
     <li>Change the structure of the <span class="public-directory-name">Lean.DataSource.&lt;vendorNameDatasetName&gt; / output</span> directory to match the path structure you defined in the <code>GetSource</code> method(s) (for example, <span class="public-directory-name">output / alternative / xyzairline / ticketsales</span>).</li>
+<li>Dividing the data into different periods, load the raw data from your source, this can be an API or local file</li>
+<ul>
+    <li>For API Sourcdes ensure to consider rate limits, you can use the rate gate class</li>
+    <li>For local sources, it can help to first copy the data into location</li>
+    <li>use FTP to copyt the data, see this example of copying data locally with FTP.</li>
+</ul>
+    <li>Process the data period by period, using the date range provided ot the scrtipt to process the specific dates provided</li>
     <li>In the <span class="public-directory-name">Lean.DataSource.&lt;vendorNameDatasetName&gt; / DataProcessing / process.sample.py</span> file, write a script to process your data and output the results to the <span class="public-directory-name">Lean.DataSource.&lt;vendorNameDatasetName&gt; / output</span> directory.</li>
     <p>If your dataset is for universe selection data and it's at a higher frequency than hour resolution, resample your data to hourly or daily resolution.</p>
     <p>If your dataset is related to Equities and your dataset does not account for ticker changes, follow these steps to adjust the tickers over the historical data:</p>
