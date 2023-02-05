@@ -1,20 +1,24 @@
-<p class="csharp">Jupyter Notebooks don't currently support libraries to plot historical data, but we are working on adding the functionality. Until we add the functionality, use Python to plot historical Index data.</p>
+<p>You need some&nbsp;<a href="/docs/v2/research-environment/datasets/indices#04-Get-Historical-Data">historical Indices data</a> to produce plots. You can use <span class="python">many of the <a href="/docs/v2/research-environment/charting">supported plotting libraries</a></span><span class="csharp"><code>Plot.NET</code> package</span> to visualize data in various formats. For example, you can plot candlestick and line charts.</p>
 
-<p class="python">You need some <a href="/docs/v2/research-environment/datasets/indices#04-Get-Historical-Data">historical Index data</a> to produce plots. You can use many of the <a href="/docs/v2/research-environment/charting">supported plotting libraries</a> to visualize data in various formats. For example, you can plot candlestick and line charts.</p>
+<h4>Candlestick Chart<br></h4>
 
-<h4 class="python">Candlestick Chart<br></h4>
+<p>Follow these steps to plot candlestick charts:</p>
 
-<p class="python">Follow these steps to plot candlestick charts:</p>
-
-<ol class="python">
+<ol>
     <li>Get some historical data.</li>
     <div class="section-example-container">
         <pre class="python">history = qb.History(spx, datetime(2021, 11, 24), datetime(2021, 12, 8), Resolution.Daily).loc[spx]</pre>
+        <pre class="csharp">var history = qb.History&lt;TradeBar&gt;(spx, new DateTime(2021, 11, 24), new DateTime(2021, 12, 8), Resolution.Daily);</pre>
     </div>
-    <li>Import the <code>plotly</code> library.</li>
+
+    <li>Import the <code class="python">plotly</code><code class="csharp">Plotly.NET</code> library.</li>
     <div class="section-example-container">
         <pre class="python">import plotly.graph_objects as go</pre>
+        <pre class="csharp">#r "../Plotly.NET.dll"
+using Plotly.NET;
+using Plotly.NET.LayoutObjects;</pre>
     </div>
+
     <li>Create a <code>Candlestick</code>.<br></li>
     <div class="section-example-container">
         <pre class="python">candlestick = go.Candlestick(x=history.index,
@@ -22,49 +26,115 @@
                              high=history['high'],
                              low=history['low'],
                              close=history['close'])</pre>
+        <pre class="csharp">var chart = Chart2D.Chart.Candlestick&lt;decimal, decimal, decimal, decimal, DateTime, string&gt;(
+    history.Select(x => x.Open),
+    history.Select(x => x.High),
+    history.Select(x => x.Low),
+    history.Select(x => x.Close),
+    history.Select(x => x.EndTime)
+);</pre>
     </div>
+
     <li>Create a <code>Layout</code>.<br></li>
     <div class="section-example-container">
         <pre class="python">layout = go.Layout(title=go.layout.Title(text='SPX OHLC'),
                    xaxis_title='Date',
                    yaxis_title='Price',
                    xaxis_rangeslider_visible=False)</pre>
+        <pre class="csharp">LinearAxis xAxis = new LinearAxis();
+xAxis.SetValue("title", "Time");
+LinearAxis yAxis = new LinearAxis();
+yAxis.SetValue("title", "Price ($)");
+Title title = Title.init($"{spx} OHLC");
+
+Layout layout = new Layout();
+layout.SetValue("xaxis", xAxis);
+layout.SetValue("yaxis", yAxis);
+layout.SetValue("title", title);</pre>
     </div>
-    <li>Create a <code>Figure</code>.<br></li>
-    <div class="section-example-container">
-        <pre class="python">fig = go.Figure(data=[candlestick], layout=layout)</pre>
+    
+    <li class="python">Create a <code>Figure</code>.<br></li>
+    <div class="python section-example-container">
+        <pre>fig = go.Figure(data=[candlestick], layout=layout)</pre>
     </div>
+
+    <li class="csharp">Assign the <code>Layout</code> to the chart.<br></li>
+    <div class="csharp section-example-container">
+        <pre>chart.WithLayout(layout);</pre>
+    </div>
+
     <li>Show the <code>Figure</code>.<br></li>
     <div class="section-example-container">
         <pre class="python">fig.show()</pre>
+        <pre class="csharp">HTML(GenericChart.toChartHTML(chart))</pre>
     </div>
     <p>Candlestick charts display the open, high, low, and close prices of the security.</p>
 </ol>
 
 <img class="python docs-image" src="https://cdn.quantconnect.com/i/tu/researchhistoryindexonesecuritycandlestickplot.png" alt="Candlestick plot of SPX OHLC">
+<img class="csharp docs-image" src="https://cdn.quantconnect.com/i/tu/researchhistoryindexonesecuritycandlestickplotcsharp.png" alt="Candlestick plot of SPX OHLC">
 
+<h4>Line Chart</h4>
+<p>Follow these steps to plot line charts using <span class="python">built-in methods</span><span class="csharp"><code>Plotly.NET</code> package</span>:</p>
 
-<h4 class="python">Line Chart</h4>
-<p class="python">Follow these steps to plot line charts using built-in methods:</p>
-
-<ol class="python">
+<ol>
     <li>Get some historical data.</li>
     <div class="section-example-container">
         <pre class="python">history = qb.History([spx, vix], datetime(2021, 11, 24), datetime(2021, 12, 8), Resolution.Daily)</pre>
+        <pre class="csharp">var history = qb.History&lt;TradeBar&gt;(new [] {spx, vix}, new DateTime(2021, 11, 24), new DateTime(2021, 12, 8), Resolution.Daily);</pre>
     </div>
-    <li>Select the data to plot.</li>
-    <div class="section-example-container">
-        <pre class="python">pct_change = history['close'].unstack(0).pct_change().dropna()</pre>
+
+    <li class="python">Select the data to plot.</li>
+    <div class="python section-example-container">
+        <pre>pct_change = history['close'].unstack(0).pct_change().dropna()</pre>
     </div>
-    <li>Call the <code>plot</code> method on the <code>pandas</code> object.</li>
-    <div class="section-example-container">
-        <pre class="python">pct_change.plot(title="Close Price %Change", figsize=(15, 10))</pre>
+
+    <li class="python">Call the <code>plot</code> method on the <code>pandas</code> object.</li>
+    <div class="python section-example-container">
+        <pre>pct_change.plot(title="Close Price %Change", figsize=(15, 10))</pre>
     </div>
+
+    <li class="csharp">Create <code>Line</code> charts.</li>
+    <div class="csharp section-example-container">
+        <pre>var chart1 = Chart2D.Chart.Line&lt;DateTime, decimal, string&gt;(
+    history.Select(x => x[spx].EndTime),
+    history.Select(x => x[spx].Close - x[spx].Open),
+    Name: $"{spx}"
+);
+var chart2 = Chart2D.Chart.Line&lt;DateTime, decimal, string&gt;(
+    history.Select(x => x[vix].EndTime),
+    history.Select(x => x[vix].Close - x[vix].Open),
+    Name: $"{vix}"
+);</pre>
+    </div>
+
+    <li class="csharp">Create a <code>Layout</code>.<br></li>
+    <div class="csharp section-example-container">
+        <pre>LinearAxis xAxis = new LinearAxis();
+xAxis.SetValue("title", "Time");
+LinearAxis yAxis = new LinearAxis();
+yAxis.SetValue("title", "Price ($)");
+Title title = Title.init($"{spx} & {vix} Daily Spread");
+
+Layout layout = new Layout();
+layout.SetValue("xaxis", xAxis);
+layout.SetValue("yaxis", yAxis);
+layout.SetValue("title", title);</pre>
+    </div>
+
+    <li class="csharp">Combine the charts and assign the <code>Layout</code> to the chart.<br></li>
+    <div class="csharp section-example-container">
+        <pre>var chart = Plotly.NET.Chart.Combine(new []{chart1, chart2});
+chart.WithLayout(layout);</pre>
+    </div>
+    
     <li>Show the plot.</li>
     <div class="section-example-container">
         <pre class="python">plt.show()</pre>
+        <pre class="csharp">HTML(GenericChart.toChartHTML(chart))</pre>
     </div>
     <p>Line charts display the value of the property you selected in a time series.</p>
 </ol>
 
 <img class="python docs-image" src="https://cdn.quantconnect.com/i/tu/research-env-index-plot.jpg" alt="Line chart of indices %chg">
+<img class="python docs-image" src="https://cdn.quantconnect.com/i/tu/research-env-index-plot-csharp.png" alt="Line chart of indices daily spread">
