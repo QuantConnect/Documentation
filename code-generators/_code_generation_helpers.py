@@ -1,4 +1,5 @@
 from json import dumps
+from typing import List
 from urllib.request import urlopen
 
 WRITING_ALGORITHMS = '03 Writing Algorithms'
