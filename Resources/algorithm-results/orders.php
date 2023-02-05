@@ -9,7 +9,7 @@
     <li>Partial fills</li>
     <li>Updates</li>
     <li>Cancellations</li>
-    <li>Option contract exercising</li>
+    <li>Option contract exercises and expiration</li>
 </ul>
         
 <p>The timestamps in the Order Summary table are based in Eastern Time (ET).</p>
