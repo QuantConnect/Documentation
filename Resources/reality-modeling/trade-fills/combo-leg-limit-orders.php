@@ -76,7 +76,7 @@
 <ul>
     <li>The exchange is open</li>
     <li>The data isn't <a href='/docs/v2/writing-algorithms/reality-modeling/trade-fills/key-concepts#06-Stale-Fills'>stale</a></li>
-    <li>All the legs can fill in the same <a href='/docs/v2/writing-algorithms/key-concepts/time-modeling/timeslices'>time step</a></li>
+    <li>All the legs can fill in the same <a href='/docs/v2/writing-algorithms/key-concepts/time-modeling/timeslices'>time step</a> after the order time step</li>
 </ul>
 
 <p>The fill quantity is the product of the leg order quantity and the combo order quantity.</p>

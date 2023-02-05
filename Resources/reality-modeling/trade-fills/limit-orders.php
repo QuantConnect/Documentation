@@ -70,5 +70,7 @@
     </tbody>
 </table>
 
-
-<p>The model won't fill limit orders with <a href='/docs/v2/writing-algorithms/reality-modeling/trade-fills/key-concepts#06-Stale-Fills'>stale data</a>.</p>
+<?
+$orderType = "limit";
+include(DOCS_RESOURCES."/reality-modeling/trade-fills/fill-with-stale-data.php");
+?>

@@ -1,1 +1,1 @@
-<?php echo file_get_contents(DOCS_RESOURCES."/reality-modeling/trade-fills/market-on-open-orders.html"); ?>
+<? include(DOCS_RESOURCES."/reality-modeling/trade-fills/market-on-open-orders.php"); ?>
