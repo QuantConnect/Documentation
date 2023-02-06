@@ -1,0 +1,74 @@
+<p>Call <code>QCAlgorithm.GetParameter(name)</code> in your algorithm to retrieve the string value of a parameter and use that instead of constant values. For example, the <code>ema-fast</code>, and <code>ema-slow</code> parameters can be used like this:</p>
+<div class="section-example-container">
+<pre class="csharp">namespace QuantConnect.Algorithm.CSharp
+{
+    public class ParameterizedAlgorithm : QCAlgorithm
+    {
+        private ExponentialMovingAverage _fast;
+        private ExponentialMovingAverage _slow;
+    
+        public override void Initialize()
+        {
+            SetStartDate(2020, 1, 1);
+            SetCash(100000);
+            AddEquity("SPY");
+    
+            var fastPeriod = GetParameter("ema-fast", 100);
+            var slowPeriod = GetParameter("ema-slow", 200);
+    
+            _fast = EMA("SPY", fastPeriod);
+            _slow = EMA("SPY", slowPeriod);
+        }
+    }
+}</pre>
+<pre class="python">class ParameterizedAlgorithm(QCAlgorithm):
+    def Initialize(self) -&gt; None:
+        self.SetStartDate(2020, 1, 1)
+        self.SetCash(100000)
+        self.AddEquity("SPY")
+    
+        fast_period = self.GetParameter("ema-fast", 100)
+        slow_period = self.GetParameter("ema-slow", 200)
+    
+        self._fast = self.EMA("SPY", fast_period)
+        self._slow = self.EMA("SPY", slow_period)</pre>
+</div>
+
+<p class="csharp">Alternatively, add attributes using <code>Parameter(name)</code> on top of our fields or properties that should receive their values from the job and use that instead of constant values. For example, the <code>ema-fast</code>, and <code>ema-slow</code> parameters can be used like this:</p>
+<div class="csharp" class="section-example-container">
+    <pre class="csharp">namespace QuantConnect.Algorithm.CSharp
+{
+    public class ParameterizedAlgorithm : QCAlgorithm
+    {
+        [Parameter("ema-fast")]
+        public int FastPeriod = 100;
+
+        [Parameter("ema-slow")]
+        public int SlowPeriod = 200;
+
+        private ExponentialMovingAverage _fast;
+        private ExponentialMovingAverage _slow;
+        
+        public override void Initialize()
+        {
+            SetStartDate(2020, 1, 1);
+            SetCash(100000);
+            AddEquity("SPY");
+        
+            _fast = EMA("SPY", FastPeriod);
+            _slow = EMA("SPY", SlowPeriod);
+        }
+    }
+}</pre>
+</div>
+
+<div class="example-legend">Demonstration Algorithms</div>
+<div class="example-fieldset">
+    <a class="python example-algorithm-link" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.Python/ParameterizedAlgorithm.py" target="_BLANK">
+        ParameterizedAlgorithm.py <span class="badge-python pull-right">Python</span>
+    </a>
+
+    <a class="csharp example-algorithm-link" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.CSharp/ParameterizedAlgorithm.cs" target="_BLANK">
+        ParameterizedAlgorithm.cs <span class="badge-csharp pull-right">C#</span>
+    </a>
+</div>
