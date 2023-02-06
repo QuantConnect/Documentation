@@ -1,1 +1,20 @@
-<p></p>
+<p>
+When LEAN returns an enumerable, the object should be converted to a <code>list()</code> to be easily read by python classes. Popular API methods which return an enumerable are shown below:
+</p>
+
+<h4>Historical Data</h4>
+<p>While using research or building algorithms you might see types like the <code>MemoizingEnumerable</code> that is a raw C# type accessible in python. </p>
+<div class="cli section-example-container">
+<pre>qb = QuantBook()
+start = datetime(2023, 2, 1)
+end = datetime(2023, 2, 4)
+ibm = qb.AddEquity('IBM', Resolution.Minute)
+bars = qb.History[TradeBar](ibm.Symbol, start, end, Resolution.Minute)
+bars</pre></div>
+<div class="cli section-example-container">
+<pre>&lt;QuantConnect.Util.MemoizingEnumerable[TradeBar] object at 0x7f1dea829f40&gt;</pre></div>
+<p>You can directly enumerate this object with standard python <code>for</code> loops, or to convert it to a native type, wrap the object in the <code>list()</code>:</p>
+<div class="cli section-example-container">
+<pre># Convert to a standard python list
+bars = list(bars)
+len(bars) </pre></div>
