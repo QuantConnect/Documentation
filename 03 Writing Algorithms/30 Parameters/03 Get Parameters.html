@@ -1,0 +1,83 @@
+<p>The <code>GetParameter</code> method returns the parameter value with the numeric type of the default value. If you don't provide a default value, the method returns a string, and you need to cast it to the data type you need. If there are no parameters in your project that match the name you pass to the method and you provide a default value to the method, it returns the default value.</p>
+
+<p>The following table describes the arguments the <code>GetParameter</code> method accepts:</p>
+<table class="qc-table table">
+    <thead>
+        <tr>
+            <th>Argument</th>
+            <th>Data Type</th>
+            <th>Description</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><code>name</code></td>
+            <td><code class="csharp">string</code><code class="python">str</code></td>
+            <td>The name of the parameter to get</td>
+        </tr>
+        <tr>
+            <td><code>defaultValue</code></td>
+            <td><code class="csharp">string</code><code class="python">str</code>, or number</td>
+            <td>The default value to return</td>
+        </tr>
+    </tbody>
+</table>
+
+<div class="section-example-container">
+    <pre class="csharp">namespace QuantConnect.Algorithm.CSharp
+{
+    public class ParameterizedAlgorithm : QCAlgorithm
+    {
+        public override void Initialize()
+        {
+            // Get the parameter value and return an integer
+            var intParameterValue = GetParameter("&lt;int-parameter-name&gt;", 100);
+
+            // Get the parameter value and return a double
+            var doubleParameterValue = GetParameter("&lt;double-parameter-name&gt;", 0.95);
+
+            // Get the parameter value and return a decimal
+            var decimalParameterValue = GetParameter("&lt;decimal-parameter-name&gt;", 0.05m);
+
+            // Get the parameter value as a string
+            var stringParameterValue = GetParameter("&lt;parameter-name&gt;")
+
+            // Cast it to an integer
+            var castedParameterValue = Convert.ToInt32(stringParameterValue);
+        }
+    }
+}</pre>
+    <pre class="python">class ParameterizedAlgorithm(QCAlgorithm):
+    def Initialize(self) -&gt; None:
+        # Get the parameter value and return an integer
+        int_parameter_value = self.GetParameter("&lt;int-parameter-name&gt;", 100)
+
+        # Get the parameter value and return a double
+        float_parameter_value = self.GetParameter("&lt;float-parameter-name&gt;", 0.95)
+
+        # Get the parameter value as a string
+        string_parameter_value = self.GetParameter("&lt;parameter-name&gt;")
+
+        # Cast it to an integer
+        parameter_value = int(string_parameter_value)</pre>
+</div>
+
+<p class="csharp">The <code>Parameter(name)</code> attribute on top of our fields or properties sets their values. If there are no parameters in your project that match the name you pass to the attribute and you provide a default value to the method, it returns the default value.</p>
+<div class="csharp" class="section-example-container">
+    <pre class="csharp">namespace QuantConnect.Algorithm.CSharp
+{
+    public class ParameterizedAlgorithm : QCAlgorithm
+    {
+        [Parameter("&lt;int-parameter-name&gt;")]
+        public int IntParameterValue = 100;
+
+        [Parameter("&lt;double-parameter-name&gt;")]
+        public double DoubleParameterValue = 0.95;
+
+        [Parameter("&lt;decimal-parameter-name&gt;")]
+        public decimal DecimalParameterValue = 0.05m;
+    }
+}</pre>
+</div>
+
+<p>The parameter values are sent to your algorithm when you deploy the algorithm, so it's not possible to change the parameter values while the algorithm runs.</p>

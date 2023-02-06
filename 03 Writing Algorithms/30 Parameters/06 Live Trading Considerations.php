@@ -1,0 +1,1 @@
+<? include(DOCS_RESOURCES."/live-trading/parameters-live-update.php"); ?>
