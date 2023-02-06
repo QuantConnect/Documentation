@@ -1,1 +1,0 @@
-<? include(DOCS_RESOURCES."/parameters/introduction.html"); ?>
