@@ -30,10 +30,6 @@
 }</pre>
 </div>
 
-<p>The <code>Resolution</code> enumeration has the following members:</p>
-
-<div data-tree="QuantConnect.Resolution"></div>
-
 <li>Define the <code>IsSparseData</code> method.</li>
 
 <p>If your dataset is not tick resolution and your dataset is missing data for at least one sample, it's sparse. If your dataset is sparse, we disable logging for missing files.</p>
@@ -58,7 +54,7 @@
 }</pre>
 </div>
 
-<li>Define the <code>RequiresMapping</code> method.</li>
+<li>Define the <a href='/docs/v2/lean-engine/contributing-datasets/key-concepts#08-Linked-Datasets'>RequiresMapping</a> method.</li>
 <div class="section-example-container">
     <pre>public class VendorNameDatasetName<?=$classNameEnding?> : BaseData
 {
