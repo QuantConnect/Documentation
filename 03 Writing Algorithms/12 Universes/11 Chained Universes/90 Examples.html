@@ -1,0 +1,26 @@
+<meta name="tag" content="universes">
+<meta name="tag" content="coarse universes">
+<meta name="tag" content="alternative data universes">
+<p>
+    The following examples are typical filter functions you may want.
+</p>
+<h4>Example 1: Requesting QQQ ETF Constituents with Morning Star Fundamental Data</h4>
+<p>
+    
+</p>
+<div class="section-example-container">
+<pre class="csharp">IEnumerable&lt;Symbol&gt; CoarseFilterFunction(IEnumerable&lt;CoarseFundamental&gt; coarse) 
+{
+    // Linq makes this a piece of cake;
+    return (from c in coarse
+        where c.DollarVolume &gt; 10000000 &amp;&amp;
+            c.Price &gt; 10
+        orderby c.DollarVolume descending
+        select c.Symbol).Take(500);
+}</pre>
+<pre class="python">def CoarseFilterFunction(self, coarse: List[CoarseFundamental]) -&gt; List[Symbol]:
+    sortedByDollarVolume = sorted(coarse, key=lambda x: x.DollarVolume, reverse=True)
+    filtered = [ x.Symbol for x in sortedByDollarVolume 
+                if x.Price &gt; 10 and x.DollarVolume &gt; 10000000 ]
+    return filtered[:500]</pre>
+</div>
