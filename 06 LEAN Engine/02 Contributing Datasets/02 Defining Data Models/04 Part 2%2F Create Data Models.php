@@ -1,4 +1,4 @@
-<p>The input data to your model should be in a CSV file that's in chronological order.</p>
+<p>The input data to your model should be in a <span class="public-file-name">CSV</span> file that's in chronological order.</p>
 
 <div class="section-example-container"><pre>
 1997-01-01,905.2,941.4,905.2,939.55,38948210,978.21
