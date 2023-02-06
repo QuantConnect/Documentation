@@ -1,4 +1,4 @@
-<p>If your dataset doesn't provide universe data, skip this part.</p>
+<p>If your dataset doesn't provide universe data, delete the <span class="public-file-name">Lean.DataSource.&lt;vendorNameDatasetName&gt; / &lt;vendorNameDatasetName&gt;Universe.cs</span> file and skip this part.</p>
 
 <p>The input to your model should be a <span class="public-file-name">CSV</span> file where the first column is the <a href='/docs/v2/writing-algorithms/key-concepts/security-identifiers'>security identifier</a> and the second column is the point-in-time ticker.</p>
 
@@ -15,7 +15,6 @@ ZVX R735QTJ8XC9X,ZVX,10,15600,156000,False,1,0.666667
 <p>Follow these steps to define the data source class:</p>
 
 <ol>
-    <li>If your dataset doesn't provide trading data, delete the <span class="public-file-name">Lean.DataSource.&lt;vendorNameDatasetName&gt; / &lt;vendorNameDatasetName&gt;.cs</span> file. If your dataset doesn't provide universe selection data, delete the <span class="public-file-name">Lean.DataSource.&lt;vendorNameDatasetName&gt; / &lt;vendorNameDatasetName&gt;Universe.cs</span> file.</li>
     <li>Open the <span class="public-file-name">Lean.DataSource.&lt;vendorNameDatasetName&gt; / &lt;vendorNameDatasetName&gt;Universe.cs</span> file.</li>
     <li>Follow these steps to define the properties of your dataset:</li>
     <ol>
