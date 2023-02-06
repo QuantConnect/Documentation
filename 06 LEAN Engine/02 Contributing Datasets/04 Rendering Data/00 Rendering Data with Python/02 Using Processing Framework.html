@@ -1,42 +1,66 @@
+<p>During this part of the contribution process, you need to edit the <span class="public-directory-name">Lean.DataSource.&lt;vendorNameDatasetName&gt; / DataProcessing / process.sample.py</span> file so it transforms and moves your raw data into the format and location the <a href="/docs/v2/lean-engine/contributing-datasets/defining-data-models">GetSource methods</a> expect. Before you start editing the script, change the structure of the <span class="public-directory-name">Lean.DataSource.&lt;vendorNameDatasetName&gt; / output</span> directory to match the path structure you defined in the <code>GetSource</code> methods (for example, <span class="public-directory-name">output / alternative / xyzairline / ticketsales</span>).</p>
+
 <p>Follow these steps to set up the downloading and processing script for your dataset:</p>
 
 <ol>
-    <li>Change the structure of the <span class="public-directory-name">Lean.DataSource.&lt;vendorNameDatasetName&gt; / output</span> directory to match the path structure you defined in the <code>GetSource</code> method(s) (for example, <span class="public-directory-name">output / alternative / xyzairline / ticketsales</span>).</li>
-<li>Dividing the data into different periods, load the raw data from your source, this can be an API or local file</li>
-<ul>
-    <li>For API Sourcdes ensure to consider rate limits, you can use the rate gate class</li>
-    <li>For local sources, it can help to first copy the data into location</li>
-    <li>use FTP to copyt the data, see this example of copying data locally with FTP.</li>
-</ul>
-    <li>Process the data period by period, using the date range provided ot the scrtipt to process the specific dates provided</li>
-    <li>In the <span class="public-directory-name">Lean.DataSource.&lt;vendorNameDatasetName&gt; / DataProcessing / process.sample.py</span> file, write a script to process your data and output the results to the <span class="public-directory-name">Lean.DataSource.&lt;vendorNameDatasetName&gt; / output</span> directory.</li>
-    <p>If your dataset is for universe selection data and it's at a higher frequency than hour resolution, resample your data to hourly or daily resolution.</p>
-    <p>If your dataset is related to Equities and your dataset does not account for ticker changes, follow these steps to adjust the tickers over the historical data:</p>
-    <ol>
-        <li>If you don't have the <a href="https://www.quantconnect.com/datasets/quantconnect-us-equity-security-master/cli">US Equity Security Master dataset</a>, <a href="https://www.quantconnect.com/contact">contact us</a>.</li>
-        <li class="python">In the <span class="public-file-name">Lean.DataSource.&lt;vendorNameDatasetName&gt; / DataProcessing / Program.cs</span> file, remove the statements of the <code>Main</code> method and compile the data processing project.
-        <div class="cli section-example-container">
-            <pre>$ dotnet build .\DataProcessing\DataProcessing.csproj</pre>
-        </div>
-        This step generates a file that the <code>CLRImports</code> library uses.
-        </li>
-        <li class="python">Import the <code>CLRImports</code> library.</li>
-        <div class="python section-example-container">
-            <pre class="python">from CLRImports import *</pre>
-        </div>
-        <li>Create and initialize a map file provider.</li>
-        <div class="section-example-container">
-            <pre class="python">map_file_provider = LocalZipMapFileProvider()
+    <li>In the <span class="public-directory-name">Lean.DataSource.&lt;vendorNameDatasetName&gt; / DataProcessing / process.sample.py</span> file, load the raw data from your source.</li>
+    <p>You can fetch data from any of the following sources:</p>
+    <table class="qc-table table">
+       <thead>
+          <tr>
+             <th>Source</th>
+             <th>Considerations</th>
+          </tr>
+       </thead>
+       <tbody>
+          <tr>
+             <td>Local Files</td>
+             <td>It can help to first copy the data into location.</td>
+          </tr>
+          <tr>
+             <td>Remote API</td>
+             <td>Stay within the rate limits. You can use the rate gate class.</td>
+          </tr>
+       </tbody>
+    </table>
+
+    <p>Use FTP to copy the data. To view an example of copying data locally with FTP, see ______.</p>
+    <p>You should load and process the data period by period. Use the date range provided to the script to process the specific dates provided.</p>
+
+    <li>If your dataset is for universe selection data and it's at a higher frequency than hour resolution, resample your data to hourly or daily resolution.<br></li>
+    <li>If any of the following statements are true, skip the rest of the steps in this tutorial:</li>
+    <ul>
+        <li>Your dataset is not related to Equities.</li>
+        <li>Your dataset is related to Equities and already includes the point-in-time tickers.</li>
+    </ul>
+    <p>If your dataset is related to Equities and your dataset doesn't account for ticker changes, the rest of the steps help you to adjust the tickers over the historical data so they are point-in-time.</p>
+    <li>If you don't have the <a href="https://www.quantconnect.com/datasets/quantconnect-us-equity-security-master/cli">US Equity Security Master dataset</a>, <a href="https://www.quantconnect.com/contact">contact us</a>.</li>
+    <li class="python">In the <span class="public-file-name">Lean.DataSource.&lt;vendorNameDatasetName&gt; / DataProcessing / Program.cs</span> file, remove the statements of the <code>Main</code> method</li>
+    <li>In a terminal, compile the data processing project.</li>
+    <div class="cli section-example-container">
+        <pre>$ dotnet build .\DataProcessing\DataProcessing.csproj</pre>
+    </div>
+    <p>This step generates a file that the <code>CLRImports</code> library uses.</p>
+    <li class="python">In the <span class="public-directory-name">Lean.DataSource.&lt;vendorNameDatasetName&gt; / DataProcessing / process.sample.py</span> file, import the <code>CLRImports</code> library.</li>
+    <div class="python section-example-container">
+        <pre class="python">from CLRImports import *</pre>
+    </div>
+    <li>Create and initialize a map file provider.</li>
+    <div class="section-example-container">
+        <pre class="python">map_file_provider = LocalZipMapFileProvider()
 map_file_provider.Initialize(DefaultDataProvider())<br></pre>
-        </div>
-        <li>Create a security identifier.</li>
-        <div class="section-example-container">
-            <pre class="python">sid = SecurityIdentifier.GenerateEquity(point_in_time_ticker,
+    </div>
+    <li>Create a security identifier.</li>
+    <div class="section-example-container">
+        <pre class="python">sid = SecurityIdentifier.GenerateEquity(point_in_time_ticker,
     Market.USA, True, map_file_provider, csv_date)</pre>
-        </div>
-    </ol>
-    <li>Run the <span class="public-file-name">process.sample.py</span> file to populate the <span class="public-directory-name">Lean.DataSource.&lt;vendorNameDatasetName&gt; / output</span> directory.</li>
-
-    <div class="highlight">Note: The pull request you make at the end must contain sample data so we can review it and run the demonstration algorithms.</div>
-
+    </div>
 </ol>
+
+<p>After you finish editing the <span class="public-file-name">process.sample.py</span> script, run it to populate the <span class="public-directory-name">Lean.DataSource.&lt;vendorNameDatasetName&gt; / output</span> directory.</p>
+
+<div class="cli section-example-container">
+        <pre>$ python process.sample.py</pre>
+</div>
+
+<div class="highlight">Note: The pull request you make at the end must contain sample data so we can review it and run the demonstration algorithms.</div>
