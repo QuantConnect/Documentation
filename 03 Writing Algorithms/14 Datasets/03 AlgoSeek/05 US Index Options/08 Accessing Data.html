@@ -2,17 +2,30 @@
 
 <div class="section-example-container">
 <pre class="python">def OnData(self, slice: Slice) -&gt; None:
-    chain = slice.OptionChains.get(self.option_symbol)
-    if chain:
-        for contract in chain:
+    standard_chain = slice.OptionChains.get(self.standard_option_symbol)
+    if standard_chain:
+        for contract in standard_chain:
             self.Log(f"{contract.Symbol} price at {slice.Time}: {contract.LastPrice}")
-</pre>
+
+    weekly_chain = slice.OptionChains.get(self.weekly_option_symbol)
+    if weekly_chain:
+        for contract in weekly_chain:
+            self.Log(f"{contract.Symbol} price at {slice.Time}: {contract.LastPrice}")</pre>
 <pre class="csharp">public override void OnData(Slice slice)
 {
-    if (slice.OptionChains.ContainsKey(_optionSymbol))
+    if (slice.OptionChains.ContainsKey(_standardOptionSymbol))
     {
-        var chain = slice.OptionChains[_optionSymbol];
-        foreach (var contract in chain)
+        var standardChain = slice.OptionChains[_standardOptionSymbol];
+        foreach (var contract in standardChain)
+        {
+            Log($"{contract.Symbol} price at {slice.Time}: {contract.LastPrice}");
+        }
+    }
+
+    if (slice.OptionChains.ContainsKey(_weeklyOptionSymbol))
+    {
+        var weeklyChain = slice.OptionChains[_weeklyOptionSymbol];
+        foreach (var contract in weeklyChain)
         {
             Log($"{contract.Symbol} price at {slice.Time}: {contract.LastPrice}");
         }

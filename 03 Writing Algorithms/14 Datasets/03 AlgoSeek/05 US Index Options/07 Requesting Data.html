@@ -8,15 +8,19 @@
         self.SetCash(1000000);
         
         self.index_symbol = self.AddIndex('VIX').Symbol
-        option = self.AddIndexOption(self.index_symbol)
-        option.SetFilter(-2, 2, 0, 90)
-        self.option_symbol = option.Symbol</pre>
+        
+        standard_option = self.AddIndexOption(self.index_symbol)
+        standard_option.SetFilter(-2, 2, 0, 90)
+        self.standard_option_symbol = standard_option.Symbol
+
+        weekly_option = self.AddIndexOption(self.index_symbol, "VIXW")
+        weekly_option.SetFilter(-2, 2, 0, 90)
+        self.weekly_option_symbol = weekly_option.Symbol</pre>
 <pre class="csharp">namespace QuantConnect
 {
     public class IndexOptionsDataAlgorithm : QCAlgorithm
     {
-    	private Symbol _indexSymbol;
-    	private Symbol _optionSymbol;
+    	private Symbol _indexSymbol, _standardOptionSymbol, _weeklyOptionSymbol;
 
         public override void Initialize()
         {
@@ -25,14 +29,19 @@
             SetCash(100000);
             
             _indexSymbol = AddIndex("VIX").Symbol;
-            var option = AddIndexOption(_indexSymbol);
-            option.SetFilter(-2, 2, 0, 90);
-            _optionSymbol = option.Symbol;
+
+            var standardOption = AddIndexOption(_indexSymbol);
+            standardOption.SetFilter(-2, 2, 0, 90);
+            _standardOptionSymbol = standardOption.Symbol;
+
+            var weeklyOption = AddIndexOption(_indexSymbol, "VIXW");
+            weeklyOption.SetFilter(-2, 2, 0, 90);
+            _weeklyOptionSymbol = weeklyOption.Symbol;
         }
     }
 }</pre>
 </div>
 
-<p>The Index resolution must be less than or equal to the Index Option resolution. Index Options only have minute resolution available, so the Index must have tick, second, or minute resolution.</p>
+<p>The Index resolution must be less than or equal to the Index Option resolution. For example, if you set the Index resolution to minute, then you must set the Index Option resolution to minute, hour, or daily.</p>
 
 <p>For more information about creating US Index Option subscriptions, see <a href="/docs/v2/writing-algorithms/securities/asset-classes/index-options/requesting-data">Requesting Data</a> or <a href="/docs/v2/writing-algorithms/universes/index-options">Index Options Universes</a>.</p>
