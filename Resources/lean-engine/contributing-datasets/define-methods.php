@@ -1,4 +1,4 @@
-<li>Define the methods in your dataset class that define the dataset frequency.</li>
+<li>Define the <code>SupportedResolutions</code> method.</li>
 <div class="section-example-container">
     <pre>public class VendorNameDatasetName<?=$classNameEnding?> : BaseData
 {
@@ -6,12 +6,40 @@
     {
         return DailyResolution;
     }
+}</pre>
+</div>
 
+<?php if ($classNameEnding == "Universe") { ?><p>Universe data must have hour or daily resolution.</p><?php } ?>
+
+<p>The <code>Resolution</code> enumeration has the following members:</p>
+
+<div data-tree="QuantConnect.Resolution"></div>
+
+
+<li>Define the <code>DefaultResolution</code> method.</li>
+
+<p>If a member doesn't specify a resolution when they subscribe to your dataset, Lean uses the <code>DefaultResolution</code>.</p>
+
+<div class="section-example-container">
+    <pre>public class VendorNameDatasetName<?=$classNameEnding?> : BaseData
+{
     public override Resolution DefaultResolution()
     {
         return Resolution.Daily;
     }
+}</pre>
+</div>
 
+<p>The <code>Resolution</code> enumeration has the following members:</p>
+
+<div data-tree="QuantConnect.Resolution"></div>
+
+<li>Define the <code>IsSparseData</code> method.</li>
+
+<p>If your dataset is not tick resolution and your dataset is missing data for at least one sample, it's sparse. If your dataset is sparse, we disable logging for missing files.</p>
+<div class="section-example-container">
+    <pre>public class VendorNameDatasetName<?=$classNameEnding?> : BaseData
+{
     public override bool IsSparseData()
     {
         return true;
