@@ -1,15 +1,10 @@
 <div class='section-example-container'>
 <pre>.
 ├── data/
-│&nbsp;&nbsp; ├── alternative/
-│&nbsp;&nbsp; ├── cfd/
+│&nbsp;&nbsp; ├── alternative/ 
 │&nbsp;&nbsp; ├── crypto/
 │&nbsp;&nbsp; ├── equity/
-│&nbsp;&nbsp; ├── forex/
-│&nbsp;&nbsp; ├── future/
-│&nbsp;&nbsp; ├── futureoption/
-│&nbsp;&nbsp; ├── index/
-│&nbsp;&nbsp; ├── indexoption/
+│&nbsp;&nbsp; ├── ...
 │&nbsp;&nbsp; ├── market-hours/
 │&nbsp;&nbsp; ├── option/
 │&nbsp;&nbsp; ├── symbol-properties/
