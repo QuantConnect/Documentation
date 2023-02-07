@@ -43,7 +43,7 @@
 }</pre>
 </div>
 
-<li>Define the <a href='/docs/v2/lean-engine/contributing-datasets/key-concepts#06-TimeZones'>DataTimeZone</a> method.</li>
+<li>Define the <a href='/docs/v2/lean-engine/contributions/datasets/key-concepts#06-TimeZones'>DataTimeZone</a> method.</li>
 <div class="section-example-container">
     <pre>public class VendorNameDatasetName<?=$classNameEnding?> : BaseData
 {
@@ -54,7 +54,7 @@
 }</pre>
 </div>
 
-<li>Define the <a href='/docs/v2/lean-engine/contributing-datasets/key-concepts#08-Linked-Datasets'>RequiresMapping</a> method.</li>
+<li>Define the <a href='/docs/v2/lean-engine/contributions/datasets/key-concepts#08-Linked-Datasets'>RequiresMapping</a> method.</li>
 <div class="section-example-container">
     <pre>public class VendorNameDatasetName<?=$classNameEnding?> : BaseData
 {

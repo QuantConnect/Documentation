@@ -22,7 +22,7 @@ ZVX R735QTJ8XC9X,ZVX,10,15600,156000,False,1,0.666667
         <li>Rename the <code>SomeCustomProperty</code>/<code>SomeNumericProperty</code> properties to the names of your dataset properties (for example, <code>Destination</code>/<code>FlightPassengerCount</code>).</li>
         <li>Replace the “Some custom data property” comments with a description of each property in your dataset.</li>
     </ol>
-    <li>Define the <a href="/docs/v2/lean-engine/contributing-datasets/key-concepts#04-Data-Sources">GetSource</a> method to point to the path of your dataset file(s).</li>
+    <li>Define the <a href="/docs/v2/lean-engine/contributions/datasets/key-concepts#04-Data-Sources">GetSource</a> method to point to the path of your dataset file(s).</li>
     <p>Use the <code style="font-size: 15px; background-color: rgb(255, 255, 255);">date</code> parameter as the file name to get the date of data being requested. An example output file path is <span class="public-file-name">/ output / alternative / xyzairline / ticketsales / universe / 20200320.csv</span>.<br></p>
     <li>Define the <code>Reader</code> method to return instances of your universe class.</li>
     <p>The first column in your data file must be the security identifier and the second column must be the point-in-time ticker. With this configuration, use <code>new Symbol(SecurityIdentifier.Parse(csv[0]), csv[1])</code> to create the security <code>Symbol</code>.</p>
@@ -30,6 +30,6 @@ ZVX R735QTJ8XC9X,ZVX,10,15600,156000,False,1,0.666667
     
     <?php 
     $classNameEnding = "Universe";
-    include(DOCS_RESOURCES."/lean-engine/contributing-datasets/define-methods.php"); 
+    include(DOCS_RESOURCES."/lean-engine/contributions/datasets/define-methods.php"); 
     ?>
 </ol>
