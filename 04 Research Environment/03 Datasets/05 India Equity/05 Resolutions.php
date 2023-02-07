@@ -1,1 +1,1 @@
-<?php echo file_get_contents(DOCS_RESOURCES."/securities/resolutions/equity.html"); ?>
+<? include(DOCS_RESOURCES."/securities/resolutions/india-equity.html"); ?>
