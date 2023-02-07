@@ -1,0 +1,1 @@
+<? include(DOCS_RESOURCES."/securities/resolutions/india-equity.html"); ?>
