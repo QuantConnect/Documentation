@@ -1,4 +1,4 @@
 <?
 $orderType = "Market orders";
-include(DOCS_RESOURCES."market-orders-requirements");
+include(DOCS_RESOURCES."/order-types/market-orders-requirements");
 ?>
