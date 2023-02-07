@@ -2,7 +2,7 @@
 $assetClass = 'Equity';
 $singularAssetClass = 'Equity';
 $pluralAssetClass = 'Equities';
-$historicalDataLink = "/docs/v2/research-environment/datasets/equity#04-Get-Historical-Data";
+$historicalDataLink = "/docs/v2/research-environment/datasets/us-equity#04-Get-Historical-Data";
 $primarySymbolPy = 'spy';
 $primarySymbolC = 'spy';
 $primaryTicker = 'SPY';

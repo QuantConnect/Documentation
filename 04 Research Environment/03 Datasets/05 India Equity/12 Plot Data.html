@@ -1,4 +1,4 @@
-<p>You need some&nbsp;<a href="/docs/v2/research-environment/datasets/equity-options#04-Get-Historical-Data">historical Equity Options data</a> to produce plots. You can use <span class="python">many of the <a href="/docs/v2/research-environment/charting">supported plotting libraries</a></span><span class="csharp"><code>Plot.NET</code> package</span> to visualize data in various formats. For example, you can plot candlestick and line charts.</p>
+<p>You need some&nbsp;<a href="/docs/v2/research-environment/datasets/india-equity#04-Get-Historical-Data">historical Equity data</a> to produce plots. You can use <span class="python">many of the <a href="/docs/v2/research-environment/charting">supported plotting libraries</a></span><span class="csharp"><code>Plot.NET</code> package</span> to visualize data in various formats. For example, you can plot candlestick and line charts.</p>
 
 <h4>Candlestick Chart<br></h4>
 
@@ -6,16 +6,11 @@
 
 <ol>
     <li>Get some historical data.</li>
-	<div class="section-example-container">
-        <pre class="python">history = qb.History(contract_symbol, datetime(2021, 12, 30), datetime(2021, 12, 31))</pre>
-        <pre class="csharp">var history = qb.History&lt;TradeBar&gt;(contractSymbol, new DateTime(2021, 12, 30), new DateTime(2021, 12, 31));</pre>
+    <div class="section-example-container">
+        <pre class="python">history = qb.History(icicibank, datetime(2021, 11, 23), datetime(2021, 12, 8), Resolution.Daily).loc[icicibank]</pre>
+        <pre class="csharp">var history = qb.History&lt;TradeBar&gt;(icicibank, new DateTime(2021, 11, 23), new DateTime(2021, 12, 8), Resolution.Daily);</pre>
     </div>
 
-    <li class="python">Drop the first four index levels of the <code>DataFrame</code> that returns.</li>
-	<div class="python section-example-container">
-        <pre>history.index = history.index.droplevel([0,1,2,3])</pre>
-    </div>
-    
     <li>Import the <code class="python">plotly</code><code class="csharp">Plotly.NET</code> library.</li>
     <div class="section-example-container">
         <pre class="python">import plotly.graph_objects as go</pre>
@@ -24,7 +19,7 @@ using Plotly.NET;
 using Plotly.NET.LayoutObjects;</pre>
     </div>
 
-    <li>Create a <code>Candlestick</code>.</li>
+    <li>Create a <code>Candlestick</code> chart.<br></li>
     <div class="section-example-container">
         <pre class="python">candlestick = go.Candlestick(x=history.index,
                              open=history['open'],
@@ -40,17 +35,17 @@ using Plotly.NET.LayoutObjects;</pre>
 );</pre>
     </div>
 
-    <li>Create a <code>Layout</code>.</li>
+    <li>Create a <code>Layout</code>.<br></li>
     <div class="section-example-container">
-        <pre class="python">layout = go.Layout(title=go.layout.Title(text=f'{symbol.Value} OHLC'),
+        <pre class="python">layout = go.Layout(title=go.layout.Title(text='ICICIBANK OHLC'),
                    xaxis_title='Date',
                    yaxis_title='Price',
                    xaxis_rangeslider_visible=False)</pre>
-        <pre>LinearAxis xAxis = new LinearAxis();
+        <pre class="python">LinearAxis xAxis = new LinearAxis();
 xAxis.SetValue("title", "Time");
 LinearAxis yAxis = new LinearAxis();
 yAxis.SetValue("title", "Price ($)");
-Title title = Title.init($"{contractSymbol} Price");
+Title title = Title.init("ICICIBANK Price");
 
 Layout layout = new Layout();
 layout.SetValue("xaxis", xAxis);
@@ -73,11 +68,11 @@ layout.SetValue("title", title);</pre>
         <pre class="python">fig.show()</pre>
         <pre class="csharp">HTML(GenericChart.toChartHTML(chart))</pre>
     </div>
-    <p>The Jupyter Notebook displays a candlestick chart of the Option contract's price.</p>
+    <p>Candlestick charts display the open, high, low, and close prices of the security.</p>
 </ol>
 
-<img class="python docs-image" src="https://cdn.quantconnect.com/i/tu/research-history-equity-options-contract-candlestick-2022.png" alt="Candlestick shart of a contract's price">
-<img class="csharp docs-image" src="https://cdn.quantconnect.com/i/tu/research-history-equity-options-contract-candlestick-csharp.png" alt="Candlestick shart of a contract's price">
+<img class="python docs-image" src="https://cdn.quantconnect.com/i/tu/research-india-equity-candle-python.png" alt="Candlestick plot of ICICIBANK OHLC">
+<img class="csharp docs-image" src="https://cdn.quantconnect.com/i/tu/research-india-equity-candle-csharp.png" alt="Candlestick plot of ICICIBANK OHLC">
 
 <h4>Line Chart</h4>
 <p>Follow these steps to plot line charts using <span class="python">built-in methods</span><span class="csharp"><code>Plotly.NET</code> package</span>:</p>
@@ -85,37 +80,25 @@ layout.SetValue("title", title);</pre>
 <ol>
     <li>Get some historical data.</li>
     <div class="section-example-container">
-        <pre class="python">history = qb.History(OpenInterest, contract_symbol, datetime(2021, 12, 1), datetime(2021, 12, 31))</pre>
-        <pre class="csharp">var history = qb.History&lt;OpenInterest&gt;(contract_symbol, new DateTime(2021, 12, 1), new DateTime(2021, 12, 31));</pre>
+        <pre class="python">history = qb.History([icicibank, yesbank], datetime(2021, 11, 23), datetime(2021, 12, 8), Resolution.Daily)</pre>
+        <pre class="csharp">var history = qb.History&lt;TradeBar&gt;(icicibank, new DateTime(2021, 11, 23), new DateTime(2021, 12, 8), Resolution.Daily);</pre>
     </div>
 
-    <li class="python">Drop the first three index levels of the&nbsp;<code>DataFrame</code> that returns.<br></li>
+    <li class="python">Select the data to plot.</li>
     <div class="python section-example-container">
-        <pre>history.index = history.index.droplevel([0, 1, 2])</pre>
+        <pre>volume = history['volume'].unstack(level=0)</pre>
     </div>
 
-    <li class="python">Select the open interest data.</li>
+    <li class="python">Call the <code>plot</code> method on the <code>pandas</code> object.</li>
     <div class="python section-example-container">
-        <pre>history = history['openinterest'].unstack(level=0)</pre>
-    </div>
-
-	<li class="python">Rename the column to the <code>Symbol</code> of the contract.</li>
-    <div class="python section-example-container">
-        <pre class="">history.columns = [
-    Symbol.GetAlias(SecurityIdentifier.Parse(x), equity_symbol)
-        for x in history.columns]</pre>
-    </div>
-
-    <li class="python">Call the <code>plot</code> method with a title.</li>
-    <div class="python section-example-container">
-        <pre>history.plot(title="Open Interest")</pre>
+        <pre>volume.plot(title="Volume", figsize=(15, 10))</pre>
     </div>
 
     <li class="csharp">Create a <code>Line</code> chart.</li>
     <div class="csharp section-example-container">
         <pre>var chart = Chart2D.Chart.Line&lt;DateTime, decimal, string&gt;(
-    history.Select(x => x.EndTime),
-    history.Select(x => x.Value)
+    icicibank.Select(x => x.EndTime),
+    icicibank.Select(x => x.Volume)
 );</pre>
     </div>
 
@@ -124,8 +107,8 @@ layout.SetValue("title", title);</pre>
         <pre>LinearAxis xAxis = new LinearAxis();
 xAxis.SetValue("title", "Time");
 LinearAxis yAxis = new LinearAxis();
-yAxis.SetValue("title", "Open Interest");
-Title title = Title.init("SPY Open Interest");
+yAxis.SetValue("title", "Volume");
+Title title = Title.init("ICICIBANK Volume");
 
 Layout layout = new Layout();
 layout.SetValue("xaxis", xAxis);
@@ -137,14 +120,14 @@ layout.SetValue("title", title);</pre>
     <div class="csharp section-example-container">
         <pre>chart.WithLayout(layout);</pre>
     </div>
-
+    
     <li>Show the plot.</li>
     <div class="section-example-container">
         <pre class="python">plt.show()</pre>
         <pre class="csharp">HTML(GenericChart.toChartHTML(chart))</pre>
     </div>
-    <p>The Jupyter Notebook displays a line chart of open interest data.<br></p>
+    <p>Line charts display the value of the property you selected in a time series.</p>
 </ol>
 
-<img class="python docs-image" src="https://cdn.quantconnect.com/i/tu/us-equity-option-research-plot-line-chart.jpg" alt="Line chart of open interest">
-<img class="csharp docs-image" src="https://cdn.quantconnect.com/i/tu/us-equity-option-research-plot-line-chart-csharp.png" alt="Line chart of open interest">
+<img class="python docs-image" src="https://cdn.quantconnect.com/i/tu/research-india-equity-line-python.png" rel="Line chart of volume for ICICIBANK and YESBANK">
+<img class="csharp docs-image" src="https://cdn.quantconnect.com/i/tu/research-india-equity-line-csharp.png" rel="Line chart of volume for ICICIBANK">
