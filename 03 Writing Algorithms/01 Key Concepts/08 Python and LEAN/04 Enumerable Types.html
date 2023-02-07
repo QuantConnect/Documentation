@@ -3,18 +3,9 @@ When LEAN returns an enumerable, the object should be converted to a <code>list(
 </p>
 
 <h4>Historical Data</h4>
-<p>While using research or building algorithms you might see types like the <code>MemoizingEnumerable</code> that is a raw C# type accessible in python. </p>
-<div class="section-example-container">
-<pre class="python">qb = QuantBook()
-start = datetime(2023, 2, 1)
-end = datetime(2023, 2, 4)
-ibm = qb.AddEquity('IBM', Resolution.Minute)
-bars = qb.History[TradeBar](ibm.Symbol, start, end, Resolution.Minute)
-bars</pre></div>
-<div class="section-example-container">
-<pre class="python">&lt;QuantConnect.Util.MemoizingEnumerable[TradeBar] object at 0x7f1dea829f40&gt;</pre></div>
+<p>QuantConnect also provides methods to request historical data that return a pandas dataframe, or an enumerable. If loading a large amount of data using an enumerable streams the results reducing RAM usage.</p>
+<p>The enumerable types might look like the <code>MemoizingEnumerable</code> that is a raw C# type accessible in python. </p>
+<img src="https://cdn.quantconnect.com/i/tu/bars-history-memoize2.png" width="100%" />
+ <br/>   <br/>  
 <p>You can directly enumerate this object with standard python <code>for</code> loops, or to convert it to a native type, wrap the object in the <code>list()</code>:</p>
-<div class="section-example-container">
-<pre class="python"># Convert to a standard python list
-bars = list(bars)
-len(bars) </pre></div>
+<img src="https://cdn.quantconnect.com/i/tu/bars-history-memoize2-result.png" width="100%" />
