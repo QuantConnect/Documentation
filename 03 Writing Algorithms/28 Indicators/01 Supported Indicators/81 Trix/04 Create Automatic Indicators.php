@@ -5,7 +5,7 @@
 <p>The TRIX method creates an Trix indicator, sets up a consolidator to update the indicator, and then returns the indicator so you can use it in your algorithm.</p>
 <p>The following reference table describes the <code>TRIX</code> method:</p>
 
-<? include(DOCS_RESOURCES."/qcalgorithm-api/trix"); ?>
+<? include(DOCS_RESOURCES."/qcalgorithm-api/trix.html"); ?>
 <br/>
 
 <p>If you don't provide a resolution, it defaults to the security resolution. If you provide a resolution, it must be greater than or equal to the resolution of the security. For instance, if you subscribe to hourly data for a security, you should update its indicator with data that spans 1 hour or longer.</p>
