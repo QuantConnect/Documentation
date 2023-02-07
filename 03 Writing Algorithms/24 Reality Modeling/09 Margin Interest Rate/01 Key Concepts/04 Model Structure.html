@@ -10,8 +10,12 @@
         positionValue.Cash.AddAmount(-1);
     }
 }</pre>
-    <pre class="python"># Custom margin interest rate models are not currently available in Python
-# See https://github.com/QuantConnect/Lean/issues/6837</pre>
+    <pre class="python">class MyMarginInterestRateModel:
+
+    def ApplyMarginInterestRate(self, marginInterestRateParameters: MarginInterestRateParameters) -&gt; None:
+        holdings = marginInterestRateParameters.Security.Holdings
+        position_value = holdings.GetQuantityValue(holdings.Quantity)
+        position_value.Cash.AddAmount(-1)</pre>
 </div>
 
 <p>The algorithm manager calls the <code>ApplyMarginInterestRate</code> method at the top of each hour.</p>
