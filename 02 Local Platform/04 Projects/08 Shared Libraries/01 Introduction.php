@@ -1,1 +1,0 @@
-<? include(DOCS_RESOURCES."/libraries/project-libraries.html"); ?>
