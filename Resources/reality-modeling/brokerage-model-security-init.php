@@ -46,6 +46,7 @@ class MySecurityInitializer : BrokerageModelSecurityInitializer
         // Next, overwrite <?=$comment?>
         
         <?=$overwriteCodeC?>
+    
     }
 }</pre>
 <pre class='python'># In Initialize
