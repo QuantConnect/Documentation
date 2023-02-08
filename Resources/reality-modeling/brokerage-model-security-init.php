@@ -44,6 +44,7 @@ class MySecurityInitializer : BrokerageModelSecurityInitializer
         base.Initialize(security);
 
         // Next, overwrite <?=$comment?>
+        
         <?=$overwriteCodeC?>
     }
 }</pre>
@@ -62,5 +63,6 @@ class MySecurityInitializer(BrokerageModelSecurityInitializer):
         super().Initialize(security)
 
         # Next, overwrite <?=$comment?>
+        
         <?=$overwriteCodePy?></pre>
 </div>
