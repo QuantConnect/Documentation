@@ -1,0 +1,1 @@
+<p><?php if ($writingAlgorithms) {?>The <code>TradierBrokerageModel</code><?php } else { ?>Our Tradier integration<?php } ?> supports trading <a href='/docs/v2/writing-algorithms/securities/asset-classes/us-equity'>US Equities</a> and <a href='/docs/v2/writing-algorithms/securities/asset-classes/equity-options'>Equity Options</a>.</p>

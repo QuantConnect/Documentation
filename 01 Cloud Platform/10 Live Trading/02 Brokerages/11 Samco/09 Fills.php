@@ -1,3 +1,3 @@
 <?php include(DOCS_RESOURCES."/brokerages/fills.html"); ?>
 
-<p>For default fill model, see <a href="/docs/v2/writing-algorithms/reality-modeling/brokerages/supported-models/samco#02-Fills">Samco Supported Models</a>.
+<p>To view how we model Samco order fills, see <a href="/docs/v2/writing-algorithms/reality-modeling/brokerages/supported-models/samco#04-Fills">Fills</a>.</p>

@@ -1,9 +1,84 @@
-<p>The <code>GDAXFeeModel</code> models <a href='/docs/v2/cloud-platform/live-trading/brokerages/coinbase#06-Fees'>the fees of Coinbase</a>. It's the default fee model of the <a href='/docs/v2/writing-algorithms/reality-modeling/brokerages/supported-models/coinbase'>GDAXBrokerageModel</a>.</p>
+<p>The <code>GDAXFeeModel</code> models the <a rel="nofollow" target="_blank" href="https://help.coinbase.com/en/pro/trading-and-funding/trading-rules-and-fees/fees">Coinbase live trading fees</a>.</p>
 
 <div class="section-example-container">
 <pre class="csharp">security.SetFeeModel(new GDAXFeeModel());</pre>
 <pre class="python">security.SetFeeModel(GDAXFeeModel())</pre>
 </div>
+
+<p>The <code>GDAXFeeModel</code> models the order fees of Coinbase at the $50K-100K pricing tier for all Crypto pairs, so it charges a 0.5% maker and taker fee for most pairs. The following table shows the Coinbase Stable Pairs, which charge a 0% maker fee and a 0.1% taker fee: </p>
+
+<table class="table qc-table">
+   <thead>
+      <tr>
+         <th colspan="4">Stable Pairs</th>
+      </tr>
+   </thead>
+   <tbody>
+      <tr>
+         <td>DAIUSDC</td>
+         <td>DAIUSD</td>
+         <td>GYENUSD</td>
+         <td>PAXUSD</td>
+      </tr>
+      <tr>
+         <td>PAXUSDT</td>
+         <td>MUSDUSD</td>
+         <td>USDCEUR</td>
+         <td>USDCGBP</td>
+      </tr>
+      <tr>
+         <td>USDTEUR</td>
+         <td>USDTGBP</td>
+         <td>USDTUSD</td>
+         <td>USDTUSDC</td>
+      </tr>
+      <tr>
+         <td>USTEUR</td>
+         <td>USTUSD</td>
+         <td>USTUSDT</td>
+         <td>WBTCBTC</td>
+      </tr>
+   </tbody>
+</table>
+
+<p>If you add liquidity to the order book by placing a limit order that doesn't cross the spread, you pay maker fees. If you remove liquidity from the order book by placing an order that crosses the spread, you pay taker fees. Coinbase adjusts your fees based on your 30-day trading volume, but we don't currently model trading volume to adjust fees.</p>
+
+<p>The <code>GDAXFeeModel</code> models the adjustments Coinbase has made to their fees over time. The following table shows the fees for each time period:</p>
+
+<table class="table qc-table" id="coinbase-historical-fees-table">
+   <thead>
+      <tr>
+         <th style="width: 50%">Time Period (UTC)</th>
+         <th style="width: 25%">Maker Fee (%)</th>
+         <th style="width: 25%">Taker Fee (%)</th>
+      </tr>
+   </thead>
+   <tbody>
+      <tr>
+         <td>Time &lt; 3/23/2019 1:30AM</td>
+         <td>0</td>
+         <td>0.3</td>
+      </tr>
+      <tr>
+         <td>3/23/2019 1:30AM &lt;= Time &lt; 10/8/2019 12:30AM</td>
+         <td>0.15</td>
+         <td>0.25</td>
+      </tr>
+      <tr>
+         <td>10/8/2019 12:30AM &lt;= Time</td>
+         <td>0.5</td>
+         <td>0.5</td>
+      </tr>
+   </tbody>
+</table>
+
+<style>
+#coinbase-historical-fees-table td, 
+#coinbase-historical-fees-table th
+{
+   text-align: right;
+}
+</style>
 
 <p>The <code>GDAXFeeModel</code> charges fees in the <a href='/docs/v2/writing-algorithms/securities/key-concepts#03-Quote-Currency'>quote currency</a>.</p>
 

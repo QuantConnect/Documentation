@@ -1,0 +1,1 @@
+<p><?php if ($writingAlgorithms) {?>The <code>ZerodhaBrokerageModel</code><?php } else { ?>Our Zerodha integration<?php } ?> supports trading <a href='/docs/v2/writing-algorithms/securities/asset-classes/india-equity'>Indian Equities</a>.</p>

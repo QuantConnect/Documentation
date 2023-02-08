@@ -1,0 +1,1 @@
+<p><?php if ($writingAlgorithms) {?>The <code>WolverineBrokerageModel</code><?php } else { ?>Our Wolverine Execution Services integration<?php } ?> supports trading <a href='/docs/v2/writing-algorithms/securities/asset-classes/us-equity'>US Equities</a>.</p>

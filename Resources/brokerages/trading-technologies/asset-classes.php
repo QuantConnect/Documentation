@@ -1,0 +1,2 @@
+
+<p><?php if ($writingAlgorithms) {?>The <code>TradingTechnologiesBrokerageModel</code><?php } else { ?>Our TT integration<?php } ?> supports trading <a href='/docs/v2/writing-algorithms/securities/asset-classes/futures'>Futures</a>.</p>

@@ -7,4 +7,6 @@ $options=true;
 include(DOCS_RESOURCES."/brokerages/settlements.php");
 ?>
 
-<p>For default settlement model, see <a href="/docs/v2/writing-algorithms/reality-modeling/brokerages/supported-models/tradier#06-Settlement">Tradier Supported Models</a>.
+
+<p>To view how we model settlement for Tradier trades, see <a href="/docs/v2/writing-algorithms/reality-modeling/brokerages/supported-models/tradier#08-Settlement">Settlement</a>.</p>
+

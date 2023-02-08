@@ -1,10 +1,60 @@
-<p>The <code>KrakenFeeModel</code> models <a href='/docs/v2/cloud-platform/live-trading/brokerages/kraken#06-Fees'>the fees of Kraken</a>. It's the default fee model of the <a href='/docs/v2/writing-algorithms/reality-modeling/brokerages/supported-models/kraken'>KrakenBrokerageModel</a>.</p>
+<p>The <code>KrakenFeeModel</code> models <a rel="nofollow" target="_blank" href="https://www.kraken.com/features/fee-schedule">the fees of Kraken</a>.</p>
 
 <div class="section-example-container">
 <pre class="csharp">security.SetFeeModel(new KrakenFeeModel());</pre>
 <pre class="python">security.SetFeeModel(KrakenFeeModel())</pre>
 </div>
 
-<p>The <code>KrakenFeeModel</code> charges fees in the <a href='/docs/v2/writing-algorithms/securities/key-concepts#03-Quote-Currency'>quote currency</a> for buy orders and in the base currency for sell orders. To override these settings, define the <a href='/docs/v2/cloud-platform/live-trading/brokerages/kraken#05-Orders'>KrakenOrderProperties</a>.</p>
+<p>The <code>KrakenFeeModel</code> model the order fees of Kraken. For trading pairs that contain only Crypto assets, this fee model models the lowest tier in Kraken's tiered fee structure, which is a 0.16% maker fee and a 0.26% taker fee. If you add liquidity to the order book by placing a limit order that doesn't cross the spread, you pay maker fees. If you remove liquidity from the order book by placing an order that crosses the spread, you pay taker fees. For trading pairs that have any of the following currencies as the base currency in the pair, the fee is 0.2%:</p>
+
+<ul>
+    <li>CAD</li>
+    <li>EUR</li>
+    <li>GBP</li>
+    <li>JPY</li>
+    <li>USD</li>
+    <li>USDT</li>
+    <li>DAI</li>
+    <li>USDC</li>
+</ul>
+
+<p>The <code>KrakenFeeModel</code> charges fees in the <a href='/docs/v2/writing-algorithms/securities/key-concepts#03-Quote-Currency'>quote currency</a> for buy orders and in the base currency for sell orders. To override these settings, define the <code>KrakenOrderProperties</code>.</p>
+
+<div class="section-example-container">
+    <pre class="csharp">public override void Initialize()
+{
+    // Set the default order properties
+    DefaultOrderProperties = new KrakenOrderProperties()
+    {
+        FeeInBase = true,
+        FeeInQuote = false
+    };
+}
+
+public override void OnData(Slice slice)
+{
+    // Override the default order properties
+    LimitOrder(_symbol, quantity, limitPrice, 
+               orderProperties: new KrakenOrderProperties
+               { 
+                   FeeInQuote = true, 
+                   FeeInBase = false 
+               });
+}</pre>
+    <pre class="python">def Initialize(self) -&gt; None:
+    # Set the default order properties
+    self.DefaultOrderProperties = KrakenOrderProperties()
+    self.DefaultOrderProperties.FeeInBase = True
+    self.DefaultOrderProperties.FeeInQuote = False
+
+def OnData(self, slice: Slice) -&gt; None:
+    # Override the default order properties
+    order_properties = KrakenOrderProperties()
+    order_properties.FeeInQuote = True
+    order_properties.FeeInBase = False
+    self.LimitOrder(self.symbol, quantity, limit_price, orderProperties=order_properties)</pre>
+</div>
+
+<p>Kraken adjusts your fees based on your 30-day trading volume, but the <code>KrakenFeeModel</code> don't currently model trading volume to adjust fees.</p>
 
 <p>To view the implementation of this model, see the <a target="_blank" rel="nofollow" href="https://github.com/QuantConnect/Lean/blob/master/Common/Orders/Fees/KrakenFeeModel.cs">LEAN GitHub repository</a>.</p>
