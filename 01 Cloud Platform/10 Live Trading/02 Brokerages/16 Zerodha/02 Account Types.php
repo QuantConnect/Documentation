@@ -39,10 +39,5 @@ print(f"Your access_token is {data['access_token']}")</pre>
 	</li>
 </ol>
 
-// login page opens automatically, need to log in
-// the request token is in the url parameters
-
-<p>For more information about the process, see the <a rel="nofollow" target="_blank" href="https://kite.trade/docs/connect/v3/user/#login-flow">Login flow</a> in the Kite Connect documentation.</p>
-
 <h4>Paper Trading</h4>
 <p>Zerodha doesn't support paper trading.</p>
