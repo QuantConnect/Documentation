@@ -1,8 +1,59 @@
 <p>If you use the <code>Liquidate</code> method to liquidate a Crypto position, it only liquidates the quantity of the virtual pair. Since the virtual pair BTCUSD may not represent all of your BTC holdings, don't use the <code>Liquidate</code> method to liquidate Crypto positions. Instead, calculate the order quantity based on the currency amounts in your cash book and place manual orders. The following code snippet demonstrates how to liquidate a BTCUSD position.</p>
 
 <div class="section-example-container">
-<pre class="csharp">var quantity = Portfolio.CashBook['BTC'].Amount;
-MarketOrder("BTCUSD", quantity);</pre>
-<pre class="python">quantity = self.Portfolio.CashBook['BTC'].Amount
-self.MarketOrder("BTCUSD", quantity)</pre>
+<pre class="csharp">public override void OnData(Slice data)
+{
+    LiquidateCrypto(_symbol);
+}
+
+private void LiquidateCrypto(Symbol symbol)
+{
+    var crypto = Securities[symbol] as Crypto;
+    var baseCurrency = crypto.BaseCurrency;
+
+    // Avoid negative amount after liquidate
+    var quantity = Math.Min(crypto.Holdings.Quantity, baseCurrency.Amount);
+    
+    // Round down to observe the lot size
+    var lotSize = crypto.SymbolProperties.LotSize;
+    quantity = (Math.Round(quantity / lotSize) - 1) * lotSize;
+
+    if (IsValidOrderSize(crypto, quantity))
+    {
+        MarketOrder(symbol, -quantity);
+    }
+}</pre>
+<pre class="python">def OnData(self, data: Slice):
+    self.liquidate_crypto(self.symbol)
+
+def liquidate_crypto(self, symbol):
+    crypto = self.Securities[symbol]
+    base_currency = crypto.BaseCurrency
+
+    # Avoid negative amount after liquidate
+    quantity = min(crypto.Holdings.Quantity, base_currency.Amount)
+        
+    # Round down to observe the lot size
+    lot_size = crypto.SymbolProperties.LotSize;
+    quantity = (round(quantity / lot_size) - 1) * lot_size
+
+    if self.IsValidOrderSize(crypto, quantity):
+        self.MarketOrder(symbol, -quantity)</pre>
+</div>
+
+<p>The order fees don't respect the lot size. When we try to liquidate a position, the absolute value of cash amount of the base currency is less than the lot size and greater than zero. Your algorithm may hold a position that cannot be liquidated, and cannot use <code pre class="python">self.</code><code>Portfolio[symbol].Invested</code> to evaluate whether it holds a position. The following code snippet demonstrates how to determine if a position can be liquidated:</p>
+
+<div class="section-example-container">
+    <pre class="csharp">public override void OnData(Slice data)
+{
+    var crypto = Securities[_symbol];
+    if (Math.Abs(crypto.Holdings.Quantity) > crypto.SymbolProperties.LotSize)
+    {
+        LiquidateCrypto(_symbol);
+    }
+}</pre>
+    <pre class="python">def OnData(self, data: Slice):
+    crypto = self.Securities[self.symbol]
+    if abs(crypto.Holdings.Quantity) > crypto.SymbolProperties.LotSize:
+        self.liquidate_crypto(self.symbol)</pre>
 </div>

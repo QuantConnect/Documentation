@@ -3,26 +3,82 @@
 <p>The following code snippet demonstrates how to allocate 90% of your portfolio to BTC.</p>
 
 <div class="section-example-container">
-<pre class="csharp">var targetQuantity = 0.9m * Portfolio.TotalPortfolioValue / Securities["BTCUSD"].Price;
-var quantity = targetQuantity - Portfolio.CashBook['BTC'].Amount;
-MarketOrder("BTCUSD", quantity);</pre>
-<pre class="python">target_quantity = 0.9 * self.Portfolio.TotalPortfolioValue / self.Securities["BTCUSD"].Price
-quantity = target_quantity - self.Portfolio.CashBook['BTC'].Amount
-self.MarketOrder("BTCUSD", quantity)</pre>
+<pre class="csharp">public override void OnData(Slice data)
+{
+    SetCryptoHoldings(_symbol, 0.9m);
+}
+
+private void SetCryptoHoldings(Symbol symbol, decimal percentage)
+{
+    var crypto = Securities[symbol] as Crypto;
+    var baseCurrency = crypto.BaseCurrency;
+
+    // Calculate the target quantity in the base currency
+    var targetQuantity = percentage * (Portfolio.TotalPortfolioValue - Settings.FreePortfolioValue) / baseCurrency.ConversionRate;
+    var quantity = targetQuantity - baseCurrency.Amount;
+
+    // Round down to observe the lot size
+    var lotSize = crypto.SymbolProperties.LotSize;
+    quantity = Math.Round(quantity / lotSize) * lotSize;
+
+    if (IsValidOrderSize(crypto, quantity))
+    {
+        MarketOrder(symbol, quantity);
+    }
+}
+
+// Brokerages have different order size rules
+// Binance considered the minimum volume (price x quantity):
+private bool IsValidOrderSize(Crypto crypto, decimal quantity)
+{
+    return Math.Abs(crypto.Price * quantity) > crypto.SymbolProperties.MinimumOrderSize;
+}</pre>
+<pre class="python">def OnData(self, data: Slice):
+    self.set_crypto_holdings(self.symbol, .9)
+
+def set_crypto_holdings(self, symbol, percentage):
+    crypto = self.Securities[symbol]
+    base_currency = crypto.BaseCurrency
+
+    # Calculate the target quantity in the base currency
+    target_quantity = percentage * (self.Portfolio.TotalPortfolioValue - self.Settings.FreePortfolioValue) / base_currency.ConversionRate    
+    quantity = target_quantity - base_currency.Amount
+
+    # Round down to observe the lot size
+    lot_size = crypto.SymbolProperties.LotSize
+    quantity = round(quantity / lot_size) * lot_size
+
+    if self.IsValidOrderSize(crypto, quantity):
+        self.MarketOrder(symbol, quantity)
+
+# Brokerages have different order size rules
+# Binance considered the minimum volume (price x quantity):
+def IsValidOrderSize(self, crypto, quantity):
+    return abs(crypto.Price * quantity) > crypto.SymbolProperties.MinimumOrderSize
+</pre>
 </div>
 
+<p>The previous example doesn't take into account order fees. You can add a 0.1% buffer to accomodate it.</p>
 
 <p>The following example demonstrates how to form an equal-weighted Crypto portfolio and stay within the <a href="/docs/v2/writing-algorithms/trading-and-orders/position-sizing#05-Buying-Power-Buffer">cash buffer</a>. <br></p>
 
 <div class="section-example-container">
-<pre class="csharp">var usdPerSymbol = Portfolio.CashBook["USD"].Amount * (1m - _cashBuffer) / _symbols.Count();
-foreach (var symbol in _symbols)
+<pre class="csharp">private decimal _cashBuffer = 0.01m;   // 1% buffer
+
+public override void OnData(Slice data)
 {
-    MarketOrder(symbol, usdPerSymbol / data[symbol].Price);
+    var percentage = (1m - _cashBuffer) / _symbols.Count;
+    foreach (var symbol in _symbols)
+    {
+        SetCryptoHoldings(_symbol, percentage);
+    }
 }</pre>
-<pre class="python">usd_per_symbol = self.Portfolio.CashBook['USD'].Amount * (1 - self.cash_buffer) / len(self.symbols)
-for symbol in self.symbols:
-    self.MarketOrder(symbol, usd_per_symbol / data[symbol].Price)</pre>
+<pre class="python">cash_buffer = 0.01   # 1% buffer
+
+def OnData(self, data: Slice):
+    percentage = (1 - self.cash_buffer) / len(self.symbols);
+    for symbol in self.symbols:
+        self.set_crypto_holdings(symbol, percentage)</pre>
 </div>
 
 <p>When you place Crypto trades, ensure you have a sufficient balance of the base or quote currency before each trade. If you hold multiple assets and you want to put all of your capital into BTCUSD, you need to first convert all your non-BTC assets into USD and then purchase BTCUSD.</p>
