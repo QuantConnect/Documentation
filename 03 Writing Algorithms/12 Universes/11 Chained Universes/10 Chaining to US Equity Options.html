@@ -6,33 +6,53 @@ In the below example, we chain a <code>OptionFilterUniverse</code> to the QQQ ET
 using System.Linq;
 using QuantConnect.Data;
 using QuantConnect.Data.UniverseSelection;
-using QuantConnect.Securities;
 
 namespace QuantConnect.Algorithm.CSharp
 {
     public class ChainedUniverseAlgorithm : QCAlgorithm
     {
         private Universe _universeEtf;
+        private List&lt;Symbol&gt; _optionContracts = new();
 
         public override void Initialize()
         {
             SetStartDate(2023, 2, 2);
             SetCash(100000);
 
-            _universeEtf = Universe.ETF("QQQ", Market.USA, UniverseSettings, ETFConstituentsFilter);
-            AddUniverseOptions(_universeEtf, OptionFilter);
+            UniverseSettings.DataNormalizationMode = DataNormalizationMode.Raw;
+            _universeEtf = AddUniverse(Universe.ETF("QQQ", Market.USA, UniverseSettings, ETFConstituentsFilter));
         }
 
         private IEnumerable&lt;Symbol&gt; ETFConstituentsFilter(IEnumerable&lt;ETFConstituentData&gt; constituents)
         {
             return (from c in constituents
                     orderby c.Weight descending
-                    select c.Symbol).Take(30);
+                    select c.Symbol).Take(10);
         }
 
-        private OptionFilterUniverse OptionFilter(OptionFilterUniverse optionFilter)
+        public override void OnSecuritiesChanged(SecurityChanges changes)
         {
-            return optionFilter.CallsOnly().Expiration(0, 60).IncludeWeeklys();
+            foreach (var added in changes.AddedSecurities)
+            {
+                if (added.Type != SecurityType.Equity) continue;
+
+                var contracts = OptionChainProvider.GetOptionContractList(added.Symbol, Time);
+                var filteredContracts = (from contract in contracts
+                                        where contract.ID.OptionRight == OptionRight.Call
+                                        && contract.ID.StrikePrice &gt;= 100
+                                        && contract.ID.Date &lt;= Time.AddDays(10)
+                                        && contract.ID.OptionStyle == OptionStyle.American
+                                        select AddOptionContract(contract).Symbol);
+                _optionContracts = _optionContracts.Union(filteredContracts).ToList();
+            }
+            
+            foreach (var removed in changes.RemovedSecurities)
+            {
+                if (_optionContracts.Contains(removed.Symbol))
+                {
+                    _optionContracts.Remove(removed.Symbol);
+                }
+            }
         }
 
         public override void OnData(Slice data)
@@ -53,22 +73,36 @@ namespace QuantConnect.Algorithm.CSharp
 class ChainedUniverseAlgorithm(QCAlgorithm):
 
     universe_etf = None
+    option_contracts = []
 
     def Initialize(self):
         self.SetCash(100000)
         self.SetStartDate(2023, 2, 2)
         
-        self.universe_etf = self.Universe.ETF("QQQ", Market.USA, self.UniverseSettings, self.ETFConstituentsFilter)
-        self.AddUniverseOptions(self.universe_etf, self.OptionFilter)
+        self.UniverseSettings.DataNormalizationMode = DataNormalizationMode.Raw
+        self.universe_etf = self.AddUniverse(self.Universe.ETF("QQQ", Market.USA, self.UniverseSettings, self.ETFConstituentsFilter))
 
     def ETFConstituentsFilter(self, constituents: List[ETFConstituentData]) -&gt; List[Symbol]:
         sorted_by_weight = sorted(constituents, key=lambda x: x.Weight, reverse=True) 
-        return [c.Symbol for c in sorted_by_weight[:30]]
+        return [c.Symbol for c in sorted_by_weight[:10]]
 
-    def OptionFilter(self, option_filter: OptionFilterUniverse) -&gt; OptionFilterUniverse:
-        return option_filter.CallsOnly().Expiration(0, 60).IncludeWeeklys()
+    def OnSecuritiesChanged(self, changes: SecurityChanges) -&gt; None:
+        for added in changes.AddedSecurities:
+            if added.Type != SecurityType.Equity: continue
 
-    def OnData(self, data):
+            contracts = self.OptionChainProvider.GetOptionContractList(added.Symbol, self.Time)
+            filtered_contracts = [self.AddOptionContract(contract).Symbol for contract in contracts \
+                                    if contract.ID.OptionRight == OptionRight.Call \
+                                    and contract.ID.StrikePrice &gt;= 100 \
+                                    and contract.ID.Date &lt;= self.Time + timedelta(10) \
+                                    and contract.ID.OptionStyle == OptionStyle.American]
+            self.option_contracts = self.option_contracts + filtered_contracts
+
+        for removed in changes.RemovedSecurities:
+            if removed.Symbol in self.option_contracts:
+                self.option_contracts.remove(removed.Symbol)
+
+    def OnData(self, data: Slice) -&gt; None:
         for chain in data.OptionChains:
             symbol = chain.Key
             for contract in chain.Value:
