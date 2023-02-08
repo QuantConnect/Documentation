@@ -41,8 +41,7 @@ def liquidate_crypto(self, symbol):
         self.MarketOrder(symbol, -quantity)</pre>
 </div>
 
-<p>The order fees don't respect the lot size. When we try to liquidate a position, the absolute value of cash amount of the base currency is less than the lot size and greater than zero. Your algorithm may hold a position that cannot be liquidated, and cannot use <code pre class="python">self.</code><code>Portfolio[symbol].Invested</code> to evaluate whether it holds a position. The following code snippet demonstrates how to determine if a position can be liquidated:</p>
-
+<p>The order fees don't respect the lot size. When you try to liquidate a position, the absolute value of the base currency quantity can be less than the lot size and greater than zero. In this case, your algorithm holds a position that you can't liquidate and <code class="python">self.</code><code>Portfolio[symbol].Invested</code> is <code class="python">True</code><code class="csharp">true</code>. The following code snippet demonstrates how to determine if you can liquidate a position:</p>
 <div class="section-example-container">
     <pre class="csharp">public override void OnData(Slice data)
 {
