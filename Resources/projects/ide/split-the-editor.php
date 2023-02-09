@@ -5,4 +5,4 @@
     <li>In the <span class='page-section-name'>QC (Workspace)</span> section, drag and drop the files you want to open.</li>
 </ol>
 
-<img class='docs-image' src='<?=$gifLink?>'>
+<img class='docs-image' src='<?=$gifLink?>' alt="Split editor vertically">

@@ -23,5 +23,5 @@
     dictSample.Select(kvp => new XElement(kvp.Key, kvp.Value)));
 <?=$research ? "Console.WriteLine" : "Log"?>(xmlSample.ToString());</pre>
     </div>
-    <img class='csharp' src='https://cdn.quantconnect.com/i/tu/store-data-xml-cs.png'>
+    <img class='csharp' src='https://cdn.quantconnect.com/i/tu/store-data-xml-cs.png' alt="Sample XML format data">
 </ol>

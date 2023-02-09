@@ -19,7 +19,7 @@
     <li><a href='<?=$openProjectLink ?>'>Open the project</a>.</li>
     <?=$localPlatform ? "<li>In the left navigation menu, click the <img class='inline-icon' src='https://cdn.quantconnect.com/i/tu/vscode-qc-icon.jpg'> <span class='icon-name'>QuantConnect</span> icon.</li>" : "" ?>
     <li>In the Project panel, hover over the algorithm parameter and then click the <span class='icon-name'>pencil</span> icon that appears.</li>
-    <img class='docs-image' src='https://cdn.quantconnect.com/i/tu/set-default-value.png'>
+    <img class='docs-image' src='https://cdn.quantconnect.com/i/tu/set-default-value.png' alt="Edit default parameter">
     <li>Enter a default value for the parameter and then click <span class='button-name'>Save</span>.</li>
     <p>The Project panel displays the default parameter value next to the parameter name.</p>
 </ol>
@@ -30,6 +30,6 @@
     <li><a href='<?=$openProjectLink ?>'>Open the project</a>.</li>
     <?=$localPlatform ? "<li>In the left navigation menu, click the <img class='inline-icon' src='https://cdn.quantconnect.com/i/tu/vscode-qc-icon.jpg'> <span class='icon-name'>QuantConnect</span> icon.</li>" : "" ?>
     <li>In the Project panel, hover over the algorithm parameter and then click the <span class='icon-name'>trash can</span> icon that appears.</li>
-    <img class='docs-image' src='https://cdn.quantconnect.com/i/tu/delete-parameters.png'>
+    <img class='docs-image' src='https://cdn.quantconnect.com/i/tu/delete-parameters.png' alt="Delete a parameter">
     <li>Remove the <code>GetParameter</code> calls that were associated with the parameter from your code files.</li>
 </ol>
