@@ -7,4 +7,4 @@ $options=false;
 include(DOCS_RESOURCES."/brokerages/settlements.php");
 ?>
 
-<p>For default settlement model, see <a href="/docs/v2/writing-algorithms/reality-modeling/brokerages/supported-models/bitfinex#06-Settlement">Bitfinex Supported Models</a>.
+<p>To view how we model settlement for Bitfinex trades, see <a href="/docs/v2/writing-algorithms/reality-modeling/brokerages/supported-models/bitfinex#08-Settlement">Settlement</a>.</p>

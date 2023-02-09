@@ -1,0 +1,1 @@
+<p><?= $writingAlgorithms ? "The <code>KrakenBrokerageModel</code>" : "Our Kraken integration" ?> supports trading <a href='/docs/v2/writing-algorithms/securities/asset-classes/crypto'>Crypto</a>.</p>

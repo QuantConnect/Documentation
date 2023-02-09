@@ -7,4 +7,5 @@ $options=false;
 include(DOCS_RESOURCES."/brokerages/settlements.php");
 ?>
 
-<p>For default settlement model, see <a href="/docs/v2/writing-algorithms/reality-modeling/brokerages/supported-models/zerodha#06-Settlement">Zerodha Supported Models</a>.
+
+<p>To view how we model settlement for Zerodha trades, see <a href="/docs/v2/writing-algorithms/reality-modeling/brokerages/supported-models/zerodha#08-Settlement">Settlement</a>.</p>

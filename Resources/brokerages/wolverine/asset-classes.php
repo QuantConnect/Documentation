@@ -1,0 +1,1 @@
+<p><?= $writingAlgorithms ? "The <code>WolverineBrokerageModel</code>" : "Our Wolverine Execution Services integration" ?> supports trading <a href='/docs/v2/writing-algorithms/securities/asset-classes/us-equity'>US Equities</a>.</p>

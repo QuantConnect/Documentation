@@ -42,7 +42,7 @@
     <li>The order size is larger than the minimum order size</li>
 </ul>
 
-<p>Each brokerage model can have additional order requirements that the brokerage declares. To avoid this order response error, see the <span class='page-section-name'>Orders</span> section of the <a href='/docs/v2/cloud-platform/live-trading/brokerages'>integration documentation for your brokerage</a>.</p>
+<p>Each brokerage model can have additional order requirements that the brokerage declares. To avoid this order response error, see the <span class='page-section-name'>Orders</span> section of the <a href='/docs/v2/writing-algorithms/reality-modeling/brokerages/supported-models'>brokerage model documentation</a>.</p>
 
 <p><a id='brokerage-failed-to-submit-order'></a>To investigate this order response error further, see the <code>CanSubmitOrder</code> method definition of your <a href='/docs/v2/writing-algorithms/reality-modeling/brokerages/supported-models'>brokerage model</a>. This order response error occurs when the <code>CanSubmitOrder</code> method returns <code class='csharp'>false</code><code class='python'>False</code>.</p>
 
@@ -56,7 +56,7 @@
 <h4>Brokerage Failed to Update Order</h4>
 <p>The <code>OrderResponseErrorCode.BrokerageFailedToUpdateOrder</code> (-6) error occurs when you try to update an order but the brokerage implementation fails to submit the order update request to your brokerage.</p>
 
-<p>To avoid this order response error, see the <span class='page-section-name'>Orders</span> section of the <a href='/docs/v2/cloud-platform/live-trading/brokerages'>integration documentation for your brokerage</a>.</p>
+<p>To avoid this order response error, see the <span class='page-section-name'>Orders</span> section of the <a href='/docs/v2/writing-algorithms/reality-modeling/brokerages/supported-models'>brokerage model documentation</a>.</p>
 
 <p><a id='brokerage-failed-to-cancel-order'></a>To investigate this order response error further, see the <code>UpdateOrder</code> method definition of your <a href='/docs/v2/cloud-platform/live-trading/brokerages'>brokerage</a> or the <a rel='nofollow' target='_blank' href='https://github.com/QuantConnect/Lean/blob/master/Brokerages/Backtesting/BacktestingBrokerage.cs'>BacktestingBrokerage</a> in the LEAN GitHub repository. This order response error occurs when the <code>UpdateOrder</code> method throws an error or returns <code>false</code>.</p></p>
 
@@ -227,7 +227,7 @@ if holding_quantity > 0:
 <h4>Brokerage Model Refused to Update Order</h4>
 <p>The <code>OrderResponseErrorCode.BrokerageModelRefusedToUpdateOrder</code> (-25) error occurs in backtests when you try to update an order in a way that the <a href='/docs/v2/writing-algorithms/reality-modeling/brokerages/key-concepts'>brokerage model</a> doesn't support.</p>
 
-<p><a id='quote-currency-required'></a>To avoid this issue, see the <span class='page-section-name'>Orders</span> section of the <a href='/docs/v2/cloud-platform/live-trading/brokerages'>integration documentation for your brokerage</a> to check its order requirements.</p>
+<p><a id='quote-currency-required'></a>To avoid this issue, see the <span class='page-section-name'>Orders</span> section of the <a href='/docs/v2/writing-algorithms/reality-modeling/brokerages/supported-models'>brokerage model documentation</a> to check its order requirements.</p>
 
 <p>To investigate this order response error further, see the <code>CanUpdateOrder</code> method definition of your <a href='/docs/v2/writing-algorithms/reality-modeling/brokerages/supported-models'>brokerage model</a>.</p>
 

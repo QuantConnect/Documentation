@@ -13,8 +13,3 @@
 <? } else { ?>
     Trades settle immediately after the transaction
 <? } ?></p>
-
-<div class="section-example-container">
-    <pre class="csharp">security.SettlementModel = new ImmediateSettlementModel();</pre>
-    <pre class="python">security.SettlementModel = ImmediateSettlementModel()</pre>
-</div>

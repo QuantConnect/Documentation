@@ -1,0 +1,2 @@
+
+<p><?= $writingAlgorithms ? "The <code>TradingTechnologiesBrokerageModel</code>" : "Our TT integration" ?> supports trading <a href='/docs/v2/writing-algorithms/securities/asset-classes/futures'>Futures</a>.</p>

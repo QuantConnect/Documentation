@@ -115,12 +115,4 @@ include(DOCS_RESOURCES."/order-types/update-individual-fields.php");
 include(DOCS_RESOURCES."/order-types/update-requests.html");
 ?>
 
-<div class="base-tree-container"></div>
-<div><script data-tree="QuantConnect.Orders.OrderResponse"></script><script type="text/javascript">
-    $(document).ready(function () {
-        var dataTree = $("script[data-tree]").data("tree").split(",");
-        initializeTreeView(dataTree);
-    }); </script></div>
-
-
 <p>Not all brokerages support order updates. To check if your brokerage supports order updates, see the <a href="/docs/v2/cloud-platform/live-trading/brokerages">brokerage integration documentation</a>.</p>

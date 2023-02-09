@@ -4,4 +4,5 @@ $paperTradingSupported = false;
 include(DOCS_RESOURCES."/brokerages/slippage.php");
 ?>
 
-<p>For default backtest slippage model, see <a href="/docs/v2/writing-algorithms/reality-modeling/brokerages/supported-models/binance#03-Slippage">Binance Supported Models</a>.
+
+<p>To view how we model Binance and Binance US slippage, see <a href="/docs/v2/writing-algorithms/reality-modeling/brokerages/supported-models/binance#05-Slippage">Slippage</a>.</p>
