@@ -1,4 +1,4 @@
-<p>The following sections describe how the <code>DefaultBrokerageModel</code> handles orders. <?php if ($cloudPlatform) { ?>If you set the brokerage model to a different model, the new brokerage model defines how orders are handled.<?php } ?></p>
+<p>The following sections describe how the <code>DefaultBrokerageModel</code> handles orders. <?= $cloudPlatform ? "If you set the brokerage model to a different model, the new brokerage model defines how orders are handled." : "" ?></p>
 
 <h4>Order Types</h4>
 <p>The following table describes the available order types for each asset class that the <code>DefaultBrokerageModel</code> supports:</p>
@@ -8,14 +8,14 @@
       <tr>
         <th>Order Type</th>
         <th>US Equity</th>
-        <?php if ($writingAlgorithms) { ?><th>Equity Options</th><?php } ?>
+        <?= $writingAlgorithms ? "<th>Equity Options</th>" : "" ?>
         <th>Crypto</th>
         <th>Crypto Futures</th>
         <th>Forex</th>
         <th>CFD</th>
         <th>Futures</th>
         <th>Futures Options</th>
-        <?php if ($writingAlgorithms) { ?><th>Index Options</th><?php } ?>
+        <?= $writingAlgorithms ? "<th>Index Options</th>" : "" ?>
       </tr>
    </thead>
    <tbody>

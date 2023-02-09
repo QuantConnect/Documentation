@@ -184,13 +184,7 @@
 
 <h4>Order Properties</h4>
 
-<p><p>
-<?php if ($writingAlgorithms) { ?>
-  The <code>InteractiveBrokersBrokerageModel</code> supports custom order properties. 
-<?php } else { ?>
-  We model custom order properties from the IB API. 
-<?php } ?>
-The following table describes the members of the <code>InteractiveBrokersOrderProperties</code> object that you can set to customize order execution. The table does not include the preceding methods for FA accounts.</p>
+<p><?=  $writingAlgorithms ? "The <code>InteractiveBrokersBrokerageModel</code> supports custom order properties." : "We model custom order properties from the IB API." ?> The following table describes the members of the <code>InteractiveBrokersOrderProperties</code> object that you can set to customize order execution. The table does not include the preceding methods for FA accounts.</p>
 
 <table class="table qc-table">
     <thead>
@@ -217,10 +211,7 @@ The following table describes the members of the <code>InteractiveBrokersOrderPr
     </tbody>
 </table>
 
-<?php
-if ($writingAlgorithms)
-{
-?>
+<?php if ($writingAlgorithms) { ?>
 <div class="section-example-container">
     <pre class="csharp">public override void Initialize()
 {
@@ -270,17 +261,10 @@ def OnData(self, slice: Slice) -&gt; None:
     order_properties.TimeInForce = TimeInForce.GoodTilDate(datetime(year, month, day))
     self.LimitOrder(self.symbol, quantity, limit_price, orderProperties=order_properties)</pre>
 </div>
-<?php
-}
-?>
+<?php } ?>
 
 <h4>Updates</h4>
-<p>
-<?php if ($writingAlgorithms) { ?>
-  The <code>InteractiveBrokersBrokerageModel</code> supports
-<?php } else { ?>
-  We model the IB API by supporting
-<?php } ?> <a href='/docs/v2/writing-algorithms/trading-and-orders/order-management/order-tickets#04-Update-Orders'>order updates</a>.</p>
+<p><?= $writingAlgorithms ? "The <code>InteractiveBrokersBrokerageModel</code> supports" : "We model the IB API by supporting" ?> <a href='/docs/v2/writing-algorithms/trading-and-orders/order-management/order-tickets#04-Update-Orders'>order updates</a>.</p>
 
 
 <h4>Financial Advisor Group Orders</h4>

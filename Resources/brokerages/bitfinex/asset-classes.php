@@ -1,1 +1,1 @@
-<p><?php if ($writingAlgorithms) {?>The <code>BitfinexBrokerageModel</code><?php } else { ?>Our Bitfinex integration<?php } ?> supports trading <a href='/docs/v2/writing-algorithms/securities/asset-classes/crypto'>Crypto</a>.</p>
+<p><?= $writingAlgorithms ? "The <code>BitfinexBrokerageModel</code>" : "Our Bitfinex integration" ?> supports trading <a href='/docs/v2/writing-algorithms/securities/asset-classes/crypto'>Crypto</a>.</p>

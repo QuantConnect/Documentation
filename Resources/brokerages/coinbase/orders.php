@@ -36,13 +36,7 @@
 </style>
 
 <h4>Order Properties</h4>
-<p>
-<?php if ($writingAlgorithms) { ?>
-  The <code>GDAXBrokerageModel</code> supports custom order properties. 
-<?php } else { ?>
-  We model custom order properties from the Coinbase API. 
-<?php } ?>
-The following table describes the members of the <code>GDAXOrderProperties</code> object that you can set to customize order execution:</p>
+<p><?= $writingAlgorithms ? "The <code>GDAXBrokerageModel</code> supports custom order properties." :  "We model custom order properties from the Coinbase API." ?> The following table describes the members of the <code>GDAXOrderProperties</code> object that you can set to customize order execution:</p>
 
 <table class="table qc-table">
     <thead>
@@ -63,10 +57,7 @@ The following table describes the members of the <code>GDAXOrderProperties</code
     </tbody>
 </table>
 
-<?php
-if ($writingAlgorithms)
-{
-?>
+<?php if ($writingAlgorithms) { ?>
 <div class="section-example-container">
     <pre class="csharp">public override void Initialize()
 {
@@ -107,17 +98,9 @@ def OnData(self, slice: Slice) -&gt; None:
     order_properties.PostOnly = True
     self.LimitOrder(self.symbol, quantity, limit_price, orderProperties=order_properties)</pre>
 </div>
-<?php
-}
-?>
+<?php } ?>
 
 <h4>Updates</h4>
-<p>
-<?php if ($writingAlgorithms) { ?>
-  The <code>GDAXBrokerageModel</code> doesn't support order updates
-<?php } else { ?>
-  We model the Coinbase API by not supporting order updates
-<?php } ?>
-, but you can cancel an existing order and then create a new order with the desired arguments.</p>
+<p><?= $writingAlgorithms ? "The <code>GDAXBrokerageModel</code> doesn't support order updates" : "We model the Coinbase API by not supporting order updates" ?>, but you can cancel an existing order and then create a new order with the desired arguments.</p>
 
 

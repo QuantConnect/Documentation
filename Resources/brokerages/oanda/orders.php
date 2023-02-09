@@ -53,8 +53,4 @@ self.LimitOrder(self.symbol, quantity, limit_price)</pre>
 
 
 <h4>Updates</h4>
-<p><?php if ($writingAlgorithms) { ?>
-  The <code>OandaBrokerageModel</code> supports 
-<?php } else { ?>
-  We model the Oanda API by supporting
-<?php } ?> <a href='/docs/v2/writing-algorithms/trading-and-orders/order-management/order-tickets#04-Update-Orders'>order updates</a>.</p>
+<p><?= $writingAlgorithms ? "The <code>OandaBrokerageModel</code> supports" : "We model the Oanda API by supporting" ?> <a href='/docs/v2/writing-algorithms/trading-and-orders/order-management/order-tickets#04-Update-Orders'>order updates</a>.</p>

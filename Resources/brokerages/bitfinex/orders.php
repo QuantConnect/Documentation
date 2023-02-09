@@ -47,13 +47,7 @@
 </style>
 
 <h4>Order Properties</h4>
-<p>
-<?php if ($writingAlgorithms) { ?>
-  The <code>BitfinexBrokerageModel</code> supports custom order properties. 
-<?php } else { ?>
-  We model custom order properties from the Bitfinex API. 
-<?php } ?>
-The following table describes the members of the <code>BitfinexOrderProperties</code> object that you can set to customize order execution:</p>
+<p><?= $writingAlgorithms ? "The <code>BitfinexBrokerageModel</code> supports custom order properties." : "We model custom order properties from the Bitfinex API." ?> The following table describes the members of the <code>BitfinexOrderProperties</code> object that you can set to customize order execution:</p>
 
 
 <table class="table qc-table">
@@ -86,10 +80,7 @@ The following table describes the members of the <code>BitfinexOrderProperties</
    </tbody>
 </table>
 
-<?php 
-if ($writingAlgorithms)
-{
-?>
+<?php if ($writingAlgorithms) { ?>
 <div class="section-example-container">
     <pre class="csharp">public override void Initialize()
 {
@@ -146,14 +137,7 @@ def OnData(self, slice: Slice) -&gt; None:
     order_properties.PostOnly = True
     self.LimitOrder(self.symbol, quantity, limit_price, orderProperties=order_properties)</pre>
 </div>
-<?php 
-}
-?>
+<?php } ?>
 
 <h4>Updates</h4>
-<p>
-<?php if ($writingAlgorithms) { ?>
-  The <code>BitfinexBrokerageModel</code> supports
-<?php } else { ?>
-  We model the Bitfinex API by supporting
-<?php } ?> <a href='/docs/v2/writing-algorithms/trading-and-orders/order-management/order-tickets#04-Update-Orders'>order updates</a>.</p>
+<p><?= $writingAlgorithms ? "The <code>BitfinexBrokerageModel</code> supports" : "We model the Bitfinex API by supporting"?> <a href='/docs/v2/writing-algorithms/trading-and-orders/order-management/order-tickets#04-Update-Orders'>order updates</a>.</p>

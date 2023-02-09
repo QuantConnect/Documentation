@@ -37,11 +37,7 @@
 
 
 <h4>Order Properties<br></h4>
-<p><?php if ($writingAlgorithms) { ?>
-  The Binance and Binance US brokerage models supports custom order properties. 
-<?php } else { ?>
-  We model custom order properties from the Binance and Binance US APIs. 
-<?php } ?>The following table describes the members of the <code>BinanceOrderProperties</code> object that you can set to customize order execution:</p>
+<p><?= $writingAlgorithms? "The Binance and Binance US brokerage models supports custom order properties." : "We model custom order properties from the Binance and Binance US APIs."?> The following table describes the members of the <code>BinanceOrderProperties</code> object that you can set to customize order execution:</p>
 
 
 <table class="table qc-table">
@@ -70,10 +66,7 @@
    </tbody>
 </table>
 
-<?php 
-if ($writingAlgorithms)
-{
-?>
+<?php if ($writingAlgorithms) { ?>
 <div class="section-example-container">
     <pre class="csharp">public override void Initialize()
 {
@@ -123,13 +116,7 @@ def OnData(self, slice: Slice) -&gt; None:
     order_properties.TimeInForce = TimeInForce.GoodTilDate(datetime(year, month, day))
     self.LimitOrder(self.symbol, quantity, limit_price, orderProperties=order_properties)</pre>
 </div>
-<?php 
-}
-?>
+<?php } ?>
 
 <h4>Updates</h4>
-<p><?php if ($writingAlgorithms) { ?>
-  The Binance and Binance US brokerage models don't support
-<?php } else { ?>
-  We model the Binance and Binance US APIs by not supporting
-<?php } ?> order updates, but you can cancel an existing order and then create a new order with the desired arguments.</p>
+<p><?= $writingAlgorithms ? "The Binance and Binance US brokerage models don't support" : "We model the Binance and Binance US APIs by not supporting" ?> order updates, but you can cancel an existing order and then create a new order with the desired arguments.</p>

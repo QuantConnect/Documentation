@@ -38,11 +38,7 @@
 </style>
 
 <h4>Time In Force</h4>
-<p><?php if ($writingAlgorithms) { ?>
-  The <code>TDAmeritradeBrokerageModel</code> supports
-<?php } else { ?>
-  We model the TD Ameritrade API by supporting
-<?php } ?> the following <a href='/docs/v2/writing-algorithms/trading-and-orders/order-properties#03-Time-In-Force'>TimeInForce</a> instructions:</p>
+<p><?= $writingAlgorithms ? "The <code>TDAmeritradeBrokerageModel</code> supports" : "We model the TD Ameritrade API by supporting" ?> the following <a href='/docs/v2/writing-algorithms/trading-and-orders/order-properties#03-Time-In-Force'>TimeInForce</a> instructions:</p>
 
 <ul>
     <li><code>Day</code></li>
@@ -94,11 +90,7 @@ def OnData(self, slice: Slice) -&gt; None:
 <?php } ?>
 
 <h4>Updates</h4>
-<p><?php if ($writingAlgorithms) { ?>
-  The <code>TDAmeritradeBrokerageModel</code> supports
-<?php } else { ?>
-  We model the TD Ameritrade API by supporting 
-<?php } ?> <a href='/docs/v2/writing-algorithms/trading-and-orders/order-management/order-tickets#04-Update-Orders'>order updates</a>.</p>
+<p><?= $writingAlgorithms ? "The <code>TDAmeritradeBrokerageModel</code> supports" : "We model the TD Ameritrade API by supporting" ?> <a href='/docs/v2/writing-algorithms/trading-and-orders/order-management/order-tickets#04-Update-Orders'>order updates</a>.</p>
 
 
 <?php include(DOCS_RESOURCES."/brokerages/handling-splits.html"); ?>

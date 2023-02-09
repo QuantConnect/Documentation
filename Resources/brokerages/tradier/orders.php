@@ -43,11 +43,7 @@
 
 
 <h4>Time In Force</h4>
-<p><?php if ($writingAlgorithms) { ?>
-  The <code>TradierBrokerageModel</code> supports
-<?php } else { ?>
-  We model the Tradier API by supporting
-<?php } ?> the following <a href='/docs/v2/writing-algorithms/trading-and-orders/order-properties#03-Time-In-Force'>TimeInForce</a> instructions:</p>
+<p><?= $writingAlgorithms ? "The <code>TradierBrokerageModel</code> supports" : "We model the Tradier API by supporting" ?> the following <a href='/docs/v2/writing-algorithms/trading-and-orders/order-properties#03-Time-In-Force'>TimeInForce</a> instructions:</p>
 
 <ul>
     <li><code>Day</code></li>
@@ -99,11 +95,7 @@ def OnData(self, slice: Slice) -&gt; None:
 <?php } ?>
 
 <h4>Updates</h4>
-<p><?php if ($writingAlgorithms) { ?>
-  The <code>TradierBrokerageModel</code> supports
-<?php } else { ?>
-  We model the Tradier API by supporting 
-<?php } ?> most <a href='/docs/v2/writing-algorithms/trading-and-orders/order-management/order-tickets#04-Update-Orders'>order updates</a>. To update the quantity of an order, cancel the order and then submit a new order with the desired quantity.</p>
+<p><?= $writingAlgorithms ? "The <code>TradierBrokerageModel</code> supports" : "We model the Tradier API by supporting" ?> most <a href='/docs/v2/writing-algorithms/trading-and-orders/order-management/order-tickets#04-Update-Orders'>order updates</a>. To update the quantity of an order, cancel the order and then submit a new order with the desired quantity.</p>
 
 
 <h4>Extended Market Hours</h4>

@@ -1,1 +1,1 @@
-<p><?php if ($writingAlgorithms) {?>The <code>GDAXBrokerageModel</code><?php } else { ?>Our Coinbase integration<?php } ?> supports trading <a href='/docs/v2/writing-algorithms/securities/asset-classes/crypto'>Crypto</a>.</p>
+<p><?= $writingAlgorithms ? "The <code>GDAXBrokerageModel</code>" : "Our Coinbase integration" ?> supports trading <a href='/docs/v2/writing-algorithms/securities/asset-classes/crypto'>Crypto</a>.</p>

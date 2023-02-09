@@ -1,1 +1,1 @@
-<p><?php if ($writingAlgorithms) {?>The <code>KrakenBrokerageModel</code><?php } else { ?>Our Kraken integration<?php } ?> supports trading <a href='/docs/v2/writing-algorithms/securities/asset-classes/crypto'>Crypto</a>.</p>
+<p><?= $writingAlgorithms ? "The <code>KrakenBrokerageModel</code>" : "Our Kraken integration" ?> supports trading <a href='/docs/v2/writing-algorithms/securities/asset-classes/crypto'>Crypto</a>.</p>

@@ -40,13 +40,7 @@
 </style>
 
 <h4>Order Properties</h4>
-<p>
-<?php if ($writingAlgorithms) { ?>
-  The <code>KrakenBrokerageModel</code> supports custom order properties. 
-<?php } else { ?>
-  We model custom order properties from the Kraken API. 
-<?php } ?>
-The following table describes the members of the <code>KrakenOrderProperties</code> object that you can set to customize order execution:</p>
+<p><?= $writingAlgorithms ? "The <code>KrakenBrokerageModel</code> supports custom order properties." : "We model custom order properties from the Kraken API." ?> The following table describes the members of the <code>KrakenOrderProperties</code> object that you can set to customize order execution:</p>
 
 <table class="table qc-table">
     <thead>
@@ -89,10 +83,7 @@ The following table describes the members of the <code>KrakenOrderProperties</co
     </tbody>
 </table>
 
-<?php
-if ($writingAlgorithms)
-{
-?>
+<?php if ($writingAlgorithms) { ?>
 <div class="section-example-container">
     <pre class="csharp">public override void Initialize()
 {
@@ -163,15 +154,8 @@ def OnData(self, slice: Slice) -&gt; None:
     order_properties.ConditionalOrder = StopLimitOrder(self.symbol, -quantity, stop_limit_price, stop_price)
     self.LimitOrder(self.symbol, quantity, limit_price, orderProperties=order_properties)</pre>
 </div>
-<?php
-}
-?>
+<?php } ?>
 
 <h4>Updates</h4>
-<p>
-<?php if ($writingAlgorithms) { ?>
-  The <code>KrakenBrokerageModel</code> doesn't support order updates
-<?php } else { ?>
-  We model the Kraken API by not supporting order updates
-<?php } ?>, but you can cancel an existing order and then create a new order with the desired arguments.</p>
+<p><?= $writingAlgorithms ? "The <code>KrakenBrokerageModel</code> doesn't support order updates" : "We model the Kraken API by not supporting order updates" ?>, but you can cancel an existing order and then create a new order with the desired arguments.</p>
 

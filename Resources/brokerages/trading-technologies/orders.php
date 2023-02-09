@@ -43,11 +43,7 @@
 </ul>
 
 <h4>Time In Force</h4>
-<p><p><?php if ($writingAlgorithms) { ?>
-  The <code>TradingTechnologiesBrokerageModel</code> supports
-<?php } else { ?>
-  We model the TT API by supporting
-<?php } ?> the <code>Day</code> and <code>GoodTilCanceled</code> <a href='/docs/v2/writing-algorithms/trading-and-orders/order-properties#03-Time-In-Force'>TimeInForce</a> order properties.</p>
+<p><?= $writingAlgorithms ? "The <code>TradingTechnologiesBrokerageModel</code> supports" : "We model the TT API by supporting" ?> the <code>Day</code> and <code>GoodTilCanceled</code> <a href='/docs/v2/writing-algorithms/trading-and-orders/order-properties#03-Time-In-Force'>TimeInForce</a> order properties.</p>
 
 <?php if ($writingAlgorithms) { ?>
 <div class="section-example-container">
@@ -85,9 +81,5 @@ def OnData(self, slice: Slice) -&gt; None:
 <?php } ?>
 
 <h4>Updates</h4>
-<p><?php if ($writingAlgorithms) { ?>
-  The <code>TradingTechnologiesBrokerageModel</code> supports
-<?php } else { ?>
-  We model the TT API by supporting 
-<?php } ?> <a href='/docs/v2/writing-algorithms/trading-and-orders/order-management/order-tickets#04-Update-Orders'>order updates</a>.</p>
+<p><?= $writingAlgorithms ? "The <code>TradingTechnologiesBrokerageModel</code> supports" : "We model the TT API by supporting" ?> <a href='/docs/v2/writing-algorithms/trading-and-orders/order-management/order-tickets#04-Update-Orders'>order updates</a>.</p>
 

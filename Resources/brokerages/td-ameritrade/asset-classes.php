@@ -1,1 +1,1 @@
-<p><?php if ($writingAlgorithms) {?>The <code>TDAmeritradeBrokerageModel</code><?php } else { ?>Our TD Ameritrade integration<?php } ?> supports trading <a href='/docs/v2/writing-algorithms/securities/asset-classes/us-equity'>US Equities</a>.</p>
+<p><?= $writingAlgorithms ? "The <code>TDAmeritradeBrokerageModel</code>" : "Our TD Ameritrade integration" ?> supports trading <a href='/docs/v2/writing-algorithms/securities/asset-classes/us-equity'>US Equities</a>.</p>

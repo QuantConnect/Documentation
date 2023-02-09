@@ -36,12 +36,7 @@
 
 <h4>Order Properties</h4>
 
-<p>
-<?php if ($writingAlgorithms) { ?>
-  The <code>ZerodhaBrokerageModel</code> supports custom order properties. 
-<?php } else { ?>
-  We model custom order properties from the Zerodha API. 
-<?php } ?>The following table describes the members of the <code>IndiaOrderProperties</code> object that you can set to customize order execution:</p>
+<p><?= $writingAlgorithms ? "The <code>ZerodhaBrokerageModel</code> supports custom order properties." : "We model custom order properties from the Zerodha API." ?> The following table describes the members of the <code>IndiaOrderProperties</code> object that you can set to customize order execution:</p>
 
 <table class="table qc-table">
     <thead>
@@ -130,11 +125,7 @@ def OnData(self, slice: Slice) -&gt; None:
 
 
 <h4>Updates</h4>
-<p><?php if ($writingAlgorithms) { ?>
-  The <code>ZerodhaBrokerageModel</code> supports
-<?php } else { ?>
-  We model the Samco Zerodha by supporting
-<?php } ?> <a href='/docs/v2/writing-algorithms/trading-and-orders/order-management/order-tickets#04-Update-Orders'>order updates</a>.</p>
+<p><?= $writingAlgorithms ? "The <code>ZerodhaBrokerageModel</code> supports" : "We model the Samco Zerodha by supporting" ?> <a href='/docs/v2/writing-algorithms/trading-and-orders/order-management/order-tickets#04-Update-Orders'>order updates</a>.</p>
 
 <?php include(DOCS_RESOURCES."/brokerages/handling-splits.html"); ?>
 
