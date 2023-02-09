@@ -9,12 +9,12 @@
 
 <? if ($isBacktest) { ?> 
 <p>Click to the left of a line number to add a breakpoint on that line.</p>
-<img class='python docs-image' src='https://cdn.quantconnect.com/i/tu/set-break-point-2.gif'>
-<img class='csharp docs-image' src='https://cdn.quantconnect.com/i/tu/set-breakpoint-c-sharp.gif'>
+<img class='python docs-image' src='https://cdn.quantconnect.com/i/tu/set-break-point-2.gif' alt="Add breakpoint">
+<img class='csharp docs-image' src='https://cdn.quantconnect.com/i/tu/set-breakpoint-c-sharp.gif' alt="Add breakpoint">
 <? } else { ?>
 <p>Click to the left of a line to add a breakpoint on that line.</p>
-<img class='python docs-image' src='https://cdn.quantconnect.com/i/tu/research-environment-breakpoint.gif'>
-<img class='csharp docs-image' src='https://cdn.quantconnect.com/i/tu/research-environment-breakpoint-c.gif'>
+<img class='python docs-image' src='https://cdn.quantconnect.com/i/tu/research-environment-breakpoint.gif' alt="Add breakpoint">
+<img class='csharp docs-image' src='https://cdn.quantconnect.com/i/tu/research-environment-breakpoint-c.gif' alt="Add breakpoint">
 <? } ?>
 
 <h4>Edit Breakpoints</h4>
@@ -50,7 +50,7 @@
 <p>To disable a breakpoint, right-click it and then click <span class='menu-name'>Disable Breakpoint</span>.</p>
 <p>Follow these steps to enable and disable all breakpoints:</p>
 <ol>
-    <li>In the right navigation menu, click the <img class='inline-icon' src='https://cdn.quantconnect.com/i/tu/run-and-debug-icon.png'> <span class='icon-name'>Run and Debug</span> icon. </li>
+    <li>In the right navigation menu, click the <img class='inline-icon' src='https://cdn.quantconnect.com/i/tu/run-and-debug-icon.png' alt="Run & debug icon"> <span class='icon-name'>Run and Debug</span> icon. </li>
     <li>In the Debug panel, hover over the <span class='page-section-name'>Breakpoints</span> section and then click the <img class='inline-icon' src='https://cdn.quantconnect.com/i/tu/disable-all-breakpoints-icon.png'> <span class='icon-name'>Toggle Active Breakpoints</span> icon.</li>
 </ol>
 
@@ -58,6 +58,6 @@
 <p>To remove a breakpoint, right-click it and then click <span class='menu-name'>Remove Breakpoint</span>.</p>
 <p>Follow these steps to remove all breakpoints:</p>
 <ol>
-    <li>In the right navigation menu, click the <img class='inline-icon' src='https://cdn.quantconnect.com/i/tu/run-and-debug-icon.png'> <span class='icon-name'>Run and Debug</span> icon. </li>
+    <li>In the right navigation menu, click the <img class='inline-icon' src='https://cdn.quantconnect.com/i/tu/run-and-debug-icon.png' alt="Run & debug icon"> <span class='icon-name'>Run and Debug</span> icon. </li>
     <li>In the Debug panel, hover over the <span class='page-section-name'>Breakpoints</span> section and then click the <img class='inline-icon' src='https://cdn.quantconnect.com/i/tu/remove-all-breakpoints-icon.png'> <span class='icon-name'>Remove All Breakpoints</span> icon.</li>
 </ol>

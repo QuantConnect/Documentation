@@ -5,6 +5,6 @@
 	<? } ?> 
     <li>Hover over the backtest you want to rename and then click the <span class='icon-name'>
 pencil</span> icon that appears.</li>
-    <img class='docs-image' src='https://cdn.quantconnect.com/i/tu/rename-backtest-result.png'>
+    <img class='docs-image' src='https://cdn.quantconnect.com/i/tu/rename-backtest-result.png' alt="Rename backtest navigation">
     <li>Enter the new backtest name and then click <span class='button-name'>OK</span>.</li>
 </ol>
