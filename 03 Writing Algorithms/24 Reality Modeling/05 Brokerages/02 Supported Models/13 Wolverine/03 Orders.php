@@ -1,4 +1,4 @@
-<p>The <code>ZerodhaBrokerageModel</code> supports several order types, order properties, and order updates.</p>
+<p>The <code>WolverineBrokerageModel</code> supports several order types, order properties, and order updates.</p>
 
-<?php include(DOCS_RESOURCES."/brokerages/trading-technologies/orders.php"); ?>
+<?php include(DOCS_RESOURCES."/brokerages/wolverine/orders.php"); ?>
 
