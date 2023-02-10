@@ -28,12 +28,12 @@
 <? } ?>
 
 <? if ($supportsOptionHistory || $supportsFutureHistory) { ?>
-<img class='python docs-image' src='<?=$dataFrameImages[0] ?>'>
+<img class='python docs-image' src='<?=$dataFrameImages[0] ?>' alt="Historical data dataframe">
 <p class='python'>To select the rows of the contract(s) that expire at a specific time, index the <code>loc</code> property of the <code>DataFrame</code> with the expiry time.</p>
 <div class='python section-example-container'>
     <pre class='python'>all_history_df.loc[<?=$contractExpiryDate?>]</pre>
 </div>
-<img class='python docs-image' src='<?=$dataFrameImages[1]?>'>
+<img class='python docs-image' src='<?=$dataFrameImages[1]?>' alt="Historical data dataframe of selected date">
 <? } ?>
 
 <? if ($supportsOptionHistory) { ?>
@@ -52,7 +52,7 @@
 
 <? if ($supportsOptionHistory || $supportsFutureHistory) { ?>
 
-<img class='python docs-image' src='<?=$dataFrameImages[2]?>'>
+<img class='python docs-image' src='<?=$dataFrameImages[2]?>' alt="Historical data dataframe of dropped first column">
 <p class='python'>To select the historical data of a single <?=$assetClass ?> contract, index the <code>loc</code> property of the <code>DataFrame</code> with the contract <code>Symbol</code>.</p>
 <div class='python section-example-container'>
     <pre class='python'>all_history_df.loc[<?=$primarySymbolPy?>]
@@ -70,7 +70,7 @@
     <pre class='python'>all_history_df['<?=$dataFrameColumnName ?>'].unstack(level=0)</pre>
 </div>
 <p class='python'>The <code>DataFrame</code> is transformed so that the column indices are the <code>Symbol</code> of each security and each row contains the <?=$columnNameEnglish?>  value.</p>
-<img class='python docs-image' src='<?=$dataFrameImages[5]?>'>
+<img class='python docs-image' src='<?=$dataFrameImages[5]?>' alt="Historical data dataframe with column indexed by symbols">
 
 <? } else { ?>
 
@@ -93,7 +93,7 @@
     <pre class='python'>all_history_df['<?=$dataFrameColumnName?>'].unstack(level=0)</pre>
 </div>
 <p class='python'>The <code>DataFrame</code> is transformed so that the column indices are the <code>Symbol</code> of each <?=$singularAssetClass?> and each row contains the <?=$columnNameEnglish?> value.</p>
-<img class='python docs-image' src='<?=$dataFrameImages[3]?>'>
+<img class='python docs-image' src='<?=$dataFrameImages[3]?>' alt='DataFrame of one <?=$assetClass ?>'>
 
 <? } ?>
 
@@ -121,7 +121,7 @@
   <pre class='python'>all_history_df.loc[spy.Value]  # or all_history_df.loc["SPY"]  </pre>
 </div>
 <p class='python'>After the index renaming, the unstacked <code>DataFrame</code> has the following format:</p>
-<img class='python docs-image' src='https://cdn.quantconnect.com/i/tu/us-equity-research-data-5.jpg'>
+<img class='python docs-image' src='https://cdn.quantconnect.com/i/tu/us-equity-research-data-5.jpg' alt="Historical data dataframe of selected attribute by symbols">
 <? } ?>
 
 

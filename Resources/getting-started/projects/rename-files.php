@@ -8,5 +8,5 @@
 </ol>
 
 <? if (!is_null($videoLink)) { ?>
-<img class='docs-image' src='{$videoLink}'>
+<img class='docs-image' src='{$videoLink}' alt="Renaming a file">
 <? } ?>
