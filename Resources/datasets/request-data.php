@@ -226,7 +226,7 @@ quote_bars_list = <?=$pyVar?>.History[QuoteBar]([ibm, aapl], 2)
 trade_bars_df = <?=$pyVar?>.History(TradeBar, [ibm, aapl], 2)
 quote_bars_df = <?=$pyVar?>.History(QuoteBar, [ibm, aapl], 2)
 df = <?=$pyVar?>.History([ibm, aapl], 2)  # Includes trade and quote data
-<img class='img-responsive img-thumbnail' src='https://cdn.quantconnect.com/i/tu/history-request-single-symbol-4.png' alt="Historical minute data dataframe of IBM & AAPL">
+<img class='img-responsive img-thumbnail' src='https://cdn.quantconnect.com/i/tu/history-request-single-symbol-4.png' alt="Historical minute data dataframe of IBM &amp; AAPL">
 </pre>
 
 <pre class='csharp'><b>// EXAMPLE 7: Requesting By Bar Count for Multiple Symbols: 2 bars at the security resolution:</b>
@@ -247,7 +247,7 @@ quote_bars_list = <?=$pyVar?>.History[QuoteBar]([ibm, aapl], 5, Resolution.Minut
 trade_bars_df = <?=$pyVar?>.History(TradeBar, [ibm, aapl], 5, Resolution.Daily)
 quote_bars_df = <?=$pyVar?>.History(QuoteBar, [ibm, aapl], 5, Resolution.Minute)
 df = <?=$pyVar?>.History([ibm, aapl], 5, Resolution.Daily)  # Includes trade data only. No quote for daily equity data
-<img class='img-responsive img-thumbnail' src='https://cdn.quantconnect.com/i/tu/history-request-single-symbol-5.png' alt="Historical daily data dataframe of IBM & AAPL">
+<img class='img-responsive img-thumbnail' src='https://cdn.quantconnect.com/i/tu/history-request-single-symbol-5.png' alt="Historical daily data dataframe of IBM &amp; AAPL">
 </pre>
 
 <pre class='csharp'><b>// EXAMPLE 8: Requesting By Bar Count for Multiple Symbols: 5 bars with a specific resolution:</b>
@@ -304,7 +304,7 @@ var tradeBars2 = <?=$cVar?>History(new[] {btcSymbol}, startTime, endTime);</pre>
 slices = <?=$pyVar?>.History(5)
 for s in slices:
     <?=$pyPrintMethod?>(str(s.Time) + " AAPL:" + str(s.Bars["AAPL"].Close) + " IBM:" + str(s.Bars["IBM"].Close))
-<img class='img-responsive img-thumbnail' src='https://cdn.quantconnect.com/i/tu/history-request-single-symbol-7.png' alt="Historical daily close price output of IBM & AAPL">
+<img class='img-responsive img-thumbnail' src='https://cdn.quantconnect.com/i/tu/history-request-single-symbol-7.png' alt="Historical daily close price output of IBM &amp; AAPL">
 </pre>
 
 <pre class='csharp'><b>// EXAMPLE 11: Requesting 5 bars for all securities at their respective resolution:</b>
@@ -320,7 +320,7 @@ foreach (var s in slices) {
     var ibmClose = s.Bars["IBM"].Close;
     <?=$cPrintMethod?>($"{s.Time} AAPL: {aaplClose} IBM: {ibmClose}");
 }
-<img class='img-responsive img-thumbnail' src='https://cdn.quantconnect.com/i/tu/history-request-single-symbol-9.png' alt="Historical daily close price output of IBM & AAPL">
+<img class='img-responsive img-thumbnail' src='https://cdn.quantconnect.com/i/tu/history-request-single-symbol-9.png' alt="Historical daily close price output of IBM &amp; AAPL">
 </pre>
 </div>
 
@@ -330,7 +330,7 @@ foreach (var s in slices) {
 slices = <?=$pyVar?>.History(timedelta(minutes=5), Resolution.Minute)
 for s in slices:
     <?=$pyPrintMethod?>(str(s.Time) + " AAPL:" + str(s.Bars["AAPL"].Close) + " IBM:" + str(s.Bars["IBM"].Close))
-<img class='img-responsive img-thumbnail' src='https://cdn.quantconnect.com/i/tu/history-request-single-symbol-8.png' alt="Historical minute close price output of IBM & AAPL">
+<img class='img-responsive img-thumbnail' src='https://cdn.quantconnect.com/i/tu/history-request-single-symbol-8.png' alt="Historical minute close price output of IBM &amp; AAPL">
 # timedelta history requests are relative to "now" in <?=$envName?> Time. If you request this data at 16:05, it returns an empty array because the market is closed.</pre>
     
 <pre class='csharp'><b>// EXAMPLE 12: Requesting 24 hours of hourly data for all securities:</b>
@@ -341,7 +341,7 @@ foreach (var s in slices) {
     var ibmClose = s.Bars["IBM"].Close;
     <?=$cPrintMethod?>($"{s.Time} AAPL: {aaplClose} IBM: {ibmClose}");
 }
-<img class='img-responsive img-thumbnail' src='https://cdn.quantconnect.com/i/tu/history-request-single-symbol-10.png' alt="Historical hourly close price output of IBM & AAPL">
+<img class='img-responsive img-thumbnail' src='https://cdn.quantconnect.com/i/tu/history-request-single-symbol-10.png' alt="Historical hourly close price output of IBM &amp; AAPL">
 // TimeSpan history requests are relative to "now" in <?=$envName?> Time.</pre>
 
 </div>   
