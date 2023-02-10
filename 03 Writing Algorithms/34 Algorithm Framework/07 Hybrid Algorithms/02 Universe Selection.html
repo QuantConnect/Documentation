@@ -1,7 +1,18 @@
 <p>
-  You can add one or more Framework Universe Selection Models to your algorithm and it will operate normally. 
+  You can add one or more Framework Universe Selection Models to your algorithm and it will operate normally. It can also be used together with the <code>AddUniverse</code> method of the classic approach.
   See below for an example initializing a classic algorithm with framework universe selection models:
 </p>
 <div class="section-example-container">
-     <pre class="Csharp"></pre><pre class="python"></pre>
+	<pre class="csharp">public override void Initialize()
+{
+    SetUniverseSelection(new ManualUniverseSelectionModel(QuantConnect.Symbol.Create("SPY", SecurityType.Equity, Market.USA)));
+    AddUniverseSelection(new ManualUniverseSelectionModel(QuantConnect.Symbol.Create("AAPL", SecurityType.Equity, Market.USA)));
+    AddUniverseSelection(new QC500UniverseSelectionModel());
+    AddUniverse(CoarseSelection);
+}</pre>
+	<pre class="python">def Initialize(self):
+    self.SetUniverseSelection(ManualUniverseSelectionModel([ Symbol.Create("SPY", SecurityType.Equity, Market.USA) ]))
+    self.AddUniverseSelection(ManualUniverseSelectionModel([ Symbol.Create("AAPL", SecurityType.Equity, Market.USA) ]))
+    self.AddUniverseSelection(QC500UniverseSelectionModel())
+    self.AddUniverse(self.CoarseSelection)</pre>
 </div>
