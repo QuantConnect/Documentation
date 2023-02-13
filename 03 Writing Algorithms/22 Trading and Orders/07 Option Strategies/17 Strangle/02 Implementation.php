@@ -46,7 +46,7 @@ public override void Initialize()
     if (callStrikes.Count() == 0) return;
     var callStrike = callStrikes.Min();
 
-    // Select the ITM put strike
+    // Select the OTM put strike
     var putStrikes = chain.Where(contract =&gt; contract.Expiry == expiry 
                                               &amp;&amp; contract.Right == OptionRight.Put 
                                               &amp;&amp; contract.Strike &lt; chain.Underlying.Price)
