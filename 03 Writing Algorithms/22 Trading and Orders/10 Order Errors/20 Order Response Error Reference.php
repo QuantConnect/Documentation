@@ -213,7 +213,7 @@ if holding_quantity > 0:
 
 <ul>
     <li>When you try to place, update, or cancel an order during the <a href='/docs/v2/writing-algorithms/historical-data/warm-up-periods'>warm-up period</a></li>
-    <li>When the <a href='/docs/v2/writing-algorithms/trading-and-orders/order-types/option-exercise-orders#07-Option-Assignments'>Option assignment simulator</a> assigns you to an Option during the warm-up period</li>
+    <li>When the <a href='/docs/v2/writing-algorithms/trading-and-orders/order-types/option-exercise-orders#06-Option-Assignments'>Option assignment simulator</a> assigns you to an Option during the warm-up period</li>
 </ul>
 
 <p>To avoid this order response error, only manage orders after the warm-up period ends. To avoid trading during the warm-up period, add an <code>IsWarmingUp</code> guard to the top of the <code>OnData</code> method.</p>
