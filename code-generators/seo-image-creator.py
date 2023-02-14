@@ -32,7 +32,7 @@ class ImageGenerator:
 if __name__ == '__main__':
     counter = 0
     now = dt.now()
-    location = f"Resources/seo/"
+    location = f"Resources/social/"
     font = ImageFont.FreeTypeFont(f'{location}Inter-Bold.ttf', 62)
     
     for product in PRODUCTS:

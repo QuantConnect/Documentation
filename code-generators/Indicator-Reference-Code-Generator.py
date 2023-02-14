@@ -204,8 +204,8 @@ include(DOCS_RESOURCES."/indicators/visualization.php");
                     'keywords': key.lower(),
                     'og:type': 'website',
                     'og:description': description,
-                    'og:title': f'{key} - Documentation QuantConnect.com',
-                    'og:site_name': f'{key} - QuantConnect.com',
+                    'og:title': f'{key} - Using Indicators on QuantConnect.com',
+                    'og:site_name': f'{key} - Using Indicators on QuantConnect.com',
                     'og:image': image_source
                 }
             }
