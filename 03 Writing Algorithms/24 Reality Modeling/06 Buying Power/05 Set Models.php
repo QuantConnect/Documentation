@@ -15,5 +15,5 @@ security.SetFeeModel(SecurityMarginModel(3))</pre>
 <?php
 $overwriteCodePy = "security.SetBuyingPowerModel(SecurityMarginModel(3))";
 $overwriteCodeC = "security.SetBuyingPowerModel(new SecurityMarginModel(3m));";
-include(DOCS_RESOURCES."/reality-modeling/brokerage-mondel-security-init.php");
+include(DOCS_RESOURCES."/reality-modeling/brokerage-model-security-init.php");
 ?>
