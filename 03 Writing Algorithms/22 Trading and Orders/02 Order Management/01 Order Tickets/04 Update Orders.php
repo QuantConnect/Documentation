@@ -1,4 +1,8 @@
-<p>To update an order, use its <code>OrderTicket</code>. You can update other orders until they are filled or the brokerage prevents modifications. The specific properties you can update depends on the order type. The following table shows the properties you can update for each order type.<br></p>
+<p>To update an order, use its <code>OrderTicket</code>. You can update other orders until they are filled or the brokerage prevents modifications. You just can't update orders during <a href='/docs/v2/writing-algorithms/historical-data/warm-up-periods'>warm up</a> and <a href='/docs/v2/writing-algorithms/initialization'>initialization</a>.</p>
+
+<h4>Updatable Properties</h4>
+
+<p>The specific properties you can update depends on the order type. The following table shows the properties you can update for each order type.</p>
 
 <table class="qc-table table  table-condensed">
 <thead>
@@ -74,7 +78,7 @@
 </tbody>
 </table>
 
-<p>Note that orders cannot be placed, canceled, or updated during warm up and initialization.</p>
+<h4>Update Methods</h4>
 
 <p>To update an order, pass an <code>UpdateOrderFields</code> object to the <code>Update</code> method. The method returns an <code>OrderResponse</code> to signal the success or failure of the update request. 
 </p>
@@ -112,7 +116,47 @@ if response.IsSuccess:
 <?
 $supportedMethods = array("UpdateLimitPrice", "UpdateQuantity", "UpdateStopPrice", "UpdateTag");
 include(DOCS_RESOURCES."/order-types/update-individual-fields.php");
+?>
+
+<h4>Update Order Requests</h4>
+
+<?
 include(DOCS_RESOURCES."/order-types/update-requests.html");
 ?>
 
-<p>Not all brokerages support order updates. To check if your brokerage supports order updates, see the <a href="/docs/v2/cloud-platform/live-trading/brokerages">brokerage integration documentation</a>.</p>
+<h4>Workaround for Brokerages That Don’t Support Updates</h4>
+
+<p>Not all brokerages fully support order updates. To check what functionality your brokerage supports for order updates, see the <span class='page-section-name'>Orders</span> section of the documentation for your <a href="/docs/v2/writing-algorithms/reality-modeling/brokerages/supported-models">brokerage model</a>. If your brokerage doesn't support order updates and you want to update an order, <a href='/docs/v2/writing-algorithms/trading-and-orders/order-management/order-tickets#05-Cancel-Orders'>cancel the order</a>. When you get an <a href='/docs/v2/writing-algorithms/trading-and-orders/order-events'>order event</a> that confirms the order is no longer active, place a new order.</p>
+
+<div class="section-example-container">
+<pre class="csharp">public override void OnData(Slice slice)
+{
+    // Cancel the order
+    _ticket.Cancel();
+}
+
+public override void OnOrderEvent(OrderEvent orderEvent)
+{
+    if (_ticket != null 
+        && orderEvent.OrderId == _ticket.OrderId 
+        && orderEvent.Status == OrderStatus.Canceled)
+    {
+        // Place a new order
+        var quantity = _ticket.Quantity - _ticket.QuantityFilled;
+        var limitPrice = Securities[_ticket.Symbol].Price + 1;
+        _ticket = LimitOrder(_ticket.Symbol, quantity, limitPrice);
+    }
+}</pre>
+<pre class="python">def OnData(self, slice: Slice) -> None:
+    # Cancel the order
+    self.ticket.Cancel()
+
+def OnOrderEvent(self, orderEvent: OrderEvent) -> None:
+    if self.ticket is not None \
+        and orderEvent.OrderId == self.ticket.OrderId \
+        and orderEvent.Status == OrderStatus.Canceled:
+        # Place a new order
+        quantity = self.ticket.Quantity - self.ticket.QuantityFilled
+        limit_price = self.Securities[self.ticket.Symbol].Price + 1
+        self.ticket = self.LimitOrder(self.ticket.Symbol, quantity, limit_price)</pre>
+</div>
