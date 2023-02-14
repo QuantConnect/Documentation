@@ -1,0 +1,61 @@
+<p>The <code>BinanceFuturesFeeModel</code> models the <a rel="nofollow" target="_blank" href="https://www.binance.com/en/fee/futureFee">Binance Futures live trading fees</a>.</p>
+
+<div class="section-example-container">
+<pre class="csharp">security.SetFeeModel(new BinanceFuturesFeeModel());</pre>
+<pre class="python">security.SetFeeModel(BinanceFuturesFeeModel())</pre>
+</div>
+
+
+<p>The following table describes the arguments the model accepts:</p>
+
+<table class="qc-table table" id='binance-futures-fee-table'>
+    <thead>
+        <tr>
+            <th>Argument</th>
+            <th>Data Type</th>
+            <th>Description</th>
+            <th>Default Value</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><code>mUsdtFee</code></td>
+            <td><code class="csharp">decimal</code><code class="python">float</code></td>
+            <td>Maker fee value for USDT pair contracts</td>
+            <td>0.0002</td>
+        </tr>
+        <tr>
+            <td><code>tUsdtFee</code></td>
+            <td><code class="csharp">decimal</code><code class="python">float</code></td>
+            <td>Taker fee value for USDT pair contracts</td>
+            <td>0.0004</td>
+        </tr>
+        <tr>
+            <td><code>mBusdFee</code></td>
+            <td><code class="csharp">decimal</code><code class="python">float</code></td>
+            <td>Maker fee value for BUSD pair contracts</td>
+            <td>0.00012</td>
+        </tr>
+        <tr>
+            <td><code>tUsdtFee</code></td>
+            <td><code class="csharp">decimal</code><code class="python">float</code></td>
+            <td>Taker fee value for BUSD pair contracts</td>
+            <td>0.00036</td>
+        </tr>
+    </tbody>
+</table>
+
+
+<p>By default, the <code>BinanceFuturesFeeModel</code> charges the order fees of Binance Futures at the Regular User level. If you add liquidity to the order book by placing a limit order that doesn't cross the spread, you pay maker fees. If you remove liquidity from the order book by placing an order that crosses the spread, you pay taker fees. Binance adjusts your fees based on your 30-day trading volume and BNB balance, but we don't currently model these metrics to adjust fees.</p>
+
+<p>The <code>BinanceFuturesFeeModel</code> charges fees in the currency you receive from a trade. For example, if you buy BTCUSD, you pay fees in BTC. If you sell BTCUSD, you pay fees in USD.</p>
+
+<p>To view the implementation of this model, see the <a target="_blank" rel="nofollow" href="https://github.com/QuantConnect/Lean/blob/master/Common/Orders/Fees/BinanceFuturesFeeModel.cs">LEAN GitHub repository</a>.</p>
+
+<style>
+#binance-futures-fee-table td:last-child, 
+#binance-futures-fee-table th:last-child {
+    text-align: right;
+}
+</style>
+
