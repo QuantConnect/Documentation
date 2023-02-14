@@ -6,8 +6,8 @@ import plotly.express as px
 # endregion
 
 def generate(name, indicator, df):
-    columns = set(df.columns).intersection(indicator['columns'] + ['price'])
-    df = df.drop(columns=columns)
+    columns = set(df.columns).intersection(indicator.get('columns', '') + ['price'])
+    df = df.drop(columns=columns).dropna()
     fig = px.line(df, x=df.index, y=df.columns, title=indicator['title'])
     fig.write_image(f"{name}.png", width=1200, height=630, format='png')
 
@@ -31,26 +31,20 @@ class IndicatorImageGeneratorAlgorithm(QCAlgorithm):
             },
             'absolute-price-oscillator':
             {
-                'code': AbsolutePriceOscillator(10, 20),
-                'title' : 'APO("SPY", 10, 2)',
+                'code': AbsolutePriceOscillator(10, 20, MovingAverageType.Simple),
+                'title' : 'APO("SPY", 10, 2, MovingAverageType.Simple)',
                 'columns' : ['fast','slow']
             },
             'acceleration-bands':
             {
-                'code': AccelerationBands(10, 4),
-                'title' : 'ABANDS("SPY", 10, 4)',
+                'code': AccelerationBands("", 10, 4, MovingAverageType.Simple),
+                'title' : 'ABANDS("SPY", 10, 4, MovingAverageType.Simple)',
                 'columns' : []
             },
             'accumulation-distribution':
             {
                 'code': AccumulationDistribution(),
                 'title' : 'AD("SPY")',
-                'columns' : []
-            },
-            'accumulation-distribution-oscillator':
-            {
-                'code': AccumulationDistributionOscillator(10, 20),
-                'title' : 'ADOSC("SPY", 10, 2)',
                 'columns' : []
             },
             'accumulation-distribution-oscillator':
@@ -97,20 +91,14 @@ class IndicatorImageGeneratorAlgorithm(QCAlgorithm):
             },
             'average-true-range':
             {
-                'code': AverageTrueRange(20),
-                'title' : 'ATR("SPY", 20)',
-                'columns' : []
-            },
-            'average-true-range':
-            {
-                'code': AverageTrueRange(20),
-                'title' : 'ATR("SPY", 20)',
+                'code': AverageTrueRange(20, MovingAverageType.Simple),
+                'title' : 'ATR("SPY", 20, MovingAverageType.Simple)',
                 'columns' : []
             },
             'awesome-oscillator':
             {
                 'code': AwesomeOscillator(10, 20, MovingAverageType.Simple),
-                'title' : 'AO("SPY", 10, 20, Simple)',
+                'title' : 'AO("SPY", 10, 20, MovingAverageType.Simple)',
                 'columns' : ['fastao', 'slowao']
             },
             'balance-of-power':
@@ -133,8 +121,8 @@ class IndicatorImageGeneratorAlgorithm(QCAlgorithm):
             },
             'commodity-channel-index':
             {
-                'code': CommodityChannelIndex(20),
-                'title' : 'CCI("SPY", 20)',
+                'code': CommodityChannelIndex(20, MovingAverageType.Simple),
+                'title' : 'CCI("SPY", 20, MovingAverageType.Simple)',
                 'columns' : ['typicalpriceaverage', 'typicalpricemeandeviation']
             },
             'coppock-curve':
@@ -146,7 +134,7 @@ class IndicatorImageGeneratorAlgorithm(QCAlgorithm):
             'de-marker-indicator':
             {
                 'code': DeMarkerIndicator(20, MovingAverageType.Simple),
-                'title' : 'DEM("SPY", 20, Simple)',
+                'title' : 'DEM("SPY", 20, MovingAverageType.Simple)',
                 'columns' : []
             },
             'detrended-price-oscillator':
@@ -157,8 +145,8 @@ class IndicatorImageGeneratorAlgorithm(QCAlgorithm):
             },
             'donchian-channel':
             {
-                'code': DonchianChannel(20),
-                'title' : 'DCH("SPY", 20)',
+                'code': DonchianChannel(20, 20),
+                'title' : 'DCH("SPY", 20, 20)',
                 'columns' : []
             },
             'double-exponential-moving-average':
@@ -195,7 +183,7 @@ class IndicatorImageGeneratorAlgorithm(QCAlgorithm):
             {
                 'code': HeikinAshi(),
                 'title' : 'HeikinAshi("SPY")',
-                'columns' : []
+                'columns' : ['volume']
             },
             'hull-moving-average':
             {
@@ -229,8 +217,8 @@ class IndicatorImageGeneratorAlgorithm(QCAlgorithm):
             },
             'keltner-channels':
             {
-                'code': KeltnerChannels(20, 2),
-                'title' : 'KCH("SPY", 20, 2)',
+                'code': KeltnerChannels(20, 2, MovingAverageType.Simple),
+                'title' : 'KCH("SPY", 20, 2, MovingAverageType.Simple)',
                 'columns' : ['averagetruerange']
             },
             'least-squares-moving-average':
@@ -313,8 +301,8 @@ class IndicatorImageGeneratorAlgorithm(QCAlgorithm):
             },
             'moving-average-convergence-divergence':
             {
-                'code': MovingAverageConvergenceDivergence(12, 26, 9),
-                'title' : 'MACD("SPY", 12, 26, 9)',
+                'code': MovingAverageConvergenceDivergence(12, 26, 9, MovingAverageType.Exponential),
+                'title' : 'MACD("SPY", 12, 26, 9, MovingAverageType.Exponential)',
                 'columns' : ['fast', 'slow']
             },
             'normalized-average-true-range':
@@ -337,14 +325,14 @@ class IndicatorImageGeneratorAlgorithm(QCAlgorithm):
             },
             'percentage-price-oscillator':
             {
-                'code': PercentagePriceOscillator(10, 20),
-                'title' : 'PPO("SPY", 10, 20)',
+                'code': PercentagePriceOscillator(10, 20, MovingAverageType.Simple),
+                'title' : 'PPO("SPY", 10, 20, MovingAverageType.Simple)',
                 'columns' : ['fast', 'slow']
             },
             'pivot-points-high-low':
             {
-                'code': PivotPointsHighLow(10),
-                'title' : 'PPHL("SPY", 10)',
+                'code': PivotPointsHighLow(10, 10, 100),
+                'title' : 'PPHL("SPY", 10, 10, 100)',
                 'columns' : []
             },
             'rate-of-change':
@@ -392,13 +380,13 @@ class IndicatorImageGeneratorAlgorithm(QCAlgorithm):
             'relative-vigor-index':
             {
                 'code': RelativeVigorIndex(20, MovingAverageType.Simple),
-                'title' : 'RVI("SPY", 20, Simple)',
+                'title' : 'RVI("SPY", 20, MovingAverageType.Simple)',
                 'columns' : []
             },
             'schaff-trend-cycle':
             {
-                'code': SchaffTrendCycle(5, 10, 20),
-                'title' : 'STC("SPY", 5, 10, 20)',
+                'code': SchaffTrendCycle(5, 10, 20, MovingAverageType.Exponential),
+                'title' : 'STC("SPY", 5, 10, 20, MovingAverageType.Exponential)',
                 'columns' : []
             },
             'sharpe-ratio':
@@ -439,26 +427,20 @@ class IndicatorImageGeneratorAlgorithm(QCAlgorithm):
             },
             'super-trend':
             {
-                'code': SuperTrend(20, 2),
-                'title' : 'STR("SPY", 20, 2)',
+                'code': SuperTrend(20, 2, MovingAverageType.Wilders),
+                'title' : 'STR("SPY", 20, 2, MovingAverageType.Wilders)',
                 'columns' : ['basicupperband', 'basiclowerband', 'currenttrailingupperband', 'currenttrailinglowerband']
             },
             'swiss-army-knife':
             {
                 'code': SwissArmyKnife(20, 0.2, SwissArmyKnifeTool.Gauss),
-                'title' : 'SWISS("SPY", 20, 0.2, Gauss)',
+                'title' : 'SWISS("SPY", 20, 0.2, SwissArmyKnifeTool.Gauss)',
                 'columns' : []
             },
-            't3-moving-average': # 't3-moving-average'
+            't3-moving-average':
             {
                 'code': T3MovingAverage(30, 0.7),
                 'title' : 'T3("SPY", 30, 0.7)',
-                'columns' : []
-            },
-            'target-downside-deviation':
-            {
-                'code': IndicatorExtensions.Of(TargetDownsideDeviation(50), RateOfChange(1)),
-                'title' : 'TDD("SPY", 50)',
                 'columns' : []
             },
             'triangular-moving-average':
@@ -487,8 +469,8 @@ class IndicatorImageGeneratorAlgorithm(QCAlgorithm):
             },
             'true-strength-index':
             {
-                'code': TrueStrengthIndex(20, 10, 5),
-                'title' : 'TSI("SPY", 20, 10, 5)',
+                'code': TrueStrengthIndex(25, 13, 7, MovingAverageType.Exponential),
+                'title' : 'TSI("SPY", 25, 13, 7, MovingAverageType.Exponential)',
                 'columns' : ['signal']
             },
             'ultimate-oscillator':
@@ -572,13 +554,19 @@ class IndicatorImageGeneratorAlgorithm(QCAlgorithm):
                 'title' : 'VWAP("SPY")',
                 'columns' : []
             },
-            'time-profile': # 'time-profile'
+            'target-downside-deviation':
+            {
+                'code': IndicatorExtensions.Of(TargetDownsideDeviation(50), RateOfChange(1)),
+                'title' : 'TDD("SPY", 50)',
+                'columns' : []
+            },
+            'time-profile':
             {
                 'code': TimeProfile("", 3, 0.70, 0.05),
                 'title' : 'TP("SPY", 3, 0.70, 0.05)',
                 'columns' : []
             },
-            'volume-profile': # 'volume-profile'
+            'volume-profile':
             {
                 'code': VolumeProfile("", 3, 0.70, 0.05),
                 'title' : 'VP("SPY", 3, 0.70, 0.05)',
@@ -593,5 +581,98 @@ class IndicatorImageGeneratorAlgorithm(QCAlgorithm):
                 generate(name, indicator, df)
             except Exception as e:
                 self.Debug(e)
+
+        history = qb.History[TradeBar](["SPY", "QQQ"], timedelta(365), Resolution.Daily)
+
+        roc = RateOfChange(1)
+        indicator['code'] = IndicatorExtensions.Of(TargetDownsideDeviation(50), roc)
+        indicator['title'] = 'TDD("SPY", 50)'
+        index, values = [], []
+
+        for bars in history:
+            bar = bars.get("SPY")
+            roc.Update(bar.EndTime, bar.Close)
+            if indicator['code'].IsReady:
+                index.append(bar.EndTime)
+                values.append(indicator['code'].Current.Value)
+
+        df = pd.DataFrame(values, index=index, columns=["targetdownsidedeviation"])
+        generate("target-downside-deviation", indicator, df)
+
+        index, values = [], []
+        indicator = special_indicators.get('advance-decline-ratio')
+        indicator['code'] = qb.ADR(["SPY","QQQ"])
+        for bars in history:
+            indicator['code'].Update(bars.get("SPY"))
+            indicator['code'].Update(bars.get("QQQ"))
+            if indicator['code'].IsReady:
+                index.append(bars.Time)
+                values.append(indicator['code'].Current.Value)
+        df = pd.DataFrame(values, index=index, columns=["advancedeclineratio"])
+        generate("advance-decline-ratio", indicator, df)
+
+        index, values = [], []
+        indicator = special_indicators.get('advance-decline-volume-ratio')
+        indicator['code'] = qb.ADVR(["SPY","QQQ"])
+        for bars in history:
+            indicator['code'].Update(bars.get("SPY"))
+            indicator['code'].Update(bars.get("QQQ"))
+            if indicator['code'].IsReady:
+                index.append(bars.Time)
+                values.append(indicator['code'].Current.Value)
+        df = pd.DataFrame(values, index=index, columns=["advancedeclinevolumeratio"])
+        generate("advance-decline-volume-ratio", indicator, df)
+
+        index, values = [], []
+        indicator = special_indicators.get('arms-index')
+        indicator['code'] = qb.TRIN(["SPY","QQQ"])
+        for bars in history:
+            indicator['code'].Update(bars.get("SPY"))
+            indicator['code'].Update(bars.get("QQQ"))
+            if indicator['code'].IsReady:
+                index.append(bars.Time)
+                values.append(indicator['code'].Current.Value)
+        df = pd.DataFrame(values, index=index, columns=["armsindex"])
+        generate("arms-index", indicator, df)
+        
+        index, values = [], []
+        indicator = special_indicators.get('intraday-vwap')
+        for bars in history:
+            indicator['code'].Update(bars.get("SPY"))
+            if indicator['code'].IsReady:
+                index.append(bars.Time)
+                values.append(indicator['code'].Current.Value)
+        df = pd.DataFrame(values, index=index, columns=["intradayvwap"])
+        generate("intraday-vwap", indicator, df)
+
+        index, values = [], []
+        indicator = special_indicators.get('time-profile')
+        for bars in history:
+            indicator['code'].Update(bars.get("SPY"))
+            if indicator['code'].IsReady:
+                index.append(bars.Time)
+                values.append(indicator['code'].Current.Value)
+        df = pd.DataFrame(values, index=index, columns=["timeprofile"])
+        generate("time-profile", indicator, df)
+
+        index, values = [], []
+        indicator = special_indicators.get('volume-profile')
+        for bars in history:
+            indicator['code'].Update(bars.get("SPY"))
+            if indicator['code'].IsReady:
+                index.append(bars.Time)
+                values.append(indicator['code'].Current.Value)
+        df = pd.DataFrame(values, index=index, columns=["volumeprofile"])
+        generate("volume-profile", indicator, df)
+
+        index, values = [], []
+        indicator = special_indicators.get('filtered-identity')
+        for bars in history:
+            indicator['code'].Update(bars.get("SPY"))
+            if indicator['code'].IsReady:
+                index.append(bars.Time)
+                values.append(indicator['code'].Current.Value)
+        df = pd.DataFrame(values, index=index, columns=["filteredidentity"])
+        generate("filtered-identity", indicator, df)
 
         self.Quit()
