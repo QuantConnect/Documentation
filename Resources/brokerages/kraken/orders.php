@@ -157,5 +157,5 @@ def OnData(self, slice: Slice) -&gt; None:
 <?php } ?>
 
 <h4>Updates</h4>
-<p><?= $writingAlgorithms ? "The <code>KrakenBrokerageModel</code> doesn't support order updates" : "We model the Kraken API by not supporting order updates" ?>, but you can cancel an existing order and then create a new order with the desired arguments.</p>
+<p><?= $writingAlgorithms ? "The <code>KrakenBrokerageModel</code> doesn't support order updates" : "We model the Kraken API by not supporting order updates" ?>, but you can cancel an existing order and then create a new order with the desired arguments. For more information about this workaround, see the <a href='/docs/v2/writing-algorithms/trading-and-orders/order-management/order-tickets#workaround-for-brokerages-that-dont-support-updates'>Workaround for Brokerages That Don’t Support Updates</a>.</p>
 

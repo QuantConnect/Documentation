@@ -95,7 +95,7 @@ def OnData(self, slice: Slice) -&gt; None:
 <?php } ?>
 
 <h4>Updates</h4>
-<p><?= $writingAlgorithms ? "The <code>TradierBrokerageModel</code> supports" : "We model the Tradier API by supporting" ?> most <a href='/docs/v2/writing-algorithms/trading-and-orders/order-management/order-tickets#04-Update-Orders'>order updates</a>. To update the quantity of an order, cancel the order and then submit a new order with the desired quantity.</p>
+<p><?= $writingAlgorithms ? "The <code>TradierBrokerageModel</code> supports" : "We model the Tradier API by supporting" ?> most <a href='/docs/v2/writing-algorithms/trading-and-orders/order-management/order-tickets#04-Update-Orders'>order updates</a>. To update the quantity of an order, cancel the order and then submit a new order with the desired quantity. For more information about this workaround, see the <a href='/docs/v2/writing-algorithms/trading-and-orders/order-management/order-tickets#workaround-for-brokerages-that-dont-support-updates'>Workaround for Brokerages That Don’t Support Updates</a>.</p>
 
 
 <h4>Extended Market Hours</h4>
