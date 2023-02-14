@@ -2,4 +2,4 @@
 
 <img class='docs-image' style="max-width: 500px"
     alt="<? echo "$typeName line plot." ?>"
-    src="<? echo "https://cdn.quantconnect.com/docs/i/$imageName.png" ?>">
+    src="<?=$imageSource?>">

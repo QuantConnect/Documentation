@@ -9,7 +9,7 @@
     public override void Initialize()
     {
         _symbol = AddEquity("SPY", Resolution.Daily).Symbol;
-        _<?=strtolower($helperName)?> = <?=$helperCall?>;
+        _<?=strtolower($helperName)?> = <?=$helperName?>(<?=$helperArguments?>);
     }
 
     public override void OnData(Slice data)
@@ -26,7 +26,7 @@
     <pre class="python">class <?=$typeName?>Algorithm(QCAlgorithm):
     def Initialize(self) -> None:
         self.symbol = self.AddEquity("SPY", Resolution.Daily).Symbol
-        self.<?=strtolower($helperName)?> = self.<?=$helperCall?>
+        self.<?=strtolower($helperName)?> = self.<?=$helperName?>(<?=$helperArguments?>)
 
     def OnData(self, slice: Slice) -> None:
         if self.<?=strtolower($helperName)?>.IsReady:
@@ -45,7 +45,7 @@
 
 <p>For more information about plotting indicators, see <a href="/docs/v2/writing-algorithms/indicators/plotting-indicators">Plotting Indicators</a>.</p>
 
-
+<? if($hasMovingAverageTypeParameter) include(DOCS_RESOURCES."/enumerations/moving_average_type.html"); ?>
 
 <H4>Manual Indicators</H4>
 <p>You can manually create a <code><?=$typeName?></code> indicator, so it doesn't automatically update. Manual indicators let you update their values with any data you choose.</p>
@@ -61,7 +61,7 @@
     public override void Initialize()
     {
         _symbol = AddEquity("SPY", Resolution.Daily).Symbol;
-        _<?=strtolower($helperName)?> = new <?=$constructorCall?>;
+        _<?=strtolower($helperName)?> = new <?=$typeName?>(<?=$constructorArguments?>);
     }
 
     public override void OnData(Slice data)
@@ -83,7 +83,7 @@
     <pre class="python">class <?=$typeName?>Algorithm(QCAlgorithm):
     def Initialize(self) -> None:
         self.symbol = self.AddEquity("SPY", Resolution.Daily).Symbol
-        self.<?=strtolower($helperName)?> = <?=$constructorCall?>
+        self.<?=strtolower($helperName)?> = <?=$typeName?>(<?=$constructorArguments?>)
 
     def OnData(self, slice: Slice) -> None:
         bar = data.Bars.get(self.symbol)
@@ -109,7 +109,7 @@
     public override void Initialize()
     {
         _symbol = AddEquity("SPY", Resolution.Daily).Symbol;
-        _<?=strtolower($helperName)?> = <?=$constructorCall?>;
+        _<?=strtolower($helperName)?> = new <?=$typeName?>(<?=$constructorArguments?>);
         RegisterIndicator(_symbol, _<?=strtolower($helperName)?>, Resolution.Daily);
     }
 
@@ -127,7 +127,7 @@
     <pre class="python">class <?=$typeName?>Algorithm(QCAlgorithm):
     def Initialize(self) -> None:
         self.symbol = self.AddEquity("SPY", Resolution.Daily).Symbol
-        self.<?=strtolower($helperName)?> = <?=$constructorCall?>
+        self.<?=strtolower($helperName)?> = <?=$typeName?>(<?=$constructorArguments?>)
         self.RegisterIndicator(self.symbol, self.<?=strtolower($helperName)?>, Resolution.Daily)
 
     def OnData(self, slice: Slice) -> None:
@@ -140,4 +140,4 @@
 </div>
 
 <p>The following reference table describes the <?=$typeName?> constructor:</p>
-<? include(DOCS_RESOURCES."/indicators/constructors/" . strtolower($helperName) . ".html"); ?>
+<? include(DOCS_RESOURCES."/indicators/constructors/" . $constructorBox . ".html"); ?>

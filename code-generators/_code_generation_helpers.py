@@ -1,4 +1,5 @@
 from json import dumps
+from re import findall
 from typing import List
 from urllib.request import urlopen
 
@@ -17,3 +18,9 @@ def get_json_content(url: str) -> List:
 def get_type(_type: str) -> List:
     url = f'https://www.quantconnect.com/services/inspector?type=T:{_type}'
     return get_json_content(url)
+
+def to_key(name: str) -> str:
+    key = name
+    if not key.isupper():
+        key = '-'.join(findall('[a-zA-Z][^A-Z]*', name))
+    return key.lower()

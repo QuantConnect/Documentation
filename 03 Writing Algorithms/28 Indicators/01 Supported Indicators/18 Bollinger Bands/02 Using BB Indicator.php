@@ -2,12 +2,14 @@
 <? 
 include(DOCS_RESOURCES."/qcalgorithm-api/_method_container.html");
 
-$typeName = "BollingerBands";
-$helperName = "BB";
-$helperCall = 'BB("SPY", 30, 2)';
-$properties = array("MiddleBand", "MiddleBand", "LowerBand");
-$updateParameterType = "date/time pair";
-$constructorCall = 'BollingerBands(30, 2)';
+$typeName = 'BollingerBands';
+$helperName = 'BB';
+$helperArguments = '"SPY", 30, 2';
+$properties = array("StandardDeviation","MiddleBand","UpperBand","LowerBand","BandWidth","PercentB","Price");
+$updateParameterType = 'time/number pair, or an <code>IndicatorDataPoint</code>';
+$constructorArguments = '30, 2';
 $updateParameterValue = 'bar.EndTime, bar.Close';
+$hasMovingAverageTypeParameter = True;
+$constructorBox = 'bollinger-bands';
 include(DOCS_RESOURCES."/indicators/using-indicator.php");
 ?>
