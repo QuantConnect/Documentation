@@ -13,8 +13,6 @@ $resolutionArgExtraExamplesPy = "";
 $consolidationTextResolution = "minute";
 $consolidationTextReceiveTime1 = "at 9:31";
 $consolidationTextReceiveTime2 = "9:31";
-$shortcutClass1 = "";
-$shortcutClass2 = "";
 $shortCutTickTypeArg = "TickType.Quote, ";
 
 $consolidatorInfo = new TimePeriodConsolidatorInfo($timeSpanPeriod, 
@@ -28,8 +26,6 @@ $consolidatorInfo = new TimePeriodConsolidatorInfo($timeSpanPeriod,
 	$consolidationTextResolution,
 	$consolidationTextReceiveTime1,
 	$consolidationTextReceiveTime2,
-	$shortcutClass1,
-	$shortcutClass2,
 	$shortCutTickTypeArg);
 
 include(DOCS_RESOURCES."/consolidators/manage-consolidators.php");
