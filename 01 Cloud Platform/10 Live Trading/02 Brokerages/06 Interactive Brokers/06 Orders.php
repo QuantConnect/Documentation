@@ -7,3 +7,5 @@
 <h4>Fill Time</h4>
 <p>IB has a 400 millisecond fill time for live orders.</p>
 
+<h4>Fractional Trading</h4>
+<p><a rel="nofollow" target="_blank" href='https://www.interactivebrokers.com/en/trading/fractional-trading.php'>Fractional trading</p> is not supported via API or FIX/CTCI.</p>
