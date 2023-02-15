@@ -1,28 +1,29 @@
-<p>You must <a href="#03-Import-Libraries">import the plotting libraries</a> and <a href="#04-Get-Historical-Data">get some historical data</a> to create scatter plots.</p>
+<p>You must <a href="/docs/v2/research-environment/charting/plotly-net#03-Import-Libraries">import the plotting libraries</a> and <a href="/docs/v2/research-environment/charting/plotly-net#04-Get-Historical-Data">get some historical data</a> to create scatter plots.</p>
 
-<p>In this example, you create a scatter plot that shows the relationship between the daily price of SPY & TLT. Follow these steps to create the scatter plot:</p>
+<p>In this example, you create a scatter plot that shows the relationship between the daily price of two securities. Follow these steps to create the scatter plot:</p>
 
 <ol>
-    <li>Get historical data for the 2 securites.</li>
-    <div class="csharp section-example-container">
-        <pre>var history = qb.History&lt;TradeBar&gt;(new[] {spy, tlt}, new DateTime(2022, 1, 1), new DateTime(2023, 1, 1), Resolution.Daily);</pre>
+    <li>Select two <code>Symbol</code> objects.</li>
+    <div class="section-example-container">
+        <pre class='csharp'>var symbol1 = symbols.First();
+var symbol2 = symbols.Last();</pre>
     </div>
 
-    <li>Create a <code>Line</code> chart.</li>
-    <div class="csharp section-example-container">
-        <pre>var chart = Chart2D.Chart.Point&lt;decimal, decimal, string&gt;(
-    history.Select(x => x[spy].Close),
-    history.Select(x => x[tlt].Close)
+    <li>Call the <code>Chart2D.Chart.Point</code> constructor with the closing prices of both securities.</li>
+    <div class="section-example-container">
+        <pre class='csharp'>var chart = Chart2D.Chart.Point&lt;decimal, decimal, string&gt;(
+    history.Select(slice => slice.Bars[symbol1].Close),
+    history.Select(slice => slice.Bars[symbol2].Close)
 );</pre>
     </div>
 
     <li>Create a <code>Layout</code>.<br></li>
-    <div class="csharp section-example-container">
-        <pre>LinearAxis xAxis = new LinearAxis();
-xAxis.SetValue("title", "SPY Price ($)");
+    <div class="section-example-container">
+        <pre class='csharp'>LinearAxis xAxis = new LinearAxis();
+xAxis.SetValue("title", $"{symbol1} Price ($)");
 LinearAxis yAxis = new LinearAxis();
-yAxis.SetValue("title", "TLT Price ($)");
-Title title = Title.init($"SPY vs TLT");
+yAxis.SetValue("title", $"{symbol2} Price ($)");
+Title title = Title.init($"{symbol1} vs {symbol2}");
 
 Layout layout = new Layout();
 layout.SetValue("xaxis", xAxis);
@@ -31,15 +32,15 @@ layout.SetValue("title", title);</pre>
     </div>
 
     <li>Assign the <code>Layout</code> to the chart.<br></li>
-    <div class="csharp section-example-container">
-        <pre>chart.WithLayout(layout);</pre>
+    <div class="section-example-container">
+        <pre class='csharp'>chart.WithLayout(layout);</pre>
     </div>
     
     <li>Show the plot.</li>
     <div class="csharp section-example-container">
-        <pre>HTML(GenericChart.toChartHTML(chart))</pre>
+        <pre>HTML(GenericChart.toChartHTML(chart));</pre>
     </div>
 
     <p>The Jupyter Notebook displays the scatter plot.</p>
-    <img class="docs-image" src="https://cdn.quantconnect.com/i/tu/plotly-dotnet-scatter.png" alt="Plotly.NET scatter plot">
+    <img class="docs-image" src="https://cdn.quantconnect.com/i/tu/plotly-net-scatter-plot.png" alt="Plotly.NET scatter plot">
 </ol>
