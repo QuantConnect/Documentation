@@ -230,6 +230,34 @@
    </tbody>
 </table>
 
+<h4>Volume Renko Consolidators</h4>
+<?php echo file_get_contents(DOCS_RESOURCES."/consolidators/consolidator-info/volume-renko/introduction.html"); ?>
+
+<p>The following table shows which consolidator type to use based on the data format of the input and output:</p>
+
+<table class="qc-table table">
+   <thead>
+      <tr>
+         <th>Input</th>
+         <th>Output</th>
+         <th>Class Type</th>
+      </tr>
+   </thead>
+   <tbody>
+      <tr>
+         <td><code>TradeBar</code></td>
+         <td><code>TradeBar</code></td>
+         <td><a href='/docs/v2/writing-algorithms/consolidating-data/consolidator-types/renko-consolidators/volume-renko-consolidators#02-Consolidate-Trade-Bars'>VolumeRenkoConsolidator</a></td>
+      </tr>
+      <tr>
+         <td><code>Tick</code></td>
+         <td><code>TradeBar</code></td>
+         <td><a href='/docs/v2/writing-algorithms/consolidating-data/consolidator-types/renko-consolidators/volume-renko-consolidators#04-Consolidate-Trade-Ticks'>VolumeRenkoConsolidator</a></td>
+      </tr>
+   </tbody>
+</table>
+
+
 <h4>Sequential Consolidators</h4>
 
 <?php echo file_get_contents(DOCS_RESOURCES."/consolidators/sequential-consolidator-intro.html"); ?>
