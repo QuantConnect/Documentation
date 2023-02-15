@@ -10,8 +10,7 @@ security = self.AddEquity("SPY")
 security.SetFeeModel(ConstantFeeModel(0))</pre>
 </div>
 
-<p>You can also set the fee model in a <a href='/docs/v2/writing-algorithms/initialization#07-Set-Security-Initializer'>security initializer</a>
-. If your algorithm has a dynamic universe, use the security initializer technique. In order to initialize single security subscriptions with the security initializer, call <code>SetSecurityInitializer</code> before you create the subscriptions.</p>
+<p>You can also set the fee model in a <a href='/docs/v2/writing-algorithms/initialization#07-Set-Security-Initializer'>security initializer</a>. If your algorithm has a dynamic universe, use the security initializer technique. In order to initialize single security subscriptions with the security initializer, call <code>SetSecurityInitializer</code> before you create the subscriptions.</p>
 
 <?
 $overwriteCodePy = "security.SetFeeModel(ConstantFeeModel(0))";
