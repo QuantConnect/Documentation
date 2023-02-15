@@ -2,9 +2,9 @@
 $methodTyping = $consolidationHandlerType == "QuoteBar" ? "&lt;QuoteBar&gt;" : "";
 ?>
 
-<p <?=$this->shortcutClass1?>>You can also use the <code>Consolidate</code> helper method to create period consolidators and register them for automatic updates. With just one line of code, you can create data in any time period based on a <code class='python'>timedelta</code><code class='csharp'>TimeSpan</code> or <code>Resolution</code> object:</p>
+<p>You can also use the <code>Consolidate</code> helper method to create period consolidators and register them for automatic updates. With just one line of code, you can create data in any time period based on a <code class='python'>timedelta</code><code class='csharp'>TimeSpan</code> or <code>Resolution</code> object:</p>
 
-<ul {$this->shortcutClass1}>
+<ul>
     <li class='csharp'><code>TimeSpan</code> Periods</li>
     <li class='python'><code>timedelta</code> Periods</li>
     <div class='section-example-container'>
