@@ -1,5 +1,6 @@
 import os
 from re import findall
+from typing import List, Dict
 from pathlib import Path
 from shutil import rmtree
 from _code_generation_helpers import *
@@ -134,6 +135,58 @@ def get_indicators_constructor(full_name: str) -> list:
         constructor.append(overload)
 
     return constructor
+
+def convert_candlestick_method(method: Dict, source: List) -> Dict:
+    
+    type_name = method['method-return-type-short-name']
+    l = min([i for i, elem in enumerate(source)
+        if elem.count(f' {type_name}') > 1])
+    
+    return {
+        "Name": type_name,
+        "FullName": f'QuantConnect.Algorithm.CandlestickPatterns.{type_name}',
+        "Tag": "M",
+        "Description": parse_description(method['method-description']),
+        "ReturnValue": {
+            "Name": type_name,
+            "Type": method['method-return-type-full-name'],
+            "Description": f'The new <code>{type_name}</code> indicator object.',
+        },
+        "Parameters": [
+            {
+                'ShortType': 'Symbol',
+                'Type': 'QuantConnect.Symbol',
+                'Name': 'symbol',
+                'Description': 'The symbol whose pattern we seek.',
+                'typeId': 1
+            },
+            {
+                'ShortType': 'Nullable`1',
+                'Type': 'System.Nullable`1[QuantConnect.Resolution]',
+                'Name': 'resolution',
+                'Description': 'The resolution.',
+                'typeId': 5,
+                'IsOptional': True
+            },
+            {
+                'ShortType': 'Func`2',
+                'Type': 'System.Func`2[QuantConnect.Data.IBaseData,QuantConnect.Data.Market.TradeBar]',
+                'Name': 'selector',
+                'Tag': 'T',
+                'Description': 'Selects a value from the BaseData to send into the indicator, if null defaults to casting the input value to a TradeBar.',
+                'typeId': 7,
+                'IsOptional': True
+            },
+        ],
+        "DocumentationAttributes": [
+            {
+                "tag": "Indicators",
+                "weight": 0,
+                "line": l + 1,
+                "fileName": "Algorithm/CandlestickPatterns.cs",
+            }
+        ]
+    }
 
 def Box(input_, doc_attr, type_map, i, imax):
     if not doc_attr:
@@ -344,8 +397,8 @@ if __name__ == '__main__':
     # ----------------------------------------
     # Generate Box for each QCAlgorithm Method
     # ----------------------------------------
-    path = Path('Resources/qcalgorithm-api')
-    path.mkdir(parents=True, exist_ok=True)
+    qcapi = Path('Resources/qcalgorithm-api')
+    qcapi.mkdir(parents=True, exist_ok=True)
 
     for key, overloads in methods.items():
         imax = len(overloads)
@@ -363,7 +416,7 @@ if __name__ == '__main__':
 
             html += Box(overload, doc_attrs, type_map, i, imax)
 
-        with open(f'{path}/{key}.html', 'w', encoding='utf-8') as fp:
+        with open(f'{qcapi}/{key}.html', 'w', encoding='utf-8') as fp:
             fp.write(html + '</div>')
 
     path = Path(API_REFERENCE)
@@ -431,6 +484,24 @@ if __name__ == '__main__':
 ?>"""
         fp.write(content)
 
+    # -----------------------------------------------
+    # Generate Box for each Candlestick helper method
+    # -----------------------------------------------
+    types = set()
+    source = get_text_content(f'https://raw.githubusercontent.com/QuantConnect/Lean/master/Algorithm/CandlestickPatterns.cs').split('\n')
+    candlesticks = get_json_content("https://www.quantconnect.com/services/inspector?type=T:QuantConnect.Algorithm.CandlestickPatterns")
+    
+    for method in candlesticks['methods']:
+        types.add(method['method-return-type-full-name'])
+        overload = convert_candlestick_method(method, source)
+        doc_attrs = overload.get('DocumentationAttributes')
+        html = f'''<a id="{overload['Name']}-header"></a>
+<div class="method-container">
+        ''' + Box(overload, doc_attrs, type_map, 0, 1)
+        
+        with open(f'{qcapi}/{overload["Name"].lower()}.html', 'w', encoding='utf-8') as fp:
+            fp.write(html + '</div>')
+
     # -------------------------------
     # Generate Box for each Indicator
     # -------------------------------
@@ -438,17 +509,12 @@ if __name__ == '__main__':
     rmtree(path, ignore_errors=True)
     path.mkdir(parents=True, exist_ok=True)
 
-    types = set()
     for overloads in methods.values():
         for overload in overloads:
             type_name = overload['ReturnValue'].get('Type','')
             if type_name.startswith("QuantConnect.Indicators."):
                 types.add(type_name)
     
-    candlesticks = get_json_content("https://www.quantconnect.com/services/inspector?type=T:QuantConnect.Algorithm.CandlestickPatterns")
-    for method in candlesticks['methods']:
-        types.add(method['method-return-type-full-name'])
-
     indicators = {}
     for type_name in types:
         indicator = get_indicators_constructor(type_name)
