@@ -25,7 +25,7 @@ self.AddFutureOption(future.Symbol)</pre>
         <tr>
             <td><code>symbol</code></td>
 	        <td><code>Symbol</code></td>
-            <td>The continuous Future contract Symbol.</td>
+            <td>The continuous Future contract Symbol. To view the supported assets in the US Future Options dataset, see <a href='/docs/v2/writing-algorithms/datasets/algoseek/us-future-options#05-Supported-Assets'>Supported Assets</a>.</td>
             <td></td>
         </tr>
         <tr>
