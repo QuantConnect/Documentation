@@ -1,28 +1,29 @@
-<p>You must <a href="#03-Import-Libraries">import the plotting libraries</a> and <a href="#04-Get-Historical-Data">get some historical data</a> to create line charts.</p>
+<p>You must <a href="/docs/v2/research-environment/charting/plotly-net#03-Import-Libraries">import the plotting libraries</a> and <a href="/docs/v2/research-environment/charting/plotly-net#04-Get-Historical-Data">get some historical data</a> to create line charts.</p>
 
-<p>In this example, you create a line chart that shows the volume for SPY. Follow these steps to create the chart:</p>
+<p>In this example, you create a line chart that shows the volume of a security. Follow these steps to create the chart:</p>
 
 <ol>
-    <li>Get historical data for visualization.</li>
-    <div class="csharp section-example-container">
-        <pre>var history = qb.History&lt;TradeBar&gt;(spy, new DateTime(2021, 11, 23), new DateTime(2021, 12, 8), Resolution.Daily);</pre>
+    <li>Select a <code>Symbol</code>.</li>
+    <div class="section-example-container">
+        <pre class='csharp'>var symbol = symbols.First();</pre>
     </div>
 
-    <li>Create a <code>Line</code> chart.</li>
-    <div class="csharp section-example-container">
-        <pre>var chart = Chart2D.Chart.Line&lt;DateTime, decimal, string&gt;(
-    spy.Select(x => x.EndTime),
-    spy.Select(x => x.Volume)
+    <li>Call the <code>Chart2D.Chart.Line</code> constructor with the timestamps and volumes.</li>
+    <div class="section-example-container">
+        <pre class='csharp'>var bars = history.Select(slice => slice.Bars[symbol]);
+var chart = Chart2D.Chart.Line&lt;DateTime, decimal, string&gt;(
+    bars.Select(x => x.EndTime),
+    bars.Select(x => x.Volume)
 );</pre>
     </div>
 
     <li>Create a <code>Layout</code>.<br></li>
-    <div class="csharp section-example-container">
-        <pre>LinearAxis xAxis = new LinearAxis();
+    <div class="section-example-container">
+        <pre class='csharp'>LinearAxis xAxis = new LinearAxis();
 xAxis.SetValue("title", "Time");
 LinearAxis yAxis = new LinearAxis();
 yAxis.SetValue("title", "Volume");
-Title title = Title.init("SPY Volume");
+Title title = Title.init($"{symbol} Volume");
 
 Layout layout = new Layout();
 layout.SetValue("xaxis", xAxis);
@@ -31,15 +32,15 @@ layout.SetValue("title", title);</pre>
     </div>
 
     <li>Assign the <code>Layout</code> to the chart.<br></li>
-    <div class="csharp section-example-container">
-        <pre>chart.WithLayout(layout);</pre>
+    <div class="section-example-container">
+        <pre class='csharp'>chart.WithLayout(layout);</pre>
     </div>
     
     <li>Show the plot.</li>
     <div class="csharp section-example-container">
-        <pre>HTML(GenericChart.toChartHTML(chart))</pre>
+        <pre>HTML(GenericChart.toChartHTML(chart));</pre>
     </div>
     <p>The Jupyter Notebook displays the line chart.</p>
 </ol>
 
-<img class="docs-image" src="https://cdn.quantconnect.com/i/tu/research-env-plot-equity-data-csharp.png" rel="Line chart of volume for SPY">
+<img class="docs-image" src="https://cdn.quantconnect.com/i/tu/plotly-net-line-plot.png" rel="Line chart of volume for XLF">
