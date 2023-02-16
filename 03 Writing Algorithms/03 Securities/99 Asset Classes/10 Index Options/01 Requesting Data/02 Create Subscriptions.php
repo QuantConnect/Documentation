@@ -69,17 +69,35 @@ self.weekly_contract_symbol = Symbol.CreateOption(self.symbol, "SPXW", Market.US
     </table>
 
 <div class="section-example-container">
-    <pre class="csharp">var contractSymbols = OptionChainProvider.GetOptionContractList(_symbol, Time);
+    <pre class="csharp">// Standard contracts
+_canonicalSymbol = QuantConnect.Symbol.CreateCanonicalOption(_symbol, Market.USA, "?SPX");
+var contractSymbols = OptionChainProvider.GetOptionContractList(_canonicalSymbol, Time);
 var expiry = contractSymbols.Select(symbol =&gt; symbol.ID.Date).Min();
-var filteredSymbols = contractSymbols.Where(symbol =&gt; symbol.ID.Date == expiry &amp;&amp; symbol.ID.OptionRight == OptionRight.Call);
-_contractSymbol = filteredSymbols.OrderByDescending(symbol =&gt; symbol.ID.StrikePrice).Last();</pre>
-    <pre class="python">contract_symbols = self.OptionChainProvider.GetOptionContractList(self.symbol, self.Time)
+var filteredSymbols = contractSymbols.Where(symbol =&gt; symbol.ID.Date == expiry && symbol.ID.OptionRight == OptionRight.Call);
+_contractSymbol = filteredSymbols.OrderByDescending(symbol =&gt; symbol.ID.StrikePrice).Last();
+
+// Weekly contracts
+_weeklyCanonicalSymbol = QuantConnect.Symbol.CreateCanonicalOption(_symbol, "SPXW", Market.USA, "?SPXW");
+var weeklyContractSymbols = OptionChainProvider.GetOptionContractList(_weeklyCanonicalSymbol, Time)
+    .Where(symbol =&gt; OptionSymbol.IsWeekly(symbol));
+var weeklyExpiry = weeklyContractSymbols.Select(symbol =&gt; symbol.ID.Date).Min();
+filteredSymbols = contractSymbols.Where(symbol =&gt; symbol.ID.Date == weeklyExpiry &amp;&amp; symbol.ID.OptionRight == OptionRight.Call);
+_weeklyContractSymbol = filteredSymbols.OrderByDescending(symbol =&gt; symbol.ID.StrikePrice).Last();</pre>
+    <pre class="python"># Standard contracts
+self.canonical_symbol = Symbol.CreateCanonicalOption(self.symbol, Market.USA, "?SPX")       
+contract_symbols = self.OptionChainProvider.GetOptionContractList(self.canonical_symbol, self.Time)
 expiry = min([symbol.ID.Date for symbol in contract_symbols])
 filtered_symbols = [symbol for symbol in contract_symbols if symbol.ID.Date == expiry and symbol.ID.OptionRight == OptionRight.Call]
-self.contract_symbol = sorted(filtered_symbols, key=lambda symbol: symbol.ID.StrikePrice)[0]</pre>
-</div>
+self.contract_symbol = sorted(filtered_symbols, key=lambda symbol: symbol.ID.StrikePrice)[0]
 
-<p>The <code>GetOptionContractList</code> isn't currently fully functional for weekly contracts. To track our progress of updating it, subscribe to <a href='https://github.com/QuantConnect/Lean/issues/6872' rel='nofollow' target='_blank'>GitHub Issue #6872</a>.</p> 
+# Weekly contracts
+self.weekly_canonical_symbol = Symbol.CreateCanonicalOption(self.symbol, "SPXW", Market.USA, "?SPXW")
+weekly_contract_symbols = self.OptionChainProvider.GetOptionContractList(self.weekly_canonical_symbol, self.Time)
+weekly_contract_symbols = [symbol for symbol in weekly_contract_symbols if OptionSymbol.IsWeekly(symbol)]
+weekly_expiry = min([symbol.ID.Date for symbol in weekly_contract_symbols])
+weekly_filtered_symbols = [symbol for symbol in weekly_contract_symbols if symbol.ID.Date == weekly_expiry and symbol.ID.OptionRight == OptionRight.Call]
+self.weekly_contract_symbol = sorted(weekly_filtered_symbols, key=lambda symbol: symbol.ID.StrikePrice)[0]</pre>
+</div>
 
 <h4>Subscribe to Contracts</h4>
 <p>To create an Index Option contract subscription, pass the contract <code>Symbol</code> to the <code>AddIndexOptionContract</code> method. Save a reference to the contract <code>Symbol</code> so you can easily access the contract in the <a href="/docs/v2/writing-algorithms/securities/asset-classes/index-options/handling-data#02-Option-Chains">OptionChain</a> that LEAN passes to the <code>OnData</code> method. To override the default <a href="/docs/v2/writing-algorithms/reality-modeling/options-models/pricing">pricing model</a> of the Option, <a href='https://www.quantconnect.com/docs/v2/writing-algorithms/reality-modeling/options-models/pricing#04-Set-Models'>set a pricing model</a>.</p>
