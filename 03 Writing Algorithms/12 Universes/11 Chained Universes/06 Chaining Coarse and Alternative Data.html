@@ -1,5 +1,5 @@
 <p>
-In the below example, we chain the <code>QuiverQuantTwitterFollowersUniverse</code> alternative universe to the coarse universe. We first select the top 100 dollar volume US Equities, then further filter them with twitter followers number and weekly change. Note that the final output would take place at the alternative universe selection method.
+The following example chains the <code>QuiverQuantTwitterFollowersUniverse</code> alternative universe to the coarse universe. It first selects the 100 most liquid US Equities and then filters them down based on their Twitter followers number and weekly change. The output of the alternative universe selection method is the output of the chained universe.
 </p>
 <div class="section-example-container">
     <pre class="csharp">using System.Collections.Generic;
@@ -38,7 +38,7 @@ namespace QuantConnect.Algorithm.CSharp
         private IEnumerable&lt;Symbol&gt; FollowerSelection(IEnumerable&lt;QuiverQuantTwitterFollowersUniverse&gt; altCoarse)
         {
             var followers = from d in altCoarse
-                         where d.Followers &gt; 200000m && d.WeekPercentChange &gt; 0m
+                         where d.Followers &gt; 200000m &amp;&amp; d.WeekPercentChange &gt; 0m
                          select d.Symbol;
             return _coarse.Intersect(followers);
         }
@@ -83,7 +83,7 @@ class ChainedUniverseAlgorithm(QCAlgorithm):
 
     def FollowerSelection(self, alt_coarse: List[QuiverQuantTwitterFollowersUniverse]) -&gt; List[Symbol]:
         self.followers = [d.Symbol for d in alt_coarse if d.Followers &gt; 200000 and d.WeekPercentChange &gt; 0]
-        return list(set(self.coarse) & set(self.followers))
+        return list(set(self.coarse) &amp; set(self.followers))
 
     def OnSecuritiesChanged(self, changes):
         for added in changes.AddedSecurities:
