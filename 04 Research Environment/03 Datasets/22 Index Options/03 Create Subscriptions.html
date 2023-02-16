@@ -12,6 +12,7 @@ using QuantConnect.Data.Market;
 using QuantConnect.Algorithm;
 using QuantConnect.Securities;
 using QuantConnect.Securities.Index;
+using QuantConnect.Securities.Option;
 using QuantConnect.Research;</pre>
     </div>
     <li>Instantiate a <code>QuantBook</code>.</li>
@@ -49,9 +50,25 @@ using QuantConnect.Research;</pre>
     <li>Call the <code>GetOptionsContractList</code> method with the underlying <code>Index</code> <code>Symbol</code> and a <code class="python">datetime</code><code class="csharp">DateTime</code>.</li>
     <div class="section-example-container">
         <pre class="csharp">var startDate = new DateTime(2021, 12, 31);
-var contractSymbols = qb.OptionChainProvider.GetOptionContractList(indexSymbol, startDate);</pre>
-    <pre class="python">start_date = datetime(2021, 12, 31)
-contract_symbols = qb.OptionChainProvider.GetOptionContractList(index_symbol, start_date)</pre>
+
+// Standard contracts
+var canonicalSymbol = QuantConnect.Symbol.CreateCanonicalOption(indexSymbol, Market.USA, "?SPX");
+var contractSymbols = qb.OptionChainProvider.GetOptionContractList(canonicalSymbol, startDate);
+            
+// Weekly contracts
+var weeklyCanonicalSymbol = QuantConnect.Symbol.CreateCanonicalOption(indexSymbol, "SPXW", Market.USA, "?SPXW");
+var weeklyContractSymbols = qb.OptionChainProvider.GetOptionContractList(weeklyCanonicalSymbol, startDate)
+    .Where(s => OptionSymbol.IsWeekly(s));</pre>
+<pre class="python">start_date = datetime(2021, 12, 31)
+
+# Standard contracts
+canonical_symbol = Symbol.CreateCanonicalOption(index_symbol, Market.USA, "?SPX")
+contract_symbols = qb.OptionChainProvider.GetOptionContractList(canonical_symbol, start_date)
+
+# Weekly contracts
+weekly_canonical_symbol = Symbol.CreateCanonicalOption(index_symbol, "SPXW", Market.USA, "?SPXW")
+weekly_contract_symbols = qb.OptionChainProvider.GetOptionContractList(weekly_canonical_symbol, start_date)
+weekly_contract_symbols = [s for s in weekly_contract_symbols if OptionSymbol.IsWeekly(s)]</pre>
     </div>
     <p>This method returns a list of <code>Symbol</code>&nbsp;objects that reference the Option contracts that were trading at the given time.</p>
     <li>Select the <code>Symbol</code> of the <code>OptionContract</code>&nbsp;object(s) for which you want to get historical data.</li>
@@ -90,14 +107,28 @@ contract_symbols = qb.OptionChainProvider.GetOptionContractList(index_symbol, st
     </table>
 
     <div class="section-example-container">
-      <pre class="csharp">var contractSymbol = contractSymbols.Where(s =&gt; 
-    s.ID.OptionRight == OptionRight.Call &amp;&amp;
-    s.ID.StrikePrice == 4460 &amp;&amp;
-    s.ID.Date == new DateTime(2022, 4, 14)).First();</pre>
-	    <pre class="python">contract_symbol = [s for s in contract_symbols 
+      <pre class="csharp">// Standard contracts
+var contractSymbol = contractSymbols.Where(s => 
+    s.ID.OptionRight == OptionRight.Call &&
+    s.ID.StrikePrice == 4460 &&
+    s.ID.Date == new DateTime(2022, 4, 14)).First();
+
+// Weekly contracts
+var weeklyContractSymbol = weeklyContractSymbols.Where(s => 
+    s.ID.OptionRight == OptionRight.Call &&
+    s.ID.StrikePrice == 4460 &&
+    s.ID.Date == new DateTime(2021, 12, 31)).First();</pre>
+	    <pre class="python"># Standard contracts
+contract_symbol = [s for s in contract_symbols 
     if s.ID.OptionRight == OptionRight.Call 
         and s.ID.StrikePrice == 4460 
-        and s.ID.Date == datetime(2022, 4, 14)][0]</pre>
+        and s.ID.Date == datetime(2022, 4, 14)][0]
+
+# Weekly contracts
+weekly_contract_symbol = [s for s in weekly_contract_symbols 
+    if s.ID.OptionRight == OptionRight.Call 
+        and s.ID.StrikePrice == 4460 
+        and s.ID.Date == datetime(2021, 12, 31)][0]</pre>
     </div>
 
 	<li>Call the <code>AddIndexOptionContract </code> method with an <code>OptionContract</code> <code>Symbol</code> and disable fill-forward.</li>
