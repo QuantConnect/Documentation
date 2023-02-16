@@ -270,4 +270,7 @@ def OnData(self, slice: Slice) -&gt; None:
 <h4>Financial Advisor Group Orders</h4>
 <p>To place FA group orders, see <a href='/docs/v2/writing-algorithms/reality-modeling/brokerages/supported-models/interactive-brokers#18-Financial-Advisors'>Financial Advisors</a>.</p>
 
+<h4>Fractional Trading</h4>
+<p>The IB API and FIX/CTCI don't support <a rel="nofollow" target="_blank" href='https://www.interactivebrokers.com/en/trading/fractional-trading.php'>fractional trading</a>.</p>
+
 <?php include(DOCS_RESOURCES."/brokerages/handling-splits.html"); ?>
