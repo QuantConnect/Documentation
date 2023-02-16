@@ -1,3 +1,5 @@
+<p>The <code>InteractiveBrokersBrokerageModel</code> supports several order types, order properties, and order updates.</p>
+
 <?php include(DOCS_RESOURCES."/brokerages/interactive-brokers/orders.php"); ?>
 
 
