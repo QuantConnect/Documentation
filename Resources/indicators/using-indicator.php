@@ -45,9 +45,11 @@
 
 <p>For more information about plotting indicators, see <a href="/docs/v2/writing-algorithms/indicators/plotting-indicators">Plotting Indicators</a>.</p>
 
-<? if($hasMovingAverageTypeParameter) include(DOCS_RESOURCES."/enumerations/moving_average_type.html"); ?>
+<? if($hasMovingAverageTypeParameter) { ?>
+<p>The following table describes the <code>MovingAverageType</code> enumeration members:</p>
+<div data-tree='QuantConnect.Indicators.MovingAverageType'></div>
+<? } ?>
 
-<H4>Manual Indicators</H4>
 <p>You can manually create a <code><?=$typeName?></code> indicator, so it doesn't automatically update. Manual indicators let you update their values with any data you choose.</p>
 
 <p>Updating your indicator manually enables you to control when the indicator is updated and what data you use to update it. To manually update the indicator, call the <code>Update</code> method with <?=$updateParameterType?>. The indicator will only be ready after you prime it with enough data.</p>
