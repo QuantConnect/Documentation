@@ -1,11 +1,11 @@
 <p>The following examples are typical calendar functions you may want.<br></p>
 
-<p>The function should receive a <code class='python'>datetime</code><code class='csharp'>DateTime</code> object that's based in the <a href='/docs/v2/writing-algorithms/key-concepts/time-modeling/time-zones#04-Algorithm-Time-Zone'>algorithm time zone</a> and should return a <code>CalendarInfo</code> object, which contains the start time of the bar in the data time zone and the duration of the consolidation period. This function is evaluated when the duration of the consolidation period has passed, and at the following time step.<p>
+<p>The function should receive a <code class="python">datetime</code><code class="csharp">DateTime</code> object that's based in the <a href="/docs/v2/writing-algorithms/key-concepts/time-modeling/time-zones#04-Algorithm-Time-Zone">algorithm time zone</a> and should return a <code>CalendarInfo</code> object, which contains the start time of the bar in the data time zone and the duration of the consolidation period. This function is evaluated when the duration of the consolidation period has passed and at the following time step.</p><p>
 
-<p>The previous sections of this page provide a typical calendar function that consolidates data weekly, starting at 5:00 PM. If you are consolidating US Equity and Crypto, the event handle will trigger at different time since the data time zone of US Equity is America/New York and Crypto is UTC.</p>
+</p><p>The preceding sections of this page provide a typical calendar function that consolidates data weekly, starting at 5:00 PM. If you consolidate US Equity and Crypto data, the event handler triggers at different times since the data time zone of US Equity is America/New York and Crypto is UTC.</p>
 
-<h4>Example 1: Consolidates data into 20-minute <code>TradeBar</code> objects, starting at 9:30 AM</h4>
-<p>Typical US markets case because they open on every business day at 9:30 PM DST.</p>
+<h4>Example 1: Consolidate data into 20-minute <code>TradeBar</code> objects that start at 9:30 AM</h4>
+<p>This is a typical case for the US markets because they open every business day at 9:30 PM Eastern Time (ET).</p>
 
 <div class="section-example-container">
 <pre class="csharp">public CalendarInfo EveryTwentyMinuteAfterEquityMarketOpen(DateTime datetime)
@@ -15,16 +15,16 @@
     var start = openTime + (int)((datetime - openTime) / period) * period;            
     return new CalendarInfo(start, period);
 }</pre>
-<pre class="python">def every_twenty_minute_after_equity_market_open(self, dt: datetime) -> CalendarInfo:
+<pre class="python">def every_twenty_minute_after_equity_market_open(self, dt: datetime) -&gt; CalendarInfo:
     period = timedelta(minutes=20)
     open_time = dt.replace(hour=9, minute=30, second=0, microsecond=0)
     start = open_time + ((dt - open_time) // period) * period
     return CalendarInfo(start, period)</pre>
 </div>
-<p>To consolidate data into another period, for example 4 hours, replace <span class="python">timedelta(minutes=20)</span><span class="python">TimeSpan.FromMinutes(20)</span> with <span class="python">timedelta(hours=4)</span><span class="python">TimeSpan.FromHours(4)</span>.</p>
+<p>To consolidate data into another period, change the <code>period</code> variable. For example, to consolidate into 4-hour bars, replace <code class="python">timedelta(minutes=20)</code><code class="csharp">TimeSpan.FromMinutes(20)</code> with <code class="python">timedelta(hours=4)</code><code class="csharp">TimeSpan.FromHours(4).</code></p>
 
-<h4>Example 2: Consolidates data daily <code>QuoteBar</code> objects, starting at 5:00 PM:</h4>
-<p>Typical Forex case because the Forex market opens on Sunday at 5:00 PM EST.</p>
+<h4>Example 2: Consolidate data in daily <code>QuoteBar</code> objects that start at 5 PM:</h4>
+<p>This is a typical Forex case because the Forex market opens on Sunday at 5 PM ET.</p>
 
 <div class="section-example-container">
     <pre class="csharp">public CalendarInfo CustomDailyForex(DateTime datetime)
@@ -33,14 +33,14 @@
         .AddHours(datetime.Hour &lt; 17 ? -7 : 17);
     return new CalendarInfo(start, TimeSpan.FromDays(1));
 }</pre>
-    <pre class="python">def custom_daily_forex(self, dt: datetime) -> CalendarInfo:
+    <pre class="python">def custom_daily_forex(self, dt: datetime) -&gt; CalendarInfo:
 start = dt.replace(hour=17, minute=0, second=0)
 if dt.hour &lt; 17:
     start -= timedelta(1)
 return CalendarInfo(start, timedelta(1))</pre>
 </div>
 
-<h4>Example 3: Consolidates data monthly <code>TradeBar</code> objects, starting at midnight:</h4>
+<h4>Example 3: Consolidate data into monthly <code>TradeBar</code> objects that start at midnight:</h4>
 
 <div class="section-example-container">
     <pre class="csharp">public CalendarInfo CustomMonthly(DateTime datetime)
@@ -50,7 +50,7 @@ return CalendarInfo(start, timedelta(1))</pre>
     end = new DateTime(end.Year, end.Month, 1);
     return new CalendarInfo(start, (end - start));
 }</pre>
-    <pre class="python">def custom_monthly(self, dt: datetime) -> CalendarInfo:
+    <pre class="python">def custom_monthly(self, dt: datetime) -&gt; CalendarInfo:
 start = dt.replace(day=1).date()
 end = dt.replace(day=28) + timedelta(4)
 end = (end - timedelta(end.day - 1)).date()
