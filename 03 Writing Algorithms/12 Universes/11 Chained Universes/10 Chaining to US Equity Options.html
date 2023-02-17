@@ -1,6 +1,4 @@
-<p>
-In the below example, we chain a <code>OptionFilterUniverse</code> to the QQQ ETF universe. We first select top 30 weighted constituents of QQQ, then select their call option contracts expiring within 60 days.
-</p>
+<p>The following example chains an <code>OptionFilterUniverse</code> to the QQQ <a href='/docs/v2/writing-algorithms/universes/equity#04-ETF-Constituents-Selection'>ETF universe</a>. It first selects the 30 largest-weighted constituents of QQQ and then selects their call Option contracts that expire within 60 days.</p>
 <div class="section-example-container">
     <pre class="csharp">using System.Collections.Generic;
 using System.Linq;
@@ -39,9 +37,9 @@ namespace QuantConnect.Algorithm.CSharp
                 var contracts = OptionChainProvider.GetOptionContractList(added.Symbol, Time);
                 var filteredContracts = (from contract in contracts
                                         where contract.ID.OptionRight == OptionRight.Call
-                                        && contract.ID.StrikePrice &gt;= 100
-                                        && contract.ID.Date &lt;= Time.AddDays(10)
-                                        && contract.ID.OptionStyle == OptionStyle.American
+                                        &amp;&amp; contract.ID.StrikePrice &gt;= 100
+                                        &amp;&amp; contract.ID.Date &lt;= Time.AddDays(10)
+                                        &amp;&amp; contract.ID.OptionStyle == OptionStyle.American
                                         select AddOptionContract(contract).Symbol);
                 _optionContracts = _optionContracts.Union(filteredContracts).ToList();
             }
