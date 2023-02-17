@@ -12,6 +12,7 @@
     }
 }
 
+<?php if ($chainTypeName != "FuturesChains") { ?>
 public void OnData(<?=$chainTypeName?> <?=$variableName?>)
 {
     if (<?=$variableName?>.TryGetValue(_contractSymbol.Canonical, out var chain))
@@ -21,7 +22,8 @@ public void OnData(<?=$chainTypeName?> <?=$variableName?>)
             var openInterest = contract.OpenInterest;
         }
     }
-}</pre>
+}
+<?php } ?></pre>
     <pre class='python'>def OnData(self, slice: Slice) -> None:
     chain = slice.<?=$chainTypeName?>.get(self.contract_symbol.Canonical)
     if chain:
