@@ -13,24 +13,22 @@
 
 <div class="section-example-container">
 	<pre class="csharp">public override void OnMarginCall(List&lt;SubmitOrderRequest&gt; requests)
+{
     foreach (var order in requests.ToList())
     {
-        // liquidate an extra 10% each time we get a margin call to give us more padding
-        var newQuantity = (int)(Math.Sign(order.Quantity) * order.Quantity * 1.1m);
-        requests.Remove(order);
-        requests.Add(new SubmitOrderRequest(order.OrderType, order.SecurityType, 
+        // liquidate an extra 10% each time you get a margin call to give yourself more padding
+        var newQuantity = (int)(order.Quantity * 1.1m);
+        requests[i] = new SubmitOrderRequest(order.OrderType, order.SecurityType, 
                                             order.Symbol, newQuantity, order.StopPrice, 
-                                            order.LimitPrice, 0, Time, "OnMarginCall"));
+                                            order.LimitPrice, 0, Time, "OnMarginCall");
     }
 }</pre>
 	<pre class="python">def OnMarginCall(self, requests: List[SubmitOrderRequest]) -&gt; List[SubmitOrderRequest]:
-    for order in requests[:]:
-        # liquidate an extra 10% each time we get a margin call to give us more padding
-        new_quantity = int(np.sign(order.Quantity) * order.Quantity * 1.1)
-        requests.remove(order)
-        requests.append(SubmitOrderRequest(order.OrderType, order.SecurityType, 
-                                           order.Symbol, new_quantity, order.StopPrice, 
-                                           order.LimitPrice, 0, self.Time, "OnMarginCall"))
-    return requests
-</pre>
+    for i, order in enumerate(requests):
+        # liquidate an extra 10% each time you get a margin call to give yourself more padding
+        new_quantity = int(order.Quantity * 1.1)
+        requests[i] = SubmitOrderRequest(order.OrderType, order.SecurityType, 
+                                        order.Symbol, new_quantity, order.StopPrice, 
+                                        order.LimitPrice, 0, self.Time, "OnMarginCall")
+    return requests</pre>
 </div>
