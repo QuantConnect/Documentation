@@ -14,8 +14,9 @@
 <div class="section-example-container">
 	<pre class="csharp">public override void OnMarginCall(List&lt;SubmitOrderRequest&gt; requests)
 {
-    foreach (var order in requests.ToList())
+    for (var i = 0; i < requests.Count; i++)
     {
+        var order = requests[i];
         // liquidate an extra 10% each time you get a margin call to give yourself more padding
         var newQuantity = (int)(order.Quantity * 1.1m);
         requests[i] = new SubmitOrderRequest(order.OrderType, order.SecurityType, 
