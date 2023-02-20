@@ -2,12 +2,7 @@
 
 <div data-tree='QuantConnect.DataNormalizationMode' data-fields='Raw,Adjusted,SplitAdjusted,TotalReturn'></div>
 
-<? 
-$cSharpVariableName = "spy";
-$pyVariableName = "spy";
-$ticker = "SPY";
-include(DOCS_RESOURCES."/datasets/data-normalization.php"); 
-?>
+<? include(DOCS_RESOURCES."/datasets/data-normalization.php"); ?>
 
 <p>To set the data normalization mode for a security, pass a <code>dataNormalizationMode</code> argument to the <code>AddEquity</code> method.</p>
 
