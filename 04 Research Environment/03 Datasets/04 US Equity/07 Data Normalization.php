@@ -1,4 +1,7 @@
 <?
+$cSharpVariableName = "spy";
+$pyVariableName = "spy";
+$ticker = "SPY";
 include(DOCS_RESOURCES."/securities/data-normalization.php");
 ?>
 
