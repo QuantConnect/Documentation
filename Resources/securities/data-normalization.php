@@ -7,7 +7,7 @@
 <p>To set the data normalization mode for a security, pass a <code>dataNormalizationMode</code> argument to the <code>AddEquity</code> method.</p>    
 
 <div class='section-example-container'>
-    <pre class='csharp'><?=$cSharpVariableName?> = <?=$writingAlgorithms ? "" : "qb." ?>AddEquity("<?=$ticker?>", dataNormalizationMode: DataNormalizationMode.Raw).Symbol;</pre>
+    <pre class='csharp'>var <?=$cSharpVariableName?> = <?=$writingAlgorithms ? "" : "qb." ?>AddEquity("<?=$ticker?>", dataNormalizationMode: DataNormalizationMode.Raw).Symbol;</pre>
     <pre class='python'><?=$pyVariableName?> = <?=$writingAlgorithms ? "self" : "qb" ?>.AddEquity("<?=$ticker?>", dataNormalizationMode=DataNormalizationMode.Raw).Symbol</pre>
 </div>
 
