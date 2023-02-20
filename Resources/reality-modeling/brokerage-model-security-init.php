@@ -37,6 +37,7 @@ class MySecurityInitializer : BrokerageModelSecurityInitializer
     <?=$classMemberC?>public MySecurityInitializer(IBrokerageModel brokerageModel, ISecuritySeeder securitySeeder<?=$extraParamsC?>)
         : base(brokerageModel, securitySeeder) <?=$contructorBodyC ?>
     
+    
     public override void Initialize(Security security)
     {
         // First, call the superclass definition
@@ -57,6 +58,7 @@ class MySecurityInitializer(BrokerageModelSecurityInitializer):
 
     def __init__(self, brokerage_model: IBrokerageModel, security_seeder: ISecuritySeeder<?=$extraParamsPy?>) -> None:
         super().__init__(brokerage_model, security_seeder)<?=$contructorBodyPy?>
+
 
     def Initialize(self, security: Security) -> None:
         # First, call the superclass definition
