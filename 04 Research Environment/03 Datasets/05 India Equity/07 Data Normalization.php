@@ -1,4 +1,7 @@
 <?
+$cSharpVariableName = "icicibank";
+$pyVariableName = "icicibank";
+$ticker = "ICICIBANK";
 include(DOCS_RESOURCES."/securities/data-normalization.php");
 ?>
 
