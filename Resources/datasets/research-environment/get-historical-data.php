@@ -241,6 +241,8 @@ all_history_open_interest = qb.History[OpenInterest](qb.Securities.Keys, start_t
 </div>
 <? } elseif ($assetClass == "Futures Option") { ?>
 <p class='python'>To get historical data for all of the <?=$assetClass?> contracts that traded during a specific period of time, call the <code>GetOptionHistory</code> method with the underlying <?=$underlyingAssetClass?> <code>Symbol</code> object, a start <code class='csharp'>DateTime</code><code class='python'>datetime</code>, and an end <code class='csharp'>DateTime</code><code class='python'>datetime</code>.</p>
+<? } elseif ($assetClass == "Index Option") { ?>
+<p class='python'>To get historical data for all of the <?=$assetClass?> contracts that pass your <a href='<?=$createSubscriptionsLink?>'>filter</a> during a specific period of time, call the <code>GetOptionHistory</code> method with the canonical Index Option <code>Symbol</code> object, a start <code class='csharp'>DateTime</code><code class='python'>datetime</code>, and an end <code class='csharp'>DateTime</code><code class='python'>datetime</code>.</p>
 <? } else { ?>
 <p class='python'>To get historical data for all of the <?=$assetClass?> contracts that pass your <a href='<?=$createSubscriptionsLink?>'>filter</a> during a specific period of time, call the <code>GetOptionHistory</code> method with the underlying <?=$underlyingAssetClass?> <code>Symbol</code> object, a start <code class='csharp'>DateTime</code><code class='python'>datetime</code>, and an end <code class='csharp'>DateTime</code><code class='python'>datetime</code>.</p>
 <? } ?>
