@@ -77,7 +77,7 @@
             return null;
         }
 
-        if (isLiveMode)
+        if (isLive)
         {
             var custom = JsonConvert.DeserializeObject&lt;MyCustomDataType&gt;(line);
             custom.EndTime = DateTime.UtcNow.ConvertFromUtc(config.ExchangeTimeZone);
@@ -114,7 +114,7 @@
         custom = MyCustomDataType()
         custom.Symbol = config.Symbol
 
-        if isLiveMode:
+        if isLive:
             data = json.loads(line)
             custom.EndTime =  Extensions.ConvertFromUtc(datetime.utcnow(), config.ExchangeTimeZone)
             custom.Value = data["value"]
