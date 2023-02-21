@@ -15,6 +15,10 @@ $dataFrameImages = array(
     'https://cdn.quantconnect.com/i/tu/fop-research-data-5.jpg',
     'https://cdn.quantconnect.com/i/tu/fop-research-data-6.jpg'
 );
+$cSharpDataFrameImages = array(
+    'https://cdn.quantconnect.com/i/tu/future-options-research-data-c-1.png',
+    'https://cdn.quantconnect.com/i/tu/future-options-research-data-c-2.png'
+);
 $dataFrameColumnName = 'close';
 $columnNameEnglish = 'close';
 $supportsTrades = true;
