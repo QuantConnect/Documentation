@@ -1,0 +1,21 @@
+<p>You need to <a href='/docs/v2/research-environment/machine-learning/aesera#05-Train-Models'>build and train the model</a> before you test its performance. If you have trained the model, test it on the out-of-sample data. Follow these steps to test the model:</p>
+
+<ol>
+    <li>Call the <code>predict</code> method with the features of the testing period.</li>
+    <div class="section-example-container">
+        <pre class="python">y_hat = predict(np.array(X_test))</pre>
+    </div>
+
+    <li>Plot the actual and predicted labels of the testing period.</li>
+    <div class="section-example-container">
+        <pre class="python">df = pd.DataFrame({'y': y_test, 'y_hat': y_hat}).astype(int)
+df.plot(title='Model Performance: predicted vs actual return direction in closing price', figsize=(12, 5))</pre>
+    </div>
+
+    <li>Calculate the prediction accuracy.</li>
+    <div class="section-example-container">
+        <pre class="python">correct = sum([1 if x==y else 0 for x, y in zip(y_test, y_hat)])
+print(f"Accuracy: {correct}/{y_test.shape[0]} ({correct/y_test.shape[0]}%)")</pre>
+    </div>
+</ol>
+<img class='docs-image' src="https://cdn.quantconnect.com/i/tu/aesera-model-performance-2.png" alt="Aesera model's performance">

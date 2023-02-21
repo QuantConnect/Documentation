@@ -1,0 +1,25 @@
+<p>Follow these steps to save <code>sklearn</code> models into the <a href="/docs/v2/writing-algorithms/object-store">ObjectStore</a>:</p>
+
+<ol>
+    <li>Set the key name you want to store the model under in the ObjectStore.</li>
+    <div class="section-example-container">
+        <pre class="python">model_key = "model"</pre>
+    </div>
+
+    <li>Call the <code>GetFilePath</code> method with the key.</li>
+    <div class="section-example-container">
+        <pre class="python">file_name = self.ObjectStore.GetFilePath(model_key)</pre>
+    </div>
+    <p>This method returns the file path where the model will be stored.</p>
+
+    <li>Call the <code>dump</code> method the file path.</li>
+    <div class="section-example-container">
+        <pre class="python">joblib.dump(self.predict, file_name)</pre>
+    </div>
+    <p>If you dump the model using the <code>joblib</code> module before you save the model, you don't need to retrain the model.</p>
+
+    <li>Call the <code>Save</code> method with the key.</li>
+    <div class="section-example-container">
+        <pre class="python">self.ObjectStore.Save(model_key)</pre>
+    </div>
+</ol>

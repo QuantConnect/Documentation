@@ -1,0 +1,59 @@
+<p>You need some <a href="/docs/v2/research-environment/machine-learning/aesera#03-Get-Historical-Data">historical data</a> to prepare the data for the model. If you have historical data, manipulate it to train and test the model. In this example, use the following features and labels:</p>
+
+<table class="qc-table table">
+    <thead>
+        <tr>
+            <th>Data Category</th>
+            <th>Description</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>Features</td>
+            <td>Normalized close price of the SPY over the last 5 days</td>
+        </tr>
+        <tr>
+            <td>Labels</td>
+            <td>Return direction of the SPY over the next day</td>
+        </tr>
+    </tbody>
+</table>
+
+<p>The following image shows the time difference between the features and labels:</p>
+
+<img class="docs-image" src="https://cdn.quantconnect.com/i/tu/ml-keras-function.png" alt="Features and labels for training">
+
+<p>Follow these steps to prepare the data:</p>
+
+<ol>
+    <li>Obtain the close price and return direction series.</li>
+    <div class="section-example-container">
+        <pre class="python">close = history['close']
+returns = data['close'].pct_change().shift(-1)[lookback*2-1:-1].reset_index(drop=True)
+labels = pd.Series([1 if y > 0 else 0 for y in returns])   # binary class</pre>
+    </div>
+
+    <li>Loop through the <code>close</code> Series and collect the features.</li>
+    <div class="section-example-container">
+        <pre class="python">lookback = 5
+lookback_series = []
+for i in range(1, lookback + 1):
+    df = data['close'].shift(i)[lookback:-1]
+    df.name = f"close-{i}"
+    lookback_series.append(df)
+X = pd.concat(lookback_series, axis=1)
+# Normalize using the 5 day interval
+X = MinMaxScaler().fit_transform(X.T).T[4:]</pre>
+    </div>
+
+    <li>Convert the lists of features and labels into <code>numpy</code> arrays.</li>
+    <div class="section-example-container">
+        <pre class="python">X = np.array(features)
+y = np.array(labels)</pre>
+    </div>
+
+    <li>Split the data into training and testing periods.</li>
+    <div class="section-example-container">
+        <pre class="python">X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)</pre>
+    </div>
+</ol>
