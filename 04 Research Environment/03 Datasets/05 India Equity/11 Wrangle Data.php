@@ -13,6 +13,10 @@ $dataFrameImages = array(
     'https://cdn.quantconnect.com/i/tu/india-equity-research-data-3.png',
     'https://cdn.quantconnect.com/i/tu/india-equity-research-data-4.png'
 );
+$cSharpDataFrameImages = array(
+    'https://cdn.quantconnect.com/i/tu/india-equity-research-data-c-1.png',
+    'https://cdn.quantconnect.com/i/tu/india-equity-research-data-c-2.png'
+);
 $dataFrameColumnName = 'close';
 $columnNameEnglish = 'close';
 $supportsTrades = true;

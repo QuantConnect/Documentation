@@ -2,7 +2,7 @@
 
 <p class='csharp'>You need some <a href='<?=$historicalDataLink ?>'>historical data</a> to perform wrangling operations. Use LINQ to wrangle the data and then call the <code>Console.WriteLine</code> method in a Jupyter Notebook to display the data. The process to manipulate the historical data depends on its data type.</p>
 
-<h4 class='python'>DataFrame Objects</h4>
+<h4>DataFrame Objects</h4>
 
 <? if ($supportsOptionHistory) { ?>
 <p class='python'>If your history request returns a <code>DataFrame</code>, the <code>DataFrame</code> has the following index levels:</p>
@@ -124,6 +124,25 @@
 <img class='python docs-image' src='https://cdn.quantconnect.com/i/tu/us-equity-research-data-5.jpg' alt="Historical data dataframe of selected attribute by symbols">
 <? } ?>
 
+<p class="csharp">You may construct a <code>Microsoft.Data.Analysis.DataFrame</code> object from the historical data for efficient vectorized data wrangling.</p>
+<div class='section-example-container'>
+<pre class='csharp'>var columns = new DataFrameColumn[] {
+    new PrimitiveDataFrameColumn<DateTime>("Time", history.Select(x => x[<?=$primarySymbolC?>].EndTime)),
+    new DecimalDataFrameColumn("<?=$primaryTicker?> Open", history.Select(x => x[<?=$primarySymbolC?>].Open)),
+    new DecimalDataFrameColumn("<?=$primaryTicker?> High", history.Select(x => x[<?=$primarySymbolC?>].High)),
+    new DecimalDataFrameColumn("<?=$primaryTicker?> Low", history.Select(x => x[<?=$primarySymbolC?>].Low)),
+    new DecimalDataFrameColumn("<?=$primaryTicker?> Close", history.Select(x => x[<?=$primarySymbolC?>].Close))
+};
+var df = new DataFrame(columns);
+df</pre>
+</div>
+<p class='csharp'>The below displayed a formatted dataframe with reference from <a href="https://swharden.com/blog/2022-05-01-dotnet-dataframe/#pretty-dataframe-formatting">SWHarden</a>.</p>
+<img class='csharp docs-image' src='<?=$cSharpDataFrameImages[0]?>' alt="Historical C# dataframe">
+<p class='csharp'>To select a particular column, specifies it like a dictionary key.</p>
+<div class='section-example-container'>
+<pre class='csharp'>df["<?=$primaryTicker?> <?=$dataFrameColumnName?>"]</pre>
+</div>
+<img class='csharp docs-image' src='<?=$cSharpDataFrameImages[1]?>' alt="Historical C# dataframe column">
 
 <h4>Slice Objects</h4>
 <p>If the <code>History</code> method returns <code>Slice</code> objects, iterate through the <code>Slice</code> objects to get each one. The <code>Slice</code> objects may not have data for all of your <?=$assetClass?> subscriptions. To avoid issues, check if the <code>Slice</code> contains data for your <?=$singularAssetClass?> before you index it with the <?=$assetClass?> <code>Symbol</code>.</p>
