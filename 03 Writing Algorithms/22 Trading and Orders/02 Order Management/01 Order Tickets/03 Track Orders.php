@@ -1,4 +1,4 @@
-<p>As the state or your order updates over time, your order ticket automatically updates. To track an order, you can check any of the preceding order ticket properties.</p>
+<p>As the state of your order updates over time, your order ticket automatically updates. To track an order, you can check any of the preceding order ticket properties.</p>
 
 <p>To get an order field, call the <code>Get</code> method with an <code>OrderField</code>.</p> 
 
