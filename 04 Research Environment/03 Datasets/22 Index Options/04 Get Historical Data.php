@@ -1,7 +1,7 @@
 <?
 $createSubscriptionsLink = "/docs/v2/research-environment/datasets/index-options#03-Create-Subscriptions";
 $assetClass = "Index Option";
-$underlyingSymbolVariable = "index_symbol";
+$underlyingSymbolVariable = "option.Symbol";
 $underlyingAssetClass = "Index";
 $contractVariablePy = "\"SPX\"";
 $contractVariableC = "\"SPX\"";
