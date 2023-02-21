@@ -86,7 +86,7 @@
         DateTime date,
         bool isLive)
     {
-        if (isLiveMode)
+        if (isLive)
         {
             return new SubscriptionDataSource("https://www.bitstamp.net/api/ticker/", SubscriptionTransportMedium.Rest);
         }
@@ -101,7 +101,7 @@
          date: datetime,
          isLive: bool) -&gt; SubscriptionDataSource:
         
-         if isLiveMode:
+         if isLive:
             return SubscriptionDataSource("https://www.bitstamp.net/api/ticker/", SubscriptionTransportMedium.Rest)
 
         source = f"http://my-ftp-server.com/{config.Symbol.Value}/{date:%Y%M%d}.csv"
