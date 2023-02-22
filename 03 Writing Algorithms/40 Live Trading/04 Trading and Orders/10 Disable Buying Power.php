@@ -1,0 +1,1 @@
+<? include(DOCS_RESOURCES."/reality-modeling/disable-buying-power.php"); ?>
