@@ -125,7 +125,7 @@
 <? } ?>
 
 <p class="csharp">You may construct a <code>Microsoft.Data.Analysis.DataFrame</code> object from the historical data for efficient vectorized data wrangling.</p>
-<div class='section-example-container'>
+<div class='csharp section-example-container'>
 <pre class='csharp'>var columns = new DataFrameColumn[] {
     new PrimitiveDataFrameColumn<DateTime>("Time", history.Select(x => x[<?=$primarySymbolC?>].EndTime)),
     new DecimalDataFrameColumn("<?=$primaryTicker?> Open", history.Select(x => x[<?=$primarySymbolC?>].Open)),
@@ -146,7 +146,7 @@ df</pre>
 
 <h4>Slice Objects</h4>
 <p>If the <code>History</code> method returns <code>Slice</code> objects, iterate through the <code>Slice</code> objects to get each one. The <code>Slice</code> objects may not have data for all of your <?=$assetClass?> subscriptions. To avoid issues, check if the <code>Slice</code> contains data for your <?=$singularAssetClass?> before you index it with the <?=$assetClass?> <code>Symbol</code>.</p>
-<div class='section-example-container'>
+<div class='csharp section-example-container'>
 <pre class='csharp'>foreach (var slice in allHistorySlice) {
 <? if ($supportsAltData) {?>
     if (slice.ContainsKey(<?=$primarySymbolC?>))
