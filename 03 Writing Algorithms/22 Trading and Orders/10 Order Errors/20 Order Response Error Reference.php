@@ -258,7 +258,7 @@ if holding_quantity > 0:
 <p><a id='order-quantity-less-than-lot-size'></a>The <code>OrderResponseErrorCode.NonExercisableSecurity</code> (-29) error occurs when you call the <a href='/docs/v2/writing-algorithms/trading-and-orders/order-types/option-exercise-orders'>ExerciseOption</a> method with a <code>Symbol</code> that doesn't reference an Option contract.</p>
 
 <h4>Order Quantity Less Than Lot Size</h4>
-<p>The <code>OrderResponseErrorCode.OrderQuantityLessThanLoteSize</code> (-30) error occurs when you place an order with a quantity that's less than the lot size of the security.</p>
+<p>The <code>OrderResponseErrorCode.OrderQuantityLessThanLotSize</code> (-30) error occurs when you place an order with a quantity that's less than the lot size of the security.</p>
 
 <p>To avoid this order response error, check if the order quantity is greater than or equal to the security lot size before you place an order.</p>
 
