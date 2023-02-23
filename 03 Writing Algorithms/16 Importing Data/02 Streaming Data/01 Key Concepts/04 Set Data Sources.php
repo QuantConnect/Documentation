@@ -84,9 +84,9 @@
     public override SubscriptionDataSource GetSource(
         SubscriptionDataConfig config,
         DateTime date,
-        bool isLive)
+        bool isLiveMode)
     {
-        if (isLive)
+        if (isLiveMode)
         {
             return new SubscriptionDataSource("https://www.bitstamp.net/api/ticker/", SubscriptionTransportMedium.Rest);
         }
@@ -99,9 +99,9 @@
     def GetSource(self,
          config: SubscriptionDataConfig,
          date: datetime,
-         isLive: bool) -&gt; SubscriptionDataSource:
+         isLiveMode: bool) -&gt; SubscriptionDataSource:
         
-         if isLive:
+         if isLiveMode:
             return SubscriptionDataSource("https://www.bitstamp.net/api/ticker/", SubscriptionTransportMedium.Rest)
 
         source = f"http://my-ftp-server.com/{config.Symbol.Value}/{date:%Y%M%d}.csv"
