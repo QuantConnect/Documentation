@@ -70,14 +70,14 @@
         SubscriptionDataConfig config,
         string line,
         DateTime date,
-        bool isLive)
+        bool isLiveMode)
     {
         if (string.IsNullOrWhiteSpace(line.Trim()))
         {
             return null;
         }
 
-        if (isLive)
+        if (isLiveMode)
         {
             var custom = JsonConvert.DeserializeObject&lt;MyCustomDataType&gt;(line);
             custom.EndTime = DateTime.UtcNow.ConvertFromUtc(config.ExchangeTimeZone);
@@ -106,7 +106,7 @@
          config: SubscriptionDataConfig,
          line: str,
          date: datetime,
-         isLive: bool) -&gt; BaseData:
+         isLiveMode: bool) -&gt; BaseData:
 
         if not line.strip():
             return None
@@ -114,7 +114,7 @@
         custom = MyCustomDataType()
         custom.Symbol = config.Symbol
 
-        if isLive:
+        if isLiveMode:
             data = json.loads(line)
             custom.EndTime =  Extensions.ConvertFromUtc(datetime.utcnow(), config.ExchangeTimeZone)
             custom.Value = data["value"]
