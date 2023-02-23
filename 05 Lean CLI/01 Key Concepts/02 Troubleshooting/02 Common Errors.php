@@ -52,6 +52,14 @@
         </tr>
         <tr>
             <td>
+                <div class="error-messages">We couldn't find you account in the given organization, ORG: &lt;32-char-hash&gt;</div>
+            </td>
+            <td>
+                The organization Id found in the <span class="public-file-name">lean.json</span> is incorrect. You need to <a href='/docs/v2/lean-cli/initialization/configuration'>re-install</a> Lean CLI running <code>lean init</code> in an empty directory.
+            </td>
+        </tr>
+        <tr>
+            <td>
                 <div class="error-messages">Invalid value for 'PROJECT': Path '&lt;path&gt;' does not exist.</div>
             </td>
             <td>
