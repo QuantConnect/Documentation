@@ -22,10 +22,22 @@
         <li>If your dataset isn't a streaming dataset, delete the <code>ProtoMember</code> members.</li>
         <li>Replace the “Some custom data property” comments with a description of each property in your dataset.</li>
     </ol>
+    <p>If your dataset contains multiple series, like the <a href='https://www.quantconnect.com/datasets/us-federal-reserve-economic-data'>FRED dataset</a>, create a helper class file in <span class="public-file-name">Lean.DataSource.&lt;vendorNameDatasetName&gt;</span> directory to map the series name to the series code. For a full example, see the <a rel='nofollow' target='_blank' href='https://github.com/QuantConnect/Lean.DataSource.FRED/blob/master/LIBOR.cs'>LIBOR.cs file</a> in the Lean.DataSource.FRED repository. The helper class makes it easier for members to subscribe to the series in your dataset because they don't need to know the series code. For instance, you can subscribe to the 1-Week London Interbank Offered Rate (LIBOR) based on U.S. Dollars with the following code snippet:</p>
+
+    <div class="section-example-container">
+    <pre class='csharp'>AddData&lt;Fred&gt;(Fred.LIBOR.OneWeekBasedOnUSD);
+// Instead of
+// AddData&lt;Fred&gt;("USD1WKD156N");</pre>
+    <pre class='python'>self.AddData(Fred, Fred.LIBOR.OneWeekBasedOnUSD)
+# Instead of
+# self.AddData(Fred, "USD1WKD156N")</pre>
+    </div>
+
     <li>Define the <a href="/docs/v2/lean-engine/contributions/datasets/key-concepts#04-Data-Sources">GetSource</a> method to point to the path of your dataset file(s).</li>
-    <p>Set the file name to the security ticker with <code>config.Symbol.Value</code>. An example output file path is <span class="public-file-name">/ output / alternative / xyzairline / ticketsales / dal.csv</span>.</p>
+    <p>Set the file name to the security ticker with <code>config.Symbol.Value</code>, which is the string value of the argument you pass to the <a href='https://www.quantconnect.com/docs/v2/writing-algorithms/initialization#08-Add-Data'>AddData</a> method when you subscribe to the dataset. An example output file path is <span class="public-file-name">/ output / alternative / xyzairline / ticketsales / dal.csv</span>.</p>
     <li>Define the <code>Reader</code> method to return instances of your dataset class.</li>
     <p>Set <code>Symbol = config.Symbol</code> and set <code>EndTime</code> to the time that the datapoint first became available for consumption.</p>
+    <p>Your data class inherits from the <code>BaseData</code> class, which has <code>Value</code> and <code>Time</code> properties. Set the <code>Value</code> property to one of the factors in your dataset. If you don't set the <code>Time</code> property, its default value is the value of <code>EndTime</code>. For more information about the <code>Time</code> and <code>EndTime</code> properties, see <a href='https://www.quantconnect.com/docs/v2/writing-algorithms/key-concepts/time-modeling/periods'>Periods</a>.</p>
 
     <?php 
     $classNameEnding = "";

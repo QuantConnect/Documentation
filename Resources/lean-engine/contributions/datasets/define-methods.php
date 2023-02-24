@@ -1,3 +1,16 @@
+<li>Define the <a href='/docs/v2/lean-engine/contributions/datasets/key-concepts#06-TimeZones'>DataTimeZone</a> method.</li>
+<div class="section-example-container">
+    <pre>public class VendorNameDatasetName<?=$classNameEnding?> : BaseData
+{
+    public override DateTimeZone DataTimeZone()
+    {
+        return DateTimeZone.Utc;
+    }
+}</pre>
+</div>
+
+<p>If you import <code>using QuantConnect</code>, the <code>TimeZones</code> class provides helper attributes to create <code>DateTimeZone</code> objects. For example, you can use <code>TimeZones.Utc</code> or <code>TimeZones.NewYork</code>. For more information about time zones, see <a href='https://www.quantconnect.com/docs/v2/writing-algorithms/key-concepts/time-modeling/time-zones'>Time Zones</a>.</p>
+
 <li>Define the <code>SupportedResolutions</code> method.</li>
 <div class="section-example-container">
     <pre>public class VendorNameDatasetName<?=$classNameEnding?> : BaseData
@@ -43,17 +56,6 @@
 }</pre>
 </div>
 
-<li>Define the <a href='/docs/v2/lean-engine/contributions/datasets/key-concepts#06-TimeZones'>DataTimeZone</a> method.</li>
-<div class="section-example-container">
-    <pre>public class VendorNameDatasetName<?=$classNameEnding?> : BaseData
-{
-    public override DateTimeZone DataTimeZone()
-    {
-        return DateTimeZone.Utc;
-    }
-}</pre>
-</div>
-
 <li>Define the <a href='/docs/v2/lean-engine/contributions/datasets/key-concepts#08-Linked-Datasets'>RequiresMapping</a> method.</li>
 <div class="section-example-container">
     <pre>public class VendorNameDatasetName<?=$classNameEnding?> : BaseData
@@ -61,17 +63,6 @@
     public override bool RequiresMapping()
     {
         return true;
-    }
-}</pre>
-</div>
-
-<li>Define the <code>ToString</code> method.</li>
-<div class="section-example-container">
-    <pre>public class VendorNameDatasetName<?=$classNameEnding?> : BaseData
-{
-    public override string ToString()
-    {
-        return $"{Symbol} - {SomeCustomProperty}";
     }
 }</pre>
 </div>
@@ -89,6 +80,17 @@
             EndTime = EndTime,
             SomeCustomProperty = SomeCustomProperty,
         };
+    }
+}</pre>
+</div>
+
+<li>Define the <code>ToString</code> method.</li>
+<div class="section-example-container">
+    <pre>public class VendorNameDatasetName<?=$classNameEnding?> : BaseData
+{
+    public override string ToString()
+    {
+        return $"{Symbol} - {SomeCustomProperty}";
     }
 }</pre>
 </div>
