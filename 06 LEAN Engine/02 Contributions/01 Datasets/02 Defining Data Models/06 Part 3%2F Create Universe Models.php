@@ -1,4 +1,11 @@
-<p>If your dataset doesn't provide universe data, delete the <span class="public-file-name">Lean.DataSource.&lt;vendorNameDatasetName&gt; / &lt;vendorNameDatasetName&gt;Universe.cs</span> file and skip this part.</p>
+<p>If your dataset doesn't provide universe data, follow these steps:</p>
+
+<ol>
+    <li>Delete the <span class="public-file-name">Lean.DataSource.&lt;vendorNameDatasetName&gt; / &lt;vendorNameDatasetName&gt;Universe.cs</span>.</li>
+    <li>Delete the <span class="public-file-name">Lean.DataSource.&lt;vendorNameDatasetName&gt; / &lt;vendorNameDatasetName&gt;UniverseSelectionAlgorithm.*</span> files.</li>
+    <li>In the <span class="public-file-name">Lean.DataSource.&lt;vendorNameDatasetName&gt; / tests / Tests.csproj</span> file, delete the code on line 8 that compiles the universe selection algorithms.</li>
+    <li>Skip the rest of this page.</li>
+</ol>
 
 <p>The input to your model should be a <span class="public-file-name">CSV</span> file where the first column is the <a href='/docs/v2/writing-algorithms/key-concepts/security-identifiers'>security identifier</a> and the second column is the point-in-time ticker.</p>
 
@@ -23,7 +30,7 @@ ZVX R735QTJ8XC9X,ZVX,10,15600,156000,False,1,0.666667
         <li>Replace the “Some custom data property” comments with a description of each property in your dataset.</li>
     </ol>
     <li>Define the <a href="/docs/v2/lean-engine/contributions/datasets/key-concepts#04-Data-Sources">GetSource</a> method to point to the path of your dataset file(s).</li>
-    <p>Use the <code style="font-size: 15px; background-color: rgb(255, 255, 255);">date</code> parameter as the file name to get the date of data being requested. An example output file path is <span class="public-file-name">/ output / alternative / xyzairline / ticketsales / universe / 20200320.csv</span>.<br></p>
+    <p>Use the <code>date</code> parameter as the file name to get the date of data being requested. An example output file path is <span class="public-file-name">/ output / alternative / xyzairline / ticketsales / universe / 20200320.csv</span>.<br></p>
     <li>Define the <code>Reader</code> method to return instances of your universe class.</li>
     <p>The first column in your data file must be the security identifier and the second column must be the point-in-time ticker. With this configuration, use <code>new Symbol(SecurityIdentifier.Parse(csv[0]), csv[1])</code> to create the security <code>Symbol</code>.</p>
     <p>The date in your data file must be the date that the data point is available for consumption. With this configuration, set the <code>Time</code> to <code>date - Period</code>.</p>
