@@ -24,7 +24,7 @@
     <li>Contract <code>Symbol</code></li>
     <li>The <code>EndTime</code> of the data sample</li>
 </ol>
-<p class='python'>The columns of the <code>DataFrame</code> are the data properties. Depending on how you request data, the <code>DataFrame</code> may contain data for the continuous Futures contract, which has an expiry date before the year 1900.</p>
+<p class='python'>The columns of the <code>DataFrame</code> are the data properties. Depending on how you request data, the <code>DataFrame</code> may contain data for the continuous Futures contract. The continuous contract doesn't expire, so the default expiry date of December 30, 1899 doesn't have any practical meaning.</p>
 <? } ?>
 
 <? if ($supportsOptionHistory || $supportsFutureHistory) { ?>
