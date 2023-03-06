@@ -259,7 +259,7 @@ if __name__ == '__main__':
 <tbody>
 
 <?
-class MachineLearningLibrary {
+class MachineLearningLibraryForWritingAlgorithm {
     public $name;
     public $version;
     public $importStatement;
@@ -287,7 +287,7 @@ $libraries = array('''
         if example:
             example = f'https://github.com/QuantConnect/Lean/blob/master/{example}'
         html += f'''
-    new MachineLearningLibrary("{value["name"]}", "{value["version"]}", "{value["language"]}", "{value["code"]}", "{value["url"]}", "{example}"),'''
+    new MachineLearningLibraryForWritingAlgorithm("{value["name"]}", "{value["version"]}", "{value["language"]}", "{value["code"]}", "{value["url"]}", "{example}"),'''
 
     html = html[:-1] + '''
 );
