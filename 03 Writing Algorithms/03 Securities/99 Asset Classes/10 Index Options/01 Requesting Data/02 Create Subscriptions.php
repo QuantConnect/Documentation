@@ -63,6 +63,7 @@ self.weekly_contract_symbol = Symbol.CreateOption(self.symbol, "SPXW", Market.US
                  <td>
                      The contract style. The <code>OptionStyle</code> enumeration has the following members:
                      <div data-tree="QuantConnect.OptionStyle"></div>
+                     We currently only support European-style Options for Index Options.
                   </td>
             </tr>
         </tbody>
