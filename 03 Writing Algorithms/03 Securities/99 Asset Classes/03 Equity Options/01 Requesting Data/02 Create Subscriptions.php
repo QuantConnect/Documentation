@@ -60,6 +60,7 @@
                  <td>
                      The contract style. The <code>OptionStyle</code> enumeration has the following members:
                      <div data-tree="QuantConnect.OptionStyle"></div>
+                     We currently only support American-style Options for US Equity Options.
                   </td>
             </tr>
         </tbody>
