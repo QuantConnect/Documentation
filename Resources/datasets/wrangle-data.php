@@ -10,7 +10,7 @@
     <li>Contract expiry</li>
     <li>Contract strike price</li>
     <li>Contract type (call or put)</li>
-    <li>Contract <code>Symbol</code></li>
+    <li><a href='/docs/v2/writing-algorithms/key-concepts/security-identifiers#02-Encoding-Symbols'>Encoded contract Symbol</a></li>
     <li>The <code>EndTime</code> of the data sample</li>
 </ol>
 <p class='python'>The columns of the <code>DataFrame</code> are the data properties. Depending on how you request data, the <code>DataFrame</code> may contain data for the underlying security, which causes some of the index levels to be an empty string for the corresponding rows.</p>
@@ -21,7 +21,7 @@
 <p class='python'>If your history request returns a <code>DataFrame</code>, the <code>DataFrame</code> has the following index levels:</p>
 <ol class='python'>
     <li>Contract expiry</li>
-    <li>Contract <code>Symbol</code></li>
+    <li><a href='/docs/v2/writing-algorithms/key-concepts/security-identifiers#02-Encoding-Symbols'>Encoded contract Symbol</a></li>
     <li>The <code>EndTime</code> of the data sample</li>
 </ol>
 <p class='python'>The columns of the <code>DataFrame</code> are the data properties. Depending on how you request data, the <code>DataFrame</code> may contain data for the continuous Futures contract. The continuous contract doesn't expire, so the default expiry date of December 30, 1899 doesn't have any practical meaning.</p>
@@ -74,7 +74,7 @@
 
 <? } else { ?>
 
-<p class='python'>If the <code>History</code> method returns a <code>DataFrame</code>, the first level of the <code>DataFrame</code> index is the <?=$assetClass?> <code>Symbol</code> and the second level is the <code>EndTime</code> of the data sample. The columns of the <code>DataFrame</code> are the data properties.</p>
+<p class='python'>If the <code>History</code> method returns a <code>DataFrame</code>, the first level of the <code>DataFrame</code> index is the <a href='/docs/v2/writing-algorithms/key-concepts/security-identifiers#02-Encoding-Symbols'>encoded <?=$assetClass?> Symbol</a> and the second level is the <code>EndTime</code> of the data sample. The columns of the <code>DataFrame</code> are the data properties.</p>
 <img class='python docs-image' src='<?=$dataFrameImages[0]?>' alt='DataFrame of two <?=$pluralAssetClass?>'>
 <p class='python'>To select the historical data of a single <?=$assetClass?>, index the <code>loc</code> property of the <code>DataFrame</code> with the <?=$assetClass?> <code>Symbol</code>.</p>
 <div class='python section-example-container'>
