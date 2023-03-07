@@ -32,7 +32,7 @@
         <tr>
             <td><code>Date</code></td>
             <td><code class="python">datetime</code><code class="csharp">DateTime</code></td>
-            <td>Earliest listing date for Equities; expiry for Futures and Options</td>
+            <td>Earliest listing date for Equities; expiry for Futures and Options; December 30, 1899 for continuous Futures contracts and Indices.</td>
         </tr>
         <tr>
             <td><code>HasUnderlying</code></td>
@@ -45,6 +45,412 @@
 <p>We encode the preceding properties to create <code>Symbol</code> objects. We do our best to hide the details of this process from your algorithm, but you'll occasionally see it come through as an encoded hash like <code>AAPL R735QTJ8XC9X</code>. The first half of the encoded string represents the first ticker AAPL was listed under. The other letters at the end of the string represent the serialized form of the preceding <code>SecurityIdentifier</code> properties. You may also see an encoded has like <code>AAPL XL7X5I241SO6|AAPL R735QTJ8XC9X</code> for a derivative contract. In this case, the part before the <code>|</code> is contract hash and the part after the <code>|</code> is the underlying hash. This serialization approach lets LEAN assign a short, unique string to octillions of different security objects.</p>
 
 <img class="img-responsive" src="https://cdn.quantconnect.com/docs/i/symbol-encoding-examples_rev0.png" style="max-width: 400px" alt="Security identifier decomposition">
+
+<p>The following table shows the results of our encoding process given the preceding <code>SecurityIdentifier</code> properties:</p>
+
+<table class="qc-table table">
+    <thead>
+        <tr>
+            <th><code>Market</code></th>
+            <th><code>SecurityType</code></th>
+            <th><code>OptionStyle</code></th>
+            <th><code>OptionRight</code></th>
+            <th><code>StrikePrice</code></th>
+            <th><code>Date</code></th>
+            <th><code>HasUnderlying</code></th>
+            <th>Encoded <code>SecurityIdentifer</code> After the Ticker</th>
+            <th>Full Encoded <code>SecurityIdentifer</code> Example</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><code>USA</code></td>
+            <td><code>Equity</code></td>
+            <td>N/A</td>
+            <td>N/A</td>
+            <td>N/A</td>
+            <td></td>
+            <td><code>false</code></td>
+            <td>Depends on the listing date</td>
+            <td><code>SPY R735QTJ8XC9X</code></td>
+        </tr>
+        <tr>
+            <td><code>India</code></td>
+            <td><code>Equity</code></td>
+            <td>N/A</td>
+            <td>N/A</td>
+            <td>N/A</td>
+            <td></td>
+            <td><code>false</code></td>
+            <td>Depends on the listing date</td>
+            <td><code>YESBANK TA8Y7QR36M31</code></td>
+        </tr>
+        <tr>
+            <td><code>USA</code></td>
+            <td><code>Option</code></td>
+            <td><code>American</code></td>
+            <td><code>Call</code></td>
+            <td></td>
+            <td></td>
+            <td><code>true</code></td>
+            <td>Depends on the strike price and contract expiry date</td>
+            <td><code>SPY Y7T8ERCJRZHI|SPY R735QTJ8XC9X</code></td>
+        </tr>
+        <tr>
+            <td><code>USA</code></td>
+            <td><code>Option</code></td>
+            <td><code>American</code></td>
+            <td><code>Put</code></td>
+            <td></td>
+            <td></td>
+            <td><code>true</code></td>
+            <td>Depends on the strike price and contract expiry date</td>
+            <td><code>SPY 325YRWXJ6A2CM|SPY R735QTJ8XC9X</code></td>
+        </tr>
+        <tr>
+            <td><code>Bitfinex</code></td>
+            <td><code>Crypto</code></td>
+            <td>N/A</td>
+            <td>N/A</td>
+            <td>N/A</td>
+            <td>N/A</td>
+            <td><code>false</code></td>
+            <td><code>E3</code></td>
+            <td><code>BTCUSD E3</code></td>
+        </tr>
+        <tr>
+            <td><code>GDAX</code></td>
+            <td><code>Crypto</code></td>
+            <td>N/A</td>
+            <td>N/A</td>
+            <td>N/A</td>
+            <td>N/A</td>
+            <td><code>false</code></td>
+            <td><code>XJ</code></td>
+            <td><code>BTCUSD XJ</code></td>
+        </tr>
+        <tr>
+            <td><code>Kraken</code></td>
+            <td><code>Crypto</code></td>
+            <td>N/A</td>
+            <td>N/A</td>
+            <td>N/A</td>
+            <td>N/A</td>
+            <td><code>false</code></td>
+            <td><code>10B</code></td>
+            <td><code>BTCUSD 10B</code></td>
+        </tr>
+        <tr>
+            <td><code>Binance</code></td>
+            <td><code>Crypto</code></td>
+            <td>N/A</td>
+            <td>N/A</td>
+            <td>N/A</td>
+            <td>N/A</td>
+            <td><code>false</code></td>
+            <td><code>18N</code></td>
+            <td><code>BTCUSDT 18N</code></td>
+        </tr>
+        <tr>
+            <td><code>BinanceUS</code></td>
+            <td><code>Crypto</code></td>
+            <td>N/A</td>
+            <td>N/A</td>
+            <td>N/A</td>
+            <td>N/A</td>
+            <td><code>false</code></td>
+            <td><code>2S7</code></td>
+            <td><code>BTCUSD 2S7</code></td>
+        </tr>
+        <tr>
+            <td><code>Binance</code></td>
+            <td><code>CryptoFuture</code></td>
+            <td>N/A</td>
+            <td>N/A</td>
+            <td>N/A</td>
+            <td>Default value for continuous contracts (December 30, 1899)</td>
+            <td><code>false</code></td>
+            <td><code>18R</code></td>
+            <td><code>BTCBUSD 18R</code></td>
+        </tr>
+        <tr>
+            <td><code>Oanda</code></td>
+            <td><code>Forex</code></td>
+            <td>N/A</td>
+            <td>N/A</td>
+            <td>N/A</td>
+            <td>N/A</td>
+            <td><code>false</code></td>
+            <td><code>8G</code></td>
+            <td><code>EURUSD 8G</code></td>
+        </tr>
+        <tr>
+            <td><code>NYMEX</code></td>
+            <td><code>Futures</code></td>
+            <td>N/A</td>
+            <td>N/A</td>
+            <td>N/A</td>
+            <td>Default value for continuous contracts (December 30, 1899)</td>
+            <td><code>false</code></td>
+            <td><code>JL</code></td>
+            <td><code>CL JL</code></td>
+        </tr>
+        <tr>
+            <td><code>NYMEX</code></td>
+            <td><code>Futures</code></td>
+            <td>N/A</td>
+            <td>N/A</td>
+            <td>N/A</td>
+            <td></td>
+            <td><code>false</code></td>
+            <td>Depends on the contract expiry date</td>
+            <td><code>CL Y5BMQ78IXW3L</code></td>
+        </tr>
+        <tr>
+            <td><code>CBOT</code></td>
+            <td><code>Futures</code></td>
+            <td>N/A</td>
+            <td>N/A</td>
+            <td>N/A</td>
+            <td>Default value for continuous contracts (December 30, 1899)</td>
+            <td><code>false</code></td>
+            <td><code>MD</code></td>
+            <td><code>10Y MD</code></td>
+        </tr>
+        <tr>
+            <td><code>CBOT</code></td>
+            <td><code>Futures</code></td>
+            <td>N/A</td>
+            <td>N/A</td>
+            <td>N/A</td>
+            <td></td>
+            <td><code>false</code></td>
+            <td>Depends on the contract expiry date</td>
+            <td><code>10Y Y6E15UI3XBFP</code></td>
+        </tr>
+        <tr>
+            <td><code>ICE</code></td>
+            <td><code>Futures</code></td>
+            <td>N/A</td>
+            <td>N/A</td>
+            <td>N/A</td>
+            <td>Default value for continuous contracts (December 30, 1899)</td>
+            <td><code>false</code></td>
+            <td><code>P5</code></td>
+            <td><code>SB P5</code></td>
+        </tr>
+        <tr>
+            <td><code>ICE</code></td>
+            <td><code>Futures</code></td>
+            <td>N/A</td>
+            <td>N/A</td>
+            <td>N/A</td>
+            <td></td>
+            <td><code>false</code></td>
+            <td>Depends on the contract expiry date</td>
+            <td><code>SB XS9YHLR0G0P5</code></td>
+        </tr>
+        <tr>
+            <td><code>CFE</code></td>
+            <td><code>Futures</code></td>
+            <td>N/A</td>
+            <td>N/A</td>
+            <td>N/A</td>
+            <td>Default value for continuous contracts (December 30, 1899)</td>
+            <td><code>false</code></td>
+            <td><code>2JT</code></td>
+            <td><code>VX 2JT</code></td>
+        </tr>
+        <tr>
+            <td><code>CFE</code></td>
+            <td><code>Futures</code></td>
+            <td>N/A</td>
+            <td>N/A</td>
+            <td>N/A</td>
+            <td></td>
+            <td><code>false</code></td>
+            <td>Depends on the contract expiry date</td>
+            <td><code>VX XLCUDY7B36Y1</code></td>
+        </tr>
+        <tr>
+            <td><code>COMEX</code></td>
+            <td><code>Futures</code></td>
+            <td>N/A</td>
+            <td>N/A</td>
+            <td>N/A</td>
+            <td>Default value for continuous contracts (December 30, 1899)</td>
+            <td><code>false</code></td>
+            <td><code>1P9</code></td>
+            <td><code>AUP 1P9</code></td>
+        </tr>
+        <tr>
+            <td><code>COMEX</code></td>
+            <td><code>Futures</code></td>
+            <td>N/A</td>
+            <td>N/A</td>
+            <td>N/A</td>
+            <td></td>
+            <td><code>false</code></td>
+            <td>Depends on the contract expiry date</td>
+            <td><code>AUP Y6E15UI3XCIL</code></td>
+        </tr>
+        <tr>
+            <td><code>CME</code></td>
+            <td><code>Futures</code></td>
+            <td>N/A</td>
+            <td>N/A</td>
+            <td>N/A</td>
+            <td>Default value for continuous contracts (December 30, 1899)</td>
+            <td><code>false</code></td>
+            <td><code>1S1</code></td>
+            <td><code>6A 1S1</code></td>
+        </tr>
+        <tr>
+            <td><code>CME</code></td>
+            <td><code>Futures</code></td>
+            <td>N/A</td>
+            <td>N/A</td>
+            <td>N/A</td>
+            <td></td>
+            <td><code>false</code></td>
+            <td>Depends on the contract expiry date</td>
+            <td><code>6A Y54QLJOCEN7L</code></td>
+        </tr>
+        <tr>
+            <td><code>CBOT</code></td>
+            <td><code>FutureOption</code></td>
+            <td><code>American</code></td>
+            <td><code>Call</code></td>
+            <td></td>
+            <td></td>
+            <td><code>true</code></td>
+            <td>Depends on the strike price and Option contract expiry date</td>
+            <td><code>OZB Y5IIV0IM2B9K|ZB Y6ZOZWJTLWYT</code></td>
+        </tr>
+        <tr>
+            <td><code>CBOT</code></td>
+            <td><code>FutureOption</code></td>
+            <td><code>American</code></td>
+            <td><code>Put</code></td>
+            <td></td>
+            <td></td>
+            <td><code>true</code></td>
+            <td>Depends on the strike price and Option contract expiry date</td>
+            <td><code>OZB 324MJ0GMRY64O|ZB Y6ZOZWJTLWYT</code></td>
+        </tr>
+        <tr>
+            <td><code>CME</code></td>
+            <td><code>FutureOption</code></td>
+            <td><code>American</code></td>
+            <td><code>Call</code></td>
+            <td></td>
+            <td></td>
+            <td><code>true</code></td>
+            <td>Depends on the strike price and Option contract expiry date</td>
+            <td><code>DC Y6F0M6PN2P50|DC Y79JGU7IDHQ9</code></td>
+        </tr>
+        <tr>
+            <td><code>CME</code></td>
+            <td><code>FutureOption</code></td>
+            <td><code>American</code></td>
+            <td><code>Put</code></td>
+            <td></td>
+            <td></td>
+            <td><code>true</code></td>
+            <td>Depends on the strike price and Option contract expiry date</td>
+            <td><code>DC 325J0RLJHWU6C|DC Y79JGU7IDHQ9</code></td>
+        </tr>
+        <tr>
+            <td><code>COMEX</code></td>
+            <td><code>FutureOption</code></td>
+            <td><code>American</code></td>
+            <td><code>Call</code></td>
+            <td></td>
+            <td></td>
+            <td><code>true</code></td>
+            <td>Depends on the strike price and Option contract expiry date</td>
+            <td><code>OG Y5HJES9Z6R40|GC Y6A3DH1FMBVH</code></td>
+        </tr>
+        <tr>
+            <td><code>COMEX</code></td>
+            <td><code>FutureOption</code></td>
+            <td><code>American</code></td>
+            <td><code>Put</code></td>
+            <td></td>
+            <td></td>
+            <td><code>true</code></td>
+            <td>Depends on the strike price and Option contract expiry date</td>
+            <td><code>OG 324LJK7HQ75GG|GC Y6A3DH1FMBVH</code></td>
+        </tr>
+        <tr>
+            <td><code>NYMEX</code></td>
+            <td><code>FutureOption</code></td>
+            <td><code>American</code></td>
+            <td><code>Call</code></td>
+            <td></td>
+            <td></td>
+            <td><code>true</code></td>
+            <td>Depends on the strike price and Option contract expiry date</td>
+            <td><code>ON Y693XDUJYOX0|NG Y6A3DH1FMAPT</code></td>
+        </tr>
+        <tr>
+            <td><code>NYMEX</code></td>
+            <td><code>FutureOption</code></td>
+            <td><code>American</code></td>
+            <td><code>Put</code></td>
+            <td></td>
+            <td></td>
+            <td><code>true</code></td>
+            <td>Depends on the strike price and Option contract expiry date</td>
+            <td><code>ON 325D42V6VFRT0|NG Y6A3DH1FMAPT</code></td>
+        </tr>
+        <tr>
+            <td><code>USA</code></td>
+            <td><code>Index</code></td>
+            <td>N/A</td>
+            <td>N/A</td>
+            <td>N/A</td>
+            <td>Default value for Indices (December 30, 1899)</td>
+            <td><code>false</code></td>
+            <td><code>31</code></td>
+            <td><code>SPX 31</code></td>
+        </tr>
+        <tr>
+            <td><code>USA</code></td>
+            <td><code>IndexOption</code></td>
+            <td><code>European</code></td>
+            <td><code>Call</code></td>
+            <td></td>
+            <td></td>
+            <td><code>true</code></td>
+            <td>Depends on the strike price and contract expiry date</td>
+            <td><code>SPX XVDBJU811DE6|SPX 31</code></td>
+        </tr>
+        <tr>
+            <td><code>USA</code></td>
+            <td><code>IndexOption</code></td>
+            <td><code>European</code></td>
+            <td><code>Put</code></td>
+            <td></td>
+            <td></td>
+            <td><code>true</code></td>
+            <td>Depends on the strike price and contract expiry date</td>
+            <td><code>SPX 31UHBPA78B6RY|SPX 31</code></td>
+        </tr>
+        <tr>
+            <td><code>OANDA</code></td>
+            <td><code>Cfd</code></td>
+            <td>N/A</td>
+            <td>N/A</td>
+            <td>N/A</td>
+            <td>N/A</td>
+            <td><code>false</code></td>
+            <td><code>8I</code></td>
+            <td><code>SPX500USD 8I</code></td>
+        </tr>
+    </tbody>
+</table>
+
 
 <p>LEAN assumes the ticker you pass to the <a href="/docs/v2/writing-algorithms/securities/asset-classes/us-equity/requesting-data#02-Create-Subscriptions">AddEquity</a> method is the current ticker of the Equity asset. To access this ticker, use the <code>Value</code> property of the <code>Symbol</code> object.</p>
 
