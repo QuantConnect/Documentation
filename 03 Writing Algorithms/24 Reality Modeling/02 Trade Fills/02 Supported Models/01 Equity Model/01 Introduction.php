@@ -5,6 +5,6 @@
 <pre class="python">security.SetFillModel(EquityFillModel())</pre>
 </div>
 
-<?php echo file_get_contents(DOCS_RESOURCES."/reality-modeling/trade-fills/immediate-fill-model-fill-logic.html"); ?>
+<p>The fill logic of each order depends on the order type, the data format of the security subscription, and the order direction. The following sections explain the fill logic of each order given these factors.</p>
 
 <p>To view the implementation of this model, see the <a rel="nofollow" target="_blank" href="https://github.com/QuantConnect/Lean/blob/master/Common/Orders/Fills/EquityFillModel.cs">LEAN GitHub repository</a>.</p>
