@@ -5,16 +5,12 @@
 {
     public override void Initialize() 
     {
-        var universe = Universe.ETF("SPY", Market.USA, UniverseSettings, 
-                                    constituents =&gt; from x in constituents select x.Symbol);
-        AddUniverse(universe);
+        AddUniverse(Universe.ETF("SPY", Market.USA, UniverseSettings));
     }
 }</pre>
 <pre class="python">class ETFConstituentsAlgorithm(QCAlgorithm):
     def Initialize(self) -&gt; None:        
-        filter_function = lambda constituents: [x.Symbol for x in constituents]
-        universe = self.Universe.ETF("SPY", Market.USA, self.UniverseSettings, filter_function)
-        self.AddUniverse(universe)</pre>
+        self.AddUniverse(self.Universe.ETF("SPY", Market.USA, self.UniverseSettings))</pre>
 </div>
 
 <p>The following table describes the <code>ETF</code> method arguments:</p>
@@ -32,14 +28,14 @@
                 <td>
                     <h4>Argument: <span><code>market</code></span></h4>
                     <p class='property-description'>The market of the ETF. If you don't provide an argument, it uses the default Equity market of the <a href="https://www.quantconnect.com/docs/v2/writing-algorithms/reality-modeling/brokerages/key-concepts">brokerage model</a>.</p>
-                    <p>Data Type: <span><code class="csharp">string</code><code class="python">str</code></span><span class='pipe-separator'>  |  </span> Default Value: <span><code class="csharp">null</code><code class="python">None</code></span></p>
+                    <p>Data Type: <span><code class="csharp">string</code><code class="python">str</code></span><span class='pipe-separator'>  |  </span> Default Value: <span>None</span></p>
                 </td>
             </tr>
             <tr>
                 <td>
                     <h4>Argument: <span><code>universeSettings</code></span></h4>
                     <p class='property-description'>The <a href="https://www.quantconnect.com/docs/v2/writing-algorithms/universes/settings#02-Properties">universe settings</a>. If you don't provide an argument, it uses the algorithm <code>UniverseSettings</code>.</p>
-                    <p>Data Type: <span><code>UniverseSettings</code></span><span class='pipe-separator'>  |  </span> Default Value: <span><code class="csharp">null</code><code class="python">None</code></span></p>
+                    <p>Data Type: <span><code>UniverseSettings</code></span><span class='pipe-separator'>  |  </span> Default Value: <span>None</span></p>
                 </td>
             </tr>
             <tr>
@@ -52,12 +48,9 @@
     </tbody>
 </table>
 
-<p>The filter function receives <code>ETFConstituentData</code> objects, which represent one of the ETF constituents. <code>ETFConstituentsData</code> objects have the following attributes:</p>
+<p>To select a subset of the ETF constituents, provide a <code>universeFilterFunc</code> argument. The filter function receives <code>ETFConstituentData</code> objects, which represent one of the ETF constituents. <code>ETFConstituentsData</code> objects have the following attributes:</p>
 
 <div data-tree="QuantConnect.Data.UniverseSelection.ETFConstituentData"></div>
-
-
-<p>To perform thorough filtering on the <code>ETFConstituentsData</code> objects, define an isolated filter method.</p>
 
 
 <div class="section-example-container">
