@@ -98,7 +98,8 @@ quote_bars = <?=$pyVar?>.History[QuoteBar](btc_symbol, timedelta(days=3))
 trade_bars_df = <?=$pyVar?>.History(TradeBar, btc_symbol, timedelta(days=3))
 quote_bars_df = <?=$pyVar?>.History(QuoteBar, btc_symbol, timedelta(days=3))
 df = <?=$pyVar?>.History(btc_symbol, timedelta(days=3))  # Includes trade and quote data
-<img class='img-responsive img-thumbnail' src='https://cdn.quantconnect.com/i/tu/history-request-single-symbol-2.png' alt="Historical minute data dataframe of BTCUSD"></pre>
+<img class='img-responsive img-thumbnail' src='https://cdn.quantconnect.com/i/tu/history-request-single-symbol-2.png' alt="Historical minute data dataframe of BTCUSD">
+</pre>
 
 <pre class='csharp'><b>// EXAMPLE 3: Requesting By a Trailing Period: 3 days of data at the security resolution:</b>
 var ethSymbol = <?=$cVar?>AddCrypto("ETHUSD", Resolution.Tick).Symbol;
@@ -144,7 +145,8 @@ trade_bars_df = <?=$pyVar?>.History(TradeBar, btc_symbol, start_time, end_time)
 quote_bars_df = <?=$pyVar?>.History(QuoteBar, btc_symbol, start_time, end_time)
 ticks_df = <?=$pyVar?>.History(Tick, eth_symbol, start_time, end_time)
 df = <?=$pyVar?>.History(btc_symbol, start_time, end_time)  # Includes trade and quote data
-<img class='img-responsive img-thumbnail' src='https://cdn.quantconnect.com/i/tu/history-request-defined-period-default-resolution.jpg' alt="Historical minute data dataframe of BTCUSD"></pre>
+<img class='img-responsive img-thumbnail' src='https://cdn.quantconnect.com/i/tu/history-request-defined-period-default-resolution.jpg' alt="Historical minute data dataframe of BTCUSD">
+</pre>
 
 <pre class='csharp'><b>// EXAMPLE 5: Requesting By a Defined Period: 3 specific days of data at the security resolution:</b>
 var startTime = new DateTime(2022, 1, 1);
@@ -166,7 +168,8 @@ trade_bars_df = <?=$pyVar?>.History(TradeBar, btc_symbol, start_time, end_time, 
 quote_bars_df = <?=$pyVar?>.History(QuoteBar, btc_symbol, start_time, end_time, Resolution.Minute)
 ticks_df = <?=$pyVar?>.History(eth_symbol, start_time, end_time, Resolution.Tick)
 df = <?=$pyVar?>.History(btc_symbol, start_time, end_time, Resolution.Hour)  # Includes trade and quote data
-<img class='img-thumbnail img-responsive' src='https://cdn.quantconnect.com/i/tu/history-request-defined-period.jpg' alt="Historical hourly data dataframe of BTCUSD"></pre>
+<img class='img-thumbnail img-responsive' src='https://cdn.quantconnect.com/i/tu/history-request-defined-period.jpg' alt="Historical hourly data dataframe of BTCUSD">
+</pre>
 
 
 <pre class='csharp'><b>// EXAMPLE 6: Requesting By a Defined Period: 3 days of data with a specific resolution:</b>
@@ -264,7 +267,8 @@ quote_bars = <?=$pyVar?>.History[QuoteBar]([btc_symbol], timedelta(days=3))
 trade_bars_df = <?=$pyVar?>.History(TradeBar, [btc_symbol], timedelta(days=3))
 quote_bars_df = <?=$pyVar?>.History(QuoteBar, [btc_symbol], timedelta(days=3))
 df = <?=$pyVar?>.History([btc_symbol], timedelta(days=3))  # Includes trade and quote data 
-<img class='img-responsive img-thumbnail' src='https://cdn.quantconnect.com/i/tu/history-request-single-symbol-6.png' alt="Historical minute data dataframe of BTCUSD"></pre>
+<img class='img-responsive img-thumbnail' src='https://cdn.quantconnect.com/i/tu/history-request-single-symbol-6.png' alt="Historical minute data dataframe of BTCUSD">
+</pre>
 <pre class='csharp'><b>// EXAMPLE 9: Requesting By Trailing Period: 3 days of data at the security resolution:</b>
 var ticks = <?=$cVar?>History&lt;Tick&gt;(new[] {ethSymbol}, TimeSpan.FromDays(3));
 
@@ -280,7 +284,8 @@ trade_bars_df = <?=$pyVar?>.History(TradeBar, btc_symbol, start_time, end_time)
 quote_bars_df = <?=$pyVar?>.History(QuoteBar, btc_symbol, start_time, end_time)
 ticks_df = <?=$pyVar?>.History(Tick, eth_symbol, start_time, end_time)
 df = <?=$pyVar?>.History([btc_symbol], start_time, end_time)  # Includes trade and quote data
-<img class='img-responsive img-thumbnail' src='https://cdn.quantconnect.com/i/tu/history-request-defined-period-default-resolution.jpg' alt="Historical minute data dataframe of BTCUSD"></pre>
+<img class='img-responsive img-thumbnail' src='https://cdn.quantconnect.com/i/tu/history-request-defined-period-default-resolution.jpg' alt="Historical minute data dataframe of BTCUSD">
+</pre>
 <pre class='csharp'><b>// EXAMPLE 10: Requesting By Defined Period: 3 days of data at the security resolution:</b>
 var tradeBars = <?=$cVar?>History&lt;TradeBar&gt;(new[] {btcSymbol}, startTime, endTime);
 var quoteBars = <?=$cVar?>History&lt;QuoteBar&gt;(new[] {btcSymbol}, startTime, endTime);
