@@ -13,12 +13,12 @@
         <tr>
             <td><code>Tick</code></td>
             <td>Buy</td>
-            <td>If the model receives the official opening auction price within one minute after the close, the order fills at official close price + slippage. After one minute, the order fills at the most recent trade price + slippage. If the security doesn't trade within the first two minutes, the order fills at the best effort ask price + slippage.</td>
+            <td>If the model receives the <a href='/docs/v2/cloud-platform/datasets/misconceptions#06-Opening-and-Closing-Auctions'>official closing auction price</a> within one minute after the close, the order fills at official close price + slippage. After one minute, the order fills at the most recent trade price + slippage. If the security doesn't trade within the first two minutes, the order fills at the best effort ask price + slippage.</td>
         </tr>
         <tr>
             <td><code>Tick</code></td>
             <td>Sell</td>
-            <td>If the model receives the official opening auction price within one minute after the close, the order fills at the official close price - slippage. After one minute, the order fills at the most recent trade price - slippage. If the security doesn't trade within the first two minutes after the close, the order fills at the best effort bid price - slippage.</td>
+            <td>If the model receives the <a href='/docs/v2/cloud-platform/datasets/misconceptions#06-Opening-and-Closing-Auctions'>official closing auction price</a> within one minute after the close, the order fills at the official close price - slippage. After one minute, the order fills at the most recent trade price - slippage. If the security doesn't trade within the first two minutes after the close, the order fills at the best effort bid price - slippage.</td>
         </tr>
         <tr>
             <td><code>TradeBar</code></td>
