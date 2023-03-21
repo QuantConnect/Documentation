@@ -52,7 +52,7 @@ EMSX handling []:</pre>
 </div>
 </li>
 
-<li>Enter whether modification must be allowed.
+<li>Enter whether order changes are allowed.
 <div class='cli section-example-container'>
 <pre>$ lean live \"My Project\"
 Allow modification (yes/no): no</pre>
