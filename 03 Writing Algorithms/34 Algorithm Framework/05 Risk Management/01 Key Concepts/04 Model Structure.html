@@ -1,5 +1,5 @@
 <p>
-Risk Management models should extend the <code>RiskManagementModel</code> class. Extensions of the <code>RiskManagementModel</code> class must implement the <code>ManageRisk</code> method, which receives an array of <code>PortfolioTarget</code> objects from the Portfolio Construction model and should return an array of risk-adjusted  <code>PortfolioTarget</code> objects. The method should only return the adjusted targets, not all of targets.
+Risk Management models should extend the <code>RiskManagementModel</code> class. Extensions of the <code>RiskManagementModel</code> class must implement the <code>ManageRisk</code> method, which receives an array of <code>PortfolioTarget</code> objects from the Portfolio Construction model and should return an array of risk-adjusted <code>PortfolioTarget</code> objects. The method should only return the adjusted targets, not all of targets. If the method creates a <code>PortfolioTarget</code> object to liquidate a security, <a href='/docs/v2/writing-algorithms/algorithm-framework/insight-manager#10-Cancel-Insights'>cancel the security's insights</a> to avoid re-entering the position.
 </p>
 <div class="section-example-container">
 	<pre class="csharp">class MyRiskManagementModel : RiskManagementModel
@@ -33,6 +33,7 @@ Risk Management models should extend the <code>RiskManagementModel</code> class.
         pass
 </pre>
 </div>
+
 <p>The <code>algorithm</code> argument that the methods receive is an instance of the base <code>QCAlgorithm</code> class, not your subclass of it.</p>
 
 <p>To view a full example of a <code>RiskManagementModel</code> subclass, see the <span class="csharp"><a target="_blank" rel="nofollow" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.Framework/Risk/MaximumDrawdownPercentPerSecurity.cs">MaximumDrawdownPercentPerSecurity</a></span><span class="python"><a target="_blank" rel="nofollow" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.Framework/Risk/MaximumDrawdownPercentPerSecurity.py">MaximumDrawdownPercentPerSecurity</a></span> in the LEAN GitHub repository.</p>
