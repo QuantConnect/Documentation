@@ -1,5 +1,5 @@
 <p>
-Portfolio Construction models should extend the <code>PortfolioConstructionModel</code> class. Extensions of the <code>PortfolioConstructionModel</code> class should implement the <code>CreateTargets</code> method, which receives an array of <code>Insight</code> objects from the Alpha model at every <a href='/docs/v2/writing-algorithms/key-concepts/time-modeling/timeslices'>time step</a> and returns an array of <code>PortfolioTarget</code> objects. The Portfolio Construction model seeks to answer the question, "how many units should I buy based on the insight predictions I've been presented?".</p>
+Portfolio Construction models should extend the <code>PortfolioConstructionModel</code> class. Extensions of the <code>PortfolioConstructionModel</code> class should implement the <code>CreateTargets</code> method, which receives an array of <code>Insight</code> objects from the Alpha model at every <a href="/docs/v2/writing-algorithms/key-concepts/time-modeling/timeslices">time step</a> and returns an array of <code>PortfolioTarget</code> objects. The Portfolio Construction model seeks to answer the question, "how many units should I buy based on the insight predictions I've been presented?".</p>
 
 <div class="section-example-container">
 	<pre class="csharp">// Portfolio construction scaffolding class; basic method args.
@@ -69,6 +69,7 @@ class MyPortfolioConstructionModel(PortfolioConstructionModel):
         pass
 </pre>
 </div>
+<p>The Portfolio Construction model should <a href="/docs/v2/writing-algorithms/algorithm-framework/insight-manager#08-Remove-Insights">remove expired insights</a> from the Insight Manager. The <code>CreateTargets</code> definition of the base <code>PortfolioConstructionModel</code> class already does this. Therefore, if you override the <code>CreateTargets</code> method and don't call the <code>CreateTargets</code> definition of the base class, your new method definition should remove expired insights from the Insight Manager.</p>
 
 <p>The <code>algorithm</code> argument that the methods receive is an instance of the base <code>QCAlgorithm</code> class, not your subclass of it.</p>
 
