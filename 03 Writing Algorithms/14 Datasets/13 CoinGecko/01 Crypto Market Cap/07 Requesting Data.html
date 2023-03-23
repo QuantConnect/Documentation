@@ -1,0 +1,33 @@
+<p>To add CoinGecko Crypto Market Cap data to your algorithm, call the <b>AddData</b> method. Save a reference to the dataset <b>Symbol</b> so you can access the data later in your algorithm.</p>
+
+<div class="section-example-container">
+<pre class="python">from Algorithm import *
+
+class CoinGeckoMarketCapDataAlgorithm(QCAlgorithm):
+    def Initialize(self) -&gt; None:
+        self.SetStartDate(2019, 1, 1)
+        self.SetEndDate(2020, 6, 1)
+        self.SetCash(100000)
+
+        self.symbol = self.AddCrypto("BTCUSD", Resolution.Daily).Symbol
+        self.dataset_symbol = self.AddData(CoinGecko, "BTC").Symbol</pre>
+<pre class="csharp">using QuantConnect.DataSource;
+
+namespace QuantConnect.Algorithm.CSharp.AltData
+{
+    public class CoinGeckoMarketCapDataAlgorithm: QCAlgorithm
+    {
+        private Symbol _symbol, _datasetSymbol;
+
+        public override void Initialize()
+        {
+            SetStartDate(2019, 1, 1);
+            SetEndDate(2020, 6, 1);
+            SetCash(100000);
+
+            _symbol = AddCrypto("BTCUSD", Resolution.Daily).Symbol;
+            _datasetSymbol = AddData&lt;CoinGecko&gt;("BTC").Symbol;
+        }
+    }
+}</pre>
+</div>
