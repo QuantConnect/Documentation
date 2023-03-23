@@ -71,6 +71,8 @@ class MyPortfolioConstructionModel(PortfolioConstructionModel):
 </div>
 <p>The Portfolio Construction model should <a href="/docs/v2/writing-algorithms/algorithm-framework/insight-manager#08-Remove-Insights">remove expired insights</a> from the <a href='/docs/v2/writing-algorithms/algorithm-framework/insight-manager'>Insight Manager</a>. The <code>CreateTargets</code> definition of the base <code>PortfolioConstructionModel</code> class already removes them during each rebalance. Therefore, if you override the <code>CreateTargets</code> method and don't call the <code>CreateTargets</code> definition of the base class, your new method definition should remove expired insights from the Insight Manager.</p>
 
+<p>The model should also remove all a security's insights from the Insight Manager when the security is removed from the <a href='/docs/v2/writing-algorithms/algorithm-framework/universe-selection/key-concepts'>universe</a>. The <code>OnSecuritiesChanged</code> definition of the base <code>PortfolioConstructionModel</code> class already does this. Therefore, if you override the <code>OnSecuritiesChanged</code> method and don't call the <code>OnSecuritiesChanged</code> definition of the base class, your new method definition should remove the security's insights from the Insight Manager.</p>
+
 <p>The <code>algorithm</code> argument that the methods receive is an instance of the base <code>QCAlgorithm</code> class, not your subclass of it.</p>
 
 <p>You may use the <code>PortfolioBias</code> enumeration in the definition of Portfolio Construction model methods. The <code>PortfolioBias</code> enumeration has the following members:</p>
