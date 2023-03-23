@@ -50,14 +50,13 @@ var insight = Insight.Price("IBM", Resolution.Minute, 20, InsightDirection.Up);<
 <h4>Cancel Insights</h4>
 <p>If an Alpha model in your algorithm emits an Insight to enter a position but it determines the trading opportunity has pre-maturely ended, you should cancel the Insight. For example, say you want your algorithm to enter a long position in a security when its <a href='/docs/v2/writing-algorithms/indicators/supported-indicators/relative-strength-index'>Relative Strength Index</a> (RSI) moves below 20 and then liquidate the position when the security's RSI moves above 30. If you emit an Insight that has a duration of 30 days when the RSI moves below 20 but the RSI moves above 30 in 10 days, you should cancel the Insight.</p>
 
-<p>To cancel an Insight, update its <code>CloseTimeUtc</code> property to be in the past and remove it from the <a href='/docs/v2/writing-algorithms/algorithm-framework/insight-manager'>InsightManager</a>.</p>
+<p>To cancel an Insight, call its <code>Cancel</code>/<code>Expire</code> method with the algorithm's Coordinated Universal Time (UTC).</p>
 
 <div class="section-example-container">
-    <pre class="python">self.insight.CloseTimeUtc = algorithm.UtcTime - timedelta(seconds=1)
-algorithm.Insights.Remove(self.insight)</pre>
-    <pre class="csharp">_insight.CloseTimeUtc = algorithm.UtcTime.AddSeconds(-1);
-algorithm.Insights.Remove(_insight);
-}</pre>
+    <pre class="python">self.insight.Cancel(algorithm.UtcTime)</pre>
+    <pre class="csharp">_insight.Cancel(algorithm.UtcTime);</pre>
 </div>
 
 <p>If you don't have a reference to the Insight you want to cancel, <a href='/docs/v2/writing-algorithms/algorithm-framework/insight-manager#04-Get-Insights'>get it from the InsightManager</a>.</p>
+
+<p>When you cancel an insight, it's <code>CloseTimeUtc</code> property is set to one second into the past.</p>
