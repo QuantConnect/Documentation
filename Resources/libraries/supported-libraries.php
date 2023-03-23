@@ -599,7 +599,6 @@ Accord.MachineLearning               3.6.0
 Accord.Math                          3.6.0
 Accord.Statistics                    3.6.0
 CloneExtensions                      1.3.0
-CoinAPI.WebSocket.V1                 1.6.7
 Common.Logging                       3.4.1
 Common.Logging.Core                  3.4.1
 CsvHelper                            19.0.0
@@ -608,8 +607,6 @@ DotNetZip                            1.16.0
 DynamicInterop                       0.9.1
 fasterflect                          3.0.0
 FSharp.Core                          4.5.2
-IQFeed.CSharpApiClient               2.5.1
-LaunchDarkly.EventSource             3.3.2
 MathNet.Numerics                     4.15.0
 McMaster.Extensions.CommandLineUtils 2.6.0
 Microsoft.IO.RecyclableMemoryStream  2.3.1
