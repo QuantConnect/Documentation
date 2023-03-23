@@ -4,10 +4,10 @@ include(DOCS_RESOURCES."/qcalgorithm-api/_method_container.html");
 
 $typeName = 'PercentagePriceOscillator';
 $helperName = 'PPO';
-$helperArguments = '"SPY", 10, 20';
+$helperArguments = '"SPY", 10, 20, MovingAverageType.Simple';
 $properties = array("Fast","Slow","Signal","Histogram");
 $updateParameterType = 'time/number pair, or an <code>IndicatorDataPoint</code>';
-$constructorArguments = '10, 20';
+$constructorArguments = '10, 20, MovingAverageType.Simple';
 $updateParameterValue = 'bar.EndTime, bar.Close';
 $hasMovingAverageTypeParameter = True;
 $constructorBox = 'percentage-price-oscillator';

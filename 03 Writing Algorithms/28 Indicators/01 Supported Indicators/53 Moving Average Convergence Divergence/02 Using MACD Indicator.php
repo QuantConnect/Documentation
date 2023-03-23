@@ -4,10 +4,10 @@ include(DOCS_RESOURCES."/qcalgorithm-api/_method_container.html");
 
 $typeName = 'MovingAverageConvergenceDivergence';
 $helperName = 'MACD';
-$helperArguments = '"SPY", 12, 26, 9';
+$helperArguments = '"SPY", 12, 26, 9, MovingAverageType.Exponential';
 $properties = array("Fast","Slow","Signal","Histogram");
 $updateParameterType = 'time/number pair, or an <code>IndicatorDataPoint</code>';
-$constructorArguments = '12, 26, 9';
+$constructorArguments = '12, 26, 9, MovingAverageType.Exponential';
 $updateParameterValue = 'bar.EndTime, bar.Close';
 $hasMovingAverageTypeParameter = True;
 $constructorBox = 'moving-average-convergence-divergence';

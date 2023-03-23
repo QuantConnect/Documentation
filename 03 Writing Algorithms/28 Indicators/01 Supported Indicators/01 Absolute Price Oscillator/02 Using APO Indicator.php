@@ -4,10 +4,10 @@ include(DOCS_RESOURCES."/qcalgorithm-api/_method_container.html");
 
 $typeName = 'AbsolutePriceOscillator';
 $helperName = 'APO';
-$helperArguments = '"SPY", 10, 2';
+$helperArguments = '"SPY", 10, 2, MovingAverageType.Simple';
 $properties = array("Fast","Slow","Signal","Histogram");
 $updateParameterType = 'time/number pair, or an <code>IndicatorDataPoint</code>';
-$constructorArguments = '10, 2';
+$constructorArguments = '10, 2, MovingAverageType.Simple';
 $updateParameterValue = 'bar.EndTime, bar.Close';
 $hasMovingAverageTypeParameter = True;
 $constructorBox = 'absolute-price-oscillator';

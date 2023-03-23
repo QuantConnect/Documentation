@@ -4,10 +4,10 @@ include(DOCS_RESOURCES."/qcalgorithm-api/_method_container.html");
 
 $typeName = 'DeMarkerIndicator';
 $helperName = 'DEM';
-$helperArguments = '"SPY", 20, Simple';
+$helperArguments = '"SPY", 20, MovingAverageType.Simple';
 $properties = array();
 $updateParameterType = 'a <code>TradeBar</code>, or <code>QuoteBar</code>';
-$constructorArguments = '20, Simple';
+$constructorArguments = '20, MovingAverageType.Simple';
 $updateParameterValue = 'bar';
 $hasMovingAverageTypeParameter = True;
 $constructorBox = 'de-marker-indicator';
