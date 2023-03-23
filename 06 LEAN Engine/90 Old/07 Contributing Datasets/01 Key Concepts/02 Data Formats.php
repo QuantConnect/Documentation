@@ -1,1 +1,0 @@
-<p>Your data source class should read <span class="public-file-name">CSV</span> files. Bundle dates together where possible to speed up execution. Just ensure the data in the file is in chronological order. For daily and hourly data, package data as a single file. For all other resolutions, bundle data by the day.</p>
