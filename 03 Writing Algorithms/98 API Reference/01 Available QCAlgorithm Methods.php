@@ -117,7 +117,7 @@
 </tr>
 <tr>
 <td width="33%"><a href="#AddUniverse-header">AddUniverse()</a></td>
-<td>Adds the universe to the algorithm.</td>
+<td></td>
 </tr>
 <tr>
 <td width="33%"><a href="#AddUniverseOptions-header">AddUniverseOptions()</a></td>
@@ -126,6 +126,10 @@
 <tr>
 <td width="33%"><a href="#AddUniverseSelection-header">AddUniverseSelection()</a></td>
 <td>Adds a new universe selection model.</td>
+</tr>
+<tr>
+<td width="33%"><a href="#ADDIFF-header">ADDIFF()</a></td>
+<td></td>
 </tr>
 <tr>
 <td width="33%"><a href="#ADOSC-header">ADOSC()</a></td>
@@ -197,7 +201,7 @@
 </tr>
 <tr>
 <td width="33%"><a href="#Buy-header">Buy()</a></td>
-<td>Buy Option Strategy (Alias of Order).</td>
+<td>Buy Stock (Alias of Order).</td>
 </tr>
 <tr>
 <td width="33%"><a href="#CalculateOrderQuantity-header">CalculateOrderQuantity()</a></td>
@@ -444,6 +448,14 @@
 <td>Creates a new MomentumPercent indicator. This will compute the n-period percent change in the security. The indicator will be automatically updated on the given resolution.</td>
 </tr>
 <tr>
+<td width="33%"><a href="#MOSC-header">MOSC()</a></td>
+<td></td>
+</tr>
+<tr>
+<td width="33%"><a href="#MSI-header">MSI()</a></td>
+<td></td>
+</tr>
+<tr>
 <td width="33%"><a href="#NATR-header">NATR()</a></td>
 <td>Creates a new NormalizedAverageTrueRange indicator.</td>
 </tr>
@@ -497,11 +509,11 @@
 </tr>
 <tr>
 <td width="33%"><a href="#Order-header">Order()</a></td>
-<td>Issue an order/trade for buying/selling an option strategy.</td>
+<td>Issue an order/trade for asset: Alias wrapper for Order(string, int);.</td>
 </tr>
 <tr>
 <td width="33%"><a href="#Plot-header">Plot()</a></td>
-<td>Plot a chart using string series name, with value.</td>
+<td>Plot a chart to string chart name, using string series name, with float value.</td>
 </tr>
 <tr>
 <td width="33%"><a href="#PlotIndicator-header">PlotIndicator()</a></td>
@@ -581,7 +593,7 @@
 </tr>
 <tr>
 <td width="33%"><a href="#Sell-header">Sell()</a></td>
-<td>Sell Option Strategy (alias of Order).</td>
+<td>Sell stock (alias of Order).</td>
 </tr>
 <tr>
 <td width="33%"><a href="#SetAccountCurrency-header">SetAccountCurrency()</a></td>
@@ -725,7 +737,7 @@
 </tr>
 <tr>
 <td width="33%"><a href="#STO-header">STO()</a></td>
-<td>Overload short hand to create a new Stochastic indicator; defaulting to the 3 period for dStoch.</td>
+<td>Creates a new Stochastic indicator.</td>
 </tr>
 <tr>
 <td width="33%"><a href="#StopLimitOrder-header">StopLimitOrder()</a></td>
@@ -993,7 +1005,7 @@
 </tr>
 <tr>
 <td width="33%"><a href="#Plot-header">Plot()</a></td>
-<td>Plot a chart using string series name, with value.</td>
+<td>Plot a chart to string chart name, using string series name, with float value.</td>
 </tr>
 <tr>
 <td width="33%"><a href="#PlotIndicator-header">PlotIndicator()</a></td>
@@ -1138,6 +1150,10 @@
 <tr>
 <td width="33%"><a href="#AD-header">AD()</a></td>
 <td>Creates a new AccumulationDistribution indicator.</td>
+</tr>
+<tr>
+<td width="33%"><a href="#ADDIFF-header">ADDIFF()</a></td>
+<td></td>
 </tr>
 <tr>
 <td width="33%"><a href="#ADOSC-header">ADOSC()</a></td>
@@ -1340,6 +1356,14 @@
 <td>Creates a new MomentumPercent indicator. This will compute the n-period percent change in the security. The indicator will be automatically updated on the given resolution.</td>
 </tr>
 <tr>
+<td width="33%"><a href="#MOSC-header">MOSC()</a></td>
+<td></td>
+</tr>
+<tr>
+<td width="33%"><a href="#MSI-header">MSI()</a></td>
+<td></td>
+</tr>
+<tr>
 <td width="33%"><a href="#NATR-header">NATR()</a></td>
 <td>Creates a new NormalizedAverageTrueRange indicator.</td>
 </tr>
@@ -1433,7 +1457,7 @@
 </tr>
 <tr>
 <td width="33%"><a href="#STO-header">STO()</a></td>
-<td>Overload short hand to create a new Stochastic indicator; defaulting to the 3 period for dStoch.</td>
+<td>Creates a new Stochastic indicator.</td>
 </tr>
 <tr>
 <td width="33%"><a href="#STR-header">STR()</a></td>
@@ -1657,7 +1681,7 @@
 </tr>
 <tr>
 <td width="33%"><a href="#Buy-header">Buy()</a></td>
-<td>Buy Option Strategy (Alias of Order).</td>
+<td>Buy Stock (Alias of Order).</td>
 </tr>
 <tr>
 <td width="33%"><a href="#CalculateOrderQuantity-header">CalculateOrderQuantity()</a></td>
@@ -1713,11 +1737,11 @@
 </tr>
 <tr>
 <td width="33%"><a href="#Order-header">Order()</a></td>
-<td>Issue an order/trade for buying/selling an option strategy.</td>
+<td>Issue an order/trade for asset: Alias wrapper for Order(string, int);.</td>
 </tr>
 <tr>
 <td width="33%"><a href="#Sell-header">Sell()</a></td>
-<td>Sell Option Strategy (alias of Order).</td>
+<td>Sell stock (alias of Order).</td>
 </tr>
 <tr>
 <td width="33%"><a href="#SetBenchmark-header">SetBenchmark()</a></td>
@@ -1765,7 +1789,7 @@
 <tbody>
 <tr>
 <td width="33%"><a href="#AddUniverse-header">AddUniverse()</a></td>
-<td>Adds the universe to the algorithm.</td>
+<td></td>
 </tr>
 <tr>
 <td width="33%"><a href="#AddUniverseOptions-header">AddUniverseOptions()</a></td>
