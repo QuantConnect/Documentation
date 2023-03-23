@@ -4,10 +4,10 @@ include(DOCS_RESOURCES."/qcalgorithm-api/_method_container.html");
 
 $typeName = 'TrueStrengthIndex';
 $helperName = 'TSI';
-$helperArguments = '"SPY", 20, 10, 5';
+$helperArguments = '"SPY", 25, 13, 7, MovingAverageType.Exponential';
 $properties = array("Signal");
 $updateParameterType = 'time/number pair, or an <code>IndicatorDataPoint</code>';
-$constructorArguments = '20, 10, 5';
+$constructorArguments = '25, 13, 7, MovingAverageType.Exponential';
 $updateParameterValue = 'bar.EndTime, bar.Close';
 $hasMovingAverageTypeParameter = True;
 $constructorBox = 'true-strength-index';

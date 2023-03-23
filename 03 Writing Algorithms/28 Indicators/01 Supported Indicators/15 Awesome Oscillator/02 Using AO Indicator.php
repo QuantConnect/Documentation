@@ -4,10 +4,10 @@ include(DOCS_RESOURCES."/qcalgorithm-api/_method_container.html");
 
 $typeName = 'AwesomeOscillator';
 $helperName = 'AO';
-$helperArguments = '"SPY", 10, 20, Simple';
+$helperArguments = '"SPY", 10, 20, MovingAverageType.Simple';
 $properties = array("SlowAo","FastAo");
 $updateParameterType = 'a <code>TradeBar</code>, or <code>QuoteBar</code>';
-$constructorArguments = '10, 20, Simple';
+$constructorArguments = '10, 20, MovingAverageType.Simple';
 $updateParameterValue = 'bar';
 $hasMovingAverageTypeParameter = False;
 $constructorBox = 'awesome-oscillator';

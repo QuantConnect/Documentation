@@ -4,10 +4,10 @@ include(DOCS_RESOURCES."/qcalgorithm-api/_method_container.html");
 
 $typeName = 'SwissArmyKnife';
 $helperName = 'SWISS';
-$helperArguments = '"SPY", 20, 0.2, Gauss';
+$helperArguments = '"SPY", 20, 0.2, SwissArmyKnifeTool.Gauss';
 $properties = array();
 $updateParameterType = 'time/number pair, or an <code>IndicatorDataPoint</code>';
-$constructorArguments = '20, 0.2, Gauss';
+$constructorArguments = '20, 0.2, SwissArmyKnifeTool.Gauss';
 $updateParameterValue = 'bar.EndTime, bar.Close';
 $hasMovingAverageTypeParameter = False;
 $constructorBox = 'swiss-army-knife';

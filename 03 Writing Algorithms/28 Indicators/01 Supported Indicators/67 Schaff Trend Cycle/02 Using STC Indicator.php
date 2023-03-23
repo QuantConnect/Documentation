@@ -4,10 +4,10 @@ include(DOCS_RESOURCES."/qcalgorithm-api/_method_container.html");
 
 $typeName = 'SchaffTrendCycle';
 $helperName = 'STC';
-$helperArguments = '"SPY", 5, 10, 20';
+$helperArguments = '"SPY", 5, 10, 20, MovingAverageType.Exponential';
 $properties = array();
 $updateParameterType = 'time/number pair, or an <code>IndicatorDataPoint</code>';
-$constructorArguments = '5, 10, 20';
+$constructorArguments = '5, 10, 20, MovingAverageType.Exponential';
 $updateParameterValue = 'bar.EndTime, bar.Close';
 $hasMovingAverageTypeParameter = True;
 $constructorBox = 'schaff-trend-cycle';
