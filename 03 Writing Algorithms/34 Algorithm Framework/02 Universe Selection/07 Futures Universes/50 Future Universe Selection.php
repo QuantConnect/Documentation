@@ -28,7 +28,7 @@ self.AddUniverseSelection(FutureUniverseSelectionModel(refreshInterval, futureCh
         <tr>
             <td><code>futureChainSymbolSelector</code></td>
 	    <td><code class="csharp">Func&lt;DateTime, IEnumerable&lt;Symbol&gt;&gt;</code><code class="python">Callable[[datetime], List[Symbol]]</code></td>
-            <td>A function that selects the Future symbols<br></td>
+            <td>A function that selects the Future symbols. To view the supported assets in the US Futures dataset, see <a href='/docs/v2/writing-algorithms/datasets/algoseek/us-futures#05-Supported-Assets'>Supported Assets</a>.</td>
             <td></td>
         </tr>
         <tr>
