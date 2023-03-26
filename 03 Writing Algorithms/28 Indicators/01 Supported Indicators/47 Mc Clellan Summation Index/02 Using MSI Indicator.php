@@ -2,14 +2,14 @@
 <? 
 include(DOCS_RESOURCES."/qcalgorithm-api/_method_container.html");
 
-$typeName = 'AdvanceDeclineDifference';
-$helperName = 'AdvanceDeclineDifference';
-$helperArguments = 'SPY';
-$properties = array();
+$typeName = 'McClellanSummationIndex';
+$helperName = 'MSI';
+$helperArguments = '["SPY", "QQQ"]';
+$properties = array("McClellanOscillator");
 $updateParameterType = 'a <code>TradeBar</code>';
-$constructorArguments = 'SPY';
+$constructorArguments = '"QQQ"]';
 $updateParameterValue = 'bar';
 $hasMovingAverageTypeParameter = False;
-$constructorBox = 'advance-decline-difference';
+$constructorBox = 'mc-clellan-summation-index';
 include(DOCS_RESOURCES."/indicators/using-indicator.php");
 ?>

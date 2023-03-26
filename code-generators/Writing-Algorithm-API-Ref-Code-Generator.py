@@ -406,6 +406,16 @@ if __name__ == '__main__':
 <div class="method-container">
         '''
         for i, overload in enumerate(overloads):
+            description = parse_description(overload.get('Description',''))
+            # If the description is empty, try to use the next
+            if not description:
+                for j in range(i, imax):
+                    description = parse_description(overloads[j].get('Description',''))
+                    if description:
+                        break
+            overload['Description'] = description
+
+        for i, overload in enumerate(overloads):
             overload['Description'] = parse_description(overload.get('Description',''))
             doc_attrs = overload.get('DocumentationAttributes')
             for doc_attr in doc_attrs:

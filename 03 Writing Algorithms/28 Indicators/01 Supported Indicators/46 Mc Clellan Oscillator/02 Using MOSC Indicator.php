@@ -3,11 +3,11 @@
 include(DOCS_RESOURCES."/qcalgorithm-api/_method_container.html");
 
 $typeName = 'McClellanOscillator';
-$helperName = 'McClellanOscillator';
-$helperArguments = 'SPY';
+$helperName = 'MOSC';
+$helperArguments = '["SPY", "QQQ"]';
 $properties = array("EMAFast","EMASlow","ADDifference");
 $updateParameterType = 'a <code>TradeBar</code>';
-$constructorArguments = 'SPY';
+$constructorArguments = '"QQQ"]';
 $updateParameterValue = 'bar';
 $hasMovingAverageTypeParameter = False;
 $constructorBox = 'mc-clellan-oscillator';

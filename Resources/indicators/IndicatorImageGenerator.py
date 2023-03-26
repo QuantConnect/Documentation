@@ -1,5 +1,4 @@
 # region imports
-from telnetlib import SE
 from AlgorithmImports import *
 from QuantConnect.Indicators.CandlestickPatterns import *
 import plotly.express as px
@@ -518,6 +517,12 @@ class IndicatorImageGeneratorAlgorithm(QCAlgorithm):
         }
 
         special_indicators = {
+            'advance-decline-difference':
+            {
+                'code': AdvanceDeclineDifference(""),
+                'title' : 'ADDIFF(["SPY", "QQQ"])',
+                'columns' : []
+            },
             'advance-decline-ratio':
             {
                 'code': AdvanceDeclineRatio(""),
@@ -552,6 +557,18 @@ class IndicatorImageGeneratorAlgorithm(QCAlgorithm):
             {
                 'code': IntradayVwap("SPY"),
                 'title' : 'VWAP("SPY")',
+                'columns' : []
+            },
+            'mc-clellan-oscillator':
+            {
+                'code': McClellanOscillator(""),
+                'title' : 'MOSC(["SPY", "QQQ"])',
+                'columns' : []
+            },
+            'mc-clellan-summation-index':
+            {
+                'code': McClellanSummationIndex(""),
+                'title' : 'MSI(["SPY", "QQQ"])',
                 'columns' : []
             },
             'target-downside-deviation':
@@ -600,6 +617,18 @@ class IndicatorImageGeneratorAlgorithm(QCAlgorithm):
         generate("target-downside-deviation", indicator, df)
 
         index, values = [], []
+        indicator = special_indicators.get('advance-decline-difference')
+        indicator['code'] = qb.ADDIFF(["SPY","QQQ"])
+        for bars in history:
+            indicator['code'].Update(bars.get("SPY"))
+            indicator['code'].Update(bars.get("QQQ"))
+            if indicator['code'].IsReady:
+                index.append(bars.Time)
+                values.append(indicator['code'].Current.Value)
+        df = pd.DataFrame(values, index=index, columns=["advancedeclinedifference"])
+        generate("advance-decline-difference", indicator, df)
+
+        index, values = [], []
         indicator = special_indicators.get('advance-decline-ratio')
         indicator['code'] = qb.ADR(["SPY","QQQ"])
         for bars in history:
@@ -634,6 +663,30 @@ class IndicatorImageGeneratorAlgorithm(QCAlgorithm):
                 values.append(indicator['code'].Current.Value)
         df = pd.DataFrame(values, index=index, columns=["armsindex"])
         generate("arms-index", indicator, df)
+
+        index, values = [], []
+        indicator = special_indicators.get('mc-clellan-oscillator')
+        indicator['code'] = qb.MOSC(["SPY","QQQ"])
+        for bars in history:
+            indicator['code'].Update(bars.get("SPY"))
+            indicator['code'].Update(bars.get("QQQ"))
+            if indicator['code'].IsReady:
+                index.append(bars.Time)
+                values.append(indicator['code'].Current.Value)
+        df = pd.DataFrame(values, index=index, columns=["mcclellanoscillator"])
+        generate("mc-clellan-oscillator", indicator, df)
+
+        index, values = [], []
+        indicator = special_indicators.get('mc-clellan-summation-index')
+        indicator['code'] = qb.MSI(["SPY","QQQ"])
+        for bars in history:
+            indicator['code'].Update(bars.get("SPY"))
+            indicator['code'].Update(bars.get("QQQ"))
+            if indicator['code'].IsReady:
+                index.append(bars.Time)
+                values.append(indicator['code'].Current.Value)
+        df = pd.DataFrame(values, index=index, columns=["mcclellansummationindex"])
+        generate("mc-clellan-summation-index", indicator, df)
         
         index, values = [], []
         indicator = special_indicators.get('intraday-vwap')

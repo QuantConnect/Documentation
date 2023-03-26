@@ -117,7 +117,7 @@
 </tr>
 <tr>
 <td width="33%"><a href="#AddUniverse-header">AddUniverse()</a></td>
-<td></td>
+<td>Adds the universe to the algorithm.</td>
 </tr>
 <tr>
 <td width="33%"><a href="#AddUniverseOptions-header">AddUniverseOptions()</a></td>
@@ -449,11 +449,11 @@
 </tr>
 <tr>
 <td width="33%"><a href="#MOSC-header">MOSC()</a></td>
-<td></td>
+<td>Creates a new McClellan Oscillator indicator.</td>
 </tr>
 <tr>
 <td width="33%"><a href="#MSI-header">MSI()</a></td>
-<td></td>
+<td>Creates a new McClellan Summation Index indicator.</td>
 </tr>
 <tr>
 <td width="33%"><a href="#NATR-header">NATR()</a></td>
@@ -797,7 +797,7 @@
 </tr>
 <tr>
 <td width="33%"><a href="#TRIN-header">TRIN()</a></td>
-<td></td>
+<td>Creates a new Arms Index indicator.</td>
 </tr>
 <tr>
 <td width="33%"><a href="#TRIX-header">TRIX()</a></td>
@@ -1357,11 +1357,11 @@
 </tr>
 <tr>
 <td width="33%"><a href="#MOSC-header">MOSC()</a></td>
-<td></td>
+<td>Creates a new McClellan Oscillator indicator.</td>
 </tr>
 <tr>
 <td width="33%"><a href="#MSI-header">MSI()</a></td>
-<td></td>
+<td>Creates a new McClellan Summation Index indicator.</td>
 </tr>
 <tr>
 <td width="33%"><a href="#NATR-header">NATR()</a></td>
@@ -1497,7 +1497,7 @@
 </tr>
 <tr>
 <td width="33%"><a href="#TRIN-header">TRIN()</a></td>
-<td></td>
+<td>Creates a new Arms Index indicator.</td>
 </tr>
 <tr>
 <td width="33%"><a href="#TRIX-header">TRIX()</a></td>
@@ -1789,7 +1789,7 @@
 <tbody>
 <tr>
 <td width="33%"><a href="#AddUniverse-header">AddUniverse()</a></td>
-<td></td>
+<td>Adds the universe to the algorithm.</td>
 </tr>
 <tr>
 <td width="33%"><a href="#AddUniverseOptions-header">AddUniverseOptions()</a></td>
