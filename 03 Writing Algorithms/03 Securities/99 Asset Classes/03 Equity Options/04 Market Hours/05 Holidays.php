@@ -1,1 +1,1 @@
-<?php include(DOCS_RESOURCES."/datasets/market-hours/equity/usa/generic/holidays.html"); ?>
+<?php include(DOCS_RESOURCES."/datasets/market-hours/option/usa/generic/holidays.html"); ?>
