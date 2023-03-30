@@ -71,6 +71,9 @@ if __name__ == '__main__':
             key = " ".join(re.findall('[a-zA-Z][^A-Z]*', indicator['type-name']))
             indicator['description'] = _format_introduction(type_name, indicator.get('description'))
 
+            start = content.find('https://github.com/QuantConnect/Lean/blob/master/Indicators/')   
+            indicator['source'] = content[start: 3 + content.find('.cs', start)].strip()
+
             helper = helpers.get(file.stem, {
                 'method': indicator['type-name'], 
                 'arguments': "SPY"
@@ -165,8 +168,11 @@ if __name__ == '__main__':
         image_source = _get_image_source(folder)
         
         with open(f'{folder}/01 Introduction.html', 'w', encoding='utf-8') as fp:
+            source = indicator['source']
+            category = 'candlestick pattern' if 'CandlestickPatterns' in source else 'indicator'
             fp.write(f"""{TAG}
-<p>{description}</p>""")
+<p>{description}</p>
+<p>To view the implementation of this {category}, see the <a rel="nofollow" target="_blank" href="{source}">LEAN GitHub repository</a>.</p>""")
 
         with open(f'{folder}/02 Using {helper_name} Indicator.php', 'w', encoding='utf-8') as fp:
             fp.write(f"""{TAG}
