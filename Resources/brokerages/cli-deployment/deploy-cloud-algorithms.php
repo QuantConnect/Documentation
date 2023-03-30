@@ -42,7 +42,7 @@ Enter an option: 1</pre>
 </div>
             </li>
 
-            <li>Configure your notification settings. You can configure any combination of email, webhook, SMS, and Telegram notifications for order events and emitted insights.
+            <li>Configure your notification settings. You can configure any combination of email, webhook, SMS, and Telegram notifications for order events and emitted insights.  To view the number of notification you can send for free, see the <a href='/docs/v2/cloud-platform/organizations/resources#12-Live-Trading-Notification-Quotas'>Live Trading Notification Quotas</a>.
             <div class='cli section-example-container'>
 <pre>$ lean cloud live "My Project" --push --open
 Do you want to send notifications on order events? [y/N]: y
