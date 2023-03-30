@@ -1,4 +1,4 @@
-<p>If the <?={$modelType}?> model manages some indicators or <a href='/docs/v2/writing-algorithms/consolidating-data/getting-started'>consolidators</a> for securities in the universe and the universe selection runs during the indicator sampling period or the consolidator aggregation period, the indicators and consolidators might be missing some data. For example, take the following scenario:</p>
+<p>If the <?=$modelType?> model manages some indicators or <a href='/docs/v2/writing-algorithms/consolidating-data/getting-started'>consolidators</a> for securities in the universe and the universe selection runs during the indicator sampling period or the consolidator aggregation period, the indicators and consolidators might be missing some data. For example, take the following scenario:</p>
 
 <ul>
     <li>The security resolution is minute</li>
