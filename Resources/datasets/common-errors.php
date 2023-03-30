@@ -22,5 +22,5 @@ def GetSafeHistoryCloses(<?=$writingAlgorithms ? "self, " : "" ?>symbols):
 
 <? if ($writingAlgorithms) { ?>
 <h4>Numerical Precision Errors</h4>
-<? file_get_contents(DOCS_RESOURCES."/datasets/equity-common-errors.html"); ?>
+<? include(DOCS_RESOURCES."/datasets/equity-common-errors.html"); ?>
 <? } ?>
