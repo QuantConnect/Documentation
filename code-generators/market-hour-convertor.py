@@ -6,7 +6,8 @@ root_dir = "Resources/datasets/market-hours/"
 target_dir = "03 Writing Algorithms/03 Securities/99 Asset Classes/"
 conversions = {
     "future": "07 Futures/04 Market Hours",
-    "cfd": "11 CFD/04 Market Hours"
+    "cfd": "11 CFD/04 Market Hours",
+    "forex": "06 Forex/04 Market Hours"
 }
 page_order = {
     "introduction.html": 0,
