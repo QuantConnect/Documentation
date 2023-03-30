@@ -5,12 +5,9 @@ import pandas as pd
 from pathlib import Path
 import shutil
 from urllib.request import urlopen
+from _code_generation_helpers import SPDB, MHDB, get_json_content
 
-raw = urlopen("https://raw.githubusercontent.com/QuantConnect/Lean/master/Data/market-hours/market-hours-database.json").read().decode("utf-8") \
-    .replace("true", "True") \
-    .replace("false", "False") \
-    .replace("null", "None")
-raw_dict = eval(raw)
+raw_dict = get_json_content(MHDB)
 entries = raw_dict["entries"]
 sorted_assets = {}
 
@@ -31,7 +28,7 @@ if os.path.exists(destination_path):
 contracts_real = {
     "[*]": "generic"
 }
-df = pd.read_csv(urlopen("https://raw.githubusercontent.com/QuantConnect/Lean/master/Data/symbol-properties/symbol-properties-database.csv"))
+df = pd.read_csv(urlopen(SPDB))
 
 for row in df.itertuples():
     if row[2] != np.nan and row[2] != "[*]":

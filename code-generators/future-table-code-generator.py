@@ -25,7 +25,7 @@ if __name__ == '__main__':
     lean_master = 'https://raw.githubusercontent.com/QuantConnect/Lean/master'
 
     properties = {}
-    spdb = get_text_content(f'{lean_master}/Data/symbol-properties/symbol-properties-database.csv')
+    spdb = get_text_content(SPDB)
     for line in spdb.split('\n'):
         csv = line.split(',')
         if len(csv) > 2 and csv[2] == 'future':
