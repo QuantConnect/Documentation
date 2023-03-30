@@ -11,7 +11,7 @@ conversions = {
 page_order = {
     "introduction.html": 0,
     "pre-market-hours.html": 1,
-    "market-opening-hours.html": 2,
+    "regular-trading-hours.html": 2,
     "post-market-hours.html": 3,
     "holidays.html": 4,
     "early-closes.html": 5,
