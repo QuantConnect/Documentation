@@ -75,7 +75,7 @@ for asset_class, assets in sorted_assets.items():
                 html += f'''<tr><td><a href="{exchange + '/' + symbol.lower() if "[*]" not in symbol else exchange}">{symbol}</a></td><td>{contracts_real[symbol]}</td></tr>
 '''
             elif symbol not in html and symbol != "[*]":
-                html += f'''<tr><td><a href="market-hours/{symbol.lower() if "[*]" not in symbol else exchange}">{symbol}</a></td><td>{contracts_real[symbol]}</td></tr>
+                html += f'''<tr><td><a href="market-hours/{symbol.lower() if "[*]" not in symbol else exchange}">{symbol}</a></td><td>{contracts_real[symbol].replace("/", "") if asset_class.lower() == "forex" else contracts_real[symbol]}</td></tr>
 '''
                 
             if asset_class.lower() == "cfd" or asset_class.lower() == "forex":
