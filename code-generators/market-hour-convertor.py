@@ -3,7 +3,8 @@ import os
 import shutil
 from _code_generation_helpers import WRITING_ALGORITHMS, MARKET_HOUR
 
-root_dir = "Resources/datasets/market-hours/"
+resource_subdir = "/datasets/market-hours/"
+root_dir = f"Resources{resource_subdir}"
 target_dir = f"{WRITING_ALGORITHMS}/03 Securities/99 Asset Classes/"
 conversions = {
     "future": "07 Futures/04 Market Hours",
@@ -55,11 +56,10 @@ for dir, target in conversions.items():
 
         ref_pages = sorted((path / "generic").glob('*.html'), key=lambda x: page_order[x.name])
         for html in ref_pages:
-            page_name = str(html.name).replace('-', ' ').title()
-            
-            codes = open(html).read()
-            with open(f'{target_dir}{target}/{j:02} {page_name.replace("Html", "html")}', 'w', encoding='utf-8') as html_file:
-                html_file.write(codes)
+            with open(output_dir / f'{j:02} {html.stem}.php', 'w', encoding='utf-8') as html_file:
+                html_file.write(f"""<?php
+include(DOCS_RESOURCES."{str(html).replace('Resources', '').replace(os.path.sep, '/')}");
+?>""")
             
             j += 1
             
@@ -99,11 +99,10 @@ for dir, target in conversions.items():
 
         ref_pages = sorted((market_dir / 'generic').glob('**/*.html'), key=lambda x: page_order[x.name]) if dir != "cfd" and dir != "forex" else sorted(market_dir.glob('*.html'), key=lambda x: page_order[x.name])
         for html in ref_pages:
-            page_name = str(html.name).replace('-', ' ').title()
-            
-            codes = open(html).read()
-            with open(output_dir / f'{j:02} {page_name.replace("Html", "html")}', 'w', encoding='utf-8') as html_file:
-                html_file.write(codes)
+            with open(output_dir / f'{j:02} {html.stem}.php', 'w', encoding='utf-8') as html_file:
+                html_file.write(f"""<?php
+include(DOCS_RESOURCES."{str(html).replace('Resources', '').replace(os.path.sep, '/')}");
+?>""")
             
             j += 1
             
