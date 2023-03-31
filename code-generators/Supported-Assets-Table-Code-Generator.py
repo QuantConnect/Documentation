@@ -1,8 +1,8 @@
 from pathlib import Path
-from _code_generation_helpers import get_text_content
+from _code_generation_helpers import SPDB, get_text_content
 
 if __name__ == '__main__':
-    spdb = get_text_content("https://raw.githubusercontent.com/QuantConnect/Lean/master/Data/symbol-properties/symbol-properties-database.csv")
+    spdb = get_text_content(SPDB)
 
     directory = "Resources/datasets/supported-securities/"
     markets = ['binance','binanceus','bitfinex','gdax','kraken','oanda']

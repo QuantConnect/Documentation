@@ -1,4 +1,5 @@
 import re
+from _code_generation_helpers import SPDB, get_text_content
 from urllib.request import urlopen
 
 destination = "Resources/enumerations"
@@ -130,7 +131,7 @@ def TableCreation(raw, namespace=""):
         sorted_ = current_object.items()
 
     if object_ == "Market":
-        sym_prop = urlopen("https://raw.githubusercontent.com/QuantConnect/Lean/master/Data/symbol-properties/symbol-properties-database.csv").read().decode("utf-8").split('\n')
+        sym_prop = get_text_content(SPDB).split('\n')
         global market, market_data
         market = set([(x.split(",")[0], x.split(",")[2].lower().strip()) for x in sym_prop if len(x.split(",")) > 2 and x.split(",")[2].lower().strip() != "type" and " " not in x.split(",")[2].lower().strip()])
         market_data = sorted_

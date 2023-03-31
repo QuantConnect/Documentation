@@ -1,1 +1,1 @@
-<?php include(DOCS_RESOURCES."/datasets/market-hours/option/usa/generic/market-opening-hours.html"); ?>
+<?php include(DOCS_RESOURCES."/datasets/market-hours/option/usa/generic/regular-trading-hours.html"); ?>
