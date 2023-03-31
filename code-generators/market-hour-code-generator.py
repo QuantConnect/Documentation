@@ -252,7 +252,8 @@ for asset_class, assets in sorted_assets.items():
 
             else:            
                 with open(symbol_path / f'{MARKET_HOUR.INTRODUCTION}.html', 'w', encoding='utf-8') as html_file:
-                    html_file.write(f"""<p>This page shows the trading hours, holidays, and time zone of the {contracts_real[symbol] + " (" + symbol +") contract in the " if "[*]" not in symbol else ""}{exchange.replace("usa", "us").upper().replace("INDIA", "India").replace("KRAKEN", "Kraken").replace("BINANCE", "Binance") + " " if asset_class.lower() != "cfd" and asset_class.lower() != "forex" else ""}{asset_class.replace("Cfd", "CFD")} market.</p>""".replace("US Option", "Equity Option").replace("IndexOption", "Index Option"))
+                    contract_name = 'pair' if asset_class.lower() in ["forex", "crypto"] else 'contract'
+                    html_file.write(f"""<p>This page shows the trading hours, holidays, and time zone of the {contracts_real[symbol] + " (" + symbol + f") {contract_name} in the " if "[*]" not in symbol else ""}{exchange.replace("usa", "us").upper().replace("INDIA", "India").replace("KRAKEN", "Kraken").replace("BINANCE", "Binance") + " " if asset_class.lower() != "cfd" and asset_class.lower() != "forex" else ""}{asset_class.replace("Cfd", "CFD")} market.</p>""".replace("US Option", "Equity Option").replace("IndexOption", "Index Option"))
 
         if asset_class.lower() != "cfd" and asset_class.lower() != "forex":
             html += """</tbody>
