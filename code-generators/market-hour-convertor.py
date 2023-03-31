@@ -1,22 +1,23 @@
 from pathlib import Path
 import os
 import shutil
+from _code_generation_helpers import WRITING_ALGORITHMS, MARKET_HOUR
 
 root_dir = "Resources/datasets/market-hours/"
-target_dir = "03 Writing Algorithms/03 Securities/99 Asset Classes/"
+target_dir = f"{WRITING_ALGORITHMS}/03 Securities/99 Asset Classes/"
 conversions = {
     "future": "07 Futures/04 Market Hours",
     "cfd": "11 CFD/04 Market Hours"
 }
 page_order = {
-    "introduction.html": 0,
-    "pre-market-hours.html": 1,
-    "market-opening-hours.html": 2,
-    "post-market-hours.html": 3,
-    "holidays.html": 4,
-    "early-closes.html": 5,
-    "late-opens.html": 6,
-    "time-zone.html": 7
+    f"{MARKET_HOUR.INTRODUCTION}.html": 0,
+    f"{MARKET_HOUR.PRE_MARKET}.html": 1,
+    f"{MARKET_HOUR.REGULAR}.html": 2,
+    f"{MARKET_HOUR.POST_MARKET}.html": 3,
+    f"{MARKET_HOUR.HOLIDAY}.html": 4,
+    f"{MARKET_HOUR.EARLY_CLOSE}.html": 5,
+    f"{MARKET_HOUR.LATE_OPEN}.html": 6,
+    f"{MARKET_HOUR.TIME_ZONE}.html": 7
 }
 
 for dir, target in conversions.items():
