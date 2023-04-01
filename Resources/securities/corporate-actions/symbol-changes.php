@@ -59,7 +59,7 @@ public void OnData(SymbolChangedEvents symbolChangedEvents)
     if (orderEvent.Status == OrderStatus.Canceled)
     {
         var ticket = Transactions.GetOrderTicket(orderEvent.OrderId);
-        if (ticket.Tag.Contains(\"symbol changed event\"))
+        if (ticket.Tag.Contains("symbol changed event"))
         {
             Transactions.AddOrder(ticket.SubmitRequest);
         }
@@ -68,7 +68,7 @@ public void OnData(SymbolChangedEvents symbolChangedEvents)
         <pre class='python'>def OnOrderEvent(self, order_event: OrderEvent) -&gt; None:
     if order_event.Status == OrderStatus.Canceled:
         ticket = self.Transactions.GetOrderTicket(order_event.OrderId)
-        if \"symbol changed event\" in ticket.Tag:
+        if "symbol changed event" in ticket.Tag:
             self.Transactions.AddOrder(ticket.SubmitRequest)</pre>
     </div>
 
