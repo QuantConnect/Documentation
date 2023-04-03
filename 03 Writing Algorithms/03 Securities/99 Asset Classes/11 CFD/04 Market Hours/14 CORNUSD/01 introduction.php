@@ -1,3 +1,1 @@
-<?php
-include(DOCS_RESOURCES."/datasets/market-hours/cfd/CORNUSD/introduction.html");
-?>
+<?php include(DOCS_RESOURCES."/datasets/market-hours/cfd/CORNUSD/introduction.html"); ?>

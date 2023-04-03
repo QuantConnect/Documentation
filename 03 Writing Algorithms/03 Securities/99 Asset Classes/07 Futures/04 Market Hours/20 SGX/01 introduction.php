@@ -1,3 +1,1 @@
-<?php
-include(DOCS_RESOURCES."/datasets/market-hours/cfd/generic/introduction.html");
-?>
+<?php include(DOCS_RESOURCES."/datasets/market-hours/future/sgx/generic/introduction.html"); ?>

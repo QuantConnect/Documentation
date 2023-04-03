@@ -1,0 +1,1 @@
+<?php include(DOCS_RESOURCES."/datasets/market-hours/cfd/USB05YUSD/regular-trading-hours.html"); ?>

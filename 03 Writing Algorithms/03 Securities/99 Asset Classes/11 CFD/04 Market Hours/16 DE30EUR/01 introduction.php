@@ -1,3 +1,1 @@
-<?php
-include(DOCS_RESOURCES."/datasets/market-hours/cfd/DE30EUR/introduction.html");
-?>
+<?php include(DOCS_RESOURCES."/datasets/market-hours/cfd/DE30EUR/introduction.html"); ?>

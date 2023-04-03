@@ -7,9 +7,14 @@ resource_subdir = "/datasets/market-hours/"
 root_dir = f"Resources{resource_subdir}"
 target_dir = f"{WRITING_ALGORITHMS}/03 Securities/99 Asset Classes/"
 conversions = {
+    "equity/usa": "01 US Equity/09 Market Hours",
+    "equity/india": "02 India Equity/05 Market Hours",
+    "option/usa": "03 Equity Options/04 Market Hours",
+    "forex": "06 Forex/04 Market Hours",
     "future": "07 Futures/04 Market Hours",
-    "cfd": "11 CFD/04 Market Hours",
-    "forex": "06 Forex/04 Market Hours"
+    "index/usa": "09 Index/04 Market Hours",
+    "indexoption/usa": "10 Index Options/04 Market Hours",
+    "cfd": "11 CFD/04 Market Hours"
 }
 page_order = {
     f"{MARKET_HOUR.INTRODUCTION}.html": 0,
@@ -38,7 +43,7 @@ for dir, target in conversions.items():
     
     i = 11
     
-    if dir != "cfd" and dir != "forex":
+    if dir == "future":
         with open(target_path / "00.json", "w", encoding="utf-8") as json:
             content_dict = {f"{count+11:02}": "" for count in range(len(subdirs))}
             json.write('''{
@@ -56,14 +61,12 @@ for dir, target in conversions.items():
 
         ref_pages = sorted((path / "generic").glob('*.html'), key=lambda x: page_order[x.name])
         for html in ref_pages:
-            with open(output_dir / f'{j:02} {html.stem}.php', 'w', encoding='utf-8') as html_file:
-                html_file.write(f"""<?php
-include(DOCS_RESOURCES."{str(html).replace('Resources', '').replace(os.path.sep, '/')}");
-?>""")
+            with open(target_path / f'{j:02} {html.stem.replace("-", " ").title().replace("Pre Market", "Pre-market").replace("Post Market", "Post-market")}.php', 'w', encoding='utf-8') as html_file:
+                html_file.write(f"""<?php include(DOCS_RESOURCES."{str(html).replace('Resources', '').replace(os.path.sep, '/')}"); ?>""")
             
             j += 1
             
-        codes = open(f'{root_dir}{dir.title()}.html').read()
+        codes = open(f"{root_dir}{dir.split('/')[0]}.html").read().split(f"<h4>{dir.split('/')[-1].upper()}</h4>"+'\n')[-1].split("<h4>")[0]
         
         if "a href" in codes:
             with open(f'{target_dir}{target}/{j:02} Supported Assets.html', 'w', encoding='utf-8') as html_file:
@@ -99,10 +102,8 @@ include(DOCS_RESOURCES."{str(html).replace('Resources', '').replace(os.path.sep,
 
         ref_pages = sorted((market_dir / 'generic').glob('**/*.html'), key=lambda x: page_order[x.name]) if dir != "cfd" and dir != "forex" else sorted(market_dir.glob('*.html'), key=lambda x: page_order[x.name])
         for html in ref_pages:
-            with open(output_dir / f'{j:02} {html.stem}.php', 'w', encoding='utf-8') as html_file:
-                html_file.write(f"""<?php
-include(DOCS_RESOURCES."{str(html).replace('Resources', '').replace(os.path.sep, '/')}");
-?>""")
+            with open(output_dir / f'{j:02} {html.stem.replace("-", " ").title().replace("Pre Market", "Pre-market").replace("Post Market", "Post-market")}.php', 'w', encoding='utf-8') as html_file:
+                html_file.write(f"""<?php include(DOCS_RESOURCES."{str(html).replace('Resources', '').replace(os.path.sep, '/')}"); ?>""")
             
             j += 1
             
