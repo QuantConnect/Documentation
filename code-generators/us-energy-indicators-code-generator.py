@@ -20,16 +20,18 @@ for line in raw:
         description = line.split("                /// ")[-1]
         
     if "           public static class " in line:
-        country = [x for x in line.split(' ') if x != ''][-1]
+        country = [x for x in line.split(' ') if x][-1]
         html += f"""<tr><td colspan="3"><b>{country}</b></td></tr>
 """
+    elif "        public static class " in line:
+        energy_type = [x for x in line.split(' ') if x][-1]
         
     if " = " in line:
         item = line.split(" = ")
         code = item[0].split(" ")[-1]
         symbol = item[-1].replace('"', "").replace(";", "").replace(" ", "")
         
-        html += f'''<tr><td>{symbol}</td><td><code>USEnergy.{country}.{code}</code></td><td>{description}</td></tr>
+        html += f'''<tr><td>{symbol}</td><td><code>USEnergy.{energy_type}.{country}.{code}</code></td><td>{description}</td></tr>
 '''
 
 html += """</tbody>
