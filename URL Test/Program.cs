@@ -160,6 +160,8 @@ namespace QuantConnect.Tests
                                     .Replace("C and Rider", "C# and Rider")    // special case
                                     .Replace("C and Rider", "C# and Rider")    // special case
                                     .Replace("mixed mode consolidators", "mixed-mode consolidators")    // special case
+                                    .Replace("Multi Alpha", "Multi-Alpha")    // special case
+                                    .Replace("Volatility3F", "Volatility%3F")      // special case
                                     .ToLower();
                                 
                                 var section = url.Split('#').Last()
@@ -170,7 +172,9 @@ namespace QuantConnect.Tests
                                     .Replace("Built in", "Built-in")    // special case
                                     .Replace("C and Visual Studio", "C# and Visual Studio")    // special case
                                     .Replace("C and VS Code", "C# and VS Code")    // special case
-                                    .Replace("C and Rider", "C# and Rider");    // special case
+                                    .Replace("C and Rider", "C# and Rider")    // special case
+                                    .Replace("Multi Alpha", "Multi-Alpha")     // special case
+                                    .Replace("Volatility3F", "Volatility%3F");      // special case
                                 var allFiles = Directory.GetFiles(_path, $"{section}.*", SearchOption.AllDirectories);
                                 var noEquals = allFiles.All(dir => 
                                 {
