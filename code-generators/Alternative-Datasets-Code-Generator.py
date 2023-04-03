@@ -26,7 +26,7 @@ vendors = {}
 product_count = {}
 attr = False
 
-priority = ["QuantConnect", "AlgoSeek", "Morningstar", "TickData", "TrueData", "CoinAPI", "OANDA"]
+priority = ["QuantConnect", "AlgoSeek", "Morningstar", "TickData", "CoinAPI", "OANDA"]
 vendor_names = priority + sorted([x for x in [dataset["vendorName"].strip() for dataset in doc] if x not in priority])
 for vendor in vendor_names:
     if vendor not in vendors:
