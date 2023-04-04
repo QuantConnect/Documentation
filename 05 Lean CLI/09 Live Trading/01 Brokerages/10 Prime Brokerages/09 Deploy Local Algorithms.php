@@ -18,44 +18,18 @@ Server port: 8194</pre>
 </div>
 </li>
 
-<li>Enter the path to the symbol map file.
-<div class='cli section-example-container'>
-<pre>$ lean live \"My Project\"
-Path to symbol map file: ~/Documents/symbol-map-file.json</pre>
-</div>
-        The symbol map file must be a JSON file (comments are supported) in which the keys are the Bloomberg symbol names and the values are the corresponding QuantConnect symbols. This content can be used as an example:
-<div class='section-example-container'>
-<pre>
-/* This is a manually created file that contains mappings from Bloomberg's own naming to original symbols defined by respective exchanges. */
-{
-    // Example:
-    /*\"SPY US Equity\": {
-        \"Underlying\": \"SPY\",
-        \"SecurityType\": \"Equity\",
-        \"Market\": \"usa\"
-    }*/
-}
-</pre>
-</div>
-</li>
-
-
-<li>Enter your EMSX configuration (properties followed by <code>[]</code> can be skipped by pressing enter).
+<li>Enter your EMSX configuration
 <div class='cli section-example-container'>
 <pre>$ lean live \"My Project\"
 EMSX broker: someValue
-EMSX user timezone [UTC]:
-EMSX account []:
-EMSX strategy []:
-EMSX notes []:
-EMSX handling []:</pre>
+EMSX account:</pre>
 </div>
 </li>
 
-<li>Enter whether order changes are allowed.
+<li>Enter your Open GIGI API key.
 <div class='cli section-example-container'>
 <pre>$ lean live \"My Project\"
-Allow modification (yes/no): no</pre>
+Open FIGI API key: </pre>
 </div>
 </li>
 ";
