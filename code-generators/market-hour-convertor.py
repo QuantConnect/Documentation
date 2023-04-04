@@ -24,7 +24,15 @@ page_order = {
     f"{MARKET_HOUR.HOLIDAY}.html": 4,
     f"{MARKET_HOUR.EARLY_CLOSE}.html": 5,
     f"{MARKET_HOUR.LATE_OPEN}.html": 6,
-    f"{MARKET_HOUR.TIME_ZONE}.html": 7
+    f"{MARKET_HOUR.TIME_ZONE}.html": 7,
+    f"{MARKET_HOUR.INTRODUCTION}.php": 0,
+    f"{MARKET_HOUR.PRE_MARKET}.php": 1,
+    f"{MARKET_HOUR.REGULAR}.php": 2,
+    f"{MARKET_HOUR.POST_MARKET}.php": 3,
+    f"{MARKET_HOUR.HOLIDAY}.php": 4,
+    f"{MARKET_HOUR.EARLY_CLOSE}.php": 5,
+    f"{MARKET_HOUR.LATE_OPEN}.php": 6,
+    f"{MARKET_HOUR.TIME_ZONE}.php": 7
 }
 
 for dir, target in conversions.items():
@@ -59,7 +67,7 @@ for dir, target in conversions.items():
     else:
         j = 1
 
-        ref_pages = sorted((path / "generic").glob('*.html'), key=lambda x: page_order[x.name])
+        ref_pages = sorted(list((path / "generic").glob('*.html')) + list((path / "generic").glob('*.php')), key=lambda x: page_order[x.name])
         for html in ref_pages:
             with open(target_path / f'{j:02} {html.stem.replace("-", " ").title().replace("Pre Market", "Pre-market").replace("Post Market", "Post-market")}.php', 'w', encoding='utf-8') as html_file:
                 html_file.write(f"""<?php include(DOCS_RESOURCES."{str(html).replace('Resources', '').replace(os.path.sep, '/')}"); ?>""")
@@ -100,7 +108,8 @@ for dir, target in conversions.items():
         
         j = 1
 
-        ref_pages = sorted((market_dir / 'generic').glob('**/*.html'), key=lambda x: page_order[x.name]) if dir != "cfd" and dir != "forex" else sorted(market_dir.glob('*.html'), key=lambda x: page_order[x.name])
+        ref_pages = sorted(list((market_dir / 'generic').glob('**/*.html')) + list((market_dir / 'generic').glob('**/*.php')), key=lambda x: page_order[x.name])\
+            if dir != "cfd" and dir != "forex" else sorted(list(market_dir.glob('*.html')) + list(market_dir.glob('*.php')), key=lambda x: page_order[x.name])
         for html in ref_pages:
             with open(output_dir / f'{j:02} {html.stem.replace("-", " ").title().replace("Pre Market", "Pre-market").replace("Post Market", "Post-market")}.php', 'w', encoding='utf-8') as html_file:
                 html_file.write(f"""<?php include(DOCS_RESOURCES."{str(html).replace('Resources', '').replace(os.path.sep, '/')}"); ?>""")
@@ -129,7 +138,7 @@ for dir, target in conversions.items():
         
             n = 1
             
-            for html in sorted(raw_asset_dir.glob('**/*.html'), key=lambda x: page_order[x.name]):
+            for html in sorted(list(raw_asset_dir.glob('**/*.html')) + list(raw_asset_dir.glob('**/*.php')), key=lambda x: page_order[x.name]):
                 page_name = str(html.name).replace('-', ' ').title()
 
                 codes = open(html).read()
