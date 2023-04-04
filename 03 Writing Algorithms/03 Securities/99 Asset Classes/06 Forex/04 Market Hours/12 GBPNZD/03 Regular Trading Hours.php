@@ -1,0 +1,1 @@
+<?php include(DOCS_RESOURCES."/datasets/market-hours/forex/GBPNZD/regular-trading-hours.html"); ?>
