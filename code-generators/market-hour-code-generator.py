@@ -223,7 +223,9 @@ for asset_class, assets in sorted_assets.items():
                     
                 if "table" in holiday_html:
                     html_file.write(f"""
-<p>The following table shows the dates of holidays for the {contracts_real[symbol] + " contract in the " if "[*]" not in symbol else ""}{exchange.replace("usa", "us").upper().replace("INDIA", "India").replace("KRAKEN", "Kraken").replace("BINANCE", "Binance") + " " if asset_class.lower() != "cfd" and asset_class.lower() != "forex" else ""}{asset_class.replace("Cfd", "CFD")} market:</p>
+{'''<p>LEAN uses the <a target="_blank" rel='nofollow' href='https://www.nyse.com/markets/hours-calendars'>trading holidays</a> from the NYSE website.</p>
+
+''' if asset_class.lower() == 'equity' and exchange == 'usa' else ''}<p>The following table shows the dates of holidays for the {contracts_real[symbol] + " contract in the " if "[*]" not in symbol else ""}{exchange.replace("usa", "us").upper().replace("INDIA", "India").replace("KRAKEN", "Kraken").replace("BINANCE", "Binance") + " " if asset_class.lower() != "cfd" and asset_class.lower() != "forex" else ""}{asset_class.replace("Cfd", "CFD")} market:</p>
 
 {holiday_html}""")
                 else:
