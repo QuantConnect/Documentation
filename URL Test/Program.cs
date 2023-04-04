@@ -35,6 +35,9 @@ namespace QuantConnect.Tests
         private static readonly string _root = "https://www.quantconnect.com/";
         private static Dictionary<string, List<string>> _urlFiles = new();
         private static bool _errorFlag = false;
+        private static readonly string[] _edgeCaseUrls = new string[] {
+            "https://www.quantconnect.com/docs/v2/writing-algorithms/trading-and-orders/order-management/order-tickets#workaround-for-brokerages-that-dont-support-updates"
+        };
 
         /// <summary>
         /// URL tester program
@@ -143,7 +146,7 @@ namespace QuantConnect.Tests
                             }
 
                             // Check "go to section" mapping is wrong
-                            if (url.Contains('#') && url.Contains("/docs/v2") && !url.Contains("api-reference"))
+                            if (url.Contains('#') && url.Contains("/docs/v2") && !url.Contains("api-reference") && !_edgeCaseUrls.Contains(url))
                             {
                                 var expected = url.Split("docs/v2/").Last()
                                     .Replace('/', Path.DirectorySeparatorChar)
