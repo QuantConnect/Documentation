@@ -4,14 +4,14 @@
 
 <p>The specific properties you can update depends on the order type. The following table shows the properties you can update for each order type.</p>
 
-<table class="qc-table table  table-condensed">
+<table class="qc-table table  table-condensed" id='updatable-properties'>
 <thead>
 <tr>
 <th width="25%" rowspan="2">Order Type</th>
 <th colspan="5">Updatable Properties</th> 
 </tr>
 <tr>
-<th width="15%">Tag</th> 
+<th width="15%" style='text-align: center'>Tag</th> 
 <th width="15%">Quantity</th> 
 <th width="15%">LimitPrice</th> 
 <th width="15%">TriggerPrice</th> 
@@ -77,6 +77,21 @@
 </tr>
 </tbody>
 </table>
+
+<style>
+#updatable-properties td:nth-child(2), 
+#updatable-properties th:nth-child(2), 
+#updatable-properties td:nth-child(3), 
+#updatable-properties th:nth-child(3), 
+#updatable-properties td:nth-child(4), 
+#updatable-properties th:nth-child(4), 
+#updatable-properties td:nth-child(5), 
+#updatable-properties th:nth-child(5), 
+#updatable-properties td:last-child, 
+#updatable-properties th:last-child {
+    text-align: center;
+}
+</style>
 
 <h4>Update Methods</h4>
 
