@@ -5,10 +5,9 @@ def OnData(self, slice: Slice) -&gt; None:
         self.consolidator.Update(slice[self.symbol])
 
 # Example 2: Update the consolidator with data from a history request
-history = self.History(self.symbol, 30, Resolution.Daily)
-#  It's only currently possible to make a history request for custom/alt data in Python that returns a DataFrame
-#  To update the consolidator, iterate through the DataFrame, then use the data of each row to create the data objects and update the consolidator.
-#  See https://github.com/QuantConnect/Lean/issues/6927</pre>
+history = self.History[&lt;dataType&gt;](self.symbol, 30, Resolution.Daily)
+for data in history:
+    self.consolidator.Update(data)</pre>
         <pre class="csharp">// Example 1: Update the consolidator with data from the Slice object
 public override void OnData(Slice slice)
 {
