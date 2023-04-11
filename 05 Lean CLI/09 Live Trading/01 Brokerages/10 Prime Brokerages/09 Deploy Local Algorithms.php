@@ -26,7 +26,7 @@ EMSX account:</pre>
 </div>
 </li>
 
-<li>Enter your Open GIGI API key.
+<li>Enter your Open FIGI API key.
 <div class='cli section-example-container'>
 <pre>$ lean live \"My Project\"
 Open FIGI API key: </pre>
