@@ -34,6 +34,7 @@ SetSecurityInitializer(security =&gt; seeder.SeedSecurity(security));</pre>
 self.SetSecurityInitializer(lambda security: seeder.SeedSecurity(security))</pre>
 </div>
 
+<p>To seed the security, the <code>GetLastKnownPrices</code> method first gathers the last five points of data at the security resolution. For example, if your security subscription is for minute resolution data, the method first gathers data from the last 5 minutes. If there is no data during this period, the <code>GetLastKnownPrices</code> method gathers data over the last three days. If there is no data during either period, the security price remains at 0.</p>
 
 <? include(DOCS_RESOURCES."/reality-modeling/security-initializers.html");?>
 
@@ -44,3 +45,11 @@ $overwriteCodePy = "security.SetFeeModel(ConstantFeeModel(0, \"USD\"))";
 $overwriteCodeC = "security.SetFeeModel(new ConstantFeeModel(0, \"USD\"));";
 include(DOCS_RESOURCES."/reality-modeling/brokerage-model-security-init.php");
 ?>
+
+<p>To set a seeder function without overwriting the reality models of the brokerages, use the standard <code>BrokerageModelSecurityInitializer</code>.</p>
+<div class="section-example-container">
+<pre class="csharp">SetSecurityInitializer(new BrokerageModelSecurityInitializer(BrokerageModel, new FuncSecuritySeeder(GetLastKnownPrices)));
+</pre>
+<pre class="python"self.SetSecurityInitializer(BrokerageModelSecurityInitializer(self.BrokerageModel, FuncSecuritySeeder(self.GetLastKnownPrices)))
+</pre>
+</div>
