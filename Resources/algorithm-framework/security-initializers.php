@@ -50,6 +50,6 @@ include(DOCS_RESOURCES."/reality-modeling/brokerage-model-security-init.php");
 <div class="section-example-container">
 <pre class="csharp">SetSecurityInitializer(new BrokerageModelSecurityInitializer(BrokerageModel, new FuncSecuritySeeder(GetLastKnownPrices)));
 </pre>
-<pre class="python"self.SetSecurityInitializer(BrokerageModelSecurityInitializer(self.BrokerageModel, FuncSecuritySeeder(self.GetLastKnownPrices)))
+<pre class="python">self.SetSecurityInitializer(BrokerageModelSecurityInitializer(self.BrokerageModel, FuncSecuritySeeder(self.GetLastKnownPrices)))
 </pre>
 </div>
