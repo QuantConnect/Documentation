@@ -46,7 +46,7 @@ $overwriteCodeC = "security.SetFeeModel(new ConstantFeeModel(0, \"USD\"));";
 include(DOCS_RESOURCES."/reality-modeling/brokerage-model-security-init.php");
 ?>
 
-<p>To set a seeder function without overwriting the reality models of the brokerages, use the standard <code>BrokerageModelSecurityInitializer</code>.</p>
+<p>To set a seeder function without overwriting the reality models of the brokerage, use the standard <code>BrokerageModelSecurityInitializer</code>.</p>
 <div class="section-example-container">
 <pre class="csharp">SetSecurityInitializer(new BrokerageModelSecurityInitializer(BrokerageModel, new FuncSecuritySeeder(GetLastKnownPrices)));
 </pre>
