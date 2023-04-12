@@ -43,11 +43,11 @@
     <div class='section-example-container'>
     <pre class='csharp'>public override void OnEndOfAlgorithm()
 {
-    ObjectStore.SaveJson("insights.json", insights);
+    ObjectStore.SaveJson($"{ProjectId}/insights", insights);
 }</pre>
     <pre class='python'>def OnEndOfAlgorithm(self):
     content = ','.join([JsonConvert.SerializeObject(x) for x in insights])
-    self.ObjectStore.Save("insights.json", f'[{content}]')</pre>
+    self.ObjectStore.Save(f"{self.ProjectId}/insights", f'[{content}]')</pre>
     </div>
 
     <li>To read the stored data, call the <code>ReadJson</code> method with a key. Populate the Insight Manager with the range of <code>Insight</code> objects, and delete the stored data.</li>
@@ -56,36 +56,39 @@
 {
     public override void Initialize()
     {
-        if (ObjectStore.ContainsKey("insights.json"))
+        var insightsKey = $"{ProjectId}/{_insightsKey}";
+        if (ObjectStore.ContainsKey(insightsKey))
         {
-            var insights = ObjectStore.ReadJson&lt;List&lt;Insight&gt;&gt;("insights.json");
+            var insights = ObjectStore.ReadJson&lt;List&lt;Insight&gt;&gt;(insightsKey);
             Insights.AddRange(insights);
 
-            ObjectStore.Delete("insights.json");
+            ObjectStore.Delete(insightsKey);
         }   
     }
 }</pre>
     <pre class='python'>class ObjectStoreChartingAlgorithm(QCAlgorithm):
     def Initialize(self):
-        if self.ObjectStore.ContainsKey("insights.json"):
-            insights = self.ObjectStore.ReadJson[List[Insight]]("insights.json")
+        insightsKey = f"{self.ProjectId}/insights"
+        if self.ObjectStore.ContainsKey(insightsKey):
+            insights = self.ObjectStore.ReadJson[List[Insight]](insightsKey)
             self.Insights.AddRange(insights)
 
-            self.ObjectStore.Delete("insights.json")</pre>
+            self.ObjectStore.Delete(insightsKey)</pre>
     </div>
 </ol>
 
-<p class='python'>In this example, we use the <code>SaveJson</code> and <code>ReadJson</code> method for convenience, since the serialization process retains all the relevant information. The <code>Insight</code> object is a C# object, thus the algorithm need to import the following C# libraries.</p>
-<div class='python section-example-container'>
-<pre class='python'>
-from Newtonsoft.Json import JsonConvert
+<ol class='python'>
+    <p>In this example, we use the <code>SaveJson</code> and <code>ReadJson</code> method for convenience, since the serialization process retains all the relevant information. The <code>Insight</code> object is a C# object, thus the algorithm need to import the following C# libraries.</p>
+    <div class='section-example-container'>
+        <pre class='python'>from Newtonsoft.Json import JsonConvert
 from System.Collections.Generic import List</pre>
-</div>
+    </div>
+</ol>
 
 <div class="qc-embed-frame" style="display: inline-block; position: relative; width: 100%; min-height: 100px; min-width: 300px;">
     <div class="qc-embed-dummy" style="padding-top: 56.25%;"></div>
     <div class="qc-embed-element" style="position: absolute; top: 0; bottom: 0; left: 0; right: 0;">
-    <iframe class="csharp qc-embed-backtest" height="100%" width="100%" style="border: 1px solid #ccc; padding: 0; margin: 0;" src="https://www.quantconnect.com/terminal/processCache?request=embedded_backtest_58722016afcdf358d015e7d51f76823b.html"></iframe>
-    <iframe class="python qc-embed-backtest" height="100%" width="100%" style="border: 1px solid #ccc; padding: 0; margin: 0;" src="https://www.quantconnect.com/terminal/processCache?request=embedded_backtest_e7b9776acd2aa66928fe6ce1e6997299.html"></iframe>
+    <iframe class="csharp qc-embed-backtest" height="100%" width="100%" style="border: 1px solid #ccc; padding: 0; margin: 0;" src="https://www.quantconnect.com/terminal/processCache?request=embedded_backtest_2c647eaeef59f2db0b9b957e7a4c014f.html"></iframe>
+    <iframe class="python qc-embed-backtest" height="100%" width="100%" style="border: 1px solid #ccc; padding: 0; margin: 0;" src="https://www.quantconnect.com/terminal/processCache?request=embedded_backtest_5042a67266802c124cacc99ce9ab2499.html"></iframe>
     </div>
 </div>
