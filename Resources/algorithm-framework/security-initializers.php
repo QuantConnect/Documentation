@@ -26,15 +26,13 @@ def CustomSecurityInitializer(self, security: Security) -&gt; None:
 <pre class="python">self.SetSecurityInitializer(lambda security: security.SetFeeModel(ConstantFeeModel(0, "USD")))</pre>
 </div>
 
-<p>In some cases, you may want to trade a security in the same time loop that you create the security subscription. To avoid errors, use a security initializer to set the market price of each security to the last known price.</p>
+<p>In some cases, you may want to trade a security in the same time loop that you create the security subscription. To avoid errors, use a security initializer to set the market price of each security to the last known price. The <code>GetLastKnownPrices</code> method seeds the security price by gathering the security data over the last 3 days. If there is no data during this period, the security price remains at 0.</p>
 <div class="section-example-container">
 <pre class="csharp">var seeder = new FuncSecuritySeeder(GetLastKnownPrices);
 SetSecurityInitializer(security =&gt; seeder.SeedSecurity(security));</pre>
 <pre class="python">seeder = FuncSecuritySeeder(self.GetLastKnownPrices)
 self.SetSecurityInitializer(lambda security: seeder.SeedSecurity(security))</pre>
 </div>
-
-<p>The <code>GetLastKnownPrices</code> method seeds the security price by first gathering the last five points of data at the security resolution. For example, if your security subscription is for minute resolution data, the method first gathers data from the last 5 minutes for the security. If there is no data during this period, the <code>GetLastKnownPrices</code> method gathers data over the last three days. If there is no data during either period, the security price remains at 0.</p>
 
 <? include(DOCS_RESOURCES."/reality-modeling/security-initializers.html");?>
 
