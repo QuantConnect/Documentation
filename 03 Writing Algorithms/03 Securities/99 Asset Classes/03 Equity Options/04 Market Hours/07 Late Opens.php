@@ -1,1 +1,1 @@
-<?php include(DOCS_RESOURCES."/datasets/market-hours/option/usa/generic/late-opens.php"); ?>
+<?php include(DOCS_RESOURCES."/datasets/market-hours/no-late-opens.html"); ?>
