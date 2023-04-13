@@ -1,1 +1,1 @@
-<?php include(DOCS_RESOURCES."/datasets/market-hours/equity/india/generic/late-opens.html"); ?>
+<?php include(DOCS_RESOURCES."/datasets/market-hours/no-late-opens.html"); ?>
