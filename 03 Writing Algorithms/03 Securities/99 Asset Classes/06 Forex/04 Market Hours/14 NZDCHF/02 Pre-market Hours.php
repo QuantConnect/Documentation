@@ -1,1 +1,0 @@
-<?php include(DOCS_RESOURCES."/datasets/market-hours/forex/NZDCHF/pre-market-hours.html"); ?>

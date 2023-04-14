@@ -1,1 +1,0 @@
-<?php include(DOCS_RESOURCES."/datasets/market-hours/forex/NZDUSD/post-market-hours.html"); ?>

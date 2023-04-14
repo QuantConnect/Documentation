@@ -1,1 +1,1 @@
-<?php include(DOCS_RESOURCES."/datasets/market-hours/forex/EURNZD/post-market-hours.html"); ?>
+<?php include(DOCS_RESOURCES."/datasets/market-hours/no-post-market-hours.html"); ?>
