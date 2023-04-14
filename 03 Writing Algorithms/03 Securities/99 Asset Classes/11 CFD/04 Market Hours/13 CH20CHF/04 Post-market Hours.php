@@ -1,1 +1,1 @@
-<?php include(DOCS_RESOURCES."/datasets/market-hours/cfd/CH20CHF/post-market-hours.html"); ?>
+<?php include(DOCS_RESOURCES."/datasets/market-hours/no-post-market-hours.html"); ?>

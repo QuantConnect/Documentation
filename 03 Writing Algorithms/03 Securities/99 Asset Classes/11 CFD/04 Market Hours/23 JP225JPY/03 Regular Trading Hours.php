@@ -1,1 +1,0 @@
-<?php include(DOCS_RESOURCES."/datasets/market-hours/cfd/JP225JPY/regular-trading-hours.html"); ?>

@@ -1,1 +1,1 @@
-<?php include(DOCS_RESOURCES."/datasets/market-hours/cfd/AU200AUD/pre-market-hours.html"); ?>
+<?php include(DOCS_RESOURCES."/datasets/market-hours/no-pre-market-hours.html"); ?>
