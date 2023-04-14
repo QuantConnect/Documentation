@@ -28,7 +28,7 @@ from System.Collections.Generic import List</pre>
     
     <p class='python'><code>Insight</code> objects are a C# objects, so you need the preceding C# libraries to serialize and deserialize them.</p>
 
-    <li>In the <a href='/docs/v2/writing-algorithms/key-concepts/event-handlers#15-End-Of-Algorithm-Events'>OnEndOfAlgorithm</a> event handler of the algorithm, <a href='/docs/v2/writing-algorithms/algorithm-framework/insight-manager#04-Get-Insights'>get the <code>Insight</code> objects</a> and save them in the Object Store as a JSON object.</li>
+    <li>In the <a href='/docs/v2/writing-algorithms/key-concepts/event-handlers#15-End-Of-Algorithm-Events'>OnEndOfAlgorithm</a> event handler of the algorithm, <a href='/docs/v2/writing-algorithms/algorithm-framework/insight-manager#04-Get-Insights'>get the Insight objects</a> and save them in the Object Store as a JSON object.</li>
     <div class='section-example-container'>
     <pre class='csharp'>public override void OnEndOfAlgorithm()
 {
