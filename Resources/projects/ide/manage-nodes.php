@@ -6,7 +6,7 @@
  To view the Resources panel, <a href='<?=$projectLink?>'>open a project</a> and then, in the <?=$cloudPlatform ? "right" : "left"?> navigation menu, click the <img class='inline-icon' src='https://cdn.quantconnect.com/i/tu/resources-icon.png'> <span class='icon-name'>Resources</span> icon.
  </p>
 
-<img class='docs-image' src='<?=$imgLink?>' alt="Node management panel">
+<img class='docs-image' src='<?=$imageLink?>' alt="Node management panel">
 
 <p>The panel displays the following information for each node:</p>
 <table class='qc-table table'>
