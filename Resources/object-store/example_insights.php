@@ -47,18 +47,17 @@ from System.Collections.Generic import List</pre>
 {
     public override void Initialize()
     {
-        if (ObjectStore.ContainsKey(insightsKey))
+        if (ObjectStore.ContainsKey(_insightKey))
         {
-            var insights = ObjectStore.ReadJson&lt;List&lt;Insight&gt;&gt;(insightsKey);
+            var insights = ObjectStore.ReadJson&lt;List&lt;Insight&gt;&gt;(_insightKey);
             Insights.AddRange(insights);
         }   
     }
 }</pre>
     <pre class='python'>class ObjectStoreChartingAlgorithm(QCAlgorithm):
     def Initialize(self):
-        insightsKey = f"{self.ProjectId}/insights"
-        if self.ObjectStore.ContainsKey(insightsKey):
-            insights = self.ObjectStore.ReadJson[List[Insight]](insightsKey)
+        if self.ObjectStore.ContainsKey(self.insight_key):
+            insights = self.ObjectStore.ReadJson[List[Insight]](self.insight_key)
             self.Insights.AddRange(insights)</pre>
     </div>
 </ol>
