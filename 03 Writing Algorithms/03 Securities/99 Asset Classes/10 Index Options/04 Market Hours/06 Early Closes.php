@@ -1,1 +1,1 @@
-<?php include(DOCS_RESOURCES."/datasets/market-hours/indexoption/usa/generic/early-closes.php"); ?>
+<?php include(DOCS_RESOURCES."/datasets/market-hours/indexoption/usa/generic/early-closes.html"); ?>
