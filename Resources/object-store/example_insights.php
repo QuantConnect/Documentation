@@ -41,7 +41,7 @@ from System.Collections.Generic import List</pre>
     self.ObjectStore.Save(self.insight_key, f'[{content}]')</pre>
     </div>
 
-    <li>Extend the <code>Initialize</code> method to read the Insight objects from the Object Store and <a href='/docs/v2/writing-algorithms/algorithm-framework/insight-manager#02-Add-Insights'>add them to the Insight Manager</a>.</li>
+    <li>At the bottom of the <code>Initialize</code> method, read the Insight objects from the Object Store and <a href='/docs/v2/writing-algorithms/algorithm-framework/insight-manager#02-Add-Insights'>add them to the Insight Manager</a>.</li>
     <div class='section-example-container'>
     <pre class='csharp'>public override void Initialize()
 {
