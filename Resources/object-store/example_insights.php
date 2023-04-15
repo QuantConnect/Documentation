@@ -43,18 +43,14 @@ from System.Collections.Generic import List</pre>
 
     <li>At the bottom of the <code>Initialize</code> method, read the Insight objects from the Object Store and <a href='/docs/v2/writing-algorithms/algorithm-framework/insight-manager#02-Add-Insights'>add them to the Insight Manager</a>.</li>
     <div class='section-example-container'>
-    <pre class='csharp'>public override void Initialize()
+    <pre class='csharp'>if (ObjectStore.ContainsKey(_insightKey))
 {
-    if (ObjectStore.ContainsKey(_insightKey))
-    {
-        var insights = ObjectStore.ReadJson&lt;List&lt;Insight&gt;&gt;(_insightKey);
-        Insights.AddRange(insights);
-    }   
+    var insights = ObjectStore.ReadJson&lt;List&lt;Insight&gt;&gt;(_insightKey);
+    Insights.AddRange(insights);
 }</pre>
-    <pre class='python'>def Initialize(self):
-    if self.ObjectStore.ContainsKey(self.insight_key):
-        insights = self.ObjectStore.ReadJson[List[Insight]](self.insight_key)
-        self.Insights.AddRange(insights)</pre>
+    <pre class='python'>if self.ObjectStore.ContainsKey(self.insight_key):
+    insights = self.ObjectStore.ReadJson[List[Insight]](self.insight_key)
+    self.Insights.AddRange(insights)</pre>
     </div>
 </ol>
 
