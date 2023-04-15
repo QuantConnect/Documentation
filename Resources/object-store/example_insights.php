@@ -5,9 +5,10 @@
     <div class='section-example-container'>
     <pre class='csharp'>public class ObjectStoreChartingAlgorithm : QCAlgorithm
 {
-    private string _insightKey = $"{ProjectId}/insights";
+    private string _insightKey;
     public override void Initialize()
     {
+        _insightKey = $"{ProjectId}/insights";
         SetUniverseSelection(new ManualUniverseSelectionModel(QuantConnect.Symbol.Create("SPY", SecurityType.Equity, Market.USA)));
         SetAlpha(new ConstantAlphaModel(InsightType.Price, InsightDirection.Up, TimeSpan.FromDays(5), 0.025, null));    
     }
