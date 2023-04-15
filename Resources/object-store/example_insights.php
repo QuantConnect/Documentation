@@ -1,7 +1,7 @@
 <p>Follow these steps to use the Object Store to preserve the algorithm state across live deployments:</p>
 
 <ol>
-    <li>Create an algorithm that adds insights to the <a href='/docs/v2/writing-algorithms/algorithm-framework/insight-manager'>Insight Manager</a> and defines an Object Store key for the Insight objects.</li>
+    <li>Create an algorithm that automatically adds insights to the <a href='/docs/v2/writing-algorithms/algorithm-framework/insight-manager'>Insight Manager</a> and defines an Object Store key for the Insight objects.</li>
     <div class='section-example-container'>
     <pre class='csharp'>public class ObjectStoreChartingAlgorithm : QCAlgorithm
 {
