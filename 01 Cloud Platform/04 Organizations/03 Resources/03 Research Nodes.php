@@ -3,3 +3,5 @@
 <?php include(DOCS_RESOURCES."/specs/research-nodes.html"); ?>
 
 <p>Refer to the <a href="/pricing">Pricing</a> page to see the price of each research node model. You get one free R1-4 research node in your first organization, but the node is replaced when you subscribe to a new research node in the organization.</p>
+
+<p>The CPU nodes are available on a fair usage basis. The GPU nodes can be shared with a maximum of three members. Depending on the server load, you may use the all of the GPU's processing power.</p>
