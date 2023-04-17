@@ -1,6 +1,6 @@
 <p>Follow these steps to plot the daily order fills of a backtest:</p>
 
-<ul>
+<ol>
     <li>Get the backtest orders.</li>
     <div class="section-example-container">
 	    <pre class="python">orders = api.ReadBacktestOrders(project_id, backtest_id)</pre>
@@ -11,7 +11,7 @@
 	<div data-tree='QuantConnect.Orders.Order'></div>
 
 	<?php include(DOCS_RESOURCES."/qc-api/plot-fills.php"); ?>
-</ul>
+</ol>
 
 
 
