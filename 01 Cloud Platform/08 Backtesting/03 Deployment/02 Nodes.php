@@ -3,3 +3,5 @@
 <?php echo file_get_contents(DOCS_RESOURCES."/specs/backtest-nodes.html"); ?>
 
 <p>Refer to the <a href="/pricing">Pricing</a> page to see the price of each backtesting node model. The first organization on each account is given one free B-MICRO backtesting node. B-MICRO nodes have a 20-second delay when you launch backtests, but the delay is removed and the node is replaced when you <a href='/docs/v2/cloud-platform/organizations/billing#07-Change-Organization-Tiers'>upgrade the tier of your organization</a> and <a href='/docs/v2/cloud-platform/organizations/resources#14-Add-Nodes'>add a new backtesting node</a>.</p>
+
+<p>The CPU nodes are available on a fair usage basis. The GPU nodes can be shared with a maximum of three members. Depending on the server load, you may use the all of the GPU's processing power.</p>
