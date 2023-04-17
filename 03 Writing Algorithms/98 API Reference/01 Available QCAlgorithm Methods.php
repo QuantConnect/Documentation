@@ -513,7 +513,7 @@
 </tr>
 <tr>
 <td width="33%"><a href="#Plot-header">Plot()</a></td>
-<td>Plot a chart to string chart name, using string series name, with float value.</td>
+<td>Plot a chart to string chart name, using string series name, with int value.</td>
 </tr>
 <tr>
 <td width="33%"><a href="#PlotIndicator-header">PlotIndicator()</a></td>
@@ -1005,7 +1005,7 @@
 </tr>
 <tr>
 <td width="33%"><a href="#Plot-header">Plot()</a></td>
-<td>Plot a chart to string chart name, using string series name, with float value.</td>
+<td>Plot a chart to string chart name, using string series name, with int value.</td>
 </tr>
 <tr>
 <td width="33%"><a href="#PlotIndicator-header">PlotIndicator()</a></td>
