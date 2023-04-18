@@ -94,14 +94,6 @@ Series(name, type, unit, color, symbol)
             <td>Benchmark</td>
 	    <td>Benchmark</td>
         </tr>
-        <tr>
-            <td>Alpha</td>
-	    <td>Direction Score, Magnitude Score</td>
-        </tr>
-        <tr>
-            <td>Alpha Count</td>
-	    <td>Count</td>
-        </tr>
     </tbody>
 </table>
 
