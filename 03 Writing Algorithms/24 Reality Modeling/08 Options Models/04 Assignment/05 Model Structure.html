@@ -1,0 +1,25 @@
+<p>Option assignment models should implement the <code>IOptionAssignmentModel</code> interface. Extensions of the <code>IOptionAssignmentModel</code> interface must implement the <code>GetAssignment</code> method, which get the option assignments to generate if any.</p>
+
+<div class="section-example-container">
+    <pre class="csharp">public class MyOptionAssignmentModel : IOptionAssignmentModel 
+{
+    public OptionAssignmentResult GetAssignment(OptionAssignmentParameters parameters)
+    {
+        var option = parameters.Option;
+        if (IsInTheMoney(option))
+        {
+            return new OptionAssignmentResult(option.Holdings.AbsoluteQuantity, "tag");
+        }
+        return OptionAssignmentResult.Null;
+    }
+}</pre>
+    <pre class="python">class MyOptionAssignmentModel:
+
+    def GetAssignment(self, parameters: OptionAssignmentParameters) -&gt; OptionAssignmentResult:
+        option = parameters.Option
+        if self.IsInTheMoney(option):
+            return OptionAssignmentResult(option.Holdings.AbsoluteQuantity, "tag")
+        return OptionAssignmentResult.Null</pre>
+</div>
+
+<p>The <code>GetAssignment</code> method is automatically called at the top of each hour.</p>
