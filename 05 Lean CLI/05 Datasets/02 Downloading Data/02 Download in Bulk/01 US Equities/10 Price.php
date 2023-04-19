@@ -7,36 +7,38 @@
 <table class="qc-table table" id='trade-and-quote-price'>
     <thead>
         <tr>
-            <th>Download Type</th>
-            <th>Resolutions</th>
-            <th>Cost ($)</th>
+            <th>Resolution</th>
+            <th>Price of Historical Data ($)</th>
+            <th>Price of Daily Updates ($/year)</th>
         </tr>
     </thead>
     <tbody>
         <tr>
-            <td>History</td>
-            <td>Hourly & Daily</td>
+            <td>Hour & Daily</td>
             <td>3,480</td>
+            <td>1,200</td>
         </tr>
         <tr>
-            <td>Daily Updates</td>
-            <td>Hourly & Daily</td>
-            <td>720/year</td>
+            <td>Minute</td>
+            <td>_____</td>
+            <td>_____</td>
         </tr>
         <tr>
-            <td>History</td>
-            <td>Minute, Second, & Tick</td>
-            <td><a href='https://www.quantconnect.com/contact'>Contact us</a></td>
+            <td>Second</td>
+            <td>_____</td>
+            <td>_____</td>
         </tr>
         <tr>
-            <td>Daily Updates</td>
-            <td>Minute, Second, & Tick</td>
-            <td><a href='https://www.quantconnect.com/contact'>Contact us</a></td>
+            <td>Tick</td>
+            <td>_____</td>
+            <td>_____</td>
         </tr>
     </tbody>
 </table>
 
 <style>
+#trade-and-quote-price td:nth-child(2), 
+#trade-and-quote-price th:nth-child(2),
 #trade-and-quote-price td:last-child, 
 #trade-and-quote-price th:last-child {
     text-align: right;
