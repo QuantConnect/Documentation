@@ -1,4 +1,4 @@
-<p>Option assignment models should implement the <code>IOptionAssignmentModel</code> interface. Extensions of the <code>IOptionAssignmentModel</code> interface must implement the <code>GetAssignment</code> method, which get the option assignments to generate if any.</p>
+<p>Option assignment models should implement the <code>IOptionAssignmentModel</code> interface. Extensions of the <code>IOptionAssignmentModel</code> interface must implement the <code>GetAssignment</code> method, which automatically fires at the top of each hour and returns the Option assignments to generate.</p>
 
 <div class="section-example-container">
     <pre class="csharp">public class MyOptionAssignmentModel : IOptionAssignmentModel 
@@ -22,4 +22,33 @@
         return OptionAssignmentResult.Null</pre>
 </div>
 
-<p>The <code>GetAssignment</code> method is automatically called at the top of each hour.</p>
+<p>The <code>OptionAssignmentParameters</code> object has the following members:</p>
+
+<div data-tree='QuantConnect.Securities.Option.OptionAssignmentParameters'></div>
+
+<p>To exercise the Option, return an <code>OptionAssignmentResult</code> with a positive quantity. Otherwise, return <code>OptionAssignmentResult.Null</code>. The <code>OptionAssignmentResult</code> constructor accepts the following arguments:</p>
+
+<table class="qc-table table">
+    <thead>
+        <tr>
+            <th>Argument</th>
+            <th>Data Type</th>
+            <th>Description</th>
+            <th>Default Value</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><code>quantity</code></td>
+            <td><code class='csharp'>decimal</code><code class='python'>float</code></td>
+            <td>The quantity to assign</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td><code>tag</code></td>
+            <td><code class='csharp'>string</code><code class='python'>str</code></td>
+            <td>The <a href='/docs/v2/writing-algorithms/trading-and-orders/order-properties#17-Tags'>order tag</a> to use</td>
+            <td></td>
+        </tr>
+    </tbody>
+</table>
