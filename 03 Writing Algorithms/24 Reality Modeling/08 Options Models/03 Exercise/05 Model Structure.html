@@ -1,10 +1,9 @@
-<p>Option exercise models should extend the <code>DefaultExerciseModel</code> class. Extensions of the <code>DefaultExerciseModel</code> class must implement the <code>OptionExercise</code> method, which receives <code>Option</code> and <code>OptionExerciseOrder</code> objects and then returns a list of <code>OrderEvent</code> objects that contain the order fill information.</p>
+<p>Option exercise models should implement the <code>IOptionExerciseModel</code> interface. The <code>IOptionExerciseModel</code> interface must implement the <code>OptionExercise</code> method, which receives <code>Option</code> and <code>OptionExerciseOrder</code> objects and then returns a list of <code>OrderEvent</code> objects that contain the order fill information.</p>
 
-<div class='csharp'>
 <div class="section-example-container">
     <pre class="csharp">public class MyExerciseModel : IOptionExerciseModel
 {
-    public IEnumerable&lt;OrderEvent&gt; OptionExercise(Option option, OptionExerciseOrder order)
+    public override IEnumerable&lt;OrderEvent&gt; OptionExercise(Option option, OptionExerciseOrder order)
     {
         var inTheMoney = option.IsAutoExercised(option.Underlying.Close);
         var isAssignment = inTheMoney &amp;&amp; option.Holdings.IsShort;
@@ -14,21 +13,34 @@
             option.Symbol,
             option.LocalTime.ConvertToUtc(option.Exchange.TimeZone),
             OrderStatus.Filled,
-            GetOrderDirection(order.Quantity),
+            Extensions.GetOrderDirection(order.Quantity),
             0.0m,
             order.Quantity,
             OrderFee.Zero,
             "Tag"
-        ) { IsAssignment = isAssignment }
+        ) { IsAssignment = isAssignment };
     }
 }</pre>
-</div>
+    <pre class="python">class MyExerciseModel:
+    def OptionExercise(self, option: Option, order: OptionExerciseOrder) -&gt; List[OrderEvent]:
+        in_the_money = option.IsAutoExercised(option.Underlying.Close)
+        is_assignment = in_the_money and option.Holdings.IsShort
+
+        order_event = OrderEvent(
+            order.Id,
+            option.Symbol,
+            Extensions.ConvertToUtc(option.LocalTime, option.Exchange.TimeZone),
+            OrderStatus.Filled,
+            Extensions.GetOrderDirection(order.Quantity),
+            0.0,
+            order.Quantity,
+            OrderFee.Zero,
+            "Tag"
+        )
+        order_event.IsAssignment = is_assignment
+        return [ order_event ]</pre>
 </div>
 
-<p class="python">LEAN doesn't currently support custom Option exercise models in Python. To track the feature progress, subscribe to <a rel="nofollow" target="_blank" href="https://github.com/QuantConnect/Lean/issues/6390">GitHub Issue #6390</a>.</p>
-
-<!---until python version ready--->
-<div class="csharp">
 <p><code>OptionExerciseOrder</code> objects have the following properties:</p>
 <div data-tree="QuantConnect.Orders.OptionExerciseOrder"></div>
 
@@ -104,4 +116,3 @@
 
 <p><code>OrderEvent</code> objects have the following attributes:</p>
 <div data-tree="QuantConnect.Orders.OrderEvent"></div>
-</div>
