@@ -1,13 +1,6 @@
-<p>After you bulk download the US ETF Constituents dataset, new daily updates are available at 7 AM Eastern Time (ET) after each trading day. Follow these steps to subscribe to data updates:</p>
+<p>After you bulk download the US ETF Constituents dataset, new daily updates are available at 7 AM Eastern Time (ET) after each trading day. To gain access to the data updates, open the <a href="https://www.quantconnect.com/pricing">Pricing</a> page of your organization and subscribe to the <span class="button-name">US ETF Constituents Updates by QuantConnect</span> dataset. You need <a href="https://www.quantconnect.com/docs/v2/cloud-platform/organizations/members#08-Permissions">billing permissions</a> to change the organization's subscriptions.</p>
 
-<ol>
-    <li>Log in to the Algorithm Lab.</li>
-    <li><a href='https://www.quantconnect.com/docs/v2/cloud-platform/organizations/getting-started#03-Switch-Organizations'>Connect to the organization</a> you want to use to download the dataset.</li>
-    <li>On the <a href='https://www.quantconnect.com/pricing'>Pricing</a> page, subscribe to the <a href='button-name'>US ETF Constituents Updates by QuantConnect</a> dataset.</li>
-    <p>You need <a href="https://www.quantconnect.com/docs/v2/cloud-platform/organizations/members#08-Permissions">billing permissions</a> to change the organization's subscriptions.</p>
-</ol>
-
-<p>To update your local copy of the US ETF Constituents dataset, use the <a href='https://www.quantconnect.com/datasets/quantconnect-us-etf-constituents/cli'>CLI Command Generator</a> to generate your download command and then run it in a terminal in your organization <a href='https://www.quantconnect.com/docs/v2/lean-cli/initialization/workspace'>workspace</a>. Alternatively, instead of directly calling the <code>lean data download</code> command, you can place a Python script in the <span class="public-directory-name">data</span> directory of your workspace and run it to update your data files. The following example script updates all of the new data that's missing from your local copy:</p>
+<p>After you subscribe to the <span class="button-name">US ETF Constituents Updates by QuantConnect</span> dataset, to update your local copy of the US ETF Constituents dataset, use the <a href="https://www.quantconnect.com/datasets/quantconnect-us-etf-constituents/cli">CLI Command Generator</a> to generate your download command and then run it in a terminal in your organization <a href="https://www.quantconnect.com/docs/v2/lean-cli/initialization/workspace">workspace</a>. Alternatively, instead of directly calling the <code>lean data download</code> command, you can place a Python script in the <span class="public-directory-name">data</span> directory of your workspace and run it to update your data files. The following example script updates all of the new data that's missing from your local copy:</p>
 
 <div class="section-example-container">
     <pre class="python">import os
@@ -26,7 +19,7 @@ FORMAT_STR = "%Y%m%d"
 END_DATE = datetime.now(timezone("US/Eastern")).strftime(FORMAT_STR)
 data_files = sorted([f for f in os.listdir("equity/usa/universes/etf/spy")])
 latest_date = data_files[-1].split(".")[0]
-if latest_date >= END_DATE:
+if latest_date &gt;= END_DATE:
     print("Data is already up to date.")
 else:
     start_date = datetime.strptime(latest_date, FORMAT_STR) + timedelta(1)
@@ -35,4 +28,4 @@ else:
     os.system(f"lean data download --dataset \"US ETF Constituents\" --organization \"{ORGANIZATION_ID}\" --data-type \"Download in Bulk\" --start \"{start_date}\" --end \"{END_DATE}\"")</pre>
 </div>
 
-<p>We structure the US ETF Constituents data files so there is one file per ETF per day. To update your local dataset, the preceding script first gets your organization Id from your <a href='/docs/v2/lean-cli/initialization/configuration#03-Lean-Configuration'>Lean configuration file</a>. The script then checks the date of the most recent SPY data you have. If there is new data available for SPY, it downloads the new data files for all of the ETFs. You may need to adjust this script to fit your needs.</p>
+<p>We structure the US ETF Constituents data files so there is one file per ETF per day. To update your local dataset, the preceding script first gets your organization Id from your <a href="/docs/v2/lean-cli/initialization/configuration#03-Lean-Configuration">Lean configuration file</a>. The script then checks the date of the most recent SPY data you have. If there is new data available for SPY, it downloads the new data files for all of the ETFs. You may need to adjust this script to fit your needs.</p>
