@@ -1,4 +1,19 @@
-<p>After you bulk download the US Equities dataset, new daily updates are available at 7 AM Eastern Time (ET) each trading day. To update your local copy of the dataset, place the following Python script in the <span class='public-directory-name'>data</span> directory of your <a href='https://www.quantconnect.com/docs/v2/lean-cli/initialization/workspace'>workspace</a> and run it:</p>
+<p>After you bulk download the US Equities dataset, new daily updates are available at 7 AM Eastern Time (ET) each trading day. If you haven't subscribed to data updates yet, follow these steps:</p>
+
+<ol>
+    <li>Log in to the Algorithm Lab.</li>
+    <li><a href="https://www.quantconnect.com/docs/v2/cloud-platform/organizations/getting-started#03-Switch-Organizations">Connect to the organization</a> you want to use to download the dataset updates.</li>
+    <li>Open the <a href="https://www.quantconnect.com/pricing">Pricing</a> page and subscribe to at least one of the following datasets:</li>
+    <ul>
+        <li>US Equity Hourly &amp; Daily Updates by AlgoSeek</li>
+        <li>US Equity Minute Updates by AlgoSeek</li>
+        <li>US Equity Second Updates by AlgoSeek</li>
+        <li>US Equity Tick Updates by AlgoSeek</li>
+    </ul>
+    <p>You need <a href="https://www.quantconnect.com/docs/v2/cloud-platform/organizations/members#08-Permissions">billing permissions</a> to change the organization's subscriptions.</p>
+</ol>
+
+<p>After you subscribe to data updates, to update your local copy of the dataset, place the following Python script in the <span class="public-directory-name">data</span> directory of your <a href="https://www.quantconnect.com/docs/v2/lean-cli/initialization/workspace">workspace</a> and run it:</p><p></p>
 
 <div class="section-example-container">
     <pre class="python">import os
@@ -19,7 +34,7 @@ new_data_available = False
 for resolution in ["tick", "second", "minute"]:
     data_files = sorted([f for f in os.listdir(f"equity/usa/{resolution}/spy")])
     latest_date = data_files[-1].split('_')[0]
-    if latest_date >= END_DATE:
+    if latest_date &gt;= END_DATE:
         print(f"{resolution} data is already up to date.")
         continue
     new_data_available = True
@@ -36,4 +51,4 @@ if new_data_available:
         os.system(f"lean data download --dataset \"US Equities\" --organization \"{ORGANIZATION_ID}\" --data-type \"Bulk\" --resolution \"{resolution}\" --overwrite")</pre>
 </div>
 
-<p>We structure tick, second, and minute resolution data files so there is one file per ticker per day. We structure hour and daily resolution data files so there is one file per ticker. To update your local dataset, the preceding script first gets your organization Id from your <a href='/docs/v2/lean-cli/initialization/configuration#03-Lean-Configuration'>Lean configuration file</a>. The script then checks the date of the most recent SPY data you have for tick, second, and minute resolutions. If there is new data available for any of these resolutions, it downloads the new data files and overwrites your hourly and daily files.</p>
+<p>We structure tick, second, and minute resolution data files so there is one file per ticker per day. We structure hour and daily resolution data files so there is one file per ticker. To update your local dataset, the preceding script first gets your organization Id from your <a href="/docs/v2/lean-cli/initialization/configuration#03-Lean-Configuration">Lean configuration file</a>. The script then checks the date of the most recent SPY data you have for tick, second, and minute resolutions. If there is new data available for any of these resolutions, it downloads the new data files and overwrites your hourly and daily files.</p>
