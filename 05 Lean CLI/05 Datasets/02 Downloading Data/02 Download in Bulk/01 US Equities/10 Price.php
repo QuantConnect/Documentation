@@ -16,12 +16,12 @@
         <tr>
             <td>History</td>
             <td>Hourly & Daily</td>
-            <td>$3,480</td>
+            <td>3,480</td>
         </tr>
         <tr>
             <td>Daily Updates</td>
             <td>Hourly & Daily</td>
-            <td>$720/year</td>
+            <td>720/year</td>
         </tr>
         <tr>
             <td>History</td>
