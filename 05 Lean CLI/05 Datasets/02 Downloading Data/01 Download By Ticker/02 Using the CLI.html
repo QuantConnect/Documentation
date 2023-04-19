@@ -1,0 +1,183 @@
+<p>
+    Follow these steps to purchase and download data from the Dataset Market using the CLI:
+</p>
+
+<ol>
+    <li><a href="/docs/v2/lean-cli/initialization/authenticating-accounts#02-Log-In">Log in</a> to the CLI if you haven't done so already.</li>
+    <li>Open a terminal in one of your <a href='/docs/v2/lean-cli/initialization/workspace'>workspace directories</a>.</li>
+    <li>Run <code>lean data download</code> to start an interactive downloading wizard.</li>
+    <li>Go through the interactive wizard to configure the data you want to download.</li>
+    <li>After configuring the data you want to download, enter <span class='key-combinations'>N</span> when asked whether you want to download more data.
+<div class="cli section-example-container">
+<pre>$ lean data download
+Selected data:
+...
+Total price: 10 QCC
+Organization balance: 20,096,264 QCC
+Do you want to download more data? [y/N]: N</pre>
+</div>
+    </li>
+    <li>In the browser window that opens, read the <span class='document-title'>CLI API Access and Data Agreement</span> and click <span class='button-name'>I Accept The Data Agreement</span>.</li>
+    <li>Go back to the terminal and confirm the purchase to start downloading.
+<div class="cli section-example-container">
+<pre>$ lean data download
+You will be charged 10 QCC from your organization's QCC balance
+After downloading all files your organization will have 20,096,254 QCC left
+Continue? [y/N]: y
+[1/1] Downloading equity/usa/daily/spy.zip (10 QCC)</pre>
+</div>
+    </li>
+</ol>
+
+<p>Many of the datasets depend on the <a href='https://www.quantconnect.com/datasets/quantconnect-us-equity-security-master'>US Equity Security Master</a> dataset because the because the US Equity Security Master contains information on splits, dividends, and symbol changes. To check if a dataset depends the US Equity Security Master, see the listing in the <a href='https://www.quantconnect.com/datasets/'>Dataset Market</a>. If you try download a dataset through the CLI that depends on the US Equity Security Master and you don't have an active subscription to it, you'll get an error.</p>
+
+<p>Follow these steps to download US Equity data from the Dataset Market:</p>
+
+<ol>
+    <li>Open a terminal in one of your <a href='/docs/v2/lean-cli/initialization/workspace'>workspace directories</a>.</li>
+    <li>Run <code>lean data download</code> to start an interactive downloading wizard and then enter the dataset category number.
+        <div class="cli section-example-container">
+            <pre>$ lean data download
+Select a category:
+1) Commerce Data (3 datasets)
+2) Consumer Data (2 datasets)
+3) Energy Data (2 datasets)
+4) Environmental Data (1 dataset)
+5) Financial Market Data (30 datasets)
+6) Industry Data (1 dataset)
+7) Legal Data (2 datasets)
+8) News and Events (4 datasets)
+9) Political Data (2 datasets)
+10) Transport and Logistics Data (1 dataset)
+11) Web Data (9 datasets)
+Enter an option: 5</pre>
+        </div>
+    </li>
+    <li>Enter the dataset number.
+        <div class="cli section-example-container">
+            <pre>$ lean data download
+Select a dataset:
+1) Binance Crypto Future Margin Rate Data
+2) Binance Crypto Future Price Data
+3) Binance Crypto Price Data
+4) Binance US Crypto Price Data
+5) Bitcoin Metadata
+6) Bitfinex Crypto Price Data
+7) Brain Language Metrics on Company Filings
+8) Brain ML Stock Ranking
+9) CFD Data
+10) Coinbase Crypto Price Data
+11) Composite Factor Bundle
+12) Cross Asset Model
+13) FOREX Data
+14) Insider Trading
+15) Kraken Crypto Price Data
+16) NFT Sales
+17) Tactical
+18) Template (Do not Edit)
+19) US Coarse Universe
+20) US Congress Trading
+21) US ETF Constituents
+22) US Equities
+23) US Equity Options
+24) US Equity Security Master
+25) US Federal Reserve (FRED)
+26) US Futures Security Master
+27) US SEC Filings
+28) US Treasury Yield Curve
+29) VIX Central Contango
+30) VIX Daily Price
+Enter an option: 22</pre>
+        </div>
+
+        <p>If you don't have an active subscription to the US Equity Security Master, you'll get the following error message:</p>
+        <div class='error-messages'>Your organization needs to have an active Security Master subscription to download data from the 'US Equities' dataset<br>You can add the subscription at https://www.quantconnect.com/datasets/quantconnect-security-master/pricing</div>
+    </li>
+
+    <li>Enter the data type.
+        <div class="cli section-example-container">
+            <pre>$ lean data download
+Data type:
+1) Trade
+2) Quote
+3) Bulk
+Enter an option: 1</pre>
+        </div>
+    </li>
+
+    <li>Enter the ticker(s).
+        <div class="cli section-example-container">
+            <pre>$ lean data download
+Ticker(s) (comma-separated): SPY</pre>
+        </div>
+    </li>
+
+    <li>Enter the resolution.
+        <div class="cli section-example-container">
+            <pre>$ lean data download
+Resolution:
+1) Tick
+2) Second
+3) Minute
+4) Hour
+5) Daily
+Enter an option: 3</pre>
+        </div>
+    </li>
+
+    <li>If you selected tick, second, or minute resolution in the previous step, enter the start and end date.
+        <div class="cli section-example-container">
+            <pre>$ lean data download
+Start date (yyyyMMdd): 20230101
+End date (yyyyMMdd): 20230105</pre>
+        </div>
+    </li>
+
+
+    <li>Review your selected data and enter whether you would like to download more data.
+        <div class="cli section-example-container">
+            <pre>$ lean data download
+Selected data:
+┌─────────────┬──────────┬────────────────────────┬────────────┬────────┐
+│ Dataset     │ Vendor   │ Details                │ File count │ Price  │
+├─────────────┼──────────┼────────────────────────┼────────────┼────────┤
+│ US Equities │ AlgoSeek │ Data type: Trade       │ 3          │ 15 QCC │
+│             │          │ Ticker: SPY            │            │        │
+│             │          │ Resolution: Minute     │            │        │
+│             │          │ Start date: 2023-01-01 │            │        │
+│             │          │ End date: 2023-01-05   │            │        │
+└─────────────┴──────────┴────────────────────────┴────────────┴────────┘
+Total price: 15 QCC
+Organization balance: 100 QCC
+Do you want to download more data? [y/N]: n</pre>
+        </div>
+    </li>
+
+
+    <li>If you haven't already agreed to the <span class='document-title'>CLI API Access and Data Agreement</span>, in the browser window that opens, read the document and click <span class='button-name'>I Accept The Data Agreement</span>.</li>
+
+    <li>Confirm your data purchase.
+        <div class="cli section-example-container">
+            <pre>$ lean data download
+Data Terms of Use has been signed previously.
+Find full agreement at: https://www.quantconnect.com/terms/data/?organization=&lt;organizationId&gt;
+==========================================================================
+CLI API Access Agreement: On 2022-04-12 22:34:26 You Agreed:
+- Display or distribution of data obtained through CLI API Access is not permitted.
+- Data and Third Party Data obtained via CLI API Access can only be used for individual or internal employee's use.
+- Data is provided in LEAN format can not be manipulated for transmission or use in other applications.
+- QuantConnect is not liable for the quality of data received and is not responsible for trading losses.
+==========================================================================
+
+You will be charged 15 QCC from your organization's QCC balance
+After downloading all files your organization will have 85 QCC left
+Continue? [y/N]: y</pre>
+        </div>
+    </li>
+
+    <p>After you confirm your data purchsae, the CLI downloads the data and prints its progress.</p>
+    <div class="cli section-example-container">
+        <pre>$ lean data download
+ ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 100% (3/3)</pre>
+    </div>
+</ol>
