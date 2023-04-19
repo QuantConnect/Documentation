@@ -2,7 +2,7 @@
 
 <div class="section-example-container">
     <pre class="csharp">_symbol = AddEquity("YESBANK", market: Market.India).Symbol;</pre>
-    <pre class="python">self.symbol = AddEquity("YESBANK", market=Market.India).Symbol</pre>
+    <pre class="python">self.symbol = self.AddEquity("YESBANK", market=Market.India).Symbol</pre>
 </div>
 
 
