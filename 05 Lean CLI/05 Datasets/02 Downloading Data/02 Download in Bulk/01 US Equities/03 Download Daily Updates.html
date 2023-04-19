@@ -1,0 +1,42 @@
+<p>After you bulk download the US Equities dataset, new daily updates are available at 7 AM Eastern Time (ET) each trading day. To update your local copy of the dataset, place and run the following Python script in the <span class='public-directory-name'>data</span> directory of your <a href='https://www.quantconnect.com/docs/v2/lean-cli/initialization/workspace'>workspace</a>:</p>
+
+<div class="section-example-container">
+    <pre class="python">import os
+from datetime import datetime, timedelta
+from pytz import timezone
+
+REFERENCE_TICKER = "spy"
+FORMAT_STR = "%Y%m%d"
+
+# Get the organization Id
+with open("../lean.json", "r") as f:
+    lines = f.readlines()
+    for line in lines:
+        if "\"organization-id\"" in line:
+            ORGANIZATION_ID = line.split("\"")[-2]
+            break
+
+# Update minute, second, and tick data files
+END_DATE = "20140606"#datetime.now(timezone("US/Eastern")).strftime(FORMAT_STR)
+new_data_available = False
+for resolution in ["tick", "second", "minute"]:
+    data_files = sorted([f for f in os.listdir(f"equity/usa/{resolution}/{REFERENCE_TICKER}")])
+    latest_date = data_files[-1].split('_')[0]
+    if latest_date >= END_DATE:
+        print(f"{resolution} data is already up to date.")
+        continue
+    new_data_available = True
+    start_date = datetime.strptime(latest_date, FORMAT_STR) + timedelta(1)
+    start_date = start_date.strftime(FORMAT_STR)
+
+    print(f"Updating {resolution} data...")
+    os.system(f"lean data download --dataset \"US Equities\" --organization \"{ORGANIZATION_ID}\" --data-type \"Bulk\" --resolution \"{resolution}\" --start \"{start_date}\" --end \"{END_DATE}\"")
+
+# Update daily and hourly data files
+if new_data_available:
+    for resolution in ["hour", "daily"]:
+        print(f"Updating {resolution} data...")
+        os.system(f"lean data download --dataset \"US Equities\" --organization \"{ORGANIZATION_ID}\" --data-type \"Bulk\" --resolution \"{resolution}\" --overwrite")</pre>
+</div>
+
+<p>We structure tick, second, and minute resolution data files so there is one file per ticker per day. We structure hour and daily resolution data files so there is one file per ticker. To update your local dataset, the preceding script first gets your organization Id from your <a href='/docs/v2/lean-cli/initialization/configuration#03-Lean-Configuration'>Lean configuration file</a>. The script then checks the date of the most recent SPY data you have for tick, second, and minute resolutions. If there is new data available for any of these resolutions, it downloads the new data files and overwrites your hourly and daily files.</p>

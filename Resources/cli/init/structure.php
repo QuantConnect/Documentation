@@ -26,7 +26,7 @@
     <tbody>
         <tr>
             <td><span class='public-directory-name'>data /</span></td>
-            <td>This directory contains the <?=$leanCli ? "<a href='/docs/v2/lean-cli/datasets/local-data'>local data</a>" : "local data"?> that is used when running the LEAN engine locally. This directory is filled with <a rel='nofollow' href='https://github.com/QuantConnect/Lean/tree/master/Data' target='_blank'>sample data from the QuantConnect/Lean repository</a>.</td>
+            <td>This directory contains the <?=$leanCli ? "<a href='/docs/v2/lean-cli/datasets/format-and-storage'>local data</a>" : "local data"?> that is used when running the LEAN engine locally. This directory is filled with <a rel='nofollow' href='https://github.com/QuantConnect/Lean/tree/master/Data' target='_blank'>sample data from the QuantConnect/Lean repository</a>.</td>
         </tr>
     
         <tr>
