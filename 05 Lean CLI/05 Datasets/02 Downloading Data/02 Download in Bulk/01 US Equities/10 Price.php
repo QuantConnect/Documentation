@@ -7,7 +7,7 @@
 <table class="qc-table table" id='trade-and-quote-price'>
     <thead>
         <tr>
-            <th>Period</th>
+            <th>Download Type</th>
             <th>Resolutions</th>
             <th>Cost ($)</th>
         </tr>
