@@ -9,7 +9,7 @@
         <tr>
             <th>Resolution</th>
             <th>Price of Historical Data ($)</th>
-            <th>Price of Daily Updates ($/year)</th>
+            <th>Price of Daily Updates ($/Year)</th>
         </tr>
     </thead>
     <tbody>
