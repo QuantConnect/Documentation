@@ -16,22 +16,22 @@
         <tr>
             <td>Hour & Daily</td>
             <td>3,480</td>
-            <td>1,200</td>
+            <td>960</td>
         </tr>
         <tr>
             <td>Minute</td>
-            <td>_____</td>
-            <td>_____</td>
+            <td>TBD</td>
+            <td>TBD</td>
         </tr>
         <tr>
             <td>Second</td>
-            <td>_____</td>
-            <td>_____</td>
+            <td>TBD</td>
+            <td>TBD</td>
         </tr>
         <tr>
             <td>Tick</td>
-            <td>_____</td>
-            <td>_____</td>
+            <td>TBD</td>
+            <td>TBD</td>
         </tr>
     </tbody>
 </table>
