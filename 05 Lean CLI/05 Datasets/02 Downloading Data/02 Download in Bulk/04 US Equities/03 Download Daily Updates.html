@@ -27,8 +27,7 @@ END_DATE = datetime.now(timezone("US/Eastern")).strftime(FORMAT_STR)
 command = lambda resolution: f"lean data download --dataset \"US Equities\" --organization \"{ORGANIZATION_ID}\" --data-type \"Bulk\" --resolution \"{resolution}\""
 new_data_available = False
 for resolution in ["tick", "second", "minute"]:
-    data_files = sorted([f for f in os.listdir(f"equity/usa/{resolution}/spy")])
-    latest_date = data_files[-1].split('_')[0]
+    latest_date = sorted([f for f in os.listdir(f"equity/usa/{resolution}/spy")])[-1].split('_')[0]
     if latest_date &gt;= END_DATE:
         print(f"{resolution} data is already up to date.")
         continue
