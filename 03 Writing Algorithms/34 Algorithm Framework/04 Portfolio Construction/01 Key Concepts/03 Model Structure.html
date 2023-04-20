@@ -1,12 +1,21 @@
 <p>
 Portfolio Construction models should extend the <code>PortfolioConstructionModel</code> class or one of the <a href="/docs/v2/writing-algorithms/algorithm-framework/portfolio-construction/supported-models">supported models</a>. Extensions of the <code>PortfolioConstructionModel</code> class should implement the <code>CreateTargets</code> method, which receives an array of <code>Insight</code> objects from the Alpha model at every <a href="/docs/v2/writing-algorithms/key-concepts/time-modeling/timeslices">time step</a> and returns an array of <code>PortfolioTarget</code> objects. The Portfolio Construction model seeks to answer the question, "how many units should I buy based on the insight predictions I've been presented?".</p>
 
-<p>If you don't override the <code>CreateTargets</code> method, the base class implementation calls&nbsp;the model's&nbsp;<code>IsRebalanceDue</code>, <code>GetTargetInsights</code>, and <code>DetermineTargetPercent</code> helper methods. The <code>GetTargetInsights</code> method, in turn, calls the model's <code>ShouldCreateTargetForInsight</code> method. You can override any of these helper methods. If you don't override the <code>CreateTargets</code> method from the <code>PortfolioConstructionModel</code> class, your class must at least override the <code>DetermineTargetPercent</code> method.</p>
+<p>If you don't override the <code>CreateTargets</code> method, the base class implementation calls the model's <code>IsRebalanceDue</code>, <code>DetermineTargetPercent</code>, and <code>GetTargetInsights</code> helper methods. The <code>GetTargetInsights</code> method, in turn, calls the model's <code>ShouldCreateTargetForInsight</code> method. You can override any of these helper methods. If you don't override the <code>CreateTargets</code> method from the <code>PortfolioConstructionModel</code> class, your class must at least override the <code>DetermineTargetPercent</code> method.</p>
 
 <div class="section-example-container">
 	<pre class="csharp">// Portfolio construction scaffolding class; basic method args.
 class MyPortfolioConstructionModel : PortfolioConstructionModel
 {
+    // Create list of PortfolioTarget objects from Insights
+    public override List&lt;PortfolioTarget&gt; CreateTargets(QCAlgorithm algorithm, Insight[] insights)
+    {
+        return new List&lt;PortfolioTarget&gt;();
+    }
+    
+    // Determines if the portfolio should be rebalanced base on the provided rebalancing func
+    protected virtual bool IsRebalanceDue(Insight[] insights, DateTime algorithmUtc) =&gt; true;
+    
     // Determines the target percent for each insight
     protected override Dictionary&lt;Insight, double&gt; DetermineTargetPercent(List&lt;Insight&gt; activeInsights)
     {
@@ -19,17 +28,8 @@ class MyPortfolioConstructionModel : PortfolioConstructionModel
         return new List&lt;Insight&gt;();
     }
 
-    // Create list of PortfolioTarget objects from Insights
-    public override List&lt;PortfolioTarget&gt; CreateTargets(QCAlgorithm algorithm, Insight[] insights)
-    {
-        return new List&lt;PortfolioTarget&gt;();
-    }
-
     // Determine if the portfolio construction model should create a target for this insight
     protected override bool ShouldCreateTargetForInsight(Insight insight) =&gt; true;
-
-    // Determines if the portfolio should be rebalanced base on the provided rebalancing func
-    protected virtual bool IsRebalanceDue(Insight[] insights, DateTime algorithmUtc) =&gt; true;
 
     // OPTIONAL: Security change details
     public override void OnSecuritiesChanged(QCAlgorithm algorithm, SecurityChanges changes)
@@ -42,6 +42,14 @@ class MyPortfolioConstructionModel : PortfolioConstructionModel
 }</pre>
 	<pre class="python"> # Portfolio construction scaffolding class; basic method args.
 class MyPortfolioConstructionModel(PortfolioConstructionModel):
+    # Create list of PortfolioTarget objects from Insights
+    def CreateTargets(self, algorithm: QCAlgorithm, insights: List[Insight]) -&gt; List[PortfolioTarget]:
+        return []
+	
+    # Determines if the portfolio should be rebalanced base on the provided rebalancing func
+    def IsRebalanceDue(self, insights: List[Insight], algorithmUtc: datetime) -&gt; bool:
+        return True
+
     # Determines the target percent for each insight
     def DetermineTargetPercent(self, activeInsights: List[Insight]) -&gt; Dict[Insight, float]:
         return {}
@@ -49,17 +57,9 @@ class MyPortfolioConstructionModel(PortfolioConstructionModel):
     # Gets the target insights to calculate a portfolio target percent for, they will be piped to DetermineTargetPercent()
     def GetTargetInsights(self) -&gt; List[Insight]:
         return []
-    
-    # Create list of PortfolioTarget objects from Insights
-    def CreateTargets(self, algorithm: QCAlgorithm, insights: List[Insight]) -&gt; List[PortfolioTarget]:
-        return []
 
     # Determine if the portfolio construction model should create a target for this insight
     def ShouldCreateTargetForInsight(self, insight: Insight) -&gt; bool:
-        return True
-
-    # Determines if the portfolio should be rebalanced base on the provided rebalancing func
-    def IsRebalanceDue(self, insights: List[Insight], algorithmUtc: datetime) -&gt; bool:
         return True
 
     # OPTIONAL: Security change details
