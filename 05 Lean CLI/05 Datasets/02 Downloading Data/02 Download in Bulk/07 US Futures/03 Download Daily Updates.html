@@ -22,11 +22,17 @@ with open("../lean.json", "r") as f:
             ORGANIZATION_ID = line.split("\"")[-2]
             break
 
+def download_data(organization_id, market, resolution, overwrite=False):
+    print(f"Updating {market} {resolution} data...")
+    command = f"lean data download --dataset \"US Futures\" --organization \"{organization_id}\" --data-type \"Bulk\" --market \"{market}\" --resolution \"{resolution}\""
+    if overwrite:
+        command += " --overwrite"
+    os.system(command)
+
 # Update minute, second, and tick data files
 FORMAT_STR = "%Y%m%d"
 MARKETS = ['CBOT', 'CFE', 'CME', 'COMEX', 'ICE', 'INDIA', 'NYMEX', 'NYSELIFFE']
 END_DATE = datetime.now(timezone("US/Eastern")).strftime(FORMAT_STR)
-command = lambda market, resolution: f"lean data download --dataset \"US Futures\" --organization \"{ORGANIZATION_ID}\" --data-type \"Bulk\" --market \"{market}\" --resolution \"{resolution}\""
 new_data_available = False
 for resolution in ["tick", "second", "minute"]:
     for f in os.listdir(f"future/cbot"):
@@ -38,15 +44,13 @@ for resolution in ["tick", "second", "minute"]:
             continue
         new_data_available = True
         for market in MARKETS:
-            print(f"Updating {market} {resolution} data...")
-            os.system(command(market, resolution))
+            download_data(ORGANIZATION_ID, market, resolution)
 
 # Update daily and hourly data files
 if new_data_available:
     for resolution in ["hour", "daily"]:
         for market in MARKETS:
-            print(f"Updating {market} {resolution} data...")
-            os.system(command(market, resolution) + " --overwrite")</pre>
+            download_data(ORGANIZATION_ID, market, resolution, True)
 </div>
 
 <p>We structure tick, second, and minute resolution data files so there is one file per ticker per day. We structure hour and daily resolution data files so there is one file per ticker. To update your local dataset, the preceding script first gets your organization Id from your <a href="/docs/v2/lean-cli/initialization/configuration#03-Lean-Configuration">Lean configuration file</a>. The script then checks the date of the most recent ZC data you have from the CBOT market for tick, second, and minute resolutions. If there is new data available for any of these resolutions, it downloads the new data files and overwrites your hourly and daily files. If you don't intend to download all resolutions and markets, adjust this script to your needs.</p>
