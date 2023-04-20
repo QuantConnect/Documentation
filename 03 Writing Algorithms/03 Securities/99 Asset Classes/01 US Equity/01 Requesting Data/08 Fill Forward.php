@@ -1,5 +1,5 @@
 <?php
-$cCode = "AddEquity(\"SPY\", fillDataForward: false);";
-$pyCode = "self.AddEquity(\"SPY\", fillDataForward=False)";
+$cCode = "AddEquity(\"SPY\", fillForward: false);";
+$pyCode = "self.AddEquity(\"SPY\", fillForward=False)";
 include(DOCS_RESOURCES."/securities/fill-forward.php");
 ?>

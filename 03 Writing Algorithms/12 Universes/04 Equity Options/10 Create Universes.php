@@ -37,7 +37,7 @@ self.symbol = option.Symbol</pre>
             <td><code class="python">None</code><code class="csharp">null</code></td>
         </tr>
         <tr>
-            <td><code>fillDataForward</code></td>
+            <td><code>fillForward</code></td>
 	        <td><code>bool</code></td>
             <td>If true, the current slice contains the last available data even if there is no data at the current time.</td>
             <td><code class="python">True</code><code class="csharp">true</code></td>

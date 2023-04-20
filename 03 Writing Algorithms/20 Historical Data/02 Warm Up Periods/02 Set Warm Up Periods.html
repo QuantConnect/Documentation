@@ -21,12 +21,12 @@ self.SetWarmUp(100)
 <p>If you pass just an integer argument, LEAN calculates the start of the warm-up period for each of your security subscriptions by using the number of bars you specify, the resolution of each security, and the trading calendar of each security. After it calculates the start time of the warm-up period for each security, it sets the earliest start time as the start of the algorithm warm-up period. For instance, in the following example, the warm-up period consists of 100 minute resolution bars for SPY and as many second resolution bars for BTCUSD that occur from the start of the SPY warm-up period to the algorithm <code>StartDate</code>.</p>
 
 <div class="section-example-container">
-<pre class="csharp">AddEquity("SPY", Resolution.Minute, fillDataForward: false);
-AddCrypto("BTCUSD", Resolution.Second, fillDataForward: false);
+<pre class="csharp">AddEquity("SPY", Resolution.Minute, fillForward: false);
+AddCrypto("BTCUSD", Resolution.Second, fillForward: false);
 SetWarmUp(100);
 </pre>
-<pre class="python">self.AddEquity("SPY", Resolution.Minute, fillDataForward=False)
-self.AddCrypto("BTCUSD", Resolution.Second, fillDataForward=False)
+<pre class="python">self.AddEquity("SPY", Resolution.Minute, fillForward=False)
+self.AddCrypto("BTCUSD", Resolution.Second, fillForward=False)
 self.SetWarmUp(100)
 </pre>
 </div>
@@ -51,16 +51,16 @@ self.SetWarmUp(100, Resolution.Daily)</pre>
 <p>If you pass an integer and a resolution, the warm-up period consists of the number of bars and resolution you set, regardless of the resolution of your data subscriptions. In this case,&nbsp;<span style="font-size: 15px;">LEAN calculates the start of the warm-up period for each of your security subscriptions just like it does when you only pass an integer argument. After it calculates the start time of the warm-up period for each security, it sets the earliest start time as the start of the algorithm warm-up period.</span></p><p>If you pass a resolution argument and you registered indicators or consolidators for automatic updates, the warm-up period resolution must be less than or equal to the lowest resolution of your automatic indicators and consolidators. For instance, in the following example, the indicators use minute resolution data, so you can set the warm-up period to use tick, second, or minute resolution data.</p>
 
 <div class="section-example-container">
-<pre class="csharp">_spy = AddEquity("SPY", Resolution.Minute, fillDataForward: false).Symbol;
-_btc = AddCrypto("BTCUSD", Resolution.Second, fillDataForward: false).Symbol;
+<pre class="csharp">_spy = AddEquity("SPY", Resolution.Minute, fillForward: false).Symbol;
+_btc = AddCrypto("BTCUSD", Resolution.Second, fillForward: false).Symbol;
 
 _spySma = SMA(_spy, 10);
 _btcSMA = SMA(_btc, 10, Resolution.Minute);
 
 SetWarmUp(100, Resolution.Minute);
 </pre>
-<pre class="python">self.spy = self.AddEquity("SPY", Resolution.Minute, fillDataForward=False).Symbol
-self.btc = self.AddCrypto("BTCUSD", Resolution.Second, fillDataForward=False).Symbol
+<pre class="python">self.spy = self.AddEquity("SPY", Resolution.Minute, fillForward=False).Symbol
+self.btc = self.AddCrypto("BTCUSD", Resolution.Second, fillForward=False).Symbol
 
 self.spy_sma = self.SMA(self.spy, 10)
 self.btc_sma = self.SMA(self.btc, 10, Resolution.Minute)
