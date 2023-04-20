@@ -392,7 +392,7 @@ foreach (var s in slices) {
             <td><code class='csharp'>null</code><code class='python'>None</code></td>
         </tr>
         <tr>
-            <td><code>extendedMarket</code></td>
+            <td><code>extendedMarketHours</code></td>
 	        <td><code class='csharp'>bool?</code><code class='python'>bool/NoneType</code></td>
             <td>True to include extended market hours data. Otherwise, false.</td>
             <td><code class='csharp'>null</code><code class='python'>None</code></td>
@@ -426,7 +426,7 @@ history = <?=$pyVar?>.History(
     end=<?=$pyVar?>.Time, 
     resolution=Resolution.Minute, 
     fillForward=False, 
-    extendedMarket=False, 
+    extendedMarketHours=False, 
     dataMappingMode=DataMappingMode.OpenInterest, 
     dataNormalizationMode=DataNormalizationMode.Raw, 
     contractDepthOffset=0)</pre>
@@ -437,7 +437,7 @@ var history = <?=$cVar?>History(
     end: <?=$cVar?>Time,
     resolution: Resolution.Minute,
     fillForward: false,
-    extendedMarket: false,
+    extendedMarketHours: false,
     dataMappingMode: DataMappingMode.OpenInterest,
     dataNormalizationMode: DataNormalizationMode.Raw,
     contractDepthOffset: 0);</pre>
