@@ -1,27 +1,19 @@
-<p>After you bulk download the US Coarse Universe dataset, new daily updates are available at 7 AM Eastern Time (ET) after each trading day. To gain access to the data updates, <a href='https://www.quantconnect.com/contact'>contact us</a>. You need <a href="https://www.quantconnect.com/docs/v2/cloud-platform/organizations/members#08-Permissions">billing permissions</a> to change the organization's subscriptions.</p>
+<p>After you bulk download the US Coarse Universe dataset, new daily updates are available at 7 AM Eastern Time (ET) after each trading day. To gain access to the data updates, <a href="https://www.quantconnect.com/contact">contact us</a>. You need <a href="https://www.quantconnect.com/docs/v2/cloud-platform/organizations/members#08-Permissions">billing permissions</a> to change the organization's subscriptions.</p>
 
-<p>After you subscribe to datasets updates, to update your local copy of the US Coarse Universe dataset, use the <a href='https://www.quantconnect.com/datasets/quantconnect-us-coarse-universe-constituents/cli'>CLI Command Generator</a> to generate your download command and then run it in a terminal in your organization <a href='https://www.quantconnect.com/docs/v2/lean-cli/initialization/workspace'>workspace</a>. Alternatively, instead of directly calling the <code>lean data download</code> command, you can place a Python script in the <span class="public-directory-name">data</span> directory of your workspace and run it to update your data files. The following example script downloads the latest data when it's available:</p>
+<p>After you subscribe to datasets updates, to update your local copy of the US Coarse Universe dataset, use the <a href="https://www.quantconnect.com/datasets/quantconnect-us-coarse-universe-constituents/cli">CLI Command Generator</a> to generate your download command and then run it in a terminal in your organization <a href="https://www.quantconnect.com/docs/v2/lean-cli/initialization/workspace">workspace</a>. Alternatively, instead of directly calling the <code>lean data download</code> command, you can place a Python script in the <span class="public-directory-name">data</span> directory of your workspace and run it to update your data files. The following example script downloads the latest data when it's available:</p>
 
 <div class="section-example-container">
     <pre class="python">import os
 from datetime import datetime
 from pytz import timezone
 
-# Get the organization Id
-with open("../lean.json", "r") as f:
-    for line in f.readlines():
-        if '"organization-id"' in line:
-            ORGANIZATION_ID = line.split('"')[-2]
-            break
-
-# Update data files
 END_DATE = datetime.now(timezone("US/Eastern")).strftime("%Y%m%d")
 latest_date = sorted([f for f in os.listdir(f"equity/usa/fundamental/coarse")])[-1]
-if latest_date >= END_DATE:
-    print(f"{resolution} data is already up to date.")
+if latest_date &gt;= END_DATE:
+    print(f"Your local data is already up to date.")
 else:
     print("Updating data...")
-    os.system(f'lean data download --dataset "US Coarse Universe" --organization "{ORGANIZATION_ID}" --data-type "Bulk"')</pre>
+    os.system(f'lean data download --dataset "US Coarse Universe" --data-type "Bulk"')</pre>
 </div>
 
 <p>We structure universe data files so there is one file per day. To update your local dataset, the preceding script first gets your organization Id from your <a href="/docs/v2/lean-cli/initialization/configuration#03-Lean-Configuration">Lean configuration file</a>. The script then checks the date of the most recent US Coarse Universe data you have. If there is new data available, it downloads the new data files.</p>
