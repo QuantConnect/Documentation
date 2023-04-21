@@ -18,22 +18,21 @@ from pytz import timezone
 # Get the organization Id
 with open("../lean.json", "r") as f:
     for line in f.readlines():
-        if "\"organization-id\"" in line:
-            ORGANIZATION_ID = line.split("\"")[-2]
+        if '"organization-id"' in line:
+            ORGANIZATION_ID = line.split('"')[-2]
             break
 
 # Define a method to download the data
 def download_data(market, resolution, overwrite=False):
     print(f"Updating {market} {resolution} data...")
-    command = f"lean data download --dataset \"US Futures\" --organization \"{ORGANIZATION_ID}\" --data-type \"Bulk\" --market \"{market}\" --resolution \"{resolution}\""
+    command = f'lean data download --dataset "US Futures" --organization "{ORGANIZATION_ID}" --data-type "Bulk" --market "{market}" --resolution "{resolution}"'
     if overwrite:
         command += " --overwrite"
     os.system(command)
 
 # Update minute, second, and tick data files
-FORMAT_STR = "%Y%m%d"
 MARKETS = ['CBOT', 'CFE', 'CME', 'COMEX', 'ICE', 'INDIA', 'NYMEX', 'NYSELIFFE']
-END_DATE = datetime.now(timezone("US/Eastern")).strftime(FORMAT_STR)
+END_DATE = datetime.now(timezone("US/Eastern")).strftime("%Y%m%d")
 new_data_available = False
 for resolution in ["tick", "second", "minute"]:
     for f in os.listdir(f"future/cbot"):
