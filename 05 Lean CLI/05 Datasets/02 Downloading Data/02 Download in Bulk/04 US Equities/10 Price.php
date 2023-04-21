@@ -14,9 +14,14 @@
     </thead>
     <tbody>
         <tr>
-            <td>Hour & Daily</td>
-            <td>3,480</td>
-            <td>960</td>
+            <td>Daily</td>
+            <td>TBD</td>
+            <td>TBD</td>
+        </tr>
+        <tr>
+            <td>Hour</td>
+            <td>TBD</td>
+            <td>TBD</td>
         </tr>
         <tr>
             <td>Minute</td>
