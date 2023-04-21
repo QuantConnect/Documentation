@@ -1,4 +1,4 @@
-<p>After you bulk download the US Index Options dataset, new daily updates are available at 8 PM Coordinated Universal Time (UTC) two days after each trading day. For example, the minute resolution data for March 14, 2023 was available on March 16, 2023 at 8 PM UTC. To gain access to the data updates, <a href="https://www.quantconnect.com/contact">contact us</a>. You need <a href="https://www.quantconnect.com/docs/v2/cloud-platform/organizations/members#08-Permissions">billing permissions</a> to change the organization's subscriptions.</p>
+<p>After you bulk download the US Index Options dataset, new daily updates are available at 8 PM Coordinated Universal Time (UTC) two days after each trading day. For example, the minute resolution data for Monday is available on Wednesday at 8 PM UTC. To gain access to the data updates, <a href="https://www.quantconnect.com/contact">contact us</a>. You need <a href="https://www.quantconnect.com/docs/v2/cloud-platform/organizations/members#08-Permissions">billing permissions</a> to change the organization's subscriptions.</p>
 
 <p>After you subscribe to datasets updates, to update your local copy of the US Index Options dataset, use the <a href="https://www.quantconnect.com/datasets/algoseek-us-index-options/cli">CLI Command Generator</a> to generate your download command and then run it in a terminal in your organization <a href="https://www.quantconnect.com/docs/v2/lean-cli/initialization/workspace">workspace</a>. Alternatively, instead of directly calling the <code>lean data download</code> command, you can place a Python script in the <span class="public-directory-name">data</span> directory of your workspace and run it to update your data files. The following example script updates all data resolutions:</p>
 
@@ -15,11 +15,11 @@ def download_data(resolution, overwrite=False):
         command += " --overwrite"
     os.system(command)
 
-# Update minute data files
+# Update data files
 END_DATE = datetime.now(timezone("US/Eastern")).strftime("%Y%m%d")
 latest_date = sorted([f for f in os.listdir(f"indexoption/usa/minute/spx")])[-1].split('_')[0]
 if latest_date &gt;= END_DATE:
-    print(f"Minute data is already up to date.")
+    print(f"Your data is already up to date.")
 else:
     download_data("minute")
     for resolution in ['hour', 'daily']:
