@@ -15,13 +15,6 @@
 from datetime import datetime
 from pytz import timezone
 
-# Get the organization Id
-with open("../lean.json", "r") as f:
-    for line in f.readlines():
-        if '"organization-id"' in line:
-            ORGANIZATION_ID = line.split('"')[-2]
-            break
-
 # Define a method to download the data
 def download_data(resolution, overwrite=False):
     print(f"Updating {resolution} data...")
@@ -47,4 +40,4 @@ if new_data_available:
         download_data(resolution, True)</pre>
 </div>
 
-<p>We structure tick, second, and minute resolution data files so there is one file per ticker per day. We structure hour and daily resolution data files so there is one file per ticker. To update your local dataset, the preceding script first gets your organization Id from your <a href="/docs/v2/lean-cli/initialization/configuration#03-Lean-Configuration">Lean configuration file</a>. The script then checks the date of the most recent SPY data you have for tick, second, and minute resolutions. If there is new data available for any of these resolutions, it downloads the new data files and overwrites your hourly and daily files. If you don't intend to download all resolutions, adjust this script to your needs.</p>
+<p>We structure tick, second, and minute resolution data files so there is one file per ticker per day. We structure hour and daily resolution data files so there is one file per ticker. To update your local dataset, the preceding script checks the date of the most recent SPY data you have for tick, second, and minute resolutions. If there is new data available for any of these resolutions, it downloads the new data files and overwrites your hourly and daily files. If you don't intend to download all resolutions, adjust this script to your needs.</p>
