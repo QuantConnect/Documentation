@@ -1,3 +1,7 @@
+<p>The following table shows the price of an annual subscription to the US Equity Security Master for each organization tier:</p>
+
+<?php include(DOCS_RESOURCES."/datasets/us-equity-security-master-price.html"); ?>
+
 <p>The following table shows the price of the US Equity Options dataset subscriptions:</p>
 
 <table class="qc-table table" id='trade-and-quote-price'>
