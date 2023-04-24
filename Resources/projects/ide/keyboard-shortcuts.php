@@ -5,7 +5,7 @@
 <ol>
     <li><a href='<?=$projectLink?>'>Open a project</a>.</li>
     <li>Press <span class='key-combinations'>F1</span>.</li>
-    <li>Enter \"Preferences: Open Keyboard Shortcuts\".</li>
+    <li>Enter "Preferences: Open Keyboard Shortcuts".</li>
     <li>Click <span class='button-name'>Preferences: Open Keyboard Shortcuts</span>.</li>
 </ol>
 
