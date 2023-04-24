@@ -1,4 +1,4 @@
-<p>To send targets to Collective2, pass a <code>PortfolioTarget</code> object or a list of <code>PortfolioTarget</code> objects to the <code>SetTargetPortfolio</code> method. The method returns a boolean that represents if the targets were sucessfully sent to the signal export provider. In this situation, the number you pass to the <code>PortfolioTarget</code> constructor represents the portfolio weight. Don't use the <code>PortfolioTarget.Percent</code> method.</p>
+<p>To send targets to Collective2, pass a <code>PortfolioTarget</code> object or a list of <code>PortfolioTarget</code> objects to the <code>SetTargetPortfolio</code> method. The method returns a boolean that represents if the targets were successfully sent to Collective2. In this situation, the number you pass to the <code>PortfolioTarget</code> constructor represents the portfolio weight. Don't use the <code>PortfolioTarget.Percent</code> method.</p>
 
 <div class="section-example-container">
 <pre class="csharp">var target = new PortfolioTarget(_symbol, weight);
