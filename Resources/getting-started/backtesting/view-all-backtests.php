@@ -7,7 +7,7 @@ $imgLink = $cloudPlatform ? "https://cdn.quantconnect.com/i/tu/backtest-results-
 
 <ol>
     <li><a href="<?=$openProjectLink?>">Open the project</a> that contains the backtests you want to view.</li>
-    <li>In the top-right corner of the IDE, click the <img class='inline-icon' src='https://cdn.quantconnect.com/i/tu/algorithm-results-icon.jpg'><?php if ($localPlatform) {?>/<img class='inline-icon' src='https://cdn.quantconnect.com/i/tu/algorithm-results-icon.jpg'><?php } ?> <span class="icon-name">Backtest Results</span> icon.<br></li>
+    <li>In the top-right corner of the IDE, click the <img class='inline-icon' src='https://cdn.quantconnect.com/i/tu/local-platform-backtest-results-button.png'><?php if ($localPlatform) {?>/<img class='inline-icon' src='https://cdn.quantconnect.com/i/tu/algorithm-results-icon.jpg'><?php } ?> <span class="icon-name">Backtest Results</span> icon.<br></li>
     <p>A table containing all of the backtest results for the project is displayed. If there is a <span class="icon-name">play</span> icon to the left of the name, it's a <a href="https://www.quantconnect.com/docs/v2/cloud-platform/backtesting/results">backtest result</a>. If there is a <span class="icon-name">fast-forward</span> icon next to the name, it's an <a href="/docs/v2/cloud-platform/optimization/results">optimization result</a>.<br></p>
     <img class="docs-image" src="<?=$imgLink?>" alt="All backtest table view">
     <li><span class="qualifier">(Optional)</span> In the top-right corner, select the <span class="field-name">Show</span> field and then select one of the options from the drop-down menu to filter the table by backtest or optimization results.</li>
