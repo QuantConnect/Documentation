@@ -4,7 +4,7 @@
 
 <div class="section-example-container">
 <pre class="csharp">var target = new PortfolioTarget(_symbol, weight);
-SignalExport.SetTargetPortfolio(target);</pre>
+var success = SignalExport.SetTargetPortfolio(target);</pre>
 <pre class="python">target = PortfolioTarget(self.symbol, weight)
-self.SignalExport.SetTargetPortfolio(target)</pre>
+success = self.SignalExport.SetTargetPortfolio(target)</pre>
 </div>
