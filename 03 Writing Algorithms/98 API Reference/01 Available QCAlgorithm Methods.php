@@ -332,6 +332,10 @@
 <td>Creates a new HullMovingAverage indicator. The Hull moving average is a series of nested weighted moving averages, is fast and smooth.</td>
 </tr>
 <tr>
+<td width="33%"><a href="#HT-header">HT()</a></td>
+<td>Creates a new Hilbert Transform indicator.</td>
+</tr>
+<tr>
 <td width="33%"><a href="#ICHIMOKU-header">ICHIMOKU()</a></td>
 <td>Creates a new IchimokuKinkoHyo indicator for the symbol. The indicator will be automatically updated on the given resolution.</td>
 </tr>
@@ -513,7 +517,7 @@
 </tr>
 <tr>
 <td width="33%"><a href="#Plot-header">Plot()</a></td>
-<td>Plot a chart to string chart name, using string series name, with int value.</td>
+<td>Plot a chart to string chart name, using string series name, with double value.</td>
 </tr>
 <tr>
 <td width="33%"><a href="#PlotIndicator-header">PlotIndicator()</a></td>
@@ -1005,7 +1009,7 @@
 </tr>
 <tr>
 <td width="33%"><a href="#Plot-header">Plot()</a></td>
-<td>Plot a chart to string chart name, using string series name, with int value.</td>
+<td>Plot a chart to string chart name, using string series name, with double value.</td>
 </tr>
 <tr>
 <td width="33%"><a href="#PlotIndicator-header">PlotIndicator()</a></td>
@@ -1278,6 +1282,10 @@
 <tr>
 <td width="33%"><a href="#HMA-header">HMA()</a></td>
 <td>Creates a new HullMovingAverage indicator. The Hull moving average is a series of nested weighted moving averages, is fast and smooth.</td>
+</tr>
+<tr>
+<td width="33%"><a href="#HT-header">HT()</a></td>
+<td>Creates a new Hilbert Transform indicator.</td>
 </tr>
 <tr>
 <td width="33%"><a href="#ICHIMOKU-header">ICHIMOKU()</a></td>

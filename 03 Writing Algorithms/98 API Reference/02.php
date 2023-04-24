@@ -78,6 +78,7 @@ echo file_get_contents(DOCS_RESOURCES."/qcalgorithm-api/get-parameters.html");
 echo file_get_contents(DOCS_RESOURCES."/qcalgorithm-api/heikin-ashi.html");
 echo file_get_contents(DOCS_RESOURCES."/qcalgorithm-api/history.html");
 echo file_get_contents(DOCS_RESOURCES."/qcalgorithm-api/hma.html");
+echo file_get_contents(DOCS_RESOURCES."/qcalgorithm-api/ht.html");
 echo file_get_contents(DOCS_RESOURCES."/qcalgorithm-api/ichimoku.html");
 echo file_get_contents(DOCS_RESOURCES."/qcalgorithm-api/identity.html");
 echo file_get_contents(DOCS_RESOURCES."/qcalgorithm-api/initialize.html");
