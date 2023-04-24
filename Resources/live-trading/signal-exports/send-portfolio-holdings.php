@@ -1,4 +1,4 @@
-<p>To send your current portfolio holdings, call the <code>SetTargetPortfolioFromPortfolio</code> method. The method returns a boolean that represents if the targets were sucessfully sent to the signal export provider.</p>
+<p>To send your current portfolio holdings, call the <code>SetTargetPortfolioFromPortfolio</code> method. The method returns a boolean that represents if the targets were successfully sent to <?=$providerName?>.</p>
 
 <div class="section-example-container">
 <pre class="csharp">var success = SignalExport.SetTargetPortfolioFromPortfolio();
