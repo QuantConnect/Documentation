@@ -47,7 +47,7 @@
 
 <ul>
     <li><code>Day</code></li>
-    <li><code>GoodTilCanceled</code></li>
+    <li><code>GoodTilCanceled</code> (not available for short selling)</li>
     <li><code>GoodTilDate</code></li>
 </ul>
 
@@ -104,3 +104,6 @@ def OnData(self, slice: Slice) -&gt; None:
 <h4>Automatic Cancellations</h4>
 <p>If you have open orders for a security when it performs a reverse split, <?= $cloudPlatform ? "Tradier" : "the <code>TradierBrokerageModel</code>" ?> automatically cancels your orders.</p>
 
+<h4>Errors</h4>
+
+<p>To view the order-related error codes from Tradier, see <a href='https://documentation.tradier.com/brokerage-api/overview/errors' rel='nofollow' target='_blank'>Error Responses</a> in their documentation.</p>
