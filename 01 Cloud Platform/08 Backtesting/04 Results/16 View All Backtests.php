@@ -1,4 +1,4 @@
-<? include(DOCS_RESOURCES."/getting-started/backtesting/view-all-backtests.html"); ?>
+<? include(DOCS_RESOURCES."/getting-started/backtesting/view-all-backtests.php"); ?>
 
 <h4>Rename Backtests</h4>
 <?
