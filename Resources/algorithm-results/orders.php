@@ -15,8 +15,9 @@
 <p>The timestamps in the Order Summary table are based in Eastern Time (ET).</p>
 
 <h4>Download CSV</h4>
-<p>To download the orders in CSV format, open the <?=$pageName?> results page, click the <span class='tab-name'>Orders</span> tab, and then click <span class='button-name'>Download Orders</span>. The content of the CSV file is the content displayed in the Orders Summary table when the table rows are collapsed.
+<p>To download the orders in CSV format, open the <?=$pageName?> results page, click the <span class='tab-name'>Orders</span> tab, and then click <span class='button-name'>Download Orders</span>. The content of the CSV file is the content displayed in the Orders Summary table when the table rows are collapsed. 
 
 <? if ($pageName == "backtest") { ?>
-    To retrieve all of the content in the Orders Summary table, <a href='/docs/v2/cloud-platform/backtesting/results#15-Download-Results'>download the backtest results JSON file</a>.The timestamps in the CSV and JSON files are based in Coordinated Universal Time (UTC).</p>
+To retrieve all of the content in the Orders Summary table, <a href='/docs/v2/cloud-platform/backtesting/results#15-Download-Results'>download the backtest results JSON file</a>.The timestamps in the CSV and JSON files are based in Coordinated Universal Time (UTC).
 <? } ?>
+</p>
