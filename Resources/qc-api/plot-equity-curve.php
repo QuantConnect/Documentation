@@ -8,13 +8,13 @@
     <pre class="python">equity = chart.Series["Equity"].Values</pre>
 </div>
 
-<li>Create a <code>pandas.DataFrame</code> from the series values.</li>
+<li>Create a <code>pandas.Series</code> from the series values.</li>
 <div class="section-example-container">
-    <pre class="python">equity_df = pd.Series({datetime.fromtimestamp(value.x): value.y for value in equity})</pre>
+    <pre class="python">equity_series = pd.Series({datetime.fromtimestamp(value.x): value.y for value in equity})</pre>
 </div>
 
 <li>Plot the equity curve.</li>
 <div class="section-example-container">
-    <pre class="python">equity_df.plot(figsize=(12, 8), title="Strategy Equity Curve", xlabel="time", ylabel="portfolio value ($)")</pre>
+    <pre class="python">equity_series.plot(figsize=(12, 8), title="Strategy Equity Curve", xlabel="time", ylabel="portfolio value ($)")</pre>
 </div>
 <img class='docs-image' src="https://cdn.quantconnect.com/i/tu/api-equity-curve.png" alt="api-equity-curve">
