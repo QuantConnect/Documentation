@@ -4,7 +4,7 @@
 <p>The local platform lets you run backtests, deploy research notebooks, and deploy live algorithms on your local machine and in QuantConnect Cloud.</p>
 
 <h4>Data Access</h4>
-<p>If you run local algorithms, you can download our cloud datasets or utilize your local data. If you run your algorithms in the cloud, you can access our rich library of datasets.</p>
+<p>If you run local algorithms, you can <a href='/docs/v2/lean-cli/datasets/downloading-data'>download our cloud datasets</a> or utilize your local data. If you run your algorithms in the cloud, you can access our rich library of datasets.</p>
 
 <h4>Version Control</h4>
 <p>The local platform syncs your local and cloud project files. If you pull your cloud projects to your local machine, you can use your own version control systems to track project changes.</p>
