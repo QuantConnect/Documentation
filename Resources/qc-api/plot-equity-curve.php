@@ -17,4 +17,4 @@
 <div class="section-example-container">
     <pre class="python">equity_df.plot(figsize=(12, 8), title="Strategy Equity Curve", xlabel="time", ylabel="portfolio value ($)")</pre>
 </div>
-<img src="https://cdn.quantconnect.com/i/tu/api-equity-curve.png" alt="api-equity-curve">
+<img class='docs-image' src="https://cdn.quantconnect.com/i/tu/api-equity-curve.png" alt="api-equity-curve">
