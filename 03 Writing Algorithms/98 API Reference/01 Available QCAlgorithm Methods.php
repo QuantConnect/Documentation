@@ -152,10 +152,6 @@
 <td>Creates a new AverageDirectionalMovementIndexRating indicator.</td>
 </tr>
 <tr>
-<td width="33%"><a href="#AllShortableSymbols-header">AllShortableSymbols()</a></td>
-<td>Gets all Symbols that are shortable, as well as the quantity shortable for them.</td>
-</tr>
-<tr>
 <td width="33%"><a href="#ALMA-header">ALMA()</a></td>
 <td>Creates a new ArnaudLegouxMovingAverage indicator.</td>
 </tr>
@@ -517,7 +513,7 @@
 </tr>
 <tr>
 <td width="33%"><a href="#Plot-header">Plot()</a></td>
-<td>Plot a chart to string chart name, using string series name, with double value.</td>
+<td>Plot a chart to string chart name, using string series name, with int value.</td>
 </tr>
 <tr>
 <td width="33%"><a href="#PlotIndicator-header">PlotIndicator()</a></td>
@@ -1009,7 +1005,7 @@
 </tr>
 <tr>
 <td width="33%"><a href="#Plot-header">Plot()</a></td>
-<td>Plot a chart to string chart name, using string series name, with double value.</td>
+<td>Plot a chart to string chart name, using string series name, with int value.</td>
 </tr>
 <tr>
 <td width="33%"><a href="#PlotIndicator-header">PlotIndicator()</a></td>
@@ -1682,10 +1678,6 @@
 <tr>
 <td width="33%"><a href="#AddRiskManagement-header">AddRiskManagement()</a></td>
 <td>Adds a new risk management model.</td>
-</tr>
-<tr>
-<td width="33%"><a href="#AllShortableSymbols-header">AllShortableSymbols()</a></td>
-<td>Gets all Symbols that are shortable, as well as the quantity shortable for them.</td>
 </tr>
 <tr>
 <td width="33%"><a href="#Buy-header">Buy()</a></td>

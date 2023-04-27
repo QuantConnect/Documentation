@@ -33,7 +33,6 @@ echo file_get_contents(DOCS_RESOURCES."/qcalgorithm-api/adr.html");
 echo file_get_contents(DOCS_RESOURCES."/qcalgorithm-api/advr.html");
 echo file_get_contents(DOCS_RESOURCES."/qcalgorithm-api/adx.html");
 echo file_get_contents(DOCS_RESOURCES."/qcalgorithm-api/adxr.html");
-echo file_get_contents(DOCS_RESOURCES."/qcalgorithm-api/all-shortable-symbols.html");
 echo file_get_contents(DOCS_RESOURCES."/qcalgorithm-api/alma.html");
 echo file_get_contents(DOCS_RESOURCES."/qcalgorithm-api/ao.html");
 echo file_get_contents(DOCS_RESOURCES."/qcalgorithm-api/apo.html");
