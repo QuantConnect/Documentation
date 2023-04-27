@@ -40,4 +40,4 @@ raw_price = self.Securities[self.future.Mapped].Price</pre>
 
 
 <h4>Contract Depth Offsets</h4>
-<p>The <code>contractDepthOffset</code> argument defines which contract to use. 0 (default) is the front month contract, 1 the following back month contract, and 3 is the second back month contract.</p>
+<p>The <code>contractDepthOffset</code> argument defines which contract to use. 0 is the front month contract, 1 is the following back month contract, and 3 is the second back month contract.</p>
