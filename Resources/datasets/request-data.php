@@ -373,7 +373,7 @@ foreach (var s in slices) {
 </table>
 
 <h4>Additional Options</h4>
-<p>If you call the <code>History</code> method with a list of <code>Symbol</code> objects, a start date, an end date, and a resolution, then you can pass the following additional arguments:</p>
+<p>The <code>History</code> method accepts the following additional arguments:</p>
 
 <table class='qc-table table'>
     <thead>
