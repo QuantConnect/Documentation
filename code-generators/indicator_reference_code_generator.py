@@ -54,8 +54,7 @@ def _get_image_source(folder: str) -> str:
     image = '/'.join([part[3:].lower().replace(' ','-') for part in folder.parts])
     return f'https://cdn.quantconnect.com/docs/i/{image}.png'
 
-if __name__ == '__main__':
-    
+def Generate_Indicators_Reference():
     indicators = dict()
     helpers = _get_helpers()
 
@@ -216,3 +215,6 @@ include(DOCS_RESOURCES."/indicators/visualization.php");
                 }
             }
             fp.write(dumps(metadata, indent=4))
+
+if __name__ == '__main__':
+    Generate_Indicators_Reference()
