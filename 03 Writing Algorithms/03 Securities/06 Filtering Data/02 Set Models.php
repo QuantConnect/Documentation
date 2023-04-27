@@ -11,9 +11,8 @@ spy.SetDataFilter(SecurityDataFilter())</pre>
 
 <p>You can also set the data filter model in a <a href='/docs/v2/writing-algorithms/initialization#07-Set-Security-Initializer'>security initializer</a>. If your algorithm has a universe, use the security initializer technique. In order to initialize single security subscriptions with the security initializer, call <code>SetSecurityInitializer</code> before you create the subscriptions.</p>
 
-<div class="section-example-container">
-    <pre class="csharp">SetSecurityInitializer((security) => {
-    security.SetDataFilter(new SecurityDataFilter())
-});</pre>
-    <pre class="python">self.SetSecurityInitializer(lambda security: security.SetDataFilter(SecurityDataFilter()))</pre>
-</div>
+<?php
+$overwriteCodePy = "security.SetDataFilter(SecurityDataFilter())";
+$overwriteCodeC = "security.SetDataFilter(new SecurityDataFilter());";
+include(DOCS_RESOURCES."/reality-modeling/brokerage-model-security-init.php");
+?>
