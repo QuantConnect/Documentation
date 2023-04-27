@@ -10,10 +10,13 @@
 <p>The local platform syncs your local and cloud project files. If you pull your cloud projects to your local machine, you can use your own version control systems to track project changes.</p>
 
 <h4>Self-Soverign Security</h4>
-<p>The local platform offers you the ability to take ownership of your project security. On the Insitution tier, you can create local workspaces and projects without pushing them to QuantConnect Cloud.</p>
+<p>The local platform offers you the ability to take ownership of your project security. On the Institution tier, you can create local workspaces and projects without pushing them to QuantConnect Cloud.</p>
 
 <h4>Custom LEAN Images</h4>
 <? include(DOCS_RESOURCES."/projects/lean-engine-branches/intro.html"); ?>
 
 <h4>On-Premise Compute</h4>
 <p>The local platform enables you to run backtests, deploy research notebooks, and deploy live algorithms on your local hardware.</p>
+
+<h4>Offline Access</h4>
+<p>Trading Firm and Institution organizations can run backtests and research notebooks on the local platform without an internet connection for up to  24 hours.</p>
