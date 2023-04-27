@@ -1,12 +1,12 @@
 <p>
     The Lean configuration contains settings for locally running the LEAN engine.
-    This configuration is created in the <span class="public-file-name">lean.json</span> file when you <?= $leanCli ? "run <code>lean init</code> in an empty directory" : "create a new <a href='/docs/v2/local-platform/set-up-environment/organization-workspaces'>organization workspace</a>"?>.
+    This configuration is created in the <span class="public-file-name">lean.json</span> file when you <?= $leanCli ? "run <code>lean init</code> in an empty directory" : "pull or create an <a href='/docs/v2/local-platform/set-up-environment/organization-workspaces'>organization workspace</a>"?>.
     The configuration is stored as JSON, with support for both single-line and multiline comments.
 </p>
 
 <p>
     The Lean configuration file is based on the <a class="public-file-name" href="https://github.com/QuantConnect/Lean/blob/master/Launcher/config.json" target="_blank">Launcher / config.json</a> file from the Lean GitHub repository.
-    When you <?= $leanCli ? "run <code>lean init</code>" : "create a new organization workspace"?>, the latest version of this file is downloaded and stored in your organization workspace.
+    When you <?= $leanCli ? "run <code>lean init</code>" : "pull or create an organization workspace"?>, the latest version of this file is downloaded and stored in your organization workspace.
     Before the file is stored, some properties are automatically removed because the <?= $leanCli ? "CLI" : "local platform"?> automatically sets them.
 </p>
 <p>The <?= $leanCli ? "CLI commands" : "local platform"?> can update most of the values of the <span class="public-file-name">lean.json</span> file. The following table shows the configuration settings that you need to manually adjust in the <span class="public-file-name">lean.json</span> file if you want to change their values:</p>
