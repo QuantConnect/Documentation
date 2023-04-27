@@ -1,6 +1,6 @@
 <p>
     The Lean configuration contains settings for running the LEAN engine locally.
-    This configuration is created in the <span class="public-file-name">lean.json</span> file when you run <code>lean init</code> in an empty directory.
+    This configuration is created in the <span class="public-file-name">lean.json</span> file when you <?= $leanCli ? "run <code>lean init</code> in an empty directory" : "create a new <a href='/docs/v2/local-platform/set-up-environment/organization-workspaces'>organization workspace</a>"?>.
     The configuration is stored as JSON, with support for both single-line and multiline comments.
 </p>
 
