@@ -1,1 +1,0 @@
-<?php include(DOCS_RESOURCES."/cli/install/docker/mac.php"); ?>
