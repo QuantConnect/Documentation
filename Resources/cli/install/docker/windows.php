@@ -1,7 +1,6 @@
+<? if ($leanCli) { ?>
 <p>Windows systems must meet the following requirements to install Docker:</p>
-
-<? 
-if ($leanCli) {
+<?
     include(DOCS_RESOURCES."/cli/windows-requirements.html"); 
 }
 ?>
