@@ -1,9 +1,7 @@
 <p>Follow these steps to install Local Platform:</p>
 
 <ol>
-    <li>Install Docker.</li>
-    <? include(DOCS_RESOURCES."/cli/install/docker/tutorial.php"); ?>
-
+    <li><a href='/docs/v2/local-platform/installation#03-Install-Docker'>Install Docker</a>.</li>
     <li>Open a terminal and download the latest LEAN image.</li>
     <div class="cli section-example-container">
     	<pre>$ docker pull quantconnect/lean</pre>
