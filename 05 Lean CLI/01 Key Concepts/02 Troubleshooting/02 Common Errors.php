@@ -36,7 +36,7 @@
             </td>
             <td>
                 You are trying to use a command which needs to run the LEAN engine locally, which always happens in a Docker container.
-                Make sure Docker is running if you installed it already, or visit <a href="/docs/v2/lean-cli/installation/installing-docker">Installing Docker</a> if you haven't.
+                Make sure Docker is running if you installed it already, or visit <a href="/docs/v2/lean-cli/installation/installing-lean-cli#02-Install-Docker">Install Docker</a> if you haven't.
             </td>
         </tr>
         <tr>
