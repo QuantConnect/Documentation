@@ -1,7 +1,7 @@
-<p>Mac systems must meet the following requirements to install Docker:</p>
 
-<? 
-if ($leanCli) {
+<? if ($leanCli) { ?>
+<p>Mac systems must meet the following requirements to install Docker:</p>
+<?
     include(DOCS_RESOURCES."/cli/mac-requirements.html");    
 }
 ?>
