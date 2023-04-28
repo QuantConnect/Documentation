@@ -9,8 +9,8 @@
 <h4>Docker Not Found</h4>
 <p>If you have Docker installed but the local platform can't detect it, update your <a href=''><span class='button-name'>Executable Path: Docker</span> setting</a> to be the path to your Docker executable.</p>
 
-<h4>LEAN CLI Conflicts</h4>
-## TODO
+<h4>LEAN CLI Account Syncronization</h4>
+<? include(DOCS_RESOURCES."/cli/login-sync.html"); ?>
 
 <h4>Further Support</h4>
 <p>For further support with installing the local platform, <a href='/contact'>contact us</a>.</p>
