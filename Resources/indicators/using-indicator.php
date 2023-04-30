@@ -88,7 +88,7 @@
         self.<?=strtolower($helperName)?> = <?=$typeName?>(<?=$constructorArguments?>)
 
     def OnData(self, slice: Slice) -> None:
-        bar = data.Bars.get(self.symbol)
+        bar = slice.Bars.get(self.symbol)
         if bar:
             self.<?=strtolower($helperName)?>.Update(<?=$updateParameterValue?>)
 
