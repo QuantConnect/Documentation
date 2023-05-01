@@ -15,25 +15,23 @@
     <tbody>
     	<tr>
             <td>Daily</td>
-            <td>TBD</td>
-            <td>TBD</td>
+            <td><a href='/contact'>Contact us</a></td>
+            <td>1,920</td>
         </tr>
         <tr>
             <td>Hour</td>
-            <td>TBD</td>
-            <td>TBD</td>
+            <td><a href='/contact'>Contact us</a></td>
+            <td>2,640</td>
         </tr>
         <tr>
             <td>Minute</td>
-            <td>TBD</td>
-            <td>TBD</td>
+            <td><a href='/contact'>Contact us</a></td>
+            <td>2,880</td>
         </tr>
     </tbody>
 </table>
 
 <style>
-#trade-and-quote-price td:nth-child(2), 
-#trade-and-quote-price th:nth-child(2),
 #trade-and-quote-price td:last-child, 
 #trade-and-quote-price th:last-child {
     text-align: right;
