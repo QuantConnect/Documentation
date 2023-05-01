@@ -15,28 +15,28 @@
     <tbody>
         <tr>
             <td>Daily</td>
-            <td>TBD</td>
-            <td>TBD</td>
+            <td>3,480</td>
+            <td>2,640</td>
         </tr>
         <tr>
             <td>Hour</td>
-            <td>TBD</td>
-            <td>TBD</td>
+            <td>3,480</td>
+            <td>2,640</td>
         </tr>
         <tr>
             <td>Minute</td>
-            <td>TBD</td>
-            <td>TBD</td>
+            <td><a href='/contact'>Contact us</a></td>
+            <td>2,640</td>
         </tr>
         <tr>
             <td>Second</td>
-            <td>TBD</td>
-            <td>TBD</td>
+            <td><a href='/contact'>Contact us</a></td>
+            <td>2,640</td>
         </tr>
         <tr>
             <td>Tick</td>
-            <td>TBD</td>
-            <td>TBD</td>
+            <td><a href='/contact'>Contact us</a></td>
+            <td>2,640</td>
         </tr>
     </tbody>
 </table>
