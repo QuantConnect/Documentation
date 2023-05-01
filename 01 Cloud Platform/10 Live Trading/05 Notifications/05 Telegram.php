@@ -26,7 +26,7 @@
     </table>
     <li>Create a new Telegram group.</li>
     <li>Add a bot to your Telegram group.</li>
-    <p>If you want to use our bot, the username is @quantconnect_notifications_bot.</p>
+    <p>To create a bot, chat with @BotFather and follow its instructions. If you want to use our bot, the username is @quantconnect_notifications_bot.</p>
     <li>On the live deployment wizard, click <span class="button-name">Telegram</span>.</li>
     <li>Enter your user Id or group Id.</li>
     <p><? include(DOCS_RESOURCES."/notifications/telegram-group-id.html"); ?></p>
