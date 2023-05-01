@@ -249,7 +249,7 @@ all_history_open_interest = qb.History[OpenInterest](qb.Securities.Keys, start_t
 <? } ?>
 
 <? if ($assetClass != "Futures") { ?> 
-<div>
+<div class='section-example-container'>
     <pre class='python'>option_history = qb.GetOptionHistory(<?=$underlyingSymbolVariablePy?>, end_time-timedelta(days=2), end_time, Resolution.Minute, fillForward=False, extendedMarketHours=False)</pre>
     <pre class='csharp'>var optionHistory = qb.GetOptionHistory(<?=$underlyingSymbolVariableC?>, endTime-TimeSpan.FromDays(2), endTime, Resolution.Minute, fillForward: False, extendedMarketHours: False);</pre>
 </div>
