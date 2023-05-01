@@ -2,4 +2,4 @@
 
 <?php include(DOCS_RESOURCES."/datasets/us-equity-security-master-price.html"); ?>
 
-<p>All of the historical US Coarse Universe data costs $TBA. An annual subscription to daily updates costs $TBA/year.</p>
+<p>All of the historical US Equity Coarse Universe data costs $TBA. An annual subscription to daily updates costs $TBA/year.</p>

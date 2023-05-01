@@ -55,7 +55,7 @@
     <tbody>
         <tr>
             <td><a href="https://www.quantconnect.com/docs/v2/writing-algorithms/universes/equity#02-Coarse-Universe-Selection">Coarse</a> or <a href="https://www.quantconnect.com/docs/v2/writing-algorithms/universes/equity#03-Dollar-Volume-Selection">Dollar Volume</a></td>
-            <td><a href="https://www.quantconnect.com/datasets/quantconnect-us-coarse-universe-constituents/pricing">US Coarse Universe</a></td>
+            <td><a href="https://www.quantconnect.com/datasets/quantconnect-us-coarse-universe-constituents/pricing">US Equity Coarse Universe</a></td>
             <td>One file per day.</td>
             <td>5 QCC = $0.05 USD</td>
         </tr>
@@ -109,7 +109,7 @@
             <td>$600 USD/year</td>
         </tr>
         <tr>
-            <td>US Coarse Universe</td>
+            <td>US Equity Coarse Universe</td>
             <td>On Premise Download</td>
             <td>252 trading days 
                     <br>=&gt; 252 files <br><br>252 files @ 5 QCC/file<br>=&gt; 252 * 5 QCC<br> = 12,600 QCC <br>= $126 USD</td>
