@@ -236,8 +236,9 @@ all_history_open_interest = qb.History[OpenInterest](qb.Securities.Keys, start_t
 
 <p class='python'>To get historical data for all of the <?=$assetClass?> contracts that pass your <a href='<?=$createSubscriptionsLink?>'>filter</a> during a specific period of time, call the <code>GetFutureHistory</code> method with the <code>Symbol</code> object of the continuous Future, a start <code class='csharp'>DateTime</code><code class='python'>datetime</code>, and an end <code class='csharp'>DateTime</code><code class='python'>datetime</code>.</p>
 
-<div class='python section-example-container'>
-    <pre class='python'>future_history = qb.GetFutureHistory(<?=$underlyingSymbolVariable?>, end_time-timedelta(days=2), end_time, Resolution.Minute, fillForward=False, extendedMarketHours=False)</pre>
+<div class='section-example-container'>
+    <pre class='python'>future_history = qb.GetFutureHistory(<?=$underlyingSymbolVariablePy?>, end_time-timedelta(days=2), end_time, Resolution.Minute, fillForward=False, extendedMarketHours=False)</pre>
+    <pre class='csharp'>var futureHistory = qb.GetFutureHistory(<?=$underlyingSymbolVariableC?>, endTime-TimeSpan.FromDays(2), endTime, Resolution.Minute, fillForward: False, extendedMarketHours: False);</pre>
 </div>
 <? } elseif ($assetClass == "Futures Option") { ?>
 <p class='python'>To get historical data for all of the <?=$assetClass?> contracts that traded during a specific period of time, call the <code>GetOptionHistory</code> method with the underlying <?=$underlyingAssetClass?> <code>Symbol</code> object, a start <code class='csharp'>DateTime</code><code class='python'>datetime</code>, and an end <code class='csharp'>DateTime</code><code class='python'>datetime</code>.</p>
@@ -248,8 +249,9 @@ all_history_open_interest = qb.History[OpenInterest](qb.Securities.Keys, start_t
 <? } ?>
 
 <? if ($assetClass != "Futures") { ?> 
-<div class='python section-example-container'>
-    <pre class='python'>option_history = qb.GetOptionHistory(<?=$underlyingSymbolVariable?>, end_time-timedelta(days=2), end_time, Resolution.Minute, fillForward=False, extendedMarketHours=False)</pre>
+<div class='python'>
+    <pre class='python'>option_history = qb.GetOptionHistory(<?=$underlyingSymbolVariablePy?>, end_time-timedelta(days=2), end_time, Resolution.Minute, fillForward=False, extendedMarketHours=False)</pre>
+    <pre class='csharp'>var optionHistory = qb.GetOptionHistory(<?=$underlyingSymbolVariableC?>, endTime-TimeSpan.FromDays(2), endTime, Resolution.Minute, fillForward: False, extendedMarketHours: False);</pre>
 </div>
 <? } ?> 
 

@@ -1,7 +1,9 @@
 <?
 $createSubscriptionsLink = "/docs/v2/research-environment/datasets/futures-options#03-Create-Subscriptions";
 $assetClass = "Futures Option";
-$underlyingSymbolVariable = "futures_contract_symbol";
+$underlyingSymbolVariablePy = "futures_contract_symbol";
+$underlyingSymbolVariableC = "futuresContractSymbol";
+
 $underlyingAssetClass = "Futures contract";
 $supportsTicks = false;
 $contractVariablePy ="fop_contract_symbol";
