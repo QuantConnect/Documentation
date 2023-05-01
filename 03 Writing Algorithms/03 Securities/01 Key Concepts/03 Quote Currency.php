@@ -1,1 +1,1 @@
-<? include(DOCS_RESOURCES."/securities/quote-currency.php"); ?>
+<? include(DOCS_RESOURCES."/securities/quote-currency.html"); ?>
