@@ -1,6 +1,5 @@
 <?php echo file_get_contents(DOCS_RESOURCES."/notifications/email-intro.html"); ?>
 
-<h4>Set Up in the Deployment Wizard</h4>
 <p>Follow these steps to set up email notifications in the deployment wizard:</p>
 
 <ol>
@@ -32,6 +31,3 @@
     <li>Click <span class="button-name">Add</span>.</li>
     <p>To add more email notifications, click <span class="button-name">Add Notification</span> and then continue from step 2.</p>
 </ol>
-
-<h4>Send In Your Code Files</h4>
-<?php echo file_get_contents(DOCS_RESOURCES."/notifications/email-setup.html"); ?>
