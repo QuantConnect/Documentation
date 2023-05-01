@@ -422,18 +422,39 @@ var quoteBars = allHistorySlice.Where(slice => slice.QuoteBars.ContainsKey(<?=$p
 <!---- ----->
 
 <? if ($supportsOptionHistory) { ?>
-<h4 class='python'>OptionHistory Objects</h4>
-<p class='python'>The <code>GetOptionHistory</code> method returns an <code>OptionHistory</code> object. To convert the <code>OptionHistory</code> object to a <code>DataFrame</code> that contains the trade and quote information of each contract and the underlying, call the <code>GetAllData</code> method.</p>
+<h4>OptionHistory Objects</h4>
+<p>The <code>GetOptionHistory</code> method returns an <code>OptionHistory</code> object. To get each <a href='/docs/v2/writing-algorithms/key-concepts/time-modeling/timeslices'>slice</a> in the <code>OptionHistory</code> object, iterate through it.</p>
+
+<div class='section-example-container'>
+<pre class='csharp'>foreach (var slice in optionHistory)
+{
+    foreach (var kvp in slice.OptionChains)
+    {
+        var canonicalSymbol = kvp.Key;
+        var chain = kvp.Value;
+        foreach (var contract in chain)
+        {
+            
+        }
+    }
+}</pre>
+<pre class='python'>for slice in option_history:
+    for canonical_symbol, chain in slice.OptionChains.items(): 
+        for contract in chain:
+            pass</pre>
+</div>
+
+<p class='python'>To convert the <code>OptionHistory</code> object to a <code>DataFrame</code> that contains the trade and quote information of each contract and the underlying, call the <code>GetAllData</code> method.</p>
 <div class='python section-example-container'>
-<pre class='python'>option_history.GetAllData()</pre>
+    <pre class='python'>option_history.GetAllData()</pre>
 </div>
 <p class='python'>To get the expiration dates of all the contracts in an <code>OptionHistory</code> object, call the <code>GetExpiryDates</code> method.</p>
 <div class='python section-example-container'>
-<pre class='python'>option_history.GetExpiryDates()</pre>
+    <pre class='python'>option_history.GetExpiryDates()</pre>
 </div>
 <p class='python'>To get the strike prices of all the contracts in an <code>OptionHistory</code> object, call the <code>GetStrikes</code> method.</p>
 <div class='python section-example-container'>
-<pre class='python'>option_history.GetStrikes()</pre>
+    <pre class='python'>option_history.GetStrikes()</pre>
 </div>
 <? } ?>
 
@@ -441,13 +462,34 @@ var quoteBars = allHistorySlice.Where(slice => slice.QuoteBars.ContainsKey(<?=$p
 <!---- ----->
 
 <? if ($supportsFutureHistory) { ?>
-<h4 class='python'>FutureHistory Objects</h4>
-<p class='python'>The <code>GetFutureHistory</code> method returns a <code>FutureHistory</code> object. To convert the <code>FutureHistory</code> object to a <code>DataFrame</code> that contains the trade and quote information of each contract, call the <code>GetAllData</code> method.</p>
+<h4>FutureHistory Objects</h4>
+<p>The <code>GetFutureHistory</code> method returns a <code>FutureHistory</code> object. To get each <a href='/docs/v2/writing-algorithms/key-concepts/time-modeling/timeslices'>slice</a> in the <code>FutureHistory</code> object, iterate through it.</p>
+
+<div class='section-example-container'>
+<pre class='csharp'>foreach (var slice in futureHistory)
+{
+    foreach (var kvp in slice.FuturesChains)
+    {
+        var continuousContractSymbol = kvp.Key;
+        var chain = kvp.Value;
+        foreach (var contract in chain)
+        {
+            
+        }
+    }
+}</pre>
+<pre class='python'>for slice in future_history:
+    for continuous_contract_symbol, chain in slice.FuturesChains.items(): 
+        for contract in chain:
+            pass</pre>
+</div>
+
+<p class='python'>To convert the <code>FutureHistory</code> object to a <code>DataFrame</code> that contains the trade and quote information of each contract, call the <code>GetAllData</code> method.</p>
 <div class='python section-example-container'>
-<pre class='python'>future_history.GetAllData()</pre>
+    <pre class='python'>future_history.GetAllData()</pre>
 </div>
 <p class='python'>To get the expiration dates of all the contracts in an <code>FutureHistory</code> object, call the <code>GetExpiryDates</code> method.</p>
 <div class='python section-example-container'>
-<pre class='python'>future_history.GetExpiryDates()</pre>
+    <pre class='python'>future_history.GetExpiryDates()</pre>
 </div>
 <? } ?>
