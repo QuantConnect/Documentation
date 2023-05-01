@@ -1,4 +1,4 @@
-<p>To update parameters in live mode, the algorithm can implement <a href="/docs/v2/writing-algorithms/scheduled-events">schedule events</a> that <a href="/docs/v2/writing-algorithms/importing-data/bulk-downloads">downloads</a> dynamic data from a remote file:</p>
+<p>To update parameters in live mode, add a <a href="/docs/v2/writing-algorithms/scheduled-events">Schedule Event</a> that <a href="/docs/v2/writing-algorithms/importing-data/bulk-downloads">downloads</a> a remote file and uses its contents to update the parameter values:</p>
 <div class="section-example-container">
     <pre class="csharp">private Dictionary<string, decimal> _parameters = new();
 public override void Initialize()
