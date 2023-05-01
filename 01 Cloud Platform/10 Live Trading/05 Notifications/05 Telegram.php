@@ -1,6 +1,5 @@
 <? include(DOCS_RESOURCES."/notifications/telegram-intro.html"); ?>
 
-<h4>Set Up in the Deployment Wizard</h4>
 <p>Follow these steps to set up Telegram notifications in the deployment wizard:</p>
 
 <ol>
@@ -35,6 +34,3 @@
     <li>Click <span class="button-name">Add</span>.</li>
     <p>To add more Telegram notifications, click <span class="button-name">Add Notification</span> and then continue from step 2.</p>
 </ol>
-
-<h4>Send In Your Code Files</h4>
-<? include(DOCS_RESOURCES."/notifications/telegram-setup.php"); ?>
