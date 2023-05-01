@@ -1,0 +1,30 @@
+<p>The quote currency is the currency you must give the seller to buy an asset. For currency trades, the quote currency is the currency ticker on the right side of the currency pair. For other types of assets, the quote currency is usually USD, but the quote currency for India Equities is INR. To get the quote currency of a <code>Security</code>, use the <code>QuoteCurrency</code> property.</p>
+
+<div class="section-example-container">
+    <pre class="csharp">var aaplQuoteCurrency = Securities["AAPL"].QuoteCurrency; // USD
+var btcusdtQuoteCurrency = Securities["BTCUSDT"].QuoteCurrency; // USDT</pre>
+    <pre class="python">aapl_quote_currency = self.Securities["AAPL"].QuoteCurrency # USD
+btcusdt_quote_currency = self.Securities["BTCUSDT"].QuoteCurrency # USDT</pre>
+</div>
+
+<p>The </code>QuoteCurrency</code> is a <code>Cash</code> object. <code>Cash</code> objects have the following properties:</p>
+<div data-tree="QuantConnect.Securities.Cash"></div>
+
+<p>You can use the <code>ConversionRate</code> property to calculate the value of a price movement in account currency</p>
+
+<div class="section-example-container">
+    <pre class="csharp">var cfd = Securities["SG30SGD"];
+var quoteCurrency = cfd.QuoteCurrency; // SGD
+var contractMutiplier = cfd.SymbolProperties.ContractMultiplier;
+var minimumPriceVariation = cfd.SymbolProperties.MinimumPriceVariation;
+
+// Value of a pip in account currency
+var pip = minimumPriceVariation * contractMutiplier * quoteCurrency.ConversionRate
+    <pre class="python">cfd = self.Securities["SG30SGD"]
+quote_currency = cfd.QuoteCurrency # SGD
+contract_mutiplier = cfd.SymbolProperties.ContractMultiplier
+minimum_price_variation = cfd.SymbolProperties.MinimumPriceVariation
+
+# Value of a pip in account currency
+pip = minimum_price_variation * contract_mutiplier * quote_currency.ConversionRate</pre>
+</div>
