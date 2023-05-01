@@ -1,12 +1,18 @@
-<p>The <code>GetParameter</code> method returns the parameter value with the numeric type of the default value. If you don't provide a default value, the method returns a string, and you need to cast it to the data type you need. If there are no parameters in your project that match the name you pass to the method and you provide a default value to the method, it returns the default value.</p>
+<p>To get a parameter value into your algorithm, call the <code>GetParameter</code> method of the algorithm class.</p>
 
-<p>The following table describes the arguments the <code>GetParameter</code> method accepts:</p>
+<div class="section-example-container">
+    <pre class="csharp">var parameterValue = GetParameter("parameterName");</pre>
+    <pre class="python">parameter_value = self.GetParameter("parameterName")</pre>
+</div>
+
+<p>The <code>GetParameter</code> method returns a string by default. If you provide a default parameter value, the method returns the parameter value as the same data type as the default value. If there are no parameters in your project that match the name you pass to the method and you provide a default value to the method, it returns the default value. The following table describes the arguments the <code>GetParameter</code> method accepts:</p>
 <table class="qc-table table">
     <thead>
         <tr>
             <th>Argument</th>
             <th>Data Type</th>
             <th>Description</th>
+            <th>Default Value</th>
         </tr>
     </thead>
     <tbody>
@@ -14,16 +20,18 @@
             <td><code>name</code></td>
             <td><code class="csharp">string</code><code class="python">str</code></td>
             <td>The name of the parameter to get</td>
+            <td></td>
         </tr>
         <tr>
             <td><code>defaultValue</code></td>
-            <td><code class="csharp">string</code><code class="python">str</code>, or number</td>
+            <td><code class="csharp">string/int/double/decimal</code><code class="python">str/int/double</code></td>
             <td>The default value to return</td>
+            <td><code class="csharp">null</code><code class="python">None</code></td>
         </tr>
     </tbody>
 </table>
 
-<p>If you don't provide a default value, the <code>GetParameter</code> method returns <code class="csharp">null</code><code class="python">None</code>.</p>
+<p>The following example algorithm gets the values of parameter of each data type:</p>
 
 <div class="section-example-container">
     <pre class="csharp">namespace QuantConnect.Algorithm.CSharp
@@ -33,16 +41,16 @@
         public override void Initialize()
         {
             // Get the parameter value and return an integer
-            var intParameterValue = GetParameter("&lt;int-parameter-name&gt;", 100);
+            var intParameterValue = GetParameter("&lt;intParameterName&gt;", 100);
 
             // Get the parameter value and return a double
-            var doubleParameterValue = GetParameter("&lt;double-parameter-name&gt;", 0.95);
+            var doubleParameterValue = GetParameter("&lt;doubleParameterName&gt;", 0.95);
 
             // Get the parameter value and return a decimal
-            var decimalParameterValue = GetParameter("&lt;decimal-parameter-name&gt;", 0.05m);
+            var decimalParameterValue = GetParameter("&lt;decimalParameterName&gt;", 0.05m);
 
             // Get the parameter value as a string
-            var stringParameterValue = GetParameter("&lt;parameter-name&gt;", "defaultStringValue")
+            var stringParameterValue = GetParameter("&lt;parameterName&gt;", "defaultStringValue")
 
             // Cast it to an integer
             var castedParameterValue = Convert.ToInt32(stringParameterValue);
@@ -52,20 +60,20 @@
     <pre class="python">class ParameterizedAlgorithm(QCAlgorithm):
     def Initialize(self) -&gt; None:
         # Get the parameter value and return an integer
-        int_parameter_value = self.GetParameter("&lt;int-parameter-name&gt;", 100)
+        int_parameter_value = self.GetParameter("&lt;int_parameter_name&gt;", 100)
 
         # Get the parameter value and return a double
-        float_parameter_value = self.GetParameter("&lt;float-parameter-name&gt;", 0.95)
+        float_parameter_value = self.GetParameter("&lt;float_parameter_name&gt;", 0.95)
 
         # Get the parameter value as a string
-        string_parameter_value = self.GetParameter("&lt;parameter-name&gt;", "default_string_value")
+        string_parameter_value = self.GetParameter("&lt;parameter_name&gt;", "default_string_value")
 
         # Cast it to an integer
         parameter_value = int(string_parameter_value)</pre>
 </div>
 
-<p class="csharp">The <code>Parameter(name)</code> attribute on top of our fields or properties sets their values. If there are no parameters in your project that match the name you pass to the attribute and you provide a default value to the method, it returns the default value.</p>
-<div class="csharp" class="section-example-container">
+<p class="csharp">Alternatively, you can use the <code>Parameter(name)</code> attribute on top of class fields or properties to set their values. If there are no parameters in your project that match the name you pass to the attribute and you provide a default value to the method, it returns the default value.</p>
+<div class="csharp section-example-container">
     <pre class="csharp">namespace QuantConnect.Algorithm.CSharp
 {
     public class ParameterizedAlgorithm : QCAlgorithm
