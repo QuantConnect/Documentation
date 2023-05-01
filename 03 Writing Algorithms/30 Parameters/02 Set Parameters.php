@@ -1,4 +1,4 @@
-<p>The process to add and edit parameters depends on the environment you use to write algorithms. See the tutorial in one of the following environments:</p>
+<p>The process to parameter values depends on the environment you use to write algorithms. See the tutorial in one of the following environments:</p>
 
 <ul>
     <li><a href='/docs/v2/cloud-platform/projects/getting-started#10-Edit-Parameters'>Cloud Platform</a></li>
