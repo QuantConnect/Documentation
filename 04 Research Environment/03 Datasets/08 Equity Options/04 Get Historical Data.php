@@ -3,6 +3,10 @@ $createSubscriptionsLink = "/docs/v2/research-environment/datasets/equity-option
 $assetClass = "Equity Option";
 $underlyingSymbolVariablePy = "equity_symbol";
 $underlyingSymbolVariableC = "equitySymbol";
+
+$contractVariableC = "contractSymbol";
+$contractVariablePy = "contract_symbol";
+
 $underlyingAssetClass = "Equity";
 include(DOCS_RESOURCES."/datasets/research-environment/get-historical-data.php");
 ?>
