@@ -4,7 +4,7 @@
     <li>Open the <a href='/docs/v2/lean-cli/initialization/workspace'>workspaces</a> on your local machine where you store the project.</li>
     <li>Rename the project file.</li>
     <?php echo "<p>" . file_get_contents(DOCS_RESOURCES."/cli/project-name-rules.html") . "</p>"; ?>
-    <li><a href="/docs/v2/lean-cli/initialization/authenticating-accounts#02-Log-In">Log in</a> to the CLI if you haven't done so already.</li>
+    <li><a href="/docs/v2/lean-cli/initialization/authentication#02-Log-In">Log in</a> to the CLI if you haven't done so already.</li>
     <li>Open a terminal in the same workspace.</li>
     <li>Run <code>lean cloud push --project "&lt;projectName&gt;"</code>.</li>
 </ol>
