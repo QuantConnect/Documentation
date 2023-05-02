@@ -10,12 +10,12 @@
         <tr>
             <td>Equity</td>
             <td>Cash</td>
-            <td><a href='/docs/v2/writing-algorithms/reality-modeling/settlement/supported-models#03-Delayed-Model'>DelayedSettlementModel</a> with the <a href='/docs/v2/writing-algorithms/reality-modeling/settlement/key-concepts#03-Default-Behavior'>default settlement rules</a></td>
+            <td><a href='/docs/v2/writing-algorithms/reality-modeling/settlement/supported-models#03-Delayed-Model'>DelayedSettlementModel</a> with the <? if ($includeLinks) {?><a href='/docs/v2/writing-algorithms/reality-modeling/settlement/key-concepts#03-Default-Behavior'>default settlement rules</a><? } else { ?>default settlement rules<? } ?></td>
         </tr>
 		<tr>
             <td>Option</td>
             <td>Cash</td>
-            <td><a href='/docs/v2/writing-algorithms/reality-modeling/settlement/supported-models#03-Delayed-Model'>DelayedSettlementModel</a> with the <a href='/docs/v2/writing-algorithms/reality-modeling/settlement/key-concepts#03-Default-Behavior'>default settlement rules</a></td>
+            <td><a href='/docs/v2/writing-algorithms/reality-modeling/settlement/supported-models#03-Delayed-Model'>DelayedSettlementModel</a> with the <? if ($includeLinks) {?><a href='/docs/v2/writing-algorithms/reality-modeling/settlement/key-concepts#03-Default-Behavior'>default settlement rules</a><? } else { ?>default settlement rules<? } ?></td>
         </tr>
         <tr>
             <td>Future</td>
