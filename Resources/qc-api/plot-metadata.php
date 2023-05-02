@@ -1,18 +1,18 @@
-<li>Get the "Strategy Equity", "Drawdown", and "Benchmark" <code>Chart</code> instance.</li>
+<li>Get the "Strategy Equity", "Drawdown", and "Benchmark" <code>Chart</code> objects.</li>
 <div class="section-example-container">
     <pre class="python">equity_chart = <?=$isLive ? "results" : "backtest"?>.Charts["Strategy Equity"]
 drawdown_chart = <?=$isLive ? "results" : "backtest"?>.Charts["Drawdown"]
 benchmark_chart = <?=$isLive ? "results" : "backtest"?>.Charts["Benchmark"]</pre>
 </div>
 
-<li>Get values from the "Equity", "Equity Drawdown", and "Benchmark" <code>Series</code> from the corresponding charts.</li>
+<li>Get the "Equity", "Equity Drawdown", and "Benchmark" <code>Series</code> from the preceding charts.</li>
 <div class="section-example-container">
     <pre class="python">equity = equity_chart.Series["Equity"].Values
 drawdown = drawdown_chart.Series["Equity Drawdown"].Values
 benchmark = benchmark_chart.Series["Benchmark"].Values</pre>
 </div>
 
-<li>Create a <code>pandas.DataFrame</code> from the series values, use <code>ffill</code> method to smooth the series.</li>
+<li>Create a <code>pandas.DataFrame</code> from the series values.</li>
 <div class="section-example-container">
     <pre class="python">df = pd.DataFrame({
     "Equity": pd.Series({datetime.fromtimestamp(value.x): value.y for value in equity}),
