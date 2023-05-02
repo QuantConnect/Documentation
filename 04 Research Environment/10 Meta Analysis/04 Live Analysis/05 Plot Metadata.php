@@ -1,4 +1,4 @@
-<p>Follow these steps to plot the equity curve of a live algorithm:</p>
+<p>Follow these steps to plot the equity curve, benchmark, and drawdown of a live algorithm:</p>
 
 <ol>
 	<li>Get the live algorithm instance.</li>	
