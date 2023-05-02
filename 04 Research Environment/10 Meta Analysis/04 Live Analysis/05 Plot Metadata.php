@@ -19,6 +19,6 @@
     ?>
 </ol>
 
-<p>Apart from the attributes of the above example, the below shows the complete list of items that is available to use the above method to visualize:</p>
+<p>The following table shows all the chart series you can plot:</p>
 
 <?include(DOCS_RESOURCES."/qc-api/metadata-table.html");?>
