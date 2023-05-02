@@ -15,6 +15,10 @@
 
     <?
     $isLive = true;
-    include(DOCS_RESOURCES."/qc-api/plot-equity-curve.php");
+    include(DOCS_RESOURCES."/qc-api/plot-metadata.php");
     ?>
 </ol>
+
+<p>Apart from the attributes of the above example, the below shows the complete list of items that is available to use the above method to visualize:</p>
+
+<?include(DOCS_RESOURCES."/qc-api/metadata-table.html");?>
