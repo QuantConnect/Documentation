@@ -1,6 +1,7 @@
 <p>The following table shows which <a href='/docs/v2/writing-algorithms/reality-modeling/settlement/key-concepts'>settlement model</a> the <code>DefaultBrokerageModel</code> uses based on the security type and your account type:</p>
 
 <? 
+$includeLinks = true;
 $brokerageModelName = "DefaultBrokerageModel";
 include(DOCS_RESOURCES."/reality-modeling/default-settlement-models.php"); 
 ?>
