@@ -2,6 +2,7 @@
 
 <? 
 $brokerageModelName = "DefaultBrokerageModel";
+$includeLinks = false;
 include(DOCS_RESOURCES."/reality-modeling/default-settlement-models.php"); 
 ?>
 
