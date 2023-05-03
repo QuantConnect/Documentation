@@ -5,4 +5,4 @@
     <pre class='python'>self.SetBrokerageModel(BrokerageName.<?=$brokerageName?>)</pre>
 </div>
 
-<p>To check if your brokerage has any special requirements for <?=$orderType ?>, see the <span class='page-section-name'>Orders</span> section of the <a href='/docs/v2/writing-algorithms/reality-modeling/brokerages/key-concepts'>brokerage model documentation</a>.</p>
+<p>To check if your brokerage has any special requirements for <?=$orderType ?>, see the <span class='page-section-name'>Orders</span> section of the <a href='/docs/v2/writing-algorithms/reality-modeling/brokerages/supported-models'>brokerage model documentation</a>.</p>
