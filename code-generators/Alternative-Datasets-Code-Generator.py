@@ -3,6 +3,22 @@ import pathlib
 import shutil
 from urllib.request import urlopen
 
+def metadata_content(vendor, dataset):
+    vendor_ = vendor.lower().replace(" ", "-")
+    dataset_ = dataset.lower().replace(" ", "-")
+    return f'''{{
+    "type": "metadata",
+    "values": {{
+        "description": "{dataset} dataset from {vendor}.",
+        "keywords": "data, financial data, alternative dataset",
+        "og:description": "{dataset} dataset from {vendor}.",
+        "og:title": "{dataset} - Documentation QuantConnect.com",
+        "og:type": "website",
+        "og:site_name": "{dataset} - QuantConnect.com",
+        "og:image": "https://cdn.quantconnect.com/docs/i/writing-algorithms/datasets/{vendor_}/{dataset_}.png"
+    }}
+}}'''
+
 for clean_up in os.listdir('03 Writing Algorithms/14 Datasets'):
     if not '01 Overview' in clean_up and not "readme" in clean_up:
         destination = '03 Writing Algorithms/14 Datasets/' + clean_up
@@ -47,6 +63,10 @@ for dataset in doc:
     main_dir = f'03 Writing Algorithms/14 Datasets/{vendors[vendorName]:02} {vendorName}/{product_count[vendorName][datasetName]:02} {datasetName}'
     destination_folder = pathlib.Path(main_dir)
     destination_folder.mkdir(parents=True, exist_ok=True)
+    
+    with open(destination_folder / f'metadata.json', "w", encoding="utf-8") as json_file:
+        metadata = metadata_content(vendorName, datasetName)
+        json_file.write(metadata)
     
     all_sections = {**{item["title"]: item for item in dataset["about"] if item["title"]}, **{item["title"]: item for item in dataset["documentation"] if item["title"]}}
     
