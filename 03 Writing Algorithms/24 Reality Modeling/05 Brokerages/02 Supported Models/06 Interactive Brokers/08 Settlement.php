@@ -27,4 +27,4 @@ security.SettlementModel = DelayedSettlementModel(Option.DefaultSettlementDays, 
 security.SettlementModel = ImmediateSettlementModel()</pre>
 </div>
 
-<p>When live trading Interactive Brokers does not provide information on which assets are not settled. We have to assume each live trading session starts with its cash fully settled.</p>
+<p>Interactive Brokers doesn't provide information on which assets aren't settled, so we assume each live trading session starts with its cash fully settled.</p>
