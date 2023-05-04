@@ -5,6 +5,12 @@ Schedule.On(DateRules.On(2013, 10, 7),
             () =&gt; Log($"SpecificTime: Fired at : {Time}"));
 
 // Schedule an event to fire every trading day for a security
+// The time rule here tells it to fire at 13:00:00 UTC
+Schedule.On(DateRules.EveryDay("SPY"),
+            TimeRules.At(13, 0, 0, TimeZones.Utc),
+            () =&gt; Log($"EveryDay.SPY SpecificTime: Fired at: {Time}"));
+            
+// Schedule an event to fire every trading day for a security
 // The time rule here tells it to fire 10 minutes after SPY's market open
 Schedule.On(DateRules.EveryDay("SPY"),
             TimeRules.AfterMarketOpen("SPY", 10),
@@ -94,13 +100,19 @@ self.Schedule.On(self.DateRules.On(2013, 10, 7),
                  lambda: self.Log(f"SpecificTime: Fired at : {self.Time}"))
 
 # Schedule an event to fire every trading day for a security the
-# time rule here tells it to fire 10 minutes after SPY's market open
+# The time rule here tells it to fire at 13:00:00 UTC
+self.Schedule.On(self.DateRules.EveryDay("SPY"), 
+                 self.TimeRules.At(13, 0, 0, TimeZones.Utc),
+                 lambda: self.Log(f"EveryDay.SPY SpecificTime: Fired at: {self.Time}"))
+
+# Schedule an event to fire every trading day for a security the
+# The time rule here tells it to fire 10 minutes after SPY's market open
 self.Schedule.On(self.DateRules.EveryDay("SPY"), 
                  self.TimeRules.AfterMarketOpen("SPY", 10),
                  lambda: self.Log(f"EveryDay.SPY 10 min after open: Fired at: {self.Time}"))
 
 # Schedule an event to fire every trading day for a security the
-# time rule here tells it to fire 10 minutes before SPY's market close
+# The time rule here tells it to fire 10 minutes before SPY's market close
 self.Schedule.On(self.DateRules.EveryDay("SPY"),
                  self.TimeRules.BeforeMarketClose("SPY", 10),
                  lambda: self.Log(f"EveryDay.SPY 10 min before close: Fired at: {self.Time}"))
