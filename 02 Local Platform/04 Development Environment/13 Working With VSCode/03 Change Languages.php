@@ -1,0 +1,1 @@
+<p>To change the default programming language for your new projects, adjust the <span class='button-name'>User: Preferred Language</span> <a href='/docs/v2/local-platform/initialization/configuration#02-Extension-Settings'>extension setting</a>.</p>

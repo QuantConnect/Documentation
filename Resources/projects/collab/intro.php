@@ -1,0 +1,1 @@
+<p>Project collaboration is a real-time coding experience with other members of your team. Collaborating can speed up your development time. By working with other members in an organization, members within the organization can specialize in different parts of the project. <? if ($localPlatform) { ?>On Local Platform, you can collaborate with your remote team members.<? } ?></p>
