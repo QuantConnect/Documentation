@@ -1,4 +1,4 @@
-<p>You can add parameters, set default parameter values, and remove parameters from your projects.</p>
+<p>Algorithm parameters are hard-coded values for variables in your project that are set outside of the code files. Add parameters to your projects to remove hard-coded values from your code files and to perform parameter optimizations. You can add parameters, set default parameter values, and remove parameters from your projects.</p>
 
 <h4>Add Parameters</h4>
 <p>Follow these steps to add an algorithm parameter to a project:</p>
@@ -10,8 +10,9 @@
     <p>The parameter name must be unique in the project.</p>
     <li>Enter the default value.</li>
     <li>Click <span class='button-name'>Create Parameter</span>.</li>
-    <li>Add the <code>GetParameter</code> method to your code files to inject the parameter value into your algorithm.</li>
-</ol>  
+</ol>
+
+<p>To get the parameter values into your algorithm, see <a href='/docs/v2/writing-algorithms/parameters#03-Get-Parameters'>Get Parameters</a>.</p>
 
 <h4>Set Default Parameter Values</h4>
 <p>Follow these steps to set the default value of an algorithm parameter in a project:</p>

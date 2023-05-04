@@ -3,5 +3,5 @@
 Use the QuantConnect platform to run your backtests because we have institutional-grade datasets, an open-source backtesting engine that's constantly being improved, cloud servers to execute the backtests, and the backtesting hardware is maintained 24/7 by QuantConnect engineers.
 <?php } 
 if ($localPlatform) { ?>
-If you run local backtests, you can leverage your local data and hardware. If you run backtests in the QuantConnect Cloud, you have access to our institutional-grade datasets and backtesting hardware that's maintained 24/7 by our team of engineers.
+If you run local backtests, you can leverage your local data and hardware.
 <?php } ?></p>
