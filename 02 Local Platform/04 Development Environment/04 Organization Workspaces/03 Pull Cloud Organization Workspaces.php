@@ -5,10 +5,10 @@
     <li>In the Select Workspace panel, click <span class="button-name">Pull Organization Workspace</span>.</li>
     <img class="docs-image" src="https://cdn.quantconnect.com/i/tu/select-workspace.png" alt="Select workspace">
     <li>In the Pull QuantConnect Organization Workspace window, click the cloud workspace (<a href='https://www.quantconnect.com/docs/v2/cloud-platform/organizations'>organization</a>) that you want to pull.</li>
-    <img class="docs-image" src="https://cdn.quantconnect.com/i/tu/pull-cloud-organization.png" alt="Pull cloud organization">
+    <img class="docs-image" src="https://cdn.quantconnect.com/i/tu/pull-cloud-workspaces-1.png" alt="Pull cloud organization">
     
     <li>In the Pull QuantConnect Organization Workspace window, create a directory to serve as the workspace and then click <span class="button-name">Select</span>.</li>
-    <img class="docs-image" src="https://cdn.quantconnect.com/i/tu/pull-cloud-workspaces.png" alt="Pull cloud workspace">
+    <img class="docs-image" src="https://cdn.quantconnect.com/i/tu/pull-cloud-workspaces-2.png" alt="Pull cloud workspace">
 </ol>
 
 <p>It takes a few minutes to create a new workspace directory and populate it with the <a href='/docs/v2/local-platform/initialization/organization-workspaces#07-Directory-Structure'>the initial file structure</a>. After the workspace directory is populated with the initial file structure, it pulls <a href='https://www.quantconnect.com/docs/v2/cloud-platform/projects/getting-started#02-View-All-Projects'>your cloud project files</a>.</p>
