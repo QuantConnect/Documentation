@@ -1,7 +1,7 @@
 <p>
     Pulls projects from QuantConnect to your local directory while preserving the directory structure of your projects on QuantConnect.
     The project's files, description, and parameters are pulled from the cloud.
-    By default, all cloud projects are pulled from the organization that's linked to your current <a href='/docs/v2/lean-cli/initialization/workspace'>workspace</a>. If you provide a <code>--project</code> option, you only pull a single project from the cloud.
+    By default, all cloud projects are pulled from the organization that's linked to your current <a href='/docs/v2/lean-cli/initialization/organization-workspaces'>organization workspace</a>. If you provide a <code>--project</code> option, you only pull a single project from the cloud.
 </p>
 
 <p>
