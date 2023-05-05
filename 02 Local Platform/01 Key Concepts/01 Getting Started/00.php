@@ -18,10 +18,10 @@
     <li>In VS Code, in the Select Workspace panel, click <span class="button-name">Pull Organization Workspace</span>.</li>
     <img class="docs-image" src="https://cdn.quantconnect.com/i/tu/select-workspace.png" alt="Select workspace">
     <li>In the Pull QuantConnect Organization Workspace window, click the cloud workspace (<a href='https://www.quantconnect.com/docs/v2/cloud-platform/organizations'>organization</a>) that you want to pull.</li>
-    <img class="docs-image" src="https://cdn.quantconnect.com/i/tu/pull-cloud-organization.png" alt="Pull cloud organization">
+    <img class="docs-image" src="https://cdn.quantconnect.com/i/tu/pull-cloud-workspaces-1.png" alt="Pull cloud organization">
     
     <li>In the Pull QuantConnect Organization Workspace window, create a directory to serve as the workspace and then click <span class="button-name">Select</span>.</li>
-    <img class="docs-image" src="https://cdn.quantconnect.com/i/tu/pull-cloud-workspaces.png" alt="Pull cloud workspace"></li>
+    <img class="docs-image" src="https://cdn.quantconnect.com/i/tu/pull-cloud-workspaces-2.png" alt="Pull cloud workspace"></li>
 
     <? include(DOCS_RESOURCES."/cli/init/wsl.html"); ?>
 
@@ -29,7 +29,7 @@
     <img class="docs-image" src="https://cdn.quantconnect.com/i/tu/open-new-project.png" alt="Open a new project">
 
     <li>Enter the project name and then press <span class="key-combinations">Enter</span>.</li>
-    <img class="docs-image" src="https://cdn.quantconnect.com/i/tu/name-project-window.png" alt="Name a new project">
+    <img class="docs-image" src="https://cdn.quantconnect.com/i/tu/local-platform-name-new-project.png" alt="Name a new project">
 
     <p>Congratulations! You just created your first local project.</p>
     <img class="python docs-image" src="https://cdn.quantconnect.com/i/tu/local-lab-new-project-py.png" alt="Python local lab interface">
