@@ -3,7 +3,7 @@
 </p>
 
 <ol>
-    <li>Open a terminal in one of your <a href='/docs/v2/lean-cli/initialization/workspace'>workspaces</a>.</li>
+    <li>Open a terminal in one of your <a href='/docs/v2/lean-cli/initialization/organization-workspaces'>organization workspaces</a>.</li>
     <li>Run <code>lean project-create --language python "&lt;projectName&gt;"</code> to create a new project named <span class="public-directory-name">&lt;projectName&gt;</span>. 
 <div class="cli section-example-container">
 <pre>$ lean project-create --language python "My Python Project"
@@ -18,7 +18,7 @@ Successfully created Python project 'My Python Project'</pre>
 </p>
 
 <ol>
-    <li>Open a terminal in one of your <a href='/docs/v2/lean-cli/initialization/workspace'>workspaces</a>.</li>
+    <li>Open a terminal in one of your <a href='/docs/v2/lean-cli/initialization/organization-workspaces'>organization workspaces</a>.</li>
     <li>Run <code>lean project-create --language csharp "</code><code><code>&lt;projectName&gt;</code>"</code> to create a new C# project named <span class="public-directory-name">&lt;projectName&gt;</span>. 
 <div class="cli section-example-container">
 <pre>$ lean project-create --language csharp "My CSharp Project"
@@ -28,7 +28,7 @@ Successfully created C# project 'My CSharp Project'</pre>
     </li>
 </ol>
 
-<?php echo file_get_contents(DOCS_RESOURCES."/cli/project-name-rules.html");?>
+<? include(DOCS_RESOURCES."/cli/project-name-rules.html");?>
 
 <p>
     You can provide a project name containing forward slashes to create a project in a sub-directory.

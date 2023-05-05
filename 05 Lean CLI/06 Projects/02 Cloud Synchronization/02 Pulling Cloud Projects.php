@@ -4,7 +4,7 @@
 
 <ol>
     <li><a href="/docs/v2/lean-cli/initialization/authentication#02-Log-In">Log in</a> to the CLI if you haven't done so already.</li>
-    <li>Open a terminal in the <a href='/docs/v2/lean-cli/initialization/workspace'>workspace</a> of the organization from which you want to pull projects.</li>
+    <li>Open a terminal in the <a href='/docs/v2/lean-cli/initialization/organization-workspaces'>organization workspace</a> from which you want to pull projects.</li>
     <li>Run <code>lean cloud pull</code> to pull all your cloud projects to the current directory, creating directories where necessary.
 <div class="cli section-example-container">
 <pre>$ lean cloud pull
@@ -28,7 +28,7 @@ Successfully pulled 'Halloween Strategy/research.ipynb'</pre>
 
 <ol>
     <li><a href="/docs/v2/lean-cli/initialization/authentication#02-Log-In">Log in</a> to the CLI if you haven't done so already.</li>
-    <li>Open a terminal in the <a href='/docs/v2/lean-cli/initialization/workspace'>workspace</a> of the organization that stores the project.</li>
+    <li>Open a terminal in the <a href='/docs/v2/lean-cli/initialization/organization-workspaces'>organization workspace</a> that stores the project.</li>
     <li>Run <code>lean cloud pull --project "&lt;projectName&gt;"</code> to pull the project named "&lt;projectName&gt;" to <span class="public-directory-name">. / &lt;projectName&gt;</span>.
 <div class="cli section-example-container">
 <pre>$ lean cloud pull --project "My Project"
