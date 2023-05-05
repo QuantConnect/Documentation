@@ -8,4 +8,4 @@
 <p>IB has a 400 millisecond fill time for live orders.</p>
 
 <h4>Brokerage Liquidation</h4>
-<p>The algorithm receives an order event with the <code>Brokerage Liquidation</code> message when IB generates a liquidation order.</p>
+<p>When IB liquidates part of your position, you receive an <a href='/docs/v2/writing-algorithms/trading-and-orders/order-events'>order event</a> that contains the <code>Brokerage Liquidation</code> message.</p>
