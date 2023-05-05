@@ -20,7 +20,7 @@
     <li>In the Pull QuantConnect Organization Workspace window, click the cloud workspace (<a href='https://www.quantconnect.com/docs/v2/cloud-platform/organizations'>organization</a>) that you want to pull.</li>
     <img class="docs-image" src="https://cdn.quantconnect.com/i/tu/pull-cloud-workspaces-1.png" alt="Pull cloud organization">
     
-    <li>In the Pull QuantConnect Organization Workspace window, create a directory to serve as the workspace and then click <span class="button-name">Select</span>.</li>
+    <li>In the Pull QuantConnect Organization Workspace window, create a directory to serve as the organization workspace and then click <span class="button-name">Select</span>.</li>
     <img class="docs-image" src="https://cdn.quantconnect.com/i/tu/pull-cloud-workspaces-2.png" alt="Pull cloud workspace"></li>
 
     <? include(DOCS_RESOURCES."/cli/init/wsl.html"); ?>
