@@ -3,8 +3,8 @@
 <p>To get an order field, call the <code>Get</code> method with an <code>OrderField</code>.</p> 
 
 <div class="section-example-container">
-<pre class="csharp">var limitPrice = orderTicket.Get(OrderField.LimitPrice);</pre>
-<pre class="python">limit_price = order_ticket.Get(OrderField.LimitPrice)</pre>
+<pre class="csharp">var limitPrice = ticket.Get(OrderField.LimitPrice);</pre>
+<pre class="python">limit_price = ticket.Get(OrderField.LimitPrice)</pre>
 </div>
 
 <p>The <code>OrderField</code> enumeration has the following members:</p>
