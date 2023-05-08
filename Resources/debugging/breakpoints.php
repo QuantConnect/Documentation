@@ -17,7 +17,7 @@
 <img class='csharp docs-image' src='https://cdn.quantconnect.com/i/tu/research-environment-breakpoint-c.gif' alt="Add breakpoint">
 <? } ?>
 
-<h4>Edit Breakpoints</h4>
+<h4>Edit Breakpoint Conditions</h4>
 <p>Follow these steps to customize what happens when a breakpoint is hit:</p>
 <ol>
     <li>Right-click the breakpoint and then click <span class='menu-name'>Edit Breakpoint...</span>.</li>
