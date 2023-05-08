@@ -123,3 +123,5 @@
         </tr>
     </tbody>
 </table>
+
+<p>The preceding table assumes you download trade and quote data, but you can run backtests with only trade data.</p>
