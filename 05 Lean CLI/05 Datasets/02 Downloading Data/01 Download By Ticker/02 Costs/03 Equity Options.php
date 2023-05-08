@@ -89,3 +89,5 @@
         </tr>
     </tbody>
 </table>
+
+<p>The preceding table assumes you download trade, quote, and open interest data. However, you can run backtests with only trade data.</p>
