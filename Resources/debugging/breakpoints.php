@@ -1,13 +1,15 @@
 <? 
     $isBacktest = DOCS_URL(1) == "backtesting";
     $location = $isBacktest ? "algorithm" : "notebook";
+    $openProjectLink = $localPlatform ? "/docs/v2/local-platform/projects/getting-started#04-Open-Projects" : "/docs/v2/cloud-platform/projects/getting-started#02-View-All-Projects";
+    $navSide = $localPlatform ? "left" : "right";
 ?>
 
-<p>Breakpoints are lines in your <?=$location ?> where execution pauses. You need at least one breakpoint in your <?=$isBacktest ? "code files" : "notebook" ?> to start the debugger. <a href='/docs/v2/cloud-platform/projects/getting-started#02-View-All-Projects'>Open a project</a> to start adjusting its breakpoints.</p>
+<p>Breakpoints are lines in your <?=$location ?> where execution pauses. You need at least one breakpoint in your <?=$isBacktest ? "code files" : "notebook" ?> to start the debugger. <a href='{$openProjectLink}'>Open a project</a> to start adjusting its breakpoints.</p>
 
 <h4>Add Breakpoints</h4>
 
-<? if ($isBacktest) { ?> 
+<? if ($cloudPlatform || $localPlatform) { ?> 
 <p>Click to the left of a line number to add a breakpoint on that line.</p>
 <img class='python docs-image' src='https://cdn.quantconnect.com/i/tu/set-break-point-2.gif' alt="Add breakpoint">
 <img class='csharp docs-image' src='https://cdn.quantconnect.com/i/tu/set-breakpoint-c-sharp.gif' alt="Add breakpoint">
@@ -50,14 +52,14 @@
 <p>To disable a breakpoint, right-click it and then click <span class='menu-name'>Disable Breakpoint</span>.</p>
 <p>Follow these steps to enable and disable all breakpoints:</p>
 <ol>
-    <li>In the right navigation menu, click the <img class='inline-icon' src='https://cdn.quantconnect.com/i/tu/run-and-debug-icon.png' alt="Run &amp; debug icon"> <span class='icon-name'>Run and Debug</span> icon. </li>
-    <li>In the Debug panel, hover over the <span class='page-section-name'>Breakpoints</span> section and then click the <img class='inline-icon' src='https://cdn.quantconnect.com/i/tu/disable-all-breakpoints-icon.png'> <span class='icon-name'>Toggle Active Breakpoints</span> icon.</li>
+    <li>In the <?=$navSide?> navigation menu, click the <img class='inline-icon' src='https://cdn.quantconnect.com/i/tu/run-and-debug-icon.png' alt="Run &amp; debug icon"> <span class='icon-name'>Run and Debug</span> icon. </li>
+    <li>In the Run and Debug panel, hover over the <span class='page-section-name'>Breakpoints</span> section and then click the <img class='inline-icon' src='https://cdn.quantconnect.com/i/tu/disable-all-breakpoints-icon.png'> <span class='icon-name'>Toggle Active Breakpoints</span> icon.</li>
 </ol>
 
 <h4>Remove Breakpoints</h4>
 <p>To remove a breakpoint, right-click it and then click <span class='menu-name'>Remove Breakpoint</span>.</p>
 <p>Follow these steps to remove all breakpoints:</p>
 <ol>
-    <li>In the right navigation menu, click the <img class='inline-icon' src='https://cdn.quantconnect.com/i/tu/run-and-debug-icon.png' alt="Run &amp; debug icon"> <span class='icon-name'>Run and Debug</span> icon. </li>
-    <li>In the Debug panel, hover over the <span class='page-section-name'>Breakpoints</span> section and then click the <img class='inline-icon' src='https://cdn.quantconnect.com/i/tu/remove-all-breakpoints-icon.png'> <span class='icon-name'>Remove All Breakpoints</span> icon.</li>
+    <li>In the <?=$navSide?> navigation menu, click the <img class='inline-icon' src='https://cdn.quantconnect.com/i/tu/run-and-debug-icon.png' alt="Run &amp; debug icon"> <span class='icon-name'>Run and Debug</span> icon. </li>
+    <li>In the Run and Debug panel, hover over the <span class='page-section-name'>Breakpoints</span> section and then click the <img class='inline-icon' src='https://cdn.quantconnect.com/i/tu/remove-all-breakpoints-icon.png'> <span class='icon-name'>Remove All Breakpoints</span> icon.</li>
 </ol>
