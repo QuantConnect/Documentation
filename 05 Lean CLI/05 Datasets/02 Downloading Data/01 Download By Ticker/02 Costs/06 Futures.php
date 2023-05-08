@@ -11,27 +11,27 @@
     <tbody>
         <tr>
             <td>Tick</td>
-            <td>One file per ticker per trading day</td>
+            <td>One file per ticker per trading day per data format. Trade, quote, and open interest data are separate files.</td>
             <td>6 QCC = $0.06 USD</td>
         </tr>
         <tr>
             <td>Second</td>
-            <td>One file per ticker per trading day</td>
+            <td>One file per ticker per trading day per data format. Trade, quote, and open interest data are separate files.</td>
             <td>5 QCC = $0.05 USD</td>
         </tr>
         <tr>
             <td>Minute</td>
-            <td>One file per ticker per trading day</td>
+            <td>One file per ticker per trading day per data format. Trade, quote, and open interest data are separate files.</td>
             <td>5 QCC = $0.05 USD</td>
         </tr>
         <tr>
             <td>Hour</td>
-            <td>One file per ticker</td>
+            <td>One file per ticker per data format. Trade, quote, and open interest data are separate files.</td>
             <td>300 QCC = $3 USD</td>
         </tr>
         <tr>
             <td>Daily</td>
-            <td>One file per ticker</td>
+            <td>One file per ticker per data format. Trade, quote, and open interest data are separate files.</td>
             <td>100 QCC = $1 USD</td>
         </tr>
     </tbody>
@@ -94,21 +94,24 @@
         <tr>
             <td>US Futures</td>
             <td>Minute Download</td>
-            <td>1 ticker over 252 trading days
-                <br>=&gt; 252 files
+            <td>1 ticker over 252 trading days with 3 data formats
+                <br>=&gt; 1 * 252 * 3 files
+                <br>=  756 files
                 <br>
-                <br>252 files @ 5 QCC/file
-                <br>=&gt; 252 * 5 QCC
-                <br>= 1,260 QCC 
-                <br>= $12.60 USD
+                <br>756 files @ 5 QCC/file
+                <br>=&gt; 756 * 5 QCC
+                <br>= 3,780 QCC 
+                <br>= $37.80 USD
             </td>
-            <td>1 ticker
-                <br>=&gt; 1 file/day
+            <td>1 ticker with 3 data formats
+                <br>=&gt; 3 files/day
                 <br>
-                <br>1 file/day @ 5 QCC/file
-                <br>=&gt; 5 QCC/day
-                <br>= $0.05 USD/day
+                <br>3 file/day @ 5 QCC/file
+                <br>=&gt; 15 QCC/day
+                <br>= $0.15 USD/day
             </td>
         </tr>
     </tbody>
 </table>
+
+<p>The preceding table assumes you download trade, quote, and open interest data. However, you can run backtests with only trade data.</p>
