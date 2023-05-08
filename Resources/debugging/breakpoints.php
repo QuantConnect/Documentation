@@ -5,7 +5,7 @@
     $navSide = $localPlatform ? "left" : "right";
 ?>
 
-<p>Breakpoints are lines in your <?=$location ?> where execution pauses. You need at least one breakpoint in your <?=$isBacktest ? "code files" : "notebook" ?> to start the debugger. <a href='{$openProjectLink}'>Open a project</a> to start adjusting its breakpoints.</p>
+<p>Breakpoints are lines in your <?=$location ?> where execution pauses. You need at least one breakpoint in your <?=$isBacktest ? "code files" : "notebook" ?> to start the debugger. <a href="<?=$openProjectLink?>">Open a project</a> to start adjusting its breakpoints.</p>
 
 <h4>Add Breakpoints</h4>
 
