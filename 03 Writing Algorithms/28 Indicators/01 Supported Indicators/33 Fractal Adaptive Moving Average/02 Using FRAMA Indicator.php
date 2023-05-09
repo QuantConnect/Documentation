@@ -2,6 +2,7 @@
 <? 
 include(DOCS_RESOURCES."/qcalgorithm-api/_method_container.html");
 
+$hasAutomaticIndicatorHelper = true;
 $typeName = 'FractalAdaptiveMovingAverage';
 $helperName = 'FRAMA';
 $helperArguments = '"SPY", 20, 198';

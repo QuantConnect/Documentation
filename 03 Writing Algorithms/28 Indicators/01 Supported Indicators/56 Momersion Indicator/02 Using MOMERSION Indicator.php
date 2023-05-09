@@ -2,6 +2,7 @@
 <? 
 include(DOCS_RESOURCES."/qcalgorithm-api/_method_container.html");
 
+$hasAutomaticIndicatorHelper = true;
 $typeName = 'MomersionIndicator';
 $helperName = 'MOMERSION';
 $helperArguments = '"SPY", 10, 20';

@@ -2,6 +2,7 @@
 <? 
 include(DOCS_RESOURCES."/qcalgorithm-api/_method_container.html");
 
+$hasAutomaticIndicatorHelper = true;
 $typeName = 'SchaffTrendCycle';
 $helperName = 'STC';
 $helperArguments = '"SPY", 5, 10, 20, MovingAverageType.Exponential';

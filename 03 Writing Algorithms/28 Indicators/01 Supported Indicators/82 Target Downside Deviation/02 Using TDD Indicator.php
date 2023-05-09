@@ -2,6 +2,7 @@
 <? 
 include(DOCS_RESOURCES."/qcalgorithm-api/_method_container.html");
 
+$hasAutomaticIndicatorHelper = true;
 $typeName = 'TargetDownsideDeviation';
 $helperName = 'TDD';
 $helperArguments = '"SPY", 50';

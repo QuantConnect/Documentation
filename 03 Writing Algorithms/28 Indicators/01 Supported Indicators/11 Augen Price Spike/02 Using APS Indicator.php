@@ -2,6 +2,7 @@
 <? 
 include(DOCS_RESOURCES."/qcalgorithm-api/_method_container.html");
 
+$hasAutomaticIndicatorHelper = true;
 $typeName = 'AugenPriceSpike';
 $helperName = 'APS';
 $helperArguments = '"SPY", 3';

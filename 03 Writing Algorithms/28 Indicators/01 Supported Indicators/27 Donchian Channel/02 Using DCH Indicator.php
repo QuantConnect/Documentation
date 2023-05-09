@@ -2,6 +2,7 @@
 <? 
 include(DOCS_RESOURCES."/qcalgorithm-api/_method_container.html");
 
+$hasAutomaticIndicatorHelper = true;
 $typeName = 'DonchianChannel';
 $helperName = 'DCH';
 $helperArguments = '"SPY", 20, 20';

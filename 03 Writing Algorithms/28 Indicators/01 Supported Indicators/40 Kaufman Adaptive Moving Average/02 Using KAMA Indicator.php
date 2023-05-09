@@ -2,6 +2,7 @@
 <? 
 include(DOCS_RESOURCES."/qcalgorithm-api/_method_container.html");
 
+$hasAutomaticIndicatorHelper = true;
 $typeName = 'KaufmanAdaptiveMovingAverage';
 $helperName = 'KAMA';
 $helperArguments = '"SPY", 20, 10, 20';

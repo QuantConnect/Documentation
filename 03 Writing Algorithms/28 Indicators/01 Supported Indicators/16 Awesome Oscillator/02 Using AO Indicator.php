@@ -2,6 +2,7 @@
 <? 
 include(DOCS_RESOURCES."/qcalgorithm-api/_method_container.html");
 
+$hasAutomaticIndicatorHelper = true;
 $typeName = 'AwesomeOscillator';
 $helperName = 'AO';
 $helperArguments = '"SPY", 10, 20, MovingAverageType.Simple';

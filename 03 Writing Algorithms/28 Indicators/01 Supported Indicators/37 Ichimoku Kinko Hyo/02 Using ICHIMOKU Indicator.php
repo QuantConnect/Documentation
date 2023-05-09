@@ -2,6 +2,7 @@
 <? 
 include(DOCS_RESOURCES."/qcalgorithm-api/_method_container.html");
 
+$hasAutomaticIndicatorHelper = true;
 $typeName = 'IchimokuKinkoHyo';
 $helperName = 'ICHIMOKU';
 $helperArguments = '"SPY", 9, 26, 17, 52, 26, 26';

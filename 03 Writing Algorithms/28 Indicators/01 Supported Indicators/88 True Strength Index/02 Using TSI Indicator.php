@@ -2,6 +2,7 @@
 <? 
 include(DOCS_RESOURCES."/qcalgorithm-api/_method_container.html");
 
+$hasAutomaticIndicatorHelper = true;
 $typeName = 'TrueStrengthIndex';
 $helperName = 'TSI';
 $helperArguments = '"SPY", 25, 13, 7, MovingAverageType.Exponential';
