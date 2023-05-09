@@ -232,7 +232,7 @@ df</pre>
 
 <p class='csharp'>You can also use LINQ to select each <?=$supportsTrades ? "<code>TradeBar</code>" : "<code>QuoteBar</code>" ?> in the <code>Slice</code> for a given <code>Symbol</code>.</p>
 <div class='csharp section-example-container'>
-<pre>
+<pre class='csharp'>
 <? if ($supportsTrades) { ?>
 var tradeBars = allHistorySlice.Where(slice => slice.Bars.ContainsKey(<?=$primarySymbolC?>)).Select(slice => slice.Bars[<?=$primarySymbolC?>]);
 <? } else { ?>
