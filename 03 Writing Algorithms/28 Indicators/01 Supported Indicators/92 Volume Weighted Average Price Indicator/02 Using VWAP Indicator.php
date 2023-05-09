@@ -2,6 +2,7 @@
 <? 
 include(DOCS_RESOURCES."/qcalgorithm-api/_method_container.html");
 
+$hasAutomaticIndicatorHelper = true;
 $typeName = 'VolumeWeightedAveragePriceIndicator';
 $helperName = 'VWAP';
 $helperArguments = '"SPY", 20';

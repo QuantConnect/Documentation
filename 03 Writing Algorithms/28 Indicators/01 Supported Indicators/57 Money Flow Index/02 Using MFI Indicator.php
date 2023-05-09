@@ -2,6 +2,7 @@
 <? 
 include(DOCS_RESOURCES."/qcalgorithm-api/_method_container.html");
 
+$hasAutomaticIndicatorHelper = true;
 $typeName = 'MoneyFlowIndex';
 $helperName = 'MFI';
 $helperArguments = '"SPY", 20';

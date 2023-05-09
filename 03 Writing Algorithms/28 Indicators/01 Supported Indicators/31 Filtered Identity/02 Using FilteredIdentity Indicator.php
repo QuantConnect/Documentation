@@ -2,6 +2,7 @@
 <? 
 include(DOCS_RESOURCES."/qcalgorithm-api/_method_container.html");
 
+$hasAutomaticIndicatorHelper = true;
 $typeName = 'FilteredIdentity';
 $helperName = 'FilteredIdentity';
 $helperArguments = '"SPY", filter = lambda x: x.Close > x.Open';

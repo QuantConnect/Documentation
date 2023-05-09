@@ -2,6 +2,7 @@
 <? 
 include(DOCS_RESOURCES."/qcalgorithm-api/_method_container.html");
 
+$hasAutomaticIndicatorHelper = true;
 $typeName = 'SuperTrend';
 $helperName = 'STR';
 $helperArguments = '"SPY", 20, 2, MovingAverageType.Wilders';

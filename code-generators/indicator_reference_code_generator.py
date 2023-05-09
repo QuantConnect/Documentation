@@ -178,6 +178,7 @@ def Generate_Indicators_Reference():
 <? 
 include(DOCS_RESOURCES."/qcalgorithm-api/_method_container.html");
 
+$hasAutomaticIndicatorHelper = {'true' if type_name != 'Delay' else 'false'};
 $typeName = '{type_name}';
 $helperName = '{helper_name}';
 $helperArguments = '{indicator['helper-arguments']}';

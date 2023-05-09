@@ -2,6 +2,7 @@
 <? 
 include(DOCS_RESOURCES."/qcalgorithm-api/_method_container.html");
 
+$hasAutomaticIndicatorHelper = true;
 $typeName = 'LogReturn';
 $helperName = 'LOGR';
 $helperArguments = '"SPY", 20';

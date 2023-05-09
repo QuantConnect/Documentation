@@ -2,6 +2,7 @@
 <? 
 include(DOCS_RESOURCES."/qcalgorithm-api/_method_container.html");
 
+$hasAutomaticIndicatorHelper = true;
 $typeName = 'SharpeRatio';
 $helperName = 'SR';
 $helperArguments = '"SPY", 22, 0.03';

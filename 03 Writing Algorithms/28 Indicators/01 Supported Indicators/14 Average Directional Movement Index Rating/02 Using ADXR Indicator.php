@@ -2,6 +2,7 @@
 <? 
 include(DOCS_RESOURCES."/qcalgorithm-api/_method_container.html");
 
+$hasAutomaticIndicatorHelper = true;
 $typeName = 'AverageDirectionalMovementIndexRating';
 $helperName = 'ADXR';
 $helperArguments = '"SPY", 20';

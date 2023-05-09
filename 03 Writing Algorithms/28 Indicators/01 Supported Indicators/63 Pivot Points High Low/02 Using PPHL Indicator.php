@@ -2,6 +2,7 @@
 <? 
 include(DOCS_RESOURCES."/qcalgorithm-api/_method_container.html");
 
+$hasAutomaticIndicatorHelper = true;
 $typeName = 'PivotPointsHighLow';
 $helperName = 'PPHL';
 $helperArguments = '"SPY", 10, 10, 100';

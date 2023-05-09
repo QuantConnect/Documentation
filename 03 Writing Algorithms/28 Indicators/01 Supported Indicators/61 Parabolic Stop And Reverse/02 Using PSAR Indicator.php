@@ -2,6 +2,7 @@
 <? 
 include(DOCS_RESOURCES."/qcalgorithm-api/_method_container.html");
 
+$hasAutomaticIndicatorHelper = true;
 $typeName = 'ParabolicStopAndReverse';
 $helperName = 'PSAR';
 $helperArguments = '"SPY", 0.02, 0.02, 0.2';

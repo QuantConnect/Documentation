@@ -2,6 +2,7 @@
 <? 
 include(DOCS_RESOURCES."/qcalgorithm-api/_method_container.html");
 
+$hasAutomaticIndicatorHelper = true;
 $typeName = 'MovingAverageConvergenceDivergence';
 $helperName = 'MACD';
 $helperArguments = '"SPY", 12, 26, 9, MovingAverageType.Exponential';

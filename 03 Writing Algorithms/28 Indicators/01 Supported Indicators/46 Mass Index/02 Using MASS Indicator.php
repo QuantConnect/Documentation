@@ -2,6 +2,7 @@
 <? 
 include(DOCS_RESOURCES."/qcalgorithm-api/_method_container.html");
 
+$hasAutomaticIndicatorHelper = true;
 $typeName = 'MassIndex';
 $helperName = 'MASS';
 $helperArguments = '"SPY", 9, 25';

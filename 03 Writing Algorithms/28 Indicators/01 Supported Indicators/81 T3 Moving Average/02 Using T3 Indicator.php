@@ -2,6 +2,7 @@
 <? 
 include(DOCS_RESOURCES."/qcalgorithm-api/_method_container.html");
 
+$hasAutomaticIndicatorHelper = true;
 $typeName = 'T3MovingAverage';
 $helperName = 'T3';
 $helperArguments = '"SPY", 30, 0.7';

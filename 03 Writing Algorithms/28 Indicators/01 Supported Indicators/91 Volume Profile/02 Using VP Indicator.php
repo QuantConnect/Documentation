@@ -2,6 +2,7 @@
 <? 
 include(DOCS_RESOURCES."/qcalgorithm-api/_method_container.html");
 
+$hasAutomaticIndicatorHelper = true;
 $typeName = 'VolumeProfile';
 $helperName = 'VP';
 $helperArguments = '"SPY", 3, 0.70, 0.05';
