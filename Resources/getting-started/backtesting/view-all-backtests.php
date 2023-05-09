@@ -1,6 +1,6 @@
 <?php
 $openProjectLink = $cloudPlatform ? "/docs/v2/cloud-platform/projects/getting-started#02-View-All-Projects" : "/docs/v2/local-platform/projects/getting-started#02-View-All-Projects";
-$imgLink = $cloudPlatform ? "https://cdn.quantconnect.com/i/tu/backtest-results-view-page.png" : "https://cdn.quantconnect.com/i/tu/local-platform-view-all-backtests.png";
+$imgLink = $cloudPlatform ? "https://cdn.quantconnect.com/i/tu/cloud-platform-backtest-results-icon.png" : "https://cdn.quantconnect.com/i/tu/local-platform-backtest-results-icon.png";
 ?>
 
 <p>Follow these steps to view all of the backtests of a project:</p>
