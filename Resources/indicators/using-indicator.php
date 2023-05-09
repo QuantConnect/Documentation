@@ -1,3 +1,4 @@
+<? if($hasAutomaticIndicatorHelper) { ?>
 <p>To create an automatic indicators for <code><?=$typeName?></code>, call the <code><?=$helperName?></code> helper method from the <code>QCAlgorithm</code> class. The <code><?=$helperName?></code> method creates a <code><?=$typeName?></code> object, hooks it up for automatic updates, and returns it so you can used it in your algorithm. In most cases, you should call the helper method in the <code>Initialize</code> method.<p>
 
 <div class="section-example-container">
@@ -55,6 +56,9 @@
 <? if($hasMovingAverageTypeParameter) { ?>
 <p>The following table describes the <code>MovingAverageType</code> enumeration members:</p>
 <div data-tree='QuantConnect.Indicators.MovingAverageType'></div>
+<? } ?>
+<? } else {?>
+<p><?=$typeName?> does not have an automatic indicator implementation available.</p>
 <? } ?>
 
 <p>You can manually create a <code><?=$typeName?></code> indicator, so it doesn't automatically update. Manual indicators let you update their values with any data you choose.</p>
