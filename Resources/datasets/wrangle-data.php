@@ -124,9 +124,11 @@
 <img class='python docs-image' src='https://cdn.quantconnect.com/i/tu/us-equity-research-data-5.jpg' alt="Historical data dataframe of selected attribute by symbols">
 <? } ?>
 
-<p class="csharp">You may construct a <code>Microsoft.Data.Analysis.DataFrame</code> object from the historical data for efficient vectorized data wrangling.</p>
+<p class="csharp">The historical data methods don't return DataFrame objects, but you can create one for efficient vectorized data wrangling.</p>
 <div class='csharp section-example-container'>
-<pre class='csharp'>var columns = new DataFrameColumn[] {
+<pre class='csharp'>using Microsoft.Data.Analysis; 
+
+var columns = new DataFrameColumn[] {
     new PrimitiveDataFrameColumn<DateTime>("Time", history.Select(x => x[<?=$primarySymbolC?>].EndTime)),
     new DecimalDataFrameColumn("<?=$primaryTicker?> Open", history.Select(x => x[<?=$primarySymbolC?>].Open)),
     new DecimalDataFrameColumn("<?=$primaryTicker?> High", history.Select(x => x[<?=$primarySymbolC?>].High)),
@@ -136,9 +138,8 @@
 var df = new DataFrame(columns);
 df</pre>
 </div>
-<p class='csharp'>The below displayed a formatted dataframe with reference from <a href="https://swharden.com/blog/2022-05-01-dotnet-dataframe/#pretty-dataframe-formatting">SWHarden</a>.</p>
 <img class='csharp docs-image' src='<?=$cSharpDataFrameImages[0]?>' alt="Historical C# dataframe">
-<p class='csharp'>To select a particular column, specifies it like a dictionary key.</p>
+<p class='csharp'>To select a particular column of the DataFrame, index it with the column name.</p>
 <div class='section-example-container'>
 <pre class='csharp'>df["<?=$primaryTicker?> <?=$dataFrameColumnName?>"]</pre>
 </div>
