@@ -1,1 +1,1 @@
-<p>To stop a running backtest, open the <a href="/docs/v2/local-platform/projects/ide#07-Manage-Nodes">Resources panel</a>, and then click the <span class="icon-name">stop</span> icon next to the backtest node.</p>
+<p>To stop a running backtest, <a href='/docs/v2/local-platform/development-environment/resource-management#03-Stop-Nodes'>stop the backtesting node</a>.</p>

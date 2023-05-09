@@ -20,7 +20,7 @@
         <tr>
             <td>Future</td>
             <td>Any</td>
-            <td><a href='/docs/v2/writing-algorithms/reality-modeling/settlement/supported-models#05-Futures-Model'>FutureSettlementModel</a></a></td>
+            <td><a href='/docs/v2/writing-algorithms/reality-modeling/settlement/supported-models#05-Future-Model'>FutureSettlementModel</a></a></td>
         </tr>
     </tbody>
 </table>
