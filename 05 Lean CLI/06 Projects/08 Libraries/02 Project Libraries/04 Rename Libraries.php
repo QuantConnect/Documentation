@@ -1,6 +1,6 @@
 <p>Follow these steps to rename a library:</p>
 
-<ul>
+<ol>
     <li>Open the <a href="/docs/v2/lean-cli/initialization/organization-workspaces">organization workspaces</a> when you store the library.</li>
     <li>In the <span class='public-directory-name'>Library</span> directory, rename the library project.</li>
     <? include(DOCS_RESOURCES."/cli/python-library-naming-rules.html"); ?>
@@ -11,4 +11,4 @@
 Renaming project in cloud from 'Library/MyLibrary' to 'Library/MySpecialLibrary'
 Successfully updated name, files, and libraries for 'Library/MyLibrary'</pre>
     </div>
-</ul>
+</ol>
