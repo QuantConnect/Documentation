@@ -136,6 +136,11 @@ public void OnData(OptionChains optionChains)
 
 <p>To get the Greeks and implied volatility of an Option contract, use the <code>Greeks</code> and <code>ImpliedVolatility</code> members.</p>
 
+<?php
+if ($isFutureOptions) 
+{
+?>
+
 <div class='section-example-container'>
     <pre class='csharp'>public override void OnData(Slice slice)
 {
