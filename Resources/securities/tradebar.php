@@ -35,6 +35,7 @@ public void OnData(TradeBars tradeBars)
     {
         var symbol = kvp.Key;
         var tradeBar = kvp.Value;
+        var closePrice = tradeBar.Close;
     }
 }
 
@@ -44,9 +45,10 @@ public void OnData(TradeBars tradeBars)
     {
         var symbol = kvp.Key;
         var tradeBar = kvp.Value;
+        var closePrice = tradeBar.Close;
     }
 }</pre>
     <pre class='python'>def OnData(self, slice: Slice) -> None:
     for symbol, trade_bar in slice.Bars.items():
-        pass</pre>
+        close_price = trade_bar.Close</pre>
 </div>
