@@ -11,6 +11,7 @@
     if (slice.Bars.ContainsKey(_symbol))
     {
         var tradeBar = slice.Bars[_symbol];
+        var value = tradeBar.Value;
     }
 }
 
@@ -19,10 +20,12 @@ public void OnData(TradeBars tradeBars)
     if (tradeBars.ContainsKey(_symbol))
     {
         var tradeBar = tradeBars[_symbol];
+        var value = tradeBar.Value;
     }
 }
 </pre>
     <pre class='python'>def OnData(self, slice: Slice) -&gt; None:
     if self.symbol in slice.Bars:
-        trade_bar = slice.Bars[self.symbol]</pre>
+        trade_bar = slice.Bars[self.symbol]
+        value = trade_bar.Value</pre>
 </div>
