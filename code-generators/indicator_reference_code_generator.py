@@ -85,10 +85,6 @@ def Generate_Indicators_Reference():
             if start > 0:
                 arguments = arguments[1 + start:].strip()
             indicator['constructor-arguments'] = arguments
-            # edge case: Beta -> the constructor and helper arguments are different
-            if type_name == "QuantConnect.Indicators.Beta":
-                indicator['helper-arguments'] = "Symbol.Create(\"QQQ\", SecurityType.Equity, Market.USA), self.symbol, 20"
-                indicator['constructor-arguments'] = "\"Beta\", 20, Symbol.Create(\"QQQ\", SecurityType.Equity, Market.USA), self.symbol"
             indicator['has-moving-average-type-parameter'] = 'MovingAverageType' in content
 
             properties = [x["property-name"] for x in indicator['properties']
