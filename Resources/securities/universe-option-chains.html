@@ -5,12 +5,15 @@
 {
     if (slice.OptionChains.TryGetValue(_symbol, out var chain))
     {
-        // Example: Find an at-the-money (ATM) put contract with the farthest expiration
-        var contract = chain
+        // Example: Find 5 put contracts that are closest to at-the-money (ATM) and have the farthest expiration
+        var contracts = chain
             .OrderByDescending(x => x.Expiry)
             .ThenBy(x => Math.Abs(chain.Underlying.Price - x.Strike))
             .ThenByDescending(x => x.Right)
-            .FirstOrDefault();
+            .Take(5);
+
+        // Select the contract with the delta closest to 0.5
+        var contract = contracts.OrderBy(x => Math.Abs(0.5 - x.Greeks.Delta)).FirstOrDefault();
     }
 }
 
@@ -18,17 +21,20 @@ public void OnData(OptionChains optionChains)
 {
     if (optionChains.TryGetValue(_symbol, out var chain))
     {
-        //
+        var contracts = chain.Contracts;
     }
 }</pre>
     <pre class='python'>def OnData(self, slice: Slice) -> None:
     chain = slice.OptionChains.get(self.symbol)
     if chain:
-        # Example: Find an at-the-money (ATM) put contract with the farthest expiration
-        contract = sorted(sorted(sorted(chain, \
+        # Example: Find 5 put contracts that are closest to at-the-money (ATM) and have the farthest expiration
+        contracts = sorted(sorted(sorted(chain, \
             key = lambda x: abs(chain.Underlying.Price - x.Strike)), \
             key = lambda x: x.Expiry, reverse=True), \
-            key = lambda x: x.Right, reverse=True)[0]</pre>
+            key = lambda x: x.Right, reverse=True)[:5]
+
+        # Select the contract with the delta closest to 0.5
+        contract = sorted(contracts, key=lambda x: abs(0.5 - x.Greeks.Delta))[0]</pre>
 </div>
 
 <p>You can also loop through the <code>OptionChains</code> property to get each <code>OptionChain</code>.</p>
@@ -39,6 +45,7 @@ public void OnData(OptionChains optionChains)
     {
         var canoncialSymbol = kvp.Key;
         var chain = kvp.Value;
+        var contracts = chain.Contracts;
     }
 }
 
@@ -48,9 +55,10 @@ public void OnData(OptionChains optionChains)
     {
         var canoncialSymbol = kvp.Key;
         var chain = kvp.Value;
+        var contracts = chain.Contracts;
     }
 }</pre>
     <pre class='python'>def OnData(self, slice: Slice) -> None:
     for canonical_symbol, chain in slice.OptionChains.items():
-        pass</pre>
+        contracts = chain.Contracts</pre>
 </div>

@@ -5,7 +5,7 @@
 {
     if (slice.OptionChains.TryGetValue(<?=$cSharpMemberName?>, out var chain))
     {
-        //
+        var contracts = chain.Contracts;
     }
 }
 
@@ -13,13 +13,13 @@ public void OnData(OptionChains optionChains)
 {
     if (optionChains.TryGetValue(<?=$cSharpMemberName?>, out var chain))
     {
-        //
+        var contracts = chain.Contracts;
     }
 }</pre>
     <pre class='python'>def OnData(self, slice: Slice) -> None:
     chain = slice.OptionChains.get(<?=$pythonMemberName?>)
     if chain:
-        pass</pre>
+        contracts = chain.Contracts</pre>
 </div>
 
 <p>You can also loop through the <code>OptionChains</code> property to get each <code>OptionChain</code>.</p>
@@ -30,6 +30,7 @@ public void OnData(OptionChains optionChains)
     {
         var <?=$cSharpVariableName?> = kvp.Key;
         var chain = kvp.Value;
+        var contracts = chain.Contracts;
     }
 }
 
@@ -39,9 +40,10 @@ public void OnData(OptionChains optionChains)
     {
         var <?=$cSharpVariableName?> = kvp.Key;
         var chain = kvp.Value;
+        var contracts = chain.Contracts;
     }
 }</pre>
     <pre class='python'>def OnData(self, slice: Slice) -> None:
     for <?=$pythonVariableName?>, chain in slice.OptionChains.items():
-        pass</pre>
+        contracts = chain.Contracts</pre>
 </div>

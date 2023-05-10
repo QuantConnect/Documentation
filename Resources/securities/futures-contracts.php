@@ -10,7 +10,7 @@
     {
         if (chain.Contracts.TryGetValue(<?=$cSharpMemberName?>, out var contract))
         {
-            //
+            var price = contract.LastPrice;
         }
     }
 }
@@ -21,7 +21,7 @@ public void OnData(FuturesChains futuresChains)
     {
         if (chain.Contracts.TryGetValue(<?=$cSharpMemberName?>, out var contract))
         {
-            //
+            var price = contract.LastPrice;
         }
     }
 }</pre>
@@ -30,5 +30,5 @@ public void OnData(FuturesChains futuresChains)
     if chain:
         contract = chain.Contracts.get(<?=$pythonMemberName?>)
         if contract:
-            pass</pre>
+            price = contract.LastPrice</pre>
 </div>   

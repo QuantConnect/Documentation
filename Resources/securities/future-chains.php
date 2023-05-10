@@ -8,14 +8,14 @@
 {
     if (slice.FuturesChains.TryGetValue(<?=$cSharpMemberName?>.Canonical, out var chain))
     {
-        //
+        var contracts = chain.Contracts;
     }
 }
 </pre>
     <pre class='python'>def OnData(self, slice: Slice) -> None:
     chain = slice.FuturesChains.get(<?=$pythonMemberName?>.Canonical)
     if chain:
-        pass</pre>
+        contracts = chain.Contracts</pre>
 </div>
 
 
@@ -28,6 +28,7 @@
     {
         var continuousContractSymbol = kvp.Key;
         var chain = kvp.Value;
+        var contracts = chain.Contracts;
     }
 }
 
@@ -37,10 +38,11 @@ public void OnData(FuturesChains futuresChains)
     {
         var continuousContractSymbol = kvp.Key;
         var chain = kvp.Value;
+        var contracts = chain.Contracts;
     }
 }</pre>
     <pre class='python'>def OnData(self, slice: Slice) -> None:
     for continuous_contract_symbol, chain in slice.FuturesChains.items():
-        pass</pre>
+        contracts = chain.Contracts</pre>
 </div>
 

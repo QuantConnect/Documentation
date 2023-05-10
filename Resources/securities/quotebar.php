@@ -37,6 +37,7 @@ public void OnData(QuoteBars quoteBars)
     {
         var symbol = kvp.Key;
         var quoteBar = kvp.Value;
+        var askPrice = quoteBar.Ask.Close;
     }
 }
 
@@ -46,11 +47,12 @@ public void OnData(QuoteBars quoteBars)
     {
         var symbol = kvp.Key;
         var quoteBar = kvp.Value;
+        var askPrice = quoteBar.Ask.Close;
     }
 }</pre>
     <pre class='python'>def OnData(self, slice: Slice) -> None:
     for symbol, quote_bar in slice.QuoteBars.items():
-        pass</pre>
+        ask_price = quote_bar.Ask.Close</pre>
 </div>
 
 <p><code>QuoteBar</code> objects let LEAN incorporate spread costs into your <a href='/docs/v2/writing-algorithms/reality-modeling/trade-fills/key-concepts'>simulated trade fills</a> to make backtest results more realistic.</p>

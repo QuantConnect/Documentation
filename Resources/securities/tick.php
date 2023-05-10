@@ -13,7 +13,7 @@
         var ticks = slice.Ticks[<?=$cSharpVariable?>];
         foreach (var tick in ticks)
         {
-            //
+            var price = tick.Price;
         }
     }
 }
@@ -24,7 +24,7 @@ public void OnData(Ticks ticks)
     {
         foreach (var tick in ticks[<?=$cSharpVariable?>])
         {
-            //
+            var price = tick.Price;
         }
     }
 }
@@ -33,7 +33,7 @@ public void OnData(Ticks ticks)
     if <?=$pythonVariable?> in slice.Ticks:
         ticks = slice.Ticks[<?=$pythonVariable?>]
         for tick in ticks:
-            pass</pre>
+            price = tick.Price</pre>
 </div>
 
 <p>You can also iterate through the <code>Ticks</code> dictionary. The keys of the dictionary are the <code>Symbol</code> objects and the values are the <code class='csharp'>List&lt;Tick&gt;</code><code class='python'>list[Tick]</code> objects.</p>
@@ -46,7 +46,7 @@ public void OnData(Ticks ticks)
         var ticks = kvp.Value;
         foreach (var tick in ticks)
         {
-            //
+            var price = tick.Price;
         }
     }
 }
@@ -58,14 +58,14 @@ public void OnData(Ticks ticks)
         var symbol = kvp.Key;
         foreach (var tick in kvp.Value)
         {
-            //
+            var price = tick.Price;
         }
     }
 }</pre>
     <pre class='python'>def OnData(self, slice: Slice) -> None:
     for symbol, ticks in slice.Ticks.items():
         for tick in ticks:
-            pass</pre>
+            price = tick.Price</pre>
 </div>
 
 <p>Tick data is raw and unfiltered, so it can contain bad ticks that skew your trade results. For example, some ticks come from dark pools, which aren't tradable. We recommend you only use tick data if you understand the risks and are able to perform your own online tick filtering.</p>
