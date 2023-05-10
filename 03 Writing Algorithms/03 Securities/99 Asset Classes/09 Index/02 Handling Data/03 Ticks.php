@@ -13,7 +13,7 @@
         var ticks = slice.Ticks[_symbol];
         foreach (var tick in ticks)
         {
-            //
+            var value = tick.Value;
         }
     }
 }
@@ -24,7 +24,7 @@ public void OnData(Ticks ticks)
     {
         foreach (var tick in ticks[_symbol])
         {
-            //
+            var value = tick.Value;
         }
     }
 }
@@ -33,5 +33,5 @@ public void OnData(Ticks ticks)
     if self.symbol in slice.Ticks:
         ticks = slice.Ticks[self.symbol]
         for tick in ticks:
-            pass</pre>
+            value = tick.Value</pre>
 </div>
