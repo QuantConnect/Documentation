@@ -12,8 +12,8 @@
             .ThenBy(x => Math.Abs(chain.Underlying.Price - x.Strike))
             .Take(5);
 
-        // Select the contract with the delta closest to 0.5
-        var contract = contracts.OrderBy(x => Math.Abs(0.5 - x.Greeks.Delta)).FirstOrDefault();
+        // Select the contract with the delta closest to -0.5
+        var contract = contracts.OrderBy(x => Math.Abs(-0.5 - x.Greeks.Delta)).FirstOrDefault();
     }
 }
 
@@ -33,8 +33,8 @@ public void OnData(OptionChains optionChains)
             key = lambda x: abs(chain.Underlying.Price - x.Strike)), \
             key = lambda x: x.Expiry, reverse=True)[:5]
 
-        # Select the contract with the delta closest to 0.5
-        contract = sorted(contracts, key=lambda x: abs(0.5 - x.Greeks.Delta))[0]</pre>
+        # Select the contract with the delta closest to -0.5
+        contract = sorted(contracts, key=lambda x: abs(-0.5 - x.Greeks.Delta))[0]</pre>
 </div>
 
 <p>You can also loop through the <code>OptionChains</code> property to get each <code>OptionChain</code>.</p>
