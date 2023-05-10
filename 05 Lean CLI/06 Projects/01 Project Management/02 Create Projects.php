@@ -28,7 +28,7 @@ Successfully created C# project 'My CSharp Project'</pre>
     </li>
 </ol>
 
-<? include(DOCS_RESOURCES."/cli/project-name-rules.html");?>
+<p><? include(DOCS_RESOURCES."/cli/project-name-rules.html");?></p>
 
 <p>
     You can provide a project name containing forward slashes to create a project in a sub-directory.
