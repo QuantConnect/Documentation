@@ -8,9 +8,9 @@
         var optionChain = kvp.Value;
         // Example: Find 5 put contracts that are closest to at-the-money (ATM) and have the farthest expiration
         var contracts = optionChain
+            .Where(x => x.Right == OptionRight.Put)
             .OrderByDescending(x => x.Expiry)
             .ThenBy(x => Math.Abs(chain.Underlying.Price - x.Strike))
-            .ThenByDescending(x => x.Right)
             .Take(5);
 
         // Select the contract with the delta closest to 0.5
@@ -28,10 +28,10 @@ public void OnData(OptionChains optionChains)
     <pre class='python'>def OnData(self, slice: Slice) -> None:
     for _, option_chain in slice.OptionChains.items():
         # Example: Find 5 put contracts that are closest to at-the-money (ATM) and have the farthest expiration
-        contracts = sorted(sorted(sorted(option_chain, \
+        contracts = [x for x in option_chain if x.Right == OptionRight.Put]
+        contracts = sorted(sorted(contracts, \
             key = lambda x: abs(option_chain.Underlying.Price - x.Strike)), \
-            key = lambda x: x.Expiry, reverse=True), \
-            key = lambda x: x.Right, reverse=True)[:5]
+            key = lambda x: x.Expiry, reverse=True)[:5]
 
         # Select the contract with the delta closest to 0.5
         contract = sorted(contracts, key=lambda x: abs(0.5 - x.Greeks.Delta))[0]</pre>
