@@ -1,7 +1,7 @@
 <p>Follow these steps to rename a library:</p>
 
 <ol>
-    <li>Open the <a href="/docs/v2/lean-cli/initialization/organization-workspaces">organization workspaces</a> where you store the library.</li>
+    <li>Open the <a href="/docs/v2/lean-cli/initialization/organization-workspaces">organization workspace</a> that contains the library.</li>
     <li>In the <span class='public-directory-name'>Library</span> directory, rename the library project.</li>
     <? include(DOCS_RESOURCES."/cli/python-library-naming-rules.html"); ?>
     <li>If you have a copy of the library in QuantConnect Cloud, open a terminal in your organization workspace and push the library project.</li>
