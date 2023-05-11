@@ -101,7 +101,7 @@ self.weekly_contract_symbol = sorted(weekly_filtered_symbols, key=lambda symbol:
 </div>
 
 <h4>Subscribe to Contracts</h4>
-<p>To create an Index Option contract subscription, pass the contract <code>Symbol</code> to the <code>AddIndexOptionContract</code> method. Save a reference to the contract <code>Symbol</code> so you can easily access the contract in the <a href="/docs/v2/writing-algorithms/securities/asset-classes/index-options/handling-data#02-Option-Chains">OptionChain</a> that LEAN passes to the <code>OnData</code> method. To override the default <a href="/docs/v2/writing-algorithms/reality-modeling/options-models/pricing">pricing model</a> of the Option, <a href='https://www.quantconnect.com/docs/v2/writing-algorithms/reality-modeling/options-models/pricing#04-Set-Models'>set a pricing model</a>.</p>
+<p>To create an Index Option contract subscription, pass the contract <code>Symbol</code> to the <code>AddIndexOptionContract</code> method. Save a reference to the contract <code>Symbol</code> so you can easily access the contract in the <a href="/docs/v2/writing-algorithms/securities/asset-classes/index-options/handling-data#04-Option-Chains">OptionChain</a> that LEAN passes to the <code>OnData</code> method. To override the default <a href="/docs/v2/writing-algorithms/reality-modeling/options-models/pricing">pricing model</a> of the Option, <a href='https://www.quantconnect.com/docs/v2/writing-algorithms/reality-modeling/options-models/pricing#04-Set-Models'>set a pricing model</a>.</p>
 
 <div class="section-example-container">
     <pre class="csharp">var option = AddIndexOptionContract(_contractSymbol);
