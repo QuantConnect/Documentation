@@ -70,7 +70,7 @@
         <hr />
         <h4>Follow these steps to create a new trading algorithm and backtest it in QuantConnect Cloud:</h4>
         <div class="tutorial-step">
-            <p>1. <a href="/docs/v2/local-platform/installation">Install Local Platform.</a>.</p>
+            <p>1. <a href="/docs/v2/local-platform/installation">Install Local Platform</a>.</p>
         </div>
         <div class="tutorial-step">
             <p>2. Open<img src="https://cdn.quantconnect.com/i/tu/vscode-inline-icon.svg"
