@@ -75,7 +75,7 @@ self.option_contract_symbol = sorted(filtered_symbols, key=lambda symbol: symbol
 
 <h4>Subscribe to Contracts</h4>
 
-<p>To create a Future Option contract subscription, pass the contract <code>Symbol</code> to the <code>AddFutureOptionContract</code> method. Save a reference to the contract <code>Symbol</code> so you can easily access the Option contract in the <a href="/docs/v2/writing-algorithms/securities/asset-classes/future-options/handling-data#04-Option-Chains">OptionChain</a> that LEAN passes to the <code>OnData</code> method. To override the default <a href="/docs/v2/writing-algorithms/reality-modeling/options-models/pricing">pricing model</a> of the Option, <a href='https://www.quantconnect.com/docs/v2/writing-algorithms/reality-modeling/options-models/pricing#04-Set-Models'>set a pricing model</a>.</p>
+<p>To create a Future Option contract subscription, pass the contract <code>Symbol</code> to the <code>AddFutureOptionContract</code> method. Save a reference to the contract <code>Symbol</code> so you can easily access the Option contract in the <a href="/docs/v2/writing-algorithms/securities/asset-classes/future-options/handling-data#06-Option-Chains">OptionChain</a> that LEAN passes to the <code>OnData</code> method. To override the default <a href="/docs/v2/writing-algorithms/reality-modeling/options-models/pricing">pricing model</a> of the Option, <a href='https://www.quantconnect.com/docs/v2/writing-algorithms/reality-modeling/options-models/pricing#04-Set-Models'>set a pricing model</a>.</p>
 
 <div class="section-example-container">
     <pre class="csharp">var option = AddFutureOptionContract(_optionContractSymbol);
