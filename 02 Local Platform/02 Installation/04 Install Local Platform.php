@@ -6,9 +6,10 @@
     <div class="cli section-example-container">
     	<pre>$ docker pull quantconnect/lean</pre>
     </div>
-    <p>If you're using a Mac that has an M1 chip, download the AMD46 version.</p>
+    <p>If you're using a Mac that has an M1 chip, download the AMD46 version of LEAN and Research.</p>
     <div class="cli section-example-container">
-    	<pre>$ docker pull --platform linux/amd64 quantconnect/lean</pre>
+    	<pre>$ docker pull --platform linux/amd64 quantconnect/lean
+$ docker pull --platform linux/amd64 quantconnect/research</pre>
     </div>
     <p>It takes about an hour to download the image. While it's downloading, continue to the next step. When you use Local Platform, it automatically pulls the latest LEAN image if your current version is more than a week old.</p>
     <li><a rel="nofollow" target="_blank" href="https://code.visualstudio.com/download">Install Visual Studio Code</a>.</li>
