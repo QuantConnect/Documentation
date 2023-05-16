@@ -6,7 +6,7 @@
     <div class="cli section-example-container">
     	<pre>$ docker pull quantconnect/lean</pre>
     </div>
-    <p>If you're using a Mac that has an M1 chip, download the AMD46 version of LEAN and Research.</p>
+    <p>If you're using a Mac that has an M1 chip, download the AMD64 version of LEAN and Research.</p>
     <div class="cli section-example-container">
     	<pre>$ docker pull --platform linux/amd64 quantconnect/lean
 $ docker pull --platform linux/amd64 quantconnect/research</pre>
