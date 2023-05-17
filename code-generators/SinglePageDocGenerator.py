@@ -18,6 +18,21 @@ TITLE_PAGE = f"""<h1>QuantConnect Documentation - %s</h1>
 Copyright QuantConnect 2023
 """
 PAGE_BREAKER = '<p style="page-break-after: always;">&nbsp;</p>'
+EXCLUSIONS = [
+    "3.7.6.3.",
+    "3.7.7.3.1.",
+    "3.7.7.3.2.",
+    "3.7.7.3.3.",
+    "3.7.7.3.4.",
+    "3.7.7.3.5.",
+    "3.7.7.3.8.",
+    "3.7.7.3.8.",
+    "3.7.7.3.10.",
+    "3.7.9.3.",
+    "3.7.10.3.",
+    "3.7.11.3.",
+    "13.1."
+]   # these are unique in Writing Algorithm
 sections = {}
 
 def GetContent(date: str) -> dict:
@@ -60,7 +75,9 @@ def Generate(branch: Union[dict, list], this_section: str) -> Tuple[str, str]:
             # indent depth is identified by file depth, subtract base level
             indent = len([x for x in branch["filePath"].split("/") if x]) - 1
             this_section = SectionNumber(indent, this_section)
-            sections[this_section] = branch['name']
+            # exclusions
+            if all(x not in this_section for x in EXCLUSIONS):
+                sections[this_section] = branch['name']
             html += f"""<section id="{this_section}"><h3>{this_section} {branch['name']}</h3></section>
 
 """
