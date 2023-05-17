@@ -1,3 +1,4 @@
+from bs4 import BeautifulSoup
 from datetime import datetime
 import json
 from pathlib import Path
@@ -70,8 +71,12 @@ def Generate(branch: Union[dict, list], this_section: str) -> Tuple[str, str]:
                     html += f"""<h3>{content['name']}</h3>
 """
                 # Completion of links
-                html += f"""{content['content'].strip().replace("a href='/", "a href='https://www.quantconnect.com/docs/v2/").replace('a href="/', 'a href="/https://www.quantconnect.com/docs/v2/')}
+                c = f"""{content['content'].strip().replace("a href='/", "a href='https://www.quantconnect.com/docs/v2/").replace('a href="/', 'a href="/https://www.quantconnect.com/docs/v2/')}"""
+                # fix any html unclosed tags
+                soup = BeautifulSoup(c)
+                html += f"""{soup.prettify()}
 """
+
             # 2nd level add a page break
             html += f"""{PAGE_BREAKER}
 """
