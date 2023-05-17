@@ -2,6 +2,7 @@ from bs4 import BeautifulSoup
 from datetime import datetime
 import json
 from pathlib import Path
+# import pdfkit
 from urllib.request import urlopen
 import sys
 import time
@@ -9,7 +10,7 @@ from typing import Union, Tuple
 
 SOURCE_URL = "https://s3.amazonaws.com/cdn.quantconnect.com/web/cache"
 DESTINATION_PATH = "single-page"
-OUTPUT_FILENAME = "Quantconnect-%s.html"
+OUTPUT_FILENAME = "Quantconnect-%s"
 DEFAULT_VERSION = "2023.01.17"
 LAST_SECTION = 6
 TITLE_PAGE = f"""<h1>QuantConnect Documentation - %s</h1>
@@ -118,19 +119,28 @@ def TitlePageAndTableOfContentGeneration(topic: str) -> str:
 {PAGE_BREAKER}
 """
 
-def WriteToFile(content: str, name: str) -> None:
+def WriteToHtmlFile(content: str, name: str) -> Path:
     output_dir = Path(DESTINATION_PATH)
     output_dir.mkdir(exist_ok=True, parents=True)
-    filepath = output_dir / (OUTPUT_FILENAME % name)
+    filepath = output_dir / f'{OUTPUT_FILENAME % name}.html'
     
     try:
         with open(filepath, "w", encoding="utf-8") as html_file:
             html_file.write(content)
         print(f"WriteToFile(): Successfully written content to {filepath}")
+        return filepath
     
     except Exception as e:
         raise Exception(f"WriteToFile(): Unable to write content to {filepath} - {e}")
-        
+"""
+def PdfConversion(html_path: Union[Path, str]) -> None:
+    try:
+        pdf_name = str(html_path)[:-5] + '.pdf'
+        pdfkit.from_file(str(html_path), pdf_name)
+        print(f"PdfConversion(): Successfully converting {html_path} to {pdf_name}")
+    except Exception as e:
+        raise Exception(f"PdfConversion(): Unable to converting {html_path} - {e}")
+"""
 def ConvertTime(sec: float) -> str:
     mins = sec // 60
     sec = sec % 60
@@ -154,7 +164,8 @@ def Run(date: datetime) -> None:
         branch_content = list(branch["branches"].values()) if isinstance(branch["branches"], dict) else branch["branches"]
         html_content = Knit(branch_content, branch["name"])
         table_of_content = TitlePageAndTableOfContentGeneration(branch["name"])
-        WriteToFile(table_of_content + html_content, branch["name"].title().replace(' ', '-'))
+        html_path = WriteToHtmlFile(table_of_content + html_content, branch["name"].title().replace(' ', '-'))
+        # PdfConversion(html_path)
         if i == LAST_SECTION:
             break
         i += 1
