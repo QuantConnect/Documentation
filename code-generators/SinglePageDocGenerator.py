@@ -2,7 +2,7 @@ from bs4 import BeautifulSoup
 from datetime import datetime
 import json
 from pathlib import Path
-# import pdfkit
+import pdfkit
 from urllib.request import urlopen
 import sys
 import time
@@ -132,15 +132,16 @@ def WriteToHtmlFile(content: str, name: str) -> Path:
     
     except Exception as e:
         raise Exception(f"WriteToFile(): Unable to write content to {filepath} - {e}")
-"""
+
 def PdfConversion(html_path: Union[Path, str]) -> None:
     try:
         pdf_name = str(html_path)[:-5] + '.pdf'
         pdfkit.from_file(str(html_path), pdf_name)
         print(f"PdfConversion(): Successfully converting {html_path} to {pdf_name}")
     except Exception as e:
-        raise Exception(f"PdfConversion(): Unable to converting {html_path} - {e}")
-"""
+        # Do not break with raising exceptions in case due to warnings
+        print(f"PdfConversion(): Unable to converting {html_path} - {e}")
+
 def ConvertTime(sec: float) -> str:
     mins = sec // 60
     sec = sec % 60
@@ -165,7 +166,7 @@ def Run(date: datetime) -> None:
         html_content = Knit(branch_content, branch["name"])
         table_of_content = TitlePageAndTableOfContentGeneration(branch["name"])
         html_path = WriteToHtmlFile(table_of_content + html_content, branch["name"].title().replace(' ', '-'))
-        # PdfConversion(html_path)
+        PdfConversion(html_path)
         if i == LAST_SECTION:
             break
         i += 1
