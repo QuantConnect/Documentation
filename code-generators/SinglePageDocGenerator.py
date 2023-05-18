@@ -1,6 +1,8 @@
+from bs4 import BeautifulSoup
 from datetime import datetime
 import json
 from pathlib import Path
+import pdfkit
 from urllib.request import urlopen
 import sys
 import time
@@ -8,9 +10,29 @@ from typing import Union, Tuple
 
 SOURCE_URL = "https://s3.amazonaws.com/cdn.quantconnect.com/web/cache"
 DESTINATION_PATH = "single-page"
-OUTPUT_FILENAME = "quantconnect-documentation.html"
+OUTPUT_FILENAME = "Quantconnect-%s"
 DEFAULT_VERSION = "2023.01.17"
-LAST_SECTION = "6"
+LAST_SECTION = 6
+TITLE_PAGE = f"""<h1>QuantConnect Documentation - %s</h1>
+<h4>Created on {datetime.utcnow().strftime("%m/%d/%Y")}</h4>
+Copyright QuantConnect 2023
+"""
+PAGE_BREAKER = '<p style="page-break-after: always;">&nbsp;</p>'
+EXCLUSIONS = [
+    "3.7.6.3.",
+    "3.7.7.3.1.",
+    "3.7.7.3.2.",
+    "3.7.7.3.3.",
+    "3.7.7.3.4.",
+    "3.7.7.3.5.",
+    "3.7.7.3.8.",
+    "3.7.7.3.8.",
+    "3.7.7.3.10.",
+    "3.7.9.3.",
+    "3.7.10.3.",
+    "3.7.11.3.",
+    "13.1."
+]   # these are unique in Writing Algorithm
 sections = {}
 
 def GetContent(date: str) -> dict:
@@ -50,10 +72,12 @@ def Generate(branch: Union[dict, list], this_section: str) -> Tuple[str, str]:
     elif isinstance(branch, dict):
         # unwanted files
         if 'name' in branch and branch['name'].strip() and ".json" not in branch['name']:
-            # indent depth is identified by file depth
-            indent = len([x for x in branch["filePath"].split("/") if x])
+            # indent depth is identified by file depth, subtract base level
+            indent = len([x for x in branch["filePath"].split("/") if x]) - 1
             this_section = SectionNumber(indent, this_section)
-            sections[this_section] = branch['name']
+            # exclusions
+            if all(x not in this_section for x in EXCLUSIONS):
+                sections[this_section] = branch['name']
             html += f"""<section id="{this_section}"><h3>{this_section} {branch['name']}</h3></section>
 
 """
@@ -65,7 +89,14 @@ def Generate(branch: Union[dict, list], this_section: str) -> Tuple[str, str]:
                     html += f"""<h3>{content['name']}</h3>
 """
                 # Completion of links
-                html += f"""{content['content'].strip().replace("a href='/", "a href='https://www.quantconnect.com/docs/v2/").replace('a href="/', 'a href="/https://www.quantconnect.com/docs/v2/')}
+                c = f"""{content['content'].strip().replace("a href='/", "a href='https://www.quantconnect.com/docs/v2/").replace('a href="/', 'a href="/https://www.quantconnect.com/docs/v2/')}"""
+                # fix any html unclosed tags
+                soup = BeautifulSoup(c)
+                html += f"""{soup.prettify()}
+"""
+
+            # 2nd level add a page break
+            html += f"""{PAGE_BREAKER}
 """
         # Recursively generate content in order
         if "branches" in branch and branch["branches"] and ".json" not in branch['name']:
@@ -73,53 +104,61 @@ def Generate(branch: Union[dict, list], this_section: str) -> Tuple[str, str]:
             subbranch = subbranch if isinstance(subbranch, list) else list(subbranch.values())
             content, this_section = Generate(subbranch, this_section)
             html += content
-            
-        # 2nd level add a page break
-        if indent == 2:
-            html += """<p style="page-break-after: always;">&nbsp;</p>
-"""
+
     return html, this_section
 
-def Knit(content: dict) -> str:
+def Knit(content: list, name: str) -> str:
     html = ""
     this_section = "0"
     
     try:
-        for branch in content["branches"].values():
-            content, this_section = Generate(branch, this_section)
-            html += content
-            if this_section[0] == LAST_SECTION:
-                break
+        content, this_section = Generate(content, this_section)
+        html += content
         
-        print(f"Knit(): Knitted documentation content successfully.")
+        print(f"Knit(): Knitted documentation content for {name} successfully.")
         return html
 
     except Exception as e:
         raise Exception(f"Knit(): Unable to knit documentation content - {e}")
     
-def TableOfContentGeneration():
+def TitlePageAndTableOfContentGeneration(topic: str) -> str:
     global sections
     linebreaker = "\n"
     
-    return f"""<nav>
+    return f"""{TITLE_PAGE % topic}
+{PAGE_BREAKER}
+<h3>Table of Content</h3>
+<nav>
 <ul>
-{linebreaker.join([f'<li><a href="#{id}" target="_parent">{id} {title}</a></li>' for id, title in sections.items()])}
+{linebreaker.join([f'<li><a href="#{id}" class="toc-h{len(id.split("."))}" target="_parent">{id} {title}</a></li>' for id, title in sections.items()])}
 </ul>
 </nav>
+{PAGE_BREAKER}
 """
 
-def WriteToFile(content: str) -> None:
+def WriteToHtmlFile(content: str, name: str) -> Path:
     output_dir = Path(DESTINATION_PATH)
     output_dir.mkdir(exist_ok=True, parents=True)
+    filepath = output_dir / f'{OUTPUT_FILENAME % name}.html'
     
     try:
-        with open(output_dir / OUTPUT_FILENAME, "w", encoding="utf-8") as html_file:
+        with open(filepath, "w", encoding="utf-8") as html_file:
             html_file.write(content)
-        print(f"WriteToFile(): Successfully written content to {output_dir / OUTPUT_FILENAME}")
+        print(f"WriteToFile(): Successfully written content to {filepath}")
+        return filepath
     
     except Exception as e:
-        raise Exception(f"WriteToFile(): Unable to write content to {output_dir / OUTPUT_FILENAME} - {e}")
-        
+        raise Exception(f"WriteToFile(): Unable to write content to {filepath} - {e}")
+
+def PdfConversion(html_path: Union[Path, str]) -> None:
+    try:
+        pdf_name = str(html_path)[:-5] + '.pdf'
+        pdfkit.from_file(str(html_path), pdf_name)
+        print(f"PdfConversion(): Successfully converting {html_path} to {pdf_name}")
+    except Exception as e:
+        # Do not break with raising exceptions in case due to warnings
+        print(f"PdfConversion(): Unable to converting {html_path} - {e}")
+
 def ConvertTime(sec: float) -> str:
     mins = sec // 60
     sec = sec % 60
@@ -128,6 +167,7 @@ def ConvertTime(sec: float) -> str:
     return f"{int(hours):02}:{int(mins):02}:{sec}"
 
 def Run(date: datetime) -> None:
+    global sections
     start_time = time.time()
     print(f"Run(): Start processing")
     date_str = date.strftime('%Y.%m.%d') if date else DEFAULT_VERSION
@@ -137,9 +177,17 @@ def Run(date: datetime) -> None:
     except:
         raise Exception(f"Run(): unable to fetch content from target URL.")
     
-    html_content = Knit(content)
-    table_of_content = TableOfContentGeneration()
-    WriteToFile(table_of_content + html_content)
+    i = 1
+    for branch in content["branches"].values():
+        branch_content = list(branch["branches"].values()) if isinstance(branch["branches"], dict) else branch["branches"]
+        html_content = Knit(branch_content, branch["name"])
+        table_of_content = TitlePageAndTableOfContentGeneration(branch["name"])
+        html_path = WriteToHtmlFile(table_of_content + html_content, branch["name"].title().replace(' ', '-'))
+        PdfConversion(html_path)
+        if i == LAST_SECTION:
+            break
+        i += 1
+        sections = {}
         
     end_time = time.time()
     time_lapsed = end_time - start_time

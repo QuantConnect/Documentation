@@ -1,0 +1,5665 @@
+<h1>QuantConnect Documentation - Local Platform</h1>
+<h4>Created on 05/17/2023</h4>
+Copyright QuantConnect 2023
+
+<p style="page-break-after: always;">&nbsp;</p>
+<h3>Table of Content</h3>
+<nav>
+<ul>
+<li><a href="#1" class="toc-h1" target="_parent">1 Key Concepts</a></li>
+<li><a href="#1.1" class="toc-h2" target="_parent">1.1 Getting Started</a></li>
+<li><a href="#1.2" class="toc-h2" target="_parent">1.2 Features</a></li>
+<li><a href="#1.3" class="toc-h2" target="_parent">1.3 Deployment Targets</a></li>
+<li><a href="#2" class="toc-h1" target="_parent">2 Installation</a></li>
+<li><a href="#3" class="toc-h1" target="_parent">3 Development Environment</a></li>
+<li><a href="#3.1" class="toc-h2" target="_parent">3.1 Authentication</a></li>
+<li><a href="#3.2" class="toc-h2" target="_parent">3.2 Organization Workspaces</a></li>
+<li><a href="#3.3" class="toc-h2" target="_parent">3.3 Configuration</a></li>
+<li><a href="#3.4" class="toc-h2" target="_parent">3.4 Autocomplete</a></li>
+<li><a href="#3.5" class="toc-h2" target="_parent">3.5 Collaboration</a></li>
+<li><a href="#3.6" class="toc-h2" target="_parent">3.6 LEAN Engine Versions</a></li>
+<li><a href="#3.7" class="toc-h2" target="_parent">3.7 Synchronization</a></li>
+<li><a href="#3.8" class="toc-h2" target="_parent">3.8 Source Control</a></li>
+<li><a href="#3.9" class="toc-h2" target="_parent">3.9 Resource Management</a></li>
+<li><a href="#3.10" class="toc-h2" target="_parent">3.10 Packages and Libraries</a></li>
+<li><a href="#3.11" class="toc-h2" target="_parent">3.11 Working With VS Code</a></li>
+<li><a href="#4" class="toc-h1" target="_parent">4 Projects</a></li>
+<li><a href="#4.1" class="toc-h2" target="_parent">4.1 Getting Started</a></li>
+<li><a href="#4.2" class="toc-h2" target="_parent">4.2 Files</a></li>
+<li><a href="#4.3" class="toc-h2" target="_parent">4.3 Shared Libraries</a></li>
+<li><a href="#5" class="toc-h1" target="_parent">5 Backtesting</a></li>
+<li><a href="#5.1" class="toc-h2" target="_parent">5.1 Getting Started</a></li>
+<li><a href="#5.2" class="toc-h2" target="_parent">5.2 Deployment</a></li>
+<li><a href="#5.3" class="toc-h2" target="_parent">5.3 Debugging</a></li>
+</ul>
+</nav>
+<p style="page-break-after: always;">&nbsp;</p>
+<section id="1"><h3>1 Key Concepts</h3></section>
+
+<section id="1.1"><h3>1.1 Getting Started</h3></section>
+
+<html>
+ <head>
+  <style>
+   .docs-tutorial .tutorial-header {
+            text-align: center;
+            background: url(https://cdn.quantconnect.com/i/tu/tut-header-dots-top-left.svg), url(https://cdn.quantconnect.com/i/tu/tut-header-dots-bottom-right.svg), url(https://cdn.quantconnect.com/i/tu/tut-header-stripes-bottom-left.svg), url(https://cdn.quantconnect.com/i/tu/tut-header-stripes-top-right.svg);
+            background-position: top 10px left 10px, bottom 10px right 10px, bottom left, top right;
+            background-repeat: no-repeat;
+            background-color: #F3F5F8;
+            border-radius: 4px;
+            padding-top: 2rem;
+        }
+
+        .docs-tutorial .tutorial-header h3 {
+            padding: 2.5rem 1rem 1rem 1rem;
+            text-align: center;
+        }
+
+        .docs-tutorial .tutorial-header p {
+            padding: 0 1rem 1rem 1rem;
+            text-align: center;
+        }
+
+        .docs-tutorial .tutorial-step {
+            position: relative;
+            border: 1px solid #D9E1EB;
+            border-radius: 4px;
+            margin-bottom: 1rem;
+        }
+
+        .docs-tutorial .tutorial-step p {
+            padding: 0.5rem 1rem;
+            margin-bottom: 0;
+        }
+
+        .docs-tutorial .tutorial-step .circle-icon {
+            margin: 0 0.2rem;
+        }
+
+        .docs-tutorial .bottom-screenshot {
+            text-align: center;
+            padding: 0 1rem;
+            margin-top:2rem;
+        }
+
+        .docs-tutorial .bottom-screenshot img {
+            vertical-align: bottom;
+            width: 100%;
+            max-width: 700px;
+        }
+  </style>
+ </head>
+ <body>
+  <div class="docs-tutorial">
+   <div class="tutorial-header">
+    <h3 style="text-align:center;">
+     QUANTCONNECT LOCAL PLATFORM
+    </h3>
+    <p style="max-width:70ch;margin: 0 auto;">
+     Guide through creating a project, running your first backtest,
+                and live algo trading in QuantConnect Local Platform.
+    </p>
+    <div class="bottom-screenshot">
+     <img alt="Local Platform" src="https://cdn.quantconnect.com/i/tu/local-platform-header.webp"/>
+    </div>
+   </div>
+   <p style="margin-top: 2rem;">
+    The Local Platform enables you to seamlessly develop quant strategies on-premise and in QuantConnect Cloud,
+            getting the best of both environments. With Local Platform, you can harness your local version control,
+            autocomplete, and coding tools with the full power of a scalable cloud at your finger tips. We intend to
+            keep complete feature parity with our cloud environment, allowing you to harness cloud or local datasets to
+            power on-premise quantitative research.
+   </p>
+   <p>
+    We encourage a hybrid “cloud + local” workflow, so you can use right tool for each stage of your development
+            process. With the Local Platform, you can create, debug, and run projects on premise while using your own
+            on-site tools. With the Cloud Platform you can deploy backtests at scale and harness our massive data
+            library at low cost.
+   </p>
+   <hr/>
+   <h4>
+    Follow these steps to create a new trading algorithm and backtest it in QuantConnect Cloud:
+   </h4>
+   <div class="tutorial-step">
+    <p>
+     1.
+     <a href="/https://www.quantconnect.com/docs/v2/docs/v2/local-platform/installation">
+      Install Local Platform
+     </a>
+     .
+    </p>
+   </div>
+   <div class="tutorial-step">
+    <p>
+     2. Open
+     <img alt="VSCode" class="inline-icon circle-icon" src="https://cdn.quantconnect.com/i/tu/vscode-inline-icon.svg"/>
+     Visual Studio Code.
+    </p>
+   </div>
+   <div class="tutorial-step">
+    <p>
+     3. In the Initialization Checklist panel, click
+     <span class="button-name">
+      Login to QuantConnect
+     </span>
+     .
+    </p>
+    <div class="bottom-screenshot">
+     <img alt="Local Platform Login" src="https://cdn.quantconnect.com/i/tu/local-platform-login.webp"/>
+    </div>
+   </div>
+   <div class="tutorial-step">
+    <p>
+     4. In the Visual Studio Code window, click
+     <span class="button-name">
+      Open
+     </span>
+     .
+    </p>
+    <div class="bottom-screenshot">
+     <img alt="Open Website" src="https://cdn.quantconnect.com/i/tu/local-platform-open-website.webp"/>
+    </div>
+   </div>
+   <div class="tutorial-step">
+    <p>
+     5. On the Code Extension Login page, click
+     <span class="button-name">
+      Grant Access
+     </span>
+     .
+    </p>
+   </div>
+   <div class="tutorial-step">
+    <p>
+     6. In VS Code, in the Select Workspace panel, click
+     <span class="button-name">
+      Pull Organization Workspace
+     </span>
+     .
+    </p>
+    <div class="bottom-screenshot">
+     <img alt="Pull Organization" src="https://cdn.quantconnect.com/i/tu/local-platform-pull-org.webp"/>
+    </div>
+   </div>
+   <div class="tutorial-step">
+    <p>
+     7. In the Pull QuantConnect Organization Workspace window, click the cloud workspace (
+     <a href="/https://www.quantconnect.com/docs/v2/docs/v2/cloud-platform/organizations">
+      organization
+     </a>
+     ) that 
+                you want to pull.
+    </p>
+    <div class="bottom-screenshot">
+     <img alt="Choose Organization" src="https://cdn.quantconnect.com/i/tu/local-platform-choose-org.webp"/>
+    </div>
+   </div>
+   <div class="tutorial-step">
+    <p>
+     8. In the Pull QuantConnect Organization Workspace window, create a directory to serve as the organization 
+                workspace and then click
+     <span class="button-name">
+      Select
+     </span>
+     .
+    </p>
+    <p>
+     If you are running Docker on Windows using the legacy Hyper-V backend instead of the new WSL 2 backend, you need to enable file sharing for your temporary directories and for your organization workspace. To do so, open your Docker settings, go to
+     <span class="button-name">
+      Resources &gt; File Sharing
+     </span>
+     and add
+     <span class="button-name">
+      C: / Users /
+      <username>
+       / AppData / Local / Temp
+      </username>
+     </span>
+     and your organization workspace path to the list. Click
+     <span class="button-name">
+      Apply &amp; Restart
+     </span>
+     after making the required changes.
+    </p>
+    <div class="bottom-screenshot">
+     <img alt="Create Directory" src="https://cdn.quantconnect.com/i/tu/local-platform-create-dir.webp"/>
+    </div>
+   </div>
+   <div class="tutorial-step">
+    <p>
+     9. In the Open Project panel, click
+     <span class="button-name">
+      Create Project
+     </span>
+     .
+    </p>
+    <div class="bottom-screenshot">
+     <img alt="Create Project" src="https://cdn.quantconnect.com/i/tu/local-platform-create-project.webp"/>
+    </div>
+   </div>
+   <div class="tutorial-step">
+    <p>
+     10. Enter the project name and then press
+     <span class="button-name">
+      Enter
+     </span>
+     .
+    </p>
+    <p>
+     Congratulations! You just created your first local project.
+    </p>
+    <div class="bottom-screenshot">
+     <img alt="Project Created" src="https://cdn.quantconnect.com/i/tu/local-platform-project-created.webp"/>
+    </div>
+   </div>
+   <div class="tutorial-step">
+    <p>
+     11. In the top-right corner of VS Code, click
+     <img alt="Gear Icon" class="inline-icon circle-icon" src="https://cdn.quantconnect.com/i/tu/tut-build-icon.svg"/>
+     <span class="button-name">
+      Build
+     </span>
+     and then click
+     <img alt="Backtest Icon" class="inline-icon circle-icon" src="https://cdn.quantconnect.com/i/tu/tut-backtest-icon.svg"/>
+     <span class="button-name">
+      Backtest
+     </span>
+     .
+    </p>
+    <p>
+     The backtest results page displays your algorithm’s performance over the backtest period.
+    </p>
+    <div class="bottom-screenshot">
+     <img alt="Backtest Project" src="https://cdn.quantconnect.com/i/tu/local-platform-backtest-proj.webp"/>
+    </div>
+   </div>
+  </div>
+ </body>
+</html>
+
+<p style="page-break-after: always;">&nbsp;</p>
+<section id="1.2"><h3>1.2 Features</h3></section>
+
+<h3>Introduction</h3>
+<html>
+ <body>
+  <p>
+   There are 5 tiers of organizations and each tier has its own set of features on Local Platform. To accommodate the growth of your trading skills and business, you can
+   <a href="https://www.quantconnect.com/docs/v2/docs/v2/cloud-platform/organizations/billing#07-Change-Organization-Tiers">
+    adjust the tier of your organization
+   </a>
+   at any time.
+  </p>
+ </body>
+</html>
+
+<h3>Hybrid Workflow</h3>
+<html>
+ <body>
+  <p>
+   The Local Platform lets you run backtests, deploy research notebooks, and deploy live algorithms on your local machine and in QuantConnect Cloud. This gives you the best of both works where you can utilize your local hardware or our scalable cloud compute systems.
+  </p>
+ </body>
+</html>
+
+<h3>Version Control</h3>
+<html>
+ <body>
+  <p>
+   The Local Platform syncs your local and cloud project files. If you pull your cloud projects to your local machine, you can use your own version control systems to track project changes.
+  </p>
+ </body>
+</html>
+
+<h3>Self-Sovereign Security</h3>
+<html>
+ <body>
+  <p>
+   The Local Platform offers you the ability to take ownership of your project security. On the Institution tier, you can create local projects without pushing them to QuantConnect Cloud.
+  </p>
+ </body>
+</html>
+
+<h3>Custom LEAN Images</h3>
+<html>
+ <body>
+  <p>
+   The latest master branch on the LEAN GitHub repository is the default engine branch that runs backtests, research notebooks, and live trading algorithms. The latest version of LEAN is generally the safest as it includes all bug fixes. Trading Firm or Institution tier users concerned for stability can elect to use older or custom versions of LEAN.
+  </p>
+ </body>
+</html>
+
+<h3>On-Premise Compute</h3>
+<html>
+ <body>
+  <p>
+   The Local Platform enables you to run backtests, deploy research notebooks, and deploy live algorithms on your local hardware.
+  </p>
+ </body>
+</html>
+
+<h3>Offline Access</h3>
+<html>
+ <body>
+  <p>
+   Trading Firm and Institution organizations can run backtests and research notebooks on Local Platform without an internet connection for up to  24 hours.
+  </p>
+ </body>
+</html>
+
+<h3>Coding</h3>
+<html>
+ <body>
+  <p>
+   The following table shows the coding features of each organization tier:
+  </p>
+  <table class="qc-table table table-condensed" id="coding-features">
+   <thead>
+    <tr>
+     <th rowspan="2">
+      Feature
+     </th>
+     <th colspan="5">
+      Organization Tier
+     </th>
+    </tr>
+    <tr>
+     <th style="text-align: center" width="15%">
+      Quant Researcher
+     </th>
+     <th width="15%">
+      Team
+     </th>
+     <th width="15%">
+      Trading Firm
+     </th>
+     <th width="15%">
+      Institution
+     </th>
+    </tr>
+   </thead>
+   <tbody>
+    <tr>
+     <td>
+      Offline Access
+      <br/>
+      <sub>
+       Edit projects without an internet connection for up to 24 hours
+      </sub>
+     </td>
+     <td>
+     </td>
+     <td>
+     </td>
+     <td>
+      <img alt="green check" src="https://cdn.quantconnect.com/i/tu/check.png" width="15px;"/>
+     </td>
+     <td>
+      <img alt="green check" src="https://cdn.quantconnect.com/i/tu/check.png" width="15px;"/>
+     </td>
+    </tr>
+    <tr>
+     <td>
+      Anonymous Projects
+      <br/>
+      <sub>
+       Create and edit local projects without syncing to QuantConnect Cloud
+      </sub>
+     </td>
+     <td>
+     </td>
+     <td>
+     </td>
+     <td>
+     </td>
+     <td>
+      <img alt="green check" src="https://cdn.quantconnect.com/i/tu/check.png" width="15px;"/>
+     </td>
+    </tr>
+   </tbody>
+  </table>
+  <style>
+   #coding-features td:nth-child(2), 
+#coding-features th:nth-child(2), 
+#coding-features td:nth-child(3), 
+#coding-features th:nth-child(3), 
+#coding-features td:nth-child(4), 
+#coding-features th:nth-child(4),
+#coding-features td:nth-child(5)  {
+    text-align: center;
+}
+  </style>
+ </body>
+</html>
+
+<h3>Backtesting</h3>
+<html>
+ <body>
+  <p>
+   The following table shows the backtesting features of each organization tier:
+  </p>
+  <table class="qc-table table table-condensed" id="coding-features">
+   <thead>
+    <tr>
+     <th rowspan="2">
+      Feature
+     </th>
+     <th colspan="5">
+      Organization Tier
+     </th>
+    </tr>
+    <tr>
+     <th style="text-align: center" width="15%">
+      Quant Researcher
+     </th>
+     <th width="15%">
+      Team
+     </th>
+     <th width="15%">
+      Trading Firm
+     </th>
+     <th width="15%">
+      Institution
+     </th>
+    </tr>
+   </thead>
+   <tbody>
+    <tr>
+     <td>
+      Concurrent Cloud Backtests Quota
+      <br/>
+      <sub>
+       The maximum number of backtests your organization can run at the same time in QuantConnect Cloud
+      </sub>
+     </td>
+     <td>
+      2
+     </td>
+     <td>
+      10
+     </td>
+     <td>
+      Unlimited
+     </td>
+     <td>
+      Unlimited
+     </td>
+    </tr>
+    <tr>
+     <td>
+      Offline Access
+      <br/>
+      <sub>
+       Backtest algorithms without an internet connection for up to 24 hours
+      </sub>
+     </td>
+     <td>
+     </td>
+     <td>
+     </td>
+     <td>
+      <img alt="green check" src="https://cdn.quantconnect.com/i/tu/check.png" width="15px;"/>
+     </td>
+     <td>
+      <img alt="green check" src="https://cdn.quantconnect.com/i/tu/check.png" width="15px;"/>
+     </td>
+    </tr>
+   </tbody>
+  </table>
+ </body>
+</html>
+
+<h3>Optimization</h3>
+<html>
+ <body>
+  <p>
+   The following table shows the parameter optimization features of each organization tier:
+  </p>
+  <table class="qc-table table table-condensed" id="coding-features">
+   <thead>
+    <tr>
+     <th rowspan="2">
+      Feature
+     </th>
+     <th colspan="5">
+      Organization Tier
+     </th>
+    </tr>
+    <tr>
+     <th style="text-align: center" width="15%">
+      Quant Researcher
+     </th>
+     <th width="15%">
+      Team
+     </th>
+     <th width="15%">
+      Trading Firm
+     </th>
+     <th width="15%">
+      Institution
+     </th>
+    </tr>
+   </thead>
+   <tbody>
+    <tr>
+     <td>
+      Concurrent Cloud Optimizations Quota
+      <br/>
+      <sub>
+       The maximum number of optimizations your organization can run at the same time in QuantConnect Cloud
+      </sub>
+     </td>
+     <td>
+      2
+     </td>
+     <td>
+      10
+     </td>
+     <td>
+      Unlimited
+     </td>
+     <td>
+      Unlimited
+     </td>
+    </tr>
+    <tr>
+     <td>
+      Offline Access
+      <br/>
+      <sub>
+       Optimize parameters without an internet connection for up to 24 hours
+      </sub>
+     </td>
+     <td>
+     </td>
+     <td>
+     </td>
+     <td>
+      <img alt="green check" src="https://cdn.quantconnect.com/i/tu/check.png" width="15px;"/>
+     </td>
+     <td>
+      <img alt="green check" src="https://cdn.quantconnect.com/i/tu/check.png" width="15px;"/>
+     </td>
+    </tr>
+   </tbody>
+  </table>
+ </body>
+</html>
+
+<h3>Live Trading</h3>
+<html>
+ <body>
+  <p>
+   The following table shows the parameter optimization features of each organization tier:
+  </p>
+  <table class="qc-table table table-condensed" id="coding-features">
+   <thead>
+    <tr>
+     <th rowspan="2">
+      Feature
+     </th>
+     <th colspan="5">
+      Organization Tier
+     </th>
+    </tr>
+    <tr>
+     <th style="text-align: center" width="15%">
+      Quant Researcher
+     </th>
+     <th width="15%">
+      Team
+     </th>
+     <th width="15%">
+      Trading Firm
+     </th>
+     <th width="15%">
+      Institution
+     </th>
+    </tr>
+   </thead>
+   <tbody>
+    <tr>
+     <td>
+      Concurrent Cloud Algorithms Quota
+      <br/>
+      <sub>
+       The maximum number of live algorithms your organization can run at the same time in QuantConnect Cloud
+      </sub>
+     </td>
+     <td>
+      2
+     </td>
+     <td>
+      10
+     </td>
+     <td>
+      Unlimited
+     </td>
+     <td>
+      Unlimited
+     </td>
+    </tr>
+   </tbody>
+  </table>
+ </body>
+</html>
+
+<p style="page-break-after: always;">&nbsp;</p>
+<section id="1.3"><h3>1.3 Deployment Targets</h3></section>
+
+<h3>Introduction</h3>
+<html>
+ <body>
+  <p>
+   The deployment target setting allows you to switch modes from local to cloud platforms, choosing where you run your algorithm. Local Platform targets are denoted with blue icons and Cloud Platform targets are denoted with gold icons.
+  </p>
+ </body>
+</html>
+
+<h3>Local</h3>
+<html>
+ <body>
+  <p>
+   The Local Platform deployment target is your local machine. Follow these steps to set the deployment target of a project to Local Platform:
+  </p>
+  <ol>
+   <li>
+    <a href="https://www.quantconnect.com/docs/v2/docs/v2/local-platform/projects/getting-started#03-Create-Projects">
+     Create a project
+    </a>
+    or
+    <a href="https://www.quantconnect.com/docs/v2/docs/v2/local-platform/projects/getting-started#04-Open-Projects">
+     open an exisiting one
+    </a>
+    .
+   </li>
+   <li>
+    In the Project panel, click the
+    <span class="field-name">
+     Deployment Target
+    </span>
+    field and then click
+    <span class="button-name">
+     Local Platform
+    </span>
+    from the drop-down menu.
+   </li>
+  </ol>
+  <p>
+   After you set the deployment target to Local Platform, the following icons are blue:
+  </p>
+  <table class="qc-table table" id="icon-table">
+   <thead>
+    <tr>
+     <th style="width: 20%">
+      Icon
+     </th>
+     <th>
+      Name
+     </th>
+    </tr>
+   </thead>
+   <tbody>
+    <tr>
+     <td>
+      <img class="inline-icon" src="https://cdn.quantconnect.com/i/tu/local-platform-build-icon.png"/>
+     </td>
+     <td>
+      <span class="button-name">
+       Build
+      </span>
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <img class="inline-icon" src="https://cdn.quantconnect.com/i/tu/local-platform-backtest-icon.png"/>
+     </td>
+     <td>
+      <span class="button-name">
+       Backtest
+      </span>
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <img class="inline-icon" src="https://cdn.quantconnect.com/i/tu/local-platform-debug-icon.png"/>
+     </td>
+     <td>
+      <span class="button-name">
+       Debug
+      </span>
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <img class="inline-icon" src="https://cdn.quantconnect.com/i/tu/local-platform-backtest-results-icon.png"/>
+     </td>
+     <td>
+      <span class="button-name">
+       Backtest Results
+      </span>
+     </td>
+    </tr>
+   </tbody>
+  </table>
+ </body>
+</html>
+
+<h3>Cloud</h3>
+<html>
+ <body>
+  <p>
+   The Cloud Platform deployment target is a collection of servers that the QuantConnect team manages. It's the same deployment target you use if you create projects, spin up research nodes, and deploy algorithms on the QuantConnect website. For more information about QuantConnect Cloud, including our infrastructure and usage quotas, see
+   <a href="/https://www.quantconnect.com/docs/v2/docs/v2/cloud-platform">
+    Cloud Platform
+   </a>
+   .
+  </p>
+  <p>
+   Follow these steps to set the deployment target Cloud Platform:
+  </p>
+  <ol>
+   <li>
+    <a href="/https://www.quantconnect.com/docs/v2/docs/v2/local-platform/projects/getting-started#03-Create-Projects">
+     Create a project
+    </a>
+    or
+    <a href="/https://www.quantconnect.com/docs/v2/docs/v2/local-platform/projects/getting-started#04-Open-Projects">
+     open an exisiting one
+    </a>
+    .
+   </li>
+   <li>
+    In the Project panel, click the
+    <span class="field-name">
+     Deployment Target
+    </span>
+    field and then click
+    <span class="button-name">
+     Cloud
+    </span>
+    from the drop-down menu.
+   </li>
+  </ol>
+  <p>
+   After you set the deployment target to Cloud Platform, the following icons are gold:
+  </p>
+  <table class="qc-table table" id="icon-table">
+   <thead>
+    <tr>
+     <th style="width: 20%">
+      Icon
+     </th>
+     <th>
+      Name
+     </th>
+    </tr>
+   </thead>
+   <tbody>
+    <tr>
+     <td>
+      <img class="inline-icon" src="https://cdn.quantconnect.com/i/tu/cloud-platform-build-icon.png"/>
+     </td>
+     <td>
+      <span class="button-name">
+       Build
+      </span>
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <img class="inline-icon" src="https://cdn.quantconnect.com/i/tu/cloud-platform-backtest-icon.png"/>
+     </td>
+     <td>
+      <span class="button-name">
+       Backtest
+      </span>
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <img class="inline-icon" src="https://cdn.quantconnect.com/i/tu/cloud-platform-optimization-icon.png"/>
+     </td>
+     <td>
+      <span class="button-name">
+       Optimize
+      </span>
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <img class="inline-icon" src="https://cdn.quantconnect.com/i/tu/cloud-platform-live-trading-icon.png"/>
+     </td>
+     <td>
+      <span class="button-name">
+       Live Trading
+      </span>
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <img class="inline-icon" src="https://cdn.quantconnect.com/i/tu/cloud-platform-backtest-results-icon.png"/>
+     </td>
+     <td>
+      <span class="button-name">
+       Backtest Results
+      </span>
+     </td>
+    </tr>
+   </tbody>
+  </table>
+  <style>
+   #icon-table td:nth-child(1), 
+#icon-table th:nth-child(1) {
+    text-align: center;
+}
+  </style>
+ </body>
+</html>
+
+<p style="page-break-after: always;">&nbsp;</p>
+<section id="2"><h3>2 Installation</h3></section>
+
+<h3>Introduction</h3>
+<html>
+ <body>
+  <p>
+   It takes 10 minutes to install Local Platform and about 1 hour to download the latest LEAN image. The Local Platform requires Docker and the LEAN CLI. When you launch Local Platform, we scan for these projects and prompt you to install them to continue. We run all algorithms in a Docker container to avoid installing any dependencies on your computer. The LEAN CLI is required to simplify the interactions with the cloud.
+  </p>
+ </body>
+</html>
+
+<h3>Requirements</h3>
+<html>
+ <body>
+  <p>
+   The following sections explain the minimum requirements to run Local Platform:
+  </p>
+  <h4>
+   Windows System Requirements
+  </h4>
+  <p>
+   Windows systems must meet the following minimum requirements:
+  </p>
+  <ul>
+   <li>
+    A 64-bit processor
+   </li>
+   <li>
+    4GB RAM or more
+   </li>
+   <li>
+    Windows 10, version 1903 or higher (released May 2019)
+   </li>
+   <li>
+    Hardware virtualization enabled in the BIOS
+   </li>
+  </ul>
+  <p>
+   When you download Docker Desktop, you need to select the
+   <span class="box-name">
+    Enable WSL 2 Features
+   </span>
+   check box. After you install Docker and restart your computer, if Docker prompts you that the WSL 2 installation is incomplete, follow the instructions in the dialog shown by Docker to finish the WSL 2 installation.
+  </p>
+  <h4>
+   Mac System Requirements
+  </h4>
+  <p>
+   Mac systems must meet the following minimum requirements:
+  </p>
+  <ul>
+   <li>
+    Mac hardware from 2010 or newer with an Intel processor
+   </li>
+   <li>
+    macOS 10.14 or newer (Mojave, Catalina, or Big Sur)
+   </li>
+   <li>
+    4GB RAM or more
+   </li>
+  </ul>
+  <h4>
+   Internet Requirements
+  </h4>
+  <p>
+   You need an internet connection for things like downloading updates, collaborating with team members, and syncing your projects with QuantConnect Cloud. Trading Firm and Institution organizations can run local backtests and research notebooks without an internet connection for up to 24 hours.
+  </p>
+ </body>
+</html>
+
+<h3>Install Docker</h3>
+<html>
+ <body>
+  <p>
+   If you run the LEAN engine locally with QuantConnect Local Platform, LEAN executes in a Docker container.
+    These Docker containers contain a minimal Linux-based operating system, the LEAN engine, and all the packages available to you on QuantConnect.com.
+    It is therefore required to install Docker if you plan on using QuantConnect Local Platform to run the LEAN engine locally.
+  </p>
+  <h4>
+   Install on Windows
+  </h4>
+  <p>
+   To install Docker, see
+   <a href="https://docs.docker.com/desktop/install/windows-install/" rel="nofollow" target="_blank">
+    Install Docker Desktop on Windows
+   </a>
+   in the Docker documentation. As you install docker, enable WSL 2 features. After you install Docker and restart your computer, if Docker prompts you that the WSL 2 installation is incomplete, follow the instructions in the dialog shown by Docker to finish the WSL 2 installation.
+  </p>
+  <p>
+   By default, Docker doesn't automatically start when your computer starts.
+    So, when you run the LEAN engine with QuantConnect Local Platform for the first time after starting your computer, you must manually start Docker.
+    To automatically start Docker, open the Docker Desktop application, click
+   <span class="menu-name">
+    Settings &gt; General
+   </span>
+   , and  then enable the
+   <span class="box-name">
+    Start Docker Desktop when you log in
+   </span>
+   check box.
+  </p>
+  <h4>
+   Install on macOS
+  </h4>
+  <p>
+   To install Docker, see
+   <a href="https://docs.docker.com/desktop/install/mac-install/" rel="nofollow" target="_blank">
+    Install Docker Desktop on Mac
+   </a>
+   in the Docker documentation.
+  </p>
+  <p>
+   If your Mac has an M1 chip, follow these additional steps:
+  </p>
+  <ol>
+   <li>
+    Open a terminal and run the following commands to pull the AMD46 version of LEAN and Research:
+    <div class="cli section-example-container">
+     <pre>$ docker pull --platform linux/amd64 quantconnect/lean
+$ docker pull --platform linux/amd64 quantconnect/research</pre>
+    </div>
+    <p>
+     The first command enables you to run the AMD64 LEAN image by taking advantages of the
+     <a href="https://www.qemu.org/" rel="nofollow" target="_blank">
+      qemu
+     </a>
+     emulator.
+    </p>
+   </li>
+   <li>
+    To achieve the best performance and stability, use
+    <a href="https://github.com/abiosoft/colima" rel="nofollow" target="_blank">
+     colima
+    </a>
+    , which uses the latest stable qemu version.
+    <div class="cli section-example-container">
+     <pre>$ brew install colima
+$ colima start --cpu 4 --memory 8</pre>
+    </div>
+    <p>
+     Without colima, in some cases, the container hangs.
+    </p>
+   </li>
+   <li>
+    To verify it's working correctly, run:
+   </li>
+   <div class="cli section-example-container">
+    <pre>$ qemu-img --version
+qemu-img version 7.1.0 (or higher)
+$ docker context ls
+	should show colima as selected
+$ docker inspect quantconnect/lean
+	should show amd64 arch
+$ docker run -it --entrypoint bash quantconnect/lean
+	$ uname -a
+		should show x86_x64/amd64 or similar</pre>
+   </div>
+   <li>
+    If
+    <code>
+     docker context ls
+    </code>
+    does not show colima, run
+    <code>
+     colima start --edit
+    </code>
+    and make sure docker is the selected context.
+   </li>
+  </ol>
+  <h4>
+   Install on Linux
+  </h4>
+  <p>
+   To install, see
+   <a href="https://docs.docker.com/desktop/install/linux-install/" rel="nofollow" target="_blank">
+    Install Docker Desktop on Linux
+   </a>
+   in the Docker documentation.
+  </p>
+ </body>
+</html>
+
+<h3>Install Local Platform</h3>
+<html>
+ <body>
+  <p>
+   Follow these steps to install Local Platform:
+  </p>
+  <ol>
+   <li>
+    <a href="https://www.quantconnect.com/docs/v2/docs/v2/local-platform/installation#03-Install-Docker">
+     Install Docker
+    </a>
+    .
+   </li>
+   <li>
+    Open a terminal and download the latest LEAN image.
+   </li>
+   <div class="cli section-example-container">
+    <pre>$ docker pull quantconnect/lean</pre>
+   </div>
+   <p>
+    If you're using a Mac that has an M1 chip, download the AMD64 version of LEAN and Research.
+   </p>
+   <div class="cli section-example-container">
+    <pre>$ docker pull --platform linux/amd64 quantconnect/lean
+$ docker pull --platform linux/amd64 quantconnect/research</pre>
+   </div>
+   <p>
+    It takes about an hour to download the image. While it's downloading, continue to the next step. When you use Local Platform, it automatically pulls the latest LEAN image if your current version is more than a week old.
+   </p>
+   <li>
+    <a href="https://code.visualstudio.com/download" rel="nofollow" target="_blank">
+     Install Visual Studio Code
+    </a>
+    .
+   </li>
+   <li>
+    <a href="https://marketplace.visualstudio.com/items?itemName=quantconnect.quantconnect" rel="nofollow" target="_blank">
+     Install Local Platform
+    </a>
+    .
+   </li>
+  </ol>
+  <p>
+   If you open Visual Studio Code and it asks you to log in to QuantConnect, you successfully installed Local Platform.
+  </p>
+  <img alt="Initialization checklist panel" class="docs-image" src="https://cdn.quantconnect.com/i/tu/initialization-checklist-1.png"/>
+ </body>
+</html>
+
+<h3>Next Steps</h3>
+<html>
+ <body>
+  <p>
+   Log in to your
+   <a href="https://www.quantconnect.com/docs/v2/docs/v2/local-platform/development-environment/authentication">
+    account
+   </a>
+   and then set up your first
+   <a href="https://www.quantconnect.com/docs/v2/docs/v2/local-platform/development-environment/organization-workspaces">
+    organization workspace
+   </a>
+   .
+  </p>
+ </body>
+</html>
+
+<h3>Troubleshooting</h3>
+<html>
+ <body>
+  <p>
+   The following sections explain how to solve some issues you may encounter while installing Local Platform.
+  </p>
+  <h4>
+   Docker with M1/M2/Colima
+  </h4>
+  <p>
+   If your Mac has an M1 chip, follow these additional steps:
+  </p>
+  <ol>
+   <li>
+    Open a terminal and run the following commands to pull the AMD46 version of LEAN and Research:
+    <div class="cli section-example-container">
+     <pre>$ docker pull --platform linux/amd64 quantconnect/lean
+$ docker pull --platform linux/amd64 quantconnect/research</pre>
+    </div>
+    <p>
+     The first command enables you to run the AMD64 LEAN image by taking advantages of the
+     <a href="https://www.qemu.org/" rel="nofollow" target="_blank">
+      qemu
+     </a>
+     emulator.
+    </p>
+   </li>
+   <li>
+    To achieve the best performance and stability, use
+    <a href="https://github.com/abiosoft/colima" rel="nofollow" target="_blank">
+     colima
+    </a>
+    , which uses the latest stable qemu version.
+    <div class="cli section-example-container">
+     <pre>$ brew install colima
+$ colima start --cpu 4 --memory 8</pre>
+    </div>
+    <p>
+     Without colima, in some cases, the container hangs.
+    </p>
+   </li>
+   <li>
+    To verify it's working correctly, run:
+   </li>
+   <div class="cli section-example-container">
+    <pre>$ qemu-img --version
+qemu-img version 7.1.0 (or higher)
+$ docker context ls
+	should show colima as selected
+$ docker inspect quantconnect/lean
+	should show amd64 arch
+$ docker run -it --entrypoint bash quantconnect/lean
+	$ uname -a
+		should show x86_x64/amd64 or similar</pre>
+   </div>
+   <li>
+    If
+    <code>
+     docker context ls
+    </code>
+    does not show colima, run
+    <code>
+     colima start --edit
+    </code>
+    and make sure docker is the selected context.
+   </li>
+  </ol>
+  <h4>
+   Docker with WSL 2 Features
+  </h4>
+  <p>
+   When you download Docker Desktop, you need to select the
+   <span class="box-name">
+    Enable WSL 2 Features
+   </span>
+   check box. After you install Docker and restart your computer, if Docker prompts you that the WSL 2 installation is incomplete, follow the instructions in the dialog shown by Docker to finish the WSL 2 installation.
+  </p>
+  <h4>
+   Docker Not Found
+  </h4>
+  <p>
+   If you have Docker installed but the Local Platform can't detect it, update your
+   <a href="">
+    <span class="button-name">
+     Executable Path: Docker
+    </span>
+    setting
+   </a>
+   to be the path to your Docker executable.
+  </p>
+  <h4>
+   LEAN CLI Account Syncronization
+  </h4>
+  <p>
+   Local Platform and the LEAN CLI share your login credentials. If you log in to your account on Local Platform or the LEAN CLI, you log into that account for both Local Platform and the LEAN CLI.
+  </p>
+  <h4>
+   Further Support
+  </h4>
+  <p>
+   For further support with installing Local Platform,
+   <a href="https://www.quantconnect.com/docs/v2/contact">
+    contact us
+   </a>
+   .
+  </p>
+ </body>
+</html>
+
+<p style="page-break-after: always;">&nbsp;</p>
+<section id="3"><h3>3 Development Environment</h3></section>
+
+<section id="3.1"><h3>3.1 Authentication</h3></section>
+
+<h3>Introduction</h3>
+<html>
+ <body>
+  <p>
+   To use Local Platform, you need to grant it access to your QuantConnect account.
+  </p>
+ </body>
+</html>
+
+<h3>Log In</h3>
+<html>
+ <body>
+  <p>
+   Follow these steps to log in to Local Platform:
+  </p>
+  <ol>
+   <li>
+    Log in to the Algorithm Lab.
+   </li>
+   <li>
+    Start
+    <a href="https://www.quantconnect.com/docs/v2/docs/v2/local-platform/installation#03-Install-Docker">
+     Docker Desktop
+    </a>
+    .
+   </li>
+   <li>
+    Open Visual Studio Code.
+   </li>
+   <li>
+    In the left navigation menu, click the
+    <img alt="VS Code QuantConnect icon" class="inline-icon" src="https://cdn.quantconnect.com/i/tu/vscode-qc-icon.jpg"/>
+    <span class="icon-name">
+     QuantConnect
+    </span>
+    icon.
+   </li>
+   <li>
+    The Project panel checks the following requirements on your local machine. If any of the checks fail, see the related documentation.
+   </li>
+  </ol>
+  <ul>
+   <li>
+    <a href="https://www.quantconnect.com/docs/v2/docs/v2/lean-cli/installation/installing-lean-cli">
+     LEAN CLI is installed
+    </a>
+    .
+   </li>
+   <li>
+    <a href="https://www.quantconnect.com/docs/v2/docs/v2/local-platform/installation#03-Install-Docker">
+     Docker is installed and running
+    </a>
+    .
+   </li>
+   <li>
+    You are logged in to QuantConnect.
+   </li>
+  </ul>
+  <li>
+   In the Initialization Checklist panel, click
+   <span class="button-name">
+    Login to QuantConnect
+   </span>
+   .
+  </li>
+  <img alt="Initialization checklist panel" class="docs-image" src="https://cdn.quantconnect.com/i/tu/initialization-checklist-1.png"/>
+  <li>
+   In the Visual Studio Code window, click
+   <span class="button-name">
+    Open
+   </span>
+   .
+  </li>
+  <img alt="VS Code login popup" class="docs-image" src="https://cdn.quantconnect.com/i/tu/local-lab-log-in-pop-up.jpg"/>
+  <li>
+   On the Code Extension Login page, click
+   <span class="button-name">
+    Grant Access
+   </span>
+   .
+  </li>
+ </body>
+</html>
+
+<h3>Log Out</h3>
+<html>
+ <body>
+  <p>
+   Follow these steps to log out of Local Platform:
+  </p>
+  <ol>
+   <li>
+    Open Visual Studio Code.
+   </li>
+   <li>
+    Press
+    <span class="key-combinations">
+     F1
+    </span>
+    .
+   </li>
+   <li>
+    Enter
+    <span class="key-combinations">
+     QuantConnect: Logout of QuantConnect
+    </span>
+    and then press
+    <span class="key-combinations">
+     Enter
+    </span>
+    .
+   </li>
+   <img alt="VS Code log out" class="docs-image" src="https://cdn.quantconnect.com/i/tu/vscode-log-out.png"/>
+  </ol>
+ </body>
+</html>
+
+<h3>Troubleshooting</h3>
+<html>
+ <body>
+  <p>
+   Local Platform and the LEAN CLI share your login credentials. If you log in to your account on Local Platform or the LEAN CLI, you log into that account for both Local Platform and the LEAN CLI.
+  </p>
+ </body>
+</html>
+
+<p style="page-break-after: always;">&nbsp;</p>
+<section id="3.2"><h3>3.2 Organization Workspaces</h3></section>
+
+<h3>Introduction</h3>
+<html>
+ <body>
+  <p>
+   An organization workspace is a directory that contains a
+   <span class="public-file-name">
+    data
+   </span>
+   directory, a Lean configuration file, and all your project files from one of your organizations. You can have a separate organization workspace directory for each organization you're a member of on QuantConnect. These directories need a
+   <span class="public-file-name">
+    data
+   </span>
+   directory and a Lean configuration file in order to run the LEAN engine on your local machine.
+  </p>
+ </body>
+</html>
+
+<h3>Pull Cloud Organization Workspaces</h3>
+<html>
+ <body>
+  <p>
+   Follow these steps to pull one of your
+   <a href="https://www.quantconnect.com/docs/v2/docs/v2/cloud-platform/projects/getting-started#02-View-All-Projects">
+    cloud organization workspaces
+   </a>
+   and set it as your local organization workspace:
+  </p>
+  <ol>
+   <li>
+    <a href="/https://www.quantconnect.com/docs/v2/docs/v2/local-platform/development-environment/authentication#02-Log-In">
+     Log in to Local Platform
+    </a>
+    .
+   </li>
+   <li>
+    In the left navigation menu, click the
+    <img alt="VS Code QuantConnect icon" class="inline-icon" src="https://cdn.quantconnect.com/i/tu/vscode-qc-icon.jpg"/>
+    <span class="icon-name">
+     QuantConnect
+    </span>
+    icon.
+   </li>
+   <li>
+    In the Select Workspace panel, click
+    <span class="button-name">
+     Pull Organization Workspace
+    </span>
+    .
+   </li>
+   <img alt="Select workspace" class="docs-image" src="https://cdn.quantconnect.com/i/tu/select-workspace.png"/>
+   <li>
+    In the Pull QuantConnect Organization Workspace window, click the cloud workspace (
+    <a href="https://www.quantconnect.com/docs/v2/cloud-platform/organizations">
+     organization
+    </a>
+    ) that you want to pull.
+   </li>
+   <img alt="Pull cloud organization" class="docs-image" src="https://cdn.quantconnect.com/i/tu/pull-cloud-workspaces-1.png"/>
+   <li>
+    In the Pull QuantConnect Organization Workspace window, create a directory to serve as the organization workspace and then click
+    <span class="button-name">
+     Select
+    </span>
+    .
+   </li>
+   <img alt="Pull cloud workspace" class="docs-image" src="https://cdn.quantconnect.com/i/tu/pull-cloud-workspaces-2.png"/>
+  </ol>
+  <p>
+   It takes a few minutes to create a new organization workspace directory and populate it with the
+   <a href="https://www.quantconnect.com/docs/v2/docs/v2/local-platform/development-environment/organization-workspaces#07-Directory-Structure">
+    the initial file structure
+   </a>
+   . After the organization workspace is populated with the initial file structure, it pulls
+   <a href="https://www.quantconnect.com/docs/v2/cloud-platform/projects/getting-started#02-View-All-Projects">
+    your cloud project files
+   </a>
+   .
+  </p>
+  <p>
+   If you are running Docker on Windows using the legacy Hyper-V backend instead of the new WSL 2 backend, you need to enable file sharing for your temporary directories and for your organization workspace.
+    To do so, open your Docker settings, go to
+   <span class="menu-name">
+    Resources &gt; File Sharing
+   </span>
+   and add
+   <span class="public-directory-name">
+    C: / Users / &lt;username&gt; / AppData / Local / Temp
+   </span>
+   and your organization workspace path to the list.
+    Click
+   <span class="button-name">
+    Apply &amp; Restart
+   </span>
+   after making the required changes.
+  </p>
+ </body>
+</html>
+
+<h3>Change Organization Workspaces</h3>
+<html>
+ <body>
+  <p>
+   Follow these steps to change organization workspaces:
+  </p>
+  <ol>
+   <li>
+    <a href="/https://www.quantconnect.com/docs/v2/docs/v2/local-platform/development-environment/authentication#02-Log-In">
+     Log in to Local Platform
+    </a>
+    .
+   </li>
+   <li>
+    In the left navigation menu, click the
+    <img alt="VS Code QuantConnect icon" class="inline-icon" src="https://cdn.quantconnect.com/i/tu/vscode-qc-icon.jpg"/>
+    <span class="icon-name">
+     QuantConnect
+    </span>
+    icon.
+   </li>
+   <li>
+    If a project is already open,
+    <a href="/https://www.quantconnect.com/docs/v2/docs/v2/local-platform/projects/getting-started#05-Close-Projects">
+     close it
+    </a>
+    .
+   </li>
+   <li>
+    In the Open Project panel, click
+    <span class="button-name">
+     Change
+    </span>
+    .
+   </li>
+   <img alt="Change workspace panel" class="docs-image" src="https://cdn.quantconnect.com/i/tu/local-platform-change-workspaces.png"/>
+   <li>
+    <a href="/https://www.quantconnect.com/docs/v2/docs/v2/local-platform/development-environment/organization-workspaces#03-Pull-Cloud-Organization-Workspaces">
+     Pull a cloud workspace
+    </a>
+    .
+   </li>
+  </ol>
+ </body>
+</html>
+
+<h3>Directory Structure</h3>
+<html>
+ <body>
+  <p>
+   The organization workspace directory initially has following structure:
+  </p>
+  <div class="section-example-container">
+   <pre>.
+├── data/
+│   ├── alternative/ 
+│   ├── crypto/
+│   ├── equity/
+│   ├── ...
+│   ├── market-hours/
+│   ├── option/
+│   ├── symbol-properties/
+│   └── readme.md
+└── lean.json</pre>
+  </div>
+  <p>
+   These files contain the following content:
+  </p>
+  <table class="qc-table table">
+   <thead>
+    <tr>
+     <th>
+      File/Directory
+     </th>
+     <th>
+      Description
+     </th>
+    </tr>
+   </thead>
+   <tbody>
+    <tr>
+     <td>
+      <span class="public-directory-name">
+       data /
+      </span>
+     </td>
+     <td>
+      This directory contains the local data that LEAN uses to run locally. This directory is comes with
+      <a href="https://github.com/QuantConnect/Lean/tree/master/Data" rel="nofollow" target="_blank">
+       sample data from the QuantConnect/Lean repository
+      </a>
+      . As you
+      <a href="https://www.quantconnect.com/docs/v2/docs/v2/lean-cli/datasets/downloading-data">
+       download additional data
+      </a>
+      from the dataset market, it's stored in this directory. Each organization workspace has its own
+      <span class="public-directory-name">
+       data
+      </span>
+      directory because each organization has its own data licenses.
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <span class="public-file-name">
+       lean.json
+      </span>
+     </td>
+     <td>
+      This file contains the Lean configuration that is used when running the LEAN engine locally. The configuration is stored as JSON with support for both single-line and multiline comments. The Lean configuration file is based on the
+      <a href="https://github.com/QuantConnect/Lean/blob/master/Launcher/config.json" rel="nofollow" target="_blank">
+       Launcher/config.json
+      </a>
+      file from the Lean repository. When you create a new organization workspace, the latest version of this file is downloaded and stored on your local drive.
+     </td>
+    </tr>
+   </tbody>
+  </table>
+  <p>
+   As you add
+   <a href="https://www.quantconnect.com/docs/v2/docs/v2/local-platform/projects/getting-started">
+    projects
+   </a>
+   , the project files are added to your organization workspace directory. If you create and use
+   <a href="https://www.quantconnect.com/docs/v2/docs/v2/local-platform/projects/shared-libraries">
+    shared libraries
+   </a>
+   in your projects, the library files are added to a
+   <span class="public-directory-name">
+    Library
+   </span>
+   directory in your organization workspace.
+  </p>
+ </body>
+</html>
+
+<p style="page-break-after: always;">&nbsp;</p>
+<section id="3.3"><h3>3.3 Configuration</h3></section>
+
+<h3>Introduction</h3>
+<html>
+ <body>
+  <p>
+   The Local Platform is configured by extension settings in VS Code and by the LEAN Engine settings. Change these settings at any time to suit your needs.
+  </p>
+ </body>
+</html>
+
+<h3>Extension Settings</h3>
+<html>
+ <body>
+  <p>
+   Follow these steps to view the settings of the Local Platform extension:
+  </p>
+  <ol>
+   <li>
+    Open VS Code.
+   </li>
+   <li>
+    In the top navigation bar, click
+    <span class="menu-name">
+     File &gt; Preferences &gt; Settings
+    </span>
+    .
+   </li>
+   <li>
+    On the Settings page, in the left navigation menu, click
+    <span class="menu-name">
+     Extensions &gt; QuantConnect
+    </span>
+    .
+   </li>
+  </ol>
+  <p>
+   The following table describes each setting:
+  </p>
+  <table class="table qc-table">
+   <thead>
+    <tr>
+     <th>
+      Name
+     </th>
+     <th>
+      Description
+     </th>
+    </tr>
+   </thead>
+   <tbody>
+    <tr>
+     <td>
+      Executable Path: Docker
+     </td>
+     <td>
+      A path to the Docker installation you want to use.
+     </td>
+    </tr>
+    <tr>
+     <td>
+      Executable Path: Lean
+     </td>
+     <td>
+      A path to the LEAN CLI executable you want to use.
+     </td>
+    </tr>
+    <tr>
+     <td>
+      Lean: Init
+     </td>
+     <td>
+      A path to the current organization workspace.
+     </td>
+    </tr>
+    <tr>
+     <td>
+      Sync: Local And Cloud Projects
+     </td>
+     <td>
+      <span class="button-name">
+       Yes
+      </span>
+      to synchronize cloud and local projects. Otherwise,
+      <span class="button-name">
+       No
+      </span>
+      .
+      <span class="button-name">
+       No
+      </span>
+      is only available for Institution organizations.
+     </td>
+    </tr>
+    <tr>
+     <td>
+      User: Preferred Language
+     </td>
+     <td>
+      The programming language to use when creating new projects.
+      <span class="button-name">
+       Py
+      </span>
+      for Python or
+      <span class="button-name">
+       C#
+      </span>
+      for C#.
+     </td>
+    </tr>
+   </tbody>
+  </table>
+ </body>
+</html>
+
+<h3>LEAN Settings</h3>
+<html>
+ <body>
+  <p>
+   The Lean configuration contains settings for locally running the LEAN engine.
+    This configuration is created in the
+   <span class="public-file-name">
+    lean.json
+   </span>
+   file when you pull or create an
+   <a href="https://www.quantconnect.com/docs/v2/docs/v2/local-platform/development-environment/organization-workspaces">
+    organization workspace
+   </a>
+   .
+    The configuration is stored as JSON, with support for both single-line and multiline comments.
+  </p>
+  <p>
+   The Lean configuration file is based on the
+   <a class="public-file-name" href="https://github.com/QuantConnect/Lean/blob/master/Launcher/config.json" target="_blank">
+    Launcher / config.json
+   </a>
+   file from the Lean GitHub repository.
+    When you pull or create an organization workspace, the latest version of this file is downloaded and stored in your organization workspace.
+    Before the file is stored, some properties are automatically removed because the Local Platform automatically sets them.
+  </p>
+  <p>
+   The Local Platform can update most of the values of the
+   <span class="public-file-name">
+    lean.json
+   </span>
+   file. The following table shows the configuration settings that you need to manually adjust in the
+   <span class="public-file-name">
+    lean.json
+   </span>
+   file if you want to change their values:
+  </p>
+  <table class="qc-table table">
+   <thead>
+    <tr>
+     <th>
+      Name
+     </th>
+     <th>
+      Description
+     </th>
+     <th nowrap="">
+      Default
+     </th>
+    </tr>
+   </thead>
+   <tbody>
+    <tr>
+     <td nowrap="">
+      <code>
+       show-missing-data-logs
+      </code>
+     </td>
+     <td>
+      Log missing data files. This is useful for debugging.
+     </td>
+     <td>
+      true
+     </td>
+    </tr>
+    <tr>
+     <td nowrap="">
+      <code>
+       maximum-warmup-history-days-look-back
+      </code>
+     </td>
+     <td>
+      The maximum number of days of data the history provider will provide during
+      <a href="https://www.quantconnect.com/docs/v2/writing-algorithms/historical-data/warm-up-periods">
+       warm-up
+      </a>
+      in live trading. The history provider expects older data to be on disk.
+     </td>
+     <td>
+      5
+     </td>
+    </tr>
+    <tr>
+     <td nowrap="">
+      <code>
+       maximum-data-points-per-chart-series
+      </code>
+     </td>
+     <td>
+      The maximum number of data points you can add to a chart series in backtests.
+     </td>
+     <td>
+      4000
+     </td>
+    </tr>
+   </tbody>
+  </table>
+ </body>
+</html>
+
+<p style="page-break-after: always;">&nbsp;</p>
+<section id="3.4"><h3>3.4 Autocomplete</h3></section>
+
+<h3>Introduction</h3>
+<html>
+ <body>
+  <p>
+   Intellisense is a GUI tool in your code files that shows auto-completion options and presents the members that are accessible from the current object. The tool works by searching for the statement that you're typing, given the context. You can use Intellisense to auto-complete method names and object attributes. When you use it, a pop-up displays in the IDE with the following information:
+  </p>
+  <ul>
+   <li>
+    Member type
+   </li>
+   <li>
+    Member description
+   </li>
+   <li>
+    The parameters that the method accepts (if the member is a method)
+   </li>
+  </ul>
+  <p>
+   Use Intellisense to speed up your algorithm development. It works with all of the default class members in Lean, but it doesn't currently support class names or user-defined objects.
+  </p>
+ </body>
+</html>
+
+<h3>Install Python Stubs</h3>
+<html>
+ <body>
+  <p>
+   Before you use autocomplete, you may need to run the following command in a terminal to get the latest Python stubs:
+  </p>
+  <div class="cli section-example-container">
+   <pre>$ pip install --upgrade quantconnect-stubs</pre>
+  </div>
+ </body>
+</html>
+
+<h3>Use Autocomplete</h3>
+<html>
+ <body>
+  <p>
+   Follow these steps to use autocomplete:
+  </p>
+  <ol>
+   <li>
+    <a href="https://www.quantconnect.com/docs/v2/docs/v2/local-platform/projects/getting-started#04-Open-Projects">
+     Open a project
+    </a>
+    .
+   </li>
+   <li>
+    Type the first few characters of a variable, function, class, or class member that you want to autocomplete (for example,
+    <code class="python">
+     self.Set
+    </code>
+    <code class="csharp">
+     Set
+    </code>
+    or
+    <code>
+     SimpleMovingAverage.Upda
+    </code>
+    ).
+   </li>
+   <li>
+    Press
+    <span class="key-combinations">
+     CTRL+Space
+    </span>
+    .
+   </li>
+   <p>
+    If there are class members that match the characters you provided, a list of class members displays.
+   </p>
+   <img alt="Autocomplete helper" class="python docs-image" src="https://cdn.quantconnect.com/i/tu/auto-complete.jpg"/>
+   <img alt="Autocomplete helper" class="csharp docs-image" src="https://cdn.quantconnect.com/i/tu/auto-complete-c.jpg"/>
+   <li>
+    Select the class member that you want to autocomplete.
+   </li>
+   <p>
+    The rest of the class member name is automatically written in the code file.
+   </p>
+  </ol>
+ </body>
+</html>
+
+<p style="page-break-after: always;">&nbsp;</p>
+<section id="3.5"><h3>3.5 Collaboration</h3></section>
+
+<h3>Introduction</h3>
+<html>
+ <body>
+  <p>
+   Project collaboration is a real-time coding experience with other members of your team. Collaborating can speed up your development time. By working with other members in an organization, members within the organization can specialize in different parts of the project. On Local Platform, you can collaborate with your remote team members.
+  </p>
+ </body>
+</html>
+
+<h3>Video Demo</h3>
+<html>
+ <body>
+  <p>
+   When there are multiple people working on the same project, the cursor of each member is visible in the IDE and all file changes occur in real-time for everyone. The following video demonstrates the collaboration feature:
+  </p>
+  <img class="docs-image" src="https://cdn.quantconnect.com/i/tu/collaboration-demo-vs-code-2.gif"/>
+ </body>
+</html>
+
+<h3>Add Team Members</h3>
+<html>
+ <body>
+  <p>
+   You need to own the project to add team members to it.
+  </p>
+  <p>
+   Follow these steps to add team members to a project:
+  </p>
+  <ol>
+   <li>
+    <a href="https://www.quantconnect.com/docs/v2/docs/v2/local-platform/projects/getting-started#04-Open-Projects">
+     Open the project
+    </a>
+    .
+   </li>
+   <li>
+    In the left navigation menu, click the
+    <img class="inline-icon" src="https://cdn.quantconnect.com/i/tu/vscode-qc-icon.jpg"/>
+    <span class="icon-name">
+     QuantConnect
+    </span>
+    icon.
+   </li>
+   <li>
+    In the Collaborate section of the Project panel, click
+    <span class="button-name">
+     Add Collaborator
+    </span>
+    .
+   </li>
+   <li>
+    Click the
+    <span class="field-name">
+     Select User...
+    </span>
+    field and then click a member from the drop-down menu.
+   </li>
+   <li>
+    If you want to give the member live control of the project, select the
+    <span class="box-name">
+     Live Control
+    </span>
+    check box.
+   </li>
+   <li>
+    Click
+    <span class="button-name">
+     Add User
+    </span>
+    .
+   </li>
+   <p>
+    The member you add receives an email with a link to the project.
+   </p>
+  </ol>
+  <p>
+   If the project has a
+   <a href="https://www.quantconnect.com/docs/v2/docs/v2/local-platform/projects/shared-libraries">
+    shared library
+   </a>
+   , the collaborator can access the project, but not the library. To grant them access to the library, add them as a collaborator to the library project.
+  </p>
+ </body>
+</html>
+
+<h3>Collaborator Quotas</h3>
+<html>
+ <body>
+  <p>
+   The number of members you can add to a project depends on your
+   <a href="https://www.quantconnect.com/docs/v2/cloud-platform/organizations/tier-features">
+    organization's tier
+   </a>
+   . The following table shows the number of collaborators each tier can have per project:
+   <br/>
+  </p>
+  <table class="qc-table table" id="collaborating-members-quota-table">
+   <thead>
+    <tr>
+     <th style="width: 50%">
+      Tier
+     </th>
+     <th style="width: 50%">
+      Collaborators per Project
+     </th>
+    </tr>
+   </thead>
+   <tbody>
+    <tr>
+     <td>
+      Free
+     </td>
+     <td>
+      Unsupported
+     </td>
+    </tr>
+    <tr>
+     <td>
+      Quant Researcher
+     </td>
+     <td>
+      Unsupported
+     </td>
+    </tr>
+    <tr>
+     <td>
+      Team
+     </td>
+     <td>
+      10
+     </td>
+    </tr>
+    <tr>
+     <td>
+      Trading Firm
+     </td>
+     <td>
+      Unlimited
+     </td>
+    </tr>
+    <tr>
+     <td>
+      Institution
+     </td>
+     <td>
+      Unlimited
+     </td>
+    </tr>
+   </tbody>
+  </table>
+  <style>
+   #collaborating-members-quota-table td:last-child,
+#collaborating-members-quota-table th:last-child {
+    text-align: right;
+}
+  </style>
+ </body>
+</html>
+
+<h3>Toggle Live Control</h3>
+<html>
+ <body>
+  <p>
+   You need to have added a member to the project to toggle their live control of the project.
+  </p>
+  <p>
+   Follow these steps to enable and disable live control for a team member:
+  </p>
+  <ol>
+   <li>
+    <a href="https://www.quantconnect.com/docs/v2/docs/v2/local-platform/projects/getting-started#04-Open-Projects">
+     Open the project
+    </a>
+    .
+   </li>
+   <li>
+    In the left navigation menu, click the
+    <img class="inline-icon" src="https://cdn.quantconnect.com/i/tu/vscode-qc-icon.jpg"/>
+    <span class="icon-name">
+     QuantConnect
+    </span>
+    icon.
+   </li>
+   <li>
+    In the Collaborate section of the Project panel, click the profile image of the team member.
+   </li>
+   <li>
+    Click the
+    <span class="box-name">
+     Live Control
+    </span>
+    check box.
+   </li>
+   <li>
+    Click
+    <span class="button-name">
+     Save Changes
+    </span>
+    .
+   </li>
+  </ol>
+ </body>
+</html>
+
+<h3>Remove Team Members</h3>
+<html>
+ <body>
+  <p>
+   Follow these steps to remove a team member from a project you own:
+  </p>
+  <ol>
+   <li>
+    <a href="https://www.quantconnect.com/docs/v2/docs/v2/local-platform/projects/getting-started#04-Open-Projects">
+     Open the project
+    </a>
+    .
+   </li>
+   <li>
+    In the left navigation menu, click the
+    <img class="inline-icon" src="https://cdn.quantconnect.com/i/tu/vscode-qc-icon.jpg"/>
+    <span class="icon-name">
+     QuantConnect
+    </span>
+    icon.
+   </li>
+   <li>
+    In the Collaborate section of the Project panel, click the profile image of the team member.
+   </li>
+   <li>
+    Click
+    <span class="button-name">
+     Remove User
+    </span>
+    .
+   </li>
+  </ol>
+  <p>
+   To remove yourself as a collaborator from a project you don't own,
+   <a href="https://www.quantconnect.com/docs/v2/docs/v2/local-platform/projects/getting-started#12-Delete-Projects">
+    delete the project
+   </a>
+   .
+  </p>
+ </body>
+</html>
+
+<p style="page-break-after: always;">&nbsp;</p>
+<section id="3.6"><h3>3.6 LEAN Engine Versions</h3></section>
+
+<h3>Introduction</h3>
+<html>
+ <body>
+  <p>
+   The latest master branch on the LEAN GitHub repository is the default engine branch that runs backtests, research notebooks, and live trading algorithms. The latest version of LEAN is generally the safest as it includes all bug fixes. Trading Firm or Institution tier users concerned for stability can elect to use older or custom versions of LEAN.
+  </p>
+ </body>
+</html>
+
+<h3>Change Branches</h3>
+<html>
+ <body>
+  <p>
+   Follow these steps to change the LEAN engine branch that runs your backtests and live trading algorithms:
+  </p>
+  <ol>
+   <li>
+    <a href="https://www.quantconnect.com/docs/v2/docs/v2/local-platform/projects/getting-started#04-Open-Projects">
+     Open a project
+    </a>
+    .
+   </li>
+   <li>
+    In the left navigation menu, click the
+    <img class="inline-icon" src="https://cdn.quantconnect.com/i/tu/vscode-qc-icon.jpg"/>
+    <span class="icon-name">
+     QuantConnect
+    </span>
+    icon.
+   </li>
+   <li>
+    In the Project panel, click the
+    <span class="field-name">
+     LEAN Engine
+    </span>
+    field and then click a branch from the drop-down menu.
+   </li>
+   <li>
+    <span class="qualifier">
+     (Optional)
+    </span>
+    Click
+    <span class="button-name">
+     About Version
+    </span>
+    to display the branch description.
+   </li>
+   <li>
+    If you want to always use the master branch, select the
+    <span class="button-name">
+     Always use Master Branch
+    </span>
+    check box.
+   </li>
+   <li>
+    Click
+    <span class="button-name">
+     Select
+    </span>
+    .
+   </li>
+  </ol>
+  <p>
+   Changing the Lean engine branch only affects the current project. If you
+   <a href="https://www.quantconnect.com/docs/v2/docs/v2/local-platform/projects/getting-started#03-Create-Projects">
+    create a new project
+   </a>
+   , the new project will 
+    use the master branch by default.
+  </p>
+ </body>
+</html>
+
+<h3>Custom Branches</h3>
+<html>
+ <body>
+  <p>
+   To create and use custom versions of LEAN, see
+   <a href="https://www.quantconnect.com/docs/v2/docs/v2/lean-cli/projects/custom-docker-images">
+    Custom Docker Images
+   </a>
+   .
+  </p>
+ </body>
+</html>
+
+<p style="page-break-after: always;">&nbsp;</p>
+<section id="3.7"><h3>3.7 Synchronization</h3></section>
+
+<h3>Introduction</h3>
+<html>
+ <body>
+  <p>
+   Unless you are working on an anonymous project, Local Platform automatically syncs your local project files with QuantConnect Cloud. Every time you save a file, Local Platform saves the changes in your local project and in the cloud version of the project.
+  </p>
+ </body>
+</html>
+
+<h3>Anonymous Projects</h3>
+<html>
+ <body>
+  <p>
+   Anonymous projects are projects that are on your local machine and not synced with QuantConnect Cloud. These types of projects are only available for members in Institution organizations. Anonymous projects provide organizations the opportunity to take ownership of their projects security.
+  </p>
+ </body>
+</html>
+
+<h3>Supported File Types</h3>
+<html>
+ <body>
+  <p>
+   When you save your local projects and push them to QuantConnect Cloud, it only pushes the Python, C#, and notebook files in your project. Projects can contain many other file types like
+   <span class="public-file-name">
+    json
+   </span>
+   ,
+   <span class="public-file-name">
+    csv
+   </span>
+   , and
+   <span class="public-file-name">
+    html
+   </span>
+   , but Local Platform only pushes your
+   <span class="public-file-name">
+    py
+   </span>
+   ,
+   <span class="public-file-name">
+    cs
+   </span>
+   , and
+   <span class="public-file-name">
+    ipynb
+   </span>
+   files.
+  </p>
+ </body>
+</html>
+
+<p style="page-break-after: always;">&nbsp;</p>
+<section id="3.8"><h3>3.8 Source Control</h3></section>
+
+<h3>Introduction</h3>
+
+<p style="page-break-after: always;">&nbsp;</p>
+<section id="3.9"><h3>3.9 Resource Management</h3></section>
+
+<h3>Introduction</h3>
+<html>
+ <body>
+  <p>
+   The Resources panel shows all of the backtest, research, and live trading nodes that Local Platform can use or is already using.
+  </p>
+  <img class="docs-image" src="https://cdn.quantconnect.com/i/tu/local-resource-panel.png"/>
+  <p>
+   The
+   <span class="page-section-name">
+    In Use By
+   </span>
+   column displays the owner and name of the project using the node.
+  </p>
+ </body>
+</html>
+
+<h3>View Resources</h3>
+<html>
+ <body>
+  <p>
+   To view the Resources panel,
+   <a href="">
+    open a project
+   </a>
+   and then, in the left navigation menu, click the
+   <img alt="VS Code QuantConnect icon" class="inline-icon" src="https://cdn.quantconnect.com/i/tu/vscode-qc-icon.jpg"/>
+   <span class="icon-name">
+    QuantConnect
+   </span>
+   icon. The Resources panel is at the bottom of the Project panel.
+  </p>
+ </body>
+</html>
+
+<h3>Stop Nodes</h3>
+<html>
+ <body>
+  <p>
+   To stop a node, open the Resources panel and then click the
+   <span class="icon-name">
+    stop
+   </span>
+   button next to the node.
+  </p>
+ </body>
+</html>
+
+<p style="page-break-after: always;">&nbsp;</p>
+<section id="3.10"><h3>3.10 Packages and Libraries</h3></section>
+
+<h3>Introduction</h3>
+<html>
+ <body>
+  <p>
+   Libraries (or packages) are third-party software that you can use in your projects. You can use many of the available open-source libraries to complement the classes and methods that you create. Libraries reduce your development time because it's faster to use a pre-built, open-source library than to write the functionality. Libraries can be used in backtesting, research, and live trading. The environments support various libraries for machine learning, plotting, and data processing. As members often request new libraries, we frequently add new libraries to the underlying docker image that runs the Lean engine.
+  </p>
+  <p>
+   This feature is primarily for Python algorithms as not all Python libraries are compatible with each other. We've bundled together different sets of libraries into distinct environments. To use the libraries of an environment, set the environment in your project and add the relevant
+   <code class="csharp">
+    using
+   </code>
+   <code class="python">
+    import
+   </code>
+   statement of a library at the top of your file.
+  </p>
+ </body>
+</html>
+
+<h3>Set Environment</h3>
+<html>
+ <body>
+  <p>
+   Follow these steps to set the library environment:
+  </p>
+  <ol>
+   <li>
+    <a href="https://www.quantconnect.com/docs/v2/docs/v2/local-platform/projects/getting-started#04-Open-Projects">
+     Open a project
+    </a>
+    .
+   </li>
+   <li>
+    In the left navigation menu, click the
+    <img class="inline-icon" src="https://cdn.quantconnect.com/i/tu/vscode-qc-icon.jpg"/>
+    <span class="icon-name">
+     QuantConnect
+    </span>
+    icon.
+   </li>
+   <li>
+    In the Project panel, click the
+    <span class="field-name">
+     Python Foundation
+    </span>
+    field and then select an environment from the drop-down menu.
+   </li>
+  </ol>
+ </body>
+</html>
+
+<h3>Default Environment</h3>
+<html>
+ <body>
+  <p>
+   The default environment supports the following libraries:
+  </p>
+  <div class="section-example-container">
+   <pre class="python">
+# Name                        Version
+absl-py                       1.4.0
+adagio                        0.2.4
+aesara                        2.8.12
+aiodns                        3.0.0
+aiohttp                       3.8.4
+aiohttp-cors                  0.7.0
+aiosignal                     1.3.1
+alabaster                     0.7.13
+ale-py                        0.7.4
+alembic                       1.10.3
+alpaca-trade-api              0.26
+alphalens-reloaded            0.4.3
+altair                        4.2.2
+ansi2html                     1.8.0
+antlr4-python3-runtime        4.11.1
+anyio                         3.6.2
+appdirs                       1.4.4
+arch                          5.3.1
+argon2-cffi                   21.3.0
+argon2-cffi-bindings          21.2.0
+arviz                         0.15.1
+astropy                       5.2.1
+asttokens                     2.2.1
+astunparse                    1.6.3
+async-timeout                 4.0.2
+asyncio-nats-client           0.11.5
+attrs                         23.1.0
+autograd                      1.5
+autokeras                     1.1.0
+autoray                       0.6.3
+AutoROM                       0.4.2
+AutoROM.accept-rom-license    0.6.1
+ax-platform                   0.3.0
+Babel                         2.12.1
+backcall                      0.2.0
+bayesian-optimization         1.4.2
+beautifulsoup4                4.11.2
+bleach                        6.0.0
+blessed                       1.20.0
+blis                          0.7.9
+blosc2                        2.0.0
+bokeh                         2.4.3
+boltons                       23.0.0
+botorch                       0.8.2
+Bottleneck                    1.3.7
+brotlipy                      0.7.0
+cachetools                    5.3.0
+captum                        0.6.0
+catalogue                     2.0.8
+catboost                      1.1.1
+category-encoders             2.6.0
+ccxt                          3.0.72
+certifi                       2022.12.7
+cffi                          1.15.1
+chardet                       5.1.0
+charset-normalizer            2.0.4
+check-shapes                  1.0.0
+click                         7.1.2
+clikit                        0.6.2
+cloudpickle                   2.2.1
+cmaes                         0.9.1
+cmdstanpy                     1.1.0
+colorama                      0.4.6
+colorcet                      3.0.1
+colorful                      0.5.5
+colorlog                      6.7.0
+colorlover                    0.3.0
+colour                        0.1.5
+comm                          0.1.3
+commonmark                    0.9.1
+conda                         23.3.1
+conda-content-trust           0.1.3
+conda-package-handling        2.0.2
+conda_package_streaming       0.7.0
+confection                    0.0.4
+cons                          0.4.5
+contourpy                     1.0.7
+convertdate                   2.4.0
+copulae                       0.7.7
+copulas                       0.8.0
+cramjam                       2.6.2
+crashtest                     0.3.1
+creme                         0.6.1
+cryptography                  38.0.4
+cufflinks                     0.17.3
+cvxopt                        1.3.0
+cvxpy                         1.3.0
+cycler                        0.11.0
+cymem                         2.0.7
+Cython                        0.29.33
+darts                         0.23.1
+dash                          2.9.3
+dash-core-components          2.0.0
+dash-cytoscape                0.3.0
+dash-html-components          2.0.0
+dash-table                    5.0.0
+dask                          2023.4.0
+deap                          1.3.3
+debugpy                       1.5.1
+decorator                     5.1.1
+defusedxml                    0.7.1
+Deprecated                    1.2.13
+dgl                           1.0.1
+dill                          0.3.6
+dimod                         0.12.3
+diskcache                     5.6.1
+distlib                       0.3.6
+distributed                   2021.4.1
+dm-tree                       0.1.8
+docutils                      0.19
+DoubleML                      0.5.2
+dtreeviz                      2.2.1
+dtw-python                    1.3.0
+dwave-cloud-client            0.10.3
+dwave-drivers                 0.4.4
+dwave-greedy                  0.3.0
+dwave-hybrid                  0.6.9
+dwave-inspector               0.3.0
+dwave-inspectorapp            0.3.0
+dwave-neal                    0.6.0
+dwave-networkx                0.8.12
+dwave-ocean-sdk               6.1.1
+dwave-preprocessing           0.5.3
+dwave-samplers                1.0.0
+dwave-system                  1.18.0
+dwave-tabu                    0.5.0
+dwavebinarycsp                0.2.0
+dx                            0.1.22
+ecos                          2.0.12
+EMD-signal                    1.4.0
+empyrical                     0.5.5
+empyrical-reloaded            0.5.9
+en-core-web-md                3.5.0
+en-core-web-sm                3.5.0
+entrypoints                   0.4
+ephem                         4.1.4
+et-xmlfile                    1.1.0
+etuples                       0.3.8
+exceptiongroup                1.1.1
+exchange-calendars            4.2.6
+executing                     1.2.0
+ezyrb                         1.3.0.post2304
+fastai                        2.7.11
+fastai2                       0.0.30
+fastcore                      1.5.29
+fastdownload                  0.0.7
+fasteners                     0.18
+fastjsonschema                2.16.3
+fastparquet                   2023.2.0
+fastprogress                  1.0.3
+fasttext                      0.9.2
+featuretools                  0.23.1
+filelock                      3.12.0
+findiff                       0.9.2
+finrl                         0.3.1
+FixedEffectModel              0.0.5
+Flask                         2.0.3
+flatbuffers                   23.3.3
+fonttools                     4.39.3
+fracdiff                      0.9.0
+frozendict                    2.3.7
+frozenlist                    1.3.3
+fs                            2.4.16
+fsspec                        2023.4.0
+fst-pso                       1.8.1
+fugue                         0.8.3
+fugue-sql-antlr               0.1.6
+future                        0.18.3
+fuzzy-c-means                 1.6.3
+FuzzyTM                       2.0.5
+gast                          0.4.0
+gensim                        4.3.0
+gevent                        22.10.2
+gluonts                       0.12.3
+google-api-core               2.11.0
+google-auth                   2.17.3
+google-auth-oauthlib          0.4.6
+google-pasta                  0.2.0
+googleapis-common-protos      1.59.0
+gpflow                        2.7.0
+gplearn                       0.4.2
+gpustat                       1.1
+GPUtil                        1.4.0
+gpytorch                      1.9.1
+graphviz                      0.20.1
+greenlet                      2.0.2
+grpcio                        1.54.0
+gym                           0.21.0
+Gymnasium                     0.26.3
+gymnasium-notices             0.0.1
+h2o                           3.40.0.1
+h5netcdf                      1.1.0
+h5py                          3.8.0
+hijri-converter               2.2.4
+hmmlearn                      0.2.8
+holidays                      0.23
+holoviews                     1.15.4
+homebase                      1.0.1
+hopcroftkarp                  1.2.5
+html5lib                      1.1
+httpstan                      4.9.1
+hurst                         0.0.5
+hvplot                        0.8.2
+hyperopt                      0.2.7
+idna                          3.4
+iisignature                   0.24
+ijson                         3.2.0.post0
+imageio                       2.27.0
+imagesize                     1.4.1
+imbalanced-learn              0.10.1
+importlib-metadata            4.13.0
+importlib-resources           5.12.0
+iniconfig                     2.0.0
+injector                      0.20.1
+interpret                     0.3.0
+interpret-core                0.3.2
+ipykernel                     6.22.0
+ipython                       8.12.0
+ipython-genutils              0.2.0
+ipywidgets                    8.0.4
+itsdangerous                  2.1.2
+jax                           0.4.4
+jaxlib                        0.4.4
+jedi                          0.18.2
+Jinja2                        3.1.2
+joblib                        1.2.0
+jqdatasdk                     1.8.11
+json5                         0.9.11
+jsonpatch                     1.32
+jsonpointer                   2.0
+jsonschema                    4.17.3
+jupyter                       1.0.0
+jupyter-bokeh                 3.0.5
+jupyter-console               6.6.3
+jupyter-dash                  0.4.2
+jupyter-resource-usage        0.7.2
+jupyter-server                1.24.0
+jupyter_client                8.2.0
+jupyter_core                  5.3.0
+jupyterlab                    3.4.4
+jupyterlab-pygments           0.2.2
+jupyterlab-widgets            3.0.7
+jupyterlab_server             2.22.1
+keract                        4.5.1
+keras                         2.11.0
+keras-nlp                     0.4.1
+keras-rl                      0.4.2
+keras-tuner                   1.3.5
+kiwisolver                    1.4.4
+kmapper                       2.0.1
+korean-lunar-calendar         0.3.1
+kt-legacy                     1.0.5
+langcodes                     3.3.0
+lark                          1.1.5
+lazy_loader                   0.2
+lazypredict                   0.2.12
+libclang                      16.0.0
+lightgbm                      3.3.5
+lime                          0.2.0.1
+line-profiler                 4.0.2
+linear-operator               0.3.0
+littleutils                   0.2.2
+livelossplot                  0.5.5
+llvmlite                      0.39.1
+locket                        1.0.0
+logical-unification           0.4.5
+LunarCalendar                 0.0.9
+lxml                          4.9.2
+lz4                           4.3.2
+Mako                          1.2.4
+Markdown                      3.4.3
+MarkupSafe                    2.1.2
+marshmallow                   3.19.0
+matplotlib                    3.7.0
+matplotlib-inline             0.1.6
+miniful                       0.0.6
+miniKanren                    1.0.3
+minorminer                    0.2.9
+mistune                       2.0.5
+mljar-supervised              0.11.5
+mlxtend                       0.21.0
+mmh3                          2.5.1
+modin                         0.18.1
+mpi4py                        3.1.4
+mplfinance                    0.12.9b7
+mpmath                        1.2.1
+msgpack                       1.0.4
+mthree                        2.4.0
+multidict                     6.0.4
+multipledispatch              0.6.0
+multiprocess                  0.70.14
+multitasking                  0.0.11
+murmurhash                    1.0.9
+nbclassic                     0.5.5
+nbclient                      0.7.3
+nbconvert                     7.3.1
+nbeats-keras                  1.8.0
+nbeats-pytorch                1.8.0
+nbformat                      5.8.0
+nest-asyncio                  1.5.6
+networkx                      2.8.8
+neural-tangents               0.6.2
+neuralprophet                 0.5.0
+nfoursid                      1.0.1
+nltk                          3.8.1
+nose                          1.3.7
+notebook                      6.5.4
+notebook_shim                 0.2.2
+ntlm-auth                     1.5.0
+numba                         0.56.4
+numerapi                      2.13.2
+numexpr                       2.8.4
+numpy                         1.23.5
+numpydoc                      1.5.0
+nvidia-cublas-cu11            11.10.3.66
+nvidia-cuda-nvrtc-cu11        11.7.99
+nvidia-cuda-runtime-cu11      11.7.99
+nvidia-cudnn-cu11             8.5.0.96
+nvidia-ml-py                  11.525.112
+oauthlib                      3.2.2
+openai                        0.26.5
+opencensus                    0.11.2
+opencensus-context            0.1.3
+opencv-python                 4.7.0.72
+openpyxl                      3.1.1
+opt-einsum                    3.3.0
+optuna                        3.1.0
+orjson                        3.8.10
+ortools                       9.4.1874
+osqp                          0.6.2.post9
+outdated                      0.2.2
+packaging                     23.1
+pandas                        1.5.3
+pandas-datareader             0.10.0
+pandas-flavor                 0.5.0
+pandas-market-calendars       4.1.4
+pandas-ta                     0.3.14b0
+pandocfilters                 1.5.0
+panel                         0.14.3
+param                         1.13.0
+parso                         0.8.3
+partd                         1.4.0
+pastel                        0.2.1
+pathos                        0.3.0
+pathy                         0.10.1
+patsy                         0.5.3
+pbr                           5.11.1
+penaltymodel                  1.0.2
+PennyLane                     0.29.0
+PennyLane-Lightning           0.29.0
+PennyLane-qiskit              0.29.0
+persim                        0.3.1
+pexpect                       4.8.0
+pickleshare                   0.7.5
+Pillow                        9.5.0
+pingouin                      0.5.3
+pip                           22.3.1
+pkgutil_resolve_name          1.3.10
+platformdirs                  3.2.0
+plotly                        5.13.1
+plotly-resampler              0.8.3.2
+plucky                        0.4.3
+pluggy                        1.0.0
+ply                           3.11
+pmdarima                      2.0.2
+polars                        0.16.9
+pox                           0.3.2
+ppft                          1.7.6.6
+pprofile                      2.1.0
+ppscore                       1.2.0
+preshed                       3.0.8
+prometheus-client             0.16.0
+prompt-toolkit                3.0.38
+property-cached               1.6.4
+prophet                       1.1.2
+protobuf                      3.19.6
+psutil                        5.9.5
+psycopg2-binary               2.9.6
+ptvsd                         4.3.2
+ptyprocess                    0.7.0
+PuLP                          2.7.0
+pure-eval                     0.2.2
+py-cpuinfo                    9.0.0
+py-heat                       0.0.6
+py-heat-magic                 0.0.2
+py-lets-be-rational           1.0.1
+py-spy                        0.3.14
+py-vollib                     1.0.1
+py4j                          0.10.9.7
+pyaml                         21.10.1
+pyarrow                       11.0.0
+pyasn1                        0.4.8
+pyasn1-modules                0.2.8
+pybind11                      2.10.4
+pycares                       4.3.0
+pycosat                       0.6.4
+pycparser                     2.21
+pyct                          0.5.0
+pydantic                      1.10.7
+pyDeprecate                   0.3.2
+pydevd-pycharm                201.8538.36
+pydmd                         0.4.0.post2301
+pyerfa                        2.0.0.3
+pyfolio                       0.9.2
+pyfolio-reloaded              0.9.5
+pyFUME                        0.2.25
+Pygments                      2.15.1
+pykalman                      0.9.5
+pylev                         1.4.0
+pyluach                       2.2.0
+pymannkendall                 1.4.3
+pymc                          5.0.2
+pymdptoolbox                  4.0b3
+PyMeeus                       0.5.12
+PyMySQL                       1.0.3
+pynndescent                   0.5.9
+pyod                          1.0.9
+Pyomo                         6.5.0
+pyOpenSSL                     22.0.0
+pyparsing                     3.0.9
+pyportfolioopt                1.5.4
+pyqubo                        1.3.1
+pyrb                          1.0.1
+pyro-api                      0.1.2
+pyro-ppl                      1.8.4
+pyrsistent                    0.19.3
+pysimdjson                    5.0.2
+PySocks                       1.7.1
+pystan                        3.6.0
+pytensor                      2.9.1
+pytest                        7.3.1
+python-dateutil               2.8.2
+python-statemachine           1.0.3
+pytorch-ignite                0.4.11
+pytorch-lightning             1.7.4
+pytz                          2023.3
+pyvinecopulib                 0.6.2
+pyviz-comms                   2.2.1
+PyWavelets                    1.4.1
+PyYAML                        6.0
+pyzmq                         25.0.2
+qdldl                         0.1.7
+qiskit                        0.41.1
+qiskit-aer                    0.11.2
+qiskit-ibmq-provider          0.20.1
+qiskit-terra                  0.23.2
+qpd                           0.4.1
+qtconsole                     5.4.2
+QtPy                          2.3.1
+quadprog                      0.1.11
+quantecon                     0.6.0
+QuantLib                      1.29
+QuantStats                    0.0.59
+rauth                         0.7.3
+ray                           2.3.0
+rectangle-packer              2.0.1
+regex                         2023.3.23
+requests                      2.28.1
+requests-ntlm                 1.1.0
+requests-oauthlib             1.3.1
+retrying                      1.3.4
+retworkx                      0.12.1
+rich                          12.4.4
+ripser                        0.6.4
+Riskfolio-Lib                 4.0.3
+riskparityportfolio           0.4
+river                         0.14.0
+rsa                           4.9
+ruamel.yaml                   0.17.21
+ruamel.yaml.clib              0.2.6
+ruptures                      1.1.7
+rustworkx                     0.12.1
+SALib                         1.4.7
+scikeras                      0.10.0
+scikit-image                  0.19.3
+scikit-learn                  1.2.1
+scikit-learn-extra            0.2.0
+scikit-multiflow              0.5.3
+scikit-optimize               0.9.0
+scikit-plot                   0.3.7
+scikit-tda                    1.0.0
+scipy                         1.10.1
+scs                           3.2.3
+sdeint                        0.3.0
+seaborn                       0.12.2
+semantic-version              2.10.0
+Send2Trash                    1.8.0
+setuptools                    64.0.2
+setuptools-scm                7.1.0
+shap                          0.41.0
+simpful                       2.10.0
+simplejson                    3.19.1
+simpy                         4.0.1
+six                           1.16.0
+sklearn-json                  0.1.0
+skope-rules                   1.0.1
+sktime                        0.16.1
+slicer                        0.0.7
+smart-open                    6.3.0
+sniffio                       1.3.0
+snowballstemmer               2.2.0
+sortedcontainers              2.4.0
+soupsieve                     2.4.1
+spacy                         3.5.0
+spacy-legacy                  3.0.12
+spacy-loggers                 1.0.4
+Sphinx                        6.1.3
+sphinxcontrib-applehelp       1.0.4
+sphinxcontrib-devhelp         1.0.2
+sphinxcontrib-htmlhelp        2.0.1
+sphinxcontrib-jsmath          1.0.1
+sphinxcontrib-qthelp          1.0.3
+sphinxcontrib-serializinghtml 1.1.5
+SQLAlchemy                    1.4.47
+sqlglot                       11.5.5
+srsly                         2.4.6
+ssm                           0.0.1
+stable-baselines3             1.7.0
+stack-data                    0.6.2
+statsforecast                 1.5.0
+statsmodels                   0.13.5
+stellargraph                  1.2.1
+stevedore                     5.0.0
+stochastic                    0.7.0
+stockstats                    0.5.2
+stumpy                        1.11.1
+symengine                     0.10.0
+sympy                         1.11.1
+ta                            0.10.2
+TA-Lib                        0.4.18
+tables                        3.8.0
+tabulate                      0.8.10
+tadasets                      0.0.4
+tbats                         1.1.3
+tblib                         1.7.0
+tenacity                      8.2.2
+tensorboard                   2.11.2
+tensorboard-data-server       0.6.1
+tensorboard-plugin-wit        1.8.1
+tensorboardX                  2.6
+tensorflow                    2.11.0
+tensorflow-addons             0.19.0
+tensorflow-decision-forests   1.2.0
+tensorflow-estimator          2.11.0
+tensorflow-hub                0.13.0
+tensorflow-io-gcs-filesystem  0.32.0
+tensorflow-probability        0.19.0
+tensorflow-text               2.11.0
+tensorly                      0.8.0
+tensortrade                   1.0.3
+termcolor                     2.2.0
+terminado                     0.17.1
+tf2jax                        0.3.3
+thinc                         8.1.9
+threadpoolctl                 3.1.0
+thriftpy2                     0.4.16
+thundergbm                    0.3.17
+tick                          0.7.0.1
+tifffile                      2023.4.12
+tinycss2                      1.2.1
+toml                          0.10.2
+tomli                         2.0.1
+toolz                         0.12.0
+torch                         1.13.1
+torch-cluster                 1.6.0
+torch-geometric               2.2.0
+torch-scatter                 2.1.0
+torch-sparse                  0.6.16
+torch-spline-conv             1.2.1
+torchmetrics                  0.9.3
+torchvision                   0.14.1
+tornado                       6.3
+tqdm                          4.64.1
+trace-updater                 0.0.9.1
+trading-calendars             2.1.1
+traitlets                     5.9.0
+treeinterpreter               0.2.3
+triad                         0.8.6
+tsfresh                       0.20.0
+tslearn                       0.5.3.2
+tweepy                        4.10.0
+typeguard                     3.0.2
+typer                         0.3.2
+typing_extensions             4.5.0
+umap-learn                    0.5.3
+urllib3                       1.26.14
+virtualenv                    20.21.0
+wasabi                        1.1.1
+wcwidth                       0.2.6
+webargs                       8.2.0
+webencodings                  0.5.1
+websocket-client              1.5.1
+websockets                    10.4
+Werkzeug                      2.2.3
+wheel                         0.37.1
+widgetsnbextension            4.0.7
+wordcloud                     1.8.2.2
+wrapt                         1.14.1
+wrds                          3.1.6
+wurlitzer                     3.0.3
+xarray                        2023.1.0
+xarray-einstats               0.5.1
+xgboost                       1.7.4
+xlrd                          2.0.1
+XlsxWriter                    3.1.0
+yarl                          1.8.2
+yellowbrick                   1.5
+yfinance                      0.2.18
+zict                          3.0.0
+zipp                          3.15.0
+zope.event                    4.6
+zope.interface                6.0
+zstandard                     0.18.0
+</pre>
+   <pre class="csharp">
+# Name                               Version
+Accord                               3.6.0
+Accord.Fuzzy                         3.6.0
+Accord.MachineLearning               3.6.0
+Accord.Math                          3.6.0
+Accord.Statistics                    3.6.0
+CloneExtensions                      1.3.0
+Common.Logging                       3.4.1
+Common.Logging.Core                  3.4.1
+CsvHelper                            19.0.0
+Deedle                               2.1.0
+DotNetZip                            1.16.0
+DynamicInterop                       0.9.1
+fasterflect                          3.0.0
+FSharp.Core                          4.5.2
+MathNet.Numerics                     4.15.0
+McMaster.Extensions.CommandLineUtils 2.6.0
+Microsoft.IO.RecyclableMemoryStream  2.3.1
+Microsoft.NET.Test.Sdk               16.9.4
+Microsoft.TestPlatform.ObjectModel   16.9.4
+Moq                                  4.16.1
+NetMQ                                4.0.1.6
+Newtonsoft.Json                      13.0.2
+NodaTime                             3.0.5
+NUnit                                3.13.3
+NUnit3TestAdapter                    4.2.1
+protobuf-net                         3.1.33
+QLNet                                1.12.0
+QuantConnect.pythonnet               2.0.18
+RestSharp                            106.12.0
+SharpZipLib                          1.3.3
+System.ComponentModel.Composition    6.0.0
+</pre>
+  </div>
+ </body>
+</html>
+
+<h3>Pomegranate Environment</h3>
+<html>
+ <body>
+  <p>
+   The Pomegranate environment supports the following libraries:
+  </p>
+  <div class="section-example-container">
+   <pre class="python">
+# Name                        Version
+absl-py                       1.4.0
+adagio                        0.2.4
+aesara                        2.8.12
+aiodns                        3.0.0
+aiohttp                       3.8.4
+aiohttp-cors                  0.7.0
+aiosignal                     1.3.1
+alabaster                     0.7.13
+ale-py                        0.7.4
+alembic                       1.10.3
+alpaca-trade-api              0.26
+alphalens-reloaded            0.4.3
+altair                        4.2.2
+ansi2html                     1.8.0
+antlr4-python3-runtime        4.11.1
+anyio                         3.6.2
+appdirs                       1.4.4
+arch                          5.3.1
+argon2-cffi                   21.3.0
+argon2-cffi-bindings          21.2.0
+arviz                         0.15.1
+astropy                       5.2.1
+asttokens                     2.2.1
+astunparse                    1.6.3
+async-timeout                 4.0.2
+asyncio-nats-client           0.11.5
+attrs                         23.1.0
+autograd                      1.5
+autokeras                     1.1.0
+autoray                       0.6.3
+AutoROM                       0.4.2
+AutoROM.accept-rom-license    0.6.1
+ax-platform                   0.3.0
+Babel                         2.12.1
+backcall                      0.2.0
+bayesian-optimization         1.4.2
+beautifulsoup4                4.11.2
+bleach                        6.0.0
+blessed                       1.20.0
+blis                          0.7.9
+blosc2                        2.0.0
+bokeh                         2.4.3
+boltons                       23.0.0
+botorch                       0.8.2
+Bottleneck                    1.3.7
+brotlipy                      0.7.0
+cachetools                    5.3.0
+captum                        0.6.0
+catalogue                     2.0.8
+catboost                      1.1.1
+category-encoders             2.6.0
+ccxt                          3.0.72
+certifi                       2022.12.7
+cffi                          1.15.1
+chardet                       5.1.0
+charset-normalizer            2.0.4
+check-shapes                  1.0.0
+click                         7.1.2
+clikit                        0.6.2
+cloudpickle                   2.2.1
+cmaes                         0.9.1
+cmdstanpy                     1.1.0
+colorama                      0.4.6
+colorcet                      3.0.1
+colorful                      0.5.5
+colorlog                      6.7.0
+colorlover                    0.3.0
+colour                        0.1.5
+comm                          0.1.3
+commonmark                    0.9.1
+conda                         23.3.1
+conda-content-trust           0.1.3
+conda-package-handling        2.0.2
+conda_package_streaming       0.7.0
+confection                    0.0.4
+cons                          0.4.5
+contourpy                     1.0.7
+convertdate                   2.4.0
+copulae                       0.7.7
+copulas                       0.8.0
+cramjam                       2.6.2
+crashtest                     0.3.1
+creme                         0.6.1
+cryptography                  38.0.4
+cufflinks                     0.17.3
+cvxopt                        1.3.0
+cvxpy                         1.3.0
+cycler                        0.11.0
+cymem                         2.0.7
+Cython                        0.29.33
+darts                         0.23.1
+dash                          2.9.3
+dash-core-components          2.0.0
+dash-cytoscape                0.3.0
+dash-html-components          2.0.0
+dash-table                    5.0.0
+dask                          2023.4.0
+deap                          1.3.3
+debugpy                       1.5.1
+decorator                     5.1.1
+defusedxml                    0.7.1
+Deprecated                    1.2.13
+dgl                           1.0.1
+dill                          0.3.6
+dimod                         0.12.3
+diskcache                     5.6.1
+distlib                       0.3.6
+distributed                   2021.4.1
+dm-tree                       0.1.8
+docutils                      0.19
+DoubleML                      0.5.2
+dtreeviz                      2.2.1
+dtw-python                    1.3.0
+dwave-cloud-client            0.10.3
+dwave-drivers                 0.4.4
+dwave-greedy                  0.3.0
+dwave-hybrid                  0.6.9
+dwave-inspector               0.3.0
+dwave-inspectorapp            0.3.0
+dwave-neal                    0.6.0
+dwave-networkx                0.8.12
+dwave-ocean-sdk               6.1.1
+dwave-preprocessing           0.5.3
+dwave-samplers                1.0.0
+dwave-system                  1.18.0
+dwave-tabu                    0.5.0
+dwavebinarycsp                0.2.0
+dx                            0.1.22
+ecos                          2.0.12
+EMD-signal                    1.4.0
+empyrical                     0.5.5
+empyrical-reloaded            0.5.9
+en-core-web-md                3.5.0
+en-core-web-sm                3.5.0
+entrypoints                   0.4
+ephem                         4.1.4
+et-xmlfile                    1.1.0
+etuples                       0.3.8
+exceptiongroup                1.1.1
+exchange-calendars            4.2.6
+executing                     1.2.0
+ezyrb                         1.3.0.post2304
+fastai                        2.7.11
+fastai2                       0.0.30
+fastcore                      1.5.29
+fastdownload                  0.0.7
+fasteners                     0.18
+fastjsonschema                2.16.3
+fastparquet                   2023.2.0
+fastprogress                  1.0.3
+fasttext                      0.9.2
+featuretools                  0.23.1
+filelock                      3.12.0
+findiff                       0.9.2
+finrl                         0.3.1
+FixedEffectModel              0.0.5
+Flask                         2.0.3
+flatbuffers                   23.3.3
+fonttools                     4.39.3
+fracdiff                      0.9.0
+frozendict                    2.3.7
+frozenlist                    1.3.3
+fs                            2.4.16
+fsspec                        2023.4.0
+fst-pso                       1.8.1
+fugue                         0.8.3
+fugue-sql-antlr               0.1.6
+future                        0.18.3
+fuzzy-c-means                 1.6.3
+FuzzyTM                       2.0.5
+gast                          0.4.0
+gensim                        4.3.0
+gevent                        22.10.2
+gluonts                       0.12.3
+google-api-core               2.11.0
+google-auth                   2.17.3
+google-auth-oauthlib          0.4.6
+google-pasta                  0.2.0
+googleapis-common-protos      1.59.0
+gpflow                        2.7.0
+gplearn                       0.4.2
+gpustat                       1.1
+GPUtil                        1.4.0
+gpytorch                      1.9.1
+graphviz                      0.8.4
+greenlet                      2.0.2
+grpcio                        1.54.0
+gym                           0.21.0
+Gymnasium                     0.26.3
+gymnasium-notices             0.0.1
+h2o                           3.40.0.1
+h5netcdf                      1.1.0
+h5py                          3.8.0
+hijri-converter               2.2.4
+hmmlearn                      0.2.8
+holidays                      0.23
+holoviews                     1.15.4
+homebase                      1.0.1
+hopcroftkarp                  1.2.5
+html5lib                      1.1
+httpstan                      4.9.1
+hurst                         0.0.5
+hvplot                        0.8.2
+hyperopt                      0.2.7
+idna                          3.4
+iisignature                   0.24
+ijson                         3.2.0.post0
+imageio                       2.27.0
+imagesize                     1.4.1
+imbalanced-learn              0.10.1
+importlib-metadata            4.13.0
+importlib-resources           5.12.0
+iniconfig                     2.0.0
+injector                      0.20.1
+interpret                     0.3.0
+interpret-core                0.3.2
+ipykernel                     6.22.0
+ipython                       8.12.0
+ipython-genutils              0.2.0
+ipywidgets                    8.0.4
+itsdangerous                  2.1.2
+jax                           0.4.4
+jaxlib                        0.4.4
+jedi                          0.18.2
+Jinja2                        3.1.2
+joblib                        1.2.0
+jqdatasdk                     1.8.11
+json5                         0.9.11
+jsonpatch                     1.32
+jsonpointer                   2.0
+jsonschema                    4.17.3
+jupyter                       1.0.0
+jupyter-bokeh                 3.0.5
+jupyter-console               6.6.3
+jupyter-dash                  0.4.2
+jupyter-resource-usage        0.7.2
+jupyter-server                1.24.0
+jupyter_client                8.2.0
+jupyter_core                  5.3.0
+jupyterlab                    3.4.4
+jupyterlab-pygments           0.2.2
+jupyterlab-widgets            3.0.7
+jupyterlab_server             2.22.1
+keract                        4.5.1
+keras                         2.11.0
+keras-nlp                     0.4.1
+keras-rl                      0.4.2
+keras-tuner                   1.3.5
+kiwisolver                    1.4.4
+kmapper                       2.0.1
+korean-lunar-calendar         0.3.1
+kt-legacy                     1.0.5
+langcodes                     3.3.0
+lark                          1.1.5
+lazy_loader                   0.2
+lazypredict                   0.2.12
+libclang                      16.0.0
+lightgbm                      3.3.5
+lime                          0.2.0.1
+line-profiler                 4.0.2
+linear-operator               0.3.0
+littleutils                   0.2.2
+livelossplot                  0.5.5
+llvmlite                      0.38.1
+locket                        1.0.0
+logical-unification           0.4.5
+LunarCalendar                 0.0.9
+lxml                          4.9.2
+lz4                           4.3.2
+Mako                          1.2.4
+Markdown                      3.4.3
+MarkupSafe                    2.1.2
+marshmallow                   3.19.0
+matplotlib                    3.7.0
+matplotlib-inline             0.1.6
+miniful                       0.0.6
+miniKanren                    1.0.3
+minorminer                    0.2.9
+mistune                       2.0.5
+mljar-supervised              0.11.5
+mlxtend                       0.21.0
+mmh3                          2.5.1
+modin                         0.18.1
+mpi4py                        3.1.4
+mplfinance                    0.12.9b7
+mpmath                        1.2.1
+msgpack                       1.0.4
+mthree                        2.4.0
+multidict                     6.0.4
+multipledispatch              0.6.0
+multiprocess                  0.70.14
+multitasking                  0.0.11
+murmurhash                    1.0.9
+mxnet                         1.9.1
+nbclassic                     0.5.5
+nbclient                      0.7.3
+nbconvert                     7.3.1
+nbeats-keras                  1.8.0
+nbeats-pytorch                1.8.0
+nbformat                      5.8.0
+nest-asyncio                  1.5.6
+networkx                      2.8.8
+neural-tangents               0.6.2
+neuralprophet                 0.5.0
+nfoursid                      1.0.1
+nltk                          3.8.1
+nose                          1.3.7
+notebook                      6.5.4
+notebook_shim                 0.2.2
+ntlm-auth                     1.5.0
+numba                         0.55.1
+numerapi                      2.13.2
+numexpr                       2.8.4
+numpy                         1.21.5
+numpydoc                      1.5.0
+nvidia-cublas-cu11            11.10.3.66
+nvidia-cuda-nvrtc-cu11        11.7.99
+nvidia-cuda-runtime-cu11      11.7.99
+nvidia-cudnn-cu11             8.5.0.96
+nvidia-ml-py                  11.525.112
+oauthlib                      3.2.2
+openai                        0.26.5
+opencensus                    0.11.2
+opencensus-context            0.1.3
+opencv-python                 4.7.0.72
+openpyxl                      3.1.1
+opt-einsum                    3.3.0
+optuna                        3.1.0
+orjson                        3.8.10
+ortools                       9.4.1874
+osqp                          0.6.2.post9
+outdated                      0.2.2
+packaging                     23.1
+pandas                        1.5.3
+pandas-datareader             0.10.0
+pandas-flavor                 0.5.0
+pandas-market-calendars       4.1.4
+pandas-ta                     0.3.14b0
+pandocfilters                 1.5.0
+panel                         0.14.3
+param                         1.13.0
+parso                         0.8.3
+partd                         1.4.0
+pastel                        0.2.1
+pathos                        0.3.0
+pathy                         0.10.1
+patsy                         0.5.3
+pbr                           5.11.1
+penaltymodel                  1.0.2
+PennyLane                     0.29.0
+PennyLane-Lightning           0.29.0
+PennyLane-qiskit              0.29.0
+persim                        0.3.1
+pexpect                       4.8.0
+pickleshare                   0.7.5
+Pillow                        9.5.0
+pingouin                      0.5.3
+pip                           22.0.4
+pkgutil_resolve_name          1.3.10
+platformdirs                  3.2.0
+plotly                        5.13.1
+plotly-resampler              0.8.3.2
+plucky                        0.4.3
+pluggy                        1.0.0
+ply                           3.11
+pmdarima                      2.0.2
+polars                        0.16.9
+pomegranate                   0.14.8
+pox                           0.3.2
+ppft                          1.7.6.6
+pprofile                      2.1.0
+ppscore                       1.2.0
+preshed                       3.0.8
+prometheus-client             0.16.0
+prompt-toolkit                3.0.38
+property-cached               1.6.4
+prophet                       1.1.2
+protobuf                      3.19.6
+psutil                        5.9.5
+psycopg2-binary               2.9.6
+ptvsd                         4.3.2
+ptyprocess                    0.7.0
+PuLP                          2.7.0
+pure-eval                     0.2.2
+py-cpuinfo                    9.0.0
+py-heat                       0.0.6
+py-heat-magic                 0.0.2
+py-lets-be-rational           1.0.1
+py-spy                        0.3.14
+py-vollib                     1.0.1
+py4j                          0.10.9.7
+pyaml                         21.10.1
+pyarrow                       11.0.0
+pyasn1                        0.4.8
+pyasn1-modules                0.2.8
+pybind11                      2.10.4
+pycares                       4.3.0
+pycosat                       0.6.4
+pycparser                     2.21
+pyct                          0.5.0
+pydantic                      1.10.7
+pyDeprecate                   0.3.2
+pydevd-pycharm                201.8538.36
+pydmd                         0.4.0.post2301
+pyerfa                        2.0.0.3
+pyfolio                       0.9.2
+pyfolio-reloaded              0.9.5
+pyFUME                        0.2.25
+Pygments                      2.15.1
+pykalman                      0.9.5
+pylev                         1.4.0
+pyluach                       2.2.0
+pymannkendall                 1.4.3
+pymc                          5.0.2
+pymdptoolbox                  4.0b3
+PyMeeus                       0.5.12
+PyMySQL                       1.0.3
+pynndescent                   0.5.9
+pyod                          1.0.9
+Pyomo                         6.5.0
+pyOpenSSL                     22.0.0
+pyparsing                     3.0.9
+pyportfolioopt                1.5.4
+pyqubo                        1.3.1
+pyrb                          1.0.1
+pyro-api                      0.1.2
+pyro-ppl                      1.8.4
+pyrsistent                    0.19.3
+pysimdjson                    5.0.2
+PySocks                       1.7.1
+pystan                        3.6.0
+pytensor                      2.9.1
+pytest                        7.3.1
+python-dateutil               2.8.2
+python-statemachine           1.0.3
+pytorch-ignite                0.4.11
+pytorch-lightning             1.7.4
+pytz                          2023.3
+pyvinecopulib                 0.6.2
+pyviz-comms                   2.2.1
+PyWavelets                    1.4.1
+PyYAML                        6.0
+pyzmq                         25.0.2
+qdldl                         0.1.7
+qiskit                        0.41.1
+qiskit-aer                    0.11.2
+qiskit-ibmq-provider          0.20.1
+qiskit-terra                  0.23.2
+qpd                           0.4.1
+qtconsole                     5.4.2
+QtPy                          2.3.1
+quadprog                      0.1.11
+quantecon                     0.6.0
+QuantLib                      1.29
+QuantStats                    0.0.59
+rauth                         0.7.3
+ray                           2.3.0
+rectangle-packer              2.0.1
+regex                         2023.3.23
+requests                      2.28.1
+requests-ntlm                 1.1.0
+requests-oauthlib             1.3.1
+retrying                      1.3.4
+retworkx                      0.12.1
+rich                          12.4.4
+ripser                        0.6.4
+Riskfolio-Lib                 4.0.3
+riskparityportfolio           0.4
+river                         0.14.0
+rsa                           4.9
+ruamel.yaml                   0.17.21
+ruamel.yaml.clib              0.2.6
+ruptures                      1.1.7
+rustworkx                     0.12.1
+SALib                         1.4.7
+scikeras                      0.10.0
+scikit-image                  0.19.3
+scikit-learn                  1.2.1
+scikit-learn-extra            0.2.0
+scikit-multiflow              0.5.3
+scikit-optimize               0.9.0
+scikit-plot                   0.3.7
+scikit-tda                    1.0.0
+scipy                         1.8.0
+scs                           3.2.3
+sdeint                        0.3.0
+seaborn                       0.12.2
+semantic-version              2.10.0
+Send2Trash                    1.8.0
+setuptools                    56.0.0
+setuptools-scm                7.1.0
+shap                          0.41.0
+simpful                       2.10.0
+simplejson                    3.19.1
+simpy                         4.0.1
+six                           1.16.0
+sklearn-json                  0.1.0
+skope-rules                   1.0.1
+sktime                        0.16.1
+slicer                        0.0.7
+smart-open                    6.3.0
+sniffio                       1.3.0
+snowballstemmer               2.2.0
+sortedcontainers              2.4.0
+soupsieve                     2.4.1
+spacy                         3.5.0
+spacy-legacy                  3.0.12
+spacy-loggers                 1.0.4
+Sphinx                        6.1.3
+sphinxcontrib-applehelp       1.0.4
+sphinxcontrib-devhelp         1.0.2
+sphinxcontrib-htmlhelp        2.0.1
+sphinxcontrib-jsmath          1.0.1
+sphinxcontrib-qthelp          1.0.3
+sphinxcontrib-serializinghtml 1.1.5
+SQLAlchemy                    1.4.47
+sqlglot                       11.5.5
+srsly                         2.4.6
+ssm                           0.0.1
+stable-baselines3             1.7.0
+stack-data                    0.6.2
+statsforecast                 1.5.0
+statsmodels                   0.13.5
+stellargraph                  1.2.1
+stevedore                     5.0.0
+stochastic                    0.7.0
+stockstats                    0.5.2
+stumpy                        1.11.1
+symengine                     0.10.0
+sympy                         1.11.1
+ta                            0.10.2
+TA-Lib                        0.4.18
+tables                        3.8.0
+tabulate                      0.8.10
+tadasets                      0.0.4
+tbats                         1.1.3
+tblib                         1.7.0
+tenacity                      8.2.2
+tensorboard                   2.11.2
+tensorboard-data-server       0.6.1
+tensorboard-plugin-wit        1.8.1
+tensorboardX                  2.6
+tensorflow                    2.11.0
+tensorflow-addons             0.19.0
+tensorflow-decision-forests   1.2.0
+tensorflow-estimator          2.11.0
+tensorflow-hub                0.13.0
+tensorflow-io-gcs-filesystem  0.32.0
+tensorflow-probability        0.19.0
+tensorflow-text               2.11.0
+tensorly                      0.8.0
+tensortrade                   1.0.3
+termcolor                     2.2.0
+terminado                     0.17.1
+tf2jax                        0.3.3
+thinc                         8.1.9
+threadpoolctl                 3.1.0
+thriftpy2                     0.4.16
+thundergbm                    0.3.17
+tick                          0.7.0.1
+tifffile                      2023.4.12
+tigramite                     5.1.0.3
+tinycss2                      1.2.1
+toml                          0.10.2
+tomli                         2.0.1
+toolz                         0.12.0
+torch                         1.13.1
+torch-cluster                 1.6.0
+torch-geometric               2.2.0
+torch-scatter                 2.1.0
+torch-sparse                  0.6.16
+torch-spline-conv             1.2.1
+torchmetrics                  0.9.3
+torchvision                   0.14.1
+tornado                       6.3
+tqdm                          4.64.1
+trace-updater                 0.0.9.1
+trading-calendars             2.1.1
+traitlets                     5.9.0
+treeinterpreter               0.2.3
+triad                         0.8.6
+tsfresh                       0.20.0
+tslearn                       0.5.3.2
+tweepy                        4.10.0
+typeguard                     3.0.2
+typer                         0.3.2
+typing_extensions             4.5.0
+umap-learn                    0.5.3
+urllib3                       1.26.14
+virtualenv                    20.21.0
+wasabi                        1.1.1
+wcwidth                       0.2.6
+webargs                       8.2.0
+webencodings                  0.5.1
+websocket-client              1.5.1
+websockets                    10.4
+Werkzeug                      2.2.3
+wheel                         0.37.1
+widgetsnbextension            4.0.7
+wordcloud                     1.8.2.2
+wrapt                         1.14.1
+wrds                          3.1.6
+wurlitzer                     3.0.3
+xarray                        2023.1.0
+xarray-einstats               0.5.1
+xgboost                       1.7.4
+xlrd                          2.0.1
+XlsxWriter                    3.1.0
+yarl                          1.8.2
+yellowbrick                   1.5
+yfinance                      0.2.18
+zict                          3.0.0
+zipp                          3.15.0
+zope.event                    4.6
+zope.interface                6.0
+zstandard                     0.18.0
+</pre>
+  </div>
+ </body>
+</html>
+
+<h3>Request New Libraries</h3>
+<html>
+ <body>
+  <p>
+   To request a new library,
+   <a href="https://www.quantconnect.com/contact">
+    contact us
+   </a>
+   . We will add the library to the queue for review and deployment. Since the libraries run on our servers, we need to ensure they are secure and won't cause harm. The process of adding new libraries takes 2-4 weeks to complete. View the list of libraries currently under review on the
+   <a href="https://github.com/QuantConnect/Lean/issues?q=is%3Aissue+is%3Aopen+label%3Alibrary-request" rel="nofollow" target="_blank">
+    Issues list of the Lean GitHub repository
+   </a>
+   .
+  </p>
+ </body>
+</html>
+
+<p style="page-break-after: always;">&nbsp;</p>
+<section id="3.11"><h3>3.11 Working With VS Code</h3></section>
+
+<h3>Introduction</h3>
+<html>
+ <body>
+  <p>
+   The VS Code Integrated Development Environment (IDE) lets you work on research notebooks and develop algorithms for backtesting and live trading. When you
+   <a href="https://www.quantconnect.com/docs/v2/docs/v2/local-platform/projects/getting-started#04-Open-Projects">
+    open a project
+   </a>
+   , the IDE automatically displays.  You can access your trading algorithms from anywhere in the world with just an internet connection and a browser.
+  </p>
+ </body>
+</html>
+
+<h3>Supported Languages</h3>
+<html>
+ <body>
+  <p>
+   The Lean engine supports C# and Python.  Python is less verbose, has more third-party libraries, and is more popular among the QuantConnect community than C#. C# is faster than Python and it's easier to contribute to Lean if you have features written in C# modules. Python is also the native language for the research notebooks, so it's easier to use in the Research Environment.
+  </p>
+  <p>
+   The programming language that you have set on your account determines how autocomplete and IntelliSense are verified and determines the types of files that are included in your new projects. If you have Python set as your programming language, new projects will have
+   <span class="private-file-name">
+    .py
+   </span>
+   files. If you have C# set as your programming language, new projects will have
+   <span class="private-file-name">
+    .cs
+   </span>
+   files.
+  </p>
+ </body>
+</html>
+
+<h3>Change Languages</h3>
+<html>
+ <body>
+  <p>
+   To change the default programming language for your new projects, adjust the
+   <span class="button-name">
+    User: Preferred Language
+   </span>
+   <a href="https://www.quantconnect.com/docs/v2/docs/v2/local-platform/development-environment/configuration#02-Extension-Settings">
+    extension setting
+   </a>
+   .
+  </p>
+ </body>
+</html>
+
+<h3>Terminal</h3>
+<html>
+ <body>
+  <p>
+   The terminal panel at the bottom of the IDE shows API messages, errors, and the logs from your algorithms.
+  </p>
+  <img alt="Termianl interface" class="docs-image" src="https://cdn.quantconnect.com/i/tu/local-platform-terminal.png"/>
+  <p>
+   The
+   <span class="tab-name">
+    Problems
+   </span>
+   tab of the panel highlights the coding errors in your algorithms.
+  </p>
+  <img alt="Compilation error in code snippets" class="python docs-image" src="https://cdn.quantconnect.com/i/tu/local-platform-terminal-problems.png"/>
+  <img alt="Compilation error in code snippets" class="csharp docs-image" src="https://cdn.quantconnect.com/i/tu/local-platform-terminal-problems-c.png"/>
+ </body>
+</html>
+
+<h3>Navigate the File Outline</h3>
+<html>
+ <body>
+  <p>
+   The
+   <span class="page-section-name">
+    Outline
+   </span>
+   section in the Explorer panel is an easy way to navigate your files. The section shows the name of classes, members, and functions defined throughout the file. Click one of the names to jump your cursor to the respective definition in the file. To view the
+   <span class="page-section-name">
+    Outline
+   </span>
+   ,
+   <a href="https://www.quantconnect.com/docs/v2/docs/v2/local-platform/projects/getting-started#04-Open-Projects">
+    open a project
+   </a>
+   and then, in the left navigation menu, click the
+   <img class="inline-icon" src="https://cdn.quantconnect.com/i/tu/local-lab-explorer-icon.jpg"/>
+   <span class="icon-name">
+    Explorer
+   </span>
+   icon.
+  </p>
+  <img alt="File outline panel" class="docs-image" src="https://cdn.quantconnect.com/i/tu/qc-desktop-file-outline.gif"/>
+ </body>
+</html>
+
+<h3>Split the Editor</h3>
+<html>
+ <body>
+  <p>
+   The editor can split horizontally and vertically to display multiple files at once. Follow these steps to split the editor:
+  </p>
+  <ol>
+   <li>
+    <a href="https://www.quantconnect.com/docs/v2/docs/v2/local-platform/projects/getting-started#04-Open-Projects">
+     Open a project
+    </a>
+    .
+   </li>
+   <li>
+    In the left navigation bar, click the
+    <img class="inline-icon" src="https://cdn.quantconnect.com/i/tu/local-lab-explorer-icon.jpg"/>
+    <span class="icon-name">
+     Explorer
+    </span>
+    icon.
+   </li>
+   <li>
+    In the
+    <span class="page-section-name">
+     QC (Workspace)
+    </span>
+    section, drag and drop the files you want to open.
+   </li>
+  </ol>
+  <img alt="Split editor vertically" class="docs-image" src="https://cdn.quantconnect.com/i/tu/qc-desktop-split-the-editor.gif"/>
+ </body>
+</html>
+
+<h3>Show and Hide Code Blocks</h3>
+<html>
+ <body>
+  <p>
+   The editor can hide and show code blocks to make navigating files easier. To hide and show code blocks,
+   <a href="https://www.quantconnect.com/docs/v2/docs/v2/local-platform/projects/getting-started#04-Open-Projects">
+    open a project
+   </a>
+   and then click the
+   <span class="icon-name">
+    arrow
+   </span>
+   icon next to a line number.
+  </p>
+  <img alt="Toggle a code block" class="docs-image" src="https://cdn.quantconnect.com/i/tu/toggle-code-block-displays-1.gif"/>
+ </body>
+</html>
+
+<h3>Keyboard Shortcuts</h3>
+<html>
+ <body>
+  <p>
+   Keyboard shortcuts are combinations of keys that you can issue to manipulate the IDE. They can speed up your workflow because they remove the need for you to reach for your mouse.
+  </p>
+  <p>
+   Follow these steps to view the keyboard shortcuts of your account:
+  </p>
+  <ol>
+   <li>
+    <a href="">
+     Open a project
+    </a>
+    .
+   </li>
+   <li>
+    Press
+    <span class="key-combinations">
+     F1
+    </span>
+    .
+   </li>
+   <li>
+    Enter "Preferences: Open Keyboard Shortcuts".
+   </li>
+   <li>
+    Click
+    <span class="button-name">
+     Preferences: Open Keyboard Shortcuts
+    </span>
+    .
+   </li>
+  </ol>
+  <p>
+   To set a key binding for a command, click the
+   <span class="icon-name">
+    pencil
+   </span>
+   icon in the left column of the keyboard shortcuts table, enter the key combination, and then press
+   <span class="key-combinations">
+    Enter
+   </span>
+   .
+  </p>
+ </body>
+</html>
+
+<p style="page-break-after: always;">&nbsp;</p>
+<section id="4"><h3>4 Projects</h3></section>
+
+<section id="4.1"><h3>4.1 Getting Started</h3></section>
+
+<h3>Introduction</h3>
+<html>
+ <body>
+  <p>
+   Projects contain files to run backtests, launch research notebooks, perform parameter optimizations, and deploy live trading strategies. You need to create projects in order to create strategies and share your work with other members. Projects enable you to generate institutional-grade reports on the performance of your backtests. You can create your projects from scratch or you can utilize pre-built libraries and third-party packages to expedite your development process.
+  </p>
+ </body>
+</html>
+
+<h3>View All Projects</h3>
+<html>
+ <body>
+  <p>
+   To view all your projects, open the
+   <a href="https://www.quantconnect.com/docs/v2/docs/v2/local-platform/development-environment/organization-workspaces">
+    organization workspace
+   </a>
+   directory on your local machine.
+  </p>
+ </body>
+</html>
+
+<h3>Create Projects</h3>
+<html>
+ <body>
+  <p>
+   Follow these steps to create a project on Local Platform:
+  </p>
+  <ol>
+   <li>
+    <a href="/https://www.quantconnect.com/docs/v2/docs/v2/local-platform/development-environment/authentication#02-Log-In">
+     Log in to Local Platform
+    </a>
+    .
+   </li>
+   <li>
+    In the left navigation menu, click the
+    <img alt="VS Code QuantConnect icon" class="inline-icon" src="https://cdn.quantconnect.com/i/tu/vscode-qc-icon.jpg"/>
+    <span class="icon-name">
+     QuantConnect
+    </span>
+    icon.
+   </li>
+   <li>
+    If a project is already open,
+    <a href="/https://www.quantconnect.com/docs/v2/docs/v2/local-platform/projects/getting-started#05-Close-Projects">
+     close it
+    </a>
+    .
+   </li>
+   <li>
+    In the Open Project panel, click
+    <span class="button-name">
+     Create Project
+    </span>
+    .
+   </li>
+   <img alt="Open a new project" class="docs-image" src="https://cdn.quantconnect.com/i/tu/open-new-project.png"/>
+   <li>
+    Enter the project name and then press
+    <span class="key-combinations">
+     Enter
+    </span>
+    .
+   </li>
+   <img alt="Name a new project" class="docs-image" src="https://cdn.quantconnect.com/i/tu/local-platform-name-new-project.png"/>
+  </ol>
+  <p>
+   The new project directory is added to your
+   <a href="/https://www.quantconnect.com/docs/v2/docs/v2/local-platform/development-environment/organization-workspaces">
+    organization workspace
+   </a>
+   directory and the project opens.
+  </p>
+ </body>
+</html>
+
+<h3>Open Projects</h3>
+<html>
+ <body>
+  <p>
+   Follow these steps to open a project on Local Platform:
+  </p>
+  <ol>
+   <li>
+    <a href="/https://www.quantconnect.com/docs/v2/docs/v2/local-platform/development-environment/authentication#02-Log-In">
+     Log in to Local Platform
+    </a>
+    .
+   </li>
+   <li>
+    In the left navigation menu, click the
+    <img alt="VS Code QuantConnect icon" class="inline-icon" src="https://cdn.quantconnect.com/i/tu/vscode-qc-icon.jpg"/>
+    <span class="icon-name">
+     QuantConnect
+    </span>
+    icon.
+   </li>
+   <li>
+    If a project is already open,
+    <a href="/https://www.quantconnect.com/docs/v2/docs/v2/local-platform/projects/getting-started#05-Close-Projects">
+     close it
+    </a>
+    .
+   </li>
+   <li>
+    In the Project panel, click
+    <span class="button-name">
+     Open Project
+    </span>
+    .
+   </li>
+   <img alt="Open a new project" class="docs-image" src="https://cdn.quantconnect.com/i/tu/open-new-project.png"/>
+   <li>
+    In the Open QuantConnect Project window, click a project in your organization workspace and then click
+    <span class="button-name">
+     Select
+    </span>
+    .
+   </li>
+   <img alt="Open an existing project" class="docs-image" src="https://cdn.quantconnect.com/i/tu/local-platform-open-project.png"/>
+  </ol>
+ </body>
+</html>
+
+<h3>Close Projects</h3>
+<html>
+ <body>
+  <p>
+   Follow these steps to close a project:
+  </p>
+  <ol>
+   <li>
+    In the left navigation menu, click the
+    <img alt="VS Code QuantConnect icon" class="inline-icon" src="https://cdn.quantconnect.com/i/tu/vscode-qc-icon.jpg"/>
+    <span class="icon-name">
+     QuantConnect
+    </span>
+    icon.
+   </li>
+   <li>
+    In the Project panel, click
+    <span class="button-name">
+     Close
+    </span>
+    .
+   </li>
+   <img alt="Close project" class="docs-image" src="https://cdn.quantconnect.com/i/tu/close-local-project.png"/>
+  </ol>
+ </body>
+</html>
+
+<h3>Clone Projects</h3>
+<html>
+ <body>
+  <p>
+   Clone a project to create a new copy of the project and save it within the same organization. When you clone a project, the project files are duplicated but the backtest results are not retained. Cloning enables you to test small changes in your projects before merging the changes back into the original project.
+  </p>
+  <p>
+   Follow these steps to clone a project:
+  </p>
+  <ol>
+   <li>
+    <a href="https://www.quantconnect.com/docs/v2/docs/v2/local-platform/projects/getting-started#04-Open-Projects">
+     Open the project
+    </a>
+    .
+   </li>
+   <li>
+    In the left navigation menu, click the
+    <img alt="VS Code QuantConnect icon" class="inline-icon" src="https://cdn.quantconnect.com/i/tu/vscode-qc-icon.jpg"/>
+    <span class="icon-name">
+     QuantConnect
+    </span>
+    icon.
+   </li>
+   <li>
+    In the Project panel, click
+    <span class="button-name">
+     Clone
+    </span>
+    .
+   </li>
+   <img alt="Clone a local project" class="docs-image" src="https://cdn.quantconnect.com/i/tu/clone-local-project.png"/>
+  </ol>
+  <p>
+   The cloned version of the project opens in a new VS Code window.
+  </p>
+ </body>
+</html>
+
+<h3>Rename Projects</h3>
+<html>
+ <body>
+  <p>
+   Follow these steps to rename a project:
+  </p>
+  <ol>
+   <li>
+    <a href="{$openProjectLink}">
+     Open the project
+    </a>
+    .
+   </li>
+   <li>
+    In the left navigation menu, click the
+    <img class="inline-icon" src="https://cdn.quantconnect.com/i/tu/vscode-qc-icon.jpg"/>
+    <span class="icon-name">
+     QuantConnect
+    </span>
+    icon.
+   </li>
+   <li>
+    In the Project panel, hover over the project name and then click the
+    <span class="icon-name">
+     pencil
+    </span>
+    icon that appears.
+   </li>
+   <img alt="Rename a project" class="docs-image" src="https://cdn.quantconnect.com/i/tu/rename-project-1.png" style="max-height: 120px"/>
+   <li>
+    In the
+    <span class="field-name">
+     Name
+    </span>
+    field, enter the new project name and then click
+    <span class="button-name">
+     Save Changes
+    </span>
+    .
+   </li>
+  </ol>
+  <p>
+   The project name must only contain
+   <code>
+    -
+   </code>
+   ,
+   <code>
+    _
+   </code>
+   , letters, numbers, and spaces. The project name can't start with a space or be any of the following reserved names: CON, PRN, AUX, NUL, COM1, COM2, COM3, COM4, COM5, COM6, COM7, COM8, COM9, LPT1, LPT2, LPT3, LPT4, LPT5, LPT6, LPT7, LPT8, or LPT9.
+  </p>
+ </body>
+</html>
+
+<h3>Create Project Directories</h3>
+<html>
+ <body>
+  <p>
+   Set the name of a project to
+   <span class="public-file-name">
+    <span class="placeholder-text">
+     directoryName
+    </span>
+    /
+    <span class="placeholder-text">
+     projectName
+    </span>
+   </span>
+   to create a project directory.
+  </p>
+ </body>
+</html>
+
+<h3>Set Descriptions</h3>
+<html>
+ <body>
+  <p>
+   You can give a project a description to provide a high-level overview of the project and its functionality. Descriptions make it easier to return to old projects and understand what is going on at a high level without having to look at the code. The project description is also displayed at the top of backtest reports, which you can create after your backtest completes.
+  </p>
+  <p>
+   Follow these steps to set the project description:
+  </p>
+  <ol>
+   <li>
+    <a href="{$openProjectLink}">
+     Open the project
+    </a>
+    .
+   </li>
+   <li>
+    In the Project panel, hover over the project name and then click the
+    <span class="icon-name">
+     pencil
+    </span>
+    icon that appears.
+   </li>
+   <img alt="Rename a project" class="docs-image" src="https://cdn.quantconnect.com/i/tu/rename-project-1.png" style="max-height: 120px"/>
+   <li>
+    In the
+    <span class="field-name">
+     Description
+    </span>
+    field, enter the new project description and then click
+    <span class="button-name">
+     Save Changes
+    </span>
+    .
+   </li>
+  </ol>
+ </body>
+</html>
+
+<h3>Edit Parameters</h3>
+<html>
+ <body>
+  <p>
+   Algorithm parameters are hard-coded values for variables in your project that are set outside of the code files. Add parameters to your projects to remove hard-coded values from your code files and to perform parameter optimizations. You can add parameters, set default parameter values, and remove parameters from your projects.
+  </p>
+  <h4>
+   Add Parameters
+  </h4>
+  <p>
+   Follow these steps to add an algorithm parameter to a project:
+  </p>
+  <ol>
+   <li>
+    <a href="https://www.quantconnect.com/docs/v2/docs/v2/local-platform/projects/getting-started#04-Open-Projects">
+     Open the project
+    </a>
+    .
+   </li>
+   <li>
+    In the left navigation menu, click the
+    <img class="inline-icon" src="https://cdn.quantconnect.com/i/tu/vscode-qc-icon.jpg"/>
+    <span class="icon-name">
+     QuantConnect
+    </span>
+    icon.
+   </li>
+   <li>
+    In the Project panel, click
+    <span class="button-name">
+     Add New Parameter
+    </span>
+    .
+   </li>
+   <li>
+    Enter the parameter name.
+   </li>
+   <p>
+    The parameter name must be unique in the project.
+   </p>
+   <li>
+    Enter the default value.
+   </li>
+   <li>
+    Click
+    <span class="button-name">
+     Create Parameter
+    </span>
+    .
+   </li>
+  </ol>
+  <p>
+   To get the parameter values into your algorithm, see
+   <a href="https://www.quantconnect.com/docs/v2/docs/v2/writing-algorithms/parameters#03-Get-Parameters">
+    Get Parameters
+   </a>
+   .
+  </p>
+  <h4>
+   Set Default Parameter Values
+  </h4>
+  <p>
+   Follow these steps to set the default value of an algorithm parameter in a project:
+  </p>
+  <ol>
+   <li>
+    <a href="https://www.quantconnect.com/docs/v2/docs/v2/local-platform/projects/getting-started#04-Open-Projects">
+     Open the project
+    </a>
+    .
+   </li>
+   <li>
+    In the left navigation menu, click the
+    <img class="inline-icon" src="https://cdn.quantconnect.com/i/tu/vscode-qc-icon.jpg"/>
+    <span class="icon-name">
+     QuantConnect
+    </span>
+    icon.
+   </li>
+   <li>
+    In the Project panel, hover over the algorithm parameter and then click the
+    <span class="icon-name">
+     pencil
+    </span>
+    icon that appears.
+   </li>
+   <img alt="Edit default parameter" class="docs-image" src="https://cdn.quantconnect.com/i/tu/set-default-value.png"/>
+   <li>
+    Enter a default value for the parameter and then click
+    <span class="button-name">
+     Save
+    </span>
+    .
+   </li>
+   <p>
+    The Project panel displays the default parameter value next to the parameter name.
+   </p>
+  </ol>
+  <h4>
+   Delete Parameters
+  </h4>
+  <p>
+   Follow these steps to delete an algorithm parameter in a project:
+  </p>
+  <ol>
+   <li>
+    <a href="https://www.quantconnect.com/docs/v2/docs/v2/local-platform/projects/getting-started#04-Open-Projects">
+     Open the project
+    </a>
+    .
+   </li>
+   <li>
+    In the left navigation menu, click the
+    <img class="inline-icon" src="https://cdn.quantconnect.com/i/tu/vscode-qc-icon.jpg"/>
+    <span class="icon-name">
+     QuantConnect
+    </span>
+    icon.
+   </li>
+   <li>
+    In the Project panel, hover over the algorithm parameter and then click the
+    <span class="icon-name">
+     trash can
+    </span>
+    icon that appears.
+   </li>
+   <img alt="Delete a parameter" class="docs-image" src="https://cdn.quantconnect.com/i/tu/delete-parameters.png"/>
+   <li>
+    Remove the
+    <code>
+     GetParameter
+    </code>
+    calls that were associated with the parameter from your code files.
+   </li>
+  </ol>
+ </body>
+</html>
+
+<h3>Delete Projects</h3>
+<html>
+ <body>
+  <p>
+   Follow these steps to delete a project:
+  </p>
+  <ol>
+   <li>
+    <a href="https://www.quantconnect.com/docs/v2/docs/v2/local-platform/projects/getting-started#04-Open-Projects">
+     Open the project
+    </a>
+    .
+   </li>
+   <li>
+    In the left navigation menu, click the
+    <img alt="VS Code QuantConnect icon" class="inline-icon" src="https://cdn.quantconnect.com/i/tu/vscode-qc-icon.jpg"/>
+    <span class="icon-name">
+     QuantConnect
+    </span>
+    icon.
+   </li>
+   <li>
+    In the Project panel, click
+    <span class="button-name">
+     Delete
+    </span>
+    .
+   </li>
+   <img alt="Delete a local project" class="docs-image" src="https://cdn.quantconnect.com/i/tu/delete-local-project.png"/>
+  </ol>
+ </body>
+</html>
+
+<p style="page-break-after: always;">&nbsp;</p>
+<section id="4.2"><h3>4.2 Files</h3></section>
+
+<h3>Introduction</h3>
+<html>
+ <body>
+  <p>
+   The files in your projects enable you to implement trading algorithms, perform research, and store important information. Python projects start with a
+   <span class="public-file-name">
+    main.py
+   </span>
+   and a
+   <span class="public-file-name">
+    research.ipynb
+   </span>
+   file. C# projects start with a
+   <span class="public-file-name">
+    Main.cs
+   </span>
+   and a
+   <span class="public-file-name">
+    Research.ipynb
+   </span>
+   file. Use the
+   <span class="public-file-name">
+    main.py
+   </span>
+   or
+   <span class="public-file-name">
+    Main.cs
+   </span>
+   file to implement trading algorithms and use the
+   <span class="public-file-name">
+    ipynb
+   </span>
+   file to access the Research Environment.
+  </p>
+ </body>
+</html>
+
+<h3>Supported File Types</h3>
+<html>
+ <body>
+  <p>
+   Local Platform supports
+   <span class="public-file-name">
+    .py
+   </span>
+   ,
+   <span class="public-file-name">
+    .cs
+   </span>
+   , and
+   <span class="public-file-name">
+    .ipynb
+   </span>
+   files in your projects.
+  </p>
+  <h4>
+   Code Files
+  </h4>
+  <p>
+   The
+   <span class="public-file-name">
+    .py
+   </span>
+   /
+   <span class="public-file-name">
+    .cs
+   </span>
+   files are code files. These are the files where you implement your trading algorithm. When you backtest the project or deploy the project to live trading, the LEAN engine executes the algorithm you define in these code files.
+  </p>
+  <h4>
+   Notebook Files
+  </h4>
+  <p>
+   The
+   <span class="public-file-name">
+    .ipynb
+   </span>
+   files are notebook files. These are the files you open when you want to access the
+   <a href="https://www.quantconnect.com/docs/v2/docs/v2/research-environment">
+    Research Environment
+   </a>
+   to perform quantitative research. When you save notebook files, it saves the input cells but not the output cells.
+  </p>
+  <h4>
+   Configuration Files
+  </h4>
+  <p>
+   Projects also contain configuration files, which are
+   <span class="public-file-name">
+    .json
+   </span>
+   files, but they aren't displayed in the Explorer panel. These files contain information like the project description, parameters, and shared libraries. For more information about project configuration files, see
+   <a href="https://www.quantconnect.com/docs/v2/docs/v2/lean-cli/projects/configuration">
+    Configuration
+   </a>
+   .
+  </p>
+  <h4>
+   Result Files
+  </h4>
+  <p>
+   When you run a backtest, optimize some parameters, or deploy a strategy to live trading on your local machine, the results are saved as phyical files in the project directory. Local Platform doesn't push these result files to QuantConnect Cloud.
+  </p>
+ </body>
+</html>
+
+<h3>View Files</h3>
+<html>
+ <body>
+  <p>
+   To view the files in a project,
+   <a href="/https://www.quantconnect.com/docs/v2/docs/v2/local-platform/projects/getting-started#04-Open-Projects">
+    open the project
+   </a>
+   and then, in the left navigation bar, click the
+   <img class="inline-icon" src="https://cdn.quantconnect.com/i/tu/local-lab-explorer-icon.jpg"/>
+   <span class="icon-name">
+    Explorer
+   </span>
+   icon.
+  </p>
+  <p>
+   The
+   <span class="page-section-name">
+    QC (Workspace)
+   </span>
+   section of the Explorer panel shows the files in the project.
+  </p>
+  <img alt="C# project files panel" class="csharp docs-image" src="https://cdn.quantconnect.com/i/tu/view-project-files-c.png"/>
+  <img alt="Python project files panel" class="python docs-image" src="https://cdn.quantconnect.com/i/tu/view-project-files-py.png"/>
+ </body>
+</html>
+
+<h3>Add Files</h3>
+<html>
+ <body>
+  <p>
+   Follow these steps to add a file to a project:
+  </p>
+  <ol>
+   <li>
+    <a href="https://www.quantconnect.com/docs/v2/docs/v2/local-platform/projects/getting-started#04-Open-Projects">
+     Open the project
+    </a>
+    .
+   </li>
+   <li>
+    In the left navigation menu, click the
+    <img class="inline-icon" src="https://cdn.quantconnect.com/i/tu/local-lab-explorer-icon.jpg"/>
+    <span class="icon-name">
+     Explorer
+    </span>
+    icon.
+   </li>
+   <li>
+    In the Explorer panel, expand the
+    <span class="button-name">
+     QC (Workspace)
+    </span>
+    section.
+   </li>
+   <li>
+    Click the
+    <img alt="New file button" class="inline-icon" src="https://cdn.quantconnect.com/i/tu/new-file-icon.png"/>
+    <span class="icon-name">
+     New File
+    </span>
+    icon.
+   </li>
+   <li>
+    Enter a file name and extension.
+   </li>
+   <li>
+    Press
+    <span class="key-combinations">
+     Enter
+    </span>
+    .
+   </li>
+  </ol>
+  <img alt="Adding a new file" class="docs-image" src="https://cdn.quantconnect.com/i/tu/local-platform-add-file-py.gif"/>
+ </body>
+</html>
+
+<h3>Add Directories</h3>
+<html>
+ <body>
+  <p>
+   You can organize the code and notebook files in your project into directories to make navigating them easier. For example, if you have multiple
+   <a href="https://www.quantconnect.com/docs/v2/docs/v2/writing-algorithms/algorithm-framework/alpha/key-concepts">
+    Alpha models
+   </a>
+   in your strategy, you can create an
+   <span class="public-directory-name">
+    alphas
+   </span>
+   directory in your project to hold a file for each Alpha model.
+  </p>
+  <p>
+   Follow these steps to add a directory to a project:
+  </p>
+  <ol>
+   <li>
+    <a href="https://www.quantconnect.com/docs/v2/docs/v2/local-platform/projects/getting-started#04-Open-Projects">
+     Open the project
+    </a>
+    .
+   </li>
+   <li>
+    In the left navigation menu, click the
+    <img class="inline-icon" src="https://cdn.quantconnect.com/i/tu/local-lab-explorer-icon.jpg"/>
+    <span class="icon-name">
+     Explorer
+    </span>
+    icon.
+   </li>
+   <li>
+    In the Explorer panel, expand the
+    <span class="button-name">
+     QC (Workspace)
+    </span>
+    section.
+   </li>
+   <li>
+    Click the
+    <img alt="New directory button" class="inline-icon" src="https://cdn.quantconnect.com/i/tu/new-directory-icon.png"/>
+    <span class="icon-name">
+     New Directory
+    </span>
+    icon.
+   </li>
+   <li>
+    Enter a directory name and then press
+    <span class="key-combinations">
+     Enter
+    </span>
+    .
+   </li>
+  </ol>
+  <img alt="Adding a new directory" class="docs-image" src="https://cdn.quantconnect.com/i/tu/local-platform-add-directory-py.gif"/>
+ </body>
+</html>
+
+<h3>Open Files</h3>
+<html>
+ <body>
+  <p>
+   Follow these steps to open a file in a project:
+  </p>
+  <ol>
+   <li>
+    <a href="https://www.quantconnect.com/docs/v2/docs/v2/local-platform/projects/getting-started#04-Open-Projects">
+     Open the project
+    </a>
+    .
+   </li>
+   <li>
+    In the left navigation menu, click the
+    <img class="inline-icon" src="https://cdn.quantconnect.com/i/tu/local-lab-explorer-icon.jpg"/>
+    <span class="icon-name">
+     Explorer
+    </span>
+    icon.
+   </li>
+   <li>
+    In the Explorer panel, click the file you want to open.
+   </li>
+  </ol>
+ </body>
+</html>
+
+<h3>Close Files</h3>
+<html>
+ <body>
+  <p>
+   To close a file, at the top of VS Code, click the
+   <span class="button-name">
+    x
+   </span>
+   button on the file tab you want to close.
+  </p>
+  <p>
+   To close all of the files in a project, at the top of VS Code, right-click one of the file tabs and then click
+   <span class="button-name">
+    Close All
+   </span>
+   .
+  </p>
+ </body>
+</html>
+
+<h3>Rename Files and Directories</h3>
+<html>
+ <body>
+  <p>
+   Follow these steps to rename a file or directory in a project:
+  </p>
+  <ol>
+   <li>
+    <a href="https://www.quantconnect.com/docs/v2/docs/v2/local-platform/projects/getting-started#04-Open-Projects">
+     Open the project
+    </a>
+    .
+   </li>
+   <li>
+    In the left navigation menu, click the
+    <img class="inline-icon" src="https://cdn.quantconnect.com/i/tu/local-lab-explorer-icon.jpg"/>
+    <span class="icon-name">
+     Explorer
+    </span>
+    icon.
+   </li>
+   <li>
+    In the Explorer panel, right-click the file or directory you want to rename and then click
+    <span class="menu-name">
+     Rename
+    </span>
+    .
+   </li>
+   <li>
+    Enter the new name and then press
+    <span class="button-name">
+     Enter
+    </span>
+    .
+   </li>
+  </ol>
+  <img alt="Renaming a file" class="docs-image" src="https://cdn.quantconnect.com/i/tu/local-platform-rename-file-py.gif"/>
+ </body>
+</html>
+
+<h3>Delete Files and Directories</h3>
+<html>
+ <body>
+  <p>
+   Follow these steps to delete a file or directory in a project:
+  </p>
+  <ol>
+   <li>
+    <a href="https://www.quantconnect.com/docs/v2/docs/v2/local-platform/projects/getting-started#04-Open-Projects">
+     Open the project
+    </a>
+    .
+   </li>
+   <li>
+    In the left navigation menu, click the
+    <img class="inline-icon" src="https://cdn.quantconnect.com/i/tu/local-lab-explorer-icon.jpg"/>
+    <span class="icon-name">
+     Explorer
+    </span>
+    icon.
+   </li>
+   <li>
+    In the Explorer panel, right-click the file or directory you want to delete and then click
+    <span class="menu-name">
+     Delete Permanently
+    </span>
+    .
+   </li>
+   <li>
+    Click
+    <span class="button-name">
+     Delete
+    </span>
+    .
+   </li>
+  </ol>
+ </body>
+</html>
+
+<p style="page-break-after: always;">&nbsp;</p>
+<section id="4.3"><h3>4.3 Shared Libraries</h3></section>
+
+<h3>Introduction</h3>
+<html>
+ <body>
+  <p>
+   Project libraries are QuantConnect projects you can merge into your project to avoid duplicating code files. If you have tools that you use across several projects, create a library.
+  </p>
+ </body>
+</html>
+
+<h3>Create Libraries</h3>
+<html>
+ <body>
+  <p>
+   Follow these steps to create a library:
+  </p>
+  <ol>
+   <li>
+    <a href="/https://www.quantconnect.com/docs/v2/docs/v2/local-platform/projects/getting-started#04-Open-Projects">
+     Open a project
+    </a>
+    .
+   </li>
+   <li>
+    In the left navigation menu, click the
+    <img alt="VS Code QuantConnect icon" class="inline-icon" src="https://cdn.quantconnect.com/i/tu/vscode-qc-icon.jpg"/>
+    <span class="icon-name">
+     QuantConnect
+    </span>
+    icon.
+   </li>
+   <li>
+    In the Project panel, click
+    <span class="button-name">
+     Add Library
+    </span>
+    .
+   </li>
+   <li>
+    Click
+    <span class="button-name">
+     Create New
+    </span>
+    .
+   </li>
+   <li>
+    In the
+    <span class="field-name">
+     Input Library Name
+    </span>
+    field, enter a name for the library.
+   </li>
+   <li>
+    Click
+    <span class="button-name">
+     Create Library
+    </span>
+    .
+   </li>
+   <p>
+    The template library files are added to a new project in the
+    <span class="public-file-name">
+     Library
+    </span>
+    directory in your
+    <a href="https://www.quantconnect.com/docs/v2/docs/v2/local-platform/development-environment/organization-workspaces">
+     organization workspace
+    </a>
+    .
+   </p>
+   <li>
+    In the left navigation menu, click the
+    <img alt="Local Platform explorer icon" class="inline-icon" src="https://cdn.quantconnect.com/i/tu/local-lab-explorer-icon.jpg"/>
+    <span class="icon-name">
+     Explorer
+    </span>
+    icon.
+   </li>
+   <li>
+    In Explorer panel, open the
+    <span class="public-file-name python">
+     Library.py
+    </span>
+    <span class="public-file-name csharp">
+     Library.cs
+    </span>
+    file and implement your library.
+   </li>
+  </ol>
+ </body>
+</html>
+
+<h3>Add Libraries</h3>
+<html>
+ <body>
+  <p>
+   Follow these steps to add a library to your project:
+  </p>
+  <ol>
+   <li>
+    <a href="https://www.quantconnect.com/docs/v2/docs/v2/local-platform/projects/getting-started#04-Open-Projects">
+     Open the project
+    </a>
+    .
+   </li>
+   <li>
+    In the left navigation menu, click the
+    <img class="inline-icon" src="https://cdn.quantconnect.com/i/tu/vscode-qc-icon.jpg"/>
+    <span class="icon-name">
+     QuantConnect
+    </span>
+    icon.
+   </li>
+   <li>
+    In the Project panel, click
+    <span class="button-name">
+     Add Library
+    </span>
+    .
+   </li>
+   <li>
+    Click the
+    <span class="field-name">
+     Choose a library...
+    </span>
+    field and then click a library from the drop-down menu.
+   </li>
+   <li>
+    Click
+    <span class="button-name">
+     Add Library
+    </span>
+    (e.g.
+    <span class="public-directory-name">
+     Calculators
+    </span>
+    ).
+   </li>
+   <p>
+    The library files are added to your project. To view the files, in the right navigation menu, click the
+    <img class="inline-icon" src="https://cdn.quantconnect.com/i/tu/local-lab-explorer-icon.jpg"/>
+    <span class="icon-name">
+     Explorer
+    </span>
+    icon.
+   </p>
+   <li>
+    Import the library into your project to use the library.
+   </li>
+   <div class="section-example-container">
+    <pre class="csharp">using Calculators;
+namespace QuantConnect.Algorithm.CSharp
+{
+    public class AddLibraryAlgorithm : QCAlgorithm
+    {
+        private TaxesCalculator _taxesCalculator = new();
+    }
+}</pre>
+    <pre class="python">from Calculators.TaxesCalculator import TaxesCalculator
+class AddLibraryAlgorithm(QCAlgorithm):
+    taxes_calculator = TaxesCalculator()</pre>
+   </div>
+  </ol>
+ </body>
+</html>
+
+<h3>Rename Libraries</h3>
+<html>
+ <body>
+  <p>
+   To rename a library,
+   <a href="https://www.quantconnect.com/docs/v2/docs/v2/local-platform/projects/getting-started#04-Open-Projects">
+    open the library project file
+   </a>
+   and then
+   <a href="https://www.quantconnect.com/docs/v2/docs/v2/local-platform/projects/getting-started#08-Rename-Projects">
+    rename the project
+   </a>
+   .
+  </p>
+ </body>
+</html>
+
+<h3>Remove Libraries</h3>
+<html>
+ <body>
+  <p>
+   Follow these steps to remove a library from your project:
+  </p>
+  <ol>
+   <li>
+    <a href="https://www.quantconnect.com/docs/v2/docs/v2/local-platform/projects/getting-started#04-Open-Projects">
+     Open the project
+    </a>
+    that contains the library you want to remove.
+   </li>
+   <li>
+    In the left navigation menu, click the
+    <img class="inline-icon" src="https://cdn.quantconnect.com/i/tu/vscode-qc-icon.jpg"/>
+    <span class="icon-name">
+     QuantConnect
+    </span>
+    icon.
+   </li>
+   <li>
+    In the Project panel, hover over the library name and then click the
+    <span class="icon-name">
+     trash can
+    </span>
+    icon that appears.
+   </li>
+   <img alt="Delete a library from a project" class="docs-image" src="https://cdn.quantconnect.com/i/tu/delete-libraries.png"/>
+   <p>
+    The library files are removed from your project.
+   </p>
+  </ol>
+ </body>
+</html>
+
+<h3>Delete Libraries</h3>
+<html>
+ <body>
+  <p>
+   To delete a library,
+   <a href="https://www.quantconnect.com/docs/v2/docs/v2/local-platform/projects/getting-started#12-Delete-Projects">
+    delete the library project file
+   </a>
+   .
+  </p>
+ </body>
+</html>
+
+<p style="page-break-after: always;">&nbsp;</p>
+<section id="5"><h3>5 Backtesting</h3></section>
+
+<section id="5.1"><h3>5.1 Getting Started</h3></section>
+
+<h3>Introduction</h3>
+<html>
+ <body>
+  <p>
+   Backtesting is the process of simulating a trading algorithm on historical data. By running a backtest, you can measure how the algorithm would have performed in the past. Although past performance doesn't guarantee future results, an algorithm that has a proven track record can provide investors with more confidence when deploying to live trading than an algorithm that hasn't performed favorably in the past. 
+If you run local backtests, you can leverage your local data and hardware.
+  </p>
+ </body>
+</html>
+
+<h3>Run Backtests</h3>
+<html>
+ <body>
+  <p>
+   To run a backtest,
+   <a href="/https://www.quantconnect.com/docs/v2/docs/v2/cloud-platform/projects/getting-started#02-View-All-Projects">
+    open a project
+   </a>
+   and then click the
+   <img class="inline-icon" src="https://cdn.quantconnect.com/i/tu/local-platform-backtest-icon.png"/>
+   /
+   <img class="inline-icon" src="https://cdn.quantconnect.com/i/tu/cloud-platform-backtest-icon.png"/>
+   <span class="icon-name">
+    Backtest
+   </span>
+   icon. If the project successfully builds, "Received backtest
+   <span class="placeholder-text">
+    backtestName
+   </span>
+   request" displays. If the backtest successfully launches, the IDE displays the
+   <a href="https://www.quantconnect.com/docs/v2/docs/v2/cloud-platform/backtesting/results">
+    backtest results page
+   </a>
+   in a new tab. If the backtest fails to launch due to coding errors, the new tab displays the error. 
+As the backtest executes, you can close Local Platform and Docker Desktop without interfering with the backtest. Just don't quit Docker Desktop.
+  </p>
+ </body>
+</html>
+
+<h3>View All Backtests</h3>
+<html>
+ <body>
+  <p>
+   Follow these steps to view all of the backtests of a project:
+  </p>
+  <ol>
+   <li>
+    <a href="/https://www.quantconnect.com/docs/v2/docs/v2/local-platform/projects/getting-started#02-View-All-Projects">
+     Open the project
+    </a>
+    that contains the backtests you want to view.
+   </li>
+   <li>
+    In the top-right corner of the IDE, click the
+    <img class="inline-icon" src="https://cdn.quantconnect.com/i/tu/local-platform-backtest-results-icon.png"/>
+    /
+    <img class="inline-icon" src="https://cdn.quantconnect.com/i/tu/cloud-platform-backtest-results-icon.png"/>
+    <span class="icon-name">
+     Backtest Results
+    </span>
+    icon.
+    <br/>
+   </li>
+   <p>
+    A table containing all of the backtest results for the project is displayed. If there is a
+    <span class="icon-name">
+     play
+    </span>
+    icon to the left of the name, it's a
+    <a href="https://www.quantconnect.com/docs/v2/cloud-platform/backtesting/results">
+     backtest result
+    </a>
+    . If there is a
+    <span class="icon-name">
+     fast-forward
+    </span>
+    icon next to the name, it's an
+    <a href="/https://www.quantconnect.com/docs/v2/docs/v2/cloud-platform/optimization/results">
+     optimization result
+    </a>
+    .
+    <br/>
+   </p>
+   <img alt="All backtest table view" class="docs-image" src="https://cdn.quantconnect.com/i/tu/local-platform-view-all-backtests.png"/>
+   <li>
+    <span class="qualifier">
+     (Optional)
+    </span>
+    In the top-right corner, select the
+    <span class="field-name">
+     Show
+    </span>
+    field and then select one of the options from the drop-down menu to filter the table by backtest or optimization results.
+   </li>
+   <li>
+    <span class="qualifier">
+     (Optional)
+    </span>
+    In the bottom-right corner, click the
+    <span class="box-name">
+     Hide Error
+    </span>
+    check box to remove backtest and optimization results from the table that had a runtime error.
+   </li>
+   <li>
+    <span class="qualifier">
+     (Optional)
+    </span>
+    Use the pagination tools at the bottom to change the page.
+   </li>
+   <li>
+    <span class="qualifier">
+     (Optional)
+    </span>
+    Click a column name to sort the table by that column.
+   </li>
+   <li>
+    Click a row in the table to open the results page of that backtest or optimization.
+   </li>
+  </ol>
+ </body>
+</html>
+
+<h3>Rename Backtests</h3>
+<html>
+ <body>
+  <p>
+   We give an arbitrary name (for example, "Smooth Apricot Chicken") to your backtest result files, but you can follow these steps to rename them:
+  </p>
+  <ol>
+   <li>
+    Open the
+    <a href="https://www.quantconnect.com/docs/v2/docs/v2/local-platform/backtesting/getting-started#03-View-All-Backtests">
+     backtest history
+    </a>
+    of the project.
+   </li>
+   <li>
+    Hover over the backtest you want to rename and then click the
+    <span class="icon-name">
+     pencil
+    </span>
+    icon that appears.
+   </li>
+   <img alt="Rename backtest navigation" class="docs-image" src="https://cdn.quantconnect.com/i/tu/rename-backtest-result.png"/>
+   <li>
+    Enter the new backtest name and then click
+    <span class="button-name">
+     OK
+    </span>
+    .
+   </li>
+  </ol>
+ </body>
+</html>
+
+<p style="page-break-after: always;">&nbsp;</p>
+<section id="5.2"><h3>5.2 Deployment</h3></section>
+
+<h3>Introduction</h3>
+<html>
+ <body>
+  <p>
+   Deploy a backtest to simulate the historical performance of your trading algorithm. Since the same Lean engine is used to run backtests and live trading algorithms, it's easy to transition from backtesting to live trading once you are satisfied with the historical performance of your algorithm. If you find any issues with Lean or our historical data, we'll resolve the issue.
+  </p>
+ </body>
+</html>
+
+<h3>Nodes</h3>
+<html>
+ <body>
+  <p>
+   If you deploy a local backtest, the algorithm runs on your hardware.
+  </p>
+ </body>
+</html>
+
+<h3>Concurrent Backtesting</h3>
+<html>
+ <body>
+  <p>
+   Concurrent backtesting is the process of running multiple backtests at the same time. Concurrent backtesting speeds up your strategy development because you don't have to wait while a single backtest finishes executing. You can run as many concurrent backtests as your CPU and RAM will handle.
+  </p>
+ </body>
+</html>
+
+<h3>Build Projects</h3>
+<html>
+ <body>
+  <p>
+   If the compiler finds errors during the build process, the IDE highlights the lines of code that caused the errors in red.
+Your projects will automatically build after each keystroke. To manually build a project,
+   <a href="/https://www.quantconnect.com/docs/v2/docs/v2/cloud-platform/projects/getting-started#02-View-All-Projects">
+    open the project
+   </a>
+   and then click the
+   <img class="inline-icon" src="https://cdn.quantconnect.com/i/tu/local-platform-build-icon.png"/>
+   /
+   <img class="inline-icon" src="https://cdn.quantconnect.com/i/tu/cloud-platform-build-icon.png"/>
+   <span class="button-name">
+    Build
+   </span>
+   icon.
+  </p>
+ </body>
+</html>
+
+<h3>Run Backtests</h3>
+<html>
+ <body>
+  <p>
+   To run a backtest,
+   <a href="/https://www.quantconnect.com/docs/v2/docs/v2/cloud-platform/projects/getting-started#02-View-All-Projects">
+    open a project
+   </a>
+   and then click the
+   <img class="inline-icon" src="https://cdn.quantconnect.com/i/tu/local-platform-backtest-icon.png"/>
+   /
+   <img class="inline-icon" src="https://cdn.quantconnect.com/i/tu/cloud-platform-backtest-icon.png"/>
+   <span class="icon-name">
+    Backtest
+   </span>
+   icon. If the project successfully builds, "Received backtest
+   <span class="placeholder-text">
+    backtestName
+   </span>
+   request" displays. If the backtest successfully launches, the IDE displays the
+   <a href="https://www.quantconnect.com/docs/v2/docs/v2/cloud-platform/backtesting/results">
+    backtest results page
+   </a>
+   in a new tab. If the backtest fails to launch due to coding errors, the new tab displays the error. 
+As the backtest executes, you can close Local Platform and Docker Desktop without interfering with the backtest. Just don't quit Docker Desktop.
+  </p>
+ </body>
+</html>
+
+<h3>Stop Backtests</h3>
+<html>
+ <body>
+  <p>
+   To stop a running backtest,
+   <a href="https://www.quantconnect.com/docs/v2/docs/v2/local-platform/development-environment/resource-management#03-Stop-Nodes">
+    stop the backtesting node
+   </a>
+   .
+  </p>
+ </body>
+</html>
+
+<p style="page-break-after: always;">&nbsp;</p>
+<section id="5.3"><h3>5.3 Debugging</h3></section>
+
+<h3>Introduction</h3>
+<html>
+ <body>
+  <p>
+   The debugger is a built-in tool to help you debug coding errors while backtesting. The debugger enables you to slow down the code execution, step through the program line-by-line, and inspect the variables to understand the internal state of the program.
+  </p>
+ </body>
+</html>
+
+<h3>Requirements</h3>
+<html>
+ <body>
+  <p class="python">
+   You need to install v2023.4.0 of
+   <a href="https://marketplace.visualstudio.com/items?itemName=ms-python.python" rel="nofollow" target="_blank">
+    Microsoft's Python VS Code extension
+   </a>
+   to run the debugger.
+  </p>
+  <p class="csharp">
+   You need to install
+   <a href="https://dotnet.microsoft.com/en-us/download" rel="nofollow" target="_blank">
+    .NET
+   </a>
+   and
+   <a href="https://marketplace.visualstudio.com/items?itemName=ms-dotnettools.csharp" rel="nofollow" target="_blank">
+    Microsoft's C# VS Code extension
+   </a>
+   to run the debugger.
+  </p>
+ </body>
+</html>
+
+<h3>Breakpoints</h3>
+<html>
+ <body>
+  <p>
+   Breakpoints are lines in your algorithm where execution pauses. You need at least one breakpoint in your code files to start the debugger.
+   <a href="/https://www.quantconnect.com/docs/v2/docs/v2/local-platform/projects/getting-started#04-Open-Projects">
+    Open a project
+   </a>
+   to start adjusting its breakpoints.
+  </p>
+  <h4>
+   Add Breakpoints
+  </h4>
+  <p>
+   Click to the left of a line number to add a breakpoint on that line.
+  </p>
+  <img alt="Add breakpoint" class="python docs-image" src="https://cdn.quantconnect.com/i/tu/set-break-point-2.gif"/>
+  <img alt="Add breakpoint" class="csharp docs-image" src="https://cdn.quantconnect.com/i/tu/set-breakpoint-c-sharp.gif"/>
+  <h4>
+   Edit Breakpoint Conditions
+  </h4>
+  <p>
+   Follow these steps to customize what happens when a breakpoint is hit:
+  </p>
+  <ol>
+   <li>
+    Right-click the breakpoint and then click
+    <span class="menu-name">
+     Edit Breakpoint...
+    </span>
+    .
+   </li>
+   <li>
+    Click one of the options in the following table:
+   </li>
+  </ol>
+  <table class="qc-table table">
+   <thead>
+    <tr>
+     <th>
+      Option
+     </th>
+     <th>
+      Additional Steps
+     </th>
+     <th>
+      Description
+     </th>
+    </tr>
+   </thead>
+   <tbody>
+    <tr>
+     <td>
+      <span class="menu-name">
+       Expression
+      </span>
+     </td>
+     <td>
+      Enter an expression and then press
+      <span class="key-combinations">
+       Enter
+      </span>
+      .
+     </td>
+     <td>
+      The breakpoint only pauses the algorithm when the expression is true.
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <span class="menu-name">
+       Hit Count
+      </span>
+     </td>
+     <td>
+      Enter an integer and then press
+      <span class="key-combinations">
+       Enter
+      </span>
+      .
+     </td>
+     <td>
+      The breakpoint doesn't pause the algorithm until its hit the number of times you specify.
+     </td>
+    </tr>
+   </tbody>
+  </table>
+  <h4>
+   Enable and Disable Breakpoints
+  </h4>
+  <p>
+   To enable a breakpoint, right-click it and then click
+   <span class="menu-name">
+    Enable Breakpoint
+   </span>
+   .
+  </p>
+  <p>
+   To disable a breakpoint, right-click it and then click
+   <span class="menu-name">
+    Disable Breakpoint
+   </span>
+   .
+  </p>
+  <p>
+   Follow these steps to enable and disable all breakpoints:
+  </p>
+  <ol>
+   <li>
+    In the left navigation menu, click the
+    <img alt="Run &amp; debug icon" class="inline-icon" src="https://cdn.quantconnect.com/i/tu/run-and-debug-icon.png"/>
+    <span class="icon-name">
+     Run and Debug
+    </span>
+    icon.
+   </li>
+   <li>
+    In the Run and Debug panel, hover over the
+    <span class="page-section-name">
+     Breakpoints
+    </span>
+    section and then click the
+    <img class="inline-icon" src="https://cdn.quantconnect.com/i/tu/disable-all-breakpoints-icon.png"/>
+    <span class="icon-name">
+     Toggle Active Breakpoints
+    </span>
+    icon.
+   </li>
+  </ol>
+  <h4>
+   Remove Breakpoints
+  </h4>
+  <p>
+   To remove a breakpoint, right-click it and then click
+   <span class="menu-name">
+    Remove Breakpoint
+   </span>
+   .
+  </p>
+  <p>
+   Follow these steps to remove all breakpoints:
+  </p>
+  <ol>
+   <li>
+    In the left navigation menu, click the
+    <img alt="Run &amp; debug icon" class="inline-icon" src="https://cdn.quantconnect.com/i/tu/run-and-debug-icon.png"/>
+    <span class="icon-name">
+     Run and Debug
+    </span>
+    icon.
+   </li>
+   <li>
+    In the Run and Debug panel, hover over the
+    <span class="page-section-name">
+     Breakpoints
+    </span>
+    section and then click the
+    <img class="inline-icon" src="https://cdn.quantconnect.com/i/tu/remove-all-breakpoints-icon.png"/>
+    <span class="icon-name">
+     Remove All Breakpoints
+    </span>
+    icon.
+   </li>
+  </ol>
+ </body>
+</html>
+
+<h3>Launch Debugger</h3>
+<html>
+ <body>
+  <p>
+   Follow these steps to launch the debugger:
+  </p>
+  <ol>
+   <li>
+    <a href="/https://www.quantconnect.com/docs/v2/docs/v2/local-platform/projects/getting-started#04-Open-Projects">
+     Open the project
+    </a>
+    you want to debug.
+   </li>
+   <li>
+    In your project's code files, add at least one breakpoint.
+   </li>
+   <li>
+    Click the
+    <img alt="Debug icon" class="inline-icon" src="https://cdn.quantconnect.com/i/tu/local-platform-debug-icon.png"/>
+    <span class="icon-name">
+     Debug
+    </span>
+    icon.
+   </li>
+  </ol>
+  <p>
+   If the Run and Debug panel is not open, it opens when the first breakpoint is hit.
+  </p>
+ </body>
+</html>
+
+<h3>Control Debugger</h3>
+<html>
+ <body>
+  <p>
+   After you launch the debugger, you can use the following buttons to control it:
+  </p>
+  <table class="qc-table table" id="debugger-button-table">
+   <thead>
+    <tr>
+     <th>
+      Button
+     </th>
+     <th>
+      Name
+     </th>
+     <th>
+      Default Keyboard Shortcut
+     </th>
+     <th>
+      Description
+     </th>
+    </tr>
+   </thead>
+   <tbody>
+    <tr>
+     <td>
+      <img alt="Debugger continue icon" src="https://cdn.quantconnect.com/i/tu/debugger-continue-button.png"/>
+     </td>
+     <td>
+      Continue
+     </td>
+     <td>
+     </td>
+     <td>
+      Continue execution until the next breakpoint
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <img alt="Debugger step over icon" src="https://cdn.quantconnect.com/i/tu/debugger-stop-over-button.png"/>
+     </td>
+     <td>
+      Step Over
+     </td>
+     <td>
+      <span class="key-combinations">
+       Alt+F10
+      </span>
+     </td>
+     <td>
+      Step to the next line of code in the current or parent scope
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <img alt="Debugger step into icon" src="https://cdn.quantconnect.com/i/tu/debugger-step-into-button.png"/>
+     </td>
+     <td>
+      Step Into
+     </td>
+     <td>
+      <span class="key-combinations">
+       Alt+F11
+      </span>
+     </td>
+     <td>
+      Step into the definition of the function call on the current line
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <img alt="Debugger restart icon" src="https://cdn.quantconnect.com/i/tu/debugger-restart-button.png"/>
+     </td>
+     <td>
+      Restart
+     </td>
+     <td>
+      <span class="key-combinations">
+       Shift+F11
+      </span>
+     </td>
+     <td>
+      Restart the debugger
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <img alt="Debugger disconnect icon" src="https://cdn.quantconnect.com/i/tu/debugger-disconnect-button.png"/>
+     </td>
+     <td>
+      Disconnect
+     </td>
+     <td>
+      <span class="key-combinations">
+       Shift+F5
+      </span>
+     </td>
+     <td>
+      Exit the debugger
+     </td>
+    </tr>
+   </tbody>
+  </table>
+  <style>
+   #debugger-button-table td:first-child,
+#debugger-button-table th:first-child {
+    text-align: center;
+}
+#debugger-button-table img {
+    height: 40px;
+}
+  </style>
+ </body>
+</html>
+
+<h3>Inspect Variables</h3>
+<html>
+ <body>
+  <p>
+   After you launch the debugger, you can inspect the state of your algorithm as it executes each line of code. You can inspect local variables or custom expressions.
+   <span class="python">
+    The values of variables in your algorithm are formatted in the IDE to improve readability. For example, if you inspect a variable that references a DataFrame, the debugger represents the variable value as the following:
+   </span>
+  </p>
+  <img alt="Dataframe in a debugger variable view" class="python docs-image" src="https://cdn.quantconnect.com/i/tu/debugger-dataframe.png"/>
+  <h4>
+   Local Variables
+  </h4>
+  <p>
+   The
+   <span class="page-section-name">
+    Variables
+   </span>
+   section of the Run and Debug panel shows the local variables at the current breakpoint. If a variable in the panel is an object, click it to see its members. The panel updates as the algorithm runs.
+  </p>
+  <img alt="Local variables in debugger view" class="python docs-image" src="https://cdn.quantconnect.com/i/tu/inspect-local-variables.gif"/>
+  <img alt="Local variables in debugger view" class="csharp docs-image" src="https://cdn.quantconnect.com/i/tu/navigate-variables-debugger-c-sharp.gif"/>
+  <p>
+   Follow these steps to update the value of a variable:
+  </p>
+  <ol>
+   <li>
+    In the Run and Debug panel, right-click a variable and then click
+    <span class="menu-name">
+     Set Value
+    </span>
+    .
+   </li>
+   <li>
+    Enter the new value and then press
+    <span class="key-combinations">
+     Enter
+    </span>
+    .
+   </li>
+  </ol>
+  <h4>
+   Custom Expressions
+  </h4>
+  <p>
+   The
+   <span class="page-section-name">
+    Watch
+   </span>
+   section of the Run and Debug panel shows any custom expressions you add. For example, you can add an expression to show the current date in the backtest.
+  </p>
+  <img alt="Inspect custom variables in debugger view" class="csharp docs-image" src="https://cdn.quantconnect.com/i/tu/watch-variables-c-sharp.png"/>
+  <img alt="Inspect custom variables in debugger view" class="python docs-image" src="https://cdn.quantconnect.com/i/tu/watch-variables.png"/>
+  <p>
+   Follow these steps to add a custom expression:
+  </p>
+  <ol>
+   <li>
+    Hover over the
+    <span class="page-section-name">
+     Watch
+    </span>
+    section and then click the
+    <span class="icon-name">
+     plus
+    </span>
+    icon that appears.
+   </li>
+   <li>
+    Enter an expression and then press
+    <span class="key-combinations">
+     Enter
+    </span>
+    .
+   </li>
+  </ol>
+ </body>
+</html>
+
+<p style="page-break-after: always;">&nbsp;</p>
