@@ -1,0 +1,1 @@
+<?php include(DOCS_RESOURCES."/datasets/market-hours/future/cbot/KE/regular-trading-hours.html"); ?>

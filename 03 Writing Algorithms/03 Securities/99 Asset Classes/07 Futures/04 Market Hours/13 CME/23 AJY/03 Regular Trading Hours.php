@@ -1,0 +1,1 @@
+<?php include(DOCS_RESOURCES."/datasets/market-hours/future/cme/AJY/regular-trading-hours.html"); ?>

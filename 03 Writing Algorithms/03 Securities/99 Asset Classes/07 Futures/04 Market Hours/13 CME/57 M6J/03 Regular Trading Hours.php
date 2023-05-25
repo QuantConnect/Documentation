@@ -1,0 +1,1 @@
+<?php include(DOCS_RESOURCES."/datasets/market-hours/future/cme/M6J/regular-trading-hours.html"); ?>
