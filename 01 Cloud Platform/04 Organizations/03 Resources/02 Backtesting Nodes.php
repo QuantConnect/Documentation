@@ -4,6 +4,6 @@
 
 <p>Refer to the <a href="/pricing">Pricing</a> page to see the price of each backtesting node model. You get one free B-MICRO backtesting node in your first organization. This node incurs a 20-second delay when you launch backtests, but the delay is removed and the node is replaced when you subscribe to a new backtesting node in the organization.</p>
 
-<p>GPU nodes perform best on repetitive and highly-parallel tasks like training machine learning models. It takes time to transfer the data to the GPU for computation, so if your algorithm doesn't train machine learning models, the extra time it takes to transfer the data can make it appear that GPU nodes execute backtests slower than CPU nodes.</p>
+<p>GPU nodes perform best on repetitive and highly-parallel tasks like training machine learning models. It takes time to transfer the data to the GPU for computation, so if your algorithm doesn't train machine learning models, the extra time it takes to transfer the data can make it appear that GPU nodes run slower than CPU nodes.</p>
 
 <p>You can't use backtesting nodes for <a href='/docs/v2/cloud-platform/optimization'>optimizations</a>. The CPU nodes are available on a fair usage basis. The GPU nodes can be shared with a maximum of three members. Depending on the server load, you may use the all of the GPU's processing power.</p>
