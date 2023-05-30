@@ -3,3 +3,5 @@
 <?php echo file_get_contents(DOCS_RESOURCES."/specs/live-trading-nodes.html"); ?>
 
 <p>Refer to the <a href="/pricing">Pricing</a> page to see the price of each live trading node model.</p>
+
+<p>GPU nodes perform best on repetitive and highly-parallel tasks like training machine learning models. It takes time to transfer the data to the GPU for computation, so if your algorithm doesn't train machine learning models, the extra time it takes to transfer the data can make it appear that GPU nodes run slower than CPU nodes.</p>
