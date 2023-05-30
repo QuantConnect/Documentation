@@ -1,1 +1,1 @@
-<?php include(DOCS_RESOURCES."/datasets/market-hours/future/cbot/BCF/holidays.html"); ?>
+<?php include(DOCS_RESOURCES."/datasets/market-hours/future/cbot/generic/holidays.html"); ?>

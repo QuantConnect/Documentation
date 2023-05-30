@@ -1,1 +1,1 @@
-<?php include(DOCS_RESOURCES."/datasets/market-hours/no-regular-trading-hours.html"); ?>
+<?php include(DOCS_RESOURCES."/datasets/market-hours/future/ice/generic/regular-trading-hours.html"); ?>
