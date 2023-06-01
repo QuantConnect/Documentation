@@ -3,7 +3,6 @@
 <? 
 include(DOCS_RESOURCES."/cli/windows-requirements.html");
 include(DOCS_RESOURCES."/local-platform/installation/internet-requirement.html");  
-include(DOCS_RESOURCES."/cli/install/docker/wsl2.html"); 
 ?>
 
 
