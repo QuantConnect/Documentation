@@ -1,4 +1,4 @@
 <? 
 $os = "mac";
-include(DOCS_RESOURCES."/local-platform/installation/next-steps.html"); 
+include(DOCS_RESOURCES."/local-platform/installation/troubleshooting.php"); 
 ?>
