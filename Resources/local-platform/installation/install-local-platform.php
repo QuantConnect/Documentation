@@ -7,7 +7,7 @@
     	<pre>$ docker pull quantconnect/lean</pre>
     </div>
     <? if ($os == "mac") { ?>
-    <p>If you're using a Mac that has an M1 chip, download the AMD64 version of LEAN and Research.</p>
+    <li>If your Mac has an M1 chip, download the AMD64 version of LEAN and Research.</li>
     <div class="cli section-example-container">
     	<pre>$ docker pull --platform linux/amd64 quantconnect/lean
 $ docker pull --platform linux/amd64 quantconnect/research</pre>
