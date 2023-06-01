@@ -1,10 +1,14 @@
 <p>The following sections explain how to solve some issues you may encounter while installing Local Platform.</p>
 
+<? if ($os == "mac") { ?>
 <h4>Docker with M1/M2/Colima</h4>
 <? include(DOCS_RESOURCES."/cli/install/docker/m1.html"); ?>
+<? } ?>
 
+<? if ($os == "windows") { ?>
 <h4>Docker with WSL 2 Features</h4>
 <? include(DOCS_RESOURCES."/cli/install/docker/wsl2.html"); ?>
+<? } ?>
 
 <h4>Docker Not Found</h4>
 <p>If you have Docker installed but the Local Platform can't detect it, update your <a href=''><span class='button-name'>Executable Path: Docker</span> setting</a> to be the path to your Docker executable.</p>
