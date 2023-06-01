@@ -1,0 +1,1 @@
+<? include(DOCS_RESOURCES."/local-platform/installation/intro.html"); ?>

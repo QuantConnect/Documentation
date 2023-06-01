@@ -1,16 +1,18 @@
 <p>Follow these steps to install Local Platform:</p>
 
 <ol>
-    <li><a href='/docs/v2/local-platform/installation#03-Install-Docker'>Install Docker</a>.</li>
+    <li><a href='<?=$installDockerLink?>'>Install Docker</a>.</li>
     <li>Open a terminal and download the latest LEAN image.</li>
     <div class="cli section-example-container">
     	<pre>$ docker pull quantconnect/lean</pre>
     </div>
+    <? if ($os == "mac") { ?>
     <p>If you're using a Mac that has an M1 chip, download the AMD64 version of LEAN and Research.</p>
     <div class="cli section-example-container">
     	<pre>$ docker pull --platform linux/amd64 quantconnect/lean
 $ docker pull --platform linux/amd64 quantconnect/research</pre>
     </div>
+    <? } ?>
     <p>It takes about an hour to download the image. While it's downloading, continue to the next step. When you use Local Platform, it automatically pulls the latest LEAN image if your current version is more than a week old.</p>
     <li><a rel="nofollow" target="_blank" href="https://code.visualstudio.com/download">Install Visual Studio Code</a>.</li>
     <li><a rel="nofollow" target="_blank" href="https://marketplace.visualstudio.com/items?itemName=quantconnect.quantconnect">Install Local Platform</a>.</li>
