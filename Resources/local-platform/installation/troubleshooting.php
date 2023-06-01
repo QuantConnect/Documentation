@@ -1,7 +1,7 @@
 <p>The following sections explain how to solve some issues you may encounter while installing Local Platform.</p>
 
 <? if ($os == "mac") { ?>
-<h4>Docker with M1 or M2</h4>
+<h4>M1 or M2 Chips</h4>
 <? include(DOCS_RESOURCES."/cli/install/docker/m1.html"); ?>
 <? } ?>
 
