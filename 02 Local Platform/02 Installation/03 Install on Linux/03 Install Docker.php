@@ -1,5 +1,4 @@
 <? 
-$os = "linux";
-$installDockerLink = "/docs/v2/local-platform/installation/install-on-linux#03-Install-Docker";
-include(DOCS_RESOURCES."/local-platform/installation/install-local-platform.php");
+include(DOCS_RESOURCES."/cli/install/docker/introduction.php");
+include(DOCS_RESOURCES."/cli/install/docker/linux.php"); 
 ?>
