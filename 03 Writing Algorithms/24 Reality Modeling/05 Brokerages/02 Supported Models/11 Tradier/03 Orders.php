@@ -18,7 +18,7 @@
         </tr>
         <tr>
             <td><code>SellShortOrderLastPriceBelow5</code></td>
-            <td>You can't short sell stock priced below $5</td>
+            <td>You can't short sell stocks below $5</td>
         </tr>
         <tr>
             <td><code>IncorrectOrderQuantity</code></td>
