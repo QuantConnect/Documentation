@@ -2,7 +2,7 @@
 
 <? include(DOCS_RESOURCES."/brokerages/tradier/orders.php"); ?>
 
-<p>The <code>TradierBrokerageModel</code> validates your orders  before submission for the following cases.</p>
+<p>The <code>TradierBrokerageModel</code> validates your orders for the following errors before sending them to Tradier:</p>
 
 <table class="qc-table table" id='backtesting-nodes-table'>
     <thead>
