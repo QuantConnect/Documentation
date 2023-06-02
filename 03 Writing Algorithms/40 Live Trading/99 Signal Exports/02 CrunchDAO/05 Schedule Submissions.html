@@ -1,1 +1,43 @@
+<p>CrunchDAO provides a new skeleton every Saturday at 6 PM Coordinated Universal Time (UTC). To submit your signals before the market opens each week, during initialization, create a <a href='https://www.quantconnect.com/docs/v2/writing-algorithms/scheduled-events'>Scheduled Event</a>.</p>
 
+
+<div class="section-example-container">
+<pre class="python">self.week = -1
+self.Schedule.On(
+    self.DateRules.Every([DayOfWeek.Monday, DayOfWeek.Tuesday, DayOfWeek.Wednesday, DayOfWeek.Thursday, DayOfWeek.Friday]), 
+    self.TimeRules.At(13, 15, TimeZones.Utc), 
+    self.submit_signals)</pre>
+</div>
+
+<p>The preceding Scheduled Event calls the <code>submit_signals</code> method every weekday at 1:15 PM UTC. Define this method to create and send portfolio targets to CrunchDAO.</p>
+
+<div class="section-example-container">
+<pre class="python">def submit_signals(self):
+    if self.IsWarmingUp:
+        return
+    
+    # Submit signals once per week
+    week_num = self.Time.isocalendar()[1]
+    if self.week == week_num:
+        return
+    self.week = week_num
+
+    symbols = [security.Symbol for security in self.crunch_universe if security.Price > 0]
+
+    # Get historical price data
+    # close_prices = self.History(symbols, 22, Resolution.Daily).close.unstack(0)
+
+    # Create portfolio targets
+    weight_by_symbol = {symbol: 1/len(symbols) for symbol in symbols} # Add your logic here
+    targets = [PortfolioTarget(symbol, weight) for symbol, weight in weight_by_symbol.items()]
+
+    # (Optional) Place trades
+    self.SetHoldings(targets)
+
+    # Send signals to CrunchDAO
+    success = self.SignalExport.SetTargetPortfolio(targets)
+    if not success:
+        self.Debug(f"Couldn't send targets at {self.Time}")</pre>
+</div>
+
+<p>For more information about requesting historical price and alternative data, see <a href='/docs/v2/writing-algorithms/historical-data/history-requests'>History Requests</a>.</p>
