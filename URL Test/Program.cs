@@ -62,7 +62,8 @@ namespace QuantConnect.Tests
         {
             var allFiles = Directory.GetFiles(_path, "*.*", SearchOption.AllDirectories)
                     // Exclude Documentation Updates since it may include broken links
-                    .Where(x => !x.EndsWith("Documentation Updates.html")).ToList();
+                    // Exclude single-page docs since it is generated from basic docs
+                    .Where(x => !x.EndsWith("Documentation Updates.html") && !x.Contains("single-page")).ToList();
 
             foreach(var file in allFiles)
             {
