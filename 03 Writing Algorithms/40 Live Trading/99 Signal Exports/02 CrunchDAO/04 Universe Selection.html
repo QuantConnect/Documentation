@@ -1,1 +1,39 @@
+<p>The <a rel="nofollow" target="_blank" href="https://docs.crunchdao.com/crunch-alpha/investment-universe">CrunchDAO skeleton</a> contains the universe constituents. To load it into your algorithm, follow these steps:</p>
 
+<ol>
+    <li>Define a <a href="/docs/v2/writing-algorithms/universes/custom-universes#03-Define-Custom-Universe-Types">custom universe type</a>.</li>
+    <div class="section-example-container">
+    <pre class="python">class CrunchDaoSkeleton(PythonData):
+    
+    def GetSource(self, config, date, isLive):
+        return SubscriptionDataSource("https://tournament.crunchdao.com/data/skeleton.csv", SubscriptionTransportMedium.RemoteFile)
+
+    def Reader(self, config, line, date, isLive):
+        if not line[0].isdigit(): return None
+        skeleton = CrunchDaoSkeleton()
+        skeleton.Symbol = config.Symbol
+
+        try:
+            csv = line.split(',')
+            skeleton.EndTime = (datetime.strptime(csv[0], "%Y-%m-%d")).date() 
+            skeleton.Symbol =  Symbol(SecurityIdentifier.GenerateEquity(csv[1], Market.USA, mappingResolveDate=skeleton.Time), csv[1])
+            skeleton["Ticker"] = csv[1]
+
+        except ValueError:
+            # Do nothing
+            return None
+
+        return skeleton</pre>
+    </div>
+
+    <li>In the <code>Initialize</code> method, <a href='/docs/v2/writing-algorithms/universes/custom-universes#04-Initialize-Custom-Universes'>initialize the universe</a>.</li>
+
+    <div class="section-example-container">
+        <pre class="python">self.AddUniverse(CrunchDaoSkeleton, "CrunchDaoSkeleton", Resolution.Daily, self.select_symbols)</pre>
+    </div>
+
+    <li>In the algorithm class, define the selector function to select all of the securities in the skeleton file.</li>
+    <div class="section-example-container">
+        <pre class="python">def select_symbols(self, data: List[CrunchDaoSkeleton]) -> List[Symbol]:
+    return [x.Symbol for x in data]</pre>
+    </div>
