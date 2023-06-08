@@ -902,64 +902,6 @@ Copyright QuantConnect 2023
  </a>
  in the Docker documentation.
 </p>
-<p>
- If your Mac has an M1 chip, follow these additional steps:
-</p>
-<ol>
- <li>
-  Open a terminal and run the following commands to pull the AMD46 version of LEAN and Research:
-  <div class="cli section-example-container">
-   <pre>$ docker pull --platform linux/amd64 quantconnect/lean
-$ docker pull --platform linux/amd64 quantconnect/research</pre>
-  </div>
-  <p>
-   The first command enables you to run the AMD64 LEAN image by taking advantages of the
-   <a href="https://www.qemu.org/" rel="nofollow" target="_blank">
-    qemu
-   </a>
-   emulator.
-  </p>
- </li>
- <li>
-  To achieve the best performance and stability, use
-  <a href="https://github.com/abiosoft/colima" rel="nofollow" target="_blank">
-   colima
-  </a>
-  , which uses the latest stable qemu version.
-  <div class="cli section-example-container">
-   <pre>$ brew install colima
-$ colima start --cpu 4 --memory 8</pre>
-  </div>
-  <p>
-   Without colima, in some cases, the container hangs.
-  </p>
-  <li>
-   To verify it's working correctly, run:
-  </li>
-  <div class="cli section-example-container">
-   <pre>$ qemu-img --version
-qemu-img version 7.1.0 (or higher)
-$ docker context ls
-	should show colima as selected
-$ docker inspect quantconnect/lean
-	should show amd64 arch
-$ docker run -it --entrypoint bash quantconnect/lean
-	$ uname -a
-		should show x86_x64/amd64 or similar</pre>
-  </div>
-  <li>
-   If
-   <code>
-    docker context ls
-   </code>
-   does not show colima, run
-   <code>
-    colima start --edit
-   </code>
-   and make sure docker is the selected context.
-  </li>
- </li>
-</ol>
 <h4>
  Install on Linux
 </h4>
@@ -1033,67 +975,6 @@ $ docker pull --platform linux/amd64 quantconnect/research</pre>
 <p>
  The following sections explain how to solve some issues you may encounter while installing Local Platform.
 </p>
-<h4>
- Docker with M1/M2/Colima
-</h4>
-<p>
- If your Mac has an M1 chip, follow these additional steps:
-</p>
-<ol>
- <li>
-  Open a terminal and run the following commands to pull the AMD46 version of LEAN and Research:
-  <div class="cli section-example-container">
-   <pre>$ docker pull --platform linux/amd64 quantconnect/lean
-$ docker pull --platform linux/amd64 quantconnect/research</pre>
-  </div>
-  <p>
-   The first command enables you to run the AMD64 LEAN image by taking advantages of the
-   <a href="https://www.qemu.org/" rel="nofollow" target="_blank">
-    qemu
-   </a>
-   emulator.
-  </p>
- </li>
- <li>
-  To achieve the best performance and stability, use
-  <a href="https://github.com/abiosoft/colima" rel="nofollow" target="_blank">
-   colima
-  </a>
-  , which uses the latest stable qemu version.
-  <div class="cli section-example-container">
-   <pre>$ brew install colima
-$ colima start --cpu 4 --memory 8</pre>
-  </div>
-  <p>
-   Without colima, in some cases, the container hangs.
-  </p>
-  <li>
-   To verify it's working correctly, run:
-  </li>
-  <div class="cli section-example-container">
-   <pre>$ qemu-img --version
-qemu-img version 7.1.0 (or higher)
-$ docker context ls
-	should show colima as selected
-$ docker inspect quantconnect/lean
-	should show amd64 arch
-$ docker run -it --entrypoint bash quantconnect/lean
-	$ uname -a
-		should show x86_x64/amd64 or similar</pre>
-  </div>
-  <li>
-   If
-   <code>
-    docker context ls
-   </code>
-   does not show colima, run
-   <code>
-    colima start --edit
-   </code>
-   and make sure docker is the selected context.
-  </li>
- </li>
-</ol>
 <h4>
  Docker with WSL 2 Features
 </h4>

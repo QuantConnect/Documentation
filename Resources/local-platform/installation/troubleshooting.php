@@ -1,10 +1,5 @@
 <p>The following sections explain how to solve some issues you may encounter while installing Local Platform.</p>
 
-<? if ($os == "mac") { ?>
-<h4>M1 or M2 Chips</h4>
-<? include(DOCS_RESOURCES."/cli/install/docker/m1.html"); ?>
-<? } ?>
-
 <? if ($os == "windows") { ?>
 <h4>Docker with WSL 2 Features</h4>
 <? include(DOCS_RESOURCES."/cli/install/docker/wsl2.html"); ?>
