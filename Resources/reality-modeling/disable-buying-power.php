@@ -1,21 +1,26 @@
 <p>In live trading, orders can pass the validations associated with buying power in LEAN and let your brokerage decide to accept or reject them. To disable the validations of the <a href='/docs/v2/writing-algorithms/reality-modeling/buying-power#08-Default-Behavior'>default buying power model</a>, use the <code>NullBuyingPowerModel</code>.</p>
 
-<p>The <a href='/docs/v2/writing-algorithms/reality-modeling/buying-power#08-Default-Behavior'>default position group buying power models</a> are helpful for option trading strategies. However, it can be counterproductive if the option strategy is not supported. To disable the validations of the <a href='/docs/v2/writing-algorithms/reality-modeling/buying-power#08-Default-Behavior'>default position group buying power model</a>, use the <code>NullSecurityPositionGroupModel</code>.
+<p>The <a href='/docs/v2/writing-algorithms/reality-modeling/buying-power#08-Default-Behavior'>default position group buying power models</a> are helpful for Option trading strategies. However, it can be counterproductive if it's not a <a href='/docs/v2/writing-algorithms/trading-and-orders/option-strategies'>supported Option strategy</a>. To disable the validations of the default position group buying power model, use the <code>NullSecurityPositionGroupModel</code>.</p>
 
-<p>To set the <code>NullBuyingPowerModel</code> for a security subscription, call the <code>SetBuyingPowerModel</code> method with the <code>BuyingPowerModel.Null</code> argument. To set the <code>NullSecurityPositionGroupModel</code> for the portfolio, call the <code>SetPositions</code> with the <code>SecurityPositionGroupModel.Null</code> argument.</p>
+<p>To set the <code>NullBuyingPowerModel</code> for a security subscription, call the <code>SetBuyingPowerModel</code> method with the <code>BuyingPowerModel.Null</code> argument. To set the <code>NullSecurityPositionGroupModel</code> for the portfolio, call the <code>SetPositions</code> method with the <code>SecurityPositionGroupModel.Null</code> argument.</p>
 <div class="section-example-container">
 <pre class="csharp">// In Initialize
 Portfolio.SetPositions(SecurityPositionGroupModel.Null);
+
 var equity = AddEquity("SPY");
-equity.SetBuyingPowerModel(BuyingPowerModel.Null);</pre>
+equity.SetBuyingPowerModel(BuyingPowerModel.Null);
+// Alias: 
+// equity.SetMarginModel(SecurityMarginModel.Null);</pre>
 <pre class="python"># In Initialize
 self.Portfolio.SetPositions(SecurityPositionGroupModel.Null)
-equity = self.AddEquity("SPY")
-equity.SetBuyingPowerModel(BuyingPowerModel.Null)</pre>
-</div>
-<p>You can call the <code>SetMarginModel</code> method with the <code>SecurityMarginModel.Null</code> argument to achive the same result.<br></p>
 
-<p>You can also set the asset <code>NullBuyingPowerModel</code> in a security initializer. In order to set the buying power of securities in the security initializer, call <code>SetSecurityInitializer</code> before you create security subscriptions and after you call <code>SetBrokerageModel</code>.<br></p>
+equity = self.AddEquity("SPY")
+equity.SetBuyingPowerModel(BuyingPowerModel.Null)
+# Alias:
+# equity.SetMarginModel(SecurityMarginModel.Null)</pre>
+</div>
+
+<p>You can also set the asset <code>NullBuyingPowerModel</code> in a <a href='/docs/v2/writing-algorithms/initialization#07-Set-Security-Initializer'>security initializer</a>. If your algorithm has a universe, use the security initializer technique. In order to set the buying power of securities in the security initializer, call <code>SetSecurityInitializer</code> before you create security subscriptions and after you call <code>SetBrokerageModel</code>.<br></p>
 
 <?
 $overwriteCodePy = "security.SetBuyingPowerModel(BuyingPowerModel.Null)";
