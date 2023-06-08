@@ -3,9 +3,6 @@
 <ol>
     <li><a href='<?=$installDockerLink?>'>Install Docker</a>.</li>
     <li>Open a terminal and download the latest LEAN image.</li>
-    <? if ($os == "mac") { ?>
-    <p>If your Mac has an M1 or M2 chip, follow the steps in <a href='/docs/v2/local-platform/installation/install-on-macos#06-Troubleshooting'>Troubleshooting</a>. Otherwise, run:</p>
-    <? } ?>
     <div class="cli section-example-container">
     	<pre>$ docker pull quantconnect/lean</pre>
     </div>
