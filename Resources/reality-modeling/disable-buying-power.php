@@ -1,4 +1,6 @@
-<p>In live trading, orders can pass the validations associated with buying power in LEAN and let your brokerage decide to accept or reject them. To disable the validations of the <a href='/docs/v2/writing-algorithms/reality-modeling/buying-power#08-Default-Behavior'>default buying power model</a>, use the <code>NullBuyingPowerModel</code>.</p>
+<p>Algorithms can elect to disable order margin checks, to let the brokerage decide to accept or reject the trades. This is helpful 
+  in live trading where you might have a more permissive brokerage margin allowance unsupported by QuantConnect.
+  To disable the validations of the <a href='/docs/v2/writing-algorithms/reality-modeling/buying-power#08-Default-Behavior'>default buying power model</a>, use the <code>NullBuyingPowerModel</code>.</p>
 
 <p>The <a href='/docs/v2/writing-algorithms/reality-modeling/buying-power#08-Default-Behavior'>default position group buying power models</a> are helpful for Option trading strategies. However, it can be counterproductive if it's not a <a href='/docs/v2/writing-algorithms/trading-and-orders/option-strategies'>supported Option strategy</a>. To disable the validations of the default position group buying power model, use the <code>NullSecurityPositionGroupModel</code>.</p>
 
