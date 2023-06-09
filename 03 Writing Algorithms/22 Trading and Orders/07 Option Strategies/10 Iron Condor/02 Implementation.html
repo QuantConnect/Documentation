@@ -9,86 +9,98 @@ public override void Initialize()
 {
     SetStartDate(2017, 2, 1);
     SetEndDate(2017, 3, 1);
-    SetCash(100000);
+    SetCash(500000);
 
-    var option = AddOption("GOOG", Resolution.Minute);
+    var option = AddOption("GOOG");
     _symbol = option.Symbol;
-    option.SetFilter(universe =&gt; universe.Strikes(-10, 10)
-                                         .Expiration(TimeSpan.FromDays(0), TimeSpan.FromDays(30)));
+    option.SetFilter(universe =&gt;
+        universe.IncludeWeeklys().Strikes(-15, 15).Expiration(0, 40));
 }</pre>
         <pre class="python">def Initialize(self) -&gt; None:
     self.SetStartDate(2017, 2, 1)
     self.SetEndDate(2017, 3, 1)
-    self.SetCash(300000)
+    self.SetCash(500000)
 
-    option = self.AddOption("GOOG", Resolution.Minute)
+    option = self.AddOption("GOOG")
     self.symbol = option.Symbol
-    option.SetFilter(-10, 10, timedelta(0), timedelta(30))</pre>
+    option.SetFilter(lambda universe:
+        universe.IncludeWeeklys().Strikes(-15, 15).Expiration(0, 40))</pre>
     </div>
 
     <li>In the <code>OnData</code> method, select the contracts in the strategy legs.</li>
     <div class="section-example-container">
         <pre class="csharp">public override void OnData(Slice slice)
 {
-    if (Portfolio.Invested) return;
+    if (Portfolio[_symbol.Underlying].Invested)
+    {
+        Liquidate();
+    }
 
-    // Get the OptionChain
-    var chain = slice.OptionChains.get(_symbol, null);
-    if (chain == null || chain.Count() == 0) return;
+    if (Portfolio.Invested || !IsMarketOpen(_symbol)) return;
 
-    // Separate the call and put contracts
-    var calls = chain.Where(x =&gt; x.Right == OptionRight.Call);
-    var puts = chain.Where(x =&gt; x.Right == OptionRight.Put);
-    if (calls.Count() == 0 || puts.Count() == 0) return;
+    if (!slice.OptionChains.TryGetValue(_symbol, out var chain)) return;
 
-    // Sort the contracts by their strike prices
-    var callContracts = calls.OrderByDescending(x =&gt; x.Strike);
-    var putContracts = puts.OrderBy(x =&gt; x.Strike);
+    // Find put and call contracts with the farthest expiry
+    var expiry = chain.Max(x =&gt; x.Expiry);
+    var contracts = chain.Where(x =&gt; x.Expiry == expiry).OrderBy(x => x.Strike);
 
-    // Select the contracts in the strategy legs
-    var farCallContract = callContracts.First();
-    var farPutContract = putContracts.First();
-    var nearCallContract = callContracts.Skip(2).First();
-    var nearPutContract = putContracts.Skip(2).First();</pre>
+    var putContracts = contracts.Where(x =&gt; x.Right == OptionRight.Put).ToArray();
+    var callContracts = contracts.Where(x =&gt; x.Right == OptionRight.Call).ToArray();
+
+    if (putContracts.Length &lt; 10 || putContracts.Length &lt; 10) return;
+
+    // Select the strikes in the strategy legs
+    var farPut = putContracts[0].Strike;
+    var nearPut = putContracts[10].Strike;
+    var nearCall = callContracts[^10].Strike;
+    var farCall = callContracts[^1].Strike;</pre>
         <pre class="python">def OnData(self, slice: Slice) -&gt; None:
-    if self.Portfolio.Invested: return
+    if self.Portfolio[self.symbol.Underlying].Invested:
+        self.Liquidate()
 
-    # Get the OptionChain
-    chain = slice.OptionChains.get(self.symbol, None)
-    if not chain: return
+    if self.Portfolio.Invested or not self.IsMarketOpen(self.symbol):
+        return
 
-    # Separate the call and put contracts
-    call = [i for i in chain if i.Right == 0]
-    put = [i for i in chain if i.Right == 1]
-    if len(call) == 0 or len(put) == 0 : return
+    chain = slice.OptionChains.get(self.symbol)
+    if not chain:
+        return
 
-    # Sort the contracts by their strike prices
-    call_contracts = sorted(call, key = lambda x: x.Strike, reverse=True)
-    put_contracts = sorted(put, key = lambda x: x.Strike)
+    # Find put and call contracts with the farthest expiry       
+    expiry = max([x.Expiry for x in chain])
+    chain = sorted([x for x in chain if x.Expiry == expiry], key = lambda x: x.Strike)
 
-    # Select the contracts in the strategy legs
-    near_put = call_contracts[1]
-    near_call = put_contracts[1]
-    far_call = call_contracts[0]
-    far_put = put_contracts[0]</pre>
+    put_contracts = [x for x in chain if x.Right == OptionRight.Put]
+    call_contracts = [x for x in chain if x.Right == OptionRight.Call]
+
+    if len(call_contracts) &lt; 10 or len(put_contracts) &lt; 10:
+        return
+
+    # Select the strikes in the strategy legs
+    far_put = put_contracts[0].Strike
+    near_put = put_contracts[10].Strike
+    near_call = call_contracts[-10].Strike
+    far_call = call_contracts[-1].Strike</pre>
     </div>
 
-    <li>In the <code>OnData</code> method, create the order legs and then call the <a href='/docs/v2/writing-algorithms/trading-and-orders/order-types/combo-market-orders'>ComboMarketOrder</a> method.</li>
+    <li>In the <code>OnData</code> method, call the <code>OptionStrategies.IronCondor</code> method and then submit the order.</li>
     <div class="section-example-container">
-        <pre class="csharp">var legs = new List&lt;Leg&gt;
-{
-    Leg.Create(nearCallContract.Symbol, 1),
-    Leg.Create(nearPutContract.Symbol, 1),
-    Leg.Create(farCallContract.Symbol, -1),
-    Leg.Create(farPutContract.Symbol, -1)
-};
-ComboMarketOrder(legs, 1);</pre>
-        <pre class="python">legs = [
-    Leg.Create(near_call.Symbol, 1),
-    Leg.Create(near_put.Symbol, 1),
-    Leg.Create(far_call.Symbol, -1),
-    Leg.Create(far_put.Symbol, -1)
-]
-self.ComboMarketOrder(legs, 1)</pre>
+        <pre class="csharp">var ironCondor = OptionStrategies.IronCondor(
+    _symbol, 
+    farPut,
+    nearPut,
+    nearCall,
+    nearPut,
+    expiry);
+
+Buy(ironCondor, 2);</pre>
+        <pre class="python">iron_condor = OptionStrategies.IronCondor(
+    self.symbol, 
+    far_put,
+    near_put,
+    near_call,
+    far_call,
+    expiry)
+
+self.Buy(iron_condor, 2)</pre>
     </div>
 </ol>
