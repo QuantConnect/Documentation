@@ -158,10 +158,10 @@ def WriteToHtmlFile(content: str, name: str) -> Path:
     except Exception as e:
         raise Exception(f"WriteToFile(): Unable to write content to {filepath} - {e}")
 
-def PdfConversion(html_path: Union[Path, str], css: Union[str, List[str]] = None) -> None:
+def PdfConversion(html_path: Union[Path, str], language: str, css: Union[str, List[str]] = None) -> None:
     try:
-        pdf_name = str(html_path)[:-5] + '.pdf'
-        pdfkit.from_file(str(html_path), pdf_name, css=css)
+        pdf_name = f'{str(html_path)[:-5]}-{"CSharp" if language == "csharp" else "Python"}.pdf'
+        pdfkit.from_file(str(html_path), pdf_name, css=f'{css}/pdf-styles-{language}.css')
         print(f"PdfConversion(): Successfully converting {html_path} to {pdf_name}")
     except Exception as e:
         # Do not break with raising exceptions in case due to warnings
@@ -206,7 +206,7 @@ def Run(date: datetime) -> None:
         table_of_content = TitlePageAndTableOfContentGeneration(branch["name"])
         html_path = WriteToHtmlFile(table_of_content + html_content, branch["name"].title().replace(' ', '-'))
         for language in ["csharp", "py"]:
-            PdfConversion(html_path, css=f'{CSS_DIR}/pdf-styles-{language}.css')
+            PdfConversion(html_path, language=language, css=CSS_DIR)
         if i == LAST_SECTION:
             break
         i += 1
