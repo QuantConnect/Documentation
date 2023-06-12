@@ -34,7 +34,8 @@ EXCLUSIONS = [
     "3.7.11.3.",
     "13.1."
 ]   # these are unique in Writing Algorithm
-IMAGE_DIR = "../single-page/images"
+IMAGE_DIR = "../single-page/images"     # relative path from file's perspective
+CSS_DIR = "single-page/css"
 sections = {}
 
 def GetContent(date: str) -> dict:
@@ -93,7 +94,7 @@ def Generate(branch: Union[dict, list], this_section: str) -> Tuple[str, str]:
                 # Completion of links
                 c = f"""{content['content'].strip().replace("a href='/", "a href='https://www.quantconnect.com/docs/v2/").replace('a href="/', 'a href="/https://www.quantconnect.com/docs/v2/')}"""
                 # fix any html unclosed tags
-                soup = BeautifulSoup(c)
+                soup = BeautifulSoup(c, features="lxml")
                 html += f"""{soup.prettify()}
 """
 
@@ -157,11 +158,10 @@ def WriteToHtmlFile(content: str, name: str) -> Path:
     except Exception as e:
         raise Exception(f"WriteToFile(): Unable to write content to {filepath} - {e}")
 
-def PdfConversion(html_path: Union[Path, str]) -> None:
+def PdfConversion(html_path: Union[Path, str], css: Union[str, List[str]] = None) -> None:
     try:
         pdf_name = str(html_path)[:-5] + '.pdf'
-        options = {'enable-local-file-access': None}
-        pdfkit.from_file(str(html_path), pdf_name, options=options)
+        pdfkit.from_file(str(html_path), pdf_name, css=css)
         print(f"PdfConversion(): Successfully converting {html_path} to {pdf_name}")
     except Exception as e:
         # Do not break with raising exceptions in case due to warnings
@@ -169,7 +169,7 @@ def PdfConversion(html_path: Union[Path, str]) -> None:
         
 def ExtractImage(content: str):
     conversions = {}
-    soup = BeautifulSoup(content)
+    soup = BeautifulSoup(content, features="lxml")
     images = soup.findAll('img')
     
     for image in images:
@@ -205,7 +205,8 @@ def Run(date: datetime) -> None:
         html_content = Knit(branch_content, branch["name"])
         table_of_content = TitlePageAndTableOfContentGeneration(branch["name"])
         html_path = WriteToHtmlFile(table_of_content + html_content, branch["name"].title().replace(' ', '-'))
-        PdfConversion(html_path)
+        for language in ["csharp", "py"]:
+            PdfConversion(html_path, css=f'{CSS_DIR}/pdf-styles-{language}.css')
         if i == LAST_SECTION:
             break
         i += 1
