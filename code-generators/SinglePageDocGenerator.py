@@ -1,13 +1,14 @@
+import base64
 from bs4 import BeautifulSoup
 from datetime import datetime
 import json
 import os
 from pathlib import Path
 import pdfkit
-from urllib.request import urlopen, urlretrieve
 import sys
 import time
 from typing import Union, Tuple, List
+from urllib.request import urlopen, urlretrieve
 
 SOURCE_URL = "https://s3.amazonaws.com/cdn.quantconnect.com/web/cache"
 DESTINATION_PATH = "single-page"
@@ -31,7 +32,7 @@ EXCLUSIONS = [
     "13.1."
 ]   # these are unique in Writing Algorithm
 COVER_PAGE_DIR = "single-page/cover-page"
-IMAGE_DIR = "../single-page/images"     # relative path from file's perspective
+IMAGE_DIR = "single-page/images"
 CSS_DIR = "single-page/css"
 sections = {}
 
@@ -116,7 +117,8 @@ def Knit(content: list, name: str) -> str:
         
         images = ExtractImage(content)
         for img_url, img_path in images.items():
-            content = content.replace(img_url, img_path)
+            base64_img = base64.b64encode(open(img_path, 'rb').read()).decode()
+            content = content.replace(img_url, f'data:;base64,{base64_img}')
         
         html += content
         
@@ -166,7 +168,7 @@ def PdfConversion(html_path: Union[Path, str], language: str, css: Union[str, Li
         # Do not break with raising exceptions in case due to warnings
         print(f"PdfConversion(): Unable to converting {html_path} - {e}")
         
-def ExtractImage(content: str):
+def ExtractImage(content: str) -> dict:
     conversions = {}
     soup = BeautifulSoup(content, features="lxml")
     images = soup.findAll('img')
@@ -174,7 +176,7 @@ def ExtractImage(content: str):
     for image in images:
         url = image["src"]
         name = f'{IMAGE_DIR}/{url.split("/")[-1].split("?")[0]}'
-        if os.path.exists(name):
+        if not os.path.exists(name):
             urlretrieve(url, name)
         conversions[url] = name
     
