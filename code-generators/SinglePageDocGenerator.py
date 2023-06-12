@@ -14,10 +14,6 @@ DESTINATION_PATH = "single-page"
 OUTPUT_FILENAME = "Quantconnect-%s"
 DEFAULT_VERSION = "2023.01.17"
 LAST_SECTION = 6
-TITLE_PAGE = f"""<h1>QuantConnect Documentation - %s</h1>
-<h4>Created on {datetime.utcnow().strftime("%m/%d/%Y")}</h4>
-Copyright QuantConnect 2023
-"""
 PAGE_BREAKER = '<p style="page-break-after: always;">&nbsp;</p>'
 EXCLUSIONS = [
     "3.7.6.3.",
@@ -34,6 +30,7 @@ EXCLUSIONS = [
     "3.7.11.3.",
     "13.1."
 ]   # these are unique in Writing Algorithm
+COVER_PAGE_DIR = "single-page/cover-page"
 IMAGE_DIR = "../single-page/images"     # relative path from file's perspective
 CSS_DIR = "single-page/css"
 sections = {}
@@ -129,11 +126,12 @@ def Knit(content: list, name: str) -> str:
     except Exception as e:
         raise Exception(f"Knit(): Unable to knit documentation content - {e}")
     
-def TitlePageAndTableOfContentGeneration(topic: str) -> str:
+def CoverPageAndTableOfContentGeneration(topic: str) -> str:
     global sections
     linebreaker = "\n"
+    cover_page = open(f'{COVER_PAGE_DIR}/{topic.lower().replace(" ", "-")}.html', 'r', encoding='utf-8').read()
     
-    return f"""{TITLE_PAGE % topic}
+    return f"""{cover_page}
 {PAGE_BREAKER}
 <h3>Table of Content</h3>
 <nav>
@@ -161,7 +159,8 @@ def WriteToHtmlFile(content: str, name: str) -> Path:
 def PdfConversion(html_path: Union[Path, str], language: str, css: Union[str, List[str]] = None) -> None:
     try:
         pdf_name = f'{str(html_path)[:-5]}-{"CSharp" if language == "csharp" else "Python"}.pdf'
-        pdfkit.from_file(str(html_path), pdf_name, css=f'{css}/pdf-styles-{language}.css')
+        options = {'enable-local-file-access': None}
+        pdfkit.from_file(str(html_path), pdf_name, options=options, css=f'{css}/pdf-styles-{language}.css')
         print(f"PdfConversion(): Successfully converting {html_path} to {pdf_name}")
     except Exception as e:
         # Do not break with raising exceptions in case due to warnings
@@ -203,7 +202,7 @@ def Run(date: datetime) -> None:
     for branch in content["branches"].values():
         branch_content = list(branch["branches"].values()) if isinstance(branch["branches"], dict) else branch["branches"]
         html_content = Knit(branch_content, branch["name"])
-        table_of_content = TitlePageAndTableOfContentGeneration(branch["name"])
+        table_of_content = CoverPageAndTableOfContentGeneration(branch["name"])
         html_path = WriteToHtmlFile(table_of_content + html_content, branch["name"].title().replace(' ', '-'))
         for language in ["csharp", "py"]:
             PdfConversion(html_path, language=language, css=CSS_DIR)

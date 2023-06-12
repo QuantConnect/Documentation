@@ -1,0 +1,3998 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500&display=swap');
+
+        html {
+            font-family: 'Inter';
+        }
+    </style>
+    <div class="cover-content" style="margin: 10rem 0 0 10rem;">
+        <img class="cover-icon" src="images/lean-engine-docs-cover.png" alt="" width="80">
+        <h2 class= "cover-section-name" style="color: #484948;font-size:30px;font-weight: 400;margin-top:1rem;">LEAN ENGINE</h2>
+        <h1 class="cover-section-tagline" style="color:#1a1919;font-size:54px;font-weight: 400;margin:1rem 0">Radically open-source <br>algorithmic trading <br>engine</h1>
+        <h2 class="cover-section-description" style="color: #484948;font-size:32px;font-weight: 400;line-height: 1.4;">Multi-asset with full portfolio modeling, <br>LEAN is data agnostic, empowering you <br>to explore faster than ever before.</h2>
+    </div>
+</body>
+</html>
+<p style="page-break-after: always;">&nbsp;</p>
+<h3>Table of Content</h3>
+<nav>
+<ul>
+<li><a href="#1" class="toc-h1" target="_parent">1 Getting Started</a></li>
+<li><a href="#2" class="toc-h1" target="_parent">2 Contributions</a></li>
+<li><a href="#2.1" class="toc-h2" target="_parent">2.1 Datasets</a></li>
+<li><a href="#2.1.1" class="toc-h3" target="_parent">2.1.1 Key Concepts</a></li>
+<li><a href="#2.1.2" class="toc-h3" target="_parent">2.1.2 Defining Data Models</a></li>
+<li><a href="#2.1.3" class="toc-h3" target="_parent">2.1.3 Rendering Data</a></li>
+<li><a href="#2.1.3.1" class="toc-h4" target="_parent">2.1.3.1 Rendering Data with Python</a></li>
+<li><a href="#2.1.3.2" class="toc-h4" target="_parent">2.1.3.2 Rendering Data with CSharp</a></li>
+<li><a href="#2.1.3.3" class="toc-h4" target="_parent">2.1.3.3 Rendering Data with Notebooks</a></li>
+<li><a href="#2.1.4" class="toc-h3" target="_parent">2.1.4 Testing Data Models</a></li>
+<li><a href="#2.1.5" class="toc-h3" target="_parent">2.1.5 Data Documentation</a></li>
+<li><a href="#2.2" class="toc-h2" target="_parent">2.2 Brokerages</a></li>
+<li><a href="#2.2.1" class="toc-h3" target="_parent">2.2.1 Setting Up Your Environment</a></li>
+<li><a href="#2.2.2" class="toc-h3" target="_parent">2.2.2 Laying the Foundation</a></li>
+<li><a href="#2.2.3" class="toc-h3" target="_parent">2.2.3 Creating the Brokerage</a></li>
+<li><a href="#2.2.4" class="toc-h3" target="_parent">2.2.4 Translating Symbol Conventions</a></li>
+<li><a href="#2.2.5" class="toc-h3" target="_parent">2.2.5 Describing Brokerage Limitations</a></li>
+<li><a href="#2.2.6" class="toc-h3" target="_parent">2.2.6 Enabling Live Data Streaming</a></li>
+<li><a href="#2.2.7" class="toc-h3" target="_parent">2.2.7 Enabling Historical Data</a></li>
+<li><a href="#2.2.8" class="toc-h3" target="_parent">2.2.8 Downloading Data</a></li>
+<li><a href="#2.2.9" class="toc-h3" target="_parent">2.2.9 Modeling Fee Structures</a></li>
+<li><a href="#2.2.10" class="toc-h3" target="_parent">2.2.10 Updating the Algorithm API</a></li>
+<li><a href="#3" class="toc-h1" target="_parent">3 Statistics</a></li>
+<li><a href="#3.1" class="toc-h2" target="_parent">3.1 Capacity</a></li>
+<li><a href="#4" class="toc-h1" target="_parent">4 Class Reference</a></li>
+</ul>
+</nav>
+<p style="page-break-after: always;">&nbsp;</p>
+<section id="1"><h3>1 Getting Started</h3></section>
+
+<h3>Introduction</h3>
+<html>
+ <body>
+  <p>
+   Lean Engine is an open-source algorithmic trading engine built for easy strategy research, backtesting and live trading. We integrate with common data providers and brokerages so you can quickly deploy algorithmic trading strategies.
+  </p>
+  <p>
+   The core of the LEAN Engine is written in C#; but it operates seamlessly on Linux, Mac and Windows operating systems. It supports algorithms written in Python 3.8 or C#. Lean drives the web-based algorithmic trading platform
+   <a href="https://www.quantconnect.com/">
+    QuantConnect
+   </a>
+   .
+  </p>
+ </body>
+</html>
+
+<h3>System Overview</h3>
+<html>
+ <body>
+  <img class="docs-image" src="../single-page/images/hdC33E0fODJrwAAAABJRU5ErkJggg=="/>
+  <p>
+   The Engine is broken into many modular pieces which can be extended without touching other files. The modules are configured in
+   <code>
+    config.json
+   </code>
+   as set "environments". Through these environments, you can control LEAN to operate in the mode required.
+  </p>
+  <p>
+   The most important plugins are:
+  </p>
+  <h4>
+   Result Processing
+  </h4>
+  <p>
+   An
+   <code>
+    IResultHandler
+   </code>
+   that handle all messages from the algorithmic trading engine. Decide what should be sent, and where the messages should go. The result processing system can send messages to a local GUI, or the web interface.
+  </p>
+  <h4>
+   Datafeed Sourcing
+  </h4>
+  <p>
+   An
+   <code>
+    IDataFeed
+   </code>
+   that connect and download the data required for the algorithmic trading engine. For backtesting this sources files from the disk, for live trading, it connects to a stream and generates the data objects.
+  </p>
+  <h4>
+   Transaction Processing
+  </h4>
+  <p>
+   An
+   <code>
+    ITransactionHandler
+   </code>
+   that process new order requests; either using the fill models provided by the algorithm or with an actual brokerage. Send the processed orders back to the algorithm's portfolio to be filled.
+  </p>
+  <h4>
+   Realtime Event Management
+  </h4>
+  <p>
+   An
+   <code>
+    IRealtimeHandler
+   </code>
+   that generate real-time events - such as the end of day events. Trigger callbacks to real-time event handlers. For backtesting, this is mocked-up a works on simulated time.
+  </p>
+  <h4>
+   Algorithm State Setup
+  </h4>
+  <p>
+   An
+   <code>
+    ISetupHandler
+   </code>
+   that configure the algorithm cash, portfolio and data requested. Initialize all state parameters required.
+  </p>
+  <p>
+   These are all configurable from the
+   <code>
+    config.json
+   </code>
+   file in the
+   <code>
+    Launcher
+   </code>
+   Project.
+  </p>
+ </body>
+</html>
+
+<h3>Developing with Lean CLI</h3>
+<html>
+ <body>
+  <p>
+   QuantConnect recommends
+   <a href="https://github.com/QuantConnect/lean-cli">
+    using Lean CLI
+   </a>
+   for local algorithm development. This is because it is a great tool for working with your algorithms locally while still being able to deploy to the cloud and have access to Lean data. It is also able to run algorithms on your local machine with your data through our official docker images.
+  </p>
+  <p>
+   Reference QuantConnects documentation on Lean CLI
+   <a href="/https://www.quantconnect.com/docs/v2/docs/v2/lean-cli/key-concepts/getting-started">
+    here
+   </a>
+   .
+  </p>
+ </body>
+</html>
+
+<h3>Installation Instructions</h3>
+<html>
+ <body>
+  <p>
+   This section will cover how to install lean locally for you to use in your own environment.
+  </p>
+  <p>
+   Refer to the following readme files for a detailed guide regarding using your local IDE with Lean:
+  </p>
+  <ul>
+   <li>
+    <a href="https://github.com/QuantConnect/Lean/blob/master/.vscode/readme.md">
+     VS Code
+    </a>
+   </li>
+   <li>
+    <a href="https://github.com/QuantConnect/Lean/blob/master/.vs/readme.md">
+     VS
+    </a>
+   </li>
+  </ul>
+  <p>
+   To install locally, download the zip file with the
+   <a href="https://github.com/QuantConnect/Lean/archive/master.zip">
+    latest master
+   </a>
+   and unzip it to your favorite location. Alternatively, install
+   <a href="https://git-scm.com/downloads">
+    Git
+   </a>
+   and clone the repo:
+  </p>
+  <div class="cli section-example-container">
+   <pre>$ git clone https://github.com/QuantConnect/Lean.git
+$ cd Lean</pre>
+  </div>
+  <h4>
+   Mac OS
+  </h4>
+  <ol>
+   <li>
+    Install
+    <a href="https://www.visualstudio.com/vs/visual-studio-mac/">
+     Visual Studio for Mac
+    </a>
+   </li>
+   <li>
+    Open
+    <code>
+     QuantConnect.Lean.sln
+    </code>
+    in Visual Studio
+   </li>
+  </ol>
+  <p>
+   Visual Studio will automatically start to restore the Nuget packages. If not, in the menu bar,
+  </p>
+  <ol>
+   <li>
+    click
+    <code>
+     Project &gt; Restore NuGet Packages
+    </code>
+   </li>
+   <li>
+    In the menu bar, click
+    <code>
+     Run &gt; Start Debugging
+    </code>
+   </li>
+  </ol>
+  <p>
+   Alternatively, run the compiled
+   <code>
+    dll
+   </code>
+   file:
+  </p>
+  <ol>
+   <li>
+    click
+    <code>
+     Build &gt; Build All
+    </code>
+   </li>
+   <li>
+    run the following code:
+   </li>
+   <div class="cli section-example-container">
+    <pre>$ cd Lean/Launcher/bin/Debug
+$ dotnet QuantConnect.Lean.Launcher.dll</pre>
+   </div>
+  </ol>
+  <h4>
+   Linux (Debian, Ubuntu)
+  </h4>
+  <ol>
+   <li>
+    Install
+    <a href="https://docs.microsoft.com/en-us/dotnet/core/install/linux">
+     dotnet 6
+    </a>
+   </li>
+   <li>
+    Compile Lean Solution
+   </li>
+   <div class="cli section-example-container">
+    <pre>$ dotnet build QuantConnect.Lean.sln</pre>
+   </div>
+   <li>
+    Run Lean
+   </li>
+   <div class="cli section-example-container">
+    <pre>$ cd Launcher/bin/Debug
+$ dotnet QuantConnect.Lean.Launcher.dll</pre>
+   </div>
+  </ol>
+  <p>
+   To set up Interactive Brokers integration, make sure you fix the
+   <code>
+    ib-tws-dir
+   </code>
+   and
+   <code>
+    ib-controller-dir
+   </code>
+   fields in the
+   <code>
+    config.json
+   </code>
+   file with the actual paths to the TWS and the IBController folders respectively. If after all you still receive connection refuse error, try changing the
+   <code>
+    ib-port
+   </code>
+   field in the
+   <code>
+    config.json
+   </code>
+   file from 4002 to 4001 to match the settings in your IBGateway/TWS.
+  </p>
+  <h4>
+   Windows
+  </h4>
+  <ol>
+   <li>
+    Install
+    <a href="https://www.visualstudio.com/en-us/downloads/download-visual-studio-vs.aspx">
+     Visual Studio
+    </a>
+   </li>
+   <li>
+    Open
+    <code>
+     QuantConnect.Lean.sln
+    </code>
+    in Visual Studio
+   </li>
+   <li>
+    Build the solution by clicking
+    <code>
+     Build Menu -&gt; Build Solution
+    </code>
+   </li>
+   <li>
+    Press
+    <code>
+     F5
+    </code>
+    to run
+   </li>
+  </ol>
+  <h4>
+   Python Support
+  </h4>
+  <p>
+   A full explanation of the Python installation process can be found in the
+   <a href="https://github.com/QuantConnect/Lean/tree/master/Algorithm.Python#quantconnect-python-algorithm-project">
+    Algorithm.Python
+   </a>
+   project.
+  </p>
+  <h4>
+   Local-Cloud Hybrid Development
+  </h4>
+  <p>
+   Seamlessly develop locally in your favorite development environment, with full autocomplete and debugging support to quickly and easily identify problems with your strategy. For more information please see the
+   <a href="/https://www.quantconnect.com/docs/v2/docs/v2/lean-cli">
+    CLI documentation
+   </a>
+   .
+  </p>
+ </body>
+</html>
+
+<h3>Sponsorships</h3>
+<html>
+ <body>
+  <p>
+   Sponsor QuantConnect to support our developers as we improve a revolutionary quantitative trading platform LEAN, in an open, collaborative way. We will continue to level the playing field with industry-grade tools and data accessibility. We use sponsorship funds to achieve the following goals:
+  </p>
+  <ul>
+   <li>
+    To continue the development of LEAN’s infrastructure
+   </li>
+   <li>
+    To create free, high-quality research and educational material
+   </li>
+   <li>
+    To provide continued support for our community
+   </li>
+   <li>
+    To make terabytes of data accessible in the Dataset Market
+   </li>
+   <li>
+    To bring LEAN to global financial markets
+   </li>
+   <li>
+    To increase live trading brokerage connections
+   </li>
+   <li>
+    To connect more individuals with financial institutions so individuals can gain income for their ideas at scale
+   </li>
+  </ul>
+  <p>
+   To become a QuantConnect sponsor, see the
+   <a href="https://github.com/sponsors/QuantConnect" rel="nofollow" target="_blank">
+    Sponsorship page
+   </a>
+   on GitHub.
+  </p>
+ </body>
+</html>
+
+<p style="page-break-after: always;">&nbsp;</p>
+<section id="2"><h3>2 Contributions</h3></section>
+
+<section id="2.1"><h3>2.1 Datasets</h3></section>
+
+<section id="2.1.1"><h3>2.1.1 Key Concepts</h3></section>
+
+<h3>Introduction</h3>
+<html>
+ <body>
+  <p>
+  </p>
+ </body>
+</html>
+
+<h3>Listing Process</h3>
+<html>
+ <body>
+  <p>
+   Datasets contributed to LEAN can be quickly listed in the QuantConnect Dataset Marketplace, and distributed for sale to more than 235,000 users in the QuantConnect community. To list a dataset, reach out to the
+   <a href="/https://www.quantconnect.com/docs/v2/contact">
+    QuantConnect Team
+   </a>
+   for  a quick review, then proceed with the data creation and process steps in the following pages.
+  </p>
+  <p>
+   Datasets must be well defined, with realistic timestamps for when the data was available ("point in time"). Ideally datasets need at least a 2 year track record and to be maintained by a reputable company. They should be accompanied with full documentation and code examples so the community can harness the data.
+  </p>
+ </body>
+</html>
+
+<h3>Data Sources</h3>
+<html>
+ <body>
+  <p>
+   The
+   <code>
+    GetSource
+   </code>
+   method of your dataset class instructs LEAN where to find the data. This method must return a
+   <a href="https://www.lean.io/docs/v2/lean-engine/class-reference/classQuantConnect_1_1Data_1_1SubscriptionDataSource.html" rel="nofollow" target="_blank">
+    SubscriptionDataSource
+   </a>
+   object, which contains the data location and format. We host your data, so the
+   <code>
+    transportMedium
+   </code>
+   must be
+   <code>
+    SubscriptionTransportMedium.LocalFile
+   </code>
+   and the
+   <code>
+    format
+   </code>
+   must be
+   <code>
+    FileFormat.Csv
+   </code>
+   .
+  </p>
+ </body>
+</html>
+
+<h3>TimeZones</h3>
+<html>
+ <body>
+  <p>
+   The
+   <code>
+    DataTimeZone
+   </code>
+   method of your data source class declares the time zone of your dataset. This method returns a
+   <a href="https://nodatime.org/" rel="nofollow" target="_blank">
+    NodaTime
+   </a>
+   .DateTimeZone object. If your dataset provides trading data and universe data, the
+   <code>
+    DataTimeZone
+   </code>
+   methods in your
+   <span class="public-file-name">
+    Lean.DataSource.&lt;vendorNameDatasetName&gt; / &lt;vendorNameDatasetName&gt;.cs
+   </span>
+   and
+   <span class="public-file-name">
+    Lean.DataSource.&lt;vendorNameDatasetName&gt; / &lt;vendorNameDatasetName&gt;Universe.cs
+   </span>
+   files must be the same.
+  </p>
+ </body>
+</html>
+
+<h3>Linked Datasets</h3>
+<html>
+ <body>
+  <p>
+   Your dataset is linked if any of the following statements are true:
+  </p>
+  <ul>
+   <li>
+    Your dataset describes market price properties of specific securities (for example, the closing price of AAPL).
+   </li>
+   <li>
+    Your alternative dataset is linked to individual securities (for example, the Wikipedia page view count of AAPL).
+   </li>
+  </ul>
+  <p>
+   Examples of unlinked datasets would be the weather of New York City where data is not relevant to a specific security.
+  </p>
+  <p>
+   When a dataset is linked, it need to be mapped to underlying assets through time. 
+    The
+   <code>
+    RequiresMapping
+   </code>
+   boolean instructs LEAN to handle the security and ticker mapping issues.
+  </p>
+ </body>
+</html>
+
+<p style="page-break-after: always;">&nbsp;</p>
+<section id="2.1.2"><h3>2.1.2 Defining Data Models</h3></section>
+
+<h3>Introduction</h3>
+<html>
+ <body>
+  <p>
+   This page explains how to set up the data source SDK and use it to create data models.
+  </p>
+ </body>
+</html>
+
+<h3>Part 1/ Set up SDK</h3>
+<html>
+ <body>
+  <p>
+   Follow these steps to create a repository for your dataset:
+  </p>
+  <ol>
+   <li>
+    Open the
+    <a href="https://github.com/QuantConnect/Lean.DataSource.SDK" rel="nofollow" target="_blank">
+     Lean.DataSource.SDK repository
+    </a>
+    and click
+    <span class="button-name">
+     Use this template &gt; Create a new repository
+    </span>
+    .
+   </li>
+   <img alt="Arrow pointing to Use this template button on GitHub GUI" class="docs-image" src="../single-page/images/sdk-use-this-template.jpg"/>
+   <p>
+    Start with the SDK repository instead of existing data source implementations because we periodically update the SDK repository.
+   </p>
+   <li>
+    On the Create a new repository from Lean.DataSource.SDK page, set the repository name to
+    <span class="public-directory-name">
+     Lean.DataSource.&lt;vendorNameDatasetName&gt;
+    </span>
+    (for example,
+    <span class="public-directory-name">
+     Lean.DataSource.XYZAirlineTicketSales
+    </span>
+    ).
+   </li>
+   <p>
+    If your dataset contains multiple series, use
+    <span class="public-directory-name">
+     &lt;vendorName&gt;
+    </span>
+    instead of
+    <span class="public-directory-name">
+     &lt;vendorNameDatasetName&gt;
+    </span>
+    . For instance, the Federal Reserve Economic Data (FRED) dataset repository has the name
+    <a href="https://github.com/QuantConnect/Lean.DataSource.FRED" rel="nofollow" target="_blank">
+     Lean.DataSource.FRED
+    </a>
+    because it has
+    <a href="https://www.quantconnect.com/docs/v2/writing-algorithms/datasets/fred/us-federal-reserve-(fred)#05-Supported-Datasets">
+     many different series
+    </a>
+    .
+   </p>
+   <li>
+    Click
+    <span class="button-name">
+     Create repository from template
+    </span>
+    .
+   </li>
+   <li>
+    <a href="https://docs.github.com/en/repositories/creating-and-managing-repositories/cloning-a-repository" rel="nofollow" target="_blank">
+     Clone
+    </a>
+    the
+    <span class="public-directory-name">
+     Lean.DataSource.&lt;vendorNameDatasetName&gt;
+    </span>
+    repository.
+   </li>
+   <div class="cli section-example-container">
+    <pre>$ git clone https://github.com/username/Lean.DataSource.&lt;vendorNameDatasetName&gt;.git</pre>
+   </div>
+   <li>
+    If you're on a Linux terminal, in your
+    <span class="public-file-name">
+     Lean.DataSource.&lt;vendorNameDatasetName&gt;
+    </span>
+    directory, change the access permissions of the bash script.
+   </li>
+   <div class="cli section-example-container">
+    <pre>$ chmod +x ./renameDataset</pre>
+   </div>
+   <li>
+    In your
+    <span class="public-file-name">
+     Lean.DataSource.&lt;vendorNameDatasetName&gt;
+    </span>
+    directory, run the
+    <span class="public-file-name">
+     renameDataset.sh
+    </span>
+    bash script.
+    <br/>
+   </li>
+   <div class="cli section-example-container">
+    <pre>$ renameDataset.sh</pre>
+   </div>
+   <p>
+    The bash script replaces some placeholder text in the
+    <span class="public-directory-name">
+     Lean.DataSource.&lt;vendorNameDatasetName&gt;
+    </span>
+    directory and renames some files according to your dataset's
+    <span class="public-directory-name">
+     &lt;vendorNameDatasetName&gt;.
+    </span>
+   </p>
+  </ol>
+ </body>
+</html>
+
+<h3>Part 2/ Create Data Models</h3>
+<html>
+ <body>
+  <p>
+   The input to your model should be a
+   <span class="public-file-name">
+    CSV
+   </span>
+   file that's in chronological order.
+  </p>
+  <div class="section-example-container">
+   <pre>
+1997-01-01,905.2,941.4,905.2,939.55,38948210,978.21
+1997-01-02,941.95,944,925.05,927.05,49118380,1150.42
+1997-01-03,924.3,932.6,919.55,931.65,35263845,866.74
+...
+2014-07-24,7796.25,7835.65,7771.65,7830.6,117608370,6271.45
+2014-07-25,7828.2,7840.95,7748.6,7790.45,153936037,7827.61
+2014-07-28,7792.9,7799.9,7722.65,7748.7,116534670,6107.78
+</pre>
+  </div>
+  <p>
+   Follow these steps to define the data source class:
+  </p>
+  <ol>
+   <li>
+    Open the
+    <span class="public-file-name">
+     Lean.DataSource.&lt;vendorNameDatasetName&gt; / &lt;vendorNameDatasetName&gt;.cs
+    </span>
+    file.
+   </li>
+   <li>
+    Follow these steps to define the properties of your dataset:
+   </li>
+   <ol>
+    <li>
+     Duplicate lines 32-36 for as many properties as there are in your dataset.
+    </li>
+    <li>
+     Rename the
+     <code>
+      SomeCustomProperty
+     </code>
+     properties to the names of your dataset properties (for example,
+     <code>
+      Destination
+     </code>
+     ).
+    </li>
+    <li>
+     If your dataset is a streaming dataset like the
+     <a href="https://www.quantconnect.com/datasets/benzinga-news-feed">
+      Benzinga News Feed
+     </a>
+     , change the argument that is passed to the
+     <code>
+      ProtoMember
+     </code>
+     members so that they start at 10 and increment by one for each additional property in your dataset.
+    </li>
+    <li>
+     If your dataset isn't a streaming dataset, delete the
+     <code>
+      ProtoMember
+     </code>
+     members.
+    </li>
+    <li>
+     Replace the “Some custom data property” comments with a description of each property in your dataset.
+    </li>
+   </ol>
+   <p>
+    If your dataset contains multiple series, like the
+    <a href="https://www.quantconnect.com/datasets/us-federal-reserve-economic-data">
+     FRED dataset
+    </a>
+    , create a helper class file in
+    <span class="public-file-name">
+     Lean.DataSource.&lt;vendorNameDatasetName&gt;
+    </span>
+    directory to map the series name to the series code. For a full example, see the
+    <a href="https://github.com/QuantConnect/Lean.DataSource.FRED/blob/master/LIBOR.cs" rel="nofollow" target="_blank">
+     LIBOR.cs file
+    </a>
+    in the Lean.DataSource.FRED repository. The helper class makes it easier for members to subscribe to the series in your dataset because they don't need to know the series code. For instance, you can subscribe to the 1-Week London Interbank Offered Rate (LIBOR) based on U.S. Dollars with the following code snippet:
+   </p>
+   <div class="section-example-container">
+    <pre class="csharp">AddData&lt;Fred&gt;(Fred.LIBOR.OneWeekBasedOnUSD);
+// Instead of
+// AddData&lt;Fred&gt;("USD1WKD156N");</pre>
+    <pre class="python">self.AddData(Fred, Fred.LIBOR.OneWeekBasedOnUSD)
+# Instead of
+# self.AddData(Fred, "USD1WKD156N")</pre>
+   </div>
+   <li>
+    Define the
+    <a href="/https://www.quantconnect.com/docs/v2/docs/v2/lean-engine/contributions/datasets/key-concepts#04-Data-Sources">
+     GetSource
+    </a>
+    method to point to the path of your dataset file(s).
+   </li>
+   <p>
+    Set the file name to the security ticker with
+    <code>
+     config.Symbol.Value
+    </code>
+    , which is the string value of the argument you pass to the
+    <a href="https://www.quantconnect.com/docs/v2/writing-algorithms/initialization#08-Add-Data">
+     AddData
+    </a>
+    method when you subscribe to the dataset. An example output file path is
+    <span class="public-file-name">
+     / output / alternative / xyzairline / ticketsales / dal.csv
+    </span>
+    .
+   </p>
+   <li>
+    Define the
+    <code>
+     Reader
+    </code>
+    method to return instances of your dataset class.
+   </li>
+   <p>
+    Set
+    <code>
+     Symbol = config.Symbol
+    </code>
+    and set
+    <code>
+     EndTime
+    </code>
+    to the time that the datapoint first became available for consumption.
+   </p>
+   <p>
+    Your data class inherits from the
+    <code>
+     BaseData
+    </code>
+    class, which has
+    <code>
+     Value
+    </code>
+    and
+    <code>
+     Time
+    </code>
+    properties. Set the
+    <code>
+     Value
+    </code>
+    property to one of the factors in your dataset. If you don't set the
+    <code>
+     Time
+    </code>
+    property, its default value is the value of
+    <code>
+     EndTime
+    </code>
+    . For more information about the
+    <code>
+     Time
+    </code>
+    and
+    <code>
+     EndTime
+    </code>
+    properties, see
+    <a href="https://www.quantconnect.com/docs/v2/writing-algorithms/key-concepts/time-modeling/periods">
+     Periods
+    </a>
+    .
+   </p>
+   <li>
+    Define the
+    <a href="https://www.quantconnect.com/docs/v2/docs/v2/lean-engine/contributions/datasets/key-concepts#06-TimeZones">
+     DataTimeZone
+    </a>
+    method.
+   </li>
+   <div class="section-example-container">
+    <pre>public class VendorNameDatasetName : BaseData
+{
+    public override DateTimeZone DataTimeZone()
+    {
+        return DateTimeZone.Utc;
+    }
+}</pre>
+   </div>
+   <p>
+    If you import
+    <code>
+     using QuantConnect
+    </code>
+    , the
+    <code>
+     TimeZones
+    </code>
+    class provides helper attributes to create
+    <code>
+     DateTimeZone
+    </code>
+    objects. For example, you can use
+    <code>
+     TimeZones.Utc
+    </code>
+    or
+    <code>
+     TimeZones.NewYork
+    </code>
+    . For more information about time zones, see
+    <a href="https://www.quantconnect.com/docs/v2/writing-algorithms/key-concepts/time-modeling/time-zones">
+     Time Zones
+    </a>
+    .
+   </p>
+   <li>
+    Define the
+    <code>
+     SupportedResolutions
+    </code>
+    method.
+   </li>
+   <div class="section-example-container">
+    <pre>public class VendorNameDatasetName : BaseData
+{
+    public override List&lt;Resolution&gt; SupportedResolutions()
+    {
+        return DailyResolution;
+    }
+}</pre>
+   </div>
+   <p>
+    The
+    <code>
+     Resolution
+    </code>
+    enumeration has the following members:
+   </p>
+   <div data-tree="QuantConnect.Resolution">
+   </div>
+   <li>
+    Define the
+    <code>
+     DefaultResolution
+    </code>
+    method.
+   </li>
+   <p>
+    If a member doesn't specify a resolution when they subscribe to your dataset, Lean uses the
+    <code>
+     DefaultResolution
+    </code>
+    .
+   </p>
+   <div class="section-example-container">
+    <pre>public class VendorNameDatasetName : BaseData
+{
+    public override Resolution DefaultResolution()
+    {
+        return Resolution.Daily;
+    }
+}</pre>
+   </div>
+   <li>
+    Define the
+    <code>
+     IsSparseData
+    </code>
+    method.
+   </li>
+   <p>
+    If your dataset is not tick resolution and your dataset is missing data for at least one sample, it's sparse. If your dataset is sparse, we disable logging for missing files.
+   </p>
+   <div class="section-example-container">
+    <pre>public class VendorNameDatasetName : BaseData
+{
+    public override bool IsSparseData()
+    {
+        return true;
+    }
+}</pre>
+   </div>
+   <li>
+    Define the
+    <a href="https://www.quantconnect.com/docs/v2/docs/v2/lean-engine/contributions/datasets/key-concepts#08-Linked-Datasets">
+     RequiresMapping
+    </a>
+    method.
+   </li>
+   <div class="section-example-container">
+    <pre>public class VendorNameDatasetName : BaseData
+{
+    public override bool RequiresMapping()
+    {
+        return true;
+    }
+}</pre>
+   </div>
+   <li>
+    Define the
+    <code>
+     Clone
+    </code>
+    method.
+   </li>
+   <div class="section-example-container">
+    <pre>public class VendorNameDatasetName : BaseData
+{
+    public override BaseData Clone()
+    {
+        return new VendorNameDatasetName
+        {
+            Symbol = Symbol,
+            Time = Time,
+            EndTime = EndTime,
+            SomeCustomProperty = SomeCustomProperty,
+        };
+    }
+}</pre>
+   </div>
+   <li>
+    Define the
+    <code>
+     ToString
+    </code>
+    method.
+   </li>
+   <div class="section-example-container">
+    <pre>public class VendorNameDatasetName : BaseData
+{
+    public override string ToString()
+    {
+        return $"{Symbol} - {SomeCustomProperty}";
+    }
+}</pre>
+   </div>
+  </ol>
+ </body>
+</html>
+
+<h3>Part 3/ Create Universe Models</h3>
+<html>
+ <body>
+  <p>
+   If your dataset doesn't provide universe data, follow these steps:
+  </p>
+  <ol>
+   <li>
+    Delete the
+    <span class="public-file-name">
+     Lean.DataSource.&lt;vendorNameDatasetName&gt; / &lt;vendorNameDatasetName&gt;Universe.cs
+    </span>
+    .
+   </li>
+   <li>
+    Delete the
+    <span class="public-file-name">
+     Lean.DataSource.&lt;vendorNameDatasetName&gt; / &lt;vendorNameDatasetName&gt;UniverseSelectionAlgorithm.*
+    </span>
+    files.
+   </li>
+   <li>
+    In the
+    <span class="public-file-name">
+     Lean.DataSource.&lt;vendorNameDatasetName&gt; / tests / Tests.csproj
+    </span>
+    file, delete the code on line 8 that compiles the universe selection algorithms.
+   </li>
+   <li>
+    Skip the rest of this page.
+   </li>
+  </ol>
+  <p>
+   The input to your model should be a
+   <span class="public-file-name">
+    CSV
+   </span>
+   file where the first column is the
+   <a href="https://www.quantconnect.com/docs/v2/docs/v2/writing-algorithms/key-concepts/security-identifiers">
+    security identifier
+   </a>
+   and the second column is the point-in-time ticker.
+  </p>
+  <div class="section-example-container">
+   <pre>
+A R735QTJ8XC9X,A,17.19,109700,1885743,False,0.9904858,1
+AA R735QTJ8XC9X,AA,71.25,513400,36579750,False,0.3992678,0.750075
+AAB R735QTJ8XC9X,AAB,16.38,5000,81900,False,0.9902758,1
+...
+ZSEV R735QTJ8XC9X,ZSEV,10.5,800,8400,False,0.8981684,1
+ZTR R735QTJ8XC9X,ZTR,9.56,102300,977988,False,0.0803037,3.97015016
+ZVX R735QTJ8XC9X,ZVX,10,15600,156000,False,1,0.666667
+</pre>
+  </div>
+  <p>
+   Follow these steps to define the data source class:
+  </p>
+  <ol>
+   <li>
+    Open the
+    <span class="public-file-name">
+     Lean.DataSource.&lt;vendorNameDatasetName&gt; / &lt;vendorNameDatasetName&gt;Universe.cs
+    </span>
+    file.
+   </li>
+   <li>
+    Follow these steps to define the properties of your dataset:
+   </li>
+   <ol>
+    <li>
+     Duplicate lines 33-36 or 38-41 (depending on the data type) for as many properties as there are in your dataset.
+    </li>
+    <li>
+     Rename the
+     <code>
+      SomeCustomProperty
+     </code>
+     /
+     <code>
+      SomeNumericProperty
+     </code>
+     properties to the names of your dataset properties (for example,
+     <code>
+      Destination
+     </code>
+     /
+     <code>
+      FlightPassengerCount
+     </code>
+     ).
+    </li>
+    <li>
+     Replace the “Some custom data property” comments with a description of each property in your dataset.
+    </li>
+   </ol>
+   <li>
+    Define the
+    <a href="/https://www.quantconnect.com/docs/v2/docs/v2/lean-engine/contributions/datasets/key-concepts#04-Data-Sources">
+     GetSource
+    </a>
+    method to point to the path of your dataset file(s).
+   </li>
+   <p>
+    Use the
+    <code>
+     date
+    </code>
+    parameter as the file name to get the date of data being requested. An example output file path is
+    <span class="public-file-name">
+     / output / alternative / xyzairline / ticketsales / universe / 20200320.csv
+    </span>
+    .
+    <br/>
+   </p>
+   <li>
+    Define the
+    <code>
+     Reader
+    </code>
+    method to return instances of your universe class.
+   </li>
+   <p>
+    The first column in your data file must be the security identifier and the second column must be the point-in-time ticker. With this configuration, use
+    <code>
+     new Symbol(SecurityIdentifier.Parse(csv[0]), csv[1])
+    </code>
+    to create the security
+    <code>
+     Symbol
+    </code>
+    .
+   </p>
+   <p>
+    The date in your data file must be the date that the data point is available for consumption. With this configuration, set the
+    <code>
+     Time
+    </code>
+    to
+    <code>
+     date - Period
+    </code>
+    .
+   </p>
+   <li>
+    Define the
+    <a href="https://www.quantconnect.com/docs/v2/docs/v2/lean-engine/contributions/datasets/key-concepts#06-TimeZones">
+     DataTimeZone
+    </a>
+    method.
+   </li>
+   <div class="section-example-container">
+    <pre>public class VendorNameDatasetNameUniverse : BaseData
+{
+    public override DateTimeZone DataTimeZone()
+    {
+        return DateTimeZone.Utc;
+    }
+}</pre>
+   </div>
+   <p>
+    If you import
+    <code>
+     using QuantConnect
+    </code>
+    , the
+    <code>
+     TimeZones
+    </code>
+    class provides helper attributes to create
+    <code>
+     DateTimeZone
+    </code>
+    objects. For example, you can use
+    <code>
+     TimeZones.Utc
+    </code>
+    or
+    <code>
+     TimeZones.NewYork
+    </code>
+    . For more information about time zones, see
+    <a href="https://www.quantconnect.com/docs/v2/writing-algorithms/key-concepts/time-modeling/time-zones">
+     Time Zones
+    </a>
+    .
+   </p>
+   <li>
+    Define the
+    <code>
+     SupportedResolutions
+    </code>
+    method.
+   </li>
+   <div class="section-example-container">
+    <pre>public class VendorNameDatasetNameUniverse : BaseData
+{
+    public override List&lt;Resolution&gt; SupportedResolutions()
+    {
+        return DailyResolution;
+    }
+}</pre>
+   </div>
+   <p>
+    Universe data must have hour or daily resolution.
+   </p>
+   <p>
+    The
+    <code>
+     Resolution
+    </code>
+    enumeration has the following members:
+   </p>
+   <div data-tree="QuantConnect.Resolution">
+   </div>
+   <li>
+    Define the
+    <code>
+     DefaultResolution
+    </code>
+    method.
+   </li>
+   <p>
+    If a member doesn't specify a resolution when they subscribe to your dataset, Lean uses the
+    <code>
+     DefaultResolution
+    </code>
+    .
+   </p>
+   <div class="section-example-container">
+    <pre>public class VendorNameDatasetNameUniverse : BaseData
+{
+    public override Resolution DefaultResolution()
+    {
+        return Resolution.Daily;
+    }
+}</pre>
+   </div>
+   <li>
+    Define the
+    <code>
+     IsSparseData
+    </code>
+    method.
+   </li>
+   <p>
+    If your dataset is not tick resolution and your dataset is missing data for at least one sample, it's sparse. If your dataset is sparse, we disable logging for missing files.
+   </p>
+   <div class="section-example-container">
+    <pre>public class VendorNameDatasetNameUniverse : BaseData
+{
+    public override bool IsSparseData()
+    {
+        return true;
+    }
+}</pre>
+   </div>
+   <li>
+    Define the
+    <a href="https://www.quantconnect.com/docs/v2/docs/v2/lean-engine/contributions/datasets/key-concepts#08-Linked-Datasets">
+     RequiresMapping
+    </a>
+    method.
+   </li>
+   <div class="section-example-container">
+    <pre>public class VendorNameDatasetNameUniverse : BaseData
+{
+    public override bool RequiresMapping()
+    {
+        return true;
+    }
+}</pre>
+   </div>
+   <li>
+    Define the
+    <code>
+     Clone
+    </code>
+    method.
+   </li>
+   <div class="section-example-container">
+    <pre>public class VendorNameDatasetNameUniverse : BaseData
+{
+    public override BaseData Clone()
+    {
+        return new VendorNameDatasetName
+        {
+            Symbol = Symbol,
+            Time = Time,
+            EndTime = EndTime,
+            SomeCustomProperty = SomeCustomProperty,
+        };
+    }
+}</pre>
+   </div>
+   <li>
+    Define the
+    <code>
+     ToString
+    </code>
+    method.
+   </li>
+   <div class="section-example-container">
+    <pre>public class VendorNameDatasetNameUniverse : BaseData
+{
+    public override string ToString()
+    {
+        return $"{Symbol} - {SomeCustomProperty}";
+    }
+}</pre>
+   </div>
+  </ol>
+ </body>
+</html>
+
+<p style="page-break-after: always;">&nbsp;</p>
+<section id="2.1.3"><h3>2.1.3 Rendering Data</h3></section>
+
+<section id="2.1.3.1"><h3>2.1.3.1 Rendering Data with Python</h3></section>
+
+<h3>Introduction</h3>
+<html>
+ <body>
+  <p>
+   This page explains how to create a script to download and process your dataset with Python for QuantConnect distribution.
+  </p>
+ </body>
+</html>
+
+<h3>Using Processing Framework</h3>
+<html>
+ <body>
+  <p>
+   During this part of the contribution process, you need to edit the
+   <span class="public-directory-name">
+    Lean.DataSource.&lt;vendorNameDatasetName&gt; / DataProcessing / process.sample.py
+   </span>
+   file so it transforms and moves your raw data into the format and location the
+   <a href="/https://www.quantconnect.com/docs/v2/docs/v2/lean-engine/contributions/datasets/defining-data-models">
+    GetSource methods
+   </a>
+   expect. Before you start editing the script, change the structure of the
+   <span class="public-directory-name">
+    Lean.DataSource.&lt;vendorNameDatasetName&gt; / output
+   </span>
+   directory to match the path structure you defined in the
+   <code>
+    GetSource
+   </code>
+   methods (for example,
+   <span class="public-directory-name">
+    output / alternative / xyzairline / ticketsales
+   </span>
+   ).
+  </p>
+  <p>
+   Follow these steps to set up the downloading and processing script for your dataset:
+  </p>
+  <ol>
+   <li>
+    In the
+    <span class="public-directory-name">
+     Lean.DataSource.&lt;vendorNameDatasetName&gt; / DataProcessing / process.sample.py
+    </span>
+    file, add some code to time how long it takes to process the entire dataset and how long it takes to update the dataset with one day's worth of data.
+   </li>
+   <div class="highlight">
+    You need this information for when you provide the
+    <a href="/https://www.quantconnect.com/docs/v2/docs/v2/lean-engine/contributions/datasets/data-documentation">
+     dataset documentation
+    </a>
+    . We need to know how long it takes to process your dataset so we can schedule its processing job.
+   </div>
+   <li>
+    In the processing file, load the raw data from your source.
+   </li>
+   <p>
+    You can fetch data from any of the following sources:
+   </p>
+   <table class="qc-table table">
+    <thead>
+     <tr>
+      <th>
+       Source
+      </th>
+      <th>
+       Considerations
+      </th>
+     </tr>
+    </thead>
+    <tbody>
+     <tr>
+      <td>
+       Local Files
+      </td>
+      <td>
+       It can help to first copy the data into location.
+      </td>
+     </tr>
+     <tr>
+      <td>
+       Remote API
+      </td>
+      <td>
+       Stay within the rate limits. You can use the rate gate class.
+      </td>
+     </tr>
+    </tbody>
+   </table>
+   <p>
+    You should load and process the data period by period. Use the date range provided to the script to process the specific dates provided.
+   </p>
+   <li>
+    If your dataset is for universe selection data and it's at a higher frequency than hour resolution, resample your data to hourly or daily resolution.
+    <br/>
+   </li>
+   <li>
+    If any of the following statements are true, skip the rest of the steps in this tutorial:
+   </li>
+  </ol>
+  <ul>
+   <li>
+    Your dataset is not related to Equities.
+   </li>
+   <li>
+    Your dataset is related to Equities and already includes the point-in-time tickers.
+   </li>
+  </ul>
+  <p>
+   If your dataset is related to Equities and your dataset doesn't account for ticker changes, the rest of the steps help you to adjust the tickers over the historical data so they are point-in-time.
+  </p>
+  <li>
+   If you don't have the
+   <a href="https://www.quantconnect.com/datasets/quantconnect-us-equity-security-master/cli">
+    US Equity Security Master dataset
+   </a>
+   ,
+   <a href="https://www.quantconnect.com/contact">
+    contact us
+   </a>
+   .
+  </li>
+  <li class="python">
+   In the
+   <span class="public-file-name">
+    Lean.DataSource.&lt;vendorNameDatasetName&gt; / DataProcessing / Program.cs
+   </span>
+   file, remove the statements of the
+   <code>
+    Main
+   </code>
+   method
+  </li>
+  <li>
+   In a terminal, compile the data processing project.
+  </li>
+  <div class="cli section-example-container">
+   <pre>$ dotnet build .\DataProcessing\DataProcessing.csproj</pre>
+  </div>
+  <p>
+   This step generates a file that the
+   <code>
+    CLRImports
+   </code>
+   library uses.
+  </p>
+  <li class="python">
+   In the
+   <span class="public-directory-name">
+    Lean.DataSource.&lt;vendorNameDatasetName&gt; / DataProcessing / process.sample.py
+   </span>
+   file, import the
+   <code>
+    CLRImports
+   </code>
+   library.
+  </li>
+  <div class="python section-example-container">
+   <pre class="python">from CLRImports import *</pre>
+  </div>
+  <li>
+   Create and initialize a map file provider.
+  </li>
+  <div class="section-example-container">
+   <pre class="python">map_file_provider = LocalZipMapFileProvider()
+map_file_provider.Initialize(DefaultDataProvider())<br/></pre>
+  </div>
+  <li>
+   Create a security identifier.
+  </li>
+  <div class="section-example-container">
+   <pre class="python">sid = SecurityIdentifier.GenerateEquity(point_in_time_ticker,
+    Market.USA, True, map_file_provider, csv_date)</pre>
+  </div>
+  <p>
+   After you finish editing the
+   <span class="public-file-name">
+    process.sample.py
+   </span>
+   script, run it to populate the
+   <span class="public-directory-name">
+    Lean.DataSource.&lt;vendorNameDatasetName&gt; / output
+   </span>
+   directory.
+  </p>
+  <div class="cli section-example-container">
+   <pre>$ python process.sample.py</pre>
+  </div>
+  <div class="highlight">
+   Note: The pull request you make at the end must contain sample data so we can review it and run the demonstration algorithms.
+  </div>
+ </body>
+</html>
+
+<h3>Python Processor Examples</h3>
+<html>
+ <body>
+  <p>
+   The following examples are rendering datasets with Python processing:
+  </p>
+  <ul>
+   <li>
+    <a href="https://github.com/QuantConnect/Lean.DataSource.BitcoinMetadata/blob/master/process.py" rel="nofollow" target="_blank">
+     Lean.DataSource.BitcoinMetadata
+    </a>
+   </li>
+   <li>
+    <a href="https://github.com/QuantConnect/Lean.DataSource.BrainSentiment/blob/master/DataProcessing/process.py" rel="nofollow" target="_blank">
+     Lean.DataSource.BrainSentiment
+    </a>
+   </li>
+   <li>
+    <a href="https://github.com/QuantConnect/Lean.DataSource.CryptoSlamNFTSale/blob/master/process.py" rel="nofollow" target="_blank">
+     Lean.DataSource.CryptoSlamNFTSale
+    </a>
+   </li>
+   <li>
+    <a href="https://github.com/QuantConnect/Lean.DataSource.QuiverQuantTwitterFollowers/blob/master/DataProcessing/process.py" rel="nofollow" target="_blank">
+     Lean.DataSource.QuiverQuantTwitterFollowers
+    </a>
+   </li>
+   <li>
+    <a href="https://github.com/QuantConnect/Lean.DataSource.Regalytics/blob/master/process.py" rel="nofollow" target="_blank">
+     Lean.DataSource.Regalytics
+    </a>
+   </li>
+  </ul>
+ </body>
+</html>
+
+<p style="page-break-after: always;">&nbsp;</p>
+<section id="2.1.3.2"><h3>2.1.3.2 Rendering Data with CSharp</h3></section>
+
+<h3>Introduction</h3>
+<html>
+ <body>
+  <p>
+   This page explains how to create a script to download and process your dataset with C# for QuantConnect distribution.
+  </p>
+ </body>
+</html>
+
+<h3>Using Processing Framework</h3>
+<html>
+ <body>
+  <p>
+   During this part of the contribution process, you need to edit the
+   <span class="public-directory-name">
+    Lean.DataSource.&lt;vendorNameDatasetName&gt; / DataProcessing / Program.cs
+   </span>
+   file so it transforms and moves your raw data into the format and location the
+   <a href="/https://www.quantconnect.com/docs/v2/docs/v2/lean-engine/contributions/datasets/defining-data-models">
+    GetSource methods
+   </a>
+   expect. Before you start editing the script, change the structure of the
+   <span class="public-directory-name">
+    Lean.DataSource.&lt;vendorNameDatasetName&gt; / output
+   </span>
+   directory to match the path structure you defined in the
+   <code>
+    GetSource
+   </code>
+   methods (for example,
+   <span class="public-directory-name">
+    output / alternative / xyzairline / ticketsales
+   </span>
+   ).
+  </p>
+  <p>
+   Follow these steps to set up the downloading and processing script for your dataset:
+  </p>
+  <ol>
+   <li>
+    In the
+    <span class="public-directory-name">
+     Lean.DataSource.&lt;vendorNameDatasetName&gt; / DataProcessing / Program.cs
+    </span>
+    file, add some code to time how long it takes to process the entire dataset and how long it takes to update the dataset with one day's worth of data.
+   </li>
+   <div class="highlight">
+    You need this information for when you provide the
+    <a href="https://www.quantconnect.com/docs/v2/docs/v2/lean-engine/contributions/datasets/data-documentation">
+     dataset documentation
+    </a>
+    . We need to know how long it takes to process your dataset so we can schedule its processing job.
+   </div>
+   <li>
+    In the processing file, load the raw data from your source.
+   </li>
+   <p>
+    You can fetch data from any of the following sources:
+   </p>
+   <table class="qc-table table">
+    <thead>
+     <tr>
+      <th>
+       Source
+      </th>
+      <th>
+       Considerations
+      </th>
+     </tr>
+    </thead>
+    <tbody>
+     <tr>
+      <td>
+       Local Files
+      </td>
+      <td>
+       It can help to first copy the data into location.
+      </td>
+     </tr>
+     <tr>
+      <td>
+       Remote API
+      </td>
+      <td>
+       Stay within the rate limits. You can use the rate gate class.
+      </td>
+     </tr>
+    </tbody>
+   </table>
+   <p>
+    You should load and process the data period by period. Use the date range provided to the script to process the specific dates provided.
+   </p>
+   <li>
+    If your dataset is for universe selection data and it's at a higher frequency than hour resolution, resample your data to hourly or daily resolution.
+    <br/>
+   </li>
+   <li>
+    If any of the following statements are true, skip the rest of the steps in this tutorial:
+   </li>
+  </ol>
+  <ul>
+   <li>
+    Your dataset is not related to Equities.
+   </li>
+   <li>
+    Your dataset is related to Equities and already includes the point-in-time tickers.
+   </li>
+  </ul>
+  <p>
+   If your dataset is related to Equities and your dataset doesn't account for ticker changes, the rest of the steps help you to adjust the tickers over the historical data so they are point-in-time.
+  </p>
+  <li>
+   If you don't have the
+   <a href="https://www.quantconnect.com/datasets/quantconnect-us-equity-security-master/cli">
+    US Equity Security Master dataset
+   </a>
+   ,
+   <a href="https://www.quantconnect.com/contact">
+    contact us
+   </a>
+   .
+  </li>
+  <li>
+   In the
+   <span class="public-file-name">
+    Lean.DataSource.&lt;vendorNameDatasetName&gt; / DataProcessing / Program.cs
+   </span>
+   file, create and initialize a map file provider.
+  </li>
+  <div class="section-example-container">
+   <pre class="csharp">var mapFileProvider = new LocalZipMapFileProvider();
+var mapFileProvider.Initialize(new DefaultDataProvider());</pre>
+  </div>
+  <li>
+   Create a security identifier.
+  </li>
+  <div class="section-example-container">
+   <pre class="csharp">var sid = SecurityIdentifier.GenerateEquity(pointInIimeTicker,
+    Market.USA, true, mapFileProvider, csvDate)</pre>
+  </div>
+  <li>
+   In a terminal, compile the data processing project to generate the
+   <span class="public-file-name">
+    process.exe
+   </span>
+   executable file.
+   <div class="cli section-example-container">
+    <pre>$ dotnet build .\DataProcessing\DataProcessing.csproj</pre>
+   </div>
+  </li>
+  <p>
+   After you finish compiling the
+   <span class="public-file-name">
+    Program.cs
+   </span>
+   file, run the
+   <span class="public-file-name">
+    process.exe
+   </span>
+   to populate the
+   <span class="public-directory-name">
+    Lean.DataSource.&lt;vendorNameDatasetName&gt; / output
+   </span>
+   directory.
+  </p>
+  <div class="highlight">
+   Note: The pull request you make at the end must contain sample data so we can review it and run the demonstration algorithms.
+  </div>
+ </body>
+</html>
+
+<h3>CSharp Processor Examples</h3>
+<html>
+ <body>
+  <p>
+   The following examples are rendering datasets with C# processing:
+  </p>
+  <ul>
+   <li>
+    <a href="https://github.com/QuantConnect/Lean.DataSource.BinanceFundingRate/blob/master/DataProcessing/BinanceFundingRateDownloader.cs" rel="nofollow" target="_blank">
+     Lean.DataSource.BinanceFundingRate
+    </a>
+   </li>
+   <li>
+    <a href="https://github.com/QuantConnect/Lean.DataSource.CoinGecko/blob/master/DataProcessing/CoinGeckoDataDownloader.cs" rel="nofollow" target="_blank">
+     Lean.DataSource.CoinGecko
+    </a>
+   </li>
+   <li>
+    <a href="https://github.com/QuantConnect/Lean.DataSource.CryptoCoarseFundamentalUniverse/blob/master/DataProcessing/CryptoCoarseFundamentalUniverseDataDownloader.cs" rel="nofollow" target="_blank">
+     Lean.DataSource.CryptoCoarseFundamentalUniverse
+    </a>
+   </li>
+   <li>
+    <a href="https://github.com/QuantConnect/Lean.DataSource.QuiverInsiderTrading/blob/master/DataProcessing/QuiverInsiderTradingDataDownloader.cs" rel="nofollow" target="_blank">
+     Lean.DataSource.QuiverInsiderTrading
+    </a>
+   </li>
+   <li>
+    <a href="https://github.com/QuantConnect/Lean.DataSource.VIXCentral/blob/master/DataProcessing/VIXContangoProcessor.cs" rel="nofollow" target="_blank">
+     Lean.DataSource.VIXCentral
+    </a>
+   </li>
+  </ul>
+ </body>
+</html>
+
+<p style="page-break-after: always;">&nbsp;</p>
+<section id="2.1.3.3"><h3>2.1.3.3 Rendering Data with Notebooks</h3></section>
+
+<h3>Introduction</h3>
+<html>
+ <body>
+  <p>
+   This page explains how to create a script to download and process your dataset with Jupyter Notebooks for QuantConnect distribution.
+  </p>
+ </body>
+</html>
+
+<h3>Using Processing Framework</h3>
+<html>
+ <body>
+  <p>
+   During this part of the contribution process, you need to edit the
+   <span class="public-directory-name">
+    Lean.DataSource.&lt;vendorNameDatasetName&gt; / DataProcessing / process.sample.ipynb
+   </span>
+   file so it transforms and moves your raw data into the format and location the
+   <a href="/https://www.quantconnect.com/docs/v2/docs/v2/lean-engine/contributions/datasets/defining-data-models">
+    GetSource methods
+   </a>
+   expect. Before you start editing the script, change the structure of the
+   <span class="public-directory-name">
+    Lean.DataSource.&lt;vendorNameDatasetName&gt; / output
+   </span>
+   directory to match the path structure you defined in the
+   <code>
+    GetSource
+   </code>
+   methods (for example,
+   <span class="public-directory-name">
+    output / alternative / xyzairline / ticketsales
+   </span>
+   ).
+  </p>
+  <p>
+   Follow these steps to set up the downloading and processing script for your dataset:
+  </p>
+  <ol>
+   <li>
+    In the
+    <span class="public-directory-name">
+     Lean.DataSource.&lt;vendorNameDatasetName&gt; / DataProcessing / process.sample.ipynb
+    </span>
+    file, add some code to time how long it takes to process the entire dataset and how long it takes to update the dataset with one day's worth of data.
+   </li>
+   <div class="highlight">
+    You need this information for when you provide the
+    <a href="/https://www.quantconnect.com/docs/v2/docs/v2/lean-engine/contributions/datasets/data-documentation">
+     dataset documentation
+    </a>
+    . We need to know how long it takes to process your dataset so we can schedule its processing job.
+   </div>
+   <li>
+    In the processing file, load the raw data from your source.
+   </li>
+   <p>
+    You can fetch data from any of the following sources:
+   </p>
+   <table class="qc-table table">
+    <thead>
+     <tr>
+      <th>
+       Source
+      </th>
+      <th>
+       Considerations
+      </th>
+     </tr>
+    </thead>
+    <tbody>
+     <tr>
+      <td>
+       Local Files
+      </td>
+      <td>
+       It can help to first copy the data into location.
+      </td>
+     </tr>
+     <tr>
+      <td>
+       Remote API
+      </td>
+      <td>
+       Stay within the rate limits. You can use the rate gate class.
+      </td>
+     </tr>
+    </tbody>
+   </table>
+   <p>
+    You should load and process the data period by period. Use the date range provided to the script to process the specific dates provided.
+   </p>
+   <li>
+    If your dataset is for universe selection data and it's at a higher frequency than hour resolution, resample your data to hourly or daily resolution.
+    <br/>
+   </li>
+   <li>
+    If any of the following statements are true, skip the rest of the steps in this tutorial:
+   </li>
+  </ol>
+  <ul>
+   <li>
+    Your dataset is not related to Equities.
+   </li>
+   <li>
+    Your dataset is related to Equities and already includes the point-in-time tickers.
+   </li>
+  </ul>
+  <p>
+   If your dataset is related to Equities and your dataset doesn't account for ticker changes, the rest of the steps help you to adjust the tickers over the historical data so they are point-in-time.
+  </p>
+  <li>
+   If you don't have the
+   <a href="https://www.quantconnect.com/datasets/quantconnect-us-equity-security-master/cli">
+    US Equity Security Master dataset
+   </a>
+   ,
+   <a href="https://www.quantconnect.com/contact">
+    contact us
+   </a>
+   .
+  </li>
+  <li class="python">
+   In the
+   <span class="public-file-name">
+    Lean.DataSource.&lt;vendorNameDatasetName&gt; / DataProcessing / Program.cs
+   </span>
+   file, remove the statements of the
+   <code>
+    Main
+   </code>
+   method
+  </li>
+  <li>
+   In a terminal, compile the data processing project.
+  </li>
+  <div class="cli section-example-container">
+   <pre>$ dotnet build .\DataProcessing\DataProcessing.csproj</pre>
+  </div>
+  <p>
+   This step generates a file that the
+   <code>
+    CLRImports
+   </code>
+   library uses.
+  </p>
+  <li class="python">
+   In the
+   <span class="public-directory-name">
+    Lean.DataSource.&lt;vendorNameDatasetName&gt; / DataProcessing / process.sample.ipynb
+   </span>
+   file, import the
+   <code>
+    CLRImports
+   </code>
+   library.
+  </li>
+  <div class="python section-example-container">
+   <pre class="python">from CLRImports import *</pre>
+  </div>
+  <li>
+   Create and initialize a map file provider.
+  </li>
+  <div class="section-example-container">
+   <pre class="python">map_file_provider = LocalZipMapFileProvider()
+map_file_provider.Initialize(DefaultDataProvider())<br/></pre>
+  </div>
+  <li>
+   Create a security identifier.
+  </li>
+  <div class="section-example-container">
+   <pre class="python">sid = SecurityIdentifier.GenerateEquity(point_in_time_ticker,
+    Market.USA, True, map_file_provider, csv_date)</pre>
+  </div>
+  <p>
+   After you finish editing the
+   <span class="public-file-name">
+    process.sample.ipynb
+   </span>
+   script, run its cells to populate the
+   <span class="public-directory-name">
+    Lean.DataSource.&lt;vendorNameDatasetName&gt; / output
+   </span>
+   directory.
+  </p>
+  <div class="highlight">
+   Note: The pull request you make at the end must contain sample data so we can review it and run the demonstration algorithms.
+  </div>
+ </body>
+</html>
+
+<h3>Notebook Processor Examples</h3>
+<html>
+ <body>
+  <p>
+   The following examples are rendering datasets with Jupyter Notebook processing:
+  </p>
+  <ul>
+   <li>
+    <a href="https://github.com/QuantConnect/Lean.DataSource.KavoutCompositeFactorBundle/blob/master/process.ipynb" rel="nofollow" target="_blank">
+     Lean.DataSource.KavoutCompositeFactorBundle
+    </a>
+   </li>
+   <li>
+    <a href="https://github.com/QuantConnect/Lean.DataSource.USEnergy/blob/master/process.ipynb" rel="nofollow" target="_blank">
+     Lean.DataSource.USEnergy
+    </a>
+   </li>
+   <li>
+    <a href="https://github.com/QuantConnect/Lean.DataSource.FRED/blob/master/process.ipynb" rel="nofollow" target="_blank">
+     Lean.DataSource.FRED
+    </a>
+   </li>
+  </ul>
+ </body>
+</html>
+
+<p style="page-break-after: always;">&nbsp;</p>
+<section id="2.1.4"><h3>2.1.4 Testing Data Models</h3></section>
+
+<h3>Introduction</h3>
+<html>
+ <body>
+  <p>
+   The implementation of your Data Source must be thoroughly tested to be listed on the
+   <a href="https://www.quantconnect.com/datasets">
+    Dataset Market
+   </a>
+   .
+  </p>
+ </body>
+</html>
+
+<h3>Run Demonstration Algorithms</h3>
+<html>
+ <body>
+  <p>
+   Follow these steps to test if your demonstration algorithm will run in production with the processed data:
+  </p>
+  <ol>
+   <li>
+    Open the
+    <span class="public-file-name">
+     Lean.DataSource.&lt;vendorNameDatasetName&gt; / QuantConnect.DataSource.csproj
+    </span>
+    file in Visual Studio.
+   </li>
+   <li>
+    In the top menu bar of Visual Studio, click
+    <span class="menu-name">
+     Build &gt; Build Solution
+    </span>
+    .
+   </li>
+   <p>
+    The Output panel displays the build status of the project.
+   </p>
+   <li>
+    Close Visual Studio.
+   </li>
+   <!-- Install LEAN -->
+   <li>
+    <a href="https://github.com/QuantConnect/Lean/fork" rel="nofollow" target="_blank">
+     Fork the LEAN repository
+    </a>
+    .
+   </li>
+   <li>
+    <a href="https://docs.github.com/en/repositories/creating-and-managing-repositories/cloning-a-repository" rel="nofollow" target="_blank">
+     Clone
+    </a>
+    the
+    <span class="public-directory-name">
+     Lean
+    </span>
+    repository.
+   </li>
+   <div class="cli section-example-container">
+    <pre>$ git clone https://github.com/&lt;username&gt;/Lean.git</pre>
+   </div>
+   <!-- Place data into LEAN -->
+   <li>
+    Copy the contents of the
+    <span class="public-file-name">
+     Lean.DataSource.&lt;vendorNameDatasetName&gt; / output
+    </span>
+    directory and paste them into the
+    <span class="public-directory-name">
+     Lean / Data
+    </span>
+    directory.
+   </li>
+   <!-- Add data source to LEAN -->
+   <li>
+    Open the
+    <span class="public-file-name">
+     Lean / QuantConnect.Lean.sln
+    </span>
+    file in Visual Studio.
+   </li>
+   <li>
+    In the Solution Explorer panel of Visual Studio, right-click
+    <span class="public-file-name">
+     QuantConnect.Algorithm.CSharp
+    </span>
+    and then click
+    <span class="menu-name">
+     Add &gt; Existing Item…
+    </span>
+    .
+   </li>
+   <li>
+    In the Add Existing Item window, click the
+    <span class="public-file-name">
+     Lean.DataSource.&lt;vendorNameDatasetName&gt; / &lt;vendorNameDatasetName&gt;Algorithm.cs
+    </span>
+    file and then click
+    <span class="button-name">
+     Add
+    </span>
+    .
+   </li>
+   <li>
+    In the Solution Explorer panel, right-click
+    <span class="public-file-name">
+     QuantConnect.Algorithm.CSharp
+    </span>
+    and then click
+    <span class="menu-name">
+     Add &gt; Project Reference...
+    </span>
+    .
+   </li>
+   <li>
+    In the Reference Manager window, click
+    <span class="button-name">
+     Browse…
+    </span>
+    .
+   </li>
+   <li>
+    In the Select the files to reference… window, click the
+    <span class="public-file-name">
+     Lean.DataSource.&lt;vendorNameDatasetName&gt; / bin / Debug / net6.0 / QuantConnect.DataSource.&lt;vendorNameDatasetName&gt;.dll
+    </span>
+    file and then click
+    <span class="button-name">
+     Add
+    </span>
+    .
+   </li>
+   <p>
+    The Reference Manager window displays the
+    <span class="public-file-name">
+     QuantConnect.DataSource.&lt;vendorNameDatasetName&gt;.dll
+    </span>
+    file with the check box beside it enabled.
+   </p>
+   <li>
+    Click
+    <span class="button-name">
+     OK
+    </span>
+    .
+   </li>
+   <p>
+    The Solution Explorer panel adds the
+    <span class="public-file-name">
+     QuantConnect.DataSource.&lt;vendorNameDatasetName&gt;.dll
+    </span>
+    file under
+    <span class="menu-name">
+     QuantConnect.Algorithm.CSharp &gt; Dependencies &gt; Assemblies
+    </span>
+    .
+   </p>
+   <!-- Write demo C# algorithm -->
+   <li>
+    Copy the
+    <span class="public-file-name">
+     Lean.DataSource.&lt;vendorNameDatasetName&gt; / &lt;vendorNameDatasetName&gt;Algorithm.cs
+    </span>
+    file and paste it in
+    <span class="public-file-name">
+     Lean / Algorithm.CSharp
+    </span>
+    directory.
+   </li>
+   <li>
+    In the
+    <span class="public-file-name">
+     Lean / Algorithm.CSharp / &lt;vendorNameDatasetName&gt;Algorithm.cs
+    </span>
+    file,
+    <a href="https://www.quantconnect.com/docs/v2/writing-algorithms">
+     write an algorithm
+    </a>
+    that uses your new dataset.
+   </li>
+   <li>
+    In the Solution Explorer panel, click
+    <span class="public-file-name">
+     QuantConnect.Lean.Launcher &gt; config.json
+    </span>
+    .
+   </li>
+   <li>
+    In the
+    <span class="public-file-name">
+     config.json
+    </span>
+    file, set the following keys:
+   </li>
+   <div class="section-example-container">
+    <pre>"algorithm-type-name": "&lt;vendorNameDatasetName&gt;Algorithm”,
+"algorithm-language": "CSharp",
+"algorithm-location": "QuantConnect.Algorithm.CSharp.dll",</pre>
+   </div>
+   <li>
+    Press
+    <span class="key-combinations">
+     F5
+    </span>
+    to backtest your demonstration algorithm.
+   </li>
+   <!-- Write demo Python algorithm -->
+   <li>
+    Copy the
+    <span class="public-file-name">
+     Lean.DataSource.&lt;vendorNameDatasetName&gt; / &lt;vendorNameDatasetName&gt;Algorithm.py
+    </span>
+    file and paste it in
+    <span class="public-file-name">
+     Lean / Algorithm.Python
+    </span>
+    directory.
+   </li>
+   <li>
+    In the
+    <span class="public-file-name">
+     Lean / Algorithm.Python / &lt;vendorNameDatasetName&gt;Algorithm.py
+    </span>
+    file,
+    <a href="https://www.quantconnect.com/docs/v2/writing-algorithms">
+     write an algorithm
+    </a>
+    that uses your new dataset.
+   </li>
+   <li>
+    In the Solution Explorer panel, click
+    <span class="public-file-name">
+     QuantConnect.Lean.Launcher &gt; config.json
+    </span>
+    .
+   </li>
+   <li>
+    In the
+    <span class="public-file-name">
+     config.json
+    </span>
+    file, set the following keys:
+   </li>
+   <div class="section-example-container">
+    <pre>"algorithm-type-name": "&lt;vendorNameDatasetName&gt;Algorithm”,
+"algorithm-language": "Python",
+"algorithm-location": "../../../Algorithm.Python/&lt;vendorNameDatasetName&gt;Algorithm.py",</pre>
+   </div>
+   <li>
+    Press
+    <span class="key-combinations">
+     F5
+    </span>
+    to backtest your demonstration algorithm.
+   </li>
+   <div class="highlight">
+    <p>
+     Important: Your backtests must run without error. If your backtests produce errors, correct them and then run the backtest again.
+    </p>
+   </div>
+   <!-- Copy demo algorithms back to data source repo -->
+   <li>
+    Copy the
+    <span class="public-file-name">
+     Lean / Algorithm.CSharp / &lt;vendorNameDatasetName&gt;Algorithm.cs
+    </span>
+    file to
+    <span class="public-file-name">
+     Lean.DataSource.&lt;vendorNameDatasetName&gt; / &lt;vendorNameDatasetName&gt;Algorithm.cs
+    </span>
+    .
+   </li>
+   <li>
+    Copy the
+    <span class="public-file-name">
+     Lean / Algorithm.Python / &lt;vendorNameDatasetName&gt;Algorithm.py
+    </span>
+    file to
+    <span class="public-file-name">
+     Lean.DataSource.&lt;vendorNameDatasetName&gt; / &lt;vendorNameDatasetName&gt;Algorithm.py
+    </span>
+    .
+   </li>
+  </ol>
+ </body>
+</html>
+
+<h3>Run Unit Tests</h3>
+<html>
+ <body>
+  <p>
+   You must
+   <a href="https://www.quantconnect.com/docs/v2/lean-engine/contributions/datasets/testing-data-models#02-Run-Demonstration-Algorithms">
+    run your demonstration algorithms
+   </a>
+   without error before you set up unit tests.
+  </p>
+  <p>
+   In the
+   <span class="public-file-name">
+    Lean.DataSource.&lt;vendorNameDatasetName&gt; / &lt;vendorNameDatasetName&gt;Tests.cs
+   </span>
+   file, define the
+   <code>
+    CreateNewInstance
+   </code>
+   method to return an instance of your
+   <code>
+    DataSource
+   </code>
+   class and then execute the following commands to run the unit tests:
+  </p>
+  <div class="cli section-example-container">
+   <pre>$ dotnet build tests/Tests.csproj
+$ dotnet test tests/bin/Debug/net6.0/Tests.dll</pre>
+  </div>
+ </body>
+</html>
+
+<p style="page-break-after: always;">&nbsp;</p>
+<section id="2.1.5"><h3>2.1.5 Data Documentation</h3></section>
+
+<h3>Introduction</h3>
+<html>
+ <body>
+  <p>
+   This page explains how to provide documentation for your dataset so QuantConnect members can use it in their trading algorithms.
+  </p>
+ </body>
+</html>
+
+<h3>Required Key Properties</h3>
+<html>
+ <body>
+  <p>
+   You need to process the entire dataset to collect the following information:
+  </p>
+  <table class="table qc-table">
+   <thead>
+    <tr>
+     <th>
+      Property
+     </th>
+     <th>
+      Description
+     </th>
+    </tr>
+   </thead>
+   <tbody>
+    <tr>
+     <td>
+      Start Date
+     </td>
+     <td>
+      Date and time of the first data point
+     </td>
+    </tr>
+    <tr>
+     <td>
+      Asset Coverage
+     </td>
+     <td>
+      Number of assets covered by the dataset
+     </td>
+    </tr>
+    <tr>
+     <td>
+      Data density
+     </td>
+     <td>
+      Dense for tick data. Regular or Sparse according to the frequency.
+     </td>
+    </tr>
+    <tr>
+     <td>
+      Resolution
+     </td>
+     <td>
+      Options: Tick, Second, Minute, Hourly, &amp; Daily.
+     </td>
+    </tr>
+    <tr>
+     <td>
+      Timezone
+     </td>
+     <td>
+      Data timezone. This is a property of the data source.
+     </td>
+    </tr>
+    <tr>
+     <td>
+      Data process time
+     </td>
+     <td>
+      Time and days of the week to process the data.
+     </td>
+    </tr>
+    <tr>
+     <td>
+      Data process duration
+     </td>
+     <td>
+      Time to process the entire the dataset.
+     </td>
+    </tr>
+    <tr>
+     <td>
+      Update process duration
+     </td>
+     <td>
+      Time to update the dataset.
+     </td>
+    </tr>
+   </tbody>
+  </table>
+ </body>
+</html>
+
+<h3>Provide Documentation</h3>
+<html>
+ <body>
+  <p>
+   To provide documentation for your dataset, in the
+   <span class="public-directory-name">
+    Lean.DataSource.&lt;vendorNameDatasetName&gt; / listing-about.md
+   </span>
+   and
+   <span class="public-directory-name">
+    Lean.DataSource.&lt;vendorNameDatasetName&gt; / listing-documentation.md
+   </span>
+   files, fill in the missing content.
+  </p>
+ </body>
+</html>
+
+<h3>Next Steps</h3>
+<html>
+ <body>
+  <p>
+   After we review and accept your dataset contribution, we will create a page in our
+   <a href="https://www.quantconnect.com/datasets">
+    Dataset Market
+   </a>
+   . At that point, you will be able to write algorithms in QuantConnect Cloud using your dataset and you can contribute an example algorithm for the dataset listing.
+  </p>
+ </body>
+</html>
+
+<p style="page-break-after: always;">&nbsp;</p>
+<section id="2.2"><h3>2.2 Brokerages</h3></section>
+
+<html>
+ <body>
+  <div class="sub-heading-landing">
+   <div class="internal-content">
+    <p>
+     Creating a fully supported brokerage is a challenging endeavor. LEAN requires a number of individual pieces which work together to form a complete brokerage implementation. This guide aims to describe in as much detail as possible what you need to do for each module.
+    </p>
+    <p>
+     The end goal is to submit a pull request that passes all tests. Partially-completed brokerage implementations are acceptable if they are merged to a branch. It's easy to fall behind master, so be sure to keep your branch updated with the master branch. Before you start, read LEAN's
+     <a href="https://github.com/QuantConnect/Lean/blob/master/CONTRIBUTING.md#code-style-and-testing" rel="nofollow" target="_blank">
+      coding style guidelines
+     </a>
+     to comply with the code commenting and design standards.
+    </p>
+    <p>
+     The root of the brokerage system is the algorithm job packets, which hold configuration information about how to run LEAN. The program logic is a little convoluted. It moves from
+     <i>
+      config.json &gt; create job packet &gt; create brokerage factory matching name &gt; set job packet brokerage data &gt; factory creates brokerage instance
+     </i>
+     . As a result, we'll start creating a brokerage at the root, the configuration and brokerage factory.
+    </p>
+   </div>
+   <div class="docs-landing-links">
+    <div class="col-md-6 col-sm-12 docs-landing-link-wrap">
+     <div class="content clickable" onclick="window.location.href = '/docs/v2/lean-engine/contributions/brokerages/setting-up-your-environment'">
+      <div class="docs-internal-link">
+       <h4>
+        Setting Up Your Environment
+       </h4>
+      </div>
+      Set up your local brokerage repository.
+     </div>
+    </div>
+    <div class="col-md-6 col-sm-12 docs-landing-link-wrap">
+     <div class="content clickable" onclick="window.location.href = '/docs/v2/lean-engine/contributions/brokerages/laying-the-foundation'">
+      <div class="docs-internal-link">
+       <h4>
+        Laying the Foundation
+       </h4>
+      </div>
+      (
+      <code>
+       IBrokerageFactory
+      </code>
+      ) Stub out the implementation and initialize a brokerage instance.
+     </div>
+    </div>
+    <div class="col-md-6 col-sm-12 docs-landing-link-wrap">
+     <div class="content clickable" onclick="window.location.href = '/docs/v2/lean-engine/contributions/brokerages/creating-the-brokerage'">
+      <div class="docs-internal-link">
+       <h4>
+        Creating the Brokerage
+       </h4>
+      </div>
+      (
+      <code>
+       IBrokerage
+      </code>
+      ) Instal key brokerage application logic, where possible using a brokerage SDK.
+     </div>
+    </div>
+    <div class="col-md-6 col-sm-12 docs-landing-link-wrap">
+     <div class="content clickable" onclick="window.location.href = '/docs/v2/lean-engine/contributions/brokerages/translating-symbol-conventions'">
+      <div class="docs-internal-link">
+       <h4>
+        Translating Symbol Conventions
+       </h4>
+      </div>
+      (
+      <code>
+       ISymbolMapper
+      </code>
+      ) Translate brokerage specific tickers to LEAN format for a uniform algorithm design experience.
+     </div>
+    </div>
+    <div class="col-md-6 col-sm-12 docs-landing-link-wrap">
+     <div class="content clickable" onclick="window.location.href = '/docs/v2/lean-engine/contributions/brokerages/describing-brokerage-limitations'">
+      <div class="docs-internal-link">
+       <h4>
+        Describing Brokerage Limitations
+       </h4>
+      </div>
+      (
+      <code>
+       IBrokerageModel
+      </code>
+      ) Describe brokerage support of orders and set transaction models.
+     </div>
+    </div>
+    <div class="col-md-6 col-sm-12 docs-landing-link-wrap">
+     <div class="content clickable" onclick="window.location.href = '/docs/v2/lean-engine/contributions/brokerages/enabling-live-data-streaming'">
+      <div class="docs-internal-link">
+       <h4>
+        Enabling Live Data Streaming
+       </h4>
+      </div>
+      (
+      <code>
+       IDataQueueHandler
+      </code>
+      ) Set up a live streaming data service from a brokerage-supplied source.
+     </div>
+    </div>
+    <div class="col-md-6 col-sm-12 docs-landing-link-wrap">
+     <div class="content clickable" onclick="window.location.href = '/docs/v2/lean-engine/contributions/brokerages/enabling-historical-data'">
+      <div class="docs-internal-link">
+       <h4>
+        Enabling Historical Data
+       </h4>
+      </div>
+      (
+      <code>
+       IHistoryProvider
+      </code>
+      ) Tap into the brokerage historical data API to serve history for live algorithms.
+     </div>
+    </div>
+    <div class="col-md-6 col-sm-12 docs-landing-link-wrap">
+     <div class="content clickable" onclick="window.location.href = '/docs/v2/lean-engine/contributions/brokerages/downloading-data'">
+      <div class="docs-internal-link">
+       <h4>
+        Downloading Data
+       </h4>
+      </div>
+      (
+      <code>
+       IDataDownloader
+      </code>
+      ) Save data from the brokerage to disk in LEAN format.
+     </div>
+    </div>
+    <div class="col-md-6 col-sm-12 docs-landing-link-wrap">
+     <div class="content clickable" onclick="window.location.href = '/docs/v2/lean-engine/contributions/brokerages/modeling-fee-structures'">
+      <div class="docs-internal-link">
+       <h4>
+        Modeling Fee Structures
+       </h4>
+      </div>
+      (
+      <code>
+       IFeeModel
+      </code>
+      ) Enable accurate backtesting with specific fee structures of the brokerage.
+     </div>
+    </div>
+    <div class="col-md-6 col-sm-12 docs-landing-link-wrap">
+     <div class="content clickable" onclick="window.location.href = '/docs/v2/lean-engine/contributions/brokerages/updating-the-algorithm-api'">
+      <div class="docs-internal-link">
+       <h4>
+        Updating the Algorithm API
+       </h4>
+      </div>
+      (
+      <code>
+       ISecurityTransactionModel
+      </code>
+      ) Combine the various models together to form a brokerage set.
+     </div>
+    </div>
+   </div>
+   <div class="see-also">
+    <h3>
+     See Also
+    </h3>
+    <a href="https://www.quantconnect.com/datasets">
+     Dataset Market
+    </a>
+    <br/>
+    <a href="https://www.quantconnect.com/docs/v2/cloud-platform/datasets/licensing">
+     Purchasing Datasets
+    </a>
+    <br/>
+   </div>
+  </div>
+ </body>
+</html>
+
+<p style="page-break-after: always;">&nbsp;</p>
+<section id="2.2.1"><h3>2.2.1 Setting Up Your Environment</h3></section>
+
+<h3>Introduction</h3>
+<html>
+ <body>
+  <p>
+   This page explains how to set up your coding environment to create, develop, and test your brokerage before you contribute it to LEAN.
+  </p>
+ </body>
+</html>
+
+<h3>Prerequisites</h3>
+<html>
+ <body>
+  <p>
+   Working knowledge of C#. You also need to
+   <a href="https://dotnet.microsoft.com/download/dotnet/6.0" rel="nofollow" target="_blank">
+    install .NET 6.0
+   </a>
+   .
+  </p>
+ </body>
+</html>
+
+<h3>Set Up Environment</h3>
+<html>
+ <body>
+  <p>
+   Follow these steps to set up your environment:
+  </p>
+  <ol>
+   <li>
+    Fork
+    <a href="https://github.com/QuantConnect/Lean/" rel="nofollow" target="_blank">
+     Lean
+    </a>
+    and then clone your forked repository to your local machine.
+   </li>
+   <li>
+    Open the
+    <a href="https://github.com/QuantConnect/Lean.Brokerages.Template" rel="nofollow" target="_blank">
+     Lean.Brokerages.Template repository
+    </a>
+    and click
+    <span class="button-name">
+     Use this template
+    </span>
+    .
+   </li>
+   <li>
+    On the Create a new repository from Lean.Brokerages.Template page, set the repository name to
+    <span class="public-directory-name">
+     Lean.Brokerages.&lt;brokerageName&gt;
+    </span>
+    (for example,
+    <span class="public-directory-name">
+     Lean.Brokerages.XYZ
+    </span>
+    ).
+   </li>
+   <li>
+    Click
+    <span class="button-name">
+     Create repository from template
+    </span>
+    .
+   </li>
+   <li>
+    Clone the
+    <span class="public-directory-name">
+     Lean.Brokerages.&lt;brokerageName&gt;
+    </span>
+    repository.
+   </li>
+   <div class="cli section-example-container">
+    <pre>$ git clone https://github.com/username/Lean.Brokerages.&lt;brokerageName&gt;.git</pre>
+   </div>
+   <li>
+    If you're on a Linux terminal, in your
+    <span class="public-file-name">
+     Lean.Brokerages.&lt;brokerageName&gt;
+    </span>
+    directory, change the access permissions of the bash script.
+   </li>
+   <div class="cli section-example-container">
+    <pre>$ chmod +x ./renameBrokerage</pre>
+   </div>
+   <li>
+    In your
+    <span class="public-file-name">
+     Lean.Brokerages.&lt;brokerageName&gt;
+    </span>
+    directory, run the
+    <span class="public-file-name">
+     renameBrokerage.sh
+    </span>
+    bash script.
+    <br/>
+   </li>
+   <div class="cli section-example-container">
+    <pre>$ renameBrokerage.sh</pre>
+   </div>
+   <p>
+    The bash script replaces some placeholder text in the
+    <span class="public-directory-name">
+     Lean.Brokerages.&lt;brokerageName&gt;
+    </span>
+    directory and renames some files according to your brokerage name.
+   </p>
+  </ol>
+ </body>
+</html>
+
+<p style="page-break-after: always;">&nbsp;</p>
+<section id="2.2.2"><h3>2.2.2 Laying the Foundation</h3></section>
+
+<html>
+ <body>
+  <table class="table qc-table summary">
+   <thead>
+    <tr>
+     <th class="summary" colspan="2">
+      <i class="fa fa-thumb-tack">
+      </i>
+      IBrokerageFactory
+     </th>
+    </tr>
+   </thead>
+   <tbody>
+    <tr>
+     <td>
+      Primary Role
+     </td>
+     <td>
+      Create and initialize a brokerage instance.
+     </td>
+    </tr>
+    <tr>
+     <td>
+      Interface
+     </td>
+     <td>
+      <a href="https://github.com/QuantConnect/Lean/blob/master/Common/Interfaces/IBrokerageFactory.cs" rel="nofollow" target="_blank">
+       IBrokerageFactory.cs
+      </a>
+     </td>
+    </tr>
+    <tr>
+     <td>
+      Example
+     </td>
+     <td>
+      <a href="https://github.com/QuantConnect/Lean.Brokerages.Bitfinex/blob/master/QuantConnect.BitfinexBrokerage/BitfinexBrokerageFactory.cs" rel="nofollow" target="_blank">
+       BitfinexBrokerageFactory.cs
+      </a>
+     </td>
+    </tr>
+    <tr>
+     <td>
+      Target Location
+     </td>
+     <td>
+      <span class="public-directory-name">
+       Lean.Brokerages.&lt;brokerageName&gt; / QuantConnect.&lt;brokerageName&gt;Brokerage /
+      </span>
+     </td>
+    </tr>
+   </tbody>
+  </table>
+ </body>
+</html>
+
+<h3>Introduction</h3>
+<html>
+ <body>
+  <p>
+   The
+   <a href="https://github.com/QuantConnect/Lean/blob/master/Common/Interfaces/IBrokerageFactory.cs" rel="nofollow" target="_blank">
+    IBrokerageFactory
+   </a>
+   creates brokerage instances and configures LEAN with a
+   <a href="https://github.com/QuantConnect/Lean/blob/master/Common/Packets/LiveNodePacket.cs#L37" rel="nofollow" target="_blank">
+    Job Packet
+   </a>
+   . To create the right
+   <code>
+    BrokerageFactory
+   </code>
+   type, LEAN uses the brokerage name in the job packet. To set the brokerage name, LEAN uses the
+   <code>
+    live-mode-brokerage
+   </code>
+   value in the
+   <a href="https://github.com/QuantConnect/Lean/blob/master/Launcher/config.json" rel="nofollow" target="_blank">
+    configuration file
+   </a>
+   .
+  </p>
+ </body>
+</html>
+
+<h3>Prerequisites</h3>
+<html>
+ <body>
+  <p>
+   You need to
+   <a href="https://www.quantconnect.com/docs/v2/docs/v2/lean-engine/contributions/brokerages/setting-up-your-environment">
+    set up your environment
+   </a>
+   before you can lay the foundation for a new brokerage.
+  </p>
+ </body>
+</html>
+
+<h3>Lay the Foundation</h3>
+<html>
+ <body>
+  <p>
+   Follow these steps to stub out the implementation and initialize a brokerage instance:
+  </p>
+  <ol>
+   <li>
+    In the
+    <span class="public-file-name">
+     Lean / Launcher / config.json
+    </span>
+    file, add a few key-value pairs with your brokerage configuration information.
+   </li>
+   <p>
+    For example,
+    <code>
+     oanda-access-token
+    </code>
+    and
+    <code>
+     oanda-account-id
+    </code>
+    keys. These key-value pairs will be used for most local debugging and testing as the default. LEAN automatically copies these pairs to the
+    <a href="https://github.com/QuantConnect/Lean/blob/master/Common/Packets/LiveNodePacket.cs#L43" rel="nofollow" target="_blank">
+     BrokerageData
+    </a>
+    member of the job packet as a dictionary of
+    <code>
+     &lt;string,string&gt;
+    </code>
+    pairs.
+   </p>
+   <li>
+    In the
+    <span class="public-file-name">
+     Lean.Brokerages.&lt;brokerageName&gt; / QuantConnect.&lt;brokerageName&gt;Brokerage / &lt;brokerageName&gt;Factory.cs
+    </span>
+    file, update the
+    <code>
+     BrokerageData
+    </code>
+    member so it uses the
+    <code>
+     Config
+    </code>
+    class to load all the required configuration settings from the
+    <span class="public-file-name">
+     Lean / Launcher / config.json
+    </span>
+    file.
+   </li>
+   <p>
+    For instance,
+    <code>
+     Config.Get("oanda-access-token")
+    </code>
+    returns the
+    <code>
+     "oanda-access-token"
+    </code>
+    value from the configuration file. For a full example, see the
+    <a href="https://github.com/QuantConnect/Lean.Brokerages.Bitfinex/blob/master/QuantConnect.BitfinexBrokerage/BitfinexBrokerageFactory.cs#L49" rel="nofollow" target="_blank">
+     BrokerageData member
+    </a>
+    in the
+    <code>
+     BitfinexBrokerageFactory
+    </code>
+    .
+   </p>
+   <p>
+    In the
+    <code>
+     IBrokerageFactory
+    </code>
+    examples, you'll see code like
+    <code>
+     Composer.Instance.AddPart&lt;IDataQueueHandler&gt;(dataQueueHandler)
+    </code>
+    , which adds parts to the
+    <span class="new-term">
+     Composer
+    </span>
+    . The Composer is a system in LEAN for dynamically loading types. In this case, it's adding an instance of the
+    <code>
+     DataQueueHandler
+    </code>
+    for the brokerage to the composer. You can think of the Composer as a library and adding parts is like adding books to its collection.
+   </p>
+   <li>
+    In the
+    <span class="public-file-name">
+     Lean / Common / Brokerages
+    </span>
+    folder, create a
+    <span class="public-file-name">
+     &lt;brokerageName&gt;.cs
+    </span>
+    file with a stub implementation that inherits from the
+    <a href="https://www.quantconnect.com/docs/v2/writing-algorithms/reality-modeling/brokerages/supported-models/quantconnect-paper-trading">
+     DefaultBrokerageModel
+    </a>
+    .
+   </li>
+   <p>
+    Brokerage models tell LEAN what order types a brokerage supports, whether we're allowed to update an order, and what
+    <a href="https://www.quantconnect.com/docs/v2/writing-algorithms/reality-modeling/key-concepts">
+     reality models
+    </a>
+    to use. Use the following stub implementation for now:
+   </p>
+   <div class="section-example-container">
+    <pre class="csharp">namespace QuantConnect.Brokerages
+{
+    public class BrokerageNameBrokerageModel : DefaultBrokerageModel
+    {
+        
+    }
+}</pre>
+   </div>
+   <p>
+    where
+    <code>
+     BrokerageName
+    </code>
+    is the name of your brokerage. For example, if the brokerage name is XYZ, then
+    <code>
+     BrokerageNameBrokerageModel
+    </code>
+    should be
+    <code>
+     XYZBrokerageModel
+    </code>
+    . You'll extend this implementation later.
+   </p>
+   <li>
+    In the
+    <span class="public-file-name">
+     Lean.Brokerages.&lt;BrokerageName&gt; / QuantConnect.&lt;brokerageName&gt;Brokerage / &lt;brokerageName&gt;BrokerageFactory.cs
+    </span>
+    file, define
+    <code>
+     GetBrokerageModel
+    </code>
+    to return an instance of your new brokerage model.
+   </li>
+   <div class="section-example-container">
+    <pre class="csharp">public override IBrokerageModel GetBrokerageModel(IOrderProvider orderProvider)
+{
+    return new BrokerageNameBrokerageModel();
+}</pre>
+   </div>
+   <li>
+    If your brokerage uses websockets to send data, in the
+    <span class="public-file-name">
+     Lean.Brokerages.&lt;brokerageName&gt; / QuantConnect.&lt;brokerageName&gt; / &lt;brokerageName&gt;Brokerage.cs
+    </span>
+    file, replace the
+    <code>
+     Brokerage
+    </code>
+    base class for
+    <code>
+     BaseWebsocketsBrokerage
+    </code>
+    .
+   </li>
+   <li>
+    In the
+    <span class="public-file-name">
+     Lean.Brokerages.&lt;brokerageName&gt; / QuantConnect.&lt;brokerageName&gt;Brokerage / &lt;brokerageName&gt;Brokerage.cs
+    </span>
+    file, update the constructor to save required authentication data to private variables.
+   </li>
+   <li>
+    In the
+    <span class="public-file-name">
+     Lean.Brokerages.&lt;brokerageName&gt; / QuantConnect.&lt;brokerageName&gt;Brokerage / &lt;brokerageName&gt;BrokerageFactory.cs
+    </span>
+    file, define the
+    <code>
+     CreateBrokerage
+    </code>
+    method to create and return an instance of your new brokerage model without connecting to the brokerage.
+   </li>
+   <p>
+    The Brokerage Factory uses a job packet to create an initialized brokerage instance in the
+    <code>
+     CreateBrokerage
+    </code>
+    method. Assume the
+    <code>
+     job
+    </code>
+    argument has the best source of data, not the
+    <code>
+     BrokerageData
+    </code>
+    property. The
+    <code>
+     BrokerageData
+    </code>
+    property in the factory are the starting default values from the configuration file, which can be overridden by a runtime job.
+   </p>
+   <li>
+    In the
+    <span class="public-file-name">
+     Lean / Launcher / config.json
+    </span>
+    file, add a
+    <code>
+     live-&lt;brokerageName&gt;
+    </code>
+    key.
+   </li>
+   <p>
+    These
+    <code>
+     live-&lt;brokerageName&gt;
+    </code>
+    keys group configuration flags together and override the root configuration values. Use the following key-value pair as a starting point:
+   </p>
+   <div class="section-example-container">
+    <pre>// defines the 'live-brokerage-name' environment
+"live-brokerage-name": {
+  "live-mode": true,
+
+  "live-mode-brokerage": "BrokerageName",
+
+  "setup-handler": "QuantConnect.Lean.Engine.Setup.BrokerageSetupHandler",
+  "result-handler": "QuantConnect.Lean.Engine.Results.LiveTradingResultHandler",
+  "data-feed-handler": "QuantConnect.Lean.Engine.DataFeeds.LiveTradingDataFeed",
+  "data-queue-handler": [ "QuantConnect.Lean.Engine.DataFeeds.Queues.LiveDataQueue" ],
+  "real-time-handler": "QuantConnect.Lean.Engine.RealTime.LiveTradingRealTimeHandler",
+  "transaction-handler": "QuantConnect.Lean.Engine.TransactionHandlers.BacktestingTransactionHandler"
+},</pre>
+   </div>
+   <p>
+    where
+    <code>
+     brokerage-name
+    </code>
+    and
+    <code>
+     "BrokerageName"
+    </code>
+    are placeholders for your brokerage name.
+   </p>
+   <li>
+    In the
+    <span class="public-file-name">
+     Lean / Launcher / config.json
+    </span>
+    file, set the
+    <code>
+     environment
+    </code>
+    value to the your new brokerage environment.
+   </li>
+   <p>
+    For example,
+    <code>
+     "live-brokerage-name"
+    </code>
+    .
+   </p>
+   <li>
+    Build the solution.
+   </li>
+   <p>
+    Running the solution won't work, but the stub implementation should still build.
+   </p>
+  </ol>
+ </body>
+</html>
+
+<p style="page-break-after: always;">&nbsp;</p>
+<section id="2.2.3"><h3>2.2.3 Creating the Brokerage</h3></section>
+
+<html>
+ <body>
+  <table class="table qc-table summary">
+   <thead>
+    <tr>
+     <th class="summary" colspan="2">
+      <i class="fa fa-thumb-tack">
+      </i>
+      IBrokerage
+     </th>
+    </tr>
+   </thead>
+   <tbody>
+    <tr>
+     <td>
+      Primary Role
+     </td>
+     <td>
+      Brokerage connection, orders, and fill events.
+     </td>
+    </tr>
+    <tr>
+     <td>
+      Interface
+     </td>
+     <td>
+      <a href="https://github.com/QuantConnect/Lean/blob/master/Common/Interfaces/IBrokerage.cs" rel="nofollow" target="_blank">
+       IBrokerage.cs
+      </a>
+     </td>
+    </tr>
+    <tr>
+     <td>
+      Example
+     </td>
+     <td>
+      <a href="https://github.com/QuantConnect/Lean.Brokerages.Bitfinex/blob/master/QuantConnect.BitfinexBrokerage/BitfinexBrokerage.cs" rel="nofollow" target="_blank">
+       BitfinexBrokerage.cs
+      </a>
+     </td>
+    </tr>
+    <tr>
+     <td>
+      Target Location
+     </td>
+     <td>
+      <span class="public-directory-name">
+       Lean.Brokerages.&lt;brokerageName&gt; / QuantConnect.&lt;brokerageName&gt;Brokerage /
+      </span>
+     </td>
+    </tr>
+   </tbody>
+  </table>
+ </body>
+</html>
+
+<h3>Introduction</h3>
+<html>
+ <body>
+  <p>
+   The
+   <a href="https://github.com/QuantConnect/Lean/blob/master/Common/Interfaces/IBrokerage.cs" rel="nofollow" target="_blank">
+    IBrokerage
+   </a>
+   holds the bulk of the core logic responsible for running the brokerage implementation. Many smaller models described later internally use the brokerage implementation, so its best to now start implementating the
+   <code>
+    IBrokerage
+   </code>
+   . Brokerage classes can get quite large, so use a
+   <code>
+    partial
+   </code>
+   class modifier to break up the files in appropriate categories.
+  </p>
+ </body>
+</html>
+
+<h3>Prerequisites</h3>
+<html>
+ <body>
+  <p>
+   You need to
+   <a href="https://www.quantconnect.com/docs/v2/docs/v2/lean-engine/contributions/brokerages/laying-the-foundation">
+    lay the foundation
+   </a>
+   before you can create a new brokerage.
+  </p>
+ </body>
+</html>
+
+<h3>Brokerage Roles</h3>
+<html>
+ <body>
+  <p>
+   The brokerage has many the following important roles vital for the stability of a running algorithm:
+  </p>
+  <ol>
+   <li>
+    Maintain Connection - Connect and maintain connection while algorithm running.
+   </li>
+   <li>
+    Setup State - Initialize the algorithm portfolio, open orders and cashbook.
+   </li>
+   <li>
+    Order Operations - Create, update and cancel orders.
+   </li>
+   <li>
+    Order Events - Receive order fills and apply them to portfolio.
+   </li>
+   <li>
+    Account Events - Track non-order events (cash deposits/removals).
+   </li>
+   <li>
+    Brokerage Events - Interpret brokerage messages and act when required.
+   </li>
+   <li>
+    Serve History Requests - Provide historical data on request.
+   </li>
+  </ol>
+  <p>
+   Brokerages often have their own ticker styles, order class names, and event names. Many of the methods in the brokerage implementation may simply be converting from the brokerage object format into LEAN format. You should plan accordingly to write neat code.
+  </p>
+  <p>
+   The brokerage must implement the following interfaces:
+  </p>
+  <div class="section-example-container">
+   <pre class="csharp">class MyBrokerage : Brokerage, IDataQueueHandler, IDataQueueUniverseProvider { ... }</pre>
+  </div>
+ </body>
+</html>
+
+<h3>Implementation Style</h3>
+<html>
+ <body>
+  <p>
+   This guide focuses on implementing the brokerage step-by-step in LEAN because it's a more natural workflow for most people. You can also follow a more test-driven development process by following the test harness. To do this, create a new test class that extends from the base class in
+   <span class="public-file-name">
+    Lean / Tests / Brokerages / BrokerageTests.cs
+   </span>
+   . This test-framework tests all the methods for an
+   <code>
+    IBrokerage
+   </code>
+   implementation.
+  </p>
+ </body>
+</html>
+
+<h3>Connection Requirements</h3>
+<html>
+ <body>
+  <p>
+   LEAN is best used with streaming or socket-based brokerage connections. Streaming brokerage implementations allow for the easiest translation of broker events into LEAN events. Without streaming order events, you will need to poll for to check for fills. In our experience, this is fraught with additional risks and challenges.
+  </p>
+ </body>
+</html>
+
+<h3>SDK Libraries</h3>
+<html>
+ <body>
+  <p>
+   Most brokerages provide a wrapper for their API. If it has a permissive license and it's compatible with .NET 6, you should utilize it. Although it is technically possible to embed an external github repository, we've elected to not do this to make LEAN easier to install (submodules can be tricky for beginners). Instead, copy the library into its own subfolder of the brokerage implementation. For example,
+   <span class="public-file-name">
+    Lean.Brokerages.&lt;brokerageName&gt; / QuantConnect.&lt;brokerageName&gt;Brokerage / BrokerLib / *
+   </span>
+   . After you add a library, build the project again to make sure the library successfully compiles.
+  </p>
+  <p>
+   LEAN
+   <i class="fa fa-heart" style="color: red">
+   </i>
+   Open-Source. If you copy and paste code from an external source, leave the comments and headers intact. If they don't have a comment header, add one to each file, referencing the source. Let's keep the attributions in place.
+  </p>
+ </body>
+</html>
+
+<h3>Define the Brokerage Class</h3>
+<html>
+ <body>
+  <p>
+   The following sections describe components of the brokerage implementation in the
+   <span class="public-file-name">
+    Lean.Brokerages.&lt;brokerageName&gt; / QuantConnect.&lt;brokerageName&gt;Brokerage / &lt;brokerageName&gt;Brokerage.cs
+   </span>
+   file.
+  </p>
+  <h4>
+   Base Class
+  </h4>
+  <p>
+   Using a base class is optional but allows you to reuse event methods we have provided. The
+   <code>
+    Brokerage
+   </code>
+   object implements these event handlers and marks the remaining items as
+   <code>
+    abstract
+   </code>
+   .
+  </p>
+  <p>
+   LEAN provides an optional base class
+   <code>
+    BaseWebsocketsBrokerage
+   </code>
+   which seeks to connect and maintain a socket connection and pass messages to an event handler. As each socket connection is different, carefully consider before using this class. It might be easier and more maintainable to simply maintain your own socket connection.
+  </p>
+  <p>
+   Brush up on the
+   <code>
+    partial
+   </code>
+   class keyword. It will help you break-up your class later.
+  </p>
+  <h4>
+   Class Constructor
+  </h4>
+  <p>
+   Once the scaffolding brokerage methods are in place (overrides of the abstract base classes), you can focus on the class constructor. If you are using a brokerage SDK, create a new instance of their library and store it to a class variable for later use. You should define the constructor so that it accepts all the arguments you pass it during the
+   <code>
+    CreateBrokerage
+   </code>
+   method you implemented in the
+   <span class="public-file-name">
+    Lean.Brokerages.&lt;brokerageName&gt; / QuantConnect.&lt;brokerageName&gt;Brokerage / &lt;brokerageName&gt;BrokerageFactory.cs
+   </span>
+   file.
+  </p>
+  <p>
+   The following table provides some example implementations of the brokerage class constructor:
+  </p>
+  <table class="table qc-table">
+   <thead>
+    <tr>
+     <th>
+      Brokerage
+     </th>
+     <th>
+      Description
+     </th>
+    </tr>
+   </thead>
+   <tbody>
+    <tr>
+     <td>
+      <a href="https://github.com/QuantConnect/Lean.Brokerages.InteractiveBrokers/blob/master/QuantConnect.InteractiveBrokersBrokerage/InteractiveBrokersBrokerage.cs#L282" rel="nofollow" target="_blank">
+       Interactive Brokers
+      </a>
+     </td>
+     <td>
+      Launches an external process to create the brokerage.
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <a href="https://github.com/QuantConnect/Lean.Brokerages.OANDA/blob/master/QuantConnect.OandaBrokerage/OandaBrokerage.cs#L76">
+       OANDA
+      </a>
+     </td>
+     <td>
+      Creates an SDK instance and assigns internal event handlers.
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <a href="https://github.com/QuantConnect/Lean/blob/master/Brokerages/BaseWebsocketsBrokerage.cs#L91">
+       Coinbase
+      </a>
+     </td>
+     <td>
+      Offloads constructor work to
+      <code>
+       BrokerageFactory
+      </code>
+      and uses the
+      <code>
+       BaseWebsocketBrokerage
+      </code>
+      base class.
+     </td>
+    </tr>
+   </tbody>
+  </table>
+  <h4>
+   <code>
+    string Name
+   </code>
+  </h4>
+  <p>
+   The
+   <code>
+    Name
+   </code>
+   property is a human-readable brokerage name for debugging and logging. For US Equity-regulated brokerages, convention states this name generally ends in the word "Brokerage".
+  </p>
+  <h4>
+   <code>
+    void Connect()
+   </code>
+  </h4>
+  <p>
+   The
+   <code>
+    Connect
+   </code>
+   method triggers logic for establishing a link to your brokerage. Normally, we don't do this in the constructor because it makes algorithms and brokerages die in the
+   <code>
+    BrokerageFactory
+   </code>
+   process. For most brokerages, to establish a connection with the brokerage, call the connect method on your SDK library.
+  </p>
+  <p>
+   The following table provides some example implementations of the
+   <code>
+    Connect
+   </code>
+   method:
+  </p>
+  <table class="table qc-table">
+   <thead>
+    <tr>
+     <th>
+      Brokerage
+     </th>
+     <th>
+      Description
+     </th>
+    </tr>
+   </thead>
+   <tbody>
+    <tr>
+     <td>
+      <a href="https://github.com/QuantConnect/Lean.Brokerages.InteractiveBrokers/blob/master/QuantConnect.InteractiveBrokersBrokerage/InteractiveBrokersBrokerage.cs#L674" rel="nofollow" target="_blank">
+       Interactive Brokers
+      </a>
+     </td>
+     <td>
+      Connects to an external process with the brokerage SDK.
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <a href="https://github.com/QuantConnect/Lean.Brokerages.OANDA/blob/master/QuantConnect.OandaBrokerage/OandaBrokerage.cs#L100" rel="nofollow" target="_blank">
+       OANDA
+      </a>
+     </td>
+     <td>
+      Simple example that calls the brokerage SDK.
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <a href="https://github.com/QuantConnect/Lean.Brokerages.CoinbasePro/blob/master/QuantConnect.GDAXBrokerage/GDAXBrokerage.cs#L207" rel="nofollow" target="_blank">
+       Coinbase
+      </a>
+     </td>
+     <td>
+      Establishes the WebSocket connection and monitoring in a thread.
+     </td>
+    </tr>
+   </tbody>
+  </table>
+  <p>
+   If a soft failure occurs like a lost internet connection or a server 502 error, create a new
+   <code>
+    BrokerageMessageEvent
+   </code>
+   so you allow the algorithm to
+   <a href="https://www.quantconnect.com/docs/v2/writing-algorithms/live-trading/brokerages#05-Monitor-Brokerage-Messages">
+    handle the brokerage messages
+   </a>
+   . For example, Interactive Brokers resets socket connections at different times globally, so users in other parts of the world can get disconnected at strange times of the day. Knowing this, they may elect to have their algorithm ignore specific disconnection attempts.
+  </p>
+  <p>
+   If a hard failure occurs like an incorrect password or an unsupported API method, throw a real exception with details of the error.
+  </p>
+  <h4>
+   <code>
+    void Disconnect()
+   </code>
+  </h4>
+  <p>
+   The
+   <code>
+    Disconnect
+   </code>
+   method is called at the end of the algorithm before LEAN shuts down.
+  </p>
+  <h4>
+   <code>
+    bool IsConnected
+   </code>
+  </h4>
+  <p>
+   The
+   <code>
+    IsConnected
+   </code>
+   property is a boolean that indicates the state of the brokerage connection. Depending on your connection style, this may be automatically handled for you and simply require passing back the value from your SDK. Alternatively, you may need to maintain your own connection state flag in your brokerage class.
+  </p>
+  <h4>
+   <code>
+    bool PlaceOrder(Order order)
+   </code>
+  </h4>
+  <p>
+   The
+   <code>
+    PlaceOrder
+   </code>
+   method should send a new LEAN order to the brokerage and report back the success or failure. The
+   <code>
+    PlaceOrder
+   </code>
+   method accepts a generic
+   <code>
+    Order
+   </code>
+   object, which is the base class for all order types. The first step of placing an order is often to convert it from LEAN format into the format that the brokerage SDK requires. Your brokerage implementation should aim to support as many
+   <a href="https://www.quantconnect.com/docs/v2/writing-algorithms/trading-and-orders/order-types">
+    LEAN order types
+   </a>
+   as possible. There may be other order types in the brokerage, but implementing them is considered out of scope of a rev-0 brokerage implementation.
+  </p>
+  <p>
+   Converting order types is an error-prone process and you should carefully review each order after you've ported it. Some brokerages have many properties on their orders, so check each required property for each order. To simplify the process, define an internal
+   <code>
+    BrokerOrder ConvertOrder(Order order)
+   </code>
+   method to convert orders between LEAN format and your brokerage format. Part of the order conversion might be converting the brokerage ticker (for example, LEAN name "EURUSD" vs OANDA name "EUR/USD"). This is done with a
+   <code>
+    BrokerageSymbolMapper
+   </code>
+   class. You can add this functionality later. For now, pass a request for the brokerage ticker to the stub implementation.
+  </p>
+  <p>
+   Once the order type is converted, use the
+   <code>
+    IsConnected
+   </code>
+   property to check if you're connected before placing the order. If you're not connected, throw an exception to halt the algorithm. Otherwise, send the order to your brokerage submit API. Oftentimes, you receive an immediate reply indicating the order was successfully placed. The
+   <code>
+    PlaceOrder
+   </code>
+   method should return true when the order is accepted by the brokerage. If the order is invalid, immediately rejected, or there is an internet outage, the method should return false.
+  </p>
+  <h4>
+   <code>
+    bool UpdateOrder(Order order)
+   </code>
+  </h4>
+  <p>
+   The
+   <code>
+    UpdateOrder
+   </code>
+   method transmits an update request to the API and returns true if it was successfully processed. Updating an order is one of the most tricky parts of brokerage implementations. You can easily run into synchronization issues.
+  </p>
+  <p>
+   The following table provides some example implementations of the
+   <code>
+    UpdateOrder
+   </code>
+   method:
+  </p>
+  <table class="table qc-table">
+   <thead>
+    <tr>
+     <th>
+      Brokerage
+     </th>
+     <th>
+      Description
+     </th>
+    </tr>
+   </thead>
+   <tbody>
+    <tr>
+     <td>
+      <a href="https://github.com/QuantConnect/Lean.Brokerages.InteractiveBrokers/blob/master/QuantConnect.InteractiveBrokersBrokerage/InteractiveBrokersBrokerage.cs#L361" rel="nofollow" target="_blank">
+       Interactive Brokers
+      </a>
+     </td>
+     <td>
+      Updates multiple asset classes with an external application.
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <a href="https://github.com/QuantConnect/Lean.Brokerages.OANDA/blob/master/QuantConnect.OandaBrokerage/OandaBrokerage.cs#L201" rel="nofollow" target="_blank">
+       OANDA
+      </a>
+     </td>
+     <td>
+      Simple example that calls the brokerage SDK.
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <a href="https://github.com/QuantConnect/Lean.Brokerages.CoinbasePro/blob/master/QuantConnect.GDAXBrokerage/GDAXBrokerage.cs#L169" rel="nofollow" target="_blank">
+       Coinbase
+      </a>
+     </td>
+     <td>
+      Throws an exception because order updates are not supported.
+     </td>
+    </tr>
+   </tbody>
+  </table>
+  <h4>
+   <code>
+    bool CancelOrder(Order order)
+   </code>
+  </h4>
+  <h4>
+   <code>
+    bool UpdateOrder(Order order)
+   </code>
+  </h4>
+  <h4>
+   <code>
+    List&lt;Order&gt; GetOpenOrders()
+   </code>
+  </h4>
+  <h4>
+   <code>
+    List&lt;Holding&gt; GetAccountHoldings()
+   </code>
+  </h4>
+  <h4>
+   <code>
+    List&lt;Cash&gt; GetCashBalance()
+   </code>
+  </h4>
+  <h4>
+   <code>
+    bool AccountInstantlyUpdated
+   </code>
+  </h4>
+  <h4>
+   <code>
+    IEnumerable&lt;BaseData&gt; GetHistory(HistoryRequest request)
+   </code>
+  </h4>
+  <h4>
+   <code>
+    bool AccountInstantlyUpdated
+   </code>
+  </h4>
+ </body>
+</html>
+
+<p style="page-break-after: always;">&nbsp;</p>
+<section id="2.2.4"><h3>2.2.4 Translating Symbol Conventions</h3></section>
+
+<h3>Introduction</h3>
+<html>
+ <body>
+  <p>
+   This brokerage development guide is still under construction.
+  </p>
+ </body>
+</html>
+
+<p style="page-break-after: always;">&nbsp;</p>
+<section id="2.2.5"><h3>2.2.5 Describing Brokerage Limitations</h3></section>
+
+<h3>Introduction</h3>
+<html>
+ <body>
+  <p>
+   This brokerage development guide is still under construction.
+  </p>
+ </body>
+</html>
+
+<p style="page-break-after: always;">&nbsp;</p>
+<section id="2.2.6"><h3>2.2.6 Enabling Live Data Streaming</h3></section>
+
+<h3>Introduction</h3>
+<html>
+ <body>
+  <p>
+   This brokerage development guide is still under construction.
+  </p>
+ </body>
+</html>
+
+<p style="page-break-after: always;">&nbsp;</p>
+<section id="2.2.7"><h3>2.2.7 Enabling Historical Data</h3></section>
+
+<h3>Introduction</h3>
+<html>
+ <body>
+  <p>
+   This brokerage development guide is still under construction.
+  </p>
+ </body>
+</html>
+
+<p style="page-break-after: always;">&nbsp;</p>
+<section id="2.2.8"><h3>2.2.8 Downloading Data</h3></section>
+
+<h3>Introduction</h3>
+<html>
+ <body>
+  <p>
+   This brokerage development guide is still under construction.
+  </p>
+ </body>
+</html>
+
+<p style="page-break-after: always;">&nbsp;</p>
+<section id="2.2.9"><h3>2.2.9 Modeling Fee Structures</h3></section>
+
+<h3>Introduction</h3>
+<html>
+ <body>
+  <p>
+   This brokerage development guide is still under construction.
+  </p>
+ </body>
+</html>
+
+<p style="page-break-after: always;">&nbsp;</p>
+<section id="2.2.10"><h3>2.2.10 Updating the Algorithm API</h3></section>
+
+<h3>Introduction</h3>
+<html>
+ <body>
+  <p>
+   This brokerage development guide is still under construction.
+  </p>
+ </body>
+</html>
+
+<p style="page-break-after: always;">&nbsp;</p>
+<section id="3"><h3>3 Statistics</h3></section>
+
+<section id="3.1"><h3>3.1 Capacity</h3></section>
+
+<h3>Introduction</h3>
+<html>
+ <body>
+  <p>
+   Capacity is a measure of how much capital a strategy can trade before the performance of the strategy degrades from market impact. The capacity calculation is done on a rolling basis with one snapshot taken at the end of each week. This page outlines how LEAN performs the entire calculation.
+  </p>
+  <script type="text/x-mathjax-config">
+   MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});
+  </script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript">
+  </script>
+ </body>
+</html>
+
+<h3>Security Capacity</h3>
+<html>
+ <body>
+  <p>
+   The first step to determine the capacity of the strategy is to compute the capacity of each security the strategy trades.
+  </p>
+  <h4>
+   Market Capacity Dollar Volume
+  </h4>
+  <p>
+   Following each order fill, LEAN monitors and records the dollar-volume for a series of bars. To get an estimate of the available capacity, we combine many second and minute trade bars together. For hourly or daily data resolutions, we only use one bar.
+  </p>
+  <div class="section-example-container">
+   <pre class="csharp">_marketCapacityDollarVolume += bar.Close * _fastTradingVolumeDiscountFactor * bar.Volume * conversionRate * Security.SymbolProperties.ContractMultiplier;</pre>
+  </div>
+  <h5>
+   Crypto Volume
+  </h5>
+  <p>
+   Crypto trade volume is light, but there is significant capacity even at the very top of the order book. The estimated volume of Crypto is based on the average size on the bid and ask.
+  </p>
+  <h5>
+   Forex and CFD Volume
+  </h5>
+  <p>
+   Forex and CFD assets do not have a trade volume or quote size information so they were approximated as deeply liquid assets with approximately $25,000,000 depth per minute.
+  </p>
+  <h5>
+   Volume Accumulation Period
+  </h5>
+  <p>
+   The number of bars we use to calculate the market volume estimate depends on the asset liquidity. The following table shows the formulas LEAN uses to determine how long of a period the market capacity dollar volume is accumulated for after each order fill, as a function of the security resolution. The $AvgDollarVolume$ in the table represents the average dollar volume per minute for the security you're trading. Notice that for the edge case where the average dollar volume is zero, the calculations use 10 minutes of data.
+  </p>
+  <table class="qc-table table">
+   <thead>
+    <tr>
+     <th>
+      Resolution
+     </th>
+     <th>
+      Timeout Period
+     </th>
+    </tr>
+   </thead>
+   <tbody>
+    <tr>
+     <td>
+      Second
+     </td>
+     <td>
+      \[ k = \left\{
+  \begin{array}{ c l }
+    \frac{100,000}{AvgDollarVolume},&amp; \text{if } AvgDollarVolume \neq 0\\
+    10, &amp; \text{otherwise}
+  \end{array}
+\right. \]
+                
+\[ \min(120, \max(5, k)) \in [5, 120] \text{ minutes} \]
+     </td>
+    </tr>
+    <tr>
+     <td>
+      Minute
+     </td>
+     <td>
+      \[ k = \left\{
+  \begin{array}{ c l }
+    \frac{6,000,000}{AvgDollarVolume},&amp; \text{if } AvgDollarVolume \neq 0\\
+    10, &amp; \text{otherwise}
+  \end{array}
+\right. \]
+                
+\[ \min(120, \max(1, k)) \in [1, 120] \text{ minutes} \]
+     </td>
+    </tr>
+    <tr>
+     <td>
+      Hour
+     </td>
+     <td>
+      1 hour
+     </td>
+    </tr>
+    <tr>
+     <td>
+      Daily
+     </td>
+     <td>
+      1 day
+     </td>
+    </tr>
+   </tbody>
+  </table>
+  <p>
+   Only a fraction of the market capacity dollar volume is available to be taken by a strategy’s orders because there are other market participants. The data resolution of the security determines how much of the market capacity dollar volume is available for the strategy to consume. The following table shows what percentage of the market capacity dollar volume is available for each of the data resolutions:
+  </p>
+  <table class="qc-table table" id="market-capacity-dollar-volume-table">
+   <thead>
+    <tr>
+     <th>
+      Resolution
+     </th>
+     <th>
+      Available Portion of Market Capacity Dollar Volume (%)
+     </th>
+    </tr>
+   </thead>
+   <tbody>
+    <tr>
+     <td>
+      Daily
+     </td>
+     <td>
+      2
+     </td>
+    </tr>
+    <tr>
+     <td>
+      Hour
+     </td>
+     <td>
+      5
+     </td>
+    </tr>
+    <tr>
+     <td>
+      Minute
+     </td>
+     <td>
+      20
+     </td>
+    </tr>
+    <tr>
+     <td>
+      Second
+     </td>
+     <td>
+      50
+     </td>
+    </tr>
+    <tr>
+     <td>
+      Tick
+     </td>
+     <td>
+      50
+     </td>
+    </tr>
+   </tbody>
+  </table>
+  <style>
+   #market-capacity-dollar-volume-table td:last-child, 
+#market-capacity-dollar-volume-table th:last-child {
+    text-align: right;
+}
+  </style>
+  <h4>
+   Fast Trading Volume Discount Factor
+  </h4>
+  <p>
+   To accommodate high-frequency trading strategies, the
+   <code>
+    _fastTradingVolumeDiscountFactor
+   </code>
+   variable scales down the market capacity dollar volume of the security proportional to the number of trades that it places per day for the security. The more frequently the strategy trades a security, the lower the capacity of the security goes since it becomes harder to get into a larger position without incurring significant market impact. The formula that LEAN uses to discount the capacity of the securities that the algorithm trades intraday is
+  </p>
+  \[ d_i = \left\{
+  \begin{array}{ c l }
+    1,&amp; \text{if } i = 1\\
+    \min(1, \max(0.2, d_{i-1} * \frac{m}{390})), &amp; \text{if } i &gt; 1
+  \end{array}
+\right. \]
+  <p>
+   where \( d_i\in{[0.2, 1]} \) is the fast trading volume discount factor after order \(i\) and \(m\) is the number of minutes since order \( i-1 \) was filled. We divide \( m \) by 390 because there are \( 390 = 6.5 * 60 \) minutes of trading in a regular Equity trading day.
+  </p>
+  <h4>
+   Sale Volume
+  </h4>
+  <p>
+   In addition to the market capacity dollar volume, for each security the strategy trades, LEAN also accumulates the weekly sale volume of the order fills. The sale volume scales down the weekly snapshot capacity.
+  </p>
+  <div class="section-example-container">
+   <pre class="csharp">SaleVolume += orderEvent.FillPrice * orderEvent.AbsoluteFillQuantity * Security.SymbolProperties.ContractMultiplier;</pre>
+  </div>
+ </body>
+</html>
+
+<h3>Portfolio Capacity</h3>
+<html>
+ <body>
+  <p>
+   Now that we have the values to calculate the capacity of each security, we can compute the capacity of the portfolio.
+  </p>
+  <h4>
+   Snapshot Capacity
+  </h4>
+  <p>
+   To calculate the strategy capactiy, weekly snapshots are taken. When it’s time to take a snapshot, the capacity of the strategy for the current snapshot is calculated by first selecting the security with the least market capacity dollar volume available. The fraction of trading volume that was available for this security is scaled down by the number of orders that were filled for the security during the week. The result is scaled down further by the largest value between the weight of the security’s sale volume in the portfolio sale volume and the weight of the security’s holding value in the total portfolio value. The result of this final scaling is the strategy’s capacity in the current snapshot.
+  </p>
+  \[ Snapshot \ Capacity = \frac{\frac{Market \ Capacity \ Dollar \ Volume}{Number \ Of \ Trades}}{\max(\frac{Sale \ Volume}{Portfolio \ Sale \ Volume}, \frac{Buying \ Power \ Used}{Total \ Portfolio \ Value})} \]
+  <p>
+   When any of the denominators are 0 in the preceding formula, the quotient that the denominator is part of defaults to a value of 0. After the snapshot is taken, the sale volume and market capacity dollar volume of each security is reset to 0.
+  </p>
+  <h4>
+   Strategy Capacity
+  </h4>
+  <p>
+   Instead of using the strategy’s capacity at the current snapshot as the final strategy capacity value, the strategy capacity is smoothed across the weekly snapshots. First, the capacity estimate of the current snapshot is calculated, then the final strategy capacity value is set using the following exponentially-weighted model:
+  </p>
+  \[ Strategy \ Capacity = \left\{
+  \begin{array}{ c l }
+    S_{i},&amp; \text{if } i = 1\\
+    0.66 * S_{i-1} + 0.33 * S_{i}, &amp; \text{if } i &gt; 1
+  \end{array}
+\right. \]
+  <p>
+   where \( S_i \) is the snapshot capacity of week \(i\).
+  </p>
+ </body>
+</html>
+
+<h3>Summary</h3>
+<html>
+ <body>
+  <p>
+   Strategies that have a larger capacity are able to trade more capital without suffering from significant market impact. In general, a strategy that trades a large weight of the portfolio in liquid securities with high volume will have a large capacity. To avoid reducing the strategy capacity too much, only trade a small portion of your portfolio in illiquid assets with low volume.
+  </p>
+ </body>
+</html>
+
+<p style="page-break-after: always;">&nbsp;</p>
+<section id="4"><h3>4 Class Reference</h3></section>
+
+<html>
+ <body>
+  <p>
+   {
+   "type": "link",
+   "heading": "Class Reference",
+   "subHeading": "",
+   "content": "",
+   "alsoLinks": [],
+   "href": "https://www.lean.io/docs/v2/lean-engine/class-reference/"
+}
+  </p>
+ </body>
+</html>
+
+<p style="page-break-after: always;">&nbsp;</p>
