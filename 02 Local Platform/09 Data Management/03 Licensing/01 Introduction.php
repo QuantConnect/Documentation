@@ -1,2 +1,2 @@
--Free / Paid - QCC, Restricted by licenses, 
-<br>-Historical / Updates (usually need both)
+<? include(DOCS_RESOURCES."/datasets/licensing/intro.html"); ?>
+
