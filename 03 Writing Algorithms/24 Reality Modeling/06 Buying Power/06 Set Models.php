@@ -16,3 +16,5 @@ $overwriteCodePy = "security.SetBuyingPowerModel(SecurityMarginModel(3))";
 $overwriteCodeC = "security.SetBuyingPowerModel(new SecurityMarginModel(3m));";
 include(DOCS_RESOURCES."/reality-modeling/brokerage-model-security-init.php");
 ?>
+
+<p>You cannot change the position group buying power models.</p>
