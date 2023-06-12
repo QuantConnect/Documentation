@@ -1,8 +1,8 @@
 <? 
-$location = $cloudPlatform ? "the Algorithm Lab" : "with the <a href='/docs/v2/local-platform/key-concepts/deployment-targets#03-Cloud'>Cloud deployment target</a>";
+$location = $cloudPlatform ? "in the Algorithm Lab" : "by using the <a href='/docs/v2/local-platform/key-concepts/deployment-targets#03-Cloud'>Cloud deployment target</a>";
 ?>
 
-<p>If you have a Cloud license for a dataset, you can access the dataset <?=$location?> for research, backtests, and live trading. The cost of the license is added to your monthly bill, which you can pay with your organization's credit card or <a href='/docs/v2/cloud-platform/organizations/credit'>QuantConnect Credit</a> balance. With one Cloud license for a dataset, all of the members in your organization can access the dataset in the cloud.</p>
+<p>If you have a Cloud license for a dataset, you can access the dataset for research, backtests, and live trading <?=$location?>. The cost of the license is added to your monthly bill, which you can pay with your organization's credit card or <a href='/docs/v2/cloud-platform/organizations/credit'>QuantConnect Credit</a> balance. With one Cloud license for a dataset, all of the members in your organization can access the dataset in the cloud.</p>
 
 <h4>Add Cloud Access</h4>
 <p>You need an organization above the <a href='/docs/v2/cloud-platform/organizations/tier-features#02-Free-Tier'>Free tier</a> to purchase cloud access to datasets.</p>
