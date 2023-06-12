@@ -34,7 +34,7 @@ EXCLUSIONS = [
     "3.7.11.3.",
     "13.1."
 ]   # these are unique in Writing Algorithm
-IMAGE_DIR = "single-page/images"
+IMAGE_DIR = "../single-page/images"
 sections = {}
 
 def GetContent(date: str) -> dict:
