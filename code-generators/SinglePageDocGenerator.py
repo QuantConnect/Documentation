@@ -61,6 +61,16 @@ def SectionNumber(indent: int, section: str) -> str:
         numberings[-1] += 1
         return '.'.join(str(x) for x in numberings)
 
+def BreadCrumb(all: dict, section: str, name: str) -> str:
+    breadcrumb = [name]
+    
+    while '.' in section:
+        section = '.'.join(section.split('.')[:-1])
+        if section in all:
+            breadcrumb.append(all[section])
+        
+    return ' > '.join(breadcrumb[::-1])
+
 def Generate(branch: Union[dict, list], this_section: str) -> Tuple[str, str]:
     global sections
     html = ""
@@ -79,7 +89,9 @@ def Generate(branch: Union[dict, list], this_section: str) -> Tuple[str, str]:
             # exclusions
             if all(x not in this_section for x in EXCLUSIONS):
                 sections[this_section] = branch['name']
-            html += f"""<section id="{this_section}"><h3>{this_section} {branch['name']}</h3></section>
+            breadcrumb = BreadCrumb(sections, this_section, branch['name'])
+            html += f"""<p class='page-breadcrumb'>{breadcrumb}</p>
+<section id="{this_section}"><h3>{this_section} {branch['name']}</h3></section>
 
 """
         if branch["hasContent"] and ".json" not in branch['name']:
