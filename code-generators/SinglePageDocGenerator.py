@@ -1,12 +1,13 @@
 from bs4 import BeautifulSoup
 from datetime import datetime
 import json
+import os
 from pathlib import Path
 import pdfkit
-from urllib.request import urlopen
+from urllib.request import urlopen, urlretrieve
 import sys
 import time
-from typing import Union, Tuple
+from typing import Union, Tuple, List
 
 SOURCE_URL = "https://s3.amazonaws.com/cdn.quantconnect.com/web/cache"
 DESTINATION_PATH = "single-page"
@@ -33,6 +34,7 @@ EXCLUSIONS = [
     "3.7.11.3.",
     "13.1."
 ]   # these are unique in Writing Algorithm
+IMAGE_DIR = "single-page/images"
 sections = {}
 
 def GetContent(date: str) -> dict:
@@ -113,6 +115,11 @@ def Knit(content: list, name: str) -> str:
     
     try:
         content, this_section = Generate(content, this_section)
+        
+        images = ExtractImage(content)
+        for img_url, img_path in images.items():
+            content = content.replace(img_url, img_path)
+        
         html += content
         
         print(f"Knit(): Knitted documentation content for {name} successfully.")
@@ -153,11 +160,26 @@ def WriteToHtmlFile(content: str, name: str) -> Path:
 def PdfConversion(html_path: Union[Path, str]) -> None:
     try:
         pdf_name = str(html_path)[:-5] + '.pdf'
-        pdfkit.from_file(str(html_path), pdf_name)
+        options = {'enable-local-file-access': None}
+        pdfkit.from_file(str(html_path), pdf_name, options=options)
         print(f"PdfConversion(): Successfully converting {html_path} to {pdf_name}")
     except Exception as e:
         # Do not break with raising exceptions in case due to warnings
         print(f"PdfConversion(): Unable to converting {html_path} - {e}")
+        
+def ExtractImage(content: str):
+    conversions = {}
+    soup = BeautifulSoup(content)
+    images = soup.findAll('img')
+    
+    for image in images:
+        url = image["src"]
+        name = f'{IMAGE_DIR}/{url.split("/")[-1].split("?")[0]}'
+        if os.path.exists(name):
+            urlretrieve(url, name)
+        conversions[url] = name
+    
+    return conversions
 
 def ConvertTime(sec: float) -> str:
     mins = sec // 60
