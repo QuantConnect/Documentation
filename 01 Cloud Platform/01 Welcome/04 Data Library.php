@@ -3,4 +3,4 @@ and alternative data. The library is roughly <?=$kpi["dataset-size"]?> in size, 
 he <a href='/datasets'>Dataset Market</a> to see all of the datasets that we have available, including their respective start dates, end dates, and resolutions. The following image 
 shows the integrated data providers:</p>
 
-<img class='img-responsive' src='https://cdn.quantconnect.com/i/tu/logo-wall.webp' alt="A table of logos for the dataset providers">
+<img class='img-responsive' src='https://cdn.quantconnect.com/i/tu/logo-wall.png' alt="A table of logos for the dataset providers">
