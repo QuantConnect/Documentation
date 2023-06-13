@@ -146,6 +146,12 @@ def CoverPageAndTableOfContentGeneration(topic: str) -> str:
     linebreaker = "\n"
     cover_page = open(f'{COVER_PAGE_DIR}/{topic.lower().replace(" ", "-")}.html', 'r', encoding='utf-8').read()
     
+    # convert image to base64
+    images = ExtractImage(cover_page)
+    for img_url, img_path in images.items():
+        base64_img = base64.b64encode(open(img_path, 'rb').read()).decode()
+        cover_page = cover_page.replace(img_url, f'data:;base64,{base64_img}')
+    
     return f"""{cover_page}
 {PAGE_BREAKER}
 <h3>Table of Content</h3>
