@@ -1,22 +1,21 @@
+import base64
 from bs4 import BeautifulSoup
 from datetime import datetime
 import json
+import os
 from pathlib import Path
 import pdfkit
-from urllib.request import urlopen
+from PIL import Image
 import sys
 import time
-from typing import Union, Tuple
+from typing import Union, Tuple, List
+from urllib.request import urlopen, urlretrieve
 
 SOURCE_URL = "https://s3.amazonaws.com/cdn.quantconnect.com/web/cache"
 DESTINATION_PATH = "single-page"
 OUTPUT_FILENAME = "Quantconnect-%s"
 DEFAULT_VERSION = "2023.01.17"
 LAST_SECTION = 6
-TITLE_PAGE = f"""<h1>QuantConnect Documentation - %s</h1>
-<h4>Created on {datetime.utcnow().strftime("%m/%d/%Y")}</h4>
-Copyright QuantConnect 2023
-"""
 PAGE_BREAKER = '<p style="page-break-after: always;">&nbsp;</p>'
 EXCLUSIONS = [
     "3.7.6.3.",
@@ -33,6 +32,9 @@ EXCLUSIONS = [
     "3.7.11.3.",
     "13.1."
 ]   # these are unique in Writing Algorithm
+COVER_PAGE_DIR = "single-page/cover-page"
+IMAGE_DIR = "single-page/images"
+CSS_DIR = "single-page/css"
 sections = {}
 
 def GetContent(date: str) -> dict:
@@ -60,6 +62,16 @@ def SectionNumber(indent: int, section: str) -> str:
         numberings[-1] += 1
         return '.'.join(str(x) for x in numberings)
 
+def BreadCrumb(all: dict, section: str, name: str) -> str:
+    breadcrumb = [name]
+    
+    while '.' in section:
+        section = '.'.join(section.split('.')[:-1])
+        if section in all:
+            breadcrumb.append(all[section])
+        
+    return ' > '.join(breadcrumb[::-1])
+
 def Generate(branch: Union[dict, list], this_section: str) -> Tuple[str, str]:
     global sections
     html = ""
@@ -78,7 +90,9 @@ def Generate(branch: Union[dict, list], this_section: str) -> Tuple[str, str]:
             # exclusions
             if all(x not in this_section for x in EXCLUSIONS):
                 sections[this_section] = branch['name']
-            html += f"""<section id="{this_section}"><h3>{this_section} {branch['name']}</h3></section>
+            breadcrumb = BreadCrumb(sections, this_section, branch['name'])
+            html += f"""<p class='page-breadcrumb'>{breadcrumb}</p>
+<section id="{this_section}"><h1 class='page-heading'>{this_section} {branch['name']}</h1></section>
 
 """
         if branch["hasContent"] and ".json" not in branch['name']:
@@ -91,7 +105,7 @@ def Generate(branch: Union[dict, list], this_section: str) -> Tuple[str, str]:
                 # Completion of links
                 c = f"""{content['content'].strip().replace("a href='/", "a href='https://www.quantconnect.com/docs/v2/").replace('a href="/', 'a href="/https://www.quantconnect.com/docs/v2/')}"""
                 # fix any html unclosed tags
-                soup = BeautifulSoup(c)
+                soup = BeautifulSoup(c, features="lxml")
                 html += f"""{soup.prettify()}
 """
 
@@ -113,6 +127,12 @@ def Knit(content: list, name: str) -> str:
     
     try:
         content, this_section = Generate(content, this_section)
+        
+        images = ExtractImage(content)
+        for img_url, img_path in images.items():
+            base64_img = base64.b64encode(open(img_path, 'rb').read()).decode()
+            content = content.replace(img_url, f'data:;base64,{base64_img}')
+        
         html += content
         
         print(f"Knit(): Knitted documentation content for {name} successfully.")
@@ -121,11 +141,18 @@ def Knit(content: list, name: str) -> str:
     except Exception as e:
         raise Exception(f"Knit(): Unable to knit documentation content - {e}")
     
-def TitlePageAndTableOfContentGeneration(topic: str) -> str:
+def CoverPageAndTableOfContentGeneration(topic: str) -> str:
     global sections
     linebreaker = "\n"
+    cover_page = open(f'{COVER_PAGE_DIR}/{topic.lower().replace(" ", "-")}.html', 'r', encoding='utf-8').read()
     
-    return f"""{TITLE_PAGE % topic}
+    # convert image to base64
+    images = ExtractImage(cover_page)
+    for img_url, img_path in images.items():
+        base64_img = base64.b64encode(open(img_path, 'rb').read()).decode()
+        cover_page = cover_page.replace(img_url, f'data:;base64,{base64_img}')
+    
+    return f"""{cover_page}
 {PAGE_BREAKER}
 <h3>Table of Content</h3>
 <nav>
@@ -150,14 +177,43 @@ def WriteToHtmlFile(content: str, name: str) -> Path:
     except Exception as e:
         raise Exception(f"WriteToFile(): Unable to write content to {filepath} - {e}")
 
-def PdfConversion(html_path: Union[Path, str]) -> None:
+def PdfConversion(html_path: Union[Path, str], language: str, css: Union[str, List[str]] = None) -> None:
     try:
-        pdf_name = str(html_path)[:-5] + '.pdf'
-        pdfkit.from_file(str(html_path), pdf_name)
+        pdf_name = f'{str(html_path)[:-5]}-{"CSharp" if language == "csharp" else "Python"}.pdf'
+        options = {'enable-local-file-access': None}
+        pdfkit.from_file(str(html_path), pdf_name, options=options, css=f'{css}/pdf-styles-{language}.css')
         print(f"PdfConversion(): Successfully converting {html_path} to {pdf_name}")
     except Exception as e:
         # Do not break with raising exceptions in case due to warnings
         print(f"PdfConversion(): Unable to converting {html_path} - {e}")
+        
+def ExtractImage(content: str) -> dict:
+    conversions = {}
+    soup = BeautifulSoup(content, features="lxml")
+    images = soup.findAll('img')
+    
+    for image in images:
+        url = image["src"]
+        path = f'{IMAGE_DIR}/{url.split("/")[-1].split("?")[0]}'
+        try:
+            if url and not os.path.exists(path):
+                urlretrieve(url, path)
+                
+                if url.endswith('.webp'):
+                    # Convert the webp image to PNG
+                    png_path = path.replace("webp", "png")
+                    image = Image.open(path).convert("RGB")
+                    image.save(png_path, "png")
+
+                    # Update the image source to the relative PNG path
+                    path = png_path
+                    
+            conversions[url] = path
+            
+        except Exception as e:
+            print(f"Unable to fetch image from {url} - {e}")
+    
+    return conversions
 
 def ConvertTime(sec: float) -> str:
     mins = sec // 60
@@ -181,9 +237,10 @@ def Run(date: datetime) -> None:
     for branch in content["branches"].values():
         branch_content = list(branch["branches"].values()) if isinstance(branch["branches"], dict) else branch["branches"]
         html_content = Knit(branch_content, branch["name"])
-        table_of_content = TitlePageAndTableOfContentGeneration(branch["name"])
+        table_of_content = CoverPageAndTableOfContentGeneration(branch["name"])
         html_path = WriteToHtmlFile(table_of_content + html_content, branch["name"].title().replace(' ', '-'))
-        PdfConversion(html_path)
+        for language in ["csharp", "py"]:
+            PdfConversion(html_path, language=language, css=CSS_DIR)
         if i == LAST_SECTION:
             break
         i += 1
