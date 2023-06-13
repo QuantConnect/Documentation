@@ -5,6 +5,7 @@ import json
 import os
 from pathlib import Path
 import pdfkit
+from PIL import Image
 import sys
 import time
 from typing import Union, Tuple, List
@@ -91,7 +92,7 @@ def Generate(branch: Union[dict, list], this_section: str) -> Tuple[str, str]:
                 sections[this_section] = branch['name']
             breadcrumb = BreadCrumb(sections, this_section, branch['name'])
             html += f"""<p class='page-breadcrumb'>{breadcrumb}</p>
-<section id="{this_section}"><h3>{this_section} {branch['name']}</h3></section>
+<section id="{this_section}"><h1 class='page-heading'>{this_section} {branch['name']}</h1></section>
 
 """
         if branch["hasContent"] and ".json" not in branch['name']:
@@ -187,10 +188,24 @@ def ExtractImage(content: str) -> dict:
     
     for image in images:
         url = image["src"]
-        name = f'{IMAGE_DIR}/{url.split("/")[-1].split("?")[0]}'
-        if not os.path.exists(name):
-            urlretrieve(url, name)
-        conversions[url] = name
+        path = f'{IMAGE_DIR}/{url.split("/")[-1].split("?")[0]}'
+        if url and not os.path.exists(path):
+            try:
+                urlretrieve(url, path)
+            
+                if url.endswith('.webp'):
+                    # Convert the webp image to PNG
+                    png_path = path.replace("webp", "png")
+                    image = Image.open(path).convert("RGB")
+                    image.save(png_path, "png")
+
+                    # Update the image source to the relative PNG path
+                    path = png_path
+            
+            except Exception as e:
+                print(f"Unable to fetch image from {url} - {e}")
+                
+        conversions[url] = path
     
     return conversions
 
