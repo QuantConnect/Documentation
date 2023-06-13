@@ -189,10 +189,10 @@ def ExtractImage(content: str) -> dict:
     for image in images:
         url = image["src"]
         path = f'{IMAGE_DIR}/{url.split("/")[-1].split("?")[0]}'
-        if url and not os.path.exists(path):
-            try:
+        try:
+            if url and not os.path.exists(path):
                 urlretrieve(url, path)
-            
+                
                 if url.endswith('.webp'):
                     # Convert the webp image to PNG
                     png_path = path.replace("webp", "png")
@@ -201,11 +201,11 @@ def ExtractImage(content: str) -> dict:
 
                     # Update the image source to the relative PNG path
                     path = png_path
+                    
+            conversions[url] = path
             
-            except Exception as e:
-                print(f"Unable to fetch image from {url} - {e}")
-                
-        conversions[url] = path
+        except Exception as e:
+            print(f"Unable to fetch image from {url} - {e}")
     
     return conversions
 
