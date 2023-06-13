@@ -103,7 +103,7 @@ def Generate(branch: Union[dict, list], this_section: str) -> Tuple[str, str]:
                     html += f"""<h3>{content['name']}</h3>
 """
                 # Completion of links
-                c = f"""{content['content'].strip().replace("a href='/", "a href='https://www.quantconnect.com/docs/v2/").replace('a href="/', 'a href="/https://www.quantconnect.com/docs/v2/')}"""
+                c = f"""{content['content'].strip().replace("a href='/docs/v2", "a href='https://www.quantconnect.com/docs/v2/").replace('a href="/docs/v2', 'a href="https://www.quantconnect.com/docs/v2/').replace('a href=/docs/v2', 'a href=https://www.quantconnect.com/docs/v2/')}"""
                 # fix any html unclosed tags
                 soup = BeautifulSoup(c, features="lxml")
                 html += f"""{soup.prettify()}
@@ -207,6 +207,13 @@ def ExtractImage(content: str) -> dict:
 
                     # Update the image source to the relative PNG path
                     path = png_path
+                
+                # to avoid libpng warning: iCCP: known incorrect sRGB profile
+                if path.lower().endswith('.png'):
+                    img = Image.open(path)
+                    if 'icc_profile' in img.info:
+                        del img.info['icc_profile']
+                        img.save(path)
                     
             conversions[url] = path
             
