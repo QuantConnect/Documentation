@@ -103,7 +103,7 @@ def Generate(branch: Union[dict, list], this_section: str) -> Tuple[str, str]:
                     html += f"""<h3>{content['name']}</h3>
 """
                 # Completion of links
-                c = f"""{content['content'].strip().replace("a href='/docs/v2", "a href='https://www.quantconnect.com/docs/v2/").replace('a href="/docs/v2', 'a href="https://www.quantconnect.com/docs/v2/').replace('a href=/docs/v2', 'a href=https://www.quantconnect.com/docs/v2/')}"""
+                c = f"""{content['content'].strip().replace("a href='/docs/v2", "a href='https://www.quantconnect.com/docs/v2/").replace('a href="/docs/v2', 'a href="https://www.quantconnect.com/docs/v2/').replace('a href=/docs/v2', 'a href=https://www.quantconnect.com/docs/v2/').replace('a href="/', 'a href="https://www.quantconnect.com/').replace("a href='/", "a href='https://www.quantconnect.com/").replace("a href=/", "a href=https://www.quantconnect.com/")}"""
                 # fix any html unclosed tags
                 soup = BeautifulSoup(c, features="lxml")
                 html += f"""{soup.prettify()}
@@ -122,6 +122,7 @@ def Generate(branch: Union[dict, list], this_section: str) -> Tuple[str, str]:
     return html, this_section
 
 def Knit(content: list, name: str) -> str:
+    global sections
     html = ""
     this_section = "0"
     
@@ -132,6 +133,20 @@ def Knit(content: list, name: str) -> str:
         for img_url, img_path in images.items():
             base64_img = base64.b64encode(open(img_path, 'rb').read()).decode()
             content = content.replace(img_url, f'data:;base64,{base64_img}')
+            
+        # Point to section in document if in the same section
+        section_num = list(sections.keys())
+        names = list([x.lower() for x in sections.values()])
+        replacement = {}
+        soup = BeautifulSoup(content, features="lxml")
+        for x in soup.findAll('a'):
+            if "href" in x and (f"https://www.quantconnect.com/docs/v2/{name.lower().replace(' ', '-')}" in x["href"] or f"https://www.quantconnect.com/docs/v2//{name.lower().replace(' ', '-')}" in x["href"]):
+                section = [y.split("#")[0].replace('-', ' ').lower().strip() for y in x["href"].split(name.lower().replace(' ', '-'))[-1].split("/")]
+                for subsection in section:
+                    if subsection in names:
+                        replacement[x["href"]] = section_num[names.index(subsection)]
+        for link, num in replacement.items():
+            content = content.replace(link, f'#{num}')
         
         html += content
         
