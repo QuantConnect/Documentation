@@ -92,7 +92,7 @@
 
 <p>The backtest result directories can contain the following additional files if you request them:</p>
 
-<table class="qc-table table" id='backtesting-nodes-table'>
+<table class="qc-table table">
     <thead>
         <tr>
             <th>File</th>
