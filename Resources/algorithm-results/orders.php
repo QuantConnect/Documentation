@@ -20,7 +20,7 @@
 <? if ($pageName == "backtest") { ?>
 <h4>Access the Orders JSON</h4>
 <?     if ($cloudPlatform) { ?>
-<p>To view all of the content in the Orders Summary table, see <a href='/docs/v2/cloud-platform/backtesting/results#15-Download-Results'>Download Results</a>. The timestamps in the CSV and JSON files are based in UTC.</p>
+<p>To view all of the content in the Orders Summary table, see <a href='/docs/v2/cloud-platform/backtesting/results#15-Download-Results'>Download Results</a>.</p>
 <?     } ?>
 
 <?     if ($localPlatform) { ?>
