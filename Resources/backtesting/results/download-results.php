@@ -7,4 +7,4 @@
     <li>The data in the <span class='tab-name'>Orders</span> tab</li>
 </ul>
 
-<p>To download the preceding information, open the backtest results page, click the <span class='tab-name'>Overview</span> tab, and then click <span class='button-name'>Download Results</span>.</p>
+<p>To download the preceding information, open the backtest results page, click the <span class='tab-name'>Overview</span> tab, and then click <span class='button-name'>Download Results</span>. The timestamps in the CSV and JSON files are based in Coordinated Universal Time (UTC).</p>
