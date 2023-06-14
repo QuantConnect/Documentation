@@ -30,8 +30,8 @@
 <p>To view all of the <a href='/docs/v2/writing-algorithms/trading-and-orders/order-events'>order events</a> for a local backtest, open one of the following files:<p>
 
 <ul>
-    <li>The <span class='public-file-name'>Project / backtests / &lt;unixTimestamp&gt; / &lt;algorithmId&gt;-order-events.json</span> file from your <a href='/docs/v2/local-platform/backtesting/results#15-View-Local-Result-Files'>local result files</a> in VS Code.</li>
-    <li>The <span class='public-file-name'>&lt;projectName&gt; / backtests / &lt;unixTimestamp&gt; / &lt;algorithmId&gt;-log.txt</span> file from your <a href='/docs/v2/local-platform/development-environment/organization-workspaces'>organization workspace</a>.</li>
+    <li>The <span class='public-file-name'>Project / backtests / &lt;unixTimestamp&gt; / &lt;algorithmId&gt;-order-events.json</span> file from your <a href='/docs/v2/local-platform/backtesting/results#15-View-Local-Result-Files'>local result files</a> in Local Platform</li>
+    <li>The <span class='public-file-name'>&lt;projectName&gt; / backtests / &lt;unixTimestamp&gt; / &lt;algorithmId&gt;-log.txt</span> file from your <a href='/docs/v2/local-platform/development-environment/organization-workspaces'>organization workspace</a></li>
 </ul>
 <?     } ?>
 
