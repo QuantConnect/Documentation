@@ -3,7 +3,7 @@
 <ol>
 	<li><a href='/docs/v2/local-platform/backtesting/getting-started#02-Run-Backtests'>Run a local backtest</a>.</li>
 	<li>Navigate to <a href='/docs/v2/local-platform/projects/files#03-View-Files'>the files in your project</a>.</li>
-	<li>Open one of <span class='public-file-name'>Project / backtests / <span class='placeholder-text'>&lt;unixTimestamp&gt;</span> directories in your project.</li>
+	<li>Open one of <span class='public-file-name'>Project / backtests / &lt;unixTimestamp&gt;</span> directories in your project.</li>
 	<p>For example, <span class='public-file-name'>Project / backtests / 168669292409</span>.</p>
 </ol>
 
