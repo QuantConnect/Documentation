@@ -9,7 +9,7 @@
 
 <p>The following table describes the initial contents of the backtest result directories:</p>
 
-<table class="qc-table table" id='backtesting-nodes-table'>
+<table class="qc-table table">
     <thead>
         <tr>
             <th>File/Directory</th>
