@@ -1,1 +1,1 @@
-<?php echo file_get_contents(DOCS_RESOURCES."/getting-started/research-environment/example.html"); ?>
+<?php include(DOCS_RESOURCES."/getting-started/research-environment/example.html"); ?>
