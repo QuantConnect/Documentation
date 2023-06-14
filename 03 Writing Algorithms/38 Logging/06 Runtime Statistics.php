@@ -5,8 +5,8 @@ $pageName = "backtest";
 include(DOCS_RESOURCES."/algorithm-results/runtime-statistics-table.php");
 ?>
 
-<p>The capacity statistic is only available for live algorithms.</p>
+<p>The capacity statistic is only available for backtests.</p>
 
 <?php 
-echo file_get_contents(DOCS_RESOURCES."/algorithm-results/create-custom-runtime-statistic.html"); 
+include(DOCS_RESOURCES."/algorithm-results/create-custom-runtime-statistic.html"); 
 ?>
