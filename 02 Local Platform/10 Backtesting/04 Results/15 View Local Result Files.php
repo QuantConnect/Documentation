@@ -26,14 +26,14 @@
             	<span class='public-file-name'>&lt;algorithmId&gt;-alpha-results.json</span>
             	<br>Ex: <span class='public-file-name'>1967791529-alpha-results.json</span>
             </td>
-            <td>A file containing all of the backtest insights. This file only exists if you emit insights during the backtest.</td>
+            <td>A file containing all of the <a href='/docs/v2/local-platform/backtesting/results#11-Insights'>backtest insights</a>. This file only exists if you emit insights during the backtest.</td>
         </tr>
         <tr>
             <td>
             	<span class='public-file-name'>&lt;algorithmId&gt;-log.txt</span>
             	<br>Ex: <span class='public-file-name'>1967791529-log.txt</span>
             </td>
-            <td>A file containing all of the backtest logs.</td>
+            <td>A file containing all of the <a href='/docs/v2/local-platform/backtesting/results#12-Logs'>backtest logs</a>.</td>
         </tr>
         <tr>
             <td>
@@ -50,12 +50,12 @@
             <td>
             	A file containing the following data:
             	<ul>
-				    <li>Runtime statistics</li>
-				    <li>Charts</li>
-				    <li>The data in the <span class='tab-name'>Overview</span> tab</li>
-				    <li>The data in the <span class='tab-name'>Orders</span> tab</li>
-				    <li>The algorithm configuration settings</li>
-				</ul>
+                    <li><a href='/docs/v2/local-platform/backtesting/results#03-Runtime-Statistics'>Runtime statistics</a></li>
+                    <li><a href='/docs/v2/local-platform/backtesting/results#04-Built-in-Charts'>Charts</a></li>
+                    <li>The data in the <a href='/docs/v2/local-platform/backtesting/results#08-Key-Statistics'><span class='tab-name'>Overview</span></a> tab</li>
+                    <li>The data in the <a href='/docs/v2/local-platform/backtesting/results#10-Orders'><span class='tab-name'>Orders</span></a> tab</li>
+                    <li>The algorithm configuration settings</li>
+                </ul>
             </td>
         </tr>
         <tr>
@@ -103,8 +103,8 @@
     <tbody>
         <tr>
             <td><span class='public-directory-name'>orders.csv</span></td>
-            <td>A file containing all of the data from the Order table when the table rows are collapsed.</td>
-            <td>See <a href='/docs/v2/local-platform/backtesting/results#10-Orders'>Reports</a></td>
+            <td>A file containing all of the data from the <a href='/docs/v2/local-platform/backtesting/results#10-Orders'>Orders table</a> when the table rows are collapsed.</td>
+            <td>See <a href='/docs/v2/local-platform/backtesting/results#10-Orders'>Orders</a></td>
         </tr>
         <tr>
             <td><span class='public-directory-name'>report.html</span> and <span class='public-directory-name'>report.pdf</span></td>
