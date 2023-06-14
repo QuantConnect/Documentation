@@ -9,5 +9,5 @@
     <li>Press <span class="key-combinations">Enter</span>.</li>
 </ol>
 
-<img class='python' src='https://cdn.quantconnect.com/i/tu/local-platform-add-notebooks.gif' alt="Adding a research notebook in Python development environment">
-<img class='csharp' src='https://cdn.quantconnect.com/i/tu/local-platform-add-notebooks-c.gif' alt="Adding a research notebook in C Sharp development environment">
+<img class='python docs-image' src='https://cdn.quantconnect.com/i/tu/local-platform-add-notebooks.gif' alt="Adding a research notebook in Python development environment">
+<img class='csharp docs-image' src='https://cdn.quantconnect.com/i/tu/local-platform-add-notebooks-c.gif' alt="Adding a research notebook in C Sharp development environment">
