@@ -23,6 +23,10 @@
             <td><span class="button-name">Debug</span></td>
         </tr>
         <tr>
+            <td><img class="inline-icon" src="https://cdn.quantconnect.com/i/tu/live-local.svg"></td>
+            <td><span class="button-name">Live Trading</span></td>
+        </tr>
+        <tr>
             <td><img class="inline-icon" src="https://cdn.quantconnect.com/i/tu/local-platform-backtest-results-icon.png"></td>
             <td><span class="button-name">Backtest Results</span></td>
         </tr>
