@@ -3,7 +3,7 @@
 <img class="docs-image" src="https://cdn.quantconnect.com/i/tu/individual-backtest-results-1.png" alt="Individual backtest result result">
 
 <h4>Open the Backtest Results Page</h4>
-<p>To open the <a href="https://www.quantconnect.com/docs/v2/cloud-platform/backtesting/results">backtest result page</a> of one of the backtests in the optimization job, click a backtest in the table.</p>
+<p>To open the <a href="https://www.quantconnect.com/docs/v2/<? if ($cloudPlatform) { ?>cloud<? } elseif ($localPlatform) { ?>local<? } ?>-platform/backtesting/results">backtest result page</a> of one of the backtests in the optimization job, click a backtest in the table.</p>
 
 <h4>Download the Table</h4>
 <p>To download the table, right-click one of the rows, and then click <span class="menu-name">Export &gt; CSV Export</span>.</p>

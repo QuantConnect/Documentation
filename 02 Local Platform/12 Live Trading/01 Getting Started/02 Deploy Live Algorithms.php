@@ -1,7 +1,7 @@
 <p>The local platform allowed live trading with cloud live-trading node or local machine.</p>
 
 <h4>Cloud Live-trading node</h4>
-<?php echo file_get_contents(DOCS_RESOURCES."/getting-started/live-trading/deploy-live-algorithms.php"); ?>
+<?php echo file_get_contents(DOCS_RESOURCES."/getting-started/live-trading/deploy-live-algorithms.html"); ?>
 
 <h4>Local Machine</h4>
 <?php echo file_get_contents(DOCS_RESOURCES."/getting-started/live-trading/local-deployment-target.html"); ?>
