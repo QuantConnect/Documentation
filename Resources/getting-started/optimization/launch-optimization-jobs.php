@@ -41,7 +41,7 @@
     <p>The <a href='/docs/v2/cloud-platform/optimization/results#02-View-Optimization-Results'>optimization results page</a> displays. As the optimization job runs, you can close or refresh the window without interrupting the job because the nodes are processing on our servers.</p>
     <? } else { ?>
     <p>The optimization results page displays. If you deploy a local optimization job, you can close Local Platform and Docker Desktop as the optimization job runs without interfering with the backtests. Just don't quit Docker Desktop. If you deploy the optimization job to QuantConnect Cloud, you can close Local Platform and Docker Desktop without interrupting with the backtests because the nodes are processing on our servers.</p>
-    <? { ?>
+    <? } ?>
 
     <p>To abort a running optimization job, in the Status panel, click <span class='button-name'>Abort</span> and then click <span class='button-name'>Yes</span>.</p>
 </ol>
