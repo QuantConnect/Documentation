@@ -9,8 +9,8 @@ if ($cloudPlatform) {
 
 <p>Follow these steps to deploy a live paper trading algorithm:</p>
 <? } else { ?>
-
 <p>Follow these steps to deploy a live trading algorithm with the Interactive Brokers brokerage:</p>
+<? } ?>
 
 <ol>
     <li><a href="<?=$openProjectLink?>">Open the project</a> that you want to deploy.</li>
