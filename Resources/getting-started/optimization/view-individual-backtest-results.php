@@ -1,9 +1,10 @@
 <p>The optimization results page displays a Backtests table that includes all of the backtests that ran during the optimization job. The table lists the parameter values of the backtests in the optimization job and their resulting values for the objectives.</p>
 
-<img class="docs-image" src="https://cdn.quantconnect.com/i/tu/individual-backtest-results-1.png" alt="Individual backtest result result">
+<img class="docs-image" src="https://cdn.quantconnect.com/i/tu/optimization-results-table-202306.png" alt="Individual backtest result result">
 
 <h4>Open the Backtest Results Page</h4>
-<p>To open the <a href="https://www.quantconnect.com/docs/v2/cloud-platform/backtesting/results">backtest result page</a> of one of the backtests in the optimization job, click a backtest in the table.</p>
+<? $resultsLink = $cloudPlatform ? "/docs/v2/cloud-platform/backtesting/results" : "/docs/v2/local-platform/backtesting/results"; ?>
+<p>To open the <a href="<?=$resultsLink?>">backtest result page</a> of one of the backtests in the optimization job, click a backtest in the table.</p>
 
 <h4>Download the Table</h4>
 <p>To download the table, right-click one of the rows, and then click <span class="menu-name">Export &gt; CSV Export</span>.</p>
@@ -16,7 +17,7 @@
     <li>Click the name of the column to which you want the filter to be applied.</li>
     <li>If the column you selected is numerical, click the <span class="field-name">operation</span> field and then select one of the operations from the drop-down menu.</li>
     <li>Fill the fields below the operation you selected.</li>
-    <img class="docs-image" src="https://cdn.quantconnect.com/i/tu/filter-optimization-results-table.gif" alt="Optimization results table">
+    <img class="docs-image" src="https://cdn.quantconnect.com/i/tu/filter-optimization-results-table-202306.gif" alt="Optimization results table">
 </ol>
 
 <h4>Toggle Table Columns</h4>
