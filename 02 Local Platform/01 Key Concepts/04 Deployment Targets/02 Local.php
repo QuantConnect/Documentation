@@ -28,7 +28,11 @@
             <td><span class="button-name">Debug</span></td>
         </tr>
         <tr>
-            <td><img class="inline-icon" src="https://cdn.quantconnect.com/i/tu/live-local.svg"></td>
+            <td><img class="inline-icon" src="https://cdn.quantconnect.com/i/tu/local-platform-optimize-icon.png"></td>
+            <td><span class="button-name">Optimize</span></td>
+        </tr>
+        <tr>
+            <td><img class="inline-icon" src="https://cdn.quantconnect.com/i/tu/local-platform-live-trading-icon.png"></td>
             <td><span class="button-name">Live Trading</span></td>
         </tr>
         <tr>
