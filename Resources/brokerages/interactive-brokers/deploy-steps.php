@@ -28,5 +28,4 @@
         </tbody>
     </table>
 
-    <li>If you have subscriptions to <a href="/docs/v2/cloud-platform/live-trading/data-feeds/brokerage-data-feeds/interactive-brokers">IB data feeds</a> and want to use them, click the <span class="field-name">Data Provider</span> field and then click <span class="button-name">Interactive Brokers</span> from the drop-down menu.</li>
     <p>If you use IB data feeds and trade with a paper trading account, you need to share the data feed with your paper trading account. For instructions on sharing data feeds, see <a href="/docs/v2/cloud-platform/live-trading/brokerages/interactive-brokers#02-Account-Types">Account Types</a>.</p>
