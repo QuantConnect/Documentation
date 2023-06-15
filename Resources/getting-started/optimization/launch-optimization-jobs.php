@@ -9,7 +9,7 @@
 
 <p>Follow these steps to optimize parameters:</p>
 
-<? $openProjectLink = $cloudPlatform ? "/docs/v2/cloud-platform/projects/getting-started#02-View-All-Projects" ; "/docs/v2/local-platform/projects/getting-started#04-Open-Projects"; ?>
+<? $openProjectLink = $cloudPlatform ? "/docs/v2/cloud-platform/projects/getting-started#02-View-All-Projects" : "/docs/v2/local-platform/projects/getting-started#04-Open-Projects"; ?>
 
 <ol>
     <li><a href="<?=$openProjectLink?>">Open the project</a> that contains the parameters you want to optimize.</li>
