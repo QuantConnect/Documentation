@@ -18,6 +18,7 @@ When you stop a live algorithm, your portfolio holdings are retained. Stop your 
 <? } elseif ($leanCli || $localPlatform) { ?>
         <li>Update your project's code files</li>
         <li>Update the settings you entered into the deployment command</li>
+        <li>Place manual orders through your brokerage account</li>
 <? } ?>
 </ul>
 
@@ -25,10 +26,12 @@ When you stop a live algorithm, your portfolio holdings are retained. Stop your 
 
 <p>LEAN actively terminates live algorithms when it detects interference outside of the algorithm's control to avoid conflicting race conditions between the owner of the account and the algorithm, so avoid manipulating your brokerage account and placing manual orders on your brokerage account while your algorithm is running. If you need to adjust your brokerage account holdings, stop the algorithm, manually place your trades, and then redeploy the algorithm.</p>
 
-<? if ($cloudPlatform || $localPlatform) { ?>
+<? 
+$liveTradingResultsPage = $cloudPlatform ? "<a href='/docs/v2/cloud-platform/live-trading/results'>live results page</a>" : "live results page";
+if ($cloudPlatform || $localPlatform) { ?>
     <p>Follow these steps to stop your algorithm:</p>
     <ol>
-        <li>Open your algorithm's <a href='/docs/v2/<?php if ($cloudPlatform) { ?>cloud<? } elseif ($localPlatform) { ?>local<? } ?>-platform/live-trading/results#02-View-Live-Results'>live results page</a>.</li>
+        <li>Open your algorithm's <?=$liveTradingResultsPage?>.</li>
         <li>Click <span class='button-name'>Stop</span>.</li>
         <li>Click <span class='button-name'>Stop</span> again.</li>
     </ol> 

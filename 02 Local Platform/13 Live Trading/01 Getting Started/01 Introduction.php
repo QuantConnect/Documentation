@@ -1,0 +1,1 @@
+<p>A live algorithm is an algorithm that trades in real-time with real market data. Local Platform provides multiple <a href='/docs/v2/local-platform/key-concepts/deployment-targets'>deployment targets</a> to enable you to run live algorithms on-premise and in QuantConnect Cloud.</p>

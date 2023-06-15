@@ -1,4 +1,9 @@
-<?php echo file_get_contents(DOCS_RESOURCES."/getting-started/live-trading/local-deployment-target.html"); ?>
+<p>The Local Platform deployment target is your local machine. Follow these steps to set the deployment target of a project to Local Platform:</p>
+
+<ol>
+    <li><a href='/docs/v2/local-platform/projects/getting-started#03-Create-Projects'>Create a project</a> or <a href='/docs/v2/local-platform/projects/getting-started#04-Open-Projects'>open an exisiting one</a>.</li>
+    <li>In the Project panel, click the <span class='field-name'>Deployment Target</span> field and then click <span class='button-name'>Local Platform</span> from the drop-down menu.</li>
+</ol>
 
 <p>After you set the deployment target to Local Platform, the following icons are blue:</p>
 
