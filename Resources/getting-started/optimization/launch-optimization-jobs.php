@@ -13,7 +13,7 @@
 
 <ol>
     <li><a href="<?=$openProjectLink?>">Open the project</a> that contains the parameters you want to optimize.</li>
-    <li>In the top-right corner of the IDE, click the <? if ($localPlatform) { ?><img class='inline-icon' src='https://cdn.quantconnect.com/i/tu/optimize-local.svg' alt="Local optimization icon"> / <? } ?><img class='inline-icon' src='https://cdn.quantconnect.com/i/tu/optimize-parameters-icon.png' alt="Cloud optimization icon"> <span class='icon-name'>Optimize</span> icon.</li>
+    <li>In the top-right corner of the IDE, click the <? if ($localPlatform) { ?><img class='inline-icon' src='https://cdn.quantconnect.com/i/tu/local-platform-optimize-icon.png' alt="Local optimization icon"> / <? } ?><img class='inline-icon' src='https://cdn.quantconnect.com/i/tu/optimize-parameters-icon.png' alt="Cloud optimization icon"> <span class='icon-name'>Optimize</span> icon.</li>
     
     <li>On the Optimization page, in the <span class='page-section-name'>Parameter &amp; Constraints</span> section, enter the name of the parameter to optimize.</li>
     <p>The parameter name must match a parameter name in the Project panel.</p>
