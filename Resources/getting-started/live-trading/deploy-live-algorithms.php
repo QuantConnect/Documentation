@@ -14,7 +14,7 @@ if ($cloudPlatform) {
 
 <ol>
     <li><a href="<?=$openProjectLink?>">Open the project</a> that you want to deploy.</li>
-    <li>Click the <? if ($localPlatform) { ?><img class="inline-icon" src= "https://cdn.quantconnect.com/i/tu/live-local.svg" alt="Local deploy live icon"> / <? } ?><img class="inline-icon" src= "https://cdn.quantconnect.com/i/tu/deploy-live-icon.png" alt="Deploy live icon"> <span class="icon-name">Deploy Live</span> icon.</li>
+    <li>Click the <? if ($localPlatform) { ?><img class="inline-icon" src= "https://cdn.quantconnect.com/i/tu/local-platform-live-trading-icon.png" alt="Local deploy live icon"> / <? } ?><img class="inline-icon" src= "https://cdn.quantconnect.com/i/tu/deploy-live-icon.png" alt="Deploy live icon"> <span class="icon-name">Deploy Live</span> icon.</li>
     <li>On the Deploy Live page, click the <span class="field-name">Brokerage</span> field and then click <span class="button-name"><?=$brokerageName?></span> from the drop-down menu.</li>
 
     <? 
