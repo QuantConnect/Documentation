@@ -2,7 +2,9 @@
 
 <? include(DOCS_RESOURCES."/universes/option/default-filter.html"); ?>
 
-<p>LEAN adds all of the Option contracts that meet the filter requirements to the <a href="/docs/v2/writing-algorithms/key-concepts/time-modeling/timeslices">Slice</a> it passes to the <code>OnData</code> method. To adjust the universe of Option contracts, in the <code>Initialize</code> method, call the <code>SetFilter</code> method of the <code>Option</code> object. The following table describes the available filter techniques:</p>
+<p>To adjust what Option contracts LEAN subscribes to, set a filter. The filter usually runs at every <a href="/docs/v2/writing-algorithms/key-concepts/time-modeling/timeslices">time step</a> in your algorithm. When the filter selects a contract that you aren't currently subscribe to, LEAN adds the new contract data to the next <code>Slice</code> that it passes to the <code>OnData</code> method.</p>
+
+<p>To set a contract filter, in the <code>Initialize</code> method, call the <code>SetFilter</code> method of the <code>Option</code> object. The following table describes the available filter techniques:</p>
 
 <table class="table qc-table">
     <thead>
