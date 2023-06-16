@@ -1,6 +1,6 @@
 <p>By default, LEAN adds contracts to the <code>OptionChain</code> that pass the filter criteria at every time step in your algorithm. If a contract has been in the universe for a duration that matches the <code>MinimumTimeInUniverse</code> <a href='/docs/v2/writing-algorithms/universes/settings#02-Properties'>setting</a> and it no longer passes the filter criteria, LEAN removes it from the chain.</p>
 
-<p>The default behavior leads to a large number of open data subscriptions. In live trading, it can be inconvenient because of data subscription limits imposed by data feed providers. To reduce the number of data subscriptions, change the value of <code>MinimumTimeInUniverse</code>.</p>
+<p>This default behavior can lead to a large number of open data subscriptions. It can be inconvenient in live trading because some data feed providers impose data subscription limits. To reduce the number of data subscriptions, change the value of the <code>MinimumTimeInUniverse</code> <a href='/docs/v2/writing-algorithms/universes/settings'>universe setting</a>.</p>
 
 <div class="section-example-container">
     <pre class="csharp">UniverseSettings.MinimumTimeInUniverse = TimeSpan.FromMinutes(15);
@@ -9,4 +9,4 @@ UniverseSettings.MinimumTimeInUniverse = TimeSpan.Zero;</pre>
 self.UniverseSettings.MinimumTimeInUniverse = timedelta(0)</pre>
 </div>
 
-<p>If you set the value to <code class="csharp">TimeSpan.Zero</code><code class="python">timedelta(0)</code> and LEAN readd a subscription removed at the previous filter evaluation, your algorithm will not receive the data for the contract when it would be immediately available with a higher <code>MinimumTimeInUniverse</code>.</p>
+<p>If you set the value to <code class="csharp">TimeSpan.Zero</code><code class="python">timedelta(0)</code> and LEAN readds a subscription removed at the previous filter evaluation, your algorithm will not receive the data for the contract when it would be immediately available with a higher <code>MinimumTimeInUniverse</code>.</p>
