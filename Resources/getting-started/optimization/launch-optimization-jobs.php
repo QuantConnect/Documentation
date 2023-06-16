@@ -30,7 +30,7 @@
     	<li>Enter a constraint value.</li>
     </ol>
     
-    <li>If you are deploying to QuantConnect Cloud, in the <span class='page-section-name'>Estimated Number and Cost of Backtests</span>, click an <a href='/docs/v2/cloud-platform/optimization/deployment#02-Resources'>optimization node</a> and then select a maximum number of nodes to use.</li>
+    <li>If you are deploying to QuantConnect Cloud, in the <span class='page-section-name'>Estimated Number and Cost of Backtests</span> section, click an <a href='/docs/v2/cloud-platform/optimization/deployment#02-Resources'>optimization node</a> and then select a maximum number of nodes to use.</li>
     
     <li>In the <span class='page-section-name'>Strategy & Target</span> section, click the <span class='field-name'>Choose Optimization Strategy</span> field and then select a <a href='/docs/v2/cloud-platform/optimization/strategies'>strategy</a> from the drop-down menu.</li>
     <li>Click the <span class='field-name'>Select Target</span> field and then select a target from the drop-down menu.</li>
