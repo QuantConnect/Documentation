@@ -41,9 +41,9 @@ _future.SetFilter(futureFilterUniverse =&gt; futureFilterUniverse.FrontMonth());
 <p>The preceding methods return an <code>FutureFilterUniverse</code>, so you can chain the methods together.</p>
 
 <div class="section-example-container">
-    <pre class="csharp">// Select the front month call contracts
+    <pre class="csharp">// Select the front month standard contracts
 _future.SetFilter(futureFilterUniverse =&gt; futureFilterUniverse.StandardsOnly().FrontMonth());</pre>
-    <pre class="python"># Select the front month call contracts
+    <pre class="python"># Select the front month standard contracts
 self.future.SetFilter(lambda future_filter_universe: future_filter_universe.StandardsOnly().FrontMonth())</pre>
 </div>
 
