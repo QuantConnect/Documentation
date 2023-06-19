@@ -45,9 +45,6 @@
     </tbody>
 </table>
 
-<p>If you already have a subscription to the underlying Equity but it's not <code>Raw</code> data normalization, LEAN automatically changes it to <code>Raw</code>.</p>
-
-
 <?php echo file_get_contents(DOCS_RESOURCES."/reality-modeling/volatility-model.html"); ?>
 
 <h4>Get Contract Symbols</h4>
