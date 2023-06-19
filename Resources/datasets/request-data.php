@@ -294,6 +294,8 @@ var tradeBars2 = <?=$cVar?>History(new[] {btcSymbol}, startTime, endTime);</pre>
 
 </div>
 
+<p>If you request data for multiple securities and you use the <code>Tick</code> request type, each <code>Ticks</code> object in the list of results only contains the last tick of each security for that particular <a href='/docs/v2/writing-algorithms/key-concepts/time-modeling/timeslices'>timeslice</a>.</p>
+
 <h4>All Symbol History Requests</h4>
  
 <?=$writingAlgorithms ? "<p>You can request history for all active securities in your universe." : "<p>You can request history for all the securities you have created subscriptions for in your notebook session. "; ?> The parameters are very similar to other history method calls, but the return type is an array of <a href='/docs/v2/writing-algorithms/key-concepts/time-modeling/timeslices'>Slice</a> objects. The <code>Slice</code> object holds all of the results in a sorted enumerable collection that you can iterate over with a loop.</p>
