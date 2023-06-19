@@ -8,13 +8,13 @@
     <pre class="python">self.symbol = self.AddIndex("SPX").Symbol</pre>
 </div>
 
-<?php echo file_get_contents(DOCS_RESOURCES."/reality-modeling/volatility-model.html"); ?>
-
 <p>If you subscribe to an Index Option contract but don't have a subscription to the underlying Index, LEAN automatically subscribes to the underlying Index and sets its <a href='/docs/v2/writing-algorithms/securities/asset-classes/index/requesting-data#05-Fill-Forward'>fill forward</a> property to match that of the Index Option contract. In this case, you still need the Index <code>Symbol</code>. If you don't have access to it, create it.</p>
 <div class="section-example-container">
     <pre class="csharp">_symbol = QuantConnect.Symbol.Create("SPX", SecurityType.Index, Market.USA);</pre>
     <pre class="python">self.symbol = Symbol.Create("SPX", SecurityType.Index, Market.USA)</pre>
 </div>
+
+<?php echo file_get_contents(DOCS_RESOURCES."/reality-modeling/volatility-model.html"); ?>
 
 <h4>Get Contract Symbols</h4>
 <p>To get Index Option contract <code>Symbol</code> objects, call the <code>CreateOption</code> method or use the <code>OptionChainProvider</code>. If you use the <code>CreateOption</code> method, you need to know the specific contract details.</p>
