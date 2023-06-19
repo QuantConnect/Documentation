@@ -87,7 +87,7 @@ self.symbol = option.Symbol</pre>
     </tbody>
 </table>
 
-<p>If you already have a subscription to the underlying Equity but it's not <code>Raw</code> data normalization, it automatically changes it to <code>Raw</code>.</p>
+<p>If you already have a subscription to the underlying Equity but it's not <code>Raw</code> data normalization, LEAN automatically changes it to <code>Raw</code>.</p>
 
 <p>To override the default <a href="/docs/v2/writing-algorithms/reality-modeling/options-models/pricing">pricing model</a> of the Option, <a href='https://www.quantconnect.com/docs/v2/writing-algorithms/reality-modeling/options-models/pricing#04-Set-Models'>set a pricing model</a>.</p>
 
