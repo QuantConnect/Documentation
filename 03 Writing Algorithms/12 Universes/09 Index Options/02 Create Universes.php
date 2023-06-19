@@ -48,7 +48,7 @@ self.symbol = option.Symbol</pre>
         </tr>
     </tbody>
 </table>
-<p>If you add an Option universe for an underlying Index that you don't have a subscription for, LEAN automatically subscribes to the underlying Index.</p>
+<p>If you add an Option universe for an underlying Index that you don't have a subscription for, LEAN automatically subscribes to the underlying Index and sets its <a href='/docs/v2/writing-algorithms/securities/asset-classes/index/requesting-data#05-Fill-Forward'>fill forward</a> property to match that of the Index Option universe</p>
 
 <h4>Create Non-Standard Universes</h4>
 
