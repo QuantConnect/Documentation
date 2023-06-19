@@ -58,7 +58,36 @@ self.symbol = option.Symbol</pre>
 </table>
 
 
-<p>If you add an Option universe for an underlying Equity that you don't have a subscription for, LEAN automatically subscribes to the underlying Equity with a <a href='/docs/v2/writing-algorithms/securities/asset-classes/us-equity/requesting-data#11-Data-Normalization'>data normalization mode</a> of <code>Raw</code>. If you already have a subscription to the underlying Equity but it's not <code>Raw</code>, it automatically changes to <code>Raw</code>.</p>
+<p>If you add an Option universe for an underlying Equity that you don't have a subscription for, LEAN automatically subscribes to the underlying Equity with the following settings:</p>
+
+<table class="qc-table table" id='backtesting-nodes-table'>
+    <thead>
+        <tr>
+            <th>Setting</th>
+            <th>Value</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><a href='/docs/v2/writing-algorithms/securities/asset-classes/us-equity/requesting-data#08-Fill-Forward'>Fill forward</a></td>
+            <td>Same as the Option universe</td>
+        </tr>
+        <tr>
+            <td><a href='/docs/v2/writing-algorithms/securities/asset-classes/us-equity/requesting-data#09-Margin-and-Leverage'>Leverage</a></td>
+            <td>0</td>
+        </tr>
+        <tr>
+            <td><a href='/docs/v2/writing-algorithms/securities/asset-classes/us-equity/requesting-data#10-Extended-Market-Hours'>Extended Market Hours</a></td>
+            <td>Same as the Option universe</td>
+        </tr>
+        <tr>
+            <td><a href='/docs/v2/writing-algorithms/securities/asset-classes/us-equity/requesting-data#11-Data-Normalization'>Data Normalization</a></td>
+            <td><code>DataNormalizationMode.Raw</code></td>
+        </tr>
+    </tbody>
+</table>
+
+<p>If you already have a subscription to the underlying Equity but it's not <code>Raw</code> data normalization, it automatically changes it to <code>Raw</code>.</p>
 
 <p>To override the default <a href="/docs/v2/writing-algorithms/reality-modeling/options-models/pricing">pricing model</a> of the Option, <a href='https://www.quantconnect.com/docs/v2/writing-algorithms/reality-modeling/options-models/pricing#04-Set-Models'>set a pricing model</a>.</p>
 
