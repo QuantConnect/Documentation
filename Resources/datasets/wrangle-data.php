@@ -373,6 +373,7 @@ var quoteBars = allHistorySlice.Where(slice => slice.QuoteBars.ContainsKey(<?=$p
         symbol = kvp.Key
         tick = kvp.Value</pre>
 </div>
+<p>The <code>Ticks</code> objects only contains the last tick of each security for that particular <a href='/docs/v2/writing-algorithms/key-concepts/time-modeling/timeslices'>timeslice</a></p>
 <? } ?>
 
 
