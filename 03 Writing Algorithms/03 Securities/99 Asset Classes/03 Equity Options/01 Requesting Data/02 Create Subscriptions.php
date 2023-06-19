@@ -16,7 +16,7 @@
     <pre class="python">self.UniverseSettings.DataNormalizationMode = DataNormalizationMode.Raw</pre>
 </div>
 
-<p>If you subscribe to an Option contract but don't have a subscription to the underlying Equity, LEAN automatically subscribes to the underlying Equity with the following settings:</p>
+<p>If you subscribe to an Equity Option contract but don't have a subscription to the underlying Equity, LEAN automatically subscribes to the underlying Equity with the following settings:</p>
 
 <table class="qc-table table">
     <thead>
@@ -44,6 +44,12 @@
         </tr>
     </tbody>
 </table>
+
+<p>In this case, you still need the Equity <code>Symbol</code>. If you don't have access to it, create it.</p>
+<div class="section-example-container">
+    <pre class="csharp">_symbol = QuantConnect.Symbol.Create("SPY", SecurityType.Equity, Market.USA);</pre>
+    <pre class="python">self.symbol = Symbol.Create("SPY", SecurityType.Equity, Market.USA)</pre>
+</div>
 
 <?php echo file_get_contents(DOCS_RESOURCES."/reality-modeling/volatility-model.html"); ?>
 
