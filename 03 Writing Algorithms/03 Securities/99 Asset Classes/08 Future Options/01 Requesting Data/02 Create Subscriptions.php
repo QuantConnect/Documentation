@@ -1,6 +1,43 @@
 <p>Before you can subscribe to a Future Option contract, you may configure the underlying volatility model and you must get the contract <code>Symbol</code>.</p>
 
-<h4>Configure the Underlying Volatility Model</h4>
+<h4>Configure the Underlying Futures Contract</h4>
+
+<p>If you subscribe to a Futures Option contract but don't have a subscription to the underlying Futures contract, LEAN automatically subscribes to the underlying Futures contract with the following settings:</p>
+
+<table class="qc-table table">
+    <thead>
+        <tr>
+            <th>Setting</th>
+            <th>Value</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><a href='/docs/v2/writing-algorithms/securities/asset-classes/futures/requesting-data#05-Fill-Forward'>Fill forward</a></td>
+            <td>Same as the Option contract</td>
+        </tr>
+        <tr>
+            <td><a href='/docs/v2/writing-algorithms/securities/asset-classes/futures/requesting-data#06-Margin-and-Leverage'>Leverage</a></td>
+            <td>0</td>
+        </tr>
+        <tr>
+            <td><a href='/docs/v2/writing-algorithms/securities/asset-classes/futures/requesting-data#07-Extended-Market-Hours'>Extended Market Hours</a></td>
+            <td>Same as the Option contract</td>
+        </tr>
+    </tbody>
+</table>
+
+<p>In this case, you still need the Futures contract <code>Symbol</code> to subscribe to Futures Option contracts. If you don't have access to it, create it.</p>
+
+<div class="section-example-container">
+    <pre class="csharp">_futureContractSymbol = QuantConnect.Symbol.CreateFuture(Futures.Indices.SP500EMini,
+    Market.CME, new DateTime(2022, 6, 17));</pre>
+    <pre class="python">self.future_contract_symbol = Symbol.CreateFuture(Futures.Indices.SP500EMini,
+    Market.CME, datetime(2022, 6, 17))</pre>
+</div>
+
+<p>For more information about getting the <code>Symbol</code> of Futures contracts, see <a href='/docs/v2/writing-algorithms/securities/asset-classes/futures/requesting-data#02-Create-Subscriptions'>Create Subscriptions</a>.</p>
+
 
 <?php echo file_get_contents(DOCS_RESOURCES."/reality-modeling/volatility-model.html"); ?>
 
@@ -9,13 +46,9 @@
 <p>To subscribe to a Future Option contract, you need the contract <code>Symbol</code>. You can get the contract <code>Symbol</code> from the <code>CreateOption</code> method or from the <code>OptionChainProvider</code>. If you use the <code>CreateOption</code> method, you need to provide the contract details.</p>
 
 <div class="section-example-container">
-    <pre class="csharp">_futureContractSymbol = QuantConnect.Symbol.CreateFuture(Futures.Indices.SP500EMini,
-    Market.CME, new DateTime(2022, 6, 17));
-_optionContractSymbol = QuantConnect.Symbol.CreateOption(_futureContractSymbol,
+    <pre class="csharp">_optionContractSymbol = QuantConnect.Symbol.CreateOption(_futureContractSymbol,
     Market.CME, OptionStyle.American, OptionRight.Call, 3600, new DateTime(2022, 6, 17))</pre>
-    <pre class="python">self.future_contract_symbol = Symbol.CreateFuture(Futures.Indices.SP500EMini,
-    Market.CME, datetime(2022, 6, 17))
-self.option_contract_symbol = Symbol.CreateOption(self.future_contract_symbol,
+    <pre class="python">self.option_contract_symbol = Symbol.CreateOption(self.future_contract_symbol,
     Market.CME, OptionStyle.American, OptionRight.Call, 3600, datetime(2022, 6, 17))</pre>
 </div>
 
