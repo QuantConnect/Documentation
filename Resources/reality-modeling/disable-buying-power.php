@@ -11,7 +11,7 @@
 <pre class="python">self.Portfolio.SetPositions(SecurityPositionGroupModel.Null)</pre>
 </div>
 
-<p>To disable the validations of the <a href='/docs/v2/writing-algorithms/reality-modeling/buying-power#08-Default-Behavior'>default buying power model</a>, use the <code>NullBuyingPowerModel</code>. To set the <code>NullBuyingPowerModel</code> for a security subscription, call the <code>SetBuyingPowerModel</code> method with the <code>BuyingPowerModel.Null</code> argument. To set the <code>NullSecurityPositionGroupModel</code> for the portfolio, call the <code>SetPositions</code> method with the <code>SecurityPositionGroupModel.Null</code> argument.</p>
+<p>To disable the validations of the <a href='/docs/v2/writing-algorithms/reality-modeling/buying-power#08-Default-Behavior'>default buying power model</a>, use the <code>NullBuyingPowerModel</code>. To set the <code>NullBuyingPowerModel</code> for a security subscription, call the <code>SetBuyingPowerModel</code> method with the <code>BuyingPowerModel.Null</code> argument.</p>
 <div class="section-example-container">
 <pre class="csharp">var equity = AddEquity("SPY");
 equity.SetBuyingPowerModel(BuyingPowerModel.Null);
