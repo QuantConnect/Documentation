@@ -45,7 +45,7 @@
     </tbody>
 </table>
 
-<p>In this case, you still need the Equity <code>Symbol</code>. If you don't have access to it, create it.</p>
+<p>In this case, you still need the Equity <code>Symbol</code> to subscribe to Equity Option contracts. If you don't have access to it, create it.</p>
 <div class="section-example-container">
     <pre class="csharp">_symbol = QuantConnect.Symbol.Create("SPY", SecurityType.Equity, Market.USA);</pre>
     <pre class="python">self.symbol = Symbol.Create("SPY", SecurityType.Equity, Market.USA)</pre>
