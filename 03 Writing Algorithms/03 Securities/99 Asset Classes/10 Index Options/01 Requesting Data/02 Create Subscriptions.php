@@ -8,26 +8,26 @@
     <pre class="python">self.symbol = self.AddIndex("SPX").Symbol</pre>
 </div>
 
-<p>If you subscribe to an Index Option contract but don't have a subscription to the underlying Index, LEAN automatically subscribes to the underlying Index and sets its <a href='/docs/v2/writing-algorithms/securities/asset-classes/index/requesting-data#05-Fill-Forward'>fill forward</a> property to match that of the Index Option contract.</p>
-
 <?php echo file_get_contents(DOCS_RESOURCES."/reality-modeling/volatility-model.html"); ?>
+
+<p>If you subscribe to an Index Option contract but don't have a subscription to the underlying Index, LEAN automatically subscribes to the underlying Index and sets its <a href='/docs/v2/writing-algorithms/securities/asset-classes/index/requesting-data#05-Fill-Forward'>fill forward</a> property to match that of the Index Option contract. In this case, you need to create the Index <code>Symbol</code>.</p>
+<div class="section-example-container">
+    <pre class="csharp">_symbol = QuantConnect.Symbol.Create("SPX", SecurityType.Index, Market.USA);</pre>
+    <pre class="python">self.symbol = Symbol.Create("SPX", SecurityType.Index, Market.USA)</pre>
+</div>
 
 <h4>Get Contract Symbols</h4>
 <p>To get Index Option contract <code>Symbol</code> objects, call the <code>CreateOption</code> method or use the <code>OptionChainProvider</code>. If you use the <code>CreateOption</code> method, you need to know the specific contract details.</p>
 
 <div class="section-example-container">
-    <pre class="csharp">_symbol = QuantConnect.Symbol.Create("SPX", SecurityType.Index, Market.USA);
-
-// Standard contracts
+    <pre class="csharp">// Standard contracts
 _contractSymbol = QuantConnect.Symbol.CreateOption(_symbol, Market.USA,
     OptionStyle.European, OptionRight.Call, 3650, new DateTime(2022, 6, 17));
 
 // Weekly contracts
 _weeklyContractSymbol = QuantConnect.Symbol.CreateOption(_symbol, "SPXW", Market.USA,
     OptionStyle.European, OptionRight.Call, 3650, new DateTime(2022, 6, 17));</pre>
-    <pre class="python">self.symbol = Symbol.Create("SPX", SecurityType.Index, Market.USA)
-
-# Standard contracts
+    <pre class="python"># Standard contracts
 self.contract_symbol = Symbol.CreateOption(self.symbol, Market.USA,
     OptionStyle.European, OptionRight.Call, 3650, datetime(2022, 6, 17))
 
