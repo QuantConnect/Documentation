@@ -58,7 +58,7 @@ self.symbol = option.Symbol</pre>
 </table>
 
 
-<p>If you add an Option universe for an underlying Equity that you don't have a subscription for, LEAN automatically subscribes to the underlying Equity with the following settings:</p>
+<p>If you add an Equity Option universe but don't have a subscription to the underlying Equity, LEAN automatically subscribes to the underlying Equity with the following settings:</p>
 
 <table class="qc-table table">
     <thead>
