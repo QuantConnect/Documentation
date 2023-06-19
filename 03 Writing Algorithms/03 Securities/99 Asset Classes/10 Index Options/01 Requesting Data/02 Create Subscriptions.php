@@ -8,7 +8,7 @@
     <pre class="python">self.symbol = self.AddIndex("SPX").Symbol</pre>
 </div>
 
-<p>If you subscribe to an Index Option contract but don't have a subscription to the underlying Index, LEAN automatically subscribes to the underlying Index and sets its <a href='/docs/v2/writing-algorithms/securities/asset-classes/index/requesting-data#05-Fill-Forward'></a> property to match that of the Index Option contract.</p>
+<p>If you subscribe to an Index Option contract but don't have a subscription to the underlying Index, LEAN automatically subscribes to the underlying Index and sets its <a href='/docs/v2/writing-algorithms/securities/asset-classes/index/requesting-data#05-Fill-Forward'>fill forward</a> property to match that of the Index Option contract.</p>
 
 <?php echo file_get_contents(DOCS_RESOURCES."/reality-modeling/volatility-model.html"); ?>
 
