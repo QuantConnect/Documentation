@@ -2,7 +2,7 @@
 
 <h4>Configure the Underlying Futures Contract</h4>
 
-<p>If you subscribe to a Futures Option contract but don't have a subscription to the underlying Futures contract, LEAN automatically subscribes to the underlying Futures contract with the following settings:</p>
+<p>In most cases, you should <a href='/docs/v2/writing-algorithms/securities/asset-classes/futures/requesting-data#02-Create-Subscriptions'>subscribe to the underlying Futures contract</a> before you subscribe to a Futures Option contract. If you don't, LEAN automatically subscribes to the underlying Futures contract with the following settings:</p>
 
 <table class="qc-table table">
     <thead>
