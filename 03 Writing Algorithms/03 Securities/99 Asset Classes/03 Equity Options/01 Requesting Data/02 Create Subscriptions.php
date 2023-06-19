@@ -90,6 +90,37 @@ option.PriceModel = OptionPriceModels.BjerksundStensland()</pre>
 
 <p>The <code>AddOptionContract</code> method creates a subscription for a single Option contract and adds it to your <span class="new-term">user-defined</span> universe. To create a dynamic universe of Option contracts, add an <a href="/docs/v2/writing-algorithms/universes/equity-options">Equity Options universe</a> or an <a href="/docs/v2/writing-algorithms/algorithm-framework/universe-selection/options-universes">Options Universe Selection model</a>.</p>
 
+<p>If you subscribe to an Option contract but don't have a subscription to the underlying Equity, LEAN automatically subscribes to the underlying Equity with the following settings:</p>
+
+<table class="qc-table table">
+    <thead>
+        <tr>
+            <th>Setting</th>
+            <th>Value</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><a href='/docs/v2/writing-algorithms/securities/asset-classes/us-equity/requesting-data#08-Fill-Forward'>Fill forward</a></td>
+            <td>Same as the Option contract</td>
+        </tr>
+        <tr>
+            <td><a href='/docs/v2/writing-algorithms/securities/asset-classes/us-equity/requesting-data#09-Margin-and-Leverage'>Leverage</a></td>
+            <td>0</td>
+        </tr>
+        <tr>
+            <td><a href='/docs/v2/writing-algorithms/securities/asset-classes/us-equity/requesting-data#10-Extended-Market-Hours'>Extended Market Hours</a></td>
+            <td>Same as the Option contract</td>
+        </tr>
+        <tr>
+            <td><a href='/docs/v2/writing-algorithms/securities/asset-classes/us-equity/requesting-data#11-Data-Normalization'>Data Normalization</a></td>
+            <td><code>DataNormalizationMode.Raw</code></td>
+        </tr>
+    </tbody>
+</table>
+
+<p>If you already have a subscription to the underlying Equity but it's not <code>Raw</code> data normalization, LEAN automatically changes it to <code>Raw</code>.</p>
+
 <h4>Warm Up Contract Prices</h4>
 
 <p>If you subscribe to an Option contract with <code>AddOptionContract</code>, you'll need to wait until the next <code>Slice</code> to receive data and trade the contract. To trade the contract in the same time step you subscribe to the contract, set the current price of the contract in a <a href='/docs/v2/writing-algorithms/initialization#07-Set-Security-Initializer'>security initializer</a>.</p>
