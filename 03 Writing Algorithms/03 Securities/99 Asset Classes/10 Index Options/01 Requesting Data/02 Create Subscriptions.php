@@ -1,7 +1,7 @@
 <p>Before you can subscribe to an Index Option contract, you must configure the underlying Index and get the contract <code>Symbol</code>.</p>
 
 <h4>Configure the Underlying Index</h4>
-<p>In the <code>Initialize</code> method, <a href='/docs/v2/writing-algorithms/securities/asset-classes/index/requesting-data#02-Create-Subscriptions'>subscribe to the underlying Index</a>.</p>
+<p>In most cases, you should <a href='/docs/v2/writing-algorithms/securities/asset-classes/index/requesting-data#02-Create-Subscriptions'>subscribe to the underlying Index</a> before you subscribe to an Index Option contract..</p>
 
 <div class="section-example-container">
     <pre class="csharp">_symbol = AddIndex("SPX").Symbol;</pre>
