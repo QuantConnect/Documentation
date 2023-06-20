@@ -74,8 +74,6 @@ def select_future_chain_symbols(self, utc_time: datetime) -&gt; List[Symbol]:
 	
 <p>Depending on how you define the contract filter, LEAN may call it once a day or at every time step.</p>
 
-<p>To move the selection functions outside of the algorithm class, create a universe selection model that inherits the <code>FutureUniverseSelectionModel</code> class.</p>
-
 <div class="section-example-container">
 	<pre class="csharp">// In Initialize
 AddUniverseSelection(new FrontMonthFutureUniverseSelectionModel());
@@ -123,5 +121,29 @@ class FrontMonthFutureUniverseSelectionModel(FutureUniverseSelectionModel):
 $assetClass = "Future";
 include(DOCS_RESOURCES."/universes/option/filter-caveats.php");
 ?>
+
+<p>
+    The <code>AddUniverseSelection</code> method doesn't return a <code>Future</code> object like the <a href='/docs/v2/writing-algorithms/universes/futures#11-Create-Universes'>AddFuture</a> method. 
+    The <code>Future</code> object contains <code>Symbol</code> and <code>Mapped</code> properties, which reference the <a href='/docs/v2/writing-algorithms/universes/futures#12-Continous-Contracts'>continuous contract</a> and the currently selected contract in the continuous contract series, respectively.
+    To get the <code>Future</code> object, define the <code>OnSecuritiesChanged</code> method in your algorithm class or framework models and check the result of the <code>IsCanonical</code> method.
+</p>
+
+<div class="section-example-container">
+	<pre class="csharp">public override void OnSecuritiesChanged(QCAlgorithmFramework algorithm, SecurityChanges changes)
+{
+    foreach (var security in changes.AddedSecurities)
+    {               
+        if (security.Symbol.IsCanonical())
+		{
+		    _future = security;
+		}
+    }
+}
+	</pre>
+	<pre class="python">def OnSecuritiesChanged(self, algorithm: QCAlgorithm, changes: SecurityChanges) -> None:
+    for security in changes.AddedSecurities:
+        if security.Symbol.IsCanonical():
+            self.future = security</pre>
+</div>
 
 <p>To view the implementation of this model, see the <span class="csharp"><a target="_blank" rel="nofollow" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.Framework/Selection/FutureUniverseSelectionModel.cs">LEAN GitHub repository</a></span><span class="python"><a target="_blank" rel="nofollow" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.Framework/Selection/FutureUniverseSelectionModel.py">LEAN GitHub repository</a></span>.</p>
