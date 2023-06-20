@@ -129,17 +129,16 @@ include(DOCS_RESOURCES."/universes/option/filter-caveats.php");
 </p>
 
 <div class="section-example-container">
-	<pre class="csharp">public override void OnSecuritiesChanged(QCAlgorithmFramework algorithm, SecurityChanges changes)
+	<pre class="csharp">public override void OnSecuritiesChanged(QCAlgorithm algorith, SecurityChanges changes)
 {
     foreach (var security in changes.AddedSecurities)
-    {               
+    {
         if (security.Symbol.IsCanonical())
-		{
-		    _future = security;
-		}
+        {
+            _future = security as Future;
+        }
     }
-}
-	</pre>
+}</pre>
 	<pre class="python">def OnSecuritiesChanged(self, algorithm: QCAlgorithm, changes: SecurityChanges) -> None:
     for security in changes.AddedSecurities:
         if security.Symbol.IsCanonical():
