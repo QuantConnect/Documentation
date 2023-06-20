@@ -7,7 +7,7 @@
 
 <p>The following table describes the arguments the model accepts:</p>
 
-<table class="qc-table table">
+<table class="qc-table table" id='OpenInterestFutureUniverseSelectionModel-args-table'>
     <thead>
         <tr>
             <th>Argument</th>
@@ -53,6 +53,12 @@
     </tbody>
 </table>
 
+<style>
+#OpenInterestFutureUniverseSelectionModel-args-table td:last-child, 
+#OpenInterestFutureUniverseSelectionModel-args-table th:last-child {
+    text-align: right;
+}
+</style>
 
 <div class="section-example-container">
     <pre class="csharp">public override void Initialize()
