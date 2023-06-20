@@ -89,7 +89,8 @@ def Generate_Indicators_Reference():
 
             properties = [x["property-name"] for x in indicator['properties']
                 if x["property-name"] not in ['MovingAverageType', 'IsReady', 'WarmUpPeriod',
-                                             'Name', 'Period', 'Samples', 'Current']]
+                                             'Name', 'Period', 'Samples', 'Current', "Consolidators", 
+                                             "Previous", "Window", "[System.Int32]"]]
 
             indicator['properties'] = 'array('  + ','.join([f'"{x}"' for x in properties]) +  ')'
 
