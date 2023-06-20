@@ -5,7 +5,7 @@
 {
     private Dictionary&lt;symbol, symboldata&gt; _symbolDataBySymbol = new Dictionary&lt;symbol, symboldata&gt;();
 
-    public override void OnSecuritiesChanged(QCAlgorithmFramework algorithm, SecurityChanges changes)
+    public override void OnSecuritiesChanged(QCAlgorithm algorithm, SecurityChanges changes)
     {
 <? if ($callsBaseClass) { ?>
         base.OnSecuritiesChanged(algorithm, changes);
