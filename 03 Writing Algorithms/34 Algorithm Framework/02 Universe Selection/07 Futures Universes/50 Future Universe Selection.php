@@ -104,7 +104,7 @@ self.AddUniverseSelection(FrontMonthFutureUniverseSelectionModel())
 
 # Outside of the algorithm class
 class FrontMonthFutureUniverseSelectionModel(FutureUniverseSelectionModel):
-    def __init__(self,) -> None:
+    def __init__(self) -> None:
         super().__init__(timedelta(1), self.select_future_chain_symbols)
 
     def select_future_chain_symbols(self, utcTime: datetime) -> List[Symbol]:
