@@ -78,6 +78,12 @@ class GoldOpenInterestFutureUniverseSelectionModel : OpenInterestFutureUniverseS
 }</pre>
 </div>
 
+<div class='csharp'>
+<?
+include(DOCS_RESOURCES."/algorithm-framework/continuous-futures.html");
+?>
+</div>
+	
 <p>To view the implementation of this model, see the <a target="_blank" rel="nofollow" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.Framework/Selection/OpenInterestFutureUniverseSelectionModel.cs">LEAN GitHub repository</a>.</p>
 </div>
 
