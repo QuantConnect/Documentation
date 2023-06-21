@@ -57,7 +57,7 @@ $$
     <li>Had a PSR value in the interval (0, 100)</li>
 </ul>
 <? } else { ?>
-<p>If you run a cloud backtest, backtest results page displays a Ranking section that shows the PSR and rank (percentile) of your algorithm. For more information about this section, see <a href='/docs/v2/cloud-platform/backtesting/results#08-Key-Statistics'>Key Statistics</a>.</p>
+<p>If you run a cloud backtest, the backtest results page displays a Ranking section that shows the PSR and rank (percentile) of your algorithm relative to other algorithms in QuantConnect Cloud. For more information about this section, see <a href='/docs/v2/cloud-platform/backtesting/results#08-Key-Statistics'>Key Statistics</a>.</p>
 <? } ?>
 
 <h4>Research Guide</h4>
