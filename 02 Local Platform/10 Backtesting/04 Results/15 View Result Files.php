@@ -1,6 +1,4 @@
-<p>To view the results files of local backtests, <a href='/docs/v2/local-platform/backtesting/getting-started#02-Run-Backtests'>run a local backtest</a> and then open the <span class='public-file-name'><a href='/docs/v2/local-platform/development-environment/organization-workspaces'>&lt;organizationWorkspace&gt;</a> / &lt;projectName&gt; / backtests / &lt;unixTimestamp&gt;</span> directory.</p>
-
-<p>The following table describes the initial contents of the backtest result directories:</p>
+<p>To view the results files of local backtests, <a href='/docs/v2/local-platform/backtesting/getting-started#02-Run-Backtests'>run a local backtest</a> and then open the <span class='public-file-name'><a href='/docs/v2/local-platform/development-environment/organization-workspaces'>&lt;organizationWorkspace&gt;</a> / &lt;projectName&gt; / backtests / &lt;unixTimestamp&gt;</span> directory. The following table describes the initial contents of the backtest result directories:</p>
 
 <table class="qc-table table">
     <thead>
