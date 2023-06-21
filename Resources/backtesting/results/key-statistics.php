@@ -32,7 +32,7 @@
 <p>Some of the preceding statistics are sampled throughout the backtest to produce a time series of rolling statistics. The time series are displayed in the Rolling Statistics table.</p>
 
 <? if ($localPlatform) { ?>
-<p>To view the data from the Overall Statistics and Rolling Statistics tables in JSON format, see <a href='/docs/v2/local-platform/backtesting/results#15-View-Result-Files'>View Result Files</a>.</p>
+<p>To view the data from the Overall Statistics and Rolling Statistics tables in JSON format, open the <span class='public-file-name'><a href='/docs/v2/local-platform/development-environment/organization-workspaces'>&lt;organizationWorkspace&gt;</a> / &lt;projectName&gt; / backtests / &lt;unixTimestamp&gt; / &lt;algorithmId&gt;.json</span> file.</p>
 <? } else { ?>
 <p>To download the data from the Overall Statistics and Rolling Statistics tables, see <a href='/docs/v2/cloud-platform/backtesting/results#15-Download-Results'>Download Results</a>.</p>
 <? } ?>
