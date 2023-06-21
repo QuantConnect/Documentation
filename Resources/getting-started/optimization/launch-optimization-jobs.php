@@ -4,7 +4,7 @@
     <li>At least one <a href='/docs/v2/writing-algorithms/parameters#02-Set-Parameters'>algorithm parameter in your project</a>.</li>
     <li>The <a href='/docs/v2/writing-algorithms/parameters#03-Get-Parameters'>GetParameter</a> method <span class='csharp'>or <code>Parameter</code> attribute </span>in your project.</li>
     <li>A successful backtest of the project.</li>
-    <li><? if ($localPlatform) { ?>If you deploy the optimization job to QuantConnect Cloud, <? } ?><a href='/docs/v2/cloud-platform/organizations/credit'>QuantConnect Credit (QCC)</a> in your organization.</li>
+    <? if ($cloudPlatform) { ?><li><a href='/docs/v2/cloud-platform/organizations/credit'>QuantConnect Credit (QCC)</a> in your organization.</li><? } ?>
 </ul>
 
 <p>Follow these steps to optimize parameters:</p>
