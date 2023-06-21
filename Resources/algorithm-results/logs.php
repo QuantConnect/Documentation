@@ -19,9 +19,5 @@ $logLink = $cloudPlatform ? "/docs/v2/cloud-platform/projects/debugging#04-Loggi
 <p>If you ran a local backtest, the log file is automatically saved on your local machine when the backtest completes.</p>
 
 <h4>Access Local Log Files</h4>
-<p>To view the log file of a local backtest, open one of the following files:<p>
-<ul>
-    <li>The <span class='public-file-name'>Project / backtests / &lt;unixTimestamp&gt; / &lt;algorithmId&gt;-log.txt</span> file from your <a href='/docs/v2/local-platform/backtesting/results#15-View-Local-Result-Files'>local result files</a> in VS Code.</li>
-    <li>The <span class='public-file-name'>&lt;projectName&gt; / backtests / &lt;unixTimestamp&gt; / &lt;algorithmId&gt;-log.txt</span> file from your <a href='/docs/v2/local-platform/development-environment/organization-workspaces'>organization workspace</a>.</li>
-</ul>
+<p>To view the log file of a local backtest, open the <span class='public-file-name'>Project / backtests / &lt;unixTimestamp&gt; / &lt;algorithmId&gt;-log.txt</span> file from your <a href='/docs/v2/local-platform/backtesting/results#15-View-Result-Files'>local result files</a>.</p>
 <? } ?>
