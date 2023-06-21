@@ -24,7 +24,7 @@
 <?     } ?>
 
 <?     if ($localPlatform) { ?>
-<p>To view all of the content in the Orders Summary table, see <a href='/docs/v2/local-platform/backtesting/results#15-View-Local-Result-Files'>View Local Result Files</a>.</p>
+<p>To view all of the content in the Orders Summary table, see <a href='/docs/v2/local-platform/backtesting/results#15-View-Result-Files'>View Result Files</a>.</p>
 
 <h4>Access the Order Events JSON</h4>
 <p>To view all of the <a href='/docs/v2/writing-algorithms/trading-and-orders/order-events'>order events</a> for a local backtest, open one of the following files:<p>
