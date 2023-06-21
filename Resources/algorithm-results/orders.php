@@ -27,12 +27,8 @@
 <p>To view all of the content in the Orders Summary table, see <a href='/docs/v2/local-platform/backtesting/results#15-View-Result-Files'>View Result Files</a>.</p>
 
 <h4>Access the Order Events JSON</h4>
-<p>To view all of the <a href='/docs/v2/writing-algorithms/trading-and-orders/order-events'>order events</a> for a local backtest, open one of the following files:<p>
+<p>To view all of the <a href='/docs/v2/writing-algorithms/trading-and-orders/order-events'>order events</a> for a local backtest, open the <span class='public-file-name'>Project / backtests / &lt;unixTimestamp&gt; / &lt;algorithmId&gt;-order-events.json</span> file from your <a href='/docs/v2/local-platform/backtesting/results#15-View-Local-Result-Files'>local result files</a>.<p>
 
-<ul>
-    <li>The <span class='public-file-name'>Project / backtests / &lt;unixTimestamp&gt; / &lt;algorithmId&gt;-order-events.json</span> file from your <a href='/docs/v2/local-platform/backtesting/results#15-View-Local-Result-Files'>local result files</a> in Local Platform</li>
-    <li>The <span class='public-file-name'>&lt;projectName&gt; / backtests / &lt;unixTimestamp&gt; / &lt;algorithmId&gt;-log.txt</span> file from your <a href='/docs/v2/local-platform/development-environment/organization-workspaces'>organization workspace</a></li>
-</ul>
 <?     } ?>
 
 <? } ?>
