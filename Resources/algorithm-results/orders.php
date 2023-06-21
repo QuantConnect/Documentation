@@ -24,7 +24,7 @@
 <?     } ?>
 
 <?     if ($localPlatform) { ?>
-<p>To view all of the content in the Orders Summary table, see <a href='/docs/v2/local-platform/backtesting/results#15-View-Result-Files'>View Result Files</a>.</p>
+<p>To view all of the content in the Orders Summary table, open the <span class='public-file-name'><a href='/docs/v2/local-platform/development-environment/organization-workspaces'>&lt;organizationWorkspace&gt;</a> / &lt;projectName&gt; / backtests / &lt;unixTimestamp&gt; / &lt;algorithmId&gt;.json</span> file and search for the <code>Orders</code> key.<p>
 
 <h4>Access the Order Events JSON</h4>
 <p>To view all of the <a href='/docs/v2/writing-algorithms/trading-and-orders/order-events'>order events</a> for a local backtest, open the <span class='public-file-name'><a href='/docs/v2/local-platform/development-environment/organization-workspaces'>&lt;organizationWorkspace&gt;</a> / &lt;projectName&gt; / backtests / &lt;unixTimestamp&gt; / &lt;algorithmId&gt;-order-events.json</span> file.<p>
