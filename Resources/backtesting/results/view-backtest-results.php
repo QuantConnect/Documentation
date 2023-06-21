@@ -11,6 +11,6 @@ $deployBacktestLink = $cloudPlatform ? "/docs/v2/cloud-platform/backtesting/depl
 <? } else { ?>
 <p>The content in the backtest results page updates as your backtest executes. You can close Local Platform without interrupting the backtest as long as you keep Docker running. If you close the page, to open it again, <a href="/docs/v2/local-platform/backtesting/results#17-View-All-Backtests">view all of the project's backtests</a>. Only you can view the results of local backtests. If you run the backtest in QuantConnect Cloud, only you can view its results unless you explicitly make the backtest public. If you delete a backtest result or you are inactive for 12 months, we archive your backtest results.</p>
 
-<p>The information on the backtest results page is also available in its raw form. To access it, see <a href='/docs/v2/local-platform/backtesting/results#15-View-Local-Result-Files'>View Local Result Files</a> or <a href='/docs/v2/local-platform/backtesting/results#16-Download-Cloud-Result-Files'>Download Cloud Result Files</a>.</p>
+<p>The information on the backtest results page is also available in its raw form. To access it, see <a href='/docs/v2/local-platform/backtesting/results#15-View-Result-Files'>View Result Files</a>.</p>
 <? } ?>
 
