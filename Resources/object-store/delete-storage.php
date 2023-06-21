@@ -3,3 +3,5 @@
     <pre class="csharp">ObjectStore.Delete(key);</pre>
     <pre class="python">self.ObjectStore.Delete(key)</pre>
 </div>
+
+<? if ($localPlatform) { ?> <p>You can also delete the files in the project's storage directory.</p> <? } ?>
