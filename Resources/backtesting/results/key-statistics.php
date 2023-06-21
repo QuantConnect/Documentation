@@ -39,10 +39,8 @@
 
 
 <h4>Ranking</h4>
-
-<? $intro = $cloudPlatform ? "T" : "If you backtest in QuantConnect Cloud, t"; ?>
-
-<p><?=$intro?>he backtest results page displays a Ranking section that shows the PSR and rank (percentile) of your algorithm.</p>
+<? if ($cloudPlatform) { ?>
+<p>The backtest results page displays a Ranking section that shows the PSR and rank (percentile) of your algorithm.</p>
 
 <img class="docs-image" src="https://cdn.quantconnect.com/i/tu/algorithm-ranking.png" alt="Backtest ranking">
 
@@ -58,6 +56,9 @@ $$
     <li>Had more than 90 tradable days</li>
     <li>Had a PSR value in the interval (0, 100)</li>
 </ul>
+<? } else { ?>
+<p>If you run a cloud backtest, backtest results page displays a Ranking section that shows the PSR and rank (percentile) of your algorithm. For more information about this section, see <a href='/docs/v2/cloud-platform/backtesting/results#08-Key-Statistics'>Key Statistics</a>.</p>
+<? } ?>
 
 <h4>Research Guide</h4>
 <p>For information about the Research Guide, see <a href="/docs/v2/cloud-platform/backtesting/research-guide">Research Guide</a>.
