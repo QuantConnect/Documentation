@@ -1,11 +1,4 @@
-<p>Follow these steps to view the results files of local backtests:</p>
-
-<ol>
-	<li><a href='/docs/v2/local-platform/backtesting/getting-started#02-Run-Backtests'>Run a local backtest</a>.</li>
-	<li>Navigate to <a href='/docs/v2/local-platform/projects/files#03-View-Files'>the files in your project</a>.</li>
-	<li>Open one of <span class='public-file-name'>Project / backtests / &lt;unixTimestamp&gt;</span> directories in your project.</li>
-	<p>For example, <span class='public-file-name'>Project / backtests / 168669292409</span>.</p>
-</ol>
+<p>To view the results files of local backtests, <a href='/docs/v2/local-platform/backtesting/getting-started#02-Run-Backtests'>run a local backtest</a> and then open the <span class='public-file-name'><a href='/docs/v2/local-platform/development-environment/organization-workspaces'>&lt;organizationWorkspace&gt;</a> / &lt;projectName&gt; / backtests / &lt;unixTimestamp&gt;</span> directory.</p>
 
 <p>The following table describes the initial contents of the backtest result directories:</p>
 
