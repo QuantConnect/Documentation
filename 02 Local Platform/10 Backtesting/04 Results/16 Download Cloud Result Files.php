@@ -1,1 +1,0 @@
-<? include(DOCS_RESOURCES."/backtesting/results/download-results.php"); ?>
