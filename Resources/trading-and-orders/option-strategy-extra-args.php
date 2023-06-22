@@ -8,7 +8,7 @@ foreach ($methodNames as $i=>$methodName)
 	}
 	echo "<code>{$methodName}</code>";
 }
-if (count($methodNames) == 0)
+if (count($methodNames) == 1)
 {
 	echo " method";
 }
