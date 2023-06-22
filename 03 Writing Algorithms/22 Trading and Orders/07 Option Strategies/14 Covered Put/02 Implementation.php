@@ -72,4 +72,8 @@ self.Buy(covered_put, 1)
 
 self.put = atm_put.Symbol</pre>
     </div>
+<?php 
+$methodNames = array("Buy");
+include(DOCS_RESOURCES."/trading-and-orders/option-strategy-extra-args.php"); 
+?>
 </ol>
