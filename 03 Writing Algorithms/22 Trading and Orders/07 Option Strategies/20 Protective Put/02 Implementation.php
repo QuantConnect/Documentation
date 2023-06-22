@@ -1,7 +1,7 @@
 <p>Follow these steps to implement the protective put strategy:</p>
 
 <ol>
-    <li>In the <code>Initialize</code> method, set the start date, set the end date, cash, subscribe to the underlying Equity, and create an <a href="/docs/v2/writing-algorithms/universes/equity-options">Options universe</a>.</li>
+    <li>In the <code>Initialize</code> method, set the start date, end date, starting cash, and <a href="/docs/v2/writing-algorithms/universes/equity-options">Options universe</a>.</li>
     <div class="section-example-container">
         <pre class="csharp">private Symbol _put, _symbol;
 
@@ -72,4 +72,10 @@ self.Buy(protective_put, 1)
 
 self.put = atm_put.Symbol</pre>
     </div>
+    
+<?php 
+$methodNames = array("Buy");
+include(DOCS_RESOURCES."/trading-and-orders/option-strategy-extra-args.php"); 
+?>
+    
 </ol>
