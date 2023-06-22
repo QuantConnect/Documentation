@@ -1,7 +1,7 @@
 <p>Follow these steps to implement the protective call strategy:</p>
 
 <ol>
-    <li>In the <code>Initialize</code> method, set the start date, set the end date, cash, subscribe to the underlying Equity, and create an <a href="/docs/v2/writing-algorithms/universes/equity-options">Options universe</a>.</li>
+    <li>In the <code>Initialize</code> method, set the start date, end date, cash, and <a href="/docs/v2/writing-algorithms/universes/equity-options">Options universe</a>.</li>
     <div class="section-example-container">
         <pre class="csharp">private Symbol _call, _symbol;
 
@@ -31,14 +31,14 @@ public override void Initialize()
     <div class="section-example-container">
         <pre class="csharp">public override void OnData(Slice slice)
 {
-    if (_call != null && Portfolio[_call].Invested) return;
+    if (_call != null &amp;&amp; Portfolio[_call].Invested) return;
 
     if (!slice.OptionChains.TryGetValue(_symbol, out var chain)) return;
 
     // Find ATM call with the farthest expiry
     var expiry = chain.Max(x =&gt; x.Expiry);
     var atmCall = chain
-        .Where(x =&gt; x.Right == OptionRight.Call && x.Expiry == expiry)
+        .Where(x =&gt; x.Right == OptionRight.Call &amp;&amp; x.Expiry == expiry)
         .OrderBy(x =&gt; Math.Abs(x.Strike - chain.Underlying.Price))
         .FirstOrDefault();</pre>
         <pre class="python">def OnData(self, slice: Slice) -&gt; None:
