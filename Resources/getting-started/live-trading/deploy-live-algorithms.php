@@ -9,7 +9,7 @@ if ($cloudPlatform) {
 
 <p>Follow these steps to deploy a live paper trading algorithm:</p>
 <? } else { ?>
-<p>Follow these steps to deploy a live trading algorithm with the Interactive Brokers brokerage:</p>
+<p>Follow these steps to deploy a live trading algorithm with the Interactive Brokers (IB) brokerage:</p>
 <? } ?>
 
 <ol>
