@@ -20,7 +20,7 @@ $definitionByTerm = array(
     "lowest capacity asset" => "The asset an algorithm traded that has the lowest capacity.",
     "net profit" => array("Percent" => "The rate of return across the entire trading period.", "Dollar-value" => "The dollar-value return across the entire trading period."),
     "out-of-the-money amount" => array("Call Option" => "The strike price minus the price of an asset if the price is below the strike price, otherwise zero.", "Put Option" => "The price of an asset minus the strike price if the price is above the strike price, otherwise zero."),
-    "payoff" => "The profit or loss that an option buyer or seller makes from a trade.",
+    "payoff" => "The profit or loss that an Option buyer or seller makes from a trade.",
     "pattern day trader" => "A trader who executes four or more day trades in the US Equity market within five business days.",
     "Probabilistic Sharpe ratio" => "The probability that the estimated Sharpe ratio of an algorithm is greater than a benchmark (1).",
     "profit-loss ratio" => "The ratio of the average win rate to the average loss rate.",
