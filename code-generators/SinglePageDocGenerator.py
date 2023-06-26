@@ -6,6 +6,7 @@ import os
 from pathlib import Path
 import pdfkit
 from PIL import Image
+import re
 import sys
 import time
 from typing import Union, Tuple, List
@@ -135,20 +136,7 @@ def Knit(content: list, name: str) -> str:
             base64_img = base64.b64encode(open(img_path, 'rb').read()).decode()
             content = content.replace(img_url, f'data:image/{img_path.split(".")[-1]};base64,{base64_img}')
             
-        # Point to section in document if in the same section
-        section_num = list(sections.keys())
-        names = list([x.lower() for x in sections.values()])
-        replacement = {}
-        soup = BeautifulSoup(content, features="lxml")
-        for x in soup.findAll('a'):
-            if "href" in x and (f"https://www.quantconnect.com/docs/v2/{name.lower().replace(' ', '-')}" in x["href"] or f"https://www.quantconnect.com/docs/v2//{name.lower().replace(' ', '-')}" in x["href"]):
-                section = [y.split("#")[0].replace('-', ' ').lower().strip() for y in x["href"].split(name.lower().replace(' ', '-'))[-1].split("/")]
-                for subsection in section:
-                    if subsection in names:
-                        replacement[x["href"]] = section_num[names.index(subsection)]
-        for link, num in replacement.items():
-            content = content.replace(link, f'#{num}')
-        
+        content = ModifySectionPointer(content, name)
         html += content
         
         print(f"Knit(): Knitted documentation content for {name} successfully.")
@@ -156,6 +144,49 @@ def Knit(content: list, name: str) -> str:
 
     except Exception as e:
         raise Exception(f"Knit(): Unable to knit documentation content - {e}")
+    
+def ModifySectionPointer(content: str, name: str) -> str:
+    global sections
+    # Point to section in document if in the same section
+    section_num = list(sections.keys())
+    names = list([x.lower() for x in sections.values()])
+    replacement = {}
+    soup = BeautifulSoup(content, features="lxml")
+    
+    for x in soup.findAll('a'):
+        try:
+            if f"https://www.quantconnect.com/docs/v2/{name.lower().replace(' ', '-')}" in x["href"] or f"https://www.quantconnect.com/docs/v2//{name.lower().replace(' ', '-')}" in x["href"]:
+                section = [y.replace('-', ' ').lower().strip() for y in re.split('/|#', x["href"].split(name.lower().replace(' ', '-'))[-1])]
+                # rundown the section number list by subsection in url
+                subnames = names; c = 0
+                for subsection in section:
+                    if subsection in subnames:
+                        ind = subnames.index(subsection)
+                        replacement[x["href"]] = f'#{section_num[c+ind]}'
+                        c = ind+1
+                        subnames = names[c:]
+        except:
+            pass       # no "href" in tag "a"
+        
+    for x in soup.find_all("div", {"class": "content clickable"}):
+        try:
+            if f"window.location.href = '/docs/v2/{name.lower().replace(' ', '-')}" in x["onclick"]:
+                section = [y.replace('-', ' ').lower().strip() for y in re.split('/|#', x["onclick"].split(name.lower().replace(' ', '-'))[-1][:-1])]
+                # rundown the section number list by subsection in url
+                subnames = names; c = 0
+                for subsection in section:
+                    if subsection in subnames:
+                        ind = subnames.index(subsection)
+                        replacement[x["onclick"]] = f"window.location.href = '#{section_num[c+ind]}'"
+                        c = ind+1
+                        subnames = names[c:]
+        except:
+            pass       # no "onclick" in tag
+        
+    for link, num in replacement.items():
+        content = content.replace(link, num)
+        
+    return content
     
 def CoverPageAndTableOfContentGeneration(topic: str) -> str:
     global sections
