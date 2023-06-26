@@ -1,10 +1,10 @@
 <p>The <?=$pageName?> results page displays the orders of your algorithm and you can <? echo $cloudPlatform ? "download them to your local machine" : "view them on your local machine";?>.</p>
         
 <h4>View in the GUI</h4>
-<p>To see the orders that your algorithm created, open the <?=$pageName?> results page and then click the <span class='tab-name'>Orders</span> tab. If there are more than 10 orders, use the pagination tools at the bottom of the Orders Summary table to see all of the orders. Click on an individual order in the Orders Summary table to reveal additional information regarding the following topics:</p>
+<p>To see the orders that your algorithm created, open the <?=$pageName?> results page and then click the <span class='tab-name'>Orders</span> tab. If there are more than 10 orders, use the pagination tools at the bottom of the Orders Summary table to see all of the orders. Click on an individual order in the Orders Summary table to reveal all of the <a href='/docs/v2/writing-algorithms/trading-and-orders/order-events'>order events</a>, which include:</p>
 
 <ul>
-    <li>Submissions<br></li>
+    <li>Submissions</li>
     <li>Fills</li>
     <li>Partial fills</li>
     <li>Updates</li>
