@@ -10,6 +10,7 @@ import sys
 import time
 from typing import Union, Tuple, List
 from urllib.request import urlopen, urlretrieve
+from wand.image import Image as WandImage
 
 SOURCE_URL = "https://s3.amazonaws.com/cdn.quantconnect.com/web/cache"
 DESTINATION_PATH = "single-page"
@@ -132,7 +133,7 @@ def Knit(content: list, name: str) -> str:
         images = ExtractImage(content)
         for img_url, img_path in images.items():
             base64_img = base64.b64encode(open(img_path, 'rb').read()).decode()
-            content = content.replace(img_url, f'data:;base64,{base64_img}')
+            content = content.replace(img_url, f'data:image/{img_path.split(".")[-1]};base64,{base64_img}')
             
         # Point to section in document if in the same section
         section_num = list(sections.keys())
@@ -195,8 +196,7 @@ def WriteToHtmlFile(content: str, name: str) -> Path:
 def PdfConversion(html_path: Union[Path, str], language: str, css: Union[str, List[str]] = None) -> None:
     try:
         pdf_name = f'{str(html_path)[:-5]}-{"CSharp" if language == "csharp" else "Python"}.pdf'
-        options = {'enable-local-file-access': None}
-        pdfkit.from_file(str(html_path), pdf_name, options=options, css=f'{css}/pdf-styles-{language}.css')
+        pdfkit.from_file(str(html_path), pdf_name, css=f'{css}/pdf-styles-{language}.css')
         print(f"PdfConversion(): Successfully converting {html_path} to {pdf_name}")
     except Exception as e:
         # Do not break with raising exceptions in case due to warnings
@@ -217,11 +217,14 @@ def ExtractImage(content: str) -> dict:
                 if url.endswith('.webp'):
                     # Convert the webp image to PNG
                     png_path = path.replace("webp", "png")
-                    image = Image.open(path).convert("RGB")
+                    image = Image.open(path).convert("RGBA")
                     image.save(png_path, "png")
-
-                    # Update the image source to the relative PNG path
-                    path = png_path
+                    
+                elif url.endswith('.svg'):
+                    with WandImage(filename=path) as img:
+                        with img.convert('png') as output_img:
+                            png_path = path.lower().replace("svg", "png")
+                            output_img.save(filename=png_path)
                 
                 # to avoid libpng warning: iCCP: known incorrect sRGB profile
                 if path.lower().endswith('.png'):
@@ -229,7 +232,11 @@ def ExtractImage(content: str) -> dict:
                     if 'icc_profile' in img.info:
                         del img.info['icc_profile']
                         img.save(path)
-                    
+                        
+            if path.lower().endswith('.svg') or path.lower().endswith('.webp'):
+                # Update the image source to the relative PNG path
+                path = f'{".".join(path.split(".")[:-1])}.png'
+            
             conversions[url] = path
             
         except Exception as e:
