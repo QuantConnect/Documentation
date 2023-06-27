@@ -45,7 +45,7 @@ def _get_helpers():
 
                 helpers[to_key(name)] = {
                     'method': parts[0].split(' ')[-1][1:], 
-                    'arguments': parts[1].split(')')[0]
+                    'arguments': ')'.join(parts[1].split(')')[:-1])
                 }
 
         return helpers
