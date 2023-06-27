@@ -5,7 +5,7 @@ include(DOCS_RESOURCES."/qcalgorithm-api/_method_container.html");
 $hasAutomaticIndicatorHelper = true;
 $typeName = 'CoppockCurve';
 $helperName = 'CC';
-$helperArguments = '"SPY", 11, 14, 10';
+$helperArguments = 'symbol, 11, 14, 10';
 $properties = array();
 $updateParameterType = 'time/number pair, or an <code>IndicatorDataPoint</code>';
 $constructorArguments = '11, 14, 10';

@@ -5,7 +5,7 @@ include(DOCS_RESOURCES."/qcalgorithm-api/_method_container.html");
 $hasAutomaticIndicatorHelper = true;
 $typeName = 'AugenPriceSpike';
 $helperName = 'APS';
-$helperArguments = '"SPY", 3';
+$helperArguments = 'symbol, 3';
 $properties = array();
 $updateParameterType = 'time/number pair, or an <code>IndicatorDataPoint</code>';
 $constructorArguments = '3';

@@ -33,7 +33,7 @@ for line in source:
 # Write the glossary pages
 for key, n in keys.items():
     with open(f"{dir}/{n:02} {key.replace(quotation, '').replace(double_quotation, '')}.php", "w", encoding="utf-8") as php:
-        php.write(f'''<?php 
+        php.write(f'''<? 
 include(DOCS_RESOURCES."/glossary.php");
 $getGlossaryTermHTML({key});
 ?>''')

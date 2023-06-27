@@ -5,7 +5,7 @@ include(DOCS_RESOURCES."/qcalgorithm-api/_method_container.html");
 $hasAutomaticIndicatorHelper = true;
 $typeName = 'ArnaudLegouxMovingAverage';
 $helperName = 'ALMA';
-$helperArguments = '"SPY", 10, 6, 0.85';
+$helperArguments = 'symbol, 10, 6, 0.85';
 $properties = array();
 $updateParameterType = 'time/number pair, or an <code>IndicatorDataPoint</code>';
 $constructorArguments = '10, 6, 0.85';

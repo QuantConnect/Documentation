@@ -5,7 +5,7 @@ include(DOCS_RESOURCES."/qcalgorithm-api/_method_container.html");
 $hasAutomaticIndicatorHelper = true;
 $typeName = 'RegressionChannel';
 $helperName = 'RC';
-$helperArguments = '"SPY", 20, 2';
+$helperArguments = 'symbol, 20, 2';
 $properties = array("LinearRegression","UpperChannel","LowerChannel","Intercept","Slope");
 $updateParameterType = 'time/number pair, or an <code>IndicatorDataPoint</code>';
 $constructorArguments = '20, 2';

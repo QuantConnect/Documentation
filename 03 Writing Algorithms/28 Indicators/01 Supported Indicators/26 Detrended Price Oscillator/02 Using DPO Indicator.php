@@ -5,7 +5,7 @@ include(DOCS_RESOURCES."/qcalgorithm-api/_method_container.html");
 $hasAutomaticIndicatorHelper = true;
 $typeName = 'DetrendedPriceOscillator';
 $helperName = 'DPO';
-$helperArguments = '"SPY", 20';
+$helperArguments = 'symbol, 20';
 $properties = array();
 $updateParameterType = 'time/number pair, or an <code>IndicatorDataPoint</code>';
 $constructorArguments = '20';

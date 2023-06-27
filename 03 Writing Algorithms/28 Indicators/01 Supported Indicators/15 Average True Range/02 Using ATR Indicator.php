@@ -5,7 +5,7 @@ include(DOCS_RESOURCES."/qcalgorithm-api/_method_container.html");
 $hasAutomaticIndicatorHelper = true;
 $typeName = 'AverageTrueRange';
 $helperName = 'ATR';
-$helperArguments = '"SPY", 20, MovingAverageType.Simple';
+$helperArguments = 'symbol, 20, MovingAverageType.Simple';
 $properties = array("TrueRange");
 $updateParameterType = 'a <code>TradeBar</code>, or <code>QuoteBar</code>';
 $constructorArguments = '20, MovingAverageType.Simple';

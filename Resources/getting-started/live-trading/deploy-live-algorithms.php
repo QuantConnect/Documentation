@@ -9,7 +9,7 @@ if ($cloudPlatform) {
 
 <p>Follow these steps to deploy a live paper trading algorithm:</p>
 <? } else { ?>
-<p>Follow these steps to deploy a live trading algorithm with the Interactive Brokers brokerage:</p>
+<p>Follow these steps to deploy a live trading algorithm with the Interactive Brokers (IB) brokerage:</p>
 <? } ?>
 
 <ol>
@@ -46,6 +46,9 @@ if ($cloudPlatform) {
     <li>Configure the <span class="box-name">Automatically restart algorithm</span> setting.</li>
     <p>By enabling automatic restarts, the algorithm will use best efforts to restart the algorithm if it fails due to a runtime error. This can help improve the algorithm's resilience to temporary outages such as a brokerage API disconnection.</p>
     <li>Click <span class="button-name">Deploy</span>.</li>
+    <? if ($localPlatform) {  ?>
+    <li>If your IB account has 2FA enabled, tap the notification on your IB Key device and then enter your pin.</li>
+    <? } ?>
 </ol>
 
 <p>The deployment process can take up to 5 minutes. When the algorithm deploys, the <?=$liveTradingResultsPage?> displays. If you know your brokerage positions before you deployed, you can verify they have been loaded properly by checking your equity value in the runtime statistics, your cashbook holdings, and your position holdings.</p>

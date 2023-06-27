@@ -10,7 +10,7 @@
     public override void Initialize()
     {
         _symbol = AddEquity("SPY", Resolution.Daily).Symbol;
-        _<?=strtolower($helperName)?> = <?=$helperName?>(<?=$helperArguments?>);
+        _<?=strtolower($helperName)?> = <?=$helperName?>(<?=str_replace("symbol", "_symbol", $helperArguments)?>);
     }
 
     public override void OnData(Slice data)
@@ -31,7 +31,7 @@
     <pre class="python">class <?=$typeName?>Algorithm(QCAlgorithm):
     def Initialize(self) -> None:
         self.symbol = self.AddEquity("SPY", Resolution.Daily).Symbol
-        self.<?=strtolower($helperName)?> = self.<?=$helperName?>(<?=$helperArguments?>)
+        self.<?=strtolower($helperName)?> = self.<?=$helperName?>(<?=str_replace("symbol", "self.symbol", $helperArguments)?>)
 
     def OnData(self, slice: Slice) -> None:
         if self.<?=strtolower($helperName)?>.IsReady:
@@ -45,7 +45,7 @@
 </pre>
 </div>
 
-<p>The following reference table describes the <?=$helperName?> method:</p>
+<p>The following reference table describes the <code><?=$helperName?></code> method:</p>
 <? include(DOCS_RESOURCES."/qcalgorithm-api/" . strtolower($helperName) . ".html"); ?>
 
 <p>If you don't provide a resolution, it defaults to the security resolution. If you provide a resolution, it must be greater than or equal to the resolution of the security. For instance, if you subscribe to hourly data for a security, you should update its indicator with data that spans 1 hour or longer.</p>
@@ -74,7 +74,7 @@
     public override void Initialize()
     {
         _symbol = AddEquity("SPY", Resolution.Daily).Symbol;
-        _<?=strtolower($helperName)?> = new <?=$typeName?>(<?=$constructorArguments?>);
+        _<?=strtolower($helperName)?> = new <?=$typeName?>(<?=str_replace("symbol", "_symbol", $constructorArguments)?>);
     }
 
     public override void OnData(Slice data)
@@ -100,7 +100,7 @@
     <pre class="python">class <?=$typeName?>Algorithm(QCAlgorithm):
     def Initialize(self) -> None:
         self.symbol = self.AddEquity("SPY", Resolution.Daily).Symbol
-        self.<?=strtolower($helperName)?> = <?=$typeName?>(<?=$constructorArguments?>)
+        self.<?=strtolower($helperName)?> = <?=$typeName?>(<?=str_replace("symbol", "self.symbol", $constructorArguments)?>)
 
     def OnData(self, slice: Slice) -> None:
         bar = slice.Bars.get(self.symbol)
@@ -129,7 +129,7 @@
     public override void Initialize()
     {
         _symbol = AddEquity("SPY", Resolution.Daily).Symbol;
-        _<?=strtolower($helperName)?> = new <?=$typeName?>(<?=$constructorArguments?>);
+        _<?=strtolower($helperName)?> = new <?=$typeName?>(<?=str_replace("symbol", "_symbol", $constructorArguments)?>);
         RegisterIndicator(_symbol, _<?=strtolower($helperName)?>, Resolution.Daily);
     }
 
@@ -151,7 +151,7 @@
     <pre class="python">class <?=$typeName?>Algorithm(QCAlgorithm):
     def Initialize(self) -> None:
         self.symbol = self.AddEquity("SPY", Resolution.Daily).Symbol
-        self.<?=strtolower($helperName)?> = <?=$typeName?>(<?=$constructorArguments?>)
+        self.<?=strtolower($helperName)?> = <?=$typeName?>(<?=str_replace("symbol", "self.symbol", $constructorArguments)?>)
         self.RegisterIndicator(self.symbol, self.<?=strtolower($helperName)?>, Resolution.Daily)
 
     def OnData(self, slice: Slice) -> None:
@@ -166,5 +166,5 @@
 </pre>
 </div>
 
-<p>The following reference table describes the <?=$typeName?> constructor:</p>
+<p>The following reference table describes the <code><?=$typeName?></code> constructor:</p>
 <? include(DOCS_RESOURCES."/indicators/constructors/" . $constructorBox . ".html"); ?>

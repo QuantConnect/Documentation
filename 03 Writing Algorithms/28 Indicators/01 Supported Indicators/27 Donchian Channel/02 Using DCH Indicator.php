@@ -5,7 +5,7 @@ include(DOCS_RESOURCES."/qcalgorithm-api/_method_container.html");
 $hasAutomaticIndicatorHelper = true;
 $typeName = 'DonchianChannel';
 $helperName = 'DCH';
-$helperArguments = '"SPY", 20, 20';
+$helperArguments = 'symbol, 20, 20';
 $properties = array("UpperBand","LowerBand");
 $updateParameterType = 'a <code>TradeBar</code>, or <code>QuoteBar</code>';
 $constructorArguments = '20, 20';

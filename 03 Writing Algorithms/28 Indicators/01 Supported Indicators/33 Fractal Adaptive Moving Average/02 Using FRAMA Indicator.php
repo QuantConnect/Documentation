@@ -5,7 +5,7 @@ include(DOCS_RESOURCES."/qcalgorithm-api/_method_container.html");
 $hasAutomaticIndicatorHelper = true;
 $typeName = 'FractalAdaptiveMovingAverage';
 $helperName = 'FRAMA';
-$helperArguments = '"SPY", 20, 198';
+$helperArguments = 'symbol, 20, 198';
 $properties = array();
 $updateParameterType = 'a <code>TradeBar</code>, or <code>QuoteBar</code>';
 $constructorArguments = '20, 198';

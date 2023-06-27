@@ -5,7 +5,7 @@ include(DOCS_RESOURCES."/qcalgorithm-api/_method_container.html");
 $hasAutomaticIndicatorHelper = true;
 $typeName = 'UltimateOscillator';
 $helperName = 'ULTOSC';
-$helperArguments = '"SPY", 5, 10, 20';
+$helperArguments = 'symbol, 5, 10, 20';
 $properties = array();
 $updateParameterType = 'a <code>TradeBar</code>, or <code>QuoteBar</code>';
 $constructorArguments = '5, 10, 20';
