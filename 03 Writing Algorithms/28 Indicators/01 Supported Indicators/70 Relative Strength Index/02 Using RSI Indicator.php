@@ -5,7 +5,7 @@ include(DOCS_RESOURCES."/qcalgorithm-api/_method_container.html");
 $hasAutomaticIndicatorHelper = true;
 $typeName = 'RelativeStrengthIndex';
 $helperName = 'RSI';
-$helperArguments = 'self.symbol, 14';
+$helperArguments = 'symbol, 14';
 $properties = array("AverageLoss","AverageGain");
 $updateParameterType = 'time/number pair, or an <code>IndicatorDataPoint</code>';
 $constructorArguments = '14';

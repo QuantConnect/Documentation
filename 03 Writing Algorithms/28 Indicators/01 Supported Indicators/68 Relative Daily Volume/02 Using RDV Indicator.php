@@ -5,7 +5,7 @@ include(DOCS_RESOURCES."/qcalgorithm-api/_method_container.html");
 $hasAutomaticIndicatorHelper = true;
 $typeName = 'RelativeDailyVolume';
 $helperName = 'RDV';
-$helperArguments = 'self.symbol, 2';
+$helperArguments = 'symbol, 2';
 $properties = array();
 $updateParameterType = 'a <code>TradeBar</code>';
 $constructorArguments = '2';

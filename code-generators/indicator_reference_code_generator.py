@@ -41,11 +41,13 @@ def _get_helpers():
         for i, line in enumerate(lines):
             if 'title' in line and ':' in line:
                 name = lines[i-3].split(':')[0].strip()[1:-1]
+                full_constructor = lines[i-1]
                 parts = line.split('(')
 
                 helpers[to_key(name)] = {
                     'method': parts[0].split(' ')[-1][1:], 
-                    'arguments': parts[1].split(')')[0]
+                    'arguments': ')'.join('('.join(parts[1:]).split(')')[:-1]),
+                    'constructor-arguments': ')'.join('('.join(full_constructor.split('(')[1:]).split(')')[:-1])
                 }
 
         return helpers
@@ -75,7 +77,8 @@ def Generate_Indicators_Reference():
 
             helper = helpers.get(file.stem, {
                 'method': indicator['type-name'], 
-                'arguments': "symbol"
+                'arguments': "symbol",
+                'constructor-arguments': None
             } )
 
             arguments = helper['arguments']
@@ -84,7 +87,7 @@ def Generate_Indicators_Reference():
             start = arguments.find(',')
             if start > 0:
                 arguments = arguments[1 + start:].strip()
-            indicator['constructor-arguments'] = arguments
+            indicator['constructor-arguments'] = helper['constructor-arguments']
             indicator['has-moving-average-type-parameter'] = 'MovingAverageType' in content
 
             properties = [x["property-name"] for x in indicator['properties']
@@ -185,7 +188,7 @@ $helperName = '{helper_name}';
 $helperArguments = '{indicator['helper-arguments']}';
 $properties = {indicator['properties']};
 $updateParameterType = '{indicator['update-parameter-type']}';
-$constructorArguments = '{indicator['constructor-arguments']}';
+$constructorArguments = '{indicator['constructor-arguments'] if indicator['constructor-arguments'] else ''}';
 $updateParameterValue = '{indicator['update-parameter-value']}';
 $hasMovingAverageTypeParameter = {indicator['has-moving-average-type-parameter']};
 $constructorBox = '{key.lower().replace(' ','-')}';

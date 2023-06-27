@@ -5,7 +5,7 @@ include(DOCS_RESOURCES."/qcalgorithm-api/_method_container.html");
 $hasAutomaticIndicatorHelper = true;
 $typeName = 'Stochastic';
 $helperName = 'STO';
-$helperArguments = 'self.symbol, 20, 10, 20';
+$helperArguments = 'symbol, 20, 10, 20';
 $properties = array("FastStoch","StochK","StochD");
 $updateParameterType = 'a <code>TradeBar</code>, or <code>QuoteBar</code>';
 $constructorArguments = '20, 10, 20';
