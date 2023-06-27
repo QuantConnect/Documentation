@@ -5,7 +5,7 @@ include(DOCS_RESOURCES."/qcalgorithm-api/_method_container.html");
 $hasAutomaticIndicatorHelper = true;
 $typeName = 'TargetDownsideDeviation';
 $helperName = 'TDD';
-$helperArguments = '"SPY", 50';
+$helperArguments = 'self.symbol, 50';
 $properties = array();
 $updateParameterType = 'time/number pair, or an <code>IndicatorDataPoint</code>';
 $constructorArguments = '50';

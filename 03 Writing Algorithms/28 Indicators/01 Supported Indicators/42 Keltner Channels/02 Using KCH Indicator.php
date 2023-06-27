@@ -5,7 +5,7 @@ include(DOCS_RESOURCES."/qcalgorithm-api/_method_container.html");
 $hasAutomaticIndicatorHelper = true;
 $typeName = 'KeltnerChannels';
 $helperName = 'KCH';
-$helperArguments = '"SPY", 20, 2, MovingAverageType.Simple';
+$helperArguments = 'self.symbol, 20, 2, MovingAverageType.Simple';
 $properties = array("MiddleBand","UpperBand","LowerBand","AverageTrueRange");
 $updateParameterType = 'a <code>TradeBar</code>, or <code>QuoteBar</code>';
 $constructorArguments = '20, 2, MovingAverageType.Simple';

@@ -5,7 +5,7 @@ include(DOCS_RESOURCES."/qcalgorithm-api/_method_container.html");
 $hasAutomaticIndicatorHelper = true;
 $typeName = 'CommodityChannelIndex';
 $helperName = 'CCI';
-$helperArguments = '"SPY", 20, MovingAverageType.Simple';
+$helperArguments = 'self.symbol, 20, MovingAverageType.Simple';
 $properties = array("TypicalPriceAverage","TypicalPriceMeanDeviation");
 $updateParameterType = 'a <code>TradeBar</code>, or <code>QuoteBar</code>';
 $constructorArguments = '20, MovingAverageType.Simple';

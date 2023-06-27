@@ -5,7 +5,7 @@ include(DOCS_RESOURCES."/qcalgorithm-api/_method_container.html");
 $hasAutomaticIndicatorHelper = true;
 $typeName = 'RateOfChangeRatio';
 $helperName = 'ROCR';
-$helperArguments = '"SPY", 10';
+$helperArguments = 'self.symbol, 10';
 $properties = array();
 $updateParameterType = 'time/number pair, or an <code>IndicatorDataPoint</code>';
 $constructorArguments = '10';

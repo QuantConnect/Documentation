@@ -5,7 +5,7 @@ include(DOCS_RESOURCES."/qcalgorithm-api/_method_container.html");
 $hasAutomaticIndicatorHelper = true;
 $typeName = 'MidPrice';
 $helperName = 'MIDPRICE';
-$helperArguments = '"SPY", 20';
+$helperArguments = 'self.symbol, 20';
 $properties = array();
 $updateParameterType = 'a <code>TradeBar</code>, or <code>QuoteBar</code>';
 $constructorArguments = '20';

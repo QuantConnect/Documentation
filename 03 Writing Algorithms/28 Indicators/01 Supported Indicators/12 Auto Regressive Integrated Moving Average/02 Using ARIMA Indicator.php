@@ -5,7 +5,7 @@ include(DOCS_RESOURCES."/qcalgorithm-api/_method_container.html");
 $hasAutomaticIndicatorHelper = true;
 $typeName = 'AutoRegressiveIntegratedMovingAverage';
 $helperName = 'ARIMA';
-$helperArguments = '"SPY", 1, 1, 1, 20';
+$helperArguments = 'self.symbol, 1, 1, 1, 20';
 $properties = array("ArResidualError","MaResidualError");
 $updateParameterType = 'time/number pair, or an <code>IndicatorDataPoint</code>';
 $constructorArguments = '1, 1, 1, 20';

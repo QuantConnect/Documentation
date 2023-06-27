@@ -5,7 +5,7 @@ include(DOCS_RESOURCES."/qcalgorithm-api/_method_container.html");
 $hasAutomaticIndicatorHelper = true;
 $typeName = 'AwesomeOscillator';
 $helperName = 'AO';
-$helperArguments = '"SPY", 10, 20, MovingAverageType.Simple';
+$helperArguments = 'self.symbol, 10, 20, MovingAverageType.Simple';
 $properties = array("SlowAo","FastAo");
 $updateParameterType = 'a <code>TradeBar</code>, or <code>QuoteBar</code>';
 $constructorArguments = '10, 20, MovingAverageType.Simple';

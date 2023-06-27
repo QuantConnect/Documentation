@@ -5,7 +5,7 @@ include(DOCS_RESOURCES."/qcalgorithm-api/_method_container.html");
 $hasAutomaticIndicatorHelper = true;
 $typeName = 'StandardDeviation';
 $helperName = 'STD';
-$helperArguments = '"SPY", 22';
+$helperArguments = 'self.symbol, 22';
 $properties = array();
 $updateParameterType = 'time/number pair, or an <code>IndicatorDataPoint</code>';
 $constructorArguments = '22';

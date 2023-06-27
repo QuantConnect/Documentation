@@ -5,7 +5,7 @@ include(DOCS_RESOURCES."/qcalgorithm-api/_method_container.html");
 $hasAutomaticIndicatorHelper = true;
 $typeName = 'SharpeRatio';
 $helperName = 'SR';
-$helperArguments = '"SPY", 22, 0.03';
+$helperArguments = 'self.symbol, 22, 0.03';
 $properties = array();
 $updateParameterType = 'time/number pair, or an <code>IndicatorDataPoint</code>';
 $constructorArguments = '22, 0.03';

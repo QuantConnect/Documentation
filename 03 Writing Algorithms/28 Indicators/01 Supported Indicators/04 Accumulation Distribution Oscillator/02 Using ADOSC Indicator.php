@@ -5,7 +5,7 @@ include(DOCS_RESOURCES."/qcalgorithm-api/_method_container.html");
 $hasAutomaticIndicatorHelper = true;
 $typeName = 'AccumulationDistributionOscillator';
 $helperName = 'ADOSC';
-$helperArguments = '"SPY", 10, 2';
+$helperArguments = 'self.symbol, 10, 2';
 $properties = array();
 $updateParameterType = 'a <code>TradeBar</code>';
 $constructorArguments = '10, 2';
