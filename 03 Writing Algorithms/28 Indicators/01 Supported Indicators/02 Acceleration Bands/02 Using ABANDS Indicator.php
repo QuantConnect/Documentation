@@ -5,7 +5,7 @@ include(DOCS_RESOURCES."/qcalgorithm-api/_method_container.html");
 $hasAutomaticIndicatorHelper = true;
 $typeName = 'AccelerationBands';
 $helperName = 'ABANDS';
-$helperArguments = '"SPY", 10, 4, MovingAverageType.Simple';
+$helperArguments = 'self.symbol, 10, 4, MovingAverageType.Simple';
 $properties = array("MiddleBand","UpperBand","LowerBand");
 $updateParameterType = 'time/number pair, or an <code>IndicatorDataPoint</code>';
 $constructorArguments = '10, 4, MovingAverageType.Simple';

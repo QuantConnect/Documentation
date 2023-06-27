@@ -5,7 +5,7 @@ include(DOCS_RESOURCES."/qcalgorithm-api/_method_container.html");
 $hasAutomaticIndicatorHelper = true;
 $typeName = 'DeMarkerIndicator';
 $helperName = 'DEM';
-$helperArguments = '"SPY", 20, MovingAverageType.Simple';
+$helperArguments = 'self.symbol, 20, MovingAverageType.Simple';
 $properties = array();
 $updateParameterType = 'a <code>TradeBar</code>, or <code>QuoteBar</code>';
 $constructorArguments = '20, MovingAverageType.Simple';

@@ -5,7 +5,7 @@ include(DOCS_RESOURCES."/qcalgorithm-api/_method_container.html");
 $hasAutomaticIndicatorHelper = true;
 $typeName = 'Sum';
 $helperName = 'SUM';
-$helperArguments = '"SPY", 20';
+$helperArguments = 'self.symbol, 20';
 $properties = array();
 $updateParameterType = 'time/number pair, or an <code>IndicatorDataPoint</code>';
 $constructorArguments = '20';

@@ -5,7 +5,7 @@ include(DOCS_RESOURCES."/qcalgorithm-api/_method_container.html");
 $hasAutomaticIndicatorHelper = true;
 $typeName = 'AverageDirectionalMovementIndexRating';
 $helperName = 'ADXR';
-$helperArguments = '"SPY", 20';
+$helperArguments = 'self.symbol, 20';
 $properties = array("ADX");
 $updateParameterType = 'a <code>TradeBar</code>, or <code>QuoteBar</code>';
 $constructorArguments = '20';

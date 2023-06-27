@@ -5,7 +5,7 @@ include(DOCS_RESOURCES."/qcalgorithm-api/_method_container.html");
 $hasAutomaticIndicatorHelper = true;
 $typeName = 'VolumeProfile';
 $helperName = 'VP';
-$helperArguments = '"SPY", 3, 0.70, 0.05';
+$helperArguments = 'self.symbol, 3, 0.70, 0.05';
 $properties = array("VolumePerPrice","ProfileHigh","ProfileLow","POCPrice","POCVolume","ValueAreaVolume","ValueAreaHigh","ValueAreaLow");
 $updateParameterType = 'a <code>TradeBar</code>';
 $constructorArguments = '3, 0.70, 0.05';

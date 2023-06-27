@@ -5,7 +5,7 @@ include(DOCS_RESOURCES."/qcalgorithm-api/_method_container.html");
 $hasAutomaticIndicatorHelper = true;
 $typeName = 'AbsolutePriceOscillator';
 $helperName = 'APO';
-$helperArguments = '"SPY", 10, 2, MovingAverageType.Simple';
+$helperArguments = 'self.symbol, 10, 2, MovingAverageType.Simple';
 $properties = array("Fast","Slow","Signal","Histogram");
 $updateParameterType = 'time/number pair, or an <code>IndicatorDataPoint</code>';
 $constructorArguments = '10, 2, MovingAverageType.Simple';

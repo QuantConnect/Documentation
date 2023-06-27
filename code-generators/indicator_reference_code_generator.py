@@ -75,7 +75,7 @@ def Generate_Indicators_Reference():
 
             helper = helpers.get(file.stem, {
                 'method': indicator['type-name'], 
-                'arguments': "SPY"
+                'arguments': "symbol"
             } )
 
             arguments = helper['arguments']

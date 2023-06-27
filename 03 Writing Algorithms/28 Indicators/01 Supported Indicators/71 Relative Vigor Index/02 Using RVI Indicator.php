@@ -5,7 +5,7 @@ include(DOCS_RESOURCES."/qcalgorithm-api/_method_container.html");
 $hasAutomaticIndicatorHelper = true;
 $typeName = 'RelativeVigorIndex';
 $helperName = 'RVI';
-$helperArguments = '"SPY", 20, MovingAverageType.Simple';
+$helperArguments = 'self.symbol, 20, MovingAverageType.Simple';
 $properties = array("Signal");
 $updateParameterType = 'a <code>TradeBar</code>, or <code>QuoteBar</code>';
 $constructorArguments = '20, MovingAverageType.Simple';

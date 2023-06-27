@@ -5,7 +5,7 @@ include(DOCS_RESOURCES."/qcalgorithm-api/_method_container.html");
 $hasAutomaticIndicatorHelper = true;
 $typeName = 'ExponentialMovingAverage';
 $helperName = 'EMA';
-$helperArguments = '"SPY", 20, 0.5';
+$helperArguments = 'self.symbol, 20, 0.5';
 $properties = array();
 $updateParameterType = 'time/number pair, or an <code>IndicatorDataPoint</code>';
 $constructorArguments = '20, 0.5';

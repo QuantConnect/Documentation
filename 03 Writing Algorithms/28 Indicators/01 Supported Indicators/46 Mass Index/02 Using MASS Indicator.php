@@ -5,7 +5,7 @@ include(DOCS_RESOURCES."/qcalgorithm-api/_method_container.html");
 $hasAutomaticIndicatorHelper = true;
 $typeName = 'MassIndex';
 $helperName = 'MASS';
-$helperArguments = '"SPY", 9, 25';
+$helperArguments = 'self.symbol, 9, 25';
 $properties = array();
 $updateParameterType = 'a <code>TradeBar</code>';
 $constructorArguments = '9, 25';

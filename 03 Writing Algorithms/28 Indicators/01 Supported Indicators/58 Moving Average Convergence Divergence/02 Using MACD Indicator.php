@@ -5,7 +5,7 @@ include(DOCS_RESOURCES."/qcalgorithm-api/_method_container.html");
 $hasAutomaticIndicatorHelper = true;
 $typeName = 'MovingAverageConvergenceDivergence';
 $helperName = 'MACD';
-$helperArguments = '"SPY", 12, 26, 9, MovingAverageType.Exponential';
+$helperArguments = 'self.symbol, 12, 26, 9, MovingAverageType.Exponential';
 $properties = array("Fast","Slow","Signal","Histogram");
 $updateParameterType = 'time/number pair, or an <code>IndicatorDataPoint</code>';
 $constructorArguments = '12, 26, 9, MovingAverageType.Exponential';
