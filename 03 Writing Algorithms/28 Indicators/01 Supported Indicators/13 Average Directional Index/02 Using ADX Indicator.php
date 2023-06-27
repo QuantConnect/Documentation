@@ -5,7 +5,7 @@ include(DOCS_RESOURCES."/qcalgorithm-api/_method_container.html");
 $hasAutomaticIndicatorHelper = true;
 $typeName = 'AverageDirectionalIndex';
 $helperName = 'ADX';
-$helperArguments = 'self.symbol, 20';
+$helperArguments = 'symbol, 20';
 $properties = array("PositiveDirectionalIndex","NegativeDirectionalIndex");
 $updateParameterType = 'a <code>TradeBar</code>, or <code>QuoteBar</code>';
 $constructorArguments = '20';

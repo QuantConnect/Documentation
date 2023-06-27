@@ -5,7 +5,7 @@ include(DOCS_RESOURCES."/qcalgorithm-api/_method_container.html");
 $hasAutomaticIndicatorHelper = true;
 $typeName = 'RelativeMovingAverage';
 $helperName = 'RMA';
-$helperArguments = 'self.symbol, 20';
+$helperArguments = 'symbol, 20';
 $properties = array("ShortAverage","MediumAverage","LongAverage");
 $updateParameterType = 'time/number pair, or an <code>IndicatorDataPoint</code>';
 $constructorArguments = '20';

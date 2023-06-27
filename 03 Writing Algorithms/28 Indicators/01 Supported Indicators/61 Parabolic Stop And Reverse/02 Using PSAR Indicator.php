@@ -5,7 +5,7 @@ include(DOCS_RESOURCES."/qcalgorithm-api/_method_container.html");
 $hasAutomaticIndicatorHelper = true;
 $typeName = 'ParabolicStopAndReverse';
 $helperName = 'PSAR';
-$helperArguments = 'self.symbol, 0.02, 0.02, 0.2';
+$helperArguments = 'symbol, 0.02, 0.02, 0.2';
 $properties = array();
 $updateParameterType = 'a <code>TradeBar</code>, or <code>QuoteBar</code>';
 $constructorArguments = '0.02, 0.02, 0.2';

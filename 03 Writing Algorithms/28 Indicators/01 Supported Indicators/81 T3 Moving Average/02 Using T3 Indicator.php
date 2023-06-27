@@ -5,7 +5,7 @@ include(DOCS_RESOURCES."/qcalgorithm-api/_method_container.html");
 $hasAutomaticIndicatorHelper = true;
 $typeName = 'T3MovingAverage';
 $helperName = 'T3';
-$helperArguments = 'self.symbol, 30, 0.7';
+$helperArguments = 'symbol, 30, 0.7';
 $properties = array();
 $updateParameterType = 'time/number pair, or an <code>IndicatorDataPoint</code>';
 $constructorArguments = '30, 0.7';

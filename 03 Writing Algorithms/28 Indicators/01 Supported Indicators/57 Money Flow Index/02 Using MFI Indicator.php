@@ -5,7 +5,7 @@ include(DOCS_RESOURCES."/qcalgorithm-api/_method_container.html");
 $hasAutomaticIndicatorHelper = true;
 $typeName = 'MoneyFlowIndex';
 $helperName = 'MFI';
-$helperArguments = 'self.symbol, 20';
+$helperArguments = 'symbol, 20';
 $properties = array("PositiveMoneyFlow","NegativeMoneyFlow","PreviousTypicalPrice");
 $updateParameterType = 'a <code>TradeBar</code>';
 $constructorArguments = '20';

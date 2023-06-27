@@ -5,7 +5,7 @@ include(DOCS_RESOURCES."/qcalgorithm-api/_method_container.html");
 $hasAutomaticIndicatorHelper = true;
 $typeName = 'EaseOfMovementValue';
 $helperName = 'EMV';
-$helperArguments = 'self.symbol, 1, 10000';
+$helperArguments = 'symbol, 1, 10000';
 $properties = array();
 $updateParameterType = 'a <code>TradeBar</code>';
 $constructorArguments = '1, 10000';

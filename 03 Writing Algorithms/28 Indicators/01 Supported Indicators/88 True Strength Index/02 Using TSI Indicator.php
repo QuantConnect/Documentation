@@ -5,7 +5,7 @@ include(DOCS_RESOURCES."/qcalgorithm-api/_method_container.html");
 $hasAutomaticIndicatorHelper = true;
 $typeName = 'TrueStrengthIndex';
 $helperName = 'TSI';
-$helperArguments = 'self.symbol, 25, 13, 7, MovingAverageType.Exponential';
+$helperArguments = 'symbol, 25, 13, 7, MovingAverageType.Exponential';
 $properties = array("Signal");
 $updateParameterType = 'time/number pair, or an <code>IndicatorDataPoint</code>';
 $constructorArguments = '25, 13, 7, MovingAverageType.Exponential';

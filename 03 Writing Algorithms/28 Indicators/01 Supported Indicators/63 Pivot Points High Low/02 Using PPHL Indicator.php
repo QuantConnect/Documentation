@@ -5,7 +5,7 @@ include(DOCS_RESOURCES."/qcalgorithm-api/_method_container.html");
 $hasAutomaticIndicatorHelper = true;
 $typeName = 'PivotPointsHighLow';
 $helperName = 'PPHL';
-$helperArguments = 'self.symbol, 10, 10, 100';
+$helperArguments = 'symbol, 10, 10, 100';
 $properties = array();
 $updateParameterType = 'time/number pair, or an <code>IndicatorDataPoint</code>';
 $constructorArguments = '10, 10, 100';
