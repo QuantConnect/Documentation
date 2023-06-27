@@ -5,7 +5,7 @@ include(DOCS_RESOURCES."/qcalgorithm-api/_method_container.html");
 $hasAutomaticIndicatorHelper = true;
 $typeName = 'ArmsIndex';
 $helperName = 'TRIN';
-$helperArguments = '';
+$helperArguments = '[symbol, Symbol.Create("QQQ", SecurityType.Equity, Market.USA)]';
 $properties = array("ADRatio","ADVRatio");
 $updateParameterType = 'a <code>TradeBar</code>';
 $constructorArguments = '""';

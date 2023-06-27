@@ -5,7 +5,7 @@ include(DOCS_RESOURCES."/qcalgorithm-api/_method_container.html");
 $hasAutomaticIndicatorHelper = true;
 $typeName = 'Beta';
 $helperName = 'B';
-$helperArguments = '';
+$helperArguments = 'Symbol.Create("QQQ", SecurityType.Equity, Market.USA), symbol, 20';
 $properties = array();
 $updateParameterType = 'a <code>TradeBar</code>';
 $constructorArguments = '"", 20, Symbol.Create("QQQ", SecurityType.Equity, Market.USA), Symbol.Create("SPY", SecurityType.Equity, Market.USA)';

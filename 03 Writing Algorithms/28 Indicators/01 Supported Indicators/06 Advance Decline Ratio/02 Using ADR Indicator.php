@@ -5,7 +5,7 @@ include(DOCS_RESOURCES."/qcalgorithm-api/_method_container.html");
 $hasAutomaticIndicatorHelper = true;
 $typeName = 'AdvanceDeclineRatio';
 $helperName = 'ADR';
-$helperArguments = '';
+$helperArguments = '[symbol, Symbol.Create("QQQ", SecurityType.Equity, Market.USA)]';
 $properties = array();
 $updateParameterType = 'a <code>TradeBar</code>';
 $constructorArguments = '""';
