@@ -10,7 +10,7 @@
     public override void Initialize()
     {
         _symbol = AddEquity("SPY", Resolution.Daily).Symbol;
-        _<?=strtolower($helperName)?> = <?=$helperName?>(<?=$helperArguments?>);
+        _<?=strtolower($helperName)?> = <?=$helperName?>(<?=str_replace("symbol", "_symbol", $helperArguments)?>);
     }
 
     public override void OnData(Slice data)
@@ -31,7 +31,7 @@
     <pre class="python">class <?=$typeName?>Algorithm(QCAlgorithm):
     def Initialize(self) -> None:
         self.symbol = self.AddEquity("SPY", Resolution.Daily).Symbol
-        self.<?=strtolower($helperName)?> = self.<?=$helperName?>(<?=$helperArguments?>)
+        self.<?=strtolower($helperName)?> = self.<?=$helperName?>(<?=str_replace("symbol", "self.symbol", $helperArguments)?>)
 
     def OnData(self, slice: Slice) -> None:
         if self.<?=strtolower($helperName)?>.IsReady:
@@ -74,7 +74,7 @@
     public override void Initialize()
     {
         _symbol = AddEquity("SPY", Resolution.Daily).Symbol;
-        _<?=strtolower($helperName)?> = new <?=$typeName?>(<?=$constructorArguments?>);
+        _<?=strtolower($helperName)?> = new <?=$typeName?>(<?=str_replace("symbol", "_symbol", $constructorArguments)?>);
     }
 
     public override void OnData(Slice data)
@@ -100,7 +100,7 @@
     <pre class="python">class <?=$typeName?>Algorithm(QCAlgorithm):
     def Initialize(self) -> None:
         self.symbol = self.AddEquity("SPY", Resolution.Daily).Symbol
-        self.<?=strtolower($helperName)?> = <?=$typeName?>(<?=$constructorArguments?>)
+        self.<?=strtolower($helperName)?> = <?=$typeName?>(<?=str_replace("symbol", "self.symbol", $constructorArguments)?>)
 
     def OnData(self, slice: Slice) -> None:
         bar = slice.Bars.get(self.symbol)
@@ -129,7 +129,7 @@
     public override void Initialize()
     {
         _symbol = AddEquity("SPY", Resolution.Daily).Symbol;
-        _<?=strtolower($helperName)?> = new <?=$typeName?>(<?=$constructorArguments?>);
+        _<?=strtolower($helperName)?> = new <?=$typeName?>(<?=str_replace("symbol", "_symbol", $constructorArguments)?>);
         RegisterIndicator(_symbol, _<?=strtolower($helperName)?>, Resolution.Daily);
     }
 
@@ -151,7 +151,7 @@
     <pre class="python">class <?=$typeName?>Algorithm(QCAlgorithm):
     def Initialize(self) -> None:
         self.symbol = self.AddEquity("SPY", Resolution.Daily).Symbol
-        self.<?=strtolower($helperName)?> = <?=$typeName?>(<?=$constructorArguments?>)
+        self.<?=strtolower($helperName)?> = <?=$typeName?>(<?=str_replace("symbol", "self.symbol", $constructorArguments)?>)
         self.RegisterIndicator(self.symbol, self.<?=strtolower($helperName)?>, Resolution.Daily)
 
     def OnData(self, slice: Slice) -> None:
