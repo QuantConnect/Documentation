@@ -77,6 +77,7 @@ def BreadCrumb(all: dict, section: str, name: str) -> str:
 def Generate(branch: Union[dict, list], this_section: str) -> Tuple[str, str]:
     global sections
     html = ""
+    large_topic = False
     
     if isinstance(branch, list):
         for element in branch:
@@ -86,6 +87,7 @@ def Generate(branch: Union[dict, list], this_section: str) -> Tuple[str, str]:
     elif isinstance(branch, dict):
         # unwanted files
         if 'name' in branch and branch['name'].strip() and ".json" not in branch['name']:
+            large_topic = True
             # indent depth is identified by file depth, subtract base level
             indent = len([x for x in branch["filePath"].split("/") if x]) - 1
             this_section = SectionNumber(indent, this_section)
@@ -93,9 +95,16 @@ def Generate(branch: Union[dict, list], this_section: str) -> Tuple[str, str]:
             if all(x not in this_section for x in EXCLUSIONS):
                 sections[this_section] = branch['name']
             breadcrumb = BreadCrumb(sections, this_section, branch['name'])
-            html += f"""<p class='page-breadcrumb'>{breadcrumb}</p>
-<section id="{this_section}"><h1 class='page-heading'>{this_section} {branch['name']}</h1></section>
-
+            subtopic = len(breadcrumb.split(" > ")) >= 2
+            html += f"""<div class="container">
+    <p class='page-breadcrumb'>{breadcrumb}</p>
+    <div class='page-heading'>
+        <section id="{this_section}">
+            <h1>{breadcrumb.split(" > ")[-2] if subtopic else branch['name']}</h1>
+            {"<h2>" + branch['name'] + "</h2>" if subtopic else ""               }
+        </section>
+    </div>
+    <div class='page-content'>
 """
         if branch["hasContent"] and ".json" not in branch['name']:
             contents = branch["contents"]
@@ -120,6 +129,11 @@ def Generate(branch: Union[dict, list], this_section: str) -> Tuple[str, str]:
             subbranch = subbranch if isinstance(subbranch, list) else list(subbranch.values())
             content, this_section = Generate(subbranch, this_section)
             html += content
+            
+        if large_topic:
+            large_topic = False
+            html += """   </div>
+</div>"""
 
     return html, this_section
 
