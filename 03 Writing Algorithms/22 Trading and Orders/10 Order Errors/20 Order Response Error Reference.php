@@ -30,7 +30,7 @@
 <pre class="python">self.Settings.FreePortfolioValuePercentage = 0.05</pre>
 </div>
 
-
+<p>To avoid this order response error for non-Option trades, <a href='/docs/v2/writing-algorithms/reality-modeling/buying-power#13-Get-Initial-Margin-Requirements'>ensure you have enough margin remaining to cover the initial margin requirements</a> of the order before placing it.</p>
 
 <h4>Brokerage Model Refused to Submit Order</h4>
 <p>The <code>OrderResponseErrorCode.BrokerageModelRefusedToSubmitOrder</code> (-4) error occurs when you place an order but the <a href='/docs/v2/writing-algorithms/reality-modeling/brokerages/key-concepts'>brokerage model</a> determines it's invalid. The brokerage model usually checks your order meets the following requirements before sending it to the brokerage:</p>
