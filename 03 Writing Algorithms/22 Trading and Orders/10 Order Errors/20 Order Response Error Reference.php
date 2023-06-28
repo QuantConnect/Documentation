@@ -23,14 +23,14 @@
 <h4>Insufficient Buying Power</h4>
 <p>The <code>OrderResponseErrorCode.InsufficientBuyingPower</code> (-3) error occurs when you place an order but the <a href='/docs/v2/writing-algorithms/reality-modeling/buying-power'>buying power model</a> determines you can't afford it.</p>
 
-<p>This error commonly occurs when you place a market on open order with daily data. If you place the order with <code>SetHoldings</code> or use <code>CalculateOrderQuantity</code> to determine the order quantity, LEAN calculates the order quantity based on the market close price. If the open price on the following day makes your order more expensive, then you may have insufficient buying power. To avoid the order response error in this case, either use intraday data and place trades when the market is open or <a href='/docs/v2/writing-algorithms/trading-and-orders/position-sizing#05-Buying-Power-Buffer'>adjust your buying power buffer</a>.</p>
+<p>To avoid this order response error for non-Option trades, <a href='/docs/v2/writing-algorithms/reality-modeling/buying-power#13-Get-Initial-Margin-Requirements'>ensure you have enough margin remaining to cover the initial margin requirements</a> of the order before placing it.</p>
+
+<p>This error also commonly occurs when you place a market on open order with daily data. If you place the order with <code>SetHoldings</code> or use <code>CalculateOrderQuantity</code> to determine the order quantity, LEAN calculates the order quantity based on the market close price. If the open price on the following day makes your order more expensive, then you may have insufficient buying power. To avoid the order response error in this case, either use intraday data and place trades when the market is open or <a href='/docs/v2/writing-algorithms/trading-and-orders/position-sizing#05-Buying-Power-Buffer'>adjust your buying power buffer</a>.</p>
 
 <a id='brokerage-model-refused-to-submit-order'></a><div class="section-example-container">
 <pre class="csharp">Settings.FreePortfolioValuePercentage = 0.05m;</pre>
 <pre class="python">self.Settings.FreePortfolioValuePercentage = 0.05</pre>
 </div>
-
-<p>To avoid this order response error for non-Option trades, <a href='/docs/v2/writing-algorithms/reality-modeling/buying-power#13-Get-Initial-Margin-Requirements'>ensure you have enough margin remaining to cover the initial margin requirements</a> of the order before placing it.</p>
 
 <h4>Brokerage Model Refused to Submit Order</h4>
 <p>The <code>OrderResponseErrorCode.BrokerageModelRefusedToSubmitOrder</code> (-4) error occurs when you place an order but the <a href='/docs/v2/writing-algorithms/reality-modeling/brokerages/key-concepts'>brokerage model</a> determines it's invalid. The brokerage model usually checks your order meets the following requirements before sending it to the brokerage:</p>
