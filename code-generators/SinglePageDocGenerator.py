@@ -207,7 +207,7 @@ def CoverPageAndTableOfContentGeneration(topic: str) -> str:
         base64_img = base64.b64encode(open(img_path, 'rb').read()).decode()
         cover_page = cover_page.replace(img_url, f'data:;base64,{base64_img}')
     
-    return f"""{main_cover}
+    return f"""{main_cover}{PAGE_BREAKER}
 {cover_page}
 {PAGE_BREAKER}
 <h3>Table of Content</h3>
