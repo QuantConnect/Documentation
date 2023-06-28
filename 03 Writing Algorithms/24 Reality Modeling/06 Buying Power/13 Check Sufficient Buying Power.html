@@ -1,0 +1,34 @@
+<p>By <code>GetInitialMarginRequirement</code> method in the buying power model, you can check if you have sufficient margin remaining to initiate an order before ordering, avoiding untracked invalid orders and unexpected risk.</p>
+
+<p>Follow the below steps to set up margin check:</p>
+<ol>
+    <li>Create a <code>InitialMarginParameters</code> class object with the security and its quantity to be traded.</li>
+    <div class="section-example-container">
+        <pre class="csharp">var parameter = new InitialMarginParameters(security, quantity);</pre>
+        <pre class="python">parameter = InitialMarginParameters(security, quantity)</pre>
+    </div>
+
+    <li>Call <code>GetInitialMarginRequirement</code> method of the security's buying power model with the <code>InitialMarginParameters</code>. Obtain the <code>Value</code> property.</li>
+    <div class="section-example-container">
+        <pre class="csharp">var initialMarginRequirement = security.BuyingPowerModel.GetInitialMarginRequirement(parameter);
+var initialMargin = initialMarginRequirement.Value;</pre>
+        <pre class="python">initial_margin_requirement = security.BuyingPowerModel.GetInitialMarginRequirement(parameter)
+initial_margin = initial_margin_requirement.Value</pre>
+    </div>
+
+    <li>Check if the margin remaining sufficient to initiate the order.</li>
+    <div class="section-example-container">
+        <pre class="csharp">if (Portfolio.MarginRemaining >= initialMargin)
+{
+    MarketOrder(security.Symbol, quantity);
+}
+else
+{
+    Debug("Margin remains is less than the initial margin required!");
+}</pre>
+        <pre class="python">if self.Portfolio.MarginRemaining >= initial_margin:
+    self.MarketOrder(security.Symbol, quantity)
+else:
+    self.Debug("Margin remains is less than the initial margin required!")</pre>
+    </div>
+</ol>
