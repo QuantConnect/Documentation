@@ -77,7 +77,6 @@ def BreadCrumb(all: dict, section: str, name: str) -> str:
 def Generate(branch: Union[dict, list], this_section: str) -> Tuple[str, str]:
     global sections
     html = ""
-    large_topic = False
     
     if isinstance(branch, list):
         for element in branch:
@@ -87,7 +86,6 @@ def Generate(branch: Union[dict, list], this_section: str) -> Tuple[str, str]:
     elif isinstance(branch, dict):
         # unwanted files
         if 'name' in branch and branch['name'].strip() and ".json" not in branch['name']:
-            large_topic = True
             # indent depth is identified by file depth, subtract base level
             indent = len([x for x in branch["filePath"].split("/") if x]) - 1
             this_section = SectionNumber(indent, this_section)
@@ -96,15 +94,13 @@ def Generate(branch: Union[dict, list], this_section: str) -> Tuple[str, str]:
                 sections[this_section] = branch['name']
             breadcrumb = BreadCrumb(sections, this_section, branch['name'])
             subtopic = len(breadcrumb.split(" > ")) >= 2
-            html += f"""<div class="container">
-    <p class='page-breadcrumb'>{breadcrumb}</p>
-    <div class='page-heading'>
-        <section id="{this_section}">
-            <h1>{breadcrumb.split(" > ")[-2] if subtopic else branch['name']}</h1>
-            {"<h2>" + branch['name'] + "</h2>" if subtopic else ""               }
-        </section>
-    </div>
-    <div class='page-content'>
+            html += f"""<p class='page-breadcrumb'>{breadcrumb}</p>
+<div class='page-heading'>
+    <section id="{this_section}">
+        <h1>{breadcrumb.split(" > ")[-2] if subtopic else branch['name']}</h1>
+        {"<h2>" + branch['name'] + "</h2>" if subtopic else ""}
+    </section>
+</div>
 """
         if branch["hasContent"] and ".json" not in branch['name']:
             contents = branch["contents"]
@@ -115,8 +111,10 @@ def Generate(branch: Union[dict, list], this_section: str) -> Tuple[str, str]:
 """
                 # Completion of links
                 c = f"""{content['content'].strip().replace("a href='/docs/v2", "a href='https://www.quantconnect.com/docs/v2/").replace('a href="/docs/v2', 'a href="https://www.quantconnect.com/docs/v2/').replace('a href=/docs/v2', 'a href=https://www.quantconnect.com/docs/v2/').replace('a href="/', 'a href="https://www.quantconnect.com/').replace("a href='/", "a href='https://www.quantconnect.com/").replace("a href=/", "a href=https://www.quantconnect.com/")}"""
-                # fix any html unclosed tags
+                # fix any html unclosed tags and hided details
                 soup = BeautifulSoup(c, features="lxml")
+                for x in soup.find_all("div", {"class": "method-details"}):
+                    x["style"] = x["style"].replace("display: none", "display: block")
                 html += f"""{soup.prettify()}
 """
 
@@ -129,11 +127,6 @@ def Generate(branch: Union[dict, list], this_section: str) -> Tuple[str, str]:
             subbranch = subbranch if isinstance(subbranch, list) else list(subbranch.values())
             content, this_section = Generate(subbranch, this_section)
             html += content
-            
-        if large_topic:
-            large_topic = False
-            html += """   </div>
-</div>"""
 
     return html, this_section
 
@@ -205,6 +198,7 @@ def ModifySectionPointer(content: str, name: str) -> str:
 def CoverPageAndTableOfContentGeneration(topic: str) -> str:
     global sections
     linebreaker = "\n"
+    main_cover = open(f'{COVER_PAGE_DIR}/main-cover.html', 'r', encoding='utf-8').read()
     cover_page = open(f'{COVER_PAGE_DIR}/{topic.lower().replace(" ", "-")}.html', 'r', encoding='utf-8').read()
     
     # convert image to base64
@@ -213,7 +207,8 @@ def CoverPageAndTableOfContentGeneration(topic: str) -> str:
         base64_img = base64.b64encode(open(img_path, 'rb').read()).decode()
         cover_page = cover_page.replace(img_url, f'data:;base64,{base64_img}')
     
-    return f"""{cover_page}
+    return f"""{main_cover}
+{cover_page}
 {PAGE_BREAKER}
 <h3>Table of Content</h3>
 <nav>
