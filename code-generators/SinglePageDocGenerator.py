@@ -6,10 +6,12 @@ import os
 from pathlib import Path
 import pdfkit
 from PIL import Image
+import re
 import sys
 import time
 from typing import Union, Tuple, List
 from urllib.request import urlopen, urlretrieve
+from wand.image import Image as WandImage
 
 SOURCE_URL = "https://s3.amazonaws.com/cdn.quantconnect.com/web/cache"
 DESTINATION_PATH = "single-page"
@@ -91,9 +93,14 @@ def Generate(branch: Union[dict, list], this_section: str) -> Tuple[str, str]:
             if all(x not in this_section for x in EXCLUSIONS):
                 sections[this_section] = branch['name']
             breadcrumb = BreadCrumb(sections, this_section, branch['name'])
+            subtopic = len(breadcrumb.split(" > ")) >= 2
             html += f"""<p class='page-breadcrumb'>{breadcrumb}</p>
-<section id="{this_section}"><h1 class='page-heading'>{this_section} {branch['name']}</h1></section>
-
+<div class='page-heading'>
+    <section id="{this_section}">
+        <h1>{breadcrumb.split(" > ")[-2] if subtopic else branch['name']}</h1>
+        {"<h2>" + branch['name'] + "</h2>" if subtopic else ""}
+    </section>
+</div>
 """
         if branch["hasContent"] and ".json" not in branch['name']:
             contents = branch["contents"]
@@ -104,8 +111,10 @@ def Generate(branch: Union[dict, list], this_section: str) -> Tuple[str, str]:
 """
                 # Completion of links
                 c = f"""{content['content'].strip().replace("a href='/docs/v2", "a href='https://www.quantconnect.com/docs/v2/").replace('a href="/docs/v2', 'a href="https://www.quantconnect.com/docs/v2/').replace('a href=/docs/v2', 'a href=https://www.quantconnect.com/docs/v2/').replace('a href="/', 'a href="https://www.quantconnect.com/').replace("a href='/", "a href='https://www.quantconnect.com/").replace("a href=/", "a href=https://www.quantconnect.com/")}"""
-                # fix any html unclosed tags
+                # fix any html unclosed tags and hided details
                 soup = BeautifulSoup(c, features="lxml")
+                for x in soup.find_all("div", {"class": "method-details"}):
+                    x["style"] = x["style"].replace("display: none", "display: block")
                 html += f"""{soup.prettify()}
 """
 
@@ -132,22 +141,9 @@ def Knit(content: list, name: str) -> str:
         images = ExtractImage(content)
         for img_url, img_path in images.items():
             base64_img = base64.b64encode(open(img_path, 'rb').read()).decode()
-            content = content.replace(img_url, f'data:;base64,{base64_img}')
+            content = content.replace(img_url, f'data:image/{img_path.split(".")[-1]};base64,{base64_img}')
             
-        # Point to section in document if in the same section
-        section_num = list(sections.keys())
-        names = list([x.lower() for x in sections.values()])
-        replacement = {}
-        soup = BeautifulSoup(content, features="lxml")
-        for x in soup.findAll('a'):
-            if "href" in x and (f"https://www.quantconnect.com/docs/v2/{name.lower().replace(' ', '-')}" in x["href"] or f"https://www.quantconnect.com/docs/v2//{name.lower().replace(' ', '-')}" in x["href"]):
-                section = [y.split("#")[0].replace('-', ' ').lower().strip() for y in x["href"].split(name.lower().replace(' ', '-'))[-1].split("/")]
-                for subsection in section:
-                    if subsection in names:
-                        replacement[x["href"]] = section_num[names.index(subsection)]
-        for link, num in replacement.items():
-            content = content.replace(link, f'#{num}')
-        
+        content = ModifySectionPointer(content, name)
         html += content
         
         print(f"Knit(): Knitted documentation content for {name} successfully.")
@@ -156,9 +152,53 @@ def Knit(content: list, name: str) -> str:
     except Exception as e:
         raise Exception(f"Knit(): Unable to knit documentation content - {e}")
     
+def ModifySectionPointer(content: str, name: str) -> str:
+    global sections
+    # Point to section in document if in the same section
+    section_num = list(sections.keys())
+    names = list([x.lower() for x in sections.values()])
+    replacement = {}
+    soup = BeautifulSoup(content, features="lxml")
+    
+    for x in soup.findAll('a'):
+        try:
+            if f"https://www.quantconnect.com/docs/v2/{name.lower().replace(' ', '-')}" in x["href"] or f"https://www.quantconnect.com/docs/v2//{name.lower().replace(' ', '-')}" in x["href"]:
+                section = [y.replace('-', ' ').lower().strip() for y in re.split('/|#', x["href"].split(name.lower().replace(' ', '-'))[-1])]
+                # rundown the section number list by subsection in url
+                subnames = names; c = 0
+                for subsection in section:
+                    if subsection in subnames:
+                        ind = subnames.index(subsection)
+                        replacement[x["href"]] = f'#{section_num[c+ind]}'
+                        c = ind+1
+                        subnames = names[c:]
+        except:
+            pass       # no "href" in tag "a"
+        
+    for x in soup.find_all("div", {"class": "content clickable"}):
+        try:
+            if f"window.location.href = '/docs/v2/{name.lower().replace(' ', '-')}" in x["onclick"]:
+                section = [y.replace('-', ' ').lower().strip() for y in re.split('/|#', x["onclick"].split(name.lower().replace(' ', '-'))[-1][:-1])]
+                # rundown the section number list by subsection in url
+                subnames = names; c = 0
+                for subsection in section:
+                    if subsection in subnames:
+                        ind = subnames.index(subsection)
+                        replacement[x["onclick"]] = f"window.location.href = '#{section_num[c+ind]}'"
+                        c = ind+1
+                        subnames = names[c:]
+        except:
+            pass       # no "onclick" in tag
+        
+    for link, num in replacement.items():
+        content = content.replace(link, num)
+        
+    return content
+    
 def CoverPageAndTableOfContentGeneration(topic: str) -> str:
     global sections
     linebreaker = "\n"
+    main_cover = open(f'{COVER_PAGE_DIR}/main-cover.html', 'r', encoding='utf-8').read()
     cover_page = open(f'{COVER_PAGE_DIR}/{topic.lower().replace(" ", "-")}.html', 'r', encoding='utf-8').read()
     
     # convert image to base64
@@ -167,7 +207,8 @@ def CoverPageAndTableOfContentGeneration(topic: str) -> str:
         base64_img = base64.b64encode(open(img_path, 'rb').read()).decode()
         cover_page = cover_page.replace(img_url, f'data:;base64,{base64_img}')
     
-    return f"""{cover_page}
+    return f"""{main_cover}{PAGE_BREAKER}
+{cover_page}
 {PAGE_BREAKER}
 <h3>Table of Content</h3>
 <nav>
@@ -195,8 +236,7 @@ def WriteToHtmlFile(content: str, name: str) -> Path:
 def PdfConversion(html_path: Union[Path, str], language: str, css: Union[str, List[str]] = None) -> None:
     try:
         pdf_name = f'{str(html_path)[:-5]}-{"CSharp" if language == "csharp" else "Python"}.pdf'
-        options = {'enable-local-file-access': None}
-        pdfkit.from_file(str(html_path), pdf_name, options=options, css=f'{css}/pdf-styles-{language}.css')
+        pdfkit.from_file(str(html_path), pdf_name, css=f'{css}/pdf-styles-{language}.css')
         print(f"PdfConversion(): Successfully converting {html_path} to {pdf_name}")
     except Exception as e:
         # Do not break with raising exceptions in case due to warnings
@@ -217,11 +257,14 @@ def ExtractImage(content: str) -> dict:
                 if url.endswith('.webp'):
                     # Convert the webp image to PNG
                     png_path = path.replace("webp", "png")
-                    image = Image.open(path).convert("RGB")
+                    image = Image.open(path).convert("RGBA")
                     image.save(png_path, "png")
-
-                    # Update the image source to the relative PNG path
-                    path = png_path
+                    
+                elif url.endswith('.svg'):
+                    with WandImage(filename=path) as img:
+                        with img.convert('png') as output_img:
+                            png_path = path.lower().replace("svg", "png")
+                            output_img.save(filename=png_path)
                 
                 # to avoid libpng warning: iCCP: known incorrect sRGB profile
                 if path.lower().endswith('.png'):
@@ -229,7 +272,11 @@ def ExtractImage(content: str) -> dict:
                     if 'icc_profile' in img.info:
                         del img.info['icc_profile']
                         img.save(path)
-                    
+                        
+            if path.lower().endswith('.svg') or path.lower().endswith('.webp'):
+                # Update the image source to the relative PNG path
+                path = f'{".".join(path.split(".")[:-1])}.png'
+            
             conversions[url] = path
             
         except Exception as e:
