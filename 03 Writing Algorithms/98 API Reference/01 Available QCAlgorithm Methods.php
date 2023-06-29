@@ -19,6 +19,7 @@
     <button id="Parameter and Optimization_button" class="tablinks" onclick="openTab(event, 'Parameter and Optimization')">Parameter and Optimization</button>
     <button id="Scheduled Events_button" class="tablinks" onclick="openTab(event, 'Scheduled Events')">Scheduled Events</button>
     <button id="Securities and Portfolio_button" class="tablinks" onclick="openTab(event, 'Securities and Portfolio')">Securities and Portfolio</button>
+    <button id="Statistics_button" class="tablinks" onclick="openTab(event, 'Statistics')">Statistics</button>
     <button id="Trading and Orders_button" class="tablinks" onclick="openTab(event, 'Trading and Orders')">Trading and Orders</button>
     <button id="Universes_button" class="tablinks" onclick="openTab(event, 'Universes')">Universes</button>
   </div>
@@ -262,6 +263,10 @@
 <tr>
 <td width="33%"><a href="#DEMA-header">DEMA()</a></td>
 <td>Creates a new DoubleExponentialMovingAverage indicator.</td>
+</tr>
+<tr>
+<td width="33%"><a href="#DeregisterIndicator-header">DeregisterIndicator()</a></td>
+<td>Will deregister an indicator and it's associated consolidator instance so they stop receiving data updates.</td>
 </tr>
 <tr>
 <td width="33%"><a href="#Download-header">Download()</a></td>
@@ -513,7 +518,7 @@
 </tr>
 <tr>
 <td width="33%"><a href="#Plot-header">Plot()</a></td>
-<td>Plot a chart to string chart name, using string series name, with int value.</td>
+<td>Plot a chart using string series name, with double value.</td>
 </tr>
 <tr>
 <td width="33%"><a href="#PlotIndicator-header">PlotIndicator()</a></td>
@@ -545,7 +550,7 @@
 </tr>
 <tr>
 <td width="33%"><a href="#Record-header">Record()</a></td>
-<td>Plot a chart using string series name, with int value. Alias of Plot();.</td>
+<td>Plot a chart using string series name, with double value. Alias of Plot();.</td>
 </tr>
 <tr>
 <td width="33%"><a href="#RegisterIndicator-header">RegisterIndicator()</a></td>
@@ -597,7 +602,7 @@
 </tr>
 <tr>
 <td width="33%"><a href="#SetAccountCurrency-header">SetAccountCurrency()</a></td>
-<td>Sets the account currency cash symbol this algorithm is to manage.</td>
+<td>Sets the account currency cash symbol this algorithm is to manage, as well as the starting cash in this currency if given.</td>
 </tr>
 <tr>
 <td width="33%"><a href="#SetAlpha-header">SetAlpha()</a></td>
@@ -686,6 +691,14 @@
 <tr>
 <td width="33%"><a href="#SetStartDate-header">SetStartDate()</a></td>
 <td>Set the start date for backtest.</td>
+</tr>
+<tr>
+<td width="33%"><a href="#SetStatisticsService-header">SetStatisticsService()</a></td>
+<td>Sets the statistics service instance to be used by the algorithm.</td>
+</tr>
+<tr>
+<td width="33%"><a href="#SetSummaryStatistic-header">SetSummaryStatistic()</a></td>
+<td>Set a custom summary statistic for the algorithm.</td>
 </tr>
 <tr>
 <td width="33%"><a href="#SetTimeZone-header">SetTimeZone()</a></td>
@@ -780,6 +793,10 @@
 <td>Creates a new TripleExponentialMovingAverage indicator.</td>
 </tr>
 <tr>
+<td width="33%"><a href="#Ticker-header">Ticker()</a></td>
+<td>For the given symbol will resolve the ticker it used at the current algorithm date.</td>
+</tr>
+<tr>
 <td width="33%"><a href="#TP-header">TP()</a></td>
 <td>Creates an Market Profile indicator for the symbol with Time Price Opportunity (TPO) mode. The indicator will be automatically updated on the given resolution.</td>
 </tr>
@@ -810,6 +827,10 @@
 <tr>
 <td width="33%"><a href="#ULTOSC-header">ULTOSC()</a></td>
 <td>Creates a new UltimateOscillator indicator.</td>
+</tr>
+<tr>
+<td width="33%"><a href="#UnregisterIndicator-header">UnregisterIndicator()</a></td>
+<td>Will unregister an indicator and it's associated consolidator instance so they stop receiving data updates.</td>
 </tr>
 <tr>
 <td width="33%"><a href="#VAR-header">VAR()</a></td>
@@ -935,6 +956,10 @@
 <td width="33%"><a href="#Symbol-header">Symbol()</a></td>
 <td>Converts the string 'ticker' symbol into a full <code>Symbol</code> object This requires that the string 'ticker' has been added to the algorithm.</td>
 </tr>
+<tr>
+<td width="33%"><a href="#Ticker-header">Ticker()</a></td>
+<td>For the given symbol will resolve the ticker it used at the current algorithm date.</td>
+</tr>
 </tbody></table>
 </div><div id="Algorithm Framework" class="ref-table-container">
 <table cellspacing="0" cellpadding="0">
@@ -1005,7 +1030,7 @@
 </tr>
 <tr>
 <td width="33%"><a href="#Plot-header">Plot()</a></td>
-<td>Plot a chart to string chart name, using string series name, with int value.</td>
+<td>Plot a chart using string series name, with double value.</td>
 </tr>
 <tr>
 <td width="33%"><a href="#PlotIndicator-header">PlotIndicator()</a></td>
@@ -1013,7 +1038,7 @@
 </tr>
 <tr>
 <td width="33%"><a href="#Record-header">Record()</a></td>
-<td>Plot a chart using string series name, with int value. Alias of Plot();.</td>
+<td>Plot a chart using string series name, with double value. Alias of Plot();.</td>
 </tr>
 <tr>
 <td width="33%"><a href="#SetRuntimeStatistic-header">SetRuntimeStatistic()</a></td>
@@ -1038,6 +1063,10 @@
 <tr>
 <td width="33%"><a href="#ResolveConsolidator-header">ResolveConsolidator()</a></td>
 <td>Gets the default consolidator for the specified symbol and resolution.</td>
+</tr>
+<tr>
+<td width="33%"><a href="#UnregisterIndicator-header">UnregisterIndicator()</a></td>
+<td>Will unregister an indicator and it's associated consolidator instance so they stop receiving data updates.</td>
 </tr>
 </tbody></table>
 </div><div id="Handling Data" class="ref-table-container">
@@ -1118,6 +1147,10 @@
 <tr>
 <td width="33%"><a href="#Symbol-header">Symbol()</a></td>
 <td>Converts the string 'ticker' symbol into a full <code>Symbol</code> object This requires that the string 'ticker' has been added to the algorithm.</td>
+</tr>
+<tr>
+<td width="33%"><a href="#Ticker-header">Ticker()</a></td>
+<td>For the given symbol will resolve the ticker it used at the current algorithm date.</td>
 </tr>
 </tbody></table>
 </div><div id="Historical Data" class="ref-table-container">
@@ -1516,6 +1549,10 @@
 <td>Creates a new UltimateOscillator indicator.</td>
 </tr>
 <tr>
+<td width="33%"><a href="#UnregisterIndicator-header">UnregisterIndicator()</a></td>
+<td>Will unregister an indicator and it's associated consolidator instance so they stop receiving data updates.</td>
+</tr>
+<tr>
 <td width="33%"><a href="#VAR-header">VAR()</a></td>
 <td>Creates a new Variance indicator. This will return the population variance of samples over the specified period.</td>
 </tr>
@@ -1661,7 +1698,7 @@
 </tr>
 <tr>
 <td width="33%"><a href="#SetAccountCurrency-header">SetAccountCurrency()</a></td>
-<td>Sets the account currency cash symbol this algorithm is to manage.</td>
+<td>Sets the account currency cash symbol this algorithm is to manage, as well as the starting cash in this currency if given.</td>
 </tr>
 <tr>
 <td width="33%"><a href="#SetBenchmark-header">SetBenchmark()</a></td>
@@ -1670,6 +1707,14 @@
 <tr>
 <td width="33%"><a href="#SetCash-header">SetCash()</a></td>
 <td>Set initial cash for the strategy while backtesting. During live mode this value is ignored and replaced with the actual cash of your brokerage account.</td>
+</tr>
+</tbody></table>
+</div><div id="Statistics" class="ref-table-container">
+<table cellspacing="0" cellpadding="0">
+<tbody>
+<tr>
+<td width="33%"><a href="#SetSummaryStatistic-header">SetSummaryStatistic()</a></td>
+<td>Set a custom summary statistic for the algorithm.</td>
 </tr>
 </tbody></table>
 </div><div id="Trading and Orders" class="ref-table-container">
