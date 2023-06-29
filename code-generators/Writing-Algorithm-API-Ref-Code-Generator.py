@@ -103,7 +103,7 @@ def get_indicators_constructor(full_name: str) -> list:
                 value = param.get("IsOptional")
                 if value:
                     param["IsOptional"] = True
-                    description = f"<span class='qualifier'>(Optional)</span> {description} Default: {value}"
+                    description = f"{description} Default: {value}"
 
                 param["Description"] = description
                 overload["Parameters"].insert(0,param)
