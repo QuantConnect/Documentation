@@ -1,8 +1,6 @@
 import os
-from re import findall
 from typing import List, Dict
 from pathlib import Path
-from shutil import rmtree
 from _code_generation_helpers import *
 from indicator_reference_code_generator import Generate_Indicators_Reference
 
@@ -516,7 +514,6 @@ def Generate_QCAlgorithm_API_Reference():
     # Generate Box for each Indicator
     # -------------------------------
     path = Path('Resources/indicators/constructors')
-    rmtree(path, ignore_errors=True)
     path.mkdir(parents=True, exist_ok=True)
 
     for overloads in methods.values():
@@ -545,5 +542,5 @@ def Generate_QCAlgorithm_API_Reference():
             fp.write(html + '</div>')
 
 if __name__ == '__main__':
-    Generate_QCAlgorithm_API_Reference()
     Generate_Indicators_Reference()
+    Generate_QCAlgorithm_API_Reference()
