@@ -146,6 +146,7 @@ echo file_get_contents(DOCS_RESOURCES."/qcalgorithm-api/rvi.html");
 echo file_get_contents(DOCS_RESOURCES."/qcalgorithm-api/sedol.html");
 echo file_get_contents(DOCS_RESOURCES."/qcalgorithm-api/sell.html");
 echo file_get_contents(DOCS_RESOURCES."/qcalgorithm-api/set-account-currency.html");
+echo file_get_contents(DOCS_RESOURCES."/qcalgorithm-api/set-algorithm-mode.html");
 echo file_get_contents(DOCS_RESOURCES."/qcalgorithm-api/set-alpha.html");
 echo file_get_contents(DOCS_RESOURCES."/qcalgorithm-api/set-api.html");
 echo file_get_contents(DOCS_RESOURCES."/qcalgorithm-api/set-benchmark.html");
@@ -153,6 +154,7 @@ echo file_get_contents(DOCS_RESOURCES."/qcalgorithm-api/set-brokerage-message-ha
 echo file_get_contents(DOCS_RESOURCES."/qcalgorithm-api/set-brokerage-model.html");
 echo file_get_contents(DOCS_RESOURCES."/qcalgorithm-api/set-cash.html");
 echo file_get_contents(DOCS_RESOURCES."/qcalgorithm-api/set-current-slice.html");
+echo file_get_contents(DOCS_RESOURCES."/qcalgorithm-api/set-deployment-target.html");
 echo file_get_contents(DOCS_RESOURCES."/qcalgorithm-api/set-end-date.html");
 echo file_get_contents(DOCS_RESOURCES."/qcalgorithm-api/set-execution.html");
 echo file_get_contents(DOCS_RESOURCES."/qcalgorithm-api/set-future-chain-provider.html");
