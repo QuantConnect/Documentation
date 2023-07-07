@@ -3,5 +3,5 @@
 <? 
 $pageName = "live trading";
 include(DOCS_RESOURCES."/algorithm-results/runtime-statistics-table.php");
-include(DOCS_RESOURCES."/algorithm-results/create-custom-runtime-statistic.html"); 
+include(DOCS_RESOURCES."/algorithm-results/create-custom-runtime-statistic.php"); 
 ?>
