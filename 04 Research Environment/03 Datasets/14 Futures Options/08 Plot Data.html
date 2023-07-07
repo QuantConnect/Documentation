@@ -1,6 +1,3 @@
-<p class="csharp">Jupyter Notebooks don't currently support libraries to plot historical data, but we are working on adding the functionality. Until we add the functionality, use Python to plot historical Future Options data.</p>
-
-<div class="python">
 <p>You need to <a href="/docs/v2/research-environment/datasets/futures-options#04-Get-Historical-Data">get some historical Future Options data</a> to plot it. You can use many of the <a href="/docs/v2/research-environment/charting">supported plotting libraries</a> to visualize data in various formats. For example, you can plot candlestick and line charts.</p>
 
 <h4>Candlestick Chart</h4>
@@ -61,12 +58,12 @@ layout.SetValue("title", title);</pre>
 
     <li class="python">Create the <code>Figure</code>.<br></li>
     <div class="python section-example-container">
-        <pre>fig = go.Figure(data=[candlestick], layout=layout)</pre>
+        <pre class='python'>fig = go.Figure(data=[candlestick], layout=layout)</pre>
     </div>
 
     <li class="csharp">Assign the <code>Layout</code> to the chart.<br></li>
     <div class="csharp section-example-container">
-        <pre>chart.WithLayout(layout);</pre>
+        <pre class='csharp'>chart.WithLayout(layout);</pre>
     </div>
 
     <li>Show the <code>Figure</code>.<br></li>
@@ -81,31 +78,31 @@ layout.SetValue("title", title);</pre>
 <img class="csharp docs-image" src="https://cdn.quantconnect.com/i/tu/fop-candlestick-plot-csharp.png" alt="Candlestick plot of Future Option contract OHLC">
 
 <h4>Line Chart</h4>
-<p>Follow these steps to plot line charts using <span class="python">built-in methods</span><span class="csharp"><code>Plotly.NET</code> package</span>:</p>
+<p>Follow these steps to plot line charts:</p>
 
 <ol>
     <li class="python">Get some historical data.</li>
-    <div class="section-example-container">
+    <div class="python section-example-container">
         <pre class="python">history = qb.History(fop_contract_symbols[:5], datetime(2021, 12, 2), datetime(2021, 12, 30), Resolution.Daily)</pre>
     </div>
 
     <li class="python">Drop the first three index levels of the returned <code>pandas.DataFrame</code>.</li>
-    <div class="section-example-container">
+    <div class="python section-example-container">
         <pre class="python">history.index = history.index.droplevel([0,1,2])</pre>
     </div>
 
     <li class="python">Select the data to plot.</li>
-    <div class="section-example-container">
+    <div class="python section-example-container">
         <pre class="python">closes = history['close'].unstack(level=0)</pre>
     </div>
 
     <li class="python">Call the <code>plot</code> method on the <code>pandas</code> object.</li>
-    <div class="section-example-container">
+    <div class="python section-example-container">
         <pre class="python">closes.plot(title="Close", figsize=(15, 5))</pre>
     </div>
     
     <li class="csharp">Create <code>Line</code> charts.</li>
-    <div class="section-example-container">
+    <div class="csharp section-example-container">
         <pre class="csharp">var chart = Chart2D.Chart.Line&lt;DateTime, decimal, string&gt;(
     history.Select(x => x.EndTime),
     history.Select(x => x.Close)
@@ -113,7 +110,7 @@ layout.SetValue("title", title);</pre>
     </div>
 
     <li class="csharp">Create a <code>Layout</code>.<br></li>
-    <div class="section-example-container">
+    <div class="csharp section-example-container">
         <pre class="csharp">LinearAxis xAxis = new LinearAxis();
 xAxis.SetValue("title", "Time");
 LinearAxis yAxis = new LinearAxis();
@@ -127,7 +124,7 @@ layout.SetValue("title", title);</pre>
     </div>
 
     <li class="csharp">Assign the <code>Layout</code> to the chart.<br></li>
-    <div class="section-example-container">
+    <div class="csharp section-example-container">
         <pre class="csharp">chart.WithLayout(layout);</pre>
     </div>
     
