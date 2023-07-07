@@ -351,7 +351,16 @@ for security_type, exchanges in sorted_assets.items():
     <li><code>{"</code></li><li><code>".join(all_time_zone)}</code></li>
 </ul>'''
         __write_content(i+11, entries)
-
+    
+    if security_type.lower() == 'future':
+        with open(entry['target'].parent / '00.json', 'w', encoding='utf-8') as fp:
+            fp.write(dumps({
+                "type" : "landing",
+                "heading" : "Futures",
+                "subHeading" : "",
+                "content" : "<p>Select one of the following Futures markets to see its operating hours:</p>",
+                "featureShortDescription": { i+11: "" for i in range(len(exchange_names)) }
+            }, indent=4))
 
 # Generate files for generic case of no information
 empty = {
