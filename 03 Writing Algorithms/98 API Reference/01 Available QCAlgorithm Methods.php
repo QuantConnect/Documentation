@@ -518,7 +518,7 @@
 </tr>
 <tr>
 <td width="33%"><a href="#Plot-header">Plot()</a></td>
-<td>Plot a chart using string series name, with double value.</td>
+<td>Plot a chart using string series name, with value.</td>
 </tr>
 <tr>
 <td width="33%"><a href="#PlotIndicator-header">PlotIndicator()</a></td>
@@ -550,7 +550,7 @@
 </tr>
 <tr>
 <td width="33%"><a href="#Record-header">Record()</a></td>
-<td>Plot a chart using string series name, with double value. Alias of Plot();.</td>
+<td>Plot a chart using string series name, with int value. Alias of Plot();.</td>
 </tr>
 <tr>
 <td width="33%"><a href="#RegisterIndicator-header">RegisterIndicator()</a></td>
@@ -605,6 +605,10 @@
 <td>Sets the account currency cash symbol this algorithm is to manage, as well as the starting cash in this currency if given.</td>
 </tr>
 <tr>
+<td width="33%"><a href="#SetAlgorithmMode-header">SetAlgorithmMode()</a></td>
+<td>Sets the algorithm running mode.</td>
+</tr>
+<tr>
 <td width="33%"><a href="#SetAlpha-header">SetAlpha()</a></td>
 <td>Sets the alpha model.</td>
 </tr>
@@ -631,6 +635,10 @@
 <tr>
 <td width="33%"><a href="#SetCurrentSlice-header">SetCurrentSlice()</a></td>
 <td>Sets the current slice.</td>
+</tr>
+<tr>
+<td width="33%"><a href="#SetDeploymentTarget-header">SetDeploymentTarget()</a></td>
+<td>Sets the algorithm deployment target.</td>
 </tr>
 <tr>
 <td width="33%"><a href="#SetEndDate-header">SetEndDate()</a></td>
@@ -1030,7 +1038,7 @@
 </tr>
 <tr>
 <td width="33%"><a href="#Plot-header">Plot()</a></td>
-<td>Plot a chart using string series name, with double value.</td>
+<td>Plot a chart using string series name, with value.</td>
 </tr>
 <tr>
 <td width="33%"><a href="#PlotIndicator-header">PlotIndicator()</a></td>
@@ -1038,7 +1046,7 @@
 </tr>
 <tr>
 <td width="33%"><a href="#Record-header">Record()</a></td>
-<td>Plot a chart using string series name, with double value. Alias of Plot();.</td>
+<td>Plot a chart using string series name, with int value. Alias of Plot();.</td>
 </tr>
 <tr>
 <td width="33%"><a href="#SetRuntimeStatistic-header">SetRuntimeStatistic()</a></td>
