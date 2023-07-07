@@ -35,6 +35,7 @@
 
 <div class="section-example-container">
 <pre class="csharp">private readonly HashSet&lt;Security&gt; _securities = new();
+
 public override void OnSecuritiesChanged(SecurityChanges changes)
 {
     NotifiedSecurityChanges.UpdateCollection(_securities, changes);
@@ -50,31 +51,36 @@ def OnSecuritiesChanged(self, changes: SecurityChanges) -> None:
     self.securities.extend(changes.AddedSecurities)</pre>
 </div>
 
-<p>If you need to save data or create objects for each security in the universe, maintain a dictionary of custom <code>SymbolData</code> objects. This technique is useful if you want to track stop loss levels or add <a href="/docs/v2/writing-algorithms/indicators/key-concepts">indicators</a> for each asset in the universe.</p>
+<p>If you need to save data or create objects for each security in the universe, <span class='python'>add custom members to the respective <code>Security</code> objects</span><span class='charp'>cast the <code>Security</code> objects to <code>dynamic</code> objects and then save custom members to them</span>. This technique is useful if you want to track stop loss levels or add <a href="/docs/v2/writing-algorithms/indicators/key-concepts">indicators</a> for each asset in the universe.</p>
+
 
 <div class="section-example-container">
-<pre class="csharp">// In Initialize
-Dictionary&lt;Symbol, SymbolData&gt; _symbolDataBySymbol = new();
-
-public override void OnSecuritiesChanged(SecurityChanges changes)
+<pre class="csharp">public override void OnSecuritiesChanged(SecurityChanges changes)
 {
     foreach (var security in changes.AddedSecurities)
     {
-        _symbolDataBySymbol.Add(security.Symbol, new SymbolData());  // You need to define this class
+        var dynamicSecurity = security as dynamic;
+
+        // Create an indicator
+        dynamicSecurity.Indicator = SMA(security.Symbol, 10);
+
+        // Warm up the indicator
+        WarmUpIndicator(security.Symbol, dynamicSecurity.Indicator);
     }
 
     foreach (var security in changes.RemovedSecurities)
     {
-        _symbolDataBySymbol.Remove(security.Symbol);
+        UnregisterIndicator((security as dynamic).Indicator);
     }
 }</pre>
-<pre class="python"># In Initialize
-self.symbol_data_by_symbol = {}
-
-def OnSecuritiesChanged(self, changes: SecurityChanges) -> None:
+<pre class="python">def OnSecuritiesChanged(self, changes: SecurityChanges) -> None:
     for security in changes.AddedSecurities:
-        self.symbol_data_by_symbol[security.Symbol] = SymbolData() # You need to define this class
+        # Create an indicator
+        security.indicator = self.SMA(security.Symbol, 10)
+
+        # Warm up the indicator
+        self.WarmUpIndicator(security.Symbol, security.indicator)
 
     for security in changes.RemovedSecurities:
-        self.symbol_data_by_symbol.pop(security.Symbol, None)</pre>
+        self.UnregisterIndicator(security.indicator)</pre>
 </div>
