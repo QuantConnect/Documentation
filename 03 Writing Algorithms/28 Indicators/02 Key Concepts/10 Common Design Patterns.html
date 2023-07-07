@@ -5,8 +5,9 @@
 <p>If you only have one security in your algorithm, you can create an automatic indicator in the <code>Initialize</code> method.</p>
 
 <div class="section-example-container">
-	<pre class="python"><span style="font-family: Menlo, Monaco, Consolas, &quot;Courier New&quot;, monospace; font-size: 13px;">def </span>Initialize(self):<span style="font-family: Menlo, Monaco, Consolas, &quot;Courier New&quot;, monospace; font-size: 13px;"><br></span><span style="font-family: Menlo, Monaco, Consolas, &quot;Courier New&quot;, monospace; font-size: 13px;">    self.symbol = self.AddEquity("SPY").Symbol
-</span>    self.EnableAutomaticIndicatorWarmUp = True
+	<pre class="python">def Initialize(self):
+    self.symbol = self.AddEquity("SPY").Symbol
+    self.EnableAutomaticIndicatorWarmUp = True
     self.sma = self.SMA(self.symbol, 20, Resolution.Daily)</pre>
 	<pre class="csharp">private Symbol _symbol;
 private SimpleMovingAverage _sma;
@@ -22,109 +23,36 @@ public override void Initialize()
 
 <h4>Multiple Assets or a Dynamic Universe</h4>
 
-<p>If your algorithm has multiple assets or a dynamic universe of assets, abstract your indicator management logic into a separate class.</p>
+<p class='python'>If your algorithm has multiple assets or a dynamic universe of assets, add custom members to the <code>Security</code> objects as you receive them in <code>OnSecuritiesChanged</code>.</p>
+<p class='csharp'>If your algorithm has multiple assets or a dynamic universe of assets, as you receive new <code>Security</code> objects in <code>OnSecuritiesChanged</code>, cast them to <code>dynamic</code> objects and add custom members to them.</p>
 
 <div class="section-example-container">
-	<pre class="python">class SymbolData:
-    def __init__(self, algorithm, symbol):
-        self.algorithm = algorithm
-        self.symbol = symbol
-
-        # Create an indicator
-        self.sma = SimpleMovingAverage(20)
-
-        # Create a consolidator to update the indicator
-        self.consolidator = TradeBarConsolidator(1) 
-        self.consolidator.DataConsolidated += self.OnDataConsolidated
-
-        # Register the consolidator to update the indicator
-        algorithm.SubscriptionManager.AddConsolidator(symbol, self.consolidator)       
-
-        # Warm up the indicator
-        algorithm.WarmUpIndicator(symbol, self.sma)
-
-    def OnDataConsolidated(self, sender: object, consolidated_bar: TradeBar) -&gt; None:
-        self.sma.Update(consolidated_bar.EndTime, consolidated_bar.Close)
-
-    # If you have a dynamic universe, remove consolidators for the securities removed from the universe
-    def dispose(self) -&gt; None:
-        self.algorithm.SubscriptionManager.RemoveConsolidator(self.symbol, self.consolidator)
-</pre>
-	<pre class="csharp">public class SymbolData
+<pre class="csharp">public override void OnSecuritiesChanged(SecurityChanges changes)
 {
-    private QCAlgorithm _algorithm;
-    private Symbol _symbol;
-    private SimpleMovingAverage _sma;
-    private TradeBarConsolidator _consolidator;
-
-    public SymbolData(QCAlgorithm algorithm, Symbol symbol)
+    foreach (var security in changes.AddedSecurities)
     {
-        _algorithm = algorithm;
-        _symbol = symbol;
+        var dynamicSecurity = security as dynamic;
 
         // Create an indicator
-        _sma = new SimpleMovingAverage(20);
-
-        // Create a consolidator to update the indicator
-        _consolidator = new TradeBarConsolidator(1);
-        _consolidator.DataConsolidated += OnDataConsolidated;
-
-        // Register the consolidator to update the indicator
-        algorithm.SubscriptionManager.AddConsolidator(symbol, _consolidator);
+        dynamicSecurity.Indicator = SMA(security.Symbol, 10);
 
         // Warm up the indicator
-        algorithm.WarmUpIndicator(symbol, _sma);
+        WarmUpIndicator(security.Symbol, dynamicSecurity.Indicator);
     }
 
-    private void OnDataConsolidated(object sender, TradeBar consolidatedBar)
+    foreach (var security in changes.RemovedSecurities)
     {
-        _sma.Update(consolidatedBar.EndTime, consolidatedBar.Close);
-    }
-
-    // If you have a dynamic universe, remove consolidators for the securities removed from the universe
-    public void Dispose()
-    {
-        _algorithm.SubscriptionManager.RemoveConsolidator(_symbol, _consolidator);
-    }
-}
-	</pre>
-</div>
-
-<p>Every time the universe adds or removes a security, create or dispose of the respective <code>SymbolData</code> object in the <code>OnSecuritiesChanged</code> event handler.</p>
-
-<div class="section-example-container">
-	<pre class="python">class MyAlgorithm(QCAlgorithm):
-    symbol_data_by_symbol = {}
-
-    def OnSecuritiesChanged(self, changes: SecurityChanges) -&gt; None:
-        for security in changes.AddedSecurities:
-            self.symbol_data_by_symbol[security.Symbol] = SymbolData(self, security.Symbol)
-
-        # If you have a dynamic universe, track removed securities
-        for security in changes.RemovedSecurities:
-            symbol_data = self.symbol_data_by_symbol.pop(security.Symbol, None)
-            if symbol_data:
-                symbol_data.dispose()
-</pre>
-	<pre class="csharp">public class MyAlgorithm : QCAlgorithm
-{
-    private Dictionary&lt;Symbol, SymbolData&gt; _symbolDataBySymbol = new();
-
-    public override void OnSecuritiesChanged(SecurityChanges changes)
-    {
-        foreach (var security in changes.AddedSecurities)
-        {
-            _symbolDataBySymbol[security.Symbol] = new SymbolData(this, security.Symbol);
-        }
-
-        // If you have a dynamic universe, track removed securities
-        foreach (var security in changes.RemovedSecurities)
-        {
-            if (_symbolDataBySymbol.TryGetValue(security.Symbol, out var symbolData))
-            {
-                symbolData.Dispose();
-            }
-        }
+        UnregisterIndicator((security as dynamic).Indicator);
     }
 }</pre>
+<pre class="python">def OnSecuritiesChanged(self, changes: SecurityChanges) -> None:
+    for security in changes.AddedSecurities:
+        # Create an indicator
+        security.indicator = self.SMA(security.Symbol, 10)
+
+        # Warm up the indicator
+        self.WarmUpIndicator(security.Symbol, security.indicator)
+
+    for security in changes.RemovedSecurities:
+        self.UnregisterIndicator(security.indicator)</pre>
 </div>
