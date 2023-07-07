@@ -8,5 +8,5 @@ include(DOCS_RESOURCES."/algorithm-results/runtime-statistics-table.php");
 <p>The capacity statistic is only available for backtests.</p>
 
 <?php 
-include(DOCS_RESOURCES."/algorithm-results/create-custom-runtime-statistic.html"); 
+include(DOCS_RESOURCES."/algorithm-results/create-custom-runtime-statistic.php"); 
 ?>
