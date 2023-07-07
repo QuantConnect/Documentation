@@ -89,11 +89,7 @@ def select_option_chain_symbols(self, utc_time: datetime) -&gt; List[Symbol]:
     return [Symbol.CreateCanonicalOption(symbol) for symbol in future_contract_symbols]</pre>
 </div>
 
-<p>This model uses the default Option filter, which selects the Option contracts with the following characteristics at every time step:</p>
-
-<? include(DOCS_RESOURCES."/universes/option/default-filter.html");?>
-
-<p>To use a different filter for the contracts, subclass the <code>OptionUniverseSelectionModel</code> and define a <code>Filter</code> method. The <code>Filter</code> method accepts and returns an <code>OptionFilterUniverse</code> object to select the Option contracts. The following table describes the methods of the <code>OptionFilterUniverse</code> class:</p>
+<p>This model uses the default Option filter, which selects all of the available Option contracts at the current time step. To use a different filter for the contracts, subclass the <code>OptionUniverseSelectionModel</code> and define a <code>Filter</code> method. The <code>Filter</code> method accepts and returns an <code>OptionFilterUniverse</code> object to select the Option contracts. The following table describes the methods of the <code>OptionFilterUniverse</code> class:</p>
 
 <? include(DOCS_RESOURCES."/universes/option/option-filter-universe.html"); ?>
 
