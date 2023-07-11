@@ -48,7 +48,6 @@
 <ul>
     <li><code>Day</code></li>
     <li><code>GoodTilCanceled</code> (not available for short selling)</li>
-    <li><code>GoodTilDate</code></li>
 </ul>
 
 <?php if ($writingAlgorithms) { ?>
@@ -70,11 +69,6 @@ public override void OnData(Slice slice)
                { 
                    TimeInForce = TimeInForce.Day 
                });
-    LimitOrder(_symbol, quantity, limitPrice, 
-               orderProperties: new OrderProperties
-               { 
-                   TimeInForce = TimeInForce.GoodTilDate(new DateTime(year, month, day)) 
-               });
 }</pre>
     <pre class="python">def Initialize(self) -&gt; None:
     # Set the default order properties
@@ -87,9 +81,6 @@ def OnData(self, slice: Slice) -&gt; None:
     # Override the default order properties
     order_properties = OrderProperties()
     order_properties.TimeInForce = TimeInForce.Day
-    self.LimitOrder(self.symbol, quantity, limit_price, orderProperties=order_properties)
-
-    order_properties.TimeInForce = TimeInForce.GoodTilDate(datetime(year, month, day))
     self.LimitOrder(self.symbol, quantity, limit_price, orderProperties=order_properties)</pre>
 </div>
 <?php } ?>
