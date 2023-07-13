@@ -18,10 +18,9 @@ Select a brokerage:
 8) Zerodha
 9) Samco
 10) Terminal Link
-11) Atreyu
-12) Trading Technologies
-13) Kraken
-14) TD Ameritrade
+11) Trading Technologies
+12) Kraken
+13) TD Ameritrade
 Enter an option: <?=$isBrokerage ? '' : '1'?></pre>
 </div>
 </li>
