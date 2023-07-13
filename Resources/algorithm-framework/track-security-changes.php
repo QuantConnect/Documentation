@@ -23,7 +23,7 @@
         {
             if (_securities.Contains(security.Symbol))
             {
-                algorithm.UnregisterIndicator((security as dynamic).Sma);
+                algorithm.DeregisterIndicator((security as dynamic).Sma);
 
                 _securities.Remove(security.Symbol);
             }
@@ -46,6 +46,6 @@
 
         for security in changes.RemovedSecurities:
             if security.Symbol in self.securities:
-                algorithm.UnregisterIndicator(security.indicator)
+                algorithm.DeregisterIndicator(security.indicator)
                 self.securities.remove(security)</pre>
 </div>

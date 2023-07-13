@@ -1,8 +1,8 @@
-<br>The location in your algorithm where you create and manage indicators depends on the type of universe in your algorithm.<p></p>
+<p>The location in your algorithm where you create and manage indicators depends on the type of universe you use.</p>
 
 <h4>One Asset In a Static Universe</h4>
 
-<p>If you only have one security in your algorithm, you can create an automatic indicator in the <code>Initialize</code> method.</p>
+<p>If you only have one security in your algorithm, you can create indicators for it during <a href='/docs/v2/writing-algorithms/initialization'>initialization</a>.</p>
 
 <div class="section-example-container">
 	<pre class="python">def Initialize(self):
@@ -42,7 +42,7 @@ public override void Initialize()
 
     foreach (var security in changes.RemovedSecurities)
     {
-        UnregisterIndicator((security as dynamic).Indicator);
+        DeregisterIndicator((security as dynamic).Indicator);
     }
 }</pre>
 <pre class="python">def OnSecuritiesChanged(self, changes: SecurityChanges) -> None:
@@ -54,5 +54,5 @@ public override void Initialize()
         self.WarmUpIndicator(security.Symbol, security.indicator)
 
     for security in changes.RemovedSecurities:
-        self.UnregisterIndicator(security.indicator)</pre>
+        self.DeregisterIndicator(security.indicator)</pre>
 </div>
