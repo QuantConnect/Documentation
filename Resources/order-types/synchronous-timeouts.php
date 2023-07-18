@@ -7,3 +7,7 @@ Transactions.MarketOrderFillTimeout = TimeSpan.FromSeconds(30);
 <pre class='python'> # Adjust the market fill-timeout to 30 seconds.
 self.Transactions.MarketOrderFillTimeout = timedelta(seconds=30)</pre>
 </div>
+
+<? if (substr_compare($orderName, 'exercise', -8) !== 0) { ?>
+<p><?=$orderName?> orders may take a few minutes to fill for illiquid assets such as out-of-the-money Options<?=$otherAssetType?>.</p>
+<? } ?>
