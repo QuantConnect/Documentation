@@ -28,8 +28,12 @@
             </td>
         </tr>
         <tr>
+            <td><code>Exchange</code></td>
+            <td>Defines the exchange name for a particular market. For example, <code>Exchange.SMART</code></td>
+        </tr>
+        <tr>
             <td><code>ExchangePostFix</code></td>
-            <td>The exchange post fix to apply if any. For example, "-INCA-TX".</td>
+            <td>The exchange post fix to apply if any. For example, "-INCA-TX" and <code>Exchange.SMART</code> yields "SMART-INCA-TX"</td>
         </tr>
     </tbody>
 </table>
@@ -42,6 +46,7 @@
     DefaultOrderProperties = new WolverineOrderProperties
     {
         TimeInForce = TimeInForce.GoodTilCanceled,
+        Exchange = Exchange.SMART,
         ExchangePostFix = "-INCA-TX"
     };
 }</pre>
@@ -49,6 +54,7 @@
     # Set the default order properties
     self.DefaultOrderProperties = WolverineOrderProperties()
     self.DefaultOrderProperties.TimeInForce = TimeInForce.GoodTilCanceled
+    self.DefaultOrderProperties.Exchange = Exchange.SMART
     self.DefaultOrderProperties.ExchangePostFix = "-INCA-TX"</pre>
 </div>
 <? } ?>
