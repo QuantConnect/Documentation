@@ -129,9 +129,9 @@ option.PriceModel = OptionPriceModels.BjerksundStensland()</pre>
 
 <div class="section-example-container">
     <pre class="csharp">var seeder = new FuncSecuritySeeder(GetLastKnownPrices);
-SetSecurityInitializer(new BrokerageModelSecurityInitializer(BrokerageModel, seeder, this));</pre>
+SetSecurityInitializer(new BrokerageModelSecurityInitializer(BrokerageModel, seeder));</pre>
     <pre class="python">seeder = FuncSecuritySeeder(self.GetLastKnownPrices)
-self.SetSecurityInitializer(BrokerageModelSecurityInitializer(self.BrokerageModel, seeder, self))</pre>
+self.SetSecurityInitializer(BrokerageModelSecurityInitializer(self.BrokerageModel, seeder))</pre>
 </div>
 
 <h4>Supported Assets</h4>
