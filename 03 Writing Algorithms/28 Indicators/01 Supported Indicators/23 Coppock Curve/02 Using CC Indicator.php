@@ -3,6 +3,7 @@
 include(DOCS_RESOURCES."/qcalgorithm-api/_method_container.html");
 
 $hasAutomaticIndicatorHelper = true;
+$helperPrefix = '';
 $typeName = 'CoppockCurve';
 $helperName = 'CC';
 $helperArguments = 'symbol, 11, 14, 10';

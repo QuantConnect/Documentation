@@ -3,6 +3,7 @@
 include(DOCS_RESOURCES."/qcalgorithm-api/_method_container.html");
 
 $hasAutomaticIndicatorHelper = true;
+$helperPrefix = '';
 $typeName = 'VolumeProfile';
 $helperName = 'VP';
 $helperArguments = 'symbol, 3, 0.70, 0.05';

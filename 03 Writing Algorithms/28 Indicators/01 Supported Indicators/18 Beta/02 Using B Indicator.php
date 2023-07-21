@@ -3,6 +3,7 @@
 include(DOCS_RESOURCES."/qcalgorithm-api/_method_container.html");
 
 $hasAutomaticIndicatorHelper = true;
+$helperPrefix = '';
 $typeName = 'Beta';
 $helperName = 'B';
 $helperArguments = 'Symbol.Create("QQQ", SecurityType.Equity, Market.USA), symbol, 20';

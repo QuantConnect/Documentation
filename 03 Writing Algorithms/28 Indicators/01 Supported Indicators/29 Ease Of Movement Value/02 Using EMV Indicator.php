@@ -3,6 +3,7 @@
 include(DOCS_RESOURCES."/qcalgorithm-api/_method_container.html");
 
 $hasAutomaticIndicatorHelper = true;
+$helperPrefix = '';
 $typeName = 'EaseOfMovementValue';
 $helperName = 'EMV';
 $helperArguments = 'symbol, 1, 10000';

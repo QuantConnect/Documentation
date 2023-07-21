@@ -3,6 +3,7 @@
 include(DOCS_RESOURCES."/qcalgorithm-api/_method_container.html");
 
 $hasAutomaticIndicatorHelper = true;
+$helperPrefix = '';
 $typeName = 'AbsolutePriceOscillator';
 $helperName = 'APO';
 $helperArguments = 'symbol, 10, 2, MovingAverageType.Simple';

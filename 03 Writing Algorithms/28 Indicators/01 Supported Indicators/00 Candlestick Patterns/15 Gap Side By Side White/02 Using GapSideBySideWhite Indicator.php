@@ -3,6 +3,7 @@
 include(DOCS_RESOURCES."/qcalgorithm-api/_method_container.html");
 
 $hasAutomaticIndicatorHelper = true;
+$helperPrefix = 'CandlestickPatterns.';
 $typeName = 'GapSideBySideWhite';
 $helperName = 'GapSideBySideWhite';
 $helperArguments = 'symbol';

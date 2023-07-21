@@ -3,6 +3,7 @@
 include(DOCS_RESOURCES."/qcalgorithm-api/_method_container.html");
 
 $hasAutomaticIndicatorHelper = true;
+$helperPrefix = '';
 $typeName = 'McClellanOscillator';
 $helperName = 'MOSC';
 $helperArguments = '[symbol, Symbol.Create("QQQ", SecurityType.Equity, Market.USA)]';

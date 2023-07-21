@@ -3,6 +3,7 @@
 include(DOCS_RESOURCES."/qcalgorithm-api/_method_container.html");
 
 $hasAutomaticIndicatorHelper = true;
+$helperPrefix = '';
 $typeName = 'ArnaudLegouxMovingAverage';
 $helperName = 'ALMA';
 $helperArguments = 'symbol, 10, 6, 0.85';

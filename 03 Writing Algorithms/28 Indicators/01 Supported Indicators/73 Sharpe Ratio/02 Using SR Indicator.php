@@ -3,6 +3,7 @@
 include(DOCS_RESOURCES."/qcalgorithm-api/_method_container.html");
 
 $hasAutomaticIndicatorHelper = true;
+$helperPrefix = '';
 $typeName = 'SharpeRatio';
 $helperName = 'SR';
 $helperArguments = 'symbol, 22, 0.03';

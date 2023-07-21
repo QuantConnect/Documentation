@@ -3,6 +3,7 @@
 include(DOCS_RESOURCES."/qcalgorithm-api/_method_container.html");
 
 $hasAutomaticIndicatorHelper = true;
+$helperPrefix = '';
 $typeName = 'SwissArmyKnife';
 $helperName = 'SWISS';
 $helperArguments = 'symbol, 20, 0.2, SwissArmyKnifeTool.Gauss';

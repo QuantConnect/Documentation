@@ -3,6 +3,7 @@
 include(DOCS_RESOURCES."/qcalgorithm-api/_method_container.html");
 
 $hasAutomaticIndicatorHelper = true;
+$helperPrefix = '';
 $typeName = 'KaufmanAdaptiveMovingAverage';
 $helperName = 'KAMA';
 $helperArguments = 'symbol, 20, 10, 20';

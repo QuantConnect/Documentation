@@ -3,6 +3,7 @@
 include(DOCS_RESOURCES."/qcalgorithm-api/_method_container.html");
 
 $hasAutomaticIndicatorHelper = true;
+$helperPrefix = '';
 $typeName = 'AroonOscillator';
 $helperName = 'AROON';
 $helperArguments = 'symbol, 10, 20';

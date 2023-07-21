@@ -3,6 +3,7 @@
 include(DOCS_RESOURCES."/qcalgorithm-api/_method_container.html");
 
 $hasAutomaticIndicatorHelper = true;
+$helperPrefix = '';
 $typeName = 'KeltnerChannels';
 $helperName = 'KCH';
 $helperArguments = 'symbol, 20, 2, MovingAverageType.Simple';

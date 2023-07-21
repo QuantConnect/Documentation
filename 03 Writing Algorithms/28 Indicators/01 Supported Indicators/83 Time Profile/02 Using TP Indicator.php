@@ -3,6 +3,7 @@
 include(DOCS_RESOURCES."/qcalgorithm-api/_method_container.html");
 
 $hasAutomaticIndicatorHelper = true;
+$helperPrefix = '';
 $typeName = 'TimeProfile';
 $helperName = 'TP';
 $helperArguments = 'symbol, 3, 0.70, 0.05';

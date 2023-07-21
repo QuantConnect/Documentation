@@ -3,6 +3,7 @@
 include(DOCS_RESOURCES."/qcalgorithm-api/_method_container.html");
 
 $hasAutomaticIndicatorHelper = true;
+$helperPrefix = '';
 $typeName = 'AutoRegressiveIntegratedMovingAverage';
 $helperName = 'ARIMA';
 $helperArguments = 'symbol, 1, 1, 1, 20';

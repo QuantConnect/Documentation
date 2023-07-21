@@ -3,6 +3,7 @@
 include(DOCS_RESOURCES."/qcalgorithm-api/_method_container.html");
 
 $hasAutomaticIndicatorHelper = true;
+$helperPrefix = '';
 $typeName = 'IchimokuKinkoHyo';
 $helperName = 'ICHIMOKU';
 $helperArguments = 'symbol, 9, 26, 17, 52, 26, 26';

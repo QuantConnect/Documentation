@@ -3,6 +3,7 @@
 include(DOCS_RESOURCES."/qcalgorithm-api/_method_container.html");
 
 $hasAutomaticIndicatorHelper = true;
+$helperPrefix = 'CandlestickPatterns.';
 $typeName = 'Engulfing';
 $helperName = 'Engulfing';
 $helperArguments = 'symbol';
