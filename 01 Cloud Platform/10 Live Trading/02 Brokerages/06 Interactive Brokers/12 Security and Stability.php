@@ -13,4 +13,7 @@ include(DOCS_RESOURCES."/brokerages/security-and-stability.php");
 <p>Our IB integration doesn't support Two-Factor Authentication (2FA) via SMS or the Online Security Code Card. Use the <a rel="nofollow" target="_blank" href="https://guides.interactivebrokers.com/iphone/log_in/ibkey.htm?tocpath=IB%20Key%20Security%20Protocol%7C_____0">IB Key Security via IBKR Mobile</a> instead.</p>
 
 <h4>System Resets</h4>
-<p>If your IB account has 2FA enabled, you receive a notification on your IB Key device every Sunday to re-authenticate the connection between IB and your live algorithm. When you <a href='/docs/v2/cloud-platform/live-trading/brokerages/interactive-brokers#16-Deploy-Live-Algorithms'>deploy your algorithm</a>, you can select a time on Sunday to receive the notification. If you don't re-authenticate before the timeout period, your algorithm quits executing. Ensure your IB Key device has sufficient battery for the time you expect to receive the notification. If you don't receive a notification, see <a rel='nofollow' target='_blank' href='https://ibkr.info/article/3234'>I am not receiving IBKR Mobile notifications</a> on the IB website.</p>
+<?
+$extraText = "When you <a href='/docs/v2/cloud-platform/live-trading/brokerages/interactive-brokers#16-Deploy-Live-Algorithms'>deploy your algorithm</a>, you can select a time on Sunday to receive the notification.";
+include(DOCS_RESOURCES."/brokerages/interactive-brokers/weekly-restarts.php");
+?>
