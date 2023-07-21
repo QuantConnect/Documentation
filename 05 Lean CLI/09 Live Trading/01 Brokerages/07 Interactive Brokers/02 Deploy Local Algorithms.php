@@ -20,7 +20,7 @@ Account password: ****************</pre>
 </div>
 </li>
 
-<li>Enter a weekly restart time that's convenient for you:</li>
+<li>Enter a weekly restart time that's convenient for you.</li>
 <div class='cli section-example-container'>
 <pre>$ lean live \"My Project\"
 Weekly restart UTC time (hh:mm:ss) [21:00:00]: </pre>
