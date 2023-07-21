@@ -10,7 +10,7 @@
     public override void Initialize()
     {
         _symbol = AddEquity("SPY", Resolution.Daily).Symbol;
-        _<?=strtolower($helperName)?> = <?=$helperName?>(<?=str_replace("symbol", "_symbol", $helperArguments)?>);
+        _<?=strtolower($helperName)?> = <?=$helperPrefix?><?=$helperName?>(<?=str_replace("symbol", "_symbol", $helperArguments)?>);
     }
 
     public override void OnData(Slice data)
@@ -31,7 +31,7 @@
     <pre class="python">class <?=$typeName?>Algorithm(QCAlgorithm):
     def Initialize(self) -> None:
         self.symbol = self.AddEquity("SPY", Resolution.Daily).Symbol
-        self.<?=strtolower($helperName)?> = self.<?=$helperName?>(<?=str_replace("symbol", "self.symbol", $helperArguments)?>)
+        self.<?=strtolower($helperName)?> = self.<?=$helperPrefix?><?=$helperName?>(<?=str_replace("symbol", "self.symbol", $helperArguments)?>)
 
     def OnData(self, slice: Slice) -> None:
         if self.<?=strtolower($helperName)?>.IsReady:

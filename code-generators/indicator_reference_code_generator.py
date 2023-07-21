@@ -169,9 +169,9 @@ def Generate_Indicators_Reference():
         description = indicator['description']
         helper_name = indicator['helper-name']
         image_source = _get_image_source(folder)
-        
+        source = indicator['source']
+
         with open(f'{folder}/01 Introduction.html', 'w', encoding='utf-8') as fp:
-            source = indicator['source']
             category = 'candlestick pattern' if 'CandlestickPatterns' in source else 'indicator'
             fp.write(f"""{TAG}
 <p>{description}</p>
@@ -183,6 +183,7 @@ def Generate_Indicators_Reference():
 include(DOCS_RESOURCES."/qcalgorithm-api/_method_container.html");
 
 $hasAutomaticIndicatorHelper = {'true' if type_name != 'Delay' else 'false'};
+$helperPrefix = '{'CandlestickPatterns.' if 'CandlestickPatterns' in source else ''}';
 $typeName = '{type_name}';
 $helperName = '{helper_name}';
 $helperArguments = '{indicator['helper-arguments']}';
