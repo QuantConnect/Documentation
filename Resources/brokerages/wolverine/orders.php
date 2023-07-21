@@ -33,7 +33,7 @@
         </tr>
         <tr>
             <td><code>ExchangePostFix</code></td>
-            <td>The exchange post fix to apply if any. For example, "-INCA-TX" and <code>Exchange.SMART</code> yields "SMART-INCA-TX"</td>
+            <td>The exchange post fix to apply if any. For example, if you set <code>Exchange</code> to <code>Exchange.SMART</code>, then "-INCA-TX" yields "SMART-INCA-TX"</td>
         </tr>
     </tbody>
 </table>
