@@ -108,7 +108,7 @@ class IndicatorImageGeneratorAlgorithm(QCAlgorithm):
             },
             'chaikin-money-flow':
             {
-                'code': ChaikinMoneyFlow(symbol, 20),
+                'code': ChaikinMoneyFlow("SPY", 20),
                 'title' : 'CMF(symbol, 20)',
                 'columns' : []
             },
@@ -183,6 +183,12 @@ class IndicatorImageGeneratorAlgorithm(QCAlgorithm):
                 'code': HeikinAshi(),
                 'title' : 'HeikinAshi(symbol)',
                 'columns' : ['volume']
+            },
+            'hilbert-transform':
+            {
+                'code': HilbertTransform(7, 0.635, 0.338),
+                'title' : 'HT(symbol, 7, 0.635, 0.338)',
+                'columns' : []
             },
             'hull-moving-average':
             {

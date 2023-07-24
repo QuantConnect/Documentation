@@ -385,6 +385,7 @@ def Generate_QCAlgorithm_API_Reference():
     qcapi.mkdir(parents=True, exist_ok=True)
 
     for key, overloads in methods.items():
+        alt_key = key
         imax = len(overloads)
         html = f'''<a id="{overloads[0]['Name']}-header"></a>
 <div class="method-container">
@@ -404,14 +405,17 @@ def Generate_QCAlgorithm_API_Reference():
             doc_attrs = overload.get('DocumentationAttributes')
             for doc_attr in doc_attrs:
                 tag = doc_attr['tag']
+                if tag.startswith("Indicators") and overload.get('ReturnValue', {}).get('Type'):
+                    alt_key = key.replace('-','')
                 if tag not in methods_by_tag:
                     methods_by_tag[tag] = {}
                 methods_by_tag[tag][key] = overloads
 
             html += Box(overload, doc_attrs, type_map, i, imax)
 
-        with open(f'{qcapi}/{key}.html', 'w', encoding='utf-8') as fp:
-            fp.write(html + '</div>')
+        for k in set([key, alt_key]):
+            with open(f'{qcapi}/{k}.html', 'w', encoding='utf-8') as fp:
+                fp.write(html + '</div>')
 
     path = Path(API_REFERENCE)
     path.mkdir(parents=True, exist_ok=True)
