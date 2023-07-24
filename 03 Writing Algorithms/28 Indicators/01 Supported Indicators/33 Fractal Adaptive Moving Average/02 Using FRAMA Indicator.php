@@ -8,6 +8,7 @@ $typeName = 'FractalAdaptiveMovingAverage';
 $helperName = 'FRAMA';
 $helperArguments = 'symbol, 20, 198';
 $properties = array();
+$otherProperties = array();
 $updateParameterType = 'a <code>TradeBar</code>, or <code>QuoteBar</code>';
 $constructorArguments = '20, 198';
 $updateParameterValue = 'bar';

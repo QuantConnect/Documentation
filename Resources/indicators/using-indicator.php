@@ -20,9 +20,9 @@
             // The current value of _<?=strtolower($helperName)?> is represented by itself (_<?=strtolower($helperName)?>)
             // or _<?=strtolower($helperName)?>.Current.Value
             Plot("<?=$typeName?>", "<?=strtolower($helperName)?>", _<?=strtolower($helperName)?>);
-            <? if (count($properties) > 0) { ?>// Plot all properties of <?=strtolower($helperName)?><? }?>
+            <? if (count($properties) + count($otherProperties)  > 0) { ?>// Plot all properties of <?=strtolower($helperName)?><? }?>
 
-<? foreach ($properties as $property) { ?>
+<? foreach (array_merge($properties, $otherProperties) as $property) { ?>
             Plot("<?=$typeName?>", "<?=strtolower($property)?>", _<?=strtolower($helperName)?>.<?=$property?>);
 <? } ?>
         }
@@ -37,10 +37,13 @@
         if self.<?=strtolower($helperName)?>.IsReady:
             # The current value of self.<?=strtolower($helperName)?> is represented by self.<?=strtolower($helperName)?>.Current.Value
             self.Plot("<?=$typeName?>", "<?=strtolower($helperName)?>", self.<?=strtolower($helperName)?>.Current.Value)
-            <? if (count($properties) > 0) { ?># Plot all attributes of self.<?=strtolower($helperName)?><? } ?>
+            <? if (count($properties) + count($otherProperties) > 0) { ?># Plot all attributes of self.<?=strtolower($helperName)?><? } ?>
 
 <? foreach ($properties as $property) { ?>
             self.Plot("<?=$typeName?>", "<?=strtolower($property)?>", self.<?=strtolower($helperName)?>.<?=$property?>.Current.Value)
+<? } ?>
+<? foreach ($otherProperties as $property) { ?>
+            self.Plot("<?=$typeName?>", "<?=strtolower($property)?>", self.<?=strtolower($helperName)?>.<?=$property?>)
 <? } ?>
 </pre>
 </div>
@@ -89,9 +92,9 @@
             // The current value of _<?=strtolower($helperName)?> is represented by itself (_<?=strtolower($helperName)?>)
             // or _<?=strtolower($helperName)?>.Current.Value
             Plot("<?=$typeName?>", "<?=strtolower($helperName)?>", _<?=strtolower($helperName)?>);
-            <? if (count($properties) > 0) { ?>// Plot all properties of <?=strtolower($helperName)?><? } ?>
+            <? if (count($properties) + count($otherProperties) > 0) { ?>// Plot all properties of <?=strtolower($helperName)?><? } ?>
 
-<? foreach ($properties as $property) { ?>
+<? foreach (array_merge($properties, $otherProperties) as $property) { ?>
             Plot("<?=$typeName?>", "<?=strtolower($property)?>", _<?=strtolower($helperName)?>.<?=$property?>);
 <? } ?>
         }
@@ -110,10 +113,13 @@
         if self.<?=strtolower($helperName)?>.IsReady:
             # The current value of self.<?=strtolower($helperName)?> is represented by self.<?=strtolower($helperName)?>.Current.Value
             self.Plot("<?=$typeName?>", "<?=strtolower($helperName)?>", self.<?=strtolower($helperName)?>.Current.Value)
-            <? if (count($properties) > 0) { ?># Plot all attributes of self.<?=strtolower($helperName)?><? } ?>
+            <? if (count($properties) + count($otherProperties) > 0) { ?># Plot all attributes of self.<?=strtolower($helperName)?><? } ?>
 
 <? foreach ($properties as $property) { ?>
             self.Plot("<?=$typeName?>", "<?=strtolower($property)?>", self.<?=strtolower($helperName)?>.<?=$property?>.Current.Value)
+<? } ?>
+<? foreach ($otherProperties as $property) { ?>
+            self.Plot("<?=$typeName?>", "<?=strtolower($property)?>", self.<?=strtolower($helperName)?>.<?=$property?>)
 <? } ?>
 </pre>
 </div>

@@ -8,6 +8,7 @@ $typeName = 'ThreeStarsInSouth';
 $helperName = 'ThreeStarsInSouth';
 $helperArguments = 'symbol';
 $properties = array();
+$otherProperties = array();
 $updateParameterType = 'a <code>TradeBar</code>';
 $constructorArguments = '';
 $updateParameterValue = 'bar';

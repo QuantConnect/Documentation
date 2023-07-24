@@ -8,6 +8,7 @@ $typeName = 'SimpleMovingAverage';
 $helperName = 'SMA';
 $helperArguments = 'symbol, 20';
 $properties = array("RollingSum");
+$otherProperties = array();
 $updateParameterType = 'time/number pair, or an <code>IndicatorDataPoint</code>';
 $constructorArguments = '20';
 $updateParameterValue = 'bar.EndTime, bar.Close';

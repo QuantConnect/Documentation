@@ -8,6 +8,7 @@ $typeName = 'BollingerBands';
 $helperName = 'BB';
 $helperArguments = 'symbol, 30, 2';
 $properties = array("StandardDeviation","MiddleBand","UpperBand","LowerBand","BandWidth","PercentB","Price");
+$otherProperties = array();
 $updateParameterType = 'time/number pair, or an <code>IndicatorDataPoint</code>';
 $constructorArguments = '30, 2';
 $updateParameterValue = 'bar.EndTime, bar.Close';

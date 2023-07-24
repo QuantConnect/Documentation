@@ -8,6 +8,7 @@ $typeName = 'SchaffTrendCycle';
 $helperName = 'STC';
 $helperArguments = 'symbol, 5, 10, 20, MovingAverageType.Exponential';
 $properties = array();
+$otherProperties = array();
 $updateParameterType = 'time/number pair, or an <code>IndicatorDataPoint</code>';
 $constructorArguments = '5, 10, 20, MovingAverageType.Exponential';
 $updateParameterValue = 'bar.EndTime, bar.Close';

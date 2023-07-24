@@ -8,6 +8,7 @@ $typeName = 'AdvanceDeclineRatio';
 $helperName = 'ADR';
 $helperArguments = '[symbol, Symbol.Create("QQQ", SecurityType.Equity, Market.USA)]';
 $properties = array();
+$otherProperties = array();
 $updateParameterType = 'a <code>TradeBar</code>';
 $constructorArguments = '""';
 $updateParameterValue = 'bar';

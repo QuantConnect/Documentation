@@ -8,6 +8,7 @@ $typeName = 'AverageDirectionalMovementIndexRating';
 $helperName = 'ADXR';
 $helperArguments = 'symbol, 20';
 $properties = array("ADX");
+$otherProperties = array();
 $updateParameterType = 'a <code>TradeBar</code>, or <code>QuoteBar</code>';
 $constructorArguments = '20';
 $updateParameterValue = 'bar';

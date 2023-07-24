@@ -8,6 +8,7 @@ $typeName = 'RelativeDailyVolume';
 $helperName = 'RDV';
 $helperArguments = 'symbol, 2';
 $properties = array();
+$otherProperties = array();
 $updateParameterType = 'a <code>TradeBar</code>';
 $constructorArguments = '2';
 $updateParameterValue = 'bar';

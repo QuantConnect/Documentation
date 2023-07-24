@@ -8,6 +8,7 @@ $typeName = 'SharpeRatio';
 $helperName = 'SR';
 $helperArguments = 'symbol, 22, 0.03';
 $properties = array();
+$otherProperties = array();
 $updateParameterType = 'time/number pair, or an <code>IndicatorDataPoint</code>';
 $constructorArguments = '22, 0.03';
 $updateParameterValue = 'bar.EndTime, bar.Close';

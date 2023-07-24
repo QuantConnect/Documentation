@@ -8,6 +8,7 @@ $typeName = 'Delay';
 $helperName = 'Delay';
 $helperArguments = 'symbol';
 $properties = array();
+$otherProperties = array();
 $updateParameterType = 'time/number pair, or an <code>IndicatorDataPoint</code>';
 $constructorArguments = '';
 $updateParameterValue = 'bar.EndTime, bar.Close';

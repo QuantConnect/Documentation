@@ -8,6 +8,7 @@ $typeName = 'PercentagePriceOscillator';
 $helperName = 'PPO';
 $helperArguments = 'symbol, 10, 20, MovingAverageType.Simple';
 $properties = array("Fast","Slow","Signal","Histogram");
+$otherProperties = array();
 $updateParameterType = 'time/number pair, or an <code>IndicatorDataPoint</code>';
 $constructorArguments = '10, 20, MovingAverageType.Simple';
 $updateParameterValue = 'bar.EndTime, bar.Close';

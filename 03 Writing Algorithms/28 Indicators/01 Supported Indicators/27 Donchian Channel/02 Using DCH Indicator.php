@@ -8,6 +8,7 @@ $typeName = 'DonchianChannel';
 $helperName = 'DCH';
 $helperArguments = 'symbol, 20, 20';
 $properties = array("UpperBand","LowerBand");
+$otherProperties = array();
 $updateParameterType = 'a <code>TradeBar</code>, or <code>QuoteBar</code>';
 $constructorArguments = '20, 20';
 $updateParameterValue = 'bar';

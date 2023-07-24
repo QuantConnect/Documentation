@@ -8,6 +8,7 @@ $typeName = 'ChaikinMoneyFlow';
 $helperName = 'CMF';
 $helperArguments = 'symbol, 20';
 $properties = array();
+$otherProperties = array();
 $updateParameterType = 'a <code>TradeBar</code>';
 $constructorArguments = '"SPY", 20';
 $updateParameterValue = 'bar';

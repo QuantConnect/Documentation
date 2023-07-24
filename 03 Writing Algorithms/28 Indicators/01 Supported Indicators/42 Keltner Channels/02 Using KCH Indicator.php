@@ -8,6 +8,7 @@ $typeName = 'KeltnerChannels';
 $helperName = 'KCH';
 $helperArguments = 'symbol, 20, 2, MovingAverageType.Simple';
 $properties = array("MiddleBand","UpperBand","LowerBand","AverageTrueRange");
+$otherProperties = array();
 $updateParameterType = 'a <code>TradeBar</code>, or <code>QuoteBar</code>';
 $constructorArguments = '20, 2, MovingAverageType.Simple';
 $updateParameterValue = 'bar';

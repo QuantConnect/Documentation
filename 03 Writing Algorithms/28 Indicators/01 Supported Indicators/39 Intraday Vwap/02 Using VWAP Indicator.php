@@ -8,6 +8,7 @@ $typeName = 'IntradayVwap';
 $helperName = 'VWAP';
 $helperArguments = 'symbol';
 $properties = array();
+$otherProperties = array();
 $updateParameterType = 'time/number pair, or an <code>IndicatorDataPoint</code>';
 $constructorArguments = '"SPY"';
 $updateParameterValue = 'bar.EndTime, bar.Close';

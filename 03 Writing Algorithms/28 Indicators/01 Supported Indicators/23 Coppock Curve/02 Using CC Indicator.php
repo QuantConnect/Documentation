@@ -8,6 +8,7 @@ $typeName = 'CoppockCurve';
 $helperName = 'CC';
 $helperArguments = 'symbol, 11, 14, 10';
 $properties = array();
+$otherProperties = array();
 $updateParameterType = 'time/number pair, or an <code>IndicatorDataPoint</code>';
 $constructorArguments = '11, 14, 10';
 $updateParameterValue = 'bar.EndTime, bar.Close';

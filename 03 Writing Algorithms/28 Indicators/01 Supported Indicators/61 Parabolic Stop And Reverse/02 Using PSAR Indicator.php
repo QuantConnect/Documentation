@@ -8,6 +8,7 @@ $typeName = 'ParabolicStopAndReverse';
 $helperName = 'PSAR';
 $helperArguments = 'symbol, 0.02, 0.02, 0.2';
 $properties = array();
+$otherProperties = array();
 $updateParameterType = 'a <code>TradeBar</code>, or <code>QuoteBar</code>';
 $constructorArguments = '0.02, 0.02, 0.2';
 $updateParameterValue = 'bar';

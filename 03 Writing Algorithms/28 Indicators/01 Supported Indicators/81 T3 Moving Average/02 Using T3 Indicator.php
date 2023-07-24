@@ -8,6 +8,7 @@ $typeName = 'T3MovingAverage';
 $helperName = 'T3';
 $helperArguments = 'symbol, 30, 0.7';
 $properties = array();
+$otherProperties = array();
 $updateParameterType = 'time/number pair, or an <code>IndicatorDataPoint</code>';
 $constructorArguments = '30, 0.7';
 $updateParameterValue = 'bar.EndTime, bar.Close';

@@ -8,6 +8,7 @@ $typeName = 'CommodityChannelIndex';
 $helperName = 'CCI';
 $helperArguments = 'symbol, 20, MovingAverageType.Simple';
 $properties = array("TypicalPriceAverage","TypicalPriceMeanDeviation");
+$otherProperties = array();
 $updateParameterType = 'a <code>TradeBar</code>, or <code>QuoteBar</code>';
 $constructorArguments = '20, MovingAverageType.Simple';
 $updateParameterValue = 'bar';

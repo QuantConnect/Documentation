@@ -8,6 +8,7 @@ $typeName = 'McClellanSummationIndex';
 $helperName = 'MSI';
 $helperArguments = '[symbol, Symbol.Create("QQQ", SecurityType.Equity, Market.USA)]';
 $properties = array("McClellanOscillator");
+$otherProperties = array();
 $updateParameterType = 'a <code>TradeBar</code>';
 $constructorArguments = '""';
 $updateParameterValue = 'bar';

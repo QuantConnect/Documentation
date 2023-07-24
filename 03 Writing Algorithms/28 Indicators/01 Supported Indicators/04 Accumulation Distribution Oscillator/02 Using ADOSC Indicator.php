@@ -8,6 +8,7 @@ $typeName = 'AccumulationDistributionOscillator';
 $helperName = 'ADOSC';
 $helperArguments = 'symbol, 10, 2';
 $properties = array();
+$otherProperties = array();
 $updateParameterType = 'a <code>TradeBar</code>';
 $constructorArguments = '10, 20';
 $updateParameterValue = 'bar';

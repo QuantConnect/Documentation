@@ -34,6 +34,27 @@ def _format_introduction(type_name: str, text: str) -> str:
         return link_split[0].replace("Source: ", f'<sup><a href="https{link_split[1]}">source</a></sup>'.replace("httpss", "https"))
     return text
 
+PROPERTIES_EXCEPTIONS = ['MovingAverageType', 'IsReady', 'WarmUpPeriod', 'Name', 'Period', 'Samples', 
+                'Current', "Consolidators", "Previous", "Window", "[System.Int32]"]
+
+def _extract_properties(properties: list):
+    numerical_properties = ''
+    indicator_properties = ''
+    for property in properties:
+        property_name = property["property-name"]
+        if property_name in PROPERTIES_EXCEPTIONS:
+            continue
+        # Some properties are lists we cannot plot
+        full_type = property['property-full-type-name'] 
+        if full_type.startswith('System.Collection'):
+            continue
+        if full_type.startswith('QuantConnect'):
+            indicator_properties += f'"{property_name}",'
+        else:
+            numerical_properties += f'"{property_name}",'
+
+    return f'array({indicator_properties[:-1]})', f'array({numerical_properties[:-1]})'
+
 def _get_helpers():
     with open(f'Resources/indicators/IndicatorImageGenerator.py', mode='r') as fp:
         lines = fp.readlines()
@@ -89,13 +110,7 @@ def Generate_Indicators_Reference():
                 arguments = arguments[1 + start:].strip()
             indicator['constructor-arguments'] = helper['constructor-arguments']
             indicator['has-moving-average-type-parameter'] = 'MovingAverageType' in content
-
-            properties = [x["property-name"] for x in indicator['properties']
-                if x["property-name"] not in ['MovingAverageType', 'IsReady', 'WarmUpPeriod',
-                                             'Name', 'Period', 'Samples', 'Current', "Consolidators", 
-                                             "Previous", "Window", "[System.Int32]"]]
-
-            indicator['properties'] = 'array('  + ','.join([f'"{x}"' for x in properties]) +  ')'
+            indicator['properties'] = _extract_properties(indicator['properties'])
 
             indicators[key] = indicator
 
@@ -187,7 +202,8 @@ $helperPrefix = '{'CandlestickPatterns.' if 'CandlestickPatterns' in source else
 $typeName = '{type_name}';
 $helperName = '{helper_name}';
 $helperArguments = '{indicator['helper-arguments']}';
-$properties = {indicator['properties']};
+$properties = {indicator['properties'][0]};
+$otherProperties = {indicator['properties'][1]};
 $updateParameterType = '{indicator['update-parameter-type']}';
 $constructorArguments = '{indicator['constructor-arguments'] if indicator['constructor-arguments'] else ''}';
 $updateParameterValue = '{indicator['update-parameter-value']}';

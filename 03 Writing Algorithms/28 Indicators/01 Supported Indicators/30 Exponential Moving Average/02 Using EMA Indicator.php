@@ -8,6 +8,7 @@ $typeName = 'ExponentialMovingAverage';
 $helperName = 'EMA';
 $helperArguments = 'symbol, 20, 0.5';
 $properties = array();
+$otherProperties = array();
 $updateParameterType = 'time/number pair, or an <code>IndicatorDataPoint</code>';
 $constructorArguments = '20, 0.5';
 $updateParameterValue = 'bar.EndTime, bar.Close';

@@ -8,6 +8,7 @@ $typeName = 'ArnaudLegouxMovingAverage';
 $helperName = 'ALMA';
 $helperArguments = 'symbol, 10, 6, 0.85';
 $properties = array();
+$otherProperties = array();
 $updateParameterType = 'time/number pair, or an <code>IndicatorDataPoint</code>';
 $constructorArguments = '10, 6, 0.85';
 $updateParameterValue = 'bar.EndTime, bar.Close';

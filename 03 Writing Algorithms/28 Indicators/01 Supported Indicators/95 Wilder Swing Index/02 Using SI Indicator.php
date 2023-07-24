@@ -8,6 +8,7 @@ $typeName = 'WilderSwingIndex';
 $helperName = 'SI';
 $helperArguments = 'symbol, 20';
 $properties = array();
+$otherProperties = array();
 $updateParameterType = 'a <code>TradeBar</code>';
 $constructorArguments = '20';
 $updateParameterValue = 'bar';

@@ -8,6 +8,7 @@ $typeName = 'AccelerationBands';
 $helperName = 'ABANDS';
 $helperArguments = 'symbol, 10, 4, MovingAverageType.Simple';
 $properties = array("MiddleBand","UpperBand","LowerBand");
+$otherProperties = array();
 $updateParameterType = 'time/number pair, or an <code>IndicatorDataPoint</code>';
 $constructorArguments = '"", 10, 4, MovingAverageType.Simple';
 $updateParameterValue = 'bar.EndTime, bar.Close';

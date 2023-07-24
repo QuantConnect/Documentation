@@ -8,6 +8,7 @@ $typeName = 'StandardDeviation';
 $helperName = 'STD';
 $helperArguments = 'symbol, 22';
 $properties = array();
+$otherProperties = array();
 $updateParameterType = 'time/number pair, or an <code>IndicatorDataPoint</code>';
 $constructorArguments = '22';
 $updateParameterValue = 'bar.EndTime, bar.Close';

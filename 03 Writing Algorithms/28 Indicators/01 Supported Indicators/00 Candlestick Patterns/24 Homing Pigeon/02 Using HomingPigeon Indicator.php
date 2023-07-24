@@ -8,6 +8,7 @@ $typeName = 'HomingPigeon';
 $helperName = 'HomingPigeon';
 $helperArguments = 'symbol';
 $properties = array();
+$otherProperties = array();
 $updateParameterType = 'a <code>TradeBar</code>';
 $constructorArguments = '';
 $updateParameterValue = 'bar';

@@ -8,6 +8,7 @@ $typeName = 'RegressionChannel';
 $helperName = 'RC';
 $helperArguments = 'symbol, 20, 2';
 $properties = array("LinearRegression","UpperChannel","LowerChannel","Intercept","Slope");
+$otherProperties = array();
 $updateParameterType = 'time/number pair, or an <code>IndicatorDataPoint</code>';
 $constructorArguments = '20, 2';
 $updateParameterValue = 'bar.EndTime, bar.Close';

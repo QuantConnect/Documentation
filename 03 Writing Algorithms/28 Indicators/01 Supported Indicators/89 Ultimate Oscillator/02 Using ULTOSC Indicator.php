@@ -8,6 +8,7 @@ $typeName = 'UltimateOscillator';
 $helperName = 'ULTOSC';
 $helperArguments = 'symbol, 5, 10, 20';
 $properties = array();
+$otherProperties = array();
 $updateParameterType = 'a <code>TradeBar</code>, or <code>QuoteBar</code>';
 $constructorArguments = '5, 10, 20';
 $updateParameterValue = 'bar';

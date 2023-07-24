@@ -8,6 +8,7 @@ $typeName = 'AverageTrueRange';
 $helperName = 'ATR';
 $helperArguments = 'symbol, 20, MovingAverageType.Simple';
 $properties = array("TrueRange");
+$otherProperties = array();
 $updateParameterType = 'a <code>TradeBar</code>, or <code>QuoteBar</code>';
 $constructorArguments = '20, MovingAverageType.Simple';
 $updateParameterValue = 'bar';

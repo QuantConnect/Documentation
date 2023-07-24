@@ -8,6 +8,7 @@ $typeName = 'MassIndex';
 $helperName = 'MASS';
 $helperArguments = 'symbol, 9, 25';
 $properties = array();
+$otherProperties = array();
 $updateParameterType = 'a <code>TradeBar</code>';
 $constructorArguments = '9, 25';
 $updateParameterValue = 'bar';

@@ -8,6 +8,7 @@ $typeName = 'Harami';
 $helperName = 'Harami';
 $helperArguments = 'symbol';
 $properties = array();
+$otherProperties = array();
 $updateParameterType = 'a <code>TradeBar</code>';
 $constructorArguments = '';
 $updateParameterValue = 'bar';

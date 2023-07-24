@@ -8,6 +8,7 @@ $typeName = 'AugenPriceSpike';
 $helperName = 'APS';
 $helperArguments = 'symbol, 3';
 $properties = array();
+$otherProperties = array();
 $updateParameterType = 'time/number pair, or an <code>IndicatorDataPoint</code>';
 $constructorArguments = '3';
 $updateParameterValue = 'bar.EndTime, bar.Close';

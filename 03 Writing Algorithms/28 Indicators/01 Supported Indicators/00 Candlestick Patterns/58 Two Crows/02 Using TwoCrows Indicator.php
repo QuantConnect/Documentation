@@ -8,6 +8,7 @@ $typeName = 'TwoCrows';
 $helperName = 'TwoCrows';
 $helperArguments = 'symbol';
 $properties = array();
+$otherProperties = array();
 $updateParameterType = 'a <code>TradeBar</code>';
 $constructorArguments = '';
 $updateParameterValue = 'bar';

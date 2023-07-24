@@ -8,6 +8,7 @@ $typeName = 'PivotPointsHighLow';
 $helperName = 'PPHL';
 $helperArguments = 'symbol, 10, 10, 100';
 $properties = array();
+$otherProperties = array();
 $updateParameterType = 'time/number pair, or an <code>IndicatorDataPoint</code>';
 $constructorArguments = '10, 10, 100';
 $updateParameterValue = 'bar.EndTime, bar.Close';

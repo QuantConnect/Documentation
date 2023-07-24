@@ -8,6 +8,7 @@ $typeName = 'MomersionIndicator';
 $helperName = 'MOMERSION';
 $helperArguments = 'symbol, 10, 20';
 $properties = array();
+$otherProperties = array();
 $updateParameterType = 'time/number pair, or an <code>IndicatorDataPoint</code>';
 $constructorArguments = '10, 20';
 $updateParameterValue = 'bar.EndTime, bar.Close';

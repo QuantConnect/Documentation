@@ -8,6 +8,7 @@ $typeName = 'RelativeStrengthIndex';
 $helperName = 'RSI';
 $helperArguments = 'symbol, 14';
 $properties = array("AverageLoss","AverageGain");
+$otherProperties = array();
 $updateParameterType = 'time/number pair, or an <code>IndicatorDataPoint</code>';
 $constructorArguments = '14';
 $updateParameterValue = 'bar.EndTime, bar.Close';

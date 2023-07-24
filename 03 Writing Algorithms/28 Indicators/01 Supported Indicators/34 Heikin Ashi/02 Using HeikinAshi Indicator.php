@@ -8,6 +8,7 @@ $typeName = 'HeikinAshi';
 $helperName = 'HeikinAshi';
 $helperArguments = 'symbol';
 $properties = array("Open","High","Low","Close","Volume");
+$otherProperties = array();
 $updateParameterType = 'a <code>TradeBar</code>, or <code>QuoteBar</code>';
 $constructorArguments = '';
 $updateParameterValue = 'bar';

@@ -8,6 +8,7 @@ $typeName = 'EaseOfMovementValue';
 $helperName = 'EMV';
 $helperArguments = 'symbol, 1, 10000';
 $properties = array();
+$otherProperties = array();
 $updateParameterType = 'a <code>TradeBar</code>';
 $constructorArguments = '1, 10000';
 $updateParameterValue = 'bar';

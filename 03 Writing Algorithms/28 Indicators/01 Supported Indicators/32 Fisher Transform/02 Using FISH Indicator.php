@@ -8,6 +8,7 @@ $typeName = 'FisherTransform';
 $helperName = 'FISH';
 $helperArguments = 'symbol, 20';
 $properties = array();
+$otherProperties = array();
 $updateParameterType = 'a <code>TradeBar</code>, or <code>QuoteBar</code>';
 $constructorArguments = '20';
 $updateParameterValue = 'bar';

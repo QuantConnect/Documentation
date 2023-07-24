@@ -8,6 +8,7 @@ $typeName = 'LeastSquaresMovingAverage';
 $helperName = 'LSMA';
 $helperArguments = 'symbol, 20';
 $properties = array("Intercept","Slope");
+$otherProperties = array();
 $updateParameterType = 'time/number pair, or an <code>IndicatorDataPoint</code>';
 $constructorArguments = '20';
 $updateParameterValue = 'bar.EndTime, bar.Close';

@@ -8,6 +8,7 @@ $typeName = 'McClellanOscillator';
 $helperName = 'MOSC';
 $helperArguments = '[symbol, Symbol.Create("QQQ", SecurityType.Equity, Market.USA)]';
 $properties = array("EMAFast","EMASlow","ADDifference");
+$otherProperties = array();
 $updateParameterType = 'a <code>TradeBar</code>';
 $constructorArguments = '""';
 $updateParameterValue = 'bar';

@@ -8,6 +8,7 @@ $typeName = 'BalanceOfPower';
 $helperName = 'BOP';
 $helperArguments = 'symbol';
 $properties = array();
+$otherProperties = array();
 $updateParameterType = 'a <code>TradeBar</code>, or <code>QuoteBar</code>';
 $constructorArguments = '';
 $updateParameterValue = 'bar';

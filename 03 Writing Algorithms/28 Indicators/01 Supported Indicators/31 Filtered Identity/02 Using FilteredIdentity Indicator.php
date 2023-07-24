@@ -8,6 +8,7 @@ $typeName = 'FilteredIdentity';
 $helperName = 'FilteredIdentity';
 $helperArguments = 'symbol, filter = lambda x: x.Close > x.Open';
 $properties = array();
+$otherProperties = array();
 $updateParameterType = 'time/number pair, or an <code>IndicatorDataPoint</code>';
 $constructorArguments = '"SPY", filter = lambda x: x.Close > x.Open';
 $updateParameterValue = 'bar.EndTime, bar.Close';

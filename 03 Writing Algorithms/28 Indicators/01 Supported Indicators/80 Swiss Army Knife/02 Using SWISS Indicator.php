@@ -8,6 +8,7 @@ $typeName = 'SwissArmyKnife';
 $helperName = 'SWISS';
 $helperArguments = 'symbol, 20, 0.2, SwissArmyKnifeTool.Gauss';
 $properties = array();
+$otherProperties = array();
 $updateParameterType = 'time/number pair, or an <code>IndicatorDataPoint</code>';
 $constructorArguments = '20, 0.2, SwissArmyKnifeTool.Gauss';
 $updateParameterValue = 'bar.EndTime, bar.Close';

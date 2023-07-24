@@ -8,6 +8,7 @@ $typeName = 'ArmsIndex';
 $helperName = 'TRIN';
 $helperArguments = '[symbol, Symbol.Create("QQQ", SecurityType.Equity, Market.USA)]';
 $properties = array("ADRatio","ADVRatio");
+$otherProperties = array();
 $updateParameterType = 'a <code>TradeBar</code>';
 $constructorArguments = '""';
 $updateParameterValue = 'bar';
