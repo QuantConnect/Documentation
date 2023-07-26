@@ -1,4 +1,4 @@
-<p>Follow these steps to implement the short straddle strategy:</p>
+<p>Follow these steps to implement the long straddle strategy:</p>
 
 <ol>
     <li>In the <code>Initialize</code> method, set the start date, end date, cash, and <a href="/docs/v2/writing-algorithms/universes/equity-options">Option universe</a>.</li>
@@ -61,13 +61,13 @@ public override void Initialize()
 
     <li>In the <code>OnData</code> method, call the <code>OptionStrategies.Straddle</code> method and then submit the order.</li>
     <div class="section-example-container">
-        <pre class="csharp">var shortStraddle = OptionStrategies.ShortStraddle(_symbol, contracts[0].Strike, expiry);
-Buy(shortStraddle, 1);<br></pre>
-        <pre class="python">short_straddle = OptionStrategies.ShortStraddle(self.symbol, contracts[0].Strike, expiry)
-self.Buy(short_straddle, 1)</pre>
+        <pre class="csharp">var longStraddle = OptionStrategies.Straddle(_symbol, contracts[0].Strike, expiry);
+Buy(longStraddle, 1);<br></pre>
+        <pre class="python">long_straddle = OptionStrategies.Straddle(self.symbol, contracts[0].Strike, expiry)
+self.Buy(long_straddle, 1)</pre>
     </div>
 
-<? 
+<?
 $methodNames = array("Buy");
 include(DOCS_RESOURCES."/trading-and-orders/option-strategy-extra-args.php"); 
 ?>
