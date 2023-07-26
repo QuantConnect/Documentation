@@ -5,6 +5,8 @@
     <pre class="python">self.SetRuntimeStatistic(name, value)</pre>
 </div>
 
+<p>Don't try to overwrite any of the preceding default runtime statistics. LEAN overwrites the value that you try to set.</p>
+
 <? if ($writingAlgorithms) { ?>
 <p>To get the value of a custom runtime statistic, index the <code>RuntimeStatistics</code> member of the algorithm class with the statistic name. The values of the <code>RuntimeStatistics</code> dictionary are strings, so you may need to cast the result to a different data type.</p>
 
