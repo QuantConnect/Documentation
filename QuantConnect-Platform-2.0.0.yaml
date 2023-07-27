@@ -609,7 +609,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/LiveAlgorithm'
+                $ref: '#/components/schemas/CreateLiveAlgorithmResponse'
         "401":
           description: Unauthorized response from the API. Key is missing, invalid, or timestamp is too old for hash.
           headers:
@@ -1112,24 +1112,26 @@ components:
         id:
           type: string
           description: '''Interactive'' / ''FXCM'' / ''Oanda'' / ''Tradier'' /''PaperTrading'''
+          example: "Default"
         user:
           type: string
           description: Username associated with brokerage.
+          example: ""
         password:
           type: string
           description: Password associated with brokerage.
+          example: ""
         environment:
-          $ref: '#/components/schemas/BrokerageEnvironment'
+          type: string
+          description: Represents the types of environments supported by brokerages for trading.
+          enum:
+            - live
+            - paper
         account:
           type: string
           description: Account of the associated brokerage.
+          example: ""
       description: Base class for settings that must be configured per Brokerage to create new algorithms via the API.
-    BrokerageEnvironment:
-      type: string
-      description: Represents the types of environments supported by brokerages for trading.
-      enum:
-      - live
-      - paper
     Cash:
       type: object
       properties:
@@ -1253,22 +1255,54 @@ components:
     CreateLiveAlgorithmRequest:
       type: object
       properties:
+        versionId:
+          type: string
+          description: The version of the Lean used to run the algorithm. -1 is master, however, sometimes this can create problems with live deployments. If you experience problems using, try specifying the version of Lean you would like to use.
+          example: "-1"
         projectId:
           type: integer
           description: Project Id.
         compileId:
           type: string
           description: Compile Id.
-        serverType:
+        nodeId:
           type: string
-          description: Type of server instance that will run the algorithm.
-        baseLiveAlgorithmSettings:
+          description: Id of the node that will run the algorithm.
+        brokerage:
           $ref: '#/components/schemas/BaseLiveAlgorithmSettings'
+      description: Request to create a live algorithm.
+    CreateLiveAlgorithmResponse:
+      type: object
+      properties:
+        responseCode:
+          type: string
+          description: Response code
+          example: "200 OK"
         versionId:
           type: string
-          description: The version of the Lean used to run the algorithm. -1 is master, however, sometimes this can create problems with live deployments. If you experience problems using, try specifying the version of Lean you would like to use.
-          example: "-1"
-      description: Request to create a live algorithm.
+          description: The version of the Lean used to run the algorithm.
+          example: "15753"
+        projectId:
+          type: integer
+          description: Project Id.
+        deployId:
+          type: string
+          description: Deployment Id.
+        source:
+          type: string
+          description: Id of the node that will run the algorithm.
+          example: "api-v2"
+        queueHandler:
+          type: string
+        success:
+          type: boolean
+          description: Indicate if the API request was successful.
+        errors:
+          type: array
+          description: List of errors with the API call.
+          items:
+            type: string
+      description: Response received when deploying a live algorithm.
     CreateProjectRequest:
       type: object
       properties:
