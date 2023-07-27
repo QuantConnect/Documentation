@@ -742,6 +742,37 @@ paths:
               explode: false
               schema:
                 type: string
+  /live/read/insights:
+    post:
+      tags:
+      - 01 Cloud Platform
+      - 99 API Reference
+      - 07 Live Management
+      - 02 Read Live Algorithm
+      - 05 Insights
+      summary: Read out the insights of a live algorithm.
+      requestBody:
+        description: Fetch the insights of a live algorithm for the project Id and steps provided.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReadLiveInsightsRequest'
+        required: true
+      responses:
+        "200":
+          description: Insights of the live algorithm within range.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LiveInsightsResponse'
+        "401":
+          description: Unauthorized response from the API. Key is missing, invalid, or timestamp is too old for hash.
+          headers:
+            www_authenticate:
+              style: simple
+              explode: false
+              schema:
+                type: string
   /live/update/liquidate:
     post:
       tags:
@@ -1347,6 +1378,49 @@ components:
           description: Current unrealized P/L of the holding.
           format: float
       description: Live results object class for packaging live result data.
+    Insight:
+      type: object
+      properties:
+        Id:
+          type: string
+          description: Insight ID.
+        Time:
+          type: number
+          description: Gets the utc unixtime this insight was created.
+          format: float
+        SignalDirection:
+          type: string
+          description: Gets the predicted direction, down, flat or up.
+          enum:
+          - Down
+          - Flat
+          - Up
+        Type:
+          type: string
+          description: Gets the type of insight, for example, price or volatility
+          enum:
+          - Price
+          - Volatility
+        Symbol:
+          type: string
+          description: Gets the symbol this insight is for
+        Direction:
+          type: number
+          description: Gets the direction score
+          format: float
+        Magnitude:
+          type: number
+          description: Gets the magnitude score
+          format: float
+        Period:
+          type: number
+          description: Gets the period, in seconds, over which this insight is expected to come to fruition
+          format: float
+        Weight:
+          type: number
+          description: Gets the portfolio weight of this insight
+          format: float
+      description: Insight struct for emitting new prediction.    
     InsightScore:
       type: object
       properties:
@@ -1544,8 +1618,9 @@ components:
       type: object
       properties:
         orders:
-          type: object
-          additionalProperties:
+          type: array
+          description: Collection of orders.
+          items:
             $ref: '#/components/schemas/Order'
         Length:
           type: integer
@@ -1554,6 +1629,21 @@ components:
           type: integer
           description: Timestamp of the latest order event.
       description: Contains orders and the number of orders of the live algorithm in the request criteria.
+    LiveInsightsResponse:
+      type: object
+      properties:
+        insights:
+          type: array
+          description: Collection of insights.
+          items:
+            $ref: '#/components/schemas/Insight'
+        length:
+          type: integer
+          description: Total number of returned insights
+        success:
+          type: boolean
+          description: Indicate if the API request was successful.
+      description: Contains insights and the number of insights of the live algorithm in the request criteria.
     LiveResultsData:
       type: object
       properties:
@@ -2198,6 +2288,22 @@ components:
           type: integer
           description: Id of the project from which to read the live algorithm.
       description: Request to read orders from a live algorithm.
+    ReadLiveInsightsRequest:
+      required:
+      - end
+      - projectId
+      type: object
+      properties:
+        start:
+          type: integer
+          description: Starting index of the insights to be fetched. Required if end > 100.
+        end:
+          type: integer
+          description: Last index of the insights to be fetched. Note that end - start must be less than 100.
+        projectId:
+          type: integer
+          description: Id of the project from which to read the live algorithm.
+      description: Request to read insights from a live algorithm.
     ListLiveAlgorithmsRequest:
       type: object
       properties:
