@@ -27,7 +27,7 @@
 <?}?>
     <li><span class="qualifier">(Optional)</span> <a href="/docs/v2/cloud-platform/live-trading/notifications">Set up notifications</a>.</li>
     <li>Configure the <span class="box-name">Automatically restart algorithm</span> setting.</li>
-    <p>By enabling automatic restarts, the algorithm will use best efforts to restart the algorithm if it fails due to a runtime error. This can help improve the algorithm's resilience to temporary outages such as a brokerage API disconnection.</p>
+    <p>By enabling <a href="/docs/v2/cloud-platform/live-trading/deployment#07-Automatic-Restarts">automatic restarts</a>, the algorithm will use best efforts to restart the algorithm if it fails due to a runtime error. This can help improve the algorithm's resilience to temporary outages such as a brokerage API disconnection.</p>
     <li>Click <span class="button-name">Deploy</span>.</li>
     <?=$postDeploy?>
 </ol>
