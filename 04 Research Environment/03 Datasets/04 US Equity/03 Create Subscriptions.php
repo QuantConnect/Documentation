@@ -1,19 +1,10 @@
 <p>Follow these steps to subscribe to a US Equity security:</p>
 
 <ol>
-    <li class="csharp">Load the required assembly files and data types.</li>
-    <div class="csharp section-example-container">
-        <pre class="csharp">#load "../Initialize.csx"
-#load "../QuantConnect.csx"
-#r "../Microsoft.Data.Analysis.dll"
-
-using QuantConnect;
-using QuantConnect.Data;
-using QuantConnect.Algorithm;
-using QuantConnect.Research;
-using QuantConnect.Indicators;
-using Microsoft.Data.Analysis;</pre>
-    </div>
+<?
+$additionalImports = "";
+include(DOCS_RESOURCES."/datasets/research-environment/load-csharp-assemblies.php");
+?>
     <li>Create a <code>QuantBook</code>.</li>
     <div class="section-example-container">
         <pre class="csharp">var qb = new QuantBook();</pre>
