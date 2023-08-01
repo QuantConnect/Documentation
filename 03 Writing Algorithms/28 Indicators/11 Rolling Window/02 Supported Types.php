@@ -1,1 +1,1 @@
-<?php echo file_get_contents(DOCS_RESOURCES."/rolling-window/supported-types.html"); ?>
+<? include(DOCS_RESOURCES."/rolling-window/supported-types.html"); ?>

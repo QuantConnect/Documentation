@@ -1,1 +1,1 @@
-<?php echo file_get_contents(DOCS_RESOURCES."/rolling-window/warm-up.html"); ?>
+<? include(DOCS_RESOURCES."/rolling-window/warm-up.html"); ?>

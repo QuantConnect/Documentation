@@ -1,0 +1,1 @@
+<? include(DOCS_RESOURCES."/rolling-window/combine-with-consolidators.html"); ?>
