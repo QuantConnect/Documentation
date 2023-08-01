@@ -18,62 +18,67 @@ if __name__ == '__main__':
         popen("git clone https://github.com/QuantConnect/Lean.git ../Lean").close()
         popen("dotnet restore ../Lean/QuantConnect.Lean.sln").close()
 
-    cloud_added = {
-        "Accord": "3.6.0",
-        "Accord.Audio": "3.6.0",
-        "Accord.Fuzzy": "3.6.0",
-        "Accord.Genetic": "3.6.0",
-        "Accord.MachineLearning": "3.6.0",
-        "Accord.MachineLearning.GPL": "3.6.0",
-        "Accord.Math": "3.6.0",
-        "Accord.Statistics": "3.6.0",
-        "Deedle": "2.1.0",
-        "DynamicInterop": "0.9.1",
-        "Google.OrTools": "9.4.1874",
-        "MathNet.Filtering": "0.7.0",
-        "MathNet.Filtering.Kalman": "0.7.0",
-        "MathNet.Numerics": "4.15.0",
-        "MathNet.Spatial": "0.6.0",
-        "Microsoft.Data.Analysis": "0.19.1",
-        "Microsoft.ML": "1.7.1",
-        "Microsoft.ML.CpuMath": "1.7.1",
-        "Microsoft.ML.DataView": "1.7.1",
-        "Microsoft.ML.Ensemble": "0.19.1",
-        "Microsoft.ML.FastTree": "1.7.1",
-        "Microsoft.ML.LightGbm": "1.7.1",
-        "Microsoft.ML.Mkl.Components": "1.7.1",
-        "Microsoft.ML.OnnxRuntime": "1.12.1",
-        "Microsoft.ML.TensorFlow": "1.7.1",
-        "Microsoft.ML.TimeSeries": "1.7.1",
-        "Newtonsoft.Json": "12.0.3",
-        "NodaTime": "3.0.5",
-        "Plotly.NET": "3.0.1",
-        "Plotly.NET.Interactive": "3.0.2",
-        "QLNet": "1.12.0",
-        "RestSharp": "106.12.0",
-        "Catalyst": "1.0.31087",
-        "Catalyst.Models.English": "1.0.30952",
-        "CNTK.CPUOnly": "2.8.0-rc0.dev20200201",
-        "LibTopoART": "0.96.0",
-        "NumSharp": "0.30.0",
-        "SharpLearning.DecisionTrees": "0.31.8",
-        "SharpLearning.AdaBoost": "0.31.8",
-        "SharpLearning.RandomForest": "0.31.8",
-        "SharpLearning.GradientBoost": "0.31.8",
-        "SharpLearning.Neural": "0.31.8",
-        "SharpLearning.Ensemble": "0.31.8",
-        "SharpLearning.Common.Interfaces": "0.31.8",
-        "SharpLearning.CrossValidation": "0.31.8",
-        "SharpLearning.Metrics": "0.31.8",
-        "SharpLearning.Optimization": "0.31.8",
-        "SharpLearning.Containers": "0.31.8",
-        "SharpLearning.InputOutput": "0.31.8",
-        "SharpLearning.FeatureTransformations": "0.31.8",
-        "SharpLearning.XGBoost": "0.31.8",
-        "SharpNeatLib": "2.4.4",
-        "TensorFlow.Keras": "0.7.0",
-        "TensorFlow.NET": "0.70.1"
-    }
+    package_reference = '''<PackageReference Include="Accord" Version="3.6.0" />
+    <PackageReference Include="Accord.Audio" Version="3.6.0" />
+    <PackageReference Include="Accord.Fuzzy" Version="3.6.0" />
+    <PackageReference Include="Accord.Genetic" Version="3.6.0" />
+    <PackageReference Include="Accord.MachineLearning" Version="3.6.0" />
+    <PackageReference Include="Accord.MachineLearning.GPL" Version="3.6.0" />
+    <PackageReference Include="Accord.Math" Version="3.6.0" />
+    <PackageReference Include="Accord.Statistics" Version="3.6.0" />
+    <PackageReference Include="Deedle" Version="2.1.0" />
+    <PackageReference Include="DynamicInterop" Version="0.9.1" />
+    <PackageReference Include="Google.OrTools" Version="9.6.2534" />
+    <PackageReference Include="MathNet.Filtering" Version="0.7.0" />
+    <PackageReference Include="MathNet.Filtering.Kalman" Version="0.7.0" />
+    <PackageReference Include="MathNet.Numerics" Version="5.0.0" />
+    <PackageReference Include="MathNet.Spatial" Version="0.6.0" />
+    <PackageReference Include="Microsoft.Data.Analysis" Version="0.20.1" />
+    <PackageReference Include="Microsoft.ML.CpuMath" Version="2.0.1" />
+    <PackageReference Include="Microsoft.ML.DataView" Version="2.0.1" />
+    <PackageReference Include="Microsoft.ML.Ensemble" Version="0.20.1" />
+    <PackageReference Include="Microsoft.ML.FastTree" Version="2.0.1" />
+    <PackageReference Include="Microsoft.ML.LightGbm" Version="2.0.1" />
+    <PackageReference Include="Microsoft.ML.Mkl.Components" Version="2.0.1" />
+    <PackageReference Include="Microsoft.ML.OnnxRuntime" Version="1.15.1" />
+    <PackageReference Include="Microsoft.ML.TensorFlow" Version="2.0.1" />
+    <PackageReference Include="Microsoft.ML.TimeSeries" Version="2.0.1" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.2" />
+    <PackageReference Include="NodaTime" Version="3.0.5" />
+    <PackageReference Include="OpenAI" Version="1.7.2" />
+    <PackageReference Include="QLNet" Version="1.13.0" />
+    <PackageReference Include="R.NET" Version="1.9.0" />
+    <PackageReference Include="QuantConnect.pythonnet" Version="2.0.21" />
+    <PackageReference Include="RestSharp" Version="106.12.0" />
+    <PackageReference Include="Catalyst" Version="1.0.39645" />
+    <PackageReference Include="Catalyst.Models.English" Version="1.0.30952" />
+    <PackageReference Include="CNTK.CPUOnly" Version="2.8.0-rc0.dev20200201" />
+    <PackageReference Include="LibTopoART" Version="0.97.0" />
+    <PackageReference Include="Microsoft.ML" Version="2.0.1" />
+    <PackageReference Include="NumSharp" Version="0.30.0" />
+    <PackageReference Include="SharpLearning.DecisionTrees" Version="0.31.8" />
+    <PackageReference Include="SharpLearning.AdaBoost" Version="0.31.8" />
+    <PackageReference Include="SharpLearning.RandomForest" Version="0.31.8" />
+    <PackageReference Include="SharpLearning.GradientBoost" Version="0.31.8" />
+    <PackageReference Include="SharpLearning.Neural" Version="0.31.8" />
+    <PackageReference Include="SharpLearning.Ensemble" Version="0.31.8" />
+    <PackageReference Include="SharpLearning.Common.Interfaces" Version="0.31.8" />
+    <PackageReference Include="SharpLearning.CrossValidation" Version="0.31.8" />
+    <PackageReference Include="SharpLearning.Metrics" Version="0.31.8" />
+    <PackageReference Include="SharpLearning.Optimization" Version="0.31.8" />
+    <PackageReference Include="SharpLearning.Containers" Version="0.31.8" />
+    <PackageReference Include="SharpLearning.InputOutput" Version="0.31.8" />
+    <PackageReference Include="SharpLearning.FeatureTransformations" Version="0.31.8" />
+    <PackageReference Include="SharpLearning.XGBoost" Version="0.31.8" />
+    <PackageReference Include="SharpNeatLib" Version="2.4.4" />
+    <PackageReference Include="TensorFlow.Keras" Version="0.11.2" />
+    <PackageReference Include="TensorFlow.NET" Version="0.110.2" />
+    <PackageReference Include="Plotly.NET.Interactive" Version="4.2.1" />'''
+
+    cloud_added = {}
+    for line in package_reference.split('\n'):
+        parts = line.split('"')
+        cloud_added[parts[1]] = parts[3]
 
     selected = {
         'tensorflow': {
