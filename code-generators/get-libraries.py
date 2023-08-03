@@ -73,7 +73,8 @@ if __name__ == '__main__':
     <PackageReference Include="SharpNeatLib" Version="2.4.4" />
     <PackageReference Include="TensorFlow.Keras" Version="0.11.2" />
     <PackageReference Include="TensorFlow.NET" Version="0.110.2" />
-    <PackageReference Include="Plotly.NET.Interactive" Version="4.2.1" />'''
+    <PackageReference Include="Plotly.NET" Version="3.0.1" />
+    <PackageReference Include="Plotly.NET.Interactive" Version="3.0.2" />'''
 
     cloud_added = {}
     for line in package_reference.split('\n'):
