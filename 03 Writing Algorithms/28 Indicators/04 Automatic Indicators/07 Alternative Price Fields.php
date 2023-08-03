@@ -5,7 +5,7 @@ assets with <code>TradeBar</code> data, that price is the <code>TradeBar</code> 
 	<pre class="python"># Define a 10-period daily RSI indicator with shortcut helper method
 # Select the Open price to update the indicator
 self.rsi = self.RSI("SPY", 10,  MovingAverageType.Simple, Resolution.Daily, Field.Open)</pre>
-	<pre class="csharp fsharp">// Define a 10-period daily RSI indicator with shortcut helper method
+	<pre class="csharp">// Define a 10-period daily RSI indicator with shortcut helper method
 // Select the Open price to update the indicator
 _rsi = RSI("SPY", 10,  MovingAverageType.Simple, Resolution.Daily, Field.Open);</pre>
 </div>
