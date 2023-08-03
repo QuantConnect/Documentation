@@ -10,7 +10,7 @@
 current_price = self.bb.Current.Value
 bb_upper_band = self.bb.UpperBand.Current.Value
 bb_lower_band = self.bb.LowerBand.Current.Value</pre>
-	<pre class="csharp fsharp">var sma = _sma.Current.Value
+	<pre class="csharp">var sma = _sma.Current.Value
 
 var currentPrice = _bb.Current.Value
 var bbUpperBand = _bb.UpperBand.Current.Value
@@ -22,14 +22,39 @@ var bbLowerBand = _bb.LowerBand.Current.Value</pre>
 <div class="section-example-container">
 	<pre class="python">if self.sma &gt; self.bb.UpperBand:
     self.SetHoldings(self.symbol, -0.1)</pre>
-	<pre class="csharp fsharp">if (_sma &gt; _bb.UpperBand)
+	<pre class="csharp">if (_sma &gt; _bb.UpperBand)
 {
     SetHoldings(_symbol, -0.1);
 }</pre>
 </div>
 
 <h4>Historical Indicator Values</h4>
-<?
-$linkToIndicatorsPage = false;
-include(DOCS_RESOURCES."/indicators/historical-values.php");
-?>
+
+<p>To access historical indicator values, use reverse list access semantics. The current (most recent) indicator value is at index 0, the previous value is at index 1 or the <code>Previous</code> object, and so on until the length of the window. You increase the window size and get a <code class="csharp">null</code><code class="python">None</code> value when using an index greater than the length of the window.</p>        
+
+<div class="section-example-container">
+	<pre class="csharp">var currentBB = _bb[0];
+var previousBB = _bb.Previous; // or _bb[1];
+var oldestBB = _bb[_bb.window.Count - 1];
+var nullValue = _bb[100];
+
+var previousUpperBand = _bb.UpperBand.Previous;
+var oldestUpperBand = _bb.UpperBand[_bb.UpperBand.Window.Count - 1];</pre>
+	<pre class="python">current_bb = self.bb[0]
+previous_bb = self.bb.Previous # or self.bb[1]
+oldest_bb = self.bb[self.bb.Count - 1]
+var none_value = self.bb[100];
+
+previous_upper_band = self.bb.UpperBand.Previous;
+oldest_upper_band = self.bb.UpperBand[self.bb.UpperBand.Window.Count - 1];</pre>
+</div>
+
+<p>You can iterate indicators to access their historical values.</p>
+<div class="section-example-container">
+	<pre class="csharp">foreach (var value in _bb)
+{
+    Log(value.ToString());
+}</pre>
+	<pre class="python">for value in self.bb:
+	self.Log(f'{value}');</pre>
+</div>
