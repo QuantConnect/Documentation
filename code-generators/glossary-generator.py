@@ -1,15 +1,10 @@
-import glob
 import os
-import shutil
+from glob import iglob
+from shutil import rmtree
 
-dir = '03 Writing Algorithms/01 Key Concepts/09 Glossary'
-temp_dir = 'tmp/03 Writing Algorithms/01 Key Concepts/09 Glossary'
+dir = '03 Writing Algorithms/01 Key Concepts/99 Glossary'
 if os.path.exists(dir):
-    shutil.copytree(dir, temp_dir, dirs_exist_ok=True,
-                    ignore=lambda dir, files: [f for f in files if os.path.isfile(os.path.join(dir, f)) and str(f) != "metadata.json"])
-    shutil.rmtree(dir)
-    shutil.copytree(temp_dir, dir, dirs_exist_ok=True)
-    shutil.rmtree(temp_dir)
+    rmtree(dir)
 os.makedirs(dir, exist_ok=True)
 
 # Get items in the dict
@@ -40,12 +35,26 @@ $getGlossaryTermHTML({key});
 
 with open(f"{dir}/01 Introduction.php", "w", encoding="utf-8") as php:       
     php.write('<p>This page defines terms in QuantConnect products and documentation.</p>')
-    
+
+with open(f"{dir}/metadata.json", "w", encoding="utf-8") as json:       
+    json.write('''{
+    "type": "metadata",
+    "values": {
+        "description": "This page defines terms in QuantConnect products and documentation.",
+        "keywords": "alpha, sharpe ratio, win rate, capacity",
+        "og:description": "This page defines terms in QuantConnect products and documentation.",
+        "og:title": "Glossary - Documentation QuantConnect.com",
+        "og:type": "website",
+        "og:site_name": "Glossary - QuantConnect.com",
+        "og:image": "https://cdn.quantconnect.com/docs/i/writing-algorithms/key-concepts/glossary.png"
+    }
+}''')
+
 # Search and replace all links
 for root_dir in ["01 Cloud Platform/", "03 Writing Algorithms/", "04 Research Environment/", "05 Lean CLI/", "06 LEAN Engine/"]:
-    for filename in list(glob.iglob(root_dir + "**/*.html", recursive=True)) + \
-                    list(glob.iglob(root_dir + "**/*.php", recursive=True)) + \
-                    list(glob.iglob(root_dir + "**/*.json", recursive=True)):
+    for filename in list(iglob(root_dir + "**/*.html", recursive=True)) + \
+                    list(iglob(root_dir + "**/*.php", recursive=True)) + \
+                    list(iglob(root_dir + "**/*.json", recursive=True)):
         filename = filename.replace("\\", os.path.sep).replace("/", os.path.sep)
         content = open(filename, 'r', encoding="utf-8").read()
         
