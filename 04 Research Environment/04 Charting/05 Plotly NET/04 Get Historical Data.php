@@ -9,7 +9,7 @@ var tickers = new[]
     "GS",   // Goldman Sachs Group, Inc.
     "JPM",  // J P Morgan Chase &amp; Co
     "WFC"   // Wells Fargo &amp; Company   
-}
+};
 var symbols = tickers.Select(ticker => qb.AddEquity(ticker, Resolution.Daily).Symbol);
 var history = qb.History(symbols, new DateTime(2021, 1, 1), new DateTime(2022, 1, 1));</pre>
 </div>

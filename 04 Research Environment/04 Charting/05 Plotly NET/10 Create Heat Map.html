@@ -1,0 +1,60 @@
+<p>You must <a href="/docs/v2/research-environment/charting/plotly-net#03-Import-Libraries">import the plotting libraries</a> and <a href="/docs/v2/research-environment/charting/plotly-net#04-Get-Historical-Data">get some historical data</a> to create heat maps.</p>
+
+<p>In this example, you create a heat map that shows the correlation between the daily returns of the banking securities. Follow these steps to create the heat map:</p>
+
+<ol>
+    <li>Compute the daily returns.</li>
+    <div class="section-example-container">
+        <pre class="csharp">var data = history.SelectMany(x =&gt; x.Bars.Values)
+    .GroupBy(x =&gt; x.Symbol)
+    .Select(x =&gt;
+    {
+        var prices = x.Select(x =&gt; (double)x.Close).ToArray();
+        return Enumerable.Range(0, prices.Length - 1)
+            .Select(i =&gt; prices[i+1] / prices[i] - 1).ToArray();
+    }).ToArray().Transpose();</pre>
+    </div>
+    
+    <li>Call the <code>Measures.Correlation</code> method.</li>
+    <div class="section-example-container">
+        <pre class="csharp">var corrMatrix = Measures.Correlation(data).Select(x =&gt; x.ToList()).ToList();</pre>
+    </div>
+
+    <li>Call the <code>Plotly.NET.Chart2D.Chart.Heatmap</code> constructor with the correlation matrix.</li>
+    <div class="section-example-container">
+        <pre class="csharp">var X = Enumerable.Range(0, tickers.Length).ToList();
+
+var heatmap = Plotly.NET.Chart2D.Chart.Heatmap&lt;IEnumerable&lt;double&gt;, double, int, int, string&gt;( 
+    zData: corr,
+    X: X,
+    Y: X,
+    ShowScale: true,
+    ReverseYAxis: true
+);</pre>
+    </div>
+
+    <li>Create a <code>Layout</code>.<br></li>
+    <div class="section-example-container">
+        <pre class="csharp">var axis = new LinearAxis();
+axis.SetValue("tickvals", X);
+axis.SetValue("ticktext", tickers);
+            
+var layout = new Layout();
+layout.SetValue("xaxis", axis);
+layout.SetValue("yaxis", axis);
+layout.SetValue("title", Title.init("Banking Stocks and bank sector ETF Correlation Heat Map"));</pre>
+    </div>
+
+    <li>Assign the <code>Layout</code> to the chart.<br></li>
+    <div class="section-example-container">
+        <pre class="csharp">heatmap.WithLayout(layout);</pre>
+    </div>
+    
+    <li>Show the plot.</li>
+    <div class="section-example-container">
+        <pre class="csharp">HTML(GenericChart.toChartHTML(heatmap))</pre>
+    </div>
+
+    <p>The Jupyter Notebook displays the heat map.</p>
+    <img class="docs-image" src="https://cdn.quantconnect.com/i/tu/plotly-net-heat-map.png" alt="Plotly.NET heat map">
+</ol>
