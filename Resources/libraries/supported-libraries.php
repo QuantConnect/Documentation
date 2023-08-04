@@ -702,7 +702,8 @@ Microsoft.ML.TensorFlow              2.0.1
 Microsoft.ML.TimeSeries              2.0.1
 NumSharp                             0.30.0
 OpenAI                               1.7.2
-Plotly.NET.Interactive               4.2.1
+Plotly.NET                           3.0.1
+Plotly.NET.Interactive               3.0.2
 R.NET                                1.9.0
 SharpLearning.AdaBoost               0.31.8
 SharpLearning.Common.Interfaces      0.31.8
