@@ -198,6 +198,7 @@ echo file_get_contents(DOCS_RESOURCES."/qcalgorithm-api/tema.html");
 echo file_get_contents(DOCS_RESOURCES."/qcalgorithm-api/ticker.html");
 echo file_get_contents(DOCS_RESOURCES."/qcalgorithm-api/tp.html");
 echo file_get_contents(DOCS_RESOURCES."/qcalgorithm-api/tr.html");
+echo file_get_contents(DOCS_RESOURCES."/qcalgorithm-api/trailing-stop-order.html");
 echo file_get_contents(DOCS_RESOURCES."/qcalgorithm-api/train.html");
 echo file_get_contents(DOCS_RESOURCES."/qcalgorithm-api/trima.html");
 echo file_get_contents(DOCS_RESOURCES."/qcalgorithm-api/trin.html");
