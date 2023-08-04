@@ -43,8 +43,6 @@ $$<br>
 
 <p>So, the strategy gains $5,277.</p>
 
-<p>The following algorithm implements a long straddle Option strategy:</p>
-
 <?
 $optionStrategyName = "a long straddle";
 $pythonBacktestHash = "26487a7d8b247490e6ae365a9344c17a" ;
