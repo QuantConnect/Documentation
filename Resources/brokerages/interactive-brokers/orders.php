@@ -31,6 +31,10 @@
       <td><a rel="nofollow" target="_blank" href="https://www.interactivebrokers.com/en/index.php?f=608">Stop-Limit Orders</a></td>
     </tr>
     <tr>
+      <td><a href='/docs/v2/writing-algorithms/trading-and-orders/order-types/trailing-stop-orders'>TrailingStopOrder</a></td>
+      <td><a rel="nofollow" target="_blank" href="https://www.interactivebrokers.com/en/trading/orders/trailing-stops.php">Trailing Stop Orders</a></td>
+    </tr>
+    <tr>
       <td><a href='/docs/v2/writing-algorithms/trading-and-orders/order-types/market-on-open-orders'>MarketOnOpenOrder</a></td>
       <td><a rel="nofollow" target="_blank" href="https://www.interactivebrokers.com/en/index.php?f=598">Market-on-Open (MOO) Orders</a></td>
     </tr>
@@ -111,6 +115,15 @@
       </tr>
       <tr>
         <td><a href='/docs/v2/writing-algorithms/trading-and-orders/order-types/stop-limit-orders'>StopLimitOrder</a></td>
+        <td><img src="https://cdn.quantconnect.com/i/tu/check.png" alt="green check" width="15px;"></td>
+        <td><img src="https://cdn.quantconnect.com/i/tu/check.png" alt="green check" width="15px;"></td>
+        <td><img src="https://cdn.quantconnect.com/i/tu/check.png" alt="green check" width="15px;"></td>
+        <td><img src="https://cdn.quantconnect.com/i/tu/check.png" alt="green check" width="15px;"></td>
+        <td><img src="https://cdn.quantconnect.com/i/tu/check.png" alt="green check" width="15px;"></td>
+        <td><img src="https://cdn.quantconnect.com/i/tu/check.png" alt="green check" width="15px;"></td>
+      </tr>
+      <tr>
+        <td><a href='/docs/v2/writing-algorithms/trading-and-orders/order-types/trailing-stop-orders'>TrailingStopOrder</a></td>
         <td><img src="https://cdn.quantconnect.com/i/tu/check.png" alt="green check" width="15px;"></td>
         <td><img src="https://cdn.quantconnect.com/i/tu/check.png" alt="green check" width="15px;"></td>
         <td><img src="https://cdn.quantconnect.com/i/tu/check.png" alt="green check" width="15px;"></td>
