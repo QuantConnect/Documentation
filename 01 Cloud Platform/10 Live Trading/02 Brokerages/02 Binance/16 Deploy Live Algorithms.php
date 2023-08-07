@@ -1,7 +1,7 @@
 <?
 $brokerageName = "Binance Exchange";
-$cashState = false;
-$holdingsState = false;
+$cashState = true;
+$holdingsState = true;
 $secondBullet = "";
 $authentication = "<li>Enter your API key and secret.</li>
 <p>To generate your API credentials, see <a href='/docs/v2/cloud-platform/live-trading/brokerages/binance#02-Account-Types'>Account Types</a>. Your account details are not saved on QuantConnect.</p>
