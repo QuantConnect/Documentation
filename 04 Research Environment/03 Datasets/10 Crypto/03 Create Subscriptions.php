@@ -2,13 +2,19 @@
 
 <ol>
 <?
-$additionalImports = "";
+$additionalImports = "using QuantConnect.Securities.Crypto;
+";
 include(DOCS_RESOURCES."/datasets/research-environment/load-csharp-assemblies.php");
 ?>
     <li>Create a <code>QuantBook</code>.</li>
     <div class="section-example-container">
         <pre class="csharp">var qb = new QuantBook();</pre>
         <pre class="python">qb = QuantBook()</pre>
+    </div>
+    <li><i>(Optional)</i> Set the time zone to the data time zone.</li>
+    <div class="section-example-container">
+        <pre class="csharp">qb.SetTimeZone(TimeZones.Utc);</pre>
+        <pre class="python">qb.SetTimeZone(TimeZones.Utc)</pre>
     </div>
     <li>Call the <code>AddCrypto</code> method with a ticker and then save a reference to the Crypto <code>Symbol</code>.</li>
     <div class="section-example-container">

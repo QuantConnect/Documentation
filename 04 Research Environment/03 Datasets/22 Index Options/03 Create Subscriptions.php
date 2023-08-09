@@ -1,22 +1,12 @@
 <p>Follow these steps to subscribe to an Index Option security:</p>
 
 <ol>
-    <li class="csharp">Load the required assembly files and data types.</li>
-    <div class="csharp section-example-container">
-        <pre class="csharp">#load "../Initialize.csx"
-#load "../QuantConnect.csx"
-#r "../Microsoft.Data.Analysis.dll"
-
-using QuantConnect;
-using QuantConnect.Data;
-using QuantConnect.Data.Market;
-using QuantConnect.Algorithm;
-using QuantConnect.Securities;
-using QuantConnect.Securities.Index;
-using QuantConnect.Securities.Option;
-using QuantConnect.Research;
-using Microsoft.Data.Analysis;</pre>
-    </div>
+<?
+$additionalImports = "using QuantConnect.Securities.Index;
+using QuantConnect.Securities.IndexOption;
+";
+include(DOCS_RESOURCES."/datasets/research-environment/load-csharp-assemblies.php");
+?>
     <li>Instantiate a <code>QuantBook</code>.</li>
     <div class="section-example-container">
         <pre class="csharp">var qb = new QuantBook();</pre>

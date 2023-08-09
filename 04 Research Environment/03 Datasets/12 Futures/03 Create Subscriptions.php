@@ -2,9 +2,7 @@
 
 <ol>
 <?
-$additionalImports = "using QuantConnect.Data;
-using QuantConnect.Securities;
-using QuantConnect.Securities.Future;
+$additionalImports = "using QuantConnect.Securities.Future;
 ";
 include(DOCS_RESOURCES."/datasets/research-environment/load-csharp-assemblies.php");
 ?>
