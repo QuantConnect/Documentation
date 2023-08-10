@@ -1,0 +1,46 @@
+<p>The following example shows how to plot the daily closing price of SPY with a scatter plot:</p>
+
+<div class="section-example-container">
+	<pre class="csharp">public class ChartingDemoAlgorithm : QCAlgorithm
+{
+    public override void Initialize()
+    {
+        SetStartDate(2021, 1, 1);
+        SetEndDate(2022, 1, 1);
+        AddEquity("SPY", Resolution.Daily);
+        var chart = new Chart("Price");
+        AddChart(chart);
+        chart.AddSeries(new Series("SPY", SeriesType.Scatter, "$", Color.Green, ScatterMarkerSymbol.Triangle));
+        chart = new Chart("Candlestick");
+        AddChart(chart);
+        chart.AddSeries(new CandlestickSeries("SPY", "$"));
+    }
+
+    public override void OnEndOfDay(Symbol symbol)
+    {
+        Plot("Price", "SPY", Securities[symbol].Price);
+        Plot("Candlestick", "SPY", (TradeBar)Securities[symbol].GetLastData());
+    }
+}</pre>
+	<pre class="python">class ChartingDemoAlgorithm(QCAlgorithm):
+
+    def Initialize(self) -&gt; None:
+        self.SetStartDate(2021, 1, 1)
+        self.SetEndDate(2022, 1, 1)
+        self.AddEquity("SPY", Resolution.Daily)
+        chart = Chart("Price")
+        self.AddChart(chart)
+        chart.AddSeries(Series("SPY", SeriesType.Scatter, "$", Color.Green, ScatterMarkerSymbol.Triangle))
+        chart = Chart("Candlestick")
+        self.AddChart(chart)
+        chart.AddSeries(CandlestickSeries("SPY", "$"))
+
+    def OnEndOfDay(self, symbol: Symbol) -&gt; None:
+        self.Plot("Price", "SPY", self.Securities[symbol].Price)
+        self.Plot("Candlestick", "SPY", self.Securities[symbol].GetLastData())</pre>
+</div>
+
+<img src="https://cdn.quantconnect.com/i/tu/spy-price-green-scatter-chart.png" class="docs-image" alt="Time series of SPY closing price during 2021.">
+<img src="https://cdn.quantconnect.com/i/tu/spy-candlestick-chart.png" class="docs-image" alt="Time series of SPY candlesticks price during 2021.">
+
+<p>To see a full example, run the <span class="python"><a href="https://www.quantconnect.com/terminal/processCache?request=embedded_backtest_8842cc548f4ac11ecdea13259df4102f.html">CustomChartingAlgorithm</a></span><span class="csharp"><a href="https://www.quantconnect.com/terminal/processCache?request=embedded_backtest_56cee27107c0300a8d76c59e926ca680.html">CustomChartingAlgorithm</a></span>.</p>
