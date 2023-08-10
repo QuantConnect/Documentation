@@ -514,7 +514,7 @@
 </tr>
 <tr>
 <td width="33%"><a href="#Order-header">Order()</a></td>
-<td>Issue an order/trade for asset: Alias wrapper for Order(string, int);.</td>
+<td>Obsolete implementation of Order method accepting a OrderType. This was deprecated since it was impossible to generate other orders via this method. Any calls to this method will always default to a Market Order.</td>
 </tr>
 <tr>
 <td width="33%"><a href="#Plot-header">Plot()</a></td>
@@ -1794,7 +1794,7 @@
 </tr>
 <tr>
 <td width="33%"><a href="#Order-header">Order()</a></td>
-<td>Issue an order/trade for asset: Alias wrapper for Order(string, int);.</td>
+<td>Obsolete implementation of Order method accepting a OrderType. This was deprecated since it was impossible to generate other orders via this method. Any calls to this method will always default to a Market Order.</td>
 </tr>
 <tr>
 <td width="33%"><a href="#Sell-header">Sell()</a></td>
