@@ -6,6 +6,9 @@
 <h4>Notebook Files</h4>
 <p>The <span class='public-file-name'>.ipynb</span> files are notebook files. These are the files you open when you want to access the <a href='/docs/v2/research-environment'>Research Environment</a> to perform quantitative research.</p>
 
+<h4>Custom Report Files</h4>
+<p>The <span class='public-file-name'>.html</span>/<span class='public-file-name'>.css</span> files are for creating custom <a href='/docs/v2/local-platform/backtesting/results#09-Reports'>reports</a>.</p>
+
 <h4>Configuration Files</h4>
 <p>Projects also contain configuration files, which are <span class='public-file-name'>.json</span> files, but they aren't displayed in the Explorer panel. These files contain information like the project description, parameters, and shared libraries. For more information about project configuration files, see <a href='/docs/v2/lean-cli/projects/configuration'>Configuration</a>.</p>
 
