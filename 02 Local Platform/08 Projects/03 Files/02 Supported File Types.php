@@ -1,4 +1,4 @@
-<p>Local Platform supports <span class='public-file-name'>.py</span>, <span class='public-file-name'>.cs</span>, and <span class='public-file-name'>.ipynb</span> files in your projects.</p>
+<? include(DOCS_RESOURCES."/projects/files/supported-file-types.php"); ?>
 
 <h4>Code Files</h4>
 <p>The <span class='public-file-name'>.py</span>/<span class='public-file-name'>.cs</span> files are code files. These are the files where you implement your trading algorithm. When you backtest the project or deploy the project to live trading, the LEAN engine executes the algorithm you define in these code files.</p>
