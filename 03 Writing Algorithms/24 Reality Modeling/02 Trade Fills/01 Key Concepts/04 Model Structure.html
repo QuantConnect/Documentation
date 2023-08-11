@@ -1,5 +1,5 @@
 <p>Fill Models should extend the <code>FillModel</code> class. To implement your own fill model, override the methods in the <code>FillModel</code> class you wish to change.
-	The class has a dedicated method for each order type. The method receives a <code>Security</code> and <code>Order</code> object and returns an <code>OrderEvent</code> object that contains information about the order status, fill quantity, and errors. <br></p>
+	The class has a dedicated method for each order type. Most of the method receive a <code>Security</code> and <code>Order</code> object and return an <code>OrderEvent</code> object that contains information about the order status, fill quantity, and errors. <br></p>
 <div class="section-example-container">
 <pre class="csharp">public class MyFillModel : FillModel {
 
@@ -33,6 +33,18 @@
 
     public override OrderEvent MarketOnCloseFill(Security asset, MarketOnCloseOrder order) {
         return base.MarketOnCloseFill(asset, order);
+    }
+
+    public override List&lt;OrderEvent&gt; ComboMarketFill(Order order, FillModelParameters parameters) {
+        return base.ComboMarketFill(order, parameters);
+    }
+
+    public override List&lt;OrderEvent&gt; ComboLimitFill(Order order, FillModelParameters parameters) {
+        return base.ComboLimitFill(order, parameters);
+    }
+
+    public override List&lt;OrderEvent&gt; ComboLegLimitFill(Order order, FillModelParameters parameters) {
+        return base.ComboLegLimitFill(order, parameters);
     }
 }
 </pre>
