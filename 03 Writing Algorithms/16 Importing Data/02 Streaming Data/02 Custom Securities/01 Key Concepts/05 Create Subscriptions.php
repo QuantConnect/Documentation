@@ -19,12 +19,12 @@
 <?php include(DOCS_RESOURCES."/datasets/live-dataset-polling-frequency-table.html"); ?>
 
 <p>There are several other signatures for the <code>AddData</code> method.</p>
-<div class='python' class="section-example-container">
+<div class="python section-example-container">
     <pre>self.AddData(type, ticker, resolution)
 self.AddData(type, ticker, resolution, timeZone, fillForward, leverage)
 self.AddData(type, ticker, properties, exchangeHours, resolution, fillForward, leverage)</pre>
 </div>
-<div class='csharp' class="section-example-container">
+<div class="csharp section-example-container">
     <pre>AddData&lt;T&gt;(ticker, resolution);
 AddData&lt;T&gt;(ticker, resolution, fillForward, leverage);
 AddData&lt;T&gt;(ticker, resolution, timeZone, fillForward, leverage);
