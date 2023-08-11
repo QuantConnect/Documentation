@@ -70,7 +70,7 @@
     </tbody>
 </table>
 
-<? if ($includeIntro) { ?><p>While the stop condition is not met, the model updates the stop price under certain conditions. The following table shows the update condition and stop price value for the nominal trailing amount.</p><? } ?>
+<? if ($includeIntro) { ?><p>While the stop condition is not met, the model updates the stop price under certain conditions. The following table shows the update condition and stop price value for the nominal trailing amount:</p><? } ?>
 
 <table class="qc-table table">
     <thead>
