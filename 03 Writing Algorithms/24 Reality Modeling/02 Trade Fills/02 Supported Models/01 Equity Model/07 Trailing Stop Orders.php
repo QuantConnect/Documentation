@@ -29,7 +29,7 @@ include(DOCS_RESOURCES."/reality-modeling/trade-fills/best-effort-tradebar.php")
     </tbody>
 </table>
 
-<p>While the stop condition is not met, the model updates the stop price under certain conditions. The following table shows the update condition and stop price value for the nominal trailing amount.</p>
+<p>While the stop condition is not met, the model updates the stop price under certain conditions. The following table shows the update condition and stop price value for currency-based trailing amounts:</p>
 
 <table class="qc-table table">
     <thead>
@@ -53,7 +53,7 @@ include(DOCS_RESOURCES."/reality-modeling/trade-fills/best-effort-tradebar.php")
     </tbody>
 </table>
 
-<p>The following table shows the update condition and stop price value for the percentage trailing amount.</p>
+<p>The following table shows the update condition and stop price value for percentage-based trailing amounts:</p>
 
 <table class="qc-table table">
     <thead>
