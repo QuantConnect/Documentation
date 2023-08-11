@@ -7,8 +7,6 @@ chart.AddSeries(candlestickSeries);</pre>
 chart.AddSeries(candlestick_series)</pre>
 </div>
 
-<h4>Arguments</h4>
-
 <p>There are several other headers for the <code>CandlestickSeries</code> constructor.</p>
 <div class="section-example-container">
     <pre>CandlestickSeries(name)
@@ -47,4 +45,4 @@ CandlestickSeries(name, unit)
     </tbody>
 </table>
 
-<p>The default <code>CandlestickSeries</code> has 0 index and "$" unit. The <code>CandlestickSeries</code> constructor expects a name argument. If you add a series to one of the default charts, some series names may be reserved. See the previous section for the reserved series name for the default charts.</p>
+<p>The default <code>CandlestickSeries</code> has 0 index and "$" unit.</p>
