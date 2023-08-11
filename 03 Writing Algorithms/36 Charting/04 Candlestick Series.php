@@ -1,4 +1,4 @@
-<p>A chart candlestick series displays candlestick on the chart. To add a candlestick series to a chart, create a <code>CandlestickSeries</code> object and then call the <code>AddSeries</code> method.</p>
+<p>A chart candlestick series displays candlesticks on the chart. To add a candlestick series to a chart, create a <code>CandlestickSeries</code> object and then call the <code>AddSeries</code> method.</p>
 
 <div class="section-example-container">
     <pre class="csharp">var candlestickSeries = new CandlestickSeries("&lt;seriesName&gt;");
