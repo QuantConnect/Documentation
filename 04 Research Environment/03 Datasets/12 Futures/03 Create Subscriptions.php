@@ -51,7 +51,7 @@ include(DOCS_RESOURCES."/datasets/research-environment/load-csharp-assemblies.ph
         </tbody>
     </table>
 
-    <li><i>(Optional)</i> Set a <a href='/docs/v2/writing-algorithms/universes/futures#13-Filter-Contracts'>contract filter</a>.</li>
+    <li><span class='qualifier'>(Optional)</span> Set a <a href='/docs/v2/writing-algorithms/universes/futures#13-Filter-Contracts'>contract filter</a>.</li>
     <div class="section-example-container">
         <pre class="csharp">future.SetFilter(0, 90);</pre>
         <pre class="python">future.SetFilter(0, 90)</pre>
