@@ -35,8 +35,15 @@ history = qb.GetOptionHistory(option.Symbol, datetime(2020, 6, 1), datetime(2020
 all_history = history.GetAllData()
 expiries = history.GetExpiryDates() 
 strikes = history.GetStrikes()</pre>
-<pre class="csharp">// The GetOptionHistory method isn't currently available for C#
-// To track the feature progress, subscribe to https://github.com/QuantConnect/Lean/issues/6489</pre>
+<pre class="csharp">var qb = new QuantBook();
+var option = qb.AddOption("GOOG");
+option.SetFilter(-2, 2, 0, 90);
+var history = qb.GetOptionHistory(option.Symbol, new DateTime(2020, 6, 1), new DateTime(2020, 6, 5));
+
+var contracts = history.SelectMany(x =&gt; x.OptionChains.SelectMany(y =&gt; y.Value.Contracts.Keys)).Distinct().ToList();
+var expiries = contracts.Select(x =&gt; x.ID.Date).Distinct().ToList();
+var strikes = contracts.Select(x =&gt; x.ID.StrikePrice).Distinct().ToList();
+</pre>
 </div>
 
 <p>To get historical data for a single US Equity Option contract, call the <b>History</b> method like you would in an algorithm but on the <b>QuantBook</b> object. For more information about historical data in the Research Environment, see <a href="/docs/v2/research-environment/datasets/equity-options">Equity Options</a>.</p>

@@ -18,7 +18,7 @@
 <h4>Order Already Exists</h4>
 <p>The <code>OrderResponseErrorCode.OrderAlreadyExists</code> (-2) error occurs when you submit a new order but you already have an open order or a completed order with the same order ID. This order response error usually comes from a concurrency issue.</p>
 
-<p><a id='insufficient-buying-power'></a>To avoid this order response, don't place two asynchronous orders at the same time. <a rel='nofollow' target='_blank' href='https://github.com/QuantConnect/Lean/issues/6736'>GitHub Issue #6736</a> may address the underlying problem.</p>
+<p><a id='insufficient-buying-power'></a>To avoid this order response, don't place two asynchronous orders at the same time.</p>
 
 <h4>Insufficient Buying Power</h4>
 <p>The <code>OrderResponseErrorCode.InsufficientBuyingPower</code> (-3) error occurs when you place an order but the <a href='/docs/v2/writing-algorithms/reality-modeling/buying-power'>buying power model</a> determines you can't afford it.</p>
