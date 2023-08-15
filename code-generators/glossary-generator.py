@@ -51,7 +51,7 @@ with open(f"{dir}/metadata.json", "w", encoding="utf-8") as json:
 }''')
 
 # Search and replace all links
-for root_dir in ["01 Cloud Platform/", "03 Writing Algorithms/", "04 Research Environment/", "05 Lean CLI/", "06 LEAN Engine/"]:
+for root_dir in ["01 Cloud Platform/", "02 Local Platform/", "03 Writing Algorithms/", "04 Research Environment/", "05 Lean CLI/", "06 LEAN Engine/", "Resources/"]:
     for filename in list(iglob(root_dir + "**/*.html", recursive=True)) + \
                     list(iglob(root_dir + "**/*.php", recursive=True)) + \
                     list(iglob(root_dir + "**/*.json", recursive=True)):

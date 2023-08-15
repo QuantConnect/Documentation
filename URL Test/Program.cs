@@ -83,6 +83,7 @@ foreach (var (url, files) in urlFiles)
                         .Replace("C and Rider", "C# and Rider") // special case
                         .Replace("mixed mode consolidators", "mixed-mode consolidators") // special case
                         .Replace("Multi Alpha", "Multi-Alpha") // special case
+                        .Replace("Margin3F", "Margin%3F") // special case
                         .Replace("Volatility3F", "Volatility%3F") // special case
                         .ToLower();
 
@@ -97,6 +98,7 @@ foreach (var (url, files) in urlFiles)
                         .Replace("C and VS Code", "C# and VS Code") // special case
                         .Replace("C and Rider", "C# and Rider") // special case
                         .Replace("Multi Alpha", "Multi-Alpha") // special case
+                        .Replace("Margin3F", "Margin%3F") // special case
                         .Replace("Volatility3F", "Volatility%3F"); // special case
                     var allFiles = Directory.GetFiles(path, $"{section}.*", SearchOption.AllDirectories);
                     var noEquals = allFiles.All(dir =>
@@ -126,9 +128,9 @@ foreach (var (url, files) in urlFiles)
         Log.Error(e, $":\n\t{url}\n\t[\n\t\t{string.Join("\n\t\t", files)}\n\t]");
     }
 
-    if (i % 50 == 0)
+    if (i % 100 == 0)
     {
-        Log.Trace($"\tDone {i}/{count} ({Convert.ToDecimal(i) * 100 / count:0.00}%)");
+        Log.Trace($"\tDone {i}/{count} ({Convert.ToDouble(i) / count:P2}%)");
     }
 
     Interlocked.Increment(ref i);

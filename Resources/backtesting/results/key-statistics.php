@@ -4,28 +4,28 @@
 <p>The <span class="tab-name">Overview</span> tab on the backtest results page displays tables for Overall Statistics and Rolling Statistics. The Overall Statistics table displays the following statistics:<br></p>
 
 <ul style="columns: 2">
-    <li><a href="/docs/v2/writing-algorithms/key-concepts/glossary#21-Probabilistic-Sharpe-ratio">Probabilistic Sharpe Ratio (PSR)</a></li>
+    <li><a href="/docs/v2/writing-algorithms/key-concepts/glossary#24-Probabilistic-Sharpe-ratio">Probabilistic Sharpe Ratio (PSR)</a></li>
     <li>Total Trades</li>
     <li><a href="/docs/v2/writing-algorithms/key-concepts/glossary#05-average-loss">Average Loss</a></li>
     <li><a href="/docs/v2/writing-algorithms/key-concepts/glossary#11-drawdown">Drawdown</a></li>
-    <li><a href="/docs/v2/writing-algorithms/key-concepts/glossary#19-net-profit">Net Profit</a></li>
-    <li><a href="/docs/v2/writing-algorithms/key-concepts/glossary#17-loss-rate">Loss Rate</a></li>
-    <li><a href="/docs/v2/writing-algorithms/key-concepts/glossary#22-profit-loss-ratio">Profit-Loss Ratio</a></li>
+    <li><a href="/docs/v2/writing-algorithms/key-concepts/glossary#20-net-profit">Net Profit</a></li>
+    <li><a href="/docs/v2/writing-algorithms/key-concepts/glossary#18-loss-rate">Loss Rate</a></li>
+    <li><a href="/docs/v2/writing-algorithms/key-concepts/glossary#25-profit-loss-ratio">Profit-Loss Ratio</a></li>
     <li><a href="/docs/v2/writing-algorithms/key-concepts/glossary#07-beta">Beta</a></li>
     <li><a href="/docs/v2/writing-algorithms/key-concepts/glossary#04-annual-variance">Annual Variance</a></li>
-    <li><a href="/docs/v2/writing-algorithms/key-concepts/glossary#28-tracking-error">Tracking Error</a></li>
-    <li><a href="/docs/v2/writing-algorithms/key-concepts/glossary#25-total-fees">Total Fees</a></li>
-    <li><a href="/docs/v2/writing-algorithms/key-concepts/glossary#18-lowest-capacity-asset">Lowest Capacity Asset</a></li>
+    <li><a href="/docs/v2/writing-algorithms/key-concepts/glossary#31-tracking-error">Tracking Error</a></li>
+    <li><a href="/docs/v2/writing-algorithms/key-concepts/glossary#28-total-fees">Total Fees</a></li>
+    <li><a href="/docs/v2/writing-algorithms/key-concepts/glossary#19-lowest-capacity-asset">Lowest Capacity Asset</a></li>
 
-    <li><a href="/docs/v2/writing-algorithms/key-concepts/glossary#24-Sharpe-ratio">Sharpe Ratio</a></li>
+    <li><a href="/docs/v2/writing-algorithms/key-concepts/glossary#27-Sharpe-ratio">Sharpe Ratio</a></li>
     <li><a href="/docs/v2/writing-algorithms/key-concepts/glossary#06-average-win">Average Win</a></li>
     <li><a href="/docs/v2/writing-algorithms/key-concepts/glossary#09-compounding-annual-return">Compounding Annual Return</a></li>
     <li><a href="/docs/v2/writing-algorithms/key-concepts/glossary#13-expectancy">Expectancy</a></li>
-    <li><a href="/docs/v2/writing-algorithms/key-concepts/glossary#32-win-rate">Win Rate</a></li>
+    <li><a href="/docs/v2/writing-algorithms/key-concepts/glossary#35-win-rate">Win Rate</a></li>
     <li><a href="/docs/v2/writing-algorithms/key-concepts/glossary#02-alpha">Alpha</a></li>
     <li><a href="/docs/v2/writing-algorithms/key-concepts/glossary#03-annual-standard-deviation">Annual Standard Deviation</a></li>
     <li><a href="/docs/v2/writing-algorithms/key-concepts/glossary#15-information-ratio">Information Ratio</a></li>
-    <li><a href="/docs/v2/writing-algorithms/key-concepts/glossary#29-Treynor-ratio">Treynor Ratio</a></li>
+    <li><a href="/docs/v2/writing-algorithms/key-concepts/glossary#32-Treynor-ratio">Treynor Ratio</a></li>
     <li><a href="/docs/v2/writing-algorithms/key-concepts/glossary#08-capacity">Estimated Strategy Capacity</a></li>
 </ul>
 
