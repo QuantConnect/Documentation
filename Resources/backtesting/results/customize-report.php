@@ -38,7 +38,7 @@ parameters--&gt</pre>
 
 <p>In the preceding example, <code>{{$KEY0}}</code> is the name of the first parameter in the algorithm and <code>{{$VALUE0}}</code> is its value.</p>
 
-<? if ($leanCLI) { ?>
+<? if ($leanCli) { ?>
 <p>To generate the report with your custom HTML file, run <code>lean report --html &lt;pathToCustomHTMLFile&gt;</code>.</p>
 <? } ?>
 
@@ -46,6 +46,6 @@ parameters--&gt</pre>
 
 <p>The <a rel='nofollow' target='_blank' href='https://github.com/QuantConnect/Lean/blob/master/Report/css/report.css'><span class='public-file-name'>Report / css / report.css</span></a> file in the LEAN GitHub repository defines the style of the reports you generate. To override the stylesheet, <?=$addCSSFileInstructions?>.</p>
 
-<? if ($leanCLI) { ?>
+<? if ($leanCli) { ?>
 <p>To generate the report with your custom CSS file, run <code>lean report --css &lt;pathToCustomCSSFile&gt;</code>.</p>
 <? } ?>
