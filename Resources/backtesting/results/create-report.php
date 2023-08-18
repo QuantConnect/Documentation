@@ -1,4 +1,4 @@
-<p>The <a href="/docs/v2/cloud-platform/backtesting/report">backtest report</a> provides a summary of your algorithm's performance. Follow these steps to generate one:</p>
+<p><a href='/docs/v2/cloud-platform/backtesting/report'>Backtest reports</a> provide a summary of your algorithm's performance during the backtest period. Follow these steps to generate one:</p>
 
 <ol>
     <li>Open the backtest results page for which you want to generate a report.</li>
@@ -8,3 +8,6 @@
     <p>The report may take a minute to generate.</p>
     <li>If the IDE says that the report is being generated, repeat step 4.</li>
 </ol>
+
+
+
