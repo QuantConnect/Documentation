@@ -44,7 +44,7 @@ parameters--&gt</pre>
 
 <h4>Customize the Report CSS</h4>
 
-<p>The <a rel='nofollow' target='_blank' href='https://github.com/QuantConnect/Lean/blob/master/Report/css/report.css'><span class='public-file-name'>Report / css / report.css</span></a> in the LEAN GitHub repository defines the style of the reports you generate. To override the stylesheet, <?=$addHTMLFileInstructions?>.</p>
+<p>The <a rel='nofollow' target='_blank' href='https://github.com/QuantConnect/Lean/blob/master/Report/css/report.css'><span class='public-file-name'>Report / css / report.css</span></a> in the LEAN GitHub repository defines the style of the reports you generate. To override the stylesheet, <?=$addCSSFileInstructions?>.</p>
 
 <? if ($leanCLI) { ?>
 <p>To generate the report with your custom CSS file, run <code>lean report --css &lt;pathToCustomCSSFile&gt;</code>.</p>
