@@ -25,7 +25,7 @@
 crisis--&gt</pre>
 </div>
 
-<p>To include the <a href='https://www.quantconnect.com/docs/v2/cloud-platform/backtesting/report#09-Parameters'>algorithm parameter</a> in your report, add the <code>{{$PARAMETERS}}</code> key and then define the HTML element inside of <code>&lt;!--parameters</code> and <code>parameters--&gt;</code>. Inside of this comment, you can use special keys <code>{{$KEY&lt;parameterIndex&gt;}}</code> and <code>{{$VALUE&lt;parameterIndex&gt;}}</code>, which represent the key and value of a single parameter. For example, the following HTML is the default format for the parameters element:</p>
+<p>To include the <a href='https://www.quantconnect.com/docs/v2/cloud-platform/backtesting/report#09-Parameters'>algorithm parameters</a> in your report, add the <code>{{$PARAMETERS}}</code> key and then define the HTML element inside of <code>&lt;!--parameters</code> and <code>parameters--&gt;</code>. Inside of this comment, you can use special keys <code>{{$KEY&lt;parameterIndex&gt;}}</code> and <code>{{$VALUE&lt;parameterIndex&gt;}}</code>, which represent the key and value of a single parameter. For example, the following HTML is the default format for the parameters element:</p>
 
 <div class="section-example-container">
     <pre class="html">&lt;!--parameters
