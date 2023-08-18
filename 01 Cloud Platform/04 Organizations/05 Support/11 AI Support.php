@@ -2,35 +2,6 @@
 <img src="https://cdn.quantconnect.com/i/tu/ask-mia.png" class="img-responsive"/>
 <p>The following table shows the number of AI tickets each support seat tier can open during a 1-month rolling period:</p>
 
-<table class="table qc-table" id="seat-quota-table">
-    <thead>
-        <tr>
-            <th style="width: 50%;">Tier</th>
-            <th>Open Ticket Quota</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr>
-            <td>Gold</td>
-            <td>250</td>
-        </tr>
-        <tr>
-            <td>Silver</td>
-            <td>125</td>
-        </tr>
-        <tr>
-            <td>Bronze</td>
-            <td>25</td>
-        </tr>
-    </tbody>
-</table>
-
-<style>
-#seat-quota-table th:not(:first-child),
-#seat-quota-table td:not(:first-child) {
-    text-align: right;
-}
-</style>
-
+<? include(DOCS_RESOURCES."/quotas/ask-mia.html"); ?>
 
 <p>The quotas don't restore on the first day of the month or the billing date. They restore according to a 1-month rolling window.</p>
