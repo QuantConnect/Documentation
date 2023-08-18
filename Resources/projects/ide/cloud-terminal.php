@@ -2,7 +2,7 @@
 
 <? if ($cloudPlatform)  { ?>
 <h4>Cloud Terminal</h4>
-<p>The <span class='tab-name'>Ask Mia</span> tab of the panel shows the API messages, errors, and the logs from your algorithms.</p>
+<p>The <span class='tab-name'>Cloud Terminal</span> tab of the panel shows the API messages, errors, and the logs from your algorithms.</p>
 <img class='docs-image' src='<?=$cloudTermianlImage?>' alt="Termianl interface">
 <p>To clear the Cloud Terminal, click the <span class='button-name'>Clear Logs</span> icon in the top-right corner of the panel.</p>
 
