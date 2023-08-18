@@ -1,4 +1,4 @@
-<p>The console panel at the bottom of the IDE provides some helpful information while you're developing.</p>
+<p>The console panel at the bottom of the IDE provides some helpful information while you're developing algorithms.</p>
 
 <? if ($cloudPlatform)  { ?>
 <h4>Cloud Terminal</h4>
