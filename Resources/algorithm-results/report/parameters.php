@@ -1,0 +1,1 @@
+<p>This section of the report shows the name and value of all the <a href='<?=$parametersLink?>'>parameters</a> in your project.</p>
