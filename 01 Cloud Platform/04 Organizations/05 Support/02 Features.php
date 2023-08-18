@@ -24,6 +24,31 @@
    </tbody>
 </table>
 
+<h4>AI Support</h4>
+<p>Mia is an AI assistant in the Algorithm Lab console. Mia provides contextual assistance to most issues you may encounter when developing a strategy. It has been trained on hundreds of algorithms and thousands of documentation pages. The following table shows the number of AI tickets each support seat tier can open during a 1-month rolling period:</p>
+
+<? include(DOCS_RESOURCES."/quotas/ask-mia.html");?>
+
+<table class="qc-table table">
+   <thead>
+      <tr>
+      	<th style="width: 28%;">Feature</th>
+        <th style="width: 18%;">Community</th>
+        <th style="width: 18%;">Bronze</th>
+        <th style="width: 18%;">Silver</th>
+        <th style="width: 18%;">Gold</th>
+      </tr>
+   </thead>
+   <tbody>
+      <tr>
+        <td>AI Support</td>
+        <td><img src="https://cdn.quantconnect.com/i/tu/check.png" alt="green check" width="15px;"></td>
+        <td><img src="https://cdn.quantconnect.com/i/tu/check.png" alt="green check" width="15px;"></td>
+        <td><img src="https://cdn.quantconnect.com/i/tu/check.png" alt="green check" width="15px;"></td>
+        <td><img src="https://cdn.quantconnect.com/i/tu/check.png" alt="green check" width="15px;"></td>
+      </tr>
+   </tbody>
+</table>
 
 <h4>Email Support </h4>
 <p>Our support ticket system enables you to privately email with our Support Team. We address support tickets in a first-in, first-out order, but we give priority to tickets opened by members with higher support seats. The following table shows our response time for each of the support tiers:
@@ -215,30 +240,6 @@ table td:not(:first-child) {
    </tbody>
 </table>
 
-<h4>AI Support</h4>
-<p>Mia is an AI assistant in the Algorithm Lab console. Mia provides contextual assistance to most issues you may encounter when developing a strategy. It has been trained on hundreds of algorithms and thousands of documentation pages. The following table shows the number of AI tickets each support seat tier can open during a 1-month rolling period:</p>
-
-<table class="qc-table table">
-   <thead>
-      <tr>
-        <th style="width: 28%;">Feature</th>
-        <th style="width: 18%;">Community</th>
-        <th style="width: 18%;">Bronze</th>
-        <th style="width: 18%;">Silver</th>
-        <th style="width: 18%;">Gold</th>
-      </tr>
-   </thead>
-   <tbody>
-      <tr>
-        <td>AI Support</td>
-        <td>5</td>
-        <td>25</td>
-        <td>125</td>
-        <td>250</td>
-      </tr>
-   </tbody>
-</table>
-
 <h4>Summary</h4>
 <p>The following table shows the features available in each tier:</p>
 
@@ -255,6 +256,13 @@ table td:not(:first-child) {
    <tbody>
       <tr>
         <td>Bug Reports</td>
+        <td><img src="https://cdn.quantconnect.com/i/tu/check.png" alt="green check" width="15px;"></td>
+        <td><img src="https://cdn.quantconnect.com/i/tu/check.png" alt="green check" width="15px;"></td>
+        <td><img src="https://cdn.quantconnect.com/i/tu/check.png" alt="green check" width="15px;"></td>
+        <td><img src="https://cdn.quantconnect.com/i/tu/check.png" alt="green check" width="15px;"></td>
+      </tr>
+      <tr>
+        <td>AI Support</td>
         <td><img src="https://cdn.quantconnect.com/i/tu/check.png" alt="green check" width="15px;"></td>
         <td><img src="https://cdn.quantconnect.com/i/tu/check.png" alt="green check" width="15px;"></td>
         <td><img src="https://cdn.quantconnect.com/i/tu/check.png" alt="green check" width="15px;"></td>
