@@ -6,22 +6,22 @@
 
 <div class="section-example-container">
     <pre class="html">&lt;!--crisis
-<div class="col-xs-4">
-    <table class="crisis-chart table compact">
-        <thead>
-        <tr>
-            <th style="display: block; height: 75px;">{{$TEXT-CRISIS-TITLE}}</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr>
-            <td style="padding:0;">
-                <img src="{{$PLOT-CRISIS-CONTENT}}">
-            </td>
-        </tr>
-        </tbody>
-    </table>
-</div>
+&lt;div class="col-xs-4"&gt;
+    &lt;table class="crisis-chart table compact"&gt;
+        &lt;thead&gt;
+        &lt;tr&gt;
+            &lt;th style="display: block; height: 75px;"&gt;{{$TEXT-CRISIS-TITLE}}&lt;/th&gt;
+        &lt;/tr&gt;
+        &lt;/thead&gt;
+        &lt;tbody&gt;
+        &lt;tr&gt;
+            &lt;td style="padding:0;"&gt;
+                &lt;img src="{{$PLOT-CRISIS-CONTENT}}"&gt;
+            &lt;/td&gt;
+        &lt;/tr&gt;
+        &lt;/tbody&gt;
+    &lt;/table&gt;
+&lt;/div&gt;
 crisis--&gt</pre>
 </div>
 
@@ -29,10 +29,10 @@ crisis--&gt</pre>
 
 <div class="section-example-container">
     <pre class="html">&lt;!--parameters
-<tr>
-	<td class = "title"> {{$KEY0}} </td><td> {{$VALUE0}} </td>
-	<td class = "title"> {{$KEY1}} </td><td> {{$VALUE1}} </td>
-</tr>
+&lt;tr&gt;
+    &lt;td class = "title"&gt; {{$KEY0}} &lt;/td&gt;&lt;td&gt; {{$VALUE0}} &lt;/td&gt;
+    &lt;td class = "title"&gt; {{$KEY1}} &lt;/td&gt;&lt;td&gt; {{$VALUE1}} &lt;/td&gt;
+&lt;/tr&gt;
 parameters--&gt</pre>
 </div>
 
