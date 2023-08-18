@@ -19,8 +19,8 @@
     <p>The parameter name must match a parameter name in the Project panel.</p>
     <li>Enter the minimum and maximum parameter values.</li>
     <li>Click the <span class='icon-name'>gear</span> icon next to the parameter and then enter a step size.</li>
-    <li>If you want to add a second parameter to optimize, click <span class='button-name'>Add Parameter</span>.</li>
-    <p>You can optimize a maximum of two parameters. To optimize more parameters, <a href='/docs/v2/lean-cli/optimization/deployment#02-Run-Local-Optimizations'>run local optimizations with the CLI</a>.</p>
+    <li>If you want to add another parameter to optimize, click <span class='button-name'>Add Parameter</span>.</li>
+    <p>You can optimize a maximum of three parameters. To optimize more parameters, <a href='/docs/v2/lean-cli/optimization/deployment#02-Run-Local-Optimizations'>run local optimizations with the CLI</a>.</p>
     
     <li>If you want to add <a href='/docs/v2/cloud-platform/optimization/objectives#06-Constraints'>optimization constraints</a>, follow these steps:</li>
     <ol>
@@ -30,7 +30,7 @@
     	<li>Enter a constraint value.</li>
     </ol>
     
-    <li>If you are deploying to QuantConnect Cloud, in the <span class='page-section-name'>Estimated Number and Cost of Backtests</span> section, click an <a href='/docs/v2/cloud-platform/optimization/deployment#02-Resources'>optimization node</a> and then select a maximum number of nodes to use.</li>
+    <li><? if ($localPlatform) { ?>If you are deploying to QuantConnect Cloud, i<?} else {?>I<?}?>n the <span class='page-section-name'>Estimated Number and Cost of Backtests</span> section, click an <a href='/docs/v2/cloud-platform/optimization/deployment#02-Resources'>optimization node</a> and then select a maximum number of nodes to use.</li>
     
     <li>In the <span class='page-section-name'>Strategy & Target</span> section, click the <span class='field-name'>Choose Optimization Strategy</span> field and then select a <a href='/docs/v2/cloud-platform/optimization/strategies'>strategy</a> from the drop-down menu.</li>
     <li>Click the <span class='field-name'>Select Target</span> field and then select a target from the drop-down menu.</li>
