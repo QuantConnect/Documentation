@@ -116,9 +116,9 @@ self.contract_symbol = sorted(filtered_symbols, key=lambda symbol: symbol.ID.Str
 
 <div class="section-example-container">
     <pre class="csharp">var option = AddOptionContract(_contractSymbol);
-option.PriceModel = OptionPriceModels.BjerksundStensland();</pre>
+option.PriceModel = OptionPriceModels.BinomialCoxRossRubinstein();</pre>
     <pre class="python">option = self.AddOptionContract(self.contract_symbol)
-option.PriceModel = OptionPriceModels.BjerksundStensland()</pre>
+option.PriceModel = OptionPriceModels.BinomialCoxRossRubinstein()</pre>
 </div>
 
 <p>The <code>AddOptionContract</code> method creates a subscription for a single Option contract and adds it to your <span class="new-term">user-defined</span> universe. To create a dynamic universe of Option contracts, add an <a href="/docs/v2/writing-algorithms/universes/equity-options">Equity Options universe</a> or an <a href="/docs/v2/writing-algorithms/algorithm-framework/universe-selection/options-universes">Options Universe Selection model</a>.</p>

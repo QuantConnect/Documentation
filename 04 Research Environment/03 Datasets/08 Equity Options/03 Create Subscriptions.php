@@ -35,8 +35,8 @@ include(DOCS_RESOURCES."/datasets/research-environment/load-csharp-assemblies.ph
 </ul>
     <li><span class='qualifier'>(Optional)</span> Set the <a href='/docs/v2/writing-algorithms/reality-modeling/options-models/pricing'>price model</a>.</li>
     <div class="section-example-container">
-        <pre class="csharp">option.PriceModel = OptionPriceModels.BjerksundStensland();</pre>
-        <pre class="python">option.PriceModel = OptionPriceModels.BjerksundStensland()</pre>
+        <pre class="csharp">option.PriceModel = OptionPriceModels.BinomialCoxRossRubinstein();</pre>
+        <pre class="python">option.PriceModel = OptionPriceModels.BinomialCoxRossRubinstein()</pre>
     </div>
 
 </ol>
@@ -104,7 +104,7 @@ contract_symbols = qb.OptionChainProvider.GetOptionContractList(equity_symbol, s
   <p>Disable fill-forward because there are only a few <code>OpenInterest</code> data points per day.</p>
     <li><span class='qualifier'>(Optional)</span> Set the <a href='/docs/v2/writing-algorithms/reality-modeling/options-models/pricing'>price model</a>.</li>
     <div class="section-example-container">
-        <pre class="csharp">optionContract.PriceModel = OptionPriceModels.BjerksundStensland();</pre>
-        <pre class="python">option_contract.PriceModel = OptionPriceModels.BjerksundStensland()</pre>
+        <pre class="csharp">optionContract.PriceModel = OptionPriceModels.BinomialCoxRossRubinstein();</pre>
+        <pre class="python">option_contract.PriceModel = OptionPriceModels.BinomialCoxRossRubinstein()</pre>
     </div>
 </ol>
