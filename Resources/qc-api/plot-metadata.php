@@ -15,9 +15,9 @@ benchmark = benchmark_chart.Series["Benchmark"].Values</pre>
 <li>Create a <code>pandas.DataFrame</code> from the series values.</li>
 <div class="section-example-container">
     <pre class="python">df = pd.DataFrame({
-    "Equity": pd.Series({datetime.fromtimestamp(value.x): value.y for value in equity}),
-    "Drawdown": pd.Series({datetime.fromtimestamp(value.x): value.y for value in drawdown}),
-    "Benchmark": pd.Series({datetime.fromtimestamp(value.x): value.y for value in benchmark})
+    "Equity": pd.Series({value.Time: value.Close for value in equity}),
+    "Drawdown": pd.Series({value.Time: value.Y for value in drawdown}),
+    "Benchmark": pd.Series({value.Time: value.Y for value in benchmark})
 }).ffill()</pre>
 </div>
 
