@@ -1,6 +1,6 @@
 <? if ($leanCli) { ?>
 <p> 
-    The Lean CLI is distributed as a Python package, so it requires <code>pip</code> to be installed. Because <code>pip</code> is distributed as a part of Python, you must install Python before you can install the CLI.
+    The Lean CLI is distributed as a Python package, so it requires <code>pip</code> to be installed. Because <code>pip</code> is distributed as a part of Python, you must install Python before you can install the CLI. If you want to install a non-Debian packaged Python application, it may be easiest to use <code>pipx install xyz</code>, which will manage a virtual environment for you.
 </p>
 <? } else { ?>
 <p> 
