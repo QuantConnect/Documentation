@@ -1,7 +1,7 @@
 <p>Follow these steps to create a new version control repository for one of your <a href='<?=$workspaceLink?>'>organization workspaces</a>:</p>
 
 <ol>
-    <li>In your version control system, <a href='https://docs.github.com/en/repositories/creating-and-managing-repositories/creating-a-new-repository' rel='nofollow' target='_blank'>create a new repository</a> for the project.</li>
+    <li>In your version control system, <a href='https://docs.github.com/en/repositories/creating-and-managing-repositories/creating-a-new-repository' rel='nofollow' target='_blank'>create a new repository</a> for the organization workspace.</li>
     
     <li>Open a terminal in your organization workspace and then <a href='https://docs.github.com/en/repositories/creating-and-managing-repositories/cloning-a-repository' rel='nofollow' target='_blank'>clone</a> the new repository to a temporary directory.</li>
     <div class="cli section-example-container">
