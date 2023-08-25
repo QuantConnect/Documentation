@@ -1,4 +1,4 @@
-<p>Follow these steps to create a new version control repository for one of your <a href='<?=$workspaceLink?>'>organization workspaces</a>:</p>
+<p>Follow these steps to set up a new version control repository for one of your <a href='<?=$workspaceLink?>'>organization workspaces</a>:</p>
 
 <ol>
     <li>In your version control system, <a href='https://docs.github.com/en/repositories/creating-and-managing-repositories/creating-a-new-repository' rel='nofollow' target='_blank'>create a new repository</a> for the organization workspace.</li>
