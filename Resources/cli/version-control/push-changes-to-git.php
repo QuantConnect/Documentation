@@ -1,7 +1,7 @@
 <p>Follow these steps to push the changes of your organization workspace to your version control system:</p>
 <ol>
 <? if($leanCli) { ?>
-    <li><a href='/docs/v2/lean-cli/projects/cloud-synchronization#02-Pulling-Cloud-Projects'>Pull all your cloud projects</a> to the current directory, creating directories where necessary.</li>
+    <li>Open a terminal in your organizatino workspace and then <a href='/docs/v2/lean-cli/projects/cloud-synchronization#02-Pulling-Cloud-Projects'>pull all your cloud projects</a>, creating directories where necessary.</li>
     <div class="cli section-example-container">
         <pre>$ lean cloud pull</pre>
     </div>
