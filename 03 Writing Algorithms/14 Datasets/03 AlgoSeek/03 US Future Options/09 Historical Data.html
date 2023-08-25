@@ -39,8 +39,18 @@ option_history = qb.GetOptionHistory(future_contract_symbol, start_time, end_tim
 all_history = option_history.GetAllData()
 expiries = option_history.GetExpiryDates() 
 strikes = option_history.GetStrikes()</pre>
-<pre class="csharp">// The GetOptionHistory method isn't currently available for C#
-// To track the feature progress, subscribe to https://github.com/QuantConnect/Lean/issues/6489</pre>
+<pre class="csharp">var qb = new QuantBook();
+var future = qb.AddFuture(Futures.Indices.SP500EMini, Resolution.Minute);
+var futureSymbols = qb.FutureChainProvider.GetFutureContractList(future.Symbol, new DateTime(2021, 12, 20));
+var futureContractSymbol = futureSymbols.OrderBy(x =&gt; x.ID.Date).First();
+    
+var startTime = new DateTime(2021, 12, 1);
+var endTime = new DateTime(2021, 12, 10);
+var optionHistory = qb.GetOptionHistory(futureContractSymbol, startTime, endTime, Resolution.Minute);
+
+var contracts = optionHistory.SelectMany(x =&gt; x.OptionChains.SelectMany(y =&gt; y.Value.Contracts.Keys)).Distinct().ToList();
+var expiries = contracts.Select(x =&gt; x.ID.Date).Distinct().ToList();
+var strikes = contracts.Select(x =&gt; x.ID.StrikePrice).Distinct().ToList();</pre>
 </div>
 
 <p>To get historical data for a single US Future Option contract, call the <b>History</b> method like you would in an algorithm but on the <b>QuantBook</b> object. For more information about historical data in the Research Environment, see <a href="/docs/v2/research-environment/datasets/futures-options">Futures Options</a>.</p>

@@ -1,64 +1,55 @@
 <p>To send a trailing stop order, call the <code>TrailingStopOrder</code> method and provide a <code>Symbol</code>, quantity, trailing amount, and the trailing type. You can also provide a tag and <a href="/docs/v2/writing-algorithms/trading-and-orders/order-properties">order properties</a> to the <code>TrailingStopOrder</code> method. If you do not have sufficient capital for the order, it is rejected.</p>
-<div class="section-example-container">
-    <pre class="csharp">TrailingStopOrder(symbol, quantity, trailingAmount, trailingAsPercentage, tag, orderProperties);</pre>
-    <pre class="python">self.TrailingStopOrder(symbol, quantity, trailingAmount, trailingAsPercentage, tag, orderProperties)</pre>
-</div>
-
-<p>LEAN calculates the initial stop price with the current security price.</p>
-
-<p>To buy an asset with a trailing stop order, set the the trailing amount and trailing type.</p>
-<div class="section-example-container">
-<pre class="csharp">// When Bitcoin trades up to its current price ($45,000) plus a $10,000 trailing amount, buy 1 Bitcoin
-TrailingStopOrder("BTCUSD", 1, 10000, false);
-// When Bitcoin trades up to its current price ($45,000) plus a 20% trailing amount, buy 1 Bitcoin
-TrailingStopOrder("BTCUSD", 1, 0.2, true);</pre>
-<pre class="python"># When Bitcoin trades up to to its current price ($45,000) plus a $10,000 trailing amount, buy 1 Bitcoin
-self.TrailingStopOrder("BTCUSD", 1, 10000, False)
-# When Bitcoin trades up to to its current price ($45,000) plus a 20% trailing amount, buy 1 Bitcoin
-self.TrailingStopOrder("BTCUSD", 1, 0.2, True)</pre>
-</div>
-
-<p>To sell an asset with a trailing stop order, set the trailing amount.</p>
-<div class="section-example-container">
-<pre class="csharp">// When Bitcoin trades down to its current price ($56,000) minus a $10,000 trailing amount, sell 1 Bitcoin
-TrailingStopOrder("BTCUSD", -1, 10000, false);
-// When Bitcoin trades down to its current price ($56,000) minus a 20% trailing amount, sell 1 Bitcoin
-TrailingStopOrder("BTCUSD", -1, 0.2, true);</pre>
-<pre class="python"># When Bitcoin trades down to its current price ($56,000) minus a $10,000 trailing amount, sell 1 Bitcoin
-self.TrailingStopOrder("BTCUSD", -1, 10000, False)
-# When Bitcoin trades down to its current price ($56,000) minus a 20% trailing amount, sell 1 Bitcoin
-self.TrailingStopOrder("BTCUSD", -1, 0.2, True)</pre>
-</div>
-
-<p>To send a trailing stop order with an initial stop price, call the <code>TrailingStopOrder</code> method and provide a <code>Symbol</code>, quantity, stop price, trailing amount, and the trailing type. You can also provide a tag and <a href="/docs/v2/writing-algorithms/trading-and-orders/order-properties">order properties</a> to the <code>TrailingStopOrder</code> method. If you do not have sufficient capital for the order, it is rejected.</p>
 
 <div class="section-example-container">
-<pre class="csharp">TrailingStopOrder(symbol, quantity, stopPrice, trailingAmount, trailingAsPercentage, tag, orderProperties);</pre>
-<pre class="python">self.TrailingStopOrder(symbol, quantity, stopPrice, trailingAmount, trailingAsPercentage, tag, orderProperties)</pre>
+<pre class="csharp">TrailingStopOrder(symbol, quantity, trailingAmount, trailingAsPercentage, tag, orderProperties);</pre>
+<pre class="python">self.TrailingStopOrder(symbol, quantity, trailingAmount, trailingAsPercentage, tag, orderProperties)</pre>
 </div>
 
-<p>To buy an asset with a trailing stop order, set the stop price above the current ask price and the trailing amount.</p>
-<div class="section-example-container">
-<pre class="csharp">// When Bitcoin trades up to $60,000 with a $10000 trailing amount, buy 1 Bitcoin
-TrailingStopOrder("BTCUSD", 1, 60000, 10000, false);
-// When Bitcoin trades up to $60,000 with a 20% trailing amount, buy 1 Bitcoin
-TrailingStopOrder("BTCUSD", 1, 60000, 0.2, true);</pre>
-<pre class="python"># When Bitcoin trades up to $60,000 with a $10000 trailing amount, buy 1 Bitcoin
-self.TrailingStopOrder("BTCUSD", 1, 60000, 10000, False)
-# When Bitcoin trades up to $60,000 with a 20% trailing amount, buy 1 Bitcoin
-self.TrailingStopOrder("BTCUSD", 1, 60000, 0.2, True)</pre>
-</div>
-<!--img src="https://cdn.quantconnect.com/i/tu/buy-trailing-stop-order.png" class="docs-image" alt="When the asset currently trades at $45,000, the stop price of the buy stop market order is set at $60,000. The order fills when the price trades up to $60,000."-->
+<p>If you set the <code>trailingAsPercentage</code> parameter to <code class="csharp">false</code><code class="python">False</code>, the <code>trailingAmount</code> is denominated in the asset's <a href='/docs/v2/writing-algorithms/securities/key-concepts#03-Quote-Currency'>quote currency</a>.</p>
 
-<p>To sell an asset with a trailing stop order, set the stop price below the current bid price and the trailing amount.</p>
+<h4>Buy With a Currency-Based Trailing Stop</h4>
+<p>To buy an asset with a currency-based trailing stop order, pass the trailing amount and disable the <code>trailingAsPercentage</code> parameter.</p>
 <div class="section-example-container">
-<pre class="csharp">// When Bitcoin trades down to $43,000 with a $10000 trailing amount, sell 1 Bitcoin
-TrailingStopOrder("BTCUSD", -1, 43000, 10000, false);
-// When Bitcoin trades down to $43,000 with a 20% trailing amount, sell 1 Bitcoin
-TrailingStopOrder("BTCUSD", -1, 43000, 0.2, true);</pre>
-<pre class="python"># When Bitcoin trades down to $43,000 with a $10000 trailing amount, sell 1 Bitcoin
-self.TrailingStopOrder("BTCUSD", -1, 43000, 10000, False)
-# When Bitcoin trades down to $43,000 with a 20% trailing amount, sell 1 Bitcoin
-self.TrailingStopOrder("BTCUSD", -1, 43000, 0.2, True)</pre>
+<pre class="csharp">// Buy 1 share of SPY through a trailing stop order that starts $30 above the current price
+TrailingStopOrder("SPY", 1, 30m, false);</pre>
+<pre class="python"># Buy 1 share of SPY through a trailing stop order that starts $30 above the current price
+self.TrailingStopOrder("SPY", 1, 30, False)</pre>
 </div>
-<!--img src="https://cdn.quantconnect.com/i/tu/sell-trailing-stop-order.png" class="docs-image" alt="When the asset currently trades at $56,000, the stop price of the sell stop market order is set at $43,000. The order fills when the price trades down to $43,000."-->
+<img src="https://cdn.quantconnect.com/i/tu/buy-dollar-2.webp" class="docs-image" alt="When the asset currently trades at $440, the stop price of the buy stop market order is set at $470 and a trailing amount of $30. The order fills when the price trades up to $402.82.">
+
+<h4>Buy With a Percent-Based Trailing Stop</h4>
+<p>To buy an asset with a percent-based trailing stop order, pass the trailing percent and enable the <code>trailingAsPercentage</code> parameter.</p>
+<div class="section-example-container">
+<pre class="csharp">// Buy 1 share of SPY through a trailing stop order that starts 7% above the current price
+TrailingStopOrder("SPY", 1, 0.07m, true);</pre>
+<pre class="python"># Buy 1 share of SPY through a trailing stop order that starts 7% above the current price
+self.TrailingStopOrder("SPY", 1, 0.07, True)</pre>
+</div>
+<img src="https://cdn.quantconnect.com/i/tu/buy-percent-2.webp" class="docs-image" alt="When the asset currently trades at $440, the stop price of the buy stop market order is set at $470 and a trailing amount of 7%. The order fills when the price trades up to $398.92.">
+
+<h4>Sell With a Currency-Based Trailing Stop</h4>
+<p>To sell an asset with a currency-based trailing stop order, pass the trailing amount and disable the <code>trailingAsPercentage</code> parameter.</p>
+<div class="section-example-container">
+<pre class="csharp">// Sell 1 share of SPY through a trailing stop order that starts $20 below the current price
+TrailingStopOrder("SPY", -1, 20m, false)</pre>
+<pre class="python"># Sell 1 share of SPY through a trailing stop order that starts $20 below the current price
+self.TrailingStopOrder("SPY", -1, 20, False)</pre>
+</div>
+<img src="https://cdn.quantconnect.com/i/tu/sell-dollar-2.webp" class="docs-image" alt="When the asset currently trades at $415, the stop price of the sell stop market order is set at $395 and a trailing amount of $20. The order fills when the price trades down to $420.49.">
+
+<h4>Sell With a Percent-Based Trailing Stop</h4>
+<p>To sell an asset with a percent-based trailing stop order, pass the trailing percent and enable the <code>trailingAsPercentage</code> parameter.</p>
+<div class="section-example-container">
+<pre class="csharp">// Sell 1 share of SPY through a trailing stop order that starts 5% above the current price
+TrailingStopOrder("SPY", -1, 0.05m, true);</pre>
+<pre class="python"># Sell 1 share of SPY through a trailing stop order that starts 5% above the current price
+self.TrailingStopOrder("SPY", -1, 0.05, True)</pre>
+</div>
+<img src="https://cdn.quantconnect.com/i/tu/sell-percent-2.webp" class="docs-image" alt="When the asset currently trades at $415, the stop price of the sell stop market order is set at $395 and a trailing amount of 5%. The order fills when the price trades down to $418.46.">
+
+<h4>Custom Starting Prices</h4>
+<p>In the preceding examples, LEAN calculates the stop price based on the current security price. If you want the order to start with a stop price closer to the security price than the <code>trailingAmount</code>, pass a <code>stopPrice</code> parameter to the <code>TrailingStopOrder</code> method.</p>
+<div class="section-example-container">
+    <pre class="csharp">TrailingStopOrder(symbol, quantity, stopPrice, trailingAmount, trailingAsPercentage, tag, orderProperties);</pre>
+    <pre class="python">self.TrailingStopOrder(symbol, quantity, stopPrice, trailingAmount, trailingAsPercentage, tag, orderProperties)</pre>
+</div>

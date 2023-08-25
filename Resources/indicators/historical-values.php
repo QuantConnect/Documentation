@@ -1,1 +1,1 @@
-<p>Indicators have a built-in <code>RollingWindow</code> storing their historical values. To view how to access individual members in an indicator, see <a href="/docs/v2/writing-algorithms/indicators/key-concepts#09-Get-Indicator-Values">Get Indicator Values</a>.</p>
+<p>Indicators have a built-in <code>RollingWindow</code> that stores historical values. To access these historical values, see <a href="/docs/v2/writing-algorithms/indicators/key-concepts#09-Get-Indicator-Values">Get Indicator Values</a>.</p>

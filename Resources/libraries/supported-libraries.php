@@ -662,7 +662,7 @@ DynamicInterop                       0.9.1
 fasterflect                          3.0.0
 MathNet.Numerics                     5.0.0
 McMaster.Extensions.CommandLineUtils 2.6.0
-Microsoft.IO.RecyclableMemoryStream  2.3.1
+Microsoft.IO.RecyclableMemoryStream  2.3.2
 Microsoft.NET.Test.Sdk               16.9.4
 Microsoft.TestPlatform.ObjectModel   16.9.4
 Moq                                  4.16.1

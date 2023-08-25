@@ -1,0 +1,1 @@
+<? include(DOCS_RESOURCES."/plotting/plot-consolidated-values.html"); ?>

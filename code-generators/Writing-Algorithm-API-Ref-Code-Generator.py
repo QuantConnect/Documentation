@@ -230,7 +230,7 @@ def Box(input_, doc_attr, type_map, i, imax):
             params += f'''                
                 <tr><td><code>{prop["Type"]}</code></td>
                 <td>{name}</td>
-                <td>{description.replace("(Optional)", "<i>(Optional)</i>")}</td></tr>'''
+                <td>{description.replace("(Optional)", "<span class='qualifier'>(Optional)</span>")}</td></tr>'''
 
         params += """
             </table>
