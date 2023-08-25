@@ -1,0 +1,1 @@
+<? include(DOCS_RESOURCES."/cli/version-control/how-to.php"); ?>
