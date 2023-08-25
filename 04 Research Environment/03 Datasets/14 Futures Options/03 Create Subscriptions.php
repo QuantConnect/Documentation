@@ -99,8 +99,14 @@ fop_contract_symbol = sorted(calls, key=lambda c: c.ID.StrikePrice)[0]</pre>
 
     <li>Call the <code>AddFutureOptionContract</code>&nbsp;method with an <code>OptionContract</code> Symbol and disable fill-forward.</li>
 	<div class="section-example-container">
-		<pre class="csharp">qb.AddFutureOptionContract(fopContractSymbol, fillForward: false);</pre>
-		<pre class="python">qb.AddFutureOptionContract(fop_contract_symbol, fillForward = False)</pre>
+		<pre class="csharp">var optionContract = qb.AddFutureOptionContract(fopContractSymbol, fillForward: false);</pre>
+		<pre class="python">option_contract = qb.AddFutureOptionContract(fop_contract_symbol, fillForward = False)</pre>
 	</div>
     <p>Disable fill-forward because there are only a few <code>OpenInterest</code> data points per day.</p>
+    
+    <li><span class='qualifier'>(Optional)</span> Set the <a href='/docs/v2/writing-algorithms/reality-modeling/options-models/pricing'>price model</a>.</li>
+    <div class="section-example-container">
+        <pre class="csharp">optionContract.PriceModel = OptionPriceModels.BinomialCoxRossRubinstein();</pre>
+        <pre class="python">option_contract.PriceModel = OptionPriceModels.BinomialCoxRossRubinstein()</pre>
+    </div>
 </ol>

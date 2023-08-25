@@ -503,7 +503,7 @@ paths:
       tags:
       - 01 Cloud Platform
       - 99 API Reference
-      - 09 Reports
+      - 11 Reports
       - 01 Backtest Report
       summary: Read out the report of a backtest in the project Id specified
       requestBody:
@@ -835,12 +835,342 @@ paths:
               explode: false
               schema:
                 type: string
+  /optimizations/create:
+    post:
+      tags:
+      - 01 Cloud Platform
+      - 99 API Reference
+      - 08 Optimization Management
+      - 01 Create Optimization
+      summary: Create an optimization with the specified parameters
+      requestBody:
+        description: Project, compile and optimization parameters for launching an optimization job.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateOptimizationRequest'
+        required: true
+      responses:
+        "200":
+          description: Response received when launching an optimization job.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateOptimizationResponse'
+        "401":
+          description: Unauthorized response from the API. Key is missing, invalid, or timestamp is too old for hash.
+          headers:
+            www_authenticate:
+              style: simple
+              explode: false
+              schema:
+                type: string
+  /optimizations/update:
+    post:
+      tags:
+      - 01 Cloud Platform
+      - 99 API Reference
+      - 08 Optimization Management
+      - 02 Update Optimization
+      summary: Updates the name of an optimization.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateOptimizationRequest'
+          required: true
+      responses:
+        "200":
+          description: Base API response class.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RestResponse'
+        "401":
+          description: Unauthorized response from the API. Key is missing, invalid, or timestamp is too old for hash.
+          headers:
+            www_authenticate:
+              style: simple
+              explode: false
+              schema:
+                type: string
+  /optimizations/read:
+    post:
+      tags:
+      - 01 Cloud Platform
+      - 99 API Reference
+      - 08 Optimization Management
+      - 03 Read Optimization
+      summary: Read an optimization.
+      requestBody:
+        description: Optimization id for the optimization we want to read
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReadOptimizationRequest'
+        required: true
+      responses:
+        "200":
+          description: Response received when reading an optimization job.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReadOptimizationResponse'
+        "401":
+          description: Unauthorized response from the API. Key is missing, invalid, or timestamp is too old for hash.
+          headers:
+            www_authenticate:
+              style: simple
+              explode: false
+              schema:
+                type: string
+  /optimizations/delete:
+    post:
+      tags:
+      - 01 Cloud Platform
+      - 99 API Reference
+      - 08 Optimization Management
+      - 04 Delete Optimization
+      summary: Delete an optimization.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DeleteOptimizationRequest'
+          required: true
+      responses:
+        "200":
+          description: Base API response class.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RestResponse'
+        "401":
+          description: Unauthorized response from the API. Key is missing, invalid, or timestamp is too old for hash.
+          headers:
+            www_authenticate:
+              style: simple
+              explode: false
+              schema:
+                type: string
+  /optimizations/abort:
+    post:
+      tags:
+      - 01 Cloud Platform
+      - 99 API Reference
+      - 08 Optimization Management
+      - 05 Abort Optimization
+      summary: Abort an optimization.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AbortOptimizationRequest'
+          required: true
+      responses:
+        "200":
+          description: Base API response class.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RestResponse'
+        "401":
+          description: Unauthorized response from the API. Key is missing, invalid, or timestamp is too old for hash.
+          headers:
+            www_authenticate:
+              style: simple
+              explode: false
+              schema:
+                type: string
+  /optimizations/list:
+    post:
+      tags:
+      - 01 Cloud Platform
+      - 99 API Reference
+      - 08 Optimization Management
+      - 06 List Optimization
+      summary: List all the optimizations for a project.
+      requestBody:
+        description: Project id we'd like to get a list of optimizations for.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ListOptimizationRequest'
+        required: true
+      responses:
+        "200":
+          description: Response received when reading an optimization job.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListOptimizationResponse'
+        "401":
+          description: Unauthorized response from the API. Key is missing, invalid, or timestamp is too old for hash.
+          headers:
+            www_authenticate:
+              style: simple
+              explode: false
+              schema:
+                type: string
+  /optimizations/estimate:
+    post:
+      tags:
+      - 01 Cloud Platform
+      - 99 API Reference
+      - 08 Optimization Management
+      - 07 Estimate Optimization Cost
+      summary: Estimate the cost of an optimization with the specified parameters
+      requestBody:
+        description: Project, compile and optimization parameters for estimating the cost of an optimization job.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EstimateOptimizationRequest'
+        required: true
+      responses:
+        "200":
+          description: Response received when estimating the cost of an optimization job.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EstimateOptimizationResponse'
+        "401":
+          description: Unauthorized response from the API. Key is missing, invalid, or timestamp is too old for hash.
+          headers:
+            www_authenticate:
+              style: simple
+              explode: false
+              schema:
+                type: string
+  /object/set:
+    post:
+      tags:
+      - 01 Cloud Platform
+      - 99 API Reference
+      - 09 Object Store Management
+      - 01 Upload Object Store Files
+      summary: Upload files to the Object Store.
+      requestBody:
+        description: Upload files to the Object Store.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SetObjectStoreRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ObjectStoreBinaryFile'
+        required: true
+      responses:
+        "200":
+          description: Base API response class.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RestResponse'
+        "401":
+          description: Unauthorized response from the API. Key is missing, invalid, or timestamp is too old for hash.
+          headers:
+            www_authenticate:
+              style: simple
+              explode: false
+              schema:
+                type: string
+  /object/get:
+    post:
+      tags:
+      - 01 Cloud Platform
+      - 99 API Reference
+      - 09 Object Store Management
+      - 02 Get Object Store Metadata
+      summary: Get Object Store metadata of a specific organization and key.
+      requestBody:
+        description: Get Object Store metadata of a specific organization and key.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GetObjectStoreRequest'
+        required: true
+      responses:
+        "200":
+          description: Base API response class.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetObjectStoreResponse'
+        "401":
+          description: Unauthorized response from the API. Key is missing, invalid, or timestamp is too old for hash.
+          headers:
+            www_authenticate:
+              style: simple
+              explode: false
+              schema:
+                type: string
+  /object/delete:
+    post:
+      tags:
+      - 01 Cloud Platform
+      - 99 API Reference
+      - 09 Object Store Management
+      - 03 Delete Object Store File
+      summary: Delete the Object Store file of a specific organization and key.
+      requestBody:
+        description: Delete the Object Store file of a specific organization and key.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DeleteObjectStoreRequest'
+        required: true
+      responses:
+        "200":
+          description: Base API response class.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RestResponse'
+        "401":
+          description: Unauthorized response from the API. Key is missing, invalid, or timestamp is too old for hash.
+          headers:
+            www_authenticate:
+              style: simple
+              explode: false
+              schema:
+                type: string
+  /object/list:
+    post:
+      tags:
+      - 01 Cloud Platform
+      - 99 API Reference
+      - 09 Object Store Management
+      - 03 List Object Store Files
+      summary: List the Object Store files of a specific organization and path.
+      requestBody:
+        description: List the Object Store files of a specific organization and path.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ListObjectStoreRequest'
+        required: true
+      responses:
+        "200":
+          description: Base API response class.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListObjectStoreResponse'
+        "401":
+          description: Unauthorized response from the API. Key is missing, invalid, or timestamp is too old for hash.
+          headers:
+            www_authenticate:
+              style: simple
+              explode: false
+              schema:
+                type: string
   /data/read:
     post:
       tags:
       - 01 Cloud Platform
       - 99 API Reference
-      - 08 Downloading Data
+      - 10 Downloading Data
       - 01 Read Downloaded Data
       summary: Get the link to the downloadable data.
       requestBody:
@@ -866,6 +1196,13 @@ paths:
                 type: string
 components:
   schemas:
+    AbortOptimizationRequest:
+      type: object
+      properties:
+        optimizationId:
+          type: string
+          description: Optimization id we want to abort.
+      description: Abort an optimization.
     AlgorithmPerformance:
       type: object
       properties:
@@ -1303,6 +1640,90 @@ components:
           items:
             type: string
       description: Response received when deploying a live algorithm.
+    CreateOptimizationRequest:
+      type: object
+      properties:
+        projectId:
+          type: integer
+          description: Project ID of the project the optimization belongs to.
+        name:
+          type: string
+          description: Name of the optimization.
+        target:
+          type: string
+          description: Target of the optimization.
+        targetTo:
+          type: string
+          description: Target extremum of the optimization.
+          example: max or min
+        targetValue:
+          type: float
+          description: Optimization target value.
+        strategy:
+          type: string
+          description: Optimization strategy.
+          example: QuantConnect.Optimizer.Strategies.GridSearchOptimizationStrategy
+        compileId:
+          type: string
+          description: Optimization compile ID.
+        parameters:
+          type: array
+          description: Optimization parameters.
+          items:
+            $ref: '#/components/schemas/OptimizationParameter'
+        constraints:
+          type: array
+          description: Optimization constraints.
+          items:
+            $ref: '#/components/schemas/OptimizationConstraint'
+        estimatedCost:
+          type: float
+          description: Estimated cost for optimization.
+          example: 10
+        nodeType:
+          type: string
+          description: Optimization node type.
+          example: O2-8
+          enum:
+          - O2-8
+          - O4-12
+          - O8-16          
+        parallelNodes:
+          type: integer
+          description: Number of parallel nodes for optimization.
+          example: 4
+      description: Request to create an optimization job.
+    CreateOptimizationResponse:
+      type: object
+      properties:
+        optimizationId:
+          type: string
+          description: Optimization ID.
+        projectId:
+          type: string
+          description: Project ID of the project the optimization belongs to.
+        name:
+          type: string
+          description: Name of the optimization.
+        status:
+          type: string
+          description: Status of the optimization.
+          enum:
+          - New
+          - Aborted
+          - Running
+          - Completed
+        nodeType:
+          type: string
+          description: Optimization node type.
+          example: O2-8
+          enum:
+          - O2-8
+          - O4-12
+          - O8-16 
+        criterion:
+          $ref: '#/components/schemas/OptimizationTarget'
+      description: Response received when launching an optimization job.
     CreateProjectRequest:
       type: object
       properties:
@@ -1376,6 +1797,113 @@ components:
           type: string
           description: Backtest Id we want to delete.
       description: Request to delete a backtest.
+    DeleteObjectStoreRequest:
+      type: object
+      properties:
+        organizationId:
+          type: string
+          description: Organization id we'd like to delete the Object Store file from.
+        key:
+          type: string
+          description: Key to the Object Store file
+      description: Request to delete Object Store metadata of a specific organization and key.    
+    DeleteOptimizationRequest:
+      type: object
+      properties:
+        optimizationId:
+          type: string
+          description: Optimization id we want to delete.
+      description: Delete an optimization.
+    Estimate:
+      type: object
+      properties:
+        estimateId:
+          type: string
+          description: Estimate Id.
+        time:
+          type: integer
+          description: Estimate time in seconds.
+          example: 60
+        balance:
+          type: integer
+          description: Estimate balance in QCC.
+          example: 10
+      description: Response received when estimating the cost of an optimization.
+    EstimateOptimizationRequest:
+      type: object
+      properties:
+        projectId:
+          type: integer
+          description: Project ID of the project the optimization belongs to.
+        name:
+          type: string
+          description: Name of the optimization.
+        target:
+          type: string
+          description: Target of the optimization.
+        targetTo:
+          type: string
+          description: Target extremum of the optimization.
+          example: max or min
+        targetValue:
+          type: float
+          description: Optimization target value.
+        strategy:
+          type: string
+          description: Optimization strategy.
+          example: QuantConnect.Optimizer.Strategies.GridSearchOptimizationStrategy
+        compileId:
+          type: string
+          description: Optimization compile ID.
+        parameters:
+          type: array
+          description: Optimization parameters.
+          items:
+            $ref: '#/components/schemas/OptimizationParameter'
+        constraints:
+          type: array
+          description: Optimization constraints.
+          items:
+            $ref: '#/components/schemas/OptimizationConstraint'
+      description: Request to estimate the cost of an optimization job.
+    EstimateOptimizationResponse:
+      type: object
+      properties:
+        estimate:
+          $ref: '#/components/schemas/Estimate'
+        success:
+          type: boolean
+          description: Indicate if the API request was successful.
+        errors:
+          type: array
+          description: List of errors with the API call.
+          items:
+            type: string
+      description: Response received when estimating the cost of an optimization.
+    GetObjectStoreRequest:
+      type: object
+      properties:
+        organizationId:
+          type: string
+          description: Organization id we'd like to get the Object Store metadata from.
+        key:
+          type: string
+          description: Key to the Object Store file
+      description: Request to get Object Store metadata of a specific organization and key.
+    GetObjectStoreResponse:
+      type: object
+      properties:
+        metadata:
+          $ref: '#/components/schemas/ObjectStoreMetadata'
+        success:
+          type: boolean
+          description: Indicate if the API request was successful.
+        errors:
+          type: array
+          description: List of errors with the API call.
+          items:
+            type: string
+      description: Response received when fetching Object Store metadata.
     Holding:
       type: object
       properties:
@@ -1625,6 +2153,61 @@ components:
           type: integer
           description: Project Id for the live instance we want to liquidate.
       description: Request to liquidate a live algorithm.
+    ListObjectStoreRequest:
+      type: object
+      properties:
+        organizationId:
+          type: string
+          description: Organization id we'd like to list the Object Store files from.
+        path:
+          type: string
+          description: Path to the Object Store files
+      description: Request to list Object Store files of a specific organization and key.   
+    ListObjectStoreResponse:
+      type: object
+      properties:
+        path:
+          type: string
+          description: Path to the files in the Object Store.
+          example: Mia
+        objects:
+          type: array
+          description: Indicate if the API request was successful.
+          items:
+            $ref: '#/components/schemas/ObjectStoreSummary'
+        success:
+          type: boolean
+          description: Indicate if the API request was successful.
+        errors:
+          type: array
+          description: List of errors with the API call.
+          items:
+            type: string
+      description: Response received when listing Object of a project.
+    ListOptimizationRequest:
+      type: object
+      properties:
+        projectId:
+          type: integer
+          description: Project id we'd like to get a list of optimizations for.
+      description: Project id we'd like to get a list of optimizations for.
+    ListOptimizationResponse:
+      type: object
+      properties:
+        optimizations:
+          type: array
+          description: Collection of summarized optimization objects.
+          items:
+            $ref: '#/components/schemas/CreateOptimizationResponse'
+        success:
+          type: boolean
+          description: Indicate if the API request was successful.
+        errors:
+          type: array
+          description: List of errors with the API call.
+          items:
+            type: string
+      description: Response received when listing optimizations of a project.
     LiveList:
       type: object
       properties:
@@ -1767,6 +2350,116 @@ components:
           type: boolean
           description: Indicate if this is the active node. The project will use this node if it's not busy.
       description: Contains all relevant information on a Node to interact through API endpoints.
+    ObjectStoreBinaryFile:
+      type: object
+      properties:
+        objectData:
+          type: string
+          format: binary
+      descripion: 
+    ObjectStoreMetadata:
+      type: object
+      properties:
+        key:
+          type: string
+          description: Object Store key.
+          example: "Mia/Test"
+        created:
+          type: string
+          description: Time the file was created.
+          format: date-time
+        modified:
+          type: string
+          description: Time the file was modified.
+          format: date-time
+        size:
+          type: float
+          description: File size.
+          example: 13
+        md5:
+          type: string
+          description: MD5 Hash of the file.
+          example: 5d41402abc4b2a76b9719d911017c592
+        mime: 
+          type: string
+          description: MIME type.
+          example: "text/plain"
+        preview:
+          type: string
+          description: Preview of the file content.
+          example: Hello, world!
+      description: Metadata of the Object Store file.
+    ObjectStoreSummary:
+      type: object
+      properties:
+        key:
+          type: string
+          description: Object Store key.
+          example: "Mia/Test"
+        name:
+          type: string
+          description: File or folder name.
+        folder:
+          type: boolean
+          description: True if it is a folder.
+        size:
+          type: float
+          description: File size.
+          example: 13
+      description: Summary information of the Object Store.
+    OptimizationConstraint:
+      type: object
+      properties:
+        target:
+          type: string
+          description: Property we want to track
+          example: TotalPerformance.PortfolioStatistics.SharpeRatio
+        operator:
+          type: string
+          description: The target comparison operation
+          example: greater
+        target-value:
+          type: float
+          description: The value of the property we want to track
+          example: 1
+    OptimizationParameter:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Name of optimization parameter.
+          example: rsi_period
+        min:
+          type: float
+          description: Minimum value of optimization parameter, applicable for boundary conditions.
+          example: 10
+        max:
+          type: float
+          description: Maximum value of optimization parameter, applicable for boundary conditions.
+          example: 20
+        step:
+          type: float
+          description: Movement, should be positive
+          example: 1
+        min-step:
+          type: float
+          description: Minimal possible movement for current parameter, should be positive. Used by <code>Strategies.EulerSearchOptimizationStrategy</code> to determine when this parameter can no longer be optimized.
+          example: 1
+    OptimizationTarget:
+      type: object
+      properties:
+        target:
+          type: string
+          description: Property we want to track
+          example: TotalPerformance.PortfolioStatistics.SharpeRatio
+        extremum:
+          type: string
+          description: Defines the direction of optimization.
+          example: max or min
+        target-value:
+          type: float
+          description: The value of the property we want to track
+          example: 1
     ProjectNodes:
       type: object
       properties:
@@ -1803,6 +2496,95 @@ components:
       - Backtest
       - Research
       - Live
+    Optimization:
+      type: object
+      properties:
+        optimizationId:
+          type: string
+          description: Optimization ID.
+        projectId:
+          type: string
+          description: Project ID of the project the optimization belongs to.
+        name:
+          type: string
+          description: Name of the optimization.
+        status:
+          type: string
+          description: Status of the optimization.
+          enum:
+          - New
+          - Aborted
+          - Running
+          - Completed
+        nodeType:
+          type: string
+          description: Optimization node type.
+          example: O2-8
+          enum:
+          - O2-8
+          - O4-12
+          - O8-16 
+        parallelNodes:
+          type: integer
+          description: Number of parallel nodes for optimization.
+          example: 4
+        criterion:
+          $ref: '#/components/schemas/OptimizationTarget'
+        runtimeStatistics:
+          type: object
+          additionalProperties:
+            type: string
+          description: Runtime banner/updating statistics for the optimization.
+        constraints:
+          type: array
+          description: Optimization constraints.
+          items:
+            $ref: '#/components/schemas/OptimizationConstraint'
+        parameters:
+          type: array
+          description: Optimization parameters.
+          items:
+            $ref: '#/components/schemas/OptimizationParameter'
+        backtests:
+          type: array
+          description: Optimization constraints.
+          items:
+            $ref: '#/components/schemas/OptimizationBacktest'
+        strategy:
+          type: string
+          description: Optimization strategy.
+          example: QuantConnect.Optimizer.Strategies.GridSearchOptimizationStrategy
+        requested:
+          type: string
+          description: Optimization requested date and time.
+          format: date-time    
+      description: Response received when launching an optimization job.
+    OptimizationBacktest:
+      type: object
+      properties:
+        name:
+          type: string
+          description: The backtest name.
+        id:
+          type: string
+          description: The backtest id
+        progress:
+          type: string
+          description: Progress of the backtest as a percentage from 0-1 based on the days lapsed from start-finish.
+        exitCode:
+          type: integer
+          description: The exit code of this backtest
+        statistics:
+          type: object
+          additionalProperties:
+            type: string
+          description: The backtest statistics results.
+        parameterSet:
+          type: string
+          description: Represent a combination as key value of parameters, i.e. order doesn't matter.
+        equity:
+          type: string
+          description: The backtest equity chart series.
     Order:
       type: object
       properties:
@@ -2107,7 +2889,7 @@ components:
       properties:
         nodes:
           type: '#/components/schemas/ProjectNodes'
-          description: List of project nodes..
+          description: List of project nodes.
         autoSelectNode:
           type: boolean
           description: Indicate if a node is automatically selected.
@@ -2398,6 +3180,41 @@ components:
           type: string
           description: Id of the backtest from which to read the orders.
       description: Request to read orders from a backtest.
+    ReadOptimizationRequest:
+      required:
+      - optimizationId
+      type: object
+      properties:
+        optimizationId:
+          type: string
+          description: Optimization id for the optimization we want to read.
+      description: Request to read a optimization from a project.
+    ReadOptimizationResponse:
+      type: object
+      properties:
+        optimization:
+          $ref: '#/components/schemas/Optimization'
+        success:
+          type: boolean
+          description: Indicate if the API request was successful.
+        errors:
+          type: array
+          description: List of errors with the API call.
+          items:
+            type: string
+      description: Response received when reading an optimization.
+    RequestFailedError:
+      type: object
+      properties:
+        success:
+          type: boolean
+          description: Indicate if the API request was successful.
+        errors:
+          type: array
+          description: List of errors with the API call.
+          items:
+            type: string
+      description: The API method call could not be completed as requested.
     RequestFailedError:
       type: object
       properties:
@@ -2493,6 +3310,16 @@ components:
           - triangle
           - triangle-down
       description: Chart Series Object - Series data and properties for a chart.
+    SetObjectStoreRequest:
+      type: object
+      properties:
+        organizationId:
+          type: string
+          description: Organization id we'd like to upload the file to.
+        key:
+          type: string
+          description: Key to the Object Store file.
+      description: Request to upload a file to an Object Store of a specific organization and key.
     StopLiveAlgorithmRequest:
       type: object
       properties:
@@ -2771,6 +3598,16 @@ components:
           type: string
           description: The new contents of the file.
       description: Request to update the contents of a file.
+    UpdateOptimizationRequest:
+      type: object
+      properties:
+        optimizationId:
+          type: string
+          description: Optimization id we want to update.
+        name:
+          type: string
+          description: Name we'd like to assign to the optimization.
+      description: Updates the name of an optimization.
     UpdateProjectRequest:
       type: object
       properties:
