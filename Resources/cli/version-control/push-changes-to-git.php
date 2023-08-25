@@ -1,12 +1,12 @@
 <p>Follow these steps to push the changes of your organization workspace to your version control system:</p>
 <ol>
 <? if($leanCli) { ?>
-    <li>Open a terminal in your organizatino workspace and then <a href='/docs/v2/lean-cli/projects/cloud-synchronization#02-Pulling-Cloud-Projects'>pull all your cloud projects</a>, creating directories where necessary.</li>
+    <li>Open a terminal in your organization workspace and then <a href='/docs/v2/lean-cli/projects/cloud-synchronization#02-Pulling-Cloud-Projects'>pull all your cloud projects</a>, creating directories where necessary.</li>
     <div class="cli section-example-container">
         <pre>$ lean cloud pull</pre>
     </div>
 <? } ?>
-    <li>Add the project directories and the <span class='public-directory-name'>Library</span>.</li>
+    <li><? if ($leanCLI) { ?>A<? } else { ?>Open a terminal in your organization workspace and then a<? } ?>dd the project directories and the <span class='public-directory-name'>Library</span>.</li>
     <div class="cli section-example-container">
         <pre>$ git add Library/
 $ git add &lt;projectDirectory1&gt;/
