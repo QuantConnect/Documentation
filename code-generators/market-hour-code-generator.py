@@ -228,7 +228,7 @@ for key, entry in entries.items():
     entry[MARKET_HOUR.INTRODUCTION] = f"<p>This page shows the trading hours, holidays, and time zone of the {fullname} market.</p>"
 
     entry["exchangeTimeZone"] = entry["exchangeTimeZone"].replace("_", " ")
-    entry[MARKET_HOUR.TIME_ZONE] = f'<p>The {fullname} market uses the <code>{entry["exchangeTimeZone"]}</code> <a href="/docs/v2/writing-algorithms/key-concepts/time-modeling/time-zones#03-Exchange-Time-Zone">exchange time zone</a> and the <code>{entry["dataTimeZone"]}</code> <a href="/docs/v2/writing-algorithms/key-concepts/time-modeling/time-zones#05-Data-Time-Zone">data time zone</a>.</p>'
+    entry[MARKET_HOUR.TIME_ZONE] = f'<p>The {fullname} market trades in the <code>{entry["exchangeTimeZone"]}</code> time zone.</p>'
 
     for day in days:
         for x in entry.pop(day, []):
@@ -345,22 +345,11 @@ for security_type, exchanges in sorted_assets.items():
             all_time_zone = sorted(set(x["exchangeTimeZone"] for x in entries.values()))
             if len(all_time_zone) > 1:
                 time_zone = entry[MARKET_HOUR.TIME_ZONE]
-                end = time_zone.index('uses the')
-                entry[MARKET_HOUR.TIME_ZONE] = f'''{time_zone[:end]} trades in the following <a href="/docs/v2/writing-algorithms/key-concepts/time-modeling/time-zones#03-Exchange-Time-Zone">time zones</a>:</p>
-<ul>
-    <li><code>{"</code></li><li><code>".join(all_time_zone)}</code></li>
-</ul>
-'''
-            all_time_zone = sorted(set(x["dataTimeZone"] for x in entries.values()))
-            if len(all_time_zone) > 1:
-                entry[MARKET_HOUR.TIME_ZONE] += '''<p>The data has the following <a href="/docs/v2/writing-algorithms/key-concepts/time-modeling/time-zones#05-Data-Time-Zone">time zones</a>:</p>
+                end = time_zone.index('trades in the') + 14
+                entry[MARKET_HOUR.TIME_ZONE] = f'''{time_zone[:end]}following time zones:</p>
 <ul>
     <li><code>{"</code></li><li><code>".join(all_time_zone)}</code></li>
 </ul>'''
-            else:
-                entry[MARKET_HOUR.TIME_ZONE] += f'<p>{all_time_zone[0]} is the <a href="/docs/v2/writing-algorithms/key-concepts/time-modeling/time-zones#05-Data-Time-Zone">data time zone</a>.</p>'
-
-
         __write_content(i+11, entries)
     
     if security_type.lower() == 'future':
