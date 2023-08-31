@@ -1,1 +1,0 @@
-<? include(DOCS_RESOURCES."/object-store/research-to-live-considerations.php"); ?>
