@@ -7,4 +7,4 @@
 	<li>Drag and drop the files you want to upload.</li>
 </ol>
 
-<p>Alternatively, you can <a href='/docs/v2/writing-algorithms/object-store#04-Save-Data'>add data to the Object Store in an algorithm</a> or <a href='/docs/v2/research-environment/object-store#06-Delete-Data'>notebook</a>.</p>
+<p>Alternatively, you can <a href='/docs/v2/writing-algorithms/object-store#04-Save-Data'>add data to the Object Store in an algorithm</a> or <a href='/docs/v2/research-environment/object-store#04-Save-Data'>notebook</a>.</p>
