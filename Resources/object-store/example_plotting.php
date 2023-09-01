@@ -1,4 +1,4 @@
-<p>You can use the <code>ObjectStore</code> to plot data from your backtests and live algorithm in the Research Environment. In the following example, you will learn how to plot the <a href="/docs/v2/writing-algorithms/indicators/supported-indicators/simple-moving-average">Simple Moving Average</a> indicator generated in a backtest.</p>
+<p>You can use the Object Store to plot data from your backtests and live algorithm in the Research Environment. In the following example, you will learn how to plot the <a href="/docs/v2/writing-algorithms/indicators/supported-indicators/simple-moving-average">Simple Moving Average</a> indicator generated in a backtest.</p>
 
 <ol>
     <li>Create a algorithm, add a data subscription and a <a href="/docs/v2/writing-algorithms/indicators/supported-indicators/simple-moving-average">Simple Moving Average</a> indicator.</li>
@@ -22,7 +22,7 @@
         self.sma = self.SMA("SPY", 22)</pre>
     </div>
 
-    <p>The algorithm will save <code class='csharp'>_content</code><code class='python'>self.content</code> to the <code>ObjectStore</code>.</p>
+    <p>The algorithm will save <code class='csharp'>_content</code><code class='python'>self.content</code> to the Object Store.</p>
 
     <li>Save indicator data as <code>string</code> in <code class='csharp'>_content</code><code class='python'>self.content</code>.</li>
     <div class='section-example-container'>

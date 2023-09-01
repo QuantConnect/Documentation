@@ -1,0 +1,45 @@
+<p>The CLI enables you to upload files to the Object Store, view a summary of your stored files, and delete files.</p>
+
+<h4>Upload Files</h4>
+<p>To upload files to the Object Store, run <code>lean cloud object-store set &lt;storage-key&gt; &lt;local-file-path&gt;</code>.</p>
+<div class="cli section-example-container">
+<pre>$ lean cloud object-store 15737956/signals D:\qc\magic-signals.txt
+Setting object 15737956/signals in organization d6d62db48592c72e67b534553413b691</pre>
+</div>
+
+<p>If the the file fails to upload, you may have insufficient <a href='https://www.quantconnect.com/docs/v2/cloud-platform/data-storage#03-Storage-Sizes'>storage space</a>. If you need more, <a href='https://www.quantconnect.com/docs/v2/cloud-platform/data-storage#07-Edit-Storage-Plan'>edit your storage plan</a>.</p>
+
+
+<h4>List Directory Contents</h4>
+<p>To view all of the files and folders in the root directory of the Object Store, run <code>lean cloud object-store ls</code>.</p>
+<div class="cli section-example-container">
+<pre>$ lean cloud object-store ls
+Key              Bytes  Folder  Filename
+/15710069        None   True    15710069
+/15727540        None   True    15727540
+/15727540-1      None   True    15727540-1
+/15730221        89649  False   15730221
+/15730422        89748  False   15730422</pre>
+</div>
+
+<p>To view all of the files and folders that are inside of one of the directories, run <code>lean cloud object-store ls &lt;folder-name&gt;</code>.</p>
+<div class="cli section-example-container">
+<pre>$ lean cloud object-store ls 15710069
+Key                Bytes  Folder  Filename
+15710069/adjusted  60024  False   adjusted
+15710069/raw       60143  False   raw</pre>
+</div>
+
+<h4>Get File Metadata</h4>
+<p>To view the metadata of a file in the Object Store, run <code>lean cloud object-store get &lt;path/to/file&gt;</code>.</p>
+<div class="cli section-example-container">
+<pre>$ lean cloud object-store get 15710069/adjusted
+Bytes  Modified             Filename           Preview
+60024  2023-08-30 23:08:23  15710069/adjusted  {"12723264</pre>
+</div>
+
+<h4>Delete Content</h4>
+<p>To delete a file or directory in the Object Storage, run <code>lean cloud object-store delete &lt;key&gt;</code>.</p>
+<div class="cli section-example-container">
+<pre>$ lean cloud object-store delete 15710069/adjusted</pre>
+</div>
