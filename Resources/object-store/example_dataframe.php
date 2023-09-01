@@ -1,5 +1,5 @@
 <? $cs = $research ? "qb." : ""; $py = $research ? "qb." : "self."; ?>
-<p>Follow these steps to create a <code>Dataframe</code>, save and load it from the <code>ObjectStore</code>.</p>
+<p>Follow these steps to create a <code>Dataframe</code>, save and load it from the Object Store.</p>
 
 <ol>
     <li>Get historical data.</li>
