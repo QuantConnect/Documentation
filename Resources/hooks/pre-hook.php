@@ -2,7 +2,7 @@
 /**
  * Available global variables
  *
- * $BREADCRUMBS    Array<String>, Example ["cloud-platform","organizations","data-storage"]
+ * $BREADCRUMBS    Array<String>, Example ["cloud-platform","organizations","object-store"]
  * $ANCHOR         String, Example "#remove-option-contract"
  * $DOCS_RESOURCES String path to the docs resources folder
  * $DOCS_ROOT      String path to the docs root folder
@@ -21,9 +21,9 @@ if (!function_exists('str_contains')) {
 if (!function_exists('DOCS_URL')) {
 
     /**
-     * Example breadcrumb: ["cloud-platform","organizations","data-storage"]
+     * Example breadcrumb: ["cloud-platform","organizations","object-store"]
      *
-     * DOCS_URL() => "cloud-platform/organizations/data-storage"
+     * DOCS_URL() => "cloud-platform/organizations/object-store"
      * DOCS_URL(0) => "cloud-platform"
      *
      * @return mixed
