@@ -1,0 +1,1 @@
+<? include(DOCS_RESOURCES."/object-store/view-cloud-storage.php"); ?>

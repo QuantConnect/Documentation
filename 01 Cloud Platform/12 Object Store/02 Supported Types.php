@@ -1,1 +1,0 @@
-<? include(DOCS_RESOURCES."/object-store/supported-types.html"); ?>
