@@ -3,14 +3,18 @@
 <div class="section-example-container">
 <pre class="python">def OnData(self, slice: Slice) -&gt; None:
     if slice.ContainsKey(self.dataset_symbol):
-        data_point = slice[self.dataset_symbol]
-        self.Log(f"{self.dataset_symbol} weekly page views percentage change at {slice.Time}: {data_point.WeekPercentChange}")</pre>
+        data_points = slice[self.dataset_symbol]
+        for data_point in data_points:
+            self.Log(f"{self.dataset_symbol} weekly page views percentage change at {slice.Time}: {data_point.WeekPercentChange}")</pre>
 <pre class="csharp">public override void OnData(Slice slice)
 {
     if (slice.ContainsKey(_datasetSymbol))
     {
-        var dataPoint = slice[_datasetSymbol];
-        Log($"{_datasetSymbol} weekly page views percentage change at {slice.Time}: {dataPoint.WeekPercentChange}");
+        var dataPoints = slice[_datasetSymbol];
+        foreach (var dataPoint in dataPoints)
+        {
+            Log($"{_datasetSymbol} weekly page views percentage change at {slice.Time}: {dataPoint.WeekPercentChange}");
+        }
     }
 }</pre>
 </div>
@@ -19,7 +23,8 @@
 
 <div class="section-example-container">
 <pre class="python">def OnData(self, slice: Slice) -&gt; None:
-    for dataset_symbol, data_point in slice.Get(QuiverWikipedia).items():
+    data_points = slice.Get(QuiverWikipedia)
+    for data_point in data_points.Values:
         self.Log(f"{dataset_symbol} weekly page views percentage change at {slice.Time}: {data_point.WeekPercentChange}")
 </pre>
 <pre class="csharp">public override void OnData(Slice slice)
@@ -27,8 +32,11 @@
     foreach (var kvp in slice.Get&lt;QuiverWikipedia&gt;())
     {
         var datasetSymbol = kvp.Key;
-        var dataPoint = kvp.Value;
-        Log($"{datasetSymbol} weekly page views percentage change at {slice.Time}: {dataPoint.WeekPercentChange}");
+        var dataPoints = kvp.Value;
+        foreach (var dataPoint in dataPoints)
+        {
+            Log($"{datasetSymbol} weekly page views percentage change at {slice.Time}: {dataPoint.WeekPercentChange}");
+        }
     }
 }</pre>
 </div>
