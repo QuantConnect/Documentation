@@ -3,33 +3,39 @@
 <div class="section-example-container">
 <pre class="python">def OnData(self, slice: Slice) -&gt; None:
     if slice.ContainsKey(self.dataset_symbol):
-        data_point = slice[self.dataset_symbol]
-        self.Log(f"{self.dataset_symbol} followers at {slice.Time}: {data_point.Followers}")</pre>
+        data_points = slice[self.dataset_symbol]
+        for data_point in data_points:
+            self.Log(f"{self.dataset_symbol} followers at {slice.Time}: {data_point.Followers}")</pre>
 <pre class="csharp">public override void OnData(Slice slice)
 {
     if (slice.ContainsKey(_datasetSymbol))
     {
-        var dataPoint = slice[_datasetSymbol];
-        Log($"{_datasetSymbol} followers at {slice.Time}: {dataPoint.Followers}");
+        var dataPoints = slice[_datasetSymbol];
+        foreach (var dataPoint in dataPoints)
+        {
+            Log($"{_datasetSymbol} followers at {slice.Time}: {dataPoint.Followers}");
+        }
     }
-}
-</pre>
+}</pre>
 </div>
 
 <p>To iterate through all of the dataset objects in the current <b>Slice</b>, call the <b>Get</b> method.</p>
 
 <div class="section-example-container">
 <pre class="python">def OnData(self, slice: Slice) -&gt; None:
-    for dataset_symbol, data_point in slice.Get(QuiverQuantTwitterFollowers).items():
-        self.Log(f"{dataset_symbol} followers at {slice.Time}: {data_point.Followers}")
-</pre>
+    for dataset_symbol, data_points in slice.Get(QuiverTwitterFollowers).items():
+        for data_point in data_points:
+            self.Log(f"{dataset_symbol} followers at {slice.Time}: {data_point.Followers}")</pre>
 <pre class="csharp">public override void OnData(Slice slice)
 {
-    foreach (var kvp in slice.Get&lt;QuiverQuantTwitterFollowers&gt;())
+    foreach (var kvp in slice.Get&lt;QuiverTwitterFollowers&gt;())
     {
         var datasetSymbol = kvp.Key;
-        var dataPoint = kvp.Value;
-        Log($"{datasetSymbol} followers at {slice.Time}: {dataPoint.Followers}");
+        var dataPoints = kvp.Value;
+        foreach (var dataPoint in dataPoints)
+        {
+            Log($"{datasetSymbol} followers at {slice.Time}: {dataPoint.Followers}");
+        }
     }
 }</pre>
 </div>
