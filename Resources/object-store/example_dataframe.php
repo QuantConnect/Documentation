@@ -48,25 +48,25 @@ var df = new DataFrame(columns);</pre>
 <p class='python'><code>pandas</code> supports saving and loading DataFrame objects in the following additional formats:</p>
 
 <ul class='python'>
-    <li><a rel="nofollow" target="_blank" href="https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.to_xml.html">XML</a>.</li>
+    <li><a rel="nofollow" target="_blank" href="https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.to_xml.html">XML</a></li>
     <div class='section-example-container'>
     <pre class='python'>file_path = <?=$py?>ObjectStore.GetFilePath("df_to_xml")
 df.to_xml(file_path)   # File size: 87816 bytes
 reread = pd.read_xml(file_path)</pre>
     </div> 
-    <li><a rel="nofollow" target="_blank" href="https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.to_json.html">JSON</a>.</li>
+    <li><a rel="nofollow" target="_blank" href="https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.to_json.html">JSON</a></li>
     <div class='section-example-container'>
     <pre class='python'>file_path = <?=$py?>ObjectStore.GetFilePath("df_to_json")
 df.to_json(file_path)   # File size: 125250 bytes
 reread = pd.read_json(file_path)</pre>
     </div> 
-    <li><a rel="nofollow" target="_blank" href="https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.to_parquet.html">Parquet</a>.</li>
+    <li><a rel="nofollow" target="_blank" href="https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.to_parquet.html">Parquet</a></li>
     <div class='section-example-container'>
     <pre class='python'>file_path = <?=$py?>ObjectStore.GetFilePath("df_to_parquet")
 df.to_parquet(file_path)   # File size: 23996 bytes
 reread = pd.read_parquet(file_path)</pre>
     </div>
-    <li><a rel="nofollow" target="_blank" href="https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.to_pickle.html">Pickle</a>.</li>
+    <li><a rel="nofollow" target="_blank" href="https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.to_pickle.html">Pickle</a></li>
     <div class='section-example-container'>
     <pre class='python'>file_path = <?=$py?>ObjectStore.GetFilePath("df_to_pickle")
 df.to_pickle(file_path)   # File size: 19868 bytes
