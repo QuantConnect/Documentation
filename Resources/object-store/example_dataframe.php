@@ -32,20 +32,20 @@ var df = new DataFrame(columns);</pre>
     <pre class='python'>file_path = <?=$py?>ObjectStore.GetFilePath("df_to_csv")</pre>
     </div>
 
-    <li>Save the DataFrame as <span class='public-file-name'>CSV</span> with the <a class='csharp' rel="nofollow" target="_blank" href="https://learn.microsoft.com/en-us/dotnet/api/microsoft.data.analysis.dataframe.savecsv">SaveCsv</a><a class='python' rel="nofollow" target="_blank" href="https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.to_csv.html">to_csv</a> method.</li>
+    <li>Call the <a class='csharp' rel="nofollow" target="_blank" href="https://learn.microsoft.com/en-us/dotnet/api/microsoft.data.analysis.dataframe.savecsv">SaveCsv</a><a class='python' rel="nofollow" target="_blank" href="https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.to_csv.html">to_csv</a> method to save the DataFrame in the Object Store as a CSV file.</li>
     <div class='section-example-container'>
     <pre class='csharp'>DataFrame.SaveCsv(df, filePath);    // File size: 26520 bytes</pre>
     <pre class='python'>df.to_csv(file_path)   # File size: 32721 bytes</pre>
     </div>
 
-    <li>Load the DataFrame with the <a class='csharp' rel="nofollow" target="_blank" href="https://learn.microsoft.com/en-us/dotnet/api/microsoft.data.analysis.dataframe.loadcsv">LoadCsv</a><a class='python' rel="nofollow" target="_blank" href="https://pandas.pydata.org/docs/reference/api/pandas.read_csv.html">read_csv</a> method.</li>
+    <li>Call the <a class='csharp' rel="nofollow" target="_blank" href="https://learn.microsoft.com/en-us/dotnet/api/microsoft.data.analysis.dataframe.loadcsv">LoadCsv</a><a class='python' rel="nofollow" target="_blank" href="https://pandas.pydata.org/docs/reference/api/pandas.read_csv.html">read_csv</a> method to load the CSV file from the Object Store.</li>
     <div class='section-example-container'>
     <pre class='csharp'>var reread = DataFrame.LoadCsv(filePath);</pre>
     <pre class='python'>reread = pd.read_csv(file_path)</pre>
     </div>
 </ol>
 
-<p class='python'><code>pandas</code> supports saving and loading data frames in the following additional formats:</p>
+<p class='python'><code>pandas</code> supports saving and loading DataFrame objects in the following additional formats:</p>
 
 <ul class='python'>
     <li><a rel="nofollow" target="_blank" href="https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.to_xml.html">XML</a>.</li>
