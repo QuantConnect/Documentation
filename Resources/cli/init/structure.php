@@ -31,7 +31,7 @@
         </tr>
         <tr>
             <td><span class='public-directory-name'>storage /</span></td>
-            <td>This directory contains the <a href='/docs/v2/lean-cli/data-storage'>Object Store</a> data that LEAN uses to run locally.</td>
+            <td>This directory contains the <a href='/docs/v2/lean-cli/object-store'>Object Store</a> data that LEAN uses to run locally.</td>
         </tr>    
         <tr>
             <td><span class='public-file-name'>lean.json</span></td>
