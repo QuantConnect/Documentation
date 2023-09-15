@@ -7,6 +7,10 @@ $logLink = $cloudPlatform ? "/docs/v2/cloud-platform/projects/debugging#04-Loggi
 <h4>View in the GUI</h4>
 <p>To see the log file that was created throughout a backtest, open the backtest result page and then click the <span class="tab-name">Logs</span> tab.</p>
 
+<? if ($cloudPlatform) { ?>
+<p>To filter the logs, enter a search string in the <span class='field-name'>Filter logs</span> field.</p>
+<? } ?>
+
 <h4>Download Log Files</h4>
 <p>To download the log file that was created throughout a backtest, follow these steps:</p>
 <ol>
