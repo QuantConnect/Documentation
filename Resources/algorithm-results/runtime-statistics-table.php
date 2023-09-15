@@ -1,7 +1,6 @@
 <p>The following table describes the default runtime statistics:</p>
-<?php
-    include(DOCS_RESOURCES."/glossary.php");
-?>
+<? include(DOCS_RESOURCES."/glossary.php"); ?>
+
 <table class='qc-table table'>
   <thead>
     <tr>
@@ -10,14 +9,6 @@
     </tr>
   </thead>
   <tbody>
-    
-<? if ($pageName == "backtest") { ?>
-  <tr>
-    <td>Capacity</td>
-    <td><?=$definitionByTerm['capacity']?></td>
-  </tr>
-<? } ?>
-
   <tr>
     <td>Equity</td>
     <td><?=$definitionByTerm['equity']?></td>
