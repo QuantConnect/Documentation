@@ -2,10 +2,7 @@
 
 <img class='docs-image' src="https://cdn.quantconnect.com/i/tu/runtime-statistics-live-1.png" alt="Live runtime statistics">
 
-<?php 
-$pageName = "live";
-include(DOCS_RESOURCES."/algorithm-results/runtime-statistics-table.php");
-?>
+<? include(DOCS_RESOURCES."/algorithm-results/runtime-statistics-table.php"); ?>
 
 <p>To add a custom runtime statistic, see <a href='/docs/v2/writing-algorithms/logging#06-Runtime-Statistics'>Runtime Statistics</a>.</p>
 
