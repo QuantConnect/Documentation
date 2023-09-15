@@ -6,4 +6,4 @@
 
 <p>To download the runtime statistics data, see <a href='/docs/v2/cloud-platform/backtesting/results#15-Download-Results'>Download Results</a>.</p>
 
-<p>To add a custom runtime statistic, see <a href='/docs/v2/writing-algorithms/logging#06-Runtime-Statistics'>Runtime Statistics</a>.</p>
+<p>To add a custom runtime statistic, see <a href='/docs/v2/writing-algorithms/statistics/runtime-statistics#03-Add-Statistics'>Add Statistics</a>.</p>
