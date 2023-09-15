@@ -27,7 +27,7 @@
 
 <h4>Ask Mia</h4>
 <p>The <span class='tab-name'>Ask Mia</span> tab of the panel is where you can interact with our AI assistant, Mia.</p>
-<img src="https://cdn.quantconnect.com/i/tu/ask-mia.png" class="docs-image"/>
+<img src="https://cdn.quantconnect.com/i/tu/ask-mia-local-platform.png" class="docs-image"/>
 <p>Mia provides contextual assistance to most issues you may encounter when developing a strategy, including build errors, API methods, and best coding practices. It has been trained on hundreds of algorithms and thousands of documentation pages.</p>
 <p>To clear the chat with Mia, click the <span class='button-name'>Clear Mia Chat</span> icon in the top-right corner of the panel.</p>
 <? } ?>
