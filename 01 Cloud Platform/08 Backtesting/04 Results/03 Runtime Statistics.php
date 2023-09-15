@@ -1,6 +1,6 @@
 <p>The banner at the top of the backtest results page displays the runtime statistics of your backtest.</p>
 
-<img class='docs-image' src="https://cdn.quantconnect.com/i/tu/run-time-statistics-2023.png" alt="Backtest runtime statistics">
+<img class='docs-image' src="https://cdn.quantconnect.com/i/tu/runtime-statistics-live-1.png" alt="Backtest runtime statistics">
 
 <?php 
 $pageName = "backtest";
