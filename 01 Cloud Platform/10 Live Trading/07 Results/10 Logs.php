@@ -4,6 +4,9 @@
 <h4>View in the GUI</h4>
 <p>To see the log file your algorithm has created, open the live results page and then click the <span class="tab-name">Logs</span> tab.</p>
 
+<p>To filter the logs, enter a search string in the <span class='field-name'>Filter logs</span> field.</p>
+<img class='docs-image' src='https://cdn.quantconnect.com/i/tu/filter-live-logs.gif'>
+
 
 <h4>Download Log File</h4>
 <p>To download the log file, open the live result page, click the <span class="tab-name">Logs</span> tab, and then click <span class="button-name">Download Logs</span>.</p>
