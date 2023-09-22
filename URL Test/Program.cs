@@ -27,6 +27,8 @@ using System.Threading.Tasks;
 
 const string path = "..";
 const string root = "https://www.quantconnect.com/";
+const string leanIo = "https://www.lean.io/";
+var leanIoFolder = new string[] {"05 Lean CLI", "06 LEAN Engine"};
 var edgeCaseUrls = new []
 {
     "https://www.quantconnect.com/docs/v2/writing-algorithms/trading-and-orders/order-management/order-tickets#workaround-for-brokerages-that-dont-support-updates"
@@ -130,7 +132,7 @@ foreach (var (url, files) in urlFiles)
 
     if (i % 100 == 0)
     {
-        Log.Trace($"\tDone {i}/{count} ({Convert.ToDouble(i) / count:P2}%)");
+        Log.Trace($"\tDone {i}/{count} ({Convert.ToDouble(i) / count:P2})");
     }
 
     Interlocked.Increment(ref i);
@@ -175,6 +177,7 @@ Dictionary<string, List<string>> GetAllUrls()
             foreach (var href in hrefs)
             {
                 var url = href.Split('\"').First();
+                var subUrl = String.Empty;
 
                 if (string.IsNullOrWhiteSpace(url) || url.Contains('{') || url.Contains('}')) continue;
 
@@ -182,7 +185,7 @@ Dictionary<string, List<string>> GetAllUrls()
                 {
                     if (url[0] == '#')
                     {
-                        var subUrl = string.Join("/",
+                        subUrl = string.Join("/",
                                 file.Split(Path.DirectorySeparatorChar).SkipLast(1)
                                     .Select(x => x.Remove(0, 2).Trim()))
                             .ToLower().Replace(" ", "-");
@@ -193,7 +196,7 @@ Dictionary<string, List<string>> GetAllUrls()
                     }
                     else if (url[0] != '/')
                     {
-                        var subUrl = string.Join("/",
+                        subUrl = string.Join("/",
                                 file.Split(Path.DirectorySeparatorChar).SkipLast(2)
                                     .Select(x => x.Remove(0, 2).Trim()))
                             .ToLower().Replace(" ", "-");
@@ -213,6 +216,18 @@ Dictionary<string, List<string>> GetAllUrls()
                 }
 
                 urlFiles[url].Add(file);
+
+                if (leanIoFolder.Any(file.Contains))
+                {
+                    url = url.Replace(root, leanIo);
+
+                    if (!urlFiles.ContainsKey(url))
+                    {
+                        urlFiles.Add(url, new List<string>());
+                    }
+
+                    urlFiles[url].Add(file);
+                }
             }
         }
     }
