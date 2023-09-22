@@ -605,10 +605,6 @@
 <td>Sets the account currency cash symbol this algorithm is to manage, as well as the starting cash in this currency if given.</td>
 </tr>
 <tr>
-<td width="33%"><a href="#SetAlgorithmMode-header">SetAlgorithmMode()</a></td>
-<td>Sets the algorithm running mode.</td>
-</tr>
-<tr>
 <td width="33%"><a href="#SetAlpha-header">SetAlpha()</a></td>
 <td>Sets the alpha model.</td>
 </tr>
@@ -637,10 +633,6 @@
 <td>Sets the current slice.</td>
 </tr>
 <tr>
-<td width="33%"><a href="#SetDeploymentTarget-header">SetDeploymentTarget()</a></td>
-<td>Sets the algorithm deployment target.</td>
-</tr>
-<tr>
 <td width="33%"><a href="#SetEndDate-header">SetEndDate()</a></td>
 <td>Set the end date for a backtest run.</td>
 </tr>
@@ -663,10 +655,6 @@
 <tr>
 <td width="33%"><a href="#SetOptionChainProvider-header">SetOptionChainProvider()</a></td>
 <td>Sets the option chain provider, used to get the list of option contracts for an underlying symbol.</td>
-</tr>
-<tr>
-<td width="33%"><a href="#SetPandasConverter-header">SetPandasConverter()</a></td>
-<td>Sets pandas converter.</td>
 </tr>
 <tr>
 <td width="33%"><a href="#SetParameters-header">SetParameters()</a></td>
@@ -699,10 +687,6 @@
 <tr>
 <td width="33%"><a href="#SetStartDate-header">SetStartDate()</a></td>
 <td>Set the start date for backtest.</td>
-</tr>
-<tr>
-<td width="33%"><a href="#SetStatisticsService-header">SetStatisticsService()</a></td>
-<td>Sets the statistics service instance to be used by the algorithm.</td>
 </tr>
 <tr>
 <td width="33%"><a href="#SetSummaryStatistic-header">SetSummaryStatistic()</a></td>
