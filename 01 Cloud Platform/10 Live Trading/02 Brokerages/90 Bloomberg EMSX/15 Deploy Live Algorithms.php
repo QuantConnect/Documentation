@@ -12,7 +12,7 @@ $authentication = "<li>Click the <span class='field-name'>Connection Type</span>
 <li>In the <span class='field-name'>EMSX Broker</span> field, enter the EMSX broker to use.</li>
 
 <li>In the <span class='field-name'>Server Port</span> field, enter the port where SAPI is listening.</li>
-<p>The default port is 8194.<li>
+<p>The default port is 8194.</p>
 
 <li>In the <span class='field-name'>Server Host</span> field, enter the public IP address of the SAPI AWS server.</li>
 
