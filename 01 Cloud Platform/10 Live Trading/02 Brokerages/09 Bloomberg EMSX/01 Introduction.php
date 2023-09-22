@@ -1,4 +1,4 @@
-<?php include(DOCS_RESOURCES."/landing-page-introductions/individual-brokerages.php"); ?>
+<? include(DOCS_RESOURCES."/landing-page-introductions/individual-brokerages.php"); ?>
 
 <img class='docs-image' style='width: 100%;' src='https://cdn.quantconnect.com/i/tu/terminal-link-logo.svg' alt="Terminal link icon">
 

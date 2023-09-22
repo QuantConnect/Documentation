@@ -67,3 +67,5 @@
 
 <h4>Cancellations</h4>
 <p>Terminal Link enables you to <a href='/docs/v2/writing-algorithms/trading-and-orders/order-management/order-tickets#05-Cancel-Orders'>cancel open orders</a>.</p>
+
+<? include(DOCS_RESOURCES."/brokerages/handling-splits.html"); ?>
