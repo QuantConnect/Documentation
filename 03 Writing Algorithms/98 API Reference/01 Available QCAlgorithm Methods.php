@@ -1053,6 +1053,10 @@
 <td>Creates a new consolidator for the specified period, generating the requested output type.</td>
 </tr>
 <tr>
+<td width="33%"><a href="#DeregisterIndicator-header">DeregisterIndicator()</a></td>
+<td>Will deregister an indicator and it's associated consolidator instance so they stop receiving data updates.</td>
+</tr>
+<tr>
 <td width="33%"><a href="#RegisterIndicator-header">RegisterIndicator()</a></td>
 <td>Registers the consolidator to receive automatic updates as well as configures the indicator to receive updates from the consolidator.</td>
 </tr>
@@ -1275,6 +1279,10 @@
 <tr>
 <td width="33%"><a href="#DEMA-header">DEMA()</a></td>
 <td>Creates a new DoubleExponentialMovingAverage indicator.</td>
+</tr>
+<tr>
+<td width="33%"><a href="#DeregisterIndicator-header">DeregisterIndicator()</a></td>
+<td>Will deregister an indicator and it's associated consolidator instance so they stop receiving data updates.</td>
 </tr>
 <tr>
 <td width="33%"><a href="#DPO-header">DPO()</a></td>
@@ -1729,6 +1737,18 @@
 <td>Calculate the order quantity to achieve target-percent holdings.</td>
 </tr>
 <tr>
+<td width="33%"><a href="#ComboLegLimitOrder-header">ComboLegLimitOrder()</a></td>
+<td>Issue a combo leg limit order/trade for multiple assets, each having its own limit price.</td>
+</tr>
+<tr>
+<td width="33%"><a href="#ComboLimitOrder-header">ComboLimitOrder()</a></td>
+<td>Issue a combo limit order/trade for multiple assets. A single limit price is defined for the combo order and will fill only if the sum of the assets price compares properly to the limit price, depending on the direction.</td>
+</tr>
+<tr>
+<td width="33%"><a href="#ComboMarketOrder-header">ComboMarketOrder()</a></td>
+<td>Issue a combo market order/trade for multiple assets.</td>
+</tr>
+<tr>
 <td width="33%"><a href="#ExerciseOption-header">ExerciseOption()</a></td>
 <td>Send an exercise order to the transaction handler.</td>
 </tr>
@@ -1823,6 +1843,10 @@
 <tr>
 <td width="33%"><a href="#StopMarketOrder-header">StopMarketOrder()</a></td>
 <td>Create a stop market order and return the newly created order id; or negative if the order is invalid.</td>
+</tr>
+<tr>
+<td width="33%"><a href="#SubmitOrderRequest-header">SubmitOrderRequest()</a></td>
+<td>Will submit an order request to the algorithm.</td>
 </tr>
 <tr>
 <td width="33%"><a href="#TrailingStopOrder-header">TrailingStopOrder()</a></td>
