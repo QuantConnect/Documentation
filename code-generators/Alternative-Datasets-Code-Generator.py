@@ -49,7 +49,7 @@ for vendor in vendor_names:
         vendors[vendor] = vendor_count
         product_count[vendor] = {dataset["name"].strip(): m+1 for m, dataset in enumerate(sorted([x for x in doc if x["vendorName"].strip() == vendor], key=lambda x: x['name']))}
         vendor_count += 1
-        
+
 universe_html = """<p>The following alternative datasets support universe selection:</p>
 <ul>
 """
@@ -58,54 +58,52 @@ for dataset in doc:
     i = 1
     vendorName = dataset["vendorName"].strip()
     datasetName = dataset["name"].strip()
-        
+
     # Create path if not exist
     main_dir = f'03 Writing Algorithms/14 Datasets/{vendors[vendorName]:02} {vendorName}/{product_count[vendorName][datasetName]:02} {datasetName}'
     destination_folder = pathlib.Path(main_dir)
     destination_folder.mkdir(parents=True, exist_ok=True)
-    
+
     with open(destination_folder / f'metadata.json', "w", encoding="utf-8") as json_file:
         metadata = metadata_content(vendorName, datasetName)
         json_file.write(metadata)
-    
-    all_sections = {**{item["title"]: item for item in dataset["about"] if item["title"]}, **{item["title"]: item for item in dataset["documentation"] if item["title"]}}
-    
-    for _, item in all_sections.items():
-        content = item["content"].replace("\/", "/") \
+
+    all_sections = {**{item["title"]: item["content"] for item in dataset["about"] if item["title"]},
+                    **{item["title"]: item["content"] for item in dataset["documentation"] if item["title"]}}
+
+    for title, content in all_sections.items():
+        content = content.replace("\/", "/") \
                     .replace("https://www.quantconnect.com/docs/v2/", "/docs/v2/") \
                     .replace("https://www.quantconnect.com/datasets/", "/datasets/") \
                     .replace('<div class="qc-embed-frame"><div class="qc-embed-dummy"></div><div class="qc-embed-element"><iframe class="qc-embed-backtest"',
-                                            '<div class="qc-embed-frame python" style="display: inline-block; position: relative; width: 100%; min-height: 100px; min-width: 300px;"><div class="qc-embed-dummy" style="padding-top: 56.25%;"></div><div class="qc-embed-element" style="position: absolute; top: 0; bottom: 0; left: 0; right: 0;"><iframe class="qc-embed-backtest"') \
-                    .replace('<pre><code class="language-python">', 
-                                '<pre class="python">') \
-                    .replace('<pre><code class="language-cs">',
-                                '<pre class="csharp">') \
-                    .replace('</code>',
-                                '')
-                    
-        if item["title"].lower() == "example applications":
-            with open(destination_folder / f'99 {item["title"].strip()}.html', "w", encoding="utf-8") as html_file:
+                                            '<div class="qc-embed-frame python" style="display: inline-block; position: relative; width: 100%; min-height: 100px; min-width: 300px;"><div class="qc-embed-dummy" style="padding-top: 56.25%;"></div><div class="qc-embed-element" style="position: absolute; top: 0; bottom: 0; left: 0; right: 0;"><iframe class="qc-embed-backtest"')
+        if title.lower() != "supported assets":
+            content = content.replace('</code>','') \
+                    .replace('<pre><code class="language-cs">','<pre class="csharp">') \
+                    .replace('<pre><code class="language-python">', '<pre class="python">')
+
+        if title.lower() == "example applications":
+            with open(destination_folder / f'99 {title.strip()}.html', "w", encoding="utf-8") as html_file:
                 html_file.write(content)
-                
             continue
-        
-        else: 
-            if item["title"].lower() == "introduction":
+
+        else:
+            if title.lower() == "introduction":
                 backslash = '\\'
                 content += f"""
                 
 <p>For more information about the {datasetName} dataset, including CLI commands and pricing, see the <a href=\"{dataset['url'].lower().replace(backslash, '')}\">dataset listing</a>.<p>"""
-                
-        if item["title"].strip() == "Universe Selection" and vendorName not in priority:
+
+        if title.strip() == "Universe Selection" and vendorName not in priority:
             universe_html += f"""    <li><a href="/docs/v2/writing-algorithms/datasets/{vendorName.lower().replace(' ', '-')}/{datasetName.lower().replace(' ', '-')}#{i:02}-Universe-Selection">{datasetName}</a></li>
 """
-        
-        with open(destination_folder / f'{i:02} {item["title"].strip()}.html', "w", encoding="utf-8") as html_file:
+
+        with open(destination_folder / f'{i:02} {title.strip()}.html', "w", encoding="utf-8") as html_file:
             html_file.write(content)
             i += 1
-            
+
     print(f'Documentation of {dataset["name"]} is generated and inplace!')
-    
+
 universe_html += "</ul>"
 with open('Resources/datasets/supported-alternative-dataset-universe.html', "w", encoding="utf-8") as html_file:
     html_file.write(universe_html)
