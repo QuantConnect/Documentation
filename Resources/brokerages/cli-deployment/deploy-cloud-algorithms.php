@@ -56,7 +56,8 @@ Enter an option: <?=$brokerageNumber?></pre>
 
     <?=$brokerageDetails?>
 
-            <li>Select the live node that you want to use. If you only have one idle live trading node, it is selected automatically and this step is skipped.
+            <li>Select the live node that you want to use. 
+             <p>If you only have one idle live trading node, it is selected automatically and this step is skipped.</p>
 <div class='cli section-example-container'>
 <pre>$ lean cloud live "My Project" --push --open
 Select a node:
