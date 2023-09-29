@@ -25,9 +25,7 @@
 </table>
 
 <h4>AI Support</h4>
-<p>Mia is an AI assistant that provides contextual assistance to most issues you may encounter when developing a strategy. We trained it on hundreds of algorithms and thousands of documentation pages. The following table shows the number of AI tickets each support seat tier can open during a 1-month rolling period:</p>
-
-<? include(DOCS_RESOURCES."/quotas/ask-mia.html");?>
+<p>Mia is an AI assistant we trained on hundreds of algorithms and thousands of documentation pages to provide contextual assistance for most issues you may encounter when developing a strategy.</p>
 
 <table class="qc-table table">
    <thead>
