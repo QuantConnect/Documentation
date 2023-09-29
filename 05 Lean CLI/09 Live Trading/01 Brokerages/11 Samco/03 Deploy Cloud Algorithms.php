@@ -1,21 +1,19 @@
 <?
 $brokerageDetails = "
-<li>Enter your Samco credentials.
+<li>Enter your Samco credentials.</li>
 <div class='cli section-example-container'>
 <pre>$ lean cloud live \"My Project\" --push --open
 Client ID:
 Client Password:</pre>
 </div>
-</li>
 
-<li>Enter your year of birth.
+<li>Enter your year of birth.</li>
 <div class='cli section-example-container'>
 <pre>$ lean cloud live \"My Project\" --push --open
 Year of Birth:</pre>
 </div>
-</li>
 
-<li>Enter the product type.
+<li>Enter the product type.</li>
 <div class='cli section-example-container'>
 <pre>$ lean cloud live \"My Project\" --push --open
 Product type (mis, cnc, nrml):</pre>
@@ -43,9 +41,8 @@ Product type (mis, cnc, nrml):</pre>
         </tr>
     </tbody>
 </table>
-</li>
 
-<li>Enter the trading segment.
+<li>Enter the trading segment.</li>
 <div class='cli section-example-container'>
 <pre>$ lean cloud live \"My Project\" --push --open
 Trading segment (equity, commodity):</pre>
@@ -69,7 +66,6 @@ Trading segment (equity, commodity):</pre>
         </tr>
     </tbody>
 </table>
-</li>
 ";
 $brokerageName="Samco";
 $isSupported=true;
