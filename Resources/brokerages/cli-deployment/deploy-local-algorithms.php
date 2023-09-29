@@ -13,7 +13,7 @@ if ($isBrokerage) {
       "Tradier",
       "Oanda",
       "Bitfinex",
-      "Coinbase Pro",
+      "Coinbase",
       "Binance",
       "Zerodha",
       "Samco",
