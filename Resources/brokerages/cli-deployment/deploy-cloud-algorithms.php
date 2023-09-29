@@ -33,7 +33,7 @@ $brokerages = array(
 $brokerageNumber = array_search($brokerageName, $brokerages) + 1;
 ?>
          
-            <li>Enter <span class='key-combinations'><?=$brokerageNumber?></span> to select the <?=$brokerageName?> brokerage.
+            <li>Enter <span class='key-combinations'><?=$brokerageNumber?></span> to select the <?=$brokerageName?> brokerage.</li>
 <div class='cli section-example-container'>
 <pre>$ lean cloud live "My Project" --push --open
 Select a brokerage:
@@ -52,12 +52,11 @@ Select a brokerage:
 13) TD Ameritrade
 Enter an option: <?=$brokerageNumber?></pre>
 </div>
-            </li>
 
     <?=$brokerageDetails?>
 
-            <li>Select the live node that you want to use. 
-             <p>If you only have one idle live trading node, it is selected automatically and this step is skipped.</p>
+            <li>Select the live node that you want to use.</li>
+            <p>If you only have one idle live trading node, it is selected automatically and this step is skipped.</p>
 <div class='cli section-example-container'>
 <pre>$ lean cloud live "My Project" --push --open
 Select a node:
@@ -65,10 +64,9 @@ Select a node:
 2) L-MICRO node 85a52135 - 1 CPU @ 2.4GHz, 0.5GB Ram
 Enter an option: 1</pre>
 </div>
-            </li>
 
-            <li>Configure your notification settings. 
-             <p>You can configure any combination of email, webhook, SMS, and Telegram notifications for order events and emitted insights.  To view the number of notification you can send for free, see the <a href='/docs/v2/cloud-platform/organizations/resources#12-Live-Trading-Notification-Quotas'>Live Trading Notification Quotas</a>.</p>
+            <li>Configure your notification settings.</li>
+            <p>You can configure any combination of email, webhook, SMS, and Telegram notifications for order events and emitted insights.  To view the number of notification you can send for free, see the <a href='/docs/v2/cloud-platform/organizations/resources#12-Live-Trading-Notification-Quotas'>Live Trading Notification Quotas</a>.</p>
             <div class='cli section-example-container'>
 <pre>$ lean cloud live "My Project" --push --open
 Do you want to send notifications on order events? [y/N]: y
@@ -90,17 +88,15 @@ SMS notifications: None
 Telegram notifications: None
 Do you want to add another notification method? [y/N]: n</pre>
 </div>
-            </li>
 
-            <li>Enable or disable automatic algorithm restarting. 
-             <p>This feature attempts to restart your algorithm if it fails due to a runtime error, like a brokerage API disconnection.</p>
+            <li>Enable or disable automatic algorithm restarting.</li>
+            <p>This feature attempts to restart your algorithm if it fails due to a runtime error, like a brokerage API disconnection.</p>
             <div class='cli section-example-container'>
 <pre>$ lean cloud live "My Project" --push --open
 Do you want to enable automatic algorithm restarting? [Y/n]: y</pre>
 </div>
-            </li>
     
- <? if (!$supportsCashHoldings) { ?> <li>Set your initial cash balance.
+ <? if (!$supportsCashHoldings) { ?> <li>Set your initial cash balance.</li>
             <div class='cli section-example-container'>
 <pre>$ lean cloud live "My Project" --push --open
 Previous cash balance: [{'currency': 'USD', 'amount': 100000.0}]
@@ -110,9 +106,9 @@ Currency: USD
 Amount: 95800
 Cash balance: [{'currency': 'USD', 'amount': 95800.0}]
 Do you want to add more currency? [y/N]: n</pre>
-</div></li> <? } ?>
+</div> <? } ?>
 
- <? if (!$supportsPositionHoldings) { ?> <li>Set your initial portfolio holdings.
+ <? if (!$supportsPositionHoldings) { ?> <li>Set your initial portfolio holdings.</li>
             <div class='cli section-example-container'>
 <pre>$ lean cloud live "My Project" --push --open
 Do you want to set the initial portfolio holdings? [y/N]: y
@@ -124,9 +120,9 @@ Quantity: 10
 Average Price: 50
 Portfolio Holdings: [{'symbol': 'GOOG', 'symbolId': 'GOOCV VP83T1ZUHROL', 'quantity': 10, 'averagePrice': 50.0}]
 Do you want to add more holdings? [y/N]: n</pre>
-</div></li> <? } ?> 
+</div> <? } ?> 
        
-            <li>Verify the configured settings and confirm them to start the live deployment in the cloud.
+            <li>Verify the configured settings and confirm them to start the live deployment in the cloud.</li>
             <div class='cli section-example-container'>
 <pre>$ lean cloud live "My Project" --push --open
 Brokerage: <?=$brokerageName?>
@@ -150,7 +146,6 @@ Telegram notifications: None
 Automatic algorithm restarting: Yes
 Are you sure you want to start live trading for project 'My Project'? [y/N]: y</pre>
 </div>
-            </li>
             <li>Inspect the result in the browser, which opens automatically after the deployment starts.</li>
         </ol>
 
@@ -160,7 +155,7 @@ Are you sure you want to start live trading for project 'My Project'? [y/N]: y</
         <ol>
             <li><a href='/docs/v2/lean-cli/initialization/authentication#02-Log-In'>Log in</a> to the CLI if you haven't done so already.</li>
             <li>Open a terminal in the <a href='/docs/v2/lean-cli/initialization/organization-workspaces'>organization workspace</a> that contains the project.</li>
-            <li>Run <code>lean cloud status "&lt;projectName&gt;"</code> to show the status of the cloud project named "&lt;projectName&gt;".
+            <li>Run <code>lean cloud status "&lt;projectName&gt;"</code> to show the status of the cloud project named "&lt;projectName&gt;".</li>
             <div class='cli section-example-container'>
 <pre>$ lean cloud status "My Project"
 Project id: 1234567
@@ -172,5 +167,4 @@ Live url: https://www.quantconnect.com/project/1234567/live
 Brokerage: <?=$brokerageName?>
 Launched: 2021-06-09 15:10:12 UTC</pre>
             </div>
-            </li>
         </ol>
