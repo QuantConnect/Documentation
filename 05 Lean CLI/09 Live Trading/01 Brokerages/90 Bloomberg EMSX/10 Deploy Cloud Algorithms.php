@@ -38,7 +38,7 @@ EMSX account []: </pre>
 <li>Enter your OpenFIGI API key.</li>
 <div class='cli section-example-container'>
 <pre>$ lean cloud live \"My Project\" --push --open
-Open FIGI API key: </pre>
+OpenFIGI API key: </pre>
 </div>
 ";
 $brokerageName="Terminal Link";
