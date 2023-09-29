@@ -18,7 +18,9 @@ $authentication = "<li>Click the <span class='field-name'>Connection Type</span>
 
 <li>In the <span class='field-name'>EMSX Account</span> field, enter the account to which LEAN should route orders.</li>
 
-<li>In the <span class='field-name'>OpenFIGI Api Key</span> field, enter your API key.</li>";
+<li>In the <span class='field-name'>OpenFIGI Api Key</span> field, enter your API key.</li>
+
+<li>Click the <span class='field-name'>Environment</span> field and then click one of the options from the drop-down menu.</li>";
 $postDeploy = "";
 include(DOCS_RESOURCES."/live-trading/deploy-live-algorithm.php");
 ?>
