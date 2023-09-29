@@ -4,7 +4,29 @@
 
 <ol>
     <li>Open a terminal in the <a href='/docs/v2/lean-cli/initialization/organization-workspaces'>organization workspace</a> that contains the project.</li>
-    <li>Run <code>lean live "&lt;projectName&gt;"</code> to start a live deployment wizard for the project in <span class='public-directory-name'>. / &lt;projectName&gt;</span> and then enter <?=$isBrokerage ? 'the' : 'a'?> brokerage number.
+
+<?
+if ($isBrokerage) {
+  $brokerages = array(
+      "QuantConnect Paper Trading",
+      "Interactive Brokers",
+      "Tradier",
+      "Oanda",
+      "Bitfinex",
+      "Coinbase Pro",
+      "Binance",
+      "Zerodha",
+      "Samco",
+      "Terminal Link",
+      "Trading Technologies",
+      "Kraken",
+      "TD Ameritrade"
+  );
+  $brokerageNumber = array_search($brokerageName, $brokerages) + 1;
+}
+?>
+    
+    <li>Run <code>lean live "&lt;projectName&gt;"</code> to start a live deployment wizard for the project in <span class='public-directory-name'>. / &lt;projectName&gt;</span> and then enter <? if ($isBrokerage) { ?><span class='key-combinations'><?=$brokerageNumber?></span><? } else { ?>a brokerage number<? } ?>.
     <div class='cli section-example-container'>
 <pre>$ lean live "My Project"
 Select a brokerage:
@@ -21,7 +43,7 @@ Select a brokerage:
 11) Trading Technologies
 12) Kraken
 13) TD Ameritrade
-Enter an option: <?=$isBrokerage ? '' : '1'?></pre>
+Enter an option: <?=$isBrokerage ? $brokerageNumber : '1'?></pre>
 </div>
 </li>
 
