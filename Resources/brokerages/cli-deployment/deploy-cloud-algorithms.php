@@ -31,7 +31,6 @@ $brokerages = array(
       "TD Ameritrade"
 );
 $brokerageNumber = array_search($brokerageName, $brokerages) + 1;
-}
 ?>
          
             <li>Enter <span class='key-combinations'><?=$brokerageNumber?></span> to select the <?=$brokerageName?> brokerage.</li>
