@@ -1,3 +1,5 @@
+<p>You need to <a href='/docs/v2/cloud-platform/live-trading/brokerages/bloomberg-emsx#14-Set-Up-SAPI'>set up the Bloomberg SAPI</a> before you can deploy cloud algorithms with Terminal Link.</p>
+
 <?php
 $brokerageDetails = "
 <li>Enter your unique user identifier (UUID).</li>
