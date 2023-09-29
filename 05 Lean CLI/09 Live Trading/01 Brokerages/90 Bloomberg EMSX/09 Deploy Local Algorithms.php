@@ -1,3 +1,5 @@
+<p>You need to <a href='https://www.bloomberg.com/professional/support/software-updates/' rel='nofollow' target='_blank'>install the Bloomberg Terminal and the BBComm component</a> from the Bloomberg website before you can deploy local algorithms with Terminal Link.</p>
+
 <?
 $brokerageName = "Terminal Link";
 $dataFeedName = "";
