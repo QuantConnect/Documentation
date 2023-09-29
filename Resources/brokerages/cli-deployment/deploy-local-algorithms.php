@@ -52,7 +52,7 @@ Enter an option: <?=$isBrokerage ? $brokerageNumber : '1'?></pre>
 <?
 if ($isBrokerage && $brokerageName == "Terminal Link") {
 ?>
-<li>Enter the data feed number, <span class='key-combinations'>9</span>.
+<li>Enter <span class='key-combinations'>9</span> to select the Terminal Link data feed.
 <div class='cli section-example-container'>
 <pre>$ lean live "My Project"
 Select a data feed:
@@ -70,7 +70,7 @@ Select a data feed:
 12) IQFeed
 13) Polygon Data Feed
 14) Custom data only
-To enter multiple options, separate them with comma.:</pre>
+To enter multiple options, separate them with comma.: 9</pre>
 </div>
 </li>   
 <?  
