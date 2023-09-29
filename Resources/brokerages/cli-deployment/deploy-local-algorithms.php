@@ -26,7 +26,7 @@ if ($isBrokerage) {
 }
 ?>
     
-    <li>Run <code>lean live "&lt;projectName&gt;"</code> to start a live deployment wizard for the project in <span class='public-directory-name'>. / &lt;projectName&gt;</span> and then enter <? if ($isBrokerage) { ?><span class='key-combinations'><?=$brokerageNumber?></span><? } else { ?>a brokerage number<? } ?>.
+    <li>Run <code>lean live "&lt;projectName&gt;"</code> to start a live deployment wizard for the project in <span class='public-directory-name'>. / &lt;projectName&gt;</span> and then enter <? if ($isBrokerage) { ?> the brokerage number, <span class='key-combinations'><?=$brokerageNumber?></span><? } else { ?>a brokerage number<? } ?>.
     <div class='cli section-example-container'>
 <pre>$ lean live "My Project"
 Select a brokerage:
