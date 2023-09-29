@@ -49,6 +49,33 @@ Enter an option: <?=$isBrokerage ? $brokerageNumber : '1'?></pre>
 
 <?=$brokerageDetails ?>
 
+<?
+if ($isBrokerage && $brokerageName == "Terminal Link") {
+?>
+<li>Enter the data feed number, <span class='key-combinations'>9</span>.
+<div class='cli section-example-container'>
+<pre>$ lean live "My Project"
+Select a data feed:
+1) Interactive Brokers
+2) Tradier
+3) Oanda
+4) Bitfinex
+5) Coinbase Pro
+6) Binance
+7) Zerodha
+8) Samco
+9) Terminal Link
+10) Kraken
+11) TD Ameritrade
+12) IQFeed
+13) Polygon Data Feed
+14) Custom data only
+To enter multiple options, separate them with comma.:</pre>
+</div>
+</li>   
+<?  
+} else {
+?>
 <li>Enter the number of the data feed to use and then follow the steps required for the data connection.
 <div class='cli section-example-container'>
 <pre>$ lean live "My Project"
@@ -70,11 +97,12 @@ Select a data feed:
 To enter multiple options, separate them with comma.:</pre>
 </div>
 </li>
-
-<?if ($isBrokerage && $brokerageName != "Terminal Link") {?>
-<p>If you select IQFeed, see <a href='/docs/v2/lean-cli/live-trading/data-feeds/iqfeed'>IQFeed</a> for set up instructions.</p>
-<p>If you select Polygon Data Feed, see <a href='/docs/v2/lean-cli/live-trading/data-feeds/polygon'>Polygon</a> for set up instructions.</p>
+    <?if ($isBrokerage) {?>
+    <p>If you select IQFeed, see <a href='/docs/v2/lean-cli/live-trading/data-feeds/iqfeed'>IQFeed</a> for set up instructions.</p>
+    <p>If you select Polygon Data Feed, see <a href='/docs/v2/lean-cli/live-trading/data-feeds/polygon'>Polygon</a> for set up instructions.</p>
+    <? } ?>
 <? } ?>
+
 
 <?=$dataFeedDetails ?>
 
