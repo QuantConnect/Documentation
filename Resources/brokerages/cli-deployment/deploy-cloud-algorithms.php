@@ -4,7 +4,7 @@
         <ol>
             <li><a href='/docs/v2/lean-cli/initialization/authentication#02-Log-In'>Log in</a> to the CLI if you haven't done so already.</li>
             <li>Open a terminal in the <a href='/docs/v2/lean-cli/initialization/organization-workspaces'>organization workspace</a> that contains the project.</li>
-            <li>Run <code>lean cloud live "&lt;projectName&gt;" --push --open</code> to push <span class='public-directory-name'>. / &lt;projectName&gt;</span>. to the cloud, start a live deployment wizard, and open the results in the browser once the deployment starts.
+            <li>Run <code>lean cloud live "&lt;projectName&gt;" --push --open</code> to push <span class='public-directory-name'>. / &lt;projectName&gt;</span>. to the cloud, start a live deployment wizard, and open the results in the browser once the deployment starts.</li>
 <div class='cli section-example-container'>
 <pre>$ lean cloud live "My Project" --push --open
 [1/1] Pushing 'My Project'
@@ -12,7 +12,6 @@ Successfully updated cloud file 'My Project/main.py'
 Started compiling project 'My Project'
 Successfully compiled project 'My Project'</pre>
 </div>
-            </li>
 
 <?
 $brokerages = array(
