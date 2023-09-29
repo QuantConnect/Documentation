@@ -33,7 +33,7 @@ $brokerages = array(
 $brokerageNumber = array_search($brokerageName, $brokerages) + 1;
 ?>
          
-            <li>Enter <span class='key-combinations'><?=$brokerageNumber?></span> to select the <?=$brokerageName?> brokerage.</li>
+            <li>Enter <span class='key-combinations'><?=$brokerageNumber?></span> to select the <?=$brokerageName?> brokerage.
 <div class='cli section-example-container'>
 <pre>$ lean cloud live "My Project" --push --open
 Select a brokerage:
@@ -52,6 +52,7 @@ Select a brokerage:
 13) TD Ameritrade
 Enter an option: <?=$brokerageNumber?></pre>
 </div>
+            </li>
 
     <?=$brokerageDetails?>
 
