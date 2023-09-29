@@ -10,7 +10,33 @@
 [1/1] Pushing 'My Project'
 Successfully updated cloud file 'My Project/main.py'
 Started compiling project 'My Project'
-Successfully compiled project 'My Project'
+Successfully compiled project 'My Project'</pre>
+</div>
+            </li>
+
+<?
+$brokerages = array(
+      "QuantConnect Paper Trading",
+      "Interactive Brokers",
+      "Tradier",
+      "Oanda",
+      "Bitfinex",
+      "Coinbase",
+      "Binance",
+      "Zerodha",
+      "Samco",
+      "Terminal Link",
+      "Trading Technologies",
+      "Kraken",
+      "TD Ameritrade"
+);
+$brokerageNumber = array_search($brokerageName, $brokerages) + 1;
+}
+?>
+         
+            <li>Enter <span class='key-combinations'><?=$brokerageNumber?></span> to select the <?=$brokerageName?> brokerage.</li>
+<div class='cli section-example-container'>
+<pre>$ lean cloud live "My Project" --push --open
 Select a brokerage:
 1) Paper Trading
 2) Interactive Brokers
@@ -21,14 +47,12 @@ Select a brokerage:
 7) Binance
 8) Zerodha
 9) Samco
-10) Trading Technologies
-11) Kraken
-12) TD Ameritrade
-Enter an option:</pre>
+10) Terminal Link
+11) Trading Technologies
+12) Kraken
+13) TD Ameritrade
+Enter an option: <?=$brokerageNumber?></pre>
 </div>
-            </li>
-
-            <li>Enter the number of the <?=$brokerageName?> brokerage.</li>
 
     <?=$brokerageDetails?>
 
