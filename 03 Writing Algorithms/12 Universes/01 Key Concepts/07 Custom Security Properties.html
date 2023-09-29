@@ -1,0 +1,33 @@
+<p>If you need to save data or create objects for each security in the universe, <span class='python'>add custom members to the respective <code>Security</code> objects</span><span class='csharp'>cast the <code>Security</code> objects to <code>dynamic</code> objects and then save custom members to them</span>. This technique is useful if you want to track stop loss levels or add <a href="/docs/v2/writing-algorithms/indicators/key-concepts">indicators</a> for each asset in the universe.</p>
+
+
+<div class="section-example-container">
+<pre class="csharp">public override void OnSecuritiesChanged(SecurityChanges changes)
+{
+    foreach (var security in changes.AddedSecurities)
+    {
+        var dynamicSecurity = security as dynamic;
+
+        // Create an indicator
+        dynamicSecurity.Indicator = SMA(security.Symbol, 10);
+
+        // Warm up the indicator
+        WarmUpIndicator(security.Symbol, dynamicSecurity.Indicator);
+    }
+
+    foreach (var security in changes.RemovedSecurities)
+    {
+        DeregisterIndicator((security as dynamic).Indicator);
+    }
+}</pre>
+<pre class="python">def OnSecuritiesChanged(self, changes: SecurityChanges) -> None:
+    for security in changes.AddedSecurities:
+        # Create an indicator
+        security.indicator = self.SMA(security.Symbol, 10)
+
+        # Warm up the indicator
+        self.WarmUpIndicator(security.Symbol, security.indicator)
+
+    for security in changes.RemovedSecurities:
+        self.DeregisterIndicator(security.indicator)</pre>
+</div>
