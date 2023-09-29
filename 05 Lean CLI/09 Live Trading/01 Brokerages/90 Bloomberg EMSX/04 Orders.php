@@ -1,4 +1,4 @@
-<p>Terminal Link enables you to create and manage Bloomberg™ orders.</p>
+<p>Terminal Link enables you to create and manage Bloomberg™ orders. You can also use the LEAN CLI with the Terminal Link integration to test paper trading with LEAN. In this case, LEAN models order fills using the live tick data feed from Bloomberg™.</p>
 
 <h4>Order Types</h4>
 <p>The following table describes the available order types for each asset class that Terminal Link supports:</p>
