@@ -1,6 +1,6 @@
 <?
 $brokerageDetails = "
-<li>Enter your TD Ameritrade credentials.
+<li>Enter your TD Ameritrade credentials.</li>
 <div class='cli section-example-container'>
 <pre>$ lean cloud live \"My Project\"
 API key:
@@ -8,7 +8,6 @@ OAuth Access Token:
 Account number: </pre>
 </div>
 <p>To get your account credentials, see <a href='https://www.quantconnect.com/docs/v2/cloud-platform/live-trading/brokerages/td-ameritrade#02-Account-Types'>Account Types</a>.</p>
-</li>
 ";
 $brokerageName="TD Ameritrade";
 $isSupported=true;
