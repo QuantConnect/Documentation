@@ -1,15 +1,14 @@
 <?
 $brokerageDetails = "
-<li>Enter your <a href='https://kite.trade/' target='_blank'>Kite Connect</a> API key and access token.
+<li>Enter your <a href='https://kite.trade/' target='_blank'>Kite Connect</a> API key and access token.</li>
 <div class='cli section-example-container'>
 <pre>$ lean cloud live \"My Project\" --push --open
 API key: hp9erb9ct0lqaxpm
 Access token: ********************</pre>
 </div>
-</li>
 
 
-<li>Enter the product type.
+<li>Enter the product type.</li>
 <div class='cli section-example-container'>
 <pre>$ lean cloud live \"My Project\" --push --open
 Product type (mis, cnc, nrml):</pre>
@@ -37,10 +36,9 @@ Product type (mis, cnc, nrml):</pre>
         </tr>
     </tbody>
 </table>
-</li>
 
 
-<li>Enter the trading segment.
+<li>Enter the trading segment.</li>
 <div class='cli section-example-container'>
 <pre>$ lean cloud live \"My Project\" --push --open
 Trading segment (equity, commodity):</pre>
@@ -64,14 +62,12 @@ Trading segment (equity, commodity):</pre>
         </tr>
     </tbody>
 </table>
-</li>
 
-<li>Enter whether you have a history API subscription.
+<li>Enter whether you have a history API subscription.</li>
 <div class='cli section-example-container'>
 <pre>$ lean live \"My Project\"
 Do you have a history API subscription? (true, false): true</pre>
 </div>
-</li>
 ";
 $brokerageName="Zerodha";
 $isSupported=true;
