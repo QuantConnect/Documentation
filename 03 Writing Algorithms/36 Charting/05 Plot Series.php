@@ -5,7 +5,7 @@
     <pre class="python">self.Plot("&lt;chartName&gt;", "&lt;seriesName&gt", value)</pre>
 </div>
 
-<p>The <code>value</code> argument can be an integer for decimal number. If the chart is a time series, the value is added to the chart using the algorithm time as the x-coordinate.</p>
+<p>The <code>value</code> argument can be an integer or decimal number. If the chart is a time series, the value is added to the chart using the algorithm time as the x-coordinate.</p>
 
 <?php echo file_get_contents(DOCS_RESOURCES."/plotting/plot-current-indicator-values.html"); ?>
 <?php echo file_get_contents(DOCS_RESOURCES."/plotting/plot-all-indicator-values.html"); ?>
