@@ -87,19 +87,19 @@
         </tr>
         <tr>
             <td><code>CustomNotes2</code></td>
-            <td>Custom user order notes 1.</td>
+            <td>Custom user order notes 2.</td>
         </tr>
         <tr>
             <td><code>CustomNotes3</code></td>
-            <td>Custom user order notes 1.</td>
+            <td>Custom user order notes 3.</td>
         </tr>
         <tr>
             <td><code>CustomNotes4</code></td>
-            <td>Custom user order notes 1.</td>
+            <td>Custom user order notes 4.</td>
         </tr>
         <tr>
             <td><code>CustomNotes5</code></td>
-            <td>Custom user order notes 1.</td>
+            <td>Custom user order notes 5.</td>
         </tr>
         <tr>
             <td><code>Account</code></td>
