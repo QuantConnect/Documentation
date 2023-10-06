@@ -4,10 +4,10 @@
 <div class="section-example-container">
     <pre class="csharp" style="">// In Initialize
 var security = AddEquity("SPY");
-security.SetShortableProvider(new AtreyuShortableProvider(SecurityType.Equity, Market.USA));</pre>
+security.SetShortableProvider(new LocalDiskShortableProvider(SecurityType.Equity, "atreyu", Market.USA));</pre>
     <pre class="python"># In Initialize
 security = self.AddEquity("SPY")
-security.SetShortableProvider(AtreyuShortableProvider(SecurityType.Equity, Market.USA))</pre>
+security.SetShortableProvider(LocalDiskShortableProvider(SecurityType.Equity, "atreyu", Market.USA))</pre>
 </div>
 
 <p>You can also set the shortable provider in a security initializer. If your algorithm has a universe, use the security initializer technique. In order to initialize single security subscriptions with the security initializer, call <code>SetSecurityInitializer</code> before you create the subscriptions.</p>
@@ -36,8 +36,8 @@ def CustomSecurityInitializer(self, security: Security) -&gt; None:
 <p>To extend upon the default security initializer instead of overwriting it, create a custom <code>BrokerageModelSecurityInitializer</code>.</p>
 
 <?php
-$overwriteCodePy = "security.SetShortableProvider(AtreyuShortableProvider(SecurityType.Equity, Market.USA))";
-$overwriteCodeC = "security.SetShortableProvider(new AtreyuShortableProvider(SecurityType.Equity, Market.USA));";
+$overwriteCodePy = "security.SetShortableProvider(LocalDiskShortableProvider(SecurityType.Equity, \"atreyu\", Market.USA))";
+$overwriteCodeC = "security.SetShortableProvider(new LocalDiskShortableProvider(SecurityType.Equity, \"atreyu\", Market.USA));";
 include(DOCS_RESOURCES."/reality-modeling/brokerage-model-security-init.php");
 ?>
 
