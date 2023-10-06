@@ -83,7 +83,7 @@
         </tr>
         <tr>
             <td><code>CustomNotes1</code></td>
-            <td>Custom user order notes 1. For more information about custom order notes, see <a href='https://emsx-api-doc.readthedocs.io/en/latest/programmable/description.html?highlight=Notes#custom-notes-free-text-fields'>Custom Notes & Free Text Fields</a> in the EMSX API documentation</td>
+            <td>Custom user order notes 1. For more information about custom order notes, see <a rel='nofollow' target='_blank' href='https://emsx-api-doc.readthedocs.io/en/latest/programmable/description.html?highlight=Notes#custom-notes-free-text-fields'>Custom Notes & Free Text Fields</a> in the EMSX API documentation</td>
         </tr>
         <tr>
             <td><code>CustomNotes2</code></td>
