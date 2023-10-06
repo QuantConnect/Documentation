@@ -31,10 +31,10 @@ if (data.Splits.ContainsKey(_symbol) || data.Dividends.ContainsKey(_symbol))
     _sma.Reset();
 
     // Warm up the indicator
-    var tradeBars = qb.History&lt;TradeBar&gt;(symbol, sma.WarmUpPeriod, Resolution.Daily, dataNormalizationMode: DataNormalizationMode.ScaledRaw);
+    var tradeBars = History&lt;TradeBar&gt;(_symbol, _sma.WarmUpPeriod, Resolution.Daily, dataNormalizationMode: DataNormalizationMode.ScaledRaw);
     foreach (var tradeBar in tradeBars)
     {
-        sma.Update(tradeBar.EndTime, tradeBar.Close);
+        _sma.Update(tradeBar.EndTime, tradeBar.Close);
     }
 }</pre>
 </div>
