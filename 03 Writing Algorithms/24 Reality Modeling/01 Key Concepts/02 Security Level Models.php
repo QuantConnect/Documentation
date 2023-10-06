@@ -7,6 +7,7 @@
     <li><a href="/docs/v2/writing-algorithms/reality-modeling/brokerages/key-concepts">Brokerages</a></li>
     <li><a href="/docs/v2/writing-algorithms/reality-modeling/buying-power">Buying Power</a></li>
     <li><a href="/docs/v2/writing-algorithms/reality-modeling/settlement/key-concepts">Settlement </a></li>
+    <li><a href="/docs/v2/writing-algorithms/reality-modeling/short-availability/key-concepts">Short availability</a></li>
     <li>Option models</li>
     <ul>
         <li><a href="/docs/v2/writing-algorithms/reality-modeling/options-models/pricing">Pricing</a></li>
