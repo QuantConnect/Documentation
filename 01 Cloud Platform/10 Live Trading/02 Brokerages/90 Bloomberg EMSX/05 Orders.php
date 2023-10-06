@@ -55,7 +55,7 @@
 <h4>Order Properties</h4>
 <p>We model custom order properties from the Bloomberg EMSX API. The following table describes the members of the <code>TerminalLinkOrderProperties</code> object that you can set to customize order execution:</p>
 
-<table class="table qc-table">
+<table class="table qc-table" class='order-properties-table'>
     <thead>
         <tr>
             <th style="width: 25%">Property</th>
@@ -128,7 +128,7 @@
         TimeInForce = TimeInForce.GoodTilCanceled,
         Strategy = new TerminalLinkOrderProperties.StrategyParameters(
             "VWAP",
-            new List<TerminalLinkOrderProperties.StrategyField>
+            new List&lt;TerminalLinkOrderProperties.StrategyField&gt;
             {
                 new("09:30:00"),
                 new("10:30:00"),
