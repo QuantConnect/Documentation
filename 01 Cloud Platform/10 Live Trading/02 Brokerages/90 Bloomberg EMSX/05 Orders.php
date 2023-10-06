@@ -148,12 +148,14 @@ public override void OnData(Slice slice)
     LimitOrder(_symbol, quantity, limitPrice, 
                orderProperties: new TerminalLinkOrderProperties
                { 
-                   TimeInForce = TimeInForce.Day
+                   TimeInForce = TimeInForce.Day,
+                   Account = "account1"
                });
     LimitOrder(_symbol, quantity, limitPrice, 
                orderProperties: new TerminalLinkOrderProperties
                { 
-                   TimeInForce = TimeInForce.GoodTilDate(new DateTime(year, month, day))
+                   TimeInForce = TimeInForce.GoodTilDate(new DateTime(year, month, day)),
+                   Account = "account2"
                });
 }</pre>
     <pre class="python">def Initialize(self) -&gt; None:
@@ -177,9 +179,11 @@ def OnData(self, slice: Slice) -&gt; None:
     # Override the default order properties
     order_properties = TerminalLinkOrderProperties()
     order_properties.TimeInForce = TimeInForce.Day
+    order_properties.Account = "account1"
     self.LimitOrder(self.symbol, quantity, limit_price, orderProperties=order_properties)
 
     order_properties.TimeInForce = TimeInForce.GoodTilDate(datetime(year, month, day))
+    order_properties.Account = "account2"
     self.LimitOrder(self.symbol, quantity, limit_price, orderProperties=order_properties)</pre>
 </div>
 
