@@ -187,6 +187,8 @@ def OnData(self, slice: Slice) -&gt; None:
     self.LimitOrder(self.symbol, quantity, limit_price, orderProperties=order_properties)</pre>
 </div>
 
+<p>For more information about the format the the Bloomberg EMSX API expects, see <a href='https://emsx-api-doc.readthedocs.io/en/latest/programmable/requestResponse.html#create-order-and-route-extended-request' rel='nofollow' target='_blank'>Create Order and Route Extended Request</a> in the EMSX API documentation and the <a rel='nofollow' target='_blank' href='https://www.mathworks.com/help/datafeed/emsx.createorderandroutewithstrat.html'>createOrderAndRouteWithStrat documentation</a> on the MathWorks website.</p>
+
 <h4>Get Open Orders</h4>
 <p>Terminal Link lets you <a href='/docs/v2/writing-algorithms/trading-and-orders/order-management/transaction-manager'>access open orders</a>.</p>
 
