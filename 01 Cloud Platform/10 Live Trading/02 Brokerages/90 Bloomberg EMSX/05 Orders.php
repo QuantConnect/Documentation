@@ -52,14 +52,136 @@
 }
 </style>
 
+<h4>Order Properties</h4>
+<p>We model custom order properties from the Bloomberg EMSX API. The following table describes the members of the <code>TerminalLinkOrderProperties</code> object that you can set to customize order execution:</p>
 
-<h4>Time In Force</h4>
-<p>Terminal Link supports the following <a href='/docs/v2/writing-algorithms/trading-and-orders/order-properties#03-Time-In-Force'>TimeInForce</a> instructions:</p>
-<ul>
-    <li><code>Day</code></li>
-    <li><code>GoodTilCanceled</code></li>
-    <li><code>GoodTilDate</code></li>
-</ul>
+<table class="table qc-table">
+    <thead>
+        <tr>
+            <th style="width: 25%">Property</th>
+            <th style="width: 75%">Description</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><code>TimeInForce</code></td>
+            <td>A <a href='/docs/v2/writing-algorithms/trading-and-orders/order-properties#03-Time-In-Force'>TimeInForce</a> instruction to apply to the order. The following instructions are supported:
+                <ul>
+                    <li><code>Day</code></li>
+                    <li><code>GoodTilCanceled</code></li>
+                    <li><code>GoodTilDate</code></li>
+                </ul>
+            </td>
+        </tr>
+        <tr>
+            <td><code>Notes</code></td>
+            <td>The free form instructions that may be sent to the broker.</td>
+        </tr>
+        <tr>
+            <td><code>HandlingInstruction</code></td>
+            <td>The instructions for handling the order or route. The values can be preconfigured or a value customized by the broker.</td>
+        </tr>
+        <tr>
+            <td><code>CustomNotes1</code></td>
+            <td>Custom user order notes 1. For more information about custom order notes, see <a href='https://emsx-api-doc.readthedocs.io/en/latest/programmable/description.html?highlight=Notes#custom-notes-free-text-fields'>Custom Notes & Free Text Fields</a> in the EMSX API documentation</td>
+        </tr>
+        <tr>
+            <td><code>CustomNotes2</code></td>
+            <td>Custom user order notes 1.</td>
+        </tr>
+        <tr>
+            <td><code>CustomNotes3</code></td>
+            <td>Custom user order notes 1.</td>
+        </tr>
+        <tr>
+            <td><code>CustomNotes4</code></td>
+            <td>Custom user order notes 1.</td>
+        </tr>
+        <tr>
+            <td><code>CustomNotes5</code></td>
+            <td>Custom user order notes 1.</td>
+        </tr>
+        <tr>
+            <td><code>Account</code></td>
+            <td>The EMSX account.</td>
+        </tr>
+        <tr>
+            <td><code>Broker</code></td>
+            <td>The EMSX broker code.</td>
+        </tr>
+        <tr>
+            <td><code>Strategy</code></td>
+            <td>
+               A <code>StrategyParameters</code> object that represents the EMSX order strategy details. You must append strategy parameters in the order that the EMSX API expects. 
+               The following strategy names are supported: "DMA", "DESK", "VWAP", "TWAP", "FLOAT", "HIDDEN", "VOLUMEINLINE", "CUSTOM", "TAP", "CUSTOM2", "WORKSTRIKE", "TAPNOW", "TIMED", "LIMITTICK", "STRIKE"
+            </td>
+        </tr>
+    </tbody>
+</table>
+
+<div class="section-example-container">
+    <pre class="csharp">public override void Initialize()
+{
+    // Set the default order properties
+    DefaultOrderProperties = new TerminalLinkOrderProperties
+    {
+        TimeInForce = TimeInForce.GoodTilCanceled,
+        Strategy = new TerminalLinkOrderProperties.StrategyParameters(
+            "VWAP",
+            new List<TerminalLinkOrderProperties.StrategyField>
+            {
+                new("09:30:00"),
+                new("10:30:00"),
+                new(),
+                new()
+            }
+         )
+    };
+}
+
+public override void OnData(Slice slice)
+{
+    // Use default order order properties
+    LimitOrder(_symbol, quantity, limitPrice);
+    
+    // Override the default order properties
+    LimitOrder(_symbol, quantity, limitPrice, 
+               orderProperties: new TerminalLinkOrderProperties
+               { 
+                   TimeInForce = TimeInForce.Day
+               });
+    LimitOrder(_symbol, quantity, limitPrice, 
+               orderProperties: new TerminalLinkOrderProperties
+               { 
+                   TimeInForce = TimeInForce.GoodTilDate(new DateTime(year, month, day))
+               });
+}</pre>
+    <pre class="python">def Initialize(self) -&gt; None:
+    # Set the default order properties
+    self.DefaultOrderProperties = TerminalLinkOrderProperties()
+    self.DefaultOrderProperties.TimeInForce = TimeInForce.GoodTilCanceled
+    self.DefaultOrderProperties.Strategy = TerminalLinkOrderProperties.StrategyParameters(
+        "VWAP",
+        [
+            TerminalLinkOrderProperties.StrategyField("09:30:00"),
+            TerminalLinkOrderProperties.StrategyField("10:30:00"),
+            TerminalLinkOrderProperties.StrategyField(),
+            TerminalLinkOrderProperties.StrategyField()
+        ]
+    )
+
+def OnData(self, slice: Slice) -&gt; None:
+    # Use default order order properties
+    self.LimitOrder(self.symbol, quantity, limit_price)
+    
+    # Override the default order properties
+    order_properties = InteractiveBrokersOrderProperties()
+    order_properties.TimeInForce = TimeInForce.Day
+    self.LimitOrder(self.symbol, quantity, limit_price, orderProperties=order_properties)
+
+    order_properties.TimeInForce = TimeInForce.GoodTilDate(datetime(year, month, day))
+    self.LimitOrder(self.symbol, quantity, limit_price, orderProperties=order_properties)</pre>
+</div>
 
 <h4>Get Open Orders</h4>
 <p>Terminal Link lets you <a href='/docs/v2/writing-algorithms/trading-and-orders/order-management/transaction-manager'>access open orders</a>.</p>
