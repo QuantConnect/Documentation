@@ -175,7 +175,7 @@ def OnData(self, slice: Slice) -&gt; None:
     self.LimitOrder(self.symbol, quantity, limit_price)
     
     # Override the default order properties
-    order_properties = InteractiveBrokersOrderProperties()
+    order_properties = TerminalLinkOrderProperties()
     order_properties.TimeInForce = TimeInForce.Day
     self.LimitOrder(self.symbol, quantity, limit_price, orderProperties=order_properties)
 
