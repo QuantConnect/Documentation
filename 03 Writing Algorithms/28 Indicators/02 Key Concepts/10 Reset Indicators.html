@@ -5,8 +5,14 @@
 	<pre class="csharp">_indicator.Reset();</pre>
 </div>
 
+<p>The process to warm up your indicator depends on if it's a <a href='/docs/v2/writing-algorithms/indicators/manual-indicators#06-Warm-Up-Indicators'>manual</a> or <a href='/docs/v2/writing-algorithms/indicators/automatic-indicators#08-Warm-Up-Indicators'>automatic indicator</a>.</p>
 
-<p>If you are live trading Equities or backtesting Equities without the adjusted <a href="/docs/v2/writing-algorithms/securities/asset-classes/us-equity/requesting-data#11-Data-Normalization">data normalization mode</a>, reset your indicators when <a href="/docs/v2/writing-algorithms/securities/asset-classes/us-equity/corporate-actions#02-Splits">splits</a> and <a href="/docs/v2/writing-algorithms/securities/asset-classes/us-equity/corporate-actions#03-Dividends">dividends</a> occur. If a split or dividend occurs, the data in your indicators becomes invalid because it doesn't account for the price adjustments that the split or dividend causes. To replace your indicator history with the newly-adjusted prices, call the <code>Reset</code> method and then warm up the indicator.</p>
+<p>
+  If you are live trading Equities or backtesting Equities without the adjusted <a href="/docs/v2/writing-algorithms/securities/asset-classes/us-equity/requesting-data#11-Data-Normalization">data normalization mode</a>, 
+  reset your indicators when <a href="/docs/v2/writing-algorithms/securities/asset-classes/us-equity/corporate-actions#02-Splits">splits</a> and <a href="/docs/v2/writing-algorithms/securities/asset-classes/us-equity/corporate-actions#03-Dividends">dividends</a> occur. 
+  If a split or dividend occurs, the data in your indicators becomes invalid because it doesn't account for the price adjustments that the split or dividend causes. 
+  To replace your indicator history with the newly-adjusted prices, call the <code>Reset</code> method and then warm up the indicator with <code>ScaledRaw</code> data from a <a href='/docs/v2/writing-algorithms/historical-data/history-requests'>history request</a>.
+</p>
 
 <div class="section-example-container">
 	<pre class="python"># In OnData
@@ -14,7 +20,10 @@ if data.Splits.ContainsKey(self.symbol) or data.Dividends.ContainsKey(self.symbo
     # Reset the indicator
     self.sma.Reset() 
 
-    # Warm up the indicator</pre>
+    # Warm up the indicator
+    trade_bars = self.History[TradeBar](self.symbol, self.sma.WarmUpPeriod, Resolution.Daily, dataNormalizationMode=DataNormalizationMode.ScaledRaw)
+    for trade_bar in trade_bars:
+        self.sma.Update(trade_bar.EndTime, trade_bar.Close)</pre>
 	<pre class="csharp">// In OnData
 if (data.Splits.ContainsKey(_symbol) || data.Dividends.ContainsKey(_symbol))
 {
@@ -22,8 +31,11 @@ if (data.Splits.ContainsKey(_symbol) || data.Dividends.ContainsKey(_symbol))
     _sma.Reset();
 
     // Warm up the indicator
+    var tradeBars = qb.History<TradeBar>(symbol, sma.WarmUpPeriod, Resolution.Daily, dataNormalizationMode: DataNormalizationMode.ScaledRaw);
+    foreach (var tradeBar in tradeBars)
+    {
+        sma.Update(tradeBar.EndTime, tradeBar.Close);
+    }
 }</pre>
 </div>
-
-<p>The process to warm up your indicator depends on if it's a <a href='/docs/v2/writing-algorithms/indicators/manual-indicators#06-Warm-Up-Indicators'>manual</a> or <a href='/docs/v2/writing-algorithms/indicators/automatic-indicators#08-Warm-Up-Indicators'>automatic indicator</a>.</p>
 
