@@ -53,6 +53,9 @@
          config: SubscriptionDataConfig,
          date: datetime,
          isLive: bool) -&gt; SubscriptionDataSource:
+
+        if not isLive:
+            return SubscriptionDataSource("&lt;custom_data_key&gt;", SubscriptionTransportMedium.ObjectStore, FileFormat.Csv)
         return SubscriptionDataSource("https://www.dropbox.com/s/rsmg44jr6wexn2h/CNXNIFTY.csv?dl=1", SubscriptionTransportMedium.RemoteFile)
 
     def Reader(self,

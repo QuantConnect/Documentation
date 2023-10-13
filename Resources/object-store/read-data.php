@@ -27,15 +27,6 @@ $pythonPrefix = $research ? "qb." : "self.";
 </div>
 
 
-<h4>Bytes</h4>
-
-<p>To read a <code>Bytes</code> object, call the <code>ReadBytes</code> method.</p>
-
-<div class='section-example-container'>
-    <pre class='csharp'>var bytesData = <?=$cSharpPrefix?>ObjectStore.ReadBytes($"{<?=$cSharpPrefix?>ProjectId}/bytesKey");</pre>
-    <pre class='python'>byte_data = <?=$pythonPrefix?>ObjectStore.ReadBytes(f"{<?=$pythonPrefix?>ProjectId}/bytes_key")</pre>
-</div>
-
 <h4>Strings</h4>
 
 <p>To read a <code>string</code> object, call the <code>Read</code> or <code>ReadString</code> method.</p>
@@ -60,4 +51,13 @@ $pythonPrefix = $research ? "qb." : "self.";
 <p class='csharp'>If you created the XML object from a dictionary, reconstruct the dictionary.</p>
 <div class='csharp section-example-container'>
     <pre class='csharp'>var dict = xmlData.Elements().ToDictionary(x => x.Name.LocalName, x => int.Parse(x.Value));</pre>
+</div>
+
+<h4>Bytes</h4>
+
+<p>To read a <code>Bytes</code> object, call the <code>ReadBytes</code> method.</p>
+
+<div class='section-example-container'>
+    <pre class='csharp'>var bytesData = <?=$cSharpPrefix?>ObjectStore.ReadBytes($"{<?=$cSharpPrefix?>ProjectId}/bytesKey");</pre>
+    <pre class='python'>byte_data = <?=$pythonPrefix?>ObjectStore.ReadBytes(f"{<?=$pythonPrefix?>ProjectId}/bytes_key")</pre>
 </div>

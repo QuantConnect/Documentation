@@ -60,6 +60,8 @@ public class MyCustomDataType : BaseData
          config: SubscriptionDataConfig,
          date: datetime,
          isLive: bool) -&gt; SubscriptionDataSource:
+        if not isLive:
+            return SubscriptionDataSource("&lt;custom_data_key&gt;", SubscriptionTransportMedium.ObjectStore, FileFormat.Csv)
         return SubscriptionDataSource("https://raw.githubusercontent.com/QuantConnect/Documentation/master/Resources/datasets/custom-data/unfolding-collection-example.json", SubscriptionTransportMedium.RemoteFile, FileFormat.UnfoldingCollection)
 
     def Reader(self,
