@@ -22,13 +22,6 @@ $pythonPrefix = $research ? "qb." : "self.";
 <?=$writingAlgorithms ? "To store data, you need to provide a key. If you provide a key that is already in the Object Store, it will overwrite the data at that location. To avoid overwriting objects from other projects in your organization, prefix the key with your project ID. You can find the project ID in the URL of your browser when you open a project. For example, the ID of the project at <span class='public-file-name'>quantconnect.com/project/12345</span> is 12345." : ""?>
 </p>
 
-<h4>Bytes</h4>
-<p>To save a <code>Bytes</code> object, call the <code>SaveBytes</code> method.</p>
-<div class='section-example-container'>
-    <pre class='csharp'>var saveSuccessful = <?=$cSharpPrefix?>ObjectStore.SaveBytes($"{<?=$cSharpPrefix?>ProjectId}/bytesKey", bytesSample)</pre>
-    <pre class='python'>save_successful = <?=$pythonPrefix?>ObjectStore.SaveBytes(f"{<?=$pythonPrefix?>ProjectId}/bytes_key", bytes_sample)</pre>
-</div>
-
 <h4>Strings</h4>
 <p>To save a <code>string</code> object, call the <code>Save</code> or <code>SaveString</code> method.</p>
 <div class='section-example-container'>
@@ -46,4 +39,17 @@ $pythonPrefix = $research ? "qb." : "self.";
 <p class='csharp'>To save an XML-formatted object, call the <code>SaveXml&lt;T&gt;</code> method.</p>
 <div class='csharp section-example-container'>
     <pre class='csharp'>var saveSuccessful = <?=$cSharpPrefix?>ObjectStore.SaveXml&lt;XElement&gt;($"{<?=$cSharpPrefix?>ProjectId}/xmlKey", xmlSample);</pre>
+</div>
+
+<h4>Bytes</h4>
+<p>To save a <code>Bytes</code> object (for example, zipped data), call the <code>SaveBytes</code> method.</p>
+<div class='section-example-container'>
+    <pre class='csharp'>var saveSuccessful = <?=$cSharpPrefix?>ObjectStore.SaveBytes($"{<?=$cSharpPrefix?>ProjectId}/bytesKey", bytesSample)
+
+var zippedDataSample = Compression.ZipBytes(Encoding.UTF8.GetBytes(stringSample), "data");
+var saveSuccessful = <?=$cSharpPrefix?>ObjectStore.SaveBytes($"{<?=$cSharpPrefix?>ProjectId}/bytesKey.zip", zippedDataSample);</pre>
+    <pre class='python'>save_successful = <?=$pythonPrefix?>ObjectStore.SaveBytes(f"{<?=$pythonPrefix?>ProjectId}/bytes_key", bytes_sample)
+
+zipped_data_sample = Compression.ZipBytes(bytes(string_sample, "utf-8"), "data")
+zip_save_successful = <?=$pythonPrefix?>ObjectStore.SaveBytes($"{<?=$pythonPrefix?>ProjectId}/bytesKey.zip", zipped_data_sample)</pre>
 </div>
