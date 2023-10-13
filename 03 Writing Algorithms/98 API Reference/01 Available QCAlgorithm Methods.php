@@ -326,7 +326,7 @@
 </tr>
 <tr>
 <td width="33%"><a href="#History-header">History()</a></td>
-<td>Gets the historical data for the specified symbol. The exact number of bars will be returned. The symbol must exist in the Securities collection.</td>
+<td>Gets the historical data for the specified symbols over the requested span. The symbols must exist in the Securities collection.</td>
 </tr>
 <tr>
 <td width="33%"><a href="#HMA-header">HMA()</a></td>
@@ -1162,7 +1162,7 @@
 </tr>
 <tr>
 <td width="33%"><a href="#History-header">History()</a></td>
-<td>Gets the historical data for the specified symbol. The exact number of bars will be returned. The symbol must exist in the Securities collection.</td>
+<td>Gets the historical data for the specified symbols over the requested span. The symbols must exist in the Securities collection.</td>
 </tr>
 <tr>
 <td width="33%"><a href="#SetWarmUp-header">SetWarmUp()</a></td>
