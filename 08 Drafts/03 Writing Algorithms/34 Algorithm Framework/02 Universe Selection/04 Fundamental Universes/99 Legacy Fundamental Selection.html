@@ -1,0 +1,162 @@
+<p>The <code>CoarseFundamentalUniverseSelectionModel</code> selects assets based on <code>CoarseFundamental</code> data. To use this model, define a coarse selection function. The coarse selection function receives a list of 
+<code>CoarseFundamental</code> objects and returns a list of <code>Symbol</code> objects.  The <code>Symbol</code> objects you return from the coarse selection function are the constituents of the universe.</p>
+
+<div class="section-example-container">
+	<pre class="csharp">public override void Initialize()
+{
+    AddUniverseSelection(new CoarseFundamentalUniverseSelectionModel(SelectCoarse));
+}
+
+private IEnumerable&lt;Symbol&gt; SelectCoarse(IEnumerable&lt;CoarseFundamental&gt; coarse)
+{
+    // Return most liquid assets w/ fundamentals
+    return coarse.Where(c =&gt; c.HasFundamentalData)
+                 .OrderByDescending(c =&gt; c.DollarVolume)
+                 .Take(100)
+                 .Select(c =&gt; c.Symbol);
+}</pre>
+	<pre class="python">def Initialize(self) -&gt; None:
+    self.AddUniverseSelection(CoarseFundamentalUniverseSelectionModel(self.SelectCoarse))
+
+def SelectCoarse(self, coarse: List[CoarseFundamental]) -&gt; List[Symbol]:
+    selected = [c for c in coarse if c.HasFundamentalData]
+    sorted_by_dollar_volume = sorted(selected, key=lambda c: c.DollarVolume, reverse=True)
+    return [c.Symbol for c in sorted_by_dollar_volume[:100]] # Return most liquid assets w/ fundamentals</pre>
+</div>
+
+<p>To move the coarse selection function outside of the algorithm class, create a universe selection model that inherits the <code>CoarseFundamentalUniverseSelectionModel</code> class.</p>
+
+<div class="section-example-container">
+	<pre class="csharp">// In Initialize
+AddUniverseSelection(new MostLiquidFundamentalUniverseSelectionModel(UniverseSettings));
+
+// Outside of the algorithm class
+class MostLiquidFundamentalUniverseSelectionModel : CoarseFundamentalUniverseSelectionModel
+{
+    public MostLiquidFundamentalUniverseSelectionModel(UniverseSettings universeSettings)
+        : base(default(Func&lt;IEnumerable&lt;CoarseFundamental&gt;, IEnumerable&lt;Symbol&gt;&gt;), universeSettings)
+    {
+    }
+
+    public override IEnumerable&lt;Symbol&gt; SelectCoarse(QCAlgorithm algorithm, IEnumerable&lt;CoarseFundamental&gt; coarse)
+    {
+        return coarse.Where(c =&gt; c.HasFundamentalData)
+                     .OrderByDescending(c =&gt; c.DollarVolume)
+                     .Take(100)
+                     .Select(c =&gt; c.Symbol);
+    }
+}</pre>
+	<pre class="python"># In Initialize
+self.AddUniverseSelection(MostLiquidFundamentalUniverseSelectionModel(self.UniverseSettings))
+
+# Outside of the algorithm class
+class MostLiquidFundamentalUniverseSelectionModel(CoarseFundamentalUniverseSelectionModel):
+    def __init__(self, universe_settings: UniverseSettings) -&gt; None:
+        super().__init__(self.SelectCoarse, universe_settings)
+
+    def SelectCoarse(self, coarse: List[CoarseFundamental]) -&gt; List[Symbol]:
+        selected = [c for c in coarse if c.HasFundamentalData]
+        sorted_by_dollar_volume = sorted(selected, key=lambda c: c.DollarVolume, reverse=True)
+        return [c.Symbol for c in sorted_by_dollar_volume[:100]]</pre>
+</div>
+
+<p>To return the current universe constituents from the coarse selection function, return <code>Universe.Unchanged</code>.</p>
+
+<p>To view the implementation of this model, see the <a target="_blank" rel="nofollow" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.Framework/Selection/CoarseFundamentalUniverseSelectionModel.cs">LEAN GitHub repository</a>.</p>
+
+
+<p>The <code>FineFundamentalUniverseSelectionModel</code> selects assets based on <code>CoarseFundamental</code> and <code>FineFundamental</code> data. This is the only model that provides corporate fundamental data to your algorithm. To use this model, define a coarse selection function and a fine selection function. The coarse selection function receives a list of 
+    <code>CoarseFundamental</code> objects and returns a list of <code>Symbol</code> objects. To filter the <code>CoarseFundamental</code> down to the securities that have fundamental data, add a <code>HasFundamentalData</code> filter to the coarse selection function. The fine selection function receives a subset of <code>FineFundamental</code> objects generated from coarse selection results and returns a list of <code>Symbol</code> objects. The <code>Symbol</code> objects you return from the fine selection function are the constituents of the universe.</p>
+    
+    <div class="section-example-container">
+        <pre class="csharp">public override void Initialize()
+    {
+         AddUniverseSelection(new FineFundamentalUniverseSelectionModel(SelectCoarse, SelectFine));
+    }
+    
+    private IEnumerable&lt;Symbol&gt; SelectCoarse(IEnumerable&lt;CoarseFundamental&gt; coarse)
+    {
+        // Return most liquid assets w/ fundamentals
+        return coarse.Where(c =&gt; c.HasFundamentalData)
+                     .OrderByDescending(c =&gt; c.DollarVolume)
+                     .Take(100)
+                     .Select(c =&gt; c.Symbol);
+    }
+    
+    private IEnumerable&lt;Symbol&gt; SelectFine(IEnumerable&lt;FineFundamental&gt; fine)
+    {
+        // Return assets with lowest P/E ratios
+        return fine.OrderBy(f =&gt; f.ValuationRatios.PERatio)
+                   .Take(10)
+                   .Select(f =&gt; f.Symbol);
+    }
+    </pre>
+        <pre class="python">def Initialize(self) -&gt; None:
+        self.AddUniverseSelection(FineFundamentalUniverseSelectionModel(self.SelectCoarse, self.SelectFine))
+    
+    def SelectCoarse(self, coarse: List[CoarseFundamental]) -&gt; List[Symbol]:
+        selected = [c for c in coarse if c.HasFundamentalData]
+        sorted_by_dollar_volume = sorted(selected, key=lambda c: c.DollarVolume, reverse=True)
+        return [c.Symbol for c in sorted_by_dollar_volume[:100]] # Return most liquid assets w/ fundamentals
+    
+    def SelectFine(self, fine: List[FineFundamental]) -&gt; List[Symbol]:
+        sorted_by_pe_ratio = sorted(fine, key=lambda x: x.ValuationRatios.PERatio, reverse=False)
+        return [c.Symbol for c in sorted_by_pe_ratio[:10]] # Return assets with lowest P/E ratios</pre>
+    </div>
+    
+    
+    <p>To move the selection functions outside of the algorithm class, create a universe selection model that inherits the <code>FineFundamentalUniverseSelectionModel</code> class.</p>
+    
+    <div class="section-example-container">
+        <pre class="csharp">// In Initialize
+    AddUniverseSelection(new LowPERatioUniverseSelectionModel(UniverseSettings));
+    
+    // Outside of the algorithm class
+    class LowPERatioUniverseSelectionModel : FineFundamentalUniverseSelectionModel
+    {
+        public LowPERatioUniverseSelectionModel(UniverseSettings universeSettings = null)
+            : base(default(Func&lt;IEnumerable&lt;CoarseFundamental&gt;, IEnumerable&lt;Symbol&gt;&gt;), 
+                   default(Func&lt;IEnumerable&lt;FineFundamental&gt;, IEnumerable&lt;Symbol&gt;&gt;),
+                   universeSettings)
+        {
+        }
+    
+        public override IEnumerable&lt;Symbol&gt; SelectCoarse(QCAlgorithm algorithm, IEnumerable&lt;CoarseFundamental&gt; coarse)
+        {
+            return coarse.Where(c =&gt; c.HasFundamentalData)
+                         .OrderByDescending(c =&gt; c.DollarVolume)
+                         .Take(100)
+                         .Select(c =&gt; c.Symbol);
+        }
+    
+        public override IEnumerable&lt;Symbol&gt; SelectFine(QCAlgorithm algorithm, IEnumerable&lt;FineFundamental&gt; fine)
+        {
+            return fine.OrderBy(f =&gt; f.ValuationRatios.PERatio)
+                       .Take(10)
+                       .Select(f =&gt; f.Symbol);
+        }
+    }</pre>
+        <pre class="python"># In Initialize
+    self.AddUniverseSelection(LowPERatioUniverseSelectionModel(self.UniverseSettings))
+    
+    # Outside of the algorithm class
+    class LowPERatioUniverseSelectionModel(FineFundamentalUniverseSelectionModel):
+        def __init__(self, universe_settings: UniverseSettings = None) -&gt; None:
+            super().__init__(self.SelectCoarse, self.SelectFine, universe_settings)
+    
+        def SelectCoarse(self, coarse: List[CoarseFundamental]) -&gt; List[Symbol]:
+            selected = [c for c in coarse if c.HasFundamentalData]
+            sorted_by_dollar_volume = sorted(selected, key=lambda c: c.DollarVolume, reverse=True)
+            return [c.Symbol for c in sorted_by_dollar_volume[:100]]
+    
+        def SelectFine(self, fine: List[FineFundamental]) -&gt; List[Symbol]:
+            sorted_by_pe_ratio = sorted(fine, key=lambda x: x.ValuationRatios.PERatio, reverse=False)
+            return [c.Symbol for c in sorted_by_pe_ratio[:10]]</pre>
+    </div>
+    
+    <p>To return the current universe constituents from the coarse or fine selection function, return <code>Universe.Unchanged</code>.</p>
+    
+    <p>If you add a <code>FineFundamentalUniverseSelectionModel</code> to your algorithm, you can access fundamental data in the fine selection function or from the <code>Equity</code> object. To access fundamental data from the <code>Equity</code> object, use the <code>Equity.Fundamentals</code> property.</p>
+    
+    <p>To view the implementation of this model, see the <a target="_blank" rel="nofollow" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.Framework/Selection/FineFundamentalUniverseSelectionModel.cs">LEAN GitHub repository</a>.</p>
+    
