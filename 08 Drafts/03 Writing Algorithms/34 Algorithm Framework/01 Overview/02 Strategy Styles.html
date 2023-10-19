@@ -1,0 +1,16 @@
+<p>
+The algorithm framework works best for portfolio rebalancing, ranking, and multi-factor style strategies. The default portfolio construction models are designed to weigh and invest in the assets as the signals values shift, aiming to be fully invested as much as possible.
+</p>
+<p>    
+    Some strategies might find it difficult to fit this model. Technical entry signals are often tightly coupled with their exit criteria, they may not have defined hold periods, and they might follow the market to determine when to exit. This style of strategy can be addressed in a few ways: 
+</p>
+<ol>
+    <li>Short Term Signals - Emitting insights for short periods until they are no longer valid.</li>
+    <li>Cancel Signals - Updating an insight's expiry time so that it's expired upon the exit signal.</li>
+    <li>Alpha Exit Signal - Treating exit as its own signal, a separate Alpha model could indicate exit.</li>
+    <li>Risk Model - Tracking exit using a risk model that attempts to lock in gains.</li>
+</ol>
+
+<p>These techniques are still not ideal for many strategies. For example, with only a single signal, the built in <code>EqualWeightingPortfolioConstructionModel</code> will allocate 100% of buying power to a single asset, over concentrating risk. If a second signal comes a few days later, it would sell 50% of the portfolio to free cash and invest in the second asset. This can create high trading costs through portfolio churn.</p>
+
+<p>With a <a href="/docs/v2/writing-algorithms/algorithm-framework/portfolio-construction/key-concepts#01-Introduction">custom portfolio construction model</a>, signals can mean what you need for your specific strategy style. For example, you might create a "<code>MultiBetPortfolioConstructionModel</code>" that uses each insight to open a specific "bet" that is separately allocated capital and tracked.</p>

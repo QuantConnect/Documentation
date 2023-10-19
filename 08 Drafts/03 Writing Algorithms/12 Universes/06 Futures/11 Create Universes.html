@@ -1,0 +1,77 @@
+<p>To add a universe of Future contracts, in the <code>Initialize</code> method, call the <code>AddFuture</code> method. This method returns an <code>Future</code> object, which contains the continuous contract&nbsp;<code>Symbol</code>. The&nbsp;<code><span style="color: rgb(49, 49, 49);">continuous contract&nbsp;</span>Symbol</code> is the key to access the contracts in the <a href="/docs/v2/writing-algorithms/securities/asset-classes/futures/handling-data#05-Futures-Chains">FutureChain</a> that LEAN passes to the <code>OnData</code> method. When you create the Future subscription, save a reference to the&nbsp;<code><span style="color: rgb(49, 49, 49);">continuous contract&nbsp;</span>Symbol</code> so you can use it later in your algorithm.</p>
+
+<div class="section-example-container">
+    <pre class="csharp">_future = AddFuture(Futures.Currencies.BTC);
+_symbol = _future.Symbol;</pre>
+    <pre class="python">self.future = self.AddFuture(Futures.Currencies.BTC)
+self.symbol = self.future.Symbol</pre>
+</div>
+
+<p>The following table describes the <code>AddFuture</code> method arguments:</p>
+    <table class='qc-table table vertical-table'>
+    <tbody>
+            <tr>
+                <td>
+                    <h4>Argument: <span><code>ticker</code></span></h4>
+                    <p class='property-description'>The Future ticker. To view the supported assets in the US Futures dataset, see <a href='https://www.quantconnect.com/docs/v2/writing-algorithms/datasets/algoseek/us-futures#05-Supported-Assets'>Supported Assets</a>.</p>
+                    <p>Data Type: <span><code class='csharp'>string</code><code class='python'>str</code></span><span class='pipe-separator'>  |  </span> Default Value: <span>None</span></p>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <h4>Argument: <span><code>resolution</code></span></h4>
+                    <p class='property-description'>The resolution of the market data. To view the supported resolutions, see <a href='https://www.quantconnect.com/docs/v2/writing-algorithms/securities/asset-classes/futures/requesting-data#03-Resolutions'>Resolutions</a>. If you don't provide a value, it uses <code>Resolution.Minute</code> by default.</p>
+                    <p>Data Type: <span><code class='csharp'>Resolution?</code><code class='python'>Resolution/NoneType</code></span><span class='pipe-separator'>  |  </span> Default Value: <span><code class='python'>None</code><code class='csharp'>null</code></span></p>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <h4>Argument: <span><code>market</code></span></h4>
+                    <p class='property-description'>The Futures market. To view the supported markets in the US Futures dataset, see <a href='https://www.quantconnect.com/docs/v2/writing-algorithms/securities/asset-classes/futures/requesting-data#04-Supported-Markets'>Supported Markets</a>. If you don't provide a value, it uses the default Future market of your <a href='https://www.quantconnect.com/docs/v2/writing-algorithms/reality-modeling/brokerages/key-concepts'>brokerage model</a>.</p>
+                    <p>Data Type: <span><code class='csharp'>string</code><code class='python'>str</code></span><span class='pipe-separator'>  |  </span> Default Value: <span><code class='python'>None</code><code class='csharp'>null</code></span></p>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <h4>Argument: <span><code>fillForward</code></span></h4>
+                    <p class='property-description'>If true, the current slice contains the last available data even if there is no data at the current time.</p>
+                    <p>Data Type: <span><code>bool</code></span><span class='pipe-separator'>  |  </span> Default Value: <span><code class='python'>True</code><code class='csharp'>true</code></span></p>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <h4>Argument: <span><code>leverage</code></span></h4>
+                    <p class='property-description'>The leverage for this Future.</p>
+                    <p>Data Type: <span><code class='csharp'>decimal</code><code class='python'>float</code></span><span class='pipe-separator'>  |  </span> Default Value: <span><code>Security.NullLeverage</code></span></p>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <h4>Argument: <span><code>extendedMarketHours</code></span></h4>
+                    <p class='property-description'>If true, use data from the pre and post market sessions</p>
+                    <p>Data Type: <span><code>bool</code></span><span class='pipe-separator'>  |  </span> Default Value: <span><code class='python'>False</code><code class='csharp'>false</code></span></p>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <h4>Argument: <span><code>dataMappingMode</code></span></h4>
+                    <p class='property-description'>The contract mapping mode to use for the continuous future contract</p>
+                    <p>Data Type: <span><code class='csharp'>DataMappingMode?</code><code class='python'>DataMappingMode/NoneType</code></span><span class='pipe-separator'>  |  </span> Default Value: <span><code class='python'>None</code><code class='csharp'>null</code></span></p>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <h4>Argument: <span><code>dataNormalizationMode</code></span></h4>
+                    <p class='property-description'>The price scaling mode to use for the continuous future contract</p>
+                    <p>Data Type: <span><code class='csharp'>DataNormalizationMode?</code><code class='python'>DataNormalizationMode/NoneType</code></span><span class='pipe-separator'>  |  </span> Default Value: <span><code class='python'>None</code><code class='csharp'>null</code></span></p>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <h4>Argument: <span><code>contractDepthOffset</code></span></h4>
+                    <p class='property-description'>The continuous future contract desired offset from the current front month. For example, 0 is the front month, 1 is the back month contract.</p>
+                    <p>Data Type: <span><code>int</code></span><span class='pipe-separator'>  |  </span> Default Value: <span><code>0</code></span></p>
+                </td>
+            </tr>
+    </tbody>
+</table>

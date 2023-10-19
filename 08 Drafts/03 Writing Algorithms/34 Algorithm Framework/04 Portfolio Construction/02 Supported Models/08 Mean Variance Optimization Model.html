@@ -1,0 +1,69 @@
+<p>The <code>MeanVarianceOptimizationPortfolioConstructionModel</code> seeks to build a portfolio with the least volatility possible and achieve a target return.</p>
+
+<div class="section-example-container">
+	<pre class="csharp">SetPortfolioConstruction(new MeanVarianceOptimizationPortfolioConstructionModel());</pre>
+	<pre class="python">self.SetPortfolioConstruction(MeanVarianceOptimizationPortfolioConstructionModel())</pre>
+</div>
+
+
+
+<p>The following table describes the arguments the model accepts:</p>
+
+<table class="qc-table table">
+    <thead>
+        <tr>
+            <th>Argument</th>
+            <th>Data Type</th>
+            <th>Description</th>
+            <th>Default Value</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><code class="python">rebalance</code><code class="csharp">rebalanceResolution</code></td>
+	    <td><code>Resolution</code></td>
+	    <td>Rebalancing frequency</td>
+            <td><code>Resolution.Daily</code></td>
+        </tr>
+        <tr>
+            <td><code>portfolioBias</code></td>
+	    <td><code>PortfolioBias</code></td>
+            <td>The bias of the portfolio</td>
+            <td><code>PortfolioBias.LongShort</code></td>
+        </tr>
+        <tr>
+            <td><code>lookback</code></td>
+	    <td><code>int</code></td>
+            <td>Historical return lookback period</td>
+            <td>1</td>
+        </tr>
+        <tr>
+            <td><code>period</code></td>
+	    <td><code>int</code></td>
+            <td>The time interval of history price to calculate the weight</td>
+            <td>63</td>
+        </tr>
+        <tr>
+            <td><code>resolution</code></td>
+	    <td><code>Resolution</code></td>
+            <td>The resolution of the history price</td>
+            <td><code>Resolution.Daily</code></td>
+        </tr>
+        <tr>
+            <td><code>targetReturn</code></td>
+	    <td><code class="csharp">double</code><code class="python">float</code></td>
+            <td>The target portfolio return</td>
+            <td>0.02 (2%)</td>
+        </tr>
+        <tr>
+            <td><code>optimizer</code></td>
+	    <td><code>IPortfolioOptimizer</code></td>
+            <td>The portfolio optimization algorithm</td>
+            <td><code class="csharp">null</code><code class="python">None</code></td>
+        </tr>
+    </tbody>
+</table>
+
+<p>This model supports other data types for the rebalancing frequency argument. For more information about the supported types, see <a href='/docs/v2/writing-algorithms/algorithm-framework/portfolio-construction/key-concepts#07-Rebalance-Frequency'>Rebalance Frequency</a>. If you don't provide an <code>optimizer</code> argument, the default one is the <a href="/docs/v2/writing-algorithms/algorithm-framework/portfolio-construction/supported-optimizers#03-Minimum-Variance-Optimizer">MinimumVariancePortfolioOptimizer</a> with upper and lower weights that respect the <code>portfolioBias</code>.</p>
+<p>This model removes expired insights from the <a href='/docs/v2/writing-algorithms/algorithm-framework/insight-manager'>Insight Manager</a> during each rebalance. It also removes all insights for a security when the security is removed from the <a href='/docs/v2/writing-algorithms/algorithm-framework/universe-selection/key-concepts'>universe</a>.</p>
+<p>To view the implementation of this model, see the <span class="csharp"><a target="_blank" rel="nofollow" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.Framework/Portfolio/MeanVarianceOptimizationPortfolioConstructionModel.cs">LEAN GitHub repository</a></span><span class="python"><a target="_blank" rel="nofollow" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.Framework/Portfolio/MeanVarianceOptimizationPortfolioConstructionModel.py">LEAN GitHub repository</a></span>.</p>

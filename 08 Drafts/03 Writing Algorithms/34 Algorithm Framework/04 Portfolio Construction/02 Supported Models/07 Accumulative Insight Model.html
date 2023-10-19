@@ -1,0 +1,59 @@
+<p>The <code>AccumulativeInsightPortfolioConstructionModel</code> generates target portfolio weights based on all the active insights of a security. For each active Insight of direction <code>InsightDirection.Up</code>, it increases the position size by a fixed percent. For each active Insight of direction <code>InsightDirection.Down</code>, it decreases the position size by a fixed percent. For each active Insight of direction <code>InsightDirection.Flat</code>, it moves the position size towards 0 by a fixed percent.</p>
+
+
+<div class="section-example-container">
+	<pre class="csharp">SetPortfolioConstruction(new AccumulativeInsightPortfolioConstructionModel());</pre>
+	<pre class="python">self.SetPortfolioConstruction(AccumulativeInsightPortfolioConstructionModel())</pre>
+</div>
+
+<p>The following table describes the arguments the model accepts:</p>
+
+<table class="qc-table table">
+    <thead>
+        <tr>
+            <th>Argument</th>
+            <th>Data Type</th>
+            <th>Description</th>
+            <th>Default Value</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><code class="python">rebalance</code><code class="csharp">rebalanceFunc</code></td>
+	    <td><code class="csharp">Func&lt;DateTime, DateTime?&gt;</code>
+                 <span class="python">Any of the following types:
+                     <ul>
+                         <li><code>timedelta</code></li>
+                         <li><code>Resolution</code></li>
+                         <li><a href="/docs/v2/writing-algorithms/scheduled-events#04-Date-Rules">DateRules</a></li>
+                         <li><code>None</code></li>
+                         <li>Callable[[datetime], datetime]</li>
+                     </ul>
+                 </span>
+            </td>
+	    <td>
+                 <span class="csharp">A function that receives the algorithm UTC time and returns the next expected rebalance time. If the function returns <code class='python'>None</code><code class='csharp'>null</code>, the portfolio doesn't rebalance.</span>
+
+                 <span class="python">Rebalancing parameter. If it's a <code>timedelta</code>, <code>DateRules</code> or <code>Resolution</code>, it's converted into a function. If it's <code>None</code>, it's ignored. The function returns the next expected rebalance time for a given algorithm UTC DateTime. The function returns </span><span class="python"><span class="python"><code>None </code>if unknown, in which case the function will be called again in the
+                              next loop. If the function returns the current time, the portfolio rebalances.</span>
+            </td>
+            <td><code class="python">None</code><code class="csharp">null</code></td>
+        </tr>
+        <tr>
+            <td><code>portfolioBias</code></td>
+	    <td><code>PortfolioBias</code></td>
+            <td>The bias of the portfolio</td>
+            <td><code>PortfolioBias.LongShort</code></td>
+        </tr>
+        <tr>
+            <td><code>percent</code></td>
+	    <td><code>PortfolioBias</code></td>
+            <td>The percentage amount of the portfolio value to allocate to a single insight</td>
+            <td>0.03 (3%)</td>
+        </tr>
+    </tbody>
+</table>
+
+<p>This model supports other data types for the rebalancing frequency argument. For more information about the supported types, see <a href="/docs/v2/writing-algorithms/algorithm-framework/portfolio-construction/key-concepts#07-Rebalance-Frequency">Rebalance Frequency</a>.</p>
+<p>This model removes expired insights from the <a href='/docs/v2/writing-algorithms/algorithm-framework/insight-manager'>Insight Manager</a> during each rebalance. It also removes all insights for a security when the security is removed from the <a href='/docs/v2/writing-algorithms/algorithm-framework/universe-selection/key-concepts'>universe</a>.</p>
+<p>To view the implementation of this model, see the <span class="csharp"><a target="_blank" rel="nofollow" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.Framework/Portfolio/AccumulativeInsightPortfolioConstructionModel.cs">LEAN GitHub repository</a></span><span class="python"><a target="_blank" rel="nofollow" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.Framework/Portfolio/AccumulativeInsightPortfolioConstructionModel.py">LEAN GitHub repository</a></span>.</p>

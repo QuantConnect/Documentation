@@ -1,0 +1,1 @@
+<?php include(DOCS_RESOURCES."/datasets/market-hours/future/nymex/A1M/regular-trading-hours.html"); ?>

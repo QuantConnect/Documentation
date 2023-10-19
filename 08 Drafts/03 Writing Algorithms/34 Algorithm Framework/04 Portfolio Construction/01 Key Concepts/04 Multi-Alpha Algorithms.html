@@ -1,0 +1,24 @@
+<p>If you add <a href="/docs/v2/writing-algorithms/algorithm-framework/alpha/key-concepts#03-Multi-Alpha-Algorithms">multiple Alpha models</a>, each Alpha model receives the current slice in the order that you add the Alphas. The combined stream of Insight objects is passed to the Portfolio Construction model.</p>
+
+<p>Each Portfolio Construction model has a unique method to combine Insight objects. The base <code>PortfolioConstructionModel</code> that most PCM's inherit from doesn't combine information from Insight objects with the same <code>Symbol</code> - but just gets the most recent active insight. To combine the active insights differently, override the <code>GetTargetInsights</code>, and return all active insights. The <code>DetermineTargetPercent</code>&nbsp;method implements the combination criteria and determines the target for each <code>Symbol</code>.</p>
+
+<div class="section-example-container">
+	<pre class="csharp">public class MultipleAlphaPortfolioConstructionModel : PortfolioConstructionModel
+{
+    protected override List&lt;Insight&gt; GetTargetInsights()
+    {
+        return InsightCollection.GetActiveInsights(Algorithm.UtcTime).ToList();
+    }
+
+    protected override Dictionary&lt;Insight, double&gt; DetermineTargetPercent(List&lt;Insight&gt; activeInsights)
+    {
+        return new Dictionary&lt;Insight, double&gt;();
+    }
+}</pre>
+	<pre class="python">class MultipleAlphaPortfolioConstructionModel(PortfolioConstructionModel):
+    def GetTargetInsights(self) -&gt; List[Insight]:
+        return list(self.InsightCollection.GetActiveInsights(self.Algorithm.UtcTime))
+
+    def DetermineTargetPercent(self, activeInsights: List[Insight]) -&gt; Dict[Insight, float]:
+        return {}</pre>
+</div>

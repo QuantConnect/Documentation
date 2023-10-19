@@ -1,0 +1,82 @@
+<p>
+Portfolio Construction models should extend the <code>PortfolioConstructionModel</code> class or one of the <a href="/docs/v2/writing-algorithms/algorithm-framework/portfolio-construction/supported-models">supported models</a>. Extensions of the <code>PortfolioConstructionModel</code> class should implement the <code>CreateTargets</code> method, which receives an array of <code>Insight</code> objects from the Alpha model at every <a href="/docs/v2/writing-algorithms/key-concepts/time-modeling/timeslices">time step</a> and returns an array of <code>PortfolioTarget</code> objects. The Portfolio Construction model seeks to answer the question, "how many units should I buy based on the insight predictions I've been presented?".</p>
+
+<p>If you don't override the <code>CreateTargets</code> method, the base class implementation calls the model's <code>IsRebalanceDue</code>, <code>DetermineTargetPercent</code>, and <code>GetTargetInsights</code> helper methods. The <code>GetTargetInsights</code> method, in turn, calls the model's <code>ShouldCreateTargetForInsight</code> method. You can override any of these helper methods. If you don't override the <code>CreateTargets</code> method from the <code>PortfolioConstructionModel</code> class, your class must at least override the <code>DetermineTargetPercent</code> method.</p>
+
+<div class="section-example-container">
+	<pre class="csharp">// Portfolio construction scaffolding class; basic method args.
+class MyPortfolioConstructionModel : PortfolioConstructionModel
+{
+    // Create list of PortfolioTarget objects from Insights
+    public override List&lt;PortfolioTarget&gt; CreateTargets(QCAlgorithm algorithm, Insight[] insights)
+    {
+        return base.CreateTargets(algorithm, insights);
+    }
+    
+    // Determines if the portfolio should rebalance based on the provided rebalancing func
+    protected virtual bool IsRebalanceDue(Insight[] insights, DateTime algorithmUtc) 
+    {
+        return base.IsRebalanceDue(insights, algorithmUtc);
+    }
+    
+    // Determines the target percent for each insight
+    protected override Dictionary&lt;Insight, double&gt; DetermineTargetPercent(List&lt;Insight&gt; activeInsights)
+    {
+        return new Dictionary&lt;Insight, double&gt;();
+    }
+
+    // Gets the target insights to calculate a portfolio target percent for, they will be piped to DetermineTargetPercent()
+    protected override List&lt;Insight&gt; GetTargetInsights()
+    {
+        return base.GetTargetInsights();
+    }
+
+    // Determine if the portfolio construction model should create a target for this insight
+    protected override bool ShouldCreateTargetForInsight(Insight insight)
+    {
+        return base.ShouldCreateTargetForInsight(insight);
+    }
+
+    // Security change details
+    public override void OnSecuritiesChanged(QCAlgorithm algorithm, SecurityChanges changes)
+    {
+        return base.OnSecuritiesChanged(algorithm, changes);
+    }
+}</pre>
+	<pre class="python"> # Portfolio construction scaffolding class; basic method args.
+class MyPortfolioConstructionModel(PortfolioConstructionModel):
+    # Create list of PortfolioTarget objects from Insights
+    def CreateTargets(self, algorithm: QCAlgorithm, insights: List[Insight]) -&gt; List[PortfolioTarget]:
+        return super().CreateTargets(algorithm, insights)
+	
+    # Determines if the portfolio should rebalance based on the provided rebalancing func
+    def IsRebalanceDue(self, insights: List[Insight], algorithmUtc: datetime) -&gt; bool:
+        return super().IsRebalanceDue(insights, algorithmUtc)
+
+    # Determines the target percent for each insight
+    def DetermineTargetPercent(self, activeInsights: List[Insight]) -&gt; Dict[Insight, float]:
+        return {}
+
+    # Gets the target insights to calculate a portfolio target percent for, they will be piped to DetermineTargetPercent()
+    def GetTargetInsights(self) -&gt; List[Insight]:
+        return super().GetTargetInsights()
+
+    # Determine if the portfolio construction model should create a target for this insight
+    def ShouldCreateTargetForInsight(self, insight: Insight) -&gt; bool:
+        return super().ShouldCreateTargetForInsight(insight)
+
+    # Security change details
+    def OnSecuritiesChanged(self, algorithm: QCAlgorithm, changes: SecurityChanges) -&gt; None:
+        super().OnSecuritiesChanged(algorithm, changes)
+</pre>
+</div>
+<p>The Portfolio Construction model should <a href="/docs/v2/writing-algorithms/algorithm-framework/insight-manager#08-Remove-Insights">remove expired insights</a> from the <a href="/docs/v2/writing-algorithms/algorithm-framework/insight-manager">Insight Manager</a>. The <code>CreateTargets</code> definition of the base <code>PortfolioConstructionModel</code> class already removes them during each rebalance. Therefore, if you override the <code>CreateTargets</code> method and don't call the <code>CreateTargets</code> definition of the base class, your new method definition should remove expired insights from the Insight Manager.</p>
+
+<p>The model should also remove all a security's insights from the Insight Manager when the security is removed from the <a href="/docs/v2/writing-algorithms/algorithm-framework/universe-selection/key-concepts">universe</a>. The <code>OnSecuritiesChanged</code> definition of the base <code>PortfolioConstructionModel</code> class already does this. Therefore, if you override the <code>OnSecuritiesChanged</code> method and don't call the <code>OnSecuritiesChanged</code> definition of the base class, your new method definition should remove the security's insights from the Insight Manager.</p>
+
+<p>The <code>algorithm</code> argument that the methods receive is an instance of the base <code>QCAlgorithm</code> class, not your subclass of it.</p>
+
+<p>You may use the <code>PortfolioBias</code> enumeration in the definition of Portfolio Construction model methods. The <code>PortfolioBias</code> enumeration has the following members:</p>
+<div data-tree="QuantConnect.Algorithm.Framework.Portfolio.PortfolioBias"></div>
+
+<p>To view a full example of a <code>PortfolioConstructionModel</code> subclass, see the <span class="csharp"><a target="_blank" rel="nofollow" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.Framework/Portfolio/EqualWeightingPortfolioConstructionModel.cs">EqualWeightingPortfolioConstructionModel</a></span><span class="python"><a target="_blank" rel="nofollow" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.Framework/Portfolio/EqualWeightingPortfolioConstructionModel.py">EqualWeightingPortfolioConstructionModel</a></span> in the LEAN GitHub repository.</p>

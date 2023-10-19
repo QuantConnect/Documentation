@@ -1,0 +1,42 @@
+<p>The <code>BasePairsTradingAlphaModel</code> analyzes every possible pair combination from securities that the Universe Selection model selects. This model calculates a ratio between the two securities by dividing their historical prices over a lookback window. It then calculates the mean of this ratio by taking the 500-period EMA of the quotient. When the ratio diverges far enough from the mean ratio, this model emits generates alternating long ratio/short ratio insights emitted as a group to capture the reversion of the ratio.</p>
+
+<div class="section-example-container">
+	<pre class="csharp">AddAlpha(new BasePairsTradingAlphaModel());</pre>
+	<pre class="python">self.AddAlpha(BasePairsTradingAlphaModel())</pre>
+</div>
+
+<p>The following table describes the arguments the model accepts:</p>
+
+<table class="qc-table table">
+    <thead>
+        <tr>
+            <th>Argument</th>
+            <th>Data Type</th>
+            <th>Description</th>
+            <th>Default Value</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><code>lookback</code></td>
+	    <td><code>int</code></td>
+            <td>Lookback period of the analysis</td>
+            <td>1</td>
+        </tr>
+        <tr>
+            <td><code>resolution</code></td>
+	    <td><code>Resolution</code></td>
+            <td>Analysis resolution</td>
+            <td><code>Resolution.Daily</code></td>
+        </tr>
+        <tr>
+            <td><code>threshold</code></td>
+	    <td><code class="csharp">decimal</code><code class="python">float</code></td>
+            <td>The percent [0, 100] deviation of the ratio from the mean before emitting an insight</td>
+            <td>1</td>
+        </tr>
+    </tbody>
+</table>
+
+
+<p>To view the implementation of this model, see the <span class='csharp'><a target="_blank" rel='nofollow' href='https://github.com/QuantConnect/Lean/blob/master/Algorithm.Framework/Alphas/BasePairsTradingAlphaModel.cs'>LEAN GitHub repository</a></span><span class='python'><a target="_blank" rel='nofollow' href='https://github.com/QuantConnect/Lean/blob/master/Algorithm.Framework/Alphas/BasePairsTradingAlphaModel.py'>LEAN GitHub repository</a></span>.</p>

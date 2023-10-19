@@ -1,0 +1,62 @@
+<p>An Insight is a single prediction for an asset. The <code>Update</code> method returns an array of Insight objects. You can think of these as actionable trading signals, indicating the asset direction, magnitude, and confidence in the near future. All insights can take a weight parameter to set the desired weighting for the insight. If you change the cash of the algorithm, it will affect the orders, but not necessarily the insights.</p>
+
+<p>The Portfolio Construction model consumes the Insight objects from the Alpha model. It's up to the Portfolio Construction model to define how Insight objects are converted into <code>PortfolioTarget</code> objects. In the pre-built Portfolio Construction models, down insights translate to short-biased trades, up insights translate to long-biased trades, and flat insights usually close open positions, but this doesn't have to be the case in <a href="/docs/v2/writing-algorithms/algorithm-framework/portfolio-construction/key-concepts#03-Model-Structure">custom Portfolio Construction models</a>.</p>
+
+
+<h4>Insight Properties</h4>
+<p><code>Insight</code> objects have the following properties:</p>
+<div data-tree="QuantConnect.Algorithm.Framework.Alphas.Insight"></div>
+
+<h4>Create Insights</h4>
+
+<p>To create an <code>Insight</code>, call the <code>Insight</code> constructor.</p>
+<div class="section-example-container">
+	<pre class="python"># Insight(symbol, period, type, direction, magnitude=None, confidence=None, sourceModel=None, weight=None, tag='')
+insight = Insight("IBM", timedelta(minutes=20), InsightType.Price, InsightDirection.Up)</pre>
+	<pre class="csharp">// new Insight(symbol, period, type, direction, magnitude=null, confidence=null, sourceModel=null, weight=null, tag="");
+var insight = new Insight("IBM", TimeSpan.FromMinutes(20), InsightType.Price, InsightDirection.Up);</pre>
+</div>
+
+<p>In the <code>Insight</code> constructor, the <code>period</code> argument can be a <code class="python">timedelta</code><code class="csharp">TimeSpan</code> object or a function that receives a <code class="csharp">DateTime</code><code class="python">datetime</code> object and returns the expiry <code class="csharp">DateTime</code><code class="python">datetime</code>. Some of the constructor arguments are optional to create the <code>Insight</code> object, but some of the Portfolio Construction models may require these properties. To check which <code>Insight</code> properties a Portfolio Construction model requires, see <a href="/docs/v2/writing-algorithms/algorithm-framework/portfolio-construction/supported-models">Supported Models</a>.</p>
+
+<p>You can also use the helper method to create Insight objects of the Price type.</p>  
+<div class="section-example-container">
+		<pre class="python"># Insight.Price(symbol, period, direction, magnitude=None, confidence=None, sourceModel=None, weight=None, tag='') 
+insight = Insight.Price("IBM", timedelta(minutes = 20), InsightDirection.Up)
+
+# Insight.Price(symbol, resolution, barCount, direction, magnitude=None, confidence=None, sourceModel=None, weight=None, tag='') 
+insight = Insight.Price("IBM", Resolution.Minute, 20, InsightDirection.Up)</pre>
+		<pre class="csharp">// new Insight(symbol, period, direction, magnitude=null, confidence=null, sourceModel=null, weight=null, tag="")
+var insight = Insight.Price("IBM", TimeSpan.FromMinutes(20), InsightDirection.Up);
+
+// new Insight(symbol, resolution, barCount, direction, magnitude=null, confidence=null, sourceModel=null, weight=null, tag="")
+var insight = Insight.Price("IBM", Resolution.Minute, 20, InsightDirection.Up);</pre>
+</div>
+
+<p>In the <code>Price</code> method, the <code>period</code> argument can be a <code class="python">timedelta</code><code class="csharp">TimeSpan</code> object, a <code class="csharp">DateTime</code><code class="python">datetime</code> object, or a function that receives a <code class="csharp">DateTime</code><code class="python">datetime</code> object and returns the expiry <code class="csharp">DateTime</code><code class="python">datetime</code>.</p>
+
+<h4>Group Insights</h4>
+<p>Sometimes an algorithm's performance relies on multiple insights being traded together, like in pairs trading and options straddles. These types insights should be grouped. Insight groups signal to the Execution model that the insights need to be acted on as a single unit to maximize the alpha created.</p>
+
+<p>To mark insights as a group, call the <code>Insight.Group</code> method.</p>
+
+<div class="section-example-container">
+	<pre class="csharp">return Insight.Group(insight1, insight2, insight3);</pre>
+	<pre class="python">return Insight.Group([insight1, insight2,insight3])
+</pre>
+</div>
+
+
+<h4>Cancel Insights</h4>
+<p>If an Alpha model in your algorithm emits an Insight to enter a position but it determines the trading opportunity has pre-maturely ended, you should cancel the Insight. For example, say you want your algorithm to enter a long position in a security when its <a href='/docs/v2/writing-algorithms/indicators/supported-indicators/relative-strength-index'>Relative Strength Index</a> (RSI) moves below 20 and then liquidate the position when the security's RSI moves above 30. If you emit an Insight that has a duration of 30 days when the RSI moves below 20 but the RSI moves above 30 in 10 days, you should cancel the Insight.</p>
+
+<p>To cancel an Insight, call its <code>Cancel</code>/<code>Expire</code> method with the algorithm's Coordinated Universal Time (UTC).</p>
+
+<div class="section-example-container">
+    <pre class="python">self.insight.Cancel(algorithm.UtcTime)</pre>
+    <pre class="csharp">_insight.Cancel(algorithm.UtcTime);</pre>
+</div>
+
+<p>If you don't have a reference to the Insight you want to cancel, <a href='/docs/v2/writing-algorithms/algorithm-framework/insight-manager#04-Get-Insights'>get it from the InsightManager</a>.</p>
+
+<p>When you cancel an insight, it's <code>CloseTimeUtc</code> property is set to one second into the past.</p>

@@ -1,0 +1,83 @@
+<p>The <code>ScheduledUniverseSelectionModel</code> selects assets on the schedule you provide. To use this model, provide a <code>DateRule</code>, <code>TimeRule</code>, and a selector function. The <code>DateRule</code> and <code>TimeRule</code> define the selection schedule. The selector function receives a <code class="python">datetime</code><code class="csharp">DateTime</code> object and returns a list of <code>Symbol</code> objects. The <code>Symbol</code> objects you return from the selector function are the constituents of the universe.</p>
+
+<div class="section-example-container">
+	<pre class="csharp">AddUniverseSelection(new ScheduledUniverseSelectionModel(dateRule, timeRule, selector));</pre>
+	<pre class="python">self.AddUniverseSelection(ScheduledUniverseSelectionModel(dateRule, timeRule, selector))</pre>
+</div>
+
+<p>The following table describes the arguments the model accepts:</p>
+
+<table class="qc-table table">
+    <thead>
+        <tr>
+            <th>Argument</th>
+            <th>Data Type</th>
+            <th>Description</th>
+            <th>Default Value</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><code>dateRule</code></td>
+	    <td><code>IDateRule</code></td>
+            <td>Date rule defines what days the universe selection function will be invoked</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td><code>timeRule</code></td>
+	    <td><code>ITimeRule</code></td>
+            <td>Time rule defines what times on each day selected by date rule the universe selection function will be invoked</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td><code>selector</code></td>
+	    <td><code class="csharp">Func&lt;DateTime, IEnumerable&lt;Symbol&gt;&gt;</code><code class="python">Callable[[datetime], List[Symbol]]</code></td>
+            <td>Selector function accepting the date time firing time and returning the universe selected symbols</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td><code>settings</code></td>
+	    <td><code>UniverseSettings</code></td>
+            <td>Universe settings for subscriptions added via this universe, null will default to algorithm's universe settings</td>
+            <td><code class="csharp">null</code><code class="python">None</code></td>
+        </tr>
+    </tbody>
+</table>
+
+<p>If you don't provide a <code>settings</code> argument, the <code>algorithm.UniverseSettings</code> is used by default.</p>
+
+<p>The model assumes the <code>timeRule</code> argument is in Coordinated Universal Time (UTC). To use a different timezone, pass a <code>timeZone</code> argument of type <code>DateTimeZone</code> before the <code>dateRule</code> argument.</p>
+
+<p>To return the current universe constituents from the selector function, return <code>Universe.Unchanged</code>.</p>
+
+<div class="section-example-container">
+	<pre class="csharp">// Selection will run on mon/tues/thurs at 00:00/06:00/12:00/18:00
+AddUniverseSelection(new ScheduledUniverseSelectionModel(
+    DateRules.Every(DayOfWeek.Monday, DayOfWeek.Tuesday, DayOfWeek.Thursday),
+    TimeRules.Every(TimeSpan.FromHours(6)),
+    SelectSymbols // selection function in algorithm.
+));
+
+// Create selection function which returns symbol objects.
+private IEnumerable&lt;Symbol&gt; SelectSymbols(DateTime dateTime)
+{
+    var tickers = new[] {"SPY", "AAPL", "IBM"};
+    return tickers.Select(ticker =&gt;
+        QuantConnect.Symbol.Create(ticker, SecurityType.Equity, Market.USA));
+}
+</pre>
+	<pre class="python"># Selection will run on mon/tues/thurs at 00:00/06:00/12:00/18:00
+self.AddUniverseSelection(ScheduledUniverseSelectionModel(
+    self.DateRules.Every(DayOfWeek.Monday, DayOfWeek.Tuesday, DayOfWeek.Thursday),
+    self.TimeRules.Every(timedelta(hours = 6)),
+    self.SelectSymbols # selection function in algorithm.
+))
+
+# Create selection function which returns symbol objects.
+def SelectSymbols(self, dateTime: datetime) -> List[Symbol]:
+    tickers = ['SPY', 'AAPL', 'IBM']
+    return [Symbol.Create(ticker, SecurityType.Equity, Market.USA)
+        for ticker in tickers]</pre>
+</div>
+
+<p>To view the implementation of this model, see the <a target="_blank" rel="nofollow" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.Framework/Selection/ScheduledUniverseSelectionModel.cs">LEAN GitHub repository</a>.</p>

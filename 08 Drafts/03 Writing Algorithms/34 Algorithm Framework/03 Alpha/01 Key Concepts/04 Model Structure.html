@@ -1,0 +1,66 @@
+<p>
+Alpha models should extend the <code>AlphaModel</code> class. Extensions of the <code>AlphaModel</code> class must implement the <code>Update</code> method, which receives a <a href="/docs/v2/writing-algorithms/key-concepts/time-modeling/timeslices">Slice</a> object and returns an array of <code>Insight</code> objects. Extensions should also implement the <code>OnSecuritiesChanged</code> method to track security changes in the universe.</p>
+
+<div class="section-example-container">
+	<pre class="csharp">// Algorithm framework model that produces insights
+class MyAlphaModel : AlphaModel
+{
+    // Updates this Alpha model with the latest data from the algorithm.
+    // This is called each time the algorithm receives data for subscribed securities
+    public override IEnumerable&lt;Insight&gt; Update(QCAlgorithm algorithm, Slice data) 
+    {
+        var insights = new List&lt;Insight&gt;();
+        return insights;
+    }
+
+    public override void OnSecuritiesChanged(QCAlgorithm algorithm, SecurityChanges changes) 
+    {
+        // Security additions and removals are pushed here.
+        // This can be used for setting up algorithm state.
+        // changes.AddedSecurities
+        // changes.RemovedSecurities
+    }
+}</pre>
+	<pre class="python"># Algorithm framework model that produces insights
+class MyAlphaModel(AlphaModel):
+
+    def Update(self, algorithm: QCAlgorithm, data: Slice) -&gt; List[Insight]:
+        # Updates this Alpha model with the latest data from the algorithm.
+        # This is called each time the algorithm receives data for subscribed securities
+        # Generate insights on the securities in the universe.
+        insights = []
+        return insights
+
+    def OnSecuritiesChanged(self, algorithm: QCAlgorithm, changes: SecurityChanges) -&gt; None:
+        # Security additions and removals are pushed here.
+        # This can be used for setting up algorithm state.
+        # changes.AddedSecurities
+        # changes.RemovedSecurities
+        pass</pre>
+</div>
+
+<h4>Method Parameters</h4>
+
+<p>The <code>algorithm</code> parameter that the methods receive is an instance of the base <code>QCAlgorithm</code> class, not your subclass of it. To access members of your algorithm object, either use a global variable or pass an algorithm reference to Alpha model constructor. Both of these approaches violate the separation of concerns principle.<br></p>
+
+<p>The <code>data</code> parameter contains the latest data available to the algorithm. <br></p><div>The <code>changes</code> parameter contains the universe changes. </div><div><br></div>
+
+
+<h4>Model Names</h4>
+
+<p>To ensure your Alpha model is compatible with all <a href="/docs/v2/writing-algorithms/algorithm-framework/portfolio-construction/supported-models">Portfolio Construction models</a>, assign a unique name to your Alpha model. Some Portfolio Construction models can combine multiple Alpha models together, so it can be important to distinguish between the Alpha models.
+</p>
+	<div class="section-example-container">
+		<pre class="python" style="display: none;">class RsiAlphaModel(AlphaModel):
+    Name = "RsiAlphaModel"</pre>
+		<pre class="csharp">public class RsiAlphaModel : AlphaModel
+{
+    // Give your alpha a name (perhaps based on its constructor args?)
+    public override string Name { get; }
+}</pre>
+	</div>
+
+<p>By default, LEAN uses the string representation of a <a href='https://learn.microsoft.com/en-us/dotnet/api/system.guid.newguid?view=net-7.0' rel='nofollow' target='_blank'>Guid object</a> to set the Alpha model name. An example default name is "0f8fad5b-d9cb-469f-a165-70867728950e". This default name is different for every backtest you run and every live algorithm you deploy. For consistent behavior, manually set the Alpha model name.</p>
+
+<h4>Example</h4>
+<p>To view a full example of an <code>AlphaModel</code> subclass, see the <span class="csharp"><a target="_blank" rel="nofollow" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.Framework/Alphas/ConstantAlphaModel.cs">ConstantAlphaModel</a></span><span class="python"><a target="_blank" rel="nofollow" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.Framework/Alphas/ConstantAlphaModel.py">ConstantAlphaModel</a></span> in the LEAN GitHub repository.</p>

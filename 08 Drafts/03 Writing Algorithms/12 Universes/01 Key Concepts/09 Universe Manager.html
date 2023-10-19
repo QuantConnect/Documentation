@@ -1,0 +1,25 @@
+<p>The universe manager tracks all the universes in your algorithm. If you add multiple universe, you can access the constituents of each individual universe. To access the constituents of a universe in a multi-universe algorithm, save references to each universe when you add them.</p>
+
+ <div class="section-example-container">
+<pre class="csharp">private Universe _universe;
+
+// In Initialize
+_universe = AddUniverse(MyCoarseFilterFunction);
+
+// In OnData
+var universeMembers = UniverseManager[_universe.Configuration.Symbol].Members;
+foreach (var kvp in universeMembers)
+{
+    var symbol = kvp.Key;
+    var security = kvp.Value;
+}</pre>
+<pre class="python"># In Initialize
+self.universe = self.AddUniverse(self.MyCoarseFilterFunction)
+
+# In OnData
+universe_members = self.UniverseManager[self.universe.Configuration.Symbol].Members
+for kvp in universe_members:
+    symbol = kvp.Key
+    security = kvp.Value
+</pre>
+</div>

@@ -1,0 +1,58 @@
+<p>Some portfolio construction models contain an optimizer that accepts the historical returns of each security and returns a list of optimized portfolio weights. Portfolio optimizer models must implement the <code>IPortfolioOptimizer</code> interface, which has an <code>Optimize</code> method.</p>
+
+<div class="section-example-container">
+	<pre class="csharp">public class MyPortfolioOptimizer : IPortfolioOptimizer
+{
+    public double[] Optimize(double[,] historicalReturns, double[] expectedReturns = null, double[,] covariance = null)
+    {
+        // Create weights
+        return weights;
+    }
+}</pre>
+	<pre class="python">class MyPortfolioOptimizer:
+
+    def Optimize(self, historicalReturns: pd.DataFrame, expectedReturns: pd.Series = None, covariance: pd.DataFrame = None) -&gt; pd.Series:
+        # Create weights
+        return weights</pre>
+</div>
+
+
+<p>The following table describes the arguments the <code>Optimize</code> method accepts:</p>
+
+<table class="qc-table table">
+    <thead>
+        <tr>
+            <th>Argument</th>
+            <th>Data Type</th>
+            <th>Description</th>
+            <th>Default Value</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><code>historicalReturns</code></td>
+	    <td><code class="csharp">double[,]</code><code class="python">DataFrame</code></td>
+            <td>Matrix of annualized historical returns where each column represents a 
+security and each row returns for the given date/time (size: K x N)</td>
+            <td><br></td>
+        </tr>
+        <tr>
+            <td><code>expectedReturns</code></td>
+	    <td><code class="csharp">double[]</code><code class="python">Series</code></td>
+            <td>Array of double with the portfolio annualized expected returns (size: K x 1)</td>
+            <td><code class="csharp">null</code><code class="python">None</code></td>
+        </tr>
+        <tr>
+            <td><code>covariance</code></td>
+	    <td><code class="csharp">double[,]</code><code class="python">DataFrame</code></td>
+            <td>Multi-dimensional array of double with the portfolio covariance of annualized returns (size: K x K)</td>
+            <td><code class="csharp">null</code><code class="python">None</code></td>
+        </tr>
+    </tbody>
+</table>
+
+<p>The method should return a K x 1 array of double objects that represent the portfolio weights.</p>
+
+<p>To view all the pre-built portfolio optimization algorithms, see <a href="/docs/v2/writing-algorithms/algorithm-framework/portfolio-construction/supported-optimizers">Supported Optimizers</a>.</p>
+
+<p>To view a full example of an <code>IPortfolioOptimizer</code> implementation, see the <span class="csharp"><a target="_blank" rel="nofollow" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.Framework/Portfolio/MaximumSharpeRatioPortfolioOptimizer.cs">MaximumSharpeRatioPortfolioOptimizer</a></span><span class="python"><a target="_blank" rel="nofollow" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.Framework/Portfolio/MaximumSharpeRatioPortfolioOptimizer.py">MaximumSharpeRatioPortfolioOptimizer</a></span> in the LEAN GitHub repository.</p>

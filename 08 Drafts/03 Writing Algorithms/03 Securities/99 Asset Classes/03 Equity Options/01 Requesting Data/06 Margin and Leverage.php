@@ -1,0 +1,1 @@
+<p>LEAN models buying power and margin calls to ensure your algorithm stays within the margin requirements. Options are already leveraged products, so you can't change their leverage.</p>

@@ -1,0 +1,1 @@
+<?php include(DOCS_RESOURCES."/datasets/market-hours/future/nymex/BK/regular-trading-hours.html"); ?>

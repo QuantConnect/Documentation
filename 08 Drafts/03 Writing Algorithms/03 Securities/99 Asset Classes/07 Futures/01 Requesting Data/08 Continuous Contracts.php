@@ -1,0 +1,1 @@
+<p>A continuous Futures contract represents a single contract that maps to other contracts over time as the rollover rules are met. For more information about continuous Futures contracts, see <a href='/docs/v2/writing-algorithms/universes/futures#12-Continous-Contracts'>Continuous Contracts</a>.</p>

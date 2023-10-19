@@ -1,0 +1,28 @@
+<p>You can add a Portfolio Construction model to your classic algorithm and have it place orders without returning <code>Insight</code> objects from an Alpha model. To emit insights without an Alpha model, in the <code>OnData</code> method, call the <code>EmitInsights</code> method.</p>
+
+<p>The following example uses a Portfolio Construction Framework model with <code>EmitInsights</code> method in a classic algorithm:</p>
+
+<div class="section-example-container">
+	<pre class="csharp">public override void Initialize()
+{
+    SetPortfolioConstruction(new EqualWeightingPortfolioConstructionModel());
+}
+
+public override void OnData(Slice slice)
+{
+	EmitInsights(new Insight("GOOG", TimeSpan.FromMinutes(20), InsightType.Price, InsightDirection.Up));
+	EmitInsights(new []{
+		new Insight("AAPL", TimeSpan.FromMinutes(20), InsightType.Price, InsightDirection.Up),
+		new Insight("MSFT", TimeSpan.FromMinutes(20), InsightType.Price, InsightDirection.Up)
+	});
+}</pre>
+	<pre class="python">def Initialize(self):
+    self.SetPortfolioConstruction(EqualWeightingPortfolioConstructionModel())
+
+def OnData(self, slice):
+	self.EmitInsights(Insight("GOOG", TimeSpan.FromMinutes(20), InsightType.Price, InsightDirection.Up))
+	self.EmitInsights([
+		Insight("AAPL", TimeSpan.FromMinutes(20), InsightType.Price, InsightDirection.Up),
+		Insight("MSFT", TimeSpan.FromMinutes(20), InsightType.Price, InsightDirection.Up)
+	])</pre>
+</div>

@@ -1,0 +1,62 @@
+<p>The <code>MeanReversionPortfolioConstructionModel</code> implements an on-line portfolio selection technique, named "On-Line Moving Average Reversion" (OLMAR). The basic idea is to represent multi-period mean reversion as "Moving Average Reversion" (MAR), which explicitly predicts next price relatives using moving averages and then forms portfolios with online learning techniques.</p>
+
+<div class="section-example-container">
+	<pre class="csharp">SetPortfolioConstruction(new MeanReversionPortfolioConstructionModel());</pre>
+	<pre class="python">self.SetPortfolioConstruction(MeanReversionPortfolioConstructionModel())</pre>
+</div>
+
+<p>The following table describes the arguments the model accepts:</p>
+
+<table class="qc-table table">
+    <thead>
+        <tr>
+            <th>Argument</th>
+            <th>Data Type</th>
+            <th>Description</th>
+            <th>Default Value</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><code class="python">rebalance</code><code class="csharp">rebalanceResolution</code></td>
+	    <td><code>Resolution</code>
+            </td>
+	    <td>Rebalancing frequency</td>
+            <td><code>Resolution.Daily</code></td>
+        </tr>
+        <tr>
+            <td><code>portfolioBias</code></td>
+	    <td><code>PortfolioBias</code></td>
+            <td>The bias of the portfolio</td>
+            <td><code>PortfolioBias.LongShort</code></td>
+        </tr>
+        <tr>
+            <td><code>reversionThreshold</code></td>
+	    <td><code class="csharp">decimal</code><code class="python">float</code></td>
+            <td>Reversion threshold</td>
+            <td>1</td>
+        </tr>
+        <tr>
+            <td><code>windowSize</code></td>
+	    <td><code>int</code></td>
+            <td>The window size of mean price</td>
+            <td>20</td>
+        </tr>
+        <tr>
+            <td><code>resolution</code></td>
+	    <td><code>Resolution</code></td>
+            <td>The resolution of the history price</td>
+            <td><code>Resolution.Daily</code></td>
+        </tr>
+    </tbody>
+</table>
+
+<p>This model supports other data types for the rebalancing frequency argument. For more information about the supported types, see <a href="/docs/v2/writing-algorithms/algorithm-framework/portfolio-construction/key-concepts#07-Rebalance-Frequency">Rebalance Frequency</a>.</p>
+<p>This model removes expired insights from the <a href='/docs/v2/writing-algorithms/algorithm-framework/insight-manager'>Insight Manager</a> during each rebalance. It also removes all insights for a security when the security is removed from the <a href='/docs/v2/writing-algorithms/algorithm-framework/universe-selection/key-concepts'>universe</a>.</p>
+<p>To view the implementation of this model, see the <span class="csharp"><a target="_blank" rel="nofollow" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.Framework/Portfolio/MeanReversionPortfolioConstructionModel.cs">LEAN GitHub repository</a></span><span class="python"><a target="_blank" rel="nofollow" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.Framework/Portfolio/MeanReversionPortfolioConstructionModel.py">LEAN GitHub repository</a></span>.</p>
+
+<p>Reference:</p>
+<ul>
+<li> Li, B., Hoi, S. C. (2012). On-line portfolio selection with moving average reversion. arXiv preprint <a target="_blank" rel="nofollow" href="https://arxiv.org/ftp/arxiv/papers/1206/1206.4626.pdf">arXiv:1206.4626</a>.
+</li>
+</ul>
