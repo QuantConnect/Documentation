@@ -1,0 +1,104 @@
+<p>
+The following example chains a <a href='/docs/v2/writing-algorithms/datasets/quiver-quantitative/twitter-followers#09-Universe-Selection'>QuiverQuantTwitterFollowersUniverse alternative universe</a> to the SPY <a href="/docs/v2/writing-algorithms/universes/equity#04-ETF-Constituents-Selection">ETF universe</a>. It first selects all constituents of SPY and then filters them down with based on their Twitter followers number and weekly change. The output of the alternative universe selection method is the output of the chained universe.
+</p>
+<div class="section-example-container">
+    <pre class="csharp">using System.Collections.Generic;
+using System.Linq;
+using QuantConnect.Data;
+using QuantConnect.Data.UniverseSelection;
+using QuantConnect.DataSource;
+using QuantConnect.Securities;
+
+namespace QuantConnect.Algorithm.CSharp
+{
+    public class ChainedUniverseAlgorithm : QCAlgorithm
+    {
+        private List&lt;Symbol&gt; _etf = new();
+        private Universe _universeEtf;
+        private Universe _universeTwitter;
+
+        public override void Initialize()
+        {
+            SetStartDate(2023, 1, 2);
+            SetCash(100000);
+
+            _universeEtf = AddUniverse(Universe.ETF("SPY", Market.USA, UniverseSettings, ETFConstituentsFilter));
+            // or var symbol = QuantConnect.Symbol.Create("SPY", SecurityType.Equity, Market.USA);
+            // _universeEtf = AddUniverseSelection(new ETFConstituentsUniverseSelectionModel(
+            //    symbol, UniverseSettings, ETFConstituentsFilter));
+            _universeTwitter = AddUniverse&lt;QuiverQuantTwitterFollowersUniverse&gt;(
+                "QuiverQuantTwitterFollowersUniverse", Resolution.Daily, FollowerSelection);
+        }
+
+        private IEnumerable&lt;Symbol&gt; ETFConstituentsFilter(IEnumerable&lt;ETFConstituentData&gt; constituents)
+        {
+            _etf = constituents.Select(c =&gt; c.Symbol).ToList();
+            return Universe.Unchanged;
+        }
+
+        private IEnumerable&lt;Symbol&gt; FollowerSelection(IEnumerable&lt;QuiverQuantTwitterFollowersUniverse&gt; altCoarse)
+        {
+            var followers = from d in altCoarse
+                            where d.Followers &gt; 200000m &amp;&amp; d.WeekPercentChange &gt; 0m
+                            select d.Symbol;
+            return _etf.Intersect(followers);
+        }
+
+        public override void OnSecuritiesChanged(SecurityChanges changes)
+        {
+            foreach (var added in changes.AddedSecurities)
+            {
+                AddData&lt;QuiverQuantTwitterFollowers&gt;(added.Symbol);
+            }
+        }
+
+        public override void OnData(Slice data)
+        {
+            foreach (var kvp in data.Get&lt;QuiverQuantTwitterFollowers&gt;())
+            {
+                var datasetSymbol = kvp.Key;
+                var dataPoint = kvp.Value;
+                Debug($"{datasetSymbol} followers at {data.Time}: {dataPoint.Followers}");
+            }
+        }
+    }
+}</pre>
+    <pre class="python">from AlgorithmImports import * 
+
+class ChainedUniverseAlgorithm(QCAlgorithm):
+
+    etf = []
+    universe_etf = None
+    universe_twitter = None
+
+    def Initialize(self):
+        self.SetCash(100000)
+        self.SetStartDate(2023, 1, 2)
+        
+        self.universe_etf = self.AddUniverse(self.Universe.ETF("SPY", Market.USA, self.UniverseSettings, self.ETFConstituentsFilter))
+        # or symbol = Symbol.Create("SPY", SecurityType.Equity, Market.USA)
+        # self.universe_etf = self.AddUniverseSelection(ETFConstituentsUniverseSelectionModel(
+        #   symbol, self.UniverseSettings, self.ETFConstituentsFilter))
+        self.universe_twitter = self.AddUniverse(QuiverQuantTwitterFollowersUniverse, 
+            "QuiverQuantTwitterFollowersUniverse", Resolution.Daily, self.FollowerSelection)
+
+    def ETFConstituentsFilter(self, constituents: List[ETFConstituentData]) -&gt; List[Symbol]:
+        self.etf = [c.Symbol for c in constituents]
+        return Universe.Unchanged
+
+    def FollowerSelection(self, alt_coarse: List[QuiverQuantTwitterFollowersUniverse]) -&gt; List[Symbol]:
+        self.followers = [d.Symbol for d in alt_coarse if d.Followers &gt; 200000 and d.WeekPercentChange &gt; 0]
+        return list(set(self.etf) &amp; set(self.followers))
+
+    def OnSecuritiesChanged(self, changes):
+        for added in changes.AddedSecurities:
+            self.AddData(QuiverQuantTwitterFollowers, added.Symbol)
+
+    def OnData(self, data):
+        # Prices in the slice from the universe selection
+        # Alternative data in slice from OnSecuritiesChanged Addition
+        # for ticker,bar in data.Bars.items():
+        #     pass
+        for dataset_symbol, data_point in data.Get(QuiverQuantTwitterFollowers).items():
+            self.Debug(f"{dataset_symbol} followers at {data.Time}: {data_point.Followers}")</pre>
+</div>

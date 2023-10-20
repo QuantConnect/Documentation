@@ -1,0 +1,31 @@
+<p>Direct access gives us the fundamentals for the current algorithm time. For historical requests, we can rely on the History method</p>
+
+<p>Single security requets: returns a list of Fundamental ordered by date</p>
+<p>Multiple security requets: returns a list of Dictionary ordered by date where the key is the Symbol and the value is a Fundamental object</p>
+<p>Multiple security requets Py: pandas DataFrame</p>
+
+<div class="section-example-container">
+        <pre class="csharp">
+// Single asset 
+var ibm = QuantConnect.Symbol.Create("IBM", SecurityType.Equity, Market.USA);
+var ibmHistory = History&lt;Fundamental&gt;(ibm, new TimeSpan(1, 0, 0, 0)).ToList();
+
+// Multiple assets
+var nb = QuantConnect.Symbol.Create("NB", SecurityType.Equity, Market.USA);
+var history= History&lt;Fundamental&gt;(new List<Symbol>{ nb, ibm }, new TimeSpan(1, 0, 0, 0)).ToList();
+
+// All securities
+var history= History&lt;Fundamental&gt;(Securities.Keys, new TimeSpan(1, 0, 0, 0)).ToList();</pre>
+     <pre class="python"># Single asset
+ibm = Symbol.Create("IBM", SecurityType.Equity, Market.USA)
+ibm_history = self.History(Fundamental, ibm, timedelta(1))
+
+// Multiple assets
+nb = QuantConnect.Symbol.Create("NB", SecurityType.Equity, Market.USA);
+history= self.History(Fundamental, [ nb, ibm ], timedelta(1))
+
+// All securities
+history = self.History(Fundamental, timedelta(1))</pre>
+</div>
+    
+<p>Link to https://www.quantconnect.com/docs/v2/writing-algorithms/historical-data/history-requests when ready</p>

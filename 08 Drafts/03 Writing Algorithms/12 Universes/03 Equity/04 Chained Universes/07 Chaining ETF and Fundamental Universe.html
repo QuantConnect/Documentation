@@ -1,0 +1,76 @@
+<meta name="tag" content="universes">
+<meta name="tag" content="coarse universes">
+<meta name="tag" content="alternative data universes">
+<p>
+    The following example chains an <a href='/docs/v2/writing-algorithms/universes/equity#04-ETF-Constituents-Selection'>ETF constituents universe</a> with a <a href='/docs/v2/writing-algorithms/universes/equity#05-Fundamentals-Selection'>fundamental universe</a> to select ETF constituents with a low PE ratio.
+</p> 
+<div class="section-example-container">
+<pre class="csharp">using System.Collections.Generic;
+using System.Linq;
+using QuantConnect.Data;
+using QuantConnect.Data.Fundamental;
+using QuantConnect.Data.UniverseSelection;
+using QuantConnect.Securities;
+
+namespace QuantConnect.Algorithm.CSharp
+{
+    public class ChainedUniverseAlgorithm : QCAlgorithm
+    {
+        private Universe _universeEtf;
+        private Universe _universeFine;
+
+        public override void Initialize()
+        {
+            SetStartDate(2023, 1, 2);
+            SetCash(100000);
+
+            _universeEtf = Universe.ETF("QQQ", Market.USA, UniverseSettings, ETFConstituentsFilter);
+            _universeFine = AddUniverse(_universeEtf, FineSelection);
+        }
+
+        private IEnumerable&lt;Symbol&gt; ETFConstituentsFilter(IEnumerable&lt;ETFConstituentData&gt; constituents)
+        {
+            return constituents.Select(c => c.Symbol);
+        }
+
+        private IEnumerable&lt;Symbol&gt; FineSelection(IEnumerable&lt;FineFundamental&gt; fine)
+        {
+            return (from f in fine
+                    orderby f.ValuationRatios.PERatio
+                    select f.Symbol).Take(20);
+        }
+
+        public override void OnData(Slice data)
+        {
+            foreach (var symbol in data.Keys)
+            {
+                Debug($"{symbol} PE Ratio: {Securities[symbol].Fundamentals.ValuationRatios.PERatio}");
+            }
+        }
+    }
+}</pre>
+<pre class="python">from AlgorithmImports import * 
+
+class ChainedUniverseAlgorithm(QCAlgorithm):
+
+    universe_etf = None
+    universe_fine = None
+
+    def Initialize(self):
+        self.SetCash(100000)
+        self.SetStartDate(2023, 2, 2)
+        
+        self.universe_etf = self.Universe.ETF("QQQ", Market.USA, self.UniverseSettings, self.ETFConstituentsFilter)
+        self.universe_fine = self.AddUniverse(self.universe_etf, self.FineSelection)
+
+    def ETFConstituentsFilter(self, constituents: List[ETFConstituentData]) -&gt; List[Symbol]:
+        return [c.Symbol for c in constituents]
+
+    def FineSelection(self, fine: List[FineFundamental]) -&gt; List[Symbol]:
+        sorted_by_pe_ratio = sorted(fine, key=lambda f: f.ValuationRatios.PERatio)
+        return [f.Symbol for f in sorted_by_pe_ratio[:20]]
+
+    def OnData(self, data):
+        for symbol in data.Keys:
+            self.Debug(f"{symbol} PE Ratio: {self.Securities[symbol].Fundamentals.ValuationRatios.PERatio}")</pre>
+</div>
