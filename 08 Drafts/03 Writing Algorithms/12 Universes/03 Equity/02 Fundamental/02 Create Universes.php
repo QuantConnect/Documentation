@@ -28,7 +28,7 @@
     </div>
     
     <p><code>Fundamental</code> objects have the following attributes:</p>
-    <div data-tree='QuantConnect.Data.Fundamental.Fundamental'></div>
+    <div data-tree='QuantConnect.Data.Fundamental.Fundamentals'></div>
     
     <h4>Example</h4>
     <p>
