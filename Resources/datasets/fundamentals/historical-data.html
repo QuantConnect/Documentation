@@ -1,0 +1,26 @@
+<p>To get historical fundamental data, call the <code>History</code> method. If you pass one <code>Symbol</code> object, the method returns a list of <code>Fundamental</code> objects in chronological order. If you pass a list of <code>Symbol</code> objects, the method returns a <span class='csharp'>list of <code>Dictionary&lt;Symbol, Fundamental&gt;</code> objects in chronological order</span><span class='python'>DataFrame</span>.</p>
+
+<div class="section-example-container">
+    <pre class="csharp">// Single asset 
+var ibm = QuantConnect.Symbol.Create("IBM", SecurityType.Equity, Market.USA);
+var ibmHistory = History&lt;Fundamental&gt;(ibm, new TimeSpan(30, 0, 0, 0)).ToList();
+
+// Multiple assets
+var nb = QuantConnect.Symbol.Create("NB", SecurityType.Equity, Market.USA);
+var history= History&lt;Fundamental&gt;(new List<Symbol>{ nb, ibm }, new TimeSpan(30, 0, 0, 0)).ToList();
+
+// All assets
+var allHistory = History&lt;Fundamental&gt;(Securities.Keys, new TimeSpan(30, 0, 0, 0)).ToList();</pre>
+     <pre class="python"># Single asset
+ibm = Symbol.Create("IBM", SecurityType.Equity, Market.USA)
+ibm_history = self.History(Fundamental, ibm, timedelta(30))
+
+# Multiple assets
+nb = QuantConnect.Symbol.Create("NB", SecurityType.Equity, Market.USA);
+history = self.History(Fundamental, [ nb, ibm ], timedelta(30))
+
+# All assets
+all_history = self.History(Fundamental, timedelta(30))</pre>
+</div>
+    
+<p>For more information about history requests, see <a href='/docs/v2/writing-algorithms/historical-data/history-requests'>History Requests</a>.</p>
