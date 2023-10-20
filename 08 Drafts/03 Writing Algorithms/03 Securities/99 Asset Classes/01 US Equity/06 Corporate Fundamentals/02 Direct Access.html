@@ -1,12 +1,11 @@
-<p>To get fundamental data, access the <code>Fundamental</code> properties in your fundamental universe selection function or access the <code>Fundamentals</code> property of the <code>Equity</code> objects in your fundamental universe.
+<p>To get fundamental data for Equities that your fundamental universe selects, access the <code>Fundamentals</code> property of the <code>Equity</code> objects.
 
-<div class='section-example-container'>
-        <pre class='csharp'>var fundamentals = Securities[_symbol].Fundamentals;</pre>
-        <pre class='python'>fundamentals = self.Securities[self.symbol].Fundamentals</pre>
+</p><div class="section-example-container">
+        <pre class="csharp">var fundamentals = Securities[_symbol].Fundamentals;</pre>
+        <pre class="python">fundamentals = self.Securities[self.symbol].Fundamentals</pre>
 </div>
 
-<p>Without an active subscription.</br>
-    QCAlgorithm.Fundamentals returns Fundamental for a single security or a list depending on the input</p>
+<p>To get fundamental data for Equities that your fundamental universe doesn't select, call the <code>Fundamentals</code> method.</p>
 <div class="section-example-container">
     <pre class="csharp">// Single asset 
 var ibm = QuantConnect.Symbol.Create("IBM", SecurityType.Equity, Market.USA);
@@ -14,37 +13,33 @@ var ibmFundamental = Fundamentals(ibm);
 
 // Multiple assets
 var nb = QuantConnect.Symbol.Create("NB", SecurityType.Equity, Market.USA);
-var fundamentals = Fundamentals(new List<Symbol>{ nb, ibm }).ToList();
-</pre>
+var fundamentals = Fundamentals(new List&lt;Symbol&gt;{ nb, ibm }).ToList();</pre>
         <pre class="python"># Single asset
 ibm = Symbol.Create("IBM", SecurityType.Equity, Market.USA)
-ibmFundamental = self.Fundamentals(ibm)
+ibm_fundamental = self.Fundamentals(ibm)
 
 # Multiple assets
 nb = Symbol.Create("NB", SecurityType.Equity, Market.USA)
 fundamentals = self.Fundamentals([ nb, ibm ])</pre>
 </div>
 
-<p>H4 : Has Fundamental Data</br>
-- Check if it has fundamental data</br>
-- Fundamentals property.HasFundamentalData property is false if the Equity doesn't have this data (ETF)</p>
+<h4>Check Data Availability</h4>
+<p>Some assets don't have fundamentals (for example, ETFs) and the Morningstar dataset doesn't provide fundamentals for all US Equities. To check if fundamental data is available for an asset, use the <code>HasFundamentalData</code> property.</p>
 <div class="section-example-container">
     <pre class="csharp">var hasFundamentalData = Securities["SPY"].Fundamentals.HasFundamentalData;</pre>
     <pre class="python">has_fundamental_data = self.Securities["SPY"].Fundamentals.HasFundamentalData</pre>
 </div>
 
-<p>H4 : Saving Reference</br>
-- We cannot keep a reference of sub classes (eg Fundamentals.EarningRatios) since the object is reused</br>
-
-- We can keep a reference of Fundamentals:</br>
+<h4>Saving References</h4>
+<p>If you save a reference to the <code>Fundamentals</code> object, you can access the fundamental properties as they change over time. Don't save a direct reference of the fundamental properties (for example, <code>Fundamentals.EarningRatios</code>) because it won't update over time.</p>
 <div class="section-example-container">
     <pre class="csharp">_fundamentals = Securities["SPY"].Fundamentals;
-var earningRatios = _fundamentals.EarningRatios;
+var earningRatios = _fundamentals.EarningRatios; // the current earnings ratio
     
 // WARNING: Don't save a reference to the properties of the Fundamentals object
 // _earningRatios = Securities["SPY"].Fundamentals.EarningRatios;</pre>
     <pre class="python">self.fundamentals  = self.Securities["SPY"].Fundamentals
-earning_ratios = self.fundamentals.EarningRatios
+earning_ratios = self.fundamentals.EarningRatios # the current earnings ratio
     
 # WARNING: Don't save a reference to the properties of the Fundamentals object
 # self.earnings_ratio = self.Securities["SPY"].Fundamentals.EarningRatios</pre>
