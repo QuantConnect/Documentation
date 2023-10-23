@@ -1,5 +1,5 @@
 <meta name="tag" content="universes">
-<meta name="tag" content="coarse universes">
+<meta name="tag" content="fundamental universes">
 <meta name="tag" content="alternative data universes">
 <p>
     The following example chains an <a href='/docs/v2/writing-algorithms/universes/equity#04-ETF-Constituents-Selection'>ETF constituents universe</a> with a <a href='/docs/v2/writing-algorithms/universes/equity#05-Fundamentals-Selection'>fundamental universe</a> to select ETF constituents with a low PE ratio.
@@ -17,7 +17,7 @@ namespace QuantConnect.Algorithm.CSharp
     public class ChainedUniverseAlgorithm : QCAlgorithm
     {
         private Universe _universeEtf;
-        private Universe _universeFine;
+        private Universe _universeFundamental;
 
         public override void Initialize()
         {
@@ -25,7 +25,7 @@ namespace QuantConnect.Algorithm.CSharp
             SetCash(100000);
 
             _universeEtf = Universe.ETF("QQQ", Market.USA, UniverseSettings, ETFConstituentsFilter);
-            _universeFine = AddUniverse(_universeEtf, FineSelection);
+            _universeFundamental = AddUniverse(_universeEtf, FundamentalSelection);
         }
 
         private IEnumerable&lt;Symbol&gt; ETFConstituentsFilter(IEnumerable&lt;ETFConstituentData&gt; constituents)
@@ -33,9 +33,10 @@ namespace QuantConnect.Algorithm.CSharp
             return constituents.Select(c => c.Symbol);
         }
 
-        private IEnumerable&lt;Symbol&gt; FineSelection(IEnumerable&lt;FineFundamental&gt; fine)
+        private IEnumerable&lt;Symbol&gt; FundamentalSelection(IEnumerable&lt;Fundamental&gt; fundamental)
         {
-            return (from f in fine
+            return (from f in fundamental
+                    where f.HasFundamentalData
                     orderby f.ValuationRatios.PERatio
                     select f.Symbol).Take(20);
         }
@@ -54,20 +55,21 @@ namespace QuantConnect.Algorithm.CSharp
 class ChainedUniverseAlgorithm(QCAlgorithm):
 
     universe_etf = None
-    universe_fine = None
+    universe_fundamental = None
 
     def Initialize(self):
         self.SetCash(100000)
         self.SetStartDate(2023, 2, 2)
         
         self.universe_etf = self.Universe.ETF("QQQ", Market.USA, self.UniverseSettings, self.ETFConstituentsFilter)
-        self.universe_fine = self.AddUniverse(self.universe_etf, self.FineSelection)
+        self.universe_fundamental = self.AddUniverse(self.universe_etf, self.FundamentalSelection)
 
     def ETFConstituentsFilter(self, constituents: List[ETFConstituentData]) -&gt; List[Symbol]:
         return [c.Symbol for c in constituents]
 
-    def FineSelection(self, fine: List[FineFundamental]) -&gt; List[Symbol]:
-        sorted_by_pe_ratio = sorted(fine, key=lambda f: f.ValuationRatios.PERatio)
+    def FundamentalSelection(self, fundamental: List[Fundamental]) -&gt; List[Symbol]:
+        sorted_by_pe_ratio = sorted([f for f in fundamental if f.HasFundamentalData], 
+                                    key=lambda f: f.ValuationRatios.PERatio)
         return [f.Symbol for f in sorted_by_pe_ratio[:20]]
 
     def OnData(self, data):
