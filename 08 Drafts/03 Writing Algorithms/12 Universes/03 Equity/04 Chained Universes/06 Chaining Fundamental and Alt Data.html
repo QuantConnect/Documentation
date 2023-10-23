@@ -13,8 +13,8 @@ namespace QuantConnect.Algorithm.CSharp
 {
     public class ChainedUniverseAlgorithm : QCAlgorithm
     {
-        private List&lt;Symbol&gt; _coarse = new();
-        private Universe _universeCoarse;
+        private List&lt;Symbol&gt; _fundamental = new();
+        private Universe _universeFundamental;
         private Universe _universeTwitter;
 
         public override void Initialize()
@@ -22,14 +22,14 @@ namespace QuantConnect.Algorithm.CSharp
             SetStartDate(2023, 1, 2);
             SetCash(100000);
 
-            _universeCoarse = AddUniverse(CoarseFilterFunction);
+            _universeFundamental = AddUniverse(FundamentalFilterFunction);
             _universeTwitter = AddUniverse&lt;QuiverQuantTwitterFollowersUniverse&gt;(
                 "QuiverQuantTwitterFollowersUniverse", Resolution.Daily, FollowerSelection);
         }
 
-        private IEnumerable&lt;Symbol&gt; CoarseFilterFunction(IEnumerable&lt;CoarseFundamental&gt; coarse)
+        private IEnumerable&lt;Symbol&gt; FundamentalFilterFunction(IEnumerable&lt;Fundamental&gt; fundamental)
         {
-            _coarse = (from c in coarse
+            _fundamental = (from c in fundamental
                        orderby c.DollarVolume descending
                        select c.Symbol).Take(100).ToList();
             return Universe.Unchanged;
@@ -40,7 +40,7 @@ namespace QuantConnect.Algorithm.CSharp
             var followers = from d in altCoarse
                          where d.Followers &gt; 200000m &amp;&amp; d.WeekPercentChange &gt; 0m
                          select d.Symbol;
-            return _coarse.Intersect(followers);
+            return _fundamental.Intersect(followers);
         }
 
         public override void OnSecuritiesChanged(SecurityChanges changes)
@@ -66,24 +66,24 @@ namespace QuantConnect.Algorithm.CSharp
 
 class ChainedUniverseAlgorithm(QCAlgorithm):
 
-    coarse = []
-    universe_coarse = None
+fundamental = []
+    universe_fundamental = None
     universe_twitter = None
 
     def Initialize(self):
         self.SetCash(100000)
         self.SetStartDate(2023, 1, 2)
-        self.universe_coarse = self.AddUniverse(self.CoarseFilterFunction)
+        self.universe_fundamental = self.AddUniverse(self.FundamentalFilterFunction)
         self.universe_twitter = self.AddUniverse(QuiverQuantTwitterFollowersUniverse, "QuiverQuantTwitterFollowersUniverse", Resolution.Daily, self.FollowerSelection)
 
-    def CoarseFilterFunction(self, coarse: List[CoarseFundamental]) -&gt; List[Symbol]:
-        sorted_by_dollar_volume = sorted(coarse, key=lambda x: x.DollarVolume, reverse=True) 
-        self.coarse = [c.Symbol for c in sorted_by_dollar_volume[:100]]
+    def FundamentalFilterFunction(self, fundamental: List[Fundamental]) -&gt; List[Symbol]:
+        sorted_by_dollar_volume = sorted(fundamental, key=lambda x: x.DollarVolume, reverse=True) 
+        self.fundamental = [c.Symbol for c in sorted_by_dollar_volume[:100]]
         return Universe.Unchanged
 
     def FollowerSelection(self, alt_coarse: List[QuiverQuantTwitterFollowersUniverse]) -&gt; List[Symbol]:
         self.followers = [d.Symbol for d in alt_coarse if d.Followers &gt; 200000 and d.WeekPercentChange &gt; 0]
-        return list(set(self.coarse) &amp; set(self.followers))
+        return list(set(self.fundamental) &amp; set(self.followers))
 
     def OnSecuritiesChanged(self, changes):
         for added in changes.AddedSecurities:

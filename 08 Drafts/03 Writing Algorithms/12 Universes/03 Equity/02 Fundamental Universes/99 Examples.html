@@ -35,7 +35,7 @@ private IEnumerable&lt;Symbol&gt; FundamentalFilterFunction(IEnumerable&lt;Funda
     return (from f in fundamental
         let avg = _stateData.GetOrAdd(f.Symbol, sym =&gt; new SelectionData(200))
         where avg.Update(f.EndTime, f.AdjustedPrice)
-        where f.Price &gt; avg.Ema &amp;&amp; f.DollarVolume &gt; 1000000000
+        where f.Price &gt; avg.Ema.Current.Value &amp;&amp; f.DollarVolume &gt; 1000000000
         orderby f.DollarVolume descending
         select f.Symbol).Take(10);
 }</pre>
@@ -73,7 +73,7 @@ In this example, the <code>SelectionData</code> class group variables for the un
     def update(self, time, price, volume):
         self.volume = volume
         if self.ema.Update(time, price):
-            self.is_above_ema = price &gt; ema</pre>
+            self.is_above_ema = price &gt; ema.Current.Value</pre>
 <pre class="csharp">// example selection data class
 private class SelectionData
 {
@@ -127,7 +127,7 @@ The process to get the 10-day SMA stock volume is the same process as in Example
     public bool Update(DateTime time, decimal value)
     {
         var ready = VolumeSma.Update(time, value);
-        VolumeRatio = value / VolumeSma;
+        VolumeRatio = value / VolumeSma.Current.Value;
         return ready;
     }
 }</pre>
@@ -144,7 +144,7 @@ This class tracks the ratio of today's volume relative to historical volumes. Yo
         avg.update(f.EndTime, f.AdjustedPrice, f.DollarVolume)
 
     # filter the values of selectionData(sd) above SMA
-    values = [sd for sd in self.stateData.values() if sd.volume &gt; sd.sma.Current.Value and sd.volume_ratio &gt; 0]
+    values = [sd for sd in self.stateData.values() if sd.volume_ratio &gt; 1]
         
     # sort sd by the largest % jump in volume.
     values.sort(key=lambda sd: sd.volume_ratio, reverse=True)
@@ -157,7 +157,7 @@ private IEnumerable&lt;Symbol&gt; FundamentalFilterFunction(IEnumerable&lt;Funda
     return (from f in fundamental
         let avg = _stateData.GetOrAdd(f.Symbol, sym =&gt; new SelectionData(10))
         where avg.Update(f.EndTime, f.Volume)
-        where f.Volume &gt; avg.VolumeSma
+        where avg.VolumeRatio &gt; 1
         orderby avg.VolumeRatio descending
         select f.Symbol).Take(10);
 }</pre>

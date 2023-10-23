@@ -12,8 +12,8 @@
         private IEnumerable&lt;Symbol&gt; FundamentalFilterFunction(IEnumerable&lt;Fundamental&gt; fundamental) 
         {
              return (from f in fundamental
-                 where f.HasFundamentalData
-                 select f.Symbol);
+                    where f.HasFundamentalData
+                    select f.Symbol);
         }
     }
     </pre>
@@ -23,7 +23,7 @@
             self.AddUniverse(self.FundamentalFunction)
     
         def FundamentalFunction(self, fundamental: List[Fundamental]) -&gt; List[Symbol]:
-            return [c.Symbol for c in coarse if c.HasFundamentalData]
+            return [c.Symbol for c in fundamental if c.HasFundamentalData]
     </pre>
     </div>
     
@@ -41,16 +41,17 @@
     AddUniverse(
         fundamental =&gt; (from f in fundamental
             where f.Price &gt; 10 &amp;&amp; f.HasFundamentalData
-            orderby f.DollarVolume descending, f.ValuationRatios.PERatio
-            select f.Symbol).Take(10));</pre>
+            orderby f.DollarVolume descending).Take(100)
+            .OrderBy(f =&gt; f.ValuationRatios.PERatio).Take(10)
+            .Select(f =&gt; f.Symbol));</pre>
         <pre class="python"># In Initialize:
     self.AddUniverse(self.FundamentalSelectionFunction)
     
     def FundamentalSelectionFunction(self, fundamental: List[Fundamental]) -&gt; List[Symbol]:
         filtered = [f for f in fundamental if f.Price &gt; 10 and f.HasFundamentalData]
-        sortedByDollarVolume = sorted(filtered, key=lambda f: f.DollarVolume, reverse=True)
-        sortedByPeRatio = sorted(sortedByDollarVolume, key=lambda f: f.ValuationRatios.PERatio, reverse=False)
-        return [f.Symbol for f in sortedByPeRatio[:10]]</pre>
+        sortedByDollarVolume = sorted(filtered, key=lambda f: f.DollarVolume, reverse=True)[:100]
+        sortedByPeRatio = sorted(sortedByDollarVolume, key=lambda f: f.ValuationRatios.PERatio, reverse=False)[:10]
+        return [f.Symbol for f in sortedByPeRatio]</pre>
     </div>
     
     <h4>Asset Categories</h4>
@@ -58,22 +59,22 @@
     
     <p>Sectors are large super categories of data. To get the sector of a stock, use the <code>MorningstarSectorCode</code> property.</p>
     <div class="section-example-container">
-    <pre class="csharp">var tech = fine.Where(x =&gt; x.AssetClassification.MorningstarSectorCode == MorningstarSectorCode.Technology);</pre>
-    <pre class="python">tech = [x for x in fine if x.AssetClassification.MorningstarSectorCode == MorningstarSectorCode.Technology]
+    <pre class="csharp">var tech = fundamental.Where(x =&gt; x.AssetClassification.MorningstarSectorCode == MorningstarSectorCode.Technology);</pre>
+    <pre class="python">tech = [x for x in fundamental if x.AssetClassification.MorningstarSectorCode == MorningstarSectorCode.Technology]
     </pre>
     </div>
     
     <p>Industry groups are clusters of related industries that tie together. To get the industry group of a stock, use the <code>MorningstarIndustryGroupCode</code> property.</p>
     <div class="section-example-container">
-    <pre class="csharp">var ag = fine.Where(x =&gt; x.AssetClassification.MorningstarIndustryGroupCode == MorningstarIndustryGroupCode.Agriculture);</pre>
-    <pre class="python">ag = [x for x in fine if x.AssetClassification.MorningstarIndustryGroupCode == MorningstarIndustryGroupCode.Agriculture]
+    <pre class="csharp">var ag = fundamental.Where(x =&gt; x.AssetClassification.MorningstarIndustryGroupCode == MorningstarIndustryGroupCode.Agriculture);</pre>
+    <pre class="python">ag = [x for x in fundamental if x.AssetClassification.MorningstarIndustryGroupCode == MorningstarIndustryGroupCode.Agriculture]
     </pre>
     </div>
     
     <p>Industries are the finest level of classification available. They are the individual industries according to the Morningstar classification system. To get the industry of a stock, use the <code>MorningstarIndustryCode</code>.</p>
     <div class="section-example-container">
-    <pre class="csharp">var coal = fine.Where(x =&gt; x.AssetClassification.MorningstarIndustryCode == MorningstarSectorCode.Coal);</pre>
-    <pre class="python">coal = [x for x in fine if x.AssetClassification.MorningstarIndustryCode == MorningstarSectorCode.Coal]
+    <pre class="csharp">var coal = fundamental.Where(x =&gt; x.AssetClassification.MorningstarIndustryCode == MorningstarSectorCode.Coal);</pre>
+    <pre class="python">coal = [x for x in fundamental if x.AssetClassification.MorningstarIndustryCode == MorningstarSectorCode.Coal]
     </pre>
     </div>
     
