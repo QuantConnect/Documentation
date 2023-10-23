@@ -82,7 +82,7 @@ $localPlatformOrCli = $localPlatform || $leanCli;
 
 $kpi["dataset-size"]                   = "400TB";
 $kpi["coarse-universe-size"]           = "10,000";
-$kpi["fundamental-universe-size"]      = "5,000";
+$kpi["fundamental-universe-size"]      = "8,100";
 $kpi["live-algorithms-count"]          = "200,000";
 $kpi["member-count"]                   = "250,000";
 $kpi["us-equity-security-master-size"] = "30,000";
