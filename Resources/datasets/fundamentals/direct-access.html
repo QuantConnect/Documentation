@@ -1,11 +1,11 @@
-<p>To get fundamental data for Equities that your fundamental universe selects, access the <code>Fundamentals</code> property of the <code>Equity</code> objects.
+<p>To get fundamental data for Equities in your algorithm, use the <code>Fundamentals</code> property of the <code>Equity</code> objects.</p>
 
-</p><div class="section-example-container">
+<div class="section-example-container">
         <pre class="csharp">var fundamentals = Securities[_symbol].Fundamentals;</pre>
         <pre class="python">fundamentals = self.Securities[self.symbol].Fundamentals</pre>
 </div>
 
-<p>To get fundamental data for Equities that your fundamental universe doesn't select, call the <code>Fundamentals</code> method. If you pass one <code>Symbol</code>, the method returns a <code>Fundamental</code> object. If you pass a list of <code>Symbol</code> objects, the method returns a list of <code>Fundamental</code> objects.</p>
+<p>To get fundamental data for Equities, regardless of whether or not you have subscribed to them in your algorithm, call the <code>Fundamentals</code> method. If you pass one <code>Symbol</code>, the method returns a <code>Fundamental</code> object. If you pass a list of <code>Symbol</code> objects, the method returns a list of <code>Fundamental</code> objects.</p>
 <div class="section-example-container">
     <pre class="csharp">// Single asset 
 var ibm = QuantConnect.Symbol.Create("IBM", SecurityType.Equity, Market.USA);
@@ -31,16 +31,10 @@ fundamentals = self.Fundamentals([ nb, ibm ])</pre>
 </div>
 
 <h4>Object References</h4>
-<p>If you save a reference to the <code>Fundamentals</code> object, you can access the fundamental properties as they change over time. Don't save a direct reference of the fundamental properties (for example, <code>Fundamentals.EarningRatios</code>) because it won't update over time.</p>
+<p>If you save a reference to the <code>Fundamentals</code> object or its properties, you can access the fundamental properties as they change over time.</p>
 <div class="section-example-container">
     <pre class="csharp">_fundamentals = Securities[_symbol].Fundamentals;
-var earningRatios = _fundamentals.EarningRatios; // the current earnings ratio
-    
-// WARNING: Don't save a reference to the properties of the Fundamentals object
-// _earningRatios = Securities[_symbol].Fundamentals.EarningRatios;</pre>
+var earningRatios = _fundamentals.EarningRatios;</pre>
     <pre class="python">self.fundamentals  = self.Securities[self.symbol].Fundamentals
-earning_ratios = self.fundamentals.EarningRatios # the current earnings ratio
-    
-# WARNING: Don't save a reference to the properties of the Fundamentals object
-# self.earnings_ratio = self.Securities[self.symbol].Fundamentals.EarningRatios</pre>
+earning_ratios = self.fundamentals.EarningRatios</pre>
 </div>
