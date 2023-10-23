@@ -1,0 +1,23 @@
+<p>The selection function of your <a href="/docs/v2/writing-algorithms/universes/equity/fundamental-universes">fundamental universe</a>&nbsp;is another opportunity to get fundamental data.</p>
+
+<div class="section-example-container">
+    <pre class="csharp">public class MyUniverseAlgorithm : QCAlgorithm {
+    public override void Initialize() 
+    {
+        AddUniverse(FundamentalFilterFunction);
+    }
+        
+    private IEnumerable&lt;Symbol&gt; FundamentalFilterFunction(IEnumerable&lt;Fundamental&gt; fundamental) 
+    {
+         return (from f in fundamental
+             where f.HasFundamentalData
+            select f.Symbol);
+    }
+}</pre>
+    <pre class="python">class MyUniverseAlgorithm(QCAlgorithm):
+    def Initialize(self) -&gt; None:
+        self.AddUniverse(self.FundamentalFunction)
+    
+    def FundamentalFunction(self, fundamental: List[Fundamental]) -&gt; List[Symbol]:
+        return [c.Symbol for c in coarse if c.HasFundamentalData]</pre>
+    </div>
