@@ -63,15 +63,35 @@ def FundamentalFilterFunction(self, fundamental: List[Fundamental]):
 
 <div class="section-example-container">
 	<pre class="csharp">// In Initialize
-AddUniverseSelection(new FundamentalUniverseSelectionModel());
+AddUniverseSelection(new LiquidAndLowPEUniverseSelectionModel());
 
 // Outside of the algorithm class
-</pre>
+public class LiquidAndLowPEUniverseSelectionModel : FundamentalUniverseSelectionModel
+{
+    public override IEnumerable<Symbol> Select(QCAlgorithm algorithm, IEnumerable<Fundamental> fundamental)
+    {
+        return fundamental
+            // select symbols with fundamental data and a price above $1
+            .Where(x => x.HasFundamentalData && x.Price > 1)
+            // sort descending by daily dollar volume
+            .OrderByDescending(x => x.DollarVolume)
+            .Take(100)
+            // sort descending by P/E ratio
+            .OrderByDescending(x => x.ValuationRatios.PERatio)
+            .Take(10)
+            .Select(x => x.Symbol);
+    }
+}</pre>
 	<pre class="python"># In Initialize
-self.AddUniverseSelection(FundamentalUniverseSelectionModel())
+self.AddUniverseSelection(LiquidAndLowPEUniverseSelectionModel())
 
 # Outside of the algorithm class
-</pre>
+from Selection.FundamentalUniverseSelectionModel import FundamentalUniverseSelectionModel
+class LiquidAndLowPEUniverseSelectionModel(FundamentalUniverseSelectionModel):
+    def Select(self, algorithm: QCAlgorithm, fundamental: List[Fundamental]) -> List[Symbol]:
+        most_liquid = sorted([x for x in fundamental if x.Price > 1], key=lambda x: x.DollarVolume)[-100:]
+        lowest_pe_ratio = sorted(most_liquid, key=lambda x: x.ValuationRatios.PERatio)[:10]
+        return [x.Symbol for x in lowest_pe_ratio]</pre>
 </div>
 
 <p>To return the current universe constituents from the selection function, return <code>Universe.Unchanged</code>.</p>
