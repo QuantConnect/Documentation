@@ -3,11 +3,12 @@
 <p>Follow these steps to plot line charts using <span class="python">built-in methods</span><span class="csharp"><code>Plotly.NET</code> package</span>:</p>
 
 <ol>
-    <li class="python">Call the <code>plot</code> method on the history <code>DataFrame</code>.</li>
-    <div class="python section-example-container">
-        <pre class='python'>history.plot(title='PE Ratio Over Time', figsize=(15, 8))</pre>
+    <li>Get some historical data.</li>
+    <div class="section-example-container">
+        <pre class='csharp'>var history = qb.GetFundamental(symbols, "ValuationRatios.PERatio", new DateTime(2014, 1, 1), new DateTime(2015, 1, 1));</pre>
+        <pre class='python'>history = qb.GetFundamental(symbols, "ValuationRatios.PERatio", datetime(2014, 1, 1), datetime(2015, 1, 1))</pre>
     </div>
-
+    
     <li class="csharp">Create <code>Line</code> charts.</li>
     <div class="csharp section-example-container">
         <pre class='csharp'>var chart1 = Chart2D.Chart.Line&lt;DateTime, decimal, string&gt;(
@@ -40,6 +41,11 @@ layout.SetValue("title", title);</pre>
     <div class="csharp section-example-container">
         <pre class='csharp'>var chart = Plotly.NET.Chart.Combine(new []{chart1, chart2});
 chart.WithLayout(layout);</pre>
+    </div>
+
+    <li class="python">Call the <code>plot</code> method on the history <code>DataFrame</code>.</li>
+    <div class="python section-example-container">
+        <pre class='python'>history.plot(title='PE Ratio Over Time', figsize=(15, 8))</pre>
     </div>
     
     <li>Show the plot.</li>
