@@ -1,22 +1,50 @@
 <p class="python">You need some <a href="/docs/v2/research-environment/datasets/equity-fundamental-data#04-Get-Historical-Data">historical data</a> to perform wrangling operations. To display <code>pandas</code> objects, run a cell in a notebook with the <code>pandas</code> object as the last line. To display other data formats, call the <code>print</code> method.</p>
 <p class="csharp">You need some <a href="/docs/v2/research-environment/datasets/equity-fundamental-data#04-Get-Historical-Data">historical data</a> to perform wrangling operations. Use LINQ to wrangle the data and then call the <code>Console.WriteLine</code> method in a Jupyter Notebook to display the data.</p>
 
-<h4 class='python'>DataFrame Objects</h4>
+<h4 class='python'>DataFrame Objects</h4> # TODO: C# DataFrame
 <p class="python">The <code>DataFrame</code> index is the <code>EndTime</code> of the data sample. The columns of the <code>DataFrame</code> are the Equity <code>Symbol</code> objects.</p>
-
 <img class="python docs-image" src="https://cdn.quantconnect.com/i/tu/research-equity-fundamental-data.jpg" alt="Historical PE ratio of US Equities">
-
 <p class="python">To select the historical data of a single Equity, index the <code>DataFrame</code> with the Equity <code>Symbol</code>. Each history slice may not have data for all of your Equity subscriptions. To avoid issues, check if it contains data for your Equity before you index it with the Equity <code>Symbol</code>.</p>
-
 <div class="python section-example-container">
     <pre class="python">history[symbols[1]]</pre>
 </div>
-
 <img class="python docs-image" src="https://cdn.quantconnect.com/i/tu/research-equity-fundamental-data-1.jpg" alt="Historical PE ratio of a single symbol">
 
+<h4>Fundamental Objects</h4>
+<p>If you pass a <code>Symbol</code> to the <code>History</code> method, run the following code to get the fundamental properties over time:</p>
+<div class="section-example-container">
+    <pre class="python">for fundamental in single_fundamental_history:
+    symbol = fundamental.Symbol
+    end_time = fundamental.EndTime
+    pe_ratio = fundamental.ValuationRatios.PERatio</pre>
+    <pre class="csharp">foreach (var fundamental in singleFundamentalHistory) // Iterate trading days
+{
+    var endTime = fundamental.EndTime;
+    var peRatio = fundamental.ValuationRatios.PERatio;
+}</pre>
+</div>
 
-<p class="csharp">To get the fundamental data points for each Equity, iterate through the history request result.</p>
+<p>If you pass a list of <code>Symbol</code> objects to the <code>History</code> method, run the following code to get the fundamental properties over time:</p>
+<div class="section-example-container">
+    <pre class="python">for fundamental_dict in set_fundamental_history: # Iterate trading days
+    for symbol, fundamental in fundamental_dict.items(): # Iterate Symbols
+        end_time = fundamental.EndTime
+        pe_ratio = fundamental.ValuationRatios.PERatio</pre>
+    <pre class="csharp">foreach (var fundamentalDict in setFundamentalHistory) // Iterate trading days
+{
+    foreach (var kvp in fundamentalDict) // Iterate Symbols
+    {
+        var symbol = kvp.Key;
+        var fundamental = kvp.Value;
+        var endTime = fundamental.EndTime;
+        var peRatio = fundamental.ValuationRatios.PERatio;
+    }
+}</pre>
+</div>
 
+
+<h4>DataDictionary Objects</h4>
+<p>To get the fundamental data points for each Equity, iterate through the history request result.</p>
 <div class="csharp section-example-container">
     <pre class="csharp">foreach (var slice in history)
 {
