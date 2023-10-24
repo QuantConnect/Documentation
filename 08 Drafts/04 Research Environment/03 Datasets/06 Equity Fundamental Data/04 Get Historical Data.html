@@ -1,4 +1,181 @@
-<p>You need a <a href="/docs/v2/research-environment/datasets/equity-fundamental-data#03-Create-Subscriptions">subscription</a> before you can request historical fundamental data for a US Equity.</p>
+<p>
+    You need a <a href="/docs/v2/research-environment/datasets/equity-fundamental-data#03-Create-Subscriptions">subscription</a> before you can request historical fundamental data for a US Equity.
+    On the time dimension, you can request an amount of historical data based on a trailing number of bars, a trailing period of time, or a defined period of time. 
+    On the security dimension, you can request historical data for a single US Equity, a set of US Equities, or all of the US Equities in the US Fundamental dataset.
+    On the property dimension, you can call the <code>History</code> method to get all fundamental factors or you can call the <code>GetFundamental</code> method to get a specific factor.
+</p>
+
+<h4>Trailing Number of Trading Days</h4>
+<p>To get historical data for a number of trailing trading days, call the <code>History</code> method with the <code>Symbol</code> object(s) and the number of trading days. If you didn't use <code>Resolution.Daily</code> when you subscribed to the US Equities, pass it as the last argument to the <code>History</code> method.</code>.</p>
+<div class="section-example-container">
+    <pre class="csharp">// Fundamental objects
+var singleFundamentalHistory = qb.History&lt;Fundamental&gt;(symbols.First(), 10);
+var setFundamentalHistory = qb.History&lt;Fundamental&gt;(symbols, 10);
+var allFundamentalHistory = qb.History&lt;Fundamental&gt;(qb.Securities.Keys, 10);
+    
+// Fundamentals objects
+var allFundamentalsHistory = qb.History&lt;Fundamentals&gt;(qb.Securities.Keys, 10);</pre>
+    <pre class="python"># DataFrame of fundamental data
+single_fundamental_df = qb.History(Fundamental, symbols[0], 10)
+set_fundamental_df = qb.History(Fundamental, symbols, 10)
+all_fundamental_df = qb.History(Fundamental, qb.Securities.Keys, 10)
+
+# Fundamental objects
+single_fundamental_history = qb.History[Fundamental](symbols[0], 10)
+set_fundamental_history = qb.History[Fundamental](symbols, 10)
+all_fundamental_history = qb.History[Fundamental](qb.Securities.Keys, 10)
+
+# Fundamentals objects
+all_fundamentals_history = qb.History[Fundamentals](qb.Securities.Keys, 10)</pre>
+</div>
+<p>
+    The preceding calls return the 10 most recent trading days. 
+    If you use <code>Fundamental</code>, the method returns all fundamental properties for the <code>Symbol</code> object(s) you provide.
+    If you use <code>Fundamentals</code>, the method returns all fundamental properties all US Equities in the US Fundamental dataset, including delisting companies.
+</p>
+
+<h4>Trailing Period of Time<br></h4>
+<p>To get historical data for a trailing period of time, call the <code>History</code> method with the&nbsp;<code style="font-size: 15px; background-color: rgb(255, 255, 255);">Symbol</code>&nbsp;object(s) and a&nbsp;<code class="csharp">TimeSpan</code><code class="python">timedelta</code>.</p>
+<div class="section-example-container">
+    <pre class="csharp">// Slice objects
+var singleHistorySlice = qb.History(spy, TimeSpan.FromDays(3));
+var subsetHistorySlice = qb.History(new[] {spy, tlt}, TimeSpan.FromDays(3));
+var allHistorySlice = qb.History(10);
+
+// TradeBar objects
+var singleHistoryTradeBars = qb.History&lt;TradeBar&gt;(spy, TimeSpan.FromDays(3));
+var subsetHistoryTradeBars = qb.History&lt;TradeBar&gt;(new[] {spy, tlt}, TimeSpan.FromDays(3));
+var allHistoryTradeBars = qb.History&lt;TradeBar&gt;(TimeSpan.FromDays(3));
+
+// QuoteBar objects
+var singleHistoryQuoteBars = qb.History&lt;QuoteBar&gt;(spy, TimeSpan.FromDays(3), Resolution.Minute);
+var subsetHistoryQuoteBars = qb.History&lt;QuoteBar&gt;(new[] {spy, tlt}, TimeSpan.FromDays(3), Resolution.Minute);
+var allHistoryQuoteBars = qb.History&lt;QuoteBar&gt;(qb.Securities.Keys, TimeSpan.FromDays(3), Resolution.Minute);
+
+// Tick objects
+var singleHistoryTicks = qb.History&lt;Tick&gt;(spy, TimeSpan.FromDays(3), Resolution.Tick);
+var subsetHistoryTicks = qb.History&lt;Tick&gt;(new[] {spy, tlt}, TimeSpan.FromDays(3), Resolution.Tick);<br>var allHistoryTicks = qb.History&lt;Tick&gt;(qb.Securities.Keys, TimeSpan.FromDays(3), Resolution.Tick);<br></pre>
+    <pre class="python"># DataFrame of trade and quote data
+single_history_df = qb.History(spy, timedelta(days=3))
+subset_history_df = qb.History([spy, tlt], timedelta(days=3))
+all_history_df = qb.History(qb.Securities.Keys, timedelta(days=3))
+
+# DataFrame of trade data
+single_history_trade_bar_df = qb.History(TradeBar, spy, timedelta(days=3))
+subset_history_trade_bar_df = qb.History(TradeBar, [spy, tlt], timedelta(days=3))
+all_history_trade_bar_df = qb.History(TradeBar, qb.Securities.Keys, timedelta(days=3))
+
+# DataFrame of quote data
+single_history_quote_bar_df = qb.History(QuoteBar, spy, timedelta(days=3))
+subset_history_quote_bar_df = qb.History(QuoteBar, [spy, tlt], timedelta(days=3))
+all_history_quote_bar_df = qb.History(QuoteBar, qb.Securities.Keys, timedelta(days=3))
+
+# DataFrame of tick data
+single_history_tick_df = qb.History(spy, timedelta(days=3), Resolution.Tick)
+subset_history_tick_df = qb.History([spy, tlt], timedelta(days=3), Resolution.Tick)
+all_history_tick_df = qb.History(qb.Securities.Keys, timedelta(days=3), Resolution.Tick)
+
+# Slice objects
+all_history_slice = qb.History(timedelta(days=3))
+
+# TradeBar objects
+single_history_trade_bars = qb.History[TradeBar](spy, timedelta(days=3))
+subset_history_trade_bars = qb.History[TradeBar]([spy, tlt], timedelta(days=3))
+all_history_trade_bars = qb.History[TradeBar](qb.Securities.Keys, timedelta(days=3))
+
+# QuoteBar objects
+single_history_quote_bars = qb.History[QuoteBar](spy, timedelta(days=3), Resolution.Minute)
+subset_history_quote_bars = qb.History[QuoteBar]([spy, tlt], timedelta(days=3), Resolution.Minute)
+all_history_quote_bars = qb.History[QuoteBar](qb.Securities.Keys, timedelta(days=3), Resolution.Minute)
+
+# Tick objects
+single_history_ticks = qb.History[Tick](spy, timedelta(days=3), Resolution.Tick)
+subset_history_ticks = qb.History[Tick]([spy, tlt], timedelta(days=3), Resolution.Tick)
+all_history_ticks = qb.History[Tick](qb.Securities.Keys, timedelta(days=3), Resolution.Tick)</pre>
+</div>
+<p>The preceding calls return the most recent bars or ticks, excluding periods of time when the exchange was closed.</p>
+
+<h4>Defined Period of Time<br></h4>
+<p>To get historical data for a specific period of time, call the <code>History</code> method with the <code>Symbol</code> object(s), a start  <code class="csharp">DateTime</code><code class="python">datetime</code>, and an end  <code class="csharp">DateTime</code><code class="python">datetime</code>. The start and end times you provide are based in the <a href='/docs/v2/research-environment/initialization#04-Set-Time-Zone'>notebook time zone</a>.</p>
+
+<div class="section-example-container">
+    <pre class="csharp">var startTime = new DateTime(2021, 1, 1);
+var endTime = new DateTime(2021, 2, 1);
+
+// Slice objects
+var singleHistorySlice = qb.History(spy, startTime, endTime);
+var subsetHistorySlice = qb.History(new[] {spy, tlt}, startTime, endTime);
+var allHistorySlice = qb.History(qb.Securities.Keys, startTime, endTime);
+
+// TradeBar objects
+var singleHistoryTradeBars = qb.History&lt;TradeBar&gt;(spy, startTime, endTime);
+var subsetHistoryTradeBars = qb.History&lt;TradeBar&gt;(new[] {spy, tlt}, startTime, endTime);
+var allHistoryTradeBars = qb.History&lt;TradeBar&gt;(qb.Securities.Keys, startTime, endTime);
+
+// QuoteBar objects
+var singleHistoryQuoteBars = qb.History&lt;QuoteBar&gt;(spy, startTime, endTime, Resolution.Minute);
+var subsetHistoryQuoteBars = qb.History&lt;QuoteBar&gt;(new[] {spy, tlt}, startTime, endTime, Resolution.Minute);
+var allHistoryQuoteBars = qb.History&lt;QuoteBar&gt;(qb.Securities.Keys, startTime, endTime, Resolution.Minute);
+
+// Tick objects
+var singleHistoryTicks = qb.History&lt;Tick&gt;(spy, startTime, endTime, Resolution.Tick);
+var subsetHistoryTicks = qb.History&lt;Tick&gt;(new[] {spy, tlt}, startTime, endTime, Resolution.Tick);
+var allHistoryTicks = qb.History&lt;Tick&gt;(qb.Securities.Keys, startTime, endTime, Resolution.Tick);</pre>
+    <pre class="python">start_time = datetime(2021, 1, 1)
+end_time = datetime(2021, 2, 1)
+
+# DataFrame of trade and quote data
+single_history_df = qb.History(spy, start_time, end_time)
+subset_history_df = qb.History([spy, tlt], start_time, end_time)
+all_history_df = qb.History(qb.Securities.Keys, start_time, end_time)
+
+# DataFrame of trade data
+single_history_trade_bar_df = qb.History(TradeBar, spy, start_time, end_time)
+subset_history_trade_bar_df = qb.History(TradeBar, [spy, tlt], start_time, end_time)
+all_history_trade_bar_df = qb.History(TradeBar, qb.Securities.Keys, start_time, end_time)
+
+# DataFrame of quote data
+single_history_quote_bar_df = qb.History(QuoteBar, spy, start_time, end_time)
+subset_history_quote_bar_df = qb.History(QuoteBar, [spy, tlt], start_time, end_time)
+all_history_quote_bar_df = qb.History(QuoteBar, qb.Securities.Keys, start_time, end_time)
+
+# DataFrame of tick data
+single_history_tick_df = qb.History(spy, start_time, end_time, Resolution.Tick)
+subset_history_tick_df = qb.History([spy, tlt], start_time, end_time, Resolution.Tick)
+all_history_tick_df = qb.History(qb.Securities.Keys, start_time, end_time, Resolution.Tick)
+
+# TradeBar objects
+single_history_trade_bars = qb.History[TradeBar](spy, start_time, end_time)
+subset_history_trade_bars = qb.History[TradeBar]([spy, tlt], start_time, end_time)
+all_history_trade_bars = qb.History[TradeBar](qb.Securities.Keys, start_time, end_time)
+
+# QuoteBar objects
+single_history_quote_bars = qb.History[QuoteBar](spy, start_time, end_time, Resolution.Minute)
+subset_history_quote_bars = qb.History[QuoteBar]([spy, tlt], start_time, end_time, Resolution.Minute)
+all_history_quote_bars = qb.History[QuoteBar](qb.Securities.Keys, start_time, end_time, Resolution.Minute)
+
+# Tick objects
+single_history_ticks = qb.History[Tick](spy, start_time, end_time, Resolution.Tick)
+subset_history_ticks = qb.History[Tick]([spy, tlt], start_time, end_time, Resolution.Tick)
+all_history_ticks = qb.History[Tick](qb.Securities.Keys, start_time, end_time, Resolution.Tick)</pre>
+</div>
+
+<p>The preceding calls return the bars or ticks that have a timestamp within the defined period of time.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-------------------------
 
 <p>To get historical data, call the <code>GetFundamental</code> method with a list of <code>Symbol</code> objects, a fundamental data field name, a start <code class="csharp">DateTime</code><code class="python">datetime</code>, and an end <code class="csharp">DateTime</code><code class="python">datetime</code>. The start and end times you provide are based in the <a href='/docs/v2/research-environment/initialization#04-Set-Time-Zone'>notebook time zone</a>. To view the possible fundamental data field names, see the <code>FineFundamental</code> attributes in <a href="/docs/v2/writing-algorithms/datasets/morningstar/us-fundamental-data#06-Data-Point-Attributes">Data Point Attributes</a>. For example, to get data for airline companies over 2014, run:</p>
 
