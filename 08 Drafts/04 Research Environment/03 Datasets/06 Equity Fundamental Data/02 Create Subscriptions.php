@@ -14,16 +14,16 @@ include(DOCS_RESOURCES."/datasets/research-environment/load-csharp-assemblies.ph
 
 <div class="section-example-container">
     <pre class="csharp">var symbols = new [] 
-    {
-        "AAL",  // American Airlines Group, Inc.
-        "ALGT", // Allegiant Travel Company
-        "ALK",  // Alaska Air Group, Inc.
-        "DAL",  // Delta Air Lines, Inc.
-        "LUV",  // Southwest Airlines Company
-        "SKYW", // SkyWest, Inc.
-        "UAL"   // United Air Lines
-    }
-    .Select(ticker =&gt; qb.AddEquity(ticker).Symbol);</pre>
+{
+    "AAL",  // American Airlines Group, Inc.
+    "ALGT", // Allegiant Travel Company
+    "ALK",  // Alaska Air Group, Inc.
+    "DAL",  // Delta Air Lines, Inc.
+    "LUV",  // Southwest Airlines Company
+    "SKYW", // SkyWest, Inc.
+    "UAL"   // United Air Lines
+}
+.Select(ticker =&gt; qb.AddEquity(ticker).Symbol);</pre>
     <pre class="python">symbols = [
     qb.AddEquity(ticker).Symbol
     for ticker in [
