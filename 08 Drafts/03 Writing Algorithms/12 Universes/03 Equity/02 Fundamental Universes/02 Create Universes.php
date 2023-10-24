@@ -25,8 +25,6 @@
     <p><code>Fundamental</code> objects have the following attributes:</p>
     <div data-tree='QuantConnect.Data.Fundamental.Fundamentals'></div>
 
-    <p>Many of the MorningStar values are <code>MultiPeriodField</code> objects. These objects represent a timespan of data, normally either <code>OneMonth</code>, <code>ThreeMonths</code>, <code>SixMonths</code>, or <code>TwelveMonths</code>. To view the objects, see the the <a href='https://raw.githubusercontent.com/QuantConnect/Lean/master/Common/Data/Fundamental/Generated/MultiPeriodValueTypes.cs' rel='nofollow' target='_blank'>auto-generated classes</a> in the LEAN GitHub repository.</p>
-    
     <h4>Example</h4>
     <p>
     The simplest example of accessing the fundamental object would be harnessing the iconic PE ratio for a stock. This is a ratio of the price it commands to the earnings of a stock. The lower the PE ratio for a stock, the more affordable it appears.
