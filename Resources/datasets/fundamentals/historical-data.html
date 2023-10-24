@@ -1,26 +1,23 @@
-<p>To get historical fundamental data, call the <code>History</code> method. If you pass one <code>Symbol</code> object, the method returns a list of <code>Fundamental</code> objects in chronological order. If you pass a list of <code>Symbol</code> objects, the method returns a <span class='csharp'>list of <code>Dictionary&lt;Symbol, Fundamental&gt;</code> objects in chronological order</span><span class='python'>DataFrame</span>.</p>
+<p>To get historical fundamental data, call the <code>History</code> method. The return type depends on how you call the method.</p>
 
 <div class="section-example-container">
-    <pre class="csharp">// Single asset 
-var ibm = QuantConnect.Symbol.Create("IBM", SecurityType.Equity, Market.USA);
-var ibmHistory = History&lt;Fundamental&gt;(ibm, new TimeSpan(30, 0, 0, 0)).ToList();
+    <pre class="csharp">var ibm = QuantConnect.Symbol.Create("IBM", SecurityType.Equity, Market.USA);
 
-// Multiple assets
-var nb = QuantConnect.Symbol.Create("NB", SecurityType.Equity, Market.USA);
-var history= History&lt;Fundamentals&gt;(new List<Symbol>{ nb, ibm }, new TimeSpan(30, 0, 0, 0)).ToList();
+// Fundamental objects
+var fundamentalHistory = History&lt;Fundamental&gt;(ibm, TimeSpan.FromDays(30));
 
-// All assets
-var allHistory = History&lt;Fundamentals&gt;(Securities.Keys, new TimeSpan(30, 0, 0, 0)).ToList();</pre>
-     <pre class="python"># Single asset
-ibm = QuantConnect.Symbol.Create("IBM", SecurityType.Equity, Market.USA)
-ibm_history = self.History(Fundamental, ibm, timedelta(30))
+// Fundamentals objects for all US Equities (including delisted companies)
+var fundamentalsHistory = History&lt;Fundamentals&gt;(TimeSpan.FromDays(30));</pre>
+     <pre class="python">ibm = Symbol.Create("IBM", SecurityType.Equity, Market.USA)
 
-# Multiple assets
-nb = QuantConnect.Symbol.Create("NB", SecurityType.Equity, Market.USA);
-history = self.History(Fundamentals, [ nb, ibm ], timedelta(30))
+# DataFrame objects
+df_history = qb.History(Fundamental, ibm, timedelta(30))
 
-# All assets
-all_history = self.History(Fundamentals, timedelta(30))</pre>
+# Fundamental objects
+fundamental_history= self.History[Fundamental](ibm, timedelta(30))
+
+# Fundamentals objects for all US Equities (including delisted companies)
+fundamentals_history = self.History[Fundamentals](timedelta(30))</pre>
 </div>
     
-<p>For more information about history requests, see <a href='/docs/v2/writing-algorithms/historical-data/history-requests'>History Requests</a>.</p>
+<p>For more information about historical fundamental data, see <a href='/docs/v2/research-environment/datasets/equity-fundamental-data'>Equity Fundamental Data</a>.</p>
