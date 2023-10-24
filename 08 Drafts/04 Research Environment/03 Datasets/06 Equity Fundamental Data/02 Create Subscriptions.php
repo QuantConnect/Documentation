@@ -40,5 +40,3 @@ include(DOCS_RESOURCES."/datasets/research-environment/load-csharp-assemblies.ph
 </div>
 
 </ol>
-
-<p>To view the supported assets in the US Equities dataset, see the <a href="/data/tree/equity/usa/daily">Data Explorer</a>.</p>
