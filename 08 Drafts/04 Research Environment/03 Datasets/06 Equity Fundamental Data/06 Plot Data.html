@@ -1,0 +1,54 @@
+<p>You need some <a href="/docs/v2/research-environment/datasets/equity-fundamental-data#04-Get-Historical-Data">historical Equity fundamental data</a> to produce plots. You can use <span class="python">many of the <a href="/docs/v2/research-environment/charting">supported plotting libraries</a></span><span class="csharp"><code>Plot.NET</code> package</span> to visualize data in various formats. For example, you can plot line charts.</p>
+
+<p>Follow these steps to plot line charts using <span class="python">built-in methods</span><span class="csharp"><code>Plotly.NET</code> package</span>:</p>
+
+<ol>
+    <li class="python">Call the <code>plot</code> method on the history <code>DataFrame</code>.</li>
+    <div class="python section-example-container">
+        <pre>history.plot(title='PE Ratio Over Time', figsize=(15, 8))</pre>
+    </div>
+
+    <li class="csharp">Create <code>Line</code> charts.</li>
+    <div class="csharp section-example-container">
+        <pre>var chart1 = Chart2D.Chart.Line&lt;DateTime, decimal, string&gt;(
+    history.Select(x => (DateTime)x.Time),
+    history.Select(x => (decimal)x[aapl]),
+    Name: "AAPL"
+);
+var chart2 = Chart2D.Chart.Line&lt;DateTime, decimal, string&gt;(
+    history.Select(x => (DateTime)x.Time),
+    history.Select(x => (decimal)x[goog]),
+    Name: "GOOG"
+);</pre>
+    </div>
+
+    <li class="csharp">Create a <code>Layout</code>.<br></li>
+    <div class="csharp section-example-container">
+        <pre>LinearAxis xAxis = new LinearAxis();
+xAxis.SetValue("title", "Time");
+LinearAxis yAxis = new LinearAxis();
+yAxis.SetValue("title", "PE Ratio");
+Title title = Title.init("AAPL & GOOG PE Ratio");
+
+Layout layout = new Layout();
+layout.SetValue("xaxis", xAxis);
+layout.SetValue("yaxis", yAxis);
+layout.SetValue("title", title);</pre>
+    </div>
+
+    <li class="csharp">Combine the charts and assign the <code>Layout</code> to the chart.<br></li>
+    <div class="csharp section-example-container">
+        <pre>var chart = Plotly.NET.Chart.Combine(new []{chart1, chart2});
+chart.WithLayout(layout);</pre>
+    </div>
+    
+    <li>Show the plot.</li>
+    <div class="section-example-container">
+        <pre class="python">plt.show()</pre>
+        <pre class="csharp">HTML(GenericChart.toChartHTML(chart))</pre>
+    </div>
+    <p>Line charts display the value of the property you selected in a time series.</p>
+</ol>
+
+<img class="python docs-image" src="https://cdn.quantconnect.com/i/tu/equity-fundamental-data-plot.jpg" alt="Line plot of PE ratio of US Equities">
+<img class="csharp docs-image" src="https://cdn.quantconnect.com/i/tu/equity-fundamental-data-plot-csharp.png" alt="Line plot of PE ratio of AAPL & GOOG">
