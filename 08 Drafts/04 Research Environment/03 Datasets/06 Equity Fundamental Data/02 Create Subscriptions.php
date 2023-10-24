@@ -24,7 +24,8 @@ include(DOCS_RESOURCES."/datasets/research-environment/load-csharp-assemblies.ph
         "UAL"   // United Air Lines
     }
     .Select(ticker =&gt; qb.AddEquity(ticker).Symbol);</pre>
-    <pre class="python">symbols = [qb.AddEquity(ticker).Symbol
+    <pre class="python">symbols = [
+    qb.AddEquity(ticker).Symbol
     for ticker in [
         "AAL",   # American Airlines Group, Inc.
         "ALGT",  # Allegiant Travel Company
@@ -33,7 +34,8 @@ include(DOCS_RESOURCES."/datasets/research-environment/load-csharp-assemblies.ph
         "LUV",   # Southwest Airlines Company
         "SKYW",  # SkyWest, Inc.
         "UAL"    # United Air Lines
-    ]]</pre>
+    ]
+]</pre>
 </div>
 
 </ol>
