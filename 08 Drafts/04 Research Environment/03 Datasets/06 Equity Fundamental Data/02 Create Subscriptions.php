@@ -24,9 +24,9 @@ include(DOCS_RESOURCES."/datasets/research-environment/load-csharp-assemblies.ph
     "SKYW", // SkyWest, Inc.
     "UAL"   // United Air Lines
 }
-.Select(ticker =&gt; qb.AddEquity(ticker).Symbol);</pre>
+.Select(ticker =&gt; qb.AddEquity(ticker, Resolution.Daily).Symbol);</pre>
     <pre class="python">symbols = [
-    qb.AddEquity(ticker).Symbol
+    qb.AddEquity(ticker, Resolution.Daily).Symbol
     for ticker in [
         "AAL",   # American Airlines Group, Inc.
         "ALGT",  # Allegiant Travel Company
