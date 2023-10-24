@@ -2,7 +2,7 @@
 
 <ol>
 <?
-$additionalImports = "";
+$additionalImports = "using QuantConnect.Data.Fundamental;";
 include(DOCS_RESOURCES."/datasets/research-environment/load-csharp-assemblies.php");
 ?>
     <li>Create a <code>QuantBook</code>.</li>
