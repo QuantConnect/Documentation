@@ -11,7 +11,7 @@
 <img class="python docs-image" src="https://cdn.quantconnect.com/i/tu/research-equity-fundamental-data-1.jpg" alt="Historical PE ratio of a single symbol">
 
 <h4>Fundamental Objects</h4>
-<p>If you pass a <code>Symbol</code> to the <code>History</code> method, run the following code to get the fundamental properties over time:</p>
+<p>If you pass a <code>Symbol</code> to the <code class='python'>History[Fundamental]</code><code class='csharp'>History&lt;Fundamental&gt;</code> method, run the following code to get the fundamental properties over time:</p>
 <div class="section-example-container">
     <pre class="python">for fundamental in single_fundamental_history:
     symbol = fundamental.Symbol
@@ -24,7 +24,7 @@
 }</pre>
 </div>
 
-<p>If you pass a list of <code>Symbol</code> objects to the <code>History</code> method, run the following code to get the fundamental properties over time:</p>
+<p>If you pass a list of <code>Symbol</code> objects to the <code class='python'>History[Fundamental]</code><code class='csharp'>History&lt;Fundamental&gt;</code> method, run the following code to get the fundamental properties over time:</p>
 <div class="section-example-container">
     <pre class="python">for fundamental_dict in set_fundamental_history: # Iterate trading days
     for symbol, fundamental in fundamental_dict.items(): # Iterate Symbols
@@ -42,9 +42,37 @@
 }</pre>
 </div>
 
+<h4>Fundamentals Objects</h4>
+<p>If you request all fundamental properties for all US Equities with the <code class='python'>History[Fundamentals]</code><code class='csharp'>History&lt;Fundamentals&gt;</code> method, run the following code to get the fundamental properties over time:</p>
+<div class="section-example-container">
+    <pre class="python">for fundamentals_dict in all_fundamentals_history: # Iterate trading days
+    fundamentals = list(fundamentals_dict.Values)[0]
+    end_time = fundamentals.EndTime
+    for fundamental in fundamentals.Data: # Iterate Symbols
+        if not fundamental.HasFundamentalData:
+            continue
+        symbol = fundamental.Symbol
+        pe_ratio = fundamental.ValuationRatios.PERatio
+        print(f"{end_time} - {symbol} - {pe_ratio}")
+    break</pre>
+    <pre class="csharp">foreach (var fundamentalsDict in history) // Iterate trading days
+{
+    var fundamentals = fundamentalsDict.Values.First().Data;
+    foreach (Fundamental fundamental in fundamentals) // Iterate Symbols
+    {
+        if (!fundamental.HasFundamentalData)
+        {
+            continue;
+        }
+        var endTime = fundamental.EndTime;
+        var symbol = fundamental.Symbol;
+        var peRatio = fundamental.ValuationRatios.PERatio;
+    }
+}</pre>
+</div>
 
-<h4>DataDictionary Objects</h4>
-<p>To get the fundamental data points for each Equity, iterate through the history request result.</p>
+<h4 class='csharp'>DataDictionary Objects</h4>
+<p class='csharp'>To get the fundamental data points for each Equity, iterate through the history request result.</p>
 <div class="csharp section-example-container">
     <pre class="csharp">foreach (var slice in history)
 {
