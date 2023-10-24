@@ -86,10 +86,15 @@ var history = qb.GetFundamental(symbols, "ValuationRatios.PERatio", startTime, e
     <pre class="python">start_time = datetime(2021, 1, 1)
 end_time = datetime(2021, 2, 1)
 
-# DataFrame of fundamental data
+# DataFrame of all fundamental properties
 single_fundamental_df = qb.History(Fundamental, symbols[0], start_time, end_time)
 set_fundamental_df = qb.History(Fundamental, symbols, start_time, end_time)
 all_fundamental_df = qb.History(Fundamental, qb.Securities.Keys, start_time, end_time)
+
+# DataFrame of a single fundamental property
+single_one_attribute_df = qb.GetFundamental(symbols[0], "ValuationRatios.PERatio", start_time, end_time)
+set_one_attribute_df = qb.GetFundamental(symbols, "ValuationRatios.PERatio", start_time, end_time)
+all_one_attribute_df = qb.GetFundamental(qb.Securities.Keys, "ValuationRatios.PERatio", start_time, end_time)
 
 # Fundamental objects
 single_fundamental_history = qb.History[Fundamental](symbols[0], start_time, end_time)
@@ -97,9 +102,7 @@ set_fundamental_history = qb.History[Fundamental](symbols, start_time, end_time)
 all_fundamental_history = qb.History[Fundamental](qb.Securities.Keys, start_time, end_time)
 
 # Fundamentals objects
-all_fundamentals_history = qb.History[Fundamentals](start_time, end_time)
-
-history = qb.GetFundamental(symbols, "ValuationRatios.PERatio", start_time, end_time)</pre>
+all_fundamentals_history = qb.History[Fundamentals](qb.Securities.Keys, start_time, end_time)</pre>
 </div>
 
 <p>The preceding method returns the fundamental property values that are timestamped within the defined period of time.</p>
