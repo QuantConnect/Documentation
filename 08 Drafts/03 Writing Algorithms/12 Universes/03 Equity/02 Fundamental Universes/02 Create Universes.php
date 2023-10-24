@@ -2,30 +2,25 @@
     <p>To add a fundamental universe, in the <code>Initialize</code> method, pass a filter function to the <code>AddUniverse</code> method. The filter function receives a list of <code>Fundamental</code> objects and must return a list of <code>Symbol</code> objects. The <code>Symbol</code> objects you return from the function are the constituents of the fundamental universe and LEAN automatically creates subscriptions for them. Don't call <code>AddEquity</code> in the filter function.</p>
     
     <div class="section-example-container">
-    <pre class="csharp">
-    public class MyUniverseAlgorithm : QCAlgorithm {
-        public override void Initialize() 
-        {
-            AddUniverse(FundamentalFilterFunction);
-        }
-        
-        private IEnumerable&lt;Symbol&gt; FundamentalFilterFunction(IEnumerable&lt;Fundamental&gt; fundamental) 
-        {
-             return (from f in fundamental
-                    where f.HasFundamentalData
-                    select f.Symbol);
-        }
+    <pre class="csharp">public class MyUniverseAlgorithm : QCAlgorithm {
+    public override void Initialize() 
+    {
+        AddUniverse(FundamentalFilterFunction);
     }
-    </pre>
-    <pre class="python">
-    class MyUniverseAlgorithm(QCAlgorithm):
-        def Initialize(self) -&gt; None:
-            self.AddUniverse(self.FundamentalFunction)
+        
+    private IEnumerable&lt;Symbol&gt; FundamentalFilterFunction(IEnumerable&lt;Fundamental&gt; fundamental) 
+    {
+         return (from f in fundamental
+                where f.HasFundamentalData
+                select f.Symbol);
+    }
+}</pre>
+    <pre class="python">class MyUniverseAlgorithm(QCAlgorithm):
+    def Initialize(self) -&gt; None:
+        self.AddUniverse(self.FundamentalFunction)
     
-        def FundamentalFunction(self, fundamental: List[Fundamental]) -&gt; List[Symbol]:
-            return [c.Symbol for c in fundamental if c.HasFundamentalData]
-    </pre>
-    </div>
+    def FundamentalFunction(self, fundamental: List[Fundamental]) -&gt; List[Symbol]:
+        return [c.Symbol for c in fundamental if c.HasFundamentalData]</pre></div>
     
     <p><code>Fundamental</code> objects have the following attributes:</p>
     <div data-tree='QuantConnect.Data.Fundamental.Fundamentals'></div>
@@ -39,21 +34,21 @@
     
     <div class="section-example-container">
         <pre class="csharp">// Take the top 50 by dollar volume using coarse
-    // Then the top 10 by PERatio using fine
-    AddUniverse(
-        fundamental =&gt; (from f in fundamental
-            where f.Price &gt; 10 &amp;&amp; f.HasFundamentalData
-            orderby f.DollarVolume descending).Take(100)
-            .OrderBy(f =&gt; f.ValuationRatios.PERatio).Take(10)
-            .Select(f =&gt; f.Symbol));</pre>
-        <pre class="python"># In Initialize:
-    self.AddUniverse(self.FundamentalSelectionFunction)
+// Then the top 10 by PERatio using fine
+AddUniverse(
+    fundamental =&gt; (from f in fundamental
+        where f.Price &gt; 10 &amp;&amp; f.HasFundamentalData
+        orderby f.DollarVolume descending).Take(100)
+        .OrderBy(f =&gt; f.ValuationRatios.PERatio).Take(10)
+        .Select(f =&gt; f.Symbol));</pre>
+    <pre class="python"># In Initialize:
+self.AddUniverse(self.FundamentalSelectionFunction)
     
-    def FundamentalSelectionFunction(self, fundamental: List[Fundamental]) -&gt; List[Symbol]:
-        filtered = [f for f in fundamental if f.Price &gt; 10 and f.HasFundamentalData]
-        sortedByDollarVolume = sorted(filtered, key=lambda f: f.DollarVolume, reverse=True)[:100]
-        sortedByPeRatio = sorted(sortedByDollarVolume, key=lambda f: f.ValuationRatios.PERatio, reverse=False)[:10]
-        return [f.Symbol for f in sortedByPeRatio]</pre>
+def FundamentalSelectionFunction(self, fundamental: List[Fundamental]) -&gt; List[Symbol]:
+    filtered = [f for f in fundamental if f.Price &gt; 10 and f.HasFundamentalData]
+    sortedByDollarVolume = sorted(filtered, key=lambda f: f.DollarVolume, reverse=True)[:100]
+    sortedByPeRatio = sorted(sortedByDollarVolume, key=lambda f: f.ValuationRatios.PERatio, reverse=False)[:10]
+    return [f.Symbol for f in sortedByPeRatio]</pre>
     </div>
     
     <h4>Asset Categories</h4>
