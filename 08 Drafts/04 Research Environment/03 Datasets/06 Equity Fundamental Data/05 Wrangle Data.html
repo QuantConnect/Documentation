@@ -52,9 +52,7 @@
         if not fundamental.HasFundamentalData:
             continue
         symbol = fundamental.Symbol
-        pe_ratio = fundamental.ValuationRatios.PERatio
-        print(f"{end_time} - {symbol} - {pe_ratio}")
-    break</pre>
+        pe_ratio = fundamental.ValuationRatios.PERatio</pre>
     <pre class="csharp">foreach (var fundamentalsDict in allFundamentalsHistory) // Iterate trading days
 {
     var fundamentals = fundamentalsDict.Values.First().Data;
@@ -74,8 +72,9 @@
 <h4 class='csharp'>DataDictionary Objects</h4>
 <p class='csharp'>To get the fundamental data points for each Equity, iterate through the history request result.</p>
 <div class="csharp section-example-container">
-    <pre class="csharp">foreach (var slice in history)
+    <pre class="csharp">foreach (var slice in allOneAttributeHistory)
 {
+    var endTime = slice.Time;
     foreach (var symbol in symbols)
     {
         if (slice.ContainsKey(symbol))
@@ -88,8 +87,9 @@
 
 <p class="csharp">You can also iterate through each data point in the slice.</p>
 <div class="csharp section-example-container">
-    <pre class="csharp">foreach (var slice in history)
+    <pre class="csharp">foreach (var slice in allOneAttributeHistory)
 {
+    var endTime = slice.Time;
     foreach (var kvp in slice)
     {
         var symbol = kvp.Key;
@@ -102,5 +102,5 @@
 
 <div class="csharp section-example-container">
     <pre class="csharp">var symbol = symbols.Last();
-var values = history.Select(slice =&gt; slice[symbol]);</pre>
+var values = allOneAttributeHistory.Select(slice =&gt; slice[symbol]);</pre>
 </div>
