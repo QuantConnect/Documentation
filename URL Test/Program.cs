@@ -190,6 +190,7 @@ Dictionary<string, List<string>> GetAllUrls()
             foreach (var href in hrefs)
             {
                 var url = href.Split('\"').First();
+                var urlLeanIo = String.Empty;
                 var subUrl = String.Empty;
 
                 if (string.IsNullOrWhiteSpace(url) || url.Contains('{') || url.Contains('}')) continue;
@@ -219,6 +220,11 @@ Dictionary<string, List<string>> GetAllUrls()
                     {
                         url = $"{root}{url.Remove(0, 1)}";
                     }
+
+                    if (leanIoFolder.Any(file.Contains))
+                    {
+                        urlLeanIo = url.Replace(root, leanIo);
+                    }
                 }
 
                 if (url.Contains("sources")) continue;
@@ -230,16 +236,14 @@ Dictionary<string, List<string>> GetAllUrls()
 
                 urlFiles[url].Add(file);
 
-                if (leanIoFolder.Any(file.Contains))
+                if (!string.IsNullOrWhiteSpace(urlLeanIo))
                 {
-                    url = url.Replace(root, leanIo);
-
-                    if (!urlFiles.ContainsKey(url))
+                    if (!urlFiles.ContainsKey(urlLeanIo))
                     {
-                        urlFiles.Add(url, new List<string>());
+                        urlFiles.Add(urlLeanIo, new List<string>());
                     }
 
-                    urlFiles[url].Add(file);
+                    urlFiles[urlLeanIo].Add(file);
                 }
             }
         }
