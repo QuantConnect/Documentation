@@ -15,28 +15,28 @@
    </thead>
    <tbody>
       <tr>
-        <td><a href="/docs/v2/writing-algorithms/trading-and-orders/order-types/market-orders">MarketOrder</a></td>
+        <td><a href="http://www.quantconnect.com/docs/v2/writing-algorithms/trading-and-orders/order-types/market-orders">MarketOrder</a></td>
         <td><img src="https://cdn.quantconnect.com/i/tu/check.png" alt="green check" width="15px;"></td>
         <td><img src="https://cdn.quantconnect.com/i/tu/check.png" alt="green check" width="15px;"></td>
         <td><img src="https://cdn.quantconnect.com/i/tu/check.png" alt="green check" width="15px;"></td>
         <td><img src="https://cdn.quantconnect.com/i/tu/check.png" alt="green check" width="15px;"></td>
       </tr>
       <tr>
-        <td><a href="/docs/v2/writing-algorithms/trading-and-orders/order-types/limit-orders">LimitOrder</a></td>
+        <td><a href="http://www.quantconnect.com/docs/v2/writing-algorithms/trading-and-orders/order-types/limit-orders">LimitOrder</a></td>
         <td><img src="https://cdn.quantconnect.com/i/tu/check.png" alt="green check" width="15px;"></td>
         <td><img src="https://cdn.quantconnect.com/i/tu/check.png" alt="green check" width="15px;"></td>
         <td><img src="https://cdn.quantconnect.com/i/tu/check.png" alt="green check" width="15px;"></td>
         <td><img src="https://cdn.quantconnect.com/i/tu/check.png" alt="green check" width="15px;"></td>
       </tr>
       <tr>
-        <td><a href="/docs/v2/writing-algorithms/trading-and-orders/order-types/stop-market-orders">StopMarketOrder</a></td>
+        <td><a href="http://www.quantconnect.com/docs/v2/writing-algorithms/trading-and-orders/order-types/stop-market-orders">StopMarketOrder</a></td>
         <td><img src="https://cdn.quantconnect.com/i/tu/check.png" alt="green check" width="15px;"></td>
         <td><img src="https://cdn.quantconnect.com/i/tu/check.png" alt="green check" width="15px;"></td>
         <td><img src="https://cdn.quantconnect.com/i/tu/check.png" alt="green check" width="15px;"></td>
         <td><img src="https://cdn.quantconnect.com/i/tu/check.png" alt="green check" width="15px;"></td>
       </tr>
       <tr>
-        <td><a href="/docs/v2/writing-algorithms/trading-and-orders/order-types/stop-limit-orders">StopLimitOrder</a></td>
+        <td><a href="http://www.quantconnect.com/docs/v2/writing-algorithms/trading-and-orders/order-types/stop-limit-orders">StopLimitOrder</a></td>
         <td><img src="https://cdn.quantconnect.com/i/tu/check.png" alt="green check" width="15px;"></td>
         <td><img src="https://cdn.quantconnect.com/i/tu/check.png" alt="green check" width="15px;"></td>
         <td><img src="https://cdn.quantconnect.com/i/tu/check.png" alt="green check" width="15px;"></td>
@@ -54,7 +54,7 @@
 
 
 <h4>Time In Force</h4>
-<p>Terminal Link supports the following <a href='/docs/v2/writing-algorithms/trading-and-orders/order-properties#03-Time-In-Force'>TimeInForce</a> instructions:</p>
+<p>Terminal Link supports the following <a href='http://www.quantconnect.com/docs/v2/writing-algorithms/trading-and-orders/order-properties#03-Time-In-Force'>TimeInForce</a> instructions:</p>
 <ul>
     <li><code>Day</code></li>
     <li><code>GoodTilCanceled</code></li>
@@ -62,15 +62,15 @@
 </ul>
 
 <h4>Get Open Orders</h4>
-<p>Terminal Link lets you <a href='/docs/v2/writing-algorithms/trading-and-orders/order-management/transaction-manager'>access open orders</a>.</p>
+<p>Terminal Link lets you <a href='http://www.quantconnect.com/docs/v2/writing-algorithms/trading-and-orders/order-management/transaction-manager'>access open orders</a>.</p>
 
 <h4>Monitor Fills</h4>
-<p>Terminal Link allows you to monitor orders as they fill through <a href='/docs/v2/writing-algorithms/trading-and-orders/order-events'>order events</a>.</p>
+<p>Terminal Link allows you to monitor orders as they fill through <a href='http://www.quantconnect.com/docs/v2/writing-algorithms/trading-and-orders/order-events'>order events</a>.</p>
 
 <h4>Updates</h4>
-<p>Terminal Link doesn't support <a href='/docs/v2/writing-algorithms/trading-and-orders/order-management/order-tickets#04-Update-Orders'>order updates</a>.</p>
+<p>Terminal Link doesn't support <a href='http://www.quantconnect.com/docs/v2/writing-algorithms/trading-and-orders/order-management/order-tickets#04-Update-Orders'>order updates</a>.</p>
 
 <h4>Cancellations</h4>
-<p>Terminal Link enables you to <a href='/docs/v2/writing-algorithms/trading-and-orders/order-management/order-tickets#05-Cancel-Orders'>cancel open orders</a>.</p>
+<p>Terminal Link enables you to <a href='http://www.quantconnect.com/docs/v2/writing-algorithms/trading-and-orders/order-management/order-tickets#05-Cancel-Orders'>cancel open orders</a>.</p>
 
 <? include(DOCS_RESOURCES."/brokerages/handling-splits.html"); ?>
