@@ -1,0 +1,146 @@
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});
+  </script>
+  <script type="text/javascript"
+    src="http://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+  </script>
+
+<p>The <code>MarketImpactSlippageModel</code> calculates the slippage with perspective to the market impact created by an order, which mimics the consumption of the order book and disruption of the supply-demand relationship in microeconomic scale. 
+The model was divided into two parts: the market impact estimation, and the slippage resulted from it.</p>
+
+<h4>Factors To Consider</h4>
+<p>The model shall include factors that create market impact. Almgren, Thum, Hauptmann & Li (2005) suggested the following factors:</p>
+<ol>
+    <li>Execution Time</li>
+    <p>Asset price time series is usually considered as Random walk (with/without drift)
+    $$S_t = S_{t-1} + f(S, t) + \epsilon$$
+    or Brownian Motion
+    $$S_t = S_0 + exp((\mu-\frac{1}{2}\sigma^2)t + \sigma W_t)$$
+    In either model, the variance of predictions increases over time ($Var(S)=\sigma\sqrt{t}$). In fact, this happens to most stock price models. Thus, time uncertainty should also apply to the concept of slippage. The longer the time taken from order submission to execution, the more deviation the filling price from the price at order submission.</p>
+    
+    <li> Volatility of Underlying Securities</li>
+    <p>Like (1), the volatility also contributes to the uncertainty of the next price ($Var(S)=\sigma\sqrt{t}$). Usually, volatility has a one-sided impact in the majority since the market's volatility is often introduced by overbuying or overselling by positive and negative sentiments.</p>
+    
+    <li>Liquidity</li>
+    <p>Liquidity plays a crucial role in the supply-demand resilience. When a stock is liquid, an order usually take only a tiny bit of the market depth. Hence, the gap between the bid and ask price can be refilled quickly due to high market participation and a small gap. 
+    However, when a stock is illiquid, a single order might already take the top few layers of the order book, creating a wide gap between the bid and ask price and volume, which makes a bigger shift in the equilibrium price. This will create an impact which is permanent in nature.</p>
+    <img style="max-height: 58px" src="https://cdn.quantconnect.com/i/tu/market-impact-description.png" class="docs-image" alt="Market impact componenets">
+    
+    <li>Order Size</li>
+    <p>Last but not least, the order size directly affects the proportion of the order book/liquidity being consumed. Also, the larger the order, the longer it takes to be filled since the market might not have sufficient depth. This will have interaction effects with the above factors.</p>
+</ol>    
+
+<h4>Market Impact Decomposition</h4>
+<p>In the book "A Signal Processing Perspective on Financial Engineering", Feng & Palomer (2015) generalized scholars' opinions that market impact can be broken down into "permanent" and "temporary" components, with noise. 
+The permanent impact of a trade refers to the price differences between equilibrium prices before and after the trade and the resilience of the order book. 
+In contrast, temporary impact refers to the price difference between the instant price drop after a trade and the post-trade equilibrium.</p>
+
+<img style="max-height: 58px" src="https://cdn.quantconnect.com/i/tu/market-impact-liquidity.png" class="docs-image" alt="Market impact under different liquidity situation">
+
+<p>The model incorporates the above factors, and estimates both the permanent and temporary impact components with two diffusion models as a function of $\nu=\frac{X}{VT}$, which is the normalized order size:
+    $$G\left(\nu\right)=\pm\gamma\left|\nu\right|^\alpha+\text{noise}$$
+    $$H\left(\nu\right)=\pm\eta\left|\nu\right|^\beta+\text{noise}$$
+    where $X$ is the order quantity, $V$ is the average daily volume, $T$ is the time difference between order submission and filling (execution time). Others are parameters to be calibrated from historical trade data. Together with the execution time, daily volatility $\sigma$, and liquidity factor $\delta$, the complete models are as follows:
+    $$I=\sigma T \gamma\left|\frac{X}{VT}\right|^\alpha\left(\frac{\Theta}{V}\right)^\delta+\sigma\sqrt{T_{\text{post}}}\epsilon$$
+    $$J=\sigma T \eta\left|\frac{X}{VT}\right|^\beta+\sigma\sqrt{T_{\text{post}}}\epsilon$$
+    where $\Theta$ is the share outstanding, $T_{post}$ is the time difference between order submission and the new equilibrium established, $I$ is the permanent market impact, and $J$ is the temporary market impact. The inverse of the turnover rate $\frac{\Theta}{V}$ contributes to the permanent impact. This is reasonable since higher turnover means more market participants are in the market, so the order book depth is deeper.</p>
+
+<p>The authors also posted their calibrated parameters, which are set as default parameters of the model. Note that there are so shortfall of the default parameters:</p>
+<ul>
+    <li>The default parameters are calibrated around 2 decades ago</li>
+    <li>The trading time effect is not accounted (volume near market open/close is larger)</li>
+    <li>The market environment does not have many market makers at that time</li>
+</ul>
+<p>So it is recommend to recalibrate with reference to the original paper.</p>
+
+<h4>Implementation</h4>
+<div class="section-example-container">
+<pre class="csharp">security.SetSlippageModel(new MarketImpactSlippageModel(self));</pre>
+<pre class="python">security.SetSlippageModel(MarketImpactSlippageModel(self))</pre>
+</div>
+
+<p>The following table describes the arguments the model accepts:</p>
+
+<table class="qc-table table" id="market-impact-slippage-model">
+    <thead>
+        <tr>
+            <th>Argument</th>
+            <th>Data Type</th>
+            <th>Description</th>
+            <th>Default Value</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>algorithm</td>
+	        <td><code>IAlgorithm</code></td>
+            <td>The algorithm instance</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>nonNegative</td>
+	        <td><code>bool</code></td>
+            <td>Indicator whether only non-negative slippage allowed.</td>
+            <td><code class="csharp">true</code><code class="python">True</code></td>
+        </tr>
+        <tr>
+            <td>latency</td>
+	        <td><code class="csharp">double</code><code class="python">float</code></td>
+            <td>Time between order submitted and filled, in seconds(s)</td>
+            <td>0.075</td>
+        </tr>
+        <tr>
+            <td>impactTime</td>
+	        <td><code class="csharp">double</code><code class="python">float</code></td>
+            <td>Time between order filled and new equilibrium established, in second(s)</td>
+            <td>1800</td>
+        </tr>
+        <tr>
+            <td>alpha</td>
+	        <td><code class="csharp">double</code><code class="python">float</code></td>
+            <td>Exponent of the permanent impact function</td>
+            <td>0.891</td>
+        </tr>
+        <tr>
+            <td>beta</td>
+	        <td><code class="csharp">double</code><code class="python">float</code></td>
+            <td>Exponent of the temporary impact function</td>
+            <td>0.600</td>
+        </tr>
+        <tr>
+            <td>gamma</td>
+	        <td><code class="csharp">double</code><code class="python">float</code></td>
+            <td>Coefficient of the permanent impact function</td>
+            <td>0.314</td>
+        </tr>
+        <tr>
+            <td>eta</td>
+	        <td><code class="csharp">double</code><code class="python">float</code></td>
+            <td>Coefficient of the temporary impact function</td>
+            <td>0.142</td>
+        </tr>
+        <tr>
+            <td>delta</td>
+	        <td><code class="csharp">double</code><code class="python">float</code></td>
+            <td>Liquidity scaling factor for permanent impact</td>
+            <td>0.267</td>
+        </tr>
+        <tr>
+            <td>randomSeed</td>
+	        <td><code>int</code></td>
+            <td>Random seed for generating gaussian noise</td>
+            <td>50</td>
+        </tr>
+    </tbody>
+</table>
+
+
+<p>To view the implementation of this model, see the <a target="_blank" rel="nofollow" href="https://github.com/QuantConnect/Lean/blob/master/Common/Orders/Slippage/MarketImpactSlippageModel.cs">LEAN GitHub repository</a>.</p>
+
+
+<style>
+#market-impact-slippage-model td:last-child, 
+#market-impact-slippage-model th:last-child {
+    text-align: right;
+}
+</style>
