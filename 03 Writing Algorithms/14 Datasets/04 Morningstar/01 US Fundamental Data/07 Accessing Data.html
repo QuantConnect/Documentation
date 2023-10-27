@@ -2,23 +2,10 @@
 
 <div class="section-example-container">
 <pre class="python">def FundamentalFunction(self, fundamental: List[Fundamental]) -&gt; List[Symbol]:
-    sorted_by_dollar_volume = sorted(fundamental, key=lambda x: x.DollarVolume, reverse=True)[:3]
-    for cf in sorted_by_dollar_volume:
-        self.Debug(f"{cf.EndTime} :: {cf.Symbol} : {cf.AdjustedPrice} :: {cf.DollarVolume}")
-
-    return [ x.Symbol for x in sortedByDollarVolume]</pre>
+    return [f.Symbol for f in fundamental if f.Price &gt; 10 f.ValuationRatios.PERatios &gt; 30]</pre>
 <pre class="csharp">public IEnumerable&lt;Symbol&gt; FundamentalFunction(IEnumerable&lt;Fundamental&gt; fundamental)
 {
-    var sortedByDollarVolume = fundamental
-        .OrderByDescending(x =&gt; x.DollarVolume)
-        .Take(3).ToList();
-
-    foreach (var cf in sortedByDollarVolume)
-    {
-        Debug($"{cf.EndTime} :: {cf.Symbol} : {cf.AdjustedPrice} :: {cf.DollarVolume}");
-    }
-
-    return sortedByDollarVolume.Select(x =&gt; x.Symbol);
+    return fundamental.Where(f =&gt; f.Price &gt; 10 &amp;&amp; f.ValuationRatios.PERatios &gt; 30).Select(f =&gt; f.Symbol);
 }</pre>
 </div>
 

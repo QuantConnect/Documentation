@@ -1,10 +1,37 @@
-<p>The following snippet demonstrates how to request data from the US Fundamental dataset:</p>
+<p>The following snippets demonstrate how to request data from the US Fundamental dataset:</p>
 
-<div class="section-example-container">
-<pre class="python">from QuantConnect.DataSource import *
+<ul><li>Direct Access using the Security object</li></ul><div class="section-example-container">
+<pre class="python">equity = self.AddEquity("IBM")
+ibm_fundamental = equity.Fundamentals</pre>
+<pre class="csharp">var equity = AddEquity("IBM");
+var ibmFundamental = equity.Fundamentals;</pre>
+</div>
 
-self.AddUniverse(self.SelectCoarse, self.SelectFine)</pre>
-<pre class="csharp">using QuantConnect.DataSource;
+<ul><li>Direct Access using the Symbol object</li></ul><div class="section-example-container">
+<pre class="python">ibm = Symbol.Create("IBM", SecurityType.Equity, Market.USA)
+ibm_fundamental = self.Fundamentals(ibm)</pre>
+<pre class="csharp">var ibm = QuantConnect.Symbol.Create("IBM", SecurityType.Equity, Market.USA);
+var ibmFundamental = Fundamentals(ibm);</pre>
+</div>
 
-AddUniverse(SelectCoarse, SelectFine);</pre>
+<ul><li>Universe Selection</li></ul><div class="section-example-container">
+<pre class="python">def Initialize(self) -&gt; None:
+    self.AddUniverse(self.FundamentalFilterFunction)
+
+def FundamentalFilterFunction(self, fundamental: List[Fundamental]):
+    sorted_by_pe_ratio = sorted([f for f in fundamental if f.HasFundamentalData and f.Price &gt; 10],
+                                key=lambda f: f.ValuationRatios.PERatio)
+    return [f.Symbol for f in sorted_by_pe_ratio[:10]]</pre>
+<pre class="csharp">public override void Initialize()
+{
+    AddUniverseSelection(new FundamentalUniverseSelectionModel(FundamentalFilterFunction));
+}
+
+public override List&lt;Symbol&gt; FundamentalFilterFunction(List&lt;Fundamental&gt; fundamental)
+{
+    return (from f in fundamental
+            where f.HasFundamentalData &amp;&amp; f.Price &gt; 10
+            orderby f.ValuationRatios.PERatio
+            select f.Symbol).Take(10);
+}</pre>
 </div>
