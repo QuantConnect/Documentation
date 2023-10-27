@@ -1,0 +1,80 @@
+<meta name="tag" content="universes">
+<meta name="tag" content="fundamental universes">
+<meta name="tag" content="alternative data universes">
+<p>
+    The following example chains a <a href='/docs/v2/writing-algorithms/universes/equity/fundamental-universes'>fundamental universe</a> and an <a href='/docs/v2/writing-algorithms/universes/equity/etf-constituents-universes'>ETF constituents universe</a>.
+    It first selects all the constituents of the QQQ ETF and then filters then down to select the 20 assets with the lowest PE ratio.
+    The output of the fundamental universe selection method is the output of the chained universe.
+</p> 
+<div class="section-example-container">
+<pre class="csharp">using System.Collections.Generic;
+using System.Linq;
+using QuantConnect.Data;
+using QuantConnect.Data.Fundamental;
+using QuantConnect.Data.UniverseSelection;
+using QuantConnect.Securities;
+
+namespace QuantConnect.Algorithm.CSharp
+{
+    public class ChainedUniverseAlgorithm : QCAlgorithm
+    {
+        private Universe _universeEtf;
+        private Universe _universeFundamental;
+
+        public override void Initialize()
+        {
+            SetStartDate(2023, 1, 2);
+            SetCash(100000);
+
+            _universeEtf = Universe.ETF("QQQ", Market.USA, UniverseSettings, ETFConstituentsFilter);
+            _universeFundamental = AddUniverse(_universeEtf, FundamentalSelection);
+        }
+
+        private IEnumerable&lt;Symbol&gt; ETFConstituentsFilter(IEnumerable&lt;ETFConstituentData&gt; constituents)
+        {
+            return constituents.Select(c => c.Symbol);
+        }
+
+        private IEnumerable&lt;Symbol&gt; FundamentalSelection(IEnumerable&lt;Fundamental&gt; fundamental)
+        {
+            return (from f in fundamental
+                    where f.HasFundamentalData
+                    orderby f.ValuationRatios.PERatio
+                    select f.Symbol).Take(20);
+        }
+
+        public override void OnData(Slice data)
+        {
+            foreach (var symbol in data.Keys)
+            {
+                Debug($"{symbol} PE Ratio: {Securities[symbol].Fundamentals.ValuationRatios.PERatio}");
+            }
+        }
+    }
+}</pre>
+<pre class="python">from AlgorithmImports import * 
+
+class ChainedUniverseAlgorithm(QCAlgorithm):
+
+    universe_etf = None
+    universe_fundamental = None
+
+    def Initialize(self):
+        self.SetCash(100000)
+        self.SetStartDate(2023, 2, 2)
+        
+        self.universe_etf = self.Universe.ETF("QQQ", Market.USA, self.UniverseSettings, self.ETFConstituentsFilter)
+        self.universe_fundamental = self.AddUniverse(self.universe_etf, self.FundamentalSelection)
+
+    def ETFConstituentsFilter(self, constituents: List[ETFConstituentData]) -&gt; List[Symbol]:
+        return [c.Symbol for c in constituents]
+
+    def FundamentalSelection(self, fundamental: List[Fundamental]) -&gt; List[Symbol]:
+        sorted_by_pe_ratio = sorted([f for f in fundamental if f.HasFundamentalData], 
+                                    key=lambda f: f.ValuationRatios.PERatio)
+        return [f.Symbol for f in sorted_by_pe_ratio[:20]]
+
+    def OnData(self, data):
+        for symbol in data.Keys:
+            self.Debug(f"{symbol} PE Ratio: {self.Securities[symbol].Fundamentals.ValuationRatios.PERatio}")</pre>
+</div>

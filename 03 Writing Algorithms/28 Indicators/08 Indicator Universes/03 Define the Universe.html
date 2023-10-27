@@ -15,25 +15,25 @@
         self.UniverseSettings.Resolution = Resolution.Daily
         self.UniverseSettings.Leverage = 2
 
-        self.coarse_count = 10
+        self.count = 10
         self.averages = { }
 
         # this add universe method accepts two parameters:
-        # - coarse selection function: accepts an IEnumerable&lt;CoarseFundamental&gt; and returns an IEnumerable&lt;Symbol&gt;
-        self.AddUniverse(self.CoarseSelectionFunction)
+        # - fundamental selection function: accepts an IEnumerable&lt;Fundamental&gt; and returns an IEnumerable&lt;Symbol&gt;
+        self.AddUniverse(self.FundamentalSelectionFunction)
 
 
     # sort the data by daily dollar volume and take the top 'NumberOfSymbols'
-    def CoarseSelectionFunction(self, coarse: List[CoarseFundamental]) -&gt; List[Symbol]:
+    def FundamentalSelectionFunction(self, fundamental: List[Fundamental]) -&gt; List[Symbol]:
 
         # We are going to use a dictionary to refer the object that will keep the moving averages
-        for cf in coarse:
-            if cf.Symbol not in self.averages:
-                self.averages[cf.Symbol] = SymbolData(cf.Symbol)
+        for f in fundamental:
+            if f.Symbol not in self.averages:
+                self.averages[f.Symbol] = SymbolData(f.Symbol)
 
             # Updates the SymbolData object with current EOD price
-            avg = self.averages[cf.Symbol]
-            avg.update(cf.EndTime, cf.AdjustedPrice)
+            avg = self.averages[f.Symbol]
+            avg.update(f.EndTime, f.AdjustedPrice)
 
         # Filter the values of the dict: we only want up-trending securities
         values = list(filter(lambda x: x.is_uptrend, self.averages.values()))
@@ -41,11 +41,11 @@
         # Sorts the values of the dict: we want those with greater difference between the moving averages
         values.sort(key=lambda x: x.scale, reverse=True)
 
-        for x in values[:self.coarse_count]:
+        for x in values[:self.count]:
             self.Log('symbol: ' + str(x.symbol.Value) + '  scale: ' + str(x.scale))
 
         # we need to return only the symbol objects
-        return [ x.symbol for x in values[:self.coarse_count] ]</pre>
+        return [ x.symbol for x in values[:self.count] ]</pre>
 	<pre class="csharp">namespace QuantConnect.Algorithm.CSharp
 {
     public class EmaCrossUniverseSelectionAlgorithm : QCAlgorithm
@@ -56,7 +56,7 @@
         // use Buffer+Count to leave a little in cash
         private const decimal TargetPercent = 0.1m;
         private SecurityChanges _changes = SecurityChanges.None;
-        // holds our coarse fundamental indicators by symbol
+        // holds our fundamental indicators by symbol
         private readonly ConcurrentDictionary&lt;Symbol, SelectionData&gt; _averages = new ConcurrentDictionary&lt;Symbol, SelectionData&gt;();
     
         public override void Initialize()
@@ -68,19 +68,19 @@
             SetEndDate(2015, 01, 01);
             SetCash(100*1000);
 
-            AddUniverse(coarse =>
+            AddUniverse(fundamental =>
             {
-                return (from cf in coarse
+                return (from f in fundamental
                         // grab th SelectionData instance for this symbol
-                        let avg = _averages.GetOrAdd(cf.Symbol, sym => new SelectionData())
+                        let avg = _averages.GetOrAdd(f.Symbol, sym => new SelectionData())
                         // Update returns true when the indicators are ready, so don't accept until they are
-                        where avg.Update(cf.EndTime, cf.AdjustedPrice)
+                        where avg.Update(f.EndTime, f.AdjustedPrice)
                         // only pick symbols who have their 50 day ema over their 100 day ema
                         where avg.Fast > avg.Slow*(1 + Tolerance)
                         // prefer symbols with a larger delta by percentage between the two averages
                         orderby avg.ScaledDelta descending
                         // we only need to return the symbol and return 'Count' symbols
-                        select cf.Symbol).Take(Count);
+                        select f.Symbol).Take(Count);
             });
         }
     }

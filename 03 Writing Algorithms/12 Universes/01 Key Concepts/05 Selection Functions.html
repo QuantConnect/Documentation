@@ -1,27 +1,27 @@
 <p>The following example filter function selects the 100 most liquid US Equities.</p>
 
 <div class="section-example-container">
-<pre class="csharp">public class MyCoarseUniverseAlgorithm : QCAlgorithm
+<pre class="csharp">public class MyFundamentalUniverseAlgorithm : QCAlgorithm
 {
     public override void Initialize()
     {
-        AddUniverse(CoarseFilterFunction);
+        AddUniverse(FundamentalFilterFunction);
     }
 
-    private IEnumerable&lt;Symbol&gt; CoarseFilterFunction(IEnumerable&lt;CoarseFundamental&gt; coarse)
+    private IEnumerable&lt;Symbol&gt; FundamentalFilterFunction(IEnumerable&lt;Fundamental&gt; fundamental)
     {
-        return (from c in coarse
+        return (from c in fundamental
             orderby c.DollarVolume descending
             select c.Symbol).Take(100);
     }
 }</pre>
-<pre class="python">class MyCoarseUniverseAlgorithm(QCAlgorithm):
+<pre class="python">class MyFundamentalUniverseAlgorithm(QCAlgorithm):
     def Initialize(self) -&gt; None:
-        self.AddUniverse(self.CoarseFilterFunction)
+        self.AddUniverse(self.FundamentalFilterFunction)
 
-    def CoarseFilterFunction(self, coarse: List[CoarseFundamental]) -&gt; List[Symbol]:
-        sorted_by_dollar_volume = sorted(coarse, key=lambda x: x.DollarVolume, reverse=True) 
+    def FundamentalFilterFunction(self, fundamental: List[Fundamental]) -&gt; List[Symbol]:
+        sorted_by_dollar_volume = sorted(fundamental, key=lambda x: x.DollarVolume, reverse=True) 
         return [c.Symbol for c in sorted_by_dollar_volume[:100]]</pre>
 </div>
 
-<p>To learn how to define filter functions for other asset classes, <a href='/docs/v2/writing-algorithms/universes/custom-universes'>custom data universes</a>, or <a href='/docs/v2/writing-algorithms/universes/alternative-data-universes'>alternative data universes</a>, see the following pages in this Universes chapter.</p>
+<p>To learn how to define filter functions for other asset classes, <a href='/docs/v2/writing-algorithms/universes/custom-universes'>custom data universes</a>, or <a href='/docs/v2/writing-algorithms/universes/equity/alternative-data-universes'>alternative data universes</a>, see the following pages in this Universes chapter.</p>

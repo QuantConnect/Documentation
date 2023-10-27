@@ -82,9 +82,9 @@ self.AddUniverseSelection(VolatilityETFUniverse())</pre>
 <div class="section-example-container">
 <pre class="csharp">// Request second resolution data. This will be slow!
 UniverseSettings.Resolution = Resolution.Second;
-AddUniverse(MyCoarseFilterFunction);</pre>
+AddUniverse(MyFundamentalFilterFunction);</pre>
 <pre class="python"># Request second resolution data. This will be slow!
 self.UniverseSettings.Resolution = Resolution.Second
-self.AddUniverse(self.MyCoarseFilterFunction)</pre>
+self.AddUniverse(self.MyFundamentalFilterFunction)</pre>
 </div>
 <? } ?>

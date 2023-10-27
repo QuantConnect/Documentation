@@ -54,13 +54,13 @@
     </thead>
     <tbody>
         <tr>
-            <td><a href="https://www.quantconnect.com/docs/v2/writing-algorithms/universes/equity#02-Coarse-Universe-Selection">Coarse</a> or <a href="https://www.quantconnect.com/docs/v2/writing-algorithms/universes/equity#03-Dollar-Volume-Selection">Dollar Volume</a></td>
+            <td><a href="https://www.quantconnect.com/docs/v2/writing-algorithms/universes/equity/fundamental-universes">Fundamental</a> or <a href="https://www.quantconnect.com/docs/v2/writing-algorithms/universes/equity/liquidity-universes">Dollar Volume</a></td>
             <td><a href="https://www.quantconnect.com/datasets/quantconnect-us-coarse-universe-constituents/pricing">US Equity Coarse Universe</a></td>
             <td>One file per day.</td>
             <td>5 QCC = $0.05 USD</td>
         </tr>
         <tr>
-            <td><a href="https://www.quantconnect.com/docs/v2/writing-algorithms/universes/equity#04-ETF-Constituents-Selection">ETF Constituents</a></td>
+            <td><a href="https://www.quantconnect.com/docs/v2/writing-algorithms/universes/equity/etf-constituents-universes">ETF Constituents</a></td>
             <td><a href="https://www.quantconnect.com/datasets/quantconnect-us-etf-constituents/pricing">US ETF Constituents</a></td>
             <td>One file per ETF per day.</td>
             <td>50 QCC = $0.50 USD</td>
