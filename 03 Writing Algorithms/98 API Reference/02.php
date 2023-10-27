@@ -48,6 +48,7 @@ echo file_get_contents(DOCS_RESOURCES."/qcalgorithm-api/buy.html");
 echo file_get_contents(DOCS_RESOURCES."/qcalgorithm-api/calculate-order-quantity.html");
 echo file_get_contents(DOCS_RESOURCES."/qcalgorithm-api/cc.html");
 echo file_get_contents(DOCS_RESOURCES."/qcalgorithm-api/cci.html");
+echo file_get_contents(DOCS_RESOURCES."/qcalgorithm-api/cik.html");
 echo file_get_contents(DOCS_RESOURCES."/qcalgorithm-api/cmf.html");
 echo file_get_contents(DOCS_RESOURCES."/qcalgorithm-api/cmo.html");
 echo file_get_contents(DOCS_RESOURCES."/qcalgorithm-api/combo-leg-limit-order.html");
@@ -73,6 +74,7 @@ echo file_get_contents(DOCS_RESOURCES."/qcalgorithm-api/filtered-identity.html")
 echo file_get_contents(DOCS_RESOURCES."/qcalgorithm-api/fish.html");
 echo file_get_contents(DOCS_RESOURCES."/qcalgorithm-api/frama.html");
 echo file_get_contents(DOCS_RESOURCES."/qcalgorithm-api/framework-post-initialize.html");
+echo file_get_contents(DOCS_RESOURCES."/qcalgorithm-api/fundamentals.html");
 echo file_get_contents(DOCS_RESOURCES."/qcalgorithm-api/get-last-known-prices.html");
 echo file_get_contents(DOCS_RESOURCES."/qcalgorithm-api/get-parameters.html");
 echo file_get_contents(DOCS_RESOURCES."/qcalgorithm-api/heikin-ashi.html");

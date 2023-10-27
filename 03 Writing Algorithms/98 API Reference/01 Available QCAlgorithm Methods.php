@@ -213,6 +213,10 @@
 <td>Creates a new CommodityChannelIndex indicator. The indicator will be automatically updated on the given resolution.</td>
 </tr>
 <tr>
+<td width="33%"><a href="#CIK-header">CIK()</a></td>
+<td>Converts a CIK identifier into <code>String)</code> array.</td>
+</tr>
+<tr>
 <td width="33%"><a href="#CMF-header">CMF()</a></td>
 <td>Creates a new ChaikinMoneyFlow indicator.</td>
 </tr>
@@ -311,6 +315,10 @@
 <tr>
 <td width="33%"><a href="#FrameworkPostInitialize-header">FrameworkPostInitialize()</a></td>
 <td>Called by setup handlers after Initialize and allows the algorithm a chance to organize the data gather in the Initialize method.</td>
+</tr>
+<tr>
+<td width="33%"><a href="#Fundamentals-header">Fundamentals()</a></td>
+<td>Get the fundamental data for the requested symbol at the current time.</td>
 </tr>
 <tr>
 <td width="33%"><a href="#GetLastKnownPrices-header">GetLastKnownPrices()</a></td>
@@ -646,7 +654,7 @@
 </tr>
 <tr>
 <td width="33%"><a href="#SetHoldings-header">SetHoldings()</a></td>
-<td>Sets holdings for a collection of targets. The implementation will order the provided targets executing first those that reduce a position, freeing margin.</td>
+<td>Automatically place a market order which will set the holdings to between 100% or -100% of *PORTFOLIO VALUE*. E.g. SetHoldings("AAPL", 0.1); SetHoldings("IBM", -0.2); -&gt; Sets portfolio as long 10% APPL and short 20% IBM E.g. SetHoldings("AAPL", 2); -&gt; Sets apple to 2x leveraged with all our cash. If the market is closed, place a market on open order.</td>
 </tr>
 <tr>
 <td width="33%"><a href="#SetObjectStore-header">SetObjectStore()</a></td>
@@ -1073,12 +1081,20 @@
 <table cellspacing="0" cellpadding="0">
 <tbody>
 <tr>
+<td width="33%"><a href="#CIK-header">CIK()</a></td>
+<td>Converts a CIK identifier into <code>String)</code> array.</td>
+</tr>
+<tr>
 <td width="33%"><a href="#CompositeFIGI-header">CompositeFIGI()</a></td>
 <td>Converts a composite FIGI identifier into a <code>String)</code>.</td>
 </tr>
 <tr>
 <td width="33%"><a href="#CUSIP-header">CUSIP()</a></td>
 <td>Converts a CUSIP identifier into a <code>String)</code>.</td>
+</tr>
+<tr>
+<td width="33%"><a href="#Fundamentals-header">Fundamentals()</a></td>
+<td>Get the fundamental data for the requested symbol at the current time.</td>
 </tr>
 <tr>
 <td width="33%"><a href="#Initialize-header">Initialize()</a></td>
@@ -1681,12 +1697,20 @@
 <table cellspacing="0" cellpadding="0">
 <tbody>
 <tr>
+<td width="33%"><a href="#CIK-header">CIK()</a></td>
+<td>Converts a CIK identifier into <code>String)</code> array.</td>
+</tr>
+<tr>
 <td width="33%"><a href="#CompositeFIGI-header">CompositeFIGI()</a></td>
 <td>Converts a composite FIGI identifier into a <code>String)</code>.</td>
 </tr>
 <tr>
 <td width="33%"><a href="#CUSIP-header">CUSIP()</a></td>
 <td>Converts a CUSIP identifier into a <code>String)</code>.</td>
+</tr>
+<tr>
+<td width="33%"><a href="#Fundamentals-header">Fundamentals()</a></td>
+<td>Get the fundamental data for the requested symbol at the current time.</td>
 </tr>
 <tr>
 <td width="33%"><a href="#IsMarketOpen-header">IsMarketOpen()</a></td>
@@ -1814,7 +1838,7 @@
 </tr>
 <tr>
 <td width="33%"><a href="#SetHoldings-header">SetHoldings()</a></td>
-<td>Sets holdings for a collection of targets. The implementation will order the provided targets executing first those that reduce a position, freeing margin.</td>
+<td>Automatically place a market order which will set the holdings to between 100% or -100% of *PORTFOLIO VALUE*. E.g. SetHoldings("AAPL", 0.1); SetHoldings("IBM", -0.2); -&gt; Sets portfolio as long 10% APPL and short 20% IBM E.g. SetHoldings("AAPL", 2); -&gt; Sets apple to 2x leveraged with all our cash. If the market is closed, place a market on open order.</td>
 </tr>
 <tr>
 <td width="33%"><a href="#SetPortfolioConstruction-header">SetPortfolioConstruction()</a></td>
