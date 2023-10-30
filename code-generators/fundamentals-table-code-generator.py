@@ -54,7 +54,7 @@ html = """<p>The US Fundamentals dataset provides Fundamental objects. To filter
 
 <h4>Fundamentals Attributes</h4>
 <p>Fundamentals objects have the following attributes:</p>
-<div data-tree="QuantConnect.Data.Fundamental.Fundamentals"></div>
+<div data-tree="QuantConnect.Data.Fundamental.Fundamental"></div>
 
 <h4>MorningstarSectorCode Enumeration</h4>
 <p>Sectors are large super categories of data. To access the sector of an Equity, use the <b>MorningstarSectorCode</b> property.</p>

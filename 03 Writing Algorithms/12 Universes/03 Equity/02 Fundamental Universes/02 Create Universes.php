@@ -23,7 +23,7 @@
         return [c.Symbol for c in fundamental if c.HasFundamentalData]</pre></div>
     
     <p><code>Fundamental</code> objects have the following attributes:</p>
-    <div data-tree='QuantConnect.Data.Fundamental.Fundamentals'></div>
+    <div data-tree='QuantConnect.Data.Fundamental.Fundamental'></div>
 
     <h4>Example</h4>
     <p>
