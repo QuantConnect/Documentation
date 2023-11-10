@@ -1,6 +1,6 @@
 <?php
     $comment = $comment ?? "some of the reality models";
-    if ($saveAlgorithm)
+    if (isset($saveAlgorithm) && $saveAlgorithm)
     {
         $extraArgsC = ", this";
         $extraArgsPy = ", self";
