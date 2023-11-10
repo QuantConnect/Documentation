@@ -1,12 +1,12 @@
 <p>
     Runs a local backtest in a Docker container using the <a href="https://hub.docker.com/r/quantconnect/lean" target="_blank">quantconnect/lean</a> Docker image.
-    The logs of the backtest are shown in real-time and the full results are stored in the <span class='public-directory-name'>&lt;project&gt; / backtest / &lt;timestamp&gt;</span> directory.
+    The logs of the backtest are shown in real-time and the full results are stored in the <span class="public-directory-name">&lt;project&gt; / backtest / &lt;timestamp&gt;</span> directory.
     You can use the <code>--output</code> option to change the output directory.
 </p>
 
 <p>
     The given <code>&lt;project&gt;</code> argument must be either a project directory or a file containing the algorithm to backtest.
-    If it is a project directory, the CLI looks for a <span class='public-file-name'>main.py</span> or <span class='public-file-name'>Main.cs</span> file, assuming the first file it finds to be the algorithm to run.
+    If it is a project directory, the CLI looks for a <span class="public-file-name">main.py</span> or <span class="public-file-name">Main.cs</span> file, assuming the first file it finds to be the algorithm to run.
 </p>
 
 <p>
@@ -16,7 +16,7 @@
 
 <p>
     You can use the <code>--data-provider</code> option to change where the data is retrieved.
-    This option updates the <a href='/docs/v2/lean-cli/initialization/configuration#03-Lean-Configuration'>Lean configuration file</a>, so you don't need to use this option multiple times for the same data provider if you are not switching between them. If you use the Terminal Link data provider, you must also provide the following options:
+    This option updates the <a href="/docs/v2/lean-cli/initialization/configuration#03-Lean-Configuration">Lean configuration file</a>, so you don't need to use this option multiple times for the same data provider if you are not switching between them. If you use the Terminal Link data provider, you must also provide the following options:
 </p>
 <ul>
     <li><code>--terminal-link-connection-type</code></li>
@@ -27,7 +27,9 @@
 </ul>
 <p>Furthermore, if you use <code>--terminal-link-connection-type SAPI</code>, you also need to provide the <code>--terminal-link-server-auth-id</code> option.</p>
 
-<p>You can use the <code>--download-data</code> flag as an alias for <code>--data-provider QuantConnect</code> and the <code>--data-purchase-limit</code> option to set the maximum amount of <a href='https://www.quantconnect.com/docs/v2/cloud-platform/organizations/credit'>QuantConnect Credit</a> (QCC) to spend during the backtest when using QuantConnect as data provider.
+<p>You can use the <code>--download-data</code> flag as an alias for <code>--data-provider QuantConnect</code>. This data provider automatically downloads the required data files when your backtest requests them. After it downloads a data file, it stores it in your local <span class='public-directory-name'>data</span> directory so that in future runs, it won't have to download it again. If the file contain data for multiple days (for example, daily Equity price data files), the <code>ApiDataProvider</code> re-downloads the file if your local version is at least 7 days old. To adjust this setting, update the <code>downloader-data-update-period</code> value in your <a href="/docs/v2/lean-cli/initialization/configuration#03-Lean-Configuration">Lean configuration</a> file.</p>
+
+<p>You can also use the <code>--data-purchase-limit</code> option to set the maximum amount of <a href="https://www.quantconnect.com/docs/v2/cloud-platform/organizations/credit">QuantConnect Credit</a> (QCC) to spend during the backtest when using QuantConnect as data provider.
     The <code>--data-purchase-limit</code> option is not persistent.
 </p>
 
