@@ -22,5 +22,6 @@ $overwriteCodeC = "if (security.Type == SecurityType.Option) // Option type
             security.PriceModel = OptionPriceModels.CrankNicolsonFD();
         }";
 $comment = "the price model";
+$saveAlgorithm = false;
 include(DOCS_RESOURCES."/reality-modeling/brokerage-model-security-init.php");
 ?>
