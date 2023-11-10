@@ -1,17 +1,19 @@
 <p>
-    An alternative to manually downloading all required data before running the backtest is to use the <code>ApiDataProvider</code> in LEAN.
+    An alternative to manually downloading all the data you need before you run a backtest is to use the <code>ApiDataProvider</code> in LEAN.
     This data provider automatically downloads the required data files when your backtest requests them.
     After it downloads a data file, it stores it in your local data directory so that in future runs, it'll not have to download it again.
+    If the files contain data for multiple days (for example, daily Equity price data files), the <code>ApiDataProvider</code> re-downloads the files if your local files are at least 7 days old.
+    To adjust this setting, update the <code>downloader-data-update-period</code> value in your <a href="/docs/v2/lean-cli/initialization/configuration#03-Lean-Configuration">Lean configuration</a> file.
 </p>
 
 <p>
-    Follow these steps to use the <code>ApiDataProvider</code> to automatically download data when needed:
+    Follow these steps to use the <code>ApiDataProvider</code> to automatically download the data you need:
 </p>
 
 <ol>
     <li><a href="/docs/v2/lean-cli/initialization/authentication#02-Log-In">Log in</a> to the CLI if you haven't done so already.</li>
     <li>Open a terminal in the <a href="/docs/v2/lean-cli/initialization/organization-workspaces">organization workspace</a> that contains the project you want to backtest.</li>
-    <li>Run <code>lean backtest "&lt;projectName&gt;" --download-data</code> to run a local backtest for the project in <span class='public-directory-name'>. / &lt;projectName&gt;</span> and update the <a href="/docs/v2/lean-cli/initialization/configuration#03-Lean-Configuration">Lean configuration</a> to use the <code>ApiDataProvider</code>.
+    <li>Run <code>lean backtest "&lt;projectName&gt;" --download-data</code> to run a local backtest for the project in <span class='public-directory-name'>. / &lt;projectName&gt;</span> and update the Lean configuration to use the <code>ApiDataProvider</code>.
 <div class="cli section-example-container">
 <pre>$ lean backtest "My Project" --download-data
 20210322 17:27:46.658 TRACE:: Engine.Main(): LEAN ALGORITHMIC TRADING ENGINE v2.5.0.0 Mode: DEBUG (64bit)
