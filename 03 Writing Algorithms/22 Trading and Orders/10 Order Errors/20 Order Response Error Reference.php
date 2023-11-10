@@ -326,10 +326,10 @@ if available_to_borrow == None or quantity_to_borrow <= available_to_borrow:
 <p>To avoid this order response error, check if the time slice has a split event for the underlying Equity of the contract before you place an order for the contract.</p>
 
 <div class="section-example-container">
-    <pre class="csharp">if (!slice.Splits.ContainsKey(_contractSymbol.Underlying.Symbol))
+    <pre class="csharp">if (!slice.Splits.ContainsKey(_contractSymbol.Underlying))
 {
     MarketOrder(_contractSymbol, quantity);
 }</pre>
-    <pre class="python">if self.contract_symbol.Underlying.Symbol not in slice.Splits:
+    <pre class="python">if self.contract_symbol.Underlying not in slice.Splits:
     self.MarketOrder(self.contract_symbol, quantity)</pre>
 </div>
