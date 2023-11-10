@@ -1,5 +1,5 @@
 <p>
-    The <code>lean cloud live deploy</code> command supports the following options:
+    The <code>lean live deploy</code> command supports the following options:
 </p>
 
 <table class="table qc-table">
@@ -11,8 +11,28 @@
     </thead>
     <tbody>
         <tr>
+            <td nowrap=""><code>--environment &lt;value&gt;</code></td>
+            <td>The name of the environment in the <a href="/docs/v2/lean-cli/initialization/configuration#03-Lean-Configuration">Lean configuration file</a> to use.</td>
+        </tr>
+        <tr>
+            <td nowrap=""><code>--output &lt;path&gt;</code></td>
+            <td>Directory to store results in (defaults to <span class="public-directory-name">&lt;project&gt; / live / &lt;timestamp&gt;</span>).</td>
+        </tr>
+        <tr>
+            <td nowrap=""><code>--detach</code>, <code>-d<code></code></code></td>
+            <td>Run the live deployment in a detached Docker container and return immediately. The name of the Docker container is shown before the command ends. You can use Docker's own commands to manage the detached container.</td>
+        </tr>
+        <tr>
             <td nowrap=""><code>--brokerage &lt;value&gt;</code></td>
             <td>The brokerage to use when running in non-interactive mode.</td>
+        </tr>
+        <tr>
+            <td nowrap=""><code>--data-feed &lt;value&gt;</code></td>
+            <td>The data feed to use when running in non-interactive mode.</td>
+        </tr>
+        <tr>
+            <td nowrap=""><code>--data-provider &lt;value&gt;</code></td>
+            <td>Update the Lean configuration file to retrieve data from the given provider (<code>QuantConnect</code> or <code>Local</code>).</td>
         </tr>
         <tr>
             <td nowrap=""><code>--ib-user-name &lt;value&gt;</code></td>
@@ -31,10 +51,6 @@
             <td></td>
         </tr>
         <tr>
-            <td nowrap=""><code>--ib-data-feed &lt;boolean&gt;</code></td>
-            <td>Whether the <a href="https://www.quantconnect.com/docs/v2/cloud-platform/live-trading/data-feeds/brokerage-data-feeds/interactive-brokers">Interactive Brokers price data feed</a> must be used instead of the one from QuantConnect (<code>yes</code> or <code>no</code>).</td>
-        </tr>
-        <tr>
             <td nowrap=""><code>--tradier-account-id &lt;value&gt;</code></td>
             <td>Your Tradier account id, which you can find on your <a href="https://dash.tradier.com/settings/api" target="_blank" rel="nofollow">Settings &gt; API Access</a> page on the Tradier website.</td>
         </tr>
@@ -44,11 +60,7 @@
         </tr>
         <tr>
             <td nowrap=""><code>--tradier-environment &lt;value&gt;</code></td>
-            <td><code style="font-size: 15px; background-color: rgb(255, 255, 255);">live</code>&nbsp;to use the live environment or&nbsp;<code style="font-size: 15px; background-color: rgb(255, 255, 255);">paper</code>&nbsp;to use the developer sandbox.<br></td>
-        </tr>
-        <tr>
-            <td nowrap><code>--tradier-data-feed</code></td>
-            <td></td>
+            <td><code>live</code> to use the live environment or <code>paper</code> to use the developer sandbox.</td>
         </tr>
         <tr>
             <td nowrap=""><code>--oanda-account-id &lt;value&gt;</code></td>
@@ -64,7 +76,7 @@
         </tr>
         <tr>
             <td nowrap=""><code>--bitfinex-api-key &lt;value&gt;</code></td>
-            <td>Your Bitfinex API key, which you can generate on the <a href="https://www.bitfinex.com/api" target="_blank">API Management</a> page on the Bitfinex website.</td>
+            <td>Your Bitfinex API key, which you can generate on the <a href="https://www.bitfinex.com/api" target="_blank" rel="nofollow">API Management</a> page on the Bitfinex website.</td>
         </tr>
         <tr>
             <td nowrap=""><code>--bitfinex-api-secret &lt;value&gt;</code></td>
@@ -129,7 +141,7 @@
         <tr>
             <td nowrap=""><code>--zerodha-history-subscription &lt;boolean&gt;</code></td>
             <td>Whether you have a history API subscription for Zerodha.</td>
-        </tr>        
+        </tr>
         <tr>
             <td nowrap=""><code>--samco-client-id &lt;value&gt;</code></td>
             <td>Your Samco account Client ID.</td>
@@ -151,32 +163,36 @@
             <td>The trading segment, which must be <code>equity</code>&nbsp;if you are trading equities on NSE or BSE, or <code>commodity</code>&nbsp;if you are trading commodities on MCX.</td>
         </tr>
         <tr>
+            <td nowrap=""><code>--terminal-link-connection-type &lt;value&gt;</code></td>
+            <td>The Terminal Link connection type, which must be <code>SAPI</code> or <code>DAPI</code>.</td>
+        </tr>
+        <tr>
             <td nowrap=""><code>--terminal-link-server-auth-id &lt;value&gt;</code></td>
             <td>Your unique user identifier (UUID). The UUID is a unique integer identifier that's assigned to each Bloomberg Anywhere user. If you don't know your UUID, contact Bloomberg.</td>
         </tr>
         <tr>
             <td nowrap=""><code>--terminal-link-environment &lt;value&gt;</code></td>
-            <td>The environment to run in. <code>Production</code> or <code>Beta</code>.</td>
+            <td>The environment to run in, which must be <code>Production</code> or <code>Beta</code>.</td>
         </tr>
         <tr>
             <td nowrap=""><code>--terminal-link-server-host &lt;value&gt;</code></td>
-            <td>The public IP address of the SAPI AWS server.</td>
+            <td>The host on which the Terminal Link server is running.</td>
         </tr>
         <tr>
             <td nowrap=""><code>--terminal-link-server-port &lt;value&gt;</code></td>
-            <td>The port where SAPI is listening. The default port is 8194.</td>
+            <td>The port on which the Terminal Link&nbsp;server is running.</td>
         </tr>
         <tr>
             <td nowrap=""><code>--terminal-link-emsx-broker &lt;value&gt;</code></td>
             <td>The EMSX broker to use.</td>
         </tr>
         <tr>
-            <td nowrap><code>--terminal-link-emsx-account</code></td>
-            <td></td>
+            <td nowrap=""><code>--terminal-link-emsx-account &lt;value&gt;</code></td>
+            <td>The EMSX account to use (optional).</td>
         </tr>
         <tr>
             <td nowrap=""><code>--terminal-link-openfigi-api-key &lt;value&gt;</code></td>
-            <td>The OpenFIGI API key to use for mapping options.</td>
+            <td>The Open FIGI API key to use for mapping Options.</td>
         </tr>
         <tr>
             <td nowrap=""><code>--tt-user-name &lt;value&gt;</code></td>
@@ -203,8 +219,40 @@
             <td>The REST environment in which to run.</td>
         </tr>
         <tr>
+            <td nowrap=""><code>--tt-market-data-sender-comp-id &lt;value&gt;</code></td>
+            <td>The market data sender comp Id to use.</td>
+        </tr>
+        <tr>
+            <td nowrap=""><code>--tt-market-data-target-comp-id &lt;value&gt;</code></td>
+            <td>The market data target comp Id to use.</td>
+        </tr>
+        <tr>
+            <td nowrap=""><code>--tt-market-data-host &lt;value&gt;</code></td>
+            <td>The host of the market data server.</td>
+        </tr>
+        <tr>
+            <td nowrap=""><code>--tt-market-data-port &lt;value&gt;</code></td>
+            <td>The port of the market data server.</td>
+        </tr>
+        <tr>
             <td nowrap=""><code>--tt-order-routing-sender-comp-id &lt;value&gt;</code></td>
             <td>The order routing sender comp Id to use.</td>
+        </tr>
+        <tr>
+            <td nowrap=""><code>--tt-order-routing-target-comp-id &lt;value&gt;</code></td>
+            <td>The order routing target comp Id to use.</td>
+        </tr>
+        <tr>
+            <td nowrap=""><code>--tt-order-routing-host &lt;value&gt;</code></td>
+            <td>The host of the order routing server.</td>
+        </tr>
+        <tr>
+            <td nowrap=""><code>--tt-order-routing-port &lt;value&gt;</code></td>
+            <td>The port of the order routing server.</td>
+        </tr>
+        <tr>
+            <td nowrap=""><code>--tt-log-fix-messages &lt;boolean&gt;</code></td>
+            <td>Whether FIX messages should be logged.</td>
         </tr>
         <tr>
             <td nowrap=""><code>--kraken-api-key &lt;value&gt;</code></td>
@@ -231,56 +279,72 @@
             <td>Your TDAmeritrade account number.</td>
         </tr>
         <tr>
-            <td nowrap=""><code>--node &lt;value&gt;</code></td>
-            <td>The name or Id of the live node to run on.</td>
+            <td nowrap=""><code>--ib-enable-delayed-streaming-data &lt;boolean&gt;</code></td>
+            <td>Whether delayed data may be used when your algorithm subscribes to a security for which you don't have a market data subscription.</td>
         </tr>
         <tr>
-            <td nowrap=""><code>--auto-restart &lt;boolean&gt;</code></td>
-            <td>Whether automatic algorithm restarting must be enabled.</td>
+            <td nowrap=""><code>--iqfeed-iqconnect &lt;path&gt;</code></td>
+            <td>The path to your IQConnect binary.</td>
         </tr>
         <tr>
-            <td nowrap=""><code>--notify-order-events &lt;boolean&gt;</code></td>
-            <td>Whether notifications must be sent for order events.</td>
+            <td nowrap=""><code>--iqfeed-username &lt;value&gt;</code></td>
+            <td>Your IQFeed username.</td>
         </tr>
         <tr>
-            <td nowrap=""><code>--notify-insights &lt;boolean&gt;</code></td>
-            <td>Whether notifications must be sent for emitted insights.</td>
+            <td nowrap=""><code>--iqfeed-password &lt;value&gt;</code></td>
+            <td>Your IQFeed password.</td>
         </tr>
         <tr>
-            <td nowrap=""><code>--notify-emails &lt;email&gt; &lt;subject&gt;</code></td>
-            <td>A comma-separated list of "email:subject" pairs configuring email-notifications.</td>
+            <td nowrap><code>--iqfeed-productName</code></td>
+            <td></td>
         </tr>
         <tr>
-            <td nowrap=""><code>--notify-webhooks &lt;url&gt; &lt;headers&gt;</code></td>
-            <td>A comma-separated list of "url:HEADER_1=VALUE_1:HEADER_2=VALUE_2:etc" pairs configuring webhook-notifications.</td>
+            <td nowrap=""><code>--iqfeed-version &lt;value&gt;</code></td>
+            <td>The product version of your IQFeed developer account.</td>
         </tr>
         <tr>
-            <td nowrap=""><code>--notify-sms &lt;value&gt;</code></td>
-            <td>A comma-separated list of phone numbers configuring SMS notifications.</td>
+            <td nowrap=""><code>--polygon-api-key &lt;value&gt;</code></td>
+            <td>Your Polygon data feed API Key.</td>
         </tr>
         <tr>
-            <td nowrap=""><code>--notify-telegram &lt;value&gt;</code></td>
-            <td>A comma-separated list of "user/group Id:token(optional)" pairs configuring telegram notifications.</td>
+            <td nowrap=""><code>--release</code></td>
+            <td>Compile C# projects in release configuration instead of debug.</td>
+        </tr>
+        <tr>
+            <td nowrap=""><code>--image &lt;value&gt;</code></td>
+            <td>The LEAN engine image to use (defaults to <code>quantconnect/lean:latest</code>).</td>
+        </tr>
+        <tr>
+            <td nowrap=""><code>--python-venv &lt;value&gt;</code></td>
+            <td>The path of the python virtual environment to use.</td>
         </tr>
         <tr>
             <td nowrap=""><code>--live-cash-balance &lt;value&gt;</code></td>
-            <td>A comma-separated list of "currency:amount" pairs that define the initial cash balance.</td>
+            <td>A comma-separated list of currency:amount pairs that define the initial cash balance.</td>
         </tr>
         <tr>
             <td nowrap=""><code>--live-holdings &lt;value&gt;</code></td>
             <td>A comma-separated list of "symbol:symbolId:quantity:averagePrice" pairs that define the initial portfolio holdings. For example, <code>"GOOG:GOOCV VP83T1ZUHROL:10:50.0"</code>.</td>
         </tr>
         <tr>
-            <td nowrap=""><code>--push</code></td>
-            <td>Push local modifications to the cloud before starting live trading.</td>
-        </tr>
-        <tr>
-            <td nowrap=""><code>--open</code></td>
-            <td>Automatically open the live results in the browser once the deployment starts.</td>
+            <td nowrap=""><code>--update</code></td>
+            <td>Pull the LEAN engine image before starting live trading.</td>
         </tr>
         <tr>
             <td nowrap><code>--show-secrets</code></td>
             <td></td>
+        </tr>
+        <tr>
+            <td nowrap><code>--extra-docker-config</code></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td nowrap><code>--no-update</code></td>
+            <td>Use the local LEAN engine image instead of pulling the latest version.</td>
+        </tr>
+        <tr>
+            <td nowrap=""><code>--lean-config &lt;path&gt;</code></td>
+            <td>The Lean configuration file that should be used (defaults to the nearest <span class="public-file-name">lean.json</span> file).</td>
         </tr>
         <tr>
             <td nowrap=""><code>--verbose</code></td>
@@ -288,7 +352,7 @@
         </tr>
         <tr>
             <td nowrap=""><code>--help</code></td>
-            <td>Display the help text of the <code>lean cloud live deploy</code> command and exit.</td>
+            <td>Display the help text of the <code>lean live deploy</code> command and exit.</td>
         </tr>
     </tbody>
 </table>
