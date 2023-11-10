@@ -310,13 +310,26 @@ if available_to_borrow == None or quantity_to_borrow <= available_to_borrow:
 
 <p>To avoid this order response error, check the type and expiry date of the contract before you exercise it.</p>
 
-<div class="section-example-container">
+<a id='option-order-on-stock-split'></a><div class="section-example-container">
     <pre class="csharp">if (_contractSymbol.ID.OptionStyle == OptionStyle.European && _contractSymbol.ID.Date == Time.Date)
 {
     ExerciseOption(_contractSymbol, quantity);
 }</pre>
-    <pre class="python">if (self.contract_symbol.ID.OptionStyle == OptionStyle.European && self.contract_symbol.ID.Date == self.Time.Date)
+    <pre class="python">if self.contract_symbol.ID.OptionStyle == OptionStyle.European && self.contract_symbol.ID.Date == self.Time.Date:
+    self.ExerciseOption(self.contract_symbol, quantity)</pre>
+</div>
+
+
+<h4>Option Order on Stock Split</h4>
+<p>The <code>OrderResponseErrorCode.OptionOrderOnStockSplit</code> (-34) error occurs when you try to submit an order for an Equity Option contract when the current <a href='/docs/v2/writing-algorithms/key-concepts/time-modeling/timeslices'>time slice</a> contains a <a href='/docs/v2/writing-algorithms/securities/asset-classes/us-equity/corporate-actions#02-Splits'>split</a> for the underlying Equity.</p>
+
+<p>To avoid this order response error, check if the time slice has a split event for the underlying Equity of the contract before you place an order for the contract.</p>
+
+<div class="section-example-container">
+    <pre class="csharp">if (!slice.Splits.ContainsKey(_contractSymbol.Underlying.Symbol))
 {
-    self.ExerciseOption(self.contract_symbol, quantity);
+    MarketOrder(_contractSymbol, quantity);
 }</pre>
+    <pre class="python">if self.contract_symbol.Underlying.Symbol not in slice.Splits:
+    self.MarketOrder(self.contract_symbol, quantity)</pre>
 </div>
