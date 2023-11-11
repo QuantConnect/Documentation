@@ -9,6 +9,7 @@ $logLink = $cloudPlatform ? "/docs/v2/cloud-platform/projects/debugging#04-Loggi
 
 <? if ($cloudPlatform) { ?>
 <p>To filter the logs, enter a search string in the <span class='field-name'>Filter logs</span> field.</p>
+<img src='https://cdn.quantconnect.com/i/tu/cloud-backtest-log-filter.gif' class='docs-image'>
 <? } ?>
 
 <h4>Download Log Files</h4>
