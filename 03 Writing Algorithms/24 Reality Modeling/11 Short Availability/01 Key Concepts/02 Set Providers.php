@@ -4,10 +4,10 @@
 <div class="section-example-container">
     <pre class="csharp" style="">// In Initialize
 var security = AddEquity("SPY");
-security.SetShortableProvider(new LocalDiskShortableProvider(SecurityType.Equity, "atreyu", Market.USA));</pre>
+security.SetShortableProvider(new LocalDiskShortableProvider("axos"));</pre>
     <pre class="python"># In Initialize
 security = self.AddEquity("SPY")
-security.SetShortableProvider(LocalDiskShortableProvider(SecurityType.Equity, "atreyu", Market.USA))</pre>
+security.SetShortableProvider(LocalDiskShortableProvider("axos"))</pre>
 </div>
 
 <p>You can also set the shortable provider in a security initializer. If your algorithm has a universe, use the security initializer technique. In order to initialize single security subscriptions with the security initializer, call <code>SetSecurityInitializer</code> before you create the subscriptions.</p>
@@ -19,7 +19,7 @@ AddEquity("SPY");
 
 private void CustomSecurityInitializer(Security security)
 {
-    security.SetShortableProvider(new LocalDiskShortableProvider(SecurityType.Equity, "atreyu", Market.USA));
+    security.SetShortableProvider(new LocalDiskShortableProvider("axos"));
 }
 </pre>
 <pre class="python"># In Initialize
@@ -27,7 +27,7 @@ self.SetSecurityInitializer(self.CustomSecurityInitializer)
 self.AddEquity("SPY")
 
 def CustomSecurityInitializer(self, security: Security) -&gt; None:
-    security.SetShortableProvider(LocalDiskShortableProvider(SecurityType.Equity, "atreyu", Market.USA))
+    security.SetShortableProvider(LocalDiskShortableProvider("axos"))
 </pre>
 </div>
 
@@ -36,8 +36,8 @@ def CustomSecurityInitializer(self, security: Security) -&gt; None:
 <p>To extend upon the default security initializer instead of overwriting it, create a custom <code>BrokerageModelSecurityInitializer</code>.</p>
 
 <?php
-$overwriteCodePy = "security.SetShortableProvider(LocalDiskShortableProvider(SecurityType.Equity, \"atreyu\", Market.USA))";
-$overwriteCodeC = "security.SetShortableProvider(new LocalDiskShortableProvider(SecurityType.Equity, \"atreyu\", Market.USA));";
+$overwriteCodePy = "security.SetShortableProvider(LocalDiskShortableProvider(\"axos\"))";
+$overwriteCodeC = "security.SetShortableProvider(new LocalDiskShortableProvider(\"axos\"));";
 include(DOCS_RESOURCES."/reality-modeling/brokerage-model-security-init.php");
 ?>
 
