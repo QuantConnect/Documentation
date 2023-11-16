@@ -12,7 +12,7 @@
     public MyBrokerageModel(AccountType accountType = AccountType.Margin)
         : base(accountType)
     {
-        ShortableProvider = new NullShortableProvider();
+        
     }
 
     public override bool CanSubmitOrder(Security security, Order order,
@@ -79,7 +79,7 @@
 
     public override IShortableProvider GetShortableProvider()
     {
-        return ShortableProvider;
+        return base.GetShortableProvider();
     }
 }
 </pre>
@@ -89,7 +89,6 @@
 
     def __init__(self, accountType: AccountType = AccountType.Margin):
         self.AccountType = accountType
-        self.ShortableProvider = NullShortableProvider()
     
     def CanSubmitOrder(self, security: Security, order: Order,
          message: BrokerageMessageEvent) -&gt; bool:
@@ -130,7 +129,7 @@
         return super().GetMarginInterestRateModel(security)
 
     def GetShortableProvider(self) -&gt; IShortableProvider:
-        return self.ShortableProvider</pre>
+        return super().GetShortableProvider()</pre>
 </div>
 
 <p>Custom brokerage models give you enormous control over your algorithm behavior and allow you to model virtually any brokerage in the world.</p>
