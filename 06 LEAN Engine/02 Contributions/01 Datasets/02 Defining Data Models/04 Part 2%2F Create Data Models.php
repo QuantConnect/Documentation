@@ -19,7 +19,7 @@
         <li>Duplicate lines 32-36 for as many properties as there are in your dataset.</li>
         <li>Rename the <code>SomeCustomProperty</code> properties to the names of your dataset properties (for example, <code>Destination</code>).</li>
         <li>If your dataset is a streaming dataset like the <a href="https://www.quantconnect.com/datasets/benzinga-news-feed">Benzinga News Feed</a>, change the argument that is passed to the <code>ProtoMember</code> members so that they start at 10 and increment by one for each additional property in your dataset.</li>
-        <li>If your dataset isn't a streaming dataset, delete the <code>ProtoMember</code> members.</li>
+        <li>If your dataset isn't a streaming dataset, delete the <code>ProtoMember</code> property decorators.</li>
         <li>Replace the “Some custom data property” comments with a description of each property in your dataset.</li>
     </ol>
     <p>If your dataset contains multiple series, like the <a href='https://www.quantconnect.com/datasets/us-federal-reserve-economic-data'>FRED dataset</a>, create a helper class file in <span class="public-file-name">Lean.DataSource.&lt;vendorNameDatasetName&gt;</span> directory to map the series name to the series code. For a full example, see the <a rel='nofollow' target='_blank' href='https://github.com/QuantConnect/Lean.DataSource.FRED/blob/master/LIBOR.cs'>LIBOR.cs file</a> in the Lean.DataSource.FRED repository. The helper class makes it easier for members to subscribe to the series in your dataset because they don't need to know the series code. For instance, you can subscribe to the 1-Week London Interbank Offered Rate (LIBOR) based on U.S. Dollars with the following code snippet:</p>
