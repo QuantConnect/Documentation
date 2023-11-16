@@ -11,9 +11,8 @@
         self.symbol = self.AddEquity("AAPL", Resolution.Minute).Symbol
  
 class InteractiveBrokersBrokerageModelWithShortable(InteractiveBrokersBrokerageModel):
-    def __init__(self) -&gt; None:
-        super().__init__()
-        self.ShortableProvider = LocalDiskShortableProvider(SecurityType.Equity, "Atreyu", Market.USA)
+    def GetShortableProvider(self, security):
+        return InteractiveBrokersShortableProvider()
 </pre>
 
 <pre class="csharp">using QuantConnect.Data.Shortable;
@@ -37,9 +36,9 @@ namespace QuantConnect
 		
         public class InteractiveBrokersBrokerageModelWithShortable : InteractiveBrokersBrokerageModel
         {
-            public InteractiveBrokersBrokerageModelWithShortable() : base()
+            public override IShortableProvider GetShortableProvider(Security security)
             {
-                ShortableProvider = new LocalDiskShortableProvider(SecurityType.Equity, "Atreyu", Market.USA);
+                return new InteractiveBrokersShortableProvider();
             }
         }
     }
