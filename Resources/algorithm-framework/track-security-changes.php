@@ -21,11 +21,11 @@
 
         foreach (var security in changes.RemovedSecurities)
         {
-            if (_securities.Contains(security.Symbol))
+            if (_securities.Contains(security))
             {
                 algorithm.DeregisterIndicator((security as dynamic).Sma);
 
-                _securities.Remove(security.Symbol);
+                _securities.Remove(security);
             }
         }
     }
@@ -45,7 +45,7 @@
             self.securities.append(security)
 
         for security in changes.RemovedSecurities:
-            if security.Symbol in self.securities:
+            if security in self.securities:
                 algorithm.DeregisterIndicator(security.indicator)
                 self.securities.remove(security)</pre>
 </div>
