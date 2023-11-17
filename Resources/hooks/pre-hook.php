@@ -62,7 +62,7 @@ if (!function_exists('DOCS_URL')) {
                 <iframe src='https://player.vimeo.com/video/<?=$vimeoCode?>' width='640' height='360' frameborder='0' allow='autoplay; fullscreen' allowfullscreen=''></iframe>
             </div>
         </div>
-        <?php
+        <?
     }
 }
 
