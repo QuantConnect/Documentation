@@ -5,7 +5,7 @@ if __name__ == '__main__':
     spdb = get_text_content(SPDB)
 
     directory = "Resources/datasets/supported-securities/"
-    markets = ['binance','binanceus','bitfinex','gdax','kraken','oanda']
+    markets = ['binance','binanceus','bitfinex','bybit','gdax','kraken','oanda']
     results = {}
 
     # Organize data
@@ -31,16 +31,16 @@ if __name__ == '__main__':
         for exchange, tickers in result.items():
             
             rows = ''
+            count = len(tickers)
             tickers.sort()
-            for i in range(0, len(tickers), 6):
+            for i in range(0, count, 6):
                 rows += '<tr>' + ''.join(f'<td>{ticker}</td>' for ticker in tickers[i:i+6]) + '</tr>\n'
 
             with open(f"{path}/{exchange}.html", "w", encoding="utf-8") as text:
                 text.write(f'''<div>
 <table class="table qc-table table-reflow ticker-table hidden-xs">
-<thead><tr><th colspan="6">{name} Available</th></tr></thead>
+<thead><tr><th colspan="6">{name} Available ({count})</th></tr></thead>
 <tbody>
-{rows}
-</tbody>
+{rows}</tbody>
 </table>
 </div>''')
