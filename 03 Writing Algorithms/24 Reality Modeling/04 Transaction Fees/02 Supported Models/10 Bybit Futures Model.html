@@ -1,0 +1,49 @@
+<p>The <code>BybitFuturesFeeModel</code> models the <a rel="nofollow" target="_blank" href="https://www.bybit.com/en/help-center/article/Trading-Fee-Structure">Bybit live trading fees</a>.</p>
+
+<div class="section-example-container">
+<pre class="csharp">security.SetFeeModel(new BybitFuturesFeeModel());</pre>
+<pre class="python">security.SetFeeModel(BybitFuturesFeeModel())</pre>
+</div>
+
+
+<p>The following table describes the arguments the model accepts:</p>
+
+<table class="qc-table table" id='binance-fee-table'>
+    <thead>
+        <tr>
+            <th>Argument</th>
+            <th>Data Type</th>
+            <th>Description</th>
+            <th>Default Value</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><code>makerFee</code></td>
+            <td><code class="csharp">decimal</code><code class="python">float</code></td>
+            <td>Maker fee value</td>
+            <td>0.0002</td>
+        </tr>
+        <tr>
+            <td><code>takerFee</code></td>
+            <td><code class="csharp">decimal</code><code class="python">float</code></td>
+            <td>Taker fee value</td>
+            <td>0.00055</td>
+        </tr>
+    </tbody>
+</table>
+
+
+<p>The <code>BybitFuturesFeeModel</code> charges the order fees of Bybit at the VIP 0 level, which is a 0.02% maker and a 0.055% taker fee for Crypto Futures trades. If you add liquidity to the order book by placing a limit order that doesn't cross the spread, you pay maker fees. If you remove liquidity from the order book by placing an order that crosses the spread, you pay taker fees. Bybit adjusts your fees based on your 30-day trading volume, net borrowings, or asset balance, but we don't currently model these metrics to adjust fees.</p>
+
+<p>The <code>BybitFuturesFeeModel</code> charges fees in the currency you receive from a trade. For example, if you buy BTCUSDT, you pay fees in BTC. If you sell BTCUSDT, you pay fees in USDT.</p>
+
+<p>To view the implementation of this model, see the <a target="_blank" rel="nofollow" href="https://github.com/QuantConnect/Lean/blob/master/Common/Orders/Fees/BybitFuturesFeeModel.cs">LEAN GitHub repository</a>.</p>
+
+<style>
+#binance-fee-table td:last-child, 
+#binance-fee-table th:last-child {
+    text-align: right;
+}
+</style>
+
