@@ -201,6 +201,10 @@
 <td>Buy Stock (Alias of Order).</td>
 </tr>
 <tr>
+<td width="33%"><a href="#C-header">C()</a></td>
+<td>Creates a Correlation indicator for the given target symbol in relation with the reference used. The indicator will be automatically updated on the given resolution.</td>
+</tr>
+<tr>
 <td width="33%"><a href="#CalculateOrderQuantity-header">CalculateOrderQuantity()</a></td>
 <td>Calculate the order quantity to achieve target-percent holdings.</td>
 </tr>
@@ -250,7 +254,7 @@
 </tr>
 <tr>
 <td width="33%"><a href="#CUSIP-header">CUSIP()</a></td>
-<td>Converts a CUSIP identifier into a <code>String)</code>.</td>
+<td>Converts a <code>String)</code> into a CUSIP identifier.</td>
 </tr>
 <tr>
 <td width="33%"><a href="#DCH-header">DCH()</a></td>
@@ -334,7 +338,7 @@
 </tr>
 <tr>
 <td width="33%"><a href="#History-header">History()</a></td>
-<td>Gets the historical data for the specified symbols over the requested span. The symbols must exist in the Securities collection.</td>
+<td>Gets the historical data for the specified symbols between the specified dates. The symbols must exist in the Securities collection.</td>
 </tr>
 <tr>
 <td width="33%"><a href="#HMA-header">HMA()</a></td>
@@ -654,7 +658,7 @@
 </tr>
 <tr>
 <td width="33%"><a href="#SetHoldings-header">SetHoldings()</a></td>
-<td>Automatically place a market order which will set the holdings to between 100% or -100% of *PORTFOLIO VALUE*. E.g. SetHoldings("AAPL", 0.1); SetHoldings("IBM", -0.2); -&gt; Sets portfolio as long 10% APPL and short 20% IBM E.g. SetHoldings("AAPL", 2); -&gt; Sets apple to 2x leveraged with all our cash. If the market is closed, place a market on open order.</td>
+<td>Sets holdings for a collection of targets. The implementation will order the provided targets executing first those that reduce a position, freeing margin.</td>
 </tr>
 <tr>
 <td width="33%"><a href="#SetObjectStore-header">SetObjectStore()</a></td>
@@ -675,6 +679,10 @@
 <tr>
 <td width="33%"><a href="#SetQuit-header">SetQuit()</a></td>
 <td>Set the Quit flag property of the algorithm.</td>
+</tr>
+<tr>
+<td width="33%"><a href="#SetRiskFreeInterestRateModel-header">SetRiskFreeInterestRateModel()</a></td>
+<td>Sets the risk free interest rate model to be used in the algorithm.</td>
 </tr>
 <tr>
 <td width="33%"><a href="#SetRiskManagement-header">SetRiskManagement()</a></td>
@@ -738,7 +746,7 @@
 </tr>
 <tr>
 <td width="33%"><a href="#SR-header">SR()</a></td>
-<td>Creates a new RollingSharpeRatio indicator.</td>
+<td>Creates a new SharpeRatio indicator.</td>
 </tr>
 <tr>
 <td width="33%"><a href="#STC-header">STC()</a></td>
@@ -1090,7 +1098,7 @@
 </tr>
 <tr>
 <td width="33%"><a href="#CUSIP-header">CUSIP()</a></td>
-<td>Converts a CUSIP identifier into a <code>String)</code>.</td>
+<td>Converts a <code>String)</code> into a CUSIP identifier.</td>
 </tr>
 <tr>
 <td width="33%"><a href="#Fundamentals-header">Fundamentals()</a></td>
@@ -1178,7 +1186,7 @@
 </tr>
 <tr>
 <td width="33%"><a href="#History-header">History()</a></td>
-<td>Gets the historical data for the specified symbols over the requested span. The symbols must exist in the Securities collection.</td>
+<td>Gets the historical data for the specified symbols between the specified dates. The symbols must exist in the Securities collection.</td>
 </tr>
 <tr>
 <td width="33%"><a href="#SetWarmUp-header">SetWarmUp()</a></td>
@@ -1267,6 +1275,10 @@
 <tr>
 <td width="33%"><a href="#BOP-header">BOP()</a></td>
 <td>Creates a new Balance Of Power indicator. The indicator will be automatically updated on the given resolution.</td>
+</tr>
+<tr>
+<td width="33%"><a href="#C-header">C()</a></td>
+<td>Creates a Correlation indicator for the given target symbol in relation with the reference used. The indicator will be automatically updated on the given resolution.</td>
 </tr>
 <tr>
 <td width="33%"><a href="#CC-header">CC()</a></td>
@@ -1502,7 +1514,7 @@
 </tr>
 <tr>
 <td width="33%"><a href="#SR-header">SR()</a></td>
-<td>Creates a new RollingSharpeRatio indicator.</td>
+<td>Creates a new SharpeRatio indicator.</td>
 </tr>
 <tr>
 <td width="33%"><a href="#STC-header">STC()</a></td>
@@ -1669,6 +1681,10 @@
 <td>Sets the brokerage to emulate in backtesting or paper trading. This can be used to set a custom brokerage model.</td>
 </tr>
 <tr>
+<td width="33%"><a href="#SetRiskFreeInterestRateModel-header">SetRiskFreeInterestRateModel()</a></td>
+<td>Sets the risk free interest rate model to be used in the algorithm.</td>
+</tr>
+<tr>
 <td width="33%"><a href="#SetSecurityInitializer-header">SetSecurityInitializer()</a></td>
 <td>Sets the security initializer function, used to initialize/configure securities after creation.</td>
 </tr>
@@ -1706,7 +1722,7 @@
 </tr>
 <tr>
 <td width="33%"><a href="#CUSIP-header">CUSIP()</a></td>
-<td>Converts a CUSIP identifier into a <code>String)</code>.</td>
+<td>Converts a <code>String)</code> into a CUSIP identifier.</td>
 </tr>
 <tr>
 <td width="33%"><a href="#Fundamentals-header">Fundamentals()</a></td>
@@ -1838,7 +1854,7 @@
 </tr>
 <tr>
 <td width="33%"><a href="#SetHoldings-header">SetHoldings()</a></td>
-<td>Automatically place a market order which will set the holdings to between 100% or -100% of *PORTFOLIO VALUE*. E.g. SetHoldings("AAPL", 0.1); SetHoldings("IBM", -0.2); -&gt; Sets portfolio as long 10% APPL and short 20% IBM E.g. SetHoldings("AAPL", 2); -&gt; Sets apple to 2x leveraged with all our cash. If the market is closed, place a market on open order.</td>
+<td>Sets holdings for a collection of targets. The implementation will order the provided targets executing first those that reduce a position, freeing margin.</td>
 </tr>
 <tr>
 <td width="33%"><a href="#SetPortfolioConstruction-header">SetPortfolioConstruction()</a></td>

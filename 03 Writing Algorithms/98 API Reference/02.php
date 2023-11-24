@@ -45,6 +45,7 @@ echo file_get_contents(DOCS_RESOURCES."/qcalgorithm-api/b.html");
 echo file_get_contents(DOCS_RESOURCES."/qcalgorithm-api/bb.html");
 echo file_get_contents(DOCS_RESOURCES."/qcalgorithm-api/bop.html");
 echo file_get_contents(DOCS_RESOURCES."/qcalgorithm-api/buy.html");
+echo file_get_contents(DOCS_RESOURCES."/qcalgorithm-api/c.html");
 echo file_get_contents(DOCS_RESOURCES."/qcalgorithm-api/calculate-order-quantity.html");
 echo file_get_contents(DOCS_RESOURCES."/qcalgorithm-api/cc.html");
 echo file_get_contents(DOCS_RESOURCES."/qcalgorithm-api/cci.html");
@@ -164,6 +165,7 @@ echo file_get_contents(DOCS_RESOURCES."/qcalgorithm-api/set-option-chain-provide
 echo file_get_contents(DOCS_RESOURCES."/qcalgorithm-api/set-parameters.html");
 echo file_get_contents(DOCS_RESOURCES."/qcalgorithm-api/set-portfolio-construction.html");
 echo file_get_contents(DOCS_RESOURCES."/qcalgorithm-api/set-quit.html");
+echo file_get_contents(DOCS_RESOURCES."/qcalgorithm-api/set-risk-free-interest-rate-model.html");
 echo file_get_contents(DOCS_RESOURCES."/qcalgorithm-api/set-risk-management.html");
 echo file_get_contents(DOCS_RESOURCES."/qcalgorithm-api/set-run-time-error.html");
 echo file_get_contents(DOCS_RESOURCES."/qcalgorithm-api/set-runtime-statistic.html");
