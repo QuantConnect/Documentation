@@ -1,0 +1,1 @@
+<p><?= $writingAlgorithms ? "The <code>BybitBrokerageModel</code>" : "Our Bybit integration" ?> supports trading <a href='/docs/v2/writing-algorithms/securities/asset-classes/crypto'>Crypto</a> and <a href='/docs/v2/writing-algorithms/securities/asset-classes/crypto-futures'>Crypto Futures</a>.</p>
