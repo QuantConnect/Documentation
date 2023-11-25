@@ -108,7 +108,7 @@ To enter multiple options, separate them with comma.:</pre>
 
 <?=$dataFeedDetails ?>
 
-<? if (defined($supportsCashHoldings) && $supportsCashHoldings) { ?> 
+<? if (isset($supportsCashHoldings) && $supportsCashHoldings) { ?> 
     <li>Set your initial cash balance.
         <div class='cli section-example-container'>
         <pre>$ lean live "My Project"
@@ -123,7 +123,7 @@ Do you want to add more currency? [y/N]: n</pre>
     </li> 
 <? } ?> 
     
-<? if (defined($supportedPositionHoldings) && $supportedPositionHoldings) { ?>
+<? if (isset($supportedPositionHoldings) && $supportedPositionHoldings) { ?>
     <li>Set your initial portfolio holdings.
         <div class='cli section-example-container'>
         <pre>$ lean live "My Project"
