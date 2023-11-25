@@ -133,7 +133,7 @@ def OnData(self, slice: Slice) -&gt; None:
 <?php } ?>
 
 <h4>Updates</h4>
-<p><?= $writingAlgorithms ? "The <code>BybitBrokerageModel</code> supports" : "We model the Bybit API by supporting"?> <a href='/docs/v2/writing-algorithms/trading-and-orders/order-management/order-tickets#04-Update-Orders'>order updates</a> for a Crypto Future asset that have one of the following <a href='/docs/v2/writing-algorithms/trading-and-orders/order-events#03-Order-States'>order states</a>:</p>
+<p><?= $writingAlgorithms ? "The <code>BybitBrokerageModel</code> supports" : "We model the Bybit API by supporting"?> <a href='/docs/v2/writing-algorithms/trading-and-orders/order-management/order-tickets#04-Update-Orders'>order updates</a> for Crypto Future assets that have one of the following <a href='/docs/v2/writing-algorithms/trading-and-orders/order-events#03-Order-States'>order states</a>:</p>
 <ul>
   <li><code>OrderStatus.New</code></li>
   <li><code>OrderStatus.PartiallyFilled</code></li>
