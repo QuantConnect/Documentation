@@ -27,7 +27,8 @@ $brokerages = array(
       "Terminal Link",
       "Trading Technologies",
       "Kraken",
-      "TD Ameritrade"
+      "TD Ameritrade",
+      "Bybit"
 );
 $brokerageNumber = array_search($brokerageName, $brokerages) + 1;
 ?>
@@ -49,6 +50,7 @@ Select a brokerage:
 11) Trading Technologies
 12) Kraken
 13) TD Ameritrade
+14) Bybit
 Enter an option: <?=$brokerageNumber?></pre>
 </div>
 
