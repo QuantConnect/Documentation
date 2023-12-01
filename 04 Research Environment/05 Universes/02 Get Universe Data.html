@@ -1,1 +1,38 @@
+<p>Universes are data types. When you request historical universe data, you get an object that contains a universe data collection for each day. You can iterate through each day in the object and then iterate through the universe data objects of each day.</p>
 
+<p class='csharp'>For example, to get all the US Equity Fundamental universe data for a specific time period, call the <code>UniverseHistory&lt;Fundamentals, Fundamental&gt;</code> method with start and end dates.</p>
+<p class='python'>For example, to get all historical data during a specific time period, call the <code>UniverseHistory</code> method with <code>Fundamentals</code>, a start date, and an end date.</p>
+
+<div class="section-example-container">
+    <pre class="csharp">var universeHistory = qb.UniverseHistory&lt;Fundamentals, Fundamental&gt;(new DateTime(2023, 11, 6), new DateTime(2023, 11, 13));</pre>
+    <pre class="python">universe_history = qb.UniverseHistory(Fundamentals, datetime(2023, 11, 6), datetime(2023, 11, 13))</pre>
+</div>
+
+<p>The end date argument is optional. If you omit it, you get all historical data between the start date and the current day.</p>
+
+<p>To get historical data for a specific universe, pass a filter function to the <code class='csharp'>UniverseHistory&lt;Fundamentals, Fundamental&gt;</code><code class='python'>UniverseHistory</code> method. In this case, the filter function receives a list of <code>Fundamental</code> objects and returns a list of <code>Symbol</code> objects, which represent the universe constituents.</p>
+
+<div class="section-example-container">
+    <pre class="csharp">IEnumerable&lt;Symbol&gt; FilterFunction(IEnumerable&lt;Fundamental&gt; fundamentals) 
+{
+    // Select the 10 Equities that have the lowest PE ratios
+    return fundamentals
+        .Where(f => f.HasFundamentalData)
+        .OrderByDescending(f => f.ValuationRatios.PERatio)
+        .Take(10)
+        .Select(f => f.Symbol);
+}
+
+var universeHistory = qb.UniverseHistory&lt;Fundamentals, Fundamental&gt;(new DateTime(2023, 11, 6), new DateTime(2023, 11, 13), FilterFunction);</pre>
+    <pre class="python">def filter_function(fundamentals: List[Fundamental]) -> List[Symbol]:
+    # Select the 10 Equities that have the lowest PE ratios
+    sorted_by_pe_ratio = sorted(
+        [f for f in fundamentals if f.HasFundamentalData], 
+        key=lambda fundamental: fundamental.ValuationRatios.PERatio
+    )
+    return [fundamental.Symbol for fundamental in sorted_by_pe_ratio[:10]]
+
+universe_history = qb.UniverseHistory(Fundamentals, datetime(2023, 11, 6), datetime(2023, 11, 13), filter_function)</pre>
+</div>
+
+<p>To see all the <code>Fundamental</code> attributes you can use to define a Fundamental universe, see <a href='/docs/v2/writing-algorithms/datasets/morningstar/us-fundamental-data#05-Data-Point-Attributes'>Data Point Attributes</a>.
