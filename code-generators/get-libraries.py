@@ -1,22 +1,24 @@
 from os import path, popen
-    
+from pathlib import Path
 if __name__ == '__main__':
+
+    lean_sln = Path("../Lean/QuantConnect.Lean.sln")
+    # Install Lean
+    if not lean_sln.is_file():
+        popen("git clone https://github.com/QuantConnect/Lean.git ../Lean").close()
+        popen(f"dotnet restore {lean_sln.resolve()}").close()
+
     docker_run = 'docker run --entrypoint bash quantconnect/lean:latest -c '
 
     cmds_by_file = {
         'supported-libraries.php': {
             'python': f'{docker_run} "pip list"',
-            'csharp': 'dotnet list ../Lean/QuantConnect.Lean.sln package'
+            'csharp': f'dotnet list {lean_sln.resolve()} package'
         },
         'supported-libraries-foundation-pomegranate.html': {
             'python': f'{docker_run} ". /Foundation-Pomegranate/bin/activate && pip list"'
         }
     }
-
-    # Install Lean
-    if not path.isfile("../Lean/QuantConnect.Lean.sln"):
-        popen("git clone https://github.com/QuantConnect/Lean.git ../Lean").close()
-        popen("dotnet restore ../Lean/QuantConnect.Lean.sln").close()
 
     package_reference = '''<PackageReference Include="Accord" Version="3.6.0" />
     <PackageReference Include="Accord.Audio" Version="3.6.0" />
