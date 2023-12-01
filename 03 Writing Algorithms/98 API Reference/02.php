@@ -2,6 +2,7 @@
 <?php echo file_get_contents(DOCS_RESOURCES."/qcalgorithm-api/_method_container.html"); ?>             
 <hr>
 <?php
+echo file_get_contents(DOCS_RESOURCES."/qcalgorithm-api/a.html");
 echo file_get_contents(DOCS_RESOURCES."/qcalgorithm-api/abands.html");
 echo file_get_contents(DOCS_RESOURCES."/qcalgorithm-api/ad.html");
 echo file_get_contents(DOCS_RESOURCES."/qcalgorithm-api/add-alpha.html");

@@ -29,6 +29,10 @@
 <table cellspacing="0" cellpadding="0" width="100%">
 <tbody>
 <tr>
+<td width="33%"><a href="#A-header">A()</a></td>
+<td>Creates a Alpha indicator for the given target symbol in relation with the reference used. The indicator will be automatically updated on the given resolution.</td>
+</tr>
+<tr>
 <td width="33%"><a href="#ABANDS-header">ABANDS()</a></td>
 <td>Creates a new Acceleration Bands indicator.</td>
 </tr>
@@ -1200,6 +1204,10 @@
 </div><div id="Indicators" class="ref-table-container">
 <table cellspacing="0" cellpadding="0">
 <tbody>
+<tr>
+<td width="33%"><a href="#A-header">A()</a></td>
+<td>Creates a Alpha indicator for the given target symbol in relation with the reference used. The indicator will be automatically updated on the given resolution.</td>
+</tr>
 <tr>
 <td width="33%"><a href="#ABANDS-header">ABANDS()</a></td>
 <td>Creates a new Acceleration Bands indicator.</td>
