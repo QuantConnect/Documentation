@@ -1,7 +1,7 @@
 <p>Universes are data types. When you request historical universe data, you get an object that contains a universe data collection for each day. You can iterate through each day in the object and then iterate through the universe data objects of each day.</p>
 
 <p class='csharp'>For example, to get all the US Equity Fundamental universe data for a specific time period, call the <code>UniverseHistory&lt;Fundamentals, Fundamental&gt;</code> method with start and end dates.</p>
-<p class='python'>For example, to get all historical data during a specific time period, call the <code>UniverseHistory</code> method with <code>Fundamentals</code>, a start date, and an end date.</p>
+<p class='python'>For example, to get all the US Equity Fundamental universe data for a specific time period, call the <code>UniverseHistory</code> method with the <code>Fundamentals</code> type, a start date, and an end date.</p>
 
 <div class="section-example-container">
     <pre class="csharp">var universeHistory = qb.UniverseHistory&lt;Fundamentals, Fundamental&gt;(new DateTime(2023, 11, 6), new DateTime(2023, 11, 13));</pre>
@@ -10,7 +10,7 @@
 
 <p>The end date argument is optional. If you omit it, you get all historical data between the start date and the current day.</p>
 
-<p>To get historical data for a specific universe, pass a filter function to the <code class='csharp'>UniverseHistory&lt;Fundamentals, Fundamental&gt;</code><code class='python'>UniverseHistory</code> method. In this case, the filter function receives a list of <code>Fundamental</code> objects and returns a list of <code>Symbol</code> objects, which represent the universe constituents.</p>
+<p>To narrow down the results and get historical universe data for assets that pass a specific filter, pass a filter function to the <code class='csharp'>UniverseHistory&lt;Fundamentals, Fundamental&gt;</code><code class='python'>UniverseHistory</code> method. In this case, the filter function receives a list of <code>Fundamental</code> objects and returns a list of <code>Symbol</code> objects, which represent the universe constituents.</p>
 
 <div class="section-example-container">
     <pre class="csharp">IEnumerable&lt;Symbol&gt; FilterFunction(IEnumerable&lt;Fundamental&gt; fundamentals) 
@@ -36,3 +36,30 @@ universe_history = qb.UniverseHistory(Fundamentals, datetime(2023, 11, 6), datet
 </div>
 
 <p>To see all the <code>Fundamental</code> attributes you can use to define a Fundamental universe, see <a href='/docs/v2/writing-algorithms/datasets/morningstar/us-fundamental-data#05-Data-Point-Attributes'>Data Point Attributes</a>.
+
+<p class='python'>The <code>UniverseHistory</code> method returns a DataFrame where the index is the time when universe selection would occur in a backtest. The DataFrame has one column, named "data". Each row in the data column contains a list of <code>Fundamental</code> objects. The following image shows the first 5 rows of an example DataFrame:</p>
+<img class="python docs-image" src="https://cdn.quantconnect.com/i/tu/universe-selection-history-dataframe-python.png" alt="Historical fundamental universe dataframe">
+<p class='python'>The access the universe selection data, iterate through the DataFrame.</p>
+
+<p class='csharp'>The <code>UniverseHistory</code> method returns a <code>IEnumerable&lt;IEnumerable&lt;Fundamental&gt;&gt;</code> object. To access the data, iterate through the result.</p>
+
+<div class="section-example-container">
+    <pre class="python">for date, fundamentals in universe_history.iterrows():
+    for fundamental in fundamentals['data']:
+        symbol = fundamental.Symbol
+        price = fundamental.Price
+        if fundamental.HasFundamentalData:
+            pe_ratio = fundamental.ValuationRatios.PERatio</pre>
+    <pre class="csharp">foreach (var fundamentals in universeHistory)
+{
+    foreach (var fundamental in fundamentals)
+    {
+        var symbol = fundamental.Symbol;
+        var price = fundamental.Price;
+        if (fundamental.HasFundamentalData)
+        {
+            var peRatio = fundamental.ValuationRatios.PERatio;
+        }
+    }
+}</pre>
+</div>
