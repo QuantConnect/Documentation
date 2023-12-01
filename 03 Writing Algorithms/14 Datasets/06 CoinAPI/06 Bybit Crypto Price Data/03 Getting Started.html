@@ -1,0 +1,25 @@
+<p>The following snippet demonstrates how to request data from the Bybit Crypto Price dataset:</p>
+
+<div class="section-example-container">
+<pre class="python">from QuantConnect.DataSource import *
+from QuantConnect.Data.UniverseSelection import *
+
+# Bybit accepts both Cash and Margin account types only.
+self.SetBrokerageModel(BrokerageName.Bybit, AccountType.Cash)
+self.SetBrokerageModel(BrokerageName.Bybit, AccountType.Margin)
+
+self.symbol = self.AddCrypto("BTCUSDT", Resolution.Minute, Market.Bybit).Symbol
+
+self.AddUniverse(CryptoCoarseFundamentalUniverse(Market.Bybit, self.UniverseSettings, self.UniverseSelectionFilter))
+</pre>
+<pre class="csharp">using QuantConnect.DataSource;
+using QuantConnect.Data.UniverseSelection;
+
+// Bybit accepts both Cash and Margin account types only.
+SetBrokerageModel(BrokerageName.Bybit, AccountType.Cash);
+SetBrokerageModel(BrokerageName.Bybit, AccountType.Margin);
+
+_symbol = AddCrypto("BTCUSDT", Resolution.Minute, Market.Bybit).Symbol;
+
+AddUniverse(new CryptoCoarseFundamentalUniverse(Market.Bybit, UniverseSettings, UniverseSelectionFilter));</pre>
+</div>
