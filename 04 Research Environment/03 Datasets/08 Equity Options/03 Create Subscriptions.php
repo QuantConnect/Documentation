@@ -27,7 +27,7 @@ include(DOCS_RESOURCES."/datasets/research-environment/load-csharp-assemblies.ph
         <pre class="csharp">option.SetFilter(-1, 1, 0, 90);</pre>
         <pre class="python">option.SetFilter(-1, 1, 0, 90)</pre>
     </div>
-    <p>The filter determines which contracts the <code>GetOptionHistory</code> method returns. If you don't set a filter, the default filter selects the contracts that have the following characteristics:</p>
+    <p>The filter determines which contracts the <code>OptionHistory</code> method returns. If you don't set a filter, the default filter selects the contracts that have the following characteristics:</p>
 <ul>
 	<li>Standard type (exclude weeklys)</li>
 	<li>Within 1 strike price of the underlying asset price</li>

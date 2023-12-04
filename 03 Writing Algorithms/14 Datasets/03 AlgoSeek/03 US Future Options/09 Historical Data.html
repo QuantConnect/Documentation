@@ -24,7 +24,7 @@ var historyQuoteBars = History&lt;QuoteBar&gt;(contract.Symbol, 100, Resolution.
 
 <h4>Historical Data In Research</h4>
 
-<p>To get historical US Future Options data in the Research Environment for the entire Option chain of a Futures contract, call the <b>GetOptionHistory</b> method with the Futures contract <b>Symbol</b>.</p>
+<p>To get historical US Future Options data in the Research Environment for the entire Option chain of a Futures contract, call the <b>OptionHistory</b> method with the Futures contract <b>Symbol</b>.</p>
 
 <div class="section-example-container">
 <pre class="python">qb = QuantBook()
@@ -34,7 +34,7 @@ future_contract_symbol = sorted(future_symbols, key=lambda s: s.ID.Date)[0]
 
 start_time = datetime(2021, 12, 1)
 end_time = datetime(2021, 12, 10)
-option_history = qb.GetOptionHistory(future_contract_symbol, start_time, end_time, Resolution.Minute)
+option_history = qb.OptionHistory(future_contract_symbol, start_time, end_time, Resolution.Minute)
 
 all_history = option_history.GetAllData()
 expiries = option_history.GetExpiryDates() 
@@ -46,7 +46,7 @@ var futureContractSymbol = futureSymbols.OrderBy(x =&gt; x.ID.Date).First();
     
 var startTime = new DateTime(2021, 12, 1);
 var endTime = new DateTime(2021, 12, 10);
-var optionHistory = qb.GetOptionHistory(futureContractSymbol, startTime, endTime, Resolution.Minute);
+var optionHistory = qb.OptionHistory(futureContractSymbol, startTime, endTime, Resolution.Minute);
 
 var contracts = optionHistory.SelectMany(x =&gt; x.OptionChains.SelectMany(y =&gt; y.Value.Contracts.Keys)).Distinct().ToList();
 var expiries = contracts.Select(x =&gt; x.ID.Date).Distinct().ToList();

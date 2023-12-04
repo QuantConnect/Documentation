@@ -54,20 +54,20 @@ var continuousHistoryTicks = History&lt;Tick&gt;(_futureSymbol, TimeSpan.FromSec
 
 <h4>Historical Data In Research</h4>
 
-<p>To get historical US Futures data in the Research Environment for an entire Futures chain, call the <b>GetFutureHistory</b> method with the canonical Future <b>Symbol</b>.</p>
+<p>To get historical US Futures data in the Research Environment for an entire Futures chain, call the <b>FutureHistory</b> method with the canonical Future <b>Symbol</b>.</p>
 
 <div class="section-example-container">
 <pre class="python">qb = QuantBook()
 future = qb.AddFuture(Futures.Metals.Gold) 
 future.SetFilter(0, 90)
-history = qb.GetFutureHistory(future.Symbol, datetime(2020, 6, 1), datetime(2020, 6, 5))
+history = qb.FutureHistory(future.Symbol, datetime(2020, 6, 1), datetime(2020, 6, 5))
 
 all_history = history.GetAllData()
 expiries = history.GetExpiryDates()</pre>
 <pre class="csharp">var qb = new QuantBook();
 var future = qb.AddFuture(Futures.Metals.Gold);
 future.SetFilter(0, 90);
-var history = qb.GetFutureHistory(future.Symbol, new DateTime(2020, 6, 1), new DateTime(2020, 6, 5));
+var history = qb.FutureHistory(future.Symbol, new DateTime(2020, 6, 1), new DateTime(2020, 6, 5));
     
 var contracts = history.SelectMany(x =&gt; x.OptionChains.SelectMany(y =&gt; y.Value.Contracts.Keys)).Distinct().ToList();
 var expiries = contracts.Select(x =&gt; x.ID.Date).Distinct().ToList();</pre>

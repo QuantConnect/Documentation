@@ -56,7 +56,7 @@ include(DOCS_RESOURCES."/datasets/research-environment/load-csharp-assemblies.ph
         <pre class="csharp">future.SetFilter(0, 90);</pre>
         <pre class="python">future.SetFilter(0, 90)</pre>
     </div>
-    <p>If you don't call the <code>SetFilter</code> method, the <code>GetFutureHistory</code> method won't return historical data.</p>
+    <p>If you don't call the <code>SetFilter</code> method, the <code>FutureHistory</code> method won't return historical data.</p>
 </ol>
 
 <p>If you want historical data on individual contracts and their <code>OpenInterest</code>, follow these steps to subscribe to individual Future contracts:</p>

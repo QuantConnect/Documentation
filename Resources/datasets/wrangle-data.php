@@ -425,7 +425,7 @@ var quoteBars = allHistorySlice.Where(slice => slice.QuoteBars.ContainsKey(<?=$p
 
 <? if ($supportsOptionHistory) { ?>
 <h4>OptionHistory Objects</h4>
-<p>The <code>GetOptionHistory</code> method returns an <code>OptionHistory</code> object. To get each <a href='/docs/v2/writing-algorithms/key-concepts/time-modeling/timeslices'>slice</a> in the <code>OptionHistory</code> object, iterate through it.</p>
+<p>The <code>OptionHistory</code> method returns an <code>OptionHistory</code> object. To get each <a href='/docs/v2/writing-algorithms/key-concepts/time-modeling/timeslices'>slice</a> in the <code>OptionHistory</code> object, iterate through it.</p>
 
 <div class='section-example-container'>
 <pre class='csharp'>foreach (var slice in optionHistory)
@@ -465,7 +465,7 @@ var quoteBars = allHistorySlice.Where(slice => slice.QuoteBars.ContainsKey(<?=$p
 
 <? if ($supportsFutureHistory) { ?>
 <h4>FutureHistory Objects</h4>
-<p>The <code>GetFutureHistory</code> method returns a <code>FutureHistory</code> object. To get each <a href='/docs/v2/writing-algorithms/key-concepts/time-modeling/timeslices'>slice</a> in the <code>FutureHistory</code> object, iterate through it.</p>
+<p>The <code>FutureHistory</code> method returns a <code>FutureHistory</code> object. To get each <a href='/docs/v2/writing-algorithms/key-concepts/time-modeling/timeslices'>slice</a> in the <code>FutureHistory</code> object, iterate through it.</p>
 
 <div class='section-example-container'>
 <pre class='csharp'>foreach (var slice in futureHistory)
