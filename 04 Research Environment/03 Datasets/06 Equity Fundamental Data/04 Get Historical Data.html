@@ -2,7 +2,7 @@
     You need a <a href="/docs/v2/research-environment/datasets/equity-fundamental-data#02-Create-Subscriptions">subscription</a> before you can request historical fundamental data for US Equities.
     On the time dimension, you can request an amount of historical data based on a trailing number of bars, a trailing period of time, or a defined period of time. 
     On the security dimension, you can request historical data for a single US Equity, a set of US Equities, or all of the US Equities in the US Fundamental dataset.
-    On the property dimension, you can call the <code>History</code> method to get all <a href='/docs/v2/writing-algorithms/datasets/morningstar/us-fundamental-data#05-Data-Point-Attributes'>fundamental properties</a> or you can call the <code>GetFundamental</code> method to get a specific property (for example, the price–earnings ratio).
+    On the property dimension, you can call the <code>History</code> method to get all <a href='/docs/v2/writing-algorithms/datasets/morningstar/us-fundamental-data#05-Data-Point-Attributes'>fundamental properties</a>.
 </p>
 
 <p>
@@ -65,7 +65,6 @@ all_fundamentals_history = qb.History[Fundamentals](timedelta(days=10))</pre>
 <h4>Defined Period of Time<br></h4>
 <p>
     To get the historical data of all the fundamental properties over specific period of time, call the <code>History</code> method with a start <code class="csharp">DateTime</code><code class="python">datetime</code> and an end <code class="csharp">DateTime</code><code class="python">datetime</code>.
-    To get the historical data of a single fundamental property over a specific period of time, call the <code>GetFundamental</code> method and include the name of a fundamental property.
     To view the possible fundamental properties, see the <code>Fundamental</code> attributes in <a href='/docs/v2/writing-algorithms/datasets/morningstar/us-fundamental-data#05-Data-Point-Attributes'>Data Point Attributes</a>.
     The start and end times you provide to these methods are based in the <a href='/docs/v2/research-environment/initialization#04-Set-Time-Zone'>notebook time zone</a>.
 </p>   
@@ -80,12 +79,7 @@ var setFundamentalHistory = qb.History&lt;Fundamental&gt;(symbols, startDate, en
 var allFundamentalHistory = qb.History&lt;Fundamental&gt;(qb.Securities.Keys, startDate, endDate);
     
 // Fundamentals objects
-var allFundamentalsHistory = qb.History&lt;Fundamentals&gt;(qb.Securities.Keys, startDate, endDate);
-
-// DataDictionary objects
-var singleOneAttributeHistory = qb.GetFundamental(symbols.First(), "ValuationRatios.PERatio", startDate, endDate);
-var setOneAttributeHistory = qb.GetFundamental(symbols, "ValuationRatios.PERatio", startDate, endDate);
-var allOneAttributeHistory = qb.GetFundamental(qb.Securities.Keys, "ValuationRatios.PERatio", startDate, endDate);</pre>
+var allFundamentalsHistory = qb.History&lt;Fundamentals&gt;(qb.Securities.Keys, startDate, endDate);</pre>
     <pre class="python">start_date = datetime(2021, 1, 1)
 end_date = datetime(2021, 2, 1)
 
@@ -93,11 +87,6 @@ end_date = datetime(2021, 2, 1)
 single_fundamental_df = qb.History(Fundamental, symbols[0], start_date, end_date)
 set_fundamental_df = qb.History(Fundamental, symbols, start_date, end_date)
 all_fundamental_df = qb.History(Fundamental, qb.Securities.Keys, start_date, end_date)
-
-# DataFrame of a fundamental property
-single_one_attribute_df = qb.GetFundamental(symbols[0], "ValuationRatios.PERatio", start_date, end_date)
-set_one_attribute_df = qb.GetFundamental(symbols, "ValuationRatios.PERatio", start_date, end_date)
-all_one_attribute_df = qb.GetFundamental(qb.Securities.Keys, "ValuationRatios.PERatio", start_date, end_date)
 
 # Fundamental objects
 single_fundamental_history = qb.History[Fundamental](symbols[0], start_date, end_date)

@@ -5,8 +5,8 @@
 <ol>    
     <li>Get some historical data.</li>
     <div class="section-example-container">
-        <pre class='csharp'>var history = qb.GetFundamental(symbols, "ValuationRatios.PERatio", new DateTime(2014, 1, 1), new DateTime(2015, 1, 1));</pre>
-        <pre class='python'>history = qb.GetFundamental(symbols, "ValuationRatios.PERatio", datetime(2014, 1, 1), datetime(2015, 1, 1))</pre>
+        <pre class='csharp'>var history = history = qb.History&lt;Fundamental&gt;(symbols, new DateTime(2014, 1, 1), new DateTime(2015, 1, 1));</pre>
+        <pre class='python'>history = qb.History[Fundamental](symbols, datetime(2014, 1, 1), datetime(2015, 1, 1))</pre>
     </div>
 
     <li class="csharp">Load the <code>Plotly.NET</code> package.</li>
@@ -24,7 +24,7 @@ using Plotly.NET.LayoutObjects;</pre>
         <pre class='csharp'>var charts = symbols.Select(
     symbol => Chart2D.Chart.Line&lt;DateTime, decimal, string&gt;(
         history.Select(x => (DateTime)x.Time),
-        history.Select(x => (decimal)x[symbol]),
+        history.Select(x => (decimal)x[symbol].ValuationRatios.PERatio)),
         Name: symbol.Value
     )
 );</pre>
@@ -50,9 +50,27 @@ layout.SetValue("title", title);</pre>
 chart.WithLayout(layout);</pre>
     </div>
 
+    <li class="python">Convert to pandas DataFrame.</li>
+    <div class="python section-example-container">
+        <pre class='python'>data = {}
+for fundamental_dict in history: # Iterate trading days
+    for symbol, fundamental in fundamental_dict.items(): # Iterate Symbols
+        datum = data.get(symbol, dict())
+        datum['index'] = datum.get('index', [])
+        datum['index'].append(fundamental.EndTime)
+        datum['pe_ratio'] = datum.get('pe_ratio', [])
+        datum['pe_ratio'].append(fundamental.ValuationRatios.PERatio)
+        data[symbol] = datum
+
+df = pd.DataFrame()
+for symbol, datum in data.items():
+    df_symbol = pd.DataFrame({symbol: pd.Series(datum['pe_ratio'], index=datum['index'])})
+    df = pd.concat([df, df_symbol], axis=1)</pre>
+    </div>
+
     <li class="python">Call the <code>plot</code> method on the history DataFrame.</li>
     <div class="python section-example-container">
-        <pre class='python'>history.plot(title='PE Ratio Over Time', figsize=(15, 8))</pre>
+        <pre class='python'>df.plot(title='PE Ratio Over Time', figsize=(15, 8))</pre>
     </div>
     
     <li>Show the plot.</li>
