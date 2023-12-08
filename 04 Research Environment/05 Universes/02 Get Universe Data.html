@@ -32,14 +32,14 @@ using QuantConnect.Data.Fundamental;</pre>
     <pre class="csharp">IEnumerable&lt;Symbol&gt; FilterFunction(IEnumerable&lt;Fundamental&gt; fundamentals) 
 {
     return fundamentals
-        .Where(f => f.HasFundamentalData)
+        .Where(f => !Double.IsNaN(f.ValuationRatios.PERatio))
         .OrderBy(f => f.ValuationRatios.PERatio)
         .Take(10)
         .Select(f => f.Symbol);
 }</pre>
     <pre class="python">def filter_function(fundamentals: List[Fundamental]) -> List[Symbol]:
     sorted_by_pe_ratio = sorted(
-        [f for f in fundamentals if f.HasFundamentalData], 
+        [f for f in fundamentals if not np.isnan(f.ValuationRatios.PERatio)], 
         key=lambda fundamental: fundamental.ValuationRatios.PERatio
     )
     return [fundamental.Symbol for fundamental in sorted_by_pe_ratio[:10]]</pre>
@@ -75,6 +75,7 @@ using QuantConnect.Data.Fundamental;</pre>
 {
     foreach (var fundamental in fundamentals)
     {
+        var date = fundamental.Time;
         var symbol = fundamental.Symbol;
         var price = fundamental.Price;
         if (fundamental.HasFundamentalData)
