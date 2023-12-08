@@ -38,6 +38,7 @@ COVER_PAGE_DIR = "single-page/cover-page"
 IMAGE_DIR = "single-page/images"
 CSS_DIR = "single-page/css"
 sections = {}
+PhpErrors = []
 
 def GetContent(date: str) -> dict:
     filename = f"documentation.v2.{date}.en.json"
@@ -112,6 +113,7 @@ def Generate(branch: Union[dict, list], this_section: str) -> Tuple[str, str]:
                 # Completion of links
                 c = f"""{content['content'].strip().replace("a href='/docs/v2", "a href='https://www.quantconnect.com/docs/v2/").replace('a href="/docs/v2', 'a href="https://www.quantconnect.com/docs/v2/').replace('a href=/docs/v2', 'a href=https://www.quantconnect.com/docs/v2/').replace('a href="/', 'a href="https://www.quantconnect.com/').replace("a href='/", "a href='https://www.quantconnect.com/").replace("a href=/", "a href=https://www.quantconnect.com/")}"""
                 # fix any html unclosed tags and hided details
+                SavePhpImportError(branch['filePath'], c)
                 soup = BeautifulSoup(c, features="lxml")
                 for x in soup.find_all("div", {"class": "method-details"}):
                     x["style"] = x["style"].replace("display: none", "display: block")
@@ -129,6 +131,10 @@ def Generate(branch: Union[dict, list], this_section: str) -> Tuple[str, str]:
             html += content
 
     return html, this_section
+
+def SavePhpImportError(path: str, html: str):
+    if html.find('Failed to open stream') > 0:
+        PhpErrors.append(path)
 
 def Knit(content: list, name: str) -> str:
     global sections
@@ -331,3 +337,6 @@ if __name__ == "__main__":
             raise Exception(f"Main(): {sys.argv[-1]} is not in valid format, expected date input in format: yyyyMMdd")
     
     Run(date)
+    if PhpErrors:
+        print('\n'.join(path for path in PhpErrors))
+        sys.exit(1)
