@@ -1,1 +1,1 @@
-<?php include(DOCS_RESOURCES."/datasets/market-hours/no-late-opens.html"); ?>
+<?php include(DOCS_RESOURCES."/datasets/market-hours/future/cme/MNQ/late-opens.html"); ?>
