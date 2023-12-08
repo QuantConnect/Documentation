@@ -636,7 +636,6 @@ Accord.MachineLearning               3.6.0
 Accord.Math                          3.6.0
 Accord.Statistics                    3.6.0
 CloneExtensions                      1.3.0
-CoinAPI.WebSocket.V1                 1.6.7
 Common.Logging                       3.4.1
 Common.Logging.Core                  3.4.1
 CsvHelper                            19.0.0
@@ -644,8 +643,6 @@ Deedle                               2.1.0
 DotNetZip                            1.16.0
 DynamicInterop                       0.9.1
 fasterflect                          3.0.0
-IQFeed.CSharpApiClient               2.5.1
-LaunchDarkly.EventSource             3.3.2
 MathNet.Numerics                     5.0.0
 McMaster.Extensions.CommandLineUtils 2.6.0
 Microsoft.IO.RecyclableMemoryStream  2.3.2
@@ -657,8 +654,6 @@ Newtonsoft.Json                      13.0.2
 NodaTime                             3.0.5
 NUnit                                3.13.3
 NUnit3TestAdapter                    4.2.1
-Plotly.NET                           3.0.1
-Plotly.NET.Interactive               3.0.2
 protobuf-net                         3.1.33
 QLNet                                1.13.0
 QuantConnect.pythonnet               2.0.25
@@ -690,6 +685,8 @@ Microsoft.ML.TensorFlow              2.0.1
 Microsoft.ML.TimeSeries              2.0.1
 NumSharp                             0.30.0
 OpenAI                               1.7.2
+Plotly.NET                           3.0.1
+Plotly.NET.Interactive               3.0.2
 R.NET                                1.9.0
 SharpLearning.AdaBoost               0.31.8
 SharpLearning.Common.Interfaces      0.31.8
