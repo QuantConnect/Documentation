@@ -117,12 +117,12 @@ def Generate_Indicators_Reference():
     types = {
         'Indicator': {
             'name': 'data-point-indicator',
-            'update-parameter-type': 'time/number pair, or an <code>IndicatorDataPoint</code>',
+            'update-parameter-type': 'time/number pair or an <code>IndicatorDataPoint</code>',
             'update-parameter-value': 'bar.EndTime, bar.Close'
         },
         'BarIndicator': {
             'name': 'bar-indicator',
-            'update-parameter-type': 'a <code>TradeBar</code>, or <code>QuoteBar</code>',
+            'update-parameter-type': 'a <code>TradeBar</code> or <code>QuoteBar</code>',
             'update-parameter-value': 'bar'
         },
         'TradeBarIndicator': {
@@ -223,6 +223,10 @@ $imageSource = "{image_source}";
 include(DOCS_RESOURCES."/indicators/visualization.php");
 ?>""")
 
+        if description.find('<see cref=\"T:') > 0:
+            description = description.replace('<see cref=\"T:','').replace('\" />','')
+        if len(description) > 127:
+            description = description[:127] + '...'
         with open(f'{folder}/metadata.json', 'w', encoding='utf-8') as fp:
             metadata = {
                 'type': 'metadata',

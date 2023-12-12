@@ -547,10 +547,22 @@ class IndicatorImageGeneratorAlgorithm(QCAlgorithm):
                 'title' : 'TRIN([symbol, Symbol.Create("QQQ", SecurityType.Equity, Market.USA)])',
                 'columns' : []
             },
+            'alpha':
+            {
+                'code': Alpha("", Symbol.Create("QQQ", SecurityType.Equity, Market.USA), Symbol.Create("SPY", SecurityType.Equity, Market.USA), 20),
+                'title' : 'A(symbol, reference, 20)',
+                'columns' : []
+            },
             'beta':
             {
-                'code': Beta("", 20, Symbol.Create("QQQ", SecurityType.Equity, Market.USA), Symbol.Create("SPY", SecurityType.Equity, Market.USA)),
-                'title' : 'B(Symbol.Create("QQQ", SecurityType.Equity, Market.USA), symbol, 20)',
+                'code': Beta("", Symbol.Create("QQQ", SecurityType.Equity, Market.USA), Symbol.Create("SPY", SecurityType.Equity, Market.USA), 20),
+                'title' : 'B(symbol, reference, 20)',
+                'columns' : []
+            },
+            'correlation':
+            {
+                'code': Correlation("", Symbol.Create("QQQ", SecurityType.Equity, Market.USA), Symbol.Create("SPY", SecurityType.Equity, Market.USA), 20, correlationType=CorrelationType.Pearson),
+                'title' : 'C(symbol, reference, 20, correlationType=CorrelationType.Pearson)',
                 'columns' : []
             },
             'filtered-identity':
@@ -657,6 +669,42 @@ class IndicatorImageGeneratorAlgorithm(QCAlgorithm):
                 values.append(indicator['code'].Current.Value)
         df = pd.DataFrame(values, index=index, columns=["advancedeclinevolumeratio"])
         generate("advance-decline-volume-ratio", indicator, df)
+
+        index, values = [], []
+        indicator = special_indicators.get('alpha')
+        indicator['code'] = qb.A("SPY","QQQ", 1, 20)
+        for bars in history:
+            indicator['code'].Update(bars.get("SPY"))
+            indicator['code'].Update(bars.get("QQQ"))
+            if indicator['code'].IsReady:
+                index.append(bars.Time)
+                values.append(indicator['code'].Current.Value)
+        df = pd.DataFrame(values, index=index, columns=["alpha"])
+        generate("alpha", indicator, df)
+        
+        index, values = [], []
+        indicator = special_indicators.get('beta')
+        indicator['code'] = qb.B("SPY","QQQ", 20)
+        for bars in history:
+            indicator['code'].Update(bars.get("SPY"))
+            indicator['code'].Update(bars.get("QQQ"))
+            if indicator['code'].IsReady:
+                index.append(bars.Time)
+                values.append(indicator['code'].Current.Value)
+        df = pd.DataFrame(values, index=index, columns=["beta"])
+        generate("beta", indicator, df)
+        
+        index, values = [], []
+        indicator = special_indicators.get('correlation')
+        indicator['code'] = qb.C("SPY","QQQ", 20, CorrelationType.Pearson)
+        for bars in history:
+            indicator['code'].Update(bars.get("SPY"))
+            indicator['code'].Update(bars.get("QQQ"))
+            if indicator['code'].IsReady:
+                index.append(bars.Time)
+                values.append(indicator['code'].Current.Value)
+        df = pd.DataFrame(values, index=index, columns=["correlation"])
+        generate("correlation", indicator, df)
 
         index, values = [], []
         indicator = special_indicators.get('arms-index')
