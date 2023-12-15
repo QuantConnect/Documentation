@@ -656,7 +656,7 @@ NUnit                                3.13.3
 NUnit3TestAdapter                    4.2.1
 protobuf-net                         3.1.33
 QLNet                                1.13.0
-QuantConnect.pythonnet               2.0.25
+QuantConnect.pythonnet               2.0.26
 RestSharp                            106.12.0
 SharpZipLib                          1.3.3
 System.ComponentModel.Composition    6.0.0
