@@ -61,6 +61,29 @@
 <? if($hasMovingAverageTypeParameter) { ?>
 <p>The following table describes the <code>MovingAverageType</code> enumeration members:</p>
 <div data-tree='QuantConnect.Indicators.MovingAverageType'></div>
+
+<p>To avoid parameter ambiguity, use the <code>resolution</code> argument to set the <code>Resolution</code>.</p>
+
+<div class="section-example-container">
+    <pre class="csharp">public class <?=$typeName?>Algorithm : QCAlgorithm
+{
+    private Symbol _symbol;
+    private <?=$typeName?> _<?=strtolower($helperName)?>;
+
+    public override void Initialize()
+    {
+        _symbol = AddEquity("SPY", Resolution.Hour).Symbol;<? if($hasReference) { ?>
+        var reference = AddEquity("QQQ", Resolution.Hour).Symbol;<?}?>
+        _<?=strtolower($helperName)?> = <?=$helperPrefix?><?=$helperName?>(<?=str_replace("symbol", "_symbol", $helperArguments)?>, resolution: Resolution.Daily);
+    }
+}</pre>
+    <pre class="python">class <?=$typeName?>Algorithm(QCAlgorithm):
+    def Initialize(self) -> None:
+        self.symbol = self.AddEquity("SPY", Resolution.Hour).Symbol<? if($hasReference) { ?>
+        reference = self.AddEquity("QQQ", Resolution.Hour).Symbol<?}?>
+        self.<?=strtolower($helperName)?> = self.<?=$helperPrefix?><?=$helperName?>(<?=str_replace("symbol", "self.symbol", $helperArguments)?>, resolution=Resolution.Daily)
+</pre>
+</div>
 <? } ?>
 <? } else {?>
 <p><?=$typeName?> does not have an automatic indicator implementation available.</p>
