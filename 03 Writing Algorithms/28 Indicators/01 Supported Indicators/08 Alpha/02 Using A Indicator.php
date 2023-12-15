@@ -2,6 +2,7 @@
 <? 
 include(DOCS_RESOURCES."/qcalgorithm-api/_method_container.html");
 
+$hadReference = true;
 $hasAutomaticIndicatorHelper = true;
 $helperPrefix = '';
 $typeName = 'Alpha';
@@ -10,7 +11,7 @@ $helperArguments = 'symbol, reference, 20';
 $properties = array();
 $otherProperties = array();
 $updateParameterType = 'a <code>TradeBar</code> or <code>QuoteBar</code>';
-$constructorArguments = '"", Symbol.Create("QQQ", SecurityType.Equity, Market.USA), Symbol.Create("SPY", SecurityType.Equity, Market.USA), 20';
+$constructorArguments = '"", symbol, reference, 20';
 $updateParameterValue = 'bar';
 $hasMovingAverageTypeParameter = False;
 $constructorBox = 'alpha';

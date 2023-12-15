@@ -2,6 +2,7 @@
 <? 
 include(DOCS_RESOURCES."/qcalgorithm-api/_method_container.html");
 
+$hadReference = false;
 $hasAutomaticIndicatorHelper = false;
 $helperPrefix = '';
 $typeName = 'Delay';

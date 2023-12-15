@@ -2,11 +2,12 @@
 <? 
 include(DOCS_RESOURCES."/qcalgorithm-api/_method_container.html");
 
+$hadReference = true;
 $hasAutomaticIndicatorHelper = true;
 $helperPrefix = '';
 $typeName = 'McClellanSummationIndex';
 $helperName = 'MSI';
-$helperArguments = '[symbol, Symbol.Create("QQQ", SecurityType.Equity, Market.USA)]';
+$helperArguments = '[symbol, reference]';
 $properties = array("McClellanOscillator");
 $otherProperties = array();
 $updateParameterType = 'a <code>TradeBar</code>';

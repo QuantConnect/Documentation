@@ -526,42 +526,42 @@ class IndicatorImageGeneratorAlgorithm(QCAlgorithm):
             'advance-decline-difference':
             {
                 'code': AdvanceDeclineDifference(""),
-                'title' : 'ADDIFF([symbol, Symbol.Create("QQQ", SecurityType.Equity, Market.USA)])',
+                'title' : 'ADDIFF([symbol, reference])',
                 'columns' : []
             },
             'advance-decline-ratio':
             {
                 'code': AdvanceDeclineRatio(""),
-                'title' : 'ADR([symbol, Symbol.Create("QQQ", SecurityType.Equity, Market.USA)])',
+                'title' : 'ADR([symbol, reference])',
                 'columns' : []
             },
             'advance-decline-volume-ratio':
             {
                 'code': AdvanceDeclineVolumeRatio(""),
-                'title' : 'ADVR([symbol, Symbol.Create("QQQ", SecurityType.Equity, Market.USA)])',
+                'title' : 'ADVR([symbol, reference])',
                 'columns' : []
             },
             'arms-index':
             {
                 'code': ArmsIndex(""),
-                'title' : 'TRIN([symbol, Symbol.Create("QQQ", SecurityType.Equity, Market.USA)])',
+                'title' : 'TRIN([symbol, reference])',
                 'columns' : []
             },
             'alpha':
             {
-                'code': Alpha("", Symbol.Create("QQQ", SecurityType.Equity, Market.USA), Symbol.Create("SPY", SecurityType.Equity, Market.USA), 20),
+                'code': Alpha("", symbol, reference, 20),
                 'title' : 'A(symbol, reference, 20)',
                 'columns' : []
             },
             'beta':
             {
-                'code': Beta("", Symbol.Create("QQQ", SecurityType.Equity, Market.USA), Symbol.Create("SPY", SecurityType.Equity, Market.USA), 20),
+                'code': Beta("", symbol, reference, 20),
                 'title' : 'B(symbol, reference, 20)',
                 'columns' : []
             },
             'correlation':
             {
-                'code': Correlation("", Symbol.Create("QQQ", SecurityType.Equity, Market.USA), Symbol.Create("SPY", SecurityType.Equity, Market.USA), 20, correlationType=CorrelationType.Pearson),
+                'code': Correlation("", symbol, reference, 20, correlationType=CorrelationType.Pearson),
                 'title' : 'C(symbol, reference, 20, correlationType=CorrelationType.Pearson)',
                 'columns' : []
             },
@@ -580,13 +580,13 @@ class IndicatorImageGeneratorAlgorithm(QCAlgorithm):
             'mc-clellan-oscillator':
             {
                 'code': McClellanOscillator(""),
-                'title' : 'MOSC([symbol, Symbol.Create("QQQ", SecurityType.Equity, Market.USA)])',
+                'title' : 'MOSC([symbol, reference])',
                 'columns' : []
             },
             'mc-clellan-summation-index':
             {
                 'code': McClellanSummationIndex(""),
-                'title' : 'MSI([symbol, Symbol.Create("QQQ", SecurityType.Equity, Market.USA)])',
+                'title' : 'MSI([symbol, reference])',
                 'columns' : []
             },
             'target-downside-deviation':

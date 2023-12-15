@@ -2,11 +2,12 @@
 <? 
 include(DOCS_RESOURCES."/qcalgorithm-api/_method_container.html");
 
+$hadReference = true;
 $hasAutomaticIndicatorHelper = true;
 $helperPrefix = '';
 $typeName = 'AdvanceDeclineVolumeRatio';
 $helperName = 'ADVR';
-$helperArguments = '[symbol, Symbol.Create("QQQ", SecurityType.Equity, Market.USA)]';
+$helperArguments = '[symbol, reference]';
 $properties = array();
 $otherProperties = array();
 $updateParameterType = 'a <code>TradeBar</code>';

@@ -2,6 +2,7 @@
 <? 
 include(DOCS_RESOURCES."/qcalgorithm-api/_method_container.html");
 
+$hadReference = false;
 $hasAutomaticIndicatorHelper = true;
 $helperPrefix = '';
 $typeName = 'CommodityChannelIndex';

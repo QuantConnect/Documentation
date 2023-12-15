@@ -2,11 +2,12 @@
 <? 
 include(DOCS_RESOURCES."/qcalgorithm-api/_method_container.html");
 
+$hadReference = true;
 $hasAutomaticIndicatorHelper = true;
 $helperPrefix = '';
 $typeName = 'McClellanOscillator';
 $helperName = 'MOSC';
-$helperArguments = '[symbol, Symbol.Create("QQQ", SecurityType.Equity, Market.USA)]';
+$helperArguments = '[symbol, reference]';
 $properties = array("EMAFast","EMASlow","ADDifference");
 $otherProperties = array();
 $updateParameterType = 'a <code>TradeBar</code>';
