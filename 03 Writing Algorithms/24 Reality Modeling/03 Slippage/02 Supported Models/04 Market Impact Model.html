@@ -44,14 +44,7 @@ In contrast, temporary impact refers to the price difference between the instant
     $$J=\sigma T \eta\left|\frac{X}{VT}\right|^\beta+\sigma\sqrt{T_{\text{post}}}\epsilon$$
     where $\Theta$ is the share outstanding, $T_{post}$ is the time difference between order submission and the new equilibrium established, $I$ is the permanent market impact, and $J$ is the temporary market impact. The inverse of the turnover rate $\frac{\Theta}{V}$ contributes to the permanent impact. This relationship is reasonable since higher turnover means more market participants are in the market, so the order book depth is deeper.</p>
 
-<p>The default parameters of the model is are the parameters that the authors calibrated and shared. However, you may want to reference the original paper and recalibrate the parameters because of the following reasons:</p>
-<ul>
-    <li>The default parameters are calibrated around 2 decades ago</li>
-    <li>The trading time effect is not accounted (volume near market open/close is larger)</li>
-    <li>The market environment does not have many market makers at that time</li>
-</ul>
-
-<h4>Set the Model</h4>
+<h4>Implementation</h4>
 <div class="section-example-container">
 <pre class="csharp">security.SetSlippageModel(new MarketImpactSlippageModel(self));</pre>
 <pre class="python">security.SetSlippageModel(MarketImpactSlippageModel(self))</pre>
@@ -131,6 +124,13 @@ In contrast, temporary impact refers to the price difference between the instant
         </tr>
     </tbody>
 </table>
+
+<p>The default parameters of the <code>MarketImpactSlippageModel</code> are the parameters that the authors calibrated and shared. However, you may want to reference the original paper and recalibrate the parameters because of the following reasons:</p>
+<ul>
+    <li>The default parameters are calibrated around 2 decades ago</li>
+    <li>The trading time effect is not accounted (volume near market open/close is larger)</li>
+    <li>The market environment does not have many market makers at that time</li>
+</ul>
 
 
 <p>To view the implementation of this model, see the <a target="_blank" rel="nofollow" href="https://github.com/QuantConnect/Lean/blob/master/Common/Orders/Slippage/MarketImpactSlippageModel.cs">LEAN GitHub repository</a>.</p>
