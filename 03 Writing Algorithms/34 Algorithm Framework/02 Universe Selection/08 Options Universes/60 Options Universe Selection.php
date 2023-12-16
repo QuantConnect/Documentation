@@ -93,7 +93,7 @@ def select_option_chain_symbols(self, utc_time: datetime) -&gt; List[Symbol]:
 
 <? include(DOCS_RESOURCES."/universes/option/option-filter-universe.html"); ?>
 
-<p>Depending on how you define the contract filter, LEAN may call it once a day or at every time step.</p> 
+<p>The contract filter runs at the first time step of each day.</p>
 
 <p>To move the selection functions outside of the algorithm class, create a universe selection model that inherits the <code>OptionUniverseSelectionModel</code> class.</p>
 
