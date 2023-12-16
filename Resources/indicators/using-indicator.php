@@ -9,8 +9,8 @@
 
     public override void Initialize()
     {
-        _symbol = AddEquity("SPY", Resolution.Daily).Symbol;<? if($hasReference) { ?>
-        var reference = AddEquity("QQQ", Resolution.Daily).Symbol;<?}?>
+        _symbol = AddEquity("SPY", Resolution.Daily).Symbol;
+        <? if($hasReference) { ?>var reference = AddEquity("QQQ", Resolution.Daily).Symbol;<?}?>
         _<?=strtolower($helperName)?> = <?=$helperPrefix?><?=$helperName?>(<?=str_replace("symbol", "_symbol", $helperArguments)?>);
     }
 
@@ -31,8 +31,8 @@
 }</pre>
     <pre class="python">class <?=$typeName?>Algorithm(QCAlgorithm):
     def Initialize(self) -> None:
-        self.symbol = self.AddEquity("SPY", Resolution.Daily).Symbol<? if($hasReference) { ?>
-        reference = self.AddEquity("QQQ", Resolution.Daily).Symbol<?}?>
+        self.symbol = self.AddEquity("SPY", Resolution.Daily).Symbol
+        <? if($hasReference) { ?>reference = self.AddEquity("QQQ", Resolution.Daily).Symbol<?}?>
         self.<?=strtolower($helperName)?> = self.<?=$helperPrefix?><?=$helperName?>(<?=str_replace("symbol", "self.symbol", $helperArguments)?>)
 
     def OnData(self, slice: Slice) -> None:
@@ -72,15 +72,15 @@
 
     public override void Initialize()
     {
-        _symbol = AddEquity("SPY", Resolution.Hour).Symbol;<? if($hasReference) { ?>
-        var reference = AddEquity("QQQ", Resolution.Hour).Symbol;<?}?>
+        _symbol = AddEquity("SPY", Resolution.Hour).Symbol;
+        <? if($hasReference) { ?>var reference = AddEquity("QQQ", Resolution.Hour).Symbol;<?}?>
         _<?=strtolower($helperName)?> = <?=$helperPrefix?><?=$helperName?>(<?=str_replace("symbol", "_symbol", $helperArguments)?>, resolution: Resolution.Daily);
     }
 }</pre>
     <pre class="python">class <?=$typeName?>Algorithm(QCAlgorithm):
     def Initialize(self) -> None:
-        self.symbol = self.AddEquity("SPY", Resolution.Hour).Symbol<? if($hasReference) { ?>
-        reference = self.AddEquity("QQQ", Resolution.Hour).Symbol<?}?>
+        self.symbol = self.AddEquity("SPY", Resolution.Hour).Symbol
+        <? if($hasReference) { ?>reference = self.AddEquity("QQQ", Resolution.Hour).Symbol<?}?>
         self.<?=strtolower($helperName)?> = self.<?=$helperPrefix?><?=$helperName?>(<?=str_replace("symbol", "self.symbol", $helperArguments)?>, resolution=Resolution.Daily)
 </pre>
 </div>
@@ -101,8 +101,8 @@
 
     public override void Initialize()
     {
-        _symbol = AddEquity("SPY", Resolution.Daily).Symbol;<? if($hasReference) { ?>
-        var reference = AddEquity("QQQ", Resolution.Daily).Symbol;<?}?>
+        _symbol = AddEquity("SPY", Resolution.Daily).Symbol;
+        <? if($hasReference) { ?>var reference = AddEquity("QQQ", Resolution.Daily).Symbol;<?}?>
         _<?=strtolower($helperName)?> = new <?=$typeName?>(<?=str_replace("symbol", "_symbol", $constructorArguments)?>);
     }
 
@@ -128,8 +128,8 @@
 }</pre>
     <pre class="python">class <?=$typeName?>Algorithm(QCAlgorithm):
     def Initialize(self) -> None:
-        self.symbol = self.AddEquity("SPY", Resolution.Daily).Symbol<? if($hasReference) { ?>
-        reference = self.AddEquity("QQQ", Resolution.Daily).Symbol<?}?>
+        self.symbol = self.AddEquity("SPY", Resolution.Daily).Symbol
+        <? if($hasReference) { ?>reference = self.AddEquity("QQQ", Resolution.Daily).Symbol<?}?>
         self.<?=strtolower($helperName)?> = <?=$typeName?>(<?=str_replace("symbol", "self.symbol", $constructorArguments)?>)
 
     def OnData(self, slice: Slice) -> None:
@@ -161,11 +161,11 @@
 
     public override void Initialize()
     {
-        _symbol = AddEquity("SPY", Resolution.Daily).Symbol;<? if($hasReference) { ?>
-        var reference = AddEquity("QQQ", Resolution.Daily).Symbol;<?}?>
+        _symbol = AddEquity("SPY", Resolution.Daily).Symbol;
+        <? if($hasReference) { ?>var reference = AddEquity("QQQ", Resolution.Daily).Symbol;<?}?>
         _<?=strtolower($helperName)?> = new <?=$typeName?>(<?=str_replace("symbol", "_symbol", $constructorArguments)?>);
-        RegisterIndicator(_symbol, _<?=strtolower($helperName)?>, Resolution.Daily);<? if($hasReference) { ?>
-        RegisterIndicator(reference, _<?=strtolower($helperName)?>, Resolution.Daily);<?}?>
+        RegisterIndicator(_symbol, _<?=strtolower($helperName)?>, Resolution.Daily);
+        <? if($hasReference) { ?>RegisterIndicator(reference, _<?=strtolower($helperName)?>, Resolution.Daily);<?}?>
     }
 
     public override void OnData(Slice data)
@@ -185,11 +185,11 @@
 }</pre>
     <pre class="python">class <?=$typeName?>Algorithm(QCAlgorithm):
     def Initialize(self) -> None:
-        self.symbol = self.AddEquity("SPY", Resolution.Daily).Symbol<? if($hasReference) { ?>
-        reference = self.AddEquity("QQQ", Resolution.Daily).Symbol<?}?>
+        self.symbol = self.AddEquity("SPY", Resolution.Daily).Symbol
+        <? if($hasReference) { ?>reference = self.AddEquity("QQQ", Resolution.Daily).Symbol<?}?>
         self.<?=strtolower($helperName)?> = <?=$typeName?>(<?=str_replace("symbol", "self.symbol", $constructorArguments)?>)
-        self.RegisterIndicator(self.symbol, self.<?=strtolower($helperName)?>, Resolution.Daily)<? if($hasReference) { ?>
-        self.RegisterIndicator(reference, self.<?=strtolower($helperName)?>, Resolution.Daily)<?}?>
+        self.RegisterIndicator(self.symbol, self.<?=strtolower($helperName)?>, Resolution.Daily)
+        <? if($hasReference) { ?>self.RegisterIndicator(reference, self.<?=strtolower($helperName)?>, Resolution.Daily)<?}?>
 
     def OnData(self, slice: Slice) -> None:
         if self.<?=strtolower($helperName)?>.IsReady:
