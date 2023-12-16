@@ -72,7 +72,7 @@ def select_future_chain_symbols(self, utc_time: datetime) -&gt; List[Symbol]:
 
 <?php echo file_get_contents(DOCS_RESOURCES."/universes/future/future-filter-universe.html");?>
 	
-<p>Depending on how you define the contract filter, LEAN may call it once a day or at every time step.</p>
+<p>The contract filter runs at the first time step of each day.</p>
 
 <div class="section-example-container">
 	<pre class="csharp">// In Initialize
