@@ -2,7 +2,7 @@
 <? 
 include(DOCS_RESOURCES."/qcalgorithm-api/_method_container.html");
 
-$hadReference = false;
+$hasReference = false;
 $hasAutomaticIndicatorHelper = true;
 $helperPrefix = '';
 $typeName = 'MidPrice';

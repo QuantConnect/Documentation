@@ -197,7 +197,7 @@ def Generate_Indicators_Reference():
 <? 
 include(DOCS_RESOURCES."/qcalgorithm-api/_method_container.html");
 
-$hadReference = { 'true' if 'reference' in indicator['helper-arguments'] else 'false' };
+$hasReference = { 'true' if 'reference' in indicator['helper-arguments'] else 'false' };
 $hasAutomaticIndicatorHelper = {'true' if type_name != 'Delay' else 'false'};
 $helperPrefix = '{'CandlestickPatterns.' if 'CandlestickPatterns' in source else ''}';
 $typeName = '{type_name}';
