@@ -1,31 +1,4 @@
-<p>The following table shows the supported allocation methods for FA group orders:</p>
-
-<table class="table qc-table">
-    <thead>
-        <tr>
-            <th style="width: 25%"><code>FaMethod</code></th>
-            <th style="width: 75%">Description</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr>
-            <td><code>"EqualQuantity"</code></td>
-            <td>Distributes shares equally between all accounts in the group. If you use this method, specify an order quantity.</td>
-        </tr>
-        <tr>
-            <td><code>"NetLiq"</code></td>
-            <td>Distributes shares based on the net liquidation value of each account. The system calculates ratios based on the net liquidation value in each account and allocates shares based on these ratios. If you use this method, specify an order quantity.</td>
-        </tr>
-        <tr>
-            <td><code>"AvailableEquity"</code></td>
-            <td>Distributes shares based on the amount of available equity in each account. The system calculates ratios based on the available equity in each account and allocates shares based on these ratios. If you use this method, specify an order quantity.</td>
-        </tr>
-        <tr>
-            <td><code>"PctChange"</code></td>
-            <td>Increases or decreases an already existing position. Positive percents increase positions and negative percents decrease positions. If you use this method, specify a percent instead of an order quantity.</td>
-        </tr>
-    </tbody>
-</table>
+<p>LEAN supports several allocation methods for FA group orders. If you intend to use the same group allocation method for every order, set the <code>DefaultOrderProperties</code> of your algorithm, which sets the order properties for all of your orders.</p>
 
 <div class="section-example-container">
     <pre class="csharp">public override void Initialize()
@@ -42,29 +15,7 @@
 public override void OnData(Slice slice)
 {
     // Use default order order properties
-    LimitOrder(_symbol, quantity, limitPrice);
-
-    // Override the default order properties
-    // "NetLiq" requires a order size input
-    LimitOrder(_symbol, quantity, limitPrice, 
-               orderProperties: new InteractiveBrokersOrderProperties
-               { 
-                   FaMethod = "NetLiq" 
-               });
-
-    // "AvailableEquity" requires a order size input
-    LimitOrder(_symbol, quantity, limitPrice, 
-               orderProperties: new InteractiveBrokersOrderProperties
-               { 
-                   FaMethod = "AvailableEquity" 
-               });
-    
-    // "PctChange" requires a percentage of portfolio input
-    SetHoldings(_symbol, pctPortfolio,
-                orderProperties: new InteractiveBrokersOrderProperties
-                { 
-                    FaMethod = "PctChange" 
-                });
+    LimitOrder(_symbol, quantity, limitPrice);  
 }</pre>
     <pre class="python">def Initialize(self) -&gt; None:
     # Set the default order properties
@@ -74,17 +25,63 @@ public override void OnData(Slice slice)
     self.DefaultOrderProperties.Account = "DU123456"
 
 def OnData(self, slice: Slice) -&gt; None:
-    # Override the default order properties
-    # "NetLiq" requires a order size input
-    order_properties = InteractiveBrokersOrderProperties()
-    order_properties.FaMethod = "NetLiq"
-    self.LimitOrder(self.symbol, quantity, limit_price, orderProperties=order_properties)
-
-    # "AvailableEquity" requires a order size input
-    order_properties.FaMethod = "AvailableEquity"
-    self.LimitOrder(self.symbol, quantity, limit_price, orderProperties=order_properties)
-
-    # "PctChange" requires a percentage of portfolio input
-    order_properties.FaMethod = "PctChange"
-    self.SetHoldings(self.symbol, pct_portfolio, orderProperties=order_properties)</pre>
+    # Use default order order properties
+    LimitOrder(_symbol, quantity, limitPrice);</pre>
 </div>
+
+<p>To adjust the order properties of an order, change the <code>DefaultOrderProperties</code> or pass an <a href='/docs/v2/writing-algorithms/trading-and-orders/order-properties'>order properties object</a> to the <a href='/docs/v2/writing-algorithms/trading-and-orders/order-types'>order method</a>. The following sections explain the FA group allocation methods.</p>
+
+<h4>Equal Quantity</h4>
+<p>This group allocation method distributes shares equally between all accounts in the group. When you use this method, you need to specify an order quantity.</p>
+
+<p>For example, say your Account Group includes four accounts and you place an order to buy 400 shares of a stock. In this case, each account receives 100 shares. If your Account Group includes six accounts, each account receives 66 shares, and then 1 share is allocated to each account until all are distributed. After you submit the order, your algorithm receives <a href='/docs/v2/writing-algorithms/trading-and-orders/order-events'>order events</a> to track the order progress. When all the shares are bought, the order status is <code>OrderStatus.Filled</code>. If one of the accounts in the group can't afford 10 of the shares it needs to buy, 10 shares are cancelled and you'll only end up buying 390 shares in total.</p>
+
+<div class="section-example-container">
+    <pre class="csharp">LimitOrder(
+    _symbol, quantity, limitPrice, 
+    orderProperties: new InteractiveBrokersOrderProperties
+    { 
+        FaMethod = "EqualQuantity" 
+    }
+);</pre>
+    <pre class="python">order_properties = InteractiveBrokersOrderProperties()
+order_properties.FaMethod = "EqualQuantity"
+self.LimitOrder(self.symbol, quantity, limit_price, orderProperties=order_properties)</pre>
+</div>
+
+<h4>Net Liquidation Value</h4>
+<p>This group allocation method distributes shares based on the net liquidation value of each account. The system calculates ratios based on the net liquidation value in each account and allocates shares based on these ratios. When you use this method, you need to specify an order quantity.</p>
+
+<p>For example, say your account group includes three accounts, A, B and C with Net Liquidation values of $25,000, $50,000 and $100,000, respectively. In this case, the system calculates a ratio of 1:2:4. If you place an order for 700 shares of a stock, it allocates 100 shares to Client A, 200 shares to Client B, and 400 shares to Client C. </p>
+
+<div class="section-example-container">
+    <pre class="csharp">LimitOrder(_symbol, quantity, limitPrice, 
+    orderProperties: new InteractiveBrokersOrderProperties
+    { 
+        FaMethod = "NetLiq" 
+    }
+);</pre>
+    <pre class="python">order_properties = InteractiveBrokersOrderProperties()
+order_properties.FaMethod = "NetLiq"
+self.LimitOrder(self.symbol, quantity, limit_price, orderProperties=order_properties)</pre>
+</div>
+
+<h4>Available Equity</h4>
+<p>This group allocation method distributes shares based on the amount of available equity in each account. The system calculates ratios based on the available equity in each account and allocates shares based on these ratios. When you use this method, you need to specify an order quantity.</p>
+
+<p>For example, say your account group includes three accounts, A, B and C with available equity of $25,000, $50,000 and $100,000, respectively. In this case, the system calculates a ratio of 1:2:4. If you place an order for 700 shares of a stock, it allocates 100 shares to Client A, 200 shares to Client B, and 400 shares to Client C.</p>
+
+<div class="section-example-container">
+    <pre class="csharp">LimitOrder(_symbol, quantity, limitPrice, 
+    orderProperties: new InteractiveBrokersOrderProperties
+    { 
+        FaMethod = "AvailableEquity" 
+    }
+);</pre>
+    <pre class="python">order_properties = InteractiveBrokersOrderProperties()
+order_properties.FaMethod = "AvailableEquity"
+self.LimitOrder(self.symbol, quantity, limit_price, orderProperties=order_properties)</pre>
+</div>
+
+
+
