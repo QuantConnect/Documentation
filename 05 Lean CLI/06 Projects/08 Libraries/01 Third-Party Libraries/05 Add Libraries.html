@@ -1,0 +1,45 @@
+<p>
+    Follow these steps to add custom libraries to your <span class='csharp'>C#</span><span class='python'>Python</span> project:
+</p>
+
+<ol class='csharp'>
+    <li>Find the name of the package that you want to add on <a href="https://www.nuget.org/" target="_blank">NuGet</a>.</li>
+    <li>Open a terminal in the <a href='/docs/v2/lean-cli/initialization/organization-workspaces'>organization workspace</a> that stores the project.</li>
+    <li>Run <code>lean library add "&lt;projectName&gt;" </code><code>&lt;packageName&gt;</code> to add the <code>&lt;packageName&gt;</code> NuGet package to the project in <span class="public-directory-name">. / &lt;projectName&gt;</span>.<br><div class="cli section-example-container">
+<pre>$ lean library add "My Project" Microsoft.ML
+Retrieving latest available version from NuGet
+Adding Microsoft.ML 1.5.5 to 'My Project/My Project.csproj'
+Restoring packages in 'My Project' to provide local autocomplete</pre>
+</div>
+        This command installs the latest version of the <code>Microsoft.ML</code> package.
+        If you want to use a different version you can use the <code>--version &lt;value&gt;</code> option.
+        Additionally, you can pass the <code>--no-local</code> flag to skip restoring the packages locally.
+    </li>
+</ol>
+
+<ol class='python'>
+    <li>Find the name of the package that you want to add on <a href="https://pypi.org/" target="_blank">PyPI</a>.</li>
+    <li>Open a terminal in the <a href='/docs/v2/lean-cli/initialization/organization-workspaces'>organization workspace</a> that stores the project.</li>
+    <li>Run <code>lean library add "&lt;projectName&gt;" &lt;packageName&gt;</code> to add the <code>&lt;packageName&gt;</code> PyPI package to the project in <span class="public-directory-name">. / &lt;projectName&gt;</span>.<br><div class="cli section-example-container">
+<pre>$ lean library add "My Project" altair
+Retrieving latest compatible version from PyPI
+Adding altair 4.1.0 to 'My Project/requirements.txt'
+Installing altair 4.1.0 in local Python environment to provide local autocomplete</pre>
+</div>
+        This command installs the latest version of the <code>altair</code> package that is compatible with Python 3.8 (which is what the official LEAN Docker images use).
+        If you want to use a different version you can use the <code>--version &lt;value&gt;</code> option.
+        Additionally, you can pass the <code>--no-local</code> flag to skip installing the package in your local Python environment.
+    </li>
+    <li>If you are using VS Code, restart your editor for autocomplete to start working on the new library.</li>
+</ol>
+
+
+<p class='csharp'>
+    Additionally, you can also add custom C# libraries by modifying the C# project file (the file ending with <span class="public-file-name">.csproj</span>).
+    This can be done manually or through your editor's built-in NuGet tooling if your editor has such a feature.
+</p>
+
+<p class='python'>
+    Additionally, you can also add custom Python libraries by modifying the project's <span class='public-file-name'>requirements.txt</span> file.
+    If you choose to do this, make sure that the library versions that you add to this file are compatible with Python 3.6, because that's what the official LEAN Docker images use.
+</p>
