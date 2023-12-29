@@ -12,7 +12,7 @@
 public override List&lt;Symbol&gt; FundamentalFilterFunction(List&lt;Fundamental&gt; fundamental)
 {
     return (from f in fundamental
-            where f.HasFundamentalData && f.Price &gt; 10
+            where f.HasFundamentalData && f.Price &gt; 10 && !Double.IsNaN(f.ValuationRatios.PERatio)
             orderby f.ValuationRatios.PERatio
             select f.Symbol).Take(10);
 }</pre>
@@ -20,8 +20,8 @@ public override List&lt;Symbol&gt; FundamentalFilterFunction(List&lt;Fundamental
     self.AddUniverseSelection(FundamentalUniverseSelectionModel(self.FundamentalFilterFunction))
 
 def FundamentalFilterFunction(self, fundamental: List[Fundamental]):
-    sorted_by_pe_ratio = sorted([f for f in fundamental if f.HasFundamentalData and f.Price &gt; 10],
-                                key=lambda f: f.ValuationRatios.PERatio)
+    filtered = [f for f in fundamental if f.HasFundamentalData and f.Price &gt; 10 and not np.isnan(f.ValuationRatios.PERatio)]
+    sorted_by_pe_ratio = sorted(filtered, key=lambda f: f.ValuationRatios.PERatio)
     return [f.Symbol for f in sorted_by_pe_ratio[:10]]</pre>
 </div>
 
@@ -71,7 +71,7 @@ public class LiquidAndLowPEUniverseSelectionModel : FundamentalUniverseSelection
     {
         return fundamental
             // select symbols with fundamental data and a price above $1
-            .Where(x => x.HasFundamentalData && x.Price > 1)
+            .Where(x => x.HasFundamentalData && x.Price > 1 && !Double.IsNaN(x.ValuationRatios.PERatio))
             // sort descending by daily dollar volume
             .OrderByDescending(x => x.DollarVolume)
             .Take(100)
@@ -88,7 +88,8 @@ self.AddUniverseSelection(LiquidAndLowPEUniverseSelectionModel())
 from Selection.FundamentalUniverseSelectionModel import FundamentalUniverseSelectionModel
 class LiquidAndLowPEUniverseSelectionModel(FundamentalUniverseSelectionModel):
     def Select(self, algorithm: QCAlgorithm, fundamental: List[Fundamental]) -> List[Symbol]:
-        most_liquid = sorted([x for x in fundamental if x.Price > 1], key=lambda x: x.DollarVolume)[-100:]
+        filtered = [x for x in fundamental if x.Price > 1 and not np.isnan(x.ValuationRatios.PERatio)]
+        most_liquid = sorted(filtered, key=lambda x: x.DollarVolume)[-100:]
         lowest_pe_ratio = sorted(most_liquid, key=lambda x: x.ValuationRatios.PERatio)[:10]
         return [x.Symbol for x in lowest_pe_ratio]</pre>
 </div>

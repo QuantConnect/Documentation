@@ -19,8 +19,8 @@ var ibmFundamental = Fundamentals(ibm);</pre>
     self.AddUniverse(self.FundamentalFilterFunction)
 
 def FundamentalFilterFunction(self, fundamental: List[Fundamental]):
-    sorted_by_pe_ratio = sorted([f for f in fundamental if f.HasFundamentalData and f.Price &gt; 10],
-                                key=lambda f: f.ValuationRatios.PERatio)
+    filtered = [f for f in fundamental if f.HasFundamentalData and f.Price &gt; 10 and not np.isnan(f.ValuationRatios.PERatio)]
+    sorted_by_pe_ratio = sorted(filtered, key=lambda f: f.ValuationRatios.PERatio)
     return [f.Symbol for f in sorted_by_pe_ratio[:10]]</pre>
 <pre class="csharp">public override void Initialize()
 {
@@ -30,7 +30,7 @@ def FundamentalFilterFunction(self, fundamental: List[Fundamental]):
 public override List&lt;Symbol&gt; FundamentalFilterFunction(List&lt;Fundamental&gt; fundamental)
 {
     return (from f in fundamental
-            where f.HasFundamentalData &amp;&amp; f.Price &gt; 10
+            where f.HasFundamentalData &amp;&amp; f.Price &gt; 10 &amp;&amp; !Double.IsNaN(f.ValuationRatios.PERatio)
             orderby f.ValuationRatios.PERatio
             select f.Symbol).Take(10);
 }</pre>
