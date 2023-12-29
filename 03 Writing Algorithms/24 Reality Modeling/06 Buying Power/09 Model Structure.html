@@ -2,7 +2,11 @@
 Extensions of the <code>BuyingPowerModel</code> class should implement the following methods: </p>
 
 <div class="section-example-container">
-<pre class="csharp">class MyBuyingPowerModel : BuyingPowerModel
+<pre class="csharp">// In the Initialize method, set the buying power model
+security.SetBuyingPowerModel(new MyBuyingPowerModel());
+
+// Define the custom buying power model
+class MyBuyingPowerModel : BuyingPowerModel
 {
     public MyBuyingPowerModel(
         decimal leverage = 2m,
@@ -73,10 +77,14 @@ Extensions of the <code>BuyingPowerModel</code> class should implement the follo
         return base.GetBuyingPower(parameters);
     }
 }</pre>
-<pre class="python">class MyBuyingPowerModel(BuyingPowerModel):
-    def __init__(self,
-         leverage = 2: float,
-         requiredFreeBuyingPowerPercent = 0: float):
+<pre class="python"># In the Initialize method, set the buying power model
+security.SetBuyingPowerModel(MyBuyingPowerModel())
+
+# Define the custom buying power model
+class MyBuyingPowerModel(BuyingPowerModel):
+    def __init__(self, 
+         leverage: float = 2, 
+         requiredFreeBuyingPowerPercent: float = 0):
         super().__init__(leverage, requiredFreeBuyingPowerPercent)
 
     def GetLeverage(self, security: Security) -&gt; float: 
@@ -128,3 +136,5 @@ Extensions of the <code>BuyingPowerModel</code> class should implement the follo
         return super().GetBuyingPower(parameters)
 </pre>
 </div>
+
+<p>For a full example algorithm, see <span class='python'><a href='https://www.quantconnect.com/terminal/processCache?request=embedded_backtest_7befeef6a555dcd34af8d5679201c6f0.html'>this backtest</a></span><span class='csharp'><a href='https://www.quantconnect.com/terminal/processCache?request=embedded_backtest_4cc2132e2137730e07a0defaba99f6a4.html'>this backtest</a></span>.</p>
