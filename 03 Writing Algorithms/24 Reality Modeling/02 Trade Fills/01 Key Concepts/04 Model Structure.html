@@ -1,7 +1,11 @@
 <p>Fill Models should extend the <code>FillModel</code> class. To implement your own fill model, override the methods in the <code>FillModel</code> class you wish to change.
 	The class has a dedicated method for each order type. Most of the methods receive a <code>Security</code> and <code>Order</code> object and return an <code>OrderEvent</code> object that contains information about the order status, fill quantity, and errors. <br></p>
 <div class="section-example-container">
-<pre class="csharp">public class MyFillModel : FillModel {
+<pre class="csharp">// In the Initialize method, set the custom fill model
+security.SetFillModel(new MyFillModel());
+	
+// Define the custom fill model outside of the algorithm
+public class MyFillModel : FillModel {
 
     public override OrderEvent MarketFill(Security asset, MarketOrder order) {
         return base.MarketFill(asset, order);
@@ -48,41 +52,47 @@
     }
 }
 </pre>
-<pre class="python">class MyFillModel(FillModel):
+<pre class="python"># In the Initialize method, set the custom fill model
+security.SetFillModel(MyFillModel())
 
-    def MarketFill(self, asset: Security, order: MarketOrder) -&gt; OrderEvent:
+# Define the custom fill model outside of the algorithm
+class MyFillModel(FillModel):
+
+    def MarketFill(self, asset: Security, order: MarketOrder) -> OrderEvent:
         return super().MarketFill(asset, order)
 
-    def LimitFill(self, asse: Securityt, order: LimitOrder) -&gt; OrderEvent:
+    def LimitFill(self, asset: Security, order: LimitOrder) -> OrderEvent:
         return super().LimitFill(asset, order)
 
-    def LimitIfTouchedFill(self, asset: Security, order: LimitIfTouchOrder) -&gt; OrderEvent:
+    def LimitIfTouchedFill(self, asset: Security, order: LimitIfTouchedOrder) -> OrderEvent:
         return super().LimitIfTouchedFill(asset, order)
 
-    def StopMarketFill(self, asset: Security, order: StopMarketOrder) -&gt; OrderEvent:
+    def StopMarketFill(self, asset: Security, order: StopMarketOrder) -> OrderEvent:
         return super().StopMarketFill(asset, order)
 
-    def StopLimitFill(self, asset: Security, order: StopLimitOrder) -&gt; OrderEvent:
+    def StopLimitFill(self, asset: Security, order: StopLimitOrder) -> OrderEvent:
         return super().StopLimitFill(asset, order)
 
-    def TrailingStopFill(self, asset: Security, order: TrailingStopOrder) -&gt; OrderEvent:
+    def TrailingStopFill(self, asset: Security, order: TrailingStopOrder) -> OrderEvent:
         return super().TrailingStopFill(asset, order)
 
-    def MarketOnOpenFill(self, asset: Security, order: MarketOnOpenOrder) -&gt; OrderEvent:
+    def MarketOnOpenFill(self, asset: Security, order: MarketOnOpenOrder) -> OrderEvent:
         return super().MarketOnOpenFill(asset, order)
 
-    def MarketOnCloseFill(self, asset: Security, order: MarketOnCloseOrder) -&gt; OrderEvent:
+    def MarketOnCloseFill(self, asset: Security, order: MarketOnCloseOrder) -> OrderEvent:
         return super().MarketOnCloseFill(asset, order)
 
-    def ComboMarketFill(self, order: Order, parameters: FillModelParameters) -&gt; List[OrderEvent]:
+    def ComboMarketFill(self, order: Order, parameters: FillModelParameters) -> List[OrderEvent]:
         return super().ComboMarketFill(order, parameters)
     
-    def ComboLimitFill(self, order: Order, parameters: FillModelParameters) -&gt; List[OrderEvent]:
+    def ComboLimitFill(self, order: Order, parameters: FillModelParameters) -> List[OrderEvent]:
         return super().ComboLimitFill(order, parameters)
     
-    def ComboLegLimitFill(self, order: Order, parameters: FillModelParameters) -&gt; List[OrderEvent]:
+    def ComboLegLimitFill(self, order: Order, parameters: FillModelParameters) -> List[OrderEvent]:
         return super().ComboLegLimitFill(order, parameters)</pre>
 </div>
+
+<p>For a full example algorithm, see <span class='python'><a href='https://www.quantconnect.com/terminal/processCache?request=embedded_backtest_96544c291961b174b496cabc5c459ea2.html'>this backtest</a></span><span class='csharp'><a href='https://www.quantconnect.com/terminal/processCache?request=embedded_backtest_9325d62e8427267b70b3c75fe09c1d0e.html'>this backtest</a></span>.</p>
 
 <p>The <code>FillModelParameters</code> class has the following properties.</p>
 <div data-tree='QuantConnect.Orders.Fills.FillModelParameters'></div>
