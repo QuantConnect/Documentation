@@ -1,16 +1,17 @@
 <p>
     The following example chains an ETF constituents universe and <a href='/docs/v2/writing-algorithms/universes/equity/fundamental-universes'>fundamental universe</a>. 
-    It first selects all the constituents of the QQQ ETF and then filters them down to select the assets that are trading above their average price over the last 200 days. 
+    It first selects all the constituents of the QQQ ETF and then filters them down in the fundamental universe to select the assets that are trading above their average price over the last 200 days. 
     The output of the fundamental universe selection method is the output of the chained universe.
-    The <code>Fundamental</code> objects that the fundamental universe filter function recieves contains the prices of the ETF constituents, so by chaining the ETF constituents universe into the fundamental universe, you avoid making a <a href='/docs/v2/writing-algorithms/historical-data/history-requests'>history request</a> in the ETF consituents filter function to update the indicators. 
+    The <code>Fundamental</code> objects that the fundamental universe filter function recieves contains the prices of the ETF constituents. By chaining the ETF constituents universe into the fundamental universe, you can update the indicators with the price instead of making a <a href='/docs/v2/writing-algorithms/historical-data/history-requests'>history request</a>. 
 </p>
 
 <div class="section-example-container">
-<pre class="csharp">using System.Collections.Generic;
+<pre class="csharp">using System;
+using System.Collections.Generic;
 using System.Linq;
-using QuantConnect.Data;
+using QuantConnect.Util;
+using QuantConnect.Indicators;
 using QuantConnect.Data.Fundamental;
-using QuantConnect.Data.UniverseSelection;
 using QuantConnect.Securities;
 
 namespace QuantConnect.Algorithm.CSharp
