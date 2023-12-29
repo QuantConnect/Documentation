@@ -38,7 +38,7 @@ namespace QuantConnect.Algorithm.CSharp
         private IEnumerable&lt;Symbol&gt; FundamentalSelection(IEnumerable&lt;Fundamental&gt; fundamental)
         {
             return (from f in fundamental
-                    where f.HasFundamentalData
+                    where f.HasFundamentalData && !Double.IsNaN(f.ValuationRatios.PERatio)
                     orderby f.ValuationRatios.PERatio
                     select f.Symbol).Take(20);
         }
@@ -70,7 +70,7 @@ class ChainedUniverseAlgorithm(QCAlgorithm):
         return [c.Symbol for c in constituents]
 
     def FundamentalSelection(self, fundamental: List[Fundamental]) -&gt; List[Symbol]:
-        sorted_by_pe_ratio = sorted([f for f in fundamental if f.HasFundamentalData], 
+        sorted_by_pe_ratio = sorted([f for f in fundamental if f.HasFundamentalData and not np.isnan(f.ValuationRatios.PERatio)], 
                                     key=lambda f: f.ValuationRatios.PERatio)
         return [f.Symbol for f in sorted_by_pe_ratio[:20]]
 
