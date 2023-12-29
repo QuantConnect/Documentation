@@ -1,3 +1,134 @@
+<p>
+    The following example chains an ETF constituents universe and <a href='/docs/v2/writing-algorithms/universes/equity/fundamental-universes'>fundamental universe</a>. 
+    It first selects all the constituents of the QQQ ETF and then filters them down to select the assets that are trading above their average price over the last 200 days. 
+    The output of the fundamental universe selection method is the output of the chained universe.
+    The <code>Fundamental</code> objects that the fundamental universe filter function recieves contains the prices of the ETF constituents, so by chaining the ETF constituents universe into the fundamental universe, you avoid making a <a href='/docs/v2/writing-algorithms/historical-data/history-requests'>history request</a> in the ETF consituents filter function to update the indicators. 
+</p>
+
+<div class="section-example-container">
+<pre class="csharp">using System.Collections.Generic;
+using System.Linq;
+using QuantConnect.Data;
+using QuantConnect.Data.Fundamental;
+using QuantConnect.Data.UniverseSelection;
+using QuantConnect.Securities;
+
+namespace QuantConnect.Algorithm.CSharp
+{
+    public class ChainedUniverseAlgorithm : QCAlgorithm
+    {
+        private Dictionary&lt;Symbol, SymbolData&gt; _symbolDataBySymbol = new Dictionary&lt;Symbol, SymbolData&gt;();
+
+        public override void Initialize()
+        {
+            SetCash(100000);
+            SetStartDate(2023, 6, 1);
+            AddUniverse(Universe.ETF("QQQ", Market.USA), FundamentalSelection);
+        }
+
+        public IEnumerable&lt;Symbol&gt; FundamentalSelection(IEnumerable&lt;Fundamental&gt; fundamental)
+        {
+            // Create/Update the indicator for each asset in the ETF
+            List&lt;Symbol&gt; universeSymbols = new List&lt;Symbol&gt;();
+            foreach (var f in fundamental)
+            {
+                universeSymbols.Add(f.Symbol);
+                if (!_symbolDataBySymbol.ContainsKey(f.Symbol))
+                {
+                    // Create an indicator for each asset that enters the ETF
+                    _symbolDataBySymbol[f.Symbol] = new SymbolData(this, f.Symbol);
+                }
+                // Update each indicator
+                _symbolDataBySymbol[f.Symbol].Update(Time, f.AdjustedPrice);
+            }
+
+            // Remove indicators for assets that are no longer in the ETF
+            var symbolsToRemove = _symbolDataBySymbol.Keys.Where(symbol => !universeSymbols.Contains(symbol)).ToList();
+            foreach (var symbol in symbolsToRemove)
+            {
+                _symbolDataBySymbol.Remove(symbol);
+            }
+
+            // Select a subset of the ETF constituents based on the indicator value
+            var universe = _symbolDataBySymbol.Where(kvp => kvp.Value.IsAboveSma).Select(kvp => kvp.Key);
+
+            // Plot the results
+            Plot("Universe", "Possible", fundamental.Count());
+            Plot("Universe", "Selected", universe.Count());
+
+            // Return the selected assets
+            return universe;
+        }
+    }
+
+    public class SymbolData
+    {
+        private SimpleMovingAverage _sma;
+        public bool IsAboveSma { get; private set; }
+
+        public SymbolData(QCAlgorithm algorithm, Symbol symbol, int period = 200)
+        {
+            _sma = new SimpleMovingAverage(period);
+            algorithm.WarmUpIndicator(symbol, _sma, Resolution.Daily);
+        }
+
+        public void Update(DateTime time, decimal value)
+        {
+            IsAboveSma = _sma.Update(time, value) && value > _sma.Current.Value;
+        }
+    }
+}</pre>
+<pre class="python">from AlgorithmImports import * 
+
+class ChainedUniverseAlgorithm(QCAlgorithm):
+
+    symbol_data_by_symbol = {}
+
+    def Initialize(self):
+        self.SetCash(100000)
+        self.SetStartDate(2023, 6, 1)
+        self.AddUniverse(self.Universe.ETF("QQQ", Market.USA), self.FundamentalSelection)
+
+    def FundamentalSelection(self, fundamental: List[Fundamental]) -> List[Symbol]:
+        # Create/Update the indicator for each asset in the ETF
+        universe_symbols = []
+        for f in fundamental:
+            universe_symbols.append(f.Symbol)
+            if f.Symbol not in self.symbol_data_by_symbol:
+                # Create an indicator for each asset that enters the ETF
+                self.symbol_data_by_symbol[f.Symbol] = SymbolData(self, f.Symbol)
+            
+            # Update each indicator
+            self.symbol_data_by_symbol[f.Symbol].Update(self.Time, f.AdjustedPrice)
+
+        # Remove indicators for assets that are no longer in the ETF
+        symbols_to_remove = [symbol for symbol in self.symbol_data_by_symbol.keys() if symbol not in universe_symbols]
+        for symbol in symbols_to_remove:
+            self.symbol_data_by_symbol.pop(symbol)
+
+        # Select a subset of the ETF constituents based on the indicator value
+        universe = [symbol for symbol, symbol_data in self.symbol_data_by_symbol.items() if symbol_data.is_above_sma]
+        
+        # Plot the results
+        self.Plot("Universe", "Possible", len(list(fundamental)))
+        self.Plot("Universe", "Selected", len(universe))
+
+        # Return the selected assets
+        return universe
+
+
+class SymbolData(object):
+    def __init__(self, algorithm, symbol, period=200):
+        self.sma = SimpleMovingAverage(period)
+        algorithm.WarmUpIndicator(symbol, self.sma, Resolution.Daily)
+
+    def Update(self, time, value):
+        self.is_above_sma = self.sma.Update(time, value) and value > self.sma.Current.Value</pre>
+</div>
+
+
+
+
 <div class="example-fieldset">
 	<div class="example-legend">Demonstration Algorithms</div>
 	<a class="python example-algorithm-link" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.Python/ETFConstituentUniverseRSIAlphaModelAlgorithm.py" target="_BLANK"> ETFConstituentUniverseRSIAlphaModelAlgorithm.py  <span class="badge-python pull-right">Python</span></a>
