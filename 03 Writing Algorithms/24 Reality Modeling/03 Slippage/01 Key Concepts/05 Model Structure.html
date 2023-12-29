@@ -1,7 +1,11 @@
 <p>Slippage models should implement the <code>ISlippageModel</code> interface. Extensions of the <code>ISlippageModel</code> interface must implement the <code>GetSlippageApproximation</code> method, which calculates the slippage quantity.</p>
 
 <div class="section-example-container">
-<pre class="csharp">public class MySlippageModel : ISlippageModel 
+<pre class="csharp">// In the Initialize method, set the slippage model
+security.SetSlippageModel(new MySlippageModel());
+
+// Define the custom slippage model
+public class MySlippageModel : ISlippageModel 
 {
     public decimal GetSlippageApproximation(Security asset, Order order) 
     {
@@ -9,8 +13,14 @@
     }
 }
 </pre>
-<pre class="python">class MySlippageModel:
+<pre class="python"># In the Initialize method, set the slippage model
+security.SetSlippageModel(MySlippageModel())
+
+# Define the custom slippage model
+class MySlippageModel:
 
     def GetSlippageApproximation(self, asset: Security, order: Order) -&gt; float:
         return asset.Price * 0.0001 * np.log10(2*float(order.AbsoluteQuantity))</pre>
 </div>
+
+<p>For a full example algorithm, see <span class='python'><a href='https://www.quantconnect.com/terminal/processCache?request=embedded_backtest_de1d5d6e6168e59361bc39190e97e925.html'>this backtest</a></span><span class='csharp'><a href='https://www.quantconnect.com/terminal/processCache?request=embedded_backtest_1c4ff4aa10b85956fc6c86e627606fef.html'>this backtest</a></span>.</p>
