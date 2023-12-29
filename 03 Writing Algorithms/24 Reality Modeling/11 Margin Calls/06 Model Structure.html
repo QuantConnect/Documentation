@@ -5,7 +5,11 @@
 <p>The <code>ExecuteMarginCall</code> method receives the list of <code>SubmitOrderRequest</code> objects from the <code>GetMarginCallOrders</code> method, executes some of them, and returns a list of <code>OrderTicket</code> objects.</p>
 
 <div class="section-example-container">
-    <pre class="csharp">public class MyMarginCallModel : DefaultMarginCallModel
+    <pre class="csharp">// In the Initialize method, set the margin call model
+Portfolio.MarginCallModel = new MyMarginCallModel(Portfolio, DefaultOrderProperties);
+
+// Define the custom margin call model  
+public class MyMarginCallModel : DefaultMarginCallModel
 {
     public MyMarginCallModel(
         SecurityPortfolioManager portfolio,
@@ -17,15 +21,19 @@
     public override List&lt;OrderTicket&gt; ExecuteMarginCall(
         IEnumerable&lt;SubmitOrderRequest&gt; generatedMarginCallOrders)
     {
-        return base.ExecuteMarginCall(generatedMarginCallOrders)
+        return base.ExecuteMarginCall(generatedMarginCallOrders);
     }
 
     public List&lt;SubmitOrderRequest&gt;<submitorderrequest> GetMarginCallOrders(out bool issueMarginCallWarning)
     {
-        return base.GetMarginCallOrders(issueMarginCallWarning)
+        return base.GetMarginCallOrders(out issueMarginCallWarning);
     }
 }</submitorderrequest></pre>
-    <pre class="python">class MyMarginCallModel(DefaultMarginCallModel):
+    <pre class="python"># In the Initialize method, set the margin call model
+self.Portfolio.MarginCallModel = MyMarginCallModel(self.Portfolio, self.DefaultOrderProperties)
+        
+# Define the custom margin call model        
+class MyMarginCallModel(DefaultMarginCallModel):
     def __init__(self,
          portfolio: SecurityPortfolioManager,
          defaultOrderProperties: IOrderProperties):
@@ -40,3 +48,4 @@
         return super().GetMarginCallOrders(issueMarginCallWarning)<br></pre>
 </div>
 
+<p>For a full example algorithm, see <span class='python'><a href='https://www.quantconnect.com/terminal/processCache?request=embedded_backtest_769aebdef2735928e516e3f36fa48c52.html'>this backtest</a></span><span class='csharp'><a href='https://www.quantconnect.com/terminal/processCache?request=embedded_backtest_d9fb9673344eb8c6a2073b74fc70070a.html'>this backtest</a></span>.</p>
