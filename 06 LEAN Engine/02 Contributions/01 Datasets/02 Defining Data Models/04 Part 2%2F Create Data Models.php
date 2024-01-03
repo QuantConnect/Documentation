@@ -10,6 +10,8 @@
 2014-07-28,7792.9,7799.9,7722.65,7748.7,116534670,6107.78
 </pre></div>
 
+<p>If you don't already have these CSV files, you'll create them later during the Rendering Data part of this tutorial series. For this part of the contribution process, consider using a "toy example" file to establish the format and requirements.</p>
+
 <p>Follow these steps to define the data source class:</p>
 
 <ol>
