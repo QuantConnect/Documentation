@@ -3,11 +3,12 @@
 <div class="section-example-container">
 <pre class="csharp">class MyBrokerageModel : DefaultBrokerageModel
 {
-    public static new readonly IReadOnlyDictionary&lt;SecurityType, string&gt; DefaultMarketMap;
-
     public override decimal RequiredFreeBuyingPowerPercent { get; }
 
-    public override IReadOnlyDictionary&lt;SecurityType, string&gt; DefaultMarkets =&gt; DefaultMarketMap;
+    public override IReadOnlyDictionary&lt;SecurityType, string&gt; DefaultMarkets  = new Dictionary&lt;SecurityType, string&gt;
+    {
+        {SecurityType.Equity, Market.USA}
+    }.ToReadOnlyDictionary();
 
     public MyBrokerageModel(AccountType accountType = AccountType.Margin)
         : base(accountType)
@@ -77,14 +78,14 @@
         return base.GetMarginInterestRateModel(security);
     }
 
-    public override IShortableProvider GetShortableProvider()
+    public override IShortableProvider GetShortableProvider(Security security)
     {
-        return base.GetShortableProvider();
+        return base.GetShortableProvider(security);
     }
 }
 </pre>
 <pre class="python">class MyBrokerageModel(DefaultBrokerageModel):
-    DefaultMarkets = {}
+    DefaultMarkets = {SecurityType.Equity: Market.USA}
     RequiredFreeBuyingPowerPercent = 0
 
     def __init__(self, accountType: AccountType = AccountType.Margin):
@@ -128,8 +129,8 @@
     def GetMarginInterestRateModel(self, security: Security) -&gt; IMarginInterestRateModel:
         return super().GetMarginInterestRateModel(security)
 
-    def GetShortableProvider(self) -&gt; IShortableProvider:
-        return super().GetShortableProvider()</pre>
+    def GetShortableProvider(self, security: Security) -&gt; IShortableProvider:
+        return super().GetShortableProvider(security)</pre>
 </div>
 
 <p>Custom brokerage models give you enormous control over your algorithm behavior and allow you to model virtually any brokerage in the world.</p>
