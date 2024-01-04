@@ -1,7 +1,11 @@
 <p>Volatility models should extend the <code>BaseVolatilityModel</code> class. Extensions of the <code>BaseVolatilityModel</code> class must have <code>Update</code> and <code>GetHistoryRequirements</code> methods and a <code>Volatility</code> property. The <code>Update</code> method receives <code>Security</code> and <code>BaseData</code> objects and then updates the <code>Volatility</code>. The <code>GetHistoryRequirements</code> method receives <code>Security</code> and <code class="csharp">DateTime</code><code class="python">datetime</code> objects and then returns a list of <code>HistoryRequest</code> objects that represent the history requests to warm up the model. Volatility models receive data at each time step in the algorithm to update their state.</p> 
 
 <div class="section-example-container">
-    <pre class="csharp">public class MyVolatilityModel : BaseVolatilityModel
+    <pre class="csharp">// In the Initialize method, set the custom volatility model of the underlying security
+underlyingSecurity.VolatilityModel = new MyVolatilityModel();
+
+// Define the custom volatility model outside of the algorithm
+public class MyVolatilityModel : BaseVolatilityModel
 {
     public override decimal Volatility { get; }
 
@@ -31,7 +35,11 @@
         return base.GetHistoryRequirements(security, utcTime, resolution, barCount);
     }
 }</pre>
-    <pre class="python">class MyVolatilityModel(BaseVolatilityModel):
+    <pre class="python"># In the Initialize method, set the custom volatility model of the underlying security
+underlying_security.VolatilityModel = MyVolatilityModel()
+
+# Define the custom volatility model outside of the algorithm
+class MyVolatilityModel(BaseVolatilityModel):
     Volatility: float = 0
 
     def SetSubscriptionDataConfigProvider(self,
