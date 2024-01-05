@@ -1,26 +1,41 @@
-<p>Option assignment models should implement the <code>IOptionAssignmentModel</code> interface. Extensions of the <code>IOptionAssignmentModel</code> interface must implement the <code>GetAssignment</code> method, which automatically fires at the top of each hour and returns the Option assignments to generate.</p>
+<p class='csharp'>Option assignment models should implement the <code>IOptionAssignmentModel</code> interface. Extensions of the <code>IOptionAssignmentModel</code> interface must implement the <code>GetAssignment</code> method, which automatically fires at the top of each hour and returns the Option assignments to generate.</p>
+<p class='python'>Option assignment models should extend the <code>NullOptionAssignmentModel</code> class. Extensions of the <code>NullOptionAssignmentModel</code> class must implement the <code>GetAssignment</code> method, which automatically fires at the top of each hour and returns the Option assignments to generate.</p>
 
 <div class="section-example-container">
-    <pre class="csharp">public class MyOptionAssignmentModel : IOptionAssignmentModel 
+    <pre class="csharp">// In the security initializer, set the custom Option assignment model
+(security as Option).SetOptionAssignmentModel(new MyOptionAssignmentModel());
+
+// Define the custom Option assignment model outside of the algorithm
+public class MyOptionAssignmentModel : IOptionAssignmentModel
 {
     public OptionAssignmentResult GetAssignment(OptionAssignmentParameters parameters)
     {
         var option = parameters.Option;
-        if (IsInTheMoney(option))
+        // Check if the contract is ITM
+        if ((option.Right == OptionRight.Call && option.Underlying.Price > option.StrikePrice) ||
+            (option.Right == OptionRight.Put && option.Underlying.Price < option.StrikePrice))
         {
-            return new OptionAssignmentResult(option.Holdings.AbsoluteQuantity, "tag");
+            return new OptionAssignmentResult(option.Holdings.AbsoluteQuantity, "MyTag");
         }
         return OptionAssignmentResult.Null;
     }
 }</pre>
-    <pre class="python">class MyOptionAssignmentModel:
+    <pre class="python"># In the security initializer, set the custom Option assignment model
+security.SetOptionAssignmentModel(MyOptionAssignmentModel())
 
-    def GetAssignment(self, parameters: OptionAssignmentParameters) -&gt; OptionAssignmentResult:
+# Define the custom Option assignment model outside of the algorithm
+class MyOptionAssignmentModel(NullOptionAssignmentModel):
+
+    def GetAssignment(self, parameters: OptionAssignmentParameters) -> OptionAssignmentResult:
         option = parameters.Option
-        if self.IsInTheMoney(option):
-            return OptionAssignmentResult(option.Holdings.AbsoluteQuantity, "tag")
+        # Check if the contract is ITM
+        if option.Right == OptionRight.Call and option.Underlying.Price > option.StrikePrice \
+            or option.Right == OptionRight.Put and option.Underlying.Price < option.StrikePrice:
+            return OptionAssignmentResult(option.Holdings.AbsoluteQuantity, "MyTag")
         return OptionAssignmentResult.Null</pre>
 </div>
+
+<p>For a full example algorithm, see <span class='python'><a href='https://www.quantconnect.com/terminal/processCache?request=embedded_backtest_2508628c593236c7426c0c0d5e48feba.html'>this backtest</a></span><span class='csharp'><a href='https://www.quantconnect.com/terminal/processCache?request=embedded_backtest_f34015bb1349159cd3ff789ade1e004f.html'>this backtest</a></span>.</p>
 
 <p>The <code>OptionAssignmentParameters</code> object has the following members:</p>
 
