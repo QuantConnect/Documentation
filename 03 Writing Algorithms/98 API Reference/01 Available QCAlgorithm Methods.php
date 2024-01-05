@@ -342,7 +342,7 @@
 </tr>
 <tr>
 <td width="33%"><a href="#History-header">History()</a></td>
-<td>Gets the historical data for the specified symbols between the specified dates. The symbols must exist in the Securities collection.</td>
+<td>Gets the historical data for the specified symbol. The exact number of bars will be returned. The symbol must exist in the Securities collection.</td>
 </tr>
 <tr>
 <td width="33%"><a href="#HMA-header">HMA()</a></td>
@@ -837,6 +837,10 @@
 <td>Creates a new Trix indicator.</td>
 </tr>
 <tr>
+<td width="33%"><a href="#TSF-header">TSF()</a></td>
+<td>Creates a new Time Series Forecast indicator.</td>
+</tr>
+<tr>
 <td width="33%"><a href="#TSI-header">TSI()</a></td>
 <td>Creates a TrueStrengthIndex indicator for the symbol. The indicator will be automatically updated on the given resolution.</td>
 </tr>
@@ -1190,7 +1194,7 @@
 </tr>
 <tr>
 <td width="33%"><a href="#History-header">History()</a></td>
-<td>Gets the historical data for the specified symbols between the specified dates. The symbols must exist in the Securities collection.</td>
+<td>Gets the historical data for the specified symbol. The exact number of bars will be returned. The symbol must exist in the Securities collection.</td>
 </tr>
 <tr>
 <td width="33%"><a href="#SetWarmUp-header">SetWarmUp()</a></td>
@@ -1579,6 +1583,10 @@
 <tr>
 <td width="33%"><a href="#TRIX-header">TRIX()</a></td>
 <td>Creates a new Trix indicator.</td>
+</tr>
+<tr>
+<td width="33%"><a href="#TSF-header">TSF()</a></td>
+<td>Creates a new Time Series Forecast indicator.</td>
 </tr>
 <tr>
 <td width="33%"><a href="#TSI-header">TSI()</a></td>
