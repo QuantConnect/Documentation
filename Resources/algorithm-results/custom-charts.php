@@ -12,9 +12,6 @@
 <h4>Supported Markers</h4>
 <p>When you create scatter plots, you can set a marker symbol. We support the following marker symbols:</p>
 <div data-tree='QuantConnect.ScatterMarkerSymbol'></div>
-
-<h4>Chart Quotas</h4>
-<? include(DOCS_RESOURCES."/plotting/quotas.php"); ?>
     
 <h4>Demonstration</h4>
 <p>For more information about creating custom charts, see <a href='/docs/v2/writing-algorithms/charting'>Charting</a>.
