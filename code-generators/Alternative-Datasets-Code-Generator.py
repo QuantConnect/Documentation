@@ -30,7 +30,7 @@ for clean_up in os.listdir('03 Writing Algorithms/14 Datasets'):
             shutil.copytree(temp, destination, dirs_exist_ok=True)
             shutil.rmtree(temp)
 
-url = urlopen("https://s3.amazonaws.com/cdn.quantconnect.com/web/docs/alternative-data-dump-v2021-12-06.json")
+url = urlopen("https://s3.amazonaws.com/cdn.quantconnect.com/web/docs/alternative-data-dump-v2024-01-02.json")
 response = url.read().decode("utf-8") \
     .replace("true", "True") \
     .replace("false", "False") \
