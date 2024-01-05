@@ -4,11 +4,11 @@
 <div class="section-example-container">
     <pre class="csharp">using QuantConnect.Orders.OptionExercise;
 
-// In the Initialize method, set the custom exercise model
-option.SetOptionExerciseModel(new MyExerciseModel());
+// In the security initializer, set the custom Option exercise model
+(security as Option).SetOptionExerciseModel(new MyOptionExerciseModel());
 
-// Define the custom exercise model outside of the algorithm
-public class MyExerciseModel : IOptionExerciseModel
+// Define the custom Option exercise model outside of the algorithm
+public class MyOptionExerciseModel : IOptionExerciseModel
 {
     public override IEnumerable&lt;OrderEvent&gt; OptionExercise(Option option, OptionExerciseOrder order)
     {
@@ -28,11 +28,11 @@ public class MyExerciseModel : IOptionExerciseModel
         ) { IsAssignment = isAssignment };
     }
 }</pre>
-    <pre class="python"># In the Initialize method, set the custom exercise model
-option.SetOptionExerciseModel(MyExerciseModel())
+    <pre class="python"># In the security initializer, set the custom Option exercise model
+security.SetOptionExerciseModel(MyOptionExerciseModel())
 
-# Define the custom exercise model outside of the algorithm
-class MyExerciseModel(DefaultExerciseModel):
+# Define the custom Option exercise model outside of the algorithm
+class MyOptionExerciseModel(DefaultExerciseModel):
     def OptionExercise(self, option: Option, order: OptionExerciseOrder) -&gt; List[OrderEvent]:
         in_the_money = option.IsAutoExercised(option.Underlying.Close)
         is_assignment = in_the_money and option.Holdings.IsShort
@@ -52,7 +52,7 @@ class MyExerciseModel(DefaultExerciseModel):
         return [ order_event ]</pre>
 </div>
 
-<p>For a full example algorithm, see <span class='python'><a href='https://www.quantconnect.com/terminal/processCache?request=embedded_backtest_b421c2e469df0d6bfb29f15b1d38bf32.html'>this backtest</a></span><span class='csharp'><a href='https://www.quantconnect.com/terminal/processCache?request=embedded_backtest_32c7894dd9e6f01836d4914622dc3710.html'>this backtest</a></span>.</p>
+<p>For a full example algorithm, see <span class='python'><a href='https://www.quantconnect.com/terminal/processCache?request=embedded_backtest_e655d5be4d1938fc9957106c1c3a9382.html'>this backtest</a></span><span class='csharp'><a href='https://www.quantconnect.com/terminal/processCache?request=embedded_backtest_d2f6cddd42e0c3fbb5780ac3a646a050.html'>this backtest</a></span>.</p>
 
 <p><code>OptionExerciseOrder</code> objects have the following properties:</p>
 <div data-tree="QuantConnect.Orders.OptionExerciseOrder"></div>
