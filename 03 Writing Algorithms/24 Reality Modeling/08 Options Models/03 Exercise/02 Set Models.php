@@ -1,4 +1,4 @@
-<p>To set the exercise model of an Option, call the <code>SetOptionExerciseModel</code> method of the <code>Option</code> object in a <a href='/docs/v2/writing-algorithms/initialization#07-Set-Security-Initializer'>security initializer</a>.</p>
+<p>To set the exercise model of an Option, call the <code>SetOptionExerciseModel</code> method of the <code>Option</code> object inside a <a href='/docs/v2/writing-algorithms/initialization#07-Set-Security-Initializer'>security initializer</a>.</p>
 
 <?php
 $overwriteCodePy = "if security.Type == SecurityType.Option: # Option type
