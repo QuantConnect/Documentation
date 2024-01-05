@@ -1,1 +1,1 @@
-<?php echo file_get_contents(DOCS_RESOURCES."/plotting/quotas.html"); ?>
+<? include(DOCS_RESOURCES."/plotting/quotas.php"); ?>
