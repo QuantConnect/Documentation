@@ -204,6 +204,7 @@ echo file_get_contents(DOCS_RESOURCES."/qcalgorithm-api/train.html");
 echo file_get_contents(DOCS_RESOURCES."/qcalgorithm-api/trima.html");
 echo file_get_contents(DOCS_RESOURCES."/qcalgorithm-api/trin.html");
 echo file_get_contents(DOCS_RESOURCES."/qcalgorithm-api/trix.html");
+echo file_get_contents(DOCS_RESOURCES."/qcalgorithm-api/tsf.html");
 echo file_get_contents(DOCS_RESOURCES."/qcalgorithm-api/tsi.html");
 echo file_get_contents(DOCS_RESOURCES."/qcalgorithm-api/ultosc.html");
 echo file_get_contents(DOCS_RESOURCES."/qcalgorithm-api/unregister-indicator.html");
