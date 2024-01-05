@@ -14,19 +14,7 @@
 <div data-tree='QuantConnect.ScatterMarkerSymbol'></div>
 
 <h4>Chart Quotas</h4>
-
-
-
-<? if ($backtest) { ?>
-<p>You can chart up to 4,000 data points. <? if ($cloudPlatform) { ?>Intensive charting requires hundreds of megabytes of data, which is too much to stream online or display in a web browser. <? } ?>If you exceed the quota, the terminal displays the following message:</p>
-<p><span class='error-messages'>Exceeded maximum points per chart, data skipped</span></p>
-<?     if ($localPlatform) { ?>
-    <p>To adjust the data point quota, open your <a href='/docs/v2/local-platform/development-environment/configuration#03-LEAN-Settings'>LEAN configuration file</a> and adjust the value of the <code>maximum-data-points-per-chart-series</code> key.</p>
-<?     } ?>
-<? } ?>
-
-<p>You can create up to 10 custom chart series per algorithm. If you exceed the quota, your algorithm stops executing and the Cloud Terminal displays the following message:</p>
-<p><span class='error-messages'>Exceeded maximum series count: Each backtest can have up to 10 series in total.</span></p>
+<? include(DOCS_RESOURCES."/plotting/quotas.php"); ?>
     
 <h4>Demonstration</h4>
 <p>For more information about creating custom charts, see <a href='/docs/v2/writing-algorithms/charting'>Charting</a>.
