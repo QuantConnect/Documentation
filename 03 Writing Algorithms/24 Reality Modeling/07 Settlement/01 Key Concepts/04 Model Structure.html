@@ -1,15 +1,5 @@
-<p>Settlement models must extend the <code>ISettlementModel</code> interface. Extensions of the <code>ISettlementModel</code> interface must implement the <code>Scan</code> and <code>ApplyFunds</code> methods. The <code>Scan</code> method is automatically called at the top of each hour and it receives a <code>ScanSettlementModelParameters</code> object. The <code>ApplyFunds</code> method receives an <code>ApplyFundsSettlementModelParameters</code> object and applies the settlement rules. The <code>ApplyFunds</code> method is also automatically called, but its frequency depends on the security type.</p>
-
-<div class="section-example-container">
-<pre class='csharp'>public interface ISettlementModel
-{
-    void ApplyFunds(ApplyFundsSettlementModelParameters applyFundsParameters);
-
-    void Scan(ScanSettlementModelParameters settlementParameters);
-}</pre>
-</div>
-
-<p>The <code>ApplyFunds</code> method is automatically called when you fill an order for the following security types:</p>
+<div class='csharp'>
+<p>Settlement models must extend the <code>ISettlementModel</code> interface. Extensions of the <code>ISettlementModel</code> interface must implement the <code>Scan</code> and <code>ApplyFunds</code> methods. The <code>Scan</code> method is automatically called at the top of each hour and it receives a <code>ScanSettlementModelParameters</code> object. The <code>ApplyFunds</code> method receives an <code>ApplyFundsSettlementModelParameters</code> object and applies the settlement rules. The <code>ApplyFunds</code> method is also automatically called, but its frequency depends on the security type. The <code>ApplyFunds</code> method is automatically called when you fill an order for the following security types:</p>
 
 <ul>
     <li>Equity</li>
@@ -28,10 +18,35 @@
     <li>CFD</li>
 </ul>
 
+<div class="section-example-container">
+<pre class='csharp'>// In the Initialize method, set the custom settlement model
+security.SettlementModel = new MySettlementModel();
+
+// Define the custom settlement model outside of the algorithm
+public class MySettlementModel : ISettlementModel
+{
+    public void ApplyFunds(ApplyFundsSettlementModelParameters applyFundsParameters)
+    {
+        var currency = applyFundsParameters.CashAmount.Currency;
+        var amount = applyFundsParameters.CashAmount.Amount;
+        applyFundsParameters.Portfolio.CashBook[currency].AddAmount(amount);
+    }
+
+    public void Scan(ScanSettlementModelParameters settlementParameters)
+    {
+    }
+}</pre>
+</div>
+
+<p>For a full example algorithm, see <a href='https://www.quantconnect.com/terminal/processCache?request=embedded_backtest_30d189b735ac70dc1a709a37a3bd85c4.html'>this backtest</a>.</p>
+
 <p><code>ApplyFundsSettlementModelParameters</code> objects have the following properties:</p>
 <div data-tree="QuantConnect.Securities.ApplyFundsSettlementModelParameters"></div>
 
 <p><code>ScanSettlementModelParameters</code> objects have the following properties:</p>
 <div data-tree="QuantConnect.Securities.ScanSettlementModelParameters"></div>
+</div>
+
+<p class='python'>It's not currently possible to create custom settlement models in Python. To be notified when this functionality is available, subscribe to <a href='https://github.com/QuantConnect/Lean/issues/7676' rel='nofollow' target='_blank'>LEAN Issue #7676</a>.</p>
 
 <p>You likely don't need to create a custom settlement model because the <a href='/docs/v2/writing-algorithms/reality-modeling/settlement/supported-models'>supported models</a> already implement immediate and delayed settlement rules.</p>
