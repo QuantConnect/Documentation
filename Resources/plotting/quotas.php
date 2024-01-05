@@ -47,7 +47,7 @@
 </style>
 
 <p>If you exceed the series quota, your algorithm stops executing and the following message displays:</p>
-<p><span class='error-messages'>Exceeded maximum series count: Each backtest can have up to 10 series in total.</span></p>
+<p><span class='error-messages'>Exceeded maximum chart series count, new series will be ignored. Limit is currently set at &lt;quota&gt;.</span></p>
 
 <p>If you exceed the data points per series quota, the following message displays:</p>
 <p><span class='error-messages'>Exceeded maximum points per chart, data skipped</span></p>
