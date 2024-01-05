@@ -15,10 +15,10 @@ option.SetOptionAssignmentModel(DefaultOptionAssignmentModel())</pre>
 
 <?php
 $overwriteCodePy = "if security.Type == SecurityType.Option: # Option type
-            option.SetOptionAssignmentModel(DefaultOptionAssignmentModel())";
+            security.SetOptionAssignmentModel(DefaultOptionAssignmentModel())";
 $overwriteCodeC = "if (security.Type == SecurityType.Option) // Option type
         {
-            option.SetOptionAssignmentModel(new DefaultOptionAssignmentModel());
+            security.SetOptionAssignmentModel(new DefaultOptionAssignmentModel());
         }";
 $comment = "the assignment model";
 include(DOCS_RESOURCES."/reality-modeling/brokerage-model-security-init.php");
