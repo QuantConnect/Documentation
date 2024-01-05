@@ -35,7 +35,7 @@
     self.content += f'{self.sma.Current.EndTime},{self.sma.Current.Value}\n'</pre>
     </div>
     
-    <li>To store the collected data, call the <code>Save</code> method with a key.</li>
+    <li>In the <a href='/docs/v2/writing-algorithms/key-concepts/event-handlers#15-End-Of-Algorithm-Events'>OnEndOfAlgorithm</a> method, save the indicator data to the Object Store.</li>
     <div class='section-example-container'>
     <pre class='csharp'>public override void OnEndOfAlgorithm()
 {
