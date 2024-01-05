@@ -1,8 +1,12 @@
 <p class="csharp">Option exercise models should implement the <code>IOptionExerciseModel</code> interface. The <code>IOptionExerciseModel</code> interface must implement the <code>OptionExercise</code> method, which receives <code>Option</code> and <code>OptionExerciseOrder</code> objects and then returns a list of <code>OrderEvent</code> objects that contain the order fill information.</p>
-<p class="python">Option exercise models must implement the <code>OptionExercise</code> method, which receives <code>Option</code> and <code>OptionExerciseOrder</code> objects and then returns a list of <code>OrderEvent</code> objects that contain the order fill information.</p>
+<p class="python">Option exercise models should extend the <code>DefaultExerciseModel</code> class. Extensions of the <code>DefaultExerciseModel</code> must implement the <code>OptionExercise</code> method, which receives <code>Option</code> and <code>OptionExerciseOrder</code> objects and then returns a list of <code>OrderEvent</code> objects that contain the order fill information.</p>
 
 <div class="section-example-container">
-    <pre class="csharp">public class MyExerciseModel : IOptionExerciseModel
+    <pre class="csharp">// In the Initialize method, set the custom exercise model
+option.SetOptionExerciseModel(new MyExerciseModel());
+
+// Define the custom exercise model outside of the algorithm
+public class MyExerciseModel : IOptionExerciseModel
 {
     public override IEnumerable&lt;OrderEvent&gt; OptionExercise(Option option, OptionExerciseOrder order)
     {
@@ -22,7 +26,11 @@
         ) { IsAssignment = isAssignment };
     }
 }</pre>
-    <pre class="python">class MyExerciseModel:
+    <pre class="python"># In the Initialize method, set the custom exercise model
+option.SetOptionExerciseModel(MyExerciseModel())
+
+# Define the custom exercise model outside of the algorithm
+class MyExerciseModel(DefaultExerciseModel):
     def OptionExercise(self, option: Option, order: OptionExerciseOrder) -&gt; List[OrderEvent]:
         in_the_money = option.IsAutoExercised(option.Underlying.Close)
         is_assignment = in_the_money and option.Holdings.IsShort
@@ -41,6 +49,8 @@
         order_event.IsAssignment = is_assignment
         return [ order_event ]</pre>
 </div>
+
+<p>For a full example algorithm, see <span class='python'><a href='https://www.quantconnect.com/terminal/processCache?request=embedded_backtest_b421c2e469df0d6bfb29f15b1d38bf32.html'>this backtest</a></span><span class='csharp'><a href='https://www.quantconnect.com/terminal/processCache?request=embedded_backtest_32c7894dd9e6f01836d4914622dc3710.html'>this backtest</a></span>.</p>
 
 <p><code>OptionExerciseOrder</code> objects have the following properties:</p>
 <div data-tree="QuantConnect.Orders.OptionExerciseOrder"></div>
