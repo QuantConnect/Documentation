@@ -1,1 +1,1 @@
-<? include(DOCS_RESOURCES."/plotting/quotas.php"); ?>
+<p>Charts are sampled every one and ten minutes. If you create 1-minute resolution custom charts, the IDE charting will downgrade the granularity and display the 10-minutes sampling after a certain amount of samples. There are not quotas in live trading.</p>
