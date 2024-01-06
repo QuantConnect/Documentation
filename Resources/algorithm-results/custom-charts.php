@@ -18,5 +18,10 @@
 <? include(DOCS_RESOURCES."/plotting/quotas.php"); ?>
 <? } ?>
 
+<? if (in_array("live-trading", $BREADCRUMBS) && $cloudPlatform) { ?>
+<h4>Chart Sampling</h4>
+<p>Charts are sampled every one and ten minutes. If you create 1-minute resolution custom charts, the IDE charting will downgrade the granularity and display the 10-minutes sampling after a certain amount of samples.</p>
+<? } ?>
+
 <h4>Demonstration</h4>
 <p>For more information about creating custom charts, see <a href='/docs/v2/writing-algorithms/charting'>Charting</a>.
