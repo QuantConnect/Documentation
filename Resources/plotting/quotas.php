@@ -51,10 +51,6 @@
 
 <p>If you exceed the data points per series quota, the following message displays:</p>
 <p><span class='error-messages'>Exceeded maximum points per chart, data skipped</span></p>
-
-<? if (in_array("live-trading", $BREADCRUMBS)) { ?>
-<p>In live trading, charts are sampled every one and ten minutes. If you create 1-minute resolution custom charts, the IDE charting will downgrade the granularity and display the 10-minutes sampling after a certain amount of samples.</p>
-<? } ?>
                                 
 <? if ($localPlatform) { ?>
 <p>To adjust the data point quota, open your <a href='/docs/v2/local-platform/development-environment/configuration#03-LEAN-Settings'>LEAN configuration file</a> and adjust the value of the <code>maximum-data-points-per-chart-series</code> key.</p>
