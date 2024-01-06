@@ -31,9 +31,14 @@
             <td>5</td>
         </tr>
         <tr>
+            <td nowrap><code>maximum-chart-series</code></td>
+            <td>The maximum number of chart series you can create in backtests.</td>
+            <td>30</td>
+        </tr>
+        <tr>
             <td nowrap><code>maximum-data-points-per-chart-series</code></td>
             <td>The maximum number of data points you can add to a chart series in backtests.</td>
-            <td>4000</td>
+            <td>1,000,000</td>
         </tr>
     </tbody>
 </table>
