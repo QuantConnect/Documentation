@@ -72,6 +72,7 @@ Select a data feed:
 12) IQFeed
 13) Polygon Data Feed
 14) Custom data only
+15) Bybit
 To enter multiple options, separate them with comma.: 9</pre>
 </div>
 </li>   
