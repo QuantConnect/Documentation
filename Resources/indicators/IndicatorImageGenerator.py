@@ -20,6 +20,8 @@ class IndicatorImageGeneratorAlgorithm(QCAlgorithm):
         qb.AddEquity("SPY", Resolution.Daily)
         qb.AddEquity("QQQ", Resolution.Daily)
         qb.SetStartDate(self.StartDate)
+        symbol = Symbol.Create("SPY", SecurityType.Equity, Market.USA)
+        reference = Symbol.Create("QQQ", SecurityType.Equity, Market.USA)
 
         indicators = {
             'bollinger-bands':
@@ -446,6 +448,12 @@ class IndicatorImageGeneratorAlgorithm(QCAlgorithm):
             {
                 'code': T3MovingAverage(30, 0.7),
                 'title' : 'T3(symbol, 30, 0.7)',
+                'columns' : []
+            },
+            'time-series-forecast':
+            {
+                'code': TimeSeriesForecast(3),
+                'title' : 'TSF(symbol, 3)',
                 'columns' : []
             },
             'triangular-moving-average':
