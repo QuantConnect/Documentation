@@ -15,7 +15,7 @@ Passphrase: ****************
 </div>
 <p>To create new API credentials, see the <a href='https://pro.coinbase.com/profile/api' target='_blank' rel='nofollow'>API settings page</a> on the Coinbase website.</p>
 ";
-$brokerageName="Coinbase";
+$brokerageName="Coinbase Advanced Trade";
 $isSupported=true;
 $supportsCashHoldings=false;
 $supportsPositionHoldings=false;
