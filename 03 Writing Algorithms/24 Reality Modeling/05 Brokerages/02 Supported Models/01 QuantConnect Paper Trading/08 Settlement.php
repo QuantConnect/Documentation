@@ -8,25 +8,25 @@ include(DOCS_RESOURCES."/reality-modeling/default-settlement-models.php");
 
 <div class="section-example-container">
 <pre class="csharp">// For US Equities with a cash account:
-security.SettlementModel = new DelayedSettlementModel(Equity.DefaultSettlementDays, Equity.DefaultSettlementTime);
+security.SetSettlementModel(new DelayedSettlementModel(Equity.DefaultSettlementDays, Equity.DefaultSettlementTime));
 
 // For Equity Options with a cash account:
-security.SettlementModel = new DelayedSettlementModel(Option.DefaultSettlementDays, Option.DefaultSettlementTime);
+security.SetSettlementModel(new DelayedSettlementModel(Option.DefaultSettlementDays, Option.DefaultSettlementTime));
 
 // For Futures
-security.SettlementModel = new FutureSettlementModel();
+security.SetSettlementModel(new FutureSettlementModel());
 
 // For remaining cases:
-security.SettlementModel = new ImmediateSettlementModel();</pre>
+security.SetSettlementModel(new ImmediateSettlementModel());</pre>
 <pre class="python"># For US Equities with a cash account:
-security.SettlementModel = DelayedSettlementModel(Equity.DefaultSettlementDays, Equity.DefaultSettlementTime)
+security.SetSettlementModel(DelayedSettlementModel(Equity.DefaultSettlementDays, Equity.DefaultSettlementTime))
 
 # For Equity Options with a cash account:
-security.SettlementModel = DelayedSettlementModel(Option.DefaultSettlementDays, Option.DefaultSettlementTime)
+security.SetSettlementModel(DelayedSettlementModel(Option.DefaultSettlementDays, Option.DefaultSettlementTime))
 
 # For Futures
-security.SettlementModel = FutureSettlementModel()
+security.SetSettlementModel(FutureSettlementModel())
 
 # For remaining cases:
-security.SettlementModel = ImmediateSettlementModel()</pre>
+security.SetSettlementModel(ImmediateSettlementModel())</pre>
 </div>
