@@ -38,7 +38,7 @@
     </tr>
     <? if ($cloudPlatform) { ?>
     <tr>
-      <td>Stockplot &lt;ticker&gt;</td>
+      <td>Stockplot <span class='placeholder-text'>ticker</span></td>
       <td>A time series of an asset's price with order event annotations. To view these charts, see <a href='/docs/v2/cloud-platform/backtesting/results#10-Orders'>Orders</a>.</td>
     </tr>
     <? } ?>
