@@ -13,19 +13,19 @@
     <li><a href="/docs/v2/writing-algorithms/key-concepts/glossary#25-profit-loss-ratio">Profit-Loss Ratio</a></li>
     <li><a href="/docs/v2/writing-algorithms/key-concepts/glossary#07-beta">Beta</a></li>
     <li><a href="/docs/v2/writing-algorithms/key-concepts/glossary#04-annual-variance">Annual Variance</a></li>
-    <li><a href="/docs/v2/writing-algorithms/key-concepts/glossary#31-tracking-error">Tracking Error</a></li>
-    <li><a href="/docs/v2/writing-algorithms/key-concepts/glossary#28-total-fees">Total Fees</a></li>
+    <li><a href="/docs/v2/writing-algorithms/key-concepts/glossary#33-tracking-error">Tracking Error</a></li>
+    <li><a href="/docs/v2/writing-algorithms/key-concepts/glossary#30-total-fees">Total Fees</a></li>
     <li><a href="/docs/v2/writing-algorithms/key-concepts/glossary#19-lowest-capacity-asset">Lowest Capacity Asset</a></li>
 
-    <li><a href="/docs/v2/writing-algorithms/key-concepts/glossary#27-Sharpe-ratio">Sharpe Ratio</a></li>
+    <li><a href="/docs/v2/writing-algorithms/key-concepts/glossary#28-Sharpe-ratio">Sharpe Ratio</a></li>
     <li><a href="/docs/v2/writing-algorithms/key-concepts/glossary#06-average-win">Average Win</a></li>
     <li><a href="/docs/v2/writing-algorithms/key-concepts/glossary#09-compounding-annual-return">Compounding Annual Return</a></li>
     <li><a href="/docs/v2/writing-algorithms/key-concepts/glossary#13-expectancy">Expectancy</a></li>
-    <li><a href="/docs/v2/writing-algorithms/key-concepts/glossary#35-win-rate">Win Rate</a></li>
+    <li><a href="/docs/v2/writing-algorithms/key-concepts/glossary#37-win-rate">Win Rate</a></li>
     <li><a href="/docs/v2/writing-algorithms/key-concepts/glossary#02-alpha">Alpha</a></li>
     <li><a href="/docs/v2/writing-algorithms/key-concepts/glossary#03-annual-standard-deviation">Annual Standard Deviation</a></li>
     <li><a href="/docs/v2/writing-algorithms/key-concepts/glossary#15-information-ratio">Information Ratio</a></li>
-    <li><a href="/docs/v2/writing-algorithms/key-concepts/glossary#32-Treynor-ratio">Treynor Ratio</a></li>
+    <li><a href="/docs/v2/writing-algorithms/key-concepts/glossary#34-Treynor-ratio">Treynor Ratio</a></li>
     <li><a href="/docs/v2/writing-algorithms/key-concepts/glossary#08-capacity">Estimated Strategy Capacity</a></li>
 </ul>
 
