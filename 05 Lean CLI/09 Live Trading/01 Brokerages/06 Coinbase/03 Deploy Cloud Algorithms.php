@@ -7,7 +7,7 @@ API key: 6d3ef5ca2d2fa52e4ee55624b0471261
 API secret: ****************************************************************************************
 Passphrase: ****************
 </div>
-<p>To create new API credentials, see the <a href='https://pro.coinbase.com/profile/api' target='_blank' rel='nofollow'>API settings page</a> on the Coinbase website.</p>
+<p>To create new API credentials, see the <a href='https://www.coinbase.com/settings/api' target='_blank' rel='nofollow'>API settings page</a> on the Coinbase website.</p>
 ";
 $brokerageName="Coinbase Advanced Trade";
 $isSupported=true;
