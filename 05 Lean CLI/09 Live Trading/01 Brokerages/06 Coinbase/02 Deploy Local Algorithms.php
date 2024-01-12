@@ -3,13 +3,6 @@ $brokerageName = "Coinbase Advanced Trade";
 $dataFeedName = "";
 $isBrokerage = true;
 $brokerageDetails = "
-<li>Enter the environment to use.
-<div class='cli section-example-container'>
-<pre>$ lean live \"My Project\"
-Use sandbox? (live, paper): live</pre>
-</div>
-</li>
-
 <li>Enter your API key, API secret, and passphrase.
 <div class='cli section-example-container'>
 <pre>$ lean live \"My Project\"
