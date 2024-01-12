@@ -14,6 +14,13 @@
         
 <p>The timestamps in the Order Summary table are based in Eastern Time (ET).</p>
 
+<? if ($pageName == "backtest" && $cloudPlatform) { ?>
+<p>To plot all the order events for a single asset, click the <img class='inline-icon' src='https://cdn.quantconnect.com/i/tu/stock-plot-icon.png'> <span class='icon-name'>Stockplot</span> icon.</p>
+<img class='docs-image' src='https://cdn.quantconnect.com/i/tu/stockplot-example.png' alt='time series of AAPL price with buy and sell arrows overlaid'>
+<p>To highlight a specific order event in the chart, hover over the order event in the Order Summary table.</p>
+<img class='docs-image' src='https://cdn.quantconnect.com/i/tu/stockplot-hover.png' alt='time series of AAPL price with one of the buy arrows highlighted'>
+<? } ?>
+
 <h4>Access the Order Summary CSV</h4>
 <p>To view the orders data in CSV format, open the <?=$pageName?> results page, click the <span class='tab-name'>Orders</span> tab, and then click <span class='button-name'>Download Orders</span>. The content of the CSV file is the content displayed in the Orders Summary table when the table rows are collapsed. The timestamps in the CSV file are based in Coordinated Universal Time (UTC). <? if ($localPlatform) { ?>If you download the order summary CSV for a local backtest, the file is stored in <span class='public-file-name'><a href='/docs/v2/local-platform/development-environment/organization-workspaces'>&lt;organizationWorkspace&gt;</a> / &lt;projectName&gt; / backtests / &lt;unixTimestamp&gt; / orders.csv</span>.<? } ?></p>
 
