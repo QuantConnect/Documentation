@@ -103,7 +103,7 @@ To enter multiple options, separate them with comma.:</pre>
 </li>
     <?if ($isBrokerage) {?>
     <p>If you select IQFeed, see <a href='/docs/v2/lean-cli/live-trading/data-feeds/iqfeed'>IQFeed</a> for set up instructions.</p>
-    <p>If you select Polygon Data Feed, see <a href='/docs/v2/lean-cli/live-trading/data-feeds/polygon'>Polygon</a> for set up instructions.</p>
+    <p>If you select Polygon, see <a href='/docs/v2/lean-cli/live-trading/data-feeds/polygon'>Polygon</a> for set up instructions.</p>
     <? } ?>
 <? } ?>
 
