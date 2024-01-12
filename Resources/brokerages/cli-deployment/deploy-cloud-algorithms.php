@@ -20,7 +20,7 @@ $brokerages = array(
       "Tradier",
       "Oanda",
       "Bitfinex",
-      "Coinbase",
+      "Coinbase Advanced Trade",
       "Binance",
       "Zerodha",
       "Samco",
@@ -42,7 +42,7 @@ Select a brokerage:
 3) Tradier
 4) Oanda
 5) Bitfinex
-6) Coinbase Pro
+6) Coinbase Advanced Trade
 7) Binance
 8) Zerodha
 9) Samco
