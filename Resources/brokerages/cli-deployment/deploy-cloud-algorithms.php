@@ -127,6 +127,7 @@ Do you want to add more holdings? [y/N]: n</pre>
             <div class='cli section-example-container'>
 <pre>$ lean cloud live "My Project" --push --open
 Brokerage: <?=$brokerageName?>
+
 Project id: 1234567
 Environment: Live
 Server name: L-MICRO node 89c90172
