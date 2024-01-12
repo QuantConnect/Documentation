@@ -13,7 +13,7 @@ if ($isBrokerage) {
       "Tradier",
       "Oanda",
       "Bitfinex",
-      "Coinbase",
+      "Coinbase Advanced Trade",
       "Binance",
       "Zerodha",
       "Samco",
@@ -36,7 +36,7 @@ Select a brokerage:
 3) Tradier
 4) OANDA
 5) Bitfinex
-6) Coinbase Pro
+6) Coinbase Advanced Trade
 7) Binance
 8) Zerodha
 9) Samco
@@ -62,7 +62,7 @@ Select a data feed:
 2) Tradier
 3) Oanda
 4) Bitfinex
-5) Coinbase Pro
+5) Coinbase Advanced Trade
 6) Binance
 7) Zerodha
 8) Samco
@@ -87,7 +87,7 @@ Select a data feed:
 2) Tradier
 3) Oanda
 4) Bitfinex
-5) Coinbase Pro
+5) Coinbase Advanced Trade
 6) Binance
 7) Zerodha
 8) Samco
