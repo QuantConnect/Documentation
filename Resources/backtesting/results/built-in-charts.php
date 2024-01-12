@@ -10,36 +10,36 @@
   <tbody>
     <tr>
       <td>Strategy Equity</td>
-      <td>Time series of equity and daily performance</td>
+      <td>A time series of equity and daily performance.</td>
     </tr>
     <tr>
       <td>Capacity</td>
-      <td>Time series of <a href="/docs/v2/writing-algorithms/key-concepts/glossary#08-capacity">strategy capacity</a> snapshots</td>
+      <td>A time series of <a href="/docs/v2/writing-algorithms/key-concepts/glossary#08-capacity">strategy capacity</a> snapshots.</td>
     </tr>
     <tr>
       <td>Drawdown</td>
-      <td>Time series of equity peak-to-trough value</td>
+      <td>A time series of equity peak-to-trough value.</td>
     </tr>
     <tr>
       <td>Benchmark</td>
-      <td>Time series of the benchmark closing price (SPY, by default)</td>
+      <td>A time series of the benchmark closing price (SPY, by default).</td>
     </tr>
     <tr>
       <td>Exposure</td>
-      <td>Time series of long and short exposure ratios</td>
+      <td>A time series of long and short exposure ratios.</td>
     </tr>
     <tr>
       <td>Assets Sales Volume</td>
-      <td>Chart showing the proportion of total volume for each traded security </td>
+      <td>A chart showing the proportion of total volume for each traded security. </td>
     </tr>
     <tr>
       <td>Portfolio Turnover</td>
-      <td>Time series of the portfolio turnover rate</td>
+      <td>A time series of the portfolio turnover rate.</td>
     </tr>
     <? if ($cloudPlatform) { ?>
     <tr>
       <td>Stockplot &lt;ticker&gt;</td>
-      <td>Time series of an asset's price with <a href='/docs/v2/local-platform/backtesting/results#10-Orders'>order event</a> annotations</td>
+      <td>A time series of an asset's price with order event annotations. To view these charts, see <a href='/docs/v2/local-platform/backtesting/results#10-Orders'>Orders</a>.</td>
     </tr>
     <? } ?>
   </tbody>
