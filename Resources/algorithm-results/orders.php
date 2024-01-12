@@ -15,7 +15,7 @@
 <p>The timestamps in the Order Summary table are based in Eastern Time (ET).</p>
 
 <? if ($pageName == "backtest" && $cloudPlatform) { ?>
-<p>To plot all the order events for a single asset, click the <img class='inline-icon' src='https://cdn.quantconnect.com/i/tu/stock-plot-icon.png'> <span class='icon-name'>Stockplot</span> icon that's next to the asset Symbol in the Orders Summary table.</p>
+<p>To plot all the order events for a single asset, click the <img class='inline-icon' src='https://cdn.quantconnect.com/i/tu/stock-plot-icon.png'> <span class='icon-name'>Assetplot</span> icon that's next to the asset Symbol in the Orders Summary table.</p>
 <img class='docs-image' src='https://cdn.quantconnect.com/i/tu/stockplot-example.png' alt='time series of AAPL price with buy and sell arrows overlaid'>
 <p>To highlight a specific order event in the chart, hover over the order event in the Orders Summary table.</p>
 <img class='docs-image' src='https://cdn.quantconnect.com/i/tu/stockplot-hover.png' alt='time series of AAPL price with one of the buy arrows highlighted'>
