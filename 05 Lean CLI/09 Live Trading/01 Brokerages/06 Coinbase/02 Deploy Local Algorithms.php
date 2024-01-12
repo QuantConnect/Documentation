@@ -3,7 +3,7 @@ $brokerageName = "Coinbase Advanced Trade";
 $dataFeedName = "";
 $isBrokerage = true;
 $brokerageDetails = "
-<li>Enter your API key, API secret, and passphrase.
+<li>Enter your API key and API secret.
 <div class='cli section-example-container'>
 <pre>$ lean live \"My Project\"
 API key: 6d3ef5ca2d2fa52e4ee55624b0471261
