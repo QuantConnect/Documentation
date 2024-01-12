@@ -70,7 +70,7 @@ Select a data feed:
 10) Kraken
 11) TD Ameritrade
 12) IQFeed
-13) Polygon Data Feed
+13) Polygon
 14) Custom data only
 15) Bybit
 To enter multiple options, separate them with comma.: 9</pre>
