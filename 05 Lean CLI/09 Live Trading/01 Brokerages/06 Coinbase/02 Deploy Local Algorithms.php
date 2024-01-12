@@ -1,5 +1,5 @@
 <?
-$brokerageName = "Coinbase";
+$brokerageName = "Coinbase Advanced Trade";
 $dataFeedName = "";
 $isBrokerage = true;
 $brokerageDetails = "
