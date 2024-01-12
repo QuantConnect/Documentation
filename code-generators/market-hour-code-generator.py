@@ -234,13 +234,13 @@ for key, entry in entries.items():
         for x in entry.pop(day, []):
             if x['state'] == "premarket":
                 hours = entry.setdefault(MARKET_HOUR.PRE_MARKET, {}).setdefault(day, [])
-                hours.append(f'{x["start"]} to {x["end"].replace("1:00", "24")}')
+                hours.append(f'{x["start"]} to {x["end"].replace("1.00", "24").replace("1:00", "24")}')
             elif x['state'] == "market":
                 hours = entry.setdefault(MARKET_HOUR.REGULAR, {}).setdefault(day, [])
-                hours.append(f'{x["start"]} to {x["end"].replace("1:00", "24")}')
+                hours.append(f'{x["start"]} to {x["end"].replace("1.00", "24").replace("1:00", "24")}')
             elif x['state'] == "postmarket":
                 hours = entry.setdefault(MARKET_HOUR.POST_MARKET, {}).setdefault(day, [])
-                hours.append(f'{x["start"]} to {x["end"].replace("1:00", "24")}')
+                hours.append(f'{x["start"]} to {x["end"].replace("1.00", "24").replace("1:00", "24")}')
 
     cutoff = datetime.utcnow() + timedelta(365)
     
