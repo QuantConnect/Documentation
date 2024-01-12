@@ -1,11 +1,5 @@
 <?
 $brokerageDetails = "
-<li>Enter whether the sandbox should be used.</li>
-<div class='cli section-example-container'>
-<pre>$ lean cloud live \"My Project\" --push --open
-Use sandbox? (live, paper): live</pre>
-</div>
-
 <li>Enter your API key, API secret, and passphrase.</li>
 <div class='cli section-example-container'>
 <pre>$ lean cloud live \"My Project\" --push --open
