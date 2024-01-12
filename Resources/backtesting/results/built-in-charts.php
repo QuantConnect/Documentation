@@ -39,7 +39,7 @@
     <? if ($cloudPlatform) { ?>
     <tr>
       <td>Stockplot &lt;ticker&gt;</td>
-      <td>Time series of an asset's price with <a href=<?= str_contains(DOCS_URL(), "live-trading") ? '/docs/v2/cloud-platform/live-trading/results#08-Orders': '/docs/v2/local-platform/backtesting/results#10-Orders';?>>order event</a> annotations</td>
+      <td>Time series of an asset's price with <a href='/docs/v2/local-platform/backtesting/results#10-Orders'>order event</a> annotations</td>
     </tr>
     <? } ?>
   </tbody>
