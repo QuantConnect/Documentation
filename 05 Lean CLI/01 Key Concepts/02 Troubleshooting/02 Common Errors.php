@@ -39,7 +39,7 @@
                 Make sure Docker is running if you installed it already, or visit <a href="/docs/v2/lean-cli/installation/installing-lean-cli#02-Install-Docker">Install Docker</a> if you haven't.
             </td>
         </tr>
-        <tr><td>Your venv probably has a non standard docker path or no docker access. Please uninstall and <a href="/docs/v2/lean-cli/installation/installing-lean-cli#02-Install-Docker">reinstall</a> docker.</td></tr>
+        <tr><td>Your venv probably has a non standard docker path or no docker access. Uninstall and <a href="/docs/v2/lean-cli/installation/installing-lean-cli#02-Install-Docker">reinstall</a> docker.</td></tr>
         <tr>
             <td>
                 <div class="error-messages">This command requires a Lean configuration file, run `lean init` in an empty directory to create one, or specify the file to use with --lean-config</div>
