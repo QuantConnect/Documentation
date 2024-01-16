@@ -18,6 +18,10 @@
             <td>Blue circle</td>
         </tr>
         <tr>
+            <td>Cancellations</td>
+            <td>Gray square</td>
+        </tr>
+        <tr>
             <td>Fills and partial fills</td>
             <td>Green (buys) or red (sells) arrows</td>
         </tr>
