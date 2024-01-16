@@ -38,8 +38,8 @@
     </tr>
     <? if ($cloudPlatform) { ?>
     <tr>
-      <td>Assetplot <span class='placeholder-text'>ticker</span></td>
-      <td>A time series of an asset's price with order event annotations. To view these charts, see <a href='/docs/v2/cloud-platform/backtesting/results#10-Orders'>Orders</a>. These charts are available for all paid organziation tiers.</td>
+      <td>Asset Plot</td>
+      <td>A time series of an asset's price with order event annotations. These charts are available for all paid organziation tiers. For more information about these charts, see <a href='/docs/v2/cloud-platform/backtesting/results#05-Asset-Plots'>Asset Plots</a>. </td>
     </tr>
     <? } ?>
   </tbody>
