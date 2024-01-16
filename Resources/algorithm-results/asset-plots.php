@@ -4,7 +4,7 @@
 <table class="qc-table table">
     <thead>
         <tr>
-            <th>Order Event</th>
+            <th style="width: 50%">Order Event</th>
             <th>Icon</th>
         </tr>
     </thead>
