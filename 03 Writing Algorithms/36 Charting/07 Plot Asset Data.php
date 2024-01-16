@@ -1,0 +1,1 @@
+<? include(DOCS_RESOURCES."/algorithm-results/asset-plots.php"); ?>
