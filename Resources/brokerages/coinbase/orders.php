@@ -1,6 +1,6 @@
 <h4>Order Types</h4>
 
-<p>The following table describes the available order types for each asset class that <?= $cloudPlatform ? "our Coinbase integration" : "the <code>GDAXBrokerageModel</code>" ?> supports:</p>
+<p>The following table describes the available order types for each asset class that <?= $cloudPlatform ? "our Coinbase integration" : "the <code>CoinbaseBrokerageModel</code>" ?> supports:</p>
 
 <table class="qc-table table" id='order-types-table'>
    <thead>
@@ -36,7 +36,7 @@
 </style>
 
 <h4>Order Properties</h4>
-<p><?= $writingAlgorithms ? "The <code>GDAXBrokerageModel</code> supports custom order properties." :  "We model custom order properties from the Coinbase API." ?> The following table describes the members of the <code>GDAXOrderProperties</code> object that you can set to customize order execution:</p>
+<p><?= $writingAlgorithms ? "The <code>CoinbaseBrokerageModel</code> supports custom order properties." :  "We model custom order properties from the Coinbase API." ?> The following table describes the members of the <code>CoinbaseOrderProperties</code> object that you can set to customize order execution:</p>
 
 <table class="table qc-table">
     <thead>
@@ -62,7 +62,7 @@
     <pre class="csharp">public override void Initialize()
 {
     // Set the default order properties
-    DefaultOrderProperties = new GDAXOrderProperties
+    DefaultOrderProperties = new CoinbaseOrderProperties
     {
         TimeInForce = TimeInForce.GoodTilCanceled,
         PostOnly = false
@@ -76,7 +76,7 @@ public override void OnData(Slice slice)
     
     // Override the default order properties
     LimitOrder(_symbol, quantity, limitPrice, 
-               orderProperties: new GDAXOrderProperties
+               orderProperties: new CoinbaseOrderProperties
                { 
                    TimeInForce = TimeInForce.GoodTilCanceled,
                    PostOnly = true
@@ -84,7 +84,7 @@ public override void OnData(Slice slice)
 }</pre>
     <pre class="python">def Initialize(self) -&gt; None:
     # Set the default order properties
-    self.DefaultOrderProperties = GDAXOrderProperties()
+    self.DefaultOrderProperties = CoinbaseOrderProperties()
     self.DefaultOrderProperties.TimeInForce = TimeInForce.GoodTilCanceled
     self.DefaultOrderProperties.PostOnly = False
 
@@ -93,7 +93,7 @@ def OnData(self, slice: Slice) -&gt; None:
     self.LimitOrder(self.symbol, quantity, limit_price)
     
     # Override the default order properties
-    order_properties = GDAXOrderProperties()
+    order_properties = CoinbaseOrderProperties()
     order_properties.TimeInForce = TimeInForce.GoodTilCanceled
     order_properties.PostOnly = True
     self.LimitOrder(self.symbol, quantity, limit_price, orderProperties=order_properties)</pre>
@@ -101,6 +101,6 @@ def OnData(self, slice: Slice) -&gt; None:
 <?php } ?>
 
 <h4>Updates</h4>
-<p><?= $writingAlgorithms ? "The <code>GDAXBrokerageModel</code> doesn't support order updates" : "We model the Coinbase API by not supporting order updates" ?>, but you can cancel an existing order and then create a new order with the desired arguments. For more information about this workaround, see the <a href='/docs/v2/writing-algorithms/trading-and-orders/order-management/order-tickets#workaround-for-brokerages-that-dont-support-updates'>Workaround for Brokerages That Don’t Support Updates</a>.</p>
+<p><?= $writingAlgorithms ? "The <code>CoinbaseBrokerageModel</code> doesn't support order updates" : "We model the Coinbase API by not supporting order updates" ?>, but you can cancel an existing order and then create a new order with the desired arguments. For more information about this workaround, see the <a href='/docs/v2/writing-algorithms/trading-and-orders/order-management/order-tickets#workaround-for-brokerages-that-dont-support-updates'>Workaround for Brokerages That Don’t Support Updates</a>.</p>
 
 

@@ -1,1 +1,1 @@
-<p><?= $writingAlgorithms ? "The <code>GDAXBrokerageModel</code>" : "Our Coinbase integration" ?> supports trading <a href='/docs/v2/writing-algorithms/securities/asset-classes/crypto'>Crypto</a>.</p>
+<p><?= $writingAlgorithms ? "The <code>CoinbaseBrokerageModel</code>" : "Our Coinbase integration" ?> supports trading <a href='/docs/v2/writing-algorithms/securities/asset-classes/crypto'>Crypto</a>.</p>

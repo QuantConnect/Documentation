@@ -50,7 +50,7 @@
         {
             SetStartDate(2020, 1, 1);
             SetEndDate(2021, 1, 1);            
-            AddUniverse(new CryptoCoarseFundamentalUniverse(Market.GDAX, UniverseSettings, 
+            AddUniverse(new CryptoCoarseFundamentalUniverse(Market.Coinbase, UniverseSettings, 
                 cryptoCoarse =&gt; cryptoCoarse.OrderByDescending(cf =&gt; cf.VolumeInUsd).Take(100).Select(x =&gt; x.Symbol))
             );
         }
@@ -60,7 +60,7 @@
     def Initialize(self) -&gt; None:
         self.SetStartDate(2020, 1, 1)
         self.SetEndDate(2021, 1, 1)
-        self.AddUniverse(CryptoCoarseFundamentalUniverse(Market.GDAX, self.UniverseSettings, self.universe_filter))
+        self.AddUniverse(CryptoCoarseFundamentalUniverse(Market.Coinbase, self.UniverseSettings, self.universe_filter))
 
     def universe_filter(self, crypto_coarse: List[CryptoCoarseFundamental]) -&gt; List[Symbol]:
         sorted_by_dollar_volume = sorted(crypto_coarse, key=lambda cf: cf.VolumeInUsd, reverse=True)
