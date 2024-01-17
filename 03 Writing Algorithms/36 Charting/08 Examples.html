@@ -3,44 +3,68 @@
 <div class="section-example-container">
 	<pre class="csharp">public class ChartingDemoAlgorithm : QCAlgorithm
 {
+    private ExponentialMovingAverage _emaFast;
+    private ExponentialMovingAverage _emaSlow;
     public override void Initialize()
     {
         SetStartDate(2021, 1, 1);
         SetEndDate(2022, 1, 1);
-        AddEquity("SPY", Resolution.Daily);
+        EnableAutomaticIndicatorWarmUp = true;
+        var symbol = AddEquity("MSFT", Resolution.Daily).Symbol;
+        _emaFast = EMA(symbol, 10);
+        _emaSlow = EMA(symbol, 50);
         var chart = new Chart("Price");
         AddChart(chart);
-        chart.AddSeries(new Series("SPY", SeriesType.Scatter, "$", Color.Green, ScatterMarkerSymbol.Triangle));
+        chart.AddSeries(new Series("CROSS UP", SeriesType.Scatter, "$", Color.Green, ScatterMarkerSymbol.Triangle));
+        chart.AddSeries(new Series("CROSS DOWN", SeriesType.Scatter, "$", Color.Red, ScatterMarkerSymbol.TriangleDown));
+        chart.AddSeries(new Series("EMA FAST", SeriesType.Line, "$", Color.Orange));
+        chart.AddSeries(new Series("EMA SLOW", SeriesType.Line, "$", Color.Blue));
         chart = new Chart("Candlestick");
         AddChart(chart);
-        chart.AddSeries(new CandlestickSeries("SPY", "$"));
+        chart.AddSeries(new CandlestickSeries("MSFT", "$"));
     }
 
     public override void OnEndOfDay(Symbol symbol)
     {
-        Plot("Price", "SPY", Securities[symbol].Price);
-        Plot("Candlestick", "SPY", (TradeBar)Securities[symbol].GetLastData());
+        Plot("Candlestick", "MSFT", (TradeBar)Securities[symbol].GetLastData());
+        Plot("Price", "EMA FAST", _emaFast);
+        Plot("Price", "EMA SLOW", _emaSlow);
+        if (_emaFast &gt; _emaSlow && _emaFast[1] &lt; _emaSlow[1])
+            Plot("Price", "CROSS UP", Securities[symbol].Price);
+        else if (_emaFast &lt; _emaSlow && _emaFast[1] &gt; _emaSlow[1])
+            Plot("Price", "CROSS DOWN", Securities[symbol].Price);
     }
 }</pre>
 	<pre class="python">class ChartingDemoAlgorithm(QCAlgorithm):
 
-    def Initialize(self) -&gt; None:
-        self.SetStartDate(2021, 1, 1)
-        self.SetEndDate(2022, 1, 1)
-        self.AddEquity("SPY", Resolution.Daily)
-        chart = Chart("Price")
-        self.AddChart(chart)
-        chart.AddSeries(Series("SPY", SeriesType.Scatter, "$", Color.Green, ScatterMarkerSymbol.Triangle))
-        chart = Chart("Candlestick")
-        self.AddChart(chart)
-        chart.AddSeries(CandlestickSeries("SPY", "$"))
-
-    def OnEndOfDay(self, symbol: Symbol) -&gt; None:
-        self.Plot("Price", "SPY", self.Securities[symbol].Price)
-        self.Plot("Candlestick", "SPY", self.Securities[symbol].GetLastData())</pre>
+def Initialize(self) -> None:
+    self.SetStartDate(2021, 1, 1)
+    self.SetEndDate(2022, 1, 1)
+    self.EnableAutomaticIndicatorWarmUp = True
+    symbol = self.AddEquity("MSFT", Resolution.Daily).Symbol
+    self.ema_fast = self.EMA(symbol, 10)
+    self.ema_slow = self.EMA(symbol, 50)
+    chart = Chart("Price")
+    self.AddChart(chart)
+    chart.AddSeries(Series("CROSS UP", SeriesType.Scatter, "$", Color.Green, ScatterMarkerSymbol.Triangle))
+    chart.AddSeries(Series("CROSS DOWN", SeriesType.Scatter, "$", Color.Red, ScatterMarkerSymbol.TriangleDown))
+    chart.AddSeries(Series("EMA FAST", SeriesType.Line, "$", Color.Orange))
+    chart.AddSeries(Series("EMA SLOW", SeriesType.Line, "$", Color.Blue))
+    chart = Chart("Candlestick")
+    self.AddChart(chart)
+    chart.AddSeries(CandlestickSeries("MSFT", "$"))
+    
+def OnEndOfDay(self, symbol: Symbol) -&gt; None:
+    self.Plot("Candlestick", "MSFT", self.Securities[symbol].GetLastData())
+    self.Plot("Price", "EMA FAST", self.ema_fast.Current.Value)
+    self.Plot("Price", "EMA SLOW", self.ema_slow.Current.Value)
+    if (self.ema_fast &gt; self.ema_slow and self.ema_fast[1] &lt; self.ema_slow[1]):
+        self.Plot("Price", "CROSS UP", self.Securities[symbol].Price)
+    elif (self.ema_fast &lt; self.ema_slow and self.ema_fast[1] &gt; self.ema_slow[1]):
+        self.Plot("Price", "CROSS DOWN", self.Securities[symbol].Price)</pre>
 </div>
 
-<img src="https://cdn.quantconnect.com/i/tu/spy-price-green-scatter-chart.png" class="docs-image" alt="Time series of SPY closing price during 2021.">
-<img src="https://cdn.quantconnect.com/i/tu/spy-candlestick-chart.png" class="docs-image" alt="Time series of SPY candlesticks price during 2021.">
+<img src="https://cdn.quantconnect.com/i/tu/msft-ema-cross-plus-scatter-chart.png" class="docs-image" alt="Time series of SPY closing price during 2021.">
+<img src="https://cdn.quantconnect.com/i/tu/msft-candlestick-chart.png" class="docs-image" alt="Time series of SPY candlesticks price during 2021.">
 
 <p>To see a full example, run the <span class="python"><a href="https://www.quantconnect.com/terminal/processCache?request=embedded_backtest_8842cc548f4ac11ecdea13259df4102f.html">CustomChartingAlgorithm</a></span><span class="csharp"><a href="https://www.quantconnect.com/terminal/processCache?request=embedded_backtest_56cee27107c0300a8d76c59e926ca680.html">CustomChartingAlgorithm</a></span>.</p>
