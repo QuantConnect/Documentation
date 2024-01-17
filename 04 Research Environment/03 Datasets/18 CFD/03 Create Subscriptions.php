@@ -25,4 +25,4 @@ usb = qb.AddCfd("USB10YUSD").Symbol</pre>
     </div>
 </ol>
 
-<p>To view all of the available contracts, see <a href="/docs/v2/writing-algorithms/datasets/oanda/cfd-data#05-Supported-Assets">Supported Assets</a>.</p>
+<p>To view all of the available contracts, see <a href="/docs/v2/writing-algorithms/datasets/oanda/cfd-data#06-Supported-Assets">Supported Assets</a>.</p>

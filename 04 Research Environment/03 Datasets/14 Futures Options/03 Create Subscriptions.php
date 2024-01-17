@@ -26,7 +26,7 @@ futures_contract_symbols = qb.FutureChainProvider.GetFutureContractList(future.S
 futures_contract_symbol = sorted(futures_contract_symbols, key=lambda s: s.ID.Date)[0]
 qb.AddFutureContract(futures_contract_symbol, fillForward = False)</pre>
     </div>
-    <p>To view the available underlying Futures in the US Future Options dataset, see <a href="/docs/v2/writing-algorithms/datasets/algoseek/us-future-options#05-Supported-Assets">Supported Assets</a>.</p>
+    <p>To view the available underlying Futures in the US Future Options dataset, see <a href="/docs/v2/writing-algorithms/datasets/algoseek/us-future-options#06-Supported-Assets">Supported Assets</a>.</p>
 
     <li><span class='qualifier'>(Optional)</span> Set a <a href='/docs/v2/writing-algorithms/universes/future-options#03-Filter-Contracts'>contract filter</a>.</li>
 <div class="section-example-container">

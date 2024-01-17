@@ -25,4 +25,4 @@ gbpusd = qb.AddForex("GBPUSD").Symbol</pre>
     </div>
 </ol>
 
-<p>To view all of the available Forex pairs, see <a href='/docs/v2/writing-algorithms/datasets/oanda/forex-data#05-Supported-Assets'>Supported Assets</a>.</p>
+<p>To view all of the available Forex pairs, see <a href='/docs/v2/writing-algorithms/datasets/oanda/forex-data#06-Supported-Assets'>Supported Assets</a>.</p>
