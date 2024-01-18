@@ -1,0 +1,18 @@
+<p>To improve the algorithm performance, set <code>Asynchronous</code> property to <code class="csharp">true</code><code class="csharp">True</code> in the <code>Initialize</code> method before you add a universes.</p>
+
+<div class="section-example-container">
+    <pre class="csharp">UniverseSettings.Asynchronous = true;
+    AddUniverse(MyFundamentalFilterFunction);
+    var option = AddOption("SPY");
+    option.SetFilter(u =&gt; u.Strikes(-10, 10).Expiration(0, 30));</pre>
+    <pre class="python">self.UniverseSettings.Asynchronous = True
+    self.AddUniverse(self.MyFundamentalFilterFunction)
+    option = self.AddOption("SPY")
+    option.SetFilter(lambda u: u.Strikes(-10, 10).Expiration(0, 30))</pre>
+</div>
+
+<p>The filter function cannot use external data</p>
+<ol>
+    <li>Historical data requests</li>
+    <li>Porfolio or security state. For example, <code class="csharp">Securities[_underlyingSymbol].Price</code><code class="python">self.Securities[self.underlying_symbol].Price</code></li>
+</ol>
