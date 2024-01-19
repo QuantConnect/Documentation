@@ -4,6 +4,7 @@
 <pre class="python">from QuantConnect.Data.UniverseSelection import *
 
 def Initialize(self) -&gt; None:
+    self.UniverseSettings.Asynchronous = True
     self.SetBrokerageModel(BrokerageName.Binance, AccountType.Margin)
     self.AddUniverse(CryptoCoarseFundamentalUniverse(Market.Binance, self.UniverseSettings, self.UniverseSelectionFilter))
 
@@ -13,6 +14,7 @@ def UniverseSelectionFilter(self, crypto_coarse: List[CryptoCoarseFundamental]) 
 
 public override void Initialize()
 {
+    UniverseSettings.Asynchronous = True;
     SetBrokerageModel(BrokerageName.Binance, AccountType.Margin);
     AddUniverse(new CryptoCoarseFundamentalUniverse(Market.Binance, UniverseSettings, UniverseSelectionFilter));
 }
@@ -24,3 +26,4 @@ private IEnumerable&lt;Symbol&gt; UniverseSelectionFilter(IEnumerable&lt;CryptoC
            select c.Symbol;
 }</pre>
 </div>
+<p>For more information about universe settings, see <a href="/docs/v2/writing-algorithms/universes/settings">Settings</a>.</p>

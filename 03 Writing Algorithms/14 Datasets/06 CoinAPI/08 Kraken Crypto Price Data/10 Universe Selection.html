@@ -5,6 +5,7 @@
 
 def Initialize(self) -&gt; None:
     self.SetBrokerageModel(BrokerageName.Kraken, AccountType.Margin)
+    self.UniverseSettings.Asynchronous = True
     self.AddUniverse(CryptoCoarseFundamentalUniverse(Market.Kraken, self.UniverseSettings, self.UniverseSelectionFilter))
 
 def UniverseSelectionFilter(self, crypto_coarse: List[CryptoCoarseFundamental]) -&gt; List[Symbol]:
@@ -14,6 +15,7 @@ def UniverseSelectionFilter(self, crypto_coarse: List[CryptoCoarseFundamental]) 
 public override void Initialize()
 {
     SetBrokerageModel(BrokerageName.Kraken, AccountType.Margin);
+    UniverseSettings.Asynchronous = True;
     AddUniverse(new CryptoCoarseFundamentalUniverse(Market.Kraken, UniverseSettings, UniverseSelectionFilter));
 }
 
@@ -24,3 +26,4 @@ private IEnumerable&lt;Symbol&gt; UniverseSelectionFilter(IEnumerable&lt;CryptoC
            select c.Symbol;
 }</pre>
 </div>
+<p>For more information about universe settings, see <a href="/docs/v2/writing-algorithms/universes/settings">Settings</a>.</p>
