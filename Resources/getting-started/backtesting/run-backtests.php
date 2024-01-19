@@ -2,5 +2,5 @@
 <? if ($localPlatform) { ?>
 As the backtest executes, you can close Local Platform and Docker Desktop without interfering with the backtest. Just don't quit Docker Desktop.
 <? } else { ?>
-As the backtest executes, you can refresh or close the IDE without interfering with the backtest because it runs on our cloud servers.
+As the backtest executes, you can refresh or close the IDE without interfering with the backtest because it runs on our cloud servers. The backtest runs up to the start of the <a href='/docs/v2/cloud-platform/organizations/resources#18-Backtest-Hold-Out-Periods'>out-of-sample hold out period</a>.
 <? } ?></p>
