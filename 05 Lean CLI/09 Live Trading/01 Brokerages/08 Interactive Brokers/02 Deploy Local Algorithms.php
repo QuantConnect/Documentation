@@ -1,3 +1,5 @@
+<p>If you have an ARM M1 chip, you can't deploy a local live algorithm with the IB brokerage.</p>
+
 <?
 $brokerageName = "Interactive Brokers";
 $dataFeedName = "";
