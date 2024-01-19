@@ -2,6 +2,13 @@
 
 <table class='qc-table table vertical-table'>
     <tbody>
+    <tr>
+            <td>
+                <h4>Property: <span><code>Asynchronous</code></span></h4>
+                <p class='property-description'>Should the universe selection run asynchronously to boost speed?</p>
+                <p>Data Type: <span><code>bool</code></span><span class='pipe-separator'>  |  </span> Default Value: <span><code class='csharp'>false</code><code class='python'>False</code></span></p>
+            </td>
+        </tr>
         <tr>
             <td>
                 <h4>Property: <span><code>ExtendedMarketHours</code></span></h4>
