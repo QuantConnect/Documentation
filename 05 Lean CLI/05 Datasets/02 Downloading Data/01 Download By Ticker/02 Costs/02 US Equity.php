@@ -79,6 +79,7 @@
         {
             SetStartDate(2020, 1, 1);
             SetEndDate(2021, 1, 1);
+            UniverseSettings.Asynchronous = true;
             AddUniverse(Universe.DollarVolume.Top(100));
         }
     }
@@ -87,6 +88,7 @@
     def Initialize(self) -&gt; None:
         self.SetStartDate(2020, 1, 1)
         self.SetEndDate(2021, 1, 1)
+        self.UniverseSettings.Asynchronous = True
         self.AddUniverse(self.Universe.DollarVolume.Top(100))</pre>
 </div>
 

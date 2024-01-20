@@ -1,9 +1,10 @@
 <p>The <code>OptionUniverseSelectionModel</code> selects all the available contracts for the Equity Options, Index Options, and Future Options you specify. To use this model, provide a <code>refreshInterval</code> and a selector function. The <code>refreshInterval</code><code></code> defines how frequently LEAN calls the selector function. The selector function receives a <code class="csharp">DateTime</code><code class="python">datetime</code> object that represents the current Coordinated Universal Time (UTC) and returns a list of <code>Symbol</code> objects. The <code>Symbol</code> objects you return from the selector function are the Options of the universe.</p>
 
 <div class="section-example-container">
-	<pre class="csharp">AddUniverseSelection(new OptionUniverseSelectionModel(refreshInterval, optionChainSymbolSelector));</pre>
+	<pre class="csharp">UniverseSettings.Asynchronous = true;
+AddUniverseSelection(new OptionUniverseSelectionModel(refreshInterval, optionChainSymbolSelector));</pre>
 	<pre class="python">from Selection.OptionUniverseSelectionModel import OptionUniverseSelectionModel 
-
+self.UniverseSettings.Asynchronous = True
 self.AddUniverseSelection(OptionUniverseSelectionModel(refreshInterval, optionChainSymbolSelector))</pre>
 </div>
 
@@ -99,6 +100,7 @@ def select_option_chain_symbols(self, utc_time: datetime) -&gt; List[Symbol]:
 
 <div class="section-example-container">
 	<pre class="csharp">// In Initialize
+UniverseSettings.Asynchronous = true;
 AddUniverseSelection(new EarliestExpiringAtTheMoneyCallOptionUniverseSelectionModel(this));
 
 // Outside of the algorithm class
@@ -128,13 +130,14 @@ class EarliestExpiringAtTheMoneyCallOptionUniverseSelectionModel : OptionUnivers
 
     protected override OptionFilterUniverse Filter(OptionFilterUniverse filter)
     {
-        return filter.Strikes(-1, -1).Expiration(0, 7).CallsOnly().OnlyApplyFilterAtMarketOpen();
+        return filter.Strikes(-1, -1).Expiration(0, 7).CallsOnly();
     }
 }
 </pre>
 	<pre class="python">from Selection.OptionUniverseSelectionModel import OptionUniverseSelectionModel 
 
 # In Initialize
+self.UniverseSettings.Asynchronous = True
 self.AddUniverseSelection(EarliestExpiringAtTheMoneyCallOptionUniverseSelectionModel(self))
 
 # Outside of the algorithm class
@@ -158,7 +161,7 @@ class EarliestExpiringAtTheMoneyCallOptionUniverseSelectionModel(OptionUniverseS
         return [Symbol.CreateCanonicalOption(symbol) for symbol in future_contract_symbols]
 
     def Filter(self, option_filter_universe: OptionFilterUniverse) -> OptionFilterUniverse:
-        return option_filter_universe.Strikes(-1, -1).Expiration(0, 7).CallsOnly().OnlyApplyFilterAtMarketOpen()</pre>
+        return option_filter_universe.Strikes(-1, -1).Expiration(0, 7).CallsOnly()</pre>
 </div>
 
 <?

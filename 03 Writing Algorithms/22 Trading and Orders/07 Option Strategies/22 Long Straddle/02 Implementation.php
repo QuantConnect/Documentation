@@ -10,7 +10,7 @@ public override void Initialize()
     SetStartDate(2017, 4, 1);
     SetEndDate(2017, 6, 30);
     SetCash(100000);
-
+    UniverseSettings.Asynchronous = true;
     var option = AddOption("GOOG");
     _symbol = option.Symbol;
     option.SetFilter(-1, 1, 30, 60);
@@ -19,7 +19,7 @@ public override void Initialize()
     self.SetStartDate(2017, 4, 1)
     self.SetEndDate(2017, 6, 30)
     self.SetCash(100000)
-        
+    self.UniverseSettings.Asynchronous = True 
     option = self.AddOption("GOOG")
     self.symbol = option.Symbol
     option.SetFilter(-1, 1, 30, 60)</pre>

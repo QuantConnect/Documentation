@@ -1,10 +1,12 @@
 <p>To add a universe of Future Option contracts, in the <code>Initialize</code> method, <a href="/docs/v2/writing-algorithms/universes/futures#11-Create-Universes">define a Future universe</a> and then pass the canonical <code>Symbol</code> to the <code>AddFutureOption</code> method.<br></p>
 
 <div class="section-example-container">
-    <pre class="csharp">var future = AddFuture(Futures.Metals.Gold);
+    <pre class="csharp">UniverseSettings.Asynchronous = true;
+var future = AddFuture(Futures.Metals.Gold);
 future.SetFilter(0, 90);
 AddFutureOption(future.Symbol);</pre>
-    <pre class="python">future = self.AddFuture(Futures.Metals.Gold)
+    <pre class="python">self.UniverseSettings.Asynchronous = True
+future = self.AddFuture(Futures.Metals.Gold)
 future.SetFilter(0, 90)
 self.AddFutureOption(future.Symbol)</pre>
 </div>

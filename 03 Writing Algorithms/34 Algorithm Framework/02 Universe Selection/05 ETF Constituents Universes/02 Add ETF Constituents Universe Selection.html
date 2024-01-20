@@ -1,7 +1,9 @@
 <p>To add an <code>ETFConstituentsUniverseSelectionModel</code> to your algorithm, in the <code>Initialize</code> method, call the <code>AddUniverseSelection</code> method. The <code>ETFConstituentsUniverseSelectionModel</code> constructor expects an ETF <code>Symbol</code>.</p>
 <div class="section-example-container">
-	<pre class="csharp">AddUniverseSelection(new ETFConstituentsUniverseSelectionModel(etfSymbol));</pre>
-	<pre class="python">self.AddUniverseSelection(ETFConstituentsUniverseSelectionModel(etfSymbol))</pre>
+	<pre class="csharp">UniverseSettings.Asynchronous = true;
+AddUniverseSelection(new ETFConstituentsUniverseSelectionModel(etfSymbol));</pre>
+	<pre class="python">self.UniverseSettings.Asynchronous = True
+self.AddUniverseSelection(ETFConstituentsUniverseSelectionModel(etfSymbol))</pre>
 </div>
 
 
@@ -47,6 +49,7 @@
 <div class="section-example-container">
 	<pre class="csharp">public override void Initialize()
 {
+    UniverseSettings.Asynchronous = true;
     var symbol = QuantConnect.Symbol.Create("SPY", SecurityType.Equity, Market.USA);
     AddUniverseSelection(new ETFConstituentsUniverseSelectionModel(symbol, UniverseSettings, ETFConstituentsFilter));
 }
@@ -56,6 +59,7 @@ private IEnumerable&lt;Symbol&gt; ETFConstituentsFilter(IEnumerable&lt;ETFConsti
     return constituents.OrderByDescending(c =&gt; c.Weight).Take(10).Select(c =&gt; c.Symbol);
 }</pre>
 	<pre class="python">def Initialize(self) -&gt; None:
+    self.UniverseSettings.Asynchronous = True   
     symbol = Symbol.Create("SPY", SecurityType.Equity, Market.USA)
     universe = ETFConstituentsUniverseSelectionModel(symbol, self.UniverseSettings, self.ETFConstituentsFilter)
     self.AddUniverseSelection(universe)
@@ -71,6 +75,7 @@ def ETFConstituentsFilter(self, constituents: List[ETFConstituentData]) -&gt; Li
 
 <div class="section-example-container">
 	<pre class="csharp">// In Initialize
+UniverseSettings.Asynchronous = true;
 AddUniverseSelection(new LargestWeightSPYETFUniverseSelectionModel(UniverseSettings));
 
 // Outside of the algorithm class
@@ -88,6 +93,7 @@ class LargestWeightSPYETFUniverseSelectionModel : ETFConstituentsUniverseSelecti
     }
 }</pre>
 	<pre class="python"># In Initialize
+self.UniverseSettings.Asynchronous = True
 self.AddUniverseSelection(LargestWeightSPYETFUniverseSelectionModel(self.UniverseSettings))
 
 # Outside of the algorithm class

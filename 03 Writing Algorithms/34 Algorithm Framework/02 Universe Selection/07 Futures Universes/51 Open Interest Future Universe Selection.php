@@ -1,8 +1,10 @@
 <p>The <code>OpenInterestFutureUniverseSelectionModel</code> is an extension of the <code>FutureUniverseSelectionModel</code> that selects the contract with the greatest open interest on a daily basis.</p>
 
 <div class="section-example-container">
-    <pre class="csharp">AddUniverseSelection(new OpenInterestFutureUniverseSelectionModel(algorithm, futureChainSymbolSelector));</pre>
-    <pre class="python">self.AddUniverseSelection(OpenInterestFutureUniverseSelectionModel(algorithm, futureChainSymbolSelector));</pre>
+    <pre class="csharp">UniverseSettings.Asynchronous = true;
+AddUniverseSelection(new OpenInterestFutureUniverseSelectionModel(algorithm, futureChainSymbolSelector));</pre>
+    <pre class="python">self.UniverseSettings.Asynchronous = True
+self.AddUniverseSelection(OpenInterestFutureUniverseSelectionModel(algorithm, futureChainSymbolSelector));</pre>
 </div>
 
 <p>The following table describes the arguments the model accepts:</p>
@@ -63,6 +65,7 @@
 <div class="section-example-container">
     <pre class="csharp">public override void Initialize()
 {
+    UniverseSettings.Asynchronous = true;        
     var symbols = new[] {
         QuantConnect.Symbol.Create(Futures.Indices.SP500EMini, SecurityType.Future, Market.CME),
         QuantConnect.Symbol.Create(Futures.Metals.Gold, SecurityType.Future, Market.COMEX)
@@ -70,6 +73,7 @@
     AddUniverseSelection(new OpenInterestFutureUniverseSelectionModel(this, utcTime =&gt; symbols));
 }</pre>
     <pre class='python'>def Initialize(self):
+    self.UniverseSettings.Asynchronous = True
     symbols = [
         Symbol.Create(Futures.Indices.SP500EMini, SecurityType.Future, Market.CME),
         Symbol.Create(Futures.Metals.Gold, SecurityType.Future, Market.COMEX)
@@ -82,6 +86,7 @@
 
 <div class="section-example-container">
     <pre class="csharp">// In Initialize
+UniverseSettings.Asynchronous = true;
 AddUniverseSelection(new GoldOpenInterestFutureUniverseSelectionModel(this));
 
 // Outside of the algorithm class
@@ -99,6 +104,7 @@ class GoldOpenInterestFutureUniverseSelectionModel : OpenInterestFutureUniverseS
     }
 }</pre>
     <pre class='python'># In Initialize
+self.UniverseSettings.Asynchronous = True
 self.AddUniverseSelection(GoldOpenInterestFutureUniverseSelectionModel(self))
     
 # Outside of the algorithm class

@@ -49,7 +49,8 @@
         public override void Initialize()
         {
             SetStartDate(2020, 1, 1);
-            SetEndDate(2021, 1, 1);            
+            SetEndDate(2021, 1, 1);
+            UniverseSettings.Asynchronous = true;            
             AddUniverse(new CryptoCoarseFundamentalUniverse(Market.Coinbase, UniverseSettings, 
                 cryptoCoarse =&gt; cryptoCoarse.OrderByDescending(cf =&gt; cf.VolumeInUsd).Take(100).Select(x =&gt; x.Symbol))
             );
@@ -60,6 +61,7 @@
     def Initialize(self) -&gt; None:
         self.SetStartDate(2020, 1, 1)
         self.SetEndDate(2021, 1, 1)
+        self.UniverseSettings.Asynchronous = True
         self.AddUniverse(CryptoCoarseFundamentalUniverse(Market.Coinbase, self.UniverseSettings, self.universe_filter))
 
     def universe_filter(self, crypto_coarse: List[CryptoCoarseFundamental]) -&gt; List[Symbol]:

@@ -4,9 +4,11 @@
 
 <div class="section-example-container">
     <pre class="csharp">// In Initialize
+UniverseSettings.Asynchronous = true;
 var option = AddOption("SPY");
 option.PriceModel = OptionPriceModels.CrankNicolsonFD();</pre>
     <pre class="python"># In Initialize
+self.UniverseSettings.Asynchronous = True
 option = self.AddOption("SPY")
 option.PriceModel = OptionPriceModels.CrankNicolsonFD()</pre>
 </div>

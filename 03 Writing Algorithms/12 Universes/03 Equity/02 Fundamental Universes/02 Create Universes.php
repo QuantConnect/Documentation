@@ -5,6 +5,7 @@
     <pre class="csharp">public class MyUniverseAlgorithm : QCAlgorithm {
     public override void Initialize() 
     {
+        UniverseSettings.Asynchronous = true;
         AddUniverse(FundamentalFilterFunction);
     }
         
@@ -17,6 +18,7 @@
 }</pre>
     <pre class="python">class MyUniverseAlgorithm(QCAlgorithm):
     def Initialize(self) -&gt; None:
+        self.UniverseSettings.Asynchronous = True
         self.AddUniverse(self.FundamentalFunction)
     
     def FundamentalFunction(self, fundamental: List[Fundamental]) -&gt; List[Symbol]:
@@ -33,6 +35,7 @@ The simplest example of accessing the fundamental object would be harnessing the
 <div class="section-example-container">
     <pre class="csharp">// Take the top 50 by dollar volume using fundamental
 // Then the top 10 by PERatio using fine
+UniverseSettings.Asynchronous = true;
 AddUniverse(
     fundamental =&gt; (from f in fundamental
         where f.Price &gt; 10 &amp;&amp; f.HasFundamentalData &amp;&amp; !Double.IsNaN(f.ValuationRatios.PERatio)
@@ -40,6 +43,7 @@ AddUniverse(
         .OrderBy(f =&gt; f.ValuationRatios.PERatio).Take(10)
         .Select(f =&gt; f.Symbol));</pre>
     <pre class="python"># In Initialize:
+self.UniverseSettings.Asynchronous = True
 self.AddUniverse(self.FundamentalSelectionFunction)
     
 def FundamentalSelectionFunction(self, fundamental: List[Fundamental]) -&gt; List[Symbol]:

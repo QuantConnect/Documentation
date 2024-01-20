@@ -10,24 +10,19 @@ public override void Initialize()
     SetStartDate(2017, 2, 1);
     SetEndDate(2017, 3, 5);
     SetCash(500000);
-
+    UniverseSettings.Asynchronous = true;
     var option = AddOption("GOOG", Resolution.Minute);
     _symbol = option.Symbol;
-    option.SetFilter(universe =&gt; universe.IncludeWeeklys()
-                                            .Strikes(-15, 15)
-                                            .Expiration(TimeSpan.FromDays(0), TimeSpan.FromDays(31)));
+    option.SetFilter(universe =&gt; universe.IncludeWeeklys().Strikes(-15, 15).Expiration(0, 31));
 }</pre>
         <pre class="python">def Initialize(self) -&gt; None:
     self.SetStartDate(2017, 2, 1)
     self.SetEndDate(2017, 3, 5)
     self.SetCash(500000)
-
+    self.UniverseSettings.Asynchronous = True
     option = self.AddOption("GOOG", Resolution.Minute)
     self.symbol = option.Symbol
-    option.SetFilter(self.UniverseFunc)
-
-def UniverseFunc(self, universe: OptionFilterUniverse) -&gt; OptionFilterUniverse:
-    return universe.IncludeWeeklys().Strikes(-15, 15).Expiration(timedelta(0), timedelta(31))</pre>
+    option.SetFilter(lambda universe: universe.IncludeWeeklys().Strikes(-15, 15).Expiration(0, 31))</pre>
     </div>
 
     <li>In the <code>OnData</code> method, select strikes and expiration date of the contracts in the strategy legs.</li>
