@@ -2,10 +2,16 @@
 
 </p><div class="section-example-container">
 	<pre class="csharp">UniverseSettings.Asynchronous = true;
-AddUniverseOptions(universe, optionFilter);
-</pre>
+AddUniverseOptions(
+    AddUniverse(Universe.DollarVolume.Top(10)), 
+    optionFilterUniverse => optionFilterUniverse.Strikes(-2, +2).FrontMonth().CallsOnly()
+);</pre>
 	<pre class="python">self.UniverseSettings.Asynchronous = True
-self.AddUniverseOptions(universe, optionFilter)</pre>
+self.AddUniverseOptions(
+    self.AddUniverse(self.Universe.DollarVolume.Top(10)), 
+    lambda option_filter_universe: option_filter_universe.Strikes(-2, +2).FrontMonth().CallsOnly()
+)</pre>
+
 </div>
 
 
@@ -41,12 +47,13 @@ self.AddUniverseOptions(universe, optionFilter)</pre>
 
 <? include(DOCS_RESOURCES."/universes/option/option-filter-universe.html"); ?>
 
+<p>The following example shows how to define the Option filter as an isolated method:</p>
+
 <div class="section-example-container">
 	<pre class="csharp">public override void Initialize()
 {
     UniverseSettings.Asynchronous = true;
-    var universe = AddUniverse(Universe.DollarVolume.Top(10));
-    AddUniverseOptions(universe, OptionFilterFunction);
+    AddUniverseOptions(AddUniverse(Universe.DollarVolume.Top(10)), OptionFilterFunction);
 }
 
 private OptionFilterUniverse OptionFilterFunction(OptionFilterUniverse optionFilterUniverse)
@@ -55,8 +62,7 @@ private OptionFilterUniverse OptionFilterFunction(OptionFilterUniverse optionFil
 }</pre>
 	<pre class="python">def Initialize(self) -&gt; None:
     self.UniverseSettings.Asynchronous = True
-    universe = self.AddUniverse(self.Universe.DollarVolume.Top(10))
-    self.AddUniverseOptions(universe, self.OptionFilterFunction)
+    self.AddUniverseOptions(self.AddUniverse(self.Universe.DollarVolume.Top(10)), self.OptionFilterFunction)
 
 def OptionFilterFunction(self, option_filter_universe: OptionFilterUniverse) -&gt; OptionFilterUniverse:
     return option_filter_universe.Strikes(-2, +2).FrontMonth().CallsOnly()</pre>

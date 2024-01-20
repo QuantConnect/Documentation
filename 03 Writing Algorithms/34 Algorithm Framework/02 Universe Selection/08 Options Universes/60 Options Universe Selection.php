@@ -2,10 +2,20 @@
 
 <div class="section-example-container">
 	<pre class="csharp">UniverseSettings.Asynchronous = true;
-AddUniverseSelection(new OptionUniverseSelectionModel(refreshInterval, optionChainSymbolSelector));</pre>
+AddUniverseSelection(
+    new OptionUniverseSelectionModel(
+        TimeSpan.FromDays(1), 
+        _ => new [] { QuantConnect.Symbol.Create("SPY", SecurityType.Option, Market.USA) }
+    )
+);</pre>
 	<pre class="python">from Selection.OptionUniverseSelectionModel import OptionUniverseSelectionModel 
+
 self.UniverseSettings.Asynchronous = True
-self.AddUniverseSelection(OptionUniverseSelectionModel(refreshInterval, optionChainSymbolSelector))</pre>
+self.SetUniverseSelection(
+    OptionUniverseSelectionModel(
+        timedelta(1), lambda _: [Symbol.Create("SPY", SecurityType.Option, Market.USA)]
+    )
+)</pre>
 </div>
 
 <p>The following table describes the arguments the model accepts:</p>
@@ -43,6 +53,8 @@ self.AddUniverseSelection(OptionUniverseSelectionModel(refreshInterval, optionCh
 
 <p>If you don't provide a <code>universeSettings</code> argument, the <code>algorithm.UniverseSettings</code> is used by default.</p>
 
+<p>The following example shows how to define the Option chain Symbol selector as an isolated method:</p>
+
 <div class="section-example-container">
 	<pre class="csharp">public override void Initialize()
 {
@@ -72,8 +84,9 @@ private IEnumerable&lt;Symbol&gt; SelectOptionChainSymbols(DateTime utcTime)
 	<pre class="python">from Selection.OptionUniverseSelectionModel import OptionUniverseSelectionModel 
 
 def Initialize(self) -&gt; None:
-    universe = OptionUniverseSelectionModel(timedelta(days=1), self.select_option_chain_symbols)
-    self.SetUniverseSelection(universe)
+    self.AddUniverseSelection(
+        OptionUniverseSelectionModel(timedelta(days=1), self.select_option_chain_symbols)
+    )
 
 def select_option_chain_symbols(self, utc_time: datetime) -&gt; List[Symbol]:
     # Equity Options example:
@@ -96,7 +109,7 @@ def select_option_chain_symbols(self, utc_time: datetime) -&gt; List[Symbol]:
 
 <p>The contract filter runs at the first time step of each day.</p>
 
-<p>To move the selection functions outside of the algorithm class, create a universe selection model that inherits the <code>OptionUniverseSelectionModel</code> class.</p>
+<p>To move the Option chain Symbol selector outside of the algorithm class, create a universe selection model that inherits the <code>OptionUniverseSelectionModel</code> class.</p>
 
 <div class="section-example-container">
 	<pre class="csharp">// In Initialize

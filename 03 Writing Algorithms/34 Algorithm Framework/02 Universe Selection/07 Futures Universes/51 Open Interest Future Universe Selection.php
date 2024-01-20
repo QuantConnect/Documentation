@@ -2,9 +2,19 @@
 
 <div class="section-example-container">
     <pre class="csharp">UniverseSettings.Asynchronous = true;
-AddUniverseSelection(new OpenInterestFutureUniverseSelectionModel(algorithm, futureChainSymbolSelector));</pre>
+AddUniverseSelection(
+    new OpenInterestFutureUniverseSelectionModel(
+        this, 
+        utcTime => new[] { QuantConnect.Symbol.Create(Futures.Indices.SP500EMini, SecurityType.Future, Market.CME) }
+    )
+);</pre>
     <pre class="python">self.UniverseSettings.Asynchronous = True
-self.AddUniverseSelection(OpenInterestFutureUniverseSelectionModel(algorithm, futureChainSymbolSelector));</pre>
+self.AddUniverseSelection(
+    OpenInterestFutureUniverseSelectionModel(
+        self, 
+        lambda utc_time: [Symbol.Create(Futures.Indices.SP500EMini, SecurityType.Future, Market.CME)]
+    )
+)</pre>
 </div>
 
 <p>The following table describes the arguments the model accepts:</p>
@@ -62,27 +72,40 @@ self.AddUniverseSelection(OpenInterestFutureUniverseSelectionModel(algorithm, fu
 }
 </style>
 
+<p>The following example shows how to define the Future chain Symbol selector as an isolated method:</p>
+
 <div class="section-example-container">
     <pre class="csharp">public override void Initialize()
 {
-    UniverseSettings.Asynchronous = true;        
-    var symbols = new[] {
+    UniverseSettings.Asynchronous = true;  
+    AddUniverseSelection(
+        new OpenInterestFutureUniverseSelectionModel(this, SelectFutureChainSymbols)
+    );
+}
+
+private static IEnumerable&lt;Symbol&gt; SelectFutureChainSymbols(DateTime utcTime)
+{
+    return new[] {
         QuantConnect.Symbol.Create(Futures.Indices.SP500EMini, SecurityType.Future, Market.CME),
         QuantConnect.Symbol.Create(Futures.Metals.Gold, SecurityType.Future, Market.COMEX)
-    }; 
-    AddUniverseSelection(new OpenInterestFutureUniverseSelectionModel(this, utcTime =&gt; symbols));
-}</pre>
-    <pre class='python'>def Initialize(self):
+    };
+}
+
+</pre>
+    <pre class="python">def Initialize(self) -&gt; None:
     self.UniverseSettings.Asynchronous = True
-    symbols = [
+    self.AddUniverseSelection(
+        OpenInterestFutureUniverseSelectionModel(self, self.select_future_chain_symbols)
+    )
+
+def select_future_chain_symbols(self, utc_time: datetime) -&gt; List[Symbol]:
+    return [ 
         Symbol.Create(Futures.Indices.SP500EMini, SecurityType.Future, Market.CME),
         Symbol.Create(Futures.Metals.Gold, SecurityType.Future, Market.COMEX)
-    ]
-    universe = OpenInterestFutureUniverseSelectionModel(self, lambda utc_time: symbols)
-    self.AddUniverseSelection(universe)</pre>
+    ]</pre>
 </div>
 
-<p>To move the selection functions outside of the algorithm class, create a universe selection model that inherits the <code>OpenInterestFutureUniverseSelectionModel</code> class.</p>
+<p>To move the Future chain Symbol selector outside of the algorithm class, create a universe selection model that inherits the <code>OpenInterestFutureUniverseSelectionModel</code> class.</p>
 
 <div class="section-example-container">
     <pre class="csharp">// In Initialize

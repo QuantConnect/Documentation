@@ -80,18 +80,18 @@ These settings are globals, so they apply to all universes you create.</p>
 <div class="section-example-container">
 <pre class="csharp">// Request second resolution data. This will be slow!
 UniverseSettings.Resolution = Resolution.Second;
-AddUniverseSelection(new VolatilityETFUniverse());</pre>
+AddUniverseSelection(new EmaCrossUniverseSelectionModel());</pre>
 <pre class="python"># Request second resolution data. This will be slow!
 self.UniverseSettings.Resolution = Resolution.Second
-self.AddUniverseSelection(VolatilityETFUniverse())</pre>
+self.AddUniverseSelection(EmaCrossUniverseSelectionModel())</pre>
 </div>
 <? } else { ?>
 <div class="section-example-container">
 <pre class="csharp">// Request second resolution data. This will be slow!
 UniverseSettings.Resolution = Resolution.Second;
-AddUniverse(MyFundamentalFilterFunction);</pre>
+AddUniverse(Universe.DollarVolume.Top(50));</pre>
 <pre class="python"># Request second resolution data. This will be slow!
 self.UniverseSettings.Resolution = Resolution.Second
-self.AddUniverse(self.MyFundamentalFilterFunction)</pre>
+self.AddUniverse(self.Universe.DollarVolume.Top(50))</pre>
 </div>
 <? } ?>

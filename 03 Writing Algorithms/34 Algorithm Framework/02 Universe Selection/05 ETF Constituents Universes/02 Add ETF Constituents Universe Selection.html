@@ -1,9 +1,9 @@
 <p>To add an <code>ETFConstituentsUniverseSelectionModel</code> to your algorithm, in the <code>Initialize</code> method, call the <code>AddUniverseSelection</code> method. The <code>ETFConstituentsUniverseSelectionModel</code> constructor expects an ETF <code>Symbol</code>.</p>
 <div class="section-example-container">
 	<pre class="csharp">UniverseSettings.Asynchronous = true;
-AddUniverseSelection(new ETFConstituentsUniverseSelectionModel(etfSymbol));</pre>
+AddUniverseSelection(new ETFConstituentsUniverseSelectionModel("SPY"));</pre>
 	<pre class="python">self.UniverseSettings.Asynchronous = True
-self.AddUniverseSelection(ETFConstituentsUniverseSelectionModel(etfSymbol))</pre>
+self.AddUniverseSelection(ETFConstituentsUniverseSelectionModel("SPY"))</pre>
 </div>
 
 
@@ -20,9 +20,9 @@ self.AddUniverseSelection(ETFConstituentsUniverseSelectionModel(etfSymbol))</pre
     </thead>
     <tbody>
         <tr>
-            <td><code>etfSymbol</code></td>
-	    <td><code>Symbol</code></td>
-            <td><code>Symbol</code> of the ETF to get constituents for</td>
+            <td><code>etfTicker</code></td>
+	        <td><code>string</code></td>
+            <td>Ticker of the ETF to get constituents for</td>
             <td></td>
         </tr>
         <tr>
@@ -50,8 +50,9 @@ self.AddUniverseSelection(ETFConstituentsUniverseSelectionModel(etfSymbol))</pre
 	<pre class="csharp">public override void Initialize()
 {
     UniverseSettings.Asynchronous = true;
-    var symbol = QuantConnect.Symbol.Create("SPY", SecurityType.Equity, Market.USA);
-    AddUniverseSelection(new ETFConstituentsUniverseSelectionModel(symbol, UniverseSettings, ETFConstituentsFilter));
+    AddUniverseSelection(
+        new ETFConstituentsUniverseSelectionModel("SPY", universeFilterFunc: ETFConstituentsFilter)
+    );
 }
 
 private IEnumerable&lt;Symbol&gt; ETFConstituentsFilter(IEnumerable&lt;ETFConstituentData&gt; constituents)
@@ -60,13 +61,15 @@ private IEnumerable&lt;Symbol&gt; ETFConstituentsFilter(IEnumerable&lt;ETFConsti
 }</pre>
 	<pre class="python">def Initialize(self) -&gt; None:
     self.UniverseSettings.Asynchronous = True   
-    symbol = Symbol.Create("SPY", SecurityType.Equity, Market.USA)
-    universe = ETFConstituentsUniverseSelectionModel(symbol, self.UniverseSettings, self.ETFConstituentsFilter)
-    self.AddUniverseSelection(universe)
+    self.AddUniverseSelection(
+        ETFConstituentsUniverseSelectionModel("SPY", universeFilterFunc=self.ETFConstituentsFilter)
+    )
 
 def ETFConstituentsFilter(self, constituents: List[ETFConstituentData]) -&gt; List[Symbol]:
-    selected = sorted([c for c in constituents if c.Weight],
-        key=lambda c: c.Weight, reverse=True)[:10]
+    selected = sorted(
+        [c for c in constituents if c.Weight],
+        key=lambda c: c.Weight, reverse=True
+    )[:10]
     return [c.Symbol for c in selected]</pre>
 </div>
 
