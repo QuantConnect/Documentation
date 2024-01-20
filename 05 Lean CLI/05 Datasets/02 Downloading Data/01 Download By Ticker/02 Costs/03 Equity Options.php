@@ -44,6 +44,7 @@
         {
             SetStartDate(2020, 1, 1);
             SetEndDate(2021, 1, 1);
+            UniverseSettings.Asynchronous = true;
             var underlying = AddEquity("GOOG").Symbol;
             AddOption(underlying);
         }
@@ -53,6 +54,7 @@
     def Initialize(self) -&gt; None:
         self.SetStartDate(2020, 1, 1)
         self.SetEndDate(2021, 1, 1)
+        self.UniverseSettings.Asynchronous = True
         underlying = self.AddEquity("GOOG").Symbol
         self.AddOption(underlying)</pre>
 </div>

@@ -1,7 +1,8 @@
 <p>The <code>FutureUniverseSelectionModel</code> selects all the contracts for a set of Futures you specify. To use this model, provide a <code>refreshInterval</code> and a selector function. The <code>refreshInterval</code><code></code> defines how frequently LEAN calls the selector function. The selector function receives a <code class="csharp">DateTime</code><code class="python">datetime</code> object that represents the current Coordinated Universal Time (UTC) and returns a list of <code>Symbol</code> objects. The <code>Symbol</code> objects you return from the selector function are the Futures of the universe.</p>
 
 <div class="section-example-container">
-	<pre class="csharp">AddUniverseSelection(
+	<pre class="csharp">UniverseSettings.Asynchronous = true;
+AddUniverseSelection(
     new FutureUniverseSelectionModel(
         TimeSpan.FromDays(1), 
         _ => new List&lt;Symbol&gt; {{ QuantConnect.Symbol.Create(Futures.Indices.SP500EMini, SecurityType.Future, Market.CME) }}
@@ -9,6 +10,7 @@
 );</pre>
 	<pre class="python">from Selection.FutureUniverseSelectionModel import FutureUniverseSelectionModel
 
+self.UniverseSettings.Asynchronous = True
 self.AddUniverseSelection(
     FutureUniverseSelectionModel(
         timedelta(1), 
@@ -93,6 +95,7 @@ def select_future_chain_symbols(self, utc_time: datetime) -&gt; List[Symbol]:
 
 <div class="section-example-container">
 	<pre class="csharp">// In Initialize
+UniverseSettings.Asynchronous = true;
 AddUniverseSelection(new FrontMonthFutureUniverseSelectionModel());
 
 // Outside of the algorithm class
@@ -111,12 +114,13 @@ class FrontMonthFutureUniverseSelectionModel : FutureUniverseSelectionModel
 
     protected override FutureFilterUniverse Filter(FutureFilterUniverse filter)
     {
-        return filter.FrontMonth().OnlyApplyFilterAtMarketOpen();
+        return filter.FrontMonth();
     }
 }</pre>
 	<pre class="python">from Selection.FutureUniverseSelectionModel import FutureUniverseSelectionModel
 
 # In Initialize
+self.UniverseSettings.Asynchronous = True
 self.AddUniverseSelection(FrontMonthFutureUniverseSelectionModel())
 
 # Outside of the algorithm class
@@ -131,7 +135,7 @@ class FrontMonthFutureUniverseSelectionModel(FutureUniverseSelectionModel):
         ]
 
     def Filter(self, filter: FutureFilterUniverse) -> FutureFilterUniverse:
-        return filter.FrontMonth().OnlyApplyFilterAtMarketOpen()</pre>
+        return filter.FrontMonth()</pre>
 </div>
 
 <?

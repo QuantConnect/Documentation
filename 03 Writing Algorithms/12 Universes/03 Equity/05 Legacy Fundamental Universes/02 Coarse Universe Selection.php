@@ -5,6 +5,7 @@
 {
     public override void Initialize()
     {
+        UniverseSettings.Asynchronous = true;
         AddUniverse(CoarseFilterFunction);
     }
 
@@ -17,6 +18,7 @@
 }</pre>
 <pre class="python">class MyCoarseUniverseAlgorithm(QCAlgorithm):
     def Initialize(self) -&gt; None:
+        self.UniverseSettings.Asynchronous = True
         self.AddUniverse(self.CoarseFilterFunction)
 
     def CoarseFilterFunction(self, coarse: List[CoarseFundamental]) -&gt; List[Symbol]:

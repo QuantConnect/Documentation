@@ -10,22 +10,21 @@ public override void Initialize()
     SetStartDate(2017, 4, 1);
     SetEndDate(2017, 4, 30);
     SetCash(100000);
-
+    UniverseSettings.Asynchronous = true;
     _equitySymbol = AddEquity("GOOG").Symbol;
     var option = AddOption("GOOG", Resolution.Minute);
     _optionSymbol = option.Symbol;
-    option.SetFilter(universe =&gt; universe.Strikes(-10, 10)
-                                         .Expiration(TimeSpan.FromDays(0), TimeSpan.FromDays(30)));
+    option.SetFilter(-10, 10, 0, 30);
 }</pre>
         <pre class="python">def Initialize(self) -&gt; None:
     self.SetStartDate(2017, 4, 1)
     self.SetEndDate(2017, 4, 30)
     self.SetCash(100000)
-    
+    self.UniverseSettings.Asynchronous = True
     self.equity_symbol = self.AddEquity("GOOG").Symbol
     option = self.AddOption("GOOG", Resolution.Minute)
     self.option_symbol = option.Symbol
-    option.SetFilter(-10, +10, timedelta(0), timedelta(30))<br></pre>
+    option.SetFilter(-10, 10, 0, 30)<br></pre>
     </div>
 
     <li>In the <code>OnData</code> method, select the Option contracts.</li>

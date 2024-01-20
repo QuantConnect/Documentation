@@ -1,14 +1,17 @@
 <p>An Option chained universe subscribes to Option contracts on the constituents of a <a href="/docs/v2/writing-algorithms/universes/equity">US Equity universe</a>. <br>
 
 </p><div class="section-example-container">
-	<pre class="csharp">AddUniverseOptions(
+	<pre class="csharp">UniverseSettings.Asynchronous = true;
+AddUniverseOptions(
     AddUniverse(Universe.DollarVolume.Top(10)), 
     optionFilterUniverse => optionFilterUniverse.Strikes(-2, +2).FrontMonth().CallsOnly()
 );</pre>
-	<pre class="python">self.AddUniverseOptions(
+	<pre class="python">self.UniverseSettings.Asynchronous = True
+self.AddUniverseOptions(
     self.AddUniverse(self.Universe.DollarVolume.Top(10)), 
     lambda option_filter_universe: option_filter_universe.Strikes(-2, +2).FrontMonth().CallsOnly()
 )</pre>
+
 </div>
 
 
@@ -49,6 +52,7 @@
 <div class="section-example-container">
 	<pre class="csharp">public override void Initialize()
 {
+    UniverseSettings.Asynchronous = true;
     AddUniverseOptions(AddUniverse(Universe.DollarVolume.Top(10)), OptionFilterFunction);
 }
 
@@ -57,6 +61,7 @@ private OptionFilterUniverse OptionFilterFunction(OptionFilterUniverse optionFil
     return optionFilterUniverse.Strikes(-2, +2).FrontMonth().CallsOnly();
 }</pre>
 	<pre class="python">def Initialize(self) -&gt; None:
+    self.UniverseSettings.Asynchronous = True
     self.AddUniverseOptions(self.AddUniverse(self.Universe.DollarVolume.Top(10)), self.OptionFilterFunction)
 
 def OptionFilterFunction(self, option_filter_universe: OptionFilterUniverse) -&gt; OptionFilterUniverse:

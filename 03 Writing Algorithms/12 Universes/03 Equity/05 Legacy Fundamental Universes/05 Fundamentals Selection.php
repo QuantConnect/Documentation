@@ -59,6 +59,7 @@ th.summary {
 public class MyUniverseAlgorithm : QCAlgorithm {
     public override void Initialize() 
     {
+        UniverseSettings.Asynchronous = true;
         AddUniverse(CoarseFilterFunction, FineFundamentalFilterFunction);
     }
     // filter based on CoarseFundamental
@@ -79,6 +80,7 @@ public class MyUniverseAlgorithm : QCAlgorithm {
 <pre class="python">
 class MyUniverseAlgorithm(QCAlgorithm):
     def Initialize(self) -&gt; None:
+        self.UniverseSettings.Asynchronous = True
         self.AddUniverse(self.CoarseFilterFunction, self.FineFundamentalFunction)
 
     def CoarseFilterFunction(self, coarse: List[CoarseFundamental]) -&gt; List[Symbol]:
@@ -103,6 +105,7 @@ The simplest example of accessing the fundamental object would be harnessing the
 <div class="section-example-container">
 	<pre class="csharp">// Take the top 50 by dollar volume using coarse
 // Then the top 10 by PERatio using fine
+UniverseSettings.Asynchronous = true;
 AddUniverse(
     coarse =&gt; {
         return (from c in coarse
@@ -117,6 +120,7 @@ AddUniverse(
     });
 </pre>
 	<pre class="python"># In Initialize:
+self.UniverseSettings.Asynchronous = True
 self.AddUniverse(self.CoarseSelectionFunction, self.FineSelectionFunction)
 
 def CoarseSelectionFunction(self, coarse: List[CoarseFundamental]) -&gt; List[Symbol]:

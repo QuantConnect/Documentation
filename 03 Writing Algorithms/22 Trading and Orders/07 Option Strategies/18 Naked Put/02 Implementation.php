@@ -10,7 +10,7 @@ public override void Initialize()
     SetStartDate(2014, 1, 1);
     SetEndDate(2014, 3, 1);
     SetCash(100000);
-
+    UniverseSettings.Asynchronous = true;
     var option = AddOption("IBM");
     _symbol = option.Symbol;
     option.SetFilter(-3, 3, 0, 31);
@@ -19,12 +19,11 @@ public override void Initialize()
     self.SetStartDate(2014, 1, 1)
     self.SetEndDate(2014, 3, 1)
     self.SetCash(100000)
-    
+    self.UniverseSettings.Asynchronous = True
     option = self.AddOption("IBM")
     self.symbol = option.Symbol
-    self.put = None
-
-    option.SetFilter(-3, 3, 0, 31)</pre>
+    option.SetFilter(-3, 3, 0, 31)
+    self.put = None</pre>
     </div>
   
     <li>In the <code>OnData</code> method, select the Option contract.</li>
