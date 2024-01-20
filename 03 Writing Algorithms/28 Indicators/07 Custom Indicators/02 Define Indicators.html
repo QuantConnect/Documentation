@@ -42,3 +42,77 @@
         return count == self.queue.maxlen</pre>
 </div>
 
+<p>The following definition provides an example of a custom money flow index indicator.</p>
+
+<div class="section-example-container">
+    <pre class="csharp">public class CustomMoneyFlowIndex : TradeBarIndicator, IIndicatorWarmUpPeriodProvider
+{
+    private decimal _previousTypicalPrice;
+    private RollingWindow&lt;decimal&gt; _negativeMoneyFlow;
+    private RollingWindow&lt;decimal&gt; _positiveMoneyFlow;
+    public override bool IsReady =&gt; _positiveMoneyFlow.IsReady;
+    public int WarmUpPeriod =&gt; _positiveMoneyFlow.Size;
+        
+    public CustomMoneyFlowIndex(string name, int period) : base(name)
+    {
+        _negativeMoneyFlow = new(period);
+        _positiveMoneyFlow = new(period);
+        _previousTypicalPrice = 0m;
+    }
+        
+    protected override decimal ComputeNextValue(TradeBar input)
+    {
+        var typicalPrice = (input.High + input.Low + input.Close) / 3;
+        var moneyFlow = typicalPrice * input.Volume;
+        
+        _negativeMoneyFlow.Add(typicalPrice &lt; _previousTypicalPrice ? moneyFlow: 0);
+        _positiveMoneyFlow.Add(typicalPrice &gt; _previousTypicalPrice ? moneyFlow: 0);
+        _previousTypicalPrice = moneyFlow;
+        
+        var positiveMoneyFlowSum = _positiveMoneyFlow.Sum();
+        var totalMoneyFlow = positiveMoneyFlowSum + _negativeMoneyFlow.Sum();
+        
+        return totalMoneyFlow == 0 ? 100m : 100m * positiveMoneyFlowSum / totalMoneyFlow;
+    }
+        
+    public override void Reset()
+    {
+        _previousTypicalPrice = 0m;
+        _negativeMoneyFlow.Reset();
+        _positiveMoneyFlow.Reset();
+        base.Reset();
+    }
+}</pre>
+    <pre class="python">class CustomMoneyFlowIndex(PythonIndicator):
+    def __init__(self, name, period):
+        super().__init__()
+        self.Name = name
+        self.Value = 0
+        self.previous_typical_price = 0
+        self.negative_money_flow = deque(maxlen=period)
+        self.positive_money_flow = deque(maxlen=period)
+    
+    def Update(self, input):
+        if not isinstance(input, TradeBar):
+            raise TypeError('CustomMoneyFlowIndex.Update: input must be a TradeBar')
+    
+        typical_price = (input.High + input.Low + input.Close) / 3
+        money_flow = typical_price * input.Volume
+            
+        # We need to avoid double rounding errors
+        if abs(self.previous_typical_price / typical_price - 1) &lt; 1e-10:
+            self.previous_typical_price = typical_price
+            
+        self.negative_money_flow.appendleft(money_flow if typical_price &lt; self.previous_typical_price else 0)
+        self.positive_money_flow.appendleft(money_flow if typical_price &gt; self.previous_typical_price else 0)
+        self.previous_typical_price = typical_price
+    
+        positive_money_flow_sum = sum(self.positive_money_flow)        
+        total_money_flow = positive_money_flow_sum + sum(self.negative_money_flow)
+    
+        self.Value = 100
+        if total_money_flow != 0:
+            self.Value *= positive_money_flow_sum / total_money_flow
+    
+        return len(self.positive_money_flow) == self.positive_money_flow.maxlen</pre>
+</div>
