@@ -1,8 +1,22 @@
 <p>The <code>ScheduledUniverseSelectionModel</code> selects assets on the schedule you provide. To use this model, provide a <code>DateRule</code>, <code>TimeRule</code>, and a selector function. The <code>DateRule</code> and <code>TimeRule</code> define the selection schedule. The selector function receives a <code class="python">datetime</code><code class="csharp">DateTime</code> object and returns a list of <code>Symbol</code> objects. The <code>Symbol</code> objects you return from the selector function are the constituents of the universe.</p>
 
 <div class="section-example-container">
-	<pre class="csharp">AddUniverseSelection(new ScheduledUniverseSelectionModel(dateRule, timeRule, selector));</pre>
-	<pre class="python">self.AddUniverseSelection(ScheduledUniverseSelectionModel(dateRule, timeRule, selector))</pre>
+	<pre class="csharp">AddUniverseSelection(
+    new ScheduledUniverseSelectionModel(
+        DateRules.MonthStart(), 
+        TimeRules.Midnight, 
+        dt => new List&lt;Symbol&gt; { 
+            QuantConnect.Symbol.Create(dt.Month == 10 ? "SPY" : "QQQ", SecurityType.Equity, Market.USA) 
+        }
+    )
+);</pre>
+	<pre class="python">self.AddUniverseSelection(
+    ScheduledUniverseSelectionModel(
+        self.DateRules.MonthStart(), 
+        self.TimeRules.Midnight, 
+        lambda dt: [Symbol.Create("SPY" if dt.month == 10 else "QQQ", SecurityType.Equity, Market.USA)]
+    )
+)</pre>
 </div>
 
 <p>The following table describes the arguments the model accepts:</p>

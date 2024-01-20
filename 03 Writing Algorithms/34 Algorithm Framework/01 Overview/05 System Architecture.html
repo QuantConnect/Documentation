@@ -7,21 +7,23 @@
 
 <img src="https://cdn.quantconnect.com/web/i/docs/algorithm-framework/algorithm-framework.png" class="docs-image" alt="The flow of data between the Algorithm Framework modules">
 <div class="section-example-container">
-	<pre class="csharp">public class MyFrameworkAlgorithm : QCAlgorithm <br>{
-    public void Initialize() {
-        SetUniverseSelection();
-        AddAlpha();
-        SetPortfolioConstruction();
-        SetExecution();
-        AddRiskManagement();
+	<pre class="csharp">public class MyFrameworkAlgorithm : QCAlgorithm 
+{
+    public override void Initialize() 
+    {
+        SetUniverseSelection(new EmaCrossUniverseSelectionModel());
+        AddAlpha(new RsiAlphaModel());
+        SetPortfolioConstruction(new EqualWeightingPortfolioConstructionModel());
+        SetExecution(new ImmediateExecutionModel());
+        AddRiskManagement(new NullRiskManagementModel());
     }
 }</pre>
 	<pre class="python">class MyFrameworkAlgorithm(QCAlgorithm):
     def Initialize(self) -&gt; None:
-        self.SetUniverseSelection()
-        self.AddAlpha()
-        self.SetPortfolioConstruction()
-        self.SetExecution()
-        self.AddRiskManagement()</pre>
+        self.SetUniverseSelection(EmaCrossUniverseSelectionModel())
+        self.AddAlpha(RsiAlphaModel())
+        self.SetPortfolioConstruction(EqualWeightingPortfolioConstructionModel())
+        self.SetExecution(ImmediateExecutionModel())
+        self.AddRiskManagement(NullRiskManagementModel())</pre>
 </div>
 <p>For simple strategies, it may seem like overkill to abstract out your algorithm concepts. However, even simple strategies can benefit from reusing the ecosystem of modules available in QuantConnect. Imagine pairing your EMA-cross Alpha model with a better execution system or plugging in an open-source <a href="/docs/v2/writing-algorithms/algorithm-framework/risk-management/supported-models#07-Trailing-Stop-Model">trailing stop Risk Management model</a>.</p>

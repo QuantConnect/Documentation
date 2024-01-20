@@ -1,10 +1,20 @@
 <p>The <code>FutureUniverseSelectionModel</code> selects all the contracts for a set of Futures you specify. To use this model, provide a <code>refreshInterval</code> and a selector function. The <code>refreshInterval</code><code></code> defines how frequently LEAN calls the selector function. The selector function receives a <code class="csharp">DateTime</code><code class="python">datetime</code> object that represents the current Coordinated Universal Time (UTC) and returns a list of <code>Symbol</code> objects. The <code>Symbol</code> objects you return from the selector function are the Futures of the universe.</p>
 
 <div class="section-example-container">
-	<pre class="csharp">AddUniverseSelection(new FutureUniverseSelectionModel(refreshInterval, futureChainSymbolSelector));</pre>
+	<pre class="csharp">AddUniverseSelection(
+    new FutureUniverseSelectionModel(
+        TimeSpan.FromDays(1), 
+        _ => new List&lt;Symbol&gt; {{ QuantConnect.Symbol.Create(Futures.Indices.SP500EMini, SecurityType.Future, Market.CME) }}
+    )
+);</pre>
 	<pre class="python">from Selection.FutureUniverseSelectionModel import FutureUniverseSelectionModel
 
-self.AddUniverseSelection(FutureUniverseSelectionModel(refreshInterval, futureChainSymbolSelector))</pre>
+self.AddUniverseSelection(
+    FutureUniverseSelectionModel(
+        timedelta(1), 
+        lambda _: [Symbol.Create(Futures.Indices.SP500EMini, SecurityType.Future, Market.CME)]
+    )
+)</pre>
 </div>
 
 <p>The following table describes the arguments the model accepts:</p>
@@ -42,8 +52,10 @@ self.AddUniverseSelection(FutureUniverseSelectionModel(refreshInterval, futureCh
 
 <p>If you don't provide a <code>universeSettings</code> argument, the <code>algorithm.UniverseSettings</code> is used by default.</p>
 
+<p>The following example shows how to define the Future chain Symbol selector as an isolated method:</p>
+
 <div class="section-example-container">
-	<pre class="csharp">public override void Initialize()
+    <pre class="csharp">public override void Initialize()
 {
     AddUniverseSelection(
         new FutureUniverseSelectionModel(TimeSpan.FromDays(1), SelectFutureChainSymbols)
@@ -57,22 +69,27 @@ private static IEnumerable&lt;Symbol&gt; SelectFutureChainSymbols(DateTime utcTi
         QuantConnect.Symbol.Create(Futures.Metals.Gold, SecurityType.Future, Market.COMEX)
     };
 }</pre>
-	<pre class="python">from Selection.FutureUniverseSelectionModel import FutureUniverseSelectionModel
+    <pre class="python">from Selection.FutureUniverseSelectionModel import FutureUniverseSelectionModel
 
 def Initialize(self) -&gt; None:
-    universe = FutureUniverseSelectionModel(timedelta(days=1), self.select_future_chain_symbols)
-    self.SetUniverseSelection(universe)
+    self.SetUniverseSelection(
+        FutureUniverseSelectionModel(timedelta(days=1), self.select_future_chain_symbols)
+    )
 
 def select_future_chain_symbols(self, utc_time: datetime) -&gt; List[Symbol]:
-    return [ Symbol.Create(Futures.Indices.SP500EMini, SecurityType.Future, Market.CME),
-             Symbol.Create(Futures.Metals.Gold, SecurityType.Future, Market.COMEX) ]</pre>
+    return [ 
+        Symbol.Create(Futures.Indices.SP500EMini, SecurityType.Future, Market.CME),
+        Symbol.Create(Futures.Metals.Gold, SecurityType.Future, Market.COMEX)
+    ]</pre>
 </div>
 
 <p>This model uses the default Future contract filter, which doesn't select any Futures contracts. To use a different filter, subclass the <code>FutureUniverseSelectionModel</code> and define a <code>Filter</code> method. The <code>Filter</code> method accepts and returns a <code>FutureFilterUniverse</code> object to select the Futures contracts. The following table describes the filter methods of the <code>FutureFilterUniverse</code> class:</p>
 
-<?php echo file_get_contents(DOCS_RESOURCES."/universes/future/future-filter-universe.html");?>
+<? echo file_get_contents(DOCS_RESOURCES."/universes/future/future-filter-universe.html");?>
 	
 <p>The contract filter runs at the first time step of each day.</p>
+
+<p>To move the Future chain Symbol selector and the contract selection function outside of the algorithm class, create a universe selection model that inherits the FundamentalUniverseSelectionModel class and override its Select method.</p>
 
 <div class="section-example-container">
 	<pre class="csharp">// In Initialize

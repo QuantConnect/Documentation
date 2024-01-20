@@ -3,9 +3,13 @@
 <div class="section-example-container">
 	<pre class="csharp">public class MyPortfolioOptimizer : IPortfolioOptimizer
 {
-    public double[] Optimize(double[,] historicalReturns, double[] expectedReturns = null, double[,] covariance = null)
+    public double[] Optimize(double[,] historicalReturns, double[] expectedReturns = null, double[,] covarianceMatrix = null)
     {
         // Create weights
+        //  For example, equal-weighting:
+        int numAssets = historicalReturns.GetLength(1);
+        var weights = Enumerable.Repeat(1.0 / numAssets, numAssets).ToArray();
+
         return weights;
     }
 }</pre>
@@ -13,6 +17,10 @@
 
     def Optimize(self, historicalReturns: pd.DataFrame, expectedReturns: pd.Series = None, covariance: pd.DataFrame = None) -&gt; pd.Series:
         # Create weights
+        #  For example, equal-weighting:
+        num_assets = historicalReturns.shape[1]
+        weights = [1/num_assets] * num_assets
+
         return weights</pre>
 </div>
 
@@ -56,3 +64,8 @@ security and each row returns for the given date/time (size: K x N)</td>
 <p>To view all the pre-built portfolio optimization algorithms, see <a href="/docs/v2/writing-algorithms/algorithm-framework/portfolio-construction/supported-optimizers">Supported Optimizers</a>.</p>
 
 <p>To view a full example of an <code>IPortfolioOptimizer</code> implementation, see the <span class="csharp"><a target="_blank" rel="nofollow" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.Framework/Portfolio/MaximumSharpeRatioPortfolioOptimizer.cs">MaximumSharpeRatioPortfolioOptimizer</a></span><span class="python"><a target="_blank" rel="nofollow" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.Framework/Portfolio/MaximumSharpeRatioPortfolioOptimizer.py">MaximumSharpeRatioPortfolioOptimizer</a></span> in the LEAN GitHub repository.</p>
+
+<p class='python'>If you define a custom optimizer and want to use it as the <code>optimizer</code> argument for one of the <a href='/docs/v2/writing-algorithms/algorithm-framework/portfolio-construction/supported-models'>pre-built Portfolio Construction models</a>, import the Python version of the Portfolio Construction model into your project file. For example, to pair your optimizer with the <a href='/docs/v2/writing-algorithms/algorithm-framework/portfolio-construction/supported-models#09-Black-Litterman-Optimization-Model'>Black Litterman Optimization Model</a>, add the following line:</p>
+<div class="python section-example-container">
+    <pre class="python">from Portfolio.BlackLittermanOptimizationPortfolioConstructionModel import BlackLittermanOptimizationPortfolioConstructionModel</pre>
+</div>
