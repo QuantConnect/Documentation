@@ -1,1 +1,1 @@
-<?php include(DOCS_RESOURCES."/datasets/market-hours/no-early-closes.html"); ?>
+<?php include(DOCS_RESOURCES."/datasets/market-hours/index/usa/SPX/early-closes.html"); ?>
