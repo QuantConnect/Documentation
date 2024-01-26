@@ -88,6 +88,7 @@ echo file_get_contents(DOCS_RESOURCES."/qcalgorithm-api/identity.html");
 echo file_get_contents(DOCS_RESOURCES."/qcalgorithm-api/initialize.html");
 echo file_get_contents(DOCS_RESOURCES."/qcalgorithm-api/is-market-open.html");
 echo file_get_contents(DOCS_RESOURCES."/qcalgorithm-api/isin.html");
+echo file_get_contents(DOCS_RESOURCES."/qcalgorithm-api/iv.html");
 echo file_get_contents(DOCS_RESOURCES."/qcalgorithm-api/kama.html");
 echo file_get_contents(DOCS_RESOURCES."/qcalgorithm-api/kch.html");
 echo file_get_contents(DOCS_RESOURCES."/qcalgorithm-api/ker.html");

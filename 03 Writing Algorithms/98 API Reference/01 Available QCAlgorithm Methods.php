@@ -373,6 +373,10 @@
 <td>Converts an ISIN identifier into a <code>String)</code>.</td>
 </tr>
 <tr>
+<td width="33%"><a href="#IV-header">IV()</a></td>
+<td>Creates a new ImpliedVolatility indicator for the symbol The indicator will be automatically updated on the symbol's subscription resolution.</td>
+</tr>
+<tr>
 <td width="33%"><a href="#KAMA-header">KAMA()</a></td>
 <td>Creates a new KaufmanAdaptiveMovingAverage indicator.</td>
 </tr>
@@ -1367,6 +1371,10 @@
 <tr>
 <td width="33%"><a href="#Identity-header">Identity()</a></td>
 <td>Creates a new Identity indicator for the symbol The indicator will be automatically updated on the symbol's subscription resolution.</td>
+</tr>
+<tr>
+<td width="33%"><a href="#IV-header">IV()</a></td>
+<td>Creates a new ImpliedVolatility indicator for the symbol The indicator will be automatically updated on the symbol's subscription resolution.</td>
 </tr>
 <tr>
 <td width="33%"><a href="#KAMA-header">KAMA()</a></td>
