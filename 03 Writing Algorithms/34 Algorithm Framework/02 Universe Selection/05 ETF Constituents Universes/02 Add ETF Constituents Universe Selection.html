@@ -79,14 +79,13 @@ def ETFConstituentsFilter(self, constituents: List[ETFConstituentData]) -&gt; Li
 <div class="section-example-container">
 	<pre class="csharp">// In Initialize
 UniverseSettings.Asynchronous = true;
-AddUniverseSelection(new LargestWeightSPYETFUniverseSelectionModel(UniverseSettings));
+AddUniverseSelection(new LargestWeightSPYETFUniverseSelectionModel());
 
 // Outside of the algorithm class
 class LargestWeightSPYETFUniverseSelectionModel : ETFConstituentsUniverseSelectionModel
 {
     public LargestWeightSPYETFUniverseSelectionModel(UniverseSettings universeSettings = null)
-        : base(QuantConnect.Symbol.Create("SPY", SecurityType.Equity, Market.USA), 
-            universeSettings, ETFConstituentsFilter)
+        : base("SPY", universeFilterFunc: ETFConstituentsFilter)
     {
     }
 
@@ -97,17 +96,18 @@ class LargestWeightSPYETFUniverseSelectionModel : ETFConstituentsUniverseSelecti
 }</pre>
 	<pre class="python"># In Initialize
 self.UniverseSettings.Asynchronous = True
-self.AddUniverseSelection(LargestWeightSPYETFUniverseSelectionModel(self.UniverseSettings))
+self.AddUniverseSelection(LargestWeightSPYETFUniverseSelectionModel())
 
 # Outside of the algorithm class
 class LargestWeightSPYETFUniverseSelectionModel(ETFConstituentsUniverseSelectionModel):
-    def __init__(self, universe_settings: UniverseSettings = None) -&gt; None:
-        symbol = Symbol.Create("SPY", SecurityType.Equity, Market.USA)
-        super().__init__(symbol, universe_settings, self.ETFConstituentsFilter)
+    def __init__(self) -&gt; None:
+        super().__init__(symbol, universeFilterFunc=self.ETFConstituentsFilter)
 
     def ETFConstituentsFilter(self, constituents: List[ETFConstituentData]) -&gt; List[Symbol]:
-        selected = sorted([c for c in constituents if c.Weight],
-            key=lambda c: c.Weight, reverse=True)[:10]
+        selected = sorted(
+            [c for c in constituents if c.Weight],
+            key=lambda c: c.Weight, reverse=True
+        )[:10]
         return [c.Symbol for c in selected]</pre>
 </div>
 
