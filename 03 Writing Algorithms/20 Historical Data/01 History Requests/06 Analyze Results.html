@@ -1,6 +1,6 @@
 <span class="python">
 <p>
-The History method returns a multi-index DataFrame where the first index is the <code>Symbol</code>. The data is then sorted in rows according to the second index, the <a target="_BLANK" href="/docs/v2/writing-algorithms/key-concepts/time-modeling/periods">EndTime</a> of the bar. By learning a few helpful shortcuts, you can directly access the history values you need for your algorithm.</p>
+For most data types, the <code>History</code> method returns a multi-index DataFrame where the first index is the <code>Symbol</code>. The data is then sorted in rows according to the second index, the <a href="/docs/v2/writing-algorithms/key-concepts/time-modeling/periods">EndTime</a> of the data point. By learning a few helpful shortcuts, you can directly access the history values you need for your algorithm.</p>
 <div class="section-example-container">
 <pre class="python"># Setup the universe:
 eurusd = self.AddForex("EURUSD", Resolution.Daily).Symbol
@@ -39,9 +39,28 @@ self.dataframe["close"].unstack(level=0)
 # Make sure to use the lowercase string column name.</pre>
 </div>
 
+<p>To reorganize the DataFrame so that the first index level is the EndTime and the second index level is the asset's Symbol, swap the index level and then sort the index.</p>
+<div class="section-example-container">
+<pre class="python">history = self.History([eurusd, nzdusd], 3)
+history.index = history.index.swaplevel(0, 1)
+history = history.sort_index()
+<img class="img-responsive img-thumbnail" src="https://cdn.quantconnect.com/i/tu/history-request-swap-index-levels.png" alt="Historical data of EURUSD and NZDUSD in a dataframe"></pre>
+</div>
+
+<p>If you request historical data for derivatives, the DataFrame can have more index levels. For example, history requests for Equity Options return DataFrames with the following index levels:</p>
+<ol>
+    <li>Contract expiry</li>
+    <li>Contract strike price</li>
+    <li>Contract type (call or put)</li>
+    <li><a href='/docs/v2/writing-algorithms/key-concepts/security-identifiers#02-Encoding-Symbols'>Encoded contract Symbol</a></li>
+    <li>The <code>EndTime</code> of the data sample</li>
+</ol>
+<p>In this cast, you can remove the first three index levels to index the DataFrame with just the contract Symbol, similiar to how you would with non-derivative asset classes. To remove the first three index levels, call the droplevel method.</p>
+<div class="section-example-container">
+<pre class="python">history.index = history.index.droplevel([0,1,2])</pre>
+</div>
+    
 </span>
-
-
 <span class="csharp">
 
 <p>The History method returns an array of <code>TradeBar</code>, <code>QuoteBar</code>, or <code>Slice</code> objects, depending on how you call the method. To access the members of each of these objects, iterate over the objects in a for loop.</p>
