@@ -1,6 +1,5 @@
 
-<p>To add a <code>ManualUniverseSelectionModel</code> to your algorithm, in the <code>Initialize</code> method, call the <code>AddUniverseSelection</code> method. The <code>ManualUniverseSelectionModel</code> constructor expects a list of <code>Symbol</code> objects that represent the universe constituents. To create the <code>Symbol</code> objects, call the <code>Symbol.Create</code> method.
-</p>
+<p>To add a <code>ManualUniverseSelectionModel</code> to your algorithm, in the <code>Initialize</code> method, call the <code>AddUniverseSelection</code> method. The <code>ManualUniverseSelectionModel</code> constructor expects a list of <code>Symbol</code> objects that represent the universe constituents.</p>
 <div class="section-example-container">
 	<pre class="csharp">var tickers = new[] {"SPY", "QQQ", "IWM"};
 var symbols = tickers.Select(ticker =&gt; QuantConnect.Symbol.Create(ticker, SecurityType.Equity, Market.USA));
@@ -9,6 +8,33 @@ AddUniverseSelection(new ManualUniverseSelectionModel(symbols));</pre>
 symbols = [ Symbol.Create(ticker, SecurityType.Equity, Market.USA) for ticker in tickers]
 self.AddUniverseSelection(ManualUniverseSelectionModel(symbols))</pre>
 </div>
+
+<p>The following table describes the arguments the model accepts:</p>
+
+<table class="qc-table table">
+    <thead>
+        <tr>
+            <th>Argument</th>
+            <th>Data Type</th>
+            <th>Description</th>
+            <th>Default Value</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><code>symbols</code></td>
+            <td><code class='csharp'>IEnumerable&lt;Symbol&gt;</code><code class='python'>List[Symbol]</code></td>
+            <td>Universe constituents</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td><code>universeSettings</code></td>
+            <td><code>UniverseSettings</code></td>
+            <td>The <a href="/docs/v2/writing-algorithms/algorithm-framework/universe-selection/universe-settings">universe settings</a>. If you don't provide an argument, the model uses the <code>algorithm.UniverseSettings</code> by default.</td>
+            <td><code class='python'>None</code></td>
+        </tr>
+    </tbody>
+</table>
 
 <p>To move the universe tickers and <code>Symbol</code> objects outside of the algorithm class, create a universe selection model that inherits the <code>ManualUniverseSelectionModel</code> class.</p>
 

@@ -45,13 +45,11 @@ self.SetUniverseSelection(
         <tr>
             <td><code>universeSettings</code></td>
 	    <td><code>UniverseSettings</code></td>
-            <td>Universe settings define attributes of created subscriptions, such as their resolution and the minimum time in universe before they can be removed</td>
+            <td>The <a href="/docs/v2/writing-algorithms/algorithm-framework/universe-selection/universe-settings">universe settings</a>. If you don't provide an argument, the model uses the <code>algorithm.UniverseSettings</code> by default.</td>
             <td><code class="csharp">null</code><code class="python">None</code></td>
         </tr>
     </tbody>
 </table>
-
-<p>If you don't provide a <code>universeSettings</code> argument, the <code>algorithm.UniverseSettings</code> is used by default.</p>
 
 <p>The following example shows how to define the Option chain Symbol selector as an isolated method:</p>
 
