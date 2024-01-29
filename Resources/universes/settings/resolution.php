@@ -7,7 +7,7 @@
 	<li>Open the <a href='/docs/v2/writing-algorithms/securities/asset-classes'>Asset Classes</a> documentation page.</li>
 	<li>Click an asset class.</li>
 	<li>Click <span class='button-name'>Requesting Data</span>.</li>
-	<li>On the Requesting Data page, in the menu, click <span class='button-name'>Resolutions</span>.</li>
+	<li>On the Requesting Data page, in the table of contents, click <span class='button-name'>Resolutions</span>.</li>
 </ol>
 
 <p>The default value is <code>Resolution.Minute</code>. To change the resolution, in the <a href='/docs/v2/writing-algorithms/initialization'>Initialize</a> method, 
