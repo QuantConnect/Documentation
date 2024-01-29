@@ -1,0 +1,5 @@
+<p>The <code>ExtendedMarketHours</code> setting is a <code>bool</code> that defines the trading schedule. If it's <code class='csharp'>true</code><code class='python'>True</code>, your algorithm receives price data for all trading hours. If it's <code class='csharp'>false</code><code class='python'>False</code>, your algorithm receives price data only for regular trading hours. The default value is <code class='csharp'>false</code><code class='python'>False</code>.</p>
+
+<p>You only receive extended market hours data if you create the subscription with an intraday resolution. If you create the subscription with daily resolution, the daily bars only reflect the regular trading hours.</p>
+
+<p>To view the trading schedule of an asset, open <a href='/docs/v2/writing-algorithms/securities/asset-classes'>Asset Classes</a>, click an asset class, then click <span class='button-name'>Market Hours</span>.</p>
