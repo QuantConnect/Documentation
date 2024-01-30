@@ -1,4 +1,4 @@
-<p>LEAN's philosophy is to make the models per security as much as possible. The following models are security-level models:</p>
+<p>LEAN's philosophy is to make the models customizable per security as much as possible. The following models are security-level models:</p>
 
 <ul>
     <li><a href="/docs/v2/writing-algorithms/reality-modeling/trade-fills/key-concepts">Fill</a></li>
