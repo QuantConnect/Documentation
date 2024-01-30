@@ -2,7 +2,7 @@
 include(DOCS_RESOURCES."/datasets/resolutions.php");
 ?>
 
-<p>To set the resolution for all securities, set the <code>Resolution</code> <a href='/docs/v2/writing-algorithms/universes/settings#02-Properties'>universe setting</a> before you create security subscriptions.</p>
+<p>To set the resolution for all securities, set the <a href='/docs/v2/writing-algorithms/universes/settings#02-Resolution'>Resolution universe setting</a> before you create security subscriptions.</p>
 
 <div class="section-example-container">
     <pre class="csharp">UniverseSettings.Resolution = Resolution.Daily;</pre>
