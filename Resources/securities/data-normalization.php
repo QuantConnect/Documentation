@@ -12,7 +12,7 @@
 </div>
 
 <? if ($writingAlgorithms) { ?>
-<p>To set the data normalization mode for all securities in an algorithm, set the <code>DataNormalizationMode</code> <a href='/docs/v2/writing-algorithms/universes/settings#02-Properties'>universe setting</a> before you create the security subscriptions.</p>
+<p>To set the data normalization mode for all securities in an algorithm, set the <a href='/docs/v2/writing-algorithms/universes/settings#07-Data-Normalization-Mode'>DataNormalizationMode universe setting</a> before you create the security subscriptions.</p>
 
  <div class='section-example-container'>
     <pre class='csharp'>UniverseSettings.DataNormalizationMode = DataNormalizationMode.Raw;</pre>
