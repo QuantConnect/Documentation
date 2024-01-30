@@ -16,15 +16,15 @@
     <tbody>
         <tr>
             <td><code class="csharp">SetFilter(int minStrike, int maxStrike)</code><code class="python">SetFilter(minStrike: int, maxStrike: int)</code></td>
-	        <td>Selects the contracts that have a strike price within a minimum and maximum strike level relative to the underlying price. For example, say the underlying price is $302 and there are strikes at every $5. If you set <code>minStrike</code> to -1 and <code>maxStrike</code> to 1, LEAN selects the contracts that have a strike of $300 or $305. This filter runs <a href='/docs/v2/writing-algorithms/universes/settings#03-Asynchronous-Selection'>asynchronously</a> by default.</td>
+	        <td>Selects the contracts that have a strike price within a minimum and maximum strike level relative to the underlying price. For example, say the underlying price is $302 and there are strikes at every $5. If you set <code>minStrike</code> to -1 and <code>maxStrike</code> to 1, LEAN selects the contracts that have a strike of $300 or $305. This filter runs <a href='/docs/v2/writing-algorithms/universes/settings#09-Asynchronous-Selection'>asynchronously</a> by default.</td>
         </tr>
         <tr>
             <td><code class="csharp">SetFilter(TimeSpan minExpiry, TimeSpan maxExpiry)</code><code class="python">SetFilter(minExpiry: timedelta, maxExpiry: timedelta)</code></td>
-	        <td>Selects the contracts that expire within the range you set. This filter runs <a href='/docs/v2/writing-algorithms/universes/settings#03-Asynchronous-Selection'>asynchronously</a> by default.</td>
+	        <td>Selects the contracts that expire within the range you set. This filter runs <a href='/docs/v2/writing-algorithms/universes/settings#09-Asynchronous-Selection'>asynchronously</a> by default.</td>
         </tr>
         <tr>
             <td><code class="csharp">SetFilter(int minStrike, int maxStrike, TimeSpan minExpiry, TimeSpan maxExpiry)</code><code class="python">SetFilter(minStrike: int, maxStrike: int, minExpiry: timedelta, maxExpiry: timedelta)</code></td>
-	        <td>Selects the contracts that expire and have a strike within the range you set. This filter runs <a href='/docs/v2/writing-algorithms/universes/settings#03-Asynchronous-Selection'>asynchronously</a> by default.</td>
+	        <td>Selects the contracts that expire and have a strike within the range you set. This filter runs <a href='/docs/v2/writing-algorithms/universes/settings#09-Asynchronous-Selection'>asynchronously</a> by default.</td>
         </tr>
         <tr>
             <td><code class="csharp">SetFilter(Func&lt;OptionFilterUniverse, OptionFilterUniverse&gt; universeFunc)</code><code class="python">SetFilter(universeFunc: Callable[[OptionFilterUniverse], OptionFilterUniverse])</code></td>
