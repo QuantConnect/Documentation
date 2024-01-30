@@ -70,4 +70,4 @@ $assetClass = "Future";
 include(DOCS_RESOURCES."/universes/option/filter-caveats.php");
 ?>
 
-<p>By default, LEAN adds contracts to the <code>FutureChain</code> that pass the filter criteria at every time step in your algorithm. If a contract has been in the universe for a duration that matches the <a href='/docs/v2/writing-algorithms/universes/settings#06-Minimum-Time-in-Universe'>MinimumTimeInUniverse setting</a> and it no longer passes the filter criteria, LEAN removes it from the chain</p>
+<p>By default, LEAN adds contracts to the <code>FutureChain</code> that pass the filter criteria at every time step in your algorithm. If a contract has been in the universe for a duration that matches the <a href='/docs/v2/writing-algorithms/universes/settings#06-Minimum-Time-in-Universe'>MinimumTimeInUniverse</a> setting and it no longer passes the filter criteria, LEAN removes it from the chain</p>
