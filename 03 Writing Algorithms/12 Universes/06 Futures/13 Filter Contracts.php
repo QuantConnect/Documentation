@@ -10,7 +10,7 @@
     <tbody>
         <tr>
             <td><code class="csharp">SetFilter(int minExpiryDays, int maxExpiryDays)</code><code class="python">SetFilter(minExpiryDays: int, maxExpiryDays: int)</code></td>
-	        <td>Selects the contracts that expire within the range you set. This filter runs <a href='/docs/v2/writing-algorithms/universes/settings#03-Asynchronous-Selection'>asynchronously</a> by default.</td>
+	        <td>Selects the contracts that expire within the range you set. This filter runs <a href='/docs/v2/writing-algorithms/universes/settings#09-Asynchronous-Selection'>asynchronously</a> by default.</td>
         </tr>
         <tr>
             <td><code class="csharp">SetFilter(Func&lt;FutureFilterUniverse, FutureFilterUniverse&gt; universeFunc)</code><code class="python">SetFilter(universeFunc: Callable[[FutureFilterUniverse], FutureFilterUniverse])</code></td>
