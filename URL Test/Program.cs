@@ -47,6 +47,12 @@ var urlFiles = GetAllUrls();
 var count = urlFiles.Count;
 Log.Trace($"Start Testing {count} URLs...");
 
+var emptyPages = Directory.GetDirectories(path, "*.*", SearchOption.AllDirectories)
+    .Where(filter)
+    .Where(x => Directory.GetFiles(x).Length == 0)
+    .Select(x => pathToLink(x))
+    .ToHashSet();
+
 foreach (var (url, files) in urlFiles)
 {
     try
@@ -75,6 +81,12 @@ foreach (var (url, files) in urlFiles)
                         Log.Error($"Lean.io non-existence:\n\t{url}\n\t[\n\t\t{string.Join("\n\t\t", files)}\n\t]");
                         errorFlag = true;
                     }
+                }
+
+                if (emptyPages.Contains(url))
+                {
+                    Log.Error($"Empty page:\n\t{url}\n\t[\n\t\t{string.Join("\n\t\t", files)}\n\t]");
+                    errorFlag = true;
                 }
 
                 // Check "go to section" mapping is wrong
@@ -174,19 +186,22 @@ Dictionary<string, List<string>> GetAllUrls()
     Dictionary<string, List<string>> urlFiles = new();
 
     var allFiles = Directory.GetFiles(path, "*.*", SearchOption.AllDirectories)
-        // Exclude Documentation Updates since it may include broken links
-        // Exclude single-page docs since it is generated from basic docs
-        .Where(x => !x.Contains(".git") && !x.Contains("single-page") &&
-                    !x.EndsWith("Documentation Updates.html"))
+        .Where(filter)
         .OrderBy(x => x);
 
     foreach (var file in allFiles)
     {
         foreach (var line in File.ReadAllLines(file))
         {
-            if (!line.Contains("a href")) continue;
+            var end = line.IndexOf("href");
+            if (end < 0 ) continue;
+            var start = line[..end].IndexOf("<a");
+            if (start < 0) continue;
 
-            var hrefs = line.Replace('\'', '\"').Split("a href=\"").Skip(1);
+            if (line[end..].Contains("<?=")) continue;
+            if (line[..start].Contains("<!--")) continue;
+
+            var hrefs = (line[..(3 + start)] + line[end..]).Replace('\'', '\"').Split("a href=\"").Skip(1);
             foreach (var href in hrefs)
             {
                 var url = href.Split('\"').First();
@@ -199,22 +214,14 @@ Dictionary<string, List<string>> GetAllUrls()
                 {
                     if (url[0] == '#')
                     {
-                        subUrl = string.Join("/",
-                                file.Split(Path.DirectorySeparatorChar).SkipLast(1)
-                                    .Select(x => x.Remove(0, 2).Trim()))
-                            .ToLower().Replace(" ", "-");
-                        url = $"{root}docs/v2{subUrl}{url}";
+                        url = pathToLink(file, 1) + url;
                     }
                     else if (url.Contains("mailto:"))
                     {
                     }
                     else if (url[0] != '/')
                     {
-                        subUrl = string.Join("/",
-                                file.Split(Path.DirectorySeparatorChar).SkipLast(2)
-                                    .Select(x => x.Remove(0, 2).Trim()))
-                            .ToLower().Replace(" ", "-");
-                        url = $"{root}docs/v2{subUrl}/{url}";
+                        url = pathToLink(file, 2) + $"/{url}";
                     }
                     else
                     {
@@ -282,4 +289,21 @@ async Task<string> HttpRequester(string url, List<string> files)
     }
 
     return $"Fail to request:\n\t{url}\n\t[\n\t\t{string.Join("\n\t\t", files)}\n\t]";
+}
+
+bool filter(string x)
+{
+    // Exclude Documentation Updates since it may include broken links
+    // Exclude single-page docs since it is generated from basic docs
+    return !x.Contains(".git") && !x.Contains(".vs") && !x.Contains("single-page") &&
+    !x.EndsWith("Documentation Updates.html");
+}
+
+string pathToLink(string x, int count = 0)
+{
+    var values = x[Math.Min(3, path.Length)..]
+        .Split(Path.DirectorySeparatorChar, StringSplitOptions.RemoveEmptyEntries)
+        .SkipLast(count)
+        .Select(x => x.Remove(0, 2).Trim());
+    return $"{root}docs/v2/" + string.Join("/", values).ToLower().Replace(" ", "-");
 }
