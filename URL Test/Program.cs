@@ -295,7 +295,7 @@ bool filter(string x)
 {
     // Exclude Documentation Updates since it may include broken links
     // Exclude single-page docs since it is generated from basic docs
-    return !x.Contains(".git") && !x.Contains(".vs") && !x.Contains("single-page") &&
+    return !x.Contains(".git") && !x.Contains(".vs") && !x.Contains("single-page") && !x.Contains("08 Drafts") &&
     !x.EndsWith("Documentation Updates.html");
 }
 
