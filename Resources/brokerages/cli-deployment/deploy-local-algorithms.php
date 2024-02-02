@@ -73,7 +73,7 @@ Select a data feed:
 13) Polygon
 14) Custom data only
 15) Bybit
-To enter multiple options, separate them with comma.: 9</pre>
+To enter multiple options, separate them with comma: 9</pre>
 </div>
 </li>   
 <?  
@@ -98,7 +98,7 @@ Select a data feed:
 13) Polygon
 14) Custom data only
 15) Bybit
-To enter multiple options, separate them with comma.:</pre>
+To enter multiple options, separate them with comma:</pre>
 </div>
 </li>
     <?if ($isBrokerage) {?>
