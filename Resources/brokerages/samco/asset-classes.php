@@ -2,6 +2,8 @@
 
 <ul>
 	<li><a href='/docs/v2/writing-algorithms/securities/asset-classes/india-equity'>Indian Equities</a></li>
+	<!--
 	<li>India Equity Options</li>
 	<li>India Futures</li>
+	-->
 </ul> 
