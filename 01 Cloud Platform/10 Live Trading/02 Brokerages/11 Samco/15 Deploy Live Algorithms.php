@@ -29,6 +29,7 @@ $authentication = "<li>Enter your client ID, password, and date of birth.</li>
 </tbody>
 </table>
 
+<!--
 <li>Click the <span class='field-name'>Trading Segment</span> field and then click one of the following options from the drop-down menu:</li>
 <table class='qc-table table'>
 <thead>
@@ -47,7 +48,8 @@ $authentication = "<li>Enter your client ID, password, and date of birth.</li>
         <td>For trading commodities on the Multi Commodity Exchange of India (MCX)</td>
     </tr>
 </tbody>
-</table>";
+</table>
+-->";
 $postDeploy = "";
 include(DOCS_RESOURCES."/live-trading/deploy-live-algorithm.php");
 ?>
