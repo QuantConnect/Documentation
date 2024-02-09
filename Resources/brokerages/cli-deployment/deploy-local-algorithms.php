@@ -54,10 +54,10 @@ Enter an option: <?=$isBrokerage ? $brokerageNumber : '1'?></pre>
 <?
 if ($isBrokerage && $brokerageName == "Terminal Link") {
 ?>
-<li>Enter <span class='key-combinations'>9</span> to select the Terminal Link data feed.
+<li>Enter <span class='key-combinations'>9</span> to select the Terminal Link live data provider.
 <div class='cli section-example-container'>
 <pre>$ lean live "My Project"
-Select a data feed:
+Select a live data provider:
 1) Interactive Brokers
 2) Tradier
 3) Oanda
@@ -71,18 +71,19 @@ Select a data feed:
 11) TD Ameritrade
 12) IQFeed
 13) Polygon
-14) Custom data only
-15) Bybit
+14) IEX
+15) Custom data only
+16) Bybit
 To enter multiple options, separate them with comma: 9</pre>
 </div>
 </li>   
 <?  
 } else {
 ?>
-<li>Enter the number of the data feed to use and then follow the steps required for the data connection.
+<li>Enter the number of the live data provider to use and then follow the steps required for the data connection.
 <div class='cli section-example-container'>
 <pre>$ lean live "My Project"
-Select a data feed:
+Select a live data provider:
 1) Interactive Brokers
 2) Tradier
 3) Oanda
@@ -96,8 +97,9 @@ Select a data feed:
 11) TD Ameritrade
 12) IQFeed
 13) Polygon
-14) Custom data only
-15) Bybit
+14) IEX
+15) Custom data only
+16) Bybit
 To enter multiple options, separate them with comma:</pre>
 </div>
 </li>
