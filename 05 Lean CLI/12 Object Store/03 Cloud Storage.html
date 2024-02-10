@@ -43,25 +43,3 @@ Bytes  Modified             Filename           Preview
 <div class="cli section-example-container">
 <pre>$ lean cloud object-store delete 15710069/adjusted</pre>
 </div>
-
-<h4>Bulk File Upload</h4>
-<p>To upload all files from a directory to the Object Store, run the following Python script.</p>
-
-<div class="section-example-container">
-<pre>from os import listdir, path
-from subprocess import run
-SRC = ""   # Source directory
-DST = ""   # Destination directory (empty is root)
-if __name__ == '__main__':
-
-    command = [ "lean", "cloud", "object-store", "set" ]
-
-    for key in listdir(SRC):
-        fullname = path.join(SRC, key)
-        if not path.isfile(fullname):
-            continue
-        key = DST + '/' + key
-        args = [key, fullname]
-        print(' '.join(command + args))
-        run(command + args)</pre>
-</div>
