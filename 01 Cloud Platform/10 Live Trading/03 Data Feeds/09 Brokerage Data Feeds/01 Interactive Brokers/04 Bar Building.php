@@ -1,1 +1,0 @@
-<p>The data feed is a summarized snapshot of the trades and quotes at roughly 300 milliseconds per snapshot.</p>
