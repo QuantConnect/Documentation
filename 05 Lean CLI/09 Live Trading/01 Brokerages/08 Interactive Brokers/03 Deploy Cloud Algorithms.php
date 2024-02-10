@@ -22,7 +22,7 @@ Weekly restart UTC time (hh:mm:ss) [21:00:00]: </pre>
 </div>
 {$weeklyRestartText}
 
-<li>Enter whether you want to use the <a href='https://www.quantconnect.com/docs/v2/cloud-platform/live-trading/data-feeds/brokerage-data-feeds/interactive-brokers'>price data feed from Interactive Brokers</a> instead of the one from QuantConnect. Enabling this feature requires you to have active Interactive Brokers market data subscriptions for all data required by your algorithm.</li>
+<li>Enter whether you want to use the <a href='https://www.quantconnect.com/docs/v2/cloud-platform/live-trading/data-providers/interactive-brokers'>price data from Interactive Brokers</a> instead of the data from QuantConnect. Enabling this feature requires you to have active Interactive Brokers market data subscriptions for all data required by your algorithm.</li>
 <div class='cli section-example-container'>
 <pre>$ lean cloud live \"My Project\" --push --open
 Do you want to use the Interactive Brokers price data feed instead of the QuantConnect price data feed? (yes/no): y</pre>

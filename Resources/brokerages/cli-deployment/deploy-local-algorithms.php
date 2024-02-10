@@ -1,5 +1,5 @@
 <p>
-    Follow these steps to start local live trading with the <?=($isBrokerage) ? "{$brokerageName} brokerage" : "{$dataFeedName} data feed" ?>:
+    Follow these steps to start local live trading with the <?=($isBrokerage) ? "{$brokerageName} brokerage" : "{$dataFeedName} data provider" ?>:
 </p>
 
 <ol>
@@ -104,8 +104,8 @@ To enter multiple options, separate them with comma:</pre>
 </div>
 </li>
     <?if ($isBrokerage) {?>
-    <p>If you select IQFeed, see <a href='/docs/v2/lean-cli/live-trading/data-feeds/iqfeed'>IQFeed</a> for set up instructions.</p>
-    <p>If you select Polygon, see <a href='/docs/v2/lean-cli/live-trading/data-feeds/polygon'>Polygon</a> for set up instructions.</p>
+    <p>If you select IQFeed, see <a href='/docs/v2/lean-cli/live-trading/data-providers/iqfeed'>IQFeed</a> for set up instructions.</p>
+    <p>If you select Polygon, see <a href='/docs/v2/lean-cli/live-trading/data-providers/polygon'>Polygon</a> for set up instructions.</p>
     <? } ?>
 <? } ?>
 

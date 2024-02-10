@@ -1,0 +1,1 @@
+<p>The data is a summarized snapshot of the trades and quotes at roughly 300 milliseconds per snapshot.</p>
