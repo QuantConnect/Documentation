@@ -16,7 +16,7 @@ include(DOCS_RESOURCES."/datasets/research-environment/load-csharp-assemblies.ph
         <pre class="csharp">var equitySymbol = qb.AddEquity("SPY", dataNormalizationMode: DataNormalizationMode.Raw).Symbol;</pre>
         <pre class="python">equity_symbol = qb.AddEquity("SPY", dataNormalizationMode=DataNormalizationMode.Raw).Symbol</pre></div><div class="csharp section-example-container">
     </div>
-    <p>To view the supported underlying assets in the US Equity Options dataset, see the <a href="/data/tree/option/usa/minute">Data Explorer</a>.</p>
+    <p>To view the supported underlying assets in the US Equity Options dataset, see the <a href="/datasets/algoseek-us-equity-options/explorer">Data Explorer</a>.</p>
     <li>Call the <code>AddOption</code> method with the underlying Equity <code>Symbol</code>.</li>
     <div class="section-example-container">
         <pre class="csharp">var option = qb.AddOption(equitySymbol);</pre>

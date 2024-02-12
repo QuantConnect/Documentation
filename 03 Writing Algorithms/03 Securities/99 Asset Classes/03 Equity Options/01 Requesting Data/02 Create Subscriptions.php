@@ -136,4 +136,4 @@ self.SetSecurityInitializer(BrokerageModelSecurityInitializer(self.BrokerageMode
 
 <h4>Supported Assets</h4>
 
-<p>To view the supported assets in the US Equities dataset, see the <a href="/data/tree/option/usa/minute">Data Explorer</a>.</p>
+<p>To view the supported assets in the US Equities dataset, see the <a href="/datasets/algoseek-us-equity-options/explorer">Data Explorer</a>.</p>

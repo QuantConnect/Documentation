@@ -25,7 +25,7 @@
             </tr>
             <tr>
                 <td>QuantConnect + IB</td>
-                <td>Use a combination of the QuantConnect and IB data providers. For more details about this option, see <a href="/docs/v2/cloud-platform/live-trading/data-proviers/interactive-brokers#07-Hybrid-QuantConnect-Data-Provider">Hybrid QuantConnect Data Provider</a>.</td>
+                <td>Use a combination of the QuantConnect and IB data providers. For more details about this option, see <a href="/docs/v2/cloud-platform/live-trading/data-providers/interactive-brokers#07-Hybrid-QuantConnect-Data-Provider">Hybrid QuantConnect Data Provider</a>.</td>
             </tr>
         </tbody>
     </table>

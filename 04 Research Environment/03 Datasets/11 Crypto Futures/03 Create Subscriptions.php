@@ -25,4 +25,4 @@ ethusd = qb.AddCryptoFuture("ETHUSD").Symbol</pre>
     </div>
 </ol>
 
-<p>To view the supported assets in the Crypto Futures datasets, see the <a href="/data/tree/cryptofuture/binance/daily">Data Explorer</a>.</p>
+<p>To view the supported assets in the Crypto Futures datasets, see the <a href="/datasets/binance-cryptofuture-price-data/explorer">Data Explorer</a>.</p>

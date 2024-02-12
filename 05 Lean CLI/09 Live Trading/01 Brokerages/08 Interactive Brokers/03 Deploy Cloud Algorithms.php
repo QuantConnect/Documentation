@@ -5,7 +5,7 @@ include(DOCS_RESOURCES."/brokerages/interactive-brokers/weekly-restarts.php");
 $weeklyRestartText = ob_get_clean();
 
 $brokerageDetails = "
-<li>Set up IB Key Security via IBKR Mobile. For instructions, see <a href='https://guides.interactivebrokers.com/iphone/log_in/ibkey.htm?tocpath=IB%20Key%20Security%20Protocol%7C_____0' target='_blank' rel='nofollow'>IB Key Security via IBKR Mobile</a> on the IB website.</li>
+<li>Set up IB Key Security via IBKR Mobile. For instructions, see <a href='https://ibkrguides.com/securelogin/sls/ibkrmobile.htm' target='_blank' rel='nofollow'>IB Key Security via IBKR Mobile</a> on the IB website.</li>
 
 <li>Go back to the terminal and enter your Interactive Brokers username, account id, and password.</li>
 <div class='cli section-example-container'>

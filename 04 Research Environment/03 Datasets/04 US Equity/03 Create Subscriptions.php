@@ -19,4 +19,4 @@ tlt = qb.AddEquity("TLT").Symbol</pre>
     </div>
 </ol>
 
-<p>To view the supported assets in the US Equities dataset, see the <a href="/data/tree/equity/usa/daily">Data Explorer</a>.</p>
+<p>To view the supported assets in the US Equities dataset, see the <a href="/datasets/algoseek-us-equities/explorer">Data Explorer</a>.</p>
