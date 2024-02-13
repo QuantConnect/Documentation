@@ -8,5 +8,6 @@ $contractVariableC = "contractSymbol";
 $contractVariablePy = "contract_symbol";
 
 $underlyingAssetClass = "Equity";
+$supportsTicks = false;
 include(DOCS_RESOURCES."/datasets/research-environment/get-historical-data.php");
 ?>
