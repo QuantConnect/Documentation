@@ -14,16 +14,14 @@ namespace QuantConnect.Algorithm.CSharp
     public class ChainedUniverseAlgorithm : QCAlgorithm
     {
         private List&lt;Symbol&gt; _fundamental = new();
-        private Universe _universeFundamental;
-        private Universe _universeTwitter;
 
         public override void Initialize()
         {
             SetStartDate(2023, 1, 2);
             SetCash(100000);
             UniverseSettings.Asynchronous = true;
-            _universeFundamental = AddUniverse(FundamentalFilterFunction);
-            _universeTwitter = AddUniverse&lt;QuiverQuantTwitterFollowersUniverse&gt;(
+            AddUniverse(FundamentalFilterFunction);
+            AddUniverse&lt;QuiverQuantTwitterFollowersUniverse&gt;(
                 "QuiverQuantTwitterFollowersUniverse", Resolution.Daily, FollowerSelection);
         }
 
@@ -66,16 +64,14 @@ namespace QuantConnect.Algorithm.CSharp
 
 class ChainedUniverseAlgorithm(QCAlgorithm):
 
-fundamental = []
-    universe_fundamental = None
-    universe_twitter = None
+    fundamental = []
 
     def Initialize(self):
-        self.SetCash(100000)
         self.SetStartDate(2023, 1, 2)
+        self.SetCash(100000)
         self.UniverseSettings.Asynchronous = True
-        self.universe_fundamental = self.AddUniverse(self.FundamentalFilterFunction)
-        self.universe_twitter = self.AddUniverse(QuiverQuantTwitterFollowersUniverse, "QuiverQuantTwitterFollowersUniverse", Resolution.Daily, self.FollowerSelection)
+        self.AddUniverse(self.FundamentalFilterFunction)
+        self.AddUniverse(QuiverQuantTwitterFollowersUniverse, "QuiverQuantTwitterFollowersUniverse", Resolution.Daily, self.FollowerSelection)
 
     def FundamentalFilterFunction(self, fundamental: List[Fundamental]) -&gt; List[Symbol]:
         sorted_by_dollar_volume = sorted(fundamental, key=lambda x: x.DollarVolume, reverse=True) 
@@ -83,8 +79,8 @@ fundamental = []
         return Universe.Unchanged
 
     def FollowerSelection(self, alt_coarse: List[QuiverQuantTwitterFollowersUniverse]) -&gt; List[Symbol]:
-        self.followers = [d.Symbol for d in alt_coarse if d.Followers &gt; 200000 and d.WeekPercentChange &gt; 0]
-        return list(set(self.fundamental) &amp; set(self.followers))
+        followers = [d.Symbol for d in alt_coarse if d.Followers &gt; 200000 and d.WeekPercentChange &gt; 0]
+        return list(set(self.fundamental) &amp; set(followers))
 
     def OnSecuritiesChanged(self, changes):
         for added in changes.AddedSecurities:

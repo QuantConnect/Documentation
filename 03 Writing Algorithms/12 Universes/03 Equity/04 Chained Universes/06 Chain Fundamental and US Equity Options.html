@@ -1,16 +1,17 @@
 <p>
     The following example chains an <a href='/docs/v2/writing-algorithms/universes/equity/etf-constituents-universes'>ETF constituents universe</a> and an <a href='/docs/v2/writing-algorithms/universes/equity-options'>Equity Options universe</a>.
-    It first selects the 10 largest-weighted constituents of QQQ and then selects their front-month call Option contracts.
+    It first selects 10 stocks with the lowest PE ratio and then selects their front-month call Option contracts.
     The output of both universes is the output of the chained universe.
 </p>
 <div class="section-example-container">
     <pre class="csharp">using QuantConnect.Data;
+using QuantConnect.Data.Fundamental;
 using QuantConnect.Data.UniverseSelection;
 using QuantConnect.Securities;
 using QuantConnect.Util;
 using System.Collections.Generic;
 using System.Linq;
-#endregion
+
 namespace QuantConnect.Algorithm.CSharp
 {
     public class ETFUniverseOptions : QCAlgorithm
@@ -21,14 +22,17 @@ namespace QuantConnect.Algorithm.CSharp
             SetCash(100000);
             UniverseSettings.Asynchronous = true;
             UniverseSettings.DataNormalizationMode = DataNormalizationMode.Raw;
-            var etfUniverse = Universe.ETF("QQQ", Market.USA, UniverseSettings, ETFConstituentsFilter);
-            AddUniverse(etfUniverse);
-            AddUniverseOptions(etfUniverse, OptionFilterFunction);
+            var universe = AddUniverse(FundamentalFunction);
+            AddUniverseOptions(universe, OptionFilterFunction);
         }
-    
-        private IEnumerable&lt;Symbol&gt; ETFConstituentsFilter(IEnumerable&lt;ETFConstituentData&gt; constituents)
+
+        private IEnumerable<Symbol> FundamentalFunction(IEnumerable<Fundamental> fundamental)
         {
-            return constituents.OrderByDescending(c =&gt; c.Weight).Take(10).Select(c =&gt; c.Symbol);
+            return fundamental
+                .Where(f => !double.IsNaN(f.ValuationRatios.PERatio))
+                .OrderBy(f => f.ValuationRatios.PERatio)
+                .Take(10)
+                .Select(x => x.Symbol);
         }
     
         private OptionFilterUniverse OptionFilterFunction(OptionFilterUniverse optionFilterUniverse)
@@ -55,13 +59,13 @@ class ChainedUniverseAlgorithm(QCAlgorithm):
         self.SetStartDate(2023, 2, 2)
         self.UniverseSettings.Asynchronous = True
         self.UniverseSettings.DataNormalizationMode = DataNormalizationMode.Raw
-        etf_universe = self.Universe.ETF("QQQ", Market.USA, self.UniverseSettings, self.ETFConstituentsFilter)
-        self.AddUniverse(etf_universe)
-        self.AddUniverseOptions(etf_universe, self.OptionFilterFunction)
+        universe = self.AddUniverse(self.FundamentalFunction)
+        self.AddUniverseOptions(universe, self.OptionFilterFunction)
 
-    def ETFConstituentsFilter(self, constituents: List[ETFConstituentData]) -&gt; List[Symbol]:
-        sorted_by_weight = sorted(constituents, key=lambda x: x.Weight, reverse=True) 
-        return [c.Symbol for c in sorted_by_weight[:10]]
+    def FundamentalFunction(self, fundamental: List[Fundamental]) -&gt; List[Symbol]:
+        filtered = [f for f in fundamental if not np.isnan(f.ValuationRatios.PERatio)]
+        sorted_by_pe_ratio = sorted(filtered, key=lambda f: f.ValuationRatios.PERatio)
+        return [f.Symbol for f in sorted_by_pe_ratio[:10]]
 
     def OptionFilterFunction(self, optionFilterUniverse: OptionFilterUniverse) -&gt; OptionFilterUniverse:
         return optionFilterUniverse.Strikes(0, 2).FrontMonth().CallsOnly()

@@ -16,19 +16,17 @@ namespace QuantConnect.Algorithm.CSharp
     public class ChainedUniverseAlgorithm : QCAlgorithm
     {
         private List&lt;Symbol&gt; _etf = new();
-        private Universe _universeEtf;
-        private Universe _universeTwitter;
 
         public override void Initialize()
         {
             SetStartDate(2023, 1, 2);
             SetCash(100000);
             UniverseSettings.Asynchronous = true;
-            _universeEtf = AddUniverse(Universe.ETF("SPY", Market.USA, UniverseSettings, ETFConstituentsFilter));
+            AddUniverse(Universe.ETF("SPY", Market.USA, UniverseSettings, ETFConstituentsFilter));
             // or var symbol = QuantConnect.Symbol.Create("SPY", SecurityType.Equity, Market.USA);
-            // _universeEtf = AddUniverseSelection(new ETFConstituentsUniverseSelectionModel(
+            // AddUniverseSelection(new ETFConstituentsUniverseSelectionModel(
             //    symbol, UniverseSettings, ETFConstituentsFilter));
-            _universeTwitter = AddUniverse&lt;QuiverQuantTwitterFollowersUniverse&gt;(
+            AddUniverse&lt;QuiverQuantTwitterFollowersUniverse&gt;(
                 "QuiverQuantTwitterFollowersUniverse", Resolution.Daily, FollowerSelection);
         }
 
@@ -70,18 +68,16 @@ namespace QuantConnect.Algorithm.CSharp
 class ChainedUniverseAlgorithm(QCAlgorithm):
 
     etf = []
-    universe_etf = None
-    universe_twitter = None
 
     def Initialize(self):
         self.SetCash(100000)
         self.SetStartDate(2023, 1, 2)
         self.UniverseSettings.Asynchronous = True
-        self.universe_etf = self.AddUniverse(self.Universe.ETF("SPY", Market.USA, self.UniverseSettings, self.ETFConstituentsFilter))
+        self.AddUniverse(self.Universe.ETF("SPY", Market.USA, self.UniverseSettings, self.ETFConstituentsFilter))
         # or symbol = Symbol.Create("SPY", SecurityType.Equity, Market.USA)
-        # self.universe_etf = self.AddUniverseSelection(ETFConstituentsUniverseSelectionModel(
+        # self.AddUniverseSelection(ETFConstituentsUniverseSelectionModel(
         #   symbol, self.UniverseSettings, self.ETFConstituentsFilter))
-        self.universe_twitter = self.AddUniverse(QuiverQuantTwitterFollowersUniverse, 
+        self.AddUniverse(QuiverQuantTwitterFollowersUniverse, 
             "QuiverQuantTwitterFollowersUniverse", Resolution.Daily, self.FollowerSelection)
 
     def ETFConstituentsFilter(self, constituents: List[ETFConstituentData]) -&gt; List[Symbol]:
@@ -89,8 +85,8 @@ class ChainedUniverseAlgorithm(QCAlgorithm):
         return Universe.Unchanged
 
     def FollowerSelection(self, alt_coarse: List[QuiverQuantTwitterFollowersUniverse]) -&gt; List[Symbol]:
-        self.followers = [d.Symbol for d in alt_coarse if d.Followers &gt; 200000 and d.WeekPercentChange &gt; 0]
-        return list(set(self.etf) &amp; set(self.followers))
+        followers = [d.Symbol for d in alt_coarse if d.Followers &gt; 200000 and d.WeekPercentChange &gt; 0]
+        return list(set(self.etf) &amp; set(followers))
 
     def OnSecuritiesChanged(self, changes):
         for added in changes.AddedSecurities:
