@@ -73,8 +73,4 @@ $assetClass = "Option";
 include(DOCS_RESOURCES."/universes/option/filter-caveats.php");
 ?>
 
-<p>To override the default <a href='https://www.quantconnect.com/docs/v2/writing-algorithms/reality-modeling/options-models/pricing'>pricing model</a> of the Options, <a href='https://www.quantconnect.com/docs/v2/writing-algorithms/reality-modeling/options-models/pricing#04-Set-Models'>set a pricing model</a> in a security initializer.</p>
-
-<? include(DOCS_RESOURCES."/reality-modeling/volatility-model.html"); ?>
-
 <p>To view the implementation of this model, see the <a target="_blank" rel="nofollow" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm/Selection/OptionChainedUniverseSelectionModel.cs">LEAN GitHub repository</a>.</p>
