@@ -14,19 +14,34 @@ raw_price = self.Securities[self.future.Mapped].Price</pre>
 </div>
 
 
-<p>To configure how LEAN identifies the current Future contract in the continuous series and how it forms the adjusted price between each contract, provide <code>dataMappingMode</code>, <code>dataNormalizationMode</code>, and <code>contractDepthOffset</code> arguments to the <code>AddFuture</code> method. The <code>Future</code> object that the <code>AddFuture</code> method returns contains a <code>Mapped</code> property that references the current contract in the continuous contract series. As the contracts roll over, the <code>Mapped</code> property references the next contract in the series and you receive a <code>SymbolChangedEvent</code> object in the <code>OnData</code> method. The <code>SymbolChangedEvent</code> references the old contract <code>Symbol</code> and the new contract <code>Symbol</code>.</p>
+<p>To configure how LEAN identifies the current Future contract in the continuous series and how it forms the adjusted price between each contract, provide <code>dataMappingMode</code>, <code>dataNormalizationMode</code>, and <code>contractDepthOffset</code> arguments to the <code>AddFuture</code> method. The <code>Future</code> object that the <code>AddFuture</code> method returns contains a <code>Mapped</code> property that references the current contract in the continuous contract series. As the contracts roll over, the <code>Mapped</code> property references the next contract in the series and you receive a <code>SymbolChangedEvent</code> object in the <code>OnData</code> method. The <code>SymbolChangedEvent</code> references the old contract <code>Symbol</code> and the new contract <code>Symbol</code>. You can use <code>SymbolChangedEvents</code> to roll over contracts.</p>
 
 <div class="section-example-container">
     <pre class="csharp">public override void OnData(Slice slice)
 {
-    foreach (var changedEvent in slice.SymbolChangedEvents.Values)
+    foreach (var (symbol, changedEvent) in slice.SymbolChangedEvents)
     {
-        Log($"Symbol changed: {changedEvent.OldSymbol} -> {changedEvent.NewSymbol}");
+        var oldSymbol = changedEvent.OldSymbol;
+        var newSymbol = changedEvent.NewSymbol;
+        var tag = $"Rollover - Symbol changed at {_algorithm.Time}: {oldSymbol} -> {newSymbol}";
+        var quantity = _algorithm.Portfolio[oldSymbol].Quantity;
+        // Rolling over: to liquidate any position of the old mapped contract and switch to the newly mapped contract
+        Liquidate(oldSymbol, tag: tag);
+        if (quantity != 0) MarketOrder(newSymbol, quantity, tag: tag);
+        Log(tag);
     }
 }</pre>
     <pre class="python">def OnData(self, slice: Slice) -> None:
-    for changed_event in slice.SymbolChangedEvents.Values:
-        self.Log(f"Contract rollover from {changed_event.OldSymbol} to {changed_event.NewSymbol}")</pre>
+    for symbol, changed_event in  slice.SymbolChangedEvents.items():
+        old_symbol = changed_event.OldSymbol
+        new_symbol = changed_event.NewSymbol
+        tag = f"Rollover - Symbol changed at {self._algorithm.Time}: {old_symbol} -> {new_symbol}"
+        quantity = self.Portfolio[old_symbol].Quantity
+
+        # Rolling over: to liquidate any position of the old mapped contract and switch to the newly mapped contract
+        self.Liquidate(old_symbol, tag = tag)
+        if quantity != 0: self.MarketOrder(new_symbol, quantity, tag = tag)
+        self.Log(tag)</pre>
 </div>
 
 <h4>Data Normalization Modes</h4>
