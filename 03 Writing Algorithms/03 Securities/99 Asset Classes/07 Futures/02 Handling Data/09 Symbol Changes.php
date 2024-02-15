@@ -11,8 +11,8 @@
     {
         var oldSymbol = changedEvent.OldSymbol;
         var newSymbol = changedEvent.NewSymbol;
-        var tag = $"Rollover - Symbol changed at {_algorithm.Time}: {oldSymbol} -> {newSymbol}";
-        var quantity = _algorithm.Portfolio[oldSymbol].Quantity;
+        var tag = $"Rollover - Symbol changed at {Time}: {oldSymbol} -> {newSymbol}";
+        var quantity = Portfolio[oldSymbol].Quantity;
         // Rolling over: to liquidate any position of the old mapped contract and switch to the newly mapped contract
         Liquidate(oldSymbol, tag: tag);
         if (quantity != 0) MarketOrder(newSymbol, quantity, tag: tag);
@@ -23,7 +23,7 @@
     for symbol, changed_event in  slice.SymbolChangedEvents.items():
         old_symbol = changed_event.OldSymbol
         new_symbol = changed_event.NewSymbol
-        tag = f"Rollover - Symbol changed at {self._algorithm.Time}: {old_symbol} -> {new_symbol}"
+        tag = f"Rollover - Symbol changed at {self.Time}: {old_symbol} -> {new_symbol}"
         quantity = self.Portfolio[old_symbol].Quantity
 
         # Rolling over: to liquidate any position of the old mapped contract and switch to the newly mapped contract
