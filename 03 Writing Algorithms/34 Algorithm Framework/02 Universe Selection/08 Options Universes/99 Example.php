@@ -1,5 +1,5 @@
 <p>
-    The following example chains an <a href='/docs/v2/writing-algorithms/universes/equity/fundamental-universes'>fundamental universe</a> and an <a href='/docs/v2/writing-algorithms/universes/equity-options'>Equity Options universe</a>.
+    The following example chains a <a href='/docs/v2/writing-algorithms/universes/equity/fundamental-universes'>fundamental universe</a> and an <a href='/docs/v2/writing-algorithms/universes/equity-options'>Equity Options universe</a>.
     It first selects 10 stocks with the lowest PE ratio and then selects their front-month call Option contracts.
     It buys one front-month call Option contract every day.
 </p>
