@@ -1,15 +1,23 @@
 <p>An Option chained universe subscribes to Option contracts on the constituents of a <a href="/docs/v2/writing-algorithms/universes/equity">US Equity universe</a>. <br>
 
 </p><div class="section-example-container">
-	<pre class="csharp">UniverseSettings.Asynchronous = true;
-AddUniverseOptions(
-    AddUniverse(Universe.DollarVolume.Top(10)), 
-    optionFilterUniverse => optionFilterUniverse.Strikes(-2, +2).FrontMonth().CallsOnly()
+	<pre class="csharp">using QuantConnect.Algorithm.Selection;
+
+UniverseSettings.DataNormalizationMode = DataNormalizationMode.Raw;
+UniverseSettings.Asynchronous = true;
+AddUniverseSelection(
+    new OptionChainedUniverseSelectionModel(
+        AddUniverse(Universe.DollarVolume.Top(10)),
+        optionFilterUniverse => optionFilterUniverse.Strikes(-2, +2).FrontMonth().CallsOnly()
+    )
 );</pre>
-	<pre class="python">self.UniverseSettings.Asynchronous = True
-self.AddUniverseOptions(
-    self.AddUniverse(self.Universe.DollarVolume.Top(10)), 
-    lambda option_filter_universe: option_filter_universe.Strikes(-2, +2).FrontMonth().CallsOnly()
+	<pre class="python">self.UniverseSettings.DataNormalizationMode = DataNormalizationMode.Raw
+self.UniverseSettings.Asynchronous = True
+self.AddUniverseSelection(
+    OptionChainedUniverseSelectionModel(
+        self.AddUniverse(self.Universe.DollarVolume.Top(10)),
+        lambda option_filter_universe: option_filter_universe.Strikes(-2, +2).FrontMonth().CallsOnly()
+    )
 )</pre>
 
 </div>
@@ -39,11 +47,16 @@ self.AddUniverseOptions(
             <td>The Option filter universe to use</td>
             <td></td>
         </tr>
+        <tr>
+            <td><code>universeSettings</code></td>
+	    <td><code>UniverseSettings</code></td>
+            <td>The <a href="/docs/v2/writing-algorithms/algorithm-framework/universe-selection/universe-settings">universe settings</a>. If you don't provide an argument, the model uses the <code>algorithm.UniverseSettings</code> by default.</td>
+            <td><code class="csharp">null</code><code class="python">None</code></td>
+        </tr>
     </tbody>
 </table>
 
 <p>The <code>optionFilter</code> function receives and returns an <code>OptionFilterUniverse</code> to select the Option contracts. The following table describes the methods of the <code>OptionFilterUniverse</code> class:</p>
-
 
 <? include(DOCS_RESOURCES."/universes/option/option-filter-universe.html"); ?>
 
@@ -52,8 +65,9 @@ self.AddUniverseOptions(
 <div class="section-example-container">
 	<pre class="csharp">public override void Initialize()
 {
+    UniverseSettings.DataNormalizationMode = DataNormalizationMode.Raw;
     UniverseSettings.Asynchronous = true;
-    AddUniverseOptions(AddUniverse(Universe.DollarVolume.Top(10)), OptionFilterFunction);
+    AddUniverseSelection(new OptionChainedUniverseSelectionModel(AddUniverse(Universe.DollarVolume.Top(10)), OptionFilterFunction));
 }
 
 private OptionFilterUniverse OptionFilterFunction(OptionFilterUniverse optionFilterUniverse)
@@ -61,8 +75,9 @@ private OptionFilterUniverse OptionFilterFunction(OptionFilterUniverse optionFil
     return optionFilterUniverse.Strikes(-2, +2).FrontMonth().CallsOnly();
 }</pre>
 	<pre class="python">def Initialize(self) -&gt; None:
+    self.UniverseSettings.DataNormalizationMode = DataNormalizationMode.Raw
     self.UniverseSettings.Asynchronous = True
-    self.AddUniverseOptions(self.AddUniverse(self.Universe.DollarVolume.Top(10)), self.OptionFilterFunction)
+    self.AddUniverseSelection(OptionChainedUniverseSelectionModel(self.AddUniverse(self.Universe.DollarVolume.Top(10)), self.OptionFilterFunction))
 
 def OptionFilterFunction(self, option_filter_universe: OptionFilterUniverse) -&gt; OptionFilterUniverse:
     return option_filter_universe.Strikes(-2, +2).FrontMonth().CallsOnly()</pre>
