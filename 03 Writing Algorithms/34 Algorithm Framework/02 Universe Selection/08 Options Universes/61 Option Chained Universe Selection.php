@@ -67,7 +67,9 @@ self.AddUniverseSelection(
 {
     UniverseSettings.DataNormalizationMode = DataNormalizationMode.Raw;
     UniverseSettings.Asynchronous = true;
-    AddUniverseSelection(new OptionChainedUniverseSelectionModel(AddUniverse(Universe.DollarVolume.Top(10)), OptionFilterFunction));
+    AddUniverseSelection(
+        new OptionChainedUniverseSelectionModel(AddUniverse(Universe.DollarVolume.Top(10)), OptionFilterFunction)
+    );
 }
 
 private OptionFilterUniverse OptionFilterFunction(OptionFilterUniverse optionFilterUniverse)
@@ -77,7 +79,9 @@ private OptionFilterUniverse OptionFilterFunction(OptionFilterUniverse optionFil
 	<pre class="python">def Initialize(self) -&gt; None:
     self.UniverseSettings.DataNormalizationMode = DataNormalizationMode.Raw
     self.UniverseSettings.Asynchronous = True
-    self.AddUniverseSelection(OptionChainedUniverseSelectionModel(self.AddUniverse(self.Universe.DollarVolume.Top(10)), self.OptionFilterFunction))
+    self.AddUniverseSelection(
+	OptionChainedUniverseSelectionModel(self.AddUniverse(self.Universe.DollarVolume.Top(10)), self.OptionFilterFunction)
+    )
 
 def OptionFilterFunction(self, option_filter_universe: OptionFilterUniverse) -&gt; OptionFilterUniverse:
     return option_filter_universe.Strikes(-2, +2).FrontMonth().CallsOnly()</pre>
