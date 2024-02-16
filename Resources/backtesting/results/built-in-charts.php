@@ -36,6 +36,10 @@
       <td>Portfolio Turnover</td>
       <td>A time series of the portfolio turnover rate.</td>
     </tr>
+    <tr>
+      <td>Portfolio Margin</td>
+      <td>A stacked area chart of the portfolio margin usage. For more information about this chart, see <a href='/docs/v2/cloud-platform/backtesting/results/portfolio-margin-plots'>Portfolio Margin Plots</a>.</td>
+    </tr>
     <? if ($cloudPlatform) { ?>
     <tr>
       <td>Asset Plot</td>
