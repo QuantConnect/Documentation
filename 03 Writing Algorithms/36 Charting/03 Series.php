@@ -80,7 +80,7 @@ Series(name, type, unit, color, symbol)
     <tbody>
         <tr>
             <td>Strategy Equity</td>
-	    <td>Equity, Daily Performance</td>
+	    <td>Equity, Return</td>
         </tr>
         <tr>
             <td>Capacity</td>
@@ -93,6 +93,11 @@ Series(name, type, unit, color, symbol)
         <tr>
             <td>Benchmark</td>
 	    <td>Benchmark</td>
+        </tr>
+
+        <tr>
+            <td>Portfolio Turnover</td>
+	    <td>Portfolio Turnover</td>
         </tr>
     </tbody>
 </table>
