@@ -10,7 +10,7 @@
   <tbody>
     <tr>
       <td>Strategy Equity</td>
-      <td>A time series of equity and daily performance.</td>
+      <td>A time series of equity and periodic returns.</td>
     </tr>
     <tr>
       <td>Capacity</td>
