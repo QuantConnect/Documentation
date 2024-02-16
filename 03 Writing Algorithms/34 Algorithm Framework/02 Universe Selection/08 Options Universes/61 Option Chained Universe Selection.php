@@ -67,8 +67,8 @@ self.AddUniverseSelection(
     UniverseSettings.Asynchronous = true;
     AddUniverseSelection(
         new OptionChainedUniverseSelectionModel(
-	    AddUniverse(Universe.DollarVolume.Top(10)), OptionFilterFunction
-	)
+            AddUniverse(Universe.DollarVolume.Top(10)), OptionFilterFunction
+        )
     );
 }
 
@@ -80,9 +80,9 @@ private OptionFilterUniverse OptionFilterFunction(OptionFilterUniverse optionFil
     self.UniverseSettings.DataNormalizationMode = DataNormalizationMode.Raw
     self.UniverseSettings.Asynchronous = True
     self.AddUniverseSelection(
-	OptionChainedUniverseSelectionModel(
-	    self.AddUniverse(self.Universe.DollarVolume.Top(10)), self.OptionFilterFunction
-	)
+        OptionChainedUniverseSelectionModel(
+            self.AddUniverse(self.Universe.DollarVolume.Top(10)), self.OptionFilterFunction
+        )
     )
 
 def OptionFilterFunction(self, option_filter_universe: OptionFilterUniverse) -&gt; OptionFilterUniverse:
