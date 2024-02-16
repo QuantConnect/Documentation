@@ -1,0 +1,193 @@
+<p>
+    The following example shows how to update the option chain every five minutes. The <code>OptionChainManager</code> class implements the selection logic, adds and removes the contracts.
+</p>
+
+<div class="section-example-container">
+    <pre class="csharp">namespace QuantConnect.Algorithm.CSharp
+{
+    public class OptionChainProviderFullExample : QCAlgorithm
+    {
+        private Dictionary&lt;Symbol, OptionChainManager&gt; _chainManager = new();
+        public override void Initialize()
+        {
+            SetStartDate(2023, 1, 2);
+            SetEndDate(2023, 1, 30);
+            SetCash(100000);
+            UniverseSettings.Asynchronous = true;
+            UniverseSettings.MinimumTimeInUniverse = TimeSpan.Zero;
+            SetSecurityInitializer(new BrokerageModelSecurityInitializer(BrokerageModel, new FuncSecuritySeeder(GetLastKnownPrices)));
+            var spy = AddEquity("SPY", dataNormalizationMode: DataNormalizationMode.Raw).Symbol;
+            _chainManager[QuantConnect.Symbol.CreateCanonicalOption(spy)] = new(-10, 10, 0, 7);
+            PopulateOptionChain();
+            Schedule.On(DateRules.EveryDay(spy), TimeRules.AfterMarketOpen(spy, 1), PopulateOptionChain);
+            Schedule.On(DateRules.EveryDay(spy), TimeRules.Every(TimeSpan.FromMinutes(5)), Filter);
+        }
+        
+        private void PopulateOptionChain()
+        {
+            // The contract list is updated daily, so we can get it and apply
+            // the expiration filter as soon as the market open
+            foreach (var (symbol, manager) in _chainManager)
+            {
+                manager.SetChain(OptionChainProvider.GetOptionContractList(symbol, Time), Time);
+            }
+    
+            Filter();
+        }
+        
+        private void Filter()
+        {
+            foreach (var (symbol, manager) in _chainManager)
+            {
+                manager.Select(this, symbol);
+            }
+        }
+        
+        public override void OnData(Slice slice)
+        {
+            foreach (var (symbol, manager) in _chainManager)
+            {
+                if (!slice.OptionChains.TryGetValue(symbol, out var chain))
+                    continue;
+                var expiry = chain.Min(x =&gt; x.Expiry);
+                var atmCall = chain
+                    .Where(x =&gt; x.Expiry == expiry && x.Right == OptionRight.Call && Securities[x.Symbol].IsTradable)
+                    .OrderBy(x =&gt; Math.Abs(chain.Underlying.Price - x.Strike))
+                    .FirstOrDefault();
+
+                if (atmCall != null && !Portfolio[atmCall.Symbol].Invested)
+                    MarketOrder(atmCall.Symbol, 1);
+            }
+        }
+    }
+
+    internal class OptionChainManager
+    {
+        private readonly int _minStrike;
+        private readonly int _maxStrike;
+        private readonly int _minExpiry;
+        private readonly int _maxExpiry;
+        private List&lt;Symbol&gt; _chain = new();
+        private readonly List&lt;Symbol&gt; _symbols = new();
+
+        public OptionChainManager(int minStrike, int maxStrike, int minExpiry, int maxExpiry)
+        {
+            _minStrike = minStrike;
+            _maxStrike = maxStrike;
+            _minExpiry = minExpiry;
+            _maxExpiry = maxExpiry;
+        }
+
+        public void SetChain(IEnumerable&lt;Symbol&gt; symbols, DateTime time)
+        {
+            _chain = symbols.Where(x =&gt;
+            {
+                var totalDays = (x.ID.Date - time).TotalDays;
+                return _minExpiry &lt;= totalDays && totalDays &lt;= _maxExpiry;
+            }).ToList();
+        }
+        
+        public void Select(QCAlgorithm algorithm, Symbol underlyingSymbol)
+        {
+            if (_chain.IsNullOrEmpty())
+                return;
+            if (underlyingSymbol.IsCanonical())
+                underlyingSymbol = underlyingSymbol.Underlying;
+
+            var strikes = _chain.Select(x =&gt; x.ID.StrikePrice).OrderBy(x =&gt; x).Distinct().ToList();
+            var spot = algorithm.Securities[underlyingSymbol].Price;
+            var atm = strikes.OrderBy(x =&gt; Math.Abs(spot - x)).FirstOrDefault();
+            var index = strikes.IndexOf(atm);
+            var minStrike = strikes[Math.Max(0, index + _minStrike)];
+            var maxStrike = strikes[Math.Min(strikes.Count - 1, index + _maxStrike)];
+            var symbols = _chain.Where(x =&gt; minStrike &lt;= x.ID.StrikePrice && x.ID.StrikePrice &lt;= maxStrike).ToList();
+
+            var toRemove = _symbols.Except(symbols).ToList();
+            foreach (var symbol in toRemove)
+            {
+                if (algorithm.RemoveOptionContract(symbol))
+                    _symbols.Remove(symbol);
+            }
+            var toAdd = symbols.Except(_symbols).ToList();
+            foreach (var symbol in toAdd)
+            {
+                _symbols.Add(symbol);
+                algorithm.AddOptionContract(symbol);
+            }
+        }
+    }
+}</pre>
+    <pre class="python">class OptionChainProviderFullExample(QCAlgorithm):
+
+    def Initialize(self):
+        self.SetStartDate(2023, 1, 2)
+        self.SetEndDate(2023, 1, 30)
+        self.SetCash(100000)
+        self.UniverseSettings.Asynchronous = True
+        self.UniverseSettings.MinimumTimeInUniverse = timedelta(minutes=0)
+        self.SetSecurityInitializer(BrokerageModelSecurityInitializer(self.BrokerageModel, FuncSecuritySeeder(self.GetLastKnownPrices)))
+        spy = self.AddEquity("SPY", dataNormalizationMode=DataNormalizationMode.Raw).Symbol
+        self.chain_manager = {
+            Symbol.CreateCanonicalOption(spy): OptionChainManager(-10, 10, 0, 7)
+        }
+        self.PopulateOptionChain()
+        self.Schedule.On(self.DateRules.EveryDay(spy), self.TimeRules.AfterMarketOpen(spy, 1), self.PopulateOptionChain)
+        self.Schedule.On(self.DateRules.EveryDay(spy), self.TimeRules.Every(timedelta(minutes=5)), self.Filter)
+
+    def PopulateOptionChain(self):
+        # The contract list is updated daily, so we can get it and apply
+        # the expiration filter as soon as the market open
+        for symbol, manager in self.chain_manager.items():
+            manager.SetChain(self.OptionChainProvider.GetOptionContractList(symbol, self.Time), self.Time)
+        self.Filter()
+
+    def Filter(self):
+        for symbol, manager in self.chain_manager.items():
+            manager.Select(self, symbol)
+
+    def OnData(self, slice: Slice) -&gt; None:
+        for symbol, _ in self.chain_manager.items():
+            chain = slice.OptionChains.get(symbol)
+            if not chain: continue
+            if self.Portfolio[symbol.Underlying].Invested:
+                self.Liquidate(symbol.Underlying)
+
+            expiry = min([x.Expiry for x in chain])
+            contracts = [x for x in chain if x.Expiry == expiry and x.Right == OptionRight.Call and self.Securities[x.Symbol].IsTradable]
+            if not contracts: continue
+            atm_call = sorted(contracts, key=lambda x: abs(chain.Underlying.Price-x.Strike))[0]
+
+            if not self.Portfolio[atm_call.Symbol].Invested:
+                self.MarketOrder(atm_call.Symbol, 1)
+
+class OptionChainManager:
+    chain = []
+    symbols = []
+    def __init__(self, min_strike, max_strike, min_expiry, max_expiry):
+        self.min_strike = min_strike
+        self.max_strike = max_strike
+        self.min_expiry = min_expiry
+        self.max_expiry = max_expiry
+    def SetChain(self, symbols: List[Symbol], time: datetime) -&gt; None:
+        self.chain = [x for x in symbols if self.min_expiry &lt;= (x.ID.Date - time).days &lt;= self.max_expiry]
+    def Select(self, algorithm: QCAlgorithm, symbol: Symbol) -&gt; None:
+        if not self.chain:
+            return
+        if symbol.IsCanonical():
+            symbol = symbol.Underlying
+        strikes = sorted(set(x.ID.StrikePrice for x in self.chain))
+        spot = algorithm.Securities[symbol].Price
+        atm = sorted(strikes, key=lambda x: abs(spot-x))[0]
+        index = strikes.index(atm)
+        min_strike = strikes[max(0, index + self.min_strike)]
+        max_strike = strikes[min(len(strikes) - 1, index + self.max_strike)]
+        symbols = set(x for x in self.chain if min_strike &lt;= x.ID.StrikePrice &lt;= max_strike)
+        to_remove = set(self.symbols).difference(symbols)
+        for symbol in to_remove:
+            if algorithm.RemoveOptionContract(symbol):
+                self.symbols.remove(symbol)
+        to_add = symbols.difference(self.symbols)
+        for symbol in to_add:
+            self.symbols.append(symbol)
+            algorithm.AddOptionContract(symbol)</pre>
+</div>
