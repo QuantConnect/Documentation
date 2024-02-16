@@ -104,8 +104,12 @@ To enter multiple options, separate them with comma:</pre>
 </div>
 </li>
     <?if ($isBrokerage) {?>
-    <p>If you select IQFeed, see <a href='/docs/v2/lean-cli/live-trading/data-providers/iqfeed'>IQFeed</a> for set up instructions.</p>
-    <p>If you select Polygon, see <a href='/docs/v2/lean-cli/live-trading/data-providers/polygon'>Polygon</a> for set up instructions.</p>
+    <p>If you select one of the following data providers, see the respective page for more instructions:</p>
+    <ul>
+        <li><a href='/docs/v2/lean-cli/live-trading/data-providers/iex-cloud'>IEX Cloud</a></li>
+        <li><a href='/docs/v2/lean-cli/live-trading/data-providers/iqfeed'>IQFeed</a></li>
+        <li><a href='/docs/v2/lean-cli/live-trading/data-providers/polygon'>Polygon</a></li>
+    </ul>
     <? } ?>
 <? } ?>
 
