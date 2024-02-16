@@ -1,4 +1,4 @@
-<p>You need to <a href='http://www.quantconnect.com/docs/v2/cloud-platform/live-trading/brokerages/bloomberg-emsx#14-Set-Up-SAPI'>set up the Bloomberg SAPI</a> before you can deploy cloud algorithms with Terminal Link.</p>
+<p>You need to <a href='https://www.quantconnect.com/docs/v2/cloud-platform/live-trading/brokerages/bloomberg-emsx#14-Set-Up-SAPI'>set up the Bloomberg SAPI</a> before you can deploy cloud algorithms with Terminal Link.</p>
 
 <?php
 $brokerageDetails = "

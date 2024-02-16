@@ -1,5 +1,5 @@
 <p>
-    Follow these steps to pull all the cloud projects that you store in an <a href='http://www.quantconnect.com/docs/v2/cloud-platform/organizations/getting-started'>organization</a> to your local drive:
+    Follow these steps to pull all the cloud projects that you store in an <a href='https://www.quantconnect.com/docs/v2/cloud-platform/organizations/getting-started'>organization</a> to your local drive:
 </p>
 
 <ol>
