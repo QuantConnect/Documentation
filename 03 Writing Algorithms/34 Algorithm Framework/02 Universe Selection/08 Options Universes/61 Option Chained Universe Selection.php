@@ -1,9 +1,7 @@
 <p>An Option chained universe subscribes to Option contracts on the constituents of a <a href="/docs/v2/writing-algorithms/universes/equity">US Equity universe</a>. <br>
 
 </p><div class="section-example-container">
-	<pre class="csharp">using QuantConnect.Algorithm.Selection;
-
-UniverseSettings.DataNormalizationMode = DataNormalizationMode.Raw;
+	<pre class="csharp">UniverseSettings.DataNormalizationMode = DataNormalizationMode.Raw;
 UniverseSettings.Asynchronous = true;
 AddUniverseSelection(
     new OptionChainedUniverseSelectionModel(
@@ -68,7 +66,9 @@ self.AddUniverseSelection(
     UniverseSettings.DataNormalizationMode = DataNormalizationMode.Raw;
     UniverseSettings.Asynchronous = true;
     AddUniverseSelection(
-        new OptionChainedUniverseSelectionModel(AddUniverse(Universe.DollarVolume.Top(10)), OptionFilterFunction)
+        new OptionChainedUniverseSelectionModel(
+	    AddUniverse(Universe.DollarVolume.Top(10)), OptionFilterFunction
+	)
     );
 }
 
@@ -80,7 +80,9 @@ private OptionFilterUniverse OptionFilterFunction(OptionFilterUniverse optionFil
     self.UniverseSettings.DataNormalizationMode = DataNormalizationMode.Raw
     self.UniverseSettings.Asynchronous = True
     self.AddUniverseSelection(
-	OptionChainedUniverseSelectionModel(self.AddUniverse(self.Universe.DollarVolume.Top(10)), self.OptionFilterFunction)
+	OptionChainedUniverseSelectionModel(
+	    self.AddUniverse(self.Universe.DollarVolume.Top(10)), self.OptionFilterFunction
+	)
     )
 
 def OptionFilterFunction(self, option_filter_universe: OptionFilterUniverse) -&gt; OptionFilterUniverse:
