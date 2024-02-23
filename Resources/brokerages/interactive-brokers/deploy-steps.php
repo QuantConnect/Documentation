@@ -17,15 +17,15 @@
         <tbody>
             <tr>
                 <td>QuantConnect</td>
-                <td>Use data collected across all of the exchanges. For more details about this data provider, see <a href="/docs/v2/cloud-platform/live-trading/data-providers">Data Providers</a>.</td>
+                <td>Use data collected across all of the exchanges. For more details about this data provider, see <a href="/docs/v2/cloud-platform/datasets">Datasets</a>.</td>
             </tr>
             <tr>
                 <td>IB</td>
-                <td>Use data sourced directly from IB. For more details about this data provider, see the <a href="/docs/v2/cloud-platform/live-trading/data-providers/interactive-brokers">IB data provider</a> guide.</td>
+                <td>Use data sourced directly from IB. For more details about this data provider, see the <a href="/docs/v2/cloud-platform/datasets/interactive-brokers">IB data provider</a> guide.</td>
             </tr>
             <tr>
                 <td>QuantConnect + IB</td>
-                <td>Use a combination of the QuantConnect and IB data providers. For more details about this option, see <a href="/docs/v2/cloud-platform/live-trading/data-providers/interactive-brokers#07-Hybrid-QuantConnect-Data-Provider">Hybrid QuantConnect Data Provider</a>.</td>
+                <td>Use a combination of the QuantConnect and IB data providers. For more details about this option, see <a href="/docs/v2/cloud-platform/datasets/interactive-brokers#07-Hybrid-QuantConnect-Data-Provider">Hybrid QuantConnect Data Provider</a>.</td>
             </tr>
         </tbody>
     </table>
