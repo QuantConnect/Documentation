@@ -1,3 +1,3 @@
-<p>Polygon was founded by Quinton Pike in 2017  with the goal to "break down the barriers that have traditionally limited access to high-quality financial data for all". Polygon provides institutional-grade Equity, Option, Index, Forex, and Crypto data for business and educational purposes.</p>
+<? include(DOCS_RESOURCES."/brokerages/introduction-by-brokerage/polygon.html"); ?>
 
 <p>The Polygon data provider streams live asset prices from Polygon. If you use this data provider and request historical data, the historical data comes from Polygon.</p>
