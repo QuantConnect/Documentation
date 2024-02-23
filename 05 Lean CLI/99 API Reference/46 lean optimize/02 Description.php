@@ -40,6 +40,8 @@
     You can provide this option multiple times to configure multiple constraints.
 </p>
 
+<? include(DOCS_RESOURCES."/cli/backtest-data-provider.html"); ?>
+
 <p>
     Example non-interactive usage:
 </p>
