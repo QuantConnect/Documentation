@@ -8,6 +8,6 @@
 </p>
 
 <p>
-  QuantConnect Cloud currently only supported streaming Polygon data for live algorithms. 
-  To download data from Polygon to use for backtesting, research, and optimizations, use the <a href='/docs/v2/lean-cli/datasets/polygon'>CLI</a>.
+  QuantConnect Cloud currently only supported streaming Polygon data during live trading. 
+  To download Polygon for backtesting, research, and optimizations, use the <a href='/docs/v2/lean-cli/datasets/polygon'>CLI</a>.
 </p>
