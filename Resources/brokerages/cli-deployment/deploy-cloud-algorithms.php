@@ -51,7 +51,7 @@ $dataProviders = array(
     "CoinApi",
     "Bybit"
 );
-$dataProviderNumber = array_search($dataProviderName, $dataProviders) + 1;
+$dataProviderNumber = isset($dataProviderName) ? array_search($dataProviderName, $dataProviders) + 1 : -1;
 ?>
          
             <li>Enter <span class='key-combinations'><?=$brokerageNumber?></span> to select the <?=$brokerageName?> brokerage.</li>
