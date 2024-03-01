@@ -177,6 +177,7 @@ Select a live data feed:
 To enter multiple options, separate them with comma:</pre>
             </div>
             </li>
+<? } ?>
             <?if ($isBrokerage) {?>
             <p>If you select one of the following data providers, see the respective page for more instructions:</p>
             <ul>
