@@ -1,14 +1,16 @@
 <p>
     Starts live trading for a cloud project.
-    Before starting live trading, the CLI shows an interactive wizard letting you configure the brokerage, the live node, and the notifications.
+    Before starting live trading, the CLI shows an interactive wizard letting you configure the brokerage, data provider, live node, and notifications.
     After starting live trading, the CLI displays a URL to the live results.
     You can use the <code>--open</code> flag to automatically open this URL in the browser once the deployment starts.
 </p>
 
 <p>
-    If you specify the <code>--brokerage</code> option, the interactive wizard is skipped and the command runs in non-interactive mode.
+    If you specify the <code>--brokerage</code> and <code>--data-provider-live</code> options, the interactive wizard is skipped and the command runs in non-interactive mode.
     In this mode, the command doesn't prompt for input or confirmation and reads all configuration from the provided command-line options.
     In non-interactive mode, all options specific to the selected brokerage become required, as well as <code>--node</code>, <code>--auto-restart</code>, <code>--notify-order-events</code>, and <code>--notify-insights</code>.
+    In case a required option has not been provided, the command falls back to the property with the same name in your <a href="/docs/v2/lean-cli/initialization/configuration#03-Lean-Configuration">Lean configuration file</a>.
+    The command aborts if this property also hasn't been set.
 </p>
 
 <p>
@@ -51,7 +53,7 @@
         <tr><td><code>--bybit-vip-level</code></td></tr>
 
         <tr>
-            <td rowspan="2"><code>Coinbase</code></td>
+            <td rowspan="2"><code>"Coinbase Advanced Trade"</code></td>
             <td><code>--coinbase-api-key</code></td>
         </tr>
         <tr><td><code>--coinbase-api-secret</code></td></tr>
@@ -72,7 +74,7 @@
         <tr><td><code>--kraken-verification-tier</code></td></tr>
 
         <tr>
-            <td rowspan="3"><code>OANDA</code></td>
+            <td rowspan="3"><code>Oanda</code></td>
             <td><code>--oanda-account-id</code></td>
         </tr>
         <tr><td><code>--oanda-access-token</code></td></tr>
@@ -134,7 +136,143 @@
     </tbody>
 </table>
 
-<p>If you omit some of the required brokerage options when running in non-interactive mode, the CLI uses the option values in your <a href="/docs/v2/lean-cli/initialization/configuration#03-Lean-Configuration">LEAN configuration file</a>.</p>
+<p>
+    The <code>--data-provider-live</code> option is required. The following table shows the available live data providers and their required options in non-interactive mode. You can select multiple data providers.
+</p>
+
+<table class="qc-table table">
+    <thead>
+        <tr>
+            <th style="width: 25%"><code>--data-provider-live</code></th>
+            <th>Required Options</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td rowspan="3"><code>Binance</code></td>
+            <td><code>--binance-exchange-name</code></td>
+        </tr>
+        <tr><td><code>--binance-api-key</code> or <code>--binanceus-api-key</code></td></tr>
+        <tr><td><code>--binance-api-secret</code> or <code>--binanceus-api-secret</code></td></tr>
+
+        <tr>
+            <td><code>Bitfinex</code></td>
+            <td>All options required by <code>--brokerage Bitfinex</code>.</td>
+        </tr>
+
+        <tr>
+            <td><code>Bybit</code></td>
+            <td>All options required by <code>--brokerage Bybit</code>.</td>
+        </tr>
+
+        <tr>
+            <td rowspan="2"><code>"Coinbase Advanced Trade"</code></td>
+            <td><code>--coinbase-api-key</code></td>
+        </tr>
+        <tr><td><code>--coinbase-api-secret</code></td></tr>
+
+        <tr>
+            <td rowspan="2"><code>IEX</code></td>
+            <td><code>--iex-cloud-api-key</code></td>
+        </tr>
+        <tr><td><code>--iex-price-plan</code></td></tr>
+
+        <tr>
+            <td rowspan="2"><code>"Interactive Brokers"</code></td>
+            <td>All options required by <code>--brokerage "Interactive Brokers"</code>.</td>
+        </tr>
+        <tr><td><code>--ib-enable-delayed-streaming-data</code></td></tr>
+
+        <tr>
+            <td><code>Kraken</code></td>
+            <td>All options required by <code>--brokerage Kraken</code>.</td>
+        </tr>
+
+        <tr>
+            <td rowspan="2"><code>Oanda</code></td>
+            <td><code>--oanda-account-id</code></td>
+        </tr>
+        <tr><td><code>--oanda-access-token</code></td></tr>
+
+        <tr>
+            <td><code>Polygon</code></td>
+            <td><code>--polygon-api-key</code></td>
+        </tr>
+
+        <tr>
+            <td><code>QuantConnect</code></td>
+            <td>N/A</td>
+        </tr>
+
+        <tr>
+            <td><code>Samco</code></td>
+            <td>All options required by <code>--brokerage Samco</code>.</td>
+        </tr>
+
+        <tr>
+            <td><code>TDAmeritrade</code></td>
+            <td>All options required by <code>--brokerage TDAmeritrade</code>.</td>
+        </tr>
+
+        <tr>
+            <td><code>"Terminal Link"</code></td>
+            <td>All options required by <code>--brokerage "Terminal Link"</code>.</td>
+        </tr>
+
+        <tr>
+            <td rowspan="2"><code>Tradier</code></td>
+            <td><code>--tradier-account-id</code></td>
+        </tr>
+        <tr><td><code>--tradier-access-token</code></td></tr>
+
+        <tr>
+            <td rowspan="2"><code>Zerodha</code></td>
+            <td>All options required by <code>--brokerage Zerodha</code>.</td>
+        </tr>
+        <tr><td><code>--zerodha-history-subscription</code></td></tr>
+
+    </tbody>
+</table>
+
+<p>
+    The <code>--data-provider-historical</code> option specifies the source of historical data. 
+    The following table shows the available historical data providers and their required options in non-interactive mode.
+    If the live data provider you set also provides historical data and you omit the <code>--data-provider-historical</code> option, it defaults to the same value as the <code>--data-provider-live</code> option. 
+    If the live data provider you set doesn't provide historical data and you omit the <code>--data-provider-historical</code> option, it defaults to the <code>Local</code> data provider.
+</p>
+<table class="qc-table table">
+    <thead>
+        <tr>
+            <th style="width: 25%"><code>--data-provider-historical</code></th>
+            <th>Required Options</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td rowspan="2"><code>AlphaVantage</code></td>
+            <td><code>--alpha-vantage-api-key</code></td>
+        </tr>
+        <tr><td><code>--alpha-vantage-price-plan</code></td></tr>
+
+        <tr>
+            <td rowspan="2"><code>IEX</code></td>
+            <td><code>--iex-cloud-api-key</code></td>
+        </tr>
+        <tr><td><code>--iex-price-plan</code></td></tr>
+
+        <tr>
+            <td><code>Polygon</code></td>
+            <td><code>--polygon-api-key</code></td>
+        </tr>
+
+        <tr>
+            <td><code>QuantConnect</code></td>
+            <td>N/A</td>
+        </tr>
+    </tbody>
+</table>
+
+<p>If you omit some of the required options when running in non-interactive mode, the CLI uses the option values in your <a href="/docs/v2/lean-cli/initialization/configuration#03-Lean-Configuration">LEAN configuration file</a>.</p>
 
 <p>
     Example non-interactive usage:
