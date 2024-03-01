@@ -1,6 +1,6 @@
  <? if (!$isSupported) { ?> <p>The CLI doesn't currently support deploying cloud algorithms with <?=$brokerageName?>. <? return; } ?>
 
-    <p>Follow these steps to start live trading a project in the cloud with the <?=$brokerageName?> brokerage:</p>
+    <p>Follow these steps to start live trading a project in the cloud with the <?=$brokerageName?> brokerage <?=isset($dataProviderName) ? "and the {$dataProviderName} data provider": ""?>:</p>
         <ol>
             <li><a href='/docs/v2/lean-cli/initialization/authentication#02-Log-In'>Log in</a> to the CLI if you haven't done so already.</li>
             <li>Open a terminal in the <a href='/docs/v2/lean-cli/initialization/organization-workspaces'>organization workspace</a> that contains the project.</li>
@@ -31,6 +31,27 @@ $brokerages = array(
       "Bybit"
 );
 $brokerageNumber = array_search($brokerageName, $brokerages) + 1;
+
+$dataProviders = array(
+    "QuantConnect",
+    "Interactive Brokers",
+    "Tradier",
+    "Oanda",
+    "Bitfinex",
+    "Coinbase Advanced Trade",
+    "Binance",
+    "Zerodha",
+    "Samco",
+    "Terminal Link",
+    "Trading Technologies",
+    "Kraken",
+    "TDAmeritrade",
+    "Polygon",
+    "IEX Cloud",
+    "CoinApi",
+    "Bybit"
+);
+$dataProviderNumber = array_search($dataProviderName, $dataProviders) + 1;
 ?>
          
             <li>Enter <span class='key-combinations'><?=$brokerageNumber?></span> to select the <?=$brokerageName?> brokerage.</li>
@@ -151,6 +172,33 @@ To enter multiple options, separate them with comma: 9</pre>
             </div>
             </li>   
 <?  
+} else if isset($dataProviderName) {
+?>
+            <li>Enter <span class='key-combinations'><?=$dataProviderNumber?></span> to select the <?=$dataProviderName?> data provider.</li> 
+            <div class='cli section-example-container'>
+<pre>$ lean live "My Project"
+Select a live data feed:
+1) Interactive Brokers
+2) Tradier
+3) Oanda
+4) Bitfinex
+5) Coinbase Advanced Trade
+6) Binance
+7) Zerodha
+8) Samco
+9) Terminal Link
+10) Trading Technologies
+11) Kraken
+12) TD Ameritrade
+13) IQFeed
+14) Polygon
+15) IEX
+16) CoinApi
+17) Bybit
+To enter multiple options, separate them with comma: <?=$dataProviderNumber?></pre>
+            </div>
+            </li>
+<?
 } else {
 ?>
             <li>Enter the number of the live data provider(s) to use and then follow the steps required for the data connection.
@@ -178,12 +226,14 @@ To enter multiple options, separate them with comma:</pre>
             </div>
             </li>
 <? } ?>
+<? if (!isset($dataProviderName)) {?>
             <p>If you select one of the following data providers, see the respective page for more instructions:</p>
             <ul>
                 <li><a href='/docs/v2/lean-cli/live-trading/data-providers/iex-cloud'>IEX Cloud</a></li>
                 <li><a href='/docs/v2/lean-cli/live-trading/data-providers/iqfeed'>IQFeed</a></li>
                 <li><a href='/docs/v2/lean-cli/live-trading/data-providers/polygon'>Polygon</a></li>
             </ul>
+ <? } ?>
        
             <li>Verify the configured settings and confirm them to start the live deployment in the cloud.</li>
             <div class='cli section-example-container'>
