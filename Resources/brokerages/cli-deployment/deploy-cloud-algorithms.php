@@ -246,6 +246,7 @@ Environment: Live
 Server name: L-MICRO node 89c90172
 Server type: L-MICRO
 Live Data providers: <?=isset($dataProviderName) ? $dataProviderName : "QuantConnectBrokerage"?>
+
 LEAN version: 11157
 Order event notifications: Yes
 Insight notifications: Yes
