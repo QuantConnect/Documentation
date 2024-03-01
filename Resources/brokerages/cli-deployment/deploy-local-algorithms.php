@@ -51,71 +51,6 @@ Enter an option: <?=$isBrokerage ? $brokerageNumber : '1'?></pre>
 
 <?=$brokerageDetails ?>
 
-<?
-if ($isBrokerage && $brokerageName == "Terminal Link") {
-?>
-<li>Enter <span class='key-combinations'>9</span> to select the Terminal Link live data provider.
-<div class='cli section-example-container'>
-<pre>$ lean live "My Project"
-Select a live data provider:
-1) Interactive Brokers
-2) Tradier
-3) Oanda
-4) Bitfinex
-5) Coinbase Advanced Trade
-6) Binance
-7) Zerodha
-8) Samco
-9) Terminal Link
-10) Kraken
-11) TD Ameritrade
-12) IQFeed
-13) Polygon
-14) IEX
-15) Custom data only
-16) Bybit
-To enter multiple options, separate them with comma: 9</pre>
-</div>
-</li>   
-<?  
-} else {
-?>
-<li>Enter the number of the live data provider to use and then follow the steps required for the data connection.
-<div class='cli section-example-container'>
-<pre>$ lean live "My Project"
-Select a live data provider:
-1) Interactive Brokers
-2) Tradier
-3) Oanda
-4) Bitfinex
-5) Coinbase Advanced Trade
-6) Binance
-7) Zerodha
-8) Samco
-9) Terminal Link
-10) Kraken
-11) TD Ameritrade
-12) IQFeed
-13) Polygon
-14) IEX
-15) Custom data only
-16) Bybit
-To enter multiple options, separate them with comma:</pre>
-</div>
-</li>
-    <?if ($isBrokerage) {?>
-    <p>If you select one of the following data providers, see the respective page for more instructions:</p>
-    <ul>
-        <li><a href='/docs/v2/lean-cli/live-trading/data-providers/iex-cloud'>IEX Cloud</a></li>
-        <li><a href='/docs/v2/lean-cli/live-trading/data-providers/iqfeed'>IQFeed</a></li>
-        <li><a href='/docs/v2/lean-cli/live-trading/data-providers/polygon'>Polygon</a></li>
-    </ul>
-    <? } ?>
-<? } ?>
-
-
-<?=$dataFeedDetails ?>
-
 <? if (isset($supportsCashHoldings) && $supportsCashHoldings) { ?> 
     <li>Set your initial cash balance.
         <div class='cli section-example-container'>
@@ -147,6 +82,75 @@ Do you want to add more holdings? [y/N]: n</pre>
         </div>
         </li>
 <? } ?>
+
+<?
+if ($isBrokerage && $brokerageName == "Terminal Link") {
+?>
+<li>Enter <span class='key-combinations'>9</span> to select the Terminal Link live data provider.
+<div class='cli section-example-container'>
+<pre>$ lean live "My Project"
+Select a live data provider:
+1) Interactive Brokers
+2) Tradier
+3) Oanda
+4) Bitfinex
+5) Coinbase Advanced Trade
+6) Binance
+7) Zerodha
+8) Samco
+9) Terminal Link
+10) Trading Technologies
+11) Kraken
+12) TD Ameritrade
+13) IQFeed
+14) Polygon
+15) IEX
+16) CoinApi
+17) Custom data only
+18) Bybit
+To enter multiple options, separate them with comma: 9</pre>
+</div>
+</li>   
+<?  
+} else {
+?>
+<li>Enter the number of the live data provider(s) to use and then follow the steps required for the data connection.
+<div class='cli section-example-container'>
+<pre>$ lean live "My Project"
+Select a live data provider:
+1) Interactive Brokers
+2) Tradier
+3) Oanda
+4) Bitfinex
+5) Coinbase Advanced Trade
+6) Binance
+7) Zerodha
+8) Samco
+9) Terminal Link
+10) Trading Technologies
+11) Kraken
+12) TD Ameritrade
+13) IQFeed
+14) Polygon
+15) IEX
+16) CoinApi
+17) Custom data only
+18) Bybit
+To enter multiple options, separate them with comma:</pre>
+</div>
+</li>
+    <?if ($isBrokerage) {?>
+    <p>If you select one of the following data providers, see the respective page for more instructions:</p>
+    <ul>
+        <li><a href='/docs/v2/lean-cli/live-trading/data-providers/iex-cloud'>IEX Cloud</a></li>
+        <li><a href='/docs/v2/lean-cli/live-trading/data-providers/iqfeed'>IQFeed</a></li>
+        <li><a href='/docs/v2/lean-cli/live-trading/data-providers/polygon'>Polygon</a></li>
+    </ul>
+    <? } ?>
+<? } ?>
+
+
+<?=$dataFeedDetails ?>
      
     <li>
         View the result in the <span class='public-directory-name'>&lt;projectName&gt; / live / &lt;timestamp&gt;</span> directory.
