@@ -124,7 +124,7 @@ Enter an option: 1</pre>
 </div>
 
 <?
-if ($isBrokerage && $brokerageName == "Terminal Link") {
+if ($brokerageName == "Terminal Link") {
 ?>
             <li>Enter <span class='key-combinations'>9</span> to select the Terminal Link live data provider.
             <div class='cli section-example-container'>
