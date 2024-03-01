@@ -199,6 +199,7 @@ To enter multiple options, separate them with comma: <?=$dataProviderNumber?></p
             </div>
             </li>
 <?
+    echo $dataProviderDetails;
 } else {
 ?>
             <li>Enter the number of the live data provider(s) to use and then follow the steps required for the data connection.
