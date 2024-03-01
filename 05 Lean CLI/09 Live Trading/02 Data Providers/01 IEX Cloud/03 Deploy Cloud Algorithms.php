@@ -4,8 +4,8 @@ $isSupported=true;
 $brokerageDetails="";
 $supportsCashHoldings=true;
 $supportsPositionHoldings=true;
-$dataFeedName = "IEX Cloud";
-$dataFeedDetails = "
+$dataProviderName = "IEX Cloud";
+$dataProviderDetails = "
     <li>Enter your IEX Cloud API Key. 
 <div class='cli section-example-container'>
 <pre>$ lean cloud live \"My Project\" --push --open
