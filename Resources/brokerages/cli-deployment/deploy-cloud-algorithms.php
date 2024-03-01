@@ -140,8 +140,12 @@ Email notifications: john.doe@example.com
 Webhook notifications: None
 SMS notifications: None
 Telegram notifications: None
-<? if (!$supportsCashHoldings) { ?> Initial live cash balance: [{'currency': 'USD', 'amount': 95800.0}] <? } ?>
-<? if (!$supportsPositionHoldings) { ?> Initial live portfolio holdings: [{'symbol': 'GOOG', 'symbolId': 'GOOCV VP83T1ZUHROL', 'quantity': 10, 'averagePrice': 50.0}] <? } ?>
+<? if (!$supportsCashHoldings) { ?>
+Initial live cash balance: [{'currency': 'USD', 'amount': 95800.0}]
+<? } ?>
+<? if (!$supportsPositionHoldings) { ?>
+Initial live portfolio holdings: [{'symbol': 'GOOG', 'symbolId': 'GOOCV VP83T1ZUHROL', 'quantity': 10, 'averagePrice': 50.0}]
+<? } ?>
 Automatic algorithm restarting: Yes
 Are you sure you want to start live trading for project 'My Project'? [y/N]: y</pre>
 </div>
