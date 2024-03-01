@@ -56,16 +56,6 @@ Enter an option: <?=$brokerageNumber?></pre>
 
     <?=$brokerageDetails?>
 
-            <li>Select the live node that you want to use.</li>
-            <p>If you only have one idle live trading node, it is selected automatically and this step is skipped.</p>
-<div class='cli section-example-container'>
-<pre>$ lean cloud live "My Project" --push --open
-Select a node:
-1) L-MICRO node 89c90172 - 1 CPU @ 2.4GHz, 0.5GB Ram
-2) L-MICRO node 85a52135 - 1 CPU @ 2.4GHz, 0.5GB Ram
-Enter an option: 1</pre>
-</div>
-
             <li>Configure your notification settings.</li>
             <p>You can configure any combination of email, webhook, SMS, and Telegram notifications for order events and emitted insights.  To view the number of notification you can send for free, see the <a href='/docs/v2/cloud-platform/organizations/resources#12-Live-Trading-Notification-Quotas'>Live Trading Notification Quotas</a>.</p>
             <div class='cli section-example-container'>
@@ -122,6 +112,16 @@ Average Price: 50
 Portfolio Holdings: [{'symbol': 'GOOG', 'symbolId': 'GOOCV VP83T1ZUHROL', 'quantity': 10, 'averagePrice': 50.0}]
 Do you want to add more holdings? [y/N]: n</pre>
 </div> <? } ?> 
+
+            <li>Select the live node that you want to use.</li>
+            <p>If you only have one idle live trading node, it is selected automatically and this step is skipped.</p>
+<div class='cli section-example-container'>
+<pre>$ lean cloud live "My Project" --push --open
+Select a node:
+1) L-MICRO node 89c90172 - 1 CPU @ 2.4GHz, 0.5GB Ram
+2) L-MICRO node 85a52135 - 1 CPU @ 2.4GHz, 0.5GB Ram
+Enter an option: 1</pre>
+</div>
        
             <li>Verify the configured settings and confirm them to start the live deployment in the cloud.</li>
             <div class='cli section-example-container'>
@@ -140,11 +140,8 @@ Email notifications: john.doe@example.com
 Webhook notifications: None
 SMS notifications: None
 Telegram notifications: None
-    
 <? if (!$supportsCashHoldings) { ?> Initial live cash balance: [{'currency': 'USD', 'amount': 95800.0}] <? } ?>
-    
 <? if (!$supportsPositionHoldings) { ?> Initial live portfolio holdings: [{'symbol': 'GOOG', 'symbolId': 'GOOCV VP83T1ZUHROL', 'quantity': 10, 'averagePrice': 50.0}] <? } ?>
-
 Automatic algorithm restarting: Yes
 Are you sure you want to start live trading for project 'My Project'? [y/N]: y</pre>
 </div>
