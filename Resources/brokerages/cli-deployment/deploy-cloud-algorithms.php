@@ -172,7 +172,7 @@ To enter multiple options, separate them with comma: 9</pre>
             </div>
             </li>   
 <?  
-} else if isset($dataProviderName) {
+} else if (isset($dataProviderName)) {
 ?>
             <li>Enter <span class='key-combinations'><?=$dataProviderNumber?></span> to select the <?=$dataProviderName?> data provider.</li> 
             <div class='cli section-example-container'>
