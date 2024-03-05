@@ -1,0 +1,1 @@
+<? include(DOCS_RESOURCES."/object-store/example_custom_data.php"); ?>
