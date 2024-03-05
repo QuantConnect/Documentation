@@ -1,1 +1,1 @@
-
+<? include(DOCS_RESOURCES."/object-store/download-files-from-cloud.php"); ?>
