@@ -56,7 +56,7 @@ paths:
       - 99 API Reference
       - 02 Project Management
       - 02 Read Project
-      summary: If a ReadProjectRequest is passed, get details about that single project. If no request body is passed, list details of all projects.
+      summary: List details of all projects, or the project matched the passed project ID if the project ID property passed.
       requestBody:
         description: The projectId for the project to read, or nothing to get a list of all projects.
         content:
@@ -903,7 +903,7 @@ paths:
       - 03 Read Optimization
       summary: Read an optimization.
       requestBody:
-        description: Optimization id for the optimization we want to read
+        description: Optimization ID for the optimization we want to read
         content:
           application/json:
             schema:
@@ -991,7 +991,7 @@ paths:
       - 06 List Optimization
       summary: List all the optimizations for a project.
       requestBody:
-        description: Project id we'd like to get a list of optimizations for.
+        description: Project ID we'd like to get a list of optimizations for.
         content:
           application/json:
             schema:
@@ -1201,7 +1201,7 @@ components:
       properties:
         optimizationId:
           type: string
-          description: Optimization id we want to abort.
+          description: Optimization ID we want to abort.
       description: Abort an optimization.
     AlgorithmPerformance:
       type: object
@@ -1315,34 +1315,11 @@ components:
     BacktestResponse:
       type: object
       properties:
-        name:
-          type: string
-          description: Name of the backtest.
-        note:
-          type: string
-          description: Note on the backtest attached by the user.
-        backtestId:
-          type: string
-          description: Assigned backtest Id
-        completed:
-          type: boolean
-          description: Boolean true when the backtest is completed.
-        progress:
-          type: number
-          description: Progress of the backtest in percent 0-1
-          format: float
-        result:
+        backtest:
           $ref: '#/components/schemas/BacktestResult'
-        error:
-          type: string
-          description: Backtest error message.
-        stacktrace:
-          type: string
-          description: Backtest error stacktrace.
-        created:
-          type: string
-          description: Backtest creation date and time.
-          format: date-time
+        debugging:
+          type: boolean
+          description: Indicates if the backtest is run under debugging mode.
         success:
           type: boolean
           description: Indicate if the API request was successful.
@@ -1397,51 +1374,112 @@ components:
     BacktestResult:
       type: object
       properties:
-        RollingWindow:
+        note:
+          type: string
+          description: Note on the backtest attached by the user.
+        name:
+          type: string
+          description: Name of the backtest.
+        organizationId:
+          type: integer
+          description: Organization ID.
+        projectId:
+          type: integer
+          description: Project ID
+        completed:
+          type: boolean
+          description: Boolean true when the backtest is completed.
+        optimizationId:
+          type: string
+          description: Optimization task ID, if the backtest is part of an optimization
+        backtestId:
+          type: string
+          description: Assigned backtest ID
+        tradeableDates:
+          type: integer
+          description: Number of traadeable days
+        researchGuide:
+          $ref: '#/components/schemas/ResearchGuide'
+        backtestStart:
+          type: string
+          description: The starting time of the backtest
+          format: date-time
+        backtestEnd:
+          type: string
+          description: The ending time of the backtest
+          format: date-time
+        created:
+          type: string
+          description: Backtest creation date and time.
+          format: date-time
+        snapshotId:
+          type: integer
+          description: Snapshot id of this backtest result.
+        status:
+          type: string
+          description: Status of the backtest.
+          enum:
+          - Completed.
+          - In Queue...
+          - '''Running: _%'''
+        error:
+          type: string
+          description: Backtest error message.
+        stacktrace:
+          type: string
+          description: Backtest error stacktrace.
+        progress:
+          type: number
+          description: Progress of the backtest in percent 0-1.
+          format: float
+        profitLoss:
           type: object
-          additionalProperties:
-            $ref: '#/components/schemas/AlgorithmPerformance'
-          description: Rolling window detailed statistics.
-        TotalPerformance:
-          $ref: '#/components/schemas/AlgorithmPerformance'
-        AlphaRuntimeStatistics:
-          $ref: '#/components/schemas/AlphaRuntimeStatistics'
-        Charts:
+          description: time-PnL pairs of profit/loss at a timestamp.
+        hasInitializeError:
+          type: boolean
+          description: Indicates if the backtest has error during initialization.
+        charts:
           type: object
           additionalProperties:
             $ref: '#/components/schemas/Chart'
           description: Charts updates for the live algorithm since the last result packet.
-        Orders:
-          type: object
-          additionalProperties:
-            $ref: '#/components/schemas/Order'
-          description: Order updates since the last result packet.
-        OrderEvents:
+        parameterSet:
           type: array
-          description: OrderEvent updates since the last result packet.
+          description: Parameters used in the backtest.
           items:
-            $ref: '#/components/schemas/OrderEvent'
-        ProfitLoss:
+            $ref: '#/components/schemas/ParameterSet'
+        alphaRuntimeStatistics:
+          $ref: '#/components/schemas/AlphaRuntimeStatistics'
+        rollingWindow:
           type: object
           additionalProperties:
-            type: number
-            format: float
-          description: Trade profit and loss information since the last algorithm result packet.
-        Statistics:
+            $ref: '#/components/schemas/AlgorithmPerformance'
+          description: Rolling window detailed statistics.
+        runtimeStatistics:
           type: object
           additionalProperties:
-            type: string
-          description: Statistics information sent during the algorithm operations.
-        RuntimeStatistics:
-          type: object
-          additionalProperties:
-            type: string
+            $ref: '#/components/schemas/RuntimeStatistics'
           description: Runtime banner/updating statistics in the title banner of the live algorithm GUI.
-        ServerStatistics:
+        statistics:
           type: object
           additionalProperties:
-            type: string
-          description: Server status information, including CPU and RAM usage.
+            $ref: '#/components/schemas/TradeStatistics'
+          description: Statistics information sent during the algorithm operations.
+        totalPerformance:
+          $ref: '#/components/schemas/AlgorithmPerformance'
+        signals:
+          type: string
+          description:
+        nodeName:
+          type: string
+          description: The backtest node name.
+        outOfSampleMaxEndDate:
+          type: string
+          description: End date of out of sample data.
+          format: date-time
+        outOfSampleDays:
+          type: integer
+          description: Number of days of out of sample days.
       description: Results object class. Results are exhaust from backtest or live algorithms running in LEAN.
     BaseLiveAlgorithmSettings:
       type: object
@@ -1469,6 +1507,21 @@ components:
           description: Account of the associated brokerage.
           example: ""
       description: Base class for settings that must be configured per Brokerage to create new algorithms via the API.
+    BrokerageData:
+      type: object
+      properties:
+        authentication:
+          $ref: '#/components/schemas/LiveAuthenticationData'
+        additionalProperties:
+          $ref: '#/components/schemas/BrokerageId'
+      description: Brokerage data saved on live deployment.
+    BrokerageId:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The ID of the brokerage.
+      description: Brokerage Id.
     Cash:
       type: object
       properties:
@@ -1549,6 +1602,56 @@ components:
           type: integer
           description: Project Id we wish to compile.
       description: Request to compile a project.
+    Collaborator:
+      type: object
+      properties:
+        uid:
+          type: integer
+          description: User id.
+        blivecontrol:
+          type: boolean
+          description: Indicate if the user have live control.
+        epermission:
+          type: string
+          description: The permission this user is given.
+          enum:
+          - read
+          - write
+        profileimage:
+          type: string
+          description: The url of the user profile image.
+          example: "https://cdn.quantconnect.com/web/i/users/profile/abc123.jpeg"
+        email:
+          type: string
+          description: The registered email of the user.
+          example: "abc@123.com"
+        name:
+          type: string
+          description: The display name of the user.
+        bio:
+          type: string
+          description: The biography of the user.
+        owner:
+          type: boolean
+          description: Indicate if the user is the owner of the project.
+    CompileFile:
+      type: object
+      properties:
+        projectId:
+          type: integer
+          description: Project id.
+        open:
+          type: boolean
+          description: Indicates if the file is being opened.
+        isLibrary:
+          type: boolean
+          description: Indicates if the file is coming from a library project.
+        collaborationId:
+          type: string
+          description: Collaboration id.
+      description: File details of files being compiled.
+      additionalProperties:
+        $ref: '#/components/schemas/ProjectFile'
     CompileResponse:
       type: object
       properties:
@@ -1562,6 +1665,24 @@ components:
           - InQueue
           - BuildSuccess
           - BuildError
+        parameters:
+          type: array
+          description: Optimization parameters.
+          items:
+            $ref: '#/components/schemas/OptimizationParameter'
+        projectId:
+          type: integer
+          description: Project Id we sent for compile.
+        signature:
+          type: string
+          description: Signature key of compilation.
+        signatureOrder:
+          type: array
+          description: Signature order of files to be compiled.
+          items:
+          - string
+        debug:
+          $ref: '#/components/schemas/Debug'
         logs:
           type: array
           description: Logs of the compilation request.
@@ -1770,6 +1891,56 @@ components:
           description: Date of the data requested yyyyMMdd.
           example: yyyyMMdd
       description: Request for a link to downloadable data.
+    Debug:
+      type: object
+      properties:
+        sType:
+          type: string
+          description: Debug type.
+        sCompileID:
+          type: string
+          description: Compilation id.
+        sUserToken:
+          type: string
+          description: User token of the user compiling the project.
+        iUserID:
+          type: string
+          description: User ID of the user compiling the project.
+        iProjectID:
+          type: integer
+          description: Project ID.
+        sChannel:
+          type: string
+          description:
+        eLanguage:
+          type: string
+          description: Programming language.
+          enum:
+          - C#
+          - Py
+        sFocusedFileName:
+          type: string
+          description:
+        iRow:
+          type: integer
+          description:
+        iColumn:
+          type: integer
+          description:
+        sCodePrefix:
+          type: string
+          description:
+        sCommand:
+          type: string
+          description:
+        oVersion:
+          $ref: '#/components/schemas/VersionShort'
+        files:
+          type: array
+          description: Files being compiled.
+          items:
+            $ref: '#/components/schemas/CompileFile'
+      description: Debug record of compilation.
     DeleteFileRequest:
       type: object
       properties:
@@ -1802,7 +1973,7 @@ components:
       properties:
         organizationId:
           type: string
-          description: Organization id we'd like to delete the Object Store file from.
+          description: Organization ID we'd like to delete the Object Store file from.
         key:
           type: string
           description: Key to the Object Store file
@@ -1812,8 +1983,18 @@ components:
       properties:
         optimizationId:
           type: string
-          description: Optimization id we want to delete.
+          description: Optimization ID we want to delete.
       description: Delete an optimization.
+    EncryptionKey:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Encryption key id.
+        name:
+          type: string
+          description: Name of the encryption key.
+      description: Encryption key details.
     Estimate:
       type: object
       properties:
@@ -1885,7 +2066,7 @@ components:
       properties:
         organizationId:
           type: string
-          description: Organization id we'd like to get the Object Store metadata from.
+          description: Organization ID we'd like to get the Object Store metadata from.
         key:
           type: string
           description: Key to the Object Store file
@@ -1904,6 +2085,57 @@ components:
           items:
             type: string
       description: Response received when fetching Object Store metadata.
+    Grid:
+      type: object
+      properties:
+        xs:
+          type: array
+          description: List of chart in the xs position
+          items:
+            $ref: '#/components/schemas/GridChart'
+        sm:
+          type: array
+          description: List of chart in the sm position
+          items:
+            $ref: '#/components/schemas/GridChart'
+        md:
+          type: array
+          description: List of chart in the md position
+          items:
+            $ref: '#/components/schemas/GridChart'
+        lg:
+          type: array
+          description: List of chart in the lg position
+          items:
+            $ref: '#/components/schemas/GridChart'
+        xl:
+          type: array
+          description: List of chart in the xl position
+          items:
+            $ref: '#/components/schemas/GridChart'
+      description: The grid arrangement of charts.
+    GridChart:
+      type: object
+      properties:
+        chartName:
+          type: string
+          description: The chart name.
+        width:
+          type: integer
+          description: Width of the chart.
+        height:
+          type: integer
+          description: Height of the chart.
+        row:
+          type: integer
+          description: Number of rows of the chart.
+        column:
+          type: integer
+          description: Number of columns of the chart.
+        sort:
+          type: integer
+          description: Sort of the chart.
+      description: The chart display properties.
     Holding:
       type: object
       properties:
@@ -2002,6 +2234,21 @@ components:
           type: boolean
           description: Is the insight past its expiry time and score can be finalized.
       description: Defines the scores given to a particular insight
+    Library:
+      type: object
+      properties:
+        projectId:
+          type: integer
+          description: Project Id of the library project.
+        libraryName:
+          type: string
+          description: Name of the library project.
+        ownerName:
+          type: string
+          description: Name of the library project owner.
+        access:
+          type: boolean
+          description: Indicate if the library project can be accessed.
     LiveAlgorithm:
       type: object
       properties:
@@ -2049,6 +2296,40 @@ components:
           items:
             type: string
       description: Live algorithm instance result from the QuantConnect Rest API.
+    LiveAuthenticationData:
+      type: object
+      description: Authentication details of the live brokerage. Details on each brokerage refers to https://www.quantconnect.com/docs/v2/lean-cli/api-reference/lean-cloud-live-deploy.
+    LiveForm:
+      type: object
+      properties:
+        brokerageData:
+          $ref: '#/components/schemas/BrokerageData'
+        dataProvidersData:
+          type: array
+          description: The data providers used in the live deployment.
+          items:
+            $ref: '#/components/schemas/BrokerageId'
+        node:
+          type: string
+          description: Node ID of the live node deployed.
+        notifyInsights:
+          type: string
+          description: Indicates if notification should be issued on new insights.
+          enum:
+          - "true"
+          - "false"
+        notifyOrderEvents:
+          type: string
+          description: Indicates if notification should be issued on new order events.
+          enum:
+          - "true"
+          - "false"
+        autoRestart:
+          type: string
+          description: Indicates if the live algorithm should automatically restart after encountering runtime errors.
+          enum:
+          - "true"
+          - "false"
     LiveResult:
       type: object
       properties:
@@ -2158,7 +2439,7 @@ components:
       properties:
         organizationId:
           type: string
-          description: Organization id we'd like to list the Object Store files from.
+          description: Organization ID we'd like to list the Object Store files from.
         path:
           type: string
           description: Path to the Object Store files
@@ -2189,8 +2470,8 @@ components:
       properties:
         projectId:
           type: integer
-          description: Project id we'd like to get a list of optimizations for.
-      description: Project id we'd like to get a list of optimizations for.
+          description: Project ID we'd like to get a list of optimizations for.
+      description: Project ID we'd like to get a list of optimizations for.
     ListOptimizationResponse:
       type: object
       properties:
@@ -2356,7 +2637,7 @@ components:
         objectData:
           type: string
           format: binary
-      descripion: Represents a binary file we we'd like to upload the file to upload to the Object Store.
+      description: Represents a binary file we we'd like to upload the file to upload to the Object Store.
     ObjectStoreMetadata:
       type: object
       properties:
@@ -2460,6 +2741,69 @@ components:
           type: float
           description: The value of the property we want to track
           example: 1
+    ProjectLiveResult:
+      type: object
+      properties:
+        eStatus:
+          type: string
+          description:
+        sDeployID:
+          type: string
+          description: The live deployment id.
+        sServerType:
+          type: string
+          description: The live server node type.
+        dtLaunched:
+          type: string
+          description: The datetime of live deployment launched.
+          format: date-time
+        dtStopped:
+          type: string
+          description: The datetime of live deployment stopped.
+          format: date-time
+        sBrokerage:
+          type: string
+          description: The broker chosen for the live deployment instance.
+        sSecurityTypes:
+          type: array
+          description: The security types involved in the live deployment instance.
+          items:
+            type: string
+        dUnrealized:
+          type: number
+          description: The unrealized profit or loss.
+          format: float
+        dfees:
+          type: number
+          description: The transaction fee generated.
+          format: float
+        dnetprofit:
+          type: number
+          description: The net profit or loss.
+          format: float
+        dEquity:
+          type: number
+          description: The total portfolio value.
+          format: float
+        dHoldings:
+          type: number
+          description: The holding equity's value.
+          format: float
+        dCapital:
+          type: number
+          description: The free cash value.
+          format: float
+        dVolume:
+          type: number
+          description: The holding equity's value.
+          format: float
+        iTrades:
+          type: number
+          description:
+          format: float
+        sErrorMessage:
+          type: string
+          description: The error message last generated.
     ProjectNodes:
       type: object
       properties:
@@ -2802,6 +3146,16 @@ components:
           description: The current order quantity.
           format: float
       description: Messaging class signifying a change in an order state and record the change in the users algorithm portfolio.
+    ParameterSet:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Name of parameter.
+        value:
+          type: number
+          description: Value of parameter.
+      description: Parameter set.
     Portfolio:
       type: object
       properties:
@@ -2818,23 +3172,92 @@ components:
         projectId:
           type: integer
           description: Project id.
+        organizationId:
+          type: integer
+          description: Orgainization id.
         name:
           type: string
           description: Name of the project.
-        created:
-          type: string
-          description: Date the project was created.
-          format: date-time
         modified:
           type: string
           description: Modified date for the project.
           format: date-time
+        created:
+          type: string
+          description: Date the project was created.
+          format: date-time
+        ownerId:
+          type: integer
+          description: Owner id.
         language:
           type: string
           description: Programming language of the project.
           enum:
           - C#
           - Py
+        collaborators:
+          type: array
+          description: List of collaborators.
+          items:
+            $ref: '#/components/schemas/Collaborator'
+        leanVersionId:
+          type: integer
+          description: The version of LEAN this project is running on.
+        leanPinnedToMaster:
+          type: boolean
+          description: Indicate if the project is pinned to the master branch of LEAN.
+        owner:
+          type: boolean
+          description: Indicate if you are the owner of the project.
+        description:
+          type: string
+          description: The project description.
+        channelId:
+          type: string
+          description: Channel id.
+        parameters:
+          type: array
+          description: Optimization parameters.
+          items:
+            $ref: '#/components/schemas/ParameterSet'
+        liveResults:
+          $ref: '#/components/schemas/ProjectLiveResult'
+        libraries:
+          type: array
+          description: The library projects
+          items:
+            $ref: '#/components/schemas/Library'
+        isAlphaStreamDeployment:
+          type: integer
+          description: Indicate if the project is an alpha stream deployment
+        grid:
+          $ref: '#/components/schemas/Grid'
+        liveGrid:
+          $ref: '#/components/schemas/Grid'
+        builder:
+          type: integer
+          description:
+        paperEquity:
+          type: number
+          description: The equity value of the last paper trading instance.
+          format: float
+        lastLiveDeployment:
+          type: string
+          description: The last live deployment active time.
+          format: date-time
+        liveForm:
+          type: object
+        encrypted:
+          type: boolean
+          description: Indicates if the project is encrypted.
+        codeRunning:
+          type: boolean
+          description:
+        leanEnvironment:
+          type: integer
+          description: LEAN environment of the project running on.
+        encryptionKey:
+          $ref: '#/components/schemas/EncryptionKey'
       description: Response from reading a project by id.
     ProjectFile:
       type: object
@@ -2875,6 +3298,11 @@ components:
           description: List of projects for the authenticated user.
           items:
             $ref: '#/components/schemas/Project'
+        versions:
+          type: array
+          description: List of LEAN version the project is using.
+          items:
+            $ref: '#/components/schemas/Version'
         success:
           type: boolean
           description: Indicate if the API request was successful.
@@ -2990,7 +3418,10 @@ components:
         projectId:
           type: integer
           description: Project Id to which the file belongs.
-        fileName:
+        includeLibraries:
+          type: boolean
+          description: Optional. Indicates if files from library projects should be read.
+        name:
           type: string
           description: Optional. The name of the file that should be updated.
       description: Request to read all files from a project.
@@ -3187,7 +3618,7 @@ components:
       properties:
         optimizationId:
           type: string
-          description: Optimization id for the optimization we want to read.
+          description: Optimization ID for the optimization we want to read.
       description: Request to read a optimization from a project.
     ReadOptimizationResponse:
       type: object
@@ -3215,17 +3646,18 @@ components:
           items:
             type: string
       description: The API method call could not be completed as requested.
-    RequestFailedError:
+    ResearchGuide:
       type: object
       properties:
-        success:
-          type: boolean
-          description: Indicate if the API request was successful.
-        errors:
-          type: array
-          description: List of errors with the API call.
-          items:
-            type: string
+        minutes:
+          type: integer
+          description: Number of minutes used in developing the current backtest.
+        backtestCount:
+          type: integer
+          description: Backtest count of the current backtest in the project.
+        parameters:
+          type: integer
+          description: Number of parameters detected.
       description: The API method call could not be completed as requested.
     RestResponse:
       type: object
@@ -3248,6 +3680,41 @@ components:
       - Minute
       - Hour
       - Daily
+    RuntimeStatistics:
+      type: object
+      properties:
+        Equity:
+          type: string
+          description: Total portfolio value.
+          example: '$100.00'
+        Fees:
+          type: string
+          description: Transaction fee.
+          example: '-$100.00'
+        Holdings:
+          type: string
+          description: Equity value of security holdings.
+          example: '$100.00'
+        Net Profit:
+          type: string
+          description: Net profit.
+          example: '$100.00'
+        Probabilistic Sharpe Ratio:
+          type: string
+          description: Probabilistic Sharpe Ratio.
+          example: '50.00%'
+        Return:
+          type: string
+          description: Return.
+          example: '50.00%'
+        Unrealized:
+          type: string
+          description: Unrealized profit/loss.
+          example: '$100.00'
+        Volume:
+          type: string
+          description: Total transaction volume.
+          example: '$100.00'
     ChartResolution:
       type: string
       description: Storage format of the charting data
@@ -3315,7 +3782,7 @@ components:
       properties:
         organizationId:
           type: string
-          description: Organization id we'd like to upload the file to.
+          description: Organization ID we'd like to upload the file to.
         key:
           type: string
           description: Key to the Object Store file.
@@ -3603,7 +4070,7 @@ components:
       properties:
         optimizationId:
           type: string
-          description: Optimization id we want to update.
+          description: Optimization ID we want to update.
         name:
           type: string
           description: Name we'd like to assign to the optimization.
@@ -3632,6 +4099,111 @@ components:
           items:
             type: string
       description: Request to update the nodes of a project.
+    Version:
+      type: object
+      properties:
+        sdescription:
+          type: string
+          description:
+        bpublic:
+          type: integer
+          description:
+        itimestamp:
+          type: string
+          description:
+          format: date-time
+        benchmark_basic:
+          type: number
+          description:
+          format: float
+        benchmark_equity_400_minute:
+          type: number
+          description:
+          format: float
+        benchmark_equity_1_second:
+          type: number
+          description:
+          format: float
+        benchmark_cs_indicator:
+          type: number
+          description:
+          format: float
+        benchmark_cs_history:
+          type: number
+          description:
+          format: float
+        benchmark_cs_schedule_events:
+          type: number
+          description:
+          format: float
+        benchmark_py_basic:
+          type: number
+          description:
+          format: float
+        benchmark_py_equity_400_minute:
+          type: number
+          description:
+          format: float
+        benchmark_py_equity_1_second:
+          type: number
+          description:
+          format: float
+        benchmark_py_indicator:
+          type: number
+          description:
+          format: float
+        benchmark_py_history:
+          type: number
+          description:
+          format: float
+        benchmark_py_schedule_events:
+          type: number
+          description:
+          format: float
+        benchmark_py_universe_coarsefine:
+          type: number
+          description:
+          format: float
+        benchmark_cs_universe_coarsefine:
+          type: number
+          description:
+          format: float
+        benchmark_py_universe_stateful:
+          type: number
+          description:
+          format: float
+        benchmark_cs_universe_stateful:
+          type: number
+          description:
+          format: float
+        benchmark_py_universe_stateless:
+          type: number
+          description:
+          format: float
+        benchmark_cs_universe_stateless:
+          type: number
+          description:
+          format: float
+      additionalProperties:
+        $ref: '#/components/schemas/VersionShort'
+    VersionShort:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: LEAN version id.
+        sref:
+          type: string
+          description: Server location of the LEAN engine.
+        slean:
+          type: string
+          description: LEAN hash reference.
+        sleancloud:
+          type: string
+          description: LEAN cloud hash reference.
+        sname:
+          type: string
+          description: Name of LEAN version.
     files_update_body:
       oneOf:
       - $ref: '#/components/schemas/UpdateFileNameRequest'
