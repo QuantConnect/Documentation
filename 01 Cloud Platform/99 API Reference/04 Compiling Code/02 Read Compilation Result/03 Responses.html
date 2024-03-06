@@ -17,6 +17,21 @@ The <code>/compile/read</code> API provides a response in the following format:
 <td width="20%">state</td> <td> <code>string Enum</code> <br/> True on successful compile. Options : ['InQueue', 'BuildSuccess', 'BuildError']</td>
 </tr>
 <tr>
+<td width="20%">parameters</td> <td> <code>OptimizationParameter Array</code> <br/> Optimization parameters.</td>
+</tr>
+<tr>
+<td width="20%">projectId</td> <td> <code>integer</code> <br/> Project Id we sent for compile.</td>
+</tr>
+<tr>
+<td width="20%">signature</td> <td> <code>string</code> <br/> Signature key of compilation.</td>
+</tr>
+<tr>
+<td width="20%">signatureOrder</td> <td> <code>array</code> <br/> Signature order of files to be compiled.</td>
+</tr>
+<tr>
+<td width="20%">debug</td> <td> <code>Debug object</code> <br/> Debug record of compilation.</td>
+</tr>
+<tr>
 <td width="20%">logs</td> <td> <code>string Array</code> <br/> Logs of the compilation request.</td>
 </tr>
 <tr>
@@ -32,6 +47,48 @@ The <code>/compile/read</code> API provides a response in the following format:
 {
   "compileId": "string",
   "state": "InQueue",
+  "parameters": [
+    {
+      "name": "rsi_period",
+      "min": 10,
+      "max": 20,
+      "step": 1,
+      "min-step": 1
+    }
+  ],
+  "projectId": 0,
+  "signature": "string",
+  "signatureOrder": [
+,
+  "debug": {
+    "sType": "string",
+    "sCompileID": "string",
+    "sUserToken": "string",
+    "iUserID": "string",
+    "iProjectID": 0,
+    "sChannel": "string",
+    "eLanguage": "C#",
+    "sFocusedFileName": "string",
+    "iRow": 0,
+    "iColumn": 0,
+    "sCodePrefix": "string",
+    "sCommand": "string",
+    "oVersion": {
+      "id": 0,
+      "sref": "string",
+      "slean": "string",
+      "sleancloud": "string",
+      "sname": "string"
+    },
+    "files": [
+      {
+        "projectId": 0,
+        "open": true,
+        "isLibrary": true,
+        "collaborationId": "string"
+      }
+    ]
+  },
   "logs": [
     "string"
   ],
@@ -39,6 +96,191 @@ The <code>/compile/read</code> API provides a response in the following format:
   "errors": [
     "string"
   ]
+}</pre>
+</div>
+</td>
+</tr>
+</table><table class="table qc-table">
+<thead>
+<tr>
+<th colspan="2"><code>OptimizationParameter</code> Model</th>
+</tr>
+</thead>
+<tr>
+<td width="20%">name</td> <td> <code>string<br/><i><sub>example: rsi_period</sub></i></code> <br/> Name of optimization parameter.</td>
+</tr>
+<tr>
+<td width="20%">min</td> <td> <code>float<br/><i><sub>example: 10</sub></i></code> <br/> Minimum value of optimization parameter, applicable for boundary conditions.</td>
+</tr>
+<tr>
+<td width="20%">max</td> <td> <code>float<br/><i><sub>example: 20</sub></i></code> <br/> Maximum value of optimization parameter, applicable for boundary conditions.</td>
+</tr>
+<tr>
+<td width="20%">step</td> <td> <code>float<br/><i><sub>example: 1</sub></i></code> <br/> Movement, should be positive.</td>
+</tr>
+<tr>
+<td width="20%">min-step</td> <td> <code>float<br/><i><sub>example: 1</sub></i></code> <br/> Minimal possible movement for current parameter, should be positive. Used by <code>Strategies.EulerSearchOptimizationStrategy</code> to determine when this parameter can no longer be optimized.</td>
+</tr>
+<tr>
+<td width="20%">Example</td>
+<td>
+<div class="cli section-example-container"><pre>
+{
+  "name": "rsi_period",
+  "min": 10,
+  "max": 20,
+  "step": 1,
+  "min-step": 1
+}</pre>
+</div>
+</td>
+</tr>
+</table><table class="table qc-table">
+<thead>
+<tr>
+<th colspan="2"><code>Debug</code> Model - Debug record of compilation.</th>
+</tr>
+</thead>
+<tr>
+<td width="20%">sType</td> <td> <code>string</code> <br/> Debug type.</td>
+</tr>
+<tr>
+<td width="20%">sCompileID</td> <td> <code>string</code> <br/> Compilation id.</td>
+</tr>
+<tr>
+<td width="20%">sUserToken</td> <td> <code>string</code> <br/> User token of the user compiling the project.</td>
+</tr>
+<tr>
+<td width="20%">iUserID</td> <td> <code>string</code> <br/> User ID of the user compiling the project.</td>
+</tr>
+<tr>
+<td width="20%">iProjectID</td> <td> <code>integer</code> <br/> Project ID.</td>
+</tr>
+<tr>
+<td width="20%">sChannel</td> <td> <code>string</code> <br/> None</td>
+</tr>
+<tr>
+<td width="20%">eLanguage</td> <td> <code>string Enum</code> <br/> Programming language. Options : ['C#', 'Py']</td>
+</tr>
+<tr>
+<td width="20%">sFocusedFileName</td> <td> <code>string</code> <br/> None</td>
+</tr>
+<tr>
+<td width="20%">iRow</td> <td> <code>integer</code> <br/> None</td>
+</tr>
+<tr>
+<td width="20%">iColumn</td> <td> <code>integer</code> <br/> None</td>
+</tr>
+<tr>
+<td width="20%">sCodePrefix</td> <td> <code>string</code> <br/> None</td>
+</tr>
+<tr>
+<td width="20%">sCommand</td> <td> <code>string</code> <br/> None</td>
+</tr>
+<tr>
+<td width="20%">oVersion</td> <td> <code>VersionShort object</code> <br/> /.</td>
+</tr>
+<tr>
+<td width="20%">files</td> <td> <code>CompileFile Array</code> <br/> Files being compiled.</td>
+</tr>
+<tr>
+<td width="20%">Example</td>
+<td>
+<div class="cli section-example-container"><pre>
+{
+  "sType": "string",
+  "sCompileID": "string",
+  "sUserToken": "string",
+  "iUserID": "string",
+  "iProjectID": 0,
+  "sChannel": "string",
+  "eLanguage": "C#",
+  "sFocusedFileName": "string",
+  "iRow": 0,
+  "iColumn": 0,
+  "sCodePrefix": "string",
+  "sCommand": "string",
+  "oVersion": {
+    "id": 0,
+    "sref": "string",
+    "slean": "string",
+    "sleancloud": "string",
+    "sname": "string"
+  },
+  "files": [
+    {
+      "projectId": 0,
+      "open": true,
+      "isLibrary": true,
+      "collaborationId": "string"
+    }
+  ]
+}</pre>
+</div>
+</td>
+</tr>
+</table><table class="table qc-table">
+<thead>
+<tr>
+<th colspan="2"><code>VersionShort</code> Model</th>
+</tr>
+</thead>
+<tr>
+<td width="20%">id</td> <td> <code>integer</code> <br/> LEAN version id.</td>
+</tr>
+<tr>
+<td width="20%">sref</td> <td> <code>string</code> <br/> Server location of the LEAN engine.</td>
+</tr>
+<tr>
+<td width="20%">slean</td> <td> <code>string</code> <br/> LEAN hash reference.</td>
+</tr>
+<tr>
+<td width="20%">sleancloud</td> <td> <code>string</code> <br/> LEAN cloud hash reference.</td>
+</tr>
+<tr>
+<td width="20%">sname</td> <td> <code>string</code> <br/> Name of LEAN version.</td>
+</tr>
+<tr>
+<td width="20%">Example</td>
+<td>
+<div class="cli section-example-container"><pre>
+{
+  "id": 0,
+  "sref": "string",
+  "slean": "string",
+  "sleancloud": "string",
+  "sname": "string"
+}</pre>
+</div>
+</td>
+</tr>
+</table><table class="table qc-table">
+<thead>
+<tr>
+<th colspan="2"><code>CompileFile</code> Model - File details of files being compiled.</th>
+</tr>
+</thead>
+<tr>
+<td width="20%">projectId</td> <td> <code>integer</code> <br/> Project id.</td>
+</tr>
+<tr>
+<td width="20%">open</td> <td> <code>boolean</code> <br/> Indicates if the file is being opened.</td>
+</tr>
+<tr>
+<td width="20%">isLibrary</td> <td> <code>boolean</code> <br/> Indicates if the file is coming from a library project.</td>
+</tr>
+<tr>
+<td width="20%">collaborationId</td> <td> <code>string</code> <br/> Collaboration id.</td>
+</tr>
+<tr>
+<td width="20%">Example</td>
+<td>
+<div class="cli section-example-container"><pre>
+{
+  "projectId": 0,
+  "open": true,
+  "isLibrary": true,
+  "collaborationId": "string"
 }</pre>
 </div>
 </td>
