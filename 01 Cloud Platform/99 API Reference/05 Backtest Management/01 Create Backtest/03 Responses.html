@@ -11,31 +11,10 @@ The <code>/backtests/create</code> API provides a response in the following form
 </tr>
 </thead>
 <tr>
-<td width="20%">name</td> <td> <code>string</code> <br/> Name of the backtest.</td>
+<td width="20%">backtest</td> <td> <code>BacktestResult object</code> <br/> Results object class. Results are exhaust from backtest or live algorithms running in LEAN.</td>
 </tr>
 <tr>
-<td width="20%">note</td> <td> <code>string</code> <br/> Note on the backtest attached by the user.</td>
-</tr>
-<tr>
-<td width="20%">backtestId</td> <td> <code>string</code> <br/> Assigned backtest Id.</td>
-</tr>
-<tr>
-<td width="20%">completed</td> <td> <code>boolean</code> <br/> Boolean true when the backtest is completed.</td>
-</tr>
-<tr>
-<td width="20%">progress</td> <td> <code>number</code> <br/> Progress of the backtest in percent 0-1.</td>
-</tr>
-<tr>
-<td width="20%">result</td> <td> <code>BacktestResult object</code> <br/> Results object class. Results are exhaust from backtest or live algorithms running in LEAN.</td>
-</tr>
-<tr>
-<td width="20%">error</td> <td> <code>string</code> <br/> Backtest error message.</td>
-</tr>
-<tr>
-<td width="20%">stacktrace</td> <td> <code>string</code> <br/> Backtest error stacktrace.</td>
-</tr>
-<tr>
-<td width="20%">created</td> <td> <code>string($date-time)</code> <br/> Backtest creation date and time.</td>
+<td width="20%">debugging</td> <td> <code>boolean</code> <br/> Indicates if the backtest is run under debugging mode.</td>
 </tr>
 <tr>
 <td width="20%">success</td> <td> <code>boolean</code> <br/> Indicate if the API request was successful.</td>
@@ -48,187 +27,55 @@ The <code>/backtests/create</code> API provides a response in the following form
 <td>
 <div class="cli section-example-container"><pre>
 {
-  "name": "string",
-  "note": "string",
-  "backtestId": "string",
-  "completed": true,
-  "progress": 0,
-  "result": {
-    "RollingWindow": {
-      "TradeStatistics": {
-        "StartDateTime": "2021-11-26T15:18:27.693Z",
-        "EndDateTime": "2021-11-26T15:18:27.693Z",
-        "TotalNumberOfTrades": 0,
-        "NumberOfWinningTrades": 0,
-        "NumberOfLosingTrades": 0,
-        "TotalProfitLoss": 0,
-        "TotalProfit": 0,
-        "TotalLoss": 0,
-        "LargestProfit": 0,
-        "LargestLoss": 0,
-        "AverageProfitLoss": 0,
-        "AverageProfit": 0,
-        "AverageLoss": 0,
-        "AverageTradeDuration": "string",
-        "AverageWinningTradeDuration": "string",
-        "AverageLosingTradeDuration": "string",
-        "MedianTradeDuration": "string",
-        "MedianWinningTradeDuration": "string",
-        "MedianLosingTradeDuration": "string",
-        "MaxConsecutiveWinningTrades": 0,
-        "MaxConsecutiveLosingTrades": 0,
-        "ProfitLossRatio": 0,
-        "WinLossRatio": 0,
-        "WinRate": 0,
-        "LossRate": 0,
-        "AverageMAE": 0,
-        "AverageMFE": 0,
-        "LargestMAE": 0,
-        "LargestMFE": 0,
-        "MaximumClosedTradeDrawdown": 0,
-        "MaximumIntraTradeDrawdown": 0,
-        "ProfitLossStandardDeviation": 0,
-        "ProfitLossDownsideDeviation": 0,
-        "ProfitFactor": 0,
-        "SharpeRatio": 0,
-        "SortinoRatio": 0,
-        "ProfitToMaxDrawdownRatio": 0,
-        "MaximumEndTradeDrawdown": 0,
-        "AverageEndTradeDrawdown": 0,
-        "MaximumDrawdownDuration": "string",
-        "TotalFees": 0
-      },
-      "PortfolioStatistics": {
-        "RiskFreeRate": 0,
-        "AverageWinRate": 0,
-        "AverageLossRate": 0,
-        "ProfitLossRatio": 0,
-        "WinRate": 0,
-        "LossRate": 0,
-        "Expectancy": 0,
-        "CompoundingAnnualReturn": 0,
-        "Drawdown": 0,
-        "TotalNetProfit": 0,
-        "SharpeRatio": 0,
-        "ProbabilisticSharpeRatio": 0,
-        "Alpha": 0,
-        "Beta": 0,
-        "AnnualStandardDeviation": 0,
-        "AnnualVariance": 0,
-        "InformationRatio": 0,
-        "TrackingError": 0,
-        "TreynorRatio": 0
-      },
-      "ClosedTrades": [
-        {
-          "Symbol": {
-            "Value": "string",
-            "ID": "string",
-            "Permtick": "string"
-          },
-          "EntryTime": "2021-11-26T15:18:27.693Z",
-          "EntryPrice": 0,
-          "Direction": "Long",
-          "Quantity": 0,
-          "ExitTime": "2021-11-26T15:18:27.693Z",
-          "ExitPrice": 0,
-          "ProfitLoss": 0,
-          "TotalFees": 0,
-          "MAE": 0,
-          "MFE": 0,
-          "Duration": "string",
-          "EndTradeDrawdown": 0
-        }
-      ]
+  "backtest": {
+    "note": "string",
+    "name": "string",
+    "organizationId": 0,
+    "projectId": 0,
+    "completed": true,
+    "optimizationId": "string",
+    "backtestId": "string",
+    "tradeableDates": 0,
+    "researchGuide": {
+      "minutes": 0,
+      "backtestCount": 0,
+      "parameters": 0
     },
-    "TotalPerformance": {
-      "TradeStatistics": {
-        "StartDateTime": "2021-11-26T15:18:27.693Z",
-        "EndDateTime": "2021-11-26T15:18:27.693Z",
-        "TotalNumberOfTrades": 0,
-        "NumberOfWinningTrades": 0,
-        "NumberOfLosingTrades": 0,
-        "TotalProfitLoss": 0,
-        "TotalProfit": 0,
-        "TotalLoss": 0,
-        "LargestProfit": 0,
-        "LargestLoss": 0,
-        "AverageProfitLoss": 0,
-        "AverageProfit": 0,
-        "AverageLoss": 0,
-        "AverageTradeDuration": "string",
-        "AverageWinningTradeDuration": "string",
-        "AverageLosingTradeDuration": "string",
-        "MedianTradeDuration": "string",
-        "MedianWinningTradeDuration": "string",
-        "MedianLosingTradeDuration": "string",
-        "MaxConsecutiveWinningTrades": 0,
-        "MaxConsecutiveLosingTrades": 0,
-        "ProfitLossRatio": 0,
-        "WinLossRatio": 0,
-        "WinRate": 0,
-        "LossRate": 0,
-        "AverageMAE": 0,
-        "AverageMFE": 0,
-        "LargestMAE": 0,
-        "LargestMFE": 0,
-        "MaximumClosedTradeDrawdown": 0,
-        "MaximumIntraTradeDrawdown": 0,
-        "ProfitLossStandardDeviation": 0,
-        "ProfitLossDownsideDeviation": 0,
-        "ProfitFactor": 0,
-        "SharpeRatio": 0,
-        "SortinoRatio": 0,
-        "ProfitToMaxDrawdownRatio": 0,
-        "MaximumEndTradeDrawdown": 0,
-        "AverageEndTradeDrawdown": 0,
-        "MaximumDrawdownDuration": "string",
-        "TotalFees": 0
-      },
-      "PortfolioStatistics": {
-        "RiskFreeRate": 0,
-        "AverageWinRate": 0,
-        "AverageLossRate": 0,
-        "ProfitLossRatio": 0,
-        "WinRate": 0,
-        "LossRate": 0,
-        "Expectancy": 0,
-        "CompoundingAnnualReturn": 0,
-        "Drawdown": 0,
-        "TotalNetProfit": 0,
-        "SharpeRatio": 0,
-        "ProbabilisticSharpeRatio": 0,
-        "Alpha": 0,
-        "Beta": 0,
-        "AnnualStandardDeviation": 0,
-        "AnnualVariance": 0,
-        "InformationRatio": 0,
-        "TrackingError": 0,
-        "TreynorRatio": 0
-      },
-      "ClosedTrades": [
-        {
-          "Symbol": {
-            "Value": "string",
-            "ID": "string",
-            "Permtick": "string"
-          },
-          "EntryTime": "2021-11-26T15:18:27.693Z",
-          "EntryPrice": 0,
-          "Direction": "Long",
-          "Quantity": 0,
-          "ExitTime": "2021-11-26T15:18:27.693Z",
-          "ExitPrice": 0,
-          "ProfitLoss": 0,
-          "TotalFees": 0,
-          "MAE": 0,
-          "MFE": 0,
-          "Duration": "string",
-          "EndTradeDrawdown": 0
-        }
-      ]
+    "backtestStart": "2021-11-26T15:18:27.693Z",
+    "backtestEnd": "2021-11-26T15:18:27.693Z",
+    "created": "2021-11-26T15:18:27.693Z",
+    "snapshotId": 0,
+    "status": "Completed.",
+    "error": "string",
+    "stacktrace": "string",
+    "progress": 0,
+    "profitLoss": ,
+    "hasInitializeError": true,
+    "charts": {
+      "Name": "string",
+      "ChartType": "Overlay",
+      "Series": {
+        "Name": "string",
+        "Unit": "string",
+        "Index": 0,
+        "Values": [
+          {
+            "x": "string",
+            "y": 0
+          }
+        ],
+        "SeriesType": "Line",
+        "Color": "string",
+        "ScatterMarkerSymbol": "none"
+      }
     },
-    "AlphaRuntimeStatistics": {
+    "parameterSet": [
+      {
+        "name": "string",
+        "value": 0
+      }
+    ],
+    "alphaRuntimeStatistics": {
       "MeanPopulationScore": {
         "UpdatedTimeUtc": "2021-11-26T15:18:27.693Z",
         "Direction": 0,
@@ -257,111 +104,239 @@ The <code>/backtests/create</code> API provides a response in the following form
       "TotalInsightsAnalysisCompleted": "string",
       "MeanPopulationEstimatedInsightValue": 0
     },
-    "Charts": {
-      "Name": "string",
-      "ChartType": "Overlay",
-      "Series": {
-        "Name": "string",
-        "Unit": "string",
-        "Index": 0,
-        "Values": [
-          {
-            "x": "string",
-            "y": 0
-          }
-        ],
-        "SeriesType": "Line",
-        "Color": "string",
-        "ScatterMarkerSymbol": "none"
-      }
-    },
-    "Orders": {
-      "Id": 0,
-      "ContingentId": 0,
-      "BrokerId": [
-        "string"
-      ],
-      "Symbol": {
-        "Value": "string",
-        "ID": "string",
-        "Permtick": "string"
+    "rollingWindow": {
+      "TradeStatistics": {
+        "StartDateTime": "2021-11-26T15:18:27.693Z",
+        "EndDateTime": "2021-11-26T15:18:27.693Z",
+        "TotalNumberOfTrades": 0,
+        "NumberOfWinningTrades": 0,
+        "NumberOfLosingTrades": 0,
+        "TotalProfitLoss": 0,
+        "TotalProfit": 0,
+        "TotalLoss": 0,
+        "LargestProfit": 0,
+        "LargestLoss": 0,
+        "AverageProfitLoss": 0,
+        "AverageProfit": 0,
+        "AverageLoss": 0,
+        "AverageTradeDuration": "string",
+        "AverageWinningTradeDuration": "string",
+        "AverageLosingTradeDuration": "string",
+        "MedianTradeDuration": "string",
+        "MedianWinningTradeDuration": "string",
+        "MedianLosingTradeDuration": "string",
+        "MaxConsecutiveWinningTrades": 0,
+        "MaxConsecutiveLosingTrades": 0,
+        "ProfitLossRatio": 0,
+        "WinLossRatio": 0,
+        "WinRate": 0,
+        "LossRate": 0,
+        "AverageMAE": 0,
+        "AverageMFE": 0,
+        "LargestMAE": 0,
+        "LargestMFE": 0,
+        "MaximumClosedTradeDrawdown": 0,
+        "MaximumIntraTradeDrawdown": 0,
+        "ProfitLossStandardDeviation": 0,
+        "ProfitLossDownsideDeviation": 0,
+        "ProfitFactor": 0,
+        "SharpeRatio": 0,
+        "SortinoRatio": 0,
+        "ProfitToMaxDrawdownRatio": 0,
+        "MaximumEndTradeDrawdown": 0,
+        "AverageEndTradeDrawdown": 0,
+        "MaximumDrawdownDuration": "string",
+        "TotalFees": 0
       },
-      "Price": 0,
-      "PriceCurrency": "string",
-      "Time": "2021-11-26T15:18:27.693Z",
-      "CreatedTime": "2021-11-26T15:18:27.693Z",
-      "LastFillTime": "2021-11-26T15:18:27.693Z",
-      "LastUpdateTime": "2021-11-26T15:18:27.693Z",
-      "CanceledTime": "2021-11-26T15:18:27.693Z",
-      "Quantity": 0,
-      "Type": "Market",
-      "Status": "New",
-      "Tag": "string",
-      "SecurityType": "Base",
-      "Direction": "Buy",
-      "Value": 0,
-      "OrderSubmissionData": {
-        "BidPrice": 0,
-        "AskPrice": 0,
-        "LastPrice": 0
+      "PortfolioStatistics": {
+        "RiskFreeRate": 0,
+        "AverageWinRate": 0,
+        "AverageLossRate": 0,
+        "ProfitLossRatio": 0,
+        "WinRate": 0,
+        "LossRate": 0,
+        "Expectancy": 0,
+        "CompoundingAnnualReturn": 0,
+        "Drawdown": 0,
+        "TotalNetProfit": 0,
+        "SharpeRatio": 0,
+        "ProbabilisticSharpeRatio": 0,
+        "Alpha": 0,
+        "Beta": 0,
+        "AnnualStandardDeviation": 0,
+        "AnnualVariance": 0,
+        "InformationRatio": 0,
+        "TrackingError": 0,
+        "TreynorRatio": 0
       },
-      "IsMarketable": true
-    },
-    "OrderEvents": [
-      {
-        "OrderId": 0,
-        "Id": 0,
-        "Symbol": {
-          "Value": "string",
-          "ID": "string",
-          "Permtick": "string"
-        },
-        "UtcTime": "2021-11-26T15:18:27.693Z",
-        "Status": {
-          "OrderId": 0,
-          "Id": 0,
+      "ClosedTrades": [
+        {
           "Symbol": {
             "Value": "string",
             "ID": "string",
             "Permtick": "string"
           },
-          "UtcTime": "2021-11-26T15:18:27.693Z",
-          "Status": "New",
-          "FillPrice": 0,
-          "FillPriceCurrency": "string",
-          "FillQuantity": 0,
-          "Direction": "Buy",
-          "Message": "string",
-          "IsAssignment": true,
-          "StopPrice": 0,
-          "LimitPrice": 0,
-          "Quantity": 0
-        },
-        "OrderFee": {
-          "Value": {
-            "Amount": 0,
-            "Currency": "string"
-          }
-        },
-        "FillPrice": 0,
-        "FillPriceCurrency": "string",
-        "FillQuantity": 0,
-        "Direction": "Buy",
-        "Message": "string",
-        "IsAssignment": true,
-        "StopPrice": 0,
-        "LimitPrice": 0,
-        "Quantity": 0
-      }
-    ],
-    "ProfitLoss": "number",
-    "Statistics": "string",
-    "RuntimeStatistics": "string",
-    "ServerStatistics": "string"
+          "EntryTime": "2021-11-26T15:18:27.693Z",
+          "EntryPrice": 0,
+          "Direction": "Long",
+          "Quantity": 0,
+          "ExitTime": "2021-11-26T15:18:27.693Z",
+          "ExitPrice": 0,
+          "ProfitLoss": 0,
+          "TotalFees": 0,
+          "MAE": 0,
+          "MFE": 0,
+          "Duration": "string",
+          "EndTradeDrawdown": 0
+        }
+      ]
+    },
+    "runtimeStatistics": {
+      "Equity": "$100.00",
+      "Fees": "-$100.00",
+      "Holdings": "$100.00",
+      "Net Profit": "$100.00",
+      "Probabilistic Sharpe Ratio": "50.00%",
+      "Return": "50.00%",
+      "Unrealized": "$100.00",
+      "Volume": "$100.00"
+    },
+    "statistics": {
+      "StartDateTime": "2021-11-26T15:18:27.693Z",
+      "EndDateTime": "2021-11-26T15:18:27.693Z",
+      "TotalNumberOfTrades": 0,
+      "NumberOfWinningTrades": 0,
+      "NumberOfLosingTrades": 0,
+      "TotalProfitLoss": 0,
+      "TotalProfit": 0,
+      "TotalLoss": 0,
+      "LargestProfit": 0,
+      "LargestLoss": 0,
+      "AverageProfitLoss": 0,
+      "AverageProfit": 0,
+      "AverageLoss": 0,
+      "AverageTradeDuration": "string",
+      "AverageWinningTradeDuration": "string",
+      "AverageLosingTradeDuration": "string",
+      "MedianTradeDuration": "string",
+      "MedianWinningTradeDuration": "string",
+      "MedianLosingTradeDuration": "string",
+      "MaxConsecutiveWinningTrades": 0,
+      "MaxConsecutiveLosingTrades": 0,
+      "ProfitLossRatio": 0,
+      "WinLossRatio": 0,
+      "WinRate": 0,
+      "LossRate": 0,
+      "AverageMAE": 0,
+      "AverageMFE": 0,
+      "LargestMAE": 0,
+      "LargestMFE": 0,
+      "MaximumClosedTradeDrawdown": 0,
+      "MaximumIntraTradeDrawdown": 0,
+      "ProfitLossStandardDeviation": 0,
+      "ProfitLossDownsideDeviation": 0,
+      "ProfitFactor": 0,
+      "SharpeRatio": 0,
+      "SortinoRatio": 0,
+      "ProfitToMaxDrawdownRatio": 0,
+      "MaximumEndTradeDrawdown": 0,
+      "AverageEndTradeDrawdown": 0,
+      "MaximumDrawdownDuration": "string",
+      "TotalFees": 0
+    },
+    "totalPerformance": {
+      "TradeStatistics": {
+        "StartDateTime": "2021-11-26T15:18:27.693Z",
+        "EndDateTime": "2021-11-26T15:18:27.693Z",
+        "TotalNumberOfTrades": 0,
+        "NumberOfWinningTrades": 0,
+        "NumberOfLosingTrades": 0,
+        "TotalProfitLoss": 0,
+        "TotalProfit": 0,
+        "TotalLoss": 0,
+        "LargestProfit": 0,
+        "LargestLoss": 0,
+        "AverageProfitLoss": 0,
+        "AverageProfit": 0,
+        "AverageLoss": 0,
+        "AverageTradeDuration": "string",
+        "AverageWinningTradeDuration": "string",
+        "AverageLosingTradeDuration": "string",
+        "MedianTradeDuration": "string",
+        "MedianWinningTradeDuration": "string",
+        "MedianLosingTradeDuration": "string",
+        "MaxConsecutiveWinningTrades": 0,
+        "MaxConsecutiveLosingTrades": 0,
+        "ProfitLossRatio": 0,
+        "WinLossRatio": 0,
+        "WinRate": 0,
+        "LossRate": 0,
+        "AverageMAE": 0,
+        "AverageMFE": 0,
+        "LargestMAE": 0,
+        "LargestMFE": 0,
+        "MaximumClosedTradeDrawdown": 0,
+        "MaximumIntraTradeDrawdown": 0,
+        "ProfitLossStandardDeviation": 0,
+        "ProfitLossDownsideDeviation": 0,
+        "ProfitFactor": 0,
+        "SharpeRatio": 0,
+        "SortinoRatio": 0,
+        "ProfitToMaxDrawdownRatio": 0,
+        "MaximumEndTradeDrawdown": 0,
+        "AverageEndTradeDrawdown": 0,
+        "MaximumDrawdownDuration": "string",
+        "TotalFees": 0
+      },
+      "PortfolioStatistics": {
+        "RiskFreeRate": 0,
+        "AverageWinRate": 0,
+        "AverageLossRate": 0,
+        "ProfitLossRatio": 0,
+        "WinRate": 0,
+        "LossRate": 0,
+        "Expectancy": 0,
+        "CompoundingAnnualReturn": 0,
+        "Drawdown": 0,
+        "TotalNetProfit": 0,
+        "SharpeRatio": 0,
+        "ProbabilisticSharpeRatio": 0,
+        "Alpha": 0,
+        "Beta": 0,
+        "AnnualStandardDeviation": 0,
+        "AnnualVariance": 0,
+        "InformationRatio": 0,
+        "TrackingError": 0,
+        "TreynorRatio": 0
+      },
+      "ClosedTrades": [
+        {
+          "Symbol": {
+            "Value": "string",
+            "ID": "string",
+            "Permtick": "string"
+          },
+          "EntryTime": "2021-11-26T15:18:27.693Z",
+          "EntryPrice": 0,
+          "Direction": "Long",
+          "Quantity": 0,
+          "ExitTime": "2021-11-26T15:18:27.693Z",
+          "ExitPrice": 0,
+          "ProfitLoss": 0,
+          "TotalFees": 0,
+          "MAE": 0,
+          "MFE": 0,
+          "Duration": "string",
+          "EndTradeDrawdown": 0
+        }
+      ]
+    },
+    "signals": "string",
+    "nodeName": "string",
+    "outOfSampleMaxEndDate": "2021-11-26T15:18:27.693Z",
+    "outOfSampleDays": 0
   },
-  "error": "string",
-  "stacktrace": "string",
-  "created": "2021-11-26T15:18:27.693Z",
+  "debugging": true,
   "success": true,
   "errors": [
     "string"
@@ -377,215 +352,148 @@ The <code>/backtests/create</code> API provides a response in the following form
 </tr>
 </thead>
 <tr>
-<td width="20%">RollingWindow</td> <td> <code>AlgorithmPerformance object</code> <br/> Rolling window detailed statistics.</td>
+<td width="20%">note</td> <td> <code>string</code> <br/> Note on the backtest attached by the user.</td>
 </tr>
 <tr>
-<td width="20%">TotalPerformance</td> <td> <code>AlgorithmPerformance object</code> <br/> The AlgorithmPerformance class is a wrapper for TradeStatistics and PortfolioStatistics.</td>
+<td width="20%">name</td> <td> <code>string</code> <br/> Name of the backtest.</td>
 </tr>
 <tr>
-<td width="20%">AlphaRuntimeStatistics</td> <td> <code>AlphaRuntimeStatistics object</code> <br/> Contains insight population run time statistics.</td>
+<td width="20%">organizationId</td> <td> <code>integer</code> <br/> Organization ID.</td>
 </tr>
 <tr>
-<td width="20%">Charts</td> <td> <code>Chart object</code> <br/> Charts updates for the live algorithm since the last result packet.</td>
+<td width="20%">projectId</td> <td> <code>integer</code> <br/> Project ID.</td>
 </tr>
 <tr>
-<td width="20%">Orders</td> <td> <code>Order object</code> <br/> Order updates since the last result packet.</td>
+<td width="20%">completed</td> <td> <code>boolean</code> <br/> Boolean true when the backtest is completed.</td>
 </tr>
 <tr>
-<td width="20%">OrderEvents</td> <td> <code>OrderEvent Array</code> <br/> OrderEvent updates since the last result packet.</td>
+<td width="20%">optimizationId</td> <td> <code>string</code> <br/> Optimization task ID, if the backtest is part of an optimization.</td>
 </tr>
 <tr>
-<td width="20%">ProfitLoss</td> <td> <code>number object</code> <br/> Trade profit and loss information since the last algorithm result packet.</td>
+<td width="20%">backtestId</td> <td> <code>string</code> <br/> Assigned backtest ID.</td>
 </tr>
 <tr>
-<td width="20%">Statistics</td> <td> <code>string object</code> <br/> Statistics information sent during the algorithm operations.</td>
+<td width="20%">tradeableDates</td> <td> <code>integer</code> <br/> Number of traadeable days.</td>
 </tr>
 <tr>
-<td width="20%">RuntimeStatistics</td> <td> <code>string object</code> <br/> Runtime banner/updating statistics in the title banner of the live algorithm GUI.</td>
+<td width="20%">researchGuide</td> <td> <code>ResearchGuide object</code> <br/> The API method call could not be completed as requested.</td>
 </tr>
 <tr>
-<td width="20%">ServerStatistics</td> <td> <code>string object</code> <br/> Server status information, including CPU and RAM usage.</td>
+<td width="20%">backtestStart</td> <td> <code>string($date-time)</code> <br/> The starting time of the backtest.</td>
+</tr>
+<tr>
+<td width="20%">backtestEnd</td> <td> <code>string($date-time)</code> <br/> The ending time of the backtest.</td>
+</tr>
+<tr>
+<td width="20%">created</td> <td> <code>string($date-time)</code> <br/> Backtest creation date and time.</td>
+</tr>
+<tr>
+<td width="20%">snapshotId</td> <td> <code>integer</code> <br/> Snapshot id of this backtest result.</td>
+</tr>
+<tr>
+<td width="20%">status</td> <td> <code>string Enum</code> <br/> Status of the backtest. Options : ['Completed.', 'In Queue...', "'Running: _%'"]</td>
+</tr>
+<tr>
+<td width="20%">error</td> <td> <code>string</code> <br/> Backtest error message.</td>
+</tr>
+<tr>
+<td width="20%">stacktrace</td> <td> <code>string</code> <br/> Backtest error stacktrace.</td>
+</tr>
+<tr>
+<td width="20%">progress</td> <td> <code>number</code> <br/> Progress of the backtest in percent 0-1.</td>
+</tr>
+<tr>
+<td width="20%">profitLoss</td> <td> <code>object</code> <br/> time-PnL pairs of profit/loss at a timestamp.</td>
+</tr>
+<tr>
+<td width="20%">hasInitializeError</td> <td> <code>boolean</code> <br/> Indicates if the backtest has error during initialization.</td>
+</tr>
+<tr>
+<td width="20%">charts</td> <td> <code>Chart object</code> <br/> Charts updates for the live algorithm since the last result packet.</td>
+</tr>
+<tr>
+<td width="20%">parameterSet</td> <td> <code>ParameterSet Array</code> <br/> Parameters used in the backtest.</td>
+</tr>
+<tr>
+<td width="20%">alphaRuntimeStatistics</td> <td> <code>AlphaRuntimeStatistics object</code> <br/> Contains insight population run time statistics.</td>
+</tr>
+<tr>
+<td width="20%">rollingWindow</td> <td> <code>AlgorithmPerformance object</code> <br/> Rolling window detailed statistics.</td>
+</tr>
+<tr>
+<td width="20%">runtimeStatistics</td> <td> <code>RuntimeStatistics object</code> <br/> Runtime banner/updating statistics in the title banner of the live algorithm GUI.</td>
+</tr>
+<tr>
+<td width="20%">statistics</td> <td> <code>TradeStatistics object</code> <br/> Statistics information sent during the algorithm operations.</td>
+</tr>
+<tr>
+<td width="20%">totalPerformance</td> <td> <code>AlgorithmPerformance object</code> <br/> The AlgorithmPerformance class is a wrapper for TradeStatistics and PortfolioStatistics.</td>
+</tr>
+<tr>
+<td width="20%">signals</td> <td> <code>string</code> <br/> None</td>
+</tr>
+<tr>
+<td width="20%">nodeName</td> <td> <code>string</code> <br/> The backtest node name.</td>
+</tr>
+<tr>
+<td width="20%">outOfSampleMaxEndDate</td> <td> <code>string($date-time)</code> <br/> End date of out of sample data.</td>
+</tr>
+<tr>
+<td width="20%">outOfSampleDays</td> <td> <code>integer</code> <br/> Number of days of out of sample days.</td>
 </tr>
 <tr>
 <td width="20%">Example</td>
 <td>
 <div class="cli section-example-container"><pre>
 {
-  "RollingWindow": {
-    "TradeStatistics": {
-      "StartDateTime": "2021-11-26T15:18:27.693Z",
-      "EndDateTime": "2021-11-26T15:18:27.693Z",
-      "TotalNumberOfTrades": 0,
-      "NumberOfWinningTrades": 0,
-      "NumberOfLosingTrades": 0,
-      "TotalProfitLoss": 0,
-      "TotalProfit": 0,
-      "TotalLoss": 0,
-      "LargestProfit": 0,
-      "LargestLoss": 0,
-      "AverageProfitLoss": 0,
-      "AverageProfit": 0,
-      "AverageLoss": 0,
-      "AverageTradeDuration": "string",
-      "AverageWinningTradeDuration": "string",
-      "AverageLosingTradeDuration": "string",
-      "MedianTradeDuration": "string",
-      "MedianWinningTradeDuration": "string",
-      "MedianLosingTradeDuration": "string",
-      "MaxConsecutiveWinningTrades": 0,
-      "MaxConsecutiveLosingTrades": 0,
-      "ProfitLossRatio": 0,
-      "WinLossRatio": 0,
-      "WinRate": 0,
-      "LossRate": 0,
-      "AverageMAE": 0,
-      "AverageMFE": 0,
-      "LargestMAE": 0,
-      "LargestMFE": 0,
-      "MaximumClosedTradeDrawdown": 0,
-      "MaximumIntraTradeDrawdown": 0,
-      "ProfitLossStandardDeviation": 0,
-      "ProfitLossDownsideDeviation": 0,
-      "ProfitFactor": 0,
-      "SharpeRatio": 0,
-      "SortinoRatio": 0,
-      "ProfitToMaxDrawdownRatio": 0,
-      "MaximumEndTradeDrawdown": 0,
-      "AverageEndTradeDrawdown": 0,
-      "MaximumDrawdownDuration": "string",
-      "TotalFees": 0
-    },
-    "PortfolioStatistics": {
-      "RiskFreeRate": 0,
-      "AverageWinRate": 0,
-      "AverageLossRate": 0,
-      "ProfitLossRatio": 0,
-      "WinRate": 0,
-      "LossRate": 0,
-      "Expectancy": 0,
-      "CompoundingAnnualReturn": 0,
-      "Drawdown": 0,
-      "TotalNetProfit": 0,
-      "SharpeRatio": 0,
-      "ProbabilisticSharpeRatio": 0,
-      "Alpha": 0,
-      "Beta": 0,
-      "AnnualStandardDeviation": 0,
-      "AnnualVariance": 0,
-      "InformationRatio": 0,
-      "TrackingError": 0,
-      "TreynorRatio": 0
-    },
-    "ClosedTrades": [
-      {
-        "Symbol": {
-          "Value": "string",
-          "ID": "string",
-          "Permtick": "string"
-        },
-        "EntryTime": "2021-11-26T15:18:27.693Z",
-        "EntryPrice": 0,
-        "Direction": "Long",
-        "Quantity": 0,
-        "ExitTime": "2021-11-26T15:18:27.693Z",
-        "ExitPrice": 0,
-        "ProfitLoss": 0,
-        "TotalFees": 0,
-        "MAE": 0,
-        "MFE": 0,
-        "Duration": "string",
-        "EndTradeDrawdown": 0
-      }
-    ]
+  "note": "string",
+  "name": "string",
+  "organizationId": 0,
+  "projectId": 0,
+  "completed": true,
+  "optimizationId": "string",
+  "backtestId": "string",
+  "tradeableDates": 0,
+  "researchGuide": {
+    "minutes": 0,
+    "backtestCount": 0,
+    "parameters": 0
   },
-  "TotalPerformance": {
-    "TradeStatistics": {
-      "StartDateTime": "2021-11-26T15:18:27.693Z",
-      "EndDateTime": "2021-11-26T15:18:27.693Z",
-      "TotalNumberOfTrades": 0,
-      "NumberOfWinningTrades": 0,
-      "NumberOfLosingTrades": 0,
-      "TotalProfitLoss": 0,
-      "TotalProfit": 0,
-      "TotalLoss": 0,
-      "LargestProfit": 0,
-      "LargestLoss": 0,
-      "AverageProfitLoss": 0,
-      "AverageProfit": 0,
-      "AverageLoss": 0,
-      "AverageTradeDuration": "string",
-      "AverageWinningTradeDuration": "string",
-      "AverageLosingTradeDuration": "string",
-      "MedianTradeDuration": "string",
-      "MedianWinningTradeDuration": "string",
-      "MedianLosingTradeDuration": "string",
-      "MaxConsecutiveWinningTrades": 0,
-      "MaxConsecutiveLosingTrades": 0,
-      "ProfitLossRatio": 0,
-      "WinLossRatio": 0,
-      "WinRate": 0,
-      "LossRate": 0,
-      "AverageMAE": 0,
-      "AverageMFE": 0,
-      "LargestMAE": 0,
-      "LargestMFE": 0,
-      "MaximumClosedTradeDrawdown": 0,
-      "MaximumIntraTradeDrawdown": 0,
-      "ProfitLossStandardDeviation": 0,
-      "ProfitLossDownsideDeviation": 0,
-      "ProfitFactor": 0,
-      "SharpeRatio": 0,
-      "SortinoRatio": 0,
-      "ProfitToMaxDrawdownRatio": 0,
-      "MaximumEndTradeDrawdown": 0,
-      "AverageEndTradeDrawdown": 0,
-      "MaximumDrawdownDuration": "string",
-      "TotalFees": 0
-    },
-    "PortfolioStatistics": {
-      "RiskFreeRate": 0,
-      "AverageWinRate": 0,
-      "AverageLossRate": 0,
-      "ProfitLossRatio": 0,
-      "WinRate": 0,
-      "LossRate": 0,
-      "Expectancy": 0,
-      "CompoundingAnnualReturn": 0,
-      "Drawdown": 0,
-      "TotalNetProfit": 0,
-      "SharpeRatio": 0,
-      "ProbabilisticSharpeRatio": 0,
-      "Alpha": 0,
-      "Beta": 0,
-      "AnnualStandardDeviation": 0,
-      "AnnualVariance": 0,
-      "InformationRatio": 0,
-      "TrackingError": 0,
-      "TreynorRatio": 0
-    },
-    "ClosedTrades": [
-      {
-        "Symbol": {
-          "Value": "string",
-          "ID": "string",
-          "Permtick": "string"
-        },
-        "EntryTime": "2021-11-26T15:18:27.693Z",
-        "EntryPrice": 0,
-        "Direction": "Long",
-        "Quantity": 0,
-        "ExitTime": "2021-11-26T15:18:27.693Z",
-        "ExitPrice": 0,
-        "ProfitLoss": 0,
-        "TotalFees": 0,
-        "MAE": 0,
-        "MFE": 0,
-        "Duration": "string",
-        "EndTradeDrawdown": 0
-      }
-    ]
+  "backtestStart": "2021-11-26T15:18:27.693Z",
+  "backtestEnd": "2021-11-26T15:18:27.693Z",
+  "created": "2021-11-26T15:18:27.693Z",
+  "snapshotId": 0,
+  "status": "Completed.",
+  "error": "string",
+  "stacktrace": "string",
+  "progress": 0,
+  "profitLoss": ,
+  "hasInitializeError": true,
+  "charts": {
+    "Name": "string",
+    "ChartType": "Overlay",
+    "Series": {
+      "Name": "string",
+      "Unit": "string",
+      "Index": 0,
+      "Values": [
+        {
+          "x": "string",
+          "y": 0
+        }
+      ],
+      "SeriesType": "Line",
+      "Color": "string",
+      "ScatterMarkerSymbol": "none"
+    }
   },
-  "AlphaRuntimeStatistics": {
+  "parameterSet": [
+    {
+      "name": "string",
+      "value": 0
+    }
+  ],
+  "alphaRuntimeStatistics": {
     "MeanPopulationScore": {
       "UpdatedTimeUtc": "2021-11-26T15:18:27.693Z",
       "Direction": 0,
@@ -614,107 +522,522 @@ The <code>/backtests/create</code> API provides a response in the following form
     "TotalInsightsAnalysisCompleted": "string",
     "MeanPopulationEstimatedInsightValue": 0
   },
-  "Charts": {
-    "Name": "string",
-    "ChartType": "Overlay",
-    "Series": {
-      "Name": "string",
-      "Unit": "string",
-      "Index": 0,
-      "Values": [
-        {
-          "x": "string",
-          "y": 0
-        }
-      ],
-      "SeriesType": "Line",
-      "Color": "string",
-      "ScatterMarkerSymbol": "none"
-    }
-  },
-  "Orders": {
-    "Id": 0,
-    "ContingentId": 0,
-    "BrokerId": [
-      "string"
-    ],
-    "Symbol": {
-      "Value": "string",
-      "ID": "string",
-      "Permtick": "string"
+  "rollingWindow": {
+    "TradeStatistics": {
+      "StartDateTime": "2021-11-26T15:18:27.693Z",
+      "EndDateTime": "2021-11-26T15:18:27.693Z",
+      "TotalNumberOfTrades": 0,
+      "NumberOfWinningTrades": 0,
+      "NumberOfLosingTrades": 0,
+      "TotalProfitLoss": 0,
+      "TotalProfit": 0,
+      "TotalLoss": 0,
+      "LargestProfit": 0,
+      "LargestLoss": 0,
+      "AverageProfitLoss": 0,
+      "AverageProfit": 0,
+      "AverageLoss": 0,
+      "AverageTradeDuration": "string",
+      "AverageWinningTradeDuration": "string",
+      "AverageLosingTradeDuration": "string",
+      "MedianTradeDuration": "string",
+      "MedianWinningTradeDuration": "string",
+      "MedianLosingTradeDuration": "string",
+      "MaxConsecutiveWinningTrades": 0,
+      "MaxConsecutiveLosingTrades": 0,
+      "ProfitLossRatio": 0,
+      "WinLossRatio": 0,
+      "WinRate": 0,
+      "LossRate": 0,
+      "AverageMAE": 0,
+      "AverageMFE": 0,
+      "LargestMAE": 0,
+      "LargestMFE": 0,
+      "MaximumClosedTradeDrawdown": 0,
+      "MaximumIntraTradeDrawdown": 0,
+      "ProfitLossStandardDeviation": 0,
+      "ProfitLossDownsideDeviation": 0,
+      "ProfitFactor": 0,
+      "SharpeRatio": 0,
+      "SortinoRatio": 0,
+      "ProfitToMaxDrawdownRatio": 0,
+      "MaximumEndTradeDrawdown": 0,
+      "AverageEndTradeDrawdown": 0,
+      "MaximumDrawdownDuration": "string",
+      "TotalFees": 0
     },
-    "Price": 0,
-    "PriceCurrency": "string",
-    "Time": "2021-11-26T15:18:27.693Z",
-    "CreatedTime": "2021-11-26T15:18:27.693Z",
-    "LastFillTime": "2021-11-26T15:18:27.693Z",
-    "LastUpdateTime": "2021-11-26T15:18:27.693Z",
-    "CanceledTime": "2021-11-26T15:18:27.693Z",
-    "Quantity": 0,
-    "Type": "Market",
-    "Status": "New",
-    "Tag": "string",
-    "SecurityType": "Base",
-    "Direction": "Buy",
-    "Value": 0,
-    "OrderSubmissionData": {
-      "BidPrice": 0,
-      "AskPrice": 0,
-      "LastPrice": 0
+    "PortfolioStatistics": {
+      "RiskFreeRate": 0,
+      "AverageWinRate": 0,
+      "AverageLossRate": 0,
+      "ProfitLossRatio": 0,
+      "WinRate": 0,
+      "LossRate": 0,
+      "Expectancy": 0,
+      "CompoundingAnnualReturn": 0,
+      "Drawdown": 0,
+      "TotalNetProfit": 0,
+      "SharpeRatio": 0,
+      "ProbabilisticSharpeRatio": 0,
+      "Alpha": 0,
+      "Beta": 0,
+      "AnnualStandardDeviation": 0,
+      "AnnualVariance": 0,
+      "InformationRatio": 0,
+      "TrackingError": 0,
+      "TreynorRatio": 0
     },
-    "IsMarketable": true
-  },
-  "OrderEvents": [
-    {
-      "OrderId": 0,
-      "Id": 0,
-      "Symbol": {
-        "Value": "string",
-        "ID": "string",
-        "Permtick": "string"
-      },
-      "UtcTime": "2021-11-26T15:18:27.693Z",
-      "Status": {
-        "OrderId": 0,
-        "Id": 0,
+    "ClosedTrades": [
+      {
         "Symbol": {
           "Value": "string",
           "ID": "string",
           "Permtick": "string"
         },
-        "UtcTime": "2021-11-26T15:18:27.693Z",
-        "Status": "New",
-        "FillPrice": 0,
-        "FillPriceCurrency": "string",
-        "FillQuantity": 0,
-        "Direction": "Buy",
-        "Message": "string",
-        "IsAssignment": true,
-        "StopPrice": 0,
-        "LimitPrice": 0,
-        "Quantity": 0
-      },
-      "OrderFee": {
-        "Value": {
-          "Amount": 0,
-          "Currency": "string"
-        }
-      },
-      "FillPrice": 0,
-      "FillPriceCurrency": "string",
-      "FillQuantity": 0,
-      "Direction": "Buy",
-      "Message": "string",
-      "IsAssignment": true,
-      "StopPrice": 0,
-      "LimitPrice": 0,
-      "Quantity": 0
+        "EntryTime": "2021-11-26T15:18:27.693Z",
+        "EntryPrice": 0,
+        "Direction": "Long",
+        "Quantity": 0,
+        "ExitTime": "2021-11-26T15:18:27.693Z",
+        "ExitPrice": 0,
+        "ProfitLoss": 0,
+        "TotalFees": 0,
+        "MAE": 0,
+        "MFE": 0,
+        "Duration": "string",
+        "EndTradeDrawdown": 0
+      }
+    ]
+  },
+  "runtimeStatistics": {
+    "Equity": "$100.00",
+    "Fees": "-$100.00",
+    "Holdings": "$100.00",
+    "Net Profit": "$100.00",
+    "Probabilistic Sharpe Ratio": "50.00%",
+    "Return": "50.00%",
+    "Unrealized": "$100.00",
+    "Volume": "$100.00"
+  },
+  "statistics": {
+    "StartDateTime": "2021-11-26T15:18:27.693Z",
+    "EndDateTime": "2021-11-26T15:18:27.693Z",
+    "TotalNumberOfTrades": 0,
+    "NumberOfWinningTrades": 0,
+    "NumberOfLosingTrades": 0,
+    "TotalProfitLoss": 0,
+    "TotalProfit": 0,
+    "TotalLoss": 0,
+    "LargestProfit": 0,
+    "LargestLoss": 0,
+    "AverageProfitLoss": 0,
+    "AverageProfit": 0,
+    "AverageLoss": 0,
+    "AverageTradeDuration": "string",
+    "AverageWinningTradeDuration": "string",
+    "AverageLosingTradeDuration": "string",
+    "MedianTradeDuration": "string",
+    "MedianWinningTradeDuration": "string",
+    "MedianLosingTradeDuration": "string",
+    "MaxConsecutiveWinningTrades": 0,
+    "MaxConsecutiveLosingTrades": 0,
+    "ProfitLossRatio": 0,
+    "WinLossRatio": 0,
+    "WinRate": 0,
+    "LossRate": 0,
+    "AverageMAE": 0,
+    "AverageMFE": 0,
+    "LargestMAE": 0,
+    "LargestMFE": 0,
+    "MaximumClosedTradeDrawdown": 0,
+    "MaximumIntraTradeDrawdown": 0,
+    "ProfitLossStandardDeviation": 0,
+    "ProfitLossDownsideDeviation": 0,
+    "ProfitFactor": 0,
+    "SharpeRatio": 0,
+    "SortinoRatio": 0,
+    "ProfitToMaxDrawdownRatio": 0,
+    "MaximumEndTradeDrawdown": 0,
+    "AverageEndTradeDrawdown": 0,
+    "MaximumDrawdownDuration": "string",
+    "TotalFees": 0
+  },
+  "totalPerformance": {
+    "TradeStatistics": {
+      "StartDateTime": "2021-11-26T15:18:27.693Z",
+      "EndDateTime": "2021-11-26T15:18:27.693Z",
+      "TotalNumberOfTrades": 0,
+      "NumberOfWinningTrades": 0,
+      "NumberOfLosingTrades": 0,
+      "TotalProfitLoss": 0,
+      "TotalProfit": 0,
+      "TotalLoss": 0,
+      "LargestProfit": 0,
+      "LargestLoss": 0,
+      "AverageProfitLoss": 0,
+      "AverageProfit": 0,
+      "AverageLoss": 0,
+      "AverageTradeDuration": "string",
+      "AverageWinningTradeDuration": "string",
+      "AverageLosingTradeDuration": "string",
+      "MedianTradeDuration": "string",
+      "MedianWinningTradeDuration": "string",
+      "MedianLosingTradeDuration": "string",
+      "MaxConsecutiveWinningTrades": 0,
+      "MaxConsecutiveLosingTrades": 0,
+      "ProfitLossRatio": 0,
+      "WinLossRatio": 0,
+      "WinRate": 0,
+      "LossRate": 0,
+      "AverageMAE": 0,
+      "AverageMFE": 0,
+      "LargestMAE": 0,
+      "LargestMFE": 0,
+      "MaximumClosedTradeDrawdown": 0,
+      "MaximumIntraTradeDrawdown": 0,
+      "ProfitLossStandardDeviation": 0,
+      "ProfitLossDownsideDeviation": 0,
+      "ProfitFactor": 0,
+      "SharpeRatio": 0,
+      "SortinoRatio": 0,
+      "ProfitToMaxDrawdownRatio": 0,
+      "MaximumEndTradeDrawdown": 0,
+      "AverageEndTradeDrawdown": 0,
+      "MaximumDrawdownDuration": "string",
+      "TotalFees": 0
+    },
+    "PortfolioStatistics": {
+      "RiskFreeRate": 0,
+      "AverageWinRate": 0,
+      "AverageLossRate": 0,
+      "ProfitLossRatio": 0,
+      "WinRate": 0,
+      "LossRate": 0,
+      "Expectancy": 0,
+      "CompoundingAnnualReturn": 0,
+      "Drawdown": 0,
+      "TotalNetProfit": 0,
+      "SharpeRatio": 0,
+      "ProbabilisticSharpeRatio": 0,
+      "Alpha": 0,
+      "Beta": 0,
+      "AnnualStandardDeviation": 0,
+      "AnnualVariance": 0,
+      "InformationRatio": 0,
+      "TrackingError": 0,
+      "TreynorRatio": 0
+    },
+    "ClosedTrades": [
+      {
+        "Symbol": {
+          "Value": "string",
+          "ID": "string",
+          "Permtick": "string"
+        },
+        "EntryTime": "2021-11-26T15:18:27.693Z",
+        "EntryPrice": 0,
+        "Direction": "Long",
+        "Quantity": 0,
+        "ExitTime": "2021-11-26T15:18:27.693Z",
+        "ExitPrice": 0,
+        "ProfitLoss": 0,
+        "TotalFees": 0,
+        "MAE": 0,
+        "MFE": 0,
+        "Duration": "string",
+        "EndTradeDrawdown": 0
+      }
+    ]
+  },
+  "signals": "string",
+  "nodeName": "string",
+  "outOfSampleMaxEndDate": "2021-11-26T15:18:27.693Z",
+  "outOfSampleDays": 0
+}</pre>
+</div>
+</td>
+</tr>
+</table><table class="table qc-table">
+<thead>
+<tr>
+<th colspan="2"><code>ResearchGuide</code> Model - The API method call could not be completed as requested.</th>
+</tr>
+</thead>
+<tr>
+<td width="20%">minutes</td> <td> <code>integer</code> <br/> Number of minutes used in developing the current backtest.</td>
+</tr>
+<tr>
+<td width="20%">backtestCount</td> <td> <code>integer</code> <br/> Backtest count of the current backtest in the project.</td>
+</tr>
+<tr>
+<td width="20%">parameters</td> <td> <code>integer</code> <br/> Number of parameters detected.</td>
+</tr>
+<tr>
+<td width="20%">Example</td>
+<td>
+<div class="cli section-example-container"><pre>
+{
+  "minutes": 0,
+  "backtestCount": 0,
+  "parameters": 0
+}</pre>
+</div>
+</td>
+</tr>
+</table><table class="table qc-table">
+<thead>
+<tr>
+<th colspan="2"><code>Chart</code> Model - Single Parent Chart Object for Custom Charting.</th>
+</tr>
+</thead>
+<tr>
+<td width="20%">Name</td> <td> <code>string</code> <br/> Name of the Chart.</td>
+</tr>
+<tr>
+<td width="20%">ChartType</td> <td> <code>string Enum</code> <br/> Type of the Chart, Overlayed or Stacked. Options : ['Overlay', 'Stacked']</td>
+</tr>
+<tr>
+<td width="20%">Series</td> <td> <code>Series object</code> <br/> List of Series Objects for this Chart.</td>
+</tr>
+<tr>
+<td width="20%">Example</td>
+<td>
+<div class="cli section-example-container"><pre>
+{
+  "Name": "string",
+  "ChartType": "Overlay",
+  "Series": {
+    "Name": "string",
+    "Unit": "string",
+    "Index": 0,
+    "Values": [
+      {
+        "x": "string",
+        "y": 0
+      }
+    ],
+    "SeriesType": "Line",
+    "Color": "string",
+    "ScatterMarkerSymbol": "none"
+  }
+}</pre>
+</div>
+</td>
+</tr>
+</table><table class="table qc-table">
+<thead>
+<tr>
+<th colspan="2"><code>Series</code> Model - Chart Series Object - Series data and properties for a chart.</th>
+</tr>
+</thead>
+<tr>
+<td width="20%">Name</td> <td> <code>string</code> <br/> Name of the series.</td>
+</tr>
+<tr>
+<td width="20%">Unit</td> <td> <code>string</code> <br/> Axis for the chart series.</td>
+</tr>
+<tr>
+<td width="20%">Index</td> <td> <code>integer</code> <br/> Index/position of the series on the chart.</td>
+</tr>
+<tr>
+<td width="20%">Values</td> <td> <code>ChartPoint Array</code> <br/> Values for the series plot. These values are assumed to be in ascending time order (first points earliest, last points latest).</td>
+</tr>
+<tr>
+<td width="20%">SeriesType</td> <td> <code>string Enum</code> <br/> Chart type for the series. Options : ['Line', 'Scatter', 'Candle', 'Bar', 'Flag', 'StackedArea', 'Pie', 'Treemap']</td>
+</tr>
+<tr>
+<td width="20%">Color</td> <td> <code>string</code> <br/> Color the series.</td>
+</tr>
+<tr>
+<td width="20%">ScatterMarkerSymbol</td> <td> <code>string Enum</code> <br/> Shape or symbol for the marker in a scatter plot. Options : ['none', 'circle', 'square', 'diamond', 'triangle', 'triangle-down']</td>
+</tr>
+<tr>
+<td width="20%">Example</td>
+<td>
+<div class="cli section-example-container"><pre>
+{
+  "Name": "string",
+  "Unit": "string",
+  "Index": 0,
+  "Values": [
+    {
+      "x": "string",
+      "y": 0
     }
   ],
-  "ProfitLoss": "number",
-  "Statistics": "string",
-  "RuntimeStatistics": "string",
-  "ServerStatistics": "string"
+  "SeriesType": "Line",
+  "Color": "string",
+  "ScatterMarkerSymbol": "none"
+}</pre>
+</div>
+</td>
+</tr>
+</table><table class="table qc-table">
+<thead>
+<tr>
+<th colspan="2"><code>ChartPoint</code> Model - Location on a chart containing the X-Y location</th>
+</tr>
+</thead>
+<tr>
+<td width="20%">x</td> <td> <code>string</code> <br/> Time of this chart point: lower case for javascript encoding simplicty.</td>
+</tr>
+<tr>
+<td width="20%">y</td> <td> <code>number</code> <br/> Value of this chart point:  lower case for javascript encoding simplicty.</td>
+</tr>
+<tr>
+<td width="20%">Example</td>
+<td>
+<div class="cli section-example-container"><pre>
+{
+  "x": "string",
+  "y": 0
+}</pre>
+</div>
+</td>
+</tr>
+</table><table class="table qc-table">
+<thead>
+<tr>
+<th colspan="2"><code>ParameterSet</code> Model - Parameter set.</th>
+</tr>
+</thead>
+<tr>
+<td width="20%">name</td> <td> <code>string</code> <br/> Name of parameter.</td>
+</tr>
+<tr>
+<td width="20%">value</td> <td> <code>number</code> <br/> Value of parameter.</td>
+</tr>
+<tr>
+<td width="20%">Example</td>
+<td>
+<div class="cli section-example-container"><pre>
+{
+  "name": "string",
+  "value": 0
+}</pre>
+</div>
+</td>
+</tr>
+</table><table class="table qc-table">
+<thead>
+<tr>
+<th colspan="2"><code>AlphaRuntimeStatistics</code> Model - Contains insight population run time statistics.</th>
+</tr>
+</thead>
+<tr>
+<td width="20%">MeanPopulationScore</td> <td> <code>InsightScore object</code> <br/> Defines the scores given to a particular insight.</td>
+</tr>
+<tr>
+<td width="20%">RollingAveragedPopulationScore</td> <td> <code>InsightScore object</code> <br/> Defines the scores given to a particular insight.</td>
+</tr>
+<tr>
+<td width="20%">LongCount</td> <td> <code>string</code> <br/> Gets the total number of insights with an up direction.</td>
+</tr>
+<tr>
+<td width="20%">ShortCount</td> <td> <code>string</code> <br/> Gets the total number of insights with a down direction.</td>
+</tr>
+<tr>
+<td width="20%">LongShortRatio</td> <td> <code>number</code> <br/> The ratio of InsightDirection.Up over InsightDirection.Down.</td>
+</tr>
+<tr>
+<td width="20%">TotalAccumulatedEstimatedAlphaValue</td> <td> <code>number</code> <br/> The total accumulated estimated value of trading all insights.</td>
+</tr>
+<tr>
+<td width="20%">KellyCriterionEstimate</td> <td> <code>number</code> <br/> Score of the strategy's insights predictive power.</td>
+</tr>
+<tr>
+<td width="20%">KellyCriterionProbabilityValue</td> <td> <code>number</code> <br/> The p-value or probability value of the KellyCriterionEstimate.</td>
+</tr>
+<tr>
+<td width="20%">FitnessScore</td> <td> <code>number</code> <br/> Score of the strategy's performance, and suitability for the Alpha Stream Market.</td>
+</tr>
+<tr>
+<td width="20%">PortfolioTurnover</td> <td> <code>number</code> <br/> Measurement of the strategies trading activity with respect to the portfolio value. Calculated as the sales volume with respect to the average total portfolio value.</td>
+</tr>
+<tr>
+<td width="20%">ReturnOverMaxDrawdown</td> <td> <code>number</code> <br/> Provides a risk adjusted way to factor in the returns and drawdown of the strategy. It is calculated by dividing the Portfolio Annualized Return by the Maximum Drawdown seen during the backtest.</td>
+</tr>
+<tr>
+<td width="20%">SortinoRatio</td> <td> <code>number</code> <br/> Gives a relative picture of the strategy volatility. It is calculated by taking a portfolio's annualized rate of return and subtracting the risk free rate of return.</td>
+</tr>
+<tr>
+<td width="20%">EstimatedMonthlyAlphaValue</td> <td> <code>number</code> <br/> Suggested Value of the Alpha On A Monthly Basis For Licensing.</td>
+</tr>
+<tr>
+<td width="20%">TotalInsightsGenerated</td> <td> <code>string</code> <br/> The total number of insight signals generated by the algorithm.</td>
+</tr>
+<tr>
+<td width="20%">TotalInsightsClosed</td> <td> <code>string</code> <br/> The total number of insight signals generated by the algorithm.</td>
+</tr>
+<tr>
+<td width="20%">TotalInsightsAnalysisCompleted</td> <td> <code>string</code> <br/> The total number of insight signals generated by the algorithm.</td>
+</tr>
+<tr>
+<td width="20%">MeanPopulationEstimatedInsightValue</td> <td> <code>number</code> <br/> Gets the mean estimated insight value.</td>
+</tr>
+<tr>
+<td width="20%">Example</td>
+<td>
+<div class="cli section-example-container"><pre>
+{
+  "MeanPopulationScore": {
+    "UpdatedTimeUtc": "2021-11-26T15:18:27.693Z",
+    "Direction": 0,
+    "Magnitude": 0,
+    "IsFinalScore": true
+  },
+  "RollingAveragedPopulationScore": {
+    "UpdatedTimeUtc": "2021-11-26T15:18:27.693Z",
+    "Direction": 0,
+    "Magnitude": 0,
+    "IsFinalScore": true
+  },
+  "LongCount": "string",
+  "ShortCount": "string",
+  "LongShortRatio": 0,
+  "TotalAccumulatedEstimatedAlphaValue": 0,
+  "KellyCriterionEstimate": 0,
+  "KellyCriterionProbabilityValue": 0,
+  "FitnessScore": 0,
+  "PortfolioTurnover": 0,
+  "ReturnOverMaxDrawdown": 0,
+  "SortinoRatio": 0,
+  "EstimatedMonthlyAlphaValue": 0,
+  "TotalInsightsGenerated": "string",
+  "TotalInsightsClosed": "string",
+  "TotalInsightsAnalysisCompleted": "string",
+  "MeanPopulationEstimatedInsightValue": 0
+}</pre>
+</div>
+</td>
+</tr>
+</table><table class="table qc-table">
+<thead>
+<tr>
+<th colspan="2"><code>InsightScore</code> Model - Defines the scores given to a particular insight</th>
+</tr>
+</thead>
+<tr>
+<td width="20%">UpdatedTimeUtc</td> <td> <code>string($date-time)</code> <br/> The time these scores were last updated.</td>
+</tr>
+<tr>
+<td width="20%">Direction</td> <td> <code>number</code> <br/> The direction score.</td>
+</tr>
+<tr>
+<td width="20%">Magnitude</td> <td> <code>number</code> <br/> The magnitude score.</td>
+</tr>
+<tr>
+<td width="20%">IsFinalScore</td> <td> <code>boolean</code> <br/> Is the insight past its expiry time and score can be finalized.</td>
+</tr>
+<tr>
+<td width="20%">Example</td>
+<td>
+<div class="cli section-example-container"><pre>
+{
+  "UpdatedTimeUtc": "2021-11-26T15:18:27.693Z",
+  "Direction": 0,
+  "Magnitude": 0,
+  "IsFinalScore": true
 }</pre>
 </div>
 </td>
@@ -1218,646 +1541,46 @@ The <code>/backtests/create</code> API provides a response in the following form
 </table><table class="table qc-table">
 <thead>
 <tr>
-<th colspan="2"><code>AlphaRuntimeStatistics</code> Model - Contains insight population run time statistics.</th>
+<th colspan="2"><code>RuntimeStatistics</code> Model</th>
 </tr>
 </thead>
 <tr>
-<td width="20%">MeanPopulationScore</td> <td> <code>InsightScore object</code> <br/> Defines the scores given to a particular insight.</td>
+<td width="20%">Equity</td> <td> <code>string<br/><i><sub>example: $100.00</sub></i></code> <br/> Total portfolio value.</td>
 </tr>
 <tr>
-<td width="20%">RollingAveragedPopulationScore</td> <td> <code>InsightScore object</code> <br/> Defines the scores given to a particular insight.</td>
+<td width="20%">Fees</td> <td> <code>string<br/><i><sub>example: -$100.00</sub></i></code> <br/> Transaction fee.</td>
 </tr>
 <tr>
-<td width="20%">LongCount</td> <td> <code>string</code> <br/> Gets the total number of insights with an up direction.</td>
+<td width="20%">Holdings</td> <td> <code>string<br/><i><sub>example: $100.00</sub></i></code> <br/> Equity value of security holdings.</td>
 </tr>
 <tr>
-<td width="20%">ShortCount</td> <td> <code>string</code> <br/> Gets the total number of insights with a down direction.</td>
+<td width="20%">Net Profit</td> <td> <code>string<br/><i><sub>example: $100.00</sub></i></code> <br/> Net profit.</td>
 </tr>
 <tr>
-<td width="20%">LongShortRatio</td> <td> <code>number</code> <br/> The ratio of InsightDirection.Up over InsightDirection.Down.</td>
+<td width="20%">Probabilistic Sharpe Ratio</td> <td> <code>string<br/><i><sub>example: 50.00%</sub></i></code> <br/> Probabilistic Sharpe Ratio.</td>
 </tr>
 <tr>
-<td width="20%">TotalAccumulatedEstimatedAlphaValue</td> <td> <code>number</code> <br/> The total accumulated estimated value of trading all insights.</td>
+<td width="20%">Return</td> <td> <code>string<br/><i><sub>example: 50.00%</sub></i></code> <br/> Return.</td>
 </tr>
 <tr>
-<td width="20%">KellyCriterionEstimate</td> <td> <code>number</code> <br/> Score of the strategy's insights predictive power.</td>
+<td width="20%">Unrealized</td> <td> <code>string<br/><i><sub>example: $100.00</sub></i></code> <br/> Unrealized profit/loss.</td>
 </tr>
 <tr>
-<td width="20%">KellyCriterionProbabilityValue</td> <td> <code>number</code> <br/> The p-value or probability value of the KellyCriterionEstimate.</td>
-</tr>
-<tr>
-<td width="20%">FitnessScore</td> <td> <code>number</code> <br/> Score of the strategy's performance, and suitability for the Alpha Stream Market.</td>
-</tr>
-<tr>
-<td width="20%">PortfolioTurnover</td> <td> <code>number</code> <br/> Measurement of the strategies trading activity with respect to the portfolio value. Calculated as the sales volume with respect to the average total portfolio value.</td>
-</tr>
-<tr>
-<td width="20%">ReturnOverMaxDrawdown</td> <td> <code>number</code> <br/> Provides a risk adjusted way to factor in the returns and drawdown of the strategy. It is calculated by dividing the Portfolio Annualized Return by the Maximum Drawdown seen during the backtest.</td>
-</tr>
-<tr>
-<td width="20%">SortinoRatio</td> <td> <code>number</code> <br/> Gives a relative picture of the strategy volatility. It is calculated by taking a portfolio's annualized rate of return and subtracting the risk free rate of return.</td>
-</tr>
-<tr>
-<td width="20%">EstimatedMonthlyAlphaValue</td> <td> <code>number</code> <br/> Suggested Value of the Alpha On A Monthly Basis For Licensing.</td>
-</tr>
-<tr>
-<td width="20%">TotalInsightsGenerated</td> <td> <code>string</code> <br/> The total number of insight signals generated by the algorithm.</td>
-</tr>
-<tr>
-<td width="20%">TotalInsightsClosed</td> <td> <code>string</code> <br/> The total number of insight signals generated by the algorithm.</td>
-</tr>
-<tr>
-<td width="20%">TotalInsightsAnalysisCompleted</td> <td> <code>string</code> <br/> The total number of insight signals generated by the algorithm.</td>
-</tr>
-<tr>
-<td width="20%">MeanPopulationEstimatedInsightValue</td> <td> <code>number</code> <br/> Gets the mean estimated insight value.</td>
+<td width="20%">Volume</td> <td> <code>string<br/><i><sub>example: $100.00</sub></i></code> <br/> Total transaction volume.</td>
 </tr>
 <tr>
 <td width="20%">Example</td>
 <td>
 <div class="cli section-example-container"><pre>
 {
-  "MeanPopulationScore": {
-    "UpdatedTimeUtc": "2021-11-26T15:18:27.693Z",
-    "Direction": 0,
-    "Magnitude": 0,
-    "IsFinalScore": true
-  },
-  "RollingAveragedPopulationScore": {
-    "UpdatedTimeUtc": "2021-11-26T15:18:27.693Z",
-    "Direction": 0,
-    "Magnitude": 0,
-    "IsFinalScore": true
-  },
-  "LongCount": "string",
-  "ShortCount": "string",
-  "LongShortRatio": 0,
-  "TotalAccumulatedEstimatedAlphaValue": 0,
-  "KellyCriterionEstimate": 0,
-  "KellyCriterionProbabilityValue": 0,
-  "FitnessScore": 0,
-  "PortfolioTurnover": 0,
-  "ReturnOverMaxDrawdown": 0,
-  "SortinoRatio": 0,
-  "EstimatedMonthlyAlphaValue": 0,
-  "TotalInsightsGenerated": "string",
-  "TotalInsightsClosed": "string",
-  "TotalInsightsAnalysisCompleted": "string",
-  "MeanPopulationEstimatedInsightValue": 0
-}</pre>
-</div>
-</td>
-</tr>
-</table><table class="table qc-table">
-<thead>
-<tr>
-<th colspan="2"><code>InsightScore</code> Model - Defines the scores given to a particular insight</th>
-</tr>
-</thead>
-<tr>
-<td width="20%">UpdatedTimeUtc</td> <td> <code>string($date-time)</code> <br/> The time these scores were last updated.</td>
-</tr>
-<tr>
-<td width="20%">Direction</td> <td> <code>number</code> <br/> The direction score.</td>
-</tr>
-<tr>
-<td width="20%">Magnitude</td> <td> <code>number</code> <br/> The magnitude score.</td>
-</tr>
-<tr>
-<td width="20%">IsFinalScore</td> <td> <code>boolean</code> <br/> Is the insight past its expiry time and score can be finalized.</td>
-</tr>
-<tr>
-<td width="20%">Example</td>
-<td>
-<div class="cli section-example-container"><pre>
-{
-  "UpdatedTimeUtc": "2021-11-26T15:18:27.693Z",
-  "Direction": 0,
-  "Magnitude": 0,
-  "IsFinalScore": true
-}</pre>
-</div>
-</td>
-</tr>
-</table><table class="table qc-table">
-<thead>
-<tr>
-<th colspan="2"><code>Chart</code> Model - Single Parent Chart Object for Custom Charting.</th>
-</tr>
-</thead>
-<tr>
-<td width="20%">Name</td> <td> <code>string</code> <br/> Name of the Chart.</td>
-</tr>
-<tr>
-<td width="20%">ChartType</td> <td> <code>string Enum</code> <br/> Type of the Chart, Overlayed or Stacked. Options : ['Overlay', 'Stacked']</td>
-</tr>
-<tr>
-<td width="20%">Series</td> <td> <code>Series object</code> <br/> List of Series Objects for this Chart.</td>
-</tr>
-<tr>
-<td width="20%">Example</td>
-<td>
-<div class="cli section-example-container"><pre>
-{
-  "Name": "string",
-  "ChartType": "Overlay",
-  "Series": {
-    "Name": "string",
-    "Unit": "string",
-    "Index": 0,
-    "Values": [
-      {
-        "x": "string",
-        "y": 0
-      }
-    ],
-    "SeriesType": "Line",
-    "Color": "string",
-    "ScatterMarkerSymbol": "none"
-  }
-}</pre>
-</div>
-</td>
-</tr>
-</table><table class="table qc-table">
-<thead>
-<tr>
-<th colspan="2"><code>Series</code> Model - Chart Series Object - Series data and properties for a chart.</th>
-</tr>
-</thead>
-<tr>
-<td width="20%">Name</td> <td> <code>string</code> <br/> Name of the series.</td>
-</tr>
-<tr>
-<td width="20%">Unit</td> <td> <code>string</code> <br/> Axis for the chart series.</td>
-</tr>
-<tr>
-<td width="20%">Index</td> <td> <code>integer</code> <br/> Index/position of the series on the chart.</td>
-</tr>
-<tr>
-<td width="20%">Values</td> <td> <code>ChartPoint Array</code> <br/> Values for the series plot. These values are assumed to be in ascending time order (first points earliest, last points latest).</td>
-</tr>
-<tr>
-<td width="20%">SeriesType</td> <td> <code>string Enum</code> <br/> Chart type for the series. Options : ['Line', 'Scatter', 'Candle', 'Bar', 'Flag', 'StackedArea', 'Pie', 'Treemap']</td>
-</tr>
-<tr>
-<td width="20%">Color</td> <td> <code>string</code> <br/> Color the series.</td>
-</tr>
-<tr>
-<td width="20%">ScatterMarkerSymbol</td> <td> <code>string Enum</code> <br/> Shape or symbol for the marker in a scatter plot. Options : ['none', 'circle', 'square', 'diamond', 'triangle', 'triangle-down']</td>
-</tr>
-<tr>
-<td width="20%">Example</td>
-<td>
-<div class="cli section-example-container"><pre>
-{
-  "Name": "string",
-  "Unit": "string",
-  "Index": 0,
-  "Values": [
-    {
-      "x": "string",
-      "y": 0
-    }
-  ],
-  "SeriesType": "Line",
-  "Color": "string",
-  "ScatterMarkerSymbol": "none"
-}</pre>
-</div>
-</td>
-</tr>
-</table><table class="table qc-table">
-<thead>
-<tr>
-<th colspan="2"><code>ChartPoint</code> Model - Location on a chart containing the X-Y location</th>
-</tr>
-</thead>
-<tr>
-<td width="20%">x</td> <td> <code>string</code> <br/> Time of this chart point: lower case for javascript encoding simplicty.</td>
-</tr>
-<tr>
-<td width="20%">y</td> <td> <code>number</code> <br/> Value of this chart point:  lower case for javascript encoding simplicty.</td>
-</tr>
-<tr>
-<td width="20%">Example</td>
-<td>
-<div class="cli section-example-container"><pre>
-{
-  "x": "string",
-  "y": 0
-}</pre>
-</div>
-</td>
-</tr>
-</table><table class="table qc-table">
-<thead>
-<tr>
-<th colspan="2"><code>Order</code> Model - Order struct for placing new trade.</th>
-</tr>
-</thead>
-<tr>
-<td width="20%">Id</td> <td> <code>integer</code> <br/> Order ID.</td>
-</tr>
-<tr>
-<td width="20%">ContingentId</td> <td> <code>integer</code> <br/> Order Id to process before processing this order.</td>
-</tr>
-<tr>
-<td width="20%">BrokerId</td> <td> <code>string Array</code> <br/> Brokerage Id for this order for when the brokerage splits orders into multiple pieces.</td>
-</tr>
-<tr>
-<td width="20%">Symbol</td> <td> <code>Symbol object</code> <br/> Represents a unique security identifier. This is made of two components, the unique SID and the Value. The value is the current ticker symbol while the SID is constant over the life of a security.</td>
-</tr>
-<tr>
-<td width="20%">Price</td> <td> <code>number</code> <br/> Price of the Order.</td>
-</tr>
-<tr>
-<td width="20%">PriceCurrency</td> <td> <code>string</code> <br/> Currency for the order price.</td>
-</tr>
-<tr>
-<td width="20%">Time</td> <td> <code>string($date-time)</code> <br/> Gets the utc time the order was created.</td>
-</tr>
-<tr>
-<td width="20%">CreatedTime</td> <td> <code>string($date-time)</code> <br/> Gets the utc time this order was created. Alias for Time.</td>
-</tr>
-<tr>
-<td width="20%">LastFillTime</td> <td> <code>string($date-time)</code> <br/> Gets the utc time the last fill was received, or null if no fills have been received.</td>
-</tr>
-<tr>
-<td width="20%">LastUpdateTime</td> <td> <code>string($date-time)</code> <br/> Gets the utc time this order was last updated, or null if the order has not been updated.</td>
-</tr>
-<tr>
-<td width="20%">CanceledTime</td> <td> <code>string($date-time)</code> <br/> Gets the utc time this order was canceled, or null if the order was not canceled.</td>
-</tr>
-<tr>
-<td width="20%">Quantity</td> <td> <code>number</code> <br/> Number of shares to execute.</td>
-</tr>
-<tr>
-<td width="20%">Type</td> <td> <code>string Enum</code> <br/> Order type. Options : ['Market', 'Limit', 'StopMarket', 'StopLimit', 'MarketOnOpen', 'MarketOnClose', 'OptionExercise']</td>
-</tr>
-<tr>
-<td width="20%">Status</td> <td> <code>string Enum</code> <br/> Status of the Order. Options : ['New', 'Submitted', 'PartiallyFilled', 'Filled', 'Canceled', 'None', 'Invalid', 'CancelPending', 'UpdateSubmitted']</td>
-</tr>
-<tr>
-<td width="20%">Tag</td> <td> <code>string</code> <br/> Tag the order with some custom data.</td>
-</tr>
-<tr>
-<td width="20%">SecurityType</td> <td> <code>string Enum</code> <br/> Type of tradable security / underlying asset. Options : ['Base', 'Equity', 'Option', 'Commodity', 'Forex', 'Future', 'Cfd', 'Crypto']</td>
-</tr>
-<tr>
-<td width="20%">Direction</td> <td> <code>string Enum</code> <br/> Direction of the order. Options : ['Buy', 'Sell', 'Hold']</td>
-</tr>
-<tr>
-<td width="20%">Value</td> <td> <code>number</code> <br/> Gets the executed value of this order. If the order has not yet filled, then this will return zero.</td>
-</tr>
-<tr>
-<td width="20%">OrderSubmissionData</td> <td> <code>OrderSubmissionData object</code> <br/> Stores time and price information available at the time an order was submitted.</td>
-</tr>
-<tr>
-<td width="20%">IsMarketable</td> <td> <code>boolean</code> <br/> Returns true if the order is a marketable order.</td>
-</tr>
-<tr>
-<td width="20%">Example</td>
-<td>
-<div class="cli section-example-container"><pre>
-{
-  "Id": 0,
-  "ContingentId": 0,
-  "BrokerId": [
-    "string"
-  ],
-  "Symbol": {
-    "Value": "string",
-    "ID": "string",
-    "Permtick": "string"
-  },
-  "Price": 0,
-  "PriceCurrency": "string",
-  "Time": "2021-11-26T15:18:27.693Z",
-  "CreatedTime": "2021-11-26T15:18:27.693Z",
-  "LastFillTime": "2021-11-26T15:18:27.693Z",
-  "LastUpdateTime": "2021-11-26T15:18:27.693Z",
-  "CanceledTime": "2021-11-26T15:18:27.693Z",
-  "Quantity": 0,
-  "Type": "Market",
-  "Status": "New",
-  "Tag": "string",
-  "SecurityType": "Base",
-  "Direction": "Buy",
-  "Value": 0,
-  "OrderSubmissionData": {
-    "BidPrice": 0,
-    "AskPrice": 0,
-    "LastPrice": 0
-  },
-  "IsMarketable": true
-}</pre>
-</div>
-</td>
-</tr>
-</table><table class="table qc-table">
-<thead>
-<tr>
-<th colspan="2"><code>SecurityType</code> Model - Type of tradable security / underlying asset.</th>
-</tr>
-</thead>
-<tr>
-<td width="20%">SecurityType</td> <td> <code>string Enum</code> <br/> Type of tradable security / underlying asset. Options : ['Base', 'Equity', 'Option', 'Commodity', 'Forex', 'Future', 'Cfd', 'Crypto']</td>
-</tr>
-<tr>
-<td width="20%">Example</td>
-<td>
-<div class="cli section-example-container"><pre>
-{
-  "SecurityType": "Base"
-}</pre>
-</div>
-</td>
-</tr>
-</table><table class="table qc-table">
-<thead>
-<tr>
-<th colspan="2"><code>OrderDirection</code> Model - Direction of the order.</th>
-</tr>
-</thead>
-<tr>
-<td width="20%">OrderDirection</td> <td> <code>string Enum</code> <br/> Direction of the order. Options : ['Buy', 'Sell', 'Hold']</td>
-</tr>
-<tr>
-<td width="20%">Example</td>
-<td>
-<div class="cli section-example-container"><pre>
-{
-  "OrderDirection": "Buy"
-}</pre>
-</div>
-</td>
-</tr>
-</table><table class="table qc-table">
-<thead>
-<tr>
-<th colspan="2"><code>OrderSubmissionData</code> Model - Stores time and price information available at the time an order was submitted.</th>
-</tr>
-</thead>
-<tr>
-<td width="20%">BidPrice</td> <td> <code>number</code> <br/> The bid price at an order submission time.</td>
-</tr>
-<tr>
-<td width="20%">AskPrice</td> <td> <code>number</code> <br/> The ask price at an order submission time.</td>
-</tr>
-<tr>
-<td width="20%">LastPrice</td> <td> <code>number</code> <br/> The current price at an order submission time.</td>
-</tr>
-<tr>
-<td width="20%">Example</td>
-<td>
-<div class="cli section-example-container"><pre>
-{
-  "BidPrice": 0,
-  "AskPrice": 0,
-  "LastPrice": 0
-}</pre>
-</div>
-</td>
-</tr>
-</table><table class="table qc-table">
-<thead>
-<tr>
-<th colspan="2"><code>OrderEvent</code> Model - Change in an order state applied to user algorithm portfolio</th>
-</tr>
-</thead>
-<tr>
-<td width="20%">OrderId</td> <td> <code>integer</code> <br/> Id of the order this event comes from.</td>
-</tr>
-<tr>
-<td width="20%">Id</td> <td> <code>integer</code> <br/> The unique order event Id for each order.</td>
-</tr>
-<tr>
-<td width="20%">Symbol</td> <td> <code>Symbol object</code> <br/> Represents a unique security identifier. This is made of two components, the unique SID and the Value. The value is the current ticker symbol while the SID is constant over the life of a security.</td>
-</tr>
-<tr>
-<td width="20%">UtcTime</td> <td> <code>string($date-time)</code> <br/> The date and time of this event (UTC).</td>
-</tr>
-<tr>
-<td width="20%">Status</td> <td> <code>OrderStatus object</code> <br/> Messaging class signifying a change in an order state and record the change in the users algorithm portfolio.</td>
-</tr>
-<tr>
-<td width="20%">OrderFee</td> <td> <code>OrderFee object</code> <br/> The order fee associated with the specified order.</td>
-</tr>
-<tr>
-<td width="20%">FillPrice</td> <td> <code>number</code> <br/> Fill price information about the order.</td>
-</tr>
-<tr>
-<td width="20%">FillPriceCurrency</td> <td> <code>string</code> <br/> Currency for the fill price.</td>
-</tr>
-<tr>
-<td width="20%">FillQuantity</td> <td> <code>number</code> <br/> Number of shares of the order that was filled in this event.</td>
-</tr>
-<tr>
-<td width="20%">Direction</td> <td> <code>string Enum</code> <br/> Direction of the order. Options : ['Buy', 'Sell', 'Hold']</td>
-</tr>
-<tr>
-<td width="20%">Message</td> <td> <code>string</code> <br/> Any message from the exchange.</td>
-</tr>
-<tr>
-<td width="20%">IsAssignment</td> <td> <code>boolean</code> <br/> True if the order event is an assignment.</td>
-</tr>
-<tr>
-<td width="20%">StopPrice</td> <td> <code>number</code> <br/> The current stop price.</td>
-</tr>
-<tr>
-<td width="20%">LimitPrice</td> <td> <code>number</code> <br/> The current limit price.</td>
-</tr>
-<tr>
-<td width="20%">Quantity</td> <td> <code>number</code> <br/> The current order quantity.</td>
-</tr>
-<tr>
-<td width="20%">Example</td>
-<td>
-<div class="cli section-example-container"><pre>
-{
-  "OrderId": 0,
-  "Id": 0,
-  "Symbol": {
-    "Value": "string",
-    "ID": "string",
-    "Permtick": "string"
-  },
-  "UtcTime": "2021-11-26T15:18:27.693Z",
-  "Status": {
-    "OrderId": 0,
-    "Id": 0,
-    "Symbol": {
-      "Value": "string",
-      "ID": "string",
-      "Permtick": "string"
-    },
-    "UtcTime": "2021-11-26T15:18:27.693Z",
-    "Status": "New",
-    "FillPrice": 0,
-    "FillPriceCurrency": "string",
-    "FillQuantity": 0,
-    "Direction": "Buy",
-    "Message": "string",
-    "IsAssignment": true,
-    "StopPrice": 0,
-    "LimitPrice": 0,
-    "Quantity": 0
-  },
-  "OrderFee": {
-    "Value": {
-      "Amount": 0,
-      "Currency": "string"
-    }
-  },
-  "FillPrice": 0,
-  "FillPriceCurrency": "string",
-  "FillQuantity": 0,
-  "Direction": "Buy",
-  "Message": "string",
-  "IsAssignment": true,
-  "StopPrice": 0,
-  "LimitPrice": 0,
-  "Quantity": 0
-}</pre>
-</div>
-</td>
-</tr>
-</table><table class="table qc-table">
-<thead>
-<tr>
-<th colspan="2"><code>OrderStatus</code> Model - Messaging class signifying a change in an order state and record the change in the users algorithm portfolio.</th>
-</tr>
-</thead>
-<tr>
-<td width="20%">OrderId</td> <td> <code>integer</code> <br/> Id of the order this event comes from.</td>
-</tr>
-<tr>
-<td width="20%">Id</td> <td> <code>integer</code> <br/> The unique order event Id for this order.</td>
-</tr>
-<tr>
-<td width="20%">Symbol</td> <td> <code>Symbol object</code> <br/> Represents a unique security identifier. This is made of two components, the unique SID and the Value. The value is the current ticker symbol while the SID is constant over the life of a security.</td>
-</tr>
-<tr>
-<td width="20%">UtcTime</td> <td> <code>string($date-time)</code> <br/> The date and time of this event.</td>
-</tr>
-<tr>
-<td width="20%">Status</td> <td> <code>string Enum</code> <br/> Status of the Order. Options : ['New', 'Submitted', 'PartiallyFilled', 'Filled', 'Canceled', 'None', 'Invalid', 'CancelPending', 'UpdateSubmitted']</td>
-</tr>
-<tr>
-<td width="20%">FillPrice</td> <td> <code>number</code> <br/> Fill price information about the order.</td>
-</tr>
-<tr>
-<td width="20%">FillPriceCurrency</td> <td> <code>string</code> <br/> Currency for the fill price.</td>
-</tr>
-<tr>
-<td width="20%">FillQuantity</td> <td> <code>number</code> <br/> Number of shares of the order that was filled in this event.</td>
-</tr>
-<tr>
-<td width="20%">Direction</td> <td> <code>string Enum</code> <br/> Direction of the order. Options : ['Buy', 'Sell', 'Hold']</td>
-</tr>
-<tr>
-<td width="20%">Message</td> <td> <code>string</code> <br/> Any message from the exchange.</td>
-</tr>
-<tr>
-<td width="20%">IsAssignment</td> <td> <code>boolean</code> <br/> Order event is an allocation of trades from ITM option assignment.</td>
-</tr>
-<tr>
-<td width="20%">StopPrice</td> <td> <code>number</code> <br/> The current stop price.</td>
-</tr>
-<tr>
-<td width="20%">LimitPrice</td> <td> <code>number</code> <br/> The current limit price.</td>
-</tr>
-<tr>
-<td width="20%">Quantity</td> <td> <code>number</code> <br/> The current order quantity.</td>
-</tr>
-<tr>
-<td width="20%">Example</td>
-<td>
-<div class="cli section-example-container"><pre>
-{
-  "OrderId": 0,
-  "Id": 0,
-  "Symbol": {
-    "Value": "string",
-    "ID": "string",
-    "Permtick": "string"
-  },
-  "UtcTime": "2021-11-26T15:18:27.693Z",
-  "Status": "New",
-  "FillPrice": 0,
-  "FillPriceCurrency": "string",
-  "FillQuantity": 0,
-  "Direction": "Buy",
-  "Message": "string",
-  "IsAssignment": true,
-  "StopPrice": 0,
-  "LimitPrice": 0,
-  "Quantity": 0
-}</pre>
-</div>
-</td>
-</tr>
-</table><table class="table qc-table">
-<thead>
-<tr>
-<th colspan="2"><code>Status</code> Model - Status of the Order.</th>
-</tr>
-</thead>
-<tr>
-<td width="20%">Status</td> <td> <code>string Enum</code> <br/> Status of the Order. Options : ['New', 'Submitted', 'PartiallyFilled', 'Filled', 'Canceled', 'None', 'Invalid', 'CancelPending', 'UpdateSubmitted']</td>
-</tr>
-<tr>
-<td width="20%">Example</td>
-<td>
-<div class="cli section-example-container"><pre>
-{
-  "Status": "New"
-}</pre>
-</div>
-</td>
-</tr>
-</table><table class="table qc-table">
-<thead>
-<tr>
-<th colspan="2"><code>OrderFee</code> Model - The order fee associated with the specified order.</th>
-</tr>
-</thead>
-<tr>
-<td width="20%">Value</td> <td> <code>CashAmount object</code> <br/> Represents a cash amount which can be converted to account currency using a currency converter.</td>
-</tr>
-<tr>
-<td width="20%">Example</td>
-<td>
-<div class="cli section-example-container"><pre>
-{
-  "Value": {
-    "Amount": 0,
-    "Currency": "string"
-  }
-}</pre>
-</div>
-</td>
-</tr>
-</table><table class="table qc-table">
-<thead>
-<tr>
-<th colspan="2"><code>CashAmount</code> Model - Represents a cash amount which can be converted to account currency using a currency converter.</th>
-</tr>
-</thead>
-<tr>
-<td width="20%">Amount</td> <td> <code>number</code> <br/> The amount of cash.</td>
-</tr>
-<tr>
-<td width="20%">Currency</td> <td> <code>string</code> <br/> The currency in which the cash amount is denominated.</td>
-</tr>
-<tr>
-<td width="20%">Example</td>
-<td>
-<div class="cli section-example-container"><pre>
-{
-  "Amount": 0,
-  "Currency": "string"
+  "Equity": "$100.00",
+  "Fees": "-$100.00",
+  "Holdings": "$100.00",
+  "Net Profit": "$100.00",
+  "Probabilistic Sharpe Ratio": "50.00%",
+  "Return": "50.00%",
+  "Unrealized": "$100.00",
+  "Volume": "$100.00"
 }</pre>
 </div>
 </td>
