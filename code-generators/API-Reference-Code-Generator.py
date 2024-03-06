@@ -324,7 +324,7 @@ def ExampleWriting(request_object_properties, item_list, array=False, order=0):
                 type_ += f'(${format})'
                 example_ += '"2021-11-26T15:18:27.693Z"'
                 
-        if description_[-1] != ".":
+        if description_ and description_[-1] != ".":
               description_ += "."
               
         if "enum" in properties:
