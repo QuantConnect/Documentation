@@ -1,0 +1,26 @@
+<p>Dividend yield models must extend the <code>IDividendYieldModel</code> interface. Extensions of the <code>IDividendYieldModel</code> interface must implement a <code>GetDividendYield</code> method. The <code>GetDividendYield</code> method returns the dividend yield for a given date.</p>
+
+<div class="section-example-container">
+<pre class="csharp">// Before creating the indicator, create the set dividend yield model
+var dividendYieldModel = new MyDividendYieldModel();
+_iv = new ImpliedVolatility(symbol, RiskFreeInterestRateModel, dividendYieldModel, OptionPricingModelType.BlackScholes);
+
+// Define the custom dividend yield model
+public class MyDividendYieldModel : IDividendYieldModel 
+{
+    public decimal GetDividendYield(DateTime date) 
+    {
+        return 0.02m;
+    }
+}</pre>
+<pre class="python"># Before creating the indicator, create the set dividend yield model
+dividendYieldModel = MyDividendYieldModel()
+self.iv = ImpliedVolatility(symbol, self.RiskFreeInterestRateModel, dividendYieldModel, OptionPricingModelType.BlackScholes)
+    
+# Define the custom dividend yield model
+class MyDividendYieldModel:
+    def GetDividendYield(self, date: datetime) -&gt; float:
+        return 0.02</pre>
+</div>
+
+<p>For a full example algorithm, see <span class='python'><a href='https://www.quantconnect.com/terminal/processCache?request=embedded_backtest_20d0faedc86be00cb5f7e2e2cc4f9b79.html'>this backtest</a></span><span class='csharp'><a href='https://www.quantconnect.com/terminal/processCache?request=embedded_backtest_157d3106f24568d8aa43d169f2ccf52a.html'>this backtest</a></span>.</p>
