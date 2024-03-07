@@ -6,7 +6,7 @@
         <pre>$ lean cloud pull</pre>
     </div>
 <? } ?>
-    <li><? if ($leanCLI) { ?>A<? } else { ?>Open a terminal in your organization workspace and then a<? } ?>dd the project directories and the <span class='public-directory-name'>Library</span>.</li>
+    <li><? if ($leanCli) { ?>A<? } else { ?>Open a terminal in your organization workspace and then a<? } ?>dd the project directories and the <span class='public-directory-name'>Library</span>.</li>
     <div class="cli section-example-container">
         <pre>$ git add Library/
 $ git add &lt;projectDirectory1&gt;/

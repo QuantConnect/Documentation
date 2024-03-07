@@ -4,10 +4,9 @@ $assetClass = "Futures";
 $underlyingSymbolVariablePy = "future.Symbol";
 $underlyingSymbolVariableC = "future.Symbol";
 
-$contractVariableC = "contractSymbol";
-$contractVariablePy = "contract_symbol";
-
 $underlyingAssetClass = ""; 
 $supportsTicks = true;
+$contractVariableC = "contractSymbol";
+$contractVariablePy = "contract_symbol";
 include(DOCS_RESOURCES."/datasets/research-environment/get-historical-data.php");
 ?>

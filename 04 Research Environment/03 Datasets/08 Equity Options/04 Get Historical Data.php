@@ -4,10 +4,9 @@ $assetClass = "Equity Option";
 $underlyingSymbolVariablePy = "equity_symbol";
 $underlyingSymbolVariableC = "equitySymbol";
 
-$contractVariableC = "contractSymbol";
-$contractVariablePy = "contract_symbol";
-
 $underlyingAssetClass = "Equity";
 $supportsTicks = false;
+$contractVariableC = "contractSymbol";
+$contractVariablePy = "contract_symbol";
 include(DOCS_RESOURCES."/datasets/research-environment/get-historical-data.php");
 ?>

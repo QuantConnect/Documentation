@@ -9,6 +9,7 @@ $resolutionPeriod = "Second";
 $typeOf = "Tick";
 $createConsolidatorExtraArgs = ", TickType.Quote";
 $resolveConsolidatorExtraArgsC = ", typeof(QuoteBar)";
+$resolveConsolidatorExtraArgsPy = "";
 $resolutionArgExtraExamplesC = "";
 $resolutionArgExtraExamplesPy = "";
 $consolidationHandlerType = "QuoteBar";

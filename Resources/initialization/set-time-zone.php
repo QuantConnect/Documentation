@@ -5,7 +5,7 @@
 <div data-tree='QuantConnect.TimeZones'></div>
 
 <div class='section-example-container'>
-<pre class='csharp'><?=$cCodePrefix?>SetTimeZone("Europe/London");
+<pre class='csharp'><?=$writingAlgorithms ? "" : "qb."?>SetTimeZone("Europe/London");
 <?=$writingAlgorithms ? "" : "qb."?>SetTimeZone(NodaTime.DateTimeZone.Utc);
 <?=$writingAlgorithms ? "" : "qb."?>SetTimeZone(TimeZones.Chicago);
 </pre>

@@ -5,7 +5,8 @@ $underlyingSymbolVariablePy = "option.Symbol";
 $underlyingSymbolVariableC = "option.Symbol";
 
 $underlyingAssetClass = "Index";
-$contractVariablePy = "\"SPX\"";
+$supportsTicks = false;
 $contractVariableC = "\"SPX\"";
+$contractVariablePy = "\"SPX\"";
 include(DOCS_RESOURCES."/datasets/research-environment/get-historical-data.php");
 ?>

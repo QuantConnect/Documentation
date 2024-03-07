@@ -1,4 +1,4 @@
-<? $specificAsset = " for Futures contracts"; include(DOCS_RESOURCES."/securities/data-normalization-raw-only.php"); ?>
+<? $specificAsset = " for Futures contracts"; $additionalInformation = ""; include(DOCS_RESOURCES."/securities/data-normalization-raw-only.php"); ?>
 
 <p>The following data normalization modes are available for <a href='/docs/v2/writing-algorithms/universes/futures#12-Continous-Contracts'>continuous Futures contracts</a>:</p>
 

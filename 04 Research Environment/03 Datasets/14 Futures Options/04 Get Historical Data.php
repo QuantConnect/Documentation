@@ -6,7 +6,7 @@ $underlyingSymbolVariableC = "futuresContractSymbol";
 
 $underlyingAssetClass = "Futures contract";
 $supportsTicks = false;
-$contractVariablePy ="fop_contract_symbol";
 $contractVariableC ="fopContractSymbol";
+$contractVariablePy ="fop_contract_symbol";
 include(DOCS_RESOURCES."/datasets/research-environment/get-historical-data.php");
 ?>

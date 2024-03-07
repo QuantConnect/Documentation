@@ -254,7 +254,9 @@ def ExtractImage(content: str) -> dict:
     images = soup.findAll('img')
     
     for image in images:
-        url = image["src"]
+        url = image["src"].strip()
+        if not url:
+            continue
         path = f'{IMAGE_DIR}/{url.split("/")[-1].split("?")[0]}'
         try:
             if url and not os.path.exists(path):
