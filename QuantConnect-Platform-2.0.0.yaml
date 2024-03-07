@@ -1608,16 +1608,16 @@ components:
         uid:
           type: integer
           description: User id.
-        blivecontrol:
+        liveControl:
           type: boolean
           description: Indicate if the user have live control.
-        epermission:
+        permission:
           type: string
           description: The permission this user is given.
           enum:
           - read
           - write
-        profileimage:
+        profileImage:
           type: string
           description: The url of the user profile image.
           example: "https://cdn.quantconnect.com/web/i/users/profile/abc123.jpeg"
@@ -1681,8 +1681,6 @@ components:
           description: Signature order of files to be compiled.
           items:
           - string
-        debug:
-          $ref: '#/components/schemas/Debug'
         logs:
           type: array
           description: Logs of the compilation request.
@@ -1891,56 +1889,6 @@ components:
           description: Date of the data requested yyyyMMdd.
           example: yyyyMMdd
       description: Request for a link to downloadable data.
-    Debug:
-      type: object
-      properties:
-        sType:
-          type: string
-          description: Debug type.
-        sCompileID:
-          type: string
-          description: Compilation id.
-        sUserToken:
-          type: string
-          description: User token of the user compiling the project.
-        iUserID:
-          type: string
-          description: User ID of the user compiling the project.
-        iProjectID:
-          type: integer
-          description: Project ID.
-        sChannel:
-          type: string
-          description:
-        eLanguage:
-          type: string
-          description: Programming language.
-          enum:
-          - C#
-          - Py
-        sFocusedFileName:
-          type: string
-          description:
-        iRow:
-          type: integer
-          description:
-        iColumn:
-          type: integer
-          description:
-        sCodePrefix:
-          type: string
-          description:
-        sCommand:
-          type: string
-          description:
-        oVersion:
-          $ref: '#/components/schemas/VersionShort'
-        files:
-          type: array
-          description: Files being compiled.
-          items:
-            $ref: '#/components/schemas/CompileFile'
-      description: Debug record of compilation.
     DeleteFileRequest:
       type: object
       properties:
@@ -3298,11 +3246,6 @@ components:
           description: List of projects for the authenticated user.
           items:
             $ref: '#/components/schemas/Project'
-        versions:
-          type: array
-          description: List of LEAN version the project is using.
-          items:
-            $ref: '#/components/schemas/Version'
         success:
           type: boolean
           description: Indicate if the API request was successful.
@@ -4185,25 +4128,7 @@ components:
           description:
           format: float
       additionalProperties:
-        $ref: '#/components/schemas/VersionShort'
-    VersionShort:
-      type: object
-      properties:
-        id:
-          type: integer
-          description: LEAN version id.
-        sref:
-          type: string
-          description: Server location of the LEAN engine.
-        slean:
-          type: string
-          description: LEAN hash reference.
-        sleancloud:
-          type: string
-          description: LEAN cloud hash reference.
-        sname:
-          type: string
-          description: Name of LEAN version.
+        $ref: '#/components/schemas/Version'
     files_update_body:
       oneOf:
       - $ref: '#/components/schemas/UpdateFileNameRequest'
