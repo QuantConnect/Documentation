@@ -1,0 +1,3 @@
+<p>Implied Volatility, <script type="math/tex">\sigma</script>, is often interpreted as the market's expectation for the future volatility of a stock and is implied by the price of the stock's options. It is not observable in the market but can be derived from the price of an option.</p>
+
+<p>To create an automatic indicators for <code>ImpliedVolatility</code>, call the <code>IV</code> helper method from the QCAlgorithm class.</p>

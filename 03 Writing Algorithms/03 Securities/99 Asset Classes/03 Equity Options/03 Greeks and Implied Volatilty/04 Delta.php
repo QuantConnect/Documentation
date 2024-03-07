@@ -1,0 +1,3 @@
+<p>Delta, <script type="math/tex">\Delta</script>, is the rate of change of the option price with respect to the price of the underlying asset. It measures the first-order sensitivity of the price to a movement in stock price S. The option delta is 0.4 means that if the underlying moves by for example 1%, then the value of the option will move by 0.4 × 1%.</p>
+
+<p>To create an automatic indicators for <code>Delta</code>, call the <code>D</code> helper method from the QCAlgorithm class.</p>

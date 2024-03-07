@@ -1,0 +1,3 @@
+<p>Rho, <script type="math/tex">\rho</script>, is the rate of change of the value of a derivative with respect to the interest rate. It is usually small and not a big issue in practice unless the option is deep in-the-money and has a long horizon. The interest rate would matter because we need to discount a larger cash flow over a longer horizon. Rho for the European options:</p>
+
+<p>To create an automatic indicators for <code>Rho</code>, call the <code>R</code> helper method from the QCAlgorithm class.</p>
