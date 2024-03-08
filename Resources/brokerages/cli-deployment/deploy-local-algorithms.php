@@ -25,6 +25,28 @@ if ($isBrokerage) {
   );
   $brokerageNumber = array_search($brokerageName, $brokerages) + 1;
 }
+
+$dataProviders = array(
+    "Interactive Brokers",
+    "Tradier",
+    "Oanda",
+    "Bitfinex",
+    "Coinbase Advanced Trade",
+    "Binance",
+    "Zerodha",
+    "Samco",
+    "Terminal Link",
+    "Trading Technologies",
+    "Kraken",
+    "TDAmeritrade",
+    "IQFeed",
+    "Polygon",
+    "IEX Cloud",
+    "CoinApi",
+    "Custom data only",
+    "Bybit"
+);
+$dataProviderNumber = isset($dataProviderName) ? array_search($dataProviderName, $dataProviders) + 1 : -1;
 ?>
     
     <li>Run <code>lean live "&lt;projectName&gt;"</code> to start a live deployment wizard for the project in <span class='public-directory-name'>. / &lt;projectName&gt;</span> and then enter <? if ($isBrokerage) { ?> the brokerage number, <span class='key-combinations'><?=$brokerageNumber?></span><? } else { ?>a brokerage number<? } ?>.
@@ -112,9 +134,37 @@ To enter multiple options, separate them with comma: 9</pre>
 </div>
 </li>   
 <?  
-} else {
+} else if (isset($dataProviderName)) {
 ?>
-<li>Enter the number of the live data provider(s) to use and then follow the steps required for the data connection.
+            <li>Enter <span class='key-combinations'><?=$dataProviderNumber?></span> to select the <?=$dataProviderName?> data provider.</li> 
+            <div class='cli section-example-container'>
+<pre>$ lean live "My Project"
+Select a live data feed:
+1) Interactive Brokers
+2) Tradier
+3) Oanda
+4) Bitfinex
+5) Coinbase Advanced Trade
+6) Binance
+7) Zerodha
+8) Samco
+9) Terminal Link
+10) Trading Technologies
+11) Kraken
+12) TD Ameritrade
+13) IQFeed
+14) Polygon
+15) IEX
+16) CoinApi
+17) Custom data only
+18) Bybit
+To enter multiple options, separate them with comma: <?=$dataProviderNumber?></pre>
+            </div>
+            </li>
+<?
+    echo $dataProviderDetails;
+} else {
+?><li>Enter the number of the live data provider(s) to use and then follow the steps required for the data connection.
 <div class='cli section-example-container'>
 <pre>$ lean live "My Project"
 Select a live data provider:
