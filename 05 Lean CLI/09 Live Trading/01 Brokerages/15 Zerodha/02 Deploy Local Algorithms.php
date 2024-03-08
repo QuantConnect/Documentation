@@ -76,6 +76,8 @@ Do you have a history API subscription? (true, false): true</pre>
 </div>
 </li>
 ";
+$dataProviderName = "Zerodha";
+$dataProviderDetails = "";
 $supportsIQFeed = false;
 $requiresSubscription = true;
 $useBrokerageDataProvider = true;
