@@ -44,6 +44,8 @@ raw_price = self.Securities[self.future.Mapped].Price</pre>
         self.Log(tag)</pre>
 </div>
 
+<p>In backtesting, the <code>SymbolChangedEvent</code> occurs at midnight (ET). In live trading, the live data for continuous contract mapping arrives at 6/7 AM ET, so that's when it occurs.</p>
+
 <h4>Data Normalization Modes</h4>
 <p>The <code>dataNormalizationMode</code> argument defines how the price series of two contracts are stitched together when the contract rollovers occur. The following <code>DataNormalizatoinMode</code> enumeration members are available for continuous contracts:</p>
 <div data-tree='QuantConnect.DataNormalizationMode' data-fields='Raw,ForwardPanamaCanal,BackwardsPanamaCanal,BackwardsRatio'></div>

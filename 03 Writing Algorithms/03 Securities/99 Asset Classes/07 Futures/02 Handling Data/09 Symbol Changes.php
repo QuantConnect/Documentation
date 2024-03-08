@@ -31,3 +31,5 @@
         if quantity != 0: self.MarketOrder(new_symbol, quantity, tag = tag)
         self.Log(tag)</pre>
 </div>
+
+<p>In backtesting, the <code>SymbolChangedEvent</code> occurs at midnight (ET). In live trading, the live data for continuous contract mapping arrives at 6/7 AM ET, so that's when it occurs.</p>
