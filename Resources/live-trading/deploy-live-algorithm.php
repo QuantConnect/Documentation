@@ -9,6 +9,7 @@
     <li>On the Deploy Live page, click the <span class="field-name">Brokerage</span> field and then click <span class="button-name"><?=$brokerageName?></span> from the drop-down menu.</li>
     <?=$authentication?>
     <li>Click the <span class="field-name">Node</span> field and then click the live trading node that you want to use from the drop-down menu.</li>
+    <li><span class='qualifier'>(Optional)</span> In the <span class='page-section-name'>Data Provider</span> section, click <span class='button-name'>Show</span> and change the data provider or add additional providers.</li>
 <? if ($cashState) {?>
     <li>If your brokerage account has existing cash holdings, follow these steps (<a href='https://vimeo.com/703024505' rel='nofollow' target="_blank">see video</a>):</li>
     <ol>
