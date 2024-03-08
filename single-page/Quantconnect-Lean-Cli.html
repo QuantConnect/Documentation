@@ -69,6 +69,7 @@
 <li><a href="#4.6" class="toc-h2" target="_parent">4.6 IEX Cloud</a></li>
 <li><a href="#4.7" class="toc-h2" target="_parent">4.7 IQFeed</a></li>
 <li><a href="#4.8" class="toc-h2" target="_parent">4.8 Polygon</a></li>
+<li><a href="#4.9" class="toc-h2" target="_parent">4.9 Terminal Link</a></li>
 <li><a href="#5" class="toc-h1" target="_parent">5 Projects</a></li>
 <li><a href="#5.1" class="toc-h2" target="_parent">5.1 Project Management</a></li>
 <li><a href="#5.2" class="toc-h2" target="_parent">5.2 Cloud Synchronization</a></li>
@@ -7810,12 +7811,30 @@ else:
  <body>
   <p>
    Instead of using the data from QuantConnect or your brokerage, you can use IEX Cloud if you're deploying a local project.
-    To use IEX Cloud, you need an account their Launch, Grow, or Enterprise plan.
-    If you don't have an account,
+    To use IEX Cloud, you need an account subscribed to one or more
+   <a href="https://iexcloud.io/documentation/financial-data/data-bundles.html" rel="nofollow" target="_blank">
+    data bundles
+   </a>
+   . You also must select either the Launch, Grow, or Enterprise subscription tier; this dictates your maximum requests per second. If you don't have an account,
    <a href="https://iexcloud.io/cloud-login#/register" rel="nofollow" target="_blank">
     register today
    </a>
-   and get your API key.
+   and get your
+   <a href="https://iexcloud.io/console/tokens" rel="nofollow" target="_blank">
+    API key
+   </a>
+   . Pricing information can be found
+   <a href="https://iexcloud.io/pricing" rel="nofollow" target="_blank">
+    here
+   </a>
+   .
+  </p>
+  <p>
+   Upon registration, your account will automatically start a 7-day free trial. This trial has access to all API endpoints and a rate limit of 5 requests per second. If you have any questions regarding IEX Cloud's API service, please contact them here:
+   <a href="mailto:support@iexcloud.io">
+    support@iexcloud.io
+   </a>
+   .
   </p>
   <p>
    To view the implementation of the IEX Cloud integration, see the
@@ -8059,6 +8078,13 @@ else:
    </code>
    to deploy another live algorithm with the same options.
   </p>
+  <p>
+   To deploy the live algorithm through the interactive mode of the CLI, see
+   <a href="#4.6">
+    IEX Cloud
+   </a>
+   .
+  </p>
  </body>
 </html>
 
@@ -8297,6 +8323,13 @@ else:
    </code>
    to deploy another live algorithm with the same options.
   </p>
+  <p>
+   To deploy the live algorithm through the interactive mode of the CLI, see
+   <a href="#4.7">
+    IQFeed
+   </a>
+   .
+  </p>
  </body>
 </html>
 
@@ -8526,6 +8559,23 @@ else:
    </code>
    to deploy another live algorithm with the same options.
   </p>
+  <p>
+   To deploy the algorithm in QuantConnect Cloud while still using Polygon as the data provider, run
+   <code>
+    lean cloud live deploy &lt;projectName&gt; --data-provider-live Polygon --polygon-api-key &lt;apiKey&gt; --brokerage &lt;brokerageName&gt; &lt;requiredBrokerageOptions&gt; --node &lt;nodeName&gt; --auto-restart &lt;enableAutoRestarts&gt; --notify-order-events &lt;enableOrderEventNotifications&gt; --notify-insights &lt;enableInsightNotifications&gt; &lt;requiredNotificationOptions&gt;
+   </code>
+   .
+  </p>
+  <div class="cli section-example-container">
+   <pre>$ lean cloud live deploy "My Project" --data-provider-live Polygon --polygon-api-key apiKey --brokerage "Paper Trading" --node "My Node" --auto-restart yes --notify-order-events no --notify-insights no</pre>
+  </div>
+  <p>
+   To deploy the live algorithm through the interactive mode of the CLI, see
+   <a href="#4.8">
+    Polygon
+   </a>
+   .
+  </p>
  </body>
 </html>
 
@@ -8559,6 +8609,26 @@ else:
   </ul>
  </body>
 </html>
+
+<p style="page-break-after: always;">&nbsp;</p>
+<p class='page-breadcrumb'>Datasets > Terminal Link</p>
+<div class='page-heading'>
+    <section id="4.9">
+        <h1>Datasets</h1>
+        <h2>Terminal Link</h2>
+    </section>
+</div>
+<h3>Introduction</h3>
+
+<h3>Backtesting</h3>
+
+<h3>Research</h3>
+
+<h3>Optimization</h3>
+
+<h3>Live Trading</h3>
+
+<h3>Supported Assets</h3>
 
 <p style="page-break-after: always;">&nbsp;</p>
 <p class='page-breadcrumb'>Projects</p>
@@ -12051,8 +12121,7 @@ Setting default research image to 'lean-cli/research:latest'</pre>
     <pre>$ lean cloud pull</pre>
    </div>
    <li>
-    Warning: Undefined variable $leanCLI in /tmp/docs/e4cd878f7bb065188c7dcbda70f739c63a499865/Resources/cli/version-control/push-changes-to-git.php on line 9
-Open a terminal in your organization workspace and then add the project directories and the
+    Add the project directories and the
     <span class="public-directory-name">
      Library
     </span>
@@ -13499,7 +13568,20 @@ Enter an option: 1</pre>
     </div>
    </li>
    <li>
-    Enter the number of the live data provider to use and then follow the steps required for the data connection.
+    Set your initial cash balance.
+    <div class="cli section-example-container">
+     <pre>$ lean live "My Project"
+Previous cash balance: [{'currency': 'USD', 'amount': 100000.0}]
+Do you want to set a different initial cash balance? [y/N]: y 
+Setting initial cash balance...
+Currency: USD
+Amount: 95800
+Cash balance: [{'currency': 'USD', 'amount': 95800.0}]
+Do you want to add more currency? [y/N]: n</pre>
+    </div>
+   </li>
+   <li>
+    Enter the number of the live data provider(s) to use and then follow the steps required for the data connection.
     <div class="cli section-example-container">
      <pre>$ lean live "My Project"
 Select a live data provider:
@@ -13512,13 +13594,15 @@ Select a live data provider:
 7) Zerodha
 8) Samco
 9) Terminal Link
-10) Kraken
-11) TD Ameritrade
-12) IQFeed
-13) Polygon
-14) IEX
-15) Custom data only
-16) Bybit
+10) Trading Technologies
+11) Kraken
+12) TD Ameritrade
+13) IQFeed
+14) Polygon
+15) IEX
+16) CoinApi
+17) Custom data only
+18) Bybit
 To enter multiple options, separate them with comma:</pre>
     </div>
    </li>
@@ -13557,19 +13641,6 @@ To enter multiple options, separate them with comma:</pre>
    <pre class="csharp">SetBenchmark(x =&gt; 0);</pre>
    <pre class="python">self.SetBenchmark(lambda x: 0)</pre>
   </div>
-  <li>
-   Set your initial cash balance.
-   <div class="cli section-example-container">
-    <pre>$ lean live "My Project"
-Previous cash balance: [{'currency': 'USD', 'amount': 100000.0}]
-Do you want to set a different initial cash balance? [y/N]: y 
-Setting initial cash balance...
-Currency: USD
-Amount: 95800
-Cash balance: [{'currency': 'USD', 'amount': 95800.0}]
-Do you want to add more currency? [y/N]: n</pre>
-   </div>
-  </li>
   <li>
    View the result in the
    <span class="public-directory-name">
@@ -13610,7 +13681,7 @@ Do you want to add more currency? [y/N]: n</pre>
 <html>
  <body>
   <p>
-   Follow these steps to start live trading a project in the cloud with the QuantConnect Paper Trading brokerage:
+   Follow these steps to start live trading a project in the cloud with the QuantConnect Paper Trading brokerage :
   </p>
   <ol>
    <li>
@@ -13671,19 +13742,6 @@ Select a brokerage:
 Enter an option: 1</pre>
    </div>
    <li>
-    Select the live node that you want to use.
-   </li>
-   <p>
-    If you only have one idle live trading node, it is selected automatically and this step is skipped.
-   </p>
-   <div class="cli section-example-container">
-    <pre>$ lean cloud live "My Project" --push --open
-Select a node:
-1) L-MICRO node 89c90172 - 1 CPU @ 2.4GHz, 0.5GB Ram
-2) L-MICRO node 85a52135 - 1 CPU @ 2.4GHz, 0.5GB Ram
-Enter an option: 1</pre>
-   </div>
-   <li>
     Configure your notification settings.
    </li>
    <p>
@@ -13725,16 +13783,75 @@ Do you want to add another notification method? [y/N]: n</pre>
 Do you want to enable automatic algorithm restarting? [Y/n]: y</pre>
    </div>
    <li>
-    Verify the configured settings and confirm them to start the live deployment in the cloud.
+    Select the live node that you want to use.
    </li>
+   <p>
+    If you only have one idle live trading node, it is selected automatically and this step is skipped.
+   </p>
    <div class="cli section-example-container">
     <pre>$ lean cloud live "My Project" --push --open
+Select a node:
+1) L-MICRO node 89c90172 - 1 CPU @ 2.4GHz, 0.5GB Ram
+2) L-MICRO node 85a52135 - 1 CPU @ 2.4GHz, 0.5GB Ram
+Enter an option: 1</pre>
+   </div>
+   <li>
+    Enter the number of the live data provider(s) to use and then follow the steps required for the data connection.
+    <div class="cli section-example-container">
+     <pre>$ lean live "My Project"
+Select a live data feed:
+1) Interactive Brokers
+2) Tradier
+3) Oanda
+4) Bitfinex
+5) Coinbase Advanced Trade
+6) Binance
+7) Zerodha
+8) Samco
+9) Terminal Link
+10) Trading Technologies
+11) Kraken
+12) TD Ameritrade
+13) IQFeed
+14) Polygon
+15) IEX
+16) CoinApi
+17) Bybit
+To enter multiple options, separate them with comma:</pre>
+    </div>
+   </li>
+   <p>
+    If you select one of the following data providers, see the respective page for more instructions:
+   </p>
+  </ol>
+  <ul>
+   <li>
+    <a href="#4.6">
+     IEX Cloud
+    </a>
+   </li>
+   <li>
+    <a href="#4.7">
+     IQFeed
+    </a>
+   </li>
+   <li>
+    <a href="#4.8">
+     Polygon
+    </a>
+   </li>
+  </ul>
+  <li>
+   Verify the configured settings and confirm them to start the live deployment in the cloud.
+  </li>
+  <div class="cli section-example-container">
+   <pre>$ lean cloud live "My Project" --push --open
 Brokerage: QuantConnect Paper Trading
 Project id: 1234567
 Environment: Live
 Server name: L-MICRO node 89c90172
 Server type: L-MICRO
-Data provider: QuantConnect
+Live Data providers: QuantConnectBrokerage
 LEAN version: 11157
 Order event notifications: Yes
 Insight notifications: Yes
@@ -13742,16 +13859,12 @@ Email notifications: john.doe@example.com
 Webhook notifications: None
 SMS notifications: None
 Telegram notifications: None
-    
-    
-
 Automatic algorithm restarting: Yes
 Are you sure you want to start live trading for project 'My Project'? [y/N]: y</pre>
-   </div>
-   <li>
-    Inspect the result in the browser, which opens automatically after the deployment starts.
-   </li>
-  </ol>
+  </div>
+  <li>
+   Inspect the result in the browser, which opens automatically after the deployment starts.
+  </li>
   <p>
    Follow these steps to see the live status of a project:
   </p>
@@ -13784,7 +13897,8 @@ Project url: https://www.quantconnect.com/project/1234567
 Live status: Running
 Live id: L-1234567a8901d234e5e678ddd9b0123c
 Live url: https://www.quantconnect.com/project/1234567/live
-Brokerage: QuantConnect Paper TradingLaunched: 2021-06-09 15:10:12 UTC</pre>
+Brokerage: QuantConnect Paper Trading
+Launched: 2021-06-09 15:10:12 UTC</pre>
    </div>
   </ol>
  </body>
@@ -13898,7 +14012,7 @@ Use the testnet? (live, paper): live</pre>
     </div>
    </li>
    <li>
-    Enter the number of the live data provider to use and then follow the steps required for the data connection.
+    Enter the number of the live data provider(s) to use and then follow the steps required for the data connection.
     <div class="cli section-example-container">
      <pre>$ lean live "My Project"
 Select a live data provider:
@@ -13911,13 +14025,15 @@ Select a live data provider:
 7) Zerodha
 8) Samco
 9) Terminal Link
-10) Kraken
-11) TD Ameritrade
-12) IQFeed
-13) Polygon
-14) IEX
-15) Custom data only
-16) Bybit
+10) Trading Technologies
+11) Kraken
+12) TD Ameritrade
+13) IQFeed
+14) Polygon
+15) IEX
+16) CoinApi
+17) Custom data only
+18) Bybit
 To enter multiple options, separate them with comma:</pre>
     </div>
    </li>
@@ -13982,7 +14098,7 @@ To enter multiple options, separate them with comma:</pre>
 <html>
  <body>
   <p>
-   Follow these steps to start live trading a project in the cloud with the Binance brokerage:
+   Follow these steps to start live trading a project in the cloud with the Binance brokerage :
   </p>
   <ol>
    <li>
@@ -14072,19 +14188,6 @@ API secret: ****************************************************************</pr
 Use the testnet? (live, paper): </pre>
    </div>
    <li>
-    Select the live node that you want to use.
-   </li>
-   <p>
-    If you only have one idle live trading node, it is selected automatically and this step is skipped.
-   </p>
-   <div class="cli section-example-container">
-    <pre>$ lean cloud live "My Project" --push --open
-Select a node:
-1) L-MICRO node 89c90172 - 1 CPU @ 2.4GHz, 0.5GB Ram
-2) L-MICRO node 85a52135 - 1 CPU @ 2.4GHz, 0.5GB Ram
-Enter an option: 1</pre>
-   </div>
-   <li>
     Configure your notification settings.
    </li>
    <p>
@@ -14154,16 +14257,75 @@ Portfolio Holdings: [{'symbol': 'GOOG', 'symbolId': 'GOOCV VP83T1ZUHROL', 'quant
 Do you want to add more holdings? [y/N]: n</pre>
    </div>
    <li>
-    Verify the configured settings and confirm them to start the live deployment in the cloud.
+    Select the live node that you want to use.
    </li>
+   <p>
+    If you only have one idle live trading node, it is selected automatically and this step is skipped.
+   </p>
    <div class="cli section-example-container">
     <pre>$ lean cloud live "My Project" --push --open
+Select a node:
+1) L-MICRO node 89c90172 - 1 CPU @ 2.4GHz, 0.5GB Ram
+2) L-MICRO node 85a52135 - 1 CPU @ 2.4GHz, 0.5GB Ram
+Enter an option: 1</pre>
+   </div>
+   <li>
+    Enter the number of the live data provider(s) to use and then follow the steps required for the data connection.
+    <div class="cli section-example-container">
+     <pre>$ lean live "My Project"
+Select a live data feed:
+1) Interactive Brokers
+2) Tradier
+3) Oanda
+4) Bitfinex
+5) Coinbase Advanced Trade
+6) Binance
+7) Zerodha
+8) Samco
+9) Terminal Link
+10) Trading Technologies
+11) Kraken
+12) TD Ameritrade
+13) IQFeed
+14) Polygon
+15) IEX
+16) CoinApi
+17) Bybit
+To enter multiple options, separate them with comma:</pre>
+    </div>
+   </li>
+   <p>
+    If you select one of the following data providers, see the respective page for more instructions:
+   </p>
+  </ol>
+  <ul>
+   <li>
+    <a href="#4.6">
+     IEX Cloud
+    </a>
+   </li>
+   <li>
+    <a href="#4.7">
+     IQFeed
+    </a>
+   </li>
+   <li>
+    <a href="#4.8">
+     Polygon
+    </a>
+   </li>
+  </ul>
+  <li>
+   Verify the configured settings and confirm them to start the live deployment in the cloud.
+  </li>
+  <div class="cli section-example-container">
+   <pre>$ lean cloud live "My Project" --push --open
 Brokerage: Binance
 Project id: 1234567
 Environment: Live
 Server name: L-MICRO node 89c90172
 Server type: L-MICRO
-Data provider: QuantConnect
+Live Data providers: QuantConnectBrokerage
 LEAN version: 11157
 Order event notifications: Yes
 Insight notifications: Yes
@@ -14171,16 +14333,14 @@ Email notifications: john.doe@example.com
 Webhook notifications: None
 SMS notifications: None
 Telegram notifications: None
-    
- Initial live cash balance: [{'currency': 'USD', 'amount': 95800.0}]     
- Initial live portfolio holdings: [{'symbol': 'GOOG', 'symbolId': 'GOOCV VP83T1ZUHROL', 'quantity': 10, 'averagePrice': 50.0}] 
+Initial live cash balance: [{'currency': 'USD', 'amount': 95800.0}]
+Initial live portfolio holdings: [{'symbol': 'GOOG', 'symbolId': 'GOOCV VP83T1ZUHROL', 'quantity': 10, 'averagePrice': 50.0}]
 Automatic algorithm restarting: Yes
 Are you sure you want to start live trading for project 'My Project'? [y/N]: y</pre>
-   </div>
-   <li>
-    Inspect the result in the browser, which opens automatically after the deployment starts.
-   </li>
-  </ol>
+  </div>
+  <li>
+   Inspect the result in the browser, which opens automatically after the deployment starts.
+  </li>
   <p>
    Follow these steps to see the live status of a project:
   </p>
@@ -14213,7 +14373,8 @@ Project url: https://www.quantconnect.com/project/1234567
 Live status: Running
 Live id: L-1234567a8901d234e5e678ddd9b0123c
 Live url: https://www.quantconnect.com/project/1234567/live
-Brokerage: BinanceLaunched: 2021-06-09 15:10:12 UTC</pre>
+Brokerage: Binance
+Launched: 2021-06-09 15:10:12 UTC</pre>
    </div>
   </ol>
  </body>
@@ -14313,7 +14474,7 @@ API secret: *******************************************</pre>
     on the Bitfinex website.
    </li>
    <li>
-    Enter the number of the live data provider to use and then follow the steps required for the data connection.
+    Enter the number of the live data provider(s) to use and then follow the steps required for the data connection.
     <div class="cli section-example-container">
      <pre>$ lean live "My Project"
 Select a live data provider:
@@ -14326,13 +14487,15 @@ Select a live data provider:
 7) Zerodha
 8) Samco
 9) Terminal Link
-10) Kraken
-11) TD Ameritrade
-12) IQFeed
-13) Polygon
-14) IEX
-15) Custom data only
-16) Bybit
+10) Trading Technologies
+11) Kraken
+12) TD Ameritrade
+13) IQFeed
+14) Polygon
+15) IEX
+16) CoinApi
+17) Custom data only
+18) Bybit
 To enter multiple options, separate them with comma:</pre>
     </div>
    </li>
@@ -14397,7 +14560,7 @@ To enter multiple options, separate them with comma:</pre>
 <html>
  <body>
   <p>
-   Follow these steps to start live trading a project in the cloud with the Bitfinex brokerage:
+   Follow these steps to start live trading a project in the cloud with the Bitfinex brokerage :
   </p>
   <ol>
    <li>
@@ -14473,19 +14636,6 @@ Secret key: *******************************************</pre>
     on the Bitfinex website.
    </p>
    <li>
-    Select the live node that you want to use.
-   </li>
-   <p>
-    If you only have one idle live trading node, it is selected automatically and this step is skipped.
-   </p>
-   <div class="cli section-example-container">
-    <pre>$ lean cloud live "My Project" --push --open
-Select a node:
-1) L-MICRO node 89c90172 - 1 CPU @ 2.4GHz, 0.5GB Ram
-2) L-MICRO node 85a52135 - 1 CPU @ 2.4GHz, 0.5GB Ram
-Enter an option: 1</pre>
-   </div>
-   <li>
     Configure your notification settings.
    </li>
    <p>
@@ -14555,16 +14705,75 @@ Portfolio Holdings: [{'symbol': 'GOOG', 'symbolId': 'GOOCV VP83T1ZUHROL', 'quant
 Do you want to add more holdings? [y/N]: n</pre>
    </div>
    <li>
-    Verify the configured settings and confirm them to start the live deployment in the cloud.
+    Select the live node that you want to use.
    </li>
+   <p>
+    If you only have one idle live trading node, it is selected automatically and this step is skipped.
+   </p>
    <div class="cli section-example-container">
     <pre>$ lean cloud live "My Project" --push --open
+Select a node:
+1) L-MICRO node 89c90172 - 1 CPU @ 2.4GHz, 0.5GB Ram
+2) L-MICRO node 85a52135 - 1 CPU @ 2.4GHz, 0.5GB Ram
+Enter an option: 1</pre>
+   </div>
+   <li>
+    Enter the number of the live data provider(s) to use and then follow the steps required for the data connection.
+    <div class="cli section-example-container">
+     <pre>$ lean live "My Project"
+Select a live data feed:
+1) Interactive Brokers
+2) Tradier
+3) Oanda
+4) Bitfinex
+5) Coinbase Advanced Trade
+6) Binance
+7) Zerodha
+8) Samco
+9) Terminal Link
+10) Trading Technologies
+11) Kraken
+12) TD Ameritrade
+13) IQFeed
+14) Polygon
+15) IEX
+16) CoinApi
+17) Bybit
+To enter multiple options, separate them with comma:</pre>
+    </div>
+   </li>
+   <p>
+    If you select one of the following data providers, see the respective page for more instructions:
+   </p>
+  </ol>
+  <ul>
+   <li>
+    <a href="#4.6">
+     IEX Cloud
+    </a>
+   </li>
+   <li>
+    <a href="#4.7">
+     IQFeed
+    </a>
+   </li>
+   <li>
+    <a href="#4.8">
+     Polygon
+    </a>
+   </li>
+  </ul>
+  <li>
+   Verify the configured settings and confirm them to start the live deployment in the cloud.
+  </li>
+  <div class="cli section-example-container">
+   <pre>$ lean cloud live "My Project" --push --open
 Brokerage: Bitfinex
 Project id: 1234567
 Environment: Live
 Server name: L-MICRO node 89c90172
 Server type: L-MICRO
-Data provider: QuantConnect
+Live Data providers: QuantConnectBrokerage
 LEAN version: 11157
 Order event notifications: Yes
 Insight notifications: Yes
@@ -14572,16 +14781,14 @@ Email notifications: john.doe@example.com
 Webhook notifications: None
 SMS notifications: None
 Telegram notifications: None
-    
- Initial live cash balance: [{'currency': 'USD', 'amount': 95800.0}]     
- Initial live portfolio holdings: [{'symbol': 'GOOG', 'symbolId': 'GOOCV VP83T1ZUHROL', 'quantity': 10, 'averagePrice': 50.0}] 
+Initial live cash balance: [{'currency': 'USD', 'amount': 95800.0}]
+Initial live portfolio holdings: [{'symbol': 'GOOG', 'symbolId': 'GOOCV VP83T1ZUHROL', 'quantity': 10, 'averagePrice': 50.0}]
 Automatic algorithm restarting: Yes
 Are you sure you want to start live trading for project 'My Project'? [y/N]: y</pre>
-   </div>
-   <li>
-    Inspect the result in the browser, which opens automatically after the deployment starts.
-   </li>
-  </ol>
+  </div>
+  <li>
+   Inspect the result in the browser, which opens automatically after the deployment starts.
+  </li>
   <p>
    Follow these steps to see the live status of a project:
   </p>
@@ -14614,7 +14821,8 @@ Project url: https://www.quantconnect.com/project/1234567
 Live status: Running
 Live id: L-1234567a8901d234e5e678ddd9b0123c
 Live url: https://www.quantconnect.com/project/1234567/live
-Brokerage: BitfinexLaunched: 2021-06-09 15:10:12 UTC</pre>
+Brokerage: Bitfinex
+Launched: 2021-06-09 15:10:12 UTC</pre>
    </div>
   </ol>
  </body>
@@ -14744,7 +14952,7 @@ Use testnet? (live, paper): live</pre>
     </p>
    </li>
    <li>
-    Enter the number of the live data provider to use and then follow the steps required for the data connection.
+    Enter the number of the live data provider(s) to use and then follow the steps required for the data connection.
     <div class="cli section-example-container">
      <pre>$ lean live "My Project"
 Select a live data provider:
@@ -14757,13 +14965,15 @@ Select a live data provider:
 7) Zerodha
 8) Samco
 9) Terminal Link
-10) Kraken
-11) TD Ameritrade
-12) IQFeed
-13) Polygon
-14) IEX
-15) Custom data only
-16) Bybit
+10) Trading Technologies
+11) Kraken
+12) TD Ameritrade
+13) IQFeed
+14) Polygon
+15) IEX
+16) CoinApi
+17) Custom data only
+18) Bybit
 To enter multiple options, separate them with comma:</pre>
     </div>
    </li>
@@ -14828,7 +15038,7 @@ To enter multiple options, separate them with comma:</pre>
 <html>
  <body>
   <p>
-   Follow these steps to start live trading a project in the cloud with the Bybit brokerage:
+   Follow these steps to start live trading a project in the cloud with the Bybit brokerage :
   </p>
   <ol>
    <li>
@@ -14918,19 +15128,6 @@ VIP Level (VIP0, VIP1, VIP2, VIP3, VIP4, VIP5, SupremeVIP, Pro1, Pro2, Pro3, Pro
     </p>
    </li>
    <li>
-    Select the live node that you want to use.
-   </li>
-   <p>
-    If you only have one idle live trading node, it is selected automatically and this step is skipped.
-   </p>
-   <div class="cli section-example-container">
-    <pre>$ lean cloud live "My Project" --push --open
-Select a node:
-1) L-MICRO node 89c90172 - 1 CPU @ 2.4GHz, 0.5GB Ram
-2) L-MICRO node 85a52135 - 1 CPU @ 2.4GHz, 0.5GB Ram
-Enter an option: 1</pre>
-   </div>
-   <li>
     Configure your notification settings.
    </li>
    <p>
@@ -14985,16 +15182,75 @@ Cash balance: [{'currency': 'USD', 'amount': 95800.0}]
 Do you want to add more currency? [y/N]: n</pre>
    </div>
    <li>
-    Verify the configured settings and confirm them to start the live deployment in the cloud.
+    Select the live node that you want to use.
    </li>
+   <p>
+    If you only have one idle live trading node, it is selected automatically and this step is skipped.
+   </p>
    <div class="cli section-example-container">
     <pre>$ lean cloud live "My Project" --push --open
+Select a node:
+1) L-MICRO node 89c90172 - 1 CPU @ 2.4GHz, 0.5GB Ram
+2) L-MICRO node 85a52135 - 1 CPU @ 2.4GHz, 0.5GB Ram
+Enter an option: 1</pre>
+   </div>
+   <li>
+    Enter the number of the live data provider(s) to use and then follow the steps required for the data connection.
+    <div class="cli section-example-container">
+     <pre>$ lean live "My Project"
+Select a live data feed:
+1) Interactive Brokers
+2) Tradier
+3) Oanda
+4) Bitfinex
+5) Coinbase Advanced Trade
+6) Binance
+7) Zerodha
+8) Samco
+9) Terminal Link
+10) Trading Technologies
+11) Kraken
+12) TD Ameritrade
+13) IQFeed
+14) Polygon
+15) IEX
+16) CoinApi
+17) Bybit
+To enter multiple options, separate them with comma:</pre>
+    </div>
+   </li>
+   <p>
+    If you select one of the following data providers, see the respective page for more instructions:
+   </p>
+  </ol>
+  <ul>
+   <li>
+    <a href="#4.6">
+     IEX Cloud
+    </a>
+   </li>
+   <li>
+    <a href="#4.7">
+     IQFeed
+    </a>
+   </li>
+   <li>
+    <a href="#4.8">
+     Polygon
+    </a>
+   </li>
+  </ul>
+  <li>
+   Verify the configured settings and confirm them to start the live deployment in the cloud.
+  </li>
+  <div class="cli section-example-container">
+   <pre>$ lean cloud live "My Project" --push --open
 Brokerage: Bybit
 Project id: 1234567
 Environment: Live
 Server name: L-MICRO node 89c90172
 Server type: L-MICRO
-Data provider: QuantConnect
+Live Data providers: QuantConnectBrokerage
 LEAN version: 11157
 Order event notifications: Yes
 Insight notifications: Yes
@@ -15002,16 +15258,13 @@ Email notifications: john.doe@example.com
 Webhook notifications: None
 SMS notifications: None
 Telegram notifications: None
-    
- Initial live cash balance: [{'currency': 'USD', 'amount': 95800.0}]     
-
+Initial live cash balance: [{'currency': 'USD', 'amount': 95800.0}]
 Automatic algorithm restarting: Yes
 Are you sure you want to start live trading for project 'My Project'? [y/N]: y</pre>
-   </div>
-   <li>
-    Inspect the result in the browser, which opens automatically after the deployment starts.
-   </li>
-  </ol>
+  </div>
+  <li>
+   Inspect the result in the browser, which opens automatically after the deployment starts.
+  </li>
   <p>
    Follow these steps to see the live status of a project:
   </p>
@@ -15044,7 +15297,8 @@ Project url: https://www.quantconnect.com/project/1234567
 Live status: Running
 Live id: L-1234567a8901d234e5e678ddd9b0123c
 Live url: https://www.quantconnect.com/project/1234567/live
-Brokerage: BybitLaunched: 2021-06-09 15:10:12 UTC</pre>
+Brokerage: Bybit
+Launched: 2021-06-09 15:10:12 UTC</pre>
    </div>
   </ol>
  </body>
@@ -15144,7 +15398,7 @@ API secret: ********************************************************************
     on the Coinbase website.
    </li>
    <li>
-    Enter the number of the live data provider to use and then follow the steps required for the data connection.
+    Enter the number of the live data provider(s) to use and then follow the steps required for the data connection.
     <div class="cli section-example-container">
      <pre>$ lean live "My Project"
 Select a live data provider:
@@ -15157,13 +15411,15 @@ Select a live data provider:
 7) Zerodha
 8) Samco
 9) Terminal Link
-10) Kraken
-11) TD Ameritrade
-12) IQFeed
-13) Polygon
-14) IEX
-15) Custom data only
-16) Bybit
+10) Trading Technologies
+11) Kraken
+12) TD Ameritrade
+13) IQFeed
+14) Polygon
+15) IEX
+16) CoinApi
+17) Custom data only
+18) Bybit
 To enter multiple options, separate them with comma:</pre>
     </div>
    </li>
@@ -15228,7 +15484,7 @@ To enter multiple options, separate them with comma:</pre>
 <html>
  <body>
   <p>
-   Follow these steps to start live trading a project in the cloud with the Coinbase Advanced Trade brokerage:
+   Follow these steps to start live trading a project in the cloud with the Coinbase Advanced Trade brokerage :
   </p>
   <ol>
    <li>
@@ -15304,19 +15560,6 @@ API secret: ********************************************************************
     on the Coinbase website.
    </p>
    <li>
-    Select the live node that you want to use.
-   </li>
-   <p>
-    If you only have one idle live trading node, it is selected automatically and this step is skipped.
-   </p>
-   <div class="cli section-example-container">
-    <pre>$ lean cloud live "My Project" --push --open
-Select a node:
-1) L-MICRO node 89c90172 - 1 CPU @ 2.4GHz, 0.5GB Ram
-2) L-MICRO node 85a52135 - 1 CPU @ 2.4GHz, 0.5GB Ram
-Enter an option: 1</pre>
-   </div>
-   <li>
     Configure your notification settings.
    </li>
    <p>
@@ -15386,16 +15629,75 @@ Portfolio Holdings: [{'symbol': 'GOOG', 'symbolId': 'GOOCV VP83T1ZUHROL', 'quant
 Do you want to add more holdings? [y/N]: n</pre>
    </div>
    <li>
-    Verify the configured settings and confirm them to start the live deployment in the cloud.
+    Select the live node that you want to use.
    </li>
+   <p>
+    If you only have one idle live trading node, it is selected automatically and this step is skipped.
+   </p>
    <div class="cli section-example-container">
     <pre>$ lean cloud live "My Project" --push --open
+Select a node:
+1) L-MICRO node 89c90172 - 1 CPU @ 2.4GHz, 0.5GB Ram
+2) L-MICRO node 85a52135 - 1 CPU @ 2.4GHz, 0.5GB Ram
+Enter an option: 1</pre>
+   </div>
+   <li>
+    Enter the number of the live data provider(s) to use and then follow the steps required for the data connection.
+    <div class="cli section-example-container">
+     <pre>$ lean live "My Project"
+Select a live data feed:
+1) Interactive Brokers
+2) Tradier
+3) Oanda
+4) Bitfinex
+5) Coinbase Advanced Trade
+6) Binance
+7) Zerodha
+8) Samco
+9) Terminal Link
+10) Trading Technologies
+11) Kraken
+12) TD Ameritrade
+13) IQFeed
+14) Polygon
+15) IEX
+16) CoinApi
+17) Bybit
+To enter multiple options, separate them with comma:</pre>
+    </div>
+   </li>
+   <p>
+    If you select one of the following data providers, see the respective page for more instructions:
+   </p>
+  </ol>
+  <ul>
+   <li>
+    <a href="#4.6">
+     IEX Cloud
+    </a>
+   </li>
+   <li>
+    <a href="#4.7">
+     IQFeed
+    </a>
+   </li>
+   <li>
+    <a href="#4.8">
+     Polygon
+    </a>
+   </li>
+  </ul>
+  <li>
+   Verify the configured settings and confirm them to start the live deployment in the cloud.
+  </li>
+  <div class="cli section-example-container">
+   <pre>$ lean cloud live "My Project" --push --open
 Brokerage: Coinbase Advanced Trade
 Project id: 1234567
 Environment: Live
 Server name: L-MICRO node 89c90172
 Server type: L-MICRO
-Data provider: QuantConnect
+Live Data providers: QuantConnectBrokerage
 LEAN version: 11157
 Order event notifications: Yes
 Insight notifications: Yes
@@ -15403,16 +15705,14 @@ Email notifications: john.doe@example.com
 Webhook notifications: None
 SMS notifications: None
 Telegram notifications: None
-    
- Initial live cash balance: [{'currency': 'USD', 'amount': 95800.0}]     
- Initial live portfolio holdings: [{'symbol': 'GOOG', 'symbolId': 'GOOCV VP83T1ZUHROL', 'quantity': 10, 'averagePrice': 50.0}] 
+Initial live cash balance: [{'currency': 'USD', 'amount': 95800.0}]
+Initial live portfolio holdings: [{'symbol': 'GOOG', 'symbolId': 'GOOCV VP83T1ZUHROL', 'quantity': 10, 'averagePrice': 50.0}]
 Automatic algorithm restarting: Yes
 Are you sure you want to start live trading for project 'My Project'? [y/N]: y</pre>
-   </div>
-   <li>
-    Inspect the result in the browser, which opens automatically after the deployment starts.
-   </li>
-  </ol>
+  </div>
+  <li>
+   Inspect the result in the browser, which opens automatically after the deployment starts.
+  </li>
   <p>
    Follow these steps to see the live status of a project:
   </p>
@@ -15445,7 +15745,8 @@ Project url: https://www.quantconnect.com/project/1234567
 Live status: Running
 Live id: L-1234567a8901d234e5e678ddd9b0123c
 Live url: https://www.quantconnect.com/project/1234567/live
-Brokerage: Coinbase Advanced TradeLaunched: 2021-06-09 15:10:12 UTC</pre>
+Brokerage: Coinbase Advanced Trade
+Launched: 2021-06-09 15:10:12 UTC</pre>
    </div>
   </ol>
  </body>
@@ -15565,7 +15866,7 @@ Weekly restart UTC time (hh:mm:ss) [21:00:00]: </pre>
     </p>
    </li>
    <li>
-    Enter the number of the live data provider to use and then follow the steps required for the data connection.
+    Enter the number of the live data provider(s) to use and then follow the steps required for the data connection.
     <div class="cli section-example-container">
      <pre>$ lean live "My Project"
 Select a live data provider:
@@ -15578,13 +15879,15 @@ Select a live data provider:
 7) Zerodha
 8) Samco
 9) Terminal Link
-10) Kraken
-11) TD Ameritrade
-12) IQFeed
-13) Polygon
-14) IEX
-15) Custom data only
-16) Bybit
+10) Trading Technologies
+11) Kraken
+12) TD Ameritrade
+13) IQFeed
+14) Polygon
+15) IEX
+16) CoinApi
+17) Custom data only
+18) Bybit
 To enter multiple options, separate them with comma:</pre>
     </div>
    </li>
@@ -15657,7 +15960,7 @@ Enable delayed market data? [yes/no]: </pre>
 <html>
  <body>
   <p>
-   Follow these steps to start live trading a project in the cloud with the Interactive Brokers brokerage:
+   Follow these steps to start live trading a project in the cloud with the Interactive Brokers brokerage :
   </p>
   <ol>
    <li>
@@ -15759,19 +16062,6 @@ Weekly restart UTC time (hh:mm:ss) [21:00:00]: </pre>
 Do you want to use the Interactive Brokers price data feed instead of the QuantConnect price data feed? (yes/no): y</pre>
    </div>
    <li>
-    Select the live node that you want to use.
-   </li>
-   <p>
-    If you only have one idle live trading node, it is selected automatically and this step is skipped.
-   </p>
-   <div class="cli section-example-container">
-    <pre>$ lean cloud live "My Project" --push --open
-Select a node:
-1) L-MICRO node 89c90172 - 1 CPU @ 2.4GHz, 0.5GB Ram
-2) L-MICRO node 85a52135 - 1 CPU @ 2.4GHz, 0.5GB Ram
-Enter an option: 1</pre>
-   </div>
-   <li>
     Configure your notification settings.
    </li>
    <p>
@@ -15841,16 +16131,75 @@ Portfolio Holdings: [{'symbol': 'GOOG', 'symbolId': 'GOOCV VP83T1ZUHROL', 'quant
 Do you want to add more holdings? [y/N]: n</pre>
    </div>
    <li>
-    Verify the configured settings and confirm them to start the live deployment in the cloud.
+    Select the live node that you want to use.
    </li>
+   <p>
+    If you only have one idle live trading node, it is selected automatically and this step is skipped.
+   </p>
    <div class="cli section-example-container">
     <pre>$ lean cloud live "My Project" --push --open
+Select a node:
+1) L-MICRO node 89c90172 - 1 CPU @ 2.4GHz, 0.5GB Ram
+2) L-MICRO node 85a52135 - 1 CPU @ 2.4GHz, 0.5GB Ram
+Enter an option: 1</pre>
+   </div>
+   <li>
+    Enter the number of the live data provider(s) to use and then follow the steps required for the data connection.
+    <div class="cli section-example-container">
+     <pre>$ lean live "My Project"
+Select a live data feed:
+1) Interactive Brokers
+2) Tradier
+3) Oanda
+4) Bitfinex
+5) Coinbase Advanced Trade
+6) Binance
+7) Zerodha
+8) Samco
+9) Terminal Link
+10) Trading Technologies
+11) Kraken
+12) TD Ameritrade
+13) IQFeed
+14) Polygon
+15) IEX
+16) CoinApi
+17) Bybit
+To enter multiple options, separate them with comma:</pre>
+    </div>
+   </li>
+   <p>
+    If you select one of the following data providers, see the respective page for more instructions:
+   </p>
+  </ol>
+  <ul>
+   <li>
+    <a href="#4.6">
+     IEX Cloud
+    </a>
+   </li>
+   <li>
+    <a href="#4.7">
+     IQFeed
+    </a>
+   </li>
+   <li>
+    <a href="#4.8">
+     Polygon
+    </a>
+   </li>
+  </ul>
+  <li>
+   Verify the configured settings and confirm them to start the live deployment in the cloud.
+  </li>
+  <div class="cli section-example-container">
+   <pre>$ lean cloud live "My Project" --push --open
 Brokerage: Interactive Brokers
 Project id: 1234567
 Environment: Live
 Server name: L-MICRO node 89c90172
 Server type: L-MICRO
-Data provider: QuantConnect
+Live Data providers: QuantConnectBrokerage
 LEAN version: 11157
 Order event notifications: Yes
 Insight notifications: Yes
@@ -15858,16 +16207,14 @@ Email notifications: john.doe@example.com
 Webhook notifications: None
 SMS notifications: None
 Telegram notifications: None
-    
- Initial live cash balance: [{'currency': 'USD', 'amount': 95800.0}]     
- Initial live portfolio holdings: [{'symbol': 'GOOG', 'symbolId': 'GOOCV VP83T1ZUHROL', 'quantity': 10, 'averagePrice': 50.0}] 
+Initial live cash balance: [{'currency': 'USD', 'amount': 95800.0}]
+Initial live portfolio holdings: [{'symbol': 'GOOG', 'symbolId': 'GOOCV VP83T1ZUHROL', 'quantity': 10, 'averagePrice': 50.0}]
 Automatic algorithm restarting: Yes
 Are you sure you want to start live trading for project 'My Project'? [y/N]: y</pre>
-   </div>
-   <li>
-    Inspect the result in the browser, which opens automatically after the deployment starts.
-   </li>
-  </ol>
+  </div>
+  <li>
+   Inspect the result in the browser, which opens automatically after the deployment starts.
+  </li>
   <p>
    Follow these steps to see the live status of a project:
   </p>
@@ -15900,7 +16247,8 @@ Project url: https://www.quantconnect.com/project/1234567
 Live status: Running
 Live id: L-1234567a8901d234e5e678ddd9b0123c
 Live url: https://www.quantconnect.com/project/1234567/live
-Brokerage: Interactive BrokersLaunched: 2021-06-09 15:10:12 UTC</pre>
+Brokerage: Interactive Brokers
+Launched: 2021-06-09 15:10:12 UTC</pre>
    </div>
   </ol>
  </body>
@@ -16012,7 +16360,7 @@ Select the Verification Tier (Starter, Intermediate, Pro): </pre>
     on the Kraken website.
    </li>
    <li>
-    Enter the number of the live data provider to use and then follow the steps required for the data connection.
+    Enter the number of the live data provider(s) to use and then follow the steps required for the data connection.
     <div class="cli section-example-container">
      <pre>$ lean live "My Project"
 Select a live data provider:
@@ -16025,13 +16373,15 @@ Select a live data provider:
 7) Zerodha
 8) Samco
 9) Terminal Link
-10) Kraken
-11) TD Ameritrade
-12) IQFeed
-13) Polygon
-14) IEX
-15) Custom data only
-16) Bybit
+10) Trading Technologies
+11) Kraken
+12) TD Ameritrade
+13) IQFeed
+14) Polygon
+15) IEX
+16) CoinApi
+17) Custom data only
+18) Bybit
 To enter multiple options, separate them with comma:</pre>
     </div>
    </li>
@@ -16096,7 +16446,7 @@ To enter multiple options, separate them with comma:</pre>
 <html>
  <body>
   <p>
-   Follow these steps to start live trading a project in the cloud with the Kraken brokerage:
+   Follow these steps to start live trading a project in the cloud with the Kraken brokerage :
   </p>
   <ol>
    <li>
@@ -16186,19 +16536,6 @@ Select the Verification Tier (Starter, Intermediate, Pro):</pre>
     on the Kraken website.
    </p>
    <li>
-    Select the live node that you want to use.
-   </li>
-   <p>
-    If you only have one idle live trading node, it is selected automatically and this step is skipped.
-   </p>
-   <div class="cli section-example-container">
-    <pre>$ lean cloud live "My Project" --push --open
-Select a node:
-1) L-MICRO node 89c90172 - 1 CPU @ 2.4GHz, 0.5GB Ram
-2) L-MICRO node 85a52135 - 1 CPU @ 2.4GHz, 0.5GB Ram
-Enter an option: 1</pre>
-   </div>
-   <li>
     Configure your notification settings.
    </li>
    <p>
@@ -16268,16 +16605,75 @@ Portfolio Holdings: [{'symbol': 'GOOG', 'symbolId': 'GOOCV VP83T1ZUHROL', 'quant
 Do you want to add more holdings? [y/N]: n</pre>
    </div>
    <li>
-    Verify the configured settings and confirm them to start the live deployment in the cloud.
+    Select the live node that you want to use.
    </li>
+   <p>
+    If you only have one idle live trading node, it is selected automatically and this step is skipped.
+   </p>
    <div class="cli section-example-container">
     <pre>$ lean cloud live "My Project" --push --open
+Select a node:
+1) L-MICRO node 89c90172 - 1 CPU @ 2.4GHz, 0.5GB Ram
+2) L-MICRO node 85a52135 - 1 CPU @ 2.4GHz, 0.5GB Ram
+Enter an option: 1</pre>
+   </div>
+   <li>
+    Enter the number of the live data provider(s) to use and then follow the steps required for the data connection.
+    <div class="cli section-example-container">
+     <pre>$ lean live "My Project"
+Select a live data feed:
+1) Interactive Brokers
+2) Tradier
+3) Oanda
+4) Bitfinex
+5) Coinbase Advanced Trade
+6) Binance
+7) Zerodha
+8) Samco
+9) Terminal Link
+10) Trading Technologies
+11) Kraken
+12) TD Ameritrade
+13) IQFeed
+14) Polygon
+15) IEX
+16) CoinApi
+17) Bybit
+To enter multiple options, separate them with comma:</pre>
+    </div>
+   </li>
+   <p>
+    If you select one of the following data providers, see the respective page for more instructions:
+   </p>
+  </ol>
+  <ul>
+   <li>
+    <a href="#4.6">
+     IEX Cloud
+    </a>
+   </li>
+   <li>
+    <a href="#4.7">
+     IQFeed
+    </a>
+   </li>
+   <li>
+    <a href="#4.8">
+     Polygon
+    </a>
+   </li>
+  </ul>
+  <li>
+   Verify the configured settings and confirm them to start the live deployment in the cloud.
+  </li>
+  <div class="cli section-example-container">
+   <pre>$ lean cloud live "My Project" --push --open
 Brokerage: Kraken
 Project id: 1234567
 Environment: Live
 Server name: L-MICRO node 89c90172
 Server type: L-MICRO
-Data provider: QuantConnect
+Live Data providers: QuantConnectBrokerage
 LEAN version: 11157
 Order event notifications: Yes
 Insight notifications: Yes
@@ -16285,16 +16681,14 @@ Email notifications: john.doe@example.com
 Webhook notifications: None
 SMS notifications: None
 Telegram notifications: None
-    
- Initial live cash balance: [{'currency': 'USD', 'amount': 95800.0}]     
- Initial live portfolio holdings: [{'symbol': 'GOOG', 'symbolId': 'GOOCV VP83T1ZUHROL', 'quantity': 10, 'averagePrice': 50.0}] 
+Initial live cash balance: [{'currency': 'USD', 'amount': 95800.0}]
+Initial live portfolio holdings: [{'symbol': 'GOOG', 'symbolId': 'GOOCV VP83T1ZUHROL', 'quantity': 10, 'averagePrice': 50.0}]
 Automatic algorithm restarting: Yes
 Are you sure you want to start live trading for project 'My Project'? [y/N]: y</pre>
-   </div>
-   <li>
-    Inspect the result in the browser, which opens automatically after the deployment starts.
-   </li>
-  </ol>
+  </div>
+  <li>
+   Inspect the result in the browser, which opens automatically after the deployment starts.
+  </li>
   <p>
    Follow these steps to see the live status of a project:
   </p>
@@ -16327,7 +16721,8 @@ Project url: https://www.quantconnect.com/project/1234567
 Live status: Running
 Live id: L-1234567a8901d234e5e678ddd9b0123c
 Live url: https://www.quantconnect.com/project/1234567/live
-Brokerage: KrakenLaunched: 2021-06-09 15:10:12 UTC</pre>
+Brokerage: Kraken
+Launched: 2021-06-09 15:10:12 UTC</pre>
    </div>
   </ol>
  </body>
@@ -16453,7 +16848,7 @@ API token: ****************</pre>
     on the OANDA website.
    </li>
    <li>
-    Enter the number of the live data provider to use and then follow the steps required for the data connection.
+    Enter the number of the live data provider(s) to use and then follow the steps required for the data connection.
     <div class="cli section-example-container">
      <pre>$ lean live "My Project"
 Select a live data provider:
@@ -16466,13 +16861,15 @@ Select a live data provider:
 7) Zerodha
 8) Samco
 9) Terminal Link
-10) Kraken
-11) TD Ameritrade
-12) IQFeed
-13) Polygon
-14) IEX
-15) Custom data only
-16) Bybit
+10) Trading Technologies
+11) Kraken
+12) TD Ameritrade
+13) IQFeed
+14) Polygon
+15) IEX
+16) CoinApi
+17) Custom data only
+18) Bybit
 To enter multiple options, separate them with comma:</pre>
     </div>
    </li>
@@ -16537,7 +16934,7 @@ To enter multiple options, separate them with comma:</pre>
 <html>
  <body>
   <p>
-   Follow these steps to start live trading a project in the cloud with the Oanda brokerage:
+   Follow these steps to start live trading a project in the cloud with the Oanda brokerage :
   </p>
   <ol>
    <li>
@@ -16641,19 +17038,6 @@ API token: ****************</pre>
     on the OANDA website.
    </p>
    <li>
-    Select the live node that you want to use.
-   </li>
-   <p>
-    If you only have one idle live trading node, it is selected automatically and this step is skipped.
-   </p>
-   <div class="cli section-example-container">
-    <pre>$ lean cloud live "My Project" --push --open
-Select a node:
-1) L-MICRO node 89c90172 - 1 CPU @ 2.4GHz, 0.5GB Ram
-2) L-MICRO node 85a52135 - 1 CPU @ 2.4GHz, 0.5GB Ram
-Enter an option: 1</pre>
-   </div>
-   <li>
     Configure your notification settings.
    </li>
    <p>
@@ -16723,16 +17107,75 @@ Portfolio Holdings: [{'symbol': 'GOOG', 'symbolId': 'GOOCV VP83T1ZUHROL', 'quant
 Do you want to add more holdings? [y/N]: n</pre>
    </div>
    <li>
-    Verify the configured settings and confirm them to start the live deployment in the cloud.
+    Select the live node that you want to use.
    </li>
+   <p>
+    If you only have one idle live trading node, it is selected automatically and this step is skipped.
+   </p>
    <div class="cli section-example-container">
     <pre>$ lean cloud live "My Project" --push --open
+Select a node:
+1) L-MICRO node 89c90172 - 1 CPU @ 2.4GHz, 0.5GB Ram
+2) L-MICRO node 85a52135 - 1 CPU @ 2.4GHz, 0.5GB Ram
+Enter an option: 1</pre>
+   </div>
+   <li>
+    Enter the number of the live data provider(s) to use and then follow the steps required for the data connection.
+    <div class="cli section-example-container">
+     <pre>$ lean live "My Project"
+Select a live data feed:
+1) Interactive Brokers
+2) Tradier
+3) Oanda
+4) Bitfinex
+5) Coinbase Advanced Trade
+6) Binance
+7) Zerodha
+8) Samco
+9) Terminal Link
+10) Trading Technologies
+11) Kraken
+12) TD Ameritrade
+13) IQFeed
+14) Polygon
+15) IEX
+16) CoinApi
+17) Bybit
+To enter multiple options, separate them with comma:</pre>
+    </div>
+   </li>
+   <p>
+    If you select one of the following data providers, see the respective page for more instructions:
+   </p>
+  </ol>
+  <ul>
+   <li>
+    <a href="#4.6">
+     IEX Cloud
+    </a>
+   </li>
+   <li>
+    <a href="#4.7">
+     IQFeed
+    </a>
+   </li>
+   <li>
+    <a href="#4.8">
+     Polygon
+    </a>
+   </li>
+  </ul>
+  <li>
+   Verify the configured settings and confirm them to start the live deployment in the cloud.
+  </li>
+  <div class="cli section-example-container">
+   <pre>$ lean cloud live "My Project" --push --open
 Brokerage: Oanda
 Project id: 1234567
 Environment: Live
 Server name: L-MICRO node 89c90172
 Server type: L-MICRO
-Data provider: QuantConnect
+Live Data providers: QuantConnectBrokerage
 LEAN version: 11157
 Order event notifications: Yes
 Insight notifications: Yes
@@ -16740,16 +17183,14 @@ Email notifications: john.doe@example.com
 Webhook notifications: None
 SMS notifications: None
 Telegram notifications: None
-    
- Initial live cash balance: [{'currency': 'USD', 'amount': 95800.0}]     
- Initial live portfolio holdings: [{'symbol': 'GOOG', 'symbolId': 'GOOCV VP83T1ZUHROL', 'quantity': 10, 'averagePrice': 50.0}] 
+Initial live cash balance: [{'currency': 'USD', 'amount': 95800.0}]
+Initial live portfolio holdings: [{'symbol': 'GOOG', 'symbolId': 'GOOCV VP83T1ZUHROL', 'quantity': 10, 'averagePrice': 50.0}]
 Automatic algorithm restarting: Yes
 Are you sure you want to start live trading for project 'My Project'? [y/N]: y</pre>
-   </div>
-   <li>
-    Inspect the result in the browser, which opens automatically after the deployment starts.
-   </li>
-  </ol>
+  </div>
+  <li>
+   Inspect the result in the browser, which opens automatically after the deployment starts.
+  </li>
   <p>
    Follow these steps to see the live status of a project:
   </p>
@@ -16782,7 +17223,8 @@ Project url: https://www.quantconnect.com/project/1234567
 Live status: Running
 Live id: L-1234567a8901d234e5e678ddd9b0123c
 Live url: https://www.quantconnect.com/project/1234567/live
-Brokerage: OandaLaunched: 2021-06-09 15:10:12 UTC</pre>
+Brokerage: Oanda
+Launched: 2021-06-09 15:10:12 UTC</pre>
    </div>
   </ol>
  </body>
@@ -16982,7 +17424,7 @@ Trading segment (equity, commodity):</pre>
     </table>
    </li>
    <li>
-    Enter the number of the live data provider to use and then follow the steps required for the data connection.
+    Enter the number of the live data provider(s) to use and then follow the steps required for the data connection.
     <div class="cli section-example-container">
      <pre>$ lean live "My Project"
 Select a live data provider:
@@ -16995,13 +17437,15 @@ Select a live data provider:
 7) Zerodha
 8) Samco
 9) Terminal Link
-10) Kraken
-11) TD Ameritrade
-12) IQFeed
-13) Polygon
-14) IEX
-15) Custom data only
-16) Bybit
+10) Trading Technologies
+11) Kraken
+12) TD Ameritrade
+13) IQFeed
+14) Polygon
+15) IEX
+16) CoinApi
+17) Custom data only
+18) Bybit
 To enter multiple options, separate them with comma:</pre>
     </div>
    </li>
@@ -17066,7 +17510,7 @@ To enter multiple options, separate them with comma:</pre>
 <html>
  <body>
   <p>
-   Follow these steps to start live trading a project in the cloud with the Samco brokerage:
+   Follow these steps to start live trading a project in the cloud with the Samco brokerage :
   </p>
   <ol>
    <li>
@@ -17240,19 +17684,6 @@ Trading segment (equity, commodity):</pre>
     </tbody>
    </table>
    <li>
-    Select the live node that you want to use.
-   </li>
-   <p>
-    If you only have one idle live trading node, it is selected automatically and this step is skipped.
-   </p>
-   <div class="cli section-example-container">
-    <pre>$ lean cloud live "My Project" --push --open
-Select a node:
-1) L-MICRO node 89c90172 - 1 CPU @ 2.4GHz, 0.5GB Ram
-2) L-MICRO node 85a52135 - 1 CPU @ 2.4GHz, 0.5GB Ram
-Enter an option: 1</pre>
-   </div>
-   <li>
     Configure your notification settings.
    </li>
    <p>
@@ -17322,16 +17753,75 @@ Portfolio Holdings: [{'symbol': 'GOOG', 'symbolId': 'GOOCV VP83T1ZUHROL', 'quant
 Do you want to add more holdings? [y/N]: n</pre>
    </div>
    <li>
-    Verify the configured settings and confirm them to start the live deployment in the cloud.
+    Select the live node that you want to use.
    </li>
+   <p>
+    If you only have one idle live trading node, it is selected automatically and this step is skipped.
+   </p>
    <div class="cli section-example-container">
     <pre>$ lean cloud live "My Project" --push --open
+Select a node:
+1) L-MICRO node 89c90172 - 1 CPU @ 2.4GHz, 0.5GB Ram
+2) L-MICRO node 85a52135 - 1 CPU @ 2.4GHz, 0.5GB Ram
+Enter an option: 1</pre>
+   </div>
+   <li>
+    Enter the number of the live data provider(s) to use and then follow the steps required for the data connection.
+    <div class="cli section-example-container">
+     <pre>$ lean live "My Project"
+Select a live data feed:
+1) Interactive Brokers
+2) Tradier
+3) Oanda
+4) Bitfinex
+5) Coinbase Advanced Trade
+6) Binance
+7) Zerodha
+8) Samco
+9) Terminal Link
+10) Trading Technologies
+11) Kraken
+12) TD Ameritrade
+13) IQFeed
+14) Polygon
+15) IEX
+16) CoinApi
+17) Bybit
+To enter multiple options, separate them with comma:</pre>
+    </div>
+   </li>
+   <p>
+    If you select one of the following data providers, see the respective page for more instructions:
+   </p>
+  </ol>
+  <ul>
+   <li>
+    <a href="#4.6">
+     IEX Cloud
+    </a>
+   </li>
+   <li>
+    <a href="#4.7">
+     IQFeed
+    </a>
+   </li>
+   <li>
+    <a href="#4.8">
+     Polygon
+    </a>
+   </li>
+  </ul>
+  <li>
+   Verify the configured settings and confirm them to start the live deployment in the cloud.
+  </li>
+  <div class="cli section-example-container">
+   <pre>$ lean cloud live "My Project" --push --open
 Brokerage: Samco
 Project id: 1234567
 Environment: Live
 Server name: L-MICRO node 89c90172
 Server type: L-MICRO
-Data provider: QuantConnect
+Live Data providers: QuantConnectBrokerage
 LEAN version: 11157
 Order event notifications: Yes
 Insight notifications: Yes
@@ -17339,16 +17829,14 @@ Email notifications: john.doe@example.com
 Webhook notifications: None
 SMS notifications: None
 Telegram notifications: None
-    
- Initial live cash balance: [{'currency': 'USD', 'amount': 95800.0}]     
- Initial live portfolio holdings: [{'symbol': 'GOOG', 'symbolId': 'GOOCV VP83T1ZUHROL', 'quantity': 10, 'averagePrice': 50.0}] 
+Initial live cash balance: [{'currency': 'USD', 'amount': 95800.0}]
+Initial live portfolio holdings: [{'symbol': 'GOOG', 'symbolId': 'GOOCV VP83T1ZUHROL', 'quantity': 10, 'averagePrice': 50.0}]
 Automatic algorithm restarting: Yes
 Are you sure you want to start live trading for project 'My Project'? [y/N]: y</pre>
-   </div>
-   <li>
-    Inspect the result in the browser, which opens automatically after the deployment starts.
-   </li>
-  </ol>
+  </div>
+  <li>
+   Inspect the result in the browser, which opens automatically after the deployment starts.
+  </li>
   <p>
    Follow these steps to see the live status of a project:
   </p>
@@ -17381,7 +17869,8 @@ Project url: https://www.quantconnect.com/project/1234567
 Live status: Running
 Live id: L-1234567a8901d234e5e678ddd9b0123c
 Live url: https://www.quantconnect.com/project/1234567/live
-Brokerage: SamcoLaunched: 2021-06-09 15:10:12 UTC</pre>
+Brokerage: Samco
+Launched: 2021-06-09 15:10:12 UTC</pre>
    </div>
   </ol>
  </body>
@@ -17484,7 +17973,7 @@ Account number: </pre>
     </p>
    </li>
    <li>
-    Enter the number of the live data provider to use and then follow the steps required for the data connection.
+    Enter the number of the live data provider(s) to use and then follow the steps required for the data connection.
     <div class="cli section-example-container">
      <pre>$ lean live "My Project"
 Select a live data provider:
@@ -17497,13 +17986,15 @@ Select a live data provider:
 7) Zerodha
 8) Samco
 9) Terminal Link
-10) Kraken
-11) TD Ameritrade
-12) IQFeed
-13) Polygon
-14) IEX
-15) Custom data only
-16) Bybit
+10) Trading Technologies
+11) Kraken
+12) TD Ameritrade
+13) IQFeed
+14) Polygon
+15) IEX
+16) CoinApi
+17) Custom data only
+18) Bybit
 To enter multiple options, separate them with comma:</pre>
     </div>
    </li>
@@ -17568,7 +18059,7 @@ To enter multiple options, separate them with comma:</pre>
 <html>
  <body>
   <p>
-   Follow these steps to start live trading a project in the cloud with the TD Ameritrade brokerage:
+   Follow these steps to start live trading a project in the cloud with the TD Ameritrade brokerage :
   </p>
   <ol>
    <li>
@@ -17645,19 +18136,6 @@ Account number: </pre>
     .
    </p>
    <li>
-    Select the live node that you want to use.
-   </li>
-   <p>
-    If you only have one idle live trading node, it is selected automatically and this step is skipped.
-   </p>
-   <div class="cli section-example-container">
-    <pre>$ lean cloud live "My Project" --push --open
-Select a node:
-1) L-MICRO node 89c90172 - 1 CPU @ 2.4GHz, 0.5GB Ram
-2) L-MICRO node 85a52135 - 1 CPU @ 2.4GHz, 0.5GB Ram
-Enter an option: 1</pre>
-   </div>
-   <li>
     Configure your notification settings.
    </li>
    <p>
@@ -17727,16 +18205,75 @@ Portfolio Holdings: [{'symbol': 'GOOG', 'symbolId': 'GOOCV VP83T1ZUHROL', 'quant
 Do you want to add more holdings? [y/N]: n</pre>
    </div>
    <li>
-    Verify the configured settings and confirm them to start the live deployment in the cloud.
+    Select the live node that you want to use.
    </li>
+   <p>
+    If you only have one idle live trading node, it is selected automatically and this step is skipped.
+   </p>
    <div class="cli section-example-container">
     <pre>$ lean cloud live "My Project" --push --open
+Select a node:
+1) L-MICRO node 89c90172 - 1 CPU @ 2.4GHz, 0.5GB Ram
+2) L-MICRO node 85a52135 - 1 CPU @ 2.4GHz, 0.5GB Ram
+Enter an option: 1</pre>
+   </div>
+   <li>
+    Enter the number of the live data provider(s) to use and then follow the steps required for the data connection.
+    <div class="cli section-example-container">
+     <pre>$ lean live "My Project"
+Select a live data feed:
+1) Interactive Brokers
+2) Tradier
+3) Oanda
+4) Bitfinex
+5) Coinbase Advanced Trade
+6) Binance
+7) Zerodha
+8) Samco
+9) Terminal Link
+10) Trading Technologies
+11) Kraken
+12) TD Ameritrade
+13) IQFeed
+14) Polygon
+15) IEX
+16) CoinApi
+17) Bybit
+To enter multiple options, separate them with comma:</pre>
+    </div>
+   </li>
+   <p>
+    If you select one of the following data providers, see the respective page for more instructions:
+   </p>
+  </ol>
+  <ul>
+   <li>
+    <a href="#4.6">
+     IEX Cloud
+    </a>
+   </li>
+   <li>
+    <a href="#4.7">
+     IQFeed
+    </a>
+   </li>
+   <li>
+    <a href="#4.8">
+     Polygon
+    </a>
+   </li>
+  </ul>
+  <li>
+   Verify the configured settings and confirm them to start the live deployment in the cloud.
+  </li>
+  <div class="cli section-example-container">
+   <pre>$ lean cloud live "My Project" --push --open
 Brokerage: TD Ameritrade
 Project id: 1234567
 Environment: Live
 Server name: L-MICRO node 89c90172
 Server type: L-MICRO
-Data provider: QuantConnect
+Live Data providers: QuantConnectBrokerage
 LEAN version: 11157
 Order event notifications: Yes
 Insight notifications: Yes
@@ -17744,16 +18281,14 @@ Email notifications: john.doe@example.com
 Webhook notifications: None
 SMS notifications: None
 Telegram notifications: None
-    
- Initial live cash balance: [{'currency': 'USD', 'amount': 95800.0}]     
- Initial live portfolio holdings: [{'symbol': 'GOOG', 'symbolId': 'GOOCV VP83T1ZUHROL', 'quantity': 10, 'averagePrice': 50.0}] 
+Initial live cash balance: [{'currency': 'USD', 'amount': 95800.0}]
+Initial live portfolio holdings: [{'symbol': 'GOOG', 'symbolId': 'GOOCV VP83T1ZUHROL', 'quantity': 10, 'averagePrice': 50.0}]
 Automatic algorithm restarting: Yes
 Are you sure you want to start live trading for project 'My Project'? [y/N]: y</pre>
-   </div>
-   <li>
-    Inspect the result in the browser, which opens automatically after the deployment starts.
-   </li>
-  </ol>
+  </div>
+  <li>
+   Inspect the result in the browser, which opens automatically after the deployment starts.
+  </li>
   <p>
    Follow these steps to see the live status of a project:
   </p>
@@ -17786,7 +18321,8 @@ Project url: https://www.quantconnect.com/project/1234567
 Live status: Running
 Live id: L-1234567a8901d234e5e678ddd9b0123c
 Live url: https://www.quantconnect.com/project/1234567/live
-Brokerage: TD AmeritradeLaunched: 2021-06-09 15:10:12 UTC</pre>
+Brokerage: TD Ameritrade
+Launched: 2021-06-09 15:10:12 UTC</pre>
    </div>
   </ol>
  </body>
@@ -17893,7 +18429,7 @@ Use the developer sandbox? (live, paper): live</pre>
     </div>
    </li>
    <li>
-    Enter the number of the live data provider to use and then follow the steps required for the data connection.
+    Enter the number of the live data provider(s) to use and then follow the steps required for the data connection.
     <div class="cli section-example-container">
      <pre>$ lean live "My Project"
 Select a live data provider:
@@ -17906,13 +18442,15 @@ Select a live data provider:
 7) Zerodha
 8) Samco
 9) Terminal Link
-10) Kraken
-11) TD Ameritrade
-12) IQFeed
-13) Polygon
-14) IEX
-15) Custom data only
-16) Bybit
+10) Trading Technologies
+11) Kraken
+12) TD Ameritrade
+13) IQFeed
+14) Polygon
+15) IEX
+16) CoinApi
+17) Custom data only
+18) Bybit
 To enter multiple options, separate them with comma:</pre>
     </div>
    </li>
@@ -17977,7 +18515,7 @@ To enter multiple options, separate them with comma:</pre>
 <html>
  <body>
   <p>
-   Follow these steps to start live trading a project in the cloud with the Tradier brokerage:
+   Follow these steps to start live trading a project in the cloud with the Tradier brokerage :
   </p>
   <ol>
    <li>
@@ -18060,19 +18598,6 @@ Access token: ****************</pre>
 Use the developer sandbox? (live, paper): </pre>
    </div>
    <li>
-    Select the live node that you want to use.
-   </li>
-   <p>
-    If you only have one idle live trading node, it is selected automatically and this step is skipped.
-   </p>
-   <div class="cli section-example-container">
-    <pre>$ lean cloud live "My Project" --push --open
-Select a node:
-1) L-MICRO node 89c90172 - 1 CPU @ 2.4GHz, 0.5GB Ram
-2) L-MICRO node 85a52135 - 1 CPU @ 2.4GHz, 0.5GB Ram
-Enter an option: 1</pre>
-   </div>
-   <li>
     Configure your notification settings.
    </li>
    <p>
@@ -18142,16 +18667,75 @@ Portfolio Holdings: [{'symbol': 'GOOG', 'symbolId': 'GOOCV VP83T1ZUHROL', 'quant
 Do you want to add more holdings? [y/N]: n</pre>
    </div>
    <li>
-    Verify the configured settings and confirm them to start the live deployment in the cloud.
+    Select the live node that you want to use.
    </li>
+   <p>
+    If you only have one idle live trading node, it is selected automatically and this step is skipped.
+   </p>
    <div class="cli section-example-container">
     <pre>$ lean cloud live "My Project" --push --open
+Select a node:
+1) L-MICRO node 89c90172 - 1 CPU @ 2.4GHz, 0.5GB Ram
+2) L-MICRO node 85a52135 - 1 CPU @ 2.4GHz, 0.5GB Ram
+Enter an option: 1</pre>
+   </div>
+   <li>
+    Enter the number of the live data provider(s) to use and then follow the steps required for the data connection.
+    <div class="cli section-example-container">
+     <pre>$ lean live "My Project"
+Select a live data feed:
+1) Interactive Brokers
+2) Tradier
+3) Oanda
+4) Bitfinex
+5) Coinbase Advanced Trade
+6) Binance
+7) Zerodha
+8) Samco
+9) Terminal Link
+10) Trading Technologies
+11) Kraken
+12) TD Ameritrade
+13) IQFeed
+14) Polygon
+15) IEX
+16) CoinApi
+17) Bybit
+To enter multiple options, separate them with comma:</pre>
+    </div>
+   </li>
+   <p>
+    If you select one of the following data providers, see the respective page for more instructions:
+   </p>
+  </ol>
+  <ul>
+   <li>
+    <a href="#4.6">
+     IEX Cloud
+    </a>
+   </li>
+   <li>
+    <a href="#4.7">
+     IQFeed
+    </a>
+   </li>
+   <li>
+    <a href="#4.8">
+     Polygon
+    </a>
+   </li>
+  </ul>
+  <li>
+   Verify the configured settings and confirm them to start the live deployment in the cloud.
+  </li>
+  <div class="cli section-example-container">
+   <pre>$ lean cloud live "My Project" --push --open
 Brokerage: Tradier
 Project id: 1234567
 Environment: Live
 Server name: L-MICRO node 89c90172
 Server type: L-MICRO
-Data provider: QuantConnect
+Live Data providers: QuantConnectBrokerage
 LEAN version: 11157
 Order event notifications: Yes
 Insight notifications: Yes
@@ -18159,16 +18743,14 @@ Email notifications: john.doe@example.com
 Webhook notifications: None
 SMS notifications: None
 Telegram notifications: None
-    
- Initial live cash balance: [{'currency': 'USD', 'amount': 95800.0}]     
- Initial live portfolio holdings: [{'symbol': 'GOOG', 'symbolId': 'GOOCV VP83T1ZUHROL', 'quantity': 10, 'averagePrice': 50.0}] 
+Initial live cash balance: [{'currency': 'USD', 'amount': 95800.0}]
+Initial live portfolio holdings: [{'symbol': 'GOOG', 'symbolId': 'GOOCV VP83T1ZUHROL', 'quantity': 10, 'averagePrice': 50.0}]
 Automatic algorithm restarting: Yes
 Are you sure you want to start live trading for project 'My Project'? [y/N]: y</pre>
-   </div>
-   <li>
-    Inspect the result in the browser, which opens automatically after the deployment starts.
-   </li>
-  </ol>
+  </div>
+  <li>
+   Inspect the result in the browser, which opens automatically after the deployment starts.
+  </li>
   <p>
    Follow these steps to see the live status of a project:
   </p>
@@ -18201,7 +18783,8 @@ Project url: https://www.quantconnect.com/project/1234567
 Live status: Running
 Live id: L-1234567a8901d234e5e678ddd9b0123c
 Live url: https://www.quantconnect.com/project/1234567/live
-Brokerage: TradierLaunched: 2021-06-09 15:10:12 UTC</pre>
+Brokerage: Tradier
+Launched: 2021-06-09 15:10:12 UTC</pre>
    </div>
   </ol>
  </body>
@@ -18333,7 +18916,20 @@ Log FIX messages (yes/no): yes</pre>
     </div>
    </li>
    <li>
-    Enter the number of the live data provider to use and then follow the steps required for the data connection.
+    Set your initial cash balance.
+    <div class="cli section-example-container">
+     <pre>$ lean live "My Project"
+Previous cash balance: [{'currency': 'USD', 'amount': 100000.0}]
+Do you want to set a different initial cash balance? [y/N]: y 
+Setting initial cash balance...
+Currency: USD
+Amount: 95800
+Cash balance: [{'currency': 'USD', 'amount': 95800.0}]
+Do you want to add more currency? [y/N]: n</pre>
+    </div>
+   </li>
+   <li>
+    Enter the number of the live data provider(s) to use and then follow the steps required for the data connection.
     <div class="cli section-example-container">
      <pre>$ lean live "My Project"
 Select a live data provider:
@@ -18346,13 +18942,15 @@ Select a live data provider:
 7) Zerodha
 8) Samco
 9) Terminal Link
-10) Kraken
-11) TD Ameritrade
-12) IQFeed
-13) Polygon
-14) IEX
-15) Custom data only
-16) Bybit
+10) Trading Technologies
+11) Kraken
+12) TD Ameritrade
+13) IQFeed
+14) Polygon
+15) IEX
+16) CoinApi
+17) Custom data only
+18) Bybit
 To enter multiple options, separate them with comma:</pre>
     </div>
    </li>
@@ -18377,19 +18975,6 @@ To enter multiple options, separate them with comma:</pre>
     </a>
    </li>
   </ul>
-  <li>
-   Set your initial cash balance.
-   <div class="cli section-example-container">
-    <pre>$ lean live "My Project"
-Previous cash balance: [{'currency': 'USD', 'amount': 100000.0}]
-Do you want to set a different initial cash balance? [y/N]: y 
-Setting initial cash balance...
-Currency: USD
-Amount: 95800
-Cash balance: [{'currency': 'USD', 'amount': 95800.0}]
-Do you want to add more currency? [y/N]: n</pre>
-   </div>
-  </li>
   <li>
    View the result in the
    <span class="public-directory-name">
@@ -18430,7 +19015,7 @@ Do you want to add more currency? [y/N]: n</pre>
 <html>
  <body>
   <p>
-   Follow these steps to start live trading a project in the cloud with the Trading Technologies brokerage:
+   Follow these steps to start live trading a project in the cloud with the Trading Technologies brokerage :
   </p>
   <ol>
    <li>
@@ -18523,19 +19108,6 @@ Order routing sender comp id: </pre>
     to set the exchange where you would like your orders sent. Your account details are not saved on QuantConnect.
    </p>
    <li>
-    Select the live node that you want to use.
-   </li>
-   <p>
-    If you only have one idle live trading node, it is selected automatically and this step is skipped.
-   </p>
-   <div class="cli section-example-container">
-    <pre>$ lean cloud live "My Project" --push --open
-Select a node:
-1) L-MICRO node 89c90172 - 1 CPU @ 2.4GHz, 0.5GB Ram
-2) L-MICRO node 85a52135 - 1 CPU @ 2.4GHz, 0.5GB Ram
-Enter an option: 1</pre>
-   </div>
-   <li>
     Configure your notification settings.
    </li>
    <p>
@@ -18592,16 +19164,75 @@ Portfolio Holdings: [{'symbol': 'GOOG', 'symbolId': 'GOOCV VP83T1ZUHROL', 'quant
 Do you want to add more holdings? [y/N]: n</pre>
    </div>
    <li>
-    Verify the configured settings and confirm them to start the live deployment in the cloud.
+    Select the live node that you want to use.
    </li>
+   <p>
+    If you only have one idle live trading node, it is selected automatically and this step is skipped.
+   </p>
    <div class="cli section-example-container">
     <pre>$ lean cloud live "My Project" --push --open
+Select a node:
+1) L-MICRO node 89c90172 - 1 CPU @ 2.4GHz, 0.5GB Ram
+2) L-MICRO node 85a52135 - 1 CPU @ 2.4GHz, 0.5GB Ram
+Enter an option: 1</pre>
+   </div>
+   <li>
+    Enter the number of the live data provider(s) to use and then follow the steps required for the data connection.
+    <div class="cli section-example-container">
+     <pre>$ lean live "My Project"
+Select a live data feed:
+1) Interactive Brokers
+2) Tradier
+3) Oanda
+4) Bitfinex
+5) Coinbase Advanced Trade
+6) Binance
+7) Zerodha
+8) Samco
+9) Terminal Link
+10) Trading Technologies
+11) Kraken
+12) TD Ameritrade
+13) IQFeed
+14) Polygon
+15) IEX
+16) CoinApi
+17) Bybit
+To enter multiple options, separate them with comma:</pre>
+    </div>
+   </li>
+   <p>
+    If you select one of the following data providers, see the respective page for more instructions:
+   </p>
+  </ol>
+  <ul>
+   <li>
+    <a href="#4.6">
+     IEX Cloud
+    </a>
+   </li>
+   <li>
+    <a href="#4.7">
+     IQFeed
+    </a>
+   </li>
+   <li>
+    <a href="#4.8">
+     Polygon
+    </a>
+   </li>
+  </ul>
+  <li>
+   Verify the configured settings and confirm them to start the live deployment in the cloud.
+  </li>
+  <div class="cli section-example-container">
+   <pre>$ lean cloud live "My Project" --push --open
 Brokerage: Trading Technologies
 Project id: 1234567
 Environment: Live
 Server name: L-MICRO node 89c90172
 Server type: L-MICRO
-Data provider: QuantConnect
+Live Data providers: QuantConnectBrokerage
 LEAN version: 11157
 Order event notifications: Yes
 Insight notifications: Yes
@@ -18609,16 +19240,13 @@ Email notifications: john.doe@example.com
 Webhook notifications: None
 SMS notifications: None
 Telegram notifications: None
-    
-    
- Initial live portfolio holdings: [{'symbol': 'GOOG', 'symbolId': 'GOOCV VP83T1ZUHROL', 'quantity': 10, 'averagePrice': 50.0}] 
+Initial live portfolio holdings: [{'symbol': 'GOOG', 'symbolId': 'GOOCV VP83T1ZUHROL', 'quantity': 10, 'averagePrice': 50.0}]
 Automatic algorithm restarting: Yes
 Are you sure you want to start live trading for project 'My Project'? [y/N]: y</pre>
-   </div>
-   <li>
-    Inspect the result in the browser, which opens automatically after the deployment starts.
-   </li>
-  </ol>
+  </div>
+  <li>
+   Inspect the result in the browser, which opens automatically after the deployment starts.
+  </li>
   <p>
    Follow these steps to see the live status of a project:
   </p>
@@ -18651,7 +19279,8 @@ Project url: https://www.quantconnect.com/project/1234567
 Live status: Running
 Live id: L-1234567a8901d234e5e678ddd9b0123c
 Live url: https://www.quantconnect.com/project/1234567/live
-Brokerage: Trading TechnologiesLaunched: 2021-06-09 15:10:12 UTC</pre>
+Brokerage: Trading Technologies
+Launched: 2021-06-09 15:10:12 UTC</pre>
    </div>
   </ol>
  </body>
@@ -18848,7 +19477,7 @@ Trading segment (equity, commodity):</pre>
     </table>
    </li>
    <li>
-    Enter the number of the live data provider to use and then follow the steps required for the data connection.
+    Enter the number of the live data provider(s) to use and then follow the steps required for the data connection.
     <div class="cli section-example-container">
      <pre>$ lean live "My Project"
 Select a live data provider:
@@ -18861,13 +19490,15 @@ Select a live data provider:
 7) Zerodha
 8) Samco
 9) Terminal Link
-10) Kraken
-11) TD Ameritrade
-12) IQFeed
-13) Polygon
-14) IEX
-15) Custom data only
-16) Bybit
+10) Trading Technologies
+11) Kraken
+12) TD Ameritrade
+13) IQFeed
+14) Polygon
+15) IEX
+16) CoinApi
+17) Custom data only
+18) Bybit
 To enter multiple options, separate them with comma:</pre>
     </div>
    </li>
@@ -18939,7 +19570,7 @@ Do you have a history API subscription? (true, false): true</pre>
 <html>
  <body>
   <p>
-   Follow these steps to start live trading a project in the cloud with the Zerodha brokerage:
+   Follow these steps to start live trading a project in the cloud with the Zerodha brokerage :
   </p>
   <ol>
    <li>
@@ -19117,19 +19748,6 @@ Trading segment (equity, commodity):</pre>
 Do you have a history API subscription? (true, false): true</pre>
    </div>
    <li>
-    Select the live node that you want to use.
-   </li>
-   <p>
-    If you only have one idle live trading node, it is selected automatically and this step is skipped.
-   </p>
-   <div class="cli section-example-container">
-    <pre>$ lean cloud live "My Project" --push --open
-Select a node:
-1) L-MICRO node 89c90172 - 1 CPU @ 2.4GHz, 0.5GB Ram
-2) L-MICRO node 85a52135 - 1 CPU @ 2.4GHz, 0.5GB Ram
-Enter an option: 1</pre>
-   </div>
-   <li>
     Configure your notification settings.
    </li>
    <p>
@@ -19199,16 +19817,75 @@ Portfolio Holdings: [{'symbol': 'GOOG', 'symbolId': 'GOOCV VP83T1ZUHROL', 'quant
 Do you want to add more holdings? [y/N]: n</pre>
    </div>
    <li>
-    Verify the configured settings and confirm them to start the live deployment in the cloud.
+    Select the live node that you want to use.
    </li>
+   <p>
+    If you only have one idle live trading node, it is selected automatically and this step is skipped.
+   </p>
    <div class="cli section-example-container">
     <pre>$ lean cloud live "My Project" --push --open
+Select a node:
+1) L-MICRO node 89c90172 - 1 CPU @ 2.4GHz, 0.5GB Ram
+2) L-MICRO node 85a52135 - 1 CPU @ 2.4GHz, 0.5GB Ram
+Enter an option: 1</pre>
+   </div>
+   <li>
+    Enter the number of the live data provider(s) to use and then follow the steps required for the data connection.
+    <div class="cli section-example-container">
+     <pre>$ lean live "My Project"
+Select a live data feed:
+1) Interactive Brokers
+2) Tradier
+3) Oanda
+4) Bitfinex
+5) Coinbase Advanced Trade
+6) Binance
+7) Zerodha
+8) Samco
+9) Terminal Link
+10) Trading Technologies
+11) Kraken
+12) TD Ameritrade
+13) IQFeed
+14) Polygon
+15) IEX
+16) CoinApi
+17) Bybit
+To enter multiple options, separate them with comma:</pre>
+    </div>
+   </li>
+   <p>
+    If you select one of the following data providers, see the respective page for more instructions:
+   </p>
+  </ol>
+  <ul>
+   <li>
+    <a href="#4.6">
+     IEX Cloud
+    </a>
+   </li>
+   <li>
+    <a href="#4.7">
+     IQFeed
+    </a>
+   </li>
+   <li>
+    <a href="#4.8">
+     Polygon
+    </a>
+   </li>
+  </ul>
+  <li>
+   Verify the configured settings and confirm them to start the live deployment in the cloud.
+  </li>
+  <div class="cli section-example-container">
+   <pre>$ lean cloud live "My Project" --push --open
 Brokerage: Zerodha
 Project id: 1234567
 Environment: Live
 Server name: L-MICRO node 89c90172
 Server type: L-MICRO
-Data provider: QuantConnect
+Live Data providers: QuantConnectBrokerage
 LEAN version: 11157
 Order event notifications: Yes
 Insight notifications: Yes
@@ -19216,16 +19893,14 @@ Email notifications: john.doe@example.com
 Webhook notifications: None
 SMS notifications: None
 Telegram notifications: None
-    
- Initial live cash balance: [{'currency': 'USD', 'amount': 95800.0}]     
- Initial live portfolio holdings: [{'symbol': 'GOOG', 'symbolId': 'GOOCV VP83T1ZUHROL', 'quantity': 10, 'averagePrice': 50.0}] 
+Initial live cash balance: [{'currency': 'USD', 'amount': 95800.0}]
+Initial live portfolio holdings: [{'symbol': 'GOOG', 'symbolId': 'GOOCV VP83T1ZUHROL', 'quantity': 10, 'averagePrice': 50.0}]
 Automatic algorithm restarting: Yes
 Are you sure you want to start live trading for project 'My Project'? [y/N]: y</pre>
-   </div>
-   <li>
-    Inspect the result in the browser, which opens automatically after the deployment starts.
-   </li>
-  </ol>
+  </div>
+  <li>
+   Inspect the result in the browser, which opens automatically after the deployment starts.
+  </li>
   <p>
    Follow these steps to see the live status of a project:
   </p>
@@ -19258,7 +19933,8 @@ Project url: https://www.quantconnect.com/project/1234567
 Live status: Running
 Live id: L-1234567a8901d234e5e678ddd9b0123c
 Live url: https://www.quantconnect.com/project/1234567/live
-Brokerage: ZerodhaLaunched: 2021-06-09 15:10:12 UTC</pre>
+Brokerage: Zerodha
+Launched: 2021-06-09 15:10:12 UTC</pre>
    </div>
   </ol>
  </body>
@@ -19805,13 +20481,15 @@ Select a live data provider:
 7) Zerodha
 8) Samco
 9) Terminal Link
-10) Kraken
-11) TD Ameritrade
-12) IQFeed
-13) Polygon
-14) IEX
-15) Custom data only
-16) Bybit
+10) Trading Technologies
+11) Kraken
+12) TD Ameritrade
+13) IQFeed
+14) Polygon
+15) IEX
+16) CoinApi
+17) Custom data only
+18) Bybit
 To enter multiple options, separate them with comma: 9</pre>
     </div>
    </li>
@@ -19863,7 +20541,7 @@ To enter multiple options, separate them with comma: 9</pre>
    before you can deploy cloud algorithms with Terminal Link.
   </p>
   <p>
-   Follow these steps to start live trading a project in the cloud with the Terminal Link brokerage:
+   Follow these steps to start live trading a project in the cloud with the Terminal Link brokerage :
   </p>
   <ol>
    <li>
@@ -19975,19 +20653,6 @@ EMSX account []: </pre>
 OpenFIGI API key: </pre>
    </div>
    <li>
-    Select the live node that you want to use.
-   </li>
-   <p>
-    If you only have one idle live trading node, it is selected automatically and this step is skipped.
-   </p>
-   <div class="cli section-example-container">
-    <pre>$ lean cloud live "My Project" --push --open
-Select a node:
-1) L-MICRO node 89c90172 - 1 CPU @ 2.4GHz, 0.5GB Ram
-2) L-MICRO node 85a52135 - 1 CPU @ 2.4GHz, 0.5GB Ram
-Enter an option: 1</pre>
-   </div>
-   <li>
     Configure your notification settings.
    </li>
    <p>
@@ -20057,16 +20722,79 @@ Portfolio Holdings: [{'symbol': 'GOOG', 'symbolId': 'GOOCV VP83T1ZUHROL', 'quant
 Do you want to add more holdings? [y/N]: n</pre>
    </div>
    <li>
-    Verify the configured settings and confirm them to start the live deployment in the cloud.
+    Select the live node that you want to use.
    </li>
+   <p>
+    If you only have one idle live trading node, it is selected automatically and this step is skipped.
+   </p>
    <div class="cli section-example-container">
     <pre>$ lean cloud live "My Project" --push --open
+Select a node:
+1) L-MICRO node 89c90172 - 1 CPU @ 2.4GHz, 0.5GB Ram
+2) L-MICRO node 85a52135 - 1 CPU @ 2.4GHz, 0.5GB Ram
+Enter an option: 1</pre>
+   </div>
+   <li>
+    Enter
+    <span class="key-combinations">
+     9
+    </span>
+    to select the Terminal Link live data provider.
+    <div class="cli section-example-container">
+     <pre>$ lean live "My Project"
+Select a live data feed:
+1) Interactive Brokers
+2) Tradier
+3) Oanda
+4) Bitfinex
+5) Coinbase Advanced Trade
+6) Binance
+7) Zerodha
+8) Samco
+9) Terminal Link
+10) Trading Technologies
+11) Kraken
+12) TD Ameritrade
+13) IQFeed
+14) Polygon
+15) IEX
+16) CoinApi
+17) Bybit
+To enter multiple options, separate them with comma: 9</pre>
+    </div>
+   </li>
+   <p>
+    If you select one of the following data providers, see the respective page for more instructions:
+   </p>
+  </ol>
+  <ul>
+   <li>
+    <a href="#4.6">
+     IEX Cloud
+    </a>
+   </li>
+   <li>
+    <a href="#4.7">
+     IQFeed
+    </a>
+   </li>
+   <li>
+    <a href="#4.8">
+     Polygon
+    </a>
+   </li>
+  </ul>
+  <li>
+   Verify the configured settings and confirm them to start the live deployment in the cloud.
+  </li>
+  <div class="cli section-example-container">
+   <pre>$ lean cloud live "My Project" --push --open
 Brokerage: Terminal Link
 Project id: 1234567
 Environment: Live
 Server name: L-MICRO node 89c90172
 Server type: L-MICRO
-Data provider: QuantConnect
+Live Data providers: QuantConnectBrokerage
 LEAN version: 11157
 Order event notifications: Yes
 Insight notifications: Yes
@@ -20074,16 +20802,14 @@ Email notifications: john.doe@example.com
 Webhook notifications: None
 SMS notifications: None
 Telegram notifications: None
-    
- Initial live cash balance: [{'currency': 'USD', 'amount': 95800.0}]     
- Initial live portfolio holdings: [{'symbol': 'GOOG', 'symbolId': 'GOOCV VP83T1ZUHROL', 'quantity': 10, 'averagePrice': 50.0}] 
+Initial live cash balance: [{'currency': 'USD', 'amount': 95800.0}]
+Initial live portfolio holdings: [{'symbol': 'GOOG', 'symbolId': 'GOOCV VP83T1ZUHROL', 'quantity': 10, 'averagePrice': 50.0}]
 Automatic algorithm restarting: Yes
 Are you sure you want to start live trading for project 'My Project'? [y/N]: y</pre>
-   </div>
-   <li>
-    Inspect the result in the browser, which opens automatically after the deployment starts.
-   </li>
-  </ol>
+  </div>
+  <li>
+   Inspect the result in the browser, which opens automatically after the deployment starts.
+  </li>
   <p>
    Follow these steps to see the live status of a project:
   </p>
@@ -20116,7 +20842,8 @@ Project url: https://www.quantconnect.com/project/1234567
 Live status: Running
 Live id: L-1234567a8901d234e5e678ddd9b0123c
 Live url: https://www.quantconnect.com/project/1234567/live
-Brokerage: Terminal LinkLaunched: 2021-06-09 15:10:12 UTC</pre>
+Brokerage: Terminal Link
+Launched: 2021-06-09 15:10:12 UTC</pre>
    </div>
   </ol>
  </body>
@@ -20253,7 +20980,7 @@ Enter an option: 1</pre>
     </div>
    </li>
    <li>
-    Enter the number of the live data provider to use and then follow the steps required for the data connection.
+    Enter the number of the live data provider(s) to use and then follow the steps required for the data connection.
     <div class="cli section-example-container">
      <pre>$ lean live "My Project"
 Select a live data provider:
@@ -20266,13 +20993,15 @@ Select a live data provider:
 7) Zerodha
 8) Samco
 9) Terminal Link
-10) Kraken
-11) TD Ameritrade
-12) IQFeed
-13) Polygon
-14) IEX
-15) Custom data only
-16) Bybit
+10) Trading Technologies
+11) Kraken
+12) TD Ameritrade
+13) IQFeed
+14) Polygon
+15) IEX
+16) CoinApi
+17) Custom data only
+18) Bybit
 To enter multiple options, separate them with comma:</pre>
     </div>
    </li>
@@ -20325,6 +21054,232 @@ IEX Cloud Price plan (Launch, Grow, Enterprise): </pre>
    </code>
    .
   </p>
+ </body>
+</html>
+
+<h3>Deploy Cloud Algorithms</h3>
+<html>
+ <body>
+  <p>
+   Follow these steps to start live trading a project in the cloud with the QuantConnect Paper Trading brokerage and the IEX Cloud data provider:
+  </p>
+  <ol>
+   <li>
+    <a href="#3.1#02-Log-In">
+     Log in
+    </a>
+    to the CLI if you haven't done so already.
+   </li>
+   <li>
+    Open a terminal in the
+    <a href="#3.2">
+     organization workspace
+    </a>
+    that contains the project.
+   </li>
+   <li>
+    Run
+    <code>
+     lean cloud live "&lt;projectName&gt;" --push --open
+    </code>
+    to push
+    <span class="public-directory-name">
+     . / &lt;projectName&gt;
+    </span>
+    . to the cloud, start a live deployment wizard, and open the results in the browser once the deployment starts.
+   </li>
+   <div class="cli section-example-container">
+    <pre>$ lean cloud live "My Project" --push --open
+[1/1] Pushing 'My Project'
+Successfully updated cloud file 'My Project/main.py'
+Started compiling project 'My Project'
+Successfully compiled project 'My Project'</pre>
+   </div>
+   <li>
+    Enter
+    <span class="key-combinations">
+     1
+    </span>
+    to select the QuantConnect Paper Trading brokerage.
+   </li>
+   <div class="cli section-example-container">
+    <pre>$ lean cloud live "My Project" --push --open
+Select a brokerage:
+1) Paper Trading
+2) Interactive Brokers
+3) Tradier
+4) Oanda
+5) Bitfinex
+6) Coinbase Advanced Trade
+7) Binance
+8) Zerodha
+9) Samco
+10) Terminal Link
+11) Trading Technologies
+12) Kraken
+13) TD Ameritrade
+14) Bybit
+Enter an option: 1</pre>
+   </div>
+   <li>
+    Configure your notification settings.
+   </li>
+   <p>
+    You can configure any combination of email, webhook, SMS, and Telegram notifications for order events and emitted insights.  To view the number of notification you can send for free, see the
+    <a href="https://www.quantconnect.com/docs/v2//cloud-platform/organizations/resources#12-Live-Trading-Notification-Quotas">
+     Live Trading Notification Quotas
+    </a>
+    .
+   </p>
+   <div class="cli section-example-container">
+    <pre>$ lean cloud live "My Project" --push --open
+Do you want to send notifications on order events? [y/N]: y
+Do you want to send notifications on insights? [y/N]: y
+Email notifications: None
+Webhook notifications: None
+SMS notifications: None
+Select a notification method:
+1) Email
+2) Webhook
+3) SMS
+4) Telegram
+Enter an option: 1
+Email address: john.doe@example.com
+Subject: Algorithm notification
+Email notifications: john.doe@example.com
+Webhook notifications: None
+SMS notifications: None
+Telegram notifications: None
+Do you want to add another notification method? [y/N]: n</pre>
+   </div>
+   <li>
+    Enable or disable automatic algorithm restarting.
+   </li>
+   <p>
+    This feature attempts to restart your algorithm if it fails due to a runtime error, like a brokerage API disconnection.
+   </p>
+   <div class="cli section-example-container">
+    <pre>$ lean cloud live "My Project" --push --open
+Do you want to enable automatic algorithm restarting? [Y/n]: y</pre>
+   </div>
+   <li>
+    Select the live node that you want to use.
+   </li>
+   <p>
+    If you only have one idle live trading node, it is selected automatically and this step is skipped.
+   </p>
+   <div class="cli section-example-container">
+    <pre>$ lean cloud live "My Project" --push --open
+Select a node:
+1) L-MICRO node 89c90172 - 1 CPU @ 2.4GHz, 0.5GB Ram
+2) L-MICRO node 85a52135 - 1 CPU @ 2.4GHz, 0.5GB Ram
+Enter an option: 1</pre>
+   </div>
+   <li>
+    Enter
+    <span class="key-combinations">
+     15
+    </span>
+    to select the IEX Cloud data provider.
+   </li>
+   <div class="cli section-example-container">
+    <pre>$ lean live "My Project"
+Select a live data feed:
+1) Interactive Brokers
+2) Tradier
+3) Oanda
+4) Bitfinex
+5) Coinbase Advanced Trade
+6) Binance
+7) Zerodha
+8) Samco
+9) Terminal Link
+10) Trading Technologies
+11) Kraken
+12) TD Ameritrade
+13) IQFeed
+14) Polygon
+15) IEX
+16) CoinApi
+17) Bybit
+To enter multiple options, separate them with comma: 15</pre>
+   </div>
+   <li>
+    Enter your IEX Cloud API Key.
+    <div class="cli section-example-container">
+     <pre>$ lean cloud live "My Project" --push --open
+Configure credentials for IEX
+Your iexcloud.io API token publishable key: </pre>
+    </div>
+   </li>
+   <li>
+    Enter your price plan.
+    <div class="cli section-example-container">
+     <pre>$ lean cloud live "My Project" --push --open
+IEX Cloud Price plan (Launch, Grow, Enterprise): </pre>
+    </div>
+   </li>
+   <li>
+    Verify the configured settings and confirm them to start the live deployment in the cloud.
+   </li>
+   <div class="cli section-example-container">
+    <pre>$ lean cloud live "My Project" --push --open
+Brokerage: QuantConnect Paper Trading
+Project id: 1234567
+Environment: Live
+Server name: L-MICRO node 89c90172
+Server type: L-MICRO
+Live Data providers: IEX Cloud
+LEAN version: 11157
+Order event notifications: Yes
+Insight notifications: Yes
+Email notifications: john.doe@example.com
+Webhook notifications: None
+SMS notifications: None
+Telegram notifications: None
+Automatic algorithm restarting: Yes
+Are you sure you want to start live trading for project 'My Project'? [y/N]: y</pre>
+   </div>
+   <li>
+    Inspect the result in the browser, which opens automatically after the deployment starts.
+   </li>
+  </ol>
+  <p>
+   Follow these steps to see the live status of a project:
+  </p>
+  <ol>
+   <li>
+    <a href="#3.1#02-Log-In">
+     Log in
+    </a>
+    to the CLI if you haven't done so already.
+   </li>
+   <li>
+    Open a terminal in the
+    <a href="#3.2">
+     organization workspace
+    </a>
+    that contains the project.
+   </li>
+   <li>
+    Run
+    <code>
+     lean cloud status "&lt;projectName&gt;"
+    </code>
+    to show the status of the cloud project named "&lt;projectName&gt;".
+   </li>
+   <div class="cli section-example-container">
+    <pre>$ lean cloud status "My Project"
+Project id: 1234567
+Project name: My Project
+Project url: https://www.quantconnect.com/project/1234567
+Live status: Running
+Live id: L-1234567a8901d234e5e678ddd9b0123c
+Live url: https://www.quantconnect.com/project/1234567/live
+Brokerage: QuantConnect Paper Trading
+Launched: 2021-06-09 15:10:12 UTC</pre>
+   </div>
+  </ol>
  </body>
 </html>
 
@@ -20411,7 +21366,7 @@ Enter an option: 1</pre>
     </div>
    </li>
    <li>
-    Enter the number of the live data provider to use and then follow the steps required for the data connection.
+    Enter the number of the live data provider(s) to use and then follow the steps required for the data connection.
     <div class="cli section-example-container">
      <pre>$ lean live "My Project"
 Select a live data provider:
@@ -20424,13 +21379,15 @@ Select a live data provider:
 7) Zerodha
 8) Samco
 9) Terminal Link
-10) Kraken
-11) TD Ameritrade
-12) IQFeed
-13) Polygon
-14) IEX
-15) Custom data only
-16) Bybit
+10) Trading Technologies
+11) Kraken
+12) TD Ameritrade
+13) IQFeed
+14) Polygon
+15) IEX
+16) CoinApi
+17) Custom data only
+18) Bybit
 To enter multiple options, separate them with comma:</pre>
     </div>
    </li>
@@ -20509,6 +21466,15 @@ Product version: 1.0</pre>
     true
    </code>
    .
+  </p>
+ </body>
+</html>
+
+<h3>Deploy Cloud Algorithms</h3>
+<html>
+ <body>
+  <p>
+   The CLI doesn't currently support deploying cloud algorithms with the IQFeed data provider.
   </p>
  </body>
 </html>
@@ -20618,7 +21584,7 @@ Enter an option: 1</pre>
     </div>
    </li>
    <li>
-    Enter the number of the live data provider to use and then follow the steps required for the data connection.
+    Enter the number of the live data provider(s) to use and then follow the steps required for the data connection.
     <div class="cli section-example-container">
      <pre>$ lean live "My Project"
 Select a live data provider:
@@ -20631,13 +21597,15 @@ Select a live data provider:
 7) Zerodha
 8) Samco
 9) Terminal Link
-10) Kraken
-11) TD Ameritrade
-12) IQFeed
-13) Polygon
-14) IEX
-15) Custom data only
-16) Bybit
+10) Trading Technologies
+11) Kraken
+12) TD Ameritrade
+13) IQFeed
+14) Polygon
+15) IEX
+16) CoinApi
+17) Custom data only
+18) Bybit
 To enter multiple options, separate them with comma:</pre>
     </div>
    </li>
@@ -20691,6 +21659,233 @@ Your Polygon API Key:</pre>
    </code>
    .
   </p>
+ </body>
+</html>
+
+<h3>Deploy Cloud Algorithms</h3>
+<html>
+ <body>
+  <p>
+   Follow these steps to start live trading a project in the cloud with the QuantConnect Paper Trading brokerage and the Polygon data provider:
+  </p>
+  <ol>
+   <li>
+    <a href="#3.1#02-Log-In">
+     Log in
+    </a>
+    to the CLI if you haven't done so already.
+   </li>
+   <li>
+    Open a terminal in the
+    <a href="#3.2">
+     organization workspace
+    </a>
+    that contains the project.
+   </li>
+   <li>
+    Run
+    <code>
+     lean cloud live "&lt;projectName&gt;" --push --open
+    </code>
+    to push
+    <span class="public-directory-name">
+     . / &lt;projectName&gt;
+    </span>
+    . to the cloud, start a live deployment wizard, and open the results in the browser once the deployment starts.
+   </li>
+   <div class="cli section-example-container">
+    <pre>$ lean cloud live "My Project" --push --open
+[1/1] Pushing 'My Project'
+Successfully updated cloud file 'My Project/main.py'
+Started compiling project 'My Project'
+Successfully compiled project 'My Project'</pre>
+   </div>
+   <li>
+    Enter
+    <span class="key-combinations">
+     1
+    </span>
+    to select the QuantConnect Paper Trading brokerage.
+   </li>
+   <div class="cli section-example-container">
+    <pre>$ lean cloud live "My Project" --push --open
+Select a brokerage:
+1) Paper Trading
+2) Interactive Brokers
+3) Tradier
+4) Oanda
+5) Bitfinex
+6) Coinbase Advanced Trade
+7) Binance
+8) Zerodha
+9) Samco
+10) Terminal Link
+11) Trading Technologies
+12) Kraken
+13) TD Ameritrade
+14) Bybit
+Enter an option: 1</pre>
+   </div>
+   <li>
+    Configure your notification settings.
+   </li>
+   <p>
+    You can configure any combination of email, webhook, SMS, and Telegram notifications for order events and emitted insights.  To view the number of notification you can send for free, see the
+    <a href="https://www.quantconnect.com/docs/v2//cloud-platform/organizations/resources#12-Live-Trading-Notification-Quotas">
+     Live Trading Notification Quotas
+    </a>
+    .
+   </p>
+   <div class="cli section-example-container">
+    <pre>$ lean cloud live "My Project" --push --open
+Do you want to send notifications on order events? [y/N]: y
+Do you want to send notifications on insights? [y/N]: y
+Email notifications: None
+Webhook notifications: None
+SMS notifications: None
+Select a notification method:
+1) Email
+2) Webhook
+3) SMS
+4) Telegram
+Enter an option: 1
+Email address: john.doe@example.com
+Subject: Algorithm notification
+Email notifications: john.doe@example.com
+Webhook notifications: None
+SMS notifications: None
+Telegram notifications: None
+Do you want to add another notification method? [y/N]: n</pre>
+   </div>
+   <li>
+    Enable or disable automatic algorithm restarting.
+   </li>
+   <p>
+    This feature attempts to restart your algorithm if it fails due to a runtime error, like a brokerage API disconnection.
+   </p>
+   <div class="cli section-example-container">
+    <pre>$ lean cloud live "My Project" --push --open
+Do you want to enable automatic algorithm restarting? [Y/n]: y</pre>
+   </div>
+   <li>
+    Select the live node that you want to use.
+   </li>
+   <p>
+    If you only have one idle live trading node, it is selected automatically and this step is skipped.
+   </p>
+   <div class="cli section-example-container">
+    <pre>$ lean cloud live "My Project" --push --open
+Select a node:
+1) L-MICRO node 89c90172 - 1 CPU @ 2.4GHz, 0.5GB Ram
+2) L-MICRO node 85a52135 - 1 CPU @ 2.4GHz, 0.5GB Ram
+Enter an option: 1</pre>
+   </div>
+   <li>
+    Enter
+    <span class="key-combinations">
+     14
+    </span>
+    to select the Polygon data provider.
+   </li>
+   <div class="cli section-example-container">
+    <pre>$ lean live "My Project"
+Select a live data feed:
+1) Interactive Brokers
+2) Tradier
+3) Oanda
+4) Bitfinex
+5) Coinbase Advanced Trade
+6) Binance
+7) Zerodha
+8) Samco
+9) Terminal Link
+10) Trading Technologies
+11) Kraken
+12) TD Ameritrade
+13) IQFeed
+14) Polygon
+15) IEX
+16) CoinApi
+17) Bybit
+To enter multiple options, separate them with comma: 14</pre>
+   </div>
+   <li>
+    Enter your Polygon API key.
+    <div class="cli section-example-container">
+     <pre>$ lean cloud live "My Project" --push --open
+Configure credentials for Polygon
+
+Your Polygon API Key:</pre>
+    </div>
+    <p>
+     To get your API key, see the
+     <a href="https://polygon.io/dashboard/api-keys" rel="nofollow" target="_blank">
+      API Keys page
+     </a>
+     on the Polygon website.
+    </p>
+   </li>
+   <li>
+    Verify the configured settings and confirm them to start the live deployment in the cloud.
+   </li>
+   <div class="cli section-example-container">
+    <pre>$ lean cloud live "My Project" --push --open
+Brokerage: QuantConnect Paper Trading
+Project id: 1234567
+Environment: Live
+Server name: L-MICRO node 89c90172
+Server type: L-MICRO
+Live Data providers: Polygon
+LEAN version: 11157
+Order event notifications: Yes
+Insight notifications: Yes
+Email notifications: john.doe@example.com
+Webhook notifications: None
+SMS notifications: None
+Telegram notifications: None
+Automatic algorithm restarting: Yes
+Are you sure you want to start live trading for project 'My Project'? [y/N]: y</pre>
+   </div>
+   <li>
+    Inspect the result in the browser, which opens automatically after the deployment starts.
+   </li>
+  </ol>
+  <p>
+   Follow these steps to see the live status of a project:
+  </p>
+  <ol>
+   <li>
+    <a href="#3.1#02-Log-In">
+     Log in
+    </a>
+    to the CLI if you haven't done so already.
+   </li>
+   <li>
+    Open a terminal in the
+    <a href="#3.2">
+     organization workspace
+    </a>
+    that contains the project.
+   </li>
+   <li>
+    Run
+    <code>
+     lean cloud status "&lt;projectName&gt;"
+    </code>
+    to show the status of the cloud project named "&lt;projectName&gt;".
+   </li>
+   <div class="cli section-example-container">
+    <pre>$ lean cloud status "My Project"
+Project id: 1234567
+Project name: My Project
+Project url: https://www.quantconnect.com/project/1234567
+Live status: Running
+Live id: L-1234567a8901d234e5e678ddd9b0123c
+Live url: https://www.quantconnect.com/project/1234567/live
+Brokerage: QuantConnect Paper Trading
+Launched: 2021-06-09 15:10:12 UTC</pre>
+   </div>
+  </ol>
  </body>
 </html>
 
@@ -22330,11 +23525,11 @@ Setting object 15737956/signals in organization d6d62db48592c72e67b534553413b691
   </div>
   <p>
    If the file fails to upload, you may have insufficient
-   <a href="https://www.quantconnect.com/docs/v2/cloud-platform/object-store#04-Storage-Sizes">
+   <a href="https://www.quantconnect.com/docs/v2/cloud-platform/object-store#05-Storage-Sizes">
     storage space
    </a>
    . If you need more,
-   <a href="https://www.quantconnect.com/docs/v2/cloud-platform/object-store#07-Edit-Storage-Plan">
+   <a href="https://www.quantconnect.com/docs/v2/cloud-platform/object-store#06-Edit-Storage-Plan">
     edit your storage plan
    </a>
    .
@@ -23052,12 +24247,24 @@ if __name__ == '__main__':
       .
      </td>
     </tr>
-    <!--
-        <tr><td nowrap><code>--coinapi-api-key</code></td><td></td></tr>
--->
-    <!--
-        <tr><td nowrap><code>--coinapi-product</code></td><td></td></tr>
--->
+    <tr>
+     <td nowrap="">
+      <code>
+       --coinapi-api-key
+      </code>
+     </td>
+     <td>
+     </td>
+    </tr>
+    <tr>
+     <td nowrap="">
+      <code>
+       --coinapi-product
+      </code>
+     </td>
+     <td>
+     </td>
+    </tr>
     <tr>
      <td nowrap="">
       <code>
@@ -23816,7 +25023,7 @@ if __name__ == '__main__':
  <body>
   <p>
    Starts live trading for a cloud project.
-    Before starting live trading, the CLI shows an interactive wizard letting you configure the brokerage, the live node, and the notifications.
+    Before starting live trading, the CLI shows an interactive wizard letting you configure the brokerage, data provider, live node, and notifications.
     After starting live trading, the CLI displays a URL to the live results.
     You can use the
    <code>
@@ -23829,7 +25036,11 @@ if __name__ == '__main__':
    <code>
     --brokerage
    </code>
-   option, the interactive wizard is skipped and the command runs in non-interactive mode.
+   and
+   <code>
+    --data-provider-live
+   </code>
+   options, the interactive wizard is skipped and the command runs in non-interactive mode.
     In this mode, the command doesn't prompt for input or confirmation and reads all configuration from the provided command-line options.
     In non-interactive mode, all options specific to the selected brokerage become required, as well as
    <code>
@@ -23848,6 +25059,12 @@ if __name__ == '__main__':
     --notify-insights
    </code>
    .
+    In case a required option has not been provided, the command falls back to the property with the same name in your
+   <a href="#3.3">
+    Lean configuration file
+   </a>
+   .
+    The command aborts if this property also hasn't been set.
   </p>
   <p>
    The following options are required for each brokerage in non-interactive mode:
@@ -23879,7 +25096,7 @@ if __name__ == '__main__':
     <tr>
      <td rowspan="4">
       <code>
-       "Binance"
+       Binance
       </code>
      </td>
      <td>
@@ -23920,7 +25137,7 @@ if __name__ == '__main__':
     <tr>
      <td rowspan="2">
       <code>
-       "Bitfinex"
+       Bitfinex
       </code>
      </td>
      <td>
@@ -23939,7 +25156,7 @@ if __name__ == '__main__':
     <tr>
      <td rowspan="3">
       <code>
-       "Bybit"
+       Bybit
       </code>
      </td>
      <td>
@@ -23965,7 +25182,7 @@ if __name__ == '__main__':
     <tr>
      <td rowspan="2">
       <code>
-       "Coinbase"
+       "Coinbase Advanced Trade"
       </code>
      </td>
      <td>
@@ -23982,7 +25199,7 @@ if __name__ == '__main__':
      </td>
     </tr>
     <tr>
-     <td rowspan="4">
+     <td rowspan="3">
       <code>
        "Interactive Brokers"
       </code>
@@ -24008,16 +25225,9 @@ if __name__ == '__main__':
      </td>
     </tr>
     <tr>
-     <td>
-      <code>
-       --ib-data-feed
-      </code>
-     </td>
-    </tr>
-    <tr>
      <td rowspan="3">
       <code>
-       "Kraken"
+       Kraken
       </code>
      </td>
      <td>
@@ -24043,7 +25253,7 @@ if __name__ == '__main__':
     <tr>
      <td rowspan="3">
       <code>
-       "OANDA"
+       Oanda
       </code>
      </td>
      <td>
@@ -24069,7 +25279,7 @@ if __name__ == '__main__':
     <tr>
      <td rowspan="5">
       <code>
-       "Samco"
+       Samco
       </code>
      </td>
      <td>
@@ -24109,7 +25319,7 @@ if __name__ == '__main__':
     <tr>
      <td rowspan="3">
       <code>
-       "TDAmeritrade"
+       TDAmeritrade
       </code>
      </td>
      <td>
@@ -24182,7 +25392,7 @@ if __name__ == '__main__':
     <tr>
      <td rowspan="3">
       <code>
-       "Tradier"
+       Tradier
       </code>
      </td>
      <td>
@@ -24262,7 +25472,7 @@ if __name__ == '__main__':
     <tr>
      <td rowspan="5">
       <code>
-       "Zerodha"
+       Zerodha
       </code>
      </td>
      <td>
@@ -24302,7 +25512,440 @@ if __name__ == '__main__':
    </tbody>
   </table>
   <p>
-   If you omit some of the required brokerage options when running in non-interactive mode, the CLI uses the option values in your
+   The
+   <code>
+    --data-provider-live
+   </code>
+   option is required. 
+    The following table shows the available live data providers and their required options in non-interactive mode. 
+    To select multiple data providers, seperate them with a comma. 
+    The order you select them in defines the order of precedence.
+  </p>
+  <table class="qc-table table">
+   <thead>
+    <tr>
+     <th style="width: 25%">
+      <code>
+       --data-provider-live
+      </code>
+     </th>
+     <th>
+      Required Options
+     </th>
+    </tr>
+   </thead>
+   <tbody>
+    <tr>
+     <td rowspan="3">
+      <code>
+       Binance
+      </code>
+     </td>
+     <td>
+      <code>
+       --binance-exchange-name
+      </code>
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <code>
+       --binance-api-key
+      </code>
+      or
+      <code>
+       --binanceus-api-key
+      </code>
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <code>
+       --binance-api-secret
+      </code>
+      or
+      <code>
+       --binanceus-api-secret
+      </code>
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <code>
+       Bitfinex
+      </code>
+     </td>
+     <td>
+      All options required by
+      <code>
+       --brokerage Bitfinex
+      </code>
+      .
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <code>
+       Bybit
+      </code>
+     </td>
+     <td>
+      All options required by
+      <code>
+       --brokerage Bybit
+      </code>
+      .
+     </td>
+    </tr>
+    <tr>
+     <td rowspan="2">
+      <code>
+       "Coinbase Advanced Trade"
+      </code>
+     </td>
+     <td>
+      <code>
+       --coinbase-api-key
+      </code>
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <code>
+       --coinbase-api-secret
+      </code>
+     </td>
+    </tr>
+    <tr>
+     <td rowspan="2">
+      <code>
+       IEX
+      </code>
+     </td>
+     <td>
+      <code>
+       --iex-cloud-api-key
+      </code>
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <code>
+       --iex-price-plan
+      </code>
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <code>
+       "Interactive Brokers"
+      </code>
+     </td>
+     <td>
+      All options required by
+      <code>
+       --brokerage "Interactive Brokers"
+      </code>
+      .
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <code>
+       Kraken
+      </code>
+     </td>
+     <td>
+      All options required by
+      <code>
+       --brokerage Kraken
+      </code>
+      .
+     </td>
+    </tr>
+    <tr>
+     <td rowspan="2">
+      <code>
+       Oanda
+      </code>
+     </td>
+     <td>
+      <code>
+       --oanda-account-id
+      </code>
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <code>
+       --oanda-access-token
+      </code>
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <code>
+       Polygon
+      </code>
+     </td>
+     <td>
+      <code>
+       --polygon-api-key
+      </code>
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <code>
+       QuantConnect
+      </code>
+     </td>
+     <td>
+      N/A
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <code>
+       Samco
+      </code>
+     </td>
+     <td>
+      All options required by
+      <code>
+       --brokerage Samco
+      </code>
+      .
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <code>
+       TDAmeritrade
+      </code>
+     </td>
+     <td>
+      All options required by
+      <code>
+       --brokerage TDAmeritrade
+      </code>
+      .
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <code>
+       "Terminal Link"
+      </code>
+     </td>
+     <td>
+      All options required by
+      <code>
+       --brokerage "Terminal Link"
+      </code>
+      .
+     </td>
+    </tr>
+    <tr>
+     <td rowspan="2">
+      <code>
+       Tradier
+      </code>
+     </td>
+     <td>
+      <code>
+       --tradier-account-id
+      </code>
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <code>
+       --tradier-access-token
+      </code>
+     </td>
+    </tr>
+    <tr>
+     <td rowspan="7">
+      <code>
+       "Trading Technologies"
+      </code>
+     </td>
+     <td>
+      <code>
+       --tt-user-name
+      </code>
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <code>
+       --tt-session-password
+      </code>
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <code>
+       --tt-account-name
+      </code>
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <code>
+       --tt-rest-app-key
+      </code>
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <code>
+       --tt-rest-app-secret
+      </code>
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <code>
+       --tt-rest-environment
+      </code>
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <code>
+       --tt-order-routing-sender-comp-id
+      </code>
+     </td>
+    </tr>
+    <tr>
+     <td rowspan="2">
+      <code>
+       Zerodha
+      </code>
+     </td>
+     <td>
+      All options required by
+      <code>
+       --brokerage Zerodha
+      </code>
+      .
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <code>
+       --zerodha-history-subscription
+      </code>
+     </td>
+    </tr>
+   </tbody>
+  </table>
+  <p>
+   The
+   <code>
+    --data-provider-historical
+   </code>
+   option specifies the source of historical data. 
+    The following table shows the available historical data providers and their required options in non-interactive mode.
+    If the live data provider you set also provides historical data and you omit the
+   <code>
+    --data-provider-historical
+   </code>
+   option, it defaults to the same value as the
+   <code>
+    --data-provider-live
+   </code>
+   option. 
+    If the live data provider you set doesn't provide historical data and you omit the
+   <code>
+    --data-provider-historical
+   </code>
+   option, it defaults to the
+   <code>
+    Local
+   </code>
+   data provider.
+  </p>
+  <table class="qc-table table">
+   <thead>
+    <tr>
+     <th style="width: 25%">
+      <code>
+       --data-provider-historical
+      </code>
+     </th>
+     <th>
+      Required Options
+     </th>
+    </tr>
+   </thead>
+   <tbody>
+    <tr>
+     <td rowspan="2">
+      <code>
+       AlphaVantage
+      </code>
+     </td>
+     <td>
+      <code>
+       --alpha-vantage-api-key
+      </code>
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <code>
+       --alpha-vantage-price-plan
+      </code>
+     </td>
+    </tr>
+    <tr>
+     <td rowspan="2">
+      <code>
+       IEX
+      </code>
+     </td>
+     <td>
+      <code>
+       --iex-cloud-api-key
+      </code>
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <code>
+       --iex-price-plan
+      </code>
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <code>
+       Polygon
+      </code>
+     </td>
+     <td>
+      <code>
+       --polygon-api-key
+      </code>
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <code>
+       QuantConnect
+      </code>
+     </td>
+     <td>
+      N/A
+     </td>
+    </tr>
+   </tbody>
+  </table>
+  <p>
+   If you omit some of the required options when running in non-interactive mode, the CLI uses the option values in your
    <a href="#3.3">
     LEAN configuration file
    </a>
@@ -24314,6 +25957,7 @@ if __name__ == '__main__':
   <div class="cli section-example-container">
    <pre>$ lean cloud live deploy "My Project" \
     --brokerage "Paper Trading" \
+    --data-provider-live QuantConnect \
     --node "My Node" \
     --auto-restart yes
     --notify-order-events no \
@@ -24403,6 +26047,26 @@ if __name__ == '__main__':
     <tr>
      <td nowrap="">
       <code>
+       --data-provider-live &lt;value&gt;
+      </code>
+     </td>
+     <td>
+      The live data source.
+     </td>
+    </tr>
+    <tr>
+     <td nowrap="">
+      <code>
+       --data-provider-historical &lt;value&gt;
+      </code>
+     </td>
+     <td>
+      The historical data source.
+     </td>
+    </tr>
+    <tr>
+     <td nowrap="">
+      <code>
        --ib-user-name &lt;value&gt;
       </code>
      </td>
@@ -24437,28 +26101,6 @@ if __name__ == '__main__':
       </code>
      </td>
      <td>
-     </td>
-    </tr>
-    <tr>
-     <td nowrap="">
-      <code>
-       --ib-data-feed &lt;boolean&gt;
-      </code>
-     </td>
-     <td>
-      Whether the
-      <a href="https://www.quantconnect.com/docs/v2/cloud-platform/datasets/interactive-brokers">
-       Interactive Brokers data provider
-      </a>
-      must be used instead of the one from QuantConnect (
-      <code>
-       yes
-      </code>
-      or
-      <code>
-       no
-      </code>
-      ).
      </td>
     </tr>
     <tr>
@@ -24501,15 +26143,6 @@ if __name__ == '__main__':
       </code>
       to use the developer sandbox.
       <br/>
-     </td>
-    </tr>
-    <tr>
-     <td nowrap="">
-      <code>
-       --tradier-data-feed
-      </code>
-     </td>
-     <td>
      </td>
     </tr>
     <tr>
@@ -25151,6 +26784,54 @@ if __name__ == '__main__':
       on the Bybit website.
      </td>
     </tr>
+    <tr>
+     <td nowrap="">
+      <code>
+       --polygon-api-key &lt;value&gt;
+      </code>
+     </td>
+     <td>
+      Your Polygon API Key.
+     </td>
+    </tr>
+    <tr>
+     <td nowrap="">
+      <code>
+       --iex-cloud-api-key
+      </code>
+     </td>
+     <td>
+      Your IEX Cloud API Key.
+     </td>
+    </tr>
+    <tr>
+     <td nowrap="">
+      <code>
+       --iex-price-plan
+      </code>
+     </td>
+     <td>
+      Your IEX Cloud price plan.
+      <code>
+       Launch
+      </code>
+      ,
+      <code>
+       Grow
+      </code>
+      , or
+      <code>
+       Enterprise
+      </code>
+      .
+     </td>
+    </tr>
+    <!--
+        <tr><td nowrap><code>--coinapi-api-key</code></td><td></td></tr>
+-->
+    <!--
+        <tr><td nowrap><code>--coinapi-product</code></td><td></td></tr>
+-->
     <tr>
      <td nowrap="">
       <code>
@@ -30121,7 +31802,7 @@ if __name__ == '__main__':
     <tr>
      <td rowspan="3">
       <code>
-       OANDA
+       Oanda
       </code>
      </td>
      <td>
@@ -30295,7 +31976,7 @@ if __name__ == '__main__':
      </td>
     </tr>
     <tr>
-     <td rowspan="15">
+     <td rowspan="14">
       <code>
        "Trading Technologies"
       </code>
@@ -30398,13 +32079,6 @@ if __name__ == '__main__':
      </td>
     </tr>
     <tr>
-     <td>
-      <code>
-       --tt-log-fix-messages
-      </code>
-     </td>
-    </tr>
-    <tr>
      <td rowspan="4">
       <code>
        Zerodha
@@ -30444,7 +32118,10 @@ if __name__ == '__main__':
    <code>
     --data-provider-live
    </code>
-   option is required. The following table shows the available live data providers and their required options in non-interactive mode:
+   option is required. 
+    The following table shows the available live data providers and their required options in non-interactive mode. 
+    To select multiple data providers, seperate them with a comma. 
+    The order you select them in defines the order of precedence.
   </p>
   <table class="qc-table table">
    <thead>
@@ -30648,7 +32325,7 @@ if __name__ == '__main__':
     <tr>
      <td rowspan="2">
       <code>
-       OANDA
+       Oanda
       </code>
      </td>
      <td>
@@ -30734,6 +32411,60 @@ if __name__ == '__main__':
      <td>
       <code>
        --tradier-access-token
+      </code>
+     </td>
+    </tr>
+    <tr>
+     <td rowspan="7">
+      <code>
+       "Trading Technologies"
+      </code>
+     </td>
+     <td>
+      <code>
+       --tt-user-name
+      </code>
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <code>
+       --tt-session-password
+      </code>
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <code>
+       --tt-account-name
+      </code>
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <code>
+       --tt-rest-app-key
+      </code>
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <code>
+       --tt-rest-app-secret
+      </code>
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <code>
+       --tt-rest-environment
+      </code>
+     </td>
+    </tr>
+    <tr>
+     <td>
+      <code>
+       --tt-order-routing-sender-comp-id
       </code>
      </td>
     </tr>
@@ -32031,12 +33762,24 @@ if __name__ == '__main__':
       .
      </td>
     </tr>
-    <!--
-        <tr><td nowrap><code>--coinapi-api-key</code></td><td></td></tr>
--->
-    <!--
-        <tr><td nowrap><code>--coinapi-product</code></td><td></td></tr>
--->
+    <tr>
+     <td nowrap="">
+      <code>
+       --coinapi-api-key
+      </code>
+     </td>
+     <td>
+     </td>
+    </tr>
+    <tr>
+     <td nowrap="">
+      <code>
+       --coinapi-product
+      </code>
+     </td>
+     <td>
+     </td>
+    </tr>
     <tr>
      <td nowrap="">
       <code>
@@ -34244,6 +35987,9 @@ if __name__ == '__main__':
       .
      </td>
     </tr>
+    <!--
+        <tr><td nowrap><code>--data-purchase-limit</code></td><td></td></tr>
+-->
     <tr>
      <td nowrap="">
       <code>
@@ -34461,12 +36207,24 @@ if __name__ == '__main__':
       .
      </td>
     </tr>
-    <!--
-        <tr><td nowrap><code>--coinapi-api-key</code></td><td></td></tr>
--->
-    <!--
-        <tr><td nowrap><code>--coinapi-product</code></td><td></td></tr>
--->
+    <tr>
+     <td nowrap="">
+      <code>
+       --coinapi-api-key
+      </code>
+     </td>
+     <td>
+     </td>
+    </tr>
+    <tr>
+     <td nowrap="">
+      <code>
+       --coinapi-product
+      </code>
+     </td>
+     <td>
+     </td>
+    </tr>
     <tr>
      <td nowrap="">
       <code>
@@ -35713,12 +37471,24 @@ if __name__ == '__main__':
       .
      </td>
     </tr>
-    <!--
-        <tr><td nowrap><code>--coinapi-api-key</code></td><td></td></tr>
--->
-    <!--
-        <tr><td nowrap><code>--coinapi-product</code></td><td></td></tr>
--->
+    <tr>
+     <td nowrap="">
+      <code>
+       --coinapi-api-key
+      </code>
+     </td>
+     <td>
+     </td>
+    </tr>
+    <tr>
+     <td nowrap="">
+      <code>
+       --coinapi-product
+      </code>
+     </td>
+     <td>
+     </td>
+    </tr>
     <tr>
      <td nowrap="">
       <code>
