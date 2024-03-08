@@ -16,6 +16,7 @@
 	<li><a href="/docs/v2/writing-algorithms/reality-modeling/options-models/assignment">Assignment</a></li>
     </ul>
     <li><a href="/docs/v2/writing-algorithms/reality-modeling/margin-interest-rate/key-concepts">Margin Interest Rate</a></li>
+    <li><a href="/docs/v2/writing-algorithms/reality-modeling/dividend-yield/key-concepts">Dividend Yield</a></li>
 </ul>
 
 
