@@ -80,6 +80,7 @@ Trading segment (equity, commodity):</pre>
 </li>
 ";
 $dataFeedDetails = "";
+$useBrokerageDataProvider = true;
 $supportsIQFeed = false;
 $requiresSubscription = true;
 include(DOCS_RESOURCES."/brokerages/cli-deployment/deploy-local-algorithms.php");
