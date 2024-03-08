@@ -28,6 +28,6 @@ $authentication .= "    <li>Click the <span class='field-name'>Environment</span
     </tbody>
 </table>";
 $dataProviderDetails = "<p>If you use the Tradier data provider, it sources data directly from Tradier";
-$postDeploy = "In most cases, we suggest using the <a href='/docs/v2/cloud-platform/datasets'>QuantConnect data provider</a>, the <a href='/docs/v2/cloud-platform/datasets/tradier'>Tradier data provider</a>, or both. The order you set them in the deployment wizard defines their order of precedence in Lean. ";
+$postDeploy = "<p>In most cases, we suggest using the <a href='/docs/v2/cloud-platform/datasets'>QuantConnect data provider</a>, the <a href='/docs/v2/cloud-platform/datasets/tradier'>Tradier data provider</a>, or both. The order you set them in the deployment wizard defines their order of precedence in Lean.</p>";
 include(DOCS_RESOURCES."/live-trading/deploy-live-algorithm.php");
 ?>
