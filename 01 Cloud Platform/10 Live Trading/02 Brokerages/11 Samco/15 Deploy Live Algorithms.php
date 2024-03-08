@@ -50,6 +50,8 @@ $authentication = "<li>Enter your client ID, password, and date of birth.</li>
 </tbody>
 </table>
 -->";
+$omitTemplateDataProviderText = True;
+$dataProviderDetails = "<li>In the <span class='page-section-name'>Data Provider</span> section, click <span class='button-name'>Show</span> and then change the QuantConnect data provider to the Samco data provider.</li>";
 $postDeploy = "";
 include(DOCS_RESOURCES."/live-trading/deploy-live-algorithm.php");
 ?>
