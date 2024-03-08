@@ -73,5 +73,6 @@ $brokerageName="Zerodha";
 $isSupported=true;
 $supportsCashHoldings=false;
 $supportsPositionHoldings=false;
+$useBrokerageDataProvider = true;
 include(DOCS_RESOURCES."/brokerages/cli-deployment/deploy-cloud-algorithms.php");
 ?>
