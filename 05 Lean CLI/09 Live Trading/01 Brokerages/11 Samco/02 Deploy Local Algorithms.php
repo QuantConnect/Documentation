@@ -80,7 +80,7 @@ Trading segment (equity, commodity):</pre>
 </li>
 ";
 $dataFeedDetails = "";
-$useBrokerageDataProvider = true;
+$dataProviderName = "Samco";
 $supportsIQFeed = false;
 $requiresSubscription = true;
 include(DOCS_RESOURCES."/brokerages/cli-deployment/deploy-local-algorithms.php");
