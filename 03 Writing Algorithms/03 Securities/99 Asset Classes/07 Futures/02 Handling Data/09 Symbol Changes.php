@@ -32,4 +32,4 @@
         self.Log(tag)</pre>
 </div>
 
-<p>In backtesting, the <code>SymbolChangedEvent</code> occurs at midnight (ET). In live trading, the live data for continuous contract mapping arrives at 6/7 AM ET, so that's when it occurs.</p>
+<p>In backtesting, the <code>SymbolChangedEvent</code> occurs at midnight Eastern Time (ET). In live trading, the live data for continuous contract mapping arrives at 6/7 AM ET, so that's when it occurs.</p>
