@@ -1,11 +1,6 @@
 <p>The Polygon data provider serves asset price data directly from Polygon. Our integration supports securities from the following asset classes:</p>
 
-<ul>
-  <li><a href="https://www.quantconnect.com/docs/v2/writing-algorithms/securities/asset-classes/us-equity">US Equity</a></li>
-  <li><a href="https://www.quantconnect.com/docs/v2/writing-algorithms/securities/asset-classes/equity-options">US Equity Options</a></li>
-  <li><a href="https://www.quantconnect.com/docs/v2/writing-algorithms/securities/asset-classes/index">US Indices</a></li>
-  <li><a href="https://www.quantconnect.com/docs/v2/writing-algorithms/securities/asset-classes/index-options">US Index Options</a></li>
-</ul>
+<? include(DOCS_RESOURCES."/data-providers/supported-assets/polygon.html"); ?>
 
 <p>To supplement the asset price data from Polygon, we provide the following auxiliary datasets from the Dataset Market:</p>
 
