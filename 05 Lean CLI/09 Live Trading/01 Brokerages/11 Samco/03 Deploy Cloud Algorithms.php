@@ -68,7 +68,7 @@ Trading segment (equity, commodity):</pre>
 </table>
 ";
 $brokerageName="Samco";
-$useBrokerageDataProvider = true;
+$dataProviderName = "Samco";
 $isSupported=true;
 $supportsCashHoldings=false;
 $supportsPositionHoldings=false;
