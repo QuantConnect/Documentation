@@ -1,0 +1,31 @@
+<script type="text/x-mathjax-config">MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});</script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML" ></script>
+
+<p>Volatility smoothing refers to the creation of a smooth volatility smile/surface. 
+Derivative like options are favorable for maket-making and arbitration trading, due to the existence of fair price modeling. 
+In the contemporary domain of high-frequency trading, the efficiency of calculating IV and Greeks assumes paramount significance.
+Thus, the quest for swift and refined IV surface computation becomes an inevitable quest for traders.
+Rather than relying solely on conventional methods involving slow-paced sampling and continuous parameter recalibration, the adoption of approximation techniques and stationary state analyses gains traction, especially in the context of IV estimation.</p>
+
+<h4>Accuracy Consideration</h4>
+<p>The Law of One Price stipulates the existence of a singular fair price for any given underlying asset. Consequently, according to the principles of put-call parity, each strike price for European options at expiration should correspond to a unique IV value. 
+Within the realm of the Black-Scholes-Merton (BSM) framework, for instance, the concept of put-call parity yields insights into the equivalence of IVs for call and put options at identical strike prices and expirations. This equivalence serves as the foundation for formulating objective function:
+$$
+  C(t,K) - P(t,K)=e^{(q-r)t} (S_T - K)
+  \\\Rightarrow e^{(q-r)t} [S_T (\Phi(d_{+}^{call})+\Phi(-d_{+}^{put})) - K (\Phi(d_{-}^{call})+\Phi(-d_{-}^{put}))] = e^{(q-r)t} (S_T - K)
+  \\\Rightarrow \Phi(d_{+}^{call})+\Phi(-d_{+}^{put}) = 1\ \text{and}\ \Phi(d_{-}^{call})+\Phi(-d_{-}^{put}) = 1
+  \\\Rightarrow d_{\pm}^{call}=d_{\pm}^{put}
+$$
+Thus, we can formulate an objective function of $C_{market} + P_{market} = C_{BSM} + P_{BSM}$.</p>
+
+<p>Alternatively, certain schools of thought contend that the bulk of historical volatility information is encapsulated within at-the-money (ATM) options, with any residual volatility attributable to the extrinsic value of the option. Consequently, a strategy focused on out-of-the-money (OTM) options for IV calculations gains traction.</p>
+
+<h4>Speed Consideration</h4>
+<p>In the realm of high-frequency trading, where split-second decisions are the norm, the traditional process of sampling, evaluating, recalibrating, and deriving implied volatility expectations is simply unfeasible. In response, traders and analysts increasingly turn to polynomial regression techniques as a pragmatic solution for IV modeling.</p>
+<p>For example,
+$$
+  IV_t = \beta_0 + \beta_1 M + \beta_2 M^2 + \beta_3 (T-t) + \beta_4 (T-t)^2 + \beta_5 M(T-t)
+  \\\text{where} M = ln(S_t/K)
+$$</p>
+
+<p>Additionally, the utilization of advanced mathematical algorithms, such as the Fast Fourier Transform (FFT), enables the rapid computation of the entire Greek surface, enhancing speed and efficiency. While these approaches may entail minor trade-offs in terms of accuracy, the overarching objective remains the attainment of a seamlessly smooth implied volatility surface that fosters effective arbitrage strategies.</p>
