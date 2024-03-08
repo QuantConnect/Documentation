@@ -34,3 +34,33 @@ $typeName = "ImpliedVolatility";
 $indicatorPage = "implied-volatility";
 include(DOCS_RESOURCES."/option-indicators/manual-indicator.php");
 ?>
+
+<h4>Volatility Smoothing</h4>
+<p>To perform <a href="/docs/v2/writing-algorithms/securities/asset-classes/equity-options/greeks-and-implied-volatility/key-concepts#05-Volatility-Smoothing">IV smoothing</a>, you can call the <code>SetSmoothingFunction</code> method of the <code>ImpliedVolatility</code> object. Note that you must use the mirror-contract constructor.</p>
+<div class="section-example-container">
+    <pre class="csharp">private ImpliedVolatility _iv;
+
+public override void Initialize()
+{
+    var option = QuantConnect.Symbol.CreateOption("AAPL", Market.USA, OptionStyle.American, OptionRight.Put, 505m, new DateTime(2014, 6, 27));
+    AddOptionContract(option);
+
+    var mirrorOption = QuantConnect.Symbol.CreateOption("AAPL", Market.USA, OptionStyle.American, OptionRight.Call, 505m, new DateTime(2014, 6, 27));
+    AddOptionContract(mirrorOption);
+
+    _iv = IV(option, mirrorOption);
+    // example: take average of the call-put pair
+    _iv.SetSmoothingFunction((iv, mirrorIv) => (iv + mirrorIv) * 0.5m);
+}</pre>
+    <pre class="python">def Initialize(self):
+    option = Symbol.CreateOption("AAPL", Market.USA, OptionStyle.American, OptionRight.Put, 505, datetime(2014, 6, 27))
+    self.AddOptionContract(option)
+
+    mirror_option = Symbol.CreateOption("AAPL", Market.USA, OptionStyle.American, OptionRight.Call, 505m, new DateTime(2014, 6, 27))
+    AddOptionContract(mirror_option)
+
+    self.iv = self.IV(option, mirror_option)
+    # example: take average of the call-put pair
+    self.iv.SetSmoothingFunction(lambda iv, mirror_iv: (iv + mirror_iv) * 0.5)
+</pre>
+</div>
