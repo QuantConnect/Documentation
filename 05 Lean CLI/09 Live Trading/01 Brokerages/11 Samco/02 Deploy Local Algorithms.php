@@ -81,6 +81,7 @@ Trading segment (equity, commodity):</pre>
 ";
 $dataFeedDetails = "";
 $dataProviderName = "Samco";
+$dataProviderDetails = "";
 $supportsIQFeed = false;
 $requiresSubscription = true;
 include(DOCS_RESOURCES."/brokerages/cli-deployment/deploy-local-algorithms.php");
