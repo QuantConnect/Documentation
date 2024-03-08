@@ -8,5 +8,5 @@
 	<li>Select the file(s) and directory(ies) to download</li>
 	<li>Click <span class='button-name'>Download</span>.</li>
 	<li>Wait while QuantConnect processes the request.</li>
-	<li>Click the <span class='button-name'>Download</span> that appears.</li>
+	<li>Click the <span class='button-name'>Download</span> link that appears.</li>
 </ol>
