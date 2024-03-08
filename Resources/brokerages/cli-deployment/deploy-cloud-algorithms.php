@@ -178,23 +178,24 @@ To enter multiple options, separate them with comma: 9</pre>
             <div class='cli section-example-container'>
 <pre>$ lean live "My Project"
 Select a live data feed:
-1) Interactive Brokers
-2) Tradier
-3) Oanda
-4) Bitfinex
-5) Coinbase Advanced Trade
-6) Binance
-7) Zerodha
-8) Samco
-9) Terminal Link
-10) Trading Technologies
-11) Kraken
-12) TD Ameritrade
-13) IQFeed
-14) Polygon
-15) IEX
-16) CoinApi
-17) Bybit
+1) QuantConnect
+2) Interactive Brokers
+3) Tradier
+4) Oanda
+5) Bitfinex
+6) Coinbase Advanced Trade
+7) Binance
+8) Zerodha
+9) Samco
+10) Terminal Link
+11) Trading Technologies
+12) Kraken
+13) TD Ameritrade
+14) IQFeed
+15) Polygon
+16) IEX
+17) CoinApi
+18) Bybit
 To enter multiple options, separate them with comma: <?=$dataProviderNumber?></pre>
             </div>
             </li>
@@ -206,23 +207,24 @@ To enter multiple options, separate them with comma: <?=$dataProviderNumber?></p
             <div class='cli section-example-container'>
 <pre>$ lean live "My Project"
 Select a live data feed:
-1) Interactive Brokers
-2) Tradier
-3) Oanda
-4) Bitfinex
-5) Coinbase Advanced Trade
-6) Binance
-7) Zerodha
-8) Samco
-9) Terminal Link
-10) Trading Technologies
-11) Kraken
-12) TD Ameritrade
-13) IQFeed
-14) Polygon
-15) IEX
-16) CoinApi
-17) Bybit
+1) QuantConnect
+2) Interactive Brokers
+3) Tradier
+4) Oanda
+5) Bitfinex
+6) Coinbase Advanced Trade
+7) Binance
+8) Zerodha
+9) Samco
+10) Terminal Link
+11) Trading Technologies
+12) Kraken
+13) TD Ameritrade
+14) IQFeed
+15) Polygon
+16) IEX
+17) CoinApi
+18) Bybit
 To enter multiple options, separate them with comma:</pre>
             </div>
             </li>
