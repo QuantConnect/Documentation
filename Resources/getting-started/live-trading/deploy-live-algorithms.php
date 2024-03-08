@@ -24,6 +24,7 @@ if ($cloudPlatform) {
     ?>
 
     <li>Click the <span class="field-name">Node</span> field and then click the live trading node that you want to use from the drop-down menu.</li>
+    <li><span class='qualifier'>(Optional)</span> In the <span class='page-section-name'>Data Provider</span> section, click <span class='button-name'>Show</span> and change the data provider or add additional providers.</li>    
 
     <? if ($cloudPlatform) {  ?>
     <li><span class="qualifier">(Optional)</span> Follow these steps to start the algorithm with existing cash holdings  (<a href='https://vimeo.com/703024505' rel='nofollow' target="_blank">see video</a>):</li>
