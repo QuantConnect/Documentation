@@ -25,13 +25,13 @@
         <tr>
             <td><code>riskFreeRate</code></td>
             <td><code class="csharp">decimal</code><code class="python">float</code></td>
-            <td>The risk free rate, will use the US interest rate if not specified</td>
+            <td>The risk free rate, will use the US primary credit rate if not specified. Refer to <a href="/docs/v2/writing-algorithms/reality-modeling/risk-free-interest-rate/supported-models#04-Interest-Rate-Provider-Model">Interest Rate</a>.</td>
             <td><code class="csharp">null</code><code class="python">None</code></td>
         </tr>
         <tr>
             <td><code>dividendYield</code></td>
             <td><code class="csharp">decimal</code><code class="python">float</code></td>
-            <td>The dividend yield, will calculate from past dividend payoffs if not specified</td>
+            <td>The dividend yield, will calculate from past dividend payoffs if not specified for US Equities. Refer to <a href="/docs/v2/writing-algorithms/reality-modeling/dividend-yield/default-behavior">Dividend Yield</a>.</td>
             <td><code class="csharp">null</code><code class="python">None</code></td>
         </tr>
         <tr>
