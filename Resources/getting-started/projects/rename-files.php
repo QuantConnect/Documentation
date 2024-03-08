@@ -7,6 +7,6 @@
     <li>Enter the new name and then press <span class='button-name'>Enter</span>.</li>
 </ol>
 
-<? if (!is_null($videoLink)) { ?>
+<? if ($videoLink != "") { ?>
 <img class='docs-image' src='<?=$videoLink?>' alt="Renaming a file">
 <? } ?>
