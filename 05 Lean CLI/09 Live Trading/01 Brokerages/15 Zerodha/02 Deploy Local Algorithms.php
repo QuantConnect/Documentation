@@ -78,5 +78,6 @@ Do you have a history API subscription? (true, false): true</pre>
 ";
 $supportsIQFeed = false;
 $requiresSubscription = true;
+$useBrokerageDataProvider = true;
 include(DOCS_RESOURCES."/brokerages/cli-deployment/deploy-local-algorithms.php");
 ?>
