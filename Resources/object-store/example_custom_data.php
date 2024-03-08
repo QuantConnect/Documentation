@@ -1,7 +1,7 @@
-<p>Follow these steps to use the Object Store as a data source for <a href='/docs/v2/writing-algorithms/importing-data/streaming-data/key-concepts'>Custom Data</a>:</p>
+<p>Follow these steps to use the Object Store as a data source for <a href='/docs/v2/writing-algorithms/importing-data/streaming-data/key-concepts'>custom data</a>:</p>
 
 <ol>
-    <li>Create a custom data class that defines a storage key and implement the <code>GetSource</code> method.</li>
+    <li>Create a custom data class that defines a storage key and implements the <code><a href='/docs/v2/writing-algorithms/importing-data/streaming-data/key-concepts#04-Set-Data-Sources'>GetSource</a></code> method.</li>
     <div class='section-example-container'>
     <pre class='csharp'>public class Bitstamp : TradeBar
 {
@@ -18,7 +18,7 @@
         return SubscriptionDataSource(Bitstamp.KEY, SubscriptionTransportMedium.ObjectStore)</pre>
     </div>
 
-    <li>Create an algorithm that download data from an external source, and save it to the Object Store.</li>
+    <li>Create an algorithm that <a href='/docs/v2/writing-algorithms/importing-data/bulk-downloads'>downloads data from an external source</a> and <a href='/docs/v2/writing-algorithms/object-store#04-Save-Data'>saves it to the Object Store</a>.</li>
     <div class='section-example-container'>
     <pre class='csharp'>public class ObjectStoreCustomDataAlgorithm : QCAlgorithm
 {
@@ -40,7 +40,7 @@
             self.ObjectStore.Save(Bitstamp.KEY, content)</pre>
     </div>
 
-    <li>Call the <code>AddData</code> method to create a subscription for the custom type.</li>
+    <li>Call the <code>AddData</code> method to <a href='/docs/v2/writing-algorithms/importing-data/streaming-data/custom-securities/key-concepts#05-Create-Subscriptions'>subscribe to the custom type</a>.</li>
     <div class='section-example-container'>
     <pre class='csharp'>public class ObjectStoreCustomDataAlgorithm : QCAlgorithm
 {
@@ -55,7 +55,7 @@
         self.custom_data_symbol = self.AddData(Bitstamp, "BTC").Symbol</pre>
     </div>
 
-    <li>Implement the <code>Reader</code> method for the custom data class.</li>
+    <li>Implement the <code><a href='/docs/v2/writing-algorithms/importing-data/streaming-data/key-concepts#05-Parse-Custom-Data'>Reader</a></code> method for the custom data class.</li>
     <div class='section-example-container'>
     <pre class='csharp'>public class Bitstamp : TradeBar
 {
@@ -119,7 +119,7 @@
         return coin</pre>
     </div>  
 
-    <li>Make a historical data request, log and plot the data from the <code>Slice</code> object to confirm your algorithm is receiving the custom data.</li>
+    <li>To confirm your algorithm is receiving the custom data, <a href='/docs/v2/writing-algorithms/historical-data/history-requests'>request some historical data</a>, then <a href='/docs/v2/writing-algorithms/logging'>log</a> and <a href='/docs/v2/writing-algorithms/charting'>plot</a> the data from the <code>Slice</code> object.</li>
     <div class='section-example-container'>
     <pre class='csharp'>public class ObjectStoreCustomDataAlgorithm : QCAlgorithm
 {
@@ -148,7 +148,7 @@
     </div>
 </ol>
 
-<p>The following algorithm provides a full example of a custom data algorithm sourcing from the Object Store:</p>
+<p>The following algorithm provides a full example of a sourcing custom data from the Object Store:</p>
 
 <div class="qc-embed-frame" style="display: inline-block; position: relative; width: 100%; min-height: 100px; min-width: 300px;">
     <div class="qc-embed-dummy" style="padding-top: 56.25%;"></div>
