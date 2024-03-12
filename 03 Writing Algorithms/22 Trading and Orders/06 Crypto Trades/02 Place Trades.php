@@ -81,6 +81,6 @@ def OnData(self, data: Slice):
 
 <p>You can replace the <code class="python">self.</code><code>Settings.FreePortfolioValuePercentage</code> for a class variable (e.g. <code class="python">self.cash_buffer</code><code class="csharp">_cashBuffer</code>).</p>
 
-<p>When you place Crypto trades, ensure you have a sufficient balance of the base or quote currency before each trade. If you hold multiple assets and you want to put all of your capital into BTCUSD, you need to first convert all your non-BTC assets into USD and then purchase BTCUSD.</p>
+<? echo file_get_contents(DOCS_RESOURCES."/order-types/crypto-insufficient-buying-power.html"); ?>
 
 <p>For a full example of placing crypto trades, see the <span class="python"><a href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.Python/BasicTemplateCryptoAlgorithm.py">BasicTemplateCryptoAlgorithm</a></span><span class="csharp"><a href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.CSharp/BasicTemplateCryptoAlgorithm.cs">BasicTemplateCryptoAlgorithm</a></span>.</p>

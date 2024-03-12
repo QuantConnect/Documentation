@@ -15,8 +15,11 @@ If you place a market order when the market is closed, LEAN automatically conver
 
 <h4>Why am I seeing the "stale price" warning?</h4>
 
-<?php echo file_get_contents(DOCS_RESOURCES."/order-types/stale-fills.html"); ?>
+<? echo file_get_contents(DOCS_RESOURCES."/order-types/stale-fills.html"); ?>
 
 <h4>Why do I get "Backtest Handled Error: The security with symbol '/ES' is marked as non-tradable"?</h4>
 
 <p>This error occurs when you place an order for a continuous Futures contract, which isn't a tradable security. To fix the issue, place the order for a specific Futures contract. To access the currently selected contract in the continuous contract series, use the <code>Mapped</code> property of the <code>Future</code> object.</p>
+
+<h4>Why do I get "Backtest Handled Error: Order Error: ids: [1], Insufficient buying power to complete orders" from a Crypto order?</h4>
+<? echo file_get_contents(DOCS_RESOURCES."/order-types/crypto-insufficient-buying-power.html"); ?>
