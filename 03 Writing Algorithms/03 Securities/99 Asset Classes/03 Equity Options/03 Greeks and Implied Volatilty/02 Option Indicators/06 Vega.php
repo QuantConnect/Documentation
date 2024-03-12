@@ -34,3 +34,9 @@ $typeName = "Vega";
 $indicatorPage = "vega";
 include(DOCS_RESOURCES."/option-indicators/manual-indicator.php");
 ?>
+
+<h4>Volatility Smoothing</h4>
+<?
+$typeName = "vega";
+include(DOCS_RESOURCES."/option-indicators/iv-smoothing.php");
+?>

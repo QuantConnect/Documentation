@@ -34,3 +34,9 @@ $typeName = "Theta";
 $indicatorPage = "theta";
 include(DOCS_RESOURCES."/option-indicators/manual-indicator.php");
 ?>
+
+<h4>Volatility Smoothing</h4>
+<?
+$typeName = "theta";
+include(DOCS_RESOURCES."/option-indicators/iv-smoothing.php");
+?>

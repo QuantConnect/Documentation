@@ -34,3 +34,9 @@ $typeName = "Gamma";
 $indicatorPage = "gamma";
 include(DOCS_RESOURCES."/option-indicators/manual-indicator.php");
 ?>
+
+<h4>Volatility Smoothing</h4>
+<?
+$typeName = "gamma";
+include(DOCS_RESOURCES."/option-indicators/iv-smoothing.php");
+?>

@@ -36,7 +36,7 @@ include(DOCS_RESOURCES."/option-indicators/manual-indicator.php");
 ?>
 
 <h4>Volatility Smoothing</h4>
-<p>To perform <a href="/docs/v2/writing-algorithms/securities/asset-classes/equity-options/greeks-and-implied-volatility/key-concepts#05-Volatility-Smoothing">IV smoothing</a>, you can call the <code>SetSmoothingFunction</code> method of the <code>ImpliedVolatility</code> object. Note that you must use the mirror-contract constructor. Belows shows the arguments you should have for the custom function</p>
+<p>To perform <a href="/docs/v2/writing-algorithms/securities/asset-classes/equity-options/greeks-and-implied-volatility/key-concepts#05-Volatility-Smoothing">IV smoothing</a>, you can call the <code>SetSmoothingFunction</code> method of the <code>ImpliedVolatility</code> object. Note that you must use the mirror-contract constructor. Belows shows the arguments you should have for the custom function:</p>
 
 <table class="qc-table table">
     <thead>
@@ -88,3 +88,5 @@ public override void Initialize()
     self.iv.SetSmoothingFunction(lambda iv, mirror_iv: (iv + mirror_iv) * 0.5)
 </pre>
 </div>
+
+<p>The default smoothing function is using the IV from the ATM/OTM contract from the call-put pair.</p>
