@@ -2,6 +2,7 @@
 <?php echo file_get_contents(DOCS_RESOURCES."/qcalgorithm-api/_method_container.html"); ?>             
 <hr>
 <?php
+echo file_get_contents(DOCS_RESOURCES."/qcalgorithm-api/.html");
 echo file_get_contents(DOCS_RESOURCES."/qcalgorithm-api/a.html");
 echo file_get_contents(DOCS_RESOURCES."/qcalgorithm-api/abands.html");
 echo file_get_contents(DOCS_RESOURCES."/qcalgorithm-api/ad.html");
@@ -25,6 +26,7 @@ echo file_get_contents(DOCS_RESOURCES."/qcalgorithm-api/add-option-contract.html
 echo file_get_contents(DOCS_RESOURCES."/qcalgorithm-api/add-risk-management.html");
 echo file_get_contents(DOCS_RESOURCES."/qcalgorithm-api/add-security.html");
 echo file_get_contents(DOCS_RESOURCES."/qcalgorithm-api/add-series.html");
+echo file_get_contents(DOCS_RESOURCES."/qcalgorithm-api/add-tag.html");
 echo file_get_contents(DOCS_RESOURCES."/qcalgorithm-api/add-universe.html");
 echo file_get_contents(DOCS_RESOURCES."/qcalgorithm-api/add-universe-options.html");
 echo file_get_contents(DOCS_RESOURCES."/qcalgorithm-api/add-universe-selection.html");
@@ -60,6 +62,7 @@ echo file_get_contents(DOCS_RESOURCES."/qcalgorithm-api/composite-f-i-g-i.html")
 echo file_get_contents(DOCS_RESOURCES."/qcalgorithm-api/consolidate.html");
 echo file_get_contents(DOCS_RESOURCES."/qcalgorithm-api/create-consolidator.html");
 echo file_get_contents(DOCS_RESOURCES."/qcalgorithm-api/cusip.html");
+echo file_get_contents(DOCS_RESOURCES."/qcalgorithm-api/d.html");
 echo file_get_contents(DOCS_RESOURCES."/qcalgorithm-api/dch.html");
 echo file_get_contents(DOCS_RESOURCES."/qcalgorithm-api/debug.html");
 echo file_get_contents(DOCS_RESOURCES."/qcalgorithm-api/dem.html");
@@ -77,6 +80,7 @@ echo file_get_contents(DOCS_RESOURCES."/qcalgorithm-api/fish.html");
 echo file_get_contents(DOCS_RESOURCES."/qcalgorithm-api/frama.html");
 echo file_get_contents(DOCS_RESOURCES."/qcalgorithm-api/framework-post-initialize.html");
 echo file_get_contents(DOCS_RESOURCES."/qcalgorithm-api/fundamentals.html");
+echo file_get_contents(DOCS_RESOURCES."/qcalgorithm-api/g.html");
 echo file_get_contents(DOCS_RESOURCES."/qcalgorithm-api/get-last-known-prices.html");
 echo file_get_contents(DOCS_RESOURCES."/qcalgorithm-api/get-parameters.html");
 echo file_get_contents(DOCS_RESOURCES."/qcalgorithm-api/heikin-ashi.html");
@@ -135,6 +139,7 @@ echo file_get_contents(DOCS_RESOURCES."/qcalgorithm-api/pphl.html");
 echo file_get_contents(DOCS_RESOURCES."/qcalgorithm-api/ppo.html");
 echo file_get_contents(DOCS_RESOURCES."/qcalgorithm-api/psar.html");
 echo file_get_contents(DOCS_RESOURCES."/qcalgorithm-api/quit.html");
+echo file_get_contents(DOCS_RESOURCES."/qcalgorithm-api/r.html");
 echo file_get_contents(DOCS_RESOURCES."/qcalgorithm-api/rc.html");
 echo file_get_contents(DOCS_RESOURCES."/qcalgorithm-api/rdv.html");
 echo file_get_contents(DOCS_RESOURCES."/qcalgorithm-api/record.html");
@@ -162,6 +167,7 @@ echo file_get_contents(DOCS_RESOURCES."/qcalgorithm-api/set-end-date.html");
 echo file_get_contents(DOCS_RESOURCES."/qcalgorithm-api/set-execution.html");
 echo file_get_contents(DOCS_RESOURCES."/qcalgorithm-api/set-future-chain-provider.html");
 echo file_get_contents(DOCS_RESOURCES."/qcalgorithm-api/set-holdings.html");
+echo file_get_contents(DOCS_RESOURCES."/qcalgorithm-api/set-name.html");
 echo file_get_contents(DOCS_RESOURCES."/qcalgorithm-api/set-object-store.html");
 echo file_get_contents(DOCS_RESOURCES."/qcalgorithm-api/set-option-chain-provider.html");
 echo file_get_contents(DOCS_RESOURCES."/qcalgorithm-api/set-parameters.html");
@@ -174,6 +180,7 @@ echo file_get_contents(DOCS_RESOURCES."/qcalgorithm-api/set-runtime-statistic.ht
 echo file_get_contents(DOCS_RESOURCES."/qcalgorithm-api/set-security-initializer.html");
 echo file_get_contents(DOCS_RESOURCES."/qcalgorithm-api/set-start-date.html");
 echo file_get_contents(DOCS_RESOURCES."/qcalgorithm-api/set-summary-statistic.html");
+echo file_get_contents(DOCS_RESOURCES."/qcalgorithm-api/set-tags.html");
 echo file_get_contents(DOCS_RESOURCES."/qcalgorithm-api/set-time-zone.html");
 echo file_get_contents(DOCS_RESOURCES."/qcalgorithm-api/set-trade-builder.html");
 echo file_get_contents(DOCS_RESOURCES."/qcalgorithm-api/set-universe-selection.html");
@@ -194,6 +201,7 @@ echo file_get_contents(DOCS_RESOURCES."/qcalgorithm-api/submit-order-request.htm
 echo file_get_contents(DOCS_RESOURCES."/qcalgorithm-api/sum.html");
 echo file_get_contents(DOCS_RESOURCES."/qcalgorithm-api/swiss.html");
 echo file_get_contents(DOCS_RESOURCES."/qcalgorithm-api/symbol.html");
+echo file_get_contents(DOCS_RESOURCES."/qcalgorithm-api/t.html");
 echo file_get_contents(DOCS_RESOURCES."/qcalgorithm-api/t3.html");
 echo file_get_contents(DOCS_RESOURCES."/qcalgorithm-api/tdd.html");
 echo file_get_contents(DOCS_RESOURCES."/qcalgorithm-api/tema.html");
@@ -209,10 +217,15 @@ echo file_get_contents(DOCS_RESOURCES."/qcalgorithm-api/tsf.html");
 echo file_get_contents(DOCS_RESOURCES."/qcalgorithm-api/tsi.html");
 echo file_get_contents(DOCS_RESOURCES."/qcalgorithm-api/ultosc.html");
 echo file_get_contents(DOCS_RESOURCES."/qcalgorithm-api/unregister-indicator.html");
+echo file_get_contents(DOCS_RESOURCES."/qcalgorithm-api/v.html");
 echo file_get_contents(DOCS_RESOURCES."/qcalgorithm-api/var.html");
+echo file_get_contents(DOCS_RESOURCES."/qcalgorithm-api/vidya.html");
 echo file_get_contents(DOCS_RESOURCES."/qcalgorithm-api/vp.html");
 echo file_get_contents(DOCS_RESOURCES."/qcalgorithm-api/vwap.html");
 echo file_get_contents(DOCS_RESOURCES."/qcalgorithm-api/warm-up-indicator.html");
 echo file_get_contents(DOCS_RESOURCES."/qcalgorithm-api/wilr.html");
 echo file_get_contents(DOCS_RESOURCES."/qcalgorithm-api/wwma.html");
+echo file_get_contents(DOCS_RESOURCES."/qcalgorithm-api/γ.html");
+echo file_get_contents(DOCS_RESOURCES."/qcalgorithm-api/δ.html");
+echo file_get_contents(DOCS_RESOURCES."/qcalgorithm-api/θ.html");
 ?>
