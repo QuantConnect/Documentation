@@ -1,0 +1,54 @@
+<p>You can use the IDE <a href='/docs/v2/cloud-platform/backtesting/debugging'>debugging</a> capabilities to inspect the variables to understand the internal state of the custom data implementation.</p>
+<p>It's good practice to add logging statements to live algorithms since you cannot use the debugger. To add <a href='/docs/v2/writing-algorithms/logging'>logging</a> to your custom data class, pass a reference of the algorithm, and call the <code>Log</code> or the <code>Debug</code> method.</p>
+
+<div class="section-example-container">
+<pre class="csharp">public class MyCustomDataTypeAlgorithm : QCAlgorithm
+{
+    public override void Initialize()
+    {
+        MyCustomDataType.ALGORITHM = this;
+        var symbol = AddData&lt;MyCustomDataType&gt;("&lt;name&gt;", Resolution.Daily).Symbol;
+    }
+}
+
+public class MyCustomDataType : BaseData
+{
+    public static QCAlgorithm ALGORITHM;
+
+    public override BaseData Reader(SubscriptionDataConfig config, string line, DateTime date, bool isLiveMode)
+    {
+        if (!char.IsDigit(line.Trim()[0]))
+        {
+            // Display the line with the header
+            ALGORITHM.Debug($"HEADER: {line}");
+            return null;
+        }
+        var data = line.Split(',');
+        return new MyCustomDataType()
+        {
+            Time = DateTime.ParseExact(data[0], "yyyyMMdd", CultureInfo.InvariantCulture),
+            EndTime = Time.AddDays(1),
+            Symbol = config.Symbol,
+            Value = data[1].IfNotNullOrEmpty(
+                s =&gt; decimal.Parse(s, NumberStyles.Any, CultureInfo.InvariantCulture)),
+        };
+    }
+}</pre>
+<pre class="python">class MyCustomDataTypeAlgorithm(QCAlgorithm):
+    def Initialize(self):
+        MyCustomDataType.ALGORITHM = self
+        self.symbol = self.AddData(MyCustomDataType, "&lt;name&gt;", Resolution.Daily).Symbol
+
+class MyCustomDataType(PythonData):
+    def Reader(self, config: SubscriptionDataConfig, line: str, date: datetime, isLiveMode: bool) -> BaseData:
+        if not line[0].isdigit():
+            # Display the line with the header
+            MyCustomDataType.ALGORITHM.Debug(f"HEADER: {line}");
+            return None
+        data = line.split(',')
+        custom = MyCustomDataType()
+        custom.Symbol = config.Symbol
+        custom.EndTime = datetime.strptime(data[0], '%Y%m%d') + timedelta(1)
+        custom.Value = float(data[1])
+        return custom</pre>
+</div>
