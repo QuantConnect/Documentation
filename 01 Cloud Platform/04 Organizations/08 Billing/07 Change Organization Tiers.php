@@ -4,7 +4,7 @@
 
 <ol>
     <li>Log in to the Algorithm Lab.</li>
-    <li>In the left navigation bar, click <span class='menu-name'>Organization &gt; Home</span>.</li>
+    <li>In the left navigation bar, click <a href="/organization" class="menu-name">Organization &gt; Home</a>.</li>
     <li>On the organization homepage, click <span class='button-name'>Edit Plan</span>.</li>
     <li>Click the <span class='tab-name'>Choose a Plan</span> tab.</li>
     <li>Click <span class='button-name'>CHOOSE TIER</span> under the organization tier you want.</li>
@@ -43,7 +43,7 @@
 
 <ol>
     <li>Log in to the Algorithm Lab.</li>
-    <li>In the left navigation bar, click <span class='menu-name'>Organization &gt; Home</span>.</li>
+    <li>In the left navigation bar, click <a href="/organization" class="menu-name">Organization &gt; Home</a>.</li>
     <li>On the organization homepage, click <span class='button-name'>Downgrade to Free</span>.</li>
     <li>Click <span class='button-name'>Cancel My Plan</span>.</li>
     <li>Click the <span class='button-name'>I understand that my subscription will be terminated immediately</span> check box and then click <span class='button-name'>Cancel My Subscription</span>.</li>
