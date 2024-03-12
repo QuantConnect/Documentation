@@ -74,7 +74,7 @@ def _get_helpers():
         return helpers
 
 def _get_image_source(folder: str) -> str:
-    image = '/'.join([part[3:].lower().replace(' ','-') for part in folder.parts])
+    image = '/'.join([part[3:].strip().lower().replace(' ','-') for part in folder.parts])
     return f'https://cdn.quantconnect.com/docs/i/{image}.png'
 
 def Generate_Indicators_Reference():
@@ -162,7 +162,7 @@ def Generate_Indicators_Reference():
             indicator['folder'] = Path(f'{INDICATORS}/00 Candlestick Patterns/{candle:02} {key}')
         else:
             count += 1
-            indicator['folder'] = Path(f'{INDICATORS}/{count:02} {key}')
+            indicator['folder'] = Path(f'{INDICATORS}/{count:03} {key}')
 
     with open('Resources/indicators/indicator_count.html', 'w', encoding='utf-8') as fp:
         fp.write(f'There are {count} indicators.')
