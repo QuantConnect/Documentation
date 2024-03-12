@@ -22,6 +22,11 @@ class IndicatorImageGeneratorAlgorithm(QCAlgorithm):
         qb.SetStartDate(self.StartDate)
         symbol = Symbol.Create("SPY", SecurityType.Equity, Market.USA)
         reference = Symbol.Create("QQQ", SecurityType.Equity, Market.USA)
+        option_symbol = Symbol.CreateOption("SPY", Market.USA, OptionStyle.American, OptionRight.Call, 375, datetime(2021, 1, 8))
+        option_mirror_symbol = Symbol.CreateOption("SPY", Market.USA, OptionStyle.American, OptionRight.Put, 375, datetime(2021, 1, 8))
+        
+        interest_rate_model = InterestRateProvider()
+        dividend_yield_model = DividendYieldProvider(symbol)
 
         indicators = {
             'bollinger-bands':
@@ -614,6 +619,44 @@ class IndicatorImageGeneratorAlgorithm(QCAlgorithm):
                 'code': VolumeProfile("", 3, 0.70, 0.05),
                 'title' : 'VP(symbol, 3, 0.70, 0.05)',
                 'columns' : []
+            },
+        }
+        option_indicators = {
+            'implied-volatility':
+            {
+                'code': ImpliedVolatility(option_symbol, interest_rate_model, dividend_yield_model, option_mirror_symbol),
+                'title' : 'IV(option_symbol, option_mirror_symbol)',
+                'columns' : []
+            },
+            'delta':
+            {
+                'code': Delta(option_symbol, interest_rate_model, dividend_yield_model, option_mirror_symbol),
+                'title' : 'D(option_symbol, option_mirror_symbol)',
+                'columns' : []
+            },
+            'gamma':
+            {
+                'code': Gamma(option_symbol, interest_rate_model, dividend_yield_model, option_mirror_symbol),
+                'title' : 'G(option_symbol, option_mirror_symbol)',
+                'columns' : []
+            },
+            'vega':
+            {
+                'code': Vega(option_symbol, interest_rate_model, dividend_yield_model, option_mirror_symbol),
+                'title' : 'V(option_symbol, option_mirror_symbol)',
+                'columns' : []
+            },
+            'theta':
+            {
+                'code': Theta(option_symbol, interest_rate_model, dividend_yield_model, option_mirror_symbol),
+                'title' : 'T(option_symbol, option_mirror_symbol)',
+                'columns' : []
+            },
+            'rho':
+            {
+                'code': Rho(option_symbol, interest_rate_model, dividend_yield_model, option_mirror_symbol),
+                'title' : 'R(option_symbol, option_mirror_symbol)',
+                'columns' : []
             }
         }
 
@@ -626,6 +669,7 @@ class IndicatorImageGeneratorAlgorithm(QCAlgorithm):
                 self.Debug(e)
 
         history = qb.History[TradeBar](["SPY", "QQQ"], timedelta(365), Resolution.Daily)
+        option_history = qb.History[QuoteBar]([option_symbol, option_mirror_symbol], timedelta(365), Resolution.Daily)
 
         roc = RateOfChange(1)
         indicator['code'] = IndicatorExtensions.Of(TargetDownsideDeviation(50), roc)
@@ -789,5 +833,21 @@ class IndicatorImageGeneratorAlgorithm(QCAlgorithm):
                 values.append(indicator['code'].Current.Value)
         df = pd.DataFrame(values, index=index, columns=["filteredidentity"])
         generate("filtered-identity", indicator, df)
+        
+        times = set(bars.get("SPY").EndTime for bars in history).intersection(bars.get(option_symbol).EndTime for bars in option_history)
+        history = [bar for bar in history if bar.get("SPY").EndTime in times]
+        option_history = [bar for bar in option_history if bar.get(option_symbol).EndTime in times]
+        
+        for name, indicator in option_indicators.items():
+            index, values = [], []
+            for bars, quotebars in zip(history, option_history):
+                indicator['code'].Update(IndicatorDataPoint(symbol, bars.get("SPY").EndTime, bars.get("SPY").Close))
+                indicator['code'].Update(IndicatorDataPoint(option_symbol, quotebars.get(option_symbol).EndTime, quotebars.get(option_symbol).Close))
+                indicator['code'].Update(IndicatorDataPoint(option_mirror_symbol, quotebars.get(option_mirror_symbol).EndTime, quotebars.get(option_mirror_symbol).Close))
+                if indicator['code'].IsReady:
+                    index.append(bars.get("SPY").EndTime)
+                    values.append(indicator['code'].Current.Value)
+            df = pd.DataFrame(values, index=index, columns=[name.replace('-', '')])
+            generate(name, indicator, df)
 
         self.Quit()
