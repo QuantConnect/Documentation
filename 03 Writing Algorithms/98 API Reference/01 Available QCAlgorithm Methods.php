@@ -29,6 +29,10 @@
 <table cellspacing="0" cellpadding="0" width="100%">
 <tbody>
 <tr>
+<td width="33%"><a href="#ρ-header">ρ()</a></td>
+<td>Creates a new Rho indicator for the symbol The indicator will be automatically updated on the symbol's subscription resolution.</td>
+</tr>
+<tr>
 <td width="33%"><a href="#A-header">A()</a></td>
 <td>Creates a Alpha indicator for the given target symbol in relation with the reference used. The indicator will be automatically updated on the given resolution.</td>
 </tr>
@@ -121,6 +125,10 @@
 <td>Add a series object for charting. This is useful when initializing charts with series other than type = line. If a series exists in the chart with the same name, then it is replaced.</td>
 </tr>
 <tr>
+<td width="33%"><a href="#AddTag-header">AddTag()</a></td>
+<td>Adds a tag to the algorithm.</td>
+</tr>
+<tr>
 <td width="33%"><a href="#AddUniverse-header">AddUniverse()</a></td>
 <td>Adds the universe to the algorithm.</td>
 </tr>
@@ -202,7 +210,7 @@
 </tr>
 <tr>
 <td width="33%"><a href="#Buy-header">Buy()</a></td>
-<td>Buy Stock (Alias of Order).</td>
+<td>Buy Option Strategy (Alias of Order).</td>
 </tr>
 <tr>
 <td width="33%"><a href="#C-header">C()</a></td>
@@ -258,7 +266,11 @@
 </tr>
 <tr>
 <td width="33%"><a href="#CUSIP-header">CUSIP()</a></td>
-<td>Converts a <code>String)</code> into a CUSIP identifier.</td>
+<td>Converts a CUSIP identifier into a <code>String)</code>.</td>
+</tr>
+<tr>
+<td width="33%"><a href="#D-header">D()</a></td>
+<td>Creates a new Delta indicator for the symbol The indicator will be automatically updated on the symbol's subscription resolution.</td>
 </tr>
 <tr>
 <td width="33%"><a href="#DCH-header">DCH()</a></td>
@@ -327,6 +339,10 @@
 <tr>
 <td width="33%"><a href="#Fundamentals-header">Fundamentals()</a></td>
 <td>Get the fundamental data for the requested symbol at the current time.</td>
+</tr>
+<tr>
+<td width="33%"><a href="#G-header">G()</a></td>
+<td>Creates a new Gamma indicator for the symbol The indicator will be automatically updated on the symbol's subscription resolution.</td>
 </tr>
 <tr>
 <td width="33%"><a href="#GetLastKnownPrices-header">GetLastKnownPrices()</a></td>
@@ -534,7 +550,7 @@
 </tr>
 <tr>
 <td width="33%"><a href="#Order-header">Order()</a></td>
-<td>Obsolete implementation of Order method accepting a OrderType. This was deprecated since it was impossible to generate other orders via this method. Any calls to this method will always default to a Market Order.</td>
+<td>Issue an order/trade for buying/selling an option strategy.</td>
 </tr>
 <tr>
 <td width="33%"><a href="#Plot-header">Plot()</a></td>
@@ -559,6 +575,10 @@
 <tr>
 <td width="33%"><a href="#Quit-header">Quit()</a></td>
 <td>Terminate the algorithm after processing the current event handler.</td>
+</tr>
+<tr>
+<td width="33%"><a href="#R-header">R()</a></td>
+<td>Creates a new Rho indicator for the symbol The indicator will be automatically updated on the symbol's subscription resolution.</td>
 </tr>
 <tr>
 <td width="33%"><a href="#RC-header">RC()</a></td>
@@ -618,7 +638,7 @@
 </tr>
 <tr>
 <td width="33%"><a href="#Sell-header">Sell()</a></td>
-<td>Sell stock (alias of Order).</td>
+<td>Sell Option Strategy (alias of Order).</td>
 </tr>
 <tr>
 <td width="33%"><a href="#SetAccountCurrency-header">SetAccountCurrency()</a></td>
@@ -669,6 +689,10 @@
 <td>Sets holdings for a collection of targets. The implementation will order the provided targets executing first those that reduce a position, freeing margin.</td>
 </tr>
 <tr>
+<td width="33%"><a href="#SetName-header">SetName()</a></td>
+<td>Sets name to the currently running backtest.</td>
+</tr>
+<tr>
 <td width="33%"><a href="#SetObjectStore-header">SetObjectStore()</a></td>
 <td>Sets the object store.</td>
 </tr>
@@ -715,6 +739,10 @@
 <tr>
 <td width="33%"><a href="#SetSummaryStatistic-header">SetSummaryStatistic()</a></td>
 <td>Set a custom summary statistic for the algorithm.</td>
+</tr>
+<tr>
+<td width="33%"><a href="#SetTags-header">SetTags()</a></td>
+<td></td>
 </tr>
 <tr>
 <td width="33%"><a href="#SetTimeZone-header">SetTimeZone()</a></td>
@@ -797,6 +825,10 @@
 <td>Converts the string 'ticker' symbol into a full <code>String)</code> object This requires that the string 'ticker' has been added to the algorithm.</td>
 </tr>
 <tr>
+<td width="33%"><a href="#T-header">T()</a></td>
+<td>Creates a new Theta indicator for the symbol The indicator will be automatically updated on the symbol's subscription resolution.</td>
+</tr>
+<tr>
 <td width="33%"><a href="#T3-header">T3()</a></td>
 <td>Creates a new T3MovingAverage indicator.</td>
 </tr>
@@ -822,7 +854,7 @@
 </tr>
 <tr>
 <td width="33%"><a href="#TrailingStopOrder-header">TrailingStopOrder()</a></td>
-<td>Create a trailing stop order and return the newly created order id; or negative if the order is invalid. It will calculate the stop price using the trailing amount and the current market price.</td>
+<td>Create a trailing stop order and return the newly created order id; or negative if the order is invalid.</td>
 </tr>
 <tr>
 <td width="33%"><a href="#Train-header">Train()</a></td>
@@ -857,8 +889,16 @@
 <td>Will unregister an indicator and it's associated consolidator instance so they stop receiving data updates.</td>
 </tr>
 <tr>
+<td width="33%"><a href="#V-header">V()</a></td>
+<td>Creates a new Vega indicator for the symbol The indicator will be automatically updated on the symbol's subscription resolution.</td>
+</tr>
+<tr>
 <td width="33%"><a href="#VAR-header">VAR()</a></td>
 <td>Creates a new Variance indicator. This will return the population variance of samples over the specified period.</td>
+</tr>
+<tr>
+<td width="33%"><a href="#VIDYA-header">VIDYA()</a></td>
+<td>Creates a new Chande's Variable Index Dynamic Average indicator.</td>
 </tr>
 <tr>
 <td width="33%"><a href="#VP-header">VP()</a></td>
@@ -879,6 +919,18 @@
 <tr>
 <td width="33%"><a href="#WWMA-header">WWMA()</a></td>
 <td>Creates a WilderMovingAverage indicator for the symbol. The indicator will be automatically updated on the given resolution.</td>
+</tr>
+<tr>
+<td width="33%"><a href="#Γ-header">Γ()</a></td>
+<td>Creates a new Gamma indicator for the symbol The indicator will be automatically updated on the symbol's subscription resolution.</td>
+</tr>
+<tr>
+<td width="33%"><a href="#Δ-header">Δ()</a></td>
+<td>Creates a new Delta indicator for the symbol The indicator will be automatically updated on the symbol's subscription resolution.</td>
+</tr>
+<tr>
+<td width="33%"><a href="#Θ-header">Θ()</a></td>
+<td>Creates a new Theta indicator for the symbol The indicator will be automatically updated on the symbol's subscription resolution.</td>
 </tr>
 </tbody></table>
 </div><div id="Adding Data" class="ref-table-container">
@@ -1110,7 +1162,7 @@
 </tr>
 <tr>
 <td width="33%"><a href="#CUSIP-header">CUSIP()</a></td>
-<td>Converts a <code>String)</code> into a CUSIP identifier.</td>
+<td>Converts a CUSIP identifier into a <code>String)</code>.</td>
 </tr>
 <tr>
 <td width="33%"><a href="#Fundamentals-header">Fundamentals()</a></td>
@@ -1213,6 +1265,10 @@
 <table cellspacing="0" cellpadding="0">
 <tbody>
 <tr>
+<td width="33%"><a href="#ρ-header">ρ()</a></td>
+<td>Creates a new Rho indicator for the symbol The indicator will be automatically updated on the symbol's subscription resolution.</td>
+</tr>
+<tr>
 <td width="33%"><a href="#A-header">A()</a></td>
 <td>Creates a Alpha indicator for the given target symbol in relation with the reference used. The indicator will be automatically updated on the given resolution.</td>
 </tr>
@@ -1313,6 +1369,10 @@
 <td>Creates a new ChandeMomentumOscillator indicator.</td>
 </tr>
 <tr>
+<td width="33%"><a href="#D-header">D()</a></td>
+<td>Creates a new Delta indicator for the symbol The indicator will be automatically updated on the symbol's subscription resolution.</td>
+</tr>
+<tr>
 <td width="33%"><a href="#DCH-header">DCH()</a></td>
 <td>Creates a new Donchian Channel indicator which will compute the Upper Band and Lower Band. The indicator will be automatically updated on the given resolution.</td>
 </tr>
@@ -1351,6 +1411,10 @@
 <tr>
 <td width="33%"><a href="#FRAMA-header">FRAMA()</a></td>
 <td>Creates an FractalAdaptiveMovingAverage (FRAMA) indicator for the symbol. The indicator will be automatically updated on the given resolution.</td>
+</tr>
+<tr>
+<td width="33%"><a href="#G-header">G()</a></td>
+<td>Creates a new Gamma indicator for the symbol The indicator will be automatically updated on the symbol's subscription resolution.</td>
 </tr>
 <tr>
 <td width="33%"><a href="#HeikinAshi-header">HeikinAshi()</a></td>
@@ -1477,6 +1541,10 @@
 <td>Creates a new Parabolic SAR indicator.</td>
 </tr>
 <tr>
+<td width="33%"><a href="#R-header">R()</a></td>
+<td>Creates a new Rho indicator for the symbol The indicator will be automatically updated on the symbol's subscription resolution.</td>
+</tr>
+<tr>
 <td width="33%"><a href="#RC-header">RC()</a></td>
 <td>Creates a new RegressionChannel indicator which will compute the LinearRegression, UpperChannel and LowerChannel lines, the intercept and slope.</td>
 </tr>
@@ -1561,6 +1629,10 @@
 <td>Creates Swiss Army Knife transformation for the symbol. The indicator will be automatically updated on the given resolution.</td>
 </tr>
 <tr>
+<td width="33%"><a href="#T-header">T()</a></td>
+<td>Creates a new Theta indicator for the symbol The indicator will be automatically updated on the symbol's subscription resolution.</td>
+</tr>
+<tr>
 <td width="33%"><a href="#T3-header">T3()</a></td>
 <td>Creates a new T3MovingAverage indicator.</td>
 </tr>
@@ -1609,8 +1681,16 @@
 <td>Will unregister an indicator and it's associated consolidator instance so they stop receiving data updates.</td>
 </tr>
 <tr>
+<td width="33%"><a href="#V-header">V()</a></td>
+<td>Creates a new Vega indicator for the symbol The indicator will be automatically updated on the symbol's subscription resolution.</td>
+</tr>
+<tr>
 <td width="33%"><a href="#VAR-header">VAR()</a></td>
 <td>Creates a new Variance indicator. This will return the population variance of samples over the specified period.</td>
+</tr>
+<tr>
+<td width="33%"><a href="#VIDYA-header">VIDYA()</a></td>
+<td>Creates a new Chande's Variable Index Dynamic Average indicator.</td>
 </tr>
 <tr>
 <td width="33%"><a href="#VP-header">VP()</a></td>
@@ -1631,6 +1711,18 @@
 <tr>
 <td width="33%"><a href="#WWMA-header">WWMA()</a></td>
 <td>Creates a WilderMovingAverage indicator for the symbol. The indicator will be automatically updated on the given resolution.</td>
+</tr>
+<tr>
+<td width="33%"><a href="#Γ-header">Γ()</a></td>
+<td>Creates a new Gamma indicator for the symbol The indicator will be automatically updated on the symbol's subscription resolution.</td>
+</tr>
+<tr>
+<td width="33%"><a href="#Δ-header">Δ()</a></td>
+<td>Creates a new Delta indicator for the symbol The indicator will be automatically updated on the symbol's subscription resolution.</td>
+</tr>
+<tr>
+<td width="33%"><a href="#Θ-header">Θ()</a></td>
+<td>Creates a new Theta indicator for the symbol The indicator will be automatically updated on the symbol's subscription resolution.</td>
 </tr>
 </tbody></table>
 </div><div id="Live Trading" class="ref-table-container">
@@ -1746,7 +1838,7 @@
 </tr>
 <tr>
 <td width="33%"><a href="#CUSIP-header">CUSIP()</a></td>
-<td>Converts a <code>String)</code> into a CUSIP identifier.</td>
+<td>Converts a CUSIP identifier into a <code>String)</code>.</td>
 </tr>
 <tr>
 <td width="33%"><a href="#Fundamentals-header">Fundamentals()</a></td>
@@ -1794,7 +1886,7 @@
 </tr>
 <tr>
 <td width="33%"><a href="#Buy-header">Buy()</a></td>
-<td>Buy Stock (Alias of Order).</td>
+<td>Buy Option Strategy (Alias of Order).</td>
 </tr>
 <tr>
 <td width="33%"><a href="#CalculateOrderQuantity-header">CalculateOrderQuantity()</a></td>
@@ -1862,11 +1954,11 @@
 </tr>
 <tr>
 <td width="33%"><a href="#Order-header">Order()</a></td>
-<td>Obsolete implementation of Order method accepting a OrderType. This was deprecated since it was impossible to generate other orders via this method. Any calls to this method will always default to a Market Order.</td>
+<td>Issue an order/trade for buying/selling an option strategy.</td>
 </tr>
 <tr>
 <td width="33%"><a href="#Sell-header">Sell()</a></td>
-<td>Sell stock (alias of Order).</td>
+<td>Sell Option Strategy (alias of Order).</td>
 </tr>
 <tr>
 <td width="33%"><a href="#SetBenchmark-header">SetBenchmark()</a></td>
@@ -1914,7 +2006,7 @@
 </tr>
 <tr>
 <td width="33%"><a href="#TrailingStopOrder-header">TrailingStopOrder()</a></td>
-<td>Create a trailing stop order and return the newly created order id; or negative if the order is invalid. It will calculate the stop price using the trailing amount and the current market price.</td>
+<td>Create a trailing stop order and return the newly created order id; or negative if the order is invalid.</td>
 </tr>
 </tbody></table>
 </div><div id="Universes" class="ref-table-container">
