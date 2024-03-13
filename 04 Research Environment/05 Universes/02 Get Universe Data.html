@@ -26,54 +26,53 @@ using QuantConnect.Data.Fundamental;</pre>
         <pre class="python">qb = QuantBook()</pre>
     </div>
 
-    <li>Define a universe selection function.</li>
-    <p>The following example defines a dynamic universe that contains the 10 Equities with the lowest PE ratios in the market. To see all the <code>Fundamental</code> attributes you can use to define a filter function for a Fundamental universe, see <a href='/docs/v2/writing-algorithms/datasets/morningstar/us-fundamental-data#05-Data-Point-Attributes'>Data Point Attributes</a>.</p>
+    <li>Define a universe.</li>
+    <p>The following example defines a dynamic universe that contains the 10 Equities with the lowest PE ratios in the market. To see all the <code>Fundamental</code> attributes you can use to define a filter function for a Fundamental universe, see <a href='/docs/v2/writing-algorithms/datasets/morningstar/us-fundamental-data#05-Data-Point-Attributes'>Data Point Attributes</a>. Call the <code>AddUniverse</code> method with filter function.</p>
     <div class="section-example-container">
-    <pre class="csharp">IEnumerable&lt;Symbol&gt; FilterFunction(IEnumerable&lt;Fundamental&gt; fundamentals) 
+    <pre class="csharp">var universe = qb.AddUniverse(fundamentals =&gt;
 {
     return fundamentals
-        .Where(f => !Double.IsNaN(f.ValuationRatios.PERatio))
-        .OrderBy(f => f.ValuationRatios.PERatio)
+        .Where(f =&gt; !double.IsNaN(f.ValuationRatios.PERatio))
+        .OrderBy(f =&gt; f.ValuationRatios.PERatio)
         .Take(10)
-        .Select(f => f.Symbol);
-}</pre>
-    <pre class="python">def filter_function(fundamentals: List[Fundamental]) -> List[Symbol]:
+        .Select(f =&gt; f.Symbol);
+});</pre>
+    <pre class="python">def filter_function(fundamentals):
     sorted_by_pe_ratio = sorted(
         [f for f in fundamentals if not np.isnan(f.ValuationRatios.PERatio)], 
         key=lambda fundamental: fundamental.ValuationRatios.PERatio
     )
-    return [fundamental.Symbol for fundamental in sorted_by_pe_ratio[:10]]</pre>
+    return [fundamental.Symbol for fundamental in sorted_by_pe_ratio[:10]]
+
+universe = qb.AddUniverse(filter_function)</pre>
     </div>
 
-    <li>Call the <code class='csharp'>UniverseHistory&lt;Fundamentals, Fundamental&gt;</code><code class='python'>UniverseHistory</code> method with <span class='python'>the <code>Fundamentals</code> type,</span> a start date, an end date, and the universe selection function.</li>
+    <li>Call the <code class='csharp'>UniverseHistory</code><code class='python'>UniverseHistory</code> method with the universe, a start date, and an end date.</li>
     <div class="section-example-container">
-        <pre class="csharp">var universeHistory = qb.UniverseHistory&lt;Fundamentals, Fundamental&gt;(new DateTime(2023, 11, 6), new DateTime(2023, 11, 13), FilterFunction);</pre>
-        <pre class="python">universe_history = qb.UniverseHistory(Fundamentals, datetime(2023, 11, 6), datetime(2023, 11, 13), filter_function)</pre>
+        <pre class="csharp">var universeHistory = qb.UniverseHistory(universe, new DateTime(2023, 11, 6), new DateTime(2023, 11, 13));</pre>
+        <pre class="python">universe_history = qb.UniverseHistory(universe, datetime(2023, 11, 6), datetime(2023, 11, 13))</pre>
     </div>
 
-    <p>
-    The end date and filter function arguments are optional. 
-    If you omit the end date argument, the method returns <code>Fundamental</code> data between the start date and the current day. 
-    If you omit the filter function argument, the method returns <code>Fundamental</code> data for all US Equities that were trading between the start and end dates, including delisted securities.
-    </p>
+    <p>The end date arguments is optional. If you omit it, the method returns <code>Fundamental</code> data between the start date and the current day.</p>
 
-    <p class='python'>The <code>UniverseHistory</code> method returns a DataFrame where the index is the time when universe selection would occur in a backtest. The DataFrame has one column, named "data". Each row in the data column contains a list of <code>Fundamental</code> objects. The following image shows the first 5 rows of an example DataFrame:</p>
+    <p class='python'>The <code>UniverseHistory</code> method returns a Series where the multi-index is the universe <code>Symbol</code> and the time when universe selection would occur in a backtest. Each row in the data column contains a list of <code>Fundamental</code> objects. The following image shows the first 5 rows of an example Series:</p>
     <img class="python docs-image" src="https://cdn.quantconnect.com/i/tu/universe-selection-history-dataframe-python.png" alt="Historical fundamental universe dataframe">
-    <p class='csharp'>The <code>UniverseHistory&lt;Fundamentals, Fundamental&gt;</code> method returns an <code>IEnumerable&lt;IEnumerable&lt;Fundamental&gt;&gt;</code> object. </p>
+    <p class='csharp'>The <code>UniverseHistory</code> method returns an <code>IEnumerable&lt;IEnumerable&lt;Fundamental&gt;&gt;</code> object. </p>
 
-    <li class='python'>Iterate through the DataFrame to access the universe data.</li>
+    <li class='python'>Iterate through the Series to access the universe data.</li>
     <li class='csharp'>Iterate through the result to access the universe data.</li>
 
     <div class="section-example-container">
-    <pre class="python">for date, fundamentals in universe_history.iterrows():
-    for fundamental in fundamentals['data']:
+    <pre class="python">universe_history = universe_history.droplevel('symbol', axis=0)
+for date, fundamentals in universe_history.items():
+    for fundamental in fundamentals:
         symbol = fundamental.Symbol
         price = fundamental.Price
         if fundamental.HasFundamentalData:
             pe_ratio = fundamental.ValuationRatios.PERatio</pre>
     <pre class="csharp">foreach (var fundamentals in universeHistory)
 {
-    foreach (var fundamental in fundamentals)
+    foreach (Fundamental fundamental in fundamentals)
     {
         var date = fundamental.Time;
         var symbol = fundamental.Symbol;
