@@ -1,4 +1,4 @@
-<p>To add add a universe of Cryptocurrencies, in the <code>Initialize</code> method, pass a <code>CryptoCoarseFundamentalUniverse</code> to the <code>AddUniverse</code> method. <br></p>
+<p>To add a universe of Cryptocurrencies, in the <code>Initialize</code> method, pass a <code>CryptoCoarseFundamentalUniverse</code> to the <code>AddUniverse</code> method. <br></p>
 
 <div class="section-example-container">
 <pre class="python">def Initialize(self) -&gt; None:
@@ -8,7 +8,7 @@
 
     # Add universe selection of cryptos based on coarse fundamentals
     filter_function = lambda crypto_coarse: [c.Symbol for c in crypto_coarse]
-    self.AddUniverse(CryptoCoarseFundamentalUniverse(Market.Coinbase, self.UniverseSettings, filter_function))</pre>
+    self.AddUniverse(CryptoUniverse.Coinbase(filter_function))<br></pre>
 <pre class="csharp">public override void Initialize()
 {
     UniverseSettings.Asynchronous = true;
@@ -16,8 +16,7 @@
     SetBrokerageModel(BrokerageName.Coinbase, AccountType.Cash);
 
     // Add universe selection of cryptos based on coarse fundamentals
-    AddUniverse(new CryptoCoarseFundamentalUniverse(Market.Coinbase, UniverseSettings, cryptoCoarse =&gt; from x in cryptoCoarse select x.Symbol));
-}</pre>
+    AddUniverse(CryptoUniverse.Coinbase(cryptoCoarse =&gt; from x in cryptoCoarse select x.Symbol));<br>}</pre>
 </div>
 
 <p>The following table describes the <code>CryptoCoarseFundamentalUniverse</code> constructor arguments:</p>
@@ -66,9 +65,9 @@
     self.SetBrokerageModel(BrokerageName.Coinbase, AccountType.Cash)
 
     # Add universe selection of cryptos based on coarse fundamentals
-    self.AddUniverse(CryptoCoarseFundamentalUniverse(Market.Coinbase, self.UniverseSettings, self.universe_filter))
+    self.AddUniverse(CryptoUniverse.Coinbase(self.universe_filter))<br>
 
-def universe_filter(self, crypto_coarse: List[CryptoCoarseFundamental]) -&gt; List[Symbol]:
+def universe_filter(self, crypto_coarse):
     # Define the universe selection function
     return [cf.Symbol for cf in crypto_coarse if cf.Volume &gt;= 100 and cf.VolumeInUsd &gt; 10000]</pre>
 <pre class="csharp">public override void Initialize()
@@ -78,10 +77,10 @@ def universe_filter(self, crypto_coarse: List[CryptoCoarseFundamental]) -&gt; Li
     SetBrokerageModel(BrokerageName.Coinbase, AccountType.Cash);
 
     // Add universe selection of cryptos based on coarse fundamentals
-    AddUniverse(new CryptoCoarseFundamentalUniverse(Market.Coinbase, UniverseSettings, UniverseFilter));
+    AddUniverse(CryptoUniverse.Coinbase(UniverseFilter));
 }
 
-private IEnumerable&lt;Symbol&gt; UniverseFilter(IEnumerable&lt;CryptoCoarseFundamental&gt; cryptoCoarse)
+private IEnumerable&lt;Symbol&gt; UniverseFilter(IEnumerable&lt; CryptoUniverse&gt; cryptoCoarse)
 {
     return cryptoCoarse.Where(cf =&gt; cf.Volume &gt;= 100m &amp;&amp; cf.VolumeInUsd &gt; 10000m).Select(x =&gt; x.Symbol);
 }</pre>
