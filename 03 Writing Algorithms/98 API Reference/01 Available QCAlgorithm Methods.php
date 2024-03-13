@@ -854,7 +854,7 @@
 </tr>
 <tr>
 <td width="33%"><a href="#TrailingStopOrder-header">TrailingStopOrder()</a></td>
-<td>Create a trailing stop order and return the newly created order id; or negative if the order is invalid.</td>
+<td>Create a trailing stop order and return the newly created order id; or negative if the order is invalid. It will calculate the stop price using the trailing amount and the current market price.</td>
 </tr>
 <tr>
 <td width="33%"><a href="#Train-header">Train()</a></td>
@@ -2006,7 +2006,7 @@
 </tr>
 <tr>
 <td width="33%"><a href="#TrailingStopOrder-header">TrailingStopOrder()</a></td>
-<td>Create a trailing stop order and return the newly created order id; or negative if the order is invalid.</td>
+<td>Create a trailing stop order and return the newly created order id; or negative if the order is invalid. It will calculate the stop price using the trailing amount and the current market price.</td>
 </tr>
 </tbody></table>
 </div><div id="Universes" class="ref-table-container">
