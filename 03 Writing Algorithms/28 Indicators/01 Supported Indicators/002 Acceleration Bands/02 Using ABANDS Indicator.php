@@ -15,5 +15,6 @@ $constructorArguments = '"", 10, 4, MovingAverageType.Simple';
 $updateParameterValue = 'bar.EndTime, bar.Close';
 $hasMovingAverageTypeParameter = True;
 $constructorBox = 'acceleration-bands';
+$isOptionIndicator = false;
 include(DOCS_RESOURCES."/indicators/using-indicator.php");
 ?>

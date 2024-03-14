@@ -15,5 +15,6 @@ $constructorArguments = '20, 2, MovingAverageType.Wilders';
 $updateParameterValue = 'bar';
 $hasMovingAverageTypeParameter = True;
 $constructorBox = 'super-trend';
+$isOptionIndicator = false;
 include(DOCS_RESOURCES."/indicators/using-indicator.php");
 ?>

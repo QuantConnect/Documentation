@@ -15,5 +15,6 @@ $constructorArguments = '9, 26, 17, 52, 26, 26';
 $updateParameterValue = 'bar';
 $hasMovingAverageTypeParameter = False;
 $constructorBox = 'ichimoku-kinko-hyo';
+$isOptionIndicator = false;
 include(DOCS_RESOURCES."/indicators/using-indicator.php");
 ?>

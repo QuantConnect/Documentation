@@ -15,5 +15,6 @@ $constructorArguments = '20, 198';
 $updateParameterValue = 'bar';
 $hasMovingAverageTypeParameter = False;
 $constructorBox = 'fractal-adaptive-moving-average';
+$isOptionIndicator = false;
 include(DOCS_RESOURCES."/indicators/using-indicator.php");
 ?>

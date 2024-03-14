@@ -15,5 +15,6 @@ $constructorArguments = '10, 20, MovingAverageType.Simple';
 $updateParameterValue = 'bar.EndTime, bar.Close';
 $hasMovingAverageTypeParameter = True;
 $constructorBox = 'absolute-price-oscillator';
+$isOptionIndicator = false;
 include(DOCS_RESOURCES."/indicators/using-indicator.php");
 ?>

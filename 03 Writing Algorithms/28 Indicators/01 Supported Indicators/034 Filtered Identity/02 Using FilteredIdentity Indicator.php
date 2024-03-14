@@ -15,5 +15,6 @@ $constructorArguments = '"SPY", filter = lambda x: x.Close > x.Open';
 $updateParameterValue = 'bar.EndTime, bar.Close';
 $hasMovingAverageTypeParameter = False;
 $constructorBox = 'filtered-identity';
+$isOptionIndicator = false;
 include(DOCS_RESOURCES."/indicators/using-indicator.php");
 ?>

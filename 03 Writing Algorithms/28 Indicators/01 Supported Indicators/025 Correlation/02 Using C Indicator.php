@@ -15,5 +15,6 @@ $constructorArguments = '"", symbol, reference, 20, correlationType=CorrelationT
 $updateParameterValue = 'bar';
 $hasMovingAverageTypeParameter = False;
 $constructorBox = 'correlation';
+$isOptionIndicator = false;
 include(DOCS_RESOURCES."/indicators/using-indicator.php");
 ?>
