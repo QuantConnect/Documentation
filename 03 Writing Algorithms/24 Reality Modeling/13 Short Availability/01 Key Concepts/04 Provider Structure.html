@@ -1,4 +1,6 @@
-<p>Shortable providers must implement the <code>IShortableProvider</code> interface. Shortable providers that implement the <code>IShortableProvider</code> interface must implement the <code>AllShortableSymbols</code> and <code>ShortableQuantity</code> methods. The <code>AllShortableSymbols</code> method receives the local time of the algorithm and returns a dictionary that represents the shortable quantity for each <code>Symbol</code> in the algorithm. The <code>ShortableQuantity</code> method receives a Symbol and the local time of the algorithm and returns the shortable quantity.</p>
+<p>Shortable providers must implement the <code>IShortableProvider</code> interface. Shortable providers that implement the <code>IShortableProvider</code> interface must implement the <code>FeeRate</code>, <code>RebateRate</code>, and <code>ShortableQuantity</code> methods. These methods receives a Symbol and the local time of the algorithm. The <code>FeeRate</code> method returns the borrow fee rate. The <code>RebateRate</code> method returns the borrow rebate rate. The <code>ShortableQuantity</code> returns the shortable quantity.</p>
+
+These <code>ShortableQuantity</code> method receives a Symbol and the local time of the algorithm and returns the shortable quantity.</p>
 
 <div class="section-example-container">
 <pre class="csharp">// In the Initialize method, set the shortable provider
@@ -7,12 +9,14 @@ security.SetShortableProvider(new MyShortableProvider());
 // Define the custom shortable provider  
 class MyShortableProvider : IShortableProvider
 {
-    public Dictionary&lt;Symbol, long&gt; AllShortableSymbols(DateTime localTime)
+    public decimal FeeRate(Symbol symbol, DateTime localTime)
     {
-        return new Dictionary&lt;Symbol, long&gt;() {
-            { QuantConnect.Symbol.Create("SPY", SecurityType.Equity, Market.USA), 0 },
-            { QuantConnect.Symbol.Create("AAPL", SecurityType.Equity, Market.USA), 10 }
-        };
+        return 0.0025m;
+    }
+
+    public decimal RebateRate(Symbol symbol, DateTime localTime)
+    {
+        return 0.0507m;
     }
 
     public long? ShortableQuantity(Symbol symbol, DateTime localTime)
@@ -26,14 +30,14 @@ security.SetShortableProvider(MyShortableProvider())
 # Define the custom shortable provider 
 class MyShortableProvider(NullShortableProvider):
 
-    def AllShortableSymbols(self, localTime: datetime) -> Dict[Symbol,float]:
-        return {
-            Symbol.Create("SPY", SecurityType.Equity, Market.USA): 0,
-            Symbol.Create("AAPL", SecurityType.Equity, Market.USA): 10
-        }
+    def FeeRate(self, symbol: Symbol, localTime: datetime) -> float:
+        return 0.0025
+
+    def RebateRate(self, symbol: Symbol, localTime: datetime) -> float:
+        return 0.0507
     
     def ShortableQuantity(self, symbol: Symbol, localTime: datetime) -> float:
         return 10000</pre>
 </div>
 
-<p>For a full example algorithm, see <span class='python'><a href='https://www.quantconnect.com/terminal/processCache?request=embedded_backtest_48629500ab7a49a9c9f918f0281bfc38.html'>this backtest</a></span><span class='csharp'><a href='https://www.quantconnect.com/terminal/processCache?request=embedded_backtest_c7947b57b0dd00ee4e8934c65958b7b4.html'>this backtest</a></span>.</p>
+<p>For a full example algorithm, see <span class='python'><a href='https://www.quantconnect.com/terminal/processCache?request=embedded_backtest_3b08573ceb12aba5e9e559eaab9d2b5c.html'>this backtest</a></span><span class='csharp'><a href='https://www.quantconnect.com/terminal/processCache?request=embedded_backtest_edc3e83fbb02e12fcd25d6835a36ca78.html'>this backtest</a></span>.</p>
