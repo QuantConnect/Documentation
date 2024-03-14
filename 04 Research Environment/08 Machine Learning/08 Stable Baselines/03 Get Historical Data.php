@@ -1,1 +1,0 @@
-<?php include(DOCS_RESOURCES."/machine-learning/get-historical-data.html"); ?>

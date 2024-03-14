@@ -3,84 +3,100 @@
 <ol>
     <li>Split the data for training and testing to evaluate our model.</li>
     <div class="section-example-container">
-        <pre class="python">X_train = history.iloc[:-50].values
-X_test = history.iloc[-50:].values
-y_train = ret.iloc[:-50].values
-y_test = ret.iloc[-50:].values</pre>
+        <pre class="python">X_train = partial_diff.iloc[:-100].values
+X_test = partial_diff.iloc[-100:].values
+y_train = history.iloc[:-100].values
+y_test = history.iloc[-100:].values</pre>
     </div>
 
     <li>Create a custom <code>gym</code> environment class.</li>
-    <p>In this example, create a custom environment with previous 5 OHLCV log-return data as observation and the highest portfolio value as reward.</p>
+    <p>In this example, create a custom environment with previous 5 OHLCV partial-differenced price data as observation and the lowest maximum drawdown as reward.</p>
     <div class="section-example-container">
-        <pre class="python">class TradingEnv(gym.Env):
-    metadata = {'render.modes': ['console']}
-    
-    FLAT = 0
-    LONG = 1
-    SHORT = 2
+        <pre class="python">class PortfolioEnv(gym.Env):
+    def __init__(self, data, prediction, num_stocks):
+        super(PortfolioEnv, self).__init__()
 
-    def __init__(self, ohlcv, ret):
-        super(TradingEnv, self).__init__()
-        
-        self.ohlcv = ohlcv
-        self.ret = ret
-        self.trading_cost = 0.01
-        self.reward = 1
-        
-        # The number of step the training has taken, starts at 5 since we're using the previous 5 data for observation.
+        self.data = data
+        self.prediction = prediction
+        self.num_stocks = num_stocks
+
         self.current_step = 5
-        # The last action
-        self.last_action = 0
+        self.portfolio_value = []
+        self.portfolio_weights = np.ones(num_stocks) / num_stocks
 
-        # Define action and observation space
-        # Example when using discrete actions, we have 3: LONG, SHORT and FLAT.
-        n_actions = 3
-        self.action_space = gym.spaces.Discrete(n_actions)
-        # The observation will be the coordinate of the agent, shape for (5 previous data poionts, OHLCV)
-        self.observation_space = gym.spaces.Box(low=-np.inf, high=np.inf, shape=(5, 5), dtype=np.float64)
+        # Define your action and observation spaces
+        self.action_space = gym.spaces.Box(low=-1.0, high=1.0, shape=(num_stocks, ), dtype=np.float32)
+        self.observation_space = gym.spaces.Box(low=-np.inf, high=np.inf, shape=(5, data.shape[1]))
 
     def reset(self):
-        # Reset the number of step the training has taken
         self.current_step = 5
-        # Reset the last action
-        self.last_action = 0
-        # must return np.array type
-        return self.ohlcv[self.current_step-5:self.current_step].astype(np.float32)
+        self.portfolio_value = []
+        self.portfolio_weights = np.ones(self.num_stocks) / self.num_stocks
+
+        return self._get_observation()
 
     def step(self, action):
-        if action == self.LONG:
-            self.reward *= 1 + self.ret[self.current_step] - (self.trading_cost if self.last_action != action else 0)
-        elif action == self.SHORT:
-            self.reward *= 1 + -1 * self.ret[self.current_step] - (self.trading_cost if self.last_action != action else 0)
-        elif action == self.FLAT:
-             self.reward *= 1 - (self.trading_cost if self.last_action != action else 0)
-        else:
-            raise ValueError("Received invalid action={} which is not part of the action space".format(action))
-            
-        self.last_action = action
+        # Normalize the portfolio weights
+        sum_weights = np.sum(np.abs(action))
+        if sum_weights > 1:
+            action /= sum_weights
+
+        # deduct transaction fee
+        value = self.prediction[self.current_step]
+        fees = np.abs(self.portfolio_weights - action) @ value
+        
+        # Update portfolio weights based on the chosen action
+        self.portfolio_weights = action
+
+        # Update portfolio value based on the new weights and the market prices less fee
+        self.portfolio_value.append(np.dot(self.portfolio_weights, value) - fees)
+
+        # Move to the next time step
         self.current_step += 1
 
-        # Have we iterate all data points?
-        done = (self.current_step == self.ret.shape[0]-1)
+        # Check if the episode is done (end of data)
+        done = self.current_step >= len(self.data) - 1
 
-        # Reward as return
-        return self.ohlcv[self.current_step-5:self.current_step].astype(np.float32), self.reward, done, {}
+        # Calculate the reward, in here, we use max drawdown
+        reward = self._neg_max_drawdown
 
-    def render(self, mode='console'):
-        if mode != 'console':
-            raise NotImplementedError()
-        print(f'Equity Value: {self.reward}')</pre>
+        return self._get_observation(), reward, done, {}
+
+    def _get_observation(self):
+        # Return the last 5 partial differencing OHLCV as the observation
+        return self.data[self.current_step-5:self.current_step]
+
+    @property
+    def _neg_max_drawdown(self):
+        # Return max drawdown within 20 days in portfolio value as reward (negate since max reward is preferred)
+        portfolio_value_20d = np.array(self.portfolio_value[-min(len(self.portfolio_value), 20):])
+        acc_max = np.maximum.accumulate(portfolio_value_20d)
+        return -(portfolio_value_20d - acc_max).min()
+
+    def render(self, mode='human'):
+        # Implement rendering if needed
+        pass</pre>
     </div>
     
     <li>Initialize the environment.</li>
     <div class="section-example-container">
-        <pre class="python">env = TradingEnv(X_train, y_train)</pre>
+        <pre class="python"># Initialize the environment
+env = PortfolioEnv(X_train, y_train, 5)
+
+# Wrap the environment in a vectorized environment
+env = DummyVecEnv([lambda: env])
+
+# Normalize the observation space
+env = VecNormalize(env, norm_obs=True, norm_reward=False)</pre>
     </div>
 
     <li>Train the model.</li>
-    <p>In this example, create a RL model and train with MLP-policy DQN algorithm.</p>
+    <p>In this example, create a RL model and train with MLP-policy PPO algorithm.</p>
     <div class="section-example-container">
-        <pre class="python">model = DQN(MlpPolicy, env, verbose=1)
-model.learn(total_timesteps=1000)</pre>
+        <pre class="python"># Define the PPO agent
+model = PPO("MlpPolicy", env, verbose=0)
+
+# Train the agent
+model.learn(total_timesteps=100000)</pre>
     </div>
 </ol>
