@@ -7,6 +7,8 @@
     private Symbol _symbol;
 <? if($hasReference) { ?>
     private Symbol _reference;
+<?} else if($isOptionIndicator) { ?>
+    private Symbol _option, _mirrorOption;
 <?}?>
     private <?=$typeName?> _<?=strtolower($helperName)?>;
 
@@ -15,8 +17,13 @@
         _symbol = AddEquity("SPY", Resolution.Daily).Symbol;
 <? if($hasReference) { ?>
         _reference = AddEquity("QQQ", Resolution.Daily).Symbol;
+<?} else if($isOptionIndicator) { ?>
+        _option = QuantConnect.Symbol.CreateOption("SPY", Market.USA, OptionStyle.American, OptionRight.Put, 450m, new DateTime(2023, 12, 22));
+        AddOptionContract(_option, Resolution.Daily);
+        _mirrorOption = QuantConnect.Symbol.CreateOption("SPY", Market.USA, OptionStyle.American, OptionRight.Call, 450m, new DateTime(2023, 12, 22));
+        AddOptionContract(_mirrorOption, Resolution.Daily);
 <?}?>
-        _<?=strtolower($helperName)?> = <?=$helperPrefix?><?=$helperName?>(<?=str_replace("symbol", "_symbol", $helperArguments)?>);
+        _<?=strtolower($helperName)?> = <?=$helperPrefix?><?=$helperName?>(<?=str_replace("symbol", "_symbol", str_replace("option_mirror_symbol", "_mirrorOption", str_replace("option_symbol", "_option", $helperArguments)))?>);
     }
 
     public override void OnData(Slice data)
@@ -39,8 +46,13 @@
         self.symbol = self.AddEquity("SPY", Resolution.Daily).Symbol
 <? if($hasReference) { ?>
         self.reference = self.AddEquity("QQQ", Resolution.Daily).Symbol
+<?} else if($isOptionIndicator) { ?>
+        self.option = Symbol.CreateOption("SPY", Market.USA, OptionStyle.American, OptionRight.Put, 450, datetime(2023, 12, 22))
+        self.AddOptionContract(self.option, Resolution.Daily)
+        self.mirror_option = Symbol.CreateOption("SPY", Market.USA, OptionStyle.American, OptionRight.Call, 450, datetime(2023, 12, 22))
+        self.AddOptionContract(self.mirror_option, Resolution.Daily)
 <?}?>
-        self.<?=strtolower($helperName)?> = self.<?=$helperPrefix?><?=$helperName?>(<?=str_replace("symbol", "self.symbol", $helperArguments)?>)
+        self.<?=strtolower($helperName)?> = self.<?=$helperPrefix?><?=$helperName?>(<?=str_replace("symbol", "self.symbol", str_replace("option_mirror_symbol", "self.mirror_option", str_replace("option_symbol", "self.option", $helperArguments)))?>)
 
     def OnData(self, slice: Slice) -> None:
         if self.<?=strtolower($helperName)?>.IsReady:
@@ -77,6 +89,8 @@
     private Symbol _symbol;
 <? if($hasReference) { ?>
     private Symbol _reference;
+<?} else if($isOptionIndicator) { ?>
+    private Symbol _option, _mirrorOption;
 <?}?>
     private <?=$typeName?> _<?=strtolower($helperName)?>;
 
@@ -85,8 +99,13 @@
         _symbol = AddEquity("SPY", Resolution.Hour).Symbol;
 <? if($hasReference) { ?>
         _reference = AddEquity("QQQ", Resolution.Hour).Symbol;
+<?} else if($isOptionIndicator) { ?>
+        _option = QuantConnect.Symbol.CreateOption("SPY", Market.USA, OptionStyle.American, OptionRight.Put, 450m, new DateTime(2023, 12, 22));
+        AddOptionContract(_option, Resolution.Daily);
+        _mirrorOption = QuantConnect.Symbol.CreateOption("SPY", Market.USA, OptionStyle.American, OptionRight.Call, 450m, new DateTime(2023, 12, 22));
+        AddOptionContract(_mirrorOption, Resolution.Daily);
 <?}?>
-        _<?=strtolower($helperName)?> = <?=$helperPrefix?><?=$helperName?>(<?=str_replace("symbol", "_symbol", $helperArguments)?>, resolution: Resolution.Daily);
+        _<?=strtolower($helperName)?> = <?=$helperPrefix?><?=$helperName?>(<?=str_replace("symbol", "_symbol", str_replace("option_mirror_symbol", "_mirrorOption", str_replace("option_symbol", "_option", $helperArguments)))?>, resolution: Resolution.Daily);
     }
 }</pre>
     <pre class="python">class <?=$typeName?>Algorithm(QCAlgorithm):
@@ -94,8 +113,13 @@
         self.symbol = self.AddEquity("SPY", Resolution.Hour).Symbol
 <? if($hasReference) { ?>
         self.reference = self.AddEquity("QQQ", Resolution.Hour).Symbol
+<?} else if($isOptionIndicator) { ?>
+        self.option = Symbol.CreateOption("SPY", Market.USA, OptionStyle.American, OptionRight.Put, 450, datetime(2023, 12, 22))
+        self.AddOptionContract(self.option, Resolution.Daily)
+        self.mirror_option = Symbol.CreateOption("SPY", Market.USA, OptionStyle.American, OptionRight.Call, 450, datetime(2023, 12, 22))
+        self.AddOptionContract(self.mirror_option, Resolution.Daily)
 <?}?>
-        self.<?=strtolower($helperName)?> = self.<?=$helperPrefix?><?=$helperName?>(<?=str_replace("symbol", "self.symbol", $helperArguments)?>, resolution=Resolution.Daily)
+        self.<?=strtolower($helperName)?> = self.<?=$helperPrefix?><?=$helperName?>(<?=str_replace("symbol", "self.symbol", str_replace("option_mirror_symbol", "self.mirror_option", str_replace("option_symbol", "self.option", $helperArguments)))?>, resolution=Resolution.Daily)
 </pre>
 </div>
 <? } ?>
@@ -113,6 +137,8 @@
     private Symbol _symbol;
 <? if($hasReference) { ?>
     private Symbol _reference;
+<?} else if($isOptionIndicator) { ?>
+    private Symbol _option, _mirrorOption;
 <?}?>
     private <?=$typeName?> _<?=strtolower($helperName)?>;
 
@@ -121,22 +147,36 @@
         _symbol = AddEquity("SPY", Resolution.Daily).Symbol;
 <? if($hasReference) { ?>
         _reference = AddEquity("QQQ", Resolution.Daily).Symbol;
+<?} else if($isOptionIndicator) { ?>
+        _option = QuantConnect.Symbol.CreateOption("SPY", Market.USA, OptionStyle.American, OptionRight.Put, 450m, new DateTime(2023, 12, 22));
+        AddOptionContract(_option, Resolution.Daily);
+        _mirrorOption = QuantConnect.Symbol.CreateOption("SPY", Market.USA, OptionStyle.American, OptionRight.Call, 450m, new DateTime(2023, 12, 22));
+        AddOptionContract(_mirrorOption, Resolution.Daily);
 <?}?>
-        _<?=strtolower($helperName)?> = new <?=$typeName?>(<?=str_replace("symbol", "_symbol", $constructorArguments)?>);
+        _<?=strtolower($helperName)?> = new <?=$typeName?>(<?=str_replace("symbol", "_symbol", str_replace("option_mirror_symbol", "_mirrorOption", str_replace("option_symbol", "_option", $constructorArguments)))?>);
     }
 
     public override void OnData(Slice data)
     {
         if (data.Bars.TryGetValue(_symbol, out var bar))
         {      
-            _<?=strtolower($helperName)?>.Update(<?=$updateParameterValue?>);
+            _<?=strtolower($helperName)?>.Update(<? if($isOptionIndicator) { ?>new IndicatorDataPoint(_symbol, bar.EndTime, bar.Close)<? } else { ?><?=$updateParameterValue?><? } ?>);
         }
 <? if($hasReference) { ?>
         if (data.Bars.TryGetValue(_reference, out bar))
         {      
             _<?=strtolower($helperName)?>.Update(<?=$updateParameterValue?>);
-        }    
-<?}?>    
+        }
+<?} else if($isOptionIndicator) { ?>
+        if (data.QuoteBars.TryGetValue(_option, out bar))
+        {      
+            _<?=strtolower($helperName)?>.Update(new IndicatorDataPoint(_option, bar.EndTime, bar.Close));
+        }
+        if (data.QuoteBars.TryGetValue(_mirrorOption, out bar))
+        {      
+            _<?=strtolower($helperName)?>.Update(new IndicatorDataPoint(_mirrorOption, bar.EndTime, bar.Close));
+        }
+<?}?>   
         if (_<?=strtolower($helperName)?>.IsReady)
         {
             // The current value of _<?=strtolower($helperName)?> is represented by itself (_<?=strtolower($helperName)?>)
@@ -155,18 +195,30 @@
         self.symbol = self.AddEquity("SPY", Resolution.Daily).Symbol
 <? if($hasReference) { ?>
         self.reference = self.AddEquity("QQQ", Resolution.Daily).Symbol
+<?} else if($isOptionIndicator) { ?>
+        self.option = Symbol.CreateOption("SPY", Market.USA, OptionStyle.American, OptionRight.Put, 450, datetime(2023, 12, 22))
+        self.AddOptionContract(self.option, Resolution.Daily)
+        self.mirror_option = Symbol.CreateOption("SPY", Market.USA, OptionStyle.American, OptionRight.Call, 450, datetime(2023, 12, 22))
+        self.AddOptionContract(self.mirror_option, Resolution.Daily)
 <?}?>
-        self.<?=strtolower($helperName)?> = <?=$typeName?>(<?=str_replace("symbol", "self.symbol", $constructorArguments)?>)
+        self.<?=strtolower($helperName)?> = <?=$typeName?>(<?=str_replace("symbol", "self.symbol", str_replace("option_mirror_symbol", "self.mirror_option", str_replace("option_symbol", "self.option", $constructorArguments)))?>)
 
     def OnData(self, slice: Slice) -> None:
         bar = slice.Bars.get(self.symbol)
         if bar:
-            self.<?=strtolower($helperName)?>.Update(<?=$updateParameterValue?>)
+            self.<?=strtolower($helperName)?>.Update(<? if($isOptionIndicator) { ?>IndicatorDataPoint(self.symbol, bar.EndTime, bar.Close)<? } else { ?><?=$updateParameterValue?><? } ?>)
 <? if($hasReference) { ?>
         bar = slice.Bars.get(self.referece)
         if bar:
             self.<?=strtolower($helperName)?>.Update(<?=$updateParameterValue?>)
-<?}?>                
+<?} else if($isOptionIndicator) { ?>
+        bar = slice.QuoteBars.get(self.option)
+        if bar:
+            self.<?=strtolower($helperName)?>.Update(IndicatorDataPoint(self.option, bar.EndTime, bar.Close))
+        bar = slice.QuoteBars.get(self.mirror_option)
+        if bar:
+            self.<?=strtolower($helperName)?>.Update(IndicatorDataPoint(self.mirror_option, bar.EndTime, bar.Close))
+<?}?>
         if self.<?=strtolower($helperName)?>.IsReady:
             # The current value of self.<?=strtolower($helperName)?> is represented by self.<?=strtolower($helperName)?>.Current.Value
             self.Plot("<?=$typeName?>", "<?=strtolower($helperName)?>", self.<?=strtolower($helperName)?>.Current.Value)
@@ -189,6 +241,8 @@
     private Symbol _symbol;
 <? if($hasReference) { ?>
     private Symbol _reference;
+<?} else if($isOptionIndicator) { ?>
+    private Symbol _option, _mirrorOption;
 <?}?>
     private <?=$typeName?> _<?=strtolower($helperName)?>;
 
@@ -196,12 +250,20 @@
     {
         _symbol = AddEquity("SPY", Resolution.Daily).Symbol;
 <? if($hasReference) { ?>
-        _reference = AddEquity("QQQ", Resolution.Daily).Symbol;~
+        _reference = AddEquity("QQQ", Resolution.Daily).Symbol;
+<?} else if($isOptionIndicator) { ?>
+        _option = QuantConnect.Symbol.CreateOption("SPY", Market.USA, OptionStyle.American, OptionRight.Put, 450m, new DateTime(2023, 12, 22));
+        AddOptionContract(_option, Resolution.Daily);
+        _mirrorOption = QuantConnect.Symbol.CreateOption("SPY", Market.USA, OptionStyle.American, OptionRight.Call, 450m, new DateTime(2023, 12, 22));
+        AddOptionContract(_mirrorOption, Resolution.Daily);
 <?}?>
-        _<?=strtolower($helperName)?> = new <?=$typeName?>(<?=str_replace("symbol", "_symbol", $constructorArguments)?>);
+        _<?=strtolower($helperName)?> = new <?=$typeName?>(<?=str_replace("symbol", "_symbol", str_replace("option_mirror_symbol", "_mirrorOption", str_replace("option_symbol", "_option", $constructorArguments)))?>);
         RegisterIndicator(_symbol, _<?=strtolower($helperName)?>, Resolution.Daily);
 <? if($hasReference) { ?>
         RegisterIndicator(reference, _<?=strtolower($helperName)?>, Resolution.Daily);
+<?} else if($isOptionIndicator) { ?>
+        RegisterIndicator(_option, _<?=strtolower($helperName)?>, Resolution.Daily);
+        RegisterIndicator(_mirrorOption, _<?=strtolower($helperName)?>, Resolution.Daily);
 <?}?>
     }
 
@@ -225,11 +287,19 @@
         self.symbol = self.AddEquity("SPY", Resolution.Daily).Symbol
 <? if($hasReference) { ?>
         self.reference = self.AddEquity("QQQ", Resolution.Daily).Symbol
+<?} else if($isOptionIndicator) { ?>
+        self.option = Symbol.CreateOption("SPY", Market.USA, OptionStyle.American, OptionRight.Put, 450, datetime(2023, 12, 22))
+        self.AddOptionContract(self.option, Resolution.Daily)
+        self.mirror_option = Symbol.CreateOption("SPY", Market.USA, OptionStyle.American, OptionRight.Call, 450, datetime(2023, 12, 22))
+        self.AddOptionContract(self.mirror_option, Resolution.Daily)
 <?}?>
-        self.<?=strtolower($helperName)?> = <?=$typeName?>(<?=str_replace("symbol", "self.symbol", $constructorArguments)?>)
+        self.<?=strtolower($helperName)?> = <?=$typeName?>(<?=str_replace("symbol", "self.symbol", str_replace("option_mirror_symbol", "self.mirror_option", str_replace("option_symbol", "self.option", $constructorArguments)))?>)
         self.RegisterIndicator(self.symbol, self.<?=strtolower($helperName)?>, Resolution.Daily)
 <? if($hasReference) { ?>
         self.RegisterIndicator(reference, self.<?=strtolower($helperName)?>, Resolution.Daily)
+<?} else if($isOptionIndicator) { ?>
+        self.RegisterIndicator(self.option, self.<?=strtolower($helperName)?>, Resolution.Daily)
+        self.RegisterIndicator(self.mirror_option, self.<?=strtolower($helperName)?>, Resolution.Daily)
 <?}?>
 
     def OnData(self, slice: Slice) -> None:
