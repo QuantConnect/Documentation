@@ -540,5 +540,5 @@ def Generate_QCAlgorithm_API_Reference():
             fp.write(html + '</div>')
 
 if __name__ == '__main__':
-    Generate_Indicators_Reference()
     Generate_QCAlgorithm_API_Reference()
+    Generate_Indicators_Reference()
