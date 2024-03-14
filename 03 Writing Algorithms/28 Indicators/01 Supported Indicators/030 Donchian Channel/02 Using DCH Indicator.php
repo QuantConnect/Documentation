@@ -15,5 +15,6 @@ $constructorArguments = '20, 20';
 $updateParameterValue = 'bar';
 $hasMovingAverageTypeParameter = False;
 $constructorBox = 'donchian-channel';
+$isOptionIndicator = false;
 include(DOCS_RESOURCES."/indicators/using-indicator.php");
 ?>

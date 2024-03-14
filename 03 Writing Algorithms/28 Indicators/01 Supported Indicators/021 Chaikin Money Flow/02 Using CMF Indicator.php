@@ -15,5 +15,6 @@ $constructorArguments = '"SPY", 20';
 $updateParameterValue = 'bar';
 $hasMovingAverageTypeParameter = False;
 $constructorBox = 'chaikin-money-flow';
+$isOptionIndicator = false;
 include(DOCS_RESOURCES."/indicators/using-indicator.php");
 ?>

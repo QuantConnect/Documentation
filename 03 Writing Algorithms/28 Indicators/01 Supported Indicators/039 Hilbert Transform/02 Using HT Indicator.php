@@ -15,5 +15,6 @@ $constructorArguments = '7, 0.635, 0.338';
 $updateParameterValue = 'bar.EndTime, bar.Close';
 $hasMovingAverageTypeParameter = False;
 $constructorBox = 'hilbert-transform';
+$isOptionIndicator = false;
 include(DOCS_RESOURCES."/indicators/using-indicator.php");
 ?>

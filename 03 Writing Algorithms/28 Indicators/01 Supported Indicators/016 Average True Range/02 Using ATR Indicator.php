@@ -15,5 +15,6 @@ $constructorArguments = '20, MovingAverageType.Simple';
 $updateParameterValue = 'bar';
 $hasMovingAverageTypeParameter = True;
 $constructorBox = 'average-true-range';
+$isOptionIndicator = false;
 include(DOCS_RESOURCES."/indicators/using-indicator.php");
 ?>

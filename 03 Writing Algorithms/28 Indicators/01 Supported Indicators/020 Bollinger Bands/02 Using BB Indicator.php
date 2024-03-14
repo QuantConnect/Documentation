@@ -15,5 +15,6 @@ $constructorArguments = '30, 2';
 $updateParameterValue = 'bar.EndTime, bar.Close';
 $hasMovingAverageTypeParameter = True;
 $constructorBox = 'bollinger-bands';
+$isOptionIndicator = false;
 include(DOCS_RESOURCES."/indicators/using-indicator.php");
 ?>

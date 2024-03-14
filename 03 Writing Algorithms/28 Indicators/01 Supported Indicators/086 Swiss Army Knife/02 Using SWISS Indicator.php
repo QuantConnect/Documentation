@@ -15,5 +15,6 @@ $constructorArguments = '20, 0.2, SwissArmyKnifeTool.Gauss';
 $updateParameterValue = 'bar.EndTime, bar.Close';
 $hasMovingAverageTypeParameter = False;
 $constructorBox = 'swiss-army-knife';
+$isOptionIndicator = false;
 include(DOCS_RESOURCES."/indicators/using-indicator.php");
 ?>

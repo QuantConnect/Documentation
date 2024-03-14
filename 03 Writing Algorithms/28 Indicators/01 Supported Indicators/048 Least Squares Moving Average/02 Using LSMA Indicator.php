@@ -15,5 +15,6 @@ $constructorArguments = '20';
 $updateParameterValue = 'bar.EndTime, bar.Close';
 $hasMovingAverageTypeParameter = False;
 $constructorBox = 'least-squares-moving-average';
+$isOptionIndicator = false;
 include(DOCS_RESOURCES."/indicators/using-indicator.php");
 ?>

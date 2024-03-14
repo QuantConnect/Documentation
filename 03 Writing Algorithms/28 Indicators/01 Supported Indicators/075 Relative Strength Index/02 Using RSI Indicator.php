@@ -15,5 +15,6 @@ $constructorArguments = '14';
 $updateParameterValue = 'bar.EndTime, bar.Close';
 $hasMovingAverageTypeParameter = True;
 $constructorBox = 'relative-strength-index';
+$isOptionIndicator = false;
 include(DOCS_RESOURCES."/indicators/using-indicator.php");
 ?>

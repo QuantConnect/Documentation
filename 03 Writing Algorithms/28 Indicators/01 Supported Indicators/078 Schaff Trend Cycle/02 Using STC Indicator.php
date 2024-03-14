@@ -15,5 +15,6 @@ $constructorArguments = '5, 10, 20, MovingAverageType.Exponential';
 $updateParameterValue = 'bar.EndTime, bar.Close';
 $hasMovingAverageTypeParameter = True;
 $constructorBox = 'schaff-trend-cycle';
+$isOptionIndicator = false;
 include(DOCS_RESOURCES."/indicators/using-indicator.php");
 ?>

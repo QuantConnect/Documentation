@@ -15,5 +15,6 @@ $constructorArguments = '3';
 $updateParameterValue = 'bar.EndTime, bar.Close';
 $hasMovingAverageTypeParameter = False;
 $constructorBox = 'time-series-forecast';
+$isOptionIndicator = false;
 include(DOCS_RESOURCES."/indicators/using-indicator.php");
 ?>

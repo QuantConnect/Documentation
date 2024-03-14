@@ -15,5 +15,6 @@ $constructorArguments = '0.02, 0.02, 0.2';
 $updateParameterValue = 'bar';
 $hasMovingAverageTypeParameter = False;
 $constructorBox = 'parabolic-stop-and-reverse';
+$isOptionIndicator = false;
 include(DOCS_RESOURCES."/indicators/using-indicator.php");
 ?>

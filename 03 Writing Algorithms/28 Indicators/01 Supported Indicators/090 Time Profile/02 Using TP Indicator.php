@@ -15,5 +15,6 @@ $constructorArguments = '"", 3, 0.70, 0.05';
 $updateParameterValue = 'bar';
 $hasMovingAverageTypeParameter = False;
 $constructorBox = 'time-profile';
+$isOptionIndicator = false;
 include(DOCS_RESOURCES."/indicators/using-indicator.php");
 ?>

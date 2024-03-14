@@ -15,5 +15,6 @@ $constructorArguments = '25, 13, 7, MovingAverageType.Exponential';
 $updateParameterValue = 'bar.EndTime, bar.Close';
 $hasMovingAverageTypeParameter = True;
 $constructorBox = 'true-strength-index';
+$isOptionIndicator = false;
 include(DOCS_RESOURCES."/indicators/using-indicator.php");
 ?>

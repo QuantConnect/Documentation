@@ -15,5 +15,6 @@ $constructorArguments = 'option_symbol, interest_rate_model, dividend_yield_mode
 $updateParameterValue = 'bar.EndTime, bar.Close';
 $hasMovingAverageTypeParameter = False;
 $constructorBox = 'rho';
+$isOptionIndicator = true;
 include(DOCS_RESOURCES."/indicators/using-indicator.php");
 ?>

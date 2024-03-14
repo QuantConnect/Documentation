@@ -15,5 +15,6 @@ $constructorArguments = '10, 6, 0.85';
 $updateParameterValue = 'bar.EndTime, bar.Close';
 $hasMovingAverageTypeParameter = False;
 $constructorBox = 'arnaud-legoux-moving-average';
+$isOptionIndicator = false;
 include(DOCS_RESOURCES."/indicators/using-indicator.php");
 ?>
