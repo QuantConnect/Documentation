@@ -78,6 +78,13 @@ def _get_image_source(folder: str) -> str:
     image = '/'.join([part[3:].strip().lower().replace(' ','-') for part in folder.parts])
     return f'https://cdn.quantconnect.com/docs/i/{image}.png'
 
+def _replace_last_occurrence(string, old_substring, new_substring):
+    last_index = string.rfind(old_substring)
+    if last_index != -1:
+        return string[:last_index] + new_substring + string[last_index + len(old_substring):]
+    else:
+        return string
+
 def Generate_Indicators_Reference():
     indicators = dict()
     helpers = _get_helpers()
@@ -215,9 +222,7 @@ $isOptionIndicator = { 'true' if type_name in OPTION_INDICATORS else 'false' };
 include(DOCS_RESOURCES."/indicators/using-indicator.php");
 ?>""")
 
-        if 'CandlestickPatterns' in indicator['full-type-name']:
-            image_source = ''
-        else:
+        if 'CandlestickPatterns' not in indicator['full-type-name']:
             with open(f'{folder}/03 Visualization.php', 'w', encoding='utf-8') as fp:
                 fp.write(f"""{TAG}
 <?
@@ -225,6 +230,7 @@ $typeName = "{type_name}";
 $imageSource = "{image_source}";
 include(DOCS_RESOURCES."/indicators/visualization.php");
 ?>""")
+            image_source = _replace_last_occurrence(image_source, "/", "/-")
 
         if description.find('<see cref=\"T:') > 0:
             description = description.replace('<see cref=\"T:','').replace('\" />','')
