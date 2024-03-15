@@ -1,5 +1,1 @@
-<?
-$hybridSupported = false;
-$brokerageName = "Polygon";
-include(DOCS_RESOURCES."/data-feeds/alternative-data.php");
-?>
+<p>If you have licensed alternative data with QuantConnect, it works as expected with the Polygon data provider for research, backtesting, and live trading.</p>

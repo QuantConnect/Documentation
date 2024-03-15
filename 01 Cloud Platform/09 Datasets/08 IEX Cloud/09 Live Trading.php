@@ -1,7 +1,3 @@
-<p>The following sections explain live trading deployment, universe selection, and alternative data when using the IEX Cloud data provider.</p>
-
-<h4>Deployment</h4>
-
 <p>You must have an available <a href="/docs/v2/cloud-platform/organizations/resources#04-Live-Trading-Nodes">live trading node</a> for each live trading algorithm you deploy.</p>
 
 <p>Follow these steps to deploy a live trading algorithm that uses the IEX Cloud data provider:</p>
@@ -27,13 +23,3 @@
     <p>By enabling <a href="/docs/v2/cloud-platform/live-trading/deployment#07-Automatic-Restarts">automatic restarts</a>, the algorithm will use best efforts to restart the algorithm if it fails due to a runtime error. This can help improve the algorithm's resilience to temporary outages such as a brokerage API disconnection.</p>
     <li>Click <span class="button-name">Deploy</span>.</li>
 </ol>
-
-<h4>Universe Selection</h4>
-<p>When you trade live on QuantConnect Cloud with the IEX Cloud data provider, QuantConnect provides the <a href='/docs/v2/writing-algorithms/universes/key-concepts'>universe selection</a> data.</p>
-
-<h4>Alternative Data</h4>
-<?
-$hybridSupported = false;
-$brokerageName = "IEX Cloud";
-include(DOCS_RESOURCES."/data-feeds/alternative-data.php");
-?>
