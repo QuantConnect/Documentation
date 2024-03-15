@@ -7,6 +7,8 @@
   If you use this data provider and request historical data, the historical data comes from Polygon.
 </p>
 
+<p>To view the implementation of the Polygon integration, see the <a href='https://github.com/QuantConnect/Lean.DataSource.Polygon' rel='nofollow' target='_blank'>Lean.DataSource.Polygon repository</a>.</p>
+
 <p>
   QuantConnect Cloud currently only supported streaming Polygon data during live trading. 
   To download Polygon for backtesting, research, and optimizations, use the <a href='/docs/v2/lean-cli/datasets/polygon'>CLI</a>.
