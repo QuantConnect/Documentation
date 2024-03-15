@@ -1,1 +1,4 @@
-<? include(DOCS_RESOURCES."/data-providers/local-platform-research.php"); ?>
+<? 
+$dataProviderName = "IEX Cloud";
+include(DOCS_RESOURCES."/data-providers/local-platform-research.php"); 
+?>
