@@ -14,12 +14,6 @@
     The exact ways to get local debugging to work depends on your editor and language, see <a href="/docs/v2/lean-cli/backtesting/debugging">Debugging</a> for more information on how to set this up.
 </p>
 
-<p>
-    You can use the <code>--data-provider-historical</code> option to change where the data is retrieved.
-    This option updates the <a href="/docs/v2/lean-cli/initialization/configuration#03-Lean-Configuration">Lean configuration file</a>, so you don't need to use this option multiple times for the same data provider if you are not switching between them. 
-    The following table shows the available data providers and their required options in non-interactive mode:
-</p>
-
 <? include(DOCS_RESOURCES."/cli/backtest-data-provider.html"); ?>
 
 <p>You can also use the <code>--data-purchase-limit</code> option to set the maximum amount of <a href="https://www.quantconnect.com/docs/v2/cloud-platform/organizations/credit">QuantConnect Credit</a> (QCC) to spend during the backtest when using QuantConnect as data provider.
