@@ -1,25 +1,69 @@
-<p>To add a universe of Cryptocurrencies, in the <code>Initialize</code> method, pass a <code>CryptoCoarseFundamentalUniverse</code> to the <code>AddUniverse</code> method. <br></p>
+<p>To add a universe of Cryptocurrencies, in the <code>Initialize</code> method, pass a <code>CryptoUniverse</code> to the <code>AddUniverse</code> method.</p> 
 
 <div class="section-example-container">
-<pre class="python">def Initialize(self) -&gt; None:
-    self.UniverseSettings.Asynchronous = True
-    self.UniverseSettings.Resolution = Resolution.Daily
-    self.SetBrokerageModel(BrokerageName.Coinbase, AccountType.Cash)
-
-    # Add universe selection of cryptos based on coarse fundamentals
-    filter_function = lambda crypto_coarse: [c.Symbol for c in crypto_coarse]
-    self.AddUniverse(CryptoUniverse.Coinbase(filter_function))<br></pre>
-<pre class="csharp">public override void Initialize()
-{
-    UniverseSettings.Asynchronous = true;
-    UniverseSettings.Resolution = Resolution.Daily;
-    SetBrokerageModel(BrokerageName.Coinbase, AccountType.Cash);
-
-    // Add universe selection of cryptos based on coarse fundamentals
-    AddUniverse(CryptoUniverse.Coinbase(cryptoCoarse =&gt; from x in cryptoCoarse select x.Symbol));<br>}</pre>
+    <pre class="python">def Initialize(self) -&gt; None:
+        self.UniverseSettings.Asynchronous = True
+        self.UniverseSettings.Resolution = Resolution.Daily
+        self.SetBrokerageModel(BrokerageName.Coinbase, AccountType.Cash)
+    
+        # Add crypto universe selection
+        self.universe = self.AddUniverse(CryptoUniverse.Coinbase(lambda universe_day: [c.Symbol for c in universe_day]))</pre>
+    <pre class="csharp">public override void Initialize()
+    {
+        UniverseSettings.Asynchronous = true;
+        UniverseSettings.Resolution = Resolution.Daily;
+        SetBrokerageModel(BrokerageName.Coinbase, AccountType.Cash);
+    
+        // Add crypto universe selection
+        _universe = AddUniverse(CryptoUniverse.Coinbase(universeDay =&gt; from x in universeDay select x.Symbol));
+    }</pre>
 </div>
 
-<p>The following table describes the <code>CryptoCoarseFundamentalUniverse</code> constructor arguments:</p>
+<p>The following table shows the helper methods to create crypto universes for the supported exchanges:</p>
+<table class="qc-table table">
+    <thead>
+        <tr>
+            <th>Brokerage Name</th>
+            <th>Helper Method</th>
+            <th>Dataset page</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><code>BrokerageName.Binance</code></td>
+	        <td><code>CryptoUniverse.Binance</code></td>
+            <td><a href="/datasets/binance-crypto-price-data">Learn more</a>.</td>
+        </tr>
+        <tr>
+            <td><code>BrokerageName.BinanceUS</code></td>
+	        <td><code>CryptoUniverse.BinanceUS</code></td>
+            <td><a href="/datasets/binance-us-crypto-price-data">Learn more</a>.</td>
+        </tr>
+        <tr>
+            <td><code>BrokerageName.Bitfinex</code></td>
+	        <td><code>CryptoUniverse.Bitfinex</code></td>
+            <td><a href="/datasets/bitfinex-crypto-price-data">Learn more</a>.</td>
+        </tr>
+        <tr>
+            <td><code>BrokerageName.Bybit</code></td>
+	        <td><code>CryptoUniverse.Bybit</code></td>
+            <td><a href="/datasets/bybit-crypto-price-data">Learn more</a>.</td>
+        </tr>
+        <tr>
+            <td><code>BrokerageName.Coinbase</code></td>
+	        <td><code>CryptoUniverse.Coinbase</code></td>
+            <td><a href="/datasets/coinbase-crypto-price-data">Learn more</a>.</td>
+        </tr>
+        <tr>
+            <td><code>BrokerageName.Kraken</code></td>
+	        <td><code>CryptoUniverse.Kraken</code></td>
+            <td><a href="/datasets/kraken-crypto-price-data">Learn more</a>.</td>
+        </tr>
+    </tbody>
+</table>
+
+
+<p>The following table describes the <code>CryptoUniverse</code> method arguments:</p>
 
 <table class="qc-table table">
     <thead>
@@ -32,31 +76,24 @@
     </thead>
     <tbody>
         <tr>
-            <td><code>market</code></td>
-	        <td><code class="csharp">string</code><code class="python">str</code></td>
-            <td>The market of the Cryptocurrencies. To view the available Crypto markets, see the <a href="/docs/v2/writing-algorithms/datasets/coinapi">CoinAPI datasets</a>.</td>
+            <td><code>selector</code></td>
+	        <td><code class="csharp">Func&lt;IEnumerable&lt;CryptoUniverse&gt;, IEnumerable&lt;Symbol&gt;&gt;</code><code class="python">Callable[[List[CryptoUniverse]], List[Symbol]]</code></td>
+            <td>A function to select some of the Cryptocurrencies for the universe.<br></td>
             <td></td>
         </tr>
         <tr>
             <td><code>universeSettings</code></td>
 	        <td><code>UniverseSettings</code></td>
             <td>The <a href="/docs/v2/writing-algorithms/universes/settings">universe settings</a>.</td>
-            <td></td>
-        </tr>
-        <tr>
-            <td><code>universeFilterFunc</code></td>
-	        <td><code class="csharp">Func&lt;IEnumerable&lt;CryptoCoarseFundamental&gt;, IEnumerable&lt;Symbol&gt;&gt;</code><code class="python">Callable[[List[CryptoCoarseFundamental]], List[Symbol]]</code></td>
-            <td>A function to select some of the Cryptocurrencies for the universe.<br></td>
-            <td></td>
+            <td><code class="csharp">null</code><code class="python">None</code></td>
         </tr>
     </tbody>
 </table>
 
-<p>The filter function receives <code>CryptoCoarseFundamental</code> objects, which represent one of the Cryptocurrencies in the market. The <code>Symbol</code> objects that the filter function returns represent the universe constituents. <code>CryptoCoarseFundamental</code> objects have the following attributes:</p>
-<div data-tree="QuantConnect.DataSource.CryptoCoarseFundamental"></div>
+<p>The filter function receives <code>CryptoUniverse</code> objects, which represent one of the Cryptocurrencies in the market. The <code>Symbol</code> objects that the filter function returns represent the universe constituents. <code>CryptoUniverse</code> objects have the following attributes:</p>
+<div data-tree="QuantConnect.DataSource.CryptoUniverse"></div>
 
-
-<p>To perform thorough filtering on the <code>CryptoCoarseFundamental</code> objects, define an isolated filter method.</p>
+<p>To perform thorough filtering on the <code>CryptoUniverse</code> objects, define an isolated filter method.</p>
 
 <div class="section-example-container">
 <pre class="python">def Initialize(self) -&gt; None:
@@ -64,24 +101,24 @@
     self.UniverseSettings.Resolution = Resolution.Daily
     self.SetBrokerageModel(BrokerageName.Coinbase, AccountType.Cash)
 
-    # Add universe selection of cryptos based on coarse fundamentals
-    self.AddUniverse(CryptoUniverse.Coinbase(self.universe_filter))<br>
+    # Add crypto universe selection
+    self.universe = self.AddUniverse(CryptoUniverse.Coinbase(self.universe_filter))<br>
 
-def universe_filter(self, crypto_coarse):
+def universe_filter(self, universe_day):
     # Define the universe selection function
-    return [cf.Symbol for cf in crypto_coarse if cf.Volume &gt;= 100 and cf.VolumeInUsd &gt; 10000]</pre>
+    return [cf.Symbol for cf in universe_day if cf.Volume &gt;= 100 and cf.VolumeInUsd &gt; 10000]</pre>
 <pre class="csharp">public override void Initialize()
 {
     UniverseSettings.Asynchronous = true;
     UniverseSettings.Resolution = Resolution.Daily;
     SetBrokerageModel(BrokerageName.Coinbase, AccountType.Cash);
 
-    // Add universe selection of cryptos based on coarse fundamentals
-    AddUniverse(CryptoUniverse.Coinbase(UniverseFilter));
+    // Add crypto universe selection
+    _universe = AddUniverse(CryptoUniverse.Coinbase(UniverseFilter));
 }
 
-private IEnumerable&lt;Symbol&gt; UniverseFilter(IEnumerable&lt; CryptoUniverse&gt; cryptoCoarse)
+private IEnumerable&lt;Symbol&gt; UniverseFilter(IEnumerable&lt; CryptoUniverse&gt; universeDay)
 {
-    return cryptoCoarse.Where(cf =&gt; cf.Volume &gt;= 100m &amp;&amp; cf.VolumeInUsd &gt; 10000m).Select(x =&gt; x.Symbol);
+    return universeDay.Where(cf =&gt; cf.Volume &gt;= 100m &amp;&amp; cf.VolumeInUsd &gt; 10000m).Select(x =&gt; x.Symbol);
 }</pre>
 </div>

@@ -37,7 +37,7 @@
     </tbody>
 </table>
 
-<p>If you add universes to your algorithm, you also need <code>CryptoCoarseFundamental</code> data. The file format of <code>CryptoCoarseFundamental</code> data is one file per day per brokerage and each file costs 100 QCC = $1 USD.</p>
+<p>If you add universes to your algorithm, you also need <code>CryptoUniverse</code> data. The file format of <code>CryptoUniverse</code> data is one file per day per brokerage and each file costs 100 QCC = $1 USD.</p>
 
 <p>For example, the following algorithm creates a universe of 100 Cryptocurrencies and then subscribes to minute resolution data for each one in the universe:</p>
 
@@ -51,8 +51,7 @@
             SetStartDate(2020, 1, 1);
             SetEndDate(2021, 1, 1);
             UniverseSettings.Asynchronous = true;            
-            AddUniverse(new CryptoCoarseFundamentalUniverse(Market.Coinbase, UniverseSettings, 
-                cryptoCoarse =&gt; cryptoCoarse.OrderByDescending(cf =&gt; cf.VolumeInUsd).Take(100).Select(x =&gt; x.Symbol))
+            AddUniverse(CryptoUniverse.Coinbase(universeDay =&gt; universeDay.OrderByDescending(cf =&gt; cf.VolumeInUsd).Take(100).Select(x =&gt; x.Symbol))
             );
         }
     }
@@ -62,10 +61,10 @@
         self.SetStartDate(2020, 1, 1)
         self.SetEndDate(2021, 1, 1)
         self.UniverseSettings.Asynchronous = True
-        self.AddUniverse(CryptoCoarseFundamentalUniverse(Market.Coinbase, self.UniverseSettings, self.universe_filter))
+        self.AddUniverse(CryptoUniverse.Coinbase(self.universe_filter))
 
-    def universe_filter(self, crypto_coarse: List[CryptoCoarseFundamental]) -&gt; List[Symbol]:
-        sorted_by_dollar_volume = sorted(crypto_coarse, key=lambda cf: cf.VolumeInUsd, reverse=True)
+    def universe_filter(self, universe_day: List[CryptoUniverse]) -&gt; List[Symbol]:
+        sorted_by_dollar_volume = sorted(universe_day, key=lambda cf: cf.VolumeInUsd, reverse=True)
         return [cf.Symbol for cf in sorted_by_dollar_volume[:100]]</pre>
 </div>
 
