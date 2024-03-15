@@ -1,15 +1,20 @@
 <script type="text/x-mathjax-config">MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});</script>
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML" ></script>
 
-<h4> Failure of historical volatility</h4>
-<p>It is worth noting that all these pricing models have a volatility input, as to account for the future price expectation. However, the conventional approach of using historical volatility to predict future price uncertainty has faced criticism due to its assumption of time-invariant volatility, which fails to capture the dynamic nature of stock price distributions. This assumption overlooks the observed fat-tailed and evolving characteristics of price distributions over time. Consequently, employing such assumptions in option pricing models derived from the underlying stock may lead to pricing inaccuracies. For example, examining the Brownian Motion stochastic differential formula within the Black-Scholes-Merton (BSM) framework:
+<h4>Failure of Historical Volatility</h4>
+<p>
+    It is worth noting that all these pricing models have a volatility input, as to account for the future price expectation. 
+    However, the conventional approach of using historical volatility to predict future price uncertainty has faced criticism due to its assumption of time-invariant volatility, which fails to capture the dynamic nature of stock price distributions. 
+    This assumption overlooks the observed fat-tailed and evolving characteristics of price distributions over time. 
+    Consequently, employing such assumptions in Option pricing models derived from the underlying stock may lead to pricing inaccuracies. 
+    For example, examining the Brownian Motion stochastic differential formula within the Black-Scholes-Merton (BSM) framework:
 $$
 dS_t = \mu S_t dt + \sigma S_t dW_t^S
 $$
 In this equation, the parameter $\sigma$ denotes volatility, assumed to be constant. However, this assumption is unrealistic, as any movement in the underlying asset's price naturally induces fluctuations.
 </p>
 
-<h4>Local and stochastic volatility</h4>
+<h4>Local and Stochastic Volatility</h4>
 <p>One effective approach involves employing an alternative measure of volatility. This strategy is intuitive, as deviations of a stock's price from its current expected value typically correspond to increased variance in the series of price changes. This alternative measure can be broken down into stochastic and local volatility components.</p>
 <p>Mathematically, stochastic volatility can be represented by the following stochastic differential equation:
 $$
@@ -19,7 +24,7 @@ On the other hand, local volatility, which is deterministic, serves as a paramet
 It is worth noting that many models utilize past volatility as a predictive input for future volatility. This approach is justified by the observation of volatility clustering, where volatility tends to persist at similar levels over short time frames. 
 </p>
 
-<h4>Implied Volatility And Its Importance</h4>
+<h4>Implied Volatility and Its Importance</h4>
 <p>If we view volatility modeling as a prospective approach, implied volatility (IV) can be understood as a retrospective, backward-looking measure derived from a chosen option pricing model. Following the no-arbitrage assumption, if we consider the market option price as the fair, theoretical price, we can use the current option price, along with other known variables, to determine the "fair" volatility value implied by the specific pricing model.</p>
 <p>Implied volatility serves not only as the output of the pricing formula's inverse but also as an input for option Greeks, which we will discuss subsequently, as it represents a "correct" and risk-adjusted measure of volatility. Accurate implied volatility is crucial for calculating the correct Greeks for both trading and hedging purposes. Additionally, implied volatility offers insights into the likelihood of a stock moving toward a specific price level, thereby serving as valuable data points for regression analysis in the modeling process or to assess the accuracy of the model.</p>
 <p>While modeling implied volatility can enhance pricing accuracy, some traders leverage implied volatility for volatility trading, as it tends to be more predictable due to volatility clustering. This concept can be implemented through trading composite option strategies such as <a href="/docs/v2/writing-algorithms/trading-and-orders/option-strategies/long-straddle">Straddles</a> and <a href="/docs/v2/writing-algorithms/trading-and-orders/option-strategies/iron-condor">Iron Condor</a>.</p>
