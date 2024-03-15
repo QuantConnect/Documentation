@@ -1,4 +1,4 @@
-<p>To select a dynamic universe of Coinbase Crypto pairs, call the <b>AddUniverse</b> method with a <b>CryptoCoarseFundamentalUniverse</b> object. A <a href="/docs/v2/writing-algorithms/universes/crypto">Crypto coarse universe</a> uses a selection function to select Crypto pairs based on their OHLCV and dollar volume of the previous day as of midnight Coordinated Universal Time (UTC).</p>
+<p>To select a dynamic universe of Coinbase Crypto pairs, call the <b>AddUniverse</b> method with a <b>CryptoUniverse</b> object. A <a href="/docs/v2/writing-algorithms/universes/crypto">Crypto universe</a> uses a selection function to select Crypto pairs based on their OHLCV and dollar volume of the previous day as of midnight Coordinated Universal Time (UTC).</p>
 
 <div class="section-example-container">
 <pre class="python">from QuantConnect.Data.UniverseSelection import *
@@ -6,9 +6,9 @@
 def Initialize(self) -&gt; None:
     self.UniverseSettings.Asynchronous = True
     self.SetBrokerageModel(BrokerageName.Coinbase, AccountType.Cash)
-    self.AddUniverse(CryptoCoarseFundamentalUniverse(Market.Coinbase, self.UniverseSettings, self.UniverseSelectionFilter))
+    self.universe = self.AddUniverse(CryptoUniverse.Coinbase(self.UniverseSelectionFilter))
 
-def UniverseSelectionFilter(self, crypto_coarse: List[CryptoCoarseFundamental]) -&gt; List[Symbol]:
+def UniverseSelectionFilter(self, crypto_coarse):
     return [c.Symbol for c in crypto_coarse if c.Volume &gt;= 100 and c.VolumeInUsd &gt; 10000]</pre>
 <pre class="csharp">using QuantConnect.Data.UniverseSelection;
 
@@ -16,10 +16,10 @@ public override void Initialize()
 {
     UniverseSettings.Asynchronous = True;
     SetBrokerageModel(BrokerageName.Coinbase, AccountType.Cash);
-    AddUniverse(new CryptoCoarseFundamentalUniverse(Market.Coinbase, UniverseSettings, UniverseSelectionFilter));
+    _universe = AddUniverse(CryptoUniverse.Coinbase(UniverseSelectionFilter));
 }
 
-private IEnumerable&lt;Symbol&gt; UniverseSelectionFilter(IEnumerable&lt;CryptoCoarseFundamental&gt; cryptoCoarse)
+private IEnumerable&lt;Symbol&gt; UniverseSelectionFilter(IEnumerable&lt;CryptoUniverse&gt; cryptoCoarse)
 {
     return from c in cryptoCoarse
            where c.Volume &gt;= 100m &amp;&amp; c.VolumeInUsd &gt; 10000m
