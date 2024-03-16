@@ -1,19 +1,12 @@
-<p>To add US Equities Short Availability data to your algorithm, set the <a href="/docs/v2/writing-algorithms/reality-modeling/short-availability/key-concepts">shortable provider</a> of each US Equity in your algorithm. The <a href="/docs/v2/writing-algorithms/reality-modeling/brokerages/key-concepts">brokerage model</a> of your algorithm automatically sets the shortable provider for each security. To extend the <a href="/docs/v2/writing-algorithms/reality-modeling/brokerages/supported-models">supported brokerage models</a>, create a <a href="/docs/v2/writing-algorithms/reality-modeling/brokerages/key-concepts#06-Model-Structure">custom brokerage model</a>. </p>
+<p>To add US Equities Short Availability data to your algorithm, set the <a href="/docs/v2/writing-algorithms/reality-modeling/short-availability/key-concepts">shortable provider</a> of each US Equity in your algorithm.</p>
 
 <div class="section-example-container">
 <pre class="python">class ShortAvailabilityDataAlgorithm(QCAlgorithm):
-
     def Initialize(self) -&gt; None:
         self.SetStartDate(2019, 1, 1)
-        self.SetEndDate(2020, 6, 1)
-        self.SetCash(100000) 
-        self.SetBrokerageModel(InteractiveBrokersBrokerageModelWithShortable())
-        self.symbol = self.AddEquity("AAPL", Resolution.Minute).Symbol
- 
-class InteractiveBrokersBrokerageModelWithShortable(InteractiveBrokersBrokerageModel):
-    def GetShortableProvider(self, security):
-        return InteractiveBrokersShortableProvider()
-</pre>
+        security = self.AddEquity("AAPL")
+        security.SetShortableProvider(InteractiveBrokersShortableProvider())
+        self.symbol = security.Symbol</pre>
 
 <pre class="csharp">using QuantConnect.Data.Shortable;
 namespace QuantConnect
@@ -25,21 +18,9 @@ namespace QuantConnect
         public override void Initialize()
         {
             SetStartDate(2019, 1, 1);
-            SetEndDate(2020, 6, 1);
-            SetCash(100000);
-            SetBrokerageModel(new InteractiveBrokersBrokerageModelWithShortable());
-            _symbol = AddEquity("AAPL", Resolution.Daily).Symbol;
-        }
-        
-        public override void OnEndOfDay(Symbol symbol) =&gt;
-            Plot(symbol, "EOD", (int)((Equity)Securities[symbol]).TotalShortableQuantity.Value);
-		
-        public class InteractiveBrokersBrokerageModelWithShortable : InteractiveBrokersBrokerageModel
-        {
-            public override IShortableProvider GetShortableProvider(Security security)
-            {
-                return new InteractiveBrokersShortableProvider();
-            }
+            var security = AddEquity("AAPL");
+            security.SetShortableProvider(new InteractiveBrokersShortableProvider());
+            _symbol = security.Symbol;
         }
     }
 }</pre>

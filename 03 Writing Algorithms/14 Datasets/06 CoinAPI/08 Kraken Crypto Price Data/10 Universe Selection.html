@@ -8,8 +8,8 @@ def Initialize(self) -&gt; None:
     self.UniverseSettings.Asynchronous = True
     self.universe = self.AddUniverse(CryptoUniverse.Kraken(self.UniverseSelectionFilter))
 
-def UniverseSelectionFilter(self, crypto_coarse):
-    return [c.Symbol for c in crypto_coarse if c.Volume &gt;= 100 and c.VolumeInUsd &gt; 10000]</pre>
+def UniverseSelectionFilter(self, universe_day):
+    return [c.Symbol for c in universe_day if c.Volume &gt;= 100 and c.VolumeInUsd &gt; 10000]</pre>
 <pre class="csharp">using QuantConnect.Data.UniverseSelection;
 
 public override void Initialize()
@@ -19,9 +19,9 @@ public override void Initialize()
     _universe = AddUniverse(CryptoUniverse.Kraken(UniverseSelectionFilter));
 }
 
-private IEnumerable&lt;Symbol&gt; UniverseSelectionFilter(IEnumerable&lt;CryptoUniverse&gt; cryptoCoarse)
+private IEnumerable&lt;Symbol&gt; UniverseSelectionFilter(IEnumerable&lt;CryptoUniverse&gt; universeDay)
 {
-    return from c in cryptoCoarse
+    return from c in universeDay
            where c.Volume &gt;= 100m &amp;&amp; c.VolumeInUsd &gt; 10000m
            select c.Symbol;
 }</pre>

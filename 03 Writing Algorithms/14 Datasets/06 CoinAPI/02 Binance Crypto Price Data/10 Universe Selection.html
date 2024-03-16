@@ -1,4 +1,4 @@
-<p>To select a dynamic universe of Binance Crypto pairs, call the <b>AddUniverse</b> method with a <b>CryptoUniverse</b> object. A <a href="/docs/v2/writing-algorithms/universes/crypto">Crypto coarse universe</a> uses a selection function to select Crypto pairs based on their OHLCV and dollar volume of the previous day as of midnight Coordinated Universal Time (UTC).</p>
+<p>To select a dynamic universe of Binance Crypto pairs, call the <b>AddUniverse</b> method with a <b>CryptoUniverse</b> object. A <a href="/docs/v2/writing-algorithms/universes/crypto">Crypto universe</a> uses a selection function to select Crypto pairs based on their OHLCV and dollar volume of the previous day as of midnight Coordinated Universal Time (UTC).</p>
 
 <div class="section-example-container">
 <pre class="python">from QuantConnect.Data.UniverseSelection import *
@@ -8,8 +8,8 @@ def Initialize(self) -&gt; None:
     self.SetBrokerageModel(BrokerageName.Binance, AccountType.Margin)
     self.universe = self.AddUniverse(CryptoUniverse.Binance(self.UniverseSelectionFilter))
 
-def UniverseSelectionFilter(self, crypto_coarse):
-    return [c.Symbol for c in crypto_coarse if c.Volume &gt;= 100 and c.VolumeInUsd &gt; 10000]</pre>
+def UniverseSelectionFilter(self, universe_day):
+    return [c.Symbol for c in universe_day if c.Volume &gt;= 100 and c.VolumeInUsd &gt; 10000]</pre>
 <pre class="csharp">using QuantConnect.Data.UniverseSelection;
 
 public override void Initialize()
@@ -19,9 +19,9 @@ public override void Initialize()
     _universe = AddUniverse(CryptoUniverse.Binance(UniverseSelectionFilter));
 }
 
-private IEnumerable&lt;Symbol&gt; UniverseSelectionFilter(IEnumerable&lt;CryptoUniverse&gt; cryptoCoarse)
+private IEnumerable&lt;Symbol&gt; UniverseSelectionFilter(IEnumerable&lt;CryptoUniverse&gt; universeDay)
 {
-    return from c in cryptoCoarse
+    return from c in universeDay
            where c.Volume &gt;= 100m &amp;&amp; c.VolumeInUsd &gt; 10000m
            select c.Symbol;
 }</pre>
