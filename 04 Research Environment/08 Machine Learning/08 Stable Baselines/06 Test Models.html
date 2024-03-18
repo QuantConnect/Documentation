@@ -1,27 +1,22 @@
 <p>You need to <a href="/docs/v2/research-environment/machine-learning/stable-baselines#05-Train-Models">build and train the model</a> before you test its performance. If you have trained the model, test it on the out-of-sample data. Follow these steps to test the model:</p>
 
 <ol>
-    <li>Initialize a list to store the equity value with initial capital in each timestep, and variables to store last action and trading cost.</li>
+    <li>Initialize a return series to calculate performance, and a list to store the equity value with initial capital in each timestep.</li>
     <div class="section-example-container">
-        <pre class="python">equity = [1]
-last_action = 0
-trading_cost = 0.01</pre>
+        <pre class="python">test = np.log(y_test[1:]/y_test[:-1])
+equity = [1]</pre>
     </div>
 
     <li>Iterate each testing data point for prediction and trading.</li>
     <div class="section-example-container">
-        <pre class="python">for i in range(5, X_test.shape[0]):
+        <pre class="python">for i in range(5, X_test.shape[0]-1):
     action, _ = model.predict(X_test[i-5:i], deterministic=True)
+    sum_weights = np.sum(np.abs(action))
+    if sum_weights > 1:
+        action /= sum_weights
+    value = test[i] @ action.T
     
-    if action == 0:
-        new = equity[-1] * (1 - (trading_cost if last_action != action else 0))
-    elif action == 1:
-        new = equity[-1] * (1 + y_test[i] - (trading_cost if last_action != action else 0))
-    elif action == 2:
-        new = equity[-1] * (1 + -1 * y_test[i] - (trading_cost if last_action != action else 0))
-    
-    equity.append(new)
-    last_action = action</pre>
+    equity.append((1+value) * equity[i-5])</pre>
     </div>
     
     <li>Plot the result.</li>
@@ -33,5 +28,5 @@ plt.ylabel("equity")
 plt.plot(equity)
 plt.show()</pre>
     </div>
-    <img class="docs-image" src="https://cdn.quantconnect.com/i/tu/rl-plot.png" alt="Stable baselines model training summary">
+    <img class="docs-image" src="https://cdn.quantconnect.com/i/tu/stable-baselines3-plot.png" alt="Stable baselines model training summary">
 </ol>
