@@ -58,11 +58,12 @@
 <div class="section-example-container">
 <pre class="csharp">public class ETFConstituentsAlgorithm : QCAlgorithm 
 {
+    private Universe _universe;
     public override void Initialize() 
     {
         UniverseSettings.Asynchronous = true;
-        var universe = Universe.ETF("SPY", Market.USA, UniverseSettings, ETFConstituentsFilter);
-        AddUniverse(universe);
+        _universe = Universe.ETF("SPY", Market.USA, UniverseSettings, ETFConstituentsFilter);
+        AddUniverse(_universe);
     }
 
     private IEnumerable&lt;Symbol&gt; ETFConstituentsFilter(IEnumerable&lt;ETFConstituentUniverse&gt; constituents)
@@ -74,9 +75,9 @@
 </pre>
 <pre class="python">class ETFConstituentsAlgorithm(QCAlgorithm):
     def Initialize(self) -&gt; None:
-        UniverseSettings.Asynchronous = True
-        universe = self.Universe.ETF("SPY", Market.USA, self.UniverseSettings, self.ETFConstituentsFilter)
-        self.AddUniverse(universe)
+        self.UniverseSettings.Asynchronous = True
+        self.universe = self.Universe.ETF("SPY", Market.USA, self.UniverseSettings, self.ETFConstituentsFilter)
+        self.AddUniverse(self.universe)
 
     def ETFConstituentsFilter(self, constituents: List[ETFConstituentUniverse]) -&gt; List[Symbol]:
         # Get the 10 securities with the largest weight in the index

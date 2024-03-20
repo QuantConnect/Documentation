@@ -1,0 +1,19 @@
+<p class="csharp">To get historical ETF constituents data, call the <code>History</code> method with the <code>Universe</code> object, and the lookback period. The return type is a <code>IEnumerable&lt;BaseDataCollection&gt;</code> and you have to cast its items to <code>ETFConstituentUniverse</code>.</p><p class="python">To get historical ETF constituents data, call the <code>History</code> method with the <code>Universe</code> object, and the lookback period. The return type is a multi-index <code>pandas.Series</code> of <code>ETFConstituentUniverse</code> list.</p>
+
+<div class="section-example-container">
+    <pre class="csharp">var history = History(_universe, 30, Resolution.Daily);
+foreach (var constituents in history)
+{
+    foreach (ETFConstituentUniverse constituent in constituents)
+    {
+        Log($"{constituent.Symbol} weight at {constituent.EndTime}: {constituent.Weight}");
+    }
+}</pre>
+     <pre class="python">history = self.History(self.universe, 30, Resolution.Daily)
+for (universe_symbol, time), constituents in history.items():
+    for constituent in constituents:
+        self.Log(f'{constituent.Symbol} weight at {constituent.EndTime}: {constituent.Weight}')</pre>
+</div>
+<!--
+<p>For more information about ETF Constituents data, see <a href='/docs/v2/research-environment/datasets/etf-constituents-data'>ETF Constituents Data</a>.</p>
+-->

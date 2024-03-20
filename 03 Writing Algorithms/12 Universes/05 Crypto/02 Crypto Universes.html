@@ -2,21 +2,22 @@
 
 <div class="section-example-container">
     <pre class="python">def Initialize(self) -&gt; None:
-        self.UniverseSettings.Asynchronous = True
-        self.UniverseSettings.Resolution = Resolution.Daily
-        self.SetBrokerageModel(BrokerageName.Coinbase, AccountType.Cash)
+    self.UniverseSettings.Asynchronous = True
+    self.UniverseSettings.Resolution = Resolution.Daily
+    self.SetBrokerageModel(BrokerageName.Coinbase, AccountType.Cash)
     
-        # Add crypto universe selection
-        self.universe = self.AddUniverse(CryptoUniverse.Coinbase(lambda universe_day: [c.Symbol for c in universe_day]))</pre>
-    <pre class="csharp">public override void Initialize()
-    {
-        UniverseSettings.Asynchronous = true;
-        UniverseSettings.Resolution = Resolution.Daily;
-        SetBrokerageModel(BrokerageName.Coinbase, AccountType.Cash);
+    # Add crypto universe selection
+    self.universe = self.AddUniverse(CryptoUniverse.Coinbase(lambda universe_day: [c.Symbol for c in universe_day]))</pre>
+    <pre class="csharp">private Universe _universe;
+public override void Initialize()
+{
+    UniverseSettings.Asynchronous = true;
+    UniverseSettings.Resolution = Resolution.Daily;
+    SetBrokerageModel(BrokerageName.Coinbase, AccountType.Cash);
     
-        // Add crypto universe selection
-        _universe = AddUniverse(CryptoUniverse.Coinbase(universeDay =&gt; from x in universeDay select x.Symbol));
-    }</pre>
+    // Add crypto universe selection
+    _universe = AddUniverse(CryptoUniverse.Coinbase(universeDay =&gt; from x in universeDay select x.Symbol));
+}</pre>
 </div>
 
 <p>The following table shows the helper methods to create crypto universes for the supported exchanges:</p>
@@ -32,32 +33,32 @@
         <tr>
             <td><code>BrokerageName.Binance</code></td>
 	        <td><code>CryptoUniverse.Binance</code></td>
-            <td><a href="/datasets/binance-crypto-price-data">Learn more</a>.</td>
+            <td><a href="/datasets/binance-crypto-price-data">Learn more</a></td>
         </tr>
         <tr>
             <td><code>BrokerageName.BinanceUS</code></td>
 	        <td><code>CryptoUniverse.BinanceUS</code></td>
-            <td><a href="/datasets/binance-us-crypto-price-data">Learn more</a>.</td>
+            <td><a href="/datasets/binance-us-crypto-price-data">Learn more</a></td>
         </tr>
         <tr>
             <td><code>BrokerageName.Bitfinex</code></td>
 	        <td><code>CryptoUniverse.Bitfinex</code></td>
-            <td><a href="/datasets/bitfinex-crypto-price-data">Learn more</a>.</td>
+            <td><a href="/datasets/bitfinex-crypto-price-data">Learn more</a></td>
         </tr>
         <tr>
             <td><code>BrokerageName.Bybit</code></td>
 	        <td><code>CryptoUniverse.Bybit</code></td>
-            <td><a href="/datasets/bybit-crypto-price-data">Learn more</a>.</td>
+            <td><a href="/datasets/bybit-crypto-price-data">Learn more</a></td>
         </tr>
         <tr>
             <td><code>BrokerageName.Coinbase</code></td>
 	        <td><code>CryptoUniverse.Coinbase</code></td>
-            <td><a href="/datasets/coinbase-crypto-price-data">Learn more</a>.</td>
+            <td><a href="/datasets/coinbase-crypto-price-data">Learn more</a></td>
         </tr>
         <tr>
             <td><code>BrokerageName.Kraken</code></td>
 	        <td><code>CryptoUniverse.Kraken</code></td>
-            <td><a href="/datasets/kraken-crypto-price-data">Learn more</a>.</td>
+            <td><a href="/datasets/kraken-crypto-price-data">Learn more</a></td>
         </tr>
     </tbody>
 </table>
@@ -107,7 +108,8 @@
 def universe_filter(self, universe_day):
     # Define the universe selection function
     return [cf.Symbol for cf in universe_day if cf.Volume &gt;= 100 and cf.VolumeInUsd &gt; 10000]</pre>
-<pre class="csharp">public override void Initialize()
+<pre class="csharp">private Universe _universe;
+public override void Initialize()
 {
     UniverseSettings.Asynchronous = true;
     UniverseSettings.Resolution = Resolution.Daily;

@@ -3,10 +3,11 @@
     
 <div class="section-example-container">
     <pre class="csharp">public class MyUniverseAlgorithm : QCAlgorithm {
+    private Universe _universe;
     public override void Initialize() 
     {
         UniverseSettings.Asynchronous = true;
-        AddUniverse(FundamentalFilterFunction);
+        _universe = AddUniverse(FundamentalFilterFunction);
     }
         
     private IEnumerable&lt;Symbol&gt; FundamentalFilterFunction(IEnumerable&lt;Fundamental&gt; fundamental) 
@@ -19,7 +20,7 @@
     <pre class="python">class MyUniverseAlgorithm(QCAlgorithm):
     def Initialize(self) -&gt; None:
         self.UniverseSettings.Asynchronous = True
-        self.AddUniverse(self.FundamentalFunction)
+        self.universe = self.AddUniverse(self.FundamentalFunction)
     
     def FundamentalFunction(self, fundamental: List[Fundamental]) -&gt; List[Symbol]:
         return [c.Symbol for c in fundamental if c.HasFundamentalData]</pre></div>
@@ -36,7 +37,7 @@ The simplest example of accessing the fundamental object would be harnessing the
     <pre class="csharp">// Take the top 50 by dollar volume using fundamental
 // Then the top 10 by PERatio using fine
 UniverseSettings.Asynchronous = true;
-AddUniverse(
+_universe = AddUniverse(
     fundamental =&gt; (from f in fundamental
         where f.Price &gt; 10 &amp;&amp; f.HasFundamentalData &amp;&amp; !Double.IsNaN(f.ValuationRatios.PERatio)
         orderby f.DollarVolume descending).Take(100)
@@ -44,7 +45,7 @@ AddUniverse(
         .Select(f =&gt; f.Symbol));</pre>
     <pre class="python"># In Initialize:
 self.UniverseSettings.Asynchronous = True
-self.AddUniverse(self.FundamentalSelectionFunction)
+self.universe = self.AddUniverse(self.FundamentalSelectionFunction)
     
 def FundamentalSelectionFunction(self, fundamental: List[Fundamental]) -&gt; List[Symbol]:
     filtered = [f for f in fundamental if f.Price &gt; 10 and f.HasFundamentalData and not np.isnan(f.ValuationRatios.PERatio)]
