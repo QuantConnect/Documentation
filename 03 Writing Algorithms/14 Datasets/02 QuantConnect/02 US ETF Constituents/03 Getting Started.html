@@ -6,13 +6,13 @@
 def Initialize(self) -&gt; None:
     self.UniverseSettings.Asynchronous = True
     # Use the following method for a Classic Algorithm
-    self.AddUniverse(self.Universe.ETF("SPY", Market.USA, self.UniverseSettings, self.ETFConstituentsFilter))
+    self.universe = self.AddUniverse(self.Universe.ETF("SPY", Market.USA, self.UniverseSettings, self.ETFConstituentsFilter))
 
     symbol = Symbol.Create("SPY", SecurityType.Equity, Market.USA)
     # Use the following method for a Framework Algorithm
     self.AddUniverseSelection(ETFConstituentsUniverseSelectionModel(symbol, self.UniverseSettings, self.ETFConstituentsFilter))
 
-    def ETFConstituentsFilter(self, constituents: List[ETFConstituentData]) -&gt; List[Symbol]:
+    def ETFConstituentsFilter(self, constituents: List[ETFConstituentUniverse]) -&gt; List[Symbol]:
         # Add all Symbols of the ETFConstituentsData
         return [x.Symbol for x in constituents]</pre>
 <pre class="csharp">using QuantConnect.DataSource;
@@ -21,13 +21,13 @@ public override void Initialize()
 {
     UniverseSettings.Asynchronous = True;
     // Use the following method for a Classic Algorithm
-    AddUniverse(Universe.ETF("SPY", Market.USA, UniverseSettings, ETFConstituentsFilter));
+    _universe = AddUniverse(Universe.ETF("SPY", Market.USA, UniverseSettings, ETFConstituentsFilter));
 
     var symbol = QuantConnect.Symbol.Create("SPY", SecurityType.Equity, Market.USA);
     // Use the following method for a Framework Algorithm
     AddUniverseSelection(new ETFConstituentsUniverseSelectionModel(symbol, UniverseSettings, ETFConstituentsFilter));
 }
-private IEnumerable&lt;Symbol&gt; ETFConstituentsFilter(IEnumerable &lt;ETFConstituentData&gt; constituents)
+private IEnumerable&lt;Symbol&gt; ETFConstituentsFilter(IEnumerable &lt;ETFConstituentUniverse&gt; constituents)
 {
     // Add all Symbols of the ETFConstituentsData
     return constituents.Select(x =&gt; x.Symbol);

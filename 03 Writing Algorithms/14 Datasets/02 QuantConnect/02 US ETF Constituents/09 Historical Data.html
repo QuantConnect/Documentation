@@ -1,35 +1,39 @@
-<p>There are several types of historical data you can request.</p>
+<p>You can get historical universe data in an algorithm and in the Research Environment.</p>
 
-<h4>Get Constituent Data History</h4>
-<p>To get historical <b>ETFConstituentData</b> objects, add a <a href="/docs/v2/writing-algorithms/historical-data/warm-up-periods">warm-up period</a> so your selection function receives the <b>ETFConstituentData</b> objects from before the start date of your algorithm.</p>
-
-<h4>Get Price History</h4>
-<p>To get historical prices of the ETF constituents, use the <b>Symbol</b> member of each object to <a href="/docs/v2/writing-algorithms/historical-data/history-requests">request historical market data</a>. If there is no data in the period you request, the history result is empty.</p>
+<h4>Historical Universe Data in Algorithms</h4>
+<p>To get historical universe data in an algorithm, call the <b>History</b> method with the <b>Universe</b> object, and the lookback period. If there is no data in the period you request, the history result is empty.</p>
 
 <div class="section-example-container">
-<pre class="python">
-def ETFConstituentsFilter(self, constituents: List[ETFConstituentData]) -&gt; List[Symbol]:
-    # Get the 20 largest weighting constituents
-    selected = sorted([c for c in constituents if c.Weight],
-        key=lambda c: c.Weight, reverse=True)[:20]
-    selectedSymbols = [c.Symbol for c in selected]
-
-    history = History(selectedSymbols, 10, Resolution.Daily)
-                
-    return selectedSymbols 
-</pre>
-<pre class="csharp">
-private IEnumerable&lt;Symbol&gt; ETFConstituentsFilter(IEnumerable&lt;ETFConstituentData&gt; constituents)
+        <pre class="csharp">var history = History(_universe, 30, Resolution.Daily);
+foreach (var constituents in history)
 {
-    // Get the 20 largest weighting constituents
-    var selectedSymbols = constituents
-        .OrderByDescending(c =&gt; c.Weight)
-        .Take(10)
-        .Select(c =&gt; c.Symbol)
-
-    var history = History(selectedSymbols, 10, Resolution.Daily);
-
-    return selectedSymbols;
-}
-</pre>
+    foreach (ETFConstituentUniverse constituent in constituents)
+    {
+        Log($"{constituent.Symbol} weight at {constituent.EndTime}: {constituent.Weight}");
+    }
+}</pre>
+     <pre class="python">history = self.History(self.universe, 30, Resolution.Daily)
+for (universe_symbol, time), constituents in history.items():
+    for constituent in constituents:
+        self.Log(f'{constituent.Symbol} weight at {constituent.EndTime}: {constituent.Weight}')</pre>
 </div>
+
+<h4>Historical Universe Data in Research</h4>
+<p>To get historical universe data in research, call the <b>UniverseHistory</b> method with the <b>Universe</b> object, and the lookback period. The <b>UniverseHistory</b> returns the filtered universe. If there is no data in the period you request, the history result is empty.</p>
+
+<div class="section-example-container">
+        <pre class="csharp">var universeHistory = qb.UniverseHistory(universe, qb.Time.AddDays(-30), qb.Time);
+foreach (var constituents in universeHistory )
+{
+    foreach (ETFConstituentUniverse constituent in constituents)
+    {
+        Console.WriteLine($"{constituent.Symbol} weight at {constituent.EndTime}: {constituent.Weight}");
+    }
+}</pre>
+     <pre class="python">universe_history = qb.UniverseHistory(universe, qb.Time-timedelta(30), qb.Time)
+for (universe_symbol, time), constituents in universe_history.items():
+    for constituent in constituents:
+        print(f"{constituent.Symbol} weight at {constituent.EndTime}: {constituent.Weight}")</pre>
+</div>
+
+<p>You can call the <b>History</b> method in Research.</p>
