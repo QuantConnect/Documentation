@@ -26,7 +26,7 @@ namespace QuantConnect.Algorithm.CSharp
             AddUniverse(Universe.ETF("QQQ", Market.USA, UniverseSettings, ETFConstituentsFilter), FundamentalSelection);
         }
 
-        private IEnumerable&lt;Symbol&gt; ETFConstituentsFilter(IEnumerable&lt;ETFConstituentData&gt; constituents)
+        private IEnumerable&lt;Symbol&gt; ETFConstituentsFilter(IEnumerable&lt;ETFConstituentUniverse&gt; constituents)
         {
             return constituents.Select(c =&gt; c.Symbol);
         }
@@ -58,7 +58,7 @@ class ChainedUniverseAlgorithm(QCAlgorithm):
         self.UniverseSettings.Asynchronous = True
         self.AddUniverse(self.Universe.ETF("QQQ", Market.USA, self.UniverseSettings, self.ETFConstituentsFilter), self.FundamentalSelection)
 
-    def ETFConstituentsFilter(self, constituents: List[ETFConstituentData]) -&gt; List[Symbol]:
+    def ETFConstituentsFilter(self, constituents: List[ETFConstituentUniverse]) -&gt; List[Symbol]:
         return [c.Symbol for c in constituents]
 
     def FundamentalSelection(self, fundamental: List[Fundamental]) -&gt; List[Symbol]:

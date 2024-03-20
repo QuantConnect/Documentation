@@ -26,7 +26,7 @@ namespace QuantConnect.Algorithm.CSharp
             AddUniverseOptions(etfUniverse, OptionFilterFunction);
         }
     
-        private IEnumerable&lt;Symbol&gt; ETFConstituentsFilter(IEnumerable&lt;ETFConstituentData&gt; constituents)
+        private IEnumerable&lt;Symbol&gt; ETFConstituentsFilter(IEnumerable&lt;ETFConstituentUniverse&gt; constituents)
         {
             return constituents.OrderByDescending(c =&gt; c.Weight).Take(10).Select(c =&gt; c.Symbol);
         }
@@ -59,7 +59,7 @@ class ChainedUniverseAlgorithm(QCAlgorithm):
         self.AddUniverse(etf_universe)
         self.AddUniverseOptions(etf_universe, self.OptionFilterFunction)
 
-    def ETFConstituentsFilter(self, constituents: List[ETFConstituentData]) -&gt; List[Symbol]:
+    def ETFConstituentsFilter(self, constituents: List[ETFConstituentUniverse]) -&gt; List[Symbol]:
         sorted_by_weight = sorted(constituents, key=lambda x: x.Weight, reverse=True) 
         return [c.Symbol for c in sorted_by_weight[:10]]
 

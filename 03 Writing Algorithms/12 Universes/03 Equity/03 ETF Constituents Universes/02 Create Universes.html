@@ -44,15 +44,15 @@
                 <td>
                     <h4>Argument: <span><code>universeFilterFunc</code></span></h4>
                     <p class='property-description'>A function to select some of the ETF constituents for the universe. If you don't provide an argument, it selects all of the constituents.</p>
-                    <p>Data Type: <span><code class="csharp">Func&lt;IEnumerable&lt;ETFConstituentData&gt;, IEnumerable&lt;Symbol&gt;&gt;</code><code class="python">Callable[[List[ETFConstituentData]], List[Symbol]]</code></span><span class='pipe-separator'>  |  </span> Default Value: <span><code class="csharp">null</code><code class="python">None</code></span></p>
+                    <p>Data Type: <span><code class="csharp">Func&lt;IEnumerable&lt;ETFConstituentUniverse&gt;, IEnumerable&lt;Symbol&gt;&gt;</code><code class="python">Callable[[List[ETFConstituentUniverse]], List[Symbol]]</code></span><span class='pipe-separator'>  |  </span> Default Value: <span><code class="csharp">null</code><code class="python">None</code></span></p>
                 </td>
             </tr>
     </tbody>
 </table>
 
-<p>To select a subset of the ETF constituents, provide a <code>universeFilterFunc</code> argument. The filter function receives <code>ETFConstituentData</code> objects, which represent one of the ETF constituents. <code>ETFConstituentsData</code> objects have the following attributes:</p>
+<p>To select a subset of the ETF constituents, provide a <code>universeFilterFunc</code> argument. The filter function receives <code>ETFConstituentUniverse</code> objects, which represent one of the ETF constituents. <code>ETFConstituentUniverse</code> objects have the following attributes:</p>
 
-<div data-tree="QuantConnect.Data.UniverseSelection.ETFConstituentData"></div>
+<div data-tree="QuantConnect.Data.UniverseSelection.ETFConstituentUniverse"></div>
 
 
 <div class="section-example-container">
@@ -65,7 +65,7 @@
         AddUniverse(universe);
     }
 
-    private IEnumerable&lt;Symbol&gt; ETFConstituentsFilter(IEnumerable&lt;ETFConstituentData&gt; constituents)
+    private IEnumerable&lt;Symbol&gt; ETFConstituentsFilter(IEnumerable&lt;ETFConstituentUniverse&gt; constituents)
     {
         // Get the 10 securities with the largest weight in the index
         return constituents.OrderByDescending(c =&gt; c.Weight).Take(10).Select(c =&gt; c.Symbol);
@@ -78,7 +78,7 @@
         universe = self.Universe.ETF("SPY", Market.USA, self.UniverseSettings, self.ETFConstituentsFilter)
         self.AddUniverse(universe)
 
-    def ETFConstituentsFilter(self, constituents: List[ETFConstituentData]) -&gt; List[Symbol]:
+    def ETFConstituentsFilter(self, constituents: List[ETFConstituentUniverse]) -&gt; List[Symbol]:
         # Get the 10 securities with the largest weight in the index
         selected = sorted([c for c in constituents if c.Weight],
             key=lambda c: c.Weight, reverse=True)[:10]
