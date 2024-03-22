@@ -1,0 +1,1 @@
+<p>If you have licensed alternative data with QuantConnect, it works as expected with the Alpha Vantage data provider for research, backtesting, and live trading.</p>
