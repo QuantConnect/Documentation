@@ -36,7 +36,8 @@ def _format_introduction(type_name: str, text: str) -> str:
     return text
 
 PROPERTIES_EXCEPTIONS = ['MovingAverageType', 'IsReady', 'WarmUpPeriod', 'Name', 'Period', 'Samples', 
-                'Current', "Consolidators", "Previous", "Window", "[System.Int32]"]
+                'Current', "Consolidators", "Previous", "Window", "[System.Int32]", "Strike", "Right", 
+                "Style", "Expiry", "UseMirrorContract"]
 
 def _extract_properties(properties: list):
     numerical_properties = ''
