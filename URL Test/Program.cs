@@ -22,6 +22,8 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Text.Json;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -44,6 +46,7 @@ var tasks = new List<Task>();
 var errorFlag = false;
 
 var urlFiles = GetAllUrls();
+var resourceFiles = GetResourcesRedir();
 var count = urlFiles.Count;
 Log.Trace($"Start Testing {count} URLs...");
 
@@ -147,6 +150,15 @@ foreach (var (url, files) in urlFiles)
                         errorFlag = true;
                     }
                 }
+                else if (url.Contains("api.github.com/repos/QuantConnect/Lean/issues"))
+                {
+                    var state = JsonDocument.Parse(content).RootElement.GetProperty("state").GetString();
+                    if (state != "open")
+                    {
+                        Log.Error($"The GitHub issue is not open:\n\t{url}\n\t[\n\t\t{string.Join("\n\t\t", files)}\n\t]");
+                        errorFlag = true;
+                    }
+                }
             })
         );
     }
@@ -173,6 +185,29 @@ if (tasks.Count > 0)
 {
     Task.WaitAll(tasks.ToArray());
     tasks.Clear();
+}
+
+Log.Trace($"Now check {resourceFiles.Count()} RESOURCE redirection.");
+
+foreach (var (subPath, files) in resourceFiles)
+{
+    try
+    {
+        if (!Directory.Exists($"../Resources/{subPath}") && !File.Exists($"../Resources/{subPath}"))
+        {
+            Log.Error($"Non-existing resource page:\n\t\"Resources/{subPath}\"\n\t[\n\t\t{string.Join("\n\t\t", files)}\n\t]");
+            errorFlag = true;
+        }
+    }
+    catch (Exception e)
+    {
+        Log.Error(e, $":\n\t{subPath}\n\t[\n\t\t{string.Join("\n\t\t", files)}\n\t]");
+    }
+
+    if (i % 100 == 0)
+    {
+        Log.Trace($"\tDone {i}/{count} ({Convert.ToDouble(i) / count:P2})");
+    }
 }
 
 Log.Trace($"Finished in {stopwatch.Elapsed.ToStringInvariant(null)}");
@@ -209,6 +244,11 @@ Dictionary<string, List<string>> GetAllUrls()
                 var subUrl = String.Empty;
 
                 if (string.IsNullOrWhiteSpace(url) || url.Contains('{') || url.Contains('}')) continue;
+
+                if (Regex.IsMatch(url, @"github.com/QuantConnect/Lean/issues/\d+"))
+                {
+                    url = url.Replace("github.com", "api.github.com/repos").Replace("www", String.Empty);
+                }
 
                 if (!url.Contains("http"))
                 {
@@ -259,11 +299,53 @@ Dictionary<string, List<string>> GetAllUrls()
     return urlFiles;
 }
 
+Dictionary<string, List<string>> GetResourcesRedir()
+{
+    Dictionary<string, List<string>> resourceFiles = new();
+
+    var allFiles = Directory.GetFiles(path, "*.*", SearchOption.AllDirectories)
+        .Where(filter)
+        .OrderBy(x => x);
+
+    foreach (var file in allFiles)
+    {
+        foreach (var line in File.ReadAllLines(file))
+        {
+            var splitted = line.Split("<? include(DOCS_RESOURCES.\"");
+            if (splitted.Count() < 2) continue;
+
+            if (splitted[0].Contains("<!--")) continue;
+
+            foreach (var rref in splitted.Skip(1))
+            {
+                var subDir = rref.Split('\"').First();
+
+                if (subDir[0] == '/')
+                {
+                    subDir = subDir.Substring(1);
+                }
+
+                if (string.IsNullOrWhiteSpace(subDir) || subDir.Contains('{') || subDir.Contains('}')) continue;
+
+                if (!resourceFiles.ContainsKey(subDir))
+                {
+                    resourceFiles.Add(subDir, new List<string>());
+                }
+
+                resourceFiles[subDir].Add(file);
+            }
+        }
+    }
+
+    return resourceFiles;
+}
+
 async Task<string> HttpRequester(string url, List<string> files)
 {
     try
     {
         using var client = new HttpClient();
+        client.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 (compatible; AcmeInc/1.0)");
         var response = await client.GetAsync(url);
         var statusCode = response.StatusCode;
 
