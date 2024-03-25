@@ -78,11 +78,11 @@ public override void Initialize()
     otm_strike = atm_strike + spread</pre>
     </div>
 
-    <li>In the <code>OnData</code> method, call the <code>OptionStrategies.CallButterfly</code> method and then submit the order.</li>
+    <li>In the <code>OnData</code> method, call the <code>OptionStrategies.ButterflyCall</code> method and then submit the order.</li>
     <div class="section-example-container">
-        <pre class="csharp">var optionStrategy = OptionStrategies.CallButterfly(_symbol, otmStrike, atmStrike, itmStrike, expiry);
+        <pre class="csharp">var optionStrategy = OptionStrategies.ButterflyCall(_symbol, otmStrike, atmStrike, itmStrike, expiry);
 Buy(optionStrategy, 1);</pre>
-        <pre class="python">option_strategy = OptionStrategies.CallButterfly(self.symbol, otm_strike, atm_strike, itm_strike, expiry)
+        <pre class="python">option_strategy = OptionStrategies.ButterflyCall(self.symbol, otm_strike, atm_strike, itm_strike, expiry)
 self.Buy(option_strategy, 1)</pre>
     </div>
 
