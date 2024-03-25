@@ -9,6 +9,8 @@ self.indicator = RelativeStrengthIndex(10, MovingAverageType.Simple)
 
 # Create a consolidator
 consolidator = TradeBarConsolidator(1)
+consolidator = QuoteBarConsolidator(1)
+consolidator = RenkoConsolidator(1)     # Renko consolidator that emits a bar when the price moves $1
 
 # Register the indicator to update with the consolidated data
 self.RegisterIndicator(self.symbol, self.indicator, consolidator)</pre>
@@ -20,6 +22,8 @@ _indicator = new RelativeStrengthIndex(10, MovingAverageType.Simple);
 
 // Create a consolidator
 var consolidator = new TradeBarConsolidator(1);
+consolidator = new QuoteBarConsolidator(1);
+consolidator = new RenkoConsolidator(1);    // Renko consolidator that emits a bar when the price moves $1
 
 // Register the indicator to update with the consolidated data
 RegisterIndicator(_symbol, _indicator, consolidator);</pre>
