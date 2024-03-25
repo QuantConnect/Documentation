@@ -1,4 +1,4 @@
-<p>Follow these steps to implement the call calendar spread strategy:</p>
+<p>Follow these steps to implement the long call calendar spread strategy:</p>
 
 <ol>
     <li>In the <code>Initialize</code> method, set the start date, end date, cash, and <a href="/docs/v2/writing-algorithms/universes/equity-options">Option universe</a>.</li>
@@ -69,15 +69,13 @@ public override void Initialize()
     <li>In the <code>OnData</code> method, call the <code>OptionStrategies.CallCalendarSpread</code> method and then submit the order.</li>
     <div class="section-example-container">
         <pre class="csharp">var optionStrategy = OptionStrategies.CallCalendarSpread(_symbol, atmStrike, nearExpiry, farExpiry);
-Buy(optionStrategy, 1);        // if long call calendar spread
-Sell(optionStrategy, 1);     // if short call calendar spread</pre>
+Buy(optionStrategy, 1);</pre>
         <pre class="python">option_strategy = OptionStrategies.CallCalendarSpread(self.symbol, atm_strike, near_expiry, far_expiry)
-self.Buy(option_strategy, 1)    # if long call calendar spread
-self.Sell(option_strategy, 1)   # if short call calendar spread</pre>
+self.Buy(option_strategy, 1)</pre>
     </div>
 
 <?php 
-$methodNames = array("Buy", "Sell");
+$methodNames = array("Buy");
 include(DOCS_RESOURCES."/trading-and-orders/option-strategy-extra-args.php"); 
 ?>
 
