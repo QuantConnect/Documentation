@@ -22,6 +22,8 @@
     self.ad = AccumulationDistribution()
 
     self.consolidator = TradeBarConsolidator(timedelta(days=3))
+    self.consolidator = QuoteBarConsolidator(timedelta(days=3))
+    self.consolidator = RenkoBarConsolidator(1)     # Renko consolidator that emits a bar when the price moves $1
     # Update the AD indicator with the consolidated bar
     self.consolidator.DataConsolidated += (lambda _, bar : self.ad.Update(bar))
     self.SubscriptionManager.AddConsolidator(self.symbol, self.consolidator)
@@ -44,6 +46,8 @@ public override void Initialize()
     _ad = new AccumulationDistribution();
 
     var consolidator = new TradeBarConsolidator(TimeSpan.FromDays(3));
+    consolidator = new QuoteBarConsolidator(TimeSpan.FromDays(3));
+    consolidator = new RenkoBarConsolidator(1);     // Renko consolidator that emits a bar when the price moves $1
     //Update the AD indicator with the consolidated bar
     consolidator.DataConsolidated += (_, bar) =&gt; _ad.Update(bar);
     SubscriptionManager.AddConsolidator(_symbol, consolidator);
