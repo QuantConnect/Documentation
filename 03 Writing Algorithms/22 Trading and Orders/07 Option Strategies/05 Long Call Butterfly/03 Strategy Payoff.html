@@ -1,0 +1,39 @@
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});
+</script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+<p>The long call butterfly is a limited-reward-limited-risk strategy. The payoff is</p>
+$$
+\begin{array}{rcll}
+C^{OTM}_T &amp; = &amp; (S_T - K^{OTM})^{+}\\
+C^{ITM}_T &amp; = &amp; (S_T - K^{ITM})^{+}\\
+C^{ATM}_T &amp; = &amp; (S_T - K^{ATM})^{+}\\
+P_T &amp; = &amp; (C^{OTM}_T + C^{ITM}_T - 2\times C^{ATM}_T + 2\times C^{ATM}_0 - C^{ITM}_0 - C^{OTM}_0)\times m - fee\\
+\end{array}
+$$
+$$
+\begin{array}{rcll}
+\textrm{where} &amp; C^{OTM}_T &amp; = &amp; \textrm{OTM call value at time T}\\
+&amp; C^{ITM}_T &amp; = &amp; \textrm{ITM call value at time T}\\
+&amp; C^{ATM}_T &amp; = &amp; \textrm{ATM call value at time T}\\
+&amp; S_T &amp; = &amp; \textrm{Underlying asset price at time T}\\
+&amp; K^{OTM} &amp; = &amp; \textrm{OTM call strike price}\\
+&amp; K^{ITM} &amp; = &amp; \textrm{ITM call strike price}\\
+&amp; K^{ATM} &amp; = &amp; \textrm{ATM call strike price}\\
+&amp; P_T &amp; = &amp; \textrm{Payout total at time T}\\
+&amp; C^{ITM}_0 &amp; = &amp; \textrm{ITM call value at position opening (debit paid)}\\
+&amp; C^{OTM}_0 &amp; = &amp; \textrm{OTM call value at position opening (debit paid)}\\
+&amp; C^{ATM}_0 &amp; = &amp; \textrm{OTM call value at position opening (credit received)}\\
+&amp; m &amp; = &amp; \textrm{Contract multiplier}\\
+&amp; T &amp; = &amp; \textrm{Time of expiration}
+\end{array}
+$$
+<br>
+<p>The following chart shows the payoff at expiration:</p>
+<img class="docs-image" src="https://cdn.quantconnect.com/i/tu/long-call-butterfly.png" alt="Strategy payoff decomposition and analysis of long call butterfly">
+<p>The maximum profit is $K^{ATM} - K^{ITM} + 2\times C^{ATM}_0 - C^{ITM}_0 - C^{OTM}_0$. It occurs when the underlying price is the same price at expiration as it was when opening the position and the payouts of the bull and bear call spreads are at their maximum.</p>
+<p>The maximum loss is the net debit paid: $2\times C^{ATM}_0 - C^{ITM}_0 - C^{OTM}_0$. It occurs when the underlying price is less than ITM strike or greater than OTM strike at expiration.</p>
+<p>If the Option is an American Option, there is a risk of early assignment on the sold contracts.</p>
