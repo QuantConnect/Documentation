@@ -1,0 +1,33 @@
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});
+</script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+<p>The short put calendar spread  is a limited-reward-limited-risk strategy. The payoff is taken at the shorter-term expiration. The payoff is</p>
+$$
+\begin{array}{rcll}
+P^{\textrm{short-term}}_T &amp; = &amp; (K - S_T)^{+}\\
+P_T &amp; = &amp; (P^{\textrm{short-term}}_T - P^{\textrm{long-term}}_T + P^{\textrm{long-term}}_0 - P^{\textrm{short-term}}_0)\times m - fee
+\end{array}
+$$
+$$
+\begin{array}{rcll}
+\textrm{where} &amp; P^{\textrm{short-term}}_T &amp; = &amp; \textrm{Shorter term put value at time T}\\
+&amp; P^{\textrm{long-term}}_T &amp; = &amp; \textrm{Longer term put value at time T}\\
+&amp; S_T &amp; = &amp; \textrm{Underlying asset price at time T}\\
+&amp; K &amp; = &amp; \textrm{Strike price}\\
+&amp; P_T &amp; = &amp; \textrm{Payout total at time T}\\
+&amp; P^{\textrm{short-term}}_0 &amp; = &amp; \textrm{Shorter term put value at position opening (debit paid)}\\
+&amp; P^{\textrm{long-term}}_0 &amp; = &amp; \textrm{Longer term put value at position opening (credit received)}\\
+&amp; m &amp; = &amp; \textrm{Contract multiplier}\\
+&amp; T &amp; = &amp; \textrm{Time of shorter term put expiration}
+\end{array}
+$$
+<br>
+<p>The following chart shows the payoff at expiration:</p>
+<img class="docs-image" src="https://cdn.quantconnect.com/i/tu/short-put-calendar-spread.png" alt="Strategy payoff decomposition and analysis of short put calendar spread">
+
+<p>The maximum profit is the net credit received, $P^{\textrm{long-term}}_0 - P^{\textrm{short-term}}_0$. It occurs when the underlying price moves very deep ITM or OTM so the values of both puts are close to zero.</p>
+<p>The maximum loss is undetermined because it depends on the underlying volatility. It occurs when $S_T = S_0$ and the spread of the 2 puts are at their maximum.</p>
+<p>If the Option is American Option, there is risk of early assignment on the sold contract. Additionally, if you don't close the put positions together, the naked short put will have unlimited drawdown risk after the long put expires.</p>
