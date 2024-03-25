@@ -1,0 +1,75 @@
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}});
+</script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+<p>The following table shows the price details of the assets in the short call calendar spread:</p>
+
+<table class="table qc-table" id="payoff-table">
+<thead>
+<tr><th>Asset</th><th>Price ($)</th><th>Strike ($)</th></tr>
+</thead>
+<tbody>
+<tr><td>Longer-term call at the start of the trade</td><td>4.40</td><td>835.00</td></tr>
+<tr><td>Shorter-term call at the start of the trade</td><td>36.80</td><td>767.50</td></tr>
+<tr><td>Longer-term call at time $T$</td><td>31.35</td><td>835.00</td></tr>
+<tr><td>Underlying Equity at time $T$</td><td>829.08</td><td>-</td></tr>
+</tbody>
+</table>
+
+<style>
+#payoff-table td:nth-child(2), 
+#payoff-table th:nth-child(2), 
+#payoff-table td:nth-child(3), 
+#payoff-table th:nth-child(3) {
+    text-align: right;
+}
+</style>
+
+<p>Therefore, the payoff at time $T$ (the expiration of the short-term call) is</p>
+$$
+\begin{array}{rcll}
+C^{\textrm{short-term}}_T &amp; = &amp; (S_T - K)^{+}\\
+&amp; = &amp; (828.07-800.00)^{+}\\
+&amp; = &amp; 28.07\\
+P_T &amp; = &amp; (-C^{\textrm{long-term}}_T + C^{\textrm{short-term}}_T - C^{\textrm{short-term}}_0 + C^{\textrm{long-term}}_0)\times m - fee\\
+&amp; = &amp; (-31.35+28.07-11.30+20.00)\times100-1.00\times2\\
+&amp; = &amp; 540
+\end{array}
+$$
+<br>
+<p>So, the strategy gains $540.</p>
+
+<p>The following algorithm implements a short call calendar spread Option strategy:</p>
+
+<div class="python">
+    <div class="qc-embed-frame" style="display: inline-block; position: relative; width: 100%; min-height: 100px; min-width: 300px;">
+        <div class="qc-embed-dummy" style="padding-top: 56.25%;"></div>
+        <div class="qc-embed-element" style="position: absolute; top: 0; bottom: 0; left: 0; right: 0;">
+            <iframe class="qc-embed-backtest" height="100%" width="100%" style="border: 1px solid #ccc; padding: 0; margin: 0;" src="https://www.quantconnect.com/terminal/processCache?request=embedded_backtest_0a5f871bd938a57eb70344301d722ecd.html"></iframe>
+        </div>
+    </div>
+</div>
+
+<div class="csharp">
+    <div class="qc-embed-frame" style="display: inline-block; position: relative; width: 100%; min-height: 100px; min-width: 300px;">
+        <div class="qc-embed-dummy" style="padding-top: 56.25%;"></div>
+        <div class="qc-embed-element" style="position: absolute; top: 0; bottom: 0; left: 0; right: 0;">
+            <iframe class="qc-embed-backtest" height="100%" width="100%" style="border: 1px solid #ccc; padding: 0; margin: 0;" src="https://www.quantconnect.com/terminal/processCache?request=embedded_backtest_6794a9cc698ecfc80edaccc07b2eb1fd.html"></iframe>
+        </div>
+    </div>
+</div>
+
+<div class="example-fieldset">
+    <div class="example-legend">Demonstration Algorithm</div>
+    
+    <a class="python example-algorithm-link" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.Python/LongAndShortCallCalendarSpreadStrategiesAlgorithm.py" target="_BLANK">
+        LongAndShortCallCalendarSpreadStrategiesAlgorithm.py  <span class="badge-python pull-right">Python</span>
+    </a>
+    
+    <a class="csharp example-algorithm-link" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.CSharp/LongAndShortCallCalendarSpreadStrategiesAlgorithm.cs" target="_BLANK">
+        LongAndShortCallCalendarSpreadStrategiesAlgorithm.cs  <span class="badge badge-sm badge-csharp pull-right">C#</span>
+    </a>
+
+  </div>
