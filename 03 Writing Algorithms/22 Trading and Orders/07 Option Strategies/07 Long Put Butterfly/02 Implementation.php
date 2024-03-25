@@ -1,4 +1,4 @@
-<p>Follow these steps to implement the put butterfly strategy:</p>
+<p>Follow these steps to implement the long put butterfly strategy:</p>
 
 <ol>
     <li>In the <code>Initialize</code> method, set the start date, end date, cash, and <a href="/docs/v2/writing-algorithms/universes/equity-options">Option universe</a>.</li>
@@ -87,15 +87,13 @@ public override void Initialize()
     <li>In the <code>OnData</code> method, call the <code>OptionStrategies.PutButterfly</code> method and then submit the order.</li>
     <div class="section-example-container">
         <pre class="csharp">var optionStrategy = OptionStrategies.PutButterfly(_symbol, itmStrike, atmStrike, otmStrike, expiry);
-Buy(optionStrategy, 1);    // if long put butterfly
-Sell(optionStrategy, 1);   // if short put butterfly<br></pre>
+Buy(optionStrategy, 1);</pre>
         <pre class="python">option_strategy = OptionStrategies.PutButterfly(self.symbol, itm_strike, atm_strike, otm_strike, expiry)
-self.Buy(option_strategy, 1)    # if long put butterfly
-self.Sell(option_strategy, 1)   # if short put butterfly</pre>
+self.Buy(option_strategy, 1)</pre>
     </div>
 
 <?php 
-$methodNames = array("Buy", "Sell");
+$methodNames = array("Buy");
 include(DOCS_RESOURCES."/trading-and-orders/option-strategy-extra-args.php"); 
 ?>
     
