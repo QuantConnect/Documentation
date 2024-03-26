@@ -14,9 +14,6 @@ if __name__ == '__main__':
         'supported-libraries.php': {
             'python': f'{docker_run} "pip list"',
             'csharp': f'dotnet list {lean_sln.resolve()} package'
-        },
-        'supported-libraries-foundation-pomegranate.html': {
-            'python': f'{docker_run} ". /Foundation-Pomegranate/bin/activate && pip list"'
         }
     }
 
@@ -203,7 +200,7 @@ if __name__ == '__main__':
             html = '<div class="section-example-container">\n'
             for language, cmd in cmds.items():
                 html += f'<pre class="{language}">\n'
-                maxlen, libraries = 0, {'# Name': 'Version'}
+                maxlen, libraries = 40, {'# Name': 'Version'}
                 content = popen(cmd)
 
                 for i, line in enumerate(content.readlines()):
