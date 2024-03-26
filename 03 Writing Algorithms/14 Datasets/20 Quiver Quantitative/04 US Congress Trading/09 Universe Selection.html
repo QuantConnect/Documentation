@@ -2,18 +2,21 @@
 
 <div class="section-example-container">
 <pre class="python">def Initialize(self) -&gt; None:
-    self.AddUniverse(QuiverQuantCongressUniverse, "QuiverQuantCongresssUniverse", Resolution.Daily, self.UniverseSelection)
+    self.universe = self.AddUniverse(QuiverQuantCongressUniverse, self.UniverseSelection)
 
 def UniverseSelection(self, alt_coarse: List[QuiverQuantCongresssUniverse]) -&gt; List[Symbol]:
     return [d.Symbol for d in alt_coarse \
         if d.Amount &gt; 200000 and d.Transaction == OrderDirection.Buy]</pre>
-<pre class="csharp">
-AddUniverse&lt;QuiverQuantCongresssUniverse&gt;("QuiverQuantCongresssUniverse", Resolution.Daily, altCoarse =&gt;
+<pre class="csharp">private Universe _universe;
+public override void Initialize()
 {
-    return from d in altCoarse 
-        where d.Amount &gt; 200000 &amp;&amp; d.Transaction == OrderDirection.Buy 
-        select d.Symbol;
-});</pre>
+    _universe = AddUniverse&lt;QuiverQuantCongresssUniverse&gt;(altCoarse =&gt;
+    {
+        return from d in altCoarse.OfType&lt;QuiverCongressDataPoint&gt;()
+            where d.Amount &gt; 200000 &amp;&amp; d.Transaction == OrderDirection.Buy 
+            select d.Symbol;
+    })
+};</pre>
 </div>
 
 <p>For more information about dynamic universes, see <a href="/docs/v2/writing-algorithms/universes/key-concepts">Universes</a>.</p>

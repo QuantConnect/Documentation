@@ -1,0 +1,33 @@
+<p>You can get historical universe data in an algorithm and in the Research Environment.</p>
+
+<h4>Historical Universe Data in Algorithms</h4>
+<p>To get historical universe data in an algorithm, call the <b>History</b> method with the <b>Universe</b> object, and the lookback period. If there is no data in the period you request, the history result is empty.</p>
+
+<div class="section-example-container">
+        <pre class="csharp">var universeHistory = History(_universe, 30, Resolution.Daily);
+foreach (var trade in universeHistory.SelectMany(x =&gt; x).OfType&lt;QuiverCongressDataPoint&gt;())
+{
+    Log($"{trade.Symbol} amount at {trade.EndTime}: {trade.Amount} {trade.Representative}");
+}</pre>
+     <pre class="python">history = self.History(self.universe, 30, Resolution.Daily)
+for (univere_symbol, time), trades in universe_history.items():
+    for trade in trades:
+        self.Log(f"{trade.Symbol} amount at {trade.EndTime}: {trade.Amount} {trade.Representative}")</pre>
+</div>
+
+<h4>Historical Universe Data in Research</h4>
+<p>To get historical universe data in research, call the <b>UniverseHistory</b> method with the <b>Universe</b> object, and the lookback period. The <b>UniverseHistory</b> returns the filtered universe. If there is no data in the period you request, the history result is empty.</p>
+
+<div class="section-example-container">
+        <pre class="csharp">var universeHistory = qb.UniverseHistory(universe, qb.Time.AddDays(-30), qb.Time);
+foreach (var trade in universeHistory.SelectMany(x =&gt; x).OfType&lt;QuiverCongressDataPoint&gt;())
+{
+    Console.WriteLine($"{trade.Symbol} amount at {trade.EndTime}: {trade.Amount} {trade.Representative}");
+}</pre>
+     <pre class="python">universe_history = qb.UniverseHistory(universe, qb.Time-timedelta(30), qb.Time)
+for (univere_symbol, time), trades in universe_history.items():
+    for trade in trades:
+        print(f"{trade.Symbol} amount at {trade.EndTime}: {trade.Amount} {trade.Representative}")</pre>
+</div>
+
+<p>You can call the <b>History</b> method in Research.</p>

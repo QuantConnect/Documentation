@@ -3,8 +3,8 @@
 <div class="section-example-container">
 <pre class="python">
 def Initialize(self) -&gt; None:
-    self.AddUniverse(SmartInsiderIntentionUniverse, "SmartInsiderIntentionUniverse", Resolution.Daily, self.IntentionSelection)
-    self.AddUniverse(SmartInsiderTransactionUniverse, "SmartInsiderTransactionUniverse", Resolution.Daily, self.TransactionSelection)
+    self.intention_universe = self.AddUniverse(SmartInsiderIntentionUniverse, self.IntentionSelection)
+    self.transaction_universe = self.AddUniverse(SmartInsiderTransactionUniverse, self.TransactionSelection)
 
 def IntentionSelection(self, alt_coarse: List[SmartInsiderIntentionUniverse]) -&gt; List[Symbol]:
     return [d.Symbol for d in alt_coarse \
@@ -16,27 +16,23 @@ def TransactionSelection(self, alt_coarse: List[SmartInsiderTransactionUniverse]
                 if d.BuybackPercentage &gt; 0.005 \
                 and d.USDMarketCap &gt; 100000000]
 </pre>
-<pre class="csharp">
+<pre class="csharp">private Universe _intentionUniverse;
+private Universe _transactionUniverse;
 public override void Initialize()
 {
-    AddUniverse&lt;SmartInsiderIntentionUniverse&gt;("SmartInsiderIntentionUniverse", Resolution.Daily, IntentionSelection);
-    AddUniverse&lt;SmartInsiderTransactionUniverse&gt;("SmartInsiderTransactionUniverse", Resolution.Daily, TransactionSelection);
-}
-
-private IEnumerable&lt;Symbol&gt; IntentionSelection(IEnumerable&lt;SmartInsiderIntentionUniverse&gt; altCoarse)
-{
-    return from d in altCoarse 
-        where d.Percentage &gt; 0.005m &amp;&amp; d.USDMarketCap &gt; 100000000m
-        select d.Symbol;
-}
-
-private IEnumerable&lt;Symbol&gt; TransactionSelection(IEnumerable&lt;SmartInsiderTransactionUniverse&gt; altCoarse)
-{
-    return from d in altCoarse 
-        where d.BuybackPercentage &gt; 0.005m &amp;&amp; d.USDMarketCap &gt; 100000000m
-        select d.Symbol;
-}
-</pre>
+    _intentionUniverse = AddUniverse&lt;SmartInsiderIntentionUniverse&gt;(altCoarse =&gt;
+    {
+        return from d in altCoarse.OfType&lt;SmartInsiderIntentionUniverse&gt;() 
+            where d.Percentage &gt; 0.005m &amp;&amp; d.USDMarketCap &gt; 100000000m
+            select d.Symbol;
+    });
+    _transactionUniverse = AddUniverse&lt;SmartInsiderTransactionUniverse&gt;(altCoarse =&gt;
+    {
+        return from d in altCoarse.OfType&lt;SmartInsiderTransactionUniverse&gt;() 
+            where d.BuybackPercentage &gt; 0.005m &amp;&amp; d.USDMarketCap &gt; 100000000m
+            select d.Symbol;
+    });
+}</pre>
 </div>
 
 <p>For more information about dynamic universes, see <a href="/docs/v2/writing-algorithms/universes/key-concepts">Universes</a>.</p>

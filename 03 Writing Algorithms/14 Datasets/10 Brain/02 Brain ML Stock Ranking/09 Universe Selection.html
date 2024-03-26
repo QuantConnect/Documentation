@@ -2,19 +2,23 @@
 
 <div class="section-example-container">
 <pre class="python">def Initialize(self) -&gt; None:
-    self.AddUniverse(BrainStockRankingUniverse, "BrainStockRankingUniverse", Resolution.Daily, self.UniverseSelection)
+    self.universe = self.AddUniverse(BrainStockRankingUniverse, self.UniverseSelection)
 
 def UniverseSelection(self, alt_coarse: List[BrainStockRankingUniverse]) -&gt; List[Symbol]:
     return [d.Symbol for d in alt_coarse \
                 if d.Rank2Days &gt; 0 \
                 and d.Rank3Days &gt; 0 \
                 and d.Rank5Days &gt; 0]</pre>
-<pre class="csharp">AddUniverse&lt;BrainStockRankingUniverse&gt;("BrainStockRankingUniverse", Resolution.Daily, altCoarse =&gt;
+<pre class="csharp">private Universe _universe;
+public override void Initialize()
 {
-    return from d in altCoarse 
-        where d.Rank2Days &gt; 0m &amp;&amp; d.Rank3Days &gt; 0m  &amp;&amp; d.Rank5Days &gt; 0m
-        select d.Symbol;
-});</pre>
+    _universe = AddUniverse&lt;BrainStockRankingUniverse&gt;(altCoarse =&gt;
+    {
+        return from d in altCoarsee.OfType&lt;BrainStockRankingUniverse&gt;() 
+            where d.Rank2Days &gt; 0m &amp;&amp; d.Rank3Days &gt; 0m  &amp;&amp; d.Rank5Days &gt; 0m
+            select d.Symbol;
+    })
+};</pre>
 </div>
 
 <p>For more information about dynamic universes, see <a href="/docs/v2/writing-algorithms/universes/key-concepts">Universes</a>.</p>

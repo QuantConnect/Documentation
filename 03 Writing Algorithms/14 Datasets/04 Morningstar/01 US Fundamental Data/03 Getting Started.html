@@ -16,7 +16,7 @@ var ibmFundamental = Fundamentals(ibm);</pre>
 
 <ul><li>Universe Selection</li></ul><div class="section-example-container">
 <pre class="python">def Initialize(self) -&gt; None:
-    self.AddUniverse(self.FundamentalFilterFunction)
+    self.universe = self.AddUniverse(self.FundamentalFilterFunction)
 
 def FundamentalFilterFunction(self, fundamental: List[Fundamental]):
     filtered = [f for f in fundamental if f.HasFundamentalData and f.Price &gt; 10 and not np.isnan(f.ValuationRatios.PERatio)]
@@ -24,7 +24,7 @@ def FundamentalFilterFunction(self, fundamental: List[Fundamental]):
     return [f.Symbol for f in sorted_by_pe_ratio[:10]]</pre>
 <pre class="csharp">public override void Initialize()
 {
-    AddUniverseSelection(new FundamentalUniverseSelectionModel(FundamentalFilterFunction));
+    _universe = AddUniverseSelection(new FundamentalUniverseSelectionModel(FundamentalFilterFunction));
 }
 
 public override List&lt;Symbol&gt; FundamentalFilterFunction(List&lt;Fundamental&gt; fundamental)

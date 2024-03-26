@@ -7,15 +7,14 @@ self.symbol = self.AddEquity("AAPL", Resolution.Minute).Symbol
 self.intention_symbol = self.AddData(SmartInsiderIntention, self.symbol).Symbol
 self.transaction_symbol = self.AddData(SmartInsiderTransaction, self.symbol).Symbol
 
-self.AddUniverse(SmartInsiderIntentionUniverse, "SmartInsiderIntentionUniverse", Resolution.Daily, self.IntentionSelection)
-self.AddUniverse(SmartInsiderTransactionUniverse, "SmartInsiderTransactionUniverse", Resolution.Daily, self.TransactionSelection)</pre>
+self.intention_universe = self.AddUniverse(SmartInsiderIntentionUniverse, self.IntentionSelection)
+self.transaction_universe = self.AddUniverse(SmartInsiderTransactionUniverse, self.TransactionSelection)</pre>
 <pre class="csharp">using QuantConnect.DataSource;
 
 _symbol = AddEquity("AAPL", Resolution.Minute).Symbol;
 _intentionSymbol = AddData&lt;SmartInsiderIntention&gt;(_symbol).Symbol;
 _transactionSymbol = AddData&lt;SmartInsiderTransaction&gt;(_symbol).Symbol;
 
-AddUniverse&lt;SmartInsiderIntentionUniverse&gt;("SmartInsiderIntentionUniverse", Resolution.Daily, IntentionSelection);
-AddUniverse&lt;SmartInsiderTransactionUniverse&gt;("SmartInsiderTransactionUniverse", Resolution.Daily, TransactionSelection);
-</pre>
+_intentionUniverse = AddUniverse&lt;SmartInsiderIntentionUniverse&gt;(IntentionSelection);
+_transactionUniverse = AddUniverse&lt;SmartInsiderTransactionUniverse&gt;(TransactionSelection);</pre>
 </div>

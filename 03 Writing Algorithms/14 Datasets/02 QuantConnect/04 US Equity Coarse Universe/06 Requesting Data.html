@@ -13,14 +13,15 @@
         self.AddEquity("IBM")        
 
         # Option 2A: Create a fundamental universe (classic version)
-        self.AddUniverse(self.FundamentalFunction)
+        self.universe = self.AddUniverse(self.FundamentalFunction)
 
         # Option 2B: Create a fundamental universe (framework version)
         self.AddUniverseSelection(FundamentalUniverseSelectionModel(self.FundamentalFunction))</pre>
 <pre class="csharp">namespace QuantConnect
 {
     public class CoarseFundamentalDataAlgorithm : QCAlgorithm
-    {    	
+    {
+    	private Universe _universe:
         public override void Initialize()
         {
             SetStartDate(2021, 1, 1);
@@ -32,7 +33,7 @@
             AddEquity("IBM");
 
             // Option 2A: Create a fundamental universe (classic version)
-            AddUniverse(FundamentalFilterFunction);
+            _universe = AddUniverse(FundamentalFilterFunction);
 
             // Option 2B: Create a fundamental universe (framework version)
             AddUniverseSelection(new FundamentalUniverseSelectionModel(FundamentalFilterFunction));

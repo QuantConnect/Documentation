@@ -2,7 +2,7 @@
 
 <div class="section-example-container">
 <pre class="python">def Initialize(self) -&gt; None:
-    self.AddUniverse(CoinGeckoUniverse, "CoinGeckoUniverse", Resolution.Daily, self.UniverseSelection)
+    self.universe = self.AddUniverse(CoinGeckoUniverse, self.UniverseSelection)
 
 def UniverseSelection(self, data: List[CoinGeckoUniverse]) -&gt; List[Symbol]:
     for datum in data:
@@ -14,20 +14,24 @@ def UniverseSelection(self, data: List[CoinGeckoUniverse]) -&gt; List[Symbol]:
     # Use the CreateSymbol method to generate the Symbol object for
     # the desired market (Coinbase) and quote currency (e.g. USD)
     return [x.CreateSymbol(Market.Coinbase, "USD") for x in selected]</pre>
-<pre class="csharp">AddUniverse&lt;CoinGeckoUniverse&gt;("CoinGeckoUniverse", Resolution.Daily, data =&gt;
+<pre class="csharp">private Universe _universe;
+public override void Initialize()
 {
-    foreach (var datum in data)
+    _universe = AddUniverse&lt;CoinGecko&gt;(data =&gt;
     {
-        Debug($"{datum.Coin},{datum.MarketCap},{datum.Price}");
-    }
+        foreach (var datum in data.OfType&lt;CoinGecko&gt;())
+        {
+            Debug($"{datum.Coin},{datum.MarketCap},{datum.Price}");
+        }
 
-    // define our selection criteria
-    // Use the CreateSymbol method to generate the Symbol object for
-    // the desired market (Coinbase) and quote currency (e.g. USD)
-    return (from d in data
+        // define our selection criteria
+        // Use the CreateSymbol method to generate the Symbol object for
+        // the desired market (Coinbase) and quote currency (e.g. USD)
+        return (from d in data.OfType&lt;CoinGeckoUniverse&gt;()
             orderby d.MarketCap descending
             select d.CreateSymbol(Market.Coinbase, "USD")).Take(3);
-});</pre>
+    });
+}</pre>
 </div>
 
 <p>For more information about dynamic universes, see <a href="/docs/v2/writing-algorithms/universes/key-concepts">Universes</a>.</p>

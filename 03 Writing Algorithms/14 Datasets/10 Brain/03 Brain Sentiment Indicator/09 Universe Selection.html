@@ -2,18 +2,22 @@
 
 <div class="section-example-container">
 <pre class="python">def Initialize(self) -&gt; None:
-    self.AddUniverse(BrainSentimentIndicatorUniverse, "BrainSentimentIndicatorUniverse", Resolution.Daily, self.UniverseSelection)
+    self.universe = self.AddUniverse(BrainSentimentIndicatorUniverse, self.UniverseSelection)
 
 def UniverseSelection(self, alt_coarse: List[BrainSentimentIndicatorUniverse]) -&gt; List[Symbol]:
     return [d.Symbol for d in alt_coarse \
                 if d.TotalArticleMentions7Days &gt; 0 \
                 and d.Sentiment7Days]</pre>
-<pre class="csharp">AddUniverse&lt;BrainSentimentIndicatorUniverse&gt;("BrainSentimentIndicatorUniverse", Resolution.Daily, altCoarse=&gt;
+<pre class="csharp">private Universe _universe;
+public override void Initialize()
 {
-    return from d in altCoarse 
-           where d.TotalArticleMentions7Days &gt; 0m &amp;&amp; d.Sentiment7Days &gt; 0m
-           select d.Symbol;
-});</pre>
+    _universe = AddUniverse&lt;BrainSentimentIndicatorUniverse&gt;(altCoarse=&gt;
+    {
+        return from d in altCoarse.OfType&lt;BrainSentimentIndicatorUniverse&gt;()
+            where d.TotalArticleMentions7Days &gt; 0m &amp;&amp; d.Sentiment7Days &gt; 0m
+            select d.Symbol;
+    });
+}</pre>
 </div>
 
 <p>The Brain Sentiment Indicator universe runs at 7 AM Eastern Time (ET) in live trading. For more information about dynamic universes, see <a href="/docs/v2/writing-algorithms/universes/key-concepts">Universes</a>.</p>

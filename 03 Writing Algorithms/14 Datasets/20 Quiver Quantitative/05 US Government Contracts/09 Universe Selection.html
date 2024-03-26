@@ -1,7 +1,7 @@
 <p>To select a dynamic universe of US Equities based on US Government Contract data, call the <b>AddUniverse</b> method with the <b>QuiverGovernmentContractUniverse</b> class and a selection function.</p> 
 
 <div class="section-example-container">
-<pre class="python">self.AddUniverse(QuiverGovernmentContractUniverse, "QuiverGovernmentContractUniverse", Resolution.Daily, self.UniverseSelection)
+<pre class="python">self.AddUniverse(QuiverGovernmentContractUniverse, self.UniverseSelection)
 
 def UniverseSelection(self, alt_coase: List[QuiverGovernmentContractUniverse]) -&gt; List[Symbol]:
     gov_contract_data_by_symbol = {}
@@ -15,11 +15,11 @@ def UniverseSelection(self, alt_coase: List[QuiverGovernmentContractUniverse]) -
     
     return [symbol for symbol, d in gov_contract_data_by_symbol.items()
             if len(d) &gt;= 3 and sum([x.Amount for x in d]) &gt; 50000]</pre>
-<pre class="csharp">AddUniverse&lt;QuiverGovernmentContractUniverse&gt;("QuiverGovernmentContractUniverse", Resolution.Daily, altCoarse =&gt;
+<pre class="csharp">AddUniverse&lt;QuiverGovernmentContractUniverse&gt;(altCoarse =&gt;
 {
     var govContractDataBySymbol = new Dictionary&lt;Symbol, List&lt;QuiverGovernmentContractUniverse&gt;&gt;();
 
-    foreach (var datum in altCoarse)
+    foreach (var datum in altCoarse.OfType&lt;QuiverGovernmentContractUniverse&gt;())
     {
         var symbol = datum.Symbol;
 

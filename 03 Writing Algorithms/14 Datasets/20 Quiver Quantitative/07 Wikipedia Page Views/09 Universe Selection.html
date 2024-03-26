@@ -2,15 +2,16 @@
 
 <div class="section-example-container">
 <pre class="python">def Initialize(self) -&gt; None:
-    self.AddUniverse(QuiverWikipediaUniverse, "QuiverWikipediaUniverse", Resolution.Daily, self.UniverseSelection)
+    self.universe = self.AddUniverse(QuiverWikipediaUniverse, self.UniverseSelection)
 
 def UniverseSelection(self, alt_coarse: List[QuiverWikipediaUniverse]) -&gt; List[Symbol]:
     return [d.Symbol for d in alt_coarse \
                 if d.PageViews &gt; 100 \
                 and d.WeekPercentChange &lt; 0.2]</pre>
-<pre class="csharp">public override void Initialize()
+<pre class="csharp">private Universe _universe;
+public override void Initialize()
 {
-    AddUniverse&lt;QuiverWikipediaUniverse&gt;("QuiverWikipediaUniverse", Resolution.Daily, altCoarse =&gt;
+    _universe = AddUniverse&lt;QuiverWikipediaUniverse&gt;(altCoarse =&gt;
     {
         return from d in altCoarse
                 where d.PageViews &gt; 100m &amp;&amp; d.MonthPercentChange &gt; 0.2m

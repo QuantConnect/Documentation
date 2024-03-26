@@ -2,19 +2,17 @@
 
 <div class="section-example-container">
 <pre class="python">def Initialize(self) -&gt; None:
-    self.AddUniverse(QuiverWallStreetBetsUniverse, "QuiverWallStreetBetsUniverse", Resolution.Daily, self.UniverseSelection)
+    self.universe = self.AddUniverse(QuiverWallStreetBetsUniverse, self.UniverseSelection)
         
 def UniverseSelection(self, alt_coarse: List[QuiverWallStreetBetsUniverse]) -&gt; List[Symbol]:
-    return [d.Symbol for d in alt_coarse \
-                if d.Mentions &gt; 100 \
-                and d.Rank &lt; 100]</pre>
-<pre class="csharp">public override void Initialize()
+    return [d.Symbol for d in alt_coarse if d.Mentions &gt; 100  and d.Rank &lt; 100]</pre>
+<pre class="csharp">private Universe _universe;
+public override void Initialize()
 {
-    AddUniverse&lt;QuiverWallStreetBetsUniverse&gt;("QuiverWallStreetBetsUniverse", Resolution.Daily, altCoarse =&gt;
+    _universe = AddUniverse&lt;QuiverWallStreetBetsUniverse&gt;(altCoarse =&gt;
     {
-        return from d in altCoarse
-            where d.Mentions &gt; 10 &amp;&amp; d.Rank &gt; 10
-            select d.Symbol;
+        return from d in altCoarse.OfType&lt;QuiverWallStreetBetsUniverse&gt;()
+            where d.Mentions &gt; 10 &amp;&amp; d.Rank &gt; 10 select d.Symbol;
     });
 }</pre>
 </div>
