@@ -200,7 +200,7 @@ if __name__ == '__main__':
             html = '<div class="section-example-container">\n'
             for language, cmd in cmds.items():
                 html += f'<pre class="{language}">\n'
-                maxlen, libraries = 40, {'# Name': 'Version'}
+                maxlen, libraries = 39, {'# Name': 'Version'}
                 content = popen(cmd)
 
                 for i, line in enumerate(content.readlines()):
