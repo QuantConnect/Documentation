@@ -1,61 +1,166 @@
-<p>Follow these steps to get the values of theoretical prices, implied volatility, and Greeks:</p>
+<p>Follow these steps to get the values of implied volatility, and Greeks:</p>
 
 <ol>
-    <li><a href="/docs/v2/research-environment/datasets/equity-options#03-Create-Subscriptions">Create subscriptions and set the price model</a>.</li>
-    <li>Set the underlying <a href="/docs/v2/writing-algorithms/reality-modeling/options-models/volatility/key-concepts">volatility model</a>.</li>
+    <li><a href="/docs/v2/research-environment/datasets/equity-options#03-Create-Subscriptions">Create subscriptions</a>.</li>
     <div class="section-example-container">
-        <pre class="python">qb.Securities[equity_symbol].VolatilityModel = StandardDeviationOfReturnsVolatilityModel(30, Resolution.Daily)</pre>
+        <pre class="python">equity_symbol = qb.AddEquity("SPY", dataNormalizationMode=DataNormalizationMode.Raw).Symbol
+
+start_date = datetime(2021, 12, 31)
+contract_symbols = qb.OptionChainProvider.GetOptionContractList(equity_symbol, start_date)
+
+contract_symbol = [s for s in contract_symbols 
+    if s.ID.OptionRight == OptionRight.Call 
+        and s.ID.StrikePrice == 477 
+        and s.ID.Date == datetime(2022, 1, 21)][0]
+mirror_symbol = [s for s in contract_symbols 
+    if s.ID.OptionRight == OptionRight.Put 
+        and s.ID.StrikePrice == 477 
+        and s.ID.Date == datetime(2022, 1, 21)][0]
+
+option_contract = qb.AddOptionContract(contract_symbol, fillForward = False).Symbol
+mirror_contract = qb.AddOptionContract(mirror_symbol, fillForward = False).Symbol</pre>
+    <pre class="csharp">var equitySymbol = qb.AddEquity("SPY", dataNormalizationMode: DataNormalizationMode.Raw).Symbol;
+
+var startDate = new DateTime(2021, 12, 31);
+var contractSymbols = qb.OptionChainProvider.GetOptionContractList(equitySymbol, startDate);
+
+var contractSymbol = contractSymbols.Where(s => 
+    s.ID.OptionRight == OptionRight.Call &&
+    s.ID.StrikePrice == 477 &&
+    s.ID.Date == new DateTime(2022, 1, 21)).First();
+var mirrorSymbol = contractSymbols.Where(s => 
+    s.ID.OptionRight == OptionRight.Put &&
+    s.ID.StrikePrice == 477 &&
+    s.ID.Date == new DateTime(2022, 1, 21)).First();
+
+var optionContract = qb.AddOptionContract(contractSymbol, fillForward: false).Symbol;
+var mirrorContract = qb.AddOptionContract(mirrorSymbol, fillForward: false).Symbol;</pre>
     </div>
-    <p>You need to reset the volatility before you start calculating the theoretical prices, implied volatility, and Greeks.</p>
+
     <li><a href="/docs/v2/research-environment/datasets/equity-options#04-Get-Historical-Data">Get historical data</a> for the underlying Equity and the Option contract(s).</li>
+    <div class="section-example-container">
+        <pre class="python">qb.SetStartDate(start_date)
+history = qb.History[QuoteBar]([equity_symbol, option_contract, mirror_contract], 200, Resolution.Minute)</pre>
+    <pre class="csharp">qb.SetStartDate(startDate);
+var history = qb.History&lt;QuoteBar&gt;(new List&lt;Symbol&gt; { equitySymbol, optionContract, mirrorContract }, 200, Resolution.Minute);</pre>
+    </div>
+
+    <li>Set up <a href="/docs/v2/writing-algorithms/securities/asset-classes/equity-options/greeks-and-implied-volatility/option-indicators">Option Indicators</a>, with the chosen option pricing model.</li>
+    <div class="section-example-container">
+        <pre class="python">iv = ImpliedVolatility(option_contract, mirrorOption=mirror_contract, optionModel=OptionPricingModelType.ForwardTree)
+delta = Delta(option_contract, mirrorOption=mirror_contract, optionModel=OptionPricingModelType.ForwardTree)
+gamma = Gamma(option_contract, mirrorOption=mirror_contract, optionModel=OptionPricingModelType.ForwardTree)
+vega = Vega(option_contract, mirrorOption=mirror_contract, optionModel=OptionPricingModelType.ForwardTree)
+theta = Theta(option_contract, mirrorOption=mirror_contract, optionModel=OptionPricingModelType.ForwardTree)
+rho = Rho(option_contract, mirrorOption=mirror_contract, optionModel=OptionPricingModelType.ForwardTree)</pre>
+    <pre class="csharp">var iv = new ImpliedVolatility(optionContract, mirrorOption: mirrorContract, optionModel: OptionPricingModelType.ForwardTree);
+var delta = new Delta(optionContract, mirrorOption: mirrorContract, optionModel: OptionPricingModelType.ForwardTree);
+var gamma = new Gamma(optionContract, mirrorOption: mirrorContract, optionModel: OptionPricingModelType.ForwardTree);
+var vega = new Vega(optionContract, mirrorOption: mirrorContract, optionModel: OptionPricingModelType.ForwardTree);
+var theta = new Theta(optionContract, mirrorOption: mirrorContract, optionModel: OptionPricingModelType.ForwardTree);
+var rho = new Rho(optionContract, mirrorOption: mirrorContract, optionModel: OptionPricingModelType.ForwardTree);</pre>
+    </div>
+
     <li>Iterate through the historical data and calculate the values.</li>
-     <div class="section-example-container">
+    <div class="section-example-container">
         <pre class="python">df = pd.DataFrame()
-for slice in history:
-    underlying_price = None
-    underlying_volatility = None
 
-    # Update the security with QuoteBar information
-    for bar in slice.QuoteBars.Values:
-        qb.Securities[bar.Symbol].SetMarketPrice(bar)
+for bar in history:
+    # Update the option indicators with indicator data points of the 3 symbols
+    equity_point = IndicatorDataPoint(equity_symbol, bar[equity_symbol].EndTime, bar[equity_symbol].Close)
+    option_point = IndicatorDataPoint(option_contract, bar[option_contract].EndTime, bar[option_contract].Close)
+    mirror_point = IndicatorDataPoint(mirror_contract, bar[mirror_contract].EndTime, bar[mirror_contract].Close)
 
-    # Update the security with TradeBar information
-    for bar in slice.Bars.Values:
-        symbol = bar.Symbol
-        security = qb.Securities[symbol]
-        security.SetMarketPrice(bar)
+    iv.Update(equity_point)
+    iv.Update(option_point)
+    iv.Update(mirror_point)
+    
+    delta.Update(equity_point)
+    delta.Update(option_point)
+    delta.Update(mirror_point)
+    
+    gamma.Update(equity_point)
+    gamma.Update(option_point)
+    gamma.Update(mirror_point)
+    
+    vega.Update(equity_point)
+    vega.Update(option_point)
+    vega.Update(mirror_point)
+    
+    theta.Update(equity_point)
+    theta.Update(option_point)
+    theta.Update(mirror_point)
+    
+    rho.Update(equity_point)
+    rho.Update(option_point)
+    rho.Update(mirror_point)
 
-        if security.Type == SecurityType.Equity:
-            underlying_volatility = security.VolatilityModel.Volatility
-            underlying_price = security.Price
-            continue
-        
-        # Create the Option contract
-        contract = OptionContract.Create(symbol.Underlying, bar.EndTime, security, underlying_price)
-        contract.LastPrice = bar.Close
+    new_data = pd.Series({
+        "OptionPrice": bar[option_contract].Close,
+        "UnderlyingPrice": bar[equity_symbol].Close,
+        "IV": iv.Current.Value,
+        "Delta": delta.Current.Value,
+        "Gamma": gamma.Current.Value,
+        "Vega": vega.Current.Value,
+        "Theta": theta.Current.Value,
+        "Rho": rho.Current.Value,
+    }, name=bar[option_contract].EndTime).to_frame().T
+    df = pd.concat([df, new_data])
 
-        # Evaluate the price model to get the IV, Greeks, and theoretical price
-        result = security.PriceModel.Evaluate(security, None, contract)
-        greeks = result.Greeks
-        
-        # Append the data to the DataFrame
-        data = {
-            "IV" : result.ImpliedVolatility,
-            "Delta": greeks.Delta,
-            "Gamma": greeks.Gamma,
-            "Vega": greeks.Vega,
-            "Rho": greeks.Rho,
-            "Theta": greeks.Theta,
-            "LastPrice": contract.LastPrice,
-            "Close": security.Close,
-            "theoreticalPrice" : result.TheoreticalPrice,
-            "underlyingPrice": underlying_price,
-            "underlyingVolatility": underlying_volatility
-        }
-        right = "Put" if symbol.ID.OptionRight == 1 else "Call"
-        index = pd.MultiIndex.from_tuples([(symbol.ID.Date, symbol.ID.StrikePrice, right, symbol.Value, bar.EndTime)], names=["expiry", "strike", "type", "symbol", "endTime"])
-        df = pd.concat([df, pd.DataFrame(data, index=index)])</pre>
+df</pre>
+    <pre class="csharp">foreach (var bar in history)
+{
+    // Update the option indicators with indicator data points of the 3 symbols
+    var equityPoint = new IndicatorDataPoint(equitySymbol, bar[equitySymbol].EndTime, bar[equitySymbol].Close);
+    var optionPoint = new IndicatorDataPoint(optionContract, bar[optionContract].EndTime, bar[optionContract].Close);
+    var mirrorPoint = new IndicatorDataPoint(mirrorContract, bar[mirrorContract].EndTime, bar[mirrorContract].Close);
+
+    iv.Update(equityPoint);
+    iv.Update(optionPoint);
+    iv.Update(mirrorPoint);
+    
+    delta.Update(equityPoint);
+    delta.Update(optionPoint);
+    delta.Update(mirrorPoint);
+    
+    gamma.Update(equityPoint);
+    gamma.Update(optionPoint);
+    gamma.Update(mirrorPoint);
+    
+    vega.Update(equityPoint);
+    vega.Update(optionPoint);
+    vega.Update(mirrorPoint);
+    
+    theta.Update(equityPoint);
+    theta.Update(optionPoint);
+    theta.Update(mirrorPoint);
+    
+    rho.Update(equityPoint);
+    rho.Update(optionPoint);
+    rho.Update(mirrorPoint);
+
+    var line = $"OptionPrice: {bar[optionContract].Close:0.0000}, UnderlyingPrice: {bar[equitySymbol].Close:0.0000}, "
+        + $"IV: {iv.Current.Value:0.0000}, Delta: {delta.Current.Value:0.0000}, Gamma: {gamma.Current.Value:0.0000}, "
+        + $"Vega: {vega.Current.Value:0.0000}, Theta: {theta.Current.Value:0.0000}, Rho: {rho.Current.Value:0.0000}";
+    Console.WriteLine(line);
+}</pre>
     </div>
 </ol>
 <p>For a full example, see the following project:</p>
-<div class="qc-embed-frame" style="display: inline-block; position: relative; width: 100%; min-height: 100px; min-width: 300px;"><div class="qc-embed-dummy" style="padding-top: 56.25%;"></div><div class="qc-embed-element" style="position: absolute; top: 0; bottom: 0; left: 0; right: 0;"><iframe class="qc-embed-backtest" src="https://www.quantconnect.com/terminal/processCache?request=embedded_backtest_207ad6bc482b7db7e524dadef494d092.html" style="max-width: calc(100vw - 30px); max-height: 100vw; overflow: hidden;" scrolling="no" width="100%" height="100%"></iframe></div></div>
+<div class="python">
+    <div class="qc-embed-frame" style="display: inline-block; position: relative; width: 100%; min-height: 100px; min-width: 300px;">
+        <div class="qc-embed-dummy" style="padding-top: 56.25%;"></div>
+        <div class="qc-embed-element" style="position: absolute; top: 0; bottom: 0; left: 0; right: 0;">
+            <iframe class="qc-embed-backtest" height="100%" width="100%" style="border: 1px solid #ccc; padding: 0; margin: 0;" src="https://www.quantconnect.com/terminal/processCache?request=embedded_backtest_fa4c6f69ae712a2146db43a85a671780.html"></iframe>
+        </div>
+    </div>
+</div>
+
+<div class="csharp">
+    <div class="qc-embed-frame" style="display: inline-block; position: relative; width: 100%; min-height: 100px; min-width: 300px;">
+        <div class="qc-embed-dummy" style="padding-top: 56.25%;"></div>
+        <div class="qc-embed-element" style="position: absolute; top: 0; bottom: 0; left: 0; right: 0;">
+            <iframe class="qc-embed-backtest" height="100%" width="100%" style="border: 1px solid #ccc; padding: 0; margin: 0;" src="https://www.quantconnect.com/terminal/processCache?request=embedded_backtest_dbc97e86923bcd2d3b6f281e7e14160c.html"></iframe>
+        </div>
+    </div>
+</div>
