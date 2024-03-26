@@ -37,17 +37,17 @@ class MachineLearningLibraryForWritingAlgorithm {
 }
 
 $libraries = array(
-    new MachineLearningLibraryForWritingAlgorithm("TensorFlow", "2.13.1", "Python", "import tensorflow", "https://www.tensorflow.org/", "https://github.com/QuantConnect/Lean/blob/master/Algorithm.Python/TensorFlowNeuralNetworkAlgorithm.py"),
-    new MachineLearningLibraryForWritingAlgorithm("SciKit Learn", "1.3.2", "Python", "import sklearn", "https://scikit-learn.org/stable/", "https://github.com/QuantConnect/Lean/blob/master/Algorithm.Python/ScikitLearnLinearRegressionAlgorithm.py"),
-    new MachineLearningLibraryForWritingAlgorithm("Py Torch", "2.1.0", "Python", "import torch", "https://pytorch.org/", "https://github.com/QuantConnect/Lean/blob/master/Algorithm.Python/PytorchNeuralNetworkAlgorithm.py"),
-    new MachineLearningLibraryForWritingAlgorithm("Keras", "2.13.1", "Python", "import keras", "https://keras.io/", "https://github.com/QuantConnect/Lean/blob/master/Algorithm.Python/KerasNeuralNetworkAlgorithm.py"),
+    new MachineLearningLibraryForWritingAlgorithm("TensorFlow", "2.16.1", "Python", "import tensorflow", "https://www.tensorflow.org/", "https://github.com/QuantConnect/Lean/blob/master/Algorithm.Python/TensorFlowNeuralNetworkAlgorithm.py"),
+    new MachineLearningLibraryForWritingAlgorithm("SciKit Learn", "1.4.1.post1", "Python", "import sklearn", "https://scikit-learn.org/stable/", "https://github.com/QuantConnect/Lean/blob/master/Algorithm.Python/ScikitLearnLinearRegressionAlgorithm.py"),
+    new MachineLearningLibraryForWritingAlgorithm("Py Torch", "2.2.1", "Python", "import torch", "https://pytorch.org/", "https://github.com/QuantConnect/Lean/blob/master/Algorithm.Python/PytorchNeuralNetworkAlgorithm.py"),
+    new MachineLearningLibraryForWritingAlgorithm("Keras", "3.0.5", "Python", "import keras", "https://keras.io/", "https://github.com/QuantConnect/Lean/blob/master/Algorithm.Python/KerasNeuralNetworkAlgorithm.py"),
     new MachineLearningLibraryForWritingAlgorithm("gplearn", "0.4.2", "Python", "import gplearn", "https://gplearn.readthedocs.io/en/stable/intro.html", ""),
-    new MachineLearningLibraryForWritingAlgorithm("hmmlearn", "0.3.0", "Python", "import hmmlearn", "https://hmmlearn.readthedocs.io/en/latest/", ""),
-    new MachineLearningLibraryForWritingAlgorithm("tsfresh", "0.20.1", "Python", "import tsfresh", "https://tsfresh.readthedocs.io/en/latest/", ""),
-    new MachineLearningLibraryForWritingAlgorithm("Stable-Baselines3", "2.1.0", "Python", "from stable_baselines3 import *", "https://stable-baselines3.readthedocs.io/en/master", ""),
-    new MachineLearningLibraryForWritingAlgorithm("fastai", "2.7.13", "Python", "import fastai", "https://docs.fast.ai/", ""),
+    new MachineLearningLibraryForWritingAlgorithm("hmmlearn", "0.3.2", "Python", "import hmmlearn", "https://hmmlearn.readthedocs.io/en/latest/", ""),
+    new MachineLearningLibraryForWritingAlgorithm("tsfresh", "0.20.2", "Python", "import tsfresh", "https://tsfresh.readthedocs.io/en/latest/", ""),
+    new MachineLearningLibraryForWritingAlgorithm("Stable-Baselines3", "2.2.1", "Python", "from stable_baselines3 import *", "https://stable-baselines3.readthedocs.io/en/master", ""),
+    new MachineLearningLibraryForWritingAlgorithm("fastai", "2.7.14", "Python", "import fastai", "https://docs.fast.ai/", ""),
     new MachineLearningLibraryForWritingAlgorithm("Deap", "1.4.1", "Python", "import deap", "https://deap.readthedocs.io/en/master/overview.html", ""),
-    new MachineLearningLibraryForWritingAlgorithm("XGBoost", "2.0.0", "Python", "import xgboost", "https://xgboost.readthedocs.io/en/latest/", ""),
+    new MachineLearningLibraryForWritingAlgorithm("XGBoost", "2.0.3", "Python", "import xgboost", "https://xgboost.readthedocs.io/en/latest/", ""),
     new MachineLearningLibraryForWritingAlgorithm("mlfinlab", "1.6.0", "Python", "import mlfinlab", "https://github.com/hudson-and-thames/mlfinlab", ""),
     new MachineLearningLibraryForWritingAlgorithm("Accord", "3.6.0", "C#", "using Accord.MachineLearning;", "http://accord-framework.net/", "https://github.com/QuantConnect/Lean/blob/master/Algorithm.CSharp/AccordVectorMachinesAlgorithm.cs")
 );
