@@ -1,1 +1,1 @@
-<?php include(DOCS_RESOURCES."/datasets/market-hours/cfd/USB30YUSD/introduction.html"); ?>
+<?php include(DOCS_RESOURCES."/datasets/market-hours/cfd/oanda/USB30YUSD/introduction.html"); ?>

@@ -1,1 +1,1 @@
-<?php include(DOCS_RESOURCES."/datasets/market-hours/cfd/BCOUSD/time-zone.html"); ?>
+<?php include(DOCS_RESOURCES."/datasets/market-hours/cfd/oanda/BCOUSD/time-zone.html"); ?>

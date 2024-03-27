@@ -1,1 +1,1 @@
-<?php include(DOCS_RESOURCES."/datasets/market-hours/cfd/IBHK50/regular-trading-hours.html"); ?>
+<?php include(DOCS_RESOURCES."/datasets/market-hours/cfd/interactivebrokers/IBHK50/regular-trading-hours.html"); ?>

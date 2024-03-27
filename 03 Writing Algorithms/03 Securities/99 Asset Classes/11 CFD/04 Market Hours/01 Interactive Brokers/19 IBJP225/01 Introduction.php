@@ -1,1 +1,1 @@
-<?php include(DOCS_RESOURCES."/datasets/market-hours/cfd/IBJP225/introduction.html"); ?>
+<?php include(DOCS_RESOURCES."/datasets/market-hours/cfd/interactivebrokers/IBJP225/introduction.html"); ?>

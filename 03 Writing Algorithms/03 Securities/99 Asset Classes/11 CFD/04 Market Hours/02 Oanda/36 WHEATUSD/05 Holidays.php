@@ -1,1 +1,1 @@
-<?php include(DOCS_RESOURCES."/datasets/market-hours/cfd/WHEATUSD/holidays.html"); ?>
+<?php include(DOCS_RESOURCES."/datasets/market-hours/cfd/oanda/WHEATUSD/holidays.html"); ?>

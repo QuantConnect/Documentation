@@ -1,1 +1,1 @@
-<?php include(DOCS_RESOURCES."/datasets/market-hours/cfd/USB10YUSD/time-zone.html"); ?>
+<?php include(DOCS_RESOURCES."/datasets/market-hours/cfd/oanda/USB10YUSD/time-zone.html"); ?>

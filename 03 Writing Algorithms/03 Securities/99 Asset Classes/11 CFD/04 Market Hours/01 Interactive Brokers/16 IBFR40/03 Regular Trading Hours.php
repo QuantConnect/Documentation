@@ -1,1 +1,1 @@
-<?php include(DOCS_RESOURCES."/datasets/market-hours/cfd/IBFR40/regular-trading-hours.html"); ?>
+<?php include(DOCS_RESOURCES."/datasets/market-hours/cfd/interactivebrokers/IBFR40/regular-trading-hours.html"); ?>

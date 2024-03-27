@@ -1,1 +1,1 @@
-<?php include(DOCS_RESOURCES."/datasets/market-hours/cfd/SG30SGD/regular-trading-hours.html"); ?>
+<?php include(DOCS_RESOURCES."/datasets/market-hours/cfd/oanda/SG30SGD/regular-trading-hours.html"); ?>

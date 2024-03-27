@@ -1,1 +1,1 @@
-<?php include(DOCS_RESOURCES."/datasets/market-hours/cfd/SOYBNUSD/introduction.html"); ?>
+<?php include(DOCS_RESOURCES."/datasets/market-hours/cfd/oanda/SOYBNUSD/introduction.html"); ?>

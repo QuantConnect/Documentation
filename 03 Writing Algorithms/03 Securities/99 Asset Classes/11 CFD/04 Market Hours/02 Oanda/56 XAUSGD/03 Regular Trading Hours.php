@@ -1,1 +1,1 @@
-<?php include(DOCS_RESOURCES."/datasets/market-hours/cfd/XAUSGD/regular-trading-hours.html"); ?>
+<?php include(DOCS_RESOURCES."/datasets/market-hours/cfd/oanda/XAUSGD/regular-trading-hours.html"); ?>

@@ -1,1 +1,1 @@
-<?php include(DOCS_RESOURCES."/datasets/market-hours/cfd/CORNUSD/holidays.html"); ?>
+<?php include(DOCS_RESOURCES."/datasets/market-hours/cfd/oanda/CORNUSD/holidays.html"); ?>

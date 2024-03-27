@@ -1,1 +1,1 @@
-<?php include(DOCS_RESOURCES."/datasets/market-hours/cfd/XAUNZD/time-zone.html"); ?>
+<?php include(DOCS_RESOURCES."/datasets/market-hours/cfd/oanda/XAUNZD/time-zone.html"); ?>

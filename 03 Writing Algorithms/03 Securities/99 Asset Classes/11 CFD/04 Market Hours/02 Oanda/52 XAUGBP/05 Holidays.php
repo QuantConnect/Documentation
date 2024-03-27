@@ -1,1 +1,1 @@
-<?php include(DOCS_RESOURCES."/datasets/market-hours/cfd/XAUGBP/holidays.html"); ?>
+<?php include(DOCS_RESOURCES."/datasets/market-hours/cfd/oanda/XAUGBP/holidays.html"); ?>

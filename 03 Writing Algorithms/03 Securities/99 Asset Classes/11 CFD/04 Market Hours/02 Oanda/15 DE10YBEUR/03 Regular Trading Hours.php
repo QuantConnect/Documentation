@@ -1,1 +1,1 @@
-<?php include(DOCS_RESOURCES."/datasets/market-hours/cfd/DE10YBEUR/regular-trading-hours.html"); ?>
+<?php include(DOCS_RESOURCES."/datasets/market-hours/cfd/oanda/DE10YBEUR/regular-trading-hours.html"); ?>
