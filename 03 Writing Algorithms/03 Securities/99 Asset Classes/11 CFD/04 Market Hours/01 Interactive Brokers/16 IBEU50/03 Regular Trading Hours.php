@@ -1,0 +1,1 @@
+<?php include(DOCS_RESOURCES."/datasets/market-hours/cfd/IBEU50/regular-trading-hours.html"); ?>

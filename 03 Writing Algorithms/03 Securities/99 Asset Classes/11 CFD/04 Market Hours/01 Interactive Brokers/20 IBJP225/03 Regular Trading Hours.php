@@ -1,0 +1,1 @@
+<?php include(DOCS_RESOURCES."/datasets/market-hours/cfd/IBJP225/regular-trading-hours.html"); ?>
