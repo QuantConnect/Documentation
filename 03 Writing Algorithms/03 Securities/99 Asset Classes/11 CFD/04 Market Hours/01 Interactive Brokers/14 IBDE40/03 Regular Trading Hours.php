@@ -1,0 +1,1 @@
+<?php include(DOCS_RESOURCES."/datasets/market-hours/cfd/IBDE40/regular-trading-hours.html"); ?>
