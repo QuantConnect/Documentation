@@ -8,4 +8,5 @@
     <li><a href='/docs/v2/writing-algorithms/securities/asset-classes/future-options'>Future Options</a></li>
     <li><a href='/docs/v2/writing-algorithms/securities/asset-classes/index'>Indices</a></li>
     <li><a href='/docs/v2/writing-algorithms/securities/asset-classes/index-options'>Index Options</a></li>
+    <li><a href='/docs/v2/writing-algorithms/securities/asset-classes/cfd'>CFD</a></li>
 </ul>
