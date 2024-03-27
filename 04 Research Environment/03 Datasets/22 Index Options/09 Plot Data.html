@@ -1,11 +1,11 @@
-<p>You need some&nbsp;<a href="/docs/v2/research-environment/datasets/index-options#04-Get-Historical-Data">historical Index Options data</a> to produce plots. You can use <span class="python">many of the <a href="/docs/v2/research-environment/charting">supported plotting libraries</a></span><span class="csharp"><code>Plot.NET</code> package</span> to visualize data in various formats. For example, you can plot candlestick and line charts.</p>
+<p>You need some&nbsp;<a href="/docs/v2/research-environment/datasets/index-options#04-Get-Historical-Data">historical Index Options data</a> to produce plots. You can use <span class="python">many of the <a href="/docs/v2/research-environment/charting">supported plotting libraries</a></span><span class="csharp"><a href="/docs/v2/research-environment/charting/plotly-net">Plot.NET</a> package</span> to visualize data in various formats. For example, you can plot candlestick and line charts.</p>
 
 <h4>Candlestick Chart<br></h4>
 
 <p>Follow these steps to plot candlestick charts:</p>
 
 <ol>
-    <li>Get some historical data.</li>
+    <li>Get some <a href="#04-Get-Historical-Data">historical data</a>.</li>
 	<div class="section-example-container">
         <pre class="python">history = qb.History(contract_symbol, datetime(2021, 12, 30), datetime(2021, 12, 31))</pre>
         <pre class="csharp">var history = qb.History&lt;QuoteBar&gt;(contractSymbol, new DateTime(2021, 12, 30), new DateTime(2021, 12, 30));</pre>
@@ -13,10 +13,10 @@
 
     <li class="python">Drop the first four index levels of <code>DataFrame</code> that returns.<br></li>
 	<div class="python section-example-container">
-        <pre>history.index = history.index.droplevel([0,1,2,3])</pre>
+        <pre class="python">history.index = history.index.droplevel([0,1,2,3])</pre>
     </div>
 
-    <li>Import the <code class="python">plotly</code><code class="csharp">Plotly.NET</code> library.</li>
+    <li>Import the <code class="python">plotly</code><code class="csharp">Plot.NET</code> library.</li>
     <div class="section-example-container">
         <pre class="python">import plotly.graph_objects as go</pre>
         <pre class="csharp">#r "../Plotly.NET.dll"
@@ -60,12 +60,12 @@ layout.SetValue("title", title);</pre>
 
     <li class="python">Create a <code>Figure</code>.<br></li>
     <div class="python section-example-container">
-        <pre>fig = go.Figure(data=[candlestick], layout=layout)</pre>
+        <pre class="python">fig = go.Figure(data=[candlestick], layout=layout)</pre>
     </div>
 
     <li class="csharp">Assign the <code>Layout</code> to the chart.<br></li>
     <div class="csharp section-example-container">
-        <pre>chart.WithLayout(layout);</pre>
+        <pre class="csharp">chart.WithLayout(layout);</pre>
     </div>
 
     <li>Show the <code>Figure</code>.<br></li>
@@ -91,17 +91,17 @@ layout.SetValue("title", title);</pre>
 
     <li class="python">Drop the first three index levels of the <code>DataFrame</code> that returns.</li>
     <div class="python section-example-container">
-        <pre>history.index = history.index.droplevel([0,1,2])</pre>
+        <pre class="python">history.index = history.index.droplevel([0,1,2])</pre>
     </div>
 
     <li class="python">Select the open interest data.</li>
     <div class="python section-example-container">
-        <pre>history = history['openinterest'].unstack(level=0).ffill()</pre>
+        <pre class="python">history = history['openinterest'].unstack(level=0).ffill()</pre>
     </div>
 
 	<li class="python">Rename the column to be the <code>Symbol</code> of each contract.</li>
     <div class="python section-example-container">
-        <pre>history.columns = [
+        <pre class="python">history.columns = [
     Symbol.GetAlias(SecurityIdentifier.Parse(x), index_symbol)
         for x in history.columns]</pre>
     </div>
@@ -113,7 +113,7 @@ layout.SetValue("title", title);</pre>
 
     <li class="csharp">Create <code>Line</code> charts.</li>
     <div class="csharp section-example-container">
-        <pre>var chart = Chart2D.Chart.Line&lt;DateTime, decimal, string&gt;(
+        <pre class="csharp">var chart = Chart2D.Chart.Line&lt;DateTime, decimal, string&gt;(
     history.Select(x => x.EndTime),
     history.Select(x => x.Value)
 );</pre>
@@ -121,7 +121,7 @@ layout.SetValue("title", title);</pre>
 
     <li class="csharp">Create a <code>Layout</code>.<br></li>
     <div class="csharp section-example-container">
-        <pre>LinearAxis xAxis = new LinearAxis();
+        <pre class="csharp">LinearAxis xAxis = new LinearAxis();
 xAxis.SetValue("title", "Time");
 LinearAxis yAxis = new LinearAxis();
 yAxis.SetValue("title", "Open Interest");
@@ -135,7 +135,7 @@ layout.SetValue("title", title);</pre>
 
     <li class="csharp">Assign the <code>Layout</code> to the chart.<br></li>
     <div class="csharp section-example-container">
-        <pre>chart.WithLayout(layout);</pre>
+        <pre class="csharp">chart.WithLayout(layout);</pre>
     </div>
     
     <li>Show the plot.</li>

@@ -1,22 +1,22 @@
-<p>You need some&nbsp;<a href="/docs/v2/research-environment/datasets/custom-data#05-Get-Historical-Data">historical custom data</a> to produce plots. You can use <span class="python">many of the <a href="/docs/v2/research-environment/charting">supported plotting libraries</a></span><span class="csharp"><code>Plot.NET</code> package</span> to visualize data in various formats. For example, you can plot candlestick and line charts.</p>
+<p>You need some&nbsp;<a href="/docs/v2/research-environment/datasets/custom-data#05-Get-Historical-Data">historical custom data</a> to produce plots. You can use <span class="python">many of the <a href="/docs/v2/research-environment/charting">supported plotting libraries</a></span><span class="csharp"><a href="/docs/v2/research-environment/charting/plotly-net">Plot.NET</a> package</span> to visualize data in various formats. For example, you can plot candlestick and line charts.</p>
 
 <h4>Candlestick Chart<br></h4>
 
 <p>Follow these steps to plot candlestick charts:</p>
 
 <ol>
-    <li>Import the <code class="python">plotly</code><code class="csharp">Plotly.NET</code> library.</li>
+    <li>Get some <a href="#05-Get-Historical-Data">historical data</a>.</li>
+    <div class="section-example-container">
+        <pre class="python">history = qb.History(Nifty, datetime(2013, 7, 1), datetime(2014, 7, 31)).loc[symbol]</pre>
+        <pre class="csharp">var history = qb.History&lt;Nifty&gt;(symbol, new DateTime(2013, 7, 1), new DateTime(2014, 7, 31));</pre>
+    </div>
+
+    <li>Import the <code class="python">plotly</code><code class="csharp">Plot.NET</code> library.</li>
     <div class="section-example-container">
         <pre class="python">import plotly.graph_objects as go</pre>
         <pre class="csharp">#r "../Plotly.NET.dll"
 using Plotly.NET;
 using Plotly.NET.LayoutObjects;</pre>
-    </div>
-    
-    <li>Select the data:</li>
-    <div class="section-example-container">
-        <pre class="python">history = history.loc[symbol]</pre>
-        <pre class="csharp">var history = qb.History&lt;Nifty&gt;(symbol, new DateTime(2013, 7, 1), new DateTime(2014, 7, 31));</pre>
     </div>
 
     <li>Create a <code>Candlestick</code>.<br></li>
@@ -55,12 +55,12 @@ layout.SetValue("title", title);</pre>
     
     <li class="python">Create a <code>Figure</code>.<br></li>
     <div class="python section-example-container">
-        <pre>fig = go.Figure(data=[candlestick], layout=layout)</pre>
+        <pre class="python">fig = go.Figure(data=[candlestick], layout=layout)</pre>
     </div>
 
     <li class="csharp">Assign the <code>Layout</code> to the chart.<br></li>
     <div class="csharp section-example-container">
-        <pre>chart.WithLayout(layout);</pre>
+        <pre class="csharp">chart.WithLayout(layout);</pre>
     </div>
 
     <li>Show the <code>Figure</code>.<br></li>
@@ -80,17 +80,17 @@ layout.SetValue("title", title);</pre>
 <ol>
     <li class="python">Select data to plot.</li>
     <div class="python section-example-container">
-        <pre>values = history['value'].unstack(level=0)</pre>
+        <pre class="python">values = history['value'].unstack(level=0)</pre>
     </div>
 
     <li class="python">Call the <code>plot</code> method on the <code>pandas</code> object.</li>
     <div class="python section-example-container">
-        <pre>values.plot(title="Value", figsize=(15, 10))</pre>
+        <pre class="python">values.plot(title="Value", figsize=(15, 10))</pre>
     </div>
 
     <li class="csharp">Create a <code>Line</code> chart.</li>
     <div class="csharp section-example-container">
-        <pre>var chart = Chart2D.Chart.Line&lt;DateTime, decimal, string&gt;(
+        <pre class="csharp">var chart = Chart2D.Chart.Line&lt;DateTime, decimal, string&gt;(
     history.Select(x => x.EndTime),
     history.Select(x => x.Close)
 );</pre>
@@ -98,7 +98,7 @@ layout.SetValue("title", title);</pre>
 
     <li class="csharp">Create a <code>Layout</code>.<br></li>
     <div class="csharp section-example-container">
-        <pre>LinearAxis xAxis = new LinearAxis();
+        <pre class="csharp">LinearAxis xAxis = new LinearAxis();
 xAxis.SetValue("title", "Time");
 LinearAxis yAxis = new LinearAxis();
 yAxis.SetValue("title", "Price ($)");
@@ -112,7 +112,7 @@ layout.SetValue("title", title);</pre>
 
     <li class="csharp">Assign the <code>Layout</code> to the chart.<br></li>
     <div class="csharp section-example-container">
-        <pre>chart.WithLayout(layout);</pre>
+        <pre class="csharp">chart.WithLayout(layout);</pre>
     </div>
     
     <li>Show the plot.</li>

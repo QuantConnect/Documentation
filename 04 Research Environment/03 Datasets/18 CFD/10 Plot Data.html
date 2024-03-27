@@ -1,17 +1,17 @@
-<p>You need some&nbsp;<a href="/docs/v2/research-environment/datasets/cfd#04-Get-Historical-Data">historical CFD data</a> to produce plots. You can use <span class="python">many of the <a href="/docs/v2/research-environment/charting">supported plotting libraries</a></span><span class="csharp"><code>Plot.NET</code> package</span> to visualize data in various formats. For example, you can plot candlestick and line charts.</p>
+<p>You need some&nbsp;<a href="/docs/v2/research-environment/datasets/cfd#04-Get-Historical-Data">historical CFD data</a> to produce plots. You can use <span class="python">many of the <a href="/docs/v2/research-environment/charting">supported plotting libraries</a></span><span class="csharp"><a href="/docs/v2/research-environment/charting/plotly-net">Plot.NET</a> package</span> to visualize data in various formats. For example, you can plot candlestick and line charts.</p>
 
 <h4>Candlestick Chart<br></h4>
 
 <p>Follow these steps to plot candlestick charts:</p>
 
 <ol>
-    <li>Get some historical data.</li>
+    <li>Get some <a href="#04-Get-Historical-Data">historical data</a>.</li>
     <div class="section-example-container">
         <pre class="python">history = qb.History(spx, datetime(2021, 11, 26), datetime(2021, 12, 8), Resolution.Daily).loc[spx]</pre>
         <pre class="csharp">var history = qb.History&lt;QuoteBar&gt;(spx, new DateTime(2021, 11, 26), new DateTime(2021, 12, 8), Resolution.Daily);</pre>
     </div>
 
-    <li>Import the <code class="python">plotly</code><code class="csharp">Plotly.NET</code> library.</li>
+    <li>Import the <code class="python">plotly</code><code class="csharp">Plot.NET</code> library.</li>
     <div class="section-example-container">
         <pre class="python">import plotly.graph_objects as go</pre>
         <pre class="csharp">#r "../Plotly.NET.dll"
@@ -55,12 +55,12 @@ layout.SetValue("title", title);</pre>
 
     <li class="python">Create the <code>Figure</code>.<br></li>
     <div class="python section-example-container">
-        <pre>fig = go.Figure(data=[candlestick], layout=layout)</pre>
+        <pre class="python">fig = go.Figure(data=[candlestick], layout=layout)</pre>
     </div>
 
     <li class="csharp">Assign the <code>Layout</code> to the chart.<br></li>
     <div class="csharp section-example-container">
-        <pre>chart.WithLayout(layout);</pre>
+        <pre class="csharp">chart.WithLayout(layout);</pre>
     </div>
 
     <li>Show the <code>Figure</code>.<br></li>
@@ -86,17 +86,17 @@ layout.SetValue("title", title);</pre>
 
     <li class="python">Select the data to plot.</li>
     <div class="python section-example-container">
-        <pre>pct_change = history['close'].unstack(0).pct_change().dropna()</pre>
+        <pre class="python">pct_change = history['close'].unstack(0).pct_change().dropna()</pre>
     </div>
 
     <li class="python">Call the <code>plot</code> method on the <code>pandas</code> object.</li>
     <div class="python section-example-container">
-        <pre>pct_change.plot(title="Close Price %Change", figsize=(15, 10))</pre>
+        <pre class="python">pct_change.plot(title="Close Price %Change", figsize=(15, 10))</pre>
     </div>
 
     <li class="csharp">Create <code>Line</code> charts.</li>
     <div class="csharp section-example-container">
-        <pre>var chart1 = Chart2D.Chart.Line&lt;DateTime, decimal, string&gt;(
+        <pre class="csharp">var chart1 = Chart2D.Chart.Line&lt;DateTime, decimal, string&gt;(
     history.Select(x => x[spx].EndTime),
     history.Select(x => x[spx].Close - x[spx].Open),
     Name: $"{spx}"
@@ -110,7 +110,7 @@ var chart2 = Chart2D.Chart.Line&lt;DateTime, decimal, string&gt;(
 
     <li class="csharp">Create a <code>Layout</code>.<br></li>
     <div class="csharp section-example-container">
-        <pre>LinearAxis xAxis = new LinearAxis();
+        <pre class="csharp">LinearAxis xAxis = new LinearAxis();
 xAxis.SetValue("title", "Time");
 LinearAxis yAxis = new LinearAxis();
 yAxis.SetValue("title", "Price ($)");
@@ -124,7 +124,7 @@ layout.SetValue("title", title);</pre>
 
     <li class="csharp">Combine the charts and assign the <code>Layout</code> to the chart.<br></li>
     <div class="csharp section-example-container">
-        <pre>var chart = Plotly.NET.Chart.Combine(new []{chart1, chart2});
+        <pre class="csharp">var chart = Plotly.NET.Chart.Combine(new []{chart1, chart2});
 chart.WithLayout(layout);</pre>
     </div>
     
