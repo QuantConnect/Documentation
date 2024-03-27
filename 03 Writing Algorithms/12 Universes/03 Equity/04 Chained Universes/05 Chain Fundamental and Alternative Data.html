@@ -1,14 +1,15 @@
-<p>
-The following example chains a <a href='/docs/v2/writing-algorithms/universes/equity/fundamental-universes'>fundamental universe</a> and a <a href='/docs/v2/writing-algorithms/datasets/quiver-quantitative/twitter-followers#09-Universe-Selection'>QuiverQuantTwitterFollowersUniverse alternative universe</a>. It first selects the 100 most liquid US Equities and then filters them down based on their Twitter followers number and weekly change. The output of the alternative universe selection method is the output of the chained universe.
-</p>
+<p>The following example chains a <a href='/docs/v2/writing-algorithms/universes/equity/fundamental-universes'>fundamental universe</a> and a <a href='/docs/v2/writing-algorithms/datasets/quiver-quantitative/cnbc-trading#09-Universe-Selection'>QuiverCNBCsUniverse alternative universe</a>. It first selects the 100 most liquid US Equities and then filters them down to those mentioned by CNBC commentator/trader Jim Cramer. The output of the alternative universe selection method is the output of the chained universe.</p>
 <div class="section-example-container">
-    <pre class="csharp">using System.Collections.Generic;
-using System.Linq;
-using QuantConnect.Data;
-using QuantConnect.Data.UniverseSelection;
-using QuantConnect.DataSource;
-using QuantConnect.Securities;
-
+    <pre class="csharp">#region imports
+    using System.Collections.Generic;
+    using System.Linq;
+    using QuantConnect.Util;
+    using QuantConnect.Data;
+    using QuantConnect.DataSource;
+    using QuantConnect.Data.UniverseSelection;
+    using QuantConnect.Securities;
+#endregion
+    
 namespace QuantConnect.Algorithm.CSharp
 {
     public class ChainedUniverseAlgorithm : QCAlgorithm
@@ -20,47 +21,42 @@ namespace QuantConnect.Algorithm.CSharp
             SetStartDate(2023, 1, 2);
             SetCash(100000);
             UniverseSettings.Asynchronous = true;
-            AddUniverse(FundamentalFilterFunction);
-            AddUniverse&lt;QuiverQuantTwitterFollowersUniverse&gt;(
-                "QuiverQuantTwitterFollowersUniverse", Resolution.Daily, FollowerSelection);
-        }
-
-        private IEnumerable&lt;Symbol&gt; FundamentalFilterFunction(IEnumerable&lt;Fundamental&gt; fundamental)
-        {
-            _fundamental = (from c in fundamental
-                       orderby c.DollarVolume descending
-                       select c.Symbol).Take(100).ToList();
-            return Universe.Unchanged;
-        }
-
-        private IEnumerable&lt;Symbol&gt; FollowerSelection(IEnumerable&lt;QuiverQuantTwitterFollowersUniverse&gt; altCoarse)
-        {
-            var followers = from d in altCoarse
-                         where d.Followers &gt; 200000m &amp;&amp; d.WeekPercentChange &gt; 0m
-                         select d.Symbol;
-            return _fundamental.Intersect(followers);
+            AddUniverse(fundamental =>
+            {
+                _fundamental = (from c in fundamental
+                    orderby c.DollarVolume descending
+                    select c.Symbol).Take(100).ToList();
+                return Universe.Unchanged;
+            });
+            AddUniverse&lt;QuiverCNBCsUniverse&gt;(altCoarse =>
+            {
+                var followers = from d in altCoarse.OfType&lt;QuiverCNBCsUniverse&gt;()
+                    where d.Traders.ToLower().Contains("cramer")
+                    select d.Symbol;
+                return _fundamental.Intersect(followers);
+            });
         }
 
         public override void OnSecuritiesChanged(SecurityChanges changes)
         {
             foreach (var added in changes.AddedSecurities)
             {
-                AddData&lt;QuiverQuantTwitterFollowers&gt;(added.Symbol);
+                AddData&lt;QuiverCNBCs&gt;(added.Symbol);
             }
         }
-
+    
         public override void OnData(Slice data)
         {
-            foreach (var kvp in data.Get&lt;QuiverQuantTwitterFollowers&gt;())
+            foreach (var dataPoint in data.Get&lt;QuiverCNBCs&gt;().SelectMany(x=> x.Value.OfType<QuiverCNBC>()))
             {
-                var datasetSymbol = kvp.Key;
-                var dataPoint = kvp.Value;
-                Debug($"{datasetSymbol} followers at {data.Time}: {dataPoint.Followers}");
+                Debug($"{dataPoint.Symbol} traders at {data.Time}: {dataPoint.Traders}");
             }
         }
     }
 }</pre>
-    <pre class="python">from AlgorithmImports import * 
+    <pre class="python"># region imports
+    from AlgorithmImports import * 
+#endregion
 
 class ChainedUniverseAlgorithm(QCAlgorithm):
 
@@ -71,26 +67,27 @@ class ChainedUniverseAlgorithm(QCAlgorithm):
         self.SetCash(100000)
         self.UniverseSettings.Asynchronous = True
         self.AddUniverse(self.FundamentalFilterFunction)
-        self.AddUniverse(QuiverQuantTwitterFollowersUniverse, "QuiverQuantTwitterFollowersUniverse", Resolution.Daily, self.FollowerSelection)
-
-    def FundamentalFilterFunction(self, fundamental: List[Fundamental]) -&gt; List[Symbol]:
+        self.AddUniverse(QuiverCNBCsUniverse, self.MadMoneySelection)
+    
+    def FundamentalFilterFunction(self, fundamental: List[Fundamental]) -> List[Symbol]:
         sorted_by_dollar_volume = sorted(fundamental, key=lambda x: x.DollarVolume, reverse=True) 
         self.fundamental = [c.Symbol for c in sorted_by_dollar_volume[:100]]
         return Universe.Unchanged
-
-    def FollowerSelection(self, alt_coarse: List[QuiverQuantTwitterFollowersUniverse]) -&gt; List[Symbol]:
-        followers = [d.Symbol for d in alt_coarse if d.Followers &gt; 200000 and d.WeekPercentChange &gt; 0]
-        return list(set(self.fundamental) &amp; set(followers))
-
+    
+    def MadMoneySelection(self, alt_coarse: List[QuiverCNBCsUniverse]) -> List[Symbol]:
+        madmoney = [d.Symbol for d in alt_coarse if 'Cramer' in d.Traders]
+        return list(set(self.fundamental) & set(madmoney))
+    
     def OnSecuritiesChanged(self, changes):
         for added in changes.AddedSecurities:
-            self.AddData(QuiverQuantTwitterFollowers, added.Symbol)
-
+            self.AddData(QuiverCNBCs, added.Symbol)
+    
     def OnData(self, data):
         # Prices in the slice from the universe selection
         # Alternative data in slice from OnSecuritiesChanged Addition
         # for ticker,bar in data.Bars.items():
         #     pass
-        for dataset_symbol, data_point in data.Get(QuiverQuantTwitterFollowers).items():
-            self.Debug(f"{dataset_symbol} followers at {data.Time}: {data_point.Followers}")</pre>
+        for dataset_symbol, data_points in data.Get(QuiverCNBCs).items():
+            for data_point in data_points:
+                self.Debug(f"{dataset_symbol} traders at {data.Time}: {data_point.Traders}")</pre>
 </div>
