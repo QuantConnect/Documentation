@@ -185,6 +185,7 @@ for key, entry in entries.items():
 
     name = contracts_real.get(tmp[-1], tmp[-1])
     fullname = {
+        'Cfd-interactivebrokers-[*]': 'CFD',
         'Cfd-oanda-[*]': 'CFD',
         'Equity-usa-[*]': 'US Equity',
         'Equity-india-[*]': 'India Equity',
@@ -215,15 +216,16 @@ for key, entry in entries.items():
     entry['path'] = entry['path'] / f'{tmp[-1] if name != "generic" else name}'
 
     mapping = {
-        'equity-usa': '01 US Equity/09',
-        'equity-india': '02 India Equity/05',
-        'option-usa': '03 Equity Options/04',
-        'forex-oanda': '06 Forex/04',
-        'index-usa': '09 Index/04',
-        'indexoption-usa': '10 Index Options/04',
-        'cfd-oanda': '11 CFD/04',
-    }.get('-'.join(tmp[0:2]).lower(), '07 Futures/04')
-    entry['target'] = Path(f"{WRITING_ALGORITHMS}/03 Securities/99 Asset Classes/{mapping} Market Hours")
+        'equity-usa': '01 US Equity/09 Market Hours',
+        'equity-india': '02 India Equity/05 Market Hours',
+        'option-usa': '03 Equity Options/04 Market Hours',
+        'forex-oanda': '06 Forex/04 Market Hours',
+        'index-usa': '09 Index/04 Market Hours',
+        'indexoption-usa': '10 Index Options/04 Market Hours',
+        'cfd-interactivebrokers': '11 CFD/04 Market Hours/01 Interactive Brokers',
+        'cfd-oanda': '11 CFD/04 Market Hours/02 Oanda',
+    }.get('-'.join(tmp[0:2]).lower(), '07 Futures/04 Market Hours')
+    entry['target'] = Path(f"{WRITING_ALGORITHMS}/03 Securities/99 Asset Classes/{mapping}")
 
     entry[MARKET_HOUR.INTRODUCTION] = f"<p>This page shows the trading hours, holidays, and time zone of the {fullname} market.</p>"
 
