@@ -60,7 +60,8 @@ def __write_content(exchange, entries):
     
     rows, imax = '', len(entries)
 
-    for i, entry in enumerate(entries.values()):
+    i = 11
+    for entry in entries.values():
         fullname = entry['fullname']
         timezone = entry['exchangeTimeZone']
 
@@ -70,10 +71,11 @@ def __write_content(exchange, entries):
         
         if parts[-1] != 'generic':
             name = parts[-1].upper()
-            entry['target'] = entry['target'] / f'{i+11} {name}'
+            entry['target'] = entry['target'] / f'{i} {name}'
             href = f'<a href="/docs/v2/{to_url(entry["target"].parts)}">{name}</a>'
             rows += f'<li>{href}</li>\n' if parts[3] == 'forex' \
                 else f'<tr><td>{href}</td><td>{entry["name"]}</td></tr>\n'
+            i += 1
         elif imax == 1 and parts[3] in ['future']:
             # Generic Future without other assets
             entry['target'] = entry['target'] / f'{exchange} {parts[-2].upper()}'
