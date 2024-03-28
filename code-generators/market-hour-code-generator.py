@@ -15,7 +15,7 @@ def to_title(name):
     return name.replace('-',' ').title().replace('Pre Market', 'Pre-market').replace('Post Market', 'Post-market')
 
 def to_url(parts):
-    return '/'.join([x[3:].lower().replace(' ','-') for x in parts])
+    return '/'.join(['-'.join(x.split(' ')[1:]).lower() for x in parts])
 
 def __generate_metadata(entry):
     description = entry[MARKET_HOUR.INTRODUCTION][3:-4]
