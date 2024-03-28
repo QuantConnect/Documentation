@@ -1,1 +1,1 @@
-<?php include(DOCS_RESOURCES."/datasets/market-hours/cfd/generic/early-closes.html"); ?>
+<?php include(DOCS_RESOURCES."/datasets/market-hours/cfd/oanda/generic/early-closes.html"); ?>
