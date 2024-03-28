@@ -369,8 +369,8 @@ numpy                                   1.26.4
 nvidia-cublas-cu12                      12.1.3.1
 nvidia-cuda-cupti-cu12                  12.1.105
 nvidia-cuda-nvrtc-cu12                  12.1.105
-nvidia-cuda-runtime-cu12                12.1.105
-nvidia-cudnn-cu12                       8.9.2.26
+nvidia-cuda-runtime-cu12                12.4.99
+nvidia-cudnn-cu12                       8.9.7.29
 nvidia-cufft-cu12                       11.0.2.54
 nvidia-curand-cu12                      10.3.2.106
 nvidia-cusolver-cu12                    11.4.5.107
