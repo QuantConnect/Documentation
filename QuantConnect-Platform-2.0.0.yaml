@@ -588,6 +588,18 @@ paths:
               explode: false
               schema:
                 type: string
+  /lean/versions/read:
+    post:
+      tags:
+        - 01 Cloud Platform
+        - 99 API Reference
+      summary: Returns a list of lean versions with basic information for each version.
+      responses:
+        "200":
+          description: List of LEAN versions.
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LeanVersionsResponse'
   /live/create:
     post:
       tags:
@@ -1399,7 +1411,9 @@ components:
           type: integer
           description: Number of traadeable days
         researchGuide:
+          type: object
           $ref: '#/components/schemas/ResearchGuide'
+          description: A power gauge for backtests, time and parameters to estimate the overfitting risk.
         backtestStart:
           type: string
           description: The starting time of the backtest
@@ -1432,9 +1446,6 @@ components:
           type: number
           description: Progress of the backtest in percent 0-1.
           format: float
-        profitLoss:
-          type: object
-          description: time-PnL pairs of profit/loss at a timestamp.
         hasInitializeError:
           type: boolean
           description: Indicates if the backtest has error during initialization.
@@ -1467,9 +1478,6 @@ components:
           description: Statistics information sent during the algorithm operations.
         totalPerformance:
           $ref: '#/components/schemas/AlgorithmPerformance'
-        signals:
-          type: string
-          description:
         nodeName:
           type: string
           description: The backtest node name.
@@ -2038,27 +2046,27 @@ components:
       properties:
         xs:
           type: array
-          description: List of chart in the xs position
+          description: List of chart in the xs (Extra small) position.
           items:
             $ref: '#/components/schemas/GridChart'
         sm:
           type: array
-          description: List of chart in the sm position
+          description: List of chart in the sm (Small) position.
           items:
             $ref: '#/components/schemas/GridChart'
         md:
           type: array
-          description: List of chart in the md position
+          description: List of chart in the md (Medium) position.
           items:
             $ref: '#/components/schemas/GridChart'
         lg:
           type: array
-          description: List of chart in the lg position
+          description: List of chart in the lg (Large) position.
           items:
             $ref: '#/components/schemas/GridChart'
         xl:
           type: array
-          description: List of chart in the xl position
+          description: List of chart in the xl (Extra large) position.
           items:
             $ref: '#/components/schemas/GridChart'
       description: The grid arrangement of charts.
@@ -2182,6 +2190,41 @@ components:
           type: boolean
           description: Is the insight past its expiry time and score can be finalized.
       description: Defines the scores given to a particular insight
+    LeanVersionsResponse:
+      type: object
+      properties:
+        versions:
+          type: array
+          description: List of LEAN versions with their basic descriptions.
+          item:
+            type: object
+            $ref: '#/components/schemas/LeanVersion'
+      description: Contains the LEAN versions with their basic descriptions.
+    LeanVersion:
+      type: object
+      properties:
+        id:
+          type: int
+          description: ID of the LEAN version.
+        created:
+          type: string
+          description: Date when this version was created.
+          format: date-time
+        leanHash:
+          type: string
+          description: Commit Hash in the LEAN repository.
+        leanCloudHash:
+          type: string
+          description: Commit Hash in the LEAN Cloud repository.
+        name:
+          type: string
+          description: Name of the branch where the commit is.
+        ref:
+          type: string
+          description: Reference to the branch where the commit is.
+        public:
+          type: int
+          description: Indicates if the version is available for the public (1) or not (0).
     Library:
       type: object
       properties:
@@ -2557,6 +2600,9 @@ components:
         usedBy:
           type: string
           description: User currently using the node.
+        userProfile:
+          type: string
+          description: URL of the user using the node.
         projectName:
           type: string
           description: Project the node is being used for.
@@ -2578,6 +2624,9 @@ components:
         active:
           type: boolean
           description: Indicate if this is the active node. The project will use this node if it's not busy.
+        hasGpu:
+          type: int
+          description: Indicate if the node has GPU (1) or not (0).
       description: Contains all relevant information on a Node to interact through API endpoints.
     ObjectStoreBinaryFile:
       type: object
@@ -2964,6 +3013,12 @@ components:
         IsMarketable:
           type: boolean
           description: Returns true if the order is a marketable order.
+        Events:
+          type: array
+          description: List of order events.
+          item:
+            type: OrderEvent
+            $ref: '#/components/schemas/OrderEvent'
       description: Order struct for placing new trade.
     OrderDirection:
       type: string
@@ -2975,6 +3030,12 @@ components:
     OrderEvent:
       type: object
       properties:
+        SymbolValue:
+          type: string
+          description: The current symbol for this ticker; It is a user friendly symbol representation.
+        SymbolPermtick:
+          type: string
+          description: The original symbol used to generate this symbol.
         OrderId:
           type: integer
           description: Id of the order this event comes from.
@@ -3170,21 +3231,23 @@ components:
             $ref: '#/components/schemas/ParameterSet'
         liveResults:
           $ref: '#/components/schemas/ProjectLiveResult'
+          description: Results from running the project on live.
         libraries:
           type: array
-          description: The library projects
+          description: The library projects.
           items:
             $ref: '#/components/schemas/Library'
         isAlphaStreamDeployment:
           type: integer
-          description: Indicate if the project is an alpha stream deployment
+          description: Indicate if the project is an alpha stream deployment.
         grid:
+          type: string
           $ref: '#/components/schemas/Grid'
+          description: Contains information about the charts present in the project.
         liveGrid:
+          type: string
           $ref: '#/components/schemas/Grid'
-        builder:
-          type: integer
-          description:
+          description: Contains information about the charts present in the live project.
         paperEquity:
           type: number
           description: The equity value of the last paper trading instance.
@@ -3195,21 +3258,29 @@ components:
           format: date-time
         liveForm:
           type: object
+          description: The last live wizard content used.
         encrypted:
           type: boolean
           description: Indicates if the project is encrypted.
         codeRunning:
           type: boolean
-          description:
+          description: Indicates if the project is running or not.
         leanEnvironment:
           type: integer
           description: LEAN environment of the project running on.
         encryptionKey:
           $ref: '#/components/schemas/EncryptionKey'
+          description: Text file with at least 32 characters to be used to encrypt the project.
       description: Response from reading a project by id.
     ProjectFile:
       type: object
       properties:
+        id:
+          type: int
+          description: ID of the project file.
+        projectId:
+          type: int
+          description: ID of the project.
         name:
           type: string
           description: Name of a project file.
@@ -3220,6 +3291,12 @@ components:
           type: string
           description: DateTime project file was modified.
           format: date-time
+        open:
+          type: bool
+          description: Indicates if the project file is open or not.
+        isLibrary:
+          type: bool
+          description: Indicates if the project file is a library or not.
       description: File for a project.
     ProjectFilesResponse:
       type: object
@@ -3601,7 +3678,7 @@ components:
         parameters:
           type: integer
           description: Number of parameters detected.
-      description: The API method call could not be completed as requested.
+      description: A power gauge for backtests, time and parameters to estimate the overfitting risk.
     RestResponse:
       type: object
       properties:
