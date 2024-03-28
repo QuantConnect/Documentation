@@ -13,19 +13,22 @@ PRODUCTS = [
 ]
 
 class ImageGenerator:
-    def __init__(self, font: ImageFont, template: str):
+    def __init__(self, fonts: list, template: str):
         self.canvas = Image.open(template)
-        self.font = font
+        self.fonts = fonts
         self.x = 63
         self.y = 256
         self.max_text_width = self.canvas.size[0]-self.x*2
 
     def AddTextToImage(self, lines, outputfile):
+        font = self.fonts[max(0, len(lines) - 4)]
+        dx, dy = .8 * font.size, 1.2 * font.size
+
         image = self.canvas.copy()
         I1 = ImageDraw.Draw(image)
         for i, line in enumerate(lines):
-            xy = (self.x + i * 50, self.y + i * 75)
-            I1.text(xy, line, fill='#000', font=self.font)
+            xy = (self.x + i * dx, self.y + i * dy)
+            I1.text(xy, line, fill='#000', font=font)
         image.save(f'{outputfile}.png')
         image.close()
 
@@ -33,7 +36,7 @@ if __name__ == '__main__':
     counter = 0
     now = dt.now()
     location = f"Resources/social/"
-    font = ImageFont.FreeTypeFont(f'{location}Inter-Bold.ttf', 62)
+    fonts = [ ImageFont.FreeTypeFont(f'{location}Inter-Bold.ttf', size) for size in [ 62, 50, 42 ] ]
     
     for product in PRODUCTS:
         name = '-'.join(product.lower().split(' ')[1:])
@@ -41,12 +44,12 @@ if __name__ == '__main__':
         if not os.path.exists(template):
             continue
 
-        image_generator = ImageGenerator(font, template)
+        image_generator = ImageGenerator(fonts, template)
         for dir,_,files in os.walk(product):
             if dir == product or 'metadata.json' not in files:
                 continue
             
-            lines = [line[3:] for line in dir.split(os.path.sep)]
+            lines = [' '.join(line.split(' ')[1:]) for line in dir.split(os.path.sep)]
             
             outputfile = '/'.join([line.lower().replace(' ','-') for line in lines])
             url = f'https://cdn.quantconnect.com/docs/i/{outputfile}.png'
