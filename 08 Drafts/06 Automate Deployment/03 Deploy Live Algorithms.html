@@ -1,0 +1,121 @@
+<p>Follow the below steps to deploy live algorithm(s) through QuantConnect API with project Ids.</p>
+
+<ol>
+    <li>Compile all projects with their project Ids, cache the compilation Ids with a <code>Dictionary</code>.</li>
+    <div class="section-example-container">
+        <pre class="python">compile_id_by_project_id = {}
+
+for project_id in project_ids:
+    compile_response = api.CreateCompile(project_id)
+    
+    if not compile_response.Success:
+        print(f"Errors compiling project {project_id}: \n{compile_response.Errors}")
+    else:
+        compile_id_by_project_id[project_id] = compile_response.CompileId</pre>
+        <pre class="csharp">var compileIdsByProjectIds = new Dictionary&lt;int, string&gt;();
+
+foreach (var projectId in projectIds)
+{
+    var compileResponse = api.CreateCompile(projectId);
+
+    if (!compileResponse.Success)
+    {
+        Console.WriteLine($"Errors compiling project {projectId}: \n{compileResponse.Errors}");
+    }
+    else
+    {
+        compileIdsByProjectIds[projectId] = compileResponse.CompileId;
+    }
+}</pre>
+    </div>
+
+    <li>Obtain the all Ids of live nodes available, ordering by their speeds.</li>
+    <div class="section-example-container">
+        <pre class="python">live_nodes = []
+node_response = api.ReadProjectNodes(project_ids[0])
+
+if not node_response.Success:
+    print(f"Error getting nodes: \n{node_response.Errors}")
+else:
+    live_nodes = [node.Id for node in 
+        sorted([node for node in node_response.Nodes.LiveNodes if not node.Busy], 
+            key=lambda node: node.Speed, 
+            reverse=True)]</pre>
+        <pre class="csharp">var liveNodes = new List&lt;string&gt;();
+var nodeResponse = api.ReadProjectNodes(projectIds[0]);
+
+if (!nodeResponse.Success)
+{
+    Console.WriteLine($"Error getting nodes: \n{nodeResponse.Errors}");
+}
+else
+{
+    liveNodes = nodeResponse.Nodes.LiveNodes
+        .Where(node =&gt; !node.Busy)
+        .OrderByDescending(node =&gt; node.Speed)
+        .Select(node =&gt; node.Id)
+        .ToList();
+}</pre>
+    </div>
+    <p>Make sure you check there are remaining live nodes available, by inspecting the length of <span class="python">live_nodes</span><span class="csharp">liveNodes</span> is greater than 0.</p>
+
+    <li>Configure your brokerage and environment.</li>
+    <p>In this example, we use QC paper brokerage.</p>
+    <div class="section-example-container">
+        <pre class="python">base_live_algorithm_settings = {
+    "id": "QuantConnectBrokerage",
+    "user": "", 
+    "password": "", 
+    "environment": "paper", 
+    "account": ""
+}
+version_id = "-1" # Master branch</pre>
+        <pre class="csharp">var baseLiveAlgorithmSettings = new Dictionary&lt;string, object&gt;
+{
+    {"id", "QuantConnectBrokerage"},
+    {"user", ""}, 
+    {"password", ""}, 
+    {"environment", "paper"},
+    {"account", ""}
+};
+// Master branch
+var versionId = "-1";</pre>
+    </div>
+    
+    <li>Deploy the selected projects, with the project Ids, compilation Ids, and live nodes available. Cache the project Ids that are successfully deployed.</li>
+    <div class="section-example-container">
+        <pre class="python">deployed_ids = []
+
+for project_id, compile_id in compile_id_by_project_id.items():
+    # Deploy live algorithm
+    node_id = live_nodes[len(deployed_ids)] # Fastest node available
+    live_response = api.CreateLiveAlgorithm(project_id, compile_id, node_id, base_live_algorithm_settings, version_id)
+    
+    if not live_response.Success:
+        print(f"Errors deploying project {project_id}: \n{live_response.Errors}")
+    else:
+        print(f"Deployed {project_id}")
+        deployed_ids.append(project_id)</pre>
+        <pre class="csharp">var deployedIds = new List&lt;int&gt;();
+
+foreach (var kvp in compileIdsByProjectIds)
+{
+    var projectId = kvp.Key;
+    var compileId = kvp.Value;
+
+    // Deploy live algorithm
+    var nodeId = liveNodes[deployedIds.Count()];
+    var liveResponse = api.CreateLiveAlgorithm(projectId, compileId, nodeId, baseLiveAlgorithmSettings, versionId);
+    
+    if (!liveResponse.Success)
+    {
+        Console.WriteLine($"Errors deploying project {projectId}: \n{liveResponse.Errors}");
+    }
+    else
+    {
+        Console.WriteLine($"Deployed {projectId}");
+        deployedIds.Add(projectId);
+    }
+}</pre>
+    </div>
+</ol>
