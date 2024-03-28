@@ -1,0 +1,1 @@
+<?php include(DOCS_RESOURCES."/datasets/market-hours/cfd/interactivebrokers/EURZAR/regular-trading-hours.html"); ?>

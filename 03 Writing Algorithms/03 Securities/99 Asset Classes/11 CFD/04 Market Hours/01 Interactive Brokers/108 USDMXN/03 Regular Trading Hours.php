@@ -1,0 +1,1 @@
+<?php include(DOCS_RESOURCES."/datasets/market-hours/cfd/interactivebrokers/USDMXN/regular-trading-hours.html"); ?>
