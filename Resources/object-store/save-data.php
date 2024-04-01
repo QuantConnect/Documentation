@@ -51,5 +51,5 @@ var saveSuccessful = <?=$cSharpPrefix?>ObjectStore.SaveBytes($"{<?=$cSharpPrefix
     <pre class='python'>save_successful = <?=$pythonPrefix?>ObjectStore.SaveBytes(f"{<?=$pythonPrefix?>ProjectId}/bytes_key", bytes_sample)
 
 zipped_data_sample = Compression.ZipBytes(bytes(string_sample, "utf-8"), "data")
-zip_save_successful = <?=$pythonPrefix?>ObjectStore.SaveBytes($"{<?=$pythonPrefix?>ProjectId}/bytesKey.zip", zipped_data_sample)</pre>
+zip_save_successful = <?=$pythonPrefix?>ObjectStore.SaveBytes(f"{<?=$pythonPrefix?>ProjectId}/bytesKey.zip", zipped_data_sample)</pre>
 </div>
