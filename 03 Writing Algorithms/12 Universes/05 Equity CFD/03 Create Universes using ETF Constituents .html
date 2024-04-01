@@ -14,9 +14,12 @@
     {
         // Get the 10 securities with the largest weight in the index
         var symbols = constituents.OrderByDescending(c =&gt; c.Weight).Take(10).Select(c =&gt; c.Symbol);
-        if (!LiveMode) return symbols;
-
-        return symbols.Select(x =&gt; QuantConnect.Symbol.Create(x.Value, SecurityType.Cfd, Market.InteractiveBrokers));
+        if (LiveMode)
+        {
+            return symbols.Select(x =&gt; QuantConnect.Symbol.Create(x.Value, SecurityType.Cfd, Market.InteractiveBrokers));
+        }
+        
+        return symbols;
     }
 }</pre>
     <pre class="python">class MyUniverseAlgorithm(QCAlgorithm):
@@ -29,6 +32,6 @@
         # Get the 10 securities with the largest weight in the index
         selected = sorted([c for c in constituents if c.Weight], key=lambda c: c.Weight, reverse=True)[:10]
         symbols = [c.Symbol for c in selected]
-        if not self.LiveMode:
-            return symbols
-        return [Symbol.Create(x.Value, SecurityType.Cfd, Market.InteractiveBrokers) for x in symbols]</pre></div>
+        if self.LiveMode:
+            return [Symbol.Create(x.Value, SecurityType.Cfd, Market.InteractiveBrokers) for x in symbols]
+        return symbols</pre></div>

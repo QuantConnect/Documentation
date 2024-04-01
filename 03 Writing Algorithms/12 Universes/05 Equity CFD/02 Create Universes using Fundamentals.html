@@ -15,9 +15,12 @@
                 where f.HasFundamentalData
                 select f.Symbol);
 
-        if (!LiveMode) return symbols;
+        if (LiveMode)
+        {
+            return symbols.Select(x =&gt; QuantConnect.Symbol.Create(x.Value, SecurityType.Cfd, Market.InteractiveBrokers));
+        } 
 
-        return symbols.Select(x =&gt; QuantConnect.Symbol.Create(x.Value, SecurityType.Cfd, Market.InteractiveBrokers));
+        return symbols;
     }
 }</pre>
     <pre class="python">class MyUniverseAlgorithm(QCAlgorithm):
@@ -27,9 +30,9 @@
     
     def FundamentalFunction(self, fundamental: List[Fundamental]) -&gt; List[Symbol]:
         symbols = [c.Symbol for c in fundamental if c.HasFundamentalData]
-        if not self.LiveMode:
-            return symbols
-        return [Symbol.Create(x.Value, SecurityType.Cfd, Market.InteractiveBrokers) for x in symbols]</pre></div>
+        if self.LiveMode:
+            return [Symbol.Create(x.Value, SecurityType.Cfd, Market.InteractiveBrokers) for x in symbols]
+        return symbols</pre></div>
 
 <h4>Example</h4>
 <p>
@@ -50,9 +53,12 @@ _universe = AddUniverse(
             .OrderBy(f =&gt; f.ValuationRatios.PERatio).Take(10)
             .Select(f =&gt; f.Symbol);
                 
-        if (LiveMode) return symbols;
-
-        return symbols.Select(x =&gt; QuantConnect.Symbol.Create(x.Value, SecurityType.Cfd, Market.InteractiveBrokers));
+        if (LiveMode)
+        {
+            return symbols.Select(x =&gt; QuantConnect.Symbol.Create(x.Value, SecurityType.Cfd, Market.InteractiveBrokers));
+        }
+        
+        return symbols;
     });</pre>
     <pre class="python"># In Initialize:
 self.UniverseSettings.Asynchronous = True
@@ -64,8 +70,8 @@ def FundamentalSelectionFunction(self, fundamental: List[Fundamental]) -&gt; Lis
     sortedByPeRatio = sorted(sortedByDollarVolume, key=lambda f: f.ValuationRatios.PERatio, reverse=False)[:10]
     symbols = [f.Symbol for f in sortedByPeRatio]
     if self.LiveMode:
-        return symbols
-    return [Symbol.Create(x.Value, SecurityType.Cfd, Market.InteractiveBrokers) for x in symbols]</pre>
+        return [Symbol.Create(x.Value, SecurityType.Cfd, Market.InteractiveBrokers) for x in symbols]
+    return symbols</pre>
 </div>
 
 <h4>Practical Limitations</h4>
