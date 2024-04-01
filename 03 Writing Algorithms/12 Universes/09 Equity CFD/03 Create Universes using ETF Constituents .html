@@ -1,0 +1,34 @@
+<p>To add an ETF Constituents universe, in the <code>Initialize</code> method, call the <code>Universe.ETF</code> method with a filter function, and pass it to the <code>AddUniverse</code> method. The filter function receives a list of <code>ETFConstituentUniverse</code> objects and must return a list of <code>Symbol</code> objects. The <code>Symbol</code> objects you return from the function are the constituents of the fundamental universe and LEAN automatically creates subscriptions for them. In live mode, call the <code>Symbol.Create</code> method to swap for a CFD version of the same <code>Symbol</code>. Don't call <code>AddCfd</code> in the filter function.</p>
+    
+<div class="section-example-container">
+    <pre class="csharp">public class MyUniverseAlgorithm : QCAlgorithm {
+    private Universe _universe;
+    public override void Initialize() 
+    {
+        UniverseSettings.Asynchronous = true;
+        _universe = Universe.ETF("SPY", UniverseSettings, ETFConstituentsFilter);
+        AddUniverse(_universe);
+    }
+        
+    private IEnumerable&lt;Symbol&gt; ETFConstituentsFilter(IEnumerable&lt;ETFConstituentUniverse&gt; constituents)
+    {
+        // Get the 10 securities with the largest weight in the index
+        var symbols = constituents.OrderByDescending(c =&gt; c.Weight).Take(10).Select(c =&gt; c.Symbol);
+        if (!LiveMode) return symbols;
+
+        return symbols.Select(x =&gt; QuantConnect.Symbol.Create(x.Value, SecurityType.Cfd, Market.InteractiveBrokers));
+    }
+}</pre>
+    <pre class="python">class MyUniverseAlgorithm(QCAlgorithm):
+    def Initialize(self) -&gt; None:
+        self.UniverseSettings.Asynchronous = True
+        self.universe = self.Universe.ETF("SPY", self.UniverseSettings, self.ETFConstituentsFilter)
+        self.AddUniverse(self.universe)
+    
+    def ETFConstituentsFilter(self, constituents: List[ETFConstituentUniverse]) -&gt; List[Symbol]:
+        # Get the 10 securities with the largest weight in the index
+        selected = sorted([c for c in constituents if c.Weight], key=lambda c: c.Weight, reverse=True)[:10]
+        symbols = [c.Symbol for c in selected]
+        if not self.LiveMode:
+            return symbols
+        return [Symbol.Create(x.Value, SecurityType.Cfd, Market.InteractiveBrokers) for x in symbols]</pre></div>
