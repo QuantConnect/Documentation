@@ -1,0 +1,59 @@
+<p>The following strategy purchases ETFs when their fast moving average crosses over the slow moving average. In live mode, the strategy purchases their CFD equivalents.</p>
+
+<div class="section-example-container">
+    <pre class="csharp">public class EtfCfdSwapMovingAverageCrossAlgorithm : QCAlgorithm
+{
+    public override void Initialize()
+    {
+        SetStartDate(2022, 9, 28);
+        SetCash(100000);
+                
+        var tickers = new[] {"SPY", "BND", "GLD", "QQQ"};
+        var securityType = LiveMode ? SecurityType.Cfd : SecurityType.Equity;
+        foreach (var ticker in tickers)
+        {
+            var equity = AddEquity(ticker, Resolution.Daily);
+            equity["smaFast"] = SMA(equity.Symbol, 50);
+            equity["smaSlow"] = SMA(equity.Symbol, 200);
+            equity["targetVehicle"] = LiveMode ? AddCfd(ticker, Resolution.Daily, market: Market.InteractiveBrokers).Symbol : equity.Symbol;
+        }
+    }
+    
+    public override void OnData(Slice data)
+    {
+        foreach (var security in Securities.Values)
+        {
+            var targetVehicle = security["targetVehicle"] as Symbol;
+            if ((SimpleMovingAverage)security["smaFast"]  &gt; (SimpleMovingAverage)security["smaSlow"])
+            {
+                SetHoldings(targetVehicle, 0.25m);
+            }
+            else
+            {
+                SetHoldings(targetVehicle, 0m);
+            }
+        }   
+    }
+}</pre>
+    <pre class="python">class EtfCfdSwapMovingAverageCrossAlgorithm(QCAlgorithm):
+
+    def Initialize(self):
+        self.SetStartDate(2022, 9, 28)
+        self.SetCash(100000)
+
+        tickers = ["SPY", "BND", "GLD", "QQQ"]
+        security_type = SecurityType.Cfd if self.LiveMode else SecurityType.Equity
+        for ticker in tickers:
+            equity = self.AddEquity(ticker, Resolution.Daily)
+            equity.sma_fast = self.SMA(equity.Symbol, 50)
+            equity.sma_slow = self.SMA(equity.Symbol, 200)
+            equity.target_vehicle = self.AddCfd(ticker, Resolution.Daily, market=Market.InteractiveBrokers).Symbol if self.LiveMode else equity.Symbol
+
+    def OnData(self, data: Slice):
+        for security in self.Securities.Values:
+            if security.sma_fast &gt; security.sma_slow:
+                self.SetHoldings(security.target_vehicle, 0.25)
+            else:
+                self.SetHoldings(security.target_vehicle, 0)
+    </pre>
+</div>
