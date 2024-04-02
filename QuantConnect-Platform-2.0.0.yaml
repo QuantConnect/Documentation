@@ -15,6 +15,8 @@ servers:
   description: SwaggerHub API Auto Mocking
 - url: https://www.quantconnect.com/api/v2
   description: Primary REST Endpoint
+- url: https://beta.quantconnect.com/api/v2
+  description: Secondary REST Endpoint
 security:
 - nonceTokenAuth: []
 paths:
@@ -1065,7 +1067,7 @@ paths:
       requestBody:
         description: Upload files to the Object Store.
         content:
-          application/json:
+          multipart/form-data:
             schema:
               $ref: '#/components/schemas/SetObjectStoreRequest'
           multipart/form-data:
@@ -1328,7 +1330,10 @@ components:
       type: object
       properties:
         backtest:
-          $ref: '#/components/schemas/BacktestResult'
+          type: array
+          description: Collection of Backtests for a project.
+          item:
+            $ref: '#/components/schemas/BacktestResult'
         debugging:
           type: boolean
           description: Indicates if the backtest is run under debugging mode.
@@ -1625,6 +1630,9 @@ components:
           enum:
           - read
           - write
+        publicId:
+          type: string
+          description: The public ID.
         profileImage:
           type: string
           description: The url of the user profile image.
@@ -1688,7 +1696,7 @@ components:
           type: array
           description: Signature order of files to be compiled.
           items:
-          - string
+          type: string
         logs:
           type: array
           description: Logs of the compilation request.
@@ -2023,15 +2031,21 @@ components:
         organizationId:
           type: string
           description: Organization ID we'd like to get the Object Store metadata from.
-        key:
-          type: string
-          description: Key to the Object Store file
-      description: Request to get Object Store metadata of a specific organization and key.
+        keys:
+          type: array
+          description: Keys to the Object Store files.
+          items:
+            type: string
+      description: Request to get Object Store of a specific organization and keys.
     GetObjectStoreResponse:
       type: object
       properties:
-        metadata:
-          $ref: '#/components/schemas/ObjectStoreMetadata'
+        jobId:
+          type: string
+          description: Job ID which can be used for querying state or packaging.
+        url:
+          type: string
+          description: The URL to download the object. This can also be null.
         success:
           type: boolean
           description: Indicate if the API request was successful.
@@ -2199,6 +2213,14 @@ components:
           item:
             type: object
             $ref: '#/components/schemas/LeanVersion'
+        success:
+          type: boolean
+          description: Indicate if the API request was successful.
+        errors:
+          type: array
+          description: List of errors with the API call.
+          items:
+            type: string
       description: Contains the LEAN versions with their basic descriptions.
     LeanVersion:
       type: object
@@ -2210,6 +2232,9 @@ components:
           type: string
           description: Date when this version was created.
           format: date-time
+        description:
+          type: string
+          description: Description of the LEAN version.
         leanHash:
           type: string
           description: Commit Hash in the LEAN repository.
@@ -2433,8 +2458,8 @@ components:
           description: Organization ID we'd like to list the Object Store files from.
         path:
           type: string
-          description: Path to the Object Store files
-      description: Request to list Object Store files of a specific organization and key.   
+          description: Path to the Object Store files.
+      description: Request to list Object Store files of a specific organization and path.
     ListObjectStoreResponse:
       type: object
       properties:
@@ -2444,9 +2469,15 @@ components:
           example: Mia
         objects:
           type: array
-          description: Indicate if the API request was successful.
+          description: List of objects stored.
           items:
             $ref: '#/components/schemas/ObjectStoreSummary'
+        objectStorageUsed:
+          type: int
+          description: Size of all objects stored.
+        objectStorageUsedHuman:
+          type: string
+          description: Size of all the objects stored in human-readable format.
         success:
           type: boolean
           description: Indicate if the API request was successful.
@@ -2677,9 +2708,17 @@ components:
         name:
           type: string
           description: File or folder name.
+        modified:
+          type: string
+          description: Last time it was modified.
+          format: date-time
+        mime:
+          type: string
+          description: MIME type.
+          example: application/json
         folder:
           type: boolean
-          description: True if it is a folder.
+          description: True if it is a folder, false otherwise.
         size:
           type: float
           description: File size.
@@ -2738,69 +2777,6 @@ components:
           type: float
           description: The value of the property we want to track
           example: 1
-    ProjectLiveResult:
-      type: object
-      properties:
-        eStatus:
-          type: string
-          description:
-        sDeployID:
-          type: string
-          description: The live deployment id.
-        sServerType:
-          type: string
-          description: The live server node type.
-        dtLaunched:
-          type: string
-          description: The datetime of live deployment launched.
-          format: date-time
-        dtStopped:
-          type: string
-          description: The datetime of live deployment stopped.
-          format: date-time
-        sBrokerage:
-          type: string
-          description: The broker chosen for the live deployment instance.
-        sSecurityTypes:
-          type: array
-          description: The security types involved in the live deployment instance.
-          items:
-            type: string
-        dUnrealized:
-          type: number
-          description: The unrealized profit or loss.
-          format: float
-        dfees:
-          type: number
-          description: The transaction fee generated.
-          format: float
-        dnetprofit:
-          type: number
-          description: The net profit or loss.
-          format: float
-        dEquity:
-          type: number
-          description: The total portfolio value.
-          format: float
-        dHoldings:
-          type: number
-          description: The holding equity's value.
-          format: float
-        dCapital:
-          type: number
-          description: The free cash value.
-          format: float
-        dVolume:
-          type: number
-          description: The holding equity's value.
-          format: float
-        iTrades:
-          type: number
-          description:
-          format: float
-        sErrorMessage:
-          type: string
-          description: The error message last generated.
     ProjectNodes:
       type: object
       properties:
@@ -3229,9 +3205,6 @@ components:
           description: Optimization parameters.
           items:
             $ref: '#/components/schemas/ParameterSet'
-        liveResults:
-          $ref: '#/components/schemas/ProjectLiveResult'
-          description: Results from running the project on live.
         libraries:
           type: array
           description: The library projects.
@@ -3323,6 +3296,11 @@ components:
           description: List of projects for the authenticated user.
           items:
             $ref: '#/components/schemas/Project'
+        versions:
+          type: array
+          description: List of LEAN versions.
+          items:
+            $ref: '#/components/schemas/LeanVersion'
         success:
           type: boolean
           description: Indicate if the API request was successful.
