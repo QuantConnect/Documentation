@@ -7,7 +7,36 @@
 <div class="section-example-container">
     <pre class="csharp">x
     </pre>
-    <pre class="python">
-      y
+    <pre class="python">class MyAlgorithmInstance(QCAlgorithm):
+
+    def Initialize(self):
+        self.SetCash(100000)
+        self.SetStartDate(1998, 1, 1)
+        self.SetEndDate(2014, 6, 1)
+        
+        # Assign self to Static Cape Variable.
+        Cape.Algorithm = self
+        self.AddData(Cape, "CAPE")
+
+    def OnData(self, data):
+        self.Plot("CAPE", "Value", data["CAPE"].Value)
+
+class Cape(PythonData):  
+    def GetSource(self, config, date, isLiveMode): 
+        Cape.Algorithm.Debug("Test Static: GetSource")
+        return SubscriptionDataSource("https://www.dropbox.com/scl/fi/mqbnfb7ll88nne7b8ymy7/CAPE.csv?rlkey=mnu0ax1d8lcj3gzkdw79z0pm8&dl=1", SubscriptionTransportMedium.RemoteFile)
+    
+    def Reader(self, config, line, date, isLiveMode):
+        if not (line.strip() and line[0].isdigit()): return None 
+        index = Cape()
+        try: 
+            data = line.split(',') 
+            index.Symbol = config.Symbol
+            index.Time = datetime.strptime(data[0], "%Y-%m") 
+            index.Value = float(data[10])
+        except ValueError: 
+            Cape.Algorithm.Debug("Test Static 2: ValueError")
+            return None 
+        return index
     </pre>
 </div>
