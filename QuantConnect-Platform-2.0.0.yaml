@@ -427,7 +427,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/inline_response_200'
+                $ref: '#/components/schemas/BacktestResponse'
         "401":
           description: Unauthorized response from the API. Key is missing, invalid, or timestamp is too old for hash.
           headers:
@@ -1458,12 +1458,10 @@ components:
             $ref: '#/components/schemas/Chart'
           description: Charts updates for the live algorithm since the last result packet.
         parameterSet:
-          type: array
+          type: object
           description: Parameters used in the backtest.
-          items:
+          additionalProperties:
             $ref: '#/components/schemas/ParameterSet'
-        alphaRuntimeStatistics:
-          $ref: '#/components/schemas/AlphaRuntimeStatistics'
         rollingWindow:
           type: object
           additionalProperties:
@@ -1480,7 +1478,10 @@ components:
             $ref: '#/components/schemas/TradeStatistics'
           description: Statistics information sent during the algorithm operations.
         totalPerformance:
-          $ref: '#/components/schemas/AlgorithmPerformance'
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/AlgorithmPerformance'
+          description: The algorithm performance statistics.
         nodeName:
           type: string
           description: The backtest node name.
@@ -2950,12 +2951,6 @@ components:
         IsMarketable:
           type: boolean
           description: Returns true if the order is a marketable order.
-        Events:
-          type: array
-          description: List of order events.
-          item:
-            type: OrderEvent
-            $ref: '#/components/schemas/OrderEvent'
       description: Order struct for placing new trade.
     OrderDirection:
       type: string
