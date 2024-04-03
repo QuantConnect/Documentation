@@ -15,8 +15,6 @@ servers:
   description: SwaggerHub API Auto Mocking
 - url: https://www.quantconnect.com/api/v2
   description: Primary REST Endpoint
-- url: https://beta.quantconnect.com/api/v2
-  description: Secondary REST Endpoint
 security:
 - nonceTokenAuth: []
 paths:
@@ -218,7 +216,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ProjectFilesResponse'
+                $ref: '#/components/schemas/RestResponse'
         "401":
           description: Unauthorized response from the API. Key is missing, invalid, or timestamp is too old for hash.
           headers:
@@ -1331,7 +1329,7 @@ components:
       properties:
         backtest:
           type: array
-          description: Collection of Backtests for a project.
+          description: Collection of backtests for a project.
           item:
             $ref: '#/components/schemas/BacktestResult'
         debugging:
@@ -1620,7 +1618,7 @@ components:
       properties:
         uid:
           type: integer
-          description: User id.
+          description: User ID.
         liveControl:
           type: boolean
           description: Indicate if the user have live control.
@@ -1632,7 +1630,7 @@ components:
           - write
         publicId:
           type: string
-          description: The public ID.
+          description: The user public ID.
         profileImage:
           type: string
           description: The url of the user profile image.
@@ -1681,11 +1679,6 @@ components:
           - InQueue
           - BuildSuccess
           - BuildError
-        parameters:
-          type: array
-          description: Optimization parameters.
-          items:
-            $ref: '#/components/schemas/OptimizationParameter'
         projectId:
           type: integer
           description: Project Id we sent for compile.
@@ -2474,10 +2467,10 @@ components:
             $ref: '#/components/schemas/ObjectStoreSummary'
         objectStorageUsed:
           type: int
-          description: Size of all objects stored.
+          description: Size of all objects stored in bytes.
         objectStorageUsedHuman:
           type: string
-          description: Size of all the objects stored in human-readable format.
+          description: Size of all the objects stored (in Mebibytes) in human-readable format.
         success:
           type: boolean
           description: Indicate if the API request was successful.
@@ -2486,7 +2479,7 @@ components:
           description: List of errors with the API call.
           items:
             type: string
-      description: Response received when listing Object of a project.
+      description: Response received containing a list of stored objects metadata, as well as the total size of all of them.
     ListOptimizationRequest:
       type: object
       properties:
@@ -2627,7 +2620,7 @@ components:
           description: Node type identifier for configuration.
         description:
           type: string
-          description: String description of the node.
+          description: Description of the node.
         usedBy:
           type: string
           description: User currently using the node.
@@ -2666,38 +2659,6 @@ components:
           type: string
           format: binary
       description: Represents a binary file we we'd like to upload the file to upload to the Object Store.
-    ObjectStoreMetadata:
-      type: object
-      properties:
-        key:
-          type: string
-          description: Object Store key.
-          example: "Mia/Test"
-        created:
-          type: string
-          description: Time the file was created.
-          format: date-time
-        modified:
-          type: string
-          description: Time the file was modified.
-          format: date-time
-        size:
-          type: float
-          description: File size.
-          example: 13
-        md5:
-          type: string
-          description: MD5 Hash of the file.
-          example: 5d41402abc4b2a76b9719d911017c592
-        mime: 
-          type: string
-          description: MIME type.
-          example: "text/plain"
-        preview:
-          type: string
-          description: Preview of the file content.
-          example: Hello, world!
-      description: Metadata of the Object Store file.
     ObjectStoreSummary:
       type: object
       properties:
@@ -3210,17 +3171,14 @@ components:
           description: The library projects.
           items:
             $ref: '#/components/schemas/Library'
-        isAlphaStreamDeployment:
-          type: integer
-          description: Indicate if the project is an alpha stream deployment.
         grid:
           type: string
           $ref: '#/components/schemas/Grid'
-          description: Contains information about the charts present in the project.
+          description: Configuration of the backtest view grid.
         liveGrid:
           type: string
           $ref: '#/components/schemas/Grid'
-          description: Contains information about the charts present in the live project.
+          description: Configuration of the live view grid.
         paperEquity:
           type: number
           description: The equity value of the last paper trading instance.
@@ -3652,7 +3610,7 @@ components:
           description: Number of minutes used in developing the current backtest.
         backtestCount:
           type: integer
-          description: Backtest count of the current backtest in the project.
+          description: The quantity of backtests run in the project.
         parameters:
           type: integer
           description: Number of parameters detected.
