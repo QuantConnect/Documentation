@@ -2,7 +2,7 @@
 
 <div data-tree='QuantConnect.Data.Market.SymbolChangedEvent'></div>
 
-<p>To get the <code>SymbolChangedEvent</code> objects in the <code>Slice</code>, index the <code>SymbolChangedEvents</code> property of the <code>Slice</code> with the security <code>Symbol</code>. The <code>Slice</code> may not contain data for your <code>Symbol</code>. To avoid issues, check if the <code>SymbolChangedEvents</code> property contains data for your security before you index it with the security <code>Symbol</code>.</p>
+<p>To get the <code>SymbolChangedEvent</code> objects, index the <code>SymbolChangedEvents</code> object with the security <code>Symbol</code>. The <code>SymbolChangedEvents</code> object may not contain data for your <code>Symbol</code>. To avoid issues, check if the <code>SymbolChangedEvents</code> object contains data for your security before you index it with the security <code>Symbol</code>.</p>
 
 <div class='section-example-container'>
     <pre class='csharp'>public override void OnData(Slice slice)
@@ -13,7 +13,7 @@
     }
 }
 
-public void OnData(SymbolChangedEvents symbolChangedEvents)
+public override void OnSymbolChangedEvents(SymbolChangedEvents symbolChangedEvents)
 {
     if (symbolChangedEvents.ContainsKey(_symbol))
     {
@@ -23,6 +23,11 @@ public void OnData(SymbolChangedEvents symbolChangedEvents)
 </pre>
     <pre class='python'>def OnData(self, slice: Slice) -> None:
     symbol_changed_event = slice.SymbolChangedEvents.get(self.symbol)
+    if symbol_changed_event:
+        pass
+
+def OnSymbolChangedEvents(self, symbol_changed_events: SymbolChangedEvents) -> None:
+    symbol_changed_event = symbol_changed_events.get(self.symbol)
     if symbol_changed_event:
         pass</pre>
 </div>
@@ -38,7 +43,7 @@ public void OnData(SymbolChangedEvents symbolChangedEvents)
     }
 }
 
-public void OnData(SymbolChangedEvents symbolChangedEvents)
+public override void OnSymbolChangedEvents(SymbolChangedEvents symbolChangedEvents)
 {
     foreach (var kvp in symbolChangedEvents)
     {
@@ -48,6 +53,11 @@ public void OnData(SymbolChangedEvents symbolChangedEvents)
 }</pre>
     <pre class='python'>def OnData(self, slice: Slice) -> None:
     for symbol, symbol_changed_event in slice.SymbolChangedEvents.items():
+        pass
+
+
+def OnSymbolChangedEvents(self, symbol_changed_events: SymbolChangedEvents) -> None:
+    for symbol, symbol_changed_event in symbol_changed_events.items():
         pass</pre>
 </div>
 

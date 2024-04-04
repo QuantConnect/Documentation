@@ -15,14 +15,6 @@
         var quoteBar = slice.QuoteBars[<?=$cSharpVariable?>];
     }
 }
-
-public void OnData(QuoteBars quoteBars)
-{
-    if (quoteBars.ContainsKey(<?=$cSharpVariable?>))
-    {
-        var quoteBar = quoteBars[<?=$cSharpVariable?>];
-    }
-}
 </pre>
     <pre class='python'>def OnData(self, slice: Slice) -> None:
     if <?=$pythonVariable?> in slice.QuoteBars:
@@ -34,16 +26,6 @@ public void OnData(QuoteBars quoteBars)
     <pre class='csharp'>public override void OnData(Slice slice)
 {
     foreach (var kvp in slice.QuoteBars)
-    {
-        var symbol = kvp.Key;
-        var quoteBar = kvp.Value;
-        var askPrice = quoteBar.Ask.Close;
-    }
-}
-
-public void OnData(QuoteBars quoteBars)
-{
-    foreach (var kvp in quoteBars)
     {
         var symbol = kvp.Key;
         var quoteBar = kvp.Value;

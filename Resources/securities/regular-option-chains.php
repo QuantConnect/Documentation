@@ -7,14 +7,6 @@
     {
         var contracts = chain.Contracts;
     }
-}
-
-public void OnData(OptionChains optionChains)
-{
-    if (optionChains.TryGetValue(<?=$cSharpMemberName?>, out var chain))
-    {
-        var contracts = chain.Contracts;
-    }
 }</pre>
     <pre class='python'>def OnData(self, slice: Slice) -> None:
     chain = slice.OptionChains.get(<?=$pythonMemberName?>)
@@ -27,16 +19,6 @@ public void OnData(OptionChains optionChains)
     <pre class='csharp'>public override void OnData(Slice slice)
 {
     foreach (var kvp in slice.OptionChains)
-    {
-        var <?=$cSharpVariableName?> = kvp.Key;
-        var chain = kvp.Value;
-        var contracts = chain.Contracts;
-    }
-}
-
-public void OnData(OptionChains optionChains)
-{
-    foreach (var kvp in optionChains)
     {
         var <?=$cSharpVariableName?> = kvp.Key;
         var chain = kvp.Value;

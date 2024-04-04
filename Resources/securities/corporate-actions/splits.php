@@ -7,7 +7,7 @@
 
 <p>If you backtest without the <code>Raw</code> <a href='<?=$dataNormalizationModeLink?>'>data normalization mode</a>, the splits are factored into the price and volume. If you backtest with the <code>Raw</code> data normalization mode or trade live, when a split occurs, LEAN automatically adjusts your positions based on the <code>SplitFactor</code>. If the post-split quantity isn't a valid <a href='/docs/v2/writing-algorithms/securities/properties#50-Symbol-Properties'>lot size</a>, LEAN credits the remaining value to your <a href='/docs/v2/writing-algorithms/portfolio/cashbook'>cashbook</a> in your account currency. If you have indicators in your algorithm, <a href='/docs/v2/writing-algorithms/indicators/key-concepts#10-Reset-Indicators'>reset and warm-up your indicators with ScaledRaw data</a> when splits occur so that the data in your indicators account for the price adjustments that the splits cause.</p>
 
-<p>To get the <code>Split</code> objects in the <code>Slice</code>, index the <code>Splits</code> property of the <code>Slice</code> with the security <code>Symbol</code>. The <code>Slice</code> may not contain data for your <code>Symbol</code>. To avoid issues, check if the <code>Splits</code> property contains data for your security before you index it with the security <code>Symbol</code>.</p>
+<p>To get the <code>Split</code> objects, index the <code>Splits</code> object with the security <code>Symbol</code>. The <code>Splits</code> object may not contain data for your <code>Symbol</code>. To avoid issues, check if the <code>Splits</code> object contains data for your security before you index it with the security <code>Symbol</code>.</p>
 
 <div class='section-example-container'>
     <pre class='csharp'>public override void OnData(Slice slice)
@@ -18,7 +18,7 @@
     }
 }
 
-public void OnData(Splits splits)
+public override void OnSplits(Splits splits)
 {
     if (splits.ContainsKey(_symbol))
     {
@@ -28,6 +28,12 @@ public void OnData(Splits splits)
 </pre>
     <pre class='python'>def OnData(self, slice: Slice) -> None:
     split = slice.Splits.get(self.symbol)
+    if split:
+        pass
+
+
+def OnSplits(self, splits: Splits) -> None:
+    split = splits.get(self.symbol)
     if split:
         pass</pre>
 </div>
@@ -43,7 +49,7 @@ public void OnData(Splits splits)
     }
 }
 
-public void OnData(Splits splits)
+public override void OnSplits(Splits splits)
 {
     foreach (var kvp in splits)
     {
@@ -53,6 +59,10 @@ public void OnData(Splits splits)
 }</pre>
     <pre class='python'>def OnData(self, slice: Slice) -> None:
     for symbol, split in slice.Splits.items():
+        pass
+
+def OnSplits(self, splits: Splits) -> None:
+    for symbol, split in splits.items():
         pass</pre>
 </div>
 

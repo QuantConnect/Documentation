@@ -12,14 +12,6 @@
         var tradeBar = slice.Bars[<?=$cSharpVariable?>];
     }
 }
-
-public void OnData(TradeBars tradeBars)
-{
-    if (tradeBars.ContainsKey(<?=$cSharpVariable?>))
-    {
-        var tradeBar = tradeBars[<?=$cSharpVariable?>];
-    }
-}
 </pre>
     <pre class='python'>def OnData(self, slice: Slice) -> None:
     if <?=$pythonVariable?> in slice.Bars:
@@ -32,16 +24,6 @@ public void OnData(TradeBars tradeBars)
     <pre class='csharp'>public override void OnData(Slice slice)
 {
     foreach (var kvp in slice.Bars)
-    {
-        var symbol = kvp.Key;
-        var tradeBar = kvp.Value;
-        var closePrice = tradeBar.Close;
-    }
-}
-
-public void OnData(TradeBars tradeBars)
-{
-    foreach (var kvp in tradeBars)
     {
         var symbol = kvp.Key;
         var tradeBar = kvp.Value;
