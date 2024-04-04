@@ -9,22 +9,34 @@
 
 public override void OnSplits(Splits splits)
 {
-    var split = splits[_symbol];
+    if (splits.ContainsKey(_symbol))
+    {
+        var split = splits[_symbol];
+    }
 }
 
 public override void OnDividends(Dividends dividends)
 {
-    var dividend = dividends[_symbol];
+    if (dividends.ContainsKey(_symbol))
+    {
+        var dividend = dividends[_symbol];
+    }
 }
 
 public override void OnSymbolChangedEvents(SymbolChangedEvents symbolChangedEvents)
 {
-    var symbolChangedEvent = symbolChangedEvents[_symbol];
+    if (symbolChangedEvents.ContainsKey(_symbol))
+    {
+        var symbolChangedEvent = symbolChangedEvents[_symbol];
+    }
 }
 
 public override void OnDelistings(Delistings delistings)
 {
-    var delisting = delistings[_symbol];
+    if (delistings.ContainsKey(_symbol))
+    {
+        var delisting = delistings[_symbol];
+    }
 }
 </pre>
     <pre class="python">def OnData(self, slice: Slice) -&gt; None:
@@ -32,16 +44,20 @@ public override void OnDelistings(Delistings delistings)
         my_data = slice[self.symbol]
 
 def OnSplits(self, splits: Splits) -> None:
-    split = splits[self.symbol]
+    if self.symbol in splits:
+        split = splits[self.symbol]
 
 def OnDividends(self, dividends: Dividends) -> None:
-    dividend = dividends[self.symbol]
+    if self.symbol in dividends:
+        dividend = dividends[self.symbol]
 
 def OnSymbolChangedEvents(self, symbol_changed_events: SymbolChangedEvents) -> None:
-    symbol_changed_event = symbol_changed_events[self.symbol]
+    if self.symbol in symbol_changed_events:
+        symbol_changed_event = symbol_changed_events[self.symbol]
     
 def OnDelistings(self, delistings: OnDelistings) -> None:
-    delisting = delistings[self.symbol]
+    if self.symbol in delistings:
+        delisting = delistings[self.symbol]
 </pre>
 </div>
 <p>
