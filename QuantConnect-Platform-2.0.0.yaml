@@ -428,6 +428,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/BacktestResponse'
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BacktestSummaryResponse'
         "401":
           description: Unauthorized response from the API. Key is missing, invalid, or timestamp is too old for hash.
           headers:
@@ -1343,7 +1349,27 @@ components:
           description: List of errors with the API call.
           items:
             type: string
-      description: Packet container for carrying Backtest results.
+      description: Collection container for a list of backtests for a project.
+    BacktestSummaryResponse:
+      type: object
+      properties:
+        backtest:
+          type: array
+          description: Collection of backtest summaries for a project.
+          item:
+            $ref: '#/components/schemas/BacktestSummaryResult'
+        count:
+          type: int
+          description: Number of backtest summaries retrieved in the response.
+        success:
+          type: boolean
+          description: Indicate if the API request was successful.
+        errors:
+          type: array
+          description: List of errors with the API call.
+          items:
+            type: string
+      description: Collection container for a list of backtest summaries for a project.
     BacktestList:
       type: object
       properties:
@@ -1406,13 +1432,13 @@ components:
           description: Boolean true when the backtest is completed.
         optimizationId:
           type: string
-          description: Optimization task ID, if the backtest is part of an optimization
+          description: Optimization task ID, if the backtest is part of an optimization.
         backtestId:
           type: string
-          description: Assigned backtest ID
+          description: Assigned backtest ID.
         tradeableDates:
           type: integer
-          description: Number of traadeable days
+          description: Number of traadeable days.
         researchGuide:
           type: object
           $ref: '#/components/schemas/ResearchGuide'
@@ -1493,6 +1519,52 @@ components:
           type: integer
           description: Number of days of out of sample days.
       description: Results object class. Results are exhaust from backtest or live algorithms running in LEAN.
+    BacktestSummaryResult:
+      type: object
+      properties:
+        backtestId:
+          type: string
+          description: Assigned backtest ID
+        status:
+          type: string
+          description: Status of the backtest.
+          enum:
+          - Completed.
+          - In Queue...
+          - '''Running: _%'''
+        name:
+          type: string
+          description: Name of the backtest.
+        created:
+          type: string
+          description: Backtest creation date and time.
+          format: date-time
+        progress:
+          type: number
+          description: Progress of the backtest in percent 0-1.
+          format: float
+        optimizationId:
+          type: string
+          description: Optimization task ID, if the backtest is part of an optimization.
+        tradeableDates:
+          type: integer
+          description: Number of traadeable days
+        parameterSet:
+          type: object
+          description: Parameters used in the backtest.
+          additionalProperties:
+            $ref: '#/components/schemas/ParameterSet'
+        snapshotId:
+          type: integer
+          description: Snapshot id of this backtest result.
+        tags:
+          type: array
+          description: Collection of tags for the backtest.
+          item:
+            type: string
+        sparkLine:
+          type: string
+          description: Special chart for the backtest.
     BaseLiveAlgorithmSettings:
       type: object
       properties:
