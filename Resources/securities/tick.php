@@ -17,17 +17,6 @@
         }
     }
 }
-
-public void OnData(Ticks ticks)
-{
-    if (ticks.ContainsKey(<?=$cSharpVariable?>))
-    {
-        foreach (var tick in ticks[<?=$cSharpVariable?>])
-        {
-            var price = tick.Price;
-        }
-    }
-}
 </pre>
     <pre class='python'>def OnData(self, slice: Slice) -> None:
     if <?=$pythonVariable?> in slice.Ticks:
@@ -45,18 +34,6 @@ public void OnData(Ticks ticks)
         var symbol = kvp.Key;
         var ticks = kvp.Value;
         foreach (var tick in ticks)
-        {
-            var price = tick.Price;
-        }
-    }
-}
-
-public void OnData(Ticks ticks)
-{
-    foreach (var kvp in ticks)
-    {
-        var symbol = kvp.Key;
-        foreach (var tick in kvp.Value)
         {
             var price = tick.Price;
         }

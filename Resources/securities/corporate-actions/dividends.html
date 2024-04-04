@@ -3,7 +3,7 @@
 
 <p>If you backtest with the <code>Adjusted</code> or <code>TotalReturn</code> data normalization mode, the dividends are factored into the price. If you backtest with the other data normalization modes or trade live, when a dividend payment occurs, LEAN automatically adds the payment amount to your cashbook. If you have indicators in your algorithm, <a href='/docs/v2/writing-algorithms/indicators/key-concepts#10-Reset-Indicators'>reset and warm-up your indicators with ScaledRaw data</a> when dividend payments occur so that the data in your indicators account for the price adjustments that the dividend causes.</p>
 
-<p>To get the <code>Dividend</code> objects in the <code>Slice</code>, index the <code>Dividends</code> property of the <code>Slice</code> with the security <code>Symbol</code>. The <code>Slice</code> may not contain data for your <code>Symbol</code>. To avoid issues, check if the <code>Dividends</code> property contains data for your security before you index it with the security <code>Symbol</code>.</p>
+<p>To get the <code>Dividend</code> objects, index the <code>Dividends</code> object with the security <code>Symbol</code>. The <code>Dividends</code> object may not contain data for your <code>Symbol</code>. To avoid issues, check if the <code>Dividends</code> object contains data for your security before you index it with the security <code>Symbol</code>.</p>
 
 <div class='section-example-container'>
     <pre class='csharp'>public override void OnData(Slice slice)
@@ -14,7 +14,7 @@
     }
 }
 
-public void OnData(Dividends dividends)
+public override void OnDividends(Dividends dividends)
 {
     if (dividends.ContainsKey(_symbol))
     {
@@ -24,6 +24,11 @@ public void OnData(Dividends dividends)
 </pre>
     <pre class='python'>def OnData(self, slice: Slice) -> None:
     dividend = slice.Dividends.get(self.symbol)
+    if dividend:
+        pass
+
+def OnDividends(self, dividends: Dividends) -> None:
+    dividend = dividends.get(self.symbol)
     if dividend:
         pass</pre>
 </div>
@@ -39,7 +44,7 @@ public void OnData(Dividends dividends)
     }
 }
 
-public void OnData(Dividends dividends)
+public override void OnDividends(Dividends dividends)
 {
     foreach (var kvp in dividends)
     {
@@ -49,6 +54,10 @@ public void OnData(Dividends dividends)
 }</pre>
     <pre class='python'>def OnData(self, slice: Slice) -> None:
     for symbol, dividend in slice.Dividends.items():
+        pass
+
+def OnDividends(self, dividends: Dividends) -> None:
+    for symbol, dividend in dividends.items():
         pass</pre>
 </div>
 

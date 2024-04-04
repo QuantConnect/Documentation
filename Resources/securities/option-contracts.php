@@ -19,17 +19,7 @@ if ($isFutureOptions)
         }
     }
 }
-
-public void OnData(OptionChains optionChains)
-{
-    if (optionChains.TryGetValue(_optionContractSymbol.Canonical, out var chain))
-    {
-        if (chain.Contracts.TryGetValue(_optionContractSymbol, out var contract))
-        {
-            var price = contract.Price;
-        }
-    }
-}</pre>
+</pre>
     <pre class='python'>def OnData(self, slice: Slice) -> None:
     chain = slice.OptionChains.get(self.option_contract_symbol.Canonical)
     if chain:
@@ -44,26 +34,6 @@ public void OnData(OptionChains optionChains)
     <pre class='csharp'>public override void OnData(Slice slice)
 {
     foreach (var kvp in slice.FuturesChains)
-    {
-        var continuousContractSymbol = kvp.Key;
-        var futuresChain = kvp.Value;
-        
-        // Select a Future Contract and create its canonical FOP Symbol
-        var futuresContract = futuresChain.First();
-        var canonicalFOPSymbol = QuantConnect.Symbol.CreateCanonicalOption(futuresContract.Symbol);
-        if (slice.OptionChains.TryGetValue(canonicalFOPSymbol, out var optionChain))
-        {
-            if (optionChain.Contracts.TryGetValue(_optionContractSymbol, out var optionContract))
-            {
-                var price = optionContract.Price;
-            }
-        }
-    }
-}
-
-public void OnData(FuturesChains futuresChains)
-{
-    foreach (var kvp in futuresChains)
     {
         var continuousContractSymbol = kvp.Key;
         var futuresChain = kvp.Value;
@@ -102,17 +72,6 @@ else
     <pre class='csharp'>public override void OnData(Slice slice)
 {
     if (slice.OptionChains.TryGetValue(_contractSymbol.Canonical, out var chain))
-    {
-        if (chain.Contracts.TryGetValue(_contractSymbol, out var contract))
-        {
-            var price = contract.Price;
-        }
-    }
-}
-
-public void OnData(OptionChains optionChains)
-{
-    if (optionChains.TryGetValue(_contractSymbol.Canonical, out var chain))
     {
         if (chain.Contracts.TryGetValue(_contractSymbol, out var contract))
         {

@@ -5,21 +5,53 @@
     {
         var myData = slice[_symbol];
     }
-}</pre>
+}
+
+public override void OnSplits(Splits splits)
+{
+    var split = splits[_symbol];
+}
+
+public override void OnDividends(Dividends dividends)
+{
+    var dividend = dividends[_symbol];
+}
+
+public override void OnSymbolChangedEvents(SymbolChangedEvents symbolChangedEvents)
+{
+    var symbolChangedEvent = symbolChangedEvents[_symbol];
+}
+
+public override void OnDelistings(Delistings delistings)
+{
+    var delisting = delistings[_symbol];
+}
+</pre>
     <pre class="python">def OnData(self, slice: Slice) -&gt; None:
     if slice.ContainsKey(self.symbol):
-        my_data = slice[self.symbol]</pre>
+        my_data = slice[self.symbol]
+
+def OnSplits(self, splits: Splits) -> None:
+    split = splits[self.symbol]
+
+def OnDividends(self, dividends: Dividends) -> None:
+    dividend = dividends[self.symbol]
+
+def OnSymbolChangedEvents(self, symbol_changed_events: SymbolChangedEvents) -> None:
+    symbol_changed_event = symbol_changed_events[self.symbol]
+    
+def OnDelistings(self, delistings: OnDelistings) -> None:
+    delisting = delistings[self.symbol]
+</pre>
 </div>
 <p>
-The <code>OnData</code> method is the primary event handler for receiving financial data events to your algorithm. It is triggered sequentially at the point in time the data is available; in backtesting and live. For daily data this means the event is processed at midnight in backtesting or 6am the following day in live trading. 
-</p>
-
-<p>All data for a given moment of time is grouped in a single event, including custom data types. This data is passed with the <a href='/docs/v2/writing-algorithms/key-concepts/time-modeling/timeslices'>Slice</a> object.</p>
+The <code>OnData</code> method is the primary event handler for receiving financial data events to your algorithm. It is triggered sequentially at the point in time the data is available; in backtesting and live. For daily data this means the event is processed at midnight in backtesting or 6am the following day in live trading. In this method, all data for a given moment of time is grouped in a single event, including custom data types. This data is passed with the <a href='/docs/v2/writing-algorithms/key-concepts/time-modeling/timeslices'>Slice</a> object.</p>
 
 <p>When <a href="/docs/v2/writing-algorithms/securities/requesting-data#05-Fill-Forward">fill-forward</a> is enabled for your asset, the OnData event handler will be called regularly even if there was no new data. This is the default behavior.</p>
 
-
 <p>In backtesting, if your algorithm takes a long time to process a slice, the following slice objects queue up and the next event triggers when your algorithm finishes processing the current slice. In live trading, if your algorithm takes longer to process the current slice than the <a href="/docs/v2/writing-algorithms/key-concepts/time-modeling/periods">time period</a> that the slice spans, the next event triggers when your algorithm finishes processing the current slice, but the slice of the following event is the most recent slice. For example, say your algorithm consumes second resolution Crypto data but it takes your algorithm 3.5 seconds to process each slice. In backtesting, you'll get every slice. In live trading, if you deploy at 12:00:00 AM Coordinated Universal Time (UTC), you'll get the first slice at 12:00:01 AM UTC (spanning 12:00:00 AM UTC to 12:00:01 AM UTC) and you'll get the second slice at 12:00:04.5 AM UTC (roughly spanning 12:00:03 AM UTC to 12:00:04 AM UTC).</p>
+
+<p>The <code>OnSplits</code>, <code>OnDividends</code>, <code>OnSymbolChangedEvents</code>, and <code>OnDelistings</code> event handlers provide data for their respective types in an isolated way. However, all of the data for these corporate actions is also available in the <code>Slice</code> in <code>OnData</code>.</p>
 
 <p>To perform intensive computation before the market opens, use a <a href="/docs/v2/writing-algorithms/scheduled-events">Scheduled Event</a> or the <a href="/docs/v2/writing-algorithms/machine-learning/training-models#02-Train-Models">Train</a> method.</p>
 

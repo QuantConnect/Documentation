@@ -4,7 +4,7 @@
 <p>You receive <code>Delisting</code> objects when a delisting is in the near future and when it occurs. To know if the delisting occurs in the near future or now, check the <code>Type</code> property.</p>
 
 
-<p>To get the <code>Delisting</code> objects in the <code>Slice</code>, index the <code>Delistings</code> property of the <code>Slice</code> with the security <code>Symbol</code>. The <code>Slice</code> may not contain data for your <code>Symbol</code>. To avoid issues, check if the <code>Delistings</code> property contains data for your security before you index it with the security <code>Symbol</code>.</p>
+<p>To get the <code>Delisting</code> objects, index the <code>Delistings</code> object with the security <code>Symbol</code>. The <code>Delistings</code> objects may not contain data for your <code>Symbol</code>. To avoid issues, check if the <code>Delistings</code> objects contains data for your security before you index it with the security <code>Symbol</code>.</p>
 
 <div class='section-example-container'>
     <pre class='csharp'>public override void OnData(Slice slice)
@@ -15,7 +15,7 @@
     }
 }
 
-public void OnData(Delistings delistings)
+public override void OnDelistings(Delistings delistings)
 {
     if (delistings.ContainsKey(_symbol))
     {
@@ -25,6 +25,11 @@ public void OnData(Delistings delistings)
 </pre>
     <pre class='python'>def OnData(self, slice: Slice) -> None:
     delisting = slice.Delistings.get(self.symbol)
+    if delisting:
+        pass
+
+def OnDelistings(self, delistings: OnDelistings) -> None:
+    delisting = delistings.get(self.symbol)
     if delisting:
         pass</pre>
 </div>
@@ -41,7 +46,7 @@ public void OnData(Delistings delistings)
     }
 }
 
-public void OnData(Delistings delistings)
+public override void OnDelistings(Delistings delistings)
 {
     foreach (var kvp in delistings)
     {
@@ -51,6 +56,10 @@ public void OnData(Delistings delistings)
 }</pre>
     <pre class='python'>def OnData(self, slice: Slice) -> None:
     for symbol, delisting in slice.Delistings.items():
+        pass
+
+def OnDelistings(self, delistings: Delistings) -> None:
+    for symbol, delisting in delistings.items():
         pass</pre>
 </div>
 
