@@ -257,6 +257,43 @@
    </tbody>
 </table>
 
+<h4>Range Consolidators</h4>
+<? include(DOCS_RESOURCES."/consolidators/consolidator-info/range/introduction.html"); ?>
+
+<p>The following table shows which consolidator type to use based on the data format of the input and output:</p>
+
+<table class="qc-table table">
+   <thead>
+      <tr>
+         <th>Input</th>
+         <th>Output</th>
+         <th>Class Type</th>
+      </tr>
+   </thead>
+   <tbody>
+      <tr>
+         <td><code>TradeBar</code></td>
+         <td><code>TradeBar</code></td>
+         <td><a href='/docs/v2/writing-algorithms/consolidating-data/consolidator-types/range-consolidators#02-Consolidate-Trade-Bars'>RangeConsolidator</a></td>
+      </tr>
+      <tr>
+         <td><code>QuoteBar</code></td>
+         <td><code>QuoteBar</code></td>
+         <td><a href='/docs/v2/writing-algorithms/consolidating-data/consolidator-types/range-consolidators#03-Consolidate-Quote-Bars'>RangeConsolidator</a></td>
+      </tr>
+      <tr>
+         <td><code>Tick</code></td>
+         <td><code>TradeBar</code></td>
+         <td><a href='/docs/v2/writing-algorithms/consolidating-data/consolidator-types/range-consolidators#04-Consolidate-Trade-Ticks'>RangeConsolidator</a></td>
+      </tr>
+      <tr>
+         <td><code>Tick</code></td>
+         <td><code>QuoteBar</code></td>
+         <td><a href='/docs/v2/writing-algorithms/consolidating-data/consolidator-types/range-consolidators#05-Consolidate-Quote-Ticks'>RangeConsolidator</a></td>
+      </tr>
+   </tbody>
+</table>
+
 
 <h4>Sequential Consolidators</h4>
 
