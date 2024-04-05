@@ -1,0 +1,1 @@
+<? include(DOCS_RESOURCES."/scheduled-events/date-rules.html"); ?>

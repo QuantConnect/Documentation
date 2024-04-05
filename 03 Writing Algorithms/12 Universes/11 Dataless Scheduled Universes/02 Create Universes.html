@@ -1,0 +1,78 @@
+<p>
+To add a dataless scheduled universe, in the <code>Initialize</code> method, call the <code>AddUniverse</code> method with a <code>ScheduledUniverse</code> object.
+</p>
+
+<div class="section-example-container">
+    <pre class="csharp">public class MyUniverseAlgorithm : QCAlgorithm {
+    public override void Initialize()
+    {
+        UniverseSettings.Asynchronous = true;
+        AddUniverse(new ScheduledUniverse(DateRules.MonthStart(), TimeRules.At(8, 0), SelectSymbols));
+    }
+
+        
+    private IEnumerable&lt;Symbol&gt; SelectSymbols(DateTime dt) 
+    {
+        return new[] { QuantConnect.Symbol.Create("SPY", SecurityType.Equity, Market.USA) };
+    }
+}</pre>
+    <pre class="python">class MyUniverseAlgorithm(QCAlgorithm):
+    def Initialize(self) -> None:
+        self.UniverseSettings.Asynchronous = True
+        self.AddUniverse(
+            ScheduledUniverse(
+                self.DateRules.MonthStart(), 
+                self.TimeRules.At(8, 0), 
+                self.select_symbols
+            )
+        )
+    
+    def select_symbols(self, dt):
+        return [Symbol.Create("SPY", SecurityType.Equity, Market.USA)]</pre>
+</div>
+
+<p>The following table describes the arguments the model accepts:</p>
+
+
+<table class="qc-table table">
+    <thead>
+        <tr>
+            <th>Argument</th>
+            <th>Data Type</th>
+            <th>Description</th>
+            <th>Default Value</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><code>dateRule</code></td>
+            <td><code>IDateRule</code></td>
+            <td>Date rule that defines what days the universe selection function runs</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td><code>timeRule</code></td>
+            <td><code>ITimeRule</code></td>
+            <td>Time rule that defines what times on each day selected by date rule the universe selection function runs</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>
+                <code class='csharp'>Func&lt;DateTime, IEnumerable&lt; Symbol&gt;&gt;</code>
+                <code class='python'>Callable[[datetime], List[Symbol]]</code>
+        	</td>
+            <td><code>selector</code></td>
+            <td>Selector function that accepts the current date time and returns the universe's <code>Symbol</code> objects</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td><code>settings</code></td>
+            <td><code>UniverseSettings</code></td>
+            <td>The <a href='/docs/v2/writing-algorithms/universes/settings'>universe settings</a>. If you don't provide an argument, the model uses the <code>algorithm.UniverseSettings</code> by default.</td>
+            <td>
+                <code class='csharp'>null</code>
+                <code class='python'>None</code>
+            </td>
+        </tr>
+    </tbody>
+</table>
