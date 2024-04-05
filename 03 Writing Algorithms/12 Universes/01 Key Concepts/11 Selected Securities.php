@@ -1,6 +1,7 @@
 <p>
   The <code>Selected</code> property of your <code>Universe</code> contains references to all the assets that are currently in the universe.
-  The <code>Universe.Selected</code> property differs from the <code>QCAlgorithm.ActiveSecurities</code> property because <code>QCAlgorithm.ActiveSecurities</code> can contain more assets than <code>Universe.Selected</code>.
+  The <code>Universe.Selected</code> property differs from the <code>Universe.Members</code> property because the <code>Universe.Members</code> property can contain more assets than <code>Universe.Selected</code>.
+  The <code>QCAlgorithm.ActiveSecurities</code> is a collection of <code>Universe.Members</code> of all universes.
   To access the <code>Universe</code> object, save a reference to the result of the <code>AddUniverse</code> method.
   The following algorithm demonstrates how to use the <code>Universe.Selected</code> property to create simple rebalancing strategies:
 </p>
