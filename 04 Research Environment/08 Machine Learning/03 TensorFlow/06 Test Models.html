@@ -1,11 +1,12 @@
 <p>To test the model, we'll setup a method to plot test set predictions ontop of the SPY price.</p>
 
 <div class="section-example-container">
-    <pre class="python">def test_model(sess, output, title, X):
-    prediction = sess.run(output, feed_dict={X: X_test})
-    prediction = prediction.reshape(prediction.shape[1], 1)
+    <pre class="python">def test_model(actual, title, X):
+    prediction = model(X).numpy()
+    prediction = prediction.reshape(-1, 1)
 
-    y_test.reset_index(drop=True).plot(figsize=(16, 6), label="Actual")
+    plt.figure(figsize=(16, 6))
+    plt.plot(actual, label="Actual")
     plt.plot(prediction, label="Prediction")
     plt.title(title)
     plt.xlabel("Time step")
@@ -13,7 +14,7 @@
     plt.legend()
     plt.show()
 
-test_model(sess, output, "Test Set Results from Original Model", X)</pre>
+test_model(y_test, "Test Set Results from Original Model", X_test)</pre>
 </div>
 
 <img class="docs-image" src="https://cdn.quantconnect.com/i/tu/tf-test.png" alt="Tensorflow model performance">

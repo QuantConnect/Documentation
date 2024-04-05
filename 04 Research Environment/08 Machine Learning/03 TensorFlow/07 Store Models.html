@@ -4,29 +4,26 @@
 <p>Follow these steps to save models in the Object Store:</p>
 
 <ol>
-    <li>Export the <code>TensorFlow</code> graph as a JSON object.</li>
+    <li>Set the key name of the model to be stored in the Object Store.</li>
     <div class="section-example-container">
-        <pre class="python">graph_definition = tf.compat.v1.train.export_meta_graph()
-json_graph = json_format.MessageToJson(graph_definition)</pre>
+        <pre class="python">model_key = "model.keras"</pre>
+    </div>
+    <p>Note that the model has to have the suffix <code>.keras</code>.</p>
+
+    <li>Call the <code>GetFilePath</code> method with the key.</li>
+    <div class="section-example-container">
+        <pre class="python">file_name = qb.ObjectStore.GetFilePath(model_key)</pre>
+    </div>
+    <p>This method returns the file path where the model will be stored.</p>
+
+    <li>Call the <code>save</code> method with the model and file path.</li>
+    <div class="section-example-container">
+        <pre class="python">model.save(file_name)</pre>
     </div>
 
-    <li>Export the <code>TensorFlow</code> weights as a JSON object.</li>
+    <li>Save the model to the file path.</li>
     <div class="section-example-container">
-        <pre class="python"># Define a function to get the weights from the tensorflow session
-def get_json_weights(sess):
-    weights = sess.run(tf.compat.v1.trainable_variables())
-    weights = [w.tolist() for w in weights]
-    weights_list = json5.dumps(weights)
-    return weights_list
-    
-json_weights = get_json_weights(sess)
-sess.close()    # Close the session opened by the `get_json_weights` function</pre>
-    </div>
-
-    <li>Save the graph and weights to the <code>Object Store</code>.</li>
-    <div class="section-example-container">
-        <pre class="python">qb.ObjectStore.Save('graph', json_graph)
-qb.ObjectStore.Save('weights', json_weights)</pre>
+        <pre class="python">qb.ObjectStore.Save(model_key)</pre>
     </div>
 </ol>
 
@@ -34,39 +31,13 @@ qb.ObjectStore.Save('weights', json_weights)</pre>
 <p>You must save a model into the Object Store before you can load it from the Object Store. If you saved a model, follow these steps to load it:</p>
 
 <ol>
-    <li>Read the model graph and weights from the Object Store.</li>
+    <li>Get the file path from the Object Store.</li>
     <div class="section-example-container">
-        <pre class="python">json_graph = qb.ObjectStore.Read('graph')
-json_weights = qb.ObjectStore.Read('weights')</pre>
+        <pre class="python">file_path = self.ObjectStore.GetFilePath(model_key)</pre>
     </div>
 
-    <li>Restore the <code>TensorFlow</code> graph from the JSON object.</li>
+    <li>Restore the <code>TensorFlow</code> model from the saved path.</li>
     <div class="section-example-container">
-        <pre class="python">tf.reset_default_graph()
-graph_definition = json_format.Parse(json_graph, tf.compat.v1.MetaGraphDef())
-sess = tf.Session()
-tf.compat.v1.train.import_meta_graph(graph_definition)</pre>
-    </div>
-
-    <li>Select the input and output tensors.<br></li>
-    <div class="section-example-container">
-        <pre class="python">X = tf.compat.v1.get_default_graph().get_tensor_by_name('X:0')
-output = tf.compat.v1.get_default_graph().get_tensor_by_name('outer:0')</pre>
-    </div>
-
-    <li>Restore the model weights from the JSON object.</li>
-    <div class="section-example-container">
-        <pre class="python">weights = [np.asarray(x) for x in json5.loads(json_weights)]
-assign_ops = []
-feed_dict = {}
-vs = tf.compat.v1.trainable_variables()
-zipped_values = zip(vs, weights)
-for var, value in zipped_values:
-    value = np.asarray(value)
-    assign_placeholder = tf.placeholder(var.dtype, shape=value.shape)
-    assign_op = var.assign(assign_placeholder)
-    assign_ops.append(assign_op)
-    feed_dict[assign_placeholder] = value
-sess.run(assign_ops, feed_dict=feed_dict)</pre>
+        <pre class="python">model = tf.keras.models.load_model(file_name)</pre>
     </div>
 </ol>

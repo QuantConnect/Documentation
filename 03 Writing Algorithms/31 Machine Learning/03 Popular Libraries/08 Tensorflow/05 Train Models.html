@@ -13,22 +13,34 @@ for trade_bar in history:
 <h4>Define a Training Method</h4>
 <p>To train the model, define a method that fits the model with the training data.</p>
 <div class="section-example-container">
-    <pre class="python">def get_features_and_labels(self, n_steps=5):
-    close_prices = list(self.training_data)[::-1]
-    
-    features = []
-    labels = []
-    for i in range(len(close_prices)-n_steps):
-        features.append(close_prices[i:i+n_steps])
-        labels.append(close_prices[i+n_steps])
-    features = np.array(features)
-    labels = np.array(labels)
+    <pre class="python">def get_features_and_labels(self, lookback=5):
+    lookback_series = []
 
-    return features, labels
+    data = pd.Series(list(self.training_data)[::-1])
+    for i in range(1, lookback + 1):
+        df = data.diff(i)[lookback:-1]
+        df.name = f"close-{i}"
+        lookback_series.append(df)
+
+    X = pd.concat(lookback_series, axis=1).reset_index(drop=True).dropna()
+    Y = data.diff(-1)[lookback:-1].reset_index(drop=True)
+    return X.values, Y.values
 
 def my_training_method(self):
     features, labels = self.get_features_and_labels()
-    self.model.run(self.optimizer, feed_dict={self.X: features, self.Y: labels})</pre>
+
+    # Define the loss function, we use MSE in this example
+    def loss_mse(target_y, predicted_y):
+        return tf.reduce_mean(tf.square(target_y - predicted_y))
+
+    # Train the model
+    optimizer = tf.keras.optimizers.Adam(learning_rate=self.learning_rate)
+    for i in range(self.epochs):
+        with tf.GradientTape() as t:
+            loss = loss_mse(labels, self.model(features))
+
+        jac = t.gradient(loss, self.model.trainable_weights)
+        optimizer.apply_gradients(zip(jac, self.model.trainable_weights))</pre>
 </div>
 
 <h4>Set Training Schedule</h4>

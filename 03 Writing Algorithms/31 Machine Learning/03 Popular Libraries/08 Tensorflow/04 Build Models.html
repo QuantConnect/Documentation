@@ -10,11 +10,11 @@
     <tbody>
         <tr>
             <td>Features</td>
-            <td>The last 5 closing prices</td>
+            <td>The last 5 close price differencing compared to current price</td>
         </tr>
         <tr>
             <td>Labels</td>
-            <td>The following day's closing price</td>
+            <td>The following day's price change</td>
         </tr>
     </tbody>
 </table>
@@ -24,58 +24,23 @@
 
 <p>Follow these steps to create a method to build the model:</p>
 <ol>
-    <li>Create a method to build the model for the algorithm class.</li>
+    <li>Set the number of layers, their number of nodes, the number of epoch and the learning rate.</li>
     <div class="section-example-container">
-        <pre class="python">def BuildModel(self):    
-    # Instantiate a tensorflow session
-    sess = tf.Session()
-
-    # Declare the number of factors and then create placeholders for the input and output layers.
-    num_factors = 5
-    X = tf.placeholder(dtype=tf.float32, shape=[None, num_factors], name='X')
-    Y = tf.placeholder(dtype=tf.float32, shape=[None])
-    
-    # Set up the weights and bias initializers for each layer.
-    weight_initializer = tf.variance_scaling_initializer(mode="fan_avg", distribution="uniform", scale=1)
-    bias_initializer = tf.zeros_initializer()
-    
-    # Create hidden layers that use the Relu activator.
-    num_neurons_1 = 32
-    num_neurons_2 = 16
-    num_neurons_3 = 8
-    
-    W_hidden_1 = tf.Variable(weight_initializer([num_factors, num_neurons_1]))
-    bias_hidden_1 = tf.Variable(bias_initializer([num_neurons_1]))
-    hidden_1 = tf.nn.relu(tf.add(tf.matmul(X, W_hidden_1), bias_hidden_1))
-    
-    W_hidden_2 = tf.Variable(weight_initializer([num_neurons_1, num_neurons_2]))
-    bias_hidden_2 = tf.Variable(bias_initializer([num_neurons_2]))
-    hidden_2 = tf.nn.relu(tf.add(tf.matmul(hidden_1, W_hidden_2), bias_hidden_2))
-    
-    W_hidden_3 = tf.Variable(weight_initializer([num_neurons_2, num_neurons_3]))
-    bias_hidden_3 = tf.Variable(bias_initializer([num_neurons_3]))
-    hidden_3 = tf.nn.relu(tf.add(tf.matmul(hidden_2, W_hidden_3), bias_hidden_3))
-    
-    # Create the output layer and give it a name, so it is accessible after saving and loading the model.
-    W_out = tf.Variable(weight_initializer([num_neurons_3, 1]))
-    bias_out = tf.Variable(bias_initializer([1]))
-    output = tf.transpose(tf.add(tf.matmul(hidden_3, W_out), bias_out), name='outer')
-    
-    # Set up the loss function and optimizers for gradient descent optimization and backpropagation.
-    # This example uses mean-square error as the loss function because the close price is a continuous data and uses Adam as the optimizer because of its adaptive step size.
-    loss = tf.reduce_mean(tf.squared_difference(output, Y))
-    optimizer = tf.train.AdamOptimizer().minimize(loss)
-    
-    return sess, X, Y, output, optimizer</pre>
+        <pre class="python">num_factors = 5
+num_neurons_1 = 10
+num_neurons_2 = 20
+num_neurons_3 = 5
+self.epochs = 20
+self.learning_rate = 0.0001</pre>
     </div>
     
-    <li>Instantiate the model, input layers, output layer, and optimizer and then save them as class variables.</li>
+    <li>Create the model using in-built Keras API.</li>
     <div class="section-example-container">
-        <pre class="python">self.model, self.X, self.Y, self.output, self.optimizer = self.BuildModel(features, labels)</pre>
-    </div>
-    
-    <li>Call the <code>run</code> method with the result from the <code>global_variables_initializer</code> method.</li>
-    <div class="section-example-container">
-        <pre class="python">self.model.run(tf.global_variables_initializer())</pre>
+        <pre class="python">self.model = tf.keras.Sequential([
+    tf.keras.layers.Dense(num_neurons_1, activation=tf.nn.relu, input_shape=(num_factors,)),  # input shape required
+    tf.keras.layers.Dense(num_neurons_2, activation=tf.nn.relu),
+    tf.keras.layers.Dense(num_neurons_3, activation=tf.nn.relu),
+    tf.keras.layers.Dense(1)
+])</pre>
     </div>
 </ol>

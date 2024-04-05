@@ -1,22 +1,25 @@
 <p>Follow these steps to save <code>Tensorflow</code> models into the <a href="/docs/v2/writing-algorithms/object-store">Object Store</a>:</p>
 
 <ol>
-    <li>Export the <code>TensorFlow</code> graph as a JSON object.</li>
+    <li>Set the key name of the model to be stored in the Object Store.</li>
     <div class="section-example-container">
-        <pre class="python">graph_definition = tf.compat.v1.train.export_meta_graph()
-json_graph = json_format.MessageToJson(graph_definition)</pre>
+        <pre class="python">model_key = "model.keras"</pre>
+    </div>
+    <p>Note that the model has to have the suffix <code>.keras</code>.</p>
+
+    <li>Call the <code>GetFilePath</code> method with the key.</li>
+    <div class="section-example-container">
+        <pre class="python">file_name = self.ObjectStore.GetFilePath(model_key)</pre>
+    </div>
+    <p>This method returns the file path where the model will be stored.</p>
+
+    <li>Call the <code>save</code> method with the model and file path.</li>
+    <div class="section-example-container">
+        <pre class="python">model.save(file_name)</pre>
     </div>
 
-    <li>Export the <code>TensorFlow</code> weights as a JSON object.</li>
+    <li>Save the model to the file path.</li>
     <div class="section-example-container">
-        <pre class="python">weights = self.model.run(tf.compat.v1.trainable_variables())
-weights = [w.tolist() for w in weights]
-json_weights = json5.dumps(weights)</pre>
-    </div>
-
-    <li>Save the graph and weights to the Object Store.</li>
-    <div class="section-example-container">
-        <pre class="python">self.ObjectStore.Save('graph', json_graph)
-self.ObjectStore.Save('weights', json_weights)</pre>
+        <pre class="python">self.ObjectStore.Save(model_key)</pre>
     </div>
 </ol>
