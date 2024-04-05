@@ -3,89 +3,54 @@
 <h4>Build the Model</h4>
 <p>Follow these steps to build the model:</p>
 <ol>
-    <li>Call the <code>reset_default_graph</code> method.</li>
-    <div class="section-example-container">
-        <pre class="python">tf.reset_default_graph()</pre>
-    </div>
-    <p>This method clears the default graph stack and resets the global default graph.</p>
-
-    <li>Call the <code>Session</code> constructor.</li>
-    <div class="section-example-container">
-        <pre class="python">sess = tf.Session()</pre>
-    </div>
-
-    <li>Declare the number of factors and then create placeholders for the input and output layers.</li>
+    <li>Set the number of layers, their number of nodes, the number of epoch and the learning rate.</li>
     <div class="section-example-container">
         <pre class="python">num_factors = X_test.shape[1]
-X = tf.placeholder(dtype=tf.float32, shape=[None, num_factors], name='X')
-Y = tf.placeholder(dtype=tf.float32, shape=[None])</pre>
+num_neurons_1 = 10
+num_neurons_2 = 20
+num_neurons_3 = 5
+epochs = 20
+learning_rate = 0.0001</pre>
     </div>
 
-    <li>Set up the weights and bias initializers for each layer.</li>
+    <li>Create hidden layers with the set number of layer and their corresponding number of nodes.</li>
+    <p>In this example, we're constructing the model with the in-built Keras API, with Relu activator for non-linear activation of each tensors.</p>
     <div class="section-example-container">
-        <pre class="python">weight_initializer = tf.variance_scaling_initializer(mode="fan_avg", distribution="uniform", scale=1)
-bias_initializer = tf.zeros_initializer()</pre>
+        <pre class="python">model = tf.keras.Sequential([
+    tf.keras.layers.Dense(num_neurons_1, activation=tf.nn.relu, input_shape=(num_factors,)),  # input shape required
+    tf.keras.layers.Dense(num_neurons_2, activation=tf.nn.relu),
+    tf.keras.layers.Dense(num_neurons_3, activation=tf.nn.relu),
+    tf.keras.layers.Dense(1)
+])</pre>
+    </div>
+
+    <li>Select an optimizer.</li>
+    <p>We're using Adam optimizer in this example. You may also consider others like SGD.</p>
+    <div class="section-example-container">
+        <pre class="python">optimizer = tf.keras.optimizers.Adam(learning_rate=learning_rate)</pre>
     </div>
     
-    <li>Create hidden layers that use the Relu activator.</li>
+    <li>Define the loss function.</li>
+    <p>In the context of numerical regression, we use MSE as our objective function. If you're doing classification, cross entropy would be more suitable.</p>
     <div class="section-example-container">
-        <pre class="python">num_neurons_1 = 32
-num_neurons_2 = 16
-num_neurons_3 = 8
-
-W_hidden_1 = tf.Variable(weight_initializer([num_factors, num_neurons_1]))
-bias_hidden_1 = tf.Variable(bias_initializer([num_neurons_1]))
-hidden_1 = tf.nn.relu(tf.add(tf.matmul(X, W_hidden_1), bias_hidden_1))
-
-W_hidden_2 = tf.Variable(weight_initializer([num_neurons_1, num_neurons_2]))
-bias_hidden_2 = tf.Variable(bias_initializer([num_neurons_2]))
-hidden_2 = tf.nn.relu(tf.add(tf.matmul(hidden_1, W_hidden_2), bias_hidden_2))
-
-W_hidden_3 = tf.Variable(weight_initializer([num_neurons_2, num_neurons_3]))
-bias_hidden_3 = tf.Variable(bias_initializer([num_neurons_3]))
-hidden_3 = tf.nn.relu(tf.add(tf.matmul(hidden_2, W_hidden_3), bias_hidden_3))</pre>
-    </div>
-
-    <li>Create the output layer and give it a name.</li>
-    <div class="section-example-container">
-        <pre class="python">W_out = tf.Variable(weight_initializer([num_neurons_3, 1]))
-bias_out = tf.Variable(bias_initializer([1]))
-output = tf.transpose(tf.add(tf.matmul(hidden_3, W_out), bias_out), name='outer')</pre>
-    </div>
-
-    <p>This snippet creates a 1-node output for both weight and bias. You must name the output layer so you can access it after you load and save the model.</p>
-
-    <li>Set up the loss function and optimizers for gradient descent optimization and backpropagation.</li>
-    <div class="section-example-container">
-        <pre class="python">loss = tf.reduce_mean(tf.squared_difference(output, Y))
-optimizer = tf.train.AdamOptimizer().minimize(loss)</pre>
-    </div>
-    <p>Use mean-square error as the loss function because the close price is a continuous data and use Adam as the optimizer because of its adaptive step size.</p>
-
-    <li>Set the batch size and number of epochs to bootstrap the training process.</li>
-    <div class="section-example-container">
-        <pre class="python">batch_size = len(y_train) // 10
-epochs = 20</pre>
+        <pre class="python">def loss_mse(target_y, predicted_y):
+    return tf.reduce_mean(tf.square(target_y - predicted_y))</pre>
     </div>
 </ol>
 
 <h4>Train the Model</h4>
 
-<p>Follow these steps to train the model:</p>
+<p>Iteratively train the model by the set epoch number. The model will train adaptively by the gradient provided by the loss function with the selected optimizer.</p>
+<div class="section-example-container">
+    <pre class="python">for i in range(epochs):
+    with tf.GradientTape() as t:
+        loss = loss_mse(y_train, model(X_train))
 
-<ol>
-    <li>Call the <code>run</code> method with the result from the <code>global_variables_initializer</code> method.</li>
-    <div class="section-example-container">
-        <pre class="python">sess.run(tf.global_variables_initializer())</pre>
-    </div>
+    train_loss = loss_mse(y_train, model(X_train))
+    test_loss = loss_mse(y_test, model(X_test))
+    print(f"""Epoch {i+1}:
+Training loss = {train_loss.numpy()}. Test loss = {test_loss.numpy()}""")
 
-    <li>Loop through the number of epochs, select a subset of the training data, and then call the <code>run</code> method with the subset of data.</li>
-    <div class="section-example-container">
-        <pre class="python">for _ in range(epochs):
-    for i in range(0, len(y_train) // batch_size):
-        start = i * batch_size
-        batch_x = X_train[start:start + batch_size]
-        batch_y = y_train[start:start + batch_size]
-        sess.run(optimizer, feed_dict={X: batch_x, Y: batch_y})</pre>
-    </div>
-</ol>
+    jac = t.gradient(loss, model.trainable_weights)
+    optimizer.apply_gradients(zip(jac, model.trainable_weights))</pre>
+</div>
