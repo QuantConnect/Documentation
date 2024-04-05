@@ -24,8 +24,8 @@ public override void Initialize()
     self.<?=strtolower($typeName)?> = self.<?=$helperMethod?>(option)
 
     # indicator using mirror-contract IV calculation
-    mirror_option = Symbol.CreateOption("AAPL", Market.USA, OptionStyle.American, OptionRight.Call, 505m, new DateTime(2014, 6, 27))
-    AddOptionContract(mirror_option)
+    mirror_option = Symbol.CreateOption("AAPL", Market.USA, OptionStyle.American, OptionRight.Call, 505, datetime(2014, 6, 27))
+    self.AddOptionContract(mirror_option)
     self.<?=strtolower($typeName)?> = self.<?=$helperMethod?>(option, mirror_option)
 </pre>
 </div>
