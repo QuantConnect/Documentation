@@ -71,7 +71,8 @@ def __write_content(exchange, entries):
         
         if parts[-1] != 'generic':
             name = parts[-1].upper()
-            entry['target'] = entry['target'] / f'{i} {name}'
+
+            entry['target'] = entry['target'] / (f'{i} {name}' if imax < 100 else f'{i:03} {name}')
             href = f'<a href="/docs/v2/{to_url(entry["target"].parts)}">{name}</a>'
             rows += f'<li>{href}</li>\n' if parts[3] == 'forex' \
                 else f'<tr><td>{href}</td><td>{entry["name"]}</td></tr>\n'
@@ -246,7 +247,7 @@ for key, entry in entries.items():
                 hours = entry.setdefault(MARKET_HOUR.POST_MARKET, {}).setdefault(day, [])
                 hours.append(f'{x["start"]} to {x["end"].replace("1.00:00:00", "24:00:00").replace("1:00:00:00", "24:00:00")}')
 
-    cutoff = datetime.utcnow() + timedelta(365)
+    cutoff = datetime.now() + timedelta(365)
     
     holidays = sorted([datetime.strptime(date, "%m/%d/%Y") for date in entry.pop("holidays", [])
         if datetime.strptime(date, "%m/%d/%Y") < cutoff])   
