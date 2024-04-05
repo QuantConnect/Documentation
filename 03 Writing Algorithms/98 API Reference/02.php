@@ -123,6 +123,8 @@ echo file_get_contents(DOCS_RESOURCES."/qcalgorithm-api/natr.html");
 echo file_get_contents(DOCS_RESOURCES."/qcalgorithm-api/obv.html");
 echo file_get_contents(DOCS_RESOURCES."/qcalgorithm-api/on-assignment-order-event.html");
 echo file_get_contents(DOCS_RESOURCES."/qcalgorithm-api/on-data.html");
+echo file_get_contents(DOCS_RESOURCES."/qcalgorithm-api/on-delistings.html");
+echo file_get_contents(DOCS_RESOURCES."/qcalgorithm-api/on-dividends.html");
 echo file_get_contents(DOCS_RESOURCES."/qcalgorithm-api/on-end-of-algorithm.html");
 echo file_get_contents(DOCS_RESOURCES."/qcalgorithm-api/on-end-of-day.html");
 echo file_get_contents(DOCS_RESOURCES."/qcalgorithm-api/on-end-of-time-step.html");
@@ -131,6 +133,8 @@ echo file_get_contents(DOCS_RESOURCES."/qcalgorithm-api/on-framework-securities-
 echo file_get_contents(DOCS_RESOURCES."/qcalgorithm-api/on-margin-call.html");
 echo file_get_contents(DOCS_RESOURCES."/qcalgorithm-api/on-margin-call-warning.html");
 echo file_get_contents(DOCS_RESOURCES."/qcalgorithm-api/on-order-event.html");
+echo file_get_contents(DOCS_RESOURCES."/qcalgorithm-api/on-splits.html");
+echo file_get_contents(DOCS_RESOURCES."/qcalgorithm-api/on-symbol-changed-events.html");
 echo file_get_contents(DOCS_RESOURCES."/qcalgorithm-api/on-warmup-finished.html");
 echo file_get_contents(DOCS_RESOURCES."/qcalgorithm-api/order.html");
 echo file_get_contents(DOCS_RESOURCES."/qcalgorithm-api/plot.html");

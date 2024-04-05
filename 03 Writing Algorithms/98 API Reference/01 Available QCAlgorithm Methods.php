@@ -513,6 +513,14 @@
 <td>Event - v3.0 DATA EVENT HANDLER: (Pattern) Basic template for user to override for receiving all subscription data in a single event.</td>
 </tr>
 <tr>
+<td width="33%"><a href="#OnDelistings-header">OnDelistings()</a></td>
+<td>Event handler to be called when there's been a delistings event.</td>
+</tr>
+<tr>
+<td width="33%"><a href="#OnDividends-header">OnDividends()</a></td>
+<td>Event handler to be called when there's been a dividend event.</td>
+</tr>
+<tr>
 <td width="33%"><a href="#OnEndOfAlgorithm-header">OnEndOfAlgorithm()</a></td>
 <td>End of algorithm run event handler. This method is called at the end of a backtest or live trading operation. Intended for closing out logs.</td>
 </tr>
@@ -543,6 +551,14 @@
 <tr>
 <td width="33%"><a href="#OnOrderEvent-header">OnOrderEvent()</a></td>
 <td>Order fill event handler. On an order fill update the resulting information is passed to this method.</td>
+</tr>
+<tr>
+<td width="33%"><a href="#OnSplits-header">OnSplits()</a></td>
+<td>Event handler to be called when there's been a split event.</td>
+</tr>
+<tr>
+<td width="33%"><a href="#OnSymbolChangedEvents-header">OnSymbolChangedEvents()</a></td>
+<td>Event handler to be called when there's been a symbol changed event.</td>
 </tr>
 <tr>
 <td width="33%"><a href="#OnWarmupFinished-header">OnWarmupFinished()</a></td>
@@ -1181,6 +1197,14 @@
 <td>Event - v3.0 DATA EVENT HANDLER: (Pattern) Basic template for user to override for receiving all subscription data in a single event.</td>
 </tr>
 <tr>
+<td width="33%"><a href="#OnDelistings-header">OnDelistings()</a></td>
+<td>Event handler to be called when there's been a delistings event.</td>
+</tr>
+<tr>
+<td width="33%"><a href="#OnDividends-header">OnDividends()</a></td>
+<td>Event handler to be called when there's been a dividend event.</td>
+</tr>
+<tr>
 <td width="33%"><a href="#OnEndOfAlgorithm-header">OnEndOfAlgorithm()</a></td>
 <td>End of algorithm run event handler. This method is called at the end of a backtest or live trading operation. Intended for closing out logs.</td>
 </tr>
@@ -1195,6 +1219,14 @@
 <tr>
 <td width="33%"><a href="#OnFrameworkData-header">OnFrameworkData()</a></td>
 <td>Used to send data updates to algorithm framework models.</td>
+</tr>
+<tr>
+<td width="33%"><a href="#OnSplits-header">OnSplits()</a></td>
+<td>Event handler to be called when there's been a split event.</td>
+</tr>
+<tr>
+<td width="33%"><a href="#OnSymbolChangedEvents-header">OnSymbolChangedEvents()</a></td>
+<td>Event handler to be called when there's been a symbol changed event.</td>
 </tr>
 <tr>
 <td width="33%"><a href="#OnWarmupFinished-header">OnWarmupFinished()</a></td>
