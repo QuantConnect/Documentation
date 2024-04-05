@@ -84,7 +84,16 @@ for dataset in doc:
 
         if title.lower() == "example applications":
             with open(destination_folder / f'99 {title.strip()}.html', "w", encoding="utf-8") as html_file:
-                html_file.write(content)
+                start, end = 0, content.find("<div")
+                text, content = content[:end], content[end:]
+                ids = {}
+                for language in ['python', 'cs']:
+                    start = content.find("qc-embed-frame", start+1)
+                    end = content.find("html", start) - 1
+                    substring = content[start:end]
+                    if substring.find(language) > 0:
+                        text += f"\n<div class='{language}'><div class='qc-embed-frame' style='display: inline-block; position: relative; width: 100%; min-height: 100px; min-width: 300px;'><div class='qc-embed-dummy' style='padding-top: 56.25%;'></div><div class='qc-embed-element' style='position: absolute; top: 0; bottom: 0; left: 0; right: 0;'><iframe class='qc-embed-backtest' src='https://www.quantconnect.com/terminal/processCache?request=embedded_backtest_{substring[-32:]}.html' style='max-width: calc(100vw - 30px); max-height: 100vw; overflow: hidden;' scrolling='no' width='100%' height='100%'></iframe></div></div></div>"
+                html_file.write(text.replace("div class='cs'", "div class='csharp'"))
             continue
 
         else:
