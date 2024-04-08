@@ -1,0 +1,108 @@
+<p>There are various properties that require manual inputs, including:</p>
+<table class="qc-table table">
+    <thead>
+        <tr>
+            <th>Property</th>
+            <th>Type</th>
+            <th>Description</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><code>WarmUpPeriod</code></td>
+            <td><code>int</code></td>
+            <td>The number of data entries required to calculate an accurate indicator value.</td>
+        </tr>
+        <tr>
+            <td><code>IsReady</code></td>
+            <td><code>bool</code></td>
+            <td>A flag on whether the indicator is readily useable, depending on the conditions given.</td>
+        </tr>
+    </tbody>
+</table>
+
+<p>You must also implement a <code>ComputeNextValue</code> method to calculate the indicator value. Depending on the indicator type, the input argument(s) is/are the type of data it receives,
+ but the method should output a single value, which is the updated indicator value.</p>
+
+<p>Some indicators might produce invalid values on rare occasions. For example, a wild moving average due to extreme quotes.
+ In such cases, you should also override the <code>WindowIndicator</code> method to return an invalid <code>IndicatorResult</code>, such that the indicator value will not be passed to the main algorithm.</p>
+
+<div data-tree="QuantConnect.Indicators.IndicatorStatus"></div>
+
+<div class="section-example-container">
+    <pre class=”csharp”>public class CustomPointIndicator : IndicatorBase&lt;IndicatorDataPoint&gt;, IndicatorWarmUpPeriodProvider
+{
+    public int WarmUpPeriod = 2;
+    public override bool IsReady =&gt; Samples &ge; WarmUpPeriod;
+
+    protected override decimal ComputeNextValue(IndicatorDataPoint input)
+    {
+        return 1m;
+    }
+
+    protected virtual IndicatorResult ValidateAndComputeNextValue(IndicatorDataPoint input)
+    {
+        var indicatorValue = ComputeNextValue(input);
+        return IsReady ?
+            new IndicatorResult(indicatorValue) :
+            new IndicatorResult(indicatorValue, IndicatorStatus.ValueNotReady);
+    }
+}
+
+public class CustomBarIndicator : BarIndicator, IIndicatorWarmUpPeriodProvider
+{
+    public int WarmUpPeriod = 2;
+    public override bool IsReady =&gt; Samples &ge; WarmUpPeriod;
+
+    protected override decimal ComputeNextValue(IBaseDataBar input)
+    {
+        return 1m;
+    }
+
+    protected virtual IndicatorResult ValidateAndComputeNextValue(IBaseDataBar input)
+    {
+        var indicatorValue = ComputeNextValue(input);
+        return IsReady ?
+            new IndicatorResult(indicatorValue) :
+            new IndicatorResult(indicatorValue, IndicatorStatus.ValueNotReady);
+    }
+}
+
+public class CustomTradeBarIndicator : TradeBarIndicator, IIndicatorWarmUpPeriodProvider
+{
+    public int WarmUpPeriod = 2;
+    public override bool IsReady =&gt; Samples &ge; WarmUpPeriod;
+
+    protected override decimal ComputeNextValue(TradeBar input)
+    {
+        return 1m;
+    }
+
+    protected virtual IndicatorResult ValidateAndComputeNextValue(TradeBar input)
+    {
+        var indicatorValue = ComputeNextValue(input);
+        return IsReady ?
+            new IndicatorResult(indicatorValue) :
+            new IndicatorResult(indicatorValue, IndicatorStatus.ValueNotReady);
+    }
+}
+
+public class CustomWindowIndicator : WindowIndicator&lt;IndicatorDataPoint&gt;
+{
+    public int WarmUpPeriod =&gt; base.WarmUpPeriod;
+    public override bool IsReady =&gt; base.IsReady;
+
+    protected override decimal ComputeNextValue(IReadOnlyWindow&lt;T&gt; window, IndicatorDataPoint input)
+    {
+        return window.Average();
+    }
+
+    protected virtual IndicatorResult ValidateAndComputeNextValue(IndicatorDataPoint input)
+    {
+        var indicatorValue = ComputeNextValue(input);
+        return IsReady ?
+            new IndicatorResult(indicatorValue) :
+            new IndicatorResult(indicatorValue, IndicatorStatus.InvalidInput);
+    }
+}</pre>
+</div>
