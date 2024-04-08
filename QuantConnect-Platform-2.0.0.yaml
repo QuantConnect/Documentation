@@ -1124,10 +1124,9 @@ paths:
       - 01 Cloud Platform
       - 99 API Reference
       - 09 Object Store Management
-      - 02 Get Object Store Metadata
-      summary: Get Object Store metadata of a specific organization and key.
+      summary: Get Object Store file of a specific organization and key.
       requestBody:
-        description: Get Object Store metadata of a specific organization and key.
+        description: Get Object Store file of a specific organization and key.
         content:
           application/json:
             schema:
@@ -1140,6 +1139,36 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/GetObjectStoreResponse'
+        "401":
+          description: Unauthorized response from the API. Key is missing, invalid, or timestamp is too old for hash.
+          headers:
+            www_authenticate:
+              style: simple
+              explode: false
+              schema:
+                type: string
+  /object/properties:
+    post:
+      tags:
+      - 01 Cloud Platform
+      - 99 API Reference
+      - 09 Object Store Management
+      - 02 Get Object Store Metadata
+      summary: Get Object Store properties of a specific organization and key.
+      requestBody:
+        description: Get Object Store properties of a specific organization and key.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GetObjectStorePropertiesRequest'
+        required: true
+      responses:
+        "200":
+          description: Base API response class.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetObjectStorePropertiesResponse'
         "401":
           description: Unauthorized response from the API. Key is missing, invalid, or timestamp is too old for hash.
           headers:
@@ -2161,13 +2190,23 @@ components:
       properties:
         organizationId:
           type: string
-          description: Organization ID we'd like to get the Object Store metadata from.
+          description: Organization ID we'd like to get the Object Store file from.
         keys:
           type: array
           description: Keys to the Object Store files.
           items:
             type: string
       description: Request to get Object Store of a specific organization and keys.
+    GetObjectStorePropertiesRequest:
+      type: object
+      properties:
+        organizationId:
+          type: string
+          description: Organization ID we'd like to get the Object Store properties from.
+        key:
+          type: string
+          description: Key to the Object Store.
+      description: Request to get Object Store properties of a specific organization and keys.
     GetObjectStoreResponse:
       type: object
       properties:
@@ -2185,7 +2224,50 @@ components:
           description: List of errors with the API call.
           items:
             type: string
-      description: Response received when fetching Object Store metadata.
+      description: Response received when fetching Object Store file.
+    GetObjectStorePropertiesResponse:
+      type: object
+      properties:
+        metadata:
+          type: object
+          description: Object Store properties.
+          $ref: '#/components/schemas/ObjectStoreProperties'
+        success:
+          type: boolean
+          description: Indicate if the API request was successful.
+        errors:
+          type: array
+          description: List of errors with the API call.
+          items:
+            type: string
+      description: Response received when fetching Object Store file properties.
+    ObjectStoreProperties:
+      type: object
+      properties:
+        key:
+          type: string
+          description: Object Store key.
+        modified:
+          type: string
+          description: Last time it was modified.
+          format: date
+        created:
+          type: string
+          description: Date this project was created.
+        size:
+          type: float
+          description: Object Store file size.
+          example: 24
+        md5:
+          type: string
+          description: MD5 (hashing algorithm) hash authentication code.
+        mime:
+          type: string
+          description: MIME type.
+        preview:
+          type: string
+          description: Preview of the Object Store file content.
+      description: Object Store file properties.
     Grid:
       type: object
       properties:
@@ -2820,7 +2902,7 @@ components:
           description: True if it is a folder, false otherwise.
         size:
           type: float
-          description: File size.
+          description: Object Store file size.
           example: 13
       description: Summary information of the Object Store.
     OptimizationConstraint:
