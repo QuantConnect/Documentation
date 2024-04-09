@@ -58,7 +58,7 @@ paths:
       - 02 Read Project
       summary: List details of all projects, or the project matched the passed project ID if the project ID property passed.
       requestBody:
-        description: The projectId for the project to read, or nothing to get a list of all projects.
+        description: The projectId for the project to read, or nothing to get a details list of all projects.
         content:
           application/json:
             schema:
@@ -413,9 +413,9 @@ paths:
       - 05 Backtest Management
       - 02 Read Backtest
       - 01 Backtest Statistics
-      summary: Read out that backtest from the project.
+      summary: Read out that backtest from the project (optionally with the charts included).
       requestBody:
-        description: Fetch the results for the project Id and backtest Id provided.
+        description: Fetch the results for the project Id and backtest Id provided (and optional chart name provided).
         content:
           application/json:
             schema:
@@ -603,6 +603,35 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/DeleteBacktestRequest'
+        required: true
+      responses:
+        "200":
+          description: Base API response class.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RestResponse'
+        "401":
+          description: Unauthorized response from the API. Key is missing, invalid, or timestamp is too old for hash.
+          headers:
+            www_authenticate:
+              style: simple
+              explode: false
+              schema:
+                type: string
+  /backtests/tags/update:
+    post:
+      tags:
+      - 01 Cloud Platform
+      - 99 API Reference
+      - 05 Backtest Management
+      summary: Updates the tags collection for a backtest
+      requestBody:
+        description: Information required to update the tags collection for a backtest.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateBacktestTagsRequest'
         required: true
       responses:
         "200":
@@ -1126,11 +1155,11 @@ paths:
       - 09 Object Store Management
       summary: Get Object Store file of a specific organization and key.
       requestBody:
-        description: Get Object Store file of a specific organization and key.
+        description: Get Object Store files of a specific organization and key.
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/GetObjectStoreRequest'
+              $ref: '#/components/schemas/get_object_store'
         required: true
       responses:
         "200":
@@ -1154,7 +1183,7 @@ paths:
       - 99 API Reference
       - 09 Object Store Management
       - 02 Get Object Store Metadata
-      summary: Get Object Store properties of a specific organization and key.
+      summary: Get Object Store properties of a specific organization and key. It does not work if the object store is a directory.
       requestBody:
         description: Get Object Store properties of a specific organization and key.
         content:
@@ -2021,6 +2050,9 @@ components:
       description: Response received when launching an optimization job.
     CreateProjectRequest:
       type: object
+      required:
+        - name
+        - language
       properties:
         name:
           type: string
@@ -2031,7 +2063,10 @@ components:
           enum:
           - C#
           - Py
-      description: Request to create a project.
+        organizationId:
+          type: string
+          description: Optional parameter for specifying organization to create project under. If none provided web defaults to preferred.
+      description: Request to create a project with the specified name and language via QuantConnect.com API.
     CreateProjectFileRequest:
       type: object
       properties:
@@ -2185,18 +2220,28 @@ components:
           items:
             type: string
       description: Response received when estimating the cost of an optimization.
-    GetObjectStoreRequest:
+    GetObjectStoreJobIdRequest:
       type: object
       properties:
         organizationId:
           type: string
-          description: Organization ID we'd like to get the Object Store file from.
+          description: Organization ID we would like to get the Object Store files from.
         keys:
           type: array
           description: Keys to the Object Store files.
           items:
             type: string
-      description: Request to get Object Store of a specific organization and keys.
+      description: Request to get Object Store files of a specific organization and keys.
+    GetObjectStoreURLRequest:
+      type: object
+      properties:
+        organizationId:
+          type: string
+          description: Organization ID we would like to get the Object Store files from.
+        jobId:
+          type: string
+          description: Job ID for getting a download URL for.
+      description: Request to get a download URL for certain Object Store files.
     GetObjectStorePropertiesRequest:
       type: object
       properties:
@@ -2690,7 +2735,7 @@ components:
           description: Size of all objects stored in bytes.
         objectStorageUsedHuman:
           type: string
-          description: Size of all the objects stored (in Mebibytes) in human-readable format.
+          description: Size of all the objects stored in human-readable format.
         success:
           type: boolean
           description: Indicate if the API request was successful.
@@ -3588,13 +3633,10 @@ components:
         projectId:
           type: integer
           description: Project Id to which the file belongs.
-        includeLibraries:
-          type: boolean
-          description: Optional. Indicates if files from library projects should be read.
         name:
           type: string
-          description: Optional. The name of the file that should be updated.
-      description: Request to read all files from a project.
+          description: Optional. The name of the file that will be read.
+      description: Request to read all files from a project or just one (if the name is provided).
     ReadCompileRequest:
       type: object
       properties:
@@ -3661,8 +3703,8 @@ components:
       properties:
         projectId:
           type: integer
-          description: Id of the project.
-      description: Request to get details about a specific project.
+          description: Id of the project. If not provided the API will return a details list of all projects.
+      description: Request to get details about a specific project or a details list of all projects.
     ReadProjectNodesRequest:
       type: object
       properties:
@@ -3738,6 +3780,7 @@ components:
     ReadBacktestRequest:
       required:
       - projectId
+      - backtestId
       type: object
       properties:
         projectId:
@@ -3746,6 +3789,9 @@ components:
         backtestId:
           type: string
           description: When provided, specific backtest Id to read.
+        chart:
+          type: string
+          description: Optional. If provided, the API will return the backtests charts.
       description: Request to read a single backtest from a project.
     ListBacktestRequest:
       required:
@@ -4216,7 +4262,7 @@ components:
           description: Backtest Id we want to update.
         name:
           type: string
-          description: Name we'd like to assign to the backtest.
+          description: Name we would like to assign to the backtest.
         note:
           type: string
           description: Note attached to the backtest.
@@ -4229,8 +4275,8 @@ components:
           description: Project Id to which the file belongs.
         oldFileName:
           type: string
-          description: The current name of the new file.
-        newFileName:
+          description: The current name of the file.
+        newName:
           type: string
           description: The new name for the file.
       description: Request to update the name of a file.
@@ -4240,10 +4286,10 @@ components:
         projectId:
           type: integer
           description: Project Id to which the file belongs.
-        fileName:
+        name:
           type: string
           description: The name of the file that should be updated.
-        newFileContents:
+        content:
           type: string
           description: The new contents of the file.
       description: Request to update the contents of a file.
@@ -4281,6 +4327,20 @@ components:
           items:
             type: string
       description: Request to update the nodes of a project.
+    UpdateBacktestTagsRequest:
+      type: object
+      properties:
+        projectId:
+          type: integer
+          description: Project Id for the backtest we want to update.
+        backtestId:
+          type: Backtest Id we want to update.
+        tags:
+          type: array
+          description: Array of the new backtest tags.
+          items:
+            type: string
+      description: Updates the tags collection for a backtest.
     Version:
       type: object
       properties:
@@ -4372,6 +4432,10 @@ components:
       oneOf:
       - $ref: '#/components/schemas/UpdateFileNameRequest'
       - $ref: '#/components/schemas/UpdateFileContentsRequest'
+    get_object_store:
+      oneOf:
+      - $ref: '#/components/schemas/GetObjectStoreJobIdRequest'
+      - $ref: '#/components/schemas/GetObjectStoreURLRequest'
     inline_response_200:
       oneOf:
       - $ref: '#/components/responses/BacktestResponse'
