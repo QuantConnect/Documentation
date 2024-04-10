@@ -1755,11 +1755,11 @@ components:
       description: Represents a holding of a currency in cash.
     CashAmount:
       properties:
-        Amount:
+        amount:
           type: number
           description: The amount of cash.
           format: float
-        Currency:
+        currency:
           type: string
           description: The currency in which the cash amount is denominated.
       description: Represents a cash amount which can be converted to account currency using a currency converter.
@@ -1933,7 +1933,37 @@ components:
           type: string
           description: Id of the node that will run the algorithm.
         brokerage:
+          type: object
+          description: Brokerage configurations to be used in the live algorithm.
           $ref: '#/components/schemas/BaseLiveAlgorithmSettings'
+        dataProviders:
+          type: object
+          description: Dictionary of data provider configurations to be used in the live algorithm.
+          key:
+            type: string
+            description: Data provider ID.
+            enum:
+              - QuantConnectBrokerage
+              - InteractiveBrokersBrokerage
+              - Polygon
+              - Bianance
+              - TradierBrokerage
+              - OandaBrokerage
+              - Bitfinex
+              - Coinbase
+              - Zerodha
+              - Samco
+              - Kraken
+              - TDAmeritrade
+              - Bybit
+              - IEXCloud
+            example: InteractiveBrokersBrokerage
+          value:
+            type: object
+            description: Data provider configuration.
+            enum:
+              - $ref: '#/components/schemas/InteractiveBrokersSettings'
+              - $ref: '#/components/schemas/QuantConnectSettings'
       description: Request to create a live algorithm.
     CreateLiveAlgorithmResponse:
       type: object
@@ -2234,7 +2264,7 @@ components:
           description: Keys to the Object Store files.
           items:
             type: string
-      description: Request to get Object Store files of a specific organization and keys.
+      description: Request to get JobId for the requested Object Store files.
     GetObjectStoreURLRequest:
       type: object
       properties:
@@ -2250,7 +2280,7 @@ components:
       properties:
         organizationId:
           type: string
-          description: Organization ID we'd like to get the Object Store properties from.
+          description: Organization ID we would like to get the Object Store properties from.
         key:
           type: string
           description: Key to the Object Store.
@@ -3808,6 +3838,49 @@ components:
           type: bool
           description: If true, the backtests summaries from the response will contain the statistics with their corresponding values.
       description: Request to list the backtests from a project.
+    QuantConnectSettings:
+      type: object
+      properties:
+        id:
+          type: string
+          description: ID of QuantConnect, this is QuantConnectBrokerage.
+      description: QuantConnect settings for using it as a brokerage or data provider.
+    InteractiveBrokersSettings:
+      type: object
+      properties:
+        id:
+          type: string
+          description: ID of InteractiveBrokers, this is InteractiveBrokersBrokerage.
+        ib-user-name:
+          type: string
+          description: Username associated with brokerage.
+        ib-password:
+          type: string
+          description: Password associated with brokerage.
+        environment:
+          type: string
+          description: Represents the types of environments supported by brokerages for trading.
+          enum:
+            - live
+            - paper
+        ib-account:
+          type: string
+          description: Account of the associated brokerage.
+        ib-weekly-restart-utc-time:
+          type: string
+          description: Time at which the brokerage should be restarted each week.
+          format: date
+        holdings:
+          type: array
+          description: List of holdings for the brokerage.
+          items:
+            $ref: '#/components/schemas/Holding'
+        cash:
+          type: array
+          description: List of cash amount.
+          items:
+            $ref: '#/components/schemas/CashAmount'
+      description: Settings for using Interactive Brokers as brokerage or data provider.
     ReadBacktestPortfolioRequest:
       required:
       - projectId
