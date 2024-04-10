@@ -7,11 +7,11 @@ The <code>/backtests/create</code> API provides a response in the following form
 <table class="table qc-table">
 <thead>
 <tr>
-<th colspan="2"><code>BacktestResponse</code> Model - Packet container for carrying Backtest results.</th>
+<th colspan="2"><code>BacktestResponse</code> Model - Collection container for a list of backtests for a project.</th>
 </tr>
 </thead>
 <tr>
-<td width="20%">backtest</td> <td> <code>BacktestResult object</code> <br/> Results object class. Results are exhaust from backtest or live algorithms running in LEAN.</td>
+<td width="20%">backtest</td> <td> <code>BacktestResult Array</code> <br/> Collection of backtests for a project.</td>
 </tr>
 <tr>
 <td width="20%">debugging</td> <td> <code>boolean</code> <br/> Indicates if the backtest is run under debugging mode.</td>
@@ -27,85 +27,150 @@ The <code>/backtests/create</code> API provides a response in the following form
 <td>
 <div class="cli section-example-container"><pre>
 {
-  "backtest": {
-    "note": "string",
-    "name": "string",
-    "organizationId": 0,
-    "projectId": 0,
-    "completed": true,
-    "optimizationId": "string",
-    "backtestId": "string",
-    "tradeableDates": 0,
-    "researchGuide": {
-      "minutes": 0,
-      "backtestCount": 0,
-      "parameters": 0
-    },
-    "backtestStart": "2021-11-26T15:18:27.693Z",
-    "backtestEnd": "2021-11-26T15:18:27.693Z",
-    "created": "2021-11-26T15:18:27.693Z",
-    "snapshotId": 0,
-    "status": "Completed.",
-    "error": "string",
-    "stacktrace": "string",
-    "progress": 0,
-    "profitLoss": ,
-    "hasInitializeError": true,
-    "charts": {
-      "Name": "string",
-      "ChartType": "Overlay",
-      "Series": {
+  "backtest": [
+    {
+      "note": "string",
+      "name": "string",
+      "organizationId": 0,
+      "projectId": 0,
+      "completed": true,
+      "optimizationId": "string",
+      "backtestId": "string",
+      "tradeableDates": 0,
+      "researchGuide": {
+        "minutes": 0,
+        "backtestCount": 0,
+        "parameters": 0
+      },
+      "backtestStart": "2021-11-26T15:18:27.693Z",
+      "backtestEnd": "2021-11-26T15:18:27.693Z",
+      "created": "2021-11-26T15:18:27.693Z",
+      "snapshotId": 0,
+      "status": "Completed.",
+      "error": "string",
+      "stacktrace": "string",
+      "progress": 0,
+      "hasInitializeError": true,
+      "charts": {
         "Name": "string",
-        "Unit": "string",
-        "Index": 0,
-        "Values": [
-          {
-            "x": "string",
-            "y": 0
-          }
-        ],
-        "SeriesType": "Line",
-        "Color": "string",
-        "ScatterMarkerSymbol": "none"
-      }
-    },
-    "parameterSet": [
-      {
+        "ChartType": "Overlay",
+        "Series": {
+          "Name": "string",
+          "Unit": "string",
+          "Index": 0,
+          "Values": [
+            {
+              "x": "string",
+              "y": 0
+            }
+          ],
+          "SeriesType": "Line",
+          "Color": "string",
+          "ScatterMarkerSymbol": "none"
+        }
+      },
+      "parameterSet": {
         "name": "string",
         "value": 0
-      }
-    ],
-    "alphaRuntimeStatistics": {
-      "MeanPopulationScore": {
-        "UpdatedTimeUtc": "2021-11-26T15:18:27.693Z",
-        "Direction": 0,
-        "Magnitude": 0,
-        "IsFinalScore": true
       },
-      "RollingAveragedPopulationScore": {
-        "UpdatedTimeUtc": "2021-11-26T15:18:27.693Z",
-        "Direction": 0,
-        "Magnitude": 0,
-        "IsFinalScore": true
+      "rollingWindow": {
+        "TradeStatistics": {
+          "StartDateTime": "2021-11-26T15:18:27.693Z",
+          "EndDateTime": "2021-11-26T15:18:27.693Z",
+          "TotalNumberOfTrades": 0,
+          "NumberOfWinningTrades": 0,
+          "NumberOfLosingTrades": 0,
+          "TotalProfitLoss": 0,
+          "TotalProfit": 0,
+          "TotalLoss": 0,
+          "LargestProfit": 0,
+          "LargestLoss": 0,
+          "AverageProfitLoss": 0,
+          "AverageProfit": 0,
+          "AverageLoss": 0,
+          "AverageTradeDuration": "string",
+          "AverageWinningTradeDuration": "string",
+          "AverageLosingTradeDuration": "string",
+          "MedianTradeDuration": "string",
+          "MedianWinningTradeDuration": "string",
+          "MedianLosingTradeDuration": "string",
+          "MaxConsecutiveWinningTrades": 0,
+          "MaxConsecutiveLosingTrades": 0,
+          "ProfitLossRatio": 0,
+          "WinLossRatio": 0,
+          "WinRate": 0,
+          "LossRate": 0,
+          "AverageMAE": 0,
+          "AverageMFE": 0,
+          "LargestMAE": 0,
+          "LargestMFE": 0,
+          "MaximumClosedTradeDrawdown": 0,
+          "MaximumIntraTradeDrawdown": 0,
+          "ProfitLossStandardDeviation": 0,
+          "ProfitLossDownsideDeviation": 0,
+          "ProfitFactor": 0,
+          "SharpeRatio": 0,
+          "SortinoRatio": 0,
+          "ProfitToMaxDrawdownRatio": 0,
+          "MaximumEndTradeDrawdown": 0,
+          "AverageEndTradeDrawdown": 0,
+          "MaximumDrawdownDuration": "string",
+          "TotalFees": 0
+        },
+        "PortfolioStatistics": {
+          "RiskFreeRate": 0,
+          "AverageWinRate": 0,
+          "AverageLossRate": 0,
+          "ProfitLossRatio": 0,
+          "WinRate": 0,
+          "LossRate": 0,
+          "Expectancy": 0,
+          "CompoundingAnnualReturn": 0,
+          "Drawdown": 0,
+          "TotalNetProfit": 0,
+          "SharpeRatio": 0,
+          "ProbabilisticSharpeRatio": 0,
+          "Alpha": 0,
+          "Beta": 0,
+          "AnnualStandardDeviation": 0,
+          "AnnualVariance": 0,
+          "InformationRatio": 0,
+          "TrackingError": 0,
+          "TreynorRatio": 0
+        },
+        "ClosedTrades": [
+          {
+            "Symbol": {
+              "Value": "string",
+              "ID": "string",
+              "Permtick": "string"
+            },
+            "EntryTime": "2021-11-26T15:18:27.693Z",
+            "EntryPrice": 0,
+            "Direction": "Long",
+            "Quantity": 0,
+            "ExitTime": "2021-11-26T15:18:27.693Z",
+            "ExitPrice": 0,
+            "ProfitLoss": 0,
+            "TotalFees": 0,
+            "MAE": 0,
+            "MFE": 0,
+            "Duration": "string",
+            "EndTradeDrawdown": 0
+          }
+        ]
       },
-      "LongCount": "string",
-      "ShortCount": "string",
-      "LongShortRatio": 0,
-      "TotalAccumulatedEstimatedAlphaValue": 0,
-      "KellyCriterionEstimate": 0,
-      "KellyCriterionProbabilityValue": 0,
-      "FitnessScore": 0,
-      "PortfolioTurnover": 0,
-      "ReturnOverMaxDrawdown": 0,
-      "SortinoRatio": 0,
-      "EstimatedMonthlyAlphaValue": 0,
-      "TotalInsightsGenerated": "string",
-      "TotalInsightsClosed": "string",
-      "TotalInsightsAnalysisCompleted": "string",
-      "MeanPopulationEstimatedInsightValue": 0
-    },
-    "rollingWindow": {
-      "TradeStatistics": {
+      "runtimeStatistics": {
+        "Equity": "$100.00",
+        "Fees": "-$100.00",
+        "Holdings": "$100.00",
+        "Net Profit": "$100.00",
+        "Probabilistic Sharpe Ratio": "50.00%",
+        "Return": "50.00%",
+        "Unrealized": "$100.00",
+        "Volume": "$100.00"
+      },
+      "statistics": {
         "StartDateTime": "2021-11-26T15:18:27.693Z",
         "EndDateTime": "2021-11-26T15:18:27.693Z",
         "TotalNumberOfTrades": 0,
@@ -148,194 +213,98 @@ The <code>/backtests/create</code> API provides a response in the following form
         "MaximumDrawdownDuration": "string",
         "TotalFees": 0
       },
-      "PortfolioStatistics": {
-        "RiskFreeRate": 0,
-        "AverageWinRate": 0,
-        "AverageLossRate": 0,
-        "ProfitLossRatio": 0,
-        "WinRate": 0,
-        "LossRate": 0,
-        "Expectancy": 0,
-        "CompoundingAnnualReturn": 0,
-        "Drawdown": 0,
-        "TotalNetProfit": 0,
-        "SharpeRatio": 0,
-        "ProbabilisticSharpeRatio": 0,
-        "Alpha": 0,
-        "Beta": 0,
-        "AnnualStandardDeviation": 0,
-        "AnnualVariance": 0,
-        "InformationRatio": 0,
-        "TrackingError": 0,
-        "TreynorRatio": 0
+      "totalPerformance": {
+        "TradeStatistics": {
+          "StartDateTime": "2021-11-26T15:18:27.693Z",
+          "EndDateTime": "2021-11-26T15:18:27.693Z",
+          "TotalNumberOfTrades": 0,
+          "NumberOfWinningTrades": 0,
+          "NumberOfLosingTrades": 0,
+          "TotalProfitLoss": 0,
+          "TotalProfit": 0,
+          "TotalLoss": 0,
+          "LargestProfit": 0,
+          "LargestLoss": 0,
+          "AverageProfitLoss": 0,
+          "AverageProfit": 0,
+          "AverageLoss": 0,
+          "AverageTradeDuration": "string",
+          "AverageWinningTradeDuration": "string",
+          "AverageLosingTradeDuration": "string",
+          "MedianTradeDuration": "string",
+          "MedianWinningTradeDuration": "string",
+          "MedianLosingTradeDuration": "string",
+          "MaxConsecutiveWinningTrades": 0,
+          "MaxConsecutiveLosingTrades": 0,
+          "ProfitLossRatio": 0,
+          "WinLossRatio": 0,
+          "WinRate": 0,
+          "LossRate": 0,
+          "AverageMAE": 0,
+          "AverageMFE": 0,
+          "LargestMAE": 0,
+          "LargestMFE": 0,
+          "MaximumClosedTradeDrawdown": 0,
+          "MaximumIntraTradeDrawdown": 0,
+          "ProfitLossStandardDeviation": 0,
+          "ProfitLossDownsideDeviation": 0,
+          "ProfitFactor": 0,
+          "SharpeRatio": 0,
+          "SortinoRatio": 0,
+          "ProfitToMaxDrawdownRatio": 0,
+          "MaximumEndTradeDrawdown": 0,
+          "AverageEndTradeDrawdown": 0,
+          "MaximumDrawdownDuration": "string",
+          "TotalFees": 0
+        },
+        "PortfolioStatistics": {
+          "RiskFreeRate": 0,
+          "AverageWinRate": 0,
+          "AverageLossRate": 0,
+          "ProfitLossRatio": 0,
+          "WinRate": 0,
+          "LossRate": 0,
+          "Expectancy": 0,
+          "CompoundingAnnualReturn": 0,
+          "Drawdown": 0,
+          "TotalNetProfit": 0,
+          "SharpeRatio": 0,
+          "ProbabilisticSharpeRatio": 0,
+          "Alpha": 0,
+          "Beta": 0,
+          "AnnualStandardDeviation": 0,
+          "AnnualVariance": 0,
+          "InformationRatio": 0,
+          "TrackingError": 0,
+          "TreynorRatio": 0
+        },
+        "ClosedTrades": [
+          {
+            "Symbol": {
+              "Value": "string",
+              "ID": "string",
+              "Permtick": "string"
+            },
+            "EntryTime": "2021-11-26T15:18:27.693Z",
+            "EntryPrice": 0,
+            "Direction": "Long",
+            "Quantity": 0,
+            "ExitTime": "2021-11-26T15:18:27.693Z",
+            "ExitPrice": 0,
+            "ProfitLoss": 0,
+            "TotalFees": 0,
+            "MAE": 0,
+            "MFE": 0,
+            "Duration": "string",
+            "EndTradeDrawdown": 0
+          }
+        ]
       },
-      "ClosedTrades": [
-        {
-          "Symbol": {
-            "Value": "string",
-            "ID": "string",
-            "Permtick": "string"
-          },
-          "EntryTime": "2021-11-26T15:18:27.693Z",
-          "EntryPrice": 0,
-          "Direction": "Long",
-          "Quantity": 0,
-          "ExitTime": "2021-11-26T15:18:27.693Z",
-          "ExitPrice": 0,
-          "ProfitLoss": 0,
-          "TotalFees": 0,
-          "MAE": 0,
-          "MFE": 0,
-          "Duration": "string",
-          "EndTradeDrawdown": 0
-        }
-      ]
-    },
-    "runtimeStatistics": {
-      "Equity": "$100.00",
-      "Fees": "-$100.00",
-      "Holdings": "$100.00",
-      "Net Profit": "$100.00",
-      "Probabilistic Sharpe Ratio": "50.00%",
-      "Return": "50.00%",
-      "Unrealized": "$100.00",
-      "Volume": "$100.00"
-    },
-    "statistics": {
-      "StartDateTime": "2021-11-26T15:18:27.693Z",
-      "EndDateTime": "2021-11-26T15:18:27.693Z",
-      "TotalNumberOfTrades": 0,
-      "NumberOfWinningTrades": 0,
-      "NumberOfLosingTrades": 0,
-      "TotalProfitLoss": 0,
-      "TotalProfit": 0,
-      "TotalLoss": 0,
-      "LargestProfit": 0,
-      "LargestLoss": 0,
-      "AverageProfitLoss": 0,
-      "AverageProfit": 0,
-      "AverageLoss": 0,
-      "AverageTradeDuration": "string",
-      "AverageWinningTradeDuration": "string",
-      "AverageLosingTradeDuration": "string",
-      "MedianTradeDuration": "string",
-      "MedianWinningTradeDuration": "string",
-      "MedianLosingTradeDuration": "string",
-      "MaxConsecutiveWinningTrades": 0,
-      "MaxConsecutiveLosingTrades": 0,
-      "ProfitLossRatio": 0,
-      "WinLossRatio": 0,
-      "WinRate": 0,
-      "LossRate": 0,
-      "AverageMAE": 0,
-      "AverageMFE": 0,
-      "LargestMAE": 0,
-      "LargestMFE": 0,
-      "MaximumClosedTradeDrawdown": 0,
-      "MaximumIntraTradeDrawdown": 0,
-      "ProfitLossStandardDeviation": 0,
-      "ProfitLossDownsideDeviation": 0,
-      "ProfitFactor": 0,
-      "SharpeRatio": 0,
-      "SortinoRatio": 0,
-      "ProfitToMaxDrawdownRatio": 0,
-      "MaximumEndTradeDrawdown": 0,
-      "AverageEndTradeDrawdown": 0,
-      "MaximumDrawdownDuration": "string",
-      "TotalFees": 0
-    },
-    "totalPerformance": {
-      "TradeStatistics": {
-        "StartDateTime": "2021-11-26T15:18:27.693Z",
-        "EndDateTime": "2021-11-26T15:18:27.693Z",
-        "TotalNumberOfTrades": 0,
-        "NumberOfWinningTrades": 0,
-        "NumberOfLosingTrades": 0,
-        "TotalProfitLoss": 0,
-        "TotalProfit": 0,
-        "TotalLoss": 0,
-        "LargestProfit": 0,
-        "LargestLoss": 0,
-        "AverageProfitLoss": 0,
-        "AverageProfit": 0,
-        "AverageLoss": 0,
-        "AverageTradeDuration": "string",
-        "AverageWinningTradeDuration": "string",
-        "AverageLosingTradeDuration": "string",
-        "MedianTradeDuration": "string",
-        "MedianWinningTradeDuration": "string",
-        "MedianLosingTradeDuration": "string",
-        "MaxConsecutiveWinningTrades": 0,
-        "MaxConsecutiveLosingTrades": 0,
-        "ProfitLossRatio": 0,
-        "WinLossRatio": 0,
-        "WinRate": 0,
-        "LossRate": 0,
-        "AverageMAE": 0,
-        "AverageMFE": 0,
-        "LargestMAE": 0,
-        "LargestMFE": 0,
-        "MaximumClosedTradeDrawdown": 0,
-        "MaximumIntraTradeDrawdown": 0,
-        "ProfitLossStandardDeviation": 0,
-        "ProfitLossDownsideDeviation": 0,
-        "ProfitFactor": 0,
-        "SharpeRatio": 0,
-        "SortinoRatio": 0,
-        "ProfitToMaxDrawdownRatio": 0,
-        "MaximumEndTradeDrawdown": 0,
-        "AverageEndTradeDrawdown": 0,
-        "MaximumDrawdownDuration": "string",
-        "TotalFees": 0
-      },
-      "PortfolioStatistics": {
-        "RiskFreeRate": 0,
-        "AverageWinRate": 0,
-        "AverageLossRate": 0,
-        "ProfitLossRatio": 0,
-        "WinRate": 0,
-        "LossRate": 0,
-        "Expectancy": 0,
-        "CompoundingAnnualReturn": 0,
-        "Drawdown": 0,
-        "TotalNetProfit": 0,
-        "SharpeRatio": 0,
-        "ProbabilisticSharpeRatio": 0,
-        "Alpha": 0,
-        "Beta": 0,
-        "AnnualStandardDeviation": 0,
-        "AnnualVariance": 0,
-        "InformationRatio": 0,
-        "TrackingError": 0,
-        "TreynorRatio": 0
-      },
-      "ClosedTrades": [
-        {
-          "Symbol": {
-            "Value": "string",
-            "ID": "string",
-            "Permtick": "string"
-          },
-          "EntryTime": "2021-11-26T15:18:27.693Z",
-          "EntryPrice": 0,
-          "Direction": "Long",
-          "Quantity": 0,
-          "ExitTime": "2021-11-26T15:18:27.693Z",
-          "ExitPrice": 0,
-          "ProfitLoss": 0,
-          "TotalFees": 0,
-          "MAE": 0,
-          "MFE": 0,
-          "Duration": "string",
-          "EndTradeDrawdown": 0
-        }
-      ]
-    },
-    "signals": "string",
-    "nodeName": "string",
-    "outOfSampleMaxEndDate": "2021-11-26T15:18:27.693Z",
-    "outOfSampleDays": 0
-  },
+      "nodeName": "string",
+      "outOfSampleMaxEndDate": "2021-11-26T15:18:27.693Z",
+      "outOfSampleDays": 0
+    }
+  ],
   "debugging": true,
   "success": true,
   "errors": [
@@ -376,7 +345,7 @@ The <code>/backtests/create</code> API provides a response in the following form
 <td width="20%">tradeableDates</td> <td> <code>integer</code> <br/> Number of traadeable days.</td>
 </tr>
 <tr>
-<td width="20%">researchGuide</td> <td> <code>ResearchGuide object</code> <br/> The API method call could not be completed as requested.</td>
+<td width="20%">researchGuide</td> <td> <code>ResearchGuide object</code> <br/> A power gauge for backtests, time and parameters to estimate the overfitting risk.</td>
 </tr>
 <tr>
 <td width="20%">backtestStart</td> <td> <code>string($date-time)</code> <br/> The starting time of the backtest.</td>
@@ -403,19 +372,13 @@ The <code>/backtests/create</code> API provides a response in the following form
 <td width="20%">progress</td> <td> <code>number</code> <br/> Progress of the backtest in percent 0-1.</td>
 </tr>
 <tr>
-<td width="20%">profitLoss</td> <td> <code>object</code> <br/> time-PnL pairs of profit/loss at a timestamp.</td>
-</tr>
-<tr>
 <td width="20%">hasInitializeError</td> <td> <code>boolean</code> <br/> Indicates if the backtest has error during initialization.</td>
 </tr>
 <tr>
 <td width="20%">charts</td> <td> <code>Chart object</code> <br/> Charts updates for the live algorithm since the last result packet.</td>
 </tr>
 <tr>
-<td width="20%">parameterSet</td> <td> <code>ParameterSet Array</code> <br/> Parameters used in the backtest.</td>
-</tr>
-<tr>
-<td width="20%">alphaRuntimeStatistics</td> <td> <code>AlphaRuntimeStatistics object</code> <br/> Contains insight population run time statistics.</td>
+<td width="20%">parameterSet</td> <td> <code>ParameterSet object</code> <br/> Parameters used in the backtest.</td>
 </tr>
 <tr>
 <td width="20%">rollingWindow</td> <td> <code>AlgorithmPerformance object</code> <br/> Rolling window detailed statistics.</td>
@@ -427,10 +390,7 @@ The <code>/backtests/create</code> API provides a response in the following form
 <td width="20%">statistics</td> <td> <code>TradeStatistics object</code> <br/> Statistics information sent during the algorithm operations.</td>
 </tr>
 <tr>
-<td width="20%">totalPerformance</td> <td> <code>AlgorithmPerformance object</code> <br/> The AlgorithmPerformance class is a wrapper for TradeStatistics and PortfolioStatistics.</td>
-</tr>
-<tr>
-<td width="20%">signals</td> <td> <code>string</code> <br/> None</td>
+<td width="20%">totalPerformance</td> <td> <code>AlgorithmPerformance object</code> <br/> The algorithm performance statistics.</td>
 </tr>
 <tr>
 <td width="20%">nodeName</td> <td> <code>string</code> <br/> The backtest node name.</td>
@@ -467,7 +427,6 @@ The <code>/backtests/create</code> API provides a response in the following form
   "error": "string",
   "stacktrace": "string",
   "progress": 0,
-  "profitLoss": ,
   "hasInitializeError": true,
   "charts": {
     "Name": "string",
@@ -487,40 +446,9 @@ The <code>/backtests/create</code> API provides a response in the following form
       "ScatterMarkerSymbol": "none"
     }
   },
-  "parameterSet": [
-    {
-      "name": "string",
-      "value": 0
-    }
-  ],
-  "alphaRuntimeStatistics": {
-    "MeanPopulationScore": {
-      "UpdatedTimeUtc": "2021-11-26T15:18:27.693Z",
-      "Direction": 0,
-      "Magnitude": 0,
-      "IsFinalScore": true
-    },
-    "RollingAveragedPopulationScore": {
-      "UpdatedTimeUtc": "2021-11-26T15:18:27.693Z",
-      "Direction": 0,
-      "Magnitude": 0,
-      "IsFinalScore": true
-    },
-    "LongCount": "string",
-    "ShortCount": "string",
-    "LongShortRatio": 0,
-    "TotalAccumulatedEstimatedAlphaValue": 0,
-    "KellyCriterionEstimate": 0,
-    "KellyCriterionProbabilityValue": 0,
-    "FitnessScore": 0,
-    "PortfolioTurnover": 0,
-    "ReturnOverMaxDrawdown": 0,
-    "SortinoRatio": 0,
-    "EstimatedMonthlyAlphaValue": 0,
-    "TotalInsightsGenerated": "string",
-    "TotalInsightsClosed": "string",
-    "TotalInsightsAnalysisCompleted": "string",
-    "MeanPopulationEstimatedInsightValue": 0
+  "parameterSet": {
+    "name": "string",
+    "value": 0
   },
   "rollingWindow": {
     "TradeStatistics": {
@@ -749,7 +677,6 @@ The <code>/backtests/create</code> API provides a response in the following form
       }
     ]
   },
-  "signals": "string",
   "nodeName": "string",
   "outOfSampleMaxEndDate": "2021-11-26T15:18:27.693Z",
   "outOfSampleDays": 0
@@ -760,14 +687,14 @@ The <code>/backtests/create</code> API provides a response in the following form
 </table><table class="table qc-table">
 <thead>
 <tr>
-<th colspan="2"><code>ResearchGuide</code> Model - The API method call could not be completed as requested.</th>
+<th colspan="2"><code>ResearchGuide</code> Model - A power gauge for backtests, time and parameters to estimate the overfitting risk.</th>
 </tr>
 </thead>
 <tr>
 <td width="20%">minutes</td> <td> <code>integer</code> <br/> Number of minutes used in developing the current backtest.</td>
 </tr>
 <tr>
-<td width="20%">backtestCount</td> <td> <code>integer</code> <br/> Backtest count of the current backtest in the project.</td>
+<td width="20%">backtestCount</td> <td> <code>integer</code> <br/> The quantity of backtests run in the project.</td>
 </tr>
 <tr>
 <td width="20%">parameters</td> <td> <code>integer</code> <br/> Number of parameters detected.</td>
@@ -914,130 +841,6 @@ The <code>/backtests/create</code> API provides a response in the following form
 {
   "name": "string",
   "value": 0
-}</pre>
-</div>
-</td>
-</tr>
-</table><table class="table qc-table">
-<thead>
-<tr>
-<th colspan="2"><code>AlphaRuntimeStatistics</code> Model - Contains insight population run time statistics.</th>
-</tr>
-</thead>
-<tr>
-<td width="20%">MeanPopulationScore</td> <td> <code>InsightScore object</code> <br/> Defines the scores given to a particular insight.</td>
-</tr>
-<tr>
-<td width="20%">RollingAveragedPopulationScore</td> <td> <code>InsightScore object</code> <br/> Defines the scores given to a particular insight.</td>
-</tr>
-<tr>
-<td width="20%">LongCount</td> <td> <code>string</code> <br/> Gets the total number of insights with an up direction.</td>
-</tr>
-<tr>
-<td width="20%">ShortCount</td> <td> <code>string</code> <br/> Gets the total number of insights with a down direction.</td>
-</tr>
-<tr>
-<td width="20%">LongShortRatio</td> <td> <code>number</code> <br/> The ratio of InsightDirection.Up over InsightDirection.Down.</td>
-</tr>
-<tr>
-<td width="20%">TotalAccumulatedEstimatedAlphaValue</td> <td> <code>number</code> <br/> The total accumulated estimated value of trading all insights.</td>
-</tr>
-<tr>
-<td width="20%">KellyCriterionEstimate</td> <td> <code>number</code> <br/> Score of the strategy's insights predictive power.</td>
-</tr>
-<tr>
-<td width="20%">KellyCriterionProbabilityValue</td> <td> <code>number</code> <br/> The p-value or probability value of the KellyCriterionEstimate.</td>
-</tr>
-<tr>
-<td width="20%">FitnessScore</td> <td> <code>number</code> <br/> Score of the strategy's performance, and suitability for the Alpha Stream Market.</td>
-</tr>
-<tr>
-<td width="20%">PortfolioTurnover</td> <td> <code>number</code> <br/> Measurement of the strategies trading activity with respect to the portfolio value. Calculated as the sales volume with respect to the average total portfolio value.</td>
-</tr>
-<tr>
-<td width="20%">ReturnOverMaxDrawdown</td> <td> <code>number</code> <br/> Provides a risk adjusted way to factor in the returns and drawdown of the strategy. It is calculated by dividing the Portfolio Annualized Return by the Maximum Drawdown seen during the backtest.</td>
-</tr>
-<tr>
-<td width="20%">SortinoRatio</td> <td> <code>number</code> <br/> Gives a relative picture of the strategy volatility. It is calculated by taking a portfolio's annualized rate of return and subtracting the risk free rate of return.</td>
-</tr>
-<tr>
-<td width="20%">EstimatedMonthlyAlphaValue</td> <td> <code>number</code> <br/> Suggested Value of the Alpha On A Monthly Basis For Licensing.</td>
-</tr>
-<tr>
-<td width="20%">TotalInsightsGenerated</td> <td> <code>string</code> <br/> The total number of insight signals generated by the algorithm.</td>
-</tr>
-<tr>
-<td width="20%">TotalInsightsClosed</td> <td> <code>string</code> <br/> The total number of insight signals generated by the algorithm.</td>
-</tr>
-<tr>
-<td width="20%">TotalInsightsAnalysisCompleted</td> <td> <code>string</code> <br/> The total number of insight signals generated by the algorithm.</td>
-</tr>
-<tr>
-<td width="20%">MeanPopulationEstimatedInsightValue</td> <td> <code>number</code> <br/> Gets the mean estimated insight value.</td>
-</tr>
-<tr>
-<td width="20%">Example</td>
-<td>
-<div class="cli section-example-container"><pre>
-{
-  "MeanPopulationScore": {
-    "UpdatedTimeUtc": "2021-11-26T15:18:27.693Z",
-    "Direction": 0,
-    "Magnitude": 0,
-    "IsFinalScore": true
-  },
-  "RollingAveragedPopulationScore": {
-    "UpdatedTimeUtc": "2021-11-26T15:18:27.693Z",
-    "Direction": 0,
-    "Magnitude": 0,
-    "IsFinalScore": true
-  },
-  "LongCount": "string",
-  "ShortCount": "string",
-  "LongShortRatio": 0,
-  "TotalAccumulatedEstimatedAlphaValue": 0,
-  "KellyCriterionEstimate": 0,
-  "KellyCriterionProbabilityValue": 0,
-  "FitnessScore": 0,
-  "PortfolioTurnover": 0,
-  "ReturnOverMaxDrawdown": 0,
-  "SortinoRatio": 0,
-  "EstimatedMonthlyAlphaValue": 0,
-  "TotalInsightsGenerated": "string",
-  "TotalInsightsClosed": "string",
-  "TotalInsightsAnalysisCompleted": "string",
-  "MeanPopulationEstimatedInsightValue": 0
-}</pre>
-</div>
-</td>
-</tr>
-</table><table class="table qc-table">
-<thead>
-<tr>
-<th colspan="2"><code>InsightScore</code> Model - Defines the scores given to a particular insight</th>
-</tr>
-</thead>
-<tr>
-<td width="20%">UpdatedTimeUtc</td> <td> <code>string($date-time)</code> <br/> The time these scores were last updated.</td>
-</tr>
-<tr>
-<td width="20%">Direction</td> <td> <code>number</code> <br/> The direction score.</td>
-</tr>
-<tr>
-<td width="20%">Magnitude</td> <td> <code>number</code> <br/> The magnitude score.</td>
-</tr>
-<tr>
-<td width="20%">IsFinalScore</td> <td> <code>boolean</code> <br/> Is the insight past its expiry time and score can be finalized.</td>
-</tr>
-<tr>
-<td width="20%">Example</td>
-<td>
-<div class="cli section-example-container"><pre>
-{
-  "UpdatedTimeUtc": "2021-11-26T15:18:27.693Z",
-  "Direction": 0,
-  "Magnitude": 0,
-  "IsFinalScore": true
 }</pre>
 </div>
 </td>
