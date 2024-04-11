@@ -19,17 +19,17 @@ if (response.IsSuccess)
     Debug("Order updated successfully");
 }</pre>
 <pre class="python"># Create a new order and save the order ticket
-ticket = self.MarketOnOpenOrder("SLV", 25, "original tag")
+ticket = self.market_on_open_order("SLV", 25, "original tag")
 
 # Update the order
 update_settings = UpdateOrderFields()
-update_settings.Quantity = 50
-update_settings.Tag = "new tag"
-response = ticket.Update(update_settings)
+update_settings.quantity = 50
+update_settings.tag = "new tag"
+response = ticket.update(update_settings)
 
 # Check if the update was successful
-if response.IsSuccess:
-    self.Debug("Order updated successfully")</pre>
+if response.is_success:
+    self.debug("Order updated successfully")</pre>
 </div>
 
 <?

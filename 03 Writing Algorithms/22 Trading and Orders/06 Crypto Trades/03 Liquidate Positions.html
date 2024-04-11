@@ -23,22 +23,22 @@ private void LiquidateCrypto(Symbol symbol)
         MarketOrder(symbol, -quantity);
     }
 }</pre>
-<pre class="python">def OnData(self, data: Slice):
+<pre class="python">def on_data(self, data: Slice):
     self.liquidate_crypto(self.symbol)
 
 def liquidate_crypto(self, symbol):
-    crypto = self.Securities[symbol]
-    base_currency = crypto.BaseCurrency
+    crypto = self.securities[symbol]
+    base_currency = crypto.base_currency
 
     # Avoid negative amount after liquidate
-    quantity = min(crypto.Holdings.Quantity, base_currency.Amount)
+    quantity = min(crypto.holdings.quantity, base_currency.amount)
         
     # Round down to observe the lot size
-    lot_size = crypto.SymbolProperties.LotSize;
+    lot_size = crypto.symbol_properties.lot_size;
     quantity = (round(quantity / lot_size) - 1) * lot_size
 
-    if self.IsValidOrderSize(crypto, quantity):
-        self.MarketOrder(symbol, -quantity)</pre>
+    if self.is_valid_order_size(crypto, quantity):
+        self.market_order(symbol, -quantity)</pre>
 </div>
 
 <p>The order fees don't respect the lot size. When you try to liquidate a position, the absolute value of the base currency quantity can be less than the lot size and greater than zero. In this case, your algorithm holds a position that you can't liquidate and <code class="python">self.</code><code>Portfolio[symbol].Invested</code> is <code class="python">True</code><code class="csharp">true</code>. The following code snippet demonstrates how to determine if you can liquidate a position:</p>
