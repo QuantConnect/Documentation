@@ -36,25 +36,25 @@ public class MyVolatilityModel : BaseVolatilityModel
     }
 }</pre>
     <pre class="python"># In the Initialize method, set the custom volatility model of the underlying security
-underlying_security.VolatilityModel = MyVolatilityModel()
+underlying_security.volatility_model = MyVolatilityModel()
 
 # Define the custom volatility model outside of the algorithm
 class MyVolatilityModel(BaseVolatilityModel):
     Volatility: float = 0
 
-    def SetSubscriptionDataConfigProvider(self,
+    def set_subscription_data_config_provider(self,
          subscriptionDataConfigProvider: ISubscriptionDataConfigProvider) -&gt; None:
         SubscriptionDataConfigProvider = subscriptionDataConfigProvider
 
-    def Update(self, security: Security, data: BaseData) -&gt; None:
+    def update(self, security: Security, data: BaseData) -&gt; None:
         pass
 
-    def GetHistoryRequirements(self,
+    def get_history_requirements(self,
          security: Security,
          utcTime: datetime,
          resolution: Resolution = None,
          barCount: int = None) -&gt; List[HistoryRequest]:
-        return super().GetHistoryRequirements(security, utcTime, resolution, barCount)</pre>
+        return super().get_history_requirements(security, utcTime, resolution, barCount)</pre>
 </div>
 
 <p>For a full example algorithm, see <span class='python'><a href='https://www.quantconnect.com/terminal/processCache?request=embedded_backtest_3b7de3817c33cdba298834453f0b6e9a.html'>this backtest</a></span><span class='csharp'><a href='https://www.quantconnect.com/terminal/processCache?request=embedded_backtest_37271f7c266582fdf6cb69659765e2e9.html'>this backtest</a></span>.</p>
