@@ -8,10 +8,10 @@ _rsi = new RelativeStrengthIndex(10, MovingAverageType.Simple);
 // Register the daily High price data to automatically update the indicator
 RegisterIndicator(symbol, _rsi, Resolution.Daily, Field.High);</pre>
 <pre class="python"># Define a 10-period RSI with indicator constructor
-self.rsi = RelativeStrengthIndex(10, MovingAverageType.Simple)
+self.rsi = RelativeStrengthIndex(10, MovingAverageType.simple)
 
 # Register the daily High price data to automatically update the indicator
-self.RegisterIndicator(self.symbol, self.rsi, Resolution.Daily, Field.High)</pre>
+self.register_indicator(self.symbol, self.rsi, Resolution.DAILY, Field.high)</pre>
 </div>
 
 <p>The <code>RegisterIndicator</code> method can accept a <code class="python">timedelta</code><code class="csharp">TimeSpan</code>, <code>Resolution</code>, or an unregistered consolidator. If you apply the indicator to a security in a dynamic universe, provide a consolidator so that you can remove it when your algorithm removes the security from the universe.</p>
