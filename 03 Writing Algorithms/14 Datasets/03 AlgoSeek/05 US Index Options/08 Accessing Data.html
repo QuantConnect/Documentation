@@ -1,16 +1,16 @@
 <p>To get the current US Index Options data, index the <b>OptionChains</b> property of the current <a href="/docs/v2/writing-algorithms/key-concepts/time-modeling/timeslices"><b>Slice</b></a> with the canonical Index Option <b>Symbol</b>. Slice objects deliver unique events to your algorithm as they happen, but the <b>Slice</b> may not contain data for your Index Option at every time step.</p>
 
 <div class="section-example-container">
-<pre class="python">def OnData(self, slice: Slice) -&gt; None:
-    standard_chain = slice.OptionChains.get(self.standard_option_symbol)
+<pre class="python">def on_data(self, slice: Slice) -&gt; None:
+    standard_chain = slice.option_chains.get(self.standard_option_symbol)
     if standard_chain:
         for contract in standard_chain:
-            self.Log(f"{contract.Symbol} price at {slice.Time}: {contract.LastPrice}")
+            self.log(f"{contract.symbol} price at {slice.time}: {contract.last_price}")
 
-    weekly_chain = slice.OptionChains.get(self.weekly_option_symbol)
+    weekly_chain = slice.option_chains.get(self.weekly_option_symbol)
     if weekly_chain:
         for contract in weekly_chain:
-            self.Log(f"{contract.Symbol} price at {slice.Time}: {contract.LastPrice}")</pre>
+            self.log(f"{contract.symbol} price at {slice.time}: {contract.last_price}")</pre>
 <pre class="csharp">public override void OnData(Slice slice)
 {
     if (slice.OptionChains.ContainsKey(_standardOptionSymbol))
@@ -35,10 +35,10 @@
 
 <p>You can also iterate through all of the <b>OptionChain</b> objects in the current <b>Slice</b>.</p>
 <div class="section-example-container">
-<pre class="python">def OnData(self, slice: Slice) -&gt; None:
-    for canonical_symbol, chain in slice.OptionChains.items():
+<pre class="python">def on_data(self, slice: Slice) -&gt; None:
+    for canonical_symbol, chain in slice.option_chains.items():
         for contract in chain:
-            self.Log(f"{contract.Symbol} price at {slice.Time}: {contract.LastPrice}")
+            self.log(f"{contract.symbol} price at {slice.time}: {contract.last_price}")
 </pre>
 <pre class="csharp">public override void OnData(Slice slice)
 {

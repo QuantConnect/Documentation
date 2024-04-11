@@ -1,15 +1,15 @@
 <p>To select a dynamic universe of Coinbase Crypto pairs, call the <b>AddUniverse</b> method with a <b>CryptoUniverse</b> object. A <a href="/docs/v2/writing-algorithms/universes/crypto">Crypto universe</a> uses a selection function to select Crypto pairs based on their OHLCV and dollar volume of the previous day as of midnight Coordinated Universal Time (UTC).</p>
 
 <div class="section-example-container">
-<pre class="python">from QuantConnect.Data.UniverseSelection import *
+<pre class="python">from QuantConnect.Data.universe_selection import *
 
-def Initialize(self) -&gt; None:
-    self.UniverseSettings.Asynchronous = True
-    self.SetBrokerageModel(BrokerageName.Coinbase, AccountType.Cash)
-    self.universe = self.AddUniverse(CryptoUniverse.Coinbase(self.UniverseSelectionFilter))
+def initialize(self) -&gt; None:
+    self.universe_settings.asynchronous = True
+    self.set_brokerage_model(BrokerageName.COINBASE, AccountType.cash)
+    self.universe = self.add_universe(CryptoUniverse.coinbase(self.universe_selection_filter))
 
-def UniverseSelectionFilter(self, universe_day):
-    return [c.Symbol for c in universe_day if c.Volume &gt;= 100 and c.VolumeInUsd &gt; 10000]</pre>
+def universe_selection_filter(self, universe_day):
+    return [c.symbol for c in universe_day if c.volume &gt;= 100 and c.volume_in_usd &gt; 10000]</pre>
 <pre class="csharp">using QuantConnect.Data.UniverseSelection;
 
 public override void Initialize()

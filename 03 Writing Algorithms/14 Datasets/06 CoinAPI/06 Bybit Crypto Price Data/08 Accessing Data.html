@@ -1,19 +1,19 @@
 <p>To get the current Bybit Crypto Price data, index the <b>Bars</b>, <b>QuoteBars</b>, or <b>Ticks</b> properties of the current <a href="/docs/v2/writing-algorithms/key-concepts/time-modeling/timeslices"><b>Slice</b></a> with the Crypto <b>Symbol</b>. <b>Slice</b> objects deliver unique events to your algorithm as they happen, but the <b>Slice</b> may not contain data for your security at every time step. To avoid issues, check if the <b>Slice</b> contains the data you want before you index it.</p>
 
 <div class="section-example-container">
-<pre class="python">def OnData(self, slice: Slice) -&gt; None:
-    if self.symbol in slice.Bars:
-        trade_bar = slice.Bars[self.symbol]
-        self.Log(f"{self.symbol} close at {slice.Time}: {trade_bar.Close}")
+<pre class="python">def on_data(self, slice: Slice) -&gt; None:
+    if self.symbol in slice.bars:
+        trade_bar = slice.bars[self.symbol]
+        self.log(f"{self.symbol} close at {slice.time}: {trade_bar.close}")
 
-    if self.symbol in slice.QuoteBars:
-        quote_bar = slice.QuoteBars[self.symbol]
-        self.Log(f"{self.symbol} bid at {slice.Time}: {quote_bar.Bid.Close}")
+    if self.symbol in slice.quote_bars:
+        quote_bar = slice.quote_bars[self.symbol]
+        self.log(f"{self.symbol} bid at {slice.time}: {quote_bar.bid.close}")
 
-    if self.symbol in slice.Ticks:
-        ticks = slice.Ticks[self.symbol]
+    if self.symbol in slice.ticks:
+        ticks = slice.ticks[self.symbol]
         for tick in ticks:
-            self.Log(f"{self.symbol} price at {slice.Time}: {tick.Price}")</pre>
+            self.log(f"{self.symbol} price at {slice.time}: {tick.price}")</pre>
 <pre class="csharp">public override void OnData(Slice slice)
 {
     if (slice.Bars.ContainsKey(_symbol))
@@ -43,16 +43,16 @@
 <p>You can also iterate through all of the data objects in the current <b>Slice</b>.</p>
 
 <div class="section-example-container">
-<pre class="python">def OnData(self, slice: Slice) -&gt; None:
-    for symbol, trade_bar in slice.Bars.items():
-        self.Log(f"{symbol} close at {slice.Time}: {trade_bar.Close}")
+<pre class="python">def on_data(self, slice: Slice) -&gt; None:
+    for symbol, trade_bar in slice.bars.items():
+        self.log(f"{symbol} close at {slice.time}: {trade_bar.close}")
 
-    for symbol, quote_bar in slice.QuoteBars.items():
-        self.Log(f"{symbol} bid at {slice.Time}: {quote_bar.Bid.Close}")
+    for symbol, quote_bar in slice.quote_bars.items():
+        self.log(f"{symbol} bid at {slice.time}: {quote_bar.bid.close}")
 
-    for symbol, ticks in slice.Ticks.items():
+    for symbol, ticks in slice.ticks.items():
         for tick in ticks:
-            self.Log(f"{symbol} price at {slice.Time}: {tick.Price}")</pre>
+            self.log(f"{symbol} price at {slice.time}: {tick.price}")</pre>
 <pre class="csharp">public override void OnData(Slice slice)
 {
     foreach (var kvp in slice.Bars)

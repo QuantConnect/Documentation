@@ -1,20 +1,20 @@
 <p>To select a dynamic universe of US Equities based on Insider Trading data, call the <b>AddUniverse</b> method with the <b>QuiverInsiderTradingUniverse</b> class and a selection function.</p> 
 
 <div class="section-example-container">
-<pre class="python">self.AddUniverse(QuiverInsiderTradingUniverse, self.UniverseSelection)
+<pre class="python">self.add_universe(QuiverInsiderTradingUniverse, self.universe_selection)
 
-def UniverseSelection(self, alt_coarse: List[QuiverInsiderTradingUniverse]) -&gt; List[Symbol]:
+def universe_selection(self, alt_coarse: List[QuiverInsiderTradingUniverse]) -&gt; List[Symbol]:
     insider_trading_data_by_symbol = {}
 
     for datum in alt_coarse:
-        symbol = datum.Symbol
+        symbol = datum.symbol
         
         if symbol not in insider_trading_data_by_symbol:
             insider_trading_data_by_symbol[symbol] = []
         insider_trading_data_by_symbol[symbol].append(datum)
     
     return [symbol for symbol, d in insider_trading_data_by_symbol.items()
-            if len([x for x in d if x.Direction == OrderDirection.Buy]) &gt;= 3]</pre>
+            if len([x for x in d if x.direction == OrderDirection.buy]) &gt;= 3]</pre>
 <pre class="csharp">AddUniverse&lt;QuiverInsiderTradingUniverse&gt;(altCoarse =&gt;
 {
     var insiderTradingDataBySymbol = new Dictionary&lt;Symbol, List&lt;QuiverInsiderTradingUniverse&gt;&gt;();

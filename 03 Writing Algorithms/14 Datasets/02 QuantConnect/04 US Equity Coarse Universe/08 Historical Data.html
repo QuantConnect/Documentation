@@ -20,21 +20,21 @@ foreach (var fundamental in collectionHistory)
     // Cast to Fundamental is required
     var highestMarketCap = fundamental.OfType&lt;Fundamental&gt;().OrderByDescending(x =&gt; x.MarketCap).Take(5);
 }</pre>
-     <pre class="python">ibm = Symbol.Create("IBM", SecurityType.Equity, Market.USA)
+     <pre class="python">ibm = Symbol.create("IBM", SecurityType.EQUITY, Market.USA)
 
 # DataFrame objects
-df_history = qb.History(Fundamental, ibm, timedelta(30))
+df_history = qb.history(Fundamental, ibm, timedelta(30))
 
 # Fundamental objects
-fundamental_history= self.History[Fundamental](ibm, timedelta(30))
+fundamental_history= self.history[Fundamental](ibm, timedelta(30))
 
 # Fundamentals objects for all US Equities (including delisted companies)
-fundamentals_history = self.History[Fundamentals](timedelta(30))
+fundamentals_history = self.history[Fundamentals](timedelta(30))
 
 # Multi-index Series objects of list of Fundamental objects
-series_history = self.History(self.universe, 30, Resolution.Daily)
+series_history = self.history(self.universe, 30, Resolution.daily)
 for (universe_symbol, time), fundamental in series_history.items():
-    highest_market_cap = sorted(fundamental, key=lambda x: x.MarketCap)[-5:]</pre>
+    highest_market_cap = sorted(fundamental, key=lambda x: x.market_cap)[-5:]</pre>
 </div>
 
 <h4>Historical Universe Data in Research</h4>
@@ -49,10 +49,10 @@ foreach (var fundamentals in universeHistory)
         Console.WriteLine($"{fundamental.Symbol} market cap at {fundamental.EndTime}: {fundamental.MarketCap}");
     }
 }</pre>
-     <pre class="python">universe_history = qb.UniverseHistory(universe, qb.Time-timedelta(30), qb.Time)
+     <pre class="python">universe_history = qb.universe_history(universe, qb.time-timedelta(30), qb.time)
 for (universe_symbol, time), fundamentals in universe_history.items():
     for fundamental in fundamentals:
-        print(f"{fundamental.Symbol} market cap at {fundamental.EndTime}: {fundamental.MarketCap}")</pre>
+        print(f"{fundamental.symbol} market cap at {fundamental.end_time}: {fundamental.market_cap}")</pre>
 </div>
 
 <p>For more information about historical US Equity fundamental data, see <a href="/docs/v2/research-environment/datasets/equity-fundamental-data">Equity Fundamental Data</a>.</p>

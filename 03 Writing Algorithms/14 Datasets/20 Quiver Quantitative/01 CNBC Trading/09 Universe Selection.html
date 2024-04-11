@@ -1,13 +1,13 @@
 <p>To select a dynamic universe of US Equities based on CNBC Trading data, call the <b>AddUniverse</b> method with the <b>QuiverCNBCsUniverse</b> class and a selection function.</p> 
 
 <div class="section-example-container">
-<pre class="python">self.AddUniverse(QuiverCNBCsUniverse, self.UniverseSelection)
+<pre class="python">self.add_universe(QuiverCNBCsUniverse, self.universe_selection)
 
-def UniverseSelection(self, alt_coarse: List[QuiverCNBCsUniverse]) -&gt; List[Symbol]:
+def universe_selection(self, alt_coarse: List[QuiverCNBCsUniverse]) -&gt; List[Symbol]:
     cnbc_data_by_symbol = {}
 
     for datum in alt_coarse:
-        symbol = datum.Symbol
+        symbol = datum.symbol
         
         if symbol not in cnbc_data_by_symbol:
             cnbc_data_by_symbol[symbol] = []
@@ -15,7 +15,7 @@ def UniverseSelection(self, alt_coarse: List[QuiverCNBCsUniverse]) -&gt; List[Sy
     
     # define our selection criteria
     return [symbol for symbol, d in cnbc_data_by_symbol.items()
-            if len([x for x in d if x.Direction == OrderDirection.Buy]) &gt;= 3]</pre>
+            if len([x for x in d if x.direction == OrderDirection.buy]) &gt;= 3]</pre>
 <pre class="csharp">AddUniverse&lt;QuiverCNBCsUniverse&gt;(altCoarse =&gt;
 {
     var cnbcDataBySymbol = new Dictionary&lt;Symbol, List&lt;QuiverCNBCsUniverse&gt;&gt;();

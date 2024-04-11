@@ -3,17 +3,17 @@
 <p>To get the default value of the dataset, use the <b>Value</b> property. To get the value of a specific column in the dataset, call the <b>GetStorageDictionary</b> method and index the result with the column name.</p>
 
 <div class="section-example-container">
-<pre class="python">def OnData(self, slice: Slice) -&gt; None:
-    if slice.ContainsKey(self.pe_ratio_symbol):
-        value = slice[self.pe_ratio_symbol].Value
-        self.Log(f"{self.pe_ratio_symbol} PE ratio at {slice.Time}: {value}")
+<pre class="python">def on_data(self, slice: Slice) -&gt; None:
+    if slice.contains_key(self.pe_ratio_symbol):
+        value = slice[self.pe_ratio_symbol].value
+        self.log(f"{self.pe_ratio_symbol} PE ratio at {slice.time}: {value}")
 
-    if slice.ContainsKey(self.position_change_symbol):
+    if slice.contains_key(self.position_change_symbol):
         data_point = slice[self.position_change_symbol]
-        open_interest_change = data_point.Value
-        storage_dictionary = data_point.GetStorageDictionary()
+        open_interest_change = data_point.value
+        storage_dictionary = data_point.get_storage_dictionary()
         longs_change = storage_dictionary["noncommercial longs - change"]        
-        self.Log(f"{self.position_change_symbol} open interest change at {slice.Time}: {open_interest_change}")</pre>
+        self.log(f"{self.position_change_symbol} open interest change at {slice.time}: {open_interest_change}")</pre>
 <pre class="csharp">public override void OnData(Slice slice)
 {
     if (slice.ContainsKey(_peRatioSymbol))
@@ -36,12 +36,12 @@
 <p>To iterate through all of the dataset objects in the current <b>Slice</b>, call the <b>Get</b> method.</p>
 
 <div class="section-example-container">
-<pre class="python">def OnData(self, slice: Slice) -&gt; None:
-    for dataset_symbol, data_point in slice.Get(NasdaqDataLink).items():
-        self.Log(f"{dataset_symbol} PE ratio at {slice.Time}: {data_point.Value}")
+<pre class="python">def on_data(self, slice: Slice) -&gt; None:
+    for dataset_symbol, data_point in slice.get(NasdaqDataLink).items():
+        self.log(f"{dataset_symbol} PE ratio at {slice.time}: {data_point.value}")
 
-    for dataset_symbol, data_point in slice.Get(NasdaqCustomColumns).items():
-        self.Log(f"{dataset_symbol} value at {slice.Time}: {data_point.Value}")</pre>
+    for dataset_symbol, data_point in slice.get(NasdaqCustomColumns).items():
+        self.log(f"{dataset_symbol} value at {slice.time}: {data_point.value}")</pre>
 <pre class="csharp">public override void OnData(Slice slice)
 {
     foreach (var kvp in slice.Get&lt;NasdaqDataLink&gt;())

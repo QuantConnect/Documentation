@@ -1,14 +1,14 @@
 <p>To get the current Corporate Buybacks data, index the current <a href="/docs/v2/writing-algorithms/key-concepts/time-modeling/timeslices"><b>Slice</b></a> with the dataset <b>Symbol</b>. Slice objects deliver unique events to your algorithm as they happen, but the <b>Slice</b> may not contain data for your dataset at every time step. To avoid issues, check if the <b>Slice</b> contains the data you want before you index it.</p>
 
 <div class="section-example-container">
-<pre class="python">def OnData(self, slice: Slice) -&gt; None:
-    if slice.ContainsKey(self.intention_symbol):
+<pre class="python">def on_data(self, slice: Slice) -&gt; None:
+    if slice.contains_key(self.intention_symbol):
         data_point = slice[self.intention_symbol]
-        self.Log(f"{self.intention_symbol} intention amount at {slice.Time}: {data_point.Amount}")
+        self.log(f"{self.intention_symbol} intention amount at {slice.time}: {data_point.amount}")
 
-    if slice.ContainsKey(self.transaction_symbol):
+    if slice.contains_key(self.transaction_symbol):
         data_point = slice[self.transaction_symbol]
-        self.Log(f"{self.transaction_symbol} transaction amount at {slice.Time}: {data_point.Amount}")</pre>
+        self.log(f"{self.transaction_symbol} transaction amount at {slice.time}: {data_point.amount}")</pre>
 <pre class="csharp">public override void OnData(Slice slice)
 {
     if (slice.ContainsKey(_intentionSymbol))
@@ -29,12 +29,12 @@
 <p>To iterate through all of the dataset objects in the current <b>Slice</b>, call the <b>Get</b> method.</p>
 
 <div class="section-example-container">
-<pre class="python">def OnData(self, slice: Slice) -&gt; None:
-    for dataset_symbol, data_point in slice.Get(SmartInsiderIntention).items():
-        self.Log(f"{dataset_symbol} intention amount at {slice.Time}: {data_point.Amount}")
+<pre class="python">def on_data(self, slice: Slice) -&gt; None:
+    for dataset_symbol, data_point in slice.get(SmartInsiderIntention).items():
+        self.log(f"{dataset_symbol} intention amount at {slice.time}: {data_point.amount}")
 
-    for dataset_symbol, data_point in slice.Get(SmartInsiderTransaction).items():
-        self.Log(f"{dataset_symbol} transaction amount at {slice.Time}: {data_point.Amount}")
+    for dataset_symbol, data_point in slice.get(SmartInsiderTransaction).items():
+        self.log(f"{dataset_symbol} transaction amount at {slice.time}: {data_point.amount}")
 </pre>
 <pre class="csharp">public override void OnData(Slice slice)
 {

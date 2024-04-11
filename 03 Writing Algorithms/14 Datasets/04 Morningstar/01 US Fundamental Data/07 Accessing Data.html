@@ -1,8 +1,8 @@
 <p>If you add a <a href="/docs/v2/writing-algorithms/universes/equity/fundamental-universes">fundamental universe</a> to your algorithm, you can access fundamental data in the universe selection function.</p>
 
 <div class="section-example-container">
-<pre class="python">def FundamentalFunction(self, fundamental: List[Fundamental]) -&gt; List[Symbol]:
-    return [f.Symbol for f in fundamental if f.Price &gt; 10 f.ValuationRatios.PERatios &gt; 30]</pre>
+<pre class="python">def fundamental_function(self, fundamental: List[Fundamental]) -&gt; List[Symbol]:
+    return [f.symbol for f in fundamental if f.price &gt; 10 f.valuation_ratios.pe_ratios &gt; 30]</pre>
 <pre class="csharp">public IEnumerable&lt;Symbol&gt; FundamentalFunction(IEnumerable&lt;Fundamental&gt; fundamental)
 {
     return fundamental.Where(f =&gt; f.Price &gt; 10 &amp;&amp; f.ValuationRatios.PERatios &gt; 30).Select(f =&gt; f.Symbol);
@@ -12,7 +12,7 @@
 <p>To get fundamental data for Equities in your algorithm, use the <b>Fundamentals</b> property of the <b>Equity</b> objects. The fundamental data represent the corporate fundamentals for the current algorithm time.</p>
 
 <div class="section-example-container">
-<pre class="python">fundamentals = self.Securities[symbol].Fundamentals</pre>
+<pre class="python">fundamentals = self.securities[symbol].fundamentals</pre>
 <pre class="csharp">var fundamentals = Securities[symbol].Fundamentals;</pre>
 </div>
 
@@ -26,10 +26,10 @@ var ibmFundamental = Fundamentals(ibm);
 var nb = QuantConnect.Symbol.Create("NB", SecurityType.Equity, Market.USA);
 var fundamentals = Fundamentals(new List&lt;Symbol&gt;{ nb, ibm }).ToList();</pre>
         <pre class="python"># Single asset
-ibm = Symbol.Create("IBM", SecurityType.Equity, Market.USA)
-ibm_fundamental = self.Fundamentals(ibm)
+ibm = Symbol.create("IBM", SecurityType.EQUITY, Market.USA)
+ibm_fundamental = self.fundamentals(ibm)
 
 # Multiple assets
-nb = Symbol.Create("NB", SecurityType.Equity, Market.USA)
-fundamentals = self.Fundamentals([ nb, ibm ])</pre>
+nb = Symbol.create("NB", SecurityType.EQUITY, Market.USA)
+fundamentals = self.fundamentals([ nb, ibm ])</pre>
 </div>

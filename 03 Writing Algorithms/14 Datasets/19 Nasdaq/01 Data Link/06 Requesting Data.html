@@ -2,26 +2,26 @@
 
 <div class="section-example-container">
 <pre class="python">class NasdaqDataLinkDataAlgorithm(QCAlgorithm):
-    def Initialize(self) -&gt; None:
-        self.SetStartDate(2022, 1, 1)
-        self.SetEndDate(2022, 7, 1)
-        self.SetCash(100000)
+    def initialize(self) -&gt; None:
+        self.set_start_date(2022, 1, 1)
+        self.set_end_date(2022, 7, 1)
+        self.set_cash(100000)
 
         # For premium datasets, provide your API Key
-        # NasdaqDataLink.SetAuthCode(self.GetParameter("nasdaq-data-link-api-key"))
+        # NasdaqDataLink.set_auth_code(self.get_parameter("nasdaq-data-link-api-key"))
 
-        self.pe_ratio_symbol = self.AddData(NasdaqDataLink, "MULTPL/SP500_PE_RATIO_MONTH", Resolution.Daily).Symbol
+        self.pe_ratio_symbol = self.add_data(NasdaqDataLink, "MULTPL/SP500_PE_RATIO_MONTH", Resolution.daily).symbol
         # This dataset has one data column ("Value")
         # Source : https://data.nasdaq.com/data/MULTPL/SP500_PE_RATIO_MONTH-sp-500-pe-ratio-by-month
 
-        self.position_change_symbol = self.AddData(NasdaqCustomColumns, "CFTC/066393_FO_L_CHG", Resolution.Daily).Symbol
+        self.position_change_symbol = self.add_data(NasdaqCustomColumns, "CFTC/066393_FO_L_CHG", Resolution.daily).symbol
         # This dataset has multiple data columns
         # Source: https://data.nasdaq.com/data/CFTC/066393_FO_L_CHG-commitment-of-traders-propane-argus-far-east-mini-ifed-futures-and-options-change-in-positions-legacy-format-066393
 
 class NasdaqCustomColumns(NasdaqDataLink):
     def __init__(self) -&gt; None:
         # Select the column "open interest - change".
-        self.ValueColumnName = "open interest - change"</pre>
+        self.value_column_name = "open interest - change"</pre>
 <pre class="csharp">namespace QuantConnect.Algorithm.CSharp.AltData
 {
     public class NasdaqDataLinkDataAlgorithm : QCAlgorithm
