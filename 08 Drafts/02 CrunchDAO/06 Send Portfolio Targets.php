@@ -9,5 +9,5 @@ include(DOCS_RESOURCES."/live-trading/signal-exports/send-portfolio-holdings.php
 <pre class="csharp">var target = new PortfolioTarget(_symbol, weight);
 var success = SignalExport.SetTargetPortfolio(target);</pre>
 <pre class="python">target = PortfolioTarget(self.symbol, weight)
-success = self.SignalExport.SetTargetPortfolio(target)</pre>
+success = self.signal_export.set_target_portfolio(target)</pre>
 </div>

@@ -30,9 +30,9 @@
     <pre class='csharp'>AddData&lt;Fred&gt;(Fred.LIBOR.OneWeekBasedOnUSD);
 // Instead of
 // AddData&lt;Fred&gt;("USD1WKD156N");</pre>
-    <pre class='python'>self.AddData(Fred, Fred.LIBOR.OneWeekBasedOnUSD)
+    <pre class='python'>self.add_data(Fred, Fred.LIBOR.one_week_based_on_usd)
 # Instead of
-# self.AddData(Fred, "USD1WKD156N")</pre>
+# self.add_data(Fred, "USD1WKD156N")</pre>
     </div>
 
     <li>Define the <a href="/docs/v2/lean-engine/contributions/datasets/key-concepts#04-Data-Sources">GetSource</a> method to point to the path of your dataset file(s).</li>
