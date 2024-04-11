@@ -2,7 +2,7 @@
 
 <div class="section-example-container">
 <pre class="csharp">security.SetFillModel(new FutureFillModel());</pre>
-<pre class="python">security.SetFillModel(FutureFillModel())</pre>
+<pre class="python">security.set_fill_model(FutureFillModel())</pre>
 </div>
 
 <?php echo file_get_contents(DOCS_RESOURCES."/reality-modeling/trade-fills/immediate-fill-model-fill-logic.html"); ?>
