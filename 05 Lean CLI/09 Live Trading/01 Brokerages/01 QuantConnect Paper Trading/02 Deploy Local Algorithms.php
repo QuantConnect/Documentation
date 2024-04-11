@@ -12,7 +12,7 @@ $dataFeedDetails = "
         </p>
         <div class='section-example-container'>
             <pre class='csharp'>SetBenchmark(x => 0);</pre>
-            <pre class='python'>self.SetBenchmark(lambda x: 0)</pre>
+            <pre class='python'>self.set_benchmark(lambda x: 0)</pre>
         </div>
 ";
 $supportsIQFeed = true;
