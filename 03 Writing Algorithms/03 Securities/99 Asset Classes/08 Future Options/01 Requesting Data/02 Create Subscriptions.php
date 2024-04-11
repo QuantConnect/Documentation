@@ -32,7 +32,7 @@
 <div class="section-example-container">
     <pre class="csharp">_futureContractSymbol = QuantConnect.Symbol.CreateFuture(Futures.Indices.SP500EMini,
     Market.CME, new DateTime(2022, 6, 17));</pre>
-    <pre class="python">self.future_contract_symbol = Symbol.CreateFuture(Futures.Indices.SP500EMini,
+    <pre class="python">self.future_contract_symbol = Symbol.create_future(Futures.indices.SP500EMini,
     Market.CME, datetime(2022, 6, 17))</pre>
 </div>
 
@@ -48,8 +48,8 @@
 <div class="section-example-container">
     <pre class="csharp">_optionContractSymbol = QuantConnect.Symbol.CreateOption(_futureContractSymbol,
     Market.CME, OptionStyle.American, OptionRight.Call, 3600, new DateTime(2022, 6, 17))</pre>
-    <pre class="python">self.option_contract_symbol = Symbol.CreateOption(self.future_contract_symbol,
-    Market.CME, OptionStyle.American, OptionRight.Call, 3600, datetime(2022, 6, 17))</pre>
+    <pre class="python">self.option_contract_symbol = Symbol.create_option(self.future_contract_symbol,
+    Market.CME, OptionStyle.AMERICAN, OptionRight.CALL, 3600, datetime(2022, 6, 17))</pre>
 </div>
 
 <p>Another way to get a Future Option contract <code>Symbol</code> is to use the <code>OptionChainProvider</code>. The <code>GetOptionContractList</code> method of <code>OptionChainProvider</code> returns a list of <code>Symbol</code> objects that reference the available Option contracts for a given underlying Future contract on a given date. The <code>Symbol</code> you pass to the method can reference any of the following Futures contracts:</p>
@@ -100,10 +100,10 @@
 var expiry = optionContractSymbols.Select(symbol =&gt; symbol.ID.Date).Min();
 var filteredSymbols = optionContractSymbols.Where(symbol =&gt; symbol.ID.Date == expiry &amp;&amp; symbol.ID.OptionRight == OptionRight.Call);
 _optionContractSymbol = filteredSymbols.OrderByDescending(symbol =&gt; symbol.ID.StrikePrice).Last();</pre>
-    <pre class="python">option_contract_symbols = self.OptionChainProvider.GetOptionContractList(self.future_contract_symbol, self.Time)
-expiry = min([symbol.ID.Date for symbol in option_contract_symbols])
-filtered_symbols = [symbol for symbol in option_contract_symbols if symbol.ID.Date == expiry and symbol.ID.OptionRight == OptionRight.Call]
-self.option_contract_symbol = sorted(filtered_symbols, key=lambda symbol: symbol.ID.StrikePrice)[0]</pre>
+    <pre class="python">option_contract_symbols = self.option_chain_provider.get_option_contract_list(self.future_contract_symbol, self.time)
+expiry = min([symbol.id.date for symbol in option_contract_symbols])
+filtered_symbols = [symbol for symbol in option_contract_symbols if symbol.id.date == expiry and symbol.id.option_right == OptionRight.call]
+self.option_contract_symbol = sorted(filtered_symbols, key=lambda symbol: symbol.id.strike_price)[0]</pre>
 </div>
 
 <h4>Subscribe to Contracts</h4>
@@ -113,8 +113,8 @@ self.option_contract_symbol = sorted(filtered_symbols, key=lambda symbol: symbol
 <div class="section-example-container">
     <pre class="csharp">var option = AddFutureOptionContract(_optionContractSymbol);
 option.PriceModel = OptionPriceModels.BinomialCoxRossRubinstein();</pre>
-    <pre class="python">option = self.AddFutureOptionContract(self.option_contract_symbol)
-option.PriceModel = OptionPriceModels.BinomialCoxRossRubinstein()</pre>
+    <pre class="python">option = self.add_future_option_contract(self.option_contract_symbol)
+option.price_model = OptionPriceModels.binomial_cox_ross_rubinstein()</pre>
 </div>
 
 <p>The <code>AddFutureOptionContract</code> method creates a subscription for a single Option contract and adds it to your <span class="new-term">user-defined</span> universe. To create a dynamic universe of Future Option contracts, add a <a href="/docs/v2/writing-algorithms/universes/future-options">Future Options universe</a>.</p>
@@ -125,8 +125,8 @@ option.PriceModel = OptionPriceModels.BinomialCoxRossRubinstein()</pre>
 <div class="section-example-container">
     <pre class="csharp">var seeder = new FuncSecuritySeeder(GetLastKnownPrices);
 SetSecurityInitializer(new BrokerageModelSecurityInitializer(BrokerageModel, seeder));</pre>
-    <pre class="python">seeder = FuncSecuritySeeder(self.GetLastKnownPrices)
-self.SetSecurityInitializer(BrokerageModelSecurityInitializer(self.BrokerageModel, seeder))</pre>
+    <pre class="python">seeder = FuncSecuritySeeder(self.get_last_known_prices)
+self.set_security_initializer(BrokerageModelSecurityInitializer(self.brokerage_model, seeder))</pre>
 </div>
 
 <h4>Supported Assets</h4>

@@ -2,7 +2,7 @@
 
 <div class="section-example-container">
     <pre class="csharp">_symbol = AddCryptoFuture("BTCUSD", market: Market.Binance).Symbol;</pre>
-    <pre class="python">self.symbol = self.AddCryptoFuture("BTCUSD", market=Market.Binance).Symbol</pre>
+    <pre class="python">self.symbol = self.add_crypto_future("BTCUSD", market=Market.binance).symbol</pre>
 </div>
 
 <?php echo file_get_contents(DOCS_RESOURCES."/securities/supported-markets.html"); ?>

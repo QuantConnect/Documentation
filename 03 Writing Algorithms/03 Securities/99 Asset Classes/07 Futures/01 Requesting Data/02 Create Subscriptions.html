@@ -6,7 +6,7 @@
 <div class="section-example-container">
     <pre class="csharp">_contractSymbol = QuantConnect.Symbol.CreateFuture(Futures.Indices.SP500EMini,
     Market.CME, new DateTime(2022, 6, 17));</pre>
-    <pre class="python">self.contract_symbol = Symbol.CreateFuture(Futures.Indices.SP500EMini,
+    <pre class="python">self.contract_symbol = Symbol.create_future(Futures.indices.SP500EMini,
     Market.CME, datetime(2022,6,17))</pre>
 </div>
 
@@ -16,9 +16,9 @@
     <pre class="csharp">var continuousFutureSymbol = QuantConnect.Symbol.Create(Futures.Indices.SP500EMini, SecurityType.Future, Market.CME);
 var contractSymbols = FutureChainProvider.GetFutureContractList(continuousFutureSymbol, Time);
 _contractSymbol = contractSymbols.OrderByDescending(symbol =&gt; symbol.ID.Date).Last();</pre>
-    <pre class="python">continuous_future_symbol = Symbol.Create(Futures.Indices.SP500EMini, SecurityType.Future, Market.CME)
-contract_symbols = self.FutureChainProvider.GetFutureContractList(continuous_future_symbol, self.Time)
-self.contract_symbol = sorted(contract_symbols, key=lambda symbol: symbol.ID.Date)[0]</pre>
+    <pre class="python">continuous_future_symbol = Symbol.create(Futures.indices.SP500EMini, SecurityType.FUTURE, Market.CME)
+contract_symbols = self.future_chain_provider.get_future_contract_list(continuous_future_symbol, self.time)
+self.contract_symbol = sorted(contract_symbols, key=lambda symbol: symbol.id.date)[0]</pre>
 </div>
 
 <h4>Subscribe to Contracts</h4>
@@ -26,7 +26,7 @@ self.contract_symbol = sorted(contract_symbols, key=lambda symbol: symbol.ID.Dat
 
 <div class="section-example-container">
     <pre class="csharp">AddFutureContract(_contractSymbol);</pre>
-    <pre class="python">self.AddFutureContract(self.contract_symbol)</pre>
+    <pre class="python">self.add_future_contract(self.contract_symbol)</pre>
 </div>
 
 <p>The <code>AddFutureContract</code> method creates a subscription for a single Future contract and adds it to your <span class="new-term">user-defined</span> universe. To create a dynamic universe of Futures contracts, add a <a href="/docs/v2/writing-algorithms/universes/futures">Futures universe</a> or a <a href="/docs/v2/writing-algorithms/algorithm-framework/universe-selection/futures-universes">Futures Universe Selection model</a>.</p>
@@ -37,8 +37,8 @@ self.contract_symbol = sorted(contract_symbols, key=lambda symbol: symbol.ID.Dat
 <div class="section-example-container">
     <pre class="csharp">SetSecurityInitializer(new BrokerageModelSecurityInitializer(BrokerageModel,
     new FuncSecuritySeeder(GetLastKnownPrices)));</pre>
-    <pre class="python">self.SetSecurityInitializer(BrokerageModelSecurityInitializer(self.BrokerageModel,
-    FuncSecuritySeeder(self.GetLastKnownPrices)));</pre>
+    <pre class="python">self.set_security_initializer(BrokerageModelSecurityInitializer(self.brokerage_model,
+    FuncSecuritySeeder(self.get_last_known_prices)));</pre>
 </div>
 
 <h4>Supported Assets</h4>
