@@ -15,14 +15,14 @@ public override void Initialize()
     _symbol = option.Symbol;
     option.SetFilter(-5, 5, 0, 30);
 }</pre>
-        <pre class="python">def Initialize(self) -&gt; None:
-    self.SetStartDate(2017, 4, 1)
-    self.SetEndDate(2017, 4, 30)
-    self.SetCash(100000)
-    self.UniverseSettings.Asynchronous = True
-    option = self.AddOption("GOOG")
-    self.symbol = option.Symbol
-    option.SetFilter(-5, 5, 0, 30)</pre>
+        <pre class="python">def initialize(self) -&gt; None:
+    self.set_start_date(2017, 4, 1)
+    self.set_end_date(2017, 4, 30)
+    self.set_cash(100000)
+    self.universe_settings.asynchronous = True
+    option = self.add_option("GOOG")
+    self.symbol = option.symbol
+    option.set_filter(-5, 5, 0, 30)</pre>
     </div>
 
     <li>In the <code>OnData</code> method, select the expiration date and strike prices of the contracts in the strategy legs.</li>
@@ -92,8 +92,8 @@ public override void Initialize()
     <div class="section-example-container">
         <pre class="csharp">var longStrangle = OptionStrategies.Strangle(_symbol, callStrike, putStrike, expiry);
 Buy(longStrangle, 1);</pre>
-        <pre class="python">long_strangle = OptionStrategies.Strangle(self.symbol, call_strike, put_strike, expiry)
-self.Buy(long_strangle, 1)</pre>
+        <pre class="python">long_strangle = OptionStrategies.strangle(self.symbol, call_strike, put_strike, expiry)
+self.buy(long_strangle, 1)</pre>
     </div>
 
 <?

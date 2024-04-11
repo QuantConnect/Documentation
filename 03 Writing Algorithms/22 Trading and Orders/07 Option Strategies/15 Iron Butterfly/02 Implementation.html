@@ -15,14 +15,14 @@ public override void Initialize()
     _symbol = option.Symbol;
     option.SetFilter(-10, 10, 0, 30);
 }</pre>
-        <pre class="python">def Initialize(self) -&gt; None:
-    self.SetStartDate(2017, 4, 1)
-    self.SetEndDate(2017, 5, 10)
-    self.SetCash(100000)
-    self.UniverseSettings.Asynchronous = True
-    option = self.AddOption("GOOG", Resolution.Minute)
-    self.symbol = option.Symbol
-    option.SetFilter(-10, 10, 0, 30);</pre>
+        <pre class="python">def initialize(self) -&gt; None:
+    self.set_start_date(2017, 4, 1)
+    self.set_end_date(2017, 5, 10)
+    self.set_cash(100000)
+    self.universe_settings.asynchronous = True
+    option = self.add_option("GOOG", Resolution.minute)
+    self.symbol = option.symbol
+    option.set_filter(-10, 10, 0, 30);</pre>
     </div>
 
     <li>In the <code>OnData</code> method, select the contracts in the strategy legs.</li>
@@ -50,27 +50,27 @@ public override void Initialize()
     // Select the ATM contracts
     var atmCallContract = calls.Where(x =&gt; x.Strike == atmStrike).First();
     var atmPutsContract = puts.Where(x =&gt; x.Strike == atmStrike).First();</pre>
-        <pre class="python">def OnData(self, slice: Slice) -&gt; None:
-    if self.Portfolio.Invested: return
+        <pre class="python">def on_data(self, slice: Slice) -&gt; None:
+    if self.portfolio.invested: return
 
     # Get the OptionChain
-    chain = slice.OptionChains.get(self.symbol, None)
+    chain = slice.option_chains.get(self.symbol, None)
     if not chain: return
 
     # Separate the call and put contracts
-    call = [i for i in chain if i.Right == 0]
-    put = [i for i in chain if i.Right == 1]
+    call = [i for i in chain if i.right == 0]
+    put = [i for i in chain if i.right == 1]
     if len(call) == 0 or len(put) == 0 : return
 
     # Select the OTM contracts
-    call_contracts = sorted(call, key = lambda x: x.Strike)
-    put_contracts = sorted(put, key = lambda x: x.Strike)
+    call_contracts = sorted(call, key = lambda x: x.strike)
+    put_contracts = sorted(put, key = lambda x: x.strike)
     otm_call = call_contracts[-1]
     otm_put = put_contracts[0]
 
     # Select the ATM contracts
-    atm_put = sorted(put_contracts, key = lambda x: abs(chain.Underlying.Price - x.Strike))[0]
-    atm_call = sorted(call_contracts, key = lambda x: abs(chain.Underlying.Price - x.Strike))[0]
+    atm_put = sorted(put_contracts, key = lambda x: abs(chain.underlying.price - x.strike))[0]
+    atm_call = sorted(call_contracts, key = lambda x: abs(chain.underlying.price - x.strike))[0]
 </pre>
     </div>
 
@@ -80,9 +80,9 @@ public override void Initialize()
 Sell(atmCallContract.Symbol, 1);
 Buy(otmCallContract.Symbol, 1);
 Buy(otmPutContract.Symbol, 1);</pre>
-        <pre class="python">self.Sell(atm_put.Symbol, 1)
-self.Sell(atm_call.Symbol, 1)
-self.Buy(otm_call.Symbol, 1)
-self.Buy(otm_put.Symbol, 1)</pre>
+        <pre class="python">self.sell(atm_put.symbol, 1)
+self.sell(atm_call.symbol, 1)
+self.buy(otm_call.symbol, 1)
+self.buy(otm_put.symbol, 1)</pre>
     </div>
 </ol>

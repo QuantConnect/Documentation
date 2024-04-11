@@ -15,14 +15,14 @@ public override void Initialize()
     _symbol = option.Symbol;
     option.SetFilter(-3, 3, 0, 31);
 }</pre>
-        <pre class="python">def Initialize(self) -&gt; None:
-    self.SetStartDate(2014, 1, 1)
-    self.SetEndDate(2014, 3, 1)
-    self.SetCash(100000)
-    self.UniverseSettings.Asynchronous = True
-    option = self.AddOption("IBM")
-    self.symbol = option.Symbol
-    option.SetFilter(-3, 3, 0, 31)
+        <pre class="python">def initialize(self) -&gt; None:
+    self.set_start_date(2014, 1, 1)
+    self.set_end_date(2014, 3, 1)
+    self.set_cash(100000)
+    self.universe_settings.asynchronous = True
+    option = self.add_option("IBM")
+    self.symbol = option.symbol
+    option.set_filter(-3, 3, 0, 31)
     self.call = None</pre>
     </div>
   
@@ -40,19 +40,19 @@ public override void Initialize()
         .Where(x =&gt; x.Right == OptionRight.Call &amp;&amp; x.Expiry == expiry)
         .OrderBy(x =&gt; Math.Abs(x.Strike - chain.Underlying.Price))
         .FirstOrDefault();</pre>
-        <pre class="python">def OnData(self, slice: Slice) -&gt; None:
-    if self.call and self.Portfolio[self.call].Invested:
+        <pre class="python">def on_data(self, slice: Slice) -&gt; None:
+    if self.call and self.portfolio[self.call].invested:
         return
 
-    chain = slice.OptionChains.get(self.symbol)
+    chain = slice.option_chains.get(self.symbol)
     if not chain:
         return
 
     # Find ATM call with the farthest expiry
-    expiry = max([x.Expiry for x in chain])
+    expiry = max([x.expiry for x in chain])
     call_contracts = sorted([x for x in chain
-        if x.Right == OptionRight.Call and x.Expiry == expiry],
-        key=lambda x: abs(chain.Underlying.Price - x.Strike))
+        if x.right == OptionRight.CALL and x.expiry == expiry],
+        key=lambda x: abs(chain.underlying.price - x.strike))
 
     if not call_contracts:
         return
@@ -66,10 +66,10 @@ public override void Initialize()
 Buy(nakedCall, 1);
 
 _call = atmCall.Symbol;</pre>
-        <pre class="python">naked_call = OptionStrategies.NakedCall(self.symbol, atm_call.Strike, expiry)
-self.Buy(naked_call, 1)
+        <pre class="python">naked_call = OptionStrategies.naked_call(self.symbol, atm_call.strike, expiry)
+self.buy(naked_call, 1)
 
-self.call = atm_call.Symbol</pre>
+self.call = atm_call.symbol</pre>
     </div>
 
 <? 
