@@ -55,23 +55,23 @@ namespace QuantConnect.Algorithm.CSharp
     <pre class="python">from AlgorithmImports import *
 
 class ChainedUniverseAlgorithm(QCAlgorithm):
-    def Initialize(self):
-        self.SetStartDate(2023, 2, 2)
-        self.UniverseSettings.Asynchronous = True
-        self.UniverseSettings.DataNormalizationMode = DataNormalizationMode.Raw
-        universe = self.AddUniverse(self.FundamentalFunction)
-        self.AddUniverseOptions(universe, self.OptionFilterFunction)
+    def initialize(self):
+        self.set_start_date(2023, 2, 2)
+        self.universe_settings.asynchronous = True
+        self.universe_settings.data_normalization_mode = DataNormalizationMode.raw
+        universe = self.add_universe(self.fundamental_function)
+        self.add_universe_options(universe, self.option_filter_function)
 
-    def FundamentalFunction(self, fundamental: List[Fundamental]) -&gt; List[Symbol]:
-        filtered = [f for f in fundamental if not np.isnan(f.ValuationRatios.PERatio)]
-        sorted_by_pe_ratio = sorted(filtered, key=lambda f: f.ValuationRatios.PERatio)
-        return [f.Symbol for f in sorted_by_pe_ratio[:10]]
+    def fundamental_function(self, fundamental: List[Fundamental]) -&gt; List[Symbol]:
+        filtered = [f for f in fundamental if not np.isnan(f.valuation_ratios.pe_ratio)]
+        sorted_by_pe_ratio = sorted(filtered, key=lambda f: f.valuation_ratios.pe_ratio)
+        return [f.symbol for f in sorted_by_pe_ratio[:10]]
 
-    def OptionFilterFunction(self, optionFilterUniverse: OptionFilterUniverse) -&gt; OptionFilterUniverse:
-        return optionFilterUniverse.Strikes(0, 2).FrontMonth().CallsOnly()
+    def option_filter_function(self, optionFilterUniverse: OptionFilterUniverse) -&gt; OptionFilterUniverse:
+        return optionFilterUniverse.strikes(0, 2).front_month().calls_only()
         
-    def OnData(self, data: Slice) -&gt; None:
-        for symbol, chain in data.OptionChains.items():
+    def on_data(self, data: Slice) -&gt; None:
+        for symbol, chain in data.option_chains.items():
             for contract in chain:
-                self.Debug(f"Found {contract.Symbol} option contract for {symbol}")</pre>
+                self.debug(f"Found {contract.symbol} option contract for {symbol}")</pre>
 </div>

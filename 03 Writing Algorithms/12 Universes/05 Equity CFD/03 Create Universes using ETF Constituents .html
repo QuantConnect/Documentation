@@ -23,15 +23,15 @@
     }
 }</pre>
     <pre class="python">class MyUniverseAlgorithm(QCAlgorithm):
-    def Initialize(self) -&gt; None:
-        self.UniverseSettings.Asynchronous = True
-        self.universe = self.Universe.ETF("SPY", self.UniverseSettings, self.ETFConstituentsFilter)
-        self.AddUniverse(self.universe)
+    def initialize(self) -&gt; None:
+        self.universe_settings.asynchronous = True
+        self.universe = self.universe.etf("SPY", self.universe_settings, self.etf_constituents_filter)
+        self.add_universe(self.universe)
     
-    def ETFConstituentsFilter(self, constituents: List[ETFConstituentUniverse]) -&gt; List[Symbol]:
+    def etf_constituents_filter(self, constituents: List[ETFConstituentUniverse]) -&gt; List[Symbol]:
         # Get the 10 securities with the largest weight in the index
-        selected = sorted([c for c in constituents if c.Weight], key=lambda c: c.Weight, reverse=True)[:10]
-        symbols = [c.Symbol for c in selected]
-        if self.LiveMode:
-            return [Symbol.Create(x.Value, SecurityType.Cfd, Market.InteractiveBrokers) for x in symbols]
+        selected = sorted([c for c in constituents if c.weight], key=lambda c: c.weight, reverse=True)[:10]
+        symbols = [c.symbol for c in selected]
+        if self.live_mode:
+            return [Symbol.create(x.value, SecurityType.CFD, Market.interactive_brokers) for x in symbols]
         return symbols</pre></div>

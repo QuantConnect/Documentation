@@ -2,5 +2,5 @@
 
 <div class="section-example-container">
     <pre class="csharp">AddFuture(Futures.Currencies.BTC, contractDepthOffset: 3);</pre>
-    <pre class="python">self.AddFuture(Futures.Currencies.BTC, contractDepthOffset=3)</pre>
+    <pre class="python">self.add_future(Futures.currencies.BTC, contractDepthOffset=3)</pre>
 </div>

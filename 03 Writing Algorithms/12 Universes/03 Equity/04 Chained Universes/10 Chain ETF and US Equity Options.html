@@ -51,23 +51,23 @@ namespace QuantConnect.Algorithm.CSharp
     <pre class="python">from AlgorithmImports import *
 
 class ChainedUniverseAlgorithm(QCAlgorithm):
-    def Initialize(self):
-        self.SetStartDate(2023, 2, 2)
-        self.UniverseSettings.Asynchronous = True
-        self.UniverseSettings.DataNormalizationMode = DataNormalizationMode.Raw
-        etf_universe = self.Universe.ETF("QQQ", Market.USA, self.UniverseSettings, self.ETFConstituentsFilter)
-        self.AddUniverse(etf_universe)
-        self.AddUniverseOptions(etf_universe, self.OptionFilterFunction)
+    def initialize(self):
+        self.set_start_date(2023, 2, 2)
+        self.universe_settings.asynchronous = True
+        self.universe_settings.data_normalization_mode = DataNormalizationMode.raw
+        etf_universe = self.universe.etf("QQQ", Market.USA, self.universe_settings, self.etf_constituents_filter)
+        self.add_universe(etf_universe)
+        self.add_universe_options(etf_universe, self.option_filter_function)
 
-    def ETFConstituentsFilter(self, constituents: List[ETFConstituentUniverse]) -&gt; List[Symbol]:
-        sorted_by_weight = sorted(constituents, key=lambda x: x.Weight, reverse=True) 
-        return [c.Symbol for c in sorted_by_weight[:10]]
+    def etf_constituents_filter(self, constituents: List[ETFConstituentUniverse]) -&gt; List[Symbol]:
+        sorted_by_weight = sorted(constituents, key=lambda x: x.weight, reverse=True) 
+        return [c.symbol for c in sorted_by_weight[:10]]
 
-    def OptionFilterFunction(self, optionFilterUniverse: OptionFilterUniverse) -&gt; OptionFilterUniverse:
-        return optionFilterUniverse.Strikes(0, 2).FrontMonth().CallsOnly()
+    def option_filter_function(self, optionFilterUniverse: OptionFilterUniverse) -&gt; OptionFilterUniverse:
+        return optionFilterUniverse.strikes(0, 2).front_month().calls_only()
         
-    def OnData(self, data: Slice) -&gt; None:
-        for symbol, chain in data.OptionChains.items():
+    def on_data(self, data: Slice) -&gt; None:
+        for symbol, chain in data.option_chains.items():
             for contract in chain:
-                self.Debug(f"Found {contract.Symbol} option contract for {symbol}")</pre>
+                self.debug(f"Found {contract.symbol} option contract for {symbol}")</pre>
 </div>

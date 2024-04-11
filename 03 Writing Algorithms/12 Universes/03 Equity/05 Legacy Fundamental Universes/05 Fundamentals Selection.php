@@ -79,15 +79,15 @@ public class MyUniverseAlgorithm : QCAlgorithm {
 </pre>
 <pre class="python">
 class MyUniverseAlgorithm(QCAlgorithm):
-    def Initialize(self) -&gt; None:
-        self.UniverseSettings.Asynchronous = True
-        self.AddUniverse(self.CoarseFilterFunction, self.FineFundamentalFunction)
+    def initialize(self) -&gt; None:
+        self.universe_settings.asynchronous = True
+        self.add_universe(self.coarse_filter_function, self.fine_fundamental_function)
 
-    def CoarseFilterFunction(self, coarse: List[CoarseFundamental]) -&gt; List[Symbol]:
+    def coarse_filter_function(self, coarse: List[CoarseFundamental]) -&gt; List[Symbol]:
         # In addition to further coarse universe selection, ensure the security has fundamental data
-        return [c.Symbol for c in coarse if c.HasFundamentalData]
+        return [c.symbol for c in coarse if c.has_fundamental_data]
 
-    def FineFundamentalFunction(self, fine: List[FineFundamental]) -&gt; List[Symbol]:
+    def fine_fundamental_function(self, fine: List[FineFundamental]) -&gt; List[Symbol]:
         # Return a list of Symbols
 </pre>
 </div>
@@ -120,17 +120,17 @@ AddUniverse(
     });
 </pre>
 	<pre class="python"># In Initialize:
-self.UniverseSettings.Asynchronous = True
-self.AddUniverse(self.CoarseSelectionFunction, self.FineSelectionFunction)
+self.universe_settings.asynchronous = True
+self.add_universe(self.coarse_selection_function, self.fine_selection_function)
 
-def CoarseSelectionFunction(self, coarse: List[CoarseFundamental]) -&gt; List[Symbol]:
-    sortedByDollarVolume = sorted(coarse, key=lambda x: x.DollarVolume, reverse=True)
-    filtered = [x.Symbol for x in sortedByDollarVolume if x.HasFundamentalData]
+def coarse_selection_function(self, coarse: List[CoarseFundamental]) -&gt; List[Symbol]:
+    sortedByDollarVolume = sorted(coarse, key=lambda x: x.dollar_volume, reverse=True)
+    filtered = [x.symbol for x in sortedByDollarVolume if x.has_fundamental_data]
     return filtered[:50]
 
-def FineSelectionFunction(self, fine: List[FineFundamental]) -&gt; List[Symbol]:
-    sortedByPeRatio = sorted(fine, key=lambda x: x.ValuationRatios.PERatio, reverse=False)
-    return [x.Symbol for x in sortedByPeRatio[:10]]
+def fine_selection_function(self, fine: List[FineFundamental]) -&gt; List[Symbol]:
+    sortedByPeRatio = sorted(fine, key=lambda x: x.valuation_ratios.pe_ratio, reverse=False)
+    return [x.symbol for x in sortedByPeRatio[:10]]
 </pre>
 </div>
 
@@ -140,21 +140,21 @@ def FineSelectionFunction(self, fine: List[FineFundamental]) -&gt; List[Symbol]:
 <p>Sectors are large super categories of data. To get the sector of a stock, use the <code>MorningstarSectorCode</code> property.</p>
 <div class="section-example-container">
 <pre class="csharp">var tech = fine.Where(x =&gt; x.AssetClassification.MorningstarSectorCode == MorningstarSectorCode.Technology);</pre>
-<pre class="python">tech = [x for x in fine if x.AssetClassification.MorningstarSectorCode == MorningstarSectorCode.Technology]
+<pre class="python">tech = [x for x in fine if x.asset_classification.morningstar_sector_code == MorningstarSectorCode.technology]
 </pre>
 </div>
 
 <p>Industry groups are clusters of related industries that tie together. To get the industry group of a stock, use the <code>MorningstarIndustryGroupCode</code> property.</p>
 <div class="section-example-container">
 <pre class="csharp">var ag = fine.Where(x =&gt; x.AssetClassification.MorningstarIndustryGroupCode == MorningstarIndustryGroupCode.Agriculture);</pre>
-<pre class="python">ag = [x for x in fine if x.AssetClassification.MorningstarIndustryGroupCode == MorningstarIndustryGroupCode.Agriculture]
+<pre class="python">ag = [x for x in fine if x.asset_classification.morningstar_industry_group_code == MorningstarIndustryGroupCode.agriculture]
 </pre>
 </div>
 
 <p>Industries are the finest level of classification available. They are the individual industries according to the Morningstar classification system. To get the industry of a stock, use the <code>MorningstarIndustryCode</code>.</p>
 <div class="section-example-container">
 <pre class="csharp">var coal = fine.Where(x =&gt; x.AssetClassification.MorningstarIndustryCode == MorningstarSectorCode.Coal);</pre>
-<pre class="python">coal = [x for x in fine if x.AssetClassification.MorningstarIndustryCode == MorningstarSectorCode.Coal]
+<pre class="python">coal = [x for x in fine if x.asset_classification.morningstar_industry_code == MorningstarSectorCode.coal]
 </pre>
 </div>
 

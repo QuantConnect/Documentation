@@ -14,9 +14,9 @@ The most common use case is to select a lot of liquid stocks. With a fundamental
         orderby f.DollarVolume descending
         select f.Symbol).Take(500);
 }</pre>
-<pre class="python">def FundamentalFilterFunction(self, fundamental: List[Fundamental]) -&gt; List[Symbol]:
-    filtered = [f for f in fundamental if f.Price &gt; 10 and f.DollarVolume &gt; 10000000]
-    sortedByDollarVolume = sorted(filtered, key=lambda f: f.DollarVolume, reverse=True)
+<pre class="python">def fundamental_filter_function(self, fundamental: List[Fundamental]) -&gt; List[Symbol]:
+    filtered = [f for f in fundamental if f.price &gt; 10 and f.dollar_volume &gt; 10000000]
+    sortedByDollarVolume = sorted(filtered, key=lambda f: f.dollar_volume, reverse=True)
     return sortedByDollarVolume[:500]</pre>
 </div>
 
@@ -72,8 +72,8 @@ In this example, the <code>SelectionData</code> class group variables for the un
 
     def update(self, time, price, volume):
         self.volume = volume
-        if self.ema.Update(time, price):
-            self.is_above_ema = price &gt; ema.Current.Value</pre>
+        if self.ema.update(time, price):
+            self.is_above_ema = price &gt; ema.current.value</pre>
 <pre class="csharp">// example selection data class
 private class SelectionData
 {
@@ -111,9 +111,9 @@ The process to get the 10-day SMA stock volume is the same process as in Example
 
     def update(self, time, price, volume):
         self.volume = volume
-        if self.sma.Update(time, volume):
+        if self.sma.update(time, volume):
             # get ratio of this volume bar vs previous 10 before it.
-            self.volume_ratio = volume / self.sma.Current.Value</pre>
+            self.volume_ratio = volume / self.sma.current.value</pre>
 <pre class="csharp">private class SelectionData
 {
     public readonly Symbol Symbol;

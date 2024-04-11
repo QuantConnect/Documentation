@@ -7,8 +7,8 @@
 <div class="section-example-container">
     <pre class="csharp">var option = AddIndexOption("VIX");
 _symbol = option.Symbol;</pre>
-    <pre class="python">option = self.AddIndexOption("VIX")
-self.symbol = option.Symbol</pre>
+    <pre class="python">option = self.add_index_option("VIX")
+self.symbol = option.symbol</pre>
 </div>
 
 <p>The following table describes the <code>AddIndexOption</code> method arguments for standard universes:</p>
@@ -58,9 +58,9 @@ self.symbol = option.Symbol</pre>
     <pre class="csharp">var indexSymbol = AddIndex("VIX").Symbol;
 var option = AddIndexOption(indexSymbol, "VIXW");
 _symbol = option.Symbol;</pre>
-    <pre class="python">index_symbol = self.AddIndex("VIX").Symbol
-option = self.AddIndexOption(index_symbol, "VIXW")
-self.symbol = option.Symbol</pre>
+    <pre class="python">index_symbol = self.add_index("VIX").symbol
+option = self.add_index_option(index_symbol, "VIXW")
+self.symbol = option.symbol</pre>
 </div>
 
 <p>The following table describes the <code>AddIndexOption</code> method arguments for non-standard universes:</p>
@@ -114,8 +114,8 @@ self.symbol = option.Symbol</pre>
 <p>To override the default <a href="/docs/v2/writing-algorithms/reality-modeling/options-models/pricing">pricing model</a> of the Option, <a href='https://www.quantconnect.com/docs/v2/writing-algorithms/reality-modeling/options-models/pricing#04-Set-Models'>set a pricing model</a>.</p>
 
 <div class="section-example-container">
-    <pre class="csharp">option.PriceModel = OptionPriceModels.CrankNicolsonFD();</pre>
-    <pre class="python">option.PriceModel = OptionPriceModels.CrankNicolsonFD()</pre>
+    <pre class="csharp">option.price_model = OptionPriceModels.crank_nicolson_fd();</pre>
+    <pre class="python">option.price_model = OptionPriceModels.crank_nicolson_fd()</pre>
 </div>
 
 <?php echo file_get_contents(DOCS_RESOURCES."/reality-modeling/volatility-model.html"); ?>
