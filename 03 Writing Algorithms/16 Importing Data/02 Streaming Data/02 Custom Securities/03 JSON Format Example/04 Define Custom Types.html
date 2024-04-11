@@ -56,15 +56,15 @@ public class MyCustomDataType : BaseData
     }
 }</pre>
     <pre class="python">class MyCustomDataType(PythonData):
-    def GetSource(self,
+    def get_source(self,
          config: SubscriptionDataConfig,
          date: datetime,
          isLive: bool) -&gt; SubscriptionDataSource:
         if not isLive:
-            return SubscriptionDataSource("&lt;custom_data_key&gt;", SubscriptionTransportMedium.ObjectStore, FileFormat.Csv)
-        return SubscriptionDataSource("https://raw.githubusercontent.com/QuantConnect/Documentation/master/Resources/datasets/custom-data/unfolding-collection-example.json", SubscriptionTransportMedium.RemoteFile, FileFormat.UnfoldingCollection)
+            return SubscriptionDataSource("&lt;custom_data_key&gt;", SubscriptionTransportMedium.OBJECTSTORE, FileFormat.csv)
+        return SubscriptionDataSource("https://raw.githubusercontent.com/QuantConnect/Documentation/master/Resources/datasets/custom-data/unfolding-collection-example.json", SubscriptionTransportMedium.REMOTEFILE, FileFormat.unfolding_collection)
 
-    def Reader(self,
+    def reader(self,
          config: SubscriptionDataConfig,
          line: str,
          date: datetime,
@@ -78,15 +78,15 @@ public class MyCustomDataType : BaseData
 
         for datum in data:
             index = MyCustomDataType()
-            index.Symbol = config.Symbol
-            index.Time = datetime.strptime(datum["Date"], "%Y-%m-%d")
-            index.EndTime = index.Time + timedelta(1)
+            index.symbol = config.symbol
+            index.time = datetime.strptime(datum["Date"], "%Y-%m-%d")
+            index.end_time = index.time + timedelta(1)
             index["Open"] = float(datum["Open"])
             index["High"] = float(datum["High"])
             index["Low"] = float(datum["Low"])
             index["Close"] = float(datum["Close"])
-            index.Value = index["Close"]
+            index.value = index["Close"]
             objects.append(index)
 
-        return BaseDataCollection(objects[-1].EndTime, config.Symbol, objects)</pre>
+        return BaseDataCollection(objects[-1].end_time, config.symbol, objects)</pre>
 </div>

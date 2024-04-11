@@ -10,8 +10,8 @@
     }
 }</pre>
     <pre class="python">class MyAlgorithm(QCAlgorithm): 
-    def Initialize(self) -&gt; None:
-        self.symbol = self.AddData(MyCustomDataType, "&lt;name&gt;", Resolution.Daily).Symbol</pre>
+    def initialize(self) -&gt; None:
+        self.symbol = self.add_data(MyCustomDataType, "&lt;name&gt;", Resolution.daily).symbol</pre>
 </div>
 
 <p>The <code>resolution</code> argument should match the resolution of your custom dataset. The lowest reasonable resolution is every minute. Anything more frequent than every minute is very slow to execute. The frequency that LEAN checks the data source depends on the <code>resolution</code> argument. The following table shows the polling frequency of each resolution:</p> 
@@ -20,9 +20,9 @@
 
 <p>There are several other signatures for the <code>AddData</code> method.</p>
 <div class="python section-example-container">
-    <pre>self.AddData(type, ticker, resolution)
-self.AddData(type, ticker, resolution, timeZone, fillForward, leverage)
-self.AddData(type, ticker, properties, exchangeHours, resolution, fillForward, leverage)</pre>
+    <pre>self.add_data(type, ticker, resolution)
+self.add_data(type, ticker, resolution, timeZone, fillForward, leverage)
+self.add_data(type, ticker, properties, exchangeHours, resolution, fillForward, leverage)</pre>
 </div>
 <div class="csharp section-example-container">
     <pre>AddData&lt;T&gt;(ticker, resolution);
