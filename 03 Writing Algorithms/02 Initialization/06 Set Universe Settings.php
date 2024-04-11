@@ -75,8 +75,8 @@
 UniverseSettings.Resolution = Resolution.Second;
 AddUniverse(Universe.DollarVolume.Top(50));</pre>
 <pre class="python"># Request second resolution data. This will be slow!
-self.UniverseSettings.Resolution = Resolution.Second
-self.AddUniverse(self.Universe.DollarVolume.Top(50))</pre>
+self.universe_settings.resolution = Resolution.second
+self.add_universe(self.universe.dollar_volume.top(50))</pre>
 </div>
 
 <p>For more information about universe settings, see the related documentation for <a href='/docs/v2/writing-algorithms/universes/settings'>classic</a> and <a href='/docs/v2/writing-algorithms/algorithm-framework/universe-selection/universe-settings'>framework</a> algorithms.</p>
