@@ -15,24 +15,24 @@
 
 
 <div class="section-example-container">
-	<pre class="python">def Initialize(self) -&gt; None:
-    self.symbol = self.AddEquity("SPY", Resolution.Daily).Symbol
+	<pre class="python">def initialize(self) -&gt; None:
+    self.symbol = self.add_equity("SPY", Resolution.daily).symbol
 
-    self.rsi = RelativeStrengthIndex(10, MovingAverageType.Simple)
+    self.rsi = RelativeStrengthIndex(10, MovingAverageType.simple)
     self.ad = AccumulationDistribution()
 
     self.consolidator = TradeBarConsolidator(timedelta(days=3))
     self.consolidator = QuoteBarConsolidator(timedelta(days=3))
     self.consolidator = RenkoBarConsolidator(1)     # Renko consolidator that emits a bar when the price moves $1
     # Update the AD indicator with the consolidated bar
-    self.consolidator.DataConsolidated += (lambda _, bar : self.ad.Update(bar))
-    self.SubscriptionManager.AddConsolidator(self.symbol, self.consolidator)
+    self.consolidator.data_consolidated += (lambda _, bar : self.ad.update(bar))
+    self.subscription_manager.add_consolidator(self.symbol, self.consolidator)
 
-def OnData(self, slice: Slice) -&gt; None:
+def on_data(self, slice: Slice) -&gt; None:
     # Update the RSI indicator value with the new input close price every day
-    if slice.Bars.ContainsKey(self.symbol):
-        bar = slice.Bars[self.symbol]
-        self.rsi.Update(bar.EndTime, bar.Close)
+    if slice.bars.contains_key(self.symbol):
+        bar = slice.bars[self.symbol]
+        self.rsi.update(bar.end_time, bar.close)
 </pre>
 	<pre class="csharp">private Symbol _symbol;
 private RelativeStrengthIndex _rsi;

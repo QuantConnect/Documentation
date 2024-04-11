@@ -5,35 +5,35 @@
 <div class="section-example-container">
 	<pre class="python">class EmaCrossUniverseSelectionAlgorithm(QCAlgorithm):
 
-    def Initialize(self) -&gt; None:
+    def initialize(self) -&gt; None:
         '''Initialise the data and resolution required, as well as the cash and start-end dates for your algorithm. All algorithms must initialized.'''
 
-        self.SetStartDate(2010,1,1)  #Set Start Date
-        self.SetEndDate(2015,1,1)    #Set End Date
-        self.SetCash(100000)           #Set Strategy Cash
-        self.UniverseSettings.Asynchronous = True
-        self.UniverseSettings.Resolution = Resolution.Daily
-        self.UniverseSettings.Leverage = 2
+        self.set_start_date(2010,1,1)  #Set Start Date
+        self.set_end_date(2015,1,1)    #Set End Date
+        self.set_cash(100000)           #Set Strategy Cash
+        self.universe_settings.asynchronous = True
+        self.universe_settings.resolution = Resolution.daily
+        self.universe_settings.leverage = 2
 
         self.count = 10
         self.averages = { }
 
         # this add universe method accepts two parameters:
         # - fundamental selection function: accepts an IEnumerable&lt;Fundamental&gt; and returns an IEnumerable&lt;Symbol&gt;
-        self.AddUniverse(self.FundamentalSelectionFunction)
+        self.add_universe(self.fundamental_selection_function)
 
 
     # sort the data by daily dollar volume and take the top 'NumberOfSymbols'
-    def FundamentalSelectionFunction(self, fundamental: List[Fundamental]) -&gt; List[Symbol]:
+    def fundamental_selection_function(self, fundamental: List[Fundamental]) -&gt; List[Symbol]:
 
         # We are going to use a dictionary to refer the object that will keep the moving averages
         for f in fundamental:
-            if f.Symbol not in self.averages:
-                self.averages[f.Symbol] = SymbolData(f.Symbol)
+            if f.symbol not in self.averages:
+                self.averages[f.symbol] = SymbolData(f.symbol)
 
             # Updates the SymbolData object with current EOD price
-            avg = self.averages[f.Symbol]
-            avg.update(f.EndTime, f.AdjustedPrice)
+            avg = self.averages[f.symbol]
+            avg.update(f.end_time, f.adjusted_price)
 
         # Filter the values of the dict: we only want up-trending securities
         values = list(filter(lambda x: x.is_uptrend, self.averages.values()))
@@ -42,7 +42,7 @@
         values.sort(key=lambda x: x.scale, reverse=True)
 
         for x in values[:self.count]:
-            self.Log('symbol: ' + str(x.symbol.Value) + '  scale: ' + str(x.scale))
+            self.log('symbol: ' + str(x.symbol.value) + '  scale: ' + str(x.scale))
 
         # we need to return only the symbol objects
         return [ x.symbol for x in values[:self.count] ]</pre>

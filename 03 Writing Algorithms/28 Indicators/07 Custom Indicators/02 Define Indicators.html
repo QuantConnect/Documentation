@@ -28,17 +28,17 @@
 }</pre>
     <pre class="python">class CustomSimpleMovingAverage(PythonIndicator):
     def __init__(self, name, period):
-        self.Name = name
-        self.WarmUpPeriod = period
-        self.Time = datetime.min
-        self.Value = 0
+        self.name = name
+        self.warm_up_period = period
+        self.time = datetime.min
+        self.value = 0
         self.queue = deque(maxlen=period)
 
-    def Update(self, input: BaseData) -&gt; bool:
-        self.queue.appendleft(input.Value)
+    def update(self, input: BaseData) -&gt; bool:
+        self.queue.appendleft(input.value)
         count = len(self.queue)
-        self.Time = input.Time
-        self.Value = sum(self.queue) / count
+        self.time = input.time
+        self.value = sum(self.queue) / count
         return count == self.queue.maxlen</pre>
 </div>
 
@@ -86,18 +86,18 @@
     <pre class="python">class CustomMoneyFlowIndex(PythonIndicator):
     def __init__(self, name, period):
         super().__init__()
-        self.Name = name
-        self.Value = 0
+        self.name = name
+        self.value = 0
         self.previous_typical_price = 0
         self.negative_money_flow = deque(maxlen=period)
         self.positive_money_flow = deque(maxlen=period)
     
-    def Update(self, input):
+    def update(self, input):
         if not isinstance(input, TradeBar):
-            raise TypeError('CustomMoneyFlowIndex.Update: input must be a TradeBar')
+            raise TypeError('CustomMoneyFlowIndex.update: input must be a TradeBar')
     
-        typical_price = (input.High + input.Low + input.Close) / 3
-        money_flow = typical_price * input.Volume
+        typical_price = (input.high + input.low + input.close) / 3
+        money_flow = typical_price * input.volume
             
         # We need to avoid double rounding errors
         if abs(self.previous_typical_price / typical_price - 1) &lt; 1e-10:
@@ -110,9 +110,9 @@
         positive_money_flow_sum = sum(self.positive_money_flow)        
         total_money_flow = positive_money_flow_sum + sum(self.negative_money_flow)
     
-        self.Value = 100
+        self.value = 100
         if total_money_flow != 0:
-            self.Value *= positive_money_flow_sum / total_money_flow
+            self.value *= positive_money_flow_sum / total_money_flow
     
         return len(self.positive_money_flow) == self.positive_money_flow.maxlen</pre>
 </div>
