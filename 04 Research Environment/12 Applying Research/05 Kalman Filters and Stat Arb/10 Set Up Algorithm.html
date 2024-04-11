@@ -1,41 +1,41 @@
 <p>Once we are confident in our hypothesis, we can export this code into backtesting. One way to accomodate this model into backtest is to create a scheduled event which uses our model to predict the expected return.</p>
 
 <div class="section-example-container">
-    <pre class="python">def Initialize(self) -&gt; None:
+    <pre class="python">def initialize(self) -&gt; None:
 
     #1. Required: Five years of backtest history
-    self.SetStartDate(2014, 1, 1)
+    self.set_start_date(2014, 1, 1)
 
     #2. Required: Alpha Streams Models:
-    self.SetBrokerageModel(BrokerageName.AlphaStreams)
+    self.set_brokerage_model(BrokerageName.alpha_streams)
 
     #3. Required: Significant AUM Capacity
-    self.SetCash(1000000)
+    self.set_cash(1000000)
 
     #4. Required: Benchmark to SPY
-    self.SetBenchmark("SPY")
+    self.set_benchmark("SPY")
 
     self.assets = ["EURUSD", "GBPUSD", "USDCAD", "USDHKD", "USDJPY"]
     
     # Add Equity ------------------------------------------------ 
     for i in range(len(self.assets)):
-        self.AddForex(self.assets[i], Resolution.Minute)
+        self.add_forex(self.assets[i], Resolution.minute)
         
     # Instantiate our model
-    self.Recalibrate()
+    self.recalibrate()
     
     # Set a variable to indicate the trading bias of the portfolio
     self.state = 0
     
     # Set Scheduled Event Method For Recalibrate Our Model Every Week.
-    self.Schedule.On(self.DateRules.WeekStart(), 
-        self.TimeRules.At(0, 0), 
-        self.Recalibrate)
+    self.schedule.on(self.date_rules.week_start(), 
+        self.time_rules.at(0, 0), 
+        self.recalibrate)
     
     # Set Scheduled Event Method For Kalman Filter updating.
-    self.Schedule.On(self.DateRules.EveryDay(), 
-        self.TimeRules.BeforeMarketClose("EURUSD"), 
-        self.EveryDayBeforeMarketClose)</pre>
+    self.schedule.on(self.date_rules.every_day(), 
+        self.time_rules.before_market_close("EURUSD"), 
+        self.every_day_before_market_close)</pre>
 </div>
 
 <p>We'll also need to create a function to train and update our model from time to time. We will switch <code>qb</code> with <code>self</code> and replace methods with their <code>QCAlgorithm</code> counterparts as needed. In this example, this is not an issue because all the methods we used in research also exist in <code>QCAlgorithm</code>.</p>

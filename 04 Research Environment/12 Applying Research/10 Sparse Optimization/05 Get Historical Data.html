@@ -35,8 +35,8 @@
         
         # Subscribe to the universe price data
         for symbol in etf_symbols:
-            security = qb.AddSecurity(symbol, Resolution.Daily)
-            security_timezone = security.Exchange.TimeZone
+            security = qb.add_security(symbol, Resolution.daily)
+            security_timezone = security.exchange.time_zone
             security_symbols.append(symbol)
         
         return security_symbols, security_timezone
@@ -64,7 +64,7 @@
             print(f'Error: The ETF universe file does not exist')
             return
         security_ids = df[df.columns[1]].values
-        symbols = [qb.Symbol(security_id) for security_id in security_ids]
+        symbols = [qb.symbol(security_id) for security_id in security_ids]
         return symbols</pre>
     </div>
 
@@ -76,7 +76,7 @@
     <li>Subscribe to the index/ETF.</li>
     <p>In this tutorial, we'll be using QQQ.</p>
     <div class="section-example-container">
-        <pre class="python">qqq = qb.AddEquity("QQQ").Symbol</pre>
+        <pre class="python">qqq = qb.add_equity("QQQ").symbol</pre>
     </div>
 
     <li>Select all the constituents for research.</li>
@@ -87,16 +87,16 @@
 
     <li>Prepare the historical return data of the constituents and the benchmark index to track.</li>
     <div class="section-example-container">
-        <pre class="python">spy = qb.History(qb.AddEquity("SPY").Symbol, datetime(2019, 1, 1), datetime(2021, 12, 31), Resolution.Daily)</pre>
+        <pre class="python">spy = qb.history(qb.add_equity("SPY").symbol, datetime(2019, 1, 1), datetime(2021, 12, 31), Resolution.daily)</pre>
     </div>
 
     <li>Call the <code>History</code> method with a list of <code>SmartInsiderTransaction</code> <code>Symbol</code>s for all tickers, time argument(s), and resolution to request historical data for the symbols.</li>
     <div class="section-example-container">
-        <pre class="python">history = qb.History(assets, datetime(2020, 1, 1), datetime(2021, 3, 31), Resolution.Daily)
+        <pre class="python">history = qb.history(assets, datetime(2020, 1, 1), datetime(2021, 3, 31), Resolution.daily)
 historyPortfolio = history.close.unstack(0).loc[:"2021-01-01"]
 pctChangePortfolio = np.log(historyPortfolio/historyPortfolio.shift(1)).dropna()
 
-historyQQQ_ = qb.History(qqq, datetime(2020, 1, 1), datetime(2021, 3, 31), Resolution.Daily)
+historyQQQ_ = qb.history(qqq, datetime(2020, 1, 1), datetime(2021, 3, 31), Resolution.daily)
 historyQQQ = historyQQQ_.close.unstack(0).loc[:"2021-01-01"]
 pctChangeQQQ = np.log(historyQQQ/historyQQQ.shift(1)).loc[pctChangePortfolio.index]</pre>
     </div>

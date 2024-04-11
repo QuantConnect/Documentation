@@ -13,10 +13,10 @@ assets = ["SHY", "TLT", "SHV", "TLH", "EDV", "BIL",
 "VGLT", "SCHO", "SCHR", "SPTS", "GOVT"]
 
 for i in range(len(assets)):
-    symbols[assets[i]] = qb.AddEquity(assets[i],Resolution.Minute).Symbol
+    symbols[assets[i]] = qb.add_equity(assets[i],Resolution.minute).symbol
 
 # Fetch history on our universe
-df = qb.History(qb.Securities.Keys, 30, Resolution.Daily)
+df = qb.history(qb.securities.keys, 30, Resolution.daily)
 
 # Make all of them into a single time index.
 df = df.close.unstack(level=0)
@@ -43,13 +43,13 @@ Once you are confident in your hypothesis, you can export this code into the bac
 </p>
 
 <div class="section-example-container">
-	<pre class="python">def Initialize(self) -&gt; None:
-    self.SetStartDate(2014, 1, 1)
-    self.SetCash(1000000)
-    self.SetBenchmark("SPY")
+	<pre class="python">def initialize(self) -&gt; None:
+    self.set_start_date(2014, 1, 1)
+    self.set_cash(1000000)
+    self.set_benchmark("SPY")
     
-    self.SetPortfolioConstruction(EqualWeightingPortfolioConstructionModel())
-    self.SetExecution(ImmediateExecutionModel())
+    self.set_portfolio_construction(EqualWeightingPortfolioConstructionModel())
+    self.set_execution(ImmediateExecutionModel())
     
     self.assets = ["IEF", "SHY", "TLT", "IEI", "SHV", "TLH", "EDV", "BIL",
                    "SPTL", "TBT", "TMF", "TMV", "TBF", "VGSH", "VGIT",
@@ -59,10 +59,10 @@ Once you are confident in your hypothesis, you can export this code into the bac
     
     # Add Equity ------------------------------------------------ 
     for i in range(len(self.assets)):
-        self.symbols[self.assets[i]] = self.AddEquity(self.assets[i], Resolution.Minute).Symbol 
+        self.symbols[self.assets[i]] = self.add_equity(self.assets[i], Resolution.minute).symbol 
         
     # Set the Scheduled Event method
-    self.Schedule.On(self.DateRules.Every(DayOfWeek.Monday), self.TimeRules.AfterMarketOpen("IEF", 1), self.EveryDayAfterMarketOpen)
+    self.schedule.on(self.date_rules.every(DayOfWeek.monday), self.time_rules.after_market_open("IEF", 1), self.every_day_after_market_open)
 </pre>
 </div>
 
@@ -72,10 +72,10 @@ Now that the <code>Initialize </code>method of the algorithm is set, export the 
 
 
 <div class="section-example-container">
-	<pre class="python">def EveryDayAfterMarketOpen(self):
+	<pre class="python">def every_day_after_market_open(self):
     qb = self
     # Fetch history on our universe
-    df = qb.History(qb.Securities.Keys, 5, Resolution.Daily)
+    df = qb.history(qb.securities.keys, 5, Resolution.daily)
     
     # Make all of them into a single time index.
     df = df.close.unstack(level=0)
@@ -100,9 +100,9 @@ Now that the <code>Initialize </code>method of the algorithm is set, export the 
     insights = []
     
     for symbol, magnitude in selected:
-        insights.append(Insight.Price(symbol, timedelta(days=5), InsightDirection.Up, magnitude))
+        insights.append(Insight.price(symbol, timedelta(days=5), InsightDirection.UP, magnitude))
     
-    self.EmitInsights(insights)
+    self.emit_insights(insights)
 </pre>
 </div>
 

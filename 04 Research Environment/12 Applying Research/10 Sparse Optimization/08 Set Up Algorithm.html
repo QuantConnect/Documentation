@@ -1,18 +1,18 @@
 <p>Once we are confident in our hypothesis, we can export this code into backtesting.</p>
 
 <div class="section-example-container">
-    <pre class="python">def Initialize(self) -&gt; None:
-    self.SetStartDate(2017, 1, 1)
-    self.SetBrokerageModel(BrokerageName.AlphaStreams)
-    self.SetCash(1000000)
+    <pre class="python">def initialize(self) -&gt; None:
+    self.set_start_date(2017, 1, 1)
+    self.set_brokerage_model(BrokerageName.alpha_streams)
+    self.set_cash(1000000)
     
     # Add our ETF constituents of the index that we would like to track.
-    self.QQQ = self.AddEquity("QQQ", Resolution.Minute).Symbol
-    self.UniverseSettings.Asynchronous = True
-    self.UniverseSettings.Resolution = Resolution.Minute
-    self.AddUniverse(self.Universe.ETF(self.QQQ, self.UniverseSettings, self.ETFSelection))
+    self.QQQ = self.add_equity("QQQ", Resolution.minute).symbol
+    self.universe_settings.asynchronous = True
+    self.universe_settings.resolution = Resolution.minute
+    self.add_universe(self.universe.etf(self.QQQ, self.universe_settings, self.etf_selection))
     
-    self.SetBenchmark("QQQ")
+    self.set_benchmark("QQQ")
     
     # Set up varaibles to flag the time to recalibrate and hold the constituents.
     self.time = datetime.min
@@ -22,9 +22,9 @@
 <p>We'll also need to create a function for getting the ETF constituents.</p>
 
 <div class="section-example-container">
-    <pre class="python">def ETFSelection(self, constituents: ETFConstituentUniverse) -&gt; List[Symbol]:
+    <pre class="python">def etf_selection(self, constituents: ETFConstituentUniverse) -&gt; List[Symbol]:
     # We want all constituents to be considered.
-    self.assets = [x.Symbol for x in constituents]
+    self.assets = [x.symbol for x in constituents]
     return self.assets</pre>
 </div>
 
