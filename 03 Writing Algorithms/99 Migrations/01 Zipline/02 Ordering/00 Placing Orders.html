@@ -34,19 +34,19 @@ def handle_data(context, data):
 <div class="section-example-container">
 <pre class="python">class MyAlgorithm(QCAlgorithm):
 
-    def Initialize(self) -&gt; None:
-        self.SetStartDate(2020, 3, 1)
-        self.SetCash(100000)
-        self.symbol = self.AddEquity("SPY", Resolution.Minute).Symbol
+    def initialize(self) -&gt; None:
+        self.set_start_date(2020, 3, 1)
+        self.set_cash(100000)
+        self.symbol = self.add_equity("SPY", Resolution.minute).symbol
         self.ordered = False
 
-    def OnData(self, slice: Slice) -&gt; None:
-        if not self.ordered and slice.ContainsKey(self.symbol):
-            close = slice[self.symbol].Close
-            self.MarketOrder(self.symbol, 10)
-            self.LimitOrder(self.symbol, 10, close * 0.9)
-            self.StopMarketOrder(self.symbol, -10, close * 0.85)
-            self.StopLimitOrder(self.symbol, -10, close * 0.85, close * 0.75)
+    def on_data(self, slice: Slice) -&gt; None:
+        if not self.ordered and slice.contains_key(self.symbol):
+            close = slice[self.symbol].close
+            self.market_order(self.symbol, 10)
+            self.limit_order(self.symbol, 10, close * 0.9)
+            self.stop_market_order(self.symbol, -10, close * 0.85)
+            self.stop_limit_order(self.symbol, -10, close * 0.85, close * 0.75)
             self.ordered = True
 </pre>
 </div>
@@ -85,24 +85,24 @@ algo.order_optimal_portfolio(objective, constraints)
 
 <div class="section-example-container">
 <pre class="python">class MyAlgorithm(QCAlgorithm):
-    def Initialize(self) -&gt; None:
-        self.SetStartDate(2020, 5, 1)  
-        self.SetCash(100000)  
+    def initialize(self) -&gt; None:
+        self.set_start_date(2020, 5, 1)  
+        self.set_cash(100000)  
 
-        self.SetPortfolioConstruction(EqualWeightedDollarNeutralPortfolioConstructionModel())
+        self.set_portfolio_construction(EqualWeightedDollarNeutralPortfolioConstructionModel())
 
 
 class EqualWeightedDollarNeutralPortfolioConstructionModel(PortfolioConstructionModel):
 
-    def DetermineTargetPercent(self, activeInsights: List[Insight]) -&gt; Dict[Insight, float]:
+    def determine_target_percent(self, activeInsights: List[Insight]) -&gt; Dict[Insight, float]:
         result = {}
         
         longs = 0
         shorts = 0
         for insight in activeInsights:
-            if insight.Direction == InsightDirection.Up:
+            if insight.direction == InsightDirection.up:
                 longs += 1
-            elif insight.Direction == InsightDirection.Down:
+            elif insight.direction == InsightDirection.down:
                 shorts += 1
             result[insight] = 0
         
@@ -110,9 +110,9 @@ class EqualWeightedDollarNeutralPortfolioConstructionModel(PortfolioConstruction
             return result
         
         for insight in activeInsights:
-            if insight.Direction == InsightDirection.Up:
+            if insight.direction == InsightDirection.up:
                 result[insight] = 0.5 / longs
-            elif insight.Direction == InsightDirection.Down:
+            elif insight.direction == InsightDirection.down:
                 result[insight] = -0.5 / shorts
         return result
 </pre>
@@ -138,8 +138,8 @@ order(sid(8554), 10) # Order 10 shares
 </p>
 
 <div class="section-example-container">
-<pre class="python">self.SetHoldings(symbol, 0.1) # Allocate 10% of portfolio
-self.Order(symbol, 10) # Order 10 shares
+<pre class="python">self.set_holdings(symbol, 0.1) # Allocate 10% of portfolio
+self.order(symbol, 10) # Order 10 shares
 </pre>
 </div>
 
@@ -161,7 +161,7 @@ self.Order(symbol, 10) # Order 10 shares
 </p>
 
 <div class="section-example-container">
-<pre class="python">current_weight = self.Portfolio[symbol].HoldingsValue / self.Portfolio.TotalPortfolioValue
-self.SetHoldings(symbol, current_weight + 0.1) # Allocate 10% more of portfolio
+<pre class="python">current_weight = self.portfolio[symbol].holdings_value / self.portfolio.total_portfolio_value
+self.set_holdings(symbol, current_weight + 0.1) # Allocate 10% more of portfolio
 </pre>
 </div>
