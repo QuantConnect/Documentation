@@ -4,12 +4,12 @@
 <pre class="csharp">var target = new PortfolioTarget(_symbol, weight);
 var success = SignalExport.SetTargetPortfolio(target);</pre>
 <pre class="python">target = PortfolioTarget(self.symbol, weight)
-success = self.SignalExport.SetTargetPortfolio(target)</pre>
+success = self.signal_export.set_target_portfolio(target)</pre>
 </div>
 
 <p>If you use a margin account, you can send your current portfolio holdings by calling the <code>SetTargetPortfolioFromPortfolio</code> method.</p>
 
 <div class="section-example-container">
 <pre class="csharp">var success = SignalExport.SetTargetPortfolioFromPortfolio();</pre>
-<pre class="python">success = self.SignalExport.SetTargetPortfolioFromPortfolio()</pre>
+<pre class="python">success = self.signal_export.set_target_portfolio_from_portfolio()</pre>
 </div>

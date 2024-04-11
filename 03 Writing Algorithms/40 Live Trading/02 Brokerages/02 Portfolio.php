@@ -2,8 +2,8 @@
 <div class="section-example-container">
     <pre class="csharp">AddEquity("SPY", Resolution.Hour);
 AddEquity("MSFT", Resolution.Second);</pre>
-    <pre class="python">self.AddEquity("SPY", Resolution.Hour)
-self.AddEquity("MSFT", Resolution.Second)</pre>
+    <pre class="python">self.add_equity("SPY", Resolution.hour)
+self.add_equity("MSFT", Resolution.second)</pre>
 </div>
 
 <p>In this case, LEAN subscribes to second-resolution data for AAPL since the lowest resolution in your algorithm is <code>Resolution.Second</code>.</p>

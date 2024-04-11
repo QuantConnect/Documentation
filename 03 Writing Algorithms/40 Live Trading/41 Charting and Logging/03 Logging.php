@@ -7,6 +7,6 @@
 {
     Log("My log message");
 }</pre>
-    <pre class='python'>if self.LiveMode:
-    self.Log("My log message")</pre>
+    <pre class='python'>if self.live_mode:
+    self.log("My log message")</pre>
 </div>

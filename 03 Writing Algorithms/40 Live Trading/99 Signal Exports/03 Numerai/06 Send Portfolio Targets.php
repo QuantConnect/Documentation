@@ -2,5 +2,5 @@
 
 <div class="section-example-container">
 <pre class="csharp">var success = SignalExport.SetTargetPortfolio(targets);</pre>
-<pre class="python">success = self.SignalExport.SetTargetPortfolio(targets)</pre>
+<pre class="python">success = self.signal_export.set_target_portfolio(targets)</pre>
 </div>
