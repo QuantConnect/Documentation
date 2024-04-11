@@ -105,7 +105,7 @@
 <ol class='python'>
   <li>Create a dictionary where the keys are the string representations of each <code>SecurityIdentifier</code> and the values are the ticker.</li>
   <div class='section-example-container python'>
-    <pre class='python'>tickers_by_id = {str(x.ID): x.Value for x in qb.Securities.Keys}</pre>
+    <pre class='python'>tickers_by_id = {str(x.id): x.value for x in qb.securities.keys}</pre>
   </div>
   <li>Get the values of the symbol level of the <code>DataFrame</code> index and create a list of tickers.</li>
   <div class='section-example-container python'>
@@ -118,7 +118,7 @@
 </ol>
 <p class='python'>The new <code>DataFrame</code> is keyed by the ticker.</p>
 <div class='section-example-container python'>
-  <pre class='python'>all_history_df.loc[spy.Value]  # or all_history_df.loc["SPY"]  </pre>
+  <pre class='python'>all_history_df.loc[spy.value]  # or all_history_df.loc["SPY"]  </pre>
 </div>
 <p class='python'>After the index renaming, the unstacked <code>DataFrame</code> has the following format:</p>
 <img class='python docs-image' src='https://cdn.quantconnect.com/i/tu/us-equity-research-data-5.jpg' alt="Historical data dataframe of selected attribute by symbols">
@@ -170,16 +170,16 @@ df</pre>
 }</pre>
 <pre class='python'>for slice in all_history_slice:
     <? if ($supportsAltData) {?>
-    if slice.ContainsKey(<?=$primarySymbolPy?>):
+    if slice.contains_key(<?=$primarySymbolPy?>):
         data = slice[<?=$primarySymbolPy?>]
 <? } ?>
 <? if ($supportsTrades) {?>
-    if slice.Bars.ContainsKey(<?=$primarySymbolPy?>):
-        trade_bar = slice.Bars[<?=$primarySymbolPy?>]
+    if slice.bars.contains_key(<?=$primarySymbolPy?>):
+        trade_bar = slice.bars[<?=$primarySymbolPy?>]
 <? } ?>
 <? if ($supportsQuotes) {?>
-    if slice.QuoteBars.ContainsKey(<?=$primarySymbolPy?>):
-        quote_bar = slice.QuoteBars[<?=$primarySymbolPy?>]
+    if slice.quote_bars.contains_key(<?=$primarySymbolPy?>):
+        quote_bar = slice.quote_bars[<?=$primarySymbolPy?>]
 <? } ?>
 </pre>
 </div>
@@ -219,14 +219,14 @@ df</pre>
 }</pre>
 <pre class='python'>for slice in all_history_slice:
 <? if ($supportsTrades) { ?>
-    for kvp in slice.Bars:
-        symbol = kvp.Key
-        trade_bar = kvp.Value
+    for kvp in slice.bars:
+        symbol = kvp.key
+        trade_bar = kvp.value
 <? } ?>
 <? if ($supportsQuotes) {?>
-    for kvp in slice.QuoteBars:
-        symbol = kvp.Key
-        quote_bar = kvp.Value
+    for kvp in slice.quote_bars:
+        symbol = kvp.key
+        quote_bar = kvp.value
 <? } ?>
 </pre>
 </div>
@@ -267,7 +267,7 @@ var quoteBars = allHistorySlice.Where(slice => slice.QuoteBars.ContainsKey(<?=$p
     }
 }</pre>
 <pre class='python'>for trade_bars in all_history_trade_bars:
-    if trade_bars.ContainsKey(<?=$primarySymbolPy?>):
+    if trade_bars.contains_key(<?=$primarySymbolPy?>):
         trade_bar = trade_bars[<?=$primarySymbolPy?>]</pre>
 </div>
 <p>You can also iterate through each of the <code>TradeBars</code>.</p>
@@ -311,7 +311,7 @@ var quoteBars = allHistorySlice.Where(slice => slice.QuoteBars.ContainsKey(<?=$p
     }
 }</pre>
 <pre class='python'>for quote_bars in all_history_quote_bars:
-    if quote_bars.ContainsKey(<?=$primarySymbolPy?>):
+    if quote_bars.contains_key(<?=$primarySymbolPy?>):
         quote_bar = quote_bars[<?=$primarySymbolPy?>]</pre>
 </div>
 <p>You can also iterate through each of the <code>QuoteBars</code>.</p>
@@ -326,8 +326,8 @@ var quoteBars = allHistorySlice.Where(slice => slice.QuoteBars.ContainsKey(<?=$p
 }</pre>
 <pre class='python'>for quote_bars in all_history_quote_bars:
     for kvp in quote_bars:
-        symbol = kvp.Key
-        quote_bar = kvp.Value</pre>
+        symbol = kvp.key
+        quote_bar = kvp.value</pre>
 </div>
 <? } ?>
 
@@ -355,7 +355,7 @@ var quoteBars = allHistorySlice.Where(slice => slice.QuoteBars.ContainsKey(<?=$p
     }
 }</pre>
 <pre class='python'>for ticks in all_history_ticks:
-    if ticks.ContainsKey(<?=$primarySymbolPy?>):
+    if ticks.contains_key(<?=$primarySymbolPy?>):
         ticks = ticks[<?=$primarySymbolPy?>]</pre>
 </div>
 <p>You can also iterate through each of the <code>Ticks</code>.</p>
@@ -370,8 +370,8 @@ var quoteBars = allHistorySlice.Where(slice => slice.QuoteBars.ContainsKey(<?=$p
 }</pre>
 <pre class='python'>for ticks in all_history_ticks:
     for kvp in ticks:
-        symbol = kvp.Key
-        tick = kvp.Value</pre>
+        symbol = kvp.key
+        tick = kvp.value</pre>
 </div>
 <p>The <code>Ticks</code> objects only contain the last tick of each security for that particular <a href='/docs/v2/writing-algorithms/key-concepts/time-modeling/timeslices'>timeslice</a></p>
 <? } ?>
@@ -400,7 +400,7 @@ var quoteBars = allHistorySlice.Where(slice => slice.QuoteBars.ContainsKey(<?=$p
     }
 }</pre>
 <pre class='python'>for open_interest_dict in all_history_open_interest:
-    if open_interest_dict.ContainsKey(<?=$primarySymbolPy?>):
+    if open_interest_dict.contains_key(<?=$primarySymbolPy?>):
         open_interest = open_interest_dict[<?=$primarySymbolPy?>]</pre>
 </div>
 <p>You can also iterate through each of the <code>OpenInterest</code> dictionaries.</p>
@@ -415,8 +415,8 @@ var quoteBars = allHistorySlice.Where(slice => slice.QuoteBars.ContainsKey(<?=$p
 }</pre>
 <pre class='python'>for open_interest_dict in all_history_open_interest:
     for kvp in open_interest_dict:
-        symbol = kvp.Key
-        open_interest = kvp.Value</pre>
+        symbol = kvp.key
+        open_interest = kvp.value</pre>
 </div>
 <? } ?>
 
@@ -441,22 +441,22 @@ var quoteBars = allHistorySlice.Where(slice => slice.QuoteBars.ContainsKey(<?=$p
     }
 }</pre>
 <pre class='python'>for slice in option_history:
-    for canonical_symbol, chain in slice.OptionChains.items(): 
+    for canonical_symbol, chain in slice.option_chains.items(): 
         for contract in chain:
             pass</pre>
 </div>
 
 <p class='python'>To convert the <code>OptionHistory</code> object to a <code>DataFrame</code> that contains the trade and quote information of each contract and the underlying, call the <code>GetAllData</code> method.</p>
 <div class='python section-example-container'>
-    <pre class='python'>option_history.GetAllData()</pre>
+    <pre class='python'>option_history.get_all_data()</pre>
 </div>
 <p class='python'>To get the expiration dates of all the contracts in an <code>OptionHistory</code> object, call the <code>GetExpiryDates</code> method.</p>
 <div class='python section-example-container'>
-    <pre class='python'>option_history.GetExpiryDates()</pre>
+    <pre class='python'>option_history.get_expiry_dates()</pre>
 </div>
 <p class='python'>To get the strike prices of all the contracts in an <code>OptionHistory</code> object, call the <code>GetStrikes</code> method.</p>
 <div class='python section-example-container'>
-    <pre class='python'>option_history.GetStrikes()</pre>
+    <pre class='python'>option_history.get_strikes()</pre>
 </div>
 <? } ?>
 
@@ -481,17 +481,17 @@ var quoteBars = allHistorySlice.Where(slice => slice.QuoteBars.ContainsKey(<?=$p
     }
 }</pre>
 <pre class='python'>for slice in future_history:
-    for continuous_contract_symbol, chain in slice.FuturesChains.items(): 
+    for continuous_contract_symbol, chain in slice.futures_chains.items(): 
         for contract in chain:
             pass</pre>
 </div>
 
 <p class='python'>To convert the <code>FutureHistory</code> object to a <code>DataFrame</code> that contains the trade and quote information of each contract, call the <code>GetAllData</code> method.</p>
 <div class='python section-example-container'>
-    <pre class='python'>future_history.GetAllData()</pre>
+    <pre class='python'>future_history.get_all_data()</pre>
 </div>
 <p class='python'>To get the expiration dates of all the contracts in an <code>FutureHistory</code> object, call the <code>GetExpiryDates</code> method.</p>
 <div class='python section-example-container'>
-    <pre class='python'>future_history.GetExpiryDates()</pre>
+    <pre class='python'>future_history.get_expiry_dates()</pre>
 </div>
 <? } ?>

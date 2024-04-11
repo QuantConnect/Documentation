@@ -65,18 +65,18 @@ public override void OnData(Slice slice)
                    TimeInForce = TimeInForce.Day 
                });
 }</pre>
-    <pre class="python">def Initialize(self) -&gt; None:
+    <pre class="python">def initialize(self) -&gt; None:
     # Set the default order properties
-    self.DefaultOrderProperties.TimeInForce = TimeInForce.GoodTilCanceled
+    self.default_order_properties.time_in_force = TimeInForce.good_til_canceled
 
-def OnData(self, slice: Slice) -&gt; None:
+def on_data(self, slice: Slice) -&gt; None:
     # Use default order order properties
-    self.LimitOrder(self.symbol, quantity, limit_price)
+    self.limit_order(self.symbol, quantity, limit_price)
     
     # Override the default order properties
     order_properties = OrderProperties()
-    order_properties.TimeInForce = TimeInForce.Day
-    self.LimitOrder(self.symbol, quantity, limit_price, orderProperties=order_properties)</pre>
+    order_properties.time_in_force = TimeInForce.day
+    self.limit_order(self.symbol, quantity, limit_price, orderProperties=order_properties)</pre>
 </div>
 <?php } ?>
 

@@ -124,35 +124,35 @@ public override void OnData(Slice slice)
                    ConditionalOrder = StopLimitOrder(_symbol, -quantity, stopLimitPrice, stopPrice)
                });
 }</pre>
-    <pre class="python">def Initialize(self) -&gt; None:
+    <pre class="python">def initialize(self) -&gt; None:
     # Set the default order properties
-    self.DefaultOrderProperties = KrakenOrderProperties()
-    self.DefaultOrderProperties.TimeInForce = TimeInForce.GoodTilCanceled
-    self.DefaultOrderProperties.PostOnly = False
-    self.DefaultOrderProperties.FeeInBase = True
-    self.DefaultOrderProperties.FeeInQuote = False
-    self.DefaultOrderProperties.NoMarketPriceProtection = True
+    self.default_order_properties = KrakenOrderProperties()
+    self.default_order_properties.time_in_force = TimeInForce.good_til_canceled
+    self.default_order_properties.post_only = False
+    self.default_order_properties.fee_in_base = True
+    self.default_order_properties.fee_in_quote = False
+    self.default_order_properties.no_market_price_protection = True
 
-def OnData(self, slice: Slice) -&gt; None:
+def on_data(self, slice: Slice) -&gt; None:
     # Use default order order properties
-    self.LimitOrder(self.symbol, quantity, limit_price)
+    self.limit_order(self.symbol, quantity, limit_price)
     
     # Override the default order properties
     order_properties = KrakenOrderProperties()
-    order_properties.TimeInForce = TimeInForce.Day
-    order_properties.PostOnly = True
-    order_properties.FeeInBase = False
-    order_properties.FeeInQuote = True
-    order_properties.NoMarketPriceProtection = True
-    self.LimitOrder(self.symbol, quantity, limit_price, orderProperties=order_properties)
+    order_properties.time_in_force = TimeInForce.day
+    order_properties.post_only = True
+    order_properties.fee_in_base = False
+    order_properties.fee_in_quote = True
+    order_properties.no_market_price_protection = True
+    self.limit_order(self.symbol, quantity, limit_price, orderProperties=order_properties)
 
-    order_properties.TimeInForce = TimeInForce.GoodTilDate(datetime(year, month, day))
-    order_properties.PostOnly = False
-    order_properties.FeeInBase = True
-    order_properties.FeeInQuote = False
-    order_properties.NoMarketPriceProtection = False
-    order_properties.ConditionalOrder = StopLimitOrder(self.symbol, -quantity, stop_limit_price, stop_price)
-    self.LimitOrder(self.symbol, quantity, limit_price, orderProperties=order_properties)</pre>
+    order_properties.time_in_force = TimeInForce.good_til_date(datetime(year, month, day))
+    order_properties.post_only = False
+    order_properties.fee_in_base = True
+    order_properties.fee_in_quote = False
+    order_properties.no_market_price_protection = False
+    order_properties.conditional_order = StopLimitOrder(self.symbol, -quantity, stop_limit_price, stop_price)
+    self.limit_order(self.symbol, quantity, limit_price, orderProperties=order_properties)</pre>
 </div>
 <?php } ?>
 

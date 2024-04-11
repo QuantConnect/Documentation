@@ -5,7 +5,7 @@
 Transactions.MarketOrderFillTimeout = TimeSpan.FromSeconds(30);
 </pre>
 <pre class='python'> # Adjust the market fill-timeout to 30 seconds.
-self.Transactions.MarketOrderFillTimeout = timedelta(seconds=30)</pre>
+self.transactions.market_order_fill_timeout = timedelta(seconds=30)</pre>
 </div>
 
 <? if (substr_compare($orderName, 'exercise', -8) !== 0) { ?>

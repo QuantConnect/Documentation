@@ -5,15 +5,15 @@
 
 <p class='python'>If the history request returns an empty DataFrame and you try to slice it, it throws an exception. To avoid issues, check if the DataFrame contains data before slicing it.</p>
 <div class='python section-example-container'>
-<pre class='python'>df = <?=$writingAlgorithms ? "self": "qb"?>.History(symbol, 10).close    # raises exception if the request is empty
+<pre class='python'>df = <?=$writingAlgorithms ? "self": "qb"?>.history(symbol, 10).close    # raises exception if the request is empty
 
-def GetSafeHistoryCloses(<?=$writingAlgorithms ? "self, " : "" ?>symbols):
+def get_safe_history_closes(<?=$writingAlgorithms ? "self, " : "" ?>symbols):
     if not symbols:
-        <?=$writingAlgorithms ? "self.Log" : "print"?>(f'No symbols')
+        <?=$writingAlgorithms ? "self.log" : "print"?>(f'No symbols')
         return  False, None
-    df = <?=$writingAlgorithms ? "self": "qb"?>.History(symbols, 100, Resolution.Daily)
+    df = <?=$writingAlgorithms ? "self": "qb"?>.history(symbols, 100, Resolution.daily)
     if df.empty:
-        <?=$writingAlgorithms ? "self.Log" : "print"?>(f'Empy history for {symbols}')
+        <?=$writingAlgorithms ? "self.log" : "print"?>(f'Empy history for {symbols}')
         return  False, None
      return True, df.close.unstack(0)</pre>
 </div>

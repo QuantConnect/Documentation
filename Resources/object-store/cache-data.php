@@ -13,5 +13,5 @@
     
 <div class='section-example-container'>
     <pre class='csharp'><?=$cSharpPrefix?>ObjectStore.Clear();</pre>
-    <pre class='python'><?=$pythonPrefix?>ObjectStore.Clear()</pre>
+    <pre class='python'><?=$pythonPrefix?>object_store.clear()</pre>
 </div>

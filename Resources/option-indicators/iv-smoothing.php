@@ -5,5 +5,5 @@ Note that you must use the mirror-contract constructor. Refer to <a href="/docs/
     <pre class="csharp">// example: take average of the call-put pair
 _<?=$typeName?>.ImpliedVolatility.SetSmoothingFunction((iv, mirrorIv) => (iv + mirrorIv) * 0.5m);</pre>
     <pre class="python"># example: take average of the call-put pair
-self.<?=$typeName?>.ImpliedVolatility.SetSmoothingFunction(lambda iv, mirror_iv: (iv + mirror_iv) * 0.5)</pre>
+self.<?=$typeName?>.implied_volatility.set_smoothing_function(lambda iv, mirror_iv: (iv + mirror_iv) * 0.5)</pre>
 </div>

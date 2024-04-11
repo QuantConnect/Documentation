@@ -10,5 +10,5 @@
 
 <div class='section-example-container'>
     <pre class='csharp'>Log("My log message");</pre>
-    <pre class='python'>self.Log("My log message")</pre>
+    <pre class='python'>self.log("My log message")</pre>
 </div>

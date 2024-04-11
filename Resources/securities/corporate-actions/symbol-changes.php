@@ -75,11 +75,11 @@ def OnSymbolChangedEvents(self, symbol_changed_events: SymbolChangedEvents) -> N
         }
     } 
 }</pre>
-        <pre class='python'>def OnOrderEvent(self, order_event: OrderEvent) -&gt; None:
-    if order_event.Status == OrderStatus.Canceled:
-        ticket = self.Transactions.GetOrderTicket(order_event.OrderId)
-        if "symbol changed event" in ticket.Tag:
-            self.Transactions.AddOrder(ticket.SubmitRequest)</pre>
+        <pre class='python'>def on_order_event(self, order_event: OrderEvent) -&gt; None:
+    if order_event.status == OrderStatus.canceled:
+        ticket = self.transactions.get_order_ticket(order_event.order_id)
+        if "symbol changed event" in ticket.tag:
+            self.transactions.add_order(ticket.submit_request)</pre>
     </div>
 
 <p>LEAN stores the data for ticker changes in map files. To view some example map files, see the <a rel='nofollow' target='_blank' href='<?=$mapFilesLink?>'>LEAN GitHub repository</a>.</p>

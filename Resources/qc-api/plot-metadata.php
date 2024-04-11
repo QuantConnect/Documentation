@@ -1,23 +1,23 @@
 <li>Get the "Strategy Equity", "Drawdown", and "Benchmark" <code>Chart</code> objects.</li>
 <div class="section-example-container">
-    <pre class="python">equity_chart = <?=$isLive ? "results" : "backtest"?>.Charts["Strategy Equity"]
-drawdown_chart = <?=$isLive ? "results" : "backtest"?>.Charts["Drawdown"]
-benchmark_chart = <?=$isLive ? "results" : "backtest"?>.Charts["Benchmark"]</pre>
+    <pre class="python">equity_chart = <?=$isLive ? "results" : "backtest"?>.charts["Strategy Equity"]
+drawdown_chart = <?=$isLive ? "results" : "backtest"?>.charts["Drawdown"]
+benchmark_chart = <?=$isLive ? "results" : "backtest"?>.charts["Benchmark"]</pre>
 </div>
 
 <li>Get the "Equity", "Equity Drawdown", and "Benchmark" <code>Series</code> from the preceding charts.</li>
 <div class="section-example-container">
-    <pre class="python">equity = equity_chart.Series["Equity"].Values
-drawdown = drawdown_chart.Series["Equity Drawdown"].Values
-benchmark = benchmark_chart.Series["Benchmark"].Values</pre>
+    <pre class="python">equity = equity_chart.series["Equity"].values
+drawdown = drawdown_chart.series["Equity Drawdown"].values
+benchmark = benchmark_chart.series["Benchmark"].values</pre>
 </div>
 
 <li>Create a <code>pandas.DataFrame</code> from the series values.</li>
 <div class="section-example-container">
     <pre class="python">df = pd.DataFrame({
-    "Equity": pd.Series({value.Time: value.Close for value in equity}),
-    "Drawdown": pd.Series({value.Time: value.Y for value in drawdown}),
-    "Benchmark": pd.Series({value.Time: value.Y for value in benchmark})
+    "Equity": pd.Series({value.time: value.CLOSE for value in equity}),
+    "Drawdown": pd.Series({value.time: value.Y for value in drawdown}),
+    "Benchmark": pd.Series({value.time: value.Y for value in benchmark})
 }).ffill()</pre>
 </div>
 

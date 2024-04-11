@@ -14,5 +14,5 @@
 
 <div class='section-example-container'>
     <pre class='csharp'>security.MarginModel = new PatternDayTradingMarginModel();</pre>
-    <pre class='python'>security.MarginModel = PatternDayTradingMarginModel()</pre>
+    <pre class='python'>security.margin_model = PatternDayTradingMarginModel()</pre>
 </div>

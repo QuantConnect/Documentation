@@ -46,8 +46,8 @@
 <div class="section-example-container">
     <pre class="csharp">DefaultOrderProperties.TimeInForce = TimeInForce.GoodTilCanceled;
 LimitOrder(_symbol, quantity, limitPrice);</pre>
-    <pre class="python">self.DefaultOrderProperties.TimeInForce = TimeInForce.GoodTilCanceled
-self.LimitOrder(self.symbol, quantity, limit_price)</pre>
+    <pre class="python">self.default_order_properties.time_in_force = TimeInForce.good_til_canceled
+self.limit_order(self.symbol, quantity, limit_price)</pre>
 </div>
 <?php } ?>
 

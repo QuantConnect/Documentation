@@ -159,33 +159,33 @@ public override void OnData(Slice slice)
                    Account = "account2"
                });
 }</pre>
-    <pre class="python">def Initialize(self) -&gt; None:
+    <pre class="python">def initialize(self) -&gt; None:
     # Set the default order properties
-    self.DefaultOrderProperties = TerminalLinkOrderProperties()
-    self.DefaultOrderProperties.TimeInForce = TimeInForce.GoodTilCanceled
-    self.DefaultOrderProperties.Strategy = TerminalLinkOrderProperties.StrategyParameters(
+    self.default_order_properties = TerminalLinkOrderProperties()
+    self.default_order_properties.time_in_force = TimeInForce.good_til_canceled
+    self.default_order_properties.strategy = TerminalLinkOrderProperties.strategy_parameters(
         "VWAP",
         [
-            TerminalLinkOrderProperties.StrategyField("09:30:00"),
-            TerminalLinkOrderProperties.StrategyField("10:30:00"),
-            TerminalLinkOrderProperties.StrategyField(),
-            TerminalLinkOrderProperties.StrategyField()
+            TerminalLinkOrderProperties.strategy_field("09:30:00"),
+            TerminalLinkOrderProperties.strategy_field("10:30:00"),
+            TerminalLinkOrderProperties.strategy_field(),
+            TerminalLinkOrderProperties.strategy_field()
         ]
     )
 
-def OnData(self, slice: Slice) -&gt; None:
+def on_data(self, slice: Slice) -&gt; None:
     # Use default order order properties
-    self.LimitOrder(self.symbol, quantity, limit_price)
+    self.limit_order(self.symbol, quantity, limit_price)
     
     # Override the default order properties
     order_properties = TerminalLinkOrderProperties()
-    order_properties.TimeInForce = TimeInForce.Day
-    order_properties.Account = "account1"
-    self.LimitOrder(self.symbol, quantity, limit_price, orderProperties=order_properties)
+    order_properties.time_in_force = TimeInForce.day
+    order_properties.account = "account1"
+    self.limit_order(self.symbol, quantity, limit_price, orderProperties=order_properties)
 
-    order_properties.TimeInForce = TimeInForce.GoodTilDate(datetime(year, month, day))
-    order_properties.Account = "account2"
-    self.LimitOrder(self.symbol, quantity, limit_price, orderProperties=order_properties)</pre>
+    order_properties.time_in_force = TimeInForce.good_til_date(datetime(year, month, day))
+    order_properties.account = "account2"
+    self.limit_order(self.symbol, quantity, limit_price, orderProperties=order_properties)</pre>
 </div>
 <? } ?>
 

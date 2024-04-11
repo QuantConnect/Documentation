@@ -82,21 +82,21 @@ public override void OnData(Slice slice)
                    PostOnly = true
                });
 }</pre>
-    <pre class="python">def Initialize(self) -&gt; None:
+    <pre class="python">def initialize(self) -&gt; None:
     # Set the default order properties
-    self.DefaultOrderProperties = CoinbaseOrderProperties()
-    self.DefaultOrderProperties.TimeInForce = TimeInForce.GoodTilCanceled
-    self.DefaultOrderProperties.PostOnly = False
+    self.default_order_properties = CoinbaseOrderProperties()
+    self.default_order_properties.time_in_force = TimeInForce.good_til_canceled
+    self.default_order_properties.post_only = False
 
-def OnData(self, slice: Slice) -&gt; None:
+def on_data(self, slice: Slice) -&gt; None:
     # Use default order order properties
-    self.LimitOrder(self.symbol, quantity, limit_price)
+    self.limit_order(self.symbol, quantity, limit_price)
     
     # Override the default order properties
     order_properties = CoinbaseOrderProperties()
-    order_properties.TimeInForce = TimeInForce.GoodTilCanceled
-    order_properties.PostOnly = True
-    self.LimitOrder(self.symbol, quantity, limit_price, orderProperties=order_properties)</pre>
+    order_properties.time_in_force = TimeInForce.good_til_canceled
+    order_properties.post_only = True
+    self.limit_order(self.symbol, quantity, limit_price, orderProperties=order_properties)</pre>
 </div>
 <?php } ?>
 

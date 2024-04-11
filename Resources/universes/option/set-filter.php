@@ -46,15 +46,15 @@ option.SetFilter(minStrike: -1, maxStrike: 1, minExpiry: TimeSpan.FromDays(0), m
 // Select call contracts
 option.SetFilter(optionFilterUniverse => optionFilterUniverse.CallsOnly());</pre>
     <pre class="python"># Select contracts that have a strike price within 1 strike level above and below the underlying price
-option.SetFilter(minStrike=-1, maxStrike=1)
+option.set_filter(minStrike=-1, maxStrike=1)
 
 # Select contracts that expire within 30 days
-option.SetFilter(minExpiry=timedelta(days=0), maxExpiry=timedelta(days=30))
+option.set_filter(minExpiry=timedelta(days=0), maxExpiry=timedelta(days=30))
 
 # Select contracts that have a strike price within 1 strike level and expire within 30 days
-option.SetFilter(minStrike=-1, maxStrike=1, minExpiry=timedelta(days=0), maxExpiry=timedelta(days=30))
+option.set_filter(minStrike=-1, maxStrike=1, minExpiry=timedelta(days=0), maxExpiry=timedelta(days=30))
 
 # Select call contracts
-option.SetFilter(lambda option_filter_universe: option_filter_universe.CallsOnly())
+option.set_filter(lambda option_filter_universe: option_filter_universe.calls_only())
 </pre>
 </div>
