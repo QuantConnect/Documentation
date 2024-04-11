@@ -5,9 +5,9 @@
 <div class="section-example-container">
     <pre class="python">training_length = 252*2
 self.training_data = RollingWindow[float](training_length)
-history = self.History[TradeBar](self.symbol, training_length, Resolution.Daily)
+history = self.history[TradeBar](self.symbol, training_length, Resolution.daily)
 for trade_bar in history:
-    self.training_data.Add(trade_bar.Close)</pre>
+    self.training_data.add(trade_bar.close)</pre>
 </div>
 
 <h4>Define a Training Method</h4>
@@ -54,12 +54,12 @@ def my_training_method(self):
 <h4>Set Training Schedule</h4>
 <p>To train the model at the beginning of your algorithm, in the <code>Initialize</code> method, call the <code>Train</code> method.</p>
 <div class="section-example-container">
-    <pre class="python">self.Train(self.my_training_method)</pre>
+    <pre class="python">self.train(self.my_training_method)</pre>
 </div>
 <p>To periodically re-train the model as your algorithm executes, in the <code>Initialize</code> method, call the <code>Train</code> method as a <a href="/docs/v2/writing-algorithms/scheduled-events">Scheduled Event</a>.</p>
 <div class="section-example-container">
     <pre class="python"># Train the model every Sunday at 8:00 AM
-self.Train(self.DateRules.Every(DayOfWeek.Sunday), self.TimeRules.At(8, 0), self.my_training_method)</pre>
+self.train(self.date_rules.every(DayOfWeek.sunday), self.time_rules.at(8, 0), self.my_training_method)</pre>
 </div>
 
 
