@@ -6,14 +6,14 @@
 
 <div class="section-example-container">
     <pre class="csharp">_symbol = AddEquity("SPY", dataNormalizationMode: DataNormalizationMode.Raw).Symbol;</pre>
-    <pre class="python">self.symbol = self.AddEquity("SPY", dataNormalizationMode=DataNormalizationMode.Raw).Symbol</pre>
+    <pre class="python">self.symbol = self.add_equity("SPY", dataNormalizationMode=DataNormalizationMode.raw).symbol</pre>
 </div>
 
 <p>If your algorithm has a dynamic <a href="/docs/v2/writing-algorithms/universes/equity">universe</a> of Equities, before you add the Equity universe in the <code>Initialize</code> method, set the universe data normalization mode to <code>DataNormalizationMode.Raw</code>.</p>
 
 <div class="section-example-container">
     <pre class="csharp">UniverseSettings.DataNormalizationMode = DataNormalizationMode.Raw;</pre>
-    <pre class="python">self.UniverseSettings.DataNormalizationMode = DataNormalizationMode.Raw</pre>
+    <pre class="python">self.universe_settings.data_normalization_mode = DataNormalizationMode.raw</pre>
 </div>
 
 <p>If you subscribe to an Equity Option contract but don't have a subscription to the underlying Equity, LEAN automatically subscribes to the underlying Equity with the following settings:</p>
@@ -48,7 +48,7 @@
 <p>In this case, you still need the Equity <code>Symbol</code> to subscribe to Equity Option contracts. If you don't have access to it, create it.</p>
 <div class="section-example-container">
     <pre class="csharp">_symbol = QuantConnect.Symbol.Create("SPY", SecurityType.Equity, Market.USA);</pre>
-    <pre class="python">self.symbol = Symbol.Create("SPY", SecurityType.Equity, Market.USA)</pre>
+    <pre class="python">self.symbol = Symbol.create("SPY", SecurityType.EQUITY, Market.USA)</pre>
 </div>
 
 <?php echo file_get_contents(DOCS_RESOURCES."/reality-modeling/volatility-model.html"); ?>
@@ -60,8 +60,8 @@
 <div class="section-example-container">
     <pre class="csharp">_contractSymbol = QuantConnect.Symbol.CreateOption(_symbol, Market.USA,
     OptionStyle.American, OptionRight.Call, 365, new DateTime(2022, 6, 17));</pre>
-    <pre class="python">self.contract_symbol = Symbol.CreateOption(self.symbol, Market.USA,
-    OptionStyle.American, OptionRight.Call, 365, datetime(2022, 6, 17))</pre>
+    <pre class="python">self.contract_symbol = Symbol.create_option(self.symbol, Market.USA,
+    OptionStyle.AMERICAN, OptionRight.CALL, 365, datetime(2022, 6, 17))</pre>
 </div>
 
 <p>Another way to get an Option contract <code>Symbol</code> is to use the <code>OptionChainProvider</code>. The <code>GetOptionContractList</code> method of <code>OptionChainProvider</code> returns a list of <code>Symbol</code> objects that reference the available Option contracts for a given underlying Equity on a given date. To filter and select contracts, you can use the following properties of each <code>Symbol</code> object:</p>
@@ -104,10 +104,10 @@
 var expiry = contractSymbols.Select(symbol =&gt; symbol.ID.Date).Min();
 var filteredSymbols = contractSymbols.Where(symbol =&gt; symbol.ID.Date == expiry &amp;&amp; symbol.ID.OptionRight == OptionRight.Call);
 _contractSymbol = filteredSymbols.OrderByDescending(symbol =&gt; symbol.ID.StrikePrice).Last();</pre>
-    <pre class="python">contract_symbols = self.OptionChainProvider.GetOptionContractList(self.symbol, self.Time)
-expiry = min([symbol.ID.Date for symbol in contract_symbols])
-filtered_symbols = [symbol for symbol in contract_symbols if symbol.ID.Date == expiry and symbol.ID.OptionRight == OptionRight.Call]
-self.contract_symbol = sorted(filtered_symbols, key=lambda symbol: symbol.ID.StrikePrice)[0]</pre>
+    <pre class="python">contract_symbols = self.option_chain_provider.get_option_contract_list(self.symbol, self.time)
+expiry = min([symbol.id.date for symbol in contract_symbols])
+filtered_symbols = [symbol for symbol in contract_symbols if symbol.id.date == expiry and symbol.id.option_right == OptionRight.call]
+self.contract_symbol = sorted(filtered_symbols, key=lambda symbol: symbol.id.strike_price)[0]</pre>
 </div>
 
 <h4>Subscribe to Contracts</h4>
@@ -117,8 +117,8 @@ self.contract_symbol = sorted(filtered_symbols, key=lambda symbol: symbol.ID.Str
 <div class="section-example-container">
     <pre class="csharp">var option = AddOptionContract(_contractSymbol);
 option.PriceModel = OptionPriceModels.BinomialCoxRossRubinstein();</pre>
-    <pre class="python">option = self.AddOptionContract(self.contract_symbol)
-option.PriceModel = OptionPriceModels.BinomialCoxRossRubinstein()</pre>
+    <pre class="python">option = self.add_option_contract(self.contract_symbol)
+option.price_model = OptionPriceModels.binomial_cox_ross_rubinstein()</pre>
 </div>
 
 <p>The <code>AddOptionContract</code> method creates a subscription for a single Option contract and adds it to your <span class="new-term">user-defined</span> universe. To create a dynamic universe of Option contracts, add an <a href="/docs/v2/writing-algorithms/universes/equity-options">Equity Options universe</a> or an <a href="/docs/v2/writing-algorithms/algorithm-framework/universe-selection/options-universes">Options Universe Selection model</a>.</p>
@@ -130,8 +130,8 @@ option.PriceModel = OptionPriceModels.BinomialCoxRossRubinstein()</pre>
 <div class="section-example-container">
     <pre class="csharp">var seeder = new FuncSecuritySeeder(GetLastKnownPrices);
 SetSecurityInitializer(new BrokerageModelSecurityInitializer(BrokerageModel, seeder));</pre>
-    <pre class="python">seeder = FuncSecuritySeeder(self.GetLastKnownPrices)
-self.SetSecurityInitializer(BrokerageModelSecurityInitializer(self.BrokerageModel, seeder))</pre>
+    <pre class="python">seeder = FuncSecuritySeeder(self.get_last_known_prices)
+self.set_security_initializer(BrokerageModelSecurityInitializer(self.brokerage_model, seeder))</pre>
 </div>
 
 <h4>Supported Assets</h4>
