@@ -15,8 +15,8 @@ include(DOCS_RESOURCES."/datasets/research-environment/load-csharp-assemblies.ph
     <div class="section-example-container">
         <pre class="csharp">var spx = qb.AddIndex("SPX").Symbol;
 var vix = qb.AddIndex("VIX").Symbol;</pre>
-        <pre class="python">spx = qb.AddIndex("SPX").Symbol
-vix = qb.AddIndex("VIX").Symbol</pre>
+        <pre class="python">spx = qb.add_index("SPX").symbol
+vix = qb.add_index("VIX").symbol</pre>
     </div>
 </ol>
 

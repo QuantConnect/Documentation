@@ -43,8 +43,8 @@ var mirrorContracts = mirrorSymbols.OrderBy(x =&gt; x.ID.StrikePrice).Select(x =
 
     <li><a href="/docs/v2/research-environment/datasets/equity-options#04-Get-Historical-Data">Get historical data</a> for the underlying Equity and the Option contract(s).</li>
     <div class="section-example-container">
-        <pre class="python">qb.SetStartDate(start_date)
-history = qb.History[QuoteBar]([equity_symbol] + option_contracts + mirror_contracts, 20, Resolution.Minute)</pre>
+        <pre class="python">qb.set_start_date(start_date)
+history = qb.history[QuoteBar]([equity_symbol] + option_contracts + mirror_contracts, 20, Resolution.minute)</pre>
         <pre class="csharp">qb.SetStartDate(startDate);
 var symbols = new List&lt;Symbol&gt; { equitySymbol };
 var history = qb.History&lt;QuoteBar&gt;(symbols.Concat(optionContracts).Concat(mirrorContracts), 20, Resolution.Minute);</pre>
@@ -60,14 +60,14 @@ theta = {}
 rho = {}
 
 for option_contract, mirror_contract in zip(option_contracts, mirror_contracts):
-    strike = option_contract.ID.StrikePrice
+    strike = option_contract.id.strike_price
 
-    iv[strike] = ImpliedVolatility(option_contract, mirrorOption=mirror_contract, optionModel=OptionPricingModelType.ForwardTree)
-    delta[strike] = Delta(option_contract, mirrorOption=mirror_contract, optionModel=OptionPricingModelType.ForwardTree)
-    gamma[strike] = Gamma(option_contract, mirrorOption=mirror_contract, optionModel=OptionPricingModelType.ForwardTree)
-    vega[strike] = Vega(option_contract, mirrorOption=mirror_contract, optionModel=OptionPricingModelType.ForwardTree)
-    theta[strike] = Theta(option_contract, mirrorOption=mirror_contract, optionModel=OptionPricingModelType.ForwardTree)
-    rho[strike] = Rho(option_contract, mirrorOption=mirror_contract, optionModel=OptionPricingModelType.ForwardTree)</pre>
+    iv[strike] = ImpliedVolatility(option_contract, mirrorOption=mirror_contract, optionModel=OptionPricingModelType.forward_tree)
+    delta[strike] = Delta(option_contract, mirrorOption=mirror_contract, optionModel=OptionPricingModelType.forward_tree)
+    gamma[strike] = Gamma(option_contract, mirrorOption=mirror_contract, optionModel=OptionPricingModelType.forward_tree)
+    vega[strike] = Vega(option_contract, mirrorOption=mirror_contract, optionModel=OptionPricingModelType.forward_tree)
+    theta[strike] = Theta(option_contract, mirrorOption=mirror_contract, optionModel=OptionPricingModelType.forward_tree)
+    rho[strike] = Rho(option_contract, mirrorOption=mirror_contract, optionModel=OptionPricingModelType.forward_tree)</pre>
         <pre class="csharp">var iv = new Dictionary&lt;decimal, ImpliedVolatility>();
 var delta = new Dictionary&lt;decimal, Delta&gt;();
 var gamma = new Dictionary&lt;decimal, Gamma&gt;();
@@ -95,49 +95,49 @@ foreach (var pair in optionContracts.Zip(mirrorContracts, (x, y) =&gt; new {Opti
         <pre class="python">df = pd.DataFrame()
 
 for option_contract, mirror_contract in zip(option_contracts, mirror_contracts):
-    strike = option_contract.ID.StrikePrice
+    strike = option_contract.id.strike_price
 
     for bar in history:
         # Update the option indicators with indicator data points of the 3 symbols
-        equity_point = IndicatorDataPoint(equity_symbol, bar[equity_symbol].EndTime, bar[equity_symbol].Close)
-        option_point = IndicatorDataPoint(option_contract, bar[option_contract].EndTime, bar[option_contract].Close)
-        mirror_point = IndicatorDataPoint(mirror_contract, bar[mirror_contract].EndTime, bar[mirror_contract].Close)
+        equity_point = IndicatorDataPoint(equity_symbol, bar[equity_symbol].end_time, bar[equity_symbol].close)
+        option_point = IndicatorDataPoint(option_contract, bar[option_contract].end_time, bar[option_contract].close)
+        mirror_point = IndicatorDataPoint(mirror_contract, bar[mirror_contract].end_time, bar[mirror_contract].close)
 
-        iv[strike].Update(equity_point)
-        iv[strike].Update(option_point)
-        iv[strike].Update(mirror_point)
+        iv[strike].update(equity_point)
+        iv[strike].update(option_point)
+        iv[strike].update(mirror_point)
         
-        delta[strike].Update(equity_point)
-        delta[strike].Update(option_point)
-        delta[strike].Update(mirror_point)
+        delta[strike].update(equity_point)
+        delta[strike].update(option_point)
+        delta[strike].update(mirror_point)
         
-        gamma[strike].Update(equity_point)
-        gamma[strike].Update(option_point)
-        gamma[strike].Update(mirror_point)
+        gamma[strike].update(equity_point)
+        gamma[strike].update(option_point)
+        gamma[strike].update(mirror_point)
         
-        vega[strike].Update(equity_point)
-        vega[strike].Update(option_point)
-        vega[strike].Update(mirror_point)
+        vega[strike].update(equity_point)
+        vega[strike].update(option_point)
+        vega[strike].update(mirror_point)
         
-        theta[strike].Update(equity_point)
-        theta[strike].Update(option_point)
-        theta[strike].Update(mirror_point)
+        theta[strike].update(equity_point)
+        theta[strike].update(option_point)
+        theta[strike].update(mirror_point)
         
-        rho[strike].Update(equity_point)
-        rho[strike].Update(option_point)
-        rho[strike].Update(mirror_point)
+        rho[strike].update(equity_point)
+        rho[strike].update(option_point)
+        rho[strike].update(mirror_point)
 
         new_data = pd.Series({
             "Strike": strike,
-            "OptionPrice": bar[option_contract].Close,
-            "UnderlyingPrice": bar[equity_symbol].Close,
-            "IV": iv[strike].Current.Value,
-            "Delta": delta[strike].Current.Value,
-            "Gamma": gamma[strike].Current.Value,
-            "Vega": vega[strike].Current.Value,
-            "Theta": theta[strike].Current.Value,
-            "Rho": rho[strike].Current.Value,
-        }, name=bar[option_contract].EndTime).to_frame().T
+            "OptionPrice": bar[option_contract].close,
+            "UnderlyingPrice": bar[equity_symbol].close,
+            "IV": iv[strike].current.value,
+            "Delta": delta[strike].current.value,
+            "Gamma": gamma[strike].current.value,
+            "Vega": vega[strike].current.value,
+            "Theta": theta[strike].current.value,
+            "Rho": rho[strike].current.value,
+        }, name=bar[option_contract].end_time).to_frame().T
         df = pd.concat([df, new_data])</pre>
         <pre class="csharp">var ivs = new Dictionary&lt;decimal, decimal&gt;();
 

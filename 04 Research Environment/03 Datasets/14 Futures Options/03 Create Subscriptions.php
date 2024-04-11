@@ -20,18 +20,18 @@ var startDate = new DateTime(2021,12,20);
 var futuresContractSymbols = qb.FutureChainProvider.GetFutureContractList(future.Symbol, startDate);
 var futuresContractSymbol = futuresContractSymbols.OrderBy(s =&gt; s.ID.Date).FirstOrDefault();
 qb.AddFutureContract(futuresContractSymbol, fillForward: false);</pre>
-        <pre class="python">future = qb.AddFuture(Futures.Indices.SP500EMini, Resolution.Minute)
+        <pre class="python">future = qb.add_future(Futures.indices.SP500EMini, Resolution.minute)
 start_date = datetime(2021,12,20)
-futures_contract_symbols = qb.FutureChainProvider.GetFutureContractList(future.Symbol, start_date)
-futures_contract_symbol = sorted(futures_contract_symbols, key=lambda s: s.ID.Date)[0]
-qb.AddFutureContract(futures_contract_symbol, fillForward = False)</pre>
+futures_contract_symbols = qb.future_chain_provider.get_future_contract_list(future.symbol, start_date)
+futures_contract_symbol = sorted(futures_contract_symbols, key=lambda s: s.id.date)[0]
+qb.add_future_contract(futures_contract_symbol, fillForward = False)</pre>
     </div>
     <p>To view the available underlying Futures in the US Future Options dataset, see <a href="/docs/v2/writing-algorithms/datasets/algoseek/us-future-options#06-Supported-Assets">Supported Assets</a>.</p>
 
     <li><span class='qualifier'>(Optional)</span> Set a <a href='/docs/v2/writing-algorithms/universes/future-options#03-Filter-Contracts'>contract filter</a>.</li>
 <div class="section-example-container">
         <pre class="csharp">qb.AddFutureOption(future.Symbol, optionFilterUniverse =&gt; optionFilterUniverse.Strikes(-1, 1));</pre>
-        <pre class="python">qb.AddFutureOption(future.Symbol, lambda option_filter_universe: option_filter_universe.Strikes(-1, 1))</pre>
+        <pre class="python">qb.add_future_option(future.symbol, lambda option_filter_universe: option_filter_universe.strikes(-1, 1))</pre>
     </div>
 <p>The filter determines which contracts the <code>OptionHistory</code> method returns. If you don't set a filter, the default filter selects the contracts that have the following characteristics:</p>
 <ul>
@@ -47,7 +47,7 @@ qb.AddFutureContract(futures_contract_symbol, fillForward = False)</pre>
 	<li>Call the <code>GetOptionsContractList</code> method with the underlying Futures Contract <code>Symbol</code> and a <code class="python">datetime</code> <code class="csharp">DateTime</code> object.</li>
 	<div class="section-example-container">
 		<pre class="csharp">var fopContractSymbols = qb.OptionChainProvider.GetOptionContractList(futuresContractSymbol, startDate);</pre>
-		<pre class="python">fop_contract_symbols = qb.OptionChainProvider.GetOptionContractList(futures_contract_symbol, start_date)</pre>
+		<pre class="python">fop_contract_symbols = qb.option_chain_provider.get_option_contract_list(futures_contract_symbol, start_date)</pre>
 	</div>
     <p>This method returns a list of <code>Symbol</code> objects that reference the Option contracts that were trading for the underlying Future contract at the given time. If you set a contract filter with <code>SetFilter</code>, it doesn't affect the results of <code>GetOptionContractList</code>.</p>
 
@@ -92,21 +92,21 @@ var fopContractSymbol = fopContractSymbols
     .Where(c =&gt; c.ID.Date == closestExpiry &amp;&amp; c.ID.OptionRight == OptionRight.Call)
     .OrderBy(c =&gt; c.ID.StrikePrice)
     .FirstOrDefault();</pre>
-		<pre class="python">closest_expiry = min([c.ID.Date for c in fop_contract_symbols])
-calls = [c for c in fop_contract_symbols if c.ID.Date == closest_expiry and c.ID.OptionRight == OptionRight.Call]
-fop_contract_symbol = sorted(calls, key=lambda c: c.ID.StrikePrice)[0]</pre>
+		<pre class="python">closest_expiry = min([c.id.date for c in fop_contract_symbols])
+calls = [c for c in fop_contract_symbols if c.id.date == closest_expiry and c.id.option_right == OptionRight.call]
+fop_contract_symbol = sorted(calls, key=lambda c: c.id.strike_price)[0]</pre>
 	</div>
 
     <li>Call the <code>AddFutureOptionContract</code>&nbsp;method with an <code>OptionContract</code> Symbol and disable fill-forward.</li>
 	<div class="section-example-container">
 		<pre class="csharp">var optionContract = qb.AddFutureOptionContract(fopContractSymbol, fillForward: false);</pre>
-		<pre class="python">option_contract = qb.AddFutureOptionContract(fop_contract_symbol, fillForward = False)</pre>
+		<pre class="python">option_contract = qb.add_future_option_contract(fop_contract_symbol, fillForward = False)</pre>
 	</div>
     <p>Disable fill-forward because there are only a few <code>OpenInterest</code> data points per day.</p>
     
     <li><span class='qualifier'>(Optional)</span> Set the <a href='/docs/v2/writing-algorithms/reality-modeling/options-models/pricing'>price model</a>.</li>
     <div class="section-example-container">
         <pre class="csharp">optionContract.PriceModel = OptionPriceModels.BinomialCoxRossRubinstein();</pre>
-        <pre class="python">option_contract.PriceModel = OptionPriceModels.BinomialCoxRossRubinstein()</pre>
+        <pre class="python">option_contract.price_model = OptionPriceModels.binomial_cox_ross_rubinstein()</pre>
     </div>
 </ol>

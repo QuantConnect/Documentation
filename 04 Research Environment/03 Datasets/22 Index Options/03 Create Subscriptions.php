@@ -15,19 +15,19 @@ include(DOCS_RESOURCES."/datasets/research-environment/load-csharp-assemblies.ph
     <li>Call the <code>AddIndex</code> method with a ticker and resolution.</li>
     <div class="section-example-container">
         <pre class="csharp">var indexSymbol = qb.AddIndex("SPX", Resolution.Minute).Symbol;</pre>
-        <pre class="python">index_symbol = qb.AddIndex("SPX", Resolution.Minute).Symbol</pre>
+        <pre class="python">index_symbol = qb.add_index("SPX", Resolution.minute).symbol</pre>
     </div>
     <p>To view the available indices, see <a href="/docs/v2/writing-algorithms/datasets/algoseek/us-index-options#06-Supported-Assets">Supported Assets</a>.</p>
     <p>If you do not pass a resolution argument, <code>Resolution.Minute</code> is used by default. <br></p>
     <li>Call the <code>AddIndexOption</code> method with the underlying <code>Index</code> <code>Symbol</code> and, if you want non-standard Index Options, the <a href='/docs/v2/writing-algorithms/datasets/algoseek/us-index-options#06-Supported-Assets'>target Option ticker</a>.</li>
     <div class="section-example-container">
         <pre class="csharp">var option = qb.AddIndexOption(indexSymbol);</pre>
-        <pre class="python">option = qb.AddIndexOption(index_symbol)</pre>
+        <pre class="python">option = qb.add_index_option(index_symbol)</pre>
     </div>
     <li><span class='qualifier'>(Optional)</span> Set a <a href='/docs/v2/writing-algorithms/universes/index-options#03-Filter-Contracts'>contract filter</a>.</li>
     <div class="section-example-container">
-        <pre class="csharp">option.SetFilter(-1, 1, 0, 90);</pre>
-        <pre class="python">option.SetFilter(-1, 1, 0, 90)</pre>
+        <pre class="csharp">option.set_filter(-1, 1, 0, 90);</pre>
+        <pre class="python">option.set_filter(-1, 1, 0, 90)</pre>
     </div>
     <p>The filter determines which contracts the <code>OptionHistory</code> method returns. If you don't set a filter, the default filter selects the contracts that have the following characteristics:</p>
 <ul>
@@ -54,13 +54,13 @@ var weeklyContractSymbols = qb.OptionChainProvider.GetOptionContractList(weeklyC
 <pre class="python">start_date = datetime(2021, 12, 31)
 
 # Standard contracts
-canonical_symbol = Symbol.CreateCanonicalOption(index_symbol, Market.USA, "?SPX")
-contract_symbols = qb.OptionChainProvider.GetOptionContractList(canonical_symbol, start_date)
+canonical_symbol = Symbol.create_canonical_option(index_symbol, Market.USA, "?SPX")
+contract_symbols = qb.option_chain_provider.get_option_contract_list(canonical_symbol, start_date)
 
 # Weekly contracts
-weekly_canonical_symbol = Symbol.CreateCanonicalOption(index_symbol, "SPXW", Market.USA, "?SPXW")
-weekly_contract_symbols = qb.OptionChainProvider.GetOptionContractList(weekly_canonical_symbol, start_date)
-weekly_contract_symbols = [s for s in weekly_contract_symbols if OptionSymbol.IsWeekly(s)]</pre>
+weekly_canonical_symbol = Symbol.create_canonical_option(index_symbol, "SPXW", Market.USA, "?SPXW")
+weekly_contract_symbols = qb.option_chain_provider.get_option_contract_list(weekly_canonical_symbol, start_date)
+weekly_contract_symbols = [s for s in weekly_contract_symbols if OptionSymbol.is_weekly(s)]</pre>
     </div>
     <p>This method returns a list of <code>Symbol</code>&nbsp;objects that reference the Option contracts that were trading at the given time. If you set a contract filter with <code>SetFilter</code>, it doesn't affect the results of <code>GetOptionContractList</code>.</p>
     <li>Select the <code>Symbol</code> of the <code>OptionContract</code>&nbsp;object(s) for which you want to get historical data.</li>
@@ -112,21 +112,21 @@ var weeklyContractSymbol = weeklyContractSymbols.Where(s =>
     s.ID.Date == new DateTime(2021, 12, 31)).First();</pre>
 	    <pre class="python"># Standard contracts
 contract_symbol = [s for s in contract_symbols 
-    if s.ID.OptionRight == OptionRight.Call 
-        and s.ID.StrikePrice == 4460 
-        and s.ID.Date == datetime(2022, 4, 14)][0]
+    if s.id.option_right == OptionRight.CALL 
+        and s.id.strike_price == 4460 
+        and s.id.date == datetime(2022, 4, 14)][0]
 
 # Weekly contracts
 weekly_contract_symbol = [s for s in weekly_contract_symbols 
-    if s.ID.OptionRight == OptionRight.Call 
-        and s.ID.StrikePrice == 4460 
-        and s.ID.Date == datetime(2021, 12, 31)][0]</pre>
+    if s.id.option_right == OptionRight.CALL 
+        and s.id.strike_price == 4460 
+        and s.id.date == datetime(2021, 12, 31)][0]</pre>
     </div>
 
 	<li>Call the <code>AddIndexOptionContract </code> method with an <code>OptionContract</code> <code>Symbol</code> and disable fill-forward.</li>
     <div class="section-example-container">
       <pre class="csharp">qb.AddIndexOptionContract(contractSymbol, fillForward: false);</pre>
-	    <pre class="python">qb.AddIndexOptionContract(contract_symbol, fillForward = False)</pre>
+	    <pre class="python">qb.add_index_option_contract(contract_symbol, fillForward = False)</pre>
     </div>
   <p>Disable fill-forward because there are only a few <code>OpenInterest</code> data points per day.</p>
 </ol>
