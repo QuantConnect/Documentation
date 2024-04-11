@@ -89,56 +89,56 @@ class MyBrokerageModel : DefaultBrokerageModel
 }
 </pre>
 <pre class="python"># In the Initialize method, set the custom brokerage model
-self.SetBrokerageModel(MyBrokerageModel())
+self.set_brokerage_model(MyBrokerageModel())
 
 # Define the custom brokerage model outside of the algorithm
 class MyBrokerageModel(DefaultBrokerageModel):
-    DefaultMarkets = {SecurityType.Equity: Market.USA}
+    DefaultMarkets = {SecurityType.equity: Market.USA}
     RequiredFreeBuyingPowerPercent = 0
 
-    def __init__(self, accountType: AccountType = AccountType.Margin):
-        self.AccountType = accountType
+    def __init__(self, accountType: AccountType = AccountType.margin):
+        self.account_type = accountType
     
-    def CanSubmitOrder(self, security: Security, order: Order,
+    def can_submit_order(self, security: Security, order: Order,
          message: BrokerageMessageEvent) -&gt; bool:
-        return super().CanSubmitOrder(security, order, message)
+        return super().can_submit_order(security, order, message)
 
-    def CanUpdateOrder(self, security: Security, order: Order,
+    def can_update_order(self, security: Security, order: Order,
          request: UpdateOrderRequest, message: BrokerageMessageEvent) -&gt; bool:
-        return super().CanUpdateOrder(security, order, request, message)
+        return super().can_update_order(security, order, request, message)
 
-    def CanExecuteOrder(self, security: Security, order: Order) -&gt; bool:
-        return super().CanExecuteOrder(security, order)
+    def can_execute_order(self, security: Security, order: Order) -&gt; bool:
+        return super().can_execute_order(security, order)
 
-    def ApplySplit(self, tickets: List[OrderTicket], split: Split) -&gt; None:
-        super().ApplySplit(tickets, split)
+    def apply_split(self, tickets: List[OrderTicket], split: Split) -&gt; None:
+        super().apply_split(tickets, split)
 
-    def GetLeverage(self, security: Security) -&gt; float:
-        return super().GetLeverage(security)
+    def get_leverage(self, security: Security) -&gt; float:
+        return super().get_leverage(security)
 
-    def GetBenchmark(self, securities: SecurityManager) -&gt; IBenchmark:
-        return super().GetBenchmark(securities)
+    def get_benchmark(self, securities: SecurityManager) -&gt; IBenchmark:
+        return super().get_benchmark(securities)
 
-    def GetFillModel(self, security: Security) -&gt; IFillModel:
-        return super().GetFillModel(security)
+    def get_fill_model(self, security: Security) -&gt; IFillModel:
+        return super().get_fill_model(security)
 
-    def GetFeeModel(self, security: Security) -&gt; IFeeModel:
-        return super().GetFeeModel(security)
+    def get_fee_model(self, security: Security) -&gt; IFeeModel:
+        return super().get_fee_model(security)
 
-    def GetSlippageModel(self, security: Security) -&gt; ISlippageModel:
-        return super().GetSlippageModel(security)
+    def get_slippage_model(self, security: Security) -&gt; ISlippageModel:
+        return super().get_slippage_model(security)
 
-    def GetSettlementModel(self, security: Security) -&gt; ISettlementModel:
-        return super().GetSettlementModel(security)
+    def get_settlement_model(self, security: Security) -&gt; ISettlementModel:
+        return super().get_settlement_model(security)
 
-    def GetBuyingPowerModel(self, security: Security) -&gt; IBuyingPowerModel:
-        return super().GetBuyingPowerModel(security)
+    def get_buying_power_model(self, security: Security) -&gt; IBuyingPowerModel:
+        return super().get_buying_power_model(security)
 
-    def GetMarginInterestRateModel(self, security: Security) -&gt; IMarginInterestRateModel:
-        return super().GetMarginInterestRateModel(security)
+    def get_margin_interest_rate_model(self, security: Security) -&gt; IMarginInterestRateModel:
+        return super().get_margin_interest_rate_model(security)
 
-    def GetShortableProvider(self, security: Security) -&gt; IShortableProvider:
-        return super().GetShortableProvider(security)</pre>
+    def get_shortable_provider(self, security: Security) -&gt; IShortableProvider:
+        return super().get_shortable_provider(security)</pre>
 </div>
 
 <p>For a full example algorithm, see <span class='python'><a href='https://www.quantconnect.com/terminal/processCache?request=embedded_backtest_8a4aba81b77e3f4500811672b31d1e80.html'>this backtest</a></span><span class='csharp'><a href='https://www.quantconnect.com/terminal/processCache?request=embedded_backtest_f5e27d225f4909bb6b533a1b797413ee.html'>this backtest</a></span>.</p>
