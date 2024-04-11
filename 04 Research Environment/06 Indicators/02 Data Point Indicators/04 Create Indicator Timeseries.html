@@ -10,7 +10,7 @@
 <p>To create an indicator timeseries with the helper method, call the <code>Indicator</code> method.</p>
 <div class="section-example-container">
     <pre class="csharp">var bbIndicator = qb.Indicator(bb, symbol, 50, Resolution.Daily);</pre>
-    <pre class="python">bb_dataframe = qb.Indicator(bb, symbol, 50, Resolution.Daily)</pre>
+    <pre class="python">bb_dataframe = qb.indicator(bb, symbol, 50, Resolution.daily)</pre>
 </div>
 <img class="python docs-image" src="https://cdn.quantconnect.com/i/tu/indicator-datapoint-py-helper-bb.png" alt="Historical bollinger band data">
 
@@ -22,7 +22,7 @@
     <li>Get some <a href="/docs/v2/research-environment/datasets/key-concepts">historical data</a>.</li>
     <div class="section-example-container">
         <pre class="csharp">var history = qb.History(symbol, 70, Resolution.Daily);</pre>
-        <pre class="python">history = qb.History[TradeBar](symbol, 70, Resolution.Daily)</pre>
+        <pre class="python">history = qb.history[TradeBar](symbol, 70, Resolution.daily)</pre>
     </div>
 
     <li>Create a <code>RollingWindow</code> for each attribute of the indicator to hold their values.</li>
@@ -65,19 +65,19 @@ window["price"] = RollingWindow[float](50)
     window["standarddeviation"].Add(indicator.StandardDeviation);
     window["price"].Add(indicator.Price);
 };</pre>
-        <pre class="python">def UpdateBollingerBandWindow(sender: object, updated: IndicatorDataPoint) -&gt; None:
+        <pre class="python">def update_bollinger_band_window(sender: object, updated: IndicatorDataPoint) -&gt; None:
     indicator = sender
-    window['time'].Add(updated.EndTime)
-    window["bollingerbands"].Add(updated.Value)
-    window["lowerband"].Add(indicator.LowerBand.Current.Value)
-    window["middleband"].Add(indicator.MiddleBand.Current.Value)
-    window["upperband"].Add(indicator.UpperBand.Current.Value)
-    window["bandwidth"].Add(indicator.BandWidth.Current.Value)
-    window["percentb"].Add(indicator.PercentB.Current.Value)
-    window["standarddeviation"].Add(indicator.StandardDeviation.Current.Value)
-    window["price"].Add(indicator.Price.Current.Value)
+    window['time'].add(updated.end_time)
+    window["bollingerbands"].add(updated.value)
+    window["lowerband"].add(indicator.lower_band.current.value)
+    window["middleband"].add(indicator.middle_band.current.value)
+    window["upperband"].add(indicator.upper_band.current.value)
+    window["bandwidth"].add(indicator.band_width.current.value)
+    window["percentb"].add(indicator.percent_b.current.value)
+    window["standarddeviation"].add(indicator.standard_deviation.current.value)
+    window["price"].add(indicator.price.current.value)
 
-bb.Updated += UpdateBollingerBandWindow</pre>
+bb.updated += UpdateBollingerBandWindow</pre>
     </div>
     <p>When the indicator receives new data, the preceding handler method adds the new <code>IndicatorDataPoint</code> values into the respective <code>RollingWindow</code>.</p>
 
@@ -88,7 +88,7 @@ bb.Updated += UpdateBollingerBandWindow</pre>
     bb.Update(bar.EndTime, bar.Close);
 }</pre>
         <pre class="python">for bar in history:
-    bb.Update(bar.EndTime, bar.Close)</pre>
+    bb.update(bar.end_time, bar.close)</pre>
     </div>
     <li class="csharp">Display the data.</li>
     <div class="csharp section-example-container">

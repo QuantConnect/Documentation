@@ -39,18 +39,18 @@ using QuantConnect.Data.Fundamental;</pre>
 });</pre>
     <pre class="python">def filter_function(fundamentals):
     sorted_by_pe_ratio = sorted(
-        [f for f in fundamentals if not np.isnan(f.ValuationRatios.PERatio)], 
-        key=lambda fundamental: fundamental.ValuationRatios.PERatio
+        [f for f in fundamentals if not np.isnan(f.valuation_ratios.pe_ratio)], 
+        key=lambda fundamental: fundamental.valuation_ratios.pe_ratio
     )
-    return [fundamental.Symbol for fundamental in sorted_by_pe_ratio[:10]]
+    return [fundamental.symbol for fundamental in sorted_by_pe_ratio[:10]]
 
-universe = qb.AddUniverse(filter_function)</pre>
+universe = qb.add_universe(filter_function)</pre>
     </div>
 
     <li>Call the <code class='csharp'>UniverseHistory</code><code class='python'>UniverseHistory</code> method with the universe, a start date, and an end date.</li>
     <div class="section-example-container">
         <pre class="csharp">var universeHistory = qb.UniverseHistory(universe, new DateTime(2023, 11, 6), new DateTime(2023, 11, 13));</pre>
-        <pre class="python">universe_history = qb.UniverseHistory(universe, datetime(2023, 11, 6), datetime(2023, 11, 13))</pre>
+        <pre class="python">universe_history = qb.universe_history(universe, datetime(2023, 11, 6), datetime(2023, 11, 13))</pre>
     </div>
 
     <p>The end date arguments is optional. If you omit it, the method returns <code>Fundamental</code> data between the start date and the current day.</p>
@@ -66,10 +66,10 @@ universe = qb.AddUniverse(filter_function)</pre>
     <pre class="python">universe_history = universe_history.droplevel('symbol', axis=0)
 for date, fundamentals in universe_history.items():
     for fundamental in fundamentals:
-        symbol = fundamental.Symbol
-        price = fundamental.Price
-        if fundamental.HasFundamentalData:
-            pe_ratio = fundamental.ValuationRatios.PERatio</pre>
+        symbol = fundamental.symbol
+        price = fundamental.price
+        if fundamental.has_fundamental_data:
+            pe_ratio = fundamental.valuation_ratios.pe_ratio</pre>
     <pre class="csharp">foreach (var fundamentals in universeHistory)
 {
     foreach (Fundamental fundamental in fundamentals)
