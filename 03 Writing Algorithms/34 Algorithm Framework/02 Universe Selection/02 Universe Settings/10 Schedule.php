@@ -7,8 +7,8 @@ To change the selection schedule, call the <code>UniverseSettings.Schedule.On</c
 <div class="section-example-container">
     <pre class="csharp">UniverseSettings.Schedule.On(DateRules.MonthStart());
 AddUniverseSelection(new ETFConstituentsUniverseSelectionModel("QQQ"));</pre>
-    <pre class="python">self.UniverseSettings.Schedule.On(self.DateRules.MonthStart())
-self.AddUniverseSelection(ETFConstituentsUniverseSelectionModel("QQQ"))</pre>
+    <pre class="python">self.universe_settings.schedule.on(self.date_rules.month_start())
+self.add_universe_selection(ETFConstituentsUniverseSelectionModel("QQQ"))</pre>
 </div>
 
 <? include(DOCS_RESOURCES."/scheduled-events/date-rules.html"); ?>

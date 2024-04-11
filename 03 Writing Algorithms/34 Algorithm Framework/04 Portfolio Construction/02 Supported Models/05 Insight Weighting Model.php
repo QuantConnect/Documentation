@@ -3,7 +3,7 @@
 
 <div class="section-example-container">
 	<pre class="csharp">SetPortfolioConstruction(new InsightWeightingPortfolioConstructionModel());</pre>
-	<pre class="python">self.SetPortfolioConstruction(InsightWeightingPortfolioConstructionModel())</pre>
+	<pre class="python">self.set_portfolio_construction(InsightWeightingPortfolioConstructionModel())</pre>
 </div>
 
 <p>The following table describes the arguments the model accepts:</p>

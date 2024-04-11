@@ -2,7 +2,7 @@
 
 <div class="section-example-container">
 	<pre class="csharp">SetPortfolioConstruction(new ConfidenceWeightedPortfolioConstructionModel());</pre>
-	<pre class="python">self.SetPortfolioConstruction(ConfidenceWeightedPortfolioConstructionModel())</pre>
+	<pre class="python">self.set_portfolio_construction(ConfidenceWeightedPortfolioConstructionModel())</pre>
 </div>
 
 <p>The following table describes the arguments the model accepts:</p>

@@ -25,18 +25,18 @@ private IEnumerable&lt;Symbol&gt; SelectFine(IEnumerable&lt;FineFundamental&gt; 
                .Select(f =&gt; f.Symbol);
 }
 </pre>
-	<pre class="python">def Initialize(self) -&gt; None:
-    self.UniverseSettings.Asynchronous = True
-    self.AddUniverseSelection(FineFundamentalUniverseSelectionModel(self.SelectCoarse, self.SelectFine))
+	<pre class="python">def initialize(self) -&gt; None:
+    self.universe_settings.asynchronous = True
+    self.add_universe_selection(FineFundamentalUniverseSelectionModel(self.select_coarse, self.select_fine))
 
-def SelectCoarse(self, coarse: List[CoarseFundamental]) -&gt; List[Symbol]:
-    selected = [c for c in coarse if c.HasFundamentalData]
-    sorted_by_dollar_volume = sorted(selected, key=lambda c: c.DollarVolume, reverse=True)
-    return [c.Symbol for c in sorted_by_dollar_volume[:100]] # Return most liquid assets w/ fundamentals
+def select_coarse(self, coarse: List[CoarseFundamental]) -&gt; List[Symbol]:
+    selected = [c for c in coarse if c.has_fundamental_data]
+    sorted_by_dollar_volume = sorted(selected, key=lambda c: c.dollar_volume, reverse=True)
+    return [c.symbol for c in sorted_by_dollar_volume[:100]] # Return most liquid assets w/ fundamentals
 
-def SelectFine(self, fine: List[FineFundamental]) -&gt; List[Symbol]:
-    sorted_by_pe_ratio = sorted(fine, key=lambda x: x.ValuationRatios.PERatio, reverse=False)
-    return [c.Symbol for c in sorted_by_pe_ratio[:10]] # Return assets with lowest P/E ratios</pre>
+def select_fine(self, fine: List[FineFundamental]) -&gt; List[Symbol]:
+    sorted_by_pe_ratio = sorted(fine, key=lambda x: x.valuation_ratios.pe_ratio, reverse=False)
+    return [c.symbol for c in sorted_by_pe_ratio[:10]] # Return assets with lowest P/E ratios</pre>
 </div>
 
 
@@ -73,22 +73,22 @@ class LowPERatioUniverseSelectionModel : FineFundamentalUniverseSelectionModel
     }
 }</pre>
 	<pre class="python"># In Initialize
-self.UniverseSettings.Asynchronous = True
-self.AddUniverseSelection(LowPERatioUniverseSelectionModel(self.UniverseSettings))
+self.universe_settings.asynchronous = True
+self.add_universe_selection(LowPERatioUniverseSelectionModel(self.universe_settings))
 
 # Outside of the algorithm class
 class LowPERatioUniverseSelectionModel(FineFundamentalUniverseSelectionModel):
     def __init__(self, universe_settings: UniverseSettings = None) -&gt; None:
-        super().__init__(self.SelectCoarse, self.SelectFine, universe_settings)
+        super().__init__(self.select_coarse, self.select_fine, universe_settings)
 
-    def SelectCoarse(self, coarse: List[CoarseFundamental]) -&gt; List[Symbol]:
-        selected = [c for c in coarse if c.HasFundamentalData]
-        sorted_by_dollar_volume = sorted(selected, key=lambda c: c.DollarVolume, reverse=True)
-        return [c.Symbol for c in sorted_by_dollar_volume[:100]]
+    def select_coarse(self, coarse: List[CoarseFundamental]) -&gt; List[Symbol]:
+        selected = [c for c in coarse if c.has_fundamental_data]
+        sorted_by_dollar_volume = sorted(selected, key=lambda c: c.dollar_volume, reverse=True)
+        return [c.symbol for c in sorted_by_dollar_volume[:100]]
 
-    def SelectFine(self, fine: List[FineFundamental]) -&gt; List[Symbol]:
-        sorted_by_pe_ratio = sorted(fine, key=lambda x: x.ValuationRatios.PERatio, reverse=False)
-        return [c.Symbol for c in sorted_by_pe_ratio[:10]]</pre>
+    def select_fine(self, fine: List[FineFundamental]) -&gt; List[Symbol]:
+        sorted_by_pe_ratio = sorted(fine, key=lambda x: x.valuation_ratios.pe_ratio, reverse=False)
+        return [c.symbol for c in sorted_by_pe_ratio[:10]]</pre>
 </div>
 
 <p>To return the current universe constituents from the coarse or fine selection function, return <code>Universe.Unchanged</code>.</p>
