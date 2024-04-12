@@ -1,6 +1,6 @@
 <p>
     Theta, <script type="math/tex">\Theta</script>, is the rate of change of the value of the Option with respect to the passage of time. 
-    It is also referred to as the time decay of the Option.
+    It is also known to as the time decay of an Option.
     For more information about theta, see <a href='/learning/articles/introduction-to-options/the-greek-letters#theta'>Theta</a>.
 </p>
 
