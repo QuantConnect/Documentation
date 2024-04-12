@@ -45,7 +45,7 @@
          config: SubscriptionDataConfig,
          date: datetime,
          isLive: bool) -&gt; SubscriptionDataSource:
-        return SubscriptionDataSource("&lt;sourceURL&gt;", SubscriptionTransportMedium.remote_file)
+        return SubscriptionDataSource("&lt;sourceURL&gt;", SubscriptionTransportMedium.REMOTEFILE)
 
     def reader(self,
          config: SubscriptionDataConfig,

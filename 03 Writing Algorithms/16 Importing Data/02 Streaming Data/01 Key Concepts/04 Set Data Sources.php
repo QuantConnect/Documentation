@@ -23,10 +23,10 @@
          isLiveMode: bool) -&gt; SubscriptionDataSource:
         
          if isLiveMode:
-            return SubscriptionDataSource("https://www.bitstamp.net/api/ticker/", SubscriptionTransportMedium.rest)
+            return SubscriptionDataSource("https://www.bitstamp.net/api/ticker/", SubscriptionTransportMedium.REST)
 
         source = f"http://my-ftp-server.com/{config.symbol.value}/{date:%Y%M%d}.csv"
-        return SubscriptionDataSource(source, SubscriptionTransportMedium.remote_file)
+        return SubscriptionDataSource(source, SubscriptionTransportMedium.REMOTEFILE)
 </pre>
 </div>
 

@@ -117,7 +117,7 @@ namespace QuantConnect.Algorithm.CSharp
         # Define the symbol and "type" of our generic data:
         self.custom_data_symbol = self.add_data(Bitstamp, "BTC").symbol
 
-        history = self.history(Bitstamp, self.custom_data_symbol, 200, Resolution.daily)
+        history = self.history(Bitstamp, self.custom_data_symbol, 200, Resolution.DAILY)
         self.debug(f"We got {len(history)} items from historical data request of {self.custom_data_symbol}.")
 
 
@@ -134,10 +134,10 @@ class Bitstamp(PythonData):
 
     def get_source(self, config, date, isLiveMode):
         if isLiveMode:
-            return SubscriptionDataSource("https://www.bitstamp.net/api/ticker/", SubscriptionTransportMedium.rest)
+            return SubscriptionDataSource("https://www.bitstamp.net/api/ticker/", SubscriptionTransportMedium.REST)
 
         source = "https://raw.githubusercontent.com/QuantConnect/Documentation/master/Resources/datasets/custom-data/bitstampusd.csv"
-        return SubscriptionDataSource(source, SubscriptionTransportMedium.remote_file)
+        return SubscriptionDataSource(source, SubscriptionTransportMedium.REMOTEFILE)
 
     def reader(self, config, line, date, isLiveMode):
 
