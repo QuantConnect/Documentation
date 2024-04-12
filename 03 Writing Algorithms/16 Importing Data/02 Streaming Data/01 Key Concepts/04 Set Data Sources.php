@@ -26,7 +26,7 @@
             return SubscriptionDataSource("https://www.bitstamp.net/api/ticker/", SubscriptionTransportMedium.REST)
 
         source = f"http://my-ftp-server.com/{config.symbol.value}/{date:%Y%M%d}.csv"
-        return SubscriptionDataSource(source, SubscriptionTransportMedium.REMOTEFILE)
+        return SubscriptionDataSource(source, SubscriptionTransportMedium.REMOTE_FILE)
 </pre>
 </div>
 
