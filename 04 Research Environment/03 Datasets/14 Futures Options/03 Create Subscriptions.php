@@ -20,7 +20,7 @@ var startDate = new DateTime(2021,12,20);
 var futuresContractSymbols = qb.FutureChainProvider.GetFutureContractList(future.Symbol, startDate);
 var futuresContractSymbol = futuresContractSymbols.OrderBy(s =&gt; s.ID.Date).FirstOrDefault();
 qb.AddFutureContract(futuresContractSymbol, fillForward: false);</pre>
-        <pre class="python">future = qb.add_future(Futures.indices.SP500EMINI, Resolution.MINUTE)
+        <pre class="python">future = qb.add_future(Futures.indices.SP500EMini, Resolution.MINUTE)
 start_date = datetime(2021,12,20)
 futures_contract_symbols = qb.future_chain_provider.get_future_contract_list(future.symbol, start_date)
 futures_contract_symbol = sorted(futures_contract_symbols, key=lambda s: s.id.date)[0]
@@ -93,7 +93,7 @@ var fopContractSymbol = fopContractSymbols
     .OrderBy(c =&gt; c.ID.StrikePrice)
     .FirstOrDefault();</pre>
 		<pre class="python">closest_expiry = min([c.id.date for c in fop_contract_symbols])
-calls = [c for c in fop_contract_symbols if c.id.date == closest_expiry and c.id.option_right == OptionRight.call]
+calls = [c for c in fop_contract_symbols if c.id.date == closest_expiry and c.id.option_right == OptionRight.CALL]
 fop_contract_symbol = sorted(calls, key=lambda c: c.id.strike_price)[0]</pre>
 	</div>
 

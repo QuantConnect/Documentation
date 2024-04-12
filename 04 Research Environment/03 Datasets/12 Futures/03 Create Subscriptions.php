@@ -17,9 +17,9 @@ include(DOCS_RESOURCES."/datasets/research-environment/load-csharp-assemblies.ph
                 dataNormalizationMode: DataNormalizationMode.BackwardsRatio,
                 dataMappingMode: DataMappingMode.LastTradingDay,
                 contractDepthOffset: 0);</pre>
-        <pre class="python">future = qb.add_future(Futures.indices.SP500EMINI, Resolution.MINUTE,
-                dataNormalizationMode = DataNormalizationMode.BACKWARDSRATIO,
-                dataMappingMode = DataMappingMode.LASTTRADINGDAY,
+        <pre class="python">future = qb.add_future(Futures.indices.SP500EMini, Resolution.MINUTE,
+                dataNormalizationMode = DataNormalizationMode.BACKWARDS_RATIO,
+                dataMappingMode = DataMappingMode.LAST_TRADING_DAY,
                 contractDepthOffset = 0)</pre>
     </div>
     <p>To view the available tickers in the US Futures dataset, see <a href='/docs/v2/writing-algorithms/datasets/algoseek/us-futures#07-Supported-Assets'>Supported Assets</a>.</p>
