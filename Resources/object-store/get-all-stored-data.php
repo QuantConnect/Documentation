@@ -6,9 +6,9 @@
     var key = kvp.Key;
     var value = kvp.Value;
 }</pre>
-    <pre class='python'>for kvp in <?=$research ? "qb." : "self."?>ObjectStore:
-    key = kvp.Key
-    value = kvp.Value</pre>
+    <pre class='python'>for kvp in <?=$research ? "qb." : "self."?>object_store:
+    key = kvp.key
+    value = kvp.value</pre>
 </div>
 
 <p>To iterate through just the keys in the Object Store, iterate through the <code>Keys</code> property.</p>
@@ -18,6 +18,6 @@
 {
     continue;
 }</pre>
-    <pre class='python'>for key in <?=$research ? "qb." : "self."?>ObjectStore.Keys:
+    <pre class='python'>for key in <?=$research ? "qb." : "self."?>object_store.keys:
     continue</pre>
 </div>

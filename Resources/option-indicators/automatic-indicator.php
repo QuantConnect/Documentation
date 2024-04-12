@@ -16,16 +16,16 @@ public override void Initialize()
     AddOptionContract(mirrorOption);
     _<?=strtolower($typeName)?> = <?=$helperMethod?>(option, mirrorOption);
 }</pre>
-    <pre class="python">def Initialize(self):
-    option = Symbol.CreateOption("AAPL", Market.USA, OptionStyle.American, OptionRight.Put, 505, datetime(2014, 6, 27))
-    self.AddOptionContract(option)
+    <pre class="python">def initialize(self):
+    option = Symbol.create_option("AAPL", Market.USA, OptionStyle.AMERICAN, OptionRight.PUT, 505, datetime(2014, 6, 27))
+    self.add_option_contract(option)
 
     # Example of using the single-contract IV calculation:
     self.<?=strtolower($typeName)?> = self.<?=$helperMethod?>(option)
 
     # Example of using the using mirror-contract IV calculation:
-    mirror_option = Symbol.CreateOption("AAPL", Market.USA, OptionStyle.American, OptionRight.Call, 505, datetime(2014, 6, 27))
-    self.AddOptionContract(mirror_option)
+    mirror_option = Symbol.create_option("AAPL", Market.USA, OptionStyle.AMERICAN, OptionRight.CALL, 505, datetime(2014, 6, 27))
+    self.add_option_contract(mirror_option)
     self.<?=strtolower($typeName)?> = self.<?=$helperMethod?>(option, mirror_option)
 </pre>
 </div>

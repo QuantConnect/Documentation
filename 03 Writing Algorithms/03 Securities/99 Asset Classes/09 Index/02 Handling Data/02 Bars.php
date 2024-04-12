@@ -14,8 +14,8 @@
         var value = tradeBar.Value;
     }
 }</pre>
-<pre class='python'>def OnData(self, slice: Slice) -&gt; None:
-    if self.symbol in slice.Bars:
-        trade_bar = slice.Bars[self.symbol]
-        value = trade_bar.Value</pre>
+<pre class='python'>def on_data(self, slice: Slice) -&gt; None:
+    if self.symbol in slice.bars:
+        trade_bar = slice.bars[self.symbol]
+        value = trade_bar.value</pre>
 </div>

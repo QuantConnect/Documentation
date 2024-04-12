@@ -33,19 +33,19 @@
     <pre class="python">class My<?=$modelClassName?>(<?=$modelClassName?>):
     securities = []
 
-    def OnSecuritiesChanged(self, algorithm: QCAlgorithm, changes: SecurityChanges) -&gt; None:
+    def on_securities_changed(self, algorithm: QCAlgorithm, changes: SecurityChanges) -&gt; None:
 <? if ($callsBaseClass) { ?>
-        super().OnSecuritiesChanged(algorithm, changes)
+        super().on_securities_changed(algorithm, changes)
 <? } ?>
-        for security in changes.AddedSecurities:
+        for security in changes.added_securities:
             # Store and manage Symbol-specific data
-            security.indicator = algorithm.SMA(security.Symbol, 20)
-            algorithm.WarmUpIndicator(security.Symbol, security.indicator)
+            security.indicator = algorithm.SMA(security.symbol, 20)
+            algorithm.warm_up_indicator(security.symbol, security.indicator)
 
             self.securities.append(security)
 
-        for security in changes.RemovedSecurities:
+        for security in changes.removed_securities:
             if security in self.securities:
-                algorithm.DeregisterIndicator(security.indicator)
+                algorithm.deregister_indicator(security.indicator)
                 self.securities.remove(security)</pre>
 </div>

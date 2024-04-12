@@ -51,12 +51,12 @@
     }
 }</pre>
 <pre class="python">class USEquityOptionsDataAlgorithm(QCAlgorithm):
-    def Initialize(self) -&gt; None:
-        self.SetStartDate(2020, 1, 1)
-        self.SetEndDate(2021, 1, 1)
-        self.UniverseSettings.Asynchronous = True
-        underlying = self.AddEquity("GOOG").Symbol
-        self.AddOption(underlying)</pre>
+    def initialize(self) -&gt; None:
+        self.set_start_date(2020, 1, 1)
+        self.set_end_date(2021, 1, 1)
+        self.universe_settings.asynchronous = True
+        underlying = self.add_equity("GOOG").symbol
+        self.add_option(underlying)</pre>
 </div>
 
 <p>The following table shows the data cost of the preceding algorithm on the Quant Researcher tier:</p>

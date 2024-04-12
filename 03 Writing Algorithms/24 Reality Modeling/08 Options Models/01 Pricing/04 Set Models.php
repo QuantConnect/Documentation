@@ -8,9 +8,9 @@ UniverseSettings.Asynchronous = true;
 var option = AddOption("SPY");
 option.PriceModel = OptionPriceModels.CrankNicolsonFD();</pre>
     <pre class="python"># In Initialize
-self.UniverseSettings.Asynchronous = True
-option = self.AddOption("SPY")
-option.PriceModel = OptionPriceModels.CrankNicolsonFD()</pre>
+self.universe_settings.asynchronous = True
+option = self.add_option("SPY")
+option.price_model = OptionPriceModels.crank_nicolson_fd()</pre>
 </div>
 
 <p>Otherwise, set the price model in a <a href='/docs/v2/writing-algorithms/initialization#07-Set-Security-Initializer'>security initializer</a>.</p>

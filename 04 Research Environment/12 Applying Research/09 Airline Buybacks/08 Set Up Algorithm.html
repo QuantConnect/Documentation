@@ -1,26 +1,26 @@
 <p>Once we are confident in our hypothesis, we can export this code into backtesting. One way to accomodate this model into backtest is to create a scheduled event which uses our model to predict the expected return.</p>
 
 <div class="section-example-container">
-    <pre class="python">def Initialize(self) -&gt; None:
+    <pre class="python">def initialize(self) -&gt; None:
 
     #1. Required: Five years of backtest history
-    self.SetStartDate(2017, 1, 1)
+    self.set_start_date(2017, 1, 1)
 
     #2. Required: Alpha Streams Models:
-    self.SetBrokerageModel(BrokerageName.AlphaStreams)
+    self.set_brokerage_model(BrokerageName.ALPHA_STREAMS)
 
     #3. Required: Significant AUM Capacity
-    self.SetCash(1000000)
+    self.set_cash(1000000)
 
     #4. Required: Benchmark to SPY
-    self.SetBenchmark("SPY")
+    self.set_benchmark("SPY")
     
-    self.SetPortfolioConstruction(EqualWeightingPortfolioConstructionModel())
-    self.SetExecution(ImmediateExecutionModel())
+    self.set_portfolio_construction(EqualWeightingPortfolioConstructionModel())
+    self.set_execution(ImmediateExecutionModel())
     
     # Set our strategy to be take 5% profit and 5% stop loss.
-    self.AddRiskManagement(MaximumUnrealizedProfitPercentPerSecurity(0.05))
-    self.AddRiskManagement(MaximumDrawdownPercentPerSecurity(0.05))
+    self.add_risk_management(MaximumUnrealizedProfitPercentPerSecurity(0.05))
+    self.add_risk_management(MaximumDrawdownPercentPerSecurity(0.05))
 
     # Select the airline tickers for research.
     self.symbols = {}
@@ -35,19 +35,19 @@
                 
     # Call the AddEquity method with the tickers, and its corresponding resolution. Then call AddData with SmartInsiderTransaction to subscribe to their buyback transaction data.
     for ticker in assets:
-        symbol = self.AddEquity(ticker, Resolution.Minute).Symbol
-        self.symbols[symbol] = self.AddData(SmartInsiderTransaction, symbol).Symbol
+        symbol = self.add_equity(ticker, Resolution.MINUTE).symbol
+        self.symbols[symbol] = self.add_data(SmartInsiderTransaction, symbol).symbol
         
-    self.AddEquity("SPY")
+    self.add_equity("SPY")
     
     # Initialize the model
-    self.BuildModel()
+    self.build_model()
     
     # Set Scheduled Event Method For Our Model Recalibration every month
-    self.Schedule.On(self.DateRules.MonthStart(), self.TimeRules.At(0, 0), self.BuildModel)
+    self.schedule.on(self.date_rules.month_start(), self.time_rules.at(0, 0), self.build_model)
     
     # Set Scheduled Event Method For Trading
-    self.Schedule.On(self.DateRules.EveryDay(), self.TimeRules.BeforeMarketClose("SPY", 5), self.EveryDayBeforeMarketClose)</pre>
+    self.schedule.on(self.date_rules.every_day(), self.time_rules.before_market_close("SPY", 5), self.every_day_before_market_close)</pre>
 </div>
 
 <p>We'll also need to create a function to train and update the logistic regression model from time to time.</p>

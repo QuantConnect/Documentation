@@ -107,28 +107,28 @@ public override void OnData(Slice slice)
                    ReduceOnly = true
                });
 }</pre>
-    <pre class="python">def Initialize(self) -&gt; None:
+    <pre class="python">def initialize(self) -&gt; None:
     # Set the default order properties
-    self.DefaultOrderProperties = BybitOrderProperties()
-    self.DefaultOrderProperties.TimeInForce = TimeInForce.GoodTilCanceled
-    self.DefaultOrderProperties.PostOnly = False
-    self.DefaultOrderProperties.ReduceOnly = False
+    self.default_order_properties = BybitOrderProperties()
+    self.default_order_properties.time_in_force = TimeInForce.GOOD_TIL_CANCELED
+    self.default_order_properties.post_only = False
+    self.default_order_properties.reduce_only = False
 
-def OnData(self, slice: Slice) -&gt; None:
+def on_data(self, slice: Slice) -&gt; None:
     # Use default order order properties
-    self.LimitOrder(self.symbol, quantity, limit_price)
+    self.limit_order(self.symbol, quantity, limit_price)
     
     # Override the default order properties
     order_properties = BybitOrderProperties()
-    order_properties.TimeInForce = TimeInForce.Day
-    order_properties.PostOnly = True
-    self.DefaultOrderProperties.ReduceOnly = False
-    self.LimitOrder(self.symbol, quantity, limit_price, orderProperties=order_properties)
+    order_properties.time_in_force = TimeInForce.DAY
+    order_properties.post_only = True
+    self.default_order_properties.reduce_only = False
+    self.limit_order(self.symbol, quantity, limit_price, order_properties=order_properties)
 
-    order_properties.TimeInForce = TimeInForce.GoodTilDate(datetime(year, month, day))
-    order_properties.PostOnly = False
-    self.DefaultOrderProperties.ReduceOnly = True
-    self.LimitOrder(self.symbol, quantity, limit_price, orderProperties=order_properties)</pre>
+    order_properties.time_in_force = TimeInForce.good_til_date(datetime(year, month, day))
+    order_properties.post_only = False
+    self.default_order_properties.reduce_only = True
+    self.limit_order(self.symbol, quantity, limit_price, order_properties=order_properties)</pre>
 </div>
 <?php } ?>
 

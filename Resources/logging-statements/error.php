@@ -3,5 +3,5 @@
 
 <div class="section-example-container">
     <pre class="csharp">Error("My error message");</pre>
-    <pre class="python">self.Error("My error message")</pre>
+    <pre class="python">self.error("My error message")</pre>
 </div>

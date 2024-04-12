@@ -6,8 +6,8 @@
 {
     <?=$cSharpPrefix?>ObjectStore.Delete(key);
 }</pre>
-    <pre class='python'>if <?=$pythonPrefix?>ObjectStore.ContainsKey(key):
-    <?=$pythonPrefix?>ObjectStore.Delete(key)</pre>
+    <pre class='python'>if <?=$pythonPrefix?>object_store.contains_key(key):
+    <?=$pythonPrefix?>object_store.delete(key)</pre>
 </div>
 <p>To delete all of the content in the Object Store, iterate through all the stored data.</p>
 <div class='section-example-container'>
@@ -15,6 +15,6 @@
 {
     <?=$cSharpPrefix?>ObjectStore.Delete(kvp.Key);
 }</pre>
-    <pre class='python'>for kvp in <?=$pythonPrefix?>ObjectStore:
-    <?=$pythonPrefix?>ObjectStore.Delete(kvp.Key)</pre>
+    <pre class='python'>for kvp in <?=$pythonPrefix?>object_store:
+    <?=$pythonPrefix?>object_store.delete(kvp.key)</pre>
 </div>

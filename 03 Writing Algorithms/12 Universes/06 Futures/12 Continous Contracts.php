@@ -7,10 +7,10 @@ var adjustedPrice = Securities[_future.Symbol].Price;
 // Get the raw price of the currently selected contract in the continuous contract series
 var rawPrice = Securities[_future.Mapped].Price;</pre>
     <pre class="python"># Get the adjusted price of the continuous contract
-adjusted_price = self.Securities[self.future.Symbol].Price 
+adjusted_price = self.securities[self.future.symbol].price 
 
 # Get the raw price of the currently selected contract in the continuous contract series
-raw_price = self.Securities[self.future.Mapped].Price</pre>
+raw_price = self.securities[self.future.mapped].price</pre>
 </div>
 
 

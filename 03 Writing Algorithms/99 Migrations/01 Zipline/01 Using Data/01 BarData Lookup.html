@@ -37,15 +37,15 @@ def handle_data(context, data):
     <pre class="python">from datetime import timedelta
         
 class MyHistoryAlgorithm(QCAlgorithm):
-    def Initialize(self) -&gt; None:
-        self.aapl = self.AddEquity("AAPL", Resolution.Daily)
+    def initialize(self) -&gt; None:
+        self.aapl = self.add_equity("AAPL", Resolution.DAILY)
 
-    def OnData(self, slice: Slice) -&gt; None:
+    def on_data(self, slice: Slice) -&gt; None:
         # Gets a DataFrame of AAPL history going back 30 days
-        aapl_history = self.History([self.aapl.Symbol], timedelta(days=30), Resolution.Daily)
+        aapl_history = self.history([self.aapl.symbol], timedelta(days=30), Resolution.DAILY)
 
         # Gets the most recent AAPL Trade data (OHLCV)
-        aapl_current = slice.Bars[self.aapl.Symbol]
+        aapl_current = slice.bars[self.aapl.symbol]
     </pre>
 </div>
 <p>
@@ -97,46 +97,46 @@ class MyHistoryAlgorithm(QCAlgorithm):
 
 
 class MyDataAlgorithm(QCAlgorithm):
-    def Initialize(self) -&gt; None:
-        self.aapl_security = self.AddEquity("AAPL", Resolution.Daily)
-        self.aapl_symbol = self.aapl_security.Symbol
+    def initialize(self) -&gt; None:
+        self.aapl_security = self.add_equity("AAPL", Resolution.DAILY)
+        self.aapl_symbol = self.aapl_security.symbol
 
-    def OnData(self, slice: Slice) -&gt; None:
+    def on_data(self, slice: Slice) -&gt; None:
         # Gets 30 days of AAPL history
-        aapl_history = self.History([self.aapl_symbol], timedelta(days=30), Resolution.Daily)
+        aapl_history = self.history([self.aapl_symbol], timedelta(days=30), Resolution.DAILY)
 
         # We must first check to make sure we have AAPL data, since this point-in-time
         # might not have had any trades for AAPL (this is in case you trade a low
         # liquidity asset. The data can potentially be missing for a point-in-time).
-        if self.aapl_symbol in slice.Bars:
-            aapl_current_trade = slice.Bars[self.aapl_symbol]
-            Log(f"{self.Time} :: TRADE :: {self.aapl_symbol} - O: {aapl_current_trade.Open} H: {aapl_current_trade.High} L: {aapl_current_trade.Low} C: {aapl_current_trade.Close} V: {aapl_current_trade.Volume}")
+        if self.aapl_symbol in slice.bars:
+            aapl_current_trade = slice.bars[self.aapl_symbol]
+            Log(f"{self.time} :: TRADE :: {self.aapl_symbol} - O: {aapl_current_trade.open} H: {aapl_current_trade.high} L: {aapl_current_trade.low} C: {aapl_current_trade.close} V: {aapl_current_trade.volume}")
 
         # Check to make sure we have AAPL data first, since there might not have
         # been any quote updates since the previous for AAPL (this is in case you trade
         # a low liquidity asset. The data can potentially be missing for a point-in-time).
-        if self.aapl_symbol in data.QuoteBars:
-            aapl_current_quote = slice.QuoteBars[self.aapl_symbol]
-            if aapl_current_quote.Bid is not None:
+        if self.aapl_symbol in data.quote_bars:
+            aapl_current_quote = slice.quote_bars[self.aapl_symbol]
+            if aapl_current_quote.bid is not None:
                 Log(f"{} :: QUOTE :: {} - Bid O: {} Bid H: {} Bid L: {} Bid C: {} Bid size: {}".format(
-                    str(self.Time),
+                    str(self.time),
                     str(self.aapl_symbol)
-                    str(aapl_current_quote.Bid.Open),
-                    str(aapl_current_quote.Bid.High),
-                    str(aapl_current_quote.Bid.Low),
-                    str(aapl_current_quote.Bid.Close),
-                    str(aapl_current_quote.LastBidSize)
+                    str(aapl_current_quote.bid.open),
+                    str(aapl_current_quote.bid.high),
+                    str(aapl_current_quote.bid.low),
+                    str(aapl_current_quote.bid.close),
+                    str(aapl_current_quote.last_bid_size)
                 ))
 
-            if aapl_current_quote.Ask is not None:
+            if aapl_current_quote.ask is not None:
                 Log(f"{} :: QUOTE :: {} - Ask O: {} Ask H: {} Ask L: {} Ask C: {} Ask size: {}".format(
-                    str(self.Time),
+                    str(self.time),
                     str(self.aapl_symbol),
-                    str(aapl_current_quote.Ask.Open),
-                    str(aapl_current_quote.Ask.High),
-                    str(aapl_current_quote.Ask.Low),
-                    str(aapl_current_quote.Ask.Close),
-                    str(aapl_current_quote.LastAskSize)
+                    str(aapl_current_quote.ask.open),
+                    str(aapl_current_quote.ask.high),
+                    str(aapl_current_quote.ask.low),
+                    str(aapl_current_quote.ask.close),
+                    str(aapl_current_quote.last_ask_size)
                 ))
     </pre>
 </div> 

@@ -2,7 +2,7 @@
 
 <div class="section-example-container">
     <pre class="csharp">var content = Download("&lt;filePathOrURL&gt;");</pre>
-    <pre class="python">content = self.Download("&lt;filePathOrURL&gt;")</pre>
+    <pre class="python">content = self.download("&lt;filePathOrURL&gt;")</pre>
 </div>
 
 <p>For more information about bulk downloads, see <a href='/docs/v2/writing-algorithms/importing-data/bulk-downloads'>Bulk Downloads</a>.</p>

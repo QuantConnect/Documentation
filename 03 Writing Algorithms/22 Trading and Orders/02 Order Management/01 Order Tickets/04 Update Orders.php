@@ -115,17 +115,17 @@ if (response.IsSuccess)
     Debug("Order updated successfully");
 }</pre>
 <pre class="python"> # Create an order 
-ticket = self.LimitOrder("SPY", 100, 221.05, False, "New SPY trade")
+ticket = self.limit_order("SPY", 100, 221.05, False, "New SPY trade")
 
 # Update the order tag and limit price
 updateSettings = UpdateOrderFields()
-updateSettings.LimitPrice = 222.00
-updateSettings.Tag = "Limit Price Updated for SPY Trade"
-response = ticket.Update(updateSettings)
+updateSettings.limit_price = 222.00
+updateSettings.tag = "Limit Price Updated for SPY Trade"
+response = ticket.update(updateSettings)
 
 # Check the OrderResponse
-if response.IsSuccess:
-    self.Debug("Order updated successfully")</pre>
+if response.is_success:
+    self.debug("Order updated successfully")</pre>
 </div>
 
 <?

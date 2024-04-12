@@ -9,12 +9,12 @@ AddUniverseSelection(
         optionFilterUniverse => optionFilterUniverse.Strikes(-2, +2).FrontMonth().CallsOnly()
     )
 );</pre>
-	<pre class="python">self.UniverseSettings.DataNormalizationMode = DataNormalizationMode.Raw
-self.UniverseSettings.Asynchronous = True
-self.AddUniverseSelection(
+	<pre class="python">self.universe_settings.data_normalization_mode = DataNormalizationMode.RAW
+self.universe_settings.asynchronous = True
+self.add_universe_selection(
     OptionChainedUniverseSelectionModel(
-        self.AddUniverse(self.Universe.DollarVolume.Top(10)),
-        lambda option_filter_universe: option_filter_universe.Strikes(-2, +2).FrontMonth().CallsOnly()
+        self.add_universe(self.universe.dollar_volume.top(10)),
+        lambda option_filter_universe: option_filter_universe.strikes(-2, +2).front_month().calls_only()
     )
 )</pre>
 
@@ -76,17 +76,17 @@ private OptionFilterUniverse OptionFilterFunction(OptionFilterUniverse optionFil
 {
     return optionFilterUniverse.Strikes(-2, +2).FrontMonth().CallsOnly();
 }</pre>
-	<pre class="python">def Initialize(self) -&gt; None:
-    self.UniverseSettings.DataNormalizationMode = DataNormalizationMode.Raw
-    self.UniverseSettings.Asynchronous = True
-    self.AddUniverseSelection(
+	<pre class="python">def initialize(self) -&gt; None:
+    self.universe_settings.data_normalization_mode = DataNormalizationMode.RAW
+    self.universe_settings.asynchronous = True
+    self.add_universe_selection(
         OptionChainedUniverseSelectionModel(
-            self.AddUniverse(self.Universe.DollarVolume.Top(10)), self.OptionFilterFunction
+            self.add_universe(self.universe.dollar_volume.top(10)), self.option_filter_function
         )
     )
 
-def OptionFilterFunction(self, option_filter_universe: OptionFilterUniverse) -&gt; OptionFilterUniverse:
-    return option_filter_universe.Strikes(-2, +2).FrontMonth().CallsOnly()</pre>
+def option_filter_function(self, option_filter_universe: OptionFilterUniverse) -&gt; OptionFilterUniverse:
+    return option_filter_universe.strikes(-2, +2).front_month().calls_only()</pre>
 </div>
 
 <?

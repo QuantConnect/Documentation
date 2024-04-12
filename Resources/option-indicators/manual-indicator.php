@@ -20,10 +20,10 @@ public override void Initialize()
     AddOptionContract(mirrorOption);
     _<?=strtolower($typeName)?> = new <?=$typeName?>(option, interestRateProvider, dividendYieldProvider, mirrorOption);
 }</pre>
-    <pre class="python">def Initialize(self):
-    equity = self.AddEquity("AAPL").Symbol
-    option = Symbol.CreateOption("AAPL", Market.USA, OptionStyle.American, OptionRight.Put, 505, datetime(2014, 6, 27))
-    self.AddOptionContract(option)
+    <pre class="python">def initialize(self):
+    equity = self.add_equity("AAPL").symbol
+    option = Symbol.create_option("AAPL", Market.USA, OptionStyle.AMERICAN, OptionRight.PUT, 505, datetime(2014, 6, 27))
+    self.add_option_contract(option)
 
     interest_rate_provider = InterestRateProvider()
     dividend_yield_provider = DividendYieldProvider(equity)
@@ -32,8 +32,8 @@ public override void Initialize()
     self.<?=strtolower($typeName)?> = <?=$typeName?>(option, interest_rate_provider, dividend_yield_provider)
 
     # Example of using the using mirror-contract IV calculation:
-    mirror_option = Symbol.CreateOption("AAPL", Market.USA, OptionStyle.American, OptionRight.Call, 505m, new DateTime(2014, 6, 27))
-    self.AddOptionContract(mirror_option)
+    mirror_option = Symbol.create_option("AAPL", Market.USA, OptionStyle.AMERICAN, OptionRight.CALL, 505m, new DateTime(2014, 6, 27))
+    self.add_option_contract(mirror_option)
     self.<?=strtolower($typeName)?> = <?=$typeName?>(option, interest_rate_provider, dividend_yield_provider, mirror_option)
 </pre>
 </div>

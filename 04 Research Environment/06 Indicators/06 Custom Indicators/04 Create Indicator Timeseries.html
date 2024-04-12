@@ -6,7 +6,7 @@
     <li>Get some <a href="/docs/v2/research-environment/datasets/key-concepts">historical data</a>.</li>
     <div class="section-example-container">
         <pre class="csharp">var history = qb.History(symbol, 70, Resolution.Daily);</pre>
-        <pre class="python">history = qb.History[TradeBar](symbol, 70, Resolution.Daily)</pre>
+        <pre class="python">history = qb.history[TradeBar](symbol, 70, Resolution.DAILY)</pre>
     </div>
 	<li class="csharp">Define a custom indicator class that inherits from the <code>Indicator</code> superclass.</li>
     <li class="python">Define a custom indicator class. Note the <code>PythonIndicator</code> superclass inheritance, <code>Value</code> attribute, and <code>Update</code> method are mandatory.</li>
@@ -132,13 +132,13 @@ window['valueatrisk'] = RollingWindow[float](20)
     es.Update(bar.EndTime, bar.Close);
 }</pre>
         <pre class="python">for bar in history:
-    custom.Update(bar)
+    custom.update(bar)
     
     # The Updated event handler is not available for custom indicator in Python, RollingWindows are needed to be updated in here.
-    if custom.IsReady:
-        window['time'].Add(bar.EndTime)
-        window['expectedshortfall'].Add(custom.Value)
-        window['valueatrisk'].Add(custom.ValueAtRisk)</pre>
+    if custom.is_ready:
+        window['time'].add(bar.end_time)
+        window['expectedshortfall'].add(custom.value)
+        window['valueatrisk'].add(custom.value_at_risk)</pre>
     </div>
 
     <li class="csharp">Display the data.</li>

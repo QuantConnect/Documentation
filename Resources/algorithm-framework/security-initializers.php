@@ -12,26 +12,26 @@ private void CustomSecurityInitializer(Security security)
 }
 </pre>
 <pre class="python">#In Initialize
-self.SetSecurityInitializer(self.CustomSecurityInitializer)
+self.set_security_initializer(self.custom_security_initializer)
 
-def CustomSecurityInitializer(self, security: Security) -&gt; None:
+def custom_security_initializer(self, security: Security) -&gt; None:
     # Disable trading fees
-    security.SetFeeModel(ConstantFeeModel(0, "USD"))
+    security.set_fee_model(ConstantFeeModel(0, "USD"))
 </pre>
 </div>
 
 <p>For simple requests, you can use the functional implementation of the security initializer. This style lets you configure the security object with one line of code.</p>
 <div class="section-example-container">
 <pre class="csharp">SetSecurityInitializer(security =&gt; security.SetFeeModel(new ConstantFeeModel(0, "USD")));</pre>
-<pre class="python">self.SetSecurityInitializer(lambda security: security.SetFeeModel(ConstantFeeModel(0, "USD")))</pre>
+<pre class="python">self.set_security_initializer(lambda security: security.set_fee_model(ConstantFeeModel(0, "USD")))</pre>
 </div>
 
 <p>In some cases, you may want to trade a security in the same time loop that you create the security subscription. To avoid errors, use a security initializer to set the market price of each security to the last known price. The <code>GetLastKnownPrices</code> method seeds the security price by gathering the security data over the last 3 days. If there is no data during this period, the security price remains at 0.</p>
 <div class="section-example-container">
 <pre class="csharp">var seeder = new FuncSecuritySeeder(GetLastKnownPrices);
 SetSecurityInitializer(security =&gt; seeder.SeedSecurity(security));</pre>
-<pre class="python">seeder = FuncSecuritySeeder(self.GetLastKnownPrices)
-self.SetSecurityInitializer(lambda security: seeder.SeedSecurity(security))</pre>
+<pre class="python">seeder = FuncSecuritySeeder(self.get_last_known_prices)
+self.set_security_initializer(lambda security: seeder.seed_security(security))</pre>
 </div>
 
 <? include(DOCS_RESOURCES."/reality-modeling/security-initializers.html");?>
@@ -48,6 +48,6 @@ include(DOCS_RESOURCES."/reality-modeling/brokerage-model-security-init.php");
 <div class="section-example-container">
 <pre class="csharp">SetSecurityInitializer(new BrokerageModelSecurityInitializer(BrokerageModel, new FuncSecuritySeeder(GetLastKnownPrices)));
 </pre>
-<pre class="python">self.SetSecurityInitializer(BrokerageModelSecurityInitializer(self.BrokerageModel, FuncSecuritySeeder(self.GetLastKnownPrices)))
+<pre class="python">self.set_security_initializer(BrokerageModelSecurityInitializer(self.brokerage_model, FuncSecuritySeeder(self.get_last_known_prices)))
 </pre>
 </div>

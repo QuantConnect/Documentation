@@ -16,13 +16,13 @@ public override void OnOrderEvent(OrderEvent orderEvent)
     }
 }</pre>
 <pre class="python"># Get the fill price from the order ticket of a sync market order
-self.ticket = self.MarketOrder("SPY", 1)
-fill_price = self.ticket.AverageFillPrice
+self.ticket = self.market_order("SPY", 1)
+fill_price = self.ticket.average_fill_price
 
 # Get the fill price from the OnOrderEvent event handler
-def OnOrderEvent(self, orderEvent: OrderEvent) -&gt; None:
-    if orderEvent.Status == OrderStatus.Filled and self.ticket.OrderId == orderEvent.OrderId:
-        fill_price = orderEvent.FillPrice</pre>
+def on_order_event(self, orderEvent: OrderEvent) -&gt; None:
+    if orderEvent.status == OrderStatus.FILLED and self.ticket.order_id == orderEvent.order_id:
+        fill_price = orderEvent.fill_price</pre>
 </div>
 
 <p>After you have the target price levels, to implement the OCO orders, you can place active orders or track the security price to simulate the orders.</p>
@@ -58,17 +58,17 @@ public override void OnOrderEvent(OrderEvent orderEvent)
 <pre class="python">self.stop_loss = None
 self.take_profit = None
 
-def OnOrderEvent(self, orderEvent: OrderEvent) -&gt; None:
-    if orderEvent.Status == OrderStatus.Filled:
-        if orderEvent.OrderId == self.ticket.OrderId:
-            self.stop_loss = self.StopMarketOrder(orderEvent.Symbol, -orderEvent.FillQuantity, orderEvent.FillPrice*0.95)
-            self.take_profit = self.LimitOrder(orderEvent.Symbol, -orderEvent.FillQuantity, orderEvent.FillPrice*1.10)
+def on_order_event(self, orderEvent: OrderEvent) -&gt; None:
+    if orderEvent.status == OrderStatus.FILLED:
+        if orderEvent.order_id == self.ticket.order_id:
+            self.stop_loss = self.stop_market_order(orderEvent.symbol, -orderEvent.fill_quantity, orderEvent.fill_price*0.95)
+            self.take_profit = self.limit_order(orderEvent.symbol, -orderEvent.fill_quantity, orderEvent.fill_price*1.10)
 
-        elif self.stop_loss is not None and orderEvent.OrderId == self.stop_loss.OrderId:
-            self.take_profit.Cancel()
+        elif self.stop_loss is not None and orderEvent.order_id == self.stop_loss.order_id:
+            self.take_profit.cancel()
 
-        elif self.take_profit is not None and orderEvent.OrderId == self.take_profit.OrderId:
-            self.stop_loss.Cancel()
+        elif self.take_profit is not None and orderEvent.order_id == self.take_profit.order_id:
+            self.stop_loss.cancel()
 </pre>
 </div>
 

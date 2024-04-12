@@ -2,5 +2,5 @@
 
 <div class='section-example-container'>
     <pre class='csharp'>var filePath = <?=$research ? "qb." : ""?>ObjectStore.GetFilePath(key);</pre>
-    <pre class='python'>file_path = <?=$research ? "qb." : "self."?>ObjectStore.GetFilePath(key)</pre>
+    <pre class='python'>file_path = <?=$research ? "qb." : "self."?>object_store.get_file_path(key)</pre>
 </div>

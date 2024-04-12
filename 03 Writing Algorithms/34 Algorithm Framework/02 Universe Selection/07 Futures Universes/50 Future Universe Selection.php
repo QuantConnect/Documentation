@@ -8,13 +8,13 @@ AddUniverseSelection(
         _ => new List&lt;Symbol&gt; {{ QuantConnect.Symbol.Create(Futures.Indices.SP500EMini, SecurityType.Future, Market.CME) }}
     )
 );</pre>
-	<pre class="python">from Selection.FutureUniverseSelectionModel import FutureUniverseSelectionModel
+	<pre class="python">from Selection.futureUniverseSelectionModel import FutureUniverseSelectionModel
 
-self.UniverseSettings.Asynchronous = True
-self.AddUniverseSelection(
+self.universe_settings.asynchronous = True
+self.add_universe_selection(
     FutureUniverseSelectionModel(
         timedelta(1), 
-        lambda _: [Symbol.Create(Futures.Indices.SP500EMini, SecurityType.Future, Market.CME)]
+        lambda _: [Symbol.create(Futures.indices.SP500E_MINI, SecurityType.FUTURE, Market.CME)]
     )
 )</pre>
 </div>
@@ -69,17 +69,17 @@ private static IEnumerable&lt;Symbol&gt; SelectFutureChainSymbols(DateTime utcTi
         QuantConnect.Symbol.Create(Futures.Metals.Gold, SecurityType.Future, Market.COMEX)
     };
 }</pre>
-    <pre class="python">from Selection.FutureUniverseSelectionModel import FutureUniverseSelectionModel
+    <pre class="python">from Selection.futureUniverseSelectionModel import FutureUniverseSelectionModel
 
-def Initialize(self) -&gt; None:
-    self.SetUniverseSelection(
+def initialize(self) -&gt; None:
+    self.set_universe_selection(
         FutureUniverseSelectionModel(timedelta(days=1), self.select_future_chain_symbols)
     )
 
 def select_future_chain_symbols(self, utc_time: datetime) -&gt; List[Symbol]:
     return [ 
-        Symbol.Create(Futures.Indices.SP500EMini, SecurityType.Future, Market.CME),
-        Symbol.Create(Futures.Metals.Gold, SecurityType.Future, Market.COMEX)
+        Symbol.create(Futures.indices.SP500E_MINI, SecurityType.FUTURE, Market.CME),
+        Symbol.create(Futures.metals.GOLD, SecurityType.FUTURE, Market.COMEX)
     ]</pre>
 </div>
 

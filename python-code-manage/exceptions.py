@@ -58,7 +58,7 @@ ENUMS = [
     'PerformanceBenchmarkAlgorithms', 'TestHelper', 'PythonTestingUtils', 'PythonWrapperTests', 'DataProcessor', 'StreamProvider', 
     'TemporaryPathProvider', 'AlgoSeekFuturesProgram', 'CryptoiqDownloaderProgram', 'DukascopyDownloaderProgram', 'IVolatilityEquityConverterProgram', 
     'KaikoDataConverterProgram', 'KrakenDownloaderProgram', 'NseMarketDataConverterProgram', 'DataDensity', 'RandomDataGeneratorProgram', 
-    'YahooDownloaderProgram'
+    'YahooDownloaderProgram','TimeInForce','Universe','CryptoUniverse'
 ]
 SWAPS = {
     "ETF": "Etf",
@@ -71,7 +71,10 @@ SWAPS = {
     "QuantConnectBrokerage": "QuantconnectBrokerage",
     "TDAmeritrade": "TdAmeritrade",
     "VWAP": "Vwap",
-    "OneWeekBasedOnUSD": "OneWeekBasedOnUsd"
+    "OneWeekBasedOnUSD": "OneWeekBasedOnUsd",
+    "SP500EMini": "SP500E_MINI",
+    "CrudeOilWTI": "CRUDE_OIL_WTI",
+    "Gold": "GOLD",
 }
 EXCEPTIONS = [
     "ElementTree",
@@ -117,7 +120,5 @@ EXCEPTIONS = [
     "Newtonsoft.Json",
     "System.Collections.Generic",
     "JsonConvert.SerializeObject",
-    "Calculators.TaxesCalculator",
-    "SP500EMini",
-    "CrudeOilWTI"
+    "Calculators.TaxesCalculator"
 ]

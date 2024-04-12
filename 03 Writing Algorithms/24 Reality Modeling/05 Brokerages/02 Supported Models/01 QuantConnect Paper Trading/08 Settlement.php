@@ -19,14 +19,14 @@ security.SetSettlementModel(new FutureSettlementModel());
 // For remaining cases:
 security.SetSettlementModel(new ImmediateSettlementModel());</pre>
 <pre class="python"># For US Equities with a cash account:
-security.SetSettlementModel(DelayedSettlementModel(Equity.DefaultSettlementDays, Equity.DefaultSettlementTime))
+security.set_settlement_model(DelayedSettlementModel(Equity.DEFAULT_SETTLEMENT_DAYS, Equity.DEFAULT_SETTLEMENT_TIME))
 
 # For Equity Options with a cash account:
-security.SetSettlementModel(DelayedSettlementModel(Option.DefaultSettlementDays, Option.DefaultSettlementTime))
+security.set_settlement_model(DelayedSettlementModel(Option.DEFAULT_SETTLEMENT_DAYS, Option.DEFAULT_SETTLEMENT_TIME))
 
 # For Futures
-security.SetSettlementModel(FutureSettlementModel())
+security.set_settlement_model(FutureSettlementModel())
 
 # For remaining cases:
-security.SetSettlementModel(ImmediateSettlementModel())</pre>
+security.set_settlement_model(ImmediateSettlementModel())</pre>
 </div>

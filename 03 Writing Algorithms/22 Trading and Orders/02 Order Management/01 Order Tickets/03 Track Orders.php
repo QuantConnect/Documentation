@@ -4,7 +4,7 @@
 
 <div class="section-example-container">
 <pre class="csharp">var limitPrice = ticket.Get(OrderField.LimitPrice);</pre>
-<pre class="python">limit_price = ticket.Get(OrderField.LimitPrice)</pre>
+<pre class="python">limit_price = ticket.get(OrderField.LIMIT_PRICE)</pre>
 </div>
 
 <p>The <code>OrderField</code> enumeration has the following members:</p>

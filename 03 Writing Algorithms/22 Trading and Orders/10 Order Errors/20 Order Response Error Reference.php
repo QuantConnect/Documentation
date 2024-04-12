@@ -29,7 +29,7 @@
 
 <a id='brokerage-model-refused-to-submit-order'></a><div class="section-example-container">
 <pre class="csharp">Settings.FreePortfolioValuePercentage = 0.05m;</pre>
-<pre class="python">self.Settings.FreePortfolioValuePercentage = 0.05</pre>
+<pre class="python">self.settings.free_portfolio_value_percentage = 0.05</pre>
 </div>
 
 <h4>Brokerage Model Refused to Submit Order</h4>
@@ -76,8 +76,8 @@
 {
     _orderTicket.Cancel();
 }</pre>
-<pre class="python">if not OrderExtensions.IsClosed(order_ticket.Status):
-    order_ticket.Cancel()</pre>
+<pre class="python">if not OrderExtensions.is_closed(order_ticket.status):
+    order_ticket.cancel()</pre>
 </div>
 
 
@@ -98,9 +98,9 @@ if (quantity != 0)
 {
     MarketOrder(_symbol, quantity);
 }</pre>
-<pre class="python">quantity = self.CalculateOrderQuantity(self.symbol, 0.05)
+<pre class="python">quantity = self.calculate_order_quantity(self.symbol, 0.05)
 if quantity:
-    self.MarketOrder(self.symbol, quantity)</pre>
+    self.market_order(self.symbol, quantity)</pre>
 </div>
 
 
@@ -145,8 +145,8 @@ if holding_quantity > 0:
 {
     ExerciseOption(_contractSymbol, quantity);
 }</pre>
-    <pre class="python">if self.IsMarketOpen(self.contract_symbol):
-    self.ExerciseOption(self.contract_symbol, quantity)</pre>
+    <pre class="python">if self.is_market_open(self.contract_symbol):
+    self.exercise_option(self.contract_symbol, quantity)</pre>
     </div>
     
     <li>When you try to place a market on open order for a Futures contract or a Future Option contract</li>
@@ -220,7 +220,7 @@ if holding_quantity > 0:
 
 <a id='brokerage-model-refused-to-update-order'></a><div class="section-example-container">
 <pre class="csharp">if (IsWarmingUp) return;</pre>
-<pre class="python">if self.IsWarmingUp: return</pre>
+<pre class="python">if self.is_warming_up: return</pre>
 </div>
 
 
@@ -249,8 +249,8 @@ if holding_quantity > 0:
 {
     MarketOrder(_symbol, quantity);
 }</pre>
-    <pre class="python">if self.Securities[self.symbol].IsTradable:
-    self.MarketOrder(self.symbol, quantity)</pre>
+    <pre class="python">if self.securities[self.symbol].is_tradable:
+    self.market_order(self.symbol, quantity)</pre>
 </div>
 
 
@@ -301,8 +301,8 @@ if available_to_borrow == None or quantity_to_borrow <= available_to_borrow:
 {
     _orderTicket.Cancel();
 }</pre>
-    <pre class="python">if self.order_ticket.Status != OrderStatus.New:
-    self.order_ticket.Cancel()</pre>
+    <pre class="python">if self.order_ticket.status != OrderStatus.NEW:
+    self.order_ticket.cancel()</pre>
 </div>
 
 <h4>European Option Not Expired on Exercise</h4>
@@ -330,6 +330,6 @@ if available_to_borrow == None or quantity_to_borrow <= available_to_borrow:
 {
     MarketOrder(_contractSymbol, quantity);
 }</pre>
-    <pre class="python">if self.contract_symbol.Underlying not in slice.Splits:
-    self.MarketOrder(self.contract_symbol, quantity)</pre>
+    <pre class="python">if self.contract_symbol.underlying not in slice.splits:
+    self.market_order(self.contract_symbol, quantity)</pre>
 </div>

@@ -1,19 +1,19 @@
 <p>To select a dynamic universe of Cryptos based on CoinGecko Crypto Market Cap data, call the <b>AddUniverse</b> method with the <b>CoinGeckoUniverse</b> class and a selection function. Note that the filtered output is a list of names of the coins. If corresponding tradable crypto pairs are preferred, call <b>CreateSymbol(market, quoteCurrency)</b> method for each output item.</p> 
 
 <div class="section-example-container">
-<pre class="python">def Initialize(self) -&gt; None:
-    self.universe = self.AddUniverse(CoinGeckoUniverse, self.UniverseSelection)
+<pre class="python">def initialize(self) -&gt; None:
+    self.universe = self.add_universe(CoinGeckoUniverse, self.universe_selection)
 
-def UniverseSelection(self, data: List[CoinGeckoUniverse]) -&gt; List[Symbol]:
+def universe_selection(self, data: List[CoinGeckoUniverse]) -&gt; List[Symbol]:
     for datum in data:
-        self.Debug(f'{datum.Coin},{datum.MarketCap},{datum.Price}')
+        self.debug(f'{datum.coin},{datum.market_cap},{datum.price}')
 
     # define our selection criteria
-    selected = sorted(data, key=lambda x: x.MarketCap, reverse=True)[:3]
+    selected = sorted(data, key=lambda x: x.market_cap, reverse=True)[:3]
             
     # Use the CreateSymbol method to generate the Symbol object for
     # the desired market (Coinbase) and quote currency (e.g. USD)
-    return [x.CreateSymbol(Market.Coinbase, "USD") for x in selected]</pre>
+    return [x.create_symbol(Market.COINBASE, "USD") for x in selected]</pre>
 <pre class="csharp">private Universe _universe;
 public override void Initialize()
 {

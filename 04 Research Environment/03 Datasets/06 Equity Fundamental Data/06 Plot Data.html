@@ -6,7 +6,7 @@
     <li>Get some <a href="#04-Get-Historical-Data">historical data</a>.</li>
     <div class="section-example-container">
         <pre class='csharp'>var history = history = qb.History&lt;Fundamental&gt;(symbols, new DateTime(2014, 1, 1), new DateTime(2015, 1, 1));</pre>
-        <pre class='python'>history = qb.History[Fundamental](symbols, datetime(2014, 1, 1), datetime(2015, 1, 1))</pre>
+        <pre class='python'>history = qb.history[Fundamental](symbols, datetime(2014, 1, 1), datetime(2015, 1, 1))</pre>
     </div>
 
     <li class="csharp">Load the <code>Plotly.NET</code> package.</li>
@@ -57,9 +57,9 @@ for fundamental_dict in history: # Iterate trading days
     for symbol, fundamental in fundamental_dict.items(): # Iterate Symbols
         datum = data.get(symbol, dict())
         datum['index'] = datum.get('index', [])
-        datum['index'].append(fundamental.EndTime)
+        datum['index'].append(fundamental.end_time)
         datum['pe_ratio'] = datum.get('pe_ratio', [])
-        datum['pe_ratio'].append(fundamental.ValuationRatios.PERatio)
+        datum['pe_ratio'].append(fundamental.valuation_ratios.pe_ratio)
         data[symbol] = datum
 
 df = pd.DataFrame()

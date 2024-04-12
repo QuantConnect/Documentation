@@ -5,11 +5,11 @@
 <p>To access the indicator value, use the <code>.Current.Value</code> property. Some indicators have one output and some indicators have multiple outputs. The <code>SimpleMovingAverage</code> indicator only has one output, the average price over the last n periods, so the <code>.Current.Value</code> property returns this value. The <code>BollingerBand</code> indicator has multiple outputs because it has a simple moving average, an upper band, and a lower band. For indicators that have multiple outputs, refer to the <a href='/docs/v2/writing-algorithms/indicators/supported-indicators'>Supported Indicators</a> to see how to access the output values.</p>
 
 <div class="section-example-container">
-	<pre class="python">sma = self.sma.Current.Value
+	<pre class="python">sma = self.sma.current.value
 
-current_price = self.auto_bb.Current.Value
-bb_upper_band = self.auto_bb.UpperBand.Current.Value
-bb_lower_band = self.auto_bb.LowerBand.Current.Value</pre>
+current_price = self.auto_bb.current.value
+bb_upper_band = self.auto_bb.upper_band.current.value
+bb_lower_band = self.auto_bb.lower_band.current.value</pre>
 	<pre class="csharp">var sma = _sma.Current.Value;
 
 var currentPrice = _autoBB.Current.Value;
@@ -20,8 +20,8 @@ var bbLowerBand = _autoBB.LowerBand.Current.Value;</pre>
 <p>You can implicitly cast indicators to the decimal version of their <code>.Current.Value</code> property.</p>
 
 <div class="section-example-container">
-	<pre class="python">if self.sma.Current.Value &gt; self.auto_bb.UpperBand.Current.Value:
-    self.SetHoldings(self.symbol, -0.1)</pre>
+	<pre class="python">if self.sma.current.value &gt; self.auto_bb.upper_band.current.value:
+    self.set_holdings(self.symbol, -0.1)</pre>
 	<pre class="csharp">if (_sma &gt; _autoBB.UpperBand)
 {
     SetHoldings(_symbol, -0.1);
@@ -40,13 +40,13 @@ var nullValue = _autoBB.Window[100];
 
 var previousUpperBand = _autoBB.UpperBand.Previous;
 var oldestUpperBand = _autoBB.UpperBand.Window[_autoBB.UpperBand.Window.Count - 1];</pre>
-	<pre class="python">current_bb = self.auto_bb.Current # self.auto_bb[0]
-previous_bb = self.auto_bb.Previous # or self.auto_bb[1]
-oldest_bb = self.auto_bb.Window[self.auto_bb.Window.Count - 1]
-none_value = self.auto_bb.Window[100]
+	<pre class="python">current_bb = self.auto_bb.current # self.auto_bb[0]
+previous_bb = self.auto_bb.previous # or self.auto_bb[1]
+oldest_bb = self.auto_bb.window[self.auto_bb.window.count - 1]
+none_value = self.auto_bb.window[100]
 
-previous_upper_band = self.auto_bb.UpperBand.Previous
-oldest_upper_band = self.auto_bb.UpperBand.Window[self.auto_bb.UpperBand.Window.Count - 1]</pre>
+previous_upper_band = self.auto_bb.upper_band.previous
+oldest_upper_band = self.auto_bb.upper_band.window[self.auto_bb.upper_band.window.count - 1]</pre>
 </div>
 
 <p>To access all of an indicator's historical values, iterate through the indicator object.</p>
@@ -56,5 +56,5 @@ oldest_upper_band = self.auto_bb.UpperBand.Window[self.auto_bb.UpperBand.Window.
     Log(value.ToString());
 }</pre>
 	<pre class="python">for value in self.auto_bb:
-    self.Log(f'{value}')</pre>
+    self.log(f'{value}')</pre>
 </div>

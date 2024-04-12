@@ -41,13 +41,13 @@
     }
 }</pre>
     <pre class="python">class MyCustomDataType(PythonData):
-    def GetSource(self,
+    def get_source(self,
          config: SubscriptionDataConfig,
          date: datetime,
          isLive: bool) -&gt; SubscriptionDataSource:
-        return SubscriptionDataSource("&lt;sourceURL&gt;", SubscriptionTransportMedium.RemoteFile)
+        return SubscriptionDataSource("&lt;sourceURL&gt;", SubscriptionTransportMedium.REMOTE_FILE)
 
-    def Reader(self,
+    def reader(self,
          config: SubscriptionDataConfig,
          line: str,
          date: datetime,
@@ -59,9 +59,9 @@
          data = line.split(',')
 
         custom = MyCustomDataType()
-        custom.Time = datetime.strptime(data[0], '%Y%m%d')
-        custom.EndTime = custom.Time + timedelta(1)
-        custom.Value = float(data[1])
+        custom.time = datetime.strptime(data[0], '%Y%m%d')
+        custom.end_time = custom.time + timedelta(1)
+        custom.value = float(data[1])
         custom["Property1"] = float(data[2])
         return custom</pre>
 </div>

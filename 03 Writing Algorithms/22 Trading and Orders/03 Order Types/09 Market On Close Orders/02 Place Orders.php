@@ -7,16 +7,16 @@ MarketOnCloseOrder("AAPL", 100);
 // Sell 100 shares of AAPL at the market open
 MarketOnCloseOrder("AAPL", -100);</pre>
 <pre class="python"># Buy 100 shares of AAPL at the market open
-self.MarketOnCloseOrder("AAPL", 100)
+self.market_on_close_order("AAPL", 100)
 
 # Sell 100 shares of AAPL at the market open
-self.MarketOnCloseOrder("AAPL", -100)</pre>
+self.market_on_close_order("AAPL", -100)</pre>
 </div>
 
 <p>You can provide a tag and <a href="/docs/v2/writing-algorithms/trading-and-orders/order-properties">order properties</a> to the <code>MarketOnCloseOrder</code> method.</p>
 <div class="section-example-container">
 <pre class="csharp">MarketOnCloseOrder(symbol, quantity, tag: tag, orderProperties: orderProperties);</pre>
-<pre class="python">self.MarketOnCloseOrder(symbol, quantity, tag=tag, orderProperties=order_properties)</pre>
+<pre class="python">self.market_on_close_order(symbol, quantity, tag=tag, order_properties=order_properties)</pre>
 </div>
 
 <p><?php echo file_get_contents(DOCS_RESOURCES."/order-types/moc-buffer.html"); ?>

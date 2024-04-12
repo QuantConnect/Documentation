@@ -13,15 +13,15 @@ include(DOCS_RESOURCES."/datasets/research-environment/load-csharp-assemblies.ph
     </div>
     <li><span class='qualifier'>(Optional)</span> <a href='/docs/v2/research-environment/initialization#04-Set-Time-Zone'>Set the time zone</a> to the <a href='/docs/v2/writing-algorithms/key-concepts/time-modeling/time-zones#05-Data-Time-Zone'>data time zone</a>.</li>
     <div class="section-example-container">
-        <pre class="csharp">qb.SetTimeZone(TimeZones.Utc);</pre>
-        <pre class="python">qb.SetTimeZone(TimeZones.Utc)</pre>
+        <pre class="csharp">qb.set_time_zone(TimeZones.UTC);</pre>
+        <pre class="python">qb.set_time_zone(TimeZones.UTC)</pre>
     </div>
     <li>Call the <code>AddCrypto</code> method with a ticker and then save a reference to the Crypto <code>Symbol</code>.</li>
     <div class="section-example-container">
         <pre class="csharp">var btcusd = qb.AddCrypto("BTCUSD").Symbol;
 var ethusd = qb.AddCrypto("ETHUSD").Symbol;</pre>
-        <pre class="python">btcusd = qb.AddCrypto("BTCUSD").Symbol
-ethusd = qb.AddCrypto("ETHUSD").Symbol</pre>
+        <pre class="python">btcusd = qb.add_crypto("BTCUSD").symbol
+ethusd = qb.add_crypto("ETHUSD").symbol</pre>
     </div>
 </ol>
 

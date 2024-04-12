@@ -15,14 +15,14 @@ public override void Initialize()
     _symbol = option.Symbol;
     option.SetFilter(universe =&gt; universe.IncludeWeeklys().Strikes(-1, 1).Expiration(0, 62));
 }</pre>
-        <pre class="python">def Initialize(self) -&gt; None:
-    self.SetStartDate(2017, 2, 1)
-    self.SetEndDate(2017, 2, 19)
-    self.SetCash(500000)
-    self.UniverseSettings.Asynchronous = True
-    option = self.AddOption("GOOG", Resolution.Minute)
-    self.symbol = option.Symbol
-    option.SetFilter(lambda universe: universe.IncludeWeeklys().Strikes(-1, 1).Expiration(0, 62))</pre>
+        <pre class="python">def initialize(self) -&gt; None:
+    self.set_start_date(2017, 2, 1)
+    self.set_end_date(2017, 2, 19)
+    self.set_cash(500000)
+    self.universe_settings.asynchronous = True
+    option = self.add_option("GOOG", Resolution.MINUTE)
+    self.symbol = option.symbol
+    option.set_filter(lambda universe: universe.include_weeklys().strikes(-1, 1).expiration(0, 62))</pre>
     </div>
 
     <li>In the <code>OnData</code> method, select the expiration and strikes of the contracts in the strategy legs.</li>
@@ -46,22 +46,22 @@ public override void Initialize()
     var expiries = calls.Select(x =&gt; x.Expiry).OrderBy(x =&gt; x);
     var nearExpiry = expiries.First();
     var farExpiry = expiries.Last();</pre>
-        <pre class="python">def OnData(self, slice: Slice) -&gt; None:
-    if self.Portfolio.Invested: return
+        <pre class="python">def on_data(self, slice: Slice) -&gt; None:
+    if self.portfolio.invested: return
 
     # Get the OptionChain
-    chain = slice.OptionChains.get(self.symbol, None)
+    chain = slice.option_chains.get(self.symbol, None)
     if not chain: return
 
     # Get the ATM strike
-    atm_strike = sorted(chain, key=lambda x: abs(x.Strike - chain.Underlying.Price))[0].Strike
+    atm_strike = sorted(chain, key=lambda x: abs(x.strike - chain.underlying.price))[0].strike
 
     # Select the ATM call Option contracts
-    calls = [i for i in chain if i.Strike == atm_strike and i.Right == OptionRight.Call]
+    calls = [i for i in chain if i.strike == atm_strike and i.right == OptionRight.CALL]
     if len(calls) == 0: return
 
     # Select the near and far expiry dates
-    expiries = sorted([x.Expiry for x in calls])
+    expiries = sorted([x.expiry for x in calls])
     near_expiry = expiries[0]
     far_expiry = expiries[-1]</pre>
     </div>
@@ -70,8 +70,8 @@ public override void Initialize()
     <div class="section-example-container">
         <pre class="csharp">var optionStrategy = OptionStrategies.CallCalendarSpread(_symbol, atmStrike, nearExpiry, farExpiry);
 Buy(optionStrategy, 1);</pre>
-        <pre class="python">option_strategy = OptionStrategies.CallCalendarSpread(self.symbol, atm_strike, near_expiry, far_expiry)
-self.Buy(option_strategy, 1)</pre>
+        <pre class="python">option_strategy = OptionStrategies.call_calendar_spread(self.symbol, atm_strike, near_expiry, far_expiry)
+self.buy(option_strategy, 1)</pre>
     </div>
 
 <?php 

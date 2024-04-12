@@ -95,92 +95,92 @@ private void RebalancingCode()
 }            
 </pre>
     <pre class="python"># Schedule an event to fire at a specific date/time
-self.Schedule.On(self.DateRules.On(2013, 10, 7), 
-                 self.TimeRules.At(13, 0), 
-                 lambda: self.Log(f"SpecificTime: Fired at : {self.Time}"))
+self.schedule.on(self.date_rules.on(2013, 10, 7), 
+                 self.time_rules.at(13, 0), 
+                 lambda: self.log(f"SpecificTime: Fired at : {self.time}"))
 
 # Schedule an event to fire every trading day for a security the
 # The time rule here tells it to fire at 13:00:00 UTC
-self.Schedule.On(self.DateRules.EveryDay("SPY"), 
-                 self.TimeRules.At(13, 0, 0, TimeZones.Utc),
-                 lambda: self.Log(f"EveryDay.SPY SpecificTime: Fired at: {self.Time}"))
+self.schedule.on(self.date_rules.every_day("SPY"), 
+                 self.time_rules.at(13, 0, 0, TimeZones.UTC),
+                 lambda: self.log(f"EveryDay.SPY SpecificTime: Fired at: {self.time}"))
 
 # Schedule an event to fire every trading day for a security the
 # The time rule here tells it to fire 10 minutes after SPY's market open
-self.Schedule.On(self.DateRules.EveryDay("SPY"), 
-                 self.TimeRules.AfterMarketOpen("SPY", 10),
-                 lambda: self.Log(f"EveryDay.SPY 10 min after open: Fired at: {self.Time}"))
+self.schedule.on(self.date_rules.every_day("SPY"), 
+                 self.time_rules.after_market_open("SPY", 10),
+                 lambda: self.log(f"EveryDay.SPY 10 min after open: Fired at: {self.time}"))
 
 # Schedule an event to fire every trading day for a security the
 # The time rule here tells it to fire 10 minutes before SPY's market close
-self.Schedule.On(self.DateRules.EveryDay("SPY"),
-                 self.TimeRules.BeforeMarketClose("SPY", 10),
-                 lambda: self.Log(f"EveryDay.SPY 10 min before close: Fired at: {self.Time}"))
+self.schedule.on(self.date_rules.every_day("SPY"),
+                 self.time_rules.before_market_close("SPY", 10),
+                 lambda: self.log(f"EveryDay.SPY 10 min before close: Fired at: {self.time}"))
 
 # Schedule an event to fire on certain days of the week
-self.Schedule.On(self.DateRules.Every(DayOfWeek.Monday, DayOfWeek.Friday),
-                 self.TimeRules.At(12, 0),
-                 lambda: self.Log(f"Mon/Fri at 12pm: Fired at: {self.Time}"))
+self.schedule.on(self.date_rules.every(DayOfWeek.monday, DayOfWeek.friday),
+                 self.time_rules.at(12, 0),
+                 lambda: self.log(f"Mon/Fri at 12pm: Fired at: {self.time}"))
 
 # Schedule an event to fire once today at when this method is called (now)
-self.Schedule.On(self.DateRules.Today,
-                 self.TimeRules.Now,
-                 lambda: self.Log(f"Now: Fired at: {self.Time}"))
+self.schedule.on(self.date_rules.today,
+                 self.time_rules.now,
+                 lambda: self.log(f"Now: Fired at: {self.time}"))
 
 # Schedule an event to fire once tomorrow at midnight
-self.Schedule.On(self.DateRules.Tomorrow,
-                 self.TimeRules.Midnight,
-                 lambda: self.Log(f"Tomorrow at midnight: Fired at: {self.Time}"))
+self.schedule.on(self.date_rules.tomorrow,
+                 self.time_rules.midnight,
+                 lambda: self.log(f"Tomorrow at midnight: Fired at: {self.time}"))
 
 # Schedule an event to fire once today at noon
-self.Schedule.On(self.DateRules.Today,
-                 self.TimeRules.Noon,
-                 lambda: self.Log(f"Today at noon: Fired at: {self.Time}"))
+self.schedule.on(self.date_rules.today,
+                 self.time_rules.noon,
+                 lambda: self.log(f"Today at noon: Fired at: {self.time}"))
 
 # the scheduling methods return the ScheduledEvent object which can be used 
 # for other things here I set the event up to check the portfolio value every
 # 10 minutes, and liquidate if we have too many losses
-self.Schedule.On(self.DateRules.EveryDay(), 
-                 self.TimeRules.Every(timedelta(minutes=10)),
-                 self.LiquidateUnrealizedLosses)
+self.schedule.on(self.date_rules.every_day(), 
+                 self.time_rules.every(timedelta(minutes=10)),
+                 self.liquidate_unrealized_losses)
 
 # Schedule an event to fire at the beginning of the month, the symbol is optional. 
 # if specified, it will fire the first trading day for that symbol of the month,
 # if not specified it will fire on the first day of the month
-self.Schedule.On(self.DateRules.MonthStart("SPY"),
-                 self.TimeRules.AfterMarketOpen("SPY"),
-                 self.RebalancingCode)
+self.schedule.on(self.date_rules.month_start("SPY"),
+                 self.time_rules.after_market_open("SPY"),
+                 self.rebalancing_code)
 
 # Schedule an event to fire at the end of the month, the symbol is optional. 
 # if specified, it will fire the last trading day for that symbol of the month,
 # if not specified it will fire on the first day of the month
-self.Schedule.On(self.DateRules.MonthEnd("SPY"),
-                 self.TimeRules.BeforeMarketClose("SPY"),
-                 self.RebalancingCode)
+self.schedule.on(self.date_rules.month_end("SPY"),
+                 self.time_rules.before_market_close("SPY"),
+                 self.rebalancing_code)
 
 # Schedule an event to fire at the beginning of the week, the symbol is optional. 
 # if specified, it will fire the first trading day for that symbol of the week,
 # if not specified it will fire on the first day of the week
-self.Schedule.On(self.DateRules.WeekStart("SPY"),
-                 self.TimeRules.AfterMarketOpen("SPY", 5),
-                 self.RebalancingCode)
+self.schedule.on(self.date_rules.week_start("SPY"),
+                 self.time_rules.after_market_open("SPY", 5),
+                 self.rebalancing_code)
 
 # Schedule an event to fire at the end of the week, the symbol is optional.
 # if specified, it will fire the last trading day for that symbol of the week,
 # if not specified it will fire on the first day of the week
-self.Schedule.On(self.DateRules.WeekEnd("SPY"),
-                 self.TimeRules.BeforeMarketClose("SPY", 5),
-                 self.RebalancingCode)
+self.schedule.on(self.date_rules.week_end("SPY"),
+                 self.time_rules.before_market_close("SPY", 5),
+                 self.rebalancing_code)
 
 
 # The following methods are not defined in Initialize:
-def LiquidateUnrealizedLosses(self) -&gt; None:
+def liquidate_unrealized_losses(self) -&gt; None:
     ''' if we have over 1000 dollars in unrealized losses, liquidate'''
-    if self.Portfolio.TotalUnrealizedProfit &lt; -1000:
-        self.Log(f"Liquidated due to unrealized losses at: {self.Time}")
-        self.Liquidate()
+    if self.portfolio.total_unrealized_profit &lt; -1000:
+        self.log(f"Liquidated due to unrealized losses at: {self.time}")
+        self.liquidate()
 
-def RebalancingCode(self) -&gt; None:
+def rebalancing_code(self) -&gt; None:
     ''' Good spot for rebalancing code?'''
     pass
 </pre>

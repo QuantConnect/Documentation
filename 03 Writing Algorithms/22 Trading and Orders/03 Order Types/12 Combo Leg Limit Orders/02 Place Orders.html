@@ -20,7 +20,7 @@
     // Place order
     ComboLegLimitOrder(legs, 1);
 }</pre>
-<pre class="python">for canonical_symbol, chain in slice.OptionChains.items():
+<pre class="python">for canonical_symbol, chain in slice.option_chains.items():
     # Select contracts
     contracts = [c for c in chain][:2]
     if len(contracts) &lt; 2:
@@ -31,10 +31,10 @@
     quantities = [1, -1]
     factors = [0.98, 1.02]
     for i, contract in enumerate(contracts):
-        legs.append(Leg.Create(contract.Symbol, quantities[i], contract.LastPrice * factors[i]))
+        legs.append(Leg.create(contract.symbol, quantities[i], contract.last_price * factors[i]))
     
     # Place order
-    self.ComboLegLimitOrder(legs, 1)</pre>
+    self.combo_leg_limit_order(legs, 1)</pre>
 </div>
 
 <p>The quantity of the legs sets the ratio of the leg orders while the quantity argument of the <code>ComboLegLimitOrder</code> method sets the combo order size and acts as a global multiplier. In the preceding example, if we set the global multiplier to two, then the algorithm buys two units of the first contract and sells two units of the second contract. The quantity also sets the order direction of the combo limit order, which affects how the <a href="/docs/v2/writing-algorithms/reality-modeling/trade-fills/key-concepts">fill model</a> fills the order.</p>
@@ -42,5 +42,5 @@
 <p>You can also provide a tag and <a href="/docs/v2/writing-algorithms/trading-and-orders/order-properties">order properties</a> to the <code>ComboLegLimitOrder</code> method.</p>
 <div class="section-example-container">
 <pre class="csharp">ComboLegLimitOrder(legs, quantity, tag: tag, orderProperties: orderProperties);</pre>
-<pre class="python">self.ComboLegLimitOrder(legs, quantity, tag=tag, orderProperties=order_properties)</pre>
+<pre class="python">self.combo_leg_limit_order(legs, quantity, tag=tag, order_properties=order_properties)</pre>
 </div>

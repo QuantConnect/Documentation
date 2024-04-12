@@ -5,7 +5,7 @@ include(DOCS_RESOURCES."/initialization/set-time-zone.php");
 <p>To get the time zone of your algorithm, use the <code>TimeZone</code> property.</p>
 
 <div class="section-example-container">
-<pre class="python">time_zone = self.TimeZone</pre>
+<pre class="python">time_zone = self.time_zone</pre>
 <pre class="csharp">var timeZone = TimeZone;</pre>
 </div> 
 
@@ -13,7 +13,7 @@ include(DOCS_RESOURCES."/initialization/set-time-zone.php");
 
 
 <div class="section-example-container">
-<pre class="python">utc_time = self.UtcTime</pre>
+<pre class="python">utc_time = self.utc_time</pre>
 <pre class="csharp">var utcTime = UtcTime;</pre>
 </div> 
 

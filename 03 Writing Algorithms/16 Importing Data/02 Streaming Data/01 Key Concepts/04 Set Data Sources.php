@@ -17,16 +17,16 @@
     }
 }</pre>
     <pre class="python">class MyCustomDataType(PythonData):
-    def GetSource(self,
+    def get_source(self,
          config: SubscriptionDataConfig,
          date: datetime,
          isLiveMode: bool) -&gt; SubscriptionDataSource:
         
          if isLiveMode:
-            return SubscriptionDataSource("https://www.bitstamp.net/api/ticker/", SubscriptionTransportMedium.Rest)
+            return SubscriptionDataSource("https://www.bitstamp.net/api/ticker/", SubscriptionTransportMedium.REST)
 
-        source = f"http://my-ftp-server.com/{config.Symbol.Value}/{date:%Y%M%d}.csv"
-        return SubscriptionDataSource(source, SubscriptionTransportMedium.RemoteFile)
+        source = f"http://my-ftp-server.com/{config.symbol.value}/{date:%Y%M%d}.csv"
+        return SubscriptionDataSource(source, SubscriptionTransportMedium.REMOTE_FILE)
 </pre>
 </div>
 

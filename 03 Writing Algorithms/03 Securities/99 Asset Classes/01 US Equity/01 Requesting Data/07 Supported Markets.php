@@ -4,7 +4,7 @@
 
 <div class="section-example-container">
     <pre class="csharp">_symbol = AddEquity("SPY", market: Market.USA).Symbol;</pre>
-    <pre class="python">self.symbol = self.AddEquity("SPY", market=Market.USA).Symbol</pre>
+    <pre class="python">self.symbol = self.add_equity("SPY", market=Market.USA).symbol</pre>
 </div>
 
 <?php echo file_get_contents(DOCS_RESOURCES."/securities/supported-markets.html"); ?>

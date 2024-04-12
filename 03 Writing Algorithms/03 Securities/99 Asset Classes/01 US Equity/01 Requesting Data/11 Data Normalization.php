@@ -8,6 +8,6 @@
 
  <div class="section-example-container">
     <pre class="csharp">_symbol = AddEquity("SPY", dataNormalizationMode: DataNormalizationMode.Raw).Symbol;</pre>
-    <pre class="python">self.symbol = self.AddEquity("SPY", dataNormalizationMode=DataNormalizationMode.Raw).Symbol</pre>
+    <pre class="python">self.symbol = self.add_equity("SPY", data_normalization_mode=DataNormalizationMode.RAW).symbol</pre>
 </div>
 

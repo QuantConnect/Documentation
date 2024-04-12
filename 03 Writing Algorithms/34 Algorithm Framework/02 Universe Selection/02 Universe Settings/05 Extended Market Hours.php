@@ -7,8 +7,8 @@
 var tickers = new[] {"SPY", "QQQ", "IWM"};
 var symbols = tickers.Select(ticker =&gt; QuantConnect.Symbol.Create(ticker, SecurityType.Equity, Market.USA));
 AddUniverseSelection(new ManualUniverseSelectionModel(symbols));</pre>
-    <pre class="python">self.UniverseSettings.ExtendedMarketHours = True
+    <pre class="python">self.universe_settings.extended_market_hours = True
 tickers = ["SPY", "QQQ", "IWM"]
-symbols = [ Symbol.Create(ticker, SecurityType.Equity, Market.USA) for ticker in tickers]
-self.AddUniverseSelection(ManualUniverseSelectionModel(symbols))</pre>
+symbols = [ Symbol.create(ticker, SecurityType.EQUITY, Market.USA) for ticker in tickers]
+self.add_universe_selection(ManualUniverseSelectionModel(symbols))</pre>
 </div>

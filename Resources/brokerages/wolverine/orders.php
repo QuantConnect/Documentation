@@ -50,11 +50,11 @@
         ExchangePostFix = "-INCA-TX"
     };
 }</pre>
-    <pre class="python">def Initialize(self) -&gt; None:
+    <pre class="python">def initialize(self) -&gt; None:
     # Set the default order properties
-    self.DefaultOrderProperties = WolverineOrderProperties()
-    self.DefaultOrderProperties.TimeInForce = TimeInForce.GoodTilCanceled
-    self.DefaultOrderProperties.Exchange = Exchange.SMART
-    self.DefaultOrderProperties.ExchangePostFix = "-INCA-TX"</pre>
+    self.default_order_properties = WolverineOrderProperties()
+    self.default_order_properties.time_in_force = TimeInForce.GOOD_TIL_CANCELED
+    self.default_order_properties.exchange = Exchange.SMART
+    self.default_order_properties.exchange_post_fix = "-INCA-TX"</pre>
 </div>
 <? } ?>

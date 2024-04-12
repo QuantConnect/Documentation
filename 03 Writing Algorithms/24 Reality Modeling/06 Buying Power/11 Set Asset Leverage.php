@@ -26,7 +26,7 @@ include(DOCS_RESOURCES."/reality-modeling/brokerage-model-security-init.php");
 	<pre class="csharp">// In Initialize
 UniverseSettings.Leverage = 3;</pre>
 	<pre class="python"># In Initialize
-self.UniverseSettings.Leverage = 3</pre>
+self.universe_settings.leverage = 3</pre>
 </div>
 
 <p>In live trading, LEAN doesn't ignore the leverage you set. However, if you set a different leverage from what your brokerage provides, it creates a mismatch between the buying power in your algorithm and the buying power the brokerage gives you. In this case, orders can pass the validations in LEAN but your brokerage may reject them.</p>

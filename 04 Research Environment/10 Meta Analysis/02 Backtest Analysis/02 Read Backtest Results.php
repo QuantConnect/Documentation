@@ -8,7 +8,7 @@ using QuantConnect;
 using QuantConnect.Api;
 
 var backtest = api.ReadBacktest(projectId, backtestId);</pre>
-    <pre class="python">backtest = api.ReadBacktest(project_id, backtest_id)</pre>
+    <pre class="python">backtest = api.read_backtest(project_id, backtest_id)</pre>
 </div>
 
 <?php include(DOCS_RESOURCES."/qc-api/get-project-id-in-research.html"); ?>

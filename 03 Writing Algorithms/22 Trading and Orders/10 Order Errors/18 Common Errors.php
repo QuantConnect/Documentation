@@ -9,8 +9,8 @@ If you place a market order when the market is closed, LEAN automatically conver
 {
     MarketOrder(symbol, quantity);
 }</pre>
-<pre class="python">if self.IsMarketOpen(self.symbol):
-    self.MarketOrder(self.symbol, quantity)</pre>
+<pre class="python">if self.is_market_open(self.symbol):
+    self.market_order(self.symbol, quantity)</pre>
 </div>
 
 <h4>Why am I seeing the "stale price" warning?</h4>

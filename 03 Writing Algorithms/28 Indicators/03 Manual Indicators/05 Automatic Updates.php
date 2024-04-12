@@ -2,10 +2,10 @@
 
 <div class="section-example-container">
 	<pre class="python"># Create a security subscription 
-self.symbol = self.AddEquity("SPY", Resolution.Minute).Symbol
+self.symbol = self.add_equity("SPY", Resolution.MINUTE).symbol
 
 # Create a manual indicator
-self.indicator = RelativeStrengthIndex(10, MovingAverageType.Simple)
+self.indicator = RelativeStrengthIndex(10, MovingAverageType.SIMPLE)
 
 # Create a consolidator
 consolidator = TradeBarConsolidator(1)
@@ -13,7 +13,7 @@ consolidator = QuoteBarConsolidator(1)
 consolidator = RenkoConsolidator(1)     # Renko consolidator that emits a bar when the price moves $1
 
 # Register the indicator to update with the consolidated data
-self.RegisterIndicator(self.symbol, self.indicator, consolidator)</pre>
+self.register_indicator(self.symbol, self.indicator, consolidator)</pre>
 	<pre class="csharp">// Create a security subscription 
 _symbol = AddEquity("SPY", Resolution.Hour);
 
@@ -30,7 +30,7 @@ RegisterIndicator(_symbol, _indicator, consolidator);</pre>
 </div>
 
 <p>Data point indicators use only a single price data in their calculations. By default, those indicators use the closing price. For assets with <code>TradeBar</code> data, that price is the <code>TradeBar</code> close price. For assets with <code>QuoteBar</code> data, that price is the mid-price of the bid closing price and the ask closing price. To create an indicator with the other fields like the <code>Open</code>, <code>High</code>, <code>Low</code>, or <code>Close</code>, provide a <code>selector</code> argument to the <code>RegisterIndicator</code> method.</p><div class="section-example-container">
-	<pre class="python">self.RegisterIndicator(self.symbol, self.indicator, consolidator, Field.High)
+	<pre class="python">self.register_indicator(self.symbol, self.indicator, consolidator, Field.high)
 </pre>
 	<pre class="csharp">RegisterIndicator(_symbol, _rsi, consolidator, Field.High);
 </pre>
@@ -56,7 +56,7 @@ RegisterIndicator(_symbol, _indicator, consolidator);</pre>
     <pre class="csharp">DeregisterIndicator(_indicator);
 // Alias:
 // UnregisterIndicator(_indicator);</pre>
-    <pre class="python">self.DeregisterIndicator(self.indicator)
+    <pre class="python">self.deregister_indicator(self.indicator)
 # Alias:
-# self.UnregisterIndicator(self.indicator)</pre>
+# self.unregister_indicator(self.indicator)</pre>
 </div>

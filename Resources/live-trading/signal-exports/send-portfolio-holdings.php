@@ -3,6 +3,6 @@
 <div class="section-example-container">
 <pre class="csharp">var success = SignalExport.SetTargetPortfolioFromPortfolio();
 </pre>
-<pre class="python">success = self.SignalExport.SetTargetPortfolioFromPortfolio()
+<pre class="python">success = self.signal_export.set_target_portfolio_from_portfolio()
 </pre>
 </div>

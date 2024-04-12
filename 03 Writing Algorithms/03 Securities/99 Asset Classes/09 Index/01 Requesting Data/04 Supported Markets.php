@@ -2,7 +2,7 @@
 
 <div class="section-example-container">
     <pre class="csharp">_symbol = AddIndex("VIX", market: Market.USA).Symbol;</pre>
-    <pre class="python">self.symbol = self.AddIndex("VIX", market=Market.USA).Symbol</pre>
+    <pre class="python">self.symbol = self.add_index("VIX", market=Market.USA).symbol</pre>
 </div>
 
 <?php echo file_get_contents(DOCS_RESOURCES."/securities/supported-markets.html"); ?>

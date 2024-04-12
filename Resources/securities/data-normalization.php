@@ -8,7 +8,7 @@
 
 <div class='section-example-container'>
     <pre class='csharp'>var <?=$cSharpVariableName?> = <?=$writingAlgorithms ? "" : "qb." ?>AddEquity("<?=$ticker?>", dataNormalizationMode: DataNormalizationMode.Raw).Symbol;</pre>
-    <pre class='python'><?=$pyVariableName?> = <?=$writingAlgorithms ? "self" : "qb" ?>.AddEquity("<?=$ticker?>", dataNormalizationMode=DataNormalizationMode.Raw).Symbol</pre>
+    <pre class='python'><?=$pyVariableName?> = <?=$writingAlgorithms ? "self" : "qb" ?>.add_equity("<?=$ticker?>", data_normalization_mode=DataNormalizationMode.RAW).symbol</pre>
 </div>
 
 <? if ($writingAlgorithms) { ?>
@@ -16,6 +16,6 @@
 
  <div class='section-example-container'>
     <pre class='csharp'>UniverseSettings.DataNormalizationMode = DataNormalizationMode.Raw;</pre>
-    <pre class='python'>self.UniverseSettings.DataNormalizationMode = DataNormalizationMode.Raw</pre>
+    <pre class='python'>self.universe_settings.data_normalization_mode = DataNormalizationMode.RAW</pre>
 </div>            
 <? } ?>

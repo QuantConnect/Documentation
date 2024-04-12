@@ -8,7 +8,7 @@
 
 <div class="section-example-container">
     <pre class="csharp">AddFutureOption(future.Symbol, optionFilterUniverse => optionFilterUniverse.Strikes(-1, 1));</pre>
-    <pre class="python">self.AddFutureOption(future.Symbol, lambda option_filter_universe: option_filter_universe.Strikes(-1, 1))</pre>
+    <pre class="python">self.add_future_option(future.symbol, lambda option_filter_universe: option_filter_universe.strikes(-1, 1))</pre>
 </div>
 
 
@@ -20,7 +20,7 @@
 
 <div class="section-example-container">
     <pre class="csharp">AddFutureOption(future.Symbol, optionFilterUniverse => optionFilterUniverse.Strikes(-1, 1).CallsOnly());</pre>
-    <pre class="python">self.AddFutureOption(future.Symbol, lambda option_filter_universe: option_filter_universe.Strikes(-1, 1).CallsOnly())</pre>
+    <pre class="python">self.add_future_option(future.symbol, lambda option_filter_universe: option_filter_universe.strikes(-1, 1).calls_only())</pre>
 </div>
 
 

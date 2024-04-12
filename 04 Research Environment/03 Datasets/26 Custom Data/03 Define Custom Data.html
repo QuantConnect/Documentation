@@ -60,25 +60,25 @@ public class Nifty : BaseData
     <pre class="python">
 class Nifty(PythonData):
     '''NIFTY Custom Data Class'''
-    def GetSource(self, config: SubscriptionDataConfig, date: datetime, isLiveMode: bool) -&gt; SubscriptionDataSource:
+    def get_source(self, config: SubscriptionDataConfig, date: datetime, isLiveMode: bool) -&gt; SubscriptionDataSource:
         url = "http://cdn.quantconnect.com.s3.us-east-1.amazonaws.com/uploads/CNXNIFTY.csv"
-        return SubscriptionDataSource(url, SubscriptionTransportMedium.RemoteFile)
+        return SubscriptionDataSource(url, SubscriptionTransportMedium.REMOTE_FILE)
 
-    def Reader(self, config: SubscriptionDataConfig, line: str, date: datetime, isLiveMode: bool) -&gt; BaseData:
+    def reader(self, config: SubscriptionDataConfig, line: str, date: datetime, isLiveMode: bool) -&gt; BaseData:
         if not (line.strip() and line[0].isdigit()): return None
 
         # New Nifty object
         index = Nifty()
-        index.Symbol = config.Symbol
+        index.symbol = config.symbol
 
         try:
             # Example File Format:
             # Date,       Open       High        Low       Close     Volume      Turnover
             # 2011-09-13  7792.9    7799.9     7722.65    7748.7    116534670    6107.78
             data = line.split(',')
-            index.Time = datetime.strptime(data[0], "%Y-%m-%d")
-            index.EndTime = index.Time + timedelta(days=1)
-            index.Value = data[4]
+            index.time = datetime.strptime(data[0], "%Y-%m-%d")
+            index.end_time = index.time + timedelta(days=1)
+            index.value = data[4]
             index["Open"] = float(data[1])
             index["High"] = float(data[2])
             index["Low"] = float(data[3])

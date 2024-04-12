@@ -109,64 +109,64 @@ namespace QuantConnect.Algorithm.CSharp
 }</pre>
     <pre class="python">class CustomDataBitstampAlgorithm(QCAlgorithm):
 
-    def Initialize(self):
-        self.SetStartDate(2012, 9, 13)
-        self.SetEndDate(2021, 6, 20)
-        self.SetCash(100000)
+    def initialize(self):
+        self.set_start_date(2012, 9, 13)
+        self.set_end_date(2021, 6, 20)
+        self.set_cash(100000)
 
         # Define the symbol and "type" of our generic data:
-        self.custom_data_symbol = self.AddData(Bitstamp, "BTC").Symbol
+        self.custom_data_symbol = self.add_data(Bitstamp, "BTC").symbol
 
-        history = self.History(Bitstamp, self.custom_data_symbol, 200, Resolution.Daily)
-        self.Debug(f"We got {len(history)} items from historical data request of {self.custom_data_symbol}.")
+        history = self.history(Bitstamp, self.custom_data_symbol, 200, Resolution.DAILY)
+        self.debug(f"We got {len(history)} items from historical data request of {self.custom_data_symbol}.")
 
 
-    def OnData(self, slice):
+    def on_data(self, slice):
         if self.custom_data_symbol not in slice:
             return
 
         data = slice[self.custom_data_symbol]
-        self.Log(f'{data.EndTime}: Close: {data.Close}')
-        self.Plot(self.custom_data_symbol, 'Price', data.Close)
+        self.log(f'{data.end_time}: Close: {data.close}')
+        self.plot(self.custom_data_symbol, 'Price', data.close)
 
 
 class Bitstamp(PythonData):
 
-    def GetSource(self, config, date, isLiveMode):
+    def get_source(self, config, date, isLiveMode):
         if isLiveMode:
-            return SubscriptionDataSource("https://www.bitstamp.net/api/ticker/", SubscriptionTransportMedium.Rest)
+            return SubscriptionDataSource("https://www.bitstamp.net/api/ticker/", SubscriptionTransportMedium.REST)
 
         source = "https://raw.githubusercontent.com/QuantConnect/Documentation/master/Resources/datasets/custom-data/bitstampusd.csv"
-        return SubscriptionDataSource(source, SubscriptionTransportMedium.RemoteFile)
+        return SubscriptionDataSource(source, SubscriptionTransportMedium.REMOTE_FILE)
 
-    def Reader(self, config, line, date, isLiveMode):
+    def reader(self, config, line, date, isLiveMode):
 
         if not line.strip():
             return None
 
         coin = Bitstamp()
-        coin.Symbol = config.Symbol
+        coin.symbol = config.symbol
 
         if isLiveMode:
             # Example Line Format:
             # {"high": "441.00", "last": "421.86", "timestamp": "1411606877", "bid": "421.96", "vwap": "428.58", "volume": "14120.40683975", "low": "418.83", "ask": "421.99"}
-            liveBTC = json.loads(line)
+            live_b_t_c = json.loads(line)
 
             # If value is zero, return None
-            coin.Value = float(liveBTC["last"])
-            if coin.Value == 0:
+            coin.value = float(live_b_t_c["last"])
+            if coin.value == 0:
                 return None
 
-            coin.EndTime =  Extensions.ConvertFromUtc(datetime.utcnow(), config.ExchangeTimeZone)
-            coin.Time = coin.EndTime - timedelta(1)
-            coin["Open"] = float(liveBTC["open"])
-            coin["High"] = float(liveBTC["high"])
-            coin["Low"] = float(liveBTC["low"])
-            coin["Close"] = coin.Value
-            coin["Ask"] = float(liveBTC["ask"])
-            coin["Bid"] = float(liveBTC["bid"])
-            coin["VolumeBTC"] = float(liveBTC["volume"])
-            coin["WeightedPrice"] = float(liveBTC["vwap"])
+            coin.end_time =  Extensions.convert_from_utc(datetime.utcnow(), config.exchange_time_zone)
+            coin.time = coin.end_time - timedelta(1)
+            coin["Open"] = float(live_b_t_c["open"])
+            coin["High"] = float(live_b_t_c["high"])
+            coin["Low"] = float(live_b_t_c["low"])
+            coin["Close"] = coin.value
+            coin["Ask"] = float(live_b_t_c["ask"])
+            coin["Bid"] = float(live_b_t_c["bid"])
+            coin["VolumeBTC"] = float(live_b_t_c["volume"])
+            coin["WeightedPrice"] = float(live_b_t_c["vwap"])
             return coin
 
         # Example Line Format:
@@ -178,16 +178,16 @@ class Bitstamp(PythonData):
         data = line.split(',')
 
         # If value is zero, return None
-        coin.Value = float(data[4])
-        if coin.Value == 0:
+        coin.value = float(data[4])
+        if coin.value == 0:
             return None
 
-        coin.Time = datetime.strptime(data[0], "%Y-%m-%d")
-        coin.EndTime = coin.Time + timedelta(1)
+        coin.time = datetime.strptime(data[0], "%Y-%m-%d")
+        coin.end_time = coin.time + timedelta(1)
         coin["Open"] = float(data[1])
         coin["High"] = float(data[2])
         coin["Low"] = float(data[3])
-        coin["Close"] = coin.Value
+        coin["Close"] = coin.value
         coin["VolumeBTC"] = float(data[5])
         coin["VolumeUSD"] = float(data[6])
         coin["WeightedPrice"] = float(data[7])

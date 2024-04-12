@@ -23,20 +23,20 @@ foreach (var ticket in tickets)
     }
 }</pre>
 <pre class="python"># Create a new order and save the order tickets
-tickets = self.ComboLegLimitOrder(legs, 1)
+tickets = self.combo_leg_limit_order(legs, 1)
 
 # Update the leg orders
 for ticket in tickets:
-    direction = np.sign(ticket.Quantity)
+    direction = np.sign(ticket.quantity)
     update_settings = UpdateOrderFields()
-    update_settings.Quantity = 2 * direction
-    update_settings.LimitPrice = ticket.Get(OrderField.LimitPrice) + 0.01 * direction
-    update_settings.Tag = f"Update #{len(ticket.UpdateRequests) + 1}"
-    response = ticket.Update(update_settings)
+    update_settings.quantity = 2 * direction
+    update_settings.limit_price = ticket.get(OrderField.LIMIT_PRICE) + 0.01 * direction
+    update_settings.tag = f"Update #{len(ticket.update_requests) + 1}"
+    response = ticket.update(update_settings)
 
     # Check if the update was successful
-    if response.IsSuccess:
-        self.Debug(f"Order updated successfully for {ticket.Symbol}")</pre>
+    if response.is_success:
+        self.debug(f"Order updated successfully for {ticket.symbol}")</pre>
 </div>
 
 <?
