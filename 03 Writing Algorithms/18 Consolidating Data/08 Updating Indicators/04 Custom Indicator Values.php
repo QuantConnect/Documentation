@@ -8,7 +8,7 @@ _rsi = new RelativeStrengthIndex(10, MovingAverageType.Simple);
 // Register the daily High price data to automatically update the indicator
 RegisterIndicator(symbol, _rsi, Resolution.Daily, Field.High);</pre>
 <pre class="python"># Define a 10-period RSI with indicator constructor
-self.rsi = RelativeStrengthIndex(10, MovingAverageType.simple)
+self.rsi = RelativeStrengthIndex(10, MovingAverageType.SIMPLE)
 
 # Register the daily High price data to automatically update the indicator
 self.register_indicator(self.symbol, self.rsi, Resolution.DAILY, Field.high)</pre>
