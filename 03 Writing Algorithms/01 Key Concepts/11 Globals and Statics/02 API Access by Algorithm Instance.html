@@ -103,16 +103,16 @@ class CustomPartialFillModel(FillModel):
         self.absolute_remaining_by_order_id = {}
 
     def market_fill(self, asset, order):
-        absoluteRemaining = self.absolute_remaining_by_order_id.get(order.id, order. AbsoluteQuantity)
+        absolute_remaining = self.absolute_remaining_by_order_id.get(order.id, order. AbsoluteQuantity)
         fill = super().market_fill(asset, order)
         fill.fill_quantity = np.sign(order.quantity) * 10
-        if (min(abs(fill.fill_quantity), absoluteRemaining) == absoluteRemaining):
-            fill.fill_quantity = np.sign(order.quantity) * absoluteRemaining
+        if (min(abs(fill.fill_quantity), absolute_remaining) == absolute_remaining):
+            fill.fill_quantity = np.sign(order.quantity) * absolute_remaining
             fill.status = OrderStatus.FILLED
             self.absolute_remaining_by_order_id.pop(order.id, None)
         else:
             fill.status = OrderStatus.PARTIALLY_FILLED
-            self.absolute_remaining_by_order_id[order.id] = absoluteRemaining - abs(fill.fill_quantity)
+            self.absolute_remaining_by_order_id[order.id] = absolute_remaining - abs(fill.fill_quantity)
             price = fill.fill_price
             # Use the instance of the algorithm to log the information
             self.algorithm.debug(f"{self.algorithm.time} - Partial Fill - Remaining {self.absolute_remaining_by_order_id[order.id]} Price - {price}")
