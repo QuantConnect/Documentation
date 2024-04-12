@@ -9,7 +9,7 @@ AddUniverseSelection(
         optionFilterUniverse => optionFilterUniverse.Strikes(-2, +2).FrontMonth().CallsOnly()
     )
 );</pre>
-	<pre class="python">self.universe_settings.data_normalization_mode = DataNormalizationMode.raw
+	<pre class="python">self.universe_settings.data_normalization_mode = DataNormalizationMode.RAW
 self.universe_settings.asynchronous = True
 self.add_universe_selection(
     OptionChainedUniverseSelectionModel(
@@ -77,7 +77,7 @@ private OptionFilterUniverse OptionFilterFunction(OptionFilterUniverse optionFil
     return optionFilterUniverse.Strikes(-2, +2).FrontMonth().CallsOnly();
 }</pre>
 	<pre class="python">def initialize(self) -&gt; None:
-    self.universe_settings.data_normalization_mode = DataNormalizationMode.raw
+    self.universe_settings.data_normalization_mode = DataNormalizationMode.RAW
     self.universe_settings.asynchronous = True
     self.add_universe_selection(
         OptionChainedUniverseSelectionModel(

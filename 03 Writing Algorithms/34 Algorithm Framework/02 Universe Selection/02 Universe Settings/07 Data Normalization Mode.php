@@ -12,7 +12,7 @@
 var tickers = new[] {"MSTR", "MSFT", "IBM"};
 var symbols = tickers.Select(ticker =&gt; QuantConnect.Symbol.Create(ticker, SecurityType.Equity, Market.USA));
 AddUniverseSelection(new ManualUniverseSelectionModel(symbols));</pre>
-	<pre class="python">self.universe_settings.data_normalization_mode = DataNormalizationMode.raw
+	<pre class="python">self.universe_settings.data_normalization_mode = DataNormalizationMode.RAW
 
 tickers = ["MSTR", "MSFT", "IBM"]
 symbols = [ Symbol.create(ticker, SecurityType.EQUITY, Market.USA) for ticker in tickers]
