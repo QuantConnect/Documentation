@@ -29,7 +29,7 @@ for symbol, order_data in order_data_by_symbol.items():
     start_date = min(start_date, min(order_data.buy_fill_times), min(order_data.sell_fill_times))
     end_date = max(end_date, max(order_data.buy_fill_times), max(order_data.sell_fill_times))
 start_date -= timedelta(days=1)
-all_history = qb.history(list(order_data_by_symbol.keys()), start_date, end_date, Resolution.daily)</pre>
+all_history = qb.history(list(order_data_by_symbol.keys()), start_date, end_date, Resolution.DAILY)</pre>
     </div>
 </li>
 

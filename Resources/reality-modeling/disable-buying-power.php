@@ -18,7 +18,7 @@ equity.SetBuyingPowerModel(BuyingPowerModel.Null);
 // Alias: 
 // equity.SetMarginModel(SecurityMarginModel.Null);</pre>
 <pre class="python">equity = self.add_equity("SPY")
-equity.set_buying_power_model(BuyingPowerModel.null)
+equity.set_buying_power_model(BuyingPowerModel.NULL)
 # Alias:
 # equity.set_margin_model(SecurityMarginModel.null)</pre>
 </div>

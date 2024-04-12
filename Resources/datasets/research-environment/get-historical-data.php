@@ -130,15 +130,15 @@ subset_history_trade_bars = qb.history[TradeBar]([<?=$contractVariablePy?>], tim
 all_history_trade_bars = qb.history[TradeBar](qb.securities.keys, timedelta(days=3))
 
 # QuoteBar objects
-single_history_quote_bars = qb.history[QuoteBar](<?=$contractVariablePy?>, timedelta(days=3), Resolution.minute)
-subset_history_quote_bars = qb.history[QuoteBar]([<?=$contractVariablePy?>], timedelta(days=3), Resolution.minute)
-all_history_quote_bars = qb.history[QuoteBar](qb.securities.keys, timedelta(days=3), Resolution.minute) 
+single_history_quote_bars = qb.history[QuoteBar](<?=$contractVariablePy?>, timedelta(days=3), Resolution.MINUTE)
+subset_history_quote_bars = qb.history[QuoteBar]([<?=$contractVariablePy?>], timedelta(days=3), Resolution.MINUTE)
+all_history_quote_bars = qb.history[QuoteBar](qb.securities.keys, timedelta(days=3), Resolution.MINUTE) 
 
 <? if ($supportsTicks) { ?>
 # Tick objects
-single_history_ticks = qb.history[Tick](<?=$contractVariablePy?>, timedelta(days=3), Resolution.tick)
-subset_history_ticks = qb.history[Tick]([<?=$contractVariablePy?>], timedelta(days=3), Resolution.tick)
-all_history_ticks = qb.history[Tick](qb.securities.keys, timedelta(days=3), Resolution.tick)
+single_history_ticks = qb.history[Tick](<?=$contractVariablePy?>, timedelta(days=3), Resolution.TICK)
+subset_history_ticks = qb.history[Tick]([<?=$contractVariablePy?>], timedelta(days=3), Resolution.TICK)
+all_history_ticks = qb.history[Tick](qb.securities.keys, timedelta(days=3), Resolution.TICK)
 <? } ?>
 
 # OpenInterest objects
@@ -214,15 +214,15 @@ subset_history_trade_bars = qb.history[TradeBar]([<?=$contractVariablePy?>], sta
 all_history_trade_bars = qb.history[TradeBar](qb.securities.keys, start_time, end_time)
 
 # QuoteBar objects
-single_history_quote_bars = qb.history[QuoteBar](<?=$contractVariablePy?>, start_time, end_time, Resolution.minute)
-subset_history_quote_bars = qb.history[QuoteBar]([<?=$contractVariablePy?>], start_time, end_time, Resolution.minute)
-all_history_quote_bars = qb.history[QuoteBar](qb.securities.keys, start_time, end_time, Resolution.minute)
+single_history_quote_bars = qb.history[QuoteBar](<?=$contractVariablePy?>, start_time, end_time, Resolution.MINUTE)
+subset_history_quote_bars = qb.history[QuoteBar]([<?=$contractVariablePy?>], start_time, end_time, Resolution.MINUTE)
+all_history_quote_bars = qb.history[QuoteBar](qb.securities.keys, start_time, end_time, Resolution.MINUTE)
 
 <? if ($supportsTicks) { ?>
 # Tick objects
-single_history_ticks = qb.history[Tick](<?=$contractVariablePy?>, start_time, end_time, Resolution.tick)
-subset_history_ticks = qb.history[Tick]([<?=$contractVariablePy?>], start_time, end_time, Resolution.tick)
-all_history_ticks = qb.history[Tick](qb.securities.keys, start_time, end_time, Resolution.tick)
+single_history_ticks = qb.history[Tick](<?=$contractVariablePy?>, start_time, end_time, Resolution.TICK)
+subset_history_ticks = qb.history[Tick]([<?=$contractVariablePy?>], start_time, end_time, Resolution.TICK)
+all_history_ticks = qb.history[Tick](qb.securities.keys, start_time, end_time, Resolution.TICK)
 <? } ?>
 
 # OpenInterest objects

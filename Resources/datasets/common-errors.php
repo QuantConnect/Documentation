@@ -11,7 +11,7 @@ def get_safe_history_closes(<?=$writingAlgorithms ? "self, " : "" ?>symbols):
     if not symbols:
         <?=$writingAlgorithms ? "self.log" : "print"?>(f'No symbols')
         return  False, None
-    df = <?=$writingAlgorithms ? "self": "qb"?>.history(symbols, 100, Resolution.daily)
+    df = <?=$writingAlgorithms ? "self": "qb"?>.history(symbols, 100, Resolution.DAILY)
     if df.empty:
         <?=$writingAlgorithms ? "self.log" : "print"?>(f'Empy history for {symbols}')
         return  False, None

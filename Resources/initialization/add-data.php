@@ -11,7 +11,7 @@
 <?=$writingAlgorithms ? "" : "qb."?>AddForex("EURUSD", Resolution.Second); // Add EURUSD 1 second bars
 </pre>
 	<pre class='python'><?=$writingAlgorithms ? "self" : "qb"?>.add_equity("SPY")  # Add Apple 1 minute bars (minute by default)
-<?=$writingAlgorithms ? "self" : "qb"?>.add_forex("EURUSD", Resolution.second) # Add EURUSD 1 second bars
+<?=$writingAlgorithms ? "self" : "qb"?>.add_forex("EURUSD", Resolution.SECOND) # Add EURUSD 1 second bars
 </pre>
 </div>
 

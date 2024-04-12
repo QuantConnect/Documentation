@@ -15,7 +15,7 @@
     <pre class='python'>class Bitstamp(PythonData):
     KEY = 'bitstampusd.csv'
     def get_source(self, config, date, isLiveMode):
-        return SubscriptionDataSource(Bitstamp.KEY, SubscriptionTransportMedium.object_store)</pre>
+        return SubscriptionDataSource(Bitstamp.KEY, SubscriptionTransportMedium.OBJECTSTORE)</pre>
     </div>
 
     <li>Create an algorithm that <a href='/docs/v2/writing-algorithms/importing-data/bulk-downloads'>downloads data from an external source</a> and <a href='/docs/v2/writing-algorithms/object-store#04-Save-Data'>saves it to the Object Store</a>.</li>
@@ -136,7 +136,7 @@
 }</pre>
     <pre class='python'>class ObjectStoreCustomDataAlgorithm(QCAlgorithm):
     def initialize(self):
-        history = self.history(Bitstamp, self.custom_data_symbol, 200, Resolution.daily)
+        history = self.history(Bitstamp, self.custom_data_symbol, 200, Resolution.DAILY)
         self.debug(f"We got {len(history)} items from historical data request of {self.custom_data_symbol}.")
     def on_data(self, slice):
         data = slice.get(Bitstamp).get( self.custom_data_symbol)

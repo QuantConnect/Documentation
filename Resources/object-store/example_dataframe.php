@@ -9,7 +9,7 @@ var spy = <?=$cs?>AddEquity("SPY").Symbol;
 var history = <?=$cs?>History(<?=$cs?>Securities.Keys, 360, Resolution.Daily);</pre>
     <pre class='python'>
 spy = <?=$py?>AddEquity("SPY").symbol
-df = <?=$py?>History(<?=$py?>Securities.keys, 360, Resolution.daily)</pre>
+df = <?=$py?>History(<?=$py?>Securities.keys, 360, Resolution.DAILY)</pre>
     </div>
 
     <li class='csharp'>Create a DataFrame.</li>

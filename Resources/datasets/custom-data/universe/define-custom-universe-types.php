@@ -40,7 +40,7 @@ public class MyCustomUniverseDataClass : BaseData
 class MyCustomUniverseDataClass(PythonData):
 
     def get_source(self, config: SubscriptionDataConfig, date: datetime, isLiveMode: bool) -&gt; SubscriptionDataSource:
-        return SubscriptionDataSource(@"your-remote-universe-data", SubscriptionTransportMedium.remote_file)
+        return SubscriptionDataSource(@"your-remote-universe-data", SubscriptionTransportMedium.REMOTEFILE)
 
     def reader(self, config: SubscriptionDataConfig, line: str, date: datetime, isLiveMode: bool) -&gt; BaseData:
         items = line.split(",")
@@ -50,7 +50,7 @@ class MyCustomUniverseDataClass(PythonData):
         data.end_time = datetime.strptime(items[0], "%Y-%m-%d")
         # define Time as exactly 1 day earlier Time
         data.time = data.end_time - timedelta(1)
-        data.symbol = Symbol.create(items[1], SecurityType.CRYPTO, Market.bitfinex)
+        data.symbol = Symbol.create(items[1], SecurityType.CRYPTO, Market.BITFINEX)
         data["CustomAttribute1"] = int(items[2])
         data["CustomAttribute2"] = float(items[3])
         return data
@@ -109,7 +109,7 @@ class MyCustomUniverseDataClass(PythonData):
 <pre class="python">class MyCustomUniverseDataClass(PythonData):
     
     def get_source(self, config, date, isLive):
-        return SubscriptionDataSource("your-data-source-url", SubscriptionTransportMedium.REMOTEFILE, FileFormat.unfolding_collection)
+        return SubscriptionDataSource("your-data-source-url", SubscriptionTransportMedium.REMOTEFILE, FileFormat.UNFOLDINGCOLLECTION)
 
     def reader(self, config, line, date, isLive):
         json_response = json.loads(line)

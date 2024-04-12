@@ -10,6 +10,6 @@
 <?=$writingAlgorithms ? "" : "qb."?>SetTimeZone(TimeZones.Chicago);
 </pre>
 <pre class='python'><?=$writingAlgorithms ? "self" : "qb"?>.set_time_zone("Europe/London")
-<?=$writingAlgorithms ? "self" : "qb"?>.set_time_zone(TimeZones.chicago)
+<?=$writingAlgorithms ? "self" : "qb"?>.set_time_zone(TimeZones.CHICAGO)
 </pre>
 </div>
