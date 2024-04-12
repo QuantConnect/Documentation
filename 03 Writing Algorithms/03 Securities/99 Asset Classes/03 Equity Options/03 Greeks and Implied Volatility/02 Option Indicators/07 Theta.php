@@ -1,7 +1,12 @@
-<p>Theta, <script type="math/tex">\Theta</script>, is the rate of change of the value of the option with respect to the passage of time. It is also referred to as the time decay of the portfolio.</p>
+<p>
+    Theta, <script type="math/tex">\Theta</script>, is the rate of change of the value of the Option with respect to the passage of time. 
+    It is also referred to as the time decay of the Option.
+    For more information about theta, see <a href='/learning/articles/introduction-to-options/the-greek-letters#theta'>Theta</a>.
+</p>
 
-<h4>Automatic Indicator</h4>
+<h4>Automatic Indicators</h4>
 <?
+$name = "theta";
 $typeName = "Theta";
 $helperMethod = "T";
 include(DOCS_RESOURCES."/option-indicators/automatic-indicator.php"); 
@@ -22,14 +27,20 @@ include(DOCS_RESOURCES."/option-indicators/automatic-indicator.php");
         <tr>
             <td><code>ivModel</code></td>
             <td><code>OptionPricingModelType</code></td>
-            <td>The option pricing model used to estimate the IV for Greek calculation. Will use the <code>optionModel</code> if not specified.</td>
+            <td>
+                The Option pricing model to use to estimate the IV when calculating theta. 
+                If you don't provide a value, the default value is to match the <code>optionModel</code> parameter.
+            </td>
             <td><code class="csharp">null</code><code class="python">None</code></td>
         </tr>
     </tbody>
 </table>
 
-<h4>Manual Indicator</h4>
+<p>For more information about the <code>T</code> method, see <a href='/docs/v2/writing-algorithms/indicators/supported-indicators/theta#02-Using-T-Indicator'>Using T Indicator</a>.</p>
+
+<h4>Manual Indicators</h4>
 <?
+$name = "theta";
 $typeName = "Theta";
 $indicatorPage = "theta";
 include(DOCS_RESOURCES."/option-indicators/manual-indicator.php");
