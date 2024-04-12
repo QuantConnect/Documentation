@@ -1,4 +1,4 @@
-<p>To create an <a href='/docs/v2/writing-algorithms/indicators/automatic-indicators'>automatic indicator</a> for <?=$typeName?>, call the <code>QCAlgorithm.<?=$helperMethod?></code> method with the Option contract <code>Symbol</code> object(s).</p>
+<p>To create an <a href='/docs/v2/writing-algorithms/indicators/automatic-indicators'>automatic indicator</a> for <?=$name?>, call the <code>QCAlgorithm.<?=$helperMethod?></code> method with the Option contract <code>Symbol</code> object(s).</p>
 
 <div class="section-example-container">
     <pre class="csharp">private <?=$typeName?> _<?=strtolower($typeName)?>;
