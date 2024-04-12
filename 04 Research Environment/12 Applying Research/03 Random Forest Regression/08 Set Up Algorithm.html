@@ -7,7 +7,7 @@
     self.set_start_date(2014, 1, 1)
 
     #2. Required: Alpha Streams Models:
-    self.set_brokerage_model(BrokerageName.alpha_streams)
+    self.set_brokerage_model(BrokerageName.ALPHASTREAMS)
 
     #3. Required: Significant AUM Capacity
     self.set_cash(1000000)
@@ -25,7 +25,7 @@
     
     # Add Equity ------------------------------------------------ 
     for i in range(len(self.assets)):
-        self.add_equity(self.assets[i], Resolution.minute)
+        self.add_equity(self.assets[i], Resolution.MINUTE)
         
     # Initialize the timer to train the Machine Learning model
     self.time = datetime.min
@@ -42,7 +42,7 @@
     self.regressor = RandomForestRegressor(n_estimators=100, min_samples_split=5, random_state = 1990)
     
     # Get historical data
-    history = self.history(self.securities.keys, 360, Resolution.daily)
+    history = self.history(self.securities.keys, 360, Resolution.DAILY)
     
     # Select the close column and then call the unstack method.
     df = history['close'].unstack(level=0)

@@ -8,7 +8,7 @@
     self.set_end_date(2021, 1, 1)
 
     #2. Required: Alpha Streams Models:
-    self.set_brokerage_model(BrokerageName.alpha_streams)
+    self.set_brokerage_model(BrokerageName.ALPHASTREAMS)
 
     #3. Required: Significant AUM Capacity
     self.set_cash(1000000)
@@ -20,7 +20,7 @@
     
     # Add Equity ------------------------------------------------ 
     for ticker in self.assets:
-        self.add_equity(ticker, Resolution.minute)
+        self.add_equity(ticker, Resolution.MINUTE)
     
     # Set Scheduled Event Method For Kalman Filter updating.
     self.schedule.on(self.date_rules.every_day(), 
@@ -35,7 +35,7 @@
     qb = self
     
     # Get history
-    history = qb.history(["SPY"], datetime(2010, 1, 1), datetime.now(), Resolution.daily)
+    history = qb.history(["SPY"], datetime(2010, 1, 1), datetime.now(), Resolution.DAILY)
         
     # Get the close price daily return.
     close = history['close'].unstack(level=0)

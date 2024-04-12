@@ -39,7 +39,7 @@ public override void Initialize()
     self.set_start_date(2014, 1, 1)
 
     #2. Required: Alpha Streams Models:
-    self.set_brokerage_model(BrokerageName.alpha_streams)
+    self.set_brokerage_model(BrokerageName.ALPHASTREAMS)
 
     #3. Required: Significant AUM Capacity
     self.set_cash(1000000)
@@ -56,7 +56,7 @@ public override void Initialize()
     
     # Add Equity ------------------------------------------------ 
     for i in range(len(self.assets)):
-        self.add_equity(self.assets[i], Resolution.minute)
+        self.add_equity(self.assets[i], Resolution.MINUTE)
     
     # Set Scheduled Event Method For Our Model. In this example, we'll rebalance every month.
     self.schedule.on(self.date_rules.month_start(), 
@@ -131,7 +131,7 @@ public override void Initialize()
     <pre class="python">def every_day_before_market_close(self) -&gt; None:
     qb = self
     # Fetch history on our universe
-    history = qb.history(qb.securities.keys, 252*2, Resolution.daily)
+    history = qb.history(qb.securities.keys, 252*2, Resolution.DAILY)
     if history.empty: return
 
     # Select the close column and then call the unstack method, then call pct_change to compute the daily return.
@@ -154,7 +154,7 @@ public override void Initialize()
     insights = []
     
     for symbol in selected:
-        insights.append( Insight.price(symbol, Expiry.ENDOFMONTH, InsightDirection.up) )
+        insights.append( Insight.price(symbol, Expiry.ENDOFMONTH, InsightDirection.UP) )
 
     self.emit_insights(insights)</pre>
 </div>

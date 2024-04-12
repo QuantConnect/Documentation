@@ -13,10 +13,10 @@ assets = ["SHY", "TLT", "SHV", "TLH", "EDV", "BIL",
 "VGLT", "SCHO", "SCHR", "SPTS", "GOVT"]
 
 for i in range(len(assets)):
-    symbols[assets[i]] = qb.add_equity(assets[i],Resolution.minute).symbol
+    symbols[assets[i]] = qb.add_equity(assets[i],Resolution.MINUTE).symbol
 
 # Fetch history on our universe
-df = qb.history(qb.securities.keys, 30, Resolution.daily)
+df = qb.history(qb.securities.keys, 30, Resolution.DAILY)
 
 # Make all of them into a single time index.
 df = df.close.unstack(level=0)
@@ -59,7 +59,7 @@ Once you are confident in your hypothesis, you can export this code into the bac
     
     # Add Equity ------------------------------------------------ 
     for i in range(len(self.assets)):
-        self.symbols[self.assets[i]] = self.add_equity(self.assets[i], Resolution.minute).symbol 
+        self.symbols[self.assets[i]] = self.add_equity(self.assets[i], Resolution.MINUTE).symbol 
         
     # Set the Scheduled Event method
     self.schedule.on(self.date_rules.every(DayOfWeek.monday), self.time_rules.after_market_open("IEF", 1), self.every_day_after_market_open)
@@ -75,7 +75,7 @@ Now that the <code>Initialize </code>method of the algorithm is set, export the 
 	<pre class="python">def every_day_after_market_open(self):
     qb = self
     # Fetch history on our universe
-    df = qb.history(qb.securities.keys, 5, Resolution.daily)
+    df = qb.history(qb.securities.keys, 5, Resolution.DAILY)
     
     # Make all of them into a single time index.
     df = df.close.unstack(level=0)
