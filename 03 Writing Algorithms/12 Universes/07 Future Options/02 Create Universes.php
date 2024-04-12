@@ -6,7 +6,7 @@ var future = AddFuture(Futures.Metals.Gold);
 future.SetFilter(0, 90);
 AddFutureOption(future.Symbol);</pre>
     <pre class="python">self.universe_settings.asynchronous = True
-future = self.add_future(Futures.metals.GOLD)
+future = self.add_future(Futures.metals.gold)
 future.set_filter(0, 90)
 self.add_future_option(future.symbol)</pre>
 </div>
@@ -88,7 +88,7 @@ class MySecurityInitializer(BrokerageModelSecurityInitializer):
         super().initialize(security)
 
         # Next, set the price model
-        if security.type == SecurityType.future_option: # Option type
+        if security.type == SecurityType.FUTURE_OPTION: # Option type
             security.price_model = OptionPriceModels.crank_nicolson_fd()</pre>
 </div>
 

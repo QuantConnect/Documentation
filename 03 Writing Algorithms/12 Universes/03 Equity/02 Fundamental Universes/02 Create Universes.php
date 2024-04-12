@@ -60,21 +60,21 @@ def fundamental_selection_function(self, fundamental: List[Fundamental]) -&gt; L
 <p>Sectors are large super categories of data. To get the sector of a stock, use the <code>MorningstarSectorCode</code> property.</p>
 <div class="section-example-container">
 <pre class="csharp">var tech = fundamental.Where(x =&gt; x.AssetClassification.MorningstarSectorCode == MorningstarSectorCode.Technology);</pre>
-<pre class="python">tech = [x for x in fundamental if x.asset_classification.morningstar_sector_code == MorningstarSectorCode.technology]
+<pre class="python">tech = [x for x in fundamental if x.asset_classification.morningstar_sector_code == MorningstarSectorCode.TECHNOLOGY]
 </pre>
 </div>
 
 <p>Industry groups are clusters of related industries that tie together. To get the industry group of a stock, use the <code>MorningstarIndustryGroupCode</code> property.</p>
 <div class="section-example-container">
 <pre class="csharp">var ag = fundamental.Where(x =&gt; x.AssetClassification.MorningstarIndustryGroupCode == MorningstarIndustryGroupCode.Agriculture);</pre>
-<pre class="python">ag = [x for x in fundamental if x.asset_classification.morningstar_industry_group_code == MorningstarIndustryGroupCode.agriculture]
+<pre class="python">ag = [x for x in fundamental if x.asset_classification.morningstar_industry_group_code == MorningstarIndustryGroupCode.AGRICULTURE]
 </pre>
 </div>
 
 <p>Industries are the finest level of classification available. They are the individual industries according to the Morningstar classification system. To get the industry of a stock, use the <code>MorningstarIndustryCode</code>.</p>
 <div class="section-example-container">
 <pre class="csharp">var coal = fundamental.Where(x =&gt; x.AssetClassification.MorningstarIndustryCode == MorningstarSectorCode.Coal);</pre>
-<pre class="python">coal = [x for x in fundamental if x.asset_classification.morningstar_industry_code == MorningstarSectorCode.coal]
+<pre class="python">coal = [x for x in fundamental if x.asset_classification.morningstar_industry_code == MorningstarSectorCode.COAL]
 </pre>
 </div>
 
