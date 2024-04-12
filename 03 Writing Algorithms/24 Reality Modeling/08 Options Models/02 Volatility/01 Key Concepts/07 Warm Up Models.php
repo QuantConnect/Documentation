@@ -7,7 +7,7 @@ SetWarmUp(30, Resolution.Daily);
 // In OnData
 if (IsWarmingUp) return;</pre>
     <pre class="python"># In Initialize
-self.set_warm_up(30, Resolution.daily)
+self.set_warm_up(30, Resolution.DAILY)
 
 # In OnData
 if self.is_warming_up:
