@@ -8,5 +8,5 @@
 
  <div class="section-example-container">
     <pre class="csharp">_symbol = AddEquity("YESBANK", market: Market.India, dataNormalizationMode: DataNormalizationMode.Raw).Symbol;</pre>
-    <pre class="python">self.symbol = AddEquity("YESBANK", market=Market.INDIA, dataNormalizationMode=DataNormalizationMode.RAW).symbol</pre>
+    <pre class="python">self.symbol = AddEquity("YESBANK", market=Market.INDIA, data_normalization_mode=DataNormalizationMode.RAW).symbol</pre>
 </div>

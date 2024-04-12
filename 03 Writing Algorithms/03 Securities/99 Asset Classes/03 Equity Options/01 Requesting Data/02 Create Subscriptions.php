@@ -6,7 +6,7 @@
 
 <div class="section-example-container">
     <pre class="csharp">_symbol = AddEquity("SPY", dataNormalizationMode: DataNormalizationMode.Raw).Symbol;</pre>
-    <pre class="python">self.symbol = self.add_equity("SPY", dataNormalizationMode=DataNormalizationMode.RAW).symbol</pre>
+    <pre class="python">self.symbol = self.add_equity("SPY", data_normalization_mode=DataNormalizationMode.RAW).symbol</pre>
 </div>
 
 <p>If your algorithm has a dynamic <a href="/docs/v2/writing-algorithms/universes/equity">universe</a> of Equities, before you add the Equity universe in the <code>Initialize</code> method, set the universe data normalization mode to <code>DataNormalizationMode.Raw</code>.</p>
