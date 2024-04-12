@@ -33,7 +33,7 @@ public override void Initialize()
 
     # Example of using the using mirror-contract IV calculation:
     mirror_option = Symbol.CreateOption("AAPL", Market.USA, OptionStyle.American, OptionRight.Call, 505m, new DateTime(2014, 6, 27))
-    AddOptionContract(mirror_option)
+    self.AddOptionContract(mirror_option)
     self.<?=strtolower($typeName)?> = <?=$typeName?>(option, interest_rate_provider, dividend_yield_provider, mirror_option)
 </pre>
 </div>
