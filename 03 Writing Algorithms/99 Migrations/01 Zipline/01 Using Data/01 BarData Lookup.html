@@ -38,11 +38,11 @@ def handle_data(context, data):
         
 class MyHistoryAlgorithm(QCAlgorithm):
     def initialize(self) -&gt; None:
-        self.aapl = self.add_equity("AAPL", Resolution.daily)
+        self.aapl = self.add_equity("AAPL", Resolution.DAILY)
 
     def on_data(self, slice: Slice) -&gt; None:
         # Gets a DataFrame of AAPL history going back 30 days
-        aapl_history = self.history([self.aapl.symbol], timedelta(days=30), Resolution.daily)
+        aapl_history = self.history([self.aapl.symbol], timedelta(days=30), Resolution.DAILY)
 
         # Gets the most recent AAPL Trade data (OHLCV)
         aapl_current = slice.bars[self.aapl.symbol]
@@ -98,12 +98,12 @@ class MyHistoryAlgorithm(QCAlgorithm):
 
 class MyDataAlgorithm(QCAlgorithm):
     def initialize(self) -&gt; None:
-        self.aapl_security = self.add_equity("AAPL", Resolution.daily)
+        self.aapl_security = self.add_equity("AAPL", Resolution.DAILY)
         self.aapl_symbol = self.aapl_security.symbol
 
     def on_data(self, slice: Slice) -&gt; None:
         # Gets 30 days of AAPL history
-        aapl_history = self.history([self.aapl_symbol], timedelta(days=30), Resolution.daily)
+        aapl_history = self.history([self.aapl_symbol], timedelta(days=30), Resolution.DAILY)
 
         # We must first check to make sure we have AAPL data, since this point-in-time
         # might not have had any trades for AAPL (this is in case you trade a low
