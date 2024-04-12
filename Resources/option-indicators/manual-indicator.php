@@ -1,4 +1,4 @@
-<p>Follow the below example to create a manual indicators for <code><?=$typeName?></code>.</p>
+<p>To create a <a href='https://www.quantconnect.com/docs/v2/writing-algorithms/indicators/manual-indicators'>manual indicator</a> for <?=$name?>, call the <?=$typeName?> constructor.</p>
 
 <div class="section-example-container">
     <pre class="csharp">private <?=$typeName?> _<?=strtolower($typeName)?>;
@@ -12,10 +12,10 @@ public override void Initialize()
     var interestRateProvider = new InterestRateProvider();
     var dividendYieldProvider = new DividendYieldProvider(equity);
 
-    // indicator using single-contract IV calculation
+    // Example of using the single-contract IV calculation:
     _<?=strtolower($typeName)?> = new <?=$typeName?>(option, interestRateProvider, dividendYieldProvider);
 
-    // indicator using mirror-contract IV calculation
+    // Example of using the using mirror-contract IV calculation:
     var mirrorOption = QuantConnect.Symbol.CreateOption("AAPL", Market.USA, OptionStyle.American, OptionRight.Call, 505m, new DateTime(2014, 6, 27));
     AddOptionContract(mirrorOption);
     _<?=strtolower($typeName)?> = new <?=$typeName?>(option, interestRateProvider, dividendYieldProvider, mirrorOption);
@@ -28,14 +28,14 @@ public override void Initialize()
     interest_rate_provider = InterestRateProvider()
     dividend_yield_provider = DividendYieldProvider(equity)
 
-    # indicator using single-contract IV calculation
+    # Example of using the single-contract IV calculation:
     self.<?=strtolower($typeName)?> = <?=$typeName?>(option, interest_rate_provider, dividend_yield_provider)
 
-    # indicator using mirror-contract IV calculation
+    # Example of using the using mirror-contract IV calculation:
     mirror_option = Symbol.CreateOption("AAPL", Market.USA, OptionStyle.American, OptionRight.Call, 505m, new DateTime(2014, 6, 27))
     AddOptionContract(mirror_option)
     self.<?=strtolower($typeName)?> = <?=$typeName?>(option, interest_rate_provider, dividend_yield_provider, mirror_option)
 </pre>
 </div>
 
-<p>For details of the <code><?=$typeName?></code> indicator method, please refer to <a href="/docs/v2/writing-algorithms/indicators/supported-indicators/<?=$indicatorPage?>">its indicator page</a>.
+<p>For more information about the <code><?=$typeName?></code> constructor, see <a href="/docs/v2/writing-algorithms/indicators/supported-indicators/<?=$indicatorPage?>">Using <?=$indicatorPage?> Indicator</a>.</p>
