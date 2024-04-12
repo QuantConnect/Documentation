@@ -75,7 +75,7 @@
 UniverseSettings.Resolution = Resolution.Second;
 AddUniverse(Universe.DollarVolume.Top(50));</pre>
 <pre class="python"># Request second resolution data. This will be slow!
-self.universe_settings.resolution = Resolution.second
+self.universe_settings.resolution = Resolution.SECOND
 self.add_universe(self.universe.dollar_volume.top(50))</pre>
 </div>
 
