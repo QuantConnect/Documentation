@@ -57,7 +57,7 @@ public override void Initialize()
     atm_strike = sorted(chain, key=lambda x: abs(x.strike - chain.underlying.price))[0].strike
 
     # Select the ATM call Option contracts
-    calls = [i for i in chain if i.strike == atm_strike and i.right == OptionRight.call]
+    calls = [i for i in chain if i.strike == atm_strike and i.right == OptionRight.CALL]
     if len(calls) == 0: return
 
     # Select the near and far expiry dates

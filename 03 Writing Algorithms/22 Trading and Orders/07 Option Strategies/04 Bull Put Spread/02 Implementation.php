@@ -57,7 +57,7 @@ public override void Initialize()
     expiry = sorted(chain, key = lambda x: x.expiry, reverse=True)[0].expiry
     
     # Select the put Option contracts with the furthest expiry
-    puts = [i for i in chain if i.expiry == expiry and i.right == OptionRight.put]
+    puts = [i for i in chain if i.expiry == expiry and i.right == OptionRight.PUT]
     if len(puts) == 0: return
 
     # Select the ITM and OTM contract strikes from the remaining contracts

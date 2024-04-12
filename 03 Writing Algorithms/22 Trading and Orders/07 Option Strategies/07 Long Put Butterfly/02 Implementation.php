@@ -66,7 +66,7 @@ public override void Initialize()
     expiry = sorted(chain, key = lambda x: x.expiry, reverse=True)[0].expiry
     
     # Select the put contracts that expire on the selected date
-    puts = [i for i in chain if i.expiry == expiry and i.right == OptionRight.put]
+    puts = [i for i in chain if i.expiry == expiry and i.right == OptionRight.PUT]
     if len(puts) == 0: return
 
     # Sort the put contracts by their strike prices

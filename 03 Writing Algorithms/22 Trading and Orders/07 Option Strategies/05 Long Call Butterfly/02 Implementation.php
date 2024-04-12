@@ -63,7 +63,7 @@ public override void Initialize()
     expiry = sorted(chain, key = lambda x: x.expiry, reverse=True)[0].expiry
     
     # Select the call Option contracts with the furthest expiry
-    calls = [i for i in chain if i.expiry == expiry and i.right == OptionRight.call]
+    calls = [i for i in chain if i.expiry == expiry and i.right == OptionRight.CALL]
     if len(calls) == 0: return
 
     # Get the strike prices of the all the call Option contracts
