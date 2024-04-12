@@ -40,7 +40,7 @@ public class MyCustomUniverseDataClass : BaseData
 class MyCustomUniverseDataClass(PythonData):
 
     def get_source(self, config: SubscriptionDataConfig, date: datetime, isLiveMode: bool) -&gt; SubscriptionDataSource:
-        return SubscriptionDataSource(@"your-remote-universe-data", SubscriptionTransportMedium.REMOTEFILE)
+        return SubscriptionDataSource(@"your-remote-universe-data", SubscriptionTransportMedium.REMOTE_FILE)
 
     def reader(self, config: SubscriptionDataConfig, line: str, date: datetime, isLiveMode: bool) -&gt; BaseData:
         items = line.split(",")
@@ -109,7 +109,7 @@ class MyCustomUniverseDataClass(PythonData):
 <pre class="python">class MyCustomUniverseDataClass(PythonData):
     
     def get_source(self, config, date, isLive):
-        return SubscriptionDataSource("your-data-source-url", SubscriptionTransportMedium.REMOTEFILE, FileFormat.UNFOLDINGCOLLECTION)
+        return SubscriptionDataSource("your-data-source-url", SubscriptionTransportMedium.REMOTE_FILE, FileFormat.UNFOLDING_COLLECTION)
 
     def reader(self, config, line, date, isLive):
         json_response = json.loads(line)

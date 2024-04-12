@@ -15,7 +15,7 @@
     <pre class='python'>class Bitstamp(PythonData):
     KEY = 'bitstampusd.csv'
     def get_source(self, config, date, isLiveMode):
-        return SubscriptionDataSource(Bitstamp.KEY, SubscriptionTransportMedium.OBJECTSTORE)</pre>
+        return SubscriptionDataSource(Bitstamp.KEY, SubscriptionTransportMedium.OBJECT_STORE)</pre>
     </div>
 
     <li>Create an algorithm that <a href='/docs/v2/writing-algorithms/importing-data/bulk-downloads'>downloads data from an external source</a> and <a href='/docs/v2/writing-algorithms/object-store#04-Save-Data'>saves it to the Object Store</a>.</li>

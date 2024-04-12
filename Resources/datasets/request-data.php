@@ -429,7 +429,7 @@ history = <?=$pyVar?>.history(
     resolution=Resolution.MINUTE, 
     fillForward=False, 
     extendedMarketHours=False, 
-    dataMappingMode=DataMappingMode.OPENINTEREST, 
+    dataMappingMode=DataMappingMode.OPEN_INTEREST, 
     dataNormalizationMode=DataNormalizationMode.RAW, 
     contractDepthOffset=0)</pre>
     <pre class='csharp'>var future = <?=$cVar?>AddFuture(Futures.Currencies.BTC);

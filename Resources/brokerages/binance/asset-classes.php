@@ -15,6 +15,6 @@ self.add_crypto_future("BTCUSD", Resolution.MINUTE, Market.BINANCE)</pre>
 <?php if ($cloudPlatform) { ?>
 <div class="section-example-container">
     <pre class="csharp">AddCrypto("BTCUSDT", Resolution.Minute, Market.BinanceUS);</pre>
-    <pre class="python">self.add_crypto("BTCUSDT", Resolution.MINUTE, Market.BINANCEUS)</pre>
+    <pre class="python">self.add_crypto("BTCUSDT", Resolution.MINUTE, Market.BINANCE_US)</pre>
 </div>
 <?php } ?>

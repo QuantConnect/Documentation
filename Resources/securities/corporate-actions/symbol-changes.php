@@ -76,7 +76,7 @@ def OnSymbolChangedEvents(self, symbol_changed_events: SymbolChangedEvents) -> N
     } 
 }</pre>
         <pre class='python'>def on_order_event(self, order_event: OrderEvent) -&gt; None:
-    if order_event.status == OrderStatus.canceled:
+    if order_event.status == OrderStatus.CANCELED:
         ticket = self.transactions.get_order_ticket(order_event.order_id)
         if "symbol changed event" in ticket.tag:
             self.transactions.add_order(ticket.submit_request)</pre>
