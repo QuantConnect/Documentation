@@ -3,7 +3,7 @@
     For more information about vega, see <a href='/learning/articles/introduction-to-options/the-greek-letters#vega'>Vega</a>.
 </p>
 
-<h4>Automatic Indicator</h4>
+<h4>Automatic Indicators</h4>
 <?
 $typeName = "Vega";
 $helperMethod = "V";
@@ -38,7 +38,7 @@ include(DOCS_RESOURCES."/option-indicators/automatic-indicator.php");
 
 <p>For more information about the <code>D</code> method, see <a href='/docs/v2/writing-algorithms/indicators/supported-indicators/vega#02-Using-V-Indicator'>Using V Indicator</a>.</p>
 
-<h4>Manual Indicator</h4>
+<h4>Manual Indicators</h4>
 <?
 $name = "vega";
 $typeName = "Vega";
