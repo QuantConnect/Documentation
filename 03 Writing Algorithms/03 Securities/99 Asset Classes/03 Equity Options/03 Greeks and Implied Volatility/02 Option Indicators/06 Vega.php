@@ -5,6 +5,7 @@
 
 <h4>Automatic Indicators</h4>
 <?
+$name = "vega";
 $typeName = "Vega";
 $helperMethod = "V";
 include(DOCS_RESOURCES."/option-indicators/automatic-indicator.php"); 
@@ -36,7 +37,7 @@ include(DOCS_RESOURCES."/option-indicators/automatic-indicator.php");
 </table>
 
 
-<p>For more information about the <code>D</code> method, see <a href='/docs/v2/writing-algorithms/indicators/supported-indicators/vega#02-Using-V-Indicator'>Using V Indicator</a>.</p>
+<p>For more information about the <code>V</code> method, see <a href='/docs/v2/writing-algorithms/indicators/supported-indicators/vega#02-Using-V-Indicator'>Using V Indicator</a>.</p>
 
 <h4>Manual Indicators</h4>
 <?
