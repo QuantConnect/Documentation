@@ -6,7 +6,7 @@ var future = AddFuture(Futures.Metals.Gold);
 future.SetFilter(0, 90);
 AddFutureOption(future.Symbol);</pre>
     <pre class="python">self.universe_settings.asynchronous = True
-future = self.add_future(Futures.metals.gold)
+future = self.add_future(Futures.metals.GOLD)
 future.set_filter(0, 90)
 self.add_future_option(future.symbol)</pre>
 </div>
@@ -72,7 +72,7 @@ class MySecurityInitializer : BrokerageModelSecurityInitializer
     }
 }</pre>
     <pre class="python"># In Initialize
-seeder = SecuritySeeder.null
+seeder = SecuritySeeder.NULL
 self.set_security_initializer(MySecurityInitializer(self.brokerage_model, seeder, self))
 
 # Outside of the algorithm class
