@@ -66,9 +66,9 @@ self.universe = self.add_universe(self.fundamental_selection_function)
     
 def fundamental_selection_function(self, fundamental: List[Fundamental]) -&gt; List[Symbol]:
     filtered = [f for f in fundamental if f.price &gt; 10 and f.has_fundamental_data and not np.isnan(f.valuation_ratios.pe_ratio)]
-    sortedByDollarVolume = sorted(filtered, key=lambda f: f.dollar_volume, reverse=True)[:100]
-    sortedByPeRatio = sorted(sortedByDollarVolume, key=lambda f: f.valuation_ratios.pe_ratio, reverse=False)[:10]
-    symbols = [f.symbol for f in sortedByPeRatio]
+    sorted_by_dollar_volume = sorted(filtered, key=lambda f: f.dollar_volume, reverse=True)[:100]
+    sorted_by_pe_ratio = sorted(sorted_by_dollar_volume, key=lambda f: f.valuation_ratios.pe_ratio, reverse=False)[:10]
+    symbols = [f.symbol for f in sorted_by_pe_ratio]
     if self.live_mode:
         return [Symbol.create(x.value, SecurityType.CFD, Market.INTERACTIVE_BROKERS) for x in symbols]
     return symbols</pre>

@@ -13,5 +13,5 @@ self.add_universe(self.universe.dollar_volume.top(50))</pre>
 
 <div class="section-example-container">
     <pre class="csharp">AddFuture(Futures.Currencies.BTC, extendedMarketHours: true);</pre>
-    <pre class="python">self.add_universe(Futures.currencies.BTC, extendedMarketHours=True)</pre>
+    <pre class="python">self.add_universe(Futures.currencies.BTC, extended_market_hours=True)</pre>
 </div>

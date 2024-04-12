@@ -124,13 +124,13 @@ self.universe_settings.asynchronous = True
 self.add_universe(self.coarse_selection_function, self.fine_selection_function)
 
 def coarse_selection_function(self, coarse: List[CoarseFundamental]) -&gt; List[Symbol]:
-    sortedByDollarVolume = sorted(coarse, key=lambda x: x.dollar_volume, reverse=True)
-    filtered = [x.symbol for x in sortedByDollarVolume if x.has_fundamental_data]
+    sorted_by_dollar_volume = sorted(coarse, key=lambda x: x.dollar_volume, reverse=True)
+    filtered = [x.symbol for x in sorted_by_dollar_volume if x.has_fundamental_data]
     return filtered[:50]
 
 def fine_selection_function(self, fine: List[FineFundamental]) -&gt; List[Symbol]:
-    sortedByPeRatio = sorted(fine, key=lambda x: x.valuation_ratios.pe_ratio, reverse=False)
-    return [x.symbol for x in sortedByPeRatio[:10]]
+    sorted_by_pe_ratio = sorted(fine, key=lambda x: x.valuation_ratios.pe_ratio, reverse=False)
+    return [x.symbol for x in sorted_by_pe_ratio[:10]]
 </pre>
 </div>
 

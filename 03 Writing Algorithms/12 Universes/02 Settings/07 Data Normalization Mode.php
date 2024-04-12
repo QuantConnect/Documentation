@@ -16,5 +16,5 @@ self.add_universe(self.universe.dollar_volume.top(50))</pre>
 
 <div class="section-example-container">
     <pre class="csharp">AddFuture(Futures.Currencies.BTC, dataNormalizationMode: DataNormalizationMode.BackwardsRatio);</pre>
-    <pre class="python">self.add_future(Futures.currencies.BTC, dataNormalizationMode=DataNormalizationMode.BACKWARDS_RATIO)</pre>
+    <pre class="python">self.add_future(Futures.currencies.BTC, data_normalization_mode=DataNormalizationMode.BACKWARDS_RATIO)</pre>
 </div>
