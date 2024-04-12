@@ -17,8 +17,8 @@ if (IsWarmingUp)<br>{
 }</pre>
     <pre class="python"># In Initialize
 symbol = self.add_equity("SPY").symbol
-self.sma = self.SMA(symbol, 20, Resolution.daily)
-self.set_warm_up(20, Resolution.daily)
+self.sma = self.SMA(symbol, 20, Resolution.DAILY)
+self.set_warm_up(20, Resolution.DAILY)
 
 # In OnData
 if self.is_warming_up:
@@ -44,9 +44,9 @@ foreach (var bar in history)
 </pre>
     <pre class="python"># In Initialize
 symbol = self.add_equity("SPY").symbol
-self.sma = self.SMA(symbol, 20, Resolution.daily)
+self.sma = self.SMA(symbol, 20, Resolution.DAILY)
 
-history = self.history(symbol, 20, Resolution.daily)
+history = self.history(symbol, 20, Resolution.DAILY)
 if not history.empty:
     for time, row in history.loc[symbol].iterrows():
         self.sma.update(time, row.close)
@@ -67,7 +67,7 @@ _sma = SMA(symbol, 20, Resolution.Daily);
     <pre class="python"># In Initialize
 symbol = self.add_equity("SPY").symbol
 self.enable_automatic_indicator_warm_up = True
-self.sma = self.SMA(symbol, 20, Resolution.daily)</pre>
+self.sma = self.SMA(symbol, 20, Resolution.DAILY)</pre>
 </div>
 
 <h4>Warm-up Helper Method</h4>
@@ -90,7 +90,7 @@ WarmUpIndicator(_symbol, _sma, Resolution.Daily);
 // Warm up with 3-day bars
 WarmUpIndicator(_symbol, _sma, TimeSpan.FromDays(3));</pre>
     <pre class="python"># Warm up with daily bars
-self.warm_up_indicator(self.symbol, self.sma, Resolution.daily)
+self.warm_up_indicator(self.symbol, self.sma, Resolution.DAILY)
 
 # Warm up with 3-day bars
 self.warm_up_indicator(self.symbol, self.sma, timedelta(days=3))</pre>

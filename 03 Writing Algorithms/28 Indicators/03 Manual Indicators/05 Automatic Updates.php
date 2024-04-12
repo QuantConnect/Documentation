@@ -2,10 +2,10 @@
 
 <div class="section-example-container">
 	<pre class="python"># Create a security subscription 
-self.symbol = self.add_equity("SPY", Resolution.minute).symbol
+self.symbol = self.add_equity("SPY", Resolution.MINUTE).symbol
 
 # Create a manual indicator
-self.indicator = RelativeStrengthIndex(10, MovingAverageType.simple)
+self.indicator = RelativeStrengthIndex(10, MovingAverageType.SIMPLE)
 
 # Create a consolidator
 consolidator = TradeBarConsolidator(1)
