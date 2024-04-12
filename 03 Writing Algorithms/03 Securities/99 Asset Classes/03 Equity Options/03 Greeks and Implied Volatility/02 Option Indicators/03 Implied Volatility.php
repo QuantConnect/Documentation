@@ -1,5 +1,5 @@
 <p>
-    Implied Volatility, <script type="math/tex">\sigma</script>, is the market's expectation for the future volatility of an asset and is implied by the price of the assets's Options contracts. 
+    Implied volatility, <script type="math/tex">\sigma</script>, is the market's expectation for the future volatility of an asset and is implied by the price of the assets's Options contracts. 
     You can't observe it in the market but you can derive it from the price of an Option.
 </p>
 
