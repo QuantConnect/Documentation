@@ -4,9 +4,9 @@
 </p>
     
 <div class="section-example-container">
-    <pre class="csharp">// Example: average IV of the call-put pair.
+    <pre class="csharp">// Example: Average IV of the call-put pair.
 _<?=$typeName?>.ImpliedVolatility.SetSmoothingFunction((iv, mirrorIv) => (iv + mirrorIv) * 0.5m);</pre>
-    <pre class="python"># Example: average IV of the call-put pair.
+    <pre class="python"># Example: Average IV of the call-put pair.
 self.<?=$typeName?>.ImpliedVolatility.SetSmoothingFunction(lambda iv, mirror_iv: (iv + mirror_iv) * 0.5)</pre>
 </div>
 
