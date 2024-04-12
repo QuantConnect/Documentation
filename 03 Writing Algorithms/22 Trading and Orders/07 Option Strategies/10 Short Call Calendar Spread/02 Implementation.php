@@ -20,7 +20,7 @@ public override void Initialize()
     self.set_end_date(2017, 2, 19)
     self.set_cash(500000)
     self.universe_settings.asynchronous = True
-    option = self.add_option("GOOG", Resolution.minute)
+    option = self.add_option("GOOG", Resolution.MINUTE)
     self.symbol = option.symbol
     option.set_filter(lambda universe: universe.include_weeklys().strikes(-1, 1).expiration(0, 62))</pre>
     </div>
