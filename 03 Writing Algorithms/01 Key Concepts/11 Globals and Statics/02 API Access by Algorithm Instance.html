@@ -80,7 +80,7 @@
         self.set_start_date(2019, 1, 1)
         self.set_end_date(2019, 3, 1)
 
-        equity = self.add_equity("SPY", Resolution.hour)
+        equity = self.add_equity("SPY", Resolution.HOUR)
         self.spy = equity.symbol
         self.holdings = equity.holdings
 
@@ -108,10 +108,10 @@ class CustomPartialFillModel(FillModel):
         fill.fill_quantity = np.sign(order.quantity) * 10
         if (min(abs(fill.fill_quantity), absoluteRemaining) == absoluteRemaining):
             fill.fill_quantity = np.sign(order.quantity) * absoluteRemaining
-            fill.status = OrderStatus.filled
+            fill.status = OrderStatus.FILLED
             self.absolute_remaining_by_order_id.pop(order.id, None)
         else:
-            fill.status = OrderStatus.partially_filled
+            fill.status = OrderStatus.PARTIALLYFILLED
             self.absolute_remaining_by_order_id[order.id] = absoluteRemaining - abs(fill.fill_quantity)
             price = fill.fill_price
             # Use the instance of the algorithm to log the information
