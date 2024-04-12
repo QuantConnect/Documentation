@@ -28,7 +28,7 @@ include(DOCS_RESOURCES."/option-indicators/automatic-indicator.php");
             <td><code>ivModel</code></td>
             <td><code>OptionPricingModelType</code></td>
             <td>
-                The Option pricing model to use to estimate the IV for when calculating Delta.
+                The Option pricing model to use to estimate the IV when calculating Delta.
                 If you don't provide a value, the default value is to match the <code>optionModel</code> parameter.
             </td>
             <td><code class="csharp">null</code><code class="python">None</code></td>
