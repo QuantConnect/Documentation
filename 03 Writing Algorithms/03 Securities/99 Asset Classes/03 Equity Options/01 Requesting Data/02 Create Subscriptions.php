@@ -6,14 +6,14 @@
 
 <div class="section-example-container">
     <pre class="csharp">_symbol = AddEquity("SPY", dataNormalizationMode: DataNormalizationMode.Raw).Symbol;</pre>
-    <pre class="python">self.symbol = self.add_equity("SPY", dataNormalizationMode=DataNormalizationMode.raw).symbol</pre>
+    <pre class="python">self.symbol = self.add_equity("SPY", dataNormalizationMode=DataNormalizationMode.RAW).symbol</pre>
 </div>
 
 <p>If your algorithm has a dynamic <a href="/docs/v2/writing-algorithms/universes/equity">universe</a> of Equities, before you add the Equity universe in the <code>Initialize</code> method, set the universe data normalization mode to <code>DataNormalizationMode.Raw</code>.</p>
 
 <div class="section-example-container">
     <pre class="csharp">UniverseSettings.DataNormalizationMode = DataNormalizationMode.Raw;</pre>
-    <pre class="python">self.universe_settings.data_normalization_mode = DataNormalizationMode.raw</pre>
+    <pre class="python">self.universe_settings.data_normalization_mode = DataNormalizationMode.RAW</pre>
 </div>
 
 <p>If you subscribe to an Equity Option contract but don't have a subscription to the underlying Equity, LEAN automatically subscribes to the underlying Equity with the following settings:</p>

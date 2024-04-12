@@ -4,7 +4,7 @@
 
 <div class="section-example-container">
     <pre class="csharp">_symbol = AddForex("EURUSD", Resolution.Daily).Symbol;</pre>
-    <pre class="python">self.symbol = self.add_forex("EURUSD", Resolution.daily).symbol</pre>
+    <pre class="python">self.symbol = self.add_forex("EURUSD", Resolution.DAILY).symbol</pre>
 </div>
 
 <p>To create custom resolution periods, see <a href="/docs/v2/writing-algorithms/consolidating-data/getting-started">Consolidating Data</a>.</p>

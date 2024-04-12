@@ -42,12 +42,12 @@
         self.set_cash(100000)
 
         tickers = ["SPY", "BND", "GLD", "QQQ"]
-        security_type = SecurityType.CFD if self.live_mode else SecurityType.equity
+        security_type = SecurityType.CFD if self.live_mode else SecurityType.EQUITY
         for ticker in tickers:
             equity = self.add_equity(ticker, Resolution.DAILY)
             equity.sma_fast = self.SMA(equity.symbol, 50)
             equity.sma_slow = self.SMA(equity.symbol, 200)
-            equity.target_vehicle = self.add_cfd(ticker, Resolution.DAILY, market=Market.interactive_brokers).symbol if self.live_mode else equity.symbol
+            equity.target_vehicle = self.add_cfd(ticker, Resolution.DAILY, market=Market.INTERACTIVEBROKERS).symbol if self.live_mode else equity.symbol
 
     def on_data(self, data: Slice):
         for security in self.securities.values:

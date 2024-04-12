@@ -4,7 +4,7 @@
 
 <div class="section-example-container">
     <pre class="csharp">_symbol = AddEquity("YESBANK", Resolution.Daily, Market.India).Symbol;</pre>
-    <pre class="python">self.symbol = self.add_equity("YESBANK", Resolution.DAILY, Market.india).symbol</pre>
+    <pre class="python">self.symbol = self.add_equity("YESBANK", Resolution.DAILY, Market.INDIA).symbol</pre>
 </div>
 
 <p>To create custom resolution periods, see <a href="/docs/v2/writing-algorithms/consolidating-data/getting-started">Consolidating Data</a>.</p>
