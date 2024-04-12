@@ -73,7 +73,7 @@ include(DOCS_RESOURCES."/option-indicators/manual-indicator.php");
     </tbody>
 </table>
 
-<p>The method should return a <code class="csharp">decimal</code><code class="python">float</code> as the smoothened IV.</p>
+<p>The method must return a <code class="csharp">decimal</code><code class="python">float</code> as the smoothened IV.</p>
 
 <div class="section-example-container">
     <pre class="csharp">private ImpliedVolatility _iv;
