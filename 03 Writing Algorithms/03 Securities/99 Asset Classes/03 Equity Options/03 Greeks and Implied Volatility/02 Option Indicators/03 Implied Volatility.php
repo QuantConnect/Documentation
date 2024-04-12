@@ -1,6 +1,7 @@
 <p>
     Implied volatility, <script type="math/tex">\sigma</script>, is the market's expectation for the future volatility of an asset and is implied by the price of the assets's Options contracts. 
     You can't observe it in the market but you can derive it from the price of an Option.
+    For more information about implied volatility, see <a href='/learning/articles/introduction-to-options/historical-volatility-and-implied-volatility#implied-volatility'>Implied Volatility</a>.
 </p>
 
 <h4>Automatic Indicators</h4>
