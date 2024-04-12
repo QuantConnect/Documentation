@@ -6,7 +6,7 @@ include(DOCS_RESOURCES."/datasets/resolutions.php");
 
 <div class="section-example-container">
     <pre class="csharp">UniverseSettings.Resolution = Resolution.Daily;</pre>
-    <pre class="python">self.universe_settings.resolution = Resolution.daily</pre>
+    <pre class="python">self.universe_settings.resolution = Resolution.DAILY</pre>
 </div>
 
 <p>To see which resolutions of data are available for a dataset, see the dataset listing in the <a href="/datasets">Data Market</a>. To create custom resolution periods, see <a href='/docs/v2/writing-algorithms/consolidating-data/getting-started'>Consolidating Data</a>.</p>
