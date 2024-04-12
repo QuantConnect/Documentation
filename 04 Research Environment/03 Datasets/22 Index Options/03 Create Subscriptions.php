@@ -15,7 +15,7 @@ include(DOCS_RESOURCES."/datasets/research-environment/load-csharp-assemblies.ph
     <li>Call the <code>AddIndex</code> method with a ticker and resolution.</li>
     <div class="section-example-container">
         <pre class="csharp">var indexSymbol = qb.AddIndex("SPX", Resolution.Minute).Symbol;</pre>
-        <pre class="python">index_symbol = qb.add_index("SPX", Resolution.minute).symbol</pre>
+        <pre class="python">index_symbol = qb.add_index("SPX", Resolution.MINUTE).symbol</pre>
     </div>
     <p>To view the available indices, see <a href="/docs/v2/writing-algorithms/datasets/algoseek/us-index-options#06-Supported-Assets">Supported Assets</a>.</p>
     <p>If you do not pass a resolution argument, <code>Resolution.Minute</code> is used by default. <br></p>

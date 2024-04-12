@@ -44,7 +44,7 @@ var mirrorContracts = mirrorSymbols.OrderBy(x =&gt; x.ID.StrikePrice).Select(x =
     <li><a href="/docs/v2/research-environment/datasets/equity-options#04-Get-Historical-Data">Get historical data</a> for the underlying Equity and the Option contract(s).</li>
     <div class="section-example-container">
         <pre class="python">qb.set_start_date(start_date)
-history = qb.history[QuoteBar]([equity_symbol] + option_contracts + mirror_contracts, 20, Resolution.minute)</pre>
+history = qb.history[QuoteBar]([equity_symbol] + option_contracts + mirror_contracts, 20, Resolution.MINUTE)</pre>
         <pre class="csharp">qb.SetStartDate(startDate);
 var symbols = new List&lt;Symbol&gt; { equitySymbol };
 var history = qb.History&lt;QuoteBar&gt;(symbols.Concat(optionContracts).Concat(mirrorContracts), 20, Resolution.Minute);</pre>
@@ -62,12 +62,12 @@ rho = {}
 for option_contract, mirror_contract in zip(option_contracts, mirror_contracts):
     strike = option_contract.id.strike_price
 
-    iv[strike] = ImpliedVolatility(option_contract, mirrorOption=mirror_contract, optionModel=OptionPricingModelType.forward_tree)
-    delta[strike] = Delta(option_contract, mirrorOption=mirror_contract, optionModel=OptionPricingModelType.forward_tree)
-    gamma[strike] = Gamma(option_contract, mirrorOption=mirror_contract, optionModel=OptionPricingModelType.forward_tree)
-    vega[strike] = Vega(option_contract, mirrorOption=mirror_contract, optionModel=OptionPricingModelType.forward_tree)
-    theta[strike] = Theta(option_contract, mirrorOption=mirror_contract, optionModel=OptionPricingModelType.forward_tree)
-    rho[strike] = Rho(option_contract, mirrorOption=mirror_contract, optionModel=OptionPricingModelType.forward_tree)</pre>
+    iv[strike] = ImpliedVolatility(option_contract, mirrorOption=mirror_contract, optionModel=OptionPricingModelType.FORWARDTREE)
+    delta[strike] = Delta(option_contract, mirrorOption=mirror_contract, optionModel=OptionPricingModelType.FORWARDTREE)
+    gamma[strike] = Gamma(option_contract, mirrorOption=mirror_contract, optionModel=OptionPricingModelType.FORWARDTREE)
+    vega[strike] = Vega(option_contract, mirrorOption=mirror_contract, optionModel=OptionPricingModelType.FORWARDTREE)
+    theta[strike] = Theta(option_contract, mirrorOption=mirror_contract, optionModel=OptionPricingModelType.FORWARDTREE)
+    rho[strike] = Rho(option_contract, mirrorOption=mirror_contract, optionModel=OptionPricingModelType.FORWARDTREE)</pre>
         <pre class="csharp">var iv = new Dictionary&lt;decimal, ImpliedVolatility>();
 var delta = new Dictionary&lt;decimal, Delta&gt;();
 var gamma = new Dictionary&lt;decimal, Gamma&gt;();

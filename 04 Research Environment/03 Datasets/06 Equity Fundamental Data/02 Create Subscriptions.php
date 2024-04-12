@@ -26,7 +26,7 @@ include(DOCS_RESOURCES."/datasets/research-environment/load-csharp-assemblies.ph
 }
 .Select(ticker =&gt; qb.AddEquity(ticker, Resolution.Daily).Symbol);</pre>
     <pre class="python">symbols = [
-    qb.add_equity(ticker, Resolution.daily).symbol
+    qb.add_equity(ticker, Resolution.DAILY).symbol
     for ticker in [
         "AAL",   # American Airlines Group, Inc.
         "ALGT",  # Allegiant Travel Company

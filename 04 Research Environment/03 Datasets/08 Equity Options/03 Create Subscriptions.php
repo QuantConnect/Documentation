@@ -14,7 +14,7 @@ include(DOCS_RESOURCES."/datasets/research-environment/load-csharp-assemblies.ph
     <li>Subscribe to the underlying Equity with raw data normalization and save a reference to the Equity&nbsp;<span style="color: rgb(220, 67, 67);">Symbol</span>.</li>
     <div class="section-example-container">
         <pre class="csharp">var equitySymbol = qb.AddEquity("SPY", dataNormalizationMode: DataNormalizationMode.Raw).Symbol;</pre>
-        <pre class="python">equity_symbol = qb.add_equity("SPY", dataNormalizationMode=DataNormalizationMode.raw).symbol</pre></div><div class="csharp section-example-container">
+        <pre class="python">equity_symbol = qb.add_equity("SPY", dataNormalizationMode=DataNormalizationMode.RAW).symbol</pre></div><div class="csharp section-example-container">
     </div>
     <p>To view the supported underlying assets in the US Equity Options dataset, see the <a href="/datasets/algoseek-us-equity-options/explorer">Data Explorer</a>.</p>
     <li>Call the <code>AddOption</code> method with the underlying Equity <code>Symbol</code>.</li>
