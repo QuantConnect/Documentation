@@ -30,7 +30,7 @@ for ticket in tickets:
     direction = np.sign(ticket.quantity)
     update_settings = UpdateOrderFields()
     update_settings.quantity = 2 * direction
-    update_settings.limit_price = ticket.get(OrderField.limit_price) + 0.01 * direction
+    update_settings.limit_price = ticket.get(OrderField.LIMITPRICE) + 0.01 * direction
     update_settings.tag = f"Update #{len(ticket.update_requests) + 1}"
     response = ticket.update(update_settings)
 

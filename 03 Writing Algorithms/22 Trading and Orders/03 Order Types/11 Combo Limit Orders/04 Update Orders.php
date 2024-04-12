@@ -28,7 +28,7 @@ tickets = self.combo_limit_order(legs, 1, limit_price)
 for ticket in tickets:
     update_settings = UpdateOrderFields()
     update_settings.quantity = 2 * np.sign(ticket.quantity)
-    update_settings.limit_price = ticket.get(OrderField.limit_price) + 0.01
+    update_settings.limit_price = ticket.get(OrderField.LIMITPRICE) + 0.01
     update_settings.tag = f"Update #{len(ticket.update_requests) + 1}"
     response = ticket.update(update_settings)
 
