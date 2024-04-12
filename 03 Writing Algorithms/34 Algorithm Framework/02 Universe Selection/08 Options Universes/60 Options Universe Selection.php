@@ -93,10 +93,10 @@ def select_option_chain_symbols(self, utc_time: datetime) -&gt; List[Symbol]:
 
     # Index Options example:
     #tickers = ["VIX", "SPX"]
-    #return [Symbol.create(ticker, SecurityType.INDEXOPTION, Market.USA) for ticker in tickers]
+    #return [Symbol.create(ticker, SecurityType.INDEX_OPTION, Market.USA) for ticker in tickers]
 
     # Future Options example:
-    future_symbol = Symbol.create(Futures.indices.SP500EMINI, SecurityType.FUTURE, Market.CME)
+    future_symbol = Symbol.create(Futures.indices.SP500EMini, SecurityType.FUTURE, Market.CME)
     future_contract_symbols = self.future_chain_provider.get_future_contract_list(future_symbol, self.time)
     return [Symbol.create_canonical_option(symbol) for symbol in future_contract_symbols]</pre>
 </div>

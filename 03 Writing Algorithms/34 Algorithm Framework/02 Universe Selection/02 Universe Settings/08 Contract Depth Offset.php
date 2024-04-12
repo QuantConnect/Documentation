@@ -14,7 +14,7 @@ self.universe_settings.contract_depth_offset = 1
 self.add_universe_selection(
     FutureUniverseSelectionModel(
         timedelta(1), 
-        lambda _: [Symbol.create(Futures.indices.SP500EMINI, SecurityType.FUTURE, Market.CME)]
+        lambda _: [Symbol.create(Futures.indices.SP500EMini, SecurityType.FUTURE, Market.CME)]
     )
 )</pre>
 </div>
