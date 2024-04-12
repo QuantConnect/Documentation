@@ -38,4 +38,4 @@ public override void Initialize()
 </pre>
 </div>
 
-<p>For more information about the <code><?=$typeName?></code> constructor, see <a href="/docs/v2/writing-algorithms/indicators/supported-indicators/<?=$indicatorPage?>">Using <?=$indicatorPage?> Indicator</a>.</p>
+<p>For more information about the <code><?=$typeName?></code> constructor, see <a href="/docs/v2/writing-algorithms/indicators/supported-indicators/<?=$indicatorPage?>">Using <?=$typeName?> Indicator</a>.</p>
