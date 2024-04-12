@@ -5,7 +5,7 @@
     For more information about delta, see <a href='/learning/articles/introduction-to-options/the-greek-letters#delta'>Delta</a>.
 </p>
 
-<h4>Automatic Indicator</h4>
+<h4>Automatic Indicators</h4>
 <?
 $name = "delta";
 $typeName = "Delta";
