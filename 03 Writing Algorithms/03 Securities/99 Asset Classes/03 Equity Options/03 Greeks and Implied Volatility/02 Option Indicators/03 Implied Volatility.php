@@ -37,6 +37,7 @@ include(DOCS_RESOURCES."/option-indicators/automatic-indicator.php");
 
 <h4>Manual Indicators</h4>
 <?
+$name = "implied volatility";
 $typeName = "ImpliedVolatility";
 $indicatorPage = "implied-volatility";
 include(DOCS_RESOURCES."/option-indicators/manual-indicator.php");
