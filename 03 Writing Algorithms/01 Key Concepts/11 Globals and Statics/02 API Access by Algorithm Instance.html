@@ -91,10 +91,10 @@
         open_orders = self.transactions.get_open_orders(self.spy)
         if len(open_orders) != 0: return
 
-        if self.time.DAY &gt; 10 and self.holdings.quantity &lt;= 0:
+        if self.time.day &gt; 10 and self.holdings.quantity &lt;= 0:
             self.market_order(self.spy, 105, True)
 
-        elif self.time.DAY &gt; 20 and self.holdings.quantity &gt;= 0:
+        elif self.time.day &gt; 20 and self.holdings.quantity &gt;= 0:
             self.market_order(self.spy, -100, True)
       
 class CustomPartialFillModel(FillModel):
@@ -111,7 +111,7 @@ class CustomPartialFillModel(FillModel):
             fill.status = OrderStatus.FILLED
             self.absolute_remaining_by_order_id.pop(order.id, None)
         else:
-            fill.status = OrderStatus.PARTIALLYFILLED
+            fill.status = OrderStatus.PARTIALLY_FILLED
             self.absolute_remaining_by_order_id[order.id] = absoluteRemaining - abs(fill.fill_quantity)
             price = fill.fill_price
             # Use the instance of the algorithm to log the information
