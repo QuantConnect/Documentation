@@ -4,7 +4,7 @@
     For more information about Gamma, see <a href='/learning/articles/introduction-to-options/the-greek-letters#gamma'>Gamma</a>.
 </p>
 
-<h4>Automatic Indicator</h4>
+<h4>Automatic Indicators</h4>
 <?
 $name = "gamma";
 $typeName = "Gamma";
@@ -39,7 +39,7 @@ include(DOCS_RESOURCES."/option-indicators/automatic-indicator.php");
 
 <p>For more information about the <code>D</code> method, see <a href='/docs/v2/writing-algorithms/indicators/supported-indicators/gamma#02-Using-G-Indicator'>Using G Indicator</a>.</p>
 
-<h4>Manual Indicator</h4>
+<h4>Manual Indicators</h4>
 <?
 $name = "gamma";
 $typeName = "Gamma";
