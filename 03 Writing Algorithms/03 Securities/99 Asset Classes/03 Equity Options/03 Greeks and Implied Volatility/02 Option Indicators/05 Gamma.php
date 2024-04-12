@@ -28,7 +28,10 @@ include(DOCS_RESOURCES."/option-indicators/automatic-indicator.php");
         <tr>
             <td><code>ivModel</code></td>
             <td><code>OptionPricingModelType</code></td>
-            <td>The option pricing model used to estimate the IV for Greek calculation. Will use the <code>optionModel</code> if not specified.</td>
+            <td>
+                The Option pricing model to use to estimate the IV when calculating Gamma. 
+                If you don't provide a value, the default value is to match the <code>optionModel</code> parameter.
+            </td>
             <td><code class="csharp">null</code><code class="python">None</code></td>
         </tr>
     </tbody>
