@@ -12,7 +12,7 @@ $helperMethod = "T";
 include(DOCS_RESOURCES."/option-indicators/automatic-indicator.php"); 
 ?>
 
-<p>Note that the <code>T</code> method has an extra argument.</p>
+<p>The follow table describes the arguments that the <code>T</code> method accepts in addition to the <a href='/docs/v2/writing-algorithms/securities/asset-classes/equity-options/greeks-and-implied-volatility/option-indicators#02-Parameters'>standard parameters</a>:</p>
 
 <table class="qc-table table">
     <thead>
