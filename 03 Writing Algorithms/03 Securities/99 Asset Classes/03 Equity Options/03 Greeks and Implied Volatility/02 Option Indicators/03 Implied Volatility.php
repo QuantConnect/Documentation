@@ -6,7 +6,7 @@
 
 <h4>Automatic Indicators</h4>
 <?
-$typeName = "ImpliedVolatility";
+$typeName = "implied volatility";
 $helperMethod = "IV";
 include(DOCS_RESOURCES."/option-indicators/automatic-indicator.php"); 
 ?>
