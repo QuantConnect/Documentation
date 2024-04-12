@@ -66,7 +66,7 @@
     def initialize(self):
         self.set_start_date(2020, 1, 1)
         self.set_end_date(2021, 1, 1)
-        future = self.add_future(Futures.indices.SP500EMini,
+        future = self.add_future(Futures.indices.SP500EMINI,
                                 dataNormalizationMode = DataNormalizationMode.BACKWARDSRATIO,
                                 dataMappingMode = DataMappingMode.OPENINTEREST,
                                 contractDepthOffset = 0)
