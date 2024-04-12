@@ -1,4 +1,8 @@
-<p>Delta, <script type="math/tex">\Delta</script>, is the rate of change of the option price with respect to the price of the underlying asset. It measures the first-order sensitivity of the price to a movement in stock price S. The option delta is 0.4 means that if the underlying moves by for example 1%, then the value of the option will move by 0.4 × 1%.</p>
+<p>
+    Delta, <script type="math/tex">\Delta</script>, is the rate of change of the Option price with respect to the price of the underlying asset. 
+    It measures the first-order sensitivity of the price to a movement in underlying price. 
+    For example, an Option delta of 0.4 means that if the underlying asset moves by 1%, then the value of the Option moves by 0.4 × 1% = 0.4%.
+</p>
 
 <h4>Automatic Indicator</h4>
 <?
