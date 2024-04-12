@@ -106,7 +106,7 @@ var filteredSymbols = contractSymbols.Where(symbol =&gt; symbol.ID.Date == expir
 _contractSymbol = filteredSymbols.OrderByDescending(symbol =&gt; symbol.ID.StrikePrice).Last();</pre>
     <pre class="python">contract_symbols = self.option_chain_provider.get_option_contract_list(self.symbol, self.time)
 expiry = min([symbol.id.date for symbol in contract_symbols])
-filtered_symbols = [symbol for symbol in contract_symbols if symbol.id.date == expiry and symbol.id.option_right == OptionRight.call]
+filtered_symbols = [symbol for symbol in contract_symbols if symbol.id.date == expiry and symbol.id.option_right == OptionRight.CALL]
 self.contract_symbol = sorted(filtered_symbols, key=lambda symbol: symbol.id.strike_price)[0]</pre>
 </div>
 

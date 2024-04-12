@@ -90,7 +90,7 @@ _weeklyContractSymbol = filteredSymbols.OrderByDescending(symbol =&gt; symbol.ID
 self.canonical_symbol = Symbol.create_canonical_option(self.symbol, Market.USA, "?SPX")       
 contract_symbols = self.option_chain_provider.get_option_contract_list(self.canonical_symbol, self.time)
 expiry = min([symbol.id.date for symbol in contract_symbols])
-filtered_symbols = [symbol for symbol in contract_symbols if symbol.id.date == expiry and symbol.id.option_right == OptionRight.call]
+filtered_symbols = [symbol for symbol in contract_symbols if symbol.id.date == expiry and symbol.id.option_right == OptionRight.CALL]
 self.contract_symbol = sorted(filtered_symbols, key=lambda symbol: symbol.id.strike_price)[0]
 
 # Weekly contracts
@@ -98,7 +98,7 @@ self.weekly_canonical_symbol = Symbol.create_canonical_option(self.symbol, "SPXW
 weekly_contract_symbols = self.option_chain_provider.get_option_contract_list(self.weekly_canonical_symbol, self.time)
 weekly_contract_symbols = [symbol for symbol in weekly_contract_symbols if OptionSymbol.is_weekly(symbol)]
 weekly_expiry = min([symbol.id.date for symbol in weekly_contract_symbols])
-weekly_filtered_symbols = [symbol for symbol in weekly_contract_symbols if symbol.id.date == weekly_expiry and symbol.id.option_right == OptionRight.call]
+weekly_filtered_symbols = [symbol for symbol in weekly_contract_symbols if symbol.id.date == weekly_expiry and symbol.id.option_right == OptionRight.CALL]
 self.weekly_contract_symbol = sorted(weekly_filtered_symbols, key=lambda symbol: symbol.id.strike_price)[0]</pre>
 </div>
 

@@ -32,7 +32,7 @@
 <div class="section-example-container">
     <pre class="csharp">_futureContractSymbol = QuantConnect.Symbol.CreateFuture(Futures.Indices.SP500EMini,
     Market.CME, new DateTime(2022, 6, 17));</pre>
-    <pre class="python">self.future_contract_symbol = Symbol.create_future(Futures.indices.SP500EMINI,
+    <pre class="python">self.future_contract_symbol = Symbol.create_future(Futures.indices.SP500EMini,
     Market.CME, datetime(2022, 6, 17))</pre>
 </div>
 
@@ -102,7 +102,7 @@ var filteredSymbols = optionContractSymbols.Where(symbol =&gt; symbol.ID.Date ==
 _optionContractSymbol = filteredSymbols.OrderByDescending(symbol =&gt; symbol.ID.StrikePrice).Last();</pre>
     <pre class="python">option_contract_symbols = self.option_chain_provider.get_option_contract_list(self.future_contract_symbol, self.time)
 expiry = min([symbol.id.date for symbol in option_contract_symbols])
-filtered_symbols = [symbol for symbol in option_contract_symbols if symbol.id.date == expiry and symbol.id.option_right == OptionRight.call]
+filtered_symbols = [symbol for symbol in option_contract_symbols if symbol.id.date == expiry and symbol.id.option_right == OptionRight.CALL]
 self.option_contract_symbol = sorted(filtered_symbols, key=lambda symbol: symbol.id.strike_price)[0]</pre>
 </div>
 
