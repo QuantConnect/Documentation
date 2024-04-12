@@ -32,6 +32,8 @@ include(DOCS_RESOURCES."/option-indicators/automatic-indicator.php");
     </tbody>
 </table>
 
+<p>For more information about the <code>IV</code> method, see <a href='/docs/v2/writing-algorithms/indicators/supported-indicators/implied-volatility#02-Using-IV-Indicator'>Using IV Indicator</a>.</p>
+
 <h4>Manual Indicators</h4>
 <?
 $typeName = "ImpliedVolatility";
