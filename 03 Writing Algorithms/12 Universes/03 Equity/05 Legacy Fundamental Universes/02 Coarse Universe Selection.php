@@ -17,13 +17,13 @@
     }
 }</pre>
 <pre class="python">class MyCoarseUniverseAlgorithm(QCAlgorithm):
-    def Initialize(self) -&gt; None:
-        self.UniverseSettings.Asynchronous = True
-        self.AddUniverse(self.CoarseFilterFunction)
+    def initialize(self) -&gt; None:
+        self.universe_settings.asynchronous = True
+        self.add_universe(self.coarse_filter_function)
 
-    def CoarseFilterFunction(self, coarse: List[CoarseFundamental]) -&gt; List[Symbol]:
-        sorted_by_dollar_volume = sorted(coarse, key=lambda x: x.DollarVolume, reverse=True) 
-        return [c.Symbol for c in sorted_by_dollar_volume[:100]]</pre>
+    def coarse_filter_function(self, coarse: List[CoarseFundamental]) -&gt; List[Symbol]:
+        sorted_by_dollar_volume = sorted(coarse, key=lambda x: x.dollar_volume, reverse=True) 
+        return [c.symbol for c in sorted_by_dollar_volume[:100]]</pre>
 </div>
 
 <p><code>CoarseFundamental</code> objects have the following attributes:</p>

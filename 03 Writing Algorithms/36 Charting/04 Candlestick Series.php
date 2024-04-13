@@ -4,7 +4,7 @@
     <pre class="csharp">var candlestickSeries = new CandlestickSeries("&lt;seriesName&gt;");
 chart.AddSeries(candlestickSeries);</pre>
     <pre class="python">candlestick_series = CandlestickSeries("&lt;seriesName&gt;")
-chart.AddSeries(candlestick_series)</pre>
+chart.add_series(candlestick_series)</pre>
 </div>
 
 <p>There are several other headers for the <code>CandlestickSeries</code> constructor.</p>

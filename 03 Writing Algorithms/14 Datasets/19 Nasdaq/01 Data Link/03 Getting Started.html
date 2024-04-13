@@ -4,18 +4,18 @@
 <pre class="python">from QuantConnect.DataSource import *
 
 # For premium datasets, provide your API Key
-# NasdaqDataLink.SetAuthCode(self.GetParameter("nasdaq-data-link-api-key"))
+# NasdaqDataLink.set_auth_code(self.get_parameter("nasdaq-data-link-api-key"))
 
-self.pe_ratio_symbol = self.AddData(NasdaqDataLink, "MULTPL/SP500_PE_RATIO_MONTH", Resolution.Daily).Symbol
+self.pe_ratio_symbol = self.add_data(NasdaqDataLink, "MULTPL/SP500_PE_RATIO_MONTH", Resolution.DAILY).symbol
 # This dataset has one data column ("Value")
 
-self.position_change_symbol = self.AddData(NasdaqCustomColumns, "CFTC/066393_FO_L_CHG", Resolution.Daily).Symbol
+self.position_change_symbol = self.add_data(NasdaqCustomColumns, "CFTC/066393_FO_L_CHG", Resolution.DAILY).symbol
 # This dataset has multiple data columns. Create a subclass to set the default value column.
 
 class NasdaqCustomColumns(NasdaqDataLink):
     def __init__(self) -&gt; None:
         # Select the column "open interest - change".
-        self.ValueColumnName = "open interest - change"</pre>
+        self.value_column_name = "open interest - change"</pre>
 <pre class="csharp">using QuantConnect.DataSource;
 
 // For premium datasets, provide your API Key

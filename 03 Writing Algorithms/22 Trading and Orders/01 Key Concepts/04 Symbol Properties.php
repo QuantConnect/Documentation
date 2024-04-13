@@ -10,10 +10,10 @@
 var lotSize = symbolProperties.LotSize;
 var minimumOrderSize = symbolProperties.MinimumOrderSize;
 var minimumPriceVariation = symbolProperties.MinimumPriceVariation;</pre>
-	<pre class="python">symbol_properties = self.Securities["BTCUSD"].SymbolProperties
-lot_size = symbol_properties.LotSize
-minimum_order_size = symbol_properties.MinimumOrderSize
-minimum_price_variation = symbol_properties.MinimumPriceVariation</pre>
+	<pre class="python">symbol_properties = self.securities["BTCUSD"].symbol_properties
+lot_size = symbol_properties.lot_size
+minimum_order_size = symbol_properties.minimum_order_size
+minimum_price_variation = symbol_properties.minimum_price_variation</pre>
 </div>
 
 <p>LEAN uses the <code>MinimumPriceVariation</code> to round the <code>LimitPrice</code>, <code>StopPrice</code>, and the <code>TriggerPrice</code>.</p>

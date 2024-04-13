@@ -4,9 +4,9 @@
     <pre class="csharp">UniverseSettings.Asynchronous = true;
 var option = AddOption("SPY");
 _symbol = option.Symbol;</pre>
-    <pre class="python">self.UniverseSettings.Asynchronous = True
-option = self.AddOption("SPY")
-self.symbol = option.Symbol</pre>
+    <pre class="python">self.universe_settings.asynchronous = True
+option = self.add_option("SPY")
+self.symbol = option.symbol</pre>
 </div>
 
 <p>The following table describes the <code>AddOption</code> method arguments:</p>
@@ -94,8 +94,8 @@ self.symbol = option.Symbol</pre>
 <p>To override the default <a href="/docs/v2/writing-algorithms/reality-modeling/options-models/pricing">pricing model</a> of the Option, <a href='https://www.quantconnect.com/docs/v2/writing-algorithms/reality-modeling/options-models/pricing#04-Set-Models'>set a pricing model</a>.</p>
 
 <div class="section-example-container">
-    <pre class="csharp">option.PriceModel = OptionPriceModels.CrankNicolsonFD();</pre>
-    <pre class="python">option.PriceModel = OptionPriceModels.CrankNicolsonFD()</pre>
+    <pre class="csharp">option.price_model = OptionPriceModels.crank_nicolson_fd();</pre>
+    <pre class="python">option.price_model = OptionPriceModels.crank_nicolson_fd()</pre>
 </div>
 
 <?php echo file_get_contents(DOCS_RESOURCES."/reality-modeling/volatility-model.html"); ?>

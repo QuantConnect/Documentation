@@ -10,7 +10,7 @@
 <p>To create an indicator timeseries with the helper method, call the <code>Indicator</code> method.</p>
 <div class="section-example-container">
     <pre class="csharp">var atrIndicator = qb.Indicator(atr, symbol, 50, Resolution.Daily);</pre>
-    <pre class="python">atr_dataframe = qb.Indicator(atr, symbol, 50, Resolution.Daily)</pre>
+    <pre class="python">atr_dataframe = qb.indicator(atr, symbol, 50, Resolution.DAILY)</pre>
 </div>
 <img class="python docs-image" src="https://cdn.quantconnect.com/i/tu/indicator-bar-py-helper-atr.png" alt="Historical average true range data">
 
@@ -23,7 +23,7 @@
     <li>Get some <a href="/docs/v2/research-environment/datasets/key-concepts">historical data</a>.</li>
     <div class="section-example-container">
         <pre class="csharp">var history = qb.History(symbol, 70, Resolution.Daily);</pre>
-        <pre class="python">history = qb.History[TradeBar](symbol, 70, Resolution.Daily)</pre>
+        <pre class="python">history = qb.history[TradeBar](symbol, 70, Resolution.DAILY)</pre>
     </div>
     <li>Create a <code>RollingWindow</code> for each attribute of the indicator to hold their values.</li>
     <div class="section-example-container">
@@ -47,13 +47,13 @@ window["truerange"] = RollingWindow[float](50)
     window["averagetruerange"].Add(updated);
     window["truerange"].Add(indicator.TrueRange);
 };</pre>
-        <pre class="python">def UpdateAverageTrueRangeWindow(sender: object, updated: IndicatorDataPoint) -&gt; None:
+        <pre class="python">def update_average_true_range_window(sender: object, updated: IndicatorDataPoint) -&gt; None:
     indicator = sender
-    window['time'].Add(updated.EndTime)
-    window["averagetruerange"].Add(updated.Value)
-    window["truerange"].Add(indicator.TrueRange.Current.Value)
+    window['time'].add(updated.end_time)
+    window["averagetruerange"].add(updated.value)
+    window["truerange"].add(indicator.true_range.current.value)
 
-atr.Updated += UpdateAverageTrueRangeWindow</pre>
+atr.updated += UpdateAverageTrueRangeWindow</pre>
     </div>
     <p>When the indicator receives new data, the preceding handler method adds the new <code>IndicatorDataPoint</code> values into the respective <code>RollingWindow</code>.</p>
 
@@ -64,7 +64,7 @@ atr.Updated += UpdateAverageTrueRangeWindow</pre>
     atr.Update(bar);
 }</pre>
         <pre class="python">for bar in history:
-    atr.Update(bar)</pre>
+    atr.update(bar)</pre>
     </div>
     <li class="csharp">Display the data.</li>
     <div class="csharp section-example-container">

@@ -10,12 +10,12 @@
 
 order_data_by_symbol = {}
 for order in orders:
-    if order.Symbol not in order_data_by_symbol:
-        order_data_by_symbol[order.Symbol] = OrderData()
-    order_data = order_data_by_symbol[order.Symbol]
-    is_buy = order.Quantity &gt; 0
-    (order_data.buy_fill_times if is_buy else order_data.sell_fill_times).append(order.LastFillTime.date())
-    (order_data.buy_fill_prices if is_buy else order_data.sell_fill_prices).append(order.Price)</pre>
+    if order.symbol not in order_data_by_symbol:
+        order_data_by_symbol[order.symbol] = OrderData()
+    order_data = order_data_by_symbol[order.symbol]
+    is_buy = order.quantity &gt; 0
+    (order_data.buy_fill_times if is_buy else order_data.sell_fill_times).append(order.last_fill_time.date())
+    (order_data.buy_fill_prices if is_buy else order_data.sell_fill_prices).append(order.price)</pre>
     </div>
 </li>
 
@@ -29,7 +29,7 @@ for symbol, order_data in order_data_by_symbol.items():
     start_date = min(start_date, min(order_data.buy_fill_times), min(order_data.sell_fill_times))
     end_date = max(end_date, max(order_data.buy_fill_times), max(order_data.sell_fill_times))
 start_date -= timedelta(days=1)
-all_history = qb.History(list(order_data_by_symbol.keys()), start_date, end_date, Resolution.Daily)</pre>
+all_history = qb.history(list(order_data_by_symbol.keys()), start_date, end_date, Resolution.DAILY)</pre>
     </div>
 </li>
 
@@ -49,7 +49,7 @@ for symbol, order_data in order_data_by_symbol.items():
                                 low=history['low'],
                                 close=history['close'],
                                 name='Price')
-    layout = go.Layout(title=go.layout.Title(text=f'{symbol.Value} Trades'),
+    layout = go.Layout(title=go.layout.Title(text=f'{symbol.value} Trades'),
                     xaxis_title='Date',
                     yaxis_title='Price',
                     xaxis_rangeslider_visible=False,

@@ -29,26 +29,26 @@ public class MyOptionExerciseModel : IOptionExerciseModel
     }
 }</pre>
     <pre class="python"># In the security initializer, set the custom Option exercise model
-security.SetOptionExerciseModel(MyOptionExerciseModel())
+security.set_option_exercise_model(MyOptionExerciseModel())
 
 # Define the custom Option exercise model outside of the algorithm
 class MyOptionExerciseModel(DefaultExerciseModel):
-    def OptionExercise(self, option: Option, order: OptionExerciseOrder) -&gt; List[OrderEvent]:
-        in_the_money = option.IsAutoExercised(option.Underlying.Close)
-        is_assignment = in_the_money and option.Holdings.IsShort
+    def option_exercise(self, option: Option, order: OptionExerciseOrder) -&gt; List[OrderEvent]:
+        in_the_money = option.is_auto_exercised(option.underlying.close)
+        is_assignment = in_the_money and option.holdings.is_short
 
         order_event = OrderEvent(
-            order.Id,
-            option.Symbol,
-            Extensions.ConvertToUtc(option.LocalTime, option.Exchange.TimeZone),
-            OrderStatus.Filled,
-            Extensions.GetOrderDirection(order.Quantity),
+            order.id,
+            option.symbol,
+            Extensions.convert_to_utc(option.local_time, option.exchange.time_zone),
+            OrderStatus.FILLED,
+            Extensions.get_order_direction(order.quantity),
             0.0,
-            order.Quantity,
-            OrderFee.Zero,
+            order.quantity,
+            OrderFee.zero,
             "Tag"
         )
-        order_event.IsAssignment = is_assignment
+        order_event.is_assignment = is_assignment
         return [ order_event ]</pre>
 </div>
 

@@ -5,5 +5,5 @@
 
 <div class='section-example-container'>
     <pre class='csharp'><?=$writingAlgorithms ? "" : "qb." ?>AddEquity("SPY", market: Market.USA);</pre>
-    <pre class='python'><?=$writingAlgorithms ? "self" : "qb" ?>.AddEquity("SPY", market=Market.USA)</pre>
+    <pre class='python'><?=$writingAlgorithms ? "self" : "qb" ?>.add_equity("SPY", market=Market.USA)</pre>
 </div>

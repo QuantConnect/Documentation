@@ -3,5 +3,5 @@
 
 <div class="section-example-container">
     <pre class="csharp">Quit("My quit message");</pre>
-    <pre class="python">self.Quit("My quit message")</pre>
+    <pre class="python">self.quit("My quit message")</pre>
 </div>

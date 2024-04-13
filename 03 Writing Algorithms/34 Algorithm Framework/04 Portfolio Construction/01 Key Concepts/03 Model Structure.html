@@ -46,28 +46,28 @@ class MyPortfolioConstructionModel : PortfolioConstructionModel
 	<pre class="python"> # Portfolio construction scaffolding class; basic method args.
 class MyPortfolioConstructionModel(PortfolioConstructionModel):
     # Create list of PortfolioTarget objects from Insights
-    def CreateTargets(self, algorithm: QCAlgorithm, insights: List[Insight]) -&gt; List[PortfolioTarget]:
-        return super().CreateTargets(algorithm, insights)
+    def create_targets(self, algorithm: QCAlgorithm, insights: List[Insight]) -&gt; List[PortfolioTarget]:
+        return super().create_targets(algorithm, insights)
 	
     # Determines if the portfolio should rebalance based on the provided rebalancing func
-    def IsRebalanceDue(self, insights: List[Insight], algorithmUtc: datetime) -&gt; bool:
-        return super().IsRebalanceDue(insights, algorithmUtc)
+    def is_rebalance_due(self, insights: List[Insight], algorithmUtc: datetime) -&gt; bool:
+        return super().is_rebalance_due(insights, algorithmUtc)
 
     # Determines the target percent for each insight
-    def DetermineTargetPercent(self, activeInsights: List[Insight]) -&gt; Dict[Insight, float]:
+    def determine_target_percent(self, activeInsights: List[Insight]) -&gt; Dict[Insight, float]:
         return {}
 
     # Gets the target insights to calculate a portfolio target percent for, they will be piped to DetermineTargetPercent()
-    def GetTargetInsights(self) -&gt; List[Insight]:
-        return super().GetTargetInsights()
+    def get_target_insights(self) -&gt; List[Insight]:
+        return super().get_target_insights()
 
     # Determine if the portfolio construction model should create a target for this insight
-    def ShouldCreateTargetForInsight(self, insight: Insight) -&gt; bool:
-        return super().ShouldCreateTargetForInsight(insight)
+    def should_create_target_for_insight(self, insight: Insight) -&gt; bool:
+        return super().should_create_target_for_insight(insight)
 
     # Security change details
-    def OnSecuritiesChanged(self, algorithm: QCAlgorithm, changes: SecurityChanges) -&gt; None:
-        super().OnSecuritiesChanged(algorithm, changes)
+    def on_securities_changed(self, algorithm: QCAlgorithm, changes: SecurityChanges) -&gt; None:
+        super().on_securities_changed(algorithm, changes)
 </pre>
 </div>
 <p>The Portfolio Construction model should <a href="/docs/v2/writing-algorithms/algorithm-framework/insight-manager#08-Remove-Insights">remove expired insights</a> from the <a href="/docs/v2/writing-algorithms/algorithm-framework/insight-manager">Insight Manager</a>. The <code>CreateTargets</code> definition of the base <code>PortfolioConstructionModel</code> class already removes them during each rebalance. Therefore, if you override the <code>CreateTargets</code> method and don't call the <code>CreateTargets</code> definition of the base class, your new method definition should remove expired insights from the Insight Manager.</p>

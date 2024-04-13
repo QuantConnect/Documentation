@@ -3,7 +3,7 @@
 <ol>
     <li>Get the backtest orders.</li>
     <div class="section-example-container">
-	    <pre class="python">orders = api.ReadBacktestOrders(project_id, backtest_id)</pre>
+	    <pre class="python">orders = api.read_backtest_orders(project_id, backtest_id)</pre>
 	</div>
 	<?php include(DOCS_RESOURCES."/qc-api/get-project-id-in-research.html"); ?>
 	<?php include(DOCS_RESOURCES."/qc-api/get-backtest-id-in-research.html"); ?>

@@ -22,7 +22,7 @@ $pythonPrefix = $research ? "qb." : "self.";
 {
     // Read data
 }</pre>
-    <pre class='python'>if <?=$pythonPrefix?>ObjectStore.ContainsKey(key):
+    <pre class='python'>if <?=$pythonPrefix?>object_store.contains_key(key):
     # Read data</pre>
 </div>
 
@@ -33,7 +33,7 @@ $pythonPrefix = $research ? "qb." : "self.";
 
 <div class='section-example-container'>
     <pre class='csharp'>var stringData = <?=$cSharpPrefix?>ObjectStore.Read($"{<?=$cSharpPrefix?>ProjectId}/stringKey");</pre>
-    <pre class='python'>string_data = <?=$pythonPrefix?>ObjectStore.Read(f"{<?=$pythonPrefix?>ProjectId}/string_key")</pre>
+    <pre class='python'>string_data = <?=$pythonPrefix?>object_store.read(f"{<?=$pythonPrefix?>project_id}/string_key")</pre>
 </div>
 
 <h4 class='csharp'>JSON</h4>
@@ -59,5 +59,5 @@ $pythonPrefix = $research ? "qb." : "self.";
 
 <div class='section-example-container'>
     <pre class='csharp'>var bytesData = <?=$cSharpPrefix?>ObjectStore.ReadBytes($"{<?=$cSharpPrefix?>ProjectId}/bytesKey");</pre>
-    <pre class='python'>byte_data = <?=$pythonPrefix?>ObjectStore.ReadBytes(f"{<?=$pythonPrefix?>ProjectId}/bytes_key")</pre>
+    <pre class='python'>byte_data = <?=$pythonPrefix?>object_store.read_bytes(f"{<?=$pythonPrefix?>project_id}/bytes_key")</pre>
 </div>

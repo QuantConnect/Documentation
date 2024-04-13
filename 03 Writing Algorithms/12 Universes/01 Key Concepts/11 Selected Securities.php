@@ -27,16 +27,16 @@
 }</pre>
 <pre class="python">class SimpleRebalancingAlgorithm(QCAlgorithm):
 
-    def Initialize(self):
-        symbol = Symbol.Create("SPY", SecurityType.Equity, Market.USA)
-        date_rule = self.DateRules.WeekStart(symbol)
-        self.UniverseSettings.Schedule.On(date_rule)
-        universe = self.AddUniverse(self.Universe.DollarVolume.Top(5))
-        self.Schedule.On(
+    def initialize(self):
+        symbol = Symbol.create("SPY", SecurityType.EQUITY, Market.USA)
+        date_rule = self.date_rules.week_start(symbol)
+        self.universe_settings.schedule.on(date_rule)
+        universe = self.add_universe(self.universe.dollar_volume.top(5))
+        self.schedule.on(
             date_rule,
-            self.TimeRules.AfterMarketOpen(symbol, 30),
-            lambda: self.SetHoldings(
-                [PortfolioTarget(symbol, 1/len(universe.Selected)) for symbol in universe.Selected], 
+            self.time_rules.after_market_open(symbol, 30),
+            lambda: self.set_holdings(
+                [PortfolioTarget(symbol, 1/len(universe.selected)) for symbol in universe.selected], 
                 True
             )
         )</pre>

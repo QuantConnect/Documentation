@@ -6,7 +6,7 @@ var spy = AddEquity("SPY");
 spy.SetDataFilter(new SecurityDataFilter());</pre>
     <pre class="python"># In Initialize
 spy = AddEquity("SPY")
-spy.SetDataFilter(SecurityDataFilter())</pre>
+spy.set_data_filter(SecurityDataFilter())</pre>
 </div>
 
 <p>You can also set the data filter model in a <a href='/docs/v2/writing-algorithms/initialization#07-Set-Security-Initializer'>security initializer</a>. If your algorithm has a universe, use the security initializer technique. In order to initialize single security subscriptions with the security initializer, call <code>SetSecurityInitializer</code> before you create the subscriptions.</p>

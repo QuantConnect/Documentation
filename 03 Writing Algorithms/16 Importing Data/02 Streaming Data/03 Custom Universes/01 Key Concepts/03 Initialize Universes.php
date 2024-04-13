@@ -2,5 +2,5 @@
 
 <div class="section-example-container">
 <pre class="csharp">AddUniverse&lt;MyCustomUniverseDataClass&gt;("myCustomUniverse", Resolution.Daily, SelectorFunction)</pre>
-<pre class="python">self.AddUniverse(MyCustomUniverseDataClass, "myCustomUniverse", Resolution.Daily, self.selector_function)</pre>
+<pre class="python">self.add_universe(MyCustomUniverseDataClass, "myCustomUniverse", Resolution.DAILY, self.selector_function)</pre>
 </div>

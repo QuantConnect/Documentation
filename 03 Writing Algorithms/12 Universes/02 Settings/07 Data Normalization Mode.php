@@ -7,8 +7,8 @@
 <div class="section-example-container">
     <pre class="csharp">UniverseSettings.DataNormalizationMode = DataNormalizationMode.Raw;
 AddUniverse(Universe.DollarVolume.Top(50));</pre>
-    <pre class="python">self.UniverseSettings.DataNormalizationMode = DataNormalizationMode.Raw
-self.AddUniverse(self.Universe.DollarVolume.Top(50))</pre>
+    <pre class="python">self.universe_settings.data_normalization_mode = DataNormalizationMode.RAW
+self.add_universe(self.universe.dollar_volume.top(50))</pre>
 </div>
 
 <h4>Futures</h4>
@@ -16,5 +16,5 @@ self.AddUniverse(self.Universe.DollarVolume.Top(50))</pre>
 
 <div class="section-example-container">
     <pre class="csharp">AddFuture(Futures.Currencies.BTC, dataNormalizationMode: DataNormalizationMode.BackwardsRatio);</pre>
-    <pre class="python">self.AddFuture(Futures.Currencies.BTC, dataNormalizationMode=DataNormalizationMode.BackwardsRatio)</pre>
+    <pre class="python">self.add_future(Futures.currencies.BTC, data_normalization_mode=DataNormalizationMode.BACKWARDS_RATIO)</pre>
 </div>

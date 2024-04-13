@@ -5,7 +5,7 @@
 
 <div class="section-example-container">
     <pre class="csharp">AddOptionContract(_contractSymbol, Resolution.Minute);</pre>
-    <pre class="python">self.AddOptionContract(self.contract_symbol, Resolution.Minute)</pre>
+    <pre class="python">self.add_option_contract(self.contract_symbol, Resolution.MINUTE)</pre>
 </div>
 
 <p>To create custom resolution periods, see <a href="/docs/v2/writing-algorithms/consolidating-data/getting-started">Consolidating Data</a>.</p>

@@ -15,8 +15,8 @@
     }
 }</pre>
     <pre class='python'>class ObjectStoreChartingAlgorithm(QCAlgorithm):
-    def Initialize(self):
-        self.AddEquity("SPY")
+    def initialize(self):
+        self.add_equity("SPY")
     
         self.content = ''
         self.sma = self.SMA("SPY", 22)</pre>
@@ -30,9 +30,9 @@
 {
     _content += $"{_sma.Current.EndTime},{_sma}\n";
 }</pre>
-    <pre class='python'>def OnData(self, data: Slice):
-    self.Plot('SMA', 'Value', self.sma.Current.Value)
-    self.content += f'{self.sma.Current.EndTime},{self.sma.Current.Value}\n'</pre>
+    <pre class='python'>def on_data(self, data: Slice):
+    self.plot('SMA', 'Value', self.sma.current.value)
+    self.content += f'{self.sma.current.end_time},{self.sma.current.value}\n'</pre>
     </div>
     
     <li>In the <a href='/docs/v2/writing-algorithms/key-concepts/event-handlers#15-End-Of-Algorithm-Events'>OnEndOfAlgorithm</a> method, save the indicator data to the Object Store.</li>
@@ -41,8 +41,8 @@
 {
     ObjectStore.Save("sma_values_csharp", _content);
 }</pre>
-    <pre class='python'>def OnEndOfAlgorithm(self):
-    self.ObjectStore.Save('sma_values_python', self.content)</pre>
+    <pre class='python'>def on_end_of_algorithm(self):
+    self.object_store.save('sma_values_python', self.content)</pre>
     </div>
     
     <li><a href='/docs/v2/research-environment/key-concepts/getting-started#03-Open-Notebooks'>Open the Research Environment</a> and create a <code>QuantBook</code>.</li>
@@ -64,7 +64,7 @@ var qb = new QuantBook();</pre>
 
     <div class='section-example-container'>
     <pre class='csharp'>var content = qb.ObjectStore.Read("sma_values_csharp");</pre>
-    <pre class='python'>content = qb.ObjectStore.Read("sma_values_python")</pre>
+    <pre class='python'>content = qb.object_store.read("sma_values_python")</pre>
     </div>
 
     <p>The key you provide must be the same key you used to save the object.</p>

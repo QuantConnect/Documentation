@@ -8,7 +8,7 @@ using QuantConnect;
 using QuantConnect.Api;
 
 var liveAlgorithm = api.ReadLiveAlgorithm(projectId, deployId);</pre>
-    <pre class="python">live_algorithm = api.ReadLiveAlgorithm(project_id, deploy_id)</pre>
+    <pre class="python">live_algorithm = api.read_live_algorithm(project_id, deploy_id)</pre>
 </div>
 
 <?php include(DOCS_RESOURCES."/qc-api/get-project-id-in-research.html"); ?>

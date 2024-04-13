@@ -73,8 +73,8 @@ public override void OnData(Slice data)
     }
 }</pre>
 <pre class="python">
-def OnData(self, data: Slice):
-    percentage = (1 - self.Settings.FreePortfolioValuePercentage) / len(self.symbols);
+def on_data(self, data: Slice):
+    percentage = (1 - self.settings.free_portfolio_value_percentage) / len(self.symbols);
     for symbol in self.symbols:
         self.set_crypto_holdings(symbol, percentage)</pre>
 </div>

@@ -22,10 +22,10 @@
 
 <div class="section-example-container">
     <pre class="python"># Select the contracts which expire within 182 days
-self.future.SetFilter(0, 182)
+self.future.set_filter(0, 182)
 
 # Select the front month contract
-self.future.SetFilter(lambda future_filter_universe: future_filter_universe.FrontMonth())</pre>
+self.future.set_filter(lambda future_filter_universe: future_filter_universe.front_month())</pre>
     <pre class="csharp">// Select the contracts which expire within 182 days
 _future.SetFilter(0, 182);
 
@@ -44,7 +44,7 @@ _future.SetFilter(futureFilterUniverse =&gt; futureFilterUniverse.FrontMonth());
     <pre class="csharp">// Select the front month standard contracts
 _future.SetFilter(futureFilterUniverse =&gt; futureFilterUniverse.StandardsOnly().FrontMonth());</pre>
     <pre class="python"># Select the front month standard contracts
-self.future.SetFilter(lambda future_filter_universe: future_filter_universe.StandardsOnly().FrontMonth())</pre>
+self.future.set_filter(lambda future_filter_universe: future_filter_universe.standards_only().front_month())</pre>
 </div>
 
 
@@ -58,11 +58,11 @@ private FutureFilterUniverse Selector(FutureFilterUniverse futureFilterUniverse)
     return futureFilterUniverse.StandardsOnly().FrontMonth();
 }</pre>
     <pre class="python"># In Initialize
-self.future.SetFilter(self.contract_selector)
+self.future.set_filter(self.contract_selector)
     
 def contract_selector(self, 
     future_filter_universe: Callable[[FutureFilterUniverse], FutureFilterUniverse]) -&gt; FutureFilterUniverse:
-    return future_filter_universe.StandardsOnly().FrontMonth()</pre>
+    return future_filter_universe.standards_only().front_month()</pre>
 </div>
 
 <?

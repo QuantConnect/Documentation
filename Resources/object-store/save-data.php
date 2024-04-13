@@ -26,7 +26,7 @@ $pythonPrefix = $research ? "qb." : "self.";
 <p>To save a <code>string</code> object, call the <code>Save</code> or <code>SaveString</code> method.</p>
 <div class='section-example-container'>
     <pre class='csharp'>var saveSuccessful = <?=$cSharpPrefix?>ObjectStore.Save($"{<?=$cSharpPrefix?>ProjectId}/stringKey", stringSample);</pre>
-    <pre class='python'>save_successful = <?=$pythonPrefix?>ObjectStore.Save(f"{<?=$pythonPrefix?>ProjectId}/string_key", string_sample)</pre>
+    <pre class='python'>save_successful = <?=$pythonPrefix?>object_store.save(f"{<?=$pythonPrefix?>project_id}/string_key", string_sample)</pre>
 </div>
 
 <h4 class='csharp'>JSON</h4>
@@ -48,8 +48,8 @@ $pythonPrefix = $research ? "qb." : "self.";
 
 var zippedDataSample = Compression.ZipBytes(Encoding.UTF8.GetBytes(stringSample), "data");
 var saveSuccessful = <?=$cSharpPrefix?>ObjectStore.SaveBytes($"{<?=$cSharpPrefix?>ProjectId}/bytesKey.zip", zippedDataSample);</pre>
-    <pre class='python'>save_successful = <?=$pythonPrefix?>ObjectStore.SaveBytes(f"{<?=$pythonPrefix?>ProjectId}/bytes_key", bytes_sample)
+    <pre class='python'>save_successful = <?=$pythonPrefix?>object_store.save_bytes(f"{<?=$pythonPrefix?>project_id}/bytes_key", bytes_sample)
 
-zipped_data_sample = Compression.ZipBytes(bytes(string_sample, "utf-8"), "data")
-zip_save_successful = <?=$pythonPrefix?>ObjectStore.SaveBytes(f"{<?=$pythonPrefix?>ProjectId}/bytesKey.zip", zipped_data_sample)</pre>
+zipped_data_sample = Compression.zip_bytes(bytes(string_sample, "utf-8"), "data")
+zip_save_successful = <?=$pythonPrefix?>object_store.save_bytes(f"{<?=$pythonPrefix?>project_id}/bytesKey.zip", zipped_data_sample)</pre>
 </div>

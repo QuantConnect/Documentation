@@ -26,7 +26,7 @@
 	<pre class="csharp">// Set IBM to have a constant $1 transaction fee 
 Securities["IBM"].SetFeeModel(new ConstantFeeModel(1)); </pre>
         <pre class="python"># Set IBM to have a constant $1 transaction fee
-self.Securities["IBM"].SetFeeModel(ConstantFeeModel(1))</pre>
+self.securities["IBM"].set_fee_model(ConstantFeeModel(1))</pre>
 </div>
 
 <p>You can also set the security-specific models inside a <a href='/docs/v2/writing-algorithms/initialization#07-Set-Security-Initializer'>security initializer</a>.</p>

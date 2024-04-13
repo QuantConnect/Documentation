@@ -57,15 +57,15 @@
     }
 }</pre>
 <pre class="python">class CryptoDataAlgorithm(QCAlgorithm):
-    def Initialize(self) -&gt; None:
-        self.SetStartDate(2020, 1, 1)
-        self.SetEndDate(2021, 1, 1)
-        self.UniverseSettings.Asynchronous = True
-        self.AddUniverse(CryptoUniverse.Coinbase(self.universe_filter))
+    def initialize(self) -&gt; None:
+        self.set_start_date(2020, 1, 1)
+        self.set_end_date(2021, 1, 1)
+        self.universe_settings.asynchronous = True
+        self.add_universe(CryptoUniverse.coinbase(self.universe_filter))
 
     def universe_filter(self, universe_day: List[CryptoUniverse]) -&gt; List[Symbol]:
-        sorted_by_dollar_volume = sorted(universe_day, key=lambda cf: cf.VolumeInUsd, reverse=True)
-        return [cf.Symbol for cf in sorted_by_dollar_volume[:100]]</pre>
+        sorted_by_dollar_volume = sorted(universe_day, key=lambda cf: cf.volume_in_usd, reverse=True)
+        return [cf.symbol for cf in sorted_by_dollar_volume[:100]]</pre>
 </div>
 
 <p>The following table shows the data cost of the preceding algorithm:</p>

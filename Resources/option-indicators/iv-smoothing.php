@@ -7,7 +7,7 @@
     <pre class="csharp">// Example: Average IV of the call-put pair.
 _<?=$typeName?>.ImpliedVolatility.SetSmoothingFunction((iv, mirrorIv) => (iv + mirrorIv) * 0.5m);</pre>
     <pre class="python"># Example: Average IV of the call-put pair.
-self.<?=$typeName?>.ImpliedVolatility.SetSmoothingFunction(lambda iv, mirror_iv: (iv + mirror_iv) * 0.5)</pre>
+self.<?=$typeName?>.implied_volatility.set_smoothing_function(lambda iv, mirror_iv: (iv + mirror_iv) * 0.5)</pre>
 </div>
 
 <p>For more information about the IV smoothing function, see <a href="/docs/v2/writing-algorithms/securities/asset-classes/equity-options/greeks-and-implied-volatility/option-indicators#03-Implied-Volatility">Implied Volatility</a>.</p>

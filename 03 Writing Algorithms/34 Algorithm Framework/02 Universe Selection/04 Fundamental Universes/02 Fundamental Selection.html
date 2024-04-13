@@ -17,14 +17,14 @@ public override List&lt;Symbol&gt; FundamentalFilterFunction(List&lt;Fundamental
             orderby f.ValuationRatios.PERatio
             select f.Symbol).Take(10);
 }</pre>
-	<pre class="python">def Initialize(self) -&gt; None:
-    self.UniverseSettings.Asynchronous = True
-    self.AddUniverseSelection(FundamentalUniverseSelectionModel(self.FundamentalFilterFunction))
+	<pre class="python">def initialize(self) -&gt; None:
+    self.universe_settings.asynchronous = True
+    self.add_universe_selection(FundamentalUniverseSelectionModel(self.fundamental_filter_function))
 
-def FundamentalFilterFunction(self, fundamental: List[Fundamental]):
-    filtered = [f for f in fundamental if f.HasFundamentalData and f.Price &gt; 10 and not np.isnan(f.ValuationRatios.PERatio)]
-    sorted_by_pe_ratio = sorted(filtered, key=lambda f: f.ValuationRatios.PERatio)
-    return [f.Symbol for f in sorted_by_pe_ratio[:10]]</pre>
+def fundamental_filter_function(self, fundamental: List[Fundamental]):
+    filtered = [f for f in fundamental if f.has_fundamental_data and f.price &gt; 10 and not np.isnan(f.valuation_ratios.pe_ratio)]
+    sorted_by_pe_ratio = sorted(filtered, key=lambda f: f.valuation_ratios.pe_ratio)
+    return [f.symbol for f in sorted_by_pe_ratio[:10]]</pre>
 </div>
 
 <p>The following table describes the arguments the model accepts:</p>

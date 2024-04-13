@@ -39,18 +39,18 @@ public class MyCustomUniverseDataClass : BaseData
 <pre class="python"># Example custom universe data; it is virtually identical to other custom data types.
 class MyCustomUniverseDataClass(PythonData):
 
-    def GetSource(self, config: SubscriptionDataConfig, date: datetime, isLiveMode: bool) -&gt; SubscriptionDataSource:
-        return SubscriptionDataSource(@"your-remote-universe-data", SubscriptionTransportMedium.RemoteFile)
+    def get_source(self, config: SubscriptionDataConfig, date: datetime, isLiveMode: bool) -&gt; SubscriptionDataSource:
+        return SubscriptionDataSource(@"your-remote-universe-data", SubscriptionTransportMedium.REMOTE_FILE)
 
-    def Reader(self, config: SubscriptionDataConfig, line: str, date: datetime, isLiveMode: bool) -&gt; BaseData:
+    def reader(self, config: SubscriptionDataConfig, line: str, date: datetime, isLiveMode: bool) -&gt; BaseData:
         items = line.split(",")
     
         # Generate required data, then return an instance of your class.
         data = MyCustomUniverseDataClass()
-        data.EndTime = datetime.strptime(items[0], "%Y-%m-%d")
+        data.end_time = datetime.strptime(items[0], "%Y-%m-%d")
         # define Time as exactly 1 day earlier Time
-        data.Time = data.EndTime - timedelta(1)
-        data.Symbol = Symbol.Create(items[1], SecurityType.Crypto, Market.Bitfinex)
+        data.time = data.end_time - timedelta(1)
+        data.symbol = Symbol.create(items[1], SecurityType.CRYPTO, Market.BITFINEX)
         data["CustomAttribute1"] = int(items[2])
         data["CustomAttribute2"] = float(items[3])
         return data
@@ -108,24 +108,24 @@ class MyCustomUniverseDataClass(PythonData):
 }</pre>
 <pre class="python">class MyCustomUniverseDataClass(PythonData):
     
-    def GetSource(self, config, date, isLive):
-        return SubscriptionDataSource("your-data-source-url", SubscriptionTransportMedium.RemoteFile, FileFormat.UnfoldingCollection)
+    def get_source(self, config, date, isLive):
+        return SubscriptionDataSource("your-data-source-url", SubscriptionTransportMedium.REMOTE_FILE, FileFormat.UNFOLDING_COLLECTION)
 
-    def Reader(self, config, line, date, isLive):
+    def reader(self, config, line, date, isLive):
         json_response = json.loads(line)
         
-        endTime = datetime.strptime(json_response[-1]["date"], '%Y-%m-%d') + timedelta(1)
+        end_time = datetime.strptime(json_response[-1]["date"], '%Y-%m-%d') + timedelta(1)
 
         data = list()
 
         for json_datum in json_response:
             datum = MyCustomUniverseDataClass()
-            datum.Symbol = Symbol.Create(json_datum["Ticker"], SecurityType.Equity, Market.USA)
-            datum.Time = datetime.strptime(json_datum["date"], '%Y-%m-%d') 
-            datum.EndTime = datum.Time + timedelta(1)
+            datum.symbol = Symbol.create(json_datum["Ticker"], SecurityType.EQUITY, Market.USA)
+            datum.time = datetime.strptime(json_datum["date"], '%Y-%m-%d') 
+            datum.end_time = datum.time + timedelta(1)
             datum['CustomAttribute1'] = int(json_datum['Attr1'])
-            datum.Value = float(json_datum['Attr1'])
+            datum.value = float(json_datum['Attr1'])
             data.append(datum)
 
-        return BaseDataCollection(endTime, config.Symbol, data)</pre>
+        return BaseDataCollection(end_time, config.symbol, data)</pre>
 </div>

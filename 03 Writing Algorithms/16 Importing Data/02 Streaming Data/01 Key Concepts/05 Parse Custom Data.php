@@ -102,7 +102,7 @@
 }
 </pre>
 <pre class="python">class MyCustomDataType(PythonData):
-    def Reader(self,
+    def reader(self,
          config: SubscriptionDataConfig,
          line: str,
          date: datetime,
@@ -112,20 +112,20 @@
             return None
 
         custom = MyCustomDataType()
-        custom.Symbol = config.Symbol
+        custom.symbol = config.symbol
 
         if isLiveMode:
             data = json.loads(line)
-            custom.EndTime =  Extensions.ConvertFromUtc(datetime.utcnow(), config.ExchangeTimeZone)
-            custom.Value = data["value"]
+            custom.end_time =  Extensions.convert_from_utc(datetime.utcnow(), config.exchange_time_zone)
+            custom.value = data["value"]
             return custom
 
         if not line[0].isdigit():
             return None
 
         data = line.split(',')
-        custom.EndTime = datetime.strptime(data[0], '%Y%m%d') + timedelta(1)
-        custom.Value = float(data[1])
+        custom.end_time = datetime.strptime(data[0], '%Y%m%d') + timedelta(1)
+        custom.value = float(data[1])
         return custom
 </pre>
 </div>

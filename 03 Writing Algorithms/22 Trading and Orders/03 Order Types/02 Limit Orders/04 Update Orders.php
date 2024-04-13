@@ -18,18 +18,18 @@ if (response.IsSuccess)
     Debug("Order updated successfully");
 }</pre>
 <pre class="python"># Create a new order and save the order ticket
-ticket = self.LimitOrder("SPY", 100, 221.05, tag="original tag")
+ticket = self.limit_order("SPY", 100, 221.05, tag="original tag")
 
 # Update the order
 update_settings = UpdateOrderFields()
-update_settings.Quantity = 80
-update_settings.LimitPrice = 222.00
-update_settings.Tag = "new tag"
-response = ticket.Update(update_settings)
+update_settings.quantity = 80
+update_settings.limit_price = 222.00
+update_settings.tag = "new tag"
+response = ticket.update(update_settings)
 
 # Check if the update was successful
-if response.IsSuccess:
-    self.Debug("Order updated successfully")</pre>
+if response.is_success:
+    self.debug("Order updated successfully")</pre>
 </div>
 
 <?

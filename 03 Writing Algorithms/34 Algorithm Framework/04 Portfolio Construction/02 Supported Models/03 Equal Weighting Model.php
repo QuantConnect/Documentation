@@ -2,7 +2,7 @@
 
 <div class="section-example-container">
 	<pre class="csharp">SetPortfolioConstruction(new EqualWeightingPortfolioConstructionModel());</pre>
-	<pre class="python">self.SetPortfolioConstruction(EqualWeightingPortfolioConstructionModel())</pre>
+	<pre class="python">self.set_portfolio_construction(EqualWeightingPortfolioConstructionModel())</pre>
 </div>
 
 <p>The following table describes the arguments the model accepts:</p>

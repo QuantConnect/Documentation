@@ -3,7 +3,7 @@
 <div class="section-example-container">
     <pre class="csharp">UniverseSettings.MinimumTimeInUniverse = TimeSpan.FromDays(7);
 AddUniverseSelection(new ETFConstituentsUniverseSelectionModel("QQQ"));</pre>
-    <pre class="python">self.UniverseSettings.MinimumTimeInUniverse = timedelta(7)
-self.AddUniverseSelection(ETFConstituentsUniverseSelectionModel("QQQ"))</pre>
+    <pre class="python">self.universe_settings.minimum_time_in_universe = timedelta(7)
+self.add_universe_selection(ETFConstituentsUniverseSelectionModel("QQQ"))</pre>
 </div>
 

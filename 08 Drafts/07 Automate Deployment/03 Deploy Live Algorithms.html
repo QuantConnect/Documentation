@@ -6,12 +6,12 @@
         <pre class="python">compile_id_by_project_id = {}
 
 for project_id in project_ids:
-    compile_response = api.CreateCompile(project_id)
+    compile_response = api.create_compile(project_id)
     
-    if not compile_response.Success:
-        print(f"Errors compiling project {project_id}: \n{compile_response.Errors}")
+    if not compile_response.success:
+        print(f"Errors compiling project {project_id}: \n{compile_response.errors}")
     else:
-        compile_id_by_project_id[project_id] = compile_response.CompileId</pre>
+        compile_id_by_project_id[project_id] = compile_response.compile_id</pre>
         <pre class="csharp">var compileIdsByProjectIds = new Dictionary&lt;int, string&gt;();
 
 foreach (var projectId in projectIds)
@@ -32,14 +32,14 @@ foreach (var projectId in projectIds)
     <li>Obtain the all Ids of live nodes available, ordering by their speeds.</li>
     <div class="section-example-container">
         <pre class="python">live_nodes = []
-node_response = api.ReadProjectNodes(project_ids[0])
+node_response = api.read_project_nodes(project_ids[0])
 
-if not node_response.Success:
-    print(f"Error getting nodes: \n{node_response.Errors}")
+if not node_response.success:
+    print(f"Error getting nodes: \n{node_response.errors}")
 else:
-    live_nodes = [node.Id for node in 
-        sorted([node for node in node_response.Nodes.LiveNodes if not node.Busy], 
-            key=lambda node: node.Speed, 
+    live_nodes = [node.id for node in 
+        sorted([node for node in node_response.nodes.live_nodes if not node.busy], 
+            key=lambda node: node.speed, 
             reverse=True)]</pre>
         <pre class="csharp">var liveNodes = new List&lt;string&gt;();
 var nodeResponse = api.ReadProjectNodes(projectIds[0]);
@@ -89,10 +89,10 @@ var versionId = "-1";</pre>
 for project_id, compile_id in compile_id_by_project_id.items():
     # Deploy live algorithm
     node_id = live_nodes[len(deployed_ids)] # Fastest node available
-    live_response = api.CreateLiveAlgorithm(project_id, compile_id, node_id, base_live_algorithm_settings, version_id)
+    live_response = api.create_live_algorithm(project_id, compile_id, node_id, base_live_algorithm_settings, version_id)
     
-    if not live_response.Success:
-        print(f"Errors deploying project {project_id}: \n{live_response.Errors}")
+    if not live_response.success:
+        print(f"Errors deploying project {project_id}: \n{live_response.errors}")
     else:
         print(f"Deployed {project_id}")
         deployed_ids.append(project_id)</pre>

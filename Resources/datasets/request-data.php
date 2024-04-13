@@ -421,16 +421,16 @@ foreach (var s in slices) {
 </table>
 
 <div class='section-example-container'>
-    <pre class='python'><?=$pyFutureVar?>future = <?=$pyVar?>.AddFuture(Futures.Currencies.BTC)
-history = <?=$pyVar?>.History(
-    tickers=[<?=$pyFutureVar?>future.Symbol], 
-    start=<?=$pyVar?>.Time - timedelta(days=15), 
-    end=<?=$pyVar?>.Time, 
-    resolution=Resolution.Minute, 
+    <pre class='python'><?=$pyFutureVar?>future = <?=$pyVar?>.add_future(Futures.currencies.BTC)
+history = <?=$pyVar?>.history(
+    tickers=[<?=$pyFutureVar?>future.symbol], 
+    start=<?=$pyVar?>.time - timedelta(days=15), 
+    end=<?=$pyVar?>.time, 
+    resolution=Resolution.MINUTE, 
     fillForward=False, 
     extendedMarketHours=False, 
-    dataMappingMode=DataMappingMode.OpenInterest, 
-    dataNormalizationMode=DataNormalizationMode.Raw, 
+    dataMappingMode=DataMappingMode.OPEN_INTEREST, 
+    dataNormalizationMode=DataNormalizationMode.RAW, 
     contractDepthOffset=0)</pre>
     <pre class='csharp'>var future = <?=$cVar?>AddFuture(Futures.Currencies.BTC);
 var history = <?=$cVar?>History(

@@ -21,11 +21,11 @@
     }
 }</pre>
 <pre class='python'>class MyAlgorithm(QCAlgorithm):
-    def OnData(self, slice: Slice) -&gt; None:
-        if slice.ContainsKey(self.symbol):
+    def on_data(self, slice: Slice) -&gt; None:
+        if slice.contains_key(self.symbol):
             custom_data = slice[self.symbol]
-            value = custom_data.Value
-            property1 = custom_data.Property1</pre>
+            value = custom_data.value
+            property1 = custom_data.property1</pre>
 </div>
 <? } else { ?>
 <div class='section-example-container'>
@@ -47,10 +47,10 @@
     }
 }</pre>
 <pre class='python'>class MyAlgorithm(QCAlgorithm):
-    def OnData(self, slice: Slice) -&gt; None:
-        if slice.ContainsKey(self.symbol):
+    def on_data(self, slice: Slice) -&gt; None:
+        if slice.contains_key(self.symbol):
             custom_data = slice[self.symbol]
-            close = custom_data.Close</pre>
+            close = custom_data.close</pre>
 </div>
 <p class='python'>If you add custom properties to your data object in the <code>Reader</code> method, LEAN adds them as members to the data object in the <code>Slice</code>. To ensure the property names you add in the <code>Reader</code> method follow the convention of member names, LEAN applies the following changes to the property names you provide in the <code>Reader</code> method:</p>
 <ol class='python'>

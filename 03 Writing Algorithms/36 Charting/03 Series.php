@@ -4,7 +4,7 @@
     <pre class="csharp">var series = new Series("&lt;seriesName&gt;");
 chart.AddSeries(series);</pre>
     <pre class="python">series = Series("&lt;seriesName&gt;")
-chart.AddSeries(series)</pre>
+chart.add_series(series)</pre>
 </div>
 
 <h4>Arguments</h4>

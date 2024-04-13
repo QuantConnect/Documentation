@@ -6,9 +6,9 @@ if (response.IsSuccess)
 {
     Debug("Order successfully cancelled");
 }</pre>
-<pre class="python">response = ticket.Cancel("Cancelled Trade")
-if response.IsSuccess:
-    self.Debug("Order successfully cancelled")</pre>
+<pre class="python">response = ticket.cancel("Cancelled Trade")
+if response.is_success:
+    self.debug("Order successfully cancelled")</pre>
 </div>
 
 <p>When you cancel an order, LEAN creates a <code>CancelOrderRequest</code>, which have the following attributes:</p>
@@ -17,6 +17,6 @@ if response.IsSuccess:
 <p>To get the <code>CancelOrderRequest</code> for an order, call the <code>CancelRequest</code> method on the order ticket. The method returns <code class='csharp'>null</code><code class='python'>None</code> if the order hasn't been cancelled.</p>
 
 <div class="section-example-container">
-<pre class="csharp">var request = ticket.CancelOrderRequest();</pre>
-<pre class="python">request = ticket.CancelOrderRequest()</pre>
+<pre class="csharp">var request = ticket.cancel_order_request();</pre>
+<pre class="python">request = ticket.cancel_order_request()</pre>
 </div>

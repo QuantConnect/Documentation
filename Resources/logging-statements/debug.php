@@ -3,5 +3,5 @@
 
 <div class="section-example-container">
     <pre class="csharp">Debug("My debug message");</pre>
-    <pre class="python">self.Debug("My debug message")</pre>
+    <pre class="python">self.debug("My debug message")</pre>
 </div>

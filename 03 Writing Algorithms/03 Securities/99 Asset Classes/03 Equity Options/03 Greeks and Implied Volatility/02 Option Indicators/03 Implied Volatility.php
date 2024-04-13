@@ -90,15 +90,15 @@ public override void Initialize()
     // example: take average of the call-put pair
     _iv.SetSmoothingFunction((iv, mirrorIv) => (iv + mirrorIv) * 0.5m);
 }</pre>
-    <pre class="python">def Initialize(self):
-    option = Symbol.CreateOption("AAPL", Market.USA, OptionStyle.American, OptionRight.Put, 505, datetime(2014, 6, 27))
-    self.AddOptionContract(option)
+    <pre class="python">def initialize(self):
+    option = Symbol.create_option("AAPL", Market.USA, OptionStyle.AMERICAN, OptionRight.PUT, 505, datetime(2014, 6, 27))
+    self.add_option_contract(option)
 
-    mirror_option = Symbol.CreateOption("AAPL", Market.USA, OptionStyle.American, OptionRight.Call, 505m, new DateTime(2014, 6, 27))
-    self.AddOptionContract(mirror_option)
+    mirror_option = Symbol.create_option("AAPL", Market.USA, OptionStyle.AMERICAN, OptionRight.CALL, 505m, new DateTime(2014, 6, 27))
+    self.add_option_contract(mirror_option)
 
     self.iv = self.IV(option, mirror_option)
     # Example: The average of the call-put pair.
-    self.iv.SetSmoothingFunction(lambda iv, mirror_iv: (iv + mirror_iv) * 0.5)
+    self.iv.set_smoothing_function(lambda iv, mirror_iv: (iv + mirror_iv) * 0.5)
 </pre>
 </div>

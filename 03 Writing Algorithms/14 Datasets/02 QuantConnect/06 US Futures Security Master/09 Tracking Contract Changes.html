@@ -1,18 +1,18 @@
 <p>As the contracts roll over, the <b>Mapped</b> property of the <b>Future</b> object references the next contract in the series and you receive a <b>SymbolChangedEvent</b>. To get the current <b>Symbol</b> change events, index the <b>SymbolChangedEvents</b> property of the current <a href="/docs/v2/writing-algorithms/key-concepts/time-modeling/timeslices"><b>Slice</b></a> with the continuous Futures <b>Symbol</b>. Slice objects deliver unique events to your algorithm as they happen, but the <b>Slice</b> may not contain data for your Future at every time step. To avoid issues, check if the <b>Slice</b> contains the data you want before you index it.</p>
 
 <div class="section-example-container">
-<pre class="python">def OnData(self, slice: Slice) -&gt; None:
-    changed_event = slice.SymbolChangedEvents.get(self.continuous_future_symbol)
+<pre class="python">def on_data(self, slice: Slice) -&gt; None:
+    changed_event = slice.symbol_changed_events.get(self.continuous_future_symbol)
     if changed_event:
-        old_symbol = changed_event.OldSymbol
-        new_symbol = changed_event.NewSymbol
-        tag = f"Rollover - Symbol changed at {self.Time}: {old_symbol} -&gt; {new_symbol}"
-        quantity = self.Portfolio[old_symbol].Quantity
+        old_symbol = changed_event.old_symbol
+        new_symbol = changed_event.new_symbol
+        tag = f"Rollover - Symbol changed at {self.time}: {old_symbol} -&gt; {new_symbol}"
+        quantity = self.portfolio[old_symbol].quantity
 
         # Rolling over: to liquidate any position of the old mapped contract and switch to the newly mapped contract
-        self.Liquidate(old_symbol, tag = tag)
-        if quantity != 0: self.MarketOrder(new_symbol, quantity, tag = tag)
-        self.Log(tag)</pre>
+        self.liquidate(old_symbol, tag = tag)
+        if quantity != 0: self.market_order(new_symbol, quantity, tag = tag)
+        self.log(tag)</pre>
 <pre class="csharp">public override void OnData(Slice slice)
 {
     if (slice.SymbolChangedEvents.TryGetValue(_continuousFutureSymbol, out var changedEvent))

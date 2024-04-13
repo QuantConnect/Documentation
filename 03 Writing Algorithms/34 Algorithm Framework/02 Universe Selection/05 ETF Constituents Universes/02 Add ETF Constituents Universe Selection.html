@@ -2,8 +2,8 @@
 <div class="section-example-container">
 	<pre class="csharp">UniverseSettings.Asynchronous = true;
 AddUniverseSelection(new ETFConstituentsUniverseSelectionModel("SPY"));</pre>
-	<pre class="python">self.UniverseSettings.Asynchronous = True
-self.AddUniverseSelection(ETFConstituentsUniverseSelectionModel("SPY"))</pre>
+	<pre class="python">self.universe_settings.asynchronous = True
+self.add_universe_selection(ETFConstituentsUniverseSelectionModel("SPY"))</pre>
 </div>
 
 
@@ -59,18 +59,18 @@ private IEnumerable&lt;Symbol&gt; ETFConstituentsFilter(IEnumerable&lt;ETFConsti
 {
     return constituents.OrderByDescending(c =&gt; c.Weight).Take(10).Select(c =&gt; c.Symbol);
 }</pre>
-	<pre class="python">def Initialize(self) -&gt; None:
-    self.UniverseSettings.Asynchronous = True   
-    self.AddUniverseSelection(
-        ETFConstituentsUniverseSelectionModel("SPY", universeFilterFunc=self.ETFConstituentsFilter)
+	<pre class="python">def initialize(self) -&gt; None:
+    self.universe_settings.asynchronous = True   
+    self.add_universe_selection(
+        ETFConstituentsUniverseSelectionModel("SPY", universe_filter_func=self.etf_constituents_filter)
     )
 
-def ETFConstituentsFilter(self, constituents: List[ETFConstituentUniverse]) -&gt; List[Symbol]:
+def etf_constituents_filter(self, constituents: List[ETFConstituentUniverse]) -&gt; List[Symbol]:
     selected = sorted(
-        [c for c in constituents if c.Weight],
-        key=lambda c: c.Weight, reverse=True
+        [c for c in constituents if c.weight],
+        key=lambda c: c.weight, reverse=True
     )[:10]
-    return [c.Symbol for c in selected]</pre>
+    return [c.symbol for c in selected]</pre>
 </div>
 
 <p>To move the ETF <code>Symbol</code> and the selection function outside of the algorithm class, create a universe selection model that inherits the <code>ETFConstituentsUniverseSelectionModel</code> class.</p>
@@ -95,20 +95,20 @@ class LargestWeightSPYETFUniverseSelectionModel : ETFConstituentsUniverseSelecti
     }
 }</pre>
 	<pre class="python"># In Initialize
-self.UniverseSettings.Asynchronous = True
-self.AddUniverseSelection(LargestWeightSPYETFUniverseSelectionModel())
+self.universe_settings.asynchronous = True
+self.add_universe_selection(LargestWeightSPYETFUniverseSelectionModel())
 
 # Outside of the algorithm class
 class LargestWeightSPYETFUniverseSelectionModel(ETFConstituentsUniverseSelectionModel):
     def __init__(self) -&gt; None:
-        super().__init__(symbol, universeFilterFunc=self.ETFConstituentsFilter)
+        super().__init__(symbol, universe_filter_func=self.etf_constituents_filter)
 
-    def ETFConstituentsFilter(self, constituents: List[ETFConstituentUniverse]) -&gt; List[Symbol]:
+    def etf_constituents_filter(self, constituents: List[ETFConstituentUniverse]) -&gt; List[Symbol]:
         selected = sorted(
-            [c for c in constituents if c.Weight],
-            key=lambda c: c.Weight, reverse=True
+            [c for c in constituents if c.weight],
+            key=lambda c: c.weight, reverse=True
         )[:10]
-        return [c.Symbol for c in selected]</pre>
+        return [c.symbol for c in selected]</pre>
 </div>
 
 <p>To return the current universe constituents from the selection function, return <code>Universe.Unchanged</code>.</p>

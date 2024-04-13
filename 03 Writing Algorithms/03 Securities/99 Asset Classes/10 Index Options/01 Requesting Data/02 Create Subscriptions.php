@@ -5,13 +5,13 @@
 
 <div class="section-example-container">
     <pre class="csharp">_symbol = AddIndex("SPX").Symbol;</pre>
-    <pre class="python">self.symbol = self.AddIndex("SPX").Symbol</pre>
+    <pre class="python">self.symbol = self.add_index("SPX").symbol</pre>
 </div>
 
 <p>If you subscribe to an Index Option contract but don't have a subscription to the underlying Index, LEAN automatically subscribes to the underlying Index and sets its <a href='/docs/v2/writing-algorithms/securities/asset-classes/index/requesting-data#05-Fill-Forward'>fill forward</a> property to match that of the Index Option contract. In this case, you still need the Index <code>Symbol</code> to subscribe to Index Option contracts. If you don't have access to it, create it.</p>
 <div class="section-example-container">
     <pre class="csharp">_symbol = QuantConnect.Symbol.Create("SPX", SecurityType.Index, Market.USA);</pre>
-    <pre class="python">self.symbol = Symbol.Create("SPX", SecurityType.Index, Market.USA)</pre>
+    <pre class="python">self.symbol = Symbol.create("SPX", SecurityType.INDEX, Market.USA)</pre>
 </div>
 
 <?php echo file_get_contents(DOCS_RESOURCES."/reality-modeling/volatility-model.html"); ?>
@@ -28,12 +28,12 @@ _contractSymbol = QuantConnect.Symbol.CreateOption(_symbol, Market.USA,
 _weeklyContractSymbol = QuantConnect.Symbol.CreateOption(_symbol, "SPXW", Market.USA,
     OptionStyle.European, OptionRight.Call, 3650, new DateTime(2022, 6, 17));</pre>
     <pre class="python"># Standard contracts
-self.contract_symbol = Symbol.CreateOption(self.symbol, Market.USA,
-    OptionStyle.European, OptionRight.Call, 3650, datetime(2022, 6, 17))
+self.contract_symbol = Symbol.create_option(self.symbol, Market.USA,
+    OptionStyle.EUROPEAN, OptionRight.CALL, 3650, datetime(2022, 6, 17))
 
 # Weekly contracts
-self.weekly_contract_symbol = Symbol.CreateOption(self.symbol, "SPXW", Market.USA,
-    OptionStyle.European, OptionRight.Call, 3650, datetime(2022, 6, 17))</pre>
+self.weekly_contract_symbol = Symbol.create_option(self.symbol, "SPXW", Market.USA,
+    OptionStyle.EUROPEAN, OptionRight.CALL, 3650, datetime(2022, 6, 17))</pre>
 </div>
 
 <p>Another way to get an Index Option contract <code>Symbol</code> is to use the <code>OptionChainProvider</code>. The <code>GetOptionContractList</code> method of <code>OptionChainProvider </code>returns a list of <code>Symbol</code> objects that reference the available Option contracts for a given underlying Index on a given date. To filter and select contracts, you can use the following properties of each <code>Symbol</code> object:</p>
@@ -87,19 +87,19 @@ var weeklyExpiry = weeklyContractSymbols.Select(symbol =&gt; symbol.ID.Date).Min
 filteredSymbols = contractSymbols.Where(symbol =&gt; symbol.ID.Date == weeklyExpiry &amp;&amp; symbol.ID.OptionRight == OptionRight.Call);
 _weeklyContractSymbol = filteredSymbols.OrderByDescending(symbol =&gt; symbol.ID.StrikePrice).Last();</pre>
     <pre class="python"># Standard contracts
-self.canonical_symbol = Symbol.CreateCanonicalOption(self.symbol, Market.USA, "?SPX")       
-contract_symbols = self.OptionChainProvider.GetOptionContractList(self.canonical_symbol, self.Time)
-expiry = min([symbol.ID.Date for symbol in contract_symbols])
-filtered_symbols = [symbol for symbol in contract_symbols if symbol.ID.Date == expiry and symbol.ID.OptionRight == OptionRight.Call]
-self.contract_symbol = sorted(filtered_symbols, key=lambda symbol: symbol.ID.StrikePrice)[0]
+self.canonical_symbol = Symbol.create_canonical_option(self.symbol, Market.USA, "?SPX")       
+contract_symbols = self.option_chain_provider.get_option_contract_list(self.canonical_symbol, self.time)
+expiry = min([symbol.id.date for symbol in contract_symbols])
+filtered_symbols = [symbol for symbol in contract_symbols if symbol.id.date == expiry and symbol.id.option_right == OptionRight.CALL]
+self.contract_symbol = sorted(filtered_symbols, key=lambda symbol: symbol.id.strike_price)[0]
 
 # Weekly contracts
-self.weekly_canonical_symbol = Symbol.CreateCanonicalOption(self.symbol, "SPXW", Market.USA, "?SPXW")
-weekly_contract_symbols = self.OptionChainProvider.GetOptionContractList(self.weekly_canonical_symbol, self.Time)
-weekly_contract_symbols = [symbol for symbol in weekly_contract_symbols if OptionSymbol.IsWeekly(symbol)]
-weekly_expiry = min([symbol.ID.Date for symbol in weekly_contract_symbols])
-weekly_filtered_symbols = [symbol for symbol in weekly_contract_symbols if symbol.ID.Date == weekly_expiry and symbol.ID.OptionRight == OptionRight.Call]
-self.weekly_contract_symbol = sorted(weekly_filtered_symbols, key=lambda symbol: symbol.ID.StrikePrice)[0]</pre>
+self.weekly_canonical_symbol = Symbol.create_canonical_option(self.symbol, "SPXW", Market.USA, "?SPXW")
+weekly_contract_symbols = self.option_chain_provider.get_option_contract_list(self.weekly_canonical_symbol, self.time)
+weekly_contract_symbols = [symbol for symbol in weekly_contract_symbols if OptionSymbol.is_weekly(symbol)]
+weekly_expiry = min([symbol.id.date for symbol in weekly_contract_symbols])
+weekly_filtered_symbols = [symbol for symbol in weekly_contract_symbols if symbol.id.date == weekly_expiry and symbol.id.option_right == OptionRight.CALL]
+self.weekly_contract_symbol = sorted(weekly_filtered_symbols, key=lambda symbol: symbol.id.strike_price)[0]</pre>
 </div>
 
 <h4>Subscribe to Contracts</h4>
@@ -119,8 +119,8 @@ option.PriceModel = OptionPriceModels.BlackScholes()<br></pre>
 <div class="section-example-container">
     <pre class="csharp">var seeder = new FuncSecuritySeeder(GetLastKnownPrices);
 SetSecurityInitializer(new BrokerageModelSecurityInitializer(BrokerageModel, seeder));</pre>
-    <pre class="python">seeder = FuncSecuritySeeder(self.GetLastKnownPrices)
-self.SetSecurityInitializer(BrokerageModelSecurityInitializer(self.BrokerageModel, seeder))</pre>
+    <pre class="python">seeder = FuncSecuritySeeder(self.get_last_known_prices)
+self.set_security_initializer(BrokerageModelSecurityInitializer(self.brokerage_model, seeder))</pre>
 </div>
 
 <h4>Supported Assets</h4>

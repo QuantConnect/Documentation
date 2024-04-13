@@ -14,10 +14,10 @@
     }
 }</pre>
     <pre class='python'>class ObjectStoreChartingAlgorithm(QCAlgorithm):
-    def Initialize(self):
-        self.insight_key = f"{self.ProjectId}/insights"
-        self.SetUniverseSelection(ManualUniverseSelectionModel([ Symbol.Create("SPY", SecurityType.Equity, Market.USA) ]))
-        self.SetAlpha(ConstantAlphaModel(InsightType.Price, InsightDirection.Up, timedelta(5), 0.025, None))</pre>
+    def initialize(self):
+        self.insight_key = f"{self.project_id}/insights"
+        self.set_universe_selection(ManualUniverseSelectionModel([ Symbol.create("SPY", SecurityType.EQUITY, Market.USA) ]))
+        self.set_alpha(ConstantAlphaModel(InsightType.PRICE, InsightDirection.UP, timedelta(5), 0.025, None))</pre>
     </div>
     
     <li class='python'>At the top of the algorithm file, add the following imports:</li>
@@ -36,10 +36,10 @@ from System.Collections.Generic import List</pre>
     var insights = Insights.GetInsights(x => x.IsActive(UtcTime));
     ObjectStore.SaveJson(_insightKey, insights);
 }</pre>
-    <pre class='python'>def OnEndOfAlgorithm(self):
-    insights = self.Insights.GetInsights(lambda x: x.IsActive(self.UtcTime))
+    <pre class='python'>def on_end_of_algorithm(self):
+    insights = self.insights.get_insights(lambda x: x.is_active(self.utc_time))
     content = ','.join([JsonConvert.SerializeObject(x) for x in insights])
-    self.ObjectStore.Save(self.insight_key, f'[{content}]')</pre>
+    self.object_store.save(self.insight_key, f'[{content}]')</pre>
     </div>
 
     <li>At the bottom of the <code>Initialize</code> method, read the Insight objects from the Object Store and <a href='/docs/v2/writing-algorithms/algorithm-framework/insight-manager#02-Add-Insights'>add them to the Insight Manager</a>.</li>
@@ -49,9 +49,9 @@ from System.Collections.Generic import List</pre>
     var insights = ObjectStore.ReadJson&lt;List&lt;Insight&gt;&gt;(_insightKey);
     Insights.AddRange(insights);
 }</pre>
-    <pre class='python'>if self.ObjectStore.ContainsKey(self.insight_key):
-    insights = self.ObjectStore.ReadJson[List[Insight]](self.insight_key)
-    self.Insights.AddRange(insights)</pre>
+    <pre class='python'>if self.object_store.contains_key(self.insight_key):
+    insights = self.object_store.read_json[List[Insight]](self.insight_key)
+    self.insights.add_range(insights)</pre>
     </div>
 </ol>
 

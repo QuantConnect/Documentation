@@ -1,26 +1,26 @@
 <p>To get the current Brain ML Stock Ranking data, index the current <a href="/docs/v2/writing-algorithms/key-concepts/time-modeling/timeslices"><b>Slice</b></a> with the dataset <b>Symbol</b>. Slice objects deliver unique events to your algorithm as they happen, but the <b>Slice</b> may not contain data for your dataset at every time step. To avoid issues, check if the <b>Slice</b> contains the data you want before you index it.</p>
 
 <div class="section-example-container">
-<pre class="python">def OnData(self, slice: Slice) -&gt; None:
-    if slice.ContainsKey(self.two_day_symbol):
+<pre class="python">def on_data(self, slice: Slice) -&gt; None:
+    if slice.contains_key(self.two_day_symbol):
         data_point = slice[self.two_day_symbol]
-        self.Log(f"{self.two_day_symbol} rank at {slice.Time}: {data_point.Rank}")
+        self.log(f"{self.two_day_symbol} rank at {slice.time}: {data_point.rank}")
 
-    if slice.ContainsKey(self.three_day_symbol):
+    if slice.contains_key(self.three_day_symbol):
         data_point = slice[self.three_day_symbol]
-        self.Log(f"{self.three_day_symbol} rank at {slice.Time}: {data_point.Rank}")
+        self.log(f"{self.three_day_symbol} rank at {slice.time}: {data_point.rank}")
 
-    if slice.ContainsKey(self.five_day_symbol):
+    if slice.contains_key(self.five_day_symbol):
         data_point = slice[self.five_day_symbol]
-        self.Log(f"{self.five_day_symbol} rank at {slice.Time}: {data_point.Rank}")
+        self.log(f"{self.five_day_symbol} rank at {slice.time}: {data_point.rank}")
 
-    if slice.ContainsKey(self.ten_day_symbol):
+    if slice.contains_key(self.ten_day_symbol):
         data_point = slice[self.ten_day_symbol]
-        self.Log(f"{self.ten_day_symbol} rank at {slice.Time}: {data_point.Rank}")
+        self.log(f"{self.ten_day_symbol} rank at {slice.time}: {data_point.rank}")
 
-    if slice.ContainsKey(self.month_symbol):
+    if slice.contains_key(self.month_symbol):
         data_point = slice[self.month_symbol]
-        self.Log(f"{self.month_symbol} rank at {slice.Time}: {data_point.Rank}")</pre>
+        self.log(f"{self.month_symbol} rank at {slice.time}: {data_point.rank}")</pre>
 <pre class="csharp">public override void OnData(Slice slice)
 {
     if (slice.ContainsKey(_2DaySymbol))
@@ -59,21 +59,21 @@
 <p>To iterate through all of the dataset objects in the current <b>Slice</b>, call the <b>Get</b> method.</p>
 
 <div class="section-example-container">
-<pre class="python">def OnData(self, slice: Slice) -&gt; None:
-    for dataset_symbol, data_point in slice.Get(BrainStockRanking2Day).items():
-        self.Log(f"{dataset_symbol} rank at {slice.Time}: {data_point.Rank}")
+<pre class="python">def on_data(self, slice: Slice) -&gt; None:
+    for dataset_symbol, data_point in slice.get(BrainStockRanking2Day).items():
+        self.log(f"{dataset_symbol} rank at {slice.time}: {data_point.rank}")
 
-    for dataset_symbol, data_point in slice.Get(BrainStockRanking3Day).items():
-        self.Log(f"{dataset_symbol} rank at {slice.Time}: {data_point.Rank}")
+    for dataset_symbol, data_point in slice.get(BrainStockRanking3Day).items():
+        self.log(f"{dataset_symbol} rank at {slice.time}: {data_point.rank}")
 
-    for dataset_symbol, data_point in slice.Get(BrainStockRanking5Day).items():
-        self.Log(f"{dataset_symbol} rank at {slice.Time}: {data_point.Rank}")
+    for dataset_symbol, data_point in slice.get(BrainStockRanking5Day).items():
+        self.log(f"{dataset_symbol} rank at {slice.time}: {data_point.rank}")
 
-    for dataset_symbol, data_point in slice.Get(BrainStockRanking10Day).items():
-        self.Log(f"{dataset_symbol} rank at {slice.Time}: {data_point.Rank}")
+    for dataset_symbol, data_point in slice.get(BrainStockRanking10Day).items():
+        self.log(f"{dataset_symbol} rank at {slice.time}: {data_point.rank}")
 
-    for dataset_symbol, data_point in slice.Get(BrainStockRanking21Day).items():
-        self.Log(f"{dataset_symbol} rank at {slice.Time}: {data_point.Rank}")
+    for dataset_symbol, data_point in slice.get(BrainStockRanking21Day).items():
+        self.log(f"{dataset_symbol} rank at {slice.time}: {data_point.rank}")
 </pre>
 <pre class="csharp">public override void OnData(Slice slice)
 {

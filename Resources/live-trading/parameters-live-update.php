@@ -15,13 +15,13 @@ public override void Initialize()
             });
     }
 }</pre>
-    <pre class="python">def Initialize(self):
+    <pre class="python">def initialize(self):
     self.parameters = { }
-    if self.LiveMode:
+    if self.live_mode:
         def download_parameters():
-            content = self.Download(url_to_remote_file)
+            content = self.download(url_to_remote_file)
             # Convert content to self.parameters
 
-        self.Schedule.On(self.DateRules.EveryDay(), self.TimeRules.Every(timedelta(minutes=1)), download_parameters)
+        self.schedule.on(self.date_rules.every_day(), self.time_rules.every(timedelta(minutes=1)), download_parameters)
 </pre>
 </div>

@@ -6,8 +6,8 @@
 var security = AddEquity("SPY");
 security.SetFeeModel(new ConstantFeeModel(0));</pre>
     <pre class="python"># In Initialize
-security = self.AddEquity("SPY")
-security.SetFeeModel(ConstantFeeModel(0))</pre>
+security = self.add_equity("SPY")
+security.set_fee_model(ConstantFeeModel(0))</pre>
 </div>
 
 <p>You can also set the fee model in a <a href='/docs/v2/writing-algorithms/initialization#07-Set-Security-Initializer'>security initializer</a>. If your algorithm has a dynamic universe, use the security initializer technique. In order to initialize single security subscriptions with the security initializer, call <code>SetSecurityInitializer</code> before you create the subscriptions.</p>

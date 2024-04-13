@@ -7,8 +7,8 @@ To change the selection schedule, call the <code>UniverseSettings.Schedule.On</c
 <div class="section-example-container">
     <pre class="csharp">UniverseSettings.Schedule.On(DateRules.MonthStart());
 AddUniverse(Universe.DollarVolume.Top(50));</pre>
-    <pre class="python">self.UniverseSettings.Schedule.On(self.DateRules.MonthStart())
-self.AddUniverse(self.Universe.DollarVolume.Top(50))</pre>
+    <pre class="python">self.universe_settings.schedule.on(self.date_rules.month_start())
+self.add_universe(self.universe.dollar_volume.top(50))</pre>
 </div>
 
 <? include(DOCS_RESOURCES."/scheduled-events/date-rules.html"); ?>

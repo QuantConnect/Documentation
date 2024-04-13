@@ -119,46 +119,46 @@
 }</pre>
     <pre class="python">class OptionChainProviderFullExample(QCAlgorithm):
 
-    def Initialize(self):
-        self.SetStartDate(2023, 1, 2)
-        self.SetEndDate(2023, 1, 30)
-        self.SetCash(100000)
-        self.UniverseSettings.Asynchronous = True
-        self.UniverseSettings.MinimumTimeInUniverse = timedelta(minutes=0)
-        self.SetSecurityInitializer(BrokerageModelSecurityInitializer(self.BrokerageModel, FuncSecuritySeeder(self.GetLastKnownPrices)))
-        spy = self.AddEquity("SPY", dataNormalizationMode=DataNormalizationMode.Raw).Symbol
+    def initialize(self):
+        self.set_start_date(2023, 1, 2)
+        self.set_end_date(2023, 1, 30)
+        self.set_cash(100000)
+        self.universe_settings.asynchronous = True
+        self.universe_settings.minimum_time_in_universe = timedelta(minutes=0)
+        self.set_security_initializer(BrokerageModelSecurityInitializer(self.brokerage_model, FuncSecuritySeeder(self.get_last_known_prices)))
+        spy = self.add_equity("SPY", data_normalization_mode=DataNormalizationMode.RAW).symbol
         self.chain_manager = {
-            Symbol.CreateCanonicalOption(spy): OptionChainManager(-10, 10, 0, 7)
+            Symbol.create_canonical_option(spy): OptionChainManager(-10, 10, 0, 7)
         }
-        self.PopulateOptionChain()
-        self.Schedule.On(self.DateRules.EveryDay(spy), self.TimeRules.AfterMarketOpen(spy, 1), self.PopulateOptionChain)
-        self.Schedule.On(self.DateRules.EveryDay(spy), self.TimeRules.Every(timedelta(minutes=5)), self.Filter)
+        self.populate_option_chain()
+        self.schedule.on(self.date_rules.every_day(spy), self.time_rules.after_market_open(spy, 1), self.populate_option_chain)
+        self.schedule.on(self.date_rules.every_day(spy), self.time_rules.every(timedelta(minutes=5)), self.filter)
 
-    def PopulateOptionChain(self):
+    def populate_option_chain(self):
         # The contract list is updated daily, so we can get it and apply
         # the expiration filter as soon as the market open
         for symbol, manager in self.chain_manager.items():
-            manager.SetChain(self.OptionChainProvider.GetOptionContractList(symbol, self.Time), self.Time)
-        self.Filter()
+            manager.set_chain(self.option_chain_provider.get_option_contract_list(symbol, self.time), self.time)
+        self.filter()
 
-    def Filter(self):
+    def filter(self):
         for symbol, manager in self.chain_manager.items():
-            manager.Select(self, symbol)
+            manager.select(self, symbol)
 
-    def OnData(self, slice: Slice) -&gt; None:
+    def on_data(self, slice: Slice) -&gt; None:
         for symbol, _ in self.chain_manager.items():
-            chain = slice.OptionChains.get(symbol)
+            chain = slice.option_chains.get(symbol)
             if not chain: continue
-            if self.Portfolio[symbol.Underlying].Invested:
-                self.Liquidate(symbol.Underlying)
+            if self.portfolio[symbol.underlying].invested:
+                self.liquidate(symbol.underlying)
 
-            expiry = min([x.Expiry for x in chain])
-            contracts = [x for x in chain if x.Expiry == expiry and x.Right == OptionRight.Call and self.Securities[x.Symbol].IsTradable]
+            expiry = min([x.expiry for x in chain])
+            contracts = [x for x in chain if x.expiry == expiry and x.right == OptionRight.CALL and self.securities[x.symbol].is_tradable]
             if not contracts: continue
-            atm_call = sorted(contracts, key=lambda x: abs(chain.Underlying.Price-x.Strike))[0]
+            atm_call = sorted(contracts, key=lambda x: abs(chain.underlying.price-x.strike))[0]
 
-            if not self.Portfolio[atm_call.Symbol].Invested:
-                self.MarketOrder(atm_call.Symbol, 1)
+            if not self.portfolio[atm_call.symbol].invested:
+                self.market_order(atm_call.symbol, 1)
 
 class OptionChainManager:
     chain = []
@@ -168,26 +168,26 @@ class OptionChainManager:
         self.max_strike = max_strike
         self.min_expiry = min_expiry
         self.max_expiry = max_expiry
-    def SetChain(self, symbols: List[Symbol], time: datetime) -&gt; None:
-        self.chain = [x for x in symbols if self.min_expiry &lt;= (x.ID.Date - time).days &lt;= self.max_expiry]
-    def Select(self, algorithm: QCAlgorithm, symbol: Symbol) -&gt; None:
+    def set_chain(self, symbols: List[Symbol], time: datetime) -&gt; None:
+        self.chain = [x for x in symbols if self.min_expiry &lt;= (x.id.date - time).days &lt;= self.max_expiry]
+    def select(self, algorithm: QCAlgorithm, symbol: Symbol) -&gt; None:
         if not self.chain:
             return
-        if symbol.IsCanonical():
-            symbol = symbol.Underlying
-        strikes = sorted(set(x.ID.StrikePrice for x in self.chain))
-        spot = algorithm.Securities[symbol].Price
+        if symbol.is_canonical():
+            symbol = symbol.underlying
+        strikes = sorted(set(x.id.strike_price for x in self.chain))
+        spot = algorithm.securities[symbol].price
         atm = sorted(strikes, key=lambda x: abs(spot-x))[0]
         index = strikes.index(atm)
         min_strike = strikes[max(0, index + self.min_strike)]
         max_strike = strikes[min(len(strikes) - 1, index + self.max_strike)]
-        symbols = set(x for x in self.chain if min_strike &lt;= x.ID.StrikePrice &lt;= max_strike)
+        symbols = set(x for x in self.chain if min_strike &lt;= x.id.strike_price &lt;= max_strike)
         to_remove = set(self.symbols).difference(symbols)
         for symbol in to_remove:
-            if algorithm.RemoveOptionContract(symbol):
+            if algorithm.remove_option_contract(symbol):
                 self.symbols.remove(symbol)
         to_add = symbols.difference(self.symbols)
         for symbol in to_add:
             self.symbols.append(symbol)
-            algorithm.AddOptionContract(symbol)</pre>
+            algorithm.add_option_contract(symbol)</pre>
 </div>

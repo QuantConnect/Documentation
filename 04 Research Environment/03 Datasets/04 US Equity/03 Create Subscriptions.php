@@ -14,8 +14,8 @@ include(DOCS_RESOURCES."/datasets/research-environment/load-csharp-assemblies.ph
     <div class="section-example-container">
         <pre class="csharp">var spy = qb.AddEquity("SPY").Symbol;
 var tlt = qb.AddEquity("TLT").Symbol;</pre>
-        <pre class="python">spy = qb.AddEquity("SPY").Symbol
-tlt = qb.AddEquity("TLT").Symbol</pre>
+        <pre class="python">spy = qb.add_equity("SPY").symbol
+tlt = qb.add_equity("TLT").symbol</pre>
     </div>
 </ol>
 

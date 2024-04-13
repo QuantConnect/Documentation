@@ -17,6 +17,6 @@
     	sorted_data = sorted([ x for x in data if x["CustomAttribute1"] &gt; 0 ],
                          	key=lambda x: x["CustomAttribute2"],
                          	reverse=True)
-    	return [x.Symbol for x in sorted_data[:5]]
+    	return [x.symbol for x in sorted_data[:5]]
 </pre>
 </div>

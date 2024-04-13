@@ -5,8 +5,8 @@
 var underlyingSecurity= AddEquity("SPY");
 underlyingSecurity.VolatilityModel = new StandardDeviationOfReturnsVolatilityModel(30);</pre>
     <pre class="python"># In Initialize
-underlying_security = self.AddEquity("SPY")
-underlying_security.VolatilityModel = StandardDeviationOfReturnsVolatilityModel(30)</pre>
+underlying_security = self.add_equity("SPY")
+underlying_security.volatility_model = StandardDeviationOfReturnsVolatilityModel(30)</pre>
 </div>
 
 

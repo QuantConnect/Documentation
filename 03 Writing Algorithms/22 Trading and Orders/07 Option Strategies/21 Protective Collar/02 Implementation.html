@@ -48,24 +48,24 @@ public override void Initialize()
     // Select the OTM contracts
     var call = calls.OrderBy(x =&gt; x.Strike).Last();
     var put = puts.OrderBy(x =&gt; x.Strike).First();<br></pre>
-        <pre class="python">def OnData(self, slice: Slice) -&gt; None:
-    if self.Portfolio.Invested: return
+        <pre class="python">def on_data(self, slice: Slice) -&gt; None:
+    if self.portfolio.invested: return
 
     # Get the OptionChain
-    chain = slice.OptionChains.get(self.symbol, None)
+    chain = slice.option_chains.get(self.symbol, None)
     if not chain: return
 
     # Select an expiry date
-    expiry = sorted(chain, key = lambda x: x.Expiry)[-1].Expiry
+    expiry = sorted(chain, key = lambda x: x.expiry)[-1].expiry
 
     # Select the call and put contracts that expire on the selected date
-    calls = [x for x in chain if x.Right == OptionRight.Call and x.Expiry == expiry]
-    puts = [x for x in chain if x.Right == OptionRight.Put and x.Expiry == expiry]
+    calls = [x for x in chain if x.right == OptionRight.CALL and x.expiry == expiry]
+    puts = [x for x in chain if x.right == OptionRight.PUT and x.expiry == expiry]
     if not calls or not puts: return
 
     # Select the OTM contracts
-    call = sorted(calls, key = lambda x: x.Strike)[-1]
-    put = sorted(puts, key = lambda x: x.Strike)[0]</pre>
+    call = sorted(calls, key = lambda x: x.strike)[-1]
+    put = sorted(puts, key = lambda x: x.strike)[0]</pre>
     </div>
 
     <li>In the <code>OnData</code> method, submit the orders.</li>

@@ -9,7 +9,7 @@
 <?=$writingAlgorithms ? "" : "qb."?>SetTimeZone(NodaTime.DateTimeZone.Utc);
 <?=$writingAlgorithms ? "" : "qb."?>SetTimeZone(TimeZones.Chicago);
 </pre>
-<pre class='python'><?=$writingAlgorithms ? "self" : "qb"?>.SetTimeZone("Europe/London")
-<?=$writingAlgorithms ? "self" : "qb"?>.SetTimeZone(TimeZones.Chicago)
+<pre class='python'><?=$writingAlgorithms ? "self" : "qb"?>.set_time_zone("Europe/London")
+<?=$writingAlgorithms ? "self" : "qb"?>.set_time_zone(TimeZones.CHICAGO)
 </pre>
 </div>

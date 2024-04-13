@@ -1,41 +1,41 @@
 <p>Once we are confident in our hypothesis, we can export this code into backtesting. One way to accomodate this model into backtest is to create a scheduled event which uses our model to predict the expected return. Since we could calculate the expected return, we'd use Mean-Variance Optimization for portfolio construction.</p>
 
 <div class="section-example-container">
-    <pre class="python">def Initialize(self) -&gt; None:
+    <pre class="python">def initialize(self) -&gt; None:
 
     #1. Required: Five years of backtest history
-    self.SetStartDate(2008, 1, 1)
-    self.SetEndDate(2021, 1, 1)
+    self.set_start_date(2008, 1, 1)
+    self.set_end_date(2021, 1, 1)
 
     #2. Required: Alpha Streams Models:
-    self.SetBrokerageModel(BrokerageName.AlphaStreams)
+    self.set_brokerage_model(BrokerageName.ALPHA_STREAMS)
 
     #3. Required: Significant AUM Capacity
-    self.SetCash(1000000)
+    self.set_cash(1000000)
 
     #4. Required: Benchmark to SPY
-    self.SetBenchmark("SPY")
+    self.set_benchmark("SPY")
 
     self.assets = ["SPY", "TLT"]    # "TLT" as fix income in out-of-market period (high volatility)
     
     # Add Equity ------------------------------------------------ 
     for ticker in self.assets:
-        self.AddEquity(ticker, Resolution.Minute)
+        self.add_equity(ticker, Resolution.MINUTE)
     
     # Set Scheduled Event Method For Kalman Filter updating.
-    self.Schedule.On(self.DateRules.EveryDay(), 
-        self.TimeRules.BeforeMarketClose("SPY", 5), 
-        self.EveryDayBeforeMarketClose)</pre>
+    self.schedule.on(self.date_rules.every_day(), 
+        self.time_rules.before_market_close("SPY", 5), 
+        self.every_day_before_market_close)</pre>
 </div>
 
 <p>Now we export our model into the scheduled event method. We will switch <code>qb</code> with <code>self</code> and replace methods with their <code>QCAlgorithm</code> counterparts as needed. In this example, this is not an issue because all the methods we used in research also exist in <code>QCAlgorithm</code>.</p>
 
 <div class="section-example-container">
-    <pre class="python">def EveryDayBeforeMarketClose(self) -&gt; None:
+    <pre class="python">def every_day_before_market_close(self) -&gt; None:
     qb = self
     
     # Get history
-    history = qb.History(["SPY"], datetime(2010, 1, 1), datetime.now(), Resolution.Daily)
+    history = qb.history(["SPY"], datetime(2010, 1, 1), datetime.now(), Resolution.DAILY)
         
     # Get the close price daily return.
     close = history['close'].unstack(level=0)
@@ -52,7 +52,7 @@
     # ==============================
     
     if regime == 0:
-        self.SetHoldings([PortfolioTarget("TLT", 0.), PortfolioTarget("SPY", 1.)])
+        self.set_holdings([PortfolioTarget("TLT", 0.), PortfolioTarget("SPY", 1.)])
     else:
-        self.SetHoldings([PortfolioTarget("TLT", 1.), PortfolioTarget("SPY", 0.)])</pre>
+        self.set_holdings([PortfolioTarget("TLT", 1.), PortfolioTarget("SPY", 0.)])</pre>
 </div>

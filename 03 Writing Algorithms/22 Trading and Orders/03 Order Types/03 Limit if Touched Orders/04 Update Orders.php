@@ -21,19 +21,19 @@ if (response.IsSuccess)
     Debug("Order updated successfully");
 }</pre>
 <pre class="python"># Create a new order and save the order ticket
-ticket = self.LimitIfTouchedOrder("SPY", 100, 350, 340, tag="Original tag")
+ticket = self.limit_if_touched_order("SPY", 100, 350, 340, tag="Original tag")
 
 # Update the order
 update_order_fields = UpdateOrderFields()
-update_order_fields.Quantity = 80
-update_order_fields.TriggerPrice = 380
-update_order_fields.LimitPrice = 370
-update_order_fields.Tag = "New tag"
-response = ticket.Update(update_settings)
+update_order_fields.quantity = 80
+update_order_fields.trigger_price = 380
+update_order_fields.limit_price = 370
+update_order_fields.tag = "New tag"
+response = ticket.update(update_settings)
 
 # Check the OrderResponse
-if response.IsSuccess:
-    self.Debug("Order updated successfully")</pre>
+if response.is_success:
+    self.debug("Order updated successfully")</pre>
 </div>
 
 <? 

@@ -23,6 +23,19 @@ def conversion(content):
         snake_case_method = _title_to_snake_case(method)
         content = content.replace(f".{method}", f".{snake_case_method}")
     
+    # Named arguments. E.g.: mappingResolveDate=datetime(2021, 12, 1)
+    methods = [x for x in re.findall(r"\(([^)]+)\)", content_to_check) if '=' in x]
+    for method in sorted(set(methods), key=len, reverse=True):
+        for arg in re.findall(r"(\w+)=", method.replace(' ','')):
+            snake_case_args = _title_to_snake_case(arg)
+            content = content.replace(arg, snake_case_args)
+
+    # Local variables: E.g.: sortedByDollarVolume
+    methods = re.findall(r"\    (\w+) =", content_to_check)
+    for method in sorted(set(methods), key=len, reverse=True):
+        snake_case_method = _title_to_snake_case(method)
+        content = content.replace(method, snake_case_method)
+    
     methods = re.findall(r"<\?=\$research \? \"qb\.\" : \"self\.\"\?>(\w+)", content_to_check)
 
     for method in sorted(set(methods), key=len, reverse=True):

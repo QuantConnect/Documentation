@@ -1,27 +1,27 @@
 <p>The following snippet demonstrates how to request data from the US Equity Coarse Universe dataset:</p>
 
 <ul><li>Direct Access using the Security object</li></ul><div class="section-example-container">
-<pre class="python">equity = self.AddEquity("IBM")
-ibm_fundamental = equity.Fundamentals</pre>
+<pre class="python">equity = self.add_equity("IBM")
+ibm_fundamental = equity.fundamentals</pre>
 <pre class="csharp">var equity = AddEquity("IBM");
 var ibmFundamental = equity.Fundamentals;</pre>
 </div>
 
 <ul><li>Direct Access using the Symbol object</li></ul><div class="section-example-container">
-<pre class="python">ibm = Symbol.Create("IBM", SecurityType.Equity, Market.USA)
-ibm_fundamental = self.Fundamentals(ibm)</pre>
+<pre class="python">ibm = Symbol.create("IBM", SecurityType.EQUITY, Market.USA)
+ibm_fundamental = self.fundamentals(ibm)</pre>
 <pre class="csharp">var ibm = QuantConnect.Symbol.Create("IBM", SecurityType.Equity, Market.USA);
 var ibmFundamental = Fundamentals(ibm);</pre>
 </div>
 
 <ul><li>Universe Selection</li></ul><div class="section-example-container">
-<pre class="python">def Initialize(self) -&gt; None:
-    self.universe = self.AddUniverse(self.FundamentalFilterFunction)
+<pre class="python">def initialize(self) -&gt; None:
+    self.universe = self.add_universe(self.fundamental_filter_function)
 
-def FundamentalFilterFunction(self, fundamental: List[Fundamental]):
-    sorted_by_dollar_volume = sorted([f for f in fundamental if f.Price &gt; 10],
-                                key=lambda f: f.DollarVolume)
-    return [f.Symbol for f in sorted_by_dollar_volume[:10]]</pre>
+def fundamental_filter_function(self, fundamental: List[Fundamental]):
+    sorted_by_dollar_volume = sorted([f for f in fundamental if f.price &gt; 10],
+                                key=lambda f: f.dollar_volume)
+    return [f.symbol for f in sorted_by_dollar_volume[:10]]</pre>
 <pre class="csharp">public override void Initialize()
 {
     _universe = AddUniverseSelection(new FundamentalUniverseSelectionModel(FundamentalFilterFunction));

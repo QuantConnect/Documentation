@@ -1,6 +1,6 @@
 <p>To reset indicators, call the <code>Reset</code> method.</p>
 <div class="section-example-container">
-	<pre class="python">self.auto_bb.Reset() 
+	<pre class="python">self.auto_bb.reset() 
 </pre>
 	<pre class="csharp">_autoBB.Reset();</pre>
 </div>
@@ -16,14 +16,14 @@
 
 <div class="section-example-container">
 	<pre class="python"># In OnData
-if data.Splits.ContainsKey(self.symbol) or data.Dividends.ContainsKey(self.symbol):
+if data.splits.contains_key(self.symbol) or data.dividends.contains_key(self.symbol):
     # Reset the indicator
-    self.sma.Reset() 
+    self.sma.reset() 
 
     # Warm up the indicator
-    trade_bars = self.History[TradeBar](self.symbol, self.sma.WarmUpPeriod, Resolution.Daily, dataNormalizationMode=DataNormalizationMode.ScaledRaw)
+    trade_bars = self.history[TradeBar](self.symbol, self.sma.warm_up_period, Resolution.DAILY, data_normalization_mode=DataNormalizationMode.SCALED_RAW)
     for trade_bar in trade_bars:
-        self.sma.Update(trade_bar.EndTime, trade_bar.Close)</pre>
+        self.sma.update(trade_bar.end_time, trade_bar.close)</pre>
 	<pre class="csharp">// In OnData
 if (data.Splits.ContainsKey(_symbol) || data.Dividends.ContainsKey(_symbol))
 {

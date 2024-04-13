@@ -8,8 +8,8 @@
 var spy = <?=$cs?>AddEquity("SPY").Symbol;
 var history = <?=$cs?>History(<?=$cs?>Securities.Keys, 360, Resolution.Daily);</pre>
     <pre class='python'>
-spy = <?=$py?>AddEquity("SPY").Symbol
-df = <?=$py?>History(<?=$py?>Securities.Keys, 360, Resolution.Daily)</pre>
+spy = <?=$py?>AddEquity("SPY").symbol
+df = <?=$py?>History(<?=$py?>Securities.keys, 360, Resolution.DAILY)</pre>
     </div>
 
     <li class='csharp'>Create a DataFrame.</li>
@@ -29,7 +29,7 @@ var df = new DataFrame(columns);</pre>
     <li>Get the file path for a specific key in the Object Store.</li>
     <div class='section-example-container'>
     <pre class='csharp'>var filePath = <?=$cs?>ObjectStore.GetFilePath("df_to_csv");</pre>
-    <pre class='python'>file_path = <?=$py?>ObjectStore.GetFilePath("df_to_csv")</pre>
+    <pre class='python'>file_path = <?=$py?>ObjectStore.get_file_path("df_to_csv")</pre>
     </div>
 
     <li>Call the <a class='csharp' rel="nofollow" target="_blank" href="https://learn.microsoft.com/en-us/dotnet/api/microsoft.data.analysis.dataframe.savecsv">SaveCsv</a><a class='python' rel="nofollow" target="_blank" href="https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.to_csv.html">to_csv</a> method to save the DataFrame in the Object Store as a CSV file.</li>
@@ -50,25 +50,25 @@ var df = new DataFrame(columns);</pre>
 <ul class='python'>
     <li><a rel="nofollow" target="_blank" href="https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.to_xml.html">XML</a></li>
     <div class='section-example-container'>
-    <pre class='python'>file_path = <?=$py?>ObjectStore.GetFilePath("df_to_xml")
+    <pre class='python'>file_path = <?=$py?>ObjectStore.get_file_path("df_to_xml")
 df.to_xml(file_path)   # File size: 87816 bytes
 reread = pd.read_xml(file_path)</pre>
     </div> 
     <li><a rel="nofollow" target="_blank" href="https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.to_json.html">JSON</a></li>
     <div class='section-example-container'>
-    <pre class='python'>file_path = <?=$py?>ObjectStore.GetFilePath("df_to_json")
+    <pre class='python'>file_path = <?=$py?>ObjectStore.get_file_path("df_to_json")
 df.to_json(file_path)   # File size: 125250 bytes
 reread = pd.read_json(file_path)</pre>
     </div> 
     <li><a rel="nofollow" target="_blank" href="https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.to_parquet.html">Parquet</a></li>
     <div class='section-example-container'>
-    <pre class='python'>file_path = <?=$py?>ObjectStore.GetFilePath("df_to_parquet")
+    <pre class='python'>file_path = <?=$py?>ObjectStore.get_file_path("df_to_parquet")
 df.to_parquet(file_path)   # File size: 23996 bytes
 reread = pd.read_parquet(file_path)</pre>
     </div>
     <li><a rel="nofollow" target="_blank" href="https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.to_pickle.html">Pickle</a></li>
     <div class='section-example-container'>
-    <pre class='python'>file_path = <?=$py?>ObjectStore.GetFilePath("df_to_pickle")
+    <pre class='python'>file_path = <?=$py?>ObjectStore.get_file_path("df_to_pickle")
 df.to_pickle(file_path)   # File size: 19868 bytes
 reread = pd.read_pickle(file_path)</pre>
     </div>
