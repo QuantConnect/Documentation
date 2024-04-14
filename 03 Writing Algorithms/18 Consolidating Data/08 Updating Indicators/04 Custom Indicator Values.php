@@ -11,7 +11,7 @@ RegisterIndicator(symbol, _rsi, Resolution.Daily, Field.High);</pre>
 self.rsi = RelativeStrengthIndex(10, MovingAverageType.SIMPLE)
 
 # Register the daily High price data to automatically update the indicator
-self.register_indicator(self.symbol, self.rsi, Resolution.DAILY, Field.high)</pre>
+self.register_indicator(self.symbol, self.rsi, Resolution.DAILY, Field.HIGH)</pre>
 </div>
 
 <p>The <code>RegisterIndicator</code> method can accept a <code class="python">timedelta</code><code class="csharp">TimeSpan</code>, <code>Resolution</code>, or an unregistered consolidator. If you apply the indicator to a security in a dynamic universe, provide a consolidator so that you can remove it when your algorithm removes the security from the universe.</p>

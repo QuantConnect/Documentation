@@ -58,7 +58,7 @@ ENUMS = [
     'PerformanceBenchmarkAlgorithms', 'TestHelper', 'PythonTestingUtils', 'PythonWrapperTests', 'DataProcessor', 'StreamProvider', 
     'TemporaryPathProvider', 'AlgoSeekFuturesProgram', 'CryptoiqDownloaderProgram', 'DukascopyDownloaderProgram', 'IVolatilityEquityConverterProgram', 
     'KaikoDataConverterProgram', 'KrakenDownloaderProgram', 'NseMarketDataConverterProgram', 'DataDensity', 'RandomDataGeneratorProgram', 
-    'YahooDownloaderProgram','TimeInForce','Universe','CryptoUniverse'
+    'YahooDownloaderProgram','TimeInForce','Universe','Field'
 ]
 SWAPS = {
     "ETF": "Etf",
