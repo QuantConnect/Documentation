@@ -8,7 +8,7 @@ AddUniverseSelection(
         _ => new [] { QuantConnect.Symbol.Create("SPY", SecurityType.Option, Market.USA) }
     )
 );</pre>
-	<pre class="python">from Selection.optionUniverseSelectionModel import OptionUniverseSelectionModel 
+	<pre class="python">from Selection.OptionUniverseSelectionModel import OptionUniverseSelectionModel 
 
 self.universe_settings.asynchronous = True
 self.set_universe_selection(
@@ -79,7 +79,7 @@ private IEnumerable&lt;Symbol&gt; SelectOptionChainSymbols(DateTime utcTime)
         yield return QuantConnect.Symbol.CreateCanonicalOption(symbol);
     }
 }</pre>
-	<pre class="python">from Selection.optionUniverseSelectionModel import OptionUniverseSelectionModel 
+	<pre class="python">from Selection.OptionUniverseSelectionModel import OptionUniverseSelectionModel 
 
 def initialize(self) -&gt; None:
     self.add_universe_selection(
@@ -96,7 +96,7 @@ def select_option_chain_symbols(self, utc_time: datetime) -&gt; List[Symbol]:
     #return [Symbol.create(ticker, SecurityType.INDEX_OPTION, Market.USA) for ticker in tickers]
 
     # Future Options example:
-    future_symbol = Symbol.create(Futures.indices.SP500E_MINI, SecurityType.FUTURE, Market.CME)
+    future_symbol = Symbol.create(Futures.Indices.SP500E_MINI, SecurityType.FUTURE, Market.CME)
     future_contract_symbols = self.future_chain_provider.get_future_contract_list(future_symbol, self.time)
     return [Symbol.create_canonical_option(symbol) for symbol in future_contract_symbols]</pre>
 </div>

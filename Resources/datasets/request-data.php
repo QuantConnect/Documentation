@@ -421,7 +421,7 @@ foreach (var s in slices) {
 </table>
 
 <div class='section-example-container'>
-    <pre class='python'><?=$pyFutureVar?>future = <?=$pyVar?>.add_future(Futures.currencies.BTC)
+    <pre class='python'><?=$pyFutureVar?>future = <?=$pyVar?>.add_future(Futures.Currencies.BTC)
 history = <?=$pyVar?>.history(
     tickers=[<?=$pyFutureVar?>future.symbol], 
     start=<?=$pyVar?>.time - timedelta(days=15), 

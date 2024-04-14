@@ -17,7 +17,7 @@ include(DOCS_RESOURCES."/datasets/research-environment/load-csharp-assemblies.ph
                 dataNormalizationMode: DataNormalizationMode.BackwardsRatio,
                 dataMappingMode: DataMappingMode.LastTradingDay,
                 contractDepthOffset: 0);</pre>
-        <pre class="python">future = qb.add_future(Futures.indices.SP500E_MINI, Resolution.MINUTE,
+        <pre class="python">future = qb.add_future(Futures.Indices.SP500E_MINI, Resolution.MINUTE,
                 data_normalization_mode = DataNormalizationMode.BACKWARDS_RATIO,
                 data_mapping_mode = DataMappingMode.LAST_TRADING_DAY,
                 contract_depth_offset = 0)</pre>

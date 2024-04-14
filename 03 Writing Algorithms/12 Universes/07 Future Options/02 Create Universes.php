@@ -6,7 +6,7 @@ var future = AddFuture(Futures.Metals.Gold);
 future.SetFilter(0, 90);
 AddFutureOption(future.Symbol);</pre>
     <pre class="python">self.universe_settings.asynchronous = True
-future = self.add_future(Futures.metals.GOLD)
+future = self.add_future(Futures.Metals.GOLD)
 future.set_filter(0, 90)
 self.add_future_option(future.symbol)</pre>
 </div>

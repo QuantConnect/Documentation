@@ -8,13 +8,13 @@ AddUniverseSelection(
         _ => new List&lt;Symbol&gt; {{ QuantConnect.Symbol.Create(Futures.Indices.SP500EMini, SecurityType.Future, Market.CME) }}
     )
 );</pre>
-	<pre class="python">from Selection.futureUniverseSelectionModel import FutureUniverseSelectionModel
+	<pre class="python">from Selection.FutureUniverseSelectionModel import FutureUniverseSelectionModel
 
 self.universe_settings.contract_depth_offset = 1
 self.add_universe_selection(
     FutureUniverseSelectionModel(
         timedelta(1), 
-        lambda _: [Symbol.create(Futures.indices.SP500E_MINI, SecurityType.FUTURE, Market.CME)]
+        lambda _: [Symbol.create(Futures.Indices.SP500E_MINI, SecurityType.FUTURE, Market.CME)]
     )
 )</pre>
 </div>

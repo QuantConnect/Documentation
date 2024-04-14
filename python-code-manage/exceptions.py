@@ -3,7 +3,7 @@ SUFFIXES = ["*.html", "*.php"]
 ENUMS = [
     'AlphaModelExtensions', 'PortfolioBias', 'with', 'StressSymbols', 'Symbols', 'Equity', 'NotifiedSecurityChanges', 'State', 'State', 
     'ReturnsSymbolDataExtensions', 'DebuggingMethod', 'DebuggerHelper', 'SeriesType', 'BinaryComparisonExtensions', 'ChartType', 'Currencies', 
-    'Expiry', 'value', 'Extensions', 'BrokerageEnvironment', 'Language', 'ServerType', 'SecurityType', 'AccountType', 'MarketDataType', 
+    'Expiry', 'Extensions', 'BrokerageEnvironment', 'Language', 'ServerType', 'SecurityType', 'AccountType', 'MarketDataType', 
     'DataFeedEndpoint', 'StoragePermissions', 'TickType', 'DelistingType', 'SplitType', 'Resolution', 'PositionSide', 'OptionRight', 'OptionStyle', 
     'SettlementType', 'AlgorithmStatus', 'SubscriptionTransportMedium', 'WritePolicy', 'Period', 'DataNormalizationMode', 'DataMappingMode', 
     'CashBookUpdateType', 'DeploymentTarget', 'AlgorithmMode', 'DateFormat', 'Exchanges', 'ChannelStatus', 'Globals', 'IsolatorLimitResultProvider',

@@ -49,14 +49,17 @@ def conversion(content):
         content = content.replace(f"<?=$pythonPrefix?>{method}", f"<?=$pythonPrefix?>{snake_case_method}")
         
     for enum in sorted(ENUMS, key=len, reverse=True):
-        wanted_pattern = fr"(?![\.]){enum}\.(\w+)(?!\(|\.)"
-        unwanted_pattern = fr"(?![\.]){enum}\.(\w+)[\(\.]"
-        wanted_methods = re.findall(wanted_pattern, f"{content}<")
-        unwanted_methods = [x[:-1] for x in re.findall(unwanted_pattern, f"{content}<")]
-        
-        for method in sorted(set(wanted_methods).difference(set(unwanted_methods)), key=len, reverse=True):
+        methods = re.findall(fr"(?![\.]){enum}\.(\w+)(?!\(\.)", content)
+        if not methods:
+            continue
+        if re.findall(fr"(?![\.]){enum}\.(\w+)[\(\.]", content):
+            nested = re.findall(fr"(?![\.]){enum}\.(\w+)(?!\(\.)\.(\w+)(?!\(\.)", content)
+            for method in sorted(set(nested), key=len, reverse=True):
+                content = content.replace(f"{enum}.{method[0]}.{method[1]}", f"{enum}.{method[0].title()}.{method[1].upper()}")
+            continue
+        for method in sorted(set(methods), key=len, reverse=True):
             content = content.replace(f"{enum}.{method}", f"{enum}.{method.upper()}")
-    
+
     return content
 
 def _title_to_snake_case(title):

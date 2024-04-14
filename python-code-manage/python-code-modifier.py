@@ -7,7 +7,7 @@ file_count = 0
 code_snippet_count = 0
 
 for path in [p for suffix in SUFFIXES for p in Path().resolve().rglob(suffix)]:
-    if '10 Get Price Model Data.html' not in str(path): continue
+    if 'single-page' in str(path): continue
     with open(path, "r", encoding="utf-8") as file:
         content = file.read()
         soup = BeautifulSoup(content, 'html.parser')

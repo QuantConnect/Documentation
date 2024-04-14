@@ -8,7 +8,7 @@ AddUniverseSelection(
         _ => new [] { QuantConnect.Symbol.Create("SPY", SecurityType.Option, Market.USA) }
     )
 );</pre>
-	<pre class="python">from Selection.optionUniverseSelectionModel import OptionUniverseSelectionModel 
+	<pre class="python">from Selection.OptionUniverseSelectionModel import OptionUniverseSelectionModel 
 
 self.universe_settings.fill_forward = False
 self.add_universe_selection(

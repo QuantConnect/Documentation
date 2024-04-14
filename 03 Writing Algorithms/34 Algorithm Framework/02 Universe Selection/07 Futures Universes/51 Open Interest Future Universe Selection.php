@@ -12,7 +12,7 @@ AddUniverseSelection(
 self.add_universe_selection(
     OpenInterestFutureUniverseSelectionModel(
         self, 
-        lambda utc_time: [Symbol.create(Futures.indices.SP500E_MINI, SecurityType.FUTURE, Market.CME)]
+        lambda utc_time: [Symbol.create(Futures.Indices.SP500E_MINI, SecurityType.FUTURE, Market.CME)]
     )
 )</pre>
 </div>
@@ -100,8 +100,8 @@ private static IEnumerable&lt;Symbol&gt; SelectFutureChainSymbols(DateTime utcTi
 
 def select_future_chain_symbols(self, utc_time: datetime) -&gt; List[Symbol]:
     return [ 
-        Symbol.create(Futures.indices.SP500E_MINI, SecurityType.FUTURE, Market.CME),
-        Symbol.create(Futures.metals.GOLD, SecurityType.FUTURE, Market.COMEX)
+        Symbol.create(Futures.Indices.SP500E_MINI, SecurityType.FUTURE, Market.CME),
+        Symbol.create(Futures.Metals.GOLD, SecurityType.FUTURE, Market.COMEX)
     ]</pre>
 </div>
 
