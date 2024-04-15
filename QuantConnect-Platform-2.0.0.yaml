@@ -1946,7 +1946,7 @@ components:
               - QuantConnectBrokerage
               - InteractiveBrokersBrokerage
               - Polygon
-              - Bianance
+              - Binance
               - TradierBrokerage
               - OandaBrokerage
               - Bitfinex
@@ -1970,7 +1970,7 @@ components:
       properties:
         responseCode:
           type: string
-          description: Response code
+          description: HTTP status response code.
           example: "200 OK"
         versionId:
           type: string
@@ -2637,60 +2637,57 @@ components:
           enum:
           - "true"
           - "false"
-    LiveResult:
+    LiveAlgorithmResults:
       type: object
       properties:
-        Holdings:
+        message:
+          type: string
+          description: Algorithm Message. (?)
+        status:
+          type: string
+          description: Indicates the status of the algorihtm, i.e. 'Running', 'Stopped'.
+        deployId:
+          type: string
+          description: Deployment ID.
+        cloneId:
+          type: int
+          description: The ID of the project this live algorithm was cloned. (?)
+        launched:
+          type: string
+          description: Date the live algorithm was launched.
+        stopped:
+          type: string
+          description: Date the live algorithm was stopped.
+        brokerage:
+          type: string
+          description: Brokerage used in the live algorithm.
+        securityTypes:
+          type: string
+          description: Security types present in the live algorithm.
+        projectName:
+          type: string
+          description: Name of the project the live algorithm is in.
+        dataCenter:
+          type: string
+          description: Name of the data center. (?)
+        isPublicStreaming:
+          type: bool
+          description: Indicates if the live algorithm is public streaming. (?)
+        files:
+          type: array
+          description: Files present in the project in which the algorithm is.
+          items:
+            $ref: '#/components/schemas/ProjectFile'
+        runtimeStatistics:
           type: object
           additionalProperties:
-            $ref: '#/components/schemas/Holding'
-          description: Dictionary of algorithm holdings information.
-        Cash:
-          $ref: '#/components/schemas/Cash'
-        AlphaRuntimeStatistics:
-          $ref: '#/components/schemas/AlphaRuntimeStatistics'
-        Charts:
+            $ref: '#/components/schemas/RuntimeStatistics'
+          description: Runtime banner/updating statistics in the title banner of the live algorithm GUI.
+        charts:
           type: object
           additionalProperties:
             $ref: '#/components/schemas/Chart'
           description: Charts updates for the live algorithm since the last result packet.
-        Orders:
-          type: object
-          additionalProperties:
-            $ref: '#/components/schemas/Order'
-          description: Order updates since the last result packet.
-        OrderEvents:
-          type: array
-          description: OrderEvent updates since the last result packet.
-          items:
-            $ref: '#/components/schemas/OrderEvent'
-        ProfitLoss:
-          type: object
-          additionalProperties:
-            type: number
-            format: float
-          description: Trade profit and loss information since the last algorithm result packet.
-        Statistics:
-          type: object
-          additionalProperties:
-            type: string
-          description: Statistics information sent during the algorithm operations.
-        RuntimeStatistics:
-          type: object
-          additionalProperties:
-            type: string
-          description: Runtime banner/updating statistics in the title banner of the live algorithm GUI.
-        ServerStatistics:
-          type: object
-          additionalProperties:
-            type: string
-          description: Server status information, including CPU and RAM usage.
-      description: Live results object class for packaging live result data.
-    LiveAlgorithmResults:
-      type: object
-      properties:
-        LiveResults:
-          $ref: '#/components/schemas/LiveResultsData'
         success:
           type: boolean
           description: Indicate if the API request was successful.
@@ -2833,12 +2830,17 @@ components:
           description: Collection of orders.
           items:
             $ref: '#/components/schemas/Order'
-        Length:
+        length:
           type: integer
           description: Total number of returned orders
-        latestOrderTimestamp:
-          type: integer
-          description: Timestamp of the latest order event.
+        success:
+          type: boolean
+          description: Indicate if the API request was successful.
+        errors:
+          type: array
+          description: List of errors with the API call.
+          items:
+            type: string
       description: Contains orders and the number of orders of the live algorithm in the request criteria.
     LiveInsightsResponse:
       type: object
@@ -2855,17 +2857,6 @@ components:
           type: boolean
           description: Indicate if the API request was successful.
       description: Contains insights and the number of insights of the live algorithm in the request criteria.
-    LiveResultsData:
-      type: object
-      properties:
-        version:
-          type: integer
-          description: Results version.
-        resolution:
-          $ref: '#/components/schemas/ChartResolution'
-        results:
-          $ref: '#/components/schemas/LiveResult'
-      description: Holds information about the state and operation of the live running algorithm.
     Market:
       type: string
       description: Fungible market of the underlying security.
@@ -3176,7 +3167,18 @@ components:
           items:
             type: string
         Symbol:
+          type: object
+          description: Symbol of the asset.
           $ref: '#/components/schemas/Symbol'
+        LimitPrice:
+          type: nummber
+          description: Limit price of the Order.
+        StopPrice:
+          type: number
+          description: Stop price of the Order.
+        StopTriggered:
+          type: bool
+          description: Indicates if the stop price has been reached, so the limit order has been triggered.
         Price:
           type: number
           description: Price of the Order.
@@ -3209,109 +3211,166 @@ components:
           description: Number of shares to execute.
           format: float
         Type:
-          type: string
+          type: integer
           description: Order type.
           enum:
-          - Market
-          - Limit
-          - StopMarket
-          - StopLimit
-          - MarketOnOpen
-          - MarketOnClose
-          - OptionExercise
+          - 0 = Market
+          - 1 = Limit
+          - 2 = StopMarket
+          - 3 = StopLimit
+          - 4 = MarketOnOpen
+          - 5 = MarketOnClose
+          - 6 = OptionExercise
+          - 7 = LimitIfTouched
+          - 8 = ComboMarket
+          - 9 = ComboLimit
+          - 10 = ComboLegLimit
+          - 11 = TrailingStop
         Status:
-          type: string
+          type: integer
           description: Status of the Order.
           enum:
-          - New
-          - Submitted
-          - PartiallyFilled
-          - Filled
-          - Canceled
-          - None
-          - Invalid
-          - CancelPending
-          - UpdateSubmitted
+          - 0 = New
+          - 1 = Submitted
+          - 2 = PartiallyFilled
+          - 3 = Filled
+          - 5 = Canceled
+          - 6 = None
+          - 7 = Invalid
+          - 8 = CancelPending
+          - 9 = UpdateSubmitted
         Tag:
           type: string
           description: Tag the order with some custom data.
         SecurityType:
+          type: int
+          description: The symbol's security type.
           $ref: '#/components/schemas/SecurityType'
         Direction:
-          $ref: '#/components/schemas/OrderDirection'
+          type: integer
+          description: Order Direction Property based off Quantity. 
+          enum:
+            - 0 = Buy
+            - 1 = Sell
+            - 2 = Hold
         Value:
           type: number
           description: Gets the executed value of this order. If the order has not yet filled, then this will return zero.
           format: float
         OrderSubmissionData:
+          type: object
+          description: Gets the price data at the time the order was submitted.
           $ref: '#/components/schemas/OrderSubmissionData'
         IsMarketable:
           type: boolean
           description: Returns true if the order is a marketable order.
+        Properties:
+          type: object
+          description: Additional properties of the order.
+          $ref: '#/components/schemas/OrderProperties'
+        Events:
+          type: array
+          description: The order events.
+          items:
+            $ref : '#/components/schemas/OrderEvent'
       description: Order struct for placing new trade.
+    OrderProperties:
+      type: object
+      properties:
+        TimeInForce:
+          type: object
+          description: Defines the length of time over which an order will continue working before it is cancelled.
+          enum:
+            - 0 = GoodTilCanceled
+            - 1 = Day
+            - 2 = GoodTilDate
+      description: Additional properties of the order.
     OrderDirection:
       type: string
       description: Direction of the order.
       enum:
-      - Buy
-      - Sell
-      - Hold
+      - buy
+      - sell
+      - hold
     OrderEvent:
       type: object
       properties:
-        SymbolValue:
+        algorithmId:
+          type: string
+          description: Algorithm Id, BacktestId or DeployId.
+        symbolValue:
           type: string
           description: The current symbol for this ticker; It is a user friendly symbol representation.
-        SymbolPermtick:
+        symbolPermtick:
           type: string
           description: The original symbol used to generate this symbol.
-        OrderId:
+        orderId:
           type: integer
           description: Id of the order this event comes from.
-        Id:
+        orderEventId:
+          type: integer
+          description: The unique order event id for each order.
+        id:
           type: integer
           description: The unique order event Id for each order.
-        Symbol:
+        symbol:
           $ref: '#/components/schemas/Symbol'
-        UtcTime:
+        status:
           type: string
-          description: The date and time of this event (UTC).
-          format: date-time
-        Status:
-          $ref: '#/components/schemas/OrderStatus'
-        OrderFee:
+          description: Status of the Order.
+          enum:
+            - new
+            - submitted
+            - partiallyFilled
+            - filled
+            - canceled
+            - none
+            - invalid
+            - cancelPending
+            - updateSubmitted
+        orderFeeAmount:
+          type: integer
+          description: The fee amount associated with the order.
           $ref: '#/components/schemas/OrderFee'
-        FillPrice:
+        orderFeeCurrency:
+          type: string
+          description: The fee currency associated with the order.
+        fillPrice:
           type: number
           description: Fill price information about the order.
           format: float
-        FillPriceCurrency:
+        fillPriceCurrency:
           type: string
           description: Currency for the fill price.
-        FillQuantity:
+        fillQuantity:
           type: number
           description: Number of shares of the order that was filled in this event.
           format: float
-        Direction:
+        direction:
+          type: string
+          description: Order direction.
           $ref: '#/components/schemas/OrderDirection'
-        Message:
+        message:
           type: string
           description: Any message from the exchange.
-        IsAssignment:
+        isAssignment:
           type: boolean
           description: True if the order event is an assignment.
-        StopPrice:
+        stopPrice:
           type: number
           description: The current stop price.
           format: float
-        LimitPrice:
+        limitPrice:
           type: number
           description: The current limit price.
           format: float
-        Quantity:
+        quantity:
           type: number
           description: The current order quantity.
           format: float
+        time:
+          type: integer
+          description: The time of this event in unix timestamp.
       description: Change in an order state applied to user algorithm portfolio
     OrderFee:
       type: object
@@ -3335,55 +3394,6 @@ components:
           description: The current price at an order submission time.
           format: float
       description: Stores time and price information available at the time an order was submitted.
-    OrderStatus:
-      type: object
-      properties:
-        OrderId:
-          type: integer
-          description: Id of the order this event comes from.
-        Id:
-          type: integer
-          description: The unique order event Id for this order.
-        Symbol:
-          $ref: '#/components/schemas/Symbol'
-        UtcTime:
-          type: string
-          description: The date and time of this event.
-          format: date-time
-        Status:
-          $ref: '#/components/schemas/Order/properties/Status'
-        FillPrice:
-          type: number
-          description: Fill price information about the order.
-          format: float
-        FillPriceCurrency:
-          type: string
-          description: Currency for the fill price.
-        FillQuantity:
-          type: number
-          description: Number of shares of the order that was filled in this event.
-          format: float
-        Direction:
-          $ref: '#/components/schemas/OrderDirection'
-        Message:
-          type: string
-          description: Any message from the exchange.
-        IsAssignment:
-          type: boolean
-          description: Order event is an allocation of trades from ITM option assignment.
-        StopPrice:
-          type: number
-          description: The current stop price.
-          format: float
-        LimitPrice:
-          type: number
-          description: The current limit price.
-          format: float
-        Quantity:
-          type: number
-          description: The current order quantity.
-          format: float
-      description: Messaging class signifying a change in an order state and record the change in the users algorithm portfolio.
     ParameterSet:
       type: object
       properties:
@@ -3519,7 +3529,7 @@ components:
           description: Indicates if the project file is open or not.
         isLibrary:
           type: bool
-          description: Indicates if the project file is a library or not.
+          description: Indicates if the project file is a library or not. It's always false in live/read and backtest/read.
       description: File for a project.
     ProjectFilesResponse:
       type: object
@@ -3722,6 +3732,12 @@ components:
           description: List of logs from the live algorithm.
           items:
             type: string
+        start:
+          type: integer
+          description: Time when the first log was generated.
+        end:
+          type: integer
+          description: Time of the last log retrieved.
         success:
           type: boolean
           description: Indicate if the API request was successful.
@@ -4027,17 +4043,17 @@ components:
       - minute
       - second
     SecurityType:
-      type: string
+      type: integer
       description: Type of tradable security / underlying asset.
       enum:
-      - Base
-      - Equity
-      - Option
-      - Commodity
-      - Forex
-      - Future
-      - Cfd
-      - Crypto
+      - 0 = Base
+      - 1 = Equity
+      - 2 = Option
+      - 3 = Commodity
+      - 4 = Forex
+      - 5 = Future
+      - 6 = Cfd
+      - 7 = Crypto
     Series:
       type: object
       properties:
