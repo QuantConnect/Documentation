@@ -1717,6 +1717,107 @@ components:
           description: Account of the associated brokerage.
           example: ""
       description: Base class for settings that must be configured per Brokerage to create new algorithms via the API.
+    BinanceSettings:
+      type: object
+      properties:
+        id:
+          type: string
+          description: ID of the brokerage, this is, BinanceBrokerage
+        binance-exchange-name:
+          type: string
+          description: Binance exchange, this is, Binance.
+        binance-api-secret:
+          type: string
+          description: Your Binance API secret.
+        binance-api-key:
+          type: string
+          description: Your Binance API key.
+        binance-api-url:
+          type: string
+          description: Binance configuration for spot/margin. The value for this property is https://api.binance.com
+        binance-websocket-url:
+          type: string
+          description: Binance configuration for spot/margin. The value for this property is wss://stream.binance.com:9443/ws
+        description: Settings for using Binance as data provider.
+    BinanceFuturesUSDMSettings:
+      type: object
+      properties:
+        id:
+          type: string
+          description: ID of the brokerage, this is, BinanceBrokerage
+        binance-exchange-name:
+          type: string
+          description: Binance exchange, this is, Binance-USDM-Futures.
+        binance-api-secret:
+          type: string
+          description: Your Binance API secret.
+        binance-api-key:
+          type: string
+          description: Your Binance API key.
+        binance-fapi-url:
+          type: string
+          description: Binance Futures configuration for spot/margin. The value for this property is https://fapi.binance.com
+        binance-fwebsocket-url:
+          type: string
+          description: Binance Futures configuration for spot/margin. The value for this property is wss://fstream.binance.com/ws
+        description: Settings for using Binance Futures USDM as data provider.
+    BinanceFuturesCOINSettings:
+      type: object
+      properties:
+        id:
+          type: string
+          description: ID of the brokerage, this is, BinanceBrokerage
+        binance-exchange-name:
+          type: string
+          description: Binance exchange, this is, Binance-COIN-Futures.
+        binance-api-secret:
+          type: string
+          description: Your Binance API secret.
+        binance-api-key:
+          type: string
+          description: Your Binance API key.
+        binance-dapi-url:
+          type: string
+          description: Binance Futures configuration for spot/margin. The value for this property is https://dapi.binance.com
+        binance-dwebsocket-url:
+          type: string
+          description: Binance Futures configuration for spot/margin. The value for this property is wss://dstream.binance.com/ws
+        description: Settings for using Binance Futures COIN as data provider.
+    BinanceUSSettings:
+      type: object
+      properties:
+        id:
+          type: string
+          description: ID of the brokerage, this is, BinanceBrokerage
+        binance-exchange-name:
+          type: string
+          description: Binance exchange, this is, BinanceUS.
+        binanceus-api-secret:
+          type: string
+          description: Your Binance US API secret.
+        binanceus-api-key:
+          type: string
+          description: Your Binance US API key.
+        binanceus-api-url:
+          type: string
+          description: Binance US configuration for spot/margin. The value for this property is https://api.binance.us
+        binanceus-websocket-url:
+          type: string
+          description: Binance US configuration for spot/margin. The value for this property is wss://stream.binance.us:9443/ws
+        description: Settings for using Binance US as data provider.
+    BitfinexSettings:
+      type: object
+      properties:
+        id:
+          type: string
+          description: ID of the brokerage, this is, BitfinexBrokerage.
+        bitfinex-api-secret:
+          type: string
+          description: Your Bitfinex API key.
+        bitfinex-api-secret:
+          type: string
+          description: Your Bitfinex API secret.
+      description: Settings for using Bitfinex as a data provider.
     BrokerageData:
       type: object
       properties:
@@ -1732,6 +1833,34 @@ components:
           type: string
           description: The ID of the brokerage.
       description: Brokerage Id.
+    BybitSettings:
+      type: object
+      properties:
+        id:
+          type: string
+          description: ID of the brokerage, this is, BybitBrokerage.
+        bybit-api-key:
+          type: string
+          description: Your Bybit API key.
+        bybit-api-secret:
+          type: string
+          description: Your Bybit API secret.
+        bybit-vip-level:
+          type: string
+          description: Your Bybit VIP Level.
+        bybit-use-testnet:
+          type: string
+          description: Whether the testnet should be used.
+          enum:
+            - live
+            - paper
+        bybit-api-url:
+          type: string
+          description: Bybit API URL, this is, https://api-testnet.bybit.com
+        bybit-websocket-url:
+          type: string
+          description: Bybit Websocket URL, this is, wss://stream.bybit.com
+      description: Settings for using Bybit as a data provider.
     Cash:
       type: object
       properties:
@@ -1812,6 +1941,25 @@ components:
           type: integer
           description: Project Id we wish to compile.
       description: Request to compile a project.
+    CoinbaseSettings:
+      type: object
+      properties:
+        id:
+          type: string
+          description: ID of the brokerage, this is, CoinbaseBrokerage
+        coinbase-api-key:
+          type: string
+          description: Your Coinbase Advanced Trade API key.
+        coinbase-api-secret:
+          type: string
+          description: Your Coinbase Advanced Trade API secret.
+        coinbase-url:
+          type: string
+          description: Coinbase URL, this is, wss://advanced-trade-ws.coinbase.com
+        coinbase-rest-api:
+          type: string
+          description: Coinbase REST API, this is, https://api.coinbase.com
+      description: Settings for using Coinbase as a data provider.
     Collaborator:
       type: object
       properties:
@@ -1935,7 +2083,19 @@ components:
         brokerage:
           type: object
           description: Brokerage configurations to be used in the live algorithm.
-          $ref: '#/components/schemas/BaseLiveAlgorithmSettings'
+          enum:
+            - $ref: '#/components/schemas/QuantConnectSettings'
+            - $ref: '#/components/schemas/InteractiveBrokersSettings'
+            - $ref: '#/components/schemas/PolygonSettings'
+            - $ref: '#/components/schemas/BinanceSettings'
+            - $ref: '#/components/schemas/BinanceFuturesUSDMSettings'
+            - $ref: '#/components/schemas/BinanceFuturesCOINSettings'
+            - $ref: '#/components/schemas/BinanceUSSettings'
+            - $ref: '#/components/schemas/TradierSettings'
+            - $ref: '#/components/schemas/BitfinexSettings'
+            - $ref: '#/components/schemas/CoinbaseSettings'
+            - $ref: '#/components/schemas/KrakenSettings'
+            - $ref: '#/components/schemas/BybitSettings'
         dataProviders:
           type: object
           description: Dictionary of data provider configurations to be used in the live algorithm.
@@ -1946,24 +2106,34 @@ components:
               - QuantConnectBrokerage
               - InteractiveBrokersBrokerage
               - Polygon
-              - Binance
+              - BinanceBrokerage
               - TradierBrokerage
               - OandaBrokerage
-              - Bitfinex
-              - Coinbase
-              - Zerodha
+              - BitfinexBrokerage
+              - CoinbaseBrokerage
+              - ZerodhaBrokerage
               - Samco
-              - Kraken
+              - KrakenBrokerage
               - TDAmeritrade
-              - Bybit
+              - BybitBrokerage
               - IEXCloud
             example: InteractiveBrokersBrokerage
           value:
             type: object
             description: Data provider configuration.
             enum:
-              - $ref: '#/components/schemas/InteractiveBrokersSettings'
               - $ref: '#/components/schemas/QuantConnectSettings'
+              - $ref: '#/components/schemas/InteractiveBrokersSettings'
+              - $ref: '#/components/schemas/PolygonSettings'
+              - $ref: '#/components/schemas/BinanceSettings'
+              - $ref: '#/components/schemas/BinanceFuturesUSDMSettings'
+              - $ref: '#/components/schemas/BinanceFuturesCOINSettings'
+              - $ref: '#/components/schemas/BinanceUSSettings'
+              - $ref: '#/components/schemas/TradierSettings'
+              - $ref: '#/components/schemas/BitfinexSettings'
+              - $ref: '#/components/schemas/CoinbaseSettings'
+              - $ref: '#/components/schemas/KrakenSettings'
+              - $ref: '#/components/schemas/BybitSettings'
       description: Request to create a live algorithm.
     CreateLiveAlgorithmResponse:
       type: object
@@ -2495,6 +2665,22 @@ components:
           type: boolean
           description: Is the insight past its expiry time and score can be finalized.
       description: Defines the scores given to a particular insight
+    KrakenSettings:
+      type: object
+      properties:
+        id:
+          type: string
+          description: ID of the brokerage, this is, KrakenBrokerage.
+        kraken-api-key:
+          type: string
+          description: Your Kraken API key.
+        kraken-api-secret:
+          type: string
+          description: Your Kraken API secret.
+        kraken-verification-tier:
+          type: string
+          description: Your Kraken Verification Tier.
+      description: Settings for using Kraken as a data provider.
     LeanVersionsResponse:
       type: object
       properties:
@@ -2648,7 +2834,7 @@ components:
           description: Indicates the status of the algorihtm, i.e. 'Running', 'Stopped'.
         deployId:
           type: string
-          description: Deployment ID.
+          description: Algorithm deployment ID.
         cloneId:
           type: int
           description: The ID of the project this live algorithm was cloned. (?)
@@ -2672,7 +2858,7 @@ components:
           description: Name of the data center. (?)
         isPublicStreaming:
           type: bool
-          description: Indicates if the live algorithm is public streaming. (?)
+          description: Indicates if the live algorithm is streaming to the public. (?)
         files:
           type: array
           description: Files present in the project in which the algorithm is.
@@ -3412,6 +3598,16 @@ components:
           type: number
           description: Value of parameter.
       description: Parameter set.
+    PolygonSettings:
+      type: object
+      properties:
+        id:
+          type: string
+          description: ID of the brokerage, this is, PolygonDataFeed.
+        polygon-api-key:
+          type: string
+          description: Your Polygon.io API Key.
+      description: Settings for using Polygon as a data provider.
     Portfolio:
       type: object
       properties:
@@ -3790,6 +3986,7 @@ components:
       description: Request to read the portfolio state from a live algorithm.
     ReadLiveOrdersRequest:
       required:
+      - start
       - end
       - projectId
       type: object
@@ -4348,6 +4545,25 @@ components:
           description: The sum of fees for all trades.
           format: float
       description: A set of statistics calculated from a list of closed trades.
+    TradierSettings:
+      type: object
+      properties:
+        id:
+          type: string
+          description: ID of the brokerage, this is, TradierBrokerage
+        tradier-account-id:
+          type: string
+          description: Your Tradier account id.
+        tradier-access-token:
+          type: string
+          description: Your Tradier access token.
+        tradier-environment:
+          type: string
+          description: Whether the developer sandbox should be used.
+          enum:
+            - live
+            - paper
+      description: Settings for using Tradier as a data provider.
     UpdateBacktestRequest:
       required:
       - backtestId
