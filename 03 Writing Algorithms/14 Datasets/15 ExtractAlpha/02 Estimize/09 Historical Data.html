@@ -1,0 +1,29 @@
+<p>To get historical Estimize data, call the <b class="csharp">History</b><b class="python">history</b> method with the dataset <b>Symbol</b>. If there is no data in the period you request, the history result is empty.</p>
+
+<div class="section-example-container">
+<pre class="python"># DataFrames
+consensus_history_df = self.history(self.estimize_consensus_symbol, 100, Resolution.DAILY)
+estimate_history_df = self.history(self.estimize_estimate_symbol, 100, Resolution.DAILY)
+release_history_df = self.history(self.estimize_release_symbol, 100, Resolution.DAILY)
+history_df = self.history([
+    self.estimize_consensus_symbol,
+    self.estimize_estimate_symbol,
+    self.estimize_release_symbol], 100, Resolution.DAILY)
+
+# Dataset objects
+consensus_history_bars = self.history[EstimizeConsensus](self.estimize_consensus_symbol, 100, Resolution.DAILY)
+estimate_history_bars = self.history[EstimizeEstimate](self.estimize_estimate_symbol, 100, Resolution.DAILY)
+release_history_bars = self.history[EstimizeRelease](self.estimize_release_symbol, 100, Resolution.DAILY)</pre>
+<pre class="csharp">// Dataset objects
+var concensusHistory = History&lt;EstimizeConsensus&gt;(_estimizeConsensusSymbol, 100, Resolution.Daily);
+var estimateHistory = History&lt;EstimizeEstimate&gt;(_estimizeEstimateSymbol, 100, Resolution.Daily);
+var releaseHistory = History&lt;EstimizeRelease&gt;(_estimizeReleaseSymbol, 100, Resolution.Daily);
+
+// Slice objects
+var history = History(new[]{_estimizeConsensusSymbol,
+                            _estimizeEstimateSymbol,
+                            _estimizeReleaseSymbol}, 10, Resolution.Daily);</pre>
+</div>
+
+
+<p>For more information about historical data, see <a href="/docs/v2/writing-algorithms/historical-data/history-requests">History Requests</a>.</p>

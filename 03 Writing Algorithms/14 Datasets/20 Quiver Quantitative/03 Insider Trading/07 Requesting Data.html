@@ -1,0 +1,28 @@
+<p>To add Insider Trading data to your algorithm, call the <b class="csharp">AddData</b><b class="python">add_data</b> method. Save a reference to the dataset <b>Symbol</b> so you can access the data later in your algorithm.</p>
+
+<div class="section-example-container">
+<pre class="python">class QuiverInsiderTradingDataAlgorithm(QCAlgorithm):
+    def initialize(self) -&gt; None:
+        self.set_start_date(2019, 1, 1)
+        self.set_end_date(2020, 6, 1)
+        self.set_cash(100000)
+
+        self.aapl = self.add_equity("AAPL", Resolution.DAILY).symbol
+        self.dataset_symbol = self.add_data(QuiverInsiderTrading, self.aapl).symbol</pre>
+<pre class="csharp">namespace QuantConnect.Algorithm.CSharp.AltData
+{
+    public class QuiverInsiderTradingDataAlgorithm: QCAlgorithm
+    {
+        private Symbol _symbol, _datasetSymbol;
+
+        public override void Initialize()
+        {
+            SetStartDate(2019, 1, 1);
+            SetEndDate(2020, 6, 1);
+            SetCash(100000);
+            _symbol = AddEquity("AAPL", Resolution.Daily).Symbol;
+            _datasetSymbol= AddData&lt;QuiverInsiderTrading&gt;(_symbol).Symbol;
+        }
+    }
+}</pre>
+</div>

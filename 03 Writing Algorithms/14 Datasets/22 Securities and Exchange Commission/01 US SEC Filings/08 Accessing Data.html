@@ -1,0 +1,76 @@
+<p>To get the current US SEC Filings data, index the current <a href="/docs/v2/writing-algorithms/key-concepts/time-modeling/timeslices"><b>Slice</b></a> with the dataset <b>Symbol</b>. Slice objects deliver unique events to your algorithm as they happen, but the <b>Slice</b> may not contain data for your dataset at every time step. To avoid issues, check if the <b>Slice</b> contains the data you want before you index it.</p>
+
+<div class="section-example-container">
+<pre class="python">def on_data(self, slice: Slice) -&gt; None:
+    if slice.contains_key(self.report_8k_symbol):
+        data_point = slice[self.report_8k_symbol]
+        self.log(f"{self.report_8k_symbol} report count at {slice.time}: {len(data_point.report.documents)}")
+
+    if slice.contains_key(self.report_10k_symbol):
+        data_point = slice[self.report_10k_symbol]
+        self.log(f"{self.report_10k_symbol} report count at {slice.time}: {len(data_point.report.documents)}")
+
+    if slice.ContainsKey(self.report_10q_symbol):
+        data_point = slice[self.report_10q_symbol]
+        self.log(f"{self.report_10q_symbol} report count at {slice.Time}: {len(data_point.report.documents)}")</pre>
+
+<pre class="csharp">public override void OnData(Slice slice)
+{
+    if (slice.ContainsKey(_report8KSymbol))
+    {
+        var dataPoint = slice[_report8KSymbol];
+        Log($"{_report8KSymbol} report count at {slice.Time}: {data_point.Report.Documents.Count}");
+    }
+
+    if (slice.ContainsKey(_report10KSymbol))
+    {
+        var dataPoint = slice[_report10KSymbol];
+        Log($"{_report10KSymbol} report count at {slice.Time}: {data_point.Report.Documents.Count}");
+    }
+
+    if (slice.ContainsKey(_report10QSymbol))
+    {
+        var dataPoint = slice[_report10QSymbol];
+        Log($"{_report10QSymbol} report count at {slice.Time}: {data_point.Report.Documents.Count}");
+    }
+}</pre>
+</div>
+
+
+
+<p>To iterate through all of the dataset objects in the current <b>Slice</b>, call the <b class="csharp">Get</b><b class="python">get</b> method.</p>
+
+<div class="section-example-container">
+<pre class="python">def on_data(self, slice: Slice) -&gt; None:
+    for dataset_symbol, data_point in slice.get(SECReport8K).items():
+        self.log(f"{dataset_symbol} report count at {slice.time}: {len(data_point.report.documents)}")
+
+    for dataset_symbol, data_point in slice.get(SECReport10K).items():
+        self.log(f"{dataset_symbol} report count at {slice.time}: {len(data_point.report.documents)}")
+
+    for dataset_symbol, data_point in slice.get(SECReport10Q).items():
+        self.log(f"{dataset_symbol} report count at {slice.time}: {len(data_point.report.documents)}")</pre>
+<pre class="csharp">public override void OnData(Slice slice)
+{
+    foreach (var kvp in slice.Get&lt;SECReport8K&gt;())
+    {
+        var datasetSymbol = kvp.Key;
+        var dataPoint = kvp.Value;
+        Log($"{datasetSymbol} report count at {slice.Time}: {dataPoint.Report.Documents.Count}");
+    }
+
+    foreach (var kvp in slice.Get&lt;SECReport10K&gt;())
+    {
+        var datasetSymbol = kvp.Key;
+        var dataPoint = kvp.Value;
+        Log($"{datasetSymbol} report count at {slice.Time}: {dataPoint.Report.Documents.Count}");
+    }
+
+    foreach (var kvp in slice.Get&lt;SECReport10Q&gt;())
+    {
+        var datasetSymbol = kvp.Key;
+        var dataPoint = kvp.Value;
+        Log($"{datasetSymbol} report count at {slice.Time}: {dataPoint.Report.Documents.Count}");
+    }
+}</pre>
+</div>

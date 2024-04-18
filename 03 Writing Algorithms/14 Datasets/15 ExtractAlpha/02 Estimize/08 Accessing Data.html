@@ -1,0 +1,75 @@
+<p>To get the current Estimize data, index the current <a href="/docs/v2/writing-algorithms/key-concepts/time-modeling/timeslices"><b>Slice</b></a> with the dataset <b>Symbol</b>. Slice objects deliver unique events to your algorithm as they happen, but the <b>Slice</b> may not contain data for your dataset at every time step. To avoid issues, check if the <b>Slice</b> contains the data you want before you index it.</p>
+
+<div class="section-example-container">
+<pre class="python">def on_data(self, slice: Slice) -&gt; None:
+    if slice.contains_key(self.estimize_consensus_symbol):
+        data_point = slice[self.estimize_consensus_symbol]
+        self.log(f"{self.estimize_consensus_symbol} mean at {slice.time}: {data_point.mean}")
+
+    if slice.contains_key(self.estimize_estimate_symbol):
+        data_point = slice[self.estimize_estimate_symbol]
+        self.log(f"{self.estimize_estimate_symbol} EPS at {slice.time}: {data_point.eps}")
+
+    if slice.contains_key(self.estimize_release_symbol):
+        data_point = slice[self.estimize_release_symbol]
+        self.log(f"{self.estimize_release_symbol} EPS at {slice.time}: {data_point.eps}")</pre>
+<pre class="csharp">public override void OnData(Slice slice)
+{
+    if (slice.ContainsKey(_estimizeConsensusSymbol))
+    {
+        var dataPoint = slice[_estimizeConsensusSymbol];
+        Log($"{_estimizeConsensusSymbol} mean at {slice.Time}: {dataPoint.Mean}");
+    }
+
+    if (slice.ContainsKey(_estimizeEstimateSymbol))
+    {
+        var dataPoint = slice[_estimizeEstimateSymbol];
+        Log($"{_estimizeEstimateSymbol} EPS at {slice.Time}: {dataPoint.Eps}");
+    }
+
+    if (slice.ContainsKey(_estimizeReleaseSymbol))
+    {
+        var dataPoint = slice[_estimizeReleaseSymbol];
+        Log($"{_estimizeReleaseSymbol} EPS at {slice.Time}: {dataPoint.Eps}");
+    }
+}
+</pre>
+</div>
+
+<p>To iterate through all of the dataset objects in the current <b>Slice</b>, call the <b class="csharp">Get</b><b class="python">get</b> method.</p>
+
+<div class="section-example-container">
+<pre class="python">def on_data(self, slice: Slice) -&gt; None:
+    for dataset_symbol, data_point in slice.get(EstimizeConsensus).items():
+        self.log(f"{dataset_symbol} mean at {slice.time}: {data_point.mentions}")
+
+    for dataset_symbol, data_point in slice.get(EstimizeEstimate).items():
+        self.log(f"{dataset_symbol} EPS at {slice.time}: {data_point.eps}")
+
+    for dataset_symbol, data_point in slice.get(EstimizeRelease).items():
+        self.log(f"{dataset_symbol} EPS at {slice.time}: {data_point.eps}")
+</pre>
+<pre class="csharp">public override void OnData(Slice slice)
+{
+    foreach (var kvp in slice.Get&lt;EstimizeConsensus&gt;())
+    {
+        var datasetSymbol = kvp.Key;
+        var dataPoint = kvp.Value;
+        Log($"{datasetSymbol} mean at {slice.Time}: {dataPoint.Mentions}");
+    }
+
+    foreach (var kvp in slice.Get&lt;EstimizeEstimate&gt;())
+    {
+        var datasetSymbol = kvp.Key;
+        var dataPoint = kvp.Value;
+        Log($"{datasetSymbol} EPS at {slice.Time}: {dataPoint.Eps}");
+    }
+
+    foreach (var kvp in slice.Get&lt;EstimizeRelease&gt;())
+    {
+        var datasetSymbol = kvp.Key;
+        var dataPoint = kvp.Value;
+        Log($"{datasetSymbol} EPS at {slice.Time}: {dataPoint.Eps}");
+    }
+}</pre>
+</div>

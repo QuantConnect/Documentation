@@ -1,0 +1,19 @@
+<p>To get the current split data, index the <b class="csharp">Splits</b><b class="python">splits</b> property of the current <a href="/docs/v2/writing-algorithms/key-concepts/time-modeling/timeslices"><b>Slice</b></a> with the Equity <b>Symbol</b>. Slice objects deliver unique events to your algorithm as they happen, but the <b>Slice</b> may not contain data for your security at every time step. To avoid issues, check if the <b>Slice</b> contains the data you want before you index it.</p>
+
+<div class="section-example-container">
+<pre class="python">def on_data(self, slice: Slice) -&gt; None:
+    if slice.splits.contains_key(self.symbol):
+        split = slice.splits[self.symbol]
+        split_type = {0: "Warning", 1: "SplitOccurred"}.get(split.type)
+        self.log(f"Split: {split.symbol}\t{split.split_factor}\t{split.reference_price}\t{split_type}")</pre>
+<pre class="csharp">public override void OnData(Slice slice)
+{
+    if (slice.Splits.ContainsKey(_symbol))
+    {
+        var split = slice.Splits[_symbol];
+        Log($"Split: {split.Symbol}\t{split.SplitFactor}\t{split.ReferencePrice}\t{split.Type}");
+    }
+}</pre>
+</div>
+
+<p>For more information about accessing splits, see <a href="/docs/v2/writing-algorithms/securities/asset-classes/us-equity/corporate-actions#02-Splits">Splits</a>.</p>

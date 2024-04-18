@@ -1,0 +1,37 @@
+<p>To add US SEC Filings data to your algorithm, call the <b class="csharp">AddData</b><b class="python">add_data</b> method. Save a reference to the dataset <b>Symbol</b> so you can access the data later in your algorithm.</p>
+
+<div class="section-example-container">
+<pre class="python">
+class SECReportAlgorithm(QCAlgorithm):
+    def initialize(self) -&gt; None:
+        self.set_start_date(2019, 1, 1)
+        self.set_end_date(2019, 8, 21)
+        self.set_cash(100000)
+
+        self.aapl = self.add_equity("AAPL", Resolution.MINUTE).symbol
+        self.report_8k_symbol = self.add_data(SECReport8K, self.aapl).symbol
+        self.report_10k_symbol = self.add_data(SECReport10K, self.aapl).symbol
+        self.report_10q_symbol = self.add_data(SECReport10Q, self.aapl).symbol
+</pre>
+
+<pre class="csharp">
+namespace QuantConnect
+{
+    public class SECReportAlgorithm : QCAlgorithm
+    {
+        private Symbol _symbol, _report8KSymbol, _report10KSymbol, _report10QSymbol;
+
+        public override void Initialize()
+        {
+            SetStartDate(2019, 1, 1);
+            SetEndDate(2019, 8, 21);
+            SetCash(100000);
+
+            _symbol = AddEquity("AAPL", Resolution.Daily).Symbol;
+            _report8KSymbol = AddData&lt;SECReport8K&gt;(_symbol, Resolution.Daily).Symbol;
+            _report10KSymbol = AddData&lt;SECReport10K&gt;(_symbol, Resolution.Daily).Symbol;
+            _report10QSymbol = AddData&lt;SECReport10Q&gt;(_symbol, Resolution.Daily).Symbol;
+        }
+    }
+}</pre>
+</div>

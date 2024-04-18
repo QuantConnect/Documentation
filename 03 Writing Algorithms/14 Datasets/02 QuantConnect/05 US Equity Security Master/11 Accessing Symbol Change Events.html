@@ -1,0 +1,18 @@
+<p>To get the current Symbol change events, index the <b class="csharp">SymbolChangedEvents</b><b class="python">symbol_changed_events</b> property of the current <b>Slice</b> with the Equity <b>Symbol</b>. Slice objects deliver unique events to your algorithm as they happen, but the <b>Slice</b> may not contain data for your security at every time step. To avoid issues, check if the <b>Slice</b> contains the data you want before you index it.</p>
+<div class="section-example-container">
+<pre class="python">def on_data(self, slice: Slice) -&gt; None:
+    if slice.symbol_changed_events.contains_key(self.symbol):
+        symbol_changed_event = slice.symbol_changed_events[self.symbol]
+        self.log(f"Symbol changed: {symbol_changed_event.old_symbol} -&gt; {symbol_changed_event.new_symbol}")
+</pre>
+<pre class="csharp">
+public override void OnData(Slice slice){
+    if (slice.SymbolChangedEvents.ContainsKey(_symbol))
+    {
+        var symbolChangedEvent = slice.SymbolChangedEvents[_symbol];
+        Log($"Symbol changed: {symbolChangedEvent.OldSymbol} -&gt; {symbolChangedEvent.NewSymbol}");
+    }
+}</pre>
+</div>
+
+<p>For more information about accessing Symbol change events, see <a href="/docs/v2/writing-algorithms/securities/asset-classes/us-equity/corporate-actions#04-Symbol-Changes">Symbol Changes</a>.</p>
