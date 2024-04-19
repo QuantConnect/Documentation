@@ -1,4 +1,4 @@
-<p>To add a universe of Future Option contracts, in the <code>Initialize</code> method, <a href="/docs/v2/writing-algorithms/universes/futures#11-Create-Universes">define a Future universe</a> and then pass the canonical <code>Symbol</code> to the <code>AddFutureOption</code> method.<br></p>
+<p>To add a universe of Future Option contracts, in the <code class="csharp">Initialize</code><code class="python">initialize</code> method, <a href="/docs/v2/writing-algorithms/universes/futures#11-Create-Universes">define a Future universe</a> and then pass the canonical <code>Symbol</code> to the <code class="csharp">AddFutureOption</code><code class="python">add_future_option</code> method.<br></p>
 
 <div class="section-example-container">
     <pre class="csharp">UniverseSettings.Asynchronous = true;
@@ -12,7 +12,7 @@ self.add_future_option(future.symbol)</pre>
 </div>
 
 
-<p>The following table describes the <code>AddFutureOption</code> method arguments:</p>
+<p>The following table describes the <code class="csharp">AddFutureOption</code><code class="python">add_future_option</code> method arguments:</p>
 
 <table class="qc-table table">
     <thead>

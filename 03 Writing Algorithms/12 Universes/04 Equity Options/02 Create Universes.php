@@ -1,4 +1,4 @@
-<p>To add a universe of Equity Option contracts, in the <code>Initialize</code> method, call the <code>AddOption</code> method. This method returns an <code>Option</code> object, which contains the canonical <code>Symbol</code>. You can't trade with the canonical Option <code>Symbol</code>, but save a reference to it so you can easily access the Option contracts in the <a href='/docs/v2/writing-algorithms/universes/equity-options#04-Navigate-Option-Chains'>OptionChain</a> that LEAN passes to the <code>OnData</code> method.</p>
+<p>To add a universe of Equity Option contracts, in the <code class="csharp">Initialize</code><code class="python">initialize</code> method, call the <code class="csharp">AddOption</code><code class="python">add_option</code> method. This method returns an <code>Option</code> object, which contains the canonical <code>Symbol</code>. You can't trade with the canonical Option <code>Symbol</code>, but save a reference to it so you can easily access the Option contracts in the <a href='/docs/v2/writing-algorithms/universes/equity-options#04-Navigate-Option-Chains'>OptionChain</a> that LEAN passes to the <code class="csharp">OnData</code><code class="python">on_data</code> method.</p>
 
 <div class="section-example-container">
     <pre class="csharp">UniverseSettings.Asynchronous = true;
@@ -6,10 +6,10 @@ var option = AddOption("SPY");
 _symbol = option.Symbol;</pre>
     <pre class="python">self.universe_settings.asynchronous = True
 option = self.add_option("SPY")
-self.symbol = option.symbol</pre>
+self._symbol = option.symbol</pre>
 </div>
 
-<p>The following table describes the <code>AddOption</code> method arguments:</p>
+<p>The following table describes the <code class="csharp">AddOption</code><code class="python">add_option</code> method arguments:</p>
 <table class="qc-table table">
     <thead>
         <tr>

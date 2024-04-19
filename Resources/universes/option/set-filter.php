@@ -2,9 +2,9 @@
 
 <? $annotation = "exclude weeklys"; include(DOCS_RESOURCES."/universes/option/default-filter.php"); ?>
 
-<p>To adjust the universe of contracts, set a filter. The filter usually runs at the first bar of every day. When the filter selects a contract that isn't currently in your universe, LEAN adds the new contract data to the next <code>Slice</code> that it passes to the <code>OnData</code> method.</p>
+<p>To adjust the universe of contracts, set a filter. The filter usually runs at the first bar of every day. When the filter selects a contract that isn't currently in your universe, LEAN adds the new contract data to the next <code>Slice</code> that it passes to the <code class="csharp">OnData</code><code class="python">on_data</code> method.</p>
 
-<p>To set a contract filter, in the <code>Initialize</code> method, call the <code>SetFilter</code> method of the <code>Option</code> object. The following table describes the available filter techniques:</p>
+<p>To set a contract filter, in the <code class="csharp">Initialize</code><code class="python">initialize</code> method, call the <code>SetFilter</code> method of the <code>Option</code> object. The following table describes the available filter techniques:</p>
 
 <table class="table qc-table">
     <thead>

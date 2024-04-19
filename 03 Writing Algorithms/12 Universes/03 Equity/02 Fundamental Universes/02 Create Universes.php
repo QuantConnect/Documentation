@@ -1,5 +1,5 @@
     
-<p>To add a fundamental universe, in the <code>Initialize</code> method, pass a filter function to the <code>AddUniverse</code> method. The filter function receives a list of <code>Fundamental</code> objects and must return a list of <code>Symbol</code> objects. The <code>Symbol</code> objects you return from the function are the constituents of the fundamental universe and LEAN automatically creates subscriptions for them. Don't call <code>AddEquity</code> in the filter function.</p>
+<p>To add a fundamental universe, in the <code class="csharp">Initialize</code><code class="python">initialize</code> method, pass a filter function to the <code class="csharp">AddUniverse</code><code class="python">add_universe</code> method. The filter function receives a list of <code>Fundamental</code> objects and must return a list of <code>Symbol</code> objects. The <code>Symbol</code> objects you return from the function are the constituents of the fundamental universe and LEAN automatically creates subscriptions for them. Don't call <code class="csharp">AddEquity</code><code class="python">add_equity</code> in the filter function.</p>
     
 <div class="section-example-container">
     <pre class="csharp">public class MyUniverseAlgorithm : QCAlgorithm {
@@ -20,7 +20,7 @@
     <pre class="python">class MyUniverseAlgorithm(QCAlgorithm):
     def initialize(self) -&gt; None:
         self.universe_settings.asynchronous = True
-        self.universe = self.add_universe(self.fundamental_function)
+        self._universe = self.add_universe(self.fundamental_function)
     
     def fundamental_function(self, fundamental: List[Fundamental]) -&gt; List[Symbol]:
         return [c.symbol for c in fundamental if c.has_fundamental_data]</pre></div>
@@ -45,7 +45,7 @@ _universe = AddUniverse(
         .Select(f =&gt; f.Symbol));</pre>
     <pre class="python"># In Initialize:
 self.universe_settings.asynchronous = True
-self.universe = self.add_universe(self.fundamental_selection_function)
+self._universe = self.add_universe(self.fundamental_selection_function)
     
 def fundamental_selection_function(self, fundamental: List[Fundamental]) -&gt; List[Symbol]:
     filtered = [f for f in fundamental if f.price &gt; 10 and f.has_fundamental_data and not np.isnan(f.valuation_ratios.pe_ratio)]

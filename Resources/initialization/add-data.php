@@ -4,7 +4,7 @@
 
 <h4>Asset Data</h4>
 
-<p>To subscribe to asset data, call one of the asset subscription methods like <code>AddEquity</code> or <code>AddForex</code>. Each asset class has its own method to create subscriptions. For more information about how to create subscriptions for each asset class, see <?=$writingAlgorithms ? "<a href='/docs/v2/writing-algorithms/securities/asset-classes'>Asset Classes</a>" : "the <span class='page-section-name'>Create Subscriptions</span> section of an asset class in the <a href='/docs/v2/research-environment/datasets/key-concepts'>Datasets</a> chapter" ?>.</p>
+<p>To subscribe to asset data, call one of the asset subscription methods like <code class="csharp">AddEquity</code><code class="python">add_equity</code> or <code class="csharp">AddForex</code><code class="python">add_forex</code>. Each asset class has its own method to create subscriptions. For more information about how to create subscriptions for each asset class, see <?=$writingAlgorithms ? "<a href='/docs/v2/writing-algorithms/securities/asset-classes'>Asset Classes</a>" : "the <span class='page-section-name'>Create Subscriptions</span> section of an asset class in the <a href='/docs/v2/research-environment/datasets/key-concepts'>Datasets</a> chapter" ?>.</p>
 
 <div class='section-example-container'>
 	<pre class='csharp'><?=$writingAlgorithms ? "" : "qb."?>AddEquity("AAPL"); // Add Apple 1 minute bars (minute by default)

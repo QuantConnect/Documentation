@@ -1,4 +1,4 @@
-<p>When the <a href='/docs/v2/writing-algorithms/universes/futures#12-Continous-Contracts'>continuous contract</a> rolls over, LEAN passes a <code>SymbolChangedEvent</code> to your <code>OnData</code> method, which contains the old contract <code>Symbol</code> and the new contract <code>Symbol</code>. <code>SymbolChangedEvent</code> objects have the following properties:</p>
+<p>When the <a href='/docs/v2/writing-algorithms/universes/futures#12-Continous-Contracts'>continuous contract</a> rolls over, LEAN passes a <code>SymbolChangedEvent</code> to your <code class="csharp">OnData</code><code class="python">on_data</code> method, which contains the old contract <code>Symbol</code> and the new contract <code>Symbol</code>. <code>SymbolChangedEvent</code> objects have the following properties:</p>
 
 <div data-tree='QuantConnect.Data.Market.SymbolChangedEvent'></div>
 

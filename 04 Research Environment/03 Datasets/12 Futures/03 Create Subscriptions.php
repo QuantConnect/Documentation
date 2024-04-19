@@ -11,7 +11,7 @@ include(DOCS_RESOURCES."/datasets/research-environment/load-csharp-assemblies.ph
         <pre class="csharp">var qb = new QuantBook();</pre>
         <pre class="python">qb = QuantBook()</pre>
     </div>
-    <li>Call the <code>AddFuture</code> method with a ticker, resolution, and <a href="/docs/v2/writing-algorithms/universes/futures#12-Continous-Contracts">contract rollover settings</a>.</li>
+    <li>Call the <code class="csharp">AddFuture</code><code class="python">add_future</code> method with a ticker, resolution, and <a href="/docs/v2/writing-algorithms/universes/futures#12-Continous-Contracts">contract rollover settings</a>.</li>
     <div class="section-example-container">
         <pre class="csharp">var future = qb.AddFuture(Futures.Indices.SP500EMini, Resolution.Minute,
                 dataNormalizationMode: DataNormalizationMode.BackwardsRatio,
@@ -75,7 +75,7 @@ symbols = qb.future_chain_provider.get_future_contract_list(future.symbol, start
 		<pre class="csharp">var contractSymbol = symbols.OrderBy(s =&gt; s.ID.Date).FirstOrDefault();</pre>
 		<pre class="python">contract_symbol = sorted(symbols, key=lambda s: s.id.date)[0]</pre>
 	</div>
-	<li>Call the <code>AddFutureContract</code> method with an <code>FutureContract</code> <code>Symbol</code> and disable fill-forward.</li>
+	<li>Call the <code class="csharp">AddFutureContract</code><code class="python">add_future_contract</code> method with an <code>FutureContract</code> <code>Symbol</code> and disable fill-forward.</li>
 	<div class="section-example-container">
 		<pre class="csharp">qb.AddFutureContract(contractSymbol, fillForward: false);</pre>
 		<pre class="python">qb.add_future_contract(contract_symbol, fill_forward = False)</pre>

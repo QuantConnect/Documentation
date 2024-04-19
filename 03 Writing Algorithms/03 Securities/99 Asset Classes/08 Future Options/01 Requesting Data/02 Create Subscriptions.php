@@ -57,7 +57,7 @@
 <ul>
     <li>The <a href="/docs/v2/writing-algorithms/universes/futures#12-Continous-Contracts">continuous Futures contract</a></li>
     <li>A contract in the <a href="/docs/v2/writing-algorithms/universes/futures">Futures universe</a></li>
-    <li>A contract that you added with <code>AddFutureContract</code></li>
+    <li>A contract that you added with <code class="csharp">AddFutureContract</code><code class="python">add_future_contract</code></li>
 </ul>
 
 <p>To filter and select contracts that the <code>GetOptionContractList</code> method returns, you can use the following properties of each <code>Symbol</code> object:</p>
@@ -108,7 +108,7 @@ self.option_contract_symbol = sorted(filtered_symbols, key=lambda symbol: symbol
 
 <h4>Subscribe to Contracts</h4>
 
-<p>To create a Future Option contract subscription, pass the contract <code>Symbol</code> to the <code>AddFutureOptionContract</code> method. Save a reference to the contract <code>Symbol</code> so you can easily access the Option contract in the <a href="/docs/v2/writing-algorithms/securities/asset-classes/future-options/handling-data#06-Option-Chains">OptionChain</a> that LEAN passes to the <code>OnData</code> method. To override the default <a href="/docs/v2/writing-algorithms/reality-modeling/options-models/pricing">pricing model</a> of the Option, <a href='https://www.quantconnect.com/docs/v2/writing-algorithms/reality-modeling/options-models/pricing#04-Set-Models'>set a pricing model</a>.</p>
+<p>To create a Future Option contract subscription, pass the contract <code>Symbol</code> to the <code class="csharp">AddFutureOptionContract</code><code class="python">add_future_option_contract</code>  method. Save a reference to the contract <code>Symbol</code> so you can easily access the Option contract in the <a href="/docs/v2/writing-algorithms/securities/asset-classes/future-options/handling-data#06-Option-Chains">OptionChain</a> that LEAN passes to the <code class="csharp">OnData</code><code class="python">on_data</code> method. To override the default <a href="/docs/v2/writing-algorithms/reality-modeling/options-models/pricing">pricing model</a> of the Option, <a href='https://www.quantconnect.com/docs/v2/writing-algorithms/reality-modeling/options-models/pricing#04-Set-Models'>set a pricing model</a>.</p>
 
 <div class="section-example-container">
     <pre class="csharp">var option = AddFutureOptionContract(_optionContractSymbol);
@@ -117,7 +117,7 @@ option.PriceModel = OptionPriceModels.BinomialCoxRossRubinstein();</pre>
 option.price_model = OptionPriceModels.binomial_cox_ross_rubinstein()</pre>
 </div>
 
-<p>The <code>AddFutureOptionContract</code> method creates a subscription for a single Option contract and adds it to your <span class="new-term">user-defined</span> universe. To create a dynamic universe of Future Option contracts, add a <a href="/docs/v2/writing-algorithms/universes/future-options">Future Options universe</a>.</p>
+<p>The <code class="csharp">AddFutureOptionContract</code><code class="python">add_future_option_contract</code>  method creates a subscription for a single Option contract and adds it to your <span class="new-term">user-defined</span> universe. To create a dynamic universe of Future Option contracts, add a <a href="/docs/v2/writing-algorithms/universes/future-options">Future Options universe</a>.</p>
 
 <h4>Warm Up Contract Prices</h4>
 

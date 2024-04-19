@@ -1,35 +1,35 @@
-<p>When you deploy an algorithm, LEAN first calls the <a href="/docs/v2/writing-algorithms/initialization">Initialize</a> method. In live mode, the engine loads your holdings and open orders from your brokerage account to add data subscriptions and populate the <code>Securities</code>, <code>Portfolio</code>, and <code>Transactions</code> objects. LEAN receives the data from the subscriptions, synchronizes the data to create a&nbsp;<a href="/docs/v2/writing-algorithms/key-concepts/time-modeling/timeslices" style="background-color: rgb(255, 255, 255);">timeslice</a>, and then performs the following steps. Your algorithm can spend up to 10 minutes on each timeslice unless you call the <a href="/docs/v2/writing-algorithms/machine-learning/training-models">Train</a> method.</p>
+<p>When you deploy an algorithm, LEAN first calls the <a href="/docs/v2/writing-algorithms/initialization"><span class="csharp">Initialize</span><span class="python">initialize</span></a> method. In live mode, the engine loads your holdings and open orders from your brokerage account to add data subscriptions and populate the <code class="csharp">Securities</code><code class="python">securities</code>, <code class="csharp">Portfolio</code><code class="python">portfolio</code>, and <code class="csharp">Transactions</code><code class="python">transactions</code> objects. LEAN receives the data from the subscriptions, synchronizes the data to create a&nbsp;<a href="/docs/v2/writing-algorithms/key-concepts/time-modeling/timeslices" style="background-color: rgb(255, 255, 255);">timeslice</a>, and then performs the following steps. Your algorithm can spend up to 10 minutes on each timeslice unless you call the <a href="/docs/v2/writing-algorithms/machine-learning/training-models"><span class="csharp">Train</span><span class="python">train</span></a> method.</p>
 
 <ol>
-    <li>If it's a backtest, check if there are <a href="/docs/v2/writing-algorithms/scheduled-events">Scheduled Events</a> in the past that didn't fire because there was no data between the previous <a href="/docs/v2/writing-algorithms/key-concepts/time-modeling/timeslices">slice</a> and the current slice. LEAN automatically creates a Scheduled Event to call the <code>OnEndOfDay</code> method at the end of each day.</li>
+    <li>If it's a backtest, check if there are <a href="/docs/v2/writing-algorithms/scheduled-events">Scheduled Events</a> in the past that didn't fire because there was no data between the previous <a href="/docs/v2/writing-algorithms/key-concepts/time-modeling/timeslices">slice</a> and the current slice. LEAN automatically creates a Scheduled Event to call the <code class="csharp">OnEndOfDay</code><code class="python">on_end_of_day</code> method at the end of each day.</li>
 
     <p>In live mode, Scheduled Events occur in a separate thread from the algorithm manager, so they run at the correct time.</p>
 
     <li>Update the algorithm time.</li>
-    <li>Update the <code>CurrentSlice</code>.</li>
-    <li>Pass the <code>SymbolChangedEvents</code> to the <code>OnSymbolChangedEvents</code> method.</li>
+    <li>Update the <code class="csharp">CurrentSlice</code><code class="python">current_slice</code>.</li>
+    <li>Pass the <code>SymbolChangedEvents</code> to the <code class="csharp">OnSymbolChangedEvents</code><code class="python">on_symbol_changed_events </code> method.</li>
     <li>Cancel all open orders for securities that <a href="/docs/v2/writing-algorithms/securities/asset-classes/us-equity/corporate-actions#04-Symbol-Changes">changed their ticker</a>.</li>
-    <li>Add a <code>Security</code> object to the <code>Securities</code> collection for each new security in the universe.</li>
+    <li>Add a <code>Security</code> object to the <code class="csharp">Securities</code><code class="python">securities</code> collection for each new security in the universe.</li>
     <li>Update the <code>Security</code> objects with the latest data.</li>
     <li>Update the <code>Cash</code> objects in the <a href="/docs/v2/writing-algorithms/portfolio/cashbook">CashBook</a> with the latest data.</li>
     <li>Process <a href="/docs/v2/writing-algorithms/reality-modeling/trade-fills/key-concepts">fill models</a> for non-market orders.<br></li>
     <li>Submit market on open orders to liquidate Equity Option contracts if the underlying Equity has a <a href="/docs/v2/writing-algorithms/securities/asset-classes/us-equity/corporate-actions#02-Splits">split warning</a>.</li>
     <li>Process <a href="/docs/v2/writing-algorithms/reality-modeling/margin-calls">margin calls</a>.<br></li>
     <li>If it's time to settle <a href="/docs/v2/writing-algorithms/portfolio/cashbook#03-Settled-vs-Unsettled-Cash">unsettled cash</a>, perform settlement.</li>
-    <li>Call the <a href="/docs/v2/writing-algorithms/universes/key-concepts#06-Security-Changed-Events">OnSecuritiesChanged</a> method with the latest security changes.</li>
+    <li>Call the <a href="/docs/v2/writing-algorithms/universes/key-concepts#06-Security-Changed-Events"><span class="csharp">OnSecuritiesChanged</span><span class="csharp">on_securities_changed</span></a> method with the latest security changes.</li>
     <li>Apply dividends to the portfolio.</li>
     <li>For securities that have a split warning, update their portfolio holdings and adjust their open orders to account for the split.</li>
     <li>Update <a href="/docs/v2/writing-algorithms/consolidating-data/getting-started">consolidators</a> with the latest data.<br></li>
-    <li class="csharp">Pass custom data to the <code>OnData</code> method.</li>
-    <li>Pass the <code>Dividends</code> to the <code>OnDividends</code> method.</li>
-    <li>Pass the <code>Splits</code> to the <code>OnSplits</code> method.</li>
-    <li>Pass the <code>Delistings</code> to the <code>OnDelistings</code> method.</li>
-    <li>Pass the <code>Slice</code> to the <code>OnData</code> method.</li>
+    <li class="csharp">Pass custom data to the <code class="csharp">OnData</code><code class="python">on_data</code> method.</li>
+    <li>Pass the <code>Dividends</code> to the <code class="csharp">OnDividends</code><code class="python">on_dividends</code> method.</li>
+    <li>Pass the <code>Splits</code> to the <code class="csharp">OnSplits</code><code class="python">on_splits</code> method.</li>
+    <li>Pass the <code>Delistings</code> to the <code class="csharp">OnDelistings</code><code class="python">on_delistings</code> method.</li>
+    <li>Pass the <code>Slice</code> to the <code class="csharp">OnData</code><code class="python">on_data</code> method.</li>
     <li>Perform <a href="/docs/v2/writing-algorithms/algorithm-framework/universe-selection/key-concepts">universe selection</a>.</li>
-    <li>Pass the <code>Slice</code> to the <code>Update</code> method of each <a href="/docs/v2/writing-algorithms/algorithm-framework/alpha/key-concepts">Alpha model</a>.</li>
+    <li>Pass the <code>Slice</code> to the <code class="csharp">Update</code><code class="python">update</code> method of each <a href="/docs/v2/writing-algorithms/algorithm-framework/alpha/key-concepts">Alpha model</a>.</li>
     <li>Pass the <code>Insight</code> objects from the Alpha model to the <a href="/docs/v2/writing-algorithms/algorithm-framework/portfolio-construction/key-concepts">Portfolio Construction model</a>.</li>
     <li>Pass the <code>PortfolioTarget</code> objects from the Portfolio Construction model to each <a href="/docs/v2/writing-algorithms/algorithm-framework/risk-management/key-concepts">Risk Management model</a>.</li>
     <li>Pass the risk-adjusted <code>PortfolioTarget</code> objects from the Risk Management models to the <a href="/docs/v2/writing-algorithms/algorithm-framework/execution/key-concepts">Execution model</a>.</li>
 </ol>
 
-<p>When your algorithm stops executing, LEAN calls the <code>OnEndOfAlgorithm</code> <a href="/docs/v2/writing-algorithms/key-concepts/event-handlers#15-End-Of-Algorithm-Events">method</a>.</p>
+<p>When your algorithm stops executing, LEAN calls the <code class="csharp">OnEndOfAlgorithm</code><code class="python">on_end_of_algorithm</code> <a href="/docs/v2/writing-algorithms/key-concepts/event-handlers#15-End-Of-Algorithm-Events">method</a>.</p>

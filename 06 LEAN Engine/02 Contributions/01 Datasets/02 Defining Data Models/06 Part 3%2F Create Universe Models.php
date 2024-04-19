@@ -33,7 +33,7 @@ ZVX R735QTJ8XC9X,ZVX,10,15600,156000,False,1,0.666667
     <p>Use the <code>date</code> parameter as the file name to get the <code>DateTime</code> of data being requested. Example output file paths are <span class="public-file-name">/ output / alternative / xyzairline / ticketsales / universe / 20200320.csv</span> for daily data and <span class="public-file-name">/ output / alternative / xyzairline / ticketsales / universe / 2020032000.csv</span> for hourly data.<br></p>
     <li>Define the <code>Reader</code> method to return instances of your universe class.</li>
     <p>The first column in your data file must be the security identifier and the second column must be the point-in-time ticker. With this configuration, use <code>new Symbol(SecurityIdentifier.Parse(csv[0]), csv[1])</code> to create the security <code>Symbol</code>.</p>
-    <p>The date in your data file must be the date that the data point is available for consumption. With this configuration, set the <code>Time</code> to <code>date - Period</code>.</p>
+    <p>The date in your data file must be the date that the data point is available for consumption. With this configuration, set the <code class="csharp">Time</code><code class="python">time</code> to <code>date - Period</code>.</p>
     
     <?php 
     $classNameEnding = "Universe";

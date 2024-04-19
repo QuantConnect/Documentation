@@ -1,17 +1,17 @@
-<p>To add a universe of Index Option contracts, in the <code>Initialize</code> method, call the <code>AddIndexOption</code> method. This method returns an <code>Option</code> object, which contains the canonical <code>Symbol</code>. You can't trade with the canonical Option <code>Symbol</code>, but save a reference to it so you can easily access the Option contracts in the <a href='/docs/v2/writing-algorithms/securities/asset-classes/index-options/handling-data#04-Option-Chains'>OptionChain</a> that LEAN passes to the <code>OnData</code> method. The method to create the universe depends on if the Index Options you want require a target ticker.</p>
+<p>To add a universe of Index Option contracts, in the <code class="csharp">Initialize</code><code class="python">initialize</code> method, call the <code class="csharp">AddIndexOption</code><code class="python">add_index_option</code> method. This method returns an <code>Option</code> object, which contains the canonical <code>Symbol</code>. You can't trade with the canonical Option <code>Symbol</code>, but save a reference to it so you can easily access the Option contracts in the <a href='/docs/v2/writing-algorithms/securities/asset-classes/index-options/handling-data#04-Option-Chains'>OptionChain</a> that LEAN passes to the <code class="csharp">OnData</code><code class="python">on_data</code> method. The method to create the universe depends on if the Index Options you want require a target ticker.</p>
 
 <h4>Create Standard Universes</h4>
 
-<p>To create a universe of Index Options based on an index like VIX, SPX, or NDX, pass the index ticker to the <code>AddIndexOption</code> method.</p>
+<p>To create a universe of Index Options based on an index like VIX, SPX, or NDX, pass the index ticker to the <code class="csharp">AddIndexOption</code><code class="python">add_index_option</code> method.</p>
 
 <div class="section-example-container">
     <pre class="csharp">var option = AddIndexOption("VIX");
 _symbol = option.Symbol;</pre>
     <pre class="python">option = self.add_index_option("VIX")
-self.symbol = option.symbol</pre>
+self._symbol = option.symbol</pre>
 </div>
 
-<p>The following table describes the <code>AddIndexOption</code> method arguments for standard universes:</p>
+<p>The following table describes the <code class="csharp">AddIndexOption</code><code class="python">add_index_option</code> method arguments for standard universes:</p>
 <table class="qc-table table">
     <thead>
         <tr>
@@ -52,7 +52,7 @@ self.symbol = option.symbol</pre>
 
 <h4>Create Non-Standard Universes</h4>
 
-<p>To create a universe of non-standard Index Options like weekly VIX contracts, pass the index Symbol and target Option ticker to the <code>AddIndexOption</code> method.</p>
+<p>To create a universe of non-standard Index Options like weekly VIX contracts, pass the index Symbol and target Option ticker to the <code class="csharp">AddIndexOption</code><code class="python">add_index_option</code> method.</p>
 
 <div class="section-example-container">
     <pre class="csharp">var indexSymbol = AddIndex("VIX").Symbol;
@@ -60,10 +60,10 @@ var option = AddIndexOption(indexSymbol, "VIXW");
 _symbol = option.Symbol;</pre>
     <pre class="python">index_symbol = self.add_index("VIX").symbol
 option = self.add_index_option(index_symbol, "VIXW")
-self.symbol = option.symbol</pre>
+self._symbol = option.symbol</pre>
 </div>
 
-<p>The following table describes the <code>AddIndexOption</code> method arguments for non-standard universes:</p>
+<p>The following table describes the <code class="csharp">AddIndexOption</code><code class="python">add_index_option</code> method arguments for non-standard universes:</p>
 <table class="qc-table table">
     <thead>
         <tr>

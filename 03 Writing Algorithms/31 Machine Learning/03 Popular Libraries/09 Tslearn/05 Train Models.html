@@ -1,7 +1,7 @@
 <p>You can train the model at the beginning of your algorithm and you can periodically re-train it as the algorithm executes.</p>
 
 <h4>Warm Up Training Data</h4>
-<p>You need historical data to initially train the model at the start of your algorithm. To get the initial training data, in the <code>Initialize</code> method, make a <a href="/docs/v2/writing-algorithms/historical-data/history-requests">history request</a>.</p>
+<p>You need historical data to initially train the model at the start of your algorithm. To get the initial training data, in the <code class="csharp">Initialize</code><code class="python">initialize</code> method, make a <a href="/docs/v2/writing-algorithms/historical-data/history-requests">history request</a>.</p>
 <div class="section-example-container">
     <pre class="python">training_length = 252
 self.training_data = {}
@@ -28,18 +28,18 @@ def my_training_method(self):
 </div>
 
 <h4>Set Training Schedule</h4>
-<p>To train the model at the beginning of your algorithm, in the <code>Initialize</code> method, call the <code>Train</code> method.</p>
+<p>To train the model at the beginning of your algorithm, in the <code class="csharp">Initialize</code><code class="python">initialize</code> method, call the <code>Train</code> method.</p>
 <div class="section-example-container">
     <pre class="python">self.train(self.my_training_method)</pre>
 </div>
-<p>To periodically re-train the model as your algorithm executes, in the <code>Initialize</code> method, call the <code>Train</code> method as a <a href="/docs/v2/writing-algorithms/scheduled-events">Scheduled Event</a>.</p>
+<p>To periodically re-train the model as your algorithm executes, in the <code class="csharp">Initialize</code><code class="python">initialize</code> method, call the <code>Train</code> method as a <a href="/docs/v2/writing-algorithms/scheduled-events">Scheduled Event</a>.</p>
 <div class="section-example-container">
     <pre class="python"># Train the model every Sunday at 8:00 AM
 self.train(self.date_rules.every(DayOfWeek.sunday), self.time_rules.at(8, 0), self.my_training_method)</pre>
 </div>
 
 <h4>Update Training Data</h4>
-<p>To update the training data as the algorithm executes, in the <code>OnData</code> method, add the current <code>TradeBar</code> to the <code>RollingWindow</code> that holds the training data.</p>
+<p>To update the training data as the algorithm executes, in the <code class="csharp">OnData</code><code class="python">on_data</code> method, add the current <code>TradeBar</code> to the <code>RollingWindow</code> that holds the training data.</p>
 <div class="section-example-container">
     <pre class="python">def on_data(self, slice: Slice) -&gt; None:
     for kvp in slice.bars:

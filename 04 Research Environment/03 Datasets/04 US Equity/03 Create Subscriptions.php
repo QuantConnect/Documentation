@@ -10,7 +10,7 @@ include(DOCS_RESOURCES."/datasets/research-environment/load-csharp-assemblies.ph
         <pre class="csharp">var qb = new QuantBook();</pre>
         <pre class="python">qb = QuantBook()</pre>
     </div>
-    <li>Call the <code>AddEquity</code> method with a ticker and then save a reference to the US Equity <code>Symbol</code>.</li>
+    <li>Call the <code class="csharp">AddEquity</code><code class="python">add_equity</code> method with a ticker and then save a reference to the US Equity <code>Symbol</code>.</li>
     <div class="section-example-container">
         <pre class="csharp">var spy = qb.AddEquity("SPY").Symbol;
 var tlt = qb.AddEquity("TLT").Symbol;</pre>

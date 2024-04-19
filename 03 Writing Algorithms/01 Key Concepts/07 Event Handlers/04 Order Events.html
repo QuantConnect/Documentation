@@ -12,16 +12,16 @@ public override void OnAssignmentOrderEvent(OrderEvent assignmentEvent)
 {
     Log(assignmentEvent.ToString());
 }</pre>
-<pre class="python">def on_order_event(self, orderEvent: OrderEvent) -&gt; None:
-    order = self.transactions.get_order_by_id(orderEvent.order_id)
-    if orderEvent.status == OrderStatus.FILLED:
-        self.debug(f"{self.time}: {order.type}: {orderEvent}")
+<pre class="python">def on_order_event(self, order_event: OrderEvent) -&gt; None:
+    order = self.transactions.get_order_by_id(order_event.order_id)
+    if order_event.status == OrderStatus.FILLED:
+        self.debug(f"{self.time}: {order.type}: {order_event}")
 
-def on_assignment_order_event(self, assignmentEvent: OrderEvent) -&gt; None:
-    self.log(str(assignmentEvent))</pre>
+def on_assignment_order_event(self, assignment_event: OrderEvent) -&gt; None:
+    self.log(str(assignment_event))</pre>
 </div>
 <p>
-The <code>OnOrderEvent</code> method notifies the algorithm of new orders, and changes in the order status such as fill events and cancelations. For options assignment events there is a dedicated event handler <code>OnAssignmentOrderEvent</code>.
+The <code class="csharp">OnOrderEvent</code><code class="python">on_order_event</code> method notifies the algorithm of new orders, and changes in the order status such as fill events and cancelations. For options assignment events there is a dedicated event handler <code class="csharp">OnAssignmentOrderEvent</code><code class="python">on_assignment_order_event</code>.
 </p>
 <p>In backtesting order events are triggered synchronously after the main data events. In live trading, order events are asynchronously as they occur. To avoid infinite loops, we recommend not to place orders in the OnOrderEvent. </p> 
 <p>For more information, see how to use <a href="/docs/v2/writing-algorithms/trading-and-orders/order-events#02-Track-Order-Events">Order Events</a>.</p>

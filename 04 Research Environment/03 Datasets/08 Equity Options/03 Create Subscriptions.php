@@ -17,7 +17,7 @@ include(DOCS_RESOURCES."/datasets/research-environment/load-csharp-assemblies.ph
         <pre class="python">equity_symbol = qb.add_equity("SPY", data_normalization_mode=DataNormalizationMode.RAW).symbol</pre></div><div class="csharp section-example-container">
     </div>
     <p>To view the supported underlying assets in the US Equity Options dataset, see the <a href="/datasets/algoseek-us-equity-options/explorer">Data Explorer</a>.</p>
-    <li>Call the <code>AddOption</code> method with the underlying Equity <code>Symbol</code>.</li>
+    <li>Call the <code class="csharp">AddOption</code><code class="python">add_option</code> method with the underlying Equity <code>Symbol</code>.</li>
     <div class="section-example-container">
         <pre class="csharp">var option = qb.AddOption(equitySymbol);</pre>
         <pre class="python">option = qb.add_option(equity_symbol)</pre>
@@ -96,7 +96,7 @@ contract_symbols = qb.option_chain_provider.get_option_contract_list(equity_symb
         and s.id.strike_price == 477 
         and s.id.date == datetime(2022, 1, 21)][0]</pre>
     </div>
-	<li>Call the <code>AddOptionContract</code> method with an <code>OptionContract</code> <code>Symbol</code> and disable fill-forward.</li>
+	<li>Call the <code class="csharp">AddOptionContract</code><code class="python">add_option_contract</code>  method with an <code>OptionContract</code> <code>Symbol</code> and disable fill-forward.</li>
     <div class="section-example-container">
       <pre class="csharp">var optionContract = qb.AddOptionContract(contractSymbol, fillForward: false);</pre>
       <pre class="python">option_contract = qb.add_option_contract(contract_symbol, fill_forward = False)</pre>

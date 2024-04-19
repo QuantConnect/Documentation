@@ -1,8 +1,8 @@
-<p>With automatic updates, your indicators automatically update with the security data on a schedule you set. To configure automatic updates, create a <a href='/docs/v2/writing-algorithms/consolidating-data/getting-started'>consolidator</a> and then call the <code>RegisterIndicator</code> method. If you register an indicator for automatic updates, don't call the indicator's <code>Update</code> method or else the indicator will receive double updates.</p>
+<p>With automatic updates, your indicators automatically update with the security data on a schedule you set. To configure automatic updates, create a <a href='/docs/v2/writing-algorithms/consolidating-data/getting-started'>consolidator</a> and then call the <code>RegisterIndicator</code> method. If you register an indicator for automatic updates, don't call the indicator's <code class="csharp">Update</code><code class="python">update</code> method or else the indicator will receive double updates.</p>
 
 <div class="section-example-container">
 	<pre class="python"># Create a security subscription 
-self.symbol = self.add_equity("SPY", Resolution.MINUTE).symbol
+self._symbol = self.add_equity("SPY", Resolution.MINUTE).symbol
 
 # Create a manual indicator
 self.indicator = RelativeStrengthIndex(10, MovingAverageType.SIMPLE)

@@ -3,7 +3,7 @@
   The most common case is <a href='/docs/v2/writing-algorithms/importing-data/streaming-data/key-concepts'>custom data implementations</a>, where the LEAN Engine is creating the objects and you're unable to specify a custom constructor. 
 </p>
 <p>
-  To create a global static variable, assign the reference to the global variable in the algorithm's <code>Initialization</code> method. 
+  To create a global static variable, assign the reference to the global variable in the algorithm's <code class="csharp">Initialize</code><code class="python">initialize</code> method. 
   This assignment sets the active instance of the variable to the global static. 
   Then, in your custom class, you can access the QCAlgorithm API through the global. 
   The following algorithm demonstrates this process:
@@ -43,34 +43,33 @@ public class MyCustomDataType : BaseData
 }</pre>
     <pre class="python">class MyAlgorithmInstance(QCAlgorithm):
 
-    def Initialize(self):
-        self.SetCash(100000)
-        self.SetStartDate(1998, 1, 1)
-        self.SetEndDate(2014, 6, 1)
-        
+    def initialize(self):
+        self.set_cash(100000)
+        self.set_start_date(1998, 1, 1)
+        self.set_end_date(2014, 6, 1)
+            
         # Assign self to Static Cape Variable.
-        Cape.Algorithm = self
-        self.AddData(Cape, "CAPE")
-
-    def OnData(self, data):
-        self.Plot("CAPE", "Value", data["CAPE"].Value)
-
-class Cape(PythonData):  
-    def GetSource(self, config, date, isLiveMode): 
-        Cape.Algorithm.Debug("Test Static: GetSource")
-        return SubscriptionDataSource("https://www.dropbox.com/scl/fi/mqbnfb7ll88nne7b8ymy7/CAPE.csv?rlkey=mnu0ax1d8lcj3gzkdw79z0pm8&dl=1", SubscriptionTransportMedium.RemoteFile)
+        Cape.algorithm = self
+        self.add_data(Cape, "CAPE")
     
-    def Reader(self, config, line, date, isLiveMode):
+    def on_data(self, data):
+        self.plot("CAPE", "Value", data["CAPE"].value)
+    
+class Cape(PythonData):  
+    def get_source(self, config, date, isLiveMode): 
+        Cape.algorithm.debug("Test Static: GetSource")
+        return SubscriptionDataSource("https://www.dropbox.com/scl/fi/mqbnfb7ll88nne7b8ymy7/CAPE.csv?rlkey=mnu0ax1d8lcj3gzkdw79z0pm8&dl=1", SubscriptionTransportMedium.REMOTE_FILE)
+        
+    def reader(self, config, line, date, isLiveMode):
         if not (line.strip() and line[0].isdigit()): return None 
         index = Cape()
         try: 
             data = line.split(',') 
-            index.Symbol = config.Symbol
-            index.Time = datetime.strptime(data[0], "%Y-%m") 
-            index.Value = float(data[10])
+            index.symbol = config.symbol
+            index.time = datetime.strptime(data[0], "%Y-%m") 
+            index.value = float(data[10])
         except ValueError: 
-            Cape.Algorithm.Debug("Test Static 2: ValueError")
+            Cape.algorithm.debug("Test Static 2: ValueError")
             return None 
-        return index
-    </pre>
+        return index</pre>
 </div>

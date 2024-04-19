@@ -16,7 +16,7 @@ include(DOCS_RESOURCES."/datasets/research-environment/load-csharp-assemblies.ph
         <pre class="csharp">qb.set_time_zone(TimeZones.UTC);</pre>
         <pre class="python">qb.set_time_zone(TimeZones.UTC)</pre>
     </div>
-    <li>Call the <code>AddCryptoFuture</code> method with a ticker and then save a reference to the Crypto Future <code>Symbol</code>.</li>
+    <li>Call the <code class="csharp">AddCryptoFuture</code><code class="python">add_crypto_future</code>  method with a ticker and then save a reference to the Crypto Future <code>Symbol</code>.</li>
     <div class="section-example-container">
         <pre class="csharp">var btcusd = qb.AddCryptoFuture("BTCUSD").Symbol;
 var ethusd = qb.AddCryptoFuture("ETHUSD").Symbol;</pre>

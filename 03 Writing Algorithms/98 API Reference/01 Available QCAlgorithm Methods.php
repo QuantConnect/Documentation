@@ -762,7 +762,7 @@
 </tr>
 <tr>
 <td width="33%"><a href="#SetTimeZone-header">SetTimeZone()</a></td>
-<td>Sets the time zone of the <code>Time</code> property in the algorithm.</td>
+<td>Sets the time zone of the <code class="csharp">Time</code><code class="python">time</code> property in the algorithm.</td>
 </tr>
 <tr>
 <td width="33%"><a href="#SetTradeBuilder-header">SetTradeBuilder()</a></td>
@@ -1262,7 +1262,7 @@
 </tr>
 <tr>
 <td width="33%"><a href="#SetTimeZone-header">SetTimeZone()</a></td>
-<td>Sets the time zone of the <code>Time</code> property in the algorithm.</td>
+<td>Sets the time zone of the <code class="csharp">Time</code><code class="python">time</code> property in the algorithm.</td>
 </tr>
 <tr>
 <td width="33%"><a href="#Symbol-header">Symbol()</a></td>

@@ -1,7 +1,7 @@
 <p>Follow these steps to implement the short strangle strategy:</p>
 
 <ol>
-    <li>In the <code>Initialize</code> method, set the start date, end date, cash, and <a href="/docs/v2/writing-algorithms/universes/equity-options">Option universe</a>.</li>
+    <li>In the <code class="csharp">Initialize</code><code class="python">initialize</code> method, set the start date, end date, cash, and <a href="/docs/v2/writing-algorithms/universes/equity-options">Option universe</a>.</li>
     <div class="section-example-container">
         <pre class="csharp">private Symbol _symbol;
 
@@ -21,11 +21,11 @@ public override void Initialize()
     self.set_cash(100000)
     self.universe_settings.asynchronous = True
     option = self.add_option("GOOG")
-    self.symbol = option.symbol
+    self._symbol = option.symbol
     option.set_filter(-5, 5, 0, 30)</pre>
     </div>
 
-    <li>In the <code>OnData</code> method, select the expiration date and strike prices of the contracts in the strategy legs.</li>
+    <li>In the <code class="csharp">OnData</code><code class="python">on_data</code> method, select the expiration date and strike prices of the contracts in the strategy legs.</li>
     <div class="section-example-container">
         <pre class="csharp">public override void OnData(Slice slice)
 {
@@ -88,7 +88,7 @@ public override void Initialize()
     put_strike = put_contracts[0].Strike</pre>
     </div>
 
-    <li>In the <code>OnData</code> method, call the <code>OptionStrategies.Strangle</code> method and then submit the order.</li>
+    <li>In the <code class="csharp">OnData</code><code class="python">on_data</code> method, call the <code>OptionStrategies.Strangle</code> method and then submit the order.</li>
     <div class="section-example-container">
         <pre class="csharp">var shortStrangle = OptionStrategies.ShortStrangle(_symbol, callStrike, putStrike, expiry);
 Buy(shortStrangle, 1);</pre>

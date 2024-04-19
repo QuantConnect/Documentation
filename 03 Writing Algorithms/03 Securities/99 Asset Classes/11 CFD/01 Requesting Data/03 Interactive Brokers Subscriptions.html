@@ -1,8 +1,8 @@
-<p>To create a CFD subscription for Interactive Brokers (IB), in the <code>Initialize</code> method, call the <code>AddCfd</code> method and set the <code>market</code> parameter to <code>Market.InteractiveBrokers</code>. The <code>AddCfd</code> method returns a <code>Cfd</code> Security object, which contains a <code>Symbol</code>. Save a reference to the <code>Symbol</code> so you can use it in <code>OnData</code> to access the security data in the <code>Slice</code>.</p>
+<p>To create a CFD subscription for Interactive Brokers (IB), in the <code class="csharp">Initialize</code><code class="python">initialize</code> method, call the <code>AddCfd</code> method and set the <code>market</code> parameter to <code>Market.InteractiveBrokers</code>. The <code>AddCfd</code> method returns a <code>Cfd</code> Security object, which contains a <code>Symbol</code>. Save a reference to the <code>Symbol</code> so you can use it in <code class="csharp">OnData</code><code class="python">on_data</code> to access the security data in the <code>Slice</code>.</p>
 
 <div class="section-example-container">
     <pre class="csharp">_symbol = AddCfd("SPY", market: Market.InteractiveBrokers).Symbol;</pre>
-    <pre class="python">self.symbol = self.add_cfd("SPY", market = Market.INTERACTIVE_BROKERS).symbol</pre>
+    <pre class="python">self._symbol = self.add_cfd("SPY", market = Market.INTERACTIVE_BROKERS).symbol</pre>
 </div>
 
 <p>Historical data for backtesting IB CFDs is unavailable.</p>
@@ -23,6 +23,6 @@ _symbol = QuantConnect.Symbol.Create("SPY", securityType, Market.InteractiveBrok
 AddSecurity(_symbol);</pre>
     <pre class="python">security_type = SecurityType.CFD if self.live_mode else SecurityType.EQUITY
 market = Market.INTERACTIVE_BROKERS if self.live_mode else Market.USA
-self.symbol = Symbol.create("SPY", security_type, market)
+self._symbol = Symbol.create("SPY", security_type, market)
 self.add_security(self.symbol)</pre>
 </div>

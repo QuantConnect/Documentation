@@ -1,4 +1,4 @@
-<p>By default, LEAN doesn't add any contracts to the <a href="/docs/v2/writing-algorithms/securities/asset-classes/futures/handling-data#05-Futures-Chains">FuturesChain</a> it passes to the <code>OnData</code> method. To add a universe of Future contracts, in the <code>Initialize</code> method, call the <code>SetFilter</code> method of the <code>Future</code> object. The following table describes the available filter techniques:</p>
+<p>By default, LEAN doesn't add any contracts to the <a href="/docs/v2/writing-algorithms/securities/asset-classes/futures/handling-data#05-Futures-Chains">FuturesChain</a> it passes to the <code class="csharp">OnData</code><code class="python">on_data</code> method. To add a universe of Future contracts, in the <code class="csharp">Initialize</code><code class="python">initialize</code> method, call the <code>SetFilter</code> method of the <code>Future</code> object. The following table describes the available filter techniques:</p>
 
 <table class="table qc-table">
     <thead>

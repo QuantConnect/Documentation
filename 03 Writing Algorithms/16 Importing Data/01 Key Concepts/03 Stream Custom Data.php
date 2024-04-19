@@ -1,4 +1,4 @@
-<p>To receive your custom data in the <code>OnData</code> method, create a custom type and then create a data subscription. The custom data type tells LEAN where to get your data and how to read it.</p>
+<p>To receive your custom data in the <code class="csharp">OnData</code><code class="python">on_data</code> method, create a custom type and then create a data subscription. The custom data type tells LEAN where to get your data and how to read it.</p>
 
 <p>All custom data types must extend the <code class='csharp'>BaseData</code><code class='python'>PythonData</code> class and override the <code>GetSource</code> and <code>Reader</code> methods</p>
 

@@ -1,4 +1,4 @@
-<p>As your data reader reads your custom data file, LEAN adds the data points in the <code>Slice</code> it passes to your algorithm's <code>OnData</code> method. To collect the custom data, use the <code>Symbol</code> or name of your custom data subscription. You can access the <code>Value</code> and custom properties of your custom data class from the <code>Slice</code>. To access the custom properties, <span class='csharp'>use the custom attribute</span><span class='python'>pass the property name to the <code>GetProperty</code> method</span>.</p>
+<p>As your data reader reads your custom data file, LEAN adds the data points in the <code>Slice</code> it passes to your algorithm's <code class="csharp">OnData</code><code class="python">on_data</code> method. To collect the custom data, use the <code>Symbol</code> or name of your custom data subscription. You can access the <code>Value</code> and custom properties of your custom data class from the <code>Slice</code>. To access the custom properties, <span class='csharp'>use the custom attribute</span><span class='python'>pass the property name to the <code>GetProperty</code> method</span>.</p>
 <? if ($keyConceptsPage) { ?>
 <div class='section-example-container'>
 <pre class='csharp'>public class MyAlgorithm : QCAlgorithm
@@ -58,5 +58,5 @@
     <li>The first letter is capitalized.</li>
     <li>Whitespace characters are removed.</li>
 </ol>
-<p class='python'>For example, if you set a property name in the <code>Reader</code> method to <code>['some-property.name']</code>, you can access it in the <code>OnData</code> method through the <code>Somepropertyname</code> member of your data object.</p>
+<p class='python'>For example, if you set a property name in the <code>Reader</code> method to <code>['some-property.name']</code>, you can access it in the <code class="csharp">OnData</code><code class="python">on_data</code> method through the <code>Somepropertyname</code> member of your data object.</p>
 <? } ?>

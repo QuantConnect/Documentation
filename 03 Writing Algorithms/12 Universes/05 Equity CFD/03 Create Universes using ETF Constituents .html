@@ -1,4 +1,4 @@
-<p>To add an ETF Constituents universe, in the <code>Initialize</code> method, call the <code>Universe.ETF</code> method with a filter function, and pass it to the <code>AddUniverse</code> method. The filter function receives a list of <code>ETFConstituentUniverse</code> objects and must return a list of <code>Symbol</code> objects. The <code>Symbol</code> objects you return from the function are the constituents of the fundamental universe and LEAN automatically creates subscriptions for them. In live mode, call the <code>Symbol.Create</code> method to swap for a CFD version of the same <code>Symbol</code>. Don't call <code>AddCfd</code> in the filter function.</p>
+<p>To add an ETF Constituents universe, in the <code class="csharp">Initialize</code><code class="python">initialize</code> method, call the <code>Universe.ETF</code> method with a filter function, and pass it to the <code class="csharp">AddUniverse</code><code class="python">add_universe</code> method. The filter function receives a list of <code>ETFConstituentUniverse</code> objects and must return a list of <code>Symbol</code> objects. The <code>Symbol</code> objects you return from the function are the constituents of the fundamental universe and LEAN automatically creates subscriptions for them. In live mode, call the <code>Symbol.Create</code> method to swap for a CFD version of the same <code>Symbol</code>. Don't call <code>AddCfd</code> in the filter function.</p>
     
 <div class="section-example-container">
     <pre class="csharp">public class MyUniverseAlgorithm : QCAlgorithm {
@@ -25,7 +25,7 @@
     <pre class="python">class MyUniverseAlgorithm(QCAlgorithm):
     def initialize(self) -&gt; None:
         self.universe_settings.asynchronous = True
-        self.universe = self.universe.etf("SPY", self.universe_settings, self.etf_constituents_filter)
+        self._universe = self.universe.etf("SPY", self.universe_settings, self.etf_constituents_filter)
         self.add_universe(self.universe)
     
     def etf_constituents_filter(self, constituents: List[ETFConstituentUniverse]) -&gt; List[Symbol]:

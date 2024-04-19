@@ -1,4 +1,4 @@
-<p>The benefit of the <code>Symbol</code> class is that it always maps to the same security, regardless of their trading ticker. When a company changes its trading ticker, LEAN sends a <code>SymbolChangedEvent</code> to the <code>OnData</code> method. <code>SymbolChangedEvent</code> objects have the following properties:</p>
+<p>The benefit of the <code>Symbol</code> class is that it always maps to the same security, regardless of their trading ticker. When a company changes its trading ticker, LEAN sends a <code>SymbolChangedEvent</code> to the <code class="csharp">OnData</code><code class="python">on_data</code> method. <code>SymbolChangedEvent</code> objects have the following properties:</p>
 
 <div data-tree='QuantConnect.Data.Market.SymbolChangedEvent'></div>
 
@@ -61,7 +61,7 @@ def OnSymbolChangedEvents(self, symbol_changed_events: SymbolChangedEvents) -> N
         pass</pre>
 </div>
 
-<p>If you have an open order for a security when they change their ticker, LEAN cancels your order. To keep your order, in the <code>OnOrderEvent</code> method, get the quantity and <code>Symbol</code> of the cancelled order and submit a new order.</p> 
+<p>If you have an open order for a security when they change their ticker, LEAN cancels your order. To keep your order, in the <code class="csharp">OnOrderEvent</code><code class="python">on_order_event</code> method, get the quantity and <code>Symbol</code> of the cancelled order and submit a new order.</p> 
 
 <div class='section-example-container'>
     <pre class='csharp'>public override void OnOrderEvent(OrderEvent orderEvent)

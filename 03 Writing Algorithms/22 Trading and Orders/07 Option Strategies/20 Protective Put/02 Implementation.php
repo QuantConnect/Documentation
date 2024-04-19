@@ -1,7 +1,7 @@
 <p>Follow these steps to implement the protective put strategy:</p>
 
 <ol>
-    <li>In the <code>Initialize</code> method, set the start date, end date, starting cash, and <a href="/docs/v2/writing-algorithms/universes/equity-options">Options universe</a>.</li>
+    <li>In the <code class="csharp">Initialize</code><code class="python">initialize</code> method, set the start date, end date, starting cash, and <a href="/docs/v2/writing-algorithms/universes/equity-options">Options universe</a>.</li>
     <div class="section-example-container">
         <pre class="csharp">private Symbol _put, _symbol;
 
@@ -21,12 +21,12 @@ public override void Initialize()
     self.set_cash(100000)
     self.universe_settings.asynchronous = True
     option = self.add_option("IBM")
-    self.symbol = option.symbol
+    self._symbol = option.symbol
     option.set_filter(-3, 3, 0, 31)
     self.put = None</pre>
     </div>
   
-    <li>In the <code>OnData</code> method, select the Option contract.</li>
+    <li>In the <code class="csharp">OnData</code><code class="python">on_data</code> method, select the Option contract.</li>
     <div class="section-example-container">
         <pre class="csharp">public override void OnData(Slice slice)
 {
@@ -60,7 +60,7 @@ public override void Initialize()
     atm_put = put_contracts[0]</pre>
 </div>
 
-    <li>In the <code>OnData</code> method, call the <code>OptionStrategies.ProtectivePut</code> method and then submit the order.</li>
+    <li>In the <code class="csharp">OnData</code><code class="python">on_data</code> method, call the <code>OptionStrategies.ProtectivePut</code> method and then submit the order.</li>
     <div class="section-example-container">
         <pre class="csharp">var protectivePut = OptionStrategies.ProtectivePut(_symbol, atmPut.Strike, expiry);
 Buy(protectivePut, 1);

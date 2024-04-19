@@ -1,7 +1,7 @@
 <p>Follow these steps to implement the short put butterfly strategy:</p>
 
 <ol>
-    <li>In the <code>Initialize</code> method, set the start date, end date, cash, and <a href="/docs/v2/writing-algorithms/universes/equity-options">Option universe</a>.</li>
+    <li>In the <code class="csharp">Initialize</code><code class="python">initialize</code> method, set the start date, end date, cash, and <a href="/docs/v2/writing-algorithms/universes/equity-options">Option universe</a>.</li>
     <div class="section-example-container">
         <pre class="csharp">private Symbol _symbol;
 
@@ -21,11 +21,11 @@ public override void Initialize()
     self.set_cash(500000)
     self.universe_settings.asynchronous = True
     option = self.add_option("GOOG", Resolution.MINUTE)
-    self.symbol = option.symbol
+    self._symbol = option.symbol
     option.set_filter(lambda universe: universe.include_weeklys().strikes(-15, 15).expiration(0, 31))</pre>
     </div>
 
-    <li>In the <code>OnData</code> method, select strikes and expiration date of the contracts in the strategy legs.</li>
+    <li>In the <code class="csharp">OnData</code><code class="python">on_data</code> method, select strikes and expiration date of the contracts in the strategy legs.</li>
     <div class="section-example-container">
         <pre class="csharp">public override void OnData(Slice slice)
 {
@@ -84,7 +84,7 @@ public override void Initialize()
     otm_strike = atm_strike - spread</pre>
     </div>
 
-    <li>In the <code>OnData</code> method, call the <code>OptionStrategies.ShortButterflyPut</code> method and then submit the order.</li>
+    <li>In the <code class="csharp">OnData</code><code class="python">on_data</code> method, call the <code>OptionStrategies.ShortButterflyPut</code> method and then submit the order.</li>
     <div class="section-example-container">
         <pre class="csharp">var optionStrategy = OptionStrategies.ShortButterflyPut(_symbol, itmStrike, atmStrike, otmStrike, expiry);
 Buy(optionStrategy, 1);</pre>

@@ -22,18 +22,18 @@ self.contract_symbol = sorted(contract_symbols, key=lambda symbol: symbol.id.dat
 </div>
 
 <h4>Subscribe to Contracts</h4>
-<p>To create a Futures contract subscription, pass the contract <code>Symbol</code> to the <code>AddFutureContract</code> method. Save a reference to the contract&nbsp; <code>Symbol</code> so you can easily access the contract in the <a href="/docs/v2/writing-algorithms/securities/asset-classes/futures/handling-data#05-Futures-Chains">FuturesChain</a> that LEAN passes to the <code>OnData</code> method.</p>
+<p>To create a Futures contract subscription, pass the contract <code>Symbol</code> to the <code class="csharp">AddFutureContract</code><code class="python">add_future_contract</code> method. Save a reference to the contract&nbsp; <code>Symbol</code> so you can easily access the contract in the <a href="/docs/v2/writing-algorithms/securities/asset-classes/futures/handling-data#05-Futures-Chains">FuturesChain</a> that LEAN passes to the <code class="csharp">OnData</code><code class="python">on_data</code> method.</p>
 
 <div class="section-example-container">
     <pre class="csharp">AddFutureContract(_contractSymbol);</pre>
     <pre class="python">self.add_future_contract(self.contract_symbol)</pre>
 </div>
 
-<p>The <code>AddFutureContract</code> method creates a subscription for a single Future contract and adds it to your <span class="new-term">user-defined</span> universe. To create a dynamic universe of Futures contracts, add a <a href="/docs/v2/writing-algorithms/universes/futures">Futures universe</a> or a <a href="/docs/v2/writing-algorithms/algorithm-framework/universe-selection/futures-universes">Futures Universe Selection model</a>.</p>
+<p>The <code class="csharp">AddFutureContract</code><code class="python">add_future_contract</code> method creates a subscription for a single Future contract and adds it to your <span class="new-term">user-defined</span> universe. To create a dynamic universe of Futures contracts, add a <a href="/docs/v2/writing-algorithms/universes/futures">Futures universe</a> or a <a href="/docs/v2/writing-algorithms/algorithm-framework/universe-selection/futures-universes">Futures Universe Selection model</a>.</p>
 
 <h4>Warm Up Contract Prices</h4>
 
-<p>If you subscribe to a Futures contract with <code>AddFutureContract</code>, you'll need to wait until the next <code>Slice</code> to receive data and trade the contract. To trade the contract in the same time step you subscribe to the contract, set the current price of the contract in a <a href='/docs/v2/writing-algorithms/initialization#07-Set-Security-Initializer'>security initializer</a>.</p>
+<p>If you subscribe to a Futures contract with <code class="csharp">AddFutureContract</code><code class="python">add_future_contract</code>, you'll need to wait until the next <code>Slice</code> to receive data and trade the contract. To trade the contract in the same time step you subscribe to the contract, set the current price of the contract in a <a href='/docs/v2/writing-algorithms/initialization#07-Set-Security-Initializer'>security initializer</a>.</p>
 <div class="section-example-container">
     <pre class="csharp">SetSecurityInitializer(new BrokerageModelSecurityInitializer(BrokerageModel,
     new FuncSecuritySeeder(GetLastKnownPrices)));</pre>

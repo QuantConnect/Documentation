@@ -68,7 +68,7 @@
 </tbody>
 </table>
 
-<p>To set the <code>UniverseSettings</code>, update the preceding properties in the <code>Initialize</code> method before you add the universe. These settings are globals, so they apply to all universes you create.</p>
+<p>To set the <code>UniverseSettings</code>, update the preceding properties in the <code class="csharp">Initialize</code><code class="python">initialize</code> method before you add the universe. These settings are globals, so they apply to all universes you create.</p>
  
 <div class="section-example-container">
 <pre class="csharp">// Request second resolution data. This will be slow!

@@ -1,4 +1,4 @@
-<p>The <code>Option</code> object provides methods you can use for basic calculations. These methods require the underlying price. To get the <code>Option</code> object and the <code>Security</code> object for its underlying in any function, use the Option <code>Symbol</code> to access the value in the <code>Securities</code> object.</p>
+<p>The <code>Option</code> object provides methods you can use for basic calculations. These methods require the underlying price. To get the <code>Option</code> object and the <code>Security</code> object for its underlying in any function, use the Option <code>Symbol</code> to access the value in the <code class="csharp">Securities</code><code class="python">securities</code> object.</p>
 
 <div class="section-example-container">
     <pre class="csharp">var option = Securities[<?=$csSymbol?>];

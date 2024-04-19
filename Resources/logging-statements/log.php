@@ -6,7 +6,7 @@
 
 <p>For live trading, the log files of each cloud project can store up to 100,000 lines for up to one year. If you log more than 100,000 lines or some lines become older than one year, we remove the oldest lines in the files so your project stays within the quota.</p>
 
-<p>To record the algorithm state when the algorithm stops executing, add log statements to the <code>OnEndOfAlgorithm</code> event handler.</p>
+<p>To record the algorithm state when the algorithm stops executing, add log statements to the <code class="csharp">OnEndOfAlgorithm</code><code class="python">on_end_of_algorithm</code> event handler.</p>
 
 <div class='section-example-container'>
     <pre class='csharp'>Log("My log message");</pre>

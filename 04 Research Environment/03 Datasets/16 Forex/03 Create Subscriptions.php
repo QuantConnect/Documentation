@@ -16,7 +16,7 @@ include(DOCS_RESOURCES."/datasets/research-environment/load-csharp-assemblies.ph
         <pre class="csharp">qb.set_time_zone(TimeZones.UTC);</pre>
         <pre class="python">qb.set_time_zone(TimeZones.UTC)</pre>
     </div>
-    <li>Call the <code>AddForex</code> method with a ticker and then save a reference to the Forex <code>Symbol</code>.</li>
+    <li>Call the <code class="csharp">AddForex</code><code class="python">add_forex</code> method with a ticker and then save a reference to the Forex <code>Symbol</code>.</li>
     <div class="section-example-container">
         <pre class="csharp">var eurusd = qb.AddForex("EURUSD").Symbol;
 var gbpusd = qb.AddForex("GBPUSD").Symbol;</pre>
