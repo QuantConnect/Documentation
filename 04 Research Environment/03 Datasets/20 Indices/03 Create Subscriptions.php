@@ -20,4 +20,4 @@ vix = qb.add_index("VIX").symbol</pre>
     </div>
 </ol>
 
-<p>To view all of the available indices, see <a href="/docs/v2/writing-algorithms/datasets/tickdata/us-cash-indices#06-Supported-Indices">Supported Indices</a>.</p>
+<p>To view all of the available indices, see <a href="/docs/v2/writing-algorithms/datasets/tickdata/us-cash-indices#07-Supported-Indices">Supported Indices</a>.</p>

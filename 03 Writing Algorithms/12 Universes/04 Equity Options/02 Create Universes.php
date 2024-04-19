@@ -23,7 +23,7 @@ self.symbol = option.symbol</pre>
         <tr>
             <td><code>ticker</code></td>
 	        <td><code class="csharp">string</code><code class="python">str</code></td>
-            <td>The underlying Equity ticker. To view the supported underlying Equity tickers, see <a href='/docs/v2/writing-algorithms/datasets/algoseek/us-equity-options#06-Supported-Assets'>Supported Assets</a>.</td>
+            <td>The underlying Equity ticker. To view the supported underlying Equity tickers, see <a href='/docs/v2/writing-algorithms/datasets/algoseek/us-equity-options#07-Supported-Assets'>Supported Assets</a>.</td>
             <td></td>
         </tr>
         <tr>

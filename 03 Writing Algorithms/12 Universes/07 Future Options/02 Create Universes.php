@@ -27,7 +27,7 @@ self.add_future_option(future.symbol)</pre>
         <tr>
             <td><code>symbol</code></td>
 	        <td><code>Symbol</code></td>
-            <td>The continuous Future contract Symbol. To view the supported assets in the US Future Options dataset, see <a href='/docs/v2/writing-algorithms/datasets/algoseek/us-future-options#06-Supported-Assets'>Supported Assets</a>.</td>
+            <td>The continuous Future contract Symbol. To view the supported assets in the US Future Options dataset, see <a href='/docs/v2/writing-algorithms/datasets/algoseek/us-future-options#07-Supported-Assets'>Supported Assets</a>.</td>
             <td></td>
         </tr>
         <tr>

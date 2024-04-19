@@ -26,7 +26,7 @@ futures_contract_symbols = qb.future_chain_provider.get_future_contract_list(fut
 futures_contract_symbol = sorted(futures_contract_symbols, key=lambda s: s.id.date)[0]
 qb.add_future_contract(futures_contract_symbol, fill_forward = False)</pre>
     </div>
-    <p>To view the available underlying Futures in the US Future Options dataset, see <a href="/docs/v2/writing-algorithms/datasets/algoseek/us-future-options#06-Supported-Assets">Supported Assets</a>.</p>
+    <p>To view the available underlying Futures in the US Future Options dataset, see <a href="/docs/v2/writing-algorithms/datasets/algoseek/us-future-options#07-Supported-Assets">Supported Assets</a>.</p>
 
     <li><span class='qualifier'>(Optional)</span> Set a <a href='/docs/v2/writing-algorithms/universes/future-options#03-Filter-Contracts'>contract filter</a>.</li>
 <div class="section-example-container">

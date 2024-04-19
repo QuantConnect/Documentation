@@ -22,7 +22,7 @@ include(DOCS_RESOURCES."/datasets/research-environment/load-csharp-assemblies.ph
                 data_mapping_mode = DataMappingMode.LAST_TRADING_DAY,
                 contract_depth_offset = 0)</pre>
     </div>
-    <p>To view the available tickers in the US Futures dataset, see <a href='/docs/v2/writing-algorithms/datasets/algoseek/us-futures#07-Supported-Assets'>Supported Assets</a>.</p>
+    <p>To view the available tickers in the US Futures dataset, see <a href='/docs/v2/writing-algorithms/datasets/algoseek/us-futures#08-Supported-Assets'>Supported Assets</a>.</p>
     <p>If you omit any of the arguments after the ticker, see the following table for their default values:</p>
     <table class="qc-table table">
         <thead>

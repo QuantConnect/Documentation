@@ -41,7 +41,7 @@ self.add_universe_selection(
 		    <code class="csharp">Func&lt;DateTime, IEnumerable&lt;Symbol&gt;&gt;</code>
 		    <code class="python">Callable[[datetime], List[Symbol]]</code>
 	    </td>
-            <td>A function that selects the Future symbols for a given Coordinated Universal Time (UTC). To view the supported assets in the US Futures dataset, see <a href='/docs/v2/writing-algorithms/datasets/algoseek/us-futures#07-Supported-Assets'>Supported Assets</a>.<br></td>
+            <td>A function that selects the Future symbols for a given Coordinated Universal Time (UTC). To view the supported assets in the US Futures dataset, see <a href='/docs/v2/writing-algorithms/datasets/algoseek/us-futures#08-Supported-Assets'>Supported Assets</a>.<br></td>
             <td></td>
         </tr>
         <tr>

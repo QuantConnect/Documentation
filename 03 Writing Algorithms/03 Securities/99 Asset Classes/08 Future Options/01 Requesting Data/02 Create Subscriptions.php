@@ -131,4 +131,4 @@ self.set_security_initializer(BrokerageModelSecurityInitializer(self.brokerage_m
 
 <h4>Supported Assets</h4>
 
-<p>To view the supported assets in the US Future Options dataset, see <a href="/docs/v2/writing-algorithms/datasets/algoseek/us-future-options#06-Supported-Assets">Supported Assets</a>.</p>
+<p>To view the supported assets in the US Future Options dataset, see <a href="/docs/v2/writing-algorithms/datasets/algoseek/us-future-options#07-Supported-Assets">Supported Assets</a>.</p>
