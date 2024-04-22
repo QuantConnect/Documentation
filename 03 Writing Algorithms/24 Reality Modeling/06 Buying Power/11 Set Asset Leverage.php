@@ -8,7 +8,7 @@ AddEquity("SPY", leverage: 3);</pre>
 AddEquity("SPY", leverage=3)</pre>
 </div>
 
-<p>You can also set the asset leverage in a security initializer. In order to set the leverage of securities in the security initializer, call <code>SetSecurityInitializer</code> before you create security subscriptions and before you call <code>SetBrokerageModel</code>. If you pass in a <code>leverage</code> argument when you create the security subscription, the <code>leverage</code> argument takes precedence over the <code>SetLeverage</code> call in the security initializer.<br></p>
+<p>You can also set the asset leverage in a security initializer. In order to set the leverage of securities in the security initializer, call <code class="csharp">SetSecurityInitializer</code><code class="python">set_security_initializer</code> before you create security subscriptions and before you call <code class="csharp">SetBrokerageModel</code><code class="python">set_brokerage_model</code>. If you pass in a <code>leverage</code> argument when you create the security subscription, the <code>leverage</code> argument takes precedence over the <code>SetLeverage</code> call in the security initializer.<br></p>
 
 
 <?php

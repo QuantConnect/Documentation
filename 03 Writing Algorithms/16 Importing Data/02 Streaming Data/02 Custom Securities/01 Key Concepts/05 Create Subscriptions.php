@@ -1,4 +1,4 @@
-<p>After you define the custom data class, in the <code class="csharp">Initialize</code><code class="python">initialize</code> method of your algorithm, call the <code>AddData</code> method. This method gives LEAN the type factory to create the objects, the name of the data, and the resolution at which to poll the data source for updates.</p>
+<p>After you define the custom data class, in the <code class="csharp">Initialize</code><code class="python">initialize</code> method of your algorithm, call the <code class="csharp">AddData</code><code class="python">add_data</code> method. This method gives LEAN the type factory to create the objects, the name of the data, and the resolution at which to poll the data source for updates.</p>
 
 <div class="section-example-container">
     <pre class="csharp">public class MyAlgorithm : QCAlgorithm
@@ -18,7 +18,7 @@
 
 <?php include(DOCS_RESOURCES."/datasets/live-dataset-polling-frequency-table.html"); ?>
 
-<p>There are several other signatures for the <code>AddData</code> method.</p>
+<p>There are several other signatures for the <code class="csharp">AddData</code><code class="python">add_data</code> method.</p>
 <div class="python section-example-container">
     <pre>self.add_data(type, ticker, resolution)
 self.add_data(type, ticker, resolution, timeZone, fillForward, leverage)

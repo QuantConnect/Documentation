@@ -23,7 +23,7 @@ equity.set_buying_power_model(BuyingPowerModel.NULL)
 # equity.set_margin_model(SecurityMarginModel.null)</pre>
 </div>
 
-<p>You can also set the asset <code>NullBuyingPowerModel</code> in a <a href='/docs/v2/writing-algorithms/initialization#07-Set-Security-Initializer'>security initializer</a>. If your algorithm has a universe, use the security initializer technique. In order to set the buying power of securities in the security initializer, call <code>SetSecurityInitializer</code> before you create security subscriptions and after you call <code>SetBrokerageModel</code>.<br></p>
+<p>You can also set the asset <code>NullBuyingPowerModel</code> in a <a href='/docs/v2/writing-algorithms/initialization#07-Set-Security-Initializer'>security initializer</a>. If your algorithm has a universe, use the security initializer technique. In order to set the buying power of securities in the security initializer, call <code class="csharp">SetSecurityInitializer</code><code class="python">set_security_initializer</code> before you create security subscriptions and after you call <code class="csharp">SetBrokerageModel</code><code class="python">set_brokerage_model</code>.<br></p>
 
 <?
 $overwriteCodePy = "security.SetBuyingPowerModel(BuyingPowerModel.Null)";

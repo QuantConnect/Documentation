@@ -10,7 +10,7 @@ security = self.add_equity("SPY")
 security.set_shortable_provider(LocalDiskShortableProvider("axos"))</pre>
 </div>
 
-<p>You can also set the shortable provider in a security initializer. If your algorithm has a universe, use the security initializer technique. In order to initialize single security subscriptions with the security initializer, call <code>SetSecurityInitializer</code> before you create the subscriptions.</p>
+<p>You can also set the shortable provider in a security initializer. If your algorithm has a universe, use the security initializer technique. In order to initialize single security subscriptions with the security initializer, call <code class="csharp">SetSecurityInitializer</code><code class="python">set_security_initializer</code> before you create the subscriptions.</p>
 
 <div class="section-example-container">
 <pre class="csharp" style="">// In Initialize

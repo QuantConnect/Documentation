@@ -40,7 +40,7 @@
             self.object_store.save(Bitstamp.KEY, content)</pre>
     </div>
 
-    <li>Call the <code>AddData</code> method to <a href='/docs/v2/writing-algorithms/importing-data/streaming-data/custom-securities/key-concepts#05-Create-Subscriptions'>subscribe to the custom type</a>.</li>
+    <li>Call the <code class="csharp">AddData</code><code class="python">add_data</code> method to <a href='/docs/v2/writing-algorithms/importing-data/streaming-data/custom-securities/key-concepts#05-Create-Subscriptions'>subscribe to the custom type</a>.</li>
     <div class='section-example-container'>
     <pre class='csharp'>public class ObjectStoreCustomDataAlgorithm : QCAlgorithm
 {

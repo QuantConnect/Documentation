@@ -51,7 +51,7 @@ th.summary {
 
 <div class="tip">
   <i class="fa fa-lightbulb-o"></i><span class="tip-title">Tip:</span>
-  <p>Only <?=$kpi["fundamental-universe-size"] ?> assets have fundamental data. If your first filter function receives <code>CoarseFundamental</code> data, you should only select assets that have a true value for their <code>HasFundamentalData</code> property.</p>
+  <p>Only <?=$kpi["fundamental-universe-size"] ?> assets have fundamental data. If your first filter function receives <code>CoarseFundamental</code> data, you should only select assets that have a true value for their <code class="csharp">HasFundamentalData</code><code class="python">has_fundamental_data</code> property.</p>
 </div>
 
 <div class="section-example-container">

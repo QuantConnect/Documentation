@@ -10,7 +10,7 @@ underlying_security.volatility_model = StandardDeviationOfReturnsVolatilityModel
 </div>
 
 
-<p>You can also set the volatility model in a <a href='/docs/v2/writing-algorithms/initialization#07-Set-Security-Initializer'>security initializer</a>. If your algorithm has a universe of underlying assets, use the security initializer technique. In order to initialize single security subscriptions with the security initializer, call <code>SetSecurityInitializer</code> before you create the subscriptions.</p>
+<p>You can also set the volatility model in a <a href='/docs/v2/writing-algorithms/initialization#07-Set-Security-Initializer'>security initializer</a>. If your algorithm has a universe of underlying assets, use the security initializer technique. In order to initialize single security subscriptions with the security initializer, call <code class="csharp">SetSecurityInitializer</code><code class="python">set_security_initializer</code> before you create the subscriptions.</p>
 
 <?
 $overwriteCodePy = "if security.Type == SecurityType.Equity:

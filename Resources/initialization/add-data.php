@@ -22,13 +22,13 @@
 <h4>Alternative Data</h4>
 
 <p>
-To add alternative datasets to your <?=$location?>, call the <code>AddData</code> method. <? if ($writingAlgorithms) { ?> For full examples, in the <a href='/docs/v2/writing-algorithms/datasets/overview'>Datasets</a> chapter, select a dataset and see the <span class='page-section-name'>Requesting Data</span> section.
+To add alternative datasets to your <?=$location?>, call the <code class="csharp">AddData</code><code class="python">add_data</code> method. <? if ($writingAlgorithms) { ?> For full examples, in the <a href='/docs/v2/writing-algorithms/datasets/overview'>Datasets</a> chapter, select a dataset and see the <span class='page-section-name'>Requesting Data</span> section.
 <? } else { ?> For a full example, see <a href='/docs/v2/research-environment/datasets/alternative-data'>Alternative Data</a>. <? } ?>
 </p>
  
 <h4>Custom Data</h4>
 
-<p>To add custom data to your <?=$location?>, call the <code>AddData</code> method. For more information about custom data, see <?=$writingAlgorithms ? "<a href='/docs/v2/writing-algorithms/importing-data/key-concepts'>Importing Data</a>" : "<a href='/docs/v2/research-environment/datasets/custom-data'>Custom Data</a>"?>.</p>    
+<p>To add custom data to your <?=$location?>, call the <code class="csharp">AddData</code><code class="python">add_data</code> method. For more information about custom data, see <?=$writingAlgorithms ? "<a href='/docs/v2/writing-algorithms/importing-data/key-concepts'>Importing Data</a>" : "<a href='/docs/v2/research-environment/datasets/custom-data'>Custom Data</a>"?>.</p>    
 
 <h4>Limitations</h4>
 <p>There is no official limit to how much data you can add to your <?=$location?>, but there are practical resource limitations. Each security subscription requires about 5MB of RAM, so larger machines let you <?=$writingAlgorithms ? "run algorithms with bigger universes" : "request more data"?>. For more information about our cloud nodes, see <?=$writingAlgorithms ? "<a href='/docs/v2/cloud-platform/organizations/resources'>Resources</a>" : "<a href='/docs/v2/cloud-platform/organizations/resources#03-Research-Nodes'>Research Nodes</a>"?>.</p>
