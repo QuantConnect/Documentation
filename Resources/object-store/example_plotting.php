@@ -131,6 +131,6 @@ var result = HTML(GenericChart.toChartHTML(chart));</pre>
     <div class="qc-embed-dummy" style="padding-top: 56.25%;"></div>
     <div class="qc-embed-element" style="position: absolute; top: 0; bottom: 0; left: 0; right: 0;">
     <iframe class="csharp qc-embed-backtest" height="100%" width="100%" style="border: 1px solid #ccc; padding: 0; margin: 0;" src="https://www.quantconnect.com/terminal/processCache/?request=embedded_backtest_5fb5f5b1bb065a42ef70d4736b10c806.html"></iframe>
-    <iframe class="python qc-embed-backtest" height="100%" width="100%" style="border: 1px solid #ccc; padding: 0; margin: 0;" src="https://www.quantconnect.com/terminal/processCache/?request=embedded_backtest_bd7112ea146fa3f367c46ce21c489fce.html"></iframe>
+    <iframe class="python qc-embed-backtest" height="100%" width="100%" style="border: 1px solid #ccc; padding: 0; margin: 0;" src="https://www.quantconnect.com/terminal/processCache?request=embedded_backtest_c1fd8405f031751c0c18b47f06e95280.html"></iframe>
     </div>
 </div>
