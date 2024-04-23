@@ -1738,7 +1738,7 @@ components:
         binance-websocket-url:
           type: string
           description: Binance configuration for spot/margin. The value for this property is wss://stream.binance.com:9443/ws
-        description: Settings for using Binance as data provider.
+        description: Settings for using Binance as a data provider or brokerage.
     BinanceFuturesUSDMSettings:
       type: object
       properties:
@@ -1760,7 +1760,7 @@ components:
         binance-fwebsocket-url:
           type: string
           description: Binance Futures configuration for spot/margin. The value for this property is wss://fstream.binance.com/ws
-        description: Settings for using Binance Futures USDM as data provider.
+        description: Settings for using Binance Futures USDM as a data provider or brokerage.
     BinanceFuturesCOINSettings:
       type: object
       properties:
@@ -1782,7 +1782,7 @@ components:
         binance-dwebsocket-url:
           type: string
           description: Binance Futures configuration for spot/margin. The value for this property is wss://dstream.binance.com/ws
-        description: Settings for using Binance Futures COIN as data provider.
+        description: Settings for using Binance Futures COIN as a data provider or brokerage.
     BinanceUSSettings:
       type: object
       properties:
@@ -1804,7 +1804,7 @@ components:
         binanceus-websocket-url:
           type: string
           description: Binance US configuration for spot/margin. The value for this property is wss://stream.binance.us:9443/ws
-        description: Settings for using Binance US as data provider.
+        description: Settings for using Binance US as a data provider or brokerage.
     BitfinexSettings:
       type: object
       properties:
@@ -1817,7 +1817,7 @@ components:
         bitfinex-api-secret:
           type: string
           description: Your Bitfinex API secret.
-      description: Settings for using Bitfinex as a data provider.
+      description: Settings for using Bitfinex as a data provider or brokerage.
     BrokerageData:
       type: object
       properties:
@@ -1860,7 +1860,7 @@ components:
         bybit-websocket-url:
           type: string
           description: Bybit Websocket URL, this is, wss://stream.bybit.com
-      description: Settings for using Bybit as a data provider.
+      description: Settings for using Bybit as a data provider or brokerage.
     Cash:
       type: object
       properties:
@@ -1959,7 +1959,7 @@ components:
         coinbase-rest-api:
           type: string
           description: Coinbase REST API, this is, https://api.coinbase.com
-      description: Settings for using Coinbase as a data provider.
+      description: Settings for using Coinbase as a data provider or brokerage.
     Collaborator:
       type: object
       properties:
@@ -2086,7 +2086,6 @@ components:
           enum:
             - $ref: '#/components/schemas/QuantConnectSettings'
             - $ref: '#/components/schemas/InteractiveBrokersSettings'
-            - $ref: '#/components/schemas/PolygonSettings'
             - $ref: '#/components/schemas/BinanceSettings'
             - $ref: '#/components/schemas/BinanceFuturesUSDMSettings'
             - $ref: '#/components/schemas/BinanceFuturesCOINSettings'
@@ -2096,6 +2095,14 @@ components:
             - $ref: '#/components/schemas/CoinbaseSettings'
             - $ref: '#/components/schemas/KrakenSettings'
             - $ref: '#/components/schemas/BybitSettings'
+            - $ref: '#/components/schemas/OandaSettings'
+            - $ref: '#/components/schemas/ZerodhaSettings'
+            - $ref: '#/components/schemas/SamcoSettings'
+            - $ref: '#/components/schemas/WolverineSettings'
+            - $ref: '#/components/schemas/TDAmeritradeSettings'
+            - $ref: '#/components/schemas/TradingTechnologiesSettings'
+            - $ref: '#/components/schemas/RBIBrokerageSettings'
+            - $ref: '#/components/schemas/TerminalLinkSettings'
         dataProviders:
           type: object
           description: Dictionary of data provider configurations to be used in the live algorithm.
@@ -2112,11 +2119,11 @@ components:
               - BitfinexBrokerage
               - CoinbaseBrokerage
               - ZerodhaBrokerage
-              - Samco
+              - SamcoBrokerage
               - KrakenBrokerage
-              - TDAmeritrade
+              - TDAmeritradeBrokerage
               - BybitBrokerage
-              - IEXCloud
+              - IEXDataFeed
             example: InteractiveBrokersBrokerage
           value:
             type: object
@@ -2134,6 +2141,11 @@ components:
               - $ref: '#/components/schemas/CoinbaseSettings'
               - $ref: '#/components/schemas/KrakenSettings'
               - $ref: '#/components/schemas/BybitSettings'
+              - $ref: '#/companents/schemas/OandaSettings'
+              - $ref: '#/components/schemas/ZerodhaSettings'
+              - $ref: '#/components/schemas/SamcoSettings'
+              - $ref: '#/components/schemas/TDAmeritradeSettings'
+              - $ref: '#/components/schemas/IEXDataFeedSettings'
       description: Request to create a live algorithm.
     CreateLiveAlgorithmResponse:
       type: object
@@ -2625,6 +2637,23 @@ components:
           description: Current unrealized P/L of the holding.
           format: float
       description: Live results object class for packaging live result data.
+    IEXDataFeedSettings:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Data provider ID, this is, IEXDataFeed.
+        iex-cloud-api-key:
+          type: string
+          description: Your iexcloud.io API token publishable key.
+        iex-price-plan:
+          type: string
+          description: Your IEX Cloud Price plan.
+          enum:
+            - Launch
+            - Grow
+            - Enterprise
+      description: Settings for using IEX Cloud as a data provider.
     Insight:
       type: object
       properties:
@@ -3149,6 +3178,25 @@ components:
           type: int
           description: Indicate if the node has GPU (1) or not (0).
       description: Contains all relevant information on a Node to interact through API endpoints.
+    OandaSettings:
+      type: object
+      properties:
+        id:
+          type: string
+          description: ID of the brokerage, this is, OandaBrokerage.
+        oanda-account-id:
+          type: string
+          description: Your OANDA account id can be found on your OANDA Account Statement page (https://www.oanda.com/account/statement/). It follows the following format '###-###-######-###'.
+        oanda-access-token:
+          type: string
+          description: Your OANDA API token. You can generate an API token from the Manage API Access page (https://www.oanda.com/account/tpa/personal_token).
+        oanda-environment:
+          type: string
+          description: The environment to run in, Practice for fxTrade Practice, Trade for fxTrade.
+          enum:
+            - Practice
+            - Trade
+      description: Settings for using Oanda as a data provider or brokerage.
     ObjectStoreBinaryFile:
       type: object
       properties:
@@ -3913,6 +3961,19 @@ components:
           description: Treynor ratio statistic is a measurement of the returns earned in excess of that which could have been earned on an investment that has no diversifiable risk.
           format: float
       description: Represents a set of statistics calculated from equity and benchmark samples.
+    RBIBrokerageSettings:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Brokerage ID, this is, RBIBrokerage.
+        rbi-on-behalf-of-comp-id:
+          type: string
+          description: Value used to identify the trading firm.
+        rbi-account:
+          type: string
+          description: RBI account name.
+      description: Settings for using RBI as a brokerage.
     ReadFilesRequest:
       required:
       - projectId
@@ -4288,6 +4349,35 @@ components:
       - 10minute
       - minute
       - second
+    SamcoSettings:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Brokerage ID, this is, SamcoBrokerage.
+        samco-client-id:
+          type: string
+          description: Your Samco account Client ID.
+        samco-client-password:
+          type: string
+          description: Your Samco account password.
+        samco-year-of-birth:
+          type: int
+          description: Your year of birth (YYYY) registered with Samco.
+        samco-product-type:
+          type: string
+          description: MIS if you are targeting intraday products, CNC if you are targeting delivery products, NRML if you are targeting carry forward products.
+          enum:
+            - mis
+            - cnc
+            - nrml
+        samco-trading-segment:
+          type: string
+          description: 'equity' if you are trading equities on NSE or BSE, 'commodity' if you are trading commodities on MCX.
+          enum:
+            - equity
+            - commodity
+      description: Settings for using Samco as a data provider or brokerage.
     SecurityType:
       type: string
       description: Type of tradable security / underlying asset.
@@ -4373,6 +4463,35 @@ components:
           type: string
           description: The current symbol for this ticker.
       description: Represents a unique security identifier. This is made of two components, the unique SID and the Value. The value is the current ticker symbol while the SID is constant over the life of a security.
+    TDAmeritradeSettings:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Brokerage ID, this is, TDAmeritradeBrokerage.
+        tdameritrade-api-key:
+          type: string
+          description: Your TDAmeritrade API key.
+        tdameritrade-access-token:
+          type: string
+          description: Your TDAmeritrade OAuth Access Token.
+        tdameritrade-account-number:
+          type: string
+          description: Your TDAmeritrade account number.
+      description: Settings for using TDAmeritrade as a data provider or brokerage.
+    TerminalLinkSettings:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Brokerage ID, this is TerminalLinkBrokerage.
+        terminal-link-connection-type:
+          type: string
+          description: Terminal Link Connection Type [DAPI, SAPI].
+          enum:
+            - DAPI
+            - SAPI
+      description: Settings for using TerminalLink as a brokerage.
     Trade:
       type: object
       properties:
@@ -4605,6 +4724,37 @@ components:
             - live
             - paper
       description: Settings for using Tradier as a data provider.
+    TradingTechnologiesSettings:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Brokerage ID, this is, TradingTechnologiesBrokerage.
+        tt-user-name:
+          type: string
+          description: Trading Technologies user name.
+        tt-session-password:
+          type: string
+          description: Trading Technologies session password.
+        tt-account-name:
+          type: string
+          description: Trading Technologies account name.
+        tt-rest-app-key:
+          type: string
+          description: Trading Technologies App key.
+        tt-rest-app-secret:
+          type: string
+          description: Trading Technologies App secret.
+        tt-rest-environment:
+          type: string
+          description: Environment in which the brokerage Trading Technologies will be used.
+          enum:
+            - live
+            - uat
+        tt-order-routing-sender-comp-id:
+          type: string
+          description: Trading Technologies routing sender.
+      description: Settings for using Trading Technologies as a brokerage.
     UpdateBacktestRequest:
       required:
       - backtestId
@@ -4785,6 +4935,48 @@ components:
           format: float
       additionalProperties:
         $ref: '#/components/schemas/Version'
+    WolverineSettings:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Brokerage ID, this is, WolverineBrokerage.
+        wolverine-on-behalf-of-comp-id:
+          type: string
+          description: Value used to identify the trading firm.
+        wolverine-account:
+          type: string
+          description: Wolverine Execution Services account name.
+      description: Settings for using Wolverine Execution Services as a brokerage.
+    ZerodhaSettings:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Brokerage ID, this is, ZerodhaBrokerage.
+        zerodha-api-key:
+          type: string
+          description: Your Kite Connect API key.
+        zerodha-access-token:
+          type: string
+          description: Your Kite Connect access token.
+        zerodha-product-type:
+          type: string
+          description: The product type must be set to MIS if you are targeting intraday products, CNC if you are targeting delivery products or NRML if you are targeting carry forward products.
+          enum:
+            - mis
+            - cnc
+            - nrml
+        zerodha-trading-segment:
+          type: string
+          description: The trading segment must be set to 'equity' if you are trading equities on NSE or BSE, or 'commodity' if you are trading commodities on MCX.
+          enum:
+            - equity
+            - commodity
+        zerodha-history-subscription:
+          type: bool
+          description: Whether you have a history API subscription for Zerodha.
+      description: Settings for using Zerodha as a data provider or brokerage.
     files_update_body:
       oneOf:
       - $ref: '#/components/schemas/UpdateFileNameRequest'
