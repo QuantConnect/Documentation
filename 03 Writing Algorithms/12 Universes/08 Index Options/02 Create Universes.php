@@ -41,7 +41,7 @@ self._symbol = option.symbol</pre>
             <td><code>Market.USA</code></td>
         </tr>
         <tr>
-            <td><code>fillForward</code></td>
+            <td><code class="csharp">fillForward</code><code class="python">fill_forward</code></td>
 	        <td><code>bool</code></td>
             <td>If true, the current slice contains the last available data even if there is no data at the current time.</td>
             <td><code class="python">True</code><code class="csharp">true</code></td>
@@ -99,7 +99,7 @@ self._symbol = option.symbol</pre>
             <td><code>Market.USA</code></td>
         </tr>
         <tr>
-            <td><code>fillForward</code></td>
+            <td><code class="csharp">fillForward</code><code class="python">fill_forward</code></td>
 	        <td><code>bool</code></td>
             <td>If true, the current slice contains the last available data even if there is no data at the current time.</td>
             <td><code class="python">True</code><code class="csharp">true</code></td>

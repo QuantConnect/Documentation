@@ -74,7 +74,7 @@
 
 <? } else { ?>
 
-<p class='python'>If the <code>History</code> method returns a <code>DataFrame</code>, the first level of the <code>DataFrame</code> index is the <a href='/docs/v2/writing-algorithms/key-concepts/security-identifiers#02-Encoding-Symbols'>encoded <?=$assetClass?> Symbol</a> and the second level is the <code class="csharp">EndTime</code><code class="python">end_time</code> of the data sample. The columns of the <code>DataFrame</code> are the data properties.</p>
+<p class='python'>If the <code class="charp">History</code><code class="python">history</code> method returns a <code>DataFrame</code>, the first level of the <code>DataFrame</code> index is the <a href='/docs/v2/writing-algorithms/key-concepts/security-identifiers#02-Encoding-Symbols'>encoded <?=$assetClass?> Symbol</a> and the second level is the <code class="csharp">EndTime</code><code class="python">end_time</code> of the data sample. The columns of the <code>DataFrame</code> are the data properties.</p>
 <img class='python docs-image' src='<?=$dataFrameImages[0]?>' alt='DataFrame of two <?=$pluralAssetClass?>'>
 <p class='python'>To select the historical data of a single <?=$assetClass?>, index the <code>loc</code> property of the <code>DataFrame</code> with the <?=$assetClass?> <code>Symbol</code>.</p>
 <div class='python section-example-container'>
@@ -146,7 +146,7 @@ df</pre>
 <img class='csharp docs-image' src='<?=$cSharpDataFrameImages[1]?>' alt="Historical C# dataframe column">
 
 <h4>Slice Objects</h4>
-<p>If the <code>History</code> method returns <code>Slice</code> objects, iterate through the <code>Slice</code> objects to get each one. The <code>Slice</code> objects may not have data for all of your <?=$assetClass?> subscriptions. To avoid issues, check if the <code>Slice</code> contains data for your <?=$singularAssetClass?> before you index it with the <?=$assetClass?> <code>Symbol</code>.</p>
+<p>If the <code class="charp">History</code><code class="python">history</code> method returns <code>Slice</code> objects, iterate through the <code>Slice</code> objects to get each one. The <code>Slice</code> objects may not have data for all of your <?=$assetClass?> subscriptions. To avoid issues, check if the <code>Slice</code> contains data for your <?=$singularAssetClass?> before you index it with the <?=$assetClass?> <code>Symbol</code>.</p>
 <div class='csharp section-example-container'>
 <pre class='csharp'>foreach (var slice in allHistorySlice) {
 <? if ($supportsAltData) {?>
@@ -248,7 +248,7 @@ var quoteBars = allHistorySlice.Where(slice => slice.QuoteBars.ContainsKey(<?=$p
 
 <? if ($supportsTrades) { ?>
     <h4>TradeBar Objects</h4>
-<p>If the <code>History</code> method returns <code>TradeBar</code> objects, iterate through the <code>TradeBar</code> objects to get each one.</p>
+<p>If the <code class="charp">History</code><code class="python">history</code> method returns <code>TradeBar</code> objects, iterate through the <code>TradeBar</code> objects to get each one.</p>
 <div class='section-example-container'>
 <pre class='csharp'>foreach (var tradeBar in singleHistoryTradeBars)
 {
@@ -257,7 +257,7 @@ var quoteBars = allHistorySlice.Where(slice => slice.QuoteBars.ContainsKey(<?=$p
 <pre class='python'>for trade_bar in single_history_trade_bars:
     print(trade_bar)</pre>
 </div>
-<p>If the <code>History</code> method returns <code>TradeBars</code>, iterate through the <code>TradeBars</code> to get the <code>TradeBar</code> of each <?=$singularAssetClass?>. The <code>TradeBars</code> may not have data for all of your <?=$assetClass?> subscriptions. To avoid issues, check if the <code>TradeBars</code> object contains data for your security before you index it with the <?=$assetClass?> <code>Symbol</code>.</p>
+<p>If the <code class="charp">History</code><code class="python">history</code> method returns <code>TradeBars</code>, iterate through the <code>TradeBars</code> to get the <code>TradeBar</code> of each <?=$singularAssetClass?>. The <code>TradeBars</code> may not have data for all of your <?=$assetClass?> subscriptions. To avoid issues, check if the <code>TradeBars</code> object contains data for your security before you index it with the <?=$assetClass?> <code>Symbol</code>.</p>
 <div class='section-example-container'>
 <pre class='csharp'>foreach (var tradeBars in allHistoryTradeBars)
 {
@@ -292,7 +292,7 @@ var quoteBars = allHistorySlice.Where(slice => slice.QuoteBars.ContainsKey(<?=$p
 
 <? if ($supportsQuotes) { ?>
 <h4>QuoteBar Objects</h4>
-<p>If the <code>History</code> method returns <code>QuoteBar</code> objects, iterate through the <code>QuoteBar</code> objects to get each one.</p>
+<p>If the <code class="charp">History</code><code class="python">history</code> method returns <code>QuoteBar</code> objects, iterate through the <code>QuoteBar</code> objects to get each one.</p>
 <div class='section-example-container'>
 <pre class='csharp'>foreach (var quoteBar in singleHistoryQuoteBars)
 {
@@ -301,7 +301,7 @@ var quoteBars = allHistorySlice.Where(slice => slice.QuoteBars.ContainsKey(<?=$p
 <pre class='python'>for quote_bar in single_history_quote_bars:
     print(quote_bar)</pre>
 </div>
-<p>If the <code>History</code> method returns <code>QuoteBars</code>, iterate through the <code>QuoteBars</code> to get the <code>QuoteBar</code> of each <?=$singularAssetClass?>. The <code>QuoteBars</code> may not have data for all of your <?=$assetClass?> subscriptions. To avoid issues, check if the <code>QuoteBars</code> object contains data for your security before you index it with the <?=$assetClass?> <code>Symbol</code>.</p>
+<p>If the <code class="charp">History</code><code class="python">history</code> method returns <code>QuoteBars</code>, iterate through the <code>QuoteBars</code> to get the <code>QuoteBar</code> of each <?=$singularAssetClass?>. The <code>QuoteBars</code> may not have data for all of your <?=$assetClass?> subscriptions. To avoid issues, check if the <code>QuoteBars</code> object contains data for your security before you index it with the <?=$assetClass?> <code>Symbol</code>.</p>
 <div class='section-example-container'>
 <pre class='csharp'>foreach (var quoteBars in allHistoryQuoteBars)
 {
@@ -336,7 +336,7 @@ var quoteBars = allHistorySlice.Where(slice => slice.QuoteBars.ContainsKey(<?=$p
 
 <? if ($supportsTicks) { ?>
 <h4>Tick Objects</h4>
-<p>If the <code>History</code> method returns <code>Tick</code> objects, iterate through the <code>Tick</code> objects to get each one.</p>
+<p>If the <code class="charp">History</code><code class="python">history</code> method returns <code class="csharp">Tick</code><code class="python">TICK</code> objects, iterate through the <code class="csharp">Tick</code><code class="python">TICK</code> objects to get each one.</p>
 <div class='section-example-container'>
 <pre class='csharp'>foreach (var tick in singleHistoryTicks)
 {
@@ -345,7 +345,7 @@ var quoteBars = allHistorySlice.Where(slice => slice.QuoteBars.ContainsKey(<?=$p
 <pre class='python'>for tick in single_history_ticks:
     print(tick)</pre>
 </div>
-<p>If the <code>History</code> method returns <code>Ticks</code>, iterate through the <code>Ticks</code> to get the <code>Tick</code> of each <?=$singularAssetClass?>. The <code>Ticks</code> may not have data for all of your <?=$assetClass?> subscriptions. To avoid issues, check if the <code>Ticks</code> object contains data for your security before you index it with the <?=$assetClass?> <code>Symbol</code>.</p>
+<p>If the <code class="charp">History</code><code class="python">history</code> method returns <code>Ticks</code>, iterate through the <code>Ticks</code> to get the <code class="csharp">Tick</code><code class="python">TICK</code> of each <?=$singularAssetClass?>. The <code>Ticks</code> may not have data for all of your <?=$assetClass?> subscriptions. To avoid issues, check if the <code>Ticks</code> object contains data for your security before you index it with the <?=$assetClass?> <code>Symbol</code>.</p>
 <div class='section-example-container'>
 <pre class='csharp'>foreach (var ticks in allHistoryTicks)
 {
@@ -381,7 +381,7 @@ var quoteBars = allHistorySlice.Where(slice => slice.QuoteBars.ContainsKey(<?=$p
 
 <? if ($supportsOpenInterest) { ?>
 <h4>OpenInterest Objects</h4>
-<p>If the <code>History</code> method returns <code>OpenInterest</code> objects, iterate through the <code>OpenInterest</code> objects to get each one.</p>
+<p>If the <code class="charp">History</code><code class="python">history</code> method returns <code>OpenInterest</code> objects, iterate through the <code>OpenInterest</code> objects to get each one.</p>
 <div class='section-example-container'>
 <pre class='csharp'>foreach (var openInterest in singleHistoryOpenInterest)
 {
@@ -390,7 +390,7 @@ var quoteBars = allHistorySlice.Where(slice => slice.QuoteBars.ContainsKey(<?=$p
 <pre class='python'>for open_interest in single_history_open_interest:
     print(open_interest)</pre>
 </div>
-<p>If the <code>History</code> method returns a dictionary of <code>OpenInterest</code> objects, iterate through the dictionary to get the <code>OpenInterest</code> of each <?=$singularAssetClass?>. The dictionary of <code>OpenInterest</code> objects may not have data for all of your <?=$assetClass?> contract subscriptions. To avoid issues, check if the dictionary contains data for your contract before you index it with the <?=$assetClass?> contract <code>Symbol</code>.</p>
+<p>If the <code class="charp">History</code><code class="python">history</code> method returns a dictionary of <code>OpenInterest</code> objects, iterate through the dictionary to get the <code>OpenInterest</code> of each <?=$singularAssetClass?>. The dictionary of <code>OpenInterest</code> objects may not have data for all of your <?=$assetClass?> contract subscriptions. To avoid issues, check if the dictionary contains data for your contract before you index it with the <?=$assetClass?> contract <code>Symbol</code>.</p>
 <div class='section-example-container'>
 <pre class='csharp'>foreach (var openInterestDict in allHistoryOpenInterest)
 {

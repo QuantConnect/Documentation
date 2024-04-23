@@ -8,7 +8,7 @@
 	<pre class="python">def initialize(self):
     self._symbol = self.add_equity("SPY").symbol
     self.enable_automatic_indicator_warm_up = True
-    self.sma = self.SMA(self.symbol, 20, Resolution.DAILY)</pre>
+    self._sma = self.sma(self.symbol, 20, Resolution.DAILY)</pre>
 	<pre class="csharp">private Symbol _symbol;
 private SimpleMovingAverage _sma;
 
@@ -48,7 +48,7 @@ public override void Initialize()
 <pre class="python">def OnSecuritiesChanged(self, changes: SecurityChanges) -> None:
     for security in changes.AddedSecurities:
         # Create an indicator
-        security.indicator = self.SMA(security.Symbol, 10)
+        security.indicator = self.sma(security.Symbol, 10)
 
         # Warm up the indicator
         self.WarmUpIndicator(security.Symbol, security.indicator)

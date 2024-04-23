@@ -39,7 +39,7 @@ self._symbol = option.symbol</pre>
             <td><code class="python">None</code><code class="csharp">null</code></td>
         </tr>
         <tr>
-            <td><code>fillForward</code></td>
+            <td><code class="csharp">fillForward</code><code class="python">fill_forward</code></td>
 	        <td><code>bool</code></td>
             <td>If true, the current slice contains the last available data even if there is no data at the current time.</td>
             <td><code class="python">True</code><code class="csharp">true</code></td>
@@ -51,7 +51,7 @@ self._symbol = option.symbol</pre>
             <td><code>Security.NullLeverage</code></td>
         </tr>
         <tr>
-            <td><code>extendedMarketHours</code></td>
+            <td><code class="csharp">extendedMarketHours</code><code class="python">extended_market_hours</code></td>
 	        <td><code>bool</code></td>
             <td>A flag that signals if LEAN should send data during pre- and post-market trading hours.</td>
             <td><code class="python">False</code><code class="csharp">false</code></td>

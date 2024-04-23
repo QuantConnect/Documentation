@@ -8,7 +8,7 @@
 <p>If you don't start your backtest and live deployment on the same date with the same holdings, deviations can occur between backtesting and live trading. To avoid issues, ensure your backtest parameters are the same as your live deployment.</p>
 
 <h4>Non-deterministic State From Algorithm Restarts</h4>
-<p>If you stop and redeploy your live trading algorithm, it needs to restart in a stateful way or else deviations can occur between backtesting and live trading. To avoid issues, redeploy your algorithm in a stateful way using the <code class="csharp">SetWarmUp</code><code class="python">set_warm_up</code> and <code>History</code> methods. Furthermore, use the Object Store to save state information between your live trading deployments.</p>
+<p>If you stop and redeploy your live trading algorithm, it needs to restart in a stateful way or else deviations can occur between backtesting and live trading. To avoid issues, redeploy your algorithm in a stateful way using the <code class="csharp">SetWarmUp</code><code class="python">set_warm_up</code> and <code class="charp">History</code><code class="python">history</code> methods. Furthermore, use the Object Store to save state information between your live trading deployments.</p>
 
 
 <h4>Existing Portfolio Securities</h4>

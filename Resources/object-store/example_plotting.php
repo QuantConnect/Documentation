@@ -19,7 +19,7 @@
         self.add_equity("SPY")
     
         self.content = ''
-        self.sma = self.SMA("SPY", 22)</pre>
+        self._sma = self.sma("SPY", 22)</pre>
     </div>
 
     <p>The algorithm will save <code class='csharp'>_content</code><code class='python'>self.content</code> to the Object Store.</p>

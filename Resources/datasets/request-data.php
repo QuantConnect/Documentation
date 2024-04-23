@@ -16,7 +16,7 @@ $pyPrintMethod = $writingAlgorithms ? "self.Log" : "print";
     
 <h4>Single Symbol History Requests</h4>
 
-<p>To request history for a single asset, pass the asset <code>Symbol</code> to the <code>History</code> method. The return type of the method call depends on the history request <code class='python'>[Type]</code><code class='csharp'>&lt;Type&gt;</code>. The following table describes the return type of each request <code class='python'>[Type]</code><code class='csharp'>&lt;Type&gt;</code>:</p>
+<p>To request history for a single asset, pass the asset <code>Symbol</code> to the <code class="charp">History</code><code class="python">history</code> method. The return type of the method call depends on the history request <code class='python'>[Type]</code><code class='csharp'>&lt;Type&gt;</code>. The following table describes the return type of each request <code class='python'>[Type]</code><code class='csharp'>&lt;Type&gt;</code>:</p>
 
 <table class='qc-table table'>
     <thead>
@@ -39,7 +39,7 @@ $pyPrintMethod = $writingAlgorithms ? "self.Log" : "print";
 	    <td><code class='python'>List[QuoteBars]</code><code class='csharp'>List&lt;QuoteBar&gt;</code></td>
         </tr>
         <tr>
-	    <td><code>Tick</code></td>
+	    <td><code class="csharp">Tick</code><code class="python">TICK</code></td>
 	    <td><code class='python'>List[Ticks]</code><code class='csharp'>List&lt;Tick&gt;</code></td>
         </tr>
 	<tr>
@@ -203,7 +203,7 @@ var tradeBars2 = <?=$cVar?>History(btcSymbol, startTime, endTime, Resolution.Min
 	    <td><code class='python'>List[QuoteBars]</code><code class='csharp'>List&lt;QuoteBars&gt;</code></td>
         </tr>
         <tr>
-	    <td><code>Tick</code></td>
+	    <td><code class="csharp">Tick</code><code class="python">TICK</code></td>
 	    <td><code class='python'>List[Ticks]</code><code class='csharp'>List&lt;Ticks&gt;</code></td>
         </tr>
 	<tr>
@@ -294,7 +294,7 @@ var tradeBars2 = <?=$cVar?>History(new[] {btcSymbol}, startTime, endTime);</pre>
 
 </div>
 
-<p>If you request data for multiple securities and you use the <code>Tick</code> request type, each <code>Ticks</code> object in the list of results only contains the last tick of each security for that particular <a href='/docs/v2/writing-algorithms/key-concepts/time-modeling/timeslices'>timeslice</a>.</p>
+<p>If you request data for multiple securities and you use the <code class="csharp">Tick</code><code class="python">TICK</code> request type, each <code>Ticks</code> object in the list of results only contains the last tick of each security for that particular <a href='/docs/v2/writing-algorithms/key-concepts/time-modeling/timeslices'>timeslice</a>.</p>
 
 <h4>All Symbol History Requests</h4>
  
@@ -375,7 +375,7 @@ foreach (var s in slices) {
 </table>
 
 <h4>Additional Options</h4>
-<p>The <code>History</code> method accepts the following additional arguments:</p>
+<p>The <code class="charp">History</code><code class="python">history</code> method accepts the following additional arguments:</p>
 
 <table class='qc-table table'>
     <thead>
@@ -388,13 +388,13 @@ foreach (var s in slices) {
     </thead>
     <tbody>
         <tr>
-            <td><code>fillForward</code></td>
+            <td><code class="csharp">fillForward</code><code class="python">fill_forward</code></td>
 	        <td><code class='csharp'>bool?</code><code class='python'>bool/NoneType</code></td>
             <td>True to <a href='/docs/v2/writing-algorithms/securities/requesting-data#05-Fill-Forward'>fill forward</a> missing data. Otherwise, false. If you don't provide a value, it uses the fill forward mode of the security subscription.</td>
             <td><code class='csharp'>null</code><code class='python'>None</code></td>
         </tr>
         <tr>
-            <td><code>extendedMarketHours</code></td>
+            <td><code class="csharp">extendedMarketHours</code><code class="python">extended_market_hours</code></td>
 	        <td><code class='csharp'>bool?</code><code class='python'>bool/NoneType</code></td>
             <td>True to include extended market hours data. Otherwise, false.</td>
             <td><code class='csharp'>null</code><code class='python'>None</code></td>
