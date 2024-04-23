@@ -34,7 +34,7 @@ include(DOCS_RESOURCES."/datasets/research-environment/load-csharp-assemblies.ph
         <tbody>
             <tr>
                 <td><code>resolution</code></td>
-                <td><code>Resolution.Minute</code></td>
+                <td><code class="csharp">Resolution.Minute</code><code class="python">Resolution.MINUTE</code></td>
             </tr>
             <tr>
                 <td><code>dataNormalizationMode</code></td>

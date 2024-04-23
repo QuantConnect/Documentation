@@ -10,4 +10,4 @@
 	<li>On the Requesting Data page, in the table of contents, click <span class='button-name'>Resolutions</span>.</li>
 </ol>
 
-<p>The default value is <code>Resolution.Minute</code>. To change the resolution, in the <a href='/docs/v2/writing-algorithms/initialization'>Initialize</a> method, 
+<p>The default value is <code class="csharp">Resolution.Minute</code><code class="python">Resolution.MINUTE</code>. To change the resolution, in the <a href='/docs/v2/writing-algorithms/initialization'>Initialize</a> method, 

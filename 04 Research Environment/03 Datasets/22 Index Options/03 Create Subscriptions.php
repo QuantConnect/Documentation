@@ -18,7 +18,7 @@ include(DOCS_RESOURCES."/datasets/research-environment/load-csharp-assemblies.ph
         <pre class="python">index_symbol = qb.add_index("SPX", Resolution.MINUTE).symbol</pre>
     </div>
     <p>To view the available indices, see <a href="/docs/v2/writing-algorithms/datasets/algoseek/us-index-options#07-Supported-Assets">Supported Assets</a>.</p>
-    <p>If you do not pass a resolution argument, <code>Resolution.Minute</code> is used by default. <br></p>
+    <p>If you do not pass a resolution argument, <code class="csharp">Resolution.Minute</code><code class="python">Resolution.MINUTE</code> is used by default. <br></p>
     <li>Call the <code class="csharp">AddIndexOption</code><code class="python">add_index_option</code> method with the underlying <code>Index</code> <code>Symbol</code> and, if you want non-standard Index Options, the <a href='/docs/v2/writing-algorithms/datasets/algoseek/us-index-options#07-Supported-Assets'>target Option ticker</a>.</li>
     <div class="section-example-container">
         <pre class="csharp">var option = qb.AddIndexOption(indexSymbol);</pre>

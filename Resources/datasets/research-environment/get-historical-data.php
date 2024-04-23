@@ -8,7 +8,7 @@
 <p>If you call the <code class="csharp">SetStartDate</code><code class="python">set_start_date</code> method, the date that you pass to the method is the latest date for which your history requests will return data.</p>
 
 <h4>Trailing Number of Bars</h4>
-<p>To get historical data for a number of trailing bars, call the <code class="charp">History</code><code class="python">history</code> method with the contract <code>Symbol</code> object(s) and an integer.</p>
+<p>To get historical data for a number of trailing bars, call the <code class="csharp">History</code><code class="python">history</code> method with the contract <code>Symbol</code> object(s) and an integer.</p>
 <div class='section-example-container'>
     <pre class='csharp'>// Slice objects
 var singleHistorySlice = qb.History(<?=$contractVariableC?>, 10);
@@ -73,7 +73,7 @@ all_history_open_interest = qb.history[OpenInterest](qb.securities.keys, 400)</p
 <? } ?>
  
 <h4>Trailing Period of Time</h4>
-<p>To get historical data for a trailing period of time, call the <code class="charp">History</code><code class="python">history</code> method with the contract <code>Symbol</code> object(s) and a <code class='csharp'>TimeSpan</code><code class='python'>timedelta</code>.</p>
+<p>To get historical data for a trailing period of time, call the <code class="csharp">History</code><code class="python">history</code> method with the contract <code>Symbol</code> object(s) and a <code class='csharp'>TimeSpan</code><code class='python'>timedelta</code>.</p>
 <div class='section-example-container'>
     <pre class='csharp'>// Slice objects
 var singleHistorySlice = qb.History(<?=$contractVariableC?>, TimeSpan.FromDays(3));
@@ -153,7 +153,7 @@ all_history_open_interest = qb.history[OpenInterest](qb.securities.keys, timedel
 <? } ?>
 
 <h4>Defined Period of Time</h4>
-<p>To get historical data for individual <?=$assetClass?> contracts during a specific period of time, call the <code class="charp">History</code><code class="python">history</code> method with the <?=$assetClass?> contract <code>Symbol</code> object(s), a start  <code class='csharp'>DateTime</code><code class='python'>datetime</code>, and an end <code class='csharp'>DateTime</code><code class='python'>datetime</code>.  The start and end times you provide are based in the <a href='/docs/v2/research-environment/initialization#04-Set-Time-Zone'>notebook time zone</a>.</p>
+<p>To get historical data for individual <?=$assetClass?> contracts during a specific period of time, call the <code class="csharp">History</code><code class="python">history</code> method with the <?=$assetClass?> contract <code>Symbol</code> object(s), a start  <code class='csharp'>DateTime</code><code class='python'>datetime</code>, and an end <code class='csharp'>DateTime</code><code class='python'>datetime</code>.  The start and end times you provide are based in the <a href='/docs/v2/research-environment/initialization#04-Set-Time-Zone'>notebook time zone</a>.</p>
 
 <div class='section-example-container'>
     <pre class='csharp'>var startTime = new DateTime(2021, 12, 1);
@@ -237,7 +237,7 @@ all_history_open_interest = qb.history[OpenInterest](qb.securities.keys, start_t
 <p>To get historical data for all of the <?=$assetClass?> contracts that pass your <a href='<?=$createSubscriptionsLink?>'>filter</a> during a specific period of time, call the <code>FutureHistory</code> method with the <code>Symbol</code> object of the continuous Future, a start <code class='csharp'>DateTime</code><code class='python'>datetime</code>, and an end <code class='csharp'>DateTime</code><code class='python'>datetime</code>.</p>
 
 <div class='section-example-container'>
-    <pre class='python'>future_history = qb.future_history(<?=$underlyingSymbolVariablePy?>, end_time-timedelta(days=2), end_time, Resolution.MINUTE, fillForward=False, extendedMarketHours=False)</pre>
+    <pre class='python'>future_history = qb.future_history(<?=$underlyingSymbolVariablePy?>, end_time-timedelta(days=2), end_time, Resolution.MINUTE, fill_forward=False, extended_market_hours=False)</pre>
     <pre class='csharp'>var futureHistory = qb.FutureHistory(<?=$underlyingSymbolVariableC?>, endTime-TimeSpan.FromDays(2), endTime, Resolution.Minute, fillForward: False, extendedMarketHours: False);</pre>
 </div>
 <? } elseif ($assetClass == "Futures Option") { ?>
@@ -250,7 +250,7 @@ all_history_open_interest = qb.history[OpenInterest](qb.securities.keys, start_t
 
 <? if ($assetClass != "Futures") { ?> 
 <div class='section-example-container'>
-    <pre class='python'>option_history = qb.option_history(<?=$underlyingSymbolVariablePy?>, end_time-timedelta(days=2), end_time, Resolution.MINUTE, fillForward=False, extendedMarketHours=False)</pre>
+    <pre class='python'>option_history = qb.option_history(<?=$underlyingSymbolVariablePy?>, end_time-timedelta(days=2), end_time, Resolution.MINUTE, fill_forward=False, extended_market_hours=False)</pre>
     <pre class='csharp'>var optionHistory = qb.OptionHistory(<?=$underlyingSymbolVariableC?>, endTime-TimeSpan.FromDays(2), endTime, Resolution.Minute, fillForward: False, extendedMarketHours: False);</pre>
 </div>
 <? } ?> 

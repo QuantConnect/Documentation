@@ -34,7 +34,7 @@
             <td>
                 <h4>Property: <span><code class="csharp">Resolution</code><code class="python">resolution</code></span></h4>
                 <p class='property-description'>What resolution should assets use?</p>
-                <p>Data Type: <span><code>Resolution</code></span><span class='pipe-separator'>  |  </span> Default Value: <span><code>Resolution.Minute</code></span></p>
+                <p>Data Type: <span><code>Resolution</code></span><span class='pipe-separator'>  |  </span> Default Value: <span><code class="csharp">Resolution.Minute</code><code class="python">Resolution.MINUTE</code></span></p>
             </td>
         </tr>
         <tr>

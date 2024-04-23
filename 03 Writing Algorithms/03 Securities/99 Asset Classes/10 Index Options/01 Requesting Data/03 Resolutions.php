@@ -1,7 +1,7 @@
 <?php echo file_get_contents(DOCS_RESOURCES."/securities/resolutions/index-options.html"); ?>
 
 
-<p>The default resolution for Index Option subscriptions is <code>Resolution.Minute</code>. To change the resolution, pass a <code>resolution</code> argument to the <code class="csharp">AddIndexOptionContract</code><code class="python">add_index_option_contract</code> method.</p>
+<p>The default resolution for Index Option subscriptions is <code class="csharp">Resolution.Minute</code><code class="python">Resolution.MINUTE</code>. To change the resolution, pass a <code>resolution</code> argument to the <code class="csharp">AddIndexOptionContract</code><code class="python">add_index_option_contract</code> method.</p>
 
 
 <div class="section-example-container">

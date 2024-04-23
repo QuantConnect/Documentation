@@ -48,7 +48,7 @@ raw_price = self.securities[self.future.mapped].price</pre>
 
 <h4>Data Normalization Modes</h4>
 <p>The <code>dataNormalizationMode</code> argument defines how the price series of two contracts are stitched together when the contract rollovers occur. The following <code>DataNormalizatoinMode</code> enumeration members are available for continuous contracts:</p>
-<div data-tree='QuantConnect.DataNormalizationMode' data-fields='Raw,ForwardPanamaCanal,BackwardsPanamaCanal,BackwardsRatio'></div>
+<div data-tree='QuantConnect.DataNormalizationMode' data-fields='ForwardPanamaCanal,BackwardsPanamaCanal,BackwardsRatio,FORWARD_PANAMA_CANAL,BACKWARDS_PANAMA_CANAL,BACKWARDS_RATIO,'></div>
 <p>We use the entire Futures history to adjust historical prices. This process ensures you get the same adjusted prices, regardless of the backtest end date.</p>
 
 <h4>Data Mapping Modes</h4>

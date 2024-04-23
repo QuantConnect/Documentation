@@ -16,7 +16,7 @@ $pyPrintMethod = $writingAlgorithms ? "self.Log" : "print";
     
 <h4>Single Symbol History Requests</h4>
 
-<p>To request history for a single asset, pass the asset <code>Symbol</code> to the <code class="charp">History</code><code class="python">history</code> method. The return type of the method call depends on the history request <code class='python'>[Type]</code><code class='csharp'>&lt;Type&gt;</code>. The following table describes the return type of each request <code class='python'>[Type]</code><code class='csharp'>&lt;Type&gt;</code>:</p>
+<p>To request history for a single asset, pass the asset <code>Symbol</code> to the <code class="csharp">History</code><code class="python">history</code> method. The return type of the method call depends on the history request <code class='python'>[Type]</code><code class='csharp'>&lt;Type&gt;</code>. The following table describes the return type of each request <code class='python'>[Type]</code><code class='csharp'>&lt;Type&gt;</code>:</p>
 
 <table class='qc-table table'>
     <thead>
@@ -365,7 +365,7 @@ foreach (var s in slices) {
     <tbody>
         <tr>
             <td>Resolution</td>
-            <td>LEAN guesses the resolution you request by looking at the securities you already have in your <?=$envName?>. If you have a security subscription in your <?=$envName?> with a matching <code>Symbol</code>, the history request uses the same resolution as the subscription. If you don't have a security subscription in your <?=$envName?> with a matching <code>Symbol</code>, <code>Resolution.Minute</code> is the default.</td>
+            <td>LEAN guesses the resolution you request by looking at the securities you already have in your <?=$envName?>. If you have a security subscription in your <?=$envName?> with a matching <code>Symbol</code>, the history request uses the same resolution as the subscription. If you don't have a security subscription in your <?=$envName?> with a matching <code>Symbol</code>, <code class="csharp">Resolution.Minute</code><code class="python">Resolution.MINUTE</code> is the default.</td>
         </tr>
         <tr class='csharp'>
             <td>Bar type</td>
@@ -375,7 +375,7 @@ foreach (var s in slices) {
 </table>
 
 <h4>Additional Options</h4>
-<p>The <code class="charp">History</code><code class="python">history</code> method accepts the following additional arguments:</p>
+<p>The <code class="csharp">History</code><code class="python">history</code> method accepts the following additional arguments:</p>
 
 <table class='qc-table table'>
     <thead>
@@ -427,8 +427,8 @@ history = <?=$pyVar?>.history(
     start=<?=$pyVar?>.time - timedelta(days=15), 
     end=<?=$pyVar?>.time, 
     resolution=Resolution.MINUTE, 
-    fillForward=False, 
-    extendedMarketHours=False, 
+    fill_forward=False, 
+    extended_market_hours=False, 
     dataMappingMode=DataMappingMode.OPEN_INTEREST, 
     dataNormalizationMode=DataNormalizationMode.RAW, 
     contractDepthOffset=0)</pre>
