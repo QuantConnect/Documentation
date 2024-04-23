@@ -2156,8 +2156,6 @@ components:
           type: string
           description: Id of the node that will run the algorithm.
           example: "api-v2"
-        queueHandler:
-          type: string
         success:
           type: boolean
           description: Indicate if the API request was successful.
@@ -2567,6 +2565,30 @@ components:
           type: integer
           description: Sort of the chart.
       description: The chart display properties.
+    GroupOrderManager:
+      type: object
+      properties:
+        Id:
+          type: integer
+          description: The unique order group Id.
+        Quantity:
+          type: number
+          description: The group order quantity.
+        Count:
+          type: integer
+          description: The total order count associated with this order group.
+        LimitPrice:
+          type: number
+          description: The limit price associated with this order group if any.
+        OrderIds:
+          type: array
+          description: The order Ids in this group.
+          items:
+            type: integer
+        Direction:
+          type: integer
+          description: Order Direction Property based off Quantity.
+      description: Manager of a group of orders.
     Holding:
       type: object
       properties:
@@ -2828,7 +2850,7 @@ components:
       properties:
         message:
           type: string
-          description: Algorithm Message. (?)
+          description: Error message.
         status:
           type: string
           description: Indicates the status of the algorihtm, i.e. 'Running', 'Stopped'.
@@ -2837,7 +2859,7 @@ components:
           description: Algorithm deployment ID.
         cloneId:
           type: int
-          description: The ID of the project this live algorithm was cloned. (?)
+          description: The snapshot project ID for cloning the live development's source code.
         launched:
           type: string
           description: Date the live algorithm was launched.
@@ -2855,10 +2877,10 @@ components:
           description: Name of the project the live algorithm is in.
         dataCenter:
           type: string
-          description: Name of the data center. (?)
-        isPublicStreaming:
+          description: Name of the data center where the algorithm is physically located.
+        public:
           type: bool
-          description: Indicates if the live algorithm is streaming to the public. (?)
+          description: Indicates if the algorithm is being live shared.
         files:
           type: array
           description: Files present in the project in which the algorithm is.
@@ -3467,6 +3489,22 @@ components:
           description: The order events.
           items:
             $ref : '#/components/schemas/OrderEvent'
+        trailingAmount:
+          type: number
+          description: Trailing amount for a trailing stop order.
+        trailingPercentage:
+          type: bool
+          description: Determines whether the trailingAmount is a percentage or an absolute currency value.
+        groupOrderManager:
+          type: object
+          description: Manager for the orders in the group if this is a combo order.
+          $ref: '#/components/schemas/GroupOrderManager'
+        triggerPrice:
+          type: number
+          description: The price which, when touched, will trigger the setting of a limit order at limitPrice.
+        triggerTouched:
+          type: bool
+          description: Whether or not the triggerPrice has been touched.
       description: Order struct for placing new trade.
     OrderProperties:
       type: object
@@ -3565,6 +3603,9 @@ components:
         time:
           type: integer
           description: The time of this event in unix timestamp.
+        isInTheMoney:
+          type: bool
+          description: True if the order event's option is In-The-Money (ITM).
       description: Change in an order state applied to user algorithm portfolio
     OrderFee:
       type: object
