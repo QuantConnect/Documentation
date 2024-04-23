@@ -406,7 +406,7 @@ foreach (var s in slices) {
             <td><code class='csharp'>null</code><code class='python'>None</code></td>
         </tr>
         <tr>
-            <td><code>dataNormalizationMode</code></td>
+            <td><code class="csharp">dataNormalizationMode</code><code class="python">data_normalization_mode</code></td>
             <td><code class='csharp'>DataNormalizationMode?</code><code class='python'>DataNormalizationMode/NoneType</code></td>
             <td>The price scaling mode to use for <a href='/docs/v2/writing-algorithms/securities/asset-classes/us-equity/requesting-data#11-Data-Normalization'>US Equities</a> or <a href='/docs/v2/writing-algorithms/universes/futures#12-Continous-Contracts'>continuous Futures contracts</a>. If you don't provide a value, it uses the data normalization mode of the security subscription.</td>
             <td><code class='csharp'>null</code><code class='python'>None</code></td>

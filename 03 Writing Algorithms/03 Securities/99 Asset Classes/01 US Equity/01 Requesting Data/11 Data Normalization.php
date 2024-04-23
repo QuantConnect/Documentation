@@ -4,7 +4,7 @@
 
 <? include(DOCS_RESOURCES."/datasets/data-normalization.php"); ?>
 
-<p>To set the data normalization mode for a security, pass a <code>dataNormalizationMode</code> argument to the <code class="csharp">AddEquity</code><code class="python">add_equity</code> method.</p>
+<p>To set the data normalization mode for a security, pass a <code class="csharp">dataNormalizationMode</code><code class="python">data_normalization_mode</code> argument to the <code class="csharp">AddEquity</code><code class="python">add_equity</code> method.</p>
 
  <div class="section-example-container">
     <pre class="csharp">_symbol = AddEquity("SPY", dataNormalizationMode: DataNormalizationMode.Raw).Symbol;</pre>

@@ -186,9 +186,8 @@ for x in set([m[1] for m in market]):
     items = [y[0] for y in market if y[1] == x]
     items = [y[0] for y in market_data if y[0].lower() in items]
     items = [y for y in items if y.lower() not in ["ftx", "ftxus", "fxcm", "gdax"]]
-    
+    items = set(items + [x for x in items])
     with open(f"{destination}/market-{x}.html", "w", encoding="utf-8") as file:
         x = "Futures" if x == "future" else x
         file.write(f"""<p>The following <code>Market</code> enumeration members are available for {x.title().replace("Option", "Options").replace("option", " Options").replace("Index", "Indices").replace("Indices Options", "Index Options")}:</p>
-
 <div data-tree='QuantConnect.Market' data-fields='{",".join(items)}'></div>""")

@@ -2,7 +2,7 @@
 <img src='https://cdn.quantconnect.com/docs/i/dataformat-tradebar.png' class='img-responsive' alt="Tradebar decomposition">
 <p><code>TradeBar</code> objects have the following properties:</p>    
 <div data-tree='QuantConnect.Data.Market.TradeBar'></div>    
-<p>To get the <code>TradeBar</code> objects in the <code>Slice</code>, index the <code>Slice</code> or index the <code class="csharp">Bars</code><code class="python">bars</code> property of the <code>Slice</code> with the <?=$securityName?> <code>Symbol</code>. If the <?=$securityName?> doesn't actively trade or you are in the same time step as when you added the <?=$securityName?> subscription, the <code>Slice</code> may not contain data for your <code>Symbol</code>. To avoid issues, check if the <code>Slice</code> contains data for your <?=$securityName?> before you index the <code>Slice</code> with the <?=$securityName?> <code>Symbol</code>.</p>
+<p>To get the <code>TradeBar</code> objects in the <code>Slice</code>, index the <code>Slice</code> or index the <code class="csharp">Bars</code><code class="python">bars</code> property of the <code>Slice</code> with the <?=$securityName?> <code class="csharp">Symbol</code><code class="python">symbol</code>. If the <?=$securityName?> doesn't actively trade or you are in the same time step as when you added the <?=$securityName?> subscription, the <code>Slice</code> may not contain data for your <code class="csharp">Symbol</code><code class="python">symbol</code>. To avoid issues, check if the <code>Slice</code> contains data for your <?=$securityName?> before you index the <code>Slice</code> with the <?=$securityName?> <code class="csharp">Symbol</code><code class="python">symbol</code>.</p>
 
 <div class='section-example-container'>
     <pre class='csharp'>public override void OnData(Slice slice)
@@ -13,9 +13,8 @@
     }
 }
 </pre>
-    <pre class='python'>def OnData(self, slice: Slice) -> None:
-    if <?=$pythonVariable?> in slice.Bars:
-        trade_bar = slice.Bars[<?=$pythonVariable?>]</pre>
+    <pre class='python'>def on_data(self, slice: Slice) -> None:
+    trade_bar = slice.bars.get(<?=$pythonVariable?>)   # None if not found</pre>
 </div>
 
 
@@ -31,6 +30,6 @@
     }
 }</pre>
     <pre class='python'>def OnData(self, slice: Slice) -> None:
-    for symbol, trade_bar in slice.Bars.items():
-        close_price = trade_bar.Close</pre>
+    for symbol, trade_bar in slice.bars.items():
+        close_price = trade_bar.close</pre>
 </div>

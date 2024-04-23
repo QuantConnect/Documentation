@@ -1,4 +1,4 @@
-<?php 
+<?
 $securityName = "Option contract";
 $pythonVariable = "self.option_contract_symbol";
 $cSharpVariable = "_optionContractSymbol";
