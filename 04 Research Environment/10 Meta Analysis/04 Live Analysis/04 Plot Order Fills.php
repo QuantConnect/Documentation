@@ -6,11 +6,11 @@
 	    <pre class="python">orders = api.read_live_orders(project_id)</pre>
 	</div>
 	<?php include(DOCS_RESOURCES."/qc-api/get-project-id-in-research.html"); ?>
-	<p>By default, the orders with an ID between 0 and 100. To get orders with an ID greater than 100, pass <code>start</code> and <code>end</code> arguments to the <code>ReadLiveOrders</code> method. Note that <code>end</code> - <code>start</code> must be less than 100.</p>
+	<p>By default, the orders with an ID between 0 and 100. To get orders with an ID greater than 100, pass <code>start</code> and <code>end</code> arguments to the <code class="csharp">ReadLiveOrders</code><code class="python">read_live_orders</code> method. Note that <code>end</code> - <code>start</code> must be less than 100.</p>
 	<div class="section-example-container">
 	    <pre class="python">orders = api.read_live_orders(project_id, 100, 150)</pre>
 	</div>
-	<p>The <code>ReadLiveOrders</code> method returns a list of <code>Order</code> objects, which have the following properties:</p>
+	<p>The <code class="csharp">ReadLiveOrders</code><code class="python">read_live_orders</code> method returns a list of <code>Order</code> objects, which have the following properties:</p>
 	<div data-tree='QuantConnect.Orders.Order'></div>
 
 	<?php include(DOCS_RESOURCES."/qc-api/plot-fills.php"); ?>
