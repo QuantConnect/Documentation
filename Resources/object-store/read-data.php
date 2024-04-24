@@ -29,7 +29,7 @@ $pythonPrefix = $research ? "qb." : "self.";
 
 <h4>Strings</h4>
 
-<p>To read a <code>string</code> object, call the <code>Read</code> or <code>ReadString</code> method.</p>
+<p>To read a <code>string</code> object, call the <code class='csharp'>Read</code><code class='python'>read</code> or <code class='csharp'>ReadString</code><code class='python'>read_string</code> method.</p>
 
 <div class='section-example-container'>
     <pre class='csharp'>var stringData = <?=$cSharpPrefix?>ObjectStore.Read($"{<?=$cSharpPrefix?>ProjectId}/stringKey");</pre>
@@ -55,7 +55,7 @@ $pythonPrefix = $research ? "qb." : "self.";
 
 <h4>Bytes</h4>
 
-<p>To read a <code>Bytes</code> object, call the <code>ReadBytes</code> method.</p>
+<p>To read a <code>Bytes</code> object, call the <code class='csharp'>ReadBytes</code><code class='python'>read_bytes</code> method.</p>
 
 <div class='section-example-container'>
     <pre class='csharp'>var bytesData = <?=$cSharpPrefix?>ObjectStore.ReadBytes($"{<?=$cSharpPrefix?>ProjectId}/bytesKey");</pre>
