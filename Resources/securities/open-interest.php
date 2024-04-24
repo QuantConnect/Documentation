@@ -24,7 +24,7 @@ public void OnData(<?=$chainTypeName?> <?=$variableName?>)
     }
 }
 <?php } ?></pre>
-    <pre class='python'>def OnData(self, slice: Slice) -> None:
+    <pre class='python'>def on_data(self, slice: Slice) -> None:
     chain = slice.<?=$chainTypeName?>.get(self.contract_symbol.Canonical)
     if chain:
         contract = chain.Contracts.get(self.contract_symbol)

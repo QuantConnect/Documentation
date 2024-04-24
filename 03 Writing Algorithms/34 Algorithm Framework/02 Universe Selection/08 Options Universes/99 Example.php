@@ -121,7 +121,7 @@ class ChainedUniverseAlgorithm(QCAlgorithm):
     def OptionFilterFunction(self, option_filter_universe: OptionFilterUniverse) -&gt OptionFilterUniverse:
         return option_filter_universe.Strikes(-2, +2).FrontMonth().CallsOnly()
 
-    def OnData(self, data: Slice) -&gt None:
+    def on_data(self, data: Slice) -&gt None:
         if self.IsWarmingUp or self.day == self.Time.day:
             return
         

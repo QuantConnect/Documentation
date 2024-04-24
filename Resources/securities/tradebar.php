@@ -29,7 +29,7 @@
         var closePrice = tradeBar.Close;
     }
 }</pre>
-    <pre class='python'>def OnData(self, slice: Slice) -> None:
+    <pre class='python'>def on_data(self, slice: Slice) -> None:
     for symbol, trade_bar in slice.bars.items():
         close_price = trade_bar.close</pre>
 </div>

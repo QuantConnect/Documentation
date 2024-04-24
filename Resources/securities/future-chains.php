@@ -12,7 +12,7 @@
     }
 }
 </pre>
-    <pre class='python'>def OnData(self, slice: Slice) -> None:
+    <pre class='python'>def on_data(self, slice: Slice) -> None:
     chain = slice.FuturesChains.get(<?=$pythonMemberName?>.Canonical)
     if chain:
         contracts = chain.Contracts</pre>
@@ -41,7 +41,7 @@ public void OnData(FuturesChains futuresChains)
         var contracts = chain.Contracts;
     }
 }</pre>
-    <pre class='python'>def OnData(self, slice: Slice) -> None:
+    <pre class='python'>def on_data(self, slice: Slice) -> None:
     for continuous_contract_symbol, chain in slice.FuturesChains.items():
         contracts = chain.Contracts</pre>
 </div>

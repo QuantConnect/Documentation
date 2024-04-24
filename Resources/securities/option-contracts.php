@@ -20,7 +20,7 @@ if ($isFutureOptions)
     }
 }
 </pre>
-    <pre class='python'>def OnData(self, slice: Slice) -> None:
+    <pre class='python'>def on_data(self, slice: Slice) -> None:
     chain = slice.OptionChains.get(self.option_contract_symbol.Canonical)
     if chain:
         contract = chain.Contracts.get(self.option_contract_symbol)
@@ -50,7 +50,7 @@ if ($isFutureOptions)
         }
     }
 }</pre>
-    <pre class='python'>def OnData(self, slice: Slice) -> None:
+    <pre class='python'>def on_data(self, slice: Slice) -> None:
     for continuous_future_symbol, futures_chain in slice.FuturesChains.items():
         # Select a Future Contract and create its canonical FOP Symbol
         futures_contract = [contract for contract in futures_chain][0]
@@ -79,7 +79,7 @@ else
         }
     }
 }</pre>
-    <pre class='python'>def OnData(self, slice: Slice) -> None:
+    <pre class='python'>def on_data(self, slice: Slice) -> None:
     chain = slice.OptionChains.get(self.contract_symbol.Canonical)
     if chain:
         contract = chain.Contracts.get(self.contract_symbol)
@@ -112,7 +112,7 @@ if ($isFutureOptions)
         }
     }
 }</pre>
-    <pre class='python'>def OnData(self, slice: Slice) -> None:
+    <pre class='python'>def on_data(self, slice: Slice) -> None:
     chain = slice.OptionChains.get(self.option_contract_symbol.Canonical)
     if chain:
         contract = chain.Contracts.get(self.option_contract_symbol)
@@ -139,7 +139,7 @@ else
         }
     }
 }</pre>
-    <pre class='python'>def OnData(self, slice: Slice) -> None:
+    <pre class='python'>def on_data(self, slice: Slice) -> None:
     chain = slice.OptionChains.get(self.contract_symbol.Canonical)
     if chain:
         contract = chain.Contracts.get(self.contract_symbol)

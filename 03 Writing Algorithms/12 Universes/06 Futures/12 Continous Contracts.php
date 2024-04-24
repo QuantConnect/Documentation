@@ -31,7 +31,7 @@ raw_price = self.securities[self.future.mapped].price</pre>
         Log(tag);
     }
 }</pre>
-    <pre class="python">def OnData(self, slice: Slice) -> None:
+    <pre class="python">def on_data(self, slice: Slice) -> None:
     for symbol, changed_event in  slice.SymbolChangedEvents.items():
         old_symbol = changed_event.OldSymbol
         new_symbol = changed_event.NewSymbol

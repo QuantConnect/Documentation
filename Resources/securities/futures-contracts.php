@@ -25,7 +25,7 @@ public void OnData(FuturesChains futuresChains)
         }
     }
 }</pre>
-    <pre class='python'>def OnData(self, slice: Slice) -> None:
+    <pre class='python'>def on_data(self, slice: Slice) -> None:
     chain = slice.FuturesChains.get(<?=$pythonMemberName?>.Canonical)
     if chain:
         contract = chain.Contracts.get(<?=$pythonMemberName?>)

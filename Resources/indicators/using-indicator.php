@@ -54,7 +54,7 @@
 <?}?>
         self.<?=strtolower($helperName)?> = self.<?=$helperPrefix?><?=$helperName?>(<?=str_replace("symbol", "self.symbol", str_replace("option_mirror_symbol", "self.mirror_option", str_replace("option_symbol", "self.option", $helperArguments)))?>)
 
-    def OnData(self, slice: Slice) -> None:
+    def on_data(self, slice: Slice) -> None:
         if self.<?=strtolower($helperName)?>.IsReady:
             # The current value of self.<?=strtolower($helperName)?> is represented by self.<?=strtolower($helperName)?>.Current.Value
             self.Plot("<?=$typeName?>", "<?=strtolower($helperName)?>", self.<?=strtolower($helperName)?>.Current.Value)
@@ -203,7 +203,7 @@
 <?}?>
         self.<?=strtolower($helperName)?> = <?=$typeName?>(<?=str_replace("symbol", "self.symbol", str_replace("option_mirror_symbol", "self.mirror_option", str_replace("option_symbol", "self.option", $constructorArguments)))?>)
 
-    def OnData(self, slice: Slice) -> None:
+    def on_data(self, slice: Slice) -> None:
         bar = slice.Bars.get(self.symbol)
         if bar:
             self.<?=strtolower($helperName)?>.Update(<? if($isOptionIndicator) { ?>IndicatorDataPoint(self.symbol, bar.EndTime, bar.Close)<? } else { ?><?=$updateParameterValue?><? } ?>)
@@ -302,7 +302,7 @@
         self.RegisterIndicator(self.mirror_option, self.<?=strtolower($helperName)?>, Resolution.Daily)
 <?}?>
 
-    def OnData(self, slice: Slice) -> None:
+    def on_data(self, slice: Slice) -> None:
         if self.<?=strtolower($helperName)?>.IsReady:
             # The current value of self.<?=strtolower($helperName)?> is represented by self.<?=strtolower($helperName)?>.Current.Value
             self.Plot("<?=$typeName?>", "<?=strtolower($helperName)?>", self.<?=strtolower($helperName)?>.Current.Value)

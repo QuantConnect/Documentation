@@ -56,7 +56,7 @@ public override void Initialize()
     var callStrike = callContracts[0].Strike;
     var putStrike = putContracts[0].Strike;
 }</pre>
-        <pre class="python">def OnData(self, slice: Slice) -&gt; None:
+        <pre class="python">def on_data(self, slice: Slice) -&gt; None:
     if self.Portfolio.Invested:
         return
 
