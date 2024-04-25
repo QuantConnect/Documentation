@@ -2,30 +2,19 @@ import copy
 import json
 from pathlib import Path
 import re
+import shutil
 from urllib.request import urlopen
 
 LEAN = "https://github.com/QuantConnect/Lean/blob/master"
 RAW_LEAN = "https://raw.githubusercontent.com/QuantConnect/Lean/master"
 LEAN_SERVICE = "https://www.quantconnect.com/services/inspector?language=python&type=T:%s"
-SOURCE_FILE = "Algorithm/QCAlgorithm.cs"
 
 WRITE_PATH = Path("08 Drafts/98 API Reference")   #"03 Writing Algorithms/98 API Reference/"
-WRITE_PATH.mkdir(parents=True, exist_ok=True)
-
 DOCS_SECTION = {
-    "QCAlgorithm API": "QuantConnect.Algorithm.QCAlgorithm",
-    "Universe": "QuantConnect.Data.UniverseSelection.Universe",
-    "Security": "QuantConnect.Securities.Security",
-    "OrderTicket": "QuantConnect.Orders.OrderTicket",
-    "OrderEvent": "QuantConnect.Orders.OrderEvent"
+    "QCAlgorithm API": "QuantConnect.Algorithm.QCAlgorithm"
 }
 MAX_RECURSION = 1
-
-EXTRAS = {}
-DONE = []
-SOURCE_CODES = {}
 XML_REGEX_PATTERNS = [r'<see cref="(.*?)"(?:\s*/)?>', r'typeparam name="(.*?)"(?:\s*/)?']
-
 STYLE = '''
 <style>
 .code-source        { color: grey; float: right }
@@ -36,10 +25,27 @@ STYLE = '''
 </style>
 '''
 
+DOCS_ATTR = {}
+EXTRAS = {}
+DONE = []
+SOURCE_CODES = {}
+
 def render_docs():
+    if WRITE_PATH.exists():
+        shutil.rmtree(WRITE_PATH)
+    WRITE_PATH.mkdir(parents=True, exist_ok=True)
+
     for i, (h3, type_json_url) in enumerate(DOCS_SECTION.items()):
-        _render_section_docs(i, h3, type_json_url)
+        _render_section_docs(i, type_json_url, write=False)
         DONE.append(h3.strip().lower())
+    i += 1
+    
+    for j, (tag, html_list) in enumerate(DOCS_ATTR.items()):
+        with open(WRITE_PATH/ f"{i+j+1:02} {tag}.html", "w+", encoding="utf-8") as file:
+            file.write(f"<h4 id=\"{tag}\">{tag}</h4>")
+            file.write('\n'.join(html_list))
+            file.write(STYLE)
+    i += j + 1
         
     for x in list(EXTRAS.keys()):
         if x.strip().lower() in DONE:
@@ -50,18 +56,17 @@ def render_docs():
         extra_copy = copy.deepcopy(EXTRAS)
         EXTRAS.clear()
         
-        for j, (h3, type_json_url) in enumerate(sorted(extra_copy.items(), key=lambda x: x[0])):
-            _render_section_docs(i+j+1, h3, type_json_url)
+        for h3, type_json_url in sorted(extra_copy.items(), key=lambda x: x[0]):
+            _render_section_docs(i, type_json_url, write=True)
             DONE.append(h3.strip().lower())
         
         for x in list(EXTRAS.keys()):
             if x.strip().lower() in DONE:
                 del EXTRAS[x]
                 
-        i = i+j+1
         iters += 1
 
-def _render_section_docs(i, write_location, type_json_url):
+def _render_section_docs(i, type_json_url, write=False):
     content = json.loads(urlopen(LEAN_SERVICE % type_json_url).read())
     
     # Not a type, do not render
@@ -73,7 +78,9 @@ def _render_section_docs(i, write_location, type_json_url):
     properties = _render_properties(content["properties"])
     fields = _render_fields(content["fields"])
     
-    html = f'''{type_heading_html}
+    if write:
+        with open(WRITE_PATH / f"{i+1:02} Type.html", 'a', encoding="utf-8") as file:
+            html = f'''{type_heading_html}
 <div class=\"subsection-content\">
 {methods}
 </div>
@@ -83,13 +90,17 @@ def _render_section_docs(i, write_location, type_json_url):
 <div class=\"subsection-content\">
 {fields}
 </div>'''
-
-    with open(WRITE_PATH / f"{i+1:02} {write_location}.html", 'w', encoding="utf-8") as file:
-        file.write(html)
-        file.write(STYLE)
+            file.write(html)
+            file.write(STYLE)
+    else:
+        with open(WRITE_PATH / f"{i+1:02} Introduction.html", 'w+', encoding="utf-8") as file:
+            file.write(type_heading_html)
+            file.write(STYLE)
 
 def _render_type_heading(type_name, type_description, type_full_name):
-    return f'''<div class=\"code-snippet\"><pre id=\"{type_name}\"><span class=\"object-type\">class</span> {type_full_name}()<a class=\"code-source\" href=\"{LEAN}/{SOURCE_FILE}\">[source]</a>
+    repo_location = '/'.join(type_full_name.split(".")[1:])
+    return f'''<h4 id=\"{type_name}\">{type_name}</h4>
+<div class=\"code-snippet\"><pre><span class=\"object-type\">class</span> {type_full_name}()<a class=\"code-source\" href=\"{LEAN}/{repo_location}.cs\">[source]</a>
 </pre></div>
 <p>{extract_xml_content(type_description)}</p>
 '''
@@ -115,13 +126,19 @@ def _render_type(type_, type_dict, type_ret=None, line_arg="", params=""):
     type_description = extract_xml_content(type_dict[f"{type_}-description"])
     source_html = f"<a class=\"code-source\" href=\"{LEAN}/{source_url}\">[source]</a>" if source_url else ""
     
-    return f'''<div class=\"code-snippet\"><pre>{"" if type_ == "method" else '<span class="object-type">' + type_ + "</span> "}{type_dict[f"{type_}-name"]}{line_arg}{source_html}</pre></div>
+    type_html = f'''<div class=\"code-snippet\"><pre>{"" if type_ == "method" else '<span class="object-type">' + type_ + "</span> "}{type_dict[f"{type_}-name"]}{line_arg}{source_html}</pre></div>
 <div class=\"subsection-content\">
 <p>{type_description}</p>
 {params}
 {type_return}
 </div>
 '''
+    if doc_attr:
+        if doc_attr["tag"] not in DOCS_ATTR:
+            DOCS_ATTR[doc_attr["tag"]] = []
+        DOCS_ATTR[doc_attr["tag"]].append(type_html)
+
+    return type_html
 
 def _render_methods(method_list):
     return _render_types("method", method_list)
