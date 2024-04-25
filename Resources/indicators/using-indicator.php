@@ -57,14 +57,14 @@
     def on_data(self, slice: Slice) -> None:
         if self.<?=strtolower($helperName)?>.IsReady:
             # The current value of self.<?=strtolower($helperName)?> is represented by self.<?=strtolower($helperName)?>.Current.Value
-            self.Plot("<?=$typeName?>", "<?=strtolower($helperName)?>", self.<?=strtolower($helperName)?>.Current.Value)
+            self.plot("<?=$typeName?>", "<?=strtolower($helperName)?>", self.<?=strtolower($helperName)?>.Current.Value)
             <? if (count($properties) + count($otherProperties) > 0) { ?># Plot all attributes of self.<?=strtolower($helperName)?><? } ?>
 
 <? foreach ($properties as $property) { ?>
-            self.Plot("<?=$typeName?>", "<?=strtolower($property)?>", self.<?=strtolower($helperName)?>.<?=$property?>.Current.Value)
+            self.plot("<?=$typeName?>", "<?=strtolower($property)?>", self.<?=strtolower($helperName)?>.<?=$property?>.Current.Value)
 <? } ?>
 <? foreach ($otherProperties as $property) { ?>
-            self.Plot("<?=$typeName?>", "<?=strtolower($property)?>", self.<?=strtolower($helperName)?>.<?=$property?>)
+            self.plot("<?=$typeName?>", "<?=strtolower($property)?>", self.<?=strtolower($helperName)?>.<?=$property?>)
 <? } ?>
 </pre>
 </div>
@@ -221,14 +221,14 @@
 <?}?>
         if self.<?=strtolower($helperName)?>.IsReady:
             # The current value of self.<?=strtolower($helperName)?> is represented by self.<?=strtolower($helperName)?>.Current.Value
-            self.Plot("<?=$typeName?>", "<?=strtolower($helperName)?>", self.<?=strtolower($helperName)?>.Current.Value)
+            self.plot("<?=$typeName?>", "<?=strtolower($helperName)?>", self.<?=strtolower($helperName)?>.Current.Value)
             <? if (count($properties) + count($otherProperties) > 0) { ?># Plot all attributes of self.<?=strtolower($helperName)?><? } ?>
 
 <? foreach ($properties as $property) { ?>
-            self.Plot("<?=$typeName?>", "<?=strtolower($property)?>", self.<?=strtolower($helperName)?>.<?=$property?>.Current.Value)
+            self.plot("<?=$typeName?>", "<?=strtolower($property)?>", self.<?=strtolower($helperName)?>.<?=$property?>.Current.Value)
 <? } ?>
 <? foreach ($otherProperties as $property) { ?>
-            self.Plot("<?=$typeName?>", "<?=strtolower($property)?>", self.<?=strtolower($helperName)?>.<?=$property?>)
+            self.plot("<?=$typeName?>", "<?=strtolower($property)?>", self.<?=strtolower($helperName)?>.<?=$property?>)
 <? } ?>
 </pre>
 </div>
@@ -305,11 +305,11 @@
     def on_data(self, slice: Slice) -> None:
         if self.<?=strtolower($helperName)?>.IsReady:
             # The current value of self.<?=strtolower($helperName)?> is represented by self.<?=strtolower($helperName)?>.Current.Value
-            self.Plot("<?=$typeName?>", "<?=strtolower($helperName)?>", self.<?=strtolower($helperName)?>.Current.Value)
+            self.plot("<?=$typeName?>", "<?=strtolower($helperName)?>", self.<?=strtolower($helperName)?>.Current.Value)
             <? if (count($properties) > 0) { ?># Plot all attributes of self.<?=strtolower($helperName)?><? } ?>
 
 <? foreach ($properties as $property) { ?>
-            self.Plot("<?=$typeName?>", "<?=strtolower($property)?>", self.<?=strtolower($helperName)?>.<?=$property?>.Current.Value)
+            self.plot("<?=$typeName?>", "<?=strtolower($property)?>", self.<?=strtolower($helperName)?>.<?=$property?>.Current.Value)
 <? } ?>
 </pre>
 </div>

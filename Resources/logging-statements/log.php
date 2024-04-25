@@ -1,4 +1,4 @@
-<p>Log statements are added to the log file while your algorithm continues executing. Logging dataset information is not permitted. Use <code>Log</code> statements to debug your backtests and live trading algorithms.</p>
+<p>Log statements are added to the log file while your algorithm continues executing. Logging dataset information is not permitted. Use <code class="csharp">Log</code><code class="python">log</code> method statements to debug your backtests and live trading algorithms.</p>
 
 <p><?=$cloudPlatform ? "Log length " : "If you execute algorithms in QuantConnect Cloud, log length " ?> is <a href='/docs/v2/cloud-platform/organizations/resources#09-Log-Quotas'>capped by organization tier</a>. If your organization hits the daily limit, <a href='/contact'>contact us</a>.</p>
 

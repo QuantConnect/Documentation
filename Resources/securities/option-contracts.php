@@ -107,7 +107,7 @@ if ($isFutureOptions)
     }
 }</pre>
     <pre class='python'>def on_data(self, slice: Slice) -> None:
-    chain = slice.option_chains.get(self.option_contract_symbol.Canonical)
+    chain = slice.option_chains.get(self.option_contract_symbol.canonical)
     if chain:
         contract = chain.contracts.get(self.option_contract_symbol)
         if contract:
@@ -128,7 +128,7 @@ if ($isFutureOptions)
     }
 }</pre>
     <pre class='python'>def on_data(self, slice: Slice) -> None:
-    chain = slice.option_chains.get(self.contract_symbol.Canonical)
+    chain = slice.option_chains.get(self.contract_symbol.canonical)
     if chain:
         contract = chain.contracts.get(self.contract_symbol)
         if contract:
