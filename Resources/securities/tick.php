@@ -19,10 +19,9 @@
 }
 </pre>
     <pre class='python'>def on_data(self, slice: Slice) -> None:
-    if <?=$pythonVariable?> in slice.ticks:
-        ticks = slice.ticks[<?=$pythonVariable?>]
-        for tick in ticks:
-            price = tick.price</pre>
+    ticks = slice.ticks.get(<?=$pythonVariable?>, [])   # Empty if not found
+    for tick in ticks:
+        price = tick.price</pre>
 </div>
 
 <p>You can also iterate through the <code>Ticks</code> dictionary. The keys of the dictionary are the <code>Symbol</code> objects and the values are the <code class='csharp'>List&lt;Tick&gt;</code><code class='python'>list[Tick]</code> objects.</p>

@@ -1,1 +1,1 @@
-<p>The only market available for CFD contracts is <code>Market.Oanda</code>.</p>
+<p>The only market available for CFD contracts is <code class="csharp">Market.Oanda</code><code class="python">Market.OANDA</code>.</p>

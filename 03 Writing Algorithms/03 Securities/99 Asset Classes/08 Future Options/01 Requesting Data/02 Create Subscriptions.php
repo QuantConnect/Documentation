@@ -1,4 +1,4 @@
-<p>Before you can subscribe to a Future Option contract, you may configure the underlying volatility model and you must get the contract <code>Symbol</code>.</p>
+<p>Before you can subscribe to a Future Option contract, you may configure the underlying volatility model and you must get the contract <code class="csharp">Symbol</code><code class="python">symbol</code>.</p>
 
 <h4>Configure the Underlying Futures Contract</h4>
 
@@ -27,7 +27,7 @@
     </tbody>
 </table>
 
-<p>In this case, you still need the Futures contract <code>Symbol</code> to subscribe to Futures Option contracts. If you don't have access to it, create it.</p>
+<p>In this case, you still need the Futures contract <code class="csharp">Symbol</code><code class="python">symbol</code>.</p> to subscribe to Futures Option contracts. If you don't have access to it, create it.</p>
 
 <div class="section-example-container">
     <pre class="csharp">_futureContractSymbol = QuantConnect.Symbol.CreateFuture(Futures.Indices.SP500EMini,
@@ -43,7 +43,7 @@
 
 <h4>Get Contract Symbols</h4>
 
-<p>To subscribe to a Future Option contract, you need the contract <code>Symbol</code>. You can get the contract <code>Symbol</code> from the <code>CreateOption</code> method or from the <code>OptionChainProvider</code>. If you use the <code>CreateOption</code> method, you need to provide the contract details.</p>
+<p>To subscribe to a Future Option contract, you need the contract <code>Symbol</code>. You can get the contract <code class="csharp">Symbol</code><code class="python">symbol</code> from the <code class="csharp">CreateOption</code><code class="python">create_option</code> method or from the <code class="csharp">OptionChainProvider</code><code class="python">option_chain_provider</code>. If you use the <code class="csharp">CreateOption</code><code class="python">create_option</code> method, you need to provide the contract details.</p>
 
 <div class="section-example-container">
     <pre class="csharp">_optionContractSymbol = QuantConnect.Symbol.CreateOption(_futureContractSymbol,
@@ -52,7 +52,7 @@
     Market.CME, OptionStyle.AMERICAN, OptionRight.CALL, 3600, datetime(2022, 6, 17))</pre>
 </div>
 
-<p>Another way to get a Future Option contract <code>Symbol</code> is to use the <code>OptionChainProvider</code>. The <code>GetOptionContractList</code> method of <code>OptionChainProvider</code> returns a list of <code>Symbol</code> objects that reference the available Option contracts for a given underlying Future contract on a given date. The <code>Symbol</code> you pass to the method can reference any of the following Futures contracts:</p>
+<p>Another way to get a Future Option contract <code>Symbol</code> is to use the <code class="csharp">OptionChainProvider</code><code class="python">option_chain_provider</code>. The <code class="csharp">GetOptionContractList</code><code class="python">get_option_contract_list</code> method of <code class="csharp">OptionChainProvider</code><code class="python">option_chain_provider</code> returns a list of <code>Symbol</code> objects that reference the available Option contracts for a given underlying Future contract on a given date. The <code>Symbol</code> you pass to the method can reference any of the following Futures contracts:</p>
 
 <ul>
     <li>The <a href="/docs/v2/writing-algorithms/universes/futures#12-Continous-Contracts">continuous Futures contract</a></li>
@@ -60,7 +60,7 @@
     <li>A contract that you added with <code class="csharp">AddFutureContract</code><code class="python">add_future_contract</code></li>
 </ul>
 
-<p>To filter and select contracts that the <code>GetOptionContractList</code> method returns, you can use the following properties of each <code>Symbol</code> object:</p>
+<p>To filter and select contracts that the <code class="csharp">GetOptionContractList</code><code class="python">get_option_contract_list</code> method returns, you can use the following properties of each <code>Symbol</code> object:</p>
     <table class="qc-table table">
         <thead>
             <tr>
@@ -70,22 +70,22 @@
         </thead>
         <tbody>
             <tr>
-                 <td><code>ID.Date</code></td>
+                 <td><code class="csharp">ID.Date</code><code class="python">id.date</code></td>
                  <td>The expiration date of the contract.</td>
             </tr>
             <tr>
-                 <td><code>ID.StrikePrice</code></td>
+                 <td><code class="csharp">ID.StrikePrice</code><code class="python">id.strike_price</code></td>
                  <td>The strike price of the contract.</td>
             </tr>
             <tr>
-                 <td><code>ID.OptionRight</code></td>
+                 <td><code class="csharp">ID.OptionRight</code><code class="python">id.option_right</code></td>
                  <td>
                      The contract type. The <code>OptionRight</code> enumeration has the following members:
                      <div data-tree="QuantConnect.OptionRight"></div>
                   </td>
             </tr>
             <tr>
-                 <td><code>ID.OptionStyle</code></td>
+                 <td><code class="csharp">ID.OptionStyle</code><code class="python">id.option_style</code></td>
                  <td>
                      The contract style. The <code>OptionStyle</code> enumeration has the following members:
                      <div data-tree="QuantConnect.OptionStyle"></div>
@@ -108,7 +108,7 @@ self.option_contract_symbol = sorted(filtered_symbols, key=lambda symbol: symbol
 
 <h4>Subscribe to Contracts</h4>
 
-<p>To create a Future Option contract subscription, pass the contract <code>Symbol</code> to the <code class="csharp">AddFutureOptionContract</code><code class="python">add_future_option_contract</code>  method. Save a reference to the contract <code>Symbol</code> so you can easily access the Option contract in the <a href="/docs/v2/writing-algorithms/securities/asset-classes/future-options/handling-data#06-Option-Chains">OptionChain</a> that LEAN passes to the <code class="csharp">OnData</code><code class="python">on_data</code> method. To override the default <a href="/docs/v2/writing-algorithms/reality-modeling/options-models/pricing">pricing model</a> of the Option, <a href='https://www.quantconnect.com/docs/v2/writing-algorithms/reality-modeling/options-models/pricing#04-Set-Models'>set a pricing model</a>.</p>
+<p>To create a Future Option contract subscription, pass the contract <code class="csharp">Symbol</code><code class="python">symbol</code> to the <code class="csharp">AddFutureOptionContract</code><code class="python">add_future_option_contract</code>  method. Save a reference to the contract <code class="csharp">Symbol</code><code class="python">symbol</code> so you can easily access the Option contract in the <a href="/docs/v2/writing-algorithms/securities/asset-classes/future-options/handling-data#06-Option-Chains">OptionChain</a> that LEAN passes to the <code class="csharp">OnData</code><code class="python">on_data</code> method. To override the default <a href="/docs/v2/writing-algorithms/reality-modeling/options-models/pricing">pricing model</a> of the Option, <a href='https://www.quantconnect.com/docs/v2/writing-algorithms/reality-modeling/options-models/pricing#04-Set-Models'>set a pricing model</a>.</p>
 
 <div class="section-example-container">
     <pre class="csharp">var option = AddFutureOptionContract(_optionContractSymbol);
@@ -121,7 +121,7 @@ option.price_model = OptionPriceModels.binomial_cox_ross_rubinstein()</pre>
 
 <h4>Warm Up Contract Prices</h4>
 
-<p>If you subscribe to a Future Option contract with <code>AddFutureOptionContract</code>, you'll need to wait until the next <code>Slice</code> to receive data and trade the contract. To trade the contract in the same time step you subscribe to the contract, set the current price of the contract in a <a href='/docs/v2/writing-algorithms/initialization#07-Set-Security-Initializer'>security initializer</a>.</p>
+<p>If you subscribe to a Future Option contract with <code class="csharp">AddFutureOptionContract</code><code class="python">add_future_option_contract</code>, you'll need to wait until the next <code>Slice</code> to receive data and trade the contract. To trade the contract in the same time step you subscribe to the contract, set the current price of the contract in a <a href='/docs/v2/writing-algorithms/initialization#07-Set-Security-Initializer'>security initializer</a>.</p>
 <div class="section-example-container">
     <pre class="csharp">var seeder = new FuncSecuritySeeder(GetLastKnownPrices);
 SetSecurityInitializer(new BrokerageModelSecurityInitializer(BrokerageModel, seeder));</pre>

@@ -68,7 +68,7 @@ var symbols = qb.FutureChainProvider.GetFutureContractList(future.Symbol, startD
 		<pre class="python">start_date = datetime(2021,12,20)
 symbols = qb.future_chain_provider.get_future_contract_list(future.symbol, start_date)</pre>
 	</div>
-	<p>This method returns a list of <code>Symbol</code> objects that reference the Future contracts that were trading at the given time. If you set a contract filter with <code>SetFilter</code>, it doesn't affect the results of <code>GetFutureContractList</code>.</p>
+	<p>This method returns a list of <code>Symbol</code> objects that reference the Future contracts that were trading at the given time. If you set a contract filter with <code>SetFilter</code>, it doesn't affect the results of <code class="csharp">GetFutureContractList</code><code class="python">get_future_contract_list</code>.</p>
 	<li>Select the <code>Symbol</code> of the <code>FutureContract</code>&nbsp;object(s) for which you want to get historical data.</li>
 	<p>For example, select the  <code>Symbol</code> of the contract with the closest expiry.<br></p>
 	<div class="section-example-container">

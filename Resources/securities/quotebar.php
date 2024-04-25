@@ -17,8 +17,7 @@
 }
 </pre>
     <pre class='python'>def on_data(self, slice: Slice) -> None:
-    if <?=$pythonVariable?> in slice.quote_bars:
-        quote_bar = slice.quote_bars[<?=$pythonVariable?>]</pre>
+    quote_bar = slice.quote_bars.get(<?=$pythonVariable?>)   # None if not found</pre>
 </div>
 
 <p>You can also iterate through the <code>QuoteBars</code> dictionary. The keys of the dictionary are the <code>Symbol</code> objects and the values are the <code>QuoteBar</code> objects.</p>

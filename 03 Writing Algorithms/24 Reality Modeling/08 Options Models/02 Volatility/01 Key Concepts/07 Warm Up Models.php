@@ -14,7 +14,7 @@ if self.is_warming_up:
     return</pre>
 </div>
 
-<p>If you have a dynamic universe of underlying assets and add Option contracts to your algorithm with the <code>AddOptionContract</code>, <code class="csharp">AddIndexOptionContract</code><code class="python">add_index_option_contract</code>, or <code class="csharp">AddFutureOptionContract</code><code class="python">add_future_option_contract</code>  methods, warm up the volatility model when the underlying asset enters your universe. We recommend you do this inside a <a href='/docs/v2/writing-algorithms/initialization#07-Set-Security-Initializer'>security initializer</a>.</p>
+<p>If you have a dynamic universe of underlying assets and add Option contracts to your algorithm with the <code class="csharp">AddOptionContract</code><code class="python">add_option_contract</code>, <code class="csharp">AddIndexOptionContract</code><code class="python">add_index_option_contract</code>, or <code class="csharp">AddFutureOptionContract</code><code class="python">add_future_option_contract</code>  methods, warm up the volatility model when the underlying asset enters your universe. We recommend you do this inside a <a href='/docs/v2/writing-algorithms/initialization#07-Set-Security-Initializer'>security initializer</a>.</p>
 
 
 <?php

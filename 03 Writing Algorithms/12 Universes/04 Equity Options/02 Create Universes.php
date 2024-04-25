@@ -84,7 +84,7 @@ self._symbol = option.symbol</pre>
         </tr>
         <tr>
             <td><a href='/docs/v2/writing-algorithms/securities/asset-classes/us-equity/requesting-data#11-Data-Normalization'>Data Normalization</a></td>
-            <td><code>DataNormalizationMode.Raw</code></td>
+            <td><code class="csharp">DataNormalizationMode.Raw</code><code class="python">DataNormalizationMode.RAW</code></td>
         </tr>
     </tbody>
 </table>

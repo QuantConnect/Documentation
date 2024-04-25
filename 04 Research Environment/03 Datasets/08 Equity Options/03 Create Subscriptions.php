@@ -62,22 +62,22 @@ contract_symbols = qb.option_chain_provider.get_option_contract_list(equity_symb
         </thead>
         <tbody>
             <tr>
-                 <td><code>ID.Date</code></td>
+                 <td><code class="csharp">ID.Date</code><code class="python">id.date</code></td>
                  <td>The expiration date of the contract.</td>
             </tr>
             <tr>
-                 <td><code>ID.StrikePrice</code></td>
+                 <td><code class="csharp">ID.StrikePrice</code><code class="python">id.strike_price</code></td>
                  <td>The strike price of the contract.</td>
             </tr>
             <tr>
-                 <td><code>ID.OptionRight</code></td>
+                 <td><code class="csharp">ID.OptionRight</code><code class="python">id.option_right</code></td>
                  <td>
                      The contract type. The <code>OptionRight</code> enumeration has the following members:
                      <div data-tree="QuantConnect.OptionRight"></div>
                   </td>
             </tr>
             <tr>
-                 <td><code>ID.OptionStyle</code></td>
+                 <td><code class="csharp">ID.OptionStyle</code><code class="python">id.option_style</code></td>
                  <td>
                      The contract style. The <code>OptionStyle</code> enumeration has the following members:
                      <div data-tree="QuantConnect.OptionStyle"></div>

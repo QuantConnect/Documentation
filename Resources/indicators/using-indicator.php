@@ -49,10 +49,10 @@
 <?} else if($isOptionIndicator) { ?>
         self.option = Symbol.CreateOption("SPY", Market.USA, OptionStyle.American, OptionRight.Put, 450, datetime(2023, 12, 22))
         self.AddOptionContract(self.option, Resolution.Daily)
-        self.mirror_option = Symbol.CreateOption("SPY", Market.USA, OptionStyle.American, OptionRight.Call, 450, datetime(2023, 12, 22))
-        self.AddOptionContract(self.mirror_option, Resolution.Daily)
+        self.mirrorOption = Symbol.CreateOption("SPY", Market.USA, OptionStyle.American, OptionRight.Call, 450, datetime(2023, 12, 22))
+        self.AddOptionContract(self.mirrorOption, Resolution.Daily)
 <?}?>
-        self.<?=strtolower($helperName)?> = self.<?=$helperPrefix?><?=$helperName?>(<?=str_replace("symbol", "self.symbol", str_replace("option_mirror_symbol", "self.mirror_option", str_replace("option_symbol", "self.option", $helperArguments)))?>)
+        self.<?=strtolower($helperName)?> = self.<?=$helperPrefix?><?=$helperName?>(<?=str_replace("symbol", "self.symbol", str_replace("option_mirror_symbol", "self.mirrorOption", str_replace("option_symbol", "self.option", $helperArguments)))?>)
 
     def on_data(self, slice: Slice) -> None:
         if self.<?=strtolower($helperName)?>.IsReady:
@@ -116,10 +116,10 @@
 <?} else if($isOptionIndicator) { ?>
         self.option = Symbol.CreateOption("SPY", Market.USA, OptionStyle.American, OptionRight.Put, 450, datetime(2023, 12, 22))
         self.AddOptionContract(self.option, Resolution.Daily)
-        self.mirror_option = Symbol.CreateOption("SPY", Market.USA, OptionStyle.American, OptionRight.Call, 450, datetime(2023, 12, 22))
-        self.AddOptionContract(self.mirror_option, Resolution.Daily)
+        self.mirrorOption = Symbol.CreateOption("SPY", Market.USA, OptionStyle.American, OptionRight.Call, 450, datetime(2023, 12, 22))
+        self.AddOptionContract(self.mirrorOption, Resolution.Daily)
 <?}?>
-        self.<?=strtolower($helperName)?> = self.<?=$helperPrefix?><?=$helperName?>(<?=str_replace("symbol", "self.symbol", str_replace("option_mirror_symbol", "self.mirror_option", str_replace("option_symbol", "self.option", $helperArguments)))?>, resolution=Resolution.Daily)
+        self.<?=strtolower($helperName)?> = self.<?=$helperPrefix?><?=$helperName?>(<?=str_replace("symbol", "self.symbol", str_replace("option_mirror_symbol", "self.mirrorOption", str_replace("option_symbol", "self.option", $helperArguments)))?>, resolution=Resolution.Daily)
 </pre>
 </div>
 <? } ?>
@@ -198,10 +198,10 @@
 <?} else if($isOptionIndicator) { ?>
         self.option = Symbol.CreateOption("SPY", Market.USA, OptionStyle.American, OptionRight.Put, 450, datetime(2023, 12, 22))
         self.AddOptionContract(self.option, Resolution.Daily)
-        self.mirror_option = Symbol.CreateOption("SPY", Market.USA, OptionStyle.American, OptionRight.Call, 450, datetime(2023, 12, 22))
-        self.AddOptionContract(self.mirror_option, Resolution.Daily)
+        self.mirrorOption = Symbol.CreateOption("SPY", Market.USA, OptionStyle.American, OptionRight.Call, 450, datetime(2023, 12, 22))
+        self.AddOptionContract(self.mirrorOption, Resolution.Daily)
 <?}?>
-        self.<?=strtolower($helperName)?> = <?=$typeName?>(<?=str_replace("symbol", "self.symbol", str_replace("option_mirror_symbol", "self.mirror_option", str_replace("option_symbol", "self.option", $constructorArguments)))?>)
+        self.<?=strtolower($helperName)?> = <?=$typeName?>(<?=str_replace("symbol", "self.symbol", str_replace("option_mirror_symbol", "self.mirrorOption", str_replace("option_symbol", "self.option", $constructorArguments)))?>)
 
     def on_data(self, slice: Slice) -> None:
         bar = slice.Bars.get(self.symbol)
@@ -215,9 +215,9 @@
         bar = slice.QuoteBars.get(self.option)
         if bar:
             self.<?=strtolower($helperName)?>.Update(IndicatorDataPoint(self.option, bar.EndTime, bar.Close))
-        bar = slice.QuoteBars.get(self.mirror_option)
+        bar = slice.QuoteBars.get(self.mirrorOption)
         if bar:
-            self.<?=strtolower($helperName)?>.Update(IndicatorDataPoint(self.mirror_option, bar.EndTime, bar.Close))
+            self.<?=strtolower($helperName)?>.Update(IndicatorDataPoint(self.mirrorOption, bar.EndTime, bar.Close))
 <?}?>
         if self.<?=strtolower($helperName)?>.IsReady:
             # The current value of self.<?=strtolower($helperName)?> is represented by self.<?=strtolower($helperName)?>.Current.Value
@@ -290,16 +290,16 @@
 <?} else if($isOptionIndicator) { ?>
         self.option = Symbol.CreateOption("SPY", Market.USA, OptionStyle.American, OptionRight.Put, 450, datetime(2023, 12, 22))
         self.AddOptionContract(self.option, Resolution.Daily)
-        self.mirror_option = Symbol.CreateOption("SPY", Market.USA, OptionStyle.American, OptionRight.Call, 450, datetime(2023, 12, 22))
-        self.AddOptionContract(self.mirror_option, Resolution.Daily)
+        self.mirrorOption = Symbol.CreateOption("SPY", Market.USA, OptionStyle.American, OptionRight.Call, 450, datetime(2023, 12, 22))
+        self.AddOptionContract(self.mirrorOption, Resolution.Daily)
 <?}?>
-        self.<?=strtolower($helperName)?> = <?=$typeName?>(<?=str_replace("symbol", "self.symbol", str_replace("option_mirror_symbol", "self.mirror_option", str_replace("option_symbol", "self.option", $constructorArguments)))?>)
+        self.<?=strtolower($helperName)?> = <?=$typeName?>(<?=str_replace("symbol", "self.symbol", str_replace("option_mirror_symbol", "self.mirrorOption", str_replace("option_symbol", "self.option", $constructorArguments)))?>)
         self.RegisterIndicator(self.symbol, self.<?=strtolower($helperName)?>, Resolution.Daily)
 <? if($hasReference) { ?>
         self.RegisterIndicator(reference, self.<?=strtolower($helperName)?>, Resolution.Daily)
 <?} else if($isOptionIndicator) { ?>
         self.RegisterIndicator(self.option, self.<?=strtolower($helperName)?>, Resolution.Daily)
-        self.RegisterIndicator(self.mirror_option, self.<?=strtolower($helperName)?>, Resolution.Daily)
+        self.RegisterIndicator(self.mirrorOption, self.<?=strtolower($helperName)?>, Resolution.Daily)
 <?}?>
 
     def on_data(self, slice: Slice) -> None:

@@ -49,7 +49,7 @@ qb.add_future_contract(futures_contract_symbol, fill_forward = False)</pre>
 		<pre class="csharp">var fopContractSymbols = qb.OptionChainProvider.GetOptionContractList(futuresContractSymbol, startDate);</pre>
 		<pre class="python">fop_contract_symbols = qb.option_chain_provider.get_option_contract_list(futures_contract_symbol, start_date)</pre>
 	</div>
-    <p>This method returns a list of <code>Symbol</code> objects that reference the Option contracts that were trading for the underlying Future contract at the given time. If you set a contract filter with <code>SetFilter</code>, it doesn't affect the results of <code>GetOptionContractList</code>.</p>
+    <p>This method returns a list of <code>Symbol</code> objects that reference the Option contracts that were trading for the underlying Future contract at the given time. If you set a contract filter with <code>SetFilter</code>, it doesn't affect the results of <code class="csharp">GetOptionContractList</code><code class="python">get_option_contract_list</code>.</p>
 
     <li>Select the Symbol of the <code>OptionContract</code> object(s) for which you want to get historical data.</li>
     <p>To filter and select contracts, you can use the following properties of each&nbsp;<code>Symbol</code> object:</p>
@@ -62,22 +62,22 @@ qb.add_future_contract(futures_contract_symbol, fill_forward = False)</pre>
         </thead>
         <tbody>
             <tr>
-                 <td><code>ID.Date</code></td>
+                 <td><code class="csharp">ID.Date</code><code class="python">id.date</code></td>
                  <td>The expiration date of the contract.</td>
             </tr>
             <tr>
-                 <td><code>ID.StrikePrice</code></td>
+                 <td><code class="csharp">ID.StrikePrice</code><code class="python">id.strike_price</code></td>
                  <td>The strike price of the contract.</td>
             </tr>
             <tr>
-                 <td><code>ID.OptionRight</code></td>
+                 <td><code class="csharp">ID.OptionRight</code><code class="python">id.option_right</code></td>
                  <td>
                      The contract type. The <code>OptionRight</code> enumeration has the following members:
                      <div data-tree="QuantConnect.OptionRight"></div>
                   </td>
             </tr>
             <tr>
-                 <td><code>ID.OptionStyle</code></td>
+                 <td><code class="csharp">ID.OptionStyle</code><code class="python">id.option_style</code></td>
                  <td>
                      The contract style. The <code>OptionStyle</code> enumeration has the following members:
                      <div data-tree="QuantConnect.OptionStyle"></div>
@@ -97,7 +97,7 @@ calls = [c for c in fop_contract_symbols if c.id.date == closest_expiry and c.id
 fop_contract_symbol = sorted(calls, key=lambda c: c.id.strike_price)[0]</pre>
 	</div>
 
-    <li>Call the <code>AddFutureOptionContract</code>&nbsp;method with an <code>OptionContract</code> Symbol and disable fill-forward.</li>
+    <li>Call the <code class="csharp">AddFutureOptionContract</code><code class="python">add_future_option_contract</code>&nbsp;method with an <code>OptionContract</code> Symbol and disable fill-forward.</li>
 	<div class="section-example-container">
 		<pre class="csharp">var optionContract = qb.AddFutureOptionContract(fopContractSymbol, fillForward: false);</pre>
 		<pre class="python">option_contract = qb.add_future_option_contract(fop_contract_symbol, fill_forward = False)</pre>

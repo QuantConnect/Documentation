@@ -1,7 +1,7 @@
-<p>Before you can subscribe to a Futures contract, you must get the contract <code>Symbol</code>.</p>
+<p>Before you can subscribe to a Futures contract, you must get the contract <code class="csharp">Symbol</code><code class="python">symbol</code>.</p>
 
 <h4>Get Contract Symbols</h4>
-<p>To get Futures contract <code>Symbol</code> objects, call the <code>CreateFuture</code> method or use the <code>FutureChainProvider</code>. If you use the <code>CreateFuture</code> method, you need to know the specific contract details.</p>
+<p>To get Futures contract <code>Symbol</code> objects, call the <code class="csharp">CreateFuture</code><code class="python">create_future</code> method or use the <code class="csharp">FutureChainProvider</code><code class="python">future_chain_provider</code>. If you use the <code class="csharp">CreateFuture</code><code class="python">create_future</code> method, you need to know the specific contract details.</p>
 
 <div class="section-example-container">
     <pre class="csharp">_contractSymbol = QuantConnect.Symbol.CreateFuture(Futures.Indices.SP500EMini,
@@ -10,7 +10,7 @@
     Market.CME, datetime(2022,6,17))</pre>
 </div>
 
-<p>If you use the <code>FutureChainProvider</code>, you need to create the continuous contract <code>Symbol </code>of the Future. The <code>GetFutureContractList</code> method of <code>FutureChainProvider </code>returns a list of <code>Symbol </code>objects that reference the available Futures contracts for a given underlying Future on a given date.</p>
+<p>If you use the <code class="csharp">FutureChainProvider</code><code class="python">future_chain_provider</code>, you need to create the continuous contract <code>Symbol</code> of the Future. The <code class="csharp">GetFutureContractList</code><code class="python">get_future_contract_list</code> method of <code class="csharp">FutureChainProvider</code><code class="python">future_chain_provider</code> returns a list of <code>Symbol</code> objects that reference the available Futures contracts for a given underlying Future on a given date.</p>
 
 <div class="section-example-container">
     <pre class="csharp">var continuousFutureSymbol = QuantConnect.Symbol.Create(Futures.Indices.SP500EMini, SecurityType.Future, Market.CME);
@@ -22,7 +22,7 @@ self.contract_symbol = sorted(contract_symbols, key=lambda symbol: symbol.id.dat
 </div>
 
 <h4>Subscribe to Contracts</h4>
-<p>To create a Futures contract subscription, pass the contract <code>Symbol</code> to the <code class="csharp">AddFutureContract</code><code class="python">add_future_contract</code> method. Save a reference to the contract&nbsp; <code>Symbol</code> so you can easily access the contract in the <a href="/docs/v2/writing-algorithms/securities/asset-classes/futures/handling-data#05-Futures-Chains">FuturesChain</a> that LEAN passes to the <code class="csharp">OnData</code><code class="python">on_data</code> method.</p>
+<p>To create a Futures contract subscription, pass the contract <code class="csharp">Symbol</code><code class="python">symbol</code> to the <code class="csharp">AddFutureContract</code><code class="python">add_future_contract</code> method. Save a reference to the contract&nbsp; <code class="csharp">Symbol</code><code class="python">symbol</code> so you can easily access the contract in the <a href="/docs/v2/writing-algorithms/securities/asset-classes/futures/handling-data#05-Futures-Chains">Futures Chains</a> that LEAN passes to the <code class="csharp">OnData</code><code class="python">on_data</code> method.</p>
 
 <div class="section-example-container">
     <pre class="csharp">AddFutureContract(_contractSymbol);</pre>
@@ -35,10 +35,10 @@ self.contract_symbol = sorted(contract_symbols, key=lambda symbol: symbol.id.dat
 
 <p>If you subscribe to a Futures contract with <code class="csharp">AddFutureContract</code><code class="python">add_future_contract</code>, you'll need to wait until the next <code>Slice</code> to receive data and trade the contract. To trade the contract in the same time step you subscribe to the contract, set the current price of the contract in a <a href='/docs/v2/writing-algorithms/initialization#07-Set-Security-Initializer'>security initializer</a>.</p>
 <div class="section-example-container">
-    <pre class="csharp">SetSecurityInitializer(new BrokerageModelSecurityInitializer(BrokerageModel,
-    new FuncSecuritySeeder(GetLastKnownPrices)));</pre>
-    <pre class="python">self.set_security_initializer(BrokerageModelSecurityInitializer(self.brokerage_model,
-    FuncSecuritySeeder(self.get_last_known_prices)));</pre>
+    <pre class="csharp">var seeder = new FuncSecuritySeeder(GetLastKnownPrices);
+SetSecurityInitializer(new BrokerageModelSecurityInitializer(BrokerageModel, seeder));</pre>
+    <pre class="python">seeder = FuncSecuritySeeder(self.get_last_known_prices)
+self.set_security_initializer(BrokerageModelSecurityInitializer(self.brokerage_model, seeder))</pre>
 </div>
 
 <h4>Supported Assets</h4>

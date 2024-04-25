@@ -157,7 +157,7 @@ def HtmlGeneration(obj_name, sorted_obj, extra=''):
 
     for enum, content in sorted_obj:
         html += f'''    <tr>
-        <td>{enum}</td>
+        <td class="csharp">{enum}</td><td class="csharp">{_to_upper_snake_case(enum)}</td>
         <td>{content["code"]}</td>
         <td>{content["description"].replace("<see cref=" + quotation, "<code>").replace(quotation + "/>", "</code>")}</td>
     </tr>
@@ -177,6 +177,11 @@ def HtmlGeneration(obj_name, sorted_obj, extra=''):
 
     return html
 
+def _to_upper_snake_case(title):
+    if title.isupper():
+        return title
+    return re.sub(r'(?<!^)(?=[A-Z])', '_', title).upper().replace("U_S","US")
+
 for url in enum_objects:
     print(url)
     raw = urlopen(f'{root_url}{url}').read().decode("utf-8").split('\n')
@@ -186,7 +191,7 @@ for x in set([m[1] for m in market]):
     items = [y[0] for y in market if y[1] == x]
     items = [y[0] for y in market_data if y[0].lower() in items]
     items = [y for y in items if y.lower() not in ["ftx", "ftxus", "fxcm", "gdax"]]
-    items = set(items + [x for x in items])
+    items = set(items + [_to_upper_snake_case(x) for x in items])
     with open(f"{destination}/market-{x}.html", "w", encoding="utf-8") as file:
         x = "Futures" if x == "future" else x
         file.write(f"""<p>The following <code>Market</code> enumeration members are available for {x.title().replace("Option", "Options").replace("option", " Options").replace("Index", "Indices").replace("Indices Options", "Index Options")}:</p>
