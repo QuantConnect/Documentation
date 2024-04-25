@@ -1,4 +1,4 @@
-<p>To get the <code>OptionChain</code>, index the <code class="csharp">OptionChains</code><code class="python">option_chains</code> property of the <code>Slice</code> with the canonical <code>Symbol</code>. After you get the <code>OptionChain</code>, you can sort and filter the Option contracts in the chain.</p>
+<p>To get the <code>OptionChain</code>, index the <code class="csharp">OptionChains</code><code class="python">option_chains</code> property of the <code>Slice</code> with the canonical <code class="csharp">Symbol</code><code class="python">symbol</code>. After you get the <code>OptionChain</code>, you can sort and filter the Option contracts in the chain.</p>
 
 <div class='section-example-container'>
     <pre class='csharp'>public override void OnData(Slice slice)
@@ -16,17 +16,17 @@
         var contract = contracts.OrderBy(x => Math.Abs(-0.5m - x.Greeks.Delta)).FirstOrDefault();
     }
 }</pre>
-    <pre class='python'>def on_data(self, slice: Slice) -> None:
-    chain = slice.OptionChains.get(self.symbol)
+    <pre class='python'>def on_data(self, slice: Slice) -&gt; None:
+    chain = slice.option_chains.get(self.symbol)
     if chain:
         # Example: Find 5 put contracts that are closest to at-the-money (ATM) and have the farthest expiration
-        contracts = [x for x in chain if x.Right == OptionRight.Put]
+        contracts = [x for x in chain if x.right == OptionRight.PUT]
         contracts = sorted(sorted(contracts, \
-            key = lambda x: abs(chain.Underlying.Price - x.Strike)), \
-            key = lambda x: x.Expiry, reverse=True)[:5]
-
+            key = lambda x: abs(chain.underlying.price - x.strike)), \
+            key = lambda x: x.expiry, reverse=True)[:5]
+    
         # Select the contract with the delta closest to -0.5
-        contract = sorted(contracts, key=lambda x: abs(-0.5 - x.Greeks.Delta))[0]</pre>
+        contract = sorted(contracts, key=lambda x: abs(-0.5 - x.greeks.delta))[0]</pre>
 </div>
 
 <p>You can also loop through the <code class="csharp">OptionChains</code><code class="python">option_chains</code> property to get each <code>OptionChain</code>.</p>
@@ -41,6 +41,6 @@
     }
 }</pre>
     <pre class='python'>def on_data(self, slice: Slice) -> None:
-    for canonical_symbol, chain in slice.OptionChains.items():
-        contracts = chain.Contracts</pre>
+    for canonical_symbol, chain in slice.option_chains.items():
+        contracts = chain.contracts</pre>
 </div>

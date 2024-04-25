@@ -1,4 +1,4 @@
-<p>When your universe adds and removes assets, LEAN notifies your algorithm through the <code class="csharp">OnSecuritiesChanged</code><code class="python">on_securities_changed</code> event handler. The event handler receives a <code>SecurityChanges</code> object, which contains references to the added and removed securities. To access the added securities, check the <code>changes.AddedSecurities</code> property. To access the removed securities, check the <code>changes.RemovedSecurities</code> property.</p> 
+<p>When your universe adds and removes assets, LEAN notifies your algorithm through the <code class="csharp">OnSecuritiesChanged</code><code class="python">on_securities_changed</code> event handler. The event handler receives a <code>SecurityChanges</code> object, which contains references to the added and removed securities. To access the added securities, check the <code class="csharp">changes.AddedSecurities</code><code class="python">changes.added_securities</code> method property. To access the removed securities, check the <code class="csharp">changes.RemovedSecurities</code><code class="python">changes.removed_securities</code> method property.</p> 
 
 <div class="section-example-container">
 <pre class="csharp">public override void OnSecuritiesChanged(SecurityChanges changes)
@@ -18,7 +18,7 @@
     }
 }</pre>
 <pre class="python">def on_securities_changed(self, changes: SecurityChanges) -> None:
-    for security in changes.added_securities:
+    for security in changes.added_securities::
         self.debug(f"{self.time}: Added {security.symbol}")
 
     for security in changes.removed_securities:
@@ -45,7 +45,7 @@ self._securities = []
 
 def on_securities_changed(self, changes: SecurityChanges) -> None:
     for security in changes.removed_securities:
-        if security in self.securities:
+        if security in self._securities:
             self._securities.remove(security)
             
     self._securities.extend(changes.added_securities)</pre>

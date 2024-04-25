@@ -39,15 +39,17 @@ self.set_security_initializer(lambda security: seeder.seed_security(security))</
 <p>The default security initializer also sets the leverage of each security and intializes each security with a seeder function. To extend upon the default security initializer instead of overwriting it, create a custom <code>BrokerageModelSecurityInitializer</code>.</p>
 
 <?
-$overwriteCodePy = "security.SetFeeModel(ConstantFeeModel(0, \"USD\"))";
+$overwriteCodePy = "security.set_fee_model(ConstantFeeModel(0, \"USD\"))";
 $overwriteCodeC = "security.SetFeeModel(new ConstantFeeModel(0, \"USD\"));";
 include(DOCS_RESOURCES."/reality-modeling/brokerage-model-security-init.php");
 ?>
 
 <p>To set a seeder function without overwriting the reality models of the brokerage, use the standard <code>BrokerageModelSecurityInitializer</code>.</p>
 <div class="section-example-container">
-<pre class="csharp">SetSecurityInitializer(new BrokerageModelSecurityInitializer(BrokerageModel, new FuncSecuritySeeder(GetLastKnownPrices)));
+<pre class="csharp">var seeder = new FuncSecuritySeeder(GetLastKnownPrices);
+SetSecurityInitializer(new BrokerageModelSecurityInitializer(BrokerageModel, seeder));
 </pre>
-<pre class="python">self.set_security_initializer(BrokerageModelSecurityInitializer(self.brokerage_model, FuncSecuritySeeder(self.get_last_known_prices)))
+<pre class="python">seeder = FuncSecuritySeeder(self.get_last_known_prices)
+self.set_security_initializer(BrokerageModelSecurityInitializer(self.brokerage_model, seeder))
 </pre>
 </div>

@@ -1,4 +1,4 @@
-<p>The <code>GetSource</code> method in your custom data class instructs LEAN where to find the data.</p>
+<p>The <code class="csharp">GetSource</code><code class="python">get_source</code> method in your custom data class instructs LEAN where to find the data.</p>
 <div class="section-example-container">
     <pre class="csharp">public class MyCustomDataType : BaseData
 {
@@ -30,7 +30,7 @@
 </pre>
 </div>
 
-<p>The following table describes the arguments the <code>GetSource</code> method accepts:</p>
+<p>The following table describes the arguments the <code class="csharp">GetSource</code><code class="python">get_source</code> method accepts:</p>
 
 <table class="qc-table table">
     <thead>
@@ -126,7 +126,7 @@
         <tr>
             <td><code>Rest</code></td>
             <td>The data comes from a rest call that is polled and returns a single line/data point of information</td>
-            <td><code>LiveMode</code> case of <a href='/docs/v2/writing-algorithms/importing-data/streaming-data/key-concepts#99-Demonstration-Algorithm'>Demonstration Algorithm</a></td>
+            <td><code class="csharp">LiveMode</code><code class="python">live_mode</code> case of <a href='/docs/v2/writing-algorithms/importing-data/streaming-data/key-concepts#99-Demonstration-Algorithm'>Demonstration Algorithm</a></td>
         </tr>
         <tr>
             <td><code>ObjectStore</code></td>

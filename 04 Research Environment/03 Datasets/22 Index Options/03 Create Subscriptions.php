@@ -62,7 +62,7 @@ weekly_canonical_symbol = Symbol.create_canonical_option(index_symbol, "SPXW", M
 weekly_contract_symbols = qb.option_chain_provider.get_option_contract_list(weekly_canonical_symbol, start_date)
 weekly_contract_symbols = [s for s in weekly_contract_symbols if OptionSymbol.is_weekly(s)]</pre>
     </div>
-    <p>This method returns a list of <code>Symbol</code>&nbsp;objects that reference the Option contracts that were trading at the given time. If you set a contract filter with <code>SetFilter</code>, it doesn't affect the results of <code class="csharp">GetOptionContractList</code><code class="python">get_option_contract_list</code>.</p>
+    <p>This method returns a list of <code>Symbol</code>&nbsp;objects that reference the Option contracts that were trading at the given time. If you set a contract filter with <code class="csharp">SetFilter</code><code class="python">set_filter</code>, it doesn't affect the results of <code class="csharp">GetOptionContractList</code><code class="python">get_option_contract_list</code>.</p>
     <li>Select the <code>Symbol</code> of the <code>OptionContract</code>&nbsp;object(s) for which you want to get historical data.</li>
     <p>To filter and select contracts, you can use the following properties of each&nbsp;<code>Symbol</code> object:</p>
     <table class="qc-table table">

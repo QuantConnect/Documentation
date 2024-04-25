@@ -1,7 +1,7 @@
 <p>
-The <code>Schedule</code> setting defines the selection schedule of the universe. 
+The <code class="csharp">Schedule</code><code class="python">schedule</code> setting defines the selection schedule of the universe. 
 Most universes run on a daily schedule.
-To change the selection schedule, call the <code>UniverseSettings.Schedule.On</code> method with an <code>IDateRule</code> object before you add the universe.
+To change the selection schedule, call the <code class="csharp">UniverseSettings.Schedule.On</code><code class="python">universe_settings.schedule.on</code> method with an <code>IDateRule</code> object before you add the universe.
 </p>
 
 <div class="section-example-container">

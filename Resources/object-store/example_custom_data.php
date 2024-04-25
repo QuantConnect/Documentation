@@ -1,7 +1,7 @@
 <p>Follow these steps to use the Object Store as a data source for <a href='/docs/v2/writing-algorithms/importing-data/streaming-data/key-concepts'>custom data</a>:</p>
 
 <ol>
-    <li>Create a custom data class that defines a storage key and implements the <a href='/docs/v2/writing-algorithms/importing-data/streaming-data/key-concepts#04-Set-Data-Sources'><code>GetSource</code></a> method.</li>
+    <li>Create a custom data class that defines a storage key and implements the <a href='/docs/v2/writing-algorithms/importing-data/streaming-data/key-concepts#04-Set-Data-Sources'><code class="csharp">GetSource</code><code class="python">get_source</code></a> method.</li>
     <div class='section-example-container'>
     <pre class='csharp'>public class Bitstamp : TradeBar
 {

@@ -50,7 +50,7 @@ var contractSymbols = qb.OptionChainProvider.GetOptionContractList(equitySymbol,
     <pre class="python">start_date = datetime(2021, 12, 31)
 contract_symbols = qb.option_chain_provider.get_option_contract_list(equity_symbol, start_date)</pre>
     </div>
-    <p>This method returns a list of <code>Symbol</code> objects that reference the Option contracts that were trading at the given time. If you set a contract filter with <code>SetFilter</code>, it doesn't affect the results of <code>GetOptionsContractList</code>.</p>
+    <p>This method returns a list of <code>Symbol</code> objects that reference the Option contracts that were trading at the given time. If you set a contract filter with <code class="csharp">SetFilter</code><code class="python">set_filter</code>, it doesn't affect the results of <code>GetOptionsContractList</code>.</p>
     <li>Select the <code>Symbol</code> of the <code>OptionContract</code>&nbsp;object(s) for which you want to get historical data.</li>
     <p>To filter and select contracts, you can use the following properties of each&nbsp;<code>Symbol</code> object:</p>
     <table class="qc-table table">

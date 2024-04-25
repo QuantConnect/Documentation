@@ -1,4 +1,4 @@
-<p>To add a universe of Equity Option contracts, in the <code class="csharp">Initialize</code><code class="python">initialize</code> method, call the <code class="csharp">AddOption</code><code class="python">add_option</code> method. This method returns an <code>Option</code> object, which contains the canonical <code>Symbol</code>. You can't trade with the canonical Option <code>Symbol</code>, but save a reference to it so you can easily access the Option contracts in the <a href='/docs/v2/writing-algorithms/universes/equity-options#04-Navigate-Option-Chains'>OptionChain</a> that LEAN passes to the <code class="csharp">OnData</code><code class="python">on_data</code> method.</p>
+<p>To add a universe of Equity Option contracts, in the <code class="csharp">Initialize</code><code class="python">initialize</code> method, call the <code class="csharp">AddOption</code><code class="python">add_option</code> method. This method returns an <code>Option</code> object, which contains the canonical <code class="csharp">Symbol</code><code class="python">symbol</code>. You can't trade with the canonical Option <code class="csharp">Symbol</code><code class="python">symbol</code>, but save a reference to it so you can easily access the Option contracts in the <a href='/docs/v2/writing-algorithms/universes/equity-options#04-Navigate-Option-Chains'>OptionChain</a> that LEAN passes to the <code class="csharp">OnData</code><code class="python">on_data</code> method.</p>
 
 <div class="section-example-container">
     <pre class="csharp">UniverseSettings.Asynchronous = true;
@@ -48,7 +48,7 @@ self._symbol = option.symbol</pre>
             <td><code>leverage</code></td>
 	        <td><code class="csharp">decimal</code><code class="python">float</code></td>
             <td>The leverage for this Equity.</td>
-            <td><code>Security.NullLeverage</code></td>
+            <td><code class="csharp">Security.NullLeverage</code><code class="python">Security.NULL_LEVERAGE</code></td>
         </tr>
         <tr>
             <td><code class="csharp">extendedMarketHours</code><code class="python">extended_market_hours</code></td>

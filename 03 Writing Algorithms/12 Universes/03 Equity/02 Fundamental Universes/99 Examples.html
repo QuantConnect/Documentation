@@ -27,35 +27,37 @@ Another common request is to filter the universe by a technical indicator, such 
 </p>
 <div class="section-example-container">
 <pre class="csharp">ConcurrentDictionary&lt;Symbol, SelectionData&gt;
-    _stateData = new ConcurrentDictionary&lt;Symbol, SelectionData&gt;();
+    _state_data = new ConcurrentDictionary&lt;Symbol, SelectionData&gt;();
 
 private IEnumerable&lt;Symbol&gt; FundamentalFilterFunction(IEnumerable&lt;Fundamental&gt; fundamental)
 {
     // Linq makes this a piece of cake;
     return (from f in fundamental
-        let avg = _stateData.GetOrAdd(f.Symbol, sym =&gt; new SelectionData(200))
+        let avg = _state_data.GetOrAdd(f.Symbol, sym =&gt; new SelectionData(200))
         where avg.Update(f.EndTime, f.AdjustedPrice)
         where f.Price &gt; avg.Ema.Current.Value &amp;&amp; f.DollarVolume &gt; 1000000000
         orderby f.DollarVolume descending
         select f.Symbol).Take(10);
 }</pre>
 <pre class="python"># setup state storage in initialize method
-self.stateData = { }
-
-def FundamentalFilterFunction(self, fundamental: List[Fundamental]) -&gt; List[Symbol]:<br>    # We are going to use a dictionary to refer the object that will keep the moving averages
-    for f in fundamental:<br>        if f.Symbol not in self.stateData:
-            self.stateData[f.Symbol] = SelectionData(f.Symbol, 200)
-
-        # Updates the SymbolData object with current EOD price
-        avg = self.stateData[f.Symbol]
-        avg.update(c.EndTime, f.AdjustedPrice, f.DollarVolume)
-
-    # Filter the values of the dict to those above EMA and more than $1B vol.
-    values = [x for x in self.stateData.values() if x.is_above_ema and x.volume &gt; 1000000000]
+self.state_data = { }
     
+def fundamental_filter_function(self, fundamental: List[Fundamental]) -&gt; List[Symbol]:
+    # We are going to use a dictionary to refer the object that will keep the moving averages
+    for f in fundamental:
+        if f.symbol not in self.state_data:
+            self.state_data[f.symbol] = SelectionData(f.symbol, 200)
+    
+        # Updates the SymbolData object with current EOD price
+        avg = self.state_data[f.symbol]
+        avg.update(c.end_time, f.adjusted_price, f.dollar_volume)
+    
+    # Filter the values of the dict to those above EMA and more than $1B vol.
+    values = [x for x in self.state_data.values() if x.is_above_ema and x.volume > 1000000000]
+        
     # sort by the largest in volume.
     values.sort(key=lambda x: x.volume, reverse=True)
-
+    
     # we need to return only the symbol objects
     return [ x.symbol for x in values[:10] ]</pre>
 </div>
@@ -138,13 +140,14 @@ This class tracks the ratio of today's volume relative to historical volumes. Yo
 
 <div class="section-example-container">
 <pre class="python">def FundamentalFilterFunction(self, fundamental: List[Fundamental]) -&gt; List[Symbol]:
-    for f in fundamental:<br>        if f.Symbol not in self.stateData:
-            self.stateData[f.Symbol] = SelectionData(f.Symbol, 10)
-        avg = self.stateData[f.Symbol]
-        avg.update(f.EndTime, f.AdjustedPrice, f.DollarVolume)
+    for f in fundamental:
+        if f.symbol not in self.state_data:
+            self.state_data[f.symbol] = SelectionData(f.symbol, 10)
+        avg = self.state_data[f.symbol]
+        avg.update(f.end_time, f.adjusted_price, f.dollar_volume)
 
     # filter the values of selectionData(sd) above SMA
-    values = [sd for sd in self.stateData.values() if sd.volume_ratio &gt; 1]
+    values = [sd for sd in self.state_data.values() if sd.volume_ratio &gt; 1]
         
     # sort sd by the largest % jump in volume.
     values.sort(key=lambda sd: sd.volume_ratio, reverse=True)
@@ -155,7 +158,7 @@ This class tracks the ratio of today's volume relative to historical volumes. Yo
 <pre class="csharp"> 
 private IEnumerable&lt;Symbol&gt; FundamentalFilterFunction(IEnumerable&lt;Fundamental&gt; fundamental) <br>{
     return (from f in fundamental
-        let avg = _stateData.GetOrAdd(f.Symbol, sym =&gt; new SelectionData(10))
+        let avg = _state_data.GetOrAdd(f.Symbol, sym =&gt; new SelectionData(10))
         where avg.Update(f.EndTime, f.Volume)
         where avg.VolumeRatio &gt; 1
         orderby avg.VolumeRatio descending
@@ -175,4 +178,3 @@ private IEnumerable&lt;Symbol&gt; FundamentalFilterFunction(IEnumerable&lt;Funda
   <a class="python example-algorithm-link" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.Python/FundamentalUniverseSelectionAlgorithm.py" target="_BLANK">FundamentalUniverseSelectionAlgorithm.py  <span class="badge-python pull-right">Python</span></a>
   <a class="csharp example-algorithm-link" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm.CSharp/FundamentalUniverseSelectionRegressionAlgorithm.cs" target="_BLANK">FundamentalUniverseSelectionAlgorithm.cs  <span class="badge badge-sm badge-csharp pull-right">C#</span></a>
 </div>
-

@@ -1,4 +1,4 @@
-<p>The <code>Reader</code> method of your custom data class takes one line of data from the source location and parses it into one of your custom objects. You can add as many properties to your custom data objects as you need, but the following table describes the properties you must set. When there is no useable data in a line, the method should return <code class="csharp">null</code><code class="python">None</code>. LEAN repeatedly calls the <code>Reader</code> method until the date/time advances or it reaches the end of the file.</p>
+<p>The <code class="csharp">Reader</code><code class="python">reader</code> method of your custom data class takes one line of data from the source location and parses it into one of your custom objects. You can add as many properties to your custom data objects as you need, but the following table describes the properties you must set. When there is no useable data in a line, the method should return <code class="csharp">null</code><code class="python">None</code>. LEAN repeatedly calls the <code class="csharp">Reader</code><code class="python">reader</code> method until the date/time advances or it reaches the end of the file.</p>
 
 <table class="qc-table table">
     <thead>
@@ -27,7 +27,7 @@
     </tbody>
 </table>
 
-<p>The following table describes the arguments the <code>Reader</code> method accepts:</p>
+<p>The following table describes the arguments the <code class="csharp">Reader</code><code class="python">reader</code> method accepts:</p>
 
 <table class="qc-table table">
     <thead>

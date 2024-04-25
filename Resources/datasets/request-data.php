@@ -400,7 +400,7 @@ foreach (var s in slices) {
             <td><code class='csharp'>null</code><code class='python'>None</code></td>
         </tr>
         <tr>
-            <td><code>dataMappingMode</code></td>
+            <td><code class="csharp">dataMappingMode</code><code class="python">data_mapping_mode</code></td>
 	        <td><code class='csharp'>DataMappingMode?</code><code class='python'>DataMappingMode/NoneType</code></td>
             <td>The <a href='/docs/v2/writing-algorithms/universes/futures#12-Continous-Contracts'>contract mapping mode</a> to use for the security history request.</td>
             <td><code class='csharp'>null</code><code class='python'>None</code></td>
@@ -412,7 +412,7 @@ foreach (var s in slices) {
             <td><code class='csharp'>null</code><code class='python'>None</code></td>
         </tr>
         <tr>
-            <td><code>contractDepthOffset</code></td>
+            <td><code class="csharp">contractDepthOffset</code><code class="python">contract_depth_offset</code></td>
             <td><code class='csharp'>int?</code><code class='python'>int/NoneType</code></td>
             <td>The desired offset from the current front month for <a href='/docs/v2/writing-algorithms/universes/futures#12-Continous-Contracts'>continuous Futures contracts</a>.</td>
             <td><code class='csharp'>null</code><code class='python'>None</code></td>
