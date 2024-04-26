@@ -1,4 +1,4 @@
-<p>You can use the IDE charting capabilities to plot values over time when debugging. To add data points to a custom chart, call the <code>Plot</code> method with a chart name, series name, and value. For a full example, see <a href='/docs/v2/writing-algorithms/charting'>Charting</a>.</p>
+<p>You can use the IDE charting capabilities to plot values over time when debugging. To add data points to a custom chart, call the <code class="csharp">Plot</code><code class="python">plot</code> method with a chart name, series name, and value. For a full example, see <a href='/docs/v2/writing-algorithms/charting'>Charting</a>.</p>
 
 <div class='section-example-container'>
     <pre class='csharp'>Plot(chart, series, value);</pre>

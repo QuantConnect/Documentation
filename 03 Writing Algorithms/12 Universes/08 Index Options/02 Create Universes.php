@@ -1,4 +1,4 @@
-<p>To add a universe of Index Option contracts, in the <code class="csharp">Initialize</code><code class="python">initialize</code> method, call the <code class="csharp">AddIndexOption</code><code class="python">add_index_option</code> method. This method returns an <code>Option</code> object, which contains the canonical <code>Symbol</code>. You can't trade with the canonical Option <code>Symbol</code>, but save a reference to it so you can easily access the Option contracts in the <a href='/docs/v2/writing-algorithms/securities/asset-classes/index-options/handling-data#04-Option-Chains'>OptionChain</a> that LEAN passes to the <code class="csharp">OnData</code><code class="python">on_data</code> method. The method to create the universe depends on if the Index Options you want require a target ticker.</p>
+<p>To add a universe of Index Option contracts, in the <code class="csharp">Initialize</code><code class="python">initialize</code> method, call the <code class="csharp">AddIndexOption</code><code class="python">add_index_option</code> method. This method returns an <code>Option</code> object, which contains the canonical <code class="csharp">Symbol</code><code class="python">symbol</code>. You can't trade with the canonical Option <code class="csharp">Symbol</code><code class="python">symbol</code>, but save a reference to it so you can easily access the Option contracts in the <a href='/docs/v2/writing-algorithms/securities/asset-classes/index-options/handling-data#04-Option-Chains'>OptionChain</a> that LEAN passes to the <code class="csharp">OnData</code><code class="python">on_data</code> method. The method to create the universe depends on if the Index Options you want require a target ticker.</p>
 
 <h4>Create Standard Universes</h4>
 
@@ -41,7 +41,7 @@ self._symbol = option.symbol</pre>
             <td><code>Market.USA</code></td>
         </tr>
         <tr>
-            <td><code>fillForward</code></td>
+            <td><code class="csharp">fillForward</code><code class="python">fill_forward</code></td>
 	        <td><code>bool</code></td>
             <td>If true, the current slice contains the last available data even if there is no data at the current time.</td>
             <td><code class="python">True</code><code class="csharp">true</code></td>
@@ -81,7 +81,7 @@ self._symbol = option.symbol</pre>
             <td></td>
         </tr>
         <tr>
-            <td><code>targetOption</code></td>
+            <td><code class="csharp">targetOption</code><code class="python">target_option</code></td>
 	        <td><code class="csharp">string</code><code class="python">str</code></td>
             <td>The target Option ticker. To view the supported target Options, see <a href='/docs/v2/writing-algorithms/datasets/algoseek/us-index-options#07-Supported-Assets'>Supported Assets</a>.</td>
             <td></td>
@@ -99,7 +99,7 @@ self._symbol = option.symbol</pre>
             <td><code>Market.USA</code></td>
         </tr>
         <tr>
-            <td><code>fillForward</code></td>
+            <td><code class="csharp">fillForward</code><code class="python">fill_forward</code></td>
 	        <td><code>bool</code></td>
             <td>If true, the current slice contains the last available data even if there is no data at the current time.</td>
             <td><code class="python">True</code><code class="csharp">true</code></td>

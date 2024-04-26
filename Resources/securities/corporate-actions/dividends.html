@@ -1,9 +1,9 @@
 <p>A dividend is a payment that a company gives to shareholders to distribute profits. When a dividend payment occurs for an Equity in your algorithm, LEAN sends a <code>Dividend</code> object to the <code class="csharp">OnData</code><code class="python">on_data</code> method. <code>Dividend</code> objects have the following properties:</p>
 <div data-tree="QuantConnect.Data.Market.Dividend"></div>
 
-<p>If you backtest with the <code>Adjusted</code> or <code>TotalReturn</code> data normalization mode, the dividends are factored into the price. If you backtest with the other data normalization modes or trade live, when a dividend payment occurs, LEAN automatically adds the payment amount to your cashbook. If you have indicators in your algorithm, <a href='/docs/v2/writing-algorithms/indicators/key-concepts#10-Reset-Indicators'>reset and warm-up your indicators with ScaledRaw data</a> when dividend payments occur so that the data in your indicators account for the price adjustments that the dividend causes.</p>
+<p>If you backtest with the <code class="csharp">Adjusted</code><code class="python">ADJUSTED</code> or <code class="csharp">TotalReturn</code><code class="python">TOTAL_RETURN</code> data normalization mode, the dividends are factored into the price. If you backtest with the other data normalization modes or trade live, when a dividend payment occurs, LEAN automatically adds the payment amount to your cashbook. If you have indicators in your algorithm, <a href='/docs/v2/writing-algorithms/indicators/key-concepts#10-Reset-Indicators'>reset and warm-up your indicators with ScaledRaw data</a> when dividend payments occur so that the data in your indicators account for the price adjustments that the dividend causes.</p>
 
-<p>To get the <code>Dividend</code> objects, index the <code>Dividends</code> object with the security <code>Symbol</code>. The <code>Dividends</code> object may not contain data for your <code>Symbol</code>. To avoid issues, check if the <code>Dividends</code> object contains data for your security before you index it with the security <code>Symbol</code>.</p>
+<p>To get the <code>Dividend</code> objects, index the <code class="csharp">Dividends</code><code class="python">dividends</code> object with the security <code  class="csharp">Symbol</code><code class="python">symbol</code>. The <code class="csharp">Dividends</code><code class="python">dividends</code> object may not contain data for your <code  class="csharp">Symbol</code><code class="python">symbol</code>. To avoid issues, check if the <code class="csharp">Dividends</code><code class="python">dividends</code> object contains data for your security before you index it with the security <code  class="csharp">Symbol</code><code class="python">symbol</code>.</p>
 
 <div class='section-example-container'>
     <pre class='csharp'>public override void OnData(Slice slice)
@@ -22,18 +22,18 @@ public override void OnDividends(Dividends dividends)
     }
 }
 </pre>
-    <pre class='python'>def OnData(self, slice: Slice) -> None:
-    dividend = slice.Dividends.get(self.symbol)
+    <pre class='python'>def on_data(self, slice: Slice) -> None:
+    dividend = slice.dividends.get(self.symbol)
     if dividend:
         pass
 
-def OnDividends(self, dividends: Dividends) -> None:
+def on_dividends(self, dividends: Dividends) -> None:
     dividend = dividends.get(self.symbol)
     if dividend:
         pass</pre>
 </div>
 
-<p>You can also iterate through the <code>Dividends</code> dictionary. The keys of the dictionary are the <code>Symbol</code> objects and the values are the <code>Dividend</code> objects.</p>
+<p>You can also iterate through the <code class="csharp">Dividends</code><code class="python">dividends</code> dictionary. The keys of the dictionary are the <code>Symbol</code> objects and the values are the <code>Dividend</code> objects.</p>
 <div class='section-example-container'>
     <pre class='csharp'>public override void OnData(Slice slice)
 {
@@ -52,11 +52,11 @@ public override void OnDividends(Dividends dividends)
         var dividend = kvp.Value;
     }
 }</pre>
-    <pre class='python'>def OnData(self, slice: Slice) -> None:
-    for symbol, dividend in slice.Dividends.items():
+    <pre class='python'>def on_data(self, slice: Slice) -> None:
+    for symbol, dividend in slice.dividends.items():
         pass
 
-def OnDividends(self, dividends: Dividends) -> None:
+def on_dividends(self, dividends: Dividends) -> None:
     for symbol, dividend in dividends.items():
         pass</pre>
 </div>

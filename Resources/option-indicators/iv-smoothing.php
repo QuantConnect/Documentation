@@ -1,6 +1,6 @@
 <p>
     The default <a href="/docs/v2/writing-algorithms/securities/asset-classes/equity-options/greeks-and-implied-volatility/key-concepts#05-Volatility-Smoothing">IV smoothing</a> method uses the one contract in the pair that's at-the-money or out-of-money to calculate the IV.
-    To change the smoothing function, pass a <code>mirrorOption</code> argument to the indicator method or constructor and then call the <code>SetSmoothingFunction</code> method of the <code>ImpliedVolatility</code> property of the indicator.
+    To change the smoothing function, pass a <code class="csharp">mirrorOption</code><code class="python">mirror_option</code> argument to the indicator method or constructor and then call the <code class="csharp">SetSmoothingFunction</code><code class="python">set_smoothing_function</code> method of the <code>ImpliedVolatility</code> property of the indicator.
 </p>
     
 <div class="section-example-container">

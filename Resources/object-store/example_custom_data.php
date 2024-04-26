@@ -1,7 +1,7 @@
 <p>Follow these steps to use the Object Store as a data source for <a href='/docs/v2/writing-algorithms/importing-data/streaming-data/key-concepts'>custom data</a>:</p>
 
 <ol>
-    <li>Create a custom data class that defines a storage key and implements the <a href='/docs/v2/writing-algorithms/importing-data/streaming-data/key-concepts#04-Set-Data-Sources'><code>GetSource</code></a> method.</li>
+    <li>Create a custom data class that defines a storage key and implements the <a href='/docs/v2/writing-algorithms/importing-data/streaming-data/key-concepts#04-Set-Data-Sources'><code class="csharp">GetSource</code><code class="python">get_source</code></a> method.</li>
     <div class='section-example-container'>
     <pre class='csharp'>public class Bitstamp : TradeBar
 {
@@ -154,6 +154,6 @@
     <div class="qc-embed-dummy" style="padding-top: 56.25%;"></div>
     <div class="qc-embed-element" style="position: absolute; top: 0; bottom: 0; left: 0; right: 0;">
     <iframe class="csharp qc-embed-backtest" height="100%" width="100%" style="border: 1px solid #ccc; padding: 0; margin: 0;" src="https://www.quantconnect.com/terminal/processCache?request=embedded_backtest_21138929547fc7837b307929ecf28154.html"></iframe>
-    <iframe class="python qc-embed-backtest" height="100%" width="100%" style="border: 1px solid #ccc; padding: 0; margin: 0;" src="https://www.quantconnect.com/terminal/processCache?request=embedded_backtest_523043f753e330592e75bba3020aa9d1.html"></iframe>
+    <iframe class="python qc-embed-backtest" height="100%" width="100%" style="border: 1px solid #ccc; padding: 0; margin: 0;" src="https://www.quantconnect.com/terminal/processCache?request=embedded_backtest_c5b2d998eae315daecc027617c50c53c.html"></iframe>
     </div>
 </div>

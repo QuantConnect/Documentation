@@ -1,9 +1,9 @@
 <p>
-  The <code>Selected</code> property of your <code>Universe</code> contains references to all the assets that are currently in the universe.
-  The <code>Universe.Selected</code> property differs from the <code>Universe.Members</code> property because the <code>Universe.Members</code> property can contain more assets than <code>Universe.Selected</code>.
-  The <code>QCAlgorithm.ActiveSecurities</code> is a collection of <code>Universe.Members</code> of all universes.
+  The <code class="csharp">Selected</code><code class="python">selected</code> property of your <code>Universe</code> contains references to all the assets that are currently in the universe.
+  The <code class="csharp">Universe.Selected</code><code class="python">Universe.selected</code> property differs from the <code class="csharp">Universe.Members</code><code class="python">Universe.members</code> property because the <code class="csharp">Universe.Members</code><code class="python">Universe.members</code> property can contain more assets than <code class="csharp">Universe.Selected</code><code class="python">Universe.selected</code>.
+  The <code class="csharp">QCAlgorithm.ActiveSecurities</code><code class="python">QCAlgorithm.active_securities</code> is a collection of <code class="csharp">Universe.Members</code><code class="python">Universe.members</code> of all universes.
   To access the <code>Universe</code> object, save a reference to the result of the <code class="csharp">AddUniverse</code><code class="python">add_universe</code> method.
-  The following algorithm demonstrates how to use the <code>Universe.Selected</code> property to create simple rebalancing strategies:
+  The following algorithm demonstrates how to use the <code class="csharp">Universe.Selected</code><code class="python">Universe.selected</code> property to create simple rebalancing strategies:
 </p>
 
  <div class="section-example-container">

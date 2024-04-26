@@ -1,4 +1,4 @@
-<p>By default, your security subscriptions only cover regular trading hours. To subscribe to pre and post-market trading hours for a specific asset, enable the <code>extendedMarketHours</code> argument when you create the security subscription.</p>
+<p>By default, your security subscriptions only cover regular trading hours. To subscribe to pre and post-market trading hours for a specific asset, enable the <code class="csharp">extendedMarketHours</code><code class="python">extended_market_hours</code> argument when you create the security subscription.</p>
 <div class='section-example-container'>
     <pre class='csharp'><?=$cCode?></pre>
     <pre class='python'><?=$pyCode?></pre>

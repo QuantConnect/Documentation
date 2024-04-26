@@ -52,11 +52,11 @@
             custom_data = slice[self.symbol]
             close = custom_data.close</pre>
 </div>
-<p class='python'>If you add custom properties to your data object in the <code>Reader</code> method, LEAN adds them as members to the data object in the <code>Slice</code>. To ensure the property names you add in the <code>Reader</code> method follow the convention of member names, LEAN applies the following changes to the property names you provide in the <code>Reader</code> method:</p>
+<p class='python'>If you add custom properties to your data object in the <code class="csharp">Reader</code><code class="python">reader</code> method, LEAN adds them as members to the data object in the <code>Slice</code>. To ensure the property names you add in the <code class="csharp">Reader</code><code class="python">reader</code> method follow the convention of member names, LEAN applies the following changes to the property names you provide in the <code class="csharp">Reader</code><code class="python">reader</code> method:</p>
 <ol class='python'>
     <li><code>-</code> and <code>.</code> characters are replaced with whitespace.</li>
     <li>The first letter is capitalized.</li>
     <li>Whitespace characters are removed.</li>
 </ol>
-<p class='python'>For example, if you set a property name in the <code>Reader</code> method to <code>['some-property.name']</code>, you can access it in the <code class="csharp">OnData</code><code class="python">on_data</code> method through the <code>Somepropertyname</code> member of your data object.</p>
+<p class='python'>For example, if you set a property name in the <code class="csharp">Reader</code><code class="python">reader</code> method to <code>['some-property.name']</code>, you can access it in the <code class="csharp">OnData</code><code class="python">on_data</code> method through the <code>Somepropertyname</code> member of your data object.</p>
 <? } ?>

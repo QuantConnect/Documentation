@@ -3,7 +3,7 @@ $cSharpPrefix = $research ? "qb." : "";
 $pythonPrefix = $research ? "qb." : "self.";
 ?>
 
-<p>The Object Store saves objects under a key-value system. If you save objects in backtests, you can access them from the Research Environment. <?=$writingAlgorithms ? "To avoid slowing down your backtests, save data once in the <code class="csharp">OnEndOfAlgorithm</code><code class="python">on_end_of_algorithm</code> event handler. In live trading, you can save data more frequently like at the end of a <code>Train</code> method or after universe selection." : "" ?></p>
+<p>The Object Store saves objects under a key-value system. If you save objects in backtests, you can access them from the Research Environment. <?=$writingAlgorithms ? "To avoid slowing down your backtests, save data once in the <code class='csharp'>OnEndOfAlgorithm</code><code class='python'>on_end_of_algorithm</code> event handler. In live trading, you can save data more frequently like at the end of a <code class='csharp'>Train</code><code class='python'>train</code> method or after universe selection." : "" ?></p>
 
 <p>If you run algorithms in QuantConnect Cloud, you need <a href='/docs/v2/cloud-platform/organizations/members#08-Permissions'>storage create permissions</a> to save data in the Object Store.</p>
 
@@ -23,7 +23,7 @@ $pythonPrefix = $research ? "qb." : "self.";
 </p>
 
 <h4>Strings</h4>
-<p>To save a <code>string</code> object, call the <code>Save</code> or <code>SaveString</code> method.</p>
+<p>To save a <code>string</code> object, call the <code class='csharp'>Save</code><code class='python'>save</code> or <code class='csharp'>SaveString</code><code class='python'>save_string</code> method.</p>
 <div class='section-example-container'>
     <pre class='csharp'>var saveSuccessful = <?=$cSharpPrefix?>ObjectStore.Save($"{<?=$cSharpPrefix?>ProjectId}/stringKey", stringSample);</pre>
     <pre class='python'>save_successful = <?=$pythonPrefix?>object_store.save(f"{<?=$pythonPrefix?>project_id}/string_key", string_sample)</pre>
@@ -42,7 +42,7 @@ $pythonPrefix = $research ? "qb." : "self.";
 </div>
 
 <h4>Bytes</h4>
-<p>To save a <code>Bytes</code> object (for example, zipped data), call the <code>SaveBytes</code> method.</p>
+<p>To save a <code>Bytes</code> object (for example, zipped data), call the <code class='csharp'>SaveBytes</code><code class='python'>save_bytes</code> method.</p>
 <div class='section-example-container'>
     <pre class='csharp'>var saveSuccessful = <?=$cSharpPrefix?>ObjectStore.SaveBytes($"{<?=$cSharpPrefix?>ProjectId}/bytesKey", bytesSample)
 

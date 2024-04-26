@@ -2,7 +2,7 @@
 $brokerageName = "Bitfinex Exchange";
 $cashState = false;
 $holdingsState = false;
-$secondBullet = "<p>If you are deploying a paper trading algorithm without the QuantConnect Paper Trading brokerage, include the following lines of code in the <code class="csharp">Initialize</code><code class="python">initialize</code> method of your algorithm:</p>
+$secondBullet = "<p>If you are deploying a paper trading algorithm without the QuantConnect Paper Trading brokerage, include the following lines of code in the <code class='csharp'>Initialize</code><code class='python'>initialize</code> method of your algorithm:</p>
 <div class='section-example-container'>
     <pre class='python'>self.set_account_currency('TESTUSD') # or 'TESTUSDT'
 self.set_brokerage_model(BrokerageName.BITFINEX, AccountType.CASH)

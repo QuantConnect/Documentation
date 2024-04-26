@@ -1,7 +1,7 @@
 <p><code>FuturesChain</code> objects represent an entire chain of contracts for a single underlying Future. They have the following properties:</p>
 <div data-tree='QuantConnect.Data.Market.FuturesChain'></div>    
 
-<p>To get the <code>FuturesChain</code>, index the <code>FuturesChains</code> property of the <code>Slice</code> with the continuous contract <code>Symbol</code>.</p>
+<p>To get the <code>FuturesChain</code>, index the <code class="csharp">FuturesChains</code><code class="python">futures_chains</code> property of the <code>Slice</code> with the continuous contract <code>Symbol</code>.</p>
 
 <div class='section-example-container'>
     <pre class='csharp'>public override void OnData(Slice slice)
@@ -12,15 +12,13 @@
     }
 }
 </pre>
-    <pre class='python'>def OnData(self, slice: Slice) -> None:
-    chain = slice.FuturesChains.get(<?=$pythonMemberName?>.Canonical)
+    <pre class='python'>def on_data(self, slice: Slice) -> None:
+    chain = slice.futures_chains.get(<?=$pythonMemberName?>.canonical)
     if chain:
-        contracts = chain.Contracts</pre>
+        contracts = chain.contracts</pre>
 </div>
 
-
-
-<p>You can also loop through the <code>FuturesChains</code> property to get each <code>FuturesChain</code>.</p>
+<p>You can also loop through the <code class="csharp">FuturesChains</code><code class="python">futures_chains</code> property to get each <code>FuturesChain</code>.</p>
 <div class='section-example-container'>
     <pre class='csharp'>public override void OnData(Slice slice)
 {
@@ -41,8 +39,8 @@ public void OnData(FuturesChains futuresChains)
         var contracts = chain.Contracts;
     }
 }</pre>
-    <pre class='python'>def OnData(self, slice: Slice) -> None:
-    for continuous_contract_symbol, chain in slice.FuturesChains.items():
-        contracts = chain.Contracts</pre>
+    <pre class='python'>def on_data(self, slice: Slice) -> None:
+    for continuous_contract_symbol, chain in slice.futures_chains.items():
+        contracts = chain.contracts</pre>
 </div>
 

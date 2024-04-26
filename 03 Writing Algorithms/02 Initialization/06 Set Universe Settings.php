@@ -34,7 +34,7 @@
             <td>
                 <h4>Property: <span><code class="csharp">Resolution</code><code class="python">resolution</code></span></h4>
                 <p class='property-description'>What resolution should assets use?</p>
-                <p>Data Type: <span><code>Resolution</code></span><span class='pipe-separator'>  |  </span> Default Value: <span><code>Resolution.Minute</code></span></p>
+                <p>Data Type: <span><code>Resolution</code></span><span class='pipe-separator'>  |  </span> Default Value: <span><code class="csharp">Resolution.Minute</code><code class="python">Resolution.MINUTE</code></span></p>
             </td>
         </tr>
         <tr>
@@ -55,14 +55,14 @@
             <td>
                 <h4>Property: <span><code class="csharp">DataNormalizationMode</code><code class="pythpn">data_normalization_mode</code></span></h4>
                 <p class='property-description'>How should historical prices be adjusted? This setting is only available for Equity and Futures assets.</p>
-                <p>Data Type: <span><code>DataNormalizationMode</code></span><span class='pipe-separator'>  |  </span> Default Value: <span><code>DataNormalizationMode.Adjusted</code></span></p>
+                <p>Data Type: <span><code>DataNormalizationMode</code></span><span class='pipe-separator'>  |  </span> Default Value: <span><code class="csharp">DataNormalizationMode.Adjusted</code><code class="python">DataNormalizationMode.ADJUSTED</code></span></p>
             </td>
         </tr>
         <tr>
             <td>
                 <h4>Property: <span><code class="csharp">Leverage</code><code class="python">leverage</code></span></h4>
                 <p class='property-description'>What leverage should assets use in the universe? This setting is not available for derivative assets.</p>
-                <p>Data Type: <span><code class='csharp'>decimal</code><code class='python'>float</code></span><span  class='pipe-separator'>  |  </span> Default Value: <span><code>Security.NullLeverage</code></span></p>
+                <p>Data Type: <span><code class='csharp'>decimal</code><code class='python'>float</code></span><span  class='pipe-separator'>  |  </span> Default Value: <span><code class="csharp">Security.NullLeverage</code><code class="python">Security.NULL_LEVERAGE</code></span></p>
             </td>
         </tr>
 </tbody>

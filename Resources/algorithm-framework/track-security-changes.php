@@ -31,21 +31,21 @@
     }
 }</pre>
     <pre class="python">class My<?=$modelClassName?>(<?=$modelClassName?>):
-    securities = []
+    _securities = []
 
     def on_securities_changed(self, algorithm: QCAlgorithm, changes: SecurityChanges) -&gt; None:
 <? if ($callsBaseClass) { ?>
         super().on_securities_changed(algorithm, changes)
 <? } ?>
-        for security in changes.added_securities:
+        for security in changes.added_securities::
             # Store and manage Symbol-specific data
-            security.indicator = algorithm.SMA(security.symbol, 20)
+            security.indicator = algorithm.sma(security.symbol, 20)
             algorithm.warm_up_indicator(security.symbol, security.indicator)
 
-            self.securities.append(security)
+            self._securities.append(security)
 
         for security in changes.removed_securities:
             if security in self.securities:
                 algorithm.deregister_indicator(security.indicator)
-                self.securities.remove(security)</pre>
+                self._securities.remove(security)</pre>
 </div>

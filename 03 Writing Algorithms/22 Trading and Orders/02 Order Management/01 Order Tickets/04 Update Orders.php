@@ -162,11 +162,11 @@ public override void OnOrderEvent(OrderEvent orderEvent)
         _ticket = LimitOrder(_ticket.Symbol, quantity, limitPrice);
     }
 }</pre>
-<pre class="python">def OnData(self, slice: Slice) -> None:
+<pre class="python">def on_data(self, slice: Slice) -> None:
     # Cancel the order
     self.ticket.Cancel()
 
-def OnOrderEvent(self, orderEvent: OrderEvent) -> None:
+def on_order_event(self, orderEvent: OrderEvent) -> None:
     if self.ticket is not None \
         and orderEvent.OrderId == self.ticket.OrderId \
         and orderEvent.Status == OrderStatus.Canceled:

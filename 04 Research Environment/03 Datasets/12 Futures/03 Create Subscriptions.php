@@ -34,18 +34,18 @@ include(DOCS_RESOURCES."/datasets/research-environment/load-csharp-assemblies.ph
         <tbody>
             <tr>
                 <td><code>resolution</code></td>
-                <td><code>Resolution.Minute</code></td>
+                <td><code class="csharp">Resolution.Minute</code><code class="python">Resolution.MINUTE</code></td>
             </tr>
             <tr>
-                <td><code>dataNormalizationMode</code></td>
-                <td><code>DataNormalizationMode.Adjusted</code></td>
+                <td><code class="csharp">dataNormalizationMode</code><code class="python">data_normalization_mode</code></td>
+                <td><code class="csharp">DataNormalizationMode.Adjusted</code><code class="python">DataNormalizationMode.ADJUSTED</code></td>
             </tr>
             <tr>
-                <td><code>dataMappingMode</code></td>
+                <td><code class="csharp">dataMappingMode</code><code class="python">data_mapping_mode</code></td>
                 <td><code>DataMappingMode.OpenInterest</code></td>
             </tr>
             <tr>
-                <td><code>contractDepthOffset</code></td>
+                <td><code class="csharp">contractDepthOffset</code><code class="python">contract_depth_offset</code></td>
                 <td>0</td>
             </tr>
         </tbody>
@@ -56,7 +56,7 @@ include(DOCS_RESOURCES."/datasets/research-environment/load-csharp-assemblies.ph
         <pre class="csharp">future.set_filter(0, 90);</pre>
         <pre class="python">future.set_filter(0, 90)</pre>
     </div>
-    <p>If you don't call the <code>SetFilter</code> method, the <code>FutureHistory</code> method won't return historical data.</p>
+    <p>If you don't call the <code class="csharp">SetFilter</code><code class="python">set_filter</code> method, the <code>FutureHistory</code> method won't return historical data.</p>
 </ol>
 
 <p>If you want historical data on individual contracts and their <code>OpenInterest</code>, follow these steps to subscribe to individual Future contracts:</p>
@@ -68,7 +68,7 @@ var symbols = qb.FutureChainProvider.GetFutureContractList(future.Symbol, startD
 		<pre class="python">start_date = datetime(2021,12,20)
 symbols = qb.future_chain_provider.get_future_contract_list(future.symbol, start_date)</pre>
 	</div>
-	<p>This method returns a list of <code>Symbol</code> objects that reference the Future contracts that were trading at the given time. If you set a contract filter with <code>SetFilter</code>, it doesn't affect the results of <code>GetFutureContractList</code>.</p>
+	<p>This method returns a list of <code>Symbol</code> objects that reference the Future contracts that were trading at the given time. If you set a contract filter with <code class="csharp">SetFilter</code><code class="python">set_filter</code>, it doesn't affect the results of <code class="csharp">GetFutureContractList</code><code class="python">get_future_contract_list</code>.</p>
 	<li>Select the <code>Symbol</code> of the <code>FutureContract</code>&nbsp;object(s) for which you want to get historical data.</li>
 	<p>For example, select the  <code>Symbol</code> of the contract with the closest expiry.<br></p>
 	<div class="section-example-container">

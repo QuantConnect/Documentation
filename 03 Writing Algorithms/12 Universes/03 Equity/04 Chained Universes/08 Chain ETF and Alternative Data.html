@@ -56,35 +56,39 @@ namespace QuantConnect.Algorithm.CSharp
     from AlgorithmImports import *
 # endregion
 
+# region imports
+    from AlgorithmImports import *
+# endregion
+
 class ChainedUniverseAlgorithm(QCAlgorithm):
 
     etf = []
 
-    def Initialize(self):
-        self.SetStartDate(2023, 1, 2)
-        self.SetCash(100000)
-        self.UniverseSettings.Asynchronous = True
-        self.AddUniverse(self.Universe.ETF("SPY", Market.USA, self.UniverseSettings, self.ETFConstituentsFilter))
-        self.AddUniverse(QuiverCNBCsUniverse, self.MadMoneySelection)
+    def initialize(self):
+        self.set_start_date(2023, 1, 2)
+        self.set_cash(100000)
+        self.universe_settings.asynchronous = True
+        self.add_universe(self.universe.etf("SPY", Market.USA, self.universe_settings, self.etf_constituents_filter))
+        self.add_universe(QuiverCNBCsUniverse, self.mad_money_selection)
 
-    def ETFConstituentsFilter(self, fundamental: List[Fundamental]) -> List[Symbol]:
-        self.etf = [c.Symbol for c in constituents]
-        return Universe.Unchanged
+    def etf_constituents_filter(self, fundamental: List[Fundamental]) -> List[Symbol]:
+        self.etf = [c.symbol for c in constituents]
+        return Universe.UNCHANGED
 
-    def MadMoneySelection(self, alt_coarse: List[QuiverCNBCsUniverse]) -> List[Symbol]:
-        madmoney = [d.Symbol for d in alt_coarse if 'Cramer' in d.Traders]
+    def mad_money_selection(self, alt_coarse: List[QuiverCNBCsUniverse]) -> List[Symbol]:
+        madmoney = [d.symbol for d in alt_coarse if 'Cramer' in d.traders]
         return list(set(self.etf) & set(madmoney))
 
-    def OnSecuritiesChanged(self, changes):
-        for added in changes.AddedSecurities:
-            self.AddData(QuiverCNBCs, added.Symbol)
+    def on_securities_changed(self, changes):
+        for added in changes.added_securities:
+            self.add_data(QuiverCNBCs, added.symbol)
 
-    def OnData(self, data):
+    def on_data(self, data):
         # Prices in the slice from the universe selection
         # Alternative data in slice from OnSecuritiesChanged Addition
-        # for ticker,bar in data.Bars.items():
+        # for ticker,bar in data.bars.items():
         #     pass
-        for dataset_symbol, data_points in data.Get(QuiverCNBCs).items():
+        for dataset_symbol, data_points in data.get(QuiverCNBCs).items():
             for data_point in data_points:
-                self.Debug(f"{dataset_symbol} traders at {data.Time}: {data_point.Traders}")</pre>
+                self.debug(f"{dataset_symbol} traders at {data.time}: {data_point.traders}")</pre>
 </div>

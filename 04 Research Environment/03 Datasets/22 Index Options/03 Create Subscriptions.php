@@ -18,7 +18,7 @@ include(DOCS_RESOURCES."/datasets/research-environment/load-csharp-assemblies.ph
         <pre class="python">index_symbol = qb.add_index("SPX", Resolution.MINUTE).symbol</pre>
     </div>
     <p>To view the available indices, see <a href="/docs/v2/writing-algorithms/datasets/algoseek/us-index-options#07-Supported-Assets">Supported Assets</a>.</p>
-    <p>If you do not pass a resolution argument, <code>Resolution.Minute</code> is used by default. <br></p>
+    <p>If you do not pass a resolution argument, <code class="csharp">Resolution.Minute</code><code class="python">Resolution.MINUTE</code> is used by default. <br></p>
     <li>Call the <code class="csharp">AddIndexOption</code><code class="python">add_index_option</code> method with the underlying <code>Index</code> <code>Symbol</code> and, if you want non-standard Index Options, the <a href='/docs/v2/writing-algorithms/datasets/algoseek/us-index-options#07-Supported-Assets'>target Option ticker</a>.</li>
     <div class="section-example-container">
         <pre class="csharp">var option = qb.AddIndexOption(indexSymbol);</pre>
@@ -62,7 +62,7 @@ weekly_canonical_symbol = Symbol.create_canonical_option(index_symbol, "SPXW", M
 weekly_contract_symbols = qb.option_chain_provider.get_option_contract_list(weekly_canonical_symbol, start_date)
 weekly_contract_symbols = [s for s in weekly_contract_symbols if OptionSymbol.is_weekly(s)]</pre>
     </div>
-    <p>This method returns a list of <code>Symbol</code>&nbsp;objects that reference the Option contracts that were trading at the given time. If you set a contract filter with <code>SetFilter</code>, it doesn't affect the results of <code>GetOptionContractList</code>.</p>
+    <p>This method returns a list of <code>Symbol</code>&nbsp;objects that reference the Option contracts that were trading at the given time. If you set a contract filter with <code class="csharp">SetFilter</code><code class="python">set_filter</code>, it doesn't affect the results of <code class="csharp">GetOptionContractList</code><code class="python">get_option_contract_list</code>.</p>
     <li>Select the <code>Symbol</code> of the <code>OptionContract</code>&nbsp;object(s) for which you want to get historical data.</li>
     <p>To filter and select contracts, you can use the following properties of each&nbsp;<code>Symbol</code> object:</p>
     <table class="qc-table table">
@@ -74,22 +74,22 @@ weekly_contract_symbols = [s for s in weekly_contract_symbols if OptionSymbol.is
         </thead>
         <tbody>
             <tr>
-                 <td><code>ID.Date</code></td>
+                 <td><code class="csharp">ID.Date</code><code class="python">id.date</code></td>
                  <td>The expiration date of the contract.</td>
             </tr>
             <tr>
-                 <td><code>ID.StrikePrice</code></td>
+                 <td><code class="csharp">ID.StrikePrice</code><code class="python">id.strike_price</code></td>
                  <td>The strike price of the contract.</td>
             </tr>
             <tr>
-                 <td><code>ID.OptionRight</code></td>
+                 <td><code class="csharp">ID.OptionRight</code><code class="python">id.option_right</code></td>
                  <td>
                      The contract type. The <code>OptionRight</code> enumeration has the following members:
                      <div data-tree="QuantConnect.OptionRight"></div>
                   </td>
             </tr>
             <tr>
-                 <td><code>ID.OptionStyle</code></td>
+                 <td><code class="csharp">ID.OptionStyle</code><code class="python">id.option_style</code></td>
                  <td>
                      The contract style. The <code>OptionStyle</code> enumeration has the following members:
                      <div data-tree="QuantConnect.OptionStyle"></div>

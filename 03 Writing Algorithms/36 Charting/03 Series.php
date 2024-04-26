@@ -1,4 +1,4 @@
-<p>A chart series displays data on the chart. To add a series to a chart, create a <code>Series</code> object and then call the <code>AddSeries</code> method.</p>
+<p>A chart series displays data on the chart. To add a series to a chart, create a <code>Series</code> object and then call the <code class="csharp">AddSeries</code><code class="python">add_series</code> method.</p>
 
 <div class="section-example-container">
     <pre class="csharp">var series = new Series("&lt;seriesName&gt;");

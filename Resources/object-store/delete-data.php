@@ -1,6 +1,6 @@
 <p>Delete objects in the Object Store to remove objects that you no longer need. If you <?=$context?> in QuantConnect Cloud, you need <a href='/docs/v2/cloud-platform/organizations/members#08-Permissions'>storage delete permissions</a> to delete data from the Object Store.</p>
 
-<p>To delete objects from the Object Store, call the <code>Delete</code> method. Before you delete data, check if the key exists. If you try to delete an object with a key that doesn't exist in the Object Store, the method raises an exception.</p>
+<p>To delete objects from the Object Store, call the <code class="csharp">Delete</code><code class="python">delete</code> method. Before you delete data, check if the key exists. If you try to delete an object with a key that doesn't exist in the Object Store, the method raises an exception.</p>
 <div class='section-example-container'>
     <pre class='csharp'>if (<?=$cSharpPrefix?>ObjectStore.ContainsKey(key))
 {

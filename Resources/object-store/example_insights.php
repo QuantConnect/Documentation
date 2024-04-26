@@ -61,6 +61,6 @@ from System.Collections.Generic import List</pre>
     <div class="qc-embed-dummy" style="padding-top: 56.25%;"></div>
     <div class="qc-embed-element" style="position: absolute; top: 0; bottom: 0; left: 0; right: 0;">
     <iframe class="csharp qc-embed-backtest" height="100%" width="100%" style="border: 1px solid #ccc; padding: 0; margin: 0;" src="https://www.quantconnect.com/terminal/processCache?request=embedded_backtest_2c647eaeef59f2db0b9b957e7a4c014f.html"></iframe>
-    <iframe class="python qc-embed-backtest" height="100%" width="100%" style="border: 1px solid #ccc; padding: 0; margin: 0;" src="https://www.quantconnect.com/terminal/processCache?request=embedded_backtest_5042a67266802c124cacc99ce9ab2499.html"></iframe>
+    <iframe class="python qc-embed-backtest" height="100%" width="100%" style="border: 1px solid #ccc; padding: 0; margin: 0;" src="https://www.quantconnect.com/terminal/processCache?request=embedded_backtest_a3cd1b1fc179dff8ddd2c1532ba616ff.html"></iframe>
     </div>
 </div>

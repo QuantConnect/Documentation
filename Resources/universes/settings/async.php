@@ -6,4 +6,4 @@
     <li>If your filter function updates a class variable, don't update the class variable anywhere else in your algorithm.</li>
 </ul>
 
-<p>To enable asynchronous universe selection, in the <a href='/docs/v2/writing-algorithms/initialization'>Initialize</a> method, adjust the algorithm's <code>UniverseSettings</code> before you 
+<p>To enable asynchronous universe selection, in the <a href='/docs/v2/writing-algorithms/initialization'>Initialize</a> method, adjust the algorithm's <code class="csharp">UniverseSettings</code><code class="python">universe_settings</code> before you 

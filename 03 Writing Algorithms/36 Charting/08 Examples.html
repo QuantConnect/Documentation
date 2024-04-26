@@ -36,32 +36,31 @@
     }
 }</pre>
 	<pre class="python">class ChartingDemoAlgorithm(QCAlgorithm):
-
-def Initialize(self) -> None:
-    self.SetStartDate(2021, 1, 1)
-    self.SetEndDate(2022, 1, 1)
-    self.EnableAutomaticIndicatorWarmUp = True
-    symbol = self.AddEquity("MSFT", Resolution.Daily).Symbol
-    self.ema_fast = self.EMA(symbol, 10)
-    self.ema_slow = self.EMA(symbol, 50)
-    chart = Chart("Price")
-    self.AddChart(chart)
-    chart.AddSeries(Series("CROSS UP", SeriesType.Scatter, "$", Color.Green, ScatterMarkerSymbol.Triangle))
-    chart.AddSeries(Series("CROSS DOWN", SeriesType.Scatter, "$", Color.Red, ScatterMarkerSymbol.TriangleDown))
-    chart.AddSeries(Series("EMA FAST", SeriesType.Line, "$", Color.Orange))
-    chart.AddSeries(Series("EMA SLOW", SeriesType.Line, "$", Color.Blue))
-    chart = Chart("Candlestick")
-    self.AddChart(chart)
-    chart.AddSeries(CandlestickSeries("MSFT", "$"))
-    
-def OnEndOfDay(self, symbol: Symbol) -&gt; None:
-    self.Plot("Candlestick", "MSFT", self.Securities[symbol].GetLastData())
-    self.Plot("Price", "EMA FAST", self.ema_fast.Current.Value)
-    self.Plot("Price", "EMA SLOW", self.ema_slow.Current.Value)
-    if (self.ema_fast &gt; self.ema_slow and self.ema_fast[1] &lt; self.ema_slow[1]):
-        self.Plot("Price", "CROSS UP", self.Securities[symbol].Price)
-    elif (self.ema_fast &lt; self.ema_slow and self.ema_fast[1] &gt; self.ema_slow[1]):
-        self.Plot("Price", "CROSS DOWN", self.Securities[symbol].Price)</pre>
+    def initialize(self) -> None:
+        self.set_start_date(2021, 1, 1)
+        self.set_end_date(2022, 1, 1)
+        self.enable_automatic_indicator_warm_up = True
+        symbol = self.add_equity("MSFT", Resolution.DAILY).symbol
+        self.ema_fast = self.ema(symbol, 10)
+        self.ema_slow = self.ema(symbol, 50)
+        chart = Chart("Price")
+        self.add_chart(chart)
+        chart.add_series(Series("CROSS UP", SeriesType.SCATTER, "$", Color.green, ScatterMarkerSymbol.TRIANGLE))
+        chart.add_series(Series("CROSS DOWN", SeriesType.SCATTER, "$", Color.red, ScatterMarkerSymbol.TRIANGLE_DOWN))
+        chart.add_series(Series("EMA FAST", SeriesType.LINE, "$", Color.orange))
+        chart.add_series(Series("EMA SLOW", SeriesType.LINE, "$", Color.blue))
+        chart = Chart("Candlestick")
+        self.add_chart(chart)
+        chart.add_series(CandlestickSeries("MSFT", "$"))
+            
+    def on_end_of_day(self, symbol: Symbol) -> None:
+        self.plot("Candlestick", "MSFT", self.securities[symbol].get_last_data())
+        self.plot("Price", "EMA FAST", self.ema_fast.current.value)
+        self.plot("Price", "EMA SLOW", self.ema_slow.current.value)
+        if (self.ema_fast &gt; self.ema_slow and self.ema_fast[1] &lt; self.ema_slow[1]):
+            self.plot("Price", "CROSS UP", self.securities[symbol].price)
+        elif (self.ema_fast &lt; self.ema_slow and self.ema_fast[1] &gt; self.ema_slow[1]):
+            self.plot("Price", "CROSS DOWN", self.securities[symbol].price)</pre>
 </div>
 
 <img src="https://cdn.quantconnect.com/i/tu/msft-ema-cross-plus-scatter-chart.png" class="docs-image" alt="Time series of SPY closing price during 2021.">

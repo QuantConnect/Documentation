@@ -12,7 +12,7 @@ $helperMethod = "IV";
 include(DOCS_RESOURCES."/option-indicators/automatic-indicator.php"); 
 ?>
 
-<p>The follow table describes the arguments that the <code>IV</code> method accepts in addition to the <a href='/docs/v2/writing-algorithms/securities/asset-classes/equity-options/greeks-and-implied-volatility/option-indicators#02-Parameters'>standard parameters</a>:</p>
+<p>The follow table describes the arguments that the <code class="csharp">IV</code><code class="python">iv</code> method accepts in addition to the <a href='/docs/v2/writing-algorithms/securities/asset-classes/equity-options/greeks-and-implied-volatility/option-indicators#02-Parameters'>standard parameters</a>:</p>
 
 <table class="qc-table table">
     <thead>
@@ -33,7 +33,7 @@ include(DOCS_RESOURCES."/option-indicators/automatic-indicator.php");
     </tbody>
 </table>
 
-<p>For more information about the <code>IV</code> method, see <a href='/docs/v2/writing-algorithms/indicators/supported-indicators/implied-volatility#02-Using-IV-Indicator'>Using IV Indicator</a>.</p>
+<p>For more information about the <code class="csharp">IV</code><code class="python">iv</code> method, see <a href='/docs/v2/writing-algorithms/indicators/supported-indicators/implied-volatility#02-Using-IV-Indicator'>Using IV Indicator</a>.</p>
 
 <h4>Manual Indicators</h4>
 <?
@@ -47,7 +47,7 @@ include(DOCS_RESOURCES."/option-indicators/manual-indicator.php");
 <h4>Volatility Smoothing</h4>
 <p>
     The default <a href="/docs/v2/writing-algorithms/securities/asset-classes/equity-options/greeks-and-implied-volatility/key-concepts#05-Volatility-Smoothing">IV smoothing</a> method uses the one contract in the pair that's at-the-money or out-of-money to calculate the IV.
-    To change the smoothing function, pass a <code>mirrorOption</code> argument to the <code>IV</code> method or <code>ImpliedVolatility</code> constructor and then call the <code>SetSmoothingFunction</code> method of the resulting <code>ImpliedVolatility</code> object.
+    To change the smoothing function, pass a <code class="csharp">mirrorOption</code><code class="python">mirror_option</code> argument to the <code class="csharp">IV</code><code class="python">iv</code> method or <code>ImpliedVolatility</code> constructor and then call the <code class="csharp">SetSmoothingFunction</code><code class="python">set_smoothing_function</code> method of the resulting <code>ImpliedVolatility</code> object.
     The follow table describes the arguments of the custom function:
 </p>
 
@@ -66,7 +66,7 @@ include(DOCS_RESOURCES."/option-indicators/manual-indicator.php");
             <td>The IV of the Option contract.</td>
         </tr>
         <tr>
-            <td><code>mirrorIv</code></td>
+            <td><code class="csharp">mirrorIv</code><code class="python">mirror_iv</code></td>
             <td><code class="csharp">decimal</code><code class="python">float</code></td>
             <td>The IV of the mirror Option contract.</td>
         </tr>
@@ -94,10 +94,10 @@ public override void Initialize()
     option = Symbol.create_option("AAPL", Market.USA, OptionStyle.AMERICAN, OptionRight.PUT, 505, datetime(2014, 6, 27))
     self.add_option_contract(option)
 
-    mirror_option = Symbol.create_option("AAPL", Market.USA, OptionStyle.AMERICAN, OptionRight.CALL, 505m, new DateTime(2014, 6, 27))
-    self.add_option_contract(mirror_option)
+    mirrorOption = Symbol.create_option("AAPL", Market.USA, OptionStyle.AMERICAN, OptionRight.CALL, 505m, new DateTime(2014, 6, 27))
+    self.add_option_contract(mirrorOption)
 
-    self.iv = self.IV(option, mirror_option)
+    self.iv = self.IV(option, mirrorOption)
     # Example: The average of the call-put pair.
     self.iv.set_smoothing_function(lambda iv, mirror_iv: (iv + mirror_iv) * 0.5)
 </pre>

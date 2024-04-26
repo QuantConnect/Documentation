@@ -7,7 +7,7 @@ AddUniverse(Universe.DollarVolume.Top(50));</pre>
 self.add_universe(self.universe.dollar_volume.top(50))</pre>
 </div>
 
-<p>To disable fill forward in derivative universes, pass a <code>fillForward</code> argument to the universe creation method.</p>
+<p>To disable fill forward in derivative universes, pass a <code class="csharp">fillForward</code><code class="python">fill_forward</code> argument to the universe creation method.</p>
 <div class="section-example-container">
     <pre class="csharp">AddIndexOption("VIX", fillForward: false);</pre>
     <pre class="python">self.add_index_option("VIX", fill_forward=False)</pre>

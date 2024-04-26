@@ -42,7 +42,7 @@ public override void Initialize()
                          .ToArray();
 
     if (contracts.Length < 2) return;</pre>
-        <pre class="python">def OnData(self, slice: Slice) -&gt; None:
+        <pre class="python">def on_data(self, slice: Slice) -&gt; None:
     if self.Portfolio.Invested:
         return
 

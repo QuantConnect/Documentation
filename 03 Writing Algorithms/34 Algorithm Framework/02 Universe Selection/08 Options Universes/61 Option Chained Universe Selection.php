@@ -40,21 +40,21 @@ self.add_universe_selection(
             <td></td>
         </tr>
         <tr>
-            <td><code>optionFilter</code></td>
+            <td><code class="csharp">optionFilter</code><code class="python">option_filter</code></td>
 	    <td><code class="csharp">Func&lt;OptionFilterUniverse, OptionFilterUniverse&gt;</code><code class="python">Callable[[OptionFilterUniverse], OptionFilterUniverse]</code></td>
             <td>The Option filter universe to use</td>
             <td></td>
         </tr>
         <tr>
-            <td><code>universeSettings</code></td>
+            <td><code class="csharp">universeSettings</code><code class="python">universe_settings</code></td>
 	    <td><code>UniverseSettings</code></td>
-            <td>The <a href="/docs/v2/writing-algorithms/algorithm-framework/universe-selection/universe-settings">universe settings</a>. If you don't provide an argument, the model uses the <code>algorithm.UniverseSettings</code> by default.</td>
+            <td>The <a href="/docs/v2/writing-algorithms/algorithm-framework/universe-selection/universe-settings">universe settings</a>. If you don't provide an argument, the model uses the <code class="csharp">algorithm.UniverseSettings</code><code class="python">algorithm.universe_settings</code> by default.</td>
             <td><code class="csharp">null</code><code class="python">None</code></td>
         </tr>
     </tbody>
 </table>
 
-<p>The <code>optionFilter</code> function receives and returns an <code>OptionFilterUniverse</code> to select the Option contracts. The following table describes the methods of the <code>OptionFilterUniverse</code> class:</p>
+<p>The <code class="csharp">optionFilter</code><code class="python">option_filter</code> function receives and returns an <code>OptionFilterUniverse</code> to select the Option contracts. The following table describes the methods of the <code>OptionFilterUniverse</code> class:</p>
 
 <? include(DOCS_RESOURCES."/universes/option/option-filter-universe.html"); ?>
 

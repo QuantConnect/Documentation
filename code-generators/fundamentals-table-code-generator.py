@@ -50,7 +50,7 @@ exchange_ids = {
     'NEOE': "NEO Exchange"
 }
 
-html = """<p>The US Fundamentals dataset provides Fundamental objects. To filter Fundamental objects, you can use the MorningstarSectorCode, MorningstarIndustryGroupCode, and MorningstarIndustryCode enumeration values.</p>
+html = """<p>The US Fundamentals dataset provides Fundamental objects. To filter Fundamental objects, you can use the <code>MorningstarSectorCode</code>, <code>MorningstarIndustryGroupCode</code>, and <code>MorningstarIndustryCode</code> enumeration values.</p>
 
 <h4>Fundamentals Attributes</h4>
 <p>Fundamentals objects have the following attributes:</p>
