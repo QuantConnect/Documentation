@@ -9,7 +9,8 @@ LEAN = "https://github.com/QuantConnect/Lean/blob/master"
 RAW_LEAN = "https://raw.githubusercontent.com/QuantConnect/Lean/master"
 LEAN_SERVICE = "https://www.quantconnect.com/services/inspector?language=python&type=T:%s"
 
-WRITE_PATH = Path("08 Drafts/98 API Reference")   #"03 Writing Algorithms/98 API Reference/"
+WRITE_PATH = Path("03 Writing Algorithms/98 API Reference/")
+METADATA = WRITE_PATH / "metadata.json"
 DOCS_SECTION = {
     "QCAlgorithm API": "QuantConnect.Algorithm.QCAlgorithm"
 }
@@ -36,8 +37,13 @@ SOURCE_CODES = {}
 
 def render_docs():
     if WRITE_PATH.exists():
+        if METADATA.exists():
+            with open(METADATA, mode='r') as f:
+                content = f.read()
         shutil.rmtree(WRITE_PATH)
     WRITE_PATH.mkdir(parents=True, exist_ok=True)
+    with open(METADATA, mode='w') as f:
+        f.write(content)
 
     for i, (h3, type_json_url) in enumerate(DOCS_SECTION.items()):
         _render_section_docs(i, type_json_url, write=False)
@@ -76,14 +82,19 @@ def render_docs():
     # clean up non-inclusive jump links
     for path in Path.glob(WRITE_PATH, "*.html"):
         with open(path, 'r', encoding="utf-8") as file:
-            content = file.read()
+            content = file.read()\
+                .replace(f"<a href=\"#ICollection`1\">ICollection`1</a>", 'list')\
+                .replace(f"<a href=\"#IDictionary`2\">IDictionary`2</a>", 'dictionary')\
+                .replace(f"<a href=\"#IExtendedDictionary`2\">IExtendedDictionary`2</a>", 'dictionary') \
+                .replace(f"an list", "a list").replace(f"an dictionary", "a dictionary")
+
             pattern = r"<a href=\"#(\w+)\">"
             matches = re.findall(pattern, content)
             
             to_remove = [x for x in matches if x.strip().lower() not in DONE]
             for match in to_remove:
                 content = content.replace(f"<a href=\"#{match}\">{match}</a>", match)
-                
+
         with open(path, 'w', encoding="utf-8") as file:
             file.write(content)
 
@@ -95,7 +106,7 @@ def _render_section_docs(i, type_json_url, write=False):
         return
     
     type_heading_html = _render_type_heading(content["type-name"], content["base-type-full-name"].split('.')[-1], content["description"], content["full-type-name"])
-    methods = _render_methods(content["methods"])
+    methods = _render_methods(content["methods"], 'QuantConnect.Securities' in type_json_url)
     properties = _render_properties(content["properties"])
     fields = _render_fields(content["fields"])
     
@@ -157,10 +168,17 @@ def _render_type(type_, type_dict, type_ret=None, line_arg="", params=""):
 
     return type_html
 
-def _render_methods(method_list):
+def _render_methods(method_list, special_type=False):
+    backlist = ['compare_to', 'equals', 'to_string', 'get_hash_code']
+    if special_type:
+        backlist.extend(['add', 'get', 'remove'])
     types = []
     for name in sorted(set(x["method-name"] for x in method_list)):
+        if name in backlist:
+            continue
         type_html = _render_method([x for x in method_list if x["method-name"] == name])
+        if 'Not meant for external use' in type_html:
+            continue
         types.append(type_html)
     return '\n'.join(types)
 
