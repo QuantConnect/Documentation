@@ -14,7 +14,7 @@
     <span class="arg-name">name</span> (<span class="object-type">str</span>) &mdash; A unique name for this universe
     </li>
     <li>
-    <span class="arg-name">resolution</span> (<span class="object-type">0, Culture=neutral, PublicKeyToken=null]] | <a href="#Resolution">Resolution</a></span>) &mdash; The expected resolution of the universe data
+    <span class="arg-name">resolution</span> (<span class="object-type">Optional[Resolution] | <a href="#Resolution">Resolution</a></span>) &mdash; The expected resolution of the universe data
     </li>
     <li>
     <span class="arg-name">market</span> (<span class="object-type">str</span>) &mdash; The market for selected symbols
@@ -23,7 +23,7 @@
     <span class="arg-name">universe_settings</span> (<span class="object-type"><a href="#UniverseSettings">UniverseSettings</a></span>) &mdash; The subscription settings to use for newly created subscriptions
     </li>
     <li>
-    <span class="arg-name">selector</span> (<span class="object-type">PyObject | 0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]</span>) &mdash; Function delegate that performs selection on the universe data
+    <span class="arg-name">selector</span> (<span class="object-type">List[BaseData, Symbol] | List[BaseData, str] | List[datetime, str] | PyObject | List[Fundamental, Symbol]</span>) &mdash; Function delegate that performs selection on the universe data
     </li>
 </ul>
 
@@ -40,13 +40,13 @@
     <span class="arg-name">data_type</span> (<span class="object-type">Type</span>) &mdash; The data type
     </li>
     <li>
-    <span class="arg-name">security_type</span> (<span class="object-type">0, Culture=neutral, PublicKeyToken=null]] | <a href="#SecurityType">SecurityType</a></span>) &mdash; The security type the universe produces
+    <span class="arg-name">security_type</span> (<span class="object-type">Optional[SecurityType] | <a href="#SecurityType">SecurityType</a></span>) &mdash; The security type the universe produces
     </li>
     <li>
     <span class="arg-name">name</span> (<span class="object-type">str</span>) &mdash; A unique name for this universe
     </li>
     <li>
-    <span class="arg-name">resolution</span> (<span class="object-type">0, Culture=neutral, PublicKeyToken=null]] | <a href="#Resolution">Resolution</a></span>) &mdash; The expected resolution of the universe data
+    <span class="arg-name">resolution</span> (<span class="object-type">Optional[Resolution] | <a href="#Resolution">Resolution</a></span>) &mdash; The expected resolution of the universe data
     </li>
     <li>
     <span class="arg-name">market</span> (<span class="object-type">str</span>) &mdash; The market for selected symbols
@@ -72,7 +72,7 @@
     <span class="arg-name">date_rule</span> (<span class="object-type">IDateRule</span>)
     </li>
     <li>
-    <span class="arg-name">selector</span> (<span class="object-type">0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]</span>) &mdash; Defines an initial coarse selection
+    <span class="arg-name">selector</span> (<span class="object-type">List[BaseData, str] | List[Fundamental, Symbol] | List[BaseData, Symbol]</span>) &mdash; Defines an initial coarse selection
     </li>
 </ul>
 
@@ -152,10 +152,10 @@
 <div class="subsection-header">Parameters:</div>
 <ul class="subsection-content">
     <li>
-    <span class="arg-name">universe</span> (<span class="object-type">PyObject | <a href="#Universe">Universe</a></span>) &mdash; The universe we want to chain an option universe selection model too
+    <span class="arg-name">universe</span> (<span class="object-type"><a href="#Universe">Universe</a> | PyObject</span>) &mdash; The universe we want to chain an option universe selection model too
     </li>
     <li>
-    <span class="arg-name">option_filter</span> (<span class="object-type">0, Culture=neutral, PublicKeyToken=null]] | PyObject</span>) &mdash; The option filter universe to use
+    <span class="arg-name">option_filter</span> (<span class="object-type">PyObject | Callable[OptionFilterUniverse, OptionFilterUniverse]</span>) &mdash; The option filter universe to use
     </li>
 </ul>
 
@@ -168,7 +168,7 @@
 <div class="subsection-header">Returns:</div>
 <p class="subsection-content">Gets a helper that provides pre-defined universe definitions, such as top dollar volume</p>
 <div class="subsection-header">Return type:</div>
-<p class="subsection-content"><a href="#UniverseDefinitions">UniverseDefinitions</a></p>
+<p class="subsection-content">UniverseDefinitions</p>
 </div>
 
 <div class="code-snippet"><span class="object-type">property</span> <code>universe_manager</code><a class="code-source" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm/QCAlgorithm.Universe.cs#L44">[source]</a></div>
@@ -178,7 +178,7 @@
 <div class="subsection-header">Returns:</div>
 <p class="subsection-content">Gets universe manager which holds universes keyed by their symbol</p>
 <div class="subsection-header">Return type:</div>
-<p class="subsection-content"><a href="#UniverseManager">UniverseManager</a></p>
+<p class="subsection-content">UniverseManager</p>
 </div>
 
 <div class="code-snippet"><span class="object-type">property</span> <code>universe_settings</code><a class="code-source" href="https://github.com/QuantConnect/Lean/blob/master/Algorithm/QCAlgorithm.Universe.cs#L54">[source]</a></div>
@@ -188,7 +188,7 @@
 <div class="subsection-header">Returns:</div>
 <p class="subsection-content">Gets the universe settings to be used when adding securities via universe selection</p>
 <div class="subsection-header">Return type:</div>
-<p class="subsection-content"><a href="#UniverseSettings">UniverseSettings</a></p>
+<p class="subsection-content">UniverseSettings</p>
 </div>
 
 <style>
