@@ -18,6 +18,27 @@ servers:
 security:
 - nonceTokenAuth: []
 paths:
+  /account/read:
+    post:
+      tags:
+      - 01 Cloud Platform
+      - 99 API Reference
+      description: Will read the organization account status.
+      responses:
+        "200":
+          description: Account information for an organization.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccountResponse'
+        "401":
+          description: Unauthorized response from the API. Key is missing, invalid, or timestamp is too old for hash.
+          headers:
+            www_authenticate:
+              style: simple
+              explode: false
+              schema:
+                type: string
   /projects/create:
     post:
       tags:
@@ -1304,6 +1325,20 @@ components:
           type: string
           description: Optimization ID we want to abort.
       description: Abort an optimization.
+    AccountResponse:
+      type: object
+      properties:
+        organizationId:
+          type: string
+          description: The organization Id.
+        creditBalance:
+          type: number
+          description: The current account balance.
+        card:
+          type: object
+          description: The current organizations credit card.
+          $ref: '#/components/schemas/Card'
+      description: Account information for an organization.
     AlgorithmPerformance:
       type: object
       properties:
@@ -1918,6 +1953,20 @@ components:
           items:
             $ref: '#/components/schemas/CashAmount'
       description: Settings for using Bybit as a data provider or brokerage.
+    Card:
+      type: object
+      properties:
+        brand:
+          type: string
+          description: Credit card brand.
+        expiration:
+          type: string
+          description: The credit card expiration.
+          format: date-time
+        last4:
+          type: string
+          description: The last 4 digits of the card.
+      description: Credit card information.
     Cash:
       type: object
       properties:
@@ -2365,20 +2414,15 @@ components:
       type: object
       properties:
         format:
+          type: string
           description: Format for returning data, link or download.
           example: link
-        ticker:
+        filePath:
           type: string
-        type:
-          $ref: '#/components/schemas/SecurityType'
-        resolution:
-          $ref: '#/components/schemas/Resolution'
-        market:
-          $ref: '#/components/schemas/Market'
-        date:
+          description: File path representing the data requested.
+        organizationId:
           type: string
-          description: Date of the data requested yyyyMMdd.
-          example: yyyyMMdd
+          description: Organization to download from.
       description: Request for a link to downloadable data.
     DeleteFileRequest:
       type: object
@@ -3895,10 +3939,10 @@ components:
           description: DateTime project file was modified.
           format: date-time
         open:
-          type: bool
+          type: boolean
           description: Indicates if the project file is open or not.
         isLibrary:
-          type: bool
+          type: boolean
           description: Indicates if the project file is a library or not. It's always false in live/read and backtest/read.
       description: File for a project.
     ProjectFilesResponse:
@@ -4079,6 +4123,12 @@ components:
         link:
           type: string
           description: Link to the data.
+        balance:
+          type: number
+          description: Remaining QCC balance on account after this transaction.
+        cost:
+          type: number
+          description: QCC Cost for this data link.
         success:
           type: boolean
           description: Indicate if the API request was successful.
@@ -4235,7 +4285,7 @@ components:
           type: integer
           description: Id of the project from which to read one or multiple backtests.
         includeStatistics:
-          type: bool
+          type: boolean
           description: If true, the backtests summaries from the response will contain the statistics with their corresponding values.
       description: Request to list the backtests from a project.
     QuantConnectSettings:
