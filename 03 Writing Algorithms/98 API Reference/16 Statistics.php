@@ -1,6 +1,6 @@
 <h4 id="Statistics">Statistics</h4>
-<? include(DOCS_RESOURCES."/qcalgorithm-api/set-summary-statistic.html"); ?>
-<? include(DOCS_RESOURCES."/qcalgorithm-api/statistics.html"); ?>
+<? include(DOCS_RESOURCES."/qcalgorithm-api/qcalgorithm-set-summary-statistic.html"); ?>
+<? include(DOCS_RESOURCES."/qcalgorithm-api/qcalgorithm-statistics.html"); ?>
 <style>
 .code-source        { color: grey; float: right }
 .object-type        { font-style: italic; }

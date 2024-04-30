@@ -1,9 +1,9 @@
 <h4 id="Universes">Universes</h4>
-<? include(DOCS_RESOURCES."/qcalgorithm-api/add-universe.html"); ?>
-<? include(DOCS_RESOURCES."/qcalgorithm-api/add-universe-options.html"); ?>
-<? include(DOCS_RESOURCES."/qcalgorithm-api/universe.html"); ?>
-<? include(DOCS_RESOURCES."/qcalgorithm-api/universe-manager.html"); ?>
-<? include(DOCS_RESOURCES."/qcalgorithm-api/universe-settings.html"); ?>
+<? include(DOCS_RESOURCES."/qcalgorithm-api/qcalgorithm-add-universe.html"); ?>
+<? include(DOCS_RESOURCES."/qcalgorithm-api/qcalgorithm-add-universe-options.html"); ?>
+<? include(DOCS_RESOURCES."/qcalgorithm-api/qcalgorithm-universe.html"); ?>
+<? include(DOCS_RESOURCES."/qcalgorithm-api/qcalgorithm-universe-manager.html"); ?>
+<? include(DOCS_RESOURCES."/qcalgorithm-api/qcalgorithm-universe-settings.html"); ?>
 <style>
 .code-source        { color: grey; float: right }
 .object-type        { font-style: italic; }

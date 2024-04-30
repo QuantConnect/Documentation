@@ -1,26 +1,26 @@
 <h4 id="Algorithm Framework">Algorithm Framework</h4>
-<? include(DOCS_RESOURCES."/qcalgorithm-api/add-alpha.html"); ?>
-<? include(DOCS_RESOURCES."/qcalgorithm-api/add-risk-management.html"); ?>
-<? include(DOCS_RESOURCES."/qcalgorithm-api/add-universe-selection.html"); ?>
-<? include(DOCS_RESOURCES."/qcalgorithm-api/emit-insights.html"); ?>
-<? include(DOCS_RESOURCES."/qcalgorithm-api/framework-post-initialize.html"); ?>
-<? include(DOCS_RESOURCES."/qcalgorithm-api/get-locked.html"); ?>
-<? include(DOCS_RESOURCES."/qcalgorithm-api/initialize.html"); ?>
-<? include(DOCS_RESOURCES."/qcalgorithm-api/on-framework-data.html"); ?>
-<? include(DOCS_RESOURCES."/qcalgorithm-api/on-framework-securities-changed.html"); ?>
-<? include(DOCS_RESOURCES."/qcalgorithm-api/post-initialize.html"); ?>
-<? include(DOCS_RESOURCES."/qcalgorithm-api/set-alpha.html"); ?>
-<? include(DOCS_RESOURCES."/qcalgorithm-api/set-execution.html"); ?>
-<? include(DOCS_RESOURCES."/qcalgorithm-api/set-locked.html"); ?>
-<? include(DOCS_RESOURCES."/qcalgorithm-api/set-portfolio-construction.html"); ?>
-<? include(DOCS_RESOURCES."/qcalgorithm-api/set-risk-management.html"); ?>
-<? include(DOCS_RESOURCES."/qcalgorithm-api/set-universe-selection.html"); ?>
-<? include(DOCS_RESOURCES."/qcalgorithm-api/alpha.html"); ?>
-<? include(DOCS_RESOURCES."/qcalgorithm-api/execution.html"); ?>
-<? include(DOCS_RESOURCES."/qcalgorithm-api/insights.html"); ?>
-<? include(DOCS_RESOURCES."/qcalgorithm-api/portfolio-construction.html"); ?>
-<? include(DOCS_RESOURCES."/qcalgorithm-api/risk-management.html"); ?>
-<? include(DOCS_RESOURCES."/qcalgorithm-api/universe-selection.html"); ?>
+<? include(DOCS_RESOURCES."/qcalgorithm-api/qcalgorithm-add-alpha.html"); ?>
+<? include(DOCS_RESOURCES."/qcalgorithm-api/qcalgorithm-add-risk-management.html"); ?>
+<? include(DOCS_RESOURCES."/qcalgorithm-api/qcalgorithm-add-universe-selection.html"); ?>
+<? include(DOCS_RESOURCES."/qcalgorithm-api/qcalgorithm-emit-insights.html"); ?>
+<? include(DOCS_RESOURCES."/qcalgorithm-api/qcalgorithm-framework-post-initialize.html"); ?>
+<? include(DOCS_RESOURCES."/qcalgorithm-api/qcalgorithm-get-locked.html"); ?>
+<? include(DOCS_RESOURCES."/qcalgorithm-api/qcalgorithm-initialize.html"); ?>
+<? include(DOCS_RESOURCES."/qcalgorithm-api/qcalgorithm-on-framework-data.html"); ?>
+<? include(DOCS_RESOURCES."/qcalgorithm-api/qcalgorithm-on-framework-securities-changed.html"); ?>
+<? include(DOCS_RESOURCES."/qcalgorithm-api/qcalgorithm-post-initialize.html"); ?>
+<? include(DOCS_RESOURCES."/qcalgorithm-api/qcalgorithm-set-alpha.html"); ?>
+<? include(DOCS_RESOURCES."/qcalgorithm-api/qcalgorithm-set-execution.html"); ?>
+<? include(DOCS_RESOURCES."/qcalgorithm-api/qcalgorithm-set-locked.html"); ?>
+<? include(DOCS_RESOURCES."/qcalgorithm-api/qcalgorithm-set-portfolio-construction.html"); ?>
+<? include(DOCS_RESOURCES."/qcalgorithm-api/qcalgorithm-set-risk-management.html"); ?>
+<? include(DOCS_RESOURCES."/qcalgorithm-api/qcalgorithm-set-universe-selection.html"); ?>
+<? include(DOCS_RESOURCES."/qcalgorithm-api/qcalgorithm-alpha.html"); ?>
+<? include(DOCS_RESOURCES."/qcalgorithm-api/qcalgorithm-execution.html"); ?>
+<? include(DOCS_RESOURCES."/qcalgorithm-api/qcalgorithm-insights.html"); ?>
+<? include(DOCS_RESOURCES."/qcalgorithm-api/qcalgorithm-portfolio-construction.html"); ?>
+<? include(DOCS_RESOURCES."/qcalgorithm-api/qcalgorithm-risk-management.html"); ?>
+<? include(DOCS_RESOURCES."/qcalgorithm-api/qcalgorithm-universe-selection.html"); ?>
 <style>
 .code-source        { color: grey; float: right }
 .object-type        { font-style: italic; }

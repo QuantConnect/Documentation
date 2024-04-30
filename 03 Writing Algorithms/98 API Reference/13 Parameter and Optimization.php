@@ -1,7 +1,7 @@
 <h4 id="Parameter and Optimization">Parameter and Optimization</h4>
-<? include(DOCS_RESOURCES."/qcalgorithm-api/get-parameter.html"); ?>
-<? include(DOCS_RESOURCES."/qcalgorithm-api/get-parameters.html"); ?>
-<? include(DOCS_RESOURCES."/qcalgorithm-api/set-parameters.html"); ?>
+<? include(DOCS_RESOURCES."/qcalgorithm-api/qcalgorithm-get-parameter.html"); ?>
+<? include(DOCS_RESOURCES."/qcalgorithm-api/qcalgorithm-get-parameters.html"); ?>
+<? include(DOCS_RESOURCES."/qcalgorithm-api/qcalgorithm-set-parameters.html"); ?>
 <style>
 .code-source        { color: grey; float: right }
 .object-type        { font-style: italic; }

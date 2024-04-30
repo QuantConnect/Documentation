@@ -1,5 +1,5 @@
 <h4 id="Machine Learning">Machine Learning</h4>
-<? include(DOCS_RESOURCES."/qcalgorithm-api/train.html"); ?>
+<? include(DOCS_RESOURCES."/qcalgorithm-api/qcalgorithm-train.html"); ?>
 <style>
 .code-source        { color: grey; float: right }
 .object-type        { font-style: italic; }
