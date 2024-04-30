@@ -18,6 +18,7 @@ DOCS_SECTION = {
 }
 MAX_RECURSION = 1
 XML_REGEX_PATTERNS = {
+    
     r'<see cref="(.*?)"(?:\s*/)?>': "<a href=\"#%s\">%s</a>", 
     r'<typeparam name="(.*?)"(?:\s*/)?>': "<i>%s</i>",
     r'<paramref name="(.*?)"(?:\s*/)?>': "<i>%s</i>",
@@ -102,12 +103,12 @@ def render_docs():
         with open(path, 'r', encoding="utf-8") as file:
             content = file.read().replace(f"an list", "a list").replace(f"an dictionary", "a dictionary")
 
-            pattern = r"<a href=\"#([\w`]+)\">"
+            pattern = r"<a href=\"#(\w+)\">"
             matches = re.findall(pattern, content)
             
             to_remove = [x for x in matches if x.strip().lower() not in DONE]
             for match in to_remove:
-                content = content.replace(f"<a href=\"#{match}\">{match}</a>", match)
+                content = content.replace(f'<a href=\"#{match}\">{match.replace("[]", "")}</a>', match)
 
         with open(path, 'w', encoding="utf-8") as file:
             file.write(content)
@@ -506,9 +507,11 @@ def _type_conversion(type, language):
     type_replacement = {
         "IEnumerable<KeyValuePair": "Dict",
         "ConcurrentDictionary": "Dict",
-        "ConcurrentQueue": "List",
         "IExtendedDictionary": "Dict",
+        "IReadOnlyDict": "Dict",
         "IDictionary": "Dict",
+        "ConcurrentQueue": "List",
+        "IReadOnlyList": "List",
         "IEnumerable": "List",
         "ICollection": "List",
         "Nullable": "Optional",
