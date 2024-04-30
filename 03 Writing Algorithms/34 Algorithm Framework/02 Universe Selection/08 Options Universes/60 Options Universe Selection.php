@@ -160,19 +160,19 @@ class EarliestExpiringAtTheMoneyCallOptionUniverseSelectionModel(OptionUniverseS
     def select_option_chain_symbols(self, utc_time: datetime) -> List[Symbol]:
         # Equity Options example:
         #tickers = ["SPY", "QQQ", "TLT"]
-        #return [Symbol.Create(ticker, SecurityType.Option, Market.USA) for ticker in tickers]
+        #return [Symbol.create(ticker, SecurityType.OPTION, Market.USA) for ticker in tickers]
 
         # Index Options example:
         #tickers = ["VIX", "SPX"]
-        #return [Symbol.Create(ticker, SecurityType.IndexOption, Market.USA) for ticker in tickers]
+        #return [Symbol.create(ticker, SecurityType.INDEX_OPTION, Market.USA) for ticker in tickers]
 
         # Future Options example:
-        future_symbol = Symbol.Create(Futures.Indices.SP500EMini, SecurityType.Future, Market.CME)
-        future_contract_symbols = self.algo.FutureChainProvider.GetFutureContractList(future_symbol, self.algo.Time)
-        return [Symbol.CreateCanonicalOption(symbol) for symbol in future_contract_symbols]
+        future_symbol = Symbol.create(Futures.Indices.SP500E_MINI, SecurityType.FUTURE, Market.CME)
+        future_contract_symbols = self.algo.future_chain_provider.get_future_contract_list(future_symbol, self.algo.time)
+        return [Symbol.create_canonical_option(symbol) for symbol in future_contract_symbols]
 
     def Filter(self, option_filter_universe: OptionFilterUniverse) -> OptionFilterUniverse:
-        return option_filter_universe.Strikes(-1, -1).Expiration(0, 7).CallsOnly()</pre>
+        return option_filter_universe.strikes(-1, -1).expiration(0, 7).calls_only()</pre>
 </div>
 
 <?

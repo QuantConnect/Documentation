@@ -128,8 +128,8 @@ class FrontMonthFutureUniverseSelectionModel(FutureUniverseSelectionModel):
 
     def select_future_chain_symbols(self, utc_time: datetime) -> List[Symbol]:
         return [ 
-            Symbol.Create(Futures.Indices.SP500EMini, SecurityType.Future, Market.CME),
-            Symbol.Create(Futures.Metals.Gold, SecurityType.Future, Market.COMEX) 
+            Symbol.create(Futures.Indices.SP500E_MINI, SecurityType.FUTURE, Market.CME),
+            Symbol.create(Futures.Metals.GOLD, SecurityType.FUTURE, Market.COMEX) 
         ]
 
     def Filter(self, filter: FutureFilterUniverse) -> FutureFilterUniverse:

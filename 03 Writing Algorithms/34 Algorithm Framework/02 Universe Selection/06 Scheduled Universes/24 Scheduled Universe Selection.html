@@ -81,16 +81,16 @@ private IEnumerable&lt;Symbol&gt; SelectSymbols(DateTime dateTime)
 }
 </pre>
 	<pre class="python"># Selection will run on mon/tues/thurs at 00:00/06:00/12:00/18:00
-self.AddUniverseSelection(ScheduledUniverseSelectionModel(
-    self.DateRules.Every(DayOfWeek.Monday, DayOfWeek.Tuesday, DayOfWeek.Thursday),
-    self.TimeRules.Every(timedelta(hours = 6)),
-    self.SelectSymbols # selection function in algorithm.
+self.add_universe_selection(ScheduledUniverseSelectionModel(
+    self.date_rules.every(DayOfWeek.MONDAY, DayOfWeek.TUESDAY, DayOfWeek.THURSDAY),
+    self.time_rules.every(timedelta(hours = 6)),
+    self.select_symbols # selection function in algorithm.
 ))
 
 # Create selection function which returns symbol objects.
-def SelectSymbols(self, dateTime: datetime) -> List[Symbol]:
+def select_symbols(self, date_time: datetime) -> List[Symbol]:
     tickers = ['SPY', 'AAPL', 'IBM']
-    return [Symbol.Create(ticker, SecurityType.Equity, Market.USA)
+    return [Symbol.create(ticker, SecurityType.EQUITY, Market.USA)
         for ticker in tickers]</pre>
 </div>
 
