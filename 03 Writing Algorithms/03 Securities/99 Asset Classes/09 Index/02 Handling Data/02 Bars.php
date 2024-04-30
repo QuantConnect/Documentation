@@ -15,7 +15,7 @@
     }
 }</pre>
 <pre class='python'>def on_data(self, slice: Slice) -&gt; None:
-    if self.symbol in slice.bars:
-        trade_bar = slice.bars[self.symbol]
+    if self._symbol in slice.bars:
+        trade_bar = slice.bars[self._symbol]
         value = trade_bar.value</pre>
 </div>

@@ -110,16 +110,16 @@ public override void OnData(Slice slice)
 
 def on_data(self, slice: Slice) -&gt; None:
     # Use default order order properties
-    self.limit_order(self.symbol, quantity, limit_price)
+    self.limit_order(self._symbol, quantity, limit_price)
     
     # Override the default order properties
     order_properties = IndiaOrderProperties(Exchange.BSE, IndiaOrderProperties.india_product_type.MIS)
     order_properties.time_in_force = TimeInForce.DAY
-    self.limit_order(self.symbol, quantity, limit_price, order_properties=order_properties)
+    self.limit_order(self._symbol, quantity, limit_price, order_properties=order_properties)
 
     order_properties = IndiaOrderProperties(Exchange.BSE, IndiaOrderProperties.india_product_type.CNC)
     order_properties.time_in_force = TimeInForce.GOOD_TIL_DATE
-    self.limit_order(self.symbol, quantity, limit_price, order_properties=order_properties)</pre>
+    self.limit_order(self._symbol, quantity, limit_price, order_properties=order_properties)</pre>
 </div>
 <?php } ?>
 

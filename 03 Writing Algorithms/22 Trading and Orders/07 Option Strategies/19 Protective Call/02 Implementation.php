@@ -44,7 +44,7 @@ public override void Initialize()
     if self.call and self.portfolio[self.call].invested:
         return
 
-    chain = slice.option_chains.get(self.symbol)
+    chain = slice.option_chains.get(self._symbol)
     if not chain:
         return
 
@@ -66,7 +66,7 @@ public override void Initialize()
 Buy(protectiveCall, 1);
 
 _call = atmCall.Symbol;</pre>
-        <pre class="python">protective_call = OptionStrategies.protective_call(self.symbol, atm_call.strike, expiry)
+        <pre class="python">protective_call = OptionStrategies.protective_call(self._symbol, atm_call.strike, expiry)
 self.buy(protective_call, 1)
 
 self.call = atm_call.symbol</pre>

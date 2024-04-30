@@ -44,7 +44,7 @@ public override void Initialize()
     if self.put and self.portfolio[self.put].invested:
         return
 
-    chain = slice.option_chains.get(self.symbol)
+    chain = slice.option_chains.get(self._symbol)
     if not chain:
         return
 
@@ -66,7 +66,7 @@ public override void Initialize()
 Buy(coveredput, 1);
 
 _put = atmput.Symbol;</pre>
-        <pre class="python">covered_put = OptionStrategies.covered_put(self.symbol, atm_put.strike, expiry)
+        <pre class="python">covered_put = OptionStrategies.covered_put(self._symbol, atm_put.strike, expiry)
 self.buy(covered_put, 1)
 
 self.put = atm_put.symbol</pre>

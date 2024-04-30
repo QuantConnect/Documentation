@@ -59,7 +59,7 @@ public override void Initialize()
     if self.portfolio.invested: return
 
     # Get the OptionChain
-    chain = slice.option_chains.get(self.symbol, None)
+    chain = slice.option_chains.get(self._symbol, None)
     if not chain: return
 
     # Select an expiry date
@@ -88,7 +88,7 @@ public override void Initialize()
     <div class="section-example-container">
         <pre class="csharp">var optionStrategy = OptionStrategies.ShortButterflyPut(_symbol, itmStrike, atmStrike, otmStrike, expiry);
 Buy(optionStrategy, 1);</pre>
-        <pre class="python">option_strategy = OptionStrategies.short_butterfly_put(self.symbol, itm_strike, atm_strike, otm_strike, expiry)
+        <pre class="python">option_strategy = OptionStrategies.short_butterfly_put(self._symbol, itm_strike, atm_strike, otm_strike, expiry)
 self.buy(option_strategy, 1)</pre>
     </div>
 

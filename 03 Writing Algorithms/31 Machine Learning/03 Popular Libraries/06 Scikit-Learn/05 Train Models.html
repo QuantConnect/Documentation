@@ -5,7 +5,7 @@
 <div class="section-example-container">
     <pre class="python">training_length = 252*2
 self.training_data = RollingWindow[TradeBar](training_length)
-history = self.history[TradeBar](self.symbol, training_length, Resolution.DAILY)
+history = self.history[TradeBar](self._symbol, training_length, Resolution.DAILY)
 for trade_bar in history:
     self.training_data.add(trade_bar)</pre>
 </div>
@@ -48,6 +48,6 @@ self.train(self.date_rules.every(DayOfWeek.SUNDAY), self.time_rules.at(8, 0), se
 <p>To update the training data as the algorithm executes, in the <code class="csharp">OnData</code><code class="python">on_data</code> method, add the current <code>TradeBar</code> to the <code>RollingWindow</code> that holds the training data.</p>
 <div class="section-example-container">
     <pre class="python">def on_data(self, slice: Slice) -&gt; None:
-    if self.symbol in slice.bars:
-        self.training_data.add(slice.bars[self.symbol])</pre>
+    if self._symbol in slice.bars:
+        self.training_data.add(slice.bars[self._symbol])</pre>
 </div>

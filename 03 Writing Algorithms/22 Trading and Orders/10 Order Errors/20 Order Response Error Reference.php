@@ -98,9 +98,9 @@ if (quantity != 0)
 {
     MarketOrder(_symbol, quantity);
 }</pre>
-<pre class="python">quantity = self.calculate_order_quantity(self.symbol, 0.05)
+<pre class="python">quantity = self.calculate_order_quantity(self._symbol, 0.05)
 if quantity:
-    self.market_order(self.symbol, quantity)</pre>
+    self.market_order(self._symbol, quantity)</pre>
 </div>
 
 
@@ -249,8 +249,8 @@ if holding_quantity > 0:
 {
     MarketOrder(_symbol, quantity);
 }</pre>
-    <pre class="python">if self.securities[self.symbol].is_tradable:
-    self.market_order(self.symbol, quantity)</pre>
+    <pre class="python">if self.securities[self._symbol].is_tradable:
+    self.market_order(self._symbol, quantity)</pre>
 </div>
 
 
@@ -268,9 +268,9 @@ if (quantity >= lotSize)
 {
     MarketOrder(_symbol, quantity);
 }</pre>
-    <pre class="python">lot_size = self.Securities[self.symbol].SymbolProperties.LotSize
+    <pre class="python">lot_size = self.Securities[self._symbol].SymbolProperties.LotSize
 if quantity >= lot_size:
-    self.MarketOrder(self.symbol, quantity)</pre>
+    self.MarketOrder(self._symbol, quantity)</pre>
 </div>
 
 
@@ -285,9 +285,9 @@ if (availableToBorrow == null || quantityToBorrow <= availableToBorrow)
 {
     MarketOrder(_symbol, -quantityToBorrow);
 }</pre>
-    <pre class="python">available_to_borrow = self.BrokerageModel.GetShortableProvider().ShortableQuantity(self.symbol, self.Time)
+    <pre class="python">available_to_borrow = self.BrokerageModel.GetShortableProvider().ShortableQuantity(self._symbol, self.Time)
 if available_to_borrow == None or quantity_to_borrow <= available_to_borrow:
-    self.MarketOrder(self.symbol, -quantity_to_borrow)</pre>
+    self.MarketOrder(self._symbol, -quantity_to_borrow)</pre>
 </div>
 
 

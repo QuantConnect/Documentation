@@ -135,7 +135,7 @@ public override void OnData(Slice slice)
 
 def on_data(self, slice: Slice) -&gt; None:
     # Use default order order properties
-    self.limit_order(self.symbol, quantity, limit_price)
+    self.limit_order(self._symbol, quantity, limit_price)
     
     # Override the default order properties
     order_properties = KrakenOrderProperties()
@@ -144,15 +144,15 @@ def on_data(self, slice: Slice) -&gt; None:
     order_properties.fee_in_base = False
     order_properties.fee_in_quote = True
     order_properties.no_market_price_protection = True
-    self.limit_order(self.symbol, quantity, limit_price, order_properties=order_properties)
+    self.limit_order(self._symbol, quantity, limit_price, order_properties=order_properties)
 
     order_properties.time_in_force = TimeInForce.good_til_date(datetime(year, month, day))
     order_properties.post_only = False
     order_properties.fee_in_base = True
     order_properties.fee_in_quote = False
     order_properties.no_market_price_protection = False
-    order_properties.conditional_order = StopLimitOrder(self.symbol, -quantity, stop_limit_price, stop_price)
-    self.limit_order(self.symbol, quantity, limit_price, order_properties=order_properties)</pre>
+    order_properties.conditional_order = StopLimitOrder(self._symbol, -quantity, stop_limit_price, stop_price)
+    self.limit_order(self._symbol, quantity, limit_price, order_properties=order_properties)</pre>
 </div>
 <?php } ?>
 

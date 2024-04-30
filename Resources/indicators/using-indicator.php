@@ -204,9 +204,9 @@
         self.<?=strtolower($helperName)?> = <?=$typeName?>(<?=str_replace("symbol", "self.symbol", str_replace("option_mirror_symbol", "self.mirrorOption", str_replace("option_symbol", "self.option", $constructorArguments)))?>)
 
     def on_data(self, slice: Slice) -> None:
-        bar = slice.Bars.get(self.symbol)
+        bar = slice.Bars.get(self._symbol)
         if bar:
-            self.<?=strtolower($helperName)?>.Update(<? if($isOptionIndicator) { ?>IndicatorDataPoint(self.symbol, bar.EndTime, bar.Close)<? } else { ?><?=$updateParameterValue?><? } ?>)
+            self.<?=strtolower($helperName)?>.Update(<? if($isOptionIndicator) { ?>IndicatorDataPoint(self._symbol, bar.EndTime, bar.Close)<? } else { ?><?=$updateParameterValue?><? } ?>)
 <? if($hasReference) { ?>
         bar = slice.Bars.get(self.referece)
         if bar:
@@ -294,7 +294,7 @@
         self.AddOptionContract(self.mirrorOption, Resolution.Daily)
 <?}?>
         self.<?=strtolower($helperName)?> = <?=$typeName?>(<?=str_replace("symbol", "self.symbol", str_replace("option_mirror_symbol", "self.mirrorOption", str_replace("option_symbol", "self.option", $constructorArguments)))?>)
-        self.RegisterIndicator(self.symbol, self.<?=strtolower($helperName)?>, Resolution.Daily)
+        self.RegisterIndicator(self._symbol, self.<?=strtolower($helperName)?>, Resolution.Daily)
 <? if($hasReference) { ?>
         self.RegisterIndicator(reference, self.<?=strtolower($helperName)?>, Resolution.Daily)
 <?} else if($isOptionIndicator) { ?>

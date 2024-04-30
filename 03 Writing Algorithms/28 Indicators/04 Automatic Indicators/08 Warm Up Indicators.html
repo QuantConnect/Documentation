@@ -78,8 +78,8 @@ self._sma = self.sma(symbol, 20, Resolution.DAILY)</pre>
 <div class="section-example-container">
     <pre class="csharp">_sma = SMA(_symbol, 20);
 WarmUpIndicator(_symbol, _sma);</pre>
-    <pre class="python">self._sma = self.sma(self.symbol, 20)
-self.warm_up_indicator(self.symbol, self._sma)</pre>
+    <pre class="python">self._sma = self.sma(self._symbol, 20)
+self.warm_up_indicator(self._symbol, self._sma)</pre>
 </div>
 
 <p>To warm up the indicator with a resolution that's different from the security resolution, pass a resolution or <code class="csharp">TimeSpan</code><code class="python">timedelta</code> argument to the <code>WarmUpIndicator</code> method. The resolution you provide should be greater than or equal to the security resolution. For example, if the security has minute resolution data, you should warm up the indicator with data that spans at least one minute. If the indicator resolution is different from the security resolution, provide the indicator resolution as the argument to properly warm up the indicator.</p>
@@ -90,16 +90,16 @@ WarmUpIndicator(_symbol, _sma, Resolution.Daily);
 // Warm up with 3-day bars
 WarmUpIndicator(_symbol, _sma, TimeSpan.FromDays(3));</pre>
     <pre class="python"># Warm up with daily bars
-self.warm_up_indicator(self.symbol, self._sma, Resolution.DAILY)
+self.warm_up_indicator(self._symbol, self._sma, Resolution.DAILY)
 
 # Warm up with 3-day bars
-self.warm_up_indicator(self.symbol, self._sma, timedelta(days=3))</pre>
+self.warm_up_indicator(self._symbol, self._sma, timedelta(days=3))</pre>
 </div>
 
 <p>The <code>WarmUpIndicator</code> method uses the default <code>Value</code> of the historical data to warm up the indicator. In most cases, this is the closing price. To warm up the indicator with a different data field, pass a <code>Field</code> argument to the method.</p>
 <div class="section-example-container">
     <pre class="csharp">WarmUpIndicator(_symbol, _sma, Resolution.Daily, Field.High);</pre>
-    <pre class="python">self.warm_up_indicator(self.symbol, self._sma, Resolution.DAILY, Field.HIGH)</pre>
+    <pre class="python">self.warm_up_indicator(self._symbol, self._sma, Resolution.DAILY, Field.HIGH)</pre>
 </div>
 
 <h4>Timing Considerations</h4>

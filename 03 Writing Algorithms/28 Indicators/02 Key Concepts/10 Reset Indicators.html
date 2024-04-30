@@ -16,12 +16,12 @@
 
 <div class="section-example-container">
 	<pre class="python"># In OnData
-if data.splits.contains_key(self.symbol) or data.dividends.contains_key(self.symbol):
+if data.splits.contains_key(self._symbol) or data.dividends.contains_key(self._symbol):
     # Reset the indicator
     self._sma.reset() 
 
     # Warm up the indicator
-    trade_bars = self.history[TradeBar](self.symbol, self._sma.warm_up_period, Resolution.DAILY, data_normalization_mode=DataNormalizationMode.SCALED_RAW)
+    trade_bars = self.history[TradeBar](self._symbol, self._sma.warm_up_period, Resolution.DAILY, data_normalization_mode=DataNormalizationMode.SCALED_RAW)
     for trade_bar in trade_bars:
         self._sma.update(trade_bar.end_time, trade_bar.close)</pre>
 	<pre class="csharp">// In OnData

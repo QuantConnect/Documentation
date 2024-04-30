@@ -11,7 +11,7 @@
 			<pre class='python'>self.consolidator = <?=$consolidatorClassName?>(timedelta(<?=$this->timeDeltaPeriod?>))
 # Aliases:
 # self.consolidator = self.CreateConsolidator(timedelta(<?=$this->timeDeltaPeriod?>), <?=$typeOf?><?=$this->createConsolidatorExtraArgs?>)
-# self.consolidator = self.ResolveConsolidator(self.symbol, timedelta(<?=$this->timeDeltaPeriod?>)<?=$this->resolveConsolidatorExtraArgsPy?>)</pre>
+# self.consolidator = self.ResolveConsolidator(self._symbol, timedelta(<?=$this->timeDeltaPeriod?>)<?=$this->resolveConsolidatorExtraArgsPy?>)</pre>
 	</div>
 
 	<?php include(DOCS_RESOURCES."/consolidators/time-period-start-time.html");?>
@@ -23,7 +23,7 @@
 
 	<div class='section-example-container'>
 		<pre class='csharp'><?=$this->resolutionArgExtraExamplesC?>_consolidator = ResolveConsolidator(_symbol, Resolution.<?=$this->resolutionPeriod?>);</pre>
-		<pre class='python'><?=$this->resolutionArgExtraExamplesPy?>self.consolidator = self.ResolveConsolidator(self.symbol, Resolution.<?=$this->resolutionPeriod?>)</pre>
+		<pre class='python'><?=$this->resolutionArgExtraExamplesPy?>self.consolidator = self.ResolveConsolidator(self._symbol, Resolution.<?=$this->resolutionPeriod?>)</pre>
 	</div>
 </ul>
 

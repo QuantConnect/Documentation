@@ -50,7 +50,7 @@ public override void Initialize()
     if self.portfolio.invested: return
 
     # Get the OptionChain
-    chain = slice.option_chains.get(self.symbol, None)
+    chain = slice.option_chains.get(self._symbol, None)
     if not chain: return
 
     # Get the ATM strike price
@@ -70,7 +70,7 @@ public override void Initialize()
     <div class="section-example-container">
         <pre class="csharp">var optionStrategy = OptionStrategies.ShortPutCalendarSpread(_symbol, atmStrike, nearExpiry, farExpiry);
 Buy(optionStrategy, 1);</pre>
-        <pre class="python">option_strategy = OptionStrategies.short_put_calendar_spread(self.symbol, atm_strike, near_expiry, far_expiry)
+        <pre class="python">option_strategy = OptionStrategies.short_put_calendar_spread(self._symbol, atm_strike, near_expiry, far_expiry)
 self.buy(option_strategy, 1)</pre>
     </div>
 

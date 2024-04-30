@@ -41,12 +41,12 @@ def handle_data(context, data):
         self.ordered = False
 
     def on_data(self, slice: Slice) -&gt; None:
-        if not self.ordered and slice.contains_key(self.symbol):
-            close = slice[self.symbol].close
-            self.market_order(self.symbol, 10)
-            self.limit_order(self.symbol, 10, close * 0.9)
-            self.stop_market_order(self.symbol, -10, close * 0.85)
-            self.stop_limit_order(self.symbol, -10, close * 0.85, close * 0.75)
+        if not self.ordered and slice.contains_key(self._symbol):
+            close = slice[self._symbol].close
+            self.market_order(self._symbol, 10)
+            self.limit_order(self._symbol, 10, close * 0.9)
+            self.stop_market_order(self._symbol, -10, close * 0.85)
+            self.stop_limit_order(self._symbol, -10, close * 0.85, close * 0.75)
             self.ordered = True
 </pre>
 </div>

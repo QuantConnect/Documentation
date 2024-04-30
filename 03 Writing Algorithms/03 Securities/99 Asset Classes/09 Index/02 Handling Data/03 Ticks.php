@@ -19,8 +19,8 @@
 }
 </pre>
     <pre class='python'>def on_data(self, slice: Slice) -&gt; None:
-    if self.symbol in slice.ticks:
-        ticks = slice.ticks[self.symbol]
+    if self._symbol in slice.ticks:
+        ticks = slice.ticks[self._symbol]
         for tick in ticks:
             value = tick.value</pre>
 </div>

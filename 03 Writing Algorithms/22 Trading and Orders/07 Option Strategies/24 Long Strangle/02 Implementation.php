@@ -60,7 +60,7 @@ public override void Initialize()
     if self.Portfolio.Invested:
         return
 
-    chain = slice.OptionChains.get(self.symbol)
+    chain = slice.OptionChains.get(self._symbol)
     if not chain:
         return
 
@@ -92,7 +92,7 @@ public override void Initialize()
     <div class="section-example-container">
         <pre class="csharp">var longStrangle = OptionStrategies.Strangle(_symbol, callStrike, putStrike, expiry);
 Buy(longStrangle, 1);</pre>
-        <pre class="python">long_strangle = OptionStrategies.strangle(self.symbol, call_strike, put_strike, expiry)
+        <pre class="python">long_strangle = OptionStrategies.strangle(self._symbol, call_strike, put_strike, expiry)
 self.buy(long_strangle, 1)</pre>
     </div>
 

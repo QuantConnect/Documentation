@@ -34,7 +34,7 @@ private bool IsValidOrderSize(Crypto crypto, decimal quantity)
     return Math.Abs(crypto.Price * quantity) > crypto.SymbolProperties.MinimumOrderSize;
 }</pre>
 <pre class="python">def on_data(self, data: Slice):
-    self.set_crypto_holdings(self.symbol, .9)
+    self.set_crypto_holdings(self._symbol, .9)
 
 def set_crypto_holdings(self, symbol, percentage):
     crypto = self.Securities[symbol]

@@ -22,12 +22,12 @@ public override void OnSymbolChangedEvents(SymbolChangedEvents symbolChangedEven
 }
 </pre>
     <pre class='python'>def on_data(self, slice: Slice) -> None:
-    symbol_changed_event = slice.symbol_changed_events.get(self.symbol)
+    symbol_changed_event = slice.symbol_changed_events.get(self._symbol)
     if symbol_changed_event:
         pass
 
 def on_symbol_changed_events(self, symbol_changed_events: SymbolChangedEvents) -> None:
-    symbol_changed_event = symbol_changed_events.get(self.symbol)
+    symbol_changed_event = symbol_changed_events.get(self._symbol)
     if symbol_changed_event:
         pass</pre>
 </div>

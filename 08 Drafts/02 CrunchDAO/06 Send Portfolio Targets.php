@@ -8,6 +8,6 @@ include(DOCS_RESOURCES."/live-trading/signal-exports/send-portfolio-holdings.php
 <div class="section-example-container">
 <pre class="csharp">var target = new PortfolioTarget(_symbol, weight);
 var success = SignalExport.SetTargetPortfolio(target);</pre>
-<pre class="python">target = PortfolioTarget(self.symbol, weight)
+<pre class="python">target = PortfolioTarget(self._symbol, weight)
 success = self.signal_export.set_target_portfolio(target)</pre>
 </div>
