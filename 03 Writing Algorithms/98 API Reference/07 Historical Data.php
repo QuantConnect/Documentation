@@ -1,10 +1,10 @@
 <h4 id="Historical Data">Historical Data</h4>
-<? include(DOCS_RESOURCES."/qcalgorithm-api/history.html"); ?>
-<? include(DOCS_RESOURCES."/qcalgorithm-api/set-finished-warming-up.html"); ?>
-<? include(DOCS_RESOURCES."/qcalgorithm-api/set-history-provider.html"); ?>
-<? include(DOCS_RESOURCES."/qcalgorithm-api/set-warm-up.html"); ?>
-<? include(DOCS_RESOURCES."/qcalgorithm-api/set-warmup.html"); ?>
-<? include(DOCS_RESOURCES."/qcalgorithm-api/is-warming-up.html"); ?>
+<? include(DOCS_RESOURCES."/qcalgorithm-api/qcalgorithm-history.html"); ?>
+<? include(DOCS_RESOURCES."/qcalgorithm-api/qcalgorithm-set-finished-warming-up.html"); ?>
+<? include(DOCS_RESOURCES."/qcalgorithm-api/qcalgorithm-set-history-provider.html"); ?>
+<? include(DOCS_RESOURCES."/qcalgorithm-api/qcalgorithm-set-warm-up.html"); ?>
+<? include(DOCS_RESOURCES."/qcalgorithm-api/qcalgorithm-set-warmup.html"); ?>
+<? include(DOCS_RESOURCES."/qcalgorithm-api/qcalgorithm-is-warming-up.html"); ?>
 <style>
 .code-source        { color: grey; float: right }
 .object-type        { font-style: italic; }

@@ -7,7 +7,7 @@ from urllib.request import urlopen
 
 LEAN = "https://github.com/QuantConnect/Lean/blob/master"
 RAW_LEAN = "https://raw.githubusercontent.com/QuantConnect/Lean/master"
-LEAN_SERVICE = "https://www.quantconnect.com/services/inspector?language=python&type=T:%s"
+LEAN_SERVICE = "https://www.quantconnect.com/services/inspector?language=%s&type=T:%s"
 
 WRITE_PATH = Path("03 Writing Algorithms/98 API Reference/")
 RESOURCE = Path("Resources/qcalgorithm-api")
@@ -58,6 +58,10 @@ def render_docs():
     for f, content in temp.items():
         with open(RESOURCE / f"{f}.html", 'w', encoding="utf-8") as file:
             file.write(content)
+            
+    if INDICATOR_RESOURCE.exists():
+        shutil.rmtree(INDICATOR_RESOURCE)
+    INDICATOR_RESOURCE.mkdir(parents=True, exist_ok=True)
 
     for i, (h3, type_json_url) in enumerate(DOCS_SECTION.items()):
         _render_section_docs(i, h3, type_json_url, write=False)
@@ -65,7 +69,7 @@ def render_docs():
     i += 1
     
     for j, (tag, html_list) in enumerate(sorted(DOCS_ATTR.items(), key=lambda x: x[0])):
-        with open(WRITE_PATH/ f"{i+j+1:02} {tag}.php", "w", encoding="utf-8") as file:
+        with open(WRITE_PATH/ f"{i+j+1:02} {tag}.php", "a", encoding="utf-8") as file:
             file.write(f"<h4 id=\"{tag}\">{tag}</h4>" + "\n")
             file.write('\n'.join(html_list))
             file.write(STYLE)
@@ -98,7 +102,7 @@ def render_docs():
         with open(path, 'r', encoding="utf-8") as file:
             content = file.read().replace(f"an list", "a list").replace(f"an dictionary", "a dictionary")
 
-            pattern = r"<a href=\"#(\w+)\">"
+            pattern = r"<a href=\"#([\w`]+)\">"
             matches = re.findall(pattern, content)
             
             to_remove = [x for x in matches if x.strip().lower() not in DONE]
@@ -110,62 +114,85 @@ def render_docs():
             
     # handle indicator references
     for html_filename, type_name in sorted(INDICATORS.items(), key=lambda x: x[0]):
-        try:
-            content = json.loads(urlopen(LEAN_SERVICE % type_name).read())
-        except Exception as e:
-            print(e)
-            continue
-        if "type-name" not in content:
-            print(f"No \"type-name\" in {type_name}")
-            continue
-    
-        type_heading_html = _render_type_heading(content["type-name"], content["base-type-full-name"].split('.')[-1], content["description"], content["full-type-name"])
-        methods = _render_methods(content["methods"], True)
-        properties = _render_properties(content["properties"])
-        fields = _render_fields(content["fields"])
+        for language in ["python", "csharp"]:
+            try:
+                content = json.loads(urlopen(LEAN_SERVICE % (language, type_name)).read())
+            except Exception as e:
+                print(e)
+                continue
+            if "type-name" not in content:
+                print(f"No \"type-name\" in {type_name}")
+                continue
         
-        with open(INDICATOR_RESOURCE / f"{html_filename}.html", 'w', encoding="utf-8") as file:
-            html = type_heading_html
-            for subsection in [methods, properties, fields]:
-                if subsection:
-                    html += f'''<div class=\"subsection-content\">
+            type_heading_html = _render_type_heading(content["type-name"], content["base-type-full-name"].split('.')[-1], content["description"], content["full-type-name"])
+            methods = _render_methods(content["methods"], language, True)
+            properties = _render_properties(content["properties"], language)
+            fields = _render_fields(content["fields"], language)
+            
+            with open(INDICATOR_RESOURCE / f"{html_filename}.html", 'a', encoding="utf-8") as file:
+                html = f"<div class=\"{language}\">\n"
+                html += type_heading_html
+                for subsection in [methods, properties, fields]:
+                    if subsection:
+                        html += f'''<div class=\"subsection-content\">
 {subsection}
 </div>
 '''
-            file.write(html)
-            file.write(STYLE)
-
+                html += "</div>\n"
+                file.write(html)
+                file.write(STYLE)
+            
 def _render_section_docs(i, h3, type_json_url, write=False):
-    content = json.loads(urlopen(LEAN_SERVICE % type_json_url).read())
+    for lang in ["python", "csharp"]:
+        _render_section_docs_by_language(i, h3, type_json_url, lang, write)
+
+def _render_section_docs_by_language(i, h3, type_json_url, language, write=False):
+    content = json.loads(urlopen(LEAN_SERVICE % (language, type_json_url)).read())
     
     # Not a type, do not render
     if "type-name" not in content:
         return
     
     type_heading_html = _render_type_heading(content["type-name"], content["base-type-full-name"].split('.')[-1], content["description"], content["full-type-name"])
-    methods = _render_methods(content["methods"], 'QuantConnect.Securities' in type_json_url)
-    properties = _render_properties(content["properties"])
-    fields = _render_fields(content["fields"])
+    methods = _render_methods(content["methods"], language, 'QuantConnect.Securities' in type_json_url)
+    properties = _render_properties(content["properties"], language)
+    fields = _render_fields(content["fields"], language)
     
     if write:
-        filename = f"{h3.lower().replace(' ', '-')}.html"
-        with open(RESOURCE / filename, 'w', encoding="utf-8") as file:
-            html = type_heading_html
+        if language == "python":
+            filename = title_to_dash_linked_lower_case(h3).replace('_', '-')
+        else:
+            filename = title_to_dash_linked_lower_case(h3)
+        filename += ".html"
+            
+        if not (RESOURCE / filename).exists():
+            with open(WRITE_PATH / f"{i+1:02} Types.php", 'a', encoding="utf-8") as file:
+                file.write(f"<? include(DOCS_RESOURCES.\"/qcalgorithm-api/{filename}\"); ?>\n")
+            
+        with open(RESOURCE / filename, 'a', encoding="utf-8") as file:
+            html = f"<div class=\"{language}\">\n"
+            html += type_heading_html
             for subsection in [methods, properties, fields]:
                 if subsection:
                     html += f'''<div class=\"subsection-content\">
 {subsection}
 </div>
 '''
+            html += "</div>\n"
             file.write(html)
             
-        with open(WRITE_PATH / f"{i+1:02} Types.php", 'a', encoding="utf-8") as file:
-            file.write(f"<? include(DOCS_RESOURCES.\"/qcalgorithm-api/{filename}\"); ?>\n")
-            
     else:
-        with open(WRITE_PATH / f"{i+1:02} Introduction.html", 'w', encoding="utf-8") as file:
-            file.write(type_heading_html)
-            file.write(STYLE)
+        path = WRITE_PATH / f"{i+1:02} Introduction.html"
+        html = f"<div class=\"{language}\">\n"
+        html += type_heading_html
+        html += "</div>\n"
+        if not path.exists():
+            with open(WRITE_PATH / f"{i+1:02} Introduction.html", 'a', encoding="utf-8") as file:
+                file.write(html)
+                file.write(STYLE)
+        else:
+            with open(WRITE_PATH / f"{i+1:02} Introduction.html", 'a', encoding="utf-8") as file:
+                file.write(html)
 
 def _render_type_heading(type_name, type_base_type, type_description, type_full_name):
     base_type = "enum" if type_base_type.lower() == "enum" else "class"
@@ -175,21 +202,21 @@ def _render_type_heading(type_name, type_base_type, type_description, type_full_
 <p>{extract_xml_content(type_description)}</p>
 '''
 
-def _render_types(type_, type_list):
+def _render_types(type_, type_list, language):
     types = []
     for type in sorted(type_list, key=lambda x: x[f"{type_}-name"]):
-        type_html = eval(f"_render_{type_}(type)")
+        type_html = eval(f"_render_{type_}(type, language)")
         types.append(type_html)
     return '\n'.join(types)
 
-def _render_type(type_, type_dict, type_ret="short-type-name", line_arg="", params=""):
+def _render_type(type_, type_dict, language, type_ret="short-type-name", line_arg="", params=""):
     doc_attr = type_dict["documentation-attributes"][0] if "documentation-attributes" in type_dict and len(type_dict["documentation-attributes"]) > 0 else None
     line = doc_attr["line"] if doc_attr else None
     source_url = f'{doc_attr["fileName"]}#L{line}' if doc_attr else None
     
     type_name = type_dict[f"{type_}-{type_ret}"]
     if type_name:
-        type_return = eval(f'_get_{type_}_return(type_name, type_dict["{type_}-description"], source_url, line)')
+        type_return = eval(f'_get_{type_}_return(type_name, type_dict["{type_}-description"], source_url, line, language)')
     else:
         type_return = ""
     type_description = extract_xml_content(type_dict[f"{type_}-description"])
@@ -205,31 +232,39 @@ def _render_type(type_, type_dict, type_ret="short-type-name", line_arg="", para
     if doc_attr:
         if doc_attr["tag"] not in DOCS_ATTR:
             DOCS_ATTR[doc_attr["tag"]] = []
-        filename = f'{type_dict[f"{type_}-name"].split(".")[-1].replace("_", "-")}.html'
+        
+        if language == "python":
+            filename = f'qcalgorithm-{title_to_dash_linked_lower_case(type_dict[f"{type_}-name"].split(".")[-1]).replace("_", "-")}.html'
+        else:
+            filename = f'qcalgorithm-{title_to_dash_linked_lower_case(type_dict[f"{type_}-name"])}.html'
         
         if not (RESOURCE / filename).exists():
             DOCS_ATTR[doc_attr["tag"]].append(f"<? include(DOCS_RESOURCES.\"/qcalgorithm-api/{filename}\"); ?>")
             
         with open(RESOURCE / filename, 'a', encoding="utf-8") as file:
-            file.write(type_html)
+            html = f"<div class=\"{language}\">\n"
+            html += type_html
+            html += "</div>\n"
+            file.write(html)
 
     return type_html
 
-def _render_methods(method_list, special_type=False):
-    backlist = ['compare_to', 'equals', 'to_string', 'get_hash_code']
+def _render_methods(method_list, language, special_type=False):
+    backlist = ['compare_to', 'equals', 'to_string', 'get_hash_code', 
+                'CompareTo', 'Equals', 'ToString', 'GetHashCode']
     if special_type:
-        backlist.extend(['add', 'get', 'remove'])
+        backlist.extend(['add', 'get', 'remove', "Add", "Get", "Remove"])
     types = []
     for name in sorted(set(x["method-name"].strip() for x in method_list)):
         if name in backlist:
             continue
-        type_html = _render_method([x for x in method_list if x["method-name"].strip() == name])
+        type_html = _render_method([x for x in method_list if x["method-name"].strip() == name], language)
         if 'Not meant for external use' in type_html:
             continue
         types.append(type_html)
     return '\n'.join(types)
 
-def _render_method(method_dict_list):
+def _render_method(method_dict_list, language):
     if len(method_dict_list) == 1:
         method_dicts = method_dict_list
     else:
@@ -268,8 +303,8 @@ def _render_method(method_dict_list):
         doc_attr = method_dict["documentation-attributes"][0] if "documentation-attributes" in method_dict and len(method_dict["documentation-attributes"]) > 0 else doc_attr
         line = doc_attr["line"] if doc_attr else None
         source_url = f'{doc_attr["fileName"]}#L{line}' if doc_attr else None
-        method_params = _get_params(method_dict["method-arguments"], source_url, line)
-        method_html += _render_type("method", method_dict, "return-type-full-name", f"({line_arguments})", method_params)
+        method_params = _get_params(method_dict["method-arguments"], source_url, line, language)
+        method_html += _render_type("method", method_dict, language, "return-type-full-name", f"({line_arguments})", method_params)
     
     return method_html
 
@@ -308,7 +343,7 @@ def _merge_return(old_ret, new_ret):
         return old_ret
     return [old_ret, new_ret]
 
-def _get_params(args, source_url, line_num):
+def _get_params(args, source_url, line_num, language):
     if len(args) == 0:
         return ""
 
@@ -318,13 +353,13 @@ def _get_params(args, source_url, line_num):
             arg_types = []
             for full_type, short_type in zip(arg["argument-type-full-name"], arg["argument-type-short-name"]):
                 arg_type_name_selected_ = full_type if full_type else short_type
-                arg_type_ = _get_hyperlinked_type(arg_type_name_selected_)
+                arg_type_ = _get_hyperlinked_type(arg_type_name_selected_, language)
                 arg_types.append(arg_type_)
             arg_type = " | ".join(set(arg_types))
         else:
             arg_type_name_selected = arg["argument-type-full-name"] \
                 if arg["argument-type-full-name"] and arg["argument-type-full-name"].split('.')[0] == "QuantConnect" else arg["argument-type-short-name"]
-            arg_type = _get_hyperlinked_type(arg_type_name_selected)
+            arg_type = _get_hyperlinked_type(arg_type_name_selected, language)
         
         argument_description = _get_param_description(source_url, line_num, i) if source_url else None
         
@@ -360,7 +395,7 @@ def _get_param_description(source_url, line_num, arg_num):
     description = ' '.join(x.replace('/', '').strip() for x in substr.split("</param>")[0].split(">")[-1].split('\n'))
     return extract_xml_content(description)
 
-def _get_return(type_, return_type_name, description, source_url, line_num):
+def _get_return(type_, return_type_name, description, source_url, line_num, language):
     return_description = _get_return_description(source_url, line_num) \
         if source_url and type_ == "method" else extract_xml_content(description) \
         if type_ != "method" else ""
@@ -370,9 +405,9 @@ def _get_return(type_, return_type_name, description, source_url, line_num):
 <p class=\"subsection-content\">{return_description}</p>'''
 
     if isinstance(return_type_name, list):
-        return_type = " | ".join(_get_hyperlinked_type(r) for r in return_type_name)
+        return_type = " | ".join(_get_hyperlinked_type(r, language) for r in return_type_name)
     else:
-        return_type = _get_hyperlinked_type(return_type_name)
+        return_type = _get_hyperlinked_type(return_type_name, language)
     
     return f'''{description_html}
 <div class=\"subsection-header\">Return type:</div>
@@ -394,7 +429,7 @@ def _get_return_description(source_url, line_num):
     description = ' '.join(x.replace('/', '').strip() for x in substr[description_char+9:].split("</returns>")[0].split('\n'))
     return extract_xml_content(description)
 
-def _get_method_return(return_type_name, description, source_url, line_num):
+def _get_method_return(return_type_name, description, source_url, line_num, language):
     def no_ret(name):
         return not name or "none" in name.lower() or "void" in name.lower()
     
@@ -402,9 +437,9 @@ def _get_method_return(return_type_name, description, source_url, line_num):
         return ""
     elif isinstance(return_type_name, str) and no_ret(return_type_name):
         return ""
-    return _get_return("method", return_type_name, description, source_url, line_num)
+    return _get_return("method", return_type_name, description, source_url, line_num, language)
 
-def _get_hyperlinked_type(type_raw_name):
+def _get_hyperlinked_type(type_raw_name, language):
     if not type_raw_name:
         return "None"
     
@@ -420,20 +455,25 @@ def _get_hyperlinked_type(type_raw_name):
     else:
         type_name = type_raw_name.split(".")[-1].split("`")[0]
 
-    _type = _type_conversion(type_name)
+    _type = _type_conversion(type_name, language)
     split_type_name = type_raw_name.split('.')
     
     if split_type_name[0] == "QuantConnect":
         if _type[0] == "I" and _type[1].isupper():
             return _type
         
+        if language == "python":
+            i_name = title_to_dash_linked_lower_case(_type).replace('_', '-')
+        else:
+            i_name = title_to_dash_linked_lower_case(_type)
+        
         if split_type_name[1] == "Indicators":
             if "Indicator" in split_type_name[2]:
                 return f"<a href=\"/docs/v2/writing-algorithms/indicators/supported-indicators/\">{_type}</a>"
-            INDICATORS[title_to_dash_linked_lower_case(_type)] = type_name
+            INDICATORS[i_name] = type_name
             return f"<a href=\"/docs/v2/writing-algorithms/indicators/supported-indicators/{title_to_dash_linked_lower_case(_type)}\">{_type}</a>"
         elif _type == "CandlestickPatterns":
-            INDICATORS[title_to_dash_linked_lower_case(_type)] = type_name
+            INDICATORS[i_name] = type_name
             return f"<a href=\"/docs/v2/writing-algorithms/indicators/supported-indicators/candlestick-patterns\">{_type}</a>"
         
         EXTRAS[_type.replace('[]', '')] = type_raw_name.replace('[]', '')
@@ -441,25 +481,28 @@ def _get_hyperlinked_type(type_raw_name):
     
     return _type
                 
-def _render_properties(property_list):
-    return _render_types("property", property_list)
+def _render_properties(property_list, language):
+    return _render_types("property", property_list, language)
 
-def _render_property(property_dict):
-    return _render_type("property", property_dict)
+def _render_property(property_dict, language):
+    return _render_type("property", property_dict, language)
 
-def _get_property_return(return_type_name, description, source_url, line_num):
-    return _get_return("property", return_type_name, description, source_url, line_num)
+def _get_property_return(return_type_name, description, source_url, line_num, language):
+    return _get_return("property", return_type_name, description, source_url, line_num, language)
                 
-def _render_fields(field_list):
-    return _render_types("field", field_list)
+def _render_fields(field_list, language):
+    return _render_types("field", field_list, language)
 
-def _render_field(field_dict):
-    return _render_type("field", field_dict)
+def _render_field(field_dict, language):
+    return _render_type("field", field_dict, language)
 
-def _get_field_return(return_type_name, description, source_url, line_num):
-    return _get_return("field", return_type_name, description, source_url, line_num)
+def _get_field_return(return_type_name, description, source_url, line_num, language):
+    return _get_return("field", return_type_name, description, source_url, line_num, language)
 
-def _type_conversion(type):
+def _type_conversion(type, language):
+    if language == "csharp":
+        return type.replace('<', '&lt;').replace('>', '&gt;')
+
     type_replacement = {
         "IEnumerable<KeyValuePair": "Dict",
         "ConcurrentDictionary": "Dict",
@@ -507,11 +550,14 @@ def extract_xml_content(xml_string):
     for pattern, replacement in XML_REGEX_PATTERNS.items():
         content = re.search(pattern, xml_string)
         if content:
-            output = output.replace(content.group(0), replacement % ((content.group(1).split('.')[-1], ) * replacement.count("%s")))
+            output = output.replace(content.group(0), replacement % ((content.group(1).split('.')[-1].split('`')[0], ) * replacement.count("%s")))
     
     return output
 
 def title_to_dash_linked_lower_case(title):
+    if title.isupper():
+        return title.lower()
+    
     lower_case = ""
     for i, char in enumerate(title):
         if i > 0 and char.isupper():
