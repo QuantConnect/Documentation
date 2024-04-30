@@ -1,13 +1,13 @@
 <span class="python">
 <p>
-For most data types, the <code class="csharp">History</code><code class="python">history</code> method returns a multi-index DataFrame where the first index is the <code>Symbol</code>. The data is then sorted in rows according to the second index, the <a href="/docs/v2/writing-algorithms/key-concepts/time-modeling/periods">EndTime</a> of the data point. By learning a few helpful shortcuts, you can directly access the history values you need for your algorithm.</p>
+For most data types, the <code class="csharp">History</code><code class="python">history</code> method returns a multi-index DataFrame where the first index is the <code>Symbol</code>. The data is then sorted in rows according to the second index, the <a href="/docs/v2/writing-algorithms/key-concepts/time-modeling/periods"><span class="csharp">EndTime</span><span class="python">end_time</span></a> of the data point. By learning a few helpful shortcuts, you can directly access the history values you need for your algorithm.</p>
 <div class="section-example-container">
 <pre class="python"># Setup the universe:
-eurusd = self.AddForex("EURUSD", Resolution.Daily).Symbol
-nzdusd = self.AddForex("NZDUSD", Resolution.Daily).Symbol
+eurusd = self.add_forex("EURUSD", Resolution.DAILY).symbol
+nzdusd = self.add_forex("NZDUSD", Resolution.DAILY).symbol
 
 # STEP 1:  Request a DataFrame:
-self.df = self.History([eurusd, nzdusd], 3)
+self.df = self.history([eurusd, nzdusd], 3)
 <img class="img-responsive img-thumbnail" src="https://cdn.quantconnect.com/docs/i/history-dataframe-loc-array_rev0.png" alt="Historical data of EURUSD, & NZDUSD">
 
 
@@ -30,7 +30,7 @@ spread = eurusd_quotebars["askclose"] - eurusd_quotebars["bidclose"]
 <pre class="python"># UNSTACKING: Transform into columns
 
 # Fetch multi-indexed history:
-self.dataframe = self.History([self.Symbol("IBM"), self.Symbol("AAPL")], 3)
+self.dataframe = self.history([self.symbol("IBM"), self.symbol("AAPL")], 3)
 <img class="img-responsive img-thumbnail" src="https://cdn.quantconnect.com/docs/i/history-dataframe-unstack-source_rev0.png" alt="Historical data of IBM, & AAPL">
 
 # Transform using unstack:
@@ -41,7 +41,7 @@ self.dataframe["close"].unstack(level=0)
 
 <p>To reorganize the DataFrame so that the first index level is the EndTime and the second index level is the asset's Symbol, swap the index level and then sort the index.</p>
 <div class="section-example-container">
-<pre class="python">history = self.History([eurusd, nzdusd], 3)
+<pre class="python">history = self.history([eurusd, nzdusd], 3)
 history.index = history.index.swaplevel(0, 1)
 history = history.sort_index()
 

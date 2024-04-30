@@ -39,7 +39,7 @@ $pyPrintMethod = $writingAlgorithms ? "self.Log" : "print";
 	    <td><code class='python'>List[QuoteBars]</code><code class='csharp'>List&lt;QuoteBar&gt;</code></td>
         </tr>
         <tr>
-	    <td><code class="csharp">Tick</code><code class="python">TICK</code></td>
+	    <td><code>Tick</code></td>
 	    <td><code class='python'>List[Ticks]</code><code class='csharp'>List&lt;Tick&gt;</code></td>
         </tr>
 	<tr>
@@ -203,7 +203,7 @@ var tradeBars2 = <?=$cVar?>History(btcSymbol, startTime, endTime, Resolution.Min
 	    <td><code class='python'>List[QuoteBars]</code><code class='csharp'>List&lt;QuoteBars&gt;</code></td>
         </tr>
         <tr>
-	    <td><code class="csharp">Tick</code><code class="python">TICK</code></td>
+	    <td><code>Tick</code></td>
 	    <td><code class='python'>List[Ticks]</code><code class='csharp'>List&lt;Ticks&gt;</code></td>
         </tr>
 	<tr>
@@ -260,7 +260,7 @@ var quoteBarsList = <?=$cVar?>History&lt;QuoteBar&gt;(new[] { ibm, aapl }, 5, Re
 	
 	
 <pre class='python'><b># EXAMPLE 9: Requesting By Trailing Period: 3 days of data at the security resolution:</b> 
-ticks = <?=$pyVar?>.History[Tick]([eth_symbol], timedelta(days=3))
+ticks = <?=$pyVar?>.history[Tick]([eth_symbol], timedelta(days=3))
 
 trade_bars = <?=$pyVar?>.history[TradeBar]([btc_symbol], timedelta(days=3)) 
 quote_bars = <?=$pyVar?>.history[QuoteBar]([btc_symbol], timedelta(days=3))

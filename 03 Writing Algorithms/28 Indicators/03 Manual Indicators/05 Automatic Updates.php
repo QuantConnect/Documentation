@@ -51,7 +51,7 @@ RegisterIndicator(_symbol, _indicator, consolidator);</pre>
     </div>
 </div>
 
-<p>To stop automatically updating an indicator, pass the indicator to the <code>DeregisterIndicator</code> method.</p>
+<p>To stop automatically updating an indicator, pass the indicator to the <code class="csharp">DeregisterIndicator</code><code class="python">deregister_indicator</code> property method.</p>
 <div class="section-example-container">
     <pre class="csharp">DeregisterIndicator(_indicator);
 // Alias:

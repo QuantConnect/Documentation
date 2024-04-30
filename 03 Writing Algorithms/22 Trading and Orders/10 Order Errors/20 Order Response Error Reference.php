@@ -216,7 +216,7 @@ if holding_quantity > 0:
     <li>When the <a href='/docs/v2/writing-algorithms/trading-and-orders/order-types/option-exercise-orders#06-Option-Assignments'>Option assignment simulator</a> assigns you to an Option during the warm-up period</li>
 </ul>
 
-<p>To avoid this order response error, only manage orders after the warm-up period ends. To avoid trading during the warm-up period, add an <code>IsWarmingUp</code> guard to the top of the <code class="csharp">OnData</code><code class="python">on_data</code> method.</p>
+<p>To avoid this order response error, only manage orders after the warm-up period ends. To avoid trading during the warm-up period, add an <code class="csharp">IsWarmingUp</code><code class="python">is_warming_up</code> guard to the top of the <code class="csharp">OnData</code><code class="python">on_data</code> method.</p>
 
 <a id='brokerage-model-refused-to-update-order'></a><div class="section-example-container">
 <pre class="csharp">if (IsWarmingUp) return;</pre>
