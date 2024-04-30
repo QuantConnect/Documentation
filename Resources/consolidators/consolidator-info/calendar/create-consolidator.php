@@ -12,19 +12,19 @@
 	    </thead>
 	    <tbody>
 	        <tr>
-	            <td><code>Calendar.Weekly</code></td>
+	            <td><code class="csharp">Calendar.Weekly</code><code class="python">Calendar.WEEKLY</code></td>
 		    	<td>Computes the start of week (previous Monday) of the given date/time</td>
 	        </tr>
 	        <tr>
-	            <td><code>Calendar.Monthly</code></td>
+	            <td><code class="csharp">Calendar.Monthly</code><code class="python">Calendar.MONTHLY</code></td>
 			    <td>Computes the start of month (1st of the current month) of the given date/time</td>
 	        </tr>
 	        <tr>
-	            <td><code>Calendar.Quarterly</code></td>
+	            <td><code class="csharp">Calendar.Quarterly</code><code class="python">Calendar.QUARTERLY</code></td>
 			    <td>Computes the start of quarter (1st of the starting month of the current quarter) of the given date/time</td>
 	        </tr>
 	        <tr>
-	            <td><code>Calendar.Yearly</code></td>
+	            <td><code class="csharp">Calendar.Yearly</code><code class="python">Calendar.YEARLY</code></td>
 			    <td>Computes the start of year (1st of the current year) of the given date/time</td>
 	        </tr>
 	    </tbody>
@@ -36,7 +36,7 @@
 // _consolidator = CreateConsolidator(Calendar.Weekly, typeof(<?=$typeOf?>)<?=$this->createConsolidatorExtraArgs?>);</pre>
 		<pre class='python'>self.consolidator = <?=$consolidatorClassName?>(Calendar.Weekly)
 # Alias:
-# self.consolidator = self.CreateConsolidator(Calendar.Weekly, <?=$typeOf?><?=$this->createConsolidatorExtraArgs?>)</pre>
+# self.consolidator = self.create_consolidator(Calendar.WEEKLY, <?=$typeOf?><?=$this->createConsolidatorExtraArgs?>)</pre>
 	</div>
 	
 	<p class='csharp'>To use the <code>Calendar</code> class, you may need to add the following code to the imports section because of ambiguity with <a rel='nofollow' target='_blank' href='https://learn.microsoft.com/en-us/dotnet/api/system.globalization.calendar?view=net-7.0'>.NET Calendar Class</a>:</p>

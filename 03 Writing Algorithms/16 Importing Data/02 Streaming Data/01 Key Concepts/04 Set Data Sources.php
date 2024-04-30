@@ -20,7 +20,7 @@
     def get_source(self,
          config: SubscriptionDataConfig,
          date: datetime,
-         isLiveMode: bool) -&gt; SubscriptionDataSource:
+         is_live_mode: bool) -&gt; SubscriptionDataSource:
         
          if isLiveMode:
             return SubscriptionDataSource("https://www.bitstamp.net/api/ticker/", SubscriptionTransportMedium.REST)
@@ -52,7 +52,7 @@
             <td>Date of this source file</td>
         </tr>
         <tr>
-            <td><code>isLiveMode</code></td>
+            <td><code class="csharp">isLiveMode</code><code class="python">is_live_mode</code></td>
             <td><code>bool</code></td>
             <td><code class="csharp">true</code><code class="python">True</code> if algorithm is running in live mode</td>
         </tr>
@@ -78,7 +78,7 @@
             <td></td>
         </tr>
         <tr>
-            <td><code>transportMedium</code></td>
+            <td><code class="csharp">transportMedium</code><code class="python">transport_medium</code></td>
             <td><code>SubscriptionTransportMedium</code></td>
             <td>The transport medium to be used to retrieve data from the source</td>
             <td></td>

@@ -9,8 +9,8 @@
     </thead>
     <tbody>
         <tr>
-            <td><code>Symbol</code></td>
-            <td>You can set this property to <code>config.Symbol</code>.</td>
+            <td><code class="csharp">Symbol</code><code class="python">symbol</code></td>
+            <td>You can set this property to <code>config.</code><code class="csharp">Symbol</code><code class="python">symbol</code>.</td>
         </tr>
         <tr>
             <td><code class="csharp">Time</code><code class="python">time</code></td>
@@ -21,8 +21,8 @@
             <td>The time when the data sample ends and when LEAN should add the sample to a <a href="/docs/v2/writing-algorithms/key-concepts/time-modeling/timeslices">Slice</a>.</td>
         </tr>
         <tr>
-            <td><code>Value</code></td>
-            <td>The default data point value.<br></td>
+            <td><code class="csharp">Value</code><code class="python">value</code></td>
+            <td>The default data point value (<code class="csharp">decimal</code><code class="python">float</code>).</td>
         </tr>
     </tbody>
 </table>
@@ -54,7 +54,7 @@
             <td>Date of this source file</td>
         </tr>
         <tr>
-            <td><code>isLiveMode</code></td>
+            <td><code class="csharp">isLiveMode</code><code class="python">is_live_mode</code></td>
             <td><code>bool</code></td>
             <td><code class="csharp">true</code><code class="python">True</code> if algorithm is running in live mode</td>
         </tr>
@@ -106,7 +106,7 @@
          config: SubscriptionDataConfig,
          line: str,
          date: datetime,
-         isLiveMode: bool) -&gt; BaseData:
+         is_live_mode: bool) -&gt; BaseData:
 
         if not line.strip():
             return None

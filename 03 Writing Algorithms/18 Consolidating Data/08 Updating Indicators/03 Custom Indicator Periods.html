@@ -1,4 +1,4 @@
-<p>It's common to update indicators with price data that spans a normal time period like one minute or one day. It's less common to update an indicator with exotic time periods (for example, a 7-minute consolidated bar), so these types of indicators may provide more opportunities for alpha. To update indicators with exotic data, <a href="/docs/v2/writing-algorithms/indicators/manual-indicators#03-Create-Manual-Indicators">create a manual indicator</a> and then call the <code>RegisterIndicator</code> method. The <code>RegisterIndicator</code> method wires up the indicator for automatic updates at the time interval you provide.
+<p>It's common to update indicators with price data that spans a normal time period like one minute or one day. It's less common to update an indicator with exotic time periods (for example, a 7-minute consolidated bar), so these types of indicators may provide more opportunities for alpha. To update indicators with exotic data, <a href="/docs/v2/writing-algorithms/indicators/manual-indicators#03-Create-Manual-Indicators">create a manual indicator</a> and then call the <code class="csharp">RegisterIndicator</code><code class="python">register_indicator</code> method. The <code class="csharp">RegisterIndicator</code><code class="python">register_indicator</code> method wires up the indicator for automatic updates at the time interval you provide.
 </p>
 
 <div class="section-example-container">
@@ -10,11 +10,11 @@ RegisterIndicator(symbol, indicator, TimeSpan.FromMinutes(7));
 <pre class="python"># Calculate the SMA with 10 7-minute bars
 self._symbol = self.add_equity("SPY", Resolution.MINUTE).symbol
 self.indicator = SimpleMovingAverage(10)
-self.register_indicator(self.symbol, self.indicator, timedelta(minutes=7))
+self.register_indicator(self._symbol, self.indicator, timedelta(minutes=7))
 </pre>
 </div>
 
-<p>The <code>RegisterIndicator</code> method can accept a <code class="python">timedelta</code><code class="csharp">TimeSpan</code>, <code>Resolution</code>, or an unregistered consolidator. If you apply the indicator to a security in a dynamic universe, provide a consolidator so that you can remove it when your algorithm removes the security from the universe.</p>
+<p>The <code class="csharp">RegisterIndicator</code><code class="python">register_indicator</code> method can accept a <code class="python">timedelta</code><code class="csharp">TimeSpan</code>, <code>Resolution</code>, or an unregistered consolidator. If you apply the indicator to a security in a dynamic universe, provide a consolidator so that you can remove it when your algorithm removes the security from the universe.</p>
 
 <div class="section-example-container">
 <pre class="csharp">// TimeSpan
@@ -28,13 +28,13 @@ _consolidator = new TradeBarConsolidator(35);
 RegisterIndicator(symbol, indicator, _consolidator);
 </pre>
 <pre class="python"># timedelta
-self.register_indicator(self.symbol, self.indicator, timedelta(minutes=7))
+self.register_indicator(self._symbol, self.indicator, timedelta(minutes=7))
 
 # Resolution
-self.register_indicator(self.symbol, self.indicator, Resolution.HOUR)
+self.register_indicator(self._symbol, self.indicator, Resolution.HOUR)
 
 # Consolidator
 self.consolidator = TradeBarConsolidator(35)
-self.register_indicator(self.symbol, self.indicator, self.consolidator)
+self.register_indicator(self._symbol, self.indicator, self.consolidator)
 </pre>
 </div>

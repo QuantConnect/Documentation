@@ -1,4 +1,4 @@
-<p>The <code>Download</code> method downloads the content served from a local file or URL and then returns it as a string.</p>
+<p>The <code class="csharp">Download</code><code class="python">download</code> method downloads the content served from a local file or URL and then returns it as a string.</p>
 
 <div class="section-example-container">
     <pre class="csharp">var content = Download("&lt;filePathOrURL&gt;");</pre>

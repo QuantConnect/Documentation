@@ -12,7 +12,7 @@ $resolveConsolidatorExtraArgsPy = "";
 $resolutionArgExtraExamplesC = "_consolidator = TradeBarConsolidator.FromResolution(Resolution.Daily);
 // Alias:
 // ";
-$resolutionArgExtraExamplesPy = "self.consolidator = TradeBarConsolidator.FromResolution(Resolution.Daily)
+$resolutionArgExtraExamplesPy = "self.consolidator = TradeBarConsolidator.from_resolution(Resolution.DAILY)
 # Alias:
 # ";
 $consolidationTextResolution = "minute";

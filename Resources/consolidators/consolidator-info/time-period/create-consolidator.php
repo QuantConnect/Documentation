@@ -27,6 +27,6 @@
 	</div>
 </ul>
 
-<?php if ($typeOf == "TradeBar" || $typeOf == "QuoteBar") { ?><p>If the security subscription in your algorithm provides <code>TradeBar</code> and <code>QuoteBar</code> data, <code>ResolveConsolidator</code> returns a <code>TradeBarConsolidator</code>.</p><?php } ?>
+<?php if ($typeOf == "TradeBar" || $typeOf == "QuoteBar") { ?><p>If the security subscription in your algorithm provides <code>TradeBar</code> and <code>QuoteBar</code> data, <code class="csharp">ResolveConsolidator</code><code class="python">resolve_consolidator</code> returns a <code>TradeBarConsolidator</code>.</p><?php } ?>
 
 <?php include(DOCS_RESOURCES."/consolidators/time-period-end-time.html"); ?>

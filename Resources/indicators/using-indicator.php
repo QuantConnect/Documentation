@@ -233,7 +233,7 @@
 </pre>
 </div>
 
-<p>To register a manual indicator for automatic updates with the security data, call the <code>RegisterIndicator</code> method.</p>
+<p>To register a manual indicator for automatic updates with the security data, call the <code class="csharp">RegisterIndicator</code><code class="python">register_indicator</code> method.</p>
 
 <div class="section-example-container">
     <pre class="csharp">public class <?=$typeName?>Algorithm : QCAlgorithm

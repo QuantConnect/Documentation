@@ -31,9 +31,9 @@
 	<ul>
         <li>Automatic Updates</li>
 
-		<p>To automatically update a consolidator with data from the <?=$dataFormatInfo->isSecurityData ? "security" : "data"?> subscription, call the <code>AddConsolidator</code> method of the Subscription Manager.</p>
+		<p>To automatically update a consolidator with data from the <?=$dataFormatInfo->isSecurityData ? "security" : "data"?> subscription, call the <code class="csharp">AddConsolidator</code><code class="python">add_consolidator</code> method of the Subscription Manager.</p>
 		<div class='section-example-container'>
-			<pre class='python'>self.subscription_manager.add_consolidator(self.symbol, self.consolidator)</pre>
+			<pre class='python'>self.subscription_manager.add_consolidator(self._symbol, self.consolidator)</pre>
 			<pre class='csharp'>SubscriptionManager.AddConsolidator(_symbol, _consolidator);</pre>
 		</div>
 
@@ -50,7 +50,7 @@
 	<li>If you create consolidators for securities in a dynamic universe and register them for automatic updates, remove the consolidator when the security leaves the universe.</li>
 	<div class='section-example-container'>
 		<pre class='csharp'>SubscriptionManager.RemoveConsolidator(_symbol, _consolidator);</pre>
-		<pre class='python'>self.subscription_manager.remove_consolidator(self.symbol, self.consolidator)</pre>
+		<pre class='python'>self.subscription_manager.remove_consolidator(self._symbol, self.consolidator)</pre>
 	</div>
 	<p>If you have a dynamic universe and don't remove consolidators, they compound internally, causing your algorithm to slow down and eventually die once it runs out of RAM. For an example of removing consolidators from universe subscriptions, see the <a rel='nofollow' target='_blank' href='https://github.com/QuantConnect/Lean/blob/cfa08a11fba02704d82689268c475fbba9744f5e/Algorithm.CSharp/Alphas/GasAndCrudeOilEnergyCorrelationAlpha.cs#L255' class='csharp'>GasAndCrudeOilEnergyCorrelationAlpha</a><a rel='nofollow' target='_blank' href='https://github.com/QuantConnect/Lean/blob/03f56481d4baf5cd803ff3a39bdd04d2a6050058/Algorithm.Python/Alphas/GasAndCrudeOilEnergyCorrelationAlpha.py#L169' class='python'>GasAndCrudeOilEnergyCorrelationAlpha</a> in the LEAN GitHub repository.</p></p>
 </ol>

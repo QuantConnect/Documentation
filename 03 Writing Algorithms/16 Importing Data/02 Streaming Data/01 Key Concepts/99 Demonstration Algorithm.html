@@ -132,14 +132,14 @@ namespace QuantConnect.Algorithm.CSharp
 
 class Bitstamp(PythonData):
 
-    def get_source(self, config, date, isLiveMode):
-        if isLiveMode:
+    def get_source(self, config, date, is_live_mode):
+        if is_live_mode:
             return SubscriptionDataSource("https://www.bitstamp.net/api/ticker/", SubscriptionTransportMedium.REST)
 
         source = "https://raw.githubusercontent.com/QuantConnect/Documentation/master/Resources/datasets/custom-data/bitstampusd.csv"
         return SubscriptionDataSource(source, SubscriptionTransportMedium.REMOTE_FILE)
 
-    def reader(self, config, line, date, isLiveMode):
+    def reader(self, config, line, date, is_live_mode):
 
         if not line.strip():
             return None
@@ -147,26 +147,26 @@ class Bitstamp(PythonData):
         coin = Bitstamp()
         coin.symbol = config.symbol
 
-        if isLiveMode:
+        if is_live_mode:
             # Example Line Format:
             # {"high": "441.00", "last": "421.86", "timestamp": "1411606877", "bid": "421.96", "vwap": "428.58", "volume": "14120.40683975", "low": "418.83", "ask": "421.99"}
-            live_b_t_c = json.loads(line)
+            live_btc = json.loads(line)
 
             # If value is zero, return None
-            coin.value = float(live_b_t_c["last"])
+            coin.value = float(live_btc["last"])
             if coin.value == 0:
                 return None
 
             coin.end_time =  Extensions.convert_from_utc(datetime.utcnow(), config.exchange_time_zone)
             coin.time = coin.end_time - timedelta(1)
-            coin["Open"] = float(live_b_t_c["open"])
-            coin["High"] = float(live_b_t_c["high"])
-            coin["Low"] = float(live_b_t_c["low"])
+            coin["Open"] = float(live_btc["open"])
+            coin["High"] = float(live_btc["high"])
+            coin["Low"] = float(live_btc["low"])
             coin["Close"] = coin.value
-            coin["Ask"] = float(live_b_t_c["ask"])
-            coin["Bid"] = float(live_b_t_c["bid"])
-            coin["VolumeBTC"] = float(live_b_t_c["volume"])
-            coin["WeightedPrice"] = float(live_b_t_c["vwap"])
+            coin["Ask"] = float(live_btc["ask"])
+            coin["Bid"] = float(live_btc["bid"])
+            coin["VolumeBTC"] = float(live_btc["volume"])
+            coin["WeightedPrice"] = float(live_btc["vwap"])
             return coin
 
         # Example Line Format:
