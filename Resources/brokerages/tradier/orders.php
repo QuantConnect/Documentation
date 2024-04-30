@@ -46,7 +46,7 @@
 <p><?= $writingAlgorithms ? "The <code>TradierBrokerageModel</code> supports" : "We model the Tradier API by supporting" ?> the following <a href='/docs/v2/writing-algorithms/trading-and-orders/order-properties#03-Time-In-Force'>TimeInForce</a> instructions:</p>
 
 <ul>
-    <li><code>Day</code></li>
+    <li><code class="csharp">Day</code><code class="python">DAY</code></li>
     <li><code>GoodTilCanceled</code> (not available for short selling)</li>
 </ul>
 

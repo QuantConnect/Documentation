@@ -165,9 +165,9 @@
 <p>The <code>DefaultBrokerageModel</code> supports the following <a href='/docs/v2/writing-algorithms/trading-and-orders/order-properties#03-Time-In-Force'>TimeInForce</a> instructions:</p>
 
 <ul>
-    <li><code>Day</code></li>
-    <li><code>GoodTilCanceled</code></li>
-    <li><code>GoodTilDate</code></li>
+    <li><code class="csharp">Day</code><code class="python">DAY</code></li>
+    <li><code class="csharp">GoodTilCanceled</code><code class="python">GOOD_TIL_CANCELED</code></li>
+    <li><code class="csharp">GoodTilDate</code><code class="python">GOOD_TIL_DATE</code></li>
 </ul>
 
 <h4>Updates</h4>

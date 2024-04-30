@@ -6,4 +6,4 @@ AddEquity("MSFT", Resolution.Second);</pre>
 self.add_equity("MSFT", Resolution.SECOND)</pre>
 </div>
 
-<p>In this case, LEAN subscribes to second-resolution data for AAPL since the lowest resolution in your algorithm is <code>Resolution.Second</code>.</p>
+<p>In this case, LEAN subscribes to second-resolution data for AAPL since the lowest resolution in your algorithm is <td><code class="csharp">Resolution.Second</code><code class="python">Resolution.SECOND</code></th>.</p>

@@ -1,4 +1,4 @@
-<p>LEAN supports several allocation methods for FA group orders. If you intend to use the same group allocation method for every order, set the <code>DefaultOrderProperties</code> of your algorithm, which sets the order properties for all of your orders.</p>
+<p>LEAN supports several allocation methods for FA group orders. If you intend to use the same group allocation method for every order, set the <code class="csharp">DefaultOrderProperties</code><code class="python">default_order_properties</code> of your algorithm, which sets the order properties for all of your orders.</p>
 
 <div class="section-example-container">
     <pre class="csharp">public override void Initialize()
@@ -29,12 +29,12 @@ def on_data(self, slice: Slice) -&gt; None:
     LimitOrder(_symbol, quantity, limitPrice);</pre>
 </div>
 
-<p>To adjust the order properties of an order, change the <code>DefaultOrderProperties</code> or pass an <a href='/docs/v2/writing-algorithms/trading-and-orders/order-properties'>order properties object</a> to the <a href='/docs/v2/writing-algorithms/trading-and-orders/order-types'>order method</a>. The following sections explain the FA group allocation methods.</p>
+<p>To adjust the order properties of an order, change the <code class="csharp">DefaultOrderProperties</code><code class="python">default_order_properties</code> or pass an <a href='/docs/v2/writing-algorithms/trading-and-orders/order-properties'>order properties object</a> to the <a href='/docs/v2/writing-algorithms/trading-and-orders/order-types'>order method</a>. The following sections explain the FA group allocation methods.</p>
 
 <h4>Equal Quantity</h4>
 <p>This group allocation method distributes shares equally between all accounts in the group. When you use this method, you need to specify an order quantity.</p>
 
-<p>For example, say your Account Group includes four accounts and you place an order to buy 400 shares of a stock. In this case, each account receives 100 shares. If your Account Group includes six accounts, each account receives 66 shares, and then 1 share is allocated to each account until all are distributed. After you submit the order, your algorithm receives <a href='/docs/v2/writing-algorithms/trading-and-orders/order-events'>order events</a> to track the order progress. When all the shares are bought, the order status is <code>OrderStatus.Filled</code>. If one of the accounts in the group can't afford 10 of the shares it needs to buy, 10 shares are cancelled and you'll only end up buying 390 shares in total.</p>
+<p>For example, say your Account Group includes four accounts and you place an order to buy 400 shares of a stock. In this case, each account receives 100 shares. If your Account Group includes six accounts, each account receives 66 shares, and then 1 share is allocated to each account until all are distributed. After you submit the order, your algorithm receives <a href='/docs/v2/writing-algorithms/trading-and-orders/order-events'>order events</a> to track the order progress. When all the shares are bought, the order status is <code class="csharp">OrderStatus.Filled</code><code class="python">OrderStatus.FILLED</code>. If one of the accounts in the group can't afford 10 of the shares it needs to buy, 10 shares are cancelled and you'll only end up buying 390 shares in total.</p>
 
 <div class="section-example-container">
     <pre class="csharp">LimitOrder(

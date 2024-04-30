@@ -47,11 +47,11 @@
     </thead>
     <tbody>
         <tr>
-            <td><code>TimeInForce</code></td>
+            <td><code class="csharp">TimeInForce</code><code class="python">time_in_force</code></td>
             <td>A <a href='/docs/v2/writing-algorithms/trading-and-orders/order-properties#03-Time-In-Force'>TimeInForce</a> instruction to apply to the order. The <code>GoodTilCanceled</code> <code>TimeInForce</code> is supported.</td>
         </tr>
         <tr>
-            <td><code>PostOnly</code></td>
+            <td><code class="csharp">PostOnly</code><code class="python">post_only</code></td>
             <td>A flag that signals the order must only add liquidity to the order book and not take liquidity from the order book. If part of the order results in taking liquidity rather than providing liquidity, the order is rejected without any part of it being filled.</td>
         </tr>
     </tbody>

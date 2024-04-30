@@ -1,6 +1,6 @@
 <p>One cancels the other (OCO) orders are a set of orders that when one fills, it cancels the rest of the orders in the set. An example is to set a take-profit and a stop-loss order right after you enter a position. In this example, when either the take-profit or stop-loss order fills, you cancel the other order. OCO orders usually create an upper and lower bound on the exit price of a trade. </p>
 
-<p>When you place OCO orders, their price levels are usually relative to the fill price of an entry trade. If your entry trade is a synchronous market order, you can immediately get the fill price from the order ticket. If your entry trade doesn't execute immediately, you can get the fill price in the <a href="/docs/v2/writing-algorithms/trading-and-orders/order-events#02-Track-Order-Events">OnOrderEvents</a> event handler. Once you have the entry fill price, you can calculate the price levels for the OCO orders.</p> 
+<p>When you place OCO orders, their price levels are usually relative to the fill price of an entry trade. If your entry trade is a synchronous market order, you can immediately get the fill price from the order ticket. If your entry trade doesn't execute immediately, you can get the fill price in the <a href="/docs/v2/writing-algorithms/trading-and-orders/order-events#02-Track-Order-Events"><span class="csharp">OnOrderEvents</span><span class="python">on_order_events</span></a> event handler. Once you have the entry fill price, you can calculate the price levels for the OCO orders.</p> 
 
 <div class="section-example-container">
 <pre class="csharp">// Get the fill price from the order ticket of a sync market order
@@ -20,9 +20,9 @@ self.ticket = self.market_order("SPY", 1)
 fill_price = self.ticket.average_fill_price
 
 # Get the fill price from the OnOrderEvent event handler
-def on_order_event(self, orderEvent: OrderEvent) -&gt; None:
-    if orderEvent.status == OrderStatus.FILLED and self.ticket.order_id == orderEvent.order_id:
-        fill_price = orderEvent.fill_price</pre>
+def on_order_event(self, order_event: OrderEvent) -&gt; None:
+    if order_event.status == OrderStatus.FILLED and self.ticket.order_id == order_event.order_id:
+        fill_price = order_event.fill_price</pre>
 </div>
 
 <p>After you have the target price levels, to implement the OCO orders, you can place active orders or track the security price to simulate the orders.</p>
@@ -58,16 +58,16 @@ public override void OnOrderEvent(OrderEvent orderEvent)
 <pre class="python">self.stop_loss = None
 self.take_profit = None
 
-def on_order_event(self, orderEvent: OrderEvent) -&gt; None:
-    if orderEvent.status == OrderStatus.FILLED:
-        if orderEvent.order_id == self.ticket.order_id:
-            self.stop_loss = self.stop_market_order(orderEvent.symbol, -orderEvent.fill_quantity, orderEvent.fill_price*0.95)
-            self.take_profit = self.limit_order(orderEvent.symbol, -orderEvent.fill_quantity, orderEvent.fill_price*1.10)
+def on_order_event(self, order_event: OrderEvent) -&gt; None:
+    if order_event.status == OrderStatus.FILLED:
+        if order_event.order_id == self.ticket.order_id:
+            self.stop_loss = self.stop_market_order(order_event.symbol, -order_event.fill_quantity, order_event.fill_price*0.95)
+            self.take_profit = self.limit_order(order_event.symbol, -order_event.fill_quantity, order_event.fill_price*1.10)
 
-        elif self.stop_loss is not None and orderEvent.order_id == self.stop_loss.order_id:
+        elif self.stop_loss is not None and order_event.order_id == self.stop_loss.order_id:
             self.take_profit.cancel()
 
-        elif self.take_profit is not None and orderEvent.order_id == self.take_profit.order_id:
+        elif self.take_profit is not None and order_event.order_id == self.take_profit.order_id:
             self.stop_loss.cancel()
 </pre>
 </div>
@@ -99,14 +99,15 @@ public override void OnData(Slice slice)
 }
 </pre>
 <pre class="python">def on_data(self, slice: Slice) -&gt; None:
-    if not self.Portfolio.Invested:
-        ticket = self.MarketOrder("SPY", 1)
-        self.entry_price = ticket.AverageFillPrice
+    if not self.portfolio.invested:
+        ticket = self.market_order("SPY", 1)
+        self.entry_price = ticket.average_fill_price
 
-    if slice.Bars.ContainsKey("SPY"):
-        if slice.Bars["SPY"].Price >= self.entry_price * 1.10:
-            self.Liquidate("SPY", -1, "take profit")
+    bar = slice.get("SPY")
+    if bar:
+        if bar.price >= self.entry_price * 1.10:
+            self.liquidate("SPY", -1, "take profit")
 
-        elif slice.Bars["SPY"].Price <= self.entry_price * 0.95:
-            self.Liquidate("SPY", -1, "stop loss")</pre>
+        elif bar.price <= self.entry_price * 0.95:
+            self.liquidate("SPY", -1, "stop loss")</pre>
 </div>

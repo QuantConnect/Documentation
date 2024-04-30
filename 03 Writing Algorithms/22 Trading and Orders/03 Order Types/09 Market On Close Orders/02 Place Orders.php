@@ -1,4 +1,4 @@
-<p>To send a MOC order, call the <code>MarketOnCloseOrder</code> method with a <code>Symbol</code> and quantity. If you don't have sufficient capital for the order, it is rejected.<br></p>
+<p>To send a MOC order, call the <code class="csharp">MarketOnCloseOrder</code><code class="python">market_on_close_order</code> method with a <code>Symbol</code> and quantity. If you don't have sufficient capital for the order, it is rejected.<br></p>
 
 <div class="section-example-container">
 <pre class="csharp">// Buy 100 shares of AAPL at the market open
@@ -13,7 +13,7 @@ self.market_on_close_order("AAPL", 100)
 self.market_on_close_order("AAPL", -100)</pre>
 </div>
 
-<p>You can provide a tag and <a href="/docs/v2/writing-algorithms/trading-and-orders/order-properties">order properties</a> to the <code>MarketOnCloseOrder</code> method.</p>
+<p>You can provide a tag and <a href="/docs/v2/writing-algorithms/trading-and-orders/order-properties">order properties</a> to the <code class="csharp">MarketOnCloseOrder</code><code class="python">market_on_close_order</code> method.</p>
 <div class="section-example-container">
 <pre class="csharp">MarketOnCloseOrder(symbol, quantity, tag: tag, orderProperties: orderProperties);</pre>
 <pre class="python">self.market_on_close_order(symbol, quantity, tag=tag, order_properties=order_properties)</pre>

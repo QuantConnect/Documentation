@@ -51,26 +51,26 @@
     </thead>
     <tbody>
         <tr>
-            <td><code>TimeInForce</code></td>
+            <td><code class="csharp">TimeInForce</code><code class="python">time_in_force</code></td>
             <td>A <a href='/docs/v2/writing-algorithms/trading-and-orders/order-properties#03-Time-In-Force'>TimeInForce</a> instruction to apply to the order. The following instructions are supported:
                 <ul>
-                    <li><code>Day</code></li>
-                    <li><code>GoodTilCanceled</code></li>
-                    <li><code>GoodTilDate</code></li>
+                    <li><code class="csharp">Day</code><code class="python">DAY</code></li>
+                    <li><code class="csharp">GoodTilCanceled</code><code class="python">GOOD_TIL_CANCELED</code></li>
+                    <li><code class="csharp">GoodTilDate</code><code class="python">GOOD_TIL_DATE</code></li>
                 </ul>
             </td>
         </tr>
         <tr>
-            <td><code>PostOnly</code></td>
+            <td><code class="csharp">PostOnly</code><code class="python">post_only</code></td>
             <td>A flag to signal that the order must only add liquidity to the order book and not take liquidity from the order book. If part of the order results in taking liquidity rather than providing liquidity, the order is rejected without any part of it being filled.</td>
         </tr>
         <tr>
-            <td><code>FeeInBase</code></td>
-            <td>A flag to signal that the order fees should be paid in the base currency, which is the default behavior when selling. This flag must be the opposite of the <code>FeeInQuote</code> flag.</td>
+            <td><code class="csharp">FeeInBase</code><code class="python">fee_in_base</code></td>
+            <td>A flag to signal that the order fees should be paid in the base currency, which is the default behavior when selling. This flag must be the opposite of the <code class="csharp">FeeInQuote</code><code class="python">fee_in_quote</code> flag.</td>
         </tr>
         <tr>
-            <td><code>FeeInQuote</code></td>
-            <td>A flag to signal that the order fees should be paid in the quote currency, which is the default behavior when buying. This flag must be the opposite of the <code>FeeInBase</code> flag.</td>
+            <td><code class="csharp">FeeInQuote</code><code class="python">fee_in_quote</code></td>
+            <td>A flag to signal that the order fees should be paid in the quote currency, which is the default behavior when buying. This flag must be the opposite of the <code class="csharp">FeeInBase</code><code class="python">fee_in_base</code> flag.</td>
         </tr>
         <tr>
             <td><code>NoMarketPriceProtection</code></td>

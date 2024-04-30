@@ -25,7 +25,7 @@
 
 <p>To avoid this order response error for non-Option trades, <a href='/docs/v2/writing-algorithms/reality-modeling/buying-power#13-Get-Initial-Margin-Requirements'>ensure you have enough margin remaining to cover the initial margin requirements</a> of the order before placing it.</p>
 
-<p>This error also commonly occurs when you place a market on open order with daily data. If you place the order with <code>SetHoldings</code> or use <code>CalculateOrderQuantity</code> to determine the order quantity, LEAN calculates the order quantity based on the market close price. If the open price on the following day makes your order more expensive, then you may have insufficient buying power. To avoid the order response error in this case, either use intraday data and place trades when the market is open or <a href='/docs/v2/writing-algorithms/trading-and-orders/position-sizing#05-Buying-Power-Buffer'>adjust your buying power buffer</a>.</p>
+<p>This error also commonly occurs when you place a market on open order with daily data. If you place the order with <code class="csharp">SetHoldings</code><code class="python">set_holdings</code> or use <code class="csharp">CalculateOrderQuantity</code><code class="python">calculate_order_quantity</code> to determine the order quantity, LEAN calculates the order quantity based on the market close price. If the open price on the following day makes your order more expensive, then you may have insufficient buying power. To avoid the order response error in this case, either use intraday data and place trades when the market is open or <a href='/docs/v2/writing-algorithms/trading-and-orders/position-sizing#05-Buying-Power-Buffer'>adjust your buying power buffer</a>.</p>
 
 <a id='brokerage-model-refused-to-submit-order'></a><div class="section-example-container">
 <pre class="csharp">Settings.FreePortfolioValuePercentage = 0.05m;</pre>
@@ -67,7 +67,7 @@
 
 
 <h4>Invalid Order Status</h4>
-<p>The <code>OrderResponseErrorCode.InvalidOrderStatus</code> (-9) error occurs when you try to update or cancel an order but the order is already complete. An order is complete if it has <code>OrderStatus.Filled</code>, <code>OrderStatus.Canceled</code>, or <code>OrderStatus.Invalid</code>.</p>
+<p>The <code>OrderResponseErrorCode.InvalidOrderStatus</code> (-9) error occurs when you try to update or cancel an order but the order is already complete. An order is complete if it has <code class="csharp">OrderStatus.Filled</code><code class="python">OrderStatus.FILLED</code>, <code>OrderStatus.Canceled</code>, or <code>OrderStatus.Invalid</code>.</p>
 
 <p>To avoid this order response error, check <code>Status</code> of an <a href='/docs/v2/writing-algorithms/trading-and-orders/order-management/order-tickets'>order ticket</a> or <a href='/docs/v2/writing-algorithms/trading-and-orders/order-events'>order event</a> before you update or cancel the order.</p>
 
@@ -90,7 +90,7 @@
 <h4>Order Quantity Zero</h4>
 <p>The <code>OrderResponseErrorCode.OrderQuantityZero</code> (-11) error occurs when you place an order that has zero quantity or when you update an order to have a zero quantity. This error commonly occurs if you use the <a href='/docs/v2/writing-algorithms/trading-and-orders/position-sizing'>SetHoldings</a> method but the portfolio weight you provide to the method is too small to translate into a non-zero order quantity.</p>
 
-<p>To avoid this order response error, check if the quantity of the order is non-zero before you place the order. If you use the <code>SetHoldings</code> method, replace it with a combination of the <a href='/docs/v2/writing-algorithms/trading-and-orders/position-sizing#04-Calculate-Order-Quantities'>CalculateOrderQuantity</a> and <a href='/docs/v2/writing-algorithms/trading-and-orders/order-types/market-orders'>MarketOrder</a> methods.</p>
+<p>To avoid this order response error, check if the quantity of the order is non-zero before you place the order. If you use the <code class="csharp">SetHoldings</code><code class="python">set_holdings</code> method, replace it with a combination of the <a href='/docs/v2/writing-algorithms/trading-and-orders/position-sizing#04-Calculate-Order-Quantities'>CalculateOrderQuantity</a> and <a href='/docs/v2/writing-algorithms/trading-and-orders/order-types/market-orders'>MarketOrder</a> methods.</p>
 
 <a id='unsupported-request-type'></a><div class="section-example-container">
 <pre class="csharp">var quantity = CalculateOrderQuantity(_symbol, 0.05);

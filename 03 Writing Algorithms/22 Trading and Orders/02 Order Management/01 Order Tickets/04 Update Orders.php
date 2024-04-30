@@ -164,14 +164,13 @@ public override void OnOrderEvent(OrderEvent orderEvent)
 }</pre>
 <pre class="python">def on_data(self, slice: Slice) -> None:
     # Cancel the order
-    self.ticket.Cancel()
+    self.ticket.cancel()
 
-def on_order_event(self, orderEvent: OrderEvent) -> None:
-    if self.ticket is not None \
-        and orderEvent.OrderId == self.ticket.OrderId \
-        and orderEvent.Status == OrderStatus.Canceled:
+def on_order_event(self, order_event: OrderEvent) -> None:
+    if self.ticket and order_event.order_id == self.ticket.order_id \
+        and order_event.status == OrderStatus.CANCELED:
         # Place a new order
-        quantity = self.ticket.Quantity - self.ticket.QuantityFilled
-        limit_price = self.Securities[self.ticket.Symbol].Price + 1
-        self.ticket = self.LimitOrder(self.ticket.Symbol, quantity, limit_price)</pre>
+        quantity = self.ticket.quantity - self.ticket.quantity_filled
+        limit_price = self.securities[self.ticket.symbol].price + 1
+        self.ticket = self.limit_order(self.ticket.symbol, quantity, limit_price)</pre>
 </div>

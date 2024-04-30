@@ -2,7 +2,7 @@
 
 <h4>Why is my order converted to a market on open order?</h4>
 <p>
-If you place a market order when the market is closed, LEAN automatically converts the order into market on open order. This most commonly happens when you use daily or hourly data, which your algorithm can receive when the market is closed. Your algorithm receives daily bars at midnight and receives the last hourly bar of each day at 4 PM Eastern Time (ET). To avoid LEAN from converting your market order to market on open orders, submit your market orders when the market is open. To check if the market is open, call the <code>IsMarketOpen</code> method.<br></p>
+If you place a market order when the market is closed, LEAN automatically converts the order into market on open order. This most commonly happens when you use daily or hourly data, which your algorithm can receive when the market is closed. Your algorithm receives daily bars at midnight and receives the last hourly bar of each day at 4 PM Eastern Time (ET). To avoid LEAN from converting your market order to market on open orders, submit your market orders when the market is open. To check if the market is open, call the <code class="csharp">IsMarketOpen</code><code class="python">is_market_open</code> method.<br></p>
 
 <div class="section-example-container">
 <pre class="csharp">if (IsMarketOpen(_symbol))

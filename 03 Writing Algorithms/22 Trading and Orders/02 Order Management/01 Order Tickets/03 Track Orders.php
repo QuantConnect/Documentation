@@ -1,6 +1,6 @@
 <p>As the state of your order updates over time, your order ticket automatically updates. To track an order, you can check any of the preceding order ticket properties.</p>
 
-<p>To get an order field, call the <code>Get</code> method with an <code>OrderField</code>.</p> 
+<p>To get an order field, call the <code class="csharp">Get</code><code class="python">get</code> method with an <code>OrderField</code>.</p> 
 
 <div class="section-example-container">
 <pre class="csharp">var limitPrice = ticket.Get(OrderField.LimitPrice);</pre>

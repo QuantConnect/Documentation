@@ -19,11 +19,11 @@
     </thead>
     <tbody>
         <tr>
-            <td><code>TimeInForce</code></td>
+            <td><code class="csharp">TimeInForce</code><code class="python">time_in_force</code></td>
             <td>A <a href='/docs/v2/writing-algorithms/trading-and-orders/order-properties#03-Time-In-Force'>TimeInForce</a> instruction to apply to the order. The following instructions are supported:
                 <ul>
-                    <li><code>Day</code></li>
-                    <li><code>GoodTilCanceled</code></li>
+                    <li><code class="csharp">Day</code><code class="python">DAY</code></li>
+                    <li><code class="csharp">GoodTilCanceled</code><code class="python">GOOD_TIL_CANCELED</code></li>
                 </ul>
             </td>
         </tr>

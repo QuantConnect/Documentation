@@ -38,8 +38,8 @@
 
 <p><?= $cloudPlatform ? "TT" : "The <code>TradingTechnologiesBrokerageModel</code>" ?> enforces the following order rules:</p>
 <ul>
-    <li>If you are buying (selling) with a <code>StopMarketOrder</code> or a <code>StopLimitOrder</code>, the stop price of the order must be greater (less) than the current security price.</li>
-    <li>If you are buying (selling) with a <code>StopLimitOrder</code>, the limit price of the order must be greater (less) than the stop price.</li>
+    <li>If you are buying (selling) with a <code class="csharp">StopMarketOrder</code><code class="python">stop_market_order</code> or a <code class="csharp">StopLimitOrder</code><code class="python">stop_limit_order</code>, the stop price of the order must be greater (less) than the current security price.</li>
+    <li>If you are buying (selling) with a <code class="csharp">StopLimitOrder</code><code class="python">stop_limit_order</code>, the limit price of the order must be greater (less) than the stop price.</li>
 </ul>
 
 <h4>Time In Force</h4>

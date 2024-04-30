@@ -21,7 +21,7 @@
             <td><code class="python">rebalance</code><code class="csharp">resolution</code></td>
 	    <td><code>Resolution</code></td>
 	    <td>Rebalancing frequency</td>
-            <td><code>Resolution.Daily</code></td>
+            <td><code class="csharp">Resolution.Daily</code><code class="python">Resolution.DAILY</code></td>
         </tr>
     </tbody>
 </table>
