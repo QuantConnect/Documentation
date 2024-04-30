@@ -47,6 +47,17 @@ def render_docs():
     WRITE_PATH.mkdir(parents=True, exist_ok=True)
     with open(METADATA, mode='w') as f:
         f.write(content)
+    
+    temp = {}
+    if RESOURCE.exists():
+        for f in Path.glob(RESOURCE, "_*.html"):
+            with open(f, 'r', encoding="utf-8") as file:
+                temp[f.stem] = file.read()
+        shutil.rmtree(RESOURCE)
+    RESOURCE.mkdir(parents=True, exist_ok=True)
+    for f, content in temp.items():
+        with open(RESOURCE / f"{f}.html", 'w', encoding="utf-8") as file:
+            file.write(content)
 
     for i, (h3, type_json_url) in enumerate(DOCS_SECTION.items()):
         _render_section_docs(i, h3, type_json_url, write=False)
@@ -54,7 +65,7 @@ def render_docs():
     i += 1
     
     for j, (tag, html_list) in enumerate(sorted(DOCS_ATTR.items(), key=lambda x: x[0])):
-        with open(WRITE_PATH/ f"{i+j+1:02} {tag}.html", "w", encoding="utf-8") as file:
+        with open(WRITE_PATH/ f"{i+j+1:02} {tag}.php", "w", encoding="utf-8") as file:
             file.write(f"<h4 id=\"{tag}\">{tag}</h4>" + "\n")
             file.write('\n'.join(html_list))
             file.write(STYLE)
@@ -101,9 +112,11 @@ def render_docs():
     for html_filename, type_name in sorted(INDICATORS.items(), key=lambda x: x[0]):
         try:
             content = json.loads(urlopen(LEAN_SERVICE % type_name).read())
-        except:
+        except Exception as e:
+            print(e)
             continue
         if "type-name" not in content:
+            print(f"No \"type-name\" in {type_name}")
             continue
     
         type_heading_html = _render_type_heading(content["type-name"], content["base-type-full-name"].split('.')[-1], content["description"], content["full-type-name"])
@@ -136,7 +149,7 @@ def _render_section_docs(i, h3, type_json_url, write=False):
     
     if write:
         filename = f"{h3.lower().replace(' ', '-')}.html"
-        with open(RESOURCE / filename, 'a', encoding="utf-8") as file:
+        with open(RESOURCE / filename, 'w', encoding="utf-8") as file:
             html = type_heading_html
             for subsection in [methods, properties, fields]:
                 if subsection:
@@ -147,7 +160,7 @@ def _render_section_docs(i, h3, type_json_url, write=False):
             file.write(html)
             
         with open(WRITE_PATH / f"{i+1:02} Types.php", 'a', encoding="utf-8") as file:
-            file.write("<? include(DOCS_RESOURCES.\"/qcalgorithm-api/{filename}\"); ?>\n")
+            file.write(f"<? include(DOCS_RESOURCES.\"/qcalgorithm-api/{filename}\"); ?>\n")
             
     else:
         with open(WRITE_PATH / f"{i+1:02} Introduction.html", 'w', encoding="utf-8") as file:
@@ -192,7 +205,13 @@ def _render_type(type_, type_dict, type_ret="short-type-name", line_arg="", para
     if doc_attr:
         if doc_attr["tag"] not in DOCS_ATTR:
             DOCS_ATTR[doc_attr["tag"]] = []
-        DOCS_ATTR[doc_attr["tag"]].append(type_html)
+        filename = f'{type_dict[f"{type_}-name"].split(".")[-1].replace("_", "-")}.html'
+        
+        if not (RESOURCE / filename).exists():
+            DOCS_ATTR[doc_attr["tag"]].append(f"<? include(DOCS_RESOURCES.\"/qcalgorithm-api/{filename}\"); ?>")
+            
+        with open(RESOURCE / filename, 'a', encoding="utf-8") as file:
+            file.write(type_html)
 
     return type_html
 
@@ -201,10 +220,10 @@ def _render_methods(method_list, special_type=False):
     if special_type:
         backlist.extend(['add', 'get', 'remove'])
     types = []
-    for name in sorted(set(x["method-name"] for x in method_list)):
+    for name in sorted(set(x["method-name"].strip() for x in method_list)):
         if name in backlist:
             continue
-        type_html = _render_method([x for x in method_list if x["method-name"] == name])
+        type_html = _render_method([x for x in method_list if x["method-name"].strip() == name])
         if 'Not meant for external use' in type_html:
             continue
         types.append(type_html)
@@ -414,9 +433,10 @@ def _get_hyperlinked_type(type_raw_name):
             INDICATORS[title_to_dash_linked_lower_case(_type)] = type_name
             return f"<a href=\"/docs/v2/writing-algorithms/indicators/supported-indicators/{title_to_dash_linked_lower_case(_type)}\">{_type}</a>"
         elif _type == "CandlestickPatterns":
+            INDICATORS[title_to_dash_linked_lower_case(_type)] = type_name
             return f"<a href=\"/docs/v2/writing-algorithms/indicators/supported-indicators/candlestick-patterns\">{_type}</a>"
         
-        EXTRAS[_type.replace('[]', '')] = type_name.replace('[]', '')
+        EXTRAS[_type.replace('[]', '')] = type_raw_name.replace('[]', '')
         return f"<a href=\"#{_type.replace('[]', '')}\">{_type}</a>"
     
     return _type
