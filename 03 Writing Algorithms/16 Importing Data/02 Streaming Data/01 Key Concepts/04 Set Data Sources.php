@@ -14,6 +14,24 @@
 
         var source = $"http://my-ftp-server.com/{config.Symbol.Value}/{date:yyyyMMdd}.csv";
         return new SubscriptionDataSource(source, SubscriptionTransportMedium.RemoteFile);
+
+        /*
+        // Example of loading from the Object Store:
+        return new SubscriptionDataSource(Bitstamp.KEY, 
+            SubscriptionTransportMedium.ObjectStore);
+
+        // Example of loading a remote zip file:
+        return new SubscriptionDataSource(
+            "https://cdn.quantconnect.com/uploads/multi_csv_zipped_file.zip",
+            SubscriptionTransportMedium.RemoteFile,
+            FileFormat.ZipEntryName);
+
+        // Example of loading a remote zip file and accessing a CSV file inside it:
+        return new SubscriptionDataSource(
+            "https://cdn.quantconnect.com/uploads/multi_csv_zipped_file.zip#csv_file_10.csv",
+            SubscriptionTransportMedium.RemoteFile,
+            FileFormat.ZipEntryName);
+        */
     }
 }</pre>
     <pre class="python">class MyCustomDataType(PythonData):
@@ -27,6 +45,23 @@
 
         source = f"http://my-ftp-server.com/{config.symbol.value}/{date:%Y%M%d}.csv"
         return SubscriptionDataSource(source, SubscriptionTransportMedium.REMOTE_FILE)
+
+        # Example of loading from the Object Store:
+        # return SubscriptionDataSource(Bitstamp.KEY, SubscriptionTransportMedium.OBJECT_STORE)
+
+        # Example of loading a remote zip file:
+        # return SubscriptionDataSource(
+        #     "https://cdn.quantconnect.com/uploads/multi_csv_zipped_file.zip",
+        #     SubscriptionTransportMedium.REMOTE_FILE,
+        #     FileFormat.ZIP_ENTRY_NAME
+        # )
+
+        # Example of loading a remote zip file and accessing a CSV file inside it:
+        # return SubscriptionDataSource(
+        #     "https://cdn.quantconnect.com/uploads/multi_csv_zipped_file.zip#csv_file_10.csv",
+        #     SubscriptionTransportMedium.REMOTE_FILE,
+        #     FileFormat.ZIP_ENTRY_NAME
+        # )
 </pre>
 </div>
 
