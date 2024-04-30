@@ -40,7 +40,7 @@
          date: datetime,
          is_live_mode: bool) -&gt; SubscriptionDataSource:
         
-         if isLiveMode:
+         if is_live_mode:
             return SubscriptionDataSource("https://www.bitstamp.net/api/ticker/", SubscriptionTransportMedium.REST)
 
         source = f"http://my-ftp-server.com/{config.symbol.value}/{date:%Y%M%d}.csv"
