@@ -101,58 +101,58 @@ namespace QuantConnect.Algorithm.CSharp
 }</pre>
 	<pre class="python">from AlgorithmImports import *
 
-class ChainedUniverseAlgorithm(QCAlgorithm):
-    def Initialize(self):
-        self.SetStartDate(2023, 2, 2)
-        self.SetCash(100000)
-        self.UniverseSettings.Asynchronous = True
-        self.UniverseSettings.DataNormalizationMode = DataNormalizationMode.Raw
-        self.SetSecurityInitializer(CustomSecurityInitializer(self))
+    class ChainedUniverseAlgorithm(QCAlgorithm):
+    def initialize(self):
+        self.set_start_date(2023, 2, 2)
+        self.set_cash(100000)
+        self.universe_settings.asynchronous = True
+        self.universe_settings.data_normalization_mode = DataNormalizationMode.RAW
+        self.set_security_initializer(CustomSecurityInitializer(self))
 
-        universe = self.AddUniverse(self.FundamentalFunction)
-        self.AddUniverseOptions(universe, self.OptionFilterFunction)
+        universe = self.add_universe(self.fundamental_function)
+        self.add_universe_options(universe, self.option_filter_function)
         self.day = 0
 
-    def FundamentalFunction(self, fundamental: List[Fundamental]) -&gt List[Symbol]:
-        filtered = (f for f in fundamental if not np.isnan(f.ValuationRatios.PERatio))
-        sorted_by_pe_ratio = sorted(filtered, key=lambda f: f.ValuationRatios.PERatio)
-        return [f.Symbol for f in sorted_by_pe_ratio[:10]]
+    def fundamental_function(self, fundamental: List[Fundamental]) -&gt List[Symbol]:
+        filtered = (f for f in fundamental if not np.isnan(f.valuation_ratios.pe_ratio))
+        sorted_by_pe_ratio = sorted(filtered, key=lambda f: f.valuation_ratios.pe_ratio)
+        return [f.symbol for f in sorted_by_pe_ratio[:10]]
 
-    def OptionFilterFunction(self, option_filter_universe: OptionFilterUniverse) -&gt OptionFilterUniverse:
-        return option_filter_universe.Strikes(-2, +2).FrontMonth().CallsOnly()
+    def option_filter_function(self, option_filter_universe: OptionFilterUniverse) -&gt OptionFilterUniverse:
+        return option_filter_universe.strikes(-2, +2).front_month().calls_only()
 
     def on_data(self, data: Slice) -&gt None:
-        if self.IsWarmingUp or self.day == self.Time.day:
+        if self.is_warming_up or self.day == self.time.day:
             return
         
-        for symbol, chain in data.OptionChains.items():
-            if self.Portfolio[chain.Underlying.Symbol].Invested:
-                self.Liquidate(chain.Underlying.Symbol)
+        for symbol, chain in data.option_chains.items():
+            if self.portfolio[chain.underlying.symbol].invested:
+                self.liquidate(chain.underlying.symbol)
 
-            spot = chain.Underlying.Price
-            contract = sorted(chain, key=lambda x: abs(spot-x.Strike))[0]
-            tag = f"IV: {contract.ImpliedVolatility:.3f} Δ: {contract.Greeks.Delta:.3f}"
-            self.MarketOrder(contract.Symbol, 1, True, tag)
-            self.day = self.Time.day
+            spot = chain.underlying.price
+            contract = sorted(chain, key=lambda x: abs(spot-x.strike))[0]
+            tag = f"IV: {contract.implied_volatility:.3f} Δ: {contract.greeks.delta:.3f}"
+            self.market_order(contract.symbol, 1, True, tag)
+            self.day = self.time.day
 
 class CustomSecurityInitializer(BrokerageModelSecurityInitializer):
     def __init__(self, algorithm: QCAlgorithm) -&gt None:
-        super().__init__(algorithm.BrokerageModel, FuncSecuritySeeder(algorithm.GetLastKnownPrices))
+        super().__init__(algorithm.brokerage_model, FuncSecuritySeeder(algorithm.get_last_known_prices))
         self.algorithm = algorithm
 
-    def Initialize(self, security: Security) -&gt None:
+    def initialize(self, security: Security) -&gt None:
         # First, call the superclass definition
         # This method sets the reality models of each security using the default reality models of the brokerage model
-        super().Initialize(security)
+        super().initialize(security)
 
         # Overwrite the price model        
-        if security.Type == SecurityType.Option: # Option type
-            security.PriceModel = OptionPriceModels.CrankNicolsonFD()
+        if security.type == SecurityType.OPTION: # Option type
+            security.price_model = OptionPriceModels.crank_nicolson_fd()
 
         # Overwrite the volatility model and warm it up
-        if security.Type == SecurityType.Equity:
-            security.VolatilityModel = StandardDeviationOfReturnsVolatilityModel(30)
-            trade_bars = self.algorithm.History[TradeBar](security.Symbol, 30, Resolution.Daily)
+        if security.type == SecurityType.EQUITY:
+            security.volatility_model = StandardDeviationOfReturnsVolatilityModel(30)
+            trade_bars = self.algorithm.history[TradeBar](security.symbol, 30, Resolution.DAILY)
             for trade_bar in trade_bars:
-                security.VolatilityModel.Update(security, trade_bar)</pre>
+                security.volatility_model.update(security, trade_bar)</pre>
 </div>
